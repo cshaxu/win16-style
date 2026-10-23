@@ -33,7 +33,39 @@ def hex_value(value, length):
     return isinstance(value, str) and re.fullmatch(r"[0-9a-f]{%d}" % length, value) is not None
 
 
-def validate(manifest, inventory, abi, receipts, files):
+def third_party_entries(manifest, files):
+    require(manifest["schema"] == 1 and
+            manifest["source_repository"] == "https://github.com/TsudaKageyu/minhook.git" and
+            manifest["source_commit"] == "c3fcafdc10146beb5919319d0683e44e3c30d537" and
+            manifest["source_tag"] == "v1.3.4", "unreviewed MinHook identity")
+    license_path = "src/ntw16s-dll/injection/minhook/LICENSE.txt"
+    require(manifest["license_destination"] == license_path, "missing MinHook license identity")
+    entries, destinations = {}, set()
+    require(len(manifest["entries"]) == 14, "MinHook coverage changed")
+    for entry in manifest["entries"]:
+        source, destination = safe_path(entry["source"]), safe_path(entry["destination"])
+        require(source.startswith("minhook/") and source not in entries, "duplicate/foreign MinHook source")
+        require(destination.startswith("src/ntw16s-dll/injection/") and
+                destination.casefold() not in destinations, "duplicate/foreign MinHook destination")
+        require(entry["action"] in {"retain", "adapt"} and entry["mode"] == "100644" and
+                hex_value(entry["blob"], 40) and hex_value(entry["sha256"], 64) and
+                type(entry["size"]) is int and entry["size"] > 0, "invalid MinHook disposition/digest")
+        require(all(isinstance(entry[k], str) and entry[k].strip()
+                    for k in ("notice", "reason", "receiver")), "missing MinHook review")
+        raw = files.get(destination)
+        require(raw is not None, "missing MinHook local file")
+        if entry["action"] == "retain":
+            require(len(raw) == entry["size"] and hashlib.sha256(raw).hexdigest() == entry["sha256"],
+                    "retained MinHook bytes changed")
+        entries[source] = entry
+        destinations.add(destination.casefold())
+    require(entries.get("minhook/LICENSE.txt", {}).get("destination") == license_path and
+            entries["minhook/LICENSE.txt"]["action"] == "retain", "MinHook license not retained")
+    return entries
+
+
+def validate(manifest, inventory, abi, receipts, files, external=None):
+    external = external or {}
     require(manifest["schema"] == 1, "unknown manifest schema")
     pinned = re.search(r"^# source-commit: ([0-9a-f]{40})$", inventory, re.M)
     require(pinned and manifest["source_commit"] == pinned[1], "source commit mismatch")
@@ -102,6 +134,7 @@ def validate(manifest, inventory, abi, receipts, files):
     require(abi["helper"]["ordinal"] == 1 and abi["helper"]["noname"] is True and
             abi["helper"]["symbol"] == "Ntw16sFinishHelper", "helper ABI mismatch")
     require(receipts["schema"] == 1, "invalid receipts schema")
+    external_destinations = {e["destination"] for e in external.values()}
     seen = set()
     for receipt in receipts["files"]:
         path = safe_path(receipt["path"])
@@ -113,9 +146,9 @@ def validate(manifest, inventory, abi, receipts, files):
         require(raw is not None and hashlib.sha256(raw).hexdigest() == receipt["sha256"], "local content digest mismatch")
         if receipt["source"] is None:
             require(receipt["source_blob"] is None and receipt["disposition"] == "authored", "invalid authored receipt")
-            require(path not in destinations, "authored receipt bypasses source disposition")
+            require(path not in destinations | external_destinations, "authored receipt bypasses source disposition")
             continue
-        entry = entries.get(receipt["source"])
+        entry = entries.get(receipt["source"]) or external.get(receipt["source"])
         require(entry and path == entry["destination"] and receipt["source_blob"] == entry["blob"] and
                 receipt["disposition"] == entry["action"], "receipt/source disposition mismatch")
         if entry["action"] == "retain":
@@ -128,13 +161,14 @@ def validate(manifest, inventory, abi, receipts, files):
         require(not receipts["files"] and not files, "files present before import admission")
     if manifest["import_status"] == "imported":
         require(destinations <= seen, "incomplete final import")
+    require(all(e["destination"] in seen for e in external.values()), "missing third-party receipt")
     for path in seen:
         if "/injection/detours/" in path and not path.endswith("LICENSE.md"):
             require("src/ntw16s-dll/injection/detours/LICENSE.md" in seen, "Detours license missing")
     return len(entries), len(manifest["includes"]), len(seen)
 
 
-def check_source(manifest, repository):
+def check_source(manifest, repository, prefix=""):
     def git(*args, data=None):
         return subprocess.check_output(["git", "-C", str(repository), *args], input=data, timeout=30)
     tree = {}
@@ -144,14 +178,14 @@ def check_source(manifest, repository):
     entries = manifest["entries"]
     stream = io.BytesIO(git("cat-file", "--batch", data="".join(e["blob"] + "\n" for e in entries).encode()))
     for entry in entries:
-        require(tree.get(entry["source"]) == [entry["mode"], "blob", entry["blob"], str(entry["size"])],
+        require(tree.get(entry["source"].removeprefix(prefix)) == [entry["mode"], "blob", entry["blob"], str(entry["size"])],
                 "fixed source tree differs")
         blob, kind, size = stream.readline().decode().split()
         raw = stream.read(int(size))
         require(stream.read(1) == b"\n" and blob == entry["blob"] and kind == "blob" and
                 int(size) == entry["size"] and hashlib.sha256(raw).hexdigest() == entry["sha256"],
                 "fixed source bytes differ")
-    print("Source research PASS: 124/124 fixed tree/blob/size/SHA-256")
+    print("Source research PASS: %d/%d fixed tree/blob/size/SHA-256" % (len(entries), len(entries)))
 
 
 def self_test(manifest, inventory, abi):
@@ -212,6 +246,9 @@ def self_test(manifest, inventory, abi):
             mutated_r["files"][0]["notice"] = ""
         else:
             detours = next(e for e in mutated_m["entries"] if e["source"].endswith("detours/creatwth.cpp"))
+            # Retired in the actual tree; this isolated fixture still admits a
+            # real source destination so rejection specifically needs a license.
+            detours.update(action="adapt", destination="src/ntw16s-dll/injection/detours/creatwth.cpp")
             new_receipt = dict(receipt, path=detours["destination"], source=detours["source"],
                                source_blob=detours["blob"], disposition="adapt", notice="MIT-Detours")
             mutated_r["files"].append(new_receipt)
@@ -228,6 +265,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--source-repository", type=Path)
+    parser.add_argument("--third-party-repository", type=Path)
     parser.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
     root = args.root.resolve()
@@ -250,12 +288,49 @@ def main():
         require(path.resolve().is_relative_to(root), "import escapes root via reparse/symlink")
         if path.is_file():
             files[candidate] = path.read_bytes()
-    counts = validate(manifest, inventory, abi, receipts, files)
+    third_party_path = folder / "minhook-manifest.json"
+    third_party = json.loads(third_party_path.read_text(encoding="utf-8")) if third_party_path.exists() else None
+    external = third_party_entries(third_party, files) if third_party else {}
+    counts = validate(manifest, inventory, abi, receipts, files, external)
     print("Source manifest PASS: %d decisions / %d includes / %d local imports" % counts)
     if args.self_test:
         self_test(manifest, inventory, abi)
+        if third_party:
+            mutations = {
+                "floating-third-party": lambda m, f: m.update(source_commit="0" * 40),
+                "lost-third-party": lambda m, f: m["entries"].pop(),
+                "duplicate-third-party": lambda m, f: m["entries"].__setitem__(1, copy.deepcopy(m["entries"][0])),
+                "third-party-path-escape": lambda m, f: m["entries"][0].update(destination="src/../escape"),
+                "third-party-empty-review": lambda m, f: m["entries"][0].update(notice=""),
+                "third-party-license-omitted": lambda m, f: f.pop(m["license_destination"]),
+                "third-party-license-modified": lambda m, f: f.update({m["license_destination"]: b"changed"}),
+            }
+            for name, mutate in mutations.items():
+                m, f = copy.deepcopy(third_party), dict(files)
+                mutate(m, f)
+                try:
+                    third_party_entries(m, f)
+                except (ValueError, KeyError, TypeError):
+                    continue
+                raise ValueError("third-party fixture accepted: " + name)
+            for mode in ("authored-bypass", "missing-receipt"):
+                mutated = copy.deepcopy(receipts)
+                receipt = next(r for r in mutated["files"] if r["source"] in external)
+                if mode == "authored-bypass":
+                    receipt.update(source=None, source_blob=None, disposition="authored")
+                else:
+                    mutated["files"].remove(receipt)
+                try:
+                    validate(manifest, inventory, abi, mutated, files, external)
+                except (ValueError, KeyError, TypeError):
+                    continue
+                raise ValueError("third-party receipt fixture accepted: " + mode)
+            print("Third-party SelfTest PASS: 9 rejection cases; 14 MinHook source decisions")
     if args.source_repository:
         check_source(manifest, args.source_repository)
+    if args.third_party_repository:
+        require(third_party is not None, "no third-party manifest")
+        check_source(third_party, args.third_party_repository, "minhook/")
 
 
 if __name__ == "__main__":

@@ -3,8 +3,6 @@
 #include "ntw16s-dll/ntw16s.h"
 #include <commctrl.h>
 #include <stdio.h>
-#pragma comment(lib,"comctl32.lib")
-#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"TERMINAL FAIL line=%d error=%lu: %s\n",__LINE__,GetLastError(),#x);ExitProcess(1);}}while(0)
 typedef ntw16s_creation_scope *(__cdecl *begin_fn)(BOOL);
@@ -121,7 +119,7 @@ static int worker(const WCHAR *path)
 int wmain(int argc,WCHAR **argv)
 {
     WCHAR name[80],image[MAX_PATH],line[MAX_PATH*2+40];HDESK isolated;
-    STARTUPINFOW startup={sizeof(startup)};PROCESS_INFORMATION process={0};DWORD code;
+    STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION process={0};DWORD code;
     CHECK(argc==2 || (argc==3 && !wcscmp(argv[2],L"--worker")));
     SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOGPFAULTERRORBOX|SEM_NOOPENFILEERRORBOX);
     CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));

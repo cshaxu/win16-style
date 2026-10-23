@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <wchar.h>
+/* MinGW CRT must preserve native arguments. Globbing otherwise interprets the
+ * '?' in explicit extended paths (\\?\) before target resolution. */
+int _dowildcard=0;
 /* Locate the raw next argument without reserializing the target command line. */
 static PCWSTR next_argument(PCWSTR p)
 {
@@ -27,7 +30,7 @@ int wmain(int argc,WCHAR **argv)
 {
     int first=1;BOOL wait=FALSE;DWORD error,exit_code=0;
     WCHAR image[NTW16S_PATH_CAP];ntw16s_context context;
-    STARTUPINFOW startup={sizeof(startup)};PROCESS_INFORMATION child={0};
+    STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION child={0};
     PCWSTR raw=next_argument(GetCommandLineW());PWSTR command;
     if(argc>1 && !wcscmp(argv[1],L"--wait")){wait=TRUE;first=2;raw=next_argument(raw);}
     if(argc<=first || !wcscmp(argv[first],L"--help")){

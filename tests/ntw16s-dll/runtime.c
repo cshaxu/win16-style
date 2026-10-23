@@ -70,9 +70,11 @@ static void menu_scales(void)
 
 static void round_trip(BOOL observe)
 {
+    ULONGLONG start=GetTickCount64();
     WNDCLASSW cls={0};HMENU menu=CreateMenu(),popup=CreatePopupMenu();HWND root,children[9];
     ntw16s_creation_scope *scope=NULL;ntw16s_creation_result result={0};HFONT font=NULL,second=NULL;
-    HANDLE thread;DWORD exit_code;SCROLLINFO scroll={sizeof(scroll),SIF_ALL,0,100,10,35,0};
+    HANDLE thread;DWORD exit_code;SCROLLINFO scroll={.cbSize=sizeof(scroll),.fMask=SIF_ALL,.nMin=0,.nMax=100,.nPage=10,.nPos=35,.nTrackPos=0};
+    if(observe)fprintf(stderr,"RUNTIME first round begin styled=%d\n",styled);
     CHECK(menu && popup && AppendMenuW(popup,MF_STRING,101,L"Open") && AppendMenuW(menu,MF_POPUP,(UINT_PTR)popup,L"File"));
     cls.lpfnWndProc=owner;cls.lpszClassName=L"Win16StyleCore";cls.hInstance=GetModuleHandleW(NULL);
     cls.hbrBackground=(HBRUSH)(COLOR_BTNFACE+1);
@@ -80,6 +82,7 @@ static void round_trip(BOOL observe)
     if(styled){scope=Ntw16sCreationBegin(TRUE);CHECK(scope);}
     root=CreateWindowW(cls.lpszClassName,L"Win16 Style - standalone core",WS_OVERLAPPEDWINDOW,
         0,0,850,540,NULL,menu,cls.hInstance,NULL);CHECK(root);
+    if(observe)fprintf(stderr,"RUNTIME root created elapsed=%llu\n",GetTickCount64()-start);
     children[0]=CreateWindowW(L"STATIC",L"Native application content",WS_CHILD|WS_VISIBLE,20,20,600,30,root,NULL,cls.hInstance,NULL);
     children[1]=CreateWindowW(L"BUTTON",L"Checked",WS_CHILD|WS_VISIBLE|BS_AUTOCHECKBOX,20,65,200,30,root,(HMENU)201,cls.hInstance,NULL);
     children[2]=CreateWindowW(L"BUTTON",L"Radio",WS_CHILD|WS_VISIBLE|BS_AUTORADIOBUTTON,240,65,180,30,root,(HMENU)202,cls.hInstance,NULL);
@@ -89,6 +92,7 @@ static void round_trip(BOOL observe)
     children[6]=CreateWindowW(L"COMBOBOX",NULL,WS_CHILD|WS_VISIBLE|CBS_DROPDOWNLIST,20,270,300,160,root,(HMENU)206,cls.hInstance,NULL);
     children[7]=CreateWindowW(L"SCROLLBAR",NULL,WS_CHILD|WS_VISIBLE|SBS_HORZ,440,280,280,24,root,(HMENU)207,cls.hInstance,NULL);
     children[8]=CreateWindowW(L"SCROLLBAR",NULL,WS_CHILD|WS_VISIBLE|SBS_VERT,750,120,24,200,root,(HMENU)208,cls.hInstance,NULL);
+    if(observe)fprintf(stderr,"RUNTIME controls created elapsed=%llu\n",GetTickCount64()-start);
     if(styled){CHECK(Ntw16sCreationEnd(scope,&result) && !result.failure);CHECK(Ntw16sWindowAttached(root));}
     {unsigned i;for(i=0;i<9;++i){CHECK(children[i]);if(styled)CHECK(Ntw16sWindowAttached(children[i]));}}
     CHECK(SendMessageW(root,WM_APP+42,0,0)==4242);
@@ -110,6 +114,7 @@ static void round_trip(BOOL observe)
         CHECK(GetTextMetricsW(dc,&metric) && metric.tmHeight==20);SelectObject(dc,old);DeleteDC(dc);}}
     thread_window=root;thread=CreateThread(NULL,0,wrong_thread,NULL,0,NULL);CHECK(thread);
     CHECK(WaitForSingleObject(thread,5000)==WAIT_OBJECT_0 && GetExitCodeThread(thread,&exit_code) && exit_code==0);CloseHandle(thread);
+    if(observe)fprintf(stderr,"RUNTIME owner-thread check elapsed=%llu\n",GetTickCount64()-start);
     {unsigned before=commands;SendMessageW(children[3],BM_CLICK,0,0);CHECK(commands==before+1);}
     ShowWindow(root,SW_SHOWNOACTIVATE);UpdateWindow(root);
     if(observe){printf("CORE families=6 creation installed=%lu unsupported=%lu dpi=%u\n",result.installed,result.unsupported,GetDpiForWindow(root));capture(root);}
@@ -129,7 +134,9 @@ static int runtime_worker(int argc,WCHAR **argv)
     CHECK(argc==1 || (argc==2 && !wcscmp(argv[1],L"--native")));styled=argc==1;
     CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));
     CHECK(Ntw16sGetAbiVersion()==3);
+    fprintf(stderr,"RUNTIME worker begin styled=%d\n",styled);
     if(styled)menu_scales();
+    fprintf(stderr,"RUNTIME menu scales complete styled=%d\n",styled);
     /* Native USER/GDI lazily allocate process caches during early creation.
      * Warm the same full workload, then assert no per-round growth, as well
      * as direct destruction of every HWND and the final leased HFONT. */

@@ -20,9 +20,9 @@ typedef struct attachment {
     BOOL detached,frame,control;
     HWND themed;
 } attachment;
-static __declspec(thread) ntw16s_creation_scope *current;
-static __declspec(thread) HHOOK creation_return_hook;
-static __declspec(thread) HHOOK creation_before_hook;
+static _Thread_local ntw16s_creation_scope *current;
+static _Thread_local HHOOK creation_return_hook;
+static _Thread_local HHOOK creation_before_hook;
 static LRESULT CALLBACK attachment_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 
 static attachment *lookup(HWND w)
@@ -134,7 +134,7 @@ static BOOL install_created(HWND w,DWORD original_style)
         if(control){
             HWND themed=NULL;BOOL list=FALSE;
             if(class_is(w,L"COMBOBOX")){
-                COMBOBOXINFO info={sizeof(info)};
+                COMBOBOXINFO info={.cbSize=sizeof(info)};
                 if(ntw16s_native_get_combo_info(w,&info)){themed=info.hwndList;list=TRUE;}
             }else if(class_is(w,L"LISTBOX")){themed=w;list=TRUE;}
             else if(edit && (original_style&ES_MULTILINE))themed=w;
@@ -205,7 +205,7 @@ static LRESULT CALLBACK creation_return(int code,WPARAM p,LPARAM l)
                 if(error==ERROR_NOT_SUPPORTED){
                     ++scope->result.unsupported;ntw16s_theme_remove(m->hwnd,NULL);
                     if(class_is(m->hwnd,L"COMBOBOX")){
-                        COMBOBOXINFO info={sizeof(info)};
+                        COMBOBOXINFO info={.cbSize=sizeof(info)};
                         if(ntw16s_native_get_combo_info(m->hwnd,&info))ntw16s_theme_remove(info.hwndList,NULL);
                     }
                 }

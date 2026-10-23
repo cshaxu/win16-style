@@ -23,3 +23,11 @@ T1 的逐文件处置及静态依赖：[BASELINE](BASELINE.md) 与
 独立化决定见 [INDEPENDENCE](INDEPENDENCE.md) 与
 [逐导出 ABI 清单](abi-decisions.json)；工具链真实结果见 [TOOLCHAIN](TOOLCHAIN.md)。
 本地检查和后续导入回执规则见 [VALIDATION](VALIDATION.md)。
+
+T6 S1 纯 C 后端准入：[MinHook 固定清单](minhook-manifest.json)，官方
+TsudaKageyu/minhook v1.3.4 commit c3fcafdc10146beb5919319d0683e44e3c30d537。
+14项含许可证、作者、双宽 HDE、buffer/trampoline；不导入官方 DLL、构建脚本或
+公开 API 层。hook.c 仅适配为初始加载的私有补丁事务，保留完整原声明；不使用
+其线程冻结、Sleep/spinlock 或运行中全局附着。BSD-2-Clause 的 MinHook/HDE
+完整声明须随产物资源保留。此来源与既有124项 ntvdm64 清单分开，不冒充原创。
+新后端尚未构建整包通过，旧 Detours 待完整替换后清除。

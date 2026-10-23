@@ -24,7 +24,7 @@ static int matrix(int argc,WCHAR **argv)
         CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" --wait \"%ls\" --parent \"%ls\" \"%ls\" \"%ls\" \"%ls\" %u %u",launcher,paths[2+root],paths[3-root],paths[2+root],folder,folder,ansi,root?64:32)>0);
         HANDLE job=CreateJobObjectW(NULL,NULL);JOBOBJECT_EXTENDED_LIMIT_INFORMATION limits={0};limits.BasicLimitInformation.LimitFlags=JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
         CHECK(job && SetInformationJobObject(job,JobObjectExtendedLimitInformation,&limits,sizeof(limits)));
-        STARTUPINFOW startup={sizeof(startup)};PROCESS_INFORMATION process={0};DWORD code;
+        STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION process={0};DWORD code;
         CHECK(CreateProcessW(launcher,command,NULL,NULL,TRUE,CREATE_NO_WINDOW|CREATE_SUSPENDED,NULL,NULL,&startup,&process));
         if(!AssignProcessToJobObject(job,process.hProcess)){TerminateProcess(process.hProcess,1);WaitForSingleObject(process.hProcess,1000);CloseHandle(process.hThread);CloseHandle(process.hProcess);CloseHandle(job);CHECK(FALSE);}
         CHECK(ResumeThread(process.hThread)==1);DWORD wait=WaitForSingleObject(process.hProcess,60000);

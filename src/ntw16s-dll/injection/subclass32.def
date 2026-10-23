@@ -1,0 +1,5 @@
+; GetWindowSubclass is ordinal-only in the OS v5 COMCTL32 used by raw targets.
+; Preserve the qualified Windows SDK import contract without forcing v6 activation.
+LIBRARY COMCTL32.dll
+EXPORTS
+    GetWindowSubclass@16 @411 NONAME

@@ -3,3 +3,7 @@
 !/assets/binary/README.md
 /.vs/
 *.user
+!/assets/binary/run16s.exe
+!/assets/binary/ntw16s32.dll
+!/assets/binary/ntw16s64.dll
+!/assets/binary/demo.exe

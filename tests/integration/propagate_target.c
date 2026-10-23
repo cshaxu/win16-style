@@ -44,10 +44,10 @@ int wmain(int argc,WCHAR **argv)
     CHECK(swprintf_s(marker,MAX_PATH,L"%ls\\tree-%ls-g%d-b%u.txt",directory,argv[6],depth,(unsigned)(sizeof(void *)*8))>0);
     report("entry",GetCurrentProcessId());CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));window_check();
     if(depth){
-        WCHAR command[32768];STARTUPINFOW startup={sizeof(startup)};PROCESS_INFORMATION child={0};DWORD code;
+        WCHAR command[32768];STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION child={0};DWORD code;
         DWORD flags=hold?CREATE_SUSPENDED:0;
         CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" %d \"%ls\" \"%ls\" %d %d \"%ls\"",argv[2],depth-1,argv[3],argv[3],!ansi,hold,argv[6])>0);
-        if(ansi){char application_a[4096],command_a[32768];STARTUPINFOA a={sizeof(a)};
+        if(ansi){char application_a[4096],command_a[32768];STARTUPINFOA a={.cb=sizeof(a)};
             CHECK(WideCharToMultiByte(CP_ACP,0,argv[2],-1,application_a,sizeof(application_a),NULL,NULL));
             CHECK(WideCharToMultiByte(CP_ACP,0,command,-1,command_a,sizeof(command_a),NULL,NULL));
             CHECK(CreateProcessA(application_a,command_a,NULL,NULL,FALSE,flags,NULL,NULL,&a,&child));
@@ -61,7 +61,7 @@ int wmain(int argc,WCHAR **argv)
         DWORD wait=wait_gui(child.hProcess);if(wait!=WAIT_OBJECT_0){TerminateProcess(child.hProcess,ERROR_TIMEOUT);WaitForSingleObject(child.hProcess,1000);}
         CHECK(wait==WAIT_OBJECT_0 && GetExitCodeProcess(child.hProcess,&code));CloseHandle(child.hThread);CloseHandle(child.hProcess);CHECK(!code);
     }
-    {WCHAR missing[MAX_PATH],line[8]=L"";STARTUPINFOW startup={sizeof(startup)};PROCESS_INFORMATION child={0};
+    {WCHAR missing[MAX_PATH],line[8]=L"";STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION child={0};
         CHECK(swprintf_s(missing,MAX_PATH,L"%ls\\missing-win16style-app.exe",directory)>0);
         SetLastError(0);CHECK(!CreateProcessW(missing,line,NULL,NULL,FALSE,0,NULL,NULL,&startup,&child) && GetLastError()==ERROR_FILE_NOT_FOUND);}
     report("complete",GetCurrentProcessId());return 0;

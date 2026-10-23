@@ -1,43 +1,35 @@
-# Core verification
+# Product verification
 
-在 Windows 安装 MSVC x86/x64 Build Tools、Windows SDK、CMake、Ninja、Python，
-从仓库根运行；不需要来源仓库、NTVDM 或已安装的样式 DLL。
-
-```powershell
-pwsh -NoProfile -File tools/Build-Core.ps1 -RunName core-full -TestPattern '^core/.*$' -TimeoutSeconds 360
-```
-
-入口立即返回后台 PID、日志和 result.json 位置；必须读取最终 result.json，
-启动成功不等于验证通过。RunName 必须使用未存在的名字。Release /MT /W4 /WX
-两架构稳定树为 build/.ninja/x86、x64，真实 DLL 和 fixture 均在各自树中。
-每架构 13 项；单项 100 秒（ABI 20 秒）、隔离子进程 90 秒、总预算 360 秒。
-可用 TestPattern 选择 focused 测试，匹配零测试会失败。
-
-实际 DLL 验证包括 ABI、组合窗口、frame、字体、tabs、重入/销毁、默认按钮、
-卸载与 sizebox。core/geometry 直接编译生产几何函数，属于数学单元检查；
-core/runtime-native 与 core/sizebox-native 是原生对照，不声称覆盖样式行为。
-窗口在私有桌面测试，不修改输入桌面或系统主题；资源检查对已知 HWND、最后
-字体 lease 及同负载预热后的逐轮 GDI/USER 计数分别断言。原生对照记录计数，
-不把其冷启动缓存增长当作 DLL 泄漏。
-
-抓图经 WM_PRINT 写入本轮 scratch，不能证明物理鼠标、键盘、焦点或任意 DPI
-交互验收。关闭任务时先将结论提炼到 history，再按活动包回收本轮日志/图片与
-CTest 自动生成的 Testing 日志目录；保留稳定构建树的对象与配置缓存。
-
-启动与传播的完整回归可使用下面的选择器。TaskRoot只登记本轮scratch，
-不会改变稳定构建树；整个T结束后由活动包负责回收。
+当前构建使用独立x86/x64 MinGW-w64 GCC、Ninja、ccache、CMake、Python及PowerShell 7。
+不需要C++、MSVC、来源仓库、NTVDM或系统样式DLL安装。配置与独立包步骤见
+[构建说明](../docs/etc/operations/BUILD.md)；当前验证状态见
+[CURRENT](../docs/states/CURRENT.md)，不能以注册数量或旧测试结果声称通过。
 
 ```powershell
-pwsh -NoProfile -File tools/Build-Core.ps1 -TaskRoot t4-propagate -RunName full-new -TestPattern '^(core|launch|propagate)/.*$' -TimeoutSeconds 600
+pwsh -NoProfile -File tools/Build-Core.ps1 -TaskRoot t6-package -RunName full-new -TestPattern '^(core|launch|propagate|demo)/.*$' -TimeoutSeconds 600
 ```
 
-当前x86注册16项、x64注册26项（包含下面的demo两项）。x64控制器使用两宽fixture，包含真实CLI
-首次注入、自动窗口/对话框/消息框、错误包/stdio、三代传播、64个原生/注入
-创建字段对照及四组安装失败回收。propagate/basic、contract、rollback均在
-私有桌面和自有进程树运行，不代表真实桌面输入通过。每次须读取最终结果，
-不能把测试注册、worker PID或旧轮次通过当作本轮执行完成。
+入口返回隐藏worker PID及结果位置；必须读取最终result.json、逐架构JUnit、
+run.log/run.err。RunName必须全新。每架构独立600秒预算，依次构建并测试，
+总上限1200秒；超时为未定结论。稳定树为build/.ninja/x86、x64，ccache为
+build/.ccache；TestPattern可选择focused测试，匹配零项失败。
 
-T5增加demo/boundary（真实x64 GUI PE、系统imports及无样式消费源码）和
-demo/pair（独立observer，私有桌面、同一exe两路模块/PrintWindow/排版/业务通知）。
-完整选择器为 `^(core|launch|propagate|demo)/.*$`，TaskRoot t5-demo、600秒。
-observer不向demo加入开关，不把合成消息当作真实鼠标键盘验收。
+T6 S1当前注册x86 24项、x64 35项。包含生产C异常清理与原生补丁事务、ABI、
+实际DLL窗口/字体/控件及资源生命周期、绘图/DC故障、菜单转发、原生滚动对照、
+私有剪贴板、真实CLI/双位宽首次加载/八类对话框/六类消息框、四位宽边三代传播、
+64组原生/注入创建字段、四组失败回滚、helper超时/目标先退出及长路径。
+
+core/geometry直接编译生产几何函数；control-present/dc-failure直接编译并仪器化
+生产绘图路径，并使用同样的v5 COMCTL32 ordinal导入契约。原生对照与样式结果
+分别报告，失败不改断言来放行；不可用的私有window-station剪贴板返回77，列为
+跳过及待验收，绝不自动改用用户共享剪贴板。
+
+demo/boundary检查真实x64 GUI PE、Windows系统imports及无样式消费源码；
+demo/pair由独立observer在私有桌面对同一个exe观察模块、PrintWindow、排版、
+业务通知及窗口操作。demo不含测试开关。自动消息、截图和私有桌面不代表物理
+鼠标/键盘、输入桌面焦点或任意DPI的真实交互验收。
+
+GDI/USER检查同时断言已知窗口、最后字体lease和同负载预热后的逐轮资源计数。
+原生对照记录资源，不将冷启动缓存当成DLL泄漏。证据先提炼到history，任务结束
+按活动包回收scratch与Testing日志，保留稳定构建缓存。T1旧MSVC探针已退休，
+历史代码及结果保存在其实际提交中，不作为当前GCC构建入口。

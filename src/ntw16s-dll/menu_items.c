@@ -24,10 +24,10 @@ BOOL win16_style_menu_char(win16_style_menu_item *items,HMENU menu,WCHAR key,LRE
 {
     int i,count=GetMenuItemCount(menu),selected=-1,first=-1,next=-1,matches=0;BOOL owned=FALSE;
     CharUpperBuffW(&key,1);
-    for(i=0;i<count;++i){MENUITEMINFOW info={sizeof(info)};info.fMask=MIIM_STATE;
+    for(i=0;i<count;++i){MENUITEMINFOW info={.cbSize=sizeof(info)};info.fMask=MIIM_STATE;
         if(GetMenuItemInfoW(menu,(UINT)i,TRUE,&info) && (info.fState&MFS_HILITE))selected=i;}
     for(i=0;i<count;++i){
-        MENUITEMINFOW info={sizeof(info)};win16_style_menu_item *item;const WCHAR *text;
+        MENUITEMINFOW info={.cbSize=sizeof(info)};win16_style_menu_item *item;const WCHAR *text;
         info.fMask=MIIM_DATA|MIIM_STATE|MIIM_FTYPE;
         if(!GetMenuItemInfoW(menu,(UINT)i,TRUE,&info) || !(item=find(items,info.dwItemData)))continue;
         owned=TRUE;
@@ -35,7 +35,10 @@ BOOL win16_style_menu_char(win16_style_menu_item *items,HMENU menu,WCHAR key,LRE
         for(text=item->text;*text && *text!=L'\t';++text)if(*text==L'&' && text[1]){
             WCHAR letter=*++text;if(letter==L'&')continue;CharUpperBuffW(&letter,1);
             if(letter!=key)continue;
-            if(first<0)first=i;if(next<0 && i>selected)next=i;++matches;break;
+            if(first<0)first=i;
+            if(next<0 && i>selected)next=i;
+            ++matches;
+            break;
         }
     }
     if(!owned)return FALSE;
@@ -50,7 +53,7 @@ static void restore_items(HMENU menu,unsigned depth,BOOL by_depth,win16_style_me
         win16_style_menu_item *item=*items;int i,count=GetMenuItemCount(item->menu);
         if((menu && item->menu!=menu) || (by_depth && item->depth!=depth)){items=&item->next;continue;}
         for(i=0;i<count;++i){
-            MENUITEMINFOW info={sizeof(info)};info.fMask=MIIM_DATA|MIIM_FTYPE|MIIM_BITMAP;
+            MENUITEMINFOW info={.cbSize=sizeof(info)};info.fMask=MIIM_DATA|MIIM_FTYPE|MIIM_BITMAP;
             if(GetMenuItemInfoW(item->menu,(UINT)i,TRUE,&info) && info.dwItemData==(ULONG_PTR)item){
                 /* Do not restore state/IDs/text changed by the application.
                  * Remove only our owner-draw bit and our borrowed-data marker. */
@@ -78,7 +81,7 @@ BOOL win16_style_menu_prepare(HMENU menu,win16_style_menu_item **items,unsigned 
     int i,count=GetMenuItemCount(menu);
     if(count<0)return FALSE;
     for(i=0;i<count;++i){
-        MENUITEMINFOW info={sizeof(info)};win16_style_menu_item *item;
+        MENUITEMINFOW info={.cbSize=sizeof(info)};win16_style_menu_item *item;
         info.fMask=MIIM_FTYPE|MIIM_DATA|MIIM_STRING|MIIM_SUBMENU|MIIM_BITMAP;
         if(!GetMenuItemInfoW(menu,(UINT)i,TRUE,&info))return FALSE;
         if((info.fType&MFT_OWNERDRAW) || (info.hbmpItem &&

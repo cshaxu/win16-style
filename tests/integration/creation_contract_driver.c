@@ -25,7 +25,7 @@ static int matrix(int argc,WCHAR **argv)
         CHECK(swprintf_s(unicode[i],MAX_PATH,L"%ls\\子程序 %u.exe",executables,i?64:32)>0 && CopyFileW(argv[4+i],unicode[i],FALSE));
     }
     for(unsigned root=0;root<2;++root)for(unsigned child=0;child<2;++child)for(unsigned styled=0;styled<2;++styled){
-        WCHAR folder[MAX_PATH],tail[32768];STARTUPINFOW startup={sizeof(startup)};PROCESS_INFORMATION process={0};DWORD code;
+        WCHAR folder[MAX_PATH],tail[32768];STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION process={0};DWORD code;
         CHECK(swprintf_s(folder,MAX_PATH,L"%ls\\r%uc%us%u",scratch,root,child,styled)>0 && CreateDirectoryW(folder,NULL));
         CHECK(swprintf_s(tail,ARRAYSIZE(tail),L"\"%ls\" --parent \"%ls\" \"%ls\" %u %u \"%ls\" \"%ls\" %u",files[2+root],files[2+child],unicode[child],child?64:32,styled,package,folder,root?64:32)>0);
         if(styled)CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" --wait %ls",launcher,tail)>0);

@@ -13,7 +13,7 @@
 static int isolated_process(int argc,WCHAR **argv,int (*worker)(int,WCHAR **))
 {
     WCHAR name[80],image[MAX_PATH],command[MAX_PATH*3];HDESK desktop;
-    STARTUPINFOW startup={sizeof(startup)};PROCESS_INFORMATION process={0};
+    STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION process={0};
     DWORD code=1,wait;int i;
     SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOGPFAULTERRORBOX|SEM_NOOPENFILEERRORBOX);
     if(argc>1 && !wcscmp(argv[1],L"--private-worker"))return worker(argc-1,argv+1);

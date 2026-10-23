@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T5已关闭；自动准入M0 T6“独立包与M0产品验收”，当前S1 active，按用户新增纯C/GCC及每S产物交付要求调整。
+M0 T5已关闭；自动准入M0 T6“独立包与M0产品验收”，当前S1 verified locally：同包9项通过，四文件已本地发布，待提交推送及复核。
 用户授权按队列自动完成全部剩余T；通过独立审计后推进，不重复询问准入。
 
 ## Identifier State
@@ -10,27 +10,27 @@ M0 T5已关闭；自动准入M0 T6“独立包与M0产品验收”，当前S1 ac
 - Milestone: M0 (fixed)
 - Last allocated T: 6
 - Last allocated Td S: 4
-- Last delivery: M0 Td S4 P1 (3fdac64)
+- Last delivery: M0 Td S4 P2 (df8727e)
 
 ## Technical Baseline
 
-固定来源5b0b65f66c281050aa4ce1454c6cd31441a6d484，124处置/294 includes、93回执。
-本地唯一renderer/五自编几何头/私有Detours；MSVC C17及必要C++17、/MT /W4 /WX。
-x64 run16s及x86/x64 ntw16sDLL已实现首次自动附着和原生A/W子孙传播，默认策略3。
-ABI3、31公开名称ordinal2..32及NONAME helper1；构建版本M0 T5，0.5.0.0。
-四位宽边/三代24应用、64创建字段原生/注入对照、四安装故障回滚均通过；完整
-回归x86 16/16、x64 26/26，target-first-exit/10秒helper和句柄回收另通过。
-来源23/治理13负例、五几何头、PE及本地/SDK依赖核验通过；T4/T5 scratch已回收。
-x64纯原生demo已在9d94cdf交付，imports仅USER32/KERNEL32；同文件两路渲染/业务已通过。
-四文件完整发布和真实交互尚待T6验证。私有桌面证据不代表真实输入、任意DPI/字体或任意应用兼容性。
+当前本地已验证M0 T6/0.6.0.0：纯C17/MinGW-w64 GCC16.1.0双独立工具链、Ninja、
+ccache4.13.6，静态GCC/线程支持库；当前src/tests无C++，不使用MSVC或MSYS运行库。
+三组件四产物、唯一renderer/五自编几何头；SDK PE staging/有界OS helper、私有
+MinHook/HDE初始补丁及原生异常清理，ABI3/31公开名称ordinal2..32/NONAME helper1。
+固定ntvdm64来源124处置/294 includes、118当前回执；MinHook固定14项独立清单。
+新干净副本完成双宽全部产品/fixture构建、ABI/PE/声明/依赖门禁。默认样式+传播策略3。
 
-## Owner Toolchain And Delivery Update
+实际同包9/9通过，四文件前后哈希不变，已复制到assets/binary且再次匹配；
+[发布清单](../etc/release.json)绑定121输入摘要及逐文件SHA。该批同文件demo两路
+模块/外观/业务、双宽首次附着、四位宽边A/W三代/调用者挂起、长路径和失败路径通过。
+首轮GCC完整矩阵的失败已逐项修复并focused复验，不能代替最终快照完整矩阵。
+完整矩阵、剪贴板77环境处置、真实输入/DPI及M0审计仍待S2/S3；本地发布不等于M0通过。
+私有桌面、合成消息、截图不证明物理输入或任意应用/字体/DPI兼容性。
 
-用户本轮要求目标为纯C17/MinGW-w64 GCC、Ninja、ccache，产品不依赖C++或MSVC。
-当前源仍有Detours C++及SEH，旧MSVC候选只作过渡事实，T6 S1尚未交付/关闭。
-本机两套独立x86/x64 GCC纯C探针均编译运行成功；不能用x64 GCC -m32代替x86工具链。
-每个后续S须构建实际四文件、对同批包测试、发布产物、提交推送及实际复核；
-不再仅以源码推送收口。规则已由M0 Td S4同步并推送复核，历史事实不改写。
+用户要求每产品S构建同批四文件、对该包测试、发布、提交推送及实际复核；不再
+仅以源码推送收口。历史MSVC/Detours及未发布旧S保留历史事实，不作为新基线证据。
+S1验证细节与所有失败处置见[工作记录](../history/M0-T6-S1-package.md)。
 
 ## Recent Closure
 
@@ -66,7 +66,7 @@ S3 P1 97a777d已推送并复核；最终16/21完整回归，全部失败有处�
 | Non-goals | 不把旧MSVC候选称为新工具链通过，不把私有桌面当物理验收；开发S产物标明阶段与待验收面，M0最终关闭仍有独立条件；不修改sibling/系统配置 |
 | Reference Baseline | a4e5504，93回执，M0 T5，16/26全量；产品三组件四文件已实现 |
 | Candidate Proposal | [独立包与M0验收](../proposals/package-acceptance.md)S1；共同八类矩阵 |
-| Files And ABI Surface | 纯C注入/拦截与GCC构建/ccache/打包、工具链及来源治理同步、四文件版本/回执；新增后端先固定来源审查；ABI3/三组件四文件保持 |
+| Files And ABI Surface | 纯C注入/拦截与GCC构建/ccache/打包、工具链及来源治理同步、四文件版本/回执；新增MinHook v1.3.4/c3fcafdc固定清单及声明，限初始装载的无等待私有事务；纯C同宽SDK导入表更新/头恢复，跨宽OS rundll32与有界目标载荷交接，核对PID/创建时间并共用10秒截止；ABI3/三组件四文件保持 |
 | Applicable Rules | Task Reading Set全部规则、来源资源策略、UI及三组件四产物契约 |
 | Verification | 干净复制树双宽全构建、来源/版本/PE/imports/导出/哈希/依赖；剩余测试契约有限审计及必要故障补验；S2完整矩阵 |
 | Expected Markers | 候选目录恰四文件，同批0.6.0.0；全路径来源有证据；实际输入只来自复制树/MinGW-w64 GCC工具链/Windows系统接口，不依赖原树/sibling |

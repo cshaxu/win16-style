@@ -29,7 +29,7 @@ static int child(int argc,WCHAR **argv)
     CHECK(!_wcsicmp(expected,actual));
     CHECK(GetEnvironmentVariableW(L"WIN16STYLE_EXPECT_DESKTOP",expected,ARRAYSIZE(expected)));
     DWORD needed;CHECK(GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,actual,sizeof(actual),&needed) && !wcscmp(expected,actual));
-    STARTUPINFOW startup={sizeof(startup)};GetStartupInfoW(&startup);
+    STARTUPINFOW startup={.cb=sizeof(startup)};GetStartupInfoW(&startup);
     CHECK((startup.dwFlags&STARTF_USESHOWWINDOW) && startup.wShowWindow==SW_HIDE && startup.lpTitle && !wcscmp(startup.lpTitle,L"Contract startup title"));
     if(c->inherit){char input[80];CHECK(startup.dwFlags&STARTF_USESTDHANDLES);CHECK(fgets(input,sizeof(input),stdin) && !strcmp(input,"contract-input\n"));
         CHECK(fputs("child-stdout\n",stdout)!=EOF && fputs("child-stderr\n",stderr)!=EOF && !fflush(stdout) && !fflush(stderr));}
@@ -112,7 +112,7 @@ int wmain(int argc,WCHAR **argv)
     CHECK(SetEnvironmentVariableW(L"WIN16STYLE_PARENT_ONLY_SENTINEL",L"not inherited in custom block"));
     WCHAR before[MAX_PATH],after[MAX_PATH];CHECK(GetCurrentDirectoryW(MAX_PATH,before));
     {WCHAR missing[MAX_PATH],line[32768];char missing_a[4096],line_a[2]="";PROCESS_INFORMATION process={0};
-        STARTUPINFOA a={sizeof(a)};STARTUPINFOW w={sizeof(w)};
+        STARTUPINFOA a={.cb=sizeof(a)};STARTUPINFOW w={.cb=sizeof(w)};
         CHECK(swprintf_s(missing,MAX_PATH,L"%ls\\native-missing.exe",argv[7])>0 && WideCharToMultiByte(CP_ACP,0,missing,-1,missing_a,sizeof(missing_a),NULL,NULL));
         SetLastError(0);CHECK(!CreateProcessA(missing_a,line_a,NULL,NULL,FALSE,0,NULL,NULL,&a,&process) && GetLastError()==ERROR_FILE_NOT_FOUND);
         CHECK(swprintf_s(line,ARRAYSIZE(line),L"\"%ls\"",argv[2])>0);

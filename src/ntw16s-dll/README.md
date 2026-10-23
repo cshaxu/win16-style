@@ -18,7 +18,11 @@ from tools/generate_glyphs.py, without copied Win3.1 resource pixels. Their
 dimensions satisfy the renderer interface; pixel-exact VGA fidelity is not claimed.
 Generated headers are checked in; no source rewriting occurs at build time.
 
-Static TLS and /MT require thread notifications; DllMain performs no GUI work.
+C17 MinGW-w64 GCC builds the complete product; C++ Detours is retired.
+The private MinHook/HDE C backend preserves its original BSD notices and is
+limited to the initial staged-loader transaction, with no waiting or thread
+freezing. Private SDK PE staging restores original import metadata.
+Static runtime/TLS cleanup retains thread notifications; DllMain performs no GUI work.
 Consumers retain the DLL until all HWNDs, scopes, font leases and callbacks
 have ended on their owning GUI threads. Explicit removal restores borrowed
 application state; WM_NCDESTROY owns final attached resource release.

@@ -23,7 +23,7 @@ int wmain(int argc,WCHAR **argv)
     SECURITY_ATTRIBUTES sa={sizeof(sa),NULL,TRUE};HANDLE ready=CreateEventW(&sa,TRUE,FALSE,NULL),release=CreateEventW(&sa,TRUE,FALSE,NULL);CHECK(ready && release);
     WCHAR sibling_marker[MAX_PATH],failed_marker[MAX_PATH],missing[MAX_PATH],command[32768];
     CHECK(swprintf_s(sibling_marker,MAX_PATH,L"%ls\\sibling.txt",argv[5])>0 && swprintf_s(failed_marker,MAX_PATH,L"%ls\\failed-entry.txt",argv[5])>0);
-    STARTUPINFOW startup={sizeof(startup)};PROCESS_INFORMATION sibling={0};
+    STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION sibling={0};
     CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" --standby \"%ls\" \"%ls\" %llu %llu %u",argv[3],sibling_marker,argv[4],
         (unsigned long long)(ULONG_PTR)ready,(unsigned long long)(ULONG_PTR)release,(unsigned)(sizeof(void *)*8))>0);
     CHECK(CreateProcessW(argv[3],command,NULL,NULL,TRUE,0,NULL,NULL,&startup,&sibling) && contract_wait(ready,30000)==WAIT_OBJECT_0);
@@ -35,7 +35,7 @@ int wmain(int argc,WCHAR **argv)
     CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" --entry \"%ls\"",argv[2],failed_marker)>0);
     PROCESS_INFORMATION failed;memset(&failed,0x5a,sizeof(failed));BOOL created;
     SetLastError(0);
-    if(ansi){char app[4096],line[32768];STARTUPINFOA a={sizeof(a)};
+    if(ansi){char app[4096],line[32768];STARTUPINFOA a={.cb=sizeof(a)};
         CHECK(WideCharToMultiByte(CP_ACP,0,argv[2],-1,app,sizeof(app),NULL,NULL) && WideCharToMultiByte(CP_ACP,0,command,-1,line,sizeof(line),NULL,NULL));
         created=CreateProcessA(app,line,NULL,NULL,FALSE,0,NULL,NULL,&a,&failed);
     }else created=CreateProcessW(argv[2],command,NULL,NULL,FALSE,0,NULL,NULL,&startup,&failed);

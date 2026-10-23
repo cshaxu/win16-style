@@ -36,8 +36,8 @@ static void messages(void)
         case 1:result=MessageBoxW(NULL,L"Native text",L"Native message",MB_OK);break;
         case 2:result=MessageBoxExA(NULL,"Native text","Native message",MB_OK,0);break;
         case 3:result=MessageBoxExW(NULL,L"Native text",L"Native message",MB_OK,0);break;
-        case 4:{MSGBOXPARAMSA p={sizeof(p)};p.lpszText="Native text";p.lpszCaption="Native message";result=MessageBoxIndirectA(&p);break;}
-        case 5:{MSGBOXPARAMSW p={sizeof(p)};p.lpszText=L"Native text";p.lpszCaption=L"Native message";result=MessageBoxIndirectW(&p);break;}
+        case 4:{MSGBOXPARAMSA p={.cbSize=sizeof(p)};p.lpszText="Native text";p.lpszCaption="Native message";result=MessageBoxIndirectA(&p);break;}
+        case 5:{MSGBOXPARAMSW p={.cbSize=sizeof(p)};p.lpszText=L"Native text";p.lpszCaption=L"Native message";result=MessageBoxIndirectW(&p);break;}
         }
         CHECK(result==IDOK && UnhookWindowsHookEx(hook));
     }

@@ -9,8 +9,8 @@ struct win16_style_control_scope {
     unsigned calls;
     BOOL detached;
 };
-static __declspec(thread) win16_style_control_scope *scopes;
-static __declspec(thread) HHOOK creation_hook;
+static _Thread_local win16_style_control_scope *scopes;
+static _Thread_local HHOOK creation_hook;
 
 static BOOL class_is(HWND w,const WCHAR *expected)
 {WCHAR name[32];return GetClassNameW(w,name,32) && !lstrcmpiW(name,expected);}
@@ -66,5 +66,6 @@ BOOL win16_style_controls_end(win16_style_control_scope *s,win16_style_control_c
     if(!s || !*link){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
     *link=s->next;s->detached=TRUE;if(counts)*counts=s->counts;
     if(!scopes){UnhookWindowsHookEx(creation_hook);creation_hook=NULL;}
-    if(!s->calls)free(s);return TRUE;
+    if(!s->calls)free(s);
+    return TRUE;
 }

@@ -18,9 +18,9 @@ Win16 窗口外观启动器。项目目标与组件契约见
 .\run16s.exe <app.exe> [arguments]
 ```
 
-T1至T4已完成，包含双位宽外观、首次启动、子孙传播与创建语义。T5原生demo
-已通过同文件裸启动/注入外观和业务对照；完整回归与任务收口进行中。
-构建和测试入口见 [tests/README.md](tests/README.md)，尚无正式四文件发布包。
+T1至T5已关闭；T6正在进行独立交付与M0验收。当前开发包及验收范围见
+[四文件包说明](assets/binary/README.md)，构建与测试见
+[tests/README.md](tests/README.md)。
 文档入口为 [docs/README.md](docs/README.md)，
 进度以 [CURRENT](docs/states/CURRENT.md) 为准。所有工作固定在 milestone0，
 使用 MTSP 管理任务及交付。

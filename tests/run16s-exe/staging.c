@@ -5,7 +5,7 @@
 int wmain(int argc,WCHAR **argv)
 {
     WCHAR self[NTW16S_PATH_CAP],command[NTW16S_PATH_CAP+4];ntw16s_context context;
-    STARTUPINFOW startup={sizeof(startup)};PROCESS_INFORMATION child={0};WORD machine;
+    STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION child={0};WORD machine;
     DWORD expected=sizeof(void *)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386;int result=1;
     if(argc==1)return 42;
     CHECK(argc==2 && !wcscmp(argv[1],L"--parent"));
@@ -26,5 +26,6 @@ int wmain(int argc,WCHAR **argv)
     puts("STAGING PASS actual same-width target, payload/imports staged, original suspension retained; initialization not claimed");result=0;
 failed:
     if(child.hProcess){TerminateProcess(child.hProcess,1);WaitForSingleObject(child.hProcess,2000);CloseHandle(child.hProcess);}
-    if(child.hThread)CloseHandle(child.hThread);return result;
+    if(child.hThread)CloseHandle(child.hThread);
+    return result;
 }

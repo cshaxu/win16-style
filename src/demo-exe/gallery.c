@@ -38,7 +38,7 @@ static void reset(HWND window)
     CheckRadioButton(window,RADIO_A,RADIO_B,RADIO_A);
     SendDlgItemMessageW(window,LIST,LB_SETCURSEL,1,0);
     SendDlgItemMessageW(window,COMBO,CB_SETCURSEL,1,0);
-    SCROLLINFO info={sizeof(info),SIF_RANGE|SIF_PAGE|SIF_POS,0,100,20,30,0};
+    SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS,.nMin=0,.nMax=100,.nPage=20,.nPos=30,.nTrackPos=0};
     SetScrollInfo(GetDlgItem(window,SCROLL),SB_CTL,&info,TRUE);status(window,L"Ready");
 }
 static BOOL populate(HWND window,HINSTANCE instance)
@@ -74,7 +74,7 @@ static LRESULT CALLBACK window_proc(HWND window,UINT message,WPARAM a,LPARAM b)
         }
     }
     if(message==WM_HSCROLL && (HWND)b==GetDlgItem(window,SCROLL)){
-        SCROLLINFO info={sizeof(info),SIF_ALL};WCHAR text[80];GetScrollInfo((HWND)b,SB_CTL,&info);
+        SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_ALL};WCHAR text[80];GetScrollInfo((HWND)b,SB_CTL,&info);
         switch(LOWORD(a)){
         case SB_LINELEFT:--info.nPos;break;case SB_LINERIGHT:++info.nPos;break;
         case SB_PAGELEFT:info.nPos-=(int)info.nPage;break;case SB_PAGERIGHT:info.nPos+=(int)info.nPage;break;
@@ -95,11 +95,16 @@ static HMENU menu(void)
     if(!bar || !file || !help)goto failure;
     if(!AppendMenuW(file,MF_STRING,RESET,L"&Reset") || !AppendMenuW(file,MF_SEPARATOR,0,NULL) ||
        !AppendMenuW(file,MF_STRING,EXIT_APP,L"E&xit") || !AppendMenuW(help,MF_STRING,ABOUT,L"&About"))goto failure;
-    if(!AppendMenuW(bar,MF_POPUP,(UINT_PTR)file,L"&File"))goto failure;file=NULL;
-    if(!AppendMenuW(bar,MF_POPUP,(UINT_PTR)help,L"&Help"))goto failure;help=NULL;
+    if(!AppendMenuW(bar,MF_POPUP,(UINT_PTR)file,L"&File"))goto failure;
+    file=NULL;
+    if(!AppendMenuW(bar,MF_POPUP,(UINT_PTR)help,L"&Help"))goto failure;
+    help=NULL;
     return bar;
 failure:
-    if(file)DestroyMenu(file);if(help)DestroyMenu(help);if(bar)DestroyMenu(bar);return NULL;
+    if(file)DestroyMenu(file);
+    if(help)DestroyMenu(help);
+    if(bar)DestroyMenu(bar);
+    return NULL;
 }
 int demo_run(HINSTANCE instance,int show)
 {

@@ -14,7 +14,7 @@ static int matrix(int argc,WCHAR **argv)
     static const WCHAR *const names[]={L"ntw16s32.dll",L"ntw16s64.dll",L"tree32.exe",L"tree64.exe"};
     for(unsigned i=0;i<4;++i)CHECK(swprintf_s(files[i],MAX_PATH,L"%ls\\%ls",package,names[i])>0 && CopyFileW(argv[2+i],files[i],FALSE));
     for(unsigned root=0;root<2;++root)for(unsigned child=0;child<2;++child)for(unsigned api=0;api<2;++api){
-        WCHAR id[40];DWORD code;STARTUPINFOW startup={sizeof(startup)};PROCESS_INFORMATION process={0};
+        WCHAR id[40];DWORD code;STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION process={0};
         CHECK(swprintf_s(id,40,L"r%uc%ua%u",root,child,api)>0);
         CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" --wait \"%ls\" 2 \"%ls\" \"%ls\" %u %u \"%ls\"",launcher,files[2+root],files[2+child],files[3-root],api,(root+child+api)&1,id)>0);
         HANDLE job=CreateJobObjectW(NULL,NULL);JOBOBJECT_EXTENDED_LIMIT_INFORMATION limits={0};limits.BasicLimitInformation.LimitFlags=JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;

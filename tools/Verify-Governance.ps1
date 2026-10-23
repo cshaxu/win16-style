@@ -137,9 +137,9 @@ function Test-Governance([hashtable]$Files) {
 
 $resolvedRoot = (Resolve-Path -LiteralPath $Root).Path
 $files = @{}
-foreach ($file in (Get-ChildItem -LiteralPath $resolvedRoot -File -Recurse -Force |
-    Where-Object { $_.FullName -notmatch '[\\/](\.git|build|\.vs)[\\/]' })) {
+foreach ($file in (Get-ChildItem -LiteralPath $resolvedRoot -File -Recurse -Force)) {
     $path = [IO.Path]::GetRelativePath($resolvedRoot, $file.FullName).Replace('\','/')
+    if ($path -match '(^|/)(\.git|build|\.vs)/') { continue }
     # Only metadata is needed for binary entries, never decode packaged images as text.
     $files[$path] = if ($file.Extension -in '.exe','.dll','.png','.bmp') { '<binary>' } else {
         [IO.File]::ReadAllText($file.FullName)

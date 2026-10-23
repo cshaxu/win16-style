@@ -33,7 +33,9 @@ static INT_PTR CALLBACK dialog(HWND w,UINT message,WPARAM a,LPARAM modal)
     (void)a;
     if(message==WM_INITDIALOG){SetWindowLongPtrW(w,DWLP_USER,modal);CHECK(PostMessageW(w,WM_APP+7,0,0));return TRUE;}
     if(message==WM_APP+7){observe(w);record("dialog-observed");
-        if(GetWindowLongPtrW(w,DWLP_USER))EndDialog(w,47);return TRUE;}
+        if(GetWindowLongPtrW(w,DWLP_USER))EndDialog(w,47);
+        return TRUE;
+        }
     return FALSE;
 }
 static void dialogs(void)

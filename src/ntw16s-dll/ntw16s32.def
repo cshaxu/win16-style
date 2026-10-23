@@ -1,6 +1,6 @@
 LIBRARY ntw16s32
 EXPORTS
-    Ntw16sFinishHelper=_Ntw16sFinishHelper@16 @1 NONAME
+    Ntw16sFinishHelper=Ntw16sFinishHelper@16 @1 NONAME
     Ntw16sCreationBegin @2
     Ntw16sCreationEnd @3
     Ntw16sGetAbiVersion @4

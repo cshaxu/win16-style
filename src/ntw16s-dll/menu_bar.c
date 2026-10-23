@@ -19,7 +19,7 @@ BOOL win16_style_bar_read(HMENU menu,HFONT font,UINT dpi,POINT origin,int width,
     dc=CreateCompatibleDC(NULL);
     if(!bar->items || !bar->rects || !sizes || !flags || !dc)goto done;
     for(i=0;i<bar->count;++i){
-        MENUITEMINFOW info={sizeof(info)};
+        MENUITEMINFOW info={.cbSize=sizeof(info)};
         info.fMask=MIIM_STRING|MIIM_FTYPE|MIIM_STATE|MIIM_ID|MIIM_SUBMENU|MIIM_BITMAP;
         if(!GetMenuItemInfoW(menu,i,TRUE,&info) || (info.fType&MFT_SEPARATOR))goto done;
         /* NTUSER's old-UI MDI merge has system + restore only. Modern USER
@@ -46,7 +46,9 @@ BOOL win16_style_bar_read(HMENU menu,HFONT font,UINT dpi,POINT origin,int width,
     bar->count=n;
     ok=win16_style_menu_arrange(origin,width,sizes,flags,bar->count,bar->rects,&bar->height);
 done:
-    if(dc)DeleteDC(dc);free(sizes);free(flags);
+    if(dc)DeleteDC(dc);
+    free(sizes);
+    free(flags);
     if(!ok)win16_style_bar_free(bar);
     return ok;
 }

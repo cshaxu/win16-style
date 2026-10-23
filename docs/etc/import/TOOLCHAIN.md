@@ -5,7 +5,8 @@
 由 vswhere 发现 VC 环境；工具安装路径不成为仓库约定。PATH 中的 CMake/Ninja
 可来自其他工具包，本次 C/C++ 编译和链接实际均为 MSVC，不是 GCC 产品构建。
 
-可重现入口：`pwsh -NoProfile -File tools/Probe-Toolchain.ps1`。
+历史入口：`pwsh -NoProfile -File tools/Probe-Toolchain.ps1`（从T1提交复取；
+T6 S1已退休该MSVC探针，当前入口为tools/Build-Core.ps1）。
 它启动隐藏、拥有 PID 的 worker，返回 result.json 路径；worker 分别 vcvarsall
 x86/x64、独立 Ninja 配置、Release 构建、CTest，全部输出到 build/t1-toolchain。
 总预算 120 秒，超时终止自己启动的子树并记未定结果；不复用已有 scratch。

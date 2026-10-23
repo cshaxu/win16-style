@@ -9,7 +9,7 @@ static int matrix(int argc,WCHAR **argv)
 {
     WCHAR scratch[MAX_PATH],package[MAX_PATH],launcher[MAX_PATH],dll32[MAX_PATH],dll64[MAX_PATH],command[32768];
     WCHAR targets[2][MAX_PATH];unsigned suite;
-    DWORD code;STARTUPINFOW startup={sizeof(startup)};PROCESS_INFORMATION child={0};
+    DWORD code;STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION child={0};
     CHECK(argc==6 || argc==7);
     suite=argc==6?0:!wcscmp(argv[6],L"dialogs")?1:2;
     CHECK(GetEnvironmentVariableW(L"WIN16STYLE_CAPTURE_DIR",scratch,MAX_PATH));

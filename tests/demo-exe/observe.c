@@ -32,7 +32,7 @@ static void text(HWND window,int id,PCWSTR expected)
 static void modules(DWORD pid,BOOL styled,PCWSTR package,PCWSTR image)
 {
     HANDLE snapshot=CreateToolhelp32Snapshot(TH32CS_SNAPMODULE|TH32CS_SNAPMODULE32,pid);CHECK(snapshot!=INVALID_HANDLE_VALUE);
-    MODULEENTRY32W entry={sizeof(entry)};BOOL found=FALSE,main=FALSE;WCHAR wanted[MAX_PATH];
+    MODULEENTRY32W entry={.dwSize=sizeof(entry)};BOOL found=FALSE,main=FALSE;WCHAR wanted[MAX_PATH];
     CHECK(swprintf_s(wanted,MAX_PATH,L"%ls\\ntw16s64.dll",package)>0 && Module32FirstW(snapshot,&entry));
     do{
         if(!_wcsicmp(entry.szModule,L"ntw16s32.dll"))CHECK(FALSE);
@@ -80,7 +80,7 @@ static int matrix(int argc,WCHAR **argv)
         CHECK(tree && SetInformationJobObject(tree,JobObjectExtendedLimitInformation,&limits,sizeof(limits)) && ResetEvent(ready));observed=NULL;
         if(styled)CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" --wait \"%ls\"",launcher,image)>0);
         else CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\"",image)>0);
-        STARTUPINFOW startup={sizeof(startup)};PROCESS_INFORMATION process={0};
+        STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION process={0};
         startup.dwFlags=STARTF_USESHOWWINDOW;startup.wShowWindow=SW_SHOWNORMAL;
         CHECK(CreateProcessW(styled?launcher:image,command,NULL,NULL,FALSE,CREATE_SUSPENDED|CREATE_NO_WINDOW,NULL,NULL,&startup,&process));
         if(!AssignProcessToJobObject(tree,process.hProcess)){TerminateProcess(process.hProcess,1);CHECK(FALSE);}

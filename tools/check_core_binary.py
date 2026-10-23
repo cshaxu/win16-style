@@ -3,7 +3,14 @@ import argparse
 import hashlib
 import json
 import struct
+import re
 from pathlib import Path
+
+
+def system_crt(name):
+    name=name.lower()
+    return name in {'msvcrt.dll','ucrtbase.dll'} or re.fullmatch(
+        r'api-ms-win-crt-(conio|convert|environment|filesystem|heap|locale|math|multibyte|private|process|runtime|stdio|string|time|utility)-l1-1-0\.dll',name) is not None
 
 
 def inspect(path):
@@ -56,9 +63,11 @@ def inspect(path):
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--arch',choices=['x86','x64'],required=True)
+    parser.add_argument('--build-root',type=Path)
     args=parser.parse_args()
     root=Path(__file__).resolve().parents[1]
-    path=root/'build/.ninja'/args.arch/('ntw16s32.dll' if args.arch=='x86' else 'ntw16s64.dll')
+    build=args.build_root or root/'build/.ninja'
+    path=build/args.arch/('ntw16s32.dll' if args.arch=='x86' else 'ntw16s64.dll')
     plan=json.loads((root/'docs/etc/import/abi-decisions.json').read_text(encoding='utf-8'))
     expected={e['symbol'] for e in plan['exports'] if e['decision']=='retain-public'}
     machine,names,imports,digest,ordinals,live=inspect(path)
@@ -66,8 +75,9 @@ def main():
     if len(names)!=31 or set(names)!=expected:raise SystemExit('PE exports differ from standalone core plan: '+repr(names))
     if ordinals!={name:index+2 for index,name in enumerate(sorted(expected))} or live!=set(range(1,33)):
         raise SystemExit('PE ordinal map differs from core plan; helper ordinal 1 must be NONAME')
-    forbidden=('nthook','ntvdm','wow32','ntsrv','rpcrt4','vcruntime','msvcp','msvcr','ucrtbase')
-    if any(any(token in name.lower() for token in forbidden) for name in imports):raise SystemExit('Forbidden external/CRT import')
+    native={'kernel32.dll','user32.dll','gdi32.dll','comctl32.dll','dwmapi.dll','uxtheme.dll'}
+    if any(name.lower() not in native and not system_crt(name) for name in imports):
+        raise SystemExit('Forbidden external/compiler runtime import: '+repr(imports))
     print(json.dumps(dict(status='PE PASS',architecture=args.arch,public_exports=len(names),ordinals='1 NONAME helper; 2..32 core',imports=imports,sha256=digest)))
 
 

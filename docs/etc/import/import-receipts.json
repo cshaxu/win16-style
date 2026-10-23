@@ -14,9 +14,9 @@
       "path": "src/ntw16s-dll/attachment.c",
       "source": "src/ntw16s-dll/attachment.c",
       "source_blob": "e467006ab99ada1846f9298b650c30605807466b",
-      "sha256": "234ca89e2c70ccfcd2f2a6a79823cc0724a7c287870fddd41918dd612ffc8f38",
+      "sha256": "0fec87597e901a7251a06b838189192a5474c11a2d6a3a59a3aba2a15e1c3c70",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -32,18 +32,18 @@
       "path": "src/ntw16s-dll/control_scope.c",
       "source": "src/ntw16s-dll/control_scope.c",
       "source_blob": "e7d2e565af452f8b618badb8e1df0d2ee644a77a",
-      "sha256": "74f313e90f005973902bd76e76f5f75b7aa300ed1d39a06fe332e7c60aa37799",
-      "disposition": "retain",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "sha256": "c031ca3b4f23ad1431818861b480c49bdff5ca0ccd7cbe7f9954bf08d9a8e20c",
+      "disposition": "adapt",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
       "path": "src/ntw16s-dll/controls.c",
       "source": "src/ntw16s-dll/controls.c",
       "source_blob": "9bc3331d0f9fc3e3104059ab792670ab1579d65c",
-      "sha256": "25b360b62729aa5ecaeaa0fd8c9857aef6a8a85f0c01956169e2f2df000b8933",
+      "sha256": "77094533f72e604b55ff5e738929b162ab80b7f335cd584ad74eafc7f979d929",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -68,9 +68,9 @@
       "path": "src/ntw16s-dll/font.c",
       "source": "src/ntw16s-dll/font.c",
       "source_blob": "3bce01032d506f05bb571f8be35392f12c4dcebb",
-      "sha256": "0832d6e44f80eb5ed731c2242978ae286604f0510e322739ec42dc995f6b93ea",
-      "disposition": "retain",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "sha256": "5d22d3ad5962c5d3273689205ca9a9b4eae30b819f2cf83a46a8d7e136d83dca",
+      "disposition": "adapt",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -104,9 +104,9 @@
       "path": "src/ntw16s-dll/menu_bar.c",
       "source": "src/ntw16s-dll/menu_bar.c",
       "source_blob": "8dea689873ff121dce171c1e89d4b8ac93375ffd",
-      "sha256": "38c124da7e7bbede8b96dcdc863ecdf438ad9d54d2ce9c175c00bc942a1eebfb",
-      "disposition": "retain",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "sha256": "dabb1ce65683a5b92ae396c1c56224eb7815cacd60d91fb5f196aa9d536244b7",
+      "disposition": "adapt",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -131,9 +131,9 @@
       "path": "src/ntw16s-dll/menu_items.c",
       "source": "src/ntw16s-dll/menu_items.c",
       "source_blob": "e4515547a7ec174558bfd2923536d190b62f5fb7",
-      "sha256": "a9dfa0377afc30a0b893370b56f093bc43abc50a6aca605dfe206c4e7b98223e",
-      "disposition": "retain",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "sha256": "22424bc0fb6b2a15bd5a0ecb5413a2ec63103c8fc827567f29b7eb7c7438a37e",
+      "disposition": "adapt",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -185,9 +185,9 @@
       "path": "src/ntw16s-dll/menu_scope.c",
       "source": "src/ntw16s-dll/menu_scope.c",
       "source_blob": "b27da79667d1dce3f17336721ef7c6be06fc18f7",
-      "sha256": "95ad88b868cbd154eac2012407f1954ef89907c4e0e521a515fb182d04fff82a",
-      "disposition": "retain",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "sha256": "58187892b3f8955608ed7fbd43301428d44f643865a1ef83b9f821db65886957",
+      "disposition": "adapt",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -284,9 +284,9 @@
       "path": "src/ntw16s-dll/win16_style.c",
       "source": "src/ntw16s-dll/win16_style.c",
       "source_blob": "4235f085cb00c0d17145deec2d04a57c97b98d47",
-      "sha256": "24076b242211cb91c02d2029c35fec9074014965f46e0829b7f781370350d8b2",
+      "sha256": "f512f63aab153c72690fdcddc08f7d66c96989dc5f22956c213232c48de113d7",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -347,9 +347,9 @@
       "path": "src/ntw16s-dll/ntw16s32.def",
       "source": null,
       "source_blob": null,
-      "sha256": "30f7c6a3beb5431fd75e5fe7d684933c90298ea599aa3bce05dd4bc17ff971ae",
+      "sha256": "f2423aeaf38340653eb9c967a12762659dc8cb92aa8c46c927a6981d240cd912",
       "disposition": "authored",
-      "review": "T3 S2 payload bootstrap/real helper ABI, version or bounded test process budget; docs/proposals/launcher-injection.md",
+      "review": "T3 S2 payload bootstrap/real helper ABI, version or bounded test process budget; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored, repository MIT"
     },
     {
@@ -365,18 +365,18 @@
       "path": "src/ntw16s-dll/README.md",
       "source": null,
       "source_blob": null,
-      "sha256": "9ceaf451004c0889e3b4690c9921ffc13ecab1bc32597ef80f979e947e0cb3e5",
+      "sha256": "79eee9fc82b97ba8076b2235061a7147712b7d469fdb23faf112474dc02bdbea",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved",
       "notice": "Project-authored, repository MIT"
     },
     {
       "path": "src/ntw16s-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "374ba3c788c6b36f698329c33adf7c160e5db6eae67c0ea773eae70cf4494ea4",
+      "sha256": "b699bb6d1734218e6fe14614fa3f34e3d6a60c2068233b991afe830619755a4a",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved",
       "notice": "Project-authored, repository MIT"
     },
     {
@@ -392,9 +392,9 @@
       "path": "tests/ntw16s-dll/ntw16s_terminal.c",
       "source": "tests/app/ntw16s_terminal.c",
       "source_blob": "703b5cbf5cde11c2c94594b07b75aba79b8c7d34",
-      "sha256": "9eae7d7bf62b0feea5a79a99c287cc586b5c6e4bb2a91e2ed153a3d0aa19e2da",
+      "sha256": "dbfea02b68f38815a5930b231dfb66f29054c3f4b3f3d569a5d8c28eceff84ab",
       "disposition": "adapt",
-      "review": "T2 S2 local real-DLL focused regression registration/isolation; docs/history/M0-T2-S2-runtime.md",
+      "review": "T2 S2 local real-DLL focused regression registration/isolation; docs/history/M0-T2-S2-runtime.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored source fixture, original notices preserved"
     },
     {
@@ -455,9 +455,9 @@
       "path": "tests/ntw16s-dll/runtime.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ca8a691eaf9ecf63769d3da68f2640ac121f79cd39e8444a0916afce07427ddd",
+      "sha256": "7c29eadf782751d8e45a221c82898f712e654afe56acad1f4b51dc17c6a28e17",
       "disposition": "authored",
-      "review": "T2 S2 actual-DLL runtime/native counterpart and process-owned private desktop; docs/history/M0-T2-S2-runtime.md",
+      "review": "T2 S2 actual-DLL runtime/native counterpart and process-owned private desktop; docs/history/M0-T2-S2-runtime.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved",
       "notice": "Project-authored, repository MIT"
     },
     {
@@ -473,82 +473,10 @@
       "path": "tests/ntw16s-dll/isolated_process.h",
       "source": null,
       "source_blob": null,
-      "sha256": "4c1262d81f5198925e33a9b08b22c711629031bcf8e43f3018a89cdf72fe657e",
+      "sha256": "0a3753d9f9d2f9d9ebe8e05ce94c2b63c263e4dc6dd9eb554394c6f1be2de3a3",
       "disposition": "authored",
-      "review": "T3 S2 payload bootstrap/real helper ABI, version or bounded test process budget; docs/proposals/launcher-injection.md",
+      "review": "T3 S2 payload bootstrap/real helper ABI, version or bounded test process budget; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored, repository MIT"
-    },
-    {
-      "path": "src/ntw16s-dll/injection/detours/LICENSE.md",
-      "source": "src/nthook32-dll/detours/LICENSE.md",
-      "source_blob": "e6a4c563056daedce20576a96a4d77b02a7dc8b6",
-      "sha256": "b301808b732cfaa60df2b4b422d78cd97d2a15058b207e7e33f0535ba5170dd6",
-      "disposition": "retain",
-      "review": "T3 S1 fixed Detours slice; W helper deadline/command adaptation; docs/proposals/launcher-injection.md",
-      "notice": "Microsoft Detours MIT; original file copyright and LICENSE.md preserved"
-    },
-    {
-      "path": "src/ntw16s-dll/injection/detours/creatwth.cpp",
-      "source": "src/nthook32-dll/detours/creatwth.cpp",
-      "source_blob": "17b12f26703d2c0d5ee26c02197cca8fb52768b8",
-      "sha256": "6293aea5fd9281c687429462bcccd3f063e83b990a0b8e196946ebb03b0ad6f9",
-      "disposition": "adapt",
-      "review": "T3 S1 fixed Detours slice; W helper deadline/command adaptation; docs/proposals/launcher-injection.md",
-      "notice": "Microsoft Detours MIT; original file copyright and LICENSE.md preserved"
-    },
-    {
-      "path": "src/ntw16s-dll/injection/detours/detours.cpp",
-      "source": "src/nthook32-dll/detours/detours.cpp",
-      "source_blob": "8345c4db448d08139c2b2211dd754dfd183f3c4e",
-      "sha256": "df415e05f985afe88f4b03ba34d6f5abce47edda11cd66d4f72902b801113eb7",
-      "disposition": "retain",
-      "review": "T3 S1 fixed Detours slice; W helper deadline/command adaptation; docs/proposals/launcher-injection.md",
-      "notice": "Microsoft Detours MIT; original file copyright and LICENSE.md preserved"
-    },
-    {
-      "path": "src/ntw16s-dll/injection/detours/detours.h",
-      "source": "src/nthook32-dll/detours/detours.h",
-      "source_blob": "fe7acf110b298ad8475d5a97aff0155aea3bec6a",
-      "sha256": "7b498657d8db4cff2d488b1e65cfeeb5b1305de7f32d23588b1fa86aaa46fcf7",
-      "disposition": "retain",
-      "review": "T3 S1 fixed Detours slice; W helper deadline/command adaptation; docs/proposals/launcher-injection.md",
-      "notice": "Microsoft Detours MIT; original file copyright and LICENSE.md preserved"
-    },
-    {
-      "path": "src/ntw16s-dll/injection/detours/disasm.cpp",
-      "source": "src/nthook32-dll/detours/disasm.cpp",
-      "source_blob": "f002ff49ebe723726b2392e1bd85ed9ba7b2affc",
-      "sha256": "6c44283ac6987d77d92aca93a6a8e9f0dc1f7caf8a2b310e4b374853e9136236",
-      "disposition": "retain",
-      "review": "T3 S1 fixed Detours slice; W helper deadline/command adaptation; docs/proposals/launcher-injection.md",
-      "notice": "Microsoft Detours MIT; original file copyright and LICENSE.md preserved"
-    },
-    {
-      "path": "src/ntw16s-dll/injection/detours/image.cpp",
-      "source": "src/nthook32-dll/detours/image.cpp",
-      "source_blob": "21ff501dc509f0e00fdeb9dea995fe976c7e8ebb",
-      "sha256": "8e7c94b335237565f3dce14b6dfd9dd88876cf10fb55b9c910f12ae9c38bd190",
-      "disposition": "retain",
-      "review": "T3 S1 fixed Detours slice; W helper deadline/command adaptation; docs/proposals/launcher-injection.md",
-      "notice": "Microsoft Detours MIT; original file copyright and LICENSE.md preserved"
-    },
-    {
-      "path": "src/ntw16s-dll/injection/detours/modules.cpp",
-      "source": "src/nthook32-dll/detours/modules.cpp",
-      "source_blob": "341673085f57f4ce89b361ff8e71298e27098a99",
-      "sha256": "4a3f970eb539a4379996eb17e14bd75902fe4f34d566cfd19682ff19315cbc6f",
-      "disposition": "retain",
-      "review": "T3 S1 fixed Detours slice; W helper deadline/command adaptation; docs/proposals/launcher-injection.md",
-      "notice": "Microsoft Detours MIT; original file copyright and LICENSE.md preserved"
-    },
-    {
-      "path": "src/ntw16s-dll/injection/detours/uimports.cpp",
-      "source": "src/nthook32-dll/detours/uimports.cpp",
-      "source_blob": "052be9baeab594a94212e33caa7d46dff4fee0f2",
-      "sha256": "2b2d92df4c5412906d7e6830a7c2836d78e368a6bef509be028566cbd921e83b",
-      "disposition": "retain",
-      "review": "T3 S1 fixed Detours slice; W helper deadline/command adaptation; docs/proposals/launcher-injection.md",
-      "notice": "Microsoft Detours MIT; original file copyright and LICENSE.md preserved"
     },
     {
       "path": "src/ntw16s-dll/injection/injection.h",
@@ -560,39 +488,39 @@
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
-      "path": "src/ntw16s-dll/injection/context.cpp",
+      "path": "src/ntw16s-dll/injection/context.c",
       "source": "src/nthook32-dll/context.cpp",
       "source_blob": "f435db72a3475ef34d921a57d1632d6990d407af",
-      "sha256": "2bac7966eeff27ccd8966531e2395c0662a79e4d4597ccefe10409e08a44080e",
+      "sha256": "1240bbf321b7c6fc569f14121f4a99fed899061d1eb545479e2ac7ab8708620e",
       "disposition": "adapt",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
-      "path": "src/ntw16s-dll/injection/installer.cpp",
+      "path": "src/ntw16s-dll/injection/installer.c",
       "source": "src/nthook32-dll/installer.cpp",
       "source_blob": "84e78935b3079089569b9167eaed994df3220ebd",
-      "sha256": "6cb38455975e048284f1e0d09229942c26d4ab39644e82b2f095b55733f6537e",
+      "sha256": "05838f02e97edd1db58fbfb2537cd2a7ac7fa2123b56ad2e1d73ed8150737256",
       "disposition": "adapt",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
       "path": "src/run16s-exe/main.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ef7cb3afb1145f98b80c6d57f944bf99eb4e0af74a5458c7361bbe16eca3f5de",
+      "sha256": "6d97acf5bb798a4e9e0761e6ca98ccfed65735526be88f801b540868c2a30c51",
       "disposition": "authored",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
       "path": "src/run16s-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "a32621a7bd1acd57c5f284848e15dd4596b562eb77a789f856d8f13e7db36715",
+      "sha256": "fddd488aa6aea021a2d9985b450fbe0d3c7b6a3ec5efbd2769eb8e86bcab613b",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -617,9 +545,9 @@
       "path": "tests/run16s-exe/staging.c",
       "source": null,
       "source_blob": null,
-      "sha256": "9ff14668fab0c530b0e3acf49030bdf50fb179183a378d18ae49a64828614cb4",
+      "sha256": "94749c3984426fb8d328e264484c786884bef415b8c6d742361ef135b57777a7",
       "disposition": "authored",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -632,12 +560,12 @@
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
-      "path": "src/ntw16s-dll/injection/entry.cpp",
+      "path": "src/ntw16s-dll/injection/entry.c",
       "source": "src/nthook32-dll/entry.cpp",
       "source_blob": "39504e103bf2a934721d2898b1a1a2e8b6dd2f6b",
-      "sha256": "53c059ee6ae913c239346c5ca9f8970b69a2ab6f482ab8fb6d5b05f56f1cb570",
+      "sha256": "2268dd262061df17e243709f3c3052eb92cc6107251c40e093d56c22ac8e5e88",
       "disposition": "adapt",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
     },
     {
@@ -650,21 +578,21 @@
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
     },
     {
-      "path": "src/ntw16s-dll/injection/window_titles.cpp",
+      "path": "src/ntw16s-dll/injection/window_titles.c",
       "source": "src/nthook32-dll/window_titles.cpp",
       "source_blob": "0a3d1cd942345edb25e879b9377311929551a0ec",
-      "sha256": "1cca2d6bb6917d20366fd5063ba023fa2f747b05cb43356cfb1f810a43bba17f",
+      "sha256": "1bf8ab657967bd04f30bf0015a67cdeaacca33e314647d43de7229231a699c39",
       "disposition": "adapt",
-      "review": "T3 S2 same-DLL delayed binding and read-only native-target diagnostics; docs/proposals/launcher-injection.md",
+      "review": "T3 S2 same-DLL delayed binding and read-only native-target diagnostics; docs/proposals/launcher-injection.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
     },
     {
       "path": "tests/integration/automatic_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "0df4f754e0ec3873f3840440f0bb80cf1097868ede7798c2c8ea50f8ce574773",
+      "sha256": "e1e9bbd67be5c37a53958de1776efe8d248c2e9c07ac9458f76064447d3eae90",
       "disposition": "authored",
-      "review": "T3 S2 native MB_OK single-button oracle, exact witnesses and Unicode targets; docs/history/M0-T3-S2-bootstrap.md",
+      "review": "T3 S2 native MB_OK single-button oracle, exact witnesses and Unicode targets; docs/history/M0-T3-S2-bootstrap.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
     },
     {
@@ -680,27 +608,27 @@
       "path": "tests/integration/automatic_launch.c",
       "source": null,
       "source_blob": null,
-      "sha256": "12df713454e4fd7604c4230c7fa915dec32954024e01cc39083f2d929b276bbd",
+      "sha256": "1a015e7843f2425b3ec53f12821a318da230219fbe6577b41d403a813676d5db",
       "disposition": "authored",
-      "review": "T3 S2 native MB_OK single-button oracle, exact witnesses and Unicode targets; docs/history/M0-T3-S2-bootstrap.md",
+      "review": "T3 S2 native MB_OK single-button oracle, exact witnesses and Unicode targets; docs/history/M0-T3-S2-bootstrap.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
     },
     {
       "path": "tests/integration/automatic_messages.h",
       "source": null,
       "source_blob": null,
-      "sha256": "e4d93e926374d5203a9ed39f2b47fc23ede2b088b573af07c1ef222e829318b0",
+      "sha256": "353630b9666074084f448f2a62e2bccd5efd170a8d28a2c620bdf6346117b4f2",
       "disposition": "authored",
-      "review": "T3 S2 native MB_OK single-button oracle, exact witnesses and Unicode targets; docs/history/M0-T3-S2-bootstrap.md",
+      "review": "T3 S2 native MB_OK single-button oracle, exact witnesses and Unicode targets; docs/history/M0-T3-S2-bootstrap.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
     },
     {
-      "path": "tests/run16s-exe/failures.cpp",
+      "path": "tests/run16s-exe/failures.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e80ec889a0b9fd1fda5597cd563931744932e37b918df105480a9071267dd526",
+      "sha256": "aa75da55536b5e85b9f6af11d7bfcfa454d1b91732f22777a5382785e41a404f",
       "disposition": "authored",
-      "review": "T3 S3 real permission/initialization/helper/CLI failure paths; docs/proposals/launcher-injection.md; T4 S3 target-first-exit helper branch, see docs/history/M0-T4-completion.md",
+      "review": "T3 S3 real permission/initialization/helper/CLI failure paths; docs/proposals/launcher-injection.md; T4 S3 target-first-exit helper branch, see docs/history/M0-T4-completion.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored test, repository MIT"
     },
     {
@@ -713,30 +641,30 @@
       "notice": "Project-authored test, repository MIT"
     },
     {
-      "path": "src/ntw16s-dll/injection/create_process.cpp",
+      "path": "src/ntw16s-dll/injection/create_process.c",
       "source": "src/nthook32-dll/create_process.cpp",
       "source_blob": "2369ce7a7c46e79fc23f73367db9d42e0c40c9da",
-      "sha256": "84a7047d2218f07df8f9d1e39c960ed47bc50631ec38a61b2d1e7d621e1702a1",
+      "sha256": "40cbdcd65e01c312b5611f9db853a1ddf4086f7769c30eb7f3fca8e863cd396e",
       "disposition": "adapt",
-      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md",
+      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending",
       "notice": "Project-authored source adaptation or new native fixture, repository MIT"
     },
     {
       "path": "tests/integration/propagate_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "77917e5afd82fb2ad52a164d8e4cf4b25dc11494d48fc56994744928b583b77b",
+      "sha256": "c9a13cb74e75df66d2f3eb789e22e1108bb0a39c4c21df31aa1349f6152373d1",
       "disposition": "authored",
-      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md",
+      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored source adaptation or new native fixture, repository MIT"
     },
     {
       "path": "tests/integration/propagate_basic.c",
       "source": null,
       "source_blob": null,
-      "sha256": "9a000dbe2daaec1d48abd9d649b6fd56507007eb21f793590b3b94bf250a4f3d",
+      "sha256": "f9fe8746f2d15d35558305b03fa0cf93cc66914e8706b20753383183adc309a8",
       "disposition": "authored",
-      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md",
+      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored source adaptation or new native fixture, repository MIT"
     },
     {
@@ -752,63 +680,63 @@
       "path": "tests/integration/creation_contract.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d4ac671a938616e173db2492526015cd5fe41222ba57d5722521f484d345e4db",
+      "sha256": "a0e39e159c64a7912310620a7636008c51645a298b0d18ed6f4e1355dfb0d848",
       "disposition": "authored",
-      "review": "T4 S2 native/injected field and owned-job rollback contracts; docs/history/M0-T4-S2-contract.md",
+      "review": "T4 S2 native/injected field and owned-job rollback contracts; docs/history/M0-T4-S2-contract.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored fixture, repository MIT"
     },
     {
       "path": "tests/integration/creation_contract_driver.c",
       "source": null,
       "source_blob": null,
-      "sha256": "909d1e7a367b92d19745147eaf867bb41546e0602eca580c424aea2dcc5951fa",
+      "sha256": "4456ca4267b372696e822f7c9283e3e5afb2cb2afa6df6fd19dad32fdf4b3026",
       "disposition": "authored",
-      "review": "T4 S2 native/injected field and owned-job rollback contracts; docs/history/M0-T4-S2-contract.md",
+      "review": "T4 S2 native/injected field and owned-job rollback contracts; docs/history/M0-T4-S2-contract.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored fixture, repository MIT"
     },
     {
       "path": "tests/integration/rollback_contract.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1f459d0e943350ffd9845940551dcab463418e8a69da65ad58698f73c64261d1",
+      "sha256": "2631215970e1cdbf3a167650d11bd486ee370628cb0c085fb4ac61ae2aa35ab8",
       "disposition": "authored",
-      "review": "T4 S2 native/injected field and owned-job rollback contracts; docs/history/M0-T4-S2-contract.md",
+      "review": "T4 S2 native/injected field and owned-job rollback contracts; docs/history/M0-T4-S2-contract.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored fixture, repository MIT"
     },
     {
       "path": "tests/integration/rollback_contract_driver.c",
       "source": null,
       "source_blob": null,
-      "sha256": "369b915f2aaa1c10e6cd94cada180ab36a4cb48a2797f20e31d42061111fb21a",
+      "sha256": "9de4a198af55646b3525a8c7360cc69bf178062d5b121bd232f5a8f8744b8ead",
       "disposition": "authored",
-      "review": "T4 S2 native/injected field and owned-job rollback contracts; docs/history/M0-T4-S2-contract.md",
+      "review": "T4 S2 native/injected field and owned-job rollback contracts; docs/history/M0-T4-S2-contract.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored fixture, repository MIT"
     },
     {
       "path": "src/demo-exe/main.c",
       "source": "src/w16style-exe/main.c",
       "source_blob": "aab6a106d079d566dc8901769add516f0b0d2bb1",
-      "sha256": "5f267968288b727e44f48d93ec5c36605f04796507bfbd88c75ad67557571677",
+      "sha256": "431bc305c7bd2f2b7845333d685ab4eea8cf6ce0e873611641bbc5014519edc0",
       "disposition": "adapt",
-      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md",
+      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored source per frozen W16Style README; no third-party artwork"
     },
     {
       "path": "src/demo-exe/gallery.c",
       "source": "src/w16style-exe/gallery.c",
       "source_blob": "9a2c1eea0c8348a1609d56507c6e0c3903a0a423",
-      "sha256": "bf988db41d1fded0fe018f075199863496aef598b96d10f48fae7cfb615ebb12",
+      "sha256": "37af038a79184d11f236ecc45bb02238f4a508adfee548f6fb06adff23e4203c",
       "disposition": "adapt",
-      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md",
+      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored source per frozen W16Style README; no third-party artwork"
     },
     {
       "path": "src/demo-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "314494d5dbd6996099829ba0585dd3b616af8b87a4f7435174c64f643d5858c9",
+      "sha256": "58aee7682c6159475a08613338fcf97ac7ef65dba1fa29d9183f8ed93aceecae",
       "disposition": "authored",
-      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md",
+      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored source per frozen W16Style README; no third-party artwork"
     },
     {
@@ -824,19 +752,316 @@
       "path": "tests/demo-exe/observe.c",
       "source": null,
       "source_blob": null,
-      "sha256": "58d933d344d01f1c7758ad86736648c63d001113257ab052a52f32eab3d5009b",
+      "sha256": "0b952507a5420833401968e5b521323e730e0e1d1781905e4ab582a66ae1eeed",
       "disposition": "authored",
-      "review": "T5 S2 external owned demo observer; docs/history/M0-T5-S2-pair.md",
+      "review": "T5 S2 external owned demo observer; docs/history/M0-T5-S2-pair.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored fixture, repository MIT"
     },
     {
       "path": "tests/demo-exe/boundary.py",
       "source": null,
       "source_blob": null,
-      "sha256": "844fa5f2ab8331c30a5c8e267a779ddd558ef64ad34c248ab696c6ec2bda6295",
+      "sha256": "fd20e4ae1562ac2458c7118facc499198e394778d65c8d5e434f3222cc68e72c",
       "disposition": "authored",
-      "review": "T5 S3 actual demo PE and native-only boundary; docs/history/M0-T5-completion.md",
+      "review": "T5 S3 actual demo PE and native-only boundary; docs/history/M0-T5-completion.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
       "notice": "Project-authored fixture, repository MIT"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_control_present.c",
+      "source": "tests/app/win16_style_control_present.c",
+      "source_blob": "a44a8cf711985ae62d847021b037b8bb308f8cc7",
+      "sha256": "30ce3957d7d2e32933d66d447e4b89fd676b79bf6d305a52e3843788ec707cc0",
+      "disposition": "adapt",
+      "review": "T6 S1 remaining painter/menu/private clipboard/native scroll contract audit; docs/history/M0-T6-S1-package.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "notice": "Project-authored fixed-source fixture; original comments retained"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_dc_failure.c",
+      "source": "tests/app/win16_style_dc_failure.c",
+      "source_blob": "0bbdc27c4e17eaf1dce1ec51715b26c66b610d75",
+      "sha256": "a50fef053b0db075221447c1e5e9ebe2da973e21e4e0a33936b8f465a78909cf",
+      "disposition": "adapt",
+      "review": "T6 S1 remaining painter/menu/private clipboard/native scroll contract audit; docs/history/M0-T6-S1-package.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "notice": "Project-authored fixed-source fixture; original comments retained"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_edit_clipboard.c",
+      "source": "tests/app/win16_style_edit_clipboard.c",
+      "source_blob": "d4c191bfa4003f701fe595867105c23c1899f625",
+      "sha256": "43998c43836a939619c269b7d0dd018484a4e6bad4de042d737684a02f7204e6",
+      "disposition": "adapt",
+      "review": "T6 S1 remaining painter/menu/private clipboard/native scroll contract audit; docs/history/M0-T6-S1-package.md",
+      "notice": "Project-authored fixed-source fixture; original comments retained"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_menu_dispatch.c",
+      "source": "tests/app/win16_style_menu_dispatch.c",
+      "source_blob": "c31dbe36e549c1111aceaf6b684c1223d5a3a4ed",
+      "sha256": "35f482037eadd6e52e78cdb91d69ea331ba719598b19898cff6796ab7d4bf495",
+      "disposition": "retain",
+      "review": "T6 S1 remaining painter/menu/private clipboard/native scroll contract audit; docs/history/M0-T6-S1-package.md",
+      "notice": "Project-authored fixed-source fixture; original comments retained"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_scroll_api.c",
+      "source": "tests/app/win16_style_scroll_api.c",
+      "source_blob": "11e265bf49085678d2c8c73c68691bfc6b3b733f",
+      "sha256": "e4118fd6466c81471baaff72076225a7740a510ab7bad2b812dba6eb761e0cd7",
+      "disposition": "adapt",
+      "review": "T6 S1 remaining painter/menu/private clipboard/native scroll contract audit; docs/history/M0-T6-S1-package.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "notice": "Project-authored fixed-source fixture; original comments retained"
+    },
+    {
+      "path": "tests/ntw16s-dll/painter_negative.py",
+      "source": null,
+      "source_blob": null,
+      "sha256": "46cabf843c3035c1d81da9871c7abf2bbe25071eb8281650fbed71d3d053d062",
+      "disposition": "authored",
+      "review": "T6 S1 explicit deliberate-leak rejection; docs/history/M0-T6-S1-package.md",
+      "notice": "Project-authored fixture, repository MIT"
+    },
+    {
+      "path": "tests/run16s-exe/long_path.py",
+      "source": null,
+      "source_blob": null,
+      "sha256": "777f8dd4809fc5a89195faa69b911909d537501aba4ae09e25747cd3a793d87c",
+      "disposition": "authored",
+      "review": "T6 S1 extended target path native CLI/entry proof; docs/history/M0-T6-S1-package.md",
+      "notice": "Project-authored fixture, repository MIT"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/unwind.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ccf03098093e0dbc6ea931b8ad7c7cb6bad33dba21103f661cb8a6eb8bd1f0d4",
+      "disposition": "authored",
+      "review": "T6 S1 pure-C facade cleanup; production module exercised with native nested SEH, normal cleanup, last-error preservation, same-thread reuse and two-thread isolation on x86/x64; see M0-T6-S1-package.md",
+      "notice": "Project-authored; project MIT LICENSE"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/unwind.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "a6966eb2be1cb4a9746cd51456f7bb8c52f627ca59fdc7317d28a890ab7378c8",
+      "disposition": "authored",
+      "review": "T6 S1 pure-C facade cleanup; production module exercised with native nested SEH, normal cleanup, last-error preservation, same-thread reuse and two-thread isolation on x86/x64; see M0-T6-S1-package.md",
+      "notice": "Project-authored; project MIT LICENSE"
+    },
+    {
+      "path": "tests/run16s-exe/unwind.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "b99e78a90aed7862d1a84cf3b569a975930ceab2d96cff6d256342e75fefa360",
+      "disposition": "authored",
+      "review": "T6 S1 pure-C facade cleanup; production module exercised with native nested SEH, normal cleanup, last-error preservation, same-thread reuse and two-thread isolation on x86/x64; see M0-T6-S1-package.md",
+      "notice": "Project-authored; project MIT LICENSE"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/LICENSE.txt",
+      "source": "minhook/LICENSE.txt",
+      "source_blob": "74dea27229c05b53b095aa22b9ee7ee9f549e414",
+      "sha256": "d5c2224982b0b95a16b098a561335fa93f3eaf4d0aa964b7843edb986df78dc8",
+      "disposition": "retain",
+      "review": "Private static C trampoline/decoder backend; hook.c reduced to bounded startup-only patching, no thread enumeration, suspension, spin lock, waits or late attach; T6 S1 fixed MinHook source admission",
+      "notice": "MinHook/HDE BSD-2-Clause; retain original notices and full LICENSE.txt in binary resources"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/AUTHORS.txt",
+      "source": "minhook/AUTHORS.txt",
+      "source_blob": "ebef1a6cdc5ec50de284e5990577864df5a235ce",
+      "sha256": "073b4e8b0a5a0cd9f4dfa838369f4fc7a4f47151d930b4e1fd891644060a897f",
+      "disposition": "retain",
+      "review": "Private static C trampoline/decoder backend; hook.c reduced to bounded startup-only patching, no thread enumeration, suspension, spin lock, waits or late attach; T6 S1 fixed MinHook source admission",
+      "notice": "MinHook/HDE BSD-2-Clause; retain original notices and full LICENSE.txt in binary resources"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/src/buffer.c",
+      "source": "minhook/src/buffer.c",
+      "source_blob": "55412b0f301ba9a5b3520343bd1313bb56592899",
+      "sha256": "53228de3f2a14a390f6d97538d702c20a4388eea42e53b5b999532bab018287b",
+      "disposition": "adapt",
+      "review": "Only add (void)pOrigin for x86 -Wextra; allocation algorithm unchanged; original notice preserved; T6 S1 fixed MinHook source admission",
+      "notice": "MinHook/HDE BSD-2-Clause; retain original notices and full LICENSE.txt in binary resources"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/src/buffer.h",
+      "source": "minhook/src/buffer.h",
+      "source_blob": "204d551bffb7f11760bc1e474aa835e55f4cbb00",
+      "sha256": "9769702bd625249e59a19ede05c84365fcc7707e1fa0e5df08df42227cee13e3",
+      "disposition": "retain",
+      "review": "Private static C trampoline/decoder backend; hook.c reduced to bounded startup-only patching, no thread enumeration, suspension, spin lock, waits or late attach; T6 S1 fixed MinHook source admission",
+      "notice": "MinHook/HDE BSD-2-Clause; retain original notices and full LICENSE.txt in binary resources"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/src/trampoline.c",
+      "source": "minhook/src/trampoline.c",
+      "source_blob": "d4d6f99d9fb23d980b12eb0ba4f722e5f8377d87",
+      "sha256": "f13a169f803ff5a8e45c58ce668b4377a9878c0fc4452369b8a1325065186b2b",
+      "disposition": "retain",
+      "review": "Private static C trampoline/decoder backend; hook.c reduced to bounded startup-only patching, no thread enumeration, suspension, spin lock, waits or late attach; T6 S1 fixed MinHook source admission",
+      "notice": "MinHook/HDE BSD-2-Clause; retain original notices and full LICENSE.txt in binary resources"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/src/trampoline.h",
+      "source": "minhook/src/trampoline.h",
+      "source_blob": "bdffdac0a7bc838b52dd35733c943a9d5c7bc7b5",
+      "sha256": "53ed9934492320617a27bfd952ffe7f5b7a4a1d09963d4512447082fe7b727b4",
+      "disposition": "retain",
+      "review": "Private static C trampoline/decoder backend; hook.c reduced to bounded startup-only patching, no thread enumeration, suspension, spin lock, waits or late attach; T6 S1 fixed MinHook source admission",
+      "notice": "MinHook/HDE BSD-2-Clause; retain original notices and full LICENSE.txt in binary resources"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/src/hde/hde32.c",
+      "source": "minhook/src/hde/hde32.c",
+      "source_blob": "eb6af9b8ac8f3d83ab370f807467f2733fb4210d",
+      "sha256": "5da4941e9044f7b325c7f952b5840089e365f374740b7fe7318805d08c0d6c32",
+      "disposition": "retain",
+      "review": "Private static C trampoline/decoder backend; hook.c reduced to bounded startup-only patching, no thread enumeration, suspension, spin lock, waits or late attach; T6 S1 fixed MinHook source admission",
+      "notice": "MinHook/HDE BSD-2-Clause; retain original notices and full LICENSE.txt in binary resources"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/src/hde/hde32.h",
+      "source": "minhook/src/hde/hde32.h",
+      "source_blob": "1112450d87ae6772ad805f4f7fa07965c5bbbdb0",
+      "sha256": "5132de5be8ac7a9d054420f5caef0fb01437faa892f03b3cdc77f795973bf15a",
+      "disposition": "retain",
+      "review": "Private static C trampoline/decoder backend; hook.c reduced to bounded startup-only patching, no thread enumeration, suspension, spin lock, waits or late attach; T6 S1 fixed MinHook source admission",
+      "notice": "MinHook/HDE BSD-2-Clause; retain original notices and full LICENSE.txt in binary resources"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/src/hde/hde64.c",
+      "source": "minhook/src/hde/hde64.c",
+      "source_blob": "ce773b1e25f95b312a4c05f3acf053d87ec6d20c",
+      "sha256": "824eafa315322e6da105a7ce4ec1fc0e0adeee0106d32152fbb0b59e709bd15c",
+      "disposition": "retain",
+      "review": "Private static C trampoline/decoder backend; hook.c reduced to bounded startup-only patching, no thread enumeration, suspension, spin lock, waits or late attach; T6 S1 fixed MinHook source admission",
+      "notice": "MinHook/HDE BSD-2-Clause; retain original notices and full LICENSE.txt in binary resources"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/src/hde/hde64.h",
+      "source": "minhook/src/hde/hde64.h",
+      "source_blob": "ecbf4df958ac24646c0ba645ee4ba8340e8a74c8",
+      "sha256": "e99aa4997bda14b534c614c3d8cb78a72c4aca91a1212c8b03ec605d1d75e36e",
+      "disposition": "retain",
+      "review": "Private static C trampoline/decoder backend; hook.c reduced to bounded startup-only patching, no thread enumeration, suspension, spin lock, waits or late attach; T6 S1 fixed MinHook source admission",
+      "notice": "MinHook/HDE BSD-2-Clause; retain original notices and full LICENSE.txt in binary resources"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/src/hde/pstdint.h",
+      "source": "minhook/src/hde/pstdint.h",
+      "source_blob": "84d82a012311a72f5dfb1fc88554f7820fbdf216",
+      "sha256": "604d1cdf45c5a95bc9cf1bbf39ca05ef83013541101d34971c5cd7577e3d5247",
+      "disposition": "retain",
+      "review": "Private static C trampoline/decoder backend; hook.c reduced to bounded startup-only patching, no thread enumeration, suspension, spin lock, waits or late attach; T6 S1 fixed MinHook source admission",
+      "notice": "MinHook/HDE BSD-2-Clause; retain original notices and full LICENSE.txt in binary resources"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/src/hde/table32.h",
+      "source": "minhook/src/hde/table32.h",
+      "source_blob": "7b3e12e32fdb7c362ca333c992e3c2e05556edb5",
+      "sha256": "43bf687a9fff071b5f46070db4d36c846f8e069cdc57485ee897c499aacdde23",
+      "disposition": "retain",
+      "review": "Private static C trampoline/decoder backend; hook.c reduced to bounded startup-only patching, no thread enumeration, suspension, spin lock, waits or late attach; T6 S1 fixed MinHook source admission",
+      "notice": "MinHook/HDE BSD-2-Clause; retain original notices and full LICENSE.txt in binary resources"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/src/hde/table64.h",
+      "source": "minhook/src/hde/table64.h",
+      "source_blob": "01d4541f97765a1fe14ad4a60f3705156abaf176",
+      "sha256": "b774446d2f110ce954fb0a710f4693c5562ddbd8d56fe84106f2ee80db8b50a2",
+      "disposition": "retain",
+      "review": "Private static C trampoline/decoder backend; hook.c reduced to bounded startup-only patching, no thread enumeration, suspension, spin lock, waits or late attach; T6 S1 fixed MinHook source admission",
+      "notice": "MinHook/HDE BSD-2-Clause; retain original notices and full LICENSE.txt in binary resources"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/startup_hooks.c",
+      "source": "minhook/src/hook.c",
+      "source_blob": "68a006a768c884372a34ee34043e20db079deba6",
+      "sha256": "55fa1acfd32b96978f225b69d40f0aebb61f3b7eaea9bf817a9ef46d091e90bd",
+      "disposition": "adapt",
+      "review": "Private static C trampoline/decoder backend; hook.c reduced to bounded startup-only patching, no thread enumeration, suspension, spin lock, waits or late attach; T6 S1 fixed MinHook source admission",
+      "notice": "MinHook/HDE BSD-2-Clause; retain original notices and full LICENSE.txt in binary resources"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/startup_hooks.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "4ad7e284ba05eff4e3c555286ee237ad44be65d833e006dfedd3cb154ef5647a",
+      "disposition": "authored",
+      "review": "T6 S1 startup-only interface/native export abort, trampoline and commit test; no late attach",
+      "notice": "Project-authored; project MIT LICENSE"
+    },
+    {
+      "path": "tests/run16s-exe/startup_hooks.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "f7f6309758fe20ec2fb0f9ff41a7d7bbe1b31fea8c98da79530e3c38adfcdc42",
+      "disposition": "authored",
+      "review": "T6 S1 startup-only interface/native export abort, trampoline and commit test; no late attach",
+      "notice": "Project-authored; project MIT LICENSE"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/staging.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "472306781c4c1a94d17061dc6e36102ec689ade86a2d4a719a8851e142ba758a",
+      "disposition": "authored",
+      "review": "T6 S1 private C PE stager/OS helper or explicit native Windows manifest/import contract; see M0-T6-S1-package.md; final clean-package regression pending",
+      "notice": "Project-authored; project MIT LICENSE"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/staging.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e31da102f73d70d538ce1298bc65209e3eebc2cc98178b05ff435a35aa9d4f85",
+      "disposition": "authored",
+      "review": "T6 S1 private C PE stager/OS helper or explicit native Windows manifest/import contract; see M0-T6-S1-package.md; final clean-package regression pending",
+      "notice": "Project-authored; project MIT LICENSE"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/helper.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "f56965350420607da31e224028eb6e55f869f794ff96d2ae159ba0b7d9b29125",
+      "disposition": "authored",
+      "review": "T6 S1 private C PE stager/OS helper or explicit native Windows manifest/import contract; see M0-T6-S1-package.md; final clean-package regression pending",
+      "notice": "Project-authored; project MIT LICENSE"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/subclass32.def",
+      "source": null,
+      "source_blob": null,
+      "sha256": "1bb586134e8c3bdbfde4122b502d373a12112d33435aa3956952f067e2f82551",
+      "disposition": "authored",
+      "review": "T6 S1 private C PE stager/OS helper or explicit native Windows manifest/import contract; see M0-T6-S1-package.md; final clean-package regression pending",
+      "notice": "Project-authored; project MIT LICENSE"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/subclass64.def",
+      "source": null,
+      "source_blob": null,
+      "sha256": "7801e6b16a6795f252cb92a997594e1c32a72f6dfe178b5ff03eb08509bbec09",
+      "disposition": "authored",
+      "review": "T6 S1 private C PE stager/OS helper or explicit native Windows manifest/import contract; see M0-T6-S1-package.md; final clean-package regression pending",
+      "notice": "Project-authored; project MIT LICENSE"
+    },
+    {
+      "path": "src/demo-exe/demo.manifest",
+      "source": null,
+      "source_blob": null,
+      "sha256": "5ba292a6ddf280eed04da97c5f6ff77c006ee7d34cecc27ecc04f5f8105e7156",
+      "disposition": "authored",
+      "review": "T6 S1 private C PE stager/OS helper or explicit native Windows manifest/import contract; see M0-T6-S1-package.md; final clean-package regression pending",
+      "notice": "Project-authored; project MIT LICENSE"
+    },
+    {
+      "path": "tests/ntw16s-dll/terminal.rc",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e82c7a5c6477a9e580b3fa10dab71fd653ff30b118e810e9e6c2b047edff14bb",
+      "disposition": "authored",
+      "review": "T6 S1 private C PE stager/OS helper or explicit native Windows manifest/import contract; see M0-T6-S1-package.md; final clean-package regression pending",
+      "notice": "Project-authored; project MIT LICENSE"
     }
   ]
 }

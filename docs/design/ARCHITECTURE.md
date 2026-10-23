@@ -47,8 +47,9 @@ ntvdm64，也不修改它的消费者。具体文件与证据见[导入候选](.
 T1 已选独立化设计：[引导与注入事务](../etc/import/INDEPENDENCE.md)。
 本项目核心 ABI 定为 3，原 scroll/theme binding 改为 DLL 私有，helper 使用
 ordinal 1；普通无载荷加载为被动核心，带载荷的新目标才启用自动拦截。
-DllMain 最小 Detours 地址改写/载荷验证与 renderer 延后初始化分离；保留 /MT
-及静态 TLS 的线程通知。无 broker/句柄身份继承；载荷仅含固定宽头和包目录。
+T6 S1当前实现用私有MinHook/HDE纯C后端替换旧Detours，初始加载事务无等待/
+线程冻结；SDK导入表staging与头恢复仍与renderer延后初始化分离。保留静态
+运行库/TLS清理所需的线程通知；新工具链独立整包通过状态以CURRENT为准。无 broker/句柄身份继承；载荷仅含固定宽头和包目录。
 同宽直接更新 imports，跨宽使用有界 OS rundll32 安装事务，所有等待共享
 10 秒截止时间。staged import 成功与目标实际初始化成功分别验证，调用者
 原要求挂起时不能为等待 ready 提前恢复。

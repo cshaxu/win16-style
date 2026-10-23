@@ -13,3 +13,4 @@
 *.cmake text eol=lf
 *.exe binary
 *.dll binary
+*.manifest text eol=lf

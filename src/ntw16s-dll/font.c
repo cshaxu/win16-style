@@ -3,9 +3,9 @@
 #include <string.h>
 #include <limits.h>
 
-static __declspec(thread) HFONT shared_font;
-static __declspec(thread) HANDLE shared_resource;
-static __declspec(thread) unsigned references;
+static _Thread_local HFONT shared_font;
+static _Thread_local HANDLE shared_resource;
+static _Thread_local unsigned references;
 
 static void word(BYTE *p,unsigned n,unsigned v)
 {p[n]=(BYTE)v;p[n+1]=(BYTE)(v>>8);}
@@ -65,11 +65,18 @@ static BOOL create_font(void)
         if(old)SelectObject(scaled,old);}
 done:
     if(oldfont)SelectObject(src,oldfont);
-    if(olda)SelectObject(src,olda);if(oldb)SelectObject(scaled,oldb);
-    if(base)DeleteObject(base);if(a)DeleteObject(a);if(b)DeleteObject(b);
-    if(src)DeleteDC(src);if(scaled)DeleteDC(scaled);free(data);
+    if(olda)SelectObject(src,olda);
+    if(oldb)SelectObject(scaled,oldb);
+    if(base)DeleteObject(base);
+    if(a)DeleteObject(a);
+    if(b)DeleteObject(b);
+    if(src)DeleteDC(src);
+    if(scaled)DeleteDC(scaled);
+    free(data);
     if(ok){shared_font=font;shared_resource=resource;return TRUE;}
-    if(font)DeleteObject(font);if(resource)RemoveFontMemResourceEx(resource);return FALSE;
+    if(font)DeleteObject(font);
+    if(resource)RemoveFontMemResourceEx(resource);
+    return FALSE;
 }
 
 HFONT win16_style_font_acquire(void)

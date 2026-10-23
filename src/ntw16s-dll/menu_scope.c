@@ -16,8 +16,8 @@ struct popup {
     unsigned calls;
     BOOL detached;
 };
-static __declspec(thread) win16_style_menu_scope *current;
-static __declspec(thread) HHOOK thread_hook;
+static _Thread_local win16_style_menu_scope *current;
+static _Thread_local HHOOK thread_hook;
 static LRESULT CALLBACK popup_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 
 static void paint_border(HWND w,popup *p,HDC target)

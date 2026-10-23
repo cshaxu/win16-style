@@ -71,7 +71,10 @@ static BOOL supported(HWND w)
 static void frame(HDC dc,RECT r,COLORREF color,int width)
 {
     HBRUSH brush=CreateSolidBrush(color);int i;
-    if(!brush)return;for(i=0;i<width && r.right>r.left && r.bottom>r.top;++i){FrameRect(dc,&r,brush);InflateRect(&r,-1,-1);}
+    if(!brush)return;
+    for(i=0;i<width && r.right>r.left && r.bottom>r.top;++i){FrameRect(dc,&r,brush);
+    InflateRect(&r,-1,-1);
+    }
     DeleteObject(brush);
 }
 
@@ -185,7 +188,8 @@ static void draw(HWND w,control_style *s,HDC dc)
     }
     state=label_control?0:SendMessageW(w,BM_GETSTATE,0,0);check=label_control?0:SendMessageW(w,BM_GETCHECK,0,0);
     length=GetWindowTextLengthW(w);text=calloc((size_t)length+1,sizeof(WCHAR));
-    if(!text)return;GetWindowTextW(w,text,length+1);
+    if(!text)return;
+    GetWindowTextW(w,text,length+1);
     font=(HFONT)SendMessageW(w,WM_GETFONT,0,0);
     if(s->detached || !IsWindow(w)){free(text);return;}
     if(!font)font=(HFONT)GetStockObject(SYSTEM_FONT);
@@ -303,7 +307,7 @@ static void list_border(HWND w,control_style *s,HDC target)
 
 static void draw_combo(HWND w,control_style *s,HDC dc)
 {
-    COMBOBOXINFO info={sizeof(info)};RECT client,button,text,pixel;HFONT font;
+    COMBOBOXINFO info={.cbSize=sizeof(info)};RECT client,button,text,pixel;HFONT font;
     WCHAR *label;int length,saved,x,y,left,top,u;BOOL selected,pressed,editable,simple;
     if(!dc || !ntw16s_native_get_combo_info(w,&info))return;
     length=GetWindowTextLengthW(w);label=calloc((size_t)length+1,sizeof(WCHAR));if(!label)return;
@@ -378,7 +382,7 @@ static void scroll_arrow(HDC dc,RECT r,const char bits[17][18],const win16_style
 
 static BOOL scroll_layout(HWND w,win16_scroll_layout *layout)
 {
-    RECT r;SCROLLINFO info={sizeof(info),SIF_RANGE|SIF_PAGE|SIF_POS};
+    RECT r;SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS};
     int dpi=(int)GetDpiForWindow(w);
     win16_scroll_metrics metrics={MulDiv(17,dpi,96),MulDiv(17,dpi,96),max(1,MulDiv(1,dpi,96))};LONGLONG maximum;
     if(!GetClientRect(w,&r) || !ntw16s_native_get_scroll_info(w,SB_CTL,&info))return FALSE;
@@ -390,7 +394,7 @@ static BOOL scroll_layout(HWND w,win16_scroll_layout *layout)
 static BOOL embedded_scroll_layout(HWND w,LONG object,win16_scroll_layout *layout,POINT *screen_origin)
 {
     BOOL vertical=object==OBJID_VSCROLL;
-    SCROLLBARINFO bar={sizeof(bar)};SCROLLINFO info={sizeof(info),SIF_RANGE|SIF_PAGE|SIF_POS};
+    SCROLLBARINFO bar={.cbSize=sizeof(bar)};SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS};
     RECT r;int dpi=(int)GetDpiForWindow(w);LONGLONG maximum;
     win16_scroll_metrics metrics={MulDiv(17,dpi,96),MulDiv(17,dpi,96),max(1,MulDiv(1,dpi,96))};
     if(!GetScrollBarInfo(w,vertical?OBJID_VSCROLL:OBJID_HSCROLL,&bar) || (bar.rgstate[0]&STATE_SYSTEM_INVISIBLE) ||
@@ -403,7 +407,7 @@ static BOOL embedded_scroll_layout(HWND w,LONG object,win16_scroll_layout *layou
 
 static BOOL horizontal_thumb_messages(HWND w)
 {
-    SCROLLINFO info={sizeof(info),SIF_RANGE|SIF_PAGE};
+    SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_RANGE|SIF_PAGE};
     return ntw16s_native_get_scroll_info(w,SB_HORZ,&info) && info.nMin>=0 &&
         (LONGLONG)info.nMax-(info.nPage?info.nPage-1:0)<=0xffff;
 }
@@ -424,7 +428,7 @@ static BOOL edit_thumb_messages(HWND w,LONG object)
 
 static BOOL draw_scroll_pixels(HWND w,control_style *s,HDC dc,LONG object,BOOL vertical)
 {
-    SCROLLBARINFO info={sizeof(info)};RECT r,first,last,thumb,pixel;int saved;
+    SCROLLBARINFO info={.cbSize=sizeof(info)};RECT r,first,last,thumb,pixel;int saved;
     if(!dc || !GetScrollBarInfo(w,object,&info) || (info.rgstate[0]&STATE_SYSTEM_INVISIBLE))return FALSE;
     saved=SaveDC(dc);if(!saved)return FALSE;
     if(object==OBJID_CLIENT)GetClientRect(w,&r);
@@ -479,7 +483,7 @@ static BOOL draw_scroll_pixels(HWND w,control_style *s,HDC dc,LONG object,BOOL v
 
 static void draw_scroll(HWND w,control_style *s,HDC dc,LONG object,BOOL vertical)
 {
-    RECT r;SCROLLBARINFO bar={sizeof(bar)};HDC memory;HBITMAP bitmap,old;POINT brush,device;BOOL painted;
+    RECT r;SCROLLBARINFO bar={.cbSize=sizeof(bar)};HDC memory;HBITMAP bitmap,old;POINT brush,device;BOOL painted;
     if(!dc || !GetScrollBarInfo(w,object,&bar) || (bar.rgstate[0]&STATE_SYSTEM_INVISIBLE))return;
     if(object==OBJID_CLIENT)GetClientRect(w,&r);
     else {RECT window;GetWindowRect(w,&window);r=bar.rcScrollBar;OffsetRect(&r,-window.left,-window.top);}
@@ -541,7 +545,7 @@ void win16_style_scrollbars_paint(HWND w,HDC target,const win16_style_palette *p
 
 static UINT scroll_disabled(HWND w,LONG object)
 {
-    SCROLLBARINFO info={sizeof(info)};UINT disabled=0;
+    SCROLLBARINFO info={.cbSize=sizeof(info)};UINT disabled=0;
     if(!IsWindowEnabled(w) || !GetScrollBarInfo(w,object,&info))return ESB_DISABLE_BOTH;
     if(info.rgstate[1]&STATE_SYSTEM_UNAVAILABLE)disabled|=ESB_DISABLE_LTUP;
     if(info.rgstate[5]&STATE_SYSTEM_UNAVAILABLE)disabled|=ESB_DISABLE_RTDN;
@@ -549,7 +553,7 @@ static UINT scroll_disabled(HWND w,LONG object)
 }
 static void scroll_caret_destroy(HWND w,control_style *s)
 {
-    GUITHREADINFO info={sizeof(info)};
+    GUITHREADINFO info={.cbSize=sizeof(info)};
     if(s->scroll_caret && GetGUIThreadInfo(GetCurrentThreadId(),&info) && info.hwndCaret==w)DestroyCaret();
     s->scroll_caret=s->scroll_caret_shown=FALSE;
 }
@@ -782,7 +786,8 @@ static void present_control(HWND w,control_style *s,HDC target,
             dirty.bottom-dirty.top,memory,dirty.left,dirty.top,SRCCOPY);
     }
     if(old && old!=(HBITMAP)HGDI_ERROR)SelectObject(memory,old);
-    if(bitmap)DeleteObject(bitmap);if(memory)DeleteDC(memory);
+    if(bitmap)DeleteObject(bitmap);
+    if(memory)DeleteDC(memory);
     if(!ready && !s->detached)painter(w,s,target);
     if(target_saved)RestoreDC(target,target_saved);
 }
@@ -873,7 +878,8 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         else {BOOL redraw=m==SBM_SETPOS?b!=0:m==SBM_SETSCROLLINFO?a!=0:m!=SBM_SETRANGE;
             if(m==WM_ENABLE && !a)scroll_finish(w,s,TRUE);
             if(s->detached)goto finished;
-            if(m==SBM_SETPOS)b=FALSE;if(m==SBM_SETSCROLLINFO)a=FALSE;
+            if(m==SBM_SETPOS)b=FALSE;
+            if(m==SBM_SETSCROLLINFO)a=FALSE;
             if(m==SBM_SETRANGEREDRAW)m=SBM_SETRANGE;
             result=DefSubclassProc(w,m,a,b);
             if(redraw && !s->detached && (m==SBM_SETPOS || m==SBM_SETSCROLLINFO || m==SBM_SETRANGE || m==SBM_SETRANGEREDRAW ||
@@ -1019,7 +1025,8 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
             RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
     }
 finished:
-    if(!--s->calls && s->detached)dispose_control(s);return result;
+    if(!--s->calls && s->detached)dispose_control(s);
+    return result;
 }
 
 static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL original_border,BOOL frame_bars,
@@ -1052,9 +1059,12 @@ static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL ori
      * Retain this attempt until its result is known, just like a callback. */
     ++s->calls;
     if(!frame_bars && is_combo(w)){
-        COMBOBOXINFO info={sizeof(info)};
+        COMBOBOXINFO info={.cbSize=sizeof(info)};
         if(!ntw16s_native_get_combo_info(w,&info) || !win16_style_control_install(info.hwndList,palette)){
-            if(!s->detached)win16_style_control_remove(w);result=FALSE;goto installed;}
+            if(!s->detached)win16_style_control_remove(w);
+            result=FALSE;
+            goto installed;
+            }
         if(s->detached){win16_style_control_remove(info.hwndList);goto installed;}
         s->combo_list=info.hwndList;
         if(GetWindowSubclass(info.hwndList,control_proc,(UINT_PTR)control_proc,&existing))
@@ -1066,7 +1076,8 @@ static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL ori
         if(!s->detached)RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);}
 installed:
     if(s->detached){result=FALSE;SetLastError(ERROR_CANCELLED);}
-    if(!--s->calls && s->detached)dispose_control(s);return result;
+    if(!--s->calls && s->detached)dispose_control(s);
+    return result;
 }
 BOOL win16_style_control_install(HWND w,const win16_style_palette *palette)
 {return install(w,palette,FALSE,FALSE,FALSE,-1,NULL);}
@@ -1157,7 +1168,8 @@ BOOL win16_style_control_remove(HWND w)
     if(s->list_suppression && !s->list_redraw_off)SendMessageW(w,WM_SETREDRAW,TRUE,0);
     scroll_stop_timer(w,s);
     if(s->scroll.active){s->scroll.active=FALSE;scroll_release_capture(w,s);}
-    if(!--s->calls)dispose_control(s);RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);
+    if(!--s->calls)dispose_control(s);
+    RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);
     if(is_scroll(w) && GetFocus()==w)SendMessageW(w,WM_SETFOCUS,0,0);
     return TRUE;
 }
