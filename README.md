@@ -18,10 +18,11 @@ Win16 窗口外观启动器。项目目标与组件契约见
 .\run16s.exe <app.exe> [arguments]
 ```
 
-T1 已完成；T2 正在导入并验证双位宽样式核心。当前还没有完整可运行产品包。
+T1、T2 已完成：双位宽核心 DLL 可独立构建，真实核心回归各 13/13 通过。
+构建和测试入口见 [tests/README.md](tests/README.md)。启动器、传播与 demo 待后续任务，当前没有完整可运行产品包。
 文档入口为 [docs/README.md](docs/README.md)，
 进度以 [CURRENT](docs/states/CURRENT.md) 为准。所有工作固定在 milestone0，
-使用 MTSP 管理任务及交付。源代码、构建和运行验收将在后续导入任务进行。
+使用 MTSP 管理任务及交付。
 
 治理检查：
 
