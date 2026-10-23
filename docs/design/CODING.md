@@ -28,3 +28,8 @@ build/.ninja/ 与可选 build/.ccache/ 可复用；其他 scratch 必须在活�
 精确目录、用途与回收责任。证据先提炼到跟踪文档，任务结束后回收不再需要的
 scratch；不得清理用户目录、系统目录、其他任务目录或跟随 reparse point。
 产品包四文件均在同一目录，构建输出与正式发布相互区分。
+
+T1 的 tests/toolchain 是独立 MSVC C17/C++17、/MT 双架构编译执行探针；
+入口 tools/Probe-Toolchain.ps1 使用任务 scratch，不创建根产品构建或假目标。
+本机双架构 SDK/DLL/TLS 实测已通过，结果及证明局限见
+[工具链记录](../etc/import/TOOLCHAIN.md)，不等于产品构建成功。

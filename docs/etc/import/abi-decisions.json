@@ -1,0 +1,289 @@
+{
+  "schema": 1,
+  "source_commit": "5b0b65f66c281050aa4ce1454c6cd31441a6d484",
+  "source_abi": 2,
+  "standalone_abi": 3,
+  "calling_convention": "cdecl unless Windows CALLBACK explicitly specified",
+  "exports": [
+    {
+      "source_header": "src/ntw16s-dll/api.h",
+      "source_blob": "ed5a06e643692e727431ad7482483cfd175006f9",
+      "symbol": "Ntw16sGetAbiVersion",
+      "declaration": "DWORD __cdecl Ntw16sGetAbiVersion(void)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/attachment.h",
+      "source_blob": "a8813543e1faf9e8ba68dee29f0f1e77643b96fa",
+      "symbol": "Ntw16sCreationBegin",
+      "declaration": "ntw16s_creation_scope *__cdecl Ntw16sCreationBegin(BOOL enabled)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/attachment.h",
+      "source_blob": "a8813543e1faf9e8ba68dee29f0f1e77643b96fa",
+      "symbol": "Ntw16sCreationEnd",
+      "declaration": "BOOL __cdecl Ntw16sCreationEnd(ntw16s_creation_scope *,ntw16s_creation_result *)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/attachment.h",
+      "source_blob": "a8813543e1faf9e8ba68dee29f0f1e77643b96fa",
+      "symbol": "Ntw16sWindowAttached",
+      "declaration": "BOOL __cdecl Ntw16sWindowAttached(HWND)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/attachment.h",
+      "source_blob": "a8813543e1faf9e8ba68dee29f0f1e77643b96fa",
+      "symbol": "Ntw16sWindowRemove",
+      "declaration": "BOOL __cdecl Ntw16sWindowRemove(HWND)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/attachment.h",
+      "source_blob": "a8813543e1faf9e8ba68dee29f0f1e77643b96fa",
+      "symbol": "Ntw16sWindowTerminal",
+      "declaration": "BOOL __cdecl Ntw16sWindowTerminal(HWND)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/attachment.h",
+      "source_blob": "a8813543e1faf9e8ba68dee29f0f1e77643b96fa",
+      "symbol": "Ntw16sScrollChanged",
+      "declaration": "void __cdecl Ntw16sScrollChanged(HWND)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/attachment.h",
+      "source_blob": "a8813543e1faf9e8ba68dee29f0f1e77643b96fa",
+      "symbol": "Ntw16sSetWindowTheme",
+      "declaration": "HRESULT __cdecl Ntw16sSetWindowTheme(HWND,LPCWSTR,LPCWSTR)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/controls.h",
+      "source_blob": "8c6380513ec16c21ff3b1e34b9ef14222cc4d837",
+      "symbol": "win16_style_control_install",
+      "declaration": "BOOL win16_style_control_install(HWND window,const win16_style_palette *palette)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/controls.h",
+      "source_blob": "8c6380513ec16c21ff3b1e34b9ef14222cc4d837",
+      "symbol": "win16_style_tabbed_list_install",
+      "declaration": "BOOL win16_style_tabbed_list_install(HWND window,const win16_style_palette *palette, int count,const int *pixel_positions)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/controls.h",
+      "source_blob": "8c6380513ec16c21ff3b1e34b9ef14222cc4d837",
+      "symbol": "win16_style_edit_install",
+      "declaration": "BOOL win16_style_edit_install(HWND window,BOOL original_border,const win16_style_palette *palette)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/controls.h",
+      "source_blob": "8c6380513ec16c21ff3b1e34b9ef14222cc4d837",
+      "symbol": "win16_style_control_remove",
+      "declaration": "BOOL win16_style_control_remove(HWND window)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/controls.h",
+      "source_blob": "8c6380513ec16c21ff3b1e34b9ef14222cc4d837",
+      "symbol": "win16_style_frame_scrollbars_install",
+      "declaration": "BOOL win16_style_frame_scrollbars_install(HWND window,const win16_style_palette *palette)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/controls.h",
+      "source_blob": "8c6380513ec16c21ff3b1e34b9ef14222cc4d837",
+      "symbol": "win16_style_frame_scrollbars_remove",
+      "declaration": "void win16_style_frame_scrollbars_remove(HWND window)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/controls.h",
+      "source_blob": "8c6380513ec16c21ff3b1e34b9ef14222cc4d837",
+      "symbol": "win16_style_frame_scrollbars_palette",
+      "declaration": "void win16_style_frame_scrollbars_palette(HWND window,const win16_style_palette *palette)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/controls.h",
+      "source_blob": "8c6380513ec16c21ff3b1e34b9ef14222cc4d837",
+      "symbol": "win16_style_list_scrollbar_enable",
+      "declaration": "BOOL win16_style_list_scrollbar_enable(HWND window)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/controls.h",
+      "source_blob": "8c6380513ec16c21ff3b1e34b9ef14222cc4d837",
+      "symbol": "win16_style_edit_scrollbars_enable",
+      "declaration": "BOOL win16_style_edit_scrollbars_enable(HWND window)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/controls.h",
+      "source_blob": "8c6380513ec16c21ff3b1e34b9ef14222cc4d837",
+      "symbol": "win16_style_scrollbars_paint",
+      "declaration": "void win16_style_scrollbars_paint(HWND window,HDC target,const win16_style_palette *palette)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/controls.h",
+      "source_blob": "8c6380513ec16c21ff3b1e34b9ef14222cc4d837",
+      "symbol": "win16_style_controls_begin",
+      "declaration": "win16_style_control_scope *win16_style_controls_begin(HWND root,const win16_style_palette *palette)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/controls.h",
+      "source_blob": "8c6380513ec16c21ff3b1e34b9ef14222cc4d837",
+      "symbol": "win16_style_controls_end",
+      "declaration": "BOOL win16_style_controls_end(win16_style_control_scope *scope,win16_style_control_counts *counts)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/font.h",
+      "source_blob": "772af2b70b85d897ea842003229b5d3e5795803e",
+      "symbol": "win16_style_font_acquire",
+      "declaration": "HFONT win16_style_font_acquire(void)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/font.h",
+      "source_blob": "772af2b70b85d897ea842003229b5d3e5795803e",
+      "symbol": "win16_style_font_release",
+      "declaration": "void win16_style_font_release(HFONT font)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/menu_paint.h",
+      "source_blob": "8473ec9496b45d043be33bbf90fb43b14f8f148d",
+      "symbol": "win16_style_menu_text",
+      "declaration": "BOOL win16_style_menu_text(HDC dc,const RECT *bounds,HFONT font,UINT dpi, const win16_style_palette *palette,const WCHAR *text,UINT state,win16_style_menu_kind kind,BOOL submenu)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/menu_paint.h",
+      "source_blob": "8473ec9496b45d043be33bbf90fb43b14f8f148d",
+      "symbol": "win16_style_menu_measure",
+      "declaration": "BOOL win16_style_menu_measure(HDC dc,HFONT font,UINT dpi,const WCHAR *text, win16_style_menu_kind kind,SIZE *size)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/native_api.h",
+      "source_blob": "cd045fb697b1f6319173bc97f9fc6b5bc5e0b763",
+      "symbol": "Ntw16sBindNativeApi",
+      "declaration": "BOOL __cdecl Ntw16sBindNativeApi(const ntw16s_native_api *)",
+      "decision": "private-internal",
+      "reason": "Merged DLL binds native leaves internally; no WOW private combo provider"
+    },
+    {
+      "source_header": "src/ntw16s-dll/native_api.h",
+      "source_blob": "cd045fb697b1f6319173bc97f9fc6b5bc5e0b763",
+      "symbol": "Ntw16sBindComboInfoApi",
+      "declaration": "BOOL __cdecl Ntw16sBindComboInfoApi(ntw16s_combo_info_fn)",
+      "decision": "private-internal",
+      "reason": "Merged DLL binds native leaves internally; no WOW private combo provider"
+    },
+    {
+      "source_header": "src/ntw16s-dll/theme.h",
+      "source_blob": "088ea9230823070a010d586058bd7b86aee5d93b",
+      "symbol": "Ntw16sSetWindowTheme",
+      "declaration": "HRESULT __cdecl Ntw16sSetWindowTheme(HWND,LPCWSTR,LPCWSTR)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/win16_style.h",
+      "source_blob": "5e922312ae64dfd28356a7960caf97854c5d41ab",
+      "symbol": "win16_style_default_palette",
+      "declaration": "void win16_style_default_palette(win16_style_palette *palette)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/win16_style.h",
+      "source_blob": "5e922312ae64dfd28356a7960caf97854c5d41ab",
+      "symbol": "win16_style_install",
+      "declaration": "BOOL win16_style_install(HWND window, const win16_style_palette *palette)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/win16_style.h",
+      "source_blob": "5e922312ae64dfd28356a7960caf97854c5d41ab",
+      "symbol": "win16_style_remove",
+      "declaration": "BOOL win16_style_remove(HWND window)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/win16_style.h",
+      "source_blob": "5e922312ae64dfd28356a7960caf97854c5d41ab",
+      "symbol": "win16_style_set_palette",
+      "declaration": "BOOL win16_style_set_palette(HWND window, const win16_style_palette *palette)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/win16_style.h",
+      "source_blob": "5e922312ae64dfd28356a7960caf97854c5d41ab",
+      "symbol": "win16_style_hit_test",
+      "declaration": "BOOL win16_style_hit_test(HWND window, LPARAM point, LRESULT *result)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/win16_style.h",
+      "source_blob": "5e922312ae64dfd28356a7960caf97854c5d41ab",
+      "symbol": "win16_style_get_scroll_info",
+      "declaration": "BOOL win16_style_get_scroll_info(HWND window,int bar,LPSCROLLINFO info)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    },
+    {
+      "source_header": "src/ntw16s-dll/win16_style.h",
+      "source_blob": "5e922312ae64dfd28356a7960caf97854c5d41ab",
+      "symbol": "win16_style_set_scroll_info",
+      "declaration": "int win16_style_set_scroll_info(HWND window,int bar,LPCSCROLLINFO info,BOOL redraw)",
+      "decision": "retain-public",
+      "reason": "Preserve core testable same-thread interface, new standalone ABI version 3"
+    }
+  ],
+  "helper": {
+    "symbol": "Ntw16sFinishHelper",
+    "ordinal": 1,
+    "noname": true,
+    "calling_convention": "CALLBACK",
+    "owner": "injection",
+    "status": "planned-not-built"
+  }
+}

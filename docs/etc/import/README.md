@@ -19,3 +19,6 @@ git -C <source> show <commit>:<path>
 T1 的逐文件处置及静态依赖：[BASELINE](BASELINE.md) 与
 [source-manifest.json](source-manifest.json)。清单在候选 105 项之外明确记录
 19 个排除边界，含原字节 SHA-256 和每条 include 的处置；没有复制源码。
+
+独立化决定见 [INDEPENDENCE](INDEPENDENCE.md) 与
+[逐导出 ABI 清单](abi-decisions.json)；工具链真实结果见 [TOOLCHAIN](TOOLCHAIN.md)。

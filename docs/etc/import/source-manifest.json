@@ -311,10 +311,10 @@
       "blob": "ed5a06e643692e727431ad7482483cfd175006f9",
       "size": 624,
       "sha256": "ad5a3ef088d0cb0c8db42994823eb415866794bb9f7de0944bb8b41abd5cc1ee",
-      "action": "retain",
+      "action": "adapt",
       "destination": "src/ntw16s-dll/api.h",
       "notice": "project-authored-review",
-      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "reason": "T1 S2 ABI review: standalone public surface is version 3; change version macro and verify both-width exports",
       "receiver": "style-core"
     },
     {
