@@ -1,7 +1,7 @@
 # M0 T1 S3 本地清单校验与交接
 
 用户整个 T1 授权下继续；S2 9cf7183 已推送并实际提交复核后准入。
-状态 verified，待最终交付及实际 commit 复核。
+状态 closed，最终交付推送后已完成实际 commit 复核。
 
 交付 tools/verify_source_manifest.py，Python 3.10+ 标准库，默认只读本仓库：
 124 条去留、294 include、105 seed 对应、5 原资源 replace、ABI 与路径/声明/
@@ -26,3 +26,8 @@ theme.h 都声明同一个 Ntw16sSetWindowTheme，签名相同：33 个不同 sy
 include 外部边界、ABI 声明冲突、受限资源/声明与回执内容。各类均有拒绝用例。
 工具是本地清单校验唯一实现，未新增产品运行状态或替代 renderer。
 最终代码行数及提交复核在 T1 审计中记录；未运行/声称产品构建、Detours 注入或 UI。
+
+P1 d10aeb9 已推送；实际提交复核 9 文件 +435/-19，新增 Python 工具 +266/-0。
+git show --check 通过，S3 目标与交付一致，无阻塞；S3 关闭。
+两精确 scratch 子目录已经在校验后回收，build/ 为空，未终止任何非本任务进程。
+P2 记录 T1 级完成审计与空闲状态，不准入后续实现。

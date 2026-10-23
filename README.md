@@ -18,7 +18,8 @@ Win16 窗口外观启动器。项目目标与组件契约见
 .\run16s.exe <app.exe> [arguments]
 ```
 
-当前阶段为治理建立与导入准备。文档入口为 [docs/README.md](docs/README.md)，
+T1 来源冻结与独立化设计已完成，产品源码尚未导入。
+文档入口为 [docs/README.md](docs/README.md)，
 进度以 [CURRENT](docs/states/CURRENT.md) 为准。所有工作固定在 milestone0，
 使用 MTSP 管理任务及交付。源代码、构建和运行验收将在后续导入任务进行。
 
