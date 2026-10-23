@@ -828,6 +828,15 @@
       "disposition": "authored",
       "review": "T5 S2 external owned demo observer; docs/history/M0-T5-S2-pair.md",
       "notice": "Project-authored fixture, repository MIT"
+    },
+    {
+      "path": "tests/demo-exe/boundary.py",
+      "source": null,
+      "source_blob": null,
+      "sha256": "844fa5f2ab8331c30a5c8e267a779ddd558ef64ad34c248ab696c6ec2bda6295",
+      "disposition": "authored",
+      "review": "T5 S3 actual demo PE and native-only boundary; docs/history/M0-T5-completion.md",
+      "notice": "Project-authored fixture, repository MIT"
     }
   ]
 }

@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T4已关闭；自动准入M0 T5“纯原生demo与启动对照”，当前S2 active。
+M0 T4已关闭；自动准入M0 T5“纯原生demo与启动对照”，当前S3 active。
 用户授权按队列自动完成全部剩余T；通过独立审计后推进，不重复询问准入。
 
 ## Identifier State
@@ -10,11 +10,11 @@ M0 T4已关闭；自动准入M0 T5“纯原生demo与启动对照”，当前S2 
 - Milestone: M0 (fixed)
 - Last allocated T: 5
 - Last allocated Td S: 3
-- Last delivery: M0 T5 S1 P1 (9d94cdf)
+- Last delivery: M0 T5 S2 P1 (bd0dd65)
 
 ## Technical Baseline
 
-固定来源5b0b65f66c281050aa4ce1454c6cd31441a6d484，124处置/294 includes、91回执。
+固定来源5b0b65f66c281050aa4ce1454c6cd31441a6d484，124处置/294 includes、93回执。
 本地唯一renderer/五自编几何头/私有Detours；MSVC C17及必要C++17、/MT /W4 /WX。
 x64 run16s及x86/x64 ntw16sDLL已实现首次自动附着和原生A/W子孙传播，默认策略3。
 ABI3、31公开名称ordinal2..32及NONAME helper1；构建版本M0 T5，0.5.0.0。
@@ -41,23 +41,23 @@ S3 P1 97a777d已推送并复核；最终16/21完整回归，全部失败有处�
 [M0 Td S3 层级纠正](../history/M0-Td-S3-task-level.md)：T 级候选各自拥有 S，
 队列不预分配 T 号；此前治理记录继续保留在 history。
 
-## M0 T5 S2 Packet
+## M0 T5 S3 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S1 9d94cdf已推送并复核 |
-| Admission And Approval | 用户授权自动完成预定T，S1已关闭，无新增范围 |
-| Objective | 独立observer验证同一demo裸/真实CLI注入的模块、六类控件/标题/数据/通知及外观截图 |
-| Non-goals | 不在demo加入观测API或开关，不把私有桌面消息驱动当物理输入验收 |
-| Reference Baseline | 9d94cdf，91回执，M0 T5四产物；demo无样式依赖，双宽ABI通过 |
-| Candidate Proposal | [原生demo](../proposals/native-demo.md)S2 |
-| Files And ABI Surface | tests/demo-exe外部observer、根注册/回执和历史/状态；必要窄修复；无public ABI变更 |
-| Applicable Rules | 执行/架构/编码/文档规则、UI与来源策略 |
-| Verification | 同一exe两路；实际模块路径/字体/WM_PRINT外观差异；六类数据、按钮通知、菜单重置、滚动和系统最小/最大/恢复 |
-| Expected Markers | native无样式模块、injected只有同包64DLL；相同标题和初始业务数据；实际通知改变状态；截图明确native/injected |
-| Asset Needs | build/t5-demo/s2-*自有私有桌面/job/截图，hidden worker180秒500MB；T末统一回收 |
-| Reporting Requirements | 同一文件路径/哈希、真实外观证据与消息驱动边界、失败处置和实际差异统计 |
-| Stop Conditions | 半成功零退出、控件数据/消息被外观改变、外部观察依赖demo后门先修复 |
-| Exit Criteria | 两路对照及边界通过，提交推送实际复核，进入S3回归与T级审计 |
+| Identifier Mode | Continuation；S2 bd0dd65已推送复核关闭 |
+| Admission And Approval | 用户自动完成全部T授权，S1/S2无任务内遗留 |
+| Objective | demo源码/import边界、已有全回归及T5逐项覆盖审计、scratch收口 |
+| Non-goals | 不发布最终包、不声称物理输入或任意DPI/字体通过 |
+| Reference Baseline | bd0dd65，M0 T5；同文件裸/注入六类及业务对照通过，92回执 |
+| Candidate Proposal | [原生demo](../proposals/native-demo.md)S3 |
+| Files And ABI Surface | tests/demo-exe边界检查、根注册、来源回执、状态/历史及当前说明；ABI不变 |
+| Applicable Rules | 全部执行/架构/编码/文档规则、来源与UI设计 |
+| Verification | core/launch/propagate/demo完整注册集；demo PE/导入/源码、四文件版本/哈希；来源23/治理13/几何/diff门禁 |
+| Expected Markers | 两宽实际全部执行成功；demo同文件业务/渲染独立观察仍通过；有限全T单位有证据和后续接收者 |
+| Asset Needs | build/t5-demo/s3-full，hidden owned worker600秒500MB；关闭T前回收t5-demo及两宽Testing，保留.ninja |
+| Reporting Requirements | 冻结五单位、实际各S提交及完整回归、失败处置、统计/清理与后续物理验收接收者 |
+| Stop Conditions | 任何边界/业务/回归失败先修复，禁止跳过失败发布或混包 |
+| Exit Criteria | 全T审计通过并推送实际复核，关闭T5，自动准入独立包候选 |
 | Original Owner Request | 收口并准入下一个t 开始执行；自动完成所有t预定内容 |
-| Similar-Issue Sweep | 六类控件及原生通知、窗口/菜单所有权、实际模块/字体/画面；外部observer只接触自有树 |
+| Similar-Issue Sweep | demo全部生产/链接/运行模块边界，六类业务，原生/注入、四架构边及失败所有权回归 |

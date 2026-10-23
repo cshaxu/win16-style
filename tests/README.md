@@ -31,8 +31,13 @@ CTest 自动生成的 Testing 日志目录；保留稳定构建树的对象与�
 pwsh -NoProfile -File tools/Build-Core.ps1 -TaskRoot t4-propagate -RunName full-new -TestPattern '^(core|launch|propagate)/.*$' -TimeoutSeconds 600
 ```
 
-当前x86注册16项、x64注册24项。x64控制器使用两宽fixture，包含真实CLI
+当前x86注册16项、x64注册26项（包含下面的demo两项）。x64控制器使用两宽fixture，包含真实CLI
 首次注入、自动窗口/对话框/消息框、错误包/stdio、三代传播、64个原生/注入
 创建字段对照及四组安装失败回收。propagate/basic、contract、rollback均在
 私有桌面和自有进程树运行，不代表真实桌面输入通过。每次须读取最终结果，
 不能把测试注册、worker PID或旧轮次通过当作本轮执行完成。
+
+T5增加demo/boundary（真实x64 GUI PE、系统imports及无样式消费源码）和
+demo/pair（独立observer，私有桌面、同一exe两路模块/PrintWindow/排版/业务通知）。
+完整选择器为 `^(core|launch|propagate|demo)/.*$`，TaskRoot t5-demo、600秒。
+observer不向demo加入开关，不把合成消息当作真实鼠标键盘验收。
