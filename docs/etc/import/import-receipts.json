@@ -819,6 +819,15 @@
       "disposition": "authored",
       "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md",
       "notice": "Project-authored source per frozen W16Style README; no third-party artwork"
+    },
+    {
+      "path": "tests/demo-exe/observe.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "58d933d344d01f1c7758ad86736648c63d001113257ab052a52f32eab3d5009b",
+      "disposition": "authored",
+      "review": "T5 S2 external owned demo observer; docs/history/M0-T5-S2-pair.md",
+      "notice": "Project-authored fixture, repository MIT"
     }
   ]
 }

@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T4已关闭；自动准入M0 T5“纯原生demo与启动对照”，当前S1 active。
+M0 T4已关闭；自动准入M0 T5“纯原生demo与启动对照”，当前S2 active。
 用户授权按队列自动完成全部剩余T；通过独立审计后推进，不重复询问准入。
 
 ## Identifier State
@@ -10,18 +10,18 @@ M0 T4已关闭；自动准入M0 T5“纯原生demo与启动对照”，当前S1 
 - Milestone: M0 (fixed)
 - Last allocated T: 5
 - Last allocated Td S: 3
-- Last delivery: M0 T4 S3 P1 (f0eabb2)
+- Last delivery: M0 T5 S1 P1 (9d94cdf)
 
 ## Technical Baseline
 
-固定来源5b0b65f66c281050aa4ce1454c6cd31441a6d484，124处置/294 includes、87回执。
+固定来源5b0b65f66c281050aa4ce1454c6cd31441a6d484，124处置/294 includes、91回执。
 本地唯一renderer/五自编几何头/私有Detours；MSVC C17及必要C++17、/MT /W4 /WX。
 x64 run16s及x86/x64 ntw16sDLL已实现首次自动附着和原生A/W子孙传播，默认策略3。
-ABI3、31公开名称ordinal2..32及NONAME helper1；构建版本M0 T4，0.4.0.0。
+ABI3、31公开名称ordinal2..32及NONAME helper1；构建版本M0 T5，0.5.0.0。
 四位宽边/三代24应用、64创建字段原生/注入对照、四安装故障回滚均通过；完整
 回归x86 16/16、x64 24/24，target-first-exit/10秒helper和句柄回收另通过。
 来源23/治理13负例、五几何头、PE及本地/SDK依赖核验通过；T4 scratch已回收。
-demo与四文件完整包尚未交付。私有桌面证据不代表真实输入、任意DPI/字体或任意应用兼容性。
+x64纯原生demo已在9d94cdf交付，imports仅USER32/KERNEL32；双行为与四文件包尚待验证。私有桌面证据不代表真实输入、任意DPI/字体或任意应用兼容性。
 
 ## Recent Closure
 
@@ -41,23 +41,23 @@ S3 P1 97a777d已推送并复核；最终16/21完整回归，全部失败有处�
 [M0 Td S3 层级纠正](../history/M0-Td-S3-task-level.md)：T 级候选各自拥有 S，
 队列不预分配 T 号；此前治理记录继续保留在 history。
 
-## M0 T5 S1 Packet
+## M0 T5 S2 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | New；T4三个S已实际复核关闭，分配T5，从S1开始 |
-| Admission And Approval | 用户要求收口并准入下一个T执行，且授权自动完成全部预定T |
-| Objective | 将固定源示例的原生业务内容适配为x64 demo.exe，移除全部样式API及链接；本地构建 |
-| Non-goals | 不复刻全部28页gallery，不加入测试开关或自绘样式，不提前发布包/声称物理验收 |
-| Reference Baseline | T4 f0eabb2；87回执、完整16/24回归通过；demo来源为固定commit的main.c/gallery.c |
-| Candidate Proposal | [原生demo](../proposals/native-demo.md)S1，六类标准控件和普通菜单/消息循环 |
-| Files And ABI Surface | src/demo-exe main/gallery/version与说明；根x64目标、所有产物版本M0 T5和来源回执；public ABI不变 |
-| Applicable Rules | Task Reading Set及全部架构/编码/文档规则、UI与来源策略 |
-| Verification | 双宽构建/PE和版本；demo仅x64、静态imports及源码无样式/注入消费；focused core/abi，后续S2独立observer验收 |
-| Expected Markers | 普通窗口/菜单及STATIC BUTTON EDIT LISTBOX COMBOBOX SCROLLBAR；业务通知/标准消息循环；同一exe不按参数/环境选择样式 |
-| Asset Needs | build/.ninja双宽稳定树；build/t5-demo/s1-build及后续s2/s3自有fixture，hidden worker600秒500MB，T结束回收及Testing日志 |
-| Reporting Requirements | 固定源逐项删改、六类内容选择、状态/资源所有者、构建/PE结果、统计与后续接收者 |
-| Stop Conditions | demo依赖样式API/动态加载或测试后门、原生创建失败、构建警告先修复 |
-| Exit Criteria | 原生demo与版本一致构建，来源/边界审查通过并提交推送复核，再进入S2同文件双行为 |
-| Original Owner Request | 收口并准入下一个t 开始执行；自动完成所有t任务预定内容 |
-| Similar-Issue Sweep | 全部demo源/构建imports，移除主动安装/字体/owner-draw/计数和测试逻辑；业务字段只由Windows和demo拥有 |
+| Identifier Mode | Continuation；S1 9d94cdf已推送并复核 |
+| Admission And Approval | 用户授权自动完成预定T，S1已关闭，无新增范围 |
+| Objective | 独立observer验证同一demo裸/真实CLI注入的模块、六类控件/标题/数据/通知及外观截图 |
+| Non-goals | 不在demo加入观测API或开关，不把私有桌面消息驱动当物理输入验收 |
+| Reference Baseline | 9d94cdf，91回执，M0 T5四产物；demo无样式依赖，双宽ABI通过 |
+| Candidate Proposal | [原生demo](../proposals/native-demo.md)S2 |
+| Files And ABI Surface | tests/demo-exe外部observer、根注册/回执和历史/状态；必要窄修复；无public ABI变更 |
+| Applicable Rules | 执行/架构/编码/文档规则、UI与来源策略 |
+| Verification | 同一exe两路；实际模块路径/字体/WM_PRINT外观差异；六类数据、按钮通知、菜单重置、滚动和系统最小/最大/恢复 |
+| Expected Markers | native无样式模块、injected只有同包64DLL；相同标题和初始业务数据；实际通知改变状态；截图明确native/injected |
+| Asset Needs | build/t5-demo/s2-*自有私有桌面/job/截图，hidden worker180秒500MB；T末统一回收 |
+| Reporting Requirements | 同一文件路径/哈希、真实外观证据与消息驱动边界、失败处置和实际差异统计 |
+| Stop Conditions | 半成功零退出、控件数据/消息被外观改变、外部观察依赖demo后门先修复 |
+| Exit Criteria | 两路对照及边界通过，提交推送实际复核，进入S3回归与T级审计 |
+| Original Owner Request | 收口并准入下一个t 开始执行；自动完成所有t预定内容 |
+| Similar-Issue Sweep | 六类控件及原生通知、窗口/菜单所有权、实际模块/字体/画面；外部observer只接触自有树 |
