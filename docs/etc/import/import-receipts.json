@@ -387,6 +387,96 @@
       "disposition": "authored",
       "review": "T2 S1 real DLL ABI fixture; docs/history/M0-T2-S1-import.md",
       "notice": "Project-authored, MIT"
+    },
+    {
+      "path": "tests/ntw16s-dll/ntw16s_terminal.c",
+      "source": "tests/app/ntw16s_terminal.c",
+      "source_blob": "703b5cbf5cde11c2c94594b07b75aba79b8c7d34",
+      "sha256": "9eae7d7bf62b0feea5a79a99c287cc586b5c6e4bb2a91e2ed153a3d0aa19e2da",
+      "disposition": "adapt",
+      "review": "T2 S2 local real-DLL focused regression registration/isolation; docs/history/M0-T2-S2-runtime.md",
+      "notice": "Project-authored source fixture, original notices preserved"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_control_lifetime.c",
+      "source": "tests/app/win16_style_control_lifetime.c",
+      "source_blob": "a20eed45e5beb4d7593e53655c7ee66213d01b24",
+      "sha256": "7e5e4eac51343c69147b93ef964842cf7e506a0d29019c9d31121ae14be3a70c",
+      "disposition": "adapt",
+      "review": "T2 S2 local real-DLL focused regression registration/isolation; docs/history/M0-T2-S2-runtime.md",
+      "notice": "Project-authored source fixture, original notices preserved"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_default_button.c",
+      "source": "tests/app/win16_style_default_button.c",
+      "source_blob": "2d28d1590dcd10a67134fb76f58c3ece46d73b05",
+      "sha256": "93cec201978e235276dc370ade94b6b179c54db27f5e7cd62c923dc591868b72",
+      "disposition": "adapt",
+      "review": "T2 S2 local real-DLL focused regression registration/isolation; docs/history/M0-T2-S2-runtime.md",
+      "notice": "Project-authored source fixture, original notices preserved"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_font.c",
+      "source": "tests/app/win16_style_font.c",
+      "source_blob": "5d70ebef16f342c36df381ab0cb6e43b270f8488",
+      "sha256": "7ea9a24dad1e39eebf011bbe12a23cb63868c0c12a4f7f565ab8f15ebd85ebc7",
+      "disposition": "adapt",
+      "review": "T2 S2 local real-DLL focused regression registration/isolation; docs/history/M0-T2-S2-runtime.md",
+      "notice": "Project-authored source fixture, original notices preserved"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_list_tabs.c",
+      "source": "tests/app/win16_style_list_tabs.c",
+      "source_blob": "8154d9ef5c2b54f1899e74724c7da8a9e6e3c37e",
+      "sha256": "6115d27c62a4bc599f2561e4ada320bde5f653f283d482a9ab551cd0cf6b9128",
+      "disposition": "adapt",
+      "review": "T2 S2 local real-DLL focused regression registration/isolation; docs/history/M0-T2-S2-runtime.md",
+      "notice": "Project-authored source fixture, original notices preserved"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_scroll_geometry.c",
+      "source": "tests/app/win16_style_scroll_geometry.c",
+      "source_blob": "a152cfe652660138fbbf8147ef24cb23552ee64d",
+      "sha256": "fa4b407b071be7fb1630aa333408b1f15baec184754664fb89b777293674b70e",
+      "disposition": "adapt",
+      "review": "T2 S2 local real-DLL focused regression registration/isolation; docs/history/M0-T2-S2-runtime.md",
+      "notice": "Project-authored source fixture, original notices preserved"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_sizebox.c",
+      "source": "tests/app/win16_style_sizebox.c",
+      "source_blob": "77098da4ff3b310b4e9881539b18369742d36149",
+      "sha256": "423de8d180d356cbc03597b88b0d93882e191a049b7256a9ba83aa1e5d8732c7",
+      "disposition": "adapt",
+      "review": "T2 S2 local real-DLL focused regression registration/isolation; docs/history/M0-T2-S2-runtime.md",
+      "notice": "Project-authored source fixture, original notices preserved"
+    },
+    {
+      "path": "tests/ntw16s-dll/runtime.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ca8a691eaf9ecf63769d3da68f2640ac121f79cd39e8444a0916afce07427ddd",
+      "disposition": "authored",
+      "review": "T2 S2 actual-DLL runtime/native counterpart and process-owned private desktop; docs/history/M0-T2-S2-runtime.md",
+      "notice": "Project-authored, repository MIT"
+    },
+    {
+      "path": "tests/ntw16s-dll/frames.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "a2869d14a292e31609d324acb30b4ba260f0bcc4e476c79792f45bda582cc0cd",
+      "disposition": "authored",
+      "review": "T2 S2 actual-DLL runtime/native counterpart and process-owned private desktop; docs/history/M0-T2-S2-runtime.md",
+      "notice": "Project-authored, repository MIT"
+    },
+    {
+      "path": "tests/ntw16s-dll/isolated_process.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "96d49da3a8eb9db5260bd0aed3f9095fcebf52df057ddb311a4dd5405412bcfc",
+      "disposition": "authored",
+      "review": "T2 S2 actual-DLL runtime/native counterpart and process-owned private desktop; docs/history/M0-T2-S2-runtime.md",
+      "notice": "Project-authored, repository MIT"
     }
   ]
 }
