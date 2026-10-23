@@ -2,15 +2,15 @@
 
 ## Current Work
 
-M0 T3“启动器与首次自动附着”已准入，当前 S3 active。
+M0 T3已完成实际交付/全任务复核并关闭；自动准入M0 T4“子孙传播与创建语义”，当前S1 active。
 用户授权自动按队列完成全部剩余 T；每项通过独立审计后继续下一项，不重复询问准入。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
-- Last allocated T: 3
+- Last allocated T: 4
 - Last allocated Td S: 3
-- Last delivery: M0 T3 S2 P1 (fc12e3c)
+- Last delivery: M0 T3 S3 P2 (本次关闭/下一准入记录)
 
 ## Technical Baseline
 
@@ -27,6 +27,9 @@ S3 当前构建为79回执、唯一renderer、五自编几何头及私有Detours
 
 ## Recent Closure
 
+[M0 T3完成审计](../history/M0-T3-completion.md)：S1 2cc5d4d、S2 fc12e3c、
+S3 P1 97a777d已推送并复核；最终16/21完整回归，全部失败有处置，scratch已回收。
+
 [M0 T2 完成审计](../history/M0-T2-completion.md)：六单位覆盖、三 S 实际交付与
 失败处置、双宽 PE/资源/来源核验通过。S3 P1 527f40c 已推送并实际复核。
 本任务 scratch、CTest 日志及研究字节码已回收，build 只保留 .ninja。
@@ -37,23 +40,23 @@ S3 当前构建为79回执、唯一renderer、五自编几何头及私有Detours
 [M0 Td S3 层级纠正](../history/M0-Td-S3-task-level.md)：T 级候选各自拥有 S，
 队列不预分配 T 号；此前治理记录继续保留在 history。
 
-## M0 T3 S3 Packet
+## M0 T4 S1 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S2 已推送复核关闭，进入T3 S3 |
-| Admission And Approval | 全部剩余T自动顺序准入已授权；S2 fc12e3c实际20文件+629/-54、引导/测试/ABI差异已复核 |
-| Objective | 覆盖CLI和安装器失败/回滚、helper有限超时、拒绝初始化不执行入口，完整双宽核心回归和T级审计 |
-| Non-goals | 不扩展到传播/demo/完整产品包，不以私有桌面结果替代真实输入验收 |
-| Reference Baseline | fc12e3c；77回执，31public+NONAME helper1；双宽真实CLI/窗口/八对话框/六消息框已验证 |
-| Candidate Proposal | [启动器与首次自动附着](../proposals/launcher-injection.md) S3与T级退出条件 |
-| Files And ABI Surface | tests/run16s-exe及必要窄修复、构建/tools、回执/当前状态/历史/设计/候选；不扩31公开接口 |
-| Applicable Rules | 全部执行/架构/编码/文档规则与设计、来源/独立化方案 |
-| Verification | 缺失/错宽/损坏DLL的CLI诊断与无入口；受限进程句柄拒绝；坏载荷DLL初始化拒绝；真实W helper失败/10秒超时和目标原挂起；两宽13项核心全回归与启动矩阵；PE/来源/治理/清理 |
-| Expected Markers | 失败码/错误诊断明确；原目标未运行/未交付，owned helper被回收，无句柄泄漏；逐项全T目标有证据/接收者 |
-| Asset Needs | build/.ninja两宽稳定树；build/t3-launch/s3-*日志/包/故障helper/marker，hidden owned worker每轮600秒500MB；结束回收整个t3-launch及Testing日志 |
-| Reporting Requirements | 有限覆盖全集、实际失败与资源所有者、净行数、全部交付实际审查、未支持面与接收者、清理及远端一致 |
-| Stop Conditions | 漏执行目标、错误目标被恢复、helper超时后无限等、资源或原生契约失败先修复，不越过T级退出条件 |
-| Exit Criteria | T3全部目标审计/失败及完整回归通过、清理、提交推送实际复核后关闭；按授权准入下一队列项 |
+| Identifier Mode | New；T3已关闭，队首传播任务分配T4并从S1开始 |
+| Admission And Approval | 用户授权自动完成全部剩余T；T3 97a777d已推送并实际全任务复核，无阻塞 |
+| Objective | 适配固定来源原生CreateProcess A/W拦截，继承最小目录/策略，每代复用同一安装器；CLI默认启用传播 |
+| Non-goals | 不加入broker/VDM重定向/服务身份，不实现demo/正式完整包；复杂语义和全回归分别在本T S2/S3 |
+| Reference Baseline | 97a777d及T3关闭审计；79回执、ABI3/31public+helper1、双宽首次附着和13核心回归通过 |
+| Candidate Proposal | [子孙传播与创建语义](../proposals/descendant-propagation.md) S1与T1 INDEPENDENCE |
+| Files And ABI Surface | injection/create_process.cpp、entry/intercept/context、版本、根构建、双宽传播fixture及回执/状态/历史；不扩公开ABI |
+| Applicable Rules | 全部执行/架构/编码/文档规则与设计、来源及payload/安装所有权设计 |
+| Verification | 原生A/W参数原样转发，真实新子进程暂存及原挂起；四种父子位宽边及第三代基本生产路径；原请求失败错误；来源/治理/PE门禁 |
+| Expected Markers | 每代同位宽DLL及真实窗口附着，原生业务数据/返回保持；安装只借用，创建层只抵消自己加的挂起，失败不交付半安装目标 |
+| Asset Needs | build/.ninja两宽稳定树；build/t4-propagate/s1-*日志/目录包/marker，hidden owned worker600秒500MB；任务末回收及Testing日志 |
+| Reporting Requirements | 原生字段与局部递归防护、源删除/保留清单、每代实际附着/错误/挂起证据、失败及限制、实际增删统计 |
+| Stop Conditions | 参数改写、调用者挂起丢失、重复安装、跨宽错误或影响既有进程先修复，不将核心语义失败转发布 |
+| Exit Criteria | A/W传播实现及基本四边/第三代验证通过，推送并实际复核后进入S2完整语义/回滚 |
 | Original Owner Request | 请你自动准入 完成所有t任务预定内容 毕竟ntvdm64都已经实现过了 |
-| Similar-Issue Sweep | 两架构所有安装/恢复/清理分支、A/W GUI/消息返回、载荷边界、PE/路径长度与编码、唯一trampoline和状态所有者 |
+| Similar-Issue Sweep | 两入口原函数所有者、递归/异常退出、每种flags/environment/startup及句柄所有权、helper仅新目标、全部4边 |
