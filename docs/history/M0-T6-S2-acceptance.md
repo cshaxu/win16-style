@@ -83,3 +83,39 @@ git show --check通过，交付后工作区干净。P1自动验收交付复核�
 已向用户提供assets/binary精确发布目录及两种启动方式，请其反馈真实鼠标/键盘、
 剪贴板、焦点/捕获、菜单、窗口操作与显示缩放/DPI结果。依据package-acceptance
 的“必要物理验收完成”条件等待反馈，不提前关闭S2或准入S3；所有自动worker已完成。
+
+## S2 P3：系统cmd中转传播补验
+
+用户询问GUI启动器经cmd继续传播的可行性。检查当前CreateProcessA/W拦截确认
+传播状态由目标DLL所有，与启动器PE子系统分离；当前构建及包检查仍固定Console。
+本轮不擅自把可行性讨论改成GUI/标准流行为实现，先对当前真实发布包补验cmd路径。
+
+有限集：系统SysWOW64/cmd.exe与System32/cmd.exe各自启动32/64位propagate-target，
+再创建相反位宽、再回初始位宽；每链初始A/W各一例并切换调用者挂起。总8例、
+24个后代目标窗口。使用s2-final干净树已构建的现有propagate_target.c，未改fixture。
+每目标原有断言检查对应DLL在内存、Ntw16sWindowAttached、Win16 System20字体、
+复选框数据语义、销毁及不存在目标的LastError。外层读取三代标记，核对entry、
+window-attached和complete各一次及两条child PID准确连接；不只检查退出码。
+
+复现模板（替换为实际绝对路径；R与L为初始位宽fixture，N为相反位宽fixture）：
+
+```text
+run16s.exe --wait <system-cmd.exe> /d /s /c ""<R>" 2 "<N>" "<L>" <A/W:0|1> <suspend:0|1> <case-id>"
+```
+
+工作目录与WIN16STYLE_CAPTURE_DIR设为各例独立目录；根使用CREATE_NO_WINDOW，
+隐藏worker7656总预算300秒、单例60秒，仅超时时终止其自有树。确切命令、子进程ID、
+标记及stdout/stderr位于已登记s2-cmd-chain scratch，完成后result为passed、8/8。
+
+| cmd位宽 | 目标三代位宽 | A/W与挂起组合 | 结果 |
+| --- | --- | --- | --- |
+| 32 | 32 → 64 → 32 | 0/0与1/1 | 两例通过 |
+| 32 | 64 → 32 → 64 | 0/0与1/1 | 两例通过 |
+| 64 | 32 → 64 → 32 | 0/0与1/1 | 两例通过 |
+| 64 | 64 → 32 → 64 | 0/0与1/1 | 两例通过 |
+
+测试前后发布四文件SHA一致，完全等于S2 P1清单；没有重编译、替换产品或新S关闭，
+本P仅补充同一S现有发布批次的实际证据。src/tests/tools/CMake变化0路径、+0/-0；
+三份验收文档/清单更新，规则和sibling无改动。GUI版启动器仍未实现/验证，
+交互式cmd、ShellExecute/提权转交和conhost/Terminal外观不在本次通过声明内。
+物理输入/DPI及剪贴板验收仍待用户，S2保持active，不能以本补验替代。

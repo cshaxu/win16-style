@@ -10,7 +10,7 @@ M0 T5已关闭；自动准入M0 T6“独立包与M0产品验收”，S1已发布
 - Milestone: M0 (fixed)
 - Last allocated T: 6
 - Last allocated Td S: 4
-- Last delivery: M0 T6 S2 P2 (P1 b044345推送后复核记录)
+- Last delivery: M0 T6 S2 P3 (当前发布包的cmd传播补验证据)
 
 ## Technical Baseline
 
@@ -28,6 +28,9 @@ assets/binary，身份与[发布清单](../etc/release.json)匹配。121输入�
 S2 P1 b044345已推送并实际复核远端四文件/121输入及原始用例；自动部分已验证。
 真实鼠标/键盘/焦点/捕获及选定DPI、剪贴板仍待实际操作。
 私有桌面、合成消息、截图不证明物理输入或任意应用/字体/DPI兼容性。
+补验系统32/64位cmd中转8/8通过：每种cmd到双宽目标及其三代，A/W/调用者挂起、
+真实窗口/字体/控件/父子PID均通过，四文件哈希不变。当前启动器仍为Console；
+本轮未改GUI子系统，后台无控制台测试不证明交互cmd或conhost窗口样式。
 S2不关闭，S3全任务审计尚未准入，M0未完成。记录见[S2验收](../history/M0-T6-S2-acceptance.md)。
 
 用户要求每产品S构建同批四文件、对该包测试、发布、提交推送及实际复核；不再
@@ -75,7 +78,7 @@ S3 P1 97a777d已推送并复核；最终16/21完整回归，全部失败有处�
 | Applicable Rules | Task Reading Set全部规则；每S四产物闭环、来源资源策略及UI契约 |
 | Verification | 新干净副本双宽构建，顺序完整core/launch/propagate/demo矩阵；实际候选四文件扩展同包测试；来源/PE/哈希/声明/依赖；真实输入及选定DPI |
 | Expected Markers | 包恰四文件，所有注册用例逐项有执行或明确处置；发布文件与被测包哈希相同；物理验收另记实际操作与环境 |
-| Asset Needs | build/t6-package/s2-final及s2-package-test；新快照内部完整矩阵scratch；hidden owned worker，每架构600秒、全矩阵1200秒，同包1800秒，总scratch1GB；T结束回收 |
+| Asset Needs | build/t6-package/s2-final及s2-package-test；补验s2-cmd-chain（系统双宽cmd中转、现有fixture三代）；新快照内部完整矩阵scratch；hidden owned worker，每架构600秒、全矩阵1200秒，同包1800秒，总scratch1GB；T结束回收 |
 | Reporting Requirements | 成功/失败/跳过/未覆盖分别报告；剪贴板77不计通过；原生与注入同文件对照；工具链、源码输入、四文件SHA及发布位置 |
 | Stop Conditions | 混包、隐含依赖、必要用例缺失先修复；必要物理验收待用户时保留状态，不关闭S或M0 |
 | Exit Criteria | 完整自动矩阵与必要物理验收有证据，同批四文件发布、提交推送并实际复核；之后准入S3全任务审计 |

@@ -611,7 +611,20 @@
       }
     },
     "physical_input": "pending S2 user operation; private desktop and synthetic messages do not satisfy it",
-    "private_clipboard": "both widths skipped 77: native CreateWindowStation denied 5; explicit host/user acceptance required; shared clipboard untouched"
+    "private_clipboard": "both widths skipped 77: native CreateWindowStation denied 5; explicit host/user acceptance required; shared clipboard untouched",
+    "cmd_chain": {
+      "evidence_delivery": "M0 T6 S2 P3",
+      "package_delivery": "M0 T6 S2 P1",
+      "status": "passed",
+      "cases": 8,
+      "command_processors": [
+        "Windows SysWOW64/cmd.exe",
+        "Windows System32/cmd.exe"
+      ],
+      "selection": "each cmd width -> each target width -> opposite width -> initial width; A/W and caller suspension",
+      "observations": "three target windows attached, Win16 font, checkbox semantics, completion, exact child PID lineage; published four hashes unchanged",
+      "boundary": "CREATE_NO_WINDOW background /d /s /c; current Console launcher only; no interactive console, GUI-launcher or conhost styling claim"
+    }
   },
   "source_input_convention": "sha256 is the actual build input; git_blob_sha256 records canonical Git bytes only when checkout newline conversion differs"
 }
