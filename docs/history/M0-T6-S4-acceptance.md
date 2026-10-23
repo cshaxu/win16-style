@@ -83,3 +83,11 @@ x64 36项中35通过/1权限跳过（373.41秒），0失败。两项均为core/e
 | demo.exe | a255f30d44b2a05138ad2ba1c728dae386de7cf549e9ee1ee5116de318f67dfa |
 
 本S本地verified并已双发布；读取推送后实际提交及远端源码/四文件复核后才关闭。
+
+P1 418be5e378d07fd236505cca6eafe94e685a2eb4已推送并fetch复核。协调角色读取实际
+commit/stat/diff、原始请求、10例原始退出码、24/36注册JSON及JUnit；58通过/2权限
+跳过与清单一致。124输入按Git换行约定与实际远端blob一致，六份原资源blob逐一
+相同；远端assets四文件、被测候选和O:/winnt/system32四文件SHA完全一致。
+治理13、source23、MinHook9、资源6负例及diff检查通过，无sibling变更。
+S4达到用户更新后的原生探针与双发布退出条件并closed；隔离剪贴板权限限制明确
+保留为未验证面，不计通过。自动准入S5全任务/M0审计，不把本S直接当作M0完成。

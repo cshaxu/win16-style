@@ -2,16 +2,16 @@
 
 ## Current Work
 
-M0 T6 S4已完成滚动条方形端钮修复及原生探针；新双宽构建、完整58通过/2权限跳过、
-同包10/10及双位置发布通过，本地verified，待提交推送和实际复核。用户指定不用
-computer-use、自己用探针验收。S5最终任务审计尚未准入，M0未完成。
+M0 T6 S4已完成滚动条修复、原生探针、双发布及远端复核，closed；自动准入S5。
+本S执行T6与跨任务M0完成审计，并按每S规范重建/同包测试/双发布/推送复核。
+用户指定探针自行验收；隔离clipboard权限限制明示，不计通过，M0尚未完成。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 6
 - Last allocated Td S: 5
-- Last delivery: M0 T6 S4 P1 (本地verified及双发布，待推送后实际复核)
+- Last delivery: M0 T6 S4 P2 (P1 418be5e双发布及远端复核，关闭S4准入S5)
 
 ## Technical Baseline
 
@@ -42,6 +42,9 @@ S1验证细节与所有失败处置见[工作记录](../history/M0-T6-S1-package
 
 ## Recent Closure
 
+[M0 T6 S4修复与探针](../history/M0-T6-S4-acceptance.md)：418be5e远端124输入及四文件复核，
+58通过/2权限跳过、同包10/10，assets和O:/winnt/system32一致。S4关闭，准入S5。
+
 [M0 T6 S3等待契约](../history/M0-T6-S3-wait.md)：4b83994已推送且实际复核，
 新包14/14及相关回归6/9通过，124输入与四远端文件身份一致。S3关闭，准入S4。
 
@@ -70,23 +73,23 @@ S3 P1 97a777d已推送并复核；最终16/21完整回归，全部失败有处�
 [M0 Td S3 层级纠正](../history/M0-Td-S3-task-level.md)：T 级候选各自拥有 S，
 队列不预分配 T 号；此前治理记录继续保留在 history。
 
-## M0 T6 S4 Packet
+## M0 T6 S5 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；Td5后恢复；用户改为自己用探针做，新增滚动条方形端钮缺陷 |
-| Admission And Approval | 用户要求先处理启动器新S、随后继续后续S；每S编译发布测试提交推送；基线618c51b（规则及路径）/4b83994（产品） |
-| Objective | 从本S新干净快照构建双宽四文件，完整矩阵及实际同包复验；完成原生焦点/控件消息/捕获/DPI及隔离剪贴板探针，修复滚动条端钮比例 |
-| Non-goals | 不修改原图形资源、不切GUI子系统、不扩展组件/ABI、不接触sibling或共享剪贴板；不把自动合成消息冒充真实输入 |
-| Reference Baseline | S3 P1 4b83994；Console目标默认等待，GUI默认异步，--wait均等待；六份原资源及双DLL18表，纯C17/GCC，ABI3 |
-| Candidate Proposal | [独立包与M0验收](../proposals/package-acceptance.md)S4；原资源视觉一致已由用户确认 |
-| Files And ABI Surface | 验收记录、发布清单及本S同批四产物；修复controls/scroll_layout及demo滚动条几何，扩展外部demo/几何探针；公开ABI不变 |
-| Applicable Rules | 完整Task Reading Set、每S四文件闭环、真实交互与自动证据分开、来源身份及任务级退出条件 |
-| Verification | 新干净双宽全构建；完整注册矩阵及失败/跳过逐项核对；同批实际包10项含等待6场景；发布assets及O:/winnt/system32 SHA与测试一致；本机原生探针状态/DPI及环境限制 |
-| Expected Markers | 全矩阵无未处置失败、四文件同批且无sibling依赖；裸demo原生/注入demo原样式业务正常；焦点/捕获/控件消息/DPI有探针证据，剪贴板权限限制有明确处置 |
-| Asset Needs | build/t6-package/s4-acceptance（旧布局基线，已通过构建）、s4-probe-dev、s4-probe-dev-fixed、s4-probe-about、s4-probe-dev-about-thread（失败及修正日志）、s4-probe-dev-tree（开发构建）、s4-probe-final及s4-probe-final-test（最终新批次）新构建/矩阵/同包证据；保留S2/S3已登记scratch至T结束；hidden owned每构建架构600秒、矩阵每架构600秒、同包1800秒、总scratch1GB；s4-deploy保存两处原文件备份及部署结果 |
-| Reporting Requirements | 区分通过/失败/跳过及用户已确认外观；明确原生探针覆盖和实际DPI、隔离station权限限制；不将S3等待自动测试扩张为交互键盘通过 |
-| Stop Conditions | 探针存在未处置失败、完整矩阵失败或混包时不得关闭S4/T6/M0；先完成不依赖用户的工作 |
-| Exit Criteria | 本S编译/同批打包/测试/发布/提交推送/实际复核及用户要求的原生探针验收/限制记录完成，才关闭S4并准入S5审计 |
-| Original Owner Request | 每次S编译发布测试提交推送；原资源相同；Console自然等待优先；完成启动器新S后继续后续S |
-| Similar-Issue Sweep | 检查完整矩阵注册和实际执行、private clipboard拒绝访问、探针覆盖缺项、旧外观待确认措辞及发布清单/测试包身份 |
+| Identifier Mode | Continuation；S4已关闭，最后T6及跨任务M0覆盖审计 |
+| Admission And Approval | 用户授权完成后续S；每S编译/测试，binary change双发布assets根目录及O:/winnt/system32；自己用探针，不用computer-use |
+| Objective | 冻结原目标到T1..T6/S交付、生产所有者、证据及限制的映射；复核独立三组件四文件、原资源、纯C/GCC和最终部署，决定有界M0完成 |
+| Non-goals | 不扩展产品/ABI/资源，不修改兄弟仓库，不把权限跳过或探针当作物理输入；无源码变更时不重复无理由的全矩阵 |
+| Reference Baseline | S4 P1 418be5e；124输入、原资源六blob及18表、ABI3；完整58通过/2权限跳过、同包10/10、双发布并远端复核 |
+| Candidate Proposal | [独立包与M0验收](../proposals/package-acceptance.md)S5；前五任务闭环记录及S1..S4实际交付 |
+| Files And ABI Surface | 审计/状态/发布清单及本S新四文件；预期124个产品/测试输入与S4相同，无公开ABI或源代码变更 |
+| Applicable Rules | 完整Task Reading Set、T级全覆盖审计、每S新双宽编译/同包验证、binary change双发布及实际复核 |
+| Verification | 新干净双宽全构建/PE/ABI/资源；同包10项；逐项原始Git提交/覆盖映射与源码所有者；124输入与S4一致则保留S4完整矩阵证据而不虚称本S重跑 |
+| Expected Markers | 六任务与八验收面均有来源、实现及当前证据，未完项只有明示宿主隔离clipboard限制；四文件双发布、远端SHA/源码可复取，无sibling依赖 |
+| Asset Needs | build/t6-package/s5-audit（最终快照/审计）、s5-audit-test（实际包）、s5-deploy（两处备份）；S2/S3/S4 scratch保留至证据提炼后安全回收，预算1GB，构建每宽600秒、同包1800秒 |
+| Reporting Requirements | 当前与历史工具链/资源明确区分；S4全矩阵不冒称S5重跑；两处部署及远端相同；权限跳过和真实物理输入未覆盖明示 |
+| Stop Conditions | 覆盖缺项、未处置产品失败、124输入漂移、ABI/资源变化、部署混包或远端身份不符时先纠正，不关闭T6/M0 |
+| Exit Criteria | 本S新包编译/测试/双发布/提交推送/实际复核，T6及M0全部原目标审计无未处置缺项，提炼并回收owned scratch后关闭 |
+| Original Owner Request | 三组件四产物独立分出、原资源相同、M0/MTSP、纯C/GCC、Console等待、每S闭环、探针自行验收、binary change双位置发布 |
+| Similar-Issue Sweep | 原项目隐含依赖/第五产物、旧自绘/旧MSVC证据冒用、S2交接是否由S4接收、跳过是否误报通过、发布目录旧引用及备份可恢复性 |
