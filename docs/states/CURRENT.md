@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T5已关闭；自动准入M0 T6“独立包与M0产品验收”，S1已发布、推送并实际复核关闭；当前S2 active：用户外观验收否决自绘替代，已恢复原资源，新批次完整矩阵及同包复验通过，已更新四文件；待推送复核和用户新版视觉/物理反馈。
+M0 T5已关闭；自动准入M0 T6“独立包与M0产品验收”，S1已发布、推送并实际复核关闭；当前S2 active：用户外观验收否决自绘替代，已恢复原资源，新批次完整矩阵及同包复验通过，已更新四文件并推送复核；待用户新版视觉/物理反馈。
 用户授权按队列自动完成全部剩余T；通过独立审计后推进，不重复询问准入。
 
 ## Identifier State
@@ -10,7 +10,7 @@ M0 T5已关闭；自动准入M0 T6“独立包与M0产品验收”，S1已发布
 - Milestone: M0 (fixed)
 - Last allocated T: 6
 - Last allocated Td S: 4
-- Last delivery: M0 T6 S2 P4 (原资源恢复与新四文件交付)
+- Last delivery: M0 T6 S2 P5 (P4 4bf65c2远端身份复核记录)
 
 ## Technical Baseline
 
