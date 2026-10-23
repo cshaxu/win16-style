@@ -10,7 +10,7 @@ Win16 窗口外观启动器。项目目标与组件契约见
 | ntw16s-dll | ntw16s32.dll、ntw16s64.dll | x86、x64 |
 | demo-exe | demo.exe | x64 |
 
-预期用法（尚未实现，当前仓库没有可运行产物）：
+预期用法（启动器与 demo 尚未实现，核心 DLL 已可构建）：
 
 ```powershell
 .\demo.exe                 # 普通 Win32 窗口外观
@@ -18,7 +18,7 @@ Win16 窗口外观启动器。项目目标与组件契约见
 .\run16s.exe <app.exe> [arguments]
 ```
 
-T1 来源冻结与独立化设计已完成，产品源码尚未导入。
+T1 已完成；T2 正在导入并验证双位宽样式核心。当前还没有完整可运行产品包。
 文档入口为 [docs/README.md](docs/README.md)，
 进度以 [CURRENT](docs/states/CURRENT.md) 为准。所有工作固定在 milestone0，
 使用 MTSP 管理任务及交付。源代码、构建和运行验收将在后续导入任务进行。

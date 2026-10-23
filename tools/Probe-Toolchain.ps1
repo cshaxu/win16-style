@@ -27,13 +27,13 @@ try {
     $commands.Add('@echo off')
     foreach ($arch in @('x86','x64')) {
         $commands.Add('call "' + $vcvars + '" ' + $arch)
-        $commands.Add('if errorlevel 1 exit /b 1')
+        $commands.Add('if not "%errorlevel%"=="0" exit /b 1')
         $commands.Add('"' + $cmake + '" -S "' + (Join-Path $repo 'tests/toolchain') + '" -B "' + (Join-Path $scratch $arch) + '" -G Ninja -DCMAKE_MAKE_PROGRAM="' + $ninja + '" -DCMAKE_BUILD_TYPE=Release -DPROBE_ARCH=' + $arch)
-        $commands.Add('if errorlevel 1 exit /b 2')
+        $commands.Add('if not "%errorlevel%"=="0" exit /b 2')
         $commands.Add('"' + $cmake + '" --build "' + (Join-Path $scratch $arch) + '" --verbose')
-        $commands.Add('if errorlevel 1 exit /b 3')
+        $commands.Add('if not "%errorlevel%"=="0" exit /b 3')
         $commands.Add('"' + (Join-Path (Split-Path $cmake) 'ctest.exe') + '" --test-dir "' + (Join-Path $scratch $arch) + '" --output-on-failure --verbose')
-        $commands.Add('if errorlevel 1 exit /b 4')
+        $commands.Add('if not "%errorlevel%"=="0" exit /b 4')
     }
     $commands.Add('exit /b 0')
     $batch = Join-Path $scratch 'probe.cmd'

@@ -1,6 +1,6 @@
 # 双位宽样式核心
 
-状态：独立 T 候选，未编号、未准入。固定 M0；[前置任务](source-baseline.md)须交付并关闭。
+状态：用户准入 M0 T2；活动 S 与基线以 CURRENT 为准。固定 M0；[前置任务](source-baseline.md)已关闭。
 共同来源与验收矩阵见[导入总览](native-style-import.md)，顺序见[QUEUE](../states/QUEUE.md)。
 
 ## 任务边界与完成条件

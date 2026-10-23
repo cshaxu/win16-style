@@ -3,5 +3,13 @@
 *.json text eol=lf
 *.ps1 text eol=lf
 *.yml text eol=lf
+*.c text eol=lf
+*.h text eol=lf
+*.cpp text eol=lf
+*.py text eol=lf
+*.txt text eol=lf
+*.def text eol=lf
+*.rc text eol=lf
+*.cmake text eol=lf
 *.exe binary
 *.dll binary

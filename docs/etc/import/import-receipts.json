@@ -1,0 +1,392 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "path": "src/ntw16s-dll/api.h",
+      "source": "src/ntw16s-dll/api.h",
+      "source_blob": "ed5a06e643692e727431ad7482483cfd175006f9",
+      "sha256": "39f0fbf9693101904f458f67bfc07651f89130d2c257012dc6f961c1423c55a3",
+      "disposition": "adapt",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/attachment.c",
+      "source": "src/ntw16s-dll/attachment.c",
+      "source_blob": "e467006ab99ada1846f9298b650c30605807466b",
+      "sha256": "234ca89e2c70ccfcd2f2a6a79823cc0724a7c287870fddd41918dd612ffc8f38",
+      "disposition": "adapt",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/attachment.h",
+      "source": "src/ntw16s-dll/attachment.h",
+      "source_blob": "a8813543e1faf9e8ba68dee29f0f1e77643b96fa",
+      "sha256": "7a5cde7dcf7fb6925373ec34b0877ff37b2175f19ecb5a9c2cfa5e52ee49a7ed",
+      "disposition": "retain",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/control_scope.c",
+      "source": "src/ntw16s-dll/control_scope.c",
+      "source_blob": "e7d2e565af452f8b618badb8e1df0d2ee644a77a",
+      "sha256": "74f313e90f005973902bd76e76f5f75b7aa300ed1d39a06fe332e7c60aa37799",
+      "disposition": "retain",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/controls.c",
+      "source": "src/ntw16s-dll/controls.c",
+      "source_blob": "9bc3331d0f9fc3e3104059ab792670ab1579d65c",
+      "sha256": "25b360b62729aa5ecaeaa0fd8c9857aef6a8a85f0c01956169e2f2df000b8933",
+      "disposition": "adapt",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/controls.h",
+      "source": "src/ntw16s-dll/controls.h",
+      "source_blob": "8c6380513ec16c21ff3b1e34b9ef14222cc4d837",
+      "sha256": "d55004421db94183ce615c71b2cd6442d2ae6a1523da4c3b81bc4361b3497b3d",
+      "disposition": "retain",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/dllmain.c",
+      "source": "src/ntw16s-dll/dllmain.c",
+      "source_blob": "f52c5d4cf09186bfccec50f961c4275e5f0f8094",
+      "sha256": "a0e31578a438812efcfe9d3539da47064d8e2c9953faf849b9a3faee60028471",
+      "disposition": "adapt",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/font.c",
+      "source": "src/ntw16s-dll/font.c",
+      "source_blob": "3bce01032d506f05bb571f8be35392f12c4dcebb",
+      "sha256": "0832d6e44f80eb5ed731c2242978ae286604f0510e322739ec42dc995f6b93ea",
+      "disposition": "retain",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/font.h",
+      "source": "src/ntw16s-dll/font.h",
+      "source_blob": "772af2b70b85d897ea842003229b5d3e5795803e",
+      "sha256": "cdd88ab0f76899f51577b48e657051ca8e5c027dc5a6b4ff37eb53232a06de81",
+      "disposition": "retain",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/layout.c",
+      "source": "src/ntw16s-dll/layout.c",
+      "source_blob": "a9ba79fb962c41bbb5d8ffab0bbb3632213d282e",
+      "sha256": "83cd34e01d35e27fc40c54e82460cab945b45d3a986b3d5ee2ec8ac9ab5c4ede",
+      "disposition": "retain",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/layout.h",
+      "source": "src/ntw16s-dll/layout.h",
+      "source_blob": "397587ca491a9aef181ae8bca9404ddf0e9d0672",
+      "sha256": "a55b5d4bad75fda24a46828966f0b8024c85dd52648ac8166e77ae94c541d2d3",
+      "disposition": "retain",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_bar.c",
+      "source": "src/ntw16s-dll/menu_bar.c",
+      "source_blob": "8dea689873ff121dce171c1e89d4b8ac93375ffd",
+      "sha256": "38c124da7e7bbede8b96dcdc863ecdf438ad9d54d2ce9c175c00bc942a1eebfb",
+      "disposition": "retain",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_bar.h",
+      "source": "src/ntw16s-dll/menu_bar.h",
+      "source_blob": "dbf916ef7759d4c3a249a56712c10ec946ec70de",
+      "sha256": "7eba7d9c045131b8aebb7d7c8b87303b97d2eb8e52d9030388f6dd23af9731df",
+      "disposition": "retain",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_bar_paint.c",
+      "source": "src/ntw16s-dll/menu_bar_paint.c",
+      "source_blob": "e8d1450ac63e3364fcbad23c926e458785c3bf88",
+      "sha256": "209ab48d33f57207c33f90c412b9c294ed062683c789803dd207cf22fd66076f",
+      "disposition": "retain",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_items.c",
+      "source": "src/ntw16s-dll/menu_items.c",
+      "source_blob": "e4515547a7ec174558bfd2923536d190b62f5fb7",
+      "sha256": "a9dfa0377afc30a0b893370b56f093bc43abc50a6aca605dfe206c4e7b98223e",
+      "disposition": "retain",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_items.h",
+      "source": "src/ntw16s-dll/menu_items.h",
+      "source_blob": "4aab35cbb7a6fa674d7a0cbcf729b3bc9cff49d9",
+      "sha256": "24dff3476635ede1304b7ee3bdf28c3639b4ded55826c8000e7142531ac69b18",
+      "disposition": "retain",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_layout.c",
+      "source": "src/ntw16s-dll/menu_layout.c",
+      "source_blob": "82916ee3bf2e3e115838721ced63d0aa65539747",
+      "sha256": "cde752459255f121492daa908df6cd6201a549d0080d2cf73b8975b6042dc62c",
+      "disposition": "retain",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_layout.h",
+      "source": "src/ntw16s-dll/menu_layout.h",
+      "source_blob": "7636669b8a54caaebba89ad80572c0bbbac0a275",
+      "sha256": "e70959ddd21f2cb3d2904a7bf756f79066e839144d7ecc7174a97f026a065e19",
+      "disposition": "retain",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_paint.c",
+      "source": "src/ntw16s-dll/menu_paint.c",
+      "source_blob": "b9ba84a7ac43981013b1319d0019ee18cd1ff6b7",
+      "sha256": "329b1ff10f94b4d0ecdf4833857cd28825dc6e7c23fd1950bda9c587afb164ff",
+      "disposition": "adapt",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_paint.h",
+      "source": "src/ntw16s-dll/menu_paint.h",
+      "source_blob": "8473ec9496b45d043be33bbf90fb43b14f8f148d",
+      "sha256": "68595cdae255277f4b2d0803115178b46975bdf9e30456cebe23ae935ee8363e",
+      "disposition": "retain",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_scope.c",
+      "source": "src/ntw16s-dll/menu_scope.c",
+      "source_blob": "b27da79667d1dce3f17336721ef7c6be06fc18f7",
+      "sha256": "95ad88b868cbd154eac2012407f1954ef89907c4e0e521a515fb182d04fff82a",
+      "disposition": "retain",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_scope.h",
+      "source": "src/ntw16s-dll/menu_scope.h",
+      "source_blob": "2f793a46215944cf6219f478db14715fd59d4f06",
+      "sha256": "e7f130982359c73f3aa790cdbe8915c2acf5aa2a4889dbd5dfda7855a652a699",
+      "disposition": "retain",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/native_api.c",
+      "source": "src/ntw16s-dll/native_api.c",
+      "source_blob": "d84c73572e5d1d8dcc59ee178be6814468fecc5b",
+      "sha256": "4dcd66856f892290468ba0785835b2060b873a679b2938337d4ca87fb0e75b6f",
+      "disposition": "adapt",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/native_api.h",
+      "source": "src/ntw16s-dll/native_api.h",
+      "source_blob": "cd045fb697b1f6319173bc97f9fc6b5bc5e0b763",
+      "sha256": "2e8b3c5b585b9ee61afb597cacc3d18cfd15631de6eadc34fc2870c30ba657c8",
+      "disposition": "adapt",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/ntw16s.h",
+      "source": "src/ntw16s-dll/ntw16s.h",
+      "source_blob": "4206eba1ed0572ed7f1ae7fe2301786b6fb5b9e5",
+      "sha256": "d10566f17c968fedc73459dd2f5d5b1f184f315e220a3feacd6d8281f9083b59",
+      "disposition": "adapt",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/scroll_layout.c",
+      "source": "src/ntw16s-dll/scroll_layout.c",
+      "source_blob": "891f118725eed946da93e45e8bad2dde1753eef9",
+      "sha256": "0b1b344fcbe0ef2a8060ef140c539cefeb5fa79c7b93c322452513d15b95b4d0",
+      "disposition": "retain",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/scroll_layout.h",
+      "source": "src/ntw16s-dll/scroll_layout.h",
+      "source_blob": "63fda7674d27d2c0949374669f6c86a58263f5b3",
+      "sha256": "b8398eafbc51af77a5e5ce72c4dd06f12e51a6cdf6bdd51cf2ef6275b0b9fcb4",
+      "disposition": "retain",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/scroll_track.c",
+      "source": "src/ntw16s-dll/scroll_track.c",
+      "source_blob": "10f55fcfa1ddcf7686b45665dbdcd8afcde60ba0",
+      "sha256": "0b9c5d40849d321e3e467635d4c28b85c5897d8ee4dd8ec7bf3ed1d39fcd72ee",
+      "disposition": "retain",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/scroll_track.h",
+      "source": "src/ntw16s-dll/scroll_track.h",
+      "source_blob": "36dab01c50c485fa0da58835d7c1b97cc5f79737",
+      "sha256": "36be02d2e879175c02863c495693d5c79dfa1cbca716419c6e0ec46b59c5934e",
+      "disposition": "retain",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/theme.c",
+      "source": "src/ntw16s-dll/theme.c",
+      "source_blob": "1c81eaa41fda9d96dfc07e8fb7707d2f2dcbafbc",
+      "sha256": "48eb05bc23f40eb99288a1c3d16ba07a8262be2a15a95725427238e730e3f6ac",
+      "disposition": "retain",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/theme.h",
+      "source": "src/ntw16s-dll/theme.h",
+      "source_blob": "088ea9230823070a010d586058bd7b86aee5d93b",
+      "sha256": "0a0100203a7856d58d2a16389309440781f23d7e04e7d7a93db0cc5ad2415371",
+      "disposition": "retain",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/win16_style.c",
+      "source": "src/ntw16s-dll/win16_style.c",
+      "source_blob": "4235f085cb00c0d17145deec2d04a57c97b98d47",
+      "sha256": "24076b242211cb91c02d2029c35fec9074014965f46e0829b7f781370350d8b2",
+      "disposition": "adapt",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/win16_style.h",
+      "source": "src/ntw16s-dll/win16_style.h",
+      "source_blob": "5e922312ae64dfd28356a7960caf97854c5d41ab",
+      "sha256": "f2c52b99f8d764a5175a85532e2ad2c7afc60e0f30117e60350b27c4f1e0ddf8",
+      "disposition": "retain",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored source per fixed component README; original file notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/combo_glyph.h",
+      "source": "src/ntw16s-dll/combo_glyph.h",
+      "source_blob": "6844a599eaeabee81e3a6f0b93571aae45a3dad5",
+      "sha256": "e5674af5528e50036f68f79187b9c5b5482aa82a86b7df1b7fd9b65f6bd0859d",
+      "disposition": "replace",
+      "review": "Independent geometric drawing commands in tools/generate_glyphs.py; docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored geometry, MIT; no original extracted resource pixels"
+    },
+    {
+      "path": "src/ntw16s-dll/control_glyphs.h",
+      "source": "src/ntw16s-dll/control_glyphs.h",
+      "source_blob": "a5ac2b29e4e1471b0b1d59fedffa891565bfecbb",
+      "sha256": "e0b97a0183d7e6d0f8cbc587cab972715a581dd4c9818590422377e9a8ea8f9f",
+      "disposition": "replace",
+      "review": "Independent geometric drawing commands in tools/generate_glyphs.py; docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored geometry, MIT; no original extracted resource pixels"
+    },
+    {
+      "path": "src/ntw16s-dll/frame_buttons.h",
+      "source": "src/ntw16s-dll/frame_buttons.h",
+      "source_blob": "dd782cd7d4e58e278067366777836e6e5ae34100",
+      "sha256": "4c3cc0f9ce39a214f663192350a5408cde57d68fad167f3f966cada61f39eb4b",
+      "disposition": "replace",
+      "review": "Independent geometric drawing commands in tools/generate_glyphs.py; docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored geometry, MIT; no original extracted resource pixels"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_glyphs.h",
+      "source": "src/ntw16s-dll/menu_glyphs.h",
+      "source_blob": "3bd7a84da0ee765bc8277595caa7795b7c530cd2",
+      "sha256": "d763eb593ac8781d35d365bfb88185d8e6caf32964b2b0156cff1e804f187c1d",
+      "disposition": "replace",
+      "review": "Independent geometric drawing commands in tools/generate_glyphs.py; docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored geometry, MIT; no original extracted resource pixels"
+    },
+    {
+      "path": "src/ntw16s-dll/scroll_glyphs.h",
+      "source": "src/ntw16s-dll/scroll_glyphs.h",
+      "source_blob": "47942549a40628868026e6b3c9ac751015c69fc7",
+      "sha256": "c4f94e7d8e0cd00728a8110790f87631e8352364657323cbc2d277bb1e8cdd4d",
+      "disposition": "replace",
+      "review": "Independent geometric drawing commands in tools/generate_glyphs.py; docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored geometry, MIT; no original extracted resource pixels"
+    },
+    {
+      "path": "src/ntw16s-dll/ntw16s32.def",
+      "source": null,
+      "source_blob": null,
+      "sha256": "2c7b40a2d38b0b7b820b265d8dc3223b747b5f6c7aac600cd30cc75deff4e5e1",
+      "disposition": "authored",
+      "review": "T2 local core ABI/version/component documentation; docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored, repository MIT"
+    },
+    {
+      "path": "src/ntw16s-dll/ntw16s64.def",
+      "source": null,
+      "source_blob": null,
+      "sha256": "716deaeb4af9c0bccd3df5b17cc977ca644170287d4a0cf15c09da366b0cfc0c",
+      "disposition": "authored",
+      "review": "T2 local core ABI/version/component documentation; docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored, repository MIT"
+    },
+    {
+      "path": "src/ntw16s-dll/README.md",
+      "source": null,
+      "source_blob": null,
+      "sha256": "10e4fa4f2931dc421b7e36ba4f3aa6596a3c3b9165ec33fd84ab211fa3b5a1d7",
+      "disposition": "authored",
+      "review": "T2 local core ABI/version/component documentation; docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored, repository MIT"
+    },
+    {
+      "path": "src/ntw16s-dll/version.rc",
+      "source": null,
+      "source_blob": null,
+      "sha256": "cab4093a4b3298d70ae601494fe5befba15a4bb78440d8a5611329e3e862f2fe",
+      "disposition": "authored",
+      "review": "T2 local core ABI/version/component documentation; docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored, repository MIT"
+    },
+    {
+      "path": "tests/ntw16s-dll/abi.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "523d22da64c82db62b7e6f43895eed45bdb2df590c2be1846a1c870933892f84",
+      "disposition": "authored",
+      "review": "T2 S1 real DLL ABI fixture; docs/history/M0-T2-S1-import.md",
+      "notice": "Project-authored, MIT"
+    }
+  ]
+}

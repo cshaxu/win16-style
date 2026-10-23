@@ -1,10 +1,42 @@
 {
   "milestone": 0,
   "components": [
-    {"id": "run16s-exe", "artifacts": [{"name": "run16s.exe", "architecture": "x64"}]},
-    {"id": "ntw16s-dll", "artifacts": [{"name": "ntw16s32.dll", "architecture": "x86"}, {"name": "ntw16s64.dll", "architecture": "x64"}]},
-    {"id": "demo-exe", "artifacts": [{"name": "demo.exe", "architecture": "x64"}]}
+    {
+      "id": "run16s-exe",
+      "artifacts": [
+        {
+          "name": "run16s.exe",
+          "architecture": "x64"
+        }
+      ]
+    },
+    {
+      "id": "ntw16s-dll",
+      "artifacts": [
+        {
+          "name": "ntw16s32.dll",
+          "architecture": "x86"
+        },
+        {
+          "name": "ntw16s64.dll",
+          "architecture": "x64"
+        }
+      ]
+    },
+    {
+      "id": "demo-exe",
+      "artifacts": [
+        {
+          "name": "demo.exe",
+          "architecture": "x64"
+        }
+      ]
+    }
   ],
-  "demo": {"direct": "native", "launched": "win16", "links_style_dll": false},
-  "import_status": "not-imported"
+  "demo": {
+    "direct": "native",
+    "launched": "win16",
+    "links_style_dll": false
+  },
+  "import_status": "partial"
 }

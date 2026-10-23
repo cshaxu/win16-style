@@ -159,7 +159,12 @@ if ($SelfTest) {
         nonzero_milestone = { param($f) $f['docs/etc/product-contract.json'] = $f['docs/etc/product-contract.json'] -replace '"milestone": 0','"milestone": 1' }
         fifth_product = { param($f) $f['docs/etc/product-contract.json'] = $f['docs/etc/product-contract.json'] -replace '"run16s.exe"','"helper.exe"' }
         demo_self_style = { param($f) $f['docs/etc/product-contract.json'] = $f['docs/etc/product-contract.json'] -replace '"links_style_dll": false','"links_style_dll": true' }
-        premature_source = { param($f) $f['src/demo-exe/main.c'] = 'source' }
+        premature_source = { param($f)
+            $contract = $f['docs/etc/product-contract.json'] | ConvertFrom-Json
+            $contract.import_status = 'not-imported'
+            $f['docs/etc/product-contract.json'] = $contract | ConvertTo-Json -Depth 10
+            $f['src/demo-exe/main.c'] = 'source'
+        }
         numbered_queue = { param($f) $f['docs/states/QUEUE.md'] += "`nT1 reserved" }
         orphan_candidate = { param($f) $f['docs/proposals/orphan.md'] = 'candidate' }
         wrong_source = { param($f) $f['docs/etc/import/source-inventory.tsv'] = '# source-commit: floating' }

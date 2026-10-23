@@ -2,7 +2,7 @@
   "schema": 1,
   "source_commit": "5b0b65f66c281050aa4ce1454c6cd31441a6d484",
   "git_object_format": "sha1",
-  "import_status": "not-imported",
+  "import_status": "partial",
   "seed_count": 105,
   "entries": [
     {
@@ -323,10 +323,10 @@
       "blob": "e467006ab99ada1846f9298b650c30605807466b",
       "size": 11175,
       "sha256": "908d869a84b4b7a442d8b27ed8c18897c9757bcd6a03761b42278d811bc1b25e",
-      "action": "retain",
+      "action": "adapt",
       "destination": "src/ntw16s-dll/attachment.c",
       "notice": "project-authored-review",
-      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "reason": "T2 S1 explicit private native_api include after removing it from public umbrella; ownership unchanged",
       "receiver": "style-core"
     },
     {
