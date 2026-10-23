@@ -45,7 +45,8 @@ T6 S1已从干净复制树通过双宽全构建及同包测试；当前发布状
 ```
 
 默认同时启用样式和后代传播；--wait等待根目标并返回它的实际退出码，不等待全部
-后代。无--wait在暂存/恢复成功后返回0；初始化失败可由--wait观察到loader退出码。
+后代。默认等待Console目标；GUI目标无--wait在暂存/恢复成功后返回0。等待时可观察到loader退出码。
+Console目标默认等待根目标并返回实际退出码；GUI目标默认恢复后返回0，--wait则等待。
 CLI阶段错误2/3/4/5/6/7/8分别表示用法、解析、PE、创建、安装、恢复、等待。
 Windows错误码在stderr，失败不继续裸运行。原始参数尾串、环境/cwd/继承保持原生语义。
 
@@ -60,7 +61,7 @@ RCDATA 3为四产物的项目LICENSE，RCDATA 4为两个DLL的完整MinHook/HDE 
 旧Detours源码/声明只保留在其历史交付中，当前产品不使用Detours。
 
 
-同包运行验证使用独立观察/控制器，将候选四文件作为实际参数；默认9项聚焦测试：
+同包运行验证使用独立观察/控制器，将候选四文件作为实际参数；默认10项聚焦测试（含6场景等待契约）：
 
 ```powershell
 pwsh -NoProfile -File tools/Test-Package.ps1 -RunName package-test-new -Package build/t6-package/candidate-new/candidate -BuildRoot build/t6-package/candidate-new/clean-source/build/.ninja -SourceRoot build/t6-package/candidate-new/clean-source
@@ -72,3 +73,6 @@ pwsh -NoProfile -File tools/Test-Package.ps1 -RunName package-test-new -Package 
 
 原图形资源检查：`python tools/verify_resource_identity.py --self-test`。两DLL须包含
 全部18个原始栅格表及RCDATA5完整来源说明；禁止构建时生成替代图形。
+
+run16s保持Console子系统，交互cmd自然等待启动器；控制台目标默认同步，GUI目标
+默认异步，显式--wait始终等待。GUI子系统试验已被用户否决且从未发布。

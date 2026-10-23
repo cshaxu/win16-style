@@ -45,7 +45,7 @@ for width,system in [(32,'SysWOW64'),(64,'System32')]:
         arguments=[str(healthy/'run16s.exe'),*(['--wait'] if wait else []),
                    str(Path(windows.value)/system/'cmd.exe'),'/d','/v:on','/c',command]
         result=subprocess.run(arguments,input=b'piped input\r\n',capture_output=True,timeout=20)
-        if (result.returncode!=(37 if wait else 0) or b'STDOUT:piped input' not in result.stdout
+        if (result.returncode!=37 or b'STDOUT:piped input' not in result.stdout
                 or b'STDERR:ok' not in result.stderr):
             raise SystemExit(f'CLI IO/EXIT FAIL width={width} wait={wait}: {result.returncode} {result.stdout!r} {result.stderr!r}')
         print(f'CLI IO/EXIT PASS width={width} wait={wait}: stdin/stdout/stderr preserved, exit={result.returncode}')

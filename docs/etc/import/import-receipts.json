@@ -482,9 +482,9 @@
       "path": "src/ntw16s-dll/injection/injection.h",
       "source": "src/nthook32-dll/hook.h",
       "source_blob": "ed368c6a8b71cda0a1a84e57a542ddf8452de1ad",
-      "sha256": "234a506f289ffbd5428c1620cc614589e443a31f6f93bd5e9bd270434b9a4164",
+      "sha256": "d81b9945cd65c435e37dde6285303c571fea81fed7332054845d5c9b36e3e3e1",
       "disposition": "adapt",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -500,18 +500,18 @@
       "path": "src/ntw16s-dll/injection/installer.c",
       "source": "src/nthook32-dll/installer.cpp",
       "source_blob": "84e78935b3079089569b9167eaed994df3220ebd",
-      "sha256": "05838f02e97edd1db58fbfb2537cd2a7ac7fa2123b56ad2e1d73ed8150737256",
+      "sha256": "9203c3d9f16a5766b0e17e471bceac78eace0488a36f885ba6014308f21a2c78",
       "disposition": "adapt",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
       "path": "src/run16s-exe/main.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6d97acf5bb798a4e9e0761e6ca98ccfed65735526be88f801b540868c2a30c51",
+      "sha256": "e78e5070b47862c67f1a8f180eed1a1f12f47ed1ff3413fe79f415daa834d1b0",
       "disposition": "authored",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -527,9 +527,9 @@
       "path": "src/run16s-exe/README.md",
       "source": null,
       "source_blob": null,
-      "sha256": "678a6761513ebb5f2972fd509da1e2606de8394374585c26faeaa06277a5c959",
+      "sha256": "b7fd6605afd98eadc4eac5fe1c75fdda9d65278445b36c1a3778efc3d21e11de",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -635,9 +635,9 @@
       "path": "tests/run16s-exe/cli_failures.py",
       "source": null,
       "source_blob": null,
-      "sha256": "03ba86abe0cbd34ae7e55563ab01811be8b059f89441060e6c52e1b4d75511ca",
+      "sha256": "4c9e5271fbfaed6f2b34031dea0f00cd6b730b2fe34dddd89bf2888baa282cc9",
       "disposition": "authored",
-      "review": "T3 S3 final path/CLI contract audit; UNC namespace case and actual exit/I-O cases; docs/proposals/launcher-injection.md",
+      "review": "T3 S3 final path/CLI contract audit; UNC namespace case and actual exit/I-O cases; docs/proposals/launcher-injection.md; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait",
       "notice": "Project-authored test, repository MIT"
     },
     {
@@ -1071,6 +1071,24 @@
       "disposition": "retain",
       "review": "M0 T6 S2 owner-rejected visual substitutions; byte-exact pinned resource/provenance restoration",
       "notice": "Original source resource/provenance notices retained; not project-authored artwork; see src/ntw16s-dll/resources.md"
+    },
+    {
+      "path": "tests/run16s-exe/wait_target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "384d457e8e99f6120fe4f1eaf0bf32ce3650cf9dec871f0b32c8c4cdce24d4b8",
+      "disposition": "authored",
+      "review": "T6 S3 held native CUI/GUI target and actual cmd/event/console-membership wait contract",
+      "notice": "Project-authored C17/Python native integration fixture, MIT"
+    },
+    {
+      "path": "tests/run16s-exe/wait.py",
+      "source": null,
+      "source_blob": null,
+      "sha256": "87d03c16e130148651ced42ab6f5906e660f2632ed5dbec52ffa8012a5ed0997",
+      "disposition": "authored",
+      "review": "T6 S3 held native CUI/GUI target and actual cmd/event/console-membership wait contract; explicit same-batch DLL staging and failure stdout/stderr capture; console membership is authoritative in headless contexts with NULL console HWND; check parent liveness before membership",
+      "notice": "Project-authored C17/Python native integration fixture, MIT"
     }
   ]
 }

@@ -14,7 +14,7 @@ DWORD ntw16s_process_machine(HANDLE child,WORD *machine)
     else return ERROR_NOT_SUPPORTED;
     return ERROR_SUCCESS;
 }
-DWORD ntw16s_validate_image(PCWSTR path,WORD machine,BOOL dll)
+DWORD ntw16s_validate_image_ex(PCWSTR path,WORD machine,BOOL dll,WORD *subsystem_out)
 {
     HANDLE file=CreateFileW(path,GENERIC_READ,FILE_SHARE_READ|FILE_SHARE_DELETE,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
     if(file==INVALID_HANDLE_VALUE)return GetLastError();
@@ -33,10 +33,13 @@ DWORD ntw16s_validate_image(PCWSTR path,WORD machine,BOOL dll)
     memcpy(&magic,optional,2);memcpy(&subsystem,optional+68,2);
     if(magic!=(machine==IMAGE_FILE_MACHINE_I386?IMAGE_NT_OPTIONAL_HDR32_MAGIC:IMAGE_NT_OPTIONAL_HDR64_MAGIC) ||
        (subsystem!=IMAGE_SUBSYSTEM_WINDOWS_GUI && subsystem!=IMAGE_SUBSYSTEM_WINDOWS_CUI))goto done;
+    if(subsystem_out)*subsystem_out=subsystem;
     error=ERROR_SUCCESS;
 done:
     CloseHandle(file);return error;
 }
+DWORD ntw16s_validate_image(PCWSTR path,WORD machine,BOOL dll)
+{return ntw16s_validate_image_ex(path,machine,dll,NULL);}
 static DWORD import_path(PCWSTR path,char *out,DWORD capacity)
 {
     typedef struct path_work {WCHAR short_path[NTW16S_PATH_CAP],roundtrip[NTW16S_PATH_CAP];} path_work;

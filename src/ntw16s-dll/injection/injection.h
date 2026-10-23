@@ -21,6 +21,8 @@ DWORD ntw16s_context_read(ntw16s_context *context,BOOL *found);
 DWORD ntw16s_context_paths(ntw16s_context *context,HMODULE module);
 DWORD ntw16s_process_machine(HANDLE child,WORD *machine);
 DWORD ntw16s_validate_image(PCWSTR path,WORD machine,BOOL dll);
+/* Optional output from the same validated PE header, set only on success. */
+DWORD ntw16s_validate_image_ex(PCWSTR path,WORD machine,BOOL dll,WORD *subsystem);
 /* Borrow only a newly created, uncommitted suspended target. Does not resume,
  * terminate, close it, or transfer handles. Creator owns rollback on failure. */
 DWORD ntw16s_install(HANDLE child,const ntw16s_context *context,ntw16s_create_w create_helper);

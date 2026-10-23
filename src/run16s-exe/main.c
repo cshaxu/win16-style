@@ -28,20 +28,23 @@ static int diagnostic(int code,DWORD error,PCWSTR phase)
 }
 int wmain(int argc,WCHAR **argv)
 {
-    int first=1;BOOL wait=FALSE;DWORD error,exit_code=0;
+    int first=1;BOOL wait=FALSE;DWORD error,exit_code=0;WORD subsystem=0;
     WCHAR image[NTW16S_PATH_CAP];ntw16s_context context;
     STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION child={0};
     PCWSTR raw=next_argument(GetCommandLineW());PWSTR command;
     if(argc>1 && !wcscmp(argv[1],L"--wait")){wait=TRUE;first=2;raw=next_argument(raw);}
     if(argc<=first || !wcscmp(argv[first],L"--help")){
-        fwprintf(argc<=first?stderr:stdout,L"Usage: run16s.exe [--wait] <application> [arguments]\n");
+        fwprintf(argc<=first?stderr:stdout,L"Usage: run16s.exe [--wait] <application> [arguments]\nConsole targets wait by default; --wait also waits for GUI targets.\n");
         return argc<=first?2:0;
     }
     DWORD length=SearchPathW(NULL,argv[first],L".exe",NTW16S_PATH_CAP,image,NULL);
     if(!length || length>=NTW16S_PATH_CAP)return diagnostic(3,length?ERROR_FILENAME_EXCED_RANGE:GetLastError(),L"target resolution");
-    error=ntw16s_validate_image(image,IMAGE_FILE_MACHINE_AMD64,FALSE);
-    if(error==ERROR_BAD_EXE_FORMAT)error=ntw16s_validate_image(image,IMAGE_FILE_MACHINE_I386,FALSE);
+    error=ntw16s_validate_image_ex(image,IMAGE_FILE_MACHINE_AMD64,FALSE,&subsystem);
+    if(error==ERROR_BAD_EXE_FORMAT)error=ntw16s_validate_image_ex(image,IMAGE_FILE_MACHINE_I386,FALSE,&subsystem);
     if(error)return diagnostic(4,error,L"native target validation");
+    /* Keep the parent shell blocked for interactive console targets. GUI
+     * targets stay asynchronous unless --wait explicitly requests otherwise. */
+    wait=wait || subsystem==IMAGE_SUBSYSTEM_WINDOWS_CUI;
     error=ntw16s_context_paths(&context,NULL);if(error)return diagnostic(6,error,L"package directory");
     command=_wcsdup(raw);if(!command)return diagnostic(5,ERROR_NOT_ENOUGH_MEMORY,L"command allocation");
     if(!CreateProcessW(image,command,NULL,NULL,FALSE,CREATE_SUSPENDED,NULL,NULL,&startup,&child)){

@@ -93,6 +93,17 @@ endif()
 include(CTest)
 if(BUILD_TESTING)
   find_program(test_python python REQUIRED)
+  add_executable(wait-target tests/run16s-exe/wait_target.c)
+  target_link_options(wait-target PRIVATE -municode)
+  if(WIN16STYLE_ARCH STREQUAL "x64")
+    add_executable(wait-gui-target WIN32 tests/run16s-exe/wait_target.c)
+    target_compile_definitions(wait-gui-target PRIVATE WAIT_GUI)
+    target_link_options(wait-gui-target PRIVATE -municode)
+    add_test(NAME launch/wait COMMAND ${test_python} ${CMAKE_SOURCE_DIR}/tests/run16s-exe/wait.py
+      $<TARGET_FILE:run16s> ${WIN16STYLE_X86_BUILD}/ntw16s32.dll $<TARGET_FILE:ntw16s>
+      ${WIN16STYLE_X86_BUILD}/wait-target.exe $<TARGET_FILE:wait-target> $<TARGET_FILE:wait-gui-target>)
+    set_tests_properties(launch/wait PROPERTIES TIMEOUT 190 RUN_SERIAL TRUE)
+  endif()
   add_executable(launch-unwind tests/run16s-exe/unwind.c ${injection_root}/unwind.c)
   target_include_directories(launch-unwind PRIVATE src)
   add_executable(launch-startup-hooks tests/run16s-exe/startup_hooks.c

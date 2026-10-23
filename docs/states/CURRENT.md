@@ -2,15 +2,16 @@
 
 ## Current Work
 
-M0 T5已关闭；自动准入M0 T6“独立包与M0产品验收”，S1已发布、推送并实际复核关闭；当前S2 active：用户外观验收否决自绘替代，已恢复原资源，新批次完整矩阵及同包复验通过，已更新四文件并推送复核；待用户新版视觉/物理反馈。
-用户授权按队列自动完成全部剩余T；通过独立审计后推进，不重复询问准入。
+M0 T6当前准入S3“Console启动器默认等待语义”，用户明确要求先完成本S再继续后续。
+S2自动交付及原资源新版视觉验收已通过；真实输入/DPI/剪贴板未全部确认，按用户
+插入任务的顺序转交S4继续验收，不能写成S2整体closed。S5负责最终全任务审计。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 6
 - Last allocated Td S: 4
-- Last delivery: M0 T6 S2 P5 (P4 4bf65c2远端身份复核记录)
+- Last delivery: M0 T6 S3 P1 (本地verified，待推送及实际复核)
 
 ## Technical Baseline
 
@@ -19,7 +20,7 @@ M0 T5已关闭；自动准入M0 T6“独立包与M0产品验收”，S1已发布
 ordinal2..32及NONAME helper1；SDK staging/有界OS helper、私有MinHook/HDE后端。
 
 用户否决旧五资源自绘替代；现已从固定ntvdm64提交逐字节恢复五头及原resources.md，
-Git暂存blob与来源一致，119回执。旧生成器删除；独立摘要门禁拒绝替换，两个DLL
+Git暂存blob与来源一致，121回执。旧生成器删除；独立摘要门禁拒绝替换，两个DLL
 各含18个原图形表及RCDATA5完整来源说明。124处置/294 includes及MinHook14项保持。
 
 s2-original-art新干净双宽构建通过；完整矩阵x86为23通过/1剪贴板跳过、x64为34通过/
@@ -28,9 +29,15 @@ s2-original-art新干净双宽构建通过；完整矩阵x86为23通过/1剪贴�
 assets/binary并复核。发布清单绑定122输入、快照/工具链/PE/ABI及全部四文件SHA。
 已查看实际demo两路截图；新标题及控件图形来自原表，不用旧自绘包证明外观通过。
 
-新包待用户视觉与真实输入/焦点/捕获/选定DPI/剪贴板反馈。私有桌面、合成消息与
-PrintWindow不等于物理验收。启动器仍Console，未实施GUI子系统切换。S2不关闭，
-S3未准入，M0未完成；记录见[S2验收](../history/M0-T6-S2-acceptance.md)。
+S3新快照s3-wait-final双宽全构建通过，相关回归x86 6/6及x64 9/9无跳过，
+同包14/14含系统cmd等待6场景通过；四文件发布到assets/binary且SHA与测试包一致。
+清单更新为124源码输入。启动器保持Console，控制台目标默认等待并返回实际退出码，
+GUI目标默认异步，--wait均等待。S3完整矩阵未重跑，S4接收最终全量与物理验收。
+
+用户确认“这次跟ntvdm64的一致”，原资源新版视觉验收通过；真实输入/焦点/捕获/
+选定DPI/剪贴板的未完成项由S4接收。私有桌面、合成消息与
+PrintWindow不等于物理验收。启动器仍Console，未实施GUI子系统切换。S2剩余项转交S4，
+S3现为唯一活动包，M0未完成；记录见[S2验收](../history/M0-T6-S2-acceptance.md)。
 
 用户要求每产品S构建同批四文件、对该包测试、发布、提交推送及实际复核；不再
 仅以源码推送收口。历史MSVC/Detours及未发布旧S保留历史事实，不作为新基线证据。
@@ -63,23 +70,23 @@ S3 P1 97a777d已推送并复核；最终16/21完整回归，全部失败有处�
 [M0 Td S3 层级纠正](../history/M0-Td-S3-task-level.md)：T 级候选各自拥有 S，
 队列不预分配 T 号；此前治理记录继续保留在 history。
 
-## M0 T6 S2 Packet
+## M0 T6 S3 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；T6 S1已关闭，顺序准入S2 |
-| Admission And Approval | 用户授权自动完成全部T；S1 1bc0440源码及四文件推送、实际复核通过 |
-| Objective | 在本S新干净快照重建同批四文件，按用户要求原样恢复五图形头及来源说明，完成新批次双宽完整矩阵、同包集成及真实交互验收 |
-| Non-goals | 不把历史矩阵、私有桌面或合成输入冒充本批完整或物理验收；不修改sibling/系统配置 |
-| Reference Baseline | 1bc0440；纯C17/GCC/Ninja/ccache，ABI3，四文件0.6.0.0，同包9/9 |
-| Candidate Proposal | [独立包与M0验收](../proposals/package-acceptance.md)S2及共同八类矩阵 |
-| Files And ABI Surface | 三组件四文件及现有ABI保持；测试、必要缺陷修复、版本/来源回执、发布清单及交互证据 |
-| Applicable Rules | Task Reading Set全部规则；每S四产物闭环、来源资源策略及UI契约 |
-| Verification | 新干净副本双宽构建，顺序完整core/launch/propagate/demo矩阵；实际候选四文件扩展同包测试；来源/PE/哈希/声明/依赖；原资源逐字节及两DLL全部18栅格表；真实输入及选定DPI |
-| Expected Markers | 包恰四文件，所有注册用例逐项有执行或明确处置；发布文件与被测包哈希相同；物理验收另记实际操作与环境 |
-| Asset Needs | build/t6-package/s2-original-art及s2-original-art-test（原资源恢复重建/同包/视觉）；build/t6-package/s2-final及s2-package-test；补验s2-cmd-chain（系统双宽cmd中转、现有fixture三代）；新快照内部完整矩阵scratch；hidden owned worker，每架构600秒、全矩阵1200秒，同包1800秒，总scratch1GB；T结束回收 |
-| Reporting Requirements | 成功/失败/跳过/未覆盖分别报告；剪贴板77不计通过；原生与注入同文件对照；工具链、源码输入、四文件SHA及发布位置 |
-| Stop Conditions | 混包、隐含依赖、必要用例缺失先修复；必要物理验收待用户时保留状态，不关闭S或M0 |
-| Exit Criteria | 完整自动矩阵与必要物理验收有证据，同批四文件发布、提交推送并实际复核；之后准入S3全任务审计 |
-| Original Owner Request | 自动完成全部T并推送；纯C/MinGW GCC+Ninja+ccache；每S编译、发布、测试、提交推送；不得替换图形资源，必须使用相同的 |
-| Similar-Issue Sweep | 双宽完整注册集与实际执行对照；创建字段/回滚/对话框/消息框/资源生命周期/长路径；剪贴板环境权限及物理交互边界 |
+| Identifier Mode | Continuation；新S3由用户纠正为Console自然等待；S2未完物理项转S4，最终审计顺延S5 |
+| Admission And Approval | 用户要求新S先处理启动器，随后明确否决GUI让交互cmd不等待的行为；保留Console且按目标子系统默认等待；基线be4c486 |
+| Objective | 保留x64 Console启动器；控制台目标默认等待并返回目标退出码，GUI目标默认异步；--wait始终等待；run16s cmd.exe在原console内自然交互，无需start包装 |
+| Non-goals | 不切GUI子系统、不连接/分配额外console、不接管父shell；不改原图形资源或传播机制；不改sibling/全局设置 |
+| Reference Baseline | be4c486；原资源六文件及双DLL18表相同，纯C17/GCC，ABI3；用户确认新版外观一致 |
+| Candidate Proposal | [独立包与M0验收](../proposals/package-acceptance.md)S3；用户后续否决GUI方案，以本包为准 |
+| Files And ABI Surface | 启动器等待选择、既有PE验证输出子系统的私有接口、CLI与nativecmd等待测试、回执/文档及四文件；公开ABI和图形资源保持 |
+| Applicable Rules | 完整Task Reading Set、每S四文件闭环、来源身份及原生进程/console契约 |
+| Verification | 实际Console PE；console目标默认及--wait退出码；GUI目标默认异步和--wait；既有console HWND/成员及真实cmd等待；stdio/长路径/失败/双宽传播回归 |
+| Expected Markers | 普通run16s cmd.exe使父cmd等到目标退出；双宽console默认返回目标码；GUI默认返回0且目标仍存活；同console身份，原资源与四文件同批哈希通过 |
+| Asset Needs | build/t6-package/s3-wait（开发验证）、s3-wait-package（中间批次/相关回归）、s3-wait-final（最终快照）、s3-wait-test（中间失败证据）、s3-wait-final-test（最终同包）；s3-dev及s3-dev-tree仅保留已终止的GUI试验，未发布；原S2 scratch留至T结束；hidden owned每构建架构600秒、同包1800秒、总scratch1GB |
+| Reporting Requirements | 区分默认同步console、异步GUI和显式wait；记录退出码/console身份/发布SHA，保留S4未完验收；GUI试验不得称为产品交付 |
+| Stop Conditions | 父shell提前返回、异步GUI被强制等待、stdio丢失、注入/资源回归先修复；不得发布混包 |
+| Exit Criteria | 本S新双宽四文件编译/同包测试/发布/提交推送/实际复核，随后自动准入S4继续剩余验收 |
+| Original Owner Request | 新S先处理启动器；GUI在交互cmd不自然等待不可接受；Console自然等待及原console复用优先；原资源必须相同 |
+| Similar-Issue Sweep | 原PE子系统判断、默认/显式wait退出码、无wait GUI实际存活、原始命令行/stdio及跨宽传播；文档中GUI试验假设全部撤销 |

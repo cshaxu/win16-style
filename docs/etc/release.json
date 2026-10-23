@@ -1,13 +1,13 @@
 {
   "schema": 1,
-  "delivery": "M0 T6 S2 P4",
-  "stage": "original-resources-restored-automatic-verified-user-visual-pending",
+  "delivery": "M0 T6 S3 P1",
+  "stage": "console-default-wait-automatic-verified-physical-pending",
   "version": "0.6.0.0",
   "package_directory": "assets/binary",
   "source_inputs": [
     {
       "path": "CMakeLists.txt",
-      "sha256": "11d940f4e73d308435aa8a98ffb10b4e15fcb9b0998f65746e9ebf0d8f8409f6"
+      "sha256": "9ee1b4cd9ff6d325dcdcf1bb36b85e947e493d88068647ae6b828ac9a470f9af"
     },
     {
       "path": "LICENSE",
@@ -105,11 +105,11 @@
     },
     {
       "path": "src/ntw16s-dll/injection/injection.h",
-      "sha256": "234a506f289ffbd5428c1620cc614589e443a31f6f93bd5e9bd270434b9a4164"
+      "sha256": "d81b9945cd65c435e37dde6285303c571fea81fed7332054845d5c9b36e3e3e1"
     },
     {
       "path": "src/ntw16s-dll/injection/installer.c",
-      "sha256": "05838f02e97edd1db58fbfb2537cd2a7ac7fa2123b56ad2e1d73ed8150737256"
+      "sha256": "9203c3d9f16a5766b0e17e471bceac78eace0488a36f885ba6014308f21a2c78"
     },
     {
       "path": "src/ntw16s-dll/injection/intercept.h",
@@ -325,11 +325,11 @@
     },
     {
       "path": "src/run16s-exe/README.md",
-      "sha256": "678a6761513ebb5f2972fd509da1e2606de8394374585c26faeaa06277a5c959"
+      "sha256": "b7fd6605afd98eadc4eac5fe1c75fdda9d65278445b36c1a3778efc3d21e11de"
     },
     {
       "path": "src/run16s-exe/main.c",
-      "sha256": "6d97acf5bb798a4e9e0761e6ca98ccfed65735526be88f801b540868c2a30c51"
+      "sha256": "e78e5070b47862c67f1a8f180eed1a1f12f47ed1ff3413fe79f415daa834d1b0"
     },
     {
       "path": "src/run16s-exe/version.rc",
@@ -469,7 +469,7 @@
     },
     {
       "path": "tests/run16s-exe/cli_failures.py",
-      "sha256": "03ba86abe0cbd34ae7e55563ab01811be8b059f89441060e6c52e1b4d75511ca"
+      "sha256": "4c9e5271fbfaed6f2b34031dea0f00cd6b730b2fe34dddd89bf2888baa282cc9"
     },
     {
       "path": "tests/run16s-exe/failures.c",
@@ -494,36 +494,44 @@
     {
       "path": "tests/run16s-exe/unwind.c",
       "sha256": "b99e78a90aed7862d1a84cf3b569a975930ceab2d96cff6d256342e75fefa360"
+    },
+    {
+      "path": "tests/run16s-exe/wait.py",
+      "sha256": "87d03c16e130148651ced42ab6f5906e660f2632ed5dbec52ffa8012a5ed0997"
+    },
+    {
+      "path": "tests/run16s-exe/wait_target.c",
+      "sha256": "384d457e8e99f6120fe4f1eaf0bf32ce3650cf9dec871f0b32c8c4cdce24d4b8"
     }
   ],
-  "source_inputs_sha256": "e93c628612da08725109e3e19c175084ad5b50684eec641d8f52fe051d827d3d",
-  "source_snapshot_sha256": "4e52f2e0063f1b95edfd5c5d9e7d27519206e97153afec7306318b83a8dc6327",
+  "source_inputs_sha256": "ea9f4065349eed65ee6d8be74ef5976347bb57c4e50bfe7ec20b6ed55eb9e5db",
+  "source_snapshot_sha256": "72deabe350dc563dd57ff87e9d7ab0c2959dd0d630d7b8ea956c8ba89e082f7b",
   "toolchains": {
-    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
     "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
+    "ccache_version": "ccache version 4.13.6",
+    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
     "toolchains": [
       {
-        "version": "16.1.0",
+        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
         "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
         "target": "i686-w64-mingw32",
         "architecture": "x86",
-        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6"
+        "version": "16.1.0"
       },
       {
-        "version": "16.1.0",
+        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
         "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
         "target": "x86_64-w64-mingw32",
         "architecture": "x64",
-        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad"
+        "version": "16.1.0"
       }
-    ],
-    "ccache_version": "ccache version 4.13.6"
+    ]
   },
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T6",
-      "sha256": "f7b77cda8fa9528a425a869155d4a704588f01214941a1161117013727d75d67",
+      "sha256": "abc31195e11a5bf2a69866038c4608a5c889b483f794d778c8b0f727449f37f1",
       "imports": [
         "kernel32.dll",
         "msvcrt.dll"
@@ -532,7 +540,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T6",
-      "sha256": "592de00c333530f5d14b4d9e13efac206015a5cc861c6f5b398c7d3953706a0b",
+      "sha256": "974be256a1ca532553f2d4870ffc1257b258443ef2b82c0c71fb363ef2af51b9",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -552,7 +560,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T6",
-      "sha256": "8b5c8c8d86992c99f938492d7db0dae02d515f6a1fcbd54933515730dc129e22",
+      "sha256": "87bb0e7a422f22d21f78acbfd0f52df0600c19e0445e9db70f8674183f1def4b",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -567,7 +575,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T6",
-      "sha256": "ba8ab0120b4f3d904715c8df8e80707960c02583d6cef1baa4f4bc575b6b4222",
+      "sha256": "04bf545e2d019a8888f607caff8d3b00bb0c0eae2be3aa67ce95e7ff99851d2d",
       "imports": [
         "kernel32.dll",
         "msvcrt.dll",
@@ -577,8 +585,8 @@
   },
   "verification": {
     "clean_build": "x86/x64 products and all fixtures, ABI 1/1 each; header dependencies within clean source and selected toolchains",
-    "package_cases": 13,
-    "package_result": "13 passed; new original-resource candidate hashes unchanged before/after and after full matrix",
+    "package_cases": 14,
+    "package_result": "14 passed; final same-batch hashes unchanged before/after tests and publication",
     "coverage": [
       "ABI x86/x64",
       "native-only demo boundary",
@@ -591,9 +599,31 @@
       "64 native/injected creation-field vectors",
       "four rollback scenarios",
       "eight dialogs on two GUI threads across target widths",
-      "six message boxes on two GUI threads across target widths"
+      "six message boxes on two GUI threads across target widths",
+      "Console default wait/exit, GUI async/explicit wait, six held native-process cases via real cmd"
     ],
     "full_matrix": {
+      "status": "not-rerun-in-S3",
+      "receiver": "M0 T6 S4 final acceptance"
+    },
+    "physical_input": "owner accepted original-resource appearance as matching ntvdm64; remaining real keyboard/mouse/focus/capture/DPI/clipboard transferred to S4",
+    "private_clipboard": "both widths skipped 77: native CreateWindowStation denied 5; explicit host/user acceptance required; shared clipboard untouched",
+    "cmd_chain": {
+      "evidence_delivery": "M0 T6 S2 P4",
+      "package_delivery": "M0 T6 S2 P4",
+      "status": "passed",
+      "cases": 8,
+      "command_processors": [
+        "Windows SysWOW64/cmd.exe",
+        "Windows System32/cmd.exe"
+      ],
+      "selection": "each cmd width -> each target width -> opposite width -> initial width; A/W and caller suspension",
+      "observations": "three target windows attached, Win16 font, checkbox semantics, completion, exact child PID lineage; published four hashes unchanged",
+      "boundary": "CREATE_NO_WINDOW background /d /s /c; current Console launcher only; no interactive console, GUI-launcher or conhost styling claim"
+    },
+    "original_resource_gates": "6 source byte substitutions rejected; x86 frame_buttons and x64 system_menu_bitmap compiled-table mutations rejected; all six staged blobs equal pinned source",
+    "prior_full_matrix": {
+      "delivery": "M0 T6 S2 P4",
       "status": "passed-with-skips",
       "x86": {
         "registered": 24,
@@ -614,22 +644,32 @@
         "seconds": 355.08
       }
     },
-    "physical_input": "owner rejected old substituted artwork; original resources restored; updated package awaits user visual and physical feedback",
-    "private_clipboard": "both widths skipped 77: native CreateWindowStation denied 5; explicit host/user acceptance required; shared clipboard untouched",
-    "cmd_chain": {
-      "evidence_delivery": "M0 T6 S2 P4",
-      "package_delivery": "M0 T6 S2 P4",
-      "status": "passed",
-      "cases": 8,
-      "command_processors": [
-        "Windows SysWOW64/cmd.exe",
-        "Windows System32/cmd.exe"
+    "affected_regression": {
+      "tests": [
+        {
+          "passed": 6,
+          "skipped": [],
+          "registered": 6,
+          "architecture": "x86"
+        },
+        {
+          "passed": 9,
+          "skipped": [],
+          "registered": 9,
+          "architecture": "x64"
+        }
       ],
-      "selection": "each cmd width -> each target width -> opposite width -> initial width; A/W and caller suspension",
-      "observations": "three target windows attached, Win16 font, checkbox semantics, completion, exact child PID lineage; published four hashes unchanged",
-      "boundary": "CREATE_NO_WINDOW background /d /s /c; current Console launcher only; no interactive console, GUI-launcher or conhost styling claim"
+      "status": "passed",
+      "no_rebuild": "Same completed package build trees; hashes must be verified separately"
     },
-    "original_resource_gates": "6 source byte substitutions rejected; x86 frame_buttons and x64 system_menu_bitmap compiled-table mutations rejected; all six staged blobs equal pinned source"
+    "wait_contract": {
+      "status": "passed",
+      "cases": 6,
+      "console_targets": "x86/x64 default and --wait: parent cmd stays alive until release, returns 42",
+      "gui_target": "default returns 0 while target remains alive; --wait returns 42",
+      "identity": "CUI target, launcher and parent cmd share GetConsoleProcessList membership; HWND can be zero in headless context",
+      "negative": "previous published launcher rejected: parent cmd returned before target release"
+    }
   },
   "source_input_convention": "sha256 is the actual build input; git_blob_sha256 records canonical Git bytes only when checkout newline conversion differs",
   "original_resources": {

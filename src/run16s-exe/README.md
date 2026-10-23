@@ -4,8 +4,10 @@ CLI contract: `run16s.exe [--wait] <application> [arguments]`.
 The launcher is x64. The target must be an x86/x64 Windows native GUI/console PE.
 The application is resolved with Windows SearchPath; the original target command
 line tail is passed to CreateProcessW without reconstructing its arguments.
-No wait returns zero once installation is staged and the launch suspension is
-released. `--wait` returns the actual target exit code, including loader failure.
+Console targets wait by default and return their actual exit code. GUI targets
+return zero once installation is staged and suspension released unless `--wait`
+requests their actual exit code. The launcher remains Console subsystem so an
+interactive parent cmd naturally waits for it; no start /wait wrapper is required.
 Installation staging cannot prove target initialization; runtime fixtures check
 the target entry and actual window attachment separately.
 
