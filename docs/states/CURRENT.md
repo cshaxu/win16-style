@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T5已关闭；自动准入M0 T6“独立包与M0产品验收”，S1保留未交付现场，短暂转入M0 Td S4同步用户新增规则。
+M0 T5已关闭；自动准入M0 T6“独立包与M0产品验收”，当前S1 active，按用户新增纯C/GCC及每S产物交付要求调整。
 用户授权按队列自动完成全部剩余T；通过独立审计后推进，不重复询问准入。
 
 ## Identifier State
@@ -10,7 +10,7 @@ M0 T5已关闭；自动准入M0 T6“独立包与M0产品验收”，S1保留未
 - Milestone: M0 (fixed)
 - Last allocated T: 6
 - Last allocated Td S: 4
-- Last delivery: M0 T5 S3 P1 (a4e5504)
+- Last delivery: M0 Td S4 P1 (3fdac64)
 
 ## Technical Baseline
 
@@ -30,9 +30,12 @@ x64纯原生demo已在9d94cdf交付，imports仅USER32/KERNEL32；同文件两�
 当前源仍有Detours C++及SEH，旧MSVC候选只作过渡事实，T6 S1尚未交付/关闭。
 本机两套独立x86/x64 GCC纯C探针均编译运行成功；不能用x64 GCC -m32代替x86工具链。
 每个后续S须构建实际四文件、对同批包测试、发布产物、提交推送及实际复核；
-不再仅以源码推送收口。相关规则由治理交付同步，用户新要求立即生效，历史事实不改写。
+不再仅以源码推送收口。规则已由M0 Td S4同步并推送复核，历史事实不改写。
 
 ## Recent Closure
+
+[M0 Td S4规则同步](../history/M0-Td-S4-delivery-policy.md)：3fdac64已推送并实际复核；
+每产品S发布同批四文件、哈希绑定测试包，纯C/GCC目标生效。T6 S1恢复活动，尚未交付。
 
 [M0 T5完成审计](../history/M0-T5-completion.md)：9d94cdf、bd0dd65、a4e5504已推送
 复核，双宽16/26全量及同文件对照通过，93回执，scratch已回收。
@@ -53,23 +56,23 @@ S3 P1 97a777d已推送并复核；最终16/21完整回归，全部失败有处�
 [M0 Td S3 层级纠正](../history/M0-Td-S3-task-level.md)：T 级候选各自拥有 S，
 队列不预分配 T 号；此前治理记录继续保留在 history。
 
-## M0 Td S4 Packet
+## M0 T6 S1 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Governance；用户要求每S编译发布测试提交推送，并明确纯C/GCC目标 |
-| Admission And Approval | 用户本轮直接授权规则纠正；暂存T6 S1现场，治理交付后恢复，不并行活动S |
-| Objective | 将每产品S同批四文件闭环和纯C/GCC工具链写入当前规则 |
-| Non-goals | 不交付或宣称旧MSVC包符合新目标；不改写过去S的发布事实；不改产品构建输入 |
-| Reference Baseline | 60bb624；T6 S1未提交修改保留其所有权 |
-| Candidate Proposal | 直接用户规则纠正；不另建产品T候选 |
-| Files And ABI Surface | EXECUTION/CODING规则、源码布局、CONTRIBUTING、包说明、CURRENT及本次history；无ABI或产品输入变更 |
-| Applicable Rules | Task Reading Set、DOCUMENT、EXECUTION；规则修改由本Td承担 |
-| Verification | 治理正向及13负例、git diff --check、选定路径diff及提交/远端复核 |
-| Expected Markers | 每产品S编译打包测试发布提交推送复核；哈希绑定被测包；明确阶段验收；旧基线待迁移 |
-| Asset Needs | build/t6-package/governance-resume-current.md保存T6恢复包，属于T6已登记scratch，恢复后删除 |
-| Reporting Requirements | 治理仅文档不冒充产品发布；历史缺包如实保留；产品及工具未提交现场不得夹带 |
-| Stop Conditions | 若选定提交夹带产品输入或旧包则先修正，不关闭T6 S1 |
-| Exit Criteria | 本Td推送后实际复核，记录治理关闭并恢复T6 S1 |
-| Original Owner Request | 每一次S任务应该编译发布测试提交推送；纯msys gcc+ninja+ccache，不使用C++和MSVC |
-| Similar-Issue Sweep | 现行执行规则、贡献入口、源码布局、包说明及状态基线；历史记录保留 |
+| Identifier Mode | New；前五个T已审计关闭，分配T6，从S1开始 |
+| Admission And Approval | 用户授权自动完成全部T；T5 a4e5504已实际推送复核，无前置阻塞 |
+| Objective | 完成纯C17/MinGW-w64 GCC+Ninja+ccache迁移及独立四文件包；替换当前C++/MSVC依赖并保持既有契约，再按每S完整产物闭环交付 |
+| Non-goals | 不把旧MSVC候选称为新工具链通过，不把私有桌面当物理验收；开发S产物标明阶段与待验收面，M0最终关闭仍有独立条件；不修改sibling/系统配置 |
+| Reference Baseline | a4e5504，93回执，M0 T5，16/26全量；产品三组件四文件已实现 |
+| Candidate Proposal | [独立包与M0验收](../proposals/package-acceptance.md)S1；共同八类矩阵 |
+| Files And ABI Surface | 纯C注入/拦截与GCC构建/ccache/打包、工具链及来源治理同步、四文件版本/回执；新增后端先固定来源审查；ABI3/三组件四文件保持 |
+| Applicable Rules | Task Reading Set全部规则、来源资源策略、UI及三组件四产物契约 |
+| Verification | 干净复制树双宽全构建、来源/版本/PE/imports/导出/哈希/依赖；剩余测试契约有限审计及必要故障补验；S2完整矩阵 |
+| Expected Markers | 候选目录恰四文件，同批0.6.0.0；全路径来源有证据；实际输入只来自复制树/MinGW-w64 GCC工具链/Windows系统接口，不依赖原树/sibling |
+| Asset Needs | build/t6-package下preflight、clean-source、candidate/日志/对照；hidden owned分阶段worker各600秒、总1800秒1GB；T结束回收，必要用户验收候选精确保留 |
+| Reporting Requirements | 原始目标/八矩阵/来源逐项收口，干净重建与本机可达性证明边界，四文件哈希/声明/限制及真实输入待办 |
+| Stop Conditions | 依赖越界/混包/缺测试或来源角色不清先修复；必要物理验收待定保留状态 |
+| Exit Criteria | 独立同批四文件包及可复现步骤已验证、发布、提交推送复核，进入S2完整自动及真实交互；最终S3另做M0全任务审计 |
+| Original Owner Request | 自动完成全部T并推送；新增要求纯MSYS/MinGW GCC+Ninja+ccache，不用C++/MSVC；每S编译发布测试提交推送 |
+| Similar-Issue Sweep | 所有四文件/version/PE/依赖；旧测试逐项角色，SaveDC/绘制资源/菜单转发/剪贴板及长路径，避免用仅名称/PID代替真实产品证明 |
