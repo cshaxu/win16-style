@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T5已关闭；自动准入M0 T6“独立包与M0产品验收”，当前S1 verified locally：同包9项通过，四文件已本地发布，待提交推送及复核。
+M0 T5已关闭；自动准入M0 T6“独立包与M0产品验收”，S1已发布、推送并实际复核关闭；当前S2 active，执行最终快照完整自动矩阵及真实交互验收。
 用户授权按队列自动完成全部剩余T；通过独立审计后推进，不重复询问准入。
 
 ## Identifier State
@@ -10,11 +10,11 @@ M0 T5已关闭；自动准入M0 T6“独立包与M0产品验收”，当前S1 ve
 - Milestone: M0 (fixed)
 - Last allocated T: 6
 - Last allocated Td S: 4
-- Last delivery: M0 Td S4 P2 (df8727e)
+- Last delivery: M0 T6 S1 P1 (1bc0440)
 
 ## Technical Baseline
 
-当前本地已验证M0 T6/0.6.0.0：纯C17/MinGW-w64 GCC16.1.0双独立工具链、Ninja、
+当前已发布并推送M0 T6/0.6.0.0：纯C17/MinGW-w64 GCC16.1.0双独立工具链、Ninja、
 ccache4.13.6，静态GCC/线程支持库；当前src/tests无C++，不使用MSVC或MSYS运行库。
 三组件四产物、唯一renderer/五自编几何头；SDK PE staging/有界OS helper、私有
 MinHook/HDE初始补丁及原生异常清理，ABI3/31公开名称ordinal2..32/NONAME helper1。
@@ -34,8 +34,11 @@ S1验证细节与所有失败处置见[工作记录](../history/M0-T6-S1-package
 
 ## Recent Closure
 
+[M0 T6 S1独立包](../history/M0-T6-S1-package.md)：1bc0440已推送并读取实际提交复核；
+远端四文件SHA及121输入身份通过，同包9/9通过。S1关闭，自动准入S2。
+
 [M0 Td S4规则同步](../history/M0-Td-S4-delivery-policy.md)：3fdac64已推送并实际复核；
-每产品S发布同批四文件、哈希绑定测试包，纯C/GCC目标生效。T6 S1恢复活动，尚未交付。
+每产品S发布同批四文件、哈希绑定测试包，纯C/GCC目标生效。T6 S1按此门槛完成交付，历史规则变更记录保留。
 
 [M0 T5完成审计](../history/M0-T5-completion.md)：9d94cdf、bd0dd65、a4e5504已推送
 复核，双宽16/26全量及同文件对照通过，93回执，scratch已回收。
@@ -56,23 +59,23 @@ S3 P1 97a777d已推送并复核；最终16/21完整回归，全部失败有处�
 [M0 Td S3 层级纠正](../history/M0-Td-S3-task-level.md)：T 级候选各自拥有 S，
 队列不预分配 T 号；此前治理记录继续保留在 history。
 
-## M0 T6 S1 Packet
+## M0 T6 S2 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | New；前五个T已审计关闭，分配T6，从S1开始 |
-| Admission And Approval | 用户授权自动完成全部T；T5 a4e5504已实际推送复核，无前置阻塞 |
-| Objective | 完成纯C17/MinGW-w64 GCC+Ninja+ccache迁移及独立四文件包；替换当前C++/MSVC依赖并保持既有契约，再按每S完整产物闭环交付 |
-| Non-goals | 不把旧MSVC候选称为新工具链通过，不把私有桌面当物理验收；开发S产物标明阶段与待验收面，M0最终关闭仍有独立条件；不修改sibling/系统配置 |
-| Reference Baseline | a4e5504，93回执，M0 T5，16/26全量；产品三组件四文件已实现 |
-| Candidate Proposal | [独立包与M0验收](../proposals/package-acceptance.md)S1；共同八类矩阵 |
-| Files And ABI Surface | 纯C注入/拦截与GCC构建/ccache/打包、工具链及来源治理同步、四文件版本/回执；新增MinHook v1.3.4/c3fcafdc固定清单及声明，限初始装载的无等待私有事务；纯C同宽SDK导入表更新/头恢复，跨宽OS rundll32与有界目标载荷交接，核对PID/创建时间并共用10秒截止；ABI3/三组件四文件保持 |
-| Applicable Rules | Task Reading Set全部规则、来源资源策略、UI及三组件四产物契约 |
-| Verification | 干净复制树双宽全构建、来源/版本/PE/imports/导出/哈希/依赖；剩余测试契约有限审计及必要故障补验；S2完整矩阵 |
-| Expected Markers | 候选目录恰四文件，同批0.6.0.0；全路径来源有证据；实际输入只来自复制树/MinGW-w64 GCC工具链/Windows系统接口，不依赖原树/sibling |
-| Asset Needs | build/t6-package下preflight、clean-source、candidate/日志/对照；hidden owned分阶段worker各600秒、总1800秒1GB；T结束回收，必要用户验收候选精确保留 |
-| Reporting Requirements | 原始目标/八矩阵/来源逐项收口，干净重建与本机可达性证明边界，四文件哈希/声明/限制及真实输入待办 |
-| Stop Conditions | 依赖越界/混包/缺测试或来源角色不清先修复；必要物理验收待定保留状态 |
-| Exit Criteria | 独立同批四文件包及可复现步骤已验证、发布、提交推送复核，进入S2完整自动及真实交互；最终S3另做M0全任务审计 |
-| Original Owner Request | 自动完成全部T并推送；新增要求纯MSYS/MinGW GCC+Ninja+ccache，不用C++/MSVC；每S编译发布测试提交推送 |
-| Similar-Issue Sweep | 所有四文件/version/PE/依赖；旧测试逐项角色，SaveDC/绘制资源/菜单转发/剪贴板及长路径，避免用仅名称/PID代替真实产品证明 |
+| Identifier Mode | Continuation；T6 S1已关闭，顺序准入S2 |
+| Admission And Approval | 用户授权自动完成全部T；S1 1bc0440源码及四文件推送、实际复核通过 |
+| Objective | 在本S新干净快照重建同批四文件，完成双宽完整自动矩阵、同包扩展集成及必要真实交互验收 |
+| Non-goals | 不把历史矩阵、私有桌面或合成输入冒充本批完整或物理验收；不修改sibling/系统配置 |
+| Reference Baseline | 1bc0440；纯C17/GCC/Ninja/ccache，ABI3，四文件0.6.0.0，同包9/9 |
+| Candidate Proposal | [独立包与M0验收](../proposals/package-acceptance.md)S2及共同八类矩阵 |
+| Files And ABI Surface | 三组件四文件及现有ABI保持；测试、必要缺陷修复、版本/来源回执、发布清单及交互证据 |
+| Applicable Rules | Task Reading Set全部规则；每S四产物闭环、来源资源策略及UI契约 |
+| Verification | 新干净副本双宽构建，顺序完整core/launch/propagate/demo矩阵；实际候选四文件扩展同包测试；来源/PE/哈希/声明/依赖；真实输入及选定DPI |
+| Expected Markers | 包恰四文件，所有注册用例逐项有执行或明确处置；发布文件与被测包哈希相同；物理验收另记实际操作与环境 |
+| Asset Needs | build/t6-package/s2-final及s2-package-test；新快照内部完整矩阵scratch；hidden owned worker，每架构600秒、全矩阵1200秒，同包1800秒，总scratch1GB；T结束回收 |
+| Reporting Requirements | 成功/失败/跳过/未覆盖分别报告；剪贴板77不计通过；原生与注入同文件对照；工具链、源码输入、四文件SHA及发布位置 |
+| Stop Conditions | 混包、隐含依赖、必要用例缺失先修复；必要物理验收待用户时保留状态，不关闭S或M0 |
+| Exit Criteria | 完整自动矩阵与必要物理验收有证据，同批四文件发布、提交推送并实际复核；之后准入S3全任务审计 |
+| Original Owner Request | 自动完成全部T并推送；纯C/MinGW GCC+Ninja+ccache；每S编译、发布、测试、提交推送 |
+| Similar-Issue Sweep | 双宽完整注册集与实际执行对照；创建字段/回滚/对话框/消息框/资源生命周期/长路径；剪贴板环境权限及物理交互边界 |
