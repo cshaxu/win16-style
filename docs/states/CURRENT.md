@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T3已完成实际交付/全任务复核并关闭；自动准入M0 T4“子孙传播与创建语义”，当前S1 active。
+M0 T3已完成实际交付/全任务复核并关闭；自动准入M0 T4“子孙传播与创建语义”，当前S2 active。
 用户授权自动按队列完成全部剩余 T；每项通过独立审计后继续下一项，不重复询问准入。
 
 ## Identifier State
@@ -10,7 +10,7 @@ M0 T3已完成实际交付/全任务复核并关闭；自动准入M0 T4“子孙
 - Milestone: M0 (fixed)
 - Last allocated T: 4
 - Last allocated Td S: 3
-- Last delivery: M0 T3 S3 P2 (本次关闭/下一准入记录)
+- Last delivery: M0 T4 S1 P1 (bd619ae)
 
 ## Technical Baseline
 
@@ -40,23 +40,23 @@ S3 P1 97a777d已推送并复核；最终16/21完整回归，全部失败有处�
 [M0 Td S3 层级纠正](../history/M0-Td-S3-task-level.md)：T 级候选各自拥有 S，
 队列不预分配 T 号；此前治理记录继续保留在 history。
 
-## M0 T4 S1 Packet
+## M0 T4 S2 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | New；T3已关闭，队首传播任务分配T4并从S1开始 |
-| Admission And Approval | 用户授权自动完成全部剩余T；T3 97a777d已推送并实际全任务复核，无阻塞 |
-| Objective | 适配固定来源原生CreateProcess A/W拦截，继承最小目录/策略，每代复用同一安装器；CLI默认启用传播 |
-| Non-goals | 不加入broker/VDM重定向/服务身份，不实现demo/正式完整包；复杂语义和全回归分别在本T S2/S3 |
-| Reference Baseline | 97a777d及T3关闭审计；79回执、ABI3/31public+helper1、双宽首次附着和13核心回归通过 |
-| Candidate Proposal | [子孙传播与创建语义](../proposals/descendant-propagation.md) S1与T1 INDEPENDENCE |
-| Files And ABI Surface | injection/create_process.cpp、entry/intercept/context、版本、根构建、双宽传播fixture及回执/状态/历史；不扩公开ABI |
-| Applicable Rules | 全部执行/架构/编码/文档规则与设计、来源及payload/安装所有权设计 |
-| Verification | 原生A/W参数原样转发，真实新子进程暂存及原挂起；四种父子位宽边及第三代基本生产路径；原请求失败错误；来源/治理/PE门禁 |
-| Expected Markers | 每代同位宽DLL及真实窗口附着，原生业务数据/返回保持；安装只借用，创建层只抵消自己加的挂起，失败不交付半安装目标 |
-| Asset Needs | build/.ninja两宽稳定树；build/t4-propagate/s1-*日志/目录包/marker，hidden owned worker600秒500MB；任务末回收及Testing日志 |
-| Reporting Requirements | 原生字段与局部递归防护、源删除/保留清单、每代实际附着/错误/挂起证据、失败及限制、实际增删统计 |
-| Stop Conditions | 参数改写、调用者挂起丢失、重复安装、跨宽错误或影响既有进程先修复，不将核心语义失败转发布 |
-| Exit Criteria | A/W传播实现及基本四边/第三代验证通过，推送并实际复核后进入S2完整语义/回滚 |
+| Identifier Mode | Continuation；T4 S1已推送复核，进入S2 |
+| Admission And Approval | 用户授权全部剩余T；S1 bd619ae真实A/W事务及八条三代路径已审查，无阻塞 |
+| Objective | 完整创建字段/挂起/环境/继承及STARTUPINFO/EX语义；安装失败只回收新目标，父/既有兄弟继续正常 |
+| Non-goals | 不制作demo/发布包，不声称未覆盖扩展API或物理输入验收通过 |
+| Reference Baseline | bd619ae；82回执，四边A/W三代基本验证12.67秒通过；版本M0 T4、ABI3 |
+| Candidate Proposal | [传播候选](../proposals/descendant-propagation.md)S2，继承T1包/事务设计 |
+| Files And ABI Surface | tests/integration合同/回滚夹具、根注册、必要窄修复、回执/状态/历史；无新public ABI |
+| Applicable Rules | 全部执行/架构/编码/文档规则、产品设计及来源/独立化约束 |
+| Verification | 四位宽边原生/注入对照；A/W显式/空application、Unicode/引用/空参数、ANSI/Unicode环境及cwd、继承/白名单句柄、STARTUPINFO/EX/安全属性/优先级、原挂起/错误；故障目标无入口且已退出，父/兄弟窗口保持 |
+| Expected Markers | 子程序读取实际OS状态与业务字段而非仅PID；原生对照支持相同oracle；回滚job事件/存活兄弟/父继续；无误恢复原请求挂起 |
+| Asset Needs | build/.ninja两宽稳定树；build/t4-propagate/s2-*私有桌面/包/日志/标记，hidden owned worker600秒500MB；任务末回收及Testing日志 |
+| Reporting Requirements | 有限8种字段向量和4边/对照、真实故障和拥有者、未覆盖变体、失败处置及实际统计 |
+| Stop Conditions | 原生字段不一致、半安装目标执行、句柄/挂起丢失、父兄弟被影响先定位修复，不调低正确oracle |
+| Exit Criteria | 语义/回滚有限全集通过，提交推送并实际复核后进入S3完整回归和T级审计 |
 | Original Owner Request | 请你自动准入 完成所有t任务预定内容 毕竟ntvdm64都已经实现过了 |
-| Similar-Issue Sweep | 两入口原函数所有者、递归/异常退出、每种flags/environment/startup及句柄所有权、helper仅新目标、全部4边 |
+| Similar-Issue Sweep | 全部A/W字段、EX/继承和原挂起组合、每个返回/异常分支，借用/创建者边界、无环境策略后门 |

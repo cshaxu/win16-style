@@ -738,6 +738,51 @@
       "disposition": "authored",
       "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md",
       "notice": "Project-authored source adaptation or new native fixture, repository MIT"
+    },
+    {
+      "path": "tests/integration/contract_support.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ce03ee1cbb18f6cbc942472e733851f90b0ff611ff776152cd56a23444ec679a",
+      "disposition": "authored",
+      "review": "T4 S2 native/injected field and owned-job rollback contracts; docs/history/M0-T4-S2-contract.md",
+      "notice": "Project-authored fixture, repository MIT"
+    },
+    {
+      "path": "tests/integration/creation_contract.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "d4ac671a938616e173db2492526015cd5fe41222ba57d5722521f484d345e4db",
+      "disposition": "authored",
+      "review": "T4 S2 native/injected field and owned-job rollback contracts; docs/history/M0-T4-S2-contract.md",
+      "notice": "Project-authored fixture, repository MIT"
+    },
+    {
+      "path": "tests/integration/creation_contract_driver.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "909d1e7a367b92d19745147eaf867bb41546e0602eca580c424aea2dcc5951fa",
+      "disposition": "authored",
+      "review": "T4 S2 native/injected field and owned-job rollback contracts; docs/history/M0-T4-S2-contract.md",
+      "notice": "Project-authored fixture, repository MIT"
+    },
+    {
+      "path": "tests/integration/rollback_contract.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "1f459d0e943350ffd9845940551dcab463418e8a69da65ad58698f73c64261d1",
+      "disposition": "authored",
+      "review": "T4 S2 native/injected field and owned-job rollback contracts; docs/history/M0-T4-S2-contract.md",
+      "notice": "Project-authored fixture, repository MIT"
+    },
+    {
+      "path": "tests/integration/rollback_contract_driver.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "369b915f2aaa1c10e6cd94cada180ab36a4cb48a2797f20e31d42061111fb21a",
+      "disposition": "authored",
+      "review": "T4 S2 native/injected field and owned-job rollback contracts; docs/history/M0-T4-S2-contract.md",
+      "notice": "Project-authored fixture, repository MIT"
     }
   ]
 }
