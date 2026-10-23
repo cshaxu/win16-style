@@ -10,7 +10,7 @@ M0 T5已关闭；自动准入M0 T6“独立包与M0产品验收”，S1已发布
 - Milestone: M0 (fixed)
 - Last allocated T: 6
 - Last allocated Td S: 4
-- Last delivery: M0 T6 S2 P1 (四文件交付；提交身份见Git)
+- Last delivery: M0 T6 S2 P2 (P1 b044345推送后复核记录)
 
 ## Technical Baseline
 
@@ -25,7 +25,8 @@ S2新干净快照最终构建完整矩阵：x86注册24，23通过/1剪贴板跳
 34通过/1剪贴板跳过；0失败。原生CreateWindowStation拒绝访问5，77不计通过。
 完整矩阵发生重建后重新取齐四文件，实际同包13/13通过，前后哈希不变；已发布
 assets/binary，身份与[发布清单](../etc/release.json)匹配。121输入与快照及工作区一致。
-S2自动部分已验证；真实鼠标/键盘/焦点/捕获及选定DPI、剪贴板仍待实际操作。
+S2 P1 b044345已推送并实际复核远端四文件/121输入及原始用例；自动部分已验证。
+真实鼠标/键盘/焦点/捕获及选定DPI、剪贴板仍待实际操作。
 私有桌面、合成消息、截图不证明物理输入或任意应用/字体/DPI兼容性。
 S2不关闭，S3全任务审计尚未准入，M0未完成。记录见[S2验收](../history/M0-T6-S2-acceptance.md)。
 
