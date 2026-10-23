@@ -76,3 +76,9 @@ pwsh -NoProfile -File tools/Test-Package.ps1 -RunName package-test-new -Package 
 
 run16s保持Console子系统，交互cmd自然等待启动器；控制台目标默认同步，GUI目标
 默认异步，显式--wait始终等待。GUI子系统试验已被用户否决且从未发布。
+
+用户指定的发布步骤：每S若有binary change，将已测试的同批四文件发布至assets根目录
+及O:/winnt/system32；系统目录原四文件备份至本S scratch，再逐项核对三处SHA。
+仅更新本项目四文件，遇占用/权限问题停止并记录。无binary change记录摘要比较。
+当前交互验收使用原生探针，不用computer-use；私有剪贴板权限跳过和物理输入未覆盖
+如实单列，不再要求用户反复完成整套手工操作。

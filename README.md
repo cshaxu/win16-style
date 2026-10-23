@@ -19,7 +19,7 @@ Win16 窗口外观启动器。项目目标与组件契约见
 ```
 
 T1至T5已关闭；T6正在进行独立交付与M0验收。当前开发包及验收范围见
-[四文件包说明](assets/binary/README.md)，构建与测试见
+[四文件包说明](assets/README.md)，构建与测试见
 [tests/README.md](tests/README.md)。
 文档入口为 [docs/README.md](docs/README.md)，
 进度以 [CURRENT](docs/states/CURRENT.md) 为准。所有工作固定在 milestone0，

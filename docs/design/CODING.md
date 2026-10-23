@@ -11,7 +11,7 @@ tests/ntw16s-dll/     双位宽 DLL 单元及生命周期测试
 tests/demo-exe/       原生 demo 边界测试
 tests/integration/    真实注入、跨位宽链及 UI 观察
 tools/               构建、打包、检查与观测工具
-assets/binary/       四产物的发布包
+assets/       四产物的发布包
 build/               全部生成物（忽略）
 ```
 

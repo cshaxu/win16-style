@@ -1,6 +1,6 @@
 # Product package
 
-当前批次以[发布清单](../../docs/etc/release.json)为准，版本0.6.0.0，恰四个产品：
+当前批次以[发布清单](../docs/etc/release.json)为准，版本0.6.0.0，恰四个产品：
 run16s.exe(x64)、ntw16s32.dll(x86)、ntw16s64.dll(x64)、demo.exe(x64)。
 本README是仓库说明，不是第五个产品；运行时将四文件放在同一目录。
 
@@ -10,10 +10,13 @@ T6 S3 P1保留Console启动器：控制台目标默认等待并返回实际退�
 两个DLL均包含全部18个原始栅格表。自绘替代已移除，后续校验拒绝任何资源替换。
 四文件从本S同一干净快照构建，实际同包14项及双宽相关回归6/9项全部通过，
 其中包含真实cmd等待的6个场景；源码身份、PE/ABI/声明、SHA均绑定发布清单。
-记录见[S3等待契约](../../docs/history/M0-T6-S3-wait.md)，历史包从对应Git提交复取。
+记录见[S3等待契约](../docs/history/M0-T6-S3-wait.md)，历史包从对应Git提交复取。
 
 这是阶段包；用户已确认原资源新版与ntvdm64外观一致，真实鼠标/键盘/焦点/DPI/剪贴板
 剩余验收由S4接收；
 不把私有桌面、合成消息或截图称为物理验收通过。M0全任务审计尚未完成。
-用法及边界见[构建与运行说明](../../docs/etc/operations/BUILD.md)。
+用法及边界见[构建与运行说明](../docs/etc/operations/BUILD.md)。
 包从自身目录定位DLL，不安装到Windows系统目录。
+
+二进制变化的S验证后同步发布assets根目录及O:/winnt/system32，四文件SHA须相同；
+没有binary子目录。部署结果与原文件备份留在对应任务scratch。

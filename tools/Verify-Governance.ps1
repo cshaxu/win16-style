@@ -17,7 +17,7 @@ function Test-Governance([hashtable]$Files) {
         'docs/etc/README.md', 'docs/etc/product-contract.json',
         'docs/etc/import/README.md', 'docs/etc/import/source-inventory.tsv',
         'docs/etc/operations/source-policy.md', 'docs/proposals/native-style-import.md',
-        'docs/history/M0-Td-S1-bootstrap.md', 'assets/binary/README.md'
+        'docs/history/M0-Td-S1-bootstrap.md', 'assets/README.md'
     )
     foreach ($path in $required) {
         if (!$Files.ContainsKey($path) -or [string]::IsNullOrWhiteSpace($Files[$path])) {

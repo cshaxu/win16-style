@@ -28,7 +28,7 @@ try{
         foreach($file in $items | Where-Object { !$_.PSIsContainer }){$files.Add($file)}
     }
     if($files | Where-Object { $_.Extension -in '.cpp','.cxx','.cc' }){throw 'Pure C package cannot contain C++ sources'}
-    foreach($name in @('CMakeLists.txt','LICENSE','README.md','AGENTS.md','CONTRIBUTING.md','.gitignore','.gitattributes','assets/binary/README.md')){
+    foreach($name in @('CMakeLists.txt','LICENSE','README.md','AGENTS.md','CONTRIBUTING.md','.gitignore','.gitattributes','assets/README.md')){
         $file=Get-Item -LiteralPath (Join-Path $repo $name)
         if($file.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Source reparse file'}
         $files.Add($file)

@@ -3,7 +3,7 @@
   "delivery": "M0 T6 S3 P1",
   "stage": "console-default-wait-automatic-verified-physical-pending",
   "version": "0.6.0.0",
-  "package_directory": "assets/binary",
+  "package_directory": "assets",
   "source_inputs": [
     {
       "path": "CMakeLists.txt",
@@ -710,5 +710,7 @@
     "compiled_tables_per_dll": 18,
     "source_pixels": 8688,
     "provenance_rcdata": 5
-  }
+  },
+  "deployment_directory": "O:/winnt/system32",
+  "layout_change": "M0 Td S5: moved byte-identical S3 files to assets root; system deployment occurs with next verified binary change"
 }

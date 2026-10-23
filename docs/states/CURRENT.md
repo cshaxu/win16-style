@@ -2,15 +2,15 @@
 
 ## Current Work
 
-M0 T6 S3已完成Console等待语义及四文件发布、推送、远端复核，自动准入S4。
-本S继续新版完整自动矩阵及剩余真实输入、选定DPI、剪贴板验收；用户已确认原资源
-外观与ntvdm64一致。S5最终全任务审计尚未准入，M0未完成。
+用户授权发布规范变更，当前唯一活动包为M0 Td S5；T6 S4转交本治理包完成后恢复。
+用户要求不用computer-use、由探针验收，不再反复要求用户整套手工操作；
+本治理包更新验收方式和双发布位置。已启动S4基线构建由原owner保管，不作为新版最终包。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 6
-- Last allocated Td S: 4
+- Last allocated Td S: 5
 - Last delivery: M0 T6 S3 P2 (P1 4b83994远端身份复核及关闭，准入S4)
 
 ## Technical Baseline
@@ -26,13 +26,13 @@ Git暂存blob与来源一致，121回执。旧生成器删除；独立摘要门�
 s2-original-art新干净双宽构建通过；完整矩阵x86为23通过/1剪贴板跳过、x64为34通过/
 1剪贴板跳过，0失败。原生CreateWindowStation拒绝访问5，77仍不计通过。
 同包13/13、系统双宽cmd中转8/8通过；全程不重链接，四文件哈希保持相同，已复制
-assets/binary并复核。发布清单绑定122输入、快照/工具链/PE/ABI及全部四文件SHA。
+assets并复核。发布清单绑定122输入、快照/工具链/PE/ABI及全部四文件SHA。
 已查看实际demo两路截图；新标题及控件图形来自原表，不用旧自绘包证明外观通过。
 
 S3新快照s3-wait-final双宽全构建通过，相关回归x86 6/6及x64 9/9无跳过，
-同包14/14含系统cmd等待6场景通过；四文件发布到assets/binary且SHA与测试包一致。
+同包14/14含系统cmd等待6场景通过；四文件发布到assets且SHA与测试包一致。
 清单更新为124源码输入。启动器保持Console，控制台目标默认等待并返回实际退出码，
-GUI目标默认异步，--wait均等待。S3完整矩阵未重跑，S4接收最终全量与物理验收。
+GUI目标默认异步，--wait均等待。S3完整矩阵未重跑，S4接收最终全量与交互探针（用户后续指定）。
 
 用户确认“这次跟ntvdm64的一致”，原资源新版视觉验收通过；真实输入/焦点/捕获/
 选定DPI/剪贴板的未完成项由S4接收。私有桌面、合成消息与
@@ -73,23 +73,23 @@ S3 P1 97a777d已推送并复核；最终16/21完整回归，全部失败有处�
 [M0 Td S3 层级纠正](../history/M0-Td-S3-task-level.md)：T 级候选各自拥有 S，
 队列不预分配 T 号；此前治理记录继续保留在 history。
 
-## M0 T6 S4 Packet
+## M0 Td S5 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S3关闭后自动准入，接收S2尚未完成的物理验收及新等待语义后的最终自动矩阵 |
-| Admission And Approval | 用户要求先处理启动器新S、随后继续后续S；每S编译发布测试提交推送；基线4b83994 |
-| Objective | 从本S新干净快照构建双宽四文件，完整矩阵及实际同包复验；完成真实键鼠/焦点/捕获、选定DPI与剪贴板验收 |
-| Non-goals | 不修改原图形资源、不切GUI子系统、不扩展组件/ABI、不接触sibling或共享剪贴板；不把自动合成消息冒充真实输入 |
-| Reference Baseline | S3 P1 4b83994；Console目标默认等待，GUI默认异步，--wait均等待；六份原资源及双DLL18表，纯C17/GCC，ABI3 |
-| Candidate Proposal | [独立包与M0验收](../proposals/package-acceptance.md)S4；原资源视觉一致已由用户确认 |
-| Files And ABI Surface | 验收记录、发布清单及本S同批四产物；预期不改产品源码/公开ABI，发现缺陷先记录修复范围 |
-| Applicable Rules | 完整Task Reading Set、每S四文件闭环、真实交互与自动证据分开、来源身份及任务级退出条件 |
-| Verification | 新干净双宽全构建；完整注册矩阵及失败/跳过逐项核对；同批实际包10项含等待6场景；发布SHA与测试一致；用户真实输入及DPI反馈 |
-| Expected Markers | 全矩阵无未处置失败、四文件同批且无sibling依赖；裸demo原生/注入demo原样式业务正常；键鼠/焦点/捕获/剪贴板及显示比例有真实反馈 |
-| Asset Needs | build/t6-package/s4-acceptance及s4-acceptance-test新构建/矩阵/同包证据；保留S2/S3已登记scratch至T结束；hidden owned每构建架构600秒、矩阵每架构600秒、同包1800秒、总scratch1GB |
-| Reporting Requirements | 区分通过/失败/跳过及用户已确认外观；明确待物理操作和选定DPI；不将S3等待自动测试扩张为交互键盘通过 |
-| Stop Conditions | 必要真实交互待定、剪贴板权限跳过未获实际验证、完整矩阵失败或混包时不得关闭S4/T6/M0；先完成不依赖用户的工作 |
-| Exit Criteria | 本S编译/同批打包/测试/发布/提交推送/实际复核及必要物理验收完成，才关闭S4并准入S5审计 |
-| Original Owner Request | 每次S编译发布测试提交推送；原资源相同；Console自然等待优先；完成启动器新S后继续后续S |
-| Similar-Issue Sweep | 检查完整矩阵注册和实际执行、private clipboard拒绝访问、物理反馈缺项、旧外观待确认措辞及发布清单/测试包身份 |
+| Identifier Mode | Governance；用户明确要求将新发布步骤写入执行规范，并改用探针自行验收 |
+| Admission And Approval | 用户：每S若有binary change发布到本项目assets根目录及O:/winnt/system32；不用computer-use，自己用探针做 |
+| Objective | 更新条件式双位置发布规范、发布工具、当前资产路径及探针验收边界；完成后恢复T6 S4 |
+| Non-goals | 不改生产源码/ABI/资源，不把探针冒充人工操作，不修改系统其他文件或兄弟仓库 |
+| Reference Baseline | 603e661；S3测试包4b83994；T6 S4基线构建worker32332首次未启动，后以同步owned worker重启 |
+| Candidate Proposal | [独立包与M0验收](../proposals/package-acceptance.md)；用户最新验收和发布指令优先 |
+| Files And ABI Surface | rules/EXECUTION、当前文档/发布路径、gitignore、治理与发布工具；现有四二进制仅移动路径，字节不变，无编译输入变化 |
+| Applicable Rules | Task Reading Set、Governance编号、保留历史事实和原资源、用户指令优先 |
+| Verification | governance SelfTest、diff检查、移动四文件哈希与S3测试包一致、路径引用及门禁负例验证 |
+| Expected Markers | assets根目录恰四产品和README；不再使用binary子目录；二进制变化时测试后双发布并哈希核验；验收由原生探针执行 |
+| Asset Needs | build/t6-package/td5-policy用于发布工具隔离验证及旧路径迁移记录；S4基线构建仍由T6 owner维护；总scratch1GB |
+| Reporting Requirements | 区分规则交付与产品编译；保留S3真实历史路径；后续S4执行系统目录部署，探针局限明确记录 |
+| Stop Conditions | 路径超界、未经测试的字节、改动四产品以外系统文件、原资源变化时停止并纠正 |
+| Exit Criteria | 规范/路径引用/迁移验证、提交推送及实际复核，恢复唯一活动T6 S4 |
+| Original Owner Request | binary change时发布本项目assets（不要binary目录）及O:/winnt/system32作为规范；不用computer-use，自己用探针做 |
+| Similar-Issue Sweep | 搜索当前权威/工具中assets、物理验收强制要求、旧发布脚本；历史交付路径只保留事实 |
