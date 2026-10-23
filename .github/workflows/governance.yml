@@ -1,0 +1,15 @@
+name: Governance
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  governance:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify governance and rejection cases
+        shell: pwsh
+        run: ./tools/Verify-Governance.ps1 -SelfTest
+      - name: Check whitespace
+        shell: pwsh
+        run: git diff-tree --check --root HEAD

@@ -1,0 +1,5 @@
+/build/
+/assets/binary/*
+!/assets/binary/README.md
+/.vs/
+*.user
