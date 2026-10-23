@@ -7,8 +7,10 @@ An ordinary load supports explicit same-thread API use and stays passive.
 A versioned launch payload enables early API interception and automatic window
 attachment through this same renderer. OS rundll32 uses the real NONAME ordinal1
 installer callback for opposite-width targets. Staged imports and actual target
-initialization are separate verification events. Process propagation is the next
-task; the current launcher policy only enables window styling.
+initialization are separate verification events. The default launcher policy
+enables styling and native CreateProcess A/W descendant propagation. Each
+creation layer retains the original caller suspension or releases only its own
+added suspension. Installation failure rolls back only its uncommitted child.
 
 Upstream project-authored core files are pinned in the repository import
 manifest and individually receipted. Five glyph headers contain new geometry

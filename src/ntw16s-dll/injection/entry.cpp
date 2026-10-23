@@ -15,6 +15,7 @@ extern "C" BOOL ntw16s_bootstrap(void)
     LONG status=DetourTransactionBegin();
     if(status!=NO_ERROR){SetLastError(status);return FALSE;}
     status=DetourUpdateThread(GetCurrentThread());
+    if(!status)status=ntw16s_attach_processes();
     if(!status)status=ntw16s_attach_titles();
     if(status){DetourTransactionAbort();SetLastError(status);return FALSE;}
     status=DetourTransactionCommit();SetLastError(status);return status==NO_ERROR;

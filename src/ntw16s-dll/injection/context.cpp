@@ -54,5 +54,5 @@ DWORD ntw16s_context_paths(ntw16s_context *context,HMODULE module)
     DWORD count=GetModuleFileNameW(module,context->directory,NTW16S_PATH_CAP);
     if(!count || count>=NTW16S_PATH_CAP)return count?ERROR_FILENAME_EXCED_RANGE:GetLastError();
     WCHAR *slash=wcsrchr(context->directory,L'\\');if(!slash)return ERROR_INVALID_NAME;
-    slash[1]=0;context->flags=NTW16S_POLICY_STYLE;return ERROR_SUCCESS;
+    slash[1]=0;context->flags=NTW16S_POLICY_STYLE|NTW16S_POLICY_PROPAGATE;return ERROR_SUCCESS;
 }

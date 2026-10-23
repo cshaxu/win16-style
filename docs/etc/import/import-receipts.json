@@ -365,18 +365,18 @@
       "path": "src/ntw16s-dll/README.md",
       "source": null,
       "source_blob": null,
-      "sha256": "b4fa3f0cbf3f304107d1602831fcdedb1a3d9b364009513684d10fcd88197923",
+      "sha256": "9ceaf451004c0889e3b4690c9921ffc13ecab1bc32597ef80f979e947e0cb3e5",
       "disposition": "authored",
-      "review": "T3 S2 payload bootstrap/real helper ABI, version or bounded test process budget; docs/proposals/launcher-injection.md",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md",
       "notice": "Project-authored, repository MIT"
     },
     {
       "path": "src/ntw16s-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "d12604dec5376637387c6c75f036ec0ed66ee287f7f60c31126545776d669320",
+      "sha256": "0a873d1d1daf5df85bb998c20cb498756ee9a1f6df8228161549272357018b67",
       "disposition": "authored",
-      "review": "T3 S2 payload bootstrap/real helper ABI, version or bounded test process budget; docs/proposals/launcher-injection.md",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md",
       "notice": "Project-authored, repository MIT"
     },
     {
@@ -563,9 +563,9 @@
       "path": "src/ntw16s-dll/injection/context.cpp",
       "source": "src/nthook32-dll/context.cpp",
       "source_blob": "f435db72a3475ef34d921a57d1632d6990d407af",
-      "sha256": "c443a1d66f6e5d95ad8bb0889bfe6c34c8d4e6564d4487240384d495dcc81d76",
+      "sha256": "2bac7966eeff27ccd8966531e2395c0662a79e4d4597ccefe10409e08a44080e",
       "disposition": "adapt",
-      "review": "T3 S3 final path/CLI contract audit; UNC namespace case and actual exit/I-O cases; docs/proposals/launcher-injection.md",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -590,18 +590,18 @@
       "path": "src/run16s-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "92b838a2a6bb7be2b5b2eeb0553497ba24a909d203e76d616ae117f1b2e411f8",
+      "sha256": "5b5f2776fc4c33fd8a22ecaab9c3fae06ae872ec8fc719cf916c890a486289c8",
       "disposition": "authored",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
       "path": "src/run16s-exe/README.md",
       "source": null,
       "source_blob": null,
-      "sha256": "f2d3fc8a812acfbff796e67839a7896da4b19eeda4bf78828c43fc2637835a2f",
+      "sha256": "678a6761513ebb5f2972fd509da1e2606de8394374585c26faeaa06277a5c959",
       "disposition": "authored",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -635,18 +635,18 @@
       "path": "src/ntw16s-dll/injection/entry.cpp",
       "source": "src/nthook32-dll/entry.cpp",
       "source_blob": "39504e103bf2a934721d2898b1a1a2e8b6dd2f6b",
-      "sha256": "847d825e274b3a1e93e0393c1257c0f2cfd9224b52295d3d003fb6bb91f9a96d",
+      "sha256": "53c059ee6ae913c239346c5ca9f8970b69a2ab6f482ab8fb6d5b05f56f1cb570",
       "disposition": "adapt",
-      "review": "T3 S2 same-DLL delayed binding and read-only native-target diagnostics; docs/proposals/launcher-injection.md",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
     },
     {
       "path": "src/ntw16s-dll/injection/intercept.h",
       "source": "src/nthook32-dll/intercept.h",
       "source_blob": "b9b7ea48abb2548f2c980db63896321d079a80cd",
-      "sha256": "40063579c71dbd713478c9bf83039bfa19b37f9237a1bda2d484916076faf35f",
+      "sha256": "a3ff6fb2641671e5c7e8434df04a22db84beba1fe36a1626e27dca4dc6019221",
       "disposition": "adapt",
-      "review": "T3 S2 same-DLL delayed binding and read-only native-target diagnostics; docs/proposals/launcher-injection.md",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
     },
     {
@@ -711,6 +711,33 @@
       "disposition": "authored",
       "review": "T3 S3 final path/CLI contract audit; UNC namespace case and actual exit/I-O cases; docs/proposals/launcher-injection.md",
       "notice": "Project-authored test, repository MIT"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/create_process.cpp",
+      "source": "src/nthook32-dll/create_process.cpp",
+      "source_blob": "2369ce7a7c46e79fc23f73367db9d42e0c40c9da",
+      "sha256": "84a7047d2218f07df8f9d1e39c960ed47bc50631ec38a61b2d1e7d621e1702a1",
+      "disposition": "adapt",
+      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md",
+      "notice": "Project-authored source adaptation or new native fixture, repository MIT"
+    },
+    {
+      "path": "tests/integration/propagate_target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "77917e5afd82fb2ad52a164d8e4cf4b25dc11494d48fc56994744928b583b77b",
+      "disposition": "authored",
+      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md",
+      "notice": "Project-authored source adaptation or new native fixture, repository MIT"
+    },
+    {
+      "path": "tests/integration/propagate_basic.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "9a000dbe2daaec1d48abd9d649b6fd56507007eb21f793590b3b94bf250a4f3d",
+      "disposition": "authored",
+      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md",
+      "notice": "Project-authored source adaptation or new native fixture, repository MIT"
     }
   ]
 }
