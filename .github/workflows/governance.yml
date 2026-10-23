@@ -13,3 +13,6 @@ jobs:
       - name: Check whitespace
         shell: pwsh
         run: git diff-tree --check --root HEAD
+      - name: Verify local source decisions and receipt rejection cases
+        shell: pwsh
+        run: python tools/verify_source_manifest.py --self-test

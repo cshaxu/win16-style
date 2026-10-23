@@ -1,6 +1,6 @@
 # M0 T1 S2 独立化设计与工具链
 
-准入依据为用户整个 T1 请求，S1 e26b444 推送并实际复核后继续；当前 S2 verified。
+准入依据为用户整个 T1 请求，S1 e26b444 推送并实际复核后继续；S2 closed。
 没有产品源码导入。选定方案见 import/INDEPENDENCE.md；34 个来源公开声明逐项
 记录在 abi-decisions.json：32 保留 public、2 合并后转 private，新项目 ABI 3；
 helper 单独以 ordinal 1 NONAME 保留 OS 安装边界。
@@ -36,3 +36,8 @@ SDK 位宽查询和 TLS 多线程隔离正确。tests/toolchain 断言未被 NDE
 治理正向/13 负例、git diff --check 通过。后台 worker 已结束；scratch 在
 100 MB 预算内，待 T1 精炼证据后统一回收。没有外部系统配置/安装变化。
 生产代码 0；新增测试/工具行数在实际提交统计复核记录。
+
+P1 9cf7183 已推送并实际复核，15 文件 +662/-21，git show --check 通过。
+测试 C/C++ 为 +68/-0；测试 CMake +28/-0，工具 PowerShell +52/-0；
+产品代码仍为 0。实际提交包含设计/ABI 结论与双宽真实探针，没有产品导入。
+源 api.h 的 adapt 细化有明确研究理由与接收者；S2 无阻塞，继续 S3。

@@ -22,3 +22,4 @@ T1 的逐文件处置及静态依赖：[BASELINE](BASELINE.md) 与
 
 独立化决定见 [INDEPENDENCE](INDEPENDENCE.md) 与
 [逐导出 ABI 清单](abi-decisions.json)；工具链真实结果见 [TOOLCHAIN](TOOLCHAIN.md)。
+本地检查和后续导入回执规则见 [VALIDATION](VALIDATION.md)。

@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T1“来源冻结与独立化设计”已由用户准入，S1 已交付复核关闭，当前 S2 active。
+M0 T1“来源冻结与独立化设计”已由用户准入，S1/S2 已交付复核关闭，当前 S3 active。
 本任务包含来源/依赖/资源处置、独立化设计与工具链验证、本地来源校验工具；
 不准入样式核心及后续产品实现。
 
@@ -11,7 +11,7 @@ M0 T1“来源冻结与独立化设计”已由用户准入，S1 已交付复核
 - Milestone: M0 (fixed)
 - Last allocated T: 1
 - Last allocated Td S: 3
-- Last delivery: M0 T1 S1 P1 (e26b444)
+- Last delivery: M0 T1 S2 P1 (9cf7183)
 
 ## Technical Baseline
 
@@ -37,23 +37,23 @@ P1 bd013545d5fd81423c20154c8ba39811c579981e 已推送并核对远端 main。
 无 build scratch、产品进程或二进制；未分配 T，产品所有接受项仍未运行。
 原始活动包保留在 P1 提交的本文件中，后续规则与状态以当前文档为准。
 
-## M0 T1 S2 Packet
+## M0 T1 S3 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；T1 的下一 S2 |
-| Admission And Approval | 用户开始执行整个 T1；S1 e26b444 已推送并实际复核，继续其设计与工具链子任务 |
-| Objective | 确定 API/载荷/引导/跨位宽方案，验证本机 x86/x64 MSVC/SDK/CMake/Ninja 编译链接和执行 |
-| Non-goals | 不实现产品注入、不复制源 renderer/Detours 字节、不准入后续 T |
-| Reference Baseline | e26b444 的 124 条清单与静态边界；固定来源 commit 不变 |
-| Candidate Proposal | [已准入来源任务](../proposals/source-baseline.md)与[来源处置](../etc/import/BASELINE.md) |
-| Files And ABI Surface | design/ARCHITECTURE 与 CODING 的设计细化、import/设计证据、tests/toolchain、tools/Probe-Toolchain.ps1、CURRENT/history；无实际产品 ABI |
-| Applicable Rules | 执行、架构、编码、文档规则及全部相关设计、来源策略 |
-| Verification | 真实 x86/x64 C17/C++ 编译、/MT DLL+EXE 链接/运行、TLS 和 SDK API；治理正向/13 负例、diff --check；初始化与 helper 源码审计 |
-| Expected Markers | 两架构 CTest 全通过，明确 ABI/载荷/ordinal、初始化和 helper 失败预算，无第五产品 |
-| Asset Needs | build/t1-toolchain 是唯一构建探针 scratch；后台拥有 PID、log/err/result 路径，120 秒硬超时/100 MB 预算，执行者负责停止回收；前一扫描 scratch 待任务末回收 |
-| Reporting Requirements | 实际工具版本、构建架构/flags/结果与有限证明；记录源 helper 的无界清理发现及接收改造 |
-| Stop Conditions | 缺编译器/SDK则记录可复现缺项；需要第五产品或违反 loader-lock 约束则不推进相关方案，其他独立工作继续 |
-| Exit Criteria | 确定可执行设计与后续有限证明责任，两架构真实编译执行通过，交付推送后复核 |
+| Identifier Mode | Continuation；T1 的下一 S3 |
+| Admission And Approval | 整个 T1 已获用户执行授权；S2 9cf7183 已推送并实际复核 |
+| Objective | 交付无兄弟仓库依赖的本地来源/ABI/导入回执校验器，负例验证与设计交接，完成 T1 级审计 |
+| Non-goals | 不导入产品源码、不实现 renderer/注入、不准入后续 T、不把工具链探针当产品通过 |
+| Reference Baseline | 9cf7183；124 个来源条目/294 include、34 ABI 决策、双宽工具链通过记录 |
+| Candidate Proposal | [已准入 T1](../proposals/source-baseline.md)，S3 与独立 T 完成条件 |
+| Files And ABI Surface | tools/verify_source_manifest.py、CI/验证入口、import 支持文档、CURRENT/proposal/history；无产品 ABI 实现 |
+| Applicable Rules | 执行/编码/架构/文档规则、来源策略与独立化设计 |
+| Verification | 本地元数据一致性、导入回执/路径/内容校验及负例；可选固定源码 tree/blob 研究复核；治理全部自检；diff --check；T1 有限覆盖审计 |
+| Expected Markers | 本地无源仓库即可通过；篡改/不安全路径/资源原字节导入拒绝；T1 六类交付均有证明与接收者 |
+| Asset Needs | 只保留 S1/S2 已登记 scratch，源复核批量读取内存；完成后只删除两精确 build 子目录，确认无运行 job/reparse/无关文件 |
+| Reporting Requirements | 校验命令、结果及局限，源与导入状态区别，代码统计/状态所有者、任务完成审计及推送 |
+| Stop Conditions | 发现来源/清单不符、工具错误或无证据的完成声明时先修复；需要后续产品实现则只记录接收者 |
+| Exit Criteria | 本地/可选源复核及负例通过、设计交接和 T1 审计满足原目标、scratch 回收、提交推送和实际复核 |
 | Original Owner Request | 开始执行T1 |
-| Similar-Issue Sweep | 源 helper 的 INFINITE 等待、MAX_PATH/ACP 与 TLS/DisableThreadLibraryCalls 冲突逐一分类；方案不能默认继承 |
+| Similar-Issue Sweep | 覆盖源/目的路径、重复条目、blob/size/SHA、五限制资源、声明、源依赖边、ABI及回执引用；所有失败有永久拒绝用例 |

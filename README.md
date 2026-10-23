@@ -26,5 +26,6 @@ Win16 窗口外观启动器。项目目标与组件契约见
 
 ```powershell
 pwsh -NoProfile -File tools/Verify-Governance.ps1 -SelfTest
+python tools/verify_source_manifest.py --self-test
 git diff --check
 ```
