@@ -2,99 +2,57 @@
 
 ## Current Work
 
-M0 T6 S5全任务/M0审计本地verified，30个实际交付提交及六任务/八验收面已核对。
-本S新干净双宽构建、同包10/10及双发布通过；124输入与S4完整58通过/2权限跳过
-基线相同，不虚称本S重跑全矩阵。待推送后实际复核及scratch回收再关闭T6/M0。
+无活动任务包。M0 T6 S5及T6已完成发布、推送、实际复核和scratch清理，
+M0本次有界产品目标完成；milestone永久保持0。后续工作须由新请求准入。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 6
 - Last allocated Td S: 5
-- Last delivery: M0 T6 S5 P1 (本地审计verified及双发布，待远端复核/清理)
+- Last delivery: M0 T6 S5 P2 (P1 5b5ee58实际复核、清理及关闭)
 
 ## Technical Baseline
 
-本轮M0 T6/0.6.0.0：纯C17、MinGW-w64 GCC16.1.0双工具链、Ninja、ccache4.13.6；
-静态GCC/线程支持，不使用C++/MSVC/MSYS运行库。三组件四产物，ABI3，31公开名称
-ordinal2..32及NONAME helper1；SDK staging/有界OS helper、私有MinHook/HDE后端。
+最终产品0.6.0.0 / M0 T6，纯C17、MinGW-w64 GCC16.1.0双工具链、Ninja及
+ccache4.13.6；静态GCC/线程支持，不使用C++或MSVC编译器、不依赖MSYS运行时。
+Windows系统CRT imports见发布清单。三组件四产物：
+x64 run16s.exe、x86 ntw16s32.dll、x64 ntw16s64.dll、x64 demo.exe。ABI3，31公开
+名称ordinal2..32及ordinal1 NONAME helper；私有SDK staging/有界OS helper与
+MinHook/HDE后端，无broker、驻留服务或兄弟仓库构建/链接/运行依赖。
 
-用户否决旧五资源自绘替代；现已从固定ntvdm64提交逐字节恢复五头及原resources.md，
-Git暂存blob与来源一致，121回执。旧生成器删除；独立摘要门禁拒绝替换，两个DLL
-各含18个原图形表及RCDATA5完整来源说明。124处置/294 includes及MinHook14项保持。
+原图形五头及原resources.md与固定来源5b0b65f逐字节相同，两DLL各18原图形表并
+内嵌完整声明，禁止替换。124处置/294 includes、121回执及MinHook14清单通过。
+原资源外观一致已由用户确认；滚动条17逻辑像素，端钮/固定滑块按横截面保持正方形，
+绘制及命中测试共用几何，横纵17/28/35/42像素双宽探针通过，旧28像素实现负例失败。
 
-S4 s4-probe-final新干净双宽全构建通过，完整矩阵x86 23通过/1跳过，x64 35通过/
-1跳过，0失败；注册/执行24/36集合相同。同包10/10，四文件前后SHA一致，已发布
-assets根目录及O:/winnt/system32，备份旧四文件且核验一致，release.json绑定124输入。
-S4修复demo滚动条28->17逻辑像素及适配器按横截面保持端钮/滑块正方形；横纵
-17/28/35/42几何双宽通过，旧实现负例在28失败。真实same-demo原生探针验证Tab焦点、
-捕获、业务/菜单/About及窗口操作；GetDpiForWindow=144/150%，滚动条厚26物理像素。
+启动器保持Console：控制台目标默认等待并返回实际退出码，GUI默认异步返回0，
+--wait始终等待根目标。真实cmd/held目标六场景及stdio/退出码通过，同console身份
+由GetConsoleProcessList验证。默认加载样式并传播到后代，demo本身仅Windows原生UI。
 
-用户已确认原资源与ntvdm64外观一致，并指定不用computer-use、自己用探针做；
-不再要求整套人工操作。探针不冒称物理键鼠。隔离剪贴板77不计通过，Windows拒绝
-CreateWindowStation错误5（四种access mask均失败），共享剪贴板未触碰，记录宿主限制。
-启动器仍Console；S3默认等待语义本包六场景复验通过。S2原交接项由S4按用户最新
-验收方式接收；S5为唯一活动，最终审计本地verified。[S4证据](../history/M0-T6-S4-acceptance.md)。
+S4 418be5e最后产品/测试源码变更的完整矩阵注册/执行24/36一致，58通过/2隔离
+clipboard权限跳过，0失败。S5新干净双宽全构建、ABI各1/1、实际包10/10通过；
+124输入与S4相同，未虚称S5重跑完整矩阵。原生demo探针覆盖Tab焦点、业务数据/
+通知、菜单/About、下拉、滚动捕获、移动及窗口状态，本机DPI144/150%，滚动条厚26像素。
 
-S5 s5-audit新干净双宽全构建及同包10/10通过；124输入与S4同源，当前新四文件
-已发布assets根目录和O:/winnt/system32，before为S4已提交文件，SHA全部一致。
-全T6统计107路径+5627/-13865、净-8238，S5程序/测试源码零变更；原始目标、六任务
-及八验收面映射见[最终审计](../history/M0-T6-completion.md)。M0等待远端复核与清理。
+用户指定不用computer-use、自己用探针做，不再要求整套手工操作。探针不冒称物理
+键鼠；本宿主CreateWindowStation四种access mask均返回5，两个隔离clipboard用例
+跳过77不计通过，共享剪贴板未触碰。支持范围及未验证边界见[BUILD](../etc/operations/BUILD.md)。
 
-用户要求每产品S构建同批四文件、对该包测试、发布、提交推送及实际复核；不再
-仅以源码推送收口。历史MSVC/Detours及未发布旧S保留历史事实，不作为新基线证据。
-S1验证细节与所有失败处置见[工作记录](../history/M0-T6-S1-package.md)。
+S5 P1 5b5ee58四文件在assets根目录、O:/winnt/system32及远端与被测包SHA一致，
+124输入、六资源blob、原始测试/矩阵及30个历史交付提交已实际复核。每S编译测试，
+binary change时按规范双发布、先备份及核验；当前无binary子目录。最终身份见
+[release.json](../etc/release.json)，覆盖、失败处置与边界见[完成审计](../history/M0-T6-completion.md)。
 
 ## Recent Closure
 
-[M0 T6 S4修复与探针](../history/M0-T6-S4-acceptance.md)：418be5e远端124输入及四文件复核，
-58通过/2权限跳过、同包10/10，assets和O:/winnt/system32一致。S4关闭，准入S5。
+- [T6及M0审计](../history/M0-T6-completion.md)：S5 P1 5b5ee58新构建/10项实际包/双发布及实际复核；T6/M0有界目标关闭。
+- [S4修复与探针](../history/M0-T6-S4-acceptance.md)：418be5e修复方形滚动条并完成58通过/2权限跳过及同包10项，双发布/远端一致。
+- [S3等待语义](../history/M0-T6-S3-wait.md)：4b83994保留Console并按目标默认等待，实际包14/14及相关回归6/9通过。
+- [Td S5执行规范](../history/M0-Td-S5-publish-policy.md)：618c51b/815f115双位置发布、assets根目录及用户指定探针验收生效。
 
-[M0 T6 S3等待契约](../history/M0-T6-S3-wait.md)：4b83994已推送且实际复核，
-新包14/14及相关回归6/9通过，124输入与四远端文件身份一致。S3关闭，准入S4。
+## Retained Assets
 
-[M0 T6 S1独立包](../history/M0-T6-S1-package.md)：1bc0440已推送并读取实际提交复核；
-远端四文件SHA及121输入身份通过，同包9/9通过。S1关闭，自动准入S2。
-
-[M0 Td S4规则同步](../history/M0-Td-S4-delivery-policy.md)：3fdac64已推送并实际复核；
-每产品S发布同批四文件、哈希绑定测试包，纯C/GCC目标生效。T6 S1按此门槛完成交付，历史规则变更记录保留。
-
-[M0 T5完成审计](../history/M0-T5-completion.md)：9d94cdf、bd0dd65、a4e5504已推送
-复核，双宽16/26全量及同文件对照通过，93回执，scratch已回收。
-
-[M0 T4完成审计](../history/M0-T4-completion.md)：S1 bd619ae、S2 17720ae、
-S3 f0eabb2均已推送复核，16/24全量及target-first-exit补测通过，scratch已回收。
-
-[M0 T3完成审计](../history/M0-T3-completion.md)：S1 2cc5d4d、S2 fc12e3c、
-S3 P1 97a777d已推送并复核；最终16/21完整回归，全部失败有处置，scratch已回收。
-
-[M0 T2 完成审计](../history/M0-T2-completion.md)：六单位覆盖、三 S 实际交付与
-失败处置、双宽 PE/资源/来源核验通过。S3 P1 527f40c 已推送并实际复核。
-本任务 scratch、CTest 日志及研究字节码已回收，build 只保留 .ninja。
-
-[M0 T1 完成审计](../history/M0-T1-completion.md)：来源、资源、独立化设计及本地
-校验已关闭于 80eccb2，其计划状态由当前基线取代。
-
-[M0 Td S3 层级纠正](../history/M0-Td-S3-task-level.md)：T 级候选各自拥有 S，
-队列不预分配 T 号；此前治理记录继续保留在 history。
-
-## M0 T6 S5 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Continuation；S4已关闭，最后T6及跨任务M0覆盖审计 |
-| Admission And Approval | 用户授权完成后续S；每S编译/测试，binary change双发布assets根目录及O:/winnt/system32；自己用探针，不用computer-use |
-| Objective | 冻结原目标到T1..T6/S交付、生产所有者、证据及限制的映射；复核独立三组件四文件、原资源、纯C/GCC和最终部署，决定有界M0完成 |
-| Non-goals | 不扩展产品/ABI/资源，不修改兄弟仓库，不把权限跳过或探针当作物理输入；无源码变更时不重复无理由的全矩阵 |
-| Reference Baseline | S4 P1 418be5e；124输入、原资源六blob及18表、ABI3；完整58通过/2权限跳过、同包10/10、双发布并远端复核 |
-| Candidate Proposal | [独立包与M0验收](../proposals/package-acceptance.md)S5；前五任务闭环记录及S1..S4实际交付 |
-| Files And ABI Surface | 审计/状态/发布清单及本S新四文件；预期124个产品/测试输入与S4相同，无公开ABI或源代码变更 |
-| Applicable Rules | 完整Task Reading Set、T级全覆盖审计、每S新双宽编译/同包验证、binary change双发布及实际复核 |
-| Verification | 新干净双宽全构建/PE/ABI/资源；同包10项；逐项原始Git提交/覆盖映射与源码所有者；124输入与S4一致则保留S4完整矩阵证据而不虚称本S重跑 |
-| Expected Markers | 六任务与八验收面均有来源、实现及当前证据，未完项只有明示宿主隔离clipboard限制；四文件双发布、远端SHA/源码可复取，无sibling依赖 |
-| Asset Needs | build/t6-package/s5-audit（最终快照/审计）、s5-audit-test（实际包）、s5-deploy（两处备份）；S2/S3/S4 scratch保留至证据提炼后安全回收，预算1GB，构建每宽600秒、同包1800秒 |
-| Reporting Requirements | 当前与历史工具链/资源明确区分；S4全矩阵不冒称S5重跑；两处部署及远端相同；权限跳过和真实物理输入未覆盖明示 |
-| Stop Conditions | 覆盖缺项、未处置产品失败、124输入漂移、ABI/资源变化、部署混包或远端身份不符时先纠正，不关闭T6/M0 |
-| Exit Criteria | 本S新包编译/测试/双发布/提交推送/实际复核，T6及M0全部原目标审计无未处置缺项，提炼并回收owned scratch后关闭 |
-| Original Owner Request | 三组件四产物独立分出、原资源相同、M0/MTSP、纯C/GCC、Console等待、每S闭环、探针自行验收、binary change双位置发布 |
-| Similar-Issue Sweep | 原项目隐含依赖/第五产物、旧自绘/旧MSVC证据冒用、S2交接是否由S4接收、跳过是否误报通过、发布目录旧引用及备份可恢复性 |
+本任务build/t6-package已安全回收（40顶层目录、13003文件、521103134字节），
+无活动owned任务；稳定build/.ninja及build/.ccache保留。原始日志/抓图未提交，
+事实与摘要已提炼到history/release；历史包及部署before可从对应Git交付复取。

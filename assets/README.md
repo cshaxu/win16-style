@@ -18,4 +18,4 @@ README是仓库说明，不是第五产品。运行时将四文件放在同一�
 二进制变化的每个S都执行双位置发布、旧文件备份和摘要核验，详见
 [执行规范](../docs/rules/EXECUTION.md)和[构建/使用](../docs/etc/operations/BUILD.md)。
 交互修复记录见[S4探针与修复](../docs/history/M0-T6-S4-acceptance.md)。本S最终审计见
-[完成审计](../docs/history/M0-T6-completion.md)，本地verified，待远端复核收口。
+[完成审计](../docs/history/M0-T6-completion.md)，已完成远端复核及收口。

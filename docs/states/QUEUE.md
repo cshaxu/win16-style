@@ -13,7 +13,7 @@ CURRENT 是唯一活动工作权威；本文件拥有顺序，各 proposal 拥�
 [启动器与首次自动附着](../proposals/launcher-injection.md)已关闭；
 [子孙传播与创建语义](../proposals/descendant-propagation.md)已关闭。
 [纯原生demo与启动对照](../proposals/native-demo.md)已关闭。
-[独立包与M0产品验收](../proposals/package-acceptance.md)已准入当前任务，活动包见CURRENT。
-当前无剩余待准入候选；最终产品仍须通过当前任务验收。
+[独立包与M0产品验收](../proposals/package-acceptance.md)已关闭，证据见
+CURRENT中的完成审计。当前无剩余候选或活动包。
 后续项依赖前项交付，不能跨过失败项
 直接发布；不增加额外 milestone、产品组件或产品文件。

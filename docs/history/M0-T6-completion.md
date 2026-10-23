@@ -73,3 +73,32 @@ s5-deploy已双发布，先备份两处四文件，before均为S4已提交包，
 | demo.exe | 0104cb2b20a35daae7e45034dc76cfde5299736f9ed09fa43e7972569bdbcf6c |
 
 本地审计verified，完成推送后实际字节/提交复核及owned scratch回收再记录关闭。
+
+
+## P1实际复核与T6/M0关闭（P2记录）
+
+5b5ee58376d3ff9a98e5852cb2c3c5247e202e02已推送并fetch origin/main复核。
+协调角色读取实际commit/stat/diff、原请求和30个交付提交、124个远端输入blob，
+按LICENSE显式检出换行约定全部匹配；源码输入摘要与S4相同。远端assets四文件、
+本S被测包、本地assets及O:/winnt/system32逐项SHA一致，六份原资源blob与固定来源
+一致，两个DLL各18个原图形表及完整声明。实际包10例原始exit0、S4注册/执行
+24/36及JUnit的58通过/2权限跳过已复核，没有把本S包测试冒称全矩阵重跑。
+治理13、source23、MinHook9、原资源6负例及diff检查通过，无未处置产品失败。
+
+全部owned构建/测试已结束。核实精确绝对目标O:/repos.hobby/win16style/build/t6-package
+在本仓库内、祖先/子项无reparse且无活动owned进程后，原生PowerShell回收40个顶层
+scratch目录、13003文件、521103134字节；目标已不存在。保留稳定build/.ninja与
+build/.ccache、源码、发布四文件及兄弟仓库。部署before文件为已提交S4 418be5e，
+更早发布也可由各Git交付复取；备份在部署期间已建立并核验，原始scratch现已回收，
+身份、before/after及证据摘要已提炼于release.json和本记录。
+
+六个T及T6五个S的责任全部对应实际交付；S2原交接已由S4按用户最新探针要求接收。
+原始三组件四产物、独立启动/传播/外观/demo、C/GCC、原资源和双发布目标完成。
+因此关闭S5、T6及M0本次有界产品验收，保持milestone仍为0，不自动创建新任务。
+隔离剪贴板的两项权限跳过和物理输入未覆盖继续明示，不能读成本宿主端到端
+clipboard或任意DPI/应用的通过承诺；这些限制不是新发现的产品失败或待用户整套
+手工操作。CURRENT移除活动包，QUEUE无剩余候选，后续工作由新的用户请求准入。
+P2只记录实际复核、清理和关闭，未改编译输入或二进制，双发布摘要保持P1相同。
+
+收口文档首次将含数值任务号的历史链接放入QUEUE，被编号预分配门禁拒绝；
+改为指向CURRENT中的完成审计，保持QUEUE无数值任务号，未削弱检查器。

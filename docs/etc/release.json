@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "delivery": "M0 T6 S5 P1",
-  "stage": "final-audit-native-probes-verified-with-clipboard-host-limit",
+  "stage": "M0-bounded-product-acceptance-complete-native-probes-with-clipboard-host-limit",
   "version": "0.6.0.0",
   "package_directory": "assets",
   "source_inputs": [
@@ -834,10 +834,11 @@
         "expected": "435dfc22827582ea0a2bbec53954bbb1579e0c2a58cc25a10d038ec884470f02"
       }
     ],
-    "backups": "build/t6-package/s5-deploy; before files are exact S4 418be5e assets, recoverable from Git after scratch cleanup"
+    "backups": "build/t6-package/s5-deploy; before files are exact S4 418be5e assets, recoverable from Git after scratch cleanup",
+    "backup_retention": "task scratch cleaned after review; all before files recoverable from S4 418be5e assets"
   },
   "audit": {
-    "stage": "locally verified pending post-push review and cleanup",
+    "stage": "closed after actual remote review and owned scratch cleanup",
     "history_commits_reviewed": 30,
     "scope": "six T tasks and eight acceptance surfaces",
     "current_source_delta": 0,
@@ -874,6 +875,22 @@
       "net": -8238
     },
     "physical_input": "not claimed; owner requests native probes",
-    "isolated_clipboard": "host limitation, two S4 skips not counted as pass"
+    "isolated_clipboard": "host limitation, two S4 skips not counted as pass",
+    "reviewed_commit": "5b5ee58376d3ff9a98e5852cb2c3c5247e202e02",
+    "closure_delivery": "M0 T6 S5 P2",
+    "scratch_cleanup": {
+      "path": "build/t6-package",
+      "files": 13003,
+      "bytes": 521103134,
+      "top_level_directories": 40,
+      "reparse_points": 0,
+      "live_owned_processes": 0,
+      "preserved": [
+        "build/.ninja",
+        "build/.ccache",
+        "assets",
+        "O:/winnt/system32"
+      ]
+    }
   }
 }

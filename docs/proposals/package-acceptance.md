@@ -1,6 +1,6 @@
 # 独立包与 M0 产品验收
 
-状态：用户授权自动准入M0 T6，活动S和基线以CURRENT为准。固定 M0；[前置任务](native-demo.md)须交付并关闭。
+状态：M0 T6已关闭，实际证据见[完成审计](../history/M0-T6-completion.md)，当前基线以CURRENT为准。固定 M0；[前置任务](native-demo.md)须交付并关闭。
 共同来源与验收矩阵见[导入总览](native-style-import.md)，顺序见[QUEUE](../states/QUEUE.md)。
 
 ## 任务边界与完成条件
