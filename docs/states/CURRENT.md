@@ -2,16 +2,16 @@
 
 ## Current Work
 
-M0 T6 S4已完成滚动条修复、原生探针、双发布及远端复核，closed；自动准入S5。
-本S执行T6与跨任务M0完成审计，并按每S规范重建/同包测试/双发布/推送复核。
-用户指定探针自行验收；隔离clipboard权限限制明示，不计通过，M0尚未完成。
+M0 T6 S5全任务/M0审计本地verified，30个实际交付提交及六任务/八验收面已核对。
+本S新干净双宽构建、同包10/10及双发布通过；124输入与S4完整58通过/2权限跳过
+基线相同，不虚称本S重跑全矩阵。待推送后实际复核及scratch回收再关闭T6/M0。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 6
 - Last allocated Td S: 5
-- Last delivery: M0 T6 S4 P2 (P1 418be5e双发布及远端复核，关闭S4准入S5)
+- Last delivery: M0 T6 S5 P1 (本地审计verified及双发布，待远端复核/清理)
 
 ## Technical Baseline
 
@@ -23,7 +23,7 @@ ordinal2..32及NONAME helper1；SDK staging/有界OS helper、私有MinHook/HDE�
 Git暂存blob与来源一致，121回执。旧生成器删除；独立摘要门禁拒绝替换，两个DLL
 各含18个原图形表及RCDATA5完整来源说明。124处置/294 includes及MinHook14项保持。
 
-当前s4-probe-final新干净双宽全构建通过，完整矩阵x86 23通过/1跳过，x64 35通过/
+S4 s4-probe-final新干净双宽全构建通过，完整矩阵x86 23通过/1跳过，x64 35通过/
 1跳过，0失败；注册/执行24/36集合相同。同包10/10，四文件前后SHA一致，已发布
 assets根目录及O:/winnt/system32，备份旧四文件且核验一致，release.json绑定124输入。
 S4修复demo滚动条28->17逻辑像素及适配器按横截面保持端钮/滑块正方形；横纵
@@ -34,7 +34,12 @@ S4修复demo滚动条28->17逻辑像素及适配器按横截面保持端钮/滑�
 不再要求整套人工操作。探针不冒称物理键鼠。隔离剪贴板77不计通过，Windows拒绝
 CreateWindowStation错误5（四种access mask均失败），共享剪贴板未触碰，记录宿主限制。
 启动器仍Console；S3默认等待语义本包六场景复验通过。S2原交接项由S4按用户最新
-验收方式接收；S4唯一活动，最后审计为S5。[S4证据](../history/M0-T6-S4-acceptance.md)。
+验收方式接收；S5为唯一活动，最终审计本地verified。[S4证据](../history/M0-T6-S4-acceptance.md)。
+
+S5 s5-audit新干净双宽全构建及同包10/10通过；124输入与S4同源，当前新四文件
+已发布assets根目录和O:/winnt/system32，before为S4已提交文件，SHA全部一致。
+全T6统计107路径+5627/-13865、净-8238，S5程序/测试源码零变更；原始目标、六任务
+及八验收面映射见[最终审计](../history/M0-T6-completion.md)。M0等待远端复核与清理。
 
 用户要求每产品S构建同批四文件、对该包测试、发布、提交推送及实际复核；不再
 仅以源码推送收口。历史MSVC/Detours及未发布旧S保留历史事实，不作为新基线证据。
