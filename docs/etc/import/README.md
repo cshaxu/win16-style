@@ -15,3 +15,7 @@ git -C <source> show <commit>:<path>
 
 源工作区存在无关未提交修改，尤其 run16 及 CURRENT 等；固定提交才是候选基线。
 后续如升级来源必须新记录 commit、文件差异和影响，不能静默追随 HEAD。
+
+T1 的逐文件处置及静态依赖：[BASELINE](BASELINE.md) 与
+[source-manifest.json](source-manifest.json)。清单在候选 105 项之外明确记录
+19 个排除边界，含原字节 SHA-256 和每条 include 的处置；没有复制源码。

@@ -1,0 +1,3575 @@
+{
+  "schema": 1,
+  "source_commit": "5b0b65f66c281050aa4ce1454c6cd31441a6d484",
+  "git_object_format": "sha1",
+  "import_status": "not-imported",
+  "seed_count": 105,
+  "entries": [
+    {
+      "source": "CMakeLists.txt",
+      "mode": "100644",
+      "blob": "22681be66a0d3aa8ac8fec25cb109bdacb5a7ccb",
+      "size": 5820,
+      "sha256": "66797ec0930dab0a15ac8b67b3e2ef292929e63e9065461d3aff70a8ac352c92",
+      "action": "reference",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Build/package source graph is comparison only; author local graph without NTVDM root composition",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/common/native_image.c",
+      "mode": "100644",
+      "blob": "7de310e424555eb325cf64a891ebe6e1864d2fca",
+      "size": 2770,
+      "sha256": "41552c4428d79636c2417355ec0cfaf57b87ce3bc20bc1e13f9b7d2f88031d1a",
+      "action": "exclude",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Do not import NT/internal classifier or NTVDM protocol; use SDK process architecture/path APIs and local payload",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/common/native_image.h",
+      "mode": "100644",
+      "blob": "7c322e5136ce4d1133db17c999b8d3d1337b236f",
+      "size": 878,
+      "sha256": "41fa768a90e37e3b9e7a28fdcb8fee46348e1de4d6987385fe6da18e53ebcb41",
+      "action": "exclude",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Do not import NT/internal classifier or NTVDM protocol; use SDK process architecture/path APIs and local payload",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/common/protocol/native_hook.h",
+      "mode": "100644",
+      "blob": "9159199c3f17b0ce760a34de5698b6ff3bd08212",
+      "size": 819,
+      "sha256": "6a03425712c6bc6f4ca7f7c72aaaaaad98458d1fa3bbd9560f7425529a97fbeb",
+      "action": "exclude",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Do not import NT/internal classifier or NTVDM protocol; use SDK process architecture/path APIs and local payload",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/common/protocol/window_style.h",
+      "mode": "100644",
+      "blob": "5b53f5df8dbe1eb8375647279636efa6467e8174",
+      "size": 308,
+      "sha256": "a3ba0dd798a96018ac79f27cce8a0d768a56a3dc285238b39b072e4eaa6807d9",
+      "action": "exclude",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Do not import NT/internal classifier or NTVDM protocol; use SDK process architecture/path APIs and local payload",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/nthook32-dll/README.md",
+      "mode": "100644",
+      "blob": "a27c4a7c2159a0850753207bb5d45ce4f190ba93",
+      "size": 3537,
+      "sha256": "c88075f6043dab5a5406dd240b61af2826c7dff2f37f610f6ee206cd0becf53f",
+      "action": "reference",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Legacy classifier and old component authority do not enter native-only product",
+      "receiver": "launcher-injection/descendant-propagation"
+    },
+    {
+      "source": "src/nthook32-dll/context.cpp",
+      "mode": "100644",
+      "blob": "f435db72a3475ef34d921a57d1632d6990d407af",
+      "size": 3582,
+      "sha256": "4edaf633935aab4a1de73cca2d273384639efeed2f43f30106511679dfd252cb",
+      "action": "adapt",
+      "destination": "src/ntw16s-dll/injection/context.cpp",
+      "notice": "project-authored-review",
+      "reason": "Strip broker/VDM/launcher modes; merge DLL, rewrite payload, bind renderer directly; rewrite old export definitions",
+      "receiver": "launcher-injection/descendant-propagation"
+    },
+    {
+      "source": "src/nthook32-dll/create_process.cpp",
+      "mode": "100644",
+      "blob": "2369ce7a7c46e79fc23f73367db9d42e0c40c9da",
+      "size": 14149,
+      "sha256": "19d08d1aad5a3774a1f861e0ba092d65dc039701cef36a7849c7568d5ff51471",
+      "action": "adapt",
+      "destination": "src/ntw16s-dll/injection/create_process.cpp",
+      "notice": "project-authored-review",
+      "reason": "Strip broker/VDM/launcher modes; merge DLL, rewrite payload, bind renderer directly; rewrite old export definitions",
+      "receiver": "launcher-injection/descendant-propagation"
+    },
+    {
+      "source": "src/nthook32-dll/detours/LICENSE.md",
+      "mode": "100644",
+      "blob": "e6a4c563056daedce20576a96a4d77b02a7dc8b6",
+      "size": 1099,
+      "sha256": "b301808b732cfaa60df2b4b422d78cd97d2a15058b207e7e33f0535ba5170dd6",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/injection/detours/LICENSE.md",
+      "notice": "MIT-Detours",
+      "reason": "Preserve Detours license and source notices; creatwth helper cleanup and exact DLL path need bounded local adaptation",
+      "receiver": "launcher-injection/descendant-propagation"
+    },
+    {
+      "source": "src/nthook32-dll/detours/creatwth.cpp",
+      "mode": "100644",
+      "blob": "17b12f26703d2c0d5ee26c02197cca8fb52768b8",
+      "size": 57896,
+      "sha256": "0a9802622ae4a58e2a2e19e4c326a5a0c04fe31dbb347176b38c5b748deb5472",
+      "action": "adapt",
+      "destination": "src/ntw16s-dll/injection/detours/creatwth.cpp",
+      "notice": "MIT-Detours",
+      "reason": "Preserve Detours license and source notices; creatwth helper cleanup and exact DLL path need bounded local adaptation",
+      "receiver": "launcher-injection/descendant-propagation"
+    },
+    {
+      "source": "src/nthook32-dll/detours/detours.cpp",
+      "mode": "100644",
+      "blob": "8345c4db448d08139c2b2211dd754dfd183f3c4e",
+      "size": 79717,
+      "sha256": "df415e05f985afe88f4b03ba34d6f5abce47edda11cd66d4f72902b801113eb7",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/injection/detours/detours.cpp",
+      "notice": "MIT-Detours",
+      "reason": "Preserve Detours license and source notices; creatwth helper cleanup and exact DLL path need bounded local adaptation",
+      "receiver": "launcher-injection/descendant-propagation"
+    },
+    {
+      "source": "src/nthook32-dll/detours/detours.h",
+      "mode": "100644",
+      "blob": "fe7acf110b298ad8475d5a97aff0155aea3bec6a",
+      "size": 37571,
+      "sha256": "7b498657d8db4cff2d488b1e65cfeeb5b1305de7f32d23588b1fa86aaa46fcf7",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/injection/detours/detours.h",
+      "notice": "MIT-Detours",
+      "reason": "Preserve Detours license and source notices; creatwth helper cleanup and exact DLL path need bounded local adaptation",
+      "receiver": "launcher-injection/descendant-propagation"
+    },
+    {
+      "source": "src/nthook32-dll/detours/disasm.cpp",
+      "mode": "100644",
+      "blob": "f002ff49ebe723726b2392e1bd85ed9ba7b2affc",
+      "size": 162724,
+      "sha256": "6c44283ac6987d77d92aca93a6a8e9f0dc1f7caf8a2b310e4b374853e9136236",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/injection/detours/disasm.cpp",
+      "notice": "MIT-Detours",
+      "reason": "Preserve Detours license and source notices; creatwth helper cleanup and exact DLL path need bounded local adaptation",
+      "receiver": "launcher-injection/descendant-propagation"
+    },
+    {
+      "source": "src/nthook32-dll/detours/image.cpp",
+      "mode": "100644",
+      "blob": "21ff501dc509f0e00fdeb9dea995fe976c7e8ebb",
+      "size": 66562,
+      "sha256": "8e7c94b335237565f3dce14b6dfd9dd88876cf10fb55b9c910f12ae9c38bd190",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/injection/detours/image.cpp",
+      "notice": "MIT-Detours",
+      "reason": "Preserve Detours license and source notices; creatwth helper cleanup and exact DLL path need bounded local adaptation",
+      "receiver": "launcher-injection/descendant-propagation"
+    },
+    {
+      "source": "src/nthook32-dll/detours/modules.cpp",
+      "mode": "100644",
+      "blob": "341673085f57f4ce89b361ff8e71298e27098a99",
+      "size": 32397,
+      "sha256": "4a3f970eb539a4379996eb17e14bd75902fe4f34d566cfd19682ff19315cbc6f",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/injection/detours/modules.cpp",
+      "notice": "MIT-Detours",
+      "reason": "Preserve Detours license and source notices; creatwth helper cleanup and exact DLL path need bounded local adaptation",
+      "receiver": "launcher-injection/descendant-propagation"
+    },
+    {
+      "source": "src/nthook32-dll/detours/uimports.cpp",
+      "mode": "100644",
+      "blob": "052be9baeab594a94212e33caa7d46dff4fee0f2",
+      "size": 9771,
+      "sha256": "2b2d92df4c5412906d7e6830a7c2836d78e368a6bef509be028566cbd921e83b",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/injection/detours/uimports.cpp",
+      "notice": "MIT-Detours",
+      "reason": "Preserve Detours license and source notices; creatwth helper cleanup and exact DLL path need bounded local adaptation",
+      "receiver": "launcher-injection/descendant-propagation"
+    },
+    {
+      "source": "src/nthook32-dll/entry.cpp",
+      "mode": "100644",
+      "blob": "39504e103bf2a934721d2898b1a1a2e8b6dd2f6b",
+      "size": 1390,
+      "sha256": "80311dca678e0e04da74d4db440b6ced173bcb0fe05f1f7184105d0299d84142",
+      "action": "adapt",
+      "destination": "src/ntw16s-dll/injection/entry.cpp",
+      "notice": "project-authored-review",
+      "reason": "Strip broker/VDM/launcher modes; merge DLL, rewrite payload, bind renderer directly; rewrite old export definitions",
+      "receiver": "launcher-injection/descendant-propagation"
+    },
+    {
+      "source": "src/nthook32-dll/hook.h",
+      "mode": "100644",
+      "blob": "ed368c6a8b71cda0a1a84e57a542ddf8452de1ad",
+      "size": 1110,
+      "sha256": "e77e446b2e09b953942257c52cf248fde87da527198261c16d76a0220f74998d",
+      "action": "adapt",
+      "destination": "src/ntw16s-dll/injection/injection.h",
+      "notice": "project-authored-review",
+      "reason": "Strip broker/VDM/launcher modes; merge DLL, rewrite payload, bind renderer directly; rewrite old export definitions",
+      "receiver": "launcher-injection/descendant-propagation"
+    },
+    {
+      "source": "src/nthook32-dll/installer.cpp",
+      "mode": "100644",
+      "blob": "84e78935b3079089569b9167eaed994df3220ebd",
+      "size": 5451,
+      "sha256": "463ae8754610f66da662e44ff2e98be1424fd35e152d1382968b642a514d0237",
+      "action": "adapt",
+      "destination": "src/ntw16s-dll/injection/installer.cpp",
+      "notice": "project-authored-review",
+      "reason": "Strip broker/VDM/launcher modes; merge DLL, rewrite payload, bind renderer directly; rewrite old export definitions",
+      "receiver": "launcher-injection/descendant-propagation"
+    },
+    {
+      "source": "src/nthook32-dll/intercept.h",
+      "mode": "100644",
+      "blob": "b9b7ea48abb2548f2c980db63896321d079a80cd",
+      "size": 233,
+      "sha256": "ff849ce3b32a26cfcdf34cd6faf030b900928ac2555e2bc9471d2130c11c612d",
+      "action": "adapt",
+      "destination": "src/ntw16s-dll/injection/intercept.h",
+      "notice": "project-authored-review",
+      "reason": "Strip broker/VDM/launcher modes; merge DLL, rewrite payload, bind renderer directly; rewrite old export definitions",
+      "receiver": "launcher-injection/descendant-propagation"
+    },
+    {
+      "source": "src/nthook32-dll/legacy_classifier_arch.h",
+      "mode": "100644",
+      "blob": "8e5c29412f68b19ceeed2079d8580056275d4af5",
+      "size": 366,
+      "sha256": "142f700874be0689e4c0ba7a38ec0359236f02449308300d0965fc4212b499f9",
+      "action": "reference",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Legacy classifier and old component authority do not enter native-only product",
+      "receiver": "launcher-injection/descendant-propagation"
+    },
+    {
+      "source": "src/nthook32-dll/nthook32.def",
+      "mode": "100644",
+      "blob": "2fe7e548dca94cbd4ae3974ebcec7bb8cd6cc0f1",
+      "size": 98,
+      "sha256": "2f37ebe36f1427620d0a034521f491570bc235913338b8b414b39e66e204bec6",
+      "action": "adapt",
+      "destination": "src/ntw16s-dll/injection/ntw16s32.def",
+      "notice": "project-authored-review",
+      "reason": "Strip broker/VDM/launcher modes; merge DLL, rewrite payload, bind renderer directly; rewrite old export definitions",
+      "receiver": "launcher-injection/descendant-propagation"
+    },
+    {
+      "source": "src/nthook32-dll/nthook64.def",
+      "mode": "100644",
+      "blob": "b4278dfb7a058f67669bfe9157b1cb4fafa0f446",
+      "size": 98,
+      "sha256": "b0a49360d7aad4fb4fea2ce87541cbd95670b404b83c0006c7309311bce03e5f",
+      "action": "adapt",
+      "destination": "src/ntw16s-dll/injection/ntw16s64.def",
+      "notice": "project-authored-review",
+      "reason": "Strip broker/VDM/launcher modes; merge DLL, rewrite payload, bind renderer directly; rewrite old export definitions",
+      "receiver": "launcher-injection/descendant-propagation"
+    },
+    {
+      "source": "src/nthook32-dll/window_titles.cpp",
+      "mode": "100644",
+      "blob": "0a3d1cd942345edb25e879b9377311929551a0ec",
+      "size": 10909,
+      "sha256": "0a0da968c353976c56938e22dda4b98f666eb193efa2a9c182dcc65c03a4c407",
+      "action": "adapt",
+      "destination": "src/ntw16s-dll/injection/window_titles.cpp",
+      "notice": "project-authored-review",
+      "reason": "Strip broker/VDM/launcher modes; merge DLL, rewrite payload, bind renderer directly; rewrite old export definitions",
+      "receiver": "launcher-injection/descendant-propagation"
+    },
+    {
+      "source": "src/ntw16s-dll/README.md",
+      "mode": "100644",
+      "blob": "eb2b0e5958ff0ad837df773083668a83e495a7de",
+      "size": 32256,
+      "sha256": "5bb195cb6dafac007d60b3af8554176b8143149a26e2e099b2ad355705e6e097",
+      "action": "reference",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Retain metadata findings, rewrite local contract; source history is not current product authority",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/api.h",
+      "mode": "100644",
+      "blob": "ed5a06e643692e727431ad7482483cfd175006f9",
+      "size": 624,
+      "sha256": "ad5a3ef088d0cb0c8db42994823eb415866794bb9f7de0944bb8b41abd5cc1ee",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/api.h",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/attachment.c",
+      "mode": "100644",
+      "blob": "e467006ab99ada1846f9298b650c30605807466b",
+      "size": 11175,
+      "sha256": "908d869a84b4b7a442d8b27ed8c18897c9757bcd6a03761b42278d811bc1b25e",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/attachment.c",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/attachment.h",
+      "mode": "100644",
+      "blob": "a8813543e1faf9e8ba68dee29f0f1e77643b96fa",
+      "size": 1758,
+      "sha256": "7a5cde7dcf7fb6925373ec34b0877ff37b2175f19ecb5a9c2cfa5e52ee49a7ed",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/attachment.h",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/combo_glyph.h",
+      "mode": "100644",
+      "blob": "6844a599eaeabee81e3a6f0b93571aae45a3dad5",
+      "size": 297,
+      "sha256": "75b05a50bf02bbc8fcbd6c6f84948fcdbf82fa7f0fbbfc590a6e4eb94c3ffe34",
+      "action": "replace",
+      "destination": "src/ntw16s-dll/combo_glyph.h",
+      "notice": "source-resource-restricted",
+      "reason": "Exclude source bytes; author geometric raster/vector replacements locally; core task owns visual acceptance",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/control_glyphs.h",
+      "mode": "100644",
+      "blob": "a5ac2b29e4e1471b0b1d59fedffa891565bfecbb",
+      "size": 2755,
+      "sha256": "75031b93af2382f8ce1f47d971f32efdfe00cb7000e0db09ef878a1b50adff83",
+      "action": "replace",
+      "destination": "src/ntw16s-dll/control_glyphs.h",
+      "notice": "source-resource-restricted",
+      "reason": "Exclude source bytes; author geometric raster/vector replacements locally; core task owns visual acceptance",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/control_scope.c",
+      "mode": "100644",
+      "blob": "e7d2e565af452f8b618badb8e1df0d2ee644a77a",
+      "size": 3308,
+      "sha256": "74f313e90f005973902bd76e76f5f75b7aa300ed1d39a06fe332e7c60aa37799",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/control_scope.c",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/controls.c",
+      "mode": "100644",
+      "blob": "9bc3331d0f9fc3e3104059ab792670ab1579d65c",
+      "size": 69779,
+      "sha256": "25b360b62729aa5ecaeaa0fd8c9857aef6a8a85f0c01956169e2f2df000b8933",
+      "action": "adapt",
+      "destination": "src/ntw16s-dll/controls.c",
+      "notice": "project-authored-review",
+      "reason": "Preserve single renderer; change resource consumers to newly authored geometric assets and retest supported states",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/controls.h",
+      "mode": "100644",
+      "blob": "8c6380513ec16c21ff3b1e34b9ef14222cc4d837",
+      "size": 3768,
+      "sha256": "d55004421db94183ce615c71b2cd6442d2ae6a1523da4c3b81bc4361b3497b3d",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/controls.h",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/dllmain.c",
+      "mode": "100644",
+      "blob": "f52c5d4cf09186bfccec50f961c4275e5f0f8094",
+      "size": 386,
+      "sha256": "a0e31578a438812efcfe9d3539da47064d8e2c9953faf849b9a3faee60028471",
+      "action": "adapt",
+      "destination": "src/ntw16s-dll/dllmain.c",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/font.c",
+      "mode": "100644",
+      "blob": "3bce01032d506f05bb571f8be35392f12c4dcebb",
+      "size": 4684,
+      "sha256": "0832d6e44f80eb5ed731c2242978ae286604f0510e322739ec42dc995f6b93ea",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/font.c",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/font.h",
+      "mode": "100644",
+      "blob": "772af2b70b85d897ea842003229b5d3e5795803e",
+      "size": 401,
+      "sha256": "cdd88ab0f76899f51577b48e657051ca8e5c027dc5a6b4ff37eb53232a06de81",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/font.h",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/frame_buttons.h",
+      "mode": "100644",
+      "blob": "dd782cd7d4e58e278067366777836e6e5ae34100",
+      "size": 4694,
+      "sha256": "e7a472d76858c3d01fb1501a34d958ccd8337c8d8ccc36893c17ef9222bac0c5",
+      "action": "replace",
+      "destination": "src/ntw16s-dll/frame_buttons.h",
+      "notice": "source-resource-restricted",
+      "reason": "Exclude source bytes; author geometric raster/vector replacements locally; core task owns visual acceptance",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/layout.c",
+      "mode": "100644",
+      "blob": "a9ba79fb962c41bbb5d8ffab0bbb3632213d282e",
+      "size": 3363,
+      "sha256": "83cd34e01d35e27fc40c54e82460cab945b45d3a986b3d5ee2ec8ac9ab5c4ede",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/layout.c",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/layout.h",
+      "mode": "100644",
+      "blob": "397587ca491a9aef181ae8bca9404ddf0e9d0672",
+      "size": 580,
+      "sha256": "a55b5d4bad75fda24a46828966f0b8024c85dd52648ac8166e77ae94c541d2d3",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/layout.h",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_bar.c",
+      "mode": "100644",
+      "blob": "8dea689873ff121dce171c1e89d4b8ac93375ffd",
+      "size": 2878,
+      "sha256": "38c124da7e7bbede8b96dcdc863ecdf438ad9d54d2ce9c175c00bc942a1eebfb",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/menu_bar.c",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_bar.h",
+      "mode": "100644",
+      "blob": "dbf916ef7759d4c3a249a56712c10ec946ec70de",
+      "size": 1016,
+      "sha256": "7eba7d9c045131b8aebb7d7c8b87303b97d2eb8e52d9030388f6dd23af9731df",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/menu_bar.h",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_bar_paint.c",
+      "mode": "100644",
+      "blob": "e8d1450ac63e3364fcbad23c926e458785c3bf88",
+      "size": 658,
+      "sha256": "209ab48d33f57207c33f90c412b9c294ed062683c789803dd207cf22fd66076f",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/menu_bar_paint.c",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_glyphs.h",
+      "mode": "100644",
+      "blob": "3bd7a84da0ee765bc8277595caa7795b7c530cd2",
+      "size": 887,
+      "sha256": "03922a10b6a7b46e1792852b93f1e1590d45546a57a63cead41fb7b0f0eefa4e",
+      "action": "replace",
+      "destination": "src/ntw16s-dll/menu_glyphs.h",
+      "notice": "source-resource-restricted",
+      "reason": "Exclude source bytes; author geometric raster/vector replacements locally; core task owns visual acceptance",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_items.c",
+      "mode": "100644",
+      "blob": "e4515547a7ec174558bfd2923536d190b62f5fb7",
+      "size": 5642,
+      "sha256": "a9dfa0377afc30a0b893370b56f093bc43abc50a6aca605dfe206c4e7b98223e",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/menu_items.c",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_items.h",
+      "mode": "100644",
+      "blob": "4aab35cbb7a6fa674d7a0cbcf729b3bc9cff49d9",
+      "size": 814,
+      "sha256": "24dff3476635ede1304b7ee3bdf28c3639b4ded55826c8000e7142531ac69b18",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/menu_items.h",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_layout.c",
+      "mode": "100644",
+      "blob": "82916ee3bf2e3e115838721ced63d0aa65539747",
+      "size": 1706,
+      "sha256": "cde752459255f121492daa908df6cd6201a549d0080d2cf73b8975b6042dc62c",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/menu_layout.c",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_layout.h",
+      "mode": "100644",
+      "blob": "7636669b8a54caaebba89ad80572c0bbbac0a275",
+      "size": 687,
+      "sha256": "e70959ddd21f2cb3d2904a7bf756f79066e839144d7ecc7174a97f026a065e19",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/menu_layout.h",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_paint.c",
+      "mode": "100644",
+      "blob": "b9ba84a7ac43981013b1319d0019ee18cd1ff6b7",
+      "size": 4940,
+      "sha256": "329b1ff10f94b4d0ecdf4833857cd28825dc6e7c23fd1950bda9c587afb164ff",
+      "action": "adapt",
+      "destination": "src/ntw16s-dll/menu_paint.c",
+      "notice": "project-authored-review",
+      "reason": "Preserve single renderer; change resource consumers to newly authored geometric assets and retest supported states",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_paint.h",
+      "mode": "100644",
+      "blob": "8473ec9496b45d043be33bbf90fb43b14f8f148d",
+      "size": 808,
+      "sha256": "68595cdae255277f4b2d0803115178b46975bdf9e30456cebe23ae935ee8363e",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/menu_paint.h",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_scope.c",
+      "mode": "100644",
+      "blob": "b27da79667d1dce3f17336721ef7c6be06fc18f7",
+      "size": 4501,
+      "sha256": "95ad88b868cbd154eac2012407f1954ef89907c4e0e521a515fb182d04fff82a",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/menu_scope.c",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_scope.h",
+      "mode": "100644",
+      "blob": "2f793a46215944cf6219f478db14715fd59d4f06",
+      "size": 656,
+      "sha256": "e7f130982359c73f3aa790cdbe8915c2acf5aa2a4889dbd5dfda7855a652a699",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/menu_scope.h",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/native_api.c",
+      "mode": "100644",
+      "blob": "d84c73572e5d1d8dcc59ee178be6814468fecc5b",
+      "size": 2308,
+      "sha256": "a928fda085cbc2e8d314c30739d8d438a162d460b07be0846f43a639c9eac2ce",
+      "action": "adapt",
+      "destination": "src/ntw16s-dll/native_api.c",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/native_api.h",
+      "mode": "100644",
+      "blob": "cd045fb697b1f6319173bc97f9fc6b5bc5e0b763",
+      "size": 1333,
+      "sha256": "448ab859f0bf7ad486f8c5171ddee8262fc7726af00501837d1af27a0799ffd0",
+      "action": "adapt",
+      "destination": "src/ntw16s-dll/native_api.h",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/ntw16s.h",
+      "mode": "100644",
+      "blob": "4206eba1ed0572ed7f1ae7fe2301786b6fb5b9e5",
+      "size": 341,
+      "sha256": "74972b272381001683e1363fdb0caaa9ea7f8abc189dc185b0eae828779a72d8",
+      "action": "adapt",
+      "destination": "src/ntw16s-dll/ntw16s.h",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/resources.md",
+      "mode": "100644",
+      "blob": "feeb85f1c10bef8598684bb5426f30f04aef8ce0",
+      "size": 19251,
+      "sha256": "211d1d1d85e65bef001990fb229bd5959e272e1992b95d9086acc7c67716b6a7",
+      "action": "reference",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Retain metadata findings, rewrite local contract; source history is not current product authority",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/scroll_glyphs.h",
+      "mode": "100644",
+      "blob": "47942549a40628868026e6b3c9ac751015c69fc7",
+      "size": 5171,
+      "sha256": "a748e7d89d52abf6225403244971da442c5b391ab877d1f248ddf2ca96001d40",
+      "action": "replace",
+      "destination": "src/ntw16s-dll/scroll_glyphs.h",
+      "notice": "source-resource-restricted",
+      "reason": "Exclude source bytes; author geometric raster/vector replacements locally; core task owns visual acceptance",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/scroll_layout.c",
+      "mode": "100644",
+      "blob": "891f118725eed946da93e45e8bad2dde1753eef9",
+      "size": 3936,
+      "sha256": "0b1b344fcbe0ef2a8060ef140c539cefeb5fa79c7b93c322452513d15b95b4d0",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/scroll_layout.c",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/scroll_layout.h",
+      "mode": "100644",
+      "blob": "63fda7674d27d2c0949374669f6c86a58263f5b3",
+      "size": 1340,
+      "sha256": "b8398eafbc51af77a5e5ce72c4dd06f12e51a6cdf6bdd51cf2ef6275b0b9fcb4",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/scroll_layout.h",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/scroll_track.c",
+      "mode": "100644",
+      "blob": "10f55fcfa1ddcf7686b45665dbdcd8afcde60ba0",
+      "size": 3644,
+      "sha256": "0b9c5d40849d321e3e467635d4c28b85c5897d8ee4dd8ec7bf3ed1d39fcd72ee",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/scroll_track.c",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/scroll_track.h",
+      "mode": "100644",
+      "blob": "36dab01c50c485fa0da58835d7c1b97cc5f79737",
+      "size": 1244,
+      "sha256": "36be02d2e879175c02863c495693d5c79dfa1cbca716419c6e0ec46b59c5934e",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/scroll_track.h",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/theme.c",
+      "mode": "100644",
+      "blob": "1c81eaa41fda9d96dfc07e8fb7707d2f2dcbafbc",
+      "size": 3402,
+      "sha256": "48eb05bc23f40eb99288a1c3d16ba07a8262be2a15a95725427238e730e3f6ac",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/theme.c",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/theme.h",
+      "mode": "100644",
+      "blob": "088ea9230823070a010d586058bd7b86aee5d93b",
+      "size": 585,
+      "sha256": "0a0100203a7856d58d2a16389309440781f23d7e04e7d7a93db0cc5ad2415371",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/theme.h",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/win16_style.c",
+      "mode": "100644",
+      "blob": "4235f085cb00c0d17145deec2d04a57c97b98d47",
+      "size": 49513,
+      "sha256": "b1412c44f8d84c7446c4e0d707cdd00321508c5024a94c43f0c5a85261eedd65",
+      "action": "adapt",
+      "destination": "src/ntw16s-dll/win16_style.c",
+      "notice": "project-authored-review",
+      "reason": "Preserve single renderer; change resource consumers to newly authored geometric assets and retest supported states",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/ntw16s-dll/win16_style.h",
+      "mode": "100644",
+      "blob": "5e922312ae64dfd28356a7960caf97854c5d41ab",
+      "size": 2281,
+      "sha256": "f2c52b99f8d764a5175a85532e2ad2c7afc60e0f30117e60350b27c4f1e0ddf8",
+      "action": "retain",
+      "destination": "src/ntw16s-dll/win16_style.h",
+      "notice": "project-authored-review",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "receiver": "style-core"
+    },
+    {
+      "source": "src/run16-exe/README.md",
+      "mode": "100644",
+      "blob": "987e6d3f7d6a4a111e1d09c1cad06c8f58cd6f51",
+      "size": 3692,
+      "sha256": "46dfa94d578def7c8c9206a6d9286318c616b0e82677f953dd44659e45c51d97",
+      "action": "reference",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Author small native-only launcher; no original-shaped classifier, frontend, service, console capability or legacy routing import",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/run16-exe/bootstrap_client.c",
+      "mode": "100644",
+      "blob": "b32450b73d77b49c0cbbe02bbe1477419fe208a3",
+      "size": 534,
+      "sha256": "07fdc093fa8d189b20b6497e1d5e9261be9135bd849d5a22ec35284e83d7a33f",
+      "action": "reference",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Author small native-only launcher; no original-shaped classifier, frontend, service, console capability or legacy routing import",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/run16-exe/frontend_bootstrap.h",
+      "mode": "100644",
+      "blob": "da7e59c784350e81200fd47a663851333201f795",
+      "size": 532,
+      "sha256": "a0f3b5f6af93a113f69255c03fca7454e8820999909581440125a99b457ca58d",
+      "action": "reference",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Author small native-only launcher; no original-shaped classifier, frontend, service, console capability or legacy routing import",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/run16-exe/frontend_scope.c",
+      "mode": "100644",
+      "blob": "a2f09853f21be6e7533fbc2eb467b17ff783fe76",
+      "size": 9842,
+      "sha256": "80d1c632fdb137862e6868fbf1f91c0b7dddf1ca8c90fbc06114dfc5bbf52002",
+      "action": "reference",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Author small native-only launcher; no original-shaped classifier, frontend, service, console capability or legacy routing import",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/run16-exe/frontend_scope.h",
+      "mode": "100644",
+      "blob": "81ee22f31e5077145d6e4c9f3b1efa45861b43e9",
+      "size": 1505,
+      "sha256": "f5eeee78b1a542cf7ddbdcb351d44514fb5f7783432994df643733c29069f436",
+      "action": "reference",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Author small native-only launcher; no original-shaped classifier, frontend, service, console capability or legacy routing import",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/run16-exe/hook_classification.c",
+      "mode": "100644",
+      "blob": "0ac4eaca21218d184e10e61278d6321c65404f0c",
+      "size": 1142,
+      "sha256": "6601d0a13a4a3af1d19c6a94a799fb025dcf19e92c95d81b29f582122cf47fa4",
+      "action": "reference",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Author small native-only launcher; no original-shaped classifier, frontend, service, console capability or legacy routing import",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/run16-exe/image_classification.c",
+      "mode": "100644",
+      "blob": "c93bf4c7ef9d6e934c204bed798162d732cd46aa",
+      "size": 942,
+      "sha256": "50b39d4d27947e93495d13822e2906fe86b104f2f0ffe010797fe88bde875d85",
+      "action": "reference",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Author small native-only launcher; no original-shaped classifier, frontend, service, console capability or legacy routing import",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/run16-exe/image_classification.h",
+      "mode": "100644",
+      "blob": "5f830c80de7f33a980788d5f36f8cfa9dfc8ddea",
+      "size": 612,
+      "sha256": "d7a3fed20238caa695e641436d7fce1ea88772ef06b6dd1192dfc95fa19d40d4",
+      "action": "reference",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Author small native-only launcher; no original-shaped classifier, frontend, service, console capability or legacy routing import",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/run16-exe/launch_options.c",
+      "mode": "100644",
+      "blob": "b4c66469b62ac31c19e5c31f01e848746b1dd279",
+      "size": 1449,
+      "sha256": "954c81d4c38724e503b0a618bfd52ffe8dd1744d66de8d87463624cadec2ebcd",
+      "action": "reference",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Author small native-only launcher; no original-shaped classifier, frontend, service, console capability or legacy routing import",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/run16-exe/launch_options.h",
+      "mode": "100644",
+      "blob": "99a44e16eaf013b40cf93066e46ca4769117df13",
+      "size": 464,
+      "sha256": "43a05b03196981d6e987315daedd73b8056e5738ab63100b961d15bba9e62075",
+      "action": "reference",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Author small native-only launcher; no original-shaped classifier, frontend, service, console capability or legacy routing import",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/run16-exe/main.c",
+      "mode": "100644",
+      "blob": "47822b58dd43e608ce9e551ef14fbcc90543e41c",
+      "size": 28291,
+      "sha256": "bf345652ff7874aab7362b453c9e241e1745b37776779f1b3b3f231e99fd0226",
+      "action": "reference",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Author small native-only launcher; no original-shaped classifier, frontend, service, console capability or legacy routing import",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/run16-exe/native_launch.c",
+      "mode": "100644",
+      "blob": "7a5b5a1bf4226d13de5d0ad17efedddfc94716dc",
+      "size": 5366,
+      "sha256": "af8a85261c58586eaf8f36a47997e9b7cd5fa0cb12e76e18510c8155379fbf81",
+      "action": "reference",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Author small native-only launcher; no original-shaped classifier, frontend, service, console capability or legacy routing import",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/run16-exe/native_launch.h",
+      "mode": "100644",
+      "blob": "58e01ac1fa742a1c48620a3553c74e957aa48eeb",
+      "size": 482,
+      "sha256": "72f60be0adc5fea4f815ff17bee76f6e20a02ef40f71056325a341285b7e6f77",
+      "action": "reference",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Author small native-only launcher; no original-shaped classifier, frontend, service, console capability or legacy routing import",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/run16-exe/native_request_client.c",
+      "mode": "100644",
+      "blob": "b82d1fe2a5d047ec366b85605a88aff0059805ca",
+      "size": 1763,
+      "sha256": "d4f2f1eb9a7d71e2f34225f6fa0d4974391714369a829abc4cae29bb6372ff16",
+      "action": "reference",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Author small native-only launcher; no original-shaped classifier, frontend, service, console capability or legacy routing import",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/run16-exe/native_request_client.h",
+      "mode": "100644",
+      "blob": "7e2af3f62d4615e42652d2374aab1a94e1c22d59",
+      "size": 629,
+      "sha256": "1bdca2c00607dd98a8f0c671a5227612137f55e71cd6791fa45d63987872b102",
+      "action": "reference",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Author small native-only launcher; no original-shaped classifier, frontend, service, console capability or legacy routing import",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/w16style-exe/README.md",
+      "mode": "100644",
+      "blob": "eb0e4bc479f38196c17b5accb8d9f009a0318bcf",
+      "size": 1289,
+      "sha256": "d8dd9b884e1e12d8959c596c52a50738db907c206df139bc3869f08f43781b1d",
+      "action": "reference",
+      "destination": null,
+      "notice": "project-authored-review",
+      "reason": "Pure native demo; remove all style calls and renderer-dependent custom drawing; keep application-owned UI semantics",
+      "receiver": "native-demo"
+    },
+    {
+      "source": "src/w16style-exe/gallery.c",
+      "mode": "100644",
+      "blob": "9a2c1eea0c8348a1609d56507c6e0c3903a0a423",
+      "size": 43305,
+      "sha256": "393b52b24ffe7b700a9eca67489377d123cab57a083ba948a2b1c5cf2b4fc11a",
+      "action": "adapt",
+      "destination": "src/demo-exe/gallery.c",
+      "notice": "project-authored-review",
+      "reason": "Pure native demo; remove all style calls and renderer-dependent custom drawing; keep application-owned UI semantics",
+      "receiver": "native-demo"
+    },
+    {
+      "source": "src/w16style-exe/main.c",
+      "mode": "100644",
+      "blob": "aab6a106d079d566dc8901769add516f0b0d2bb1",
+      "size": 759,
+      "sha256": "b8143cffafade573000c88e04843e629607bf2546e6af3767057ca76868c4776",
+      "action": "adapt",
+      "destination": "src/demo-exe/main.c",
+      "notice": "project-authored-review",
+      "reason": "Pure native demo; remove all style calls and renderer-dependent custom drawing; keep application-owned UI semantics",
+      "receiver": "native-demo"
+    },
+    {
+      "source": "tests/app/ntw16s_dll.c",
+      "mode": "100644",
+      "blob": "957283107c118e331fdeae8e4bcc5b40868e01fa",
+      "size": 12451,
+      "sha256": "6034fb0cb8ecf6b36df68d1786cdea0f135e15129b2430ac2bd571a42da397dd",
+      "action": "adapt",
+      "destination": "tests/ntw16s-dll/ntw16s_dll.c",
+      "notice": "project-authored-review",
+      "reason": "Retarget real local DLL/launcher; remove source service/guest/absolute path dependencies and source-glyph byte-equality oracle",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "tests/app/ntw16s_terminal.c",
+      "mode": "100644",
+      "blob": "703b5cbf5cde11c2c94594b07b75aba79b8c7d34",
+      "size": 8007,
+      "sha256": "9eae7d7bf62b0feea5a79a99c287cc586b5c6e4bb2a91e2ed153a3d0aa19e2da",
+      "action": "adapt",
+      "destination": "tests/ntw16s-dll/ntw16s_terminal.c",
+      "notice": "project-authored-review",
+      "reason": "Retarget real local DLL/launcher; remove source service/guest/absolute path dependencies and source-glyph byte-equality oracle",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "tests/app/win16_style_control_lifetime.c",
+      "mode": "100644",
+      "blob": "a20eed45e5beb4d7593e53655c7ee66213d01b24",
+      "size": 2987,
+      "sha256": "7e5e4eac51343c69147b93ef964842cf7e506a0d29019c9d31121ae14be3a70c",
+      "action": "adapt",
+      "destination": "tests/ntw16s-dll/win16_style_control_lifetime.c",
+      "notice": "project-authored-review",
+      "reason": "Retarget real local DLL/launcher; remove source service/guest/absolute path dependencies and source-glyph byte-equality oracle",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "tests/app/win16_style_control_present.c",
+      "mode": "100644",
+      "blob": "a44a8cf711985ae62d847021b037b8bb308f8cc7",
+      "size": 12562,
+      "sha256": "b0254e0913337e2f9edd94babd562fbd1fb25736340e46a15b8901668205edd4",
+      "action": "adapt",
+      "destination": "tests/ntw16s-dll/win16_style_control_present.c",
+      "notice": "project-authored-review",
+      "reason": "Retarget real local DLL/launcher; remove source service/guest/absolute path dependencies and source-glyph byte-equality oracle",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "tests/app/win16_style_dc_failure.c",
+      "mode": "100644",
+      "blob": "0bbdc27c4e17eaf1dce1ec51715b26c66b610d75",
+      "size": 14004,
+      "sha256": "65f1b792470d7da955ef939fa61cc04fe1fa44d19a616d1e14c99161d36229e7",
+      "action": "adapt",
+      "destination": "tests/ntw16s-dll/win16_style_dc_failure.c",
+      "notice": "project-authored-review",
+      "reason": "Retarget real local DLL/launcher; remove source service/guest/absolute path dependencies and source-glyph byte-equality oracle",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "tests/app/win16_style_default_button.c",
+      "mode": "100644",
+      "blob": "2d28d1590dcd10a67134fb76f58c3ece46d73b05",
+      "size": 5614,
+      "sha256": "93cec201978e235276dc370ade94b6b179c54db27f5e7cd62c923dc591868b72",
+      "action": "adapt",
+      "destination": "tests/ntw16s-dll/win16_style_default_button.c",
+      "notice": "project-authored-review",
+      "reason": "Retarget real local DLL/launcher; remove source service/guest/absolute path dependencies and source-glyph byte-equality oracle",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "tests/app/win16_style_demo.c",
+      "mode": "100644",
+      "blob": "ab55bd270c8b1d3cb03d9c46f3038f1423791872",
+      "size": 52078,
+      "sha256": "e2daa7f908ee656efd7be2739adbbbe6e57f3728e2e7c027d70f56ee7aadb717",
+      "action": "adapt",
+      "destination": "tests/ntw16s-dll/win16_style_demo.c",
+      "notice": "project-authored-review",
+      "reason": "Retarget real local DLL/launcher; remove source service/guest/absolute path dependencies and source-glyph byte-equality oracle",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "tests/app/win16_style_edit_clipboard.c",
+      "mode": "100644",
+      "blob": "d4c191bfa4003f701fe595867105c23c1899f625",
+      "size": 4604,
+      "sha256": "af4c24cee3bb34609e9ba9c3bdd7ee45bd99c4115247f7db07127d4503982ee0",
+      "action": "adapt",
+      "destination": "tests/ntw16s-dll/win16_style_edit_clipboard.c",
+      "notice": "project-authored-review",
+      "reason": "Retarget real local DLL/launcher; remove source service/guest/absolute path dependencies and source-glyph byte-equality oracle",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "tests/app/win16_style_font.c",
+      "mode": "100644",
+      "blob": "5d70ebef16f342c36df381ab0cb6e43b270f8488",
+      "size": 3763,
+      "sha256": "a48f60b8de43919650f69ffc4655c9770d992cf3dab133ce3829e7fed951100f",
+      "action": "adapt",
+      "destination": "tests/ntw16s-dll/win16_style_font.c",
+      "notice": "project-authored-review",
+      "reason": "Retarget real local DLL/launcher; remove source service/guest/absolute path dependencies and source-glyph byte-equality oracle",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "tests/app/win16_style_gallery.c",
+      "mode": "100644",
+      "blob": "7149b11a07af170219297322d934406858b1fad5",
+      "size": 199595,
+      "sha256": "254479b8e6ad2909c333d323a805e8b4d05de39f03b266c941e1c413498de1cc",
+      "action": "adapt",
+      "destination": "tests/ntw16s-dll/win16_style_gallery.c",
+      "notice": "project-authored-review",
+      "reason": "Retarget real local DLL/launcher; remove source service/guest/absolute path dependencies and source-glyph byte-equality oracle",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "tests/app/win16_style_list_tabs.c",
+      "mode": "100644",
+      "blob": "8154d9ef5c2b54f1899e74724c7da8a9e6e3c37e",
+      "size": 10310,
+      "sha256": "6115d27c62a4bc599f2561e4ada320bde5f653f283d482a9ab551cd0cf6b9128",
+      "action": "adapt",
+      "destination": "tests/ntw16s-dll/win16_style_list_tabs.c",
+      "notice": "project-authored-review",
+      "reason": "Retarget real local DLL/launcher; remove source service/guest/absolute path dependencies and source-glyph byte-equality oracle",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "tests/app/win16_style_menu_dispatch.c",
+      "mode": "100644",
+      "blob": "c31dbe36e549c1111aceaf6b684c1223d5a3a4ed",
+      "size": 6145,
+      "sha256": "35f482037eadd6e52e78cdb91d69ea331ba719598b19898cff6796ab7d4bf495",
+      "action": "adapt",
+      "destination": "tests/ntw16s-dll/win16_style_menu_dispatch.c",
+      "notice": "project-authored-review",
+      "reason": "Retarget real local DLL/launcher; remove source service/guest/absolute path dependencies and source-glyph byte-equality oracle",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "tests/app/win16_style_scroll_api.c",
+      "mode": "100644",
+      "blob": "11e265bf49085678d2c8c73c68691bfc6b3b733f",
+      "size": 15277,
+      "sha256": "e7a2fb319e89f85a46a5a8410c0b22a3fdd37322880ab95eb47d9b4f26513240",
+      "action": "adapt",
+      "destination": "tests/ntw16s-dll/win16_style_scroll_api.c",
+      "notice": "project-authored-review",
+      "reason": "Retarget real local DLL/launcher; remove source service/guest/absolute path dependencies and source-glyph byte-equality oracle",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "tests/app/win16_style_scroll_geometry.c",
+      "mode": "100644",
+      "blob": "a152cfe652660138fbbf8147ef24cb23552ee64d",
+      "size": 6363,
+      "sha256": "fa4b407b071be7fb1630aa333408b1f15baec184754664fb89b777293674b70e",
+      "action": "adapt",
+      "destination": "tests/ntw16s-dll/win16_style_scroll_geometry.c",
+      "notice": "project-authored-review",
+      "reason": "Retarget real local DLL/launcher; remove source service/guest/absolute path dependencies and source-glyph byte-equality oracle",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "tests/app/win16_style_sizebox.c",
+      "mode": "100644",
+      "blob": "77098da4ff3b310b4e9881539b18369742d36149",
+      "size": 4045,
+      "sha256": "423de8d180d356cbc03597b88b0d93882e191a049b7256a9ba83aa1e5d8732c7",
+      "action": "adapt",
+      "destination": "tests/ntw16s-dll/win16_style_sizebox.c",
+      "notice": "project-authored-review",
+      "reason": "Retarget real local DLL/launcher; remove source service/guest/absolute path dependencies and source-glyph byte-equality oracle",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "tests/component-integration/native_title_hook_test.cpp",
+      "mode": "100644",
+      "blob": "70ba0eade5cda01417d95bde5835ad07942be7e8",
+      "size": 24263,
+      "sha256": "8fae16805e015f118e91e5757b16985e18b302708bb6895d4e69fd2c3730dbcd",
+      "action": "adapt",
+      "destination": "tests/integration/native_title_hook_test.cpp",
+      "notice": "project-authored-review",
+      "reason": "Retarget real local DLL/launcher; remove source service/guest/absolute path dependencies and source-glyph byte-equality oracle",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "tests/component-integration/native_title_hook_test.rc",
+      "mode": "100644",
+      "blob": "da9306a16372de4467170bd91c0b2efc9731bc5e",
+      "size": 114,
+      "sha256": "a7f2239e9632fef0a8b414292716d68a04bd7aa2fd1f76ba114c96f22111b0a8",
+      "action": "adapt",
+      "destination": "tests/integration/native_title_hook_test.rc",
+      "notice": "project-authored-review",
+      "reason": "Retarget real local DLL/launcher; remove source service/guest/absolute path dependencies and source-glyph byte-equality oracle",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "tests/component-integration/nthook_install_test.cpp",
+      "mode": "100644",
+      "blob": "8b2503543db6980a5a3a04068be68450ca5ef2c6",
+      "size": 29334,
+      "sha256": "ada23ceba99d495fdf0db044e6436753276bfdb8bc4ad41f7bf550f201b6d0a7",
+      "action": "adapt",
+      "destination": "tests/integration/nthook_install_test.cpp",
+      "notice": "project-authored-review",
+      "reason": "Retarget real local DLL/launcher; remove source service/guest/absolute path dependencies and source-glyph byte-equality oracle",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "tests/observation/verify-native-hook-chain.ps1",
+      "mode": "100644",
+      "blob": "d3b775c95093e23d5392dd39082b6e72c3e0e166",
+      "size": 8956,
+      "sha256": "0b53ac78d97cfd4e61c5c639926e4a8760a22489a4755b424da8fcc7cbeb3bfc",
+      "action": "adapt",
+      "destination": "tests/integration/verify-native-hook-chain.ps1",
+      "notice": "project-authored-review",
+      "reason": "Retarget real local DLL/launcher; remove source service/guest/absolute path dependencies and source-glyph byte-equality oracle",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "tests/observation/verify-ntw16s-boundary.ps1",
+      "mode": "100644",
+      "blob": "7df7d6aad159003b9e5681100928bac67440416d",
+      "size": 2383,
+      "sha256": "075e6eca897c7a40929a411c23870b8d8850e1a097ff55db0c8fa97a4d0d2ad2",
+      "action": "adapt",
+      "destination": "tests/integration/verify-ntw16s-boundary.ps1",
+      "notice": "project-authored-review",
+      "reason": "Retarget real local DLL/launcher; remove source service/guest/absolute path dependencies and source-glyph byte-equality oracle",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "tests/observation/verify-win16-style.ps1",
+      "mode": "100644",
+      "blob": "1ce77c0623f78612012e4f8353e9f81de88d46d4",
+      "size": 17522,
+      "sha256": "d8b9966cafc6cac13332e8cf36d5c2a8fe0a17e32b859e9a1ad0c20271c761e4",
+      "action": "adapt",
+      "destination": "tests/integration/verify-win16-style.ps1",
+      "notice": "project-authored-review",
+      "reason": "Retarget real local DLL/launcher; remove source service/guest/absolute path dependencies and source-glyph byte-equality oracle",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "tools/build/New-NativeHook64Ninja.ps1",
+      "mode": "100644",
+      "blob": "6f3cf536aa3f29e045e53197e02c7656a089bd35",
+      "size": 6755,
+      "sha256": "bb968057c9fb9ad45a46932b120639089a2ac13909dcc0ef8bdeb9d764e29638",
+      "action": "reference",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Build/package source graph is comparison only; author local graph without NTVDM root composition",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "tools/build/New-Ntw16sNinja.ps1",
+      "mode": "100644",
+      "blob": "eb6ba1e71aabb58dc577b2836278968d430fefb3",
+      "size": 4125,
+      "sha256": "a0bed54a0cb2375374b17e3feddd9226bb318403236646b5e71a032ba4508078",
+      "action": "reference",
+      "destination": null,
+      "notice": "source-provenance",
+      "reason": "Build/package source graph is comparison only; author local graph without NTVDM root composition",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/common/application_search.h",
+      "mode": "100644",
+      "blob": "86ea6cd88d17176c06c8633a13daaa50bf0b06e1",
+      "size": 396,
+      "sha256": "9ed7b611afb9053d75707a3aab29da6d58330c87da597073c5ce369e707127d9",
+      "action": "exclude",
+      "destination": null,
+      "notice": "outside-native-product-boundary",
+      "reason": "Boundary terminates here: remove source protocol/private classifier/test harness dependency; SDK declarations or locally authored fixture only",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/common/codec/native_launch.h",
+      "mode": "100644",
+      "blob": "d72f3551145b26a35afff623ca67930d76ccfc44",
+      "size": 1489,
+      "sha256": "7713cc5c49f0340503fd077dda7fc7819b51b5cb16fbc336b746632110c31727",
+      "action": "exclude",
+      "destination": null,
+      "notice": "outside-native-product-boundary",
+      "reason": "Boundary terminates here: remove source protocol/private classifier/test harness dependency; SDK declarations or locally authored fixture only",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/common/guest_environment.h",
+      "mode": "100644",
+      "blob": "c57c88228b069b5dcda32f1d5a975224bc9c6c1d",
+      "size": 605,
+      "sha256": "5c4473703f89aa35d696a5d9ad952658e0c07f0fb13a2e7075b1ba22baa4354c",
+      "action": "exclude",
+      "destination": null,
+      "notice": "outside-native-product-boundary",
+      "reason": "Boundary terminates here: remove source protocol/private classifier/test harness dependency; SDK declarations or locally authored fixture only",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/common/protocol/console_io.h",
+      "mode": "100644",
+      "blob": "86a2e7a465a93075e49e74ef121fc715d8d18252",
+      "size": 6216,
+      "sha256": "89a2db01e188ad354c7b193b47431f5570dadf1ca00161ad32d2c232b05f7a70",
+      "action": "exclude",
+      "destination": null,
+      "notice": "outside-native-product-boundary",
+      "reason": "Boundary terminates here: remove source protocol/private classifier/test harness dependency; SDK declarations or locally authored fixture only",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/common/protocol/frontend_lifecycle.h",
+      "mode": "100644",
+      "blob": "4f21236c96f21becea5c6892b2a4611370c4b57c",
+      "size": 742,
+      "sha256": "1de457a707850837c4ba806bf244382b24c1b2f1d14795450a4f6c076b56af1a",
+      "action": "exclude",
+      "destination": null,
+      "notice": "outside-native-product-boundary",
+      "reason": "Boundary terminates here: remove source protocol/private classifier/test harness dependency; SDK declarations or locally authored fixture only",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/common/protocol/frontend_protocol.h",
+      "mode": "100644",
+      "blob": "3252a31b88fa7d8e44f34ea72c81e20ba9bacbaa",
+      "size": 1257,
+      "sha256": "cc5cad6410a08b5c6655011093ff9cee6c69816c5284d81fb582cafc563d7c22",
+      "action": "exclude",
+      "destination": null,
+      "notice": "outside-native-product-boundary",
+      "reason": "Boundary terminates here: remove source protocol/private classifier/test harness dependency; SDK declarations or locally authored fixture only",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/common/protocol/native_launch_type.h",
+      "mode": "100644",
+      "blob": "8ece261e95b28899fdd51c4b6a3a26ca68b1c3fa",
+      "size": 1531,
+      "sha256": "3e84c3c238044e00dd9fe202b5afb753d79e8a541bdbaa0c0567f49681ab5b83",
+      "action": "exclude",
+      "destination": null,
+      "notice": "outside-native-product-boundary",
+      "reason": "Boundary terminates here: remove source protocol/private classifier/test harness dependency; SDK declarations or locally authored fixture only",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/common/rpc/local_binding.h",
+      "mode": "100644",
+      "blob": "ad6cbc580ca470afa2aae298605297215ce7705a",
+      "size": 569,
+      "sha256": "08c7753fe8f90955b39020eaeadee404bd49b9209cc92c7e485f9b75fd0bc2b2",
+      "action": "exclude",
+      "destination": null,
+      "notice": "outside-native-product-boundary",
+      "reason": "Boundary terminates here: remove source protocol/private classifier/test harness dependency; SDK declarations or locally authored fixture only",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/common/rpc/management.h",
+      "mode": "100644",
+      "blob": "512c2bbd5b373c5478bc6704a234200c8f35be79",
+      "size": 1196,
+      "sha256": "72a72996292303da005ce817d4b067cf2d79fe371c32c98505d6c1132d399123",
+      "action": "exclude",
+      "destination": null,
+      "notice": "outside-native-product-boundary",
+      "reason": "Boundary terminates here: remove source protocol/private classifier/test harness dependency; SDK declarations or locally authored fixture only",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/common/system_root.h",
+      "mode": "100644",
+      "blob": "f4a96ea33ca2b54a6ef6f77f2ea23606b29a6a6b",
+      "size": 649,
+      "sha256": "47cc6a1c925719b7ab5aa21b28aae97060928bb2030c2ae852a1e50b50554bf4",
+      "action": "exclude",
+      "destination": null,
+      "notice": "outside-native-product-boundary",
+      "reason": "Boundary terminates here: remove source protocol/private classifier/test harness dependency; SDK declarations or locally authored fixture only",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/ntsrv-exe/opennt/include/base_capture.h",
+      "mode": "100644",
+      "blob": "73f6eb1edcce9571795c75c64e9f4760f704bcb6",
+      "size": 718,
+      "sha256": "d694a8651c1e0dbda0e85203d1b08c66b5ddd98874f34794ab6346e93a4db90f",
+      "action": "exclude",
+      "destination": null,
+      "notice": "outside-native-product-boundary",
+      "reason": "Boundary terminates here: remove source protocol/private classifier/test harness dependency; SDK declarations or locally authored fixture only",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/ntsrv-exe/opennt/include/base_classifier.h",
+      "mode": "100644",
+      "blob": "bcdc3185e0b7c26207915dcf352ef4b81ff9a11d",
+      "size": 2139,
+      "sha256": "f55f62bda1b42a0e52ce2558fa60cdb77bb41c69a9066f76fa259b1ab91f66ab",
+      "action": "exclude",
+      "destination": null,
+      "notice": "outside-native-product-boundary",
+      "reason": "Boundary terminates here: remove source protocol/private classifier/test harness dependency; SDK declarations or locally authored fixture only",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/ntsrv-exe/opennt/include/base_client.h",
+      "mode": "100644",
+      "blob": "1d347ef79172a6896d917fe926c70ace7efab55c",
+      "size": 2076,
+      "sha256": "55b9c00abc8a3aa587380f72e412b82280bd5014a3a6bcaa5e8ea22287507c5a",
+      "action": "exclude",
+      "destination": null,
+      "notice": "outside-native-product-boundary",
+      "reason": "Boundary terminates here: remove source protocol/private classifier/test harness dependency; SDK declarations or locally authored fixture only",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/ntsrv-exe/opennt/include/base_config.h",
+      "mode": "100644",
+      "blob": "b47fa60b561230172efa2320cfbb9300c13311e0",
+      "size": 883,
+      "sha256": "c66f9b24a96f71330fcc01b4a27cabf1fb9c0d2a99927bf6e2b52a28f60ed2da",
+      "action": "exclude",
+      "destination": null,
+      "notice": "outside-native-product-boundary",
+      "reason": "Boundary terminates here: remove source protocol/private classifier/test harness dependency; SDK declarations or locally authored fixture only",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/ntsrv-exe/opennt/include/base_rpc_client.h",
+      "mode": "100644",
+      "blob": "f306a4b6d1f478394bd97961a6f120c60f9fc8d0",
+      "size": 5869,
+      "sha256": "663e38a23438cd908e023d0ba54987de099058979ea3bccf5683515b9ef03f8a",
+      "action": "exclude",
+      "destination": null,
+      "notice": "outside-native-product-boundary",
+      "reason": "Boundary terminates here: remove source protocol/private classifier/test harness dependency; SDK declarations or locally authored fixture only",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/ntsrv-exe/opennt/include/base_rpc_client_launch_style.h",
+      "mode": "100644",
+      "blob": "00cf24e09416cd9de4975566344b025953aa9c62",
+      "size": 333,
+      "sha256": "30a5fe870b34993eb0d0476dfba288abbb1cbd37a8f26978c21bc05189e5b39c",
+      "action": "exclude",
+      "destination": null,
+      "notice": "outside-native-product-boundary",
+      "reason": "Boundary terminates here: remove source protocol/private classifier/test harness dependency; SDK declarations or locally authored fixture only",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/ntsrv-exe/transport/rpc_security.h",
+      "mode": "100644",
+      "blob": "23ee489fe1eeee1404ac10190cdbfdd8165b9319",
+      "size": 753,
+      "sha256": "eb349903349cc075a65bf219a243c725ad9a913ec65cb75a7eece4ad24e388ec",
+      "action": "exclude",
+      "destination": null,
+      "notice": "outside-native-product-boundary",
+      "reason": "Boundary terminates here: remove source protocol/private classifier/test harness dependency; SDK declarations or locally authored fixture only",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/opennt-abi/host-compat/include/nt.h",
+      "mode": "100644",
+      "blob": "4c5a57c845c283a1f84cbf262ec5d2fd9ec4629c",
+      "size": 11240,
+      "sha256": "a7175405bc29b88f327d5d8905c6983e4e18b86bdd6d5e386f8d33621705334b",
+      "action": "exclude",
+      "destination": null,
+      "notice": "outside-native-product-boundary",
+      "reason": "Boundary terminates here: remove source protocol/private classifier/test harness dependency; SDK declarations or locally authored fixture only",
+      "receiver": "source-baseline/downstream-owner"
+    },
+    {
+      "source": "src/opennt-abi/source/public/sdk/inc/nt.h",
+      "mode": "100644",
+      "blob": "3e29924d5acceb65462df23e7a00556162058f07",
+      "size": 1483,
+      "sha256": "471924fb89f0caac226f55ff87a3d7bf841d7802fdbd42457eb0464739db8808",
+      "action": "exclude",
+      "destination": null,
+      "notice": "outside-native-product-boundary",
+      "reason": "Boundary terminates here: remove source protocol/private classifier/test harness dependency; SDK declarations or locally authored fixture only",
+      "receiver": "source-baseline/downstream-owner"
+    }
+  ],
+  "includes": [
+    {
+      "source": "src/common/native_image.c",
+      "line": 4,
+      "include": "nt.h",
+      "target": [
+        "src/opennt-abi/host-compat/include/nt.h",
+        "src/opennt-abi/source/public/sdk/inc/nt.h"
+      ],
+      "disposition": "excluded-original-native-classifier"
+    },
+    {
+      "source": "src/common/native_image.c",
+      "line": 5,
+      "include": "base_classifier.h",
+      "target": [
+        "src/ntsrv-exe/opennt/include/base_classifier.h"
+      ],
+      "disposition": "excluded-original-native-classifier"
+    },
+    {
+      "source": "src/common/native_image.c",
+      "line": 6,
+      "include": "native_image.h",
+      "target": "src/common/native_image.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/common/native_image.c",
+      "line": 7,
+      "include": "wchar.h",
+      "target": "wchar.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/common/native_image.h",
+      "line": 5,
+      "include": "windows.h",
+      "target": "windows.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/common/protocol/native_hook.h",
+      "line": 5,
+      "include": "stdint.h",
+      "target": "stdint.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/common/protocol/native_hook.h",
+      "line": 6,
+      "include": "window_style.h",
+      "target": "src/common/protocol/window_style.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/nthook32-dll/context.cpp",
+      "line": 1,
+      "include": "hook.h",
+      "target": "src/nthook32-dll/hook.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/nthook32-dll/context.cpp",
+      "line": 2,
+      "include": "detours/detours.h",
+      "target": "src/nthook32-dll/detours/detours.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/nthook32-dll/context.cpp",
+      "line": 3,
+      "include": "wchar.h",
+      "target": "wchar.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/nthook32-dll/create_process.cpp",
+      "line": 1,
+      "include": "intercept.h",
+      "target": "src/nthook32-dll/intercept.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/nthook32-dll/create_process.cpp",
+      "line": 2,
+      "include": "detours/detours.h",
+      "target": "src/nthook32-dll/detours/detours.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/nthook32-dll/create_process.cpp",
+      "line": 3,
+      "include": "common/rpc/local_binding.h",
+      "target": "src/common/rpc/local_binding.h",
+      "disposition": "excluded-source-boundary"
+    },
+    {
+      "source": "src/nthook32-dll/create_process.cpp",
+      "line": 4,
+      "include": "common/rpc/management.h",
+      "target": "src/common/rpc/management.h",
+      "disposition": "excluded-source-boundary"
+    },
+    {
+      "source": "src/nthook32-dll/create_process.cpp",
+      "line": 5,
+      "include": "ntsrv-exe/transport/rpc_security.h",
+      "target": "src/ntsrv-exe/transport/rpc_security.h",
+      "disposition": "excluded-source-boundary"
+    },
+    {
+      "source": "src/nthook32-dll/create_process.cpp",
+      "line": 6,
+      "include": "wchar.h",
+      "target": "wchar.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/nthook32-dll/detours/creatwth.cpp",
+      "line": 16,
+      "include": "windows.h",
+      "target": "windows.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/nthook32-dll/detours/creatwth.cpp",
+      "line": 17,
+      "include": "stddef.h",
+      "target": "stddef.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/nthook32-dll/detours/creatwth.cpp",
+      "line": 22,
+      "include": "strsafe.h",
+      "target": "strsafe.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/nthook32-dll/detours/creatwth.cpp",
+      "line": 27,
+      "include": "detours.h",
+      "target": "src/nthook32-dll/detours/detours.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/nthook32-dll/detours/creatwth.cpp",
+      "line": 340,
+      "include": "uimports.cpp",
+      "target": "src/nthook32-dll/detours/uimports.cpp",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/nthook32-dll/detours/creatwth.cpp",
+      "line": 356,
+      "include": "uimports.cpp",
+      "target": "src/nthook32-dll/detours/uimports.cpp",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/nthook32-dll/detours/detours.cpp",
+      "line": 18,
+      "include": "windows.h",
+      "target": "windows.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/nthook32-dll/detours/detours.cpp",
+      "line": 26,
+      "include": "detours.h",
+      "target": "src/nthook32-dll/detours/detours.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/nthook32-dll/detours/detours.h",
+      "line": 777,
+      "include": "imagehlp.h",
+      "target": "imagehlp.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/nthook32-dll/detours/detours.h",
+      "line": 791,
+      "include": "dbghelp.h",
+      "target": "dbghelp.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/nthook32-dll/detours/detours.h",
+      "line": 842,
+      "include": "stdio.h",
+      "target": "stdio.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/nthook32-dll/detours/detours.h",
+      "line": 843,
+      "include": "limits.h",
+      "target": "limits.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/nthook32-dll/detours/disasm.cpp",
+      "line": 16,
+      "include": "windows.h",
+      "target": "windows.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/nthook32-dll/detours/disasm.cpp",
+      "line": 17,
+      "include": "limits.h",
+      "target": "limits.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/nthook32-dll/detours/disasm.cpp",
+      "line": 21,
+      "include": "detours.h",
+      "target": "src/nthook32-dll/detours/detours.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/nthook32-dll/detours/image.cpp",
+      "line": 18,
+      "include": "windows.h",
+      "target": "windows.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/nthook32-dll/detours/image.cpp",
+      "line": 24,
+      "include": "strsafe.h",
+      "target": "strsafe.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/nthook32-dll/detours/image.cpp",
+      "line": 34,
+      "include": "detours.h",
+      "target": "src/nthook32-dll/detours/detours.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/nthook32-dll/detours/modules.cpp",
+      "line": 22,
+      "include": "windows.h",
+      "target": "windows.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/nthook32-dll/detours/modules.cpp",
+      "line": 29,
+      "include": "strsafe.h",
+      "target": "strsafe.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/nthook32-dll/detours/modules.cpp",
+      "line": 35,
+      "include": "detours.h",
+      "target": "src/nthook32-dll/detours/detours.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/nthook32-dll/entry.cpp",
+      "line": 1,
+      "include": "intercept.h",
+      "target": "src/nthook32-dll/intercept.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/nthook32-dll/entry.cpp",
+      "line": 2,
+      "include": "detours/detours.h",
+      "target": "src/nthook32-dll/detours/detours.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/nthook32-dll/entry.cpp",
+      "line": 3,
+      "include": "rpc.h",
+      "target": "rpc.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/nthook32-dll/hook.h",
+      "line": 3,
+      "include": "windows.h",
+      "target": "windows.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/nthook32-dll/hook.h",
+      "line": 4,
+      "include": "common/protocol/native_hook.h",
+      "target": "src/common/protocol/native_hook.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/nthook32-dll/installer.cpp",
+      "line": 1,
+      "include": "hook.h",
+      "target": "src/nthook32-dll/hook.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/nthook32-dll/installer.cpp",
+      "line": 2,
+      "include": "detours/detours.h",
+      "target": "src/nthook32-dll/detours/detours.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/nthook32-dll/installer.cpp",
+      "line": 3,
+      "include": "common/native_image.h",
+      "target": "src/common/native_image.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/nthook32-dll/installer.cpp",
+      "line": 4,
+      "include": "wchar.h",
+      "target": "wchar.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/nthook32-dll/intercept.h",
+      "line": 3,
+      "include": "hook.h",
+      "target": "src/nthook32-dll/hook.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/nthook32-dll/legacy_classifier_arch.h",
+      "line": 5,
+      "include": "nt.h",
+      "target": [
+        "src/opennt-abi/host-compat/include/nt.h",
+        "src/opennt-abi/source/public/sdk/inc/nt.h"
+      ],
+      "disposition": "excluded-original-native-classifier"
+    },
+    {
+      "source": "src/nthook32-dll/window_titles.cpp",
+      "line": 1,
+      "include": "intercept.h",
+      "target": "src/nthook32-dll/intercept.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/nthook32-dll/window_titles.cpp",
+      "line": 2,
+      "include": "detours/detours.h",
+      "target": "src/nthook32-dll/detours/detours.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/nthook32-dll/window_titles.cpp",
+      "line": 3,
+      "include": "ntw16s-dll/attachment.h",
+      "target": "src/ntw16s-dll/attachment.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/nthook32-dll/window_titles.cpp",
+      "line": 4,
+      "include": "ntw16s-dll/native_api.h",
+      "target": "src/ntw16s-dll/native_api.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/nthook32-dll/window_titles.cpp",
+      "line": 5,
+      "include": "wchar.h",
+      "target": "wchar.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/nthook32-dll/window_titles.cpp",
+      "line": 6,
+      "include": "uxtheme.h",
+      "target": "uxtheme.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/api.h",
+      "line": 3,
+      "include": "windows.h",
+      "target": "windows.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/attachment.c",
+      "line": 1,
+      "include": "ntw16s.h",
+      "target": "src/ntw16s-dll/ntw16s.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/attachment.c",
+      "line": 2,
+      "include": "theme.h",
+      "target": "src/ntw16s-dll/theme.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/attachment.c",
+      "line": 3,
+      "include": "commctrl.h",
+      "target": "commctrl.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/attachment.c",
+      "line": 4,
+      "include": "stdlib.h",
+      "target": "stdlib.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/attachment.h",
+      "line": 3,
+      "include": "api.h",
+      "target": "src/ntw16s-dll/api.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/control_scope.c",
+      "line": 1,
+      "include": "controls.h",
+      "target": "src/ntw16s-dll/controls.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/control_scope.c",
+      "line": 2,
+      "include": "stdlib.h",
+      "target": "stdlib.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/controls.c",
+      "line": 1,
+      "include": "controls.h",
+      "target": "src/ntw16s-dll/controls.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/controls.c",
+      "line": 2,
+      "include": "control_glyphs.h",
+      "target": "src/ntw16s-dll/control_glyphs.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/controls.c",
+      "line": 3,
+      "include": "combo_glyph.h",
+      "target": "src/ntw16s-dll/combo_glyph.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/controls.c",
+      "line": 4,
+      "include": "scroll_glyphs.h",
+      "target": "src/ntw16s-dll/scroll_glyphs.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/controls.c",
+      "line": 5,
+      "include": "scroll_track.h",
+      "target": "src/ntw16s-dll/scroll_track.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/controls.c",
+      "line": 6,
+      "include": "font.h",
+      "target": "src/ntw16s-dll/font.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/controls.c",
+      "line": 7,
+      "include": "native_api.h",
+      "target": "src/ntw16s-dll/native_api.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/controls.c",
+      "line": 8,
+      "include": "commctrl.h",
+      "target": "commctrl.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/controls.c",
+      "line": 9,
+      "include": "oleacc.h",
+      "target": "oleacc.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/controls.c",
+      "line": 10,
+      "include": "stdlib.h",
+      "target": "stdlib.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/controls.c",
+      "line": 11,
+      "include": "limits.h",
+      "target": "limits.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/controls.h",
+      "line": 3,
+      "include": "win16_style.h",
+      "target": "src/ntw16s-dll/win16_style.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/dllmain.c",
+      "line": 1,
+      "include": "api.h",
+      "target": "src/ntw16s-dll/api.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/font.c",
+      "line": 1,
+      "include": "font.h",
+      "target": "src/ntw16s-dll/font.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/font.c",
+      "line": 2,
+      "include": "stdlib.h",
+      "target": "stdlib.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/font.c",
+      "line": 3,
+      "include": "string.h",
+      "target": "string.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/font.c",
+      "line": 4,
+      "include": "limits.h",
+      "target": "limits.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/font.h",
+      "line": 3,
+      "include": "api.h",
+      "target": "src/ntw16s-dll/api.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/layout.c",
+      "line": 1,
+      "include": "layout.h",
+      "target": "src/ntw16s-dll/layout.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/layout.c",
+      "line": 2,
+      "include": "string.h",
+      "target": "string.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/layout.h",
+      "line": 3,
+      "include": "windows.h",
+      "target": "windows.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_bar.c",
+      "line": 1,
+      "include": "menu_bar.h",
+      "target": "src/ntw16s-dll/menu_bar.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_bar.c",
+      "line": 2,
+      "include": "stdlib.h",
+      "target": "stdlib.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_bar.c",
+      "line": 3,
+      "include": "string.h",
+      "target": "string.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_bar.h",
+      "line": 3,
+      "include": "menu_paint.h",
+      "target": "src/ntw16s-dll/menu_paint.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_bar.h",
+      "line": 4,
+      "include": "menu_layout.h",
+      "target": "src/ntw16s-dll/menu_layout.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_bar_paint.c",
+      "line": 1,
+      "include": "menu_bar.h",
+      "target": "src/ntw16s-dll/menu_bar.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_items.c",
+      "line": 3,
+      "include": "menu_items.h",
+      "target": "src/ntw16s-dll/menu_items.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_items.c",
+      "line": 4,
+      "include": "stdlib.h",
+      "target": "stdlib.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_items.h",
+      "line": 3,
+      "include": "menu_paint.h",
+      "target": "src/ntw16s-dll/menu_paint.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_layout.c",
+      "line": 1,
+      "include": "menu_layout.h",
+      "target": "src/ntw16s-dll/menu_layout.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_layout.c",
+      "line": 2,
+      "include": "limits.h",
+      "target": "limits.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_layout.h",
+      "line": 3,
+      "include": "windows.h",
+      "target": "windows.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_paint.c",
+      "line": 4,
+      "include": "menu_paint.h",
+      "target": "src/ntw16s-dll/menu_paint.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_paint.c",
+      "line": 5,
+      "include": "menu_glyphs.h",
+      "target": "src/ntw16s-dll/menu_glyphs.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_paint.c",
+      "line": 6,
+      "include": "wchar.h",
+      "target": "wchar.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_paint.h",
+      "line": 3,
+      "include": "api.h",
+      "target": "src/ntw16s-dll/api.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_paint.h",
+      "line": 4,
+      "include": "win16_style.h",
+      "target": "src/ntw16s-dll/win16_style.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_scope.c",
+      "line": 1,
+      "include": "menu_scope.h",
+      "target": "src/ntw16s-dll/menu_scope.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_scope.c",
+      "line": 2,
+      "include": "commctrl.h",
+      "target": "commctrl.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_scope.c",
+      "line": 3,
+      "include": "stdlib.h",
+      "target": "stdlib.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_scope.c",
+      "line": 4,
+      "include": "wchar.h",
+      "target": "wchar.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/menu_scope.h",
+      "line": 3,
+      "include": "win16_style.h",
+      "target": "src/ntw16s-dll/win16_style.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/native_api.c",
+      "line": 1,
+      "include": "native_api.h",
+      "target": "src/ntw16s-dll/native_api.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/native_api.c",
+      "line": 2,
+      "include": "uxtheme.h",
+      "target": "uxtheme.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/native_api.h",
+      "line": 3,
+      "include": "api.h",
+      "target": "src/ntw16s-dll/api.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/ntw16s.h",
+      "line": 7,
+      "include": "api.h",
+      "target": "src/ntw16s-dll/api.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/ntw16s.h",
+      "line": 8,
+      "include": "attachment.h",
+      "target": "src/ntw16s-dll/attachment.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/ntw16s.h",
+      "line": 9,
+      "include": "native_api.h",
+      "target": "src/ntw16s-dll/native_api.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/ntw16s.h",
+      "line": 10,
+      "include": "win16_style.h",
+      "target": "src/ntw16s-dll/win16_style.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/ntw16s.h",
+      "line": 11,
+      "include": "controls.h",
+      "target": "src/ntw16s-dll/controls.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/ntw16s.h",
+      "line": 12,
+      "include": "font.h",
+      "target": "src/ntw16s-dll/font.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/ntw16s.h",
+      "line": 13,
+      "include": "menu_paint.h",
+      "target": "src/ntw16s-dll/menu_paint.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/scroll_layout.c",
+      "line": 1,
+      "include": "scroll_layout.h",
+      "target": "src/ntw16s-dll/scroll_layout.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/scroll_layout.c",
+      "line": 2,
+      "include": "limits.h",
+      "target": "limits.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/scroll_layout.c",
+      "line": 3,
+      "include": "stdint.h",
+      "target": "stdint.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/scroll_layout.c",
+      "line": 4,
+      "include": "string.h",
+      "target": "string.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/scroll_layout.h",
+      "line": 3,
+      "include": "windows.h",
+      "target": "windows.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/scroll_track.c",
+      "line": 1,
+      "include": "scroll_track.h",
+      "target": "src/ntw16s-dll/scroll_track.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/scroll_track.c",
+      "line": 2,
+      "include": "stdint.h",
+      "target": "stdint.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/scroll_track.c",
+      "line": 3,
+      "include": "string.h",
+      "target": "string.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/scroll_track.h",
+      "line": 3,
+      "include": "scroll_layout.h",
+      "target": "src/ntw16s-dll/scroll_layout.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/scroll_track.h",
+      "line": 4,
+      "include": "limits.h",
+      "target": "limits.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/theme.c",
+      "line": 1,
+      "include": "theme.h",
+      "target": "src/ntw16s-dll/theme.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/theme.c",
+      "line": 2,
+      "include": "native_api.h",
+      "target": "src/ntw16s-dll/native_api.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/theme.c",
+      "line": 3,
+      "include": "commctrl.h",
+      "target": "commctrl.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/theme.c",
+      "line": 4,
+      "include": "uxtheme.h",
+      "target": "uxtheme.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/theme.c",
+      "line": 5,
+      "include": "stdlib.h",
+      "target": "stdlib.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/theme.c",
+      "line": 6,
+      "include": "wchar.h",
+      "target": "wchar.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/theme.h",
+      "line": 3,
+      "include": "api.h",
+      "target": "src/ntw16s-dll/api.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/win16_style.c",
+      "line": 4,
+      "include": "win16_style.h",
+      "target": "src/ntw16s-dll/win16_style.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/win16_style.c",
+      "line": 5,
+      "include": "layout.h",
+      "target": "src/ntw16s-dll/layout.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/win16_style.c",
+      "line": 6,
+      "include": "frame_buttons.h",
+      "target": "src/ntw16s-dll/frame_buttons.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/win16_style.c",
+      "line": 7,
+      "include": "menu_bar.h",
+      "target": "src/ntw16s-dll/menu_bar.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/win16_style.c",
+      "line": 8,
+      "include": "menu_items.h",
+      "target": "src/ntw16s-dll/menu_items.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/win16_style.c",
+      "line": 9,
+      "include": "menu_scope.h",
+      "target": "src/ntw16s-dll/menu_scope.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/win16_style.c",
+      "line": 10,
+      "include": "controls.h",
+      "target": "src/ntw16s-dll/controls.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/win16_style.c",
+      "line": 11,
+      "include": "font.h",
+      "target": "src/ntw16s-dll/font.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/ntw16s-dll/win16_style.c",
+      "line": 12,
+      "include": "commctrl.h",
+      "target": "commctrl.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/win16_style.c",
+      "line": 13,
+      "include": "dwmapi.h",
+      "target": "dwmapi.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/win16_style.c",
+      "line": 14,
+      "include": "windowsx.h",
+      "target": "windowsx.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/win16_style.c",
+      "line": 15,
+      "include": "stdlib.h",
+      "target": "stdlib.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/win16_style.c",
+      "line": 16,
+      "include": "string.h",
+      "target": "string.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/ntw16s-dll/win16_style.h",
+      "line": 3,
+      "include": "api.h",
+      "target": "src/ntw16s-dll/api.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/run16-exe/bootstrap_client.c",
+      "line": 1,
+      "include": "run16-exe/frontend_bootstrap.h",
+      "target": "src/run16-exe/frontend_bootstrap.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/run16-exe/frontend_bootstrap.h",
+      "line": 3,
+      "include": "windows.h",
+      "target": "windows.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/run16-exe/frontend_bootstrap.h",
+      "line": 4,
+      "include": "stdint.h",
+      "target": "stdint.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/run16-exe/frontend_bootstrap.h",
+      "line": 5,
+      "include": "common/protocol/frontend_protocol.h",
+      "target": "src/common/protocol/frontend_protocol.h",
+      "disposition": "excluded-source-boundary"
+    },
+    {
+      "source": "src/run16-exe/frontend_scope.c",
+      "line": 1,
+      "include": "frontend_scope.h",
+      "target": "src/run16-exe/frontend_scope.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/run16-exe/frontend_scope.c",
+      "line": 2,
+      "include": "run16-exe/frontend_bootstrap.h",
+      "target": "src/run16-exe/frontend_bootstrap.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/run16-exe/frontend_scope.c",
+      "line": 3,
+      "include": "run16-exe/native_request_client.h",
+      "target": "src/run16-exe/native_request_client.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/run16-exe/frontend_scope.c",
+      "line": 4,
+      "include": "ntsrv-exe/opennt/include/base_rpc_client.h",
+      "target": "src/ntsrv-exe/opennt/include/base_rpc_client.h",
+      "disposition": "excluded-source-boundary"
+    },
+    {
+      "source": "src/run16-exe/frontend_scope.c",
+      "line": 5,
+      "include": "common/protocol/console_io.h",
+      "target": "src/common/protocol/console_io.h",
+      "disposition": "excluded-source-boundary"
+    },
+    {
+      "source": "src/run16-exe/frontend_scope.c",
+      "line": 6,
+      "include": "common/protocol/frontend_lifecycle.h",
+      "target": "src/common/protocol/frontend_lifecycle.h",
+      "disposition": "excluded-source-boundary"
+    },
+    {
+      "source": "src/run16-exe/frontend_scope.c",
+      "line": 7,
+      "include": "nthook32-dll/hook.h",
+      "target": "src/nthook32-dll/hook.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/run16-exe/frontend_scope.c",
+      "line": 8,
+      "include": "stdint.h",
+      "target": "stdint.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/run16-exe/frontend_scope.c",
+      "line": 9,
+      "include": "stdlib.h",
+      "target": "stdlib.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/run16-exe/frontend_scope.c",
+      "line": 10,
+      "include": "stdio.h",
+      "target": "stdio.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/run16-exe/frontend_scope.c",
+      "line": 11,
+      "include": "wchar.h",
+      "target": "wchar.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/run16-exe/frontend_scope.c",
+      "line": 12,
+      "include": "errno.h",
+      "target": "errno.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/run16-exe/frontend_scope.h",
+      "line": 3,
+      "include": "windows.h",
+      "target": "windows.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/run16-exe/frontend_scope.h",
+      "line": 4,
+      "include": "common/codec/native_launch.h",
+      "target": "src/common/codec/native_launch.h",
+      "disposition": "excluded-source-boundary"
+    },
+    {
+      "source": "src/run16-exe/frontend_scope.h",
+      "line": 5,
+      "include": "common/protocol/native_launch_type.h",
+      "target": "src/common/protocol/native_launch_type.h",
+      "disposition": "excluded-source-boundary"
+    },
+    {
+      "source": "src/run16-exe/hook_classification.c",
+      "line": 3,
+      "include": "nt.h",
+      "target": [
+        "src/opennt-abi/host-compat/include/nt.h",
+        "src/opennt-abi/source/public/sdk/inc/nt.h"
+      ],
+      "disposition": "excluded-original-native-classifier"
+    },
+    {
+      "source": "src/run16-exe/hook_classification.c",
+      "line": 4,
+      "include": "base_classifier.h",
+      "target": [
+        "src/ntsrv-exe/opennt/include/base_classifier.h"
+      ],
+      "disposition": "excluded-original-native-classifier"
+    },
+    {
+      "source": "src/run16-exe/hook_classification.c",
+      "line": 5,
+      "include": "nthook32-dll/hook.h",
+      "target": "src/nthook32-dll/hook.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/run16-exe/hook_classification.c",
+      "line": 6,
+      "include": "image_classification.h",
+      "target": "src/run16-exe/image_classification.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/run16-exe/hook_classification.c",
+      "line": 7,
+      "include": "common/native_image.h",
+      "target": "src/common/native_image.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/run16-exe/image_classification.c",
+      "line": 5,
+      "include": "image_classification.h",
+      "target": "src/run16-exe/image_classification.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/run16-exe/image_classification.c",
+      "line": 6,
+      "include": "common/native_image.h",
+      "target": "src/common/native_image.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/run16-exe/image_classification.h",
+      "line": 3,
+      "include": "windows.h",
+      "target": "windows.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/run16-exe/image_classification.h",
+      "line": 4,
+      "include": "common/protocol/native_launch_type.h",
+      "target": "src/common/protocol/native_launch_type.h",
+      "disposition": "excluded-source-boundary"
+    },
+    {
+      "source": "src/run16-exe/launch_options.c",
+      "line": 1,
+      "include": "launch_options.h",
+      "target": "src/run16-exe/launch_options.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/run16-exe/launch_options.h",
+      "line": 3,
+      "include": "wchar.h",
+      "target": "wchar.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/run16-exe/launch_options.h",
+      "line": 5,
+      "include": "common/protocol/window_style.h",
+      "target": "src/common/protocol/window_style.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/run16-exe/main.c",
+      "line": 5,
+      "include": "nt.h",
+      "target": [
+        "src/opennt-abi/host-compat/include/nt.h",
+        "src/opennt-abi/source/public/sdk/inc/nt.h"
+      ],
+      "disposition": "excluded-original-native-classifier"
+    },
+    {
+      "source": "src/run16-exe/main.c",
+      "line": 6,
+      "include": "base_classifier.h",
+      "target": [
+        "src/ntsrv-exe/opennt/include/base_classifier.h"
+      ],
+      "disposition": "excluded-original-native-classifier"
+    },
+    {
+      "source": "src/run16-exe/main.c",
+      "line": 7,
+      "include": "ntsrv-exe/opennt/include/base_capture.h",
+      "target": "src/ntsrv-exe/opennt/include/base_capture.h",
+      "disposition": "excluded-source-boundary"
+    },
+    {
+      "source": "src/run16-exe/main.c",
+      "line": 8,
+      "include": "ntsrv-exe/opennt/include/base_client.h",
+      "target": "src/ntsrv-exe/opennt/include/base_client.h",
+      "disposition": "excluded-source-boundary"
+    },
+    {
+      "source": "src/run16-exe/main.c",
+      "line": 9,
+      "include": "ntsrv-exe/opennt/include/base_config.h",
+      "target": "src/ntsrv-exe/opennt/include/base_config.h",
+      "disposition": "excluded-source-boundary"
+    },
+    {
+      "source": "src/run16-exe/main.c",
+      "line": 10,
+      "include": "ntsrv-exe/opennt/include/base_rpc_client.h",
+      "target": "src/ntsrv-exe/opennt/include/base_rpc_client.h",
+      "disposition": "excluded-source-boundary"
+    },
+    {
+      "source": "src/run16-exe/main.c",
+      "line": 11,
+      "include": "ntsrv-exe/opennt/include/base_rpc_client_launch_style.h",
+      "target": "src/ntsrv-exe/opennt/include/base_rpc_client_launch_style.h",
+      "disposition": "excluded-source-boundary"
+    },
+    {
+      "source": "src/run16-exe/main.c",
+      "line": 12,
+      "include": "frontend_scope.h",
+      "target": "src/run16-exe/frontend_scope.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/run16-exe/main.c",
+      "line": 13,
+      "include": "launch_options.h",
+      "target": "src/run16-exe/launch_options.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/run16-exe/main.c",
+      "line": 14,
+      "include": "image_classification.h",
+      "target": "src/run16-exe/image_classification.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/run16-exe/main.c",
+      "line": 15,
+      "include": "native_launch.h",
+      "target": "src/run16-exe/native_launch.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/run16-exe/main.c",
+      "line": 16,
+      "include": "common/protocol/console_io.h",
+      "target": "src/common/protocol/console_io.h",
+      "disposition": "excluded-source-boundary"
+    },
+    {
+      "source": "src/run16-exe/main.c",
+      "line": 17,
+      "include": "common/system_root.h",
+      "target": "src/common/system_root.h",
+      "disposition": "excluded-source-boundary"
+    },
+    {
+      "source": "src/run16-exe/main.c",
+      "line": 18,
+      "include": "common/guest_environment.h",
+      "target": "src/common/guest_environment.h",
+      "disposition": "excluded-source-boundary"
+    },
+    {
+      "source": "src/run16-exe/main.c",
+      "line": 19,
+      "include": "common/application_search.h",
+      "target": "src/common/application_search.h",
+      "disposition": "excluded-source-boundary"
+    },
+    {
+      "source": "src/run16-exe/main.c",
+      "line": 20,
+      "include": "common/protocol/frontend_lifecycle.h",
+      "target": "src/common/protocol/frontend_lifecycle.h",
+      "disposition": "excluded-source-boundary"
+    },
+    {
+      "source": "src/run16-exe/main.c",
+      "line": 21,
+      "include": "shellapi.h",
+      "target": "shellapi.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/run16-exe/main.c",
+      "line": 22,
+      "include": "stdio.h",
+      "target": "stdio.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/run16-exe/main.c",
+      "line": 23,
+      "include": "wchar.h",
+      "target": "wchar.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/run16-exe/native_launch.c",
+      "line": 7,
+      "include": "run16-exe/native_launch.h",
+      "target": "src/run16-exe/native_launch.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/run16-exe/native_launch.c",
+      "line": 8,
+      "include": "common/protocol/console_io.h",
+      "target": "src/common/protocol/console_io.h",
+      "disposition": "excluded-source-boundary"
+    },
+    {
+      "source": "src/run16-exe/native_launch.c",
+      "line": 9,
+      "include": "stdio.h",
+      "target": "stdio.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/run16-exe/native_launch.c",
+      "line": 10,
+      "include": "string.h",
+      "target": "string.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/run16-exe/native_launch.c",
+      "line": 11,
+      "include": "wchar.h",
+      "target": "wchar.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/run16-exe/native_launch.h",
+      "line": 3,
+      "include": "common/codec/native_launch.h",
+      "target": "src/common/codec/native_launch.h",
+      "disposition": "excluded-source-boundary"
+    },
+    {
+      "source": "src/run16-exe/native_request_client.c",
+      "line": 1,
+      "include": "run16-exe/native_request_client.h",
+      "target": "src/run16-exe/native_request_client.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/run16-exe/native_request_client.c",
+      "line": 2,
+      "include": "ntsrv-exe/opennt/include/base_rpc_client.h",
+      "target": "src/ntsrv-exe/opennt/include/base_rpc_client.h",
+      "disposition": "excluded-source-boundary"
+    },
+    {
+      "source": "src/run16-exe/native_request_client.c",
+      "line": 3,
+      "include": "common/native_image.h",
+      "target": "src/common/native_image.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/run16-exe/native_request_client.h",
+      "line": 3,
+      "include": "common/codec/native_launch.h",
+      "target": "src/common/codec/native_launch.h",
+      "disposition": "excluded-source-boundary"
+    },
+    {
+      "source": "src/w16style-exe/gallery.c",
+      "line": 2,
+      "include": "ntw16s-dll/ntw16s.h",
+      "target": "src/ntw16s-dll/ntw16s.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "src/w16style-exe/gallery.c",
+      "line": 4,
+      "include": "windowsx.h",
+      "target": "windowsx.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/w16style-exe/gallery.c",
+      "line": 6,
+      "include": "commctrl.h",
+      "target": "commctrl.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/w16style-exe/gallery.c",
+      "line": 8,
+      "include": "stdlib.h",
+      "target": "stdlib.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/w16style-exe/gallery.c",
+      "line": 10,
+      "include": "stdio.h",
+      "target": "stdio.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "src/w16style-exe/main.c",
+      "line": 1,
+      "include": "ntw16s-dll/ntw16s.h",
+      "target": "src/ntw16s-dll/ntw16s.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/ntw16s_dll.c",
+      "line": 3,
+      "include": "ntw16s-dll/ntw16s.h",
+      "target": "src/ntw16s-dll/ntw16s.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/ntw16s_dll.c",
+      "line": 4,
+      "include": "stdio.h",
+      "target": "stdio.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/ntw16s_dll.c",
+      "line": 5,
+      "include": "stdlib.h",
+      "target": "stdlib.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/ntw16s_terminal.c",
+      "line": 3,
+      "include": "ntw16s-dll/ntw16s.h",
+      "target": "src/ntw16s-dll/ntw16s.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/ntw16s_terminal.c",
+      "line": 4,
+      "include": "commctrl.h",
+      "target": "commctrl.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/ntw16s_terminal.c",
+      "line": 5,
+      "include": "stdio.h",
+      "target": "stdio.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_control_lifetime.c",
+      "line": 1,
+      "include": "windows.h",
+      "target": "windows.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_control_lifetime.c",
+      "line": 2,
+      "include": "commctrl.h",
+      "target": "commctrl.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_control_lifetime.c",
+      "line": 3,
+      "include": "stdio.h",
+      "target": "stdio.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_control_lifetime.c",
+      "line": 4,
+      "include": "ntw16s-dll/controls.h",
+      "target": "src/ntw16s-dll/controls.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_control_present.c",
+      "line": 2,
+      "include": "windows.h",
+      "target": "windows.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_control_present.c",
+      "line": 3,
+      "include": "stdio.h",
+      "target": "stdio.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_control_present.c",
+      "line": 4,
+      "include": "string.h",
+      "target": "string.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_control_present.c",
+      "line": 69,
+      "include": "ntw16s-dll/controls.c",
+      "target": "src/ntw16s-dll/controls.c",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_dc_failure.c",
+      "line": 2,
+      "include": "windows.h",
+      "target": "windows.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_dc_failure.c",
+      "line": 3,
+      "include": "stdio.h",
+      "target": "stdio.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_dc_failure.c",
+      "line": 4,
+      "include": "wchar.h",
+      "target": "wchar.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_dc_failure.c",
+      "line": 5,
+      "include": "ntw16s-dll/menu_paint.h",
+      "target": "src/ntw16s-dll/menu_paint.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_dc_failure.c",
+      "line": 6,
+      "include": "ntw16s-dll/menu_layout.h",
+      "target": "src/ntw16s-dll/menu_layout.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_dc_failure.c",
+      "line": 7,
+      "include": "limits.h",
+      "target": "limits.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_dc_failure.c",
+      "line": 15,
+      "include": "ntw16s-dll/win16_style.c",
+      "target": "src/ntw16s-dll/win16_style.c",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_default_button.c",
+      "line": 3,
+      "include": "ntw16s-dll/ntw16s.h",
+      "target": "src/ntw16s-dll/ntw16s.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_default_button.c",
+      "line": 4,
+      "include": "stdio.h",
+      "target": "stdio.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_demo.c",
+      "line": 3,
+      "include": "ntw16s-dll/win16_style.h",
+      "target": "src/ntw16s-dll/win16_style.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_demo.c",
+      "line": 4,
+      "include": "ntw16s-dll/layout.h",
+      "target": "src/ntw16s-dll/layout.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_demo.c",
+      "line": 5,
+      "include": "ntw16s-dll/frame_buttons.h",
+      "target": "src/ntw16s-dll/frame_buttons.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_demo.c",
+      "line": 6,
+      "include": "ntw16s-dll/font.h",
+      "target": "src/ntw16s-dll/font.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_demo.c",
+      "line": 7,
+      "include": "stdio.h",
+      "target": "stdio.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_demo.c",
+      "line": 8,
+      "include": "share.h",
+      "target": "share.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_demo.c",
+      "line": 9,
+      "include": "stdlib.h",
+      "target": "stdlib.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_demo.c",
+      "line": 10,
+      "include": "string.h",
+      "target": "string.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_demo.c",
+      "line": 11,
+      "include": "windowsx.h",
+      "target": "windowsx.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_edit_clipboard.c",
+      "line": 2,
+      "include": "windows.h",
+      "target": "windows.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_edit_clipboard.c",
+      "line": 3,
+      "include": "stdio.h",
+      "target": "stdio.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_edit_clipboard.c",
+      "line": 4,
+      "include": "wchar.h",
+      "target": "wchar.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_edit_clipboard.c",
+      "line": 5,
+      "include": "string.h",
+      "target": "string.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_edit_clipboard.c",
+      "line": 6,
+      "include": "ntw16s-dll/controls.h",
+      "target": "src/ntw16s-dll/controls.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_font.c",
+      "line": 3,
+      "include": "ntw16s-dll/font.h",
+      "target": "src/ntw16s-dll/font.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_font.c",
+      "line": 4,
+      "include": "stdio.h",
+      "target": "stdio.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_font.c",
+      "line": 5,
+      "include": "string.h",
+      "target": "string.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_gallery.c",
+      "line": 3,
+      "include": "ntw16s-dll/win16_style.h",
+      "target": "src/ntw16s-dll/win16_style.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_gallery.c",
+      "line": 4,
+      "include": "ntw16s-dll/layout.h",
+      "target": "src/ntw16s-dll/layout.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_gallery.c",
+      "line": 5,
+      "include": "ntw16s-dll/menu_paint.h",
+      "target": "src/ntw16s-dll/menu_paint.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_gallery.c",
+      "line": 6,
+      "include": "ntw16s-dll/menu_bar.h",
+      "target": "src/ntw16s-dll/menu_bar.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_gallery.c",
+      "line": 7,
+      "include": "ntw16s-dll/controls.h",
+      "target": "src/ntw16s-dll/controls.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_gallery.c",
+      "line": 8,
+      "include": "ntw16s-dll/font.h",
+      "target": "src/ntw16s-dll/font.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_gallery.c",
+      "line": 9,
+      "include": "ntw16s-dll/scroll_glyphs.h",
+      "target": "src/ntw16s-dll/scroll_glyphs.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_gallery.c",
+      "line": 10,
+      "include": "ntw16s-dll/scroll_layout.h",
+      "target": "src/ntw16s-dll/scroll_layout.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_gallery.c",
+      "line": 11,
+      "include": "stdio.h",
+      "target": "stdio.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_gallery.c",
+      "line": 12,
+      "include": "stdlib.h",
+      "target": "stdlib.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_gallery.c",
+      "line": 13,
+      "include": "windowsx.h",
+      "target": "windowsx.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_gallery.c",
+      "line": 14,
+      "include": "commctrl.h",
+      "target": "commctrl.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_gallery.c",
+      "line": 15,
+      "include": "oleacc.h",
+      "target": "oleacc.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_list_tabs.c",
+      "line": 3,
+      "include": "windows.h",
+      "target": "windows.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_list_tabs.c",
+      "line": 4,
+      "include": "stdio.h",
+      "target": "stdio.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_list_tabs.c",
+      "line": 5,
+      "include": "ntw16s-dll/font.h",
+      "target": "src/ntw16s-dll/font.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_list_tabs.c",
+      "line": 6,
+      "include": "ntw16s-dll/controls.h",
+      "target": "src/ntw16s-dll/controls.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_menu_dispatch.c",
+      "line": 3,
+      "include": "ntw16s-dll/win16_style.h",
+      "target": "src/ntw16s-dll/win16_style.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_menu_dispatch.c",
+      "line": 4,
+      "include": "ntw16s-dll/controls.h",
+      "target": "src/ntw16s-dll/controls.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_menu_dispatch.c",
+      "line": 5,
+      "include": "commctrl.h",
+      "target": "commctrl.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_menu_dispatch.c",
+      "line": 6,
+      "include": "stdio.h",
+      "target": "stdio.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_scroll_api.c",
+      "line": 1,
+      "include": "windows.h",
+      "target": "windows.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_scroll_api.c",
+      "line": 2,
+      "include": "oleacc.h",
+      "target": "oleacc.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_scroll_api.c",
+      "line": 3,
+      "include": "stdio.h",
+      "target": "stdio.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_scroll_geometry.c",
+      "line": 1,
+      "include": "ntw16s-dll/scroll_layout.h",
+      "target": "src/ntw16s-dll/scroll_layout.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_scroll_geometry.c",
+      "line": 2,
+      "include": "ntw16s-dll/scroll_track.h",
+      "target": "src/ntw16s-dll/scroll_track.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/app/win16_style_scroll_geometry.c",
+      "line": 3,
+      "include": "limits.h",
+      "target": "limits.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_scroll_geometry.c",
+      "line": 4,
+      "include": "stdio.h",
+      "target": "stdio.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_scroll_geometry.c",
+      "line": 5,
+      "include": "stdlib.h",
+      "target": "stdlib.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_sizebox.c",
+      "line": 2,
+      "include": "windows.h",
+      "target": "windows.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_sizebox.c",
+      "line": 3,
+      "include": "stdio.h",
+      "target": "stdio.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_sizebox.c",
+      "line": 4,
+      "include": "string.h",
+      "target": "string.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/app/win16_style_sizebox.c",
+      "line": 5,
+      "include": "ntw16s-dll/controls.h",
+      "target": "src/ntw16s-dll/controls.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/component-integration/native_title_hook_test.cpp",
+      "line": 1,
+      "include": "nthook32-dll/hook.h",
+      "target": "src/nthook32-dll/hook.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/component-integration/native_title_hook_test.cpp",
+      "line": 2,
+      "include": "stdio.h",
+      "target": "stdio.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/component-integration/native_title_hook_test.cpp",
+      "line": 3,
+      "include": "wchar.h",
+      "target": "wchar.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/component-integration/native_title_hook_test.cpp",
+      "line": 4,
+      "include": "uxtheme.h",
+      "target": "uxtheme.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/component-integration/native_title_hook_test.rc",
+      "line": 1,
+      "include": "windows.h",
+      "target": "windows.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/component-integration/nthook_install_test.cpp",
+      "line": 1,
+      "include": "nthook32-dll/hook.h",
+      "target": "src/nthook32-dll/hook.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/component-integration/nthook_install_test.cpp",
+      "line": 2,
+      "include": "nthook32-dll/detours/detours.h",
+      "target": "src/nthook32-dll/detours/detours.h",
+      "disposition": "local-reviewed-seed"
+    },
+    {
+      "source": "tests/component-integration/nthook_install_test.cpp",
+      "line": 3,
+      "include": "stdio.h",
+      "target": "stdio.h",
+      "disposition": "SDK-or-toolchain"
+    },
+    {
+      "source": "tests/component-integration/nthook_install_test.cpp",
+      "line": 4,
+      "include": "wchar.h",
+      "target": "wchar.h",
+      "disposition": "SDK-or-toolchain"
+    }
+  ]
+}
