@@ -13,7 +13,7 @@ static BOOL absolute(PCWSTR p,size_t n)
     if(dos_absolute(p,n))return TRUE;
     if(n<5 || p[0]!=L'\\' || p[1]!=L'\\')return FALSE;
     if(p[2]==L'?' && p[3]==L'\\')return dos_absolute(p+4,n-4) ||
-        (n>=8 && !wcsncmp(p+4,L"UNC\\",4) && unc_absolute(p+8));
+        (n>=8 && !_wcsnicmp(p+4,L"UNC\\",4) && unc_absolute(p+8));
     return p[2]!=L'.' && p[2]!=L'?' && unc_absolute(p+2);
 }
 DWORD ntw16s_packet_parse(const void *data,DWORD bytes,DWORD machine,ntw16s_context *context)

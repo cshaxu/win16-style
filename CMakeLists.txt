@@ -130,4 +130,15 @@ if(BUILD_TESTING)
   set_tests_properties(core/runtime core/runtime-native core/frames core/font core/font-dpi96 core/tabs core/lifetime
     core/default core/terminal core/sizebox-native core/sizebox-styled core/geometry
     PROPERTIES TIMEOUT 100 RUN_SERIAL TRUE)
+  add_executable(launch-failures tests/run16s-exe/failures.cpp)
+  target_link_libraries(launch-failures PRIVATE ntw16s-installer)
+  target_compile_options(launch-failures PRIVATE /W4 /WX /utf-8)
+  add_test(NAME launch/failures COMMAND launch-failures ${CMAKE_SOURCE_DIR}/build/.ninja/x86/launch-failures.exe)
+  set_tests_properties(launch/failures PROPERTIES TIMEOUT 50 RUN_SERIAL TRUE)
+  if(WIN16STYLE_ARCH STREQUAL "x64")
+    add_test(NAME launch/cli-failures COMMAND ${test_python} ${CMAKE_SOURCE_DIR}/tests/run16s-exe/cli_failures.py
+      $<TARGET_FILE:run16s> ${CMAKE_SOURCE_DIR}/build/.ninja/x86/ntw16s32.dll $<TARGET_FILE:ntw16s>
+      ${CMAKE_SOURCE_DIR}/build/.ninja/x86/launch-target.exe $<TARGET_FILE:launch-target>)
+    set_tests_properties(launch/cli-failures PROPERTIES TIMEOUT 130 RUN_SERIAL TRUE)
+  endif()
 endif()

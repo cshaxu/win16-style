@@ -23,5 +23,11 @@ int main(void)
     CHECK(ntw16s_packet_parse(copy,h.bytes,machine,&context)==ERROR_INVALID_DATA);
     memcpy(copy,raw,h.bytes);((WCHAR *)(copy+sizeof(h)))[1]=L'_';
     CHECK(ntw16s_packet_parse(copy,h.bytes,machine,&context)==ERROR_INVALID_DATA);
+    {static const WCHAR *const paths[]={L"C:\\Package\\",L"\\\\server\\share\\Package\\",
+        L"\\\\?\\C:\\Package\\",L"\\\\?\\UNC\\server\\share\\",L"\\\\?\\unc\\server\\share\\"};
+        for(unsigned i=0;i<sizeof(paths)/sizeof(paths[0]);++i){
+            h.directory_bytes=(DWORD)((wcslen(paths[i])+1)*sizeof(WCHAR));h.bytes=sizeof(h)+h.directory_bytes;
+            memcpy(copy,&h,sizeof(h));memcpy(copy+sizeof(h),paths[i],h.directory_bytes);
+            CHECK(!ntw16s_packet_parse(copy,h.bytes,machine,&context));}}
     puts("PAYLOAD PASS fixed header, bounds, machine, flags, reserved fields, absolute path, termination");return 0;
 }

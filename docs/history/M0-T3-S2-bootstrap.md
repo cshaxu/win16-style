@@ -64,7 +64,9 @@ x64 f32d7016f55f67d6dcdfc54bbdadac437bff2890914c2254d6b5522e22f0e718。
 两宽31名字/32实际ordinal（1 NONAME）、静态CRT、六系统DLL imports核验通过，
 版本0.3.0.0/M0 T3。77本地回执、来源23/治理13负例与diff --check通过。
 
-S2已验证；实际交付统计、推送及提交复核后关闭，整个T3仍待S3。
+P1 fc12e3c已推送；实际20文件+629/-54，git show --check通过。协调角色
+读取实际entry事务、窗口scope/私有绑定、ABI/helper及夹具/回执差异，未发现
+超出T3范围或未处置S2失败。关闭S2，进入S3；整个T3仍待任务级审计。
 
 实际 staged numstat：src +209/-9（含组件说明），tests +218/-1（含8行资源），
 CMake +22/-0，PE工具 +3/-3；净新增439行。窗口/字体/清理仍由唯一renderer

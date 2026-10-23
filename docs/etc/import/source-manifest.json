@@ -263,11 +263,11 @@
       "blob": "2fe7e548dca94cbd4ae3974ebcec7bb8cd6cc0f1",
       "size": 98,
       "sha256": "2f37ebe36f1427620d0a034521f491570bc235913338b8b414b39e66e204bec6",
-      "action": "adapt",
-      "destination": "src/ntw16s-dll/injection/ntw16s32.def",
+      "action": "reference",
+      "destination": null,
       "notice": "project-authored-review",
-      "reason": "Strip broker/VDM/launcher modes; merge DLL, rewrite payload, bind renderer directly; rewrite old export definitions",
-      "receiver": "launcher-injection/descendant-propagation"
+      "reason": "T3 convergence: existing root ntw16s32/64.def owns the merged ABI3 and NONAME helper1; no second source-Hook export owner or legacy diagnostic/anchor exports",
+      "receiver": "launcher-injection/T3-completion"
     },
     {
       "source": "src/nthook32-dll/nthook64.def",
@@ -275,11 +275,11 @@
       "blob": "b4278dfb7a058f67669bfe9157b1cb4fafa0f446",
       "size": 98,
       "sha256": "b0a49360d7aad4fb4fea2ce87541cbd95670b404b83c0006c7309311bce03e5f",
-      "action": "adapt",
-      "destination": "src/ntw16s-dll/injection/ntw16s64.def",
+      "action": "reference",
+      "destination": null,
       "notice": "project-authored-review",
-      "reason": "Strip broker/VDM/launcher modes; merge DLL, rewrite payload, bind renderer directly; rewrite old export definitions",
-      "receiver": "launcher-injection/descendant-propagation"
+      "reason": "T3 convergence: existing root ntw16s32/64.def owns the merged ABI3 and NONAME helper1; no second source-Hook export owner or legacy diagnostic/anchor exports",
+      "receiver": "launcher-injection/T3-completion"
     },
     {
       "source": "src/nthook32-dll/window_titles.cpp",

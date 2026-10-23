@@ -563,9 +563,9 @@
       "path": "src/ntw16s-dll/injection/context.cpp",
       "source": "src/nthook32-dll/context.cpp",
       "source_blob": "f435db72a3475ef34d921a57d1632d6990d407af",
-      "sha256": "ec223eb1adcc6a15fa5298ca6d2430714525eba05dffd7751b2f6ad46f7c424a",
+      "sha256": "c443a1d66f6e5d95ad8bb0889bfe6c34c8d4e6564d4487240384d495dcc81d76",
       "disposition": "adapt",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md",
+      "review": "T3 S3 final path/CLI contract audit; UNC namespace case and actual exit/I-O cases; docs/proposals/launcher-injection.md",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -608,9 +608,9 @@
       "path": "tests/run16s-exe/payload.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b217d13c2d11f519a94451abbf6f876dbab680c23534bd65a69c76fdca9e7a89",
+      "sha256": "e093caf2734a714d21a70ec978daec18fb7adeaa0d13608a684c0381d01afbcc",
       "disposition": "authored",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md",
+      "review": "T3 S3 final path/CLI contract audit; UNC namespace case and actual exit/I-O cases; docs/proposals/launcher-injection.md",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -693,6 +693,24 @@
       "disposition": "authored",
       "review": "T3 S2 native MB_OK single-button oracle, exact witnesses and Unicode targets; docs/history/M0-T3-S2-bootstrap.md",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
+    },
+    {
+      "path": "tests/run16s-exe/failures.cpp",
+      "source": null,
+      "source_blob": null,
+      "sha256": "164aa7a9940e6599e6ef051eb0554bb82a9135039a81da338d1872a405c9f01a",
+      "disposition": "authored",
+      "review": "T3 S3 real permission/initialization/helper/CLI failure paths; docs/proposals/launcher-injection.md",
+      "notice": "Project-authored test, repository MIT"
+    },
+    {
+      "path": "tests/run16s-exe/cli_failures.py",
+      "source": null,
+      "source_blob": null,
+      "sha256": "03ba86abe0cbd34ae7e55563ab01811be8b059f89441060e6c52e1b4d75511ca",
+      "disposition": "authored",
+      "review": "T3 S3 final path/CLI contract audit; UNC namespace case and actual exit/I-O cases; docs/proposals/launcher-injection.md",
+      "notice": "Project-authored test, repository MIT"
     }
   ]
 }
