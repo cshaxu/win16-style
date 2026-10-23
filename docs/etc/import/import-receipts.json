@@ -374,7 +374,7 @@
       "path": "src/ntw16s-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "0a873d1d1daf5df85bb998c20cb498756ee9a1f6df8228161549272357018b67",
+      "sha256": "374ba3c788c6b36f698329c33adf7c160e5db6eae67c0ea773eae70cf4494ea4",
       "disposition": "authored",
       "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md",
       "notice": "Project-authored, repository MIT"
@@ -590,7 +590,7 @@
       "path": "src/run16s-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "5b5f2776fc4c33fd8a22ecaab9c3fae06ae872ec8fc719cf916c890a486289c8",
+      "sha256": "a32621a7bd1acd57c5f284848e15dd4596b562eb77a789f856d8f13e7db36715",
       "disposition": "authored",
       "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
@@ -783,6 +783,42 @@
       "disposition": "authored",
       "review": "T4 S2 native/injected field and owned-job rollback contracts; docs/history/M0-T4-S2-contract.md",
       "notice": "Project-authored fixture, repository MIT"
+    },
+    {
+      "path": "src/demo-exe/main.c",
+      "source": "src/w16style-exe/main.c",
+      "source_blob": "aab6a106d079d566dc8901769add516f0b0d2bb1",
+      "sha256": "5f267968288b727e44f48d93ec5c36605f04796507bfbd88c75ad67557571677",
+      "disposition": "adapt",
+      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md",
+      "notice": "Project-authored source per frozen W16Style README; no third-party artwork"
+    },
+    {
+      "path": "src/demo-exe/gallery.c",
+      "source": "src/w16style-exe/gallery.c",
+      "source_blob": "9a2c1eea0c8348a1609d56507c6e0c3903a0a423",
+      "sha256": "bf988db41d1fded0fe018f075199863496aef598b96d10f48fae7cfb615ebb12",
+      "disposition": "adapt",
+      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md",
+      "notice": "Project-authored source per frozen W16Style README; no third-party artwork"
+    },
+    {
+      "path": "src/demo-exe/version.rc",
+      "source": null,
+      "source_blob": null,
+      "sha256": "314494d5dbd6996099829ba0585dd3b616af8b87a4f7435174c64f643d5858c9",
+      "disposition": "authored",
+      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md",
+      "notice": "Project-authored source per frozen W16Style README; no third-party artwork"
+    },
+    {
+      "path": "src/demo-exe/README.md",
+      "source": null,
+      "source_blob": null,
+      "sha256": "128f8367168db192b7b001428f78f01f2a52f28255cf10eff9981b6e1064b0de",
+      "disposition": "authored",
+      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md",
+      "notice": "Project-authored source per frozen W16Style README; no third-party artwork"
     }
   ]
 }
