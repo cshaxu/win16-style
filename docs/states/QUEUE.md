@@ -9,11 +9,11 @@ CURRENT 是唯一活动工作权威；本文件拥有顺序，各 proposal 拥�
 
 | 顺序 | T 候选 | 前置完成条件 | 核心交付/任务级退出条件 |
 | --- | --- | --- | --- |
-| 1 | [纯原生 demo 与启动对照](../proposals/native-demo.md) | 启动与传播任务关闭 | x64 demo.exe 裸启动原生、经 run16s 启动 Win16；不链接/调用样式 API |
-| 2 | [独立包与 M0 产品验收](../proposals/package-acceptance.md) | 前置任务关闭且已知失败有处置 | 四文件同批构建、PE/哈希/依赖核验、完整矩阵与真实交互、可重现说明及跨任务审计 |
+| 1 | [独立包与 M0 产品验收](../proposals/package-acceptance.md) | 前置任务关闭且已知失败有处置 | 四文件同批构建、PE/哈希/依赖核验、完整矩阵与真实交互、可重现说明及跨任务审计 |
 
 [启动器与首次自动附着](../proposals/launcher-injection.md)已关闭；
-[子孙传播与创建语义](../proposals/descendant-propagation.md)已准入当前任务，活动包见CURRENT。
-下一候选为纯原生demo与启动对照；用户已授权在前置关闭后自动准入。
+[子孙传播与创建语义](../proposals/descendant-propagation.md)已关闭。
+[纯原生demo与启动对照](../proposals/native-demo.md)已准入当前任务，活动包见CURRENT。
+下一候选为独立包与M0产品验收，前置关闭后按用户授权自动准入。
 后续项依赖前项交付，不能跨过失败项
 直接发布；不增加额外 milestone、产品组件或产品文件。

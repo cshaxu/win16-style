@@ -68,3 +68,10 @@ S3生产零变更；测试failures.cpp +14/-3，tests/README +13/-0。来源正�
 未执行删除，排除当前PID后重核无owned进程。祖先/子项无reparse且目标均为仓库
 build内精确路径，回收t4-propagate 702文件27286092字节，x86/x64 Testing
 各2文件1363/1746字节；稳定.ninja保留。没有删除用户或兄弟项目文件。
+
+## Actual review and closure
+
+S3 P1 f0eabb2已推送，实际9文件+126/-28。协调角色读取实际helper故障差异、
+六单位证据、状态/回执及S1/S2提交；三个P的git show --check通过，远端main
+与f0eabb2一致。没有未处置T4缺项，关闭S3及T4；按用户自动准入授权进入T5。
+本P2记录关闭/准入，不把后续demo和四文件验收提前算作完成。

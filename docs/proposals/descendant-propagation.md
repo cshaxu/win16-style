@@ -1,6 +1,6 @@
 # 子孙传播与创建语义
 
-状态：用户自动准入授权下已准入 M0 T4，活动S与基线以CURRENT为准。固定 M0；[前置任务](launcher-injection.md)须交付并关闭。
+状态：M0 T4已完成并关闭，见[任务审计](../history/M0-T4-completion.md)。固定 M0；[前置任务](launcher-injection.md)须交付并关闭。
 共同来源与验收矩阵见[导入总览](native-style-import.md)，顺序见[QUEUE](../states/QUEUE.md)。
 
 ## 任务边界与完成条件
