@@ -2,13 +2,13 @@
 
 ## Current Work
 
-无活动任务包。M0 T2“双位宽样式核心”已交付并完成全任务审计，S1/S2/S3 均关闭。
-下一候选为启动器与首次自动附着，尚未准入，不预分配 T 号。
+M0 T3“启动器与首次自动附着”已准入，当前 S1 active。
+用户授权自动按队列完成全部剩余 T；每项通过独立审计后继续下一项，不重复询问准入。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
-- Last allocated T: 2
+- Last allocated T: 3
 - Last allocated Td S: 3
 - Last delivery: M0 T2 S3 P2 (本次关闭记录)
 
@@ -36,3 +36,24 @@ S2 6243b15 的完整核心回归两宽各 13/13；来源 23/治理 13 负例及�
 
 [M0 Td S3 层级纠正](../history/M0-Td-S3-task-level.md)：T 级候选各自拥有 S，
 队列不预分配 T 号；此前治理记录继续保留在 history。
+
+## M0 T3 S1 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | New；T2 关闭后分配 T3，从 S1 开始 |
+| Admission And Approval | 用户明确授权自动准入并完成全部预定 T；当前只激活 T3 S1 |
+| Objective | 建立 x64 CLI、目标位宽选择、唯一挂起目标安装事务，导入已审 Detours 私有实现 |
+| Non-goals | 本 S 不宣称自动窗口附着通过，不提前发布完整包；传播由下一 T 接收 |
+| Reference Baseline | e29b3e4；T2 双宽 ABI3 核心、53 回执；固定来源 5b0b65f66c281050aa4ce1454c6cd31441a6d484 |
+| Candidate Proposal | [启动器与首次自动附着](../proposals/launcher-injection.md)；T1 INDEPENDENCE 已选事务/载荷/10秒预算 |
+| Files And ABI Surface | run16s-exe、新增 DLL 私有 injection/Detours、构建/测试/tools、回执/状态/历史；helper ordinal1 在 S2 落地 |
+| Applicable Rules | 执行/架构/编码/文档规则与设计、来源策略、固定来源/ABI/独立化约束 |
+| Verification | 明确 CLI 引用/Unicode/wait/错误契约；真实挂起目标两宽 PE/安装暂存、载荷边界、失败清理，源码/治理/exit/diff门禁 |
+| Expected Markers | run16s x64 与双宽 installer 编译；借用目标只安装不终止，创建者只恢复本层挂起或回滚本层目标；无 broker/第五产物 |
+| Asset Needs | build/.ninja/x86/x64 稳定图；build/t3-launch scratch 日志/测试包/结果，owned hidden worker 单轮600秒/500MB；任务末回收及 Testing 日志 |
+| Reporting Requirements | 导入差异/声明、CLI契约、真实暂存与目标初始化区别、失败/限制及实际提交统计 |
+| Stop Conditions | 目标提前执行、位宽误判、loader-lock禁用操作、无限等待或源依赖先修复；不以模块加载冒充附着 |
+| Exit Criteria | 本地双宽 installer 和 CLI 有限契约验证通过，推送并实际复核后进入 S2 引导/自动附着 |
+| Original Owner Request | 请你自动准入 完成所有t任务预定内容 毕竟ntvdm64都已经实现过了 |
+| Similar-Issue Sweep | 全部A/W创建入口、两宽选择、路径编码/长度、helper等待及终止清理、载荷边界、句柄所有者 |

@@ -477,6 +477,159 @@
       "disposition": "authored",
       "review": "T2 S2 actual-DLL runtime/native counterpart and process-owned private desktop; docs/history/M0-T2-S2-runtime.md",
       "notice": "Project-authored, repository MIT"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/detours/LICENSE.md",
+      "source": "src/nthook32-dll/detours/LICENSE.md",
+      "source_blob": "e6a4c563056daedce20576a96a4d77b02a7dc8b6",
+      "sha256": "b301808b732cfaa60df2b4b422d78cd97d2a15058b207e7e33f0535ba5170dd6",
+      "disposition": "retain",
+      "review": "T3 S1 fixed Detours slice; W helper deadline/command adaptation; docs/proposals/launcher-injection.md",
+      "notice": "Microsoft Detours MIT; original file copyright and LICENSE.md preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/detours/creatwth.cpp",
+      "source": "src/nthook32-dll/detours/creatwth.cpp",
+      "source_blob": "17b12f26703d2c0d5ee26c02197cca8fb52768b8",
+      "sha256": "6293aea5fd9281c687429462bcccd3f063e83b990a0b8e196946ebb03b0ad6f9",
+      "disposition": "adapt",
+      "review": "T3 S1 fixed Detours slice; W helper deadline/command adaptation; docs/proposals/launcher-injection.md",
+      "notice": "Microsoft Detours MIT; original file copyright and LICENSE.md preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/detours/detours.cpp",
+      "source": "src/nthook32-dll/detours/detours.cpp",
+      "source_blob": "8345c4db448d08139c2b2211dd754dfd183f3c4e",
+      "sha256": "df415e05f985afe88f4b03ba34d6f5abce47edda11cd66d4f72902b801113eb7",
+      "disposition": "retain",
+      "review": "T3 S1 fixed Detours slice; W helper deadline/command adaptation; docs/proposals/launcher-injection.md",
+      "notice": "Microsoft Detours MIT; original file copyright and LICENSE.md preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/detours/detours.h",
+      "source": "src/nthook32-dll/detours/detours.h",
+      "source_blob": "fe7acf110b298ad8475d5a97aff0155aea3bec6a",
+      "sha256": "7b498657d8db4cff2d488b1e65cfeeb5b1305de7f32d23588b1fa86aaa46fcf7",
+      "disposition": "retain",
+      "review": "T3 S1 fixed Detours slice; W helper deadline/command adaptation; docs/proposals/launcher-injection.md",
+      "notice": "Microsoft Detours MIT; original file copyright and LICENSE.md preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/detours/disasm.cpp",
+      "source": "src/nthook32-dll/detours/disasm.cpp",
+      "source_blob": "f002ff49ebe723726b2392e1bd85ed9ba7b2affc",
+      "sha256": "6c44283ac6987d77d92aca93a6a8e9f0dc1f7caf8a2b310e4b374853e9136236",
+      "disposition": "retain",
+      "review": "T3 S1 fixed Detours slice; W helper deadline/command adaptation; docs/proposals/launcher-injection.md",
+      "notice": "Microsoft Detours MIT; original file copyright and LICENSE.md preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/detours/image.cpp",
+      "source": "src/nthook32-dll/detours/image.cpp",
+      "source_blob": "21ff501dc509f0e00fdeb9dea995fe976c7e8ebb",
+      "sha256": "8e7c94b335237565f3dce14b6dfd9dd88876cf10fb55b9c910f12ae9c38bd190",
+      "disposition": "retain",
+      "review": "T3 S1 fixed Detours slice; W helper deadline/command adaptation; docs/proposals/launcher-injection.md",
+      "notice": "Microsoft Detours MIT; original file copyright and LICENSE.md preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/detours/modules.cpp",
+      "source": "src/nthook32-dll/detours/modules.cpp",
+      "source_blob": "341673085f57f4ce89b361ff8e71298e27098a99",
+      "sha256": "4a3f970eb539a4379996eb17e14bd75902fe4f34d566cfd19682ff19315cbc6f",
+      "disposition": "retain",
+      "review": "T3 S1 fixed Detours slice; W helper deadline/command adaptation; docs/proposals/launcher-injection.md",
+      "notice": "Microsoft Detours MIT; original file copyright and LICENSE.md preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/detours/uimports.cpp",
+      "source": "src/nthook32-dll/detours/uimports.cpp",
+      "source_blob": "052be9baeab594a94212e33caa7d46dff4fee0f2",
+      "sha256": "2b2d92df4c5412906d7e6830a7c2836d78e368a6bef509be028566cbd921e83b",
+      "disposition": "retain",
+      "review": "T3 S1 fixed Detours slice; W helper deadline/command adaptation; docs/proposals/launcher-injection.md",
+      "notice": "Microsoft Detours MIT; original file copyright and LICENSE.md preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/injection.h",
+      "source": "src/nthook32-dll/hook.h",
+      "source_blob": "ed368c6a8b71cda0a1a84e57a542ddf8452de1ad",
+      "sha256": "234a506f289ffbd5428c1620cc614589e443a31f6f93bd5e9bd270434b9a4164",
+      "disposition": "adapt",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md",
+      "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/context.cpp",
+      "source": "src/nthook32-dll/context.cpp",
+      "source_blob": "f435db72a3475ef34d921a57d1632d6990d407af",
+      "sha256": "ec223eb1adcc6a15fa5298ca6d2430714525eba05dffd7751b2f6ad46f7c424a",
+      "disposition": "adapt",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md",
+      "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/installer.cpp",
+      "source": "src/nthook32-dll/installer.cpp",
+      "source_blob": "84e78935b3079089569b9167eaed994df3220ebd",
+      "sha256": "6cb38455975e048284f1e0d09229942c26d4ab39644e82b2f095b55733f6537e",
+      "disposition": "adapt",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md",
+      "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
+    },
+    {
+      "path": "src/run16s-exe/main.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ef7cb3afb1145f98b80c6d57f944bf99eb4e0af74a5458c7361bbe16eca3f5de",
+      "disposition": "authored",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md",
+      "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
+    },
+    {
+      "path": "src/run16s-exe/version.rc",
+      "source": null,
+      "source_blob": null,
+      "sha256": "92b838a2a6bb7be2b5b2eeb0553497ba24a909d203e76d616ae117f1b2e411f8",
+      "disposition": "authored",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md",
+      "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
+    },
+    {
+      "path": "src/run16s-exe/README.md",
+      "source": null,
+      "source_blob": null,
+      "sha256": "f2d3fc8a812acfbff796e67839a7896da4b19eeda4bf78828c43fc2637835a2f",
+      "disposition": "authored",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md",
+      "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
+    },
+    {
+      "path": "tests/run16s-exe/payload.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "b217d13c2d11f519a94451abbf6f876dbab680c23534bd65a69c76fdca9e7a89",
+      "disposition": "authored",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md",
+      "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
+    },
+    {
+      "path": "tests/run16s-exe/staging.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "9ff14668fab0c530b0e3acf49030bdf50fb179183a378d18ae49a64828614cb4",
+      "disposition": "authored",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md",
+      "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
+    },
+    {
+      "path": "tests/run16s-exe/cli.py",
+      "source": null,
+      "source_blob": null,
+      "sha256": "2deb83397ee6c19dc347269616ce1cc3bb8b2490a1d807a1fa78b67b4dda725d",
+      "disposition": "authored",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md",
+      "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     }
   ]
 }

@@ -1,17 +1,18 @@
 [CmdletBinding()]
 param(
     [ValidatePattern('^[a-z0-9-]+$')][string]$RunName='core',
+    [ValidatePattern('^t[0-9]+-[a-z-]+$')][string]$TaskRoot='t2-core',
     [ValidatePattern('^[a-zA-Z0-9_/^$.*|()-]+$')][string]$TestPattern='^core/abi$',
     [switch]$Worker,
     [ValidateRange(20,600)][int]$TimeoutSeconds=180
 )
 $ErrorActionPreference='Stop'
 $repo=Split-Path $PSScriptRoot -Parent
-$scratch=Join-Path $repo "build/t2-core/$RunName"
+$scratch=Join-Path $repo "build/$TaskRoot/$RunName"
 if(!$Worker){
     if(Test-Path -LiteralPath $scratch){throw 'Select a fresh run name; previous logs must be inspected before reuse'}
     New-Item -ItemType Directory -Force -Path $scratch | Out-Null
-    $arguments=@('-NoProfile','-File',('"'+$PSCommandPath+'"'),'-Worker','-RunName',$RunName,'-TestPattern',('"'+$TestPattern+'"'),'-TimeoutSeconds',$TimeoutSeconds)
+    $arguments=@('-NoProfile','-File',('"'+$PSCommandPath+'"'),'-Worker','-RunName',$RunName,'-TaskRoot',$TaskRoot,'-TestPattern',('"'+$TestPattern+'"'),'-TimeoutSeconds',$TimeoutSeconds)
     $job=Start-Process (Join-Path $PSHOME 'pwsh.exe') -ArgumentList $arguments -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $scratch 'worker.log') -RedirectStandardError (Join-Path $scratch 'worker.err')
     @{pid=$job.Id;result=(Join-Path $scratch 'result.json');log=(Join-Path $scratch 'run.log');timeout_seconds=$TimeoutSeconds}|ConvertTo-Json
     return

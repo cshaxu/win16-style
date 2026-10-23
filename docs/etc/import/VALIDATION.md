@@ -2,7 +2,8 @@
 
 执行 `python tools/verify_source_manifest.py --self-test`，需要 Python 3.10+
 标准库。默认只读取本仓库，不运行 git、不访问网络/兄弟目录，也不复制源码。
-CI 执行同一命令。目前应报告 124 decisions / 294 includes / 0 local imports。
+CI 执行同一命令。来源为 124 decisions / 294 includes；local imports 随已审核准的
+实际导入增长，以 import-receipts.json 和校验输出为准。
 
 该工具校验固定候选 inventory 与扩展清单的对应、处置/目的路径/接收者/声明、
 源 blob/size/SHA 字段、全部 include 接收者、限制资源必须 replace、ABI 决策、
