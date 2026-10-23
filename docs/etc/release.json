@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T6 S1 P1",
-  "stage": "development",
+  "delivery": "M0 T6 S2 P1",
+  "stage": "development-automatic-verified-physical-pending",
   "version": "0.6.0.0",
   "package_directory": "assets/binary",
   "source_inputs": [
@@ -493,26 +493,33 @@
     }
   ],
   "source_inputs_sha256": "a9bcbcbeef7dd5906bde771aab2934ee8e3b1d5457d9a465e01412994b3c7bc8",
-  "source_snapshot_sha256": "c4ded54e802187e87f3aa46ee0b68991b1b3a4c1c12a22eab49a84a17bca41df",
-  "toolchains": [
-    {
-      "architecture": "x86",
-      "target": "i686-w64-mingw32",
-      "version": "16.1.0",
-      "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6"
-    },
-    {
-      "architecture": "x64",
-      "target": "x86_64-w64-mingw32",
-      "version": "16.1.0",
-      "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad"
-    }
-  ],
+  "source_snapshot_sha256": "1089bcd956178c37867a42e31d97722391b9d9f43c51c1c918d1aeff3683c423",
+  "toolchains": {
+    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
+    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
+    "toolchains": [
+      {
+        "architecture": "x86",
+        "version": "16.1.0",
+        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
+        "target": "i686-w64-mingw32",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe"
+      },
+      {
+        "architecture": "x64",
+        "version": "16.1.0",
+        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
+        "target": "x86_64-w64-mingw32",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe"
+      }
+    ],
+    "ccache_version": "ccache version 4.13.6"
+  },
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T6",
-      "sha256": "d9ada2ee4b6b271b17141a36b7d765a71fcdbfe50b602c2d85f83d8783af4ae6",
+      "sha256": "8e62dca4a1179512b74d3b0851339e4c6e9e913e476c47b5d8ffc5ef75f86d62",
       "imports": [
         "kernel32.dll",
         "msvcrt.dll"
@@ -521,7 +528,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T6",
-      "sha256": "9a40c4dd01752e7ea79dadb0dfc1c20db8e47df0d6997cc22974bed1ed7a75c7",
+      "sha256": "04dd38bf413f7d8594d328be57694419671f43ce82e1a6584db4b0b137d1a720",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -541,7 +548,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T6",
-      "sha256": "959e22036792351e0c789ada6e605c09fd58504f794ee5b9555e5cca29eb8ea2",
+      "sha256": "54322d928ec581875506fbc51070ddc40cd1e6e7d5577957b9e75d0fd231db59",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -556,7 +563,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T6",
-      "sha256": "0818903eb19d5708f05061c95000846c46e227c6d19e6b7fa830630d6200f5fd",
+      "sha256": "e5b4b377ccd2d070e270a205bd83a597b4e91a82744c5e93cb18c94e2f03538e",
       "imports": [
         "kernel32.dll",
         "msvcrt.dll",
@@ -566,8 +573,8 @@
   },
   "verification": {
     "clean_build": "x86/x64 products and all fixtures, ABI 1/1 each; header dependencies within clean source and selected toolchains",
-    "package_cases": 9,
-    "package_result": "passed; hashes unchanged before/after",
+    "package_cases": 13,
+    "package_result": "passed; final rebuilt outputs, hashes unchanged before/after",
     "coverage": [
       "ABI x86/x64",
       "native-only demo boundary",
@@ -576,11 +583,35 @@
       "automatic x86/x64 A/W GUI threads",
       "four width edges A/W three generations and caller suspension",
       "extended target paths x86/x64",
-      "bad package/stdio/exit semantics"
+      "bad package/stdio/exit semantics",
+      "64 native/injected creation-field vectors",
+      "four rollback scenarios",
+      "eight dialogs on two GUI threads across target widths",
+      "six message boxes on two GUI threads across target widths"
     ],
-    "full_matrix": "pending S2 on final snapshot",
-    "physical_input": "pending S2",
-    "private_clipboard": "prior integration skipped 77; pending host/user acceptance"
+    "full_matrix": {
+      "status": "passed-with-skips",
+      "x86": {
+        "registered": 24,
+        "passed": 23,
+        "failed": 0,
+        "skipped": [
+          "core/edit-clipboard"
+        ],
+        "seconds": 115.08
+      },
+      "x64": {
+        "registered": 35,
+        "passed": 34,
+        "failed": 0,
+        "skipped": [
+          "core/edit-clipboard"
+        ],
+        "seconds": 381.19
+      }
+    },
+    "physical_input": "pending S2 user operation; private desktop and synthetic messages do not satisfy it",
+    "private_clipboard": "both widths skipped 77: native CreateWindowStation denied 5; explicit host/user acceptance required; shared clipboard untouched"
   },
   "source_input_convention": "sha256 is the actual build input; git_blob_sha256 records canonical Git bytes only when checkout newline conversion differs"
 }
