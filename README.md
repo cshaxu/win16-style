@@ -19,7 +19,7 @@ Win16 窗口外观启动器。项目目标与组件契约见
 ```
 
 T1、T2 已完成，T3 已验证首次启动与自动附着；双位宽完整核心回归各 13/13 通过。
-构建和测试入口见 [tests/README.md](tests/README.md)。子孙传播与 demo 待后续任务，当前没有完整可运行产品包。
+构建和测试入口见 [tests/README.md](tests/README.md)。T4已实现子孙传播及创建语义验证，当前正在任务收口；demo待后续任务，尚无完整产品包。
 文档入口为 [docs/README.md](docs/README.md)，
 进度以 [CURRENT](docs/states/CURRENT.md) 为准。所有工作固定在 milestone0，
 使用 MTSP 管理任务及交付。

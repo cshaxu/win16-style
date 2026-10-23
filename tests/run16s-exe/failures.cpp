@@ -16,6 +16,7 @@ static WCHAR self[NTW16S_PATH_CAP];
 #ifdef _WIN64
 static DWORD helper_mode,helper_calls;
 static owned_child helper_observer;
+static HANDLE controlled_target;
 static BOOL WINAPI controlled_helper(LPCWSTR application,LPWSTR,LPSECURITY_ATTRIBUTES pa,
     LPSECURITY_ATTRIBUTES ta,BOOL inherit,DWORD flags,LPVOID environment,LPCWSTR directory,
     LPSTARTUPINFOW startup,LPPROCESS_INFORMATION process)
@@ -25,6 +26,8 @@ static BOOL WINAPI controlled_helper(LPCWSTR application,LPWSTR,LPSECURITY_ATTRI
     if(n<wcslen(suffix) || _wcsicmp(application+n-wcslen(suffix),suffix) || !(flags&CREATE_SUSPENDED)){
         SetLastError(ERROR_INVALID_NAME);return FALSE;}
     if(helper_mode==1){SetLastError(ERROR_ACCESS_DENIED);return FALSE;}
+    if(helper_mode==3 && (!TerminateProcess(controlled_target,37) ||
+        WaitForSingleObject(controlled_target,2000)!=WAIT_OBJECT_0))return FALSE;
     WCHAR command[32768];if(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" --stall",self)<0){SetLastError(ERROR_INSUFFICIENT_BUFFER);return FALSE;}
     if(!CreateProcessW(self,command,pa,ta,inherit,flags,environment,directory,startup,process))return FALSE;
     return DuplicateHandle(GetCurrentProcess(),process->hProcess,GetCurrentProcess(),&helper_observer.p.hProcess,0,FALSE,DUPLICATE_SAME_ACCESS);
@@ -79,16 +82,24 @@ int wmain(int argc,WCHAR **argv)
 #ifdef _WIN64
     ntw16s_context foreign;CHECK(GetFullPathNameW(argv[1],NTW16S_PATH_CAP,foreign.directory,NULL));
     WCHAR *slash=wcsrchr(foreign.directory,L'\\');CHECK(slash);slash[1]=0;foreign.flags=1;
-    for(helper_mode=1;helper_mode<=2;++helper_mode){
+    for(helper_mode=1;helper_mode<=3;++helper_mode){
         owned_child child;CHECK(spawn(child,argv[1],L""));helper_calls=0;
+        controlled_target=child.p.hProcess;
         ULONGLONG start=GetTickCount64();DWORD error=ntw16s_install(child.p.hProcess,&foreign,controlled_helper);
         ULONGLONG elapsed=GetTickCount64()-start;
-        CHECK(helper_calls==1 && suspended(child));
-        DWORD expected_error=helper_mode==1?ERROR_ACCESS_DENIED:ERROR_TIMEOUT;CHECK(error==expected_error);
+        CHECK(helper_calls==1);
+        if(helper_mode!=3)CHECK(suspended(child));
+        DWORD expected_error=helper_mode==1?ERROR_ACCESS_DENIED:helper_mode==2?ERROR_TIMEOUT:ERROR_PROCESS_ABORTED;CHECK(error==expected_error);
         if(helper_mode==2){
             CHECK(elapsed>=9000 && elapsed<15000 && helper_observer.p.hProcess);
             CHECK(WaitForSingleObject(helper_observer.p.hProcess,5000)==WAIT_OBJECT_0);
             helper_observer.close();printf("HELPER timeout PASS elapsed=%llu target suspension retained, owned helper exited\n",elapsed);
+        }
+        if(helper_mode==3){
+            DWORD code;CHECK(elapsed<5000 && WaitForSingleObject(child.p.hProcess,0)==WAIT_OBJECT_0 &&
+                GetExitCodeProcess(child.p.hProcess,&code) && code==37);
+            CHECK(helper_observer.p.hProcess && WaitForSingleObject(helper_observer.p.hProcess,5000)==WAIT_OBJECT_0);
+            helper_observer.close();puts("HELPER target-first-exit PASS error=1067, target exit=37, owned helper exited");
         }
     }
 #endif

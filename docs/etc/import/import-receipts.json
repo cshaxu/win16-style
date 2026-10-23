@@ -698,9 +698,9 @@
       "path": "tests/run16s-exe/failures.cpp",
       "source": null,
       "source_blob": null,
-      "sha256": "164aa7a9940e6599e6ef051eb0554bb82a9135039a81da338d1872a405c9f01a",
+      "sha256": "e80ec889a0b9fd1fda5597cd563931744932e37b918df105480a9071267dd526",
       "disposition": "authored",
-      "review": "T3 S3 real permission/initialization/helper/CLI failure paths; docs/proposals/launcher-injection.md",
+      "review": "T3 S3 real permission/initialization/helper/CLI failure paths; docs/proposals/launcher-injection.md; T4 S3 target-first-exit helper branch, see docs/history/M0-T4-completion.md",
       "notice": "Project-authored test, repository MIT"
     },
     {

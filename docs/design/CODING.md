@@ -22,7 +22,7 @@ build/               全部生成物（忽略）
 预定构建基线：MSVC + Windows SDK + CMake/Ninja，Release /MT /W4 /WX，
 x86/x64 分离稳定 build/.ninja/x86 与 build/.ninja/x64。不沿用 ntvdm64 的个人
 路径、历史 T 编号脚本、服务发布目录或外部生成图。构建工具实际可用性由首个
-实现任务验证。T2 已完成双位宽核心 DLL 构建；启动器与 demo 尚未建立。
+实现任务验证。T2 已完成双位宽核心 DLL 构建，T3已有x64启动器；demo尚未建立。
 
 build/.ninja/ 与可选 build/.ccache/ 可复用；其他 scratch 必须在活动包登记
 精确目录、用途与回收责任。证据先提炼到跟踪文档，任务结束后回收不再需要的

@@ -23,3 +23,16 @@ core/runtime-native 与 core/sizebox-native 是原生对照，不声称覆盖样
 抓图经 WM_PRINT 写入本轮 scratch，不能证明物理鼠标、键盘、焦点或任意 DPI
 交互验收。关闭任务时先将结论提炼到 history，再按活动包回收本轮日志/图片与
 CTest 自动生成的 Testing 日志目录；保留稳定构建树的对象与配置缓存。
+
+启动与传播的完整回归可使用下面的选择器。TaskRoot只登记本轮scratch，
+不会改变稳定构建树；整个T结束后由活动包负责回收。
+
+```powershell
+pwsh -NoProfile -File tools/Build-Core.ps1 -TaskRoot t4-propagate -RunName full-new -TestPattern '^(core|launch|propagate)/.*$' -TimeoutSeconds 600
+```
+
+当前x86注册16项、x64注册24项。x64控制器使用两宽fixture，包含真实CLI
+首次注入、自动窗口/对话框/消息框、错误包/stdio、三代传播、64个原生/注入
+创建字段对照及四组安装失败回收。propagate/basic、contract、rollback均在
+私有桌面和自有进程树运行，不代表真实桌面输入通过。每次须读取最终结果，
+不能把测试注册、worker PID或旧轮次通过当作本轮执行完成。
