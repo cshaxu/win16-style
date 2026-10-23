@@ -154,7 +154,7 @@ if ($SelfTest) {
         foreign_topology = { param($f) $f['docs/other/file.md'] = 'foreign' }
         broken_link = { param($f) $f['README.md'] += "`n[bad](missing.md)" }
         duplicate_packet = { param($f) $f['docs/states/CURRENT.md'] += "`n## M0 Td S999 Packet`n" }
-        malformed_packet = { param($f) $f['docs/states/CURRENT.md'] = $f['docs/states/CURRENT.md'] -replace '## M0 Td S1 Packet', '## M0 T0 S0 Packet' }
+        malformed_packet = { param($f) $f['docs/states/CURRENT.md'] = $f['docs/states/CURRENT.md'] -replace '(?m)^## M0 (Td|T[1-9][0-9]*) S[1-9][0-9]* Packet', '## M0 T0 S0 Packet' }
         missing_field = { param($f) $f['docs/states/CURRENT.md'] = $f['docs/states/CURRENT.md'] -replace 'Similar-Issue Sweep', 'Missing-Field' }
         nonzero_milestone = { param($f) $f['docs/etc/product-contract.json'] = $f['docs/etc/product-contract.json'] -replace '"milestone": 0','"milestone": 1' }
         fifth_product = { param($f) $f['docs/etc/product-contract.json'] = $f['docs/etc/product-contract.json'] -replace '"run16s.exe"','"helper.exe"' }
