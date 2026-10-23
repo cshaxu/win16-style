@@ -11,3 +11,5 @@
 状态所有者仍为窗口GUI线程，保持栈式tracking_menu重入及s->calls生命周期；
 不引入全局鼠标hook、轮询或常驻状态。产物版本随任务号更新，发布到assets根目录
 和O:/winnt/system32，摘要绑定实际测试包；推送后实际读取提交/远端字节再关闭。
+
+本方案已交付并关闭；实际修复/覆盖/复核见[完成审计](../history/M0-T7-menu-cancellation.md)。

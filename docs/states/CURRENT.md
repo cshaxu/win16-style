@@ -2,15 +2,15 @@
 
 ## Current Work
 
-M0 T7 S1 Corrective菜单取消修复已verified并双发布；P1待提交、推送和实际复核，
-复核及owned scratch清理前不关闭。用户原始缺陷与有限审计见[菜单修复](../history/M0-T7-menu-cancellation.md)。
+当前无活动任务包。M0 T7 S1菜单取消修复已双发布、推送并实际复核，T7六单元审计
+通过，S1/T7已关闭，永久M0。用户原始缺陷与有限审计见[菜单修复](../history/M0-T7-menu-cancellation.md)。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 7
 - Last allocated Td S: 5
-- Last delivery: M0 T7 S1 P1 (verified locally; remote review pending)
+- Last delivery: M0 T7 S1 P2 (P1 411ab67实际复核、清理及关闭)
 
 ## Technical Baseline
 
@@ -48,33 +48,18 @@ launch/demo。实际候选包12/12通过，含两宽菜单取消各15场景及�
 
 ## Recent Closure
 
-- [T7菜单修复审计](../history/M0-T7-menu-cancellation.md)：当前verified，实际远端复核及清理待完成。
+- [T7菜单修复审计](../history/M0-T7-menu-cancellation.md)：411ab67双发布/远端实际复核通过，清理及收口完成。
 - [T6及M0历史审计](../history/M0-T6-completion.md)：S5 P1 5b5ee58/P2 89fe6b9关闭，当时未覆盖本次popup取消缺陷。
 - [滚动条修复](../history/M0-T6-S4-acceptance.md)：原资源和方形几何保留。
 - [执行规范](../history/M0-Td-S5-publish-policy.md)：每S同包测试、assets根目录和system32双发布、自己用探针。
 
 ## Retained Assets
 
-本任务精确scratch为build/t7-package，实际复核后提炼证据并回收；稳定build/.ninja
-及build/.ccache保留。T6 scratch此前已回收，其历史证据摘要保留，不作本次实时证据。
+本任务build/t7-package已安全回收：10顶层目录、2367文件、88498140字节，
+无reparse或活动owned进程。稳定build/.ninja及build/.ccache和两处发布保留。
+原始证据SHA/结果已提炼到release/history；T6/S1旧发布备份可从Git 5b5ee58 assets恢复。
 
-## M0 T7 S1 Packet
 
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Corrective；T6已关闭后的新缺陷，分配T7 S1，不复用旧标识 |
-| Admission And Approval | 用户报告menu点击无法取消、移动鼠标即打开；已授权每S构建测试双发布提交推送，自己用原生探针，不用computer-use |
-| Objective | 菜单鼠标打开/切换后能取消并恢复闲置，取消后悬停不再重新打开；保留Alt/F10、层级导航及命令行为 |
-| Non-goals | 不更换图形资源/字体，不改启动传播/ABI，不改兄弟项目或全局设置，不用物理输入冒充探针 |
-| Reference Baseline | 89fe6b9；产品T6/0.6.0.0，纯C/GCC、ABI3、原资源六blob及双DLL18表；用户本次反馈为真实缺陷依据 |
-| Candidate Proposal | [菜单取消修复](../proposals/menu-cancellation.md)；本任务只有S1，含有限覆盖与T级审计 |
-| Files And ABI Surface | win16_style菜单循环/过滤与原生菜单探针；版本T7、构建打包工具Task参数、回执/清单/文档；公开ABI和图形不变 |
-| Applicable Rules | Task Reading Set、Corrective新任务、失败负例、原资源身份、每S四文件闭环及双位置发布 |
-| Verification | 原生私有桌面菜单队列/idle探针验证旧失败和修后状态；双宽core完整及当前包；焦点/捕获/菜单depth/owner-draw恢复；新四文件PE/ABI/声明/资源及SHA |
-| Expected Markers | 鼠标切换后Esc/外部点击/重复点击/CancelMode取消能返回，焦点恢复且无残留键盘模式、scope或capture；随后hover不打开；键盘/子菜单行为回归通过 |
-| Asset Needs | build/t7-package/probe、probe-fixed、probe-complete及probe-tree开发/负例，probe-final最终focused，negative旧DLL负例，final初批与release最终干净快照，package-test实际包，publish两处备份及cleanup记录；hidden owned单架构600秒、包1800秒、scratch1GB |
-| Reporting Requirements | 列出每个取消/切换场景及实际状态；区分原生消息探针和物理输入；保留失败证据和历史权限跳过，不虚报全平台通过 |
-| Stop Conditions | 取消后再开、键盘导航/层级/命令损坏、资源改变或发布混包先修复；占用/权限问题不关闭无关进程 |
-| Exit Criteria | 冻结覆盖全部通过或明确无关限制，新双宽四文件构建/实际包测试/双发布/提交推送/实际复核，完成T7任务级审计并回收owned scratch |
-| Original Owner Request | menu点击后无法取消，鼠标移到哪个菜单哪个就打开，要求修复；沿用原资源、纯C/GCC、自己用探针及每S双发布规范 |
-| Similar-Issue Sweep | menu_filter所有退出及坐标、open_bar跨项模式切换、keyboard Escape/外部取消、重复顶层点击、CancelMode/失活/焦点以及owner-draw和scope清理 |
+P1 411ab6758517b307d44f4597dbc00fc07b925d44实际远端代码/提交、125输入、六资源
+blob、四文件远端/双位置身份及原始包测试/JUnit证据已复核通过。P2仅记录复核
+与清理；不改产品输入或二进制，不虚构新构建/发布。

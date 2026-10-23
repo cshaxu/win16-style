@@ -71,7 +71,7 @@ CLI、自动注入、四位宽边三代传播、长路径及stdio/错误退出�
 各15 CASE PASS及总标记；DPI144/150% demo滚动条26物理像素、焦点/控件/通知/
 About/移动均通过。四文件发布assets根目录及O:/winnt/system32，先备份再复制，
 8条before/after与已测包SHA一致。原文件为T6 S5 P1 5b5ee58，可由Git assets恢复。
-产物、工具链、125输入及原始证据SHA见release.json；实际远端复核待P1推送后记录。
+产物、工具链、125输入及原始证据SHA见release.json；实际远端复核已通过，见下文。
 
 代码统计基线89fe6b9，范围src/tests/tools/CMakeLists.txt，git diff --numstat：
 10文件+173/-31，净+142。分组：CMake 1文件+8/-1；src 4文件+49/-18；
@@ -88,4 +88,24 @@ tests 1文件+99/-0；tools 4文件+17/-12。无旧资源/renderer替换路径�
 | 生命周期/资源清理 | 双宽完整core、dc-failure/lifetime、loop/capture/focus/item恢复通过 |
 | 启动/传播/demo | 同包12项与相关launch/demo通过；未修改传播/注入源码 |
 | 原资源/ABI身份 | 六原文件及双DLL18表、完整声明、ABI3/31名称不变；source23/MinHook9/resource6负例门禁 |
-| 发布/远端/卫生 | 双发布8条摘要一致；P1推送实际复核及清理后再由P2关闭 |
+| 发布/远端/卫生 | 双发布8条摘要一致；P1实际远端复核通过、owned scratch回收，P2记录关闭 |
+
+
+## 实际协调复核与关闭
+
+P1为411ab6758517b307d44f4597dbc00fc07b925d44，已推送origin/main并fetch。
+切换协调角色实际读取该提交/diff与原始缺陷：菜单切换、返回和取消分支、独立加载
+候选DLL的探针及包测试参数符合本任务范围；未修改兄弟项目、全局设置、ABI或图形。
+逐项核对125 Git输入（LICENSE另记合法checkout换行）、六原资源Git blob、
+远端四文件与assets/system32四SHA一致；读取原始12项exit0、JUnit与注册名字集合、
+两项权限跳过、双宽最终菜单各15个CASE PASS、旧DLL负例，所有证据SHA吻合。
+不能以本审计替代原始证据，原始证据已在清理前实际读取并提炼。
+
+8份before备份逐项与Git 5b5ee58 assets相同，恢复性通过。核对精确绝对目录
+O:/repos.hobby/win16style/build/t7-package、祖先/所有子项无reparse、无活动owned
+进程后回收10顶层目录、2367文件、88498140字节。保留build/.ninja、build/.ccache、
+assets及O:/winnt/system32；未删除其他任务或用户目录。
+
+T7只有S1，六单元完成谓词均有处置，S1/T7关闭，永久M0。P2为本次实际复核与
+清理记录，只有文档变化，125产品/测试输入和四文件与P1相同，不另称重建或新发布。
+剪贴板权限和物理输入未覆盖仍保持上述边界；无未接收产品债务。

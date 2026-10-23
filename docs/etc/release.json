@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "delivery": "M0 T7 S1 P1",
-  "stage": "menu-cancellation-verified-awaiting-actual-remote-review",
+  "stage": "menu-cancellation-closed-after-actual-remote-review",
   "version": "0.7.0.0",
   "package_directory": "assets",
   "source_inputs": [
@@ -790,10 +790,11 @@
         "path": "O:\\winnt\\system32\\run16s.exe"
       }
     ],
-    "backups": "build/t7-package/publish; before files are exact T6 S5 P1 5b5ee58376d3ff9a98e5852cb2c3c5247e202e02 assets, recoverable from Git after task cleanup"
+    "backups": "build/t7-package/publish; before files are exact T6 S5 P1 5b5ee58376d3ff9a98e5852cb2c3c5247e202e02 assets, recoverable from Git after task cleanup",
+    "backup_retention": "task scratch cleaned after actual review; eight before files identical to T6 S5 P1 5b5ee58376d3ff9a98e5852cb2c3c5247e202e02 assets, recoverable from Git"
   },
   "audit": {
-    "stage": "verified; actual remote review and cleanup pending",
+    "stage": "closed after actual P1 remote review and owned scratch cleanup",
     "baseline": "89fe6b94265ebf7f0aee4944d8938f1c243029b9",
     "scope": "T7 single S1, six bounded coverage units in menu-cancellation history",
     "task_statistics": {
@@ -831,6 +832,23 @@
     "state_owner": "original GUI thread style_window; stack tracking_menu and calls/detached lifetime retained",
     "old_path_disposition": "no replacement renderer, resources, launcher or injection path; old T6 assets backed before exact four-file replacement",
     "physical_input": "not claimed; native probes per owner",
-    "isolated_clipboard": "two host permission skips not counted as pass"
+    "isolated_clipboard": "two host permission skips not counted as pass",
+    "scratch_cleanup": {
+      "top_level_directories": 10,
+      "preserved": [
+        "build/.ninja",
+        "build/.ccache",
+        "assets",
+        "O:/winnt/system32"
+      ],
+      "reparse_points": 0,
+      "files": 2367,
+      "bytes": 88498140.0,
+      "live_owned_processes": 0,
+      "path": "build/t7-package"
+    },
+    "reviewed_commit": "411ab6758517b307d44f4597dbc00fc07b925d44",
+    "closure_delivery": "M0 T7 S1 P2",
+    "review": "actual remote commit/diff,125 Git source inputs,six original resource blobs,four remote/assets/system32 hashes,raw12 exit0 cases,registered/JUnit name sets,two explicit skips,30 actual-package menu cases and old DLL negatives checked before cleanup"
   }
 }

@@ -15,6 +15,6 @@ CURRENT 是唯一活动工作权威；本文件拥有顺序，各 proposal 拥�
 [纯原生demo与启动对照](../proposals/native-demo.md)已关闭。
 [独立包与M0产品验收](../proposals/package-acceptance.md)已关闭，证据见
 CURRENT中的完成审计。当前无剩余待准入候选。
-[菜单取消修复](../proposals/menu-cancellation.md)已按用户新缺陷准入，当前活动包见CURRENT。
+[菜单取消修复](../proposals/menu-cancellation.md)已关闭，实际交付及复核见CURRENT。
 后续项依赖前项交付，不能跨过失败项
 直接发布；不增加额外 milestone、产品组件或产品文件。
