@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T6 S2 P1",
-  "stage": "development-automatic-verified-physical-pending",
+  "delivery": "M0 T6 S2 P4",
+  "stage": "original-resources-restored-automatic-verified-user-visual-pending",
   "version": "0.6.0.0",
   "package_directory": "assets/binary",
   "source_inputs": [
@@ -37,7 +37,7 @@
     },
     {
       "path": "src/ntw16s-dll/README.md",
-      "sha256": "79eee9fc82b97ba8076b2235061a7147712b7d469fdb23faf112474dc02bdbea"
+      "sha256": "cc82d3e2550db8fae77c697a6148eadd6fc06b237e76e40099ebceb0cc3ba097"
     },
     {
       "path": "src/ntw16s-dll/api.h",
@@ -53,11 +53,11 @@
     },
     {
       "path": "src/ntw16s-dll/combo_glyph.h",
-      "sha256": "e5674af5528e50036f68f79187b9c5b5482aa82a86b7df1b7fd9b65f6bd0859d"
+      "sha256": "75b05a50bf02bbc8fcbd6c6f84948fcdbf82fa7f0fbbfc590a6e4eb94c3ffe34"
     },
     {
       "path": "src/ntw16s-dll/control_glyphs.h",
-      "sha256": "e0b97a0183d7e6d0f8cbc587cab972715a581dd4c9818590422377e9a8ea8f9f"
+      "sha256": "75031b93af2382f8ce1f47d971f32efdfe00cb7000e0db09ef878a1b50adff83"
     },
     {
       "path": "src/ntw16s-dll/control_scope.c",
@@ -85,7 +85,7 @@
     },
     {
       "path": "src/ntw16s-dll/frame_buttons.h",
-      "sha256": "4c3cc0f9ce39a214f663192350a5408cde57d68fad167f3f966cada61f39eb4b"
+      "sha256": "e7a472d76858c3d01fb1501a34d958ccd8337c8d8ccc36893c17ef9222bac0c5"
     },
     {
       "path": "src/ntw16s-dll/injection/context.c",
@@ -225,7 +225,7 @@
     },
     {
       "path": "src/ntw16s-dll/menu_glyphs.h",
-      "sha256": "d763eb593ac8781d35d365bfb88185d8e6caf32964b2b0156cff1e804f187c1d"
+      "sha256": "03922a10b6a7b46e1792852b93f1e1590d45546a57a63cead41fb7b0f0eefa4e"
     },
     {
       "path": "src/ntw16s-dll/menu_items.c",
@@ -280,8 +280,12 @@
       "sha256": "4747660ae10ad0c73306f0f473f749b5ecbe216a83f6166795ea975e007b4a8a"
     },
     {
+      "path": "src/ntw16s-dll/resources.md",
+      "sha256": "211d1d1d85e65bef001990fb229bd5959e272e1992b95d9086acc7c67716b6a7"
+    },
+    {
       "path": "src/ntw16s-dll/scroll_glyphs.h",
-      "sha256": "c4f94e7d8e0cd00728a8110790f87631e8352364657323cbc2d277bb1e8cdd4d"
+      "sha256": "a748e7d89d52abf6225403244971da442c5b391ab877d1f248ddf2ca96001d40"
     },
     {
       "path": "src/ntw16s-dll/scroll_layout.c",
@@ -309,11 +313,11 @@
     },
     {
       "path": "src/ntw16s-dll/version.rc",
-      "sha256": "b699bb6d1734218e6fe14614fa3f34e3d6a60c2068233b991afe830619755a4a"
+      "sha256": "6a480a0f8431260222948b53fcc28faf4bc2b5df7f4a9b06ca7d4c2662e58cb1"
     },
     {
       "path": "src/ntw16s-dll/win16_style.c",
-      "sha256": "f512f63aab153c72690fdcddc08f7d66c96989dc5f22956c213232c48de113d7"
+      "sha256": "54506a48d307fa2bc7690e603babfbb511844974f77a87e84d1c2cfed3ebf764"
     },
     {
       "path": "src/ntw16s-dll/win16_style.h",
@@ -492,25 +496,25 @@
       "sha256": "b99e78a90aed7862d1a84cf3b569a975930ceab2d96cff6d256342e75fefa360"
     }
   ],
-  "source_inputs_sha256": "a9bcbcbeef7dd5906bde771aab2934ee8e3b1d5457d9a465e01412994b3c7bc8",
-  "source_snapshot_sha256": "1089bcd956178c37867a42e31d97722391b9d9f43c51c1c918d1aeff3683c423",
+  "source_inputs_sha256": "e93c628612da08725109e3e19c175084ad5b50684eec641d8f52fe051d827d3d",
+  "source_snapshot_sha256": "4e52f2e0063f1b95edfd5c5d9e7d27519206e97153afec7306318b83a8dc6327",
   "toolchains": {
     "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
     "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
     "toolchains": [
       {
-        "architecture": "x86",
         "version": "16.1.0",
-        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
         "target": "i686-w64-mingw32",
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe"
+        "architecture": "x86",
+        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6"
       },
       {
-        "architecture": "x64",
         "version": "16.1.0",
-        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
         "target": "x86_64-w64-mingw32",
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe"
+        "architecture": "x64",
+        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad"
       }
     ],
     "ccache_version": "ccache version 4.13.6"
@@ -519,7 +523,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T6",
-      "sha256": "8e62dca4a1179512b74d3b0851339e4c6e9e913e476c47b5d8ffc5ef75f86d62",
+      "sha256": "f7b77cda8fa9528a425a869155d4a704588f01214941a1161117013727d75d67",
       "imports": [
         "kernel32.dll",
         "msvcrt.dll"
@@ -528,7 +532,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T6",
-      "sha256": "04dd38bf413f7d8594d328be57694419671f43ce82e1a6584db4b0b137d1a720",
+      "sha256": "592de00c333530f5d14b4d9e13efac206015a5cc861c6f5b398c7d3953706a0b",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -548,7 +552,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T6",
-      "sha256": "54322d928ec581875506fbc51070ddc40cd1e6e7d5577957b9e75d0fd231db59",
+      "sha256": "8b5c8c8d86992c99f938492d7db0dae02d515f6a1fcbd54933515730dc129e22",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -563,7 +567,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T6",
-      "sha256": "e5b4b377ccd2d070e270a205bd83a597b4e91a82744c5e93cb18c94e2f03538e",
+      "sha256": "ba8ab0120b4f3d904715c8df8e80707960c02583d6cef1baa4f4bc575b6b4222",
       "imports": [
         "kernel32.dll",
         "msvcrt.dll",
@@ -574,7 +578,7 @@
   "verification": {
     "clean_build": "x86/x64 products and all fixtures, ABI 1/1 each; header dependencies within clean source and selected toolchains",
     "package_cases": 13,
-    "package_result": "passed; final rebuilt outputs, hashes unchanged before/after",
+    "package_result": "13 passed; new original-resource candidate hashes unchanged before/after and after full matrix",
     "coverage": [
       "ABI x86/x64",
       "native-only demo boundary",
@@ -598,7 +602,7 @@
         "skipped": [
           "core/edit-clipboard"
         ],
-        "seconds": 115.08
+        "seconds": 114.56
       },
       "x64": {
         "registered": 35,
@@ -607,14 +611,14 @@
         "skipped": [
           "core/edit-clipboard"
         ],
-        "seconds": 381.19
+        "seconds": 355.08
       }
     },
-    "physical_input": "pending S2 user operation; private desktop and synthetic messages do not satisfy it",
+    "physical_input": "owner rejected old substituted artwork; original resources restored; updated package awaits user visual and physical feedback",
     "private_clipboard": "both widths skipped 77: native CreateWindowStation denied 5; explicit host/user acceptance required; shared clipboard untouched",
     "cmd_chain": {
-      "evidence_delivery": "M0 T6 S2 P3",
-      "package_delivery": "M0 T6 S2 P1",
+      "evidence_delivery": "M0 T6 S2 P4",
+      "package_delivery": "M0 T6 S2 P4",
       "status": "passed",
       "cases": 8,
       "command_processors": [
@@ -624,7 +628,47 @@
       "selection": "each cmd width -> each target width -> opposite width -> initial width; A/W and caller suspension",
       "observations": "three target windows attached, Win16 font, checkbox semantics, completion, exact child PID lineage; published four hashes unchanged",
       "boundary": "CREATE_NO_WINDOW background /d /s /c; current Console launcher only; no interactive console, GUI-launcher or conhost styling claim"
-    }
+    },
+    "original_resource_gates": "6 source byte substitutions rejected; x86 frame_buttons and x64 system_menu_bitmap compiled-table mutations rejected; all six staged blobs equal pinned source"
   },
-  "source_input_convention": "sha256 is the actual build input; git_blob_sha256 records canonical Git bytes only when checkout newline conversion differs"
+  "source_input_convention": "sha256 is the actual build input; git_blob_sha256 records canonical Git bytes only when checkout newline conversion differs",
+  "original_resources": {
+    "source_commit": "5b0b65f66c281050aa4ce1454c6cd31441a6d484",
+    "policy": "owner requires identical resources; authored substitutions rejected",
+    "files": [
+      {
+        "path": "src/ntw16s-dll/combo_glyph.h",
+        "blob": "6844a599eaeabee81e3a6f0b93571aae45a3dad5",
+        "sha256": "75b05a50bf02bbc8fcbd6c6f84948fcdbf82fa7f0fbbfc590a6e4eb94c3ffe34"
+      },
+      {
+        "path": "src/ntw16s-dll/control_glyphs.h",
+        "blob": "a5ac2b29e4e1471b0b1d59fedffa891565bfecbb",
+        "sha256": "75031b93af2382f8ce1f47d971f32efdfe00cb7000e0db09ef878a1b50adff83"
+      },
+      {
+        "path": "src/ntw16s-dll/frame_buttons.h",
+        "blob": "dd782cd7d4e58e278067366777836e6e5ae34100",
+        "sha256": "e7a472d76858c3d01fb1501a34d958ccd8337c8d8ccc36893c17ef9222bac0c5"
+      },
+      {
+        "path": "src/ntw16s-dll/menu_glyphs.h",
+        "blob": "3bd7a84da0ee765bc8277595caa7795b7c530cd2",
+        "sha256": "03922a10b6a7b46e1792852b93f1e1590d45546a57a63cead41fb7b0f0eefa4e"
+      },
+      {
+        "path": "src/ntw16s-dll/resources.md",
+        "blob": "feeb85f1c10bef8598684bb5426f30f04aef8ce0",
+        "sha256": "211d1d1d85e65bef001990fb229bd5959e272e1992b95d9086acc7c67716b6a7"
+      },
+      {
+        "path": "src/ntw16s-dll/scroll_glyphs.h",
+        "blob": "47942549a40628868026e6b3c9ac751015c69fc7",
+        "sha256": "a748e7d89d52abf6225403244971da442c5b391ab877d1f248ddf2ca96001d40"
+      }
+    ],
+    "compiled_tables_per_dll": 18,
+    "source_pixels": 8688,
+    "provenance_rcdata": 5
+  }
 }

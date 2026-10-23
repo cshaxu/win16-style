@@ -287,7 +287,7 @@ static void button(HDC dc,RECT r,int kind,BOOL down,BOOL zoom,BOOL child,int u,
     if(IsRectEmpty(&r))return;
     fill(dc,r,kind==HTSYSMENU&&down?p->shadow:p->face);outline(dc,r,u,p->edge);
     if(kind==HTSYSMENU){
-        /* Project-authored geometry keeps top-level and child cells separate. */
+        /* Original CLOSE atlas: top-level left half, WS_CHILD right half. */
         bits=&system_menu_bitmap[0][child?18:0];width=18;stride=37;
         /* VGA selection inverts palette roles, not RGB bytes: light grey
          * becomes dark grey, black becomes white. No second CLOSE bitmap. */
@@ -304,8 +304,8 @@ static void button(HDC dc,RECT r,int kind,BOOL down,BOOL zoom,BOOL child,int u,
     bi.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
     bi.bmiHeader.biWidth=width;bi.bmiHeader.biHeight=-18;
     bi.bmiHeader.biPlanes=1;bi.bmiHeader.biBitCount=32;
-    /* Authored arrow cells include a left separator. The caption supplies
-     * the other separators. Scale the geometric raster once. */
+    /* Original arrow artwork includes its left separator; CLOSE does not.
+     * The caption supplies the other separators. Scale the raster once. */
     SetStretchBltMode(dc,COLORONCOLOR);
     StretchDIBits(dc,r.left,r.top,r.right-r.left-(kind==HTSYSMENU?u:0),r.bottom-r.top,
         0,0,width,18,pixels,&bi,DIB_RGB_COLORS,SRCCOPY);

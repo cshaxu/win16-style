@@ -119,3 +119,51 @@ run16s.exe --wait <system-cmd.exe> /d /s /c ""<R>" 2 "<N>" "<L>" <A/W:0|1> <susp
 三份验收文档/清单更新，规则和sibling无改动。GUI版启动器仍未实现/验证，
 交互式cmd、ShellExecute/提权转交和conhost/Terminal外观不在本次通过声明内。
 物理输入/DPI及剪贴板验收仍待用户，S2保持active，不能以本补验替代。
+
+## 用户外观验收否决与原资源恢复（P4进行中）
+
+用户指出左右标题栏按钮与ntvdm64不同，并明确“不得替换图形资源，必须使用相同的”。
+这不是验收通过：此前自动测试证明注入/生命周期，却未证明资源符合原始拆分目标。
+根因是T2曾把五头换为generate_glyphs.py自行画的近似图，原始标题按钮阴影/箭头/
+系统框不同；绘制主体win16_style.c/controls.c仍来自来源，layout.c与固定源无差异。
+恢复必须覆盖五头全部18表、共8688源像素及原resources.md，不只修被指出的标题按钮。
+
+本次明确用户要求覆盖历史资源替代方案；保留原声明，不把资源重新许可或标成原创。
+从5b0b65f66c281050aa4ce1454c6cd31441a6d484读取固定Git对象，逐文件核对原blob/size/SHA，
+五头及原说明原样写入本仓库，未读取或修改ntvdm64脏工作区。清单retain、119回执；
+删除自绘生成器，独立本地固定摘要检查拒绝6种字节替换；来源自测23及第三方9通过。
+两DLL内嵌原说明RCDATA5，包门禁核对18个实际编译表；新批次构建及运行尚待验证。
+有限验证为原字节/消费者差异审计、两DLL实际表、双宽完整矩阵、新四文件13项同包，
+以及标题正常/按下/系统框与demo视觉对照。任一失败先修复，不复用旧包通过结论。
+
+### P4原资源新包实际验证及发布
+
+s2-original-art worker17348干净双宽构建、ABI/PE/声明/依赖及来源门禁通过；
+18个原图形表逐一在每个DLL中找到，完整原说明RCDATA5保留。人工查看同包demo
+实际PrintWindow：系统框、右上箭头、勾选/单选/下拉/滚动均已使用原资源；同文件
+原生/注入模块与业务对照通过。截图是私有桌面观察，不宣称用户视觉或物理验收。
+二进制负例分别改x86 frame_buttons和x64 system_menu_bitmap一个单元，两例均被
+新包门禁明确拒绝，原始候选不改动。六源文件字节变更负例及23/9门禁同时通过。
+
+Test-Package -RunName s2-original-art-test -FullIntegration worker16760最终13/13通过。
+完整矩阵worker13288顺序运行原构建树CTest，没有重新编译/链接；x86注册24，
+23通过/1剪贴板权限跳过，114.56秒；x64注册35，34通过/1相同跳过，355.08秒。
+57通过/2跳过/0失败，原始JUnit与每例标记已核对，跳过的原生错误5/返回77不计通过。
+复现对每架构运行ctest --test-dir <clean>/build/.ninja/<arch>
+-R '^(core|launch|propagate|demo)/.*$' --verbose --output-on-failure --no-tests=error
+--output-junit <evidence>/results.xml，WIN16STYLE_CAPTURE_DIR设为各架构独立证据目录。
+最后cmd链worker30468使用新包及新构建fixture，8/8、24个后代目标窗口/字体/控件/
+父子PID匹配。13项前后、完整矩阵后、cmd链后、发布复制后的四文件SHA全部一致。
+122个src/tests/CMake/LICENSE输入与干净快照和工作区匹配，LICENSE检出换行约定保持。
+
+| 新发布文件 | SHA-256 |
+| --- | --- |
+| run16s.exe | f7b77cda8fa9528a425a869155d4a704588f01214941a1161117013727d75d67 |
+| ntw16s32.dll | 592de00c333530f5d14b4d9e13efac206015a5cc861c6f5b398c7d3953706a0b |
+| ntw16s64.dll | 8b5c8c8d86992c99f938492d7db0dae02d515f6a1fcbd54933515730dc129e22 |
+| demo.exe | ba8ab0120b4f3d904715c8df8e80707960c02583d6cef1baa4f4bc575b6b4222 |
+
+代码/构建统计范围src/tests/tools/CMake：14路径、+819/-573，净+246；
+主要为原样资源/原说明恢复、生成器退休和身份门禁；窗口状态/创建事务所有者不变。
+规则及sibling未改动。发布四文件已更新；推送及实际提交复核后才称本P交付完成。
+用户旧版视觉否决保留，新版仍待视觉/物理反馈，S2及M0不关闭。

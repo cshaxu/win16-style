@@ -103,7 +103,7 @@ def validate(manifest, inventory, abi, receipts, files, external=None):
     require(manifest["seed_count"] == seed_count == 105 and len(entries) == 124, "frozen coverage changed")
     restricted = {"frame_buttons.h", "control_glyphs.h", "combo_glyph.h", "menu_glyphs.h", "scroll_glyphs.h"}
     for name in restricted:
-        require(entries["src/ntw16s-dll/" + name]["action"] == "replace", "restricted resource must be replaced")
+        require(entries["src/ntw16s-dll/" + name]["action"] == "retain", "original resource must be retained byte-exact")
     require(len(manifest["includes"]) == 294, "include coverage changed")
     for edge in manifest["includes"]:
         require(edge["source"] in entries and type(edge["line"]) is int and edge["line"] > 0,
@@ -188,7 +188,7 @@ def check_source(manifest, repository, prefix=""):
     print("Source research PASS: %d/%d fixed tree/blob/size/SHA-256" % (len(entries), len(entries)))
 
 
-def self_test(manifest, inventory, abi):
+def self_test(manifest, inventory, abi, local_files):
     cases = {
         "floating-source": lambda m, a: m.update(source_commit="0" * 40),
         "missing-seed": lambda m, a: m["entries"].pop(0),
@@ -202,7 +202,7 @@ def self_test(manifest, inventory, abi):
         "wrong-ABI": lambda m, a: a.update(standalone_abi=2),
         "lost-export": lambda m, a: a["exports"].pop(),
         "wrong-helper": lambda m, a: a["helper"].update(ordinal=2),
-        "unsafe-resource-import": lambda m, a: next(e for e in m["entries"] if e["action"] == "replace").update(action="retain"),
+        "substituted-resource": lambda m, a: next(e for e in m["entries"] if e["source"].endswith("frame_buttons.h")).update(action="replace"),
         "case-alias-destination": lambda m, a: next(e for e in m["entries"] if e["source"].endswith("control_glyphs.h")).update(
             destination="src/ntw16s-dll/COMBO_GLYPH.H"),
         "excluded-edge-import": lambda m, a: next(e for e in m["entries"] if e["source"] == "src/common/rpc/local_binding.h").update(
@@ -220,22 +220,23 @@ def self_test(manifest, inventory, abi):
         raise ValueError("negative fixture was accepted: " + name)
     m = copy.deepcopy(manifest)
     m["import_status"] = "partial"
-    entry = next(e for e in m["entries"] if e["action"] == "replace")
-    raw = b"independently authored geometry fixture"
+    entry = next(e for e in m["entries"] if e["source"].endswith("frame_buttons.h"))
+    raw = local_files[entry["destination"]]
     receipt = {"path": entry["destination"], "source": entry["source"], "source_blob": entry["blob"],
-               "disposition": "replace", "sha256": hashlib.sha256(raw).hexdigest(),
-               "review": "new geometry fixture", "notice": "project-authored"}
+               "disposition": "retain", "sha256": hashlib.sha256(raw).hexdigest(),
+               "review": "byte-exact source fixture", "notice": "original provenance retained"}
     receipts = {"schema": 1, "files": [receipt]}
     files = {entry["destination"]: raw}
     validate(m, inventory, abi, receipts, files)
-    import_cases = ("tampered-local", "original-resource", "missing-receipt", "unsafe-destination",
+    import_cases = ("tampered-local", "substitution-with-updated-receipt", "missing-receipt", "unsafe-destination",
                     "duplicate-receipt", "empty-notice", "missing-Detours-license")
     for name in import_cases:
         mutated_m, mutated_r, mutated_f = copy.deepcopy(m), copy.deepcopy(receipts), dict(files)
         if name == "tampered-local":
             mutated_f[entry["destination"]] = b"changed"
-        elif name == "original-resource":
-            next(e for e in mutated_m["entries"] if e["source"] == entry["source"])["sha256"] = receipt["sha256"]
+        elif name == "substitution-with-updated-receipt":
+            mutated_f[entry["destination"]] = b"authored replacement"
+            mutated_r["files"][0]["sha256"] = hashlib.sha256(mutated_f[entry["destination"]]).hexdigest()
         elif name == "missing-receipt":
             mutated_r["files"] = []
         elif name == "unsafe-destination":
@@ -258,7 +259,7 @@ def self_test(manifest, inventory, abi):
         except (ValueError, KeyError, TypeError):
             continue
         raise ValueError("import fixture was accepted: " + name)
-    print("Source SelfTest PASS: %d rejection cases and one valid replacement receipt" % (len(cases) + len(import_cases)))
+    print("Source SelfTest PASS: %d rejection cases and one byte-exact resource receipt" % (len(cases) + len(import_cases)))
 
 
 def main():
@@ -294,7 +295,7 @@ def main():
     counts = validate(manifest, inventory, abi, receipts, files, external)
     print("Source manifest PASS: %d decisions / %d includes / %d local imports" % counts)
     if args.self_test:
-        self_test(manifest, inventory, abi)
+        self_test(manifest, inventory, abi, files)
         if third_party:
             mutations = {
                 "floating-third-party": lambda m, f: m.update(source_commit="0" * 40),

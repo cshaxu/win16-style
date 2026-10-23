@@ -347,11 +347,11 @@
       "blob": "6844a599eaeabee81e3a6f0b93571aae45a3dad5",
       "size": 297,
       "sha256": "75b05a50bf02bbc8fcbd6c6f84948fcdbf82fa7f0fbbfc590a6e4eb94c3ffe34",
-      "action": "replace",
+      "action": "retain",
       "destination": "src/ntw16s-dll/combo_glyph.h",
       "notice": "source-resource-restricted",
-      "reason": "Exclude source bytes; author geometric raster/vector replacements locally; core task owns visual acceptance",
-      "receiver": "style-core"
+      "reason": "Owner explicitly requires identical ntvdm64 graphical resources; retain pinned blob bytes and original provenance, no authored substitution",
+      "receiver": "package-acceptance"
     },
     {
       "source": "src/ntw16s-dll/control_glyphs.h",
@@ -359,11 +359,11 @@
       "blob": "a5ac2b29e4e1471b0b1d59fedffa891565bfecbb",
       "size": 2755,
       "sha256": "75031b93af2382f8ce1f47d971f32efdfe00cb7000e0db09ef878a1b50adff83",
-      "action": "replace",
+      "action": "retain",
       "destination": "src/ntw16s-dll/control_glyphs.h",
       "notice": "source-resource-restricted",
-      "reason": "Exclude source bytes; author geometric raster/vector replacements locally; core task owns visual acceptance",
-      "receiver": "style-core"
+      "reason": "Owner explicitly requires identical ntvdm64 graphical resources; retain pinned blob bytes and original provenance, no authored substitution",
+      "receiver": "package-acceptance"
     },
     {
       "source": "src/ntw16s-dll/control_scope.c",
@@ -443,11 +443,11 @@
       "blob": "dd782cd7d4e58e278067366777836e6e5ae34100",
       "size": 4694,
       "sha256": "e7a472d76858c3d01fb1501a34d958ccd8337c8d8ccc36893c17ef9222bac0c5",
-      "action": "replace",
+      "action": "retain",
       "destination": "src/ntw16s-dll/frame_buttons.h",
       "notice": "source-resource-restricted",
-      "reason": "Exclude source bytes; author geometric raster/vector replacements locally; core task owns visual acceptance",
-      "receiver": "style-core"
+      "reason": "Owner explicitly requires identical ntvdm64 graphical resources; retain pinned blob bytes and original provenance, no authored substitution",
+      "receiver": "package-acceptance"
     },
     {
       "source": "src/ntw16s-dll/layout.c",
@@ -515,11 +515,11 @@
       "blob": "3bd7a84da0ee765bc8277595caa7795b7c530cd2",
       "size": 887,
       "sha256": "03922a10b6a7b46e1792852b93f1e1590d45546a57a63cead41fb7b0f0eefa4e",
-      "action": "replace",
+      "action": "retain",
       "destination": "src/ntw16s-dll/menu_glyphs.h",
       "notice": "source-resource-restricted",
-      "reason": "Exclude source bytes; author geometric raster/vector replacements locally; core task owns visual acceptance",
-      "receiver": "style-core"
+      "reason": "Owner explicitly requires identical ntvdm64 graphical resources; retain pinned blob bytes and original provenance, no authored substitution",
+      "receiver": "package-acceptance"
     },
     {
       "source": "src/ntw16s-dll/menu_items.c",
@@ -659,11 +659,11 @@
       "blob": "feeb85f1c10bef8598684bb5426f30f04aef8ce0",
       "size": 19251,
       "sha256": "211d1d1d85e65bef001990fb229bd5959e272e1992b95d9086acc7c67716b6a7",
-      "action": "reference",
-      "destination": null,
+      "action": "retain",
+      "destination": "src/ntw16s-dll/resources.md",
       "notice": "source-provenance",
-      "reason": "Retain metadata findings, rewrite local contract; source history is not current product authority",
-      "receiver": "style-core"
+      "reason": "Owner explicitly requires identical ntvdm64 graphical resources; retain pinned blob bytes and original provenance, no authored substitution",
+      "receiver": "package-acceptance"
     },
     {
       "source": "src/ntw16s-dll/scroll_glyphs.h",
@@ -671,11 +671,11 @@
       "blob": "47942549a40628868026e6b3c9ac751015c69fc7",
       "size": 5171,
       "sha256": "a748e7d89d52abf6225403244971da442c5b391ab877d1f248ddf2ca96001d40",
-      "action": "replace",
+      "action": "retain",
       "destination": "src/ntw16s-dll/scroll_glyphs.h",
       "notice": "source-resource-restricted",
-      "reason": "Exclude source bytes; author geometric raster/vector replacements locally; core task owns visual acceptance",
-      "receiver": "style-core"
+      "reason": "Owner explicitly requires identical ntvdm64 graphical resources; retain pinned blob bytes and original provenance, no authored substitution",
+      "receiver": "package-acceptance"
     },
     {
       "source": "src/ntw16s-dll/scroll_layout.c",

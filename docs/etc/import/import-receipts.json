@@ -284,9 +284,9 @@
       "path": "src/ntw16s-dll/win16_style.c",
       "source": "src/ntw16s-dll/win16_style.c",
       "source_blob": "4235f085cb00c0d17145deec2d04a57c97b98d47",
-      "sha256": "f512f63aab153c72690fdcddc08f7d66c96989dc5f22956c213232c48de113d7",
+      "sha256": "54506a48d307fa2bc7690e603babfbb511844974f77a87e84d1c2cfed3ebf764",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -302,46 +302,46 @@
       "path": "src/ntw16s-dll/combo_glyph.h",
       "source": "src/ntw16s-dll/combo_glyph.h",
       "source_blob": "6844a599eaeabee81e3a6f0b93571aae45a3dad5",
-      "sha256": "e5674af5528e50036f68f79187b9c5b5482aa82a86b7df1b7fd9b65f6bd0859d",
-      "disposition": "replace",
-      "review": "Independent geometric drawing commands in tools/generate_glyphs.py; docs/history/M0-T2-S1-import.md",
-      "notice": "Project-authored geometry, MIT; no original extracted resource pixels"
+      "sha256": "75b05a50bf02bbc8fcbd6c6f84948fcdbf82fa7f0fbbfc590a6e4eb94c3ffe34",
+      "disposition": "retain",
+      "review": "M0 T6 S2 owner-rejected visual substitutions; byte-exact pinned resource/provenance restoration",
+      "notice": "Original source resource/provenance notices retained; not project-authored artwork; see src/ntw16s-dll/resources.md"
     },
     {
       "path": "src/ntw16s-dll/control_glyphs.h",
       "source": "src/ntw16s-dll/control_glyphs.h",
       "source_blob": "a5ac2b29e4e1471b0b1d59fedffa891565bfecbb",
-      "sha256": "e0b97a0183d7e6d0f8cbc587cab972715a581dd4c9818590422377e9a8ea8f9f",
-      "disposition": "replace",
-      "review": "Independent geometric drawing commands in tools/generate_glyphs.py; docs/history/M0-T2-S1-import.md",
-      "notice": "Project-authored geometry, MIT; no original extracted resource pixels"
+      "sha256": "75031b93af2382f8ce1f47d971f32efdfe00cb7000e0db09ef878a1b50adff83",
+      "disposition": "retain",
+      "review": "M0 T6 S2 owner-rejected visual substitutions; byte-exact pinned resource/provenance restoration",
+      "notice": "Original source resource/provenance notices retained; not project-authored artwork; see src/ntw16s-dll/resources.md"
     },
     {
       "path": "src/ntw16s-dll/frame_buttons.h",
       "source": "src/ntw16s-dll/frame_buttons.h",
       "source_blob": "dd782cd7d4e58e278067366777836e6e5ae34100",
-      "sha256": "4c3cc0f9ce39a214f663192350a5408cde57d68fad167f3f966cada61f39eb4b",
-      "disposition": "replace",
-      "review": "Independent geometric drawing commands in tools/generate_glyphs.py; docs/history/M0-T2-S1-import.md",
-      "notice": "Project-authored geometry, MIT; no original extracted resource pixels"
+      "sha256": "e7a472d76858c3d01fb1501a34d958ccd8337c8d8ccc36893c17ef9222bac0c5",
+      "disposition": "retain",
+      "review": "M0 T6 S2 owner-rejected visual substitutions; byte-exact pinned resource/provenance restoration",
+      "notice": "Original source resource/provenance notices retained; not project-authored artwork; see src/ntw16s-dll/resources.md"
     },
     {
       "path": "src/ntw16s-dll/menu_glyphs.h",
       "source": "src/ntw16s-dll/menu_glyphs.h",
       "source_blob": "3bd7a84da0ee765bc8277595caa7795b7c530cd2",
-      "sha256": "d763eb593ac8781d35d365bfb88185d8e6caf32964b2b0156cff1e804f187c1d",
-      "disposition": "replace",
-      "review": "Independent geometric drawing commands in tools/generate_glyphs.py; docs/history/M0-T2-S1-import.md",
-      "notice": "Project-authored geometry, MIT; no original extracted resource pixels"
+      "sha256": "03922a10b6a7b46e1792852b93f1e1590d45546a57a63cead41fb7b0f0eefa4e",
+      "disposition": "retain",
+      "review": "M0 T6 S2 owner-rejected visual substitutions; byte-exact pinned resource/provenance restoration",
+      "notice": "Original source resource/provenance notices retained; not project-authored artwork; see src/ntw16s-dll/resources.md"
     },
     {
       "path": "src/ntw16s-dll/scroll_glyphs.h",
       "source": "src/ntw16s-dll/scroll_glyphs.h",
       "source_blob": "47942549a40628868026e6b3c9ac751015c69fc7",
-      "sha256": "c4f94e7d8e0cd00728a8110790f87631e8352364657323cbc2d277bb1e8cdd4d",
-      "disposition": "replace",
-      "review": "Independent geometric drawing commands in tools/generate_glyphs.py; docs/history/M0-T2-S1-import.md",
-      "notice": "Project-authored geometry, MIT; no original extracted resource pixels"
+      "sha256": "a748e7d89d52abf6225403244971da442c5b391ab877d1f248ddf2ca96001d40",
+      "disposition": "retain",
+      "review": "M0 T6 S2 owner-rejected visual substitutions; byte-exact pinned resource/provenance restoration",
+      "notice": "Original source resource/provenance notices retained; not project-authored artwork; see src/ntw16s-dll/resources.md"
     },
     {
       "path": "src/ntw16s-dll/ntw16s32.def",
@@ -365,18 +365,18 @@
       "path": "src/ntw16s-dll/README.md",
       "source": null,
       "source_blob": null,
-      "sha256": "79eee9fc82b97ba8076b2235061a7147712b7d469fdb23faf112474dc02bdbea",
+      "sha256": "cc82d3e2550db8fae77c697a6148eadd6fc06b237e76e40099ebceb0cc3ba097",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S2 original resources restored per owner request",
       "notice": "Project-authored, repository MIT"
     },
     {
       "path": "src/ntw16s-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "b699bb6d1734218e6fe14614fa3f34e3d6a60c2068233b991afe830619755a4a",
+      "sha256": "6a480a0f8431260222948b53fcc28faf4bc2b5df7f4a9b06ca7d4c2662e58cb1",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5",
       "notice": "Project-authored, repository MIT"
     },
     {
@@ -1062,6 +1062,15 @@
       "disposition": "authored",
       "review": "T6 S1 private C PE stager/OS helper or explicit native Windows manifest/import contract; see M0-T6-S1-package.md; final clean-package regression pending",
       "notice": "Project-authored; project MIT LICENSE"
+    },
+    {
+      "path": "src/ntw16s-dll/resources.md",
+      "source": "src/ntw16s-dll/resources.md",
+      "source_blob": "feeb85f1c10bef8598684bb5426f30f04aef8ce0",
+      "sha256": "211d1d1d85e65bef001990fb229bd5959e272e1992b95d9086acc7c67716b6a7",
+      "disposition": "retain",
+      "review": "M0 T6 S2 owner-rejected visual substitutions; byte-exact pinned resource/provenance restoration",
+      "notice": "Original source resource/provenance notices retained; not project-authored artwork; see src/ntw16s-dll/resources.md"
     }
   ]
 }

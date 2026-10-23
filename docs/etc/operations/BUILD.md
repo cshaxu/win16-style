@@ -53,7 +53,7 @@ Windows错误码在stderr，失败不继续裸运行。原始参数尾串、环�
 显式extended目标长路径单独验证，不把它扩张为所有API/命名空间支持。目标为普通
 x86/x64原生程序；DOS/Win16二进制、ARM64、服务/受保护/提权目标及未覆盖创建API
 不在已验收支持面。自动DLL生命周期随进程，不支持应用任意FreeLibrary后继续用hook。
-字体使用本机System CP1252/FNT数据，未随包携带字体；自编图形不承诺原VGA逐像素保真。
+字体使用本机System CP1252/FNT数据，未随包携带字体；五个图形头与固定ntvdm64原资源逐字节相同；宿主字体/调色板/DPI仍分别验收。
 
 项目MIT与MinHook/HDE原始BSD声明保留于源码，二进制内嵌完整RCDATA声明：
 RCDATA 3为四产物的项目LICENSE，RCDATA 4为两个DLL的完整MinHook/HDE LICENSE.txt。
@@ -69,3 +69,6 @@ pwsh -NoProfile -File tools/Test-Package.ps1 -RunName package-test-new -Package 
 传入`-FullIntegration`另外执行64字段对照、回滚、八对话框及六消息框；它仍不替代
 完整core矩阵或物理验收。工具记录每例参数/退出码/必要标记和四文件前后哈希，
 隐藏worker总预算1800秒，单例120/320/520秒。发布时只复制被测四文件，不换包。
+
+原图形资源检查：`python tools/verify_resource_identity.py --self-test`。两DLL须包含
+全部18个原始栅格表及RCDATA5完整来源说明；禁止构建时生成替代图形。

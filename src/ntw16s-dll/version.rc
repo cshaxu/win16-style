@@ -27,3 +27,5 @@ END
 3 RCDATA "LICENSE"
 
 4 RCDATA "ntw16s-dll/injection/minhook/LICENSE.txt"
+
+5 RCDATA "ntw16s-dll/resources.md"

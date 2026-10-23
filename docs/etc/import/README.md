@@ -30,4 +30,7 @@ TsudaKageyu/minhook v1.3.4 commit c3fcafdc10146beb5919319d0683e44e3c30d537。
 公开 API 层。hook.c 仅适配为初始加载的私有补丁事务，保留完整原声明；不使用
 其线程冻结、Sleep/spinlock 或运行中全局附着。BSD-2-Clause 的 MinHook/HDE
 完整声明须随产物资源保留。此来源与既有124项 ntvdm64 清单分开，不冒充原创。
-新后端尚未构建整包通过，旧 Detours 待完整替换后清除。
+新后端已在T6 S1完成整包构建，旧Detours已退休；当前交付与验证以CURRENT为准。
+
+T6 S2用户否决五资源自绘替代，要求原样保留固定来源资源；五头和原resources.md
+使用retain，字节身份由tools/verify_resource_identity.py与清单/回执共同核验。

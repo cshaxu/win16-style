@@ -4,6 +4,7 @@ import ctypes
 import hashlib
 import importlib.util
 import json
+import re
 from pathlib import Path
 import struct
 import sys
@@ -77,6 +78,19 @@ def main():
     names = sorted({e['symbol'] for e in abi['exports'] if e['decision'] == 'retain-public'})
     license_bytes = (root/'LICENSE').read_bytes()
     minhook_license = (root/'src/ntw16s-dll/injection/minhook/LICENSE.txt').read_bytes()
+    # Independently read the retained C atlas rows and require those exact
+    # compiled tables, plus provenance, in both DLLs. No visual substitute.
+    glyph_tables = {}
+    for header in ('frame_buttons.h', 'control_glyphs.h', 'combo_glyph.h', 'menu_glyphs.h', 'scroll_glyphs.h'):
+        text = (root/'src/ntw16s-dll'/header).read_text(encoding='utf-8')
+        arrays = re.findall(r'static const char\s+(\w+)[^=]*=\s*\{(.*?)\n\};', text, re.S)
+        assert arrays, 'missing resource tables: '+header
+        for symbol, body in arrays:
+            rows = re.findall(r'"([0-3]+)"', body)
+            assert rows and symbol not in glyph_tables
+            glyph_tables[symbol] = b''.join(row.encode('ascii')+b'\0' for row in rows)
+    assert len(glyph_tables) == 18, 'incomplete original resource atlas'
+    provenance = (root/'src/ntw16s-dll/resources.md').read_bytes()
     result = {}
     for name, arch in expected.items():
         path = package/name
@@ -86,6 +100,9 @@ def main():
         assert license_bytes in raw, 'project license missing from '+name
         if name.endswith('.dll'):
             assert minhook_license in raw, 'MinHook/HDE license missing from '+name
+            assert provenance in raw, 'original resource provenance missing from '+name
+            for symbol, data in glyph_tables.items():
+                assert data in raw, 'original resource table missing/changed: '+name+':'+symbol
             machine, public, imports, digest, ordinals, live = core.inspect(path)
             pe = struct.unpack_from('<I', raw, 60)[0]
             assert struct.unpack_from('<H', raw, pe+22)[0] & 0x2000, 'DLL flag missing'
@@ -100,7 +117,7 @@ def main():
         if args.built_root:
             assert hashlib.sha256((args.built_root/arch/name).read_bytes()).hexdigest() == digest, 'mixed build'
         result[name] = dict(architecture=arch, version='M0 T'+str(args.task), sha256=digest, imports=imports)
-    print(json.dumps(dict(status='PACKAGE PASS', artifacts=result), indent=2))
+    print(json.dumps(dict(status='PACKAGE PASS', artifacts=result, original_resource_tables_per_dll=len(glyph_tables)), indent=2))
 
 
 if __name__ == '__main__':

@@ -47,7 +47,7 @@ try{
     try{
         & python (Join-Path $clean 'tools/verify_source_manifest.py') --self-test
         if($LASTEXITCODE){throw 'Snapshot source gate failed'}
-        & python (Join-Path $clean 'tools/generate_glyphs.py') --check
+        & python (Join-Path $clean 'tools/verify_resource_identity.py') --self-test
         if($LASTEXITCODE){throw 'Snapshot glyph gate failed'}
         & (Join-Path $clean 'tools/Verify-Governance.ps1') -SelfTest
         & (Join-Path $clean 'tools/Build-Core.ps1') -Worker -TaskRoot t6-package -RunName s1-rebuild -TestPattern '^core/abi$' -TimeoutSeconds 600

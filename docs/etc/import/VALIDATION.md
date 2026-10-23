@@ -6,7 +6,7 @@ CI 执行同一命令。来源为 124 decisions / 294 includes；local imports �
 实际导入增长，以 import-receipts.json 和校验输出为准。
 
 该工具校验固定候选 inventory 与扩展清单的对应、处置/目的路径/接收者/声明、
-源 blob/size/SHA 字段、全部 include 接收者、限制资源必须 replace、ABI 决策、
+源 blob/size/SHA 字段、全部 include 接收者、五图形头必须 retain、ABI 决策、
 以及本地实际导入文件的回执/内容。元数据字段一致并不能证明原字节身份；
 T1 的固定源对象研究复核另外执行如下可选命令：
 
@@ -24,8 +24,7 @@ python tools/verify_source_manifest.py --self-test --source-repository <research
 并新增同目录 import-receipts.json，完成全部目标后才改 imported。
 产品 contract 的状态也须按实际源码导入状态同步，由产品任务一并交付。
 每个条目有本地原字节 SHA-256；不要对 receipt 使用来源 hash 假充现有内容。
-retain 必须 byte-exact，adapt 保留 source blob 并有明确 review，replace 不得
-等于受限源字节且记录新素材来源。已排除/仅参考项不能通过回执变成导入。
+retain 必须 byte-exact，adapt 保留 source blob 并有明确 review，图形资源不得replace，原resources.md及来源声明完整保留。已排除/仅参考项不能通过回执变成导入。
 
 回执结构如下，仅是 schema 示例，不能据此产生真实已导入声明：
 

@@ -12,11 +12,14 @@ enables styling and native CreateProcess A/W descendant propagation. Each
 creation layer retains the original caller suspension or releases only its own
 added suspension. Installation failure rolls back only its uncommitted child.
 
-Upstream project-authored core files are pinned in the repository import
-manifest and individually receipted. Five glyph headers contain new geometry
-from tools/generate_glyphs.py, without copied Win3.1 resource pixels. Their
-dimensions satisfy the renderer interface; pixel-exact VGA fidelity is not claimed.
-Generated headers are checked in; no source rewriting occurs at build time.
+Upstream core files are pinned in the import manifest and individually receipted.
+The five graphical resource headers and resources.md are byte-exact from the
+same pinned ntvdm64 commit. Original resource notices and provenance are retained;
+these are not project-authored or relicensed artwork. Both DLLs embed the original
+provenance as RCDATA5. tools/verify_resource_identity.py rejects any substitution;
+package verification checks all 18 compiled atlas tables in each DLL.
+No resource generation or source rewriting occurs at build time. Source artwork
+identity is separate from host font, palette and DPI behavior.
 
 C17 MinGW-w64 GCC builds the complete product; C++ Detours is retired.
 The private MinHook/HDE C backend preserves its original BSD notices and is

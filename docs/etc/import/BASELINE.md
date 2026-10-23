@@ -22,14 +22,14 @@ Hook 的外部服务 include 随其调用逻辑删除，launcher 从原生目标
 ## 去留决策
 
 - renderer：保留唯一实现家族；修改 DllMain、公共门面、native binding 及
-  消费被替换资源的绘制单元。绘制算法不另建副本。
+  消费原样保留资源的绘制单元。绘制算法不另建副本。
 - Hook：保留思路并逐文件改造至 ntw16s-dll/injection；不沿用服务身份、
   launcher redirect 模式、RPC 分配接口、frontend/execution 句柄或旧导出名。
 - run16/common 分类器：仅参考/排除；不导入 OpenNT 的 nt.h、base_classifier.h、
   SEC_IMAGE/SectionImageInformation 路径。以 Windows SDK 的已创建进程位宽查询
   和有限 PE 校验实现本地注入选择；原生程序不进入 VDM 路由。
 - demo：改造项目示例为纯原生 UI，删除所有样式 API 和主动自绘资源依赖。
-- tests：保留契约、按本地包改造，图形原字节相等的 oracle 不作为新素材验收。
+- tests：保留契约、按本地包改造，图形原字节身份及实际运行绘制分别验收。
 - 原 CMake/历史任务编号脚本：仅参考，不成为本地构建图。
 
 ## 声明及五资源处置
@@ -39,20 +39,12 @@ Detours 切片带 MIT LICENSE 和源文件版权标记，接收时保留，且�
 依据源组件 README 的自编实现说明接收；若实际导入发现外部声明则保留并重新
 记录该条目的处置，不能由根 MIT 覆盖外部声明。
 
-固定 resources.md 明确记录五头来自原 Windows 3.1 VGA.DRV，公开分发依据未建立。
-处理统一选定为 **不导入原字节，后续样式核心任务自编几何绘图/栅格替代**：
+用户在T6 S2外观验收否决自编替代，明确要求“不得替换图形资源，必须使用相同的”。
+此要求覆盖T1历史替代决定。五头及原resources.md现在按固定commit/blob/SHA原样retain，
+不将原资源声明改为原创。标题系统框、六个normal/pressed箭头、checkbox/radio/mixed、
+combo、菜单及十二滚动箭头均保留原表；工具拒绝任何资源替换。
+历史替代及其通过数字保留在history，不能证明本次外观已获用户接受。
 
-| 原头 | 消费面 | 接收与验收 |
-| --- | --- | --- |
-| frame_buttons.h | 标题系统框、最小/最大/还原按钮 | 核心任务自编线条/几何，检查 normal/pressed、命中区及 DPI |
-| control_glyphs.h | checkbox/radio/mixed | 自编状态图形，保持原生 checked/disabled/notification |
-| combo_glyph.h | combo 下拉标记 | 自编箭头和边线，保留原生展开/选择 |
-| menu_glyphs.h | 菜单 check/submenu 标记 | 自编图形，保留原生状态/测量/交互 |
-| scroll_glyphs.h | 各方向及 disabled/pressed 箭头 | 自编几何，保留滚动范围/通知及已支持交互 |
-
-替代保持 Win16 外观目标，不宣称原 VGA 每个像素相等。五头的原 blob 仅记录在
-manifest，不保存原图字节。后续任务必须记录新素材来源与视觉差异、实际验收。
-资源选择已经确定，不以研究未定为由留下默认复制路线。
 
 当前 font.c 已从宿主 System 栅格生成进程私有 FNT，不包含旧 VGASYS.FON；
 不再导入历史 system_font.h。保持“运行时生成、不保存或发布宿主字形”的边界。
