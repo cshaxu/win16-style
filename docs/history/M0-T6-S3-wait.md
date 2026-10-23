@@ -56,3 +56,12 @@ Console PE未改变。worker37840在同一最终构建中执行相关回归：x8
 
 本地verified，提交推送后读取实际提交和远端字节复核再关闭S3；S4未完物理验收
 不能由本S自动用例代替。用户已接受原资源外观，不重复要求外观确认。
+
+P1已推送为4b83994eb1ed71de671a1dc830d4d08049fa44a5。随后以协调复核角色
+fetch origin/main，读取实际commit/stat/diff及原始请求；HEAD与远端一致，124输入
+按Git换行约定逐项复核，四个远端文件与最终测试包SHA一致，六个原资源blob不变。
+原始cases.json为14个exit0，JUnit确为6/9通过且无跳过，等待日志及PID成员身份
+证实父cmd阻塞、CUI同console及GUI异步，stdio四场景返回37。governance13、
+source23、MinHook9、资源6负例及diff检查通过。没有将旧完整矩阵冒充本S证据。
+S3闭环完成并closed，自动准入S4接收剩余真实输入/DPI/剪贴板及新版全量验收；
+T6和M0未完成。P2仅记录上述实际复核、关闭与准入，不改变任何产品构建输入。
