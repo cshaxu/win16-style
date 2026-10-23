@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T6 S3 P1",
-  "stage": "console-default-wait-automatic-verified-physical-pending",
+  "delivery": "M0 T6 S4 P1",
+  "stage": "native-probes-verified-isolated-clipboard-permission-skips",
   "version": "0.6.0.0",
   "package_directory": "assets",
   "source_inputs": [
@@ -25,7 +25,7 @@
     },
     {
       "path": "src/demo-exe/gallery.c",
-      "sha256": "37af038a79184d11f236ecc45bb02238f4a508adfee548f6fb06adff23e4203c"
+      "sha256": "b4a80c1027fab08c9f2b3a9ce36380c59c23b7c4187aa278b71a801d2e97c506"
     },
     {
       "path": "src/demo-exe/main.c",
@@ -65,7 +65,7 @@
     },
     {
       "path": "src/ntw16s-dll/controls.c",
-      "sha256": "77094533f72e604b55ff5e738929b162ab80b7f335cd584ad74eafc7f979d929"
+      "sha256": "68c024690d85be10cbb92bd9dfa6cd82bc24e979250c2e437531a5881f796441"
     },
     {
       "path": "src/ntw16s-dll/controls.h",
@@ -345,7 +345,7 @@
     },
     {
       "path": "tests/demo-exe/observe.c",
-      "sha256": "0b952507a5420833401968e5b521323e730e0e1d1781905e4ab582a66ae1eeed"
+      "sha256": "5bfcd0b623a0215cbff9ae5cc79124b5e7dac0721e9bd6a8236a446c6ee56420"
     },
     {
       "path": "tests/integration/automatic_launch.c",
@@ -425,7 +425,7 @@
     },
     {
       "path": "tests/ntw16s-dll/win16_style_control_present.c",
-      "sha256": "30ce3957d7d2e32933d66d447e4b89fd676b79bf6d305a52e3843788ec707cc0"
+      "sha256": "c6557011a67707d34499f353c721f0e2413264b5e92a046291fc7bc8cc4a260e"
     },
     {
       "path": "tests/ntw16s-dll/win16_style_dc_failure.c",
@@ -437,7 +437,7 @@
     },
     {
       "path": "tests/ntw16s-dll/win16_style_edit_clipboard.c",
-      "sha256": "43998c43836a939619c269b7d0dd018484a4e6bad4de042d737684a02f7204e6"
+      "sha256": "c4d162dcf694a53ec65c50acddbbe0d2f96e3a40bf45cfd7e6d9c582cd60cc09"
     },
     {
       "path": "tests/ntw16s-dll/win16_style_font.c",
@@ -504,26 +504,26 @@
       "sha256": "384d457e8e99f6120fe4f1eaf0bf32ce3650cf9dec871f0b32c8c4cdce24d4b8"
     }
   ],
-  "source_inputs_sha256": "ea9f4065349eed65ee6d8be74ef5976347bb57c4e50bfe7ec20b6ed55eb9e5db",
-  "source_snapshot_sha256": "72deabe350dc563dd57ff87e9d7ab0c2959dd0d630d7b8ea956c8ba89e082f7b",
+  "source_inputs_sha256": "f4ef21496438c269f0bccbb27c62b00f33e74c81b8c1f689fcd72f93b912379c",
+  "source_snapshot_sha256": "f75ad255cfa32c910523de280ff7c4fd20592a5503a405fe704c690100d8ccef",
   "toolchains": {
-    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
     "ccache_version": "ccache version 4.13.6",
     "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
+    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
     "toolchains": [
       {
         "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
+        "version": "16.1.0",
         "target": "i686-w64-mingw32",
         "architecture": "x86",
-        "version": "16.1.0"
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe"
       },
       {
         "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
+        "version": "16.1.0",
         "target": "x86_64-w64-mingw32",
         "architecture": "x64",
-        "version": "16.1.0"
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe"
       }
     ]
   },
@@ -531,7 +531,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T6",
-      "sha256": "abc31195e11a5bf2a69866038c4608a5c889b483f794d778c8b0f727449f37f1",
+      "sha256": "86824c855768186d9b29098733b384581fd94ddb25f4fbc056927ea0ef168cde",
       "imports": [
         "kernel32.dll",
         "msvcrt.dll"
@@ -540,7 +540,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T6",
-      "sha256": "974be256a1ca532553f2d4870ffc1257b258443ef2b82c0c71fb363ef2af51b9",
+      "sha256": "fc204b70dfdb87f062287ff832371ae8bc7c6ac430ee8196d0f6b0dbdd70ef5f",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -560,7 +560,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T6",
-      "sha256": "87bb0e7a422f22d21f78acbfd0f52df0600c19e0445e9db70f8674183f1def4b",
+      "sha256": "3f9dcb6b5d6e0f229db82b36a7cfb123c921246d827401068f839165070dcb7e",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -575,7 +575,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T6",
-      "sha256": "04bf545e2d019a8888f607caff8d3b00bb0c0eae2be3aa67ce95e7ff99851d2d",
+      "sha256": "a255f30d44b2a05138ad2ba1c728dae386de7cf549e9ee1ee5116de318f67dfa",
       "imports": [
         "kernel32.dll",
         "msvcrt.dll",
@@ -585,8 +585,8 @@
   },
   "verification": {
     "clean_build": "x86/x64 products and all fixtures, ABI 1/1 each; header dependencies within clean source and selected toolchains",
-    "package_cases": 14,
-    "package_result": "14 passed; final same-batch hashes unchanged before/after tests and publication",
+    "package_cases": 10,
+    "package_result": "10 passed; final package hashes unchanged before/after full matrix, actual-package tests and two-location publication",
     "coverage": [
       "ABI x86/x64",
       "native-only demo boundary",
@@ -603,11 +603,29 @@
       "Console default wait/exit, GUI async/explicit wait, six held native-process cases via real cmd"
     ],
     "full_matrix": {
-      "status": "not-rerun-in-S3",
-      "receiver": "M0 T6 S4 final acceptance"
+      "status": "passed-with-skips",
+      "no_rebuild": "Same completed package build trees; hashes must be verified separately",
+      "tests": [
+        {
+          "registered": 24,
+          "passed": 23,
+          "skipped": [
+            "core/edit-clipboard"
+          ],
+          "architecture": "x86"
+        },
+        {
+          "registered": 36,
+          "passed": 35,
+          "skipped": [
+            "core/edit-clipboard"
+          ],
+          "architecture": "x64"
+        }
+      ]
     },
-    "physical_input": "owner accepted original-resource appearance as matching ntvdm64; remaining real keyboard/mouse/focus/capture/DPI/clipboard transferred to S4",
-    "private_clipboard": "both widths skipped 77: native CreateWindowStation denied 5; explicit host/user acceptance required; shared clipboard untouched",
+    "physical_input": "owner directs native probes instead of computer-use/manual suite; probes verify state/messages, not physical input",
+    "private_clipboard": "both widths skipped 77: native CreateWindowStation denied 5 for four access masks; shared clipboard untouched; explicit host limitation, not counted as pass",
     "cmd_chain": {
       "evidence_delivery": "M0 T6 S2 P4",
       "package_delivery": "M0 T6 S2 P4",
@@ -644,7 +662,16 @@
         "seconds": 355.08
       }
     },
-    "affected_regression": {
+    "wait_contract": {
+      "status": "passed",
+      "cases": 6,
+      "console_targets": "x86/x64 default and --wait: parent cmd stays alive until release, returns 42",
+      "gui_target": "default returns 0 while target remains alive; --wait returns 42",
+      "identity": "CUI target, launcher and parent cmd share GetConsoleProcessList membership; HWND can be zero in headless context",
+      "negative": "previous published launcher rejected: parent cmd returned before target release"
+    },
+    "prior_affected_regression": {
+      "delivery": "M0 T6 S3 P1",
       "tests": [
         {
           "passed": 6,
@@ -662,13 +689,24 @@
       "status": "passed",
       "no_rebuild": "Same completed package build trees; hashes must be verified separately"
     },
-    "wait_contract": {
+    "demo_interaction": {
+      "status": "passed on direct and injected same demo",
+      "dpi": 144,
+      "scale_percent": 150,
+      "scrollbar_physical_thickness": 26,
+      "observations": [
+        "7 posted Tab focus transitions through real IsDialogMessage, independently read GUI thread focus",
+        "dropdown show/hide",
+        "injected scrollbar arrow capture/release and actual position",
+        "About modal opened, closed, command returned, owner enabled",
+        "exact window movement, minimize/maximize/restore, business data and notifications"
+      ]
+    },
+    "scrollbar": {
       "status": "passed",
-      "cases": 6,
-      "console_targets": "x86/x64 default and --wait: parent cmd stays alive until release, returns 42",
-      "gui_target": "default returns 0 while target remains alive; --wait returns 42",
-      "identity": "CUI target, launcher and parent cmd share GetConsoleProcessList membership; HWND can be zero in headless context",
-      "negative": "previous published launcher rejected: parent cmd returned before target release"
+      "fix": "17 logical-pixel demo thickness; native-state adapters derive square arrows/thumb from actual cross-axis",
+      "probe": "both axes at 17/28/35/42 pixels, both widths; old adapter rejected at 28",
+      "original_resources": "six files unchanged; 18 tables in each DLL"
     }
   },
   "source_input_convention": "sha256 is the actual build input; git_blob_sha256 records canonical Git bytes only when checkout newline conversion differs",
@@ -712,5 +750,70 @@
     "provenance_rcdata": 5
   },
   "deployment_directory": "O:/winnt/system32",
-  "layout_change": "M0 Td S5: moved byte-identical S3 files to assets root; system deployment occurs with next verified binary change"
+  "deployment": {
+    "status": "passed",
+    "destinations": [
+      "assets",
+      "O:/winnt/system32"
+    ],
+    "files": [
+      {
+        "after": "a255f30d44b2a05138ad2ba1c728dae386de7cf549e9ee1ee5116de318f67dfa",
+        "expected": "a255f30d44b2a05138ad2ba1c728dae386de7cf549e9ee1ee5116de318f67dfa",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t6-package\\s4-deploy\\before-0",
+        "before": "04bf545e2d019a8888f607caff8d3b00bb0c0eae2be3aa67ce95e7ff99851d2d",
+        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe"
+      },
+      {
+        "after": "fc204b70dfdb87f062287ff832371ae8bc7c6ac430ee8196d0f6b0dbdd70ef5f",
+        "expected": "fc204b70dfdb87f062287ff832371ae8bc7c6ac430ee8196d0f6b0dbdd70ef5f",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t6-package\\s4-deploy\\before-0",
+        "before": "974be256a1ca532553f2d4870ffc1257b258443ef2b82c0c71fb363ef2af51b9",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll"
+      },
+      {
+        "after": "3f9dcb6b5d6e0f229db82b36a7cfb123c921246d827401068f839165070dcb7e",
+        "expected": "3f9dcb6b5d6e0f229db82b36a7cfb123c921246d827401068f839165070dcb7e",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t6-package\\s4-deploy\\before-0",
+        "before": "87bb0e7a422f22d21f78acbfd0f52df0600c19e0445e9db70f8674183f1def4b",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll"
+      },
+      {
+        "after": "86824c855768186d9b29098733b384581fd94ddb25f4fbc056927ea0ef168cde",
+        "expected": "86824c855768186d9b29098733b384581fd94ddb25f4fbc056927ea0ef168cde",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t6-package\\s4-deploy\\before-0",
+        "before": "abc31195e11a5bf2a69866038c4608a5c889b483f794d778c8b0f727449f37f1",
+        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe"
+      },
+      {
+        "after": "a255f30d44b2a05138ad2ba1c728dae386de7cf549e9ee1ee5116de318f67dfa",
+        "expected": "a255f30d44b2a05138ad2ba1c728dae386de7cf549e9ee1ee5116de318f67dfa",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t6-package\\s4-deploy\\before-1",
+        "before": null,
+        "path": "O:\\winnt\\system32\\demo.exe"
+      },
+      {
+        "after": "fc204b70dfdb87f062287ff832371ae8bc7c6ac430ee8196d0f6b0dbdd70ef5f",
+        "expected": "fc204b70dfdb87f062287ff832371ae8bc7c6ac430ee8196d0f6b0dbdd70ef5f",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t6-package\\s4-deploy\\before-1",
+        "before": "592de00c333530f5d14b4d9e13efac206015a5cc861c6f5b398c7d3953706a0b",
+        "path": "O:\\winnt\\system32\\ntw16s32.dll"
+      },
+      {
+        "after": "3f9dcb6b5d6e0f229db82b36a7cfb123c921246d827401068f839165070dcb7e",
+        "expected": "3f9dcb6b5d6e0f229db82b36a7cfb123c921246d827401068f839165070dcb7e",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t6-package\\s4-deploy\\before-1",
+        "before": "8b5c8c8d86992c99f938492d7db0dae02d515f6a1fcbd54933515730dc129e22",
+        "path": "O:\\winnt\\system32\\ntw16s64.dll"
+      },
+      {
+        "after": "86824c855768186d9b29098733b384581fd94ddb25f4fbc056927ea0ef168cde",
+        "expected": "86824c855768186d9b29098733b384581fd94ddb25f4fbc056927ea0ef168cde",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t6-package\\s4-deploy\\before-1",
+        "before": "f7b77cda8fa9528a425a869155d4a704588f01214941a1161117013727d75d67",
+        "path": "O:\\winnt\\system32\\run16s.exe"
+      }
+    ],
+    "backups": "build/t6-package/s4-deploy/before-0 and before-1; project-owned four files only"
+  }
 }

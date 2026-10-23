@@ -80,5 +80,13 @@ run16s保持Console子系统，交互cmd自然等待启动器；控制台目标�
 用户指定的发布步骤：每S若有binary change，将已测试的同批四文件发布至assets根目录
 及O:/winnt/system32；系统目录原四文件备份至本S scratch，再逐项核对三处SHA。
 仅更新本项目四文件，遇占用/权限问题停止并记录。无binary change记录摘要比较。
+部署入口（先完成同包测试，再运行）：
+
+```powershell
+pwsh -NoProfile -File tools/Publish-Package.ps1 -Package build/t6-package/candidate-new/candidate -TestResult build/t6-package/package-test-new/result.json -RunName publish-new
+```
+
+`-ValidateOnly`只检查被测哈希、四文件集合和目标路径，不写入；正式执行保存两处
+旧文件及before/after摘要到发布scratch，失败保留incomplete记录，不标为完成。
 当前交互验收使用原生探针，不用computer-use；私有剪贴板权限跳过和物理输入未覆盖
 如实单列，不再要求用户反复完成整套手工操作。

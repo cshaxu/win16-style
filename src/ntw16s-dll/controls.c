@@ -386,6 +386,9 @@ static BOOL scroll_layout(HWND w,win16_scroll_layout *layout)
     int dpi=(int)GetDpiForWindow(w);
     win16_scroll_metrics metrics={MulDiv(17,dpi,96),MulDiv(17,dpi,96),max(1,MulDiv(1,dpi,96))};LONGLONG maximum;
     if(!GetClientRect(w,&r) || !ntw16s_native_get_scroll_info(w,SB_CTL,&info))return FALSE;
+    /* An application can choose a nonstandard control thickness. Preserve
+     * the original square glyph aspect in both paint and hit-test geometry. */
+    metrics.arrow=metrics.thumb=(GetWindowLongPtrW(w,GWL_STYLE)&SBS_VERT)?r.right-r.left:r.bottom-r.top;
     maximum=(LONGLONG)info.nMax-(info.nPage?info.nPage-1:0);
     if(maximum<info.nMin)maximum=info.nMin;
     return win16_scroll_measure(&r,(GetWindowLongPtrW(w,GWL_STYLE)&SBS_VERT)!=0,
@@ -400,6 +403,7 @@ static BOOL embedded_scroll_layout(HWND w,LONG object,win16_scroll_layout *layou
     if(!GetScrollBarInfo(w,vertical?OBJID_VSCROLL:OBJID_HSCROLL,&bar) || (bar.rgstate[0]&STATE_SYSTEM_INVISIBLE) ||
         !ntw16s_native_get_scroll_info(w,vertical?SB_VERT:SB_HORZ,&info))return FALSE;
     SetRect(&r,0,0,bar.rcScrollBar.right-bar.rcScrollBar.left,bar.rcScrollBar.bottom-bar.rcScrollBar.top);
+    metrics.arrow=metrics.thumb=vertical?r.right:r.bottom;
     screen_origin->x=bar.rcScrollBar.left;screen_origin->y=bar.rcScrollBar.top;
     maximum=(LONGLONG)info.nMax-(info.nPage?info.nPage-1:0);if(maximum<info.nMin)maximum=info.nMin;
     return win16_scroll_measure(&r,vertical,&metrics,info.nMin,(LONG)maximum,info.nPos,layout);

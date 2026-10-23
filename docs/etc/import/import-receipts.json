@@ -41,9 +41,9 @@
       "path": "src/ntw16s-dll/controls.c",
       "source": "src/ntw16s-dll/controls.c",
       "source_blob": "9bc3331d0f9fc3e3104059ab792670ab1579d65c",
-      "sha256": "77094533f72e604b55ff5e738929b162ab80b7f335cd584ad74eafc7f979d929",
+      "sha256": "68c024690d85be10cbb92bd9dfa6cd82bc24e979250c2e437531a5881f796441",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -725,9 +725,9 @@
       "path": "src/demo-exe/gallery.c",
       "source": "src/w16style-exe/gallery.c",
       "source_blob": "9a2c1eea0c8348a1609d56507c6e0c3903a0a423",
-      "sha256": "37af038a79184d11f236ecc45bb02238f4a508adfee548f6fb06adff23e4203c",
+      "sha256": "b4a80c1027fab08c9f2b3a9ce36380c59c23b7c4187aa278b71a801d2e97c506",
       "disposition": "adapt",
-      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes",
       "notice": "Project-authored source per frozen W16Style README; no third-party artwork"
     },
     {
@@ -752,9 +752,9 @@
       "path": "tests/demo-exe/observe.c",
       "source": null,
       "source_blob": null,
-      "sha256": "0b952507a5420833401968e5b521323e730e0e1d1781905e4ab582a66ae1eeed",
+      "sha256": "5bfcd0b623a0215cbff9ae5cc79124b5e7dac0721e9bd6a8236a446c6ee56420",
       "disposition": "authored",
-      "review": "T5 S2 external owned demo observer; docs/history/M0-T5-S2-pair.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "review": "T5 S2 external owned demo observer; docs/history/M0-T5-S2-pair.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes",
       "notice": "Project-authored fixture, repository MIT"
     },
     {
@@ -770,9 +770,9 @@
       "path": "tests/ntw16s-dll/win16_style_control_present.c",
       "source": "tests/app/win16_style_control_present.c",
       "source_blob": "a44a8cf711985ae62d847021b037b8bb308f8cc7",
-      "sha256": "30ce3957d7d2e32933d66d447e4b89fd676b79bf6d305a52e3843788ec707cc0",
+      "sha256": "c6557011a67707d34499f353c721f0e2413264b5e92a046291fc7bc8cc4a260e",
       "disposition": "adapt",
-      "review": "T6 S1 remaining painter/menu/private clipboard/native scroll contract audit; docs/history/M0-T6-S1-package.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "review": "T6 S1 remaining painter/menu/private clipboard/native scroll contract audit; docs/history/M0-T6-S1-package.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes",
       "notice": "Project-authored fixed-source fixture; original comments retained"
     },
     {
@@ -788,9 +788,9 @@
       "path": "tests/ntw16s-dll/win16_style_edit_clipboard.c",
       "source": "tests/app/win16_style_edit_clipboard.c",
       "source_blob": "d4c191bfa4003f701fe595867105c23c1899f625",
-      "sha256": "43998c43836a939619c269b7d0dd018484a4e6bad4de042d737684a02f7204e6",
+      "sha256": "c4d162dcf694a53ec65c50acddbbe0d2f96e3a40bf45cfd7e6d9c582cd60cc09",
       "disposition": "adapt",
-      "review": "T6 S1 remaining painter/menu/private clipboard/native scroll contract audit; docs/history/M0-T6-S1-package.md",
+      "review": "T6 S1 remaining painter/menu/private clipboard/native scroll contract audit; docs/history/M0-T6-S1-package.md; T6 S4 native isolated probe; preserve skip 77 without demanding user manual suite",
       "notice": "Project-authored fixed-source fixture; original comments retained"
     },
     {

@@ -62,7 +62,7 @@ int main(int argc,char **argv)
     if(!shared){station=CreateWindowStationW(name,0,WINSTA_CREATEDESKTOP|WINSTA_ACCESSCLIPBOARD|
         WINSTA_ACCESSGLOBALATOMS|WINSTA_READATTRIBUTES,NULL);
         if(!station && GetLastError()==ERROR_ACCESS_DENIED){
-            fprintf(stderr,"CLIPBOARD UNAVAILABLE: native CreateWindowStation denied (5); shared clipboard untouched; explicit external acceptance required\n");return 77;}
+            fprintf(stderr,"CLIPBOARD UNAVAILABLE: native CreateWindowStation denied (5); isolated clipboard probe skipped; shared clipboard untouched\n");return 77;}
         CHECK(station);
         CHECK(SetProcessWindowStation(station));}
     CHECK(GetUserObjectInformationW(GetProcessWindowStation(),UOI_NAME,actual,sizeof(actual),&needed));

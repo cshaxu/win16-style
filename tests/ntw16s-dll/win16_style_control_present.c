@@ -89,6 +89,20 @@ int main(int argc,char **argv)
     wc.lpfnWndProc=witness;wc.lpszClassName=L"StyleControlPresent";wc.hInstance=GetModuleHandleW(NULL);
     CHECK(RegisterClassW(&wc));root=CreateWindowW(wc.lpszClassName,L"Presentation",WS_OVERLAPPEDWINDOW|WS_VISIBLE,
         0,0,500,300,NULL,NULL,wc.hInstance,NULL);CHECK(root);ShowWindow(root,SW_SHOWNORMAL);UpdateWindow(root);
+    /* Exercise the actual native-state adapter used by painter and hit test,
+     * including the reported 17x28 regression and both axis directions. */
+    for(int vertical=0;vertical<2;++vertical)for(int cross=17;cross<=42;cross+=cross==17?11:7){
+        SCROLLINFO range={.cbSize=sizeof(range),.fMask=SIF_RANGE|SIF_POS,.nMin=0,.nMax=100,.nPos=50};
+        win16_scroll_layout l;
+        w=CreateWindowW(L"SCROLLBAR",L"",WS_CHILD|WS_VISIBLE|(vertical?SBS_VERT:SBS_HORZ),
+            0,0,vertical?cross:240,vertical?240:cross,root,NULL,wc.hInstance,NULL);CHECK(w);
+        SetScrollInfo(w,SB_CTL,&range,FALSE);CHECK(scroll_layout(w,&l));
+        CHECK(l.first.right-l.first.left==cross && l.first.bottom-l.first.top==cross);
+        CHECK(l.last.right-l.last.left==cross && l.last.bottom-l.last.top==cross);
+        CHECK(l.thumb.right-l.thumb.left==cross && l.thumb.bottom-l.thumb.top==cross);
+        printf("SCROLL SQUARE PASS vertical=%d thickness=%d arrows/thumb=%dx%d\n",vertical,cross,cross,cross);
+        CHECK(DestroyWindow(w));
+    }
     {HWND group,sibling;HDC dc=CreateCompatibleDC(NULL);HBITMAP bitmap,old;BITMAPINFO bi={0};void *pixels;
      control_style state={0};RECT r={0,0,300,100};
      group=CreateWindowW(L"BUTTON",L"Group",WS_CHILD|WS_VISIBLE|BS_GROUPBOX,10,10,300,100,root,NULL,wc.hInstance,NULL);

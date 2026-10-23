@@ -2,16 +2,16 @@
 
 ## Current Work
 
-M0 Td S5发布规范已推送复核并关闭，恢复M0 T6 S4唯一活动包。
-用户要求不用computer-use、自己用原生探针验收；本S同时修复滚动条端钮长方形缺陷。
-S4的新四文件验证后发布assets根目录及O:/winnt/system32；S5最终审计尚未准入。
+M0 T6 S4已完成滚动条方形端钮修复及原生探针；新双宽构建、完整58通过/2权限跳过、
+同包10/10及双位置发布通过，本地verified，待提交推送和实际复核。用户指定不用
+computer-use、自己用探针验收。S5最终任务审计尚未准入，M0未完成。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 6
 - Last allocated Td S: 5
-- Last delivery: M0 Td S5 P2 (P1 618c51b远端复核及关闭，恢复T6 S4)
+- Last delivery: M0 T6 S4 P1 (本地verified及双发布，待推送后实际复核)
 
 ## Technical Baseline
 
@@ -23,21 +23,18 @@ ordinal2..32及NONAME helper1；SDK staging/有界OS helper、私有MinHook/HDE�
 Git暂存blob与来源一致，121回执。旧生成器删除；独立摘要门禁拒绝替换，两个DLL
 各含18个原图形表及RCDATA5完整来源说明。124处置/294 includes及MinHook14项保持。
 
-s2-original-art新干净双宽构建通过；完整矩阵x86为23通过/1剪贴板跳过、x64为34通过/
-1剪贴板跳过，0失败。原生CreateWindowStation拒绝访问5，77仍不计通过。
-同包13/13、系统双宽cmd中转8/8通过；全程不重链接，四文件哈希保持相同，已复制
-assets并复核。发布清单绑定122输入、快照/工具链/PE/ABI及全部四文件SHA。
-已查看实际demo两路截图；新标题及控件图形来自原表，不用旧自绘包证明外观通过。
+当前s4-probe-final新干净双宽全构建通过，完整矩阵x86 23通过/1跳过，x64 35通过/
+1跳过，0失败；注册/执行24/36集合相同。同包10/10，四文件前后SHA一致，已发布
+assets根目录及O:/winnt/system32，备份旧四文件且核验一致，release.json绑定124输入。
+S4修复demo滚动条28->17逻辑像素及适配器按横截面保持端钮/滑块正方形；横纵
+17/28/35/42几何双宽通过，旧实现负例在28失败。真实same-demo原生探针验证Tab焦点、
+捕获、业务/菜单/About及窗口操作；GetDpiForWindow=144/150%，滚动条厚26物理像素。
 
-S3新快照s3-wait-final双宽全构建通过，相关回归x86 6/6及x64 9/9无跳过，
-同包14/14含系统cmd等待6场景通过；四文件发布到assets且SHA与测试包一致。
-清单更新为124源码输入。启动器保持Console，控制台目标默认等待并返回实际退出码，
-GUI目标默认异步，--wait均等待。S3完整矩阵未重跑，S4接收最终全量与交互探针（用户后续指定）。
-
-用户确认“这次跟ntvdm64的一致”，原资源新版视觉验收通过；真实输入/焦点/捕获/
-选定DPI/剪贴板的未完成项由S4接收。私有桌面、合成消息与
-PrintWindow不等于物理验收。启动器仍Console，未实施GUI子系统切换。S2剩余项转交S4，
-S4现为唯一活动包，M0未完成；记录见[S2验收](../history/M0-T6-S2-acceptance.md)。
+用户已确认原资源与ntvdm64外观一致，并指定不用computer-use、自己用探针做；
+不再要求整套人工操作。探针不冒称物理键鼠。隔离剪贴板77不计通过，Windows拒绝
+CreateWindowStation错误5（四种access mask均失败），共享剪贴板未触碰，记录宿主限制。
+启动器仍Console；S3默认等待语义本包六场景复验通过。S2原交接项由S4按用户最新
+验收方式接收；S4唯一活动，最后审计为S5。[S4证据](../history/M0-T6-S4-acceptance.md)。
 
 用户要求每产品S构建同批四文件、对该包测试、发布、提交推送及实际复核；不再
 仅以源码推送收口。历史MSVC/Detours及未发布旧S保留历史事实，不作为新基线证据。
@@ -87,9 +84,9 @@ S3 P1 97a777d已推送并复核；最终16/21完整回归，全部失败有处�
 | Applicable Rules | 完整Task Reading Set、每S四文件闭环、真实交互与自动证据分开、来源身份及任务级退出条件 |
 | Verification | 新干净双宽全构建；完整注册矩阵及失败/跳过逐项核对；同批实际包10项含等待6场景；发布assets及O:/winnt/system32 SHA与测试一致；本机原生探针状态/DPI及环境限制 |
 | Expected Markers | 全矩阵无未处置失败、四文件同批且无sibling依赖；裸demo原生/注入demo原样式业务正常；焦点/捕获/控件消息/DPI有探针证据，剪贴板权限限制有明确处置 |
-| Asset Needs | build/t6-package/s4-acceptance（旧布局基线，已通过构建）、s4-probe-dev（探针开发）、s4-probe-final及s4-probe-final-test（最终新批次）新构建/矩阵/同包证据；保留S2/S3已登记scratch至T结束；hidden owned每构建架构600秒、矩阵每架构600秒、同包1800秒、总scratch1GB |
-| Reporting Requirements | 区分通过/失败/跳过及用户已确认外观；明确待物理操作和选定DPI；不将S3等待自动测试扩张为交互键盘通过 |
+| Asset Needs | build/t6-package/s4-acceptance（旧布局基线，已通过构建）、s4-probe-dev、s4-probe-dev-fixed、s4-probe-about、s4-probe-dev-about-thread（失败及修正日志）、s4-probe-dev-tree（开发构建）、s4-probe-final及s4-probe-final-test（最终新批次）新构建/矩阵/同包证据；保留S2/S3已登记scratch至T结束；hidden owned每构建架构600秒、矩阵每架构600秒、同包1800秒、总scratch1GB；s4-deploy保存两处原文件备份及部署结果 |
+| Reporting Requirements | 区分通过/失败/跳过及用户已确认外观；明确原生探针覆盖和实际DPI、隔离station权限限制；不将S3等待自动测试扩张为交互键盘通过 |
 | Stop Conditions | 探针存在未处置失败、完整矩阵失败或混包时不得关闭S4/T6/M0；先完成不依赖用户的工作 |
 | Exit Criteria | 本S编译/同批打包/测试/发布/提交推送/实际复核及用户要求的原生探针验收/限制记录完成，才关闭S4并准入S5审计 |
 | Original Owner Request | 每次S编译发布测试提交推送；原资源相同；Console自然等待优先；完成启动器新S后继续后续S |
-| Similar-Issue Sweep | 检查完整矩阵注册和实际执行、private clipboard拒绝访问、物理反馈缺项、旧外观待确认措辞及发布清单/测试包身份 |
+| Similar-Issue Sweep | 检查完整矩阵注册和实际执行、private clipboard拒绝访问、探针覆盖缺项、旧外观待确认措辞及发布清单/测试包身份 |
