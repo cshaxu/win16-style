@@ -1,13 +1,13 @@
 {
   "schema": 1,
-  "delivery": "M0 T6 S5 P1",
-  "stage": "M0-bounded-product-acceptance-complete-native-probes-with-clipboard-host-limit",
-  "version": "0.6.0.0",
+  "delivery": "M0 T7 S1 P1",
+  "stage": "menu-cancellation-verified-awaiting-actual-remote-review",
+  "version": "0.7.0.0",
   "package_directory": "assets",
   "source_inputs": [
     {
       "path": "CMakeLists.txt",
-      "sha256": "9ee1b4cd9ff6d325dcdcf1bb36b85e947e493d88068647ae6b828ac9a470f9af"
+      "sha256": "c390b3f5c6b24554fc2f910e5dedb4cd70e4df5c39e9812d6dee7b311bd98047"
     },
     {
       "path": "LICENSE",
@@ -33,7 +33,7 @@
     },
     {
       "path": "src/demo-exe/version.rc",
-      "sha256": "58aee7682c6159475a08613338fcf97ac7ef65dba1fa29d9183f8ed93aceecae"
+      "sha256": "328b8c07aae9a8bd9e9878b2fe6913d599911b0b3525a61d196d495feac501a7"
     },
     {
       "path": "src/ntw16s-dll/README.md",
@@ -313,11 +313,11 @@
     },
     {
       "path": "src/ntw16s-dll/version.rc",
-      "sha256": "6a480a0f8431260222948b53fcc28faf4bc2b5df7f4a9b06ca7d4c2662e58cb1"
+      "sha256": "2e4e0438f7c3d92bc596e30243587b4b18deb856367058c1b7e310ace29013ba"
     },
     {
       "path": "src/ntw16s-dll/win16_style.c",
-      "sha256": "54506a48d307fa2bc7690e603babfbb511844974f77a87e84d1c2cfed3ebf764"
+      "sha256": "a4fd3f622c2ce753d110e9949838af30e5a2795ddf3b640aa64c91a16580c95f"
     },
     {
       "path": "src/ntw16s-dll/win16_style.h",
@@ -333,7 +333,7 @@
     },
     {
       "path": "src/run16s-exe/version.rc",
-      "sha256": "fddd488aa6aea021a2d9985b450fbe0d3c7b6a3ec5efbd2769eb8e86bcab613b"
+      "sha256": "742cf05f3e47cdf84ecb4026e9a64a9e742c64d8bf829257e4f8cc802f94e898"
     },
     {
       "path": "tests/README.md",
@@ -448,6 +448,10 @@
       "sha256": "6115d27c62a4bc599f2561e4ada320bde5f653f283d482a9ab551cd0cf6b9128"
     },
     {
+      "path": "tests/ntw16s-dll/win16_style_menu_cancel.c",
+      "sha256": "81d2355cc52e6a450e30aca5a0882b094e8540cb8d8affc5cd4c68f43d1f5716"
+    },
+    {
       "path": "tests/ntw16s-dll/win16_style_menu_dispatch.c",
       "sha256": "35f482037eadd6e52e78cdb91d69ea331ba719598b19898cff6796ab7d4bf495"
     },
@@ -504,34 +508,34 @@
       "sha256": "384d457e8e99f6120fe4f1eaf0bf32ce3650cf9dec871f0b32c8c4cdce24d4b8"
     }
   ],
-  "source_inputs_sha256": "f4ef21496438c269f0bccbb27c62b00f33e74c81b8c1f689fcd72f93b912379c",
-  "source_snapshot_sha256": "6663a8a81de7eedc0db15c419724995768edaf2f7367c53a25518dddd1191b70",
+  "source_inputs_sha256": "6878c911aa17c9128d162bb9bf82fa79b8da28d8476347db7defd85467a28f59",
+  "source_snapshot_sha256": "f0a7b95c3665f1558893ffac353be3932c438ac4ffc0899274a3ac8a06d2cf39",
   "toolchains": {
-    "ccache_version": "ccache version 4.13.6",
-    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
     "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
+    "ccache_version": "ccache version 4.13.6",
     "toolchains": [
       {
-        "architecture": "x86",
-        "version": "16.1.0",
         "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
+        "target": "i686-w64-mingw32",
         "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
-        "target": "i686-w64-mingw32"
+        "version": "16.1.0",
+        "architecture": "x86"
       },
       {
-        "architecture": "x64",
-        "version": "16.1.0",
         "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
+        "target": "x86_64-w64-mingw32",
         "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
-        "target": "x86_64-w64-mingw32"
+        "version": "16.1.0",
+        "architecture": "x64"
       }
-    ]
+    ],
+    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe"
   },
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
-      "version": "M0 T6",
-      "sha256": "435dfc22827582ea0a2bbec53954bbb1579e0c2a58cc25a10d038ec884470f02",
+      "version": "M0 T7",
+      "sha256": "922ac62590a83ccd61a5fab019d9126f8ecf39f36196dfa9eec2ea8eccb65304",
       "imports": [
         "kernel32.dll",
         "msvcrt.dll"
@@ -539,8 +543,8 @@
     },
     "ntw16s32.dll": {
       "architecture": "x86",
-      "version": "M0 T6",
-      "sha256": "828798f6dd938fb9d2f713599b29f163702e7a316f5022ddaa4a63c579d2cba4",
+      "version": "M0 T7",
+      "sha256": "9a2e49455aecfd2951de9c523089f766e2b95247992c4b6ef99b0bedbe71c78c",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -559,8 +563,8 @@
     },
     "ntw16s64.dll": {
       "architecture": "x64",
-      "version": "M0 T6",
-      "sha256": "fcd9d17983fd85f8cdcc0dde119e1963676edaf0e8b26f1ee4aed344f6ec2bf1",
+      "version": "M0 T7",
+      "sha256": "661d9f224dd9cb1ad0816074db9c9db3735493b30c77792b88eac6c238b95b1d",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -574,8 +578,8 @@
     },
     "demo.exe": {
       "architecture": "x64",
-      "version": "M0 T6",
-      "sha256": "0104cb2b20a35daae7e45034dc76cfde5299736f9ed09fa43e7972569bdbcf6c",
+      "version": "M0 T7",
+      "sha256": "73a3085eeac850c6b8bd2014d9ebeacc74b9b83c6983e5141eaaba557ba5616f",
       "imports": [
         "kernel32.dll",
         "msvcrt.dll",
@@ -584,25 +588,53 @@
     }
   },
   "verification": {
-    "clean_build": "S5 clean x86/x64 products and all fixtures, ABI 1/1 each, dependency trace within clean source and selected toolchains",
-    "package_cases": 10,
-    "package_result": "S5 10 passed; tested four hashes identical in assets and O:/winnt/system32",
+    "clean_build": "T7 S1 clean x86/x64 products and all fixtures; ABI 1/1 each; dependency trace restricted to snapshot and selected toolchains",
+    "package_cases": 12,
+    "package_result": "12 passed against exact candidate; hashes unchanged through testing and both deployments",
+    "related_regression": {
+      "status": "passed-with-skips",
+      "no_rebuild": true,
+      "selection": "^(core/.*|demo/.*|launch/(wait|payload|staging|unwind|startup-hooks|failures))$",
+      "tests": [
+        {
+          "passed": 24,
+          "failed": 0,
+          "registered": 25,
+          "skipped": [
+            "core/edit-clipboard"
+          ],
+          "architecture": "x86"
+        },
+        {
+          "passed": 27,
+          "failed": 0,
+          "registered": 28,
+          "skipped": [
+            "core/edit-clipboard"
+          ],
+          "architecture": "x64"
+        }
+      ]
+    },
+    "menu_cancel": {
+      "architectures": [
+        "x86",
+        "x64"
+      ],
+      "cases_per_architecture": 15,
+      "status": "passed",
+      "actual_package_dll": true,
+      "negative": "both actual T6 assets DLLs rejected at case0: focusRestored=0, entries=exits=2, commands=0, timeout=0, exit1",
+      "observations": "loop enter/exit, focus, capture, cancellation then hover, commands, owner-draw restore, removal/destruction"
+    },
     "coverage": [
-      "ABI x86/x64",
-      "native-only demo boundary",
-      "same demo direct/injected module/appearance/business observations",
-      "CLI",
-      "automatic x86/x64 A/W GUI threads",
-      "four width edges A/W three generations and caller suspension",
-      "extended target paths x86/x64",
-      "bad package/stdio/exit semantics",
-      "64 native/injected creation-field vectors",
-      "four rollback scenarios",
-      "eight dialogs on two GUI threads across target widths",
-      "six message boxes on two GUI threads across target widths",
-      "Console default wait/exit, GUI async/explicit wait, six held native-process cases via real cmd"
+      "all core tests both widths",
+      "native demo boundary and direct/injected observations",
+      "Console default wait, GUI async and explicit wait, six held cmd cases",
+      "CLI, automatic launch, four width edges A/W three generations/caller suspension",
+      "extended target paths, bad package, stdio and exit semantics"
     ],
-    "full_matrix": {
+    "prior_full_matrix": {
       "status": "passed-with-skips",
       "no_rebuild": "Same completed package build trees; hashes must be verified separately",
       "tests": [
@@ -628,105 +660,29 @@
       "source_inputs_sha256": "f4ef21496438c269f0bccbb27c62b00f33e74c81b8c1f689fcd72f93b912379c",
       "source_snapshot_sha256": "f75ad255cfa32c910523de280ff7c4fd20592a5503a405fe704c690100d8ccef"
     },
-    "physical_input": "owner directs native probes instead of computer-use/manual suite; probes verify state/messages, not physical input",
-    "private_clipboard": "both widths skipped 77: native CreateWindowStation denied 5 for four access masks; shared clipboard untouched; explicit host limitation, not counted as pass",
-    "cmd_chain": {
-      "evidence_delivery": "M0 T6 S2 P4",
-      "package_delivery": "M0 T6 S2 P4",
-      "status": "passed",
-      "cases": 8,
-      "command_processors": [
-        "Windows SysWOW64/cmd.exe",
-        "Windows System32/cmd.exe"
-      ],
-      "selection": "each cmd width -> each target width -> opposite width -> initial width; A/W and caller suspension",
-      "observations": "three target windows attached, Win16 font, checkbox semantics, completion, exact child PID lineage; published four hashes unchanged",
-      "boundary": "CREATE_NO_WINDOW background /d /s /c; current Console launcher only; no interactive console, GUI-launcher or conhost styling claim"
-    },
-    "original_resource_gates": "6 source byte substitutions rejected; x86 frame_buttons and x64 system_menu_bitmap compiled-table mutations rejected; all six staged blobs equal pinned source",
-    "prior_full_matrix": {
-      "delivery": "M0 T6 S2 P4",
-      "status": "passed-with-skips",
-      "x86": {
-        "registered": 24,
-        "passed": 23,
-        "failed": 0,
-        "skipped": [
-          "core/edit-clipboard"
-        ],
-        "seconds": 114.56
-      },
-      "x64": {
-        "registered": 35,
-        "passed": 34,
-        "failed": 0,
-        "skipped": [
-          "core/edit-clipboard"
-        ],
-        "seconds": 355.08
-      }
-    },
-    "wait_contract": {
-      "status": "passed",
-      "cases": 6,
-      "console_targets": "x86/x64 default and --wait: parent cmd stays alive until release, returns 42",
-      "gui_target": "default returns 0 while target remains alive; --wait returns 42",
-      "identity": "CUI target, launcher and parent cmd share GetConsoleProcessList membership; HWND can be zero in headless context",
-      "negative": "previous published launcher rejected: parent cmd returned before target release",
-      "evidence_delivery": "M0 T6 S5 P1"
-    },
-    "prior_affected_regression": {
-      "delivery": "M0 T6 S3 P1",
-      "tests": [
-        {
-          "passed": 6,
-          "skipped": [],
-          "registered": 6,
-          "architecture": "x86"
-        },
-        {
-          "passed": 9,
-          "skipped": [],
-          "registered": 9,
-          "architecture": "x64"
-        }
-      ],
-      "status": "passed",
-      "no_rebuild": "Same completed package build trees; hashes must be verified separately"
-    },
-    "demo_interaction": {
-      "status": "passed on direct and injected same demo",
-      "dpi": 144,
-      "scale_percent": 150,
-      "scrollbar_physical_thickness": 26,
-      "observations": [
-        "7 posted Tab focus transitions through real IsDialogMessage, independently read GUI thread focus",
-        "dropdown show/hide",
-        "injected scrollbar arrow capture/release and actual position",
-        "About modal opened, closed, command returned, owner enabled",
-        "exact window movement, minimize/maximize/restore, business data and notifications"
-      ],
-      "evidence_delivery": "M0 T6 S5 P1"
-    },
-    "scrollbar": {
-      "status": "passed",
-      "fix": "17 logical-pixel demo thickness; native-state adapters derive square arrows/thumb from actual cross-axis",
-      "probe": "both axes at 17/28/35/42 pixels, both widths; old adapter rejected at 28",
-      "original_resources": "six files unchanged; 18 tables in each DLL",
-      "source_identity": "S5 inputs identical to S4 square-geometry/full-matrix baseline"
-    },
-    "current_full_matrix": "not rerun in S5: all 124 inputs identical to S4 full-matrix source; current S5 clean ABI plus actual-package tests passed",
+    "physical_input": "owner directs native probes; private-desktop native queued messages, not physical input",
+    "private_clipboard": "both widths skipped77: private CreateWindowStation denied5; shared clipboard untouched; host limit not counted as pass",
+    "original_resource_gates": "six source substitutions rejected; six original resources byte-identical and each DLL contains all18 tables plus full provenance; ABI3 unchanged",
     "evidence_sha256": {
-      "build/t6-package/s5-audit/snapshot.json": "6663a8a81de7eedc0db15c419724995768edaf2f7367c53a25518dddd1191b70",
-      "build/t6-package/s5-audit/commits-reviewed.json": "10ada5906f455dc231752ac27e2bbd81f9009370ea6147fb6a3f61e232f5dd5e",
-      "build/t6-package/s5-audit/task-stats.json": "17debc5263d84caa62e1b321bc5df9be4b3ee6d708b5832d10ec19bc00bc2839",
-      "build/t6-package/s5-audit/clean-source/build/t6-package/s1-rebuild/result.json": "fedbb8837a2193ff88bfeee8971264000be05cb6181cc1867ec535e9c72cf068",
-      "build/t6-package/s5-audit-test/result.json": "1a21c70418b9d8dc59e0f0088820a43b78ee38200f4eb6ae4d96847804d76317",
-      "build/t6-package/s5-audit-test/cases.json": "72af54545a8a0cebad8dc4e1a807851862514f65e4d6b005054e7965226da2f4",
-      "build/t6-package/s4-probe-final/full-matrix/x86/registered.json": "8b1b75c966f548d167dda8d6ac0f88f1f72d8a527f0c0fa818d368efe861a78b",
-      "build/t6-package/s4-probe-final/full-matrix/x86/results.xml": "844dd131f368862082847660fad8a6ef1245e8d7a29bffb06191b4fcf5f64cd2",
-      "build/t6-package/s4-probe-final/full-matrix/x64/registered.json": "b78a113e9d1f6738fa69913d326ce7958d7ce88016e036da5c1568be77ffe441",
-      "build/t6-package/s4-probe-final/full-matrix/x64/results.xml": "dd8f1cedadc7b998297b39507adbbea7153b299d8b7821dfcfc1c523b98196d1"
+      "build/t7-package/release/snapshot.json": "f0a7b95c3665f1558893ffac353be3932c438ac4ffc0899274a3ac8a06d2cf39",
+      "build/t7-package/release/package.json": "4a9a7b682962ea124c965283a093254c7fd062f5f05361267535d8e8093e696b",
+      "build/t7-package/release/regression/result.json": "6eb66078419987715509abdcc85257b1b93379c6f848ae992ca1b22f7bd49056",
+      "build/t7-package/package-test/result.json": "294af58d31ae61d2bf61a7fa187f2412e3437dd5b07c2af19104eed29162408a",
+      "build/t7-package/package-test/cases.json": "9b39b1d0827ac2c7ab2fa3ab2ad223acb56cc7768c313ae31677a3eb9ded76eb",
+      "build/t7-package/publish/result.json": "b0f71c18083410301ef8e0b2766cd29dfd36d3b6b6b124a40de2b5a465efff8b",
+      "build/t7-package/negative/old-x86.log": "428bf338db256a5de7b6ccdfcdad1c94b3dca83c0f5e259ffc3305ea4e1cc0a4",
+      "build/t7-package/negative/old-x64.log": "428bf338db256a5de7b6ccdfcdad1c94b3dca83c0f5e259ffc3305ea4e1cc0a4",
+      "build/t7-package/probe-final/result.json": "8a498c7b4061c922d54c3db3de36bdf1f8f2e2f6eb3962006706f0985d06062a",
+      "build/t7-package/release/regression/x86/junit.xml": "5ba4de63d36a82a2b6cef552aa64147f71de49e64f55cc649474c54858b4b018",
+      "build/t7-package/release/regression/x86/registered.json": "8502316e09a9206098b441175c1ca398f486c3ebc37d7dd50b5383b7c85546db",
+      "build/t7-package/release/regression/x86/stdout.log": "83a93ec9bcc6102d73fb955a5ee16ef0b417cc73e599f8a00ac126b9a32d43e7",
+      "build/t7-package/package-test/menu-cancel-x86/stdout.log": "08c7e2abd905b3b2c008b597fe49424b2a78c382ee2b73726a2fe692873150a5",
+      "build/t7-package/package-test/menu-cancel-x86/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "build/t7-package/release/regression/x64/junit.xml": "9d38fc2cabfe087572ba15da1df036c3c0cb141f8c1f6f0290af835d8a9a8e46",
+      "build/t7-package/release/regression/x64/registered.json": "c7190ddc7b23526d2bf22497f80b4b3ba360b04c568de5c98d1855600f88f331",
+      "build/t7-package/release/regression/x64/stdout.log": "28bf3722a0f0d2d02978a863d1a8561ed316d798cc1166c7757c9e7b265d655b",
+      "build/t7-package/package-test/menu-cancel-x64/stdout.log": "08c7e2abd905b3b2c008b597fe49424b2a78c382ee2b73726a2fe692873150a5",
+      "build/t7-package/package-test/menu-cancel-x64/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
   },
   "source_input_convention": "sha256 is the actual build input; git_blob_sha256 records canonical Git bytes only when checkout newline conversion differs",
@@ -778,119 +734,103 @@
     ],
     "files": [
       {
-        "after": "0104cb2b20a35daae7e45034dc76cfde5299736f9ed09fa43e7972569bdbcf6c",
-        "before": "a255f30d44b2a05138ad2ba1c728dae386de7cf549e9ee1ee5116de318f67dfa",
-        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe",
-        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t6-package\\s5-deploy\\before-0",
-        "expected": "0104cb2b20a35daae7e45034dc76cfde5299736f9ed09fa43e7972569bdbcf6c"
+        "expected": "73a3085eeac850c6b8bd2014d9ebeacc74b9b83c6983e5141eaaba557ba5616f",
+        "after": "73a3085eeac850c6b8bd2014d9ebeacc74b9b83c6983e5141eaaba557ba5616f",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t7-package\\publish\\before-0",
+        "before": "0104cb2b20a35daae7e45034dc76cfde5299736f9ed09fa43e7972569bdbcf6c",
+        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe"
       },
       {
-        "after": "828798f6dd938fb9d2f713599b29f163702e7a316f5022ddaa4a63c579d2cba4",
-        "before": "fc204b70dfdb87f062287ff832371ae8bc7c6ac430ee8196d0f6b0dbdd70ef5f",
-        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
-        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t6-package\\s5-deploy\\before-0",
-        "expected": "828798f6dd938fb9d2f713599b29f163702e7a316f5022ddaa4a63c579d2cba4"
+        "expected": "9a2e49455aecfd2951de9c523089f766e2b95247992c4b6ef99b0bedbe71c78c",
+        "after": "9a2e49455aecfd2951de9c523089f766e2b95247992c4b6ef99b0bedbe71c78c",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t7-package\\publish\\before-0",
+        "before": "828798f6dd938fb9d2f713599b29f163702e7a316f5022ddaa4a63c579d2cba4",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll"
       },
       {
-        "after": "fcd9d17983fd85f8cdcc0dde119e1963676edaf0e8b26f1ee4aed344f6ec2bf1",
-        "before": "3f9dcb6b5d6e0f229db82b36a7cfb123c921246d827401068f839165070dcb7e",
-        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll",
-        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t6-package\\s5-deploy\\before-0",
-        "expected": "fcd9d17983fd85f8cdcc0dde119e1963676edaf0e8b26f1ee4aed344f6ec2bf1"
+        "expected": "661d9f224dd9cb1ad0816074db9c9db3735493b30c77792b88eac6c238b95b1d",
+        "after": "661d9f224dd9cb1ad0816074db9c9db3735493b30c77792b88eac6c238b95b1d",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t7-package\\publish\\before-0",
+        "before": "fcd9d17983fd85f8cdcc0dde119e1963676edaf0e8b26f1ee4aed344f6ec2bf1",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll"
       },
       {
-        "after": "435dfc22827582ea0a2bbec53954bbb1579e0c2a58cc25a10d038ec884470f02",
-        "before": "86824c855768186d9b29098733b384581fd94ddb25f4fbc056927ea0ef168cde",
-        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
-        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t6-package\\s5-deploy\\before-0",
-        "expected": "435dfc22827582ea0a2bbec53954bbb1579e0c2a58cc25a10d038ec884470f02"
+        "expected": "922ac62590a83ccd61a5fab019d9126f8ecf39f36196dfa9eec2ea8eccb65304",
+        "after": "922ac62590a83ccd61a5fab019d9126f8ecf39f36196dfa9eec2ea8eccb65304",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t7-package\\publish\\before-0",
+        "before": "435dfc22827582ea0a2bbec53954bbb1579e0c2a58cc25a10d038ec884470f02",
+        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe"
       },
       {
-        "after": "0104cb2b20a35daae7e45034dc76cfde5299736f9ed09fa43e7972569bdbcf6c",
-        "before": "a255f30d44b2a05138ad2ba1c728dae386de7cf549e9ee1ee5116de318f67dfa",
-        "path": "O:\\winnt\\system32\\demo.exe",
-        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t6-package\\s5-deploy\\before-1",
-        "expected": "0104cb2b20a35daae7e45034dc76cfde5299736f9ed09fa43e7972569bdbcf6c"
+        "expected": "73a3085eeac850c6b8bd2014d9ebeacc74b9b83c6983e5141eaaba557ba5616f",
+        "after": "73a3085eeac850c6b8bd2014d9ebeacc74b9b83c6983e5141eaaba557ba5616f",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t7-package\\publish\\before-1",
+        "before": "0104cb2b20a35daae7e45034dc76cfde5299736f9ed09fa43e7972569bdbcf6c",
+        "path": "O:\\winnt\\system32\\demo.exe"
       },
       {
-        "after": "828798f6dd938fb9d2f713599b29f163702e7a316f5022ddaa4a63c579d2cba4",
-        "before": "fc204b70dfdb87f062287ff832371ae8bc7c6ac430ee8196d0f6b0dbdd70ef5f",
-        "path": "O:\\winnt\\system32\\ntw16s32.dll",
-        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t6-package\\s5-deploy\\before-1",
-        "expected": "828798f6dd938fb9d2f713599b29f163702e7a316f5022ddaa4a63c579d2cba4"
+        "expected": "9a2e49455aecfd2951de9c523089f766e2b95247992c4b6ef99b0bedbe71c78c",
+        "after": "9a2e49455aecfd2951de9c523089f766e2b95247992c4b6ef99b0bedbe71c78c",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t7-package\\publish\\before-1",
+        "before": "828798f6dd938fb9d2f713599b29f163702e7a316f5022ddaa4a63c579d2cba4",
+        "path": "O:\\winnt\\system32\\ntw16s32.dll"
       },
       {
-        "after": "fcd9d17983fd85f8cdcc0dde119e1963676edaf0e8b26f1ee4aed344f6ec2bf1",
-        "before": "3f9dcb6b5d6e0f229db82b36a7cfb123c921246d827401068f839165070dcb7e",
-        "path": "O:\\winnt\\system32\\ntw16s64.dll",
-        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t6-package\\s5-deploy\\before-1",
-        "expected": "fcd9d17983fd85f8cdcc0dde119e1963676edaf0e8b26f1ee4aed344f6ec2bf1"
+        "expected": "661d9f224dd9cb1ad0816074db9c9db3735493b30c77792b88eac6c238b95b1d",
+        "after": "661d9f224dd9cb1ad0816074db9c9db3735493b30c77792b88eac6c238b95b1d",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t7-package\\publish\\before-1",
+        "before": "fcd9d17983fd85f8cdcc0dde119e1963676edaf0e8b26f1ee4aed344f6ec2bf1",
+        "path": "O:\\winnt\\system32\\ntw16s64.dll"
       },
       {
-        "after": "435dfc22827582ea0a2bbec53954bbb1579e0c2a58cc25a10d038ec884470f02",
-        "before": "86824c855768186d9b29098733b384581fd94ddb25f4fbc056927ea0ef168cde",
-        "path": "O:\\winnt\\system32\\run16s.exe",
-        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t6-package\\s5-deploy\\before-1",
-        "expected": "435dfc22827582ea0a2bbec53954bbb1579e0c2a58cc25a10d038ec884470f02"
+        "expected": "922ac62590a83ccd61a5fab019d9126f8ecf39f36196dfa9eec2ea8eccb65304",
+        "after": "922ac62590a83ccd61a5fab019d9126f8ecf39f36196dfa9eec2ea8eccb65304",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t7-package\\publish\\before-1",
+        "before": "435dfc22827582ea0a2bbec53954bbb1579e0c2a58cc25a10d038ec884470f02",
+        "path": "O:\\winnt\\system32\\run16s.exe"
       }
     ],
-    "backups": "build/t6-package/s5-deploy; before files are exact S4 418be5e assets, recoverable from Git after scratch cleanup",
-    "backup_retention": "task scratch cleaned after review; all before files recoverable from S4 418be5e assets"
+    "backups": "build/t7-package/publish; before files are exact T6 S5 P1 5b5ee58376d3ff9a98e5852cb2c3c5247e202e02 assets, recoverable from Git after task cleanup"
   },
   "audit": {
-    "stage": "closed after actual remote review and owned scratch cleanup",
-    "history_commits_reviewed": 30,
-    "scope": "six T tasks and eight acceptance surfaces",
-    "current_source_delta": 0,
+    "stage": "verified; actual remote review and cleanup pending",
+    "baseline": "89fe6b94265ebf7f0aee4944d8938f1c243029b9",
+    "scope": "T7 single S1, six bounded coverage units in menu-cancellation history",
     "task_statistics": {
-      "baseline": "60bb624",
+      "baseline": "89fe6b9",
       "scope": "src tests tools CMakeLists.txt",
       "groups": {
         "CMakeLists.txt": [
           1,
-          160,
-          57
+          8,
+          1
         ],
         "src": [
-          61,
-          3578,
-          13368
+          4,
+          49,
+          18
         ],
         "tests": [
-          34,
-          1285,
-          196
+          1,
+          99,
+          0
         ],
         "tools": [
-          11,
-          604,
-          244
+          4,
+          17,
+          12
         ]
       },
       "total_paths_added_deleted": [
-        107,
-        5627,
-        13865
+        10,
+        173,
+        31
       ],
-      "net": -8238
+      "net": 142
     },
-    "physical_input": "not claimed; owner requests native probes",
-    "isolated_clipboard": "host limitation, two S4 skips not counted as pass",
-    "reviewed_commit": "5b5ee58376d3ff9a98e5852cb2c3c5247e202e02",
-    "closure_delivery": "M0 T6 S5 P2",
-    "scratch_cleanup": {
-      "path": "build/t6-package",
-      "files": 13003,
-      "bytes": 521103134,
-      "top_level_directories": 40,
-      "reparse_points": 0,
-      "live_owned_processes": 0,
-      "preserved": [
-        "build/.ninja",
-        "build/.ccache",
-        "assets",
-        "O:/winnt/system32"
-      ]
-    }
+    "state_owner": "original GUI thread style_window; stack tracking_menu and calls/detached lifetime retained",
+    "old_path_disposition": "no replacement renderer, resources, launcher or injection path; old T6 assets backed before exact four-file replacement",
+    "physical_input": "not claimed; native probes per owner",
+    "isolated_clipboard": "two host permission skips not counted as pass"
   }
 }

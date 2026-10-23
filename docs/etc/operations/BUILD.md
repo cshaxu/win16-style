@@ -16,7 +16,7 @@ pwsh -NoProfile -File tools/Build-Package.ps1 -RunName candidate-new
 ```
 
 命令返回隐藏worker PID、最终result.json和候选路径。须读取最终结果和worker日志，
-不能将PID视为成功。精确scratch为build/t6-package/candidate-new；RunName必须未存在。
+不能将PID视为成功。精确scratch为build/t7-package/candidate-new；RunName必须未存在。
 它复制当前源码（含尚未提交的当前文件），按snapshot.json记录全部输入，再在
 clean-source中使用全新build/.ninja双宽构建，复制四文件到candidate，package.json
 记录PE/版本/imports/SHA；每个build/test worker预算600秒。候选构建不自动发布。
@@ -24,8 +24,8 @@ clean-source中使用全新build/.ninja双宽构建，复制四文件到candidat
 完整矩阵在该干净树运行，仍需使用新RunName：
 
 ```powershell
-cd build/t6-package/candidate-new/clean-source
-pwsh -NoProfile -File tools/Build-Core.ps1 -TaskRoot t6-package -RunName full-new -TestPattern '^(core|launch|propagate|demo)/.*$' -TimeoutSeconds 600
+cd build/t7-package/candidate-new/clean-source
+pwsh -NoProfile -File tools/Build-Core.ps1 -TaskRoot t7-package -RunName full-new -TestPattern '^(core|launch|propagate|demo)/.*$' -TimeoutSeconds 600
 ```
 
 结果区分passed、passed-with-skips和failed-or-inconclusive；逐架构JUnit摘要列出
@@ -61,10 +61,10 @@ RCDATA 3为四产物的项目LICENSE，RCDATA 4为两个DLL的完整MinHook/HDE 
 旧Detours源码/声明只保留在其历史交付中，当前产品不使用Detours。
 
 
-同包运行验证使用独立观察/控制器，将候选四文件作为实际参数；默认10项聚焦测试（含6场景等待契约）：
+同包运行验证使用独立观察/控制器，将候选四文件作为实际参数；默认12项聚焦测试（含6场景等待契约及双宽15场景菜单取消）：
 
 ```powershell
-pwsh -NoProfile -File tools/Test-Package.ps1 -RunName package-test-new -Package build/t6-package/candidate-new/candidate -BuildRoot build/t6-package/candidate-new/clean-source/build/.ninja -SourceRoot build/t6-package/candidate-new/clean-source
+pwsh -NoProfile -File tools/Test-Package.ps1 -RunName package-test-new -Package build/t7-package/candidate-new/candidate -BuildRoot build/t7-package/candidate-new/clean-source/build/.ninja -SourceRoot build/t7-package/candidate-new/clean-source
 ```
 
 传入`-FullIntegration`另外执行64字段对照、回滚、八对话框及六消息框；它仍不替代
@@ -83,10 +83,13 @@ run16s保持Console子系统，交互cmd自然等待启动器；控制台目标�
 部署入口（先完成同包测试，再运行）：
 
 ```powershell
-pwsh -NoProfile -File tools/Publish-Package.ps1 -Package build/t6-package/candidate-new/candidate -TestResult build/t6-package/package-test-new/result.json -RunName publish-new
+pwsh -NoProfile -File tools/Publish-Package.ps1 -Package build/t7-package/candidate-new/candidate -TestResult build/t7-package/package-test-new/result.json -RunName publish-new
 ```
 
 `-ValidateOnly`只检查被测哈希、四文件集合和目标路径，不写入；正式执行保存两处
 旧文件及before/after摘要到发布scratch，失败保留incomplete记录，不标为完成。
 当前交互验收使用原生探针，不用computer-use；私有剪贴板权限跳过和物理输入未覆盖
 如实单列，不再要求用户反复完成整套手工操作。
+
+打包、包测试和发布入口提供-Task参数，当前默认7；Task用于版本校验及build/t7-package
+记录目录。未来任务传入实际编号，不复用旧任务scratch。

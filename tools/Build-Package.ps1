@@ -1,15 +1,16 @@
 [CmdletBinding()]
 param(
     [ValidatePattern('^[a-z0-9-]+$')][string]$RunName='candidate',
+    [ValidateRange(1,65535)][int]$Task=7,
     [switch]$Worker
 )
 $ErrorActionPreference='Stop'
 $repo=Split-Path $PSScriptRoot -Parent
-$scratch=Join-Path $repo "build/t6-package/$RunName"
+$scratch=Join-Path $repo "build/t$Task-package/$RunName"
 if(!$Worker){
     if(Test-Path -LiteralPath $scratch){throw 'Select a fresh run name; inspect the previous result first'}
     New-Item -ItemType Directory -Path $scratch | Out-Null
-    $arguments=@('-NoProfile','-File',('"'+$PSCommandPath+'"'),'-Worker','-RunName',$RunName)
+    $arguments=@('-NoProfile','-File',('"'+$PSCommandPath+'"'),'-Worker','-RunName',$RunName,'-Task',$Task)
     $job=Start-Process (Join-Path $PSHOME 'pwsh.exe') -ArgumentList $arguments -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $scratch 'worker.log') -RedirectStandardError (Join-Path $scratch 'worker.err')
     @{pid=$job.Id;result=(Join-Path $scratch 'result.json');candidate=(Join-Path $scratch 'candidate');timeout_seconds_per_build_architecture=600;maximum_build_seconds=1200}|ConvertTo-Json
     return
@@ -50,11 +51,11 @@ try{
         & python (Join-Path $clean 'tools/verify_resource_identity.py') --self-test
         if($LASTEXITCODE){throw 'Snapshot glyph gate failed'}
         & (Join-Path $clean 'tools/Verify-Governance.ps1') -SelfTest
-        & (Join-Path $clean 'tools/Build-Core.ps1') -Worker -TaskRoot t6-package -RunName s1-rebuild -TestPattern '^core/abi$' -TimeoutSeconds 600
-        $build=Get-Content -Raw (Join-Path $clean 'build/t6-package/s1-rebuild/result.json') | ConvertFrom-Json
+        & (Join-Path $clean 'tools/Build-Core.ps1') -Worker -TaskRoot "t$Task-package" -RunName clean-build -TestPattern '^core/abi$' -TimeoutSeconds 600
+        $build=Get-Content -Raw (Join-Path $clean "build/t$Task-package/clean-build/result.json") | ConvertFrom-Json
         if($build.status -ne 'passed' -or $build.exit_code -ne 0){throw 'Clean build failed'}
         $tree=Join-Path $clean 'build/.ninja'
-        $toolchains=Get-Content -Raw (Join-Path $clean 'build/t6-package/s1-rebuild/toolchains.json') | ConvertFrom-Json
+        $toolchains=Get-Content -Raw (Join-Path $clean "build/t$Task-package/clean-build/toolchains.json") | ConvertFrom-Json
         $compilerRoots=@($toolchains.toolchains | ForEach-Object {
             [IO.Path]::GetFullPath((Split-Path (Split-Path $_.compiler -Parent) -Parent))+[IO.Path]::DirectorySeparatorChar
         })
@@ -73,7 +74,7 @@ try{
                 if(!$allowed.Count){throw "Foreign build input: $inputPath"}
             }
         }
-        $verification=& python (Join-Path $clean 'tools/check_package.py') $candidate --source-root $clean --built-root $tree --task 6
+        $verification=& python (Join-Path $clean 'tools/check_package.py') $candidate --source-root $clean --built-root $tree --task $Task
         if($LASTEXITCODE){throw 'Candidate package gate failed'}
         $verification | Set-Content (Join-Path $scratch 'package.json') -Encoding utf8
     }finally{Pop-Location}

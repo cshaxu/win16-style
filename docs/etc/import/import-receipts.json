@@ -284,9 +284,9 @@
       "path": "src/ntw16s-dll/win16_style.c",
       "source": "src/ntw16s-dll/win16_style.c",
       "source_blob": "4235f085cb00c0d17145deec2d04a57c97b98d47",
-      "sha256": "54506a48d307fa2bc7690e603babfbb511844974f77a87e84d1c2cfed3ebf764",
+      "sha256": "a4fd3f622c2ce753d110e9949838af30e5a2795ddf3b640aa64c91a16580c95f",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -374,9 +374,9 @@
       "path": "src/ntw16s-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "6a480a0f8431260222948b53fcc28faf4bc2b5df7f4a9b06ca7d4c2662e58cb1",
+      "sha256": "2e4e0438f7c3d92bc596e30243587b4b18deb856367058c1b7e310ace29013ba",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged",
       "notice": "Project-authored, repository MIT"
     },
     {
@@ -518,9 +518,9 @@
       "path": "src/run16s-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "fddd488aa6aea021a2d9985b450fbe0d3c7b6a3ec5efbd2769eb8e86bcab613b",
+      "sha256": "742cf05f3e47cdf84ecb4026e9a64a9e742c64d8bf829257e4f8cc802f94e898",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -734,9 +734,9 @@
       "path": "src/demo-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "58aee7682c6159475a08613338fcf97ac7ef65dba1fa29d9183f8ed93aceecae",
+      "sha256": "328b8c07aae9a8bd9e9878b2fe6913d599911b0b3525a61d196d495feac501a7",
       "disposition": "authored",
-      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged",
       "notice": "Project-authored source per frozen W16Style README; no third-party artwork"
     },
     {
@@ -1089,6 +1089,15 @@
       "disposition": "authored",
       "review": "T6 S3 held native CUI/GUI target and actual cmd/event/console-membership wait contract; explicit same-batch DLL staging and failure stdout/stderr capture; console membership is authoritative in headless contexts with NULL console HWND; check parent liveness before membership",
       "notice": "Project-authored C17/Python native integration fixture, MIT"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_menu_cancel.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "81d2355cc52e6a450e30aca5a0882b094e8540cb8d8affc5cd4c68f43d1f5716",
+      "disposition": "authored",
+      "review": "T7 native private-desktop actual DLL menu-loop cancellation, focus/capture/hover/item-state regression; no physical input claim",
+      "notice": "Project-authored C17 fixture, MIT"
     }
   ]
 }

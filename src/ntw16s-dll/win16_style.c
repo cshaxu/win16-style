@@ -83,7 +83,7 @@ static void print_client_and_children(HWND w,style_window *s,HDC dc,LPARAM flags
 typedef struct menu_frame {
     HWND window;
     RECT button;
-    BOOL double_click;
+    BOOL double_click,escape;
     LPARAM point;
     HMENU root,active;
     int direction;
@@ -119,6 +119,18 @@ static LRESULT CALLBACK menu_filter(int code,WPARAM wp,LPARAM lp)
     menu_frame *frame=tracking_menu;
     if(code==HC_ACTION && (wp&PM_REMOVE) && frame){
         MSG *m=(MSG *)lp;
+        if((m->message==WM_KEYDOWN || m->message==WM_SYSKEYDOWN) &&
+           m->wParam==VK_ESCAPE && frame->active==frame->root)frame->escape=TRUE;
+        if(frame->style && (m->message==WM_LBUTTONDOWN || m->message==WM_NCLBUTTONDOWN)){
+            POINT p={GET_X_LPARAM(m->lParam),GET_Y_LPARAM(m->lParam)};
+            int hit=bar_at_screen(frame->window,frame->style,p);
+            if(hit!=-3){
+                /* A second click on the current bar item dismisses it;
+                 * another item switches without leaving a queued click. */
+                frame->target=hit==frame->selected?-3:hit;
+                m->message=WM_NULL;m->wParam=0;m->lParam=0;EndMenu();
+            }
+        }
         if(frame->style && (m->message==WM_MOUSEMOVE || m->message==WM_NCMOUSEMOVE)){
             POINT p={GET_X_LPARAM(m->lParam),GET_Y_LPARAM(m->lParam)};
             int hit=bar_at_screen(frame->window,frame->style,p);
@@ -513,7 +525,8 @@ static int open_bar_once(HWND w,style_window *s,int index,int *hover)
             anchor.x,anchor.y,w,NULL);
         if(!s->detached){
             if(command){leave_bar(w,s,TRUE);if(!s->detached)PostMessageW(w,WM_COMMAND,command,0);}
-            else paint_menu_state(w,s); /* Escape returns to the selected bar. */
+            else if(!frame.direction && frame.target==-3 && !frame.escape)leave_bar(w,s,TRUE);
+            else paint_menu_state(w,s); /* Keyboard Escape returns to the selected bar. */
         }
     }else{
         if(popup)TrackPopupMenuEx(popup,TPM_LEFTALIGN|TPM_TOPALIGN,anchor.x,anchor.y,w,NULL);
@@ -531,7 +544,8 @@ static int open_bar_once(HWND w,style_window *s,int index,int *hover)
 
 static void open_bar(HWND w,style_window *s,int index)
 {
-    int direction,hover;HWND original_focus=s->bar_keyboard?s->bar_focus:GetFocus();
+    int direction,hover;BOOL mouse_origin=!s->bar_keyboard;
+    HWND original_focus=s->bar_keyboard?s->bar_focus:GetFocus();
     ++s->calls; /* The iterator may change HWND; pin its current style state. */
     for(;;){
         win16_style_layout l;win16_style_bar bar;POINT origin;BOOL popup;int count=0;
@@ -582,6 +596,9 @@ static void open_bar(HWND w,style_window *s,int index)
         popup=index>=0 && (UINT)index<bar.count && bar.items[index].popup!=NULL;
         win16_style_bar_free(&bar);if(!popup)break;
     }
+    /* Switching a mouse-opened popup uses the keyboard iterator internally,
+     * but must not leave Alt/F10 mode armed after cancellation. */
+    if(mouse_origin && !s->detached)leave_bar(w,s,TRUE);
     if(!--s->calls && s->detached)dispose(s);
 }
 
@@ -896,7 +913,10 @@ static LRESULT CALLBACK style_proc(HWND w,UINT msg,WPARAM wp,LPARAM lp,
                 }
                 win16_style_bar_free(&bar);
             }
-            if(index>=0)open_bar(w,s,index);
+            if(index>=0){
+                if(!s->bar_keyboard)select_bar(w,s,0);
+                if(!s->detached)open_bar(w,s,index);
+            }
             break;
         }
         if((wp&0xfff0)==SC_KEYMENU && lp==L' ' && layout(w,s,&l)){
@@ -913,7 +933,11 @@ static LRESULT CALLBACK style_proc(HWND w,UINT msg,WPARAM wp,LPARAM lp,
                 result=DefSubclassProc(w,msg,wp,lp);
                 if(hook)UnhookWindowsHookEx(hook);
                 tracking_menu=previous;
-                if(frame.root){s->bar_direction=frame.direction;s->bar_hover=frame.target;}
+                if(frame.root){
+                    s->bar_direction=frame.direction;s->bar_hover=frame.target;
+                    if(!s->detached && !frame.direction && frame.target==-3 && !frame.escape)
+                        leave_bar(w,s,TRUE);
+                }
                 /* Outside the menu loop USER handles SC_CLOSE availability
                  * and the application still receives its normal NC message. */
                 if(frame.double_click && !s->detached)
@@ -961,13 +985,16 @@ static LRESULT CALLBACK style_proc(HWND w,UINT msg,WPARAM wp,LPARAM lp,
         }
         goto forward;
     case WM_NCLBUTTONDOWN:
+        if(s->bar_keyboard && !tracking_menu)leave_bar(w,s,TRUE);
         if(wp==HTMENU && layout(w,s,&l)){
             win16_style_bar bar;POINT origin={l.menu.left,l.menu.top};int item;
             GetWindowRect(w,&r);point.x=GET_X_LPARAM(lp)-r.left;point.y=GET_Y_LPARAM(lp)-r.top;
             if(win16_style_bar_read(GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar)){
                 item=win16_style_menu_hit(bar.rects,bar.count,point);
                 win16_style_bar_free(&bar);
-                if(item>=0)open_bar(w,s,item);
+                if(item>=0){
+                    if(!s->detached)open_bar(w,s,item);
+                }
             }
             break;
         }
@@ -989,6 +1016,9 @@ static LRESULT CALLBACK style_proc(HWND w,UINT msg,WPARAM wp,LPARAM lp,
             s->pressed=(int)wp;s->hot=TRUE;SetCapture(w);paint_button_state(w,s,(int)wp);break;
         }
         goto forward;
+    case WM_LBUTTONDOWN:
+        if(s->bar_keyboard && !tracking_menu)leave_bar(w,s,TRUE);
+        goto forward;
     case WM_MOUSEMOVE:
     case WM_LBUTTONUP:
         if(s->pressed && layout(w,s,&l)){
@@ -1008,6 +1038,7 @@ static LRESULT CALLBACK style_proc(HWND w,UINT msg,WPARAM wp,LPARAM lp,
         goto forward;
     case WM_CANCELMODE:
     case WM_CAPTURECHANGED:
+        if(msg==WM_CANCELMODE && tracking_menu && tracking_menu->window==w)EndMenu();
         if(msg==WM_CANCELMODE && s->bar_keyboard)leave_bar(w,s,TRUE);
         if(!s->pressed)goto forward;
         {int pressed=s->pressed;s->pressed=0;s->hot=FALSE;

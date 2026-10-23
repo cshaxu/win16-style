@@ -3,6 +3,7 @@ param(
     [Parameter(Mandatory)][string]$Package,
     [Parameter(Mandatory)][string]$TestResult,
     [ValidatePattern('^[a-z0-9-]+$')][string]$RunName='publish',
+    [ValidateRange(1,65535)][int]$Task=7,
     [switch]$ValidateOnly
 )
 $ErrorActionPreference='Stop'
@@ -30,7 +31,7 @@ foreach($destination in $destinations){
     }
 }
 if($ValidateOnly){'PUBLISH VALIDATION PASS: tested hashes, exact four files, assets root and fixed system32';return}
-$scratch=Join-Path $repo "build/t6-package/$RunName"
+$scratch=Join-Path $repo "build/t$Task-package/$RunName"
 if(Test-Path -LiteralPath $scratch){throw 'Use a fresh publication run name; preserve prior backups'}
 New-Item -ItemType Directory -Path $scratch|Out-Null
 $records=[System.Collections.Generic.List[object]]::new()
