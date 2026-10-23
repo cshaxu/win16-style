@@ -58,3 +58,10 @@ S3程序源码零变更，boundary.py 51行，CMake仅注册+2；没有旧路径
 owned worker/fixture均已结束；精确绝对路径/祖先/子项无reparse后回收
 build/t5-demo 309文件35306060字节，x86 Testing 2文件14831字节，x64 Testing
 3文件27237字节。保留.ninja，不提交截图/原始日志或未正式验收二进制。
+
+## Actual review and closure
+
+S3 P1 a4e5504已推送，实际9文件+155/-24。协调角色读取实际boundary/构建差异、
+五单位及S1/S2交付；git show --check通过，远端main一致。没有未处置T5范围
+缺项，关闭S3及T5。P2记录本关闭并按用户授权自动准入T6独立包与M0验收；
+不提前关闭其真实输入或发布目标。
