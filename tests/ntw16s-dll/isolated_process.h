@@ -3,6 +3,9 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
+#ifndef NTW16S_TEST_PROCESS_TIMEOUT
+#define NTW16S_TEST_PROCESS_TIMEOUT 90000
+#endif
 
 /* USER/IME can keep hidden thread windows until process exit. The parent
  * owns the desktop and joins its worker before closing it; no busy desktop
@@ -27,7 +30,7 @@ static int isolated_process(int argc,WCHAR **argv,int (*worker)(int,WCHAR **))
     if(!CreateProcessW(image,command,NULL,NULL,TRUE,CREATE_NO_WINDOW,NULL,NULL,&startup,&process)){
         CloseDesktop(desktop);return 5;
     }
-    wait=WaitForSingleObject(process.hProcess,90000);
+    wait=WaitForSingleObject(process.hProcess,NTW16S_TEST_PROCESS_TIMEOUT);
     if(wait==WAIT_OBJECT_0)GetExitCodeProcess(process.hProcess,&code);
     else {TerminateProcess(process.hProcess,ERROR_TIMEOUT);WaitForSingleObject(process.hProcess,1000);code=6;}
     CloseHandle(process.hThread);CloseHandle(process.hProcess);

@@ -59,9 +59,9 @@
       "path": "src/ntw16s-dll/dllmain.c",
       "source": "src/ntw16s-dll/dllmain.c",
       "source_blob": "f52c5d4cf09186bfccec50f961c4275e5f0f8094",
-      "sha256": "a0e31578a438812efcfe9d3539da47064d8e2c9953faf849b9a3faee60028471",
+      "sha256": "056212610fa33c9ad268fab84de07db2bcb9de41b5c215f37e0c2685751e397c",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "review": "T3 S2 payload bootstrap/real helper ABI, version or bounded test process budget; docs/proposals/launcher-injection.md",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -347,36 +347,36 @@
       "path": "src/ntw16s-dll/ntw16s32.def",
       "source": null,
       "source_blob": null,
-      "sha256": "2c7b40a2d38b0b7b820b265d8dc3223b747b5f6c7aac600cd30cc75deff4e5e1",
+      "sha256": "30f7c6a3beb5431fd75e5fe7d684933c90298ea599aa3bce05dd4bc17ff971ae",
       "disposition": "authored",
-      "review": "T2 local core ABI/version/component documentation; docs/history/M0-T2-S1-import.md",
+      "review": "T3 S2 payload bootstrap/real helper ABI, version or bounded test process budget; docs/proposals/launcher-injection.md",
       "notice": "Project-authored, repository MIT"
     },
     {
       "path": "src/ntw16s-dll/ntw16s64.def",
       "source": null,
       "source_blob": null,
-      "sha256": "716deaeb4af9c0bccd3df5b17cc977ca644170287d4a0cf15c09da366b0cfc0c",
+      "sha256": "4747660ae10ad0c73306f0f473f749b5ecbe216a83f6166795ea975e007b4a8a",
       "disposition": "authored",
-      "review": "T2 local core ABI/version/component documentation; docs/history/M0-T2-S1-import.md",
+      "review": "T3 S2 payload bootstrap/real helper ABI, version or bounded test process budget; docs/proposals/launcher-injection.md",
       "notice": "Project-authored, repository MIT"
     },
     {
       "path": "src/ntw16s-dll/README.md",
       "source": null,
       "source_blob": null,
-      "sha256": "10e4fa4f2931dc421b7e36ba4f3aa6596a3c3b9165ec33fd84ab211fa3b5a1d7",
+      "sha256": "b4fa3f0cbf3f304107d1602831fcdedb1a3d9b364009513684d10fcd88197923",
       "disposition": "authored",
-      "review": "T2 local core ABI/version/component documentation; docs/history/M0-T2-S1-import.md",
+      "review": "T3 S2 payload bootstrap/real helper ABI, version or bounded test process budget; docs/proposals/launcher-injection.md",
       "notice": "Project-authored, repository MIT"
     },
     {
       "path": "src/ntw16s-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "cab4093a4b3298d70ae601494fe5befba15a4bb78440d8a5611329e3e862f2fe",
+      "sha256": "d12604dec5376637387c6c75f036ec0ed66ee287f7f60c31126545776d669320",
       "disposition": "authored",
-      "review": "T2 local core ABI/version/component documentation; docs/history/M0-T2-S1-import.md",
+      "review": "T3 S2 payload bootstrap/real helper ABI, version or bounded test process budget; docs/proposals/launcher-injection.md",
       "notice": "Project-authored, repository MIT"
     },
     {
@@ -473,9 +473,9 @@
       "path": "tests/ntw16s-dll/isolated_process.h",
       "source": null,
       "source_blob": null,
-      "sha256": "96d49da3a8eb9db5260bd0aed3f9095fcebf52df057ddb311a4dd5405412bcfc",
+      "sha256": "4c1262d81f5198925e33a9b08b22c711629031bcf8e43f3018a89cdf72fe657e",
       "disposition": "authored",
-      "review": "T2 S2 actual-DLL runtime/native counterpart and process-owned private desktop; docs/history/M0-T2-S2-runtime.md",
+      "review": "T3 S2 payload bootstrap/real helper ABI, version or bounded test process budget; docs/proposals/launcher-injection.md",
       "notice": "Project-authored, repository MIT"
     },
     {
@@ -630,6 +630,69 @@
       "disposition": "authored",
       "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/entry.cpp",
+      "source": "src/nthook32-dll/entry.cpp",
+      "source_blob": "39504e103bf2a934721d2898b1a1a2e8b6dd2f6b",
+      "sha256": "847d825e274b3a1e93e0393c1257c0f2cfd9224b52295d3d003fb6bb91f9a96d",
+      "disposition": "adapt",
+      "review": "T3 S2 same-DLL delayed binding and read-only native-target diagnostics; docs/proposals/launcher-injection.md",
+      "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/intercept.h",
+      "source": "src/nthook32-dll/intercept.h",
+      "source_blob": "b9b7ea48abb2548f2c980db63896321d079a80cd",
+      "sha256": "40063579c71dbd713478c9bf83039bfa19b37f9237a1bda2d484916076faf35f",
+      "disposition": "adapt",
+      "review": "T3 S2 same-DLL delayed binding and read-only native-target diagnostics; docs/proposals/launcher-injection.md",
+      "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/window_titles.cpp",
+      "source": "src/nthook32-dll/window_titles.cpp",
+      "source_blob": "0a3d1cd942345edb25e879b9377311929551a0ec",
+      "sha256": "1cca2d6bb6917d20366fd5063ba023fa2f747b05cb43356cfb1f810a43bba17f",
+      "disposition": "adapt",
+      "review": "T3 S2 same-DLL delayed binding and read-only native-target diagnostics; docs/proposals/launcher-injection.md",
+      "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
+    },
+    {
+      "path": "tests/integration/automatic_target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "0df4f754e0ec3873f3840440f0bb80cf1097868ede7798c2c8ea50f8ce574773",
+      "disposition": "authored",
+      "review": "T3 S2 native MB_OK single-button oracle, exact witnesses and Unicode targets; docs/history/M0-T3-S2-bootstrap.md",
+      "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
+    },
+    {
+      "path": "tests/integration/automatic_target.rc",
+      "source": null,
+      "source_blob": null,
+      "sha256": "c1ee853a008c7a940a1e2d9bc01332a4f5f4c5d2e5aee5c3a7c3742954422ce3",
+      "disposition": "authored",
+      "review": "T3 S2 same-DLL delayed binding and read-only native-target diagnostics; docs/proposals/launcher-injection.md",
+      "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
+    },
+    {
+      "path": "tests/integration/automatic_launch.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "12df713454e4fd7604c4230c7fa915dec32954024e01cc39083f2d929b276bbd",
+      "disposition": "authored",
+      "review": "T3 S2 native MB_OK single-button oracle, exact witnesses and Unicode targets; docs/history/M0-T3-S2-bootstrap.md",
+      "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
+    },
+    {
+      "path": "tests/integration/automatic_messages.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e4d93e926374d5203a9ed39f2b47fc23ede2b088b573af07c1ef222e829318b0",
+      "disposition": "authored",
+      "review": "T3 S2 native MB_OK single-button oracle, exact witnesses and Unicode targets; docs/history/M0-T3-S2-bootstrap.md",
+      "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
     }
   ]
 }

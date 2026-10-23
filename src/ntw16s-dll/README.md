@@ -3,8 +3,12 @@
 One local renderer builds ntw16s32.dll / ntw16s64.dll, ABI 3.
 Public entry is ntw16s.h; native_api.h and the remaining implementation helpers
 are private. The two trampoline binding functions are not DLL exports.
-The current DLL supports explicit same-thread API use. Injection/bootstrap
-and process propagation are subsequent tasks; no helper stub is supplied here.
+An ordinary load supports explicit same-thread API use and stays passive.
+A versioned launch payload enables early API interception and automatic window
+attachment through this same renderer. OS rundll32 uses the real NONAME ordinal1
+installer callback for opposite-width targets. Staged imports and actual target
+initialization are separate verification events. Process propagation is the next
+task; the current launcher policy only enables window styling.
 
 Upstream project-authored core files are pinned in the repository import
 manifest and individually receipted. Five glyph headers contain new geometry

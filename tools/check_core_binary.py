@@ -64,11 +64,11 @@ def main():
     machine,names,imports,digest,ordinals,live=inspect(path)
     if machine!=(0x14c if args.arch=='x86' else 0x8664):raise SystemExit('PE machine mismatch')
     if len(names)!=31 or set(names)!=expected:raise SystemExit('PE exports differ from standalone core plan: '+repr(names))
-    if ordinals!={name:index+2 for index,name in enumerate(sorted(expected))} or live!=set(range(2,33)):
-        raise SystemExit('PE ordinal map differs from core plan; helper ordinal 1 must remain unused')
+    if ordinals!={name:index+2 for index,name in enumerate(sorted(expected))} or live!=set(range(1,33)):
+        raise SystemExit('PE ordinal map differs from core plan; helper ordinal 1 must be NONAME')
     forbidden=('nthook','ntvdm','wow32','ntsrv','rpcrt4','vcruntime','msvcp','msvcr','ucrtbase')
     if any(any(token in name.lower() for token in forbidden) for name in imports):raise SystemExit('Forbidden external/CRT import')
-    print(json.dumps(dict(status='PE PASS',architecture=args.arch,public_exports=len(names),ordinals='2..32; 1 unused',imports=imports,sha256=digest)))
+    print(json.dumps(dict(status='PE PASS',architecture=args.arch,public_exports=len(names),ordinals='1 NONAME helper; 2..32 core',imports=imports,sha256=digest)))
 
 
 if __name__=='__main__':main()
