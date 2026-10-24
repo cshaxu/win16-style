@@ -386,7 +386,7 @@
       "action": "adapt",
       "destination": "src/ntw16s-dll/controls.c",
       "notice": "project-authored-review",
-      "reason": "Preserve single renderer; change resource consumers to newly authored geometric assets and retest supported states",
+      "reason": "Preserve single renderer; change resource consumers to newly authored geometric assets and retest supported states; T8 S2 System glyph restoration retaining current metrics/title",
       "receiver": "style-core"
     },
     {
@@ -422,7 +422,7 @@
       "action": "adapt",
       "destination": "src/ntw16s-dll/font.c",
       "notice": "project-authored-review",
-      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task; T6 S1 mechanical C17/GCC portability, original notices preserved; checks unchanged",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task; T6 S1 mechanical C17/GCC portability, original notices preserved; checks unchanged; T8 S2 System glyph restoration retaining current metrics/title",
       "receiver": "style-core"
     },
     {
@@ -434,7 +434,7 @@
       "action": "adapt",
       "destination": "src/ntw16s-dll/font.h",
       "notice": "project-authored-review",
-      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task; T8 documents legacy explicit font API rather than default control/frame typography",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task; T8 documents legacy explicit font API rather than default control/frame typography; T8 S2 System glyph restoration retaining current metrics/title",
       "receiver": "style-core"
     },
     {
@@ -758,7 +758,7 @@
       "action": "adapt",
       "destination": "src/ntw16s-dll/win16_style.c",
       "notice": "project-authored-review",
-      "reason": "Preserve single renderer; change resource consumers to newly authored geometric assets and retest supported states",
+      "reason": "Preserve single renderer; change resource consumers to newly authored geometric assets and retest supported states; T8 S2 System glyph restoration retaining current metrics/title",
       "receiver": "style-core"
     },
     {

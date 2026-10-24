@@ -41,9 +41,9 @@
       "path": "src/ntw16s-dll/controls.c",
       "source": "src/ntw16s-dll/controls.c",
       "source_blob": "9bc3331d0f9fc3e3104059ab792670ab1579d65c",
-      "sha256": "2b5d729e0ca35b22c7367f83bf8db7c78368e203bebc7a97eb72ec070b06a6ae",
+      "sha256": "5ae39749d8ff95d640784613451a6f371393deffa909439aa31c1d56bd8906ef",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -68,18 +68,18 @@
       "path": "src/ntw16s-dll/font.c",
       "source": "src/ntw16s-dll/font.c",
       "source_blob": "3bce01032d506f05bb571f8be35392f12c4dcebb",
-      "sha256": "5d22d3ad5962c5d3273689205ca9a9b4eae30b819f2cf83a46a8d7e136d83dca",
+      "sha256": "c72c04262f2c24ff6c21651ed381efb011575944c3fb8b7ad4ce307e53d86279",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
       "path": "src/ntw16s-dll/font.h",
       "source": "src/ntw16s-dll/font.h",
       "source_blob": "772af2b70b85d897ea842003229b5d3e5795803e",
-      "sha256": "c3d69902d92076256d86df6e371118cada388056e2ff25192f29f09415140d55",
+      "sha256": "9535ab055340509672bb9092157a8c580ed516d65805375eb3dd705a9be95b99",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -284,9 +284,9 @@
       "path": "src/ntw16s-dll/win16_style.c",
       "source": "src/ntw16s-dll/win16_style.c",
       "source_blob": "4235f085cb00c0d17145deec2d04a57c97b98d47",
-      "sha256": "59161a18e74ba5abf004e1db7e1584ef14e4ac6de6f14e450f7f332660c659bd",
+      "sha256": "27070fce1457f6e931b1abe2539267968756f27b19fe502512551955b39f1180",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -1103,9 +1103,9 @@
       "path": "tests/ntw16s-dll/font_layout.c",
       "source": null,
       "source_blob": null,
-      "sha256": "baa5791ec61db96ed6cce8f2a69f8ebf2f9ab119a5a7b60750e60a7e1cb138c6",
+      "sha256": "82099ebf5a7107a046d390f53b31f72485217cd07b1b64e794b41a24365ce3e5",
       "disposition": "authored",
-      "review": "T8 actual candidate native DS_SETFONT dialog and app font/rect/metrics updates across awareness contexts and nominal sizes; no physical-input claim",
+      "review": "T8 actual candidate native DS_SETFONT dialog and app font/rect/metrics updates across awareness contexts and nominal sizes; no physical-input claim; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle",
       "notice": "Project-authored C17 native probe, MIT"
     }
   ]

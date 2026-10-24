@@ -1,4 +1,4 @@
-暂无脱离开放T任务的独立产品债务。本轮字体修复已交付，用户外观验收由CURRENT的开放任务接收，见[字体记录](../history/M0-T8-S1-font-layout.md)。
+暂无脱离开放T任务的独立产品债务。本轮字体修复已交付，用户外观验收由CURRENT的开放任务接收，见[字体记录](../history/M0-T8-S2-system-font.md)。
 
 # Deferred Debt
 

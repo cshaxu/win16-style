@@ -2,73 +2,74 @@
 
 ## Current Work
 
-当前无活动任务包。本轮M0 T8 S1字体调研/修复已双发布、推送、实际复核及清理，
-S1交付收口。按用户最新指令，T8保持开放等待字体外观反馈，不宣称整任务关闭。见[字体修复记录](../history/M0-T8-S1-font-layout.md)。
+M0 T8 S2 verified并完成双发布，P1待提交推送及实际远端复核；当前活动包如下。
+用户确认的标题保持；菜单和标准控件恢复System字形并保留已确认字号/文字宽度。
+T8继续开放，不能将本轮S收口等同用户外观验收或T关闭。
+
+## M0 T8 S2 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Continuation；S1关闭后使用S2，T8继续开放。 |
+| Admission And Approval | 用户要求保持最新标题，内部包括菜单恢复System且保持当前字号。 |
+| Objective | System原生字形适配既有字高/字符advance；不改变控件布局；保留最新标题。 |
+| Non-goals | 不改标题、原图形资源、公开ABI、启动策略、规则或应用自绘文字。 |
+| Reference Baseline | 1c82c2e / S1同批四文件；字体方案见brief。 |
+| Candidate Proposal | [字体与布局](../proposals/font-layout.md)。 |
+| Files And ABI Surface | DLL私有font/controls/frame；相关原生测试及交付文档；ABI3及31名称保持。 |
+| Applicable Rules | EXECUTION/ARCHITECTURE/CODING/DOCUMENT及UI、来源策略。 |
+| Verification | 双宽System字形/尺寸/更新/NULL/卸载/资源探针，旧S1负例；完整相关core回归，同包14项及双发布哈希。 |
+| Expected Markers | FONT LAYOUT PASS、System位图校验、旧包拒绝、core及package实际结果、发布8摘要一致。 |
+| Asset Needs | 同批四文件发布assets根及O:/winnt/system32；原六资源不变。 |
+| Reporting Requirements | 原始失败/跳过保留；记录源码身份、统计、探针边界、实际远端复核；不冒称真实输入。 |
+| Stop Conditions | 标题变化、原资源变化、ABI变化、尺寸/字形/资源失败或发布占用即停止交付并修复。 |
+| Exit Criteria | 编译/同包测试/双发布/提交推送/实际复核完成后仅关闭S2；T8保持开放。 |
+| Original Owner Request | 最新标题很好继续保持；内部包括菜单字号对了，字体必须恢复System。 |
+| Similar-Issue Sweep | 搜索全部WM_SETFONT/font创建/菜单度量及绘制；明确借用app字体与拥有替换字体的寿命；scratch仅build/t8-package，执行者负责提炼后回收。 |
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 8
 - Last allocated Td S: 5
-- Last delivery: M0 T8 S1 P2 (P1 980b496实际远端复核、清理及S1收口；T8开放)
-- Open task: M0 T8 (S1 closed; owner appearance acceptance pending)
+- Last delivery: M0 T8 S2 P1 (verified/dual-published; remote review pending)
+- Open task: M0 T8 (System repair delivered; owner appearance feedback pending)
 
 ## Technical Baseline
 
-当前同批产品0.8.0.0 / M0 T8 S1，纯C17、MinGW-w64 GCC16.1.0双工具链、Ninja、
-ccache4.13.6；不用C++/MSVC/MSYS运行库。三组件四产物：x64 run16s.exe、
-x86 ntw16s32.dll、x64 ntw16s64.dll、x64 demo.exe。ABI3，31名称ordinal2..32及
-ordinal1 NONAME helper；无兄弟仓库构建、链接、运行或验收依赖。
+0.8.0.0 / M0 T8 S2，同批x64 run16s.exe、x86 ntw16s32.dll、x64 ntw16s64.dll、
+x64 demo.exe；纯C17、MinGW-w64 GCC16.1.0、Ninja、ccache4.13.6，不用C++/MSVC或
+MSYS运行库。ABI3/31名称ordinal2..32与ordinal1 NONAME helper不变，无兄弟依赖。
 
-标准控件精确保留应用原HFONT（含NULL默认字体）及后续WM_SETFONT，字重/大小/
-文字宽度与原布局一致，不重排应用。title10pt粗体/menu8pt常规MS Sans Serif，
-按窗口DPI换算一次，各由窗口拥有并释放；控件只借用app字体。显式20px公开
-compat font API保留ABI，实际默认不再使用。应用自绘Score/Time等文字不干预。
+标题沿用已确认10pt粗体MS Sans Serif及原绘制；内部/菜单使用宿主System位图字形，
+以应用原字体/菜单8pt度量匹配字符advance、字高、基线与内外行距，不重排布局。
+System字体及NULL原生默认直接保留；WM_SETFONT重新适配，卸载恢复最新app字体。
+变体由GUI线程引用计数拥有，回调入口和出站font固定引用防重入失效，原app字体只借用。
+私有FNT范围CP1252、1..64px字高/最多128px字宽和v2容量，失败保留app字体；不冒称
+任意字号/字符集覆盖。显式20px兼容API和应用自绘Score/Time保持。DPI只转换一次。
 
-五份原图形头及resources.md与固定来源5b0b65f逐字节一致，两DLL各18原表和完整
-声明。滚动条17逻辑像素、端钮/固定滑块正方形；菜单取消后hover不重开，键盘
-Escape层级保留。原资源图形未替换，原声明中的历史20px描述不是当前默认配置。
-124来源处置/294 includes、123本地回执、MinHook14清单和负例门禁通过。
+六原资源逐字节保留，两DLL各18表；滚动条17逻辑像素/端钮正方形、菜单取消修复保留。
+Console启动策略、CUI等待及退出码、GUI异步/--wait、双宽注入和后代传播保持。
 
-启动器保持Console：CUI默认等待并返回实际退出码、GUI默认异步0、--wait均等待；
-样式和后代传播默认开启，demo本身仅原生UI。同包六场景真实cmd/held目标通过。
+最终126编译输入与冻结s2-final源码逐项一致；干净双宽全构建及ABI各1/1通过。
+其余相关CTest x86选择24（23通过/1剪贴板权限跳过）、x64选择27（26通过/1跳过）；
+字体和菜单取消各双宽由实际包提供，核对完整相关注册全集26/29，最终53通过/2跳过。
+这是明确组合覆盖，不伪称单次完整CTest。实际包14/14通过，四文件测试期间未变。
+双宽字体各12组合/84控件、DS_SETFONT、System像素/ASCII宽度、基线行距、菜单
+WM_DRAWITEM及重入/NULL/卸载通过，GDI43/43与45/45；实际窗口DPI96/144，192只是
+字号向量。旧S1两DLL均被新字形断言拒绝，demo裸/注入文字advance均41。
 
-本S126输入，干净双宽全构建/ABI各1/1；之后仅修订menu-dispatch/default两个
-非产品测试的固定预热，124其余输入不变，双宽只重建对应测试，四产物不重链且
-SHA不变。原构建/最终测试快照均保留证据，不能虚称修订后又新建了一批四文件。
+探针仅私有桌面，无computer-use/物理输入。两个clipboard CreateWindowStation错误5
+跳过不计通过；原XP sol.exe及真实192-DPI显示器不在受控证明中。T8继续接收用户外观反馈。
 
-相关完整core+launch/demo覆盖：x86注册26，完整运行仅default失败，经唯一修订
-后1/1复测替代，最终25通过/1权限跳过；x64最终完整运行29，28通过/1权限跳过。
-合计53通过/2跳过，保留原失败JUnit及修后单项来源，不伪造新完整x86运行。
-实际包14/14通过，含两宽各12字体组合/84控件场景、原生DS_SETFONT对话框、
-font更新/NULL/卸载、frame刷新、GDI43/43与45/45；窗口实际DPI96/144，名义
-192字号不是实际192-DPI显示器证明。demo裸/注入文字advance均41，实际包菜单
-取消双宽各15场景及传播、等待、长路径、错误回滚通过。旧T7两个DLL均被负例拒绝。
-
-用户指定原生探针、不用computer-use，不冒称物理输入。两个隔离clipboard用例
-CreateWindowStation错误5/exit77跳过，不计通过、不碰共享剪贴板。原XP sol.exe
-不在受控fixture中，用户实际Options/标题/菜单外观验收待反馈，T8因此保持开放。
-
-同批四文件已发布assets根目录及O:/winnt/system32，8条before/after摘要一致。
-身份、初始构建/测试修订边界及证据见[release.json](../etc/release.json)。旧发布
-before与T7 P1 411ab6758517b307d44f4597dbc00fc07b925d44 assets同字节，可从Git恢复。
+已先备份8文件，再将被测同批四文件发布assets根和O:/winnt/system32，8摘要完全一致。
+原始失败、重配置失败及候选不变/恢复边界如实保留，不算通过；最终双宽完整相关复测均通过。
+身份/工具链/命令/原始证据SHA/覆盖/统计见[release.json](../etc/release.json)与
+[S2记录](../history/M0-T8-S2-system-font.md)。当前scratch仅build/t8-package，待实际复核后回收；
+旧before均与Git 1c82c2e assets同字节，可恢复。稳定build/.ninja和build/.ccache保留。
 
 ## Recent Closure
 
-- [T8字体修复](../history/M0-T8-S1-font-layout.md)：980b496实际远端复核通过、S1已收口；T8仍开放待外观验收。
-- [T7菜单取消](../history/M0-T7-menu-cancellation.md)：411ab67/101e92d交付收口，修复保留。
-- [T6历史审计](../history/M0-T6-completion.md)：历史验收不能代替本次字体修复证据。
-
-## Retained Assets
-
-本轮build/t8-package已安全回收：10顶层目录、1342文件、68852600字节，
-无reparse/活动owned进程。保留稳定build/.ninja及build/.ccache、两处发布。
-原始证据已实际读取、提炼结果及SHA到history/release；旧before可从Git T7 P1恢复。
-预览PNG保留本聊天visualizations目录，只供用户查看，不是第五产品或构建/运行
-依赖，也不代表实际sol验收通过。
-
-
-P1 980b49693c59b3b4947109990843ec71cfeb3237的实际远端代码/提交、126输入、
-六原资源、四文件双发布、原始14项及完整覆盖/失败项复测来源已复核通过。
-P2仅记录复核/清理及S1收口，不改产品输入或四文件，不虚构新构建/发布。
-T8保持开放；后续根据用户外观反馈继续，不把本次S1收口当成T8全部验收通过。
+- [S1字体大小修复](../history/M0-T8-S1-font-layout.md)：1c82c2e收口；本轮仅恢复System字形。
+- [菜单取消修复](../history/M0-T7-menu-cancellation.md)：保留原交付事实及修复。
+- [历史任务审计](../history/M0-T6-completion.md)：不替代本轮实测。

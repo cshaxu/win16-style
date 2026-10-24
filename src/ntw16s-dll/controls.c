@@ -32,7 +32,7 @@ typedef struct control_style {
     int tab_count,*tab_positions;
 } control_style;
 static void dispose_control(control_style *s)
-{free(s->tab_positions);free(s);}
+{win16_style_system_release(s->font);free(s->tab_positions);free(s);}
 static LRESULT CALLBACK control_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static BOOL is_static(HWND w)
 {WCHAR name[16];return GetClassNameW(w,name,16) && !lstrcmpiW(name,L"STATIC");}
@@ -841,12 +841,15 @@ static void draw_sizebox(HWND w,control_style *s,HDC dc)
 }
 static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
 {
-    control_style *s=(control_style *)data;LRESULT result=0;(void)id;++s->calls;
+    control_style *s=(control_style *)data;LRESULT result=0;HFONT previous=NULL,pinned=s->font,outbound=NULL;(void)id;++s->calls;
+    win16_style_system_retain(pinned);
     if(m==WM_SETFONT && !s->frame_scrollbars){
-        /* Borrow the application's font unchanged, including NULL/default.
-         * Native layout/input and our painter must measure the same glyphs. */
-        s->original_font=(HFONT)a;
-        s->font=a?(HFONT)a:(HFONT)GetStockObject(SYSTEM_FONT);
+        HFONT original=win16_style_system_source((HFONT)a);
+        HFONT replacement=win16_style_system_acquire(original);
+        previous=s->font;s->original_font=original;
+        s->font=replacement?replacement:original;
+        outbound=s->font;win16_style_system_retain(outbound);
+        a=(WPARAM)s->font;
     }
     if(m==WM_NCDESTROY){(void)win16_style_control_terminal(w);
         result=DefSubclassProc(w,m,a,b);}
@@ -1029,6 +1032,10 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
             RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
     }
 finished:
+    /* Native processing (including nested paint/remove/setfont) has finished
+     * with the previous lease. Never delete the application's borrowed font. */
+    win16_style_system_release(previous);
+    win16_style_system_release(outbound);win16_style_system_release(pinned);
     if(!--s->calls && s->detached)dispose_control(s);
     return result;
 }
@@ -1056,7 +1063,7 @@ static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL ori
          * successful attachment's subclass data with this outer attempt. */
         if(GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&existing)){
             dispose_control(s);SetLastError(ERROR_ALREADY_EXISTS);return FALSE;}
-        s->font=s->original_font?s->original_font:(HFONT)GetStockObject(SYSTEM_FONT);}
+        s->original_font=win16_style_system_source(s->original_font);}
     if(palette)s->palette=*palette;else win16_style_default_palette(&s->palette);
     if(!SetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,(DWORD_PTR)s)){dispose_control(s);return FALSE;}
     /* Child attachment and WM_SETFONT can synchronously remove/destroy us.

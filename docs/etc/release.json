@@ -1,13 +1,13 @@
 {
   "schema": 1,
-  "delivery": "M0 T8 S1 P1",
-  "stage": "S1-font-fix-delivery-closed-T8-open-owner-appearance-pending",
+  "delivery": "M0 T8 S2 P1",
+  "stage": "verified-and-dual-published-remote-review-pending-T8-open",
   "version": "0.8.0.0",
   "package_directory": "assets",
   "source_inputs": [
     {
       "path": "CMakeLists.txt",
-      "sha256": "825357663d679d3022e5723aa7509b9182c19ba5032a9abecc8d5f92b7fb347c"
+      "sha256": "73d7d7f0053182b44c10ebaea9db818bcc014716c304ec6e958d411019336472"
     },
     {
       "path": "LICENSE",
@@ -65,7 +65,7 @@
     },
     {
       "path": "src/ntw16s-dll/controls.c",
-      "sha256": "2b5d729e0ca35b22c7367f83bf8db7c78368e203bebc7a97eb72ec070b06a6ae"
+      "sha256": "5ae39749d8ff95d640784613451a6f371393deffa909439aa31c1d56bd8906ef"
     },
     {
       "path": "src/ntw16s-dll/controls.h",
@@ -77,11 +77,11 @@
     },
     {
       "path": "src/ntw16s-dll/font.c",
-      "sha256": "5d22d3ad5962c5d3273689205ca9a9b4eae30b819f2cf83a46a8d7e136d83dca"
+      "sha256": "c72c04262f2c24ff6c21651ed381efb011575944c3fb8b7ad4ce307e53d86279"
     },
     {
       "path": "src/ntw16s-dll/font.h",
-      "sha256": "c3d69902d92076256d86df6e371118cada388056e2ff25192f29f09415140d55"
+      "sha256": "9535ab055340509672bb9092157a8c580ed516d65805375eb3dd705a9be95b99"
     },
     {
       "path": "src/ntw16s-dll/frame_buttons.h",
@@ -317,7 +317,7 @@
     },
     {
       "path": "src/ntw16s-dll/win16_style.c",
-      "sha256": "59161a18e74ba5abf004e1db7e1584ef14e4ac6de6f14e450f7f332660c659bd"
+      "sha256": "27070fce1457f6e931b1abe2539267968756f27b19fe502512551955b39f1180"
     },
     {
       "path": "src/ntw16s-dll/win16_style.h",
@@ -397,7 +397,7 @@
     },
     {
       "path": "tests/ntw16s-dll/font_layout.c",
-      "sha256": "baa5791ec61db96ed6cce8f2a69f8ebf2f9ab119a5a7b60750e60a7e1cb138c6"
+      "sha256": "82099ebf5a7107a046d390f53b31f72485217cd07b1b64e794b41a24365ce3e5"
     },
     {
       "path": "tests/ntw16s-dll/frames.c",
@@ -512,34 +512,34 @@
       "sha256": "384d457e8e99f6120fe4f1eaf0bf32ce3650cf9dec871f0b32c8c4cdce24d4b8"
     }
   ],
-  "source_inputs_sha256": "bbfe9a5425b482b7ce1d8703e00223cbe7c33b1f6e2a88769989a982efdb215f",
-  "source_snapshot_sha256": "e6ce042734e6be6845b8d357d58837189a85d236e23c79555aa10216d32a34a8",
+  "source_inputs_sha256": "cbc823f288549fb404befde133fba0220c0ca1c5091418d0a4976e2b124f7847",
+  "source_snapshot_sha256": "d470fa2e9c4a3b2667e968be534ac6f16fc01dea78f18e89ba44d757954c6cf3",
   "toolchains": {
     "ccache_version": "ccache version 4.13.6",
+    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
+    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
     "toolchains": [
       {
+        "architecture": "x86",
+        "target": "i686-w64-mingw32",
         "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
         "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
-        "architecture": "x86",
-        "version": "16.1.0",
-        "target": "i686-w64-mingw32"
+        "version": "16.1.0"
       },
       {
+        "architecture": "x64",
+        "target": "x86_64-w64-mingw32",
         "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
         "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
-        "architecture": "x64",
-        "version": "16.1.0",
-        "target": "x86_64-w64-mingw32"
+        "version": "16.1.0"
       }
-    ],
-    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
-    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe"
+    ]
   },
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T8",
-      "sha256": "e99f02eb555211b1be1d0fbb1275929e18b77f25c30fb7d88f76fbe5b6333fdb",
+      "sha256": "28e96ca1153ad30f840d72de6e86cca8bc56a4e3fe7f9fe254f5013bfb797ec9",
       "imports": [
         "kernel32.dll",
         "msvcrt.dll"
@@ -548,7 +548,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T8",
-      "sha256": "e9397121a093f6038ad00eef038df9149b466d0e4efa8e6afd2f3f3b4252a88d",
+      "sha256": "defce6c26aca5c2e77dd7e705ec9320cacfb0a6c7cb3fbcdc4f2dfef7f11ac45",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -568,7 +568,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T8",
-      "sha256": "86aab9e5b125ab671cc9e073602b8a2bc9db50cd3980ee7acfe1612d972d1de8",
+      "sha256": "c93ce0efa8941f3995b2ff1509d8382c24f26dd7611d531bc52d17fdb7a2cf79",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -583,7 +583,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T8",
-      "sha256": "23c44cfd04217136cfd714626020d32a12bcfb4facb9a0891da1bb4fc49864ba",
+      "sha256": "338f7f7f2a2c9758a26acee545725211a630b224f110a01f9f3af60f91fb7075",
       "imports": [
         "kernel32.dll",
         "msvcrt.dll",
@@ -592,196 +592,270 @@
     }
   },
   "verification": {
-    "clean_build": "T8 S1 clean x86/x64 products and all fixtures, ABI1/1 each; dependencies restricted to snapshot/toolchains",
-    "package_cases": 14,
-    "package_result": "all14 passed against exact candidate; candidate unchanged through tests and both deployments",
+    "clean_build": {
+      "exit_code": 0,
+      "tests": [
+        {
+          "architecture": "x86",
+          "skipped": [],
+          "passed": 1,
+          "tests": 1
+        },
+        {
+          "architecture": "x64",
+          "skipped": [],
+          "passed": 1,
+          "tests": 1
+        }
+      ],
+      "build_root": "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\build\\.ninja",
+      "status": "passed",
+      "architectures": [
+        "x86",
+        "x64"
+      ],
+      "selection": "^core/abi$"
+    },
     "related_regression": {
-      "no_rebuild": true,
       "status": "passed-with-skips",
       "tests": [
         {
           "architecture": "x86",
           "registered": 26,
-          "passed": 25,
+          "ctest_selected": 24,
+          "ctest_passed": 23,
+          "package_supplied": [
+            "core/font-layout",
+            "core/menu-cancel"
+          ],
+          "final_passed": 25,
           "skipped": [
             "core/edit-clipboard"
           ],
-          "failed": 0,
-          "evidence": "complete26 run retained with one default failure; final default1/1 retest supersedes only that failure; other125 inputs and products unchanged",
-          "full_run": "release/regression-verified/x86",
-          "retest": "release/default-retest/x86.xml"
+          "failed": 0
         },
         {
-          "passed": 28,
-          "registered": 29,
           "architecture": "x64",
+          "registered": 29,
+          "ctest_selected": 27,
+          "ctest_passed": 26,
+          "package_supplied": [
+            "core/font-layout",
+            "core/menu-cancel"
+          ],
+          "final_passed": 28,
           "skipped": [
             "core/edit-clipboard"
           ],
           "failed": 0
         }
       ],
-      "selection": "^(core/.*|demo/.*|launch/(wait|payload|staging|unwind|startup-hooks|failures))$",
-      "x86_aggregation": "explicit full run plus only corrected failed test; no synthetic JUnit or claim of a new full x86 run"
+      "total_passed": 53,
+      "skipped": 2,
+      "coverage": "CTest rest of complete related matrix plus exact-package font-layout/menu-cancel, not a single full CTest run",
+      "package_cases": 14
     },
-    "font_layout": {
+    "actual_package": {
+      "sha256": {
+        "demo.exe": "338f7f7f2a2c9758a26acee545725211a630b224f110a01f9f3af60f91fb7075",
+        "ntw16s32.dll": "defce6c26aca5c2e77dd7e705ec9320cacfb0a6c7cb3fbcdc4f2dfef7f11ac45",
+        "ntw16s64.dll": "c93ce0efa8941f3995b2ff1509d8382c24f26dd7611d531bc52d17fdb7a2cf79",
+        "run16s.exe": "28e96ca1153ad30f840d72de6e86cca8bc56a4e3fe7f9fe254f5013bfb797ec9"
+      },
+      "cases": 14,
+      "physical_input": "not-tested",
       "status": "passed",
-      "architectures": [
-        "x86",
-        "x64"
-      ],
-      "contexts_per_architecture": 2,
-      "font_variants_per_architecture": 12,
-      "control_scenarios_per_architecture": 84,
-      "native_dialog": "DS_SETFONT actual DLU layout/font/label fit unchanged; repeated frame font refresh",
-      "updates": "original font, app italic font and NULL default; repeat attachment/removal; all7 families",
-      "observations": {
-        "x86": {
-          "gdi": [
-            {
-              "aware": 0,
-              "before": 43,
-              "after": 43
-            },
-            {
-              "aware": 1,
-              "before": 45,
-              "after": 45
-            }
-          ],
-          "actual_window_dpi": [
-            96,
-            144
-          ]
-        },
-        "x64": {
-          "gdi": [
-            {
-              "aware": 0,
-              "before": 43,
-              "after": 43
-            },
-            {
-              "aware": 1,
-              "before": 45,
-              "after": 45
-            }
-          ],
-          "actual_window_dpi": [
-            96,
-            144
-          ]
-        }
-      },
-      "negative": "both actual T7 published DLLs rejected at original-font identity assertion, exit1",
-      "limits": "nominal96/144/192 font-size vectors are not proof of real192-DPI display or cross-monitor transitions; actual DPI recorded separately"
+      "full_integration": false,
+      "package": "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate",
+      "core_matrix": "separate Build-Core matrix required"
     },
-    "menu_cancel": "actual candidate DLL15 scenarios each width passed; loop/focus/capture/hover/commands/item restoration",
-    "coverage": [
-      "all core tests x86/x64",
-      "native demo direct/injected with equal edit text advance",
-      "six real cmd held CUI/GUI wait cases",
-      "CLI, automatic launch, four-width-edge A/W descendant propagation and caller suspension",
-      "extended targets and CLI failure/stdio/exit rollback"
-    ],
-    "prior_delivery": {
-      "delivery": "M0 T7 S1 P1",
-      "related_regression": {
-        "status": "passed-with-skips",
-        "no_rebuild": true,
-        "selection": "^(core/.*|demo/.*|launch/(wait|payload|staging|unwind|startup-hooks|failures))$",
-        "tests": [
-          {
-            "passed": 24,
-            "failed": 0,
-            "registered": 25,
-            "skipped": [
-              "core/edit-clipboard"
-            ],
-            "architecture": "x86"
-          },
-          {
-            "passed": 27,
-            "failed": 0,
-            "registered": 28,
-            "skipped": [
-              "core/edit-clipboard"
-            ],
-            "architecture": "x64"
-          }
-        ]
-      },
-      "package_cases": 12,
-      "prior_full_matrix": {
-        "status": "passed-with-skips",
-        "no_rebuild": "Same completed package build trees; hashes must be verified separately",
-        "tests": [
-          {
-            "registered": 24,
-            "passed": 23,
-            "skipped": [
-              "core/edit-clipboard"
-            ],
-            "architecture": "x86"
-          },
-          {
-            "registered": 36,
-            "passed": 35,
-            "skipped": [
-              "core/edit-clipboard"
-            ],
-            "architecture": "x64"
-          }
+    "package_case_results": [
+      {
+        "name": "abi-x86",
+        "command": "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\build\\.ninja\\x86\\core-abi.exe",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\ntw16s32.dll"
         ],
-        "delivery": "M0 T6 S4 P1",
-        "commit": "418be5e378d07fd236505cca6eafe94e685a2eb4",
-        "source_inputs_sha256": "f4ef21496438c269f0bccbb27c62b00f33e74c81b8c1f689fcd72f93b912379c",
-        "source_snapshot_sha256": "f75ad255cfa32c910523de280ff7c4fd20592a5503a405fe704c690100d8ccef"
+        "exit_code": 0
+      },
+      {
+        "name": "abi-x64",
+        "command": "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\build\\.ninja\\x64\\core-abi.exe",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\ntw16s64.dll"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "demo-boundary",
+        "command": "C:\\Program Files\\Python313\\python.exe",
+        "arguments": [
+          "-B",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\tests\\demo-exe\\boundary.py",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\demo.exe"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "demo-pair",
+        "command": "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\build\\.ninja\\x64\\demo-observe.exe",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\ntw16s64.dll",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\ntw16s32.dll",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\demo.exe"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "wait-contract",
+        "command": "C:\\Program Files\\Python313\\python.exe",
+        "arguments": [
+          "-B",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\tests\\run16s-exe\\wait.py",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\ntw16s32.dll",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\ntw16s64.dll",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\build\\.ninja\\x86\\wait-target.exe",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\build\\.ninja\\x64\\wait-target.exe",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\build\\.ninja\\x64\\wait-gui-target.exe"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "font-layout-x86",
+        "command": "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\build\\.ninja\\x86\\core-font-layout.exe",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\ntw16s32.dll"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "font-layout-x64",
+        "command": "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\build\\.ninja\\x64\\core-font-layout.exe",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\ntw16s64.dll"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "menu-cancel-x86",
+        "command": "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\build\\.ninja\\x86\\core-menu-cancel.exe",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\ntw16s32.dll"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "menu-cancel-x64",
+        "command": "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\build\\.ninja\\x64\\core-menu-cancel.exe",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\ntw16s64.dll"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "cli",
+        "command": "C:\\Program Files\\Python313\\python.exe",
+        "arguments": [
+          "-B",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\tests\\run16s-exe\\cli.py",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\run16s.exe"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "automatic",
+        "command": "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\build\\.ninja\\x64\\launch-automatic.exe",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\ntw16s32.dll",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\ntw16s64.dll",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\build\\.ninja\\x86\\launch-target.exe",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\build\\.ninja\\x64\\launch-target.exe"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "propagation",
+        "command": "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\build\\.ninja\\x64\\propagate-basic.exe",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\ntw16s32.dll",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\ntw16s64.dll",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\build\\.ninja\\x86\\propagate-target.exe",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\build\\.ninja\\x64\\propagate-target.exe"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "long-path",
+        "command": "C:\\Program Files\\Python313\\python.exe",
+        "arguments": [
+          "-B",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\tests\\run16s-exe\\long_path.py",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\ntw16s32.dll",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\ntw16s64.dll",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\build\\.ninja\\x86\\launch-failures.exe",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\build\\.ninja\\x64\\launch-failures.exe"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "cli-failures",
+        "command": "C:\\Program Files\\Python313\\python.exe",
+        "arguments": [
+          "-B",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\tests\\run16s-exe\\cli_failures.py",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\ntw16s32.dll",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate\\ntw16s64.dll",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\build\\.ninja\\x86\\launch-target.exe",
+          "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\clean-source\\build\\.ninja\\x64\\launch-target.exe"
+        ],
+        "exit_code": 0
+      }
+    ],
+    "font_oracles": "both actual DLLs: native dialog and 84 control scenarios/12 variants/2 contexts, printable ASCII advances, height/ascent/internal/external leading, independent host-System pixels, actual WM_DRAWITEM menu pixels, nested setfont/remove, NULL/update/detach, strict GDI43/43 unaware and45/45 aware",
+    "actual_window_dpi": [
+      96,
+      144
+    ],
+    "nominal_font_vectors": [
+      96,
+      144,
+      192
+    ],
+    "negative_dlls": {
+      "x86": {
+        "exit_code": 1,
+        "architecture": "x86",
+        "expected": "reject non-System S1 font",
+        "baseline": "1c82c2e"
+      },
+      "x64": {
+        "exit_code": 1,
+        "expected": "reject non-System S1 font",
+        "architecture": "x64",
+        "baseline": "1c82c2e"
       }
     },
-    "physical_input": "no computer-use or physical-input claim; native queued/private-desktop probes per owner",
-    "owner_appearance_acceptance": "pending; publish for user sol.exe Options/title/menu acceptance",
-    "sol_exe": "user screenshot identifies defect; original XP sol.exe binary not part of controlled automated fixtures",
-    "private_clipboard": "two host-permission skips77, CreateWindowStation denied5; shared clipboard untouched; not counted as pass",
-    "original_resource_gates": "six byte substitution negative tests, unchanged six pinned resource blobs,18 tables/provenance per DLL,ABI3 unchanged",
-    "evidence_sha256": {
-      "build/t8-package/release/snapshot-final.json": "e6ce042734e6be6845b8d357d58837189a85d236e23c79555aa10216d32a34a8",
-      "build/t8-package/release/package.json": "697d2ae24a60bb946aac345dcb3c96ff56d83001e3d68e7254326abb32ef58fc",
-      "build/t8-package/release/regression-result.json": "43a5fbdd4a5719156a47fa80230c4db731e4bcc61d500d36ad2b63d8f8ea2196",
-      "build/t8-package/package-test-final/result.json": "bed93afcb550ec7d39d76b338291bf714427e2d92e2bd91225b84175896992b4",
-      "build/t8-package/package-test-final/cases.json": "906fe5dd4a1f24fdc9a472c1bdb6179fff8eefca0702bbaad2dc36b9cc40051b",
-      "build/t8-package/publish/result.json": "7035fcfab839c11d2af43616506c9c91d157cd94f3b030b41a927941ec10cd2d",
-      "build/t8-package/release/default-retest/x86.xml": "871c2f7cd3104dfb414138c5ac296f5df20e7aa10f80f8f4572c24d572b29a16",
-      "build/t8-package/release/default-retest/x86.log": "38e5f57aee9997cf4885d285ff2e719e30d24ee6b44ac732da1a4f496ebb0859",
-      "build/t8-package/release/inputs-build.json": "5ba848842683649eff294f793c5133320fc87ffcf47a0e5834e9543b1c528f96",
-      "build/t8-package/release/inputs-before-default.json": "3e8927c01212d3484b7ffcc601b2354ff16cc461980f1547973060be6f6d6e51",
-      "build/t8-package/release/package-final.json": "697d2ae24a60bb946aac345dcb3c96ff56d83001e3d68e7254326abb32ef58fc",
-      "build/t8-package/release/regression-verified/x86/junit.xml": "5e74c57cc635f135b3dccf6c61d0b60ecb068024a3a8c37f408176bc5afbb6f9",
-      "build/t8-package/release/regression-verified/x86/registered.json": "8ca713db06e91a1caaff901a314a4700d3b00260932e2c1f6a6bb981d24781a5",
-      "build/t8-package/release/regression-verified/x86/stdout.log": "dd549c9015263946178122915b3bde5ba421552c37c78ee99e00f7c68852d9f2",
-      "build/t8-package/package-test-final/font-layout-x86/stdout.log": "b86e8bbbaae262497d2f70a6caaf64bf77261d61523be9aa6f680a2137037d5e",
-      "build/t8-package/package-test-final/font-layout-x86/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/package-test-final/menu-cancel-x86/stdout.log": "08c7e2abd905b3b2c008b597fe49424b2a78c382ee2b73726a2fe692873150a5",
-      "build/t8-package/package-test-final/menu-cancel-x86/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/negative/old-x86.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/negative/old-x86.err": "69a4a7f3ffa62a724cdb1cfa03339d2fde1ecfea5c858157814d80c49addf439",
-      "build/t8-package/negative/old-x86.json": "9d3d127619e66a7376bb14c4d19a4b757d7867f01ff3dba6fa9374d552748603",
-      "build/t8-package/release/regression-complete/x64/junit.xml": "2d229ce111f15aea2e2656137928f2068ab6467945a90538dcefb07a9c516fe2",
-      "build/t8-package/release/regression-complete/x64/registered.json": "642feef0686b00ac546b697e70487a433955e251b45ca78139ac7ac9ff716fc8",
-      "build/t8-package/release/regression-complete/x64/stdout.log": "e62021561f20e639d8d9c35fdaca1a9a72d6e4c59bcb9eb30cbaf6dcda1e5ade",
-      "build/t8-package/package-test-final/font-layout-x64/stdout.log": "7cd573eb250d69f40598b372195f4cc84f09a535bdc01cfa4345964080d03e5c",
-      "build/t8-package/package-test-final/font-layout-x64/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/package-test-final/menu-cancel-x64/stdout.log": "08c7e2abd905b3b2c008b597fe49424b2a78c382ee2b73726a2fe692873150a5",
-      "build/t8-package/package-test-final/menu-cancel-x64/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/negative/old-x64.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/negative/old-x64.err": "69a4a7f3ffa62a724cdb1cfa03339d2fde1ecfea5c858157814d80c49addf439",
-      "build/t8-package/negative/old-x64.json": "187c0c0d8ea39e61905a91d3f1081b5ccdefb21abc32c0bbf7dcf157d546bbab"
+    "title_preserved": {
+      "baseline": "1c82c2e",
+      "title_creation_sha256": "41a0bd83963172d0c6001a42d2146c5c91f9716437c971f4d14f73c02390930e",
+      "all_frame_painters_before_refresh_font_unchanged": true
     },
-    "demo_preview": {
-      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t8-font-preview.png",
-      "sha256": "a46ac0cbdf258c53f6fe7c6baf4399e8ea11e9d5b52e4e87646f1706f319cb39",
-      "kind": "actual package injected demo native private-desktop capture, PNG conversion; not sol.exe or physical input"
-    }
+    "original_resources": "six byte-exact files; both DLLs embed18 tables; source124/294/123; selftests23+9+6+13",
+    "demo": "direct/injected actual same candidate; text advance41 both; six classes, data/notifications/About/move/min/max/restore; private desktop",
+    "not_covered": "physical input; actual XP sol.exe; real192-DPI monitor; non-CP1252 glyph coverage; full propagation contract/dialog/message matrices not rerun",
+    "failures_disposed": [
+      "first font creation rejected legal zero-width System glyphs: fixed",
+      "old CTest60sec and isolated worker90sec budgets exceeded: final170/180sec bounded probe passed",
+      "direct CTest omitted required capture env: three failures; complete rerun with correct env passed",
+      "first control-present cache39/45: no source/oracle change; complete rerun both widths strict pass",
+      "Build-Core reconfiguration tried relinking active fixture: failed build, not counted as regression pass; frozen candidate unchanged; scratch x86 DLL restored from frozen candidate before complete successful related runs"
+    ]
   },
   "source_input_convention": "sha256 is the actual build input; git_blob_sha256 records canonical Git bytes only when checkout newline conversion differs",
   "original_resources": {
@@ -825,156 +899,170 @@
   },
   "deployment_directory": "O:/winnt/system32",
   "deployment": {
-    "status": "passed",
-    "destinations": [
-      "assets",
-      "O:/winnt/system32"
-    ],
+    "test_result": "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-package-test\\result.json",
     "files": [
       {
-        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t8-package\\publish\\before-0",
-        "before": "73a3085eeac850c6b8bd2014d9ebeacc74b9b83c6983e5141eaaba557ba5616f",
-        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe",
-        "after": "23c44cfd04217136cfd714626020d32a12bcfb4facb9a0891da1bb4fc49864ba",
-        "expected": "23c44cfd04217136cfd714626020d32a12bcfb4facb9a0891da1bb4fc49864ba"
+        "after": "338f7f7f2a2c9758a26acee545725211a630b224f110a01f9f3af60f91fb7075",
+        "expected": "338f7f7f2a2c9758a26acee545725211a630b224f110a01f9f3af60f91fb7075",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-publish\\before-0",
+        "before": "23c44cfd04217136cfd714626020d32a12bcfb4facb9a0891da1bb4fc49864ba",
+        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe"
       },
       {
-        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t8-package\\publish\\before-0",
-        "before": "9a2e49455aecfd2951de9c523089f766e2b95247992c4b6ef99b0bedbe71c78c",
-        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
-        "after": "e9397121a093f6038ad00eef038df9149b466d0e4efa8e6afd2f3f3b4252a88d",
-        "expected": "e9397121a093f6038ad00eef038df9149b466d0e4efa8e6afd2f3f3b4252a88d"
+        "after": "defce6c26aca5c2e77dd7e705ec9320cacfb0a6c7cb3fbcdc4f2dfef7f11ac45",
+        "expected": "defce6c26aca5c2e77dd7e705ec9320cacfb0a6c7cb3fbcdc4f2dfef7f11ac45",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-publish\\before-0",
+        "before": "e9397121a093f6038ad00eef038df9149b466d0e4efa8e6afd2f3f3b4252a88d",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll"
       },
       {
-        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t8-package\\publish\\before-0",
-        "before": "661d9f224dd9cb1ad0816074db9c9db3735493b30c77792b88eac6c238b95b1d",
-        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll",
-        "after": "86aab9e5b125ab671cc9e073602b8a2bc9db50cd3980ee7acfe1612d972d1de8",
-        "expected": "86aab9e5b125ab671cc9e073602b8a2bc9db50cd3980ee7acfe1612d972d1de8"
+        "after": "c93ce0efa8941f3995b2ff1509d8382c24f26dd7611d531bc52d17fdb7a2cf79",
+        "expected": "c93ce0efa8941f3995b2ff1509d8382c24f26dd7611d531bc52d17fdb7a2cf79",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-publish\\before-0",
+        "before": "86aab9e5b125ab671cc9e073602b8a2bc9db50cd3980ee7acfe1612d972d1de8",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll"
       },
       {
-        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t8-package\\publish\\before-0",
-        "before": "922ac62590a83ccd61a5fab019d9126f8ecf39f36196dfa9eec2ea8eccb65304",
-        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
-        "after": "e99f02eb555211b1be1d0fbb1275929e18b77f25c30fb7d88f76fbe5b6333fdb",
-        "expected": "e99f02eb555211b1be1d0fbb1275929e18b77f25c30fb7d88f76fbe5b6333fdb"
+        "after": "28e96ca1153ad30f840d72de6e86cca8bc56a4e3fe7f9fe254f5013bfb797ec9",
+        "expected": "28e96ca1153ad30f840d72de6e86cca8bc56a4e3fe7f9fe254f5013bfb797ec9",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-publish\\before-0",
+        "before": "e99f02eb555211b1be1d0fbb1275929e18b77f25c30fb7d88f76fbe5b6333fdb",
+        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe"
       },
       {
-        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t8-package\\publish\\before-1",
-        "before": "73a3085eeac850c6b8bd2014d9ebeacc74b9b83c6983e5141eaaba557ba5616f",
-        "path": "O:\\winnt\\system32\\demo.exe",
-        "after": "23c44cfd04217136cfd714626020d32a12bcfb4facb9a0891da1bb4fc49864ba",
-        "expected": "23c44cfd04217136cfd714626020d32a12bcfb4facb9a0891da1bb4fc49864ba"
+        "after": "338f7f7f2a2c9758a26acee545725211a630b224f110a01f9f3af60f91fb7075",
+        "expected": "338f7f7f2a2c9758a26acee545725211a630b224f110a01f9f3af60f91fb7075",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-publish\\before-1",
+        "before": "23c44cfd04217136cfd714626020d32a12bcfb4facb9a0891da1bb4fc49864ba",
+        "path": "O:\\winnt\\system32\\demo.exe"
       },
       {
-        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t8-package\\publish\\before-1",
-        "before": "9a2e49455aecfd2951de9c523089f766e2b95247992c4b6ef99b0bedbe71c78c",
-        "path": "O:\\winnt\\system32\\ntw16s32.dll",
-        "after": "e9397121a093f6038ad00eef038df9149b466d0e4efa8e6afd2f3f3b4252a88d",
-        "expected": "e9397121a093f6038ad00eef038df9149b466d0e4efa8e6afd2f3f3b4252a88d"
+        "after": "defce6c26aca5c2e77dd7e705ec9320cacfb0a6c7cb3fbcdc4f2dfef7f11ac45",
+        "expected": "defce6c26aca5c2e77dd7e705ec9320cacfb0a6c7cb3fbcdc4f2dfef7f11ac45",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-publish\\before-1",
+        "before": "e9397121a093f6038ad00eef038df9149b466d0e4efa8e6afd2f3f3b4252a88d",
+        "path": "O:\\winnt\\system32\\ntw16s32.dll"
       },
       {
-        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t8-package\\publish\\before-1",
-        "before": "661d9f224dd9cb1ad0816074db9c9db3735493b30c77792b88eac6c238b95b1d",
-        "path": "O:\\winnt\\system32\\ntw16s64.dll",
-        "after": "86aab9e5b125ab671cc9e073602b8a2bc9db50cd3980ee7acfe1612d972d1de8",
-        "expected": "86aab9e5b125ab671cc9e073602b8a2bc9db50cd3980ee7acfe1612d972d1de8"
+        "after": "c93ce0efa8941f3995b2ff1509d8382c24f26dd7611d531bc52d17fdb7a2cf79",
+        "expected": "c93ce0efa8941f3995b2ff1509d8382c24f26dd7611d531bc52d17fdb7a2cf79",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-publish\\before-1",
+        "before": "86aab9e5b125ab671cc9e073602b8a2bc9db50cd3980ee7acfe1612d972d1de8",
+        "path": "O:\\winnt\\system32\\ntw16s64.dll"
       },
       {
-        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t8-package\\publish\\before-1",
-        "before": "922ac62590a83ccd61a5fab019d9126f8ecf39f36196dfa9eec2ea8eccb65304",
-        "path": "O:\\winnt\\system32\\run16s.exe",
-        "after": "e99f02eb555211b1be1d0fbb1275929e18b77f25c30fb7d88f76fbe5b6333fdb",
-        "expected": "e99f02eb555211b1be1d0fbb1275929e18b77f25c30fb7d88f76fbe5b6333fdb"
+        "after": "28e96ca1153ad30f840d72de6e86cca8bc56a4e3fe7f9fe254f5013bfb797ec9",
+        "expected": "28e96ca1153ad30f840d72de6e86cca8bc56a4e3fe7f9fe254f5013bfb797ec9",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-publish\\before-1",
+        "before": "e99f02eb555211b1be1d0fbb1275929e18b77f25c30fb7d88f76fbe5b6333fdb",
+        "path": "O:\\winnt\\system32\\run16s.exe"
       }
     ],
-    "backups": "build/t8-package/publish; all8 before files identical to T7 P1 411ab6758517b307d44f4597dbc00fc07b925d44 assets; recoverable from Git after cleanup",
-    "backup_retention": "S1 scratch cleaned after actual review; all8 before files recoverable exactly from T7 P1 411ab6758517b307d44f4597dbc00fc07b925d44 assets"
+    "tested_package": "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate",
+    "status": "passed",
+    "backup_recovery_commit": "1c82c2e5e5e33ef082d4a0797295fe04488cacb7",
+    "backup_retention": "scratch retained until actual remote review; all8 before files recoverable from baseline Git assets"
   },
   "audit": {
-    "stage": "S1 closed after actual remote review and cleanup; T8 remains open",
-    "baseline": "101e92dc03d52524c007652f983d27080e5c4a04",
-    "scope": "T8 S1 six units in font-layout history; owner appearance remains pending",
-    "task_statistics": {
-      "baseline": "101e92d",
+    "baseline": "1c82c2e5e5e33ef082d4a0797295fe04488cacb7",
+    "stage": "P1 verified/dual-published; actual remote review pending",
+    "task_status": "T8 open; only S2 repair delivery will close",
+    "source_input_comparison": "all126 final root inputs equal final clean snapshot; no post-build source changes",
+    "state_owner": "GUI-thread reference-counted private FNT/HFONT; entry and outbound references protect nested callbacks; app fonts borrowed",
+    "old_path_disposition": "S1 app-only body font strategy superseded with metric-matched System glyphs; title and explicit20 API retained; no files moved",
+    "statistics": {
       "scope": "src tests tools CMakeLists.txt",
-      "groups": {
-        "CMakeLists.txt": [
-          1,
-          8,
-          1
-        ],
-        "src": [
-          6,
-          41,
-          31
-        ],
-        "tests": [
-          7,
-          128,
-          15
-        ],
-        "tools": [
-          4,
-          6,
-          4
-        ]
-      },
-      "total_paths_added_deleted": [
-        18,
-        183,
-        51
+      "files": [
+        {
+          "path": "CMakeLists.txt",
+          "added": 1,
+          "deleted": 1
+        },
+        {
+          "path": "src/ntw16s-dll/controls.c",
+          "added": 14,
+          "deleted": 7
+        },
+        {
+          "path": "src/ntw16s-dll/font.c",
+          "added": 114,
+          "deleted": 0
+        },
+        {
+          "path": "src/ntw16s-dll/font.h",
+          "added": 7,
+          "deleted": 0
+        },
+        {
+          "path": "src/ntw16s-dll/win16_style.c",
+          "added": 10,
+          "deleted": 7
+        },
+        {
+          "path": "tests/ntw16s-dll/font_layout.c",
+          "added": 88,
+          "deleted": 4
+        },
+        {
+          "path": "tools/Test-Package.ps1",
+          "added": 2,
+          "deleted": 2
+        }
       ],
-      "net": 132
+      "added": 236,
+      "deleted": 21,
+      "net": 215
     },
-    "state_owner": "GUI-thread style_window owns two frame HFONTs; controls borrow app font; original calls/detached lifetime retained",
-    "old_path_disposition": "forced20 default removed; explicit font API kept for ABI compatibility; app layout/self-drawn text and original glyph resources retained",
-    "physical_input": "native probes only",
-    "owner_appearance": "pending; S1 repair delivery closed, T8 open per owner",
-    "scratch_cleanup": {
-      "bytes": 68852600,
-      "path": "build/t8-package",
-      "live_owned_processes": 0,
-      "reparse_points": 0,
-      "top_level_directories": 10,
-      "preserved": [
-        "build/.ninja",
-        "build/.ccache",
-        "assets",
-        "O:/winnt/system32",
-        "chat visualizations/win16style-t8-font-preview.png"
-      ],
-      "files": 1342
+    "raw_evidence_sha256": {
+      "build/t8-package/s2-final/snapshot.json": "d470fa2e9c4a3b2667e968be534ac6f16fc01dea78f18e89ba44d757954c6cf3",
+      "build/t8-package/s2-final/package.json": "fb7926ef8c17b31993f2920eaa44a9f84dbbf3fa43ca1b4481c4e3a1ba792d5d",
+      "build/t8-package/s2-final/clean-source/build/t8-package/clean-build/result.json": "5194c07acee68196d85550be080a45aa487a0c47ca84f585677d1e34f931a5cd",
+      "build/t8-package/s2-focused/x86/run.log": "b64ed6433749dc7663d23e2975a5a3a36a8482fe6ac24b898486445f4918f4ed",
+      "build/t8-package/s2-diagnostics/font-60sec-timeout.log": "6fa77ccb99a263a6d20728ce64a66d4db6786bda1a0da496ae1071a95758a81b",
+      "build/t8-package/s2-font-retest.xml": "6b2dd314c4e7d9ad58bd5e907b2d36c94b8e2d29a29a457685dd5ecf32a938b7",
+      "build/t8-package/s2-diagnostics/final-focused-x86.log": "d060aa539da5e510330a93304f7304ec616767ea9e28462f9f10e3f5974f656a",
+      "build/t8-package/s2-regression/x86/run.log": "b9a59912c300e7969448a54394ea78fb2c089be6c475ec6fb7285f6c192eca47",
+      "build/t8-package/s2-final/clean-source/build/t8-package/s2-related-final/x86/run.log": "381a015eff95c3d5e9ae61c651627a24cce3124f3d1f37cf59db36572719812b",
+      "build/t8-package/s2-package-test/result.json": "386b5072a3e8d735d125edd896cad2f9a873e9d7bbab1381a02690233b01d0d7",
+      "build/t8-package/s2-package-test/cases.json": "6e62ce45baeebeac3a4c9ba82273dabb1d5fe58988179ba7f223b5791da158a2",
+      "build/t8-package/s2-publish/result.json": "a8e31c47c8f697e16abf48d766478675367c499015279cdba66c8ec6dc935531",
+      "build/t8-package/s2-diagnostics/coverage.json": "59fd4656ba358133633ea7d028f68bd9fce9ff007fa30f03296978f35e30cf6e",
+      "build/t8-package/s2-regression-final/x86/results.xml": "cd1ab2133b6abd1a07870ab988639315efd12fb10b8085667f6caf7025c180b0",
+      "build/t8-package/s2-regression-final/x86/run.log": "7495a10971532e5e2a08fa6d6df03eea7fb90d716cbc3ef8e44b95bdd48a7b8a",
+      "build/t8-package/s2-regression-final/x86/exit.json": "9389c5c0f9ea9cd0d3dc108d2079e4a8b517165415dea331033702e835681d9b",
+      "build/t8-package/s2-package-test/font-layout-x86/stdout.log": "90739502a8f6e469fae2aa3e6d1d909894661359e08f67104bb88ff72f0d11aa",
+      "build/t8-package/s2-package-test/menu-cancel-x86/stdout.log": "08c7e2abd905b3b2c008b597fe49424b2a78c382ee2b73726a2fe692873150a5",
+      "build/t8-package/s2-diagnostics/old-s1-x86.log": "ffe53d6362353f3fe117b98e45ae54d4937497797feb09e3af68133aaba136fe",
+      "build/t8-package/s2-regression-final/x64/results.xml": "b3593f1fb5988852785b79d8ab155831576fa4d297aa2a6fc13d94c95a669ce3",
+      "build/t8-package/s2-regression-final/x64/run.log": "229313e941fb4728f141f98c66109005bb3ad5b774713db19abb041a5cf24516",
+      "build/t8-package/s2-regression-final/x64/exit.json": "3d1ff670a704a7a40f9e37063af8c0d3ae198b3850b612b0a43c03c671ae8b01",
+      "build/t8-package/s2-package-test/font-layout-x64/stdout.log": "90739502a8f6e469fae2aa3e6d1d909894661359e08f67104bb88ff72f0d11aa",
+      "build/t8-package/s2-package-test/menu-cancel-x64/stdout.log": "08c7e2abd905b3b2c008b597fe49424b2a78c382ee2b73726a2fe692873150a5",
+      "build/t8-package/s2-diagnostics/old-s1-x64.log": "ffe53d6362353f3fe117b98e45ae54d4937497797feb09e3af68133aaba136fe"
     },
-    "reviewed_commit": "980b49693c59b3b4947109990843ec71cfeb3237",
-    "closure_delivery": "M0 T8 S1 P2",
-    "task_status": "T8 open, user appearance acceptance pending",
-    "review": "actual remote code/commit,126 Git inputs,six original blobs,four remote/assets/system32 hashes,14 exit0 cases,raw x86 full plus exact default retest,x64 full registration/JUnit sets,two host skips,font/DPI/GDI/menu/demo oracles,old DLL negatives and8 backup recovery identities checked before cleanup"
-  },
-  "post_build_test_revision": {
-    "initial_snapshot_sha256": "f5dea3c253b0b8db3865782db4fe787b24bf4ae87d5439a08f6a1c7a95589a51",
-    "changed_inputs": [
-      "tests/ntw16s-dll/win16_style_default_button.c",
-      "tests/ntw16s-dll/win16_style_menu_dispatch.c"
-    ],
-    "other_inputs_identical": 124,
-    "products_relinked": false,
-    "proof": "only these two fixtures rebuilt in both same build trees; ninja -n no work; candidate four hashes unchanged; package14 prior pass remains same artifacts"
+    "preview": {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t8-s2-system-preview.png",
+      "sha256": "5641b6f41bc7825f565ea44673f2fc7803adc4f14c067b05ab53427598dc1923",
+      "kind": "native WM_PRINT demo actual candidate; not physical input or XP sol.exe"
+    },
+    "review": "pending actual remote read and code/evidence check"
   },
   "typography": {
-    "controls": "application font preserved exactly, including NULL default and subsequent WM_SETFONT; borrowed ownership; no layout changes",
+    "controls": "host System bitmap glyphs sized to original app character advances/cell/ascent/leading; borrowed app fonts restored on detach; System/NULL retained; no layout changes",
     "title": {
       "face": "MS Sans Serif",
       "points": 10,
       "weight": 700
     },
     "menu": {
-      "face": "MS Sans Serif",
-      "points": 8,
-      "weight": 400
+      "face": "host System bitmap glyphs",
+      "metrics_source_points": 8,
+      "metrics_source": "MS Sans Serif, same advances and height as approved S1"
     },
-    "dpi": "point height converted once in window DPI context; legacy virtualization separate",
-    "legacy_explicit_font_api": "20px ABI3 compatibility API retained, no longer default renderer typography",
+    "ownership": "GUI-thread reference-counted private FNT/HFONT; entry and outbound references protect nested callbacks; app fonts borrowed",
+    "dpi": "one point conversion in window DPI context; no second virtualization scale",
+    "supported_bitmap_range": "CP1252, cell1..64px,width<=128px,FNT v2 capacity; failures preserve app font",
+    "legacy_explicit_font_api": "unchanged20px ABI3 compatibility API",
     "app_self_drawn": "untouched"
   }
 }
