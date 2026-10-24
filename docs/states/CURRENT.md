@@ -2,37 +2,16 @@
 
 ## Current Work
 
-M0 T8 S2 verified并完成双发布，P1待提交推送及实际远端复核；当前活动包如下。
-用户确认的标题保持；菜单和标准控件恢复System字形并保留已确认字号/文字宽度。
-T8继续开放，不能将本轮S收口等同用户外观验收或T关闭。
-
-## M0 T8 S2 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Continuation；S1关闭后使用S2，T8继续开放。 |
-| Admission And Approval | 用户要求保持最新标题，内部包括菜单恢复System且保持当前字号。 |
-| Objective | System原生字形适配既有字高/字符advance；不改变控件布局；保留最新标题。 |
-| Non-goals | 不改标题、原图形资源、公开ABI、启动策略、规则或应用自绘文字。 |
-| Reference Baseline | 1c82c2e / S1同批四文件；字体方案见brief。 |
-| Candidate Proposal | [字体与布局](../proposals/font-layout.md)。 |
-| Files And ABI Surface | DLL私有font/controls/frame；相关原生测试及交付文档；ABI3及31名称保持。 |
-| Applicable Rules | EXECUTION/ARCHITECTURE/CODING/DOCUMENT及UI、来源策略。 |
-| Verification | 双宽System字形/尺寸/更新/NULL/卸载/资源探针，旧S1负例；完整相关core回归，同包14项及双发布哈希。 |
-| Expected Markers | FONT LAYOUT PASS、System位图校验、旧包拒绝、core及package实际结果、发布8摘要一致。 |
-| Asset Needs | 同批四文件发布assets根及O:/winnt/system32；原六资源不变。 |
-| Reporting Requirements | 原始失败/跳过保留；记录源码身份、统计、探针边界、实际远端复核；不冒称真实输入。 |
-| Stop Conditions | 标题变化、原资源变化、ABI变化、尺寸/字形/资源失败或发布占用即停止交付并修复。 |
-| Exit Criteria | 编译/同包测试/双发布/提交推送/实际复核完成后仅关闭S2；T8保持开放。 |
-| Original Owner Request | 最新标题很好继续保持；内部包括菜单字号对了，字体必须恢复System。 |
-| Similar-Issue Sweep | 搜索全部WM_SETFONT/font创建/菜单度量及绘制；明确借用app字体与拥有替换字体的寿命；scratch仅build/t8-package，执行者负责提炼后回收。 |
+当前无活动任务包。M0 T8 S2 System字形修复已双发布、推送、实际复核和清理，
+S2交付收口。用户确认的标题保持；菜单和标准控件恢复System字形，并保留已确认
+字号与字符宽度。按用户指令，T8继续开放接收外观反馈，不宣称T全部验收通过。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 8
 - Last allocated Td S: 5
-- Last delivery: M0 T8 S2 P1 (verified/dual-published; remote review pending)
+- Last delivery: M0 T8 S2 P2 (P1 2a0c7dd实际远端复核、清理和S2收口；T8开放)
 - Open task: M0 T8 (System repair delivered; owner appearance feedback pending)
 
 ## Technical Baseline
@@ -65,11 +44,16 @@ WM_DRAWITEM及重入/NULL/卸载通过，GDI43/43与45/45；实际窗口DPI96/14
 已先备份8文件，再将被测同批四文件发布assets根和O:/winnt/system32，8摘要完全一致。
 原始失败、重配置失败及候选不变/恢复边界如实保留，不算通过；最终双宽完整相关复测均通过。
 身份/工具链/命令/原始证据SHA/覆盖/统计见[release.json](../etc/release.json)与
-[S2记录](../history/M0-T8-S2-system-font.md)。当前scratch仅build/t8-package，待实际复核后回收；
-旧before均与Git 1c82c2e assets同字节，可恢复。稳定build/.ninja和build/.ccache保留。
+[S2记录](../history/M0-T8-S2-system-font.md)。本S build/t8-package已回收：8顶层目录/2076文件/77990133字节，无reparse或活动owned进程。
+原始证据先实际复核再提炼SHA及结果；旧before与Git 1c82c2e assets同字节可恢复。
+稳定build/.ninja、build/.ccache、两处发布和聊天原生预览保留。
 
 ## Recent Closure
+
+- [S2 System字形修复](../history/M0-T8-S2-system-font.md)：2a0c7dd实际远端复核通过；S2收口，T8开放。
 
 - [S1字体大小修复](../history/M0-T8-S1-font-layout.md)：1c82c2e收口；本轮仅恢复System字形。
 - [菜单取消修复](../history/M0-T7-menu-cancellation.md)：保留原交付事实及修复。
 - [历史任务审计](../history/M0-T6-completion.md)：不替代本轮实测。
+
+P2仅记录实际复核/清理/收口，126编译输入和四文件SHA与P1完全相同，不虚构新构建或发布。

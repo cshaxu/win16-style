@@ -22,3 +22,5 @@ System。S1的原字体保留策略因此只作为度量来源，不再作为当
 双宽实际DLL探针比较System像素、全部可打印ASCII advance、尺寸/更新/NULL/卸载，
 并直接验证菜单WM_DRAWITEM像素；旧S1必须被新探针拒绝。完整相关core回归、
 同包14项、双位置发布和实际远端复核后仅关闭S2，T8继续开放。
+
+S2已完成System恢复、同包验证、双发布与实际远端复核，见[S2记录](../history/M0-T8-S2-system-font.md)；本T保持开放。

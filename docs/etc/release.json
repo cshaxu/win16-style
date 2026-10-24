@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "delivery": "M0 T8 S2 P1",
-  "stage": "verified-and-dual-published-remote-review-pending-T8-open",
+  "stage": "S2-System-font-repair-closed-T8-open-owner-appearance-pending",
   "version": "0.8.0.0",
   "package_directory": "assets",
   "source_inputs": [
@@ -961,11 +961,11 @@
     "tested_package": "O:\\repos.hobby\\win16style\\build\\t8-package\\s2-final\\candidate",
     "status": "passed",
     "backup_recovery_commit": "1c82c2e5e5e33ef082d4a0797295fe04488cacb7",
-    "backup_retention": "scratch retained until actual remote review; all8 before files recoverable from baseline Git assets"
+    "backup_retention": "scratch cleaned after actual review; all8 before files exactly recoverable from1c82c2e5e5e33ef082d4a0797295fe04488cacb7 assets"
   },
   "audit": {
     "baseline": "1c82c2e5e5e33ef082d4a0797295fe04488cacb7",
-    "stage": "P1 verified/dual-published; actual remote review pending",
+    "stage": "S2 closed after actual P1 remote review and scratch cleanup; T8 remains open",
     "task_status": "T8 open; only S2 repair delivery will close",
     "source_input_comparison": "all126 final root inputs equal final clean snapshot; no post-build source changes",
     "state_owner": "GUI-thread reference-counted private FNT/HFONT; entry and outbound references protect nested callbacks; app fonts borrowed",
@@ -1038,14 +1038,52 @@
       "build/t8-package/s2-regression-final/x64/exit.json": "3d1ff670a704a7a40f9e37063af8c0d3ae198b3850b612b0a43c03c671ae8b01",
       "build/t8-package/s2-package-test/font-layout-x64/stdout.log": "90739502a8f6e469fae2aa3e6d1d909894661359e08f67104bb88ff72f0d11aa",
       "build/t8-package/s2-package-test/menu-cancel-x64/stdout.log": "08c7e2abd905b3b2c008b597fe49424b2a78c382ee2b73726a2fe692873150a5",
-      "build/t8-package/s2-diagnostics/old-s1-x64.log": "ffe53d6362353f3fe117b98e45ae54d4937497797feb09e3af68133aaba136fe"
+      "build/t8-package/s2-diagnostics/old-s1-x64.log": "ffe53d6362353f3fe117b98e45ae54d4937497797feb09e3af68133aaba136fe",
+      "build/t8-package/s2-diagnostics/remote-review.json": "1d9f7c83004e3acf21e9a9d1290d11d4520be8aeae8f74d47c0b53104128a9b1"
     },
     "preview": {
       "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t8-s2-system-preview.png",
       "sha256": "5641b6f41bc7825f565ea44673f2fc7803adc4f14c067b05ab53427598dc1923",
       "kind": "native WM_PRINT demo actual candidate; not physical input or XP sol.exe"
     },
-    "review": "pending actual remote read and code/evidence check"
+    "review": "passed actual remote code/126 inputs/six original blobs/53 pass2 host skips/14 package cases/System and menu pixel oracles/old DLL negatives/title unchanged/eight backups and both deployments",
+    "actual_remote_review": {
+      "commit": "2a0c7ddf13b274055871e03af74e83103bce3cb9",
+      "status": "passed",
+      "remote_inputs": 126,
+      "original_blobs": 6,
+      "artifact_names": [
+        "run16s.exe",
+        "ntw16s32.dll",
+        "ntw16s64.dll",
+        "demo.exe"
+      ],
+      "package_cases": 14,
+      "coverage": "53 pass/2 permission skips across complete related26/29 registration; actual-package font/menu plus remaining CTest",
+      "title": "creation expression and all frame painters unchanged",
+      "compat20_api": "byte-identical implementation",
+      "original_owner_request": "title unchanged; internal/menu System glyphs; approved sizes/advances retained",
+      "review": "actual remote code, committed inputs, raw logs/JUnit, negative DLLs, eight backups and both deployments read and checked"
+    },
+    "reviewed_commit": "2a0c7ddf13b274055871e03af74e83103bce3cb9",
+    "closure_delivery": "M0 T8 S2 P2",
+    "scratch_cleanup": {
+      "path": "build/t8-package",
+      "files": 2076,
+      "bytes": 77990133,
+      "top_level_directories": 8,
+      "live_owned_processes": 0,
+      "reparse_points": 0,
+      "preserved": [
+        "build/.ninja",
+        "build/.ccache",
+        "assets",
+        "O:/winnt/system32",
+        "chat visualizations/win16style-t8-s2-system-preview.png"
+      ]
+    },
+    "evidence_retention": "raw scratch read/reviewed before cleanup; hashes and extracted results retained here/history; baseline before files recoverable from Git1c82c2e assets",
+    "post_delivery_document_only": "P2 changes no compiled inputs or artifacts; no new build or publish claimed"
   },
   "typography": {
     "controls": "host System bitmap glyphs sized to original app character advances/cell/ascent/leading; borrowed app fonts restored on detach; System/NULL retained; no layout changes",
