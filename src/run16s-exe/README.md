@@ -22,3 +22,17 @@ it is not an additional shipped product. No global hook or existing target is us
 Native descendants created through CreateProcessA/W inherit the same package
 and style policy. --wait waits for the initial target; the application controls
 its own waits for descendants.
+
+
+On ERROR_ELEVATION_REQUIRED (740), the launcher requests Windows UAC consent
+for a new elevated copy of itself, then creates and styles the target there.
+Ordinary targets retain the original path. Cancellation returns 1223; another
+failure reports its native error. The internal --elevated flag checks the real
+token and prevents recursion; it is not an authorization mechanism.
+
+The absolute target, argument tail, working directory and wait policy cross the
+boundary. Windows supplies the elevated environment and a separate console;
+custom caller environment and standard handles are not forwarded across UAC.
+Console targets and --wait return the target exit code. GUI targets otherwise
+return after the elevated launch transaction. DLL descendant CreateProcess hooks
+do not request UAC; invoke run16s explicitly for an elevation-required target.

@@ -56,3 +56,7 @@ USER对ownerdraw宽度另加宿主菜单字体的两个平均字符格；WM_MEAS
 
 公开row measure没有submenu参数，保守预留12逻辑像素箭头区；实际HMENU适配器
 按全组submenu状态决定12或4，独立measure/draw(submenu)亦不会压到文字。
+
+启动器遇真实740时按需请求系统UAC提升自身，再执行样式注入；取消1223。
+跨UAC使用系统提升环境及独立控制台，不保留调用者标准句柄；绝对目标/原始参数尾/
+工作目录/等待策略明确交接。DLL子孙CreateProcess不自动弹UAC，普通路径不变。

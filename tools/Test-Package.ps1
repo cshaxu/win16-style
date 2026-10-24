@@ -66,6 +66,10 @@ try{
         (Case 'long-path' $python @('-B',(Join-Path $SourceRoot 'tests/run16s-exe/long_path.py'),$run,$d32,$d64,(Join-Path $x86 'launch-failures.exe'),(Join-Path $x64 'launch-failures.exe')) @('LONG PATH PASS width=32','LONG PATH PASS width=64')),
         (Case 'cli-failures' $python (@('-B',(Join-Path $SourceRoot 'tests/run16s-exe/cli_failures.py'))+$pair) @('CLI ROLLBACK PASS width=32','CLI ROLLBACK PASS width=64','CLI IO/EXIT PASS width=32','CLI IO/EXIT PASS width=64'))
     )
+    $cases+=@(
+        (Case 'uac-unit-32' (Join-Path $x86 'uac-unit.exe') @() @('UAC UNIT PASS cases=8')),
+        (Case 'uac-unit-64' (Join-Path $x64 'uac-unit.exe') @() @('UAC UNIT PASS cases=8'))
+    )
     if($FullIntegration){
         $cases+=@(
             (Case 'creation-contract' (Join-Path $x64 'creation-contract-driver.exe') @($run,$d32,$d64,(Join-Path $x86 'creation-contract.exe'),(Join-Path $x64 'creation-contract.exe')) @('CREATION CONTRACT PASS 64') 520),

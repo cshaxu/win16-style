@@ -1,0 +1,2 @@
+#include <windows.h>
+1 RT_MANIFEST "tests/run16s-exe/uac.manifest"

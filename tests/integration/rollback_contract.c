@@ -47,7 +47,19 @@ int wmain(int argc,WCHAR **argv)
         if(message==JOB_OBJECT_MSG_EXIT_PROCESS || message==JOB_OBJECT_MSG_ABNORMAL_EXIT_PROCESS)exited=(DWORD)(ULONG_PTR)data;
     }
     CHECK(born==exited && born!=GetCurrentProcessId() && born!=sibling.dwProcessId);
-    CHECK(QueryInformationJobObject(job,JobObjectBasicAccountingInformation,&after,sizeof(after),NULL) && after.ActiveProcesses==before.ActiveProcesses);
+    BOOL account=QueryInformationJobObject(job,JobObjectBasicAccountingInformation,&after,sizeof(after),NULL);
+    if(!account || after.ActiveProcesses!=before.ActiveProcesses){
+        contract_log("active-before",before.ActiveProcesses);contract_log("active-after",after.ActiveProcesses);
+        contract_log("total-before",before.TotalProcesses);contract_log("total-after",after.TotalProcesses);
+        ULONG_PTR storage[68]={0};JOBOBJECT_BASIC_PROCESS_ID_LIST *members=(void*)storage;
+        if(QueryInformationJobObject(job,JobObjectBasicProcessIdList,members,sizeof(storage),NULL))for(DWORD i=0;i<members->NumberOfProcessIdsInList;i++){
+            DWORD pid=(DWORD)members->ProcessIdList[i];contract_log("member-after",pid);
+            HANDLE process=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION,FALSE,pid);WCHAR path[32768]={0};DWORD length=32768;
+            if(process){QueryFullProcessImageNameW(process,0,path,&length);CloseHandle(process);}
+            FILE *log=NULL;if(!_wfopen_s(&log,contract_report,L"at")){fwprintf(log,L"member-image %lu %ls\n",pid,path);fclose(log);}
+        }
+    }
+    CHECK(account && after.ActiveProcesses==before.ActiveProcesses);
     CHECK(GetFileAttributesW(failed_marker)==INVALID_FILE_ATTRIBUTES);
     DWORD code;CHECK(GetExitCodeProcess(sibling.hProcess,&code) && code==STILL_ACTIVE);contract_window(TRUE,argv[4]);
     /* A failed A/W call must not leave the TLS guard disabling later launches. */

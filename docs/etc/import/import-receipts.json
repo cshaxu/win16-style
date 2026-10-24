@@ -374,9 +374,9 @@
       "path": "src/ntw16s-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "ff4af7fb53f430b28dbaa1b3f2fb4e875129809ff3c2d438d42a1ff61b2be24c",
+      "sha256": "0e79040722f00a3678fa0017e69b8b15346961ad9e48edbc120bd9a308033661",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained",
       "notice": "Project-authored, repository MIT"
     },
     {
@@ -509,27 +509,27 @@
       "path": "src/run16s-exe/main.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e78e5070b47862c67f1a8f180eed1a1f12f47ed1ff3413fe79f415daa834d1b0",
+      "sha256": "cf662839fa2c473d9b3663eda52dda23b15c791f4d21c287a098af1e9e48b2a0",
       "disposition": "authored",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
       "path": "src/run16s-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "ed026179edeaadd4c8375457346be3fb6ca1a9991aeec10732c32597805190af",
+      "sha256": "b38e557287c4ad08237e77b63f1dd9772f9363df8b4d6a6c986091b1971e3196",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
       "path": "src/run16s-exe/README.md",
       "source": null,
       "source_blob": null,
-      "sha256": "b7fd6605afd98eadc4eac5fe1c75fdda9d65278445b36c1a3778efc3d21e11de",
+      "sha256": "9de202706cc9c4c945ff4908d1fcfc58481be4558b680535f82765a3d1d488a2",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -698,9 +698,9 @@
       "path": "tests/integration/rollback_contract.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2631215970e1cdbf3a167650d11bd486ee370628cb0c085fb4ac61ae2aa35ab8",
+      "sha256": "eee833f0dad9e610fb0c2e7868ee397ce3177aa1b43992982cb4846465f6f225",
       "disposition": "authored",
-      "review": "T4 S2 native/injected field and owned-job rollback contracts; docs/history/M0-T4-S2-contract.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "review": "T4 S2 native/injected field and owned-job rollback contracts; docs/history/M0-T4-S2-contract.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T11 S1 failure-only job accounting/member diagnostics; strict predicate and budgets retained; no product modification",
       "notice": "Project-authored fixture, repository MIT"
     },
     {
@@ -734,9 +734,9 @@
       "path": "src/demo-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "8180b0a57fd4e19cdb4739e096924175215f8fe51ad7b7847cb31836ed816f7b",
+      "sha256": "7baa604650a0e2326e47a5d38a0a7ce6e51b247167987a85ed09b438cd8b52ab",
       "disposition": "authored",
-      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes",
+      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained",
       "notice": "Project-authored source per frozen W16Style README; no third-party artwork"
     },
     {
@@ -1125,6 +1125,33 @@
       "disposition": "authored",
       "review": "T9 S1 pure C real interactive nested cmd pipe driver, self-contained core and separately optional isolated installed-backend coverage; docs/proposals/vdm-propagation.md",
       "notice": "Project-authored; project MIT LICENSE"
+    },
+    {
+      "path": "src/run16s-exe/elevation.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "d46cc63b89f7a2b461636f38cd3152acfdc1c827facdfd51090712f98adcc37a",
+      "disposition": "authored",
+      "review": "T11 S1: project-authored C17 on-demand runas coordinator/private interface/asInvoker manifest; no third-party code copied",
+      "notice": "Project-authored source; project MIT license"
+    },
+    {
+      "path": "src/run16s-exe/elevation.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "bbd2a7fe8ac746c16c8670842af694b7aa09d0d3c8212b732b1caf133c43e07a",
+      "disposition": "authored",
+      "review": "T11 S1: project-authored C17 on-demand runas coordinator/private interface/asInvoker manifest; no third-party code copied",
+      "notice": "Project-authored source; project MIT license"
+    },
+    {
+      "path": "src/run16s-exe/run16s.manifest",
+      "source": null,
+      "source_blob": null,
+      "sha256": "3a0e0e8e26abcacaeaa7e3e84dc4b033367a524e94f8a16a46f1a00e9141f066",
+      "disposition": "authored",
+      "review": "T11 S1: project-authored C17 on-demand runas coordinator/private interface/asInvoker manifest; no third-party code copied",
+      "notice": "Project-authored source; project MIT license"
     }
   ]
 }

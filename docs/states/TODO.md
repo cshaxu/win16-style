@@ -1,4 +1,4 @@
-本轮外观反馈由CURRENT的开放任务接收；独立生命周期待核实债务列于下方。字体交付见[记录](../history/M0-T8-S2-system-font.md)。
+字体任务已按用户指令关闭；独立生命周期待核实债务列于下方。字体交付见[记录](../history/M0-T8-S2-system-font.md)。
 
 # Deferred Debt
 
@@ -10,3 +10,5 @@
 
 新增条目格式：`- [ ] TODO(High|Medium|Low): 问题；Owner；Evidence；Admission`。
 不得把待做实现藏在TODO中；可执行候选进入QUEUE，由新用户请求准入。
+
+- [ ] TODO(Low): 复现并定位两次并行回滚Job活动计数断言失败；Owner：原生启动/测试观测；Evidence：[T11原生诊断](../history/M0-T11-S1-uac.md)，原断言旧/新各8轮64组合未复现；Admission：可复现原生日志或用户明确准入测试观测修订，不放宽原断言。

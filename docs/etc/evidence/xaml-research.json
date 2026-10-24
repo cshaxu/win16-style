@@ -1,0 +1,218 @@
+{
+  "task": "M0 T10 S1",
+  "disposition": "owner cancelled; no shipping UWP/XAML support",
+  "baseline": "fb1fc0a",
+  "classification": [
+    {
+      "name": "Microsoft.WindowsCalculator",
+      "version": "11.2607.0.0",
+      "family": "Microsoft.WindowsCalculator_8wekyb3d8bbwe",
+      "app_id": "App",
+      "executable": "CalculatorApp.exe",
+      "entry_point": "Calculator.App",
+      "machine": "8664",
+      "sha256": "F26A20F8BD65FD23F9A7CF13145A52B01F37BEB51962A7AA3B7892EB7894B242",
+      "dependencies": [
+        "Microsoft.UI.Xaml.2.8",
+        "Microsoft.NET.Native.Framework.2.2",
+        "Microsoft.NET.Native.Runtime.2.2",
+        "Microsoft.VCLibs.140.00",
+        "Microsoft.VCLibs.140.00.UWPDesktop"
+      ]
+    },
+    {
+      "name": "Microsoft.WindowsNotepad",
+      "version": "11.2607.14.0",
+      "family": "Microsoft.WindowsNotepad_8wekyb3d8bbwe",
+      "app_id": "App",
+      "executable": "Notepad\\Notepad.exe",
+      "entry_point": "Windows.FullTrustApplication",
+      "machine": "8664",
+      "sha256": "03745E9E21684C0E6D9FDC50D91CAA0935F4BAF50F626C11987AB7D6991D58D1",
+      "dependencies": [
+        "Microsoft.WindowsAppRuntime.2",
+        "Microsoft.VCLibs.140.00",
+        "Microsoft.VCLibs.140.00.UWPDesktop"
+      ]
+    }
+  ],
+  "observations": {
+    "calculator": "x64 AppContainer; Windows.UI.Xaml + Microsoft.UI.Xaml 2.8; CoreWindow child of pre-existing shared frame host",
+    "dpi": 144,
+    "unreadable_repo_tap_error": 5,
+    "private_app_cache_access_error": 0,
+    "diagnostics_initiation_hresult": 0,
+    "tap_loaded": true,
+    "set_site": true,
+    "diagnostics_qi": 0,
+    "tree_qi": 0,
+    "subscription": 0,
+    "tree_change_records": 623,
+    "button_type_add_records": 45,
+    "product_abi": 3,
+    "host_renderer_installed": false,
+    "host_renderer_error": 1444,
+    "normal_core_close_process_exit": false,
+    "owned_process_cleanup": "forced fallback verified exit0",
+    "x86_x64_local_com_abi": "both passed; not cross-width diagnostics proof",
+    "styles_implemented": false
+  },
+  "raw_hashes": [
+    {
+      "file": "abi-x64.log",
+      "sha256": "d70dd8995af41fbc4c4400197f3c6746a98e94164ab820460ef39040b91b1d42"
+    },
+    {
+      "file": "abi-x86.log",
+      "sha256": "ffe8eda0e9ae1abad17e614b725be1c7c9c25cd9f7972e96d6d730a964f962b0"
+    },
+    {
+      "file": "access.log",
+      "sha256": "800eed55bbd6b0951b3081437ec63df415aecc71499b72557e3019923dfc7bd4"
+    },
+    {
+      "file": "activation.log",
+      "sha256": "7153e46c8d0a118ab0b3137acb7e0a96a095ce64dfbe8176b1caff606c46fd3c"
+    },
+    {
+      "file": "build-x64.log",
+      "sha256": "0eeb1b0e453a41842a9b4abe9bef888433b3cc3516438becce674f5787bac7f6"
+    },
+    {
+      "file": "build-x86.log",
+      "sha256": "1b1956b7aa05a4f6a66ebe87ed7508ee3efc79614eb3b08fc4fb6b50d64cb99e"
+    },
+    {
+      "file": "children.log",
+      "sha256": "f61ddecafa19b4c0aeb20f52a8ba1688a1ff00b4f4031a4cd9c804660582dd79"
+    },
+    {
+      "file": "configure-x64.log",
+      "sha256": "e4011c4b3c4a30c2dc462512e94f76c548ec8dd05c0bb89835e3a2114a6edddf"
+    },
+    {
+      "file": "configure-x86.log",
+      "sha256": "4c0e1af897793cc4cec78c03d111f66a0cfa2387f927469276d0d6021f529062"
+    },
+    {
+      "file": "ctest-x64.log",
+      "sha256": "cee618ac44587aa9a035221e708a55af3b7d7132a1ed9b942dde8e281543f267"
+    },
+    {
+      "file": "ctest-x86.log",
+      "sha256": "efc59ed5b143011d2c5f01cd38315048bebf64dd1face981ad7e304f87259e61"
+    },
+    {
+      "file": "diagnostics-empty.log",
+      "sha256": "dd10f0ef6fa79ac62054c5276c50e8a4dda0a8bf45a126e04839357508a556c4"
+    },
+    {
+      "file": "diagnostics-state.log",
+      "sha256": "e96131a45c9bb8ee1dd23104e49bebd6bcd7ff5bd6b9b91e0f099dcaa119b00e"
+    },
+    {
+      "file": "diagnostics.log",
+      "sha256": "fc14df87787f5d510a1ac06cbb3455c64e9f8fd8b2512ffadbc094737e643f5b"
+    },
+    {
+      "file": "final-boundary.log",
+      "sha256": "4b3593a93c9d2f872f12f07c7d5eef8ca35326c43fb2780dedbb18df3ce93e56"
+    },
+    {
+      "file": "host.log",
+      "sha256": "5a933c3d5ee6ce684a640e7439809e5a1656334ca66073bf82454308e09952a4"
+    },
+    {
+      "file": "print.log",
+      "sha256": "e18b9dbbd84537ee4d13109339b3a1959011c7aba5e7894eed56bc78c97b828a"
+    },
+    {
+      "file": "renderer-boundary.log",
+      "sha256": "0477bd593f5bb8b4169b71c011296daba9f35da810ede9e0cdc0e1b65a2bfb45"
+    },
+    {
+      "file": "staged.log",
+      "sha256": "822470889f3bf5d94803c328da66dd44f3c825f90b193ce06106c92f754890af"
+    },
+    {
+      "file": "access.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "activation.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "children.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "diagnostics-empty.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "diagnostics-state.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "diagnostics.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "final-boundary.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "host.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "print.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "renderer-boundary.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "staged.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "identities.json",
+      "sha256": "bdea48ed6d2b0e8c8a8267687d13360eac04d2cacf5d14752758071a8ddfb254"
+    }
+  ],
+  "limits": [
+    "No classic button drawing/interaction or complete title adaptation",
+    "No real run16s calc/notepad forwarding trace or reuse matrix",
+    "No production TAP exports, detach protocol, UWP feature, or product binary changes"
+  ],
+  "probe_sources": [
+    {
+      "file": "CMakeLists.txt",
+      "sha256": "a286af71c77dbfb7d402d7032de576cc6306a7535d28783de5f082a046542e9d"
+    },
+    {
+      "file": "README.md",
+      "sha256": "09c2da562f68a38db8f4b4b2246ee7d494d57e304381058701c065b8983f9eeb"
+    },
+    {
+      "file": "xaml_research.c",
+      "sha256": "027f120ca8ff7f9ee5bd842fce6a7c6cd12fed63404a95c9e06a7ea39b22f4a3"
+    },
+    {
+      "file": "xaml_tap_probe.c",
+      "sha256": "632ed4e7d3a88020aa35a7168a1445651271212b42c0effc82714b4efa890d37"
+    }
+  ],
+  "cleanup": {
+    "active_processes": 0,
+    "reparse": 0,
+    "bytes": 6101704.0,
+    "external_stage": "Calculator private LocalCache/win16style-t10-s1; no ACL changes",
+    "external_stage_files": 2,
+    "files": 181,
+    "status": "removed"
+  }
+}

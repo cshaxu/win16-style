@@ -225,3 +225,10 @@ software; no Solitaire executable or `cards.dll` is included here.
 See [CONTRIBUTING](CONTRIBUTING.md) and the [documentation guide](docs/README.md)
 for the repository workflow. Maintainer documentation is mostly in Chinese;
 this README is the English entry point for users and contributors.
+
+
+If a native target requires administrator rights, run16s requests Windows UAC
+consent for an elevated copy of the launcher, then installs the style DLL before
+starting the target. Ordinary applications do not prompt. Cancellation returns
+1223. Elevated console applications use a separate console; caller redirection
+and custom environment do not cross UAC. See [elevation support and limits](docs/etc/operations/UAC.md).
