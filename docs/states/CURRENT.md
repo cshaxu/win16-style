@@ -2,38 +2,17 @@
 
 ## Current Work
 
-M0 T9 S1 implemented/verified：0.9.0.0已完成双宽构建、19项同包验证与双目录发布，
-等待P1推送实际复核及安全清理后收口。M0固定、T8保持开放；此前NE间歇失败
-未证实根因，既有裸NTSRV复用无传播仍为用户接受边界。
-
-## M0 T9 S1 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | New；T9为下一未用产品任务，S1；M0固定，T8保持开放。 |
-| Admission And Approval | 用户授权本项目范围内确定根因/最小方案后完成修复发布；后续双钩子竞争调研发现staging拒绝有效外部表，已先说明根因与最小方案。 |
-| Objective | 读取有效重定位导入表，保持两钩子调用链与新子进程传播，不误报193；新增真实交互式cmd嵌套回归。 |
-| Non-goals | 不将其当作原NE间歇故障根因，不改兄弟协议/旧实现/既有用户进程/全局设置，不改标题字体菜单绘制及六原资源。 |
-| Reference Baseline | ce20f15诊断已推送复核；产品仍T8 S4，原失败PE证据见Td S8。 |
-| Candidate Proposal | [传播诊断及最小修复](../proposals/vdm-propagation.md)。 |
-| Files And ABI Surface | staging.c及自包含双宽导入表契约测试、T9版本/操作入口、发布/交付文档；ABI3不变。 |
-| Applicable Rules | Task Reading Set/架构编码UI来源及每S四文件闭环；纯C17/GCC/Ninja/ccache，兄弟只读兼容实验不作必需构建测试依赖。 |
-| Verification | 双宽外部导入表正例/无效地址/越界/未终止负例及真实初始化；真实cmd四位宽边，仅ntw必需、nthook/双钩子独立RPC身份可选并明确skip；各层PE/DLL SHA/标记/退出/清理；旧包负例检出。全部相关回归、标题/控件/菜单代码与资源保留；干净双宽同批四文件包测试；可选实际双钩子与NE私有自有实例复测。 |
-| Expected Markers | STAGING EXTERNAL PASS、CMD NESTED PASS、原相关矩阵标记、PACKAGE PASS、资源/治理负例门禁、实际远端复核。 |
-| Asset Needs | 接收build/td-s8-vdm原始证据/临时探针清理责任；新增精确build/t9-package，候选/测试/备份发布；本轮build/.ninja/x86/Testing及build/.ninja/x64/Testing中的LastTest*.log亦提炼回收，保留CTestCostData及编译缓存；先提炼再检查进程/reparse回收。 |
-| Reporting Requirements | 初始负例与修后、自包含/可选后端分别报告；四SHA/PE/ABI/输入/双发布/远端身份、未覆盖面，T8开放。公开证据脱敏。 |
-| Stop Conditions | 原资源或UI意外改变、调用者挂起语义/回滚失败、真实包失败则修复后重建；兄弟变更需求止于提案。 |
-| Exit Criteria | 最小修复/自包含正负例及双宽回归、同包测试、双发布、提交推送实际复核和安全清理后收口本S；不宣称原NE间歇故障已修复。 |
-| Original Owner Request | 传播链诊断及本项目范围内根因/最小修复交付，补充调查双CreateProcess钩子竞争；接受裸NTSRV无传播边界；用户新增明确授权真实cmd嵌套测试与修复，已先说明两层设计及候选失败点。 |
-| Similar-Issue Sweep | 同一staging入口的初始/同宽/跨宽helper、已经stage重入、read/restore外部导入表和权限/溢出边界；不更换trampoline或服务策略。 |
+M0 T9 S1已交付并按P1实际远端复核/安全清理收口；本P2只记录关闭，无活动任务包。
+T9有限范围审计通过。M0固定，T8保持开放；此前NE间歇失败未证实根因，既有
+裸NTSRV复用无传播仍为用户接受边界，不追写为本次已修复。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 9
 - Last allocated Td S: 8
-- Last delivery: M0 T9 S1 P1 (verified locally；待推送实际复核，T8开放)
-- Open task: M0 T9 S1 (dual-hook import staging); M0 T8 remains open
+- Last delivery: M0 T9 S1 P2 (P1 1efa924实际远端复核通过；仅文档收口，T8开放)
+- Open task: M0 T8 remains open；T9及S1已收口，无活动S
 
 ## Technical Baseline
 
@@ -56,12 +35,17 @@ NONAME helper不变，无C++/MSVC或兄弟必需依赖。唯一运行时代码�
 四文件已先备份后发布assets根及O:/winnt/system32，8摘要与实际测试包一致；
 8份before与Gite6d6b55 assets一致可恢复。版本、PE/imports、输入和脱敏证据见
 [release.json](../etc/release.json)与[S1记录](../history/M0-T9-S1-native-cmd-staging.md)。
-P1尚待推送实际复核；两个登记scratch及本轮Testing日志尚待安全回收。
+P1 1efa924abc7d13f4f0c04294512399edd4f18f2c已实际远端复核：128输入、四远端/八发布、
+六资源、59份原始摘要及18份cmd记录身份核对通过。两个登记scratch已安全回收
+6605文件/225749124字节，另6份Testing日志先提炼再回收；无reparse/活动进程，
+稳定.ninja/.ccache及CTestCostData、两处发布保持。P2仅文档，128输入/四文件不变。
 
 英文README及精选8张demo/真实XP Solitaire PNG原样保留，其展示与来源记录见
 [截图清单](../etc/screenshots/manifest.json)，不扩写成当前新包的游戏验收。
 
 ## Recent Closure
+
+- [T9 S1原生嵌套cmd及外部导入表](../history/M0-T9-S1-native-cmd-staging.md)：P1实际远端复核及清理完成；仅本轮S/T9收口，T8开放。
 
 - [Td S8传播诊断](../history/M0-Td-S8-vdm-propagation.md)：ce20f15实际远端复核通过；原NE间歇失败不作修复声明，独立staging缺陷移交当前产品任务。
 

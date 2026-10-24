@@ -1,7 +1,7 @@
 # M0 T9 S1: native nested cmd and external imports
 
 本S接续e6d6b55准入，承接用户追加的真实嵌套cmd测试；未分配新S或覆盖其他活动包。
-M0固定，T8保持开放。当前交付仍在验证，远端复核和清理完成后才收口。
+M0固定，T8保持开放。P1实际远端复核与安全清理完成，本P2仅文档记录收口。
 
 ## Confirmed defect and minimum fix
 
@@ -53,7 +53,7 @@ helper退出造成RPM 299，也曾提前打断观测；现仅在确认该自有�
 nthook/双钩子各四边均通过，目标独有标记、37/23退出及内外job归零。双宽
 staging正负例均通过；不存在后端时另实测77/SKIP。已先备份后发布assets根及
 O:/winnt/system32，8摘要与实际包相同，8份before可从e6d6b55 assets恢复。
-P1尚待实际远端复核和清理。
+P1实际远端复核和清理已完成，证据见下方。
 
 相关注册全集用`^(core|launch|propagate|demo|compatibility)/.*$`运行：x86为26项、
 25通过/clipboard跳过；x64为40项、38通过/clipboard及默认可选后端跳过，共63通过、
@@ -76,10 +76,34 @@ src/ntw16s-dll/injection`：生产描述符循环只有staging.c一处。PE头�
 
 ## Limits
 
-原始完整PID/路径/模块/转录仅在任务scratch，公开记录脱敏并保留摘要。仅验证
+原始完整PID/路径/模块/转录曾仅存在任务scratch，提炼后已安全回收；公开记录
+脱敏保留进程序号图、模块SHA和原始摘要，不公开真实进程或登录身份。仅验证
 本机Windows及安装后端的有限组合；无任意版本后端、ARM64、真实输入桌面、
 任意DPI承诺。默认可选后端缺失返回77，不能计作通过。私有桌面clipboard权限
 5/77跳过独立报告，不通过用户共享剪贴板绕过。
 
 本S新包NE冷/热及VDM复用未重跑；此前NE间歇失败仍未证实根因；既有裸NTSRV复用无传播是用户接受边界。本S不
 关闭T8、不修改兄弟仓库、不注入或结束用户已有进程。
+
+## Actual remote review, cleanup and finite closure audit
+
+P1 `1efa924abc7d13f4f0c04294512399edd4f18f2c` 已push/fetch/ls-remote核对，并读取
+实际origin/main diff、128输入Git blob、四远端产物、八发布摘要及六资源；实际
+运行时代码只有staging.c和三个版本资源变化，rules未改。59份原始摘要与18份cmd
+case/transcript身份逐项核对，19项包和63通过/3跳过的JUnit与记录相符。P1远端
+复核结果本地文件的SHA及结构化结果保存在release.json，未以自身总结代替检查。
+
+清理前核实绝对路径均为本仓库登记根、全部祖先/后代无reparse、无使用这些根的
+活动进程；先提炼再以原生PowerShell LiteralPath删除：build/td-s8-vdm为140文件/
+6180926字节，build/t9-package为6465文件/219568198字节，合计6605文件/
+225749124字节；另6份owned Testing日志先记SHA再删除。编译缓存、CTestCostData、
+.ccache、README精选PNG及两处发布保留。八份before可从e6d6b55恢复。
+
+T9有限覆盖单位逐项处置：有效外部表双宽真实初始化/附着、三类边界拒绝、
+原挂起与回滚、自包含cmd四边、可选两场景各四边、旧源/旧包负例、UI资源保留、
+干净双宽同批四文件与19包用例、发布/实际远端身份/清理，均有本次证据；环境
+跳过及未覆盖面如上，未假造通过。T9/S1按该范围收口，M0及T8保持开放。
+
+P2只记录已完成的复核和清理，并把外部表正例元数据的含糊valid_initialized=0
+明确为error=0、initialized/attached=true；规范化公开证据摘要为Git LF字节；不是新测试或产品修复。128构建/测试
+输入及四文件SHA与P1不变，不虚构新编译或发布。

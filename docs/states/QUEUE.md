@@ -24,4 +24,4 @@ CURRENT中的完成审计。当前无剩余待准入候选。
 [英文README与真实截图展示](../proposals/readme-showcase.md)为已交付收口的治理文档工作，
 不是新增产品候选；状态仍由CURRENT管理。
 
-[VDM传播诊断](../proposals/vdm-propagation.md)为本次已准入调研，状态由CURRENT管理。
+[VDM传播诊断](../proposals/vdm-propagation.md)及其T9本地修复/原生cmd测试已交付收口，状态由CURRENT管理。

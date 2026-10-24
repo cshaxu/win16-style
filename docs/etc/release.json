@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T9 S1 P1",
-  "stage": "published locally; actual P1 remote review pending",
+  "delivery": "M0 T9 S1 P2",
+  "stage": "T9 S1 closed after actual P1 remote review and safe cleanup; M0 and T8 open",
   "version": "0.9.0.0",
   "package_directory": "assets",
   "source_inputs": [
@@ -819,19 +819,93 @@
   },
   "audit": {
     "baseline": "e6d6b55",
-    "stage": "P1 actual remote review pending",
-    "task_status": "T8 open; T9 S1 awaiting delivery closure",
+    "stage": "P1 actual remote commit/source/package/evidence verified; P2 documents closure only",
+    "task_status": "T9 finite scope closed; T8 open; earlier NE intermittent issue not claimed fixed",
     "state_owner": "existing process creation transaction and GUI-thread renderer ownership unchanged; tests own jobs/pipes/desktops/new logon Console only",
     "old_path_disposition": "no moves; only descriptor SizeOfImage rejection replaced with bounded readable address checks; helper/trampolines/renderers unchanged",
     "evidence": "evidence/native-cmd-staging.json",
-    "evidence_sha256": "6078e67bcf75e0189029da52103de3d348ca9a515ce8c2d0d61d23489afd304f",
+    "evidence_sha256": "f817f06f6de340686cc63c453fbf70669ceed2ae7106d97b3696fe507c57fe27",
     "statistics": {
       "scope": "src/tests/tools/CMakeLists.txt versus e6d6b55",
       "paths": 13,
       "added": 609,
       "deleted": 23,
       "net": 586
-    }
+    },
+    "remote_review": {
+      "status": "passed",
+      "commit": "1efa924abc7d13f4f0c04294512399edd4f18f2c",
+      "source_inputs": 128,
+      "remote_assets": 4,
+      "published_copies": 8,
+      "byte_exact_resources": 6,
+      "raw_evidence_hashes": 59,
+      "case_trace_hashes": 18,
+      "registered_passed": 63,
+      "registered_skipped": 3,
+      "package_cases": 19,
+      "native_cmd_cases": 12,
+      "old_negative_193": true,
+      "runtime_diff": "staging.c only plus three version resources",
+      "rules_unchanged": true
+    },
+    "remote_review_raw_sha256": "2257cc21c4b49ec2dd725f82d9d8124fcf0dc3daa0686f19b507411af9145c65",
+    "cleanup": {
+      "preserved": "build/.ninja compiled cache, CTestCostData, build/.ccache, assets and system32 published files",
+      "status": "removed",
+      "testing_logs": [
+        {
+          "bytes": 107124,
+          "sha256": "02ae24bc5ac279aeb29857b432d9ecca9fe640a628efb31882cf686481574d77",
+          "path": "build/.ninja/x86/Testing/Temporary/LastTest.log"
+        },
+        {
+          "bytes": 23,
+          "sha256": "418f2977589b627ab33accc1ea3ffc229d217255e2db9a2d9c921bfe3785a460",
+          "path": "build/.ninja/x86/Testing/Temporary/LastTestsDisabled.log"
+        },
+        {
+          "bytes": 20,
+          "sha256": "e25a4e663758c9a22153e8730ed7776e589122a853eb9b0611a810cc750ca8e1",
+          "path": "build/.ninja/x86/Testing/Temporary/LastTestsFailed.log"
+        },
+        {
+          "bytes": 125064,
+          "sha256": "391dee58775185e7e90b1a2f7a7e422aa21051fefad7a76f0f26d4ee04227304",
+          "path": "build/.ninja/x64/Testing/Temporary/LastTest.log"
+        },
+        {
+          "bytes": 52,
+          "sha256": "3030047fce0798ceb6ae80e2946dc013aa5bd70c3f26bb813dd24254434ee6d2",
+          "path": "build/.ninja/x64/Testing/Temporary/LastTestsDisabled.log"
+        },
+        {
+          "bytes": 21,
+          "sha256": "e1661dbaf4e65bdd20a790e3cb956dcf9ad36352ad63b2f92321828860228804",
+          "path": "build/.ninja/x64/Testing/Temporary/LastTestsFailed.log"
+        }
+      ],
+      "roots": [
+        {
+          "reparse_points": 0,
+          "active_processes": 0,
+          "files": 140,
+          "directory": "build/td-s8-vdm",
+          "directories": 27,
+          "bytes": 6180926.0
+        },
+        {
+          "reparse_points": 0,
+          "active_processes": 0,
+          "files": 6465,
+          "directory": "build/t9-package",
+          "directories": 2932,
+          "bytes": 219568198.0
+        }
+      ]
+    },
+    "P2_scope": "Docs only: record P1 actual review and cleanup; clarify successful external-import result0 as error0 plus initialized/attached true; no compiled inputs or published binaries changed",
+    "evidence_hash_convention": "SHA256 of canonical Git LF bytes"
   },
   "typography": {
     "controls": "host System bitmap glyphs sized to original app character advances/cell/ascent/leading; borrowed app fonts restored on detach; System/NULL retained; no layout changes",

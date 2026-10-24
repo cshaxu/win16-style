@@ -32,3 +32,7 @@ exit /b 23并核对原生退出码。每case独有标记，x64/32根与子四边
 独立登录AuthenticationId隔离RPC端点，权限/后端缺失明确skip，兄弟不作必需依赖。
 保留原生创建错误和cmd errorlevel/警告不同证据层次，193需真实复现才归因为
 staging外部表；不能凭“不兼容16位”文字断言实际执行NE。无用户进程干预。
+
+本轮T9 S1已按有限范围交付、实际远端复核与清理收口；真实cmd及外部导入表
+结果见[T9 S1记录](../history/M0-T9-S1-native-cmd-staging.md)。此前NE间歇问题仍不作
+根因/修复声明；T8开放，当前活动状态以CURRENT为准。

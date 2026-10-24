@@ -2374,16 +2374,20 @@
   ],
   "external_import_tests": {
     "x86": {
-      "valid_initialized": 0,
       "noaccess": 299,
       "unterminated": 193,
-      "rva_end_overflow": 193
+      "rva_end_overflow": 193,
+      "valid_error": 0,
+      "initialized": true,
+      "attached_window": true
     },
     "x64": {
-      "valid_initialized": 0,
       "noaccess": 299,
       "unterminated": 193,
-      "rva_end_overflow": 193
+      "rva_end_overflow": 193,
+      "valid_error": 0,
+      "initialized": true,
+      "attached_window": true
     },
     "old_source_detected_both_widths": 193
   },
