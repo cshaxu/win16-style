@@ -144,7 +144,9 @@ int main(int argc,char **argv)
          * style installed (r237 native/old/current phase oracle). Warm the
          * same interaction closure being measured, not paint alone. Keep the
          * no-growth and exact owned-object assertions below. */
-        for(warm=0;warm<8;++warm){MSG message;
+        /* Eight rounds could still measure USER's delayed 39->45 cache
+         * allocation. Use a fixed full workload; retain strict no-growth. */
+        for(warm=0;warm<64;++warm){MSG message;
             for(n=0;n<20;++n)RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
             SetFocus(w);SetFocus(root);
             if(i<2){

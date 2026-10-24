@@ -602,7 +602,7 @@
       "action": "adapt",
       "destination": "src/ntw16s-dll/menu_scope.c",
       "notice": "project-authored-review",
-      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task; T6 S1 mechanical C17/GCC portability, original notices preserved; checks unchanged",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task; T6 S1 mechanical C17/GCC portability, original notices preserved; checks unchanged; T8 S3 per-popup shadow ownership; native message/input semantics preserved",
       "receiver": "style-core"
     },
     {

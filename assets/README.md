@@ -1,10 +1,11 @@
 # Product package
 
-当前批次以[发布清单](../docs/etc/release.json)为准：M0 T8 S2 P1 / 0.8.0.0。
+当前批次以[发布清单](../docs/etc/release.json)为准：M0 T8 S3 P1 / 0.8.0.0。
 三组件四产物：run16s.exe(x64)、ntw16s32.dll(x86)、ntw16s64.dll(x64)、demo.exe(x64)。
 README不是第五产品。将四文件放在同一目录，启动器从自身目录定位DLL。
 
-本次恢复内部控件和菜单的System字形，保持用户已确认的字号与字符宽度，
+本次修复菜单右/下多余投影及打印未绘制黑条，保留细框，不改共享类或全局阴影设置。
+内部控件和菜单保持System字形及用户已确认的字号与字符宽度，
 不重排控件。标题继续使用已确认10pt粗体MS Sans Serif，绘制逻辑不变。
 菜单沿用原8pt度量；标准控件适配应用原度量，后续WM_SETFONT重新适配，卸载
 恢复最新应用字体。应用自绘Score/Time及显式20px兼容API保持。
@@ -14,7 +15,7 @@ README不是第五产品。将四文件放在同一目录，启动器从自身�
 默认等待并返回实际退出码，GUI默认异步，--wait均等待，样式和后代传播默认启用。
 
 本批构建/原生探针/实际包/双发布及远端复核身份见发布清单及
-[字体修复记录](../docs/history/M0-T8-S2-system-font.md)。原生探针不等同物理输入，
+[字体修复记录](../docs/history/M0-T8-S3-popup-shadow.md)。原生探针不等同物理输入，
 本次用户实际sol.exe外观验收待反馈。每S有binary change按
 [执行规范](../docs/rules/EXECUTION.md)发布同批被测四文件至assets根目录和
 O:/winnt/system32，先备份后逐项核对SHA；入口见[BUILD](../docs/etc/operations/BUILD.md)。

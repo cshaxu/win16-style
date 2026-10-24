@@ -185,9 +185,9 @@
       "path": "src/ntw16s-dll/menu_scope.c",
       "source": "src/ntw16s-dll/menu_scope.c",
       "source_blob": "b27da79667d1dce3f17336721ef7c6be06fc18f7",
-      "sha256": "58187892b3f8955608ed7fbd43301428d44f643865a1ef83b9f821db65886957",
+      "sha256": "21144a3223b75b502d9b5509dee8f0f3fe642ee2dfe9b04f24f104f60279f28c",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T8 S3 scoped USER SysShadow suppression and actual popup border/shadow regression",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -770,9 +770,9 @@
       "path": "tests/ntw16s-dll/win16_style_control_present.c",
       "source": "tests/app/win16_style_control_present.c",
       "source_blob": "a44a8cf711985ae62d847021b037b8bb308f8cc7",
-      "sha256": "c6557011a67707d34499f353c721f0e2413264b5e92a046291fc7bc8cc4a260e",
+      "sha256": "76b4f154f4192991aa4aabf789426ea734b10a446e5baa89a4ebb7769323ebc8",
       "disposition": "adapt",
-      "review": "T6 S1 remaining painter/menu/private clipboard/native scroll contract audit; docs/history/M0-T6-S1-package.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes",
+      "review": "T6 S1 remaining painter/menu/private clipboard/native scroll contract audit; docs/history/M0-T6-S1-package.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 S3 fixed64 full-workload USER cache warmup; strict assertions unchanged",
       "notice": "Project-authored fixed-source fixture; original comments retained"
     },
     {
@@ -1094,9 +1094,9 @@
       "path": "tests/ntw16s-dll/win16_style_menu_cancel.c",
       "source": null,
       "source_blob": null,
-      "sha256": "81d2355cc52e6a450e30aca5a0882b094e8540cb8d8affc5cd4c68f43d1f5716",
+      "sha256": "945e74ebdba21a50564a0637509e27388d170e9595029739588ae91e5aa98e0e",
       "disposition": "authored",
-      "review": "T7 native private-desktop actual DLL menu-loop cancellation, focus/capture/hover/item-state regression; no physical input claim",
+      "review": "T7 native private-desktop actual DLL menu-loop cancellation, focus/capture/hover/item-state regression; no physical input claim; T8 S3 scoped USER SysShadow suppression and actual popup border/shadow regression",
       "notice": "Project-authored C17 fixture, MIT"
     },
     {
