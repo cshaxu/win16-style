@@ -1,0 +1,681 @@
+{
+  "schema": 1,
+  "task": "M0 T14 S1",
+  "status": "verified, dual published; actual P1 remote review pending",
+  "baseline": "97999c0fc31a9ff377cd3effcb9074dc459df30e",
+  "root_cause": {
+    "explorer_cwd": "C:/Windows/system32",
+    "observed_cmd_cwd": "D:/programs/misc",
+    "explorer_path_contains": [
+      "O:/winnt",
+      "O:/winnt/system32"
+    ],
+    "targets": [
+      {
+        "path": "O:/winnt/sol.exe",
+        "bytes": 180688,
+        "sha256": "68b196c6fd496bac0e2f30f162ee0b4b4d6eb5bfec1af086c8ea759222211f31",
+        "signature": "4e450514",
+        "format": "NE",
+        "machine": null
+      },
+      {
+        "path": "D:/programs/misc/sol.exe",
+        "bytes": 56832,
+        "sha256": "a6fc95a5b288593c9559bd177ec43bf9b30d8a98cf19e82bf5a1ba5600857f04",
+        "signature": "50450000",
+        "format": "PE",
+        "machine": "0x14c"
+      }
+    ],
+    "initial_exit": 4,
+    "initial_windows_error": 193,
+    "phase": "native target validation before creation/injection"
+  },
+  "implementation": {
+    "normal_pe": "existing suspended injection and UAC flow",
+    "legacy": "full MZ header and not PE, validation193 -> real ShellExecuteEx without UI/security suppression",
+    "shell_close_error": 1223,
+    "retained_error": 193,
+    "retained_exit": 4,
+    "custom_dialog": false,
+    "public_abi_changed": false,
+    "product_files": 4,
+    "version": "0.14.0.0",
+    "code": "src/run16s-exe/legacy_shell.c",
+    "system_ui": "Shell_Dialog",
+    "system_title": "This app cant run on your PC",
+    "prototype_stack": "shell32 SHExecuteErrorMessageBox -> Windows.Storage ShellExecuteExW",
+    "native_pe_guard": "PE signature excluded even when e_lfanew overlaps DOS header",
+    "test_cleanup": "IOCP whole-job ACTIVE_PROCESS_ZERO notification then strict zero accounting; no polling relaxation"
+  },
+  "preservation": {
+    "ntw16s_files_except_version": [
+      {
+        "path": "src/ntw16s-dll/README.md",
+        "git_blob_sha256": "cc82d3e2550db8fae77c697a6148eadd6fc06b237e76e40099ebceb0cc3ba097"
+      },
+      {
+        "path": "src/ntw16s-dll/api.h",
+        "git_blob_sha256": "39f0fbf9693101904f458f67bfc07651f89130d2c257012dc6f961c1423c55a3"
+      },
+      {
+        "path": "src/ntw16s-dll/attachment.c",
+        "git_blob_sha256": "0fec87597e901a7251a06b838189192a5474c11a2d6a3a59a3aba2a15e1c3c70"
+      },
+      {
+        "path": "src/ntw16s-dll/attachment.h",
+        "git_blob_sha256": "7a5cde7dcf7fb6925373ec34b0877ff37b2175f19ecb5a9c2cfa5e52ee49a7ed"
+      },
+      {
+        "path": "src/ntw16s-dll/combo_glyph.h",
+        "git_blob_sha256": "75b05a50bf02bbc8fcbd6c6f84948fcdbf82fa7f0fbbfc590a6e4eb94c3ffe34"
+      },
+      {
+        "path": "src/ntw16s-dll/control_glyphs.h",
+        "git_blob_sha256": "75031b93af2382f8ce1f47d971f32efdfe00cb7000e0db09ef878a1b50adff83"
+      },
+      {
+        "path": "src/ntw16s-dll/control_scope.c",
+        "git_blob_sha256": "c031ca3b4f23ad1431818861b480c49bdff5ca0ccd7cbe7f9954bf08d9a8e20c"
+      },
+      {
+        "path": "src/ntw16s-dll/controls.c",
+        "git_blob_sha256": "5ae39749d8ff95d640784613451a6f371393deffa909439aa31c1d56bd8906ef"
+      },
+      {
+        "path": "src/ntw16s-dll/controls.h",
+        "git_blob_sha256": "d55004421db94183ce615c71b2cd6442d2ae6a1523da4c3b81bc4361b3497b3d"
+      },
+      {
+        "path": "src/ntw16s-dll/dllmain.c",
+        "git_blob_sha256": "056212610fa33c9ad268fab84de07db2bcb9de41b5c215f37e0c2685751e397c"
+      },
+      {
+        "path": "src/ntw16s-dll/font.c",
+        "git_blob_sha256": "4d66371f96e8c81c2dfb557d7274f24ebbb7f880971078049c300601bc73f961"
+      },
+      {
+        "path": "src/ntw16s-dll/font.h",
+        "git_blob_sha256": "483b167c576bccce61c000a7b0ddf5ae9ed36892402e8aeabd2a4e6693396988"
+      },
+      {
+        "path": "src/ntw16s-dll/frame_buttons.h",
+        "git_blob_sha256": "e7a472d76858c3d01fb1501a34d958ccd8337c8d8ccc36893c17ef9222bac0c5"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/context.c",
+        "git_blob_sha256": "1240bbf321b7c6fc569f14121f4a99fed899061d1eb545479e2ac7ab8708620e"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/create_process.c",
+        "git_blob_sha256": "40cbdcd65e01c312b5611f9db853a1ddf4086f7769c30eb7f3fca8e863cd396e"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/entry.c",
+        "git_blob_sha256": "2268dd262061df17e243709f3c3052eb92cc6107251c40e093d56c22ac8e5e88"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/helper.c",
+        "git_blob_sha256": "f56965350420607da31e224028eb6e55f869f794ff96d2ae159ba0b7d9b29125"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/injection.h",
+        "git_blob_sha256": "d81b9945cd65c435e37dde6285303c571fea81fed7332054845d5c9b36e3e3e1"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/installer.c",
+        "git_blob_sha256": "9203c3d9f16a5766b0e17e471bceac78eace0488a36f885ba6014308f21a2c78"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/intercept.h",
+        "git_blob_sha256": "a3ff6fb2641671e5c7e8434df04a22db84beba1fe36a1626e27dca4dc6019221"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/minhook/AUTHORS.txt",
+        "git_blob_sha256": "073b4e8b0a5a0cd9f4dfa838369f4fc7a4f47151d930b4e1fd891644060a897f"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/minhook/LICENSE.txt",
+        "git_blob_sha256": "d5c2224982b0b95a16b098a561335fa93f3eaf4d0aa964b7843edb986df78dc8"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/minhook/src/buffer.c",
+        "git_blob_sha256": "53228de3f2a14a390f6d97538d702c20a4388eea42e53b5b999532bab018287b"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/minhook/src/buffer.h",
+        "git_blob_sha256": "9769702bd625249e59a19ede05c84365fcc7707e1fa0e5df08df42227cee13e3"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/minhook/src/hde/hde32.c",
+        "git_blob_sha256": "5da4941e9044f7b325c7f952b5840089e365f374740b7fe7318805d08c0d6c32"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/minhook/src/hde/hde32.h",
+        "git_blob_sha256": "5132de5be8ac7a9d054420f5caef0fb01437faa892f03b3cdc77f795973bf15a"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/minhook/src/hde/hde64.c",
+        "git_blob_sha256": "824eafa315322e6da105a7ce4ec1fc0e0adeee0106d32152fbb0b59e709bd15c"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/minhook/src/hde/hde64.h",
+        "git_blob_sha256": "e99aa4997bda14b534c614c3d8cb78a72c4aca91a1212c8b03ec605d1d75e36e"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/minhook/src/hde/pstdint.h",
+        "git_blob_sha256": "604d1cdf45c5a95bc9cf1bbf39ca05ef83013541101d34971c5cd7577e3d5247"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/minhook/src/hde/table32.h",
+        "git_blob_sha256": "43bf687a9fff071b5f46070db4d36c846f8e069cdc57485ee897c499aacdde23"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/minhook/src/hde/table64.h",
+        "git_blob_sha256": "b774446d2f110ce954fb0a710f4693c5562ddbd8d56fe84106f2ee80db8b50a2"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/minhook/src/trampoline.c",
+        "git_blob_sha256": "f13a169f803ff5a8e45c58ce668b4377a9878c0fc4452369b8a1325065186b2b"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/minhook/src/trampoline.h",
+        "git_blob_sha256": "53ed9934492320617a27bfd952ffe7f5b7a4a1d09963d4512447082fe7b727b4"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/staging.c",
+        "git_blob_sha256": "72e91020a744f8c7c89df3a1c9202222132d641d1fbe883d72342c408493af52"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/staging.h",
+        "git_blob_sha256": "e31da102f73d70d538ce1298bc65209e3eebc2cc98178b05ff435a35aa9d4f85"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/startup_hooks.c",
+        "git_blob_sha256": "55fa1acfd32b96978f225b69d40f0aebb61f3b7eaea9bf817a9ef46d091e90bd"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/startup_hooks.h",
+        "git_blob_sha256": "4ad7e284ba05eff4e3c555286ee237ad44be65d833e006dfedd3cb154ef5647a"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/subclass32.def",
+        "git_blob_sha256": "1bb586134e8c3bdbfde4122b502d373a12112d33435aa3956952f067e2f82551"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/subclass64.def",
+        "git_blob_sha256": "7801e6b16a6795f252cb92a997594e1c32a72f6dfe178b5ff03eb08509bbec09"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/unwind.c",
+        "git_blob_sha256": "a6966eb2be1cb4a9746cd51456f7bb8c52f627ca59fdc7317d28a890ab7378c8"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/unwind.h",
+        "git_blob_sha256": "ccf03098093e0dbc6ea931b8ad7c7cb6bad33dba21103f661cb8a6eb8bd1f0d4"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/window_titles.c",
+        "git_blob_sha256": "1bf8ab657967bd04f30bf0015a67cdeaacca33e314647d43de7229231a699c39"
+      },
+      {
+        "path": "src/ntw16s-dll/layout.c",
+        "git_blob_sha256": "83cd34e01d35e27fc40c54e82460cab945b45d3a986b3d5ee2ec8ac9ab5c4ede"
+      },
+      {
+        "path": "src/ntw16s-dll/layout.h",
+        "git_blob_sha256": "a55b5d4bad75fda24a46828966f0b8024c85dd52648ac8166e77ae94c541d2d3"
+      },
+      {
+        "path": "src/ntw16s-dll/menu_bar.c",
+        "git_blob_sha256": "dabb1ce65683a5b92ae396c1c56224eb7815cacd60d91fb5f196aa9d536244b7"
+      },
+      {
+        "path": "src/ntw16s-dll/menu_bar.h",
+        "git_blob_sha256": "7eba7d9c045131b8aebb7d7c8b87303b97d2eb8e52d9030388f6dd23af9731df"
+      },
+      {
+        "path": "src/ntw16s-dll/menu_bar_paint.c",
+        "git_blob_sha256": "209ab48d33f57207c33f90c412b9c294ed062683c789803dd207cf22fd66076f"
+      },
+      {
+        "path": "src/ntw16s-dll/menu_glyphs.h",
+        "git_blob_sha256": "03922a10b6a7b46e1792852b93f1e1590d45546a57a63cead41fb7b0f0eefa4e"
+      },
+      {
+        "path": "src/ntw16s-dll/menu_items.c",
+        "git_blob_sha256": "50ffdecade278016841546433fb6650c0c8e2e3d7996725eefb5e77e10be0706"
+      },
+      {
+        "path": "src/ntw16s-dll/menu_items.h",
+        "git_blob_sha256": "24dff3476635ede1304b7ee3bdf28c3639b4ded55826c8000e7142531ac69b18"
+      },
+      {
+        "path": "src/ntw16s-dll/menu_layout.c",
+        "git_blob_sha256": "cde752459255f121492daa908df6cd6201a549d0080d2cf73b8975b6042dc62c"
+      },
+      {
+        "path": "src/ntw16s-dll/menu_layout.h",
+        "git_blob_sha256": "e70959ddd21f2cb3d2904a7bf756f79066e839144d7ecc7174a97f026a065e19"
+      },
+      {
+        "path": "src/ntw16s-dll/menu_paint.c",
+        "git_blob_sha256": "00df595f7ab3f4471bd5d851930aac1e03d48430c45a8ed8ecb372dbdc108e84"
+      },
+      {
+        "path": "src/ntw16s-dll/menu_paint.h",
+        "git_blob_sha256": "59e3b90b9d362c2264ba6597c3508dd04815a1b17ea4b50317ab12865c628b22"
+      },
+      {
+        "path": "src/ntw16s-dll/menu_scope.c",
+        "git_blob_sha256": "21144a3223b75b502d9b5509dee8f0f3fe642ee2dfe9b04f24f104f60279f28c"
+      },
+      {
+        "path": "src/ntw16s-dll/menu_scope.h",
+        "git_blob_sha256": "e7f130982359c73f3aa790cdbe8915c2acf5aa2a4889dbd5dfda7855a652a699"
+      },
+      {
+        "path": "src/ntw16s-dll/native_api.c",
+        "git_blob_sha256": "4dcd66856f892290468ba0785835b2060b873a679b2938337d4ca87fb0e75b6f"
+      },
+      {
+        "path": "src/ntw16s-dll/native_api.h",
+        "git_blob_sha256": "2e8b3c5b585b9ee61afb597cacc3d18cfd15631de6eadc34fc2870c30ba657c8"
+      },
+      {
+        "path": "src/ntw16s-dll/ntw16s.h",
+        "git_blob_sha256": "d10566f17c968fedc73459dd2f5d5b1f184f315e220a3feacd6d8281f9083b59"
+      },
+      {
+        "path": "src/ntw16s-dll/ntw16s32.def",
+        "git_blob_sha256": "f2423aeaf38340653eb9c967a12762659dc8cb92aa8c46c927a6981d240cd912"
+      },
+      {
+        "path": "src/ntw16s-dll/ntw16s64.def",
+        "git_blob_sha256": "4747660ae10ad0c73306f0f473f749b5ecbe216a83f6166795ea975e007b4a8a"
+      },
+      {
+        "path": "src/ntw16s-dll/resources.md",
+        "git_blob_sha256": "211d1d1d85e65bef001990fb229bd5959e272e1992b95d9086acc7c67716b6a7"
+      },
+      {
+        "path": "src/ntw16s-dll/scroll_glyphs.h",
+        "git_blob_sha256": "a748e7d89d52abf6225403244971da442c5b391ab877d1f248ddf2ca96001d40"
+      },
+      {
+        "path": "src/ntw16s-dll/scroll_layout.c",
+        "git_blob_sha256": "0b1b344fcbe0ef2a8060ef140c539cefeb5fa79c7b93c322452513d15b95b4d0"
+      },
+      {
+        "path": "src/ntw16s-dll/scroll_layout.h",
+        "git_blob_sha256": "b8398eafbc51af77a5e5ce72c4dd06f12e51a6cdf6bdd51cf2ef6275b0b9fcb4"
+      },
+      {
+        "path": "src/ntw16s-dll/scroll_track.c",
+        "git_blob_sha256": "0b9c5d40849d321e3e467635d4c28b85c5897d8ee4dd8ec7bf3ed1d39fcd72ee"
+      },
+      {
+        "path": "src/ntw16s-dll/scroll_track.h",
+        "git_blob_sha256": "36be02d2e879175c02863c495693d5c79dfa1cbca716419c6e0ec46b59c5934e"
+      },
+      {
+        "path": "src/ntw16s-dll/theme.c",
+        "git_blob_sha256": "48eb05bc23f40eb99288a1c3d16ba07a8262be2a15a95725427238e730e3f6ac"
+      },
+      {
+        "path": "src/ntw16s-dll/theme.h",
+        "git_blob_sha256": "0a0100203a7856d58d2a16389309440781f23d7e04e7d7a93db0cc5ad2415371"
+      },
+      {
+        "path": "src/ntw16s-dll/win16_style.c",
+        "git_blob_sha256": "0f3b651b2d6aaf44fe2c51397cba2e52df0070c3eb0aabbd70e19c5ab5b971b9"
+      },
+      {
+        "path": "src/ntw16s-dll/win16_style.h",
+        "git_blob_sha256": "f2c52b99f8d764a5175a85532e2ad2c7afc60e0f30117e60350b27c4f1e0ddf8"
+      }
+    ],
+    "elevation_source_byte_exact": true,
+    "graphic_resources_and_notices": "6 original files byte-exact; 18 tables per DLL verified by package gate"
+  },
+  "verification": {
+    "prototype_build_focused": {
+      "profile": "Focused",
+      "build_root": "O:\\repos.hobby\\win16style\\build\\.ninja",
+      "test_jobs": 4,
+      "targets": "all",
+      "build_jobs": 8,
+      "architectures": [
+        "x86",
+        "x64"
+      ],
+      "status": "passed",
+      "exit_code": 0,
+      "tests": [
+        {
+          "build_seconds": 7.091670000052545,
+          "tests": 2,
+          "skipped": [],
+          "configure_seconds": 1.2477233999525197,
+          "test_seconds": 0.7725638999836519,
+          "passed": 2,
+          "architecture": "x86"
+        },
+        {
+          "build_seconds": 7.950954100000672,
+          "tests": 3,
+          "skipped": [],
+          "configure_seconds": 1.3808899999712594,
+          "test_seconds": 6.477463500050362,
+          "passed": 3,
+          "architecture": "x64"
+        }
+      ],
+      "selection": "^launch/(shell-unit|shell-errors|elevation-unit)$"
+    },
+    "frozen_shell_unit": {
+      "x86": {
+        "passed": 1,
+        "classifications": 8,
+        "junit_sha256": "e4e715442b1dc47122c2b9888ac5b378987a56e85defb3f3e2ece3194fcb3792"
+      },
+      "x64": {
+        "passed": 1,
+        "classifications": 8,
+        "junit_sha256": "a5ca219f061b5cc005c4103679cb2ba74ed5f981408b7821dd137ce81c8b0516"
+      }
+    },
+    "registered": {
+      "x86": 28,
+      "x64": 44
+    },
+    "registered_not_full_run": true,
+    "old_launcher_negative": {
+      "sha256": "6393ac06e741419b41a7148eaf9f840a02b412e70c03f2b155a85028b7d1548d",
+      "exit": 1,
+      "first_failure": "MZ direct Shell UI seen; old CLI exit4 but no system UI",
+      "log_sha256": "e0671c671fb0aae2a7421985f773b7097972bcd1fc5f5711bf46056657aba0e8"
+    },
+    "actual_package": {
+      "passed": 24,
+      "failed": 0,
+      "skipped": 0,
+      "seconds": 250.3465525,
+      "jobs": 4,
+      "cases": [
+        {
+          "name": "abi-x86",
+          "seconds": 0.2147712,
+          "exit_code": 0
+        },
+        {
+          "name": "abi-x64",
+          "seconds": 0.2277772,
+          "exit_code": 0
+        },
+        {
+          "name": "demo-boundary",
+          "seconds": 0.2047579,
+          "exit_code": 0
+        },
+        {
+          "name": "demo-pair",
+          "seconds": 1.778424,
+          "exit_code": 0
+        },
+        {
+          "name": "wait-contract",
+          "seconds": 7.2695213,
+          "exit_code": 0
+        },
+        {
+          "name": "font-layout-x64",
+          "seconds": 65.4000862,
+          "exit_code": 0
+        },
+        {
+          "name": "font-layout-x86",
+          "seconds": 98.0899184,
+          "exit_code": 0
+        },
+        {
+          "name": "menu-cancel-x86",
+          "seconds": 67.5227549,
+          "exit_code": 0
+        },
+        {
+          "name": "cli",
+          "seconds": 0.4979169,
+          "exit_code": 0
+        },
+        {
+          "name": "automatic",
+          "seconds": 1.6350957,
+          "exit_code": 0
+        },
+        {
+          "name": "shell-errors",
+          "seconds": 6.6388144,
+          "exit_code": 0
+        },
+        {
+          "name": "propagation",
+          "seconds": 5.5096092,
+          "exit_code": 0
+        },
+        {
+          "name": "long-path",
+          "seconds": 1.1186609,
+          "exit_code": 0
+        },
+        {
+          "name": "cmd-nested",
+          "seconds": 2.6275612,
+          "exit_code": 0
+        },
+        {
+          "name": "legacy-iat-32",
+          "seconds": 0.5717991,
+          "exit_code": 0
+        },
+        {
+          "name": "legacy-iat-64",
+          "seconds": 0.5061756,
+          "exit_code": 0
+        },
+        {
+          "name": "uac-unit-32",
+          "seconds": 0.4476428,
+          "exit_code": 0
+        },
+        {
+          "name": "cli-failures",
+          "seconds": 2.6657184,
+          "exit_code": 0
+        },
+        {
+          "name": "uac-unit-64",
+          "seconds": 0.5230887,
+          "exit_code": 0
+        },
+        {
+          "name": "rollback",
+          "seconds": 3.7611812,
+          "exit_code": 0
+        },
+        {
+          "name": "creation-contract",
+          "seconds": 8.9879462,
+          "exit_code": 0
+        },
+        {
+          "name": "menu-cancel-x64",
+          "seconds": 66.7384177,
+          "exit_code": 0
+        },
+        {
+          "name": "dialogs",
+          "seconds": 80.905061,
+          "exit_code": 0
+        },
+        {
+          "name": "messages",
+          "seconds": 84.6921777,
+          "exit_code": 0
+        }
+      ],
+      "result_sha256": "c8a00edd0b868469cd55bfe2b13c46ae80ef76d6c7a433034f97c85c5e9b5ab7",
+      "cases_sha256": "f3b3d6c8d7575e00748feca74ab5251ab48c347a41e066192745f302e278c7f8",
+      "system_ui_log_sha256": "10599393b1d5cc62b78bfb2e43e7eaf9066fdc65f2868f17dcdf77ff9fa3e5cd"
+    },
+    "uncovered": [
+      "physical Win+R keypress",
+      "all Windows versions/languages",
+      "new UAC secure-desktop approval",
+      "arbitrary Shell URI/associations/App Paths",
+      "legacy execution delegates or NE styling"
+    ],
+    "overlapping_pe_negative": {
+      "initial_prototype_helper_exit": 1,
+      "final_frozen_units": "x86/x64 passed",
+      "log_sha256": "f8964cac491190e7dd281ba58f4798ec4cc356bd439d8da44ce73d784a340369"
+    },
+    "superseded_actual_package": {
+      "passed": 24,
+      "seconds": 259.6013662,
+      "published": false,
+      "reason": "PE-overlap guard strengthened after final review; current candidate retested separately"
+    },
+    "guarded_package_failure": {
+      "name": "shell-errors",
+      "phase": "strict whole Job count checked immediately after root exit",
+      "dialog_class_title_and_exit_matched": true,
+      "exit": 1,
+      "stderr_sha256": "7150d19a2808df048432675970e68419e0553e8868fdbe7c4e3db0ec01637dec",
+      "disposition": "Use kernel IOCP ACTIVE_PROCESS_ZERO notification with10s bound, then retain strict zero count; renderer and product helper unchanged"
+    },
+    "job_completion_repeat": {
+      "rounds": 3,
+      "formats_per_round": 2,
+      "status": "passed",
+      "log_sha256": [
+        "10599393b1d5cc62b78bfb2e43e7eaf9066fdc65f2868f17dcdf77ff9fa3e5cd",
+        "10599393b1d5cc62b78bfb2e43e7eaf9066fdc65f2868f17dcdf77ff9fa3e5cd",
+        "10599393b1d5cc62b78bfb2e43e7eaf9066fdc65f2868f17dcdf77ff9fa3e5cd"
+      ]
+    },
+    "installed_launcher": {
+      "passed": true,
+      "formats": [
+        "MZ",
+        "NE"
+      ],
+      "ui": "actual Windows Shell_Dialog, direct-vs-installed class/title equal",
+      "exit": 4,
+      "all_owned_jobs_empty": true,
+      "log_sha256": "10599393b1d5cc62b78bfb2e43e7eaf9066fdc65f2868f17dcdf77ff9fa3e5cd"
+    },
+    "gates": {
+      "source_decisions": 124,
+      "includes": 294,
+      "local_imports": 132,
+      "source_negative": 23,
+      "third_party_negative": 9,
+      "resource_negative": 6,
+      "governance_negative": 13,
+      "ABI": 3,
+      "named_exports": 31,
+      "resource_tables_per_dll": 18
+    }
+  },
+  "exploration_failures": [
+    "early dialog matcher only recognized #32770, not native Shell_Dialog; waits inconclusive; two owned modal instances identity-checked and terminated",
+    "early sol three-case prototype exit assertion inconclusive; not a successful real-sol integration test",
+    "scratch compile warnings/constants corrected",
+    "relative-path old negative was invalid, rerun with absolute launcher shows actual missing-UI defect",
+    "x86 build requested x64-only targets, corrected to all",
+    "source receipts rejected stale changed-file hashes, precise receipts synchronized without gate relaxation"
+  ],
+  "publication": {
+    "copies": [
+      {
+        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe",
+        "before": "fa951159e6b0db388bf401340878f572aed82342ae75132e167a3758d8a6ec7d",
+        "after": "910f155bd51f4bd0643392afdcb28cdf0674169ef4131c59e3f7a75795a85bdc"
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
+        "before": "3651494500554e15fccaafd2bb5859868bdd04613afea8705f3e3db42d3bd7f1",
+        "after": "e85f5d9d58022647670112ede46e2c93b42d88cfc3a151bb9fe7486d4f3d05c5"
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll",
+        "before": "9194981cf2e0a5da81d190a9f1612360e45306a0ef73264880cfda9203feea89",
+        "after": "c45aa42d77c2fcdd5f538e8d60fa7f983bce7eed75eb8e369bfd9ea343a2971c"
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
+        "before": "6393ac06e741419b41a7148eaf9f840a02b412e70c03f2b155a85028b7d1548d",
+        "after": "8c9561b0a554c1bac04c153048744b8fbd663ef2722ebcbc3a80b7a7ebe4f4a0"
+      },
+      {
+        "path": "O:\\winnt\\system32\\demo.exe",
+        "before": "fa951159e6b0db388bf401340878f572aed82342ae75132e167a3758d8a6ec7d",
+        "after": "910f155bd51f4bd0643392afdcb28cdf0674169ef4131c59e3f7a75795a85bdc"
+      },
+      {
+        "path": "O:\\winnt\\system32\\ntw16s32.dll",
+        "before": "3651494500554e15fccaafd2bb5859868bdd04613afea8705f3e3db42d3bd7f1",
+        "after": "e85f5d9d58022647670112ede46e2c93b42d88cfc3a151bb9fe7486d4f3d05c5"
+      },
+      {
+        "path": "O:\\winnt\\system32\\ntw16s64.dll",
+        "before": "9194981cf2e0a5da81d190a9f1612360e45306a0ef73264880cfda9203feea89",
+        "after": "c45aa42d77c2fcdd5f538e8d60fa7f983bce7eed75eb8e369bfd9ea343a2971c"
+      },
+      {
+        "path": "O:\\winnt\\system32\\run16s.exe",
+        "before": "6393ac06e741419b41a7148eaf9f840a02b412e70c03f2b155a85028b7d1548d",
+        "after": "8c9561b0a554c1bac04c153048744b8fbd663ef2722ebcbc3a80b7a7ebe4f4a0"
+      }
+    ],
+    "backup_baseline": "97999c0 assets; all8 previous copies matched and remain recoverable in Git",
+    "owners": 0,
+    "closed_user_processes": 0,
+    "owner_probe_sha256": "9112b1b4cead919c60ad7f9c3c2fc65064552b2ba20a4ed5f1be8c7e4ca24cdd",
+    "installed_abi_log_sha256": {
+      "x86": "e035766e9f9abbcbfcd1e323d70fe6e936283333e44403622a358449610e351e",
+      "x64": "0b3588f46cec840251443a03dc29d798fd7baddb99706ca4f21b229f9c62995c"
+    }
+  },
+  "statistics": {
+    "scope": "CMakeLists/src/tests/tools vs97999c0",
+    "paths": 12,
+    "added": 210,
+    "deleted": 15,
+    "net": 195,
+    "numstat": [
+      "13\t2\tCMakeLists.txt",
+      "4\t4\tsrc/demo-exe/version.rc",
+      "4\t4\tsrc/ntw16s-dll/version.rc",
+      "9\t0\tsrc/run16s-exe/README.md",
+      "38\t0\tsrc/run16s-exe/legacy_shell.c",
+      "8\t0\tsrc/run16s-exe/legacy_shell.h",
+      "6\t1\tsrc/run16s-exe/main.c",
+      "4\t4\tsrc/run16s-exe/version.rc",
+      "5\t0\ttests/README.md",
+      "34\t0\ttests/run16s-exe/legacy_shell_unit.c",
+      "84\t0\ttests/run16s-exe/shell_errors.c",
+      "1\t0\ttools/Test-Package.ps1"
+    ]
+  },
+  "commands": [
+    "Build-Package.ps1 -Worker -Task14 -RunName s1-release (clean both widths)",
+    "frozen CTest launch/shell-unit each width",
+    "Test-Package.ps1 -Worker -Task14 -RunName s1-release-test -FullIntegration -Jobs4 (candidate/frozen source/build)",
+    "Publish-Package.ps1 -Task14 -RunName s1-publish",
+    "frozen shell-errors.exe against actual installed system32 run16s.exe; installed double-width core-abi",
+    "verify_source_manifest.py --self-test; verify_resource_identity.py --self-test; Verify-Governance.ps1 -SelfTest; git diff --check"
+  ]
+}

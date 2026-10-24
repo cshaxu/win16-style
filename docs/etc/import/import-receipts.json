@@ -374,9 +374,9 @@
       "path": "src/ntw16s-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "39f3387e8c4bc9dd2e5eda1f1b97e8ab50383784c46160a27d92afb257b8d42b",
+      "sha256": "ba8e6efd325b9a190c4b747dd5a1aa6a5696df48f9eac32ca1a1c42320e2fdb2",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained",
       "notice": "Project-authored, repository MIT"
     },
     {
@@ -509,27 +509,27 @@
       "path": "src/run16s-exe/main.c",
       "source": null,
       "source_blob": null,
-      "sha256": "cf662839fa2c473d9b3663eda52dda23b15c791f4d21c287a098af1e9e48b2a0",
+      "sha256": "596a173db6d3a78dae62149f7465aa21c468caee305d4c8755d30c0c27d6ac65",
       "disposition": "authored",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
       "path": "src/run16s-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "79eedd073d2184e9e33f71617ef52e6ad2fcee4642ff994e29f16e5062502001",
+      "sha256": "82393101f2fa99283e93f4b9b44696e4ead79a833a2dfd2032d3071b4342292f",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
       "path": "src/run16s-exe/README.md",
       "source": null,
       "source_blob": null,
-      "sha256": "9de202706cc9c4c945ff4908d1fcfc58481be4558b680535f82765a3d1d488a2",
+      "sha256": "3f2d53ef40c4523bbac5f3a74bf914523dbdc520793670d5613744a141bdb703",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T14 S1: describe actual Windows Shell legacy error path and explicit limits",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -734,9 +734,9 @@
       "path": "src/demo-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "11a014584bf956c68bbb8fe7b68661a5eb08e376b731a9fb2dc91070b05a402f",
+      "sha256": "fd8ebb8c52a84198e31e0eed2b0b0bb0f40aa5e16d4fe35e72371cb818170536",
       "disposition": "authored",
-      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained",
+      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained",
       "notice": "Project-authored source per frozen W16Style README; no third-party artwork"
     },
     {
@@ -1152,6 +1152,42 @@
       "disposition": "authored",
       "review": "T11 S1: project-authored C17 on-demand runas coordinator/private interface/asInvoker manifest; no third-party code copied",
       "notice": "Project-authored source; project MIT license"
+    },
+    {
+      "path": "src/run16s-exe/legacy_shell.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "f26533aabd1a71e76a394e30c6db04d9226e7f0230905e9e0d28342ad6368f44",
+      "disposition": "authored",
+      "review": "M0 T14 S1: project-authored legacy Shell delegation and native system-dialog regression; no copied external implementation; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained",
+      "notice": "Project-authored C17, repository MIT"
+    },
+    {
+      "path": "src/run16s-exe/legacy_shell.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "eec74964d4b4a6413ae0cecc27da42f7274d7a1e5a05ed456171f74d4dfbadf6",
+      "disposition": "authored",
+      "review": "M0 T14 S1: project-authored legacy Shell delegation and native system-dialog regression; no copied external implementation; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained",
+      "notice": "Project-authored C17, repository MIT"
+    },
+    {
+      "path": "tests/run16s-exe/legacy_shell_unit.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "1f6b66c7dc9fd11a399edf823dfb20ccff7ebae474a74f7ea3f097929002f1f1",
+      "disposition": "authored",
+      "review": "M0 T14 S1: project-authored legacy Shell delegation and native system-dialog regression; no copied external implementation; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained",
+      "notice": "Project-authored C17, repository MIT"
+    },
+    {
+      "path": "tests/run16s-exe/shell_errors.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "3f6e409675c464b852941a58682b36e4ec307f026ffadebbcab60cc3cd67387a",
+      "disposition": "authored",
+      "review": "M0 T14 S1: project-authored legacy Shell delegation and native system-dialog regression; no copied external implementation; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained",
+      "notice": "Project-authored C17, repository MIT"
     }
   ]
 }

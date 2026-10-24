@@ -1,5 +1,6 @@
 #include "ntw16s-dll/injection/injection.h"
 #include "elevation.h"
+#include "legacy_shell.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <wchar.h>
@@ -46,7 +47,11 @@ int wmain(int argc,WCHAR **argv)
     if(!length || length>=NTW16S_PATH_CAP)return diagnostic(3,length?ERROR_FILENAME_EXCED_RANGE:GetLastError(),L"target resolution");
     error=ntw16s_validate_image_ex(image,IMAGE_FILE_MACHINE_AMD64,FALSE,&subsystem);
     if(error==ERROR_BAD_EXE_FORMAT)error=ntw16s_validate_image_ex(image,IMAGE_FILE_MACHINE_I386,FALSE,&subsystem);
-    if(error)return diagnostic(4,error,L"native target validation");
+    if(error){
+        if(error==ERROR_BAD_EXE_FORMAT && run16s_legacy_image(image))
+            (void)run16s_legacy_shell(image,next_argument(raw),ShellExecuteExW);
+        return diagnostic(4,error,L"native target validation");
+    }
     /* Keep the parent shell blocked for interactive console targets. GUI
      * targets stay asynchronous unless --wait explicitly requests otherwise. */
     wait=wait || subsystem==IMAGE_SUBSYSTEM_WINDOWS_CUI;
