@@ -91,3 +91,11 @@ PID/路径转录。不要并发运行会改同一构建树的两个build；干�
 launch/legacy-rejection使用合成MZ/NE，经直接启动器和真实cmd两条路径捕获首次
 stderr的193/退出4；仅观察自有Job窗口、拒绝额外Shell对话框，等待内核Job归零通知，
 再核对严格活动计数0和预期总进程数。旧Shell重试版本必须失败；无后端依赖。
+
+launch/startup-errors在自有私有桌面比较Windows直接Shell与实际run16s，分别用
+CREATE_NEW_CONSOLE正常显示独占launcher、真实cmd /c持有的共享控制台，另加显式SW_HIDE独占控制台，MZ/NE共8条
+路径；独占只一个同类同标题系统UI且stderr空，共享只一次193且无UI，退出4。
+观察全部Job子进程窗口（含cmd的launcher），等待内核整Job归零，逐映像计数。
+launch/legacy-rejection原有4条CREATE_NO_WINDOW重定向路径保持，通过cmd的也是
+真实原生cmd；显式隐藏/无窗口控制台时仍保留stderr。launch/startup-error-unit双宽检验
+8种文件分类、原始参数/标志、5次Shell返回及句柄配对。无后端或computer-use依赖。

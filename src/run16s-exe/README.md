@@ -37,7 +37,22 @@ Console targets and --wait return the target exit code. GUI targets otherwise
 return after the elevated launch transaction. DLL descendant CreateProcess hooks
 do not request UAC; invoke run16s explicitly for an elevation-required target.
 
-Unsupported MZ/NE targets stop at the original validation failure: stderr reports
-Windows error 193 and the launcher returns 4. The target is not retried through
-Shell, and no additional dialog or console pause is introduced. The existing
-ERROR_ELEVATION_REQUIRED path still requests Windows UAC for native PE targets.
+Unsupported MZ/NE targets are rejected before target creation (error 193, exit 4).
+At entry the launcher snapshots its console attachment: a shared console (for
+example cmd) or an explicitly hidden/windowless console keeps the original stderr diagnostic exactly once.
+A console with a window containing only the launcher has no shell to retain that diagnostic;
+the launcher releases only its own console and requests one Windows Shell open
+of the same absolute legacy image and original argument tail. Windows owns the
+native error UI; run16s adds no second diagnostic, dialog or pause. Validation
+itself does not start the target. Shell cancellation does not replace exit 4.
+
+This is console-attachment detection, not parent-name guessing or Win+R-specific
+logic. A shell that already exited can leave a sole-process console; it follows
+the same UI policy. A headless/CREATE_NO_WINDOW job (which can still attach a hidden console) retains stderr, including
+redirection. Explicit redirection combined with a new sole-process console still
+uses system UI. An explicit STARTF_USESHOWWINDOW/SW_HIDE startup also retains stderr.
+Query/detach failure keeps stderr. Console subsystem is retained,
+so the initial creation of a console can still briefly appear. Malformed/native
+PE and other validation errors do not receive an unstyled Shell fallback. A
+system-configured legacy handler is Windows' responsibility, not NE style support.
+The existing ERROR_ELEVATION_REQUIRED path remains unchanged.

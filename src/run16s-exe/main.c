@@ -1,5 +1,6 @@
 #include "ntw16s-dll/injection/injection.h"
 #include "elevation.h"
+#include "startup_error.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <wchar.h>
@@ -29,6 +30,7 @@ static int diagnostic(int code,DWORD error,PCWSTR phase)
 }
 int wmain(int argc,WCHAR **argv)
 {
+    BOOL private_console=run16s_private_console();
     int first=1;BOOL wait=FALSE,reentered=FALSE;DWORD error,exit_code=0;WORD subsystem=0;
     WCHAR image[NTW16S_PATH_CAP];ntw16s_context context;
     STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION child={0};
@@ -46,7 +48,17 @@ int wmain(int argc,WCHAR **argv)
     if(!length || length>=NTW16S_PATH_CAP)return diagnostic(3,length?ERROR_FILENAME_EXCED_RANGE:GetLastError(),L"target resolution");
     error=ntw16s_validate_image_ex(image,IMAGE_FILE_MACHINE_AMD64,FALSE,&subsystem);
     if(error==ERROR_BAD_EXE_FORMAT)error=ntw16s_validate_image_ex(image,IMAGE_FILE_MACHINE_I386,FALSE,&subsystem);
-    if(error)return diagnostic(4,error,L"native target validation");
+    if(error){
+        if(error==ERROR_BAD_EXE_FORMAT && private_console && run16s_legacy_image(image)){
+            /* No target has been created. Choose one error channel, retaining
+             * the initial validation exit code even if Shell returns 1223. */
+            if(FreeConsole()){
+                run16s_system_error(image,next_argument(raw),ShellExecuteExW);
+                return 4;
+            }
+        }
+        return diagnostic(4,error,L"native target validation");
+    }
     /* Keep the parent shell blocked for interactive console targets. GUI
      * targets stay asynchronous unless --wait explicitly requests otherwise. */
     wait=wait || subsystem==IMAGE_SUBSYSTEM_WINDOWS_CUI;

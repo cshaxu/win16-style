@@ -509,9 +509,9 @@
       "path": "src/run16s-exe/main.c",
       "source": null,
       "source_blob": null,
-      "sha256": "cf662839fa2c473d9b3663eda52dda23b15c791f4d21c287a098af1e9e48b2a0",
+      "sha256": "7b7480998de3a392c82f789fc3fa8d450ea38e25d81bc8163fbd0b8b57ec9c48",
       "disposition": "authored",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T14 S2: remove legacy Shell retry; retain initial diagnostic and UAC",
+      "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -527,9 +527,9 @@
       "path": "src/run16s-exe/README.md",
       "source": null,
       "source_blob": null,
-      "sha256": "5fb2e368c8ff6eb16da4eaca331cb5cb362855c9902b8898375f213dd2d5f782",
+      "sha256": "ea47647f69ecf418c03a2bb9d29f9ef18b0d557ee44d3532ff8c988e52839db1",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T14 S1: describe actual Windows Shell legacy error path and explicit limits; T14 S2: remove legacy Shell retry; retain initial diagnostic and UAC",
+      "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -1161,6 +1161,42 @@
       "disposition": "authored",
       "review": "T14 S2 pure C native initial-rejection stderr/no-retry regression",
       "notice": "Project-authored C17, repository MIT"
+    },
+    {
+      "path": "src/run16s-exe/startup_error.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "sha256": "1623faa579edfbabac3fa6a58a5f0339983c507f116ad39bcabbb9868570cf1f",
+      "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes"
+    },
+    {
+      "path": "src/run16s-exe/startup_error.h",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "sha256": "0421db650da4f08f2e27e1ad059433ef465e8059bb61ff173431bac5f29bd83a",
+      "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes"
+    },
+    {
+      "path": "tests/run16s-exe/startup_error_unit.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "sha256": "9f54d8dd6af41c36269325b0259b56ed4483b08a11e21f3de472005f05856f41",
+      "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes"
+    },
+    {
+      "path": "tests/run16s-exe/startup_errors.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "sha256": "9dee61cce6f1824be1d2fdfcd283e5f5e201326ade05ac3b165ac4d94f6680d0",
+      "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes"
     }
   ]
 }

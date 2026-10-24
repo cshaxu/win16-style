@@ -2,9 +2,9 @@
 
 ## Current Work
 
-无活动任务包。M0 T14 S2已清理旧MZ/NE二次Shell尝试，完成24实际包、双发布、
-安装入口验证及P1实际远端复核；S2/T14收口，M0开放。首次诊断/UAC/样式保持。
-此前“首次看不到报错”的历史原因未复现，本轮不作已定位声明。
+M0 T14 S3已验证并双发布，待P1提交推送/实际远端复核，不提前关闭。
+已有共享/隐藏/无窗口控制台保留一次stderr；有窗口独占控制台走一次Windows系统UI。
+最终27实际包及已安装入口通过；标题/字体/菜单/滚动条与UAC源保持。
 
 ## Identifier State
 
@@ -12,18 +12,40 @@
 - Last allocated T: 14
 - Last allocated Td S: 10
 - Last delivery: M0 T14 S2 P2 (P1 f08c7da远端150输入/四产物、四删除路径404及八部署摘要通过；两登记scratch回收)
-- Open task: none；T14关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
+- Open task: T14 S3；T14按用户重开；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
+
+## M0 T14 S3 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Owner-Reopen；使用下一S3，不复用S2；T14版本固定0.14.0.0 |
+| Admission And Approval | 用户“行 你重开刚才那个s 进行这个改动”；永久提交推送及既定双发布授权 |
+| Objective | 自动区分共享/无控制台与有窗口独占临时控制台；前者保留stderr193退出4，后者仅请求一次Windows原生MZ/NE错误UI，不重复报错 |
+| Non-goals | 不自制弹窗/暂停；不改普通PE注入、UAC、renderer、资源、系统设置及兄弟仓库 |
+| Reference Baseline | c302f45，工作树干净；S1系统UI原型与S2初次stderr/Job原生回归可复用 |
+| Candidate Proposal | docs/proposals/run-dialog-launch.md；本S更新当前分流契约 |
+| Files And ABI Surface | run16s私有错误路由模块、main、CMake、纯C原生测试及包入口；无公开ABI和第五产物 |
+| Applicable Rules | EXECUTION/ARCHITECTURE/CODING/DOCUMENT及已读Task Reading Set；纯C17 GCC Ninja ccache |
+| Verification | 原生私有桌面：MZ/NE各测试真实新控制台、共享cmd、无控制台重定向；对照直接Shell类/标题、UI次数、stderr、退出码、精确映像与整个Job归零；双宽单元及27项FullIntegration实际包 |
+| Expected Markers | STARTUP ERRORS PASS；LEGACY REJECTION PASS；系统Shell对照UI恰好一次/无stderr，cmd一次193无UI，退出4 |
+| Asset Needs | 原图形及声明全保持；同批四文件发布assets根和O:/winnt/system32，八摘要核对 |
+| Reporting Requirements | 识别实测、负例、失败/跳过/边界、源码统计、双宽/包/发布/实际远端复核；可能仍有Console创建瞬间，不承诺消除系统控制台闪现 |
+| Stop Conditions | 不能证明真实控制台分类或系统UI唯一性则不发布；权限失败保留证据，不扩大权限 |
+| Exit Criteria | 探针和旧版负例通过；干净双宽/同批包/双发布/推送/实际远端复核；证据提炼后回收登记scratch |
+| Original Owner Request | Win+R错误一闪而过、上版两个错误；自动判断环境，不要求用户判断；本S实现条件路由 |
+| Similar-Issue Sweep | 搜索所有diagnostic/ShellExecute/193路径；限定旧MZ/NE分支，普通PE/740保持；scratch为build/t14-startup-errors、空的build/t14-s3-errors和build/t14-package（只含本S s3-*），退出前提炼安全清理，稳定.ninja/.ccache保留 |
 
 ## Technical Baseline
 
-0.14.0.0 / M0 T14 S2已验证/双发布及实际远端复核并收口；T14固定版本以Git/SHA区分S2。
-已删除旧MZ/NE二次Shell入口/模块和专用UI测试，首次main恢复97999c0字节。
-MZ/NE仅stderr193/退出4，无额外弹窗/暂停；UAC真实740分支及全部DLL/demo源保持。
-150输入独立冻结/双宽干净构建，实际包24/24，旧重试版被新回归检出。
-新回归覆盖MZ/NE、直接/真实cmd四场景、一次193、无额外UI、所有映像身份及整Job归零；
-系统conhost作为已识别OS宿主计入，不误判为目标重试。注册70项未全跑。
-八部署摘要一致，system32已安装启动器四场景及双宽ABI通过。此前用户未看到首次报错
-的历史原因未复现，不声称物理Win+R持久可见。见[清理记录](../history/M0-T14-S2-cleanup.md)。
+0.14.0.0 / T14 S3已验证并双发布；固定T14版本，由Git/SHA区分S3。
+154输入冻结、GCC16.1/Ninja/ccache干净双宽构建，27/27实际包253.77秒通过，
+双宽新单元/聚焦通过。MZ/NE系统Shell对照、独占/共享cmd/显式隐藏及无窗口共12路径；
+系统UI一次且stderr空，其他一次193无UI，退出4，精确映像/内核Job归零。
+S2无UI和S1双错误通道旧包均被检出；80份DLL/demo/UAC源逐字节保留。
+两处八摘要一致，已安装启动器12路径及双宽ABI3/31通过；原图形/声明/18表保留。
+73注册CTest未全部执行；物理Win+R/所有终端及历史两框来源不作已覆盖声明。
+新控制台创建瞬间仍可能短暂闪现，错误UI由Windows持有。详见
+[S3记录](../history/M0-T14-S3-console-errors.md)及[证据](../etc/evidence/console-error-routing.json)。
 
 ## Recent Closure
 
