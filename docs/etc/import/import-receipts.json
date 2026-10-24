@@ -374,9 +374,9 @@
       "path": "src/ntw16s-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "4f52dc2f1e0068c3f78fe62f9e57c33bd0bcac2e88414ead3ff8325bba35ac82",
+      "sha256": "ff4af7fb53f430b28dbaa1b3f2fb4e875129809ff3c2d438d42a1ff61b2be24c",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes",
       "notice": "Project-authored, repository MIT"
     },
     {
@@ -518,9 +518,9 @@
       "path": "src/run16s-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "0f4a8a64639ed110eba36098bc3ae39f346277e73e275fa6e4a9e9ae23900947",
+      "sha256": "ed026179edeaadd4c8375457346be3fb6ca1a9991aeec10732c32597805190af",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -545,9 +545,9 @@
       "path": "tests/run16s-exe/staging.c",
       "source": null,
       "source_blob": null,
-      "sha256": "94749c3984426fb8d328e264484c786884bef415b8c6d742361ef135b57777a7",
+      "sha256": "77a7d8f8d2ada2112e2dcffa64c74fba5dca34a2bac66824a6348119dc9ca435",
       "disposition": "authored",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -734,9 +734,9 @@
       "path": "src/demo-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "f032947613759680b6cf5352450e32c0b164e26e51959bb01315a74a07424b58",
+      "sha256": "8180b0a57fd4e19cdb4739e096924175215f8fe51ad7b7847cb31836ed816f7b",
       "disposition": "authored",
-      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20",
+      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes",
       "notice": "Project-authored source per frozen W16Style README; no third-party artwork"
     },
     {
@@ -1004,9 +1004,9 @@
       "path": "src/ntw16s-dll/injection/staging.c",
       "source": null,
       "source_blob": null,
-      "sha256": "472306781c4c1a94d17061dc6e36102ec689ade86a2d4a719a8851e142ba758a",
+      "sha256": "6b23fb48fc493412182e19e23e5bfbe0f4c0d8abfd426e6e240a8a7fadb06e7a",
       "disposition": "authored",
-      "review": "T6 S1 private C PE stager/OS helper or explicit native Windows manifest/import contract; see M0-T6-S1-package.md; final clean-package regression pending",
+      "review": "T6 S1 private C PE stager/OS helper or explicit native Windows manifest/import contract; see M0-T6-S1-package.md; final clean-package regression pending; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes",
       "notice": "Project-authored; project MIT LICENSE"
     },
     {
@@ -1107,6 +1107,24 @@
       "disposition": "authored",
       "review": "T8 actual candidate native DS_SETFONT dialog and app font/rect/metrics updates across awareness contexts and nominal sizes; no physical-input claim; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved",
       "notice": "Project-authored C17 native probe, MIT"
+    },
+    {
+      "path": "tests/integration/cmd_nested.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "09f92227c7e524000400f062746bc5146c6a8993c18ae521a0089b51dfdfad5f",
+      "disposition": "authored",
+      "review": "T9 S1 pure C real interactive nested cmd pipe driver, self-contained core and separately optional isolated installed-backend coverage; docs/proposals/vdm-propagation.md",
+      "notice": "Project-authored; project MIT LICENSE"
+    },
+    {
+      "path": "tests/integration/cmd_support.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "03550e20ed73fb34db7020839d970e2a7d4fc7e70a36d7e14ed432e053b08a1a",
+      "disposition": "authored",
+      "review": "T9 S1 pure C real interactive nested cmd pipe driver, self-contained core and separately optional isolated installed-backend coverage; docs/proposals/vdm-propagation.md",
+      "notice": "Project-authored; project MIT LICENSE"
     }
   ]
 }

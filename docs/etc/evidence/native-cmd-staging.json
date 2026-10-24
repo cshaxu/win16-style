@@ -1,0 +1,2761 @@
+{
+  "schema": 1,
+  "delivery": "M0 T9 S1 P1",
+  "privacy": "Actual absolute paths, PIDs, creators, authentication identities and full transcripts captured locally; public graph uses per-case process ordinals and filenames. Hashes identify raw evidence; no process identity is fabricated.",
+  "confirmed_root": "Readable relocated import descriptors outside SizeOfImage rejected by old staging with ERROR_BAD_EXE_FORMAT193; native PE cmd reproduction and old-source negative correlate. Not a claim about the earlier intermittent NE issue.",
+  "mandatory_cmd": [
+    {
+      "mode": 0,
+      "root_bits": 32,
+      "child_bits": 32,
+      "passed": true,
+      "marker_from_target_verified": true,
+      "child_exit": 37,
+      "outer_exit": 23,
+      "cleanup_verified": true,
+      "native_193_exit_observed": false,
+      "root_native_creation_error": 0,
+      "processes": [
+        {
+          "identity": "process-1",
+          "image": "run16s.exe",
+          "machine": "8664",
+          "sha256": "f56a7bc121f8d27f7dc320f52e4730db2024db4841457535731ab76625a3dcd4",
+          "modules": [],
+          "creator": "owned-driver-outside-inner-job",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-2",
+          "image": "conhost.exe",
+          "machine": "8664",
+          "sha256": "c86146188b78e484f32cc29e2331689659943b47689a85570342044f499938ac",
+          "modules": [],
+          "creator": "process-1",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        },
+        {
+          "identity": "process-3",
+          "image": "cmd.exe",
+          "machine": "014c",
+          "sha256": "4d4aa884b258ac42243f41292b3954340769ec36efdeea6b518a963c8c72891c",
+          "modules": [
+            {
+              "name": "ntw16s32.dll",
+              "sha256": "15faf53f25a76cebbb8a79650caf0deec12fd4f1267b6a218eced86ab6980649"
+            }
+          ],
+          "creator": "process-1",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-4",
+          "image": "rundll32.exe",
+          "machine": "014c",
+          "sha256": "ca3176c675bc1d39e8a77e984c6f63d54bded96101c30cd338730b7ddadae837",
+          "modules": [
+            {
+              "name": "ntw16s32.dll",
+              "sha256": "15faf53f25a76cebbb8a79650caf0deec12fd4f1267b6a218eced86ab6980649"
+            }
+          ],
+          "creator": "process-1",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 0,
+            "committed": 0,
+            "hooks": 0,
+            "propagation_initialized": false
+          },
+          "exit_or_STILL_ACTIVE": 0
+        },
+        {
+          "identity": "process-5",
+          "image": "cmd.exe",
+          "machine": "014c",
+          "sha256": "4d4aa884b258ac42243f41292b3954340769ec36efdeea6b518a963c8c72891c",
+          "modules": [
+            {
+              "name": "ntw16s32.dll",
+              "sha256": "15faf53f25a76cebbb8a79650caf0deec12fd4f1267b6a218eced86ab6980649"
+            }
+          ],
+          "creator": "process-3",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 37
+        }
+      ],
+      "raw_case_sha256": "3c4819a46c42e61142dedba2d4cc243072489d68ecf8bef33f1ad361054fe0c2",
+      "raw_transcript_sha256": "cb896e0f6338fa03c9623ebb1830607c2d370153fe30dfea7f0671417556e6b3"
+    },
+    {
+      "mode": 0,
+      "root_bits": 32,
+      "child_bits": 64,
+      "passed": true,
+      "marker_from_target_verified": true,
+      "child_exit": 37,
+      "outer_exit": 23,
+      "cleanup_verified": true,
+      "native_193_exit_observed": false,
+      "root_native_creation_error": 0,
+      "processes": [
+        {
+          "identity": "process-1",
+          "image": "run16s.exe",
+          "machine": "8664",
+          "sha256": "f56a7bc121f8d27f7dc320f52e4730db2024db4841457535731ab76625a3dcd4",
+          "modules": [],
+          "creator": "owned-driver-outside-inner-job",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-2",
+          "image": "conhost.exe",
+          "machine": "8664",
+          "sha256": "c86146188b78e484f32cc29e2331689659943b47689a85570342044f499938ac",
+          "modules": [],
+          "creator": "process-1",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        },
+        {
+          "identity": "process-3",
+          "image": "cmd.exe",
+          "machine": "014c",
+          "sha256": "4d4aa884b258ac42243f41292b3954340769ec36efdeea6b518a963c8c72891c",
+          "modules": [
+            {
+              "name": "ntw16s32.dll",
+              "sha256": "15faf53f25a76cebbb8a79650caf0deec12fd4f1267b6a218eced86ab6980649"
+            }
+          ],
+          "creator": "process-1",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-4",
+          "image": "rundll32.exe",
+          "machine": "014c",
+          "sha256": "ca3176c675bc1d39e8a77e984c6f63d54bded96101c30cd338730b7ddadae837",
+          "modules": [
+            {
+              "name": "ntw16s32.dll",
+              "sha256": "15faf53f25a76cebbb8a79650caf0deec12fd4f1267b6a218eced86ab6980649"
+            }
+          ],
+          "creator": "process-1",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 0,
+            "committed": 0,
+            "hooks": 0,
+            "propagation_initialized": false
+          },
+          "exit_or_STILL_ACTIVE": 0
+        },
+        {
+          "identity": "process-5",
+          "image": "cmd.exe",
+          "machine": "8664",
+          "sha256": "15cd209c995b7d3009c91ca40892d5b8f1fb162f3e5f10716642ea278e8e0d7b",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
+            }
+          ],
+          "creator": "process-3",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 37
+        },
+        {
+          "identity": "process-6",
+          "image": "rundll32.exe",
+          "machine": "8664",
+          "sha256": "dc41380d0c96adc5ce1a90ddac3239adce13656aba821a526580d05d6f3e0283",
+          "modules": [],
+          "creator": "process-3",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        }
+      ],
+      "raw_case_sha256": "8e629272789d919460f4a02cd3ac687292b2a0286e00a58e2d45b629c069cdc4",
+      "raw_transcript_sha256": "ccd184f48c2b327f9528569ccea59606a1f5232a53968f035b94c1ba76acf319"
+    },
+    {
+      "mode": 0,
+      "root_bits": 64,
+      "child_bits": 32,
+      "passed": true,
+      "marker_from_target_verified": true,
+      "child_exit": 37,
+      "outer_exit": 23,
+      "cleanup_verified": true,
+      "native_193_exit_observed": false,
+      "root_native_creation_error": 0,
+      "processes": [
+        {
+          "identity": "process-1",
+          "image": "run16s.exe",
+          "machine": "8664",
+          "sha256": "f56a7bc121f8d27f7dc320f52e4730db2024db4841457535731ab76625a3dcd4",
+          "modules": [],
+          "creator": "owned-driver-outside-inner-job",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-2",
+          "image": "conhost.exe",
+          "machine": "8664",
+          "sha256": "c86146188b78e484f32cc29e2331689659943b47689a85570342044f499938ac",
+          "modules": [],
+          "creator": "process-1",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        },
+        {
+          "identity": "process-3",
+          "image": "cmd.exe",
+          "machine": "8664",
+          "sha256": "15cd209c995b7d3009c91ca40892d5b8f1fb162f3e5f10716642ea278e8e0d7b",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
+            }
+          ],
+          "creator": "process-1",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-4",
+          "image": "cmd.exe",
+          "machine": "014c",
+          "sha256": "4d4aa884b258ac42243f41292b3954340769ec36efdeea6b518a963c8c72891c",
+          "modules": [
+            {
+              "name": "ntw16s32.dll",
+              "sha256": "15faf53f25a76cebbb8a79650caf0deec12fd4f1267b6a218eced86ab6980649"
+            }
+          ],
+          "creator": "process-3",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 37
+        },
+        {
+          "identity": "process-5",
+          "image": "rundll32.exe",
+          "machine": "014c",
+          "sha256": "ca3176c675bc1d39e8a77e984c6f63d54bded96101c30cd338730b7ddadae837",
+          "modules": [],
+          "creator": "process-3",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        }
+      ],
+      "raw_case_sha256": "5d28138ebcc925df745bdea902a8cf68e26d25d86bc551cd44084a5cc08a4783",
+      "raw_transcript_sha256": "40b37edfb89b5af0d4b65a44158793021f5b233f1de54f9a5b9a783b25649f66"
+    },
+    {
+      "mode": 0,
+      "root_bits": 64,
+      "child_bits": 64,
+      "passed": true,
+      "marker_from_target_verified": true,
+      "child_exit": 37,
+      "outer_exit": 23,
+      "cleanup_verified": true,
+      "native_193_exit_observed": false,
+      "root_native_creation_error": 0,
+      "processes": [
+        {
+          "identity": "process-1",
+          "image": "run16s.exe",
+          "machine": "8664",
+          "sha256": "f56a7bc121f8d27f7dc320f52e4730db2024db4841457535731ab76625a3dcd4",
+          "modules": [],
+          "creator": "owned-driver-outside-inner-job",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-2",
+          "image": "conhost.exe",
+          "machine": "8664",
+          "sha256": "c86146188b78e484f32cc29e2331689659943b47689a85570342044f499938ac",
+          "modules": [],
+          "creator": "process-1",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        },
+        {
+          "identity": "process-3",
+          "image": "cmd.exe",
+          "machine": "8664",
+          "sha256": "15cd209c995b7d3009c91ca40892d5b8f1fb162f3e5f10716642ea278e8e0d7b",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
+            }
+          ],
+          "creator": "process-1",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-4",
+          "image": "cmd.exe",
+          "machine": "8664",
+          "sha256": "15cd209c995b7d3009c91ca40892d5b8f1fb162f3e5f10716642ea278e8e0d7b",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
+            }
+          ],
+          "creator": "process-3",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 37
+        }
+      ],
+      "raw_case_sha256": "f59a7c6254d6139b89d15332d85dc9227ef4ab67f1a1325de4d5c44648f63db7",
+      "raw_transcript_sha256": "c8c467810f3167add487d634cdafc73cb8d488a8b85cf65806af5e0343cfff58"
+    }
+  ],
+  "optional_installed_backend": [
+    {
+      "mode": 1,
+      "root_bits": 32,
+      "child_bits": 32,
+      "passed": true,
+      "marker_from_target_verified": true,
+      "child_exit": 37,
+      "outer_exit": 23,
+      "cleanup_verified": true,
+      "native_193_exit_observed": false,
+      "root_native_creation_error": 0,
+      "processes": [
+        {
+          "identity": "process-1",
+          "image": "run16.exe",
+          "machine": "8664",
+          "sha256": "e7ac4e89e9d1e88d57d7cea1a1ad239deead1537a58c8537820bb504c1739121",
+          "modules": [],
+          "creator": "owned-driver-outside-inner-job",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-2",
+          "image": "ntsrv.exe",
+          "machine": "8664",
+          "sha256": "7adc57e6f4c1b1a3058618994664d43dcd77895079bd3b8bc5bc9a1ca6f77168",
+          "modules": [],
+          "creator": "process-1",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-3",
+          "image": "ntcon.exe",
+          "machine": "8664",
+          "sha256": "e2713f6c382f58389ba158f14fa1997434cc94f135a8d0f5d5ecdcbffe72fa77",
+          "modules": [],
+          "creator": "process-2",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-4",
+          "image": "ntvwm.exe",
+          "machine": "8664",
+          "sha256": "3ed02191359f9f0ba4ead6445b5e59bb1b5b02227854f408b19fa957635b1bd8",
+          "modules": [],
+          "creator": "process-2",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-5",
+          "image": "conhost.exe",
+          "machine": "8664",
+          "sha256": "c86146188b78e484f32cc29e2331689659943b47689a85570342044f499938ac",
+          "modules": [],
+          "creator": "process-4",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-6",
+          "image": "cmd.exe",
+          "machine": "014c",
+          "sha256": "4d4aa884b258ac42243f41292b3954340769ec36efdeea6b518a963c8c72891c",
+          "modules": [
+            {
+              "name": "nthook32.dll",
+              "sha256": "eb02654a0ecc3d6ca2f0d7f8e7b2b63b5cda72d59e664560b162f48810d7a2a2"
+            }
+          ],
+          "creator": "process-4",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-7",
+          "image": "rundll32.exe",
+          "machine": "014c",
+          "sha256": "ca3176c675bc1d39e8a77e984c6f63d54bded96101c30cd338730b7ddadae837",
+          "modules": [],
+          "creator": "process-4",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        },
+        {
+          "identity": "process-8",
+          "image": "cmd.exe",
+          "machine": "014c",
+          "sha256": "4d4aa884b258ac42243f41292b3954340769ec36efdeea6b518a963c8c72891c",
+          "modules": [
+            {
+              "name": "nthook32.dll",
+              "sha256": "eb02654a0ecc3d6ca2f0d7f8e7b2b63b5cda72d59e664560b162f48810d7a2a2"
+            }
+          ],
+          "creator": "process-6",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 37
+        }
+      ],
+      "raw_case_sha256": "7a643c23fdb5c5f1e35f97c975769f837f6a4a1d8c9faec4425a721520a42227",
+      "raw_transcript_sha256": "c427f3bb6e983b46385990993df416d1cc6634fe2b765db44e42063a03198757"
+    },
+    {
+      "mode": 1,
+      "root_bits": 32,
+      "child_bits": 64,
+      "passed": true,
+      "marker_from_target_verified": true,
+      "child_exit": 37,
+      "outer_exit": 23,
+      "cleanup_verified": true,
+      "native_193_exit_observed": false,
+      "root_native_creation_error": 0,
+      "processes": [
+        {
+          "identity": "process-1",
+          "image": "run16.exe",
+          "machine": "8664",
+          "sha256": "e7ac4e89e9d1e88d57d7cea1a1ad239deead1537a58c8537820bb504c1739121",
+          "modules": [],
+          "creator": "owned-driver-outside-inner-job",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-2",
+          "image": "ntsrv.exe",
+          "machine": "8664",
+          "sha256": "7adc57e6f4c1b1a3058618994664d43dcd77895079bd3b8bc5bc9a1ca6f77168",
+          "modules": [],
+          "creator": "process-1",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-3",
+          "image": "ntcon.exe",
+          "machine": "8664",
+          "sha256": "e2713f6c382f58389ba158f14fa1997434cc94f135a8d0f5d5ecdcbffe72fa77",
+          "modules": [],
+          "creator": "process-2",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-4",
+          "image": "ntvwm.exe",
+          "machine": "8664",
+          "sha256": "3ed02191359f9f0ba4ead6445b5e59bb1b5b02227854f408b19fa957635b1bd8",
+          "modules": [],
+          "creator": "process-2",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-5",
+          "image": "conhost.exe",
+          "machine": "8664",
+          "sha256": "c86146188b78e484f32cc29e2331689659943b47689a85570342044f499938ac",
+          "modules": [],
+          "creator": "process-4",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-6",
+          "image": "cmd.exe",
+          "machine": "014c",
+          "sha256": "4d4aa884b258ac42243f41292b3954340769ec36efdeea6b518a963c8c72891c",
+          "modules": [
+            {
+              "name": "nthook32.dll",
+              "sha256": "eb02654a0ecc3d6ca2f0d7f8e7b2b63b5cda72d59e664560b162f48810d7a2a2"
+            }
+          ],
+          "creator": "process-4",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-7",
+          "image": "rundll32.exe",
+          "machine": "014c",
+          "sha256": "ca3176c675bc1d39e8a77e984c6f63d54bded96101c30cd338730b7ddadae837",
+          "modules": [],
+          "creator": "process-4",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        },
+        {
+          "identity": "process-8",
+          "image": "cmd.exe",
+          "machine": "8664",
+          "sha256": "15cd209c995b7d3009c91ca40892d5b8f1fb162f3e5f10716642ea278e8e0d7b",
+          "modules": [
+            {
+              "name": "nthook64.dll",
+              "sha256": "9517a1b412d304e366a2c9b52d0de7f32375474e92d0bc39999a02106456ffec"
+            }
+          ],
+          "creator": "process-6",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 37
+        },
+        {
+          "identity": "process-9",
+          "image": "rundll32.exe",
+          "machine": "8664",
+          "sha256": "dc41380d0c96adc5ce1a90ddac3239adce13656aba821a526580d05d6f3e0283",
+          "modules": [
+            {
+              "name": "nthook64.dll",
+              "sha256": "9517a1b412d304e366a2c9b52d0de7f32375474e92d0bc39999a02106456ffec"
+            }
+          ],
+          "creator": "process-6",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        }
+      ],
+      "raw_case_sha256": "2c75eeffa669d3464fcd8022d4115b37af190c75d07317fd3439213b6a7a7d14",
+      "raw_transcript_sha256": "c5fb471ff18b44bf0449a765b4ac81cf80ad4bae599d221fa3b7a099082c6e38"
+    },
+    {
+      "mode": 1,
+      "root_bits": 64,
+      "child_bits": 32,
+      "passed": true,
+      "marker_from_target_verified": true,
+      "child_exit": 37,
+      "outer_exit": 23,
+      "cleanup_verified": true,
+      "native_193_exit_observed": false,
+      "root_native_creation_error": 0,
+      "processes": [
+        {
+          "identity": "process-1",
+          "image": "run16.exe",
+          "machine": "8664",
+          "sha256": "e7ac4e89e9d1e88d57d7cea1a1ad239deead1537a58c8537820bb504c1739121",
+          "modules": [],
+          "creator": "owned-driver-outside-inner-job",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-2",
+          "image": "ntsrv.exe",
+          "machine": "8664",
+          "sha256": "7adc57e6f4c1b1a3058618994664d43dcd77895079bd3b8bc5bc9a1ca6f77168",
+          "modules": [],
+          "creator": "process-1",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-3",
+          "image": "ntcon.exe",
+          "machine": "8664",
+          "sha256": "e2713f6c382f58389ba158f14fa1997434cc94f135a8d0f5d5ecdcbffe72fa77",
+          "modules": [],
+          "creator": "process-2",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-4",
+          "image": "ntvwm.exe",
+          "machine": "8664",
+          "sha256": "3ed02191359f9f0ba4ead6445b5e59bb1b5b02227854f408b19fa957635b1bd8",
+          "modules": [],
+          "creator": "process-2",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-5",
+          "image": "conhost.exe",
+          "machine": "8664",
+          "sha256": "c86146188b78e484f32cc29e2331689659943b47689a85570342044f499938ac",
+          "modules": [],
+          "creator": "process-4",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-6",
+          "image": "cmd.exe",
+          "machine": "8664",
+          "sha256": "15cd209c995b7d3009c91ca40892d5b8f1fb162f3e5f10716642ea278e8e0d7b",
+          "modules": [
+            {
+              "name": "nthook64.dll",
+              "sha256": "9517a1b412d304e366a2c9b52d0de7f32375474e92d0bc39999a02106456ffec"
+            }
+          ],
+          "creator": "process-4",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-7",
+          "image": "cmd.exe",
+          "machine": "014c",
+          "sha256": "4d4aa884b258ac42243f41292b3954340769ec36efdeea6b518a963c8c72891c",
+          "modules": [
+            {
+              "name": "nthook32.dll",
+              "sha256": "eb02654a0ecc3d6ca2f0d7f8e7b2b63b5cda72d59e664560b162f48810d7a2a2"
+            }
+          ],
+          "creator": "process-6",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 37
+        },
+        {
+          "identity": "process-8",
+          "image": "rundll32.exe",
+          "machine": "014c",
+          "sha256": "ca3176c675bc1d39e8a77e984c6f63d54bded96101c30cd338730b7ddadae837",
+          "modules": [
+            {
+              "name": "nthook32.dll",
+              "sha256": "eb02654a0ecc3d6ca2f0d7f8e7b2b63b5cda72d59e664560b162f48810d7a2a2"
+            }
+          ],
+          "creator": "process-6",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        }
+      ],
+      "raw_case_sha256": "bed1159a077da91f89e068deff327d74dce356862d013bed403a0280277c6066",
+      "raw_transcript_sha256": "7de61979b51cd810d149885bba02493e056351a1c0e3f00afe9c31d4db4ca81d"
+    },
+    {
+      "mode": 1,
+      "root_bits": 64,
+      "child_bits": 64,
+      "passed": true,
+      "marker_from_target_verified": true,
+      "child_exit": 37,
+      "outer_exit": 23,
+      "cleanup_verified": true,
+      "native_193_exit_observed": false,
+      "root_native_creation_error": 0,
+      "processes": [
+        {
+          "identity": "process-1",
+          "image": "run16.exe",
+          "machine": "8664",
+          "sha256": "e7ac4e89e9d1e88d57d7cea1a1ad239deead1537a58c8537820bb504c1739121",
+          "modules": [],
+          "creator": "owned-driver-outside-inner-job",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-2",
+          "image": "ntsrv.exe",
+          "machine": "8664",
+          "sha256": "7adc57e6f4c1b1a3058618994664d43dcd77895079bd3b8bc5bc9a1ca6f77168",
+          "modules": [],
+          "creator": "process-1",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-3",
+          "image": "ntcon.exe",
+          "machine": "8664",
+          "sha256": "e2713f6c382f58389ba158f14fa1997434cc94f135a8d0f5d5ecdcbffe72fa77",
+          "modules": [],
+          "creator": "process-2",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-4",
+          "image": "ntvwm.exe",
+          "machine": "8664",
+          "sha256": "3ed02191359f9f0ba4ead6445b5e59bb1b5b02227854f408b19fa957635b1bd8",
+          "modules": [],
+          "creator": "process-2",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-5",
+          "image": "conhost.exe",
+          "machine": "8664",
+          "sha256": "c86146188b78e484f32cc29e2331689659943b47689a85570342044f499938ac",
+          "modules": [],
+          "creator": "process-4",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-6",
+          "image": "cmd.exe",
+          "machine": "8664",
+          "sha256": "15cd209c995b7d3009c91ca40892d5b8f1fb162f3e5f10716642ea278e8e0d7b",
+          "modules": [
+            {
+              "name": "nthook64.dll",
+              "sha256": "9517a1b412d304e366a2c9b52d0de7f32375474e92d0bc39999a02106456ffec"
+            }
+          ],
+          "creator": "process-4",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-7",
+          "image": "cmd.exe",
+          "machine": "8664",
+          "sha256": "15cd209c995b7d3009c91ca40892d5b8f1fb162f3e5f10716642ea278e8e0d7b",
+          "modules": [
+            {
+              "name": "nthook64.dll",
+              "sha256": "9517a1b412d304e366a2c9b52d0de7f32375474e92d0bc39999a02106456ffec"
+            }
+          ],
+          "creator": "process-6",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 37
+        }
+      ],
+      "raw_case_sha256": "58009ead62860df6b3623f9e3f8cb7793adb785db9c21bfbed9e179a93bda321",
+      "raw_transcript_sha256": "3d300d7ca4c16543ca793625c008c47e284c6be5043e3b76690235e5dcaa3dc9"
+    },
+    {
+      "mode": 2,
+      "root_bits": 32,
+      "child_bits": 32,
+      "passed": true,
+      "marker_from_target_verified": true,
+      "child_exit": 37,
+      "outer_exit": 23,
+      "cleanup_verified": true,
+      "native_193_exit_observed": false,
+      "root_native_creation_error": 0,
+      "processes": [
+        {
+          "identity": "process-1",
+          "image": "run16s.exe",
+          "machine": "8664",
+          "sha256": "f56a7bc121f8d27f7dc320f52e4730db2024db4841457535731ab76625a3dcd4",
+          "modules": [],
+          "creator": "owned-driver-outside-inner-job",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-2",
+          "image": "run16.exe",
+          "machine": "8664",
+          "sha256": "e7ac4e89e9d1e88d57d7cea1a1ad239deead1537a58c8537820bb504c1739121",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
+            }
+          ],
+          "creator": "process-1",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-3",
+          "image": "ntsrv.exe",
+          "machine": "8664",
+          "sha256": "7adc57e6f4c1b1a3058618994664d43dcd77895079bd3b8bc5bc9a1ca6f77168",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
+            }
+          ],
+          "creator": "process-2",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-4",
+          "image": "ntcon.exe",
+          "machine": "8664",
+          "sha256": "e2713f6c382f58389ba158f14fa1997434cc94f135a8d0f5d5ecdcbffe72fa77",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
+            }
+          ],
+          "creator": "process-3",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-5",
+          "image": "ntvwm.exe",
+          "machine": "8664",
+          "sha256": "3ed02191359f9f0ba4ead6445b5e59bb1b5b02227854f408b19fa957635b1bd8",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
+            }
+          ],
+          "creator": "process-3",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-6",
+          "image": "conhost.exe",
+          "machine": "8664",
+          "sha256": "c86146188b78e484f32cc29e2331689659943b47689a85570342044f499938ac",
+          "modules": [],
+          "creator": "process-5",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-7",
+          "image": "cmd.exe",
+          "machine": "014c",
+          "sha256": "4d4aa884b258ac42243f41292b3954340769ec36efdeea6b518a963c8c72891c",
+          "modules": [
+            {
+              "name": "nthook32.dll",
+              "sha256": "eb02654a0ecc3d6ca2f0d7f8e7b2b63b5cda72d59e664560b162f48810d7a2a2"
+            },
+            {
+              "name": "ntw16s32.dll",
+              "sha256": "15faf53f25a76cebbb8a79650caf0deec12fd4f1267b6a218eced86ab6980649"
+            }
+          ],
+          "creator": "process-5",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-8",
+          "image": "rundll32.exe",
+          "machine": "014c",
+          "sha256": "ca3176c675bc1d39e8a77e984c6f63d54bded96101c30cd338730b7ddadae837",
+          "modules": [],
+          "creator": "process-5",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        },
+        {
+          "identity": "process-9",
+          "image": "rundll32.exe",
+          "machine": "014c",
+          "sha256": "ca3176c675bc1d39e8a77e984c6f63d54bded96101c30cd338730b7ddadae837",
+          "modules": [
+            {
+              "name": "ntw16s32.dll",
+              "sha256": "15faf53f25a76cebbb8a79650caf0deec12fd4f1267b6a218eced86ab6980649"
+            }
+          ],
+          "creator": "process-5",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        },
+        {
+          "identity": "process-10",
+          "image": "rundll32.exe",
+          "machine": "014c",
+          "sha256": "ca3176c675bc1d39e8a77e984c6f63d54bded96101c30cd338730b7ddadae837",
+          "modules": [],
+          "creator": "process-5",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        },
+        {
+          "identity": "process-11",
+          "image": "cmd.exe",
+          "machine": "014c",
+          "sha256": "4d4aa884b258ac42243f41292b3954340769ec36efdeea6b518a963c8c72891c",
+          "modules": [
+            {
+              "name": "ntw16s32.dll",
+              "sha256": "15faf53f25a76cebbb8a79650caf0deec12fd4f1267b6a218eced86ab6980649"
+            },
+            {
+              "name": "nthook32.dll",
+              "sha256": "eb02654a0ecc3d6ca2f0d7f8e7b2b63b5cda72d59e664560b162f48810d7a2a2"
+            }
+          ],
+          "creator": "process-7",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 37
+        }
+      ],
+      "raw_case_sha256": "2c4e10ff0e2c49e5810a00ceb2f608fb53480fb53cd0fd25ed2006b09bedce5c",
+      "raw_transcript_sha256": "4d3322706f9ad18fd6bf427895a54821bca4e2fc68611db8e334f7fdbadd6675"
+    },
+    {
+      "mode": 2,
+      "root_bits": 32,
+      "child_bits": 64,
+      "passed": true,
+      "marker_from_target_verified": true,
+      "child_exit": 37,
+      "outer_exit": 23,
+      "cleanup_verified": true,
+      "native_193_exit_observed": false,
+      "root_native_creation_error": 0,
+      "processes": [
+        {
+          "identity": "process-1",
+          "image": "run16s.exe",
+          "machine": "8664",
+          "sha256": "f56a7bc121f8d27f7dc320f52e4730db2024db4841457535731ab76625a3dcd4",
+          "modules": [],
+          "creator": "owned-driver-outside-inner-job",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-2",
+          "image": "run16.exe",
+          "machine": "8664",
+          "sha256": "e7ac4e89e9d1e88d57d7cea1a1ad239deead1537a58c8537820bb504c1739121",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
+            }
+          ],
+          "creator": "process-1",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-3",
+          "image": "ntsrv.exe",
+          "machine": "8664",
+          "sha256": "7adc57e6f4c1b1a3058618994664d43dcd77895079bd3b8bc5bc9a1ca6f77168",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
+            }
+          ],
+          "creator": "process-2",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-4",
+          "image": "ntcon.exe",
+          "machine": "8664",
+          "sha256": "e2713f6c382f58389ba158f14fa1997434cc94f135a8d0f5d5ecdcbffe72fa77",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
+            }
+          ],
+          "creator": "process-3",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-5",
+          "image": "ntvwm.exe",
+          "machine": "8664",
+          "sha256": "3ed02191359f9f0ba4ead6445b5e59bb1b5b02227854f408b19fa957635b1bd8",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
+            }
+          ],
+          "creator": "process-3",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-6",
+          "image": "conhost.exe",
+          "machine": "8664",
+          "sha256": "c86146188b78e484f32cc29e2331689659943b47689a85570342044f499938ac",
+          "modules": [],
+          "creator": "process-5",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-7",
+          "image": "cmd.exe",
+          "machine": "014c",
+          "sha256": "4d4aa884b258ac42243f41292b3954340769ec36efdeea6b518a963c8c72891c",
+          "modules": [
+            {
+              "name": "nthook32.dll",
+              "sha256": "eb02654a0ecc3d6ca2f0d7f8e7b2b63b5cda72d59e664560b162f48810d7a2a2"
+            },
+            {
+              "name": "ntw16s32.dll",
+              "sha256": "15faf53f25a76cebbb8a79650caf0deec12fd4f1267b6a218eced86ab6980649"
+            }
+          ],
+          "creator": "process-5",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-8",
+          "image": "rundll32.exe",
+          "machine": "014c",
+          "sha256": "ca3176c675bc1d39e8a77e984c6f63d54bded96101c30cd338730b7ddadae837",
+          "modules": [],
+          "creator": "process-5",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        },
+        {
+          "identity": "process-9",
+          "image": "rundll32.exe",
+          "machine": "014c",
+          "sha256": "ca3176c675bc1d39e8a77e984c6f63d54bded96101c30cd338730b7ddadae837",
+          "modules": [
+            {
+              "name": "ntw16s32.dll",
+              "sha256": "15faf53f25a76cebbb8a79650caf0deec12fd4f1267b6a218eced86ab6980649"
+            },
+            {
+              "name": "nthook32.dll",
+              "sha256": "eb02654a0ecc3d6ca2f0d7f8e7b2b63b5cda72d59e664560b162f48810d7a2a2"
+            }
+          ],
+          "creator": "process-5",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        },
+        {
+          "identity": "process-10",
+          "image": "rundll32.exe",
+          "machine": "014c",
+          "sha256": "ca3176c675bc1d39e8a77e984c6f63d54bded96101c30cd338730b7ddadae837",
+          "modules": [],
+          "creator": "process-5",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        },
+        {
+          "identity": "process-11",
+          "image": "cmd.exe",
+          "machine": "8664",
+          "sha256": "15cd209c995b7d3009c91ca40892d5b8f1fb162f3e5f10716642ea278e8e0d7b",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
+            },
+            {
+              "name": "nthook64.dll",
+              "sha256": "9517a1b412d304e366a2c9b52d0de7f32375474e92d0bc39999a02106456ffec"
+            }
+          ],
+          "creator": "process-7",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 37
+        },
+        {
+          "identity": "process-12",
+          "image": "rundll32.exe",
+          "machine": "8664",
+          "sha256": "dc41380d0c96adc5ce1a90ddac3239adce13656aba821a526580d05d6f3e0283",
+          "modules": [
+            {
+              "name": "nthook64.dll",
+              "sha256": "9517a1b412d304e366a2c9b52d0de7f32375474e92d0bc39999a02106456ffec"
+            }
+          ],
+          "creator": "process-7",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        }
+      ],
+      "raw_case_sha256": "c0d839f158864492614b224c599f3d15b51aaa005f6088dbc40f5357d47be705",
+      "raw_transcript_sha256": "260c8dcc29ce3213125b902a212e9f18e1bac2b91fc8669a06b4d728b7cd438e"
+    },
+    {
+      "mode": 2,
+      "root_bits": 64,
+      "child_bits": 32,
+      "passed": true,
+      "marker_from_target_verified": true,
+      "child_exit": 37,
+      "outer_exit": 23,
+      "cleanup_verified": true,
+      "native_193_exit_observed": false,
+      "root_native_creation_error": 0,
+      "processes": [
+        {
+          "identity": "process-1",
+          "image": "run16s.exe",
+          "machine": "8664",
+          "sha256": "f56a7bc121f8d27f7dc320f52e4730db2024db4841457535731ab76625a3dcd4",
+          "modules": [],
+          "creator": "owned-driver-outside-inner-job",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-2",
+          "image": "run16.exe",
+          "machine": "8664",
+          "sha256": "e7ac4e89e9d1e88d57d7cea1a1ad239deead1537a58c8537820bb504c1739121",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
+            }
+          ],
+          "creator": "process-1",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-3",
+          "image": "ntsrv.exe",
+          "machine": "8664",
+          "sha256": "7adc57e6f4c1b1a3058618994664d43dcd77895079bd3b8bc5bc9a1ca6f77168",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
+            }
+          ],
+          "creator": "process-2",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-4",
+          "image": "ntcon.exe",
+          "machine": "8664",
+          "sha256": "e2713f6c382f58389ba158f14fa1997434cc94f135a8d0f5d5ecdcbffe72fa77",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
+            }
+          ],
+          "creator": "process-3",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-5",
+          "image": "ntvwm.exe",
+          "machine": "8664",
+          "sha256": "3ed02191359f9f0ba4ead6445b5e59bb1b5b02227854f408b19fa957635b1bd8",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
+            }
+          ],
+          "creator": "process-3",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-6",
+          "image": "conhost.exe",
+          "machine": "8664",
+          "sha256": "c86146188b78e484f32cc29e2331689659943b47689a85570342044f499938ac",
+          "modules": [],
+          "creator": "process-5",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-7",
+          "image": "cmd.exe",
+          "machine": "8664",
+          "sha256": "15cd209c995b7d3009c91ca40892d5b8f1fb162f3e5f10716642ea278e8e0d7b",
+          "modules": [
+            {
+              "name": "nthook64.dll",
+              "sha256": "9517a1b412d304e366a2c9b52d0de7f32375474e92d0bc39999a02106456ffec"
+            },
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
+            }
+          ],
+          "creator": "process-5",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-8",
+          "image": "cmd.exe",
+          "machine": "014c",
+          "sha256": "4d4aa884b258ac42243f41292b3954340769ec36efdeea6b518a963c8c72891c",
+          "modules": [
+            {
+              "name": "ntw16s32.dll",
+              "sha256": "15faf53f25a76cebbb8a79650caf0deec12fd4f1267b6a218eced86ab6980649"
+            },
+            {
+              "name": "nthook32.dll",
+              "sha256": "eb02654a0ecc3d6ca2f0d7f8e7b2b63b5cda72d59e664560b162f48810d7a2a2"
+            }
+          ],
+          "creator": "process-7",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 37
+        },
+        {
+          "identity": "process-9",
+          "image": "rundll32.exe",
+          "machine": "014c",
+          "sha256": "ca3176c675bc1d39e8a77e984c6f63d54bded96101c30cd338730b7ddadae837",
+          "modules": [
+            {
+              "name": "nthook32.dll",
+              "sha256": "eb02654a0ecc3d6ca2f0d7f8e7b2b63b5cda72d59e664560b162f48810d7a2a2"
+            },
+            {
+              "name": "ntw16s32.dll",
+              "sha256": "15faf53f25a76cebbb8a79650caf0deec12fd4f1267b6a218eced86ab6980649"
+            }
+          ],
+          "creator": "process-7",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 0,
+            "committed": 0,
+            "hooks": 0,
+            "propagation_initialized": false
+          },
+          "exit_or_STILL_ACTIVE": 0
+        },
+        {
+          "identity": "process-10",
+          "image": "rundll32.exe",
+          "machine": "014c",
+          "sha256": "ca3176c675bc1d39e8a77e984c6f63d54bded96101c30cd338730b7ddadae837",
+          "modules": [
+            {
+              "name": "nthook32.dll",
+              "sha256": "eb02654a0ecc3d6ca2f0d7f8e7b2b63b5cda72d59e664560b162f48810d7a2a2"
+            }
+          ],
+          "creator": "process-7",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        }
+      ],
+      "raw_case_sha256": "4f8909d0c6cd2b1f36ff792f750bdb8f55f99d4ff6b2a838918d8dfd9bb45843",
+      "raw_transcript_sha256": "10781baed0537003033afc8fbe4077cb264a411fb76f62773393b95d4435ae98"
+    },
+    {
+      "mode": 2,
+      "root_bits": 64,
+      "child_bits": 64,
+      "passed": true,
+      "marker_from_target_verified": true,
+      "child_exit": 37,
+      "outer_exit": 23,
+      "cleanup_verified": true,
+      "native_193_exit_observed": false,
+      "root_native_creation_error": 0,
+      "processes": [
+        {
+          "identity": "process-1",
+          "image": "run16s.exe",
+          "machine": "8664",
+          "sha256": "f56a7bc121f8d27f7dc320f52e4730db2024db4841457535731ab76625a3dcd4",
+          "modules": [],
+          "creator": "owned-driver-outside-inner-job",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-2",
+          "image": "run16.exe",
+          "machine": "8664",
+          "sha256": "e7ac4e89e9d1e88d57d7cea1a1ad239deead1537a58c8537820bb504c1739121",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
+            }
+          ],
+          "creator": "process-1",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-3",
+          "image": "ntsrv.exe",
+          "machine": "8664",
+          "sha256": "7adc57e6f4c1b1a3058618994664d43dcd77895079bd3b8bc5bc9a1ca6f77168",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
+            }
+          ],
+          "creator": "process-2",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-4",
+          "image": "ntcon.exe",
+          "machine": "8664",
+          "sha256": "e2713f6c382f58389ba158f14fa1997434cc94f135a8d0f5d5ecdcbffe72fa77",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
+            }
+          ],
+          "creator": "process-3",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-5",
+          "image": "ntvwm.exe",
+          "machine": "8664",
+          "sha256": "3ed02191359f9f0ba4ead6445b5e59bb1b5b02227854f408b19fa957635b1bd8",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
+            }
+          ],
+          "creator": "process-3",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-6",
+          "image": "conhost.exe",
+          "machine": "8664",
+          "sha256": "c86146188b78e484f32cc29e2331689659943b47689a85570342044f499938ac",
+          "modules": [],
+          "creator": "process-5",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-7",
+          "image": "cmd.exe",
+          "machine": "8664",
+          "sha256": "15cd209c995b7d3009c91ca40892d5b8f1fb162f3e5f10716642ea278e8e0d7b",
+          "modules": [
+            {
+              "name": "nthook64.dll",
+              "sha256": "9517a1b412d304e366a2c9b52d0de7f32375474e92d0bc39999a02106456ffec"
+            },
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
+            }
+          ],
+          "creator": "process-5",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-8",
+          "image": "cmd.exe",
+          "machine": "8664",
+          "sha256": "15cd209c995b7d3009c91ca40892d5b8f1fb162f3e5f10716642ea278e8e0d7b",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
+            },
+            {
+              "name": "nthook64.dll",
+              "sha256": "9517a1b412d304e366a2c9b52d0de7f32375474e92d0bc39999a02106456ffec"
+            }
+          ],
+          "creator": "process-7",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 37
+        }
+      ],
+      "raw_case_sha256": "64db9a1d78e4b16c3eb7cca4835b9e84390881f8a74b76721b03a5a7dc239fcb",
+      "raw_transcript_sha256": "50a2cc4c23ff9aad2d1b549f538d53cb23d85056f01ae0d9fb96605336d28855"
+    }
+  ],
+  "old_package_negative": [
+    {
+      "mode": 1,
+      "root_bits": 32,
+      "child_bits": 32,
+      "passed": true,
+      "marker_from_target_verified": true,
+      "child_exit": 37,
+      "outer_exit": 23,
+      "cleanup_verified": true,
+      "native_193_exit_observed": false,
+      "root_native_creation_error": 0,
+      "processes": [
+        {
+          "identity": "process-1",
+          "image": "run16.exe",
+          "machine": "8664",
+          "sha256": "e7ac4e89e9d1e88d57d7cea1a1ad239deead1537a58c8537820bb504c1739121",
+          "modules": [],
+          "creator": "owned-driver-outside-inner-job",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-2",
+          "image": "ntsrv.exe",
+          "machine": "8664",
+          "sha256": "7adc57e6f4c1b1a3058618994664d43dcd77895079bd3b8bc5bc9a1ca6f77168",
+          "modules": [],
+          "creator": "process-1",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-3",
+          "image": "ntcon.exe",
+          "machine": "8664",
+          "sha256": "e2713f6c382f58389ba158f14fa1997434cc94f135a8d0f5d5ecdcbffe72fa77",
+          "modules": [],
+          "creator": "process-2",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-4",
+          "image": "ntvwm.exe",
+          "machine": "8664",
+          "sha256": "3ed02191359f9f0ba4ead6445b5e59bb1b5b02227854f408b19fa957635b1bd8",
+          "modules": [],
+          "creator": "process-2",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-5",
+          "image": "conhost.exe",
+          "machine": "8664",
+          "sha256": "c86146188b78e484f32cc29e2331689659943b47689a85570342044f499938ac",
+          "modules": [],
+          "creator": "process-4",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-6",
+          "image": "cmd.exe",
+          "machine": "014c",
+          "sha256": "4d4aa884b258ac42243f41292b3954340769ec36efdeea6b518a963c8c72891c",
+          "modules": [
+            {
+              "name": "nthook32.dll",
+              "sha256": "eb02654a0ecc3d6ca2f0d7f8e7b2b63b5cda72d59e664560b162f48810d7a2a2"
+            }
+          ],
+          "creator": "process-4",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-7",
+          "image": "cmd.exe",
+          "machine": "014c",
+          "sha256": "4d4aa884b258ac42243f41292b3954340769ec36efdeea6b518a963c8c72891c",
+          "modules": [
+            {
+              "name": "nthook32.dll",
+              "sha256": "eb02654a0ecc3d6ca2f0d7f8e7b2b63b5cda72d59e664560b162f48810d7a2a2"
+            }
+          ],
+          "creator": "process-6",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 37
+        }
+      ],
+      "raw_case_sha256": "d5e9b4eb46d943c63aba8d9ca80a704fe807ce4087f99931345e783883357f68",
+      "raw_transcript_sha256": "59cdbd4a4d6b301cf280e7ee4d16a824f3e0afb11367dace0b6f22404569f243"
+    },
+    {
+      "mode": 1,
+      "root_bits": 32,
+      "child_bits": 64,
+      "passed": true,
+      "marker_from_target_verified": true,
+      "child_exit": 37,
+      "outer_exit": 23,
+      "cleanup_verified": true,
+      "native_193_exit_observed": false,
+      "root_native_creation_error": 0,
+      "processes": [
+        {
+          "identity": "process-1",
+          "image": "run16.exe",
+          "machine": "8664",
+          "sha256": "e7ac4e89e9d1e88d57d7cea1a1ad239deead1537a58c8537820bb504c1739121",
+          "modules": [],
+          "creator": "owned-driver-outside-inner-job",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-2",
+          "image": "ntsrv.exe",
+          "machine": "8664",
+          "sha256": "7adc57e6f4c1b1a3058618994664d43dcd77895079bd3b8bc5bc9a1ca6f77168",
+          "modules": [],
+          "creator": "process-1",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-3",
+          "image": "ntcon.exe",
+          "machine": "8664",
+          "sha256": "e2713f6c382f58389ba158f14fa1997434cc94f135a8d0f5d5ecdcbffe72fa77",
+          "modules": [],
+          "creator": "process-2",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-4",
+          "image": "ntvwm.exe",
+          "machine": "8664",
+          "sha256": "3ed02191359f9f0ba4ead6445b5e59bb1b5b02227854f408b19fa957635b1bd8",
+          "modules": [],
+          "creator": "process-2",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-5",
+          "image": "conhost.exe",
+          "machine": "8664",
+          "sha256": "c86146188b78e484f32cc29e2331689659943b47689a85570342044f499938ac",
+          "modules": [],
+          "creator": "process-4",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-6",
+          "image": "cmd.exe",
+          "machine": "014c",
+          "sha256": "4d4aa884b258ac42243f41292b3954340769ec36efdeea6b518a963c8c72891c",
+          "modules": [
+            {
+              "name": "nthook32.dll",
+              "sha256": "eb02654a0ecc3d6ca2f0d7f8e7b2b63b5cda72d59e664560b162f48810d7a2a2"
+            }
+          ],
+          "creator": "process-4",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-7",
+          "image": "rundll32.exe",
+          "machine": "014c",
+          "sha256": "ca3176c675bc1d39e8a77e984c6f63d54bded96101c30cd338730b7ddadae837",
+          "modules": [
+            {
+              "name": "nthook32.dll",
+              "sha256": "eb02654a0ecc3d6ca2f0d7f8e7b2b63b5cda72d59e664560b162f48810d7a2a2"
+            }
+          ],
+          "creator": "process-4",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        },
+        {
+          "identity": "process-8",
+          "image": "cmd.exe",
+          "machine": "8664",
+          "sha256": "15cd209c995b7d3009c91ca40892d5b8f1fb162f3e5f10716642ea278e8e0d7b",
+          "modules": [
+            {
+              "name": "nthook64.dll",
+              "sha256": "9517a1b412d304e366a2c9b52d0de7f32375474e92d0bc39999a02106456ffec"
+            }
+          ],
+          "creator": "process-6",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 37
+        },
+        {
+          "identity": "process-9",
+          "image": "rundll32.exe",
+          "machine": "8664",
+          "sha256": "dc41380d0c96adc5ce1a90ddac3239adce13656aba821a526580d05d6f3e0283",
+          "modules": [],
+          "creator": "process-6",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        }
+      ],
+      "raw_case_sha256": "89cecf62cb5fa1f3c40d23d8c28c2dffa186e7a8fb9c4197992f3b4ea9933f07",
+      "raw_transcript_sha256": "49d3c4465ea915e085b711bede31cee5ba9ecacea2525be1225b93250ab07888"
+    },
+    {
+      "mode": 1,
+      "root_bits": 64,
+      "child_bits": 32,
+      "passed": true,
+      "marker_from_target_verified": true,
+      "child_exit": 37,
+      "outer_exit": 23,
+      "cleanup_verified": true,
+      "native_193_exit_observed": false,
+      "root_native_creation_error": 0,
+      "processes": [
+        {
+          "identity": "process-1",
+          "image": "run16.exe",
+          "machine": "8664",
+          "sha256": "e7ac4e89e9d1e88d57d7cea1a1ad239deead1537a58c8537820bb504c1739121",
+          "modules": [],
+          "creator": "owned-driver-outside-inner-job",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-2",
+          "image": "ntsrv.exe",
+          "machine": "8664",
+          "sha256": "7adc57e6f4c1b1a3058618994664d43dcd77895079bd3b8bc5bc9a1ca6f77168",
+          "modules": [],
+          "creator": "process-1",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-3",
+          "image": "ntcon.exe",
+          "machine": "8664",
+          "sha256": "e2713f6c382f58389ba158f14fa1997434cc94f135a8d0f5d5ecdcbffe72fa77",
+          "modules": [],
+          "creator": "process-2",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-4",
+          "image": "ntvwm.exe",
+          "machine": "8664",
+          "sha256": "3ed02191359f9f0ba4ead6445b5e59bb1b5b02227854f408b19fa957635b1bd8",
+          "modules": [],
+          "creator": "process-2",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-5",
+          "image": "conhost.exe",
+          "machine": "8664",
+          "sha256": "c86146188b78e484f32cc29e2331689659943b47689a85570342044f499938ac",
+          "modules": [],
+          "creator": "process-4",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-6",
+          "image": "cmd.exe",
+          "machine": "8664",
+          "sha256": "15cd209c995b7d3009c91ca40892d5b8f1fb162f3e5f10716642ea278e8e0d7b",
+          "modules": [
+            {
+              "name": "nthook64.dll",
+              "sha256": "9517a1b412d304e366a2c9b52d0de7f32375474e92d0bc39999a02106456ffec"
+            }
+          ],
+          "creator": "process-4",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-7",
+          "image": "cmd.exe",
+          "machine": "014c",
+          "sha256": "4d4aa884b258ac42243f41292b3954340769ec36efdeea6b518a963c8c72891c",
+          "modules": [
+            {
+              "name": "nthook32.dll",
+              "sha256": "eb02654a0ecc3d6ca2f0d7f8e7b2b63b5cda72d59e664560b162f48810d7a2a2"
+            }
+          ],
+          "creator": "process-6",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 37
+        }
+      ],
+      "raw_case_sha256": "7ce0140592f436b43c2351764c4bf9501018edc0b5267dcec904b4634ef4e83d",
+      "raw_transcript_sha256": "554cba92f6f9614b9a366c7e9092daa0fb135318fb821df0f125e70f912e9be9"
+    },
+    {
+      "mode": 1,
+      "root_bits": 64,
+      "child_bits": 64,
+      "passed": true,
+      "marker_from_target_verified": true,
+      "child_exit": 37,
+      "outer_exit": 23,
+      "cleanup_verified": true,
+      "native_193_exit_observed": false,
+      "root_native_creation_error": 0,
+      "processes": [
+        {
+          "identity": "process-1",
+          "image": "run16.exe",
+          "machine": "8664",
+          "sha256": "e7ac4e89e9d1e88d57d7cea1a1ad239deead1537a58c8537820bb504c1739121",
+          "modules": [],
+          "creator": "owned-driver-outside-inner-job",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-2",
+          "image": "ntsrv.exe",
+          "machine": "8664",
+          "sha256": "7adc57e6f4c1b1a3058618994664d43dcd77895079bd3b8bc5bc9a1ca6f77168",
+          "modules": [],
+          "creator": "process-1",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-3",
+          "image": "ntcon.exe",
+          "machine": "8664",
+          "sha256": "e2713f6c382f58389ba158f14fa1997434cc94f135a8d0f5d5ecdcbffe72fa77",
+          "modules": [],
+          "creator": "process-2",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-4",
+          "image": "ntvwm.exe",
+          "machine": "8664",
+          "sha256": "3ed02191359f9f0ba4ead6445b5e59bb1b5b02227854f408b19fa957635b1bd8",
+          "modules": [],
+          "creator": "process-2",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-5",
+          "image": "conhost.exe",
+          "machine": "8664",
+          "sha256": "c86146188b78e484f32cc29e2331689659943b47689a85570342044f499938ac",
+          "modules": [],
+          "creator": "process-4",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-6",
+          "image": "cmd.exe",
+          "machine": "8664",
+          "sha256": "15cd209c995b7d3009c91ca40892d5b8f1fb162f3e5f10716642ea278e8e0d7b",
+          "modules": [
+            {
+              "name": "nthook64.dll",
+              "sha256": "9517a1b412d304e366a2c9b52d0de7f32375474e92d0bc39999a02106456ffec"
+            }
+          ],
+          "creator": "process-4",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 23
+        },
+        {
+          "identity": "process-7",
+          "image": "cmd.exe",
+          "machine": "8664",
+          "sha256": "15cd209c995b7d3009c91ca40892d5b8f1fb162f3e5f10716642ea278e8e0d7b",
+          "modules": [
+            {
+              "name": "nthook64.dll",
+              "sha256": "9517a1b412d304e366a2c9b52d0de7f32375474e92d0bc39999a02106456ffec"
+            }
+          ],
+          "creator": "process-6",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 37
+        }
+      ],
+      "raw_case_sha256": "9dae956b9a5956d521148306311f190dc35be0886aa16f4705a8a1dcaada5b17",
+      "raw_transcript_sha256": "7559ea866d9f9b45ef11869ed6543577f7037b216911714a41015179cdcb2361"
+    },
+    {
+      "mode": 2,
+      "root_bits": 32,
+      "child_bits": 32,
+      "passed": false,
+      "marker_from_target_verified": false,
+      "child_exit": null,
+      "outer_exit": null,
+      "cleanup_verified": true,
+      "native_193_exit_observed": true,
+      "root_native_creation_error": 0,
+      "processes": [
+        {
+          "identity": "process-1",
+          "image": "run16s.exe",
+          "machine": "8664",
+          "sha256": "4ab03ec12923b4a0bc140f31b16187ec8d768fc8ae4d3d2fca2ab673c60586ca",
+          "modules": [],
+          "creator": "owned-driver-outside-inner-job",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-2",
+          "image": "run16.exe",
+          "machine": "8664",
+          "sha256": "e7ac4e89e9d1e88d57d7cea1a1ad239deead1537a58c8537820bb504c1739121",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "f3c006d03c704fc26bf5e1bb4129aa5b8682c2e913ad2d4cedc6309e45da375c"
+            }
+          ],
+          "creator": "process-1",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-3",
+          "image": "ntsrv.exe",
+          "machine": "8664",
+          "sha256": "7adc57e6f4c1b1a3058618994664d43dcd77895079bd3b8bc5bc9a1ca6f77168",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "f3c006d03c704fc26bf5e1bb4129aa5b8682c2e913ad2d4cedc6309e45da375c"
+            }
+          ],
+          "creator": "process-2",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-4",
+          "image": "ntcon.exe",
+          "machine": "8664",
+          "sha256": "e2713f6c382f58389ba158f14fa1997434cc94f135a8d0f5d5ecdcbffe72fa77",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "f3c006d03c704fc26bf5e1bb4129aa5b8682c2e913ad2d4cedc6309e45da375c"
+            }
+          ],
+          "creator": "process-3",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-5",
+          "image": "ntvwm.exe",
+          "machine": "8664",
+          "sha256": "3ed02191359f9f0ba4ead6445b5e59bb1b5b02227854f408b19fa957635b1bd8",
+          "modules": [
+            {
+              "name": "ntw16s64.dll",
+              "sha256": "f3c006d03c704fc26bf5e1bb4129aa5b8682c2e913ad2d4cedc6309e45da375c"
+            }
+          ],
+          "creator": "process-3",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-6",
+          "image": "conhost.exe",
+          "machine": "8664",
+          "sha256": "c86146188b78e484f32cc29e2331689659943b47689a85570342044f499938ac",
+          "modules": [],
+          "creator": "process-5",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-7",
+          "image": "cmd.exe",
+          "machine": "014c",
+          "sha256": "4d4aa884b258ac42243f41292b3954340769ec36efdeea6b518a963c8c72891c",
+          "modules": [
+            {
+              "name": "nthook32.dll",
+              "sha256": "eb02654a0ecc3d6ca2f0d7f8e7b2b63b5cda72d59e664560b162f48810d7a2a2"
+            },
+            {
+              "name": "ntw16s32.dll",
+              "sha256": "2f5d7d258e6e20c8a18f791f91bc23d0fe58dbe73d373e63aefc5c6afb3c4284"
+            }
+          ],
+          "creator": "process-5",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-8",
+          "image": "rundll32.exe",
+          "machine": "014c",
+          "sha256": "ca3176c675bc1d39e8a77e984c6f63d54bded96101c30cd338730b7ddadae837",
+          "modules": [],
+          "creator": "process-5",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        },
+        {
+          "identity": "process-9",
+          "image": "rundll32.exe",
+          "machine": "014c",
+          "sha256": "ca3176c675bc1d39e8a77e984c6f63d54bded96101c30cd338730b7ddadae837",
+          "modules": [
+            {
+              "name": "ntw16s32.dll",
+              "sha256": "2f5d7d258e6e20c8a18f791f91bc23d0fe58dbe73d373e63aefc5c6afb3c4284"
+            },
+            {
+              "name": "nthook32.dll",
+              "sha256": "eb02654a0ecc3d6ca2f0d7f8e7b2b63b5cda72d59e664560b162f48810d7a2a2"
+            }
+          ],
+          "creator": "process-5",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        },
+        {
+          "identity": "process-10",
+          "image": "rundll32.exe",
+          "machine": "014c",
+          "sha256": "ca3176c675bc1d39e8a77e984c6f63d54bded96101c30cd338730b7ddadae837",
+          "modules": [],
+          "creator": "process-5",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        },
+        {
+          "identity": "process-11",
+          "image": "cmd.exe",
+          "machine": "014c",
+          "sha256": "4d4aa884b258ac42243f41292b3954340769ec36efdeea6b518a963c8c72891c",
+          "modules": [],
+          "creator": "process-7",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 193
+        }
+      ],
+      "raw_case_sha256": "3e3fd992e8149ea5e192a933607e3e337c13f029c346d351b7467a6dd5c8a236",
+      "raw_transcript_sha256": "83efcfde0fc7439d64f5231a35127b45e8299864c140b2212d98e50d8455e53c"
+    }
+  ],
+  "earlier_old_package_native_193_observation": [
+    {
+      "mode": 2,
+      "root_bits": 32,
+      "child_bits": 32,
+      "passed": false,
+      "marker_from_target_verified": false,
+      "child_exit": null,
+      "outer_exit": null,
+      "cleanup_verified": false,
+      "native_193_exit_observed": true,
+      "root_native_creation_error": 0,
+      "processes": [
+        {
+          "identity": "process-1",
+          "image": "run16s.exe",
+          "machine": "8664",
+          "sha256": "4ab03ec12923b4a0bc140f31b16187ec8d768fc8ae4d3d2fca2ab673c60586ca",
+          "modules": [],
+          "creator": "owned-driver-outside-inner-job",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-2",
+          "image": "run16.exe",
+          "machine": "8664",
+          "sha256": "e7ac4e89e9d1e88d57d7cea1a1ad239deead1537a58c8537820bb504c1739121",
+          "modules": [],
+          "creator": "process-1",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-3",
+          "image": "ntsrv.exe",
+          "machine": "8664",
+          "sha256": "7adc57e6f4c1b1a3058618994664d43dcd77895079bd3b8bc5bc9a1ca6f77168",
+          "modules": [],
+          "creator": "process-2",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-4",
+          "image": "ntcon.exe",
+          "machine": "8664",
+          "sha256": "e2713f6c382f58389ba158f14fa1997434cc94f135a8d0f5d5ecdcbffe72fa77",
+          "modules": [],
+          "creator": "process-3",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-5",
+          "image": "ntvwm.exe",
+          "machine": "8664",
+          "sha256": "3ed02191359f9f0ba4ead6445b5e59bb1b5b02227854f408b19fa957635b1bd8",
+          "modules": [],
+          "creator": "process-3",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-6",
+          "image": "conhost.exe",
+          "machine": "8664",
+          "sha256": "c86146188b78e484f32cc29e2331689659943b47689a85570342044f499938ac",
+          "modules": [],
+          "creator": "process-5",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-7",
+          "image": "cmd.exe",
+          "machine": "014c",
+          "sha256": "4d4aa884b258ac42243f41292b3954340769ec36efdeea6b518a963c8c72891c",
+          "modules": [
+            {
+              "name": "nthook32.dll",
+              "sha256": "eb02654a0ecc3d6ca2f0d7f8e7b2b63b5cda72d59e664560b162f48810d7a2a2"
+            },
+            {
+              "name": "ntw16s32.dll",
+              "sha256": "2f5d7d258e6e20c8a18f791f91bc23d0fe58dbe73d373e63aefc5c6afb3c4284"
+            }
+          ],
+          "creator": "process-5",
+          "ntw_state": {
+            "loaded": true,
+            "policy": 3,
+            "committed": 1,
+            "hooks": 25,
+            "propagation_initialized": true
+          },
+          "exit_or_STILL_ACTIVE": 259
+        },
+        {
+          "identity": "process-8",
+          "image": "rundll32.exe",
+          "machine": "014c",
+          "sha256": "ca3176c675bc1d39e8a77e984c6f63d54bded96101c30cd338730b7ddadae837",
+          "modules": [],
+          "creator": "process-5",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        },
+        {
+          "identity": "process-9",
+          "image": "rundll32.exe",
+          "machine": "014c",
+          "sha256": "ca3176c675bc1d39e8a77e984c6f63d54bded96101c30cd338730b7ddadae837",
+          "modules": [],
+          "creator": "process-5",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        },
+        {
+          "identity": "process-10",
+          "image": "rundll32.exe",
+          "machine": "014c",
+          "sha256": "ca3176c675bc1d39e8a77e984c6f63d54bded96101c30cd338730b7ddadae837",
+          "modules": [],
+          "creator": "process-5",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 0
+        },
+        {
+          "identity": "process-11",
+          "image": "cmd.exe",
+          "machine": "014c",
+          "sha256": "4d4aa884b258ac42243f41292b3954340769ec36efdeea6b518a963c8c72891c",
+          "modules": [],
+          "creator": "process-7",
+          "ntw_state": "not-observed-or-transient-exit; never inferred from module presence",
+          "exit_or_STILL_ACTIVE": 193
+        }
+      ],
+      "raw_case_sha256": "1f72c284b82050655397a2a0a2880f97a198be3a9a7e99a69aa31bdc45a329e7",
+      "raw_transcript_sha256": "646894e47a36e4bbece6b9b5181d44f04a0b49587aaf6003d7b38c73f9fcb805"
+    }
+  ],
+  "external_import_tests": {
+    "x86": {
+      "valid_initialized": 0,
+      "noaccess": 299,
+      "unterminated": 193,
+      "rva_end_overflow": 193
+    },
+    "x64": {
+      "valid_initialized": 0,
+      "noaccess": 299,
+      "unterminated": 193,
+      "rva_end_overflow": 193
+    },
+    "old_source_detected_both_widths": 193
+  },
+  "skip": {
+    "absent_backend": 77,
+    "registered_default_optional": "77, not passed",
+    "clipboard_both_widths": "permission5/77, not passed"
+  },
+  "raw_evidence": [
+    {
+      "label": "build-result",
+      "sha256": "44e95db2901e10dda3578a760e26e1c4b29a499870183213dccfa67bc480819c",
+      "bytes": 309
+    },
+    {
+      "label": "package-identity",
+      "sha256": "019491a66c7721831c505b5cce62ea4acbcf875771e1f00a5133c64a71e4f0d1",
+      "bytes": 1644
+    },
+    {
+      "label": "snapshot",
+      "sha256": "ad96a2ea0ffb753f066e34f1e46abb3221f1af925afc22aad399050f5a8ef937",
+      "bytes": 32880
+    },
+    {
+      "label": "full-regression",
+      "sha256": "53e35bdb87bf4adfd7e164721a750d6e6fa3b4aaf79869c034d100fdf4dba973",
+      "bytes": 587
+    },
+    {
+      "label": "actual-package-result",
+      "sha256": "577e8a0fba52de19439622bda07b4e802cf4401cd356855284f1c86bb506addb",
+      "bytes": 628
+    },
+    {
+      "label": "actual-package-cases",
+      "sha256": "e41b2d57048675aca1d056b15e9e9e42126134a872dfb1531aaae86229bec3b5",
+      "bytes": 11012
+    },
+    {
+      "label": "compat-final",
+      "sha256": "fe558b4fe4fd5b81a688db363563bc99bf783da978fa25c80dcda406853239dc",
+      "bytes": 1089
+    },
+    {
+      "label": "optional-backend-skip",
+      "sha256": "a5b06389d62d172e232252eaddfbbff1e7735bc877010a9c452d5b16491807e1",
+      "bytes": 42
+    },
+    {
+      "label": "external32",
+      "sha256": "315f49b383f9a6867628f1803aa724ec70cba66bda2f69f9eb4f8a0a62d8648d",
+      "bytes": 371
+    },
+    {
+      "label": "external64",
+      "sha256": "f882de4d86bae405af16987d7ceac2b985090f50084057bac74abb73d9f3c54a",
+      "bytes": 371
+    },
+    {
+      "label": "old-source32",
+      "sha256": "03fa0f66f7395dfcb63bdbd0f28339cbebe342c085a3811bece1d740bfe24bbd",
+      "bytes": 181
+    },
+    {
+      "label": "old-source64",
+      "sha256": "03fa0f66f7395dfcb63bdbd0f28339cbebe342c085a3811bece1d740bfe24bbd",
+      "bytes": 181
+    },
+    {
+      "label": "old-final-cmd",
+      "sha256": "cad80941bc9454f8b2240d4efd3dd4d446952e4a600205061f0238078573cd0d",
+      "bytes": 640
+    },
+    {
+      "label": "old-source-negative-status",
+      "sha256": "dc0693dde79f40b0ee3336bd4e5beb59c95072be3ba9d0d0246723c9ef4be22e",
+      "bytes": 97
+    },
+    {
+      "label": "old-backed-up-package-final-negative",
+      "sha256": "cad80941bc9454f8b2240d4efd3dd4d446952e4a600205061f0238078573cd0d",
+      "bytes": 640
+    },
+    {
+      "label": "registered-x86-run.log",
+      "sha256": "dccf7b2add4784d533de48026b4242637dee7284dc9a9c55266b633121f3f248",
+      "bytes": 113620
+    },
+    {
+      "label": "registered-x86-run.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "label": "registered-x86-results.xml",
+      "sha256": "ed73873fb6b6af55a57c92871c23457f232849222119cd1eaba1160c16db4c06",
+      "bytes": 16261
+    },
+    {
+      "label": "registered-x64-run.log",
+      "sha256": "268964ec25190aa55a9359bca70113d38cda6645e07e6fabdb5aaeb49729d51e",
+      "bytes": 129834
+    },
+    {
+      "label": "registered-x64-run.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "label": "registered-x64-results.xml",
+      "sha256": "dd0862ca7649cc3ac08a9d88ea6f364ae74bf90c27ba01a852b5f07cdcb809cb",
+      "bytes": 24179
+    },
+    {
+      "label": "package-abi-x86-stdout.log",
+      "sha256": "e035766e9f9abbcbfcd1e323d70fe6e936283333e44403622a358449610e351e",
+      "bytes": 62
+    },
+    {
+      "label": "package-abi-x86-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "label": "package-abi-x64-stdout.log",
+      "sha256": "0b3588f46cec840251443a03dc29d798fd7baddb99706ca4f21b229f9c62995c",
+      "bytes": 62
+    },
+    {
+      "label": "package-abi-x64-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "label": "package-demo-boundary-stdout.log",
+      "sha256": "4cfda5a03ed4f329ef0131266128362ebcefcd310d1be0468f316c8d96b56cfa",
+      "bytes": 196
+    },
+    {
+      "label": "package-demo-boundary-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "label": "package-demo-pair-stdout.log",
+      "sha256": "af09c883ef2a4404d7211a91836ae95412022e8ce86ca9144c86c25a0d12e1ac",
+      "bytes": 952
+    },
+    {
+      "label": "package-demo-pair-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "label": "package-wait-contract-stdout.log",
+      "sha256": "ae33a52453aab100d6b8b8c9f01bf3e6b51651e21cffc22e0376a79b7c14907e",
+      "bytes": 772
+    },
+    {
+      "label": "package-wait-contract-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "label": "package-font-layout-x86-stdout.log",
+      "sha256": "17e71285a0bf4270d72111255606d8d69cef7cfec2e46904820eaa64c1c100cf",
+      "bytes": 17209
+    },
+    {
+      "label": "package-font-layout-x86-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "label": "package-font-layout-x64-stdout.log",
+      "sha256": "90eb18cf11a767794f1b4ecac1238f43ef324df67bf92f9fc22b2b0ad44fbb29",
+      "bytes": 17209
+    },
+    {
+      "label": "package-font-layout-x64-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "label": "package-menu-cancel-x86-stdout.log",
+      "sha256": "9a2c2e7a9a775ebf5b448c0e3295416b8fd2158341a58f20c3c257e48f748146",
+      "bytes": 15065
+    },
+    {
+      "label": "package-menu-cancel-x86-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "label": "package-menu-cancel-x64-stdout.log",
+      "sha256": "9a2c2e7a9a775ebf5b448c0e3295416b8fd2158341a58f20c3c257e48f748146",
+      "bytes": 15065
+    },
+    {
+      "label": "package-menu-cancel-x64-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "label": "package-cli-stdout.log",
+      "sha256": "86520b91997a6d2995da61505647ffa6463eb4008d77bab0f7befd831b16fa58",
+      "bytes": 97
+    },
+    {
+      "label": "package-cli-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "label": "package-automatic-stdout.log",
+      "sha256": "1fc71e40824dcc8a38d6ab42242c61cdb763f44397974ae608a61801917f0c3c",
+      "bytes": 86
+    },
+    {
+      "label": "package-automatic-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "label": "package-propagation-stdout.log",
+      "sha256": "02a0732661abe3c3f9630124f98ab581f08bafc5ef719dfe3db32b8f0d6191cf",
+      "bytes": 708
+    },
+    {
+      "label": "package-propagation-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "label": "package-cmd-nested-stdout.log",
+      "sha256": "b5e1ce98ff6df05e3ff2e8d55b0be2a5b1577fb6c49d1686a9ee085905353e93",
+      "bytes": 708
+    },
+    {
+      "label": "package-cmd-nested-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "label": "package-long-path-stdout.log",
+      "sha256": "09bf4effc624e5180a21a06502e1ce10405805cf2e8f8dda8622f9cbc65e1037",
+      "bytes": 146
+    },
+    {
+      "label": "package-long-path-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "label": "package-cli-failures-stdout.log",
+      "sha256": "bc47bd11da7fa71a658b9b23e91079dad2793ca1fb8b5877e1cfb0a3a5ffca39",
+      "bytes": 746
+    },
+    {
+      "label": "package-cli-failures-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "label": "package-creation-contract-stdout.log",
+      "sha256": "6ac9ebb97976b15220abd2876c15ed8c7df0717972b7043eef1234734a8c00b5",
+      "bytes": 517
+    },
+    {
+      "label": "package-creation-contract-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "label": "package-rollback-stdout.log",
+      "sha256": "92d47f8cf9c75c7da169ef8dbc70dc923765e1dad3513cae46f4cdd636b61ef0",
+      "bytes": 440
+    },
+    {
+      "label": "package-rollback-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "label": "package-dialogs-stdout.log",
+      "sha256": "1fc71e40824dcc8a38d6ab42242c61cdb763f44397974ae608a61801917f0c3c",
+      "bytes": 86
+    },
+    {
+      "label": "package-dialogs-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "label": "package-messages-stdout.log",
+      "sha256": "1fc71e40824dcc8a38d6ab42242c61cdb763f44397974ae608a61801917f0c3c",
+      "bytes": 86
+    },
+    {
+      "label": "package-messages-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "limits": [
+    "cmd internal GetLastError not directly sampled; native root creation status, actual child exit and staging error are distinct",
+    "native explicit System32/SysWOW64/Sysnative targets; arbitrary PATH resolution and other backend versions not promised",
+    "earlier NE intermittent issue not stably reproduced; unstyled existing NTSRV reuse accepted",
+    "ARM64, true192DPI and physical input not covered"
+  ],
+  "old_package_artifacts": {
+    "run16s.exe": {
+      "architecture": "x64",
+      "version": "M0 T8",
+      "sha256": "4ab03ec12923b4a0bc140f31b16187ec8d768fc8ae4d3d2fca2ab673c60586ca",
+      "imports": [
+        "kernel32.dll",
+        "msvcrt.dll"
+      ]
+    },
+    "ntw16s32.dll": {
+      "architecture": "x86",
+      "version": "M0 T8",
+      "sha256": "2f5d7d258e6e20c8a18f791f91bc23d0fe58dbe73d373e63aefc5c6afb3c4284",
+      "imports": [
+        "COMCTL32.dll",
+        "dwmapi.dll",
+        "GDI32.dll",
+        "KERNEL32.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-private-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "USER32.dll",
+        "UxTheme.dll",
+        "COMCTL32.dll"
+      ]
+    },
+    "ntw16s64.dll": {
+      "architecture": "x64",
+      "version": "M0 T8",
+      "sha256": "f3c006d03c704fc26bf5e1bb4129aa5b8682c2e913ad2d4cedc6309e45da375c",
+      "imports": [
+        "COMCTL32.dll",
+        "dwmapi.dll",
+        "GDI32.dll",
+        "KERNEL32.dll",
+        "msvcrt.dll",
+        "USER32.dll",
+        "UxTheme.dll",
+        "COMCTL32.dll"
+      ]
+    },
+    "demo.exe": {
+      "architecture": "x64",
+      "version": "M0 T8",
+      "sha256": "0e17ff0306b5277d55ac21e54ee1203cc8a39c95b2ff2c97ac52b49e7f160d8e",
+      "imports": [
+        "kernel32.dll",
+        "msvcrt.dll",
+        "user32.dll"
+      ]
+    }
+  },
+  "negative_source_identity": {
+    "baseline": "e6d6b55",
+    "old_staging_sha256": "472306781c4c1a94d17061dc6e36102ec689ade86a2d4a719a8851e142ba758a",
+    "fixture_sha256": "77a7d8f8d2ada2112e2dcffa64c74fba5dca34a2bac66824a6348119dc9ca435",
+    "negative_exe32_sha256": "87edaae55a0bfd8a1256c5204637241edea168ee64204da8d2d45076014c3993",
+    "negative_exe64_sha256": "7d92d1c06f44669e5e72e9887d41f21813c17fbb1888b8a383ad56f3740f7904"
+  }
+}

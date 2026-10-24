@@ -4,6 +4,7 @@
 | --- | --- |
 | [screenshots/README.md](screenshots/README.md) | 用户明确要求公开的精选demo/真实XP Solitaire截图及英文来源/摘要；非原始测试抓图 |
 | [evidence/vdm-propagation-diagnosis.json](evidence/vdm-propagation-diagnosis.json) | 原生命令传播、冷/热/历史与双钩子独立诊断的精选状态/原始摘要；不替代产品包回归 |
+| [evidence/native-cmd-staging.json](evidence/native-cmd-staging.json) | T9真实嵌套cmd、外部导入表正负例及脱敏进程图/模块SHA；完整身份不公开 |
 | [release.json](release.json) | 当前开发包的输入/工具链/四文件哈希与验收范围，历史版本从对应Git提交取回 |
 | [product-contract.json](product-contract.json) | 架构权威的机器映射；组件/产物变化必须同步审核 |
 | [import](import/README.md) | 来源基线与 Git blob 清单；只作导入对照，不能成为构建输入 |

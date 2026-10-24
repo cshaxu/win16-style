@@ -3,7 +3,7 @@ param(
     [Parameter(Mandatory)][string]$Package,
     [Parameter(Mandatory)][string]$TestResult,
     [ValidatePattern('^[a-z0-9-]+$')][string]$RunName='publish',
-    [ValidateRange(1,65535)][int]$Task=8,
+    [ValidateRange(1,65535)][int]$Task=9,
     [switch]$ValidateOnly
 )
 $ErrorActionPreference='Stop'

@@ -136,9 +136,15 @@ DWORD ntw16s_stage_process(HANDLE child,const char *dll,const void *packet,DWORD
     DWORD import_rva=next.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress;
     if(import_rva){
         for(;old_count<IMPORT_LIMIT;++old_count){
-            SIZE_T at=(SIZE_T)import_rva+old_count*sizeof(*old);
-            if(at>next.OptionalHeader.SizeOfImage || sizeof(*old)>next.OptionalHeader.SizeOfImage-at){error=ERROR_BAD_EXE_FORMAT;goto done;}
-            error=read_memory(child,image.base+at,&old[old_count],sizeof(*old));if(error)goto done;
+            /* Another startup installer may already have moved the imports
+             * into a private allocation beyond SizeOfImage. Preserve that
+             * valid table; RVA arithmetic and the bounded remote read, rather
+             * than the original image extent, determine readability. */
+            uint64_t at=(uint64_t)import_rva+(uint64_t)old_count*sizeof(*old);
+            uintptr_t base=(uintptr_t)image.base;
+            if(at>UINT32_MAX-(sizeof(*old)-1) || at>UINTPTR_MAX-base ||
+               sizeof(*old)-1>UINTPTR_MAX-base-(uintptr_t)at){error=ERROR_BAD_EXE_FORMAT;goto done;}
+            error=read_memory(child,(void *)(base+(uintptr_t)at),&old[old_count],sizeof(*old));if(error)goto done;
             if(!old[old_count].Name && !old[old_count].FirstThunk && !old[old_count].OriginalFirstThunk)break;
         }
         if(old_count==IMPORT_LIMIT){error=ERROR_BAD_EXE_FORMAT;goto done;}

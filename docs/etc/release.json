@@ -1,19 +1,19 @@
 {
   "schema": 1,
-  "delivery": "M0 T8 S4 P1",
-  "stage": "S4-proportional-menu-closed-T8-open-owner-appearance-pending",
-  "version": "0.8.0.0",
+  "delivery": "M0 T9 S1 P1",
+  "stage": "published locally; actual P1 remote review pending",
+  "version": "0.9.0.0",
   "package_directory": "assets",
   "source_inputs": [
     {
       "path": "CMakeLists.txt",
-      "sha256": "6a590562aaa8534792d5a7af72b8cd6cf01c3357ab271f7c32a28ff7baf23237"
+      "sha256": "6bc2816249b57016a13ace464e4dfc02edf61eace81bf0c1794cd4854994ef27"
     },
     {
       "path": "LICENSE",
       "sha256": "71337277c6c03463ca6d7b56aba20fed81d3e6f1c8a823f7d5ab30760de8a389",
       "git_blob_sha256": "bf37952d329b48cee37b42d90b96d30dc049940902e42d69338a19cf72003543",
-      "checkout_transform": "Git text=auto LF to CRLF; identical MIT notice text"
+      "checkout_transform": "Git text normalization; actual copied build bytes retain sha256"
     },
     {
       "path": "src/demo-exe/README.md",
@@ -33,7 +33,7 @@
     },
     {
       "path": "src/demo-exe/version.rc",
-      "sha256": "f032947613759680b6cf5352450e32c0b164e26e51959bb01315a74a07424b58"
+      "sha256": "8180b0a57fd4e19cdb4739e096924175215f8fe51ad7b7847cb31836ed816f7b"
     },
     {
       "path": "src/ntw16s-dll/README.md",
@@ -169,7 +169,7 @@
     },
     {
       "path": "src/ntw16s-dll/injection/staging.c",
-      "sha256": "472306781c4c1a94d17061dc6e36102ec689ade86a2d4a719a8851e142ba758a"
+      "sha256": "6b23fb48fc493412182e19e23e5bfbe0f4c0d8abfd426e6e240a8a7fadb06e7a"
     },
     {
       "path": "src/ntw16s-dll/injection/staging.h",
@@ -313,7 +313,7 @@
     },
     {
       "path": "src/ntw16s-dll/version.rc",
-      "sha256": "4f52dc2f1e0068c3f78fe62f9e57c33bd0bcac2e88414ead3ff8325bba35ac82"
+      "sha256": "ff4af7fb53f430b28dbaa1b3f2fb4e875129809ff3c2d438d42a1ff61b2be24c"
     },
     {
       "path": "src/ntw16s-dll/win16_style.c",
@@ -333,11 +333,11 @@
     },
     {
       "path": "src/run16s-exe/version.rc",
-      "sha256": "0f4a8a64639ed110eba36098bc3ae39f346277e73e275fa6e4a9e9ae23900947"
+      "sha256": "ed026179edeaadd4c8375457346be3fb6ca1a9991aeec10732c32597805190af"
     },
     {
       "path": "tests/README.md",
-      "sha256": "b94b202299f27dbe55b97650e16ea43d2b2efe15bb5f4cb7fbcf942bbf52aa60"
+      "sha256": "6134e36dbdb2a1e789e37020749dc80b5c2553951c2e759955fef1ac81d1f858"
     },
     {
       "path": "tests/demo-exe/boundary.py",
@@ -362,6 +362,14 @@
     {
       "path": "tests/integration/automatic_target.rc",
       "sha256": "c1ee853a008c7a940a1e2d9bc01332a4f5f4c5d2e5aee5c3a7c3742954422ce3"
+    },
+    {
+      "path": "tests/integration/cmd_nested.c",
+      "sha256": "09f92227c7e524000400f062746bc5146c6a8993c18ae521a0089b51dfdfad5f"
+    },
+    {
+      "path": "tests/integration/cmd_support.h",
+      "sha256": "03550e20ed73fb34db7020839d970e2a7d4fc7e70a36d7e14ed432e053b08a1a"
     },
     {
       "path": "tests/integration/contract_support.h",
@@ -493,7 +501,7 @@
     },
     {
       "path": "tests/run16s-exe/staging.c",
-      "sha256": "94749c3984426fb8d328e264484c786884bef415b8c6d742361ef135b57777a7"
+      "sha256": "77a7d8f8d2ada2112e2dcffa64c74fba5dca34a2bac66824a6348119dc9ca435"
     },
     {
       "path": "tests/run16s-exe/startup_hooks.c",
@@ -512,34 +520,31 @@
       "sha256": "384d457e8e99f6120fe4f1eaf0bf32ce3650cf9dec871f0b32c8c4cdce24d4b8"
     }
   ],
-  "source_inputs_sha256": "d023488f69fc7bd35c5affddd4669335dacce7043e68461d49801afc2eef215d",
-  "source_snapshot_sha256": "0b7eae2c14e407ee99f0e4f670b116cd7ba024c3a568341b5282a330d1e8bf67",
+  "source_inputs_sha256": "299c69596c2b6e428d4b09c58956cff1b53d10b9be4c30b3361dc9cdb630defc",
+  "source_snapshot_sha256": "ad96a2ea0ffb753f066e34f1e46abb3221f1af925afc22aad399050f5a8ef937",
   "toolchains": {
-    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
+    "ninja": "1.13.2",
     "toolchains": [
       {
         "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
-        "target": "i686-w64-mingw32",
+        "version": "16.1.0",
         "architecture": "x86",
-        "version": "16.1.0"
+        "target": "i686-w64-mingw32"
       },
       {
         "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
-        "target": "x86_64-w64-mingw32",
+        "version": "16.1.0",
         "architecture": "x64",
-        "version": "16.1.0"
+        "target": "x86_64-w64-mingw32"
       }
     ],
-    "ccache_version": "ccache version 4.13.6",
-    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe"
+    "ccache_version": "ccache version 4.13.6"
   },
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
-      "version": "M0 T8",
-      "sha256": "4ab03ec12923b4a0bc140f31b16187ec8d768fc8ae4d3d2fca2ab673c60586ca",
+      "version": "M0 T9",
+      "sha256": "f56a7bc121f8d27f7dc320f52e4730db2024db4841457535731ab76625a3dcd4",
       "imports": [
         "kernel32.dll",
         "msvcrt.dll"
@@ -547,8 +552,8 @@
     },
     "ntw16s32.dll": {
       "architecture": "x86",
-      "version": "M0 T8",
-      "sha256": "2f5d7d258e6e20c8a18f791f91bc23d0fe58dbe73d373e63aefc5c6afb3c4284",
+      "version": "M0 T9",
+      "sha256": "15faf53f25a76cebbb8a79650caf0deec12fd4f1267b6a218eced86ab6980649",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -567,8 +572,8 @@
     },
     "ntw16s64.dll": {
       "architecture": "x64",
-      "version": "M0 T8",
-      "sha256": "f3c006d03c704fc26bf5e1bb4129aa5b8682c2e913ad2d4cedc6309e45da375c",
+      "version": "M0 T9",
+      "sha256": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -582,8 +587,8 @@
     },
     "demo.exe": {
       "architecture": "x64",
-      "version": "M0 T8",
-      "sha256": "0e17ff0306b5277d55ac21e54ee1203cc8a39c95b2ff2c97ac52b49e7f160d8e",
+      "version": "M0 T9",
+      "sha256": "9510f0a47555efec3c78d361b42fca9e279864ead404a7a15f38003fcf9bcc50",
       "imports": [
         "kernel32.dll",
         "msvcrt.dll",
@@ -592,260 +597,131 @@
     }
   },
   "verification": {
-    "clean_build": "s4-delivery independent copied source, clean x86/x64 GCC16.1.0, ABI1/1 each, all126 current inputs equal frozen snapshot",
+    "clean_build": "s1-release-final copied clean source; x86/x64 GCC/Ninja/ccache; ABI1/1 each;128 actual inputs equal current tree",
     "actual_package": {
-      "package": "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate",
-      "physical_input": "not-tested",
       "status": "passed",
-      "core_matrix": "separate Build-Core matrix required",
+      "cases": 19,
+      "full_integration": true,
       "sha256": {
-        "demo.exe": "0e17ff0306b5277d55ac21e54ee1203cc8a39c95b2ff2c97ac52b49e7f160d8e",
-        "ntw16s32.dll": "2f5d7d258e6e20c8a18f791f91bc23d0fe58dbe73d373e63aefc5c6afb3c4284",
-        "ntw16s64.dll": "f3c006d03c704fc26bf5e1bb4129aa5b8682c2e913ad2d4cedc6309e45da375c",
-        "run16s.exe": "4ab03ec12923b4a0bc140f31b16187ec8d768fc8ae4d3d2fca2ab673c60586ca"
+        "demo.exe": "9510f0a47555efec3c78d361b42fca9e279864ead404a7a15f38003fcf9bcc50",
+        "ntw16s32.dll": "15faf53f25a76cebbb8a79650caf0deec12fd4f1267b6a218eced86ab6980649",
+        "ntw16s64.dll": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc",
+        "run16s.exe": "f56a7bc121f8d27f7dc320f52e4730db2024db4841457535731ab76625a3dcd4"
       },
-      "cases": 14,
-      "full_integration": false
+      "physical_input": "not-tested"
     },
     "package_case_results": [
       {
-        "exit_code": 0,
-        "arguments": [
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\ntw16s32.dll"
-        ],
         "name": "abi-x86",
-        "command": "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\build\\.ninja\\x86\\core-abi.exe"
+        "exit_code": 0
       },
       {
-        "exit_code": 0,
-        "arguments": [
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\ntw16s64.dll"
-        ],
         "name": "abi-x64",
-        "command": "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\build\\.ninja\\x64\\core-abi.exe"
+        "exit_code": 0
       },
       {
-        "exit_code": 0,
-        "arguments": [
-          "-B",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\tests\\demo-exe\\boundary.py",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\demo.exe"
-        ],
         "name": "demo-boundary",
-        "command": "C:\\Program Files\\Python313\\python.exe"
+        "exit_code": 0
       },
       {
-        "exit_code": 0,
-        "arguments": [
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\run16s.exe",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\ntw16s64.dll",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\ntw16s32.dll",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\demo.exe"
-        ],
         "name": "demo-pair",
-        "command": "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\build\\.ninja\\x64\\demo-observe.exe"
+        "exit_code": 0
       },
       {
-        "exit_code": 0,
-        "arguments": [
-          "-B",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\tests\\run16s-exe\\wait.py",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\run16s.exe",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\ntw16s32.dll",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\ntw16s64.dll",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\build\\.ninja\\x86\\wait-target.exe",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\build\\.ninja\\x64\\wait-target.exe",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\build\\.ninja\\x64\\wait-gui-target.exe"
-        ],
         "name": "wait-contract",
-        "command": "C:\\Program Files\\Python313\\python.exe"
+        "exit_code": 0
       },
       {
-        "exit_code": 0,
-        "arguments": [
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\ntw16s32.dll"
-        ],
         "name": "font-layout-x86",
-        "command": "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\build\\.ninja\\x86\\core-font-layout.exe"
+        "exit_code": 0
       },
       {
-        "exit_code": 0,
-        "arguments": [
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\ntw16s64.dll"
-        ],
         "name": "font-layout-x64",
-        "command": "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\build\\.ninja\\x64\\core-font-layout.exe"
+        "exit_code": 0
       },
       {
-        "exit_code": 0,
-        "arguments": [
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\ntw16s32.dll"
-        ],
         "name": "menu-cancel-x86",
-        "command": "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\build\\.ninja\\x86\\core-menu-cancel.exe"
+        "exit_code": 0
       },
       {
-        "exit_code": 0,
-        "arguments": [
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\ntw16s64.dll"
-        ],
         "name": "menu-cancel-x64",
-        "command": "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\build\\.ninja\\x64\\core-menu-cancel.exe"
+        "exit_code": 0
       },
       {
-        "exit_code": 0,
-        "arguments": [
-          "-B",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\tests\\run16s-exe\\cli.py",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\run16s.exe"
-        ],
         "name": "cli",
-        "command": "C:\\Program Files\\Python313\\python.exe"
+        "exit_code": 0
       },
       {
-        "exit_code": 0,
-        "arguments": [
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\run16s.exe",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\ntw16s32.dll",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\ntw16s64.dll",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\build\\.ninja\\x86\\launch-target.exe",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\build\\.ninja\\x64\\launch-target.exe"
-        ],
         "name": "automatic",
-        "command": "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\build\\.ninja\\x64\\launch-automatic.exe"
+        "exit_code": 0
       },
       {
-        "exit_code": 0,
-        "arguments": [
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\run16s.exe",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\ntw16s32.dll",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\ntw16s64.dll",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\build\\.ninja\\x86\\propagate-target.exe",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\build\\.ninja\\x64\\propagate-target.exe"
-        ],
         "name": "propagation",
-        "command": "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\build\\.ninja\\x64\\propagate-basic.exe"
+        "exit_code": 0
       },
       {
-        "exit_code": 0,
-        "arguments": [
-          "-B",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\tests\\run16s-exe\\long_path.py",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\run16s.exe",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\ntw16s32.dll",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\ntw16s64.dll",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\build\\.ninja\\x86\\launch-failures.exe",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\build\\.ninja\\x64\\launch-failures.exe"
-        ],
+        "name": "cmd-nested",
+        "exit_code": 0
+      },
+      {
         "name": "long-path",
-        "command": "C:\\Program Files\\Python313\\python.exe"
+        "exit_code": 0
       },
       {
-        "exit_code": 0,
-        "arguments": [
-          "-B",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\tests\\run16s-exe\\cli_failures.py",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\run16s.exe",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\ntw16s32.dll",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate\\ntw16s64.dll",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\build\\.ninja\\x86\\launch-target.exe",
-          "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\clean-source\\build\\.ninja\\x64\\launch-target.exe"
-        ],
         "name": "cli-failures",
-        "command": "C:\\Program Files\\Python313\\python.exe"
-      }
-    ],
-    "related_regression": {
-      "x86": {
-        "registered": 26,
-        "ctest_pass": 23,
-        "skips": [
-          "core/edit-clipboard"
-        ],
-        "package_coverage": [
-          "core/font-layout",
-          "core/menu-cancel"
-        ],
-        "font": "bar/popup independent System pixels and columns at actual96/144; controls84 scenarios unchanged; GDI43/43 and45/45",
-        "menu": "30 scenarios; exact native width; fullNC/client corner; hidden associated SysShadow; restore styles/focus/capture/commands/nested/cancel"
-      },
-      "x64": {
-        "registered": 29,
-        "ctest_pass": 26,
-        "skips": [
-          "core/edit-clipboard"
-        ],
-        "package_coverage": [
-          "core/font-layout",
-          "core/menu-cancel"
-        ],
-        "font": "bar/popup independent System pixels and columns at actual96/144; controls84 scenarios unchanged; GDI43/43 and45/45",
-        "menu": "30 scenarios; exact native width; fullNC/client corner; hidden associated SysShadow; restore styles/focus/capture/commands/nested/cancel"
-      }
-    },
-    "coverage": "exact registered26/29 union of remaining CTest24/27 plus actual-package font/menu; 53 pass/2 clipboard permission skips; not a single full CTest run",
-    "font": "actual96/144 per width, independent host System16 glyph/advance DPI oracle for bar/popup; actual item widths108/162; shared shortcut columns; 84 control scenario types unchanged; GDI43/43,45/45",
-    "menu": "30 scenarios per width, hidden associated SysShadow5px expansion, fullNC and client corners, native before/after, style/class/SPI restoration, nested/cancel/focus/capture/commands",
-    "title": [
-      {
-        "dpi": 96,
-        "width": 642,
-        "title_rows": 25,
-        "rgb_bytes_compared": 48150,
-        "differences": 0,
-        "rgb_sha256": "7a853b50f4c532cebde7f29d5682c1e8bc95c3c986c8cdaf7d04c5d36c908745",
-        "baseline_bmp": "build/t8-package/s4-negative/title-baseline/menu-open-96-case0-width106.bmp",
-        "baseline_sha256": "d552424a9bd268a0416295d4d41d87111dd37f4099bb255f3f04008122e133b7",
-        "candidate_bmp": "build/t8-package/s4-delivery-test/menu-cancel-x64/menu-open-96-case0-width114.bmp",
-        "candidate_sha256": "d1998052272c06b5e3f93b81546794fe92aacd91373ca658dfa2b639be7a29f6",
-        "comparison": "complete title/frame RGB area, alpha excluded; baseline/candidate full window heights differ naturally with menu height"
+        "exit_code": 0
       },
       {
-        "dpi": 144,
-        "width": 640,
-        "title_rows": 35,
-        "rgb_bytes_compared": 67200,
-        "differences": 0,
-        "rgb_sha256": "38053096d0c489b3ea9dc2ecc9e0e31de1f5b1fe38003b727066370c2f141044",
-        "baseline_bmp": "build/t8-package/s4-negative/title-baseline/menu-open-144-case0-width156.bmp",
-        "baseline_sha256": "37e9af6520f1dda96e5ec7d9ee3966029bcd623ed9e7febe04d15a7ee15c7843",
-        "candidate_bmp": "build/t8-package/s4-delivery-test/menu-cancel-x64/menu-open-144-case0-width168.bmp",
-        "candidate_sha256": "807ee37c64bfefcadf878969272b53f3294a9ec795885cb705a8815cdecd283b",
-        "comparison": "complete title/frame RGB area, alpha excluded; baseline/candidate full window heights differ naturally with menu height"
+        "name": "creation-contract",
+        "exit_code": 0
+      },
+      {
+        "name": "rollback",
+        "exit_code": 0
+      },
+      {
+        "name": "dialogs",
+        "exit_code": 0
+      },
+      {
+        "name": "messages",
+        "exit_code": 0
       }
     ],
-    "source_preservation": {
-      "title_expression_sha256": "1fa8dcfb9a31305e39d9c4d91ebed64a328bed8cec30893a4535794e2a8a42e3",
-      "frame_prefix_except_owner_struct": "byte-exact",
-      "controls.c": "byte-exact",
-      "menu_scope.c": "byte-exact S3 shadow and full print flags",
-      "menu_bar.c": "byte-exact",
-      "menu_bar_paint.c": "byte-exact",
-      "legacy20_font_prefix": "byte-exact"
-    },
-    "negative_dlls": "both widths reject GitS3 menu bar pixels and actual popup width; final negative fixture source byte-identical to tested fixtures; expected exit1 in all4",
-    "source_gates": "124 decisions/294 includes/123 receipts; source23, MinHook9, original-resource6, governance13 negative cases; six originals unchanged and each DLL18 tables",
-    "failures_disposed": [
-      "GCC misleading indentation corrected",
-      "old external click fell inside taller system menu; derive external point from client bounds",
-      "attached menu cleanup ownership corrected with SetMenu(NULL)",
-      "MNS_NOCHECK experiment ineffective and fully removed",
-      "exploratory overlapping build failed on owned loaded DLL; final isolated source trees and no rebuild while testing",
-      "old dc spacing24 assertion updated to public row arrow-aware18; actual no-arrow HMENU uses4px trailing edge",
-      "s4-final package14 passed but stale dc assertion failed; s4-release superseded after public helper self-review; only s4-delivery is delivered",
-      "temporary baseline preview header/API macro compile failures corrected; preview only, not a regression pass"
+    "registered_matrix": [
+      {
+        "tests": 26,
+        "skipped": [
+          "core/edit-clipboard"
+        ],
+        "passed": 25,
+        "architecture": "x86"
+      },
+      {
+        "tests": 40,
+        "skipped": [
+          "compatibility/cmd-nested",
+          "core/edit-clipboard"
+        ],
+        "passed": 38,
+        "architecture": "x64"
+      }
     ],
-    "not_covered": [
-      "physical keyboard/mouse or shared desktop compositor capture",
-      "real192DPI monitor; 192 control font vectors only",
-      "actual XP sol.exe fixture unavailable",
-      "arbitrary host fonts/CP1252-external glyphs/mixed application ownerdraw menus",
-      "clipboard private windowstation permissions denied5 -> exit77/skip",
-      "deferred frame DWM restore debt unchanged",
-      "full optional creation/dialog/message integration contracts not rerun this S; current package14 covers basic propagation and launcher contracts"
-    ]
+    "registered_identity": "stable build product sources identical to frozen package; final test observer changes focused and exact-package verified separately",
+    "native_cmd": {
+      "mandatory": 4,
+      "optional_nthook": 4,
+      "optional_dual": 4,
+      "all_exit_codes": [
+        37,
+        23
+      ],
+      "owned_inner_and_outer_jobs_zero": true
+    },
+    "negative_detection": "old production staging x86/x64 rejected valid external imports193; exact final cmd driver rejected old dual-hook package with actual native child exit193",
+    "gates": "source124/294/125; source23 + third-party9 + resource6 + governance13 rejection cases passed"
   },
-  "source_input_convention": "sha256 is the actual build input; git_blob_sha256 records canonical Git bytes only when checkout newline conversion differs",
+  "source_input_convention": "sha256 is actual copied build/test input; git_blob_sha256 is added only for canonical Git bytes differing through text newline normalization",
   "original_resources": {
     "source_commit": "5b0b65f66c281050aa4ce1454c6cd31441a6d484",
     "policy": "owner requires identical resources; authored substitutions rejected",
@@ -887,306 +763,75 @@
   },
   "deployment_directory": "O:/winnt/system32",
   "deployment": {
+    "status": "passed",
     "files": [
       {
-        "after": "0e17ff0306b5277d55ac21e54ee1203cc8a39c95b2ff2c97ac52b49e7f160d8e",
-        "expected": "0e17ff0306b5277d55ac21e54ee1203cc8a39c95b2ff2c97ac52b49e7f160d8e",
-        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-publish\\before-0",
-        "before": "803052bd0004cfea7b217db0177ba73c9e1d11dec08d6843c3171c20633f2afd",
-        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe"
+        "directory": "assets",
+        "name": "demo.exe",
+        "before": "0e17ff0306b5277d55ac21e54ee1203cc8a39c95b2ff2c97ac52b49e7f160d8e",
+        "after": "9510f0a47555efec3c78d361b42fca9e279864ead404a7a15f38003fcf9bcc50"
       },
       {
-        "after": "2f5d7d258e6e20c8a18f791f91bc23d0fe58dbe73d373e63aefc5c6afb3c4284",
-        "expected": "2f5d7d258e6e20c8a18f791f91bc23d0fe58dbe73d373e63aefc5c6afb3c4284",
-        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-publish\\before-0",
-        "before": "80d9890cd6fc5b617145c10a4f3b4ffbc43f4aaa2297cb73af62b93a125dda6d",
-        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll"
+        "directory": "assets",
+        "name": "ntw16s32.dll",
+        "before": "2f5d7d258e6e20c8a18f791f91bc23d0fe58dbe73d373e63aefc5c6afb3c4284",
+        "after": "15faf53f25a76cebbb8a79650caf0deec12fd4f1267b6a218eced86ab6980649"
       },
       {
-        "after": "f3c006d03c704fc26bf5e1bb4129aa5b8682c2e913ad2d4cedc6309e45da375c",
-        "expected": "f3c006d03c704fc26bf5e1bb4129aa5b8682c2e913ad2d4cedc6309e45da375c",
-        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-publish\\before-0",
-        "before": "57a257feedf354365a8c7ce20f0b9ee2472814afe24c4be9cb39ea347a549811",
-        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll"
+        "directory": "assets",
+        "name": "ntw16s64.dll",
+        "before": "f3c006d03c704fc26bf5e1bb4129aa5b8682c2e913ad2d4cedc6309e45da375c",
+        "after": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
       },
       {
-        "after": "4ab03ec12923b4a0bc140f31b16187ec8d768fc8ae4d3d2fca2ab673c60586ca",
-        "expected": "4ab03ec12923b4a0bc140f31b16187ec8d768fc8ae4d3d2fca2ab673c60586ca",
-        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-publish\\before-0",
-        "before": "92a3cea9fce2e1e95515edf5d774eb186c9390de152b340312ec190064aa0ae6",
-        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe"
+        "directory": "assets",
+        "name": "run16s.exe",
+        "before": "4ab03ec12923b4a0bc140f31b16187ec8d768fc8ae4d3d2fca2ab673c60586ca",
+        "after": "f56a7bc121f8d27f7dc320f52e4730db2024db4841457535731ab76625a3dcd4"
       },
       {
-        "after": "0e17ff0306b5277d55ac21e54ee1203cc8a39c95b2ff2c97ac52b49e7f160d8e",
-        "expected": "0e17ff0306b5277d55ac21e54ee1203cc8a39c95b2ff2c97ac52b49e7f160d8e",
-        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-publish\\before-1",
-        "before": "803052bd0004cfea7b217db0177ba73c9e1d11dec08d6843c3171c20633f2afd",
-        "path": "O:\\winnt\\system32\\demo.exe"
+        "directory": "O:/winnt/system32",
+        "name": "demo.exe",
+        "before": "0e17ff0306b5277d55ac21e54ee1203cc8a39c95b2ff2c97ac52b49e7f160d8e",
+        "after": "9510f0a47555efec3c78d361b42fca9e279864ead404a7a15f38003fcf9bcc50"
       },
       {
-        "after": "2f5d7d258e6e20c8a18f791f91bc23d0fe58dbe73d373e63aefc5c6afb3c4284",
-        "expected": "2f5d7d258e6e20c8a18f791f91bc23d0fe58dbe73d373e63aefc5c6afb3c4284",
-        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-publish\\before-1",
-        "before": "80d9890cd6fc5b617145c10a4f3b4ffbc43f4aaa2297cb73af62b93a125dda6d",
-        "path": "O:\\winnt\\system32\\ntw16s32.dll"
+        "directory": "O:/winnt/system32",
+        "name": "ntw16s32.dll",
+        "before": "2f5d7d258e6e20c8a18f791f91bc23d0fe58dbe73d373e63aefc5c6afb3c4284",
+        "after": "15faf53f25a76cebbb8a79650caf0deec12fd4f1267b6a218eced86ab6980649"
       },
       {
-        "after": "f3c006d03c704fc26bf5e1bb4129aa5b8682c2e913ad2d4cedc6309e45da375c",
-        "expected": "f3c006d03c704fc26bf5e1bb4129aa5b8682c2e913ad2d4cedc6309e45da375c",
-        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-publish\\before-1",
-        "before": "57a257feedf354365a8c7ce20f0b9ee2472814afe24c4be9cb39ea347a549811",
-        "path": "O:\\winnt\\system32\\ntw16s64.dll"
+        "directory": "O:/winnt/system32",
+        "name": "ntw16s64.dll",
+        "before": "f3c006d03c704fc26bf5e1bb4129aa5b8682c2e913ad2d4cedc6309e45da375c",
+        "after": "0e6cc093d69d20ee20377e63b5dc30ac3f94bd6259373cf8a0ab21191d025dbc"
       },
       {
-        "after": "4ab03ec12923b4a0bc140f31b16187ec8d768fc8ae4d3d2fca2ab673c60586ca",
-        "expected": "4ab03ec12923b4a0bc140f31b16187ec8d768fc8ae4d3d2fca2ab673c60586ca",
-        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-publish\\before-1",
-        "before": "92a3cea9fce2e1e95515edf5d774eb186c9390de152b340312ec190064aa0ae6",
-        "path": "O:\\winnt\\system32\\run16s.exe"
+        "directory": "O:/winnt/system32",
+        "name": "run16s.exe",
+        "before": "4ab03ec12923b4a0bc140f31b16187ec8d768fc8ae4d3d2fca2ab673c60586ca",
+        "after": "f56a7bc121f8d27f7dc320f52e4730db2024db4841457535731ab76625a3dcd4"
       }
     ],
-    "status": "passed",
-    "test_result": "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery-test\\result.json",
-    "tested_package": "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate",
-    "backup_recovery_commit": "a9ab2ab954af6710748de2fc7bab43285335bdd0",
-    "backup_retention": "owned scratch removed after actual remote review; all8 before bytes recoverable exactly from a9ab2ab Git assets"
+    "before_recovery_commit": "e6d6b55",
+    "raw_publication_sha256": "70002df948c50a07487690f4fbe0c38c5427001e28a2468c8e25d99d85aedf89"
   },
   "audit": {
-    "baseline": "a9ab2ab954af6710748de2fc7bab43285335bdd0",
-    "stage": "S4 closed after actual P1 remote review and safe scratch cleanup; T8 open",
-    "task_status": "T8 remains open for owner appearance feedback; only S4 closed",
-    "source_input_comparison": "all126 compiled inputs equal final s4-delivery source copy; no post-build source changes",
-    "state_owner": "GUI-thread System FNT/HFONT references and native menu item adapters; USER owns native popups/SysShadow",
-    "old_path_disposition": "no source moves, obsolete menu_source font handle removed; controls/title/legacy20/S3 shadow behavior retained",
+    "baseline": "e6d6b55",
+    "stage": "P1 actual remote review pending",
+    "task_status": "T8 open; T9 S1 awaiting delivery closure",
+    "state_owner": "existing process creation transaction and GUI-thread renderer ownership unchanged; tests own jobs/pipes/desktops/new logon Console only",
+    "old_path_disposition": "no moves; only descriptor SizeOfImage rejection replaced with bounded readable address checks; helper/trampolines/renderers unchanged",
+    "evidence": "evidence/native-cmd-staging.json",
+    "evidence_sha256": "6078e67bcf75e0189029da52103de3d348ca9a515ce8c2d0d61d23489afd304f",
     "statistics": {
-      "scope": "src/tests/tools/CMakeLists.txt against a9ab2ab",
-      "paths": 9,
-      "added": 274,
-      "deleted": 68,
-      "net": 206
-    },
-    "raw_evidence_sha256": {
-      "build/t8-package/s4-delivery-test/cases.json": "fe8d266b4fba1c1af61a3d5dfa90362af040c3452ccf974b1546d951decde44d",
-      "build/t8-package/s4-delivery-test/package-before.json": "8ce330f600ea3dc1679df2da3c5861b27e2f702dce9bdecb79e6fecf2820ad0d",
-      "build/t8-package/s4-delivery-test/progress.json": "4a8f181c020b342bc4857ca9f985c0245a4a5a9fd9ff24a7f81605241fd83d2f",
-      "build/t8-package/s4-delivery-test/result.json": "34ff9420f714e3e7aac3aee947f09b7178f58a2273ddbfb8bfeb1dc42122e65f",
-      "build/t8-package/s4-delivery-test/abi-x64/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/abi-x64/stdout.log": "0b3588f46cec840251443a03dc29d798fd7baddb99706ca4f21b229f9c62995c",
-      "build/t8-package/s4-delivery-test/abi-x86/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/abi-x86/stdout.log": "e035766e9f9abbcbfcd1e323d70fe6e936283333e44403622a358449610e351e",
-      "build/t8-package/s4-delivery-test/automatic/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/automatic/stdout.log": "1fc71e40824dcc8a38d6ab42242c61cdb763f44397974ae608a61801917f0c3c",
-      "build/t8-package/s4-delivery-test/cli/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/cli/stdout.log": "86520b91997a6d2995da61505647ffa6463eb4008d77bab0f7befd831b16fa58",
-      "build/t8-package/s4-delivery-test/cli-failures/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/cli-failures/stdout.log": "bc47bd11da7fa71a658b9b23e91079dad2793ca1fb8b5877e1cfb0a3a5ffca39",
-      "build/t8-package/s4-delivery-test/demo-boundary/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/demo-boundary/stdout.log": "af340b74cd79a12b901e4fa22ab869afa79c1955eb21a61b2bebdf6b2cd63680",
-      "build/t8-package/s4-delivery-test/demo-pair/demo-injected.bmp": "e7e11a612b0f40703ae5dfcd14d78f315de57e8573fc3f559888d3199bb56849",
-      "build/t8-package/s4-delivery-test/demo-pair/demo-native.bmp": "71443cc147e678b1d5beedf710ec5afd6490755c743eea125a6869e25bda59bb",
-      "build/t8-package/s4-delivery-test/demo-pair/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/demo-pair/stdout.log": "af09c883ef2a4404d7211a91836ae95412022e8ce86ca9144c86c25a0d12e1ac",
-      "build/t8-package/s4-delivery-test/font-layout-x64/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/font-layout-x64/stdout.log": "90eb18cf11a767794f1b4ecac1238f43ef324df67bf92f9fc22b2b0ad44fbb29",
-      "build/t8-package/s4-delivery-test/font-layout-x86/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/font-layout-x86/stdout.log": "eeb6feb1da3496236664302e37441ce702611998250d916946328448fd21c83b",
-      "build/t8-package/s4-delivery-test/long-path/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/long-path/stdout.log": "78bdc4ed70971e5530cf6a070c7891267b1cd830016d3d0df979528e5171963d",
-      "build/t8-package/s4-delivery-test/menu-cancel-x64/menu-open-144-case0-width168.bmp": "807ee37c64bfefcadf878969272b53f3294a9ec795885cb705a8815cdecd283b",
-      "build/t8-package/s4-delivery-test/menu-cancel-x64/menu-open-144-case9-width101.bmp": "5e35c0b7bad38481f6ba8ad819b651bb56d48bc6e10c4edbc8a4c93995146dbd",
-      "build/t8-package/s4-delivery-test/menu-cancel-x64/menu-open-96-case0-width114.bmp": "d1998052272c06b5e3f93b81546794fe92aacd91373ca658dfa2b639be7a29f6",
-      "build/t8-package/s4-delivery-test/menu-cancel-x64/menu-open-96-case9-width69.bmp": "d0d0ed8d762b65d06c99f2802a48d5f86e5fb07d81acbe174f2b102404e7ff11",
-      "build/t8-package/s4-delivery-test/menu-cancel-x64/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/menu-cancel-x64/stdout.log": "9a2c2e7a9a775ebf5b448c0e3295416b8fd2158341a58f20c3c257e48f748146",
-      "build/t8-package/s4-delivery-test/menu-cancel-x86/menu-open-144-case0-width168.bmp": "807ee37c64bfefcadf878969272b53f3294a9ec795885cb705a8815cdecd283b",
-      "build/t8-package/s4-delivery-test/menu-cancel-x86/menu-open-144-case9-width101.bmp": "5e35c0b7bad38481f6ba8ad819b651bb56d48bc6e10c4edbc8a4c93995146dbd",
-      "build/t8-package/s4-delivery-test/menu-cancel-x86/menu-open-96-case0-width114.bmp": "d1998052272c06b5e3f93b81546794fe92aacd91373ca658dfa2b639be7a29f6",
-      "build/t8-package/s4-delivery-test/menu-cancel-x86/menu-open-96-case9-width69.bmp": "d0d0ed8d762b65d06c99f2802a48d5f86e5fb07d81acbe174f2b102404e7ff11",
-      "build/t8-package/s4-delivery-test/menu-cancel-x86/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/menu-cancel-x86/stdout.log": "9a2c2e7a9a775ebf5b448c0e3295416b8fd2158341a58f20c3c257e48f748146",
-      "build/t8-package/s4-delivery-test/propagation/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/propagation/stdout.log": "02a0732661abe3c3f9630124f98ab581f08bafc5ef719dfe3db32b8f0d6191cf",
-      "build/t8-package/s4-delivery-test/wait-contract/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/wait-contract/stdout.log": "9351fc202b2f5d34be4b192b0605abca73e7a745a722b06570415610776ae64d",
-      "build/t8-package/s4-delivery-test/wait-contract/wait-contract/0/identity.json": "0da11f8ab0fb4f97863231d4f0a2b21b8102a419a56a20e82abeed5e5f6cd0fe",
-      "build/t8-package/s4-delivery-test/wait-contract/wait-contract/0/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/wait-contract/wait-contract/0/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/wait-contract/wait-contract/1/identity.json": "57e1f38055d78d98b1ce1f0f6db09559cf6b7cb1fe2deeb202f41b651d8ff520",
-      "build/t8-package/s4-delivery-test/wait-contract/wait-contract/1/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/wait-contract/wait-contract/1/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/wait-contract/wait-contract/2/identity.json": "198b6fe7ae08d2050537f0f7a4f647c05b66d6a6e4291423b9eeff708493ad5f",
-      "build/t8-package/s4-delivery-test/wait-contract/wait-contract/2/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/wait-contract/wait-contract/2/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/wait-contract/wait-contract/3/identity.json": "91f98f3cbbebd8d1023daedab85c48a83bc8b67793d20d44e93dd23d22619fa6",
-      "build/t8-package/s4-delivery-test/wait-contract/wait-contract/3/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/wait-contract/wait-contract/3/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/wait-contract/wait-contract/4/identity.json": "5a6a632d9fe0e72509b3d347521685cf4f9ea3aaecdbb7789da5f688e8d3722f",
-      "build/t8-package/s4-delivery-test/wait-contract/wait-contract/4/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/wait-contract/wait-contract/4/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/wait-contract/wait-contract/5/identity.json": "a37eac8185e1612f8c010227b88571b3a48ed68964cad7b7b2c255a19b8e11d5",
-      "build/t8-package/s4-delivery-test/wait-contract/wait-contract/5/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-test/wait-contract/wait-contract/5/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-regression/x64/command.json": "715a4645e34dc973ddde1374ac0eae1e30c0bd98d9df6a8e7adc36377fa883bd",
-      "build/t8-package/s4-delivery-regression/x64/core-native.bmp": "51a11929508ff9e6722e865791314a3876a6bd05fe4e6e9ed2846a61cd3f9384",
-      "build/t8-package/s4-delivery-regression/x64/core-styled.bmp": "d408e5fbd368dfe2d73733b4c9cca1a41179c674c267ec732e9ebc47996138f9",
-      "build/t8-package/s4-delivery-regression/x64/coverage.json": "eff6e465c65604f337d78ac482618ff2367140b947b5cc2a7b0da5e15d17da04",
-      "build/t8-package/s4-delivery-regression/x64/demo-injected.bmp": "e7e11a612b0f40703ae5dfcd14d78f315de57e8573fc3f559888d3199bb56849",
-      "build/t8-package/s4-delivery-regression/x64/demo-native.bmp": "71443cc147e678b1d5beedf710ec5afd6490755c743eea125a6869e25bda59bb",
-      "build/t8-package/s4-delivery-regression/x64/exit.json": "75876e0e3f497cad271143ba85bd4f36569cd81195509043f860dab14265b716",
-      "build/t8-package/s4-delivery-regression/x64/junit.xml": "7237f404fdcda6e27b597b682f56f0e0808ad0b226f1d670c9214eaf739fe535",
-      "build/t8-package/s4-delivery-regression/x64/run.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-regression/x64/run.log": "f33dd52d499dd6329c6c71ecb21038757e22af33e16ee9e5e353128eb49d8419",
-      "build/t8-package/s4-delivery-regression/x86/command.json": "b274ae60999798ff6908c0803187dc7ea4caa7b12546c1a5a2c48ea18206a203",
-      "build/t8-package/s4-delivery-regression/x86/core-native.bmp": "51a11929508ff9e6722e865791314a3876a6bd05fe4e6e9ed2846a61cd3f9384",
-      "build/t8-package/s4-delivery-regression/x86/core-styled.bmp": "d408e5fbd368dfe2d73733b4c9cca1a41179c674c267ec732e9ebc47996138f9",
-      "build/t8-package/s4-delivery-regression/x86/coverage.json": "e161b7f8c1375998650f712eb7fc97c2ef86026e4e93ffc1380d4d001fa57e31",
-      "build/t8-package/s4-delivery-regression/x86/exit.json": "75876e0e3f497cad271143ba85bd4f36569cd81195509043f860dab14265b716",
-      "build/t8-package/s4-delivery-regression/x86/junit.xml": "531e06b7909dbcc2e152bc4fb2d36c62d649a4cb69b37a13cb5e17944a70ff27",
-      "build/t8-package/s4-delivery-regression/x86/run.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-regression/x86/run.log": "78e1deb9d446495ebaa0bc2d6f30b6240fa5820a897552c5b754640a6c9b5681",
-      "build/t8-package/s4-delivery-regression/x64/wait-contract/0/identity.json": "d95b7645ece70f2a556f7425fbcd53cd786e4e5db1e3f60bbdb8069739055006",
-      "build/t8-package/s4-delivery-regression/x64/wait-contract/0/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-regression/x64/wait-contract/0/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-regression/x64/wait-contract/1/identity.json": "1af172a36be01fd7e7a86778b164cb7c671eccbd6bd2f8e988a580e8723a4b8d",
-      "build/t8-package/s4-delivery-regression/x64/wait-contract/1/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-regression/x64/wait-contract/1/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-regression/x64/wait-contract/2/identity.json": "aa3f502094fd73b1d1470c8ed91bbb99c1bc601442dc9f39b27baf26ef0a0399",
-      "build/t8-package/s4-delivery-regression/x64/wait-contract/2/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-regression/x64/wait-contract/2/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-regression/x64/wait-contract/3/identity.json": "501fb4f9488f60d1bf36b852d7da0e51c5ba74cccd209fde506838bf625feeeb",
-      "build/t8-package/s4-delivery-regression/x64/wait-contract/3/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-regression/x64/wait-contract/3/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-regression/x64/wait-contract/4/identity.json": "0f61025a2c8e7ce4b59dd93e87e14d48046a41a7f84a87cf602bb1bf33dbe7d6",
-      "build/t8-package/s4-delivery-regression/x64/wait-contract/4/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-regression/x64/wait-contract/4/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-regression/x64/wait-contract/5/identity.json": "45591d83e9a7b1eb10e3ba3c62907b470f19f9332a31f8e5bef0aa6f6ef57260",
-      "build/t8-package/s4-delivery-regression/x64/wait-contract/5/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery-regression/x64/wait-contract/5/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-negative/baseline-preview.c": "27e1502505c6cbf0414eb003123d95019473e5fc906bafaa2becc27ead5b7376",
-      "build/t8-package/s4-negative/title-baseline/menu-open-144-case0-width156.bmp": "37e9af6520f1dda96e5ec7d9ee3966029bcd623ed9e7febe04d15a7ee15c7843",
-      "build/t8-package/s4-negative/title-baseline/menu-open-96-case0-width106.bmp": "d552424a9bd268a0416295d4d41d87111dd37f4099bb255f3f04008122e133b7",
-      "build/t8-package/s4-negative/title-baseline/result.json": "092d1055f0dbd0eb4469c3a704609e464b77491771ac0f8475ea8be8a51330b7",
-      "build/t8-package/s4-negative/title-baseline/run.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-negative/title-baseline/run.log": "0343c2cfcbac028e9fbd64fdf27b9d0d49d64c937bf3874affe7c22f34a72727",
-      "build/t8-package/s4-negative/x64-font/result.json": "959276d7975a9f29fac7a0b9f9e9894bf913b61c73a92658463f05330aaad22e",
-      "build/t8-package/s4-negative/x64-font/run.err": "678fbde13238ab9f2ac5757b9d63b2bc7cb43dd615d2385a7c77899910ee5ff3",
-      "build/t8-package/s4-negative/x64-font/run.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-negative/x64-menu/menu-open-96-case0-width106.bmp": "d552424a9bd268a0416295d4d41d87111dd37f4099bb255f3f04008122e133b7",
-      "build/t8-package/s4-negative/x64-menu/result.json": "e54b2738e30da7e24afd5dea683d70348bb73a14e58a97caa7fdd05b1478992b",
-      "build/t8-package/s4-negative/x64-menu/run.err": "e01b8add2a66c298922741a00289c9e64ca40dac0ed40e4ed23502883cdc1d1e",
-      "build/t8-package/s4-negative/x64-menu/run.log": "bca94ed5806f906316f403d1041e680a6a9a937c4646bfcd7cf3cb5519012873",
-      "build/t8-package/s4-negative/x86-font/result.json": "a8d0207a600e87d45f0de5fc9883683abbc5599b8d890ae4831ea6882752e8c2",
-      "build/t8-package/s4-negative/x86-font/run.err": "678fbde13238ab9f2ac5757b9d63b2bc7cb43dd615d2385a7c77899910ee5ff3",
-      "build/t8-package/s4-negative/x86-font/run.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-negative/x86-menu/menu-open-96-case0-width106.bmp": "d552424a9bd268a0416295d4d41d87111dd37f4099bb255f3f04008122e133b7",
-      "build/t8-package/s4-negative/x86-menu/result.json": "997d2279bf77cac6fe65c198a12ab2badb9aa46a343b77055d2fb0870bc3b975",
-      "build/t8-package/s4-negative/x86-menu/run.err": "e01b8add2a66c298922741a00289c9e64ca40dac0ed40e4ed23502883cdc1d1e",
-      "build/t8-package/s4-negative/x86-menu/run.log": "bca94ed5806f906316f403d1041e680a6a9a937c4646bfcd7cf3cb5519012873",
-      "build/t8-package/s4-focused/result.json": "7c026854065a68062a767f67fae79987445b31e5ffda9c6b7f37a5d016a9f3ac",
-      "build/t8-package/s4-focused/run.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-focused/run.log": "8b52d1ad3bd940cb50bec74bbaf2c0f53349540971b8d770ab5d45e7a3bc5510",
-      "build/t8-package/s4-focused/x86/run.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-focused/x86/run.log": "8b52d1ad3bd940cb50bec74bbaf2c0f53349540971b8d770ab5d45e7a3bc5510",
-      "build/t8-package/s4-focused2/result.json": "7310122aa169d352ec7402b1525e56b439a73419cc05b7873b847f166ddfc271",
-      "build/t8-package/s4-focused2/run.err": "18e00877dc1071c85cd4f479d451bebeef8309022e46cf8c63b0bed5151984a4",
-      "build/t8-package/s4-focused2/run.log": "c306aef72fdf2056296491c0077c471e77aab9b0a07bc9baa8664e7335f60cba",
-      "build/t8-package/s4-focused2/x86/run.err": "18e00877dc1071c85cd4f479d451bebeef8309022e46cf8c63b0bed5151984a4",
-      "build/t8-package/s4-focused2/x86/run.log": "c306aef72fdf2056296491c0077c471e77aab9b0a07bc9baa8664e7335f60cba",
-      "build/t8-package/s4-focused3/result.json": "ae0aa56c2c59e2beb1826b4952f8e9743dc2e4a0f3cfa14c079d81e1d2f94b81",
-      "build/t8-package/s4-focused3/run.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-focused3/run.log": "ef9a266d682cdb934ff3c7414c128acea131c4a4255bee65f49709c1d08b8d38",
-      "build/t8-package/s4-focused3/x64/run.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-focused3/x64/run.log": "e572ebf01c9a5f16874ad35c74a32fb5e2eececd8890ebe23a8efe268c85ee84",
-      "build/t8-package/s4-focused3/x86/run.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-focused3/x86/run.log": "a2d4645c24a68c1ce6dae99e970275b377adf69c40302f568c642d1344c17b74",
-      "build/t8-package/s4-layout-probe/result.json": "e616ade3ee44102077f8ce85b7ac5c0ac3635087551c9a4b673b0d74d2868122",
-      "build/t8-package/s4-layout-probe/run.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-layout-probe/run.log": "e9eb27a2a4c69493c4b60198e0457a5bff9f5094b2276e18daac76ea81d64cb1",
-      "build/t8-package/s4-layout-probe/x64/run.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-layout-probe/x64/run.log": "2e4d1d28f314a36cfd664b8beb39146de920dbc0bef3cab18f79f8f884be7bec",
-      "build/t8-package/s4-layout-probe/x86/run.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-layout-probe/x86/run.log": "949242209327133e1796c2cc59c03ee1fb13985b41f95e70daaf841673554ef7",
-      "build/t8-package/s4-shape/result.json": "8dd24c96a914548d0801d1f33706a0d0c4e4cef0994b5b97554906d80ec661b5",
-      "build/t8-package/s4-shape/run.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-shape/run.log": "908c9e477df4333b449b03b38b911184c1553e0b25db24b6c63a42ae1d023f69",
-      "build/t8-package/s4-shape/x64/run.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-shape/x64/run.log": "abc7dffaa8a53dcd2566cf253f02eb9e566304c5cc37f7a694cfad79516bc0d5",
-      "build/t8-package/s4-shape/x86/run.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-shape/x86/run.log": "c01b3e1f27f19755a1370997d42a9c032ab49f4d6e1d50aa417f8780bce9bfe1",
-      "build/t8-package/s4-width-unit/result.json": "75876e0e3f497cad271143ba85bd4f36569cd81195509043f860dab14265b716",
-      "build/t8-package/s4-width-unit/run.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-width-unit/run.log": "1160757ecfaa7535e74e8375c30a7cc895c022a482362c17354f8213dbb98365",
-      "build/t8-package/s4-width-font/result.json": "75876e0e3f497cad271143ba85bd4f36569cd81195509043f860dab14265b716",
-      "build/t8-package/s4-width-font/run.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-width-font/run.log": "7e41d1d38118257c359933c8b3c0035ef97895f68a2195b26383f88f77cf3767",
-      "build/t8-package/s4-dc-confirm/result.json": "75876e0e3f497cad271143ba85bd4f36569cd81195509043f860dab14265b716",
-      "build/t8-package/s4-dc-confirm/run.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-dc-confirm/run.log": "bff6c8641ab7403624fe470f9e3f6aea94c02d3b96b63df59cd0e3f3e29d44ce",
-      "build/t8-package/s4-delivery/snapshot.json": "0b7eae2c14e407ee99f0e4f670b116cd7ba024c3a568341b5282a330d1e8bf67",
-      "build/t8-package/s4-delivery/package.json": "8ce330f600ea3dc1679df2da3c5861b27e2f702dce9bdecb79e6fecf2820ad0d",
-      "build/t8-package/s4-delivery/result.json": "4fda59e1f1433c17e382f4cdc91a4be36775a614c4a202bce39500980e54c038",
-      "build/t8-package/s4-publish/result.json": "acdf4ee34b848c9fea72c3686d74b93bc233c69ac3cedcf3769d57da09d99c04",
-      "build/t8-package/s4-verification.json": "ad30bff2853e622bf149c259571874df1680a0216a40e45abaa3ba5363253c7e",
-      "build/t8-package/title-pixels.json": "37967e799b5e822c96c94bc342c89acb957032b01914ab6d97f62bbc86034710",
-      "build/t8-package/preservation.json": "deffff7495e92c670a812037e07ad3d764917b7452c745b8bc306d8075238dcc",
-      "build/t8-package/s4-delivery/clean-source/build/t8-package/clean-build/x86/run.log": "aeca27f71dc5f72db27e867ec5f613479c079da2a4296379762d2081f051536d",
-      "build/t8-package/s4-delivery/clean-source/build/t8-package/clean-build/x86/run.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/s4-delivery/clean-source/build/t8-package/clean-build/x64/run.log": "55ea6b46ee530c46d6c87aca9c5b6115ba7b92025c7bbb4b3e9eb3678218fbee",
-      "build/t8-package/s4-delivery/clean-source/build/t8-package/clean-build/x64/run.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "build/t8-package/remote-review.json": "e25b1987af5b5463627f9861230962ebac44cd0031b46a866e2a61dc2cb132fc"
-    },
-    "previews": [
-      {
-        "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t8-s4-menu-96.png",
-        "sha256": "e8b8db88ab443adf0208a4119dda39728908f35bbc0069f7cc3f3ed5b1325511",
-        "kind": "final tested package actual native WM_PRINT owned frame and open popup; no resampling; not XP sol or physical input"
-      },
-      {
-        "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t8-s4-menu-144.png",
-        "sha256": "9b3830edf32c8b0705328d2805c11789ad2cf2a7adefa768ac99792b52e24130",
-        "kind": "final tested package actual native WM_PRINT owned frame and open popup; no resampling; not XP sol or physical input"
-      }
-    ],
-    "review": "passed actual remote P1 commit/diff,126 inputs,6 resource blobs,4 artifacts/8 copies,167 raw evidence digests and registered coverage/title/control/native menu/negative/backup proofs",
-    "scratch": "registered exact root safely removed after actual remote review",
-    "actual_remote_review": {
-      "status": "passed",
-      "commit": "64e3fd30634bcfa426fe1dbc4eec5a0f00c24504",
-      "source_inputs": 126,
-      "resource_blobs": 6,
-      "artifacts": 4,
-      "published_copies": 8,
-      "package_cases": 14,
-      "coverage": "53 pass/2 explicit clipboard permission skips; exact registered26/29 union",
-      "menu": "actual96/144 proportional bar/popup System pixel and native geometry,30 cancellation cases per width, hidden associated5px SysShadow, fullNC/client corners, styles/class/SPI and resource/lifetime checks",
-      "title": "complete native title RGB identical at96/144; source expression/painters unchanged",
-      "controls": "controls.c byte-exact, independent84scenario font/metrics/updates/reentrant/null/detach; GDI43/43 and45/45",
-      "negative": "four old-S3 negatives exit1; final fixture sources byte-identical",
-      "before": "all8 match a9ab2ab Git assets and owned backups",
-      "scope": "M0/T8 open; S4 only closure after review; no global/shared menu mutations or resource substitution",
-      "raw_evidence_checked": 167
-    },
-    "reviewed_commit": "64e3fd30634bcfa426fe1dbc4eec5a0f00c24504",
-    "scratch_cleanup": {
-      "top_level_directories": 21,
-      "directories": 1671,
-      "files": 3316,
-      "reparse_points": 0,
-      "preserved": [
-        "build/.ninja",
-        "build/.ccache",
-        "assets",
-        "O:/winnt/system32",
-        "chat native menu PNGs"
-      ],
-      "live_owned_processes": 0,
-      "absolute_path": "O:\\repos.hobby\\win16style\\build\\t8-package",
-      "path": "build/t8-package",
-      "bytes": 162916014
-    },
-    "evidence_retention": "Raw scratch actually read and SHA-checked before deletion; extracted results/hashes kept in release/history; all8 before bytes recoverable from a9ab2ab Git assets; two native PNGs retained in chat visual directory",
-    "closure_delivery": "M0 T8 S4 P2",
-    "post_delivery_document_only": "P2 changes none of the126 compiled inputs or4 product bytes; both8 published hashes identical to P1; no new build or publication claimed"
+      "scope": "src/tests/tools/CMakeLists.txt versus e6d6b55",
+      "paths": 13,
+      "added": 609,
+      "deleted": 23,
+      "net": 586
+    }
   },
   "typography": {
     "controls": "host System bitmap glyphs sized to original app character advances/cell/ascent/leading; borrowed app fonts restored on detach; System/NULL retained; no layout changes",
@@ -1212,6 +857,7 @@
     "print": "preserve complete native WM_PRINT flags then repaint thin frame; avoid unpainted right/bottom client strip; WM_PAINT also keeps thin frame",
     "global_state": "no class style or SPI mutation",
     "geometry": "font-adapted native ownerdraw sizes; matching System columns; native USER added width compensated once; no HMENU style changes",
-    "title_and_fonts": "title expression/painters and controls.c byte-exact; controls pixel/metric oracle unchanged; title native RGB pixels identical at96/144"
-  }
+    "title_and_fonts": "Production title/fonts/menu sources byte-exact to T8 S4; current exact-package font/menu tests passed. Historical old/new RGB comparison belongs to T8 S4."
+  },
+  "source_inputs_digest_convention": "SHA256 of UTF8 sorted-key compact JSON source_inputs array"
 }

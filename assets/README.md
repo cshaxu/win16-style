@@ -4,10 +4,10 @@ Keep these four files in the same directory:
 
 | File | Architecture | Role |
 | --- | --- | --- |
-| [run16s.exe](run16s.exe) | x64 | Application launcher |
-| [ntw16s32.dll](ntw16s32.dll) | x86 | Styling and descendant hooks |
-| [ntw16s64.dll](ntw16s64.dll) | x64 | Styling and descendant hooks |
-| [demo.exe](demo.exe) | x64 | Native controls demonstration |
+| [run16s.exe](https://raw.githubusercontent.com/cshaxu/win16-style/main/assets/run16s.exe) | x64 | Application launcher |
+| [ntw16s32.dll](https://raw.githubusercontent.com/cshaxu/win16-style/main/assets/ntw16s32.dll) | x86 | Styling and descendant hooks |
+| [ntw16s64.dll](https://raw.githubusercontent.com/cshaxu/win16-style/main/assets/ntw16s64.dll) | x64 | Styling and descendant hooks |
+| [demo.exe](https://raw.githubusercontent.com/cshaxu/win16-style/main/assets/demo.exe) | x64 | Native controls demonstration |
 
 ```powershell
 .\demo.exe

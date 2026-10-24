@@ -23,10 +23,10 @@ Use a modern **64-bit Windows** host. Get the four files from
 
 | File | Architecture | Purpose |
 | --- | --- | --- |
-| [run16s.exe](assets/run16s.exe) | x64 | Starts an application and installs the matching styling DLL. |
-| [ntw16s32.dll](assets/ntw16s32.dll) | x86 | Styles 32-bit applications and propagates hooks to descendants. |
-| [ntw16s64.dll](assets/ntw16s64.dll) | x64 | Styles 64-bit applications and propagates hooks to descendants. |
-| [demo.exe](assets/demo.exe) | x64 | A native Windows controls demo for direct comparison. |
+| [run16s.exe](https://raw.githubusercontent.com/cshaxu/win16-style/main/assets/run16s.exe) | x64 | Starts an application and installs the matching styling DLL. |
+| [ntw16s32.dll](https://raw.githubusercontent.com/cshaxu/win16-style/main/assets/ntw16s32.dll) | x86 | Styles 32-bit applications and propagates hooks to descendants. |
+| [ntw16s64.dll](https://raw.githubusercontent.com/cshaxu/win16-style/main/assets/ntw16s64.dll) | x64 | Styles 64-bit applications and propagates hooks to descendants. |
+| [demo.exe](https://raw.githubusercontent.com/cshaxu/win16-style/main/assets/demo.exe) | x64 | A native Windows controls demo for direct comparison. |
 
 From that directory, in PowerShell:
 
@@ -156,11 +156,11 @@ The script starts a hidden worker, copies the sources into an isolated clean
 build tree, builds both architectures, and assembles the four-file candidate at:
 
 ```text
-build/t8-package/local-build/candidate/
+build/t9-package/local-build/candidate/
 ```
 
 Wait for the worker to finish and inspect
-`build/t8-package/local-build/result.json`; a returned worker PID is not a
+`build/t9-package/local-build/result.json`; a returned worker PID is not a
 successful build result. Use a fresh run name for subsequent builds. If toolchain
 discovery needs help, set `WIN16STYLE_GCC32` and `WIN16STYLE_GCC64` to the two
 native GCC executables.
@@ -169,13 +169,13 @@ Test that exact candidate package:
 
 ```powershell
 pwsh -NoProfile -File tools/Test-Package.ps1 -RunName local-test `
-  -Package build/t8-package/local-build/candidate `
-  -BuildRoot build/t8-package/local-build/clean-source/build/.ninja `
-  -SourceRoot build/t8-package/local-build/clean-source
+  -Package build/t9-package/local-build/candidate `
+  -BuildRoot build/t9-package/local-build/clean-source/build/.ninja `
+  -SourceRoot build/t9-package/local-build/clean-source
 ```
 
 This also runs in a background worker; inspect its final result under
-`build/t8-package/local-test/`. Building and testing do not automatically install
+`build/t9-package/local-test/`. Building and testing do not automatically install
 or publish the candidate. Detailed [build notes](docs/etc/operations/BUILD.md)
 and [test documentation](tests/README.md) are available in Chinese.
 

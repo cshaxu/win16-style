@@ -6,7 +6,7 @@
 [CURRENT](../docs/states/CURRENT.md)，不能以注册数量或旧测试结果声称通过。
 
 ```powershell
-pwsh -NoProfile -File tools/Build-Core.ps1 -TaskRoot t6-package -RunName full-new -TestPattern '^(core|launch|propagate|demo)/.*$' -TimeoutSeconds 600
+pwsh -NoProfile -File tools/Build-Core.ps1 -TaskRoot t9-package -RunName full-new -TestPattern '^(core|launch|propagate|demo)/.*$' -TimeoutSeconds 600
 ```
 
 入口返回隐藏worker PID及结果位置；必须读取最终result.json、逐架构JUnit、
@@ -14,7 +14,7 @@ run.log/run.err。RunName必须全新。每架构独立600秒预算，依次构�
 总上限1200秒；超时为未定结论。稳定树为build/.ninja/x86、x64，ccache为
 build/.ccache；TestPattern可选择focused测试，匹配零项失败。
 
-T6 S1当前注册x86 24项、x64 35项。包含生产C异常清理与原生补丁事务、ABI、
+注册全集以实际CTest -N和本次报告为准；历史T6数量不是当前覆盖。包含生产C异常清理与原生补丁事务、ABI、
 实际DLL窗口/字体/控件及资源生命周期、绘图/DC故障、菜单转发、原生滚动对照、
 私有剪贴板、真实CLI/双位宽首次加载/八类对话框/六类消息框、四位宽边三代传播、
 64组原生/注入创建字段、四组失败回滚、helper超时/目标先退出及长路径。
@@ -33,3 +33,43 @@ GDI/USER检查同时断言已知窗口、最后字体lease和同负载预热后�
 原生对照记录资源，不将冷启动缓存当成DLL泄漏。证据先提炼到history，任务结束
 按活动包回收scratch与Testing日志，保留稳定构建缓存。T1旧MSVC探针已退休，
 历史代码及结果保存在其实际提交中，不作为当前GCC构建入口。
+
+
+## 真实交互式嵌套 cmd
+
+新增纯C `tests/integration/cmd_nested.c` / `cmd_support.h`，不是单层cmd /c smoke。
+从标准输入驱动外层原生cmd，再启动交互内层cmd（/k只初始化本例独有变量），
+成功标记由内层echo组装，驱动器不把完整标记写入输入管道。验证实际cmd.exe绝对
+路径/PE位宽/PID/创建者、DLL路径/SHA及ntw载荷/commit/hooks，内层exit /b 37、
+外层恢复的errorlevel37、外层exit /b 23、包装器实际退出码及owned job清零。
+日志中的nthook初始化结论来自实际原生子代继承，不能把模块存在单独算成功。
+
+必需自包含回归为 `propagate/cmd-nested`，四边32->32、32->64、64->32、64->64；
+32->64使用Sysnative进入真正System32 cmd。CTest从双宽构建输出复制校验三文件
+到自有scratch包；实际包测试 `tools/Test-Package.ps1` 直接使用同批candidate。
+`launch/staging`另在双宽覆盖可读外部导入表/真实初始化窗口、NOACCESS、1024条
+未终止表及RVA末端越界，不需要Detours、run16、NTVDM或兄弟仓库。
+
+在已双宽构建后，选择全新scratch（原始PID/路径/转录只保留本地，不公开提交）：
+
+```powershell
+$env:WIN16STYLE_CAPTURE_DIR = Join-Path $PWD 'build/t9-package/cmd-local-new'
+New-Item -ItemType Directory $env:WIN16STYLE_CAPTURE_DIR
+ctest --test-dir build/.ninja/x64 -R '^propagate/cmd-nested$' --output-on-failure
+# 或对实际四文件发布包运行
+& ./build/.ninja/x64/cmd-nested.exe --core (Resolve-Path assets).Path
+# 可选本机兼容：真实 run16 cmd、run16s run16 cmd，四位宽边分别报告
+& ./build/.ninja/x64/cmd-nested.exe --compat (Resolve-Path assets).Path 'O:\winnt\system32\run16.exe'
+```
+
+可选CTest名称 `compatibility/cmd-nested`；默认WIN16STYLE_OPTIONAL_RUN16为空，
+明确返回77/SKIP，不计通过。可配置该CMake FILEPATH或按上例直接运行。可选模式
+每例用CreateProcessWithLogon NETCREDENTIALS_ONLY创建新AuthenticationId，检查
+端点原先不存在/未监听，再只对本次自有headless Console做FreeConsole/AllocConsole
+以满足后端Console窗口前置条件；用户Console/服务/VDM完全不动。每case独立job、
+私有桌面、超时；缺少后端或无法创建隔离登录/Console时明确skip。
+
+输入输出记录、原生root创建错误、实际子进程退出码和cmd ERRORLEVEL分别报告，
+不凭“不兼容16位”弹窗推断NE。失败后可记录并关闭仅属于本次job的模态警告以收集
+ERRORLEVEL，case仍失败；不会将自动关掉警告当成功。旧staging源/旧发布包负例
+与新包结果必须分列，查看CURRENT/history中的本次实际结果，不能靠测试注册宣称通过。

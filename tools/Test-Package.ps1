@@ -4,7 +4,7 @@ param(
     [Parameter(Mandatory)][string]$BuildRoot,
     [string]$SourceRoot=(Split-Path $PSScriptRoot -Parent),
     [ValidatePattern('^[a-z0-9-]+$')][string]$RunName='package-test',
-    [ValidateRange(1,65535)][int]$Task=8,
+    [ValidateRange(1,65535)][int]$Task=9,
     [switch]$FullIntegration,
     [switch]$Worker
 )
@@ -60,6 +60,7 @@ try{
         (Case 'cli'  $python @('-B',(Join-Path $SourceRoot 'tests/run16s-exe/cli.py'),$run) @('CLI PASS')),
         (Case 'automatic' (Join-Path $x64 'launch-automatic.exe') $pair @('LAUNCH MATRIX PASS')),
         (Case 'propagation' (Join-Path $x64 'propagate-basic.exe') $tree @('PROPAGATION BASIC PASS') 320),
+        (Case 'cmd-nested' (Join-Path $x64 'cmd-nested.exe') @('--core',$Package) @('CMD NESTED PASS core four native PE edges') 180),
         (Case 'long-path' $python @('-B',(Join-Path $SourceRoot 'tests/run16s-exe/long_path.py'),$run,$d32,$d64,(Join-Path $x86 'launch-failures.exe'),(Join-Path $x64 'launch-failures.exe')) @('LONG PATH PASS width=32','LONG PATH PASS width=64')),
         (Case 'cli-failures' $python (@('-B',(Join-Path $SourceRoot 'tests/run16s-exe/cli_failures.py'))+$pair) @('CLI ROLLBACK PASS width=32','CLI ROLLBACK PASS width=64','CLI IO/EXIT PASS width=32','CLI IO/EXIT PASS width=64'))
     )

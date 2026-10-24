@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [ValidatePattern('^[a-z0-9-]+$')][string]$RunName='candidate',
-    [ValidateRange(1,65535)][int]$Task=8,
+    [ValidateRange(1,65535)][int]$Task=9,
     [switch]$Worker
 )
 $ErrorActionPreference='Stop'
