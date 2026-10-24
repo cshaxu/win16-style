@@ -9,6 +9,7 @@
 | [evidence/uac-elevation.json](evidence/uac-elevation.json) | T11双宽UAC、实际高令牌/窗口/子孙、负例、回归及未定位回滚计数失败；原始身份不公开 |
 | [evidence/xaml-research.json](evidence/xaml-research.json) | 用户取消的XAML研究事实及原始摘要；无换肤或产品支持声明 |
 | [evidence/legacy-iat-staging.json](evidence/legacy-iat-staging.json) | T12缺失IAT原生断点、双宽负例、真实DoubleKiller、创建对象身份判据及包验证证据 |
+| [evidence/leaderboard-font.json](evidence/leaderboard-font.json) | Td S10双宽英雄榜同资源字体/墨迹/DPI对照及卸载恢复；无产品修改 |
 | [release.json](release.json) | 当前开发包的输入/工具链/四文件哈希与验收范围，历史版本从对应Git提交取回 |
 | [product-contract.json](product-contract.json) | 架构权威的机器映射；组件/产物变化必须同步审核 |
 | [import](import/README.md) | 来源基线与 Git blob 清单；只作导入对照，不能成为构建输入 |
