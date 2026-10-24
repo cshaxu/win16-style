@@ -2,37 +2,37 @@
 
 ## Current Work
 
-M0 Td S8传播链原生诊断已本地verified，待推送复核；无其他活动包或未提交改动，T8保持开放。
-诊断不改产品；若根因支持本项目修复，另按下一产品T准入，不跨越兄弟仓库边界。
+M0 Td S8诊断已推送实际复核并收口；M0 T9 S1已准入/active，修复双钩子外部导入表
+兼容。原NE间歇失败未证实根因，T8仍开放；裸NTSRV复用无传播为用户接受边界。
 
-## M0 Td S8 Packet
+## M0 T9 S1 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Governance；下一未用Td S8，限调研/自有原生诊断。 |
-| Admission And Approval | 用户要求定位run16s run16 winmine传播，授权自有隔离探针；禁止改动或注入既有服务。 |
-| Objective | 定位首个不符节点，逐层PID/创建者/架构/模块/初始化/窗口附着证据。 |
-| Non-goals | 不改兄弟仓库、原资源、已确认外观、全局设置，不关闭用户服务或扫描注入。 |
-| Reference Baseline | 944ef2673adcb93b62ebe745b73b5e53d8f8174d，四文件T8 S4；本地工作区干净。 |
-| Candidate Proposal | [传播诊断](../proposals/vdm-propagation.md)。 |
-| Files And ABI Surface | 本次文档/临时纯C探针，无产品或ABI变化。 |
-| Applicable Rules | Task Reading Set、来源/UI/编码规则；用户实际命令兼容调研允许只读本机NTVDM而不引入产品依赖。 |
-| Verification | 端点/进程只读预检；可行时自有private desktop/debug job冷链，冷/服务复用/VDM复用分列；读取真实代码/初始化和API证据；有界历史。 |
-| Expected Markers | VDM DIAGNOSTIC、OWNED PROCESS、NODE STATE、Governance PASS；失败/受限如实记录。 |
-| Asset Needs | 精确scratch build/td-s8-vdm，纯C诊断/日志/元数据；仅回收自有任务内容，证据先提炼。 |
-| Reporting Requirements | 断点、最后正常节点、根因/最小方案、覆盖/限制、是否修复发布，T8开放。 |
-| Stop Conditions | 既有服务无法隔离则不做冷启动；兄弟协议修复需求只诊断提案；不越界修改。 |
-| Exit Criteria | 在实际可覆盖范围建立证据并提交推送复核，不能以模块存在代替钩子状态。 |
-| Original Owner Request | 调研最新命令run16s run16 o:/winnt/winmine，先根因再最小修复。 |
-| Similar-Issue Sweep | 初始/载荷/跨宽/helper/后装hook/WOW窗口创建路径及冷热历史对照。 |
+| Identifier Mode | New；T9为下一未用产品任务，S1；M0固定，T8保持开放。 |
+| Admission And Approval | 用户授权本项目范围内确定根因/最小方案后完成修复发布；后续双钩子竞争调研发现staging拒绝有效外部表，已先说明根因与最小方案。 |
+| Objective | 读取有效重定位导入表，保持两钩子调用链与新子进程传播，不误报193。 |
+| Non-goals | 不将其当作原NE间歇故障根因，不改兄弟协议/旧实现/既有用户进程/全局设置，不改标题字体菜单绘制及六原资源。 |
+| Reference Baseline | ce20f15诊断已推送复核；产品仍T8 S4，原失败PE证据见Td S8。 |
+| Candidate Proposal | [传播诊断及最小修复](../proposals/vdm-propagation.md)。 |
+| Files And ABI Surface | staging.c及自包含双宽导入表契约测试、T9版本/操作入口、发布/交付文档；ABI3不变。 |
+| Applicable Rules | Task Reading Set/架构编码UI来源及每S四文件闭环；纯C17/GCC/Ninja/ccache，兄弟只读兼容实验不作必需构建测试依赖。 |
+| Verification | 双宽外部导入表正例/无效地址/越界/未终止负例及真实初始化；全部相关回归、标题/控件/菜单代码与资源保留；干净双宽同批四文件包测试；可选实际双钩子与NE私有自有实例复测。 |
+| Expected Markers | STAGING EXTERNAL PASS、原相关矩阵标记、PACKAGE PASS、资源/治理负例门禁、实际远端复核。 |
+| Asset Needs | 接收build/td-s8-vdm原始证据/临时探针清理责任；新增精确build/t9-package，候选/测试/备份发布；先提炼再检查进程/reparse回收。 |
+| Reporting Requirements | 初始负例与修后、自包含/可选后端分别报告；四SHA/PE/ABI/输入/双发布/远端身份、未覆盖面，T8开放。公开证据脱敏。 |
+| Stop Conditions | 原资源或UI意外改变、调用者挂起语义/回滚失败、真实包失败则修复后重建；兄弟变更需求止于提案。 |
+| Exit Criteria | 最小修复/自包含正负例及双宽回归、同包测试、双发布、提交推送实际复核和安全清理后收口本S；不宣称原NE间歇故障已修复。 |
+| Original Owner Request | 传播链诊断及本项目范围内根因/最小修复交付，补充调查双CreateProcess钩子竞争；接受裸NTSRV无传播边界。 |
+| Similar-Issue Sweep | 同一staging入口的初始/同宽/跨宽helper、已经stage重入、read/restore外部导入表和权限/溢出边界；不更换trampoline或服务策略。 |
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
-- Last allocated T: 8
+- Last allocated T: 9
 - Last allocated Td S: 8
-- Last delivery: M0 Td S7 P2 (P1 894e012实际远端复核通过；T8开放)
-- Open task: M0 T8 (menu appearance feedback; remains open)
+- Last delivery: M0 Td S8 P2 (P1 ce20f15已实际远端复核，证据移交T9 S1；T8开放)
+- Open task: M0 T9 S1 (dual-hook import staging); M0 T8 remains open
 
 ## Technical Baseline
 
@@ -74,6 +74,8 @@ Td S6使用未改的发布包拍摄真实XP sol.exe/匹配cards.dll及demo，精
 [截图清单](../etc/screenshots/manifest.json)，本次验证见[记录](../history/M0-Td-S6-english-readme.md)。
 
 ## Recent Closure
+
+- [Td S8传播诊断](../history/M0-Td-S8-vdm-propagation.md)：ce20f15实际远端复核通过；原NE间歇失败不作修复声明，独立staging缺陷移交当前产品任务。
 
 - [Td S7 README编辑](../history/M0-Td-S7-readme-edit.md)：894e012实际远端复核通过；指定沿革段落已删除。
 

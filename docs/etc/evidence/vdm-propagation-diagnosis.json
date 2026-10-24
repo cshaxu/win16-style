@@ -127,5 +127,11 @@
     "Initial attachment metadata is not proof of settled drawing; non-debug restore and native capture added.",
     "Read-only user snapshot matched initialized styling state but does not reconstruct previous failed launches.",
     "No product source or binary changes in this diagnostic delivery."
+  ],
+  "discarded_probe_dispositions": [
+    "Early API breakpoints affected copied trampoline bytes; discarded and moved to image entry.",
+    "Synchronous RPC or PrintWindow inside a debugger event loop blocked its own debuggee; discarded in favor of non-debug capture.",
+    "Iconic-window initialization metadata did not prove settled drawing; added owned restore and four-second settling.",
+    "Native dual-hook fixture failures are functional failures, even when a controller completed successfully."
   ]
 }

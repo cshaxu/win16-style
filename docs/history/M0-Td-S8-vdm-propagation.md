@@ -19,7 +19,7 @@ LogonUser NEW_CREDENTIALS及CreateProcessWithLogon NETCREDENTIALS_ONLY建立新�
 指派令牌权限的CreateProcessWithToken失败1314，随后改用WithLogon；受限环境
 LogonUser失败5，取得执行权限后成功。job kill-on-close仅拥有本次树，70秒外部预算。
 
-最终release矩阵实际使用O:/winnt/system32四文件，SHA与assets/release.json一致。
+最终release矩阵实际使用O:/winnt/system32四文件，SHA与assets及本项目release.json一致。
 兄弟仓库当时HEAD e787f1a，但有其他任务未提交修改；未修改任何兄弟文件。
 探索前run16为313344字节/c482f54b…，另一任务20:14:03更新为313856字节/
 e7ac4e89e9d1e88d57d7cea1a1ad239deead1537a58c8537820bb504c1739121。
@@ -74,8 +74,9 @@ ntw16s_stage_process实际返回193。nthook先安装Detours重定位表；本�
 ## Verification and handoff
 
 当前126产品输入/四文件/原资源未改，无新产品构建或部署。治理SelfTest及diff检查
-通过。诊断S本地verified，待推送及实际复核。精确scratch build/td-s8-vdm暂保留，
-将移交最小兼容修复的活动包，复核提炼后由接收S负责安全回收；无清理用户目录。
+通过。P1 ce20f1519ae1d0cb1da7024642eb1d6e55ca7385已推送并fetch核对，实际读取远端
+diff/脱敏清单/请求复核通过，126产品输入未变。P2关闭诊断S，准入T9 S1最小兼容
+修复；精确scratch build/td-s8-vdm及清理责任由其接收，先提炼后安全回收，不清理用户目录。
 本次原NE失败仍有未覆盖：用户失败瞬间的完整创建链、过去后端二进制及当时状态；
 可选完整192DPI/物理输入不在本诊断范围，不虚构通过。
 
