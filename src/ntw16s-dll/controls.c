@@ -15,8 +15,9 @@ typedef struct control_style {
     unsigned calls;
     BOOL detached,removing;
     HFONT font,original_font;
+    BOOL text_supported,checking_text;
     BOOL edit_border;
-    HWND combo_list;
+    HWND combo_list,combo_edit;
     struct control_style *owner;
     win16_scroll_track scroll;
     UINT_PTR scroll_timer;
@@ -49,6 +50,84 @@ static BOOL is_link(HWND w)
 static BOOL is_separator(HWND w)
 {DWORD type=(DWORD)GetWindowLongPtrW(w,GWL_STYLE)&SS_TYPEMASK;
  return is_static(w) && type>=SS_ETCHEDHORZ && type<=SS_ETCHEDFRAME;}
+
+/* Read committed Unicode text through USER, also for ANSI application calls.
+ * Bound work on large controls; uncertainty preserves the borrowed app font.
+ * Owner-draw/no-data lists are excluded by supported() before installation. */
+static BOOL text_supported(HWND w)
+{
+    if(is_scroll(w))return TRUE;
+    if(is_static(w)){DWORD type=(DWORD)GetWindowLongPtrW(w,GWL_STYLE)&SS_TYPEMASK;
+        if(type!=SS_LEFT && type!=SS_CENTER && type!=SS_RIGHT && type!=SS_SIMPLE && type!=SS_LEFTNOWORDWRAP)return TRUE;}
+    BOOL list=is_list(w),combo=is_combo(w);LRESULT count=1;size_t remaining=16384;
+    if(list || combo){count=SendMessageW(w,list?LB_GETCOUNT:CB_GETCOUNT,0,0);
+        if(count<0 || count>4096)return FALSE;}
+    for(LRESULT i=0;i<count;++i){
+        SetLastError(ERROR_SUCCESS);
+        LRESULT length=(list || combo)?SendMessageW(w,list?LB_GETTEXTLEN:CB_GETLBTEXTLEN,(WPARAM)i,0):GetWindowTextLengthW(w);
+        if(length<0 || (size_t)length>=remaining || (!length && GetLastError()))return FALSE;
+        WCHAR *text=calloc((size_t)length+1,sizeof(*text));if(!text)return FALSE;
+        SetLastError(ERROR_SUCCESS);
+        LRESULT copied=(list || combo)?SendMessageW(w,list?LB_GETTEXT:CB_GETLBTEXT,(WPARAM)i,(LPARAM)text):GetWindowTextW(w,text,(int)length+1);
+        BOOL ok=copied>=0 && copied<=length && (copied || !GetLastError()) && win16_style_system_text_supported(text);
+        free(text);if(!ok)return FALSE;remaining-=(size_t)length+1;
+    }
+    /* Editable combo text is separate from its item strings. */
+    if(combo){SetLastError(ERROR_SUCCESS);int length=GetWindowTextLengthW(w);if(length<0 || (size_t)length>=remaining || (!length && GetLastError()))return FALSE;
+        WCHAR *text=calloc((size_t)length+1,sizeof(*text));if(!text)return FALSE;
+        SetLastError(ERROR_SUCCESS);int copied=GetWindowTextW(w,text,length+1);BOOL ok=copied>=0 && copied<=length && (copied || !GetLastError()) && win16_style_system_text_supported(text);
+        free(text);return ok;}
+    return TRUE;
+}
+
+static BOOL text_change(HWND w,UINT message)
+{
+    if(message==WM_SETTEXT)return TRUE;
+    if(is_edit(w))return message==EM_REPLACESEL || message==EM_UNDO || message==WM_UNDO ||
+        message==WM_CHAR || message==WM_UNICHAR || message==WM_KEYDOWN || message==WM_IME_COMPOSITION || message==WM_IME_ENDCOMPOSITION ||
+        message==WM_PASTE || message==WM_CUT || message==WM_CLEAR || message==EM_SETHANDLE;
+    if(is_list(w))return message==LB_ADDSTRING || message==LB_INSERTSTRING || message==LB_DELETESTRING ||
+        message==LB_RESETCONTENT || message==LB_DIR || message==LB_ADDFILE;
+    if(is_combo(w))return message==CB_ADDSTRING || message==CB_INSERTSTRING || message==CB_DELETESTRING ||
+        message==CB_RESETCONTENT || message==CB_DIR || message==CB_SETCURSEL || message==CB_SELECTSTRING || message==WM_COMMAND;
+    return FALSE;
+}
+
+static void refresh_text_font(HWND w,control_style *s)
+{
+    if(s->detached || s->removing || s->frame_scrollbars || s->checking_text)return;
+    s->checking_text=TRUE;
+    BOOL compatible=text_supported(w);
+    s->checking_text=FALSE;
+    if(!s->detached && compatible!=s->text_supported){
+        SendMessageW(w,WM_SETFONT,(WPARAM)s->original_font,FALSE);
+        if(!s->detached)InvalidateRect(w,NULL,TRUE);
+    }
+}
+
+/* Direct edits to the combo's native EDIT need not send the combo a change
+ * notification. Observe only that owned child; do not replace its buffer,
+ * input procedure or font ownership. Store an HWND, never an unleased state. */
+static LRESULT CALLBACK combo_text_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR owner)
+{
+    if(m==WM_NCDESTROY)RemoveWindowSubclass(w,combo_text_proc,id);
+    LRESULT result=DefSubclassProc(w,m,a,b);DWORD_PTR data;
+    if(GetWindowSubclass((HWND)owner,control_proc,(UINT_PTR)control_proc,&data)){
+        control_style *s=(control_style *)data;++s->calls;
+        if(m==WM_NCDESTROY){if(s->combo_edit==w)s->combo_edit=NULL;}
+        else if(s->combo_edit==w && text_change(w,m))refresh_text_font((HWND)owner,s);
+        if(!--s->calls && s->detached)dispose_control(s);
+    }
+    return result;
+}
+
+static BOOL detach_combo_edit(control_style *s)
+{
+    DWORD_PTR data;HWND w=s->combo_edit;
+    if(w && GetWindowSubclass(w,combo_text_proc,(UINT_PTR)combo_text_proc,&data) &&
+        !RemoveWindowSubclass(w,combo_text_proc,(UINT_PTR)combo_text_proc))return FALSE;
+    s->combo_edit=NULL;return TRUE;
+}
 
 static BOOL supported(HWND w)
 {
@@ -845,7 +924,10 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
     win16_style_system_retain(pinned);
     if(m==WM_SETFONT && !s->frame_scrollbars){
         HFONT original=win16_style_system_source((HFONT)a);
-        HFONT replacement=win16_style_system_acquire(original);
+        BOOL compatible=!s->checking_text && text_supported(w);
+        if(s->detached){result=DefSubclassProc(w,m,a,b);goto finished;}
+        HFONT replacement=compatible?win16_style_system_acquire(original):NULL;
+        s->text_supported=compatible;
         previous=s->font;s->original_font=original;
         s->font=replacement?replacement:original;
         outbound=s->font;win16_style_system_retain(outbound);
@@ -1032,6 +1114,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
             RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
     }
 finished:
+    if(!s->detached && text_change(w,m))refresh_text_font(w,s);
     /* Native processing (including nested paint/remove/setfont) has finished
      * with the previous lease. Never delete the application's borrowed font. */
     win16_style_system_release(previous);
@@ -1080,6 +1163,11 @@ static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL ori
         s->combo_list=info.hwndList;
         if(GetWindowSubclass(info.hwndList,control_proc,(UINT_PTR)control_proc,&existing))
             ((control_style *)existing)->owner=s;
+        if(info.hwndItem && is_edit(info.hwndItem)){
+            if(!SetWindowSubclass(info.hwndItem,combo_text_proc,(UINT_PTR)combo_text_proc,(DWORD_PTR)w)){
+                win16_style_control_remove(w);result=FALSE;goto installed;}
+            s->combo_edit=info.hwndItem;
+        }
     }
     if(!frame_bars){SendMessageW(w,WM_SETFONT,(WPARAM)s->original_font,FALSE);
         if(!s->detached && is_separator(w))SetWindowPos(w,NULL,0,0,0,0,
@@ -1169,7 +1257,7 @@ BOOL win16_style_control_remove(HWND w)
      * The application may remove again or destroy the HWND in this notice. */
     scroll_finish(w,s,TRUE);
     if(s->detached){if(!--s->calls)dispose_control(s);return TRUE;}
-    if(!RemoveWindowSubclass(w,control_proc,(UINT_PTR)control_proc)){
+    if(!detach_combo_edit(s) || !RemoveWindowSubclass(w,control_proc,(UINT_PTR)control_proc)){
         s->removing=FALSE;--s->calls;return FALSE;}
     s->detached=TRUE;detach_combo_list(s);
     if(s->font && IsWindow(w))SendMessageW(w,WM_SETFONT,(WPARAM)s->original_font,FALSE);
@@ -1190,6 +1278,7 @@ BOOL win16_style_control_terminal(HWND w)
     BOOL result;
     if(!GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&data))return TRUE;
     s=(control_style *)data;
+    if(!detach_combo_edit(s))return FALSE;
     if(!RemoveWindowSubclass(w,control_proc,(UINT_PTR)control_proc)){
         SetLastError(ERROR_INVALID_STATE);return FALSE;
     }

@@ -2,39 +2,37 @@
 
 ## Current Work
 
-无活动任务包。M0 Td S10已完成英雄榜字体只读调查和实际远端复核，调查S收口。
-中文字体被不含中文的ANSI System变体替换，实际墨迹缩小；产品修复未准入。
+M0 T13 S1 verified locally：多语言控件原字体保护已通过双宽验证并双发布。
+71项组合覆盖68通过/3跳过，实际包25/25，真实扫雷/旧DLL负例通过；待P1推送及远端复核。
+用户追加授权已修正占用发布规范，关闭已核实GlassCMD后继续完成部署，无混包。
 M0 T12 S1已完成缺失IAT目录的DoubleKiller启动兼容、验证、双发布及
 P1实际远端复核；T12收口，M0开放。T8/T9/T11关闭、T10取消的状态保持。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
-- Last allocated T: 12
+- Last allocated T: 13
 - Last allocated Td S: 10
 - Last delivery: M0 Td S10 P2 (P1 11cea15实际远端6文档/四产物通过；双宽4例；24 scratch文件回收)
-- Open task: none；T12/T11/T9/T8关闭；T10取消；Td S9保持关闭
+- Open task: T13 S1；T12/T11/T9/T8关闭；T10取消；Td S9保持关闭
 
 ## Technical Baseline
 
-0.12.0.0 / M0 T12 S1已验证、双发布及实际远端复核并收口；
-三组件四文件、x64 Console启动器、双宽DLL、x64 demo、ABI3保持。
-缺失IAT目录时按原FirstThunk范围有界补齐，原bootstrap恢复；不重写lookup数组。
-真实DoubleKiller默认命令和--wait均正常，96DPI经典标题/移动/最小化/恢复/关闭通过；
-已发布system32实际DLL路径/摘要及原生截图有证据，未执行查重/删除/移动文件。
+0.13.0.0 / M0 T13 S1本地验证并双发布；三组件四文件、x64 Console、双宽DLL、ABI3保持。
+控件原字体非ANSI或实际文本不适用CP1252时保留原HFONT及原生回退；动态文字/字体重判，
+列表/下拉包含未选中项目和编辑字段；不按系统UI语言替换字体，不改控件矩形。
+可编辑下拉内部EDIT局部观察，重入移除/销毁、DLL卸载后原生控件存活及GDI不增长通过。
 
-GCC16.1.0/Ninja/共享ccache双宽干净构建；确切最终包23/23通过，双发布8摘要相同。
-首次69项全量65通过3跳过1旧数值句柄判据失败；旧包裸进程亦复现，后改为固定
-内核Event身份比较且保留父进程信号断言。修后旧/新各64向量及最终包创建契约通过。
-修后再干净构建的71加载映像不变，仅2契约fixture预期变化；不冒称另跑全绿69项。
-双宽新缺失IAT测试可检出旧stager的0xC0000005，畸形范围返回193且保持头/挂起。
-证据见[本次记录](../history/M0-T12-S1-legacy-iat.md)、[release](../etc/release.json)。
+GCC16.1.0/Ninja/共享ccache独立干净双宽构建，150份构建/审查输入冻结；实际包25/25。
+冻结注册全集71项逐项组合68通过/3跳过，实际包8项fixture与余下CTest63项合并，不重复计数。
+跳过为双宽private clipboard及可选installed-run16兼容；物理输入/IME和任意DPI不计覆盖。
+8脚本原字形/墨迹、96逻辑及实际144 DPI通过；旧0.12两宽DLL均被新测试检出。
 
-标题/字体/菜单/滚动条renderer及六原资源逐字节保持；T11按需740/UAC、T9原生cmd
-和已有传播契约保持。未配置可选后端/clipboard共3跳过，物理输入及任意DPI不计覆盖。
-T11原回滚计数债务仍在TODO；本次不宣称解决。UWP研究取消，无现代应用支持发布。
-不修改或依赖兄弟仓库；仅处理本次新建进程。两旧T12自有CPU繁忙worker及12登记scratch根/文件已核验回收；
-持久Ninja/cache保留，双宽no work。
+assets根及system32八摘要一致；system32实际真实扫雷正常显示/关闭通过，有原生截图。
+旧/新英雄榜标题24行RGB差异0，frame/menu源字节保持；原资源六文件及两DLL18表、ABI保持。
+已授权发布包含关闭核实的文件占用者，按用户追加要求修正规范并处理GlassCMD实际占用。
+T12旧IAT、T11 UAC、T9原生cmd及已有传播的相关回归保持。NE间歇边界、UWP取消及
+TODO的独立DWM/回滚计数债务不扩张为已解决。证据见[记录](../history/M0-T13-S1-multilingual-font.md)。
 
 ## Recent Closure
 
@@ -61,3 +59,26 @@ T11原回滚计数债务仍在TODO；本次不宣称解决。UWP研究取消，�
 - [S2 System字形修复](../history/M0-T8-S2-system-font.md)：2a0c7dd实际复核通过；S2收口。
 - [S1字体大小修复](../history/M0-T8-S1-font-layout.md)：1c82c2e收口。
 - [菜单取消修复](../history/M0-T7-menu-cancellation.md)与[历史产品审计](../history/M0-T6-completion.md)保留历史边界。
+
+## M0 T13 S1 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | New; 调查后用户明确批准产品修复，下一未使用T13从S1开始 |
+| Admission And Approval | 用户批准实现和完整交付；后续明确要求立即修正占用规范并关闭已识别GlassCMD继续发布，覆盖本S原不改rules限制 |
+| Objective | 不适合System变体的字符集/实际文本保留应用字体；动态文字/字体更新重判，保护原度量 |
+| Non-goals | 不改标题/菜单/滚动条策略、不造本地语言字体、不改兄弟仓库/全局设置/原资源 |
+| Reference Baseline | ae9a1b5；0.12.0.0，准入工作树干净；Td S10已证明中文墨迹缩小 |
+| Candidate Proposal | [多语言控件字体保护](../proposals/leaderboard-font.md) |
+| Files And ABI Surface | font.c/h、controls.c、原生字体回归及构建/包入口，版本0.13.0；ABI3和四产物保持 |
+| Applicable Rules | 全Task Reading Set及source-policy已读；纯C17/GCC/Ninja/ccache；用户本轮明确追加授权修正EXECUTION占用处置，不据此扩张其他规则 |
+| Verification | 双宽原生中日韩/希腊/西里尔/阿拉伯/混合/组合符，字体及动态文本/编辑/列表/下拉；负例旧DLL；既有字体/菜单/标题及完整相关回归 |
+| Expected Markers | MULTILINGUAL FONT PASS、FONT LAYOUT PASS、MENU CANCEL PASS；逐项原字体/像素/advance/卸载/GDI证据 |
+| Asset Needs | 不新增产品资源；保留六原文件；自有窗口原生截图用于验收 |
+| Reporting Requirements | 报告实际覆盖/失败/跳过/负例；源码差异统计、同批四文件测试、双位置8摘要、提交及实际远端 |
+| Stop Conditions | 资源/ABI变化、未定位测试失败、系统部署占用则识别实际占用者，依用户本轮明确授权关闭并继续，不关闭无关进程；超预算文本保守原字体 |
+| Exit Criteria | 根因修复与回归、干净双宽构建及实际包测试、assets根及system32双发布、远端复核、scratch提炼回收；审计后关闭本S/T |
+| Original Owner Request | 按已讨论多语言字体保护方案执行，后续“老规矩”沿用完整交付规范 |
+| Similar-Issue Sweep | 搜索WM_SETFONT/WM_SETTEXT、EDIT变更、LB/CB内容及源字体覆盖；只改控件，保持菜单和标题生成路径 |
+
+scratch：build/t13-font（探索/负例/原生截图）、build/t13-package（冻结快照/构建/包测试/备份），均本S拥有；稳定build/.ninja和.ccache复用不清理。

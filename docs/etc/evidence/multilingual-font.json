@@ -1,0 +1,1148 @@
+{
+  "task": "M0 T13 S1",
+  "baseline": "ae9a1b5ce4b361db5491a36e4908008b05886376",
+  "product_version": "0.13.0.0",
+  "status": "verified-and-published; actual P1 remote review pending",
+  "coverage": {
+    "registered": 71,
+    "passed": 68,
+    "skipped": 3,
+    "rows": [
+      {
+        "arch": "x86",
+        "name": "launch/elevation-unit",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 0.721838
+      },
+      {
+        "arch": "x86",
+        "name": "launch/unwind",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 0.342656
+      },
+      {
+        "arch": "x86",
+        "name": "launch/startup-hooks",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 0.393159
+      },
+      {
+        "arch": "x86",
+        "name": "launch/payload",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 0.361257
+      },
+      {
+        "arch": "x86",
+        "name": "launch/staging",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 0.814684
+      },
+      {
+        "arch": "x86",
+        "name": "core/menu-dispatch",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 9.41796
+      },
+      {
+        "arch": "x86",
+        "name": "core/edit-clipboard",
+        "status": "skip",
+        "source": "ctest",
+        "seconds": 0.385562
+      },
+      {
+        "arch": "x86",
+        "name": "core/control-present",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 27.578
+      },
+      {
+        "arch": "x86",
+        "name": "core/dc-failure",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 1.02939
+      },
+      {
+        "arch": "x86",
+        "name": "core/control-present-negative",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 4.35703
+      },
+      {
+        "arch": "x86",
+        "name": "core/scroll-native",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 5.15719
+      },
+      {
+        "arch": "x86",
+        "name": "core/runtime",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 51.3201
+      },
+      {
+        "arch": "x86",
+        "name": "core/runtime-native",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 41.7317
+      },
+      {
+        "arch": "x86",
+        "name": "core/frames",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 1.15196
+      },
+      {
+        "arch": "x86",
+        "name": "core/font",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 3.2221
+      },
+      {
+        "arch": "x86",
+        "name": "core/font-dpi96",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 2.89491
+      },
+      {
+        "arch": "x86",
+        "name": "core/tabs",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 1.10951
+      },
+      {
+        "arch": "x86",
+        "name": "core/lifetime",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 0.347705
+      },
+      {
+        "arch": "x86",
+        "name": "core/default",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 3.1517
+      },
+      {
+        "arch": "x86",
+        "name": "core/terminal",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 1.26844
+      },
+      {
+        "arch": "x86",
+        "name": "core/sizebox-native",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 0.600437
+      },
+      {
+        "arch": "x86",
+        "name": "core/sizebox-styled",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 0.776728
+      },
+      {
+        "arch": "x86",
+        "name": "core/geometry",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 0.31259
+      },
+      {
+        "arch": "x86",
+        "name": "launch/failures",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 0.404176
+      },
+      {
+        "arch": "x86",
+        "name": "core/abi",
+        "status": "pass",
+        "source": "actual-package/abi-x86",
+        "seconds": 0.1026446
+      },
+      {
+        "arch": "x86",
+        "name": "core/font-layout",
+        "status": "pass",
+        "source": "actual-package/font-layout-x86",
+        "seconds": 116.5733976
+      },
+      {
+        "arch": "x86",
+        "name": "core/multilingual-font",
+        "status": "pass",
+        "source": "actual-package/multilingual-font-x86",
+        "seconds": 4.3428917
+      },
+      {
+        "arch": "x86",
+        "name": "core/menu-cancel",
+        "status": "pass",
+        "source": "actual-package/menu-cancel-x86",
+        "seconds": 66.8565668
+      },
+      {
+        "arch": "x64",
+        "name": "launch/elevation-unit",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 0.64111
+      },
+      {
+        "arch": "x64",
+        "name": "launch/wait",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 7.2393
+      },
+      {
+        "arch": "x64",
+        "name": "launch/unwind",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 0.353027
+      },
+      {
+        "arch": "x64",
+        "name": "launch/startup-hooks",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 0.285871
+      },
+      {
+        "arch": "x64",
+        "name": "launch/payload",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 0.287163
+      },
+      {
+        "arch": "x64",
+        "name": "launch/staging",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 0.657395
+      },
+      {
+        "arch": "x64",
+        "name": "propagate/cmd-nested",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 3.09328
+      },
+      {
+        "arch": "x64",
+        "name": "compatibility/cmd-nested",
+        "status": "skip",
+        "source": "ctest",
+        "seconds": 0.270257
+      },
+      {
+        "arch": "x64",
+        "name": "demo/boundary",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 0.365053
+      },
+      {
+        "arch": "x64",
+        "name": "demo/pair",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 1.93917
+      },
+      {
+        "arch": "x64",
+        "name": "launch/cli",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 0.669319
+      },
+      {
+        "arch": "x64",
+        "name": "propagate/basic",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 5.72218
+      },
+      {
+        "arch": "x64",
+        "name": "propagate/contract",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 9.11859
+      },
+      {
+        "arch": "x64",
+        "name": "propagate/rollback",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 3.98776
+      },
+      {
+        "arch": "x64",
+        "name": "launch/automatic",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 2.10808
+      },
+      {
+        "arch": "x64",
+        "name": "launch/dialogs",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 78.9592
+      },
+      {
+        "arch": "x64",
+        "name": "launch/messages",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 86.0773
+      },
+      {
+        "arch": "x64",
+        "name": "core/menu-dispatch",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 7.95012
+      },
+      {
+        "arch": "x64",
+        "name": "core/edit-clipboard",
+        "status": "skip",
+        "source": "ctest",
+        "seconds": 0.347462
+      },
+      {
+        "arch": "x64",
+        "name": "core/control-present",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 21.8308
+      },
+      {
+        "arch": "x64",
+        "name": "core/dc-failure",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 1.33982
+      },
+      {
+        "arch": "x64",
+        "name": "core/control-present-negative",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 5.05962
+      },
+      {
+        "arch": "x64",
+        "name": "core/scroll-native",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 6.69924
+      },
+      {
+        "arch": "x64",
+        "name": "core/runtime",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 48.758
+      },
+      {
+        "arch": "x64",
+        "name": "core/runtime-native",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 39.3379
+      },
+      {
+        "arch": "x64",
+        "name": "core/frames",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 0.815997
+      },
+      {
+        "arch": "x64",
+        "name": "core/font",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 4.33971
+      },
+      {
+        "arch": "x64",
+        "name": "core/font-dpi96",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 7.27866
+      },
+      {
+        "arch": "x64",
+        "name": "core/tabs",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 4.20631
+      },
+      {
+        "arch": "x64",
+        "name": "core/lifetime",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 0.330997
+      },
+      {
+        "arch": "x64",
+        "name": "core/default",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 3.34155
+      },
+      {
+        "arch": "x64",
+        "name": "core/terminal",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 1.14063
+      },
+      {
+        "arch": "x64",
+        "name": "core/sizebox-native",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 0.584825
+      },
+      {
+        "arch": "x64",
+        "name": "core/sizebox-styled",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 0.802542
+      },
+      {
+        "arch": "x64",
+        "name": "core/geometry",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 0.538499
+      },
+      {
+        "arch": "x64",
+        "name": "launch/failures",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 10.5829
+      },
+      {
+        "arch": "x64",
+        "name": "launch/long-path",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 1.36606
+      },
+      {
+        "arch": "x64",
+        "name": "launch/cli-failures",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 2.59836
+      },
+      {
+        "arch": "x64",
+        "name": "checks/test-runner",
+        "status": "pass",
+        "source": "ctest",
+        "seconds": 1.71782
+      },
+      {
+        "arch": "x64",
+        "name": "core/abi",
+        "status": "pass",
+        "source": "actual-package/abi-x64",
+        "seconds": 0.1110673
+      },
+      {
+        "arch": "x64",
+        "name": "core/font-layout",
+        "status": "pass",
+        "source": "actual-package/font-layout-x64",
+        "seconds": 67.4993398
+      },
+      {
+        "arch": "x64",
+        "name": "core/multilingual-font",
+        "status": "pass",
+        "source": "actual-package/multilingual-font-x64",
+        "seconds": 3.4507552
+      },
+      {
+        "arch": "x64",
+        "name": "core/menu-cancel",
+        "status": "pass",
+        "source": "actual-package/menu-cancel-x64",
+        "seconds": 66.4303392
+      }
+    ],
+    "mapping": "Four exact fixture types per width executed with actual candidate DLL by package tests; all other registered cases via CTest. Same clean-built DLL bytes."
+  },
+  "actual_package": {
+    "cases": 25,
+    "passed": 25,
+    "seconds": 502.1364093,
+    "jobs": 2,
+    "rows": [
+      {
+        "name": "abi-x86",
+        "exit": 0,
+        "seconds": 0.1026446
+      },
+      {
+        "name": "abi-x64",
+        "exit": 0,
+        "seconds": 0.1110673
+      },
+      {
+        "name": "demo-boundary",
+        "exit": 0,
+        "seconds": 0.2198829
+      },
+      {
+        "name": "demo-pair",
+        "exit": 0,
+        "seconds": 2.0267061
+      },
+      {
+        "name": "wait-contract",
+        "exit": 0,
+        "seconds": 7.4751657
+      },
+      {
+        "name": "font-layout-x86",
+        "exit": 0,
+        "seconds": 116.5733976
+      },
+      {
+        "name": "font-layout-x64",
+        "exit": 0,
+        "seconds": 67.4993398
+      },
+      {
+        "name": "multilingual-font-x64",
+        "exit": 0,
+        "seconds": 3.4507552
+      },
+      {
+        "name": "multilingual-font-x86",
+        "exit": 0,
+        "seconds": 4.3428917
+      },
+      {
+        "name": "menu-cancel-x86",
+        "exit": 0,
+        "seconds": 66.8565668
+      },
+      {
+        "name": "menu-cancel-x64",
+        "exit": 0,
+        "seconds": 66.4303392
+      },
+      {
+        "name": "cli",
+        "exit": 0,
+        "seconds": 0.4028706
+      },
+      {
+        "name": "automatic",
+        "exit": 0,
+        "seconds": 1.6598596
+      },
+      {
+        "name": "cmd-nested",
+        "exit": 0,
+        "seconds": 2.4112951
+      },
+      {
+        "name": "long-path",
+        "exit": 0,
+        "seconds": 1.074755
+      },
+      {
+        "name": "propagation",
+        "exit": 0,
+        "seconds": 5.1780818
+      },
+      {
+        "name": "legacy-iat-32",
+        "exit": 0,
+        "seconds": 0.4991566
+      },
+      {
+        "name": "legacy-iat-64",
+        "exit": 0,
+        "seconds": 0.4451134
+      },
+      {
+        "name": "uac-unit-32",
+        "exit": 0,
+        "seconds": 0.3790006
+      },
+      {
+        "name": "cli-failures",
+        "exit": 0,
+        "seconds": 2.2726488
+      },
+      {
+        "name": "uac-unit-64",
+        "exit": 0,
+        "seconds": 0.3685214
+      },
+      {
+        "name": "rollback",
+        "exit": 0,
+        "seconds": 3.6022813
+      },
+      {
+        "name": "creation-contract",
+        "exit": 0,
+        "seconds": 8.1435472
+      },
+      {
+        "name": "dialogs",
+        "exit": 0,
+        "seconds": 72.1569152
+      },
+      {
+        "name": "messages",
+        "exit": 0,
+        "seconds": 83.8533841
+      }
+    ]
+  },
+  "multilingual": [
+    {
+      "arch": "x86",
+      "actual_font_sources": [
+        "MULTILINGUAL SOURCE face=SimSun requested-charset=134 actual-charset=134 height=12",
+        "MULTILINGUAL SOURCE face=MS Gothic requested-charset=128 actual-charset=128 height=12",
+        "MULTILINGUAL SOURCE face=Malgun Gothic requested-charset=129 actual-charset=129 height=15",
+        "MULTILINGUAL SOURCE face=Tahoma requested-charset=161 actual-charset=161 height=14",
+        "MULTILINGUAL SOURCE face=Tahoma requested-charset=204 actual-charset=204 height=14",
+        "MULTILINGUAL SOURCE face=Tahoma requested-charset=178 actual-charset=178 height=14",
+        "MULTILINGUAL SOURCE face=Tahoma requested-charset=177 actual-charset=177 height=14",
+        "MULTILINGUAL SOURCE face=Tahoma requested-charset=222 actual-charset=222 height=14",
+        "MULTILINGUAL SOURCE face=SimSun requested-charset=134 actual-charset=134 height=18",
+        "MULTILINGUAL SOURCE face=MS Gothic requested-charset=128 actual-charset=128 height=18",
+        "MULTILINGUAL SOURCE face=Malgun Gothic requested-charset=129 actual-charset=129 height=25",
+        "MULTILINGUAL SOURCE face=Tahoma requested-charset=161 actual-charset=161 height=22",
+        "MULTILINGUAL SOURCE face=Tahoma requested-charset=204 actual-charset=204 height=22",
+        "MULTILINGUAL SOURCE face=Tahoma requested-charset=178 actual-charset=178 height=22",
+        "MULTILINGUAL SOURCE face=Tahoma requested-charset=177 actual-charset=177 height=22",
+        "MULTILINGUAL SOURCE face=Tahoma requested-charset=222 actual-charset=222 height=22"
+      ],
+      "markers": [
+        "MULTILINGUAL COMBO REENTRY PASS remove/destroy during edit observer font update",
+        "MULTILINGUAL RESOURCE PASS dpi=96 GDI=1/1",
+        "MULTILINGUAL COMBO REENTRY PASS remove/destroy during edit observer font update",
+        "MULTILINGUAL RESOURCE PASS dpi=144 GDI=1/1",
+        "MULTILINGUAL UNLOAD PASS live native combo after DLL unload",
+        "MULTILINGUAL FONT PASS 2 contexts 8 scripts original glyphs dynamic updates and lifetime"
+      ],
+      "old_dll_negative": {
+        "version": "0.12.0.0",
+        "exit": 1,
+        "failure": "First Chinese button original HFONT identity assertion",
+        "log_sha256": "08dba83b9aeb89172fdfd9ee7007a70c5b0edd5b96c587046d78ffa62ff9c5b4"
+      }
+    },
+    {
+      "arch": "x64",
+      "actual_font_sources": [
+        "MULTILINGUAL SOURCE face=SimSun requested-charset=134 actual-charset=134 height=12",
+        "MULTILINGUAL SOURCE face=MS Gothic requested-charset=128 actual-charset=128 height=12",
+        "MULTILINGUAL SOURCE face=Malgun Gothic requested-charset=129 actual-charset=129 height=15",
+        "MULTILINGUAL SOURCE face=Tahoma requested-charset=161 actual-charset=161 height=14",
+        "MULTILINGUAL SOURCE face=Tahoma requested-charset=204 actual-charset=204 height=14",
+        "MULTILINGUAL SOURCE face=Tahoma requested-charset=178 actual-charset=178 height=14",
+        "MULTILINGUAL SOURCE face=Tahoma requested-charset=177 actual-charset=177 height=14",
+        "MULTILINGUAL SOURCE face=Tahoma requested-charset=222 actual-charset=222 height=14",
+        "MULTILINGUAL SOURCE face=SimSun requested-charset=134 actual-charset=134 height=18",
+        "MULTILINGUAL SOURCE face=MS Gothic requested-charset=128 actual-charset=128 height=18",
+        "MULTILINGUAL SOURCE face=Malgun Gothic requested-charset=129 actual-charset=129 height=25",
+        "MULTILINGUAL SOURCE face=Tahoma requested-charset=161 actual-charset=161 height=22",
+        "MULTILINGUAL SOURCE face=Tahoma requested-charset=204 actual-charset=204 height=22",
+        "MULTILINGUAL SOURCE face=Tahoma requested-charset=178 actual-charset=178 height=22",
+        "MULTILINGUAL SOURCE face=Tahoma requested-charset=177 actual-charset=177 height=22",
+        "MULTILINGUAL SOURCE face=Tahoma requested-charset=222 actual-charset=222 height=22"
+      ],
+      "markers": [
+        "MULTILINGUAL COMBO REENTRY PASS remove/destroy during edit observer font update",
+        "MULTILINGUAL RESOURCE PASS dpi=96 GDI=1/1",
+        "MULTILINGUAL COMBO REENTRY PASS remove/destroy during edit observer font update",
+        "MULTILINGUAL RESOURCE PASS dpi=144 GDI=1/1",
+        "MULTILINGUAL UNLOAD PASS live native combo after DLL unload",
+        "MULTILINGUAL FONT PASS 2 contexts 8 scripts original glyphs dynamic updates and lifetime"
+      ],
+      "old_dll_negative": {
+        "version": "0.12.0.0",
+        "exit": 1,
+        "failure": "First Chinese button original HFONT identity assertion",
+        "log_sha256": "f60756e0190a6def49a30ae908b0cf1049749f1a92757a52063eed29353c94c1"
+      }
+    }
+  ],
+  "actual_winmine": {
+    "image": "D:/programs/misc/winmine.exe",
+    "format": "PE32 i386",
+    "sha256": "504177279992377c3c2c435c9340b9529e8060d1f09966defb5bf425aacfae20",
+    "isolation": "Private desktop and owned kill-on-close Job; menu command528; normal displayed leaderboard; native messages, not physical input",
+    "screenshots": [
+      {
+        "mode": "bare",
+        "bmp_sha256": "d5c4a000ec706f22a1983551567c4dee7f283f7026b2cd4bc0fa0dcd01a56e26",
+        "log_sha256": "59331613700ce9f82f72a1ba7dd79fa1898ef1b0651c23c2510f630e02be6d5b",
+        "window_dpi": 96,
+        "owned_root_exit": 0,
+        "module_path": null
+      },
+      {
+        "mode": "old",
+        "bmp_sha256": "f7e40b6dfba3ebd8aea55f7f907670794cd6114458bf6ed42caa77931d492f81",
+        "log_sha256": "e785d7cd22d11ae6c97f12a76ece1c3f42be2f889591b8ba8b44832364a10199",
+        "window_dpi": 96,
+        "owned_root_exit": 0,
+        "module_path": "assets/ntw16s32.dll"
+      },
+      {
+        "mode": "fixed",
+        "bmp_sha256": "8262e491c9fc6aab9794240da366c6e26663de6f51116024437a250f27b71c12",
+        "log_sha256": "9c7ea8fd8894fe5ff4ea7cb3f683db4c3294a6bda468430d1570af776053ff19",
+        "window_dpi": 96,
+        "owned_root_exit": 0,
+        "module_path": "candidate/ntw16s32.dll"
+      },
+      {
+        "mode": "published",
+        "bmp_sha256": "8262e491c9fc6aab9794240da366c6e26663de6f51116024437a250f27b71c12",
+        "log_sha256": "d8badf4504aa783c8b30cdd8e9387fe3185345c556c611ef0080fa902c0c1814",
+        "window_dpi": 96,
+        "owned_root_exit": 0,
+        "module_path": "O:/winnt/system32/ntw16s32.dll"
+      }
+    ],
+    "caption_first_24_rows_rgb_differences": 0,
+    "client_rgb_differences": 1424,
+    "physical_display_dpi": 144,
+    "snapshot_dpi": "Native target DPI96 print context, no image stretching"
+  },
+  "publication": {
+    "copies": [
+      {
+        "previous_sha256": "13f5298b14f3e1b5a302f9709939224083aee4ace9f776013f331fbf605e440a",
+        "sha256": "a49a60094edfff54a9cdd0eec63130eeaf4750dfaf48161adf83ec70b905a0ee",
+        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe"
+      },
+      {
+        "previous_sha256": "abefd7ae5806400f39e54da5008a2126439ec9bd3c2ac652a1b82c7b37438ac7",
+        "sha256": "0f482253a504f23bc30b18a6fb410a1111e88e37c6b3295af3ec30e339fb5631",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll"
+      },
+      {
+        "previous_sha256": "c903e0801fcf5937ccbbf8c3e50a26e691099b409ee6daeff7240b703c438f09",
+        "sha256": "120ddee812031a57271858aecf5c4dc8272116a71e19b4babe3170bd0fde0a55",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll"
+      },
+      {
+        "previous_sha256": "fa86188a17546ae74ce66f175ab348456971cf4e1b740322a53020c64fa94d4a",
+        "sha256": "f141c08043af0bd2174a5ed993e942ff460c02a175026dcb0d1cc7ba4331b2a2",
+        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe"
+      },
+      {
+        "previous_sha256": "13f5298b14f3e1b5a302f9709939224083aee4ace9f776013f331fbf605e440a",
+        "sha256": "a49a60094edfff54a9cdd0eec63130eeaf4750dfaf48161adf83ec70b905a0ee",
+        "path": "O:\\winnt\\system32\\run16s.exe"
+      },
+      {
+        "previous_sha256": "abefd7ae5806400f39e54da5008a2126439ec9bd3c2ac652a1b82c7b37438ac7",
+        "sha256": "0f482253a504f23bc30b18a6fb410a1111e88e37c6b3295af3ec30e339fb5631",
+        "path": "O:\\winnt\\system32\\ntw16s32.dll"
+      },
+      {
+        "previous_sha256": "c903e0801fcf5937ccbbf8c3e50a26e691099b409ee6daeff7240b703c438f09",
+        "sha256": "120ddee812031a57271858aecf5c4dc8272116a71e19b4babe3170bd0fde0a55",
+        "path": "O:\\winnt\\system32\\ntw16s64.dll"
+      },
+      {
+        "previous_sha256": "fa86188a17546ae74ce66f175ab348456971cf4e1b740322a53020c64fa94d4a",
+        "sha256": "f141c08043af0bd2174a5ed993e942ff460c02a175026dcb0d1cc7ba4331b2a2",
+        "path": "O:\\winnt\\system32\\demo.exe"
+      }
+    ],
+    "file_lock": {
+      "owner": "GlassCMD.exe",
+      "owner_pid": 16852,
+      "owner_start_local": "2026-10-24 11:33:02",
+      "action": "User explicitly authorized closing owner and correcting execution policy. CloseMainWindow returned false; wait4s then exact PID/path/start revalidated and terminated; RM found zero owners. All8 restored first, then republished and verified.",
+      "policy": "Publication authorization includes closing verified actual file owners; no process-name bulk termination."
+    }
+  },
+  "preserved_renderer_sources": [
+    {
+      "path": "src/ntw16s-dll/menu_bar.c",
+      "sha256": "dabb1ce65683a5b92ae396c1c56224eb7815cacd60d91fb5f196aa9d536244b7"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_bar.h",
+      "sha256": "7eba7d9c045131b8aebb7d7c8b87303b97d2eb8e52d9030388f6dd23af9731df"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_bar_paint.c",
+      "sha256": "209ab48d33f57207c33f90c412b9c294ed062683c789803dd207cf22fd66076f"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_glyphs.h",
+      "sha256": "03922a10b6a7b46e1792852b93f1e1590d45546a57a63cead41fb7b0f0eefa4e"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_items.c",
+      "sha256": "50ffdecade278016841546433fb6650c0c8e2e3d7996725eefb5e77e10be0706"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_items.h",
+      "sha256": "24dff3476635ede1304b7ee3bdf28c3639b4ded55826c8000e7142531ac69b18"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_layout.c",
+      "sha256": "cde752459255f121492daa908df6cd6201a549d0080d2cf73b8975b6042dc62c"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_layout.h",
+      "sha256": "e70959ddd21f2cb3d2904a7bf756f79066e839144d7ecc7174a97f026a065e19"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_paint.c",
+      "sha256": "00df595f7ab3f4471bd5d851930aac1e03d48430c45a8ed8ecb372dbdc108e84"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_paint.h",
+      "sha256": "59e3b90b9d362c2264ba6597c3508dd04815a1b17ea4b50317ab12865c628b22"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_scope.c",
+      "sha256": "21144a3223b75b502d9b5509dee8f0f3fe642ee2dfe9b04f24f104f60279f28c"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_scope.h",
+      "sha256": "e7f130982359c73f3aa790cdbe8915c2acf5aa2a4889dbd5dfda7855a652a699"
+    },
+    {
+      "path": "src/ntw16s-dll/win16_style.c",
+      "sha256": "0f3b651b2d6aaf44fe2c51397cba2e52df0070c3eb0aabbd70e19c5ab5b971b9"
+    }
+  ],
+  "resources": "Five original headers/provenance byte-exact; 18 original resource tables in each DLL; ABI3 and31 named exports unchanged",
+  "failures_and_disposition": [
+    "Restricted desktop returned2; rerun with native execution permission",
+    "65537-character STATIC did not retain text; replaced with confirmed20000-character budget case",
+    "EDIT initial selection oracle incorrect; explicit7/7 plus actual buffer assertions",
+    "Direct editable-combo child update missed parent notification; added owned child observer and reentrant/unload tests",
+    "Diagnostic indentation and missing Comctl32 test link errors corrected before final clean build",
+    "Observer screenshot initially used physical rectangle for virtualized app; matched native target DPI context",
+    "Initial file-in-use deployment fully rolled back; after user authorization exact owner closed and deployment completed"
+  ],
+  "limits": [
+    "Physical keyboard/mouse and IME composition not tested",
+    "Physical96/192 display not tested; actual144 and virtual96 contexts covered",
+    "No universal new glyph coverage; original application/Windows fallback retained",
+    "Title/menu policy unchanged; this is control font protection, not multilingual menu redesign",
+    "Optional installed run16 compatibility and both private-desktop clipboard cases skipped, not passes"
+  ],
+  "raw_evidence": [
+    {
+      "path": "build/t13-package/s1-final/snapshot.json",
+      "sha256": "8dd239975c4b6bb610fa0bec1b2122425a8cf32d858df0ceadeaed216d4ec558"
+    },
+    {
+      "path": "build/t13-package/s1-final/package.json",
+      "sha256": "39096c053e420b2d6f32aed077b0e1d13c073e4bd553d85daecf29edd1251b04"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/result.json",
+      "sha256": "caca8a68dc8136eba8f515ea8cb140b9299531914cc9a50d061e65a6fccb95ae"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/cases.json",
+      "sha256": "bd07c4d8abdc50f6812d93d7125a88752065423ce9a6780e54ae3c84ef38ff6a"
+    },
+    {
+      "path": "build/t13-package/s1-deploy/blocked.json",
+      "sha256": "e9c2dd4b7e62093c41f7ef7cd050505e1da383404927c96d74e0ca9dfec04922"
+    },
+    {
+      "path": "build/t13-package/s1-deploy/after.json",
+      "sha256": "3b1769dc394e3f19d9733ce3c02927302c95610964aa8e1a4fa713b712895bfc"
+    },
+    {
+      "path": "build/t13-font/lock-owner.log",
+      "sha256": "0cfbb134350cf47bfea0fcee1176f709cfeeae509dd81e1a4b85abe8d0c52a2c"
+    },
+    {
+      "path": "build/t13-font/lock-owner-after.log",
+      "sha256": "08f2a6be0836a49c8b86eece2ffd141a12465c8a7a399b53f0cdda6bb9f5fe6c"
+    },
+    {
+      "path": "build/t13-package/s1-regression/x86/registered.json",
+      "sha256": "a3f60046a764d39b3a8dc465ad3661bce3d9ecb45b67a372f8729696268c5221"
+    },
+    {
+      "path": "build/t13-package/s1-regression/x86/results.xml",
+      "sha256": "41ac833bb764acf87843e2e6051a03645bf239f19b58cf51f308a032e08e1dfc"
+    },
+    {
+      "path": "build/t13-package/s1-regression/x86/run.log",
+      "sha256": "07fee0e8194e68ec1928770d6fb70070b3e43e00620f2c9328ae5098f5c8f907"
+    },
+    {
+      "path": "build/t13-package/s1-regression/x86/time.json",
+      "sha256": "96d7c8ce0b0093ad1d1a7aaa3e681f63d1a36d15e7916d775857f0b2a88063c3"
+    },
+    {
+      "path": "build/t13-package/s1-regression/x64/registered.json",
+      "sha256": "8a0f3b9f91baeae2ccba29f8544d7c1c6c7cb2fd1d74b7e82c64e4d103374f01"
+    },
+    {
+      "path": "build/t13-package/s1-regression/x64/results.xml",
+      "sha256": "d31c94db9f2dfe16ded355703ab9eabfb79d3c49155b4568278ac7519a68108b"
+    },
+    {
+      "path": "build/t13-package/s1-regression/x64/run.log",
+      "sha256": "37d656211515ae47e6162eeadd7632ec25f06e2d3848b680b98b9a0dabdacc00"
+    },
+    {
+      "path": "build/t13-package/s1-regression/x64/time.json",
+      "sha256": "c01342b2ba7e811fdfeda475a5cba375d977be2a30388c5d3a50cdb682052175"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/abi-x86/stdout.log",
+      "sha256": "e035766e9f9abbcbfcd1e323d70fe6e936283333e44403622a358449610e351e"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/abi-x86/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/abi-x64/stdout.log",
+      "sha256": "0b3588f46cec840251443a03dc29d798fd7baddb99706ca4f21b229f9c62995c"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/abi-x64/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/demo-boundary/stdout.log",
+      "sha256": "ae574bd37836e820173aedd04ed587adb71068aa3b0c40feb9a50b582df63428"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/demo-boundary/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/demo-pair/stdout.log",
+      "sha256": "af09c883ef2a4404d7211a91836ae95412022e8ce86ca9144c86c25a0d12e1ac"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/demo-pair/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/wait-contract/stdout.log",
+      "sha256": "3b8ee58835593db8bd7136a24dabc74e0c7aca9361fccefa353a7785651f4d00"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/wait-contract/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/font-layout-x86/stdout.log",
+      "sha256": "401822c5c4b91260e70cf82ce0cafa3856d95ababd8386b92c93d4fd38d23115"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/font-layout-x86/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/font-layout-x64/stdout.log",
+      "sha256": "a961b2caf0c68a747992699c722fa67d188e1b2a38491ec90cf9cd5dff78b7ad"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/font-layout-x64/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/multilingual-font-x64/stdout.log",
+      "sha256": "49bf822deef4f6903cebb0e58e7b4551d585b6f04f6983f3fe403b0cdd365a0a"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/multilingual-font-x64/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/multilingual-font-x86/stdout.log",
+      "sha256": "49bf822deef4f6903cebb0e58e7b4551d585b6f04f6983f3fe403b0cdd365a0a"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/multilingual-font-x86/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/menu-cancel-x86/stdout.log",
+      "sha256": "9a2c2e7a9a775ebf5b448c0e3295416b8fd2158341a58f20c3c257e48f748146"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/menu-cancel-x86/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/menu-cancel-x64/stdout.log",
+      "sha256": "9a2c2e7a9a775ebf5b448c0e3295416b8fd2158341a58f20c3c257e48f748146"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/menu-cancel-x64/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/cli/stdout.log",
+      "sha256": "86520b91997a6d2995da61505647ffa6463eb4008d77bab0f7befd831b16fa58"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/cli/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/automatic/stdout.log",
+      "sha256": "1fc71e40824dcc8a38d6ab42242c61cdb763f44397974ae608a61801917f0c3c"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/automatic/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/cmd-nested/stdout.log",
+      "sha256": "13e4887cfc262de8374d5ba8f193c7ec5869906ba4e5d4c88a058828f2c45c2b"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/cmd-nested/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/long-path/stdout.log",
+      "sha256": "78bdc4ed70971e5530cf6a070c7891267b1cd830016d3d0df979528e5171963d"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/long-path/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/propagation/stdout.log",
+      "sha256": "02a0732661abe3c3f9630124f98ab581f08bafc5ef719dfe3db32b8f0d6191cf"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/propagation/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/legacy-iat-32/stdout.log",
+      "sha256": "fde2f861953db81cef2b88e0756246b8cc1c336314df14a212b2138dc9593d3b"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/legacy-iat-32/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/legacy-iat-64/stdout.log",
+      "sha256": "c43f6c6acd815c3ccf54824140e3afc5864a5f20387ee30301201f0caa3c0594"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/legacy-iat-64/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/uac-unit-32/stdout.log",
+      "sha256": "fe3b5e48e6ad65a23c3be0ccfee9ad21e64117af92d19a8ae7203376ee85f0fe"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/uac-unit-32/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/cli-failures/stdout.log",
+      "sha256": "bc47bd11da7fa71a658b9b23e91079dad2793ca1fb8b5877e1cfb0a3a5ffca39"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/cli-failures/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/uac-unit-64/stdout.log",
+      "sha256": "fe3b5e48e6ad65a23c3be0ccfee9ad21e64117af92d19a8ae7203376ee85f0fe"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/uac-unit-64/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/rollback/stdout.log",
+      "sha256": "92d47f8cf9c75c7da169ef8dbc70dc923765e1dad3513cae46f4cdd636b61ef0"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/rollback/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/creation-contract/stdout.log",
+      "sha256": "6ac9ebb97976b15220abd2876c15ed8c7df0717972b7043eef1234734a8c00b5"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/creation-contract/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/dialogs/stdout.log",
+      "sha256": "1fc71e40824dcc8a38d6ab42242c61cdb763f44397974ae608a61801917f0c3c"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/dialogs/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/messages/stdout.log",
+      "sha256": "1fc71e40824dcc8a38d6ab42242c61cdb763f44397974ae608a61801917f0c3c"
+    },
+    {
+      "path": "build/t13-package/s1-package-test/messages/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

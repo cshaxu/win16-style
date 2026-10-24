@@ -9,7 +9,6 @@ CURRENT 是唯一活动工作权威；本文件拥有顺序，各 proposal 拥�
 
 | 顺序 | T 候选 | 前置完成条件 | 核心交付/任务级退出条件 |
 | --- | --- | --- | --- |
-| 1 | [中文控件字体保护](../proposals/leaderboard-font.md) | 字体调查已完成，等待实现准入 | 保留中文原始字形/度量，双宽原生回归及四文件交付 |
 
 [启动器与首次自动附着](../proposals/launcher-injection.md)已关闭；
 [子孙传播与创建语义](../proposals/descendant-propagation.md)已关闭。
@@ -36,4 +35,4 @@ CURRENT中的完成审计。待准入候选及顺序见上表。
 [旧式PE导入staging](../proposals/legacy-import-staging.md)已完成缺失IAT目录兼容修复并收口；
 实际交付与验证边界见CURRENT及对应完成记录。
 
-[英雄榜字体调查](../proposals/leaderboard-font.md)已完成；后续实现候选见上表，尚未准入。
+[英雄榜字体调查](../proposals/leaderboard-font.md)已完成；多语言保护实现已按用户批准准入，活动状态见CURRENT。

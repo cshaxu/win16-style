@@ -195,8 +195,11 @@ and [test documentation](tests/README.md) are available in Chinese.
   changes appearance; it does not execute DOS or 16-bit Windows binaries.
 - Standard Windows UI is the primary target. Custom-drawn interfaces can retain
   their own appearance; styling is not universal across every application.
-- The System bitmap font path covers CP1252. Other scripts and arbitrary font
-  sizes are outside the bitmap fidelity claim.
+- The System bitmap font path covers CP1252. Controls using another character
+  set or text outside that repertoire retain the application font and native
+  font fallback, including after text updates. Title bars and menus keep their
+  existing typography. Other scripts and arbitrary font sizes are outside the
+  System bitmap fidelity claim.
 - Keep the package together. Its directory must round-trip through the Windows
   ANSI code page or have a usable short path; not every Unicode package path is
   supported.
