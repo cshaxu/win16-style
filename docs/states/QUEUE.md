@@ -21,5 +21,5 @@ CURRENT中的完成审计。当前无剩余待准入候选。
 
 [字体与布局兼容](../proposals/font-layout.md)本轮修复交付已收口；任务保持开放待用户外观反馈，状态由CURRENT管理。
 
-[英文README与真实截图展示](../proposals/readme-showcase.md)为用户已准入的治理文档工作，
+[英文README与真实截图展示](../proposals/readme-showcase.md)为已交付收口的治理文档工作，
 不是新增产品候选；状态仍由CURRENT管理。

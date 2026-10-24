@@ -56,6 +56,20 @@ S4验证边界及T8/TODO继续保留。有限覆盖无剩余README缺项；产�
 
 ## Delivery and review
 
-P1：本地verified，待提交推送后读取实际远端diff/PNG/文档/源输入及发布摘要复核。
-登记scratch为build/td-s6-readme；原始诊断先提炼，实际复核后检查owned进程和
-reparse并安全回收。精选8张PNG和来源元数据持续保留。
+P1 `02df11af7315c46120042c897cbd61c10e4467f7`已推送main并fetch核对一致。
+协调复核重新读取实际远端diff、README/来源清单及原始请求：18文件均为文档/精选
+PNG，没有src/tests/tools/rules、产品exe/dll变更。英文入口/导航/8图与请求相符；
+8个远端PNG逐个SHA与本地/manifest相同。126远端Git输入逐项核对release身份
+（LICENSE使用已登记Git blob SHA），四远端assets及八发布副本摘要一致。
+原声明字节保留，CURRENT明确T8开放；不把截图来源/效果扩成游戏兼容性承诺。
+
+登记scratch `O:/repos.hobby/win16style/build/td-s6-readme`实际复核后安全回收：
+32文件/29677062字节；删除前逐级核对绝对路径、所有祖先/子项无reparse，三个
+自有控制器PID均结束。最初受限CIM查询不可用，不据此删除；取得执行权限后实际
+CIM复验无自有存活应用，再用原生PowerShell LiteralPath精确删除，确认路径不存在。
+临时控制器、3轮原BMP/日志及游戏副本均删除；相关事实/SHA已提炼。精选8张PNG、
+来源元数据、稳定缓存及四文件两处发布保留，本机原Solitaire文件不变。
+
+P2仅记录远端复核、安全清理及Td S6收口；产品输入/四文件/精选PNG无变化，
+不虚构新编译或发布。P2提交前治理SelfTest（13拒绝例）和diff检查通过。
+本次文档请求完成；M0及T8继续开放，既有产品验证边界和TODO不变。
