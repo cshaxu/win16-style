@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T12 S1 P1",
-  "stage": "23 actual-package cases passed; published and hash-verified; awaiting P1 remote review",
+  "delivery": "M0 T12 S1 P2",
+  "stage": "closed after actual P1 remote source/products review and registered scratch cleanup",
   "version": "0.12.0.0",
   "package_directory": "assets",
   "source_inputs": [
@@ -952,9 +952,9 @@
   },
   "audit": {
     "baseline": "0203e097ba5d105d175d701d5c6cc779f99c67b9",
-    "task_status": "M0 T12 S1 verified/published locally; P1 remote review pending",
+    "task_status": "M0 open; T12 S1 closed; previous T8/T9/T11 closed and T10 cancelled unchanged",
     "evidence": "evidence/legacy-iat-staging.json",
-    "evidence_sha256": "2eaaf004d08fe30627c620b56776aaf4aa629e3aaf53556fe4c0ea5a1524da91",
+    "evidence_sha256": "34fb3ca54e61d54e572885c964c908ec615455bb69730098d1e2e2193f6b3044",
     "statistics": {
       "scope": "CMakeLists/src/tests/tools diff vs 0203e09",
       "paths": 8,
@@ -973,6 +973,23 @@
       "net": 125
     },
     "state_owner": "Existing creator owns suspended child and stage; DLL bootstrap restores original header; no new runtime owner/export",
-    "old_path_disposition": "Original stager/helper/bootstrap retained; unsuccessful alternate injection experiments removed"
+    "old_path_disposition": "Original stager/helper/bootstrap retained; unsuccessful alternate injection experiments removed",
+    "p1_remote_review": {
+      "status": "passed",
+      "commit": "507847c7ac264a1a37ea2e2d1155ad2c3c97e4e2",
+      "source_inputs": 139,
+      "products": 4,
+      "downloaded_records_sha256": "fae9558202c416fc8250c6a96206146bf888fcd15278e1f32243d02afa85708c"
+    }
+  },
+  "closure": {
+    "p1": "507847c7ac264a1a37ea2e2d1155ad2c3c97e4e2",
+    "remote_source_inputs": 139,
+    "remote_products": 4,
+    "published_copies": 8,
+    "cleanup": "12 registered t12-* roots/files removed; original backup bytes recoverable from 0203e09",
+    "unchanged_inputs": "P2 documentation only; product inputs and 4 published hashes remain those tested by P1",
+    "persistent_cache": "Ninja x86/x64 no work; .ninja and .ccache retained",
+    "acceptance": "Native probes and saved actual published-window screenshot; physical input and duplicate-file operations not claimed"
   }
 }

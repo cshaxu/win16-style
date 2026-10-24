@@ -110,3 +110,29 @@ verified and published; remote review and task closure are subsequent steps.
 The published default command and bare control also passed when launched from
 the repository with lpCurrentDirectory=NULL. The fix therefore does not rely
 on forcing the application directory as its working directory.
+
+## P2 remote review and closure
+
+P1 507847c7ac264a1a37ea2e2d1155ad2c3c97e4e2 was pushed to main. A separate
+review read the actual commit/diff and downloaded all 139 source inputs plus
+4 products from GitHub raw at that commit. All SHA values match the tested
+release, with existing Git LF checkout transforms explicitly recorded. All
+8 publication hashes were rechecked after commit. P2 changes documentation
+only; there is no replacement binary or untested product amendment.
+
+The task audit covers the original launch failure, decisive missing-IAT cause,
+minimal in-scope fix, both-width positive/old-negative/malformed tests, actual
+DoubleKiller rendering/closure under final and published packages, ordinary
+Win32 regression, corrected object-identity creation checks, original resources,
+same-batch package, two publication destinations and actual remote contents.
+The initial full-matrix failure and three skips remain explicit. Neither this
+S nor the object-identity test correction claims to solve the T11 rollback debt
+or certify arbitrary old programs.
+
+Twelve registered t12-* scratch roots/files were removed after absolute-path,
+reparse-point and active-process checks; the inventory is preserved in evidence.
+That includes the earlier multi-gigabyte defective debugger logs. All 8 prior
+publication copies were proven recoverable from the 0203e09 Git blobs before
+removing task backups. The external acceptance PNG remains. Persistent Ninja
+outputs and shared ccache remain; both architecture dry-runs report no work.
+S1 and T12 are closed; M0 remains open. T8/T9/T11 and cancelled T10 are unchanged.

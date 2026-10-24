@@ -1,6 +1,6 @@
 # Legacy PE import staging
 
-Admitted as M0 T12 S1 by CURRENT. The actual x86 DoubleKiller starts normally
+Delivered as 0.12.0.0 / M0 T12 S1; closure and current status belong to CURRENT. The actual x86 DoubleKiller starts normally
 but the previous run16s staging produces an access violation at the unresolved
 GetModuleHandleA import-name RVA, 0x9ECAE.
 

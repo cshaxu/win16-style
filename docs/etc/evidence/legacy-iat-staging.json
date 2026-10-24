@@ -717,7 +717,72 @@
   "hygiene": {
     "abandoned_task_workers": 2,
     "ownership": "Exact T12 debug_tree command lines and matching process creation identities checked before stopping only owned process trees",
-    "unbounded_earlier_debug_logs_used_as_primary_evidence": false
+    "unbounded_earlier_debug_logs_used_as_primary_evidence": false,
+    "cleanup_inventory": [
+      {
+        "path": "O:\\repos.hobby\\win16style\\build\\t12-current",
+        "files": 4,
+        "bytes": 972942.0
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\build\\t12-doublekiller-candidate",
+        "files": 3,
+        "bytes": 882590.0
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\build\\t12-doublekiller-diagnosis",
+        "files": 6,
+        "bytes": 5245513303.0
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\build\\t12-legacy-staging",
+        "files": 1579,
+        "bytes": 60246152.0
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\build\\t12-package",
+        "files": 3448,
+        "bytes": 154883908.0
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\build\\t12-phase",
+        "files": 3,
+        "bytes": 904673.0
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\build\\t12-phase2",
+        "files": 3,
+        "bytes": 904673.0
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\build\\t12-phase3",
+        "files": 3,
+        "bytes": 902310.0
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\build\\t12-phase4",
+        "files": 3,
+        "bytes": 903981.0
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\build\\t12-phase5",
+        "files": 3,
+        "bytes": 903981.0
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\build\\t12-remote",
+        "files": 3,
+        "bytes": 904673.0
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\build\\t12-x86-build.log",
+        "files": 1,
+        "bytes": 1918.0
+      }
+    ],
+    "cleanup_status": "completed; all 12 registered t12-* roots/files absent; no reparse traversal; persistent .ninja/.ccache and external acceptance PNG preserved",
+    "backup_recoverability": "All 8 previous publication hashes matched 0203e09 Git blobs before scratch backups were removed",
+    "persistent_build": "Both architectures refreshed and Ninja dry-run reports no work"
   },
   "limits": [
     "No arbitrary legacy/packed/managed compatibility claim",
@@ -725,5 +790,12 @@
     "No physical mouse/keyboard or arbitrary DPI certification",
     "Three existing optional/clipboard skips remain explicit",
     "Existing T11 rollback-count debt not declared solved"
-  ]
+  ],
+  "remote_review": {
+    "status": "passed",
+    "commit": "507847c7ac264a1a37ea2e2d1155ad2c3c97e4e2",
+    "source_inputs": 139,
+    "products": 4,
+    "downloaded_records_sha256": "fae9558202c416fc8250c6a96206146bf888fcd15278e1f32243d02afa85708c"
+  }
 }
