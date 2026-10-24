@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T14 S2 P1",
-  "stage": "verified and dual published;actual remote review pending",
+  "delivery": "M0 T14 S2 P2",
+  "stage": "closed after actual P1 remote review and registered scratch cleanup",
   "version": "0.14.0.0",
   "version_contract": "Fixed T14 version; S2 distinguished by Git and artifact SHA",
   "package_directory": "assets",
@@ -731,7 +731,7 @@
     "installed_rejection_passed": 4,
     "physical_input": "not-tested",
     "evidence": "evidence/legacy-retry-cleanup.json",
-    "evidence_sha256": "75fcc513d6f8830eb4f99869bcd2a85abb52dd97396c131822c3a4b429f19f52"
+    "evidence_sha256": "7ef57fe67d31e67e6d64886a93370fea362c77c57a24fa0b532d2766ed7c277a"
   },
   "publication": {
     "copies": [
@@ -819,6 +819,42 @@
       "historical cause of user first seeing no command-line error",
       "all locales/Windows versions",
       "new UAC secure-desktop approval"
-    ]
+    ],
+    "p1_remote_review": {
+      "deleted_paths_404": 4,
+      "actual_downloads": 166,
+      "receipt_sha256": "377fb0f4394b2216f8f11f4955ce009865ea45ae7f0d648dc16e58aadd1123b3",
+      "products": 4,
+      "commit": "f08c7da95915cbfc7a1806e6fa1f3cb97ed2dd92",
+      "source_inputs": 150,
+      "published_copies": 8,
+      "status": "passed"
+    }
+  },
+  "closure": {
+    "p1": "f08c7da95915cbfc7a1806e6fa1f3cb97ed2dd92",
+    "source_inputs_unchanged": 150,
+    "product_sha256_unchanged": true,
+    "registered_scratch_cleanup": {
+      "preserved": "Stable build/.ninja and build/.ccache, assets/system32 releases",
+      "status": "completed;both registered roots absent",
+      "roots": [
+        {
+          "files": 32,
+          "path": "build/t14-s2-cleanup",
+          "resolved": "O:\\repos.hobby\\win16style\\build\\t14-s2-cleanup",
+          "bytes": 586713.0
+        },
+        {
+          "files": 1035,
+          "path": "build/t14-package",
+          "resolved": "O:\\repos.hobby\\win16style\\build\\t14-package",
+          "bytes": 54102241.0
+        }
+      ],
+      "checks": "Exact registered workspace paths; no ancestor/child reparse; no live executable;package only s2-* children"
+    },
+    "task_status": "T14 S2/T14 closed;M0 open;prior states unchanged",
+    "acceptance": "Four native MZ/NE direct/cmd cases emit initial stderr193 exit4 with no extra UI;original historical output-visibility cause not claimed"
   }
 }

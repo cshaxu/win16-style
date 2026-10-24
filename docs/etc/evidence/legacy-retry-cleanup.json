@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "task": "M0 T14 S2",
-  "status": "verified and dual published; P1 actual remote review pending",
+  "status": "P1 actual remote review passed; S2/T14 closed in P2",
   "baseline": "48b5715c3b679921915f37ad81ded94b842fba30",
   "removed_files": [
     "src/run16s-exe/legacy_shell.c",
@@ -603,5 +603,40 @@
     "Publish-Package.ps1 -Task14 -RunName s2-publish",
     "frozen legacy-rejection.exe against installed O:/winnt/system32/run16s.exe; both installed DLL ABI",
     "source/resource/governance self-tests;git diff --check"
-  ]
+  ],
+  "p1_remote_review": {
+    "deleted_paths_404": 4,
+    "actual_downloads": 166,
+    "receipt_sha256": "377fb0f4394b2216f8f11f4955ce009865ea45ae7f0d648dc16e58aadd1123b3",
+    "products": 4,
+    "commit": "f08c7da95915cbfc7a1806e6fa1f3cb97ed2dd92",
+    "source_inputs": 150,
+    "published_copies": 8,
+    "status": "passed"
+  },
+  "scratch_cleanup": {
+    "preserved": "Stable build/.ninja and build/.ccache, assets/system32 releases",
+    "status": "completed;both registered roots absent",
+    "roots": [
+      {
+        "files": 32,
+        "path": "build/t14-s2-cleanup",
+        "resolved": "O:\\repos.hobby\\win16style\\build\\t14-s2-cleanup",
+        "bytes": 586713.0
+      },
+      {
+        "files": 1035,
+        "path": "build/t14-package",
+        "resolved": "O:\\repos.hobby\\win16style\\build\\t14-package",
+        "bytes": 54102241.0
+      }
+    ],
+    "checks": "Exact registered workspace paths; no ancestor/child reparse; no live executable;package only s2-* children"
+  },
+  "task_audit": {
+    "S1": "Legacy secondary Shell mechanism withdrawn by owner; historical records retained",
+    "S2": "Deleted4 obsolete files; original main restored; native initial stderr193/exit4/no-extra-UI regression;24 final package/dual publish/installed validation/actual remote/deleted-path checks/scratch cleanup complete",
+    "boundary": "Historical first missing output cause not reproduced; no extra UI, pause or global settings added",
+    "state": "T14 S2/T14 closed;M0 open;prior task states and TODOs preserved"
+  }
 }
