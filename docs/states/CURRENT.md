@@ -2,17 +2,16 @@
 
 ## Current Work
 
-M0 T8 S1字体调研/修复已verified并双发布，P1待提交推送与实际复核；完成复核和
-owned scratch清理后收口S1。按用户最新指令，T8保持开放等待字体外观反馈，
-不宣称整任务关闭。见[字体修复记录](../history/M0-T8-S1-font-layout.md)。
+当前无活动任务包。本轮M0 T8 S1字体调研/修复已双发布、推送、实际复核及清理，
+S1交付收口。按用户最新指令，T8保持开放等待字体外观反馈，不宣称整任务关闭。见[字体修复记录](../history/M0-T8-S1-font-layout.md)。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 8
 - Last allocated Td S: 5
-- Last delivery: M0 T8 S1 P1 (verified locally; remote review pending)
-- Open task: M0 T8 (owner appearance acceptance pending)
+- Last delivery: M0 T8 S1 P2 (P1 980b496实际远端复核、清理及S1收口；T8开放)
+- Open task: M0 T8 (S1 closed; owner appearance acceptance pending)
 
 ## Technical Baseline
 
@@ -56,33 +55,20 @@ before与T7 P1 411ab6758517b307d44f4597dbc00fc07b925d44 assets同字节，可从
 
 ## Recent Closure
 
-- [T8字体修复](../history/M0-T8-S1-font-layout.md)：本轮自动交付verified、已双发布，实际远端复核待完成；T8开放。
+- [T8字体修复](../history/M0-T8-S1-font-layout.md)：980b496实际远端复核通过、S1已收口；T8仍开放待外观验收。
 - [T7菜单取消](../history/M0-T7-menu-cancellation.md)：411ab67/101e92d交付收口，修复保留。
 - [T6历史审计](../history/M0-T6-completion.md)：历史验收不能代替本次字体修复证据。
 
 ## Retained Assets
 
-本轮owned scratch精确build/t8-package，实际复核后提炼证据并回收；保留稳定
-build/.ninja及build/.ccache、两处发布。预览PNG位于本聊天visualizations目录，
-只为用户查看，不是第五产品或构建/运行依赖。原始截图不代表实际sol验收通过。
+本轮build/t8-package已安全回收：10顶层目录、1342文件、68852600字节，
+无reparse/活动owned进程。保留稳定build/.ninja及build/.ccache、两处发布。
+原始证据已实际读取、提炼结果及SHA到history/release；旧before可从Git T7 P1恢复。
+预览PNG保留本聊天visualizations目录，只供用户查看，不是第五产品或构建/运行
+依赖，也不代表实际sol验收通过。
 
-## M0 T8 S1 Packet
 
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Corrective；T7关闭后字体/布局新缺陷，T8从S1开始 |
-| Admission And Approval | 用户批准字体调整方案并要求实施、发布验收；沿用每S双发布、原资源不替换、不用computer-use、自己用原生探针 |
-| Objective | 控件字体与原生布局一致，取消强制20像素粗体；标题/菜单独立DPI字体，保留程序自绘文字 |
-| Non-goals | 不改sol.exe、不重排应用业务布局、不替换五原图形及声明、不全局改字体、不改传播/启动/公开ABI |
-| Reference Baseline | 101e92dc03d52524c007652f983d27080e5c4a04；四文件T7/0.7.0.0，ABI3，用户截图为失败契约 |
-| Candidate Proposal | [字体与布局兼容](../proposals/font-layout.md)，证据见[修复记录](../history/M0-T8-S1-font-layout.md)，S1发布后等待用户外观验收 |
-| Files And ABI Surface | controls及frame字体所有权；保留既有公开font_acquire legacy API；字体/原生布局探针、旧假设测试、版本和构建/回执/清单/文档，ABI3不变 |
-| Applicable Rules | Task Reading Set、新缺陷新T、原资源身份、有限覆盖与负例、每S编译同包测试双发布推送及实际复核 |
-| Verification | 双宽实际DLL字体探针：原字体handle/度量/文本fit/控件rect、后续WM_SETFONT与移除、不同字号/字重及96/144/192度量；实际native dialog；旧包负例；双宽完整core及相关launch/demo、同包含菜单/字体测试 |
-| Expected Markers | 附着前后字体与布局精确相同，应用后改字体生效、不裁切新增文字；标题/菜单随DPI且两者独立；GDI/窗口清理、菜单取消、启动传播正常 |
-| Asset Needs | build/t8-package/probe-tree、focused等开发运行；release最终冻结快照及regression/regression-final/regression-verified/regression-complete及default-retest；negative旧包；package-test中断记录及package-test-final最终实际包；publish双位置before；hidden owned构建600秒/宽、包1800秒、scratch1GB；证据提炼后回收 |
-| Reporting Requirements | 区分字体度量/DPI上下文与真实多显示器；只报告实际覆盖；原生探针不冒称物理操作；用户外观验收pending明示 |
-| Stop Conditions | app字体/布局改变、引用寿命/GDI泄漏、原资源变、菜单或发布混包失败先修复；外部权限/占用不关闭用户进程 |
-| Exit Criteria | S1新同批四文件构建/原生与包测试/双发布/提交推送/实际复核；自动证据通过、实际远端复核及cleanup后关闭本轮S1；T8按用户最新指令保持开放等待外观验收 |
-| Original Owner Request | 字体字号不和谐，Options文字裁切/重叠而sol自绘Score/Time较小；批准调整并发布验收 |
-| Similar-Issue Sweep | 所有font_acquire/release、WM_GETFONT/WM_SETFONT拦截、列表tab度量、combo/list/edit、菜单/title字体与DPI刷新/销毁、自动注入测试旧字体断言 |
+P1 980b49693c59b3b4947109990843ec71cfeb3237的实际远端代码/提交、126输入、
+六原资源、四文件双发布、原始14项及完整覆盖/失败项复测来源已复核通过。
+P2仅记录复核/清理及S1收口，不改产品输入或四文件，不虚构新构建/发布。
+T8保持开放；后续根据用户外观反馈继续，不把本次S1收口当成T8全部验收通过。

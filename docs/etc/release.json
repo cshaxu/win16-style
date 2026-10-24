@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "delivery": "M0 T8 S1 P1",
-  "stage": "font-layout-automatically-verified-owner-appearance-pending",
+  "stage": "S1-font-fix-delivery-closed-T8-open-owner-appearance-pending",
   "version": "0.8.0.0",
   "package_directory": "assets",
   "source_inputs": [
@@ -888,10 +888,11 @@
         "expected": "e99f02eb555211b1be1d0fbb1275929e18b77f25c30fb7d88f76fbe5b6333fdb"
       }
     ],
-    "backups": "build/t8-package/publish; all8 before files identical to T7 P1 411ab6758517b307d44f4597dbc00fc07b925d44 assets; recoverable from Git after cleanup"
+    "backups": "build/t8-package/publish; all8 before files identical to T7 P1 411ab6758517b307d44f4597dbc00fc07b925d44 assets; recoverable from Git after cleanup",
+    "backup_retention": "S1 scratch cleaned after actual review; all8 before files recoverable exactly from T7 P1 411ab6758517b307d44f4597dbc00fc07b925d44 assets"
   },
   "audit": {
-    "stage": "automatic checks verified; actual remote review and user appearance acceptance pending",
+    "stage": "S1 closed after actual remote review and cleanup; T8 remains open",
     "baseline": "101e92dc03d52524c007652f983d27080e5c4a04",
     "scope": "T8 S1 six units in font-layout history; owner appearance remains pending",
     "task_statistics": {
@@ -929,7 +930,26 @@
     "state_owner": "GUI-thread style_window owns two frame HFONTs; controls borrow app font; original calls/detached lifetime retained",
     "old_path_disposition": "forced20 default removed; explicit font API kept for ABI compatibility; app layout/self-drawn text and original glyph resources retained",
     "physical_input": "native probes only",
-    "owner_appearance": "pending; T8 stays open; S1 delivery closure after actual remote review"
+    "owner_appearance": "pending; S1 repair delivery closed, T8 open per owner",
+    "scratch_cleanup": {
+      "bytes": 68852600,
+      "path": "build/t8-package",
+      "live_owned_processes": 0,
+      "reparse_points": 0,
+      "top_level_directories": 10,
+      "preserved": [
+        "build/.ninja",
+        "build/.ccache",
+        "assets",
+        "O:/winnt/system32",
+        "chat visualizations/win16style-t8-font-preview.png"
+      ],
+      "files": 1342
+    },
+    "reviewed_commit": "980b49693c59b3b4947109990843ec71cfeb3237",
+    "closure_delivery": "M0 T8 S1 P2",
+    "task_status": "T8 open, user appearance acceptance pending",
+    "review": "actual remote code/commit,126 Git inputs,six original blobs,four remote/assets/system32 hashes,14 exit0 cases,raw x86 full plus exact default retest,x64 full registration/JUnit sets,two host skips,font/DPI/GDI/menu/demo oracles,old DLL negatives and8 backup recovery identities checked before cleanup"
   },
   "post_build_test_revision": {
     "initial_snapshot_sha256": "f5dea3c253b0b8db3865782db4fe787b24bf4ae87d5439a08f6a1c7a95589a51",

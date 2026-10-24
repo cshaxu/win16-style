@@ -19,4 +19,4 @@ CURRENT中的完成审计。当前无剩余待准入候选。
 后续项依赖前项交付，不能跨过失败项
 直接发布；不增加额外 milestone、产品组件或产品文件。
 
-[字体与布局兼容](../proposals/font-layout.md)已准入，实施及验收状态由CURRENT管理。
+[字体与布局兼容](../proposals/font-layout.md)本轮修复交付已收口；任务保持开放待用户外观反馈，状态由CURRENT管理。
