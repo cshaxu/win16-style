@@ -31,3 +31,6 @@ CURRENT中的完成审计。待准入候选及顺序见上表。
 [UWP/XAML接入](../proposals/xaml-support.md)已按用户请求取消，无产品支持发布。
 
 [UAC提权与样式注入](../proposals/uac-elevation.md)已完成并收口，实际支持边界和交付见CURRENT。
+
+[旧式PE导入staging](../proposals/legacy-import-staging.md)已由CURRENT的活动包准入；
+该方案只记录本次缺失IAT目录兼容修复，不预分配后续任务。

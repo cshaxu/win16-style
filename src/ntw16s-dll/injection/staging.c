@@ -113,6 +113,37 @@ static DWORD write_header(HANDLE process,const image_info *image,const IMAGE_NT_
     if(!VirtualProtectEx(process,address,sizeof(*nt),protect,&unused) && !error)error=GetLastError();
     return error;
 }
+/* An old image may omit DIRECTORY_ENTRY_IAT. Its original import section then
+ * supplies the loader's fallback range. Moving descriptors outside that image
+ * removes this fallback and can make Windows skip ALL imports. Describe the
+ * original thunk destinations explicitly before moving the descriptors; never
+ * relocate or rewrite the target's lookup arrays. Restore the original (empty)
+ * directory along with the other metadata in stage_restore. */
+static DWORD complete_iat(HANDLE child,const image_info *image,const IMAGE_IMPORT_DESCRIPTOR *imports,
+                          unsigned count,IMAGE_DATA_DIRECTORY *iat)
+{
+    DWORD first=MAXDWORD,last=0;
+    if(iat->VirtualAddress && iat->Size)return ERROR_SUCCESS;
+    if(iat->VirtualAddress || iat->Size)return ERROR_BAD_EXE_FORMAT;
+    for(unsigned i=0;i<count;++i){
+        DWORD rva=imports[i].FirstThunk;BOOL terminated=FALSE;
+        if(!rva)return ERROR_BAD_EXE_FORMAT;
+        for(unsigned j=0;j<IMPORT_LIMIT;++j){
+            uint64_t at=(uint64_t)rva+(uint64_t)j*sizeof(uintptr_t);uintptr_t thunk;
+            if(at>image->nt.OptionalHeader.SizeOfImage || sizeof(thunk)>image->nt.OptionalHeader.SizeOfImage-at)
+                return ERROR_BAD_EXE_FORMAT;
+            DWORD error=read_memory(child,image->base+(SIZE_T)at,&thunk,sizeof(thunk));if(error)return error;
+            if(!thunk){
+                if(rva<first)first=rva;
+                if(at+sizeof(thunk)>last)last=(DWORD)(at+sizeof(thunk));
+                terminated=TRUE;break;
+            }
+        }
+        if(!terminated)return ERROR_BAD_EXE_FORMAT;
+    }
+    if(count){iat->VirtualAddress=first;iat->Size=last-first;}
+    return ERROR_SUCCESS;
+}
 DWORD ntw16s_stage_process(HANDLE child,const char *dll,const void *packet,DWORD bytes)
 {
     image_info image;stage_header previous,*stage;BOOL staged;DWORD error;unsigned old_count=0;
@@ -162,6 +193,8 @@ DWORD ntw16s_stage_process(HANDLE child,const char *dll,const void *packet,DWORD
     stage->imports=next.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
     stage->bound=next.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT];
     stage->iat=next.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IAT];stage->checksum=next.OptionalHeader.CheckSum;
+    error=complete_iat(child,&image,old,old_count,&next.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IAT]);
+    if(error)goto done;
     DWORD rva=(DWORD)((uintptr_t)remote-(uintptr_t)image.base);
     imports=(IMAGE_IMPORT_DESCRIPTOR *)(local+descriptor_offset);
     memcpy(imports+1,old,old_count*sizeof(*old));

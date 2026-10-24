@@ -10,14 +10,29 @@ static const contract_case cases[]={
     {FALSE,TRUE,FALSE,FALSE,TRUE,TRUE,0,CREATE_NEW_PROCESS_GROUP},
     {TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,0,0}
 };
+/* A valid child handle with the parent's numeric value may be an unrelated
+ * loader object. Pin it BEFORE opening the named reference, then compare the
+ * underlying object. Opening the reference first could itself reuse that slot. */
+static BOOL inherited_event(HANDLE candidate,PCWSTR variable)
+{
+    typedef BOOL (WINAPI *compare_fn)(HANDLE,HANDLE);
+    HANDLE pinned=NULL,reference;WCHAR name[128];compare_fn compare;BOOL same=FALSE;
+    FARPROC symbol=GetProcAddress(GetModuleHandleW(L"kernelbase.dll"),"CompareObjectHandles");
+    CHECK(symbol && GetEnvironmentVariableW(variable,name,ARRAYSIZE(name)));
+    memcpy(&compare,&symbol,sizeof(compare));
+    BOOL valid=DuplicateHandle(GetCurrentProcess(),candidate,GetCurrentProcess(),&pinned,0,FALSE,DUPLICATE_SAME_ACCESS);
+    reference=OpenEventW(SYNCHRONIZE,FALSE,name);CHECK(reference);
+    if(valid){same=compare(pinned,reference);CHECK(CloseHandle(pinned));if(!same)contract_log("handle-value-reused",(DWORD)(ULONG_PTR)candidate);}
+    CHECK(CloseHandle(reference));return same;
+}
 static int child(int argc,WCHAR **argv)
 {
     CHECK(argc>=3 && !wcscpy_s(contract_report,MAX_PATH,argv[2]));contract_log("entry",GetCurrentProcessId());
     CHECK(argc==16);unsigned variant=(unsigned)_wtoi(argv[4]);CHECK(variant<8);const contract_case *c=&cases[variant];
-    BOOL styled=_wtoi(argv[3]);DWORD flags=0;WCHAR value[1024],expected[1024],actual[1024],package[MAX_PATH];
+    BOOL styled=_wtoi(argv[3]);WCHAR value[1024],expected[1024],actual[1024],package[MAX_PATH];
     HANDLE event=(HANDLE)(ULONG_PTR)_wcstoui64(argv[5],NULL,10),deny=(HANDLE)(ULONG_PTR)_wcstoui64(argv[6],NULL,10);
-    BOOL has_event=GetHandleInformation(event,&flags);CHECK(!!has_event==!!_wtoi(argv[7]));if(has_event)CHECK(SetEvent(event));
-    BOOL has_deny=GetHandleInformation(deny,&flags);CHECK(!!has_deny==!!_wtoi(argv[8]));if(has_deny)CHECK(SetEvent(deny));
+    BOOL has_event=inherited_event(event,L"WIN16STYLE_EVENT_NAME");CHECK(!!has_event==!!_wtoi(argv[7]));if(has_event)CHECK(SetEvent(event));
+    BOOL has_deny=inherited_event(deny,L"WIN16STYLE_DENY_NAME");CHECK(!!has_deny==!!_wtoi(argv[8]));if(has_deny)CHECK(SetEvent(deny));
     CHECK(GetPriorityClass(GetCurrentProcess())==wcstoul(argv[9],NULL,10) && sizeof(void *)*8==wcstoul(argv[10],NULL,10));
     CHECK(!wcscmp(argv[11],L"two words") && !wcscmp(argv[12],L"quote\"inside") && !wcscmp(argv[13],L"trailing\\") && !wcscmp(argv[14],L""));
     CHECK(!wcscmp(argv[15],c->ansi?L"ansi-ascii":L"Unicode 参数 Ω"));
@@ -44,8 +59,12 @@ static void create_case(unsigned variant,PCWSTR executable,PCWSTR unicode_execut
     const contract_case *c=&cases[variant];WCHAR path[MAX_PATH],cwd[MAX_PATH],desktop[MAX_PATH],windows[MAX_PATH];
     WCHAR command[32768],block[4096];char command_a[32768],application_a[4096],directory_a[4096],environment_a[8192],desktop_a[MAX_PATH];
     HANDLE filler[512],event,deny,input=NULL,output=NULL;SECURITY_ATTRIBUTES sa={sizeof(sa),NULL,TRUE};DWORD bytes,needed;
+    WCHAR event_name[128],deny_name[128];
+    CHECK(swprintf_s(event_name,ARRAYSIZE(event_name),L"Local\\Win16StyleContract-%lu-%u-allowed",GetCurrentProcessId(),variant)>0);
+    CHECK(swprintf_s(deny_name,ARRAYSIZE(deny_name),L"Local\\Win16StyleContract-%lu-%u-denied",GetCurrentProcessId(),variant)>0);
     for(unsigned i=0;i<512;++i){filler[i]=CreateEventW(NULL,TRUE,FALSE,NULL);CHECK(filler[i]);}
-    event=CreateEventW(&sa,TRUE,FALSE,NULL);deny=CreateEventW(&sa,TRUE,FALSE,NULL);CHECK(event && deny);
+    event=CreateEventW(&sa,TRUE,FALSE,event_name);CHECK(event && GetLastError()!=ERROR_ALREADY_EXISTS);
+    deny=CreateEventW(&sa,TRUE,FALSE,deny_name);CHECK(deny && GetLastError()!=ERROR_ALREADY_EXISTS);
     for(unsigned i=0;i<512;++i)CHECK(CloseHandle(filler[i]));
     CHECK(swprintf_s(path,MAX_PATH,L"%ls\\v%u.txt",folder,variant)>0 && GetFileAttributesW(path)==INVALID_FILE_ATTRIBUTES);
     CHECK(swprintf_s(cwd,MAX_PATH,L"%ls\\%ls",folder,c->ansi?L"cwd ascii":L"工作 目录")>0);
@@ -56,6 +75,8 @@ static void create_case(unsigned variant,PCWSTR executable,PCWSTR unicode_execut
     append_environment(block,ARRAYSIZE(block),&used,L"WIN16STYLE_EXPECT_CWD",cwd);
     append_environment(block,ARRAYSIZE(block),&used,L"WIN16STYLE_EXPECT_DESKTOP",desktop);
     append_environment(block,ARRAYSIZE(block),&used,L"WIN16STYLE_EXPECT_PACKAGE",package);
+    append_environment(block,ARRAYSIZE(block),&used,L"WIN16STYLE_EVENT_NAME",event_name);
+    append_environment(block,ARRAYSIZE(block),&used,L"WIN16STYLE_DENY_NAME",deny_name);
     append_environment(block,ARRAYSIZE(block),&used,L"SystemRoot",windows);block[used++]=0;
     CHECK(WideCharToMultiByte(CP_ACP,0,block,(int)used,environment_a,sizeof(environment_a),NULL,NULL));
     DWORD priority=c->priority?c->priority:GetPriorityClass(GetCurrentProcess());if(!c->priority && priority!=IDLE_PRIORITY_CLASS && priority!=BELOW_NORMAL_PRIORITY_CLASS)priority=NORMAL_PRIORITY_CLASS;

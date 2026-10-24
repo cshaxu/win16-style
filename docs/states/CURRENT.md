@@ -2,38 +2,57 @@
 
 ## Current Work
 
-无活动任务包。M0 T11 S1已完成按需UAC修复、双目录发布、实际远端复核及scratch回收；
-T11收口供用户验收。T10按用户指令取消，无UWP产品支持；T8/T9保持关闭，M0开放。
+M0 T12 S1 active：修复缺失 IAT 目录的旧 PE 启动期导入 staging，
+由用户实际 DoubleKiller.exe 失败准入。T10按用户指令取消；T8/T9/T11保持关闭，M0开放。
+
+## M0 T12 S1 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | New；T11收口后下一未用T12 S1。 |
+| Admission And Approval | 用户报告 `run16s "D:\\programs\\misc\\DoubleKiller.exe"` 启动失败并要求修复。 |
+| Objective | 保持现有注入架构，为缺失IAT目录的旧PE补齐有界thunk范围；真实DoubleKiller恢复启动和样式。 |
+| Non-goals | 不修改目标文件、不加产品/服务/全局hook、不改资源或已确认UI。 |
+| Reference Baseline | 0203e09 / 0.11.0.0 ABI3；DoubleKiller裸启动正常、run16s下实际0xC0000005。 |
+| Candidate Proposal | [legacy import staging](../proposals/legacy-import-staging.md)。 |
+| Files And ABI Surface | staging私有实现、缺失IAT回归与创建契约测试的内核对象身份判据修正；版本0.12.0.0；DLL公开ABI不变。 |
+| Applicable Rules | 完整Task Reading Set；C17/GCC/Ninja/ccache；仅自有新进程、四产物不增加。 |
+| Verification | 零OFT自包含负例/修后初始化、DoubleKiller裸/带样式对照、双宽回归与同包测试。 |
+| Expected Markers | 旧stager负例0xC0000005、LEGACY IAT PASS/REJECT PASS、DoubleKiller实际Win16标题及退出0。 |
+| Asset Needs | build/t12-legacy-staging、build/t12-doublekiller-candidate、build/t12-doublekiller-diagnosis、build/t12-package及现存build/t12-*诊断文件均归本S；先提炼证据，再逐路径核验安全回收。 |
+| Reporting Requirements | 记录PE形状、断点、查找thunk边界、正常和失败路径、未覆盖面、发布及远端复核。 |
+| Stop Conditions | 原thunk范围无法有界读取时返回原生错误并回滚；不改目标文件/全局机制。 |
+| Exit Criteria | 修后自包含回归和真实目标通过；双宽同包测试、双发布、推送远端复核及任务审计完成。 |
+| Original Owner Request | `run16s "D:\\programs\\misc\\DoubleKiller.exe" 启动失败帮我看看如何修复。 |
+| Similar-Issue Sweep | 零OFT、空/外部导入目录、查找thunk边界/终止符、保护恢复、跨宽helper、旧/正常PE、失败回滚。 |
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
-- Last allocated T: 11
+- Last allocated T: 12
 - Last allocated Td S: 9
 - Last delivery: M0 T11 S1 P2 (P1 d77017f实际远端139输入/四产物/八发布副本复核通过；登记scratch回收)
-- Open task: none；T11/S1关闭；T10取消；T8/T9及Td S9保持关闭
+- Open task: M0 T12 S1；T11关闭；T10取消；T8/T9及Td S9保持关闭
 
 ## Technical Baseline
 
-产品0.11.0.0 / M0 T11 S1已双目录发布、实际远端复核通过并收口；
-三组件四文件、x64 Console启动器、双宽DLL、x64 demo、ABI3/31名称及ordinal1不变。
-仅入口真实740按系统runas提升启动器，再沿用挂起创建/安装/恢复；非提升重入被拒绝。
-系统提升环境及独立控制台；取消1223；DLL子孙CreateProcess不自动请求UAC。
-方法、测试入口与未覆盖面见[UAC](../etc/operations/UAC.md)。标题/字体/菜单/滚动条
-renderer对fb1fc0a无改动，六原资源逐字节保留。
+0.12.0.0 / M0 T12 S1已本地验证并双目录发布，待P1提交推送及实际远端复核；
+三组件四文件、x64 Console启动器、双宽DLL、x64 demo、ABI3保持。
+缺失IAT目录时按原FirstThunk范围有界补齐，原bootstrap恢复；不重写lookup数组。
+真实DoubleKiller默认命令和--wait均正常，96DPI经典标题/移动/最小化/恢复/关闭通过；
+已发布system32实际DLL路径/摘要及原生截图有证据，未执行查重/删除/移动文件。
 
-纯C17/GCC16.1.0、Ninja1.13.2/ccache4.13.6；持久.ninja/toolchain和共享cache保留，
-不恢复false-fresh、不清缓存；默认8 build jobs/4 test slots、重UI占2。
-双宽干净构建、注册69项66通过3明确跳过；实际最终包21/21；实际系统授权7根及7个
-带样式子孙；双目录8摘要相同。完整矩阵与LF候选73加载映像对照先于仅测试的回滚
-失败诊断改动，确切最终包另做21项；不冒称同一raw PE。证据与各阶段摘要见
-[release](../etc/release.json)、[本次记录](../history/M0-T11-S1-uac.md)。
+GCC16.1.0/Ninja/共享ccache双宽干净构建；确切最终包23/23通过，双发布8摘要相同。
+首次69项全量65通过3跳过1旧数值句柄判据失败；旧包裸进程亦复现，后改为固定
+内核Event身份比较且保留父进程信号断言。修后旧/新各64向量及最终包创建契约通过。
+修后再干净构建的71加载映像不变，仅2契约fixture预期变化；不冒称另跑全绿69项。
+双宽新缺失IAT测试可检出旧stager的0xC0000005，畸形范围返回193且保持头/挂起。
+证据见[本次记录](../history/M0-T12-S1-legacy-iat.md)、[release](../etc/release.json)。
 
-两次并行包旧回滚计数断言失败根因未明，最终严格断言包通过并不消除该事实；
-保留TODO，不宣称修复。clipboard权限/可选后端共3跳过、物理输入、真实UAC取消
-点击、跨管理员凭据、映射盘及任意高DPI不计覆盖。UWP研究已取消且未进入产品。
-T9外部导入表/原生cmd修复保持；NE间歇问题及裸NTSRV复用边界不扩张为本次修复。
-README英文8张精选图保持；不依赖或修改兄弟仓库，不扫描注入既有进程。
+标题/字体/菜单/滚动条renderer及六原资源逐字节保持；T11按需740/UAC、T9原生cmd
+和已有传播契约保持。未配置可选后端/clipboard共3跳过，物理输入及任意DPI不计覆盖。
+T11原回滚计数债务仍在TODO；本次不宣称解决。UWP研究取消，无现代应用支持发布。
+不修改或依赖兄弟仓库；仅处理本次新建进程。两旧T12自有CPU繁忙worker已核验回收。
 
 ## Recent Closure
 

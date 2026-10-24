@@ -1,19 +1,19 @@
 {
   "schema": 1,
-  "delivery": "M0 T11 S1 P2",
-  "stage": "closed after actual P1 remote review and safe registered scratch cleanup",
-  "version": "0.11.0.0",
+  "delivery": "M0 T12 S1 P1",
+  "stage": "23 actual-package cases passed; published and hash-verified; awaiting P1 remote review",
+  "version": "0.12.0.0",
   "package_directory": "assets",
   "source_inputs": [
     {
       "path": "CMakeLists.txt",
-      "sha256": "e0822aacea95ae1fbe4713a5cbf60a892aa8615049be1f64504793287cf59e68"
+      "sha256": "ecff895765be1b386719938ce5b660eb6230474815c2e3b509b4dd424e8c9b6b"
     },
     {
       "path": "LICENSE",
       "sha256": "71337277c6c03463ca6d7b56aba20fed81d3e6f1c8a823f7d5ab30760de8a389",
       "git_blob_sha256": "bf37952d329b48cee37b42d90b96d30dc049940902e42d69338a19cf72003543",
-      "checkout_transform": "Git LF normalization;actual copied bytes retained in sha256"
+      "checkout_transform": "Git LF normalization; snapshot raw bytes in sha256"
     },
     {
       "path": "src/demo-exe/demo.manifest",
@@ -33,7 +33,7 @@
     },
     {
       "path": "src/demo-exe/version.rc",
-      "sha256": "7baa604650a0e2326e47a5d38a0a7ce6e51b247167987a85ed09b438cd8b52ab"
+      "sha256": "11a014584bf956c68bbb8fe7b68661a5eb08e376b731a9fb2dc91070b05a402f"
     },
     {
       "path": "src/ntw16s-dll/api.h",
@@ -165,7 +165,7 @@
     },
     {
       "path": "src/ntw16s-dll/injection/staging.c",
-      "sha256": "6b23fb48fc493412182e19e23e5bfbe0f4c0d8abfd426e6e240a8a7fadb06e7a"
+      "sha256": "72e91020a744f8c7c89df3a1c9202222132d641d1fbe883d72342c408493af52"
     },
     {
       "path": "src/ntw16s-dll/injection/staging.h",
@@ -313,7 +313,7 @@
     },
     {
       "path": "src/ntw16s-dll/version.rc",
-      "sha256": "0e79040722f00a3678fa0017e69b8b15346961ad9e48edbc120bd9a308033661"
+      "sha256": "39f3387e8c4bc9dd2e5eda1f1b97e8ab50383784c46160a27d92afb257b8d42b"
     },
     {
       "path": "src/ntw16s-dll/win16_style.c",
@@ -345,7 +345,7 @@
     },
     {
       "path": "src/run16s-exe/version.rc",
-      "sha256": "b38e557287c4ad08237e77b63f1dd9772f9363df8b4d6a6c986091b1971e3196"
+      "sha256": "79eedd073d2184e9e33f71617ef52e6ad2fcee4642ff994e29f16e5062502001"
     },
     {
       "path": "tests/demo-exe/boundary.py",
@@ -385,7 +385,7 @@
     },
     {
       "path": "tests/integration/creation_contract.c",
-      "sha256": "a0e39e159c64a7912310620a7636008c51645a298b0d18ed6f4e1355dfb0d848"
+      "sha256": "7ae593d4b89e6443b5e0239aa984087141740b769f649b256f1fe720d9bcb311"
     },
     {
       "path": "tests/integration/creation_contract_driver.c",
@@ -491,7 +491,7 @@
       "path": "tests/README.md",
       "sha256": "2a6a2adc1d8bf774294124b3a3d9f59cc73fb043f0bc08ff4e5d4b598dcb3971",
       "git_blob_sha256": "74e5a332d8e6767602045865ad6a04523e01404f01cb0beed986e551d69be897",
-      "checkout_transform": "Git LF normalization;actual copied bytes retained in sha256"
+      "checkout_transform": "Git LF normalization; snapshot raw bytes in sha256"
     },
     {
       "path": "tests/run16s-exe/cli.py",
@@ -519,7 +519,7 @@
     },
     {
       "path": "tests/run16s-exe/staging.c",
-      "sha256": "77a7d8f8d2ada2112e2dcffa64c74fba5dca34a2bac66824a6348119dc9ca435"
+      "sha256": "25964ecaff53c1ca8977994638ad9165abd4292830641dc7af424f07f82120df"
     },
     {
       "path": "tests/run16s-exe/startup_hooks.c",
@@ -566,31 +566,31 @@
       "sha256": "5c6cc50fdcd80f95f4770970d70e06b3bb65a335372bce34af4dd227c79f599a"
     }
   ],
+  "source_inputs_sha256": "90da0bf15163030ea3f6e411fbef144795069bcc4a81d67c9a7b4c202f96e24f",
   "source_inputs_digest_convention": "SHA256 of UTF8 sorted-key compact JSON source_inputs array",
-  "source_snapshot_sha256": "40a7b5765fdf582a2af60a69db70a03c4e76f7f7a7819c21deb8f90fb99435c0",
+  "source_snapshot_sha256": "7fa4c02d38a8c359b2051b36af5273138bc7ff93e75c2a062db9aa4d9ac15838",
   "toolchains": {
+    "ccache_version": "ccache version 4.13.6",
     "toolchains": [
       {
         "architecture": "x86",
         "target": "i686-w64-mingw32",
-        "version": "16.1.0",
-        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6"
+        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
+        "version": "16.1.0"
       },
       {
         "architecture": "x64",
         "target": "x86_64-w64-mingw32",
-        "version": "16.1.0",
-        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad"
+        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
+        "version": "16.1.0"
       }
-    ],
-    "ninja": "1.13.2",
-    "ccache_version": "ccache version 4.13.6"
+    ]
   },
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
-      "version": "M0 T11",
-      "sha256": "d8953d6a9d08a2ee21b4473e8de97e829188048df9940c2e5e8f44a32d7f6927",
+      "version": "M0 T12",
+      "sha256": "13f5298b14f3e1b5a302f9709939224083aee4ace9f776013f331fbf605e440a",
       "imports": [
         "advapi32.dll",
         "kernel32.dll",
@@ -601,8 +601,8 @@
     },
     "ntw16s32.dll": {
       "architecture": "x86",
-      "version": "M0 T11",
-      "sha256": "aadc004ab94c6fe367b95ef44f76a5cad778f7ad1ae771e9cb774ec1a2a1b8e2",
+      "version": "M0 T12",
+      "sha256": "abefd7ae5806400f39e54da5008a2126439ec9bd3c2ac652a1b82c7b37438ac7",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -621,8 +621,8 @@
     },
     "ntw16s64.dll": {
       "architecture": "x64",
-      "version": "M0 T11",
-      "sha256": "1961320d1ff5c19297d9fb9abae5e2d83960217e90bb9170b7f6bf425cdbfae1",
+      "version": "M0 T12",
+      "sha256": "c903e0801fcf5937ccbbf8c3e50a26e691099b409ee6daeff7240b703c438f09",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -636,8 +636,8 @@
     },
     "demo.exe": {
       "architecture": "x64",
-      "version": "M0 T11",
-      "sha256": "7587c004c3198457568006f5e311c349e7bb001caabe8dcd4d8aee92021a8021",
+      "version": "M0 T12",
+      "sha256": "fa86188a17546ae74ce66f175ab348456971cf4e1b740322a53020c64fa94d4a",
       "imports": [
         "kernel32.dll",
         "msvcrt.dll",
@@ -647,196 +647,196 @@
   },
   "verification": {
     "clean_build": {
-      "exit_code": 0,
-      "targets": "all",
-      "build_root": "$CLEAN_BUILD",
       "test_jobs": 4,
-      "selection": "^core/abi$",
-      "build_jobs": 8,
-      "profile": "Focused",
-      "tests": [
-        {
-          "build_seconds": 13.900016199972015,
-          "passed": 1,
-          "test_seconds": 0.44694799999706447,
-          "architecture": "x86",
-          "skipped": [],
-          "tests": 1,
-          "configure_seconds": 3.7945809999946505
-        },
-        {
-          "build_seconds": 17.221522499981802,
-          "passed": 1,
-          "test_seconds": 0.4485187000245787,
-          "architecture": "x64",
-          "skipped": [],
-          "tests": 1,
-          "configure_seconds": 3.3778111999854445
-        }
-      ],
-      "status": "passed",
       "architectures": [
         "x86",
         "x64"
-      ]
-    },
-    "registered_matrix": {
-      "passed": 66,
-      "skipped": 3,
-      "architectures": [
+      ],
+      "targets": "all",
+      "status": "passed",
+      "build_jobs": 8,
+      "build_root": "$CLEAN_BUILD",
+      "exit_code": 0,
+      "selection": "^core/abi$",
+      "tests": [
         {
-          "configure_seconds": 1.261894700000994,
-          "test_seconds": 187.41789510002127,
+          "skipped": [],
+          "tests": 1,
+          "build_seconds": 15.94545310002286,
+          "test_seconds": 0.5172597999917343,
+          "passed": 1,
           "architecture": "x86",
-          "passed": 26,
-          "tests": 27,
-          "build_seconds": 0.6112258000066504,
-          "skipped": [
-            "core/edit-clipboard"
-          ]
+          "configure_seconds": 4.839898300007917
         },
         {
-          "configure_seconds": 1.261474700004328,
-          "test_seconds": 242.0789353,
+          "skipped": [],
+          "tests": 1,
+          "build_seconds": 19.660943199996836,
+          "test_seconds": 0.5592856999719515,
+          "passed": 1,
           "architecture": "x64",
-          "passed": 40,
-          "tests": 42,
-          "build_seconds": 0.4183080999646336,
-          "skipped": [
-            "compatibility/cmd-nested",
-            "core/edit-clipboard"
-          ]
+          "configure_seconds": 4.847533799998928
         }
       ],
-      "source": "pre-LF build of canonically identical product source;73 image comparison precedes the test-only rollback diagnostic amendment;final package reruns amended rollback;not same raw PE hashes"
+      "profile": "Focused"
     },
-    "runtime_image_equivalence": {
-      "count": 73,
-      "evidence": "evidence/uac-elevation.json",
-      "method": "Read-only compare headers and every raw section through last section end; normalize only PE COFF TimeDateStamp, CheckSum and export TimeDateStamp. Unsigned files only. No file edited. Unmapped COFF symbols excluded; section layouts/bytes included."
+    "registered_matrix_initial": [
+      {
+        "architecture": "x86",
+        "tests": 27,
+        "passed": 26,
+        "failed": [],
+        "skipped": [
+          "core/edit-clipboard"
+        ]
+      },
+      {
+        "architecture": "x64",
+        "tests": 42,
+        "passed": 39,
+        "failed": [
+          "propagate/contract"
+        ],
+        "skipped": [
+          "compatibility/cmd-nested",
+          "core/edit-clipboard"
+        ]
+      }
+    ],
+    "initial_matrix_disposition": "65 passed, 3 skipped, 1 failed original numeric-handle oracle; retained, not relabeled passed",
+    "image_equivalence": {
+      "method": "Read-only PE headers and every raw section, excluding unmapped trailing COFF symbols. Normalize only COFF timestamp, CheckSum and export timestamp; no binary edited.",
+      "unchanged": 71,
+      "changed": 2
     },
+    "corrected_creation": "Original 64 vectors pass for unchanged 0.11 baseline and fixed product; final exact-package case repeats corrected oracle",
     "actual_package": {
-      "cases": 21,
-      "passed": 21,
-      "seconds": 251.8910752,
+      "cases": 23,
+      "passed": 23,
+      "seconds": 260.0578665,
       "jobs": 4
     },
     "package_case_results": [
       {
-        "name": "abi-x86",
+        "seconds": 0.2256175,
         "exit_code": 0,
-        "seconds": 0.135743
+        "name": "abi-x86"
       },
       {
-        "name": "abi-x64",
+        "seconds": 0.2325061,
         "exit_code": 0,
-        "seconds": 0.1726477
+        "name": "abi-x64"
       },
       {
-        "name": "demo-boundary",
+        "seconds": 0.2137451,
         "exit_code": 0,
-        "seconds": 0.2662252
+        "name": "demo-boundary"
       },
       {
-        "name": "demo-pair",
+        "seconds": 1.5817046,
         "exit_code": 0,
-        "seconds": 1.7364907
+        "name": "demo-pair"
       },
       {
-        "name": "wait-contract",
+        "seconds": 7.2670118,
         "exit_code": 0,
-        "seconds": 7.1189105
+        "name": "wait-contract"
       },
       {
-        "name": "font-layout-x64",
+        "seconds": 63.089731,
         "exit_code": 0,
-        "seconds": 63.7619977
+        "name": "font-layout-x64"
       },
       {
-        "name": "font-layout-x86",
+        "seconds": 110.9700719,
         "exit_code": 0,
-        "seconds": 99.0301892
+        "name": "font-layout-x86"
       },
       {
-        "name": "menu-cancel-x86",
+        "seconds": 67.3048277,
         "exit_code": 0,
-        "seconds": 66.8936985
+        "name": "menu-cancel-x86"
       },
       {
-        "name": "cli",
+        "seconds": 0.4398512,
         "exit_code": 0,
-        "seconds": 0.4034081
+        "name": "cli"
       },
       {
-        "name": "automatic",
+        "seconds": 1.6393576,
         "exit_code": 0,
-        "seconds": 1.6627752
+        "name": "automatic"
       },
       {
-        "name": "cmd-nested",
+        "seconds": 2.4825106,
         "exit_code": 0,
-        "seconds": 2.2161509
+        "name": "cmd-nested"
       },
       {
-        "name": "long-path",
+        "seconds": 1.0681181,
         "exit_code": 0,
-        "seconds": 1.0250151
+        "name": "long-path"
       },
       {
-        "name": "propagation",
+        "seconds": 5.2723854,
         "exit_code": 0,
-        "seconds": 5.1646236
+        "name": "propagation"
       },
       {
-        "name": "uac-unit-32",
+        "seconds": 0.5005853,
         "exit_code": 0,
-        "seconds": 0.317927
+        "name": "legacy-iat-32"
       },
       {
-        "name": "uac-unit-64",
+        "seconds": 0.5010138,
         "exit_code": 0,
-        "seconds": 0.3310955
+        "name": "legacy-iat-64"
       },
       {
-        "name": "cli-failures",
+        "seconds": 0.380687,
         "exit_code": 0,
-        "seconds": 2.207236
+        "name": "uac-unit-32"
       },
       {
-        "name": "rollback",
+        "seconds": 2.5543879,
         "exit_code": 0,
-        "seconds": 3.4089121
+        "name": "cli-failures"
       },
       {
-        "name": "creation-contract",
+        "seconds": 0.4616265,
         "exit_code": 0,
-        "seconds": 8.0761808
+        "name": "uac-unit-64"
       },
       {
-        "name": "menu-cancel-x64",
+        "seconds": 3.7821811,
         "exit_code": 0,
-        "seconds": 66.2911961
+        "name": "rollback"
       },
       {
-        "name": "dialogs",
+        "seconds": 8.4056063,
         "exit_code": 0,
-        "seconds": 84.3820871
+        "name": "creation-contract"
       },
       {
-        "name": "messages",
+        "seconds": 66.3441023,
         "exit_code": 0,
-        "seconds": 85.8958328
+        "name": "menu-cancel-x64"
+      },
+      {
+        "seconds": 74.3884528,
+        "exit_code": 0,
+        "name": "dialogs"
+      },
+      {
+        "seconds": 81.9192771,
+        "exit_code": 0,
+        "name": "messages"
       }
     ],
-    "uac": {
-      "actual_root_cases": 7,
-      "actual_styled_descendants": 7,
-      "unit_cases_per_width": 8,
-      "negative_old_detected": true,
-      "medium_reentry_denied": "exit9/error5"
-    },
-    "gates": "source23,third-party9,resource6,governance13 rejections;PE/ABI/18 resource tables and dependency identity passed",
-    "optional_backend": "not configured;77;not counted passed"
+    "legacy_negative": "x86/x64 new missing-IAT test detects HEAD stager: child 0xC0000005 / test exit1",
+    "target": "Exact rebuilt package: actual styled DoubleKiller, 96DPI, move/minimize/restore/close exit0",
+    "gates": "Source manifest, resource identity, dependency scope, PE architecture/version, 31 public exports plus ordinal1 and 18 original resource tables per DLL",
+    "test_only_amendment": "Creation oracle changed after first full matrix; final clean rebuild differs only in the 2 contract fixture loaded images; all 71 other loaded images unchanged"
   },
   "original_resources": {
     "source_commit": "5b0b65f66c281050aa4ce1454c6cd31441a6d484",
@@ -908,161 +908,71 @@
     "status": "passed",
     "files": [
       {
-        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe",
-        "before": "025a9e52ea218bbc1022ce5a4024d923e2059d4029f69f519cd57bb77f75ede0",
-        "after": "7587c004c3198457568006f5e311c349e7bb001caabe8dcd4d8aee92021a8021",
-        "expected": "7587c004c3198457568006f5e311c349e7bb001caabe8dcd4d8aee92021a8021"
+        "path": "assets/demo.exe",
+        "sha256": "fa86188a17546ae74ce66f175ab348456971cf4e1b740322a53020c64fa94d4a",
+        "previous_sha256": "7587c004c3198457568006f5e311c349e7bb001caabe8dcd4d8aee92021a8021"
       },
       {
-        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
-        "before": "d09e93bfff333f5edb8af294e81852f3f7adcf6b67a518ab95bdd055575f056e",
-        "after": "aadc004ab94c6fe367b95ef44f76a5cad778f7ad1ae771e9cb774ec1a2a1b8e2",
-        "expected": "aadc004ab94c6fe367b95ef44f76a5cad778f7ad1ae771e9cb774ec1a2a1b8e2"
+        "path": "assets/ntw16s32.dll",
+        "sha256": "abefd7ae5806400f39e54da5008a2126439ec9bd3c2ac652a1b82c7b37438ac7",
+        "previous_sha256": "aadc004ab94c6fe367b95ef44f76a5cad778f7ad1ae771e9cb774ec1a2a1b8e2"
       },
       {
-        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll",
-        "before": "89fd8973c6dd0c57febfa34a47d4f7bf19a3bc8f446b12ef0fb4b59b85caac7b",
-        "after": "1961320d1ff5c19297d9fb9abae5e2d83960217e90bb9170b7f6bf425cdbfae1",
-        "expected": "1961320d1ff5c19297d9fb9abae5e2d83960217e90bb9170b7f6bf425cdbfae1"
+        "path": "assets/ntw16s64.dll",
+        "sha256": "c903e0801fcf5937ccbbf8c3e50a26e691099b409ee6daeff7240b703c438f09",
+        "previous_sha256": "1961320d1ff5c19297d9fb9abae5e2d83960217e90bb9170b7f6bf425cdbfae1"
       },
       {
-        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
-        "before": "65b1d6957a347ec6f60a606595937663299dd972b556292f41cfa2cfd113bbde",
-        "after": "d8953d6a9d08a2ee21b4473e8de97e829188048df9940c2e5e8f44a32d7f6927",
-        "expected": "d8953d6a9d08a2ee21b4473e8de97e829188048df9940c2e5e8f44a32d7f6927"
+        "path": "assets/run16s.exe",
+        "sha256": "13f5298b14f3e1b5a302f9709939224083aee4ace9f776013f331fbf605e440a",
+        "previous_sha256": "d8953d6a9d08a2ee21b4473e8de97e829188048df9940c2e5e8f44a32d7f6927"
       },
       {
-        "path": "O:\\winnt\\system32\\demo.exe",
-        "before": "025a9e52ea218bbc1022ce5a4024d923e2059d4029f69f519cd57bb77f75ede0",
-        "after": "7587c004c3198457568006f5e311c349e7bb001caabe8dcd4d8aee92021a8021",
-        "expected": "7587c004c3198457568006f5e311c349e7bb001caabe8dcd4d8aee92021a8021"
+        "path": "O:/winnt/system32/demo.exe",
+        "sha256": "fa86188a17546ae74ce66f175ab348456971cf4e1b740322a53020c64fa94d4a",
+        "previous_sha256": "7587c004c3198457568006f5e311c349e7bb001caabe8dcd4d8aee92021a8021"
       },
       {
-        "path": "O:\\winnt\\system32\\ntw16s32.dll",
-        "before": "d09e93bfff333f5edb8af294e81852f3f7adcf6b67a518ab95bdd055575f056e",
-        "after": "aadc004ab94c6fe367b95ef44f76a5cad778f7ad1ae771e9cb774ec1a2a1b8e2",
-        "expected": "aadc004ab94c6fe367b95ef44f76a5cad778f7ad1ae771e9cb774ec1a2a1b8e2"
+        "path": "O:/winnt/system32/ntw16s32.dll",
+        "sha256": "abefd7ae5806400f39e54da5008a2126439ec9bd3c2ac652a1b82c7b37438ac7",
+        "previous_sha256": "aadc004ab94c6fe367b95ef44f76a5cad778f7ad1ae771e9cb774ec1a2a1b8e2"
       },
       {
-        "path": "O:\\winnt\\system32\\ntw16s64.dll",
-        "before": "89fd8973c6dd0c57febfa34a47d4f7bf19a3bc8f446b12ef0fb4b59b85caac7b",
-        "after": "1961320d1ff5c19297d9fb9abae5e2d83960217e90bb9170b7f6bf425cdbfae1",
-        "expected": "1961320d1ff5c19297d9fb9abae5e2d83960217e90bb9170b7f6bf425cdbfae1"
+        "path": "O:/winnt/system32/ntw16s64.dll",
+        "sha256": "c903e0801fcf5937ccbbf8c3e50a26e691099b409ee6daeff7240b703c438f09",
+        "previous_sha256": "1961320d1ff5c19297d9fb9abae5e2d83960217e90bb9170b7f6bf425cdbfae1"
       },
       {
-        "path": "O:\\winnt\\system32\\run16s.exe",
-        "before": "65b1d6957a347ec6f60a606595937663299dd972b556292f41cfa2cfd113bbde",
-        "after": "d8953d6a9d08a2ee21b4473e8de97e829188048df9940c2e5e8f44a32d7f6927",
-        "expected": "d8953d6a9d08a2ee21b4473e8de97e829188048df9940c2e5e8f44a32d7f6927"
+        "path": "O:/winnt/system32/run16s.exe",
+        "sha256": "13f5298b14f3e1b5a302f9709939224083aee4ace9f776013f331fbf605e440a",
+        "previous_sha256": "d8953d6a9d08a2ee21b4473e8de97e829188048df9940c2e5e8f44a32d7f6927"
       }
     ],
-    "before_recovery_commit": "fb1fc0a385988c3d206427a88e775cacd5be57c4",
-    "raw_publication_sha256": "65b3220fb45b869be24414b866bddb66a85c81c19908f56eb45a6da11f438141"
+    "backup_baseline": "0203e09 assets; both previous copies verified before publication"
   },
   "audit": {
-    "baseline": "fb1fc0a",
-    "stage": "actual P1 remote/source/products reviewed;cleanup complete",
-    "task_status": "M0 open;T11 S1 closed;T10 cancelled;T8/T9 closed",
-    "evidence": "evidence/uac-elevation.json",
-    "evidence_sha256": "3b453632d8bc2a09a0ef1b35cbaf6ac5fd6c96846a2db0c9c32ad440a382fa7c",
-    "evidence_hash_convention": "SHA256 of canonical Git LF bytes",
+    "baseline": "0203e097ba5d105d175d701d5c6cc779f99c67b9",
+    "task_status": "M0 T12 S1 verified/published locally; P1 remote review pending",
+    "evidence": "evidence/legacy-iat-staging.json",
+    "evidence_sha256": "2eaaf004d08fe30627c620b56776aaf4aa629e3aaf53556fe4c0ea5a1524da91",
     "statistics": {
-      "scope": "CMakeLists/src/tests/tools staged diff vs fb1fc0a",
-      "paths": 17,
-      "added": 356,
+      "scope": "CMakeLists/src/tests/tools diff vs 0203e09",
+      "paths": 8,
+      "added": 145,
       "deleted": 20,
-      "net": 336
-    },
-    "state_owner": "OS owns UAC authorization;launcher owns elevated process handle;no IPC;original DLL GUI ownership unchanged",
-    "old_path_disposition": "ordinary CreateProcess/injection retained;only740 gets shell self-retry;no product/source moves;cancelled research scratch removed"
-  },
-  "source_inputs_sha256": "a9ef9d7eae750ed10909a453ed9f6ba239d5e33123fe73ada777c99eb7dfc192",
-  "test_only_post_snapshot_amendment": {
-    "path": "tests/integration/rollback_contract.c",
-    "before_sha256": "2631215970e1cdbf3a167650d11bd486ee370628cb0c085fb4ac61ae2aa35ab8",
-    "after_sha256": "eee833f0dad9e610fb0c2e7868ee397ce3177aa1b43992982cb4846465f6f225",
-    "purpose": "failure-only native job accounting/membership diagnostics;strict predicate and all existing budgets retained",
-    "product_inputs_changed": false,
-    "product_sha256_before": {
-      "demo.exe": "7587c004c3198457568006f5e311c349e7bb001caabe8dcd4d8aee92021a8021",
-      "ntw16s32.dll": "aadc004ab94c6fe367b95ef44f76a5cad778f7ad1ae771e9cb774ec1a2a1b8e2",
-      "ntw16s64.dll": "1961320d1ff5c19297d9fb9abae5e2d83960217e90bb9170b7f6bf425cdbfae1",
-      "run16s.exe": "d8953d6a9d08a2ee21b4473e8de97e829188048df9940c2e5e8f44a32d7f6927"
-    }
-  },
-  "closure": {
-    "cleanup": [
-      {
-        "reparse_points": 0,
-        "bytes": 71821758.0,
-        "files": 881,
-        "active_owned_executables": 0,
-        "root": "O:\\repos.hobby\\win16style\\build\\t11-uac"
-      },
-      {
-        "reparse_points": 0,
-        "bytes": 167593622.0,
-        "files": 3040,
-        "active_owned_executables": 0,
-        "root": "O:\\repos.hobby\\win16style\\build\\t11-package"
-      }
-    ],
-    "incremental_refresh": {
-      "status": "passed",
-      "selection": "^launch/elevation-unit$",
-      "exit_code": 0,
-      "architectures": [
-        "x86",
-        "x64"
+      "numstat": [
+        "1\t1\tCMakeLists.txt",
+        "4\t4\tsrc/demo-exe/version.rc",
+        "33\t0\tsrc/ntw16s-dll/injection/staging.c",
+        "4\t4\tsrc/ntw16s-dll/version.rc",
+        "4\t4\tsrc/run16s-exe/version.rc",
+        "25\t4\ttests/integration/creation_contract.c",
+        "72\t3\ttests/run16s-exe/staging.c",
+        "2\t0\ttools/Test-Package.ps1"
       ],
-      "profile": "Focused",
-      "tests": [
-        {
-          "architecture": "x86",
-          "configure_seconds": 1.2944116999860853,
-          "build_seconds": 1.1043495000340044,
-          "test_seconds": 0.47717110003577545,
-          "tests": 1,
-          "skipped": [],
-          "passed": 1
-        },
-        {
-          "architecture": "x64",
-          "configure_seconds": 0.6320630999980494,
-          "build_seconds": 0.7425275000277907,
-          "test_seconds": 0.4188673999742605,
-          "tests": 1,
-          "skipped": [],
-          "passed": 1
-        }
-      ],
-      "targets": "all",
-      "build_jobs": 8,
-      "build_root": "build/.ninja",
-      "test_jobs": 4
+      "net": 125
     },
-    "remote_p1": {
-      "status": "passed",
-      "commit": "d77017f4ef80d251255bcbda14206701b2169d83",
-      "source_inputs": 139,
-      "actual_remote_raw_products": 4,
-      "deployed_matches": 8,
-      "original_resources": 6,
-      "renderer_and_dll_c_h": "byte-identical to baseline",
-      "release_sha256": "7eecc50fb5520c6ca10b7e19d9f25459860d460df1f1e70682b194d8329a8e05"
-    },
-    "scope": "P2 documentation only;product inputs and tested/deployed four files unchanged",
-    "after_cleanup_no_work": [
-      {
-        "architecture": "x86",
-        "seconds": 0.1003054,
-        "result": "ninja:no work to do"
-      },
-      {
-        "architecture": "x64",
-        "seconds": 0.0826762,
-        "result": "ninja:no work to do"
-      }
-    ]
+    "state_owner": "Existing creator owns suspended child and stage; DLL bootstrap restores original header; no new runtime owner/export",
+    "old_path_disposition": "Original stager/helper/bootstrap retained; unsuccessful alternate injection experiments removed"
   }
 }

@@ -67,6 +67,8 @@ try{
         (Case 'cli-failures' $python (@('-B',(Join-Path $SourceRoot 'tests/run16s-exe/cli_failures.py'))+$pair) @('CLI ROLLBACK PASS width=32','CLI ROLLBACK PASS width=64','CLI IO/EXIT PASS width=32','CLI IO/EXIT PASS width=64'))
     )
     $cases+=@(
+        (Case 'legacy-iat-32' (Join-Path $x86 'launch-staging.exe') @('--parent',$Package) @('LEGACY IAT PASS bits=32 zero_oft=0 initialized=1 metadata_restored=1','LEGACY IAT PASS bits=32 zero_oft=1 initialized=1 metadata_restored=1','LEGACY IAT REJECT PASS bits=32 mode=3 error=193')),
+        (Case 'legacy-iat-64' (Join-Path $x64 'launch-staging.exe') @('--parent',$Package) @('LEGACY IAT PASS bits=64 zero_oft=0 initialized=1 metadata_restored=1','LEGACY IAT PASS bits=64 zero_oft=1 initialized=1 metadata_restored=1','LEGACY IAT REJECT PASS bits=64 mode=3 error=193')),
         (Case 'uac-unit-32' (Join-Path $x86 'uac-unit.exe') @() @('UAC UNIT PASS cases=8')),
         (Case 'uac-unit-64' (Join-Path $x64 'uac-unit.exe') @() @('UAC UNIT PASS cases=8'))
     )

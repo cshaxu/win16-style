@@ -1,0 +1,729 @@
+{
+  "schema": 1,
+  "delivery": "M0 T12 S1 P1",
+  "target": {
+    "name": "DoubleKiller.exe",
+    "machine": "x86 PE32 GUI",
+    "sha256": "cdd83ab909db749992d11ace2dff671493c0568d7a14697f8bef4b06d8647ca8",
+    "original_first_thunk": "zero for all 18 descriptors",
+    "original_iat_directory": {
+      "rva": 0,
+      "size": 0
+    }
+  },
+  "diagnosis": {
+    "first_bad_node": "Loader import initialization: staged process reaches initial breakpoint without ordinary application dependencies or ntw16s; target IAT remains unresolved",
+    "crash": "0xC0000005 executing import-name RVA 0x9ECAE (GetModuleHandleA)",
+    "bare_iat_at_initial_breakpoint": [
+      "75304200",
+      "75313650",
+      "7530c840",
+      "7530d640"
+    ],
+    "failing_iat_at_initial_breakpoint": [
+      "0009ec84",
+      "0009ec92",
+      "0009eca0",
+      "0009ecae"
+    ],
+    "root_cause": "Relocated import descriptors with absent IAT directory; failure also reproduced with OFT retained, so zero OFT/repeated DLL names are not the deciding condition",
+    "correction": "Bounded original FirstThunk destination range temporarily completes IAT directory; existing bootstrap restores original metadata",
+    "discarded_experiments": [
+      "lookup snapshots",
+      "in-image padding",
+      "descriptor ordering",
+      "deferred restore",
+      "remote-thread loading"
+    ],
+    "debugger_startup_implemented": false
+  },
+  "legacy_negative": [
+    {
+      "exit_code": 1,
+      "child_exit": "0xC0000005",
+      "architecture": "x86",
+      "detected": true
+    },
+    {
+      "exit_code": 1,
+      "child_exit": "0xC0000005",
+      "architecture": "x64",
+      "detected": true
+    }
+  ],
+  "creation_oracle": {
+    "initial_matrix": [
+      {
+        "architecture": "x86",
+        "tests": 27,
+        "passed": 26,
+        "failed": [],
+        "skipped": [
+          "core/edit-clipboard"
+        ]
+      },
+      {
+        "architecture": "x64",
+        "tests": 42,
+        "passed": 39,
+        "failed": [
+          "propagate/contract"
+        ],
+        "skipped": [
+          "compatibility/cmd-nested",
+          "core/edit-clipboard"
+        ]
+      }
+    ],
+    "original_focused_failure": "deny numeric handle valid; actual object type not captured",
+    "baseline_and_candidate_original_assertions": [
+      {
+        "exit_code": 1,
+        "kind": "baseline",
+        "round": 1
+      },
+      {
+        "exit_code": 0,
+        "kind": "candidate",
+        "round": 1
+      },
+      {
+        "exit_code": 0,
+        "kind": "baseline",
+        "round": 2
+      },
+      {
+        "exit_code": 0,
+        "kind": "candidate",
+        "round": 2
+      },
+      {
+        "exit_code": 0,
+        "kind": "baseline",
+        "round": 3
+      },
+      {
+        "exit_code": 0,
+        "kind": "candidate",
+        "round": 3
+      }
+    ],
+    "corrected_identity_matrix": [
+      {
+        "reused_unrelated_handle_observations": 0,
+        "exit_code": 0,
+        "kind": "baseline"
+      },
+      {
+        "reused_unrelated_handle_observations": 0,
+        "exit_code": 0,
+        "kind": "candidate"
+      }
+    ],
+    "correction": "Pin candidate before OpenEvent reference; compare kernel object identity with CompareObjectHandles; original parent signaling assertions retained",
+    "final_actual_package_vectors": 64
+  },
+  "image_equivalence": {
+    "method": "Read-only PE headers and every raw section, excluding unmapped trailing COFF symbols. Normalize only COFF timestamp, CheckSum and export timestamp; no binary edited.",
+    "records": [
+      {
+        "architecture": "x86",
+        "name": "core-abi.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "core-control-present.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "core-dc-failure.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "core-default.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "core-edit-clipboard.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "core-font-layout.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "core-font.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "core-frames.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "core-geometry.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "core-lifetime.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "core-menu-cancel.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "core-menu-dispatch.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "core-runtime.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "core-scroll-native.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "core-sizebox.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "core-tabs.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "core-terminal.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "creation-contract.exe",
+        "same_loaded_image": false,
+        "intentional_test_oracle_change": true
+      },
+      {
+        "architecture": "x86",
+        "name": "launch-failures.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "launch-payload.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "launch-staging.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "launch-startup-hooks.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "launch-target.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "launch-unwind.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "ntw16s32.dll",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "propagate-target.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "rollback-contract.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "uac-driver.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "uac-gui-target.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "uac-target.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "uac-unit.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x86",
+        "name": "wait-target.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "cmd-nested.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "core-abi.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "core-control-present.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "core-dc-failure.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "core-default.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "core-edit-clipboard.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "core-font-layout.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "core-font.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "core-frames.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "core-geometry.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "core-lifetime.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "core-menu-cancel.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "core-menu-dispatch.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "core-runtime.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "core-scroll-native.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "core-sizebox.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "core-tabs.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "core-terminal.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "creation-contract-driver.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "creation-contract.exe",
+        "same_loaded_image": false,
+        "intentional_test_oracle_change": true
+      },
+      {
+        "architecture": "x64",
+        "name": "demo-observe.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "demo.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "launch-automatic.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "launch-failures.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "launch-payload.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "launch-staging.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "launch-startup-hooks.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "launch-target.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "launch-unwind.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "ntw16s64.dll",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "propagate-basic.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "propagate-target.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "rollback-contract-driver.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "rollback-contract.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "run16s.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "uac-driver.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "uac-gui-target.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "uac-target.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "uac-unit.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "wait-gui-target.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      },
+      {
+        "architecture": "x64",
+        "name": "wait-target.exe",
+        "same_loaded_image": true,
+        "intentional_test_oracle_change": false
+      }
+    ],
+    "unchanged": 71,
+    "changed": 2
+  },
+  "target_runtime": {
+    "bare": {
+      "visible": true,
+      "dpi": 96,
+      "width": 704,
+      "height": 493,
+      "classic_caption_pixels": 0,
+      "close_exit": 0
+    },
+    "final_package": {
+      "pid": 33996,
+      "launcher_pid": 5440,
+      "visible": true,
+      "dpi": 96,
+      "width": 704,
+      "height": 483,
+      "classic_caption_pixels": 12440,
+      "loaded_dll": "delivery-final/candidate/ntw16s32.dll",
+      "loaded_sha256": "abefd7ae5806400f39e54da5008a2126439ec9bd3c2ac652a1b82c7b37438ac7",
+      "moved": true,
+      "minimized": true,
+      "restored": true,
+      "close_exit": 0
+    },
+    "default_async_command": {
+      "visible": true,
+      "classic_caption_pixels": 12440,
+      "launcher_exit": 0,
+      "scope": "first final product images; equivalent to rebuilt delivery"
+    },
+    "physical_input": false,
+    "duplicate_file_operations": false,
+    "published_default": {
+      "launcher_pid": 36912,
+      "target_pid": 26696,
+      "loaded_dll": "O:/winnt/system32/ntw16s32.dll",
+      "loaded_sha256": "abefd7ae5806400f39e54da5008a2126439ec9bd3c2ac652a1b82c7b37438ac7",
+      "visible": true,
+      "dpi": 96,
+      "classic_caption_pixels": 12440,
+      "minimized": true,
+      "restored": true,
+      "launcher_exit": 0,
+      "scope": "default async exact user command; target closure requested and owned job cleaned"
+    },
+    "screenshot": {
+      "format": "native PrintWindow BMP converted losslessly to PNG",
+      "width": 704,
+      "height": 483,
+      "sha256": "ae4172f5ab1a0e74335f771d2e375e6c0adc236d5606a7f6e3ab262d0cb61689",
+      "disposition": "user acceptance artifact outside repository; raw test screenshot not committed"
+    },
+    "inherited_working_directory": {
+      "start_from": "repository working directory; CreateProcess lpCurrentDirectory=NULL",
+      "bare_pass": true,
+      "published_default_async_pass": true,
+      "classic_caption_pixels": 12440,
+      "loaded_dll": "O:/winnt/system32/ntw16s32.dll"
+    }
+  },
+  "raw_evidence": [
+    {
+      "path": "build/t12-legacy-staging/bare-events.txt",
+      "sha256": "83d7ec3d6e22bcc03576684d6fc88d96e316f7b83cb8a8c3a1c1f99501d01df5"
+    },
+    {
+      "path": "build/t12-legacy-staging/styled-events.txt",
+      "sha256": "e214b0fe04689cfc4792103e2ddb9a503b92ed9ae03befeed682800b4533aa58"
+    },
+    {
+      "path": "build/t12-legacy-staging/minimal-events.txt",
+      "sha256": "aa987e8c403069b3ee38e5342fcbc8394062e79e94a61015e5119a59c29033fe"
+    },
+    {
+      "path": "build/t12-legacy-staging/target-final.log",
+      "sha256": "8adc6836b7245d601689f727d5d87cce26d278d6dbbad87593bb27c615853b83"
+    },
+    {
+      "path": "build/t12-legacy-staging/target-default.log",
+      "sha256": "6494d9bcc918f8a4440dda5650ab641008799254bafd726d92d85b3d58507fd0"
+    },
+    {
+      "path": "build/t12-legacy-staging/target-delivery.log",
+      "sha256": "04d64b369dce268389fce33c60ae2b09b82712c8ee2c5a6f4a7238d78baa238c"
+    },
+    {
+      "path": "build/t12-legacy-staging/negative-final-x86.log",
+      "sha256": "3f03991af8dacb64bf41724b0a1a477c6840f5463cbb777ec99e01dee79a9023"
+    },
+    {
+      "path": "build/t12-legacy-staging/negative-final-x64.log",
+      "sha256": "13f59b5814a62366bcfb41090d879a156216b7d95c5a7e1358c71391464a409e"
+    },
+    {
+      "path": "build/t12-legacy-staging/full-x86.log",
+      "sha256": "55cd3dda198b9bbcc2e6cf77d1f0db807edd62d019f5c68b40db6b912fb8ee1a"
+    },
+    {
+      "path": "build/t12-legacy-staging/full-native-x86.log",
+      "sha256": "43c6c4320871f208538a31f0d27282dd9f568f18a2225db1476c9f154c2e4f16"
+    },
+    {
+      "path": "build/t12-legacy-staging/full-native-x64.log",
+      "sha256": "c98082e3efba6f38662354264ffdfdf7f2045f2bfed3226152572f636f777593"
+    },
+    {
+      "path": "build/t12-legacy-staging/contract-focused.log",
+      "sha256": "a7ba2ad7eb31dacfe0989b5fd73d3a30dc3b00b78f37a7e34a1e34daccc586bf"
+    },
+    {
+      "path": "build/t12-legacy-staging/contract-repeats.json",
+      "sha256": "84a40d2050a0c8e1459fca91565121ca310a189de0a9165e6a773ba761480c95"
+    },
+    {
+      "path": "build/t12-legacy-staging/contract-identity.json",
+      "sha256": "20b9b118fc634c932598dc5edf5c191c07d236814cf1da37e70259ab6fa59129"
+    },
+    {
+      "path": "build/t12-legacy-staging/image-equivalence.json",
+      "sha256": "26b9d70883733832167781a895733883f4663cac9c09ac627c8c23da028ba618"
+    },
+    {
+      "path": "build/t12-legacy-staging/inspect.c",
+      "sha256": "de00eb383374c881648889fb29f68966dc5ed2cf0801b576196c288632eff925"
+    },
+    {
+      "path": "build/t12-legacy-staging/observe.c",
+      "sha256": "70d14f41a80b351ff898e00be170728570ee4551de68a27beec68177184c3616"
+    },
+    {
+      "path": "build/t12-legacy-staging/compare_images.py",
+      "sha256": "988a0b441dc6050bea6f0ab1725e1f590f03670cd507a792e16308ea3227f95f"
+    },
+    {
+      "path": "build/t12-legacy-staging/target-published.log",
+      "sha256": "c9fb281788769058799450dd6e2c822630a36fe4012b8d9251cc2a286f172b72"
+    },
+    {
+      "path": "build/t12-legacy-staging/target-inherited-cwd-bare.log",
+      "sha256": "85879e2b7e5cff44f3141937f00fe23a2472672dae1a03029f2ddfef00d2682d"
+    },
+    {
+      "path": "build/t12-legacy-staging/target-inherited-cwd-styled.log",
+      "sha256": "43b79530e47fe5af76486787587b6f61f26a6c728ac3b6ba06cf2215844e89f8"
+    }
+  ],
+  "hygiene": {
+    "abandoned_task_workers": 2,
+    "ownership": "Exact T12 debug_tree command lines and matching process creation identities checked before stopping only owned process trees",
+    "unbounded_earlier_debug_logs_used_as_primary_evidence": false
+  },
+  "limits": [
+    "No arbitrary legacy/packed/managed compatibility claim",
+    "No duplicate scan/delete/move operations exercised",
+    "No physical mouse/keyboard or arbitrary DPI certification",
+    "Three existing optional/clipboard skips remain explicit",
+    "Existing T11 rollback-count debt not declared solved"
+  ]
+}

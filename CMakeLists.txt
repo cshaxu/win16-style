@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.25)
-project(win16_style VERSION 0.11.0 LANGUAGES C RC)
+project(win16_style VERSION 0.12.0 LANGUAGES C RC)
 if(NOT MINGW OR NOT CMAKE_C_COMPILER_ID STREQUAL "GNU")
   message(FATAL_ERROR "The product profile requires native MinGW-w64 GCC C17")
 endif()
