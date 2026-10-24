@@ -43,4 +43,4 @@ S4按用户明确修正菜单契约：取消8pt MS Sans Serif字符advance压缩
 有限覆盖/双发布/实际复核见CURRENT活动包，完成只关闭S4，T8继续开放。
 
 S4比例/布局修复已验证并双发布，实际包14/14，相关全集53通过/2权限跳过；
-待实际远端复核后仅关闭本S，T8保持开放。见[S4记录](../history/M0-T8-S4-menu-proportions.md)。
+P1 64e3fd3实际远端复核通过、清理后仅关闭S4，T8保持开放。见[S4记录](../history/M0-T8-S4-menu-proportions.md)。

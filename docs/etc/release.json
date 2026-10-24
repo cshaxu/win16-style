@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "delivery": "M0 T8 S4 P1",
-  "stage": "S4-verified-dual-published-remote-review-pending-T8-open",
+  "stage": "S4-proportional-menu-closed-T8-open-owner-appearance-pending",
   "version": "0.8.0.0",
   "package_directory": "assets",
   "source_inputs": [
@@ -949,12 +949,12 @@
     "test_result": "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery-test\\result.json",
     "tested_package": "O:\\repos.hobby\\win16style\\build\\t8-package\\s4-delivery\\candidate",
     "backup_recovery_commit": "a9ab2ab954af6710748de2fc7bab43285335bdd0",
-    "backup_retention": "owned scratch until actual remote review; all8 before bytes recoverable from baseline Git assets"
+    "backup_retention": "owned scratch removed after actual remote review; all8 before bytes recoverable exactly from a9ab2ab Git assets"
   },
   "audit": {
     "baseline": "a9ab2ab954af6710748de2fc7bab43285335bdd0",
-    "stage": "verified, dual-published; actual remote review pending",
-    "task_status": "T8 open; close only S4 after actual P1 review",
+    "stage": "S4 closed after actual P1 remote review and safe scratch cleanup; T8 open",
+    "task_status": "T8 remains open for owner appearance feedback; only S4 closed",
     "source_input_comparison": "all126 compiled inputs equal final s4-delivery source copy; no post-build source changes",
     "state_owner": "GUI-thread System FNT/HFONT references and native menu item adapters; USER owns native popups/SysShadow",
     "old_path_disposition": "no source moves, obsolete menu_source font handle removed; controls/title/legacy20/S3 shadow behavior retained",
@@ -1132,7 +1132,8 @@
       "build/t8-package/s4-delivery/clean-source/build/t8-package/clean-build/x86/run.log": "aeca27f71dc5f72db27e867ec5f613479c079da2a4296379762d2081f051536d",
       "build/t8-package/s4-delivery/clean-source/build/t8-package/clean-build/x86/run.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "build/t8-package/s4-delivery/clean-source/build/t8-package/clean-build/x64/run.log": "55ea6b46ee530c46d6c87aca9c5b6115ba7b92025c7bbb4b3e9eb3678218fbee",
-      "build/t8-package/s4-delivery/clean-source/build/t8-package/clean-build/x64/run.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      "build/t8-package/s4-delivery/clean-source/build/t8-package/clean-build/x64/run.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "build/t8-package/remote-review.json": "e25b1987af5b5463627f9861230962ebac44cd0031b46a866e2a61dc2cb132fc"
     },
     "previews": [
       {
@@ -1146,8 +1147,46 @@
         "kind": "final tested package actual native WM_PRINT owned frame and open popup; no resampling; not XP sol or physical input"
       }
     ],
-    "review": "pending actual remote commit/diff and raw evidence review",
-    "scratch": "registered exact build/t8-package; retain until actual review and safe cleanup"
+    "review": "passed actual remote P1 commit/diff,126 inputs,6 resource blobs,4 artifacts/8 copies,167 raw evidence digests and registered coverage/title/control/native menu/negative/backup proofs",
+    "scratch": "registered exact root safely removed after actual remote review",
+    "actual_remote_review": {
+      "status": "passed",
+      "commit": "64e3fd30634bcfa426fe1dbc4eec5a0f00c24504",
+      "source_inputs": 126,
+      "resource_blobs": 6,
+      "artifacts": 4,
+      "published_copies": 8,
+      "package_cases": 14,
+      "coverage": "53 pass/2 explicit clipboard permission skips; exact registered26/29 union",
+      "menu": "actual96/144 proportional bar/popup System pixel and native geometry,30 cancellation cases per width, hidden associated5px SysShadow, fullNC/client corners, styles/class/SPI and resource/lifetime checks",
+      "title": "complete native title RGB identical at96/144; source expression/painters unchanged",
+      "controls": "controls.c byte-exact, independent84scenario font/metrics/updates/reentrant/null/detach; GDI43/43 and45/45",
+      "negative": "four old-S3 negatives exit1; final fixture sources byte-identical",
+      "before": "all8 match a9ab2ab Git assets and owned backups",
+      "scope": "M0/T8 open; S4 only closure after review; no global/shared menu mutations or resource substitution",
+      "raw_evidence_checked": 167
+    },
+    "reviewed_commit": "64e3fd30634bcfa426fe1dbc4eec5a0f00c24504",
+    "scratch_cleanup": {
+      "top_level_directories": 21,
+      "directories": 1671,
+      "files": 3316,
+      "reparse_points": 0,
+      "preserved": [
+        "build/.ninja",
+        "build/.ccache",
+        "assets",
+        "O:/winnt/system32",
+        "chat native menu PNGs"
+      ],
+      "live_owned_processes": 0,
+      "absolute_path": "O:\\repos.hobby\\win16style\\build\\t8-package",
+      "path": "build/t8-package",
+      "bytes": 162916014
+    },
+    "evidence_retention": "Raw scratch actually read and SHA-checked before deletion; extracted results/hashes kept in release/history; all8 before bytes recoverable from a9ab2ab Git assets; two native PNGs retained in chat visual directory",
+    "closure_delivery": "M0 T8 S4 P2",
+    "post_delivery_document_only": "P2 changes none of the126 compiled inputs or4 product bytes; both8 published hashes identical to P1; no new build or publication claimed"
   },
   "typography": {
     "controls": "host System bitmap glyphs sized to original app character advances/cell/ascent/leading; borrowed app fonts restored on detach; System/NULL retained; no layout changes",

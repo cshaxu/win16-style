@@ -92,4 +92,19 @@ PE/imports、统计和原始证据SHA见release.json；统计src/tests/tools/CMa
 共9路径，增加274、删除68、净206。未移动旧路径，删除不再需要的menu_source
 句柄；所有者仍为GUI线程引用计数字体/菜单适配器，USER拥有native窗口。
 
-P1验证和双发布完成，待提交推送及实际远端复核；仅S4待收口，T8继续开放。
+## 实际复核及S4收口
+
+P1 64e3fd30634bcfa426fe1dbc4eec5a0f00c24504已推送；读取origin/main实际提交/
+完整diff并逐项复核126输入（LICENSE换行约定明确）、六原资源blob/SHA、四远端
+产品和两处8副本、14实际包exit0、注册全集26/29与JUnit/package精确组合、每宽
+30菜单场景/独立System像素/原生宽度/细框与SysShadow/控制及标题保留、四旧包
+负例，167份原始证据SHA全部一致。额外核对保留PNG、负例fixture源码同一身份、
+旧DLL及8份before与a9ab2ab Git assets相同。未改rules/AGENTS/CMake及保留源码。
+
+复核通过后确认精确绝对目标/祖先与子项无reparse、无活动owned进程，仅删除
+登记build/t8-package：21顶层目录、1671目录、3316文件、162916014字节。稳定
+.ninja/.ccache、两发布位置和原生菜单PNG保留。原始日志/位图先实际检查并提炼
+结果/SHA再回收，旧包8份before均可从Gita9ab2ab assets逐字节恢复。
+
+P2只更新实际复核/清理/收口文档，126编译输入与四产品和8发布副本与P1完全
+相同；没有新编译/发布。本S4闭环完成，M0/T8保持开放，等待本轮用户外观反馈。
