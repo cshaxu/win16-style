@@ -2,37 +2,16 @@
 
 ## Current Work
 
-M0 Td S9 implemented/verified：已完成效率修复、完整回归及同包双发布，待P1实际远端复核和清理。M0固定，T8开放，T9产品任务
-仍关闭。修改工具与测试编排，不改运行时代码、版本、ABI、标题字体菜单或原资源。
-
-## M0 Td S9 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Governance；下一未用Td S9，不复用已关闭编号。 |
-| Admission And Approval | 用户在效率审计后明确要求准入一个S修复测试效率；永久提交推送授权继续适用。 |
-| Objective | 统一持久ccache、修复toolchain生命周期，支持目标/快速构建、隔离输出及有界并行，实测耗时与缓存收益。 |
-| Non-goals | 不改测试断言/轮数/超时来制造提速，不减少完整集合，不改运行时代码/版本/ABI/UI/资源，不写softpc或ntvdm64，不动用户进程或全局缓存。 |
-| Reference Baseline | 3245d15 / 0.9.0.0；审计确认临时缓存分裂、toolchain被清理、全目标构建、串行和重复验证。 |
-| Candidate Proposal | [构建与测试效率](../proposals/build-test-efficiency.md)。 |
-| Files And ABI Surface | CMakeLists、tools构建/打包/包测试/测试driver、测试入口和交付文档；产品C/资源/ABI不变。 |
-| Applicable Rules | Task Reading Set、治理工具归Td；构建输入改变仍完成干净双宽四文件同包测试，binary change则双发布。纯C17/GCC/Ninja/ccache，参考仓库只读。 |
-| Verification | 修前同集合串行基线、修后并行对照；直接增量no-work、toolchain在清理后存续、干净树共享缓存命中、目标构建与quick集合、并行目录/状态隔离、完整注册及同包回归。 |
-| Expected Markers | QUICK PASS、CACHE REUSE PASS、INCREMENTAL PASS、完整JUnit/包标记、治理/来源/资源门禁及远端实际复核。 |
-| Asset Needs | build/td-s9-efficiency为基线/bench原始日志，build/t9-package为同版本干净候选/包测试/备份；本轮Testing日志亦先提炼回收；稳定.ninja和.ccache保留，无reparse/活动进程才清理。 |
-| Reporting Requirements | 有界耗时、对照集合/身份、cache增量计数、完整数量/skip、四SHA及必要发布、失败与未覆盖；公开数据脱敏，M0/T8开放。 |
-| Stop Conditions | 资源/UI/ABI或断言改变、共享输出/竞态、完整测试失败则修正后复验；不以提高超时或删测试放行。 |
-| Exit Criteria | 工具修复、可复跑入口、性能证据与完整验证、必要同包发布、提交推送实际复核和安全清理后收口S9。 |
-| Original Owner Request | 准入一个S任务修复测试效率；此前要求对照隔壁softpc的Ninja、ccache及项目优化方案。 |
-| Similar-Issue Sweep | 公共脚本/直接CMake/复制干净树的cache一致性，所有持久构建图对临时输入依赖、目标/测试分层、全CTest及包测试隔离和重复完整矩阵。 |
+无活动任务包（S）。M0 Td S9效率修复已完成实际远端复核、同包双发布及安全清理后收口；
+M0固定，T8开放，T9产品任务仍关闭。产品版本0.9.0.0。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 9
 - Last allocated Td S: 9
-- Last delivery: M0 Td S9 P1 (verified locally；推送实际复核待完成，T8开放)
-- Open task: M0 Td S9；M0 T8 remains open；T9已收口
+- Last delivery: M0 Td S9 P2 (P1 425b7df实际远端复核通过；清理及清理后增量通过，T8开放)
+- Open task: M0 T8 remains open；无活动S；Td S9及T9已收口
 
 ## Technical Baseline
 
@@ -55,7 +34,9 @@ ABI3/31名称及ordinal1 NONAME helper不变。产品C/H/RC及六原资源与324
 
 已先备份再发布assets根及O:/winnt/system32，8摘要与被测包相同；8份before可从
 3245d15恢复。PE/输入/工具链/性能及脱敏原始摘要见[release](../etc/release.json)和
-[S9记录](../history/M0-Td-S9-test-efficiency.md)。P1尚待实际远端复核及安全清理，
+[S9记录](../history/M0-Td-S9-test-efficiency.md)。P1 425b7df实际远端131输入/四产物/八发布副本复核通过；
+本S两个scratch根及本轮Testing日志已安全回收，持久toolchain/cache保留，
+清理后两宽直接Ninja均no work（0.51/0.35秒）。
 本轮物理输入/真实192DPI/显式后端8例未重跑，不能借历史结果称为本S覆盖。
 
 T9外部导入表修复源码保持；此前NE间歇失败仍未证实根因，既有裸NTSRV复用无
@@ -63,6 +44,8 @@ T9外部导入表修复源码保持；此前NE间歇失败仍未证实根因，�
 英文README及8张demo/真实XP Solitaire精选PNG保持，来源见[截图清单](../etc/screenshots/manifest.json)。
 
 ## Recent Closure
+
+- [Td S9构建与测试效率](../history/M0-Td-S9-test-efficiency.md)：425b7df实际远端复核通过；S9收口，M0/T8开放。
 
 - [T9 S1原生嵌套cmd及外部导入表](../history/M0-T9-S1-native-cmd-staging.md)：P1实际远端复核及清理完成；仅本轮S/T9收口，T8开放。
 

@@ -11,3 +11,6 @@ M0 Td S9按用户授权实施。参考softpc的持久Ninja/ccache、按目标构
 
 最终只做一次冻结源码的双宽全构建/完整回归和实际包测试；按规则比较四文件，
 有binary change则双目录发布。所有产品C及原资源字节保持，T8开放。
+
+Td S9已交付收口；实际耗时、完整回归、发布和远端/清理证据见
+[完成记录](../history/M0-Td-S9-test-efficiency.md)，当前状态由CURRENT管理。

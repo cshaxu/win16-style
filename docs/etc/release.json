@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 Td S9 P1",
-  "stage": "published locally;actual P1 remote review pending",
+  "delivery": "M0 Td S9 P2",
+  "stage": "closed after actual P1 remote review and safe scratch cleanup",
   "version": "0.9.0.0",
   "package_directory": "assets",
   "source_inputs": [
@@ -877,8 +877,8 @@
   },
   "audit": {
     "baseline": "3245d15",
-    "stage": "actual P1 remote review pending",
-    "task_status": "M0/T8 open;Td S9 active;T9 closed",
+    "stage": "P1 actual remote review passed; cleanup and post-cleanup incremental passed",
+    "task_status": "M0/T8 open;Td S9 closed;T9 closed",
     "evidence": "evidence/test-efficiency.json",
     "evidence_sha256": "90d4d329def018982cefbedd1f2448179ae97feeb666934cd60359567d35d019",
     "evidence_hash_convention": "SHA256 of canonical Git LF bytes",
@@ -890,6 +890,71 @@
       "added": 309,
       "deleted": 76,
       "net": 233
+    },
+    "remote_review": {
+      "status": "passed",
+      "commit": "425b7df095d21899501102ef1cb1eb7693e5cea3",
+      "source_inputs": 131,
+      "remote_assets": 4,
+      "published_copies": 8,
+      "product_src_and_rules_unchanged": true,
+      "old_test_registrations_retained": true,
+      "full_passed": 64,
+      "full_skipped": 3,
+      "package_cases": 19,
+      "raw_hashes": 77,
+      "shared_cache_direct_hits": 170,
+      "shared_cache_misses": 0
+    },
+    "remote_review_raw_sha256": "40bd992af6552cbeb6cff29bf0ef8b7cf4134cab8621369ba3691e6b34adfff4",
+    "cleanup": {
+      "testing_logs": [
+        {
+          "bytes": 35963,
+          "path": "build/.ninja/x86/Testing/Temporary/LastTest.log",
+          "sha256": "86f5023df95b148f65de6cba83f90900c4c4f82b7141d75f310f860ec5d7c8cb"
+        },
+        {
+          "bytes": 37741,
+          "path": "build/.ninja/x64/Testing/Temporary/LastTest.log",
+          "sha256": "e3a06273d43b420a1516a498c7e7b8e00e4eced4e79a59ba3a1173053a44f845"
+        }
+      ],
+      "preserved": "stable .ninja metadata/objects/toolchains, CTestCostData, .ccache and published files",
+      "status": "removed",
+      "roots": [
+        {
+          "active_processes": 0,
+          "files": 311,
+          "directory": "build/td-s9-efficiency",
+          "reparse_points": 0,
+          "bytes": 27258499.0
+        },
+        {
+          "active_processes": 0,
+          "files": 1394,
+          "directory": "build/t9-package",
+          "reparse_points": 0,
+          "bytes": 88830314.0
+        }
+      ]
+    },
+    "post_cleanup_incremental": {
+      "status": "passed",
+      "results": [
+        {
+          "architecture": "x86",
+          "toolchain": "build/.ninja/x86/toolchain.cmake",
+          "no_work": true,
+          "seconds": 0.508716
+        },
+        {
+          "architecture": "x64",
+          "toolchain": "build/.ninja/x64/toolchain.cmake",
+          "no_work": true,
+          "seconds": 0.3501539
+        }
+      ]
     }
   },
   "source_inputs_sha256": "944a828bc8de854dc019f0718acafb9a8f90331f3293fcbef469cf01680bf67f"

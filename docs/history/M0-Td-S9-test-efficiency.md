@@ -48,8 +48,27 @@ x64为90/0，构建阶段12.7964/15.2998秒；Ninja依赖门禁通过，未借�
 被测包一致；八份before与3245d15 assets相同可恢复。源码/测试/配置输入131项及
 四SHA/PE/imports、77份原始摘要见[release](../etc/release.json)和
 [效率证据](../etc/evidence/test-efficiency.json)。公开记录无真实PID/路径/转录。
-P1仍待实际远端复核与安全清理，尚不宣称收口。
+P1实际远端复核及安全清理已完成，收口证据如下。
 
 变更统计范围CMakeLists/src/tools/tests相对3245d15：8路径，增加309/删除76/
 净增233行；产品src零变更。没有迁移产品实现；持久元数据归构建树，每例scratch
 归相应测试，GUI原有所有权不变。稳定树更新后不依赖旧task toolchain。
+
+## Remote review and closure
+
+协调复核读取实际fetch后的P1提交425b7df095d21899501102ef1cb1eb7693e5cea3及diff，
+逐项核对131输入的Git文本规范化/实际复制字节、远端四产物、八发布副本、77份
+原始摘要及完整JUnit/19包标记。产品src与rules对基线无diff，旧测试注册全部保留，
+公开证据无运行身份。复核结果及其原始SHA已提炼入release.audit。
+
+确认无活动进程、无reparse且绝对路径在本仓库build下后，仅回收本S两个登记根：
+build/td-s9-efficiency的311文件/27,258,499字节及build/t9-package的1394文件/
+88,830,314字节；本轮双宽LastTest.log亦在记录摘要后删除。稳定.ninja对象/元数据、
+CTestCostData、.ccache及发布文件保留。清理后实际执行两宽cmake --build --parallel8，
+均Ninja no work，0.508716/0.3501539秒，证明toolchain不再依赖已删除任务目录。
+
+有限审计清单全部满足：错误fresh分支、持久toolchain及共享cache、目标/Quick入口、
+隔离并行与资源预算、原完整集合、失败标记/退出码负例、最终干净同包回归、双发布、
+实际远端输入和产物复核、安全清理及清理后增量。上文跳过及未覆盖面保持，不扩张
+性能结论。P2仅记录复核及关闭，不改131输入或产物，不虚构重复构建/发布。Td S9
+收口；M0、T8开放，无活动S，T9保持关闭。
