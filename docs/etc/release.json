@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T13 S2 P1",
-  "stage": "verified, dual published; actual remote review pending",
+  "delivery": "M0 T13 S2 P2",
+  "stage": "closed after actual P1 remote review and registered scratch cleanup",
   "version": "0.12.0.0",
   "version_exception": "Owner requested exact revert including version; product M0 T12 metadata restored, governance remains T13 S2",
   "package_directory": "assets",
@@ -869,7 +869,7 @@
     "actual_package_passed": 23,
     "physical_input": "not-tested",
     "evidence": "evidence/multilingual-font-revert.json",
-    "evidence_sha256": "c543d2f71f97209f62e4d7e035c11bcaed98bad799fb79979fe90020aaa2642f"
+    "evidence_sha256": "287edf6644f48ce5afa5778eba0cb75f23be51eb75309134fe69f7b8454912fa"
   },
   "publication": {
     "copies": [
@@ -953,6 +953,41 @@
       "physical input/IME",
       "all languages or DPI",
       "whole binary byte identity"
-    ]
+    ],
+    "p1_remote_review": {
+      "actual_downloads": 165,
+      "published_copies": 8,
+      "commit": "bcf3d08719f81b54f4e8f043c60cd54096df757f",
+      "source_inputs": 149,
+      "products": 4,
+      "status": "passed",
+      "receipt_sha256": "b0179f9790084d9adf028b7ff48d38a23189de98d11b569f62b9b25c256f42a0"
+    }
+  },
+  "closure": {
+    "p1": "bcf3d08719f81b54f4e8f043c60cd54096df757f",
+    "source_inputs_unchanged": 149,
+    "product_sha256_unchanged": true,
+    "registered_scratch_cleanup": {
+      "roots": [
+        {
+          "files": 44,
+          "bytes": 269051.0,
+          "path": "build/t13-s2-revert",
+          "resolved": "O:\\repos.hobby\\win16style\\build\\t13-s2-revert"
+        },
+        {
+          "files": 997,
+          "bytes": 53883933.0,
+          "path": "build/t12-package",
+          "resolved": "O:\\repos.hobby\\win16style\\build\\t12-package"
+        }
+      ],
+      "status": "completed; both registered roots absent",
+      "preserved": "build/.ninja, build/.ccache, assets and system32 releases",
+      "checks": "Exact registered paths resolved inside workspace; no ancestor/child reparse; no live executable under roots; package children only t13-s2-*"
+    },
+    "task_status": "T13 S2 and T13 closed; M0 open; other task states preserved",
+    "acceptance": "Exact source/test revert to ae9a1b5, focused26 and actual-package23 passed; original typography limitations restored, physical input not claimed"
   }
 }

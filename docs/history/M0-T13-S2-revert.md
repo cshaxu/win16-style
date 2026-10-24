@@ -1,6 +1,6 @@
 # M0 T13 S2：原样撤回多语言字体修改
 
-状态：验证和双发布完成，P1实际远端复核待完成；Owner-Reopen，M0固定。
+状态：P1实际远端复核通过，S2及T13收口，M0开放；Owner-Reopen，M0固定。
 用户不满意上一S效果，明确要求追加S并将全部代码和测试原样revert。
 准入基线0c89bc3，工作树干净；不改历史，不改兄弟仓库。
 
@@ -44,6 +44,14 @@ EXECUTION的主动核实并关闭文件占用者规范逐字保留0c89bc3，不�
 只读Restart Manager在两轮发布检查均报告0占用，本S没有关闭任何用户进程。
 实际system32两宽DLL的ABI3/31命名导出验证通过。
 原资源/来源/治理自测通过，说明、摘要与[发布清单](../etc/release.json)及
-[精选证据](../etc/evidence/multilingual-font-revert.json)一致；推送后继续实际远端复核。
-原始scratch为build/t13-s2-revert及build/t12-package，本S提炼证据后安全回收；
+[精选证据](../etc/evidence/multilingual-font-revert.json)一致。
+P1 bcf3d08719f81b54f4e8f043c60cd54096df757f实际读取GitHub精确提交165份文件，
+149输入/四产物及八部署摘要全部通过；实际diff确认148代码/测试/工具等同ae9a1b5，
+EXECUTION等同0c89bc3。协调复核对照原请求及全部9条反向差异，无遗漏或替代实现。
+S1全部产品/测试撤回、S2交付完整，T13任务级审计通过；M0开放，其他任务状态不变。
+原始scratch为build/t13-s2-revert及build/t12-package，本S提炼证据后已安全回收；
 稳定build/.ninja与build/.ccache保留。
+
+清理前核对绝对路径、全部祖先/子项无reparse、无存活映像且package仅本S子目录；
+文件数/字节和远端下载回执SHA已提炼到证据。关闭提交仅更新文档，149输入及
+已测试/发布的八文件摘要未变。P2推送后再次实际读取关闭文件并核对。

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "task": "M0 T13 S2",
-  "status": "verified and published; P1 actual remote review pending",
+  "status": "P1 actual remote review passed; S2/T13 closed in P2",
   "baseline": "0c89bc38e6d25df8e652184a074f751a0595d23f",
   "exact_revert_target": "ae9a1b5ce4b361db5491a36e4908008b05886376",
   "identity": {
@@ -1014,7 +1014,7 @@
         "x86 passed",
         "x64 passed"
       ],
-      "temporary_governance_failure": "new evidence link initially absent during drafting; created before passing final governance check"
+      "temporary_governance_failure": "new evidence link initially absent during drafting; created before passing final governance check; closure draft used abbreviated idle phrase, corrected to required explicit 无活动任务包 before final passing gate"
     }
   },
   "publication": {
@@ -1094,5 +1094,38 @@
     "frozen CTest 13-case core selection on x86/x64, 4 jobs total",
     "Publish-Package.ps1 -Task 12 -RunName t13-s2-publish (tested candidate/result)",
     "verify_source_manifest.py --self-test; verify_resource_identity.py --self-test; Verify-Governance.ps1 -SelfTest; git diff --check"
-  ]
+  ],
+  "p1_remote_review": {
+    "actual_downloads": 165,
+    "published_copies": 8,
+    "commit": "bcf3d08719f81b54f4e8f043c60cd54096df757f",
+    "source_inputs": 149,
+    "products": 4,
+    "status": "passed",
+    "receipt_sha256": "b0179f9790084d9adf028b7ff48d38a23189de98d11b569f62b9b25c256f42a0"
+  },
+  "scratch_cleanup": {
+    "roots": [
+      {
+        "files": 44,
+        "bytes": 269051.0,
+        "path": "build/t13-s2-revert",
+        "resolved": "O:\\repos.hobby\\win16style\\build\\t13-s2-revert"
+      },
+      {
+        "files": 997,
+        "bytes": 53883933.0,
+        "path": "build/t12-package",
+        "resolved": "O:\\repos.hobby\\win16style\\build\\t12-package"
+      }
+    ],
+    "status": "completed; both registered roots absent",
+    "preserved": "build/.ninja, build/.ccache, assets and system32 releases",
+    "checks": "Exact registered paths resolved inside workspace; no ancestor/child reparse; no live executable under roots; package children only t13-s2-*"
+  },
+  "task_audit": {
+    "S1": "historical results preserved; all product/code/test changes withdrawn by owner request",
+    "S2": "exact source/test restore, no alternative typography, four freshly built products tested and dual published, actual P1 remote review passed",
+    "state": "T13 closed; M0 open; previous closed/cancelled tasks unchanged"
+  }
 }
