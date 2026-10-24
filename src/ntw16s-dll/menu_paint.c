@@ -19,21 +19,40 @@ static BOOL CALLBACK draw_text(HDC dc,LPARAM data,WPARAM unused,int width,int he
     return DrawTextW(dc,t->text,t->count,&r,t->flags)!=0;
 }
 
-BOOL win16_style_menu_measure(HDC dc,HFONT font,UINT dpi,const WCHAR *text,
-    win16_style_menu_kind kind,SIZE *size)
+BOOL win16_style_menu_columns_read(HDC dc,HFONT font,UINT dpi,const WCHAR *text,
+    win16_style_menu_columns *columns)
 {
-    int saved,u;RECT label={0},shortcut={0};const WCHAR *tab;TEXTMETRICW metric;
-    if(!dc || !font || !text || !size || dpi<48 || dpi>768 ||
-        kind<WIN16_STYLE_MENU_ROW || kind>WIN16_STYLE_MENU_BAR)return FALSE;
+    int saved;RECT label={0},shortcut={0};const WCHAR *tab;TEXTMETRICW metric;
+    if(!dc || !font || !text || !columns || dpi<48 || dpi>768)return FALSE;
     saved=SaveDC(dc);if(!saved)return FALSE;
-    SelectObject(dc,font);u=max(1,MulDiv(1,(int)dpi,96));
+    SelectObject(dc,font);
     if(!GetTextMetricsW(dc,&metric)){RestoreDC(dc,saved);return FALSE;}
     tab=wcschr(text,L'\t');
     DrawTextW(dc,text,tab?(int)(tab-text):-1,&label,DT_CALCRECT|DT_SINGLELINE);
     if(tab)DrawTextW(dc,tab+1,-1,&shortcut,DT_CALCRECT|DT_SINGLELINE|DT_NOPREFIX);
-    size->cx=label.right+shortcut.right+MulDiv(kind==WIN16_STYLE_MENU_BAR?12:tab?52:36,(int)dpi,96);
-    size->cy=kind==WIN16_STYLE_MENU_SEPARATOR?2*u:metric.tmHeight+2*u;
+    columns->label=max(columns->label,label.right);
+    columns->shortcut=max(columns->shortcut,shortcut.right);
+    columns->height=max(columns->height,max(metric.tmHeight,MulDiv(14,(int)dpi,96))+2*max(1,MulDiv(1,(int)dpi,96)));
     RestoreDC(dc,saved);return TRUE;
+}
+
+int win16_style_menu_columns_width(const win16_style_menu_columns *c,UINT dpi,BOOL arrows)
+{
+    return MulDiv(18,(int)dpi,96)+c->label+
+        (c->shortcut?MulDiv(8,(int)dpi,96)+c->shortcut:0)+MulDiv(arrows?12:4,(int)dpi,96);
+}
+
+BOOL win16_style_menu_measure(HDC dc,HFONT font,UINT dpi,const WCHAR *text,
+    win16_style_menu_kind kind,SIZE *size)
+{
+    win16_style_menu_columns c={0};
+    if(!size || kind<WIN16_STYLE_MENU_ROW || kind>WIN16_STYLE_MENU_BAR ||
+        !win16_style_menu_columns_read(dc,font,dpi,text,&c))return FALSE;
+    /* The exported row helper has no submenu flag: reserve an arrow cell.
+     * Native popup adapters know the complete HMENU and omit it when unused. */
+    size->cx=kind==WIN16_STYLE_MENU_BAR?c.label+MulDiv(12,(int)dpi,96):win16_style_menu_columns_width(&c,dpi,TRUE);
+    size->cy=kind==WIN16_STYLE_MENU_SEPARATOR?2*max(1,MulDiv(1,(int)dpi,96)):c.height;
+    return TRUE;
 }
 
 static BOOL render_text(HDC dc,menu_text item,BOOL disabled,COLORREF color)
@@ -58,8 +77,8 @@ static void glyph(HDC dc,int left,int top,const char *bits,int width,int height,
     }
 }
 
-BOOL win16_style_menu_text(HDC dc,const RECT *bounds,HFONT font,UINT dpi,
-    const win16_style_palette *p,const WCHAR *text,UINT state,win16_style_menu_kind kind,BOOL submenu)
+BOOL win16_style_menu_text_columns(HDC dc,const RECT *bounds,HFONT font,UINT dpi,
+    const win16_style_palette *p,const WCHAR *text,UINT state,win16_style_menu_kind kind,BOOL submenu,const win16_style_menu_columns *columns)
 {
     int saved,u,padding;RECT r;COLORREF background,foreground;const WCHAR *tab;
     menu_text item;BOOL result=TRUE,disabled;
@@ -78,14 +97,18 @@ BOOL win16_style_menu_text(HDC dc,const RECT *bounds,HFONT font,UINT dpi,
     }else{
         SelectObject(dc,font);SetBkMode(dc,TRANSPARENT);SetTextColor(dc,foreground);
         tab=wcschr(text,L'\t');item.text=text;item.count=tab?(int)(tab-text):-1;
-        item.bounds=*bounds;item.bounds.left+=padding;item.bounds.right-=padding;
+        item.bounds=*bounds;item.bounds.left+=padding;item.bounds.right-=MulDiv(kind==WIN16_STYLE_MENU_BAR?6:submenu?12:4,(int)dpi,96);
+        if(columns && kind==WIN16_STYLE_MENU_ROW)item.bounds.right=item.bounds.left+columns->label;
         item.flags=DT_LEFT|DT_SINGLELINE|DT_VCENTER;
         disabled=(state&(ODS_DISABLED|ODS_GRAYED))!=0;
         /* DSS_UNION produces the original stippled silhouette, unlike the
          * raised/shadowed DSS_DISABLED treatment of later Windows styles. */
         result=render_text(dc,item,disabled,foreground);
         if(tab && tab[1]){
-            item.text=tab+1;item.count=-1;item.flags=DT_RIGHT|DT_SINGLELINE|DT_VCENTER|DT_NOPREFIX;
+            item.text=tab+1;item.count=-1;item.flags=DT_LEFT|DT_SINGLELINE|DT_VCENTER|DT_NOPREFIX;
+            if(columns){item.bounds.left=bounds->left+padding+columns->label+MulDiv(8,(int)dpi,96);
+                item.bounds.right=item.bounds.left+columns->shortcut;}
+            else {item.bounds=*bounds;item.bounds.left+=padding;item.bounds.right-=padding;item.flags|=DT_RIGHT;}
             result=render_text(dc,item,disabled,foreground)&&result;
         }
         if(kind==WIN16_STYLE_MENU_ROW && (state&ODS_CHECKED))glyph(dc,bounds->left+MulDiv(2,(int)dpi,96),
@@ -94,4 +117,12 @@ BOOL win16_style_menu_text(HDC dc,const RECT *bounds,HFONT font,UINT dpi,
             (bounds->top+bounds->bottom-MulDiv(11,(int)dpi,96))/2,&menu_arrow[0][0],7,11,dpi,foreground);
     }
     RestoreDC(dc,saved);return result;
+}
+
+BOOL win16_style_menu_text(HDC dc,const RECT *bounds,HFONT font,UINT dpi,
+    const win16_style_palette *p,const WCHAR *text,UINT state,win16_style_menu_kind kind,BOOL submenu)
+{
+    win16_style_menu_columns c={0};
+    if(!win16_style_menu_columns_read(dc,font,dpi,text,&c))return FALSE;
+    return win16_style_menu_text_columns(dc,bounds,font,dpi,p,text,state,kind,submenu,&c);
 }

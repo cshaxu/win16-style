@@ -587,10 +587,10 @@
       "blob": "8473ec9496b45d043be33bbf90fb43b14f8f148d",
       "size": 808,
       "sha256": "68595cdae255277f4b2d0803115178b46975bdf9e30456cebe23ae935ee8363e",
-      "action": "retain",
+      "action": "adapt",
       "destination": "src/ntw16s-dll/menu_paint.h",
       "notice": "project-authored-review",
-      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task; T8 S4 admitted proportional menu correction",
       "receiver": "style-core"
     },
     {

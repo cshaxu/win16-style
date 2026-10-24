@@ -97,6 +97,7 @@ typedef struct system_variant {
     HFONT source,font;
     HANDLE resource;
     unsigned refs;
+    UINT menu_dpi;
 } system_variant;
 static _Thread_local system_variant *variants;
 static LONG variant_serial;
@@ -107,7 +108,7 @@ HFONT win16_style_system_source(HFONT font)
     return font;
 }
 
-HFONT win16_style_system_acquire(HFONT source)
+static HFONT system_acquire(HFONT source,UINT menu_dpi)
 {
     HDC original=NULL,src=NULL,dst=NULL;HFONT base=NULL,font=NULL;
     HBITMAP a=NULL,b=NULL;HGDIOBJ oa=NULL,ob=NULL,of=NULL,oo=NULL;
@@ -115,7 +116,7 @@ HFONT win16_style_system_acquire(HFONT source)
     TEXTMETRICW tm,system;char face[32],actual[32];BOOL ok=FALSE;
     unsigned cursor=118+225*4,sum=0,maxwidth=0;system_variant *v=NULL;
     source=win16_style_system_source(source);
-    for(v=variants;v;v=v->next)if(v->source==source){
+    for(v=variants;v;v=v->next)if(v->source==source && v->menu_dpi==menu_dpi){
         if(v->refs==UINT_MAX)return NULL;
         ++v->refs;return v->font;
     }
@@ -124,7 +125,7 @@ HFONT win16_style_system_acquire(HFONT source)
     if(!oo || !GetTextMetricsW(original,&tm) || !GetTextFaceA(original,32,actual))goto done;
     /* Already-System fonts, including the explicit legacy bitmap API, need
      * no new resource. NULL remains the native default System font. */
-    if(!strcmp(actual,"System") || !strncmp(actual,"Win16 System",12)){
+    if(!menu_dpi && (!strcmp(actual,"System") || !strncmp(actual,"Win16 System",12))){
         font=source;ok=TRUE;goto done;
     }
     if(tm.tmHeight<1 || tm.tmHeight>64)goto done;
@@ -141,13 +142,22 @@ HFONT win16_style_system_acquire(HFONT source)
     oa=SelectObject(src,a);ob=SelectObject(dst,b);of=SelectObject(src,base);
     if(!oa || !ob || !of || !GetTextMetricsW(src,&system) ||
         !GetTextFaceA(src,32,actual) || strcmp(actual,"System") || system.tmHeight<1 || system.tmHeight>64)goto done;
+    /* Menu typography has its own proportional contract. Control variants
+     * continue to use the application font metrics above, without changes. */
+    if(menu_dpi){
+        tm=system;tm.tmHeight=MulDiv(system.tmHeight,(int)menu_dpi,96);
+        tm.tmAscent=MulDiv(system.tmAscent,(int)menu_dpi,96);
+        tm.tmInternalLeading=MulDiv(system.tmInternalLeading,(int)menu_dpi,96);
+        tm.tmExternalLeading=MulDiv(system.tmExternalLeading,(int)menu_dpi,96);
+        if(tm.tmHeight<1 || tm.tmHeight>64)goto done;
+    }
     SetBkColor(src,RGB(255,255,255));SetTextColor(src,RGB(0,0,0));SetStretchBltMode(dst,COLORONCOLOR);
     for(unsigned n=0;n<224;++n){char ch=(char)(n+32);WCHAR wc;SIZE oldsize,syssize;RECT clear={0,0,128,64};
         if(MultiByteToWideChar(1252,0,&ch,1,&wc,1)!=1 ||
             !GetTextExtentPoint32W(original,&wc,1,&oldsize) || !GetTextExtentPoint32W(src,&wc,1,&syssize) ||
             oldsize.cx<0 || oldsize.cx>128 || syssize.cx<0 || syssize.cx>128)goto done;
-        unsigned width=(unsigned)oldsize.cx,bytes=((width+7)/8)*(unsigned)tm.tmHeight;
-        if(cursor+bytes+sizeof(face)>65535)goto done;
+        unsigned width=(unsigned)(menu_dpi?MulDiv(syssize.cx,(int)menu_dpi,96):oldsize.cx),bytes=((width+7)/8)*(unsigned)tm.tmHeight;
+        if(width>128 || cursor+bytes+sizeof(face)>65535)goto done;
         word(data,118+4*n,width);word(data,120+4*n,cursor);
         if(!FillRect(src,&clear,(HBRUSH)GetStockObject(WHITE_BRUSH)) || !TextOutW(src,0,0,&wc,1))goto done;
         if(!FillRect(dst,&clear,(HBRUSH)GetStockObject(WHITE_BRUSH)))goto done;
@@ -158,7 +168,7 @@ HFONT win16_style_system_acquire(HFONT source)
         cursor+=bytes;sum+=width;if(width>maxwidth)maxwidth=width;
     }
     word(data,118+224*4,0);word(data,120+224*4,cursor);
-    word(data,0,0x200);word(data,68,8);word(data,70,96);word(data,72,96);
+    word(data,0,0x200);word(data,68,menu_dpi?12:8);word(data,70,96);word(data,72,96);
     word(data,74,(unsigned)tm.tmAscent);word(data,76,(unsigned)tm.tmInternalLeading);
     word(data,78,(unsigned)tm.tmExternalLeading);
     word(data,83,(unsigned)system.tmWeight);word(data,88,(unsigned)tm.tmHeight);data[90]=1;
@@ -184,12 +194,21 @@ done:
     if(src)DeleteDC(src);
     if(dst)DeleteDC(dst);
     free(data);
-    if(ok && resource){v->source=source;v->font=font;v->resource=resource;v->refs=1;v->next=variants;variants=v;return font;}
+    if(ok && resource){v->source=source;v->menu_dpi=menu_dpi;v->font=font;v->resource=resource;v->refs=1;v->next=variants;variants=v;return font;}
     free(v);
     if(ok)return font;
     if(font)DeleteObject(font);
     if(resource)RemoveFontMemResourceEx(resource);
     return NULL;
+}
+
+HFONT win16_style_system_acquire(HFONT source)
+{return system_acquire(source,0);}
+
+HFONT win16_style_menu_font_acquire(UINT dpi)
+{
+    if(dpi<48 || dpi>384)return NULL;
+    return system_acquire(NULL,dpi);
 }
 
 void win16_style_system_release(HFONT font)

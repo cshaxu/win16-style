@@ -81,29 +81,68 @@ static void reentrant_case(void)
     CHECK(RemoveWindowSubclass(child,font_callback,1) && DestroyWindow(root) && DeleteObject(first) && DeleteObject(next));
     puts("FONT REENTRANT PASS nested change/remove retains outbound System font and restores latest app font");
 }
+/* Independent proportional oracle: host System16 pixels and advances, one
+ * common DPI ratio, never MS Sans Serif metrics. Also checks shared columns. */
+static int menu_width(HDC dc,const WCHAR *text,UINT dpi)
+{
+    int result=0;for(;*text;++text){SIZE size;CHECK(GetTextExtentPoint32W(dc,text,1,&size));result+=MulDiv(size.cx,(int)dpi,96);}return result;
+}
+static void menu_oracle(HDC dst,HDC src,const WCHAR *text,int x,int y,int height,UINT dpi)
+{
+    TEXTMETRICW tm;CHECK(GetTextMetricsW(src,&tm));
+    for(;*text;++text){SIZE size;RECT clear={0,0,128,64};CHECK(GetTextExtentPoint32W(src,text,1,&size));
+        CHECK(FillRect(src,&clear,GetStockObject(WHITE_BRUSH)) && TextOutW(src,0,0,text,1));
+        int width=MulDiv(size.cx,(int)dpi,96);SetStretchBltMode(dst,COLORONCOLOR);
+        if(width)CHECK(StretchBlt(dst,x,y,width,height,src,0,0,size.cx,tm.tmHeight,SRCCOPY));
+        x+=width;
+    }
+}
 static void menu_case(void)
 {
     HWND w=CreateWindowW(L"STATIC",L"Typography",WS_OVERLAPPEDWINDOW,0,0,900,700,NULL,NULL,GetModuleHandleW(NULL),NULL);CHECK(w);
-    UINT dpi=GetDpiForWindow(w);HMENU popup=CreatePopupMenu();CHECK(popup && AppendMenuW(popup,MF_STRING,101,L"GQag012"));
+    UINT dpi=GetDpiForWindow(w);HMENU popup=CreatePopupMenu(),child=CreatePopupMenu(),bar=CreateMenu();CHECK(popup && child && bar);
+    CHECK(AppendMenuW(popup,MF_STRING,101,L"GQag012\tF2") && AppendMenuW(popup,MF_STRING,102,L"WMi\tCtrl+Shift+W") &&
+        AppendMenuW(popup,MF_POPUP,(UINT_PTR)child,L"Nested") && AppendMenuW(child,MF_STRING,103,L"Command"));
+    CHECK(AppendMenuW(bar,MF_POPUP,(UINT_PTR)popup,L"GQag012") && SetMenu(w,bar));
     CHECK(install_frame(w,NULL));SendMessageW(w,WM_INITMENUPOPUP,(WPARAM)popup,0);
-    MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_DATA|MIIM_FTYPE};CHECK(GetMenuItemInfoW(popup,0,TRUE,&item) && (item.fType&MFT_OWNERDRAW));
-    HFONT source=CreateFontW(-MulDiv(8,(int)dpi,72),0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,NONANTIALIASED_QUALITY,DEFAULT_PITCH,L"MS Sans Serif");CHECK(source);
-    HWND label=CreateWindowW(L"STATIC",L"GQag012",WS_CHILD,0,0,300,60,w,NULL,GetModuleHandleW(NULL),NULL);CHECK(label);
-    SendMessageW(label,WM_SETFONT,(WPARAM)source,FALSE);CHECK(install_control(label,NULL));HFONT font=system_font(label,source);
-    HDC dc=CreateCompatibleDC(NULL),expected=CreateCompatibleDC(NULL);HBITMAP a=CreateBitmap(400,100,1,1,NULL),b=CreateBitmap(400,100,1,1,NULL);CHECK(dc && expected && a && b);
-    HGDIOBJ oa=SelectObject(dc,a),ob=SelectObject(expected,b),of=SelectObject(expected,font);TEXTMETRICW tm;CHECK(GetTextMetricsW(expected,&tm));
-    MEASUREITEMSTRUCT measure={.CtlType=ODT_MENU,.itemID=101,.itemData=item.dwItemData};CHECK(SendMessageW(w,WM_MEASUREITEM,0,(LPARAM)&measure));
-    CHECK(measure.itemHeight==(UINT)(tm.tmHeight+2*max(1,MulDiv(1,(int)dpi,96))) && measure.itemWidth<400 && measure.itemHeight<100);
-    DRAWITEMSTRUCT draw={.CtlType=ODT_MENU,.itemID=101,.itemAction=ODA_DRAWENTIRE,.hwndItem=(HWND)popup,.hDC=dc,
-        .rcItem={0,0,(LONG)measure.itemWidth,(LONG)measure.itemHeight},.itemData=item.dwItemData};
-    CHECK(SendMessageW(w,WM_DRAWITEM,0,(LPARAM)&draw));RECT r=draw.rcItem;
-    FillRect(expected,&r,GetStockObject(WHITE_BRUSH));SetTextColor(expected,RGB(0,0,0));SetBkMode(expected,TRANSPARENT);
-    r.left+=MulDiv(18,(int)dpi,96);r.right-=MulDiv(18,(int)dpi,96);CHECK(DrawTextW(expected,L"GQag012",-1,&r,DT_LEFT|DT_SINGLELINE|DT_VCENTER));
-    for(int y=0;y<draw.rcItem.bottom;++y)for(int x=0;x<draw.rcItem.right;++x)
+    HFONT base=CreateFontW(16,0,0,0,FW_BOLD,FALSE,FALSE,FALSE,ANSI_CHARSET,OUT_RASTER_PRECIS,0,NONANTIALIASED_QUALITY,0,L"System");CHECK(base);
+    HDC dc=CreateCompatibleDC(NULL),expected=CreateCompatibleDC(NULL),src=CreateCompatibleDC(NULL);
+    HBITMAP a=CreateBitmap(800,100,1,1,NULL),b=CreateBitmap(800,100,1,1,NULL),c=CreateBitmap(128,64,1,1,NULL);CHECK(dc && expected && src && a && b && c);
+    HGDIOBJ oa=SelectObject(dc,a),ob=SelectObject(expected,b),oc=SelectObject(src,c),of=SelectObject(src,base);TEXTMETRICW tm;CHECK(GetTextMetricsW(src,&tm));
+    SetTextColor(src,RGB(0,0,0));SetBkColor(src,RGB(255,255,255));
+    int height=MulDiv(tm.tmHeight,(int)dpi,96),u=max(1,MulDiv(1,(int)dpi,96));
+    int label=max(menu_width(src,L"GQag012",dpi),max(menu_width(src,L"WMi",dpi),menu_width(src,L"Nested",dpi)));
+    int shortcut=menu_width(src,L"Ctrl+Shift+W",dpi),width=MulDiv(18,(int)dpi,96)+label+MulDiv(8,(int)dpi,96)+shortcut+MulDiv(12,(int)dpi,96);
+    /* Real menu bar drawing uses the same proportional font, not an
+     * independently correct popup paired with a compressed bar. */
+    RECT outer;POINT origin={0};CHECK(GetWindowRect(w,&outer) && ClientToScreen(w,&origin));
+    int x0=origin.x-outer.left+MulDiv(6,(int)dpi,96),y0=origin.y-outer.top-(height+2*u);
+    CHECK(y0>=0 && y0+height<100);
+    RECT clear={0,0,800,100};CHECK(FillRect(dc,&clear,GetStockObject(WHITE_BRUSH)) && FillRect(expected,&clear,GetStockObject(WHITE_BRUSH)));
+    SendMessageW(w,WM_PRINT,(WPARAM)dc,PRF_NONCLIENT|PRF_CLIENT|PRF_ERASEBKGND);
+    menu_oracle(expected,src,L"GQag012",x0,y0,height,dpi);
+    for(int y=y0;y<y0+height;++y)for(int x=x0;x<x0+menu_width(src,L"GQag012",dpi);++x)
         CHECK((GetPixel(dc,x,y)==RGB(0,0,0))==(GetPixel(expected,x,y)==RGB(0,0,0)));
-    SelectObject(expected,of);SelectObject(dc,oa);SelectObject(expected,ob);DeleteObject(a);DeleteObject(b);DeleteDC(dc);DeleteDC(expected);
-    CHECK(remove_control(label) && remove_frame(w) && DestroyWindow(w) && DestroyMenu(popup) && DeleteObject(source));
-    printf("FONT MENU SYSTEM PASS dpi=%u original 8pt metrics; actual WM_DRAWITEM pixel oracle\n",dpi);
+    printf("FONT MENU BAR PASS dpi=%u System proportional glyph pixels\n",dpi);
+    const WCHAR *labels[]={L"GQag012",L"WMi"},*keys[]={L"F2",L"Ctrl+Shift+W"};
+    for(unsigned i=0;i<2;++i){
+        MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_DATA|MIIM_FTYPE};CHECK(GetMenuItemInfoW(popup,i,TRUE,&item) && (item.fType&MFT_OWNERDRAW));
+        MEASUREITEMSTRUCT measure={.CtlType=ODT_MENU,.itemID=101+i,.itemData=item.dwItemData};CHECK(SendMessageW(w,WM_MEASUREITEM,0,(LPARAM)&measure));
+        printf("FONT MENU MEASURE dpi=%u row=%u size=%ux%u expected=%dx%d label=%d shortcut=%d\n",dpi,i,measure.itemWidth,measure.itemHeight,width,height+2*u,label,shortcut);fflush(stdout);
+        CHECK(measure.itemHeight==(UINT)(height+2*u) && measure.itemWidth>0 && measure.itemWidth<=(UINT)width && width<800 && height<100);
+        DRAWITEMSTRUCT draw={.CtlType=ODT_MENU,.itemID=101+i,.itemAction=ODA_DRAWENTIRE,.hwndItem=(HWND)popup,.hDC=dc,
+            .rcItem={0,0,width,(LONG)measure.itemHeight},.itemData=item.dwItemData};
+        CHECK(SendMessageW(w,WM_DRAWITEM,0,(LPARAM)&draw));RECT r=draw.rcItem;
+        CHECK(FillRect(expected,&r,GetStockObject(WHITE_BRUSH)));
+        menu_oracle(expected,src,labels[i],MulDiv(18,(int)dpi,96),u,height,dpi);
+        menu_oracle(expected,src,keys[i],MulDiv(18,(int)dpi,96)+label+MulDiv(8,(int)dpi,96),u,height,dpi);
+        for(int y=0;y<r.bottom;++y)for(int x=0;x<r.right;++x)
+            CHECK((GetPixel(dc,x,y)==RGB(0,0,0))==(GetPixel(expected,x,y)==RGB(0,0,0)));
+    }
+    SelectObject(src,of);SelectObject(dc,oa);SelectObject(expected,ob);SelectObject(src,oc);
+    DeleteObject(a);DeleteObject(b);DeleteObject(c);DeleteObject(base);DeleteDC(dc);DeleteDC(expected);DeleteDC(src);
+    CHECK(remove_frame(w) && SetMenu(w,NULL) && DestroyWindow(w) && DestroyMenu(bar));
+    printf("FONT MENU SYSTEM PASS dpi=%u proportional System16 glyph pixels; common shortcut/check/arrow columns\n",dpi);
 }
 static void put_word(BYTE **p,WORD w){memcpy(*p,&w,2);*p+=2;}
 static void put_string(BYTE **p,const WCHAR *s)
@@ -158,12 +197,13 @@ static void controls_case(unsigned scale,unsigned bold)
 }
 static int worker(int argc,WCHAR **argv)
 {
-    CHECK(argc==2);HMODULE dll=LoadLibraryExW(argv[1],NULL,LOAD_WITH_ALTERED_SEARCH_PATH);CHECK(dll);
+    CHECK(argc==2 || (argc==3 && !wcscmp(argv[2],L"--menu-only")));HMODULE dll=LoadLibraryExW(argv[1],NULL,LOAD_WITH_ALTERED_SEARCH_PATH);CHECK(dll);
     install_frame=(install_fn)(void *)GetProcAddress(dll,"win16_style_install");remove_frame=(remove_fn)(void *)GetProcAddress(dll,"win16_style_remove");
     install_control=(install_fn)(void *)GetProcAddress(dll,"win16_style_control_install");remove_control=(remove_fn)(void *)GetProcAddress(dll,"win16_style_control_remove");CHECK(install_frame && remove_frame && install_control && remove_control);
     install_edit=(void *)GetProcAddress(dll,"win16_style_edit_install");CHECK(install_edit);
     for(unsigned context=0;context<2;++context){
         CHECK(SetThreadDpiAwarenessContext(context?DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2:DPI_AWARENESS_CONTEXT_UNAWARE));
+        if(argc==3){menu_case();continue;}
         /* USER lazily allocates per-class/font caches on first use. Warm every
          * tested variant before checking repeated attach/detach ownership. */
         for(unsigned warm=0;warm<8;++warm){
@@ -179,6 +219,6 @@ static int worker(int argc,WCHAR **argv)
         CHECK(after<=before);
         verify_pixels=FALSE;
     }
-    CHECK(FreeLibrary(dll));puts("FONT LAYOUT PASS 2 contexts 12 font variants native dialog and 84 control scenarios; repeated after warmup; actual candidate DLL");return 0;
+    CHECK(FreeLibrary(dll));if(argc==3){puts("FONT MENU ONLY PASS: proportional bar/popup subset, not the full control matrix");return 0;}puts("FONT LAYOUT PASS 2 contexts 12 font variants native dialog and 84 control scenarios; repeated after warmup; actual candidate DLL");return 0;
 }
 int wmain(int argc,WCHAR **argv){return isolated_process(argc,argv,worker);}

@@ -22,7 +22,7 @@ typedef struct menu_loop {
 } menu_loop;
 typedef struct style_window {
     win16_style_palette palette;
-    HFONT title_font,menu_font,menu_source; /* Title unchanged; menu owns a System variant. */
+    HFONT title_font,menu_font; /* Title unchanged; menu owns a System variant. */
     UINT dpi, calls;
     BOOL active, detached, hot, system_menu, dialog;
     int pressed,bar_selected,bar_direction,bar_hover;
@@ -604,22 +604,18 @@ static void open_bar(HWND w,style_window *s,int index)
 
 static BOOL refresh_font(HWND w,style_window *s)
 {
-    HFONT title,menu,source;
+    HFONT title,menu;
     UINT dpi=GetDpiForWindow(w);if(!dpi)dpi=96;
     /* Point heights are converted once in the window's DPI context. USER
      * virtualizes legacy/unaware windows separately; do not scale them again. */
     title=CreateFontW(-MulDiv(10,(int)dpi,72),0,0,0,FW_BOLD,FALSE,FALSE,FALSE,
         DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,NONANTIALIASED_QUALITY,
         DEFAULT_PITCH,L"MS Sans Serif");
-    source=CreateFontW(-MulDiv(8,(int)dpi,72),0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,
-        DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,NONANTIALIASED_QUALITY,
-        DEFAULT_PITCH,L"MS Sans Serif");
-    menu=source?win16_style_system_acquire(source):NULL;
-    if(!title || !menu){if(title)DeleteObject(title);win16_style_system_release(menu);if(source)DeleteObject(source);return FALSE;}
+    menu=win16_style_menu_font_acquire(dpi);
+    if(!title || !menu){if(title)DeleteObject(title);win16_style_system_release(menu);return FALSE;}
     if(s->title_font)DeleteObject(s->title_font);
     win16_style_system_release(s->menu_font);
-    if(s->menu_source)DeleteObject(s->menu_source);
-    s->dpi=dpi;s->title_font=title;s->menu_font=menu;s->menu_source=source;return TRUE;
+    s->dpi=dpi;s->title_font=title;s->menu_font=menu;return TRUE;
 }
 
 static void frame_changed(HWND w)
@@ -657,7 +653,6 @@ static void dispose(style_window *s)
     win16_style_menu_restore(&s->menu_items);
     if(s->title_font)DeleteObject(s->title_font);
     win16_style_system_release(s->menu_font);
-    if(s->menu_source)DeleteObject(s->menu_source);
     free(s);
 }
 

@@ -135,7 +135,8 @@ int wmain(int argc,WCHAR **argv)
         {SIZE bar,popup;RECT bounds={0,0,60,25};
             CHECK(win16_style_menu_measure(dc,font,96,L"&File",WIN16_STYLE_MENU_BAR,&bar));
             CHECK(win16_style_menu_measure(dc,font,96,L"&File",WIN16_STYLE_MENU_ROW,&popup));
-            CHECK(popup.cx-bar.cx==24 && popup.cy==bar.cy);
+            /* Public row helper reserves check18 + arrow12; bar margins6+6. */
+            CHECK(popup.cx-bar.cx==18 && popup.cy==bar.cy);
             CHECK(win16_style_menu_text(dc,&bounds,font,96,&s.palette,L"&File",ODS_SELECTED,WIN16_STYLE_MENU_BAR,FALSE));
             CHECK(GetPixel(dc,1,1)==s.palette.active);
             CHECK(GetClipBox(dc,&after)!=ERROR && EqualRect(&before,&after));}

@@ -2,56 +2,72 @@
 
 ## Current Work
 
-当前无活动任务包。M0 T8 S3菜单厚黑边修复已双发布、推送、实际复核及清理，
-S3交付收口。标题和已确认System字体/字号保持；按用户指令T8继续开放接收外观反馈，
-不把本S收口等同全任务验收通过。
+M0 T8 S4菜单System比例/布局修复已验证并双发布，P1待提交推送及实际远端复核。
+S4暂不关闭；M0固定、T8继续开放接收外观反馈。原生打开菜单图已保存供验收。
+
+## M0 T8 S4 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Corrective；T8下一未用编号S4，M0不变；implemented/verified，双发布完成，P1待实际远端复核。 |
+| Admission And Approval | 用户明确授权继续菜单外观修复、原生探针、自行双发布/提交推送/复核，保持T8开放。 |
+| Objective | 菜单System16字形等比DPI缩放，按字体重排标签/快捷键/勾选/箭头；复验薄边和局部SysShadow。 |
+| Non-goals | 标题字体/字号/绘制、标准控件策略、应用自绘信息栏、原资源及ABI不改；不改全局设置/共享菜单类。 |
+| Reference Baseline | a9ab2ab954af6710748de2fc7bab43285335bdd0；干净工作区；S3 shadow/WM_PRINT修复及已有探针沿用。 |
+| Candidate Proposal | [字体布局修复](../proposals/font-layout.md)；菜单8pt字符压缩失败契约由本S纠正。 |
+| Files And ABI Surface | font.c/h、win16_style.c、menu_paint.c/h、menu_items.c、既有原生测试及回执/设计/交付文档；ABI3不变，无新增产品。 |
+| Applicable Rules | 已读Task Reading Set、执行/架构/编码/文档规则及来源政策；纯C17/GCC/Ninja/ccache；兄弟仓库只读且不依赖。 |
+| Verification | 有限全集：两宽实际96/144 DPI比例/像素/布局、嵌套/取消/投影/资源，标题源码及控件像素/度量对照；旧包比例负例；干净双宽同批四文件及实际包测试，相关core/demo/launch回归；192仅向量不冒称实屏。 |
+| Expected Markers | FONT MENU SYSTEM PASS、FONT LAYOUT PASS、MENU CANCEL PASS、MENU SHADOW SCOPE PASS；实际失败/skip如实记录。 |
+| Asset Needs | 六原资源逐字节保持；原生打开菜单PNG只作验收图；scratch精确build/t8-package，执行者负责提炼后安全回收，保留.ninja/.ccache。 |
+| Reporting Requirements | 记录统计、来源/ABI、包与两发布位置摘要、失败/跳过、原生截图、实际远端复核；仅关闭S4。 |
+| Stop Conditions | 资源身份变化、标题/控件策略回归、ABI变化、全局设置修改、包测试失败或发布占用时停止交付并定位，不关闭无关进程。 |
+| Exit Criteria | 相关原生探针及回归通过/明确skip，干净同包测试、双发布摘要一致、提交推送实际复核后S4收口，T8继续开放。 |
+| Original Owner Request | 本轮菜单System正常比例、布局适配、查清右下投影、保持标题/控件/应用自绘/资源；不用computer-use，自行探针验收发布。 |
+| Similar-Issue Sweep | 搜索font/measure/draw/shortcut/check/arrow/shadow/print调用；菜单栏与popup共用比例字体、测绘同源；controls.c保持，DWM恢复债务维持TODO不扩围。 |
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 8
 - Last allocated Td S: 5
-- Last delivery: M0 T8 S3 P2 (P1 aa28427实际远端复核、清理和S3收口；T8开放)
-- Open task: M0 T8 (System/menu repairs delivered; owner appearance feedback pending)
+- Last delivery: M0 T8 S4 P1 (verified/dual-published; actual remote review pending)
+- Open task: M0 T8 (menu appearance feedback; remains open)
 
 ## Technical Baseline
 
-0.8.0.0 / M0 T8 S3，纯C17 MinGW-w64 GCC16.1.0双宽、Ninja/ccache4.13.6，
-无C++/MSVC/MSYS运行库或兄弟仓库依赖。三组件四文件：x64启动器、双宽DLL、x64 demo。
-ABI3/31名称ordinal2..32及ordinal1 NONAME helper，六原资源字节/两DLL各18表保持。
-Console等待/退出码及后代传播保持。原17逻辑像素滚动条和菜单取消契约保留。
+0.8.0.0 / M0 T8 S4，纯C17、MinGW GCC16.1.0双宽、Ninja/ccache4.13.6。
+三组件四文件，x64 Console启动器/双宽DLL/x64 demo，ABI3/31名称与ordinal1
+NONAME helper保持；六原资源字节/两个DLL各18表不变，无C++/MSVC或兄弟仓库依赖。
 
-S2已确认标题、System字体/字号实现源码font.c/font.h/controls.c/win16_style.c逐字节不变。
-菜单按线程/z序/原点/扩展几何，仅关联当前样式popup的SysShadow，NOACTIVATE局部
-阻止显示；不改共享类和全局SPI，不销毁USER窗口，scope/终结/缓存重用解除适配。
-保留完整原生WM_PRINT标志，再画细框，避免破坏客户区打印坐标；窗口/客户区几何不变。
-字体沿用S2：title10pt粗体MS Sans Serif，内部/菜单System字形保留原度量，DPI一次，
-应用自绘不改；位图范围/失败回退及原20px兼容API边界见[UI](../design/UI.md)。
+菜单栏和popup独立System16原比例按窗口DPI缩放，不再套用8pt MS Sans Serif
+字符宽高。popup整组标签/快捷键列测绘同源，勾选/箭头空间及行高适配字形；
+原生USER附加宽度只扣一次，实际矩形与独立自然System布局一致。公开row测量
+接口保守预留箭头，实际无submenu菜单减少尾部留白。HMENU样式/共享类/SPI不改。
 
-最终s3-flat干净双宽全构建/ABI各1/1，126编译输入与冻结树一致，无构建后源码修订。
-相关注册全集26/29：剩余CTest24/27与实际包的双宽font/menu组合，53通过/2clipboard
-权限跳过；不是一次完整CTest。实际包14/14通过；两宽96/144 DPI各15菜单场景（每宽30），
-全NC细框、客户区哨兵完整、投影隐藏、嵌套/取消/焦点/捕获/命令、原生前后/类/SPI保持。
-旧S2两宽各两负例分别拒绝未绘制角落和可见SysShadow。额外x64自然Window DC两DPI各5
-有效样本无黑角；这不是物理输入或真实桌面合成截图。字体探针GDI43/43与45/45保持。
-严格资源fixture固定64完整负载预热后无增长，不条件等待或降低断言。来源124/294/123，
-负例门禁23+9+6+13通过。原XP sol.exe/真实192DPI/其他宿主和未支持菜单未扩大承诺。
+已确认标题创建/绘制代码保持，原生96/144 DPI完整标题RGB对照零差异；controls.c
+逐字节不变，控件原策略/System像素/字高/advance/更新/NULL/卸载/重入保持，应用
+自绘信息栏不干预。legacy20显式字体API不变。S3局部SysShadow/完整WM_PRINT
+坐标修复源码原样保留，新尺寸下复验隐藏同线程关联的5px独立投影及全NC细框/
+客户区角落完整，嵌套/取消/焦点/捕获/命令/恢复通过。
 
-被测同批四文件已先备份8条，再发布assets根及O:/winnt/system32，8摘要完全一致。
-源快照、工具链、四文件SHA/PE/imports、原始失败及最终证据SHA见
-[release.json](../etc/release.json)和[S3记录](../history/M0-T8-S3-popup-shadow.md)。
-本S build/t8-package已回收：10目录/3223文件/132312573字节，无reparse或活动owned进程。
-原始证据先实际复核再提炼；旧before与Git622e8d9 assets同字节可恢复。
-保留稳定.ninja/.ccache、两处发布及聊天原生菜单/调查预览。
+最终s4-delivery独立干净双宽全构建及ABI各1/1，126输入与当前树完全相同。
+实际四文件包14/14；相关注册全集26/29由剩余CTest24/27和包内font/menu组成，
+53通过/2私有桌面clipboard权限错误5/77跳过；不是一次完整CTest。每宽实际
+96/144 DPI各15菜单场景、System菜单栏/popup像素及自然宽108/162、84控件场景，
+GDI43/43及45/45。四个旧S3负例exit1，最终负例fixture源码身份不变。
+来源124/294/123，23+9+6+13负例门禁通过。真实192DPI、XP sol.exe及物理输入
+未覆盖；可选完整创建/dialog/message integration本S未重跑，不借历史结果。
+
+同批四文件先备份后发布assets根及O:/winnt/system32，8摘要与实际测试包相同；
+8份before均与Gita9ab2ab assets一致可恢复。源快照、工具链、SHA/PE/imports、
+原始证据摘要与截图见[release.json](../etc/release.json)及[S4记录](../history/M0-T8-S4-menu-proportions.md)。
+登记scratch build/t8-package待实际复核后安全回收；.ninja/.ccache及两处发布保留。
 
 ## Recent Closure
 
-- [S3菜单厚黑边修复](../history/M0-T8-S3-popup-shadow.md)：aa28427实际远端复核通过；S3收口，T8开放。
-
-- [S2 System字形修复](../history/M0-T8-S2-system-font.md)：2a0c7dd实际远端复核通过；S2收口，T8开放。
-
-- [S1字体大小修复](../history/M0-T8-S1-font-layout.md)：1c82c2e收口；本轮仅恢复System字形。
-- [菜单取消修复](../history/M0-T7-menu-cancellation.md)：保留原交付事实及修复。
-- [历史任务审计](../history/M0-T6-completion.md)：不替代本轮实测。
-
-P2仅记录实际复核/清理/收口，126编译输入与四产品SHA与P1完全相同，不虚构新构建发布。
+- [S4菜单比例修复](../history/M0-T8-S4-menu-proportions.md)：验证/双发布完成，待实际远端复核后仅关闭S4。
+- [S3菜单厚黑边修复](../history/M0-T8-S3-popup-shadow.md)：aa28427实际复核通过；S3收口。
+- [S2 System字形修复](../history/M0-T8-S2-system-font.md)：2a0c7dd实际复核通过；S2收口。
+- [S1字体大小修复](../history/M0-T8-S1-font-layout.md)：1c82c2e收口。
+- [菜单取消修复](../history/M0-T7-menu-cancellation.md)与[历史产品审计](../history/M0-T6-completion.md)保留历史边界。
