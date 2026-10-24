@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T13 S1 P1",
-  "stage": "verified and published; actual remote review pending",
+  "delivery": "M0 T13 S1 P2",
+  "stage": "closed after actual P1 remote source/products review and registered scratch cleanup",
   "version": "0.13.0.0",
   "package_directory": "assets",
   "source_inputs": [
@@ -749,7 +749,7 @@
     "actual_published_winmine": true,
     "physical_input": "not-tested",
     "evidence": "evidence/multilingual-font.json",
-    "evidence_sha256": "a0b79ff5996b49da85c5294973d37f68a7c891591c6c058cb8bffdd634b35a15"
+    "evidence_sha256": "b7b0b5c3d34a4abf166facb710b8a7eee6f00bcde1330679ca648b376217b8ab"
   },
   "publication": {
     "copies": [
@@ -817,6 +817,38 @@
         "166\t0\ttests/ntw16s-dll/multilingual_font.c",
         "2\t0\ttools/Test-Package.ps1"
       ]
+    },
+    "p1_remote_review": {
+      "commit": "83df08c557c2f5dcce590a8549163d6a78a0323d",
+      "source_inputs": 150,
+      "products": 4,
+      "total_actual_downloads": 165,
+      "published_copies": 8,
+      "status": "passed",
+      "download_receipt_sha256": "7dc0120ddc58e342800bb733d6246c8fc51339f746f1ed339b6fb00f82f6e2b0"
     }
+  },
+  "closure": {
+    "p1": "83df08c557c2f5dcce590a8549163d6a78a0323d",
+    "source_inputs_unchanged": 150,
+    "product_sha256_unchanged": true,
+    "registered_scratch_cleanup": {
+      "roots": [
+        {
+          "path": "build/t13-font",
+          "files": 125,
+          "bytes": 1039499
+        },
+        {
+          "path": "build/t13-package",
+          "files": 1403,
+          "bytes": 83900433
+        }
+      ],
+      "checks": "Resolved exact registered paths, no ancestor/child reparse point, no live executable under owned roots; evidence extracted before deletion",
+      "preserved": "Stable build/.ninja and build/.ccache; assets/system32 releases and chat PNGs"
+    },
+    "task_status": "T13 S1 and T13 closed; M0 open; previous closed/cancelled tasks preserved",
+    "acceptance": "Native eight-script probes and actual published PE Minesweeper screenshot. Physical input/IME, arbitrary displays/scripts not claimed."
   }
 }

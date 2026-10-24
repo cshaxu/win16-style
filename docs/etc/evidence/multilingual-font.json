@@ -2,7 +2,7 @@
   "task": "M0 T13 S1",
   "baseline": "ae9a1b5ce4b361db5491a36e4908008b05886376",
   "product_version": "0.13.0.0",
-  "status": "verified-and-published; actual P1 remote review pending",
+  "status": "closed after actual P1 remote review and registered scratch cleanup",
   "coverage": {
     "registered": 71,
     "passed": 68,
@@ -1144,5 +1144,30 @@
       "path": "build/t13-package/s1-package-test/messages/stderr.log",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
-  ]
+  ],
+  "remote_review": {
+    "commit": "83df08c557c2f5dcce590a8549163d6a78a0323d",
+    "source_inputs": 150,
+    "products": 4,
+    "total_actual_downloads": 165,
+    "published_copies": 8,
+    "status": "passed",
+    "download_receipt_sha256": "7dc0120ddc58e342800bb733d6246c8fc51339f746f1ed339b6fb00f82f6e2b0"
+  },
+  "cleanup": {
+    "roots": [
+      {
+        "path": "build/t13-font",
+        "files": 125,
+        "bytes": 1039499
+      },
+      {
+        "path": "build/t13-package",
+        "files": 1403,
+        "bytes": 83900433
+      }
+    ],
+    "checks": "Resolved exact registered paths, no ancestor/child reparse point, no live executable under owned roots; evidence extracted before deletion",
+    "preserved": "Stable build/.ninja and build/.ccache; assets/system32 releases and chat PNGs"
+  }
 }
