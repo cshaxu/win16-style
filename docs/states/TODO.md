@@ -11,4 +11,4 @@
 新增条目格式：`- [ ] TODO(High|Medium|Low): 问题；Owner；Evidence；Admission`。
 不得把待做实现藏在TODO中；可执行候选进入QUEUE，由新用户请求准入。
 
-- [ ] TODO(Low): 复现并定位两次并行回滚Job活动计数断言失败；Owner：原生启动/测试观测；Evidence：[T11原生诊断](../history/M0-T11-S1-uac.md)，原断言旧/新各8轮64组合未复现；Admission：可复现原生日志或用户明确准入测试观测修订，不放宽原断言。
+- [ ] TODO(Medium): 复现并定位两次并行回滚Job活动计数断言失败；Owner：原生启动/测试观测；Evidence：[T11原生诊断](../history/M0-T11-S1-uac.md)，原断言旧/新各8轮64组合未复现；Admission：可复现原生日志或用户明确准入测试观测修订，不放宽原断言。

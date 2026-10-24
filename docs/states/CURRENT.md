@@ -2,41 +2,20 @@
 
 ## Current Work
 
-M0 T11 S1 active：调研实现按需UAC提权及样式注入。T10/S1按用户指令取消，
-不宣称UWP支持；T8与T9保持关闭，M0开放。
-
-## M0 T11 S1 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | New；T10取消后下一未用T11 S1。 |
-| Admission And Approval | 用户明确放弃UWP要求，准入UAC调研实现并要求收口验收；永久提交推送授权。 |
-| Objective | 确认740/完整性边界，按需经系统runas提升本启动器，再沿用挂起创建/双宽注入，完成有限闭环交付。 |
-| Non-goals | 不绕过UAC/保存凭据/自动点安全桌面，不加第五产品，不改UI资源，不扫描既有高权限进程，不承诺DLL内所有子孙自动提升。 |
-| Reference Baseline | fb1fc0a / 0.9.0.0 ABI3；T10研究取消且未改产品；T8关闭。 |
-| Candidate Proposal | [UAC方案](../proposals/uac-elevation.md)。 |
-| Files And ABI Surface | run16s main及内部elevation模块；测试纯C探针及requireAdministrator fixture；版本0.11.0.0；DLL公开ABI不改。 |
-| Applicable Rules | 完整Task Reading Set；C17/GCC/Ninja/ccache；只新建目标、系统合法授权；环境/句柄跨UAC边界不得冒充原始继承。 |
-| Verification | 740修前复现，shell调用/取消/错误/递归原生测试，双宽真实管理员fixture及GUI像素/模块/附着，普通启动传播/完整同包回归；实际UAC人工同意另列。 |
-| Expected Markers | UAC BASELINE、UAC UNIT PASS、UAC TARGET PASS、UAC PACKAGE PASS；取消1223；实际令牌/目标DLL/初始化/窗口状态分别验证。 |
-| Asset Needs | build/t11-uac为原生诊断/聚焦/交付证据；build/t11-package为干净包/实际包/备份；前任build/t10-xaml及其登记LocalCache暂存先提炼后安全回收。 |
-| Reporting Requirements | 根因与最小方案先报；支持直接入口、普通环境/提升新环境、工作目录/参数/等待、取消/高令牌/位宽及未覆盖分别报告，双发布/远端复核。 |
-| Stop Conditions | 需新服务/产物/安全绕过或不能确认自有目标时停止；缺真实同意覆盖标未覆盖，不捏造通过。 |
-| Exit Criteria | 本项目范围实现及完整双宽同包交付、发布远端复核；有限实际授权验收有明确入口和边界，收口本S与T。 |
-| Original Owner Request | 放弃现代应用要求，准入UAC提权，调研正确实施方法做到收口验收。 |
-| Similar-Issue Sweep | 入口740/其他错误区别；Shell直接启动目标丢注入；重复提升/当前已提升、原始参数/绝对路径/CWD、系统环境/控制台隔离、取消/等待及子孙API契约。 |
+无活动任务包。M0 T11 S1已完成按需UAC修复、双目录发布、实际远端复核及scratch回收；
+T11收口供用户验收。T10按用户指令取消，无UWP产品支持；T8/T9保持关闭，M0开放。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 11
 - Last allocated Td S: 9
-- Last delivery: M0 Td S9 P2 (P1 425b7df实际远端复核通过；清理及清理后增量通过，T8开放)
-- Open task: M0 T11 S1；T10取消；T8/T9及Td S9保持关闭
+- Last delivery: M0 T11 S1 P2 (P1 d77017f实际远端139输入/四产物/八发布副本复核通过；登记scratch回收)
+- Open task: none；T11/S1关闭；T10取消；T8/T9及Td S9保持关闭
 
 ## Technical Baseline
 
-产品0.11.0.0 / M0 T11 S1 verified并已双目录发布，待实际远端复核；
+产品0.11.0.0 / M0 T11 S1已双目录发布、实际远端复核通过并收口；
 三组件四文件、x64 Console启动器、双宽DLL、x64 demo、ABI3/31名称及ordinal1不变。
 仅入口真实740按系统runas提升启动器，再沿用挂起创建/安装/恢复；非提升重入被拒绝。
 系统提升环境及独立控制台；取消1223；DLL子孙CreateProcess不自动请求UAC。
@@ -57,6 +36,8 @@ T9外部导入表/原生cmd修复保持；NE间歇问题及裸NTSRV复用边界�
 README英文8张精选图保持；不依赖或修改兄弟仓库，不扫描注入既有进程。
 
 ## Recent Closure
+
+- [T11按需UAC](../history/M0-T11-S1-uac.md)：d77017f实际远端139输入/四产物及8发布摘要通过；S1/T11收口，M0开放。
 
 - [T10取消研究](../history/M0-T10-S1-xaml-research.md)：用户取消，无产品支持发布；T8按用户明确要求收口。
 

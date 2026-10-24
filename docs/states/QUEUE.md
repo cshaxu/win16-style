@@ -30,4 +30,4 @@ CURRENT中的完成审计。待准入候选及顺序见上表。
 
 [UWP/XAML接入](../proposals/xaml-support.md)已按用户请求取消，无产品支持发布。
 
-[UAC提权与样式注入](../proposals/uac-elevation.md)已按用户请求准入，编号及范围由CURRENT管理。
+[UAC提权与样式注入](../proposals/uac-elevation.md)已完成并收口，实际支持边界和交付见CURRENT。

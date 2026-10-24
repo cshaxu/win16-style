@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T11 S1 P1",
-  "stage": "verified and published;actual remote review pending",
+  "delivery": "M0 T11 S1 P2",
+  "stage": "closed after actual P1 remote review and safe registered scratch cleanup",
   "version": "0.11.0.0",
   "package_directory": "assets",
   "source_inputs": [
@@ -961,8 +961,8 @@
   },
   "audit": {
     "baseline": "fb1fc0a",
-    "stage": "published;actual remote review pending",
-    "task_status": "M0 open;T11 S1 active;T10 cancelled;T8/T9 closed",
+    "stage": "actual P1 remote/source/products reviewed;cleanup complete",
+    "task_status": "M0 open;T11 S1 closed;T10 cancelled;T8/T9 closed",
     "evidence": "evidence/uac-elevation.json",
     "evidence_sha256": "3b453632d8bc2a09a0ef1b35cbaf6ac5fd6c96846a2db0c9c32ad440a382fa7c",
     "evidence_hash_convention": "SHA256 of canonical Git LF bytes",
@@ -989,5 +989,80 @@
       "ntw16s64.dll": "1961320d1ff5c19297d9fb9abae5e2d83960217e90bb9170b7f6bf425cdbfae1",
       "run16s.exe": "d8953d6a9d08a2ee21b4473e8de97e829188048df9940c2e5e8f44a32d7f6927"
     }
+  },
+  "closure": {
+    "cleanup": [
+      {
+        "reparse_points": 0,
+        "bytes": 71821758.0,
+        "files": 881,
+        "active_owned_executables": 0,
+        "root": "O:\\repos.hobby\\win16style\\build\\t11-uac"
+      },
+      {
+        "reparse_points": 0,
+        "bytes": 167593622.0,
+        "files": 3040,
+        "active_owned_executables": 0,
+        "root": "O:\\repos.hobby\\win16style\\build\\t11-package"
+      }
+    ],
+    "incremental_refresh": {
+      "status": "passed",
+      "selection": "^launch/elevation-unit$",
+      "exit_code": 0,
+      "architectures": [
+        "x86",
+        "x64"
+      ],
+      "profile": "Focused",
+      "tests": [
+        {
+          "architecture": "x86",
+          "configure_seconds": 1.2944116999860853,
+          "build_seconds": 1.1043495000340044,
+          "test_seconds": 0.47717110003577545,
+          "tests": 1,
+          "skipped": [],
+          "passed": 1
+        },
+        {
+          "architecture": "x64",
+          "configure_seconds": 0.6320630999980494,
+          "build_seconds": 0.7425275000277907,
+          "test_seconds": 0.4188673999742605,
+          "tests": 1,
+          "skipped": [],
+          "passed": 1
+        }
+      ],
+      "targets": "all",
+      "build_jobs": 8,
+      "build_root": "build/.ninja",
+      "test_jobs": 4
+    },
+    "remote_p1": {
+      "status": "passed",
+      "commit": "d77017f4ef80d251255bcbda14206701b2169d83",
+      "source_inputs": 139,
+      "actual_remote_raw_products": 4,
+      "deployed_matches": 8,
+      "original_resources": 6,
+      "renderer_and_dll_c_h": "byte-identical to baseline",
+      "release_sha256": "7eecc50fb5520c6ca10b7e19d9f25459860d460df1f1e70682b194d8329a8e05"
+    },
+    "scope": "P2 documentation only;product inputs and tested/deployed four files unchanged",
+    "after_cleanup_no_work": [
+      {
+        "architecture": "x86",
+        "seconds": 0.1003054,
+        "result": "ninja:no work to do"
+      },
+      {
+        "architecture": "x64",
+        "seconds": 0.0826762,
+        "result": "ninja:no work to do"
+      }
+    ]
   }
 }
