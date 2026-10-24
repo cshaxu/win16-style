@@ -1,0 +1,960 @@
+{
+  "schema": 1,
+  "task": "M0 Td S11",
+  "status": "investigation verified; documentation delivery and remote review pending",
+  "baseline": "cad424286169d959693b92e6f4e3dfa410cea299",
+  "target": {
+    "path": "O:/winnt/madshow.exe",
+    "architecture": "x86 PE",
+    "size": 200704,
+    "sha256": "9d93484c7b230b584440b14e2d2dbb353f058be26e3385677349cff42e5db6b6",
+    "framework": "VB6",
+    "runtime_loaded_path": "C:/Windows/System32/MSVBVM60.DLL (32-bit loader path)",
+    "runtime_physical_path": "C:/Windows/SysWOW64/msvbvm60.dll",
+    "runtime_sha256": "898288bd3b21d0e7d5f406df2e0b69a5bbfa4f241baf29a2cdf8a3cf4d4619f2"
+  },
+  "loaded_style": {
+    "path": "O:/repos.hobby/win16style/assets/ntw16s32.dll",
+    "sha256": "8dffa4236a6c70d225b2a8a0104261bc68468ccd80bb85ba6a90a0fd63326318",
+    "module_loaded": true,
+    "CreateWindowEx_A_W": "entry E9 destination ntw16s32.dll",
+    "CreateProcess_A_W": "entry E9 destination ntw16s32.dll",
+    "root_Ntw16sWindowAttached": true,
+    "root_native_capture_style_visible": true,
+    "propagation_actual_child_creation": "not exercised; initialization detours verified"
+  },
+  "window_classes": {
+    "ThunderRT6FormDC": 1,
+    "ThunderRT6Timer": 1,
+    "ThunderRT6Frame": 2,
+    "ThunderRT6TextBox": 13,
+    "ThunderRT6CommandButton": 4,
+    "ThunderRT6PictureBoxDC": 1
+  },
+  "bare_windows": [
+    {
+      "window_class": "ThunderRT6FormDC",
+      "real_class": "ThunderRT6FormDC",
+      "text": "MadShow - Mini Molecular Dynamics Simulator",
+      "style": "16cf0000",
+      "ex_style": "00040100",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        623,
+        481
+      ]
+    },
+    {
+      "window_class": "ThunderRT6Timer",
+      "real_class": "ThunderRT6Timer",
+      "text": "",
+      "style": "44010000",
+      "ex_style": "00000004",
+      "attached": 0,
+      "theme": 0,
+      "font": "System",
+      "lf_height": 0,
+      "tm_height": 16,
+      "size": [
+        0,
+        0
+      ]
+    },
+    {
+      "window_class": "ThunderRT6Frame",
+      "real_class": "ThunderRT6Frame",
+      "text": "Result",
+      "style": "56010007",
+      "ex_style": "00000004",
+      "attached": 0,
+      "theme": 1,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        153,
+        145
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "0",
+      "style": "540108c0",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        65,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "0",
+      "style": "540100c0",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        65,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "0",
+      "style": "540108c0",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        65,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "0",
+      "style": "540108c0",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        65,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "0",
+      "style": "540108c0",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        65,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "0",
+      "style": "540108c0",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        65,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6Frame",
+      "real_class": "ThunderRT6Frame",
+      "text": "Settings",
+      "style": "56010007",
+      "ex_style": "00000004",
+      "attached": 0,
+      "theme": 1,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        153,
+        257
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "0.2",
+      "style": "540100c1",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        81,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "1",
+      "style": "540100c1",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        81,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6CommandButton",
+      "real_class": "ThunderRT6CommandButton",
+      "text": "&Clear",
+      "style": "54012000",
+      "ex_style": "00000004",
+      "attached": 0,
+      "theme": 1,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        65,
+        25
+      ]
+    },
+    {
+      "window_class": "ThunderRT6CommandButton",
+      "real_class": "ThunderRT6CommandButton",
+      "text": "&Pause",
+      "style": "54012000",
+      "ex_style": "00000004",
+      "attached": 0,
+      "theme": 1,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        65,
+        25
+      ]
+    },
+    {
+      "window_class": "ThunderRT6CommandButton",
+      "real_class": "ThunderRT6CommandButton",
+      "text": "&Grid",
+      "style": "54012000",
+      "ex_style": "00000004",
+      "attached": 0,
+      "theme": 1,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        65,
+        25
+      ]
+    },
+    {
+      "window_class": "ThunderRT6CommandButton",
+      "real_class": "ThunderRT6CommandButton",
+      "text": "&Start",
+      "style": "54012000",
+      "ex_style": "00000004",
+      "attached": 0,
+      "theme": 1,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        65,
+        25
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "10",
+      "style": "540100c1",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        81,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "1",
+      "style": "540100c1",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        81,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "2.5",
+      "style": "540100c1",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        81,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "0.01",
+      "style": "540100c1",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        81,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "0",
+      "style": "540100c1",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        81,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6PictureBoxDC",
+      "real_class": "ThunderRT6PictureBoxDC",
+      "text": "",
+      "style": "56810000",
+      "ex_style": "00000004",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        428,
+        428
+      ]
+    }
+  ],
+  "styled_windows": [
+    {
+      "window_class": "ThunderRT6FormDC",
+      "real_class": "ThunderRT6FormDC",
+      "text": "MadShow - Mini Molecular Dynamics Simulator",
+      "style": "16cf0000",
+      "ex_style": "00040100",
+      "attached": 1,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        615,
+        471
+      ]
+    },
+    {
+      "window_class": "ThunderRT6Timer",
+      "real_class": "ThunderRT6Timer",
+      "text": "",
+      "style": "44010000",
+      "ex_style": "00000004",
+      "attached": 0,
+      "theme": 0,
+      "font": "System",
+      "lf_height": 0,
+      "tm_height": 16,
+      "size": [
+        0,
+        0
+      ]
+    },
+    {
+      "window_class": "ThunderRT6Frame",
+      "real_class": "ThunderRT6Frame",
+      "text": "Result",
+      "style": "56010007",
+      "ex_style": "00000004",
+      "attached": 0,
+      "theme": 1,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        153,
+        145
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "0",
+      "style": "540108c0",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        65,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "0",
+      "style": "540100c0",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        65,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "0",
+      "style": "540108c0",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        65,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "0",
+      "style": "540108c0",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        65,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "0",
+      "style": "540108c0",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        65,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "0",
+      "style": "540108c0",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        65,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6Frame",
+      "real_class": "ThunderRT6Frame",
+      "text": "Settings",
+      "style": "56010007",
+      "ex_style": "00000004",
+      "attached": 0,
+      "theme": 1,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        153,
+        257
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "0.2",
+      "style": "540100c1",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        81,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "1",
+      "style": "540100c1",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        81,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6CommandButton",
+      "real_class": "ThunderRT6CommandButton",
+      "text": "&Clear",
+      "style": "54012000",
+      "ex_style": "00000004",
+      "attached": 0,
+      "theme": 1,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        65,
+        25
+      ]
+    },
+    {
+      "window_class": "ThunderRT6CommandButton",
+      "real_class": "ThunderRT6CommandButton",
+      "text": "&Pause",
+      "style": "54012000",
+      "ex_style": "00000004",
+      "attached": 0,
+      "theme": 1,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        65,
+        25
+      ]
+    },
+    {
+      "window_class": "ThunderRT6CommandButton",
+      "real_class": "ThunderRT6CommandButton",
+      "text": "&Grid",
+      "style": "54012000",
+      "ex_style": "00000004",
+      "attached": 0,
+      "theme": 1,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        65,
+        25
+      ]
+    },
+    {
+      "window_class": "ThunderRT6CommandButton",
+      "real_class": "ThunderRT6CommandButton",
+      "text": "&Start",
+      "style": "54012000",
+      "ex_style": "00000004",
+      "attached": 0,
+      "theme": 1,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        65,
+        25
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "10",
+      "style": "540100c1",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        81,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "1",
+      "style": "540100c1",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        81,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "2.5",
+      "style": "540100c1",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        81,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "0.01",
+      "style": "540100c1",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        81,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6TextBox",
+      "real_class": "ThunderRT6TextBox",
+      "text": "0",
+      "style": "540100c1",
+      "ex_style": "00000204",
+      "attached": 0,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        81,
+        18
+      ]
+    },
+    {
+      "window_class": "ThunderRT6PictureBoxDC",
+      "real_class": "ThunderRT6PictureBoxDC",
+      "text": "",
+      "style": "56810000",
+      "ex_style": "00000004",
+      "attached": 1,
+      "theme": 0,
+      "font": "Tahoma",
+      "lf_height": -12,
+      "tm_height": 14,
+      "size": [
+        420,
+        420
+      ]
+    }
+  ],
+  "direct_install": {
+    "control_error50": 20,
+    "control_error183_existing_picture_frame_tracker": 1,
+    "edit_error50": 13,
+    "unexpected_successes": 0,
+    "original_font_unchanged": true
+  },
+  "native_contracts": {
+    "buttons": 4,
+    "button_state_round_trip": [
+      0,
+      4,
+      0
+    ],
+    "button_dlgcode": "0x20a0",
+    "textboxes": 13,
+    "textbox_client_edge": 13,
+    "textbox_dlgcode": "0x89",
+    "textbox_lines": 1,
+    "textbox_selection": [
+      0,
+      0
+    ],
+    "class_registration_owner_all": "MSVBVM60.DLL",
+    "real_class_is_VB6_not_standard": true,
+    "nineteen_controls_size_font_and_height_unchanged": true,
+    "target_logical_dpi": 96,
+    "native_screenshots": {
+      "bare_size": [
+        623,
+        481
+      ],
+      "styled_size": [
+        615,
+        471
+      ],
+      "method": "PrintWindow in target DPI context; not physical screen/input"
+    },
+    "picture_box": {
+      "attached_as_frame": true,
+      "bare_outer_size": [
+        428,
+        428
+      ],
+      "styled_outer_size": [
+        420,
+        420
+      ],
+      "meaning": "existing border/frame path; not generic PictureBox client styling or a new fix; client/data preservation not proven by outer sizes"
+    }
+  },
+  "windowless_text": {
+    "examples": [
+      "Step",
+      "Speed",
+      "Timestep",
+      "Particles",
+      "R cutoff",
+      "Box Size",
+      "Radius",
+      "Temperature",
+      "E potential",
+      "Copyright (2010) Xu Ha"
+    ],
+    "independent_label_hwnds": 0,
+    "generic_MSAA": "root4/result-frame6/settings-frame11 children; these labels not individually returned",
+    "supported_claim": "visible text without separate HWND is outside per-HWND STATIC renderer; exact VB control-object/property paint bridge not traced"
+  },
+  "source_breakpoints": [
+    {
+      "path": "src/ntw16s-dll/attachment.c",
+      "function": "install_created",
+      "finding": "exact standard-class whitelist skips VB6 custom child controls; unsupported50"
+    },
+    {
+      "path": "src/ntw16s-dll/control_scope.c",
+      "function": "class_is/created",
+      "finding": "same exact whitelist; VB6 aliases absent"
+    },
+    {
+      "path": "src/ntw16s-dll/controls.c",
+      "function": "is_*/supported/install",
+      "finding": "exact standard class rejection, plus WS_EX_CLIENTEDGE edit exclusion"
+    },
+    {
+      "path": "src/ntw16s-dll/controls.c",
+      "function": "control_proc WM_PAINT",
+      "finding": "groupbox branch consumes original painting; naive VB6 Frame alias risks losing windowless labels"
+    }
+  ],
+  "verification": {
+    "valid_native_pairs": 3,
+    "valid_actual_app_instances": 6,
+    "final_target_exits": [
+      0,
+      0
+    ],
+    "final_job_active": [
+      0,
+      0
+    ],
+    "final_job_total": [
+      1,
+      4
+    ],
+    "diagnostic_scope": "WH_CALLWNDPROC restricted to exact GUI thread of new owned app; removed before normal close",
+    "probe_language": "C17",
+    "toolchain": "MinGW GCC16.1 / Ninja / shared ccache, scratch only",
+    "VB_procedure_tokens": "opaque USER proc tokens, not falsely resolved as module pointers",
+    "unchanged_product_inputs": 154,
+    "unchanged_published_copies": 8,
+    "new_product_build": false,
+    "binary_publication": false
+  },
+  "not_covered": [
+    "no product implementation or renderer prototype",
+    "no general VB6 compatibility claim",
+    "post-styling click/keyboard/focus/IME/clipboard/accessibility untested",
+    "VB5/ActiveX/custom third-party and x64 VB runtime not covered",
+    "not a full multi-DPI matrix; target logical96",
+    "windowless font/property/paint bridge unproven",
+    "per-child creation scope events not traced; explicit renderer rejection and initialized entry detours proven",
+    "did not inspect/inject/close existing user instances"
+  ],
+  "exploratory_failures": [
+    "PowerShell comma flag parse failure before execution",
+    "initial probe build lacked _WIN32_WINNT API declarations",
+    "first pair selected zero-sized ThunderRT6Main; excluded as actual-UI evidence",
+    "first capture had physical-sized buffer with logical pixels/white padding; corrected diagnostic thread DPI, target unchanged",
+    "PIL unavailable; native BMP viewed directly, no new dependency",
+    "initial evidence assertion included PictureBox in unchanged outer sizes; corrected to 19 rejected controls and recorded PictureBox size difference"
+  ],
+  "raw_sha256": {
+    "build.ninja": "4249875a2f9e05474c2abd6ecf49a47af9458f9b2abe5003bd9e38faf92966d7",
+    "mode-0.bmp": "f408346cec2aaae2345830a40260222590d805a98fa714fd9600e4ffc71aa669",
+    "mode-0.txt": "fc5dd9c80b56e13543741296e5820f8cd1ea480dcfca0c328f8dee771a8cee1b",
+    "mode-1.bmp": "f408346cec2aaae2345830a40260222590d805a98fa714fd9600e4ffc71aa669",
+    "mode-1.txt": "a739b3eb8587b399aac2144fef500ccb624356aefb3c0daaecf0bb62a3807e5d",
+    "native.log": "14023dfdc0c588eaf019ec0c47b9684125b9e7fd6668de59a4bbe3c594476d7c",
+    "probe.c": "283ba32180942533aada3d9d5bc3e5e38197af9fad0721a3889555bbbead7324",
+    "probe.exe": "b9a2740efe09afc3649b56b3a4e6dece77d922a592234de0301aa7f56023e5b2",
+    "tap.c": "8bc9b5889b6ff8b586c53d09639950598b8f676ef3424797101520f2ae6a0be1",
+    "tap.dll": "550851c1c9dd57f0c2b0198ae6fd0c2d7fe90f40d1ddde8e3c915ef4e69ebe61",
+    "actual-form/mode-0.bmp": "39892c2f4d489e59e8b03410361f84c005efe6852b97659291e4e67c40be0541",
+    "actual-form/mode-0.txt": "2b91d3c6ae2bb81e806f5a4594ce0dbcccc40a3bdbf876687163895a36b3138c",
+    "actual-form/mode-1.bmp": "b3b5d8c248a1772246884a4204855f0bdf6d2e25f8ff02dfe2436c31197cc632",
+    "actual-form/mode-1.txt": "6aa6d8dd0930632e3beedb37beb481d85fe7ec5ffc86550e0ae18659d35a44aa",
+    "actual-form/native.log": "c7a1f7a6215943cae5461b8b586cd7bff00aad32b62f03fd0ebf71a5637976e2",
+    "final-diagnostic/mode-0.bmp": "712bc5b1b0c6f53a9f5ef9fca3e87f49f1ac31264c113d102bbf060463b8c987",
+    "final-diagnostic/mode-0.txt": "bd409dd33fe51274db18822c13a9cb000ae854a77ea3c48c31db729d4de1eb2c",
+    "final-diagnostic/mode-1.bmp": "242ddeb3b2a0bceac401865edd6d1be7e6ba3c8af4b8291c5dc7a9dd1db661aa",
+    "final-diagnostic/mode-1.txt": "470417146071b6ad2a236f95436c9e009085ebff1b9fe6fa04c6792389b0aff3",
+    "final-diagnostic/native.log": "51b0b3327b5ae8a8c1d40fb37856c242f7c806efb995e647b16d46d25a9845bb",
+    "owner-verified/mode-0.bmp": "712bc5b1b0c6f53a9f5ef9fca3e87f49f1ac31264c113d102bbf060463b8c987",
+    "owner-verified/mode-0.txt": "9c595223bccf16d021adbf7087f194609c67a0016468601e86a9b5e79677a02c",
+    "owner-verified/mode-1.bmp": "242ddeb3b2a0bceac401865edd6d1be7e6ba3c8af4b8291c5dc7a9dd1db661aa",
+    "owner-verified/mode-1.txt": "38eaca4ccdb2e2cacbebfeb7e37c81a9b6223dffe4018425efa92bfc7f96c5a2",
+    "owner-verified/native.log": "4b0abd0d3ca4bf31e9d8d97f9a386c944c8efc955fadade3cda1f73e1e8305c4"
+  },
+  "product_artifacts_unchanged": {
+    "run16s.exe": {
+      "architecture": "x64",
+      "version": "M0 T14",
+      "sha256": "fd03ec47d2a2779c797b355799d58d6ab54669b96d862b390cf4954d4a600b0c",
+      "imports": [
+        "advapi32.dll",
+        "kernel32.dll",
+        "msvcrt.dll",
+        "ole32.dll",
+        "shell32.dll"
+      ]
+    },
+    "ntw16s32.dll": {
+      "architecture": "x86",
+      "version": "M0 T14",
+      "sha256": "8dffa4236a6c70d225b2a8a0104261bc68468ccd80bb85ba6a90a0fd63326318",
+      "imports": [
+        "COMCTL32.dll",
+        "dwmapi.dll",
+        "GDI32.dll",
+        "KERNEL32.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-private-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "USER32.dll",
+        "UxTheme.dll",
+        "COMCTL32.dll"
+      ]
+    },
+    "ntw16s64.dll": {
+      "architecture": "x64",
+      "version": "M0 T14",
+      "sha256": "a11b80bc15d55e46e69d6eea5e8dccf3339f04da6114379072031295a38430dd",
+      "imports": [
+        "COMCTL32.dll",
+        "dwmapi.dll",
+        "GDI32.dll",
+        "KERNEL32.dll",
+        "msvcrt.dll",
+        "USER32.dll",
+        "UxTheme.dll",
+        "COMCTL32.dll"
+      ]
+    },
+    "demo.exe": {
+      "architecture": "x64",
+      "version": "M0 T14",
+      "sha256": "0d2ecaf8f14ec2b483b02b98a325027cd34daf94a2a777f352748e644f089e97",
+      "imports": [
+        "kernel32.dll",
+        "msvcrt.dll",
+        "user32.dll"
+      ]
+    }
+  }
+}

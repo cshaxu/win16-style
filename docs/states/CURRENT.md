@@ -2,17 +2,38 @@
 
 ## Current Work
 
-无活动任务包。M0 T14 S3条件错误路由已完成27实际包、双发布、安装入口验证和
-P1实际远端复核；S3/T14关闭，M0开放。共享/隐藏/无窗口控制台只输出一次193，
-有窗口独占控制台只请求一次Windows系统错误UI。原外观/UAC/资源保持。
+M0 Td S11 MadShow控件外观调查已验证，待P1治理提交推送及实际远端复核，不提前收口。
+实际VB6的19个可视控件被标准类名单跳过；文本框另有client-edge门槛，标签无独立HWND。
+基线cad4242工作树干净，T14保持关闭；M0开放，其他任务/债务保留。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 14
-- Last allocated Td S: 10
+- Last allocated Td S: 11
 - Last delivery: M0 T14 S3 P2 (P1 47785d1实际远端167文件：154输入/四产物/八部署摘要通过；登记scratch回收)
-- Open task: none；T14 S3/T14关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
+- Open task: Td S11；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
+
+## M0 Td S11 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Governance；纯调查Td S11，不分配产品T、不复用既有S |
+| Admission And Approval | 用户“准入新S调研”；允许自有隔离实例原生探针、治理交付和永久提交推送 |
+| Objective | 定位MadShow标题成功而大量客户区控件未换肤的第一个断点，分类窗口/无窗口控件并给出有限最小方案 |
+| Non-goals | 本S不实现或发布产品修复；不改标题/字体/菜单/滚动条/图形资源/ABI，不操作既有用户实例或兄弟仓库 |
+| Reference Baseline | cad4242；0.14.0.0四文件；工作树干净；实际目标O:/winnt/madshow.exe待原生身份核实 |
+| Candidate Proposal | docs/proposals/madshow-controls.md |
+| Files And ABI Surface | CURRENT/proposal/history/精选证据和索引；临时纯C探针只在scratch；无产品输入或公开ABI变化 |
+| Applicable Rules | EXECUTION/ARCHITECTURE/CODING/DOCUMENT；完整Task Reading Set及UI已读；纯C17 GCC，禁止computer-use |
+| Verification | 自有私有桌面/kill-on-close Job、有限等待；裸/样式对照，模块路径SHA、hook初始化、类/真实类/样式/字体/窗口过程/附着/实际像素；产品和八部署摘要前后对照；治理自测 |
+| Expected Markers | MADSHOW DIAG PASS；实际进程/类数量与保守状态清单；不能取得的状态明确未覆盖，不把DLL存在当初始化 |
+| Asset Needs | 无产品发布或替换；原图形资源及来源声明逐字节保持；研究抓图仅scratch |
+| Reporting Requirements | 根因证据、标准/框架/无窗口分类、最小候选、风险/未覆盖、无产品变更说明、远端实际复核 |
+| Stop Conditions | 超时/权限/无法隔离如实记录；不全局hook、不扫描注入现有进程；不能证实不武断归因 |
+| Exit Criteria | 原生实际应用对照完成、诊断证据及后续候选清楚、八部署未变、治理/提交推送/实际远端复核、scratch提炼安全回收 |
+| Original Owner Request | MadShow很多控件样式无法apply；用户随后明确准入新S调研 |
+| Similar-Issue Sweep | 检查attachment/control_scope/controls三处分类及主题/字体/自绘边界；scratch只用build/td-s11-madshow，由本S提炼回收 |
 
 ## Technical Baseline
 

@@ -9,6 +9,7 @@ CURRENT 是唯一活动工作权威；本文件拥有顺序，各 proposal 拥�
 
 | 顺序 | T 候选 | 前置完成条件 | 核心交付/任务级退出条件 |
 | --- | --- | --- | --- |
+| 1 | [VB6框架控件外观](../proposals/madshow-controls.md) | Td S11调查完成；用户后续准入产品实现 | 先验证按钮/保留容器绘图的分组/client-edge文本框；标准控件双宽回归、三组件四产物及原资源保持；无窗口标签不默认承诺 |
 
 [启动器与首次自动附着](../proposals/launcher-injection.md)已关闭；
 [子孙传播与创建语义](../proposals/descendant-propagation.md)已关闭。
