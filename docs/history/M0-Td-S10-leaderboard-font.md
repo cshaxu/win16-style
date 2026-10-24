@@ -67,3 +67,15 @@ GetTextMetrics/GetObject/GetTextFace/GetTextExtentPoint32。对应位宽实际as
 包回归或新发布。临时纯C探针独立编译不构成新产品。未运行真实游戏交互、NE链、
 完整经典回归或资源压力测试，这些不是本次只读诊断的通过项。
 治理SelfTest、差异审查、提交推送和实际远端复核后收口调查S；M0开放。
+
+## 实际复核与收口
+
+P1 11cea154ac828b6ba5eaf2dea365ecf7be1335ce已推送；以协调复核角色读取实际
+commit/diff，src/tests/tools/CMakeLists/assets差异为空。实际取回GitHub六份变更
+文档和四个assets文件，全部与提交blob逐字节一致；八发布摘要保持。治理SelfTest
+13拒绝项、原资源六替换负例及五头/声明逐字节检查通过，git diff --check通过。
+
+确认登记绝对路径build/td-s10-font、根与所有子项无reparse、无存活自有探针后，
+回收24文件/3,585,339字节。精选证据和两张聊天PNG保留；未清Ninja/cache、用户
+目录或既有程序。P2仅记复核/清理/关闭，不更换产品，不虚构再次构建。
+调查目标已完成，本S关闭，M0开放；字体修复仍为未准入候选。

@@ -2,8 +2,8 @@
 
 ## Current Work
 
-M0 Td S10 verified locally：调查扫雷英雄榜中文控件字体偏小；双宽4例定位中文回退字形缩小；只读产品，不进行字体修复。
-证据见[调查记录](../history/M0-Td-S10-leaderboard-font.md)，待推送/实际远端复核后关闭。
+无活动任务包。M0 Td S10已完成英雄榜字体只读调查和实际远端复核，调查S收口。
+中文字体被不含中文的ANSI System变体替换，实际墨迹缩小；产品修复未准入。
 M0 T12 S1已完成缺失IAT目录的DoubleKiller启动兼容、验证、双发布及
 P1实际远端复核；T12收口，M0开放。T8/T9/T11关闭、T10取消的状态保持。
 
@@ -12,8 +12,8 @@ P1实际远端复核；T12收口，M0开放。T8/T9/T11关闭、T10取消的状�
 - Milestone: M0 (fixed)
 - Last allocated T: 12
 - Last allocated Td S: 10
-- Last delivery: M0 T12 S1 P2 (P1 507847c实际远端139输入/四产物及8发布摘要通过；12登记scratch根/文件回收)
-- Open task: Td S10；T12/T11/T9/T8关闭；T10取消；Td S9保持关闭
+- Last delivery: M0 Td S10 P2 (P1 11cea15实际远端6文档/四产物通过；双宽4例；24 scratch文件回收)
+- Open task: none；T12/T11/T9/T8关闭；T10取消；Td S9保持关闭
 
 ## Technical Baseline
 
@@ -38,6 +38,8 @@ T11原回滚计数债务仍在TODO；本次不宣称解决。UWP研究取消，�
 
 ## Recent Closure
 
+- [Td S10英雄榜字体调查](../history/M0-Td-S10-leaderboard-font.md)：11cea15远端6文档/四产物通过，中文墨迹缩小已定位；无产品修复/发布。
+
 - [T12缺失IAT启动修复](../history/M0-T12-S1-legacy-iat.md)：507847c实际远端139输入/四产物、8发布摘要及真实DoubleKiller通过；S1/T12收口，M0开放。
 
 - [T11按需UAC](../history/M0-T11-S1-uac.md)：d77017f实际远端139输入/四产物及8发布摘要通过；S1/T11收口，M0开放。
@@ -59,24 +61,3 @@ T11原回滚计数债务仍在TODO；本次不宣称解决。UWP研究取消，�
 - [S2 System字形修复](../history/M0-T8-S2-system-font.md)：2a0c7dd实际复核通过；S2收口。
 - [S1字体大小修复](../history/M0-T8-S1-font-layout.md)：1c82c2e收口。
 - [菜单取消修复](../history/M0-T7-menu-cancellation.md)与[历史产品审计](../history/M0-T6-completion.md)保留历史边界。
-
-## M0 Td S10 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Governance; 新的只读诊断和证据文档，不分配产品版本或重开已关闭任务 |
-| Admission And Approval | 用户确认上一S解决并批准收口，明确要求新S调查扫雷英雄榜字体偏小 |
-| Objective | 对照原生字体、System变体、中文实际墨迹和DPI，定位客户端缩小原因 |
-| Non-goals | 不改产品、标题/菜单/滚动条、不扩大中文支持承诺、不修改兄弟仓库 |
-| Reference Baseline | ea8876f；0.12.0.0，准入时工作树干净；T12已关闭 |
-| Candidate Proposal | [英雄榜字体调查](../proposals/leaderboard-font.md) |
-| Files And ABI Surface | 仅状态/调查文档；ABI、四文件及源码保持；临时纯C探针在build/td-s10-font |
-| Applicable Rules | Task Reading Set已读；EXECUTION、DOCUMENT、ARCHITECTURE、CODING及UI字体边界 |
-| Verification | 有限等待的原生私有桌面对照、实际DLL字体替换、字高/墨迹/字符集；门禁和摘要 |
-| Expected Markers | FONT SAMPLE、FONT INK、TARGET IDENTITY；失败及未覆盖项分别记录 |
-| Asset Needs | 用户截图只作问题输入；不导入图形资源，保留原资源字节 |
-| Reporting Requirements | 原因证据、实际覆盖、最小修复建议及未确定事项，不把ASCII通过称为中文通过 |
-| Stop Conditions | 不注入既有进程，不为NE启动接触用户服务；无法安全复现则明确限制 |
-| Exit Criteria | 调查证据提炼、治理检查、提交推送及实际远端复核；产品修复另准入 |
-| Original Owner Request | “批准收口本S任务！准入一个新的S任务调查，为啥扫雷英雄榜的字体比正常的小？” |
-| Similar-Issue Sweep | 搜索font.c、controls.c、font_layout.c及既有T8证据；覆盖中文与ASCII、字体回退和度量 |
