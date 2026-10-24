@@ -2,38 +2,17 @@
 
 ## Current Work
 
-M0 Td S11 MadShow控件外观调查已验证，待P1治理提交推送及实际远端复核，不提前收口。
-实际VB6的19个可视控件被标准类名单跳过；文本框另有client-edge门槛，标签无独立HWND。
-基线cad4242工作树干净，T14保持关闭；M0开放，其他任务/债务保留。
+无活动任务包。M0 Td S11 MadShow调查已完成并实际远端复核收口，M0开放。
+已证实VB6类名单兼容缺口、client-edge门槛及无窗口标签边界；仅调研，无产品变更。
+后续VB6控件适配列为未编号候选，尚未准入实施；T14及其他任务/债务状态保持。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 14
 - Last allocated Td S: 11
-- Last delivery: M0 T14 S3 P2 (P1 47785d1实际远端167文件：154输入/四产物/八部署摘要通过；登记scratch回收)
-- Open task: Td S11；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
-
-## M0 Td S11 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Governance；纯调查Td S11，不分配产品T、不复用既有S |
-| Admission And Approval | 用户“准入新S调研”；允许自有隔离实例原生探针、治理交付和永久提交推送 |
-| Objective | 定位MadShow标题成功而大量客户区控件未换肤的第一个断点，分类窗口/无窗口控件并给出有限最小方案 |
-| Non-goals | 本S不实现或发布产品修复；不改标题/字体/菜单/滚动条/图形资源/ABI，不操作既有用户实例或兄弟仓库 |
-| Reference Baseline | cad4242；0.14.0.0四文件；工作树干净；实际目标O:/winnt/madshow.exe待原生身份核实 |
-| Candidate Proposal | docs/proposals/madshow-controls.md |
-| Files And ABI Surface | CURRENT/proposal/history/精选证据和索引；临时纯C探针只在scratch；无产品输入或公开ABI变化 |
-| Applicable Rules | EXECUTION/ARCHITECTURE/CODING/DOCUMENT；完整Task Reading Set及UI已读；纯C17 GCC，禁止computer-use |
-| Verification | 自有私有桌面/kill-on-close Job、有限等待；裸/样式对照，模块路径SHA、hook初始化、类/真实类/样式/字体/窗口过程/附着/实际像素；产品和八部署摘要前后对照；治理自测 |
-| Expected Markers | MADSHOW DIAG PASS；实际进程/类数量与保守状态清单；不能取得的状态明确未覆盖，不把DLL存在当初始化 |
-| Asset Needs | 无产品发布或替换；原图形资源及来源声明逐字节保持；研究抓图仅scratch |
-| Reporting Requirements | 根因证据、标准/框架/无窗口分类、最小候选、风险/未覆盖、无产品变更说明、远端实际复核 |
-| Stop Conditions | 超时/权限/无法隔离如实记录；不全局hook、不扫描注入现有进程；不能证实不武断归因 |
-| Exit Criteria | 原生实际应用对照完成、诊断证据及后续候选清楚、八部署未变、治理/提交推送/实际远端复核、scratch提炼安全回收 |
-| Original Owner Request | MadShow很多控件样式无法apply；用户随后明确准入新S调研 |
-| Similar-Issue Sweep | 检查attachment/control_scope/controls三处分类及主题/字体/自绘边界；scratch只用build/td-s11-madshow，由本S提炼回收 |
+- Last delivery: M0 Td S11 P2 (P1 bb59d0a实际远端六文档通过；154产品输入/八部署未变；登记scratch已回收)
+- Open task: none；Td S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
 
 ## Technical Baseline
 
@@ -48,6 +27,8 @@ S2无UI和S1双错误通道旧包均被检出；80份DLL/demo/UAC源逐字节保
 [S3记录](../history/M0-T14-S3-console-errors.md)及[证据](../etc/evidence/console-error-routing.json)。
 
 ## Recent Closure
+
+- [Td S11 MadShow控件调查](../history/M0-Td-S11-madshow-controls.md)：3有效对照/6自有实例，VB6的19控件分类及13个client-edge断点、无窗口标签边界已明；无产品改动；bb59d0a远端六文档通过，S11关闭。
 
 - [T14 S3条件错误路由](../history/M0-T14-S3-console-errors.md)：27实际包/双发布/安装入口及47785d1实际远端复核通过；S3/T14关闭，M0开放。
 
@@ -85,12 +66,10 @@ S2无UI和S1双错误通道旧包均被检出；80份DLL/demo/UAC源逐字节保
 
 ## Last Packet Closure
 
-M0 T14 S3 Owner-Reopen完成：窗口化独占控制台的旧MZ/NE失败交Windows一次系统UI，
-共享/显式隐藏/无窗口控制台保留一次stderr193，退出4；PE/UAC/外观及原资源保持。
-154输入冻结/干净双宽构建，27实际包253.77秒通过；S1/S2旧版负例均检出，已安装
-启动器12路径/双宽ABI通过。P1 47785d1实际读取远端167文件，154输入/四产物/八
-部署摘要一致。所有登记scratch已提炼安全回收，稳定Ninja/ccache保留；受限预检
-CIM不可用，原生Job已归零，回收后提升只读进程核查无登记路径存活，限制如实记录。
-T14审计：同名sol解析差异已解释；S1无条件方案被撤回；S2清理后Win+R可见性由
-S3条件分流补齐。S3/T14关闭，M0开放；其他状态/TODO不变。历史两个不同框来源、
-物理Win+R及所有终端未冒称已覆盖，Console创建瞬间仍可能闪现。
+M0 Td S11纯调查完成：本机MadShow为x86 VB6，实际DLL/四个入口detour已生效、
+主窗附着；4按钮/13文本框/2分组仍被标准类名单跳过，13个client-edge为第二门槛，
+标签无独立HWND。有限按钮状态往返/原生截图及注册模块身份已查，未伪称已实现适配。
+3有效批次/6自有实例均正常退出、Job0；P1 bb59d0a实际取回六份文档通过，154产品
+输入及八部署摘要未变，无产品构建/发布。证据提炼后精确登记scratch已安全回收，
+提升只读进程预检无存活探针，稳定Ninja/ccache保留；治理自测通过。
+Td S11关闭，M0开放；产品T14等状态保持；VB6适配在QUEUE候选等待后续用户准入。

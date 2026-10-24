@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "task": "M0 Td S11",
-  "status": "investigation verified; documentation delivery and remote review pending",
+  "status": "P1 actual remote review passed; Td S11 closed in P2; implementation candidate remains unadmitted",
   "baseline": "cad424286169d959693b92e6f4e3dfa410cea299",
   "target": {
     "path": "O:/winnt/madshow.exe",
@@ -956,5 +956,21 @@
         "user32.dll"
       ]
     }
+  },
+  "remote_review": {
+    "status": "passed",
+    "commit": "bb59d0a0722dd98f6ce68def51f3774909d2e1bb",
+    "documents": 6,
+    "receipt_sha256": "33894c027e44a471e66e01767d59902ee88fe090219cb0e9c876217a9c83bede",
+    "product_inputs_unchanged": 154,
+    "published_copies_unchanged": 8
+  },
+  "scratch_cleanup": {
+    "status": "completed",
+    "checks": "Exact resolved workspace registration; ancestor/children no reparse; elevated pre-cleanup process inspection no live executable; six owned actual-app instances had strict Job0",
+    "files": 29,
+    "preserved": "build/.ninja,build/.ccache,source/products/user instances",
+    "path": "build/td-s11-madshow",
+    "bytes": 10278251.0
   }
 }
