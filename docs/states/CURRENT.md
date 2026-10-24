@@ -2,16 +2,35 @@
 
 ## Current Work
 
-当前无活动任务包。M0 T8 S4菜单System比例/布局修复已完成干净双宽构建、
-实际包/相关回归、双发布、推送、实际远端复核和安全清理，S4交付收口。
-M0固定，T8按用户要求继续开放；原生打开菜单图供用户外观验收，不宣称T8已关闭。
+M0 Td S6英文README与真实截图任务已实现并verified，待P1推送及实际复核；不改变M0 T8产品基线或关闭T8。
+
+## M0 Td S6 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Governance；下一未用Td S6，M0固定，T8开放。 |
+| Admission And Approval | 用户要求全英文丰富截图README供GitHub读者，可展示demo/真实sol.exe；授权文档、精选PNG和提交推送。 |
+| Objective | 准确英文入口、快速使用/下载/工作原理/构建/限制/来源，真实运行画廊。 |
+| Non-goals | 不改任何产品/测试/构建输入、原图形资源或二进制，不下载/提交游戏exe，不修改系统设置，不关闭T8。 |
+| Reference Baseline | fde1c67b7aa25dbc69e54dcc6215bd1596aba395；工作区干净，当前四文件0.8.0.0。 |
+| Candidate Proposal | [README showcase](../proposals/readme-showcase.md)。 |
+| Files And ABI Surface | README.md、assets/README.md、docs/etc截图/元数据及索引、必要过期操作指针、任务文档；ABI/126输入/四产品不变。 |
+| Applicable Rules | 已读Task Reading Set/UI/来源政策；用户公开截图要求优先于CONTRIBUTING/etc索引不提交截图的一般约束，仅精选公开展示PNG例外。 |
+| Verification | 全英文/相对链接/PNG解码与视觉检查、真实应用模块/命令/DPI/图像来源、发布与原资源SHA保持、治理SelfTest、实际远端diff复核；纯文档不重建发布。 |
+| Expected Markers | SHOWCASE CAPTURE PASS、README LINKS/ENGLISH PASS、BINARY IDENTITY PASS、Governance PASS。 |
+| Asset Needs | 精选截图存docs/etc/screenshots并索引；scratch精确build/td-s6-readme，自有C拍摄器/日志，复核提炼后回收；游戏本体不随仓库公开。 |
+| Reporting Requirements | 记录应用/包SHA、DPI/拍摄方式、实际画廊和未覆盖/失败处置，Td收口但T8保持开放。 |
+| Stop Conditions | 产品摘要改变、图形资源改变、截图失真或来历不明、不可复核的真实sol来源；先定位，不伪造截图或擅自下载游戏。 |
+| Exit Criteria | 英文README丰富真实图、链接/PNG/门禁检查、产品身份不变、提交推送及实际复核后仅关闭Td S6。 |
+| Original Owner Request | 全英文带丰富截图的项目README供GitHub读者搜索查看，可以demo和真实sol.exe截图。 |
+| Similar-Issue Sweep | 搜索根/assets/BUILD过期T6/S3/菜单8pt描述，修为当前权威指针；检查旧截图不冒称当前版本，无AI替代画面。 |
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 8
-- Last allocated Td S: 5
-- Last delivery: M0 T8 S4 P2 (P1 64e3fd3实际远端复核通过，清理/S4收口；T8开放)
+- Last allocated Td S: 6
+- Last delivery: M0 Td S6 P1 (verified locally，待推送及实际复核；T8开放)
 - Open task: M0 T8 (menu appearance feedback; remains open)
 
 ## Technical Baseline
@@ -48,6 +67,10 @@ Git blob、四远端/八发布摘要、167份原始证据、完整注册覆盖�
 无reparse或活动owned进程。结果及原始SHA先提炼，8份before可从a9ab2ab恢复；
 .ninja/.ccache、两处发布及两DPI聊天PNG保留。P2仅文档收口，126输入及四文件
 与P1完全相同，不虚构新编译或发布。
+
+Td S6使用未改的发布包拍摄真实XP sol.exe/匹配cards.dll及demo，精选8张原生PNG
+和全英文README；仅展示图中场景，不追写成S4覆盖或完整游戏测试。来源/摘要见
+[截图清单](../etc/screenshots/manifest.json)，本次验证见[记录](../history/M0-Td-S6-english-readme.md)。
 
 ## Recent Closure
 

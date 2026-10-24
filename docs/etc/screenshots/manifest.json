@@ -1,0 +1,145 @@
+{
+  "schema": 1,
+  "task": "M0 Td S6",
+  "capture_date": "2026-10-23",
+  "product_baseline_commit": "fde1c67b7aa25dbc69e54dcc6215bd1596aba395",
+  "product_version": "0.8.0.0",
+  "product_delivery": "M0 T8 S4 P1; closure P2",
+  "package_sha256": {
+    "run16s.exe": "4ab03ec12923b4a0bc140f31b16187ec8d768fc8ae4d3d2fca2ab673c60586ca",
+    "ntw16s32.dll": "2f5d7d258e6e20c8a18f791f91bc23d0fe58dbe73d373e63aefc5c6afb3c4284",
+    "ntw16s64.dll": "f3c006d03c704fc26bf5e1bb4129aa5b8682c2e913ad2d4cedc6309e45da375c",
+    "demo.exe": "0e17ff0306b5277d55ac21e54ee1203cc8a39c95b2ff2c97ac52b49e7f160d8e"
+  },
+  "applications": {
+    "demo.exe": {
+      "architecture": "x64",
+      "source": "unchanged checked-in assets/demo.exe"
+    },
+    "sol.exe": {
+      "architecture": "x86",
+      "file_version": "5.1.2600.0 (xpclient.010817-1148)",
+      "description": "Microsoft Solitaire Game Applet",
+      "source": "pre-existing local Windows XP copy; no download and no application binary redistributed",
+      "sha256": "a6fc95a5b288593c9559bd177ec43bf9b30d8a98cf19e82bf5a1ba5600857f04"
+    },
+    "cards.dll": {
+      "file_version": "5.1.2600.0 (xpclient.010817-1148)",
+      "description": "Microsoft Entertainment Pack Cardplaying Helper DLL",
+      "source": "matching pre-existing local copy; not redistributed",
+      "sha256": "0fb81e48d8b45e9995ae1e05fd28c1631dbbcdc71180904c1356bfa2c1ead506"
+    }
+  },
+  "capture": {
+    "environment": "owned private Windows desktop; no computer-use or shared desktop capture",
+    "controller": "temporary pure C17 MinGW-w64 GCC x64 controller; not a shipped product",
+    "controller_source_sha256": "f7df3ec26cc0032dcf6ab1b902eb7afc9957ad941597d12827259d1852cf3ff0",
+    "command_patterns": [
+      "demo.exe",
+      "run16s.exe --wait demo.exe",
+      "sol.exe",
+      "run16s.exe --wait sol.exe"
+    ],
+    "module_verification": "controller checks job ownership and exact loaded DLL path for each styled target, and DLL absence on direct launches",
+    "method": "PrintWindow for every published image; no WindowDC fallback needed in final capture",
+    "dialogs": "real application commands; dialogs moved to the center of their owner before capture",
+    "format": "BMP to PNG lossless format conversion; original dimensions retained; no resizing, generated content, or retouching",
+    "physical_input": "not used",
+    "application_state": "independent launches with normal application state; card deals and animated card backs can differ"
+  },
+  "images": [
+    {
+      "file": "demo-native.png",
+      "caption": "Native demo, direct launch",
+      "width": 862,
+      "height": 724,
+      "dpi_reported_by_application": 144,
+      "styled": false,
+      "sha256": "64e1b1fb15fdacd941131561272f183f8c12b2b1ba8cd0439aa8dc4c8cd317e8",
+      "source_bmp_sha256": "a0cd610d3d721c0fbb7661e6dcd77777ff8692aaff3d7a332682c4125c2cfd55",
+      "source_method": "native cross-process PrintWindow"
+    },
+    {
+      "file": "demo-styled.png",
+      "caption": "Native demo, styled launch",
+      "width": 862,
+      "height": 724,
+      "dpi_reported_by_application": 144,
+      "styled": true,
+      "sha256": "c48a41eecf5dadc79b08d7c594082aaa48f0af2cdffe2fbb64bd62dfbb344ce0",
+      "source_bmp_sha256": "585b2f155aa39e90188ed4aaa16669a196d55ff31882c22cdaab47346b33457c",
+      "source_method": "native cross-process PrintWindow"
+    },
+    {
+      "file": "demo-menu.png",
+      "caption": "Styled demo with the File menu open",
+      "width": 862,
+      "height": 724,
+      "dpi_reported_by_application": 144,
+      "styled": true,
+      "sha256": "442101ea2b2f2732f69183ee4c659a4a08bc87f82583b42924fff1ebad6e9a7f",
+      "source_bmp_sha256": "65244a0d56813636aac6b29db1d9362b8a93709d0f59c1f77737a15bf0f79a59",
+      "source_method": "native cross-process PrintWindow; popup/dialog separately printed and composited at actual window coordinates"
+    },
+    {
+      "file": "demo-about.png",
+      "caption": "Styled demo with its real About message box",
+      "width": 862,
+      "height": 724,
+      "dpi_reported_by_application": 144,
+      "styled": true,
+      "sha256": "7c584b4b6857483e01fe43b3ed24be44964050be294c5a4b1b76f8f21660fde6",
+      "source_bmp_sha256": "0826b841fbde4feacfd31dba2c8f3fec6a39dc66d30611e1d71b9fa183d374a4",
+      "source_method": "native cross-process PrintWindow; popup/dialog separately printed and composited at actual window coordinates"
+    },
+    {
+      "file": "solitaire-native.png",
+      "caption": "Windows XP Solitaire, direct launch",
+      "width": 601,
+      "height": 443,
+      "dpi_reported_by_application": 96,
+      "styled": false,
+      "sha256": "a12063045e1efac98919156cec4b9e49dd59cc0fafe410d9200a226778560148",
+      "source_bmp_sha256": "7af0ad1bdc42315218586ecfd152df92e2ec7cc787cfcc82b2a1200b496c5ea2",
+      "source_method": "native cross-process PrintWindow"
+    },
+    {
+      "file": "solitaire-styled.png",
+      "caption": "Windows XP Solitaire, styled launch",
+      "width": 593,
+      "height": 432,
+      "dpi_reported_by_application": 96,
+      "styled": true,
+      "sha256": "f73979e197ba09a0a6d3a3baf18e77af86b3b5841e099ecec032391fde269e09",
+      "source_bmp_sha256": "bf5748bc366ba6208d3b6697eef262119119b675908aaf980782586dc45b6761",
+      "source_method": "native cross-process PrintWindow"
+    },
+    {
+      "file": "solitaire-menu.png",
+      "caption": "Styled Windows XP Solitaire with the Game menu open",
+      "width": 593,
+      "height": 432,
+      "dpi_reported_by_application": 96,
+      "styled": true,
+      "sha256": "836f3abfc196b1dd595f22dad6e27a04accbee70cf4545aa9da7c0ef31664867",
+      "source_bmp_sha256": "2eea6fd6bef1f5172b5dcc563eeaae18d12676efa4f3a9430b27f3e1fc0a8a65",
+      "source_method": "native cross-process PrintWindow; popup/dialog separately printed and composited at actual window coordinates"
+    },
+    {
+      "file": "solitaire-options.png",
+      "caption": "Styled Windows XP Solitaire with its Options dialog open",
+      "width": 593,
+      "height": 432,
+      "dpi_reported_by_application": 96,
+      "styled": true,
+      "sha256": "60309581329d693eb1b207c8c33cc6373300f6823616699b0c11e3c2686de9b0",
+      "source_bmp_sha256": "24c03e53b323b2479e78417e7e1d653fe97eabe9cf0f259fabbd27fa0441d737",
+      "source_method": "native cross-process PrintWindow; popup/dialog separately printed and composited at actual window coordinates"
+    }
+  ],
+  "raw_capture_log_sha256": "bb2457694b6499d367ff4baaed4433c57197590d1dd11486aed9cd83999f595d",
+  "raw_capture_result": {
+    "exit_code": 0
+  },
+  "scope": "documentation capture only; no new product build, publication, or broad compatibility claim; existing product/source/resource hashes unchanged"
+}

@@ -32,7 +32,7 @@ pwsh -NoProfile -File tools/Build-Core.ps1 -TaskRoot t8-package -RunName full-ne
 跳过名称。原生私有window-station权限不足时剪贴板77不可用，保持待验收，不等于通过。
 所有失败/必需跳过均须有处置。每个产品S的同批包测试通过后发布、提交推送并
 复核；开发包不等同M0最终通过。真实桌面验收及跨任务审计完成后才关闭M0。
-T6 S1已从干净复制树通过双宽全构建及同包测试；当前发布状态和验收边界见
+T6 S1曾从干净复制树通过双宽全构建及同包测试；当前发布状态和验收边界见
 [发布清单](../release.json)。完整矩阵与必要真实交互仍由后续S验证。
 
 三组件四文件须始终同目录：run16s.exe、ntw16s32.dll、ntw16s64.dll、demo.exe。
@@ -94,4 +94,4 @@ pwsh -NoProfile -File tools/Publish-Package.ps1 -Package build/t8-package/candid
 打包、包测试和发布入口提供-Task参数，当前默认8；Task用于版本校验及build/t8-package
 记录目录。未来任务传入实际编号，不复用旧任务scratch。
 
-字体策略见[UI](../../design/UI.md)：控件保留应用字体，标题10pt粗体/菜单8pt常规，按窗口DPI实现，不统一拉伸20像素。
+字体策略以[UI](../../design/UI.md)为准：菜单System原比例按DPI缩放，控件保持既定原度量适配；本页不复制字号/字形配置。
