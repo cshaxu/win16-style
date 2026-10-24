@@ -51,7 +51,7 @@ try{
         & python (Join-Path $clean 'tools/verify_resource_identity.py') --self-test
         if($LASTEXITCODE){throw 'Snapshot glyph gate failed'}
         & (Join-Path $clean 'tools/Verify-Governance.ps1') -SelfTest
-        & (Join-Path $clean 'tools/Build-Core.ps1') -Worker -TaskRoot "t$Task-package" -RunName clean-build -TestPattern '^core/abi$' -TimeoutSeconds 600
+        & (Join-Path $clean 'tools/Build-Core.ps1') -Worker -TaskRoot "t$Task-package" -RunName clean-build -TestPattern '^core/abi$' -CacheRoot (Join-Path $repo 'build/.ccache') -TimeoutSeconds 600
         $build=Get-Content -Raw (Join-Path $clean "build/t$Task-package/clean-build/result.json") | ConvertFrom-Json
         if($build.status -ne 'passed' -or $build.exit_code -ne 0){throw 'Clean build failed'}
         $tree=Join-Path $clean 'build/.ninja'

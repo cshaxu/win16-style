@@ -6,6 +6,7 @@ param(
     [ValidatePattern('^[a-z0-9-]+$')][string]$RunName='package-test',
     [ValidateRange(1,65535)][int]$Task=9,
     [switch]$FullIntegration,
+    [ValidateRange(1,16)][int]$Jobs=4,
     [switch]$Worker
 )
 $ErrorActionPreference='Stop'
@@ -19,6 +20,7 @@ if(!$Worker){
     New-Item -ItemType Directory -Path $scratch | Out-Null
     $arguments=@('-NoProfile','-File',('"'+$PSCommandPath+'"'),'-Worker','-RunName',$RunName,
         '-Task',$Task,'-Package',('"'+$Package+'"'),'-BuildRoot',('"'+$BuildRoot+'"'),'-SourceRoot',('"'+$SourceRoot+'"'))
+    $arguments+=@('-Jobs',$Jobs)
     if($FullIntegration){$arguments+='-FullIntegration'}
     $job=Start-Process (Join-Path $PSHOME 'pwsh.exe') -ArgumentList $arguments -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $scratch 'worker.log') -RedirectStandardError (Join-Path $scratch 'worker.err')
     @{pid=$job.Id;result=(Join-Path $scratch 'result.json');progress=(Join-Path $scratch 'progress.json');maximum_seconds=1800}|ConvertTo-Json
@@ -72,32 +74,64 @@ try{
             (Case 'messages' (Join-Path $x64 'launch-automatic.exe') ($pair+@('messages')) @('LAUNCH MATRIX PASS') 520)
         )
     }
-    $records=[System.Collections.Generic.List[object]]::new();$deadline=[DateTime]::UtcNow.AddSeconds(1800)
-    foreach($case in $cases){
-        $directory=Join-Path $scratch $case.name;New-Item -ItemType Directory -Path $directory | Out-Null
-        $start=[Diagnostics.ProcessStartInfo]::new();$start.FileName=$case.command;$start.WorkingDirectory=$directory
-        $start.UseShellExecute=$false;$start.CreateNoWindow=$true;$start.WindowStyle='Hidden'
-        $start.RedirectStandardOutput=$true;$start.RedirectStandardError=$true
-        $start.Environment['WIN16STYLE_CAPTURE_DIR']=$directory
-        foreach($argument in $case.arguments){$start.ArgumentList.Add($argument)}
-        $process=[Diagnostics.Process]::new();$process.StartInfo=$start
-        if(!$process.Start()){throw 'Test process did not start'}
-        $stdout=$process.StandardOutput.ReadToEndAsync();$stderr=$process.StandardError.ReadToEndAsync()
-        @{name=$case.name;pid=$process.Id;command=$case.command;arguments=$case.arguments;seconds=$case.seconds}|ConvertTo-Json -Depth 4|Set-Content (Join-Path $scratch 'progress.json')
-        $budget=[Math]::Min($case.seconds,[Math]::Max(0,($deadline-[DateTime]::UtcNow).TotalSeconds))
-        if(!$process.WaitForExit([int]($budget*1000))){$process.Kill($true);$process.WaitForExit();throw "Owned test timed out: $($case.name)"}
-        $out=$stdout.GetAwaiter().GetResult();$err=$stderr.GetAwaiter().GetResult()
-        [IO.File]::WriteAllText((Join-Path $directory 'stdout.log'),$out)
-        [IO.File]::WriteAllText((Join-Path $directory 'stderr.log'),$err)
-        $record=@{name=$case.name;exit_code=$process.ExitCode;command=$case.command;arguments=$case.arguments};$records.Add($record)
-        $records|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'cases.json')
-        if($process.ExitCode){throw "Package test failed: $($case.name), exit $($process.ExitCode)"}
-        foreach($marker in $case.markers){if(!($out+$err).Contains($marker)){throw "Missing marker $marker in $($case.name)"}}
-        $process.Dispose()
+    $records=[System.Collections.Generic.List[object]]::new()
+    $pending=[System.Collections.Generic.List[object]]::new()
+    foreach($case in $cases){$pending.Add($case)}
+    $running=[System.Collections.Generic.List[object]]::new()
+    $deadline=[DateTime]::UtcNow.AddSeconds(1800);$totalTimer=[Diagnostics.Stopwatch]::StartNew()
+    $lastProgress=[DateTime]::MinValue
+    try{
+        while($pending.Count -or $running.Count){
+            $used=0;foreach($entry in $running){$used+=$entry.cost}
+            while($pending.Count){
+                $case=$pending[0]
+                $cost=if($case.name -match '^(font-layout|menu-cancel|dialogs|messages)'){[Math]::Min(2,$Jobs)}else{1}
+                if($used+$cost -gt $Jobs){break}
+                $pending.RemoveAt(0)
+                $directory=Join-Path $scratch $case.name;New-Item -ItemType Directory -Path $directory | Out-Null
+                $start=[Diagnostics.ProcessStartInfo]::new();$start.FileName=$case.command;$start.WorkingDirectory=$directory
+                $start.UseShellExecute=$false;$start.CreateNoWindow=$true;$start.WindowStyle='Hidden'
+                $start.RedirectStandardOutput=$true;$start.RedirectStandardError=$true
+                $start.Environment['WIN16STYLE_CAPTURE_DIR']=$directory
+                foreach($argument in $case.arguments){$start.ArgumentList.Add($argument)}
+                $process=[Diagnostics.Process]::new();$process.StartInfo=$start
+                if(!$process.Start()){throw 'Test process did not start'}
+                $running.Add(@{case=$case;directory=$directory;process=$process;stdout=$process.StandardOutput.ReadToEndAsync();stderr=$process.StandardError.ReadToEndAsync();timer=[Diagnostics.Stopwatch]::StartNew();cost=$cost})
+                $used+=$cost
+            }
+            if(([DateTime]::UtcNow-$lastProgress).TotalSeconds -ge 1){
+                @($running | ForEach-Object {@{name=$_.case.name;pid=$_.process.Id;seconds=$_.timer.Elapsed.TotalSeconds;budget=$_.case.seconds}})|ConvertTo-Json|Set-Content (Join-Path $scratch 'progress.json')
+                $lastProgress=[DateTime]::UtcNow
+            }
+            foreach($entry in $running.ToArray()){
+                if($entry.timer.Elapsed.TotalSeconds -gt $entry.case.seconds -or [DateTime]::UtcNow -gt $deadline){
+                    if(!$entry.process.HasExited){$entry.process.Kill($true);$entry.process.WaitForExit()}
+                    throw "Owned test timed out: $($entry.case.name)"
+                }
+                if(!$entry.process.HasExited){continue}
+                $entry.process.WaitForExit();$entry.timer.Stop()
+                $out=$entry.stdout.GetAwaiter().GetResult();$err=$entry.stderr.GetAwaiter().GetResult()
+                [IO.File]::WriteAllText((Join-Path $entry.directory 'stdout.log'),$out)
+                [IO.File]::WriteAllText((Join-Path $entry.directory 'stderr.log'),$err)
+                $record=@{name=$entry.case.name;exit_code=$entry.process.ExitCode;command=$entry.case.command;arguments=$entry.case.arguments;seconds=$entry.timer.Elapsed.TotalSeconds};$records.Add($record)
+                $records|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'cases.json')
+                if($entry.process.ExitCode){throw "Package test failed: $($entry.case.name), exit $($entry.process.ExitCode)"}
+                foreach($marker in $entry.case.markers){if(!($out+$err).Contains($marker)){throw "Missing marker $marker in $($entry.case.name)"}}
+                $running.Remove($entry)|Out-Null;$entry.process.Dispose()
+            }
+            if($running.Count){Start-Sleep -Milliseconds 50}
+        }
+    }finally{
+        foreach($entry in $running){
+            if(!$entry.process.HasExited){$entry.process.Kill($true);$entry.process.WaitForExit()}
+            [IO.File]::WriteAllText((Join-Path $entry.directory 'stdout.log'),$entry.stdout.GetAwaiter().GetResult())
+            [IO.File]::WriteAllText((Join-Path $entry.directory 'stderr.log'),$entry.stderr.GetAwaiter().GetResult())
+            $entry.process.Dispose()
+        }
     }
     $after=Package-Hashes
     foreach($name in $before.Keys){if($before[$name] -ne $after[$name]){throw 'Package changed during testing'}}
-    @{status='passed';cases=$records.Count;full_integration=[bool]$FullIntegration;package=$Package;sha256=$after;physical_input='not-tested';core_matrix='separate Build-Core matrix required'}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
+    @{status='passed';seconds=$totalTimer.Elapsed.TotalSeconds;jobs=$Jobs;cases=$records.Count;full_integration=[bool]$FullIntegration;package=$Package;sha256=$after;physical_input='not-tested';core_matrix='separate Build-Core matrix required'}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
 }catch{
     @{status='failed-or-inconclusive';error=$_.Exception.Message}|ConvertTo-Json|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
     exit 1

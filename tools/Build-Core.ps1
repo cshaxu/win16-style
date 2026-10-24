@@ -1,21 +1,29 @@
 [CmdletBinding()]
 param(
     [ValidatePattern('^[a-z0-9-]+$')][string]$RunName='core',
-    [ValidatePattern('^t[0-9]+-[a-z-]+$')][string]$TaskRoot='t9-package',
+    [ValidatePattern('^(t[0-9]+|td-s[0-9]+)-[a-z-]+$')][string]$TaskRoot='t9-package',
     [ValidatePattern('^[a-zA-Z0-9_/^$.*|()-]+$')][string]$TestPattern='^core/abi$',
     [string]$BuildRoot='build/.ninja',
     [string]$Gcc32=$env:WIN16STYLE_GCC32,
     [string]$Gcc64=$env:WIN16STYLE_GCC64,
+    [ValidateSet('Focused','Quick','Full')][string]$Profile='Focused',
+    [ValidatePattern('^[a-zA-Z0-9_-]+(,[a-zA-Z0-9_-]+)*$')][string]$Targets='all',
+    [ValidateRange(1,64)][int]$BuildJobs=8,
+    [ValidateRange(1,32)][int]$TestJobs=4,
+    [string]$CacheRoot,
     [switch]$Worker,
     [ValidateRange(20,600)][int]$TimeoutSeconds=180
 )
 $ErrorActionPreference='Stop'
 $repo=Split-Path $PSScriptRoot -Parent
+if(!$CacheRoot){$CacheRoot=Join-Path $repo 'build/.ccache'}
+$CacheRoot=[IO.Path]::GetFullPath($CacheRoot)
 $scratch=Join-Path $repo "build/$TaskRoot/$RunName"
 if(!$Worker){
     if(Test-Path -LiteralPath $scratch){throw 'Select a fresh run name; inspect previous logs before reuse'}
     New-Item -ItemType Directory -Force -Path $scratch | Out-Null
     $arguments=@('-NoProfile','-File',('"'+$PSCommandPath+'"'),'-Worker','-RunName',$RunName,'-TaskRoot',$TaskRoot,'-TestPattern',('"'+$TestPattern+'"'),'-BuildRoot',('"'+$BuildRoot+'"'),'-TimeoutSeconds',$TimeoutSeconds)
+    $arguments+=@('-Profile',$Profile,'-Targets',$Targets,'-BuildJobs',$BuildJobs,'-TestJobs',$TestJobs,'-CacheRoot',('"'+$CacheRoot+'"'))
     if($Gcc32){$arguments+=@('-Gcc32',('"'+$Gcc32+'"'))}
     if($Gcc64){$arguments+=@('-Gcc64',('"'+$Gcc64+'"'))}
     $job=Start-Process (Join-Path $PSHOME 'pwsh.exe') -ArgumentList $arguments -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $scratch 'worker.log') -RedirectStandardError (Join-Path $scratch 'worker.err')
@@ -41,6 +49,12 @@ function CMake-Value([string]$Value){
     return '[==['+$Value+']==]'
 }
 try{
+    $label=''
+    if($Profile -eq 'Quick'){$Targets='quick-tests';$TestPattern='.*';$label=' -L quick'}
+    if($Profile -eq 'Full'){$Targets='all';$TestPattern='^(core|launch|propagate|demo|compatibility|checks)/.*$'}
+    for($path=$CacheRoot;$path;$path=Split-Path $path -Parent){
+        if((Test-Path -LiteralPath $path) -and ((Get-Item -LiteralPath $path -Force).Attributes -band [IO.FileAttributes]::ReparsePoint)){throw 'Cache root traverses a reparse point'}
+    }
     # Build-Package invokes -Worker synchronously in a new copied tree.
     # The asynchronous public entry creates this directory before dispatch.
     New-Item -ItemType Directory -Force -Path $scratch | Out-Null
@@ -61,39 +75,51 @@ try{
     [IO.File]::WriteAllText((Join-Path $scratch 'run.err'),'')
     $toolchains=foreach($arch in @('x86','x64')){
         $commands=[System.Collections.Generic.List[string]]::new();$commands.Add('@echo off')
-        $commands.Add('set "CCACHE_DIR='+(Join-Path $repo 'build/.ccache')+'"')
+        $commands.Add('set "CCACHE_DIR='+$CacheRoot+'"')
         $compiler=$gcc[$arch];$bin=Split-Path $compiler
         $windres=(Join-Path $bin 'windres.exe').Replace('\','/')
         if(!(Test-Path -LiteralPath $windres)){throw "Matching windres missing: $arch"}
         $tree=Join-Path $build $arch;$evidence=Join-Path $scratch $arch
-        New-Item -ItemType Directory -Force -Path $evidence | Out-Null
-        $toolchain=Join-Path $evidence 'toolchain.cmake'
+        New-Item -ItemType Directory -Force -Path $evidence,$tree | Out-Null
+        $toolchain=Join-Path $tree 'toolchain.cmake'
         $rcFlags='--preprocessor="'+$compiler+'" --preprocessor-arg=-E --preprocessor-arg=-xc --preprocessor-arg=-DRC_INVOKED'
         $settings=@(
-            ('set(CMAKE_C_COMPILER '+(CMake-Value $compiler)+')'),
+            ('set(CMAKE_C_COMPILER '+(CMake-Value $compiler)+' CACHE FILEPATH "Native C compiler" FORCE)'),
             ('set(CMAKE_RC_COMPILER '+(CMake-Value $windres)+')'),
             ('set(CMAKE_C_COMPILER_LAUNCHER '+(CMake-Value $cache)+')'),
             ('set(CMAKE_RC_FLAGS '+(CMake-Value $rcFlags)+')')
         )
-        [IO.File]::WriteAllLines($toolchain,$settings,[Text.UTF8Encoding]::new($false))
-        foreach($value in @($repo,$scratch,$tree,$compiler,$toolchain,$cmake,$ninja,$ctest)){
+        $toolchainText=($settings -join "`n")+"`n"
+        if(!(Test-Path -LiteralPath $toolchain) -or [IO.File]::ReadAllText($toolchain) -ne $toolchainText){[IO.File]::WriteAllText($toolchain,$toolchainText,[Text.UTF8Encoding]::new($false))}
+        foreach($value in @($repo,$scratch,$tree,$compiler,$toolchain,$cmake,$ninja,$ctest,$CacheRoot)){
             if($value -match '["%\r\n]'){throw 'Unsupported batch metacharacter in path'}
         }
         $fresh=''
         $cacheFile=Join-Path $tree 'CMakeCache.txt'
         if(Test-Path -LiteralPath $cacheFile){
             $old=Select-String -LiteralPath $cacheFile -Pattern '^CMAKE_C_COMPILER:[^=]+=(.+)$'
-            if(!$old -or $old.Matches[0].Groups[1].Value.Replace('\','/') -ne $compiler){$fresh=' --fresh'}
+            $previousCompiler=if($old){$old.Matches[0].Groups[1].Value}else{$null}
+            if(!$previousCompiler){
+                # Older toolchains set a normal CMake variable, not a cache
+                # entry. Absence of that entry does not imply a compiler change.
+                $saved=Get-ChildItem -Path (Join-Path $tree 'CMakeFiles/*/CMakeCCompiler.cmake') -File -ErrorAction SilentlyContinue |
+                    Select-String -Pattern '^set\(CMAKE_C_COMPILER "([^"]+)"\)' | Select-Object -First 1
+                if($saved){$previousCompiler=$saved.Matches[0].Groups[1].Value}
+            }
+            if($previousCompiler -and $previousCompiler.Replace('\','/') -ne $compiler){$fresh=' --fresh'}
         }
-        $commands.Add('"'+$cmake+'"'+$fresh+' -S "'+$repo+'" -B "'+$tree+'" -G Ninja -DCMAKE_TOOLCHAIN_FILE="'+$toolchain.Replace('\','/')+'" -DCMAKE_MAKE_PROGRAM="'+$ninja+'" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON -DWIN16STYLE_ARCH='+$arch+' -DWIN16STYLE_X86_BUILD="'+(Join-Path $build 'x86').Replace('\','/')+'"')
+        $measure='python "'+(Join-Path $repo 'tools/run_test.py')+'" --measure "'
+        $commands.Add('"'+$cache+'" --print-stats > "'+(Join-Path $evidence 'cache-before.txt')+'"')
+        $commands.Add($measure+(Join-Path $evidence 'configure-time.json')+'" -- "'+$cmake+'"'+$fresh+' -S "'+$repo+'" -B "'+$tree+'" -G Ninja -DCMAKE_TOOLCHAIN_FILE="'+$toolchain.Replace('\','/')+'" -DCMAKE_MAKE_PROGRAM="'+$ninja+'" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON -DWIN16STYLE_ARCH='+$arch+' -DWIN16STYLE_CACHE_ROOT="'+$CacheRoot.Replace('\','/')+'" -DWIN16STYLE_X86_BUILD="'+(Join-Path $build 'x86').Replace('\','/')+'"')
         $commands.Add('if not "%errorlevel%"=="0" exit /b 2')
-        $commands.Add('"'+$cmake+'" --build "'+$tree+'" --parallel 4')
+        $commands.Add($measure+(Join-Path $evidence 'build-time.json')+'" -- "'+$cmake+'" --build "'+$tree+'" --parallel '+$BuildJobs+' --target '+($Targets.Split(',') -join ' '))
         $commands.Add('if not "%errorlevel%"=="0" exit /b 3')
         $commands.Add('set "WIN16STYLE_CAPTURE_DIR='+$evidence+'"')
-        $commands.Add('"'+$ctest+'" --test-dir "'+$tree+'" -R "'+$TestPattern+'" --output-on-failure --verbose --no-tests=error --output-junit "'+(Join-Path $evidence 'results.xml')+'"')
+        $commands.Add($measure+(Join-Path $evidence 'test-time.json')+'" -- "'+$ctest+'" --test-dir "'+$tree+'" -R "'+$TestPattern+'"'+$label+' -j '+$TestJobs+' --output-on-failure --no-tests=error --output-junit "'+(Join-Path $evidence 'results.xml')+'"')
         $commands.Add('if not "%errorlevel%"=="0" exit /b 4')
         $commands.Add('python "'+(Join-Path $repo 'tools/check_core_binary.py')+'" --arch '+$arch+' --build-root "'+$build+'"')
         $commands.Add('if not "%errorlevel%"=="0" exit /b 5')
+        $commands.Add('"'+$cache+'" --print-stats > "'+(Join-Path $evidence 'cache-after.txt')+'"')
         $commands.Add('exit /b 0');$batch=Join-Path $evidence 'build.cmd'
         [IO.File]::WriteAllLines($batch,$commands,[Text.UTF8Encoding]::new($false))
         $child=Start-Process $env:ComSpec -ArgumentList @('/d','/c',('"'+$batch+'"')) -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $evidence 'run.log') -RedirectStandardError (Join-Path $evidence 'run.err')
@@ -114,10 +140,11 @@ try{
         $cases=@($report.SelectNodes('//testcase'));$skipped=@($report.SelectNodes('//testcase[skipped]'))
         if(!$cases.Count -or $report.SelectNodes('//testcase[failure or error]').Count){throw 'Invalid or failed CTest report'}
         $skippedCount+=$skipped.Count
-        @{architecture=$arch;tests=$cases.Count;passed=($cases.Count-$skipped.Count);skipped=@($skipped | ForEach-Object { $_.name })}
+        @{architecture=$arch;tests=$cases.Count;passed=($cases.Count-$skipped.Count);skipped=@($skipped | ForEach-Object { $_.name });configure_seconds=(Get-Content -Raw (Join-Path $scratch "$arch/configure-time.json")|ConvertFrom-Json).seconds;build_seconds=(Get-Content -Raw (Join-Path $scratch "$arch/build-time.json")|ConvertFrom-Json).seconds;test_seconds=(Get-Content -Raw (Join-Path $scratch "$arch/test-time.json")|ConvertFrom-Json).seconds}
     }
     $status=if($skippedCount){'passed-with-skips'}else{'passed'}
-    @{status=$status;exit_code=0;architectures=@('x86','x64');selection=$TestPattern;tests=$summaries;build_root=$build}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
+    @{status=$status;exit_code=0;architectures=@('x86','x64');selection=$TestPattern;profile=$Profile;targets=$Targets;build_jobs=$BuildJobs;test_jobs=$TestJobs;tests=$summaries;build_root=$build}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
+    if($Profile -eq 'Quick' -and !$skippedCount){'QUICK PASS: focused targets and both architecture quick sets'}
 }catch{
     @{status='failed-or-inconclusive';error=$_.Exception.Message}|ConvertTo-Json|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
     exit 1

@@ -148,6 +148,16 @@ On x64 Windows, prepare:
 
 From the repository root:
 
+For development, reuse the persistent Ninja trees and build only the quick test targets:
+
+```powershell
+pwsh -NoProfile -File tools/Build-Core.ps1 -RunName local-quick -Profile Quick
+```
+
+Quick tests preserve a focused subset of checks; complete regression and package tests
+remain required for delivery. Compiler commands use the project ccache consistently,
+including direct Ninja builds. Then create a clean candidate for release verification:
+
 ```powershell
 pwsh -NoProfile -File tools/Build-Package.ps1 -RunName local-build
 ```

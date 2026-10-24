@@ -24,8 +24,9 @@ clean-source中使用全新build/.ninja双宽构建，复制四文件到candidat
 完整矩阵在该干净树运行，仍需使用新RunName：
 
 ```powershell
+$projectCompilerCache = Join-Path $PWD 'build/.ccache'
 cd build/t9-package/candidate-new/clean-source
-pwsh -NoProfile -File tools/Build-Core.ps1 -TaskRoot t9-package -RunName full-new -TestPattern '^(core|launch|propagate|demo)/.*$' -TimeoutSeconds 600
+pwsh -NoProfile -File tools/Build-Core.ps1 -CacheRoot $projectCompilerCache -TaskRoot t9-package -RunName full-new -TestPattern '^(core|launch|propagate|demo)/.*$' -TimeoutSeconds 600
 ```
 
 结果区分passed、passed-with-skips和failed-or-inconclusive；逐架构JUnit摘要列出
@@ -95,3 +96,32 @@ pwsh -NoProfile -File tools/Publish-Package.ps1 -Package build/t9-package/candid
 记录目录。未来任务传入实际编号，不复用旧任务scratch。
 
 字体策略以[UI](../../design/UI.md)为准：菜单System原比例按DPI缩放，控件保持既定原度量适配；本页不复制字号/字形配置。
+
+## 快速开发与持久缓存
+
+开发期优先使用稳定树，只编译quick-tests依赖并运行quick标签：
+
+```powershell
+pwsh -NoProfile -File tools/Build-Core.ps1 -TaskRoot td-s9-efficiency -RunName quick-new -Profile Quick
+# 自选共同目标及测试模式；跨宽fixture仍需先准备双宽输出
+pwsh -NoProfile -File tools/Build-Core.ps1 -TaskRoot td-s9-efficiency -RunName focused-new -Targets ntw16s,core-abi,launch-staging -TestPattern '^(core/abi|launch/staging)$'
+# 冻结后完整集合（含显式skip的可选后端），不把quick当full
+pwsh -NoProfile -File tools/Build-Core.ps1 -TaskRoot td-s9-efficiency -RunName full-new -Profile Full -TimeoutSeconds 600
+```
+
+工具链配置属于build/.ninja/<arch>/toolchain.cmake，不再依赖任务scratch。写入内容
+未变时不更新时间；清理任务日志后直接cmake --build仍可用。编译器缓存项缺失时
+读取CMake已有编译器记录，仅确认编译器确实变更才使用--fresh，不能因正常变量
+没有缓存项就清空对象目录。编译默认8 jobs，CTest
+默认4 slots，可用-BuildJobs/-TestJobs调整；重UI占2 slots，不共享输出目录。
+
+ccache DIR/TEMPDIR/MAXSIZE=5G/BASEDIR写入生成的编译命令，直接cmake/ninja也
+使用同一项目build/.ccache。干净复制树显式共享原项目缓存，保留独立构建目录；
+不清空全局缓存，不使用sloppiness绕过输入检查。-CacheRoot用于受控的干净构建
+调用。每宽记录cache-before/cache-after以及configure/build/test阶段耗时。
+
+每个CTest由tools/run_test.py将原生命令放到WIN16STYLE_CAPTURE_DIR下的唯一
+工作/捕获目录；原始命令、参数、返回码（含77）保持，原超时和断言保持。调用者
+须提供自有scratch。包测试已有每case目录，使用相同的有界并行原则，-Jobs默认4、
+重UI占2 slots，保留所有必需标记和四文件测试前后摘要。-Jobs 1可做同集合串行对照。
+开发中先quick/focused，测试源码收敛后一次最终冻结、完整回归与同批包验证。

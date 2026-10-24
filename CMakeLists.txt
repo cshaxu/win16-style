@@ -15,6 +15,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 add_compile_options(-Wall -Wextra -Werror -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-lto)
 add_link_options(-static -static-libgcc -fno-lto)
+include(tools/build_cache.cmake)
 set(WIN16STYLE_X86_BUILD "${CMAKE_SOURCE_DIR}/build/.ninja/x86" CACHE PATH "Matching x86 fixture build")
 set(core_sources
   attachment.c control_scope.c controls.c dllmain.c font.c layout.c
@@ -93,13 +94,14 @@ endif()
 include(CTest)
 if(BUILD_TESTING)
   find_program(test_python python REQUIRED)
+  set(test_driver ${test_python} ${CMAKE_SOURCE_DIR}/tools/run_test.py)
   add_executable(wait-target tests/run16s-exe/wait_target.c)
   target_link_options(wait-target PRIVATE -municode)
   if(WIN16STYLE_ARCH STREQUAL "x64")
     add_executable(wait-gui-target WIN32 tests/run16s-exe/wait_target.c)
     target_compile_definitions(wait-gui-target PRIVATE WAIT_GUI)
     target_link_options(wait-gui-target PRIVATE -municode)
-    add_test(NAME launch/wait COMMAND ${test_python} ${CMAKE_SOURCE_DIR}/tests/run16s-exe/wait.py
+    add_test(NAME launch/wait COMMAND ${test_driver} --name launch/wait -- ${test_python} ${CMAKE_SOURCE_DIR}/tests/run16s-exe/wait.py
       $<TARGET_FILE:run16s> ${WIN16STYLE_X86_BUILD}/ntw16s32.dll $<TARGET_FILE:ntw16s>
       ${WIN16STYLE_X86_BUILD}/wait-target.exe $<TARGET_FILE:wait-target> $<TARGET_FILE:wait-gui-target>)
     set_tests_properties(launch/wait PROPERTIES TIMEOUT 190 RUN_SERIAL TRUE)
@@ -109,8 +111,8 @@ if(BUILD_TESTING)
   add_executable(launch-startup-hooks tests/run16s-exe/startup_hooks.c
     ${injection_root}/startup_hooks.c ${minhook_root}/buffer.c ${minhook_root}/trampoline.c ${hde_source})
   target_include_directories(launch-startup-hooks PRIVATE src)
-  add_test(NAME launch/unwind COMMAND launch-unwind)
-  add_test(NAME launch/startup-hooks COMMAND launch-startup-hooks)
+  add_test(NAME launch/unwind COMMAND ${test_driver} --name launch/unwind -- $<TARGET_FILE:launch-unwind>)
+  add_test(NAME launch/startup-hooks COMMAND ${test_driver} --name launch/startup-hooks -- $<TARGET_FILE:launch-startup-hooks>)
   set_tests_properties(launch/unwind launch/startup-hooks PROPERTIES TIMEOUT 20 RUN_SERIAL TRUE)
   add_executable(creation-contract tests/integration/creation_contract.c)
 
@@ -131,68 +133,68 @@ if(BUILD_TESTING)
   add_executable(launch-payload tests/run16s-exe/payload.c)
   target_link_libraries(launch-payload PRIVATE ntw16s-installer)
 
-  add_test(NAME launch/payload COMMAND launch-payload)
+  add_test(NAME launch/payload COMMAND ${test_driver} --name launch/payload -- $<TARGET_FILE:launch-payload>)
   add_executable(launch-staging tests/run16s-exe/staging.c)
   target_link_libraries(launch-staging PRIVATE ntw16s-installer)
 
-  add_test(NAME launch/staging COMMAND launch-staging --parent)
+  add_test(NAME launch/staging COMMAND ${test_driver} --name launch/staging -- $<TARGET_FILE:launch-staging> --parent)
   set_tests_properties(launch/payload launch/staging PROPERTIES TIMEOUT 20 RUN_SERIAL TRUE)
   if(WIN16STYLE_ARCH STREQUAL "x64")
     add_executable(cmd-nested tests/integration/cmd_nested.c)
     target_compile_definitions(cmd-nested PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
     target_link_options(cmd-nested PRIVATE -municode)
     target_link_libraries(cmd-nested PRIVATE user32 advapi32 rpcrt4 bcrypt)
-    add_test(NAME propagate/cmd-nested COMMAND cmd-nested --build $<TARGET_FILE:run16s>
+    add_test(NAME propagate/cmd-nested COMMAND ${test_driver} --name propagate/cmd-nested -- $<TARGET_FILE:cmd-nested> --build $<TARGET_FILE:run16s>
       ${WIN16STYLE_X86_BUILD}/ntw16s32.dll $<TARGET_FILE:ntw16s>)
     set_tests_properties(propagate/cmd-nested PROPERTIES TIMEOUT 180 RUN_SERIAL TRUE)
     set(WIN16STYLE_OPTIONAL_RUN16 "" CACHE FILEPATH "Optional installed run16; never required for core tests")
-    add_test(NAME compatibility/cmd-nested COMMAND cmd-nested --compat-build "${WIN16STYLE_OPTIONAL_RUN16}"
+    add_test(NAME compatibility/cmd-nested COMMAND ${test_driver} --name compatibility/cmd-nested -- $<TARGET_FILE:cmd-nested> --compat-build "${WIN16STYLE_OPTIONAL_RUN16}"
       $<TARGET_FILE:run16s> ${WIN16STYLE_X86_BUILD}/ntw16s32.dll $<TARGET_FILE:ntw16s>)
     set_tests_properties(compatibility/cmd-nested PROPERTIES TIMEOUT 550 RUN_SERIAL TRUE SKIP_RETURN_CODE 77)
-    add_test(NAME demo/boundary COMMAND ${test_python} ${CMAKE_SOURCE_DIR}/tests/demo-exe/boundary.py $<TARGET_FILE:demo>)
+    add_test(NAME demo/boundary COMMAND ${test_driver} --name demo/boundary -- ${test_python} ${CMAKE_SOURCE_DIR}/tests/demo-exe/boundary.py $<TARGET_FILE:demo>)
     set_tests_properties(demo/boundary PROPERTIES TIMEOUT 20)
     add_executable(demo-observe tests/demo-exe/observe.c)
     target_compile_definitions(demo-observe PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 
     target_link_libraries(demo-observe PRIVATE user32 gdi32)
-    add_test(NAME demo/pair COMMAND demo-observe $<TARGET_FILE:run16s> $<TARGET_FILE:ntw16s>
+    add_test(NAME demo/pair COMMAND ${test_driver} --name demo/pair -- $<TARGET_FILE:demo-observe> $<TARGET_FILE:run16s> $<TARGET_FILE:ntw16s>
       ${WIN16STYLE_X86_BUILD}/ntw16s32.dll $<TARGET_FILE:demo>)
     set_tests_properties(demo/pair PROPERTIES TIMEOUT 100 RUN_SERIAL TRUE)
-    add_test(NAME launch/cli COMMAND ${test_python} ${CMAKE_SOURCE_DIR}/tests/run16s-exe/cli.py $<TARGET_FILE:run16s>)
+    add_test(NAME launch/cli COMMAND ${test_driver} --name launch/cli -- ${test_python} ${CMAKE_SOURCE_DIR}/tests/run16s-exe/cli.py $<TARGET_FILE:run16s>)
     set_tests_properties(launch/cli PROPERTIES TIMEOUT 60)
     add_executable(propagate-basic tests/integration/propagate_basic.c)
 
     target_compile_definitions(propagate-basic PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-    add_test(NAME propagate/basic COMMAND propagate-basic $<TARGET_FILE:run16s>
+    add_test(NAME propagate/basic COMMAND ${test_driver} --name propagate/basic -- $<TARGET_FILE:propagate-basic> $<TARGET_FILE:run16s>
       ${WIN16STYLE_X86_BUILD}/ntw16s32.dll $<TARGET_FILE:ntw16s>
       ${WIN16STYLE_X86_BUILD}/propagate-target.exe $<TARGET_FILE:propagate-target>)
     set_tests_properties(propagate/basic PROPERTIES TIMEOUT 320 RUN_SERIAL TRUE)
     add_executable(creation-contract-driver tests/integration/creation_contract_driver.c)
 
     target_compile_definitions(creation-contract-driver PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-    add_test(NAME propagate/contract COMMAND creation-contract-driver $<TARGET_FILE:run16s>
+    add_test(NAME propagate/contract COMMAND ${test_driver} --name propagate/contract -- $<TARGET_FILE:creation-contract-driver> $<TARGET_FILE:run16s>
       ${WIN16STYLE_X86_BUILD}/ntw16s32.dll $<TARGET_FILE:ntw16s>
       ${WIN16STYLE_X86_BUILD}/creation-contract.exe $<TARGET_FILE:creation-contract>)
     set_tests_properties(propagate/contract PROPERTIES TIMEOUT 520 RUN_SERIAL TRUE)
     add_executable(rollback-contract-driver tests/integration/rollback_contract_driver.c)
 
     target_compile_definitions(rollback-contract-driver PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-    add_test(NAME propagate/rollback COMMAND rollback-contract-driver $<TARGET_FILE:run16s>
+    add_test(NAME propagate/rollback COMMAND ${test_driver} --name propagate/rollback -- $<TARGET_FILE:rollback-contract-driver> $<TARGET_FILE:run16s>
       ${WIN16STYLE_X86_BUILD}/ntw16s32.dll $<TARGET_FILE:ntw16s>
       ${WIN16STYLE_X86_BUILD}/rollback-contract.exe $<TARGET_FILE:rollback-contract>)
     set_tests_properties(propagate/rollback PROPERTIES TIMEOUT 320 RUN_SERIAL TRUE)
     add_executable(launch-automatic tests/integration/automatic_launch.c)
 
     target_compile_definitions(launch-automatic PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-    add_test(NAME launch/automatic COMMAND launch-automatic $<TARGET_FILE:run16s>
+    add_test(NAME launch/automatic COMMAND ${test_driver} --name launch/automatic -- $<TARGET_FILE:launch-automatic> $<TARGET_FILE:run16s>
       ${WIN16STYLE_X86_BUILD}/ntw16s32.dll $<TARGET_FILE:ntw16s>
       ${WIN16STYLE_X86_BUILD}/launch-target.exe $<TARGET_FILE:launch-target>)
     set_tests_properties(launch/automatic PROPERTIES TIMEOUT 100 RUN_SERIAL TRUE)
-    add_test(NAME launch/dialogs COMMAND launch-automatic $<TARGET_FILE:run16s>
+    add_test(NAME launch/dialogs COMMAND ${test_driver} --name launch/dialogs -- $<TARGET_FILE:launch-automatic> $<TARGET_FILE:run16s>
       ${WIN16STYLE_X86_BUILD}/ntw16s32.dll $<TARGET_FILE:ntw16s>
       ${WIN16STYLE_X86_BUILD}/launch-target.exe $<TARGET_FILE:launch-target> dialogs)
     set_tests_properties(launch/dialogs PROPERTIES TIMEOUT 520 RUN_SERIAL TRUE)
-    add_test(NAME launch/messages COMMAND launch-automatic $<TARGET_FILE:run16s>
+    add_test(NAME launch/messages COMMAND ${test_driver} --name launch/messages -- $<TARGET_FILE:launch-automatic> $<TARGET_FILE:run16s>
       ${WIN16STYLE_X86_BUILD}/ntw16s32.dll $<TARGET_FILE:ntw16s>
       ${WIN16STYLE_X86_BUILD}/launch-target.exe $<TARGET_FILE:launch-target> messages)
     set_tests_properties(launch/messages PROPERTIES TIMEOUT 520 RUN_SERIAL TRUE)
@@ -201,7 +203,7 @@ if(BUILD_TESTING)
   target_include_directories(core-abi PRIVATE src)
   target_compile_definitions(core-abi PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 
-  add_test(NAME core/abi COMMAND core-abi $<TARGET_FILE:ntw16s>)
+  add_test(NAME core/abi COMMAND ${test_driver} --name core/abi -- $<TARGET_FILE:core-abi> $<TARGET_FILE:ntw16s>)
   set_tests_properties(core/abi PROPERTIES TIMEOUT 20)
   function(core_fixture target source)
     add_executable(${target} tests/ntw16s-dll/${source})
@@ -215,19 +217,19 @@ if(BUILD_TESTING)
   target_compile_definitions(core-font-layout PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_options(core-font-layout PRIVATE -municode)
   target_link_libraries(core-font-layout PRIVATE user32 gdi32 comctl32)
-  add_test(NAME core/font-layout COMMAND core-font-layout $<TARGET_FILE:ntw16s>)
+  add_test(NAME core/font-layout COMMAND ${test_driver} --name core/font-layout -- $<TARGET_FILE:core-font-layout> $<TARGET_FILE:ntw16s>)
   set_tests_properties(core/font-layout PROPERTIES TIMEOUT 180 RUN_SERIAL TRUE)
   add_executable(core-menu-cancel tests/ntw16s-dll/win16_style_menu_cancel.c)
   target_include_directories(core-menu-cancel PRIVATE src)
   target_compile_definitions(core-menu-cancel PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_options(core-menu-cancel PRIVATE -municode)
   target_link_libraries(core-menu-cancel PRIVATE user32 gdi32)
-  add_test(NAME core/menu-cancel COMMAND core-menu-cancel $<TARGET_FILE:ntw16s>)
+  add_test(NAME core/menu-cancel COMMAND ${test_driver} --name core/menu-cancel -- $<TARGET_FILE:core-menu-cancel> $<TARGET_FILE:ntw16s>)
   set_tests_properties(core/menu-cancel PROPERTIES TIMEOUT 150 RUN_SERIAL TRUE)
   core_fixture(core-menu-dispatch win16_style_menu_dispatch.c)
   core_fixture(core-edit-clipboard win16_style_edit_clipboard.c)
-  add_test(NAME core/menu-dispatch COMMAND core-menu-dispatch)
-  add_test(NAME core/edit-clipboard COMMAND core-edit-clipboard)
+  add_test(NAME core/menu-dispatch COMMAND ${test_driver} --name core/menu-dispatch -- $<TARGET_FILE:core-menu-dispatch>)
+  add_test(NAME core/edit-clipboard COMMAND ${test_driver} --name core/edit-clipboard -- $<TARGET_FILE:core-edit-clipboard>)
   set_tests_properties(core/edit-clipboard PROPERTIES SKIP_RETURN_CODE 77)
   set(test_common_sources ${core_sources})
   list(REMOVE_ITEM test_common_sources src/ntw16s-dll/dllmain.c src/ntw16s-dll/controls.c src/ntw16s-dll/win16_style.c)
@@ -251,14 +253,14 @@ if(BUILD_TESTING)
     # These fixtures compile the real attachment/painter objects directly, so
     # their executable also needs the same v5-compatible ordinal import.
     add_dependencies(core-${kind} ntw16s-subclass)
-    add_test(NAME core/${kind} COMMAND core-${kind})
+    add_test(NAME core/${kind} COMMAND ${test_driver} --name core/${kind} -- $<TARGET_FILE:core-${kind}>)
   endforeach()
-  add_test(NAME core/control-present-negative COMMAND ${test_python} ${CMAKE_SOURCE_DIR}/tests/ntw16s-dll/painter_negative.py $<TARGET_FILE:core-control-present>)
+  add_test(NAME core/control-present-negative COMMAND ${test_driver} --name core/control-present-negative -- ${test_python} ${CMAKE_SOURCE_DIR}/tests/ntw16s-dll/painter_negative.py $<TARGET_FILE:core-control-present>)
   set_tests_properties(core/control-present-negative PROPERTIES TIMEOUT 40 RUN_SERIAL TRUE)
   add_executable(core-scroll-native tests/ntw16s-dll/win16_style_scroll_api.c)
   target_compile_definitions(core-scroll-native PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 
-  add_test(NAME core/scroll-native COMMAND core-scroll-native)
+  add_test(NAME core/scroll-native COMMAND ${test_driver} --name core/scroll-native -- $<TARGET_FILE:core-scroll-native>)
   set_tests_properties(core/menu-dispatch core/edit-clipboard core/control-present core/dc-failure core/scroll-native PROPERTIES TIMEOUT 100 RUN_SERIAL TRUE)
   core_fixture(core-runtime runtime.c)
   core_fixture(core-frames frames.c)
@@ -275,35 +277,60 @@ if(BUILD_TESTING)
   target_include_directories(core-geometry PRIVATE src)
   target_compile_definitions(core-geometry PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 
-  add_test(NAME core/runtime COMMAND core-runtime)
-  add_test(NAME core/runtime-native COMMAND core-runtime --native)
-  add_test(NAME core/frames COMMAND core-frames)
-  add_test(NAME core/font COMMAND core-font)
-  add_test(NAME core/font-dpi96 COMMAND core-font --dpi96)
-  add_test(NAME core/tabs COMMAND core-tabs)
-  add_test(NAME core/lifetime COMMAND core-lifetime)
-  add_test(NAME core/default COMMAND core-default $<TARGET_FILE:ntw16s>)
-  add_test(NAME core/terminal COMMAND core-terminal $<TARGET_FILE:ntw16s>)
-  add_test(NAME core/sizebox-native COMMAND core-sizebox)
-  add_test(NAME core/sizebox-styled COMMAND core-sizebox --styled)
-  add_test(NAME core/geometry COMMAND core-geometry)
+  add_test(NAME core/runtime COMMAND ${test_driver} --name core/runtime -- $<TARGET_FILE:core-runtime>)
+  add_test(NAME core/runtime-native COMMAND ${test_driver} --name core/runtime-native -- $<TARGET_FILE:core-runtime> --native)
+  add_test(NAME core/frames COMMAND ${test_driver} --name core/frames -- $<TARGET_FILE:core-frames>)
+  add_test(NAME core/font COMMAND ${test_driver} --name core/font -- $<TARGET_FILE:core-font>)
+  add_test(NAME core/font-dpi96 COMMAND ${test_driver} --name core/font-dpi96 -- $<TARGET_FILE:core-font> --dpi96)
+  add_test(NAME core/tabs COMMAND ${test_driver} --name core/tabs -- $<TARGET_FILE:core-tabs>)
+  add_test(NAME core/lifetime COMMAND ${test_driver} --name core/lifetime -- $<TARGET_FILE:core-lifetime>)
+  add_test(NAME core/default COMMAND ${test_driver} --name core/default -- $<TARGET_FILE:core-default> $<TARGET_FILE:ntw16s>)
+  add_test(NAME core/terminal COMMAND ${test_driver} --name core/terminal -- $<TARGET_FILE:core-terminal> $<TARGET_FILE:ntw16s>)
+  add_test(NAME core/sizebox-native COMMAND ${test_driver} --name core/sizebox-native -- $<TARGET_FILE:core-sizebox>)
+  add_test(NAME core/sizebox-styled COMMAND ${test_driver} --name core/sizebox-styled -- $<TARGET_FILE:core-sizebox> --styled)
+  add_test(NAME core/geometry COMMAND ${test_driver} --name core/geometry -- $<TARGET_FILE:core-geometry>)
   set_tests_properties(core/runtime core/runtime-native core/frames core/font core/font-dpi96 core/tabs core/lifetime
     core/default core/terminal core/sizebox-native core/sizebox-styled core/geometry
     PROPERTIES TIMEOUT 100 RUN_SERIAL TRUE)
   add_executable(launch-failures tests/run16s-exe/failures.c)
   target_link_libraries(launch-failures PRIVATE ntw16s-installer)
 
-  add_test(NAME launch/failures COMMAND launch-failures ${WIN16STYLE_X86_BUILD}/launch-failures.exe)
+  add_test(NAME launch/failures COMMAND ${test_driver} --name launch/failures -- $<TARGET_FILE:launch-failures> ${WIN16STYLE_X86_BUILD}/launch-failures.exe)
   set_tests_properties(launch/failures PROPERTIES TIMEOUT 50 RUN_SERIAL TRUE)
   if(WIN16STYLE_ARCH STREQUAL "x64")
-    add_test(NAME launch/long-path COMMAND ${test_python} ${CMAKE_SOURCE_DIR}/tests/run16s-exe/long_path.py
+    add_test(NAME launch/long-path COMMAND ${test_driver} --name launch/long-path -- ${test_python} ${CMAKE_SOURCE_DIR}/tests/run16s-exe/long_path.py
       $<TARGET_FILE:run16s> ${WIN16STYLE_X86_BUILD}/ntw16s32.dll $<TARGET_FILE:ntw16s>
       ${WIN16STYLE_X86_BUILD}/launch-failures.exe $<TARGET_FILE:launch-failures>)
     set_tests_properties(launch/long-path PROPERTIES TIMEOUT 70 RUN_SERIAL TRUE)
-    add_test(NAME launch/cli-failures COMMAND ${test_python} ${CMAKE_SOURCE_DIR}/tests/run16s-exe/cli_failures.py
+    add_test(NAME launch/cli-failures COMMAND ${test_driver} --name launch/cli-failures -- ${test_python} ${CMAKE_SOURCE_DIR}/tests/run16s-exe/cli_failures.py
       $<TARGET_FILE:run16s> ${WIN16STYLE_X86_BUILD}/ntw16s32.dll $<TARGET_FILE:ntw16s>
       ${WIN16STYLE_X86_BUILD}/launch-target.exe $<TARGET_FILE:launch-target>)
     set_tests_properties(launch/cli-failures PROPERTIES TIMEOUT 130 RUN_SERIAL TRUE)
+  endif()
+  # Each child receives a unique directory beneath the caller-owned scratch.
+  # Native windows/desktops and GDI counts remain owned by each existing fixture.
+  get_property(registered_tests DIRECTORY PROPERTY TESTS)
+  foreach(test IN LISTS registered_tests)
+    set_tests_properties(${test} PROPERTIES RUN_SERIAL FALSE)
+    if(test MATCHES "^(core/(runtime|runtime-native|font-layout|menu-cancel)|launch/(dialogs|messages))$")
+      set_tests_properties(${test} PROPERTIES LABELS "ui" PROCESSORS 2)
+    elseif(test MATCHES "^compatibility/")
+      set_tests_properties(${test} PROPERTIES LABELS "optional" PROCESSORS 2)
+    else()
+      set_tests_properties(${test} PROPERTIES LABELS "integration")
+    endif()
+    if(test MATCHES "^(core/(abi|geometry)|launch/(unwind|startup-hooks|payload|staging)|propagate/cmd-nested)$")
+      set_tests_properties(${test} PROPERTIES LABELS "quick")
+    endif()
+  endforeach()
+  set_tests_properties(core/edit-clipboard PROPERTIES RESOURCE_LOCK "private-clipboard")
+  add_custom_target(quick-tests DEPENDS ntw16s core-abi core-geometry
+    launch-unwind launch-startup-hooks launch-payload launch-staging)
+  if(WIN16STYLE_ARCH STREQUAL "x64")
+    add_dependencies(quick-tests cmd-nested run16s)
+    add_test(NAME checks/test-runner COMMAND ${test_driver} --name checks/test-runner --
+      ${test_python} ${CMAKE_SOURCE_DIR}/tests/tooling/test_runner.py)
+    set_tests_properties(checks/test-runner PROPERTIES LABELS "quick" TIMEOUT 20)
   endif()
 endif()
 

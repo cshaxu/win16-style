@@ -25,3 +25,5 @@ CURRENT中的完成审计。当前无剩余待准入候选。
 不是新增产品候选；状态仍由CURRENT管理。
 
 [VDM传播诊断](../proposals/vdm-propagation.md)及其T9本地修复/原生cmd测试已交付收口，状态由CURRENT管理。
+
+[构建与测试效率](../proposals/build-test-efficiency.md)已准入Td S9工具修复，状态由CURRENT管理。

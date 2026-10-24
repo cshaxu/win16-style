@@ -73,3 +73,17 @@ ctest --test-dir build/.ninja/x64 -R '^propagate/cmd-nested$' --output-on-failur
 不凭“不兼容16位”弹窗推断NE。失败后可记录并关闭仅属于本次job的模态警告以收集
 ERRORLEVEL，case仍失败；不会将自动关掉警告当成功。旧staging源/旧发布包负例
 与新包结果必须分列，查看CURRENT/history中的本次实际结果，不能靠测试注册宣称通过。
+
+## 调度与快速入口
+
+`tools/Build-Core.ps1 -Profile Quick`只构建quick-tests目标；Full保持所有注册测试，
+不是减少覆盖。详见[构建入口](../docs/etc/operations/BUILD.md#快速开发与持久缓存)。
+`-Targets`使用逗号分隔目标，`-BuildJobs`默认8，`-TestJobs`默认4。重UI每例占2
+slots，其他例可并行；私有clipboard使用资源锁并继续如实skip。测试断言/轮数/
+超时不变。各CTest现在有唯一工作/捕获目录，不再共享架构根目录；环境变量
+WIN16STYLE_CAPTURE_DIR必须指向本任务已登记scratch。checks/test-runner测试实际
+子进程看到的cwd/env、并行目录隔离、空参数、失败码42和skip77透传。
+
+CTest与包测试分别报告阶段/每例及总耗时，公开证据仅提炼计数/摘要，不提交真实
+PID/路径转录。不要并发运行会改同一构建树的两个build；干净树与稳定树独立，
+只共享有界编译缓存。用`-Jobs 1`或`-TestJobs 1`做受控串行诊断，不重跑无关完整包。
