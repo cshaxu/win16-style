@@ -2,36 +2,16 @@
 
 ## Current Work
 
-M0 T8 S3 verified并双发布：菜单仅保留细框，局部抑制宿主投影，修复打印右下未绘制条。
-标题和S2字体/字号保持。P1待提交推送及实际复核；T8继续开放。
-
-## M0 T8 S3 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Continuation；S2交付后用户反馈popup边框，使用新S3。 |
-| Admission And Approval | 用户提供Win3.1与sol对照，指出右/下黑色厚边；按既有授权调研修复并发布。 |
-| Objective | popup四边细边框，清除多余宿主厚边/阴影，保持原生菜单追踪语义。 |
-| Non-goals | 不改已确认标题、字体、原图形资源、规则、公开ABI或全局主题设置。 |
-| Reference Baseline | 622e8d9；已发布S2四文件及用户两幅截图。 |
-| Candidate Proposal | [外观后续修订](../proposals/font-layout.md)。 |
-| Files And ABI Surface | menu_scope私有绘制/窗口寿命；实际DLL菜单探针及交付文档；ABI3不变。 |
-| Applicable Rules | EXECUTION/ARCHITECTURE/CODING/DOCUMENT及UI/来源策略。 |
-| Verification | 双宽实际原生popup边缘像素/窗口client几何/嵌套/取消/恢复；旧包负例；相关core完整覆盖和实际包14项。 |
-| Expected Markers | MENU BORDER PASS、MENU CANCEL PASS15、旧包边缘负例、双宽ABI及同包结果/双发布摘要一致。 |
-| Asset Needs | 同批四文件发布assets根和O:/winnt/system32；不替换原六资源。 |
-| Reporting Requirements | 实际截图/原生探针、有限覆盖、失败/跳过、统计、证据SHA和实际远端复核，不冒称物理输入。 |
-| Stop Conditions | 标题/字体/原资源改变，菜单语义/寿命回归或发布占用时停止交付并修复。 |
-| Exit Criteria | 双宽构建、同包测试、双发布、提交推送和实际复核后仅关闭S3，T8保持开放。 |
-| Original Owner Request | Win3.1菜单与sol不同，右侧及下侧粗黑线不对。 |
-| Similar-Issue Sweep | 搜索全部popup nonclient/print/paint/shadow处理；不修改共享菜单类或全局SPI；scratch仅build/t8-package，执行者提炼后回收。 |
+当前无活动任务包。M0 T8 S3菜单厚黑边修复已双发布、推送、实际复核及清理，
+S3交付收口。标题和已确认System字体/字号保持；按用户指令T8继续开放接收外观反馈，
+不把本S收口等同全任务验收通过。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 8
 - Last allocated Td S: 5
-- Last delivery: M0 T8 S3 P1 (verified/dual-published; actual remote review pending)
+- Last delivery: M0 T8 S3 P2 (P1 aa28427实际远端复核、清理和S3收口；T8开放)
 - Open task: M0 T8 (System/menu repairs delivered; owner appearance feedback pending)
 
 ## Technical Baseline
@@ -60,13 +40,18 @@ S2已确认标题、System字体/字号实现源码font.c/font.h/controls.c/win1
 被测同批四文件已先备份8条，再发布assets根及O:/winnt/system32，8摘要完全一致。
 源快照、工具链、四文件SHA/PE/imports、原始失败及最终证据SHA见
 [release.json](../etc/release.json)和[S3记录](../history/M0-T8-S3-popup-shadow.md)。
-当前scratch仅build/t8-package，实际复核后由本执行者回收；旧before与Git622e8d9 assets
-同字节可恢复。保留稳定.ninja/.ccache、两处发布及聊天原生菜单预览。
+本S build/t8-package已回收：10目录/3223文件/132312573字节，无reparse或活动owned进程。
+原始证据先实际复核再提炼；旧before与Git622e8d9 assets同字节可恢复。
+保留稳定.ninja/.ccache、两处发布及聊天原生菜单/调查预览。
 
 ## Recent Closure
+
+- [S3菜单厚黑边修复](../history/M0-T8-S3-popup-shadow.md)：aa28427实际远端复核通过；S3收口，T8开放。
 
 - [S2 System字形修复](../history/M0-T8-S2-system-font.md)：2a0c7dd实际远端复核通过；S2收口，T8开放。
 
 - [S1字体大小修复](../history/M0-T8-S1-font-layout.md)：1c82c2e收口；本轮仅恢复System字形。
 - [菜单取消修复](../history/M0-T7-menu-cancellation.md)：保留原交付事实及修复。
 - [历史任务审计](../history/M0-T6-completion.md)：不替代本轮实测。
+
+P2仅记录实际复核/清理/收口，126编译输入与四产品SHA与P1完全相同，不虚构新构建发布。

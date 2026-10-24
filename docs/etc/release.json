@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "delivery": "M0 T8 S3 P1",
-  "stage": "verified-dual-published-popup-shadow-print-fix-remote-review-pending-T8-open",
+  "stage": "S3-popup-shadow-print-fix-closed-T8-open-owner-appearance-pending",
   "version": "0.8.0.0",
   "package_directory": "assets",
   "source_inputs": [
@@ -985,12 +985,12 @@
     "test_result": "O:\\repos.hobby\\win16style\\build\\t8-package\\s3-flat-package-test\\result.json",
     "status": "passed",
     "backup_recovery_commit": "622e8d9dbcb632e1d9fd84a4b0f8cfbfcbdeb75d",
-    "backup_retention": "retain until actual remote review, then recover all8 before files from baseline Git assets"
+    "backup_retention": "scratch cleaned after actual review; all8 before files exactly recoverable from622e8d9dbcb632e1d9fd84a4b0f8cfbfcbdeb75d assets"
   },
   "audit": {
     "baseline": "622e8d9dbcb632e1d9fd84a4b0f8cfbfcbdeb75d",
-    "stage": "P1 verified and dual-published; actual remote review pending",
-    "task_status": "T8 remains open; S3 delivery not yet closed",
+    "stage": "S3 closed after P1 actual remote review and cleanup; T8 remains open",
+    "task_status": "T8 open; S3 repair delivery closed",
     "source_input_comparison": "all126 final root compiled inputs equal s3-flat clean snapshot; no post-build canonical source changes",
     "state_owner": "GUI-thread popup owns adapter nodes and borrowed SysShadow association; calls/detached prevents reentrant free; USER owns all native HWNDs",
     "old_path_disposition": "shared class/global settings retained; incomplete WM_PRINT flag mask removed; no source paths moved; unrelated frame DWM restore review deferred to TODO",
@@ -1067,14 +1067,50 @@
       "build/t8-package/s3-diagnostics/old-s2-flat-x64-full.log": "d2349ca28deca1dd1324dac6f1717e58a8d6d854b26072f6d2d787feaa5de0dd",
       "build/t8-package/s3-diagnostics/old-s2-flat-x64-full.json": "0390f51a469fc2545849c2875ede6849d8ded7a3fa0d7c10ea34a8dbfa6dd632",
       "build/t8-package/s3-diagnostics/old-s2-flat-x64-outline.log": "804fbd856e8324255228f7540cdecae71243ecb53aa60e08c2ffbb9aa20fb7a9",
-      "build/t8-package/s3-diagnostics/old-s2-flat-x64-outline.json": "e91aa76cce1f2a5c3786bcd6db5bb20ebf96c61fbaa5f1cd388a0b7ad520b037"
+      "build/t8-package/s3-diagnostics/old-s2-flat-x64-outline.json": "e91aa76cce1f2a5c3786bcd6db5bb20ebf96c61fbaa5f1cd388a0b7ad520b037",
+      "build/t8-package/s3-diagnostics/remote-review.json": "1dcda08e22d1a3b53de507d2e9621d0b0e847de0acbaca829fce76014dead950"
     },
     "preview": {
       "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t8-s3-menu-preview.png",
       "sha256": "78876d891573fc2237b68607ddf2d01b8ac1415d7ef8a1ee0368cbeb77f05b5b",
       "kind": "actual candidate DLL, six-item native WM_PRINT sample; one scenario, not a full regression or XP sol.exe receipt"
     },
-    "review": "pending actual remote commit/code/evidence check"
+    "review": "passed actual P1 remote code/126 inputs/six resource blobs/four approved source identities/complete registered coverage and raw menu/font/natural oracles/14 package cases/four old negatives/eight backup recovery and both deployments",
+    "actual_remote_review": {
+      "status": "passed",
+      "commit": "aa28427990d7556db861b6ee136817821709ce77",
+      "source_inputs": 126,
+      "original_resource_blobs": 6,
+      "artifacts": 4,
+      "published_copies": 8,
+      "package_cases": 14,
+      "coverage": "53 pass/2 host permission skips, exact registered26/29 union of remaining CTest and package font/menu",
+      "menu": "each width30 cases across actual96/144 DPI; sentinel client corner and full NC edge; no visible styled SysShadow; class/SPI unchanged",
+      "negative": "both widths separately reject oldS2 client gap and shadow",
+      "source_preservation": "four approved title/font/control sources byte-identical to622e8d9",
+      "natural": "x64 private native Window DC5 valid samples at each96/144; all nonblack",
+      "before_recovery": "all8 before files exactly recoverable from622e8d9 Git assets",
+      "owner_scope": "popup black border fix; keep approved title/fonts; T8 stays open"
+    },
+    "reviewed_commit": "aa28427990d7556db861b6ee136817821709ce77",
+    "closure_delivery": "M0 T8 S3 P2",
+    "scratch_cleanup": {
+      "path": "build/t8-package",
+      "files": 3223,
+      "bytes": 132312573,
+      "top_level_directories": 10,
+      "reparse_points": 0,
+      "live_owned_processes": 0,
+      "preserved": [
+        "build/.ninja",
+        "build/.ccache",
+        "assets",
+        "O:/winnt/system32",
+        "chat menu preview/investigation PNGs"
+      ]
+    },
+    "evidence_retention": "raw scratch read and actual-review checked before cleanup; extracted results and raw hashes retained here/history; before files recoverable from622e8d9 Git assets",
+    "post_delivery_document_only": "P2 changes no126 compiled inputs or four artifacts; no new build/publish claimed"
   },
   "typography": {
     "controls": "host System bitmap glyphs sized to original app character advances/cell/ascent/leading; borrowed app fonts restored on detach; System/NULL retained; no layout changes",
