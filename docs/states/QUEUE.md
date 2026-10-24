@@ -37,4 +37,4 @@ CURRENT中的完成审计。待准入候选及顺序见上表。
 
 [英雄榜字体调查](../proposals/leaderboard-font.md)已完成；多语言保护代码和测试已按用户要求由T13 S2原样撤回并收口，状态见CURRENT。
 
-[Win+R启动差异](../proposals/run-dialog-launch.md)前一T14 S2已收口，现按用户重开T14 S3条件错误路由，状态见CURRENT。
+[Win+R启动差异](../proposals/run-dialog-launch.md)已完成T14 S3条件错误路由并收口，保留S1/S2历史，状态见CURRENT。

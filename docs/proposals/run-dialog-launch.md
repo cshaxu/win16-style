@@ -1,6 +1,6 @@
 # Win+R与cmd启动目标差异
 
-状态：用户重开T14 S3，按控制台连接分流原生错误；S2清理是前一基线，S1无条件Shell方案撤回；当前见[S2记录](../history/M0-T14-S2-cleanup.md)，[S1](../history/M0-T14-S1-system-shell.md)只保留历史，状态以CURRENT为准。
+状态：T14 S3条件分流已交付并实际远端复核收口；S2为前一基线，S1无条件Shell方案撤回；当前见[S2记录](../history/M0-T14-S2-cleanup.md)，[S1](../history/M0-T14-S1-system-shell.md)只保留历史，状态以CURRENT为准。
 
 用户报告Win+R的run16s sol失败、cmd内正常。准入M0 T14 S1，先用原生探针
 区分实际映像、工作目录/环境、解析/PE/创建/安装/窗口状态，再按证据最小修复。

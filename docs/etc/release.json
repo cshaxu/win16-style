@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T14 S3 P1",
-  "stage": "verified and published; actual remote review pending",
+  "delivery": "M0 T14 S3 P2",
+  "stage": "closed after actual P1 remote review and registered scratch cleanup",
   "version": "0.14.0.0",
   "version_contract": "Fixed T14 version; S3 distinguished by Git/artifact SHA",
   "package_directory": "assets",
@@ -1357,7 +1357,8 @@
       "IsWindowVisible failed across private console desktop; replaced by HWND and explicit SW_HIDE startup policy",
       "initial package aborted by progress.json sharing violation during our monitoring; not product failure or pass; complete same-package rerun with no live file readers",
       "first clean candidate superseded solely to normalize modified source text to repository LF before final freeze",
-      "scratch owner probe initially used DWORD for UINT count; corrected before actual read-only owner query"
+      "scratch owner probe initially used DWORD for UINT count; corrected before actual read-only owner query",
+      "Restricted scratch preflight CIM query was denied; native Jobs were already completed/zero. Elevated post-cleanup process inspection confirmed no live executable under registered roots; no claim of successful pre-cleanup CIM."
     ],
     "not_covered": [
       "physical Win+R keystrokes not exercised; equivalent new-console conditions tested natively",
@@ -1367,6 +1368,47 @@
       "no new UAC secure-desktop approval; existing two-width UAC unit/PE paths retained",
       "system custom NE execution handlers not supported as styling backends",
       "73 registered CTests not all executed; focused tests and 27 full-integration package cases listed"
-    ]
+    ],
+    "p1_remote_review": {
+      "status": "passed",
+      "commit": "47785d1e4e916a83af8c86f58fddfb7124af182e",
+      "downloads": 167,
+      "source_inputs": 154,
+      "artifacts": 4,
+      "deployed_copies": 8,
+      "receipt_sha256": "540b2685c9c335aa84d38fd61b527406b36766cda16738f90166e861e73ef7ba"
+    }
+  },
+  "closure": {
+    "p1": "47785d1e4e916a83af8c86f58fddfb7124af182e",
+    "source_inputs_unchanged": 154,
+    "product_sha256_unchanged": true,
+    "registered_scratch_cleanup": {
+      "checks": "Exact registered workspace paths; ancestors/children no reparse; package parent only s3-*; completed native Jobs had strict zero. Restricted preflight CIM was denied; elevated post-cleanup inspection confirms no live root executable.",
+      "status": "completed",
+      "preserved": "Stable build/.ninja and build/.ccache; deployed assets/system32",
+      "roots": [
+        {
+          "bytes": 2606945.0,
+          "resolved": "O:\\repos.hobby\\win16style\\build\\t14-startup-errors",
+          "files": 367,
+          "path": "build/t14-startup-errors"
+        },
+        {
+          "bytes": null,
+          "resolved": "O:\\repos.hobby\\win16style\\build\\t14-s3-errors",
+          "files": 0,
+          "path": "build/t14-s3-errors"
+        },
+        {
+          "bytes": 107705874.0,
+          "resolved": "O:\\repos.hobby\\win16style\\build\\t14-package",
+          "files": 2042,
+          "path": "build/t14-package"
+        }
+      ]
+    },
+    "task_status": "T14 S3 and T14 closed; M0 open; other tasks/debt unchanged",
+    "acceptance": "Shared/hidden/windowless stderr193 once, private windowed console one matching Windows UI/no stderr, exit4; physical Win+R not exercised"
   }
 }
