@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "task": "M0 T14 S1",
-  "status": "verified, dual published; actual P1 remote review pending",
+  "status": "P1 actual remote review passed; S1/T14 closed in P2",
   "baseline": "97999c0fc31a9ff377cd3effcb9074dc459df30e",
   "root_cause": {
     "explorer_cwd": "C:/Windows/system32",
@@ -677,5 +677,40 @@
     "Publish-Package.ps1 -Task14 -RunName s1-publish",
     "frozen shell-errors.exe against actual installed system32 run16s.exe; installed double-width core-abi",
     "verify_source_manifest.py --self-test; verify_resource_identity.py --self-test; Verify-Governance.ps1 -SelfTest; git diff --check"
-  ]
+  ],
+  "p1_remote_review": {
+    "source_inputs": 153,
+    "products": 4,
+    "actual_downloads": 168,
+    "published_copies": 8,
+    "receipt_sha256": "462411c84960a94d934653626a1913869526835f8f63460a113595c65ea08654",
+    "commit": "91bba9f80d2687ab058ecf7290c354794d35566b",
+    "status": "passed"
+  },
+  "scratch_cleanup": {
+    "checks": "Exact registered paths under workspace; no ancestor/child reparse; no live executable under either root",
+    "status": "completed; both registered roots absent",
+    "roots": [
+      {
+        "path": "build/t14-launch",
+        "resolved": "O:\\repos.hobby\\win16style\\build\\t14-launch",
+        "files": 83,
+        "bytes": 1433369.0
+      },
+      {
+        "path": "build/t14-package",
+        "resolved": "O:\\repos.hobby\\win16style\\build\\t14-package",
+        "files": 2780,
+        "bytes": 145711733.0
+      }
+    ],
+    "preserved": "Stable build/.ninja and build/.ccache, assets/system32 releases"
+  },
+  "task_audit": {
+    "original_failure": "Different cwd chose NE vs PE; no target-switching workaround",
+    "user_ux_request": "Real Windows Shell MZ/NE rejection UI validated, no custom dialog; existing native PE and UAC path retained",
+    "complete": "24 final actual-package cases, 2 frozen native helper units, old release and early guard negatives, installed UI/ABI,153 actual remote inputs and4 products,8 deployment hashes,registered scratch reclaimed",
+    "not_claimed": "Universal Shell activation, every Windows version/language, physical Run keystrokes or fresh secure-desktop UAC consent",
+    "state": "S1/T14 closed; M0 open; prior task states and T11 TODO retained"
+  }
 }

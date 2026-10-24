@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T14 S1 P1",
-  "stage": "verified and dual published; actual P1 remote review pending",
+  "delivery": "M0 T14 S1 P2",
+  "stage": "closed after actual P1 remote review and registered scratch cleanup",
   "version": "0.14.0.0",
   "package_directory": "assets",
   "source_inputs": [
@@ -744,7 +744,7 @@
     "actual_package_passed": 24,
     "physical_input": "not-tested",
     "evidence": "evidence/system-shell-launch.json",
-    "evidence_sha256": "5b429928fcd14c1e1311d002a9405d19ff844f8fb48168c3eb9a36923fe8f1dd",
+    "evidence_sha256": "079f3220a4e4d41fbec26a40ea513fa8ebfaca8fed2641ec6a4f519ca1a03d94",
     "installed_launcher_system_ui": "MZ/NE matched direct native Windows Shell; strict whole-job zero"
   },
   "publication": {
@@ -825,6 +825,41 @@
       ]
     },
     "state_owner": "Launcher file/COM/Shell handle paired; legacy target has no injected process, Windows owns error UI; native creation transaction unchanged",
-    "old_path_disposition": "Old stderr diagnostic retained after native Shell UI; existing native/UAC branches and renderer preserved"
+    "old_path_disposition": "Old stderr diagnostic retained after native Shell UI; existing native/UAC branches and renderer preserved",
+    "p1_remote_review": {
+      "source_inputs": 153,
+      "products": 4,
+      "actual_downloads": 168,
+      "published_copies": 8,
+      "receipt_sha256": "462411c84960a94d934653626a1913869526835f8f63460a113595c65ea08654",
+      "commit": "91bba9f80d2687ab058ecf7290c354794d35566b",
+      "status": "passed"
+    }
+  },
+  "closure": {
+    "p1": "91bba9f80d2687ab058ecf7290c354794d35566b",
+    "source_inputs_unchanged": 153,
+    "product_sha256_unchanged": true,
+    "registered_scratch_cleanup": {
+      "checks": "Exact registered paths under workspace; no ancestor/child reparse; no live executable under either root",
+      "status": "completed; both registered roots absent",
+      "roots": [
+        {
+          "path": "build/t14-launch",
+          "resolved": "O:\\repos.hobby\\win16style\\build\\t14-launch",
+          "files": 83,
+          "bytes": 1433369.0
+        },
+        {
+          "path": "build/t14-package",
+          "resolved": "O:\\repos.hobby\\win16style\\build\\t14-package",
+          "files": 2780,
+          "bytes": 145711733.0
+        }
+      ],
+      "preserved": "Stable build/.ninja and build/.ccache, assets/system32 releases"
+    },
+    "task_status": "T14 S1/T14 closed;M0 open;previous states unchanged",
+    "acceptance": "Native Windows Shell direct-vs-launcher MZ/NE dialog and job completion matched; no universal activation claim"
   }
 }

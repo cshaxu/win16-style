@@ -2,20 +2,21 @@
 
 ## Current Work
 
-M0 T14 S1 active：调研并修复Win+R直接run16s sol启动失败、cmd内正常的差异。
-准入工作树干净，先核对真实目标和启动环境；保留T13回退基线与所有关闭状态。
+无活动任务包。M0 T14 S1已交付真实Windows Shell旧程序错误体验，完成24实际包、
+双发布、已安装入口及P1实际远端复核；S1/T14收口，M0开放。
+原生PE/UAC、T13字体回退及其他任务状态保持。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 14
 - Last allocated Td S: 10
-- Last delivery: M0 T13 S2 P2 (P1 bcf3d08远端149输入/四产物及八部署摘要通过；两登记scratch回收)
-- Open task: T14 S1；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
+- Last delivery: M0 T14 S1 P2 (P1 91bba9f远端153输入/四产物及八部署摘要通过；两登记scratch回收)
+- Open task: none；T14关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
 
 ## Technical Baseline
 
-0.14.0.0 / M0 T14 S1已验证并双发布，P1实际远端复核待完成。
+0.14.0.0 / M0 T14 S1已验证/双发布及P1实际远端复核并收口，M0开放。
 完整MZ头非PE的旧目标被校验拒绝时，让Windows Shell呈现原生错误UI，不自制对话框；
 关闭后仍原始193/退出4。排除标准及重叠PE签名，普通PE注入和既有UAC/Console契约保持。
 T13字体回退保持；71份DLL源除版本RC原字节保持，原图形资源/声明和ABI3/31不变。
@@ -28,7 +29,7 @@ T13字体回退保持；71份DLL源除版本RC原字节保持，原图形资源/
 
 ## Recent Closure
 
-- [T14系统启动错误体验](../history/M0-T14-S1-system-shell.md)：24实际包/双发布和安装入口通过；P1实际远端复核待完成。
+- [T14系统启动错误体验](../history/M0-T14-S1-system-shell.md)：24实际包/双发布和安装入口通过，91bba9f远端153输入/四产物、168文件复核通过，两登记scratch已回收；S1/T14收口。
 
 - [T13 S2原样撤回](../history/M0-T13-S2-revert.md)：原样撤回、26聚焦/23实际包及双发布通过，bcf3d08实际远端复核通过，S2/T13收口。
 
@@ -60,31 +61,8 @@ T13字体回退保持；71份DLL源除版本RC原字节保持，原图形资源/
 
 ## Last Packet Closure
 
-M0 T13 S2 Owner-Reopen完成：精确恢复8个原文件、删除1新增测试；149冻结输入，
-双宽干净构建/26聚焦/23实际包、双发布8摘要、实际远端165文件均通过。
-版本回退是用户原样revert要求的明确例外，治理T13不递减；没有新增字体方案。
-发布占用规范保持，旧S1证据只作历史；登记scratch已提炼安全回收。
-已审计T13全任务：S1产品/测试全部撤回，S2完成撤回交付；T13关闭，M0开放。
-
-## M0 T14 S1 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | New; 新故障请求，下一未使用T14/S1，M0固定 |
-| Admission And Approval | 用户“下一个，故障：从Win+R直接运行run16s sol，无法启动”，补充cmd内正常；沿用提交推送与完整双发布授权 |
-| Objective | 已定位cwd选中不同NE/PE；按用户最新要求让旧MZ/NE拒绝走真实系统Shell错误界面，不自制对话框；保留UAC和注入 |
-| Non-goals | 不改外观/字体/资源，不改兄弟仓库或系统全局环境，不扫描注入既有进程 |
-| Reference Baseline | 97999c0，准入工作树干净；产品0.12恢复源保持 |
-| Candidate Proposal | [Win+R启动差异](../proposals/run-dialog-launch.md) |
-| Files And ABI Surface | run16s新增私有legacy_shell.c/h，main拒绝分支及纯C shell-errors测试；CMake/版本0.14及实际包入口；无公开导出变化 |
-| Applicable Rules | 完整Task Reading Set，纯C17/GCC/Ninja/ccache；无computer-use，实际自有实例验证 |
-| Verification | Explorer环境只读与自有重放，cmd对照，绝对映像/PE/退出诊断；必要时新回归、双宽干净构建及实际包 |
-| Expected Markers | SYSTEM SHELL PASS 2 formats、SHELL UNIT PASS classification=8；实际包24/24、8发布摘要及已部署系统UI一致 |
-| Asset Needs | 不增加资源；若有binary change同批四文件双发布 |
-| Reporting Requirements | 根因/最小方案先说明，测试入口/旧版检出/实际环境及未覆盖项，远端源码和产物实际复核 |
-| Stop Conditions | 若需全局设置或越界兄弟仓库修改，停在证据方案；不得隐藏错误或静默选择不同目标 |
-| Exit Criteria | 请求范围有证据解释并完成可行修复；源码/包验证、双发布、提交推送/实际复核及scratch提炼回收 |
-| Original Owner Request | Win+R/cmd差异；追加“由系统显示系统的那个错误对话框”“原来的整个用户体验”“run16s尽量透明” |
-| Similar-Issue Sweep | SearchPath/显式相对绝对路径/同名NE与PE、App Paths、cwd/PATH、创建安装及UAC重入 |
-
-scratch：build/t14-launch（原生诊断/重放/聚焦证据），build/t14-package（独立源码/构建/测试/发布备份）；本S提炼后安全回收，稳定Ninja/ccache保留。
+M0 T14 S1完成Win+R/cmd同名NE/PE差异诊断及用户明确要求的真实系统错误体验。
+153输入独立冻结，双宽干净构建、两宽新单元、24实际包及已部署系统UI/ABI通过；
+旧版负例有效，IOCP整Job清理保持严格归零。P1 91bba9f已实际远端复核，八摘要一致。
+两登记scratch已提炼回收。T14仅S1，全任务按本轮有限支持范围审计通过；
+S1/T14关闭，M0开放；既有PE/UAC/样式/资源与其他任务/TODO状态保持。
