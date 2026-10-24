@@ -160,7 +160,7 @@ static int matrix(int argc,WCHAR **argv)
         CloseHandle(process.hThread);CloseHandle(process.hProcess);CloseHandle(tree);tree=NULL;
         printf("DEMO OBSERVE PASS styled=%u same image, six classes, data/notifications/menu/window commands, text advance=%d caption pixels=%u\n",styled,advances[styled],screenshots[styled].caption);
     }
-    CHECK(screenshots[0].hash!=screenshots[1].hash && screenshots[1].caption>screenshots[0].caption+500 && advances[1]>advances[0]);
+    CHECK(screenshots[0].hash!=screenshots[1].hash && screenshots[1].caption>screenshots[0].caption+500 && advances[1]==advances[0]);
     CHECK(UnhookWinEvent(interaction) && UnhookWinEvent(events) && CloseHandle(focus_ready) && CloseHandle(ready));puts("DEMO PAIR PASS external module/appearance/business observations on private desktop; physical input not claimed");return 0;
 }
 int wmain(int argc,WCHAR **argv)

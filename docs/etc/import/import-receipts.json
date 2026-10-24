@@ -41,9 +41,9 @@
       "path": "src/ntw16s-dll/controls.c",
       "source": "src/ntw16s-dll/controls.c",
       "source_blob": "9bc3331d0f9fc3e3104059ab792670ab1579d65c",
-      "sha256": "68c024690d85be10cbb92bd9dfa6cd82bc24e979250c2e437531a5881f796441",
+      "sha256": "2b5d729e0ca35b22c7367f83bf8db7c78368e203bebc7a97eb72ec070b06a6ae",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -77,9 +77,9 @@
       "path": "src/ntw16s-dll/font.h",
       "source": "src/ntw16s-dll/font.h",
       "source_blob": "772af2b70b85d897ea842003229b5d3e5795803e",
-      "sha256": "cdd88ab0f76899f51577b48e657051ca8e5c027dc5a6b4ff37eb53232a06de81",
-      "disposition": "retain",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "sha256": "c3d69902d92076256d86df6e371118cada388056e2ff25192f29f09415140d55",
+      "disposition": "adapt",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -284,9 +284,9 @@
       "path": "src/ntw16s-dll/win16_style.c",
       "source": "src/ntw16s-dll/win16_style.c",
       "source_blob": "4235f085cb00c0d17145deec2d04a57c97b98d47",
-      "sha256": "a4fd3f622c2ce753d110e9949838af30e5a2795ddf3b640aa64c91a16580c95f",
+      "sha256": "59161a18e74ba5abf004e1db7e1584ef14e4ac6de6f14e450f7f332660c659bd",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -374,9 +374,9 @@
       "path": "src/ntw16s-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "2e4e0438f7c3d92bc596e30243587b4b18deb856367058c1b7e310ace29013ba",
+      "sha256": "4f52dc2f1e0068c3f78fe62f9e57c33bd0bcac2e88414ead3ff8325bba35ac82",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20",
       "notice": "Project-authored, repository MIT"
     },
     {
@@ -410,9 +410,9 @@
       "path": "tests/ntw16s-dll/win16_style_default_button.c",
       "source": "tests/app/win16_style_default_button.c",
       "source_blob": "2d28d1590dcd10a67134fb76f58c3ece46d73b05",
-      "sha256": "93cec201978e235276dc370ade94b6b179c54db27f5e7cd62c923dc591868b72",
+      "sha256": "f4d35fcccda6065108c2bad2ddbd5339fd7f6b0386189c3f44000a5f477227fb",
       "disposition": "adapt",
-      "review": "T2 S2 local real-DLL focused regression registration/isolation; docs/history/M0-T2-S2-runtime.md",
+      "review": "T2 S2 local real-DLL focused regression registration/isolation; docs/history/M0-T2-S2-runtime.md; T8 default-button transaction now borrows font; fixed64x30 warm transactions and message drain before exact GDI equality",
       "notice": "Project-authored source fixture, original notices preserved"
     },
     {
@@ -428,9 +428,9 @@
       "path": "tests/ntw16s-dll/win16_style_list_tabs.c",
       "source": "tests/app/win16_style_list_tabs.c",
       "source_blob": "8154d9ef5c2b54f1899e74724c7da8a9e6e3c37e",
-      "sha256": "6115d27c62a4bc599f2561e4ada320bde5f653f283d482a9ab551cd0cf6b9128",
+      "sha256": "eda44831414a87ef1ec3d9673e83b390c06c47c8b461a66703d953b3a7473422",
       "disposition": "adapt",
-      "review": "T2 S2 local real-DLL focused regression registration/isolation; docs/history/M0-T2-S2-runtime.md",
+      "review": "T2 S2 local real-DLL focused regression registration/isolation; docs/history/M0-T2-S2-runtime.md; T8 attachment keeps original font; later WM_SETFONT and new tab requests follow app metrics",
       "notice": "Project-authored source fixture, original notices preserved"
     },
     {
@@ -518,9 +518,9 @@
       "path": "src/run16s-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "742cf05f3e47cdf84ecb4026e9a64a9e742c64d8bf829257e4f8cc802f94e898",
+      "sha256": "0f4a8a64639ed110eba36098bc3ae39f346277e73e275fa6e4a9e9ae23900947",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -590,9 +590,9 @@
       "path": "tests/integration/automatic_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e1e9bbd67be5c37a53958de1776efe8d248c2e9c07ac9458f76064447d3eae90",
+      "sha256": "4f2e49140dce57d209fd6af6b0ea59ed042178f54dcb44fa0c25ade185a913ab",
       "disposition": "authored",
-      "review": "T3 S2 native MB_OK single-button oracle, exact witnesses and Unicode targets; docs/history/M0-T3-S2-bootstrap.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "review": "T3 S2 native MB_OK single-button oracle, exact witnesses and Unicode targets; docs/history/M0-T3-S2-bootstrap.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
     },
     {
@@ -653,9 +653,9 @@
       "path": "tests/integration/propagate_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c9a13cb74e75df66d2f3eb789e22e1108bb0a39c4c21df31aa1349f6152373d1",
+      "sha256": "bab44c76f8268c751574d57f1643addde034b8dfdd69b7cdb9fba210d6fdacfe",
       "disposition": "authored",
-      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20",
       "notice": "Project-authored source adaptation or new native fixture, repository MIT"
     },
     {
@@ -734,9 +734,9 @@
       "path": "src/demo-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "328b8c07aae9a8bd9e9878b2fe6913d599911b0b3525a61d196d495feac501a7",
+      "sha256": "f032947613759680b6cf5352450e32c0b164e26e51959bb01315a74a07424b58",
       "disposition": "authored",
-      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged",
+      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20",
       "notice": "Project-authored source per frozen W16Style README; no third-party artwork"
     },
     {
@@ -752,9 +752,9 @@
       "path": "tests/demo-exe/observe.c",
       "source": null,
       "source_blob": null,
-      "sha256": "5bfcd0b623a0215cbff9ae5cc79124b5e7dac0721e9bd6a8236a446c6ee56420",
+      "sha256": "bc28ce94d3dda32f7c6e6c37ebc62ebf4363fe96ff30986b3e4b0571feb0cf4b",
       "disposition": "authored",
-      "review": "T5 S2 external owned demo observer; docs/history/M0-T5-S2-pair.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes",
+      "review": "T5 S2 external owned demo observer; docs/history/M0-T5-S2-pair.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20",
       "notice": "Project-authored fixture, repository MIT"
     },
     {
@@ -797,9 +797,9 @@
       "path": "tests/ntw16s-dll/win16_style_menu_dispatch.c",
       "source": "tests/app/win16_style_menu_dispatch.c",
       "source_blob": "c31dbe36e549c1111aceaf6b684c1223d5a3a4ed",
-      "sha256": "35f482037eadd6e52e78cdb91d69ea331ba719598b19898cff6796ab7d4bf495",
-      "disposition": "retain",
-      "review": "T6 S1 remaining painter/menu/private clipboard/native scroll contract audit; docs/history/M0-T6-S1-package.md",
+      "sha256": "407399be6f089cdd3dd2b39697dabaa1dd1c6e09f48c0cc676a387c618b8a562",
+      "disposition": "adapt",
+      "review": "T6 S1 remaining painter/menu/private clipboard/native scroll contract audit; docs/history/M0-T6-S1-package.md; T8 native role fonts make frame installation faster; fixed64 full warm cycles then16 strict no-growth cycles, damage/dispatch assertions retained",
       "notice": "Project-authored fixed-source fixture; original comments retained"
     },
     {
@@ -1098,6 +1098,15 @@
       "disposition": "authored",
       "review": "T7 native private-desktop actual DLL menu-loop cancellation, focus/capture/hover/item-state regression; no physical input claim",
       "notice": "Project-authored C17 fixture, MIT"
+    },
+    {
+      "path": "tests/ntw16s-dll/font_layout.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "baa5791ec61db96ed6cce8f2a69f8ebf2f9ab119a5a7b60750e60a7e1cb138c6",
+      "disposition": "authored",
+      "review": "T8 actual candidate native DS_SETFONT dialog and app font/rect/metrics updates across awareness contexts and nominal sizes; no physical-input claim",
+      "notice": "Project-authored C17 native probe, MIT"
     }
   ]
 }

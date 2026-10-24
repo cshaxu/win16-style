@@ -4,7 +4,7 @@ param(
     [Parameter(Mandatory)][string]$BuildRoot,
     [string]$SourceRoot=(Split-Path $PSScriptRoot -Parent),
     [ValidatePattern('^[a-z0-9-]+$')][string]$RunName='package-test',
-    [ValidateRange(1,65535)][int]$Task=7,
+    [ValidateRange(1,65535)][int]$Task=8,
     [switch]$FullIntegration,
     [switch]$Worker
 )
@@ -53,6 +53,8 @@ try{
         (Case 'demo-boundary' $python @('-B',(Join-Path $SourceRoot 'tests/demo-exe/boundary.py'),$demo) @('DEMO BOUNDARY PASS')),
         (Case 'demo-pair' (Join-Path $x64 'demo-observe.exe') @($run,$d64,$d32,$demo) @('DEMO OBSERVE PASS styled=0','DEMO OBSERVE PASS styled=1','DEMO PAIR PASS')),
         (Case 'wait-contract' $python @('-B',(Join-Path $SourceRoot 'tests/run16s-exe/wait.py'),$run,$d32,$d64,(Join-Path $x86 'wait-target.exe'),(Join-Path $x64 'wait-target.exe'),(Join-Path $x64 'wait-gui-target.exe')) @('WAIT CONTRACT PASS 6 cases') 190),
+        (Case 'font-layout-x86' (Join-Path $x86 'core-font-layout.exe') @($d32) @('FONT LAYOUT PASS 2 contexts 12 font variants')),
+        (Case 'font-layout-x64' (Join-Path $x64 'core-font-layout.exe') @($d64) @('FONT LAYOUT PASS 2 contexts 12 font variants')),
         (Case 'menu-cancel-x86' (Join-Path $x86 'core-menu-cancel.exe') @($d32) @('MENU CANCEL PASS 15 scenarios')),
         (Case 'menu-cancel-x64' (Join-Path $x64 'core-menu-cancel.exe') @($d64) @('MENU CANCEL PASS 15 scenarios')),
         (Case 'cli'  $python @('-B',(Join-Path $SourceRoot 'tests/run16s-exe/cli.py'),$run) @('CLI PASS')),

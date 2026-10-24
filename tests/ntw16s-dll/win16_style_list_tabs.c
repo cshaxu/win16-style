@@ -62,7 +62,7 @@ static int transition_cases(HWND root,HFONT font16,HFONT font20)
         if(multi){second_native=tail(list,200);CHECK(second_native==256);}
         SendMessageW(list,WM_SETFONT,(WPARAM)font16,FALSE);
         CHECK(win16_style_tabbed_list_install(list,NULL,1,&pixel));
-        CHECK((HFONT)SendMessageW(list,WM_GETFONT,0,0)==font20);
+        CHECK((HFONT)SendMessageW(list,WM_GETFONT,0,0)==font16);
         attached=tail(list,40);CHECK(attached==before);
         if(multi)CHECK(tail(list,200)==second_native);
         CHECK(win16_style_control_remove(list));
@@ -70,9 +70,13 @@ static int transition_cases(HWND root,HFONT font16,HFONT font20)
         removed=tail(list,40);CHECK(removed==before);
         CHECK(win16_style_tabbed_list_install(list,NULL,1,&pixel));
         CHECK(SendMessageW(list,LB_SETTABSTOPS,1,(LPARAM)&stop));
-        CHECK(tail(list,40)==120); /* New request uses the installed20px font. */
+        CHECK(tail(list,40)==96); /* Attachment preserves the original16px font. */
+        SendMessageW(list,WM_SETFONT,(WPARAM)font20,FALSE);
+        CHECK((HFONT)SendMessageW(list,WM_GETFONT,0,0)==font20 && tail(list,40)==96);
+        CHECK(SendMessageW(list,LB_SETTABSTOPS,1,(LPARAM)&stop));
+        CHECK(tail(list,40)==120); /* A new request uses the application's new font. */
         CHECK(win16_style_control_remove(list));
-        CHECK((HFONT)SendMessageW(list,WM_GETFONT,0,0)==font16 && tail(list,40)==120);
+        CHECK((HFONT)SendMessageW(list,WM_GETFONT,0,0)==font20 && tail(list,40)==120);
         printf("FONT TRANSITION multicolumn=%u native=%d attached=%d restored=%d new-set/restored=120 second-column=%d\n",
             multi,before,attached,removed,second_native);
         CHECK(DestroyWindow(list));

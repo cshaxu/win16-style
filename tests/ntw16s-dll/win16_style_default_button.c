@@ -63,9 +63,15 @@ int wmain(int argc,WCHAR **argv)
 lifetime:
     CHECK(remove(button));
     if(diagnostic)CHECK(remove(other));
-    /* Keep the sibling font owner alive, as an attached styled parent does.
-     * Separate attachment tests cover last release. */
-    if(!diagnostic)for(iteration=0;iteration<30;++iteration){CHECK(install(button,NULL));paint(button,dc);CHECK(remove(button));}
+    /* Keep the sibling attached while exercising the complete transaction.
+     * Font borrowing makes it much faster than the old FNT recreation. Warm
+     * a fixed workload and drain native messages before comparing resources;
+     * retain exact equality and never wait conditionally for a passing count. */
+    if(!diagnostic)for(unsigned warm=0;warm<64;++warm){
+        for(iteration=0;iteration<30;++iteration){CHECK(install(button,NULL));paint(button,dc);CHECK(remove(button));}
+        while(PeekMessageW(&msg,NULL,0,0,PM_REMOVE)){TranslateMessage(&msg);DispatchMessageW(&msg);}
+        GdiFlush();
+    }
     GdiFlush();before=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);
     for(iteration=0;iteration<30;++iteration){CHECK(install(button,NULL));paint(button,dc);CHECK(remove(button));}
     GdiFlush();after=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);

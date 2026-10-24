@@ -431,10 +431,10 @@
       "blob": "772af2b70b85d897ea842003229b5d3e5795803e",
       "size": 401,
       "sha256": "cdd88ab0f76899f51577b48e657051ca8e5c027dc5a6b4ff37eb53232a06de81",
-      "action": "retain",
+      "action": "adapt",
       "destination": "src/ntw16s-dll/font.h",
       "notice": "project-authored-review",
-      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task; T8 documents legacy explicit font API rather than default control/frame typography",
       "receiver": "style-core"
     },
     {
@@ -1058,7 +1058,7 @@
       "action": "adapt",
       "destination": "tests/ntw16s-dll/win16_style_default_button.c",
       "notice": "project-authored-review",
-      "reason": "Retarget real local DLL/launcher; remove source service/guest/absolute path dependencies and source-glyph byte-equality oracle",
+      "reason": "Retarget real local DLL/launcher; remove source service/guest/absolute path dependencies and source-glyph byte-equality oracle; T8 fixed resource warmup and native message settling; strict equality retained",
       "receiver": "source-baseline/downstream-owner"
     },
     {
@@ -1127,10 +1127,10 @@
       "blob": "c31dbe36e549c1111aceaf6b684c1223d5a3a4ed",
       "size": 6145,
       "sha256": "35f482037eadd6e52e78cdb91d69ea331ba719598b19898cff6796ab7d4bf495",
-      "action": "retain",
+      "action": "adapt",
       "destination": "tests/ntw16s-dll/win16_style_menu_dispatch.c",
       "notice": "project-authored-review",
-      "reason": "T6 reviewed self-contained fixture retained byte-exact; only current local core compiled/linked, no restricted pixels or sibling runtime dependency",
+      "reason": "T6 reviewed self-contained fixture retained byte-exact; only current local core compiled/linked, no restricted pixels or sibling runtime dependency; T8 fixed native role-font warmup workload, retain strict resource and drawing damage checks",
       "receiver": "package-acceptance/S1"
     },
     {

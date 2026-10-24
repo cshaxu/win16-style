@@ -22,7 +22,7 @@ typedef struct menu_loop {
 } menu_loop;
 typedef struct style_window {
     win16_style_palette palette;
-    HFONT title_font,menu_font; /* One shared-font reference; both borrow it. */
+    HFONT title_font,menu_font; /* Two owned frame fonts; controls keep app fonts. */
     UINT dpi, calls;
     BOOL active, detached, hot, system_menu, dialog;
     int pressed,bar_selected,bar_direction,bar_hover;
@@ -394,8 +394,8 @@ static void paint(HWND w,style_window *s,HDC target)
         r=l.title;
         SelectObject(dc,s->title_font);SetBkMode(dc,TRANSPARENT);
         SetTextColor(dc,s->active?p.active_text:p.inactive_text);
-        /* Shared20-pixel glyphs are already scaled. Never scale the title a
-         * second time; retain original centered-or-clipped, no-ellipsis text. */
+        /* The role font is realized at this window DPI. Do not scale it a
+         * second time; retain centered-or-clipped, no-ellipsis text. */
         if(GetTextExtentPoint32W(dc,title,len,&extent))
             ExtTextOutW(dc,r.left+max(1,(r.right-r.left-extent.cx)/2),
                 r.top+max(0,(r.bottom-r.top-extent.cy)/2),ETO_CLIPPED,&r,title,(UINT)len,NULL);
@@ -604,12 +604,20 @@ static void open_bar(HWND w,style_window *s,int index)
 
 static BOOL refresh_font(HWND w,style_window *s)
 {
-    HFONT font;
-    s->dpi=GetDpiForWindow(w);if(!s->dpi)s->dpi=96;
-    font=win16_style_font_acquire();
-    if(font){if(s->title_font)win16_style_font_release(s->title_font);
-        s->title_font=font;s->menu_font=font;}
-    return font!=NULL && s->menu_font!=NULL;
+    HFONT title,menu;
+    UINT dpi=GetDpiForWindow(w);if(!dpi)dpi=96;
+    /* Point heights are converted once in the window's DPI context. USER
+     * virtualizes legacy/unaware windows separately; do not scale them again. */
+    title=CreateFontW(-MulDiv(10,(int)dpi,72),0,0,0,FW_BOLD,FALSE,FALSE,FALSE,
+        DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,NONANTIALIASED_QUALITY,
+        DEFAULT_PITCH,L"MS Sans Serif");
+    menu=CreateFontW(-MulDiv(8,(int)dpi,72),0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,
+        DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,NONANTIALIASED_QUALITY,
+        DEFAULT_PITCH,L"MS Sans Serif");
+    if(!title || !menu){if(title)DeleteObject(title);if(menu)DeleteObject(menu);return FALSE;}
+    if(s->title_font)DeleteObject(s->title_font);
+    if(s->menu_font)DeleteObject(s->menu_font);
+    s->dpi=dpi;s->title_font=title;s->menu_font=menu;return TRUE;
 }
 
 static void frame_changed(HWND w)
@@ -645,7 +653,8 @@ static void dispose(style_window *s)
 {
     while(s->menus)end_menu_scope(s);
     win16_style_menu_restore(&s->menu_items);
-    if(s->title_font)win16_style_font_release(s->title_font);
+    if(s->title_font)DeleteObject(s->title_font);
+    if(s->menu_font)DeleteObject(s->menu_font);
     free(s);
 }
 

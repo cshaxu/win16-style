@@ -24,15 +24,14 @@ static LRESULT CALLBACK owner(HWND w,UINT m,WPARAM a,LPARAM b)
 {return DefWindowProcW(w,m,a,b);}
 static void window_check(void)
 {
-    WNDCLASSW cls={0};HWND root,button;LOGFONTW font;
+    WNDCLASSW cls={0};HWND root,button;
     typedef BOOL (__cdecl *attached_fn)(HWND);
     HMODULE dll=GetModuleHandleW(sizeof(void *)==8?L"ntw16s64.dll":L"ntw16s32.dll");CHECK(dll);
     attached_fn attached=(attached_fn)(void *)GetProcAddress(dll,"Ntw16sWindowAttached");CHECK(attached);
     cls.lpfnWndProc=owner;cls.lpszClassName=L"PropagatedNativeWindow";cls.hInstance=GetModuleHandleW(NULL);CHECK(RegisterClassW(&cls));
     root=CreateWindowW(cls.lpszClassName,L"Inherited native window",WS_OVERLAPPEDWINDOW,0,0,360,240,NULL,NULL,cls.hInstance,NULL);CHECK(root && attached(root));
     button=CreateWindowW(L"BUTTON",L"Native child",WS_CHILD|BS_AUTOCHECKBOX,10,10,150,30,root,NULL,cls.hInstance,NULL);CHECK(button && attached(button));
-    HFONT value=(HFONT)SendMessageW(button,WM_GETFONT,0,0);CHECK(value && GetObjectW(value,sizeof(font),&font)==sizeof(font));
-    CHECK(!wcsncmp(font.lfFaceName,L"Win16 System20 ",15));
+    CHECK(!SendMessageW(button,WM_GETFONT,0,0)); /* Native NULL/default font retained. */
     SendMessageW(button,BM_SETCHECK,BST_CHECKED,0);CHECK(SendMessageW(button,BM_GETCHECK,0,0)==BST_CHECKED);
     CHECK(DestroyWindow(root));report("window-attached",GetCurrentProcessId());
 }

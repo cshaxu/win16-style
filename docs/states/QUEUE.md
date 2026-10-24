@@ -18,3 +18,5 @@ CURRENT中的完成审计。当前无剩余待准入候选。
 [菜单取消修复](../proposals/menu-cancellation.md)已关闭，实际交付及复核见CURRENT。
 后续项依赖前项交付，不能跨过失败项
 直接发布；不增加额外 milestone、产品组件或产品文件。
+
+[字体与布局兼容](../proposals/font-layout.md)已准入，实施及验收状态由CURRENT管理。

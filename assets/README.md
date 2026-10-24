@@ -1,20 +1,20 @@
 # Product package
 
-当前批次以[发布清单](../docs/etc/release.json)为准：M0 T7 S1 P1 / 0.7.0.0。
+当前批次以[发布清单](../docs/etc/release.json)为准：M0 T8 S1 P1 / 0.8.0.0。
 三组件四产物：run16s.exe(x64)、ntw16s32.dll(x86)、ntw16s64.dll(x64)、demo.exe(x64)。
-README是仓库说明，不是第五产品。运行时将四文件放在同一目录，从自身目录定位DLL。
+README不是第五产品。将四文件放在同一目录，启动器从自身目录定位DLL。
 
-修复鼠标切换菜单后取消仍残留键盘菜单模式的问题。Esc、外部点击、同项二次点击、
-CancelMode和失活后恢复闲置，悬停不再自行打开；保留键盘及子菜单Escape层级。
-原生私有桌面探针覆盖双宽15场景，直接加载被测发布DLL，不使用computer-use。
-构建、相关回归、实际包测试及已发布文件身份见发布清单和
-[菜单修复审计](../docs/history/M0-T7-menu-cancellation.md)。探针不冒称物理输入。
+本次修复字体与原生布局不匹配：标准控件保留应用原字体、字号/字重和后续
+WM_SETFONT；标题10pt粗体、菜单8pt常规MS Sans Serif，按窗口DPI一次换算。
+不强制统一20像素粗体、不重排应用控件，不干预程序自绘Score/Time等文字。
+公开font_acquire/release兼容API仍保留，其20px显式字体不是renderer默认字体。
 
-滚动条17逻辑像素；横/纵端钮及固定滑块按实际横截面保持正方形。
-五份原图形头及原声明逐字节保留，两DLL各18表，不替换图形。
-启动器保持Console，控制台目标默认等待并返回实际退出码，GUI默认异步，--wait均等待。
+原资源五头及声明逐字节保留，两DLL各18图形表；菜单取消及17逻辑像素滚动条
+修复保留，端钮/固定滑块仍按横截面保持正方形。启动器保持Console：控制台目标
+默认等待并返回实际退出码，GUI默认异步，--wait均等待，样式和后代传播默认启用。
 
-二进制变化的每个S执行同批四文件测试、assets根目录及O:/winnt/system32双发布、
-旧文件备份和摘要核验，详见[执行规范](../docs/rules/EXECUTION.md)和
-[构建/使用](../docs/etc/operations/BUILD.md)。历史T6验收见
-[完成审计](../docs/history/M0-T6-completion.md)，不能代替本次修复验证。
+本批构建/原生探针/实际包/双发布及远端复核身份见发布清单及
+[字体修复记录](../docs/history/M0-T8-S1-font-layout.md)。原生探针不等同物理输入，
+本次用户实际sol.exe外观验收待反馈。每S有binary change按
+[执行规范](../docs/rules/EXECUTION.md)发布同批被测四文件至assets根目录和
+O:/winnt/system32，先备份后逐项核对SHA；入口见[BUILD](../docs/etc/operations/BUILD.md)。

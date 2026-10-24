@@ -42,7 +42,10 @@ int main(void)
      * cycles. A lone install/remove does not warm native asynchronous frame
      * state; retain the cold observations, but measure steady-state lifetime. */
     CHECK(win16_style_install(w,NULL) && win16_style_remove(w));
-    for(round=0;round<16;++round){
+    /* Native role fonts avoid the old slow per-install FNT rasterization.
+     * Exercise a fixed full workload long enough to warm the asynchronous
+     * USER/theme caches before measuring; never wait for counts to pass. */
+    for(round=0;round<80;++round){
     GdiFlush();before=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);
     CHECK(win16_style_install(w,NULL));
     for(phase=0;phase<4;++phase){
@@ -60,8 +63,8 @@ int main(void)
     }
     {MSG pending;while(PeekMessageW(&pending,NULL,0,0,PM_REMOVE)){TranslateMessage(&pending);DispatchMessageW(&pending);}}
     GdiFlush();after=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);
-    printf("MENU DISPATCH GDI round=%u phase=%s objects=%lu/%lu\n",round,round<8?"warm":"measured",before,after);
-    if(round>=8)CHECK(after<=before);
+    printf("MENU DISPATCH GDI round=%u phase=%s objects=%lu/%lu\n",round,round<64?"warm":"measured",before,after);
+    if(round>=64)CHECK(after<=before);
     }
     {HWND button;HMENU popup=CreatePopupMenu();POINT click={12,0};MSG message;RECT bounds;
         HDC dc;COLORREF original,observed;int x,y;

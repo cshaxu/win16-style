@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [ValidatePattern('^[a-z0-9-]+$')][string]$RunName='core',
-    [ValidatePattern('^t[0-9]+-[a-z-]+$')][string]$TaskRoot='t7-package',
+    [ValidatePattern('^t[0-9]+-[a-z-]+$')][string]$TaskRoot='t8-package',
     [ValidatePattern('^[a-zA-Z0-9_/^$.*|()-]+$')][string]$TestPattern='^core/abi$',
     [string]$BuildRoot='build/.ninja',
     [string]$Gcc32=$env:WIN16STYLE_GCC32,

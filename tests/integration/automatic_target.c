@@ -76,8 +76,9 @@ static DWORD WINAPI windows(void *unused)
         SendMessageW(children[4],CB_ADDSTRING,0,(LPARAM)L"Selection");CHECK(SendMessageW(children[4],CB_SETCURSEL,0,0)==0);
         CHECK(SetWindowTextW(root,L"Dynamic title retained"));
         {WCHAR text[80];CHECK(GetWindowTextW(root,text,80) && !wcscmp(text,L"Dynamic title retained"));}
-        if(expected){LOGFONTW font;HFONT value=(HFONT)SendMessageW(children[0],WM_GETFONT,0,0);
-            CHECK(value && GetObjectW(value,sizeof(font),&font)==sizeof(font) && !wcsncmp(font.lfFaceName,L"Win16 System20 ",15));}
+        /* Attachment keeps native default-font semantics; styling is witnessed
+         * by Ntw16sWindowAttached above, not by a destructive font override. */
+        CHECK(!SendMessageW(children[0],WM_GETFONT,0,0));
         CHECK(DestroyWindow(root));
     }
     if(dialog_suite)dialogs();
