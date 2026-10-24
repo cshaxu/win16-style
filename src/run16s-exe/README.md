@@ -37,11 +37,7 @@ Console targets and --wait return the target exit code. GUI targets otherwise
 return after the elevated launch transaction. DLL descendant CreateProcess hooks
 do not request UAC; invoke run16s explicitly for an elevation-required target.
 
-A rejected legacy MZ/NE image is passed to Windows Shell with its resolved
-absolute path and original argument tail. Windows presents its own compatibility
-error UI; run16s does not imitate a system dialog. Closing that UI preserves the
-original validation failure (exit 4, Windows error 193), even when Shell reports
-user cancellation (1223). Normal PE targets continue through suspended injection;
-invalid PE architectures, package/injection failures and arbitrary file associations
-are not redirected to an unstyled launch. Shell policy or a locally registered
-legacy execution delegate remains Windows' responsibility, without a style claim.
+Unsupported MZ/NE targets stop at the original validation failure: stderr reports
+Windows error 193 and the launcher returns 4. The target is not retried through
+Shell, and no additional dialog or console pause is introduced. The existing
+ERROR_ELEVATION_REQUIRED path still requests Windows UAC for native PE targets.

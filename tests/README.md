@@ -88,7 +88,6 @@ CTest与包测试分别报告阶段/每例及总耗时，公开证据仅提炼�
 PID/路径转录。不要并发运行会改同一构建树的两个build；干净树与稳定树独立，
 只共享有界编译缓存。用`-Jobs 1`或`-TestJobs 1`做受控串行诊断，不重跑无关完整包。
 
-launch/shell-unit双宽检查MZ/NE/LE与PE隔离、原始参数和Shell标志/句柄；
-launch/shell-errors由纯C自有桌面/Job实例逐个比较直接Shell与实际run16s处理MZ/NE
-时的系统窗口类/标题及返回码，关闭仅自有PID的Shell_Dialog/#32770。它使用合成
-本地文件，不依赖本机sol或旧程序后端。相同fixture纳入实际包测试shell-errors。
+launch/legacy-rejection使用合成MZ/NE，经直接启动器和真实cmd两条路径捕获首次
+stderr的193/退出4；仅观察自有Job窗口、拒绝额外Shell对话框，等待内核Job归零通知，
+再核对严格活动计数0和预期总进程数。旧Shell重试版本必须失败；无后端依赖。

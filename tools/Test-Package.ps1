@@ -59,7 +59,7 @@ try{
         (Case 'font-layout-x64' (Join-Path $x64 'core-font-layout.exe') @($d64) @('FONT LAYOUT PASS 2 contexts 12 font variants') 180),
         (Case 'menu-cancel-x86' (Join-Path $x86 'core-menu-cancel.exe') @($d32) @('MENU CANCEL PASS 15 scenarios','MENU SHADOW SCOPE PASS aware=0','MENU SHADOW SCOPE PASS aware=1') 150),
         (Case 'menu-cancel-x64' (Join-Path $x64 'core-menu-cancel.exe') @($d64) @('MENU CANCEL PASS 15 scenarios','MENU SHADOW SCOPE PASS aware=0','MENU SHADOW SCOPE PASS aware=1') 150),
-        (Case 'shell-errors' (Join-Path $x64 'shell-errors.exe') @($run) @('SYSTEM SHELL PASS 2 formats direct-vs-launcher native UI matched exit4 owned_jobs_empty') 100),
+        (Case 'legacy-rejection' (Join-Path $x64 'legacy-rejection.exe') @($run) @('LEGACY REJECTION PASS 4 cases stderr193 exit4 no_retry_ui exact_owned_processes') 100),
         (Case 'cli'  $python @('-B',(Join-Path $SourceRoot 'tests/run16s-exe/cli.py'),$run) @('CLI PASS')),
         (Case 'automatic' (Join-Path $x64 'launch-automatic.exe') $pair @('LAUNCH MATRIX PASS')),
         (Case 'propagation' (Join-Path $x64 'propagate-basic.exe') $tree @('PROPAGATION BASIC PASS') 320),

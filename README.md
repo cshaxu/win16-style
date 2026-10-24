@@ -233,7 +233,6 @@ starting the target. Ordinary applications do not prompt. Cancellation returns
 1223. Elevated console applications use a separate console; caller redirection
 and custom environment do not cross UAC. See [elevation support and limits](docs/etc/operations/UAC.md).
 
-Legacy MZ/NE executables cannot receive native PE injection. When one is selected,
-run16s lets Windows display its own compatibility error dialog, preserving the
-resolved target instead of silently choosing another executable with the same name.
-Native PE injection and on-demand Windows UAC elevation keep their existing paths.
+Unsupported MZ/NE targets report the initial validation error to stderr and exit
+without retrying through Windows Shell. Native PE injection and on-demand UAC
+keep their existing paths.

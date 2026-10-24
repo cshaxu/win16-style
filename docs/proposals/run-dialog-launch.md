@@ -32,3 +32,12 @@ SHExecuteErrorMessageBox。关闭后Shell返回1223，不应覆盖原校验193/�
 
 依据：[ShellExecuteEx](https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shellexecuteexw)
 与[SHELLEXECUTEINFO](https://learn.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-shellexecuteinfow)。
+
+## S2用户纠正：移除多余二次启动
+
+用户明确不需要失败后再次交Shell启动，而需首次失败正常报错。S1方案已撤回，
+按T14 S2清理其模块、入口、专用系统UI测试及当前说明，历史事实保留。
+main恢复97999c0首次校验失败路径；不增加替代弹窗或控制台暂停。新纯C回归用
+合成MZ/NE，在直接/真实cmd两种路径捕获stderr及返回码，并观察无额外系统UI、
+整Job只含预期启动器/可选cmd且完全退出。S1旧发布须被新测试检出。
+不会把捕获到stderr等同于已定位此前用户看不到报错的原因，不宣称物理Win+R验收。

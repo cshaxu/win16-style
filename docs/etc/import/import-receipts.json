@@ -509,9 +509,9 @@
       "path": "src/run16s-exe/main.c",
       "source": null,
       "source_blob": null,
-      "sha256": "596a173db6d3a78dae62149f7465aa21c468caee305d4c8755d30c0c27d6ac65",
+      "sha256": "cf662839fa2c473d9b3663eda52dda23b15c791f4d21c287a098af1e9e48b2a0",
       "disposition": "authored",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T14 S2: remove legacy Shell retry; retain initial diagnostic and UAC",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -527,9 +527,9 @@
       "path": "src/run16s-exe/README.md",
       "source": null,
       "source_blob": null,
-      "sha256": "3f2d53ef40c4523bbac5f3a74bf914523dbdc520793670d5613744a141bdb703",
+      "sha256": "5fb2e368c8ff6eb16da4eaca331cb5cb362855c9902b8898375f213dd2d5f782",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T14 S1: describe actual Windows Shell legacy error path and explicit limits",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T14 S1: describe actual Windows Shell legacy error path and explicit limits; T14 S2: remove legacy Shell retry; retain initial diagnostic and UAC",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -1154,39 +1154,12 @@
       "notice": "Project-authored source; project MIT license"
     },
     {
-      "path": "src/run16s-exe/legacy_shell.c",
+      "path": "tests/run16s-exe/legacy_rejection.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f26533aabd1a71e76a394e30c6db04d9226e7f0230905e9e0d28342ad6368f44",
+      "sha256": "0d93fceaa2d7f233e4c98d44cf929bcf2a21275d5177a7e6b6093036801b3cb8",
       "disposition": "authored",
-      "review": "M0 T14 S1: project-authored legacy Shell delegation and native system-dialog regression; no copied external implementation; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained",
-      "notice": "Project-authored C17, repository MIT"
-    },
-    {
-      "path": "src/run16s-exe/legacy_shell.h",
-      "source": null,
-      "source_blob": null,
-      "sha256": "eec74964d4b4a6413ae0cecc27da42f7274d7a1e5a05ed456171f74d4dfbadf6",
-      "disposition": "authored",
-      "review": "M0 T14 S1: project-authored legacy Shell delegation and native system-dialog regression; no copied external implementation; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained",
-      "notice": "Project-authored C17, repository MIT"
-    },
-    {
-      "path": "tests/run16s-exe/legacy_shell_unit.c",
-      "source": null,
-      "source_blob": null,
-      "sha256": "1f6b66c7dc9fd11a399edf823dfb20ccff7ebae474a74f7ea3f097929002f1f1",
-      "disposition": "authored",
-      "review": "M0 T14 S1: project-authored legacy Shell delegation and native system-dialog regression; no copied external implementation; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained",
-      "notice": "Project-authored C17, repository MIT"
-    },
-    {
-      "path": "tests/run16s-exe/shell_errors.c",
-      "source": null,
-      "source_blob": null,
-      "sha256": "3f6e409675c464b852941a58682b36e4ec307f026ffadebbcab60cc3cd67387a",
-      "disposition": "authored",
-      "review": "M0 T14 S1: project-authored legacy Shell delegation and native system-dialog regression; no copied external implementation; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained",
+      "review": "T14 S2 pure C native initial-rejection stderr/no-retry regression",
       "notice": "Project-authored C17, repository MIT"
     }
   ]

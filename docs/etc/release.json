@@ -1,14 +1,15 @@
 {
   "schema": 1,
-  "delivery": "M0 T14 S1 P2",
-  "stage": "closed after actual P1 remote review and registered scratch cleanup",
+  "delivery": "M0 T14 S2 P1",
+  "stage": "verified and dual published;actual remote review pending",
   "version": "0.14.0.0",
+  "version_contract": "Fixed T14 version; S2 distinguished by Git and artifact SHA",
   "package_directory": "assets",
   "source_inputs": [
     {
       "path": "CMakeLists.txt",
-      "sha256": "14a08ecf3b89b6079ef6d8ddb028bcb51e6cebe5d7b0cc66cbbaaf5dac943aaf",
-      "git_blob_sha256": "bb92391d2b476861d8c7fd193da4a804742763a9c29497ed82f27a2d42ffec8d"
+      "sha256": "3ff6eba51046df594a818184ccb02c6fc063e2dd4b3a00f9444ec0f585bc6791",
+      "git_blob_sha256": "c4a067abb8bca8eba7d060f263c18e8d0b2cf27c9f30780654fe334fac7edfd2"
     },
     {
       "path": "LICENSE",
@@ -327,8 +328,8 @@
     },
     {
       "path": "src/run16s-exe/README.md",
-      "sha256": "3f2d53ef40c4523bbac5f3a74bf914523dbdc520793670d5613744a141bdb703",
-      "git_blob_sha256": "75369a6e8b0e1f0c2b69f67c10712c8fbbc4842f765b310e1a8051980b0bca3e"
+      "sha256": "5fb2e368c8ff6eb16da4eaca331cb5cb362855c9902b8898375f213dd2d5f782",
+      "git_blob_sha256": "d7213165ff3df28869ae95117e2773586235fe2ff987a8a9366b904f49916925"
     },
     {
       "path": "src/run16s-exe/elevation.c",
@@ -339,17 +340,8 @@
       "sha256": "bbd2a7fe8ac746c16c8670842af694b7aa09d0d3c8212b732b1caf133c43e07a"
     },
     {
-      "path": "src/run16s-exe/legacy_shell.c",
-      "sha256": "f26533aabd1a71e76a394e30c6db04d9226e7f0230905e9e0d28342ad6368f44",
-      "git_blob_sha256": "f299728e3288658c3df3962ed5265ed074b83be97c7defcd249af9eb0fcf4393"
-    },
-    {
-      "path": "src/run16s-exe/legacy_shell.h",
-      "sha256": "eec74964d4b4a6413ae0cecc27da42f7274d7a1e5a05ed456171f74d4dfbadf6"
-    },
-    {
       "path": "src/run16s-exe/main.c",
-      "sha256": "596a173db6d3a78dae62149f7465aa21c468caee305d4c8755d30c0c27d6ac65"
+      "sha256": "cf662839fa2c473d9b3663eda52dda23b15c791f4d21c287a098af1e9e48b2a0"
     },
     {
       "path": "src/run16s-exe/run16s.manifest",
@@ -362,8 +354,8 @@
     },
     {
       "path": "tests/README.md",
-      "sha256": "4badee18c4f6c24c36758fd7ad07b163be0895e3f18d23cb613b1bea4d05b460",
-      "git_blob_sha256": "7a6f8c10bfda9c6bba93d930652be667a3a6e132d32848a52d9466cd04b68a84"
+      "sha256": "80a4807576474ca2e54647e5910ce27bdbb1e67f64df950ec60d28d82793c282",
+      "git_blob_sha256": "cf6eecbc162839add1115f8534261bdbee76075d0f6c3c6599f8dba710ae2f7e"
     },
     {
       "path": "tests/demo-exe/boundary.py",
@@ -522,9 +514,9 @@
       "sha256": "aa75da55536b5e85b9f6af11d7bfcfa454d1b91732f22777a5382785e41a404f"
     },
     {
-      "path": "tests/run16s-exe/legacy_shell_unit.c",
-      "sha256": "1f6b66c7dc9fd11a399edf823dfb20ccff7ebae474a74f7ea3f097929002f1f1",
-      "git_blob_sha256": "6f75f66e1c32c0f332b4c6190c9453ed49233ae13bb2bbc39cbcea790bfc7a0f"
+      "path": "tests/run16s-exe/legacy_rejection.c",
+      "sha256": "0d93fceaa2d7f233e4c98d44cf929bcf2a21275d5177a7e6b6093036801b3cb8",
+      "git_blob_sha256": "ee931c0390948de1446acb4827804041a04329625d372d5bca6b5366d8348233"
     },
     {
       "path": "tests/run16s-exe/long_path.py",
@@ -533,11 +525,6 @@
     {
       "path": "tests/run16s-exe/payload.c",
       "sha256": "e093caf2734a714d21a70ec978daec18fb7adeaa0d13608a684c0381d01afbcc"
-    },
-    {
-      "path": "tests/run16s-exe/shell_errors.c",
-      "sha256": "3f6e409675c464b852941a58682b36e4ec307f026ffadebbcab60cc3cd67387a",
-      "git_blob_sha256": "b8c7304cc7de3cbbfd2e2d04ad8bda58804f25850596dad8648ebfa084cccda8"
     },
     {
       "path": "tests/run16s-exe/staging.c",
@@ -598,8 +585,8 @@
     },
     {
       "path": "tools/Test-Package.ps1",
-      "sha256": "0415ebbe5f7909d321456b070937c833d424ff8a8edd6e3838f9c66f4665a021",
-      "git_blob_sha256": "2990b717e5d5bc76e9c39db568b5354ad12ff0ecb9d95fe5cb247d301110b041"
+      "sha256": "a4f48797a2a980e8365ed88d19a1c40b0854e17660da94e99bbd9627faa9e473",
+      "git_blob_sha256": "1bb566799f1fe969c5d599e6afd3906e3b3e14b8a98fe6f00842e459a066741e"
     },
     {
       "path": "tools/Verify-Governance.ps1",
@@ -632,9 +619,9 @@
     }
   ],
   "source_snapshot": {
-    "baseline": "97999c0fc31a9ff377cd3effcb9074dc459df30e",
-    "path": "build/t14-package/s1-release/clean-source",
-    "snapshot_sha256": "ff87db9300f5bd2af64e37f53dfa72250231db7731d4e13741d6a7aad433b5f2",
+    "baseline": "48b5715c3b679921915f37ad81ded94b842fba30",
+    "path": "build/t14-package/s2-release/clean-source",
+    "snapshot_sha256": "44095d789a0d986df3f84ee15d09c586af61f16b0760e241ffa43ab479c6b6d4",
     "product_inputs_match_current": true,
     "noncompiled_docs_updated_after_freeze": true
   },
@@ -659,22 +646,22 @@
     "build_jobs": 8,
     "clean_build_summaries": [
       {
-        "build_seconds": 15.632062899996527,
+        "configure_seconds": 3.5014546000165865,
+        "skipped": [],
         "architecture": "x86",
-        "test_seconds": 0.4165934000047855,
-        "tests": 1,
+        "test_seconds": 0.43588140001520514,
         "passed": 1,
-        "configure_seconds": 3.399916399968788,
-        "skipped": []
+        "tests": 1,
+        "build_seconds": 14.683804399974179
       },
       {
-        "build_seconds": 18.618203899997752,
+        "configure_seconds": 3.9050905000185594,
+        "skipped": [],
         "architecture": "x64",
-        "test_seconds": 0.451112299982924,
-        "tests": 1,
+        "test_seconds": 0.5287075000233017,
         "passed": 1,
-        "configure_seconds": 3.614427499996964,
-        "skipped": []
+        "tests": 1,
+        "build_seconds": 18.689285600034054
       }
     ]
   },
@@ -682,7 +669,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T14",
-      "sha256": "8c9561b0a554c1bac04c153048744b8fbd663ef2722ebcbc3a80b7a7ebe4f4a0",
+      "sha256": "3f657ed09c7bf3995cdbb13dbe59e34631e9da6cf7c63d6453cd59949d8933ed",
       "imports": [
         "advapi32.dll",
         "kernel32.dll",
@@ -694,7 +681,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T14",
-      "sha256": "e85f5d9d58022647670112ede46e2c93b42d88cfc3a151bb9fe7486d4f3d05c5",
+      "sha256": "09daaf912176d2ba21e136217b90e6cb01e195dc97283dba044083c2c74ed6f0",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -714,7 +701,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T14",
-      "sha256": "c45aa42d77c2fcdd5f538e8d60fa7f983bce7eed75eb8e369bfd9ea343a2971c",
+      "sha256": "30d78af6b7f08695f67c947f72295636c735ef5ae6ba32e63552f6bf3cbb10bc",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -729,7 +716,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T14",
-      "sha256": "910f155bd51f4bd0643392afdcb28cdf0674169ef4131c59e3f7a75795a85bdc",
+      "sha256": "e0432749262812d4dee60afa4a706486dda773243004c77ca92fb56ab1e07f8d",
       "imports": [
         "kernel32.dll",
         "msvcrt.dll",
@@ -738,59 +725,58 @@
     }
   },
   "verification": {
-    "registered": 72,
-    "registered_run": "not full; frozen shell-unit each width and actual-package cases separately",
-    "frozen_unit_passed": 2,
+    "registered": 70,
+    "registered_run": "not full;24 actual-package cases including native rejection and double-width UAC units",
     "actual_package_passed": 24,
+    "installed_rejection_passed": 4,
     "physical_input": "not-tested",
-    "evidence": "evidence/system-shell-launch.json",
-    "evidence_sha256": "079f3220a4e4d41fbec26a40ea513fa8ebfaca8fed2641ec6a4f519ca1a03d94",
-    "installed_launcher_system_ui": "MZ/NE matched direct native Windows Shell; strict whole-job zero"
+    "evidence": "evidence/legacy-retry-cleanup.json",
+    "evidence_sha256": "75fcc513d6f8830eb4f99869bcd2a85abb52dd97396c131822c3a4b429f19f52"
   },
   "publication": {
     "copies": [
       {
         "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe",
-        "before": "fa951159e6b0db388bf401340878f572aed82342ae75132e167a3758d8a6ec7d",
-        "after": "910f155bd51f4bd0643392afdcb28cdf0674169ef4131c59e3f7a75795a85bdc"
+        "before": "910f155bd51f4bd0643392afdcb28cdf0674169ef4131c59e3f7a75795a85bdc",
+        "after": "e0432749262812d4dee60afa4a706486dda773243004c77ca92fb56ab1e07f8d"
       },
       {
         "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
-        "before": "3651494500554e15fccaafd2bb5859868bdd04613afea8705f3e3db42d3bd7f1",
-        "after": "e85f5d9d58022647670112ede46e2c93b42d88cfc3a151bb9fe7486d4f3d05c5"
+        "before": "e85f5d9d58022647670112ede46e2c93b42d88cfc3a151bb9fe7486d4f3d05c5",
+        "after": "09daaf912176d2ba21e136217b90e6cb01e195dc97283dba044083c2c74ed6f0"
       },
       {
         "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll",
-        "before": "9194981cf2e0a5da81d190a9f1612360e45306a0ef73264880cfda9203feea89",
-        "after": "c45aa42d77c2fcdd5f538e8d60fa7f983bce7eed75eb8e369bfd9ea343a2971c"
+        "before": "c45aa42d77c2fcdd5f538e8d60fa7f983bce7eed75eb8e369bfd9ea343a2971c",
+        "after": "30d78af6b7f08695f67c947f72295636c735ef5ae6ba32e63552f6bf3cbb10bc"
       },
       {
         "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
-        "before": "6393ac06e741419b41a7148eaf9f840a02b412e70c03f2b155a85028b7d1548d",
-        "after": "8c9561b0a554c1bac04c153048744b8fbd663ef2722ebcbc3a80b7a7ebe4f4a0"
+        "before": "8c9561b0a554c1bac04c153048744b8fbd663ef2722ebcbc3a80b7a7ebe4f4a0",
+        "after": "3f657ed09c7bf3995cdbb13dbe59e34631e9da6cf7c63d6453cd59949d8933ed"
       },
       {
         "path": "O:\\winnt\\system32\\demo.exe",
-        "before": "fa951159e6b0db388bf401340878f572aed82342ae75132e167a3758d8a6ec7d",
-        "after": "910f155bd51f4bd0643392afdcb28cdf0674169ef4131c59e3f7a75795a85bdc"
+        "before": "910f155bd51f4bd0643392afdcb28cdf0674169ef4131c59e3f7a75795a85bdc",
+        "after": "e0432749262812d4dee60afa4a706486dda773243004c77ca92fb56ab1e07f8d"
       },
       {
         "path": "O:\\winnt\\system32\\ntw16s32.dll",
-        "before": "3651494500554e15fccaafd2bb5859868bdd04613afea8705f3e3db42d3bd7f1",
-        "after": "e85f5d9d58022647670112ede46e2c93b42d88cfc3a151bb9fe7486d4f3d05c5"
+        "before": "e85f5d9d58022647670112ede46e2c93b42d88cfc3a151bb9fe7486d4f3d05c5",
+        "after": "09daaf912176d2ba21e136217b90e6cb01e195dc97283dba044083c2c74ed6f0"
       },
       {
         "path": "O:\\winnt\\system32\\ntw16s64.dll",
-        "before": "9194981cf2e0a5da81d190a9f1612360e45306a0ef73264880cfda9203feea89",
-        "after": "c45aa42d77c2fcdd5f538e8d60fa7f983bce7eed75eb8e369bfd9ea343a2971c"
+        "before": "c45aa42d77c2fcdd5f538e8d60fa7f983bce7eed75eb8e369bfd9ea343a2971c",
+        "after": "30d78af6b7f08695f67c947f72295636c735ef5ae6ba32e63552f6bf3cbb10bc"
       },
       {
         "path": "O:\\winnt\\system32\\run16s.exe",
-        "before": "6393ac06e741419b41a7148eaf9f840a02b412e70c03f2b155a85028b7d1548d",
-        "after": "8c9561b0a554c1bac04c153048744b8fbd663ef2722ebcbc3a80b7a7ebe4f4a0"
+        "before": "8c9561b0a554c1bac04c153048744b8fbd663ef2722ebcbc3a80b7a7ebe4f4a0",
+        "after": "3f657ed09c7bf3995cdbb13dbe59e34631e9da6cf7c63d6453cd59949d8933ed"
       }
     ],
-    "backup_baseline": "97999c0 assets; all8 previous copies matched and remain recoverable in Git",
+    "backup_baseline": "48b5715 assets: all8 previous copies matched and recoverable in Git",
     "owners": 0,
     "closed_user_processes": 0,
     "owner_probe_sha256": "9112b1b4cead919c60ad7f9c3c2fc65064552b2ba20a4ed5f1be8c7e4ca24cdd",
@@ -800,66 +786,39 @@
     }
   },
   "audit": {
-    "scope": "M0 T14 S1 legacy Windows Shell error UX; normal native injection and UAC implementation preserved",
-    "renderer_files_except_version_unchanged": 71,
-    "public_abi_changed": false,
     "statistics": {
-      "scope": "CMakeLists/src/tests/tools vs97999c0",
-      "paths": 12,
-      "added": 210,
-      "deleted": 15,
-      "net": 195,
+      "scope": "CMakeLists/src/tests/tools vs48b5715",
+      "paths": 10,
+      "added": 112,
+      "deleted": 195,
+      "net": -83,
       "numstat": [
-        "13\t2\tCMakeLists.txt",
-        "4\t4\tsrc/demo-exe/version.rc",
-        "4\t4\tsrc/ntw16s-dll/version.rc",
-        "9\t0\tsrc/run16s-exe/README.md",
-        "38\t0\tsrc/run16s-exe/legacy_shell.c",
-        "8\t0\tsrc/run16s-exe/legacy_shell.h",
-        "6\t1\tsrc/run16s-exe/main.c",
-        "4\t4\tsrc/run16s-exe/version.rc",
-        "5\t0\ttests/README.md",
-        "34\t0\ttests/run16s-exe/legacy_shell_unit.c",
-        "84\t0\ttests/run16s-exe/shell_errors.c",
-        "1\t0\ttools/Test-Package.ps1"
+        "7\t12\tCMakeLists.txt",
+        "4\t8\tsrc/run16s-exe/README.md",
+        "0\t38\tsrc/run16s-exe/legacy_shell.c",
+        "0\t8\tsrc/run16s-exe/legacy_shell.h",
+        "1\t6\tsrc/run16s-exe/main.c",
+        "3\t4\ttests/README.md",
+        "96\t0\ttests/run16s-exe/legacy_rejection.c",
+        "0\t34\ttests/run16s-exe/legacy_shell_unit.c",
+        "0\t84\ttests/run16s-exe/shell_errors.c",
+        "1\t1\ttools/Test-Package.ps1"
       ]
     },
-    "state_owner": "Launcher file/COM/Shell handle paired; legacy target has no injected process, Windows owns error UI; native creation transaction unchanged",
-    "old_path_disposition": "Old stderr diagnostic retained after native Shell UI; existing native/UAC branches and renderer preserved",
-    "p1_remote_review": {
-      "source_inputs": 153,
-      "products": 4,
-      "actual_downloads": 168,
-      "published_copies": 8,
-      "receipt_sha256": "462411c84960a94d934653626a1913869526835f8f63460a113595c65ea08654",
-      "commit": "91bba9f80d2687ab058ecf7290c354794d35566b",
-      "status": "passed"
-    }
-  },
-  "closure": {
-    "p1": "91bba9f80d2687ab058ecf7290c354794d35566b",
-    "source_inputs_unchanged": 153,
-    "product_sha256_unchanged": true,
-    "registered_scratch_cleanup": {
-      "checks": "Exact registered paths under workspace; no ancestor/child reparse; no live executable under either root",
-      "status": "completed; both registered roots absent",
-      "roots": [
-        {
-          "path": "build/t14-launch",
-          "resolved": "O:\\repos.hobby\\win16style\\build\\t14-launch",
-          "files": 83,
-          "bytes": 1433369.0
-        },
-        {
-          "path": "build/t14-package",
-          "resolved": "O:\\repos.hobby\\win16style\\build\\t14-package",
-          "files": 2780,
-          "bytes": 145711733.0
-        }
-      ],
-      "preserved": "Stable build/.ninja and build/.ccache, assets/system32 releases"
-    },
-    "task_status": "T14 S1/T14 closed;M0 open;previous states unchanged",
-    "acceptance": "Native Windows Shell direct-vs-launcher MZ/NE dialog and job completion matched; no universal activation claim"
+    "main_byte_exact": "97999c0",
+    "removed_source_test_files": [
+      "src/run16s-exe/legacy_shell.c",
+      "src/run16s-exe/legacy_shell.h",
+      "tests/run16s-exe/legacy_shell_unit.c",
+      "tests/run16s-exe/shell_errors.c"
+    ],
+    "uac_and_dll_demo_source_preserved": true,
+    "state_owner": "Launcher errors stop at first validation; old Shell retry ownership removed; UI observer only own Job; strict kernel completion and all images accounted",
+    "not_claimed": [
+      "physical Win+R/error visibility",
+      "historical cause of user first seeing no command-line error",
+      "all locales/Windows versions",
+      "new UAC secure-desktop approval"
+    ]
   }
 }

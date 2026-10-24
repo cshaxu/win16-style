@@ -12,7 +12,8 @@
 | [evidence/leaderboard-font.json](evidence/leaderboard-font.json) | Td S10双宽英雄榜同资源字体/墨迹/DPI对照及卸载恢复；无产品修改 |
 | [evidence/multilingual-font.json](evidence/multilingual-font.json) | 已被T13 S2撤回的历史多语言控件字体保护：71项逐项覆盖、25实际包、旧DLL负例、真实扫雷/标题、发布及授权占用处置 |
 | [evidence/multilingual-font-revert.json](evidence/multilingual-font-revert.json) | T13 S2原样撤回的源身份、加载映像对照、双宽回归及实际包/双发布证据 |
-| [evidence/system-shell-launch.json](evidence/system-shell-launch.json) | T14 Win+R同名目标诊断、原生Shell错误界面对照、旧版负例及包/发布审计 |
+| [evidence/system-shell-launch.json](evidence/system-shell-launch.json) | 已由S2撤回的T14 S1历史系统UI方案及交付证据 |
+| [evidence/legacy-retry-cleanup.json](evidence/legacy-retry-cleanup.json) | T14 S2清理二次Shell、首次stderr/193、原生cmd和自有树清理及发布审计 |
 | [release.json](release.json) | 当前开发包的输入/工具链/四文件哈希与验收范围，历史版本从对应Git提交取回 |
 | [product-contract.json](product-contract.json) | 架构权威的机器映射；组件/产物变化必须同步审核 |
 | [import](import/README.md) | 来源基线与 Git blob 清单；只作导入对照，不能成为构建输入 |
