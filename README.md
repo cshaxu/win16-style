@@ -200,10 +200,6 @@ every application or DPI configuration has been validated.
 
 ## Licenses and origins
 
-Win16 Style separates the native application styling part of
-[ntvdm64](https://github.com/cshaxu/ntvdm64), originally exposed as
-`run16 --win16-style-all`, into an independent project.
-
 Project-authored code is covered by the [MIT license](LICENSE). The bundled
 MinHook/HDE code retains its [BSD license and notices](src/ntw16s-dll/injection/minhook/LICENSE.txt).
 

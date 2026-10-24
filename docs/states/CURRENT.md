@@ -2,15 +2,34 @@
 
 ## Current Work
 
-当前无活动任务包。M0 Td S6全英文README与真实截图已交付并完成P1远端实际复核、
-安全清理和本次文档收口。M0固定，M0 T8继续开放，产品基线仍为T8 S4；
-本次文档/展示图不宣称新的产品测试、二进制发布或T8关闭。
+M0 Td S7 README编辑修订已实现/verified，待推送复核；M0固定，T8继续开放。
+
+## M0 Td S7 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Governance；下一未用Td S7。 |
+| Admission And Approval | 用户明确要求README无需提及ntvdm64项目，删除所引沿革段落。 |
+| Objective | 删除README项目沿革介绍，保持独立产品介绍。 |
+| Non-goals | 不改产品、截图、原始资源/版权声明、来源审计或历史事实；不关闭T8。 |
+| Reference Baseline | d70e5513770b5def1b13ab4856d083620b70f757，干净工作区。 |
+| Candidate Proposal | [README showcase](../proposals/readme-showcase.md)，本次仅编辑反馈。 |
+| Files And ABI Surface | README及本次任务记录；无ABI/产品输入变化。 |
+| Applicable Rules | Task Reading Set、DOCUMENT、EXECUTION；用户请求定义编辑范围。 |
+| Verification | 精确diff、读者入口同类搜索、治理SelfTest/diff检查、实际远端复核。 |
+| Expected Markers | README EDIT PASS、Governance PASS。 |
+| Asset Needs | 无新资源或scratch。 |
+| Reporting Requirements | 记录删除范围及实际复核；不虚构构建发布。 |
+| Stop Conditions | diff越出编辑范围或涉及原声明则定位保留。 |
+| Exit Criteria | 指定段落删除、验证推送实际复核后收口本S。 |
+| Original Owner Request | 这个毫无必要，不需要提到ntvdm64项目。 |
+| Similar-Issue Sweep | rg检查根/assets/截图README，仅根所引段落命中。 |
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 8
-- Last allocated Td S: 6
+- Last allocated Td S: 7
 - Last delivery: M0 Td S6 P2 (P1 02df11a实际远端复核通过，文档收口；T8开放)
 - Open task: M0 T8 (menu appearance feedback; remains open)
 
