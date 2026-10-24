@@ -1,0 +1,131 @@
+{
+  "schema": 1,
+  "task": "M0 Td S8",
+  "privacy": "Public summary only. No user/owned PID, HWND, authentication identity, absolute runtime paths or raw log contents are published. Full diagnostics remain task scratch until reviewed and reduced.",
+  "baseline": "944ef2673adcb93b62ebe745b73b5e53d8f8174d",
+  "findings": {
+    "original_ne_failure": "Not stably reproduced. Current package styles the owned non-debugged cold-start NE Minesweeper; user subsequently confirmed success. No original-issue fix claimed.",
+    "accepted_boundary": "User accepts no propagation when an existing unstyled NTSRV is reused.",
+    "independent_dual_hook_failure": "Both hook DLLs initialized and native parent window attached; native A/W child creation returns ERROR_BAD_EXE_FORMAT in 64->64 and 64->32 cases.",
+    "first_proven_bad_node": "ntw16s_stage_process rejects a valid relocated import descriptor table beyond SizeOfImage",
+    "pe_evidence": {
+      "machine": "AMD64",
+      "dos_signature": "MZ",
+      "nt_signature": "PE",
+      "optional_header_bytes": "0xf0",
+      "optional_magic": "0x20b",
+      "SizeOfImage": "0x1c000",
+      "import_rva": "0x20000",
+      "table_mapping": "MEM_COMMIT/MEM_PRIVATE/PAGE_READWRITE",
+      "first_descriptor_readable": true,
+      "installer_return": 193
+    }
+  },
+  "cases": [
+    {
+      "case": "release-cold",
+      "trace_sha256": "e0f72a0eb0e0937f16958b12df00eff6e8b989ab0adf9ed4de48d733155bd064",
+      "created_process_count": 6,
+      "hook_patch_mismatches": 0,
+      "evidence_kind": "native owned probe; raw details intentionally not public"
+    },
+    {
+      "case": "release-service",
+      "trace_sha256": "2ee3e229cf2168929fd809c525438ad6f18f2882d4c2df89b3502963bc22570f",
+      "created_process_count": 5,
+      "hook_patch_mismatches": 0,
+      "evidence_kind": "native owned probe; raw details intentionally not public"
+    },
+    {
+      "case": "release-reuse-vdm",
+      "trace_sha256": "22fc599abaa2534ce6afb80e496895bbe33ca7971f169798325a98a47447de07",
+      "created_process_count": 7,
+      "hook_patch_mismatches": 0,
+      "evidence_kind": "native owned probe; raw details intentionally not public"
+    },
+    {
+      "case": "history-cold",
+      "trace_sha256": "0b795eedf72269f765c7266765c77b9129ff2301029ccc0ee51fdea2e36a4326",
+      "created_process_count": 6,
+      "hook_patch_mismatches": 0,
+      "evidence_kind": "native owned probe; raw details intentionally not public"
+    },
+    {
+      "case": "history-service",
+      "trace_sha256": "4f4acdd05cde67c8c86d8098c32622f22f6b6bc5f05f489995ab361233e45d12",
+      "created_process_count": 5,
+      "hook_patch_mismatches": 0,
+      "evidence_kind": "native owned probe; raw details intentionally not public"
+    },
+    {
+      "case": "release-cold-observe",
+      "trace_sha256": "de212086b4830bc057c1befee2c86df906ae0c8ede4f9b2a6ce27ba8dcb6c58d",
+      "created_process_count": 6,
+      "hook_patch_mismatches": 0,
+      "evidence_kind": "native owned probe; raw details intentionally not public"
+    },
+    {
+      "case": "normal-cold",
+      "trace_sha256": "598677eedd35e3cf1b3175db36ffc5c55a66a3b273df0c755a1a10abd7f570fd",
+      "created_process_count": 8,
+      "hook_patch_mismatches": 0,
+      "evidence_kind": "native owned probe; raw details intentionally not public"
+    },
+    {
+      "case": "coexist-run",
+      "trace_sha256": "c78c47e849648a94c7261f89b8c021267e5516b666be6087430efc0be9ae3f3f",
+      "created_process_count": 14,
+      "hook_patch_mismatches": 0,
+      "evidence_kind": "native owned probe; raw details intentionally not public"
+    },
+    {
+      "case": "coexist64-run",
+      "trace_sha256": "0d9fdb52b58e0f1fe68b08c681d721a845566d5564254d320e29ff359bc9fa73",
+      "created_process_count": 8,
+      "hook_patch_mismatches": 0,
+      "evidence_kind": "native owned probe; raw details intentionally not public"
+    },
+    {
+      "case": "stage-proof3",
+      "trace_sha256": "f8162772d4d5cf3286e611f681dc474b1e51e3b1b75d1f3a179269869bb5e76a",
+      "created_process_count": 8,
+      "hook_patch_mismatches": 0,
+      "evidence_kind": "native owned probe; raw details intentionally not public"
+    }
+  ],
+  "versions": {
+    "current_product": "T8 S4 / 0.8.0.0",
+    "historical_product": "5b5ee58 / T6 S5 four-file package",
+    "installed_backend_comparison": "Current and historical product controls use the same currently installed backend. Backend changed during early exploration; those exploratory cases are not mixed into the fixed comparison.",
+    "legacy_run16_sha256_before_other_task_publication": "c482f54b93c3ec3f1f0dec1d2d979ed7aca7dbc1c22a6e7cf2f4343f8dd38c99",
+    "backend_file_sha256_after_other_task_publication": {
+      "run16.exe": "e7ac4e89e9d1e88d57d7cea1a1ad239deead1537a58c8537820bb504c1739121",
+      "ntsrv.exe": "7adc57e6f4c1b1a3058618994664d43dcd77895079bd3b8bc5bc9a1ca6f77168",
+      "ntvdm.exe": "8333b6d92aac64a753998da10359feb5aa7fc5729760599a25a6f931a34f2224",
+      "WOW32.dll": "475275c6b1d9f4976cc5371860d0ef19f072d07ce11d8884fcba92b34af62bf9",
+      "nthook32.dll": "eb02654a0ecc3d6ca2f0d7f8e7b2b63b5cda72d59e664560b162f48810d7a2a2",
+      "nthook64.dll": "9517a1b412d304e366a2c9b52d0de7f32375474e92d0bc39999a02106456ffec"
+    }
+  },
+  "probe_source_sha256": {
+    "dual-same.c": "a3e1e03c6f153517227300be645e74b09ec48db27eed328a0484362eec2bef62",
+    "dual.c": "72db93bd959eddae025c5642d090f4a50e09fcdcec9dabcb356421e05431c277",
+    "inventory.c": "778f228dfd13087ed0a76d35a3f312cde5335027b3257e88d76cdae863c54791",
+    "logon.c": "a48494164717f0631af6dde8c5b8804616d770c49e65da9796c66e339152249f",
+    "observe-native.c": "30717474a5ee67a4d50454fcb655790d1309613edbd65e968167b6f04d27cb95",
+    "trace-coexist.c": "0cc0f5aa5053c5acd6dc0dbbf538fafcdf1ec6fa6a4ca2d7d89fb63323235164",
+    "trace-coexist64.c": "0fd1387ba02878c7ee5605f0bcfec86b561e24435eb314e4e04d58e383e0b46f",
+    "trace-historical.c": "f6630edb2371b51737b244f7bae58556983f0536005e2d343a758c015ad3212d",
+    "trace-installed.c": "64ed6c700270c4f774d7ff9d9f9593f473444b481e386e99dc9bf2057535d478",
+    "trace-observe.c": "b8cbc09350cca1aeb228a423737f43099cc12009775aac5abf1f8aea6783db0b",
+    "trace-stage-proof.c": "6b27c6f9ec47af85cf9272db8de38ec8647baecc45c8fb811cf2bf17d979c41c",
+    "trace-stage-proof3.c": "f6dbf7a56a5da89cb4f7bbf68ff8ecaaa591bf2e6a4ab7700fbd99033d61dcd3",
+    "trace.c": "384963a89477ea65a1b70c972588934c00891a5f17aa50798b342476ce633243"
+  },
+  "limitations": [
+    "Original user failure moment and historical backend/session not captured.",
+    "Initial attachment metadata is not proof of settled drawing; non-debug restore and native capture added.",
+    "Read-only user snapshot matched initialized styling state but does not reconstruct previous failed launches.",
+    "No product source or binary changes in this diagnostic delivery."
+  ]
+}

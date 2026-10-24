@@ -2,14 +2,35 @@
 
 ## Current Work
 
-当前无活动任务包。M0 Td S7 README编辑反馈已推送并实际复核收口。
-M0固定，T8继续开放，产品基线和截图保持。
+M0 Td S8传播链原生诊断已本地verified，待推送复核；无其他活动包或未提交改动，T8保持开放。
+诊断不改产品；若根因支持本项目修复，另按下一产品T准入，不跨越兄弟仓库边界。
+
+## M0 Td S8 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Governance；下一未用Td S8，限调研/自有原生诊断。 |
+| Admission And Approval | 用户要求定位run16s run16 winmine传播，授权自有隔离探针；禁止改动或注入既有服务。 |
+| Objective | 定位首个不符节点，逐层PID/创建者/架构/模块/初始化/窗口附着证据。 |
+| Non-goals | 不改兄弟仓库、原资源、已确认外观、全局设置，不关闭用户服务或扫描注入。 |
+| Reference Baseline | 944ef2673adcb93b62ebe745b73b5e53d8f8174d，四文件T8 S4；本地工作区干净。 |
+| Candidate Proposal | [传播诊断](../proposals/vdm-propagation.md)。 |
+| Files And ABI Surface | 本次文档/临时纯C探针，无产品或ABI变化。 |
+| Applicable Rules | Task Reading Set、来源/UI/编码规则；用户实际命令兼容调研允许只读本机NTVDM而不引入产品依赖。 |
+| Verification | 端点/进程只读预检；可行时自有private desktop/debug job冷链，冷/服务复用/VDM复用分列；读取真实代码/初始化和API证据；有界历史。 |
+| Expected Markers | VDM DIAGNOSTIC、OWNED PROCESS、NODE STATE、Governance PASS；失败/受限如实记录。 |
+| Asset Needs | 精确scratch build/td-s8-vdm，纯C诊断/日志/元数据；仅回收自有任务内容，证据先提炼。 |
+| Reporting Requirements | 断点、最后正常节点、根因/最小方案、覆盖/限制、是否修复发布，T8开放。 |
+| Stop Conditions | 既有服务无法隔离则不做冷启动；兄弟协议修复需求只诊断提案；不越界修改。 |
+| Exit Criteria | 在实际可覆盖范围建立证据并提交推送复核，不能以模块存在代替钩子状态。 |
+| Original Owner Request | 调研最新命令run16s run16 o:/winnt/winmine，先根因再最小修复。 |
+| Similar-Issue Sweep | 初始/载荷/跨宽/helper/后装hook/WOW窗口创建路径及冷热历史对照。 |
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 8
-- Last allocated Td S: 7
+- Last allocated Td S: 8
 - Last delivery: M0 Td S7 P2 (P1 894e012实际远端复核通过；T8开放)
 - Open task: M0 T8 (menu appearance feedback; remains open)
 
