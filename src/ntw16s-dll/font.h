@@ -11,8 +11,6 @@ NTW16S_API void win16_style_font_release(HFONT font);
  * cell height and per-character advances. Stock/System inputs stay borrowed.
  * A successful acquire must be released after all native users restore font. */
 HFONT win16_style_system_acquire(HFONT source);
-/* Exact repertoire of the private CP1252 bitmap, not the system UI locale. */
-BOOL win16_style_system_text_supported(const WCHAR *text);
 /* Private menu lease: System16 uniformly scaled by window DPI. */
 HFONT win16_style_menu_font_acquire(UINT dpi);
 void win16_style_system_release(HFONT font);

@@ -57,8 +57,6 @@ try{
         (Case 'wait-contract' $python @('-B',(Join-Path $SourceRoot 'tests/run16s-exe/wait.py'),$run,$d32,$d64,(Join-Path $x86 'wait-target.exe'),(Join-Path $x64 'wait-target.exe'),(Join-Path $x64 'wait-gui-target.exe')) @('WAIT CONTRACT PASS 6 cases') 190),
         (Case 'font-layout-x86' (Join-Path $x86 'core-font-layout.exe') @($d32) @('FONT LAYOUT PASS 2 contexts 12 font variants') 180),
         (Case 'font-layout-x64' (Join-Path $x64 'core-font-layout.exe') @($d64) @('FONT LAYOUT PASS 2 contexts 12 font variants') 180),
-        (Case 'multilingual-font-x86' (Join-Path $x86 'core-multilingual-font.exe') @($d32) @('MULTILINGUAL FONT PASS 2 contexts 8 scripts')),
-        (Case 'multilingual-font-x64' (Join-Path $x64 'core-multilingual-font.exe') @($d64) @('MULTILINGUAL FONT PASS 2 contexts 8 scripts')),
         (Case 'menu-cancel-x86' (Join-Path $x86 'core-menu-cancel.exe') @($d32) @('MENU CANCEL PASS 15 scenarios','MENU SHADOW SCOPE PASS aware=0','MENU SHADOW SCOPE PASS aware=1') 150),
         (Case 'menu-cancel-x64' (Join-Path $x64 'core-menu-cancel.exe') @($d64) @('MENU CANCEL PASS 15 scenarios','MENU SHADOW SCOPE PASS aware=0','MENU SHADOW SCOPE PASS aware=1') 150),
         (Case 'cli'  $python @('-B',(Join-Path $SourceRoot 'tests/run16s-exe/cli.py'),$run) @('CLI PASS')),

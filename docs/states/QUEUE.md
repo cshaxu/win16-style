@@ -35,4 +35,4 @@ CURRENT中的完成审计。待准入候选及顺序见上表。
 [旧式PE导入staging](../proposals/legacy-import-staging.md)已完成缺失IAT目录兼容修复并收口；
 实际交付与验证边界见CURRENT及对应完成记录。
 
-[英雄榜字体调查](../proposals/leaderboard-font.md)已完成；多语言保护实现已完成交付收口，证据及状态见CURRENT。
+[英雄榜字体调查](../proposals/leaderboard-font.md)已完成；用户已要求原样撤回多语言保护代码和测试，回退活动状态见CURRENT。

@@ -102,16 +102,6 @@ typedef struct system_variant {
 static _Thread_local system_variant *variants;
 static LONG variant_serial;
 
-BOOL win16_style_system_text_supported(const WCHAR *text)
-{
-    for(;*text;++text){char ch;WCHAR decoded;BOOL substituted=FALSE;
-        if(*text==L'\t' || *text==L'\r' || *text==L'\n')continue;
-        if(WideCharToMultiByte(1252,WC_NO_BEST_FIT_CHARS,text,1,&ch,1,NULL,&substituted)!=1 ||
-            substituted || (BYTE)ch<32 || MultiByteToWideChar(1252,0,&ch,1,&decoded,1)!=1 || decoded!=*text)return FALSE;
-    }
-    return TRUE;
-}
-
 HFONT win16_style_system_source(HFONT font)
 {
     for(system_variant *v=variants;v;v=v->next)if(v->font==font)return v->source;
@@ -133,9 +123,6 @@ static HFONT system_acquire(HFONT source,UINT menu_dpi)
     original=CreateCompatibleDC(NULL);if(!original)goto done;
     oo=SelectObject(original,source?source:GetStockObject(SYSTEM_FONT));
     if(!oo || !GetTextMetricsW(original,&tm) || !GetTextFaceA(original,32,actual))goto done;
-    /* A CP1252 resource cannot preserve a different character set. Keep the
-     * application's font and its native fallback, including numeric labels. */
-    if(!menu_dpi && tm.tmCharSet!=ANSI_CHARSET){font=source;ok=TRUE;goto done;}
     /* Already-System fonts, including the explicit legacy bitmap API, need
      * no new resource. NULL remains the native default System font. */
     if(!menu_dpi && (!strcmp(actual,"System") || !strncmp(actual,"Win16 System",12))){
