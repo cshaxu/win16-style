@@ -8,6 +8,7 @@
 #include "native_api.h"
 #include "tab_paint.h"
 #include "header_paint.h"
+#include "progress_paint.h"
 #include <commctrl.h>
 #include <oleacc.h>
 #include <stdlib.h>
@@ -27,7 +28,7 @@ typedef struct control_style {
     UINT_PTR scroll_timer;
     unsigned scroll_epoch;
     unsigned tab_epoch;
-    unsigned header_epoch;
+    unsigned header_epoch,progress_epoch;
     int header_pressed;
     BOOL scroll_reporting,scroll_key;
     LONG scroll_report;
@@ -74,6 +75,7 @@ static BOOL supported(HWND w)
     if(is_link(w))return TRUE;
     if(is_tab(w))return win16_style_tab_supported(w);
     if(is_header(w))return win16_style_header_supported(w);
+    if(ntw16s_class_is(w,PROGRESS_CLASSW))return win16_style_progress_supported(w);
     if(is_combo(w))return ((style&3)==CBS_DROPDOWNLIST || (style&3)==CBS_DROPDOWN || (style&3)==CBS_SIMPLE) &&
         !(style&(CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE));
     if(is_list(w))return !(style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA|LBS_USETABSTOPS));
@@ -929,10 +931,16 @@ static void draw_header(HWND w,control_style *s,HDC dc)
         DefSubclassProc(w,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT);
     win16_style_system_release(font);
 }
+static void draw_progress(HWND w,control_style *s,HDC dc)
+{
+    if(!win16_style_progress_paint(w,dc,&s->palette,&s->detached,&s->progress_epoch) && !s->detached)
+        DefSubclassProc(w,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT);
+}
 static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
 {
     control_style *s=(control_style *)data;LRESULT result=0;HFONT previous=NULL,pinned=s->font,outbound=NULL;(void)id;++s->calls;
-    BOOL tab=is_tab(w),header=is_header(w),native_font=tab || header;
+    BOOL tab=is_tab(w),header=is_header(w),progress=ntw16s_class_is(w,PROGRESS_CLASSW),native_font=tab || header;
+    if(progress && win16_style_progress_changes(m))++s->progress_epoch;
     if(tab && win16_style_tab_changes(m))++s->tab_epoch;
     if(header && win16_style_header_changes(m))++s->header_epoch;
     win16_style_system_retain(pinned);
@@ -981,6 +989,17 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         }else if(m==WM_PRINTCLIENT && win16_style_header_supported(w))draw_header(w,s,(HDC)a);
         else result=DefSubclassProc(w,m,a,b);
         if(!s->detached && win16_style_header_changes(m))
+            RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|(s->calls==1?RDW_UPDATENOW:0));
+    }
+    else if(progress){
+        BOOL classic=win16_style_progress_supported(w);
+        if(m==WM_PAINT && classic){PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);present_control(w,s,dc,draw_progress);EndPaint(w,&ps);}
+        else if(m==WM_PRINTCLIENT && classic)draw_progress(w,s,(HDC)a);
+        else if(m==WM_PRINT && classic && (b&PRF_CLIENT)){
+            int saved=SaveDC((HDC)a);if(saved){result=DefSubclassProc(w,m,a,b&~PRF_CLIENT);RestoreDC((HDC)a,saved);}
+            if(!s->detached)draw_progress(w,s,(HDC)a);
+        }else result=DefSubclassProc(w,m,a,b);
+        if(!s->detached && win16_style_progress_changes(m))
             RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|(s->calls==1?RDW_UPDATENOW:0));
     }
     else if(is_link(w)){
@@ -1275,6 +1294,13 @@ void win16_style_frame_scrollbars_palette_owned(HWND w,const win16_style_palette
     if(GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&data) &&
         ((control_style *)data)->frame_scrollbars && ((control_style *)data)->creation_owner==owner)
         ((control_style *)data)->palette=*palette;
+}
+BOOL win16_style_progress_install_created(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled)
+{
+    if(!win16_style_progress_supported(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    /* No text or font property belongs to this painter. Reuse the owned
+     * passive-font leaf; the progress branch owns its paint, not bar input. */
+    return win16_style_frame_scrollbars_install_owned(w,palette,owner,cancelled);
 }
 BOOL win16_style_tree_install_created(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled)
 {

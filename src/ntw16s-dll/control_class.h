@@ -23,7 +23,7 @@ static inline BOOL ntw16s_native_superclass(HWND w,const WCHAR *expected)
 static inline BOOL ntw16s_class_is(HWND w,const WCHAR *expected)
 {
     WCHAR name[64];
-    if(!lstrcmpiW(expected,L"SysTabControl32") || !lstrcmpiW(expected,L"SysHeader32") || !lstrcmpiW(expected,L"SysTreeView32"))
+    if(!lstrcmpiW(expected,L"SysTabControl32") || !lstrcmpiW(expected,L"SysHeader32") || !lstrcmpiW(expected,L"SysTreeView32") || !lstrcmpiW(expected,L"msctls_progress32"))
         return ntw16s_control_protocol_is(w,expected);
     if(GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpiW(name,expected))return TRUE;
     if((!lstrcmpiW(expected,L"BUTTON") || !lstrcmpiW(expected,L"EDIT") ||

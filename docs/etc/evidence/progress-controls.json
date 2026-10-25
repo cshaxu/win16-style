@@ -1,0 +1,932 @@
+{
+  "schema": 1,
+  "packet": "M0 T15 S9",
+  "status": "79 actual package tests/dual publication/20 installed checks+2 matrices passed; awaiting actual remote/archive and cleanup before S9 closure",
+  "baseline_commit": "0caca59fa30ab2969c273b2da0a5cc1aaebac18a",
+  "baseline_P2_actual_remote": {
+    "status": "passed",
+    "commit": "0caca59fa30ab2969c273b2da0a5cc1aaebac18a",
+    "remote_main": "0caca59fa30ab2969c273b2da0a5cc1aaebac18a",
+    "files": 196,
+    "source_inputs": 187,
+    "seconds": 15.536015799967572
+  },
+  "source_inputs": 190,
+  "source_snapshot_sha256": "01deb5e1a35a1232301061c8051805b71fd44144c4f4480e0bbb3a8c60c475dd",
+  "focused": {
+    "tests": [
+      {
+        "skipped": [],
+        "test_seconds": 2.114229400001932,
+        "configure_seconds": 1.3228831000160426,
+        "passed": 5,
+        "architecture": "x86",
+        "tests": 5,
+        "build_seconds": 6.173892699996941
+      },
+      {
+        "skipped": [],
+        "test_seconds": 12.131495799985714,
+        "configure_seconds": 1.408422900014557,
+        "passed": 9,
+        "architecture": "x64",
+        "tests": 9,
+        "build_seconds": 7.490296900039539
+      }
+    ],
+    "status": "passed",
+    "selection": "^core/(abi|progress-v5|progress-v6|tree-v5|tree-v6|control-protocol-owner|pending-frame-owner|header-owner|vb-font)$",
+    "profile": "Focused",
+    "exit_code": 0,
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "targets": "all",
+    "build_root": "O:\\repos.hobby\\win16style\\build\\.ninja",
+    "test_jobs": 2,
+    "build_jobs": 8
+  },
+  "old_input_seed_negatives": [
+    {
+      "version": "v5",
+      "exit": 1,
+      "architecture": "x86"
+    },
+    {
+      "version": "v6",
+      "exit": 1,
+      "architecture": "x86"
+    },
+    {
+      "version": "v5",
+      "exit": 1,
+      "architecture": "x64"
+    },
+    {
+      "version": "v6",
+      "exit": 1,
+      "architecture": "x64"
+    }
+  ],
+  "old_product_negatives": [
+    {
+      "exit": 1,
+      "case": "progress-v6-old-S8",
+      "architecture": "x86"
+    },
+    {
+      "exit": 1,
+      "case": "progress-v6-old-S8",
+      "architecture": "x64"
+    }
+  ],
+  "native_input_proof": {
+    "x86-v5": [
+      "INPUT_CASE bits=32 round=0 mode=0 control=0000 shift=0000 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=32 round=0 mode=1 control=ff80 shift=0000 focus=1 caret_root=1 caret_child=0",
+      "INPUT_CASE bits=32 round=0 mode=2 control=0000 shift=ff80 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=32 round=1 mode=0 control=0000 shift=0000 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=32 round=1 mode=1 control=ff80 shift=0000 focus=1 caret_root=1 caret_child=0",
+      "INPUT_CASE bits=32 round=1 mode=2 control=0000 shift=ff80 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=32 round=2 mode=0 control=0000 shift=0000 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=32 round=2 mode=1 control=ff80 shift=0000 focus=1 caret_root=1 caret_child=0",
+      "INPUT_CASE bits=32 round=2 mode=2 control=0000 shift=ff80 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=32 round=3 mode=0 control=0000 shift=0000 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=32 round=3 mode=1 control=ff80 shift=0000 focus=1 caret_root=1 caret_child=0",
+      "INPUT_CASE bits=32 round=3 mode=2 control=0000 shift=ff80 focus=1 caret_root=0 caret_child=1",
+      "NATIVE_INPUT_PROOF_OK bits=32 cases=12 ctrl_down_preserves_caret=1 zero_state_moves=1 thread_local_only=1"
+    ],
+    "x86-v6": [
+      "INPUT_CASE bits=32 round=0 mode=0 control=0000 shift=0000 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=32 round=0 mode=1 control=ff80 shift=0000 focus=1 caret_root=1 caret_child=0",
+      "INPUT_CASE bits=32 round=0 mode=2 control=0000 shift=ff80 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=32 round=1 mode=0 control=0000 shift=0000 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=32 round=1 mode=1 control=ff80 shift=0000 focus=1 caret_root=1 caret_child=0",
+      "INPUT_CASE bits=32 round=1 mode=2 control=0000 shift=ff80 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=32 round=2 mode=0 control=0000 shift=0000 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=32 round=2 mode=1 control=ff80 shift=0000 focus=1 caret_root=1 caret_child=0",
+      "INPUT_CASE bits=32 round=2 mode=2 control=0000 shift=ff80 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=32 round=3 mode=0 control=0000 shift=0000 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=32 round=3 mode=1 control=ff80 shift=0000 focus=1 caret_root=1 caret_child=0",
+      "INPUT_CASE bits=32 round=3 mode=2 control=0000 shift=ff80 focus=1 caret_root=0 caret_child=1",
+      "NATIVE_INPUT_PROOF_OK bits=32 cases=12 ctrl_down_preserves_caret=1 zero_state_moves=1 thread_local_only=1"
+    ],
+    "x64-v5": [
+      "INPUT_CASE bits=64 round=0 mode=0 control=0000 shift=0000 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=64 round=0 mode=1 control=ff80 shift=0000 focus=1 caret_root=1 caret_child=0",
+      "INPUT_CASE bits=64 round=0 mode=2 control=0000 shift=ff80 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=64 round=1 mode=0 control=0000 shift=0000 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=64 round=1 mode=1 control=ff80 shift=0000 focus=1 caret_root=1 caret_child=0",
+      "INPUT_CASE bits=64 round=1 mode=2 control=0000 shift=ff80 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=64 round=2 mode=0 control=0000 shift=0000 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=64 round=2 mode=1 control=ff80 shift=0000 focus=1 caret_root=1 caret_child=0",
+      "INPUT_CASE bits=64 round=2 mode=2 control=0000 shift=ff80 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=64 round=3 mode=0 control=0000 shift=0000 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=64 round=3 mode=1 control=ff80 shift=0000 focus=1 caret_root=1 caret_child=0",
+      "INPUT_CASE bits=64 round=3 mode=2 control=0000 shift=ff80 focus=1 caret_root=0 caret_child=1",
+      "NATIVE_INPUT_PROOF_OK bits=64 cases=12 ctrl_down_preserves_caret=1 zero_state_moves=1 thread_local_only=1"
+    ],
+    "x64-v6": [
+      "INPUT_CASE bits=64 round=0 mode=0 control=0000 shift=0000 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=64 round=0 mode=1 control=ff80 shift=0000 focus=1 caret_root=1 caret_child=0",
+      "INPUT_CASE bits=64 round=0 mode=2 control=0000 shift=ff80 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=64 round=1 mode=0 control=0000 shift=0000 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=64 round=1 mode=1 control=ff80 shift=0000 focus=1 caret_root=1 caret_child=0",
+      "INPUT_CASE bits=64 round=1 mode=2 control=0000 shift=ff80 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=64 round=2 mode=0 control=0000 shift=0000 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=64 round=2 mode=1 control=ff80 shift=0000 focus=1 caret_root=1 caret_child=0",
+      "INPUT_CASE bits=64 round=2 mode=2 control=0000 shift=ff80 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=64 round=3 mode=0 control=0000 shift=0000 focus=1 caret_root=0 caret_child=1",
+      "INPUT_CASE bits=64 round=3 mode=1 control=ff80 shift=0000 focus=1 caret_root=1 caret_child=0",
+      "INPUT_CASE bits=64 round=3 mode=2 control=0000 shift=ff80 focus=1 caret_root=0 caret_child=1",
+      "NATIVE_INPUT_PROOF_OK bits=64 cases=12 ctrl_down_preserves_caret=1 zero_state_moves=1 thread_local_only=1"
+    ]
+  },
+  "native_protocols": {
+    "x86-v5": [
+      "NATIVE_CLASS bits=32 class=msctls_progress32 module=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_5.82.26100.8521_none_cf9e08b68ea73d80\\COMCTL32.dll extra=4 actual_extra=4",
+      "PROGRESS_INITIAL range=0,100 returns=0,100 pos=0 step=0 state=0 bar=00000000 bk=00000000 font=00000000",
+      "PROGRESS_CHANGED range=-2000000000,2000000000 pos=1234567 step=0 state=0 bar=00000000",
+      "NATIVE_CLASS bits=32 class=msctls_trackbar32 module=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_5.82.26100.8521_none_cf9e08b68ea73d80\\COMCTL32.dll extra=4 actual_extra=4",
+      "NATIVE_CLASS bits=32 class=msctls_updown32 module=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_5.82.26100.8521_none_cf9e08b68ea73d80\\COMCTL32.dll extra=4 actual_extra=4",
+      "PROTOCOL_PROBE_DONE"
+    ],
+    "x86-v6": [
+      "NATIVE_CLASS bits=32 class=msctls_progress32 module=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll extra=4 actual_extra=4",
+      "PROGRESS_INITIAL range=0,100 returns=0,100 pos=0 step=10 state=1 bar=ff000000 bk=ff000000 font=00000000",
+      "PROGRESS_CHANGED range=-2000000000,2000000000 pos=1234567 step=17 state=3 bar=00db7f1f",
+      "NATIVE_CLASS bits=32 class=msctls_trackbar32 module=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll extra=4 actual_extra=4",
+      "NATIVE_CLASS bits=32 class=msctls_updown32 module=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll extra=4 actual_extra=4",
+      "PROTOCOL_PROBE_DONE"
+    ],
+    "x64-v5": [
+      "NATIVE_CLASS bits=64 class=msctls_progress32 module=C:\\WINDOWS\\WinSxS\\amd64_microsoft.windows.common-controls_6595b64144ccf1df_5.82.26100.8328_none_87eede957a2ccddd\\COMCTL32.dll extra=8 actual_extra=8",
+      "PROGRESS_INITIAL range=0,100 returns=0,100 pos=0 step=0 state=0 bar=00000000 bk=00000000 font=0000000000000000",
+      "PROGRESS_CHANGED range=-2000000000,2000000000 pos=1234567 step=0 state=0 bar=00000000",
+      "NATIVE_CLASS bits=64 class=msctls_trackbar32 module=C:\\WINDOWS\\WinSxS\\amd64_microsoft.windows.common-controls_6595b64144ccf1df_5.82.26100.8328_none_87eede957a2ccddd\\COMCTL32.dll extra=8 actual_extra=8",
+      "NATIVE_CLASS bits=64 class=msctls_updown32 module=C:\\WINDOWS\\WinSxS\\amd64_microsoft.windows.common-controls_6595b64144ccf1df_5.82.26100.8328_none_87eede957a2ccddd\\COMCTL32.dll extra=8 actual_extra=8",
+      "PROTOCOL_PROBE_DONE"
+    ],
+    "x64-v6": [
+      "NATIVE_CLASS bits=64 class=msctls_progress32 module=C:\\WINDOWS\\WinSxS\\amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_3e07b8b0e334e825\\COMCTL32.dll extra=8 actual_extra=8",
+      "PROGRESS_INITIAL range=0,100 returns=0,100 pos=0 step=10 state=1 bar=ff000000 bk=ff000000 font=0000000000000000",
+      "PROGRESS_CHANGED range=-2000000000,2000000000 pos=1234567 step=17 state=3 bar=00db7f1f",
+      "NATIVE_CLASS bits=64 class=msctls_trackbar32 module=C:\\WINDOWS\\WinSxS\\amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_3e07b8b0e334e825\\COMCTL32.dll extra=8 actual_extra=8",
+      "NATIVE_CLASS bits=64 class=msctls_updown32 module=C:\\WINDOWS\\WinSxS\\amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_3e07b8b0e334e825\\COMCTL32.dll extra=8 actual_extra=8",
+      "PROTOCOL_PROBE_DONE"
+    ]
+  },
+  "input_diagnosis": {
+    "original_S8_failure": "native no-DLL v5 Down caret assertion; no key/focus snapshot; historical cause remains unconfirmed",
+    "confirmed_reproduction": "four old S8 fixture builds seeded with only thread-local Ctrl reproduce the same line78 failure before DLL/renderer use",
+    "confirmed_mechanism": "48 standalone x86/x64 v5/v6 native cases: Ctrl+Down preserves caret, neutral/Shift Down select child",
+    "fix": "Tree fixture checks focus/root selection, explicitly verifies Ctrl behavior and neutralizes only own thread for plain Down, records Ctrl/Shift/Alt and restores all256 original bytes; no product input changes",
+    "covered_full_matrix": "passed288 Ctrl+288 neutral+256-byte restore checks across four tree executables, native/styled and96/144 contexts",
+    "global_input": "no SendInput/AttachThreadInput or global settings; API is thread-local"
+  },
+  "implementation": "finite native-v6 initialized progress and exact main-EXE TProgressBar; range/position/step/colors/font/dimensions remain native; classic flat border/ordinary segmented-or-smooth h/v fill; error/paused/disabled cues; existing owned passive-font leaf; no extra detour/export/artifact",
+  "v5_boundary": "actual COMCTL5 getters for state/step/bar/background all return0 even after setters; keep native; do not infer black color; require registered native module DllGetVersion>=6 and initialized legal public range/position/state; v5 wrapper emulated-state rejection covered",
+  "progress_coverage": [
+    "v6 canonical and verified TProgressBar;8 class/orientation/smooth combinations per process",
+    "native and styled; unaware96 and PMv2actual144; x86/x64",
+    "ordinary smooth/segmented and smooth-reverse; application RGB and background, normal/error/paused/disabled",
+    "WM_PAINT normal visible client, WM_PRINTCLIENT/WM_PRINT parity; native geometry/font/data unchanged",
+    "32bit extreme range, step/delta results, tiny1x1/zero-span, initial and runtime marquee/RTL/fake fallback",
+    "query-time removal/destruction/mutation; stale epoch abandons snapshot; subsequent75percent pixels checked"
+  ],
+  "real_apps": {
+    "DoubleKiller": {
+      "exit": 0,
+      "observations": [
+        "TARGET pid=20240 creator-tree-root=21704 tid=17448 image=O:\\repos.hobby\\win16style\\build\\t15-controls\\s9-doublekiller\\DoubleKiller.exe",
+        "MODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s9-progress-final\\candidate\\ntw16s32.dll",
+        "S7_OWNED_SCAN_COMPLETE rows_from_app=2 scoped_fixture_only=1 no_delete_or_move=1",
+        "OWNED_CLOSE posted=1 wait=0 exit=0 window=0",
+        "DK_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "scope": "only owned isolated instance; no user files scanned or altered;DK scans three task32-byte files"
+    },
+    "MD5summer": {
+      "exit": 0,
+      "observations": [
+        "OWNED_VISIBLE hwnd=01350F5A class=TMessageForm title=Information enabled=1",
+        "STARTUP_INFORMATION dismissed-owned-OK=1",
+        "OWNED_VISIBLE hwnd=02060362 class=TApplication title=MD5 for Windows enabled=1",
+        "OWNED_VISIBLE hwnd=01E20A1E class=TMain title=MD5Summer enabled=1",
+        "TARGET pid=31412 creator-tree-root=24960 tid=24284 image=D:\\programs\\misc\\md5summer.exe",
+        "MODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s9-progress-final\\candidate\\ntw16s32.dll",
+        "POSTED_READINESS wait=0 elapsed_ms=31",
+        "WINDOW_STATES minimized=1 restored=1 moved=1 root_attachment_preserved=1",
+        "CLOSE sent=1 error=0 wait=0 code=0 window=0 visible=0",
+        "TARGET_EXIT=0",
+        "DK_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "scope": "only owned isolated instance; no user files scanned or altered;DK scans three task32-byte files"
+    }
+  },
+  "HD_Tune_elevated": "owner-requested default skip; not pass; no UAC requested",
+  "uncovered": [
+    "actual elevated HD Tune current UI",
+    "v5 progress styling: native fallback",
+    "marquee/RTL/extra client-edge/border/unknown style: native fallback",
+    "physical keyboard/mouse/IME/accessibility",
+    "arbitrary non-native application progress drawings",
+    "trackbar/updown received by sequential S10; not implemented here"
+  ],
+  "preservation": "no changes to original title/font/menu/bar algorithms or original five graphics/provenance; no source copied from external repositories; C17/GCC/Ninja/ccache;3 components4 products",
+  "sources_review": [
+    "control_protocol role7 resolves original registered procedure module, checks DllGetVersion and initialized public protocol; no filename guesses/private object decoding",
+    "progress_paint snapshots public range/position/state/colors and epoch; uses signed64 span, stock DC brush and balanced SaveDC; no fonts/heap or resizing",
+    "controls progress branch composes existing renderer; mutation/size/style/enable epochs and native forwarding; no extra global interception",
+    "tree test only thread-local input state; original renderer input processing untouched"
+  ],
+  "full_package": {
+    "seconds": 369.9731176,
+    "full_integration": true,
+    "physical_input": "not-tested",
+    "cases": 79,
+    "status": "passed",
+    "jobs": 4,
+    "package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s9-progress-final\\candidate",
+    "sha256": {
+      "demo.exe": "7494521fd57c7852c1ef7595c8b7e05ae8f4760f18d2934b71532ac0b6d3b900",
+      "ntw16s32.dll": "f3d1a74d36e2086dca2e1937b6514e2498814b4bdcc8bac7c07c3bbfe137d346",
+      "ntw16s64.dll": "285662161d21dde3de6f4c673d56db6f3ebed8a1e3df7cabd30a224cfe842676",
+      "run16s.exe": "8e726c81ce188aabe6b9313a00ef7b76d7427d1ae4746a3bfe439361b8785672"
+    },
+    "core_matrix": "separate Build-Core matrix required"
+  },
+  "publication": {
+    "files": [
+      {
+        "after": "7494521fd57c7852c1ef7595c8b7e05ae8f4760f18d2934b71532ac0b6d3b900",
+        "expected": "7494521fd57c7852c1ef7595c8b7e05ae8f4760f18d2934b71532ac0b6d3b900",
+        "before": "06ec7cd3f532abddb4de67a84e59dfd0b617aa5cb49b675c1d3992305d96efb7",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s9-progress-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe"
+      },
+      {
+        "after": "f3d1a74d36e2086dca2e1937b6514e2498814b4bdcc8bac7c07c3bbfe137d346",
+        "expected": "f3d1a74d36e2086dca2e1937b6514e2498814b4bdcc8bac7c07c3bbfe137d346",
+        "before": "2212448070272f376361fc6cb00e55b81a28d2c7975f2ed2a18dc350eea7013f",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s9-progress-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll"
+      },
+      {
+        "after": "285662161d21dde3de6f4c673d56db6f3ebed8a1e3df7cabd30a224cfe842676",
+        "expected": "285662161d21dde3de6f4c673d56db6f3ebed8a1e3df7cabd30a224cfe842676",
+        "before": "6f05eedbc9ed31d916979a8152e49df8f6eeeacb5a6635d72008c9d7c748222b",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s9-progress-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll"
+      },
+      {
+        "after": "8e726c81ce188aabe6b9313a00ef7b76d7427d1ae4746a3bfe439361b8785672",
+        "expected": "8e726c81ce188aabe6b9313a00ef7b76d7427d1ae4746a3bfe439361b8785672",
+        "before": "89784b206e4c04cce41957bd0f6c099288ab669416949abea18c08fa4a7c727e",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s9-progress-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe"
+      },
+      {
+        "after": "7494521fd57c7852c1ef7595c8b7e05ae8f4760f18d2934b71532ac0b6d3b900",
+        "expected": "7494521fd57c7852c1ef7595c8b7e05ae8f4760f18d2934b71532ac0b6d3b900",
+        "before": "06ec7cd3f532abddb4de67a84e59dfd0b617aa5cb49b675c1d3992305d96efb7",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s9-progress-publish\\before-1",
+        "path": "O:\\winnt\\system32\\demo.exe"
+      },
+      {
+        "after": "f3d1a74d36e2086dca2e1937b6514e2498814b4bdcc8bac7c07c3bbfe137d346",
+        "expected": "f3d1a74d36e2086dca2e1937b6514e2498814b4bdcc8bac7c07c3bbfe137d346",
+        "before": "2212448070272f376361fc6cb00e55b81a28d2c7975f2ed2a18dc350eea7013f",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s9-progress-publish\\before-1",
+        "path": "O:\\winnt\\system32\\ntw16s32.dll"
+      },
+      {
+        "after": "285662161d21dde3de6f4c673d56db6f3ebed8a1e3df7cabd30a224cfe842676",
+        "expected": "285662161d21dde3de6f4c673d56db6f3ebed8a1e3df7cabd30a224cfe842676",
+        "before": "6f05eedbc9ed31d916979a8152e49df8f6eeeacb5a6635d72008c9d7c748222b",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s9-progress-publish\\before-1",
+        "path": "O:\\winnt\\system32\\ntw16s64.dll"
+      },
+      {
+        "after": "8e726c81ce188aabe6b9313a00ef7b76d7427d1ae4746a3bfe439361b8785672",
+        "expected": "8e726c81ce188aabe6b9313a00ef7b76d7427d1ae4746a3bfe439361b8785672",
+        "before": "89784b206e4c04cce41957bd0f6c099288ab669416949abea18c08fa4a7c727e",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s9-progress-publish\\before-1",
+        "path": "O:\\winnt\\system32\\run16s.exe"
+      }
+    ],
+    "tested_package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s9-progress-final\\candidate",
+    "status": "passed",
+    "test_result": "O:\\repos.hobby\\win16style\\build\\t15-package\\s9-progress-full\\result.json"
+  },
+  "caption_reference": {
+    "height": 24,
+    "result": "identical glyph/border mask",
+    "width": 292,
+    "actual_native_caption_reference": "S8 MD5 screenshot",
+    "black_mask_different": 0
+  },
+  "full_case_results": [
+    {
+      "name": "abi-x86",
+      "exit_code": 0,
+      "seconds": 0.2508622
+    },
+    {
+      "name": "abi-x64",
+      "exit_code": 0,
+      "seconds": 0.2571501
+    },
+    {
+      "name": "demo-boundary",
+      "exit_code": 0,
+      "seconds": 0.1948822
+    },
+    {
+      "name": "demo-pair",
+      "exit_code": 0,
+      "seconds": 1.8167619
+    },
+    {
+      "name": "wait-contract",
+      "exit_code": 0,
+      "seconds": 7.4408162
+    },
+    {
+      "name": "font-layout-x64",
+      "exit_code": 0,
+      "seconds": 63.5646082
+    },
+    {
+      "name": "font-layout-x86",
+      "exit_code": 0,
+      "seconds": 101.6979781
+    },
+    {
+      "name": "menu-cancel-x86",
+      "exit_code": 0,
+      "seconds": 66.8100512
+    },
+    {
+      "name": "startup-error-unit-32",
+      "exit_code": 0,
+      "seconds": 0.2502003
+    },
+    {
+      "name": "startup-error-unit-64",
+      "exit_code": 0,
+      "seconds": 0.1969554
+    },
+    {
+      "name": "legacy-rejection",
+      "exit_code": 0,
+      "seconds": 0.9315084
+    },
+    {
+      "name": "cli",
+      "exit_code": 0,
+      "seconds": 0.5123603
+    },
+    {
+      "name": "automatic",
+      "exit_code": 0,
+      "seconds": 1.7728247
+    },
+    {
+      "name": "startup-errors",
+      "exit_code": 0,
+      "seconds": 10.1352161
+    },
+    {
+      "name": "propagation",
+      "exit_code": 0,
+      "seconds": 5.7180062
+    },
+    {
+      "name": "long-path",
+      "exit_code": 0,
+      "seconds": 1.1970212
+    },
+    {
+      "name": "cmd-nested",
+      "exit_code": 0,
+      "seconds": 2.6631969
+    },
+    {
+      "name": "legacy-iat-32",
+      "exit_code": 0,
+      "seconds": 0.5691141
+    },
+    {
+      "name": "legacy-iat-64",
+      "exit_code": 0,
+      "seconds": 0.5140902
+    },
+    {
+      "name": "cli-failures",
+      "exit_code": 0,
+      "seconds": 2.7705837
+    },
+    {
+      "name": "uac-unit-32",
+      "exit_code": 0,
+      "seconds": 0.4619119
+    },
+    {
+      "name": "uac-unit-64",
+      "exit_code": 0,
+      "seconds": 0.4342707
+    },
+    {
+      "name": "vb-font-32",
+      "exit_code": 0,
+      "seconds": 1.499999
+    },
+    {
+      "name": "vb-font-64",
+      "exit_code": 0,
+      "seconds": 1.3290474
+    },
+    {
+      "name": "vb-controls-64",
+      "exit_code": 0,
+      "seconds": 1.9787945
+    },
+    {
+      "name": "vb-controls-32",
+      "exit_code": 0,
+      "seconds": 2.4833169
+    },
+    {
+      "name": "control-extensions-32",
+      "exit_code": 0,
+      "seconds": 0.5410311
+    },
+    {
+      "name": "control-extensions-64",
+      "exit_code": 0,
+      "seconds": 0.440547
+    },
+    {
+      "name": "control-protocol-owner-32",
+      "exit_code": 0,
+      "seconds": 0.1890535
+    },
+    {
+      "name": "control-protocol-owner-64",
+      "exit_code": 0,
+      "seconds": 0.2040505
+    },
+    {
+      "name": "tab-controls-32",
+      "exit_code": 0,
+      "seconds": 0.6486945
+    },
+    {
+      "name": "tab-controls-64",
+      "exit_code": 0,
+      "seconds": 0.4524621
+    },
+    {
+      "name": "tab-controls-dpi-32",
+      "exit_code": 0,
+      "seconds": 0.7035592
+    },
+    {
+      "name": "tab-controls-dpi-64",
+      "exit_code": 0,
+      "seconds": 0.6294715
+    },
+    {
+      "name": "tab-controls-v5-32",
+      "exit_code": 0,
+      "seconds": 0.7245615
+    },
+    {
+      "name": "tab-controls-v5-64",
+      "exit_code": 0,
+      "seconds": 0.632528
+    },
+    {
+      "name": "tab-controls-v5-dpi-64",
+      "exit_code": 0,
+      "seconds": 0.5583402
+    },
+    {
+      "name": "tab-controls-v5-dpi-32",
+      "exit_code": 0,
+      "seconds": 0.7128935
+    },
+    {
+      "name": "pending-control-owner-32",
+      "exit_code": 0,
+      "seconds": 0.2041791
+    },
+    {
+      "name": "pending-control-owner-64",
+      "exit_code": 0,
+      "seconds": 0.1780026
+    },
+    {
+      "name": "header-v5-32",
+      "exit_code": 0,
+      "seconds": 0.5889294
+    },
+    {
+      "name": "header-v5-64",
+      "exit_code": 0,
+      "seconds": 0.5165517
+    },
+    {
+      "name": "header-v5-dpi-32",
+      "exit_code": 0,
+      "seconds": 0.5174699
+    },
+    {
+      "name": "header-v5-dpi-64",
+      "exit_code": 0,
+      "seconds": 0.5774923
+    },
+    {
+      "name": "header-v6-32",
+      "exit_code": 0,
+      "seconds": 0.605037
+    },
+    {
+      "name": "header-v6-64",
+      "exit_code": 0,
+      "seconds": 0.5264398
+    },
+    {
+      "name": "header-v6-dpi-32",
+      "exit_code": 0,
+      "seconds": 0.5777538
+    },
+    {
+      "name": "header-v6-dpi-64",
+      "exit_code": 0,
+      "seconds": 0.5040161
+    },
+    {
+      "name": "list-report-v5-64",
+      "exit_code": 0,
+      "seconds": 3.3962771
+    },
+    {
+      "name": "menu-cancel-x64",
+      "exit_code": 0,
+      "seconds": 66.7047639
+    },
+    {
+      "name": "pending-frame-owner-32",
+      "exit_code": 0,
+      "seconds": 0.3868285
+    },
+    {
+      "name": "list-report-v5-32",
+      "exit_code": 0,
+      "seconds": 4.9154054
+    },
+    {
+      "name": "list-report-v6-64",
+      "exit_code": 0,
+      "seconds": 8.4418465
+    },
+    {
+      "name": "pending-frame-owner-64",
+      "exit_code": 0,
+      "seconds": 0.4318736
+    },
+    {
+      "name": "list-report-v6-32",
+      "exit_code": 0,
+      "seconds": 10.2714327
+    },
+    {
+      "name": "tree-v5-32",
+      "exit_code": 0,
+      "seconds": 13.7010814
+    },
+    {
+      "name": "progress-v5-32",
+      "exit_code": 0,
+      "seconds": 1.4492521
+    },
+    {
+      "name": "progress-v6-32",
+      "exit_code": 0,
+      "seconds": 2.764378
+    },
+    {
+      "name": "progress-v5-64",
+      "exit_code": 0,
+      "seconds": 0.9942289
+    },
+    {
+      "name": "tree-v5-64",
+      "exit_code": 0,
+      "seconds": 11.8530159
+    },
+    {
+      "name": "header-owner-32",
+      "exit_code": 0,
+      "seconds": 0.3134077
+    },
+    {
+      "name": "header-owner-64",
+      "exit_code": 0,
+      "seconds": 0.2532367
+    },
+    {
+      "name": "progress-v6-64",
+      "exit_code": 0,
+      "seconds": 2.8899962
+    },
+    {
+      "name": "control-visibility-32",
+      "exit_code": 0,
+      "seconds": 1.7350331
+    },
+    {
+      "name": "tree-v6-32",
+      "exit_code": 0,
+      "seconds": 23.4156918
+    },
+    {
+      "name": "control-visibility-64",
+      "exit_code": 0,
+      "seconds": 1.4159704
+    },
+    {
+      "name": "tree-v6-64",
+      "exit_code": 0,
+      "seconds": 17.1250317
+    },
+    {
+      "name": "dialog-scope-64",
+      "exit_code": 0,
+      "seconds": 19.5432166
+    },
+    {
+      "name": "theme-stage-32",
+      "exit_code": 0,
+      "seconds": 0.1885938
+    },
+    {
+      "name": "theme-stage-64",
+      "exit_code": 0,
+      "seconds": 0.1772944
+    },
+    {
+      "name": "dialog-scope-32",
+      "exit_code": 0,
+      "seconds": 21.9944835
+    },
+    {
+      "name": "superclass-32",
+      "exit_code": 0,
+      "seconds": 2.4946248
+    },
+    {
+      "name": "superclass-64",
+      "exit_code": 0,
+      "seconds": 2.1186241
+    },
+    {
+      "name": "rollback",
+      "exit_code": 0,
+      "seconds": 4.0526847
+    },
+    {
+      "name": "creation-contract",
+      "exit_code": 0,
+      "seconds": 9.0711806
+    },
+    {
+      "name": "dialog-show-64",
+      "exit_code": 0,
+      "seconds": 88.6174594
+    },
+    {
+      "name": "dialog-show-32",
+      "exit_code": 0,
+      "seconds": 94.0960604
+    },
+    {
+      "name": "dialogs",
+      "exit_code": 0,
+      "seconds": 62.4231023
+    },
+    {
+      "name": "messages",
+      "exit_code": 0,
+      "seconds": 81.6688334
+    }
+  ],
+  "native_screenshots": {
+    "DoubleKiller.png": {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t15-s9\\DoubleKiller.png",
+      "sha256": "2464582e1c0adb170c76f95dc4c29bc3e493a7af30359a96bc265a0e257f7654"
+    },
+    "MD5summer.png": {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t15-s9\\MD5summer.png",
+      "sha256": "3eba381ddd298e1be5ad3e62eaa49dc65d44a1cbf0a6e0d1c3bfa7430a4ca08f"
+    },
+    "Progress-error.png": {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t15-s9\\Progress-error.png",
+      "sha256": "8a6942dc8e18556c4e505a779ac6f4b201e5204a215d950761e7d358bc2adce8"
+    },
+    "Progress-normal.png": {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t15-s9\\Progress-normal.png",
+      "sha256": "a189a73a105889e9378c98455de54ac20e6cf98ad70b14430465854cb4077c25"
+    },
+    "Progress-paused.png": {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t15-s9\\Progress-paused.png",
+      "sha256": "52de7b6c9efdd6ad06e660da32b673e8198492d21b62688d1c155cde99fca56d"
+    }
+  },
+  "implementation_statistics": {
+    "scope": [
+      "CMakeLists.txt",
+      "src/ntw16s-dll/attachment.c",
+      "src/ntw16s-dll/control_class.h",
+      "src/ntw16s-dll/control_protocol.c",
+      "src/ntw16s-dll/controls.c",
+      "src/ntw16s-dll/controls.h",
+      "tests/ntw16s-dll/tree_controls.c",
+      "tools/Test-Package.ps1",
+      "src/ntw16s-dll/progress_paint.c",
+      "src/ntw16s-dll/progress_paint.h",
+      "tests/ntw16s-dll/progress_controls.c"
+    ],
+    "tracked_numstat": [
+      "15\t1\tCMakeLists.txt",
+      "2\t1\tsrc/ntw16s-dll/attachment.c",
+      "1\t1\tsrc/ntw16s-dll/control_class.h",
+      "23\t4\tsrc/ntw16s-dll/control_protocol.c",
+      "28\t2\tsrc/ntw16s-dll/controls.c",
+      "1\t0\tsrc/ntw16s-dll/controls.h",
+      "16\t1\ttests/ntw16s-dll/tree_controls.c",
+      "8\t4\ttools/Test-Package.ps1"
+    ],
+    "new_file_lines": {
+      "src/ntw16s-dll/progress_paint.c": 60,
+      "src/ntw16s-dll/progress_paint.h": 7,
+      "tests/ntw16s-dll/progress_controls.c": 121
+    },
+    "added": 282,
+    "deleted": 14,
+    "net": 268
+  },
+  "preserved_other_work": [
+    "docs/states/QUEUE.md",
+    "docs/proposals/global-style-mode.md",
+    "docs/proposals/outline-window-move.md"
+  ],
+  "references": [
+    "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setkeyboardstate",
+    "https://learn.microsoft.com/en-us/windows/win32/controls/pbm-getbarcolor",
+    "https://learn.microsoft.com/en-us/windows/win32/controls/pbm-getstate"
+  ],
+  "installed": [
+    {
+      "destination": "O:\\repos.hobby\\win16style\\assets",
+      "installed_hashes": "four exact matches",
+      "cases": [
+        {
+          "seconds": 0.1606712,
+          "exit": 0,
+          "name": "abi-x86"
+        },
+        {
+          "seconds": 5.0537284,
+          "exit": 0,
+          "name": "tree-v5-x86"
+        },
+        {
+          "seconds": 7.6310993,
+          "exit": 0,
+          "name": "tree-v6-x86"
+        },
+        {
+          "seconds": 1.0199565,
+          "exit": 0,
+          "name": "progress-v5-x86"
+        },
+        {
+          "seconds": 1.3362097,
+          "exit": 0,
+          "name": "progress-v6-x86"
+        },
+        {
+          "seconds": 0.089491,
+          "exit": 0,
+          "name": "abi-x64"
+        },
+        {
+          "seconds": 4.6840838,
+          "exit": 0,
+          "name": "tree-v5-x64"
+        },
+        {
+          "seconds": 10.9446205,
+          "exit": 0,
+          "name": "tree-v6-x64"
+        },
+        {
+          "seconds": 0.8880876,
+          "exit": 0,
+          "name": "progress-v5-x64"
+        },
+        {
+          "seconds": 1.6198139,
+          "exit": 0,
+          "name": "progress-v6-x64"
+        },
+        {
+          "seconds": 1.7841845,
+          "exit": 0,
+          "name": "automatic"
+        }
+      ],
+      "progress_dll_paths": "matched actual deployed location",
+      "status": "passed"
+    },
+    {
+      "installed_hashes": "four exact matches",
+      "cases": [
+        {
+          "exit": 0,
+          "name": "abi-x86",
+          "seconds": 0.1167045
+        },
+        {
+          "exit": 0,
+          "name": "tree-v5-x86",
+          "seconds": 7.1272585
+        },
+        {
+          "exit": 0,
+          "name": "tree-v6-x86",
+          "seconds": 12.179207
+        },
+        {
+          "exit": 0,
+          "name": "progress-v5-x86",
+          "seconds": 0.9984111
+        },
+        {
+          "exit": 0,
+          "name": "progress-v6-x86",
+          "seconds": 1.3995755
+        },
+        {
+          "exit": 0,
+          "name": "abi-x64",
+          "seconds": 0.0941973
+        },
+        {
+          "exit": 0,
+          "name": "tree-v5-x64",
+          "seconds": 4.1490993
+        },
+        {
+          "exit": 0,
+          "name": "tree-v6-x64",
+          "seconds": 6.8251131
+        },
+        {
+          "exit": 0,
+          "name": "progress-v5-x64",
+          "seconds": 0.7629864
+        },
+        {
+          "exit": 0,
+          "name": "progress-v6-x64",
+          "seconds": 1.1026154
+        },
+        {
+          "exit": 0,
+          "name": "automatic",
+          "seconds": 1.6205495
+        }
+      ],
+      "progress_dll_paths": "matched actual deployed location",
+      "destination": "O:\\winnt\\system32",
+      "status": "passed"
+    }
+  ],
+  "frozen_old_product_negatives": [
+    {
+      "exit": 1,
+      "architecture": "x86",
+      "case": "frozen-progress-v6-old-S8"
+    },
+    {
+      "exit": 1,
+      "architecture": "x64",
+      "case": "frozen-progress-v6-old-S8"
+    }
+  ]
+}

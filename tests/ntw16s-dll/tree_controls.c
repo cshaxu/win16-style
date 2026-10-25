@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <imm.h>
 #include <wchar.h>
+#include <string.h>
 #include "isolated_process.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"TREE_FAIL line=%u error=%lu %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
 #include "system_glyph_mask.h"
@@ -75,7 +76,21 @@ static int child(BOOL styled,BOOL aware)
         LRESULT denied=SendMessageW(tree,TVM_EXPAND,TVE_EXPAND,(LPARAM)first_item);cancel_expansion=FALSE;
         CHECK(!denied && expansions==exp+1 && !(SendMessageW(tree,TVM_GETITEMSTATE,(WPARAM)first_item,TVIS_EXPANDED)&TVIS_EXPANDED));
         CHECK(SendMessageW(tree,TVM_EXPAND,TVE_EXPAND,(LPARAM)first_item));UpdateWindow(root);SetFocus(tree);
-        SendMessageW(tree,TVM_SELECTITEM,TVGN_CARET,(LPARAM)first_item);SendMessageW(tree,WM_KEYDOWN,VK_DOWN,1);SendMessageW(tree,WM_KEYUP,VK_DOWN,1);CHECK((HTREEITEM)SendMessageW(tree,TVM_GETNEXTITEM,TVGN_CARET,0)==children[0]);
+        /* Message input does not define the queue's modifier state. Verify
+         * Ctrl+Down natively preserves the caret, then isolate plain Down.
+         * This changes only this test thread and restores all256 key bytes. */
+        BYTE saved_keys[256],neutral_keys[256]={0},control_keys[256]={0},restored_keys[256];CHECK(GetKeyboardState(saved_keys));
+        control_keys[VK_CONTROL]=control_keys[VK_LCONTROL]=0x80;CHECK(SetKeyboardState(control_keys));
+        SetFocus(tree);CHECK(GetFocus()==tree && SendMessageW(tree,TVM_SELECTITEM,TVGN_CARET,(LPARAM)first_item));
+        SendMessageW(tree,WM_KEYDOWN,VK_DOWN,1);SendMessageW(tree,WM_KEYUP,VK_DOWN,1);
+        BOOL control_preserved=(HTREEITEM)SendMessageW(tree,TVM_GETNEXTITEM,TVGN_CARET,0)==first_item;
+        CHECK(SetKeyboardState(neutral_keys));CHECK(SendMessageW(tree,TVM_SELECTITEM,TVGN_CARET,(LPARAM)first_item));
+        SHORT control_state=GetKeyState(VK_CONTROL),shift_state=GetKeyState(VK_SHIFT),alt_state=GetKeyState(VK_MENU);
+        SendMessageW(tree,WM_KEYDOWN,VK_DOWN,1);SendMessageW(tree,WM_KEYUP,VK_DOWN,1);
+        BOOL moved=(HTREEITEM)SendMessageW(tree,TVM_GETNEXTITEM,TVGN_CARET,0)==children[0],focused=GetFocus()==tree;
+        CHECK(SetKeyboardState(saved_keys) && GetKeyboardState(restored_keys));BOOL restored=!memcmp(saved_keys,restored_keys,sizeof(saved_keys));
+        printf("TREE_INPUT_STATE_OK ctrl_preserved=%u neutral_moves=%u focus=%u control=%04x shift=%04x alt=%04x restored=%u\n",control_preserved,moved,focused,(unsigned short)control_state,(unsigned short)shift_state,(unsigned short)alt_state,restored);
+        CHECK(control_preserved && moved && focused && !control_state && !shift_state && !alt_state && restored);
         unsigned sel=selections;cancel_selection=TRUE;CHECK(!SendMessageW(tree,TVM_SELECTITEM,TVGN_CARET,(LPARAM)children[1]));cancel_selection=FALSE;CHECK(selections==sel+1 && (HTREEITEM)SendMessageW(tree,TVM_GETNEXTITEM,TVGN_CARET,0)==children[0]);
         CHECK(SendMessageW(tree,TVM_EXPAND,TVE_COLLAPSE,(LPARAM)first_item));CHECK(SendMessageW(tree,TVM_EXPAND,TVE_EXPAND,(LPARAM)first_item));
         SendMessageW(tree,TVM_SELECTITEM,TVGN_FIRSTVISIBLE,(LPARAM)first_item);SendMessageW(tree,WM_VSCROLL,SB_LINEDOWN,0);CHECK((HTREEITEM)SendMessageW(tree,TVM_GETNEXTITEM,TVGN_FIRSTVISIBLE,0)!=first_item);
