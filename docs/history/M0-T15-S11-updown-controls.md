@@ -75,3 +75,16 @@ Seventeen implementation/test/build files add429/delete12/net417 lines; docs,
 receipts, binaries and unrelated work excluded. Both installed locations pass18
 focused ABI/tree/progress/trackbar/UpDown checks plus one automatic injection matrix,
 38 checks in total. Actual installed DLL paths match each location.
+
+
+P1 2bf6c55121d65aacde12a716d8f176eb566f6d09 is pushed. Actual GitHub210 files/197
+inputs match in16.5496254 seconds. Coordinator reads actual commit/diff; strict archive
+source/resource gates and affected dual DLL rebuild+4 ABI/pending-frame tests pass.
+201 Git objects recover197 inputs and four old artifacts validating8 backups; only
+known LICENSE/two PowerShell raw/Git EOL identities differ, no C receipt repair.
+Archive4/deployed8 match, original DoubleKiller equals its owned copy. Exact two task
+roots/ancestors/descendants have reparse0; native guard positive exe/loadedDLL refuses
+C0000043, unloaded succeeds.277 task images are unused; task processes exit. Both
+registered roots are safely cleared,45 reviewed sources restored byte-for-byte;
+stable Ninja/ccache and external native PNG stay. P2 changes no product input/binary,
+closes S11 and admits S12 frozen coverage audit. M0/T15 remain open.

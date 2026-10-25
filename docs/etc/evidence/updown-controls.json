@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "packet": "M0 T15 S11",
-  "status": "verified locally:91 actual-package pass; double publication and installed verification passed; remote review pending",
+  "status": "S11 closed:91 actual-package,38 installed,actual remote210/197 inputs,strict archive dual DLL+4,201-object recovery and277-image safe cleanup; S12 frozen coverage audit admitted;M0/T15 open",
   "baseline_commit": "2608b6150a4bdad28ae18ce9fb9898f6f3dfad13",
   "implementation": "Finite initialized native UpDown/exact main-EXE TUpDown; actual native DFC/DTB states; verified window/print/COMCTL compatible DC attribution; bounded32 weak DC map; no input/state inference",
   "architecture": "C17 GCC Ninja ccache; three components/four products; ABI3/31 named exports+ordinal1;35 process-local detours/40 private slots",
@@ -1643,5 +1643,175 @@
         "deleted": 0
       }
     ]
+  },
+  "P1_actual_remote": {
+    "status": "passed",
+    "commit": "2bf6c55121d65aacde12a716d8f176eb566f6d09",
+    "remote_main": "2bf6c55121d65aacde12a716d8f176eb566f6d09",
+    "files": 210,
+    "source_inputs": 197,
+    "seconds": 16.549625400046352
+  },
+  "canonical_affected_rebuild": {
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "tests": [
+      {
+        "configure_seconds": 5.503044900018722,
+        "passed": 2,
+        "build_seconds": 9.650282100017648,
+        "tests": 2,
+        "skipped": [],
+        "architecture": "x86",
+        "test_seconds": 0.7834917999571189
+      },
+      {
+        "configure_seconds": 4.854163599957246,
+        "passed": 2,
+        "build_seconds": 10.187841799983289,
+        "tests": 2,
+        "skipped": [],
+        "architecture": "x64",
+        "test_seconds": 0.8534237999701872
+      }
+    ],
+    "profile": "Focused",
+    "targets": "ntw16s,core-abi,core-pending-frame-owner",
+    "build_root": "O:\\repos.hobby\\win16style\\build\\t15-controls\\s11-canonical\\build\\.ninja",
+    "selection": "^core/(abi|pending-frame-owner)$",
+    "status": "passed",
+    "exit_code": 0,
+    "build_jobs": 8,
+    "test_jobs": 2
+  },
+  "P1_recovery_archive": {
+    "status": "passed",
+    "commit": "2bf6c55121d65aacde12a716d8f176eb566f6d09",
+    "source_inputs": 197,
+    "Git_objects": 201,
+    "old_backups": 8,
+    "archive_artifacts": 4,
+    "deployed_artifacts": 8,
+    "raw_recovery_EOL": [
+      "LICENSE",
+      "tools/Build-Package.ps1",
+      "tools/Verify-Governance.ps1"
+    ],
+    "archive_alternate_identity": [
+      "tools/Build-Package.ps1",
+      "tools/Verify-Governance.ps1"
+    ],
+    "original_DoubleKiller_equals_owned_copy": true
+  },
+  "canonical_scope": "Actual P1 Git archive strict source/resource gates and affected dual DLL rebuild plus4 ABI/pending-frame-owner tests;91 actual-package and38 installed checks separate; no unrelated executable rebuild claim",
+  "review_notes": [
+    "actual commit/diff read under coordinator role; private35/40 vs public ABI unchanged checked",
+    "early separate audit proposal failed orphan gate; folded into existing authoritative framework brief; no rule/checker/other-task QUEUE change",
+    "all197 raw/Git/archive inputs recoverable; only known three EOL variants; no C receipt repair"
+  ],
+  "safe_cleanup": {
+    "roots": [
+      "O:\\repos.hobby\\win16style\\build\\t15-controls",
+      "O:\\repos.hobby\\win16style\\build\\t15-package"
+    ],
+    "native_images": 277,
+    "status": "passed",
+    "retained_sources": {
+      "s8-dk-owned-driver.c": "d1feb8568448ba38d63e54b97104c3baeaaa82f472a8064a75b075ab305c5a55",
+      "s11-owned-folder.h": "1795936bf39d04a2aec95f3d6729a1aa87c0ed2321bd5f9dda52917d478b8f42",
+      "s10-installed.ps1": "e93658bfece285f510dbb37d877980827f99c10c53f96f3fa759ca6b818766f0",
+      "s8-owned-folder.h": "7222c3d5ce6ac95ce60b74b0541bf33db02ca76cdadda0451f3c50696dc12c90",
+      "s8-md5-probe.c": "1483293dd1a0ef1106b63cbfd3ae97c11bfa75de08d801c8e608e6a251158c05",
+      "s11-updown-key-route.c": "afc2d73d8b147cffa60133fb63832c33c47508836be8d051954a056f4047135e",
+      "s11-dk-owned-probe.c": "7219f93655ec993f36d3e4434639936ea6482ce5bad15b995c0c3da25ad1ac6c",
+      "s9-owned-folder.h": "d73ff994a37fdac09ef814361b8fd6dfa2b6ec3f1c5e08bb1f0c75b492e06651",
+      "s8-dk-owned-probe.c": "eaefc7f31ee85cd22b4d0b5f4fab42a7153b82b54610082827e7b48d7212f009",
+      "s9-dk-owned-probe.c": "51ab2600c0c5e569c145d01f98734f5465bcc254ca80425cfc3871eefff94330",
+      "s6-dk-probe.c": "a8fd253ac4e66d21c94ed2a6f1aa6a194308bf3fbd0522374bd66f3175c9d288",
+      "s9-native-protocols.c": "64cfbe2ed15efc6d1b3ba0cb3697d099c2e578412270d8534a66e9c8172d07ee",
+      "s6-list-report.h": "17b97fd73b04aaa7cc1c7203c66eec9104e9b537191cae8925778be8b2bb3cc4",
+      "s9-native-input.c": "3ee913902c3058aa15fe579b1475343be75a1d6f7a95298ead79cd3b94a7e82d",
+      "file-owners.c": "6c73285aa04fb564db13c4093396a6d5584db1496527df1ab754bf8eb7de79c8",
+      "s9-old-tree-seeded.c": "93bffbd05858603ac3fac8481c11d9620abc63156b940f24a2d8e733d6ceb4f7",
+      "s11-installed.ps1": "404dfc6e768f28d6cc0a14e0b8ede9cd266b6329e663471afe6e939fecf290da",
+      "s7-dk-owned-driver.c": "4ae09231d37065a5fd2954d6812035cbe1726a9b4eb7954546efe84aad84e99d",
+      "s10-native-ranges.c": "d64ff625c7ea24c33fe7b0414684feecce6d755528ae0f4f2a33e000f6d5083e",
+      "s11-updown-buffer-route.c": "9bde6299ca5cb7b328411ecda0b2b03581623a12ab0a7064edaf5403079ea1b5",
+      "s9-dk-owned-driver.c": "60592cf90b0ee1ff54a090a52dc5a40444e3ed4086dafe167650a19b48cb2539",
+      "s10-native-ranges-paint.c": "a8e7e133def4adaf1ff6595fc30c3c0961ac816279dca970d374f6a17049c548",
+      "s11-updown-api-route.c": "14b6d17869c9afde8aa759fa43d36386c3ff507c042b0387b7a5377d07dc05b8",
+      "s10-native-ranges-color.c": "7bfb2a08d8113c2a64b5f9f987a2e562ad712e53025660e4fe23885be9e447cc",
+      "md5-probe.c": "5423599d06e219df353d1c50f55cac8e90779dcc9656446011140864f64e7969",
+      "s7-dk-owned-probe.c": "07438de907c8d01d25fba2670cd1dcdd6f0c543052f0f12a6e1c6004c3140da0",
+      "s10-native-ranges-accessible.c": "bfbd07ba2ea9170da8ec2d6e38fed1a2e5fc85065a1fffb64587fdf793803344",
+      "s10-dk-owned-probe.c": "fc7a305d6057055c1f4c73dd040c8a254e055dfd80b0c82ef35637d47b4edb39",
+      "s11-updown-theme-identity.c": "e8f63711522c9391cc243d6264c1dc253d0d5b833b09be351adb9c1c6c2e5130",
+      "s11-old-startup.c": "55fa1acfd32b96978f225b69d40f0aebb61f3b7eaea9bf817a9ef46d091e90bd",
+      "s10-native-ranges-theme.c": "a10dd06220f37df4d2e1122d1090c3cf78e883a9959379218df8224d711c6f26",
+      "s11-updown-dc-route.c": "93de499ada4141b47ec57aba8c48ec911919efa845b5eca97d371be31ee40ebd",
+      "s8-tree-native-destroy.c": "d0c79dbb105d83ccd459a0544ed16327ffca7bdeb26100a11d1137cf0b2d0ce9",
+      "verify-remote.py": "b8ef757e825ad8e6c224690d6c3ed2ccac63ac797b084861d39ba255d81de217",
+      "s10-native-ranges-input.c": "60a10596dc0138687116ea5c5553059cd038387bf68a9b49bb3d07e4acaf102d",
+      "s11-dk-owned-driver.c": "9ff8422586ceb0a15fda5d880768893900bcdc0328ca943e4efe4883f0aa7b3f",
+      "s10-tree-profile.c": "47ff2644039eba6773264111ade0f684b0e3df85119ea73b5dcff8fb1327a47a",
+      "s7-owned-folder.h": "77a56db7626ccb4b66fb769d84e6dd873c2e89a77324c3762979a29a3cb5496c",
+      "s11-updown-dc-table.c": "92d115f0cd5431f3f2aea28a50f7d5b9041d86d56f805fe80fba7fcea5991834",
+      "image-guard.c": "1c5a49290cdfbd5944c9566b1bf11f1bc607397bb12491c11fe79578e38ed549",
+      "s11-updown-native.c": "f7dd442c3fb090e4489904d694132b61f3ab3a28e13a50c6822c1559d0a0c2e9",
+      "md5-driver.c": "e334bbbd0c764196abd48427126b8ef41eda725f1fb969e2c23d7005be275f53",
+      "s10-owned-folder.h": "f06a3274e1f96c17bc942b84a2ad52a83786c55c47eefdd0839e4792df84f5e2",
+      "s10-dk-owned-driver.c": "09c7786a4ca4ec12466e0bae2f7dd25ec02ecda62e4e6e3ed5878daabd3f3e34",
+      "s6-list-header-api.c": "d634a7d272533d42a30e1e9e7e01820dde8cbe0ef32b7d3cacf489cb2c01ea29"
+    },
+    "active_task_images": 0,
+    "batches": [
+      {
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+        "count": 32
+      },
+      {
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+        "count": 32
+      },
+      {
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+        "count": 32
+      },
+      {
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+        "count": 32
+      },
+      {
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+        "count": 32
+      },
+      {
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+        "count": 32
+      },
+      {
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+        "count": 32
+      },
+      {
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+        "count": 32
+      },
+      {
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=21 no_write=1",
+        "count": 21
+      }
+    ],
+    "positive_control": "running exe/loaded DLL C0000043;unloaded00000000",
+    "directories_checked": 1386,
+    "reparse_points": 0
+  },
+  "cleanup": "completed: two exact registered task roots removed after actual remote/archive/recovery, native image guards and deployed hashes; reviewed sources restored; stable .ninja/.ccache and external PNG kept",
+  "closing_delivery": {
+    "delivery": "M0 T15 S11 P2",
+    "binary_change": "none; same91-case P1 batch and197 inputs",
+    "following_scope": "S12 frozen T15 coverage audit; no newT;HD Tune elevated default skip"
   }
 }
