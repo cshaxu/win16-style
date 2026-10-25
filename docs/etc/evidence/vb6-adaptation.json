@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "delivery": "M0 T15 S1 P1",
-  "state": "verified and published; actual remote review pending",
+  "state": "S1 closed after actual P1 remote review and safe cleanup; T15 appearance acceptance pending",
   "baseline": "4a93d2e270142cb978db8733c49213f8159a3f9a",
   "target": {
     "path": "O:/winnt/madshow.exe",
@@ -972,5 +972,838 @@
         "deleted": 0
       }
     ]
+  },
+  "remote_review": {
+    "status": "passed",
+    "commit": "6246df6cc86947510e164d7a00eceb06b350e281",
+    "remote_main": "6246df6cc86947510e164d7a00eceb06b350e281",
+    "downloads": 177,
+    "source_inputs": 163,
+    "artifacts": 4,
+    "deployed_copies": 8,
+    "seconds": 10.72590990003664,
+    "coordinator_checks": {
+      "gui_owned_cache_release": true,
+      "native_barrier": true,
+      "standard_menu_font_mode_preserved": true,
+      "allocator_instrumentation_test_only": true,
+      "worker_cases_registered_after_setup": true,
+      "no_rule_changes": true,
+      "src/ntw16s-dll/win16_style.c_preserved": true,
+      "src/ntw16s-dll/frame_buttons.h_preserved": true,
+      "src/ntw16s-dll/control_glyphs.h_preserved": true,
+      "src/ntw16s-dll/combo_glyph.h_preserved": true,
+      "src/ntw16s-dll/menu_glyphs.h_preserved": true,
+      "src/ntw16s-dll/scroll_glyphs.h_preserved": true,
+      "src/ntw16s-dll/resources.md_preserved": true
+    },
+    "receipt_sha256": "38dc6c67c957a4103a217a633fa6c37c2027718a049c46ddab2990ab18a2f9f5",
+    "content_manifest_sha256": "71ac9f0223db8fb524f37ab4098826414dd7f74b7e32a30b7649adb00f311a91"
+  },
+  "package_cases": [
+    {
+      "exit_code": 0,
+      "seconds": 0.2392695,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x86\\core-abi.exe",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s32.dll"
+      ],
+      "name": "abi-x86",
+      "stdout_sha256": "e035766e9f9abbcbfcd1e323d70fe6e936283333e44403622a358449610e351e",
+      "success_markers": [
+        "ABI PASS width=32 version=3 public=31 private-bind-exports=0"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.2430941,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\core-abi.exe",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s64.dll"
+      ],
+      "name": "abi-x64",
+      "stdout_sha256": "0b3588f46cec840251443a03dc29d798fd7baddb99706ca4f21b229f9c62995c",
+      "success_markers": [
+        "ABI PASS width=64 version=3 public=31 private-bind-exports=0"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.3020339,
+      "command": "C:\\Program Files\\Python313\\python.exe",
+      "arguments": [
+        "-B",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\tests\\demo-exe\\boundary.py",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\demo.exe"
+      ],
+      "name": "demo-boundary",
+      "stdout_sha256": "b4a442c006f662584a5b52d0e74a13ef1a174ef88038371da572d3e318b8c529",
+      "success_markers": [
+        "DEMO BOUNDARY PASS x64 GUI, Windows USER32/KERNEL32/system CRT only, no exports/delay imports or source style consumption; sha256=f5da4181bb4e354b90aeb3f3be89fe75b0dbb65930a2159bae3bf85383dc64e4"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 2.0920521,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\demo-observe.exe",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\demo.exe"
+      ],
+      "name": "demo-pair",
+      "stdout_sha256": "af09c883ef2a4404d7211a91836ae95412022e8ce86ca9144c86c25a0d12e1ac",
+      "success_markers": [
+        "DEMO INTERACTION PASS styled=0 posted Tab=7 focus verified via GUI thread; dpi=144 scrollbar thickness=26",
+        "DEMO ABOUT/MOVE PASS styled=0 modal dialog opened/closed and exact window displacement",
+        "DEMO OBSERVE PASS styled=0 same image, six classes, data/notifications/menu/window commands, text advance=41 caption pixels=0",
+        "DEMO INTERACTION PASS styled=1 posted Tab=7 focus verified via GUI thread; dpi=144 scrollbar thickness=26",
+        "DEMO CAPTURE PASS styled=1 scrollbar arrow press/release position=29",
+        "DEMO ABOUT/MOVE PASS styled=1 modal dialog opened/closed and exact window displacement",
+        "DEMO OBSERVE PASS styled=1 same image, six classes, data/notifications/menu/window commands, text advance=41 caption pixels=26142",
+        "DEMO PAIR PASS external module/appearance/business observations on private desktop; physical input not claimed"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 7.5603392,
+      "command": "C:\\Program Files\\Python313\\python.exe",
+      "arguments": [
+        "-B",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\tests\\run16s-exe\\wait.py",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x86\\wait-target.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\wait-target.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\wait-gui-target.exe"
+      ],
+      "name": "wait-contract",
+      "stdout_sha256": "30c34864e94810061e201a86f8a192146ddf63ad460d27807eb34068c62928ae",
+      "success_markers": [
+        "WAIT CASE PASS case=0 console=True forced=False blocking=True cmd=25048 target=24532 members=4 code=42",
+        "WAIT CASE PASS case=1 console=True forced=False blocking=True cmd=40872 target=7624 members=4 code=42",
+        "WAIT CASE PASS case=2 console=True forced=True blocking=True cmd=3468 target=10652 members=4 code=42",
+        "WAIT CASE PASS case=3 console=True forced=True blocking=True cmd=21880 target=31904 members=4 code=42",
+        "WAIT CASE PASS case=4 console=False forced=False blocking=False cmd=19536 target=41244 members=0 code=0",
+        "WAIT CASE PASS case=5 console=False forced=True blocking=True cmd=42888 target=37768 members=0 code=42",
+        "WAIT CONTRACT PASS 6 cases: console default/explicit sync42, GUI default async0/explicit sync42, parent cmd blocked, shared console, injected target"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 63.3914988,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\core-font-layout.exe",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s64.dll"
+      ],
+      "name": "font-layout-x64",
+      "stdout_sha256": "a961b2caf0c68a747992699c722fa67d188e1b2a38491ec90cf9cd5dff78b7ad",
+      "success_markers": [
+        "FONT LAYOUT DIALOG PASS dpi=96 native DS_SETFONT DLU labels fit; repeated frame font refresh",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT DIALOG PASS dpi=96 native DS_SETFONT DLU labels fit; repeated frame font refresh",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT DIALOG PASS dpi=96 native DS_SETFONT DLU labels fit; repeated frame font refresh",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT DIALOG PASS dpi=96 native DS_SETFONT DLU labels fit; repeated frame font refresh",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT DIALOG PASS dpi=96 native DS_SETFONT DLU labels fit; repeated frame font refresh",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT DIALOG PASS dpi=96 native DS_SETFONT DLU labels fit; repeated frame font refresh",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT DIALOG PASS dpi=96 native DS_SETFONT DLU labels fit; repeated frame font refresh",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT DIALOG PASS dpi=96 native DS_SETFONT DLU labels fit; repeated frame font refresh",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=700 seven classes; app update/null/detach",
+        "FONT MENU BAR PASS dpi=96 System proportional glyph pixels",
+        "FONT MENU SYSTEM PASS dpi=96 proportional System16 glyph pixels; common shortcut/check/arrow columns",
+        "FONT REENTRANT PASS nested change/remove retains outbound System font and restores latest app font",
+        "FONT LAYOUT DIALOG PASS dpi=96 native DS_SETFONT DLU labels fit; repeated frame font refresh"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 91.7557202,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x86\\core-font-layout.exe",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s32.dll"
+      ],
+      "name": "font-layout-x86",
+      "stdout_sha256": "252a5aa6e67642ed3950fd2ac7bfcfde965dcd5c90f38115c51f60955b3c61a0",
+      "success_markers": [
+        "FONT LAYOUT DIALOG PASS dpi=96 native DS_SETFONT DLU labels fit; repeated frame font refresh",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT DIALOG PASS dpi=96 native DS_SETFONT DLU labels fit; repeated frame font refresh",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT DIALOG PASS dpi=96 native DS_SETFONT DLU labels fit; repeated frame font refresh",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT DIALOG PASS dpi=96 native DS_SETFONT DLU labels fit; repeated frame font refresh",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT DIALOG PASS dpi=96 native DS_SETFONT DLU labels fit; repeated frame font refresh",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT DIALOG PASS dpi=96 native DS_SETFONT DLU labels fit; repeated frame font refresh",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT DIALOG PASS dpi=96 native DS_SETFONT DLU labels fit; repeated frame font refresh",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT DIALOG PASS dpi=96 native DS_SETFONT DLU labels fit; repeated frame font refresh",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=96 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=144 weight=700 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=400 seven classes; app update/null/detach",
+        "FONT LAYOUT CONTROLS PASS nominal-dpi=192 weight=700 seven classes; app update/null/detach",
+        "FONT MENU BAR PASS dpi=96 System proportional glyph pixels",
+        "FONT MENU SYSTEM PASS dpi=96 proportional System16 glyph pixels; common shortcut/check/arrow columns",
+        "FONT REENTRANT PASS nested change/remove retains outbound System font and restores latest app font",
+        "FONT LAYOUT DIALOG PASS dpi=96 native DS_SETFONT DLU labels fit; repeated frame font refresh"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 67.3471898,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x86\\core-menu-cancel.exe",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s32.dll"
+      ],
+      "name": "menu-cancel-x86",
+      "stdout_sha256": "9a2c2e7a9a775ebf5b448c0e3295416b8fd2158341a58f20c3c257e48f748146",
+      "success_markers": [
+        "MENU NATIVE SHADOW PASS unstyled popup executes before/after styled scope",
+        "MENU OPEN CAPTURE PASS dpi=96 native WM_PRINT owned frame and open popup",
+        "MENU BORDER PASS dpi=96 outer=114x98 margins=3,3,3,3 flat=1 pixels=1236",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU BORDER PASS dpi=96 outer=114x98 margins=3,3,3,3 flat=1 pixels=1236",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 0 native loop/focus/capture/hover/item restoration",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 1 native loop/focus/capture/hover/item restoration",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 2 native loop/focus/capture/hover/item restoration",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 3 native loop/focus/capture/hover/item restoration",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 4 native loop/focus/capture/hover/item restoration",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 5 native loop/focus/capture/hover/item restoration",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 6 native loop/focus/capture/hover/item restoration",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 7 native loop/focus/capture/hover/item restoration",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 8 native loop/focus/capture/hover/item restoration",
+        "MENU BORDER PASS dpi=96 outer=69x24 margins=3,3,3,3 flat=1 pixels=522",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU BORDER PASS dpi=96 outer=141x24 margins=3,3,3,3 flat=1 pixels=954",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU BORDER PASS dpi=96 outer=69x24 margins=3,3,3,3 flat=1 pixels=522",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU OPEN CAPTURE PASS dpi=96 native WM_PRINT owned frame and open popup",
+        "MENU BORDER PASS dpi=96 outer=69x24 margins=3,3,3,3 flat=1 pixels=522",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 9 native loop/focus/capture/hover/item restoration",
+        "MENU BORDER PASS dpi=96 outer=140x116 margins=3,3,3,3 flat=1 pixels=1500",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 10 native loop/focus/capture/hover/item restoration",
+        "MENU BORDER PASS dpi=96 outer=140x116 margins=3,3,3,3 flat=1 pixels=1500",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 11 native loop/focus/capture/hover/item restoration",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 12 native loop/focus/capture/hover/item restoration",
+        "MENU CANCEL CASE PASS 13 native loop/focus/capture/hover/item restoration",
+        "MENU CANCEL CASE PASS 14 native loop/focus/capture/hover/item restoration"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.2530968,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x86\\startup-error-unit.exe",
+      "arguments": [],
+      "name": "startup-error-unit-32",
+      "stdout_sha256": "bc688761a9c459f894501f42c576179e1eb16889417352a523a5404cb0b04869",
+      "success_markers": [
+        "SHELL UNIT PASS classification=8 delegation=5 raw_args=preserved no_ui_suppression handles=stable"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.2507187,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\startup-error-unit.exe",
+      "arguments": [],
+      "name": "startup-error-unit-64",
+      "stdout_sha256": "bc688761a9c459f894501f42c576179e1eb16889417352a523a5404cb0b04869",
+      "success_markers": [
+        "SHELL UNIT PASS classification=8 delegation=5 raw_args=preserved no_ui_suppression handles=stable"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.9344434,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\legacy-rejection.exe",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\run16s.exe"
+      ],
+      "name": "legacy-rejection",
+      "stdout_sha256": "090dbeb0c38d483cbb0480343957c2dde22fa8f531751c74b22942e78bc7950f",
+      "success_markers": [
+        "LEGACY REJECTION PASS 4 cases stderr193 exit4 no_retry_ui exact_owned_processes"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.4928129,
+      "command": "C:\\Program Files\\Python313\\python.exe",
+      "arguments": [
+        "-B",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\tests\\run16s-exe\\cli.py",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\run16s.exe"
+      ],
+      "name": "cli",
+      "stdout_sha256": "86520b91997a6d2995da61505647ffa6463eb4008d77bab0f7befd831b16fa58",
+      "success_markers": [
+        "CLI PASS usage/help/wait argument, absent target and malformed native image; no target executed"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 1.7221303,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\launch-automatic.exe",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x86\\launch-target.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\launch-target.exe"
+      ],
+      "name": "automatic",
+      "stdout_sha256": "1fc71e40824dcc8a38d6ab42242c61cdb763f44397974ae608a61801917f0c3c",
+      "success_markers": [
+        "LAUNCH MATRIX PASS actual x64 CLI -> x86/x64 plus native controls on private desktop"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 7.9053346,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\startup-errors.exe",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\run16s.exe"
+      ],
+      "name": "startup-errors",
+      "stdout_sha256": "cc358ab0dfdc2eea030f9eb38fee297f6b4aa60b67e17e0c76fa3dbb21736710",
+      "success_markers": [
+        "STARTUP ERRORS PASS 2 formats Windows-Shell/private-console/shared-cmd/hidden-console one_error_channel exit4 jobs_empty"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 5.1397687,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\propagate-basic.exe",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x86\\propagate-target.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\propagate-target.exe"
+      ],
+      "name": "propagation",
+      "stdout_sha256": "02a0732661abe3c3f9630124f98ab581f08bafc5ef719dfe3db32b8f0d6191cf",
+      "success_markers": [
+        "TREE PASS root=32 child=32 grandchild=64 A/W=0 suspended=0 generations=3",
+        "TREE PASS root=32 child=32 grandchild=64 A/W=1 suspended=1 generations=3",
+        "TREE PASS root=32 child=64 grandchild=64 A/W=0 suspended=1 generations=3",
+        "TREE PASS root=32 child=64 grandchild=64 A/W=1 suspended=0 generations=3",
+        "TREE PASS root=64 child=32 grandchild=32 A/W=0 suspended=1 generations=3",
+        "TREE PASS root=64 child=32 grandchild=32 A/W=1 suspended=0 generations=3",
+        "TREE PASS root=64 child=64 grandchild=32 A/W=0 suspended=0 generations=3",
+        "TREE PASS root=64 child=64 grandchild=32 A/W=1 suspended=1 generations=3",
+        "PROPAGATION BASIC PASS four edges, both A/W, three generations, caller suspension, actual windows/font and lineage"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 2.6094835,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\cmd-nested.exe",
+      "arguments": [
+        "--core",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate"
+      ],
+      "name": "cmd-nested",
+      "stdout_sha256": "1e327fe66e08bf623ca63f97c741db35fb9f8855a27381fd023b8a0646ba40f9",
+      "success_markers": [
+        "CMD NESTED PASS core four native PE edges, interactive stdin/stdout, child markers and both exit codes"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 1.123044,
+      "command": "C:\\Program Files\\Python313\\python.exe",
+      "arguments": [
+        "-B",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\tests\\run16s-exe\\long_path.py",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x86\\launch-failures.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\launch-failures.exe"
+      ],
+      "name": "long-path",
+      "stdout_sha256": "389677f43d7cb8adba400eb9401826d7a7b3705be03ff2b12089e9ddb2d63fe2",
+      "success_markers": [
+        "LONG PATH PASS width=32 characters=355, actual CLI/install/entry/exit42",
+        "LONG PATH PASS width=64 characters=355, actual CLI/install/entry/exit42"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 2.6052608,
+      "command": "C:\\Program Files\\Python313\\python.exe",
+      "arguments": [
+        "-B",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\tests\\run16s-exe\\cli_failures.py",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x86\\launch-target.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\launch-target.exe"
+      ],
+      "name": "cli-failures",
+      "stdout_sha256": "bc47bd11da7fa71a658b9b23e91079dad2793ca1fb8b5877e1cfb0a3a5ffca39",
+      "success_markers": [
+        "CLI ROLLBACK PASS width=32 missing, Windows error=2, no target entry",
+        "CLI ROLLBACK PASS width=32 wrong-width, Windows error=193, no target entry",
+        "CLI ROLLBACK PASS width=32 corrupt, Windows error=193, no target entry",
+        "CLI ROLLBACK PASS width=64 missing, Windows error=2, no target entry",
+        "CLI ROLLBACK PASS width=64 wrong-width, Windows error=193, no target entry",
+        "CLI ROLLBACK PASS width=64 corrupt, Windows error=193, no target entry",
+        "CLI IO/EXIT PASS width=32 wait=False: stdin/stdout/stderr preserved, exit=37",
+        "CLI IO/EXIT PASS width=32 wait=True: stdin/stdout/stderr preserved, exit=37",
+        "CLI IO/EXIT PASS width=64 wait=False: stdin/stdout/stderr preserved, exit=37",
+        "CLI IO/EXIT PASS width=64 wait=True: stdin/stdout/stderr preserved, exit=37"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 2.7272344,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x86\\launch-staging.exe",
+      "arguments": [
+        "--parent",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate"
+      ],
+      "name": "legacy-iat-32",
+      "stdout_sha256": "fde2f861953db81cef2b88e0756246b8cc1c336314df14a212b2138dc9593d3b",
+      "success_markers": [
+        "STAGING PASS actual same-width target, payload/imports staged, original suspension retained; initialization not claimed",
+        "STAGING EXTERNAL PASS bits=32 mode=0 result=0 initialized=1",
+        "STAGING EXTERNAL PASS bits=32 mode=1 result=299 initialized=0",
+        "STAGING EXTERNAL PASS bits=32 mode=2 result=193 initialized=0",
+        "STAGING EXTERNAL PASS bits=32 mode=3 result=193 initialized=0",
+        "LEGACY IAT PASS bits=32 zero_oft=0 initialized=1 metadata_restored=1",
+        "LEGACY IAT PASS bits=32 zero_oft=1 initialized=1 metadata_restored=1",
+        "LEGACY IAT REJECT PASS bits=32 mode=2 error=193 headers_unchanged=1 suspended=1",
+        "LEGACY IAT REJECT PASS bits=32 mode=3 error=193 headers_unchanged=1 suspended=1"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.3670276,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x86\\uac-unit.exe",
+      "arguments": [],
+      "name": "uac-unit-32",
+      "stdout_sha256": "fe3b5e48e6ad65a23c3be0ccfee9ad21e64117af92d19a8ae7203376ee85f0fe",
+      "success_markers": [
+        "UAC UNIT PASS cases=8 cancel=1223 denied=5 missing_handle=6 exit=73 handles=stable"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.8598605,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\launch-staging.exe",
+      "arguments": [
+        "--parent",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate"
+      ],
+      "name": "legacy-iat-64",
+      "stdout_sha256": "c43f6c6acd815c3ccf54824140e3afc5864a5f20387ee30301201f0caa3c0594",
+      "success_markers": [
+        "STAGING PASS actual same-width target, payload/imports staged, original suspension retained; initialization not claimed",
+        "STAGING EXTERNAL PASS bits=64 mode=0 result=0 initialized=1",
+        "STAGING EXTERNAL PASS bits=64 mode=1 result=299 initialized=0",
+        "STAGING EXTERNAL PASS bits=64 mode=2 result=193 initialized=0",
+        "STAGING EXTERNAL PASS bits=64 mode=3 result=193 initialized=0",
+        "LEGACY IAT PASS bits=64 zero_oft=0 initialized=1 metadata_restored=1",
+        "LEGACY IAT PASS bits=64 zero_oft=1 initialized=1 metadata_restored=1",
+        "LEGACY IAT REJECT PASS bits=64 mode=2 error=193 headers_unchanged=1 suspended=1",
+        "LEGACY IAT REJECT PASS bits=64 mode=3 error=193 headers_unchanged=1 suspended=1"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.4016162,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\uac-unit.exe",
+      "arguments": [],
+      "name": "uac-unit-64",
+      "stdout_sha256": "fe3b5e48e6ad65a23c3be0ccfee9ad21e64117af92d19a8ae7203376ee85f0fe",
+      "success_markers": [
+        "UAC UNIT PASS cases=8 cancel=1223 denied=5 missing_handle=6 exit=73 handles=stable"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 1.9032907,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x86\\core-vb-font.exe",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x86\\vb-fixture\\MSVBVM60.dll"
+      ],
+      "name": "vb-font-32",
+      "stdout_sha256": "c8bbc825ff2727b7f7448b8fc7d4f016574466fcb1bfd9dedde6bc4416844f2b",
+      "success_markers": [
+        "VB_FONT_ZERO_OK requested=12 cell=14 advance=70 top=3 bottom=10",
+        "VB_FONT_ZERO_OK requested=14 cell=17 advance=80 top=3 bottom=12",
+        "VB_FONT_ZERO_OK requested=16 cell=19 advance=90 top=4 bottom=14",
+        "VB_OWNERSHIP_OK leases_retired=32 maps_freed=32 sources_preserved=33 allocations=0/0 faults=2 barrier=1 capacity=32"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 1.5975124,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\core-vb-font.exe",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\vb-fixture\\MSVBVM60.dll"
+      ],
+      "name": "vb-font-64",
+      "stdout_sha256": "c8bbc825ff2727b7f7448b8fc7d4f016574466fcb1bfd9dedde6bc4416844f2b",
+      "success_markers": [
+        "VB_FONT_ZERO_OK requested=12 cell=14 advance=70 top=3 bottom=10",
+        "VB_FONT_ZERO_OK requested=14 cell=17 advance=80 top=3 bottom=12",
+        "VB_FONT_ZERO_OK requested=16 cell=19 advance=90 top=4 bottom=14",
+        "VB_OWNERSHIP_OK leases_retired=32 maps_freed=32 sources_preserved=33 allocations=0/0 faults=2 barrier=1 capacity=32"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 64.5838088,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\core-menu-cancel.exe",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s64.dll"
+      ],
+      "name": "menu-cancel-x64",
+      "stdout_sha256": "9a2c2e7a9a775ebf5b448c0e3295416b8fd2158341a58f20c3c257e48f748146",
+      "success_markers": [
+        "MENU NATIVE SHADOW PASS unstyled popup executes before/after styled scope",
+        "MENU OPEN CAPTURE PASS dpi=96 native WM_PRINT owned frame and open popup",
+        "MENU BORDER PASS dpi=96 outer=114x98 margins=3,3,3,3 flat=1 pixels=1236",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU BORDER PASS dpi=96 outer=114x98 margins=3,3,3,3 flat=1 pixels=1236",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 0 native loop/focus/capture/hover/item restoration",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 1 native loop/focus/capture/hover/item restoration",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 2 native loop/focus/capture/hover/item restoration",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 3 native loop/focus/capture/hover/item restoration",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 4 native loop/focus/capture/hover/item restoration",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 5 native loop/focus/capture/hover/item restoration",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 6 native loop/focus/capture/hover/item restoration",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 7 native loop/focus/capture/hover/item restoration",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 8 native loop/focus/capture/hover/item restoration",
+        "MENU BORDER PASS dpi=96 outer=69x24 margins=3,3,3,3 flat=1 pixels=522",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU BORDER PASS dpi=96 outer=141x24 margins=3,3,3,3 flat=1 pixels=954",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU BORDER PASS dpi=96 outer=69x24 margins=3,3,3,3 flat=1 pixels=522",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU OPEN CAPTURE PASS dpi=96 native WM_PRINT owned frame and open popup",
+        "MENU BORDER PASS dpi=96 outer=69x24 margins=3,3,3,3 flat=1 pixels=522",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 9 native loop/focus/capture/hover/item restoration",
+        "MENU BORDER PASS dpi=96 outer=140x116 margins=3,3,3,3 flat=1 pixels=1500",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 10 native loop/focus/capture/hover/item restoration",
+        "MENU BORDER PASS dpi=96 outer=140x116 margins=3,3,3,3 flat=1 pixels=1500",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 11 native loop/focus/capture/hover/item restoration",
+        "MENU BORDER PASS dpi=96 outer=105x24 margins=3,3,3,3 flat=1 pixels=738",
+        "MENU ASSOCIATED SHADOW HIDDEN PASS dpi=96 extension=5,5",
+        "MENU CANCEL CASE PASS 12 native loop/focus/capture/hover/item restoration",
+        "MENU CANCEL CASE PASS 13 native loop/focus/capture/hover/item restoration",
+        "MENU CANCEL CASE PASS 14 native loop/focus/capture/hover/item restoration"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 2.2986066,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\core-vb.exe",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\vb-fixture\\MSVBVM60.dll"
+      ],
+      "name": "vb-controls-64",
+      "stdout_sha256": "996712aff8e5632f8f6c9cf353b7419ec6708bae701aa20f6154a261be743ed6",
+      "success_markers": [
+        "VB_WINDOWED_OK bits=64 styled=0 clicks=2 dpi=96 aware=0",
+        "VB_EDIT_OK undo=1",
+        "VB_CONTAINER_PAINT_OK label_changed=0 sentinel=preserved handles=13,13",
+        "VB_WINDOWED_OK bits=64 styled=1 clicks=2 dpi=96 aware=0",
+        "VB_EDIT_OK undo=1",
+        "VB_CONTAINER_PAINT_OK label_changed=1 sentinel=preserved handles=28,26",
+        "VB_WINDOWED_OK bits=64 styled=0 clicks=2 dpi=144 aware=1",
+        "VB_EDIT_OK undo=1",
+        "VB_CONTAINER_PAINT_OK label_changed=0 sentinel=preserved handles=13,13",
+        "VB_WINDOWED_OK bits=64 styled=1 clicks=2 dpi=144 aware=1",
+        "VB_EDIT_OK undo=1",
+        "VB_CONTAINER_PAINT_OK label_changed=1 sentinel=preserved handles=26,27",
+        "VB_CLEANUP_OK bare/styled owned jobs closed"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 2.8343728,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x86\\core-vb.exe",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x86\\vb-fixture\\MSVBVM60.dll"
+      ],
+      "name": "vb-controls-32",
+      "stdout_sha256": "b65141431bfb5d5eb40dc97f75a17b5d0174ecbba5a7b7badd3c88f25b6c8671",
+      "success_markers": [
+        "VB_WINDOWED_OK bits=32 styled=0 clicks=2 dpi=96 aware=0",
+        "VB_EDIT_OK undo=1",
+        "VB_CONTAINER_PAINT_OK label_changed=0 sentinel=preserved handles=13,13",
+        "VB_WINDOWED_OK bits=32 styled=1 clicks=2 dpi=96 aware=0",
+        "VB_EDIT_OK undo=1",
+        "VB_CONTAINER_PAINT_OK label_changed=1 sentinel=preserved handles=26,43",
+        "VB_WINDOWED_OK bits=32 styled=0 clicks=2 dpi=144 aware=1",
+        "VB_EDIT_OK undo=1",
+        "VB_CONTAINER_PAINT_OK label_changed=0 sentinel=preserved handles=13,13",
+        "VB_WINDOWED_OK bits=32 styled=1 clicks=2 dpi=144 aware=1",
+        "VB_EDIT_OK undo=1",
+        "VB_CONTAINER_PAINT_OK label_changed=1 sentinel=preserved handles=28,26",
+        "VB_CLEANUP_OK bare/styled owned jobs closed"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 3.8094038,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\rollback-contract-driver.exe",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x86\\rollback-contract.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\rollback-contract.exe"
+      ],
+      "name": "rollback",
+      "stdout_sha256": "92d47f8cf9c75c7da169ef8dbc70dc923765e1dad3513cae46f4cdd636b61ef0",
+      "success_markers": [
+        "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled",
+        "ROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled",
+        "ROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled",
+        "ROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 9.2056325,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\creation-contract-driver.exe",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x86\\creation-contract.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\creation-contract.exe"
+      ],
+      "name": "creation-contract",
+      "stdout_sha256": "6ac9ebb97976b15220abd2876c15ed8c7df0717972b7043eef1234734a8c00b5",
+      "success_markers": [
+        "CONTRACT PASS root=32 child=32 styled=0 vectors=8",
+        "CONTRACT PASS root=32 child=32 styled=1 vectors=8",
+        "CONTRACT PASS root=32 child=64 styled=0 vectors=8",
+        "CONTRACT PASS root=32 child=64 styled=1 vectors=8",
+        "CONTRACT PASS root=64 child=32 styled=0 vectors=8",
+        "CONTRACT PASS root=64 child=32 styled=1 vectors=8",
+        "CONTRACT PASS root=64 child=64 styled=0 vectors=8",
+        "CONTRACT PASS root=64 child=64 styled=1 vectors=8",
+        "CREATION CONTRACT PASS 64 native/injected vectors, four edges, fields/environment/cwd/handles/EX/suspension"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 80.4871859,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\launch-automatic.exe",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x86\\launch-target.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\launch-target.exe",
+        "dialogs"
+      ],
+      "name": "dialogs",
+      "stdout_sha256": "1fc71e40824dcc8a38d6ab42242c61cdb763f44397974ae608a61801917f0c3c",
+      "success_markers": [
+        "LAUNCH MATRIX PASS actual x64 CLI -> x86/x64 plus native controls on private desktop"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "seconds": 84.0480643,
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\launch-automatic.exe",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x86\\launch-target.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja\\x64\\launch-target.exe",
+        "messages"
+      ],
+      "name": "messages",
+      "stdout_sha256": "1fc71e40824dcc8a38d6ab42242c61cdb763f44397974ae608a61801917f0c3c",
+      "success_markers": [
+        "LAUNCH MATRIX PASS actual x64 CLI -> x86/x64 plus native controls on private desktop"
+      ]
+    }
+  ],
+  "cleanup": {
+    "preserved": [
+      "build/.ninja",
+      "build/.ccache",
+      "assets",
+      "O:/winnt/system32",
+      "user acceptance PNGs in visualizations"
+    ],
+    "roots": [
+      {
+        "files": 836,
+        "process_check": "elevated CIM passed, no live task process",
+        "resolved": "O:\\repos.hobby\\win16style\\build\\t15-vb",
+        "reparse": "none",
+        "path": "build/t15-vb",
+        "bytes": 27540213
+      },
+      {
+        "files": 4359,
+        "process_check": "elevated CIM passed, no live task process",
+        "resolved": "O:\\repos.hobby\\win16style\\build\\t15-package",
+        "reparse": "none",
+        "path": "build/t15-package",
+        "bytes": 218279906
+      }
+    ],
+    "status": "completed after exact-path, process and no-reparse preflight"
   }
 }

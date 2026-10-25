@@ -2,42 +2,21 @@
 
 ## Current Work
 
-M0 T15 S1 verified：VB6/MadShow控件及客户区文字适配完成；同包31项、双发布和
-安装复验通过，等待P1提交推送及实际远端复核，不提前关闭。T15等待最终用户外观验收，
-M0开放；本次不扩大为全部VB6/OCX支持，既有任务/债务保持。
+无活动任务包。M0 T15 S1已完成实际远端复核和登记scratch回收，S1关闭。
+本轮VB6/MadShow适配实现范围完成，T15保持开放等待用户外观验收；M0固定开放。
+三组件四产物及其他已关闭/取消任务、既有债务保持。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 15
 - Last allocated Td S: 11
-- Last delivery: M0 Td S11 P2 (P1 bb59d0a实际远端六文档通过；154产品输入/八部署未变；登记scratch已回收)
-- Open task: T15 S1；Td S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
-
-## M0 T15 S1 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | New |
-| Admission And Approval | 用户批准VB6适配实施、必要时自动划分并执行后续S；提交推送和双发布沿用永久授权 |
-| Objective | 适配MadShow的VB6按钮、client-edge文本框及保留无窗口标签绘图的容器；验证受控标签字体路径 |
-| Non-goals | 不承诺所有VB/OCX；不修改兄弟仓库、系统设置、应用业务或原图形；不猜私有VB对象布局 |
-| Reference Baseline | 4a93d2e；T14 S3 0.14.0.0；Td S11原生类/窗口证据 |
-| Candidate Proposal | [VB6适配](../proposals/madshow-controls.md) |
-| Files And ABI Surface | DLL内部分类/绘制、原生测试及CMake/版本；三组件四产物，ABI3/31导出保持 |
-| Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT；Task Reading Set已读 |
-| Verification | 双宽原生自包含分类/绘制/清理测试；真实MadShow隔离实例、按钮/文本/标签消息及截图；双宽干净构建及完整实际包、原资源门禁 |
-| Expected Markers | VB_WINDOWED_OK、VB_CONTAINER_PAINT_OK、VB_EDIT_OK、VB_CLEANUP_OK；未覆盖与失败独立记录 |
-| Asset Needs | 原资源逐字节保留；scratch build/t15-vb、build/t15-package，仅本T拥有，证据提炼后安全回收；验收PNG保留于任务visualizations/win16style-t15-vb6 |
-| Reporting Requirements | 分类/绘制/实际交互分别证明；旧包负例、四文件八摘要、输入冻结、统计、提交推送及实际远端读取 |
-| Stop Conditions | 需要私有布局、全局设置或共享进程注入时停止该路径并给证据；不以模块存在代替实际绘制 |
-| Exit Criteria | 相关实测/双宽回归、同包发布复核；必要续S自动执行；T15完成后等待用户外观验收 |
-| Original Owner Request | 以VB6适配为重点；一个S装不下则多S自动准入执行，整个适配完成后停下来验收 |
-| Similar-Issue Sweep | 检查attachment/control_scope/controls全部类名单及容器、client-edge、字体释放、重复附着/清理 |
+- Last delivery: M0 T15 S1 P2 (P1 6246df6实际取回177文件通过；163输入/八部署一致；登记scratch已回收)
+- Open task: T15等待用户外观验收；S1关闭；Td S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
 
 ## Technical Baseline
 
-0.15.0.0 / T15 S1本地verified并双发布；提交推送/实际远端复核待完成。
+0.15.0.0 / T15 S1已双发布/安装复验/6246df6实际远端复核并收口，T15等待用户验收。
 163输入冻结，GCC16.1/Ninja/ccache干净双宽构建；31/31实际包250.62秒、
 最终双宽各5项聚焦及安装ABI/协议/真实MadShow通过，无skip。76注册CTest未全部执行。
 实际MadShow4按钮/13文本框/2分组附着及窗口less文字接入；两次整图一致，标题24行
@@ -50,7 +29,7 @@ T14 S3启动错误语义、既有标题/标准字体/菜单/滚动条及其他�
 
 ## Recent Closure
 
-- [T15 S1 VB6适配（verified/待远端复核）](../history/M0-T15-S1-vb6.md)：31实际包/双发布及安装复验已通过，暂不标记收口。
+- [T15 S1 VB6适配](../history/M0-T15-S1-vb6.md)：31实际包/双发布/安装复验及P1远端177文件通过，scratch安全回收；S1关闭，T15等待用户外观验收。
 
 - [Td S11 MadShow控件调查](../history/M0-Td-S11-madshow-controls.md)：3有效对照/6自有实例，VB6的19控件分类及13个client-edge断点、无窗口标签边界已明；无产品改动；bb59d0a远端六文档通过，S11关闭。
 
@@ -90,10 +69,10 @@ T14 S3启动错误语义、既有标题/标准字体/菜单/滚动条及其他�
 
 ## Last Packet Closure
 
-M0 Td S11纯调查完成：本机MadShow为x86 VB6，实际DLL/四个入口detour已生效、
-主窗附着；4按钮/13文本框/2分组仍被标准类名单跳过，13个client-edge为第二门槛，
-标签无独立HWND。有限按钮状态往返/原生截图及注册模块身份已查，未伪称已实现适配。
-3有效批次/6自有实例均正常退出、Job0；P1 bb59d0a实际取回六份文档通过，154产品
-输入及八部署摘要未变，无产品构建/发布。证据提炼后精确登记scratch已安全回收，
-提升只读进程预检无存活探针，稳定Ninja/ccache保留；治理自测通过。
-Td S11关闭，M0开放；产品T14等状态保持；该调查后续已按新用户请求进入当前T15，调查本身不回写为产品交付。
+T15 S1完成MadShow按钮/文本框/分组与窗口less文字适配；目标19控件全部附着，
+真实截图、消息、双宽/DPI协议、私有资源释放及旧包/旧采样负例通过。标准标题/
+字体/菜单/滚动条、原图形声明和架构保持。31实际包250.62秒及10聚焦通过；
+两处八摘要一致、安装ABI/协议/真实程序复验通过。P1 6246df6实际取回163输入、
+四产物及变更文档共177文件，协调复核通过；源输入/部署摘要保持。证据提炼后
+两登记scratch按绝对路径/无活进程/无reparse检查回收，稳定Ninja/ccache和验收
+PNG保留。S1关闭，T15等待用户外观验收，M0开放；其他任务/债务状态保持。

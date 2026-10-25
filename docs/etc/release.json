@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T15 S1 P1",
-  "stage": "verified and published; actual remote review pending; user appearance acceptance pending",
+  "delivery": "M0 T15 S1 P2",
+  "stage": "S1 closed after actual P1 remote review and scratch cleanup; T15 awaiting user appearance acceptance",
   "version": "0.15.0.0",
   "version_contract": "Fixed T15 version; S/P distinguished by Git and artifact SHA",
   "package_directory": "assets",
@@ -803,7 +803,26 @@
     "acceptance": "Await user review of actual MadShow screenshot; no physical-input claim",
     "focused_tests": 10,
     "registered_ctests": 76,
-    "all_ctests_executed": false
+    "all_ctests_executed": false,
+    "p1_remote_review": {
+      "status": "passed",
+      "commit": "6246df6cc86947510e164d7a00eceb06b350e281",
+      "remote_main": "6246df6cc86947510e164d7a00eceb06b350e281",
+      "downloads": 177,
+      "source_inputs": 163,
+      "artifacts": 4,
+      "deployed_copies": 8,
+      "seconds": 10.72590990003664,
+      "receipt_sha256": "38dc6c67c957a4103a217a633fa6c37c2027718a049c46ddab2990ab18a2f9f5"
+    }
   },
-  "architecture": "three components, four products; pure C17 MinGW GCC/Ninja/ccache; optional real-app probe is not a core dependency"
+  "architecture": "three components, four products; pure C17 MinGW GCC/Ninja/ccache; optional real-app probe is not a core dependency",
+  "binary_batch_delivery": "M0 T15 S1 P1",
+  "closure": {
+    "p1": "6246df6cc86947510e164d7a00eceb06b350e281",
+    "source_inputs_unchanged": 163,
+    "deployed_copies_unchanged": 8,
+    "scratch_cleanup": "completed; details owned by evidence/vb6-adaptation.json",
+    "task_status": "S1 closed; T15 user appearance acceptance pending; M0 open"
+  }
 }
