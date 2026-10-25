@@ -1,0 +1,299 @@
+{
+  "task": "M0 Td S12",
+  "scope": "read-only native compatibility investigation; no product inputs changed",
+  "baseline_commit": "a13aa6e99730722000dca21e37516bc686d19b17",
+  "target": {
+    "path": "D:\\programs\\misc\\md5summer.exe",
+    "version": "1.2.0.11",
+    "bytes": 860160,
+    "sha256": "4646ce4f638e7d7ec820e7540b39bb185234e1f151d780c734ca557d6dba7ed9",
+    "pe_machine": "0x14c",
+    "bits": 32
+  },
+  "actual_dpi": 96,
+  "reports": {
+    "bare": {
+      "process": "PROCESS pid=11144 tid=19620 bits=32 dpi=96 dll= root_attached=0",
+      "controls": [
+        {
+          "class": "TShellTreeView",
+          "text": "",
+          "attached": false,
+          "style": "5421001b",
+          "ex_style": "00000200",
+          "size": "260,153",
+          "font": "MS Sans Serif",
+          "font_height": "-11",
+          "owner": "D:\\programs\\misc\\md5summer.exe",
+          "real_class": "TShellTreeView"
+        },
+        {
+          "class": "TPanel",
+          "text": "",
+          "attached": false,
+          "style": "56000000",
+          "ex_style": "00010000",
+          "size": "276,56",
+          "font": "",
+          "font_height": "0",
+          "owner": "D:\\programs\\misc\\md5summer.exe",
+          "real_class": "TPanel"
+        },
+        {
+          "class": "TComboBox",
+          "text": "MD5",
+          "attached": false,
+          "style": "54010242",
+          "ex_style": "00000000",
+          "size": "145,21",
+          "font": "MS Sans Serif",
+          "font_height": "-11",
+          "owner": "D:\\programs\\misc\\md5summer.exe",
+          "real_class": "TComboBox"
+        },
+        {
+          "class": "Edit",
+          "text": "MD5",
+          "attached": false,
+          "style": "50000380",
+          "ex_style": "00000000",
+          "size": "122,15",
+          "font": "MS Sans Serif",
+          "font_height": "-11",
+          "owner": "C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\comctl32.dll",
+          "real_class": "Edit"
+        },
+        {
+          "class": "TButton",
+          "text": "&About",
+          "attached": false,
+          "style": "54010000",
+          "ex_style": "00000000",
+          "size": "88,25",
+          "font": "MS Sans Serif",
+          "font_height": "-11",
+          "owner": "D:\\programs\\misc\\md5summer.exe",
+          "real_class": "TButton"
+        },
+        {
+          "class": "TButton",
+          "text": "&Verify sums",
+          "attached": false,
+          "style": "54010000",
+          "ex_style": "00000000",
+          "size": "88,25",
+          "font": "MS Sans Serif",
+          "font_height": "-11",
+          "owner": "D:\\programs\\misc\\md5summer.exe",
+          "real_class": "TButton"
+        },
+        {
+          "class": "TButton",
+          "text": "&Create sums",
+          "attached": false,
+          "style": "54010001",
+          "ex_style": "00000000",
+          "size": "88,25",
+          "font": "MS Sans Serif",
+          "font_height": "-11",
+          "owner": "D:\\programs\\misc\\md5summer.exe",
+          "real_class": "TButton"
+        }
+      ],
+      "driver_result": [
+        "STARTUP_INFORMATION dismissed-owned-OK=1",
+        "ROOT class=TMain title=MD5Summer visible=1",
+        "TARGET pid=11144 creator-tree-root=11144 tid=19620 image=D:\\programs\\misc\\md5summer.exe",
+        "MD5_CLEANUP_OK exit=0 active=0 total=1"
+      ],
+      "screenshot_bmp_sha256": "78e41234222a584aee21ce5b28916be5a1f70de8e27084ac715a07711407e93b"
+    },
+    "styled": {
+      "process": "PROCESS pid=15116 tid=42884 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll root_attached=1",
+      "controls": [
+        {
+          "class": "TShellTreeView",
+          "text": "",
+          "attached": false,
+          "style": "5421001b",
+          "ex_style": "00000200",
+          "size": "268,163",
+          "font": "MS Sans Serif",
+          "font_height": "-11",
+          "owner": "D:\\programs\\misc\\md5summer.exe",
+          "real_class": "TShellTreeView"
+        },
+        {
+          "class": "TPanel",
+          "text": "",
+          "attached": false,
+          "style": "56000000",
+          "ex_style": "00010000",
+          "size": "276,56",
+          "font": "",
+          "font_height": "0",
+          "owner": "D:\\programs\\misc\\md5summer.exe",
+          "real_class": "TPanel"
+        },
+        {
+          "class": "TComboBox",
+          "text": "MD5",
+          "attached": false,
+          "style": "54010242",
+          "ex_style": "00000000",
+          "size": "145,21",
+          "font": "MS Sans Serif",
+          "font_height": "-11",
+          "owner": "D:\\programs\\misc\\md5summer.exe",
+          "real_class": "TComboBox"
+        },
+        {
+          "class": "Edit",
+          "text": "MD5",
+          "attached": true,
+          "style": "50000380",
+          "ex_style": "00000000",
+          "size": "122,15",
+          "font": "Win16 System 00000006",
+          "font_height": "13",
+          "owner": "C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll",
+          "real_class": "Edit"
+        },
+        {
+          "class": "TButton",
+          "text": "&About",
+          "attached": false,
+          "style": "54010000",
+          "ex_style": "00000000",
+          "size": "88,25",
+          "font": "MS Sans Serif",
+          "font_height": "-11",
+          "owner": "D:\\programs\\misc\\md5summer.exe",
+          "real_class": "TButton"
+        },
+        {
+          "class": "TButton",
+          "text": "&Verify sums",
+          "attached": false,
+          "style": "54010000",
+          "ex_style": "00000000",
+          "size": "88,25",
+          "font": "MS Sans Serif",
+          "font_height": "-11",
+          "owner": "D:\\programs\\misc\\md5summer.exe",
+          "real_class": "TButton"
+        },
+        {
+          "class": "TButton",
+          "text": "&Create sums",
+          "attached": false,
+          "style": "54010001",
+          "ex_style": "00000000",
+          "size": "88,25",
+          "font": "MS Sans Serif",
+          "font_height": "-11",
+          "owner": "D:\\programs\\misc\\md5summer.exe",
+          "real_class": "TButton"
+        }
+      ],
+      "driver_result": [
+        "STARTUP_INFORMATION dismissed-owned-OK=1",
+        "ROOT class=TMain title=MD5Summer visible=1",
+        "TARGET pid=15116 creator-tree-root=33168 tid=42884 image=D:\\programs\\misc\\md5summer.exe",
+        "MODULE O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
+        "MD5_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "screenshot_bmp_sha256": "0f227942234c776ff9a55bfce1a13c99b1224297fb483a1f0deba3e9003b9fce"
+    }
+  },
+  "protocols": {
+    "real_class_A_and_W_agree": true,
+    "combo_GetComboBoxInfo": true,
+    "combo_count": 2,
+    "combo_selection": 0,
+    "tree_count": 56,
+    "tree_root_and_selection_nonnull": true,
+    "button_WM_GETDLGCODE": [
+      "0x2020",
+      "0x2020",
+      "0x2010"
+    ],
+    "opaque_classproc_not_dereferenced": true
+  },
+  "outcome": {
+    "root_attached": true,
+    "attached_child_count": 1,
+    "child_count": 7,
+    "unsupported": [
+      "3 TButton; native-button identity not established by RealGetWindowClass",
+      "TComboBox outer; native combo protocol valid but real class custom",
+      "TShellTreeView; tree protocol valid, no TreeView renderer",
+      "TPanel and windowless labels; app-painted"
+    ],
+    "not_an_initial_injection_failure": true
+  },
+  "probe_limitations": {
+    "final_pairs_passed": 2,
+    "final_instances": 4,
+    "final_target_and_launcher_exit": 0,
+    "final_job_active_processes": 0,
+    "earlier_aborted_instances": 6,
+    "earlier_causes": [
+      "observer selected hidden startup form",
+      "observer selected Information modal instead of main; close did not terminate app",
+      "modal dismissal race selected stale HWND; corrected with explicit exclusion"
+    ],
+    "aborted_job_kill_on_close": true,
+    "stale_GetLastError_values_not_product_diagnosis": true,
+    "startup_information": "App reports failure to set file associations. Only existing owned OK dismissed; no privilege/registry workaround. App itself attempts associations on startup.",
+    "not_covered": [
+      "additional business dialogs",
+      "file hashing/generation",
+      "physical keyboard/mouse",
+      "other DPI",
+      "x64 variant (actual target x86)",
+      "full product regression; no product change"
+    ]
+  },
+  "products": [
+    {
+      "name": "run16s.exe",
+      "assets_sha256": "ae04b2ba9f553df8defff7e205494080551b87fd180ff00dffa58c9b407a809d",
+      "system32_sha256": "ae04b2ba9f553df8defff7e205494080551b87fd180ff00dffa58c9b407a809d",
+      "identical": true
+    },
+    {
+      "name": "ntw16s32.dll",
+      "assets_sha256": "789bf8ed116c4c89aca5fc83c26806127ebf5124822e291fc78468348279474c",
+      "system32_sha256": "789bf8ed116c4c89aca5fc83c26806127ebf5124822e291fc78468348279474c",
+      "identical": true
+    },
+    {
+      "name": "ntw16s64.dll",
+      "assets_sha256": "d39b5f2f2304a8665e9ad9110ca146eedd6334ed1ffcbe239c22aa143d3622b7",
+      "system32_sha256": "d39b5f2f2304a8665e9ad9110ca146eedd6334ed1ffcbe239c22aa143d3622b7",
+      "identical": true
+    },
+    {
+      "name": "demo.exe",
+      "assets_sha256": "9ccac1ba4891c5b217a91269252541437889eb75f6cd54645c17e0cff1e7bd6c",
+      "system32_sha256": "9ccac1ba4891c5b217a91269252541437889eb75f6cd54645c17e0cff1e7bd6c",
+      "identical": true
+    }
+  ],
+  "binary_change": false,
+  "published": false,
+  "next_minimal_plan": [
+    "Separate reliable protocol/provenance recognition from rendering; do not globally trust TButton/TComboBox names or opaque WNDPROC.",
+    "Prove safe button identity and lifecycle with positive/negative native fixtures; combo GetComboBoxInfo supplies strong live evidence.",
+    "Add TreeView-specific rendering retaining nodes, images, expand/select/scroll, notifications and keyboard; do not replace with LISTBOX.",
+    "Evaluate TPanel/windowless text separately, keeping app layout/data/focus and original graphics."
+  ],
+  "evidence_policy": "Selected structured evidence; raw probes/logs/BMP in registered scratch, PNG acceptance images outside repository.",
+  "source_inputs_verified_unchanged": 167,
+  "governance": {
+    "passed": true,
+    "negative_cases": 13,
+    "git_diff_check": true
+  }
+}

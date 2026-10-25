@@ -18,6 +18,7 @@
 | [evidence/madshow-controls.json](evidence/madshow-controls.json) | Td S11真实VB6应用的控件分类/原生状态/附着断点、有限候选及产品未变证据 |
 | [evidence/vb6-adaptation.json](evidence/vb6-adaptation.json) | T15 VB6分类、客户端字体/边框、真实MadShow对照、资源所有权、实际包及双发布证据 |
 | [evidence/doublekiller-controls.json](evidence/doublekiller-controls.json) | T15 S2原生超类、VCL初始化/暂存主题、真实绘制/旧包负例、资源所有权及实际包/双发布证据 |
+| [evidence/md5summer-controls.json](evidence/md5summer-controls.json) | Td S12真实MD5summer原生协议/附着/截图对照及识别缺口、TreeView边界；无产品变更 |
 | [release.json](release.json) | 当前开发包的输入/工具链/四文件哈希与验收范围，历史版本从对应Git提交取回 |
 | [product-contract.json](product-contract.json) | 架构权威的机器映射；组件/产物变化必须同步审核 |
 | [import](import/README.md) | 来源基线与 Git blob 清单；只作导入对照，不能成为构建输入 |

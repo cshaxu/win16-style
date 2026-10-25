@@ -42,3 +42,5 @@ CURRENT中的完成审计。待准入候选及顺序见上表。
 [Win+R启动差异](../proposals/run-dialog-launch.md)已完成T14 S3条件错误路由并收口，保留S1/S2历史，状态见CURRENT。
 
 [DoubleKiller控件适配](../proposals/doublekiller-controls.md)已按用户请求准入，当前范围由CURRENT管理。
+
+[MD5summer控件调查](../proposals/md5summer-controls.md)为用户请求的只读兼容调查，不新增产品T。
