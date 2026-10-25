@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T16 S1 P1",
-  "stage": "verified package99/additional24/installed18; four artifacts double-published; actual remote/audit closure pending",
+  "delivery": "M0 T16 S1 P2",
+  "stage": "S1/T16 closed after P1 actual remote/audit/archive/recovery/cleanup; M0 open for owner appearance acceptance",
   "version": "0.16.0.0",
   "version_contract": "M0 fixed; task T16; S/P identified by Git and SHA",
   "package_directory": "assets",
@@ -1162,11 +1162,144 @@
     "original_tables_per_dll": 18,
     "source_gate": "124 frozen decisions/294 includes/179 local receipts;23+9 rejections",
     "resource_gate": "five headers and original provenance byte-exact;6 substitutions rejected",
-    "governance": "13 rejection cases passed; rerun before commit/closure",
+    "governance": "13 rejection cases passed before P1; repeated for P2 closure",
     "negative": "0.15 x86/x64 exits1, no outline transaction, own Jobs active0; message-driven scope, not physical dragging",
     "known_open_debt": "T11 intermittent parallel rollback accounting failure retained in TODO; unchanged strict test passes the final full99 batch; no product fix claimed",
     "physical_input": "not tested; native message/API probes only",
-    "remote": "pending actual pushed object retrieval",
-    "cleanup": "pending exact registered roots after recovery/remote verification"
+    "remote": {
+      "status": "passed",
+      "commit": "684c732411fb20aa332a14592674d636032f3eb5",
+      "remote_main": "684c732411fb20aa332a14592674d636032f3eb5",
+      "files": 218,
+      "source_inputs": 200,
+      "seconds": 16.689609799999744
+    },
+    "cleanup": {
+      "roots": [
+        "O:\\repos.hobby\\win16style\\build\\t16-outline",
+        "O:\\repos.hobby\\win16style\\build\\t16-package"
+      ],
+      "reparse_points": 0,
+      "positive_self_check": "exe/loaded DLL c0000043; unloaded DLL 00000000",
+      "no_write": true,
+      "status": "passed; both exact registered roots removed after native guard and Git recovery",
+      "images": 1400,
+      "retained": [
+        "build/.ninja",
+        "build/.ccache",
+        "build/t15-controls (49 reviewed sources)",
+        "external native PNG directory"
+      ],
+      "utility": "temporary native guard outside task roots removed after use"
+    },
+    "recovery": {
+      "commit": "684c732411fb20aa332a14592674d636032f3eb5",
+      "objects": 204,
+      "archive_inputs": 200,
+      "published_files": 8,
+      "old_backups_recoverable": 8,
+      "archive_git_EOL_variants": [
+        "LICENSE"
+      ],
+      "archive_dual_build": {
+        "build_root": "O:\\repos.hobby\\win16style\\build\\t16-package\\archive-src\\build\\.ninja",
+        "selection": "^core/abi$",
+        "status": "passed",
+        "build_jobs": 8,
+        "test_jobs": 4,
+        "exit_code": 0,
+        "targets": "ntw16s,core-abi",
+        "profile": "Focused",
+        "tests": [
+          {
+            "skipped": [],
+            "tests": 1,
+            "configure_seconds": 7.633163699996658,
+            "build_seconds": 11.011893899994902,
+            "passed": 1,
+            "test_seconds": 0.6896833999780938,
+            "architecture": "x86"
+          },
+          {
+            "skipped": [],
+            "tests": 1,
+            "configure_seconds": 6.985680499987211,
+            "build_seconds": 12.87891829997534,
+            "passed": 1,
+            "test_seconds": 0.8107864999910817,
+            "architecture": "x64"
+          }
+        ],
+        "architectures": [
+          "x86",
+          "x64"
+        ]
+      },
+      "archive_four_file_gate": {
+        "status": "PACKAGE PASS",
+        "artifacts": {
+          "run16s.exe": {
+            "architecture": "x64",
+            "version": "M0 T16",
+            "sha256": "54a260b791f334d45e732d130afc30b6653c385596ee65c7386b745126ecb475",
+            "imports": [
+              "advapi32.dll",
+              "kernel32.dll",
+              "msvcrt.dll",
+              "ole32.dll",
+              "shell32.dll"
+            ]
+          },
+          "ntw16s32.dll": {
+            "architecture": "x86",
+            "version": "M0 T16",
+            "sha256": "050b2f9368ab57c00c55f4ca47c0dfe29b4c4a1733dbcea0535af4c1514a2224",
+            "imports": [
+              "COMCTL32.dll",
+              "dwmapi.dll",
+              "GDI32.dll",
+              "KERNEL32.dll",
+              "api-ms-win-crt-convert-l1-1-0.dll",
+              "api-ms-win-crt-heap-l1-1-0.dll",
+              "api-ms-win-crt-private-l1-1-0.dll",
+              "api-ms-win-crt-runtime-l1-1-0.dll",
+              "api-ms-win-crt-stdio-l1-1-0.dll",
+              "api-ms-win-crt-string-l1-1-0.dll",
+              "USER32.dll",
+              "UxTheme.dll",
+              "COMCTL32.dll"
+            ]
+          },
+          "ntw16s64.dll": {
+            "architecture": "x64",
+            "version": "M0 T16",
+            "sha256": "0921096d1aebb8567605f8dfb79129e43c3d84dcfbfd327fccd5970838c4bbed",
+            "imports": [
+              "COMCTL32.dll",
+              "dwmapi.dll",
+              "GDI32.dll",
+              "KERNEL32.dll",
+              "msvcrt.dll",
+              "USER32.dll",
+              "UxTheme.dll",
+              "COMCTL32.dll"
+            ]
+          },
+          "demo.exe": {
+            "architecture": "x64",
+            "version": "M0 T16",
+            "sha256": "1376eaf184070f9499b66b40fd726502d7e28118c45e658337158ed251906715",
+            "imports": [
+              "kernel32.dll",
+              "msvcrt.dll",
+              "user32.dll"
+            ]
+          }
+        },
+        "original_resource_tables_per_dll": 18
+      }
+    },
+    "task_audit": "all 16 frozen units reviewed against actual P1 diff/evidence; finite promises passed; native fallback and uncovered hardware/input boundaries explicit",
+    "closing_delivery": "documentation only; same 200 product inputs and four tested/published artifact hashes; no rebuilt/replaced binaries in P2"
   }
 }

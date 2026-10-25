@@ -2,41 +2,15 @@
 
 ## Current Work
 
-M0 T16 S1有限局部轮廓移动已实现；0.16.0.0完整99实际包/经典24/安装18通过，
-已按同批四文件双发布、八SHA一致。当前进行P1提交推送、实际远端、任务审计
-及恢复/清理闭环；S1/T16仍开放，M0固定，不启动其他候选。
+无活动任务包。M0 T16 S1局部Win3.x轮廓移动已交付收口，版本0.16.0.0；
+M0保持开放，等待用户外观验收，不自动启动排队候选。
 
-## M0 T16 S1 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | New；用户明确准入队列首位实现，顺序分配T16 S1，M0固定；必要后续S顺序自动拆分直到本T可验收 |
-| Admission And Approval | 用户“准入队列首位T任务开始执行到老规矩验收”；永久提交推送/双发布授权；不启动其余候选，HD Tune提权默认skip |
-| Objective | 核实Win3.x原始USER/GDI/VGA移动轮廓依据，冻结可复现栅格/交互规范，再完成已附着窗口的有限局部轮廓移动并回归、发布供验收 |
-| Non-goals | 不猜XOR/画刷/线宽效果，不修改全局拖动/主题设置，不全局hook/注入既有进程，不改原资源及已确认标题字体菜单滚动条，不扩张为全部缩放/MDI/吸附/任意自绘拖动 |
-| Reference Baseline | 96e47212da877bcb4e16178abea093b006bb343f；现部署0.15.0.0/197输入/三组件四产物/ABI3/35detours40slots；T15及Td S14保持关闭 |
-| Candidate Proposal | [Win3.x局部轮廓拖动](../proposals/outline-window-move.md)，正式研究/实现brief；[既有界面边界](../design/UI.md) |
-| Files And ABI Surface | 研究后审查win16_style及私有移动模块/原生C测试；审查新增DefWindowProcA/W进程内私有拦截，由应用已进入默认过程后处理SC_MOVE，保留应用否决；35增至37detours/40slots，无公开导出/组件/第五产品；对话框/被动显式API保留原生移动 |
-| Applicable Rules | 完整Task Reading Set、ARCHITECTURE/CODING/UI及来源策略；C17/GCC/Ninja/ccache；禁computer-use和兄弟修改/依赖 |
-| Verification | 原二进制版本/路径/SHA/段偏移/调用及原像素证据；双宽自有原生探针对照移动中真窗口不动、提交/取消/捕获丢失/销毁/重入/DPI及资源；旧包负例、既有标题/字体/菜单/滚动条及双宽传播；每S干净同批四文件实际包/双发布/八摘要/实际远端复核 |
-| Expected Markers | 先有原始实现依据与独立oracle，再有真实显示/轮廓截图及窗口矩形/消息/API/资源证明；未知模式明确原生回退，不冒称物理输入 |
-| Asset Needs | 登记build/t16-outline原始研究副本/探针/日志与build/t16-package干净包/备份；验收PNG保存C:/Users/neko/.codex/visualizations/2026/10/23/01a1699f-9927-7fc3-ab34-4b38128ff811/win16style-t16-s1；不复制原系统二进制进Git；既有t15-controls49源码/稳定缓存/外部PNG保持；本T证据提炼后检查精确根/reparse/映像占用并安全清理 |
-| Reporting Requirements | 先报告原始依据/最小实现/有限覆盖，再实现；区分现代API近似与原始二进制事实；版本/四文件SHA/实际包/原生截图/跳过未覆盖及任务审计完整交付 |
-| Stop Conditions | 无合法可用原始实现依据时明确报告缺口，不用截图猜测；需全局设置/共享宿主/既有进程注入或额外产品时停在证据与方案；重大边界不暗改 |
-| Exit Criteria | 原始证据足够、有限移动适配及全部本S验证/双发布/推送远端/安全清理闭环后关闭S；本T另冻结支持矩阵审计，完成则停待用户验收，M0保持开放 |
-| Original Owner Request | 准入队列首位T任务开始执行到老规矩验收；原proposal要求效果依据Win3.x原始GDI/USER/VGA二进制，不自己猜 |
-| Similar-Issue Sweep | 标题鼠标/SC_MOVE/键盘入口、WM_ENTERSIZEMOVE/MOVING/EXITSIZEMOVE、嵌套重入、捕获/取消/失活/终结、DPI多屏/约束、未附着窗口及系统设置保持 |
-
-## 当前进度与恢复收口
-
-用户最新要求当前拖拽T收口，原生桌面Default，已恢复完整显示验证。最终包
-四显示配置共256场景，厚/细、A/W、actual144/logical96，独立GDI/原生定位对照、
-取消/捕获/销毁/重入/资源均通过。新旧两宽同位置整图各614400像素RGB0差异。
-200输入已冻结，原五头/声明/18表保持。源码和测试结论由[交付审计](../history/M0-T16-S1-outline-move.md)
-及[证据](../etc/evidence/outline-delivery.json)接收；此前失败保留在验证登记/TODO，
-未修复T11 Job计数债务，不抹掉历史。所有当前自有显示测试已退出。
-Actor只读诊断和用户要求的VB5/VB6专项已列队列第3位，未夹带控件修复或预占T/S。
-完成实际远端、归档/恢复及精确根清理后才关闭；验收PNG在已登记外部目录保留。
+P1 `684c732411fb20aa332a14592674d636032f3eb5`已推送并实际取回218文件，
+200产品输入/四发布物一致；独立归档双宽重建、ABI/四文件门禁和204对象恢复通过。
+完整99包、经典24及安装18检查通过；双发布八SHA一致。16单位全任务审计、
+1400映像占用/reparse检查和两个精确scratch根清理均完成，四张原生PNG保留。
+详见[收口记录](../history/M0-T16-S1-outline-move.md)及[结构化证据](../etc/evidence/outline-delivery.json)。
+Actor CheckBox只读发现已由用户要求的VB5/VB6专项接收，排队第3位，未实施。
 
 ## Identifier State
 
@@ -44,8 +18,8 @@ Actor只读诊断和用户要求的VB5/VB6专项已列队列第3位，未夹带�
 - Last allocated T: 16
 - Last allocated Td S: 14
 - Owner allocation constraint: 本次用户明确准入T16；仅可自动细分其必要后续S，不自行分配下一T，其他候选待准入。
-- Last delivery: M0 Td S14 P2（三项候选与队列登记；治理13负例/源197和八部署不变/P1实际远端207文件通过；仅文档收口）
-- Open task: T16 S1原始依据核实及有限轮廓移动实现；Td S14候选文档登记关闭；T15 S12/S11/S10/S9/S8/S7/S6/S5/S4/S3/S2/S1及T15关闭，M0开放等待用户验收；Td S13/S12/S11、T14 S3/T14、T13/T12/T11/T9/T8及Td S9/S10保持关闭；T10取消。
+- Last delivery: M0 T16 S1 P2（P1实际远端218文件/200输入、归档双宽及四产物、204对象恢复、1400映像安全清理；S1/T16关闭）
+- Open task: 无；T16 S1/T16关闭，既有关闭/取消任务状态保持；M0开放等待用户验收。
 
 ## Technical Baseline
 
@@ -54,9 +28,11 @@ Actor只读诊断和用户要求的VB5/VB6专项已列队列第3位，未夹带�
 一致；原五头/声明和每DLL18表不变。标题/字体/菜单/滚动条算法保持，同场景旧/新
 双宽整图RGB0差异。纯C17/GCC/Ninja/ccache；有限普通默认过程轮廓移动，回退与
 未覆盖见[UI](../design/UI.md)。源码快照及四SHA由[release](../etc/release.json)承载。
-P1提交推送/实际远端与最后恢复清理尚待执行；不将本阶段标记为关闭，M0开放。
+P1源码/四文件实际远端、归档双宽/四文件恢复及精确根清理均通过；S1/T16关闭，M0开放。
 
 ## Recent Closure
+
+- [T16 S1轮廓移动与任务审计](../history/M0-T16-S1-outline-move.md)：0.16.0.0；99包/24经典/18安装、双发布八SHA、218远端文件、归档双宽/四文件及204对象恢复、1400映像清理通过；16单位有限覆盖审计完成，S1/T16关闭，M0开放。
 
 - [Td S14候选队列登记](../history/M0-Td-S14-candidate-queue.md)：轮廓拖动/对话框/全局模式按1/2/3登记；治理13负例、197产品输入及八部署不变、P1实际远端207文件通过；仅文档收口，不准入候选实现。
 
@@ -126,7 +102,8 @@ P1提交推送/实际远端与最后恢复清理尚待执行；不将本阶段�
 
 ## Last Packet Closure
 
-Td S14将三份候选及队列1/2/3完整提交。P1 6f77f08实际远端207文件/197输入匹配，
-读取实际diff/队列及完整提案复核通过；治理SelfTest13负例/diff检查通过。原两份
-候选工作区内容原样保留；本S未改产品/ABI/资源/二进制，197源与八部署摘要保持。
-P2关闭文档S；T15保持关闭，M0开放，无活动包或新数值T，不自动启动队列候选。
+M0 T16 S1 P1实际提交/推送、218远端文件取回和实际diff复核通过；16单位冻结全集
+分别由实际验证、明确原生回退及未覆盖边界接收。归档双宽/四文件门禁、204对象
+恢复、八部署/四PNG复核和1400映像占用检查完成，两个登记scratch根已清理。
+P2只记录审计关闭，不改变200产品输入/四产物；S1/T16关闭，M0开放待用户验收。
+既有T11并行Job计数债务仍在TODO，未宣称修复；不自动准入下一T。

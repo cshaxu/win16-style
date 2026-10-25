@@ -1,6 +1,6 @@
-# M0 T16 S1 验证登记（进行中）
+# M0 T16 S1 验证登记（已收口）
 
-本资料记录证据和待补项；活动包/状态以CURRENT为准。不代表发布或关闭。
+本资料保留最终结论与历史失败；当前状态以CURRENT为准，最终发布SHA见release。
 
 ## 冻结覆盖全集
 
@@ -12,22 +12,22 @@
 | --- | --- | --- |
 | 原始依据 | outline-original.json：原USER/GDI/VGA SHA、调用边界、55/AA、ROP及四条带 | 已核实；非完整VGA帧缓冲模拟 |
 | 独立栅格 | core-outline-move --raster：软件真值与原生GDI PATINVERT/区域；双次擦除 | offline-final3双宽通过 |
-| 默认过程与否决 | 启动策略DefWindowProcA/W；应用SC_MOVE返回777优先 | 最终显示用例待执行 |
+| 默认过程与否决 | 启动策略DefWindowProcA/W；应用SC_MOVE返回777优先 | full-final1四显示配置通过 |
 | 被动API | 无载荷LoadLibrary+显式install；默认过程字节不变 | offline-final3双宽通过 |
-| 移动/提交 | 真窗口不动、仅最终一次定位、提交区域RGB及最终位置等于预览 | 用户延后显示验证 |
-| 取消/残影 | Esc、完整截图RGB恢复、overlay销毁 | 用户延后显示验证 |
-| 键鼠入口 | NC标题、SC_MOVE、9/1键盘步长、A/W各路径 | 用户延后显示验证 |
-| 位置约束 | WM_MOVING修改、重复鼠标不积累、完全离开工作区不更新 | 用户延后显示验证 |
-| 生命周期 | 捕获、失活、隐藏、销毁、detach、应用定位、跨线程sent cancel | 用户延后显示验证 |
-| 消息泵 | 同线程重入、WM_QUIT73重投、GetMessage取消后不派发旧目标 | 用户延后显示验证 |
-| DPI | 当前硬件单屏144；PMv2与logical96；负方向及绝对量化 | 最终显示待执行；物理96/120/192及多屏未覆盖 |
+| 移动/提交 | 真窗口不动、仅最终一次定位、提交区域RGB及最终位置等于预览 | full-final1四配置/256场景通过（消息/API探针） |
+| 取消/残影 | Esc、完整截图RGB恢复、overlay销毁 | full-final1四配置/256场景通过（消息/API探针） |
+| 键鼠入口 | NC标题、SC_MOVE、9/1键盘步长、A/W各路径 | full-final1四配置/256场景通过（消息/API探针） |
+| 位置约束 | WM_MOVING修改、重复鼠标不积累、完全离开工作区不更新 | full-final1四配置/256场景通过（消息/API探针） |
+| 生命周期 | 捕获、失活、隐藏、销毁、detach、应用定位、跨线程sent cancel | full-final1四配置/256场景通过（消息/API探针） |
+| 消息泵 | 同线程重入、WM_QUIT73重投、GetMessage取消后不派发旧目标 | full-final1四配置/256场景通过（消息/API探针） |
+| DPI | 当前硬件单屏144；PMv2与logical96；负方向及绝对量化 | 单屏physical144/aware144及unaware96通过；物理96/120/192及多屏未覆盖 |
 | 明确原生 | 对话框、MDI、max/iconic、RTL、禁用Move、被动API、多屏unaware | 代码保守回退；不计轮廓支持 |
-| 既有视觉 | 原资源门禁；旧/新同场景标题与菜单截图对照 | 源码/包资源门禁通过；截图延后；不改字体等算法 |
-| 负例 | 当前探针运行旧0.15包，必须检出无轮廓 | 用户延后显示验证 |
+| 既有视觉 | 原资源门禁；旧/新同场景标题与菜单截图对照 | 原资源门禁通过；旧/新双宽同位置各614400像素RGB0差异 |
+| 负例 | 当前探针运行旧0.15包，必须检出无轮廓 | full-final1四配置/256场景通过（消息/API探针） |
 | 架构/传播 | ABI3、37/40 detours、四原生传播边及原有回归 | 干净双宽/ABI已通过，实际包集成见下方 |
-| 交付 | 同源200已核对输入、四文件、完整99包、双发布八SHA、实际远端/恢复/清理 | 待执行；未发布，S/T开放 |
+| 交付 | 同源200已核对输入、四文件、完整99包、双发布八SHA、实际远端/恢复/清理 | 99完整包及双发布八SHA、远端218文件、归档/204恢复/1400映像清理通过 |
 
-## 既有迭代与限制
+## 历史迭代与限制（以下旧候选状态不是当前状态）
 
 lifecycle-matrix5早期实现曾双宽及四种显示组合通过，实际物理144DPI；每组合
 64场景。但之后加入独立GDI对照、负方向、最终位置/提交取消RGB比较及菜单。
@@ -129,3 +129,25 @@ tracked rollback_contract.c完全不改；该T11债务保留，必须另跑完�
 官方[Job计数定义](https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-jobobject_basic_accounting_information)
 与[完成端口通知](https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-jobobject_associate_completion_port)
 解释不同观测边界，不能仅据文档归因于MXC/DWM或其他未证实机制。
+
+## 最终独立批次与任务审计
+
+用户最新收口指令恢复显示验证，原生桌面Default。clean-final3最终200输入快照
+独立干净双宽构建并打同批四文件；full-final1完整99/99、497.7582246秒，无deferred
+或skip；原严格rollback测试全部四边通过，早期偶发失败仍是未定位债务。
+经典core额外双宽各12共24项通过；两处真实安装base各7共14及实际安装DLL移动
+四配置各64场景通过（18安装检查）。四最终display配置每配置64场景，共256；
+每配置独立native GDI oracle四项、提交/取消像素八项，结束GDI19=基线19，Jobactive0。
+
+旧0.15负例双宽均exit1，MOVE_RESULT mode0/stage0/enters0/moving0，未进入新事务，
+Job全回收；仅证明新探针检出该消息契约差异，不冒称旧版本物理移动必然失效。
+旧/新标题菜单客户区同位置各614400像素RGB0差异；18整文件及10绘制函数指纹
+等于基线，原五头/声明/每DLL18表保持。四张正常显示的原生PNG已保留。
+
+实际发布assets根目录和O:/winnt/system32八SHA与最终包一致。安装驱动初次缺少
+STD句柄转发曾45秒超时/active0；只修探针转发后同45秒限额四例通过，产品未变。
+实际远端P1取回218文件通过；归档双宽和四文件门禁、204 Git对象恢复及旧八备份
+恢复通过。登记两个根1400映像原生占用检查和reparse0后精确清理，四PNG/稳定缓存/
+其他任务源码保留。冻结16单位已按实际通过、原生边界及明确未覆盖完成独立审计。
+S1/T16已关闭，M0开放，不启动下一候选。唯一发布SHA及最终证据见
+[release](../release.json)和[交付记录](../../history/M0-T16-S1-outline-move.md)。
