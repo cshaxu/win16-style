@@ -3,7 +3,8 @@
 This S continues the owner's automatic sequential-S authorization under M0/T15.
 The reference is c5e110bbf987309699634184d5c8012f169fed0a, with S3 published bytes.
 Implementation, clean build, actual-package tests and double publication pass locally.
-P1 is awaiting push/actual remote/coordinator review; this record does not close S4.
+P1 5e8f880b9f893441cf61bf345218371b2c45b313 is pushed and remote187-file bytes match.
+A strict committed-source provenance failure is corrected by P2 below; S4 remains open.
 CURRENT alone owns admission/status. Other working-tree queue/proposal edits are preserved.
 
 ## Actual diagnosis and bounded implementation
@@ -96,3 +97,20 @@ itself independently validated actual-package hashes. No failed pixel summary is
 Exact SHA, cases, preserved source/resource hashes, selected native facts and limits are in
 [the evidence index](../etc/evidence/control-protocols.json). P1 remote/coordinator review and
 registered-scratch cleanup remain pending; T15/M0 remain open for automatic following S.
+
+## P2: canonical provenance correction
+
+Actual P1 archive review found one pre-existing authored receipt from T14: legacy_rejection.c
+was hashed with working-tree CRLF, while .gitattributes and its existing Git blob use LF.
+The content is identical after newline normalization; there is no C token or Git source change.
+The receipt now matches the already-committed LF SHA ee931c0390948de1446acb4827804041a04329625d372d5bca6b5366d8348233;
+working-tree bytes are canonicalized. Strict validator logic and all retained resources stay exact.
+The tested snapshot's raw CRLF and canonical Git identities remain explicit in release.json.
+
+The exported source with this single receipt correction passes source23/third-party9/resource6
+negative gates, a clean cached dual-width all-target build/ABI, and the native legacy rejection
+regression against the actual published launcher. Its first probe invocation lacked the required
+capture-directory environment (203); the corrected native invocation passes all4 cases.
+The proof build is verification scratch and does not replace the tested/published P1 four files.
+No product Git input changed; all eight deployment hashes remain P1. This is metadata correction,
+not an additional styling change. P2 actual source gate/remote review and cleanup remain pending.

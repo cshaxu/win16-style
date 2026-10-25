@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T15 S4 P1",
-  "stage": "verified locally and double-published; awaiting push/actual remote/coordinator review; S4/T15/M0 open",
+  "delivery": "M0 T15 S4 P2",
+  "stage": "P1 remote187 bytes match; P2 canonical provenance repair verified locally; S4/T15/M0 open pending actual P2 gate/remote review and cleanup",
   "version": "0.15.0.0",
   "version_contract": "Fixed T15 version; S/P distinguished by Git and artifact SHA; no new T allocated",
   "package_directory": "assets",
@@ -853,7 +853,69 @@
     "physical_input": "not tested; owned native probes only",
     "reported_window_DPI": 96,
     "evidence": "docs/etc/evidence/control-protocols.json",
-    "remote_review": "pending"
+    "remote_review": {
+      "status": "passed",
+      "commit": "5e8f880b9f893441cf61bf345218371b2c45b313",
+      "remote_main": "5e8f880b9f893441cf61bf345218371b2c45b313",
+      "files": 187,
+      "source_inputs": 175,
+      "seconds": 10.741016500047408,
+      "receipt_sha256": "b8b2710424a66c4c26dded1c8d8ebbed38ab379d648866d49fa98528f1e5bdb4"
+    },
+    "canonical_receipt_repair": {
+      "P1": "actual22-file commit, original request and evidence reviewed;175 Git input identities/8 deployed files verified;other work excluded",
+      "committed_source_gate_initial": "failed: one pre-existing authored legacy_rejection.c CRLF receipt disagreed with committed LF; P1 remote bytes match remains true",
+      "repair": {
+        "path": "tests/run16s-exe/legacy_rejection.c",
+        "disposition": "authored",
+        "old_worktree_sha256": "0d93fceaa2d7f233e4c98d44cf929bcf2a21275d5177a7e6b6093036801b3cb8",
+        "canonical_git_sha256": "ee931c0390948de1446acb4827804041a04329625d372d5bca6b5366d8348233",
+        "pre_existing_in": "c5e110bbf987309699634184d5c8012f169fed0a",
+        "product_source_Git_change": false,
+        "strict_gate_changed": false,
+        "resource_change": false,
+        "normalization": "CRLF -> LF only; already tracked Git blob unchanged",
+        "scope": "P2 provenance metadata repair; tested P1 raw/Git identities remain recorded"
+      },
+      "canonical_export_build": {
+        "profile": "Focused",
+        "build_jobs": 8,
+        "architectures": [
+          "x86",
+          "x64"
+        ],
+        "exit_code": 0,
+        "targets": "all",
+        "build_root": "O:\\repos.hobby\\win16style\\build\\t15-controls\\committed-review\\build\\.ninja",
+        "tests": [
+          {
+            "tests": 1,
+            "build_seconds": 24.85973590001231,
+            "architecture": "x86",
+            "passed": 1,
+            "test_seconds": 0.567791200010106,
+            "skipped": [],
+            "configure_seconds": 4.95115589996567
+          },
+          {
+            "tests": 1,
+            "build_seconds": 32.4322110999492,
+            "architecture": "x64",
+            "passed": 1,
+            "test_seconds": 0.5453244000091217,
+            "skipped": [],
+            "configure_seconds": 4.699590700038243
+          }
+        ],
+        "status": "passed",
+        "test_jobs": 4,
+        "selection": "^core/abi$"
+      },
+      "canonical_legacy_rejection": "LEGACY REJECTION PASS 4 cases stderr193 exit4 no_retry_ui exact_owned_processes",
+      "canonical_probe_first_attempt": "missing WIN16STYLE_CAPTURE_DIR returned203; corrected harness setup then4 native cases passed",
+      "strict_source_resource_gates": "pass after exact canonical receipt correction; no relaxation",
+      "P2_actual_remote": "pending"
+    }
   },
   "architecture": "three components, four products; pure C17 MinGW GCC/Ninja/ccache; real-app observer is optional, no sibling dependency",
   "binary_batch_delivery": "M0 T15 S4 P1",

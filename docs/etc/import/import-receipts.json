@@ -1157,9 +1157,9 @@
       "path": "tests/run16s-exe/legacy_rejection.c",
       "source": null,
       "source_blob": null,
-      "sha256": "0d93fceaa2d7f233e4c98d44cf929bcf2a21275d5177a7e6b6093036801b3cb8",
+      "sha256": "ee931c0390948de1446acb4827804041a04329625d372d5bca6b5366d8348233",
       "disposition": "authored",
-      "review": "T14 S2 pure C native initial-rejection stderr/no-retry regression",
+      "review": "T14 S2 pure C native initial-rejection stderr/no-retry regression; T15 S4 P2: correct pre-existing CRLF worktree receipt to already committed LF bytes; C tokens/Git source unchanged, strict validator/resources unchanged",
       "notice": "Project-authored C17, repository MIT"
     },
     {
