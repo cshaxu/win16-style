@@ -2,7 +2,8 @@
 
 ## Current Work
 
-T15 S3已收口，按用户自动续S授权准入S4。保持M0/T15，不分配新T。
+S4已完成有限控件适配、45实际包/12聚焦及真实四应用复验；同批四文件已双发布。
+P1提交/实际远端复核进行中，S4/T15/M0保持开放；不分配新T。
 
 ## M0 T15 S4 Packet
 
@@ -36,13 +37,13 @@ T15 S3已收口，按用户自动续S授权准入S4。保持M0/T15，不分配�
 
 ## Technical Baseline
 
-0.15.0.0 / T15 S3已双发布/安装复验、P1 239e700远端184文件/协调复核并收口。
-170输入、C17/GCC16.1/Ninja/ccache干净双宽，41实际包352.435秒/12聚焦无skip；
-真实HD Tune主窗/隐藏按钮/菜单取消及两款旧应用保留有证据。84注册CTest并非全部执行。
-三组件四产物/ABI3/31导出及31 detours/32slots不变，原五资源头/声明和18嵌入表保持。
-支持面及保留边界见[本S记录](../history/M0-T15-S3-dialog-menus.md)和
-[精选证据](../etc/evidence/framework-completion.json)。T15/M0开放，继续S4控件适配；
-T15 S1/S2成果、T14 S3启动语义及其他任务/债务状态不变。
+0.15.0.0 / T15 S4本地验证并双发布；P1待推送/实际远端复核，尚未关闭S4。
+175输入、C17/GCC16.1/Ninja/ccache干净双宽，45实际包364.181秒/12聚焦通过；
+MD5summer四角色/下拉、HD Tune84基础控件/六图标/隐藏3/菜单取消/native exit2、
+DK四页及MadShow19保留；两处安装复验、八摘要一致。88注册CTest并非全部执行。
+三组件四产物/ABI3/31导出及31 detours/32slots不变；原五头/声明及18表保持。
+[本S记录](../history/M0-T15-S4-control-protocols.md)和[证据](../etc/evidence/control-protocols.json)
+保留失败视觉候选、原生窗口DPI96及未覆盖面。T15/M0及其他任务/债务保持。
 
 ## Recent Closure
 

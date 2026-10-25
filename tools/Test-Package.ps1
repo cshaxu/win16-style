@@ -83,6 +83,10 @@ try{
         (Case 'vb-controls-64' (Join-Path $x64 'core-vb.exe') @($run,(Join-Path $x64 'vb-fixture/MSVBVM60.dll')) @('VB_WINDOWED_OK bits=64 styled=1','VB_EDIT_OK undo=1','VB_EDIT_FONT_PIXELS changed=1','VB_CONTAINER_PAINT_OK label_changed=1','VB_CLEANUP_OK'))
     )
     $cases+=@(
+        (Case 'control-extensions-32' (Join-Path $x86 'core-control-extensions.exe') @($d32) @('CONTROL_EXTENSION_NATIVE_OK','CONTROL_EXTENSION_IMAGELIST_OK','CONTROL_EXTENSION_OK bits=32 protocol_cases=60')),
+        (Case 'control-extensions-64' (Join-Path $x64 'core-control-extensions.exe') @($d64) @('CONTROL_EXTENSION_NATIVE_OK','CONTROL_EXTENSION_IMAGELIST_OK','CONTROL_EXTENSION_OK bits=64 protocol_cases=60')),
+        (Case 'control-protocol-owner-32' (Join-Path $x86 'core-control-protocol-owner.exe') @() @('PROTOCOL_OWNER_OK bits=32 allocations=0 bindings=0')),
+        (Case 'control-protocol-owner-64' (Join-Path $x64 'core-control-protocol-owner.exe') @() @('PROTOCOL_OWNER_OK bits=64 allocations=0 bindings=0')),
         (Case 'control-visibility-32' (Join-Path $x86 'core-control-visibility.exe') @($d32) @('CONTROL_VISIBILITY_OK bits=32 cases=16')),
         (Case 'control-visibility-64' (Join-Path $x64 'core-control-visibility.exe') @($d64) @('CONTROL_VISIBILITY_OK bits=64 cases=16')),
         (Case 'dialog-scope-32' (Join-Path $x86 'core-dialog-scope.exe') @() @('DIALOG_SCOPE_OWNERSHIP_OK bits=32','allocations=0')),

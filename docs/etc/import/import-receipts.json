@@ -14,9 +14,9 @@
       "path": "src/ntw16s-dll/attachment.c",
       "source": "src/ntw16s-dll/attachment.c",
       "source_blob": "e467006ab99ada1846f9298b650c30605807466b",
-      "sha256": "9d146ceed141632ac5a4201f62f5af460fdd4cca73a1a3430f058be1ed55cbda",
+      "sha256": "4a0fcb04b63a3d34282a3e7f5d60b694e1b1c64d878cbd617d7eeaaf874b193e",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T15 S4 verified initialized public control roles and native image/PushLike/client-edge support; original notices and resources preserved",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -41,9 +41,9 @@
       "path": "src/ntw16s-dll/controls.c",
       "source": "src/ntw16s-dll/controls.c",
       "source_blob": "9bc3331d0f9fc3e3104059ab792670ab1579d65c",
-      "sha256": "a1dce1dd3c5b2c098be18674843959de3d3e4e979901c21db84a437df0492c93",
+      "sha256": "840b7291a45d997afaac15deb0f9f34d0846b1a854d8e87deb1b25ad92913e54",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained; T15 S3: only begin transient native redraw brackets on WS_VISIBLE controls, preserving hidden state; font/render algorithms unchanged",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained; T15 S3: only begin transient native redraw brackets on WS_VISIBLE controls, preserving hidden state; font/render algorithms unchanged; T15 S4 verified initialized public control roles and native image/PushLike/client-edge support; original notices and resources preserved; BCM_GETIMAGELIST borrowed images, state pixels, explicit COMCTL6 and native disabled notification comparison",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -1204,8 +1204,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "588f1b57175b3d705bbc749af6f3d2badf8141e847b76851229bcae43524ae2a",
-      "review": "T15 S1: original private VB6 adaptation or self-contained native fixture; no copied external implementation; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained"
+      "sha256": "8a7d6d093e757423862d8825700fe35f35724e79a3544f27d7dc2ffb7b1455e3",
+      "review": "T15 S1: original private VB6 adaptation or self-contained native fixture; no copied external implementation; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained; T15 S4 verified initialized public control roles and native image/PushLike/client-edge support; original notices and resources preserved"
     },
     {
       "path": "src/ntw16s-dll/vb_text.c",
@@ -1341,6 +1341,51 @@
       "notice": "Project-authored C17; project MIT license",
       "sha256": "eff5867868a1ce574af8c01feb7f8e203ec3000ad41235fc13d89d4bea96c9c6",
       "review": "T15 S3 self-contained real public creation/attachment API hidden-state regression for four native protocols, parent/child visibility, external redraw, detach and borrowed font; no external code copied"
+    },
+    {
+      "path": "src/ntw16s-dll/control_protocol.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "review": "T15 S4 public initialized control protocols, borrowed native image/PushLike and client-edge support; no external code copied",
+      "sha256": "42ee5181b187e4ed0c141e4021c0cc7ac2e9dfa6b10d052dcbfd04cf2d25c79b"
+    },
+    {
+      "path": "src/ntw16s-dll/control_protocol.h",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "review": "T15 S4 public initialized control protocols, borrowed native image/PushLike and client-edge support; no external code copied",
+      "sha256": "39e2017d8d0dc47dc0026dfe751b29c23cc459db4635b8c0fe663c0876d04be4"
+    },
+    {
+      "path": "tests/ntw16s-dll/control_extensions.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "review": "T15 S4 public initialized control protocols, borrowed native image/PushLike and client-edge support; no external code copied; BCM_GETIMAGELIST borrowed images, state pixels, explicit COMCTL6 and native disabled notification comparison",
+      "sha256": "31877a0cb5548f2d2b0996f1fa71f76d38905776222c32f5a0d7df3a2711463e"
+    },
+    {
+      "path": "tests/ntw16s-dll/control_protocol_owner.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "review": "T15 S4 public initialized control protocols, borrowed native image/PushLike and client-edge support; no external code copied",
+      "sha256": "58338407c6927e232a565f28879994d80a40c2335ab4959c62c7b1ed8874c312"
+    },
+    {
+      "path": "tests/ntw16s-dll/control_extensions.rc",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "review": "T15 S4 explicit common-controls6 native protocol fixture manifest using existing in-repository demo dependency; no external code copied",
+      "sha256": "e82c7a5c6477a9e580b3fa10dab71fd653ff30b118e810e9e6c2b047edff14bb"
     }
   ]
 }

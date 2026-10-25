@@ -18,7 +18,7 @@ add_link_options(-static -static-libgcc -fno-lto)
 include(tools/build_cache.cmake)
 set(WIN16STYLE_X86_BUILD "${CMAKE_SOURCE_DIR}/build/.ninja/x86" CACHE PATH "Matching x86 fixture build")
 set(core_sources
-  attachment.c control_scope.c controls.c dllmain.c font.c layout.c vb_text.c
+  attachment.c control_scope.c control_protocol.c controls.c dllmain.c font.c layout.c vb_text.c
   menu_bar.c menu_bar_paint.c menu_items.c menu_layout.c menu_paint.c
   menu_scope.c native_api.c scroll_layout.c scroll_track.c theme.c win16_style.c)
 list(TRANSFORM core_sources PREPEND "src/ntw16s-dll/")
@@ -313,6 +313,17 @@ if(BUILD_TESTING)
   target_link_libraries(core-control-visibility PRIVATE user32 gdi32)
   target_link_options(core-control-visibility PRIVATE -municode)
   add_test(NAME core/control-visibility COMMAND ${test_driver} --name core/control-visibility -- $<TARGET_FILE:core-control-visibility> $<TARGET_FILE:ntw16s>)
+  add_executable(core-control-extensions tests/ntw16s-dll/control_extensions.c tests/ntw16s-dll/control_extensions.rc)
+  target_include_directories(core-control-extensions PRIVATE src)
+  target_compile_definitions(core-control-extensions PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_libraries(core-control-extensions PRIVATE user32 gdi32 comctl32)
+  target_link_options(core-control-extensions PRIVATE -municode ${explicit_manifest_options})
+  add_test(NAME core/control-extensions COMMAND ${test_driver} --name core/control-extensions -- $<TARGET_FILE:core-control-extensions> $<TARGET_FILE:ntw16s>)
+  add_executable(core-control-protocol-owner tests/ntw16s-dll/control_protocol_owner.c)
+  target_compile_definitions(core-control-protocol-owner PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_libraries(core-control-protocol-owner PRIVATE user32)
+  target_link_options(core-control-protocol-owner PRIVATE -municode)
+  add_test(NAME core/control-protocol-owner COMMAND ${test_driver} --name core/control-protocol-owner -- $<TARGET_FILE:core-control-protocol-owner>)
 
   add_executable(core-dialog-scope tests/ntw16s-dll/dialog_scope.c src/ntw16s-dll/controls.c src/ntw16s-dll/win16_style.c)
   target_include_directories(core-dialog-scope PRIVATE src)

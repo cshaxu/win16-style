@@ -22,6 +22,7 @@ typedef struct attachment {
     BOOL detached,frame,control;
     HWND themed;
     ntw16s_vb_fonts fonts;
+    ntw16s_control_protocol *protocol;
 } attachment;
 static _Thread_local ntw16s_creation_scope *current;
 static _Thread_local HHOOK creation_return_hook;
@@ -75,6 +76,7 @@ BOOL __cdecl Ntw16sWindowRemove(HWND w)
     if(a->control)win16_style_control_remove(w);
     if(a->themed)ntw16s_theme_remove(a->themed,a);
     ntw16s_theme_remove(w,NULL);
+    ntw16s_control_protocol_release(a->protocol);a->protocol=NULL;
     release(a);return TRUE;
 }
 BOOL __cdecl Ntw16sWindowTerminal(HWND w)
@@ -97,13 +99,14 @@ BOOL __cdecl Ntw16sWindowTerminal(HWND w)
     if(a && a->themed && a->themed!=w &&
             !ntw16s_theme_terminal(a->themed,a) && !error)error=GetLastError();
     if(!ntw16s_theme_terminal(w,NULL) && !error)error=GetLastError();
-    if(a)release(a);
+    if(a){ntw16s_control_protocol_release(a->protocol);a->protocol=NULL;release(a);}
     SetLastError(error?error:saved);return !error;
 }
 
 static BOOL install_created(HWND w,DWORD original_style)
 {
     BOOL control,edit,installed;HWND parent;attachment *a;DWORD error;
+    ntw16s_control_protocol *protocol=NULL;
     if(lookup(w))return TRUE;
     /* COMBOBOX installs its own internal list when construction finishes.
      * The internal EDIT also belongs to that native composite, not a frame. */
@@ -113,18 +116,30 @@ static BOOL install_created(HWND w,DWORD original_style)
     edit=(original_style&WS_CHILD) && class_is(w,L"EDIT");
     control=(original_style&WS_CHILD) && (edit || class_is(w,L"BUTTON") || class_is(w,L"STATIC") ||
         class_is(w,L"LISTBOX") || class_is(w,L"COMBOBOX") || class_is(w,L"SCROLLBAR") || class_is(w,L"SysLink"));
+    if(!control && (original_style&WS_CHILD)){
+        SetLastError(ERROR_SUCCESS);
+        protocol=ntw16s_control_protocol_bind(w);
+        if(!protocol && GetLastError()==ERROR_NOT_ENOUGH_MEMORY)return FALSE;
+        control=protocol!=NULL;
+    }
     /* A custom client-only child and MDICLIENT keep application painting.
      * MDI child frames have WS_CAPTION and take the ordinary frame route. */
     if(!control && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME))){
         SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
     }
     a=calloc(1,sizeof(*a));
-    if(!a){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    a->calls=1;
+    if(!a){ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
+    a->calls=1;a->protocol=protocol;
     if(!SetWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc,(DWORD_PTR)a)){
-        free(a);return FALSE;
+        ntw16s_control_protocol_release(protocol);free(a);return FALSE;
     }
     SetLastError(ERROR_SUCCESS);
+    if(protocol && class_is(w,L"COMBOBOX")){
+        COMBOBOXINFO info={.cbSize=sizeof(info)};
+        if(ntw16s_native_get_combo_info(w,&info) && info.hwndItem!=w && lookup(info.hwndItem))
+            Ntw16sWindowRemove(info.hwndItem);
+    }
+    if(a->detached){release(a);SetLastError(ERROR_CANCELLED);return FALSE;}
     if(edit)installed=win16_style_edit_install(w,(original_style&WS_BORDER)!=0,NULL);
     else if(control && class_is(w,L"LISTBOX") && (original_style&LBS_USETABSTOPS))
         installed=win16_style_tabbed_list_install(w,NULL,0,NULL);

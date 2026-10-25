@@ -1,6 +1,7 @@
 #ifndef NTW16S_CONTROL_CLASS_H
 #define NTW16S_CONTROL_CLASS_H
 #include <windows.h>
+#include "control_protocol.h"
 /* Private framework classification. A name alone is insufficient: only the
  * exact intrinsic classes registered by the loaded VB6 runtime are aliases.
  * No LoadLibrary, object-layout inspection or application-name special case. */
@@ -27,10 +28,10 @@ static inline BOOL ntw16s_class_is(HWND w,const WCHAR *expected)
         !lstrcmpiW(expected,L"STATIC") || !lstrcmpiW(expected,L"COMBOBOX") ||
         !lstrcmpiW(expected,L"LISTBOX") || !lstrcmpiW(expected,L"SCROLLBAR")) &&
         ntw16s_native_superclass(w,expected))return TRUE;
-    if(!lstrcmpiW(expected,L"BUTTON"))return ntw16s_vb_class(w,L"ThunderRT6CommandButton") ||
-        ntw16s_vb_class(w,L"ThunderRT6Frame");
+    if(!lstrcmpiW(expected,L"BUTTON") && (ntw16s_vb_class(w,L"ThunderRT6CommandButton") ||
+        ntw16s_vb_class(w,L"ThunderRT6Frame")))return TRUE;
     if(!lstrcmpiW(expected,L"EDIT"))return ntw16s_vb_class(w,L"ThunderRT6TextBox");
-    return FALSE;
+    return ntw16s_control_protocol_is(w,expected);
 }
 static inline BOOL ntw16s_vb_frame(HWND w)
 {return ntw16s_vb_class(w,L"ThunderRT6Frame");}

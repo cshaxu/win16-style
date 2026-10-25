@@ -64,11 +64,12 @@ static BOOL supported(HWND w)
     if(is_combo(w))return ((style&3)==CBS_DROPDOWNLIST || (style&3)==CBS_DROPDOWN || (style&3)==CBS_SIMPLE) &&
         !(style&(CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE));
     if(is_list(w))return !(style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA|LBS_USETABSTOPS));
-    if(is_edit(w))return ntw16s_vb_edit(w) || ntw16s_native_superclass(w,L"EDIT") || !(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE);
+    if(is_edit(w))return TRUE;
     if(is_static(w)){type=style&SS_TYPEMASK;return type==SS_LEFT || type==SS_CENTER || type==SS_RIGHT ||
         type==SS_ICON || type==SS_BITMAP || type==SS_SIMPLE || type==SS_LEFTNOWORDWRAP ||
         (type>=SS_BLACKRECT && type<=SS_WHITEFRAME) || (type>=SS_ETCHEDHORZ && type<=SS_ETCHEDFRAME);}
-    if(!ntw16s_class_is(w,L"BUTTON") || (style&(BS_ICON|BS_BITMAP|BS_PUSHLIKE)))return FALSE;
+    if(!ntw16s_class_is(w,L"BUTTON"))return FALSE;
+    if((style&(BS_ICON|BS_BITMAP)) && type!=BS_PUSHBUTTON && type!=BS_DEFPUSHBUTTON && !(style&BS_PUSHLIKE))return FALSE;
     if(type==BS_PUSHBUTTON || type==BS_DEFPUSHBUTTON || type==BS_GROUPBOX)return TRUE;
     return type==BS_CHECKBOX || type==BS_AUTOCHECKBOX || type==BS_RADIOBUTTON ||
         type==BS_AUTORADIOBUTTON || type==BS_3STATE || type==BS_AUTO3STATE;
@@ -88,7 +89,9 @@ static void other_control(HWND w,control_style *s,HDC dc,RECT r,HFONT font,const
 {
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);UINT type=(label?(style&SS_TYPEMASK):ntw16s_button_type(w,style));
     int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));RECT bounds=r;TEXTMETRICW tm;
-    UINT flags=DT_LEFT;BOOL pushed=!label && (SendMessageW(w,BM_GETSTATE,0,0)&BST_PUSHED);
+    LRESULT button_state=label?0:SendMessageW(w,BM_GETSTATE,0,0);
+    UINT flags=DT_LEFT;BOOL pushed=(button_state&BST_PUSHED)!=0;
+    if(!label && (style&BS_PUSHLIKE))pushed=pushed || SendMessageW(w,BM_GETCHECK,0,0)!=BST_UNCHECKED;
     if(s->detached)return;
     SelectObject(dc,font);GetTextMetricsW(dc,&tm);SetBkMode(dc,TRANSPARENT);SetTextColor(dc,s->palette.edge);
     if(label && type>=SS_ETCHEDHORZ && type<=SS_ETCHEDFRAME){
@@ -146,6 +149,57 @@ static void other_control(HWND w,control_style *s,HDC dc,RECT r,HFONT font,const
         flags|=type==SS_SIMPLE?DT_SINGLELINE:DT_EXPANDTABS|(type==SS_LEFTNOWORDWRAP?0:DT_WORDBREAK);
         if(style&SS_NOPREFIX)flags|=DT_NOPREFIX;}
     if(!IsWindowEnabled(w) && !(label && type==SS_SIMPLE))SetTextColor(dc,s->palette.shadow);
+    if(!label && (style&(BS_ICON|BS_BITMAP))){
+        UINT image_type=(style&BS_ICON)?IMAGE_ICON:IMAGE_BITMAP;
+        HANDLE image=(HANDLE)SendMessageW(w,BM_GETIMAGE,image_type,0);
+        BUTTON_IMAGELIST images={0};BOOL listed=FALSE;
+        int cx=0,cy=0;BITMAP bits;
+        if(s->detached || !IsWindow(w))return;
+        if(!image){
+            listed=(BOOL)SendMessageW(w,BCM_GETIMAGELIST,0,(LPARAM)&images);
+            if(s->detached || !IsWindow(w))return;
+            listed=listed && images.himl && images.himl!=BCCL_NOGLYPH &&
+                ImageList_GetIconSize(images.himl,&cx,&cy);
+        }
+        if(image && image_type==IMAGE_ICON){
+            ICONINFO info;
+            if(GetIconInfo((HICON)image,&info)){
+                if(GetObjectW(info.hbmColor?info.hbmColor:info.hbmMask,sizeof(bits),&bits)){
+                    cx=bits.bmWidth;cy=info.hbmColor?bits.bmHeight:bits.bmHeight/2;}
+                if(info.hbmColor)DeleteObject(info.hbmColor);
+                if(info.hbmMask)DeleteObject(info.hbmMask);
+            }
+        }else if(image && GetObjectW(image,sizeof(bits),&bits)){cx=bits.bmWidth;cy=bits.bmHeight;}
+        if((image || listed) && cx>0 && cy>0){
+            int x=bounds.left+(bounds.right-bounds.left-cx)/2,y=bounds.top+(bounds.bottom-bounds.top-cy)/2;
+            if(listed){
+                bounds.left+=images.margin.left;bounds.top+=images.margin.top;
+                bounds.right-=images.margin.right;bounds.bottom-=images.margin.bottom;
+                x=bounds.left+(bounds.right-bounds.left-cx)/2;y=bounds.top+(bounds.bottom-bounds.top-cy)/2;
+                if(images.uAlign==BUTTON_IMAGELIST_ALIGN_LEFT)x=bounds.left;
+                else if(images.uAlign==BUTTON_IMAGELIST_ALIGN_RIGHT)x=bounds.right-cx;
+                else if(images.uAlign==BUTTON_IMAGELIST_ALIGN_TOP)y=bounds.top;
+                else if(images.uAlign==BUTTON_IMAGELIST_ALIGN_BOTTOM)y=bounds.bottom-cy;
+            }else {
+                if((style&BS_CENTER)==BS_LEFT)x=bounds.left;
+                else if((style&BS_CENTER)==BS_RIGHT)x=bounds.right-cx;
+                if((style&BS_VCENTER)==BS_TOP)y=bounds.top;
+                else if((style&BS_VCENTER)==BS_BOTTOM)y=bounds.bottom-cy;
+            }
+            int saved=SaveDC(dc);
+            if(saved){IntersectClipRect(dc,bounds.left,bounds.top,bounds.right,bounds.bottom);
+                if(listed){
+                    int count=ImageList_GetImageCount(images.himl),index=0;
+                    if(count>1)index=!IsWindowEnabled(w)?3:pushed?2:(button_state&BST_HOT)?1:type==BS_DEFPUSHBUTTON?4:0;
+                    if(!s->detached && index<count)ImageList_DrawEx(images.himl,index,dc,x,y,cx,cy,CLR_NONE,
+                        s->palette.shadow,count==1 && !IsWindowEnabled(w)?ILD_BLEND50:ILD_NORMAL);
+                }else DrawStateW(dc,NULL,NULL,(LPARAM)image,0,x,y,cx,cy,
+                        (image_type==IMAGE_ICON?DST_ICON:DST_BITMAP)|(IsWindowEnabled(w)?DSS_NORMAL:DSS_DISABLED));
+                RestoreDC(dc,saved);}
+        }
+        if(GetFocus()==w){RECT focus=bounds;InflateRect(&focus,-u,-u);DrawFocusRect(dc,&focus);}
+        return;
+    }
     DrawTextW(dc,text,-1,&bounds,flags);
     if(!label && GetFocus()==w){
         /* USER 25:15DE..1694 bounds focus around the measured label, not
@@ -196,7 +250,8 @@ static void draw(HWND w,control_style *s,HDC dc)
     length=GetWindowTextLengthW(w);text=calloc((size_t)length+1,sizeof(WCHAR));
     if(!text)return;
     GetWindowTextW(w,text,length+1);
-    font=s->font && (ntw16s_vb_frame(w) || ntw16s_vb_class(w,L"ThunderRT6CommandButton"))?
+    font=s->font && (ntw16s_vb_frame(w) || ntw16s_vb_class(w,L"ThunderRT6CommandButton") ||
+        ntw16s_control_protocol_is(w,L"BUTTON"))?
         s->font:(HFONT)SendMessageW(w,WM_GETFONT,0,0);
     if(s->detached || !IsWindow(w)){free(text);return;}
     if(!font)font=(HFONT)GetStockObject(SYSTEM_FONT);
@@ -205,7 +260,7 @@ static void draw(HWND w,control_style *s,HDC dc)
     /* A group box surrounds sibling controls, not an opaque child surface.
      * Repainting its interior erases those siblings during ordinary motion. */
     if(label_control || type!=BS_GROUPBOX)FillRect(dc,&r,(HBRUSH)GetStockObject(DC_BRUSH));
-    if(label_control || type==BS_PUSHBUTTON || type==BS_DEFPUSHBUTTON || type==BS_GROUPBOX){
+    if(label_control || type==BS_PUSHBUTTON || type==BS_DEFPUSHBUTTON || type==BS_GROUPBOX || (style&BS_PUSHLIKE)){
         other_control(w,s,dc,r,font,text,label_control);RestoreDC(dc,saved);free(text);return;}
     height=MulDiv(13,(int)dpi,96);glyph=r;glyph.top+=(r.bottom-height)/2;
     glyph.bottom=glyph.top+height;glyph.right=glyph.left+MulDiv(14,(int)dpi,96);
@@ -318,7 +373,8 @@ static void draw_combo(HWND w,control_style *s,HDC dc)
     WCHAR *label;int length,saved,x,y,left,top,u;BOOL selected,pressed,editable,simple;
     if(!dc || !ntw16s_native_get_combo_info(w,&info))return;
     length=GetWindowTextLengthW(w);label=calloc((size_t)length+1,sizeof(WCHAR));if(!label)return;
-    GetWindowTextW(w,label,length+1);font=(HFONT)SendMessageW(w,WM_GETFONT,0,0);
+    GetWindowTextW(w,label,length+1);font=s->font && ntw16s_control_protocol_is(w,L"COMBOBOX")?
+        s->font:(HFONT)SendMessageW(w,WM_GETFONT,0,0);
     pressed=SendMessageW(w,CB_GETDROPPEDSTATE,0,0)!=0;
     simple=(GetWindowLongPtrW(w,GWL_STYLE)&3)==CBS_SIMPLE;
     editable=(GetWindowLongPtrW(w,GWL_STYLE)&3)!=CBS_DROPDOWNLIST;
@@ -991,7 +1047,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
             m==EM_REPLACESEL || m==EM_UNDO || m==WM_UNDO || m==WM_KEYDOWN || m==WM_CHAR ||
             (m==WM_MOUSEMOVE && GetCapture()==w && (a&MK_LBUTTON)) || m==WM_LBUTTONDOWN || m==WM_LBUTTONUP);
         if(suppress && s->list_suppression++==0)DefSubclassProc(w,WM_SETREDRAW,FALSE,0);
-        int native_dc=(ntw16s_vb_edit(w) || ntw16s_native_superclass(w,L"EDIT")) && (m==WM_PRINT || m==WM_PRINTCLIENT)?SaveDC((HDC)a):0;
+        int native_dc=(m==WM_PRINT || m==WM_PRINTCLIENT)?SaveDC((HDC)a):0;
         result=DefSubclassProc(w,m,a,b);
         if(native_dc)RestoreDC((HDC)a,native_dc);
         if(suppress && --s->list_suppression==0 && !s->detached && !s->list_redraw_off)
@@ -1002,7 +1058,8 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
             edit_border(w,s,(m==WM_PRINT || m==WM_PRINTCLIENT)?(HDC)a:NULL);
         if(!s->detached && (m==WM_NCPAINT || (m==WM_PRINT && (b&PRF_NONCLIENT))))
             {nonclient_scrollbars(w,s,m==WM_PRINT?(HDC)a:NULL);
-             if(ntw16s_vb_edit(w) || ntw16s_native_superclass(w,L"EDIT"))list_border(w,s,m==WM_PRINT?(HDC)a:NULL);}
+             if(ntw16s_vb_edit(w) || ntw16s_native_superclass(w,L"EDIT") ||
+                (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE))list_border(w,s,m==WM_PRINT?(HDC)a:NULL);}
         else if(!s->detached && (m==WM_VSCROLL || m==WM_HSCROLL || m==WM_MOUSEWHEEL ||
             m==EM_LINESCROLL || m==WM_SETTEXT || m==WM_KEYDOWN || m==WM_CHAR))
             nonclient_scrollbars(w,s,NULL);
@@ -1058,7 +1115,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         if(!s->detached && moving)changed=previous!=SendMessageW(w,BM_GETSTATE,0,0);
         if(!s->detached && s->calls==1 && !s->list_suppression && !s->list_redraw_off && (m==BM_SETCHECK || m==BM_SETSTATE || m==BM_SETSTYLE || m==BM_CLICK || m==WM_ENABLE ||
             m==WM_SETFOCUS || m==WM_KILLFOCUS || m==WM_SETTEXT || m==WM_SETFONT ||
-            (is_static(w) && (m==STM_SETICON || m==STM_SETIMAGE)) ||
+            m==BM_SETIMAGE || m==BCM_SETIMAGELIST || (is_static(w) && (m==STM_SETICON || m==STM_SETIMAGE)) ||
             m==WM_LBUTTONDOWN || m==WM_LBUTTONUP || changed || m==WM_KEYDOWN || m==WM_KEYUP))
             RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
     }
