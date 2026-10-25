@@ -44,3 +44,5 @@ CURRENT中的完成审计。待准入候选及顺序见上表。
 [DoubleKiller控件适配](../proposals/doublekiller-controls.md)已按用户请求准入，当前范围由CURRENT管理。
 
 [MD5summer控件调查](../proposals/md5summer-controls.md)为用户请求的只读兼容调查，不新增产品T。
+
+[HD Tune Pro控件调查](../proposals/hdtune-controls.md)为只读兼容调查，不新增产品T。

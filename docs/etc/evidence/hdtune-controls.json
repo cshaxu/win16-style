@@ -1,0 +1,379 @@
+{
+  "task": "M0 Td S13",
+  "status": "diagnosis complete with unresolved normal-close and root-attachment causes; no product fix",
+  "baseline": "63a15c543c845fe13ad8eef2ad0a3365018f29fa",
+  "target": {
+    "path": "D:/programs/misc/HDTunePro.exe",
+    "version": "4.60.0.0",
+    "bytes": 718848,
+    "sha256": "c6c4e51fbc93778f18732a2aec10f54188f247adfb452e7f87c2cb2bcdd6d9ea",
+    "PE_machine": "0x14c",
+    "bits": 32,
+    "manifest": "requireAdministrator"
+  },
+  "normal_start": {
+    "bare_CreateProcess_error": 740,
+    "styled_private_desktop": "no owned visible target within 30-second budget; UAC prompt detected, not counted as product failure or success",
+    "pending_consent_observed": {
+      "pid": 25104,
+      "parent_pid": 10300,
+      "created_local": "2026-10-24 18:27:16",
+      "path_unavailable": true,
+      "not_terminated_or_injected": true,
+      "later_pid_absent": true
+    },
+    "high_main_ui": "observed after approved UAC; primary root unattached and title remains native"
+  },
+  "limited_probe": {
+    "environment": "__COMPAT_LAYER=RunAsInvoker, diagnostic process tree only; no global settings/manifest/privilege changes",
+    "app_enforces_admin_internally": true,
+    "real_visible_window": "administrator-required error dialog",
+    "main_is_hidden": true,
+    "dpi": 96,
+    "observer": "pure C17; newly owned Job/thread-only WH_CALLWNDPROC; no computer-use",
+    "final_bare_and_styled_exit": 0,
+    "final_jobs_active": 0,
+    "normal_main_render_pass": false,
+    "reports": {
+      "bare": {
+        "process_header": "PROCESS pid=39720 tid=32888 bits=32 dpi=96 dll= root_attached=0",
+        "observed_main": "OWNER_ROOT class=#32770 title=HD Tune ??? v4.60 - ?????? visible=0 attached=0",
+        "scope": "hidden main behind administrator-required error dialog; not normal UI rendering",
+        "children": 284,
+        "classes": {
+          "ComboBox": 5,
+          "Button": 73,
+          "Static": 161,
+          "#32770": 12,
+          "Edit": 6,
+          "msctls_updown32": 6,
+          "SysListView32": 6,
+          "SysHeader32": 6,
+          "msctls_progress32": 6,
+          "msctls_trackbar32": 2,
+          "SysTabControl32": 1
+        },
+        "attached": {},
+        "unattached": {
+          "ComboBox": 5,
+          "Button": 73,
+          "Static": 161,
+          "#32770": 12,
+          "Edit": 6,
+          "msctls_updown32": 6,
+          "SysListView32": 6,
+          "SysHeader32": 6,
+          "msctls_progress32": 6,
+          "msctls_trackbar32": 2,
+          "SysTabControl32": 1
+        },
+        "unattached_styles": [],
+        "cleanup": "HD_CLEANUP_OK exit=0 active=0 total=1",
+        "raw_report_sha256": "4d81dfabe99a588d4ce55d68b7e0e3d9547ba856e354fde5fb8c759efc6cbaa3"
+      },
+      "styled": {
+        "process_header": "PROCESS pid=22904 tid=12004 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll root_attached=1",
+        "observed_main": "OWNER_ROOT class=#32770 title=HD Tune ??? v4.60 - ?????? visible=0 attached=0",
+        "scope": "hidden main behind administrator-required error dialog; not normal UI rendering",
+        "children": 284,
+        "classes": {
+          "ComboBox": 5,
+          "Button": 73,
+          "Static": 161,
+          "#32770": 12,
+          "Edit": 6,
+          "msctls_updown32": 6,
+          "SysListView32": 6,
+          "SysHeader32": 6,
+          "msctls_progress32": 6,
+          "msctls_trackbar32": 2,
+          "SysTabControl32": 1
+        },
+        "attached": {
+          "ComboBox": 5,
+          "Static": 161,
+          "Button": 66
+        },
+        "unattached": {
+          "Button": 7,
+          "#32770": 12,
+          "Edit": 6,
+          "msctls_updown32": 6,
+          "SysListView32": 6,
+          "SysHeader32": 6,
+          "msctls_progress32": 6,
+          "msctls_trackbar32": 2,
+          "SysTabControl32": 1
+        },
+        "unattached_styles": [
+          {
+            "class": "Button",
+            "style": "50010040",
+            "ex_style": "00000004",
+            "count": 6
+          },
+          {
+            "class": "#32770",
+            "style": "50010044",
+            "ex_style": "00010000",
+            "count": 1
+          },
+          {
+            "class": "#32770",
+            "style": "50010444",
+            "ex_style": "00010000",
+            "count": 1
+          },
+          {
+            "class": "Edit",
+            "style": "50010080",
+            "ex_style": "00000204",
+            "count": 6
+          },
+          {
+            "class": "msctls_updown32",
+            "style": "50000036",
+            "ex_style": "00000004",
+            "count": 5
+          },
+          {
+            "class": "#32770",
+            "style": "40010444",
+            "ex_style": "00010000",
+            "count": 10
+          },
+          {
+            "class": "SysListView32",
+            "style": "50018001",
+            "ex_style": "00000204",
+            "count": 3
+          },
+          {
+            "class": "SysHeader32",
+            "style": "500000c0",
+            "ex_style": "00000000",
+            "count": 4
+          },
+          {
+            "class": "msctls_progress32",
+            "style": "50000001",
+            "ex_style": "00000004",
+            "count": 5
+          },
+          {
+            "class": "SysListView32",
+            "style": "5001c005",
+            "ex_style": "00000204",
+            "count": 1
+          },
+          {
+            "class": "SysHeader32",
+            "style": "500000c8",
+            "ex_style": "00000000",
+            "count": 2
+          },
+          {
+            "class": "Button",
+            "style": "50011003",
+            "ex_style": "00000004",
+            "count": 1
+          },
+          {
+            "class": "SysListView32",
+            "style": "50018409",
+            "ex_style": "00000204",
+            "count": 1
+          },
+          {
+            "class": "SysListView32",
+            "style": "5001c001",
+            "ex_style": "00000204",
+            "count": 1
+          },
+          {
+            "class": "msctls_trackbar32",
+            "style": "58010001",
+            "ex_style": "00000204",
+            "count": 1
+          },
+          {
+            "class": "msctls_updown32",
+            "style": "50000032",
+            "ex_style": "00000004",
+            "count": 1
+          },
+          {
+            "class": "msctls_trackbar32",
+            "style": "50010001",
+            "ex_style": "00000204",
+            "count": 1
+          },
+          {
+            "class": "msctls_progress32",
+            "style": "50000000",
+            "ex_style": "00000004",
+            "count": 1
+          },
+          {
+            "class": "SysTabControl32",
+            "style": "54030240",
+            "ex_style": "00000004",
+            "count": 1
+          }
+        ],
+        "cleanup": "HD_CLEANUP_OK exit=0 active=0 total=4",
+        "raw_report_sha256": "00502f4a7dd80f644de586c0e96c28cd2cbc5305133746bc2ef271e281fec57e"
+      }
+    }
+  },
+  "source_inputs_unchanged": 167,
+  "products": [
+    {
+      "name": "run16s.exe",
+      "sha256": "ae04b2ba9f553df8defff7e205494080551b87fd180ff00dffa58c9b407a809d",
+      "system32_matches": true
+    },
+    {
+      "name": "ntw16s32.dll",
+      "sha256": "789bf8ed116c4c89aca5fc83c26806127ebf5124822e291fc78468348279474c",
+      "system32_matches": true
+    },
+    {
+      "name": "ntw16s64.dll",
+      "sha256": "d39b5f2f2304a8665e9ad9110ca146eedd6334ed1ffcbe239c22aa143d3622b7",
+      "system32_matches": true
+    },
+    {
+      "name": "demo.exe",
+      "sha256": "9ccac1ba4891c5b217a91269252541437889eb75f6cd54645c17e0cff1e7bd6c",
+      "system32_matches": true
+    }
+  ],
+  "product_changed": false,
+  "published": false,
+  "not_performed": [
+    "disk benchmark/read/write/erase/error-scan commands",
+    "tab switching/business button clicks",
+    "user-existing instance injection",
+    "opaque procedure/object-layout inspection"
+  ],
+  "production_rules_checked": [
+    "control_class.h native-class allowlist",
+    "controls.c supported: BS_ICON/BS_BITMAP/BS_PUSHLIKE rejection and exact EDIT WS_EX_CLIENTEDGE policy",
+    "no ListView/Header/Tab/Progress/Trackbar/UpDown renderer"
+  ],
+  "comparison": "Native Win32 classes, not MD5summer custom real-class identification issue. Main hidden observations establish missing types/attachment rules only, not final visible painting.",
+  "high_probe": {
+    "authorization": "owner explicitly approved this one native-probe UAC",
+    "controller_pid": 42440,
+    "token_elevated": true,
+    "controller_path": "build/td-s13-hdtune/hdtune-style-probe.exe",
+    "normal_environment_no_RunAsInvoker": true,
+    "bare_pid": 38816,
+    "styled_pid": 40220,
+    "styled_launcher_pid": 15260,
+    "results": {
+      "bare": {
+        "process": "PROCESS pid=38816 tid=42288 bits=32 dpi=96 dll= root_attached=0",
+        "class_counts": {
+          "ComboBox": 5,
+          "Button": 73,
+          "Static": 161,
+          "#32770": 12,
+          "Edit": 6,
+          "msctls_updown32": 6,
+          "SysListView32": 6,
+          "SysHeader32": 6,
+          "msctls_progress32": 6,
+          "msctls_trackbar32": 2,
+          "SysTabControl32": 1
+        },
+        "attached_counts": {},
+        "visible_counts": {
+          "ComboBox": 1,
+          "Button": 14,
+          "Static": 18,
+          "#32770": 2,
+          "Edit": 1,
+          "msctls_updown32": 1,
+          "SysTabControl32": 1
+        },
+        "visible_unattached": {
+          "ComboBox": 1,
+          "Button": 14,
+          "Static": 18,
+          "#32770": 2,
+          "Edit": 1,
+          "msctls_updown32": 1,
+          "SysTabControl32": 1
+        },
+        "normal_main_shown": true,
+        "root_attached": false,
+        "report_sha256": "a1d638fa6c438af64f3da758b262ba041d96eb01e8146b1df183900b338c2da5",
+        "screenshot_bmp_sha256": "2de85e054926d32e290f3c5eedbda5b8595fce81ab18b9e8cee03578467b849a"
+      },
+      "styled": {
+        "process": "PROCESS pid=40220 tid=15364 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll root_attached=0",
+        "class_counts": {
+          "ComboBox": 5,
+          "Button": 73,
+          "Static": 161,
+          "#32770": 12,
+          "Edit": 6,
+          "msctls_updown32": 6,
+          "SysListView32": 6,
+          "SysHeader32": 6,
+          "msctls_progress32": 6,
+          "msctls_trackbar32": 2,
+          "SysTabControl32": 1
+        },
+        "attached_counts": {
+          "ComboBox": 5,
+          "Static": 161,
+          "Button": 66
+        },
+        "visible_counts": {
+          "ComboBox": 1,
+          "Button": 17,
+          "Static": 18,
+          "#32770": 2,
+          "Edit": 1,
+          "msctls_updown32": 1,
+          "SysTabControl32": 1
+        },
+        "visible_unattached": {
+          "ComboBox": 0,
+          "Button": 6,
+          "Static": 0,
+          "#32770": 2,
+          "Edit": 1,
+          "msctls_updown32": 1,
+          "SysTabControl32": 1
+        },
+        "normal_main_shown": true,
+        "root_attached": false,
+        "report_sha256": "74922586c87917b65eef2421a68d533795c69bfa800dcc610d25c2b8beb03698",
+        "screenshot_bmp_sha256": "abf81fae83f20663b94497a0b86e31cd090df5a2f23abe6a2ae29fbcc37b7558"
+      },
+      "pixel_compare": {
+        "width": 340,
+        "height": 487,
+        "changed_pixels": 4895,
+        "top_30_rows_identical": true,
+        "geometry_identical": true,
+        "baseline_already_narrow_cropped": true
+      }
+    },
+    "batch_result": "bare=1 styled=1",
+    "normal_close_regression": "failed; exact failing close/wait branch not instrumented, final stale GetLastError=5 not a diagnosed native cause",
+    "cleanup": "KILL_ON_JOB_CLOSE fallback on each owned Job; four recorded controller/launcher/target PIDs absent after completion",
+    "success_claim": "real normal displayed main/controls and screenshots obtained, not an all-tests-pass result",
+    "related_pids_absent_verified": true
+  },
+  "next_steps": [
+    "Instrument dialog WM_INITDIALOG scope/return and original style/ex-style to locate root attachment rejection; root=false alone does not prove its cause.",
+    "Add rendering coverage for standard ListView/Header/Tab/Progress/Trackbar/UpDown separately.",
+    "Audit icon/PushLike buttons preserving original graphics and client-edge EDIT ownership before changing current refusal rules.",
+    "Investigate bounded normal-close failure before claiming lifecycle coverage."
+  ]
+}
