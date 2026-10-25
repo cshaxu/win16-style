@@ -7,8 +7,8 @@ The clean S6 four-file package,65actual-package cases, ten new focused/twelve
 preservation cases and real DK/MD5/VB observations pass. Both destinations and
 eight hashes match; installed ABI/header12 and deployed-byte launch2 checks pass.
 P1 937fab06eec57c6ffd458bca18a45d3d51ca1a33 is pushed; actual remote195
-files match. Strict archive review finds the test receipt issue below; P2 repair
-and subsequent actual review/cleanup must finish before closure.
+files match. Strict archive review finds the test receipt issue below; P2 exact receipt repair, actual remote192/strict archive and safe cleanup
+complete; P3 records S6 closure and S7 admission.
 CURRENT alone owns status. Elevated HD Tune testing defaults to skip by the owner.
 
 ## Actual breakpoint and bounded implementation
@@ -116,3 +116,21 @@ The canonical exported source builds both widths using the stable ccache in
 24.646s/30.390s and passes12 ABI/header/callback/owner checks. This is not a new
 published package: the original65-case-tested four files remain at both paths,
 and P2 records no binary change. Actual P2 remote/archive verification follows.
+
+
+## P3 closure and handoff
+
+P2 82e9135ea612f0abd508035ce0facec28a3af3fd is pushed and actual192remote files
+match. Actual P2 archive passes strict source/thirdparty/resource/governance
+gates; its183inputs equal the canonically rebuilt proof, four artifacts and eight
+deployed files match the tested P1 batch. All source/Git identities and eight
+prior backups are recoverable;187blob identities are checked in one Git batch.
+Both exact registered scratch roots have no reparse/live task executable and
+all67DLLs have zero Restart Manager owners. Evidence is extracted before removal
+of obsolete package/build/log/probe trees. Only seven reviewed sources remain:
+file-owners.c,md5-driver.c,md5-probe.c,verify-remote.py,s6-list-report.h,
+s6-dk-probe.c,s6-list-header-api.c. Stable Ninja/ccache and external PNG remain.
+S6 closes. S7 researches existing application/native custom-draw and implements
+finite report-list row adaptation without private object guesses or changes to
+application data/selection/notifications. T15/M0 remain open; other tasks' edits
+remain untouched. HD Tune elevated real-app tests continue to default to skip.

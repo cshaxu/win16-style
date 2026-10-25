@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "packet": "M0 T15 S6",
-  "status": "P1 pushed/remote195 match; strict archive exposed authored test CRLF receipt, exact LF metadata repair and canonical rebuild12pass locally; P2 push/review pending",
+  "status": "S6 closed after P1 product/P2 canonical receipt repair and actual remote/archive verification plus safe cleanup; S7 admitted; M0/T15 open",
   "baseline_commit": "602ce8b34f16e42b0ef0d5c4379e6415bef0deb4",
   "product_baseline": "a4b7e22916dbd4572654138e861432cef1bb8694",
   "authorization": "automatic sequential S through T15 audit; fixed M0; permanent publish/commit/push; elevated HD Tune defaults to owner-requested skip",
@@ -569,5 +569,66 @@
       "selection": "^core/(abi|header-v5|header-v5-dpi|header-v6|header-v6-dpi|header-owner)$"
     },
     "binary_publication": "no binary change; original65-case-tested S6 P1 deployed batch retained"
+  },
+  "P2_actual_remote": {
+    "status": "passed",
+    "commit": "82e9135ea612f0abd508035ce0facec28a3af3fd",
+    "remote_main": "82e9135ea612f0abd508035ce0facec28a3af3fd",
+    "files": 192,
+    "source_inputs": 183,
+    "seconds": 10.529001999995671,
+    "receipt_sha256": "b6d48cda4275533d6d7c325c8156805c0a8302774bea34d9095f1b0d5c668ccc"
+  },
+  "P2_actual_archive": {
+    "status": "passed",
+    "inputs_equal_canonical_rebuilt_source": 183,
+    "archive_artifacts": 4,
+    "deployed_unchanged": 8,
+    "strict_source_resource_governance": "passed without gate relaxation"
+  },
+  "closure": {
+    "P1": "937fab06eec57c6ffd458bca18a45d3d51ca1a33",
+    "P2": "82e9135ea612f0abd508035ce0facec28a3af3fd",
+    "scope": "S6 only; M0/T15 open",
+    "source_inputs_recoverable_from_commit": 183,
+    "backup8_recoverable_from_commit": "602ce8b34f16e42b0ef0d5c4379e6415bef0deb4",
+    "current_deployed_rechecked": 8,
+    "batch_Git_blob_reads": 187,
+    "cleanup_safety": {
+      "dlls": 67,
+      "status": "safe-to-clean",
+      "live_scratch_executables": 0,
+      "reparse_points": 0,
+      "queries": [
+        {
+          "resources": 32,
+          "result": "RM_QUERY_OK resources=32 owners=0 reasons=0"
+        },
+        {
+          "resources": 32,
+          "result": "RM_QUERY_OK resources=32 owners=0 reasons=0"
+        },
+        {
+          "resources": 3,
+          "result": "RM_QUERY_OK resources=3 owners=0 reasons=0"
+        }
+      ],
+      "roots": [
+        "O:\\repos.hobby\\win16style\\build\\t15-controls",
+        "O:\\repos.hobby\\win16style\\build\\t15-package"
+      ]
+    },
+    "keep_sources": [
+      "file-owners.c",
+      "md5-driver.c",
+      "md5-probe.c",
+      "verify-remote.py",
+      "s6-list-report.h",
+      "s6-dk-probe.c",
+      "s6-list-header-api.c"
+    ],
+    "cleanup": "completed: obsolete registered builds/packages/backups/logs/probes removed after extraction and source183/deployed8/backup8 recovery checks; exact roots/reparse0/live-exe0/67 DLL owners0; seven reviewed sources retained for S7; stable Ninja/ccache and external PNG preserved",
+    "closing_delivery": "M0 T15 S6 P3",
+    "following_scope": "report-list public protocols/custom-draw interaction and finite row adaptation; other families follow; HD Tune elevated test defaults to skip"
   }
 }

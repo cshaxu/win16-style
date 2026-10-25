@@ -2,37 +2,32 @@
 
 ## Current Work
 
-S5已关闭，P2 602ce8b34f16e42b0ef0d5c4379e6415bef0deb4实际远端188通过。
-S6已完成列表/表头八组协议及真实DK观察，明确列表附着仅边框；本S先实现普通
-文字表头，列表行绘制交后续S。原型真实DK五列保持几何/数据，10项新增双宽
-聚焦及8项前期保留、65实际包384.854秒/12保留、真实DK/MD5/VB与八部署一致、
-12安装ABI/表头与两启动矩阵通过；P1 937fab06已推送/实际远端195匹配。
-严格归档发现新测试CRLF回执，P2按原Git LF字节修正，导出源双宽重建12通过；
-不改C逻辑/资源/门禁或已测发布包，待P2实际远端与归档复核/清理后关闭S6。
-按用户自动续S授权准入S6，固定M0/T15；HD Tune管理员实测本次及后续默认skip，
-不计通过、不再弹UAC。[S6记录](../history/M0-T15-S6-header-controls.md)/[证据](../etc/evidence/header-controls.json)登记本S事实；
-[S5记录](../history/M0-T15-S5-tab-controls.md)保留上一交付范围及交接。
+S6普通文字表头已完成：65实际包/10新增聚焦/12保留、DK/MD5/VB、双发布与八摘要，
+P1远端195；P2修正已提交测试LF回执后严格归档/远端192/双宽重建12通过，清理后关闭。
+按自动续S授权准入S7，固定M0/T15；列表行将独立核实既有custom-draw，不能把边框附着
+算作行绘制。HD Tune管理员实测继续默认skip、不计通过。[S6记录](../history/M0-T15-S6-header-controls.md)
+和[证据](../etc/evidence/header-controls.json)保留实际范围/回执修正及交接。
 
-## M0 T15 S6 Packet
+## M0 T15 S7 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S5关闭后顺序准入S6，唯一活动S，不复用编号 |
-| Admission And Approval | 用户“批准 自动准入s任务 到t收口为止”；永久提交推送/双发布授权保持；最新要求本次及以后默认跳过HD Tune管理员实测，除非另行要求恢复 |
-| Objective | 定位SysListView32/TListView及SysHeader32公开协议；本S先完成普通文字表头，复杂列格式保留原生，列表行内容交后续S；保持数据/几何/通知/输入 |
-| Non-goals | 本S不实现树/进度/滑块/微调/应用自绘图表，不冒称任意VCL类或ownerdraw/ownerdata支持；标题/字体生成策略/菜单/滚动条/原资源/启动传播不改；不做HD Tune提权实测 |
-| Reference Baseline | a4b7e22916dbd4572654138e861432cef1bb8694四文件0.15.0.0已双发布/远端193及归档重建12通过；S5关闭记录本P；179输入/55包/八部署一致 |
-| Candidate Proposal | [框架完成分解](../proposals/framework-completion.md)；[S5记录](../history/M0-T15-S5-tab-controls.md)/[证据](../etc/evidence/tab-controls.json)及S4真实类交接 |
-| Files And ABI Surface | 私有控件分类/绘制/创建附着、纯C测试和原生观察器；三组件四产物/ABI3/31导出保持；无新产品/外部后端，新增内部hook先审容量 |
-| Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT、UI与来源策略；纯C17/MinGW GCC/Ninja/ccache；禁computer-use；兄弟仓库只读且不依赖 |
-| Verification | 先只读原生/真实DK与MD5协议、几何和绘制，再有限方案/自包含双宽原生对照、旧包负例/生命周期；双宽干净同批四文件实际包、两处发布/安装复验/远端归档复核；HD Tune管理员观察skip |
-| Expected Markers | 项目/列/文字/图标的实际像素和DPI；数据/选中/焦点/排序/列宽及重排的原生通知/取消保持；回调销毁及借用资源释放，不凭附着认定绘制生效 |
-| Asset Needs | build/t15-controls登记S6探针/日志并承接四份已审源码；build/t15-package登记新干净包/备份；先提炼后安全清理，稳定.ninja/.ccache与外部PNG保留 |
-| Reporting Requirements | 断点/角色识别、有限方案/受支持及保留模式、原生像素/语义/负例、实际包/八部署/远端协调复核和未覆盖面；不把HD Tune历史证据算本包通过 |
-| Stop Conditions | 共享宿主/既有进程注入/重大架构安全边界保留证据；不改全局设置/资源、不猜私有对象、不吞回调、不放宽门禁；未验证模式保留原生并明确交接 |
-| Exit Criteria | 有限列表/表头支持或有证据的进一步分解；相应双宽构建/四文件实际包、binary变更双发布/八摘要/安装复验、提交推送/实际远端/协调复核/清理后关闭S6；自动续S，T15另做覆盖审计 |
-| Original Owner Request | “好 怎么办吧”“批准 自动准入s任务 到t收口为止”；MD5summer/HD Tune等传统应用控件适配；“跳过这个测试 以后默认不测” |
-| Similar-Issue Sweep | 原生SysListView32/SysHeader32与真实TListView身份；报告/图标/ownerdata/ownerdraw/隐藏/ANSI与Unicode、图像/回调文字/扩展数据、原生列/输入/通知/取消/重排、回调生存期；不改未验证模式 |
+| Identifier Mode | Continuation；S6关闭后顺序准入S7，唯一活动S，不复用编号 |
+| Admission And Approval | 用户“批准 自动准入s任务 到t收口为止”；永久提交推送/双发布授权保持；HD Tune管理员实测依最新要求默认skip，除非另行恢复 |
+| Objective | 核实SysListView32/TListView报告行的公开协议、native/custom-draw阶段及应用已有回调，先原型验证再有限接入现有renderer；保留数据/图标/选中/焦点/几何/原生通知，过大自动拆续S |
+| Non-goals | 不把既有边框当行绘制，不猜VCL对象或私有lParam，不任意填充真实应用的私有行对象；不改标题/字体生成/菜单/滚动条/原资源/启动，不实现树/进度/滑块/微调/任意自绘或虚拟数据模式，不做HD Tune提权实测 |
+| Reference Baseline | S6 P1 937fab06eec57c6ffd458bca18a45d3d51ca1a33四文件0.15.0.0已双发布；P2 82e9135ea612f0abd508035ce0facec28a3af3fd严格回执修正/远端192通过；183输入/65包/八部署保持 |
+| Candidate Proposal | [框架完成分解](../proposals/framework-completion.md)；[S6记录](../history/M0-T15-S6-header-controls.md)/[证据](../etc/evidence/header-controls.json)含列表/表头真实交接 |
+| Files And ABI Surface | 私有列表角色/绘制接入/受控父通知观察器与C17测试；保持三组件四产物、ABI3/31导出/现有detour容量，无额外运行产品/兄弟仓库依赖；新增内部hook先审 |
+| Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT、UI及来源策略；MinGW GCC/Ninja/稳定ccache；禁computer-use与兄弟仓库修改/依赖 |
+| Verification | 先原生双宽/COMCTL/DPI与真实自有DK/MD5只读绘制观察，区分应用自绘；自包含填充行/选中/图标/通知及应用回调对照、旧包负例/生命周期；双宽干净四文件实际包/双发布/安装/实际远端归档；HD Tune实测skip |
+| Expected Markers | 正常显示和填充行实际字形/颜色/图标/原生几何；应用custom-draw原返回与额外阶段边界、命令/数据/选中/焦点/回调销毁、DC/字体/观察器释放；实际目标DLL路径/摘要 |
+| Asset Needs | build/t15-controls登记S7原型/日志并承接七份已审源码；build/t15-package登记新干净包/备份；先提炼后清理，稳定.ninja/.ccache和外部PNG保留 |
+| Reporting Requirements | 先报告实际断点和验证过的有限路线，明确应用自绘/虚拟/特殊视图保留；包/双发布/远端协调复核和未覆盖面，不用空列表或附着代替有内容绘制证明 |
+| Stop Conditions | 无法保留应用回调/数据或需私有对象、共享宿主/既有进程注入/全局设置时保留证据与方案；不吞通知/改源图/放宽门禁；未验证模式维持原生并明确交接 |
+| Exit Criteria | 可证有限报告行接入或有证据的进一步分解；对应双宽构建/同批四文件实际包/必要双发布与八摘要/安装复验、提交推送/实际远端/协调复核和清理后关闭S7；自动续S，T15另做有限覆盖审计 |
+| Original Owner Request | “好 怎么办吧”“批准 自动准入s任务 到t收口为止”；传统程序框架/公共控件适配；“跳过这个测试 以后默认不测” |
+| Similar-Issue Sweep | 原生SysListView32与真实TListView、报告/非报告/ownerdraw/ownerdata、父custom-draw返回和额外阶段、图像/状态图/子项/编辑与隐藏、ANSI/Unicode、回调变更/销毁/独立所有权及借用DC/字体 |
 
 ## Identifier State
 
@@ -40,21 +35,24 @@ S6已完成列表/表头八组协议及真实DK观察，明确列表附着仅边
 - Last allocated T: 15
 - Last allocated Td S: 13
 - Owner allocation constraint: 只可自行划分后续S，不得自行分配新T；保持现有T15/M0。
-- Last delivery: M0 T15 S5 P2（P1 a4b7e22916dbd4572654138e861432cef1bb8694已推送/远端193与归档重建12通过；本P记录关闭S5/准入S6）
-- Open task: T15自动续S实施/任务级审计中；S6活动，S5/S4/S3/S2/S1关闭；Td S13/S12/S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
+- Last delivery: M0 T15 S6 P3（P1 937fab06产品/远端195，P2 82e9135回执修正/实际远端192与严格归档通过；本P关闭S6/准入S7）
+- Open task: T15自动续S实施/任务级审计中；S7活动，S6/S5/S4/S3/S2/S1关闭；Td S13/S12/S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
 
 ## Technical Baseline
 
-0.15.0.0 / T15 S5四文件已双发布，P1远端193通过；179输入、55实际包361.218秒、
-12新增聚焦/12保留与实际归档双宽重建12通过。普通顶部/多行分页、回调取消安装与
-字体有效性、DK四页/MD5/VB保持；八部署/12安装ABI分页取消/两启动矩阵一致。
-HD Tune本包提权实测按最新用户指令skip，后续默认不测，不以S4历史代替本包证据。
-三组件四产物/ABI3/31导出/31detours/32slots、原五头/声明与18表保持。实际96/144DPI
-仅覆盖记录中的原生探针，不冒称物理输入或任意模式。[记录](../history/M0-T15-S5-tab-controls.md)
-及[证据](../etc/evidence/tab-controls.json)保留失败原型/行尾复核/未覆盖与安全清理事实。
-仅四份已审观察器源码交接S6，稳定Ninja/ccache与外部PNG保持；T15/M0及其他状态不变。
+0.15.0.0 / S6普通文字表头四文件已双发布，183输入/65实际包384.854秒、10聚焦/12保留、
+DK五列/四页及MD5/VB、八部署/12安装ABI表头与两启动矩阵通过；标题/页签顶部48行原样。
+P1实际远端195匹配；P2按已提交Git LF字节修正测试回执，不改C逻辑/资源/门禁/已测包，
+实际远端192/严格归档与导出源双宽重建12通过。三组件四产物/ABI3/31导出/31detours/
+32slots、原五头/声明和18表保持。报告行仍未实现，特殊表头格式保留原生；HD Tune
+本包提权实测依用户要求skip，不将历史观察计通过。[记录](../history/M0-T15-S6-header-controls.md)
+和[证据](../etc/evidence/header-controls.json)保留真实覆盖、失败/修正和未覆盖面。
+183源码/当前八文件/旧八备份可恢复；两scratch无reparse/活exe0、67DLL占用0，提炼后
+安全清理，仅七份已审观察器源码交接S7；稳定Ninja/ccache与外部PNG保留，其他状态保持。
 
 ## Recent Closure
+
+- [T15 S6普通表头](../history/M0-T15-S6-header-controls.md)：65实际包/双发布及P1远端195，P2严格回执修正后远端192/归档重建12、安全清理通过；HD Tune提权skip，关闭S6/自动续S7，M0/T15开放。
 
 - [T15 S5分页/回调所有权](../history/M0-T15-S5-tab-controls.md)：55实际包/双发布、远端193/严格归档重建12、八摘要/安装及安全清理通过；HD Tune提权按用户要求skip，S5关闭、自动续S6，M0/T15开放。
 
@@ -108,10 +106,9 @@ HD Tune本包提权实测按最新用户指令skip，后续默认不测，不以
 
 ## Last Packet Closure
 
-T15 S5 P1 a4b7e22916dbd4572654138e861432cef1bb8694完成有限分页与取消安装所有权修复；
-55实际包/12新增聚焦/12保留、DK四页/MD5/VB、八部署/安装复验通过；HD Tune管理员
-实测按用户最新要求skip，以后默认不测。实际远端193匹配，归档严格门禁及导出源
-双宽重建12通过；两个PS脚本仅已记录CRLF/LF身份差异，产品C/H与原资源相同。
-179源码/当前八文件/旧八备份身份可恢复；两精确scratch边界无reparse/活exe0、
-68DLL占用0，提炼后清理，仅四观察器源码转S6；稳定缓存/外部PNG保留。S5关闭，
-本P自动准入S6继续列表/表头；固定M0/T15，其他任务改动和状态保持。
+S6 P1 937fab06完成普通文字表头及特殊格式原生保留；65实际包/10聚焦/12保留、真实
+DK/MD5/VB、八部署/安装通过，远端195匹配。严格归档查出新测试工作区CRLF回执，
+P2 82e9135只修正原Git LF身份，导出源双宽重建12、实际P2严格归档/远端192通过；
+已测四文件不变。183输入/八当前/八旧备份可恢复，精确两root无reparse/活exe0、
+67DLL占用0，提炼证据后清理，仅七份观察器源码转S7；稳定缓存/外部PNG保持。
+S6关闭、本P准入S7报告行研究/有限适配，M0/T15及其他任务保持，HD Tune管理员实测默认skip。

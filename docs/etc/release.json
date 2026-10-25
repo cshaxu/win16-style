@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T15 S6 P2",
-  "stage": "S6 P1 published/remote195 match; exact canonical LF test receipt repaired, strict gates/canonical rebuild12pass; P2 actual push/review pending; T15/M0 open",
+  "delivery": "M0 T15 S6 P3",
+  "stage": "S6 closed: P1 remote195/P2 exact canonical receipt +remote192/strict archive/rebuild12/safe cleanup; S7 admitted; elevated HD Tune default skip; M0/T15 open",
   "version": "0.15.0.0",
   "version_contract": "Fixed T15 version; S/P distinguished by Git and artifact SHA; no new T allocated",
   "package_directory": "assets",
@@ -1148,9 +1148,70 @@
         "selection": "^core/(abi|header-v5|header-v5-dpi|header-v6|header-v6-dpi|header-owner)$"
       },
       "binary_publication": "no binary change; original65-case-tested S6 P1 deployed batch retained"
+    },
+    "P2_actual_remote": {
+      "status": "passed",
+      "commit": "82e9135ea612f0abd508035ce0facec28a3af3fd",
+      "remote_main": "82e9135ea612f0abd508035ce0facec28a3af3fd",
+      "files": 192,
+      "source_inputs": 183,
+      "seconds": 10.529001999995671,
+      "receipt_sha256": "b6d48cda4275533d6d7c325c8156805c0a8302774bea34d9095f1b0d5c668ccc"
+    },
+    "P2_actual_archive": {
+      "status": "passed",
+      "inputs_equal_canonical_rebuilt_source": 183,
+      "archive_artifacts": 4,
+      "deployed_unchanged": 8,
+      "strict_source_resource_governance": "passed without gate relaxation"
     }
   },
   "architecture": "three components, four products; pure C17 MinGW GCC/Ninja/ccache; real-app observer is optional, no sibling dependency",
   "binary_batch_delivery": "M0 T15 S6 P1",
-  "source_snapshot_format": "SHA256 of UTF8 compact sorted-key JSON array of path/sha256/git_blob_sha256 when different"
+  "source_snapshot_format": "SHA256 of UTF8 compact sorted-key JSON array of path/sha256/git_blob_sha256 when different",
+  "closure": {
+    "P1": "937fab06eec57c6ffd458bca18a45d3d51ca1a33",
+    "P2": "82e9135ea612f0abd508035ce0facec28a3af3fd",
+    "scope": "S6 only; M0/T15 open",
+    "source_inputs_recoverable_from_commit": 183,
+    "backup8_recoverable_from_commit": "602ce8b34f16e42b0ef0d5c4379e6415bef0deb4",
+    "current_deployed_rechecked": 8,
+    "batch_Git_blob_reads": 187,
+    "cleanup_safety": {
+      "dlls": 67,
+      "status": "safe-to-clean",
+      "live_scratch_executables": 0,
+      "reparse_points": 0,
+      "queries": [
+        {
+          "resources": 32,
+          "result": "RM_QUERY_OK resources=32 owners=0 reasons=0"
+        },
+        {
+          "resources": 32,
+          "result": "RM_QUERY_OK resources=32 owners=0 reasons=0"
+        },
+        {
+          "resources": 3,
+          "result": "RM_QUERY_OK resources=3 owners=0 reasons=0"
+        }
+      ],
+      "roots": [
+        "O:\\repos.hobby\\win16style\\build\\t15-controls",
+        "O:\\repos.hobby\\win16style\\build\\t15-package"
+      ]
+    },
+    "keep_sources": [
+      "file-owners.c",
+      "md5-driver.c",
+      "md5-probe.c",
+      "verify-remote.py",
+      "s6-list-report.h",
+      "s6-dk-probe.c",
+      "s6-list-header-api.c"
+    ],
+    "cleanup": "completed: obsolete registered builds/packages/backups/logs/probes removed after extraction and source183/deployed8/backup8 recovery checks; exact roots/reparse0/live-exe0/67 DLL owners0; seven reviewed sources retained for S7; stable Ninja/ccache and external PNG preserved",
+    "closing_delivery": "M0 T15 S6 P3",
+    "following_scope": "report-list public protocols/custom-draw interaction and finite row adaptation; other families follow; HD Tune elevated test defaults to skip"
+  }
 }
