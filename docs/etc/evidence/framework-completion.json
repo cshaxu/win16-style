@@ -1,0 +1,815 @@
+{
+  "task": "M0 T15 S3",
+  "status": "S3 verified, published and installed checks passed; P1 commit/push/remote review pending",
+  "owner_authorization": "automatic sequential S admission through T15 closure; no new T; necessary multiple one-shot admin probes separately explicitly approved",
+  "baseline": "da2631f6b1a84f5b4e06eddd0c72c63dc8fd6bcb",
+  "investigation": {
+    "property_sheet_A_W_comctl5_6": "old package attaches ordinary property sheet; missing PropertySheet detour is not established",
+    "early_dialog": "self-contained visible dialog before WM_INITDIALOG return old attached=0; first-show prototype attached=1; native return73 preserved",
+    "real_HD_Tune_first_prototype": "DLL loaded, root_attached=0. Prototype not a verified HD Tune fix.",
+    "normal_close_corrected": "actual bare and styled SendMessageTimeout WM_CLOSE success1/error0, Wait0, native exit2 both, HWND destroyed, owned Job active0. Previous probe falsely required exit0.",
+    "readiness_limit": "Two posted readiness native runs confirmed root_attached0; overearly observation is not the root cause. Normal close exit2 preserved in bare and styled.",
+    "actual_first_divergent_node": "Ready real HD Tune: WM_INITDIALOG returns, creation coordinator calls install_created; frame layout calls menu_bar_read, which rejects top-level MFT_OWNERDRAW (0x100), then install_frame returns ERROR_NOT_SUPPORTED50. Root94cf0044/ex10100 rect0,36,340,523 DPI96; both root entries type0x100 bitmapNULL and application itemData.",
+    "native_owner_draw_reference": "https://learn.microsoft.com/en-us/windows/win32/menurc/using-menus#creating-owner-drawn-menu-items",
+    "hidden_controls": "Native bare OK/Cancel/Help WS_VISIBLE0, styled1. Existing short native draw suppression bracketing sends WM_SETREDRAW(TRUE), which sets WS_VISIBLE on hidden BUTTON and multiline EDIT. It was also present in prior root0 candidate, so not attributed to new frame resize.",
+    "redraw_reference": "https://learn.microsoft.com/en-us/windows/win32/gdi/wm-setredraw"
+  },
+  "prototype": {
+    "source": "src/ntw16s-dll/attachment.c",
+    "scope": "only pending newly created captioned top-level dialogs within enabled same-thread creation chain",
+    "first_show": "completed WM_SHOWWINDOW or SWP_SHOWWINDOW WINDOWPOSCHANGED with actual WS_VISIBLE",
+    "settled_record": "retained to prevent duplicate attachment after explicit removal when WM_INITDIALOG later returns",
+    "ABI_changed": false,
+    "detour_count_changed": false,
+    "diagnostic_trace_still_present": false,
+    "must_remove_trace_before_freeze": false,
+    "owner_draw_bar": "Private same-thread window-aware bar snapshot forwards MEASUREITEM/DRAWITEM to existing application owner with exact ID/itemData; existing classic title algorithm and standard string bar unchanged. No MFT/data/menu mutation.",
+    "final_candidate": "build/t15-package/s3-hidden-release/candidate",
+    "source_snapshot": "clean dual-width batch passed; source/resource/ABI gates passed"
+  },
+  "resources": {
+    "process_GDI_total_not_oracle": "Native bare dialog baseline independently varied23->29->43 asynchronously; count retained only as diagnostic.",
+    "precise_ownership": "12 real coordinator dialogs per width with nested owner, explicit removal, unsupported early-show retry, failed create/OOM; exact allocations0 and hooksNULL.",
+    "prototype_regression_found": "initial prototype attached twice after explicit removal (installed2 at i2); settled-record correction now installed1 and allocations0."
+  },
+  "tests": {
+    "x86": {
+      "old-final-oracle": {
+        "sha256": "e560ffd5eb70f2330735ef83f06eac53f7fddd26f15734524f17fd44ae278050",
+        "selected_tail": [
+          "DIALOG_SHOW_OK bits=32 styled=0 aware=0 cases=9 initialization_active=1 initial_hidden_preserved=1 pixels=1 native_return=73 gdi_observed=1",
+          "DIALOG_SHOW_ASSERT line=31 error=0: (attached && attached(w))==styled",
+          "DIALOG_SHOW_ASSERT line=35 error=1168: remove_style(w)",
+          "DIALOG_SHOW_ASSERT line=35 error=0: frame_image(w)!=before",
+          "DIALOG_SHOW_FAIL line=81 error=126: result==73 && observed==before+1 && !failures",
+          "DIALOG_SHOW_FAIL line=112 error=0: wait==WAIT_OBJECT_0 && !code && empty"
+        ]
+      },
+      "ownership-once": {
+        "sha256": "05ce62c855740d9522ff919423553c688dfb59b318655628f885d92b3748385b",
+        "selected_tail": [
+          "SCOPE_DIAG i=7 installed=1 failure=0 observed=8 before=7 errors=0 live=0 current=00000000",
+          "SCOPE_DIAG i=8 installed=1 failure=0 observed=9 before=8 errors=0 live=0 current=00000000",
+          "SCOPE_DIAG i=9 installed=1 failure=0 observed=10 before=9 errors=0 live=0 current=00000000",
+          "SCOPE_DIAG i=10 installed=1 failure=0 observed=11 before=10 errors=0 live=0 current=00000000",
+          "SCOPE_DIAG i=11 installed=1 failure=0 observed=12 before=11 errors=0 live=0 current=00000000",
+          "DIALOG_SCOPE_OWNERSHIP_OK bits=32 dialogs=12 nested_owner=1 detach=1 failed_create=1 oom=1 allocations=0"
+        ]
+      },
+      "protocol": {
+        "sha256": "99f5168fb0deaeb2e06d9104668e5ceac22466a7be5ab58759138bcce488c46a",
+        "selected_tail": [
+          "DIALOG_GDI styled=1 repeat=0 resources=49",
+          "DIALOG_GDI styled=1 repeat=1 resources=49",
+          "DIALOG_GDI styled=1 repeat=2 resources=49",
+          "DIALOG_GDI styled=1 repeat=3 resources=49",
+          "DIALOG_SHOW_OK bits=32 styled=1 aware=1 cases=9 initialization_active=1 initial_hidden_preserved=1 pixels=1 native_return=73 gdi_observed=1",
+          "DIALOG_SHOW_CLEANUP_OK owned_jobs_empty=4"
+        ]
+      },
+      "focused": {
+        "tests": "5",
+        "failures": "0",
+        "skipped": "0",
+        "names": [
+          "core/dialog-scope",
+          "core/frames",
+          "core/lifetime",
+          "core/default",
+          "core/terminal"
+        ]
+      },
+      "owner_draw_dialogs": {
+        "sha256": "674b642b944818d541d4eb2cabee26759be720135dd34e764df9e1600c31290d",
+        "tail": [
+          "DIALOG_SHOW_OK bits=32 styled=0 aware=1 cases=15 owner_draw_callbacks=1 initialization_active=1 initial_hidden_preserved=1 pixels=1 native_return=73 gdi_observed=1",
+          "DIALOG_GDI styled=1 repeat=0 resources=49",
+          "DIALOG_GDI styled=1 repeat=1 resources=49",
+          "DIALOG_GDI styled=1 repeat=2 resources=49",
+          "DIALOG_GDI styled=1 repeat=3 resources=49",
+          "DIALOG_SHOW_OK bits=32 styled=1 aware=1 cases=15 owner_draw_callbacks=1 initialization_active=1 initial_hidden_preserved=1 pixels=1 native_return=73 gdi_observed=1",
+          "DIALOG_SHOW_CLEANUP_OK owned_jobs_empty=4"
+        ],
+        "status": "passed"
+      },
+      "retry_ownership": {
+        "sha256": "aa2f354b0dd5053446500fb2b09fa59ef17554edc5d8ba3a2bc5cc1b8011f07c",
+        "tail": [
+          "DIALOG_SCOPE_OWNERSHIP_OK bits=32 dialogs=12 nested_owner=1 detach=1 failed_create=1 unsupported_retry=1 oom=1 allocations=0"
+        ]
+      },
+      "old_owner_only": {
+        "sha256": "f0da77f9d21dc99fa9187b302f876f5170fafa8bee036e0cadd31d5dca70a199",
+        "tail": [
+          "DIALOG_GDI styled=0 repeat=0 resources=23",
+          "DIALOG_SHOW_OK bits=32 styled=0 aware=0 cases=2 owner_draw_callbacks=1 initialization_active=1 initial_hidden_preserved=1 pixels=1 native_return=73 gdi_observed=1",
+          "DIALOG_SHOW_ASSERT line=31 error=0: (attached && attached(w))==styled",
+          "DIALOG_SHOW_ASSERT line=39 error=1168: remove_style(w)",
+          "DIALOG_SHOW_ASSERT line=39 error=0: frame_image(w)!=before",
+          "DIALOG_SHOW_FAIL line=96 error=0: result==73 && observed==before+1 && !failures",
+          "DIALOG_SHOW_FAIL line=125 error=0: wait==WAIT_OBJECT_0 && !code && empty"
+        ]
+      },
+      "candidate_owner_only": {
+        "sha256": "a25509fc285b94066e390ea7bdd5d6cd9cb7a8fecd2a420b8238977ad7d3242f",
+        "tail": [
+          "DIALOG_GDI styled=1 repeat=0 resources=28",
+          "DIALOG_SHOW_OK bits=32 styled=1 aware=0 cases=2 owner_draw_callbacks=1 initialization_active=1 initial_hidden_preserved=1 pixels=1 native_return=73 gdi_observed=1",
+          "DIALOG_GDI styled=0 repeat=0 resources=35",
+          "DIALOG_SHOW_OK bits=32 styled=0 aware=1 cases=2 owner_draw_callbacks=1 initialization_active=1 initial_hidden_preserved=1 pixels=1 native_return=73 gdi_observed=1",
+          "DIALOG_GDI styled=1 repeat=0 resources=25",
+          "DIALOG_SHOW_OK bits=32 styled=1 aware=1 cases=2 owner_draw_callbacks=1 initialization_active=1 initial_hidden_preserved=1 pixels=1 native_return=73 gdi_observed=1",
+          "DIALOG_SHOW_CLEANUP_OK owned_jobs_empty=4"
+        ]
+      },
+      "owner_lifetime": {
+        "sha256": "b48e283acdbef514dae8a7d6eeede8684f234f874a007dba71317da7b6fde4aa",
+        "tail": [
+          "SCOPE_DIAG i=6 installed=1 failure=0 observed=7 before=6 errors=0 live=0 current=00000000",
+          "SCOPE_DIAG i=7 installed=1 failure=0 observed=8 before=7 errors=0 live=0 current=00000000",
+          "SCOPE_DIAG i=8 installed=1 failure=0 observed=9 before=8 errors=0 live=0 current=00000000",
+          "SCOPE_DIAG i=9 installed=1 failure=0 observed=10 before=9 errors=0 live=0 current=00000000",
+          "SCOPE_DIAG i=10 installed=1 failure=0 observed=11 before=10 errors=0 live=0 current=00000000",
+          "SCOPE_DIAG i=11 installed=1 failure=0 observed=12 before=11 errors=0 live=0 current=00000000",
+          "DIALOG_SCOPE_OWNERSHIP_OK bits=32 dialogs=12 nested_owner=1 detach=1 failed_create=1 unsupported_retry=1 owner_callback_destroy=2 oom=1 allocations=0"
+        ]
+      },
+      "final_focused": {
+        "tests": "6",
+        "failures": "0",
+        "skipped": "0",
+        "names": [
+          "core/control-present",
+          "core/scroll-native",
+          "core/frames",
+          "core/lifetime",
+          "core/default",
+          "core/terminal"
+        ]
+      },
+      "owner_callback_mutation": {
+        "sha256": "c37fba0695433aefbdb972236b1833bff6a7ee431f20fbdbb83fb4df88a63b3f",
+        "tail": [
+          "DIALOG_SCOPE_OWNERSHIP_OK bits=32 dialogs=12 nested_owner=1 detach=1 failed_create=1 unsupported_retry=1 owner_callback_destroy=2 owner_callback_mutation=2 oom=1 allocations=0"
+        ]
+      },
+      "verified_focused": {
+        "tests": "5",
+        "failures": "0",
+        "skipped": "0",
+        "names": [
+          "core/menu-dispatch",
+          "core/frames",
+          "core/lifetime",
+          "core/default",
+          "core/terminal"
+        ]
+      },
+      "hidden_states": {
+        "0": {
+          "old": "failed",
+          "sha256": "a20029041c380f420df6471ac16d271f87e25bdd10f87d6f996f60a1d0e49e38",
+          "last": [
+            "CONTROL_VISIBILITY_FAIL line=29 type=0 error=126: visible(w)==(BOOL)cv && IsWindowVisible(w)==(pv && cv)"
+          ]
+        },
+        "1": {
+          "old": "passed native unchanged",
+          "sha256": "b583c2f1f3cae3da9819b18aec4272687c5b2b7b2105e31d59052e101efbd133",
+          "last": [
+            "CONTROL_VISIBILITY_OK bits=32 cases=4 hidden_parent=1 hidden_child=1 native_redraw=1 detach=1 borrowed_font=1"
+          ]
+        },
+        "2": {
+          "old": "passed native unchanged",
+          "sha256": "b583c2f1f3cae3da9819b18aec4272687c5b2b7b2105e31d59052e101efbd133",
+          "last": [
+            "CONTROL_VISIBILITY_OK bits=32 cases=4 hidden_parent=1 hidden_child=1 native_redraw=1 detach=1 borrowed_font=1"
+          ]
+        },
+        "3": {
+          "old": "failed",
+          "sha256": "38476eb542d45c72bf60e3e463b901c907a0e52786b76b7767896f6a3438b372",
+          "last": [
+            "CONTROL_VISIBILITY_FAIL line=35 type=3 error=6: visible(w)==expected"
+          ]
+        },
+        "fixed": {
+          "last": [
+            "CONTROL_VISIBILITY_OK bits=32 cases=16 hidden_parent=1 hidden_child=1 native_redraw=1 detach=1 borrowed_font=1"
+          ],
+          "sha256": "6e57aef31053354b84269a8308f03c644ec53678a7792bd60fcc07f486d00577"
+        }
+      }
+    },
+    "x64": {
+      "old-final-oracle": {
+        "sha256": "5b35cbd834e360d374536d15304cdbf26824c8f1ae27d011c0d4f84db0d35a2e",
+        "selected_tail": [
+          "DIALOG_SHOW_OK bits=64 styled=0 aware=0 cases=9 initialization_active=1 initial_hidden_preserved=1 pixels=1 native_return=73 gdi_observed=1",
+          "DIALOG_SHOW_ASSERT line=31 error=0: (attached && attached(w))==styled",
+          "DIALOG_SHOW_ASSERT line=35 error=1168: remove_style(w)",
+          "DIALOG_SHOW_ASSERT line=35 error=0: frame_image(w)!=before",
+          "DIALOG_SHOW_FAIL line=81 error=126: result==73 && observed==before+1 && !failures",
+          "DIALOG_SHOW_FAIL line=112 error=0: wait==WAIT_OBJECT_0 && !code && empty"
+        ]
+      },
+      "ownership-once": {
+        "sha256": "b0179e464968210df35aff666f7eca282260f02bb97eab6a78d6eb288e8f5fb2",
+        "selected_tail": [
+          "SCOPE_DIAG i=7 installed=1 failure=0 observed=8 before=7 errors=0 live=0 current=0000000000000000",
+          "SCOPE_DIAG i=8 installed=1 failure=0 observed=9 before=8 errors=0 live=0 current=0000000000000000",
+          "SCOPE_DIAG i=9 installed=1 failure=0 observed=10 before=9 errors=0 live=0 current=0000000000000000",
+          "SCOPE_DIAG i=10 installed=1 failure=0 observed=11 before=10 errors=0 live=0 current=0000000000000000",
+          "SCOPE_DIAG i=11 installed=1 failure=0 observed=12 before=11 errors=0 live=0 current=0000000000000000",
+          "DIALOG_SCOPE_OWNERSHIP_OK bits=64 dialogs=12 nested_owner=1 detach=1 failed_create=1 oom=1 allocations=0"
+        ]
+      },
+      "protocol": {
+        "sha256": "1f0f2007e8bf84f054c69c3b7dc7ec863d283a3cd137d2aba9040feeb14ee1f1",
+        "selected_tail": [
+          "DIALOG_GDI styled=1 repeat=0 resources=49",
+          "DIALOG_GDI styled=1 repeat=1 resources=49",
+          "DIALOG_GDI styled=1 repeat=2 resources=49",
+          "DIALOG_GDI styled=1 repeat=3 resources=49",
+          "DIALOG_SHOW_OK bits=64 styled=1 aware=1 cases=9 initialization_active=1 initial_hidden_preserved=1 pixels=1 native_return=73 gdi_observed=1",
+          "DIALOG_SHOW_CLEANUP_OK owned_jobs_empty=4"
+        ]
+      },
+      "focused": {
+        "tests": "5",
+        "failures": "0",
+        "skipped": "0",
+        "names": [
+          "core/dialog-scope",
+          "core/frames",
+          "core/lifetime",
+          "core/default",
+          "core/terminal"
+        ]
+      },
+      "owner_draw_dialogs": {
+        "sha256": "4bd884662e39727286f28f70dd5924cb6c90bae12cae1934afbd0488848a105e",
+        "tail": [
+          "DIALOG_SHOW_OK bits=64 styled=0 aware=1 cases=15 owner_draw_callbacks=1 initialization_active=1 initial_hidden_preserved=1 pixels=1 native_return=73 gdi_observed=1",
+          "DIALOG_GDI styled=1 repeat=0 resources=49",
+          "DIALOG_GDI styled=1 repeat=1 resources=49",
+          "DIALOG_GDI styled=1 repeat=2 resources=49",
+          "DIALOG_GDI styled=1 repeat=3 resources=49",
+          "DIALOG_SHOW_OK bits=64 styled=1 aware=1 cases=15 owner_draw_callbacks=1 initialization_active=1 initial_hidden_preserved=1 pixels=1 native_return=73 gdi_observed=1",
+          "DIALOG_SHOW_CLEANUP_OK owned_jobs_empty=4"
+        ],
+        "status": "passed"
+      },
+      "retry_ownership": {
+        "sha256": "12027fbdbbd7e4057362b56a6e6146bd9864ca718ab1a2a6dd6ccf24ac921cb6",
+        "tail": [
+          "DIALOG_SCOPE_OWNERSHIP_OK bits=64 dialogs=12 nested_owner=1 detach=1 failed_create=1 unsupported_retry=1 oom=1 allocations=0"
+        ]
+      },
+      "old_owner_only": {
+        "sha256": "0fd5e0ab7e9c5d74c3b874bb43b2877dccc293f1dee4ac36f158a71972b26c7a",
+        "tail": [
+          "DIALOG_GDI styled=0 repeat=0 resources=23",
+          "DIALOG_SHOW_OK bits=64 styled=0 aware=0 cases=2 owner_draw_callbacks=1 initialization_active=1 initial_hidden_preserved=1 pixels=1 native_return=73 gdi_observed=1",
+          "DIALOG_SHOW_ASSERT line=31 error=0: (attached && attached(w))==styled",
+          "DIALOG_SHOW_ASSERT line=39 error=1168: remove_style(w)",
+          "DIALOG_SHOW_ASSERT line=39 error=0: frame_image(w)!=before",
+          "DIALOG_SHOW_FAIL line=96 error=0: result==73 && observed==before+1 && !failures",
+          "DIALOG_SHOW_FAIL line=125 error=0: wait==WAIT_OBJECT_0 && !code && empty"
+        ]
+      },
+      "candidate_owner_only": {
+        "sha256": "5ff592b34ed77477a490f1ab26ceec89a6535b7b46223bae321306176bc1c15e",
+        "tail": [
+          "DIALOG_GDI styled=1 repeat=0 resources=25",
+          "DIALOG_SHOW_OK bits=64 styled=1 aware=0 cases=2 owner_draw_callbacks=1 initialization_active=1 initial_hidden_preserved=1 pixels=1 native_return=73 gdi_observed=1",
+          "DIALOG_GDI styled=0 repeat=0 resources=23",
+          "DIALOG_SHOW_OK bits=64 styled=0 aware=1 cases=2 owner_draw_callbacks=1 initialization_active=1 initial_hidden_preserved=1 pixels=1 native_return=73 gdi_observed=1",
+          "DIALOG_GDI styled=1 repeat=0 resources=25",
+          "DIALOG_SHOW_OK bits=64 styled=1 aware=1 cases=2 owner_draw_callbacks=1 initialization_active=1 initial_hidden_preserved=1 pixels=1 native_return=73 gdi_observed=1",
+          "DIALOG_SHOW_CLEANUP_OK owned_jobs_empty=4"
+        ]
+      },
+      "owner_lifetime": {
+        "sha256": "bf84b5854a31f6183906df983f42a6ea736fb0e62edd104d61c37dec9df7f16c",
+        "tail": [
+          "SCOPE_DIAG i=6 installed=1 failure=0 observed=7 before=6 errors=0 live=0 current=0000000000000000",
+          "SCOPE_DIAG i=7 installed=1 failure=0 observed=8 before=7 errors=0 live=0 current=0000000000000000",
+          "SCOPE_DIAG i=8 installed=1 failure=0 observed=9 before=8 errors=0 live=0 current=0000000000000000",
+          "SCOPE_DIAG i=9 installed=1 failure=0 observed=10 before=9 errors=0 live=0 current=0000000000000000",
+          "SCOPE_DIAG i=10 installed=1 failure=0 observed=11 before=10 errors=0 live=0 current=0000000000000000",
+          "SCOPE_DIAG i=11 installed=1 failure=0 observed=12 before=11 errors=0 live=0 current=0000000000000000",
+          "DIALOG_SCOPE_OWNERSHIP_OK bits=64 dialogs=12 nested_owner=1 detach=1 failed_create=1 unsupported_retry=1 owner_callback_destroy=2 oom=1 allocations=0"
+        ]
+      },
+      "final_focused": {
+        "tests": "6",
+        "failures": "0",
+        "skipped": "0",
+        "names": [
+          "core/control-present",
+          "core/scroll-native",
+          "core/frames",
+          "core/lifetime",
+          "core/default",
+          "core/terminal"
+        ]
+      },
+      "owner_callback_mutation": {
+        "sha256": "17d955a8eab6a4ca77263a094b36dc11f8231523274147b42460c6d9b7892778",
+        "tail": [
+          "DIALOG_SCOPE_OWNERSHIP_OK bits=64 dialogs=12 nested_owner=1 detach=1 failed_create=1 unsupported_retry=1 owner_callback_destroy=2 owner_callback_mutation=2 oom=1 allocations=0"
+        ]
+      },
+      "verified_focused": {
+        "tests": "5",
+        "failures": "0",
+        "skipped": "0",
+        "names": [
+          "core/menu-dispatch",
+          "core/frames",
+          "core/lifetime",
+          "core/default",
+          "core/terminal"
+        ]
+      },
+      "hidden_states": {
+        "0": {
+          "old": "failed",
+          "sha256": "a20029041c380f420df6471ac16d271f87e25bdd10f87d6f996f60a1d0e49e38",
+          "last": [
+            "CONTROL_VISIBILITY_FAIL line=29 type=0 error=126: visible(w)==(BOOL)cv && IsWindowVisible(w)==(pv && cv)"
+          ]
+        },
+        "1": {
+          "old": "passed native unchanged",
+          "sha256": "d441ed0b5cc39fa3f10662ff9344ddde65f5e2144f3a3ab59cc8dd7a9f459758",
+          "last": [
+            "CONTROL_VISIBILITY_OK bits=64 cases=4 hidden_parent=1 hidden_child=1 native_redraw=1 detach=1 borrowed_font=1"
+          ]
+        },
+        "2": {
+          "old": "passed native unchanged",
+          "sha256": "d441ed0b5cc39fa3f10662ff9344ddde65f5e2144f3a3ab59cc8dd7a9f459758",
+          "last": [
+            "CONTROL_VISIBILITY_OK bits=64 cases=4 hidden_parent=1 hidden_child=1 native_redraw=1 detach=1 borrowed_font=1"
+          ]
+        },
+        "3": {
+          "old": "failed",
+          "sha256": "38476eb542d45c72bf60e3e463b901c907a0e52786b76b7767896f6a3438b372",
+          "last": [
+            "CONTROL_VISIBILITY_FAIL line=35 type=3 error=6: visible(w)==expected"
+          ]
+        },
+        "fixed": {
+          "last": [
+            "CONTROL_VISIBILITY_OK bits=64 cases=16 hidden_parent=1 hidden_child=1 native_redraw=1 detach=1 borrowed_font=1"
+          ],
+          "sha256": "bf772f038aaa875af7ce8b57152d3e68619e10fd5806f66d1065677fa6c4eaec"
+        }
+      }
+    }
+  },
+  "UAC": {
+    "persistent_controller": "auto-review rejected; never started; executable removed",
+    "safer_design": "one-shot fixed bare/trace HD Tune observer, two80s invocations, max180s, no command input, no disk operations",
+    "approved_first_one_shot": "controller32244, targets20296 and37220, styled launcher23664; own normal exit2 matches",
+    "following_two_requests": "OS cancellation1223; not passed or repeated as hidden workaround",
+    "owner_question_pending": "answered: prompt visible, will approve Yes",
+    "latest_completed": "controller34512; ready styled target14492 launcher6052; root0 ownerdraw type0x100 both; normalclose2, jobempty",
+    "current_request": "Completed controller13488, no resident process after run, two normal owned observations/cleanup, no business/disk commands."
+  },
+  "binary_release": true,
+  "three_components_four_products": true,
+  "next": [
+    "Commit/push P1, retrieve actual remote source/artifacts and coordinate review.",
+    "Extract evidence/clean only obsolete registered scratch, closeS3 with nextP.",
+    "Automatically admit S4 underT15/M0 and implement remaining standard/native framework controls; no newT."
+  ],
+  "probe_corrections": [
+    "First final focused CTest invocation lacked mandatory owned WIN16STYLE_CAPTURE_DIR and did not execute product checks; corrected invocation passes all10.",
+    "Initial actual DoubleKiller observer selectedx64 withx86 hook DLL -> ERROR_BAD_EXE_FORMAT193; corrected matchingx86 driver passes. This is observer configuration, not target launch regression.",
+    "Initial MadShow assumed D:/programs/misc path nonexistent; corrected authoritative O:/winnt/madshow.exe andx86 observer passes."
+  ],
+  "actual_preservation": {
+    "doublekiller32": {
+      "sha256": "caba1fbfba16c4baca8f611da70f8ed2738ba6519c408cff7fbdeb21726f2c60",
+      "lines": [
+        "TARGET pid=41352 creator-tree-root=29612 tid=17268 image=D:\\programs\\misc\\DoubleKiller.exe",
+        "DK_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "status": "passed"
+    },
+    "madshow32": {
+      "sha256": "45dd9ce9b7fae5b877c8b1ef52d5b70e9938f29de50dccf74d50fdb3faad5354",
+      "lines": [
+        "TARGET pid=37740 creator-tree-root=31068 tid=32532 image=O:\\WINNT\\madshow.exe",
+        "MODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s3-final\\candidate\\ntw16s32.dll",
+        "MODULE C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "VB_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "status": "passed"
+    }
+  },
+  "negative_variant": "Owner-only negative selects onlykind3 normal-init dialogs from the same dialog_show.c fixture, one repeat,2A/W cases (no early-show cases). Both old widths fail and final candidate widths pass all4 owned jobs. Scratch variant is diagnostic, default registered test covers15 cases.",
+  "final_candidate_sha256": {
+    "demo.exe": "42721f3f64c2979fc694e113df0d82c7ae9cc20d3ea37c89058eecc512893ffc",
+    "ntw16s32.dll": "2994595b4ddad329452a82570c100c01d81365c1193800b97ab8f0c6149ebb56",
+    "ntw16s64.dll": "bf3b2512b3f25b59dccbdcffa4cf98fbe1823ee185db7860d67ffd1a3c530cc4",
+    "run16s.exe": "ee643133155d791e8620a70a718cd904df51bc7c3386abf14ea799facc52d579"
+  },
+  "preservation_source_comparisons": {
+    "original_title_button_artwork": {
+      "unchanged": true,
+      "sha256": "ed28073b40fc940a0e59662888cbce175dbb0ea037d1752ad86b71b20b0a4d67"
+    },
+    "confirmed_title_text_paint": {
+      "unchanged": true,
+      "sha256": "d85de26c7597686cf0552edc7a388e87e7e9da4bd049b8e6e923a126e2b6c0dd"
+    },
+    "confirmed_title_role_fonts": {
+      "unchanged": true,
+      "sha256": "43f406d7e364088428987fd112fa595d1f12bcbc6b1ffe2a4552d3b6f53439c8"
+    },
+    "src/ntw16s-dll/menu_paint.c": {
+      "unchanged": true
+    },
+    "src/ntw16s-dll/scroll_glyphs.h": {
+      "unchanged": true
+    },
+    "controls_change": "Only common visibility-aware bracket predicate + four suppression guards; original font and draw algorithms unchanged (git diff reviewed).",
+    "controls_exact_reconstruction": {
+      "passed": true,
+      "baseline_sha256": "cf80cde80f33e559e471313369a952e2dca232f824712ab6111faf39754e43b8",
+      "difference": "one visibility predicate and four redraw-suppression gates only; all font and draw code unchanged"
+    }
+  },
+  "superseded_batches": {
+    "s3-final": "39/39 full347.149s +10 focused + actual DoubleKiller/MadShow passed; superseded before release by application owner-draw state/identity guards",
+    "s3-release": "clean build passed, superseded before final tests by callback mutation guards; not published",
+    "s3-verified": "39 actual package338.514s/10focused and real DoubleKiller/MadShow passed. Real HD Tune root attached1 but visible default property-sheet buttons; not published. Superseded by hidden-state correction."
+  },
+  "final_package_matrix": {
+    "package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s3-hidden-release\\candidate",
+    "status": "passed",
+    "seconds": 352.434984,
+    "full_integration": true,
+    "jobs": 4,
+    "sha256": {
+      "demo.exe": "42721f3f64c2979fc694e113df0d82c7ae9cc20d3ea37c89058eecc512893ffc",
+      "ntw16s32.dll": "2994595b4ddad329452a82570c100c01d81365c1193800b97ab8f0c6149ebb56",
+      "ntw16s64.dll": "bf3b2512b3f25b59dccbdcffa4cf98fbe1823ee185db7860d67ffd1a3c530cc4",
+      "run16s.exe": "ee643133155d791e8620a70a718cd904df51bc7c3386abf14ea799facc52d579"
+    },
+    "physical_input": "not-tested",
+    "cases": 41,
+    "core_matrix": "separate Build-Core matrix required"
+  },
+  "actual_preservation_final": {
+    "doublekiller": {
+      "sha256": "650be0f2bbc89bf90832252e3f4e219111d6e090941ea97aaf49b83d3e95d583",
+      "lines": [
+        "TARGET pid=4104 creator-tree-root=40760 tid=41684 image=D:\\programs\\misc\\DoubleKiller.exe",
+        "MODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s3-hidden-release\\candidate\\ntw16s32.dll",
+        "DK_CLEANUP_OK exit=0 active=0 total=4"
+      ]
+    },
+    "madshow": {
+      "sha256": "78a9d75b2388930fdffa0c9b0711b0ae0d2b315bd9e3c6bc2feff16dd4bcad8f",
+      "lines": [
+        "TARGET pid=16776 creator-tree-root=28132 tid=11660 image=O:\\WINNT\\madshow.exe",
+        "MODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s3-hidden-release\\candidate\\ntw16s32.dll",
+        "MODULE C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "VB_CLEANUP_OK exit=0 active=0 total=4"
+      ]
+    }
+  },
+  "source_freeze": {
+    "inputs": 170,
+    "algorithm": "SHA256 of UTF8 compact sorted-key JSON array of path/sha256/git_blob_sha256 when different",
+    "sha256": "98fb6b9dd57d6e9a6105b18ddf253e5606cfe8845a213d3b5b369d6b0e9ff355",
+    "matches_final_clean_source": true
+  },
+  "owner_draw_nondefault_states": {
+    "x86": {
+      "status": "passed",
+      "sha256": "2c2fa5a9a9ea410b3980097f1c2ccbd2838d6f6745388242f033be2e222b1a65",
+      "callbacks": 52,
+      "disabled_grayed_checked_default_mask": "0x2e native and styled every callback",
+      "cues_and_inactive": "Lifecycle-dependent; no bit-exact snapshot claim across different callbacks."
+    },
+    "x64": {
+      "status": "passed",
+      "sha256": "2d1b71cd358f1e68ba9308c60e08e99a4a44d0f4d1bc6e7d187bdfd420e3ca04",
+      "callbacks": 52,
+      "disabled_grayed_checked_default_mask": "0x2e native and styled every callback",
+      "cues_and_inactive": "Lifecycle-dependent; no bit-exact snapshot claim across different callbacks."
+    }
+  },
+  "real_HD_Tune_root_candidate": {
+    "controller": 15956,
+    "bare_pid": 13268,
+    "styled_pid": 33356,
+    "launcher_pid": 20272,
+    "root_attached": 1,
+    "dpi": 96,
+    "normal_close": "native2 both, job0",
+    "status": "not accepted: native screenshot revealed formerly hidden standard property-sheet buttons visible"
+  },
+  "final_HD_Tune": {
+    "controller": 13488,
+    "target_path": "D:/programs/misc/HDTunePro.exe",
+    "target_sha256": "c6c4e51fbc93778f18732a2aec10f54188f247adfb452e7f87c2cb2bcdd6d9ea",
+    "target_architecture": "x86",
+    "dpi": 96,
+    "bare_pid": 39056,
+    "styled_pid": 27284,
+    "styled_launcher_pid": 41620,
+    "thread": 35196,
+    "DLL_path": "O:\\repos.hobby\\win16style\\build\\t15-package\\s3-hidden-release\\candidate\\ntw16s32.dll",
+    "DLL_sha256": "2994595b4ddad329452a82570c100c01d81365c1193800b97ab8f0c6149ebb56",
+    "root_attached": 1,
+    "stages": {
+      "bare": {
+        "sha256": "d3e757a7ebaf6a7a8032aa8d1d7abebd87257ea0378aca9e6c1c3d84474c25b2",
+        "lines": [
+          "TARGET pid=39056 creator-tree-root=39056 tid=37696 image=D:\\programs\\misc\\HDTunePro.exe",
+          "POSTED_READINESS wait=0 elapsed_ms=141",
+          "INITIAL_RECT 343,93,937,580",
+          "WINDOW_STATES minimized=1 restored=1 moved=1 hidden_buttons_preserved=1",
+          "MENU_OPEN_CAPTURE_CANCEL_OK no_command=1",
+          "CLOSE sent=1 error=0 wait=0 code=2 window=0 visible=0",
+          "TARGET_EXIT=2",
+          "DK_CLEANUP_OK exit=0 active=0 total=1"
+        ],
+        "observer0": {
+          "sha256": "ce8acfae4705b3b162162f9c4fd47f0d6193fc2d9fa6702dd097a7810f49bdc9",
+          "header": [
+            "PROCESS pid=39056 tid=37696 bits=32 dpi=96 dll= root_attached=0",
+            "ROOT style=94cf0044 ex=00010100 menu=04300E29",
+            "ROOT_RECT 343,93,1143,693",
+            "MENU i=0 ok=1 type=00000100 state=00000000 bitmap=00000000 data=026E12E0 text=[&F]??",
+            "MENU i=1 ok=1 type=00000100 state=00000000 bitmap=00000000 data=026E12B0 text=[&H]??"
+          ],
+          "visibility": [
+            "HIDDEN_SHEET_BUTTON text=OK own_visible=0 id=1",
+            "HIDDEN_SHEET_BUTTON text=Cancel own_visible=0 id=2",
+            "HIDDEN_SHEET_BUTTON text=Help own_visible=0 id=9",
+            "VISIBILITY_GUARD hidden_sheet_buttons=3 unexpectedly_visible=0"
+          ]
+        },
+        "observer1": {
+          "sha256": "ac0677de4f6f32b1c20a674a6af5089f019131390e618dc516b71bfa2d2f7f17",
+          "header": [
+            "PROCESS pid=39056 tid=37696 bits=32 dpi=96 dll= root_attached=0",
+            "ROOT style=94cf0044 ex=00010100 menu=04300E29",
+            "ROOT_RECT 40,40,840,640",
+            "MENU i=0 ok=1 type=00000100 state=00000000 bitmap=00000000 data=026E12E0 text=[&F]??",
+            "MENU i=1 ok=1 type=00000100 state=00000000 bitmap=00000000 data=026E12B0 text=[&H]??"
+          ],
+          "visibility": [
+            "HIDDEN_SHEET_BUTTON text=OK own_visible=0 id=1",
+            "HIDDEN_SHEET_BUTTON text=Cancel own_visible=0 id=2",
+            "HIDDEN_SHEET_BUTTON text=Help own_visible=0 id=9",
+            "VISIBILITY_GUARD hidden_sheet_buttons=3 unexpectedly_visible=0"
+          ]
+        }
+      },
+      "styled": {
+        "sha256": "a9ec441595e8c7d337eae3b3e55309f314d4189e93898fa5f68aad88ca6d55c2",
+        "lines": [
+          "TARGET pid=27284 creator-tree-root=41620 tid=35196 image=D:\\programs\\misc\\HDTunePro.exe",
+          "MODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s3-hidden-release\\candidate\\ntw16s32.dll",
+          "POSTED_READINESS wait=0 elapsed_ms=93",
+          "INITIAL_RECT 347,96,933,576",
+          "WINDOW_STATES minimized=1 restored=1 moved=1 hidden_buttons_preserved=1",
+          "MENU_OPEN_CAPTURE_CANCEL_OK no_command=1",
+          "CLOSE sent=1 error=0 wait=0 code=2 window=0 visible=0",
+          "TARGET_EXIT=2",
+          "DK_CLEANUP_OK exit=0 active=0 total=4"
+        ],
+        "observer0": {
+          "sha256": "ec3ec0a27ad476c18f80e02ddf62ab565bd8d8d618b92de1873182ea784306e8",
+          "header": [
+            "PROCESS pid=27284 tid=35196 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\build\\t15-package\\s3-hidden-release\\candidate\\ntw16s32.dll root_attached=1",
+            "ROOT style=94cf0044 ex=00010100 menu=049B0A7D",
+            "ROOT_RECT 347,96,1147,696",
+            "MENU i=0 ok=1 type=00000100 state=00000000 bitmap=00000000 data=027112E0 text=[&F]??",
+            "MENU i=1 ok=1 type=00000100 state=00000000 bitmap=00000000 data=027112B0 text=[&H]??"
+          ],
+          "visibility": [
+            "HIDDEN_SHEET_BUTTON text=OK own_visible=0 id=1",
+            "HIDDEN_SHEET_BUTTON text=Cancel own_visible=0 id=2",
+            "HIDDEN_SHEET_BUTTON text=Help own_visible=0 id=9",
+            "VISIBILITY_GUARD hidden_sheet_buttons=3 unexpectedly_visible=0"
+          ]
+        },
+        "observer1": {
+          "sha256": "088fdfce1059f8479eb3e3149e94b2c20d52384acdbebcddfec5b96933e8a7f9",
+          "header": [
+            "PROCESS pid=27284 tid=35196 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\build\\t15-package\\s3-hidden-release\\candidate\\ntw16s32.dll root_attached=1",
+            "ROOT style=94cf0044 ex=00010100 menu=049B0A7D",
+            "ROOT_RECT 40,40,840,640",
+            "MENU i=0 ok=1 type=00000100 state=00000000 bitmap=00000000 data=027112E0 text=[&F]??",
+            "MENU i=1 ok=1 type=00000100 state=00000000 bitmap=00000000 data=027112B0 text=[&H]??"
+          ],
+          "visibility": [
+            "HIDDEN_SHEET_BUTTON text=OK own_visible=0 id=1",
+            "HIDDEN_SHEET_BUTTON text=Cancel own_visible=0 id=2",
+            "HIDDEN_SHEET_BUTTON text=Help own_visible=0 id=9",
+            "VISIBILITY_GUARD hidden_sheet_buttons=3 unexpectedly_visible=0"
+          ]
+        }
+      }
+    },
+    "legacy_summary": "failures13 in inherited observer is 7 unsupported icon/PushLike buttons plus6 native client-edge edits. These are excluded S3 assertions and explicit next-S work, not claimed supported."
+  },
+  "publication": {
+    "tested_package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s3-hidden-release\\candidate",
+    "status": "passed",
+    "test_result": "O:\\repos.hobby\\win16style\\build\\t15-package\\s3-hidden-full\\result.json",
+    "files": [
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s3-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe",
+        "before": "9ccac1ba4891c5b217a91269252541437889eb75f6cd54645c17e0cff1e7bd6c",
+        "expected": "42721f3f64c2979fc694e113df0d82c7ae9cc20d3ea37c89058eecc512893ffc",
+        "after": "42721f3f64c2979fc694e113df0d82c7ae9cc20d3ea37c89058eecc512893ffc"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s3-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
+        "before": "789bf8ed116c4c89aca5fc83c26806127ebf5124822e291fc78468348279474c",
+        "expected": "2994595b4ddad329452a82570c100c01d81365c1193800b97ab8f0c6149ebb56",
+        "after": "2994595b4ddad329452a82570c100c01d81365c1193800b97ab8f0c6149ebb56"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s3-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll",
+        "before": "d39b5f2f2304a8665e9ad9110ca146eedd6334ed1ffcbe239c22aa143d3622b7",
+        "expected": "bf3b2512b3f25b59dccbdcffa4cf98fbe1823ee185db7860d67ffd1a3c530cc4",
+        "after": "bf3b2512b3f25b59dccbdcffa4cf98fbe1823ee185db7860d67ffd1a3c530cc4"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s3-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
+        "before": "ae04b2ba9f553df8defff7e205494080551b87fd180ff00dffa58c9b407a809d",
+        "expected": "ee643133155d791e8620a70a718cd904df51bc7c3386abf14ea799facc52d579",
+        "after": "ee643133155d791e8620a70a718cd904df51bc7c3386abf14ea799facc52d579"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s3-publish\\before-1",
+        "path": "O:\\winnt\\system32\\demo.exe",
+        "before": "9ccac1ba4891c5b217a91269252541437889eb75f6cd54645c17e0cff1e7bd6c",
+        "expected": "42721f3f64c2979fc694e113df0d82c7ae9cc20d3ea37c89058eecc512893ffc",
+        "after": "42721f3f64c2979fc694e113df0d82c7ae9cc20d3ea37c89058eecc512893ffc"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s3-publish\\before-1",
+        "path": "O:\\winnt\\system32\\ntw16s32.dll",
+        "before": "789bf8ed116c4c89aca5fc83c26806127ebf5124822e291fc78468348279474c",
+        "expected": "2994595b4ddad329452a82570c100c01d81365c1193800b97ab8f0c6149ebb56",
+        "after": "2994595b4ddad329452a82570c100c01d81365c1193800b97ab8f0c6149ebb56"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s3-publish\\before-1",
+        "path": "O:\\winnt\\system32\\ntw16s64.dll",
+        "before": "d39b5f2f2304a8665e9ad9110ca146eedd6334ed1ffcbe239c22aa143d3622b7",
+        "expected": "bf3b2512b3f25b59dccbdcffa4cf98fbe1823ee185db7860d67ffd1a3c530cc4",
+        "after": "bf3b2512b3f25b59dccbdcffa4cf98fbe1823ee185db7860d67ffd1a3c530cc4"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s3-publish\\before-1",
+        "path": "O:\\winnt\\system32\\run16s.exe",
+        "before": "ae04b2ba9f553df8defff7e205494080551b87fd180ff00dffa58c9b407a809d",
+        "expected": "ee643133155d791e8620a70a718cd904df51bc7c3386abf14ea799facc52d579",
+        "after": "ee643133155d791e8620a70a718cd904df51bc7c3386abf14ea799facc52d579"
+      }
+    ],
+    "owners_before": "Restart Manager eight exact resources: owners0; earlier md5summer41256 had already released; no existing process was closed"
+  },
+  "installed_verification": {
+    "assets": {
+      "sha256": "1fc71e40824dcc8a38d6ab42242c61cdb763f44397974ae608a61801917f0c3c",
+      "lines": [
+        "LAUNCH MATRIX PASS actual x64 CLI -> x86/x64 plus native controls on private desktop"
+      ],
+      "abi": "x86/x64 ABI3 public31 private-bind0 also passed"
+    },
+    "system32": {
+      "sha256": "1fc71e40824dcc8a38d6ab42242c61cdb763f44397974ae608a61801917f0c3c",
+      "lines": [
+        "LAUNCH MATRIX PASS actual x64 CLI -> x86/x64 plus native controls on private desktop"
+      ],
+      "abi": "x86/x64 ABI3 public31 private-bind0 also passed"
+    }
+  },
+  "acceptance_images": [
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-hdtune\\T15-S3-HDTune-menu.png",
+      "sha256": "fe680a9e4b2f99ac681fceec0cbfde29806c79e2059f69f88ff5cd41393c6836",
+      "origin": "native PrintWindow on new owned actual HD Tune private desktop; lossless BMP-to-PNG conversion"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-hdtune\\T15-S3-HDTune-native.png",
+      "sha256": "ca69986e554b13299b5970274142da72826736344c07bfc1ed4b1bcae8d858d6",
+      "origin": "native PrintWindow on new owned actual HD Tune private desktop; lossless BMP-to-PNG conversion"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-hdtune\\T15-S3-HDTune-restored.png",
+      "sha256": "97f3be965ade61ccf0fea4aa94c79290d535707cf4bce0478ae21b76b3e23fea",
+      "origin": "native PrintWindow on new owned actual HD Tune private desktop; lossless BMP-to-PNG conversion"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-hdtune\\T15-S3-HDTune-styled.png",
+      "sha256": "13e3f888ae21743a2c8b5003f1357274243e58a584e8920c45997520b919d3b9",
+      "origin": "native PrintWindow on new owned actual HD Tune private desktop; lossless BMP-to-PNG conversion"
+    }
+  ],
+  "code_statistics": {
+    "scope": "src/tests/tools/CMakeLists.txt/LICENSE staged against HEAD",
+    "files": 11,
+    "added": 456,
+    "deleted": 35,
+    "rows": [
+      {
+        "path": "CMakeLists.txt",
+        "added": 23,
+        "deleted": 0
+      },
+      {
+        "path": "src/ntw16s-dll/attachment.c",
+        "added": 46,
+        "deleted": 9
+      },
+      {
+        "path": "src/ntw16s-dll/controls.c",
+        "added": 9,
+        "deleted": 4
+      },
+      {
+        "path": "src/ntw16s-dll/menu_bar.c",
+        "added": 29,
+        "deleted": 6
+      },
+      {
+        "path": "src/ntw16s-dll/menu_bar.h",
+        "added": 10,
+        "deleted": 2
+      },
+      {
+        "path": "src/ntw16s-dll/menu_bar_paint.c",
+        "added": 17,
+        "deleted": 1
+      },
+      {
+        "path": "src/ntw16s-dll/win16_style.c",
+        "added": 15,
+        "deleted": 13
+      },
+      {
+        "path": "tests/ntw16s-dll/control_visibility.c",
+        "added": 53,
+        "deleted": 0
+      },
+      {
+        "path": "tests/ntw16s-dll/dialog_scope.c",
+        "added": 115,
+        "deleted": 0
+      },
+      {
+        "path": "tests/ntw16s-dll/dialog_show.c",
+        "added": 133,
+        "deleted": 0
+      },
+      {
+        "path": "tools/Test-Package.ps1",
+        "added": 6,
+        "deleted": 0
+      }
+    ],
+    "old_path_disposition": "No moves/deletions; original resources and notices retained",
+    "state_owners": "Application HWND/menu/itemData/HFONT remain borrowed; coordinator owns pending nodes; renderer owns private fonts/DC leases",
+    "net": 421
+  },
+  "registered_ctests": {
+    "x86": 32,
+    "x64": 52
+  },
+  "all_ctests_executed": false,
+  "similar_issue_sweep": {
+    "commands": [
+      "rg -n \"win16_style_bar_read|MFT_OWNERDRAW\" src/ntw16s-dll",
+      "rg -n \"WM_SETREDRAW|BOOL suppress\" src/ntw16s-dll",
+      "rg -n \"WM_INITDIALOG|WM_CREATE|first_show\" src/ntw16s-dll/attachment.c"
+    ],
+    "dispositions": [
+      "Frame bar consumers now pass exact same-thread window, including the next-frame MDI case; menu-only internal reader preserves original restricted contract.",
+      "Popup adapter continues leaving application-owned itemData/font/graphics untouched; unsupported bitmap/custom controls remain explicitly future bounded scope.",
+      "All four internal combo/list/multiline-edit/button suppression paths use shared visibility predicate; explicit application redraw and active bracket cleanup remain native.",
+      "New top-level first-show only consumes a real pending enabled creation record; no existing-window scan or new bootstrap path."
+    ]
+  }
+}

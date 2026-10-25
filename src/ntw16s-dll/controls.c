@@ -35,6 +35,11 @@ typedef struct control_style {
 static void dispose_control(control_style *s)
 {win16_style_system_release(s->font);free(s->tab_positions);free(s);}
 static LRESULT CALLBACK control_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
+/* DefWindowProc implements WM_SETREDRAW(TRUE) by setting WS_VISIBLE.
+ * Never start an internal bracket on an application-hidden control. Nested
+ * native leaves share the already-open bracket, whose FALSE cleared that bit. */
+static BOOL can_suppress_redraw(HWND w,const control_style *s)
+{return !s->list_redraw_off && (s->list_suppression || (GetWindowLongPtrW(w,GWL_STYLE)&WS_VISIBLE));}
 static BOOL is_static(HWND w)
 {return ntw16s_class_is(w,L"STATIC");}
 static BOOL is_edit(HWND w)
@@ -912,7 +917,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         else if(m==WM_PAINT){PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);present_control(w,s,dc,draw_combo);EndPaint(w,&ps);}
         else if(m==WM_PRINTCLIENT)draw_combo(w,s,(HDC)a);
         else if(m==WM_ERASEBKGND)result=1;
-        else {BOOL suppress=!s->list_redraw_off &&
+        else {BOOL suppress=can_suppress_redraw(w,s) &&
                 (m==CB_SETCURSEL || m==CB_SHOWDROPDOWN || m==WM_COMMAND || m==WM_ENABLE ||
                  m==WM_SETFONT || m==WM_SETFOCUS || m==WM_KILLFOCUS || m==WM_KEYDOWN ||
                  m==WM_LBUTTONDOWN || m==WM_LBUTTONUP);
@@ -951,7 +956,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         else if(m==WM_ERASEBKGND)result=1;
         else {
             BOOL moving=m==WM_MOUSEMOVE,changed=FALSE;list_view_state before={0},after;
-            BOOL suppress=!s->list_redraw_off &&
+            BOOL suppress=can_suppress_redraw(w,s) &&
                 (m==WM_MOUSEWHEEL || m==WM_VSCROLL || m==WM_HSCROLL || m==WM_KEYDOWN || m==WM_KEYUP ||
                 m==WM_SETFOCUS || m==WM_KILLFOCUS || m==WM_ENABLE || m==WM_SETFONT ||
                 m==WM_MOUSEMOVE || m==WM_LBUTTONDOWN || m==WM_LBUTTONUP ||
@@ -981,7 +986,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         if(s->edit_scrollbars && (m==WM_NCMOUSEMOVE || m==WM_NCMOUSELEAVE))goto finished;
         if(s->edit_scrollbars && m==WM_NCPAINT){nonclient_scrollbars(w,s,NULL);goto finished;}
         if(s->edit_scrollbars && m==WM_SETREDRAW)s->list_redraw_off=!a;
-        {BOOL suppress=s->edit_scrollbars && !s->list_redraw_off &&
+        {BOOL suppress=s->edit_scrollbars && can_suppress_redraw(w,s) &&
             (m==WM_VSCROLL || m==WM_HSCROLL || m==WM_MOUSEWHEEL || m==EM_LINESCROLL || m==WM_SETTEXT ||
             m==EM_REPLACESEL || m==EM_UNDO || m==WM_UNDO || m==WM_KEYDOWN || m==WM_CHAR ||
             (m==WM_MOUSEMOVE && GetCapture()==w && (a&MK_LBUTTON)) || m==WM_LBUTTONDOWN || m==WM_LBUTTONUP);
@@ -1042,7 +1047,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         /* Only bracket native drawing leaves, not BM_CLICK or mouse/key
          * dispatch: automatic radio-group traversal must see the original
          * visibility throughout the outer input operation. */
-        BOOL suppress=!is_static(w) && !s->list_redraw_off &&
+        BOOL suppress=!is_static(w) && can_suppress_redraw(w,s) &&
             (m==BM_SETCHECK || m==BM_SETSTATE || m==BM_SETSTYLE || m==WM_ENABLE ||
              m==WM_SETFOCUS || m==WM_KILLFOCUS || m==WM_SETTEXT || m==WM_SETFONT ||
              m==WM_MOUSEMOVE);

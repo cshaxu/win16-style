@@ -14,9 +14,9 @@
       "path": "src/ntw16s-dll/attachment.c",
       "source": "src/ntw16s-dll/attachment.c",
       "source_blob": "e467006ab99ada1846f9298b650c30605807466b",
-      "sha256": "c98c3ee0b59153a94dcc2926fe0f24151be474d0b672f7000b10bdf55e701e0f",
+      "sha256": "9d146ceed141632ac5a4201f62f5af460fdd4cca73a1a3430f058be1ed55cbda",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -41,9 +41,9 @@
       "path": "src/ntw16s-dll/controls.c",
       "source": "src/ntw16s-dll/controls.c",
       "source_blob": "9bc3331d0f9fc3e3104059ab792670ab1579d65c",
-      "sha256": "cf80cde80f33e559e471313369a952e2dca232f824712ab6111faf39754e43b8",
+      "sha256": "a1dce1dd3c5b2c098be18674843959de3d3e4e979901c21db84a437df0492c93",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained; T15 S3: only begin transient native redraw brackets on WS_VISIBLE controls, preserving hidden state; font/render algorithms unchanged",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -104,27 +104,27 @@
       "path": "src/ntw16s-dll/menu_bar.c",
       "source": "src/ntw16s-dll/menu_bar.c",
       "source_blob": "8dea689873ff121dce171c1e89d4b8ac93375ffd",
-      "sha256": "dabb1ce65683a5b92ae396c1c56224eb7815cacd60d91fb5f196aa9d536244b7",
+      "sha256": "2f4a7ee4c408df1350d9953d7ca0c7c7ac8c96e6977026ce365c5d85e5f49bd7",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
       "path": "src/ntw16s-dll/menu_bar.h",
       "source": "src/ntw16s-dll/menu_bar.h",
       "source_blob": "dbf916ef7759d4c3a249a56712c10ec946ec70de",
-      "sha256": "7eba7d9c045131b8aebb7d7c8b87303b97d2eb8e52d9030388f6dd23af9731df",
-      "disposition": "retain",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "sha256": "5290e221b4e5d0d37e2fc2eb52a01f1e6c6589cc0476a6ea29fbd0d819194aa0",
+      "disposition": "adapt",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
       "path": "src/ntw16s-dll/menu_bar_paint.c",
       "source": "src/ntw16s-dll/menu_bar_paint.c",
       "source_blob": "e8d1450ac63e3364fcbad23c926e458785c3bf88",
-      "sha256": "209ab48d33f57207c33f90c412b9c294ed062683c789803dd207cf22fd66076f",
-      "disposition": "retain",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "sha256": "392b28274f295dfed1cbf48c464b194784fdb6af055eaff03fc0c530a074bd94",
+      "disposition": "adapt",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -284,9 +284,9 @@
       "path": "src/ntw16s-dll/win16_style.c",
       "source": "src/ntw16s-dll/win16_style.c",
       "source_blob": "4235f085cb00c0d17145deec2d04a57c97b98d47",
-      "sha256": "0f3b651b2d6aaf44fe2c51397cba2e52df0070c3eb0aabbd70e19c5ab5b971b9",
+      "sha256": "97db2ff1911b8f45507c7870ab60c0c709a9a6c6c777460249ecb94f04e60649",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -1314,6 +1314,33 @@
       "notice": "Project-authored C17; project MIT license",
       "sha256": "09f3cd4ab101a9b3f2d4c945bdd4fc21f958d5bc3c38ebb13470ee14d4c1a9f7",
       "review": "T15 S2 private theme ownership or native superclass regression; no external code copied"
+    },
+    {
+      "path": "tests/ntw16s-dll/dialog_scope.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "review": "; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes",
+      "sha256": "dbded1e1908d2e0ad4246bf96167abfb272363fcd3dcc56e2f51f691c7edbaa4"
+    },
+    {
+      "path": "tests/ntw16s-dll/dialog_show.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "review": "; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes",
+      "sha256": "08b441b8baa55e9e69c535a8ddcb475d920b1d4eeb8321f344931e1abf729d90"
+    },
+    {
+      "path": "tests/ntw16s-dll/control_visibility.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "sha256": "eff5867868a1ce574af8c01feb7f8e203ec3000ad41235fc13d89d4bea96c9c6",
+      "review": "T15 S3 self-contained real public creation/attachment API hidden-state regression for four native protocols, parent/child visibility, external redraw, detach and borrowed font; no external code copied"
     }
   ]
 }

@@ -213,8 +213,9 @@ static BOOL measure_window(HWND w,style_window *s,const RECT *outer,win16_style_
     OffsetRect(&l->system,dx,dy);OffsetRect(&l->minimize,dx,dy);OffsetRect(&l->maximize,dx,dy);
     if(!(GetWindowLongPtr(w,GWL_STYLE)&WS_CHILD) && GetMenu(w)){
         win16_style_bar bar;POINT origin={l->client.left,l->client.top};
-        if(!win16_style_bar_read(GetMenu(w),s->menu_font?s->menu_font:(HFONT)GetStockObject(SYSTEM_FONT),
+        if(!win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font?s->menu_font:(HFONT)GetStockObject(SYSTEM_FONT),
             s->dpi,origin,l->client.right-l->client.left,&bar))return FALSE;
+        if(s->detached){win16_style_bar_free(&bar);return FALSE;}
         if(bar.height){l->menu=l->client;l->menu.bottom=min(l->client.bottom,l->client.top+bar.height+l->unit);
             l->client.top=l->menu.bottom;}
         win16_style_bar_free(&bar);
@@ -336,7 +337,7 @@ static void paint(HWND w,style_window *s,HDC target)
     RECT r;int saved,len;
     WCHAR *title;
     if(!dc)return;
-    if(!layout(w,s,&l)){if(!target)ReleaseDC(w,dc);return;}
+    if(!layout(w,s,&l) || s->detached){if(!target)ReleaseDC(w,dc);return;}
     if(!l.border && IsRectEmpty(&l.caption)){if(!target)ReleaseDC(w,dc);return;}
     colors(s,&p);saved=SaveDC(dc);
     /* A borrowed WM_PRINT DC must remain untouched if its state cannot be
@@ -352,10 +353,11 @@ static void paint(HWND w,style_window *s,HDC target)
     if(!IsRectEmpty(&l.menu)){
         win16_style_bar bar;POINT origin={l.menu.left,l.menu.top};
         fill(dc,l.menu,p.light);
-        if(win16_style_bar_read(GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar)){
+        if(win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar)){
             if(s->bar_selected>=0 && (UINT)s->bar_selected<bar.count)
                 bar.items[s->bar_selected].state|=MFS_HILITE;
             win16_style_bar_paint(&bar,dc,s->menu_font,s->dpi,&p);win16_style_bar_free(&bar);
+            if(s->detached){RestoreDC(dc,saved);if(!target)ReleaseDC(w,dc);return;}
         }
         r=l.menu;r.top=r.bottom-l.unit;fill(dc,r,p.edge);
     }
@@ -464,7 +466,7 @@ static void select_bar(HWND w,style_window *s,int direction)
     if(!layout(w,s,&l))return;
     origin.x=l.menu.left;
     origin.y=l.menu.top;
-    if(!win16_style_bar_read(GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar))return;
+    if(!win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar))return;
     count=(int)bar.count;win16_style_bar_free(&bar);
     if(count<=0)return;
     if(!s->bar_keyboard){s->bar_focus=GetFocus();s->bar_keyboard=TRUE;
@@ -486,7 +488,7 @@ static int bar_at_screen(HWND w,style_window *s,POINT point)
     if(PtInRect(&l.system,point))return -2;
     if(!PtInRect(&l.menu,point))return -3;
     origin.x=l.menu.left;origin.y=l.menu.top;
-    if(!win16_style_bar_read(GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar))return -3;
+    if(!win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar))return -3;
     hit=win16_style_menu_hit(bar.rects,bar.count,point);win16_style_bar_free(&bar);
     return hit<0?-3:hit;
 }
@@ -506,7 +508,7 @@ static int open_bar_once(HWND w,style_window *s,int index,int *hover)
     SendMessageW(w,WM_INITMENU,(WPARAM)GetMenu(w),0);
     if(s->detached || !layout(w,s,&l) || IsRectEmpty(&l.menu))return 0;
     origin.x=l.menu.left;origin.y=l.menu.top;
-    if(!win16_style_bar_read(GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar))return 0;
+    if(!win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar))return 0;
     if(index<0 || (UINT)index>=bar.count || (bar.items[index].state&MFS_DISABLED)){
         win16_style_bar_free(&bar);return 0;}
     popup=bar.items[index].popup;command=bar.items[index].id;
@@ -553,7 +555,7 @@ static void open_bar(HWND w,style_window *s,int index)
         if(s->detached || (!direction && hover==-3))break;
         if(GetMenu(w) && layout(w,s,&l)){
             origin.x=l.menu.left;origin.y=l.menu.top;
-            if(win16_style_bar_read(GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar)){
+            if(win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar)){
                 count=(int)bar.count;win16_style_bar_free(&bar);}}
         if(direction && (index==-2 || (index==0 && direction<0) || (index==count-1 && direction>0))){
             MDINEXTMENU next={0};style_window *target;int next_index;
@@ -567,7 +569,7 @@ static void open_bar(HWND w,style_window *s,int index)
                 else if(next.hmenuNext==GetMenu(next.hwndNext)){
                     if(!layout(next.hwndNext,target,&l))break;
                     origin.x=l.menu.left;origin.y=l.menu.top;
-                    if(!win16_style_bar_read(next.hmenuNext,target->menu_font,target->dpi,origin,l.menu.right-l.menu.left,&bar))break;
+                    if(!win16_style_bar_read_for_window(next.hwndNext,next.hmenuNext,target->menu_font,target->dpi,origin,l.menu.right-l.menu.left,&bar))break;
                     next_index=direction>0?0:(int)bar.count-1;win16_style_bar_free(&bar);
                     if(next_index<0)break;
                 }else break;
@@ -592,7 +594,7 @@ static void open_bar(HWND w,style_window *s,int index)
         if(!layout(w,s,&l))break;
         origin.x=l.menu.left;
         origin.y=l.menu.top;
-        if(!win16_style_bar_read(GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar))break;
+        if(!win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar))break;
         popup=index>=0 && (UINT)index<bar.count && bar.items[index].popup!=NULL;
         win16_style_bar_free(&bar);if(!popup)break;
     }
@@ -865,7 +867,7 @@ static LRESULT CALLBACK style_proc(HWND w,UINT msg,WPARAM wp,LPARAM lp,
                 win16_style_bar bar;POINT origin;BOOL popup=hit==-2;
                 s->bar_selected=hit;paint_menu_state(w,s);
                 if(hit>=0 && layout(w,s,&l)){origin.x=l.menu.left;origin.y=l.menu.top;
-                    if(win16_style_bar_read(GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar)){
+                    if(win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar)){
                         popup=(UINT)hit<bar.count && bar.items[hit].popup!=NULL;
                         win16_style_bar_free(&bar);}}
                 if(popup)open_bar(w,s,hit);
@@ -910,7 +912,7 @@ static LRESULT CALLBACK style_proc(HWND w,UINT msg,WPARAM wp,LPARAM lp,
         }
         if((wp&0xfff0)==SC_KEYMENU && lp && lp!=L' ' && GetMenu(w) && layout(w,s,&l)){
             win16_style_bar bar;POINT origin={l.menu.left,l.menu.top};int index=-1;
-            if(win16_style_bar_read(GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar)){
+            if(win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar)){
                 UINT i;WCHAR key=(WCHAR)lp;CharUpperBuffW(&key,1);
                 for(i=0;i<bar.count && index<0;++i){const WCHAR *text=bar.items[i].text;
                     if(bar.items[i].state&MFS_DISABLED)continue;
@@ -977,7 +979,7 @@ static LRESULT CALLBACK style_proc(HWND w,UINT msg,WPARAM wp,LPARAM lp,
         if(wp==HTMENU && layout(w,s,&l)){
             win16_style_bar bar;POINT origin={l.menu.left,l.menu.top};int item;BOOL close=FALSE;
             GetWindowRect(w,&r);point.x=GET_X_LPARAM(lp)-r.left;point.y=GET_Y_LPARAM(lp)-r.top;
-            if(win16_style_bar_read(GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar)){
+            if(win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar)){
                 item=win16_style_menu_hit(bar.rects,bar.count,point);
                 if(item>=0 && bar.items[item].control==HBMMENU_SYSTEM && bar.items[item].popup){
                     UINT state=GetMenuState(bar.items[item].popup,SC_CLOSE,MF_BYCOMMAND);
@@ -996,7 +998,7 @@ static LRESULT CALLBACK style_proc(HWND w,UINT msg,WPARAM wp,LPARAM lp,
         if(wp==HTMENU && layout(w,s,&l)){
             win16_style_bar bar;POINT origin={l.menu.left,l.menu.top};int item;
             GetWindowRect(w,&r);point.x=GET_X_LPARAM(lp)-r.left;point.y=GET_Y_LPARAM(lp)-r.top;
-            if(win16_style_bar_read(GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar)){
+            if(win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar)){
                 item=win16_style_menu_hit(bar.rects,bar.count,point);
                 win16_style_bar_free(&bar);
                 if(item>=0){

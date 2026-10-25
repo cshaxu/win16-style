@@ -83,6 +83,12 @@ try{
         (Case 'vb-controls-64' (Join-Path $x64 'core-vb.exe') @($run,(Join-Path $x64 'vb-fixture/MSVBVM60.dll')) @('VB_WINDOWED_OK bits=64 styled=1','VB_EDIT_OK undo=1','VB_EDIT_FONT_PIXELS changed=1','VB_CONTAINER_PAINT_OK label_changed=1','VB_CLEANUP_OK'))
     )
     $cases+=@(
+        (Case 'control-visibility-32' (Join-Path $x86 'core-control-visibility.exe') @($d32) @('CONTROL_VISIBILITY_OK bits=32 cases=16')),
+        (Case 'control-visibility-64' (Join-Path $x64 'core-control-visibility.exe') @($d64) @('CONTROL_VISIBILITY_OK bits=64 cases=16')),
+        (Case 'dialog-scope-32' (Join-Path $x86 'core-dialog-scope.exe') @() @('DIALOG_SCOPE_OWNERSHIP_OK bits=32','allocations=0')),
+        (Case 'dialog-scope-64' (Join-Path $x64 'core-dialog-scope.exe') @() @('DIALOG_SCOPE_OWNERSHIP_OK bits=64','allocations=0')),
+        (Case 'dialog-show-32' (Join-Path $x86 'core-dialog-show.exe') @($run) @('DIALOG_SHOW_OK bits=32 styled=1','DIALOG_SHOW_CLEANUP_OK') 180),
+        (Case 'dialog-show-64' (Join-Path $x64 'core-dialog-show.exe') @($run) @('DIALOG_SHOW_OK bits=64 styled=1','DIALOG_SHOW_CLEANUP_OK') 180),
         (Case 'theme-stage-32' (Join-Path $x86 'core-theme-stage.exe') @() @('THEME_STAGE_OWNERSHIP_OK bits=32','allocations=0 early_proc_unchanged=1')),
         (Case 'theme-stage-64' (Join-Path $x64 'core-theme-stage.exe') @() @('THEME_STAGE_OWNERSHIP_OK bits=64','allocations=0 early_proc_unchanged=1')),
         (Case 'superclass-32' (Join-Path $x86 'core-superclass.exe') @($run) @('SUPER_PROTOCOL_OK bits=32 styled=1','SUPER_RENDER_OK','SUPER_ACTUAL_FILL_OK','SUPER_REJECT_OK','SUPER_CLEANUP_OK')),

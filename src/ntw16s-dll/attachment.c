@@ -9,7 +9,7 @@
 /* This coordinator composes the one existing renderer. It observes only
  * creation inside explicit caller scopes; it never scans a desktop or infers
  * task policy from an owner, title, executable name or a process-wide switch. */
-typedef struct pending_window {struct pending_window *next;HWND window;DWORD style;} pending_window;
+typedef struct pending_window {struct pending_window *next;HWND window;DWORD style;BOOL settled,installed;} pending_window;
 struct ntw16s_creation_scope {
     struct ntw16s_creation_scope *previous;
     DWORD thread;
@@ -196,26 +196,63 @@ static LRESULT CALLBACK creation_return(int code,WPARAM p,LPARAM l)
             SetLastError(saved);return result;
         }
         if(m->message==WM_NCDESTROY){pending_window *pending=take_pending(scope,m->hwnd);ntw16s_theme_cancel_stage(m->hwnd);free(pending);}
-        if((created || m->message==WM_INITDIALOG) && IsWindow(m->hwnd)){
-            pending_window *pending=take_pending(scope,m->hwnd);
+        /* Some dialogs show themselves and run a nested loop inside
+         * WM_INITDIALOG. Its return may be delayed until the application exits.
+         * A completed first-show notification is also a safe boundary, but
+         * only for a captioned top-level dialog owned by this creation chain.
+         * Mark its pending node before installation can reenter USER. */
+        BOOL first_show=(m->message==WM_SHOWWINDOW && m->wParam) ||
+            (m->message==WM_WINDOWPOSCHANGED && m->lParam &&
+             (((const WINDOWPOS *)m->lParam)->flags&SWP_SHOWWINDOW));
+        ntw16s_creation_scope *owner=scope;
+        if(first_show){
+            DWORD style=(DWORD)GetWindowLongPtrW(m->hwnd,GWL_STYLE);
+            first_show=(style&WS_VISIBLE) && !(style&WS_CHILD) &&
+                (style&WS_CAPTION)==WS_CAPTION && class_is(m->hwnd,L"#32770");
+            if(first_show){
+                for(;owner;owner=owner->previous){
+                    pending_window *pending=owner->pending;
+                    while(pending && pending->window!=m->hwnd)pending=pending->next;
+                    if(owner->enabled && pending && !pending->settled)break;
+                }
+                first_show=owner!=NULL;
+            }
+        }
+        if((created || m->message==WM_INITDIALOG || first_show) && IsWindow(m->hwnd)){
+            if(!first_show)owner=scope;
+            pending_window *pending;
+            if(first_show){
+                pending=owner->pending;
+                while(pending && pending->window!=m->hwnd)pending=pending->next;
+                if(pending)pending->settled=TRUE;
+            }else pending=take_pending(owner,m->hwnd);
+            /* A first-show attachment has already completed this creation.
+             * In particular, do not undo an explicit removal by attaching
+             * again when the delayed initializer finally returns. */
+            if(!first_show && pending && pending->settled && pending->installed){free(pending);SetLastError(saved);return result;}
             DWORD style=created?(DWORD)((const CREATESTRUCTW *)m->lParam)->style:
                 (DWORD)GetWindowLongPtrW(m->hwnd,GWL_STYLE);
-            if(pending){style=pending->style;free(pending);}
+            if(pending){style=pending->style;if(!first_show)free(pending);}
             BOOL already=lookup(m->hwnd)!=NULL;
-            if(ntw16s_theme_commit(m->hwnd) && install_created(m->hwnd,style)){
-                if(!already && lookup(m->hwnd))++scope->result.installed;
+            BOOL installed=ntw16s_theme_commit(m->hwnd) && install_created(m->hwnd,style);
+            if(installed){
+                if(first_show){
+                    for(pending_window *record=owner->pending;record;record=record->next)
+                        if(record==pending && record->window==m->hwnd){record->installed=TRUE;break;}
+                }
+                if(!already && lookup(m->hwnd))++owner->result.installed;
             }else{
                 DWORD error=GetLastError();
                 if(error==ERROR_NOT_SUPPORTED){
-                    ++scope->result.unsupported;ntw16s_theme_remove(m->hwnd,NULL);
+                    ++owner->result.unsupported;ntw16s_theme_remove(m->hwnd,NULL);
                     if(class_is(m->hwnd,L"COMBOBOX")){
                         COMBOBOXINFO info={.cbSize=sizeof(info)};
                         if(ntw16s_native_get_combo_info(m->hwnd,&info))ntw16s_theme_remove(info.hwndList,NULL);
                     }
                 }
-                else if(!scope->result.failure)scope->result.failure=error?error:ERROR_GEN_FAILURE;
+                else if(!owner->result.failure)owner->result.failure=error?error:ERROR_GEN_FAILURE;
             }
-            if(scope->result.failure && m->message==WM_INITDIALOG)
+            if(owner->result.failure && m->message==WM_INITDIALOG)
                 EndDialog(m->hwnd,-1);
         }
     }

@@ -46,3 +46,5 @@ CURRENT中的完成审计。待准入候选及顺序见上表。
 [MD5summer控件调查](../proposals/md5summer-controls.md)为用户请求的只读兼容调查，不新增产品T。
 
 [HD Tune Pro控件调查](../proposals/hdtune-controls.md)为只读兼容调查，不新增产品T。
+
+[框架与公共控件完成计划](../proposals/framework-completion.md)已获自动续S授权，状态由CURRENT管理。

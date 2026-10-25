@@ -20,6 +20,7 @@
 | [evidence/doublekiller-controls.json](evidence/doublekiller-controls.json) | T15 S2原生超类、VCL初始化/暂存主题、真实绘制/旧包负例、资源所有权及实际包/双发布证据 |
 | [evidence/md5summer-controls.json](evidence/md5summer-controls.json) | Td S12真实MD5summer原生协议/附着/截图对照及识别缺口、TreeView边界；无产品变更 |
 | [evidence/hdtune-controls.json](evidence/hdtune-controls.json) | Td S13 HD Tune Pro真实提权主窗/标准控件附着缺口、740及关闭失败；无产品修复 |
+| [evidence/framework-completion.json](evidence/framework-completion.json) | T15 S3原生菜单栏/对话框/隐藏状态修复、旧包负例、41实际包/12聚焦、真实三应用及双发布证据；后续状态见CURRENT |
 | [release.json](release.json) | 当前开发包的输入/工具链/四文件哈希与验收范围，历史版本从对应Git提交取回 |
 | [product-contract.json](product-contract.json) | 架构权威的机器映射；组件/产物变化必须同步审核 |
 | [import](import/README.md) | 来源基线与 Git blob 清单；只作导入对照，不能成为构建输入 |

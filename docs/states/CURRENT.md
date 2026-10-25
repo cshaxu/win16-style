@@ -2,10 +2,36 @@
 
 ## Current Work
 
-无活动任务包。Td S13 HD Tune Pro有限调查完成：真实高权限主窗/子控件与原生截图取得，
-主窗未附着及common-controls缺口已证实；主窗具体拒绝点和正常关闭失败未定位，不宣称修复。
-P1 3d43ff7实际取回六文档/四产物通过，167输入/八部署保持，登记scratch安全回收，S13关闭。
-M0/T15保持开放，既有S/债务不变；没有新T、产品代码变更或二进制发布。
+T15按用户最新授权自动续S直到任务级收口；当前准入S3，保持M0且不分配新T。
+
+## M0 T15 S3 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Continuation；在S2后顺序分配S3，不复用已关闭编号 |
+| Admission And Approval | 用户批准所述S3/S4/公共控件后续分解，自动准入执行直到T15收口；永久提交推送/双发布授权保持 |
+| Objective | 定位并修复HD Tune主窗漏附着，查清关闭验证失败；建立可自包含检出旧包的原生回归 |
+| Non-goals | 不执行磁盘业务，不干预用户既有实例/共享宿主/全局设置；不先扩展其他控件或改已确认标题字体资源 |
+| Reference Baseline | da2631f，T15 S2四文件；Td S13真实高权限主窗root_attached=0及未定位关闭失败 |
+| Candidate Proposal | [实现分解](../proposals/framework-completion.md) |
+| Files And ABI Surface | 私有创建scope早显修复；window-aware菜单栏快照保留应用owner-draw测绘回调及重入销毁；隐藏控件的瞬时重绘保护及双宽C测试；三组件四产物/ABI3/31 detours/32 slots不变 |
+| Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT、UI；纯C17/GCC/Ninja/ccache，不使用computer-use |
+| Verification | 首先原生property-sheet/对话框创建回归与旧包负例，再双宽focused/full实际包、真实HD Tune正常显示/标题/菜单/关闭及原应用回归 |
+| Expected Markers | 每种A/W、modal/modeless、双宽及异常返回独立状态；主窗附着和像素须同时验证；清理区分正常/强制 |
+| Asset Needs | build/t15-framework、build/t15-package登记原始探针/日志/包备份，先提炼证据后安全回收；稳定Ninja/ccache保留 |
+| Reporting Requirements | 实测首个断点/最小方案、保留状态/输入、负例/覆盖/失败、双发布摘要、提交和实际远端复核；自动续S |
+| Stop Conditions | 越过权限/共享宿主或重大架构边界时保留证据；不得以弱化测试/误报附着掩盖失败 |
+| Exit Criteria | 本S有限修复/回归/同批四文件实际测试/双发布/提交推送及实际复核，再续S4；最终T15另审计覆盖全集 |
+| Original Owner Request | “批准 自动准入s任务 到t收口为止”，对应先主窗和关闭、基础控件、再逐类公共控件支持方案 |
+| Similar-Issue Sweep | 对照CreateWindow/CreateDialog/MessageBox/PropertySheet创建初始化边界、ANSI/Unicode和modal/modeless；不凭类名猜根因 |
+
+## S3 Verification Progress
+
+170输入冻结/干净双宽/来源资源/ABI3，41实际包352.435秒（4槽、无skip）、12聚焦、
+真实HD Tune/DK/MadShow通过。HD Tune主窗attached1；三个原隐藏按钮在显示和恢复后
+均隐藏，菜单打开/截图/取消正常，原生关闭2与裸对照一致、Job空；提权探针已退出。
+原资源、标题/字体/菜单/滚动条保持；已双发布八摘要一致，两处真实双宽启动及ABI复验通过。
+P1待提交推送/实际远端复核；S3尚未关闭，之后自动准入S4。其他控件未称已支持。
 
 ## Identifier State
 
@@ -14,21 +40,17 @@ M0/T15保持开放，既有S/债务不变；没有新T、产品代码变更或�
 - Last allocated Td S: 13
 - Owner allocation constraint: 只可自行划分后续S，不得自行分配新T；保持现有T15/M0。
 - Last delivery: M0 Td S13 P2 (P1 3d43ff7实际取回10文件通过，HD Tune有限调查关闭；产品仍为T15 S2)
-- Open task: T15等待用户外观验收；S2/S1关闭；Td S13/S12/S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
+- Open task: T15自动续S实施/任务级审计中；S3活动，S2/S1关闭；Td S13/S12/S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
 
 ## Technical Baseline
 
-0.15.0.0 / T15 S2已双发布/安装复验/330fed7实际远端复核并收口，T15等待用户验收。
-167输入冻结；纯C17/GCC16.1、Ninja/ccache干净双宽构建；35/35实际包260.64秒，
-另10项双宽聚焦、真实DoubleKiller/MadShow、两处默认启动及系统双宽ABI通过，无skip。
-79注册CTest未全部执行。DoubleKiller四页28按钮(含复选)/3编辑/2下拉共33控件附着；
-Run真实填充c0c0c0，卸载f0f0f0，1843像素变化，关闭exit0/自有Job空。
-标题顶部24行逐像素不变，客户区29509像素变化。自绘分页/列表/标签/微调等保持原应用。
-暂存主题不更改InitWndProc，原生初始化后提交；生产主题分配配对归零、失败/取消/终结/
-最新主题恢复通过。旧包双宽和“附着假阳性”原型均被强化测试检出，未发布错误原型。
-八部署摘要一致；ABI3/31、无新增hook/导出，原五头/声明/18表及三组件四产物保持。
-范围见[本S记录](../history/M0-T15-S2-doublekiller.md)和[证据](../etc/evidence/doublekiller-controls.json)。
-T15 S1的VB6成果、T14 S3启动语义及既有标题/字体/菜单/滚动条保持；其他任务/债务状态不变。
+0.15.0.0 / T15 S3四文件已本地验证、双发布及安装复验，P1提交/远端复核待完成。
+170输入、C17/GCC16.1/Ninja/ccache干净双宽，41实际包352.435秒/12聚焦无skip；
+真实HD Tune主窗/隐藏按钮/菜单取消及两款旧应用保留有证据。84注册CTest并非全部执行。
+三组件四产物/ABI3/31导出及31 detours/32slots不变，原五资源头/声明和18嵌入表保持。
+支持面及保留边界见[本S记录](../history/M0-T15-S3-dialog-menus.md)和
+[精选证据](../etc/evidence/framework-completion.json)。T15/M0开放，继续S4控件适配；
+T15 S1/S2成果、T14 S3启动语义及其他任务/债务状态不变。
 
 ## Recent Closure
 

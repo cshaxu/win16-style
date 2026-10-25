@@ -491,10 +491,10 @@
       "blob": "dbf916ef7759d4c3a249a56712c10ec946ec70de",
       "size": 1016,
       "sha256": "7eba7d9c045131b8aebb7d7c8b87303b97d2eb8e52d9030388f6dd23af9731df",
-      "action": "retain",
+      "action": "adapt",
       "destination": "src/ntw16s-dll/menu_bar.h",
       "notice": "project-authored-review",
-      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task; T15 S3 same-thread application-owned menu callback integration, preserve original notices",
       "receiver": "style-core"
     },
     {
@@ -503,10 +503,10 @@
       "blob": "e8d1450ac63e3364fcbad23c926e458785c3bf88",
       "size": 658,
       "sha256": "209ab48d33f57207c33f90c412b9c294ed062683c789803dd207cf22fd66076f",
-      "action": "retain",
+      "action": "adapt",
       "destination": "src/ntw16s-dll/menu_bar_paint.c",
       "notice": "project-authored-review",
-      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task; T15 S3 same-thread application-owned menu callback integration, preserve original notices",
       "receiver": "style-core"
     },
     {
