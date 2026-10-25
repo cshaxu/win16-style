@@ -30,6 +30,9 @@ NTW16S_API BOOL win16_style_control_remove(HWND window);
 /* Private terminal leaf: release owned state without gesture/font notices. */
 BOOL win16_style_control_terminal(HWND window);
 NTW16S_API BOOL win16_style_frame_scrollbars_install(HWND window,const win16_style_palette *palette);
+BOOL win16_style_tree_install_created(HWND,const win16_style_palette *,const void *,const BOOL *);
+BOOL win16_style_frame_scrollbars_install_owned(HWND,const win16_style_palette *,const void *,const BOOL *);
+void win16_style_frame_scrollbars_palette_owned(HWND,const win16_style_palette *,const void *);
 NTW16S_API void win16_style_frame_scrollbars_remove(HWND window);
 NTW16S_API void win16_style_frame_scrollbars_palette(HWND window,const win16_style_palette *palette);
 /* Trial opt-in for a styled LISTBOX/ComboLBox's bars. Multicolumn lists use

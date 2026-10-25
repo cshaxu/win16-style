@@ -767,10 +767,10 @@
       "blob": "5e922312ae64dfd28356a7960caf97854c5d41ab",
       "size": 2281,
       "sha256": "f2c52b99f8d764a5175a85532e2ad2c7afc60e0f30117e60350b27c4f1e0ddf8",
-      "action": "retain",
+      "action": "adapt",
       "destination": "src/ntw16s-dll/win16_style.h",
       "notice": "project-authored-review",
-      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task; T15 S8 private created-frame ownership/cancellation parameters and exact-owner removal; public ABI and all original graphics unchanged",
       "receiver": "style-core"
     },
     {

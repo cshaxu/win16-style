@@ -33,6 +33,7 @@ typedef struct style_window {
     unsigned menu_depth;
     DWORD old_policy;
     BOOL policy_saved, pending_frame;
+    const void *creation_owner;
 } style_window;
 
 static LRESULT CALLBACK style_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
@@ -667,7 +668,7 @@ static void activate_frame(HWND w,style_window *s,const RECT *client,BOOL normal
     if(!s->detached && normal)restore_client(w,client);
 }
 
-static BOOL install_frame(HWND w,const win16_style_palette *p,BOOL creating)
+static BOOL install_frame(HWND w,const win16_style_palette *p,BOOL creating,const void *owner,const BOOL *cancelled)
 {
     style_window *s;
     DWORD style,ex;
@@ -682,7 +683,7 @@ static BOOL install_frame(HWND w,const win16_style_palette *p,BOOL creating)
     normal=!IsIconic(w)&&!IsZoomed(w);
     s=(style_window *)calloc(1,sizeof(*s));
     if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    s->bar_selected=-1;
+    s->bar_selected=-1;s->creation_owner=owner;s->calls=1;
     s->pending_frame=creating && normal && !(style&WS_VISIBLE);
     {WCHAR name[32];s->dialog=GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"#32770");}
     if(p)s->palette=*p;else win16_style_default_palette(&s->palette);
@@ -694,26 +695,37 @@ static BOOL install_frame(HWND w,const win16_style_palette *p,BOOL creating)
     client_screen(w,&client);
     s->policy_saved=!(style&WS_CHILD) && SUCCEEDED(DwmGetWindowAttribute(w,DWMWA_NCRENDERING_POLICY,
         &s->old_policy,sizeof(s->old_policy)));
+    if(cancelled && *cancelled){dispose(s);SetLastError(ERROR_CANCELLED);return FALSE;}
     if(!SetWindowSubclass(w,style_proc,STYLE_ID,(DWORD_PTR)s)){dispose(s);return FALSE;}
     /* Bars may be added by range/visibility changes after attachment. Keep
      * one frame tracker ready instead of conditionally installing it later. */
-    if(!win16_style_frame_scrollbars_install(w,&s->palette)){
-        RemoveWindowSubclass(w,style_proc,STYLE_ID);dispose(s);return FALSE;}
-    ++s->calls;
+    if(!win16_style_frame_scrollbars_install_owned(w,&s->palette,s,&s->detached)){
+        DWORD error=GetLastError();
+        if(state(w)==s)win16_style_remove(w);
+        if(!--s->calls && s->detached)dispose(s);
+        SetLastError(error);return FALSE;
+    }
     /* Initial minimized/maximized creation is valid too. Native USER owns
      * its saved normal placement; never resize that state to preserve the
      * transient icon/maximized client rectangle. Restore uses normal layout. */
     if(!s->pending_frame)activate_frame(w,s,&client,normal);
     --s->calls;
-    if(s->detached){dispose(s);SetLastError(ERROR_INVALID_WINDOW_HANDLE);return FALSE;}
+    if(s->detached){dispose(s);SetLastError(cancelled && *cancelled?ERROR_CANCELLED:ERROR_INVALID_WINDOW_HANDLE);return FALSE;}
     return TRUE;
 }
 
 BOOL win16_style_install(HWND w,const win16_style_palette *p)
-{return install_frame(w,p,FALSE);}
+{return install_frame(w,p,FALSE,NULL,NULL);}
 
-BOOL win16_style_install_created(HWND w,const win16_style_palette *p)
-{return install_frame(w,p,TRUE);}
+BOOL win16_style_install_created(HWND w,const win16_style_palette *p,const void *owner,const BOOL *cancelled)
+{return install_frame(w,p,TRUE,owner,cancelled);}
+
+BOOL win16_style_frame_remove_owned(HWND w,const void *owner)
+{
+    style_window *s=state(w);
+    if(!owner || !s || s->creation_owner!=owner)return FALSE;
+    return win16_style_remove(w);
+}
 
 BOOL win16_style_remove(HWND w)
 {
@@ -724,7 +736,7 @@ BOOL win16_style_remove(HWND w)
     if(!RemoveWindowSubclass(w,style_proc,STYLE_ID))return FALSE;
     ++s->calls;
     s->detached=TRUE;
-    win16_style_frame_scrollbars_remove(w);
+    win16_style_control_remove_owned(w,s);
     while(s->menus)end_menu_scope(s);
     win16_style_menu_restore(&s->menu_items);
     if(s->bar_keyboard)leave_bar(w,s,TRUE);
@@ -742,7 +754,7 @@ BOOL win16_style_set_palette(HWND w,const win16_style_palette *p)
     if(!p){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
     if(!local_window(w))return FALSE;
     s=state(w);if(!s){SetLastError(ERROR_NOT_FOUND);return FALSE;}
-    ++s->calls;s->palette=*p;win16_style_frame_scrollbars_palette(w,p);paint(w,s,NULL);
+    ++s->calls;s->palette=*p;win16_style_frame_scrollbars_palette_owned(w,p,s);paint(w,s,NULL);
     if(!--s->calls && s->detached)dispose(s);
     return TRUE;
 }

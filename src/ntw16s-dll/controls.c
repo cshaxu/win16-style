@@ -31,7 +31,7 @@ typedef struct control_style {
     int header_pressed;
     BOOL scroll_reporting,scroll_key;
     LONG scroll_report;
-    BOOL list_scrollbar,edit_scrollbars,frame_scrollbars,list_redraw_off;
+    BOOL list_scrollbar,edit_scrollbars,frame_scrollbars,native_border,list_redraw_off;
     unsigned list_suppression;
     HWND list_capture_before;
     LONG embedded_object;
@@ -992,7 +992,12 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         if(embedded_scroll_input(w,s,m,a,b))result=0;
         else if(m==WM_NCMOUSEMOVE && (a==HTHSCROLL || a==HTVSCROLL))result=0;
         else {if(m==WM_ENABLE && !a)scroll_finish(w,s,TRUE);
-            if(!s->detached)result=DefSubclassProc(w,m,a,b);}
+            int saved=(s->native_border && m==WM_PRINT)?SaveDC((HDC)a):0;
+            if(!s->detached)result=DefSubclassProc(w,m,a,b);
+            if(saved)RestoreDC((HDC)a,saved);}
+        if(!s->detached && s->native_border && (m==WM_NCPAINT || (m==WM_PRINT && (b&PRF_NONCLIENT)))){
+            list_border(w,s,m==WM_PRINT?(HDC)a:NULL);nonclient_scrollbars(w,s,m==WM_PRINT?(HDC)a:NULL);
+        }
     }
     else if(is_scroll(w) && (GetWindowLongPtrW(w,GWL_STYLE)&SBS_SIZEBOX)){
         if(m==WM_PAINT){PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);present_control(w,s,dc,draw_sizebox);EndPaint(w,&ps);}
@@ -1259,6 +1264,28 @@ BOOL win16_style_tabbed_list_install(HWND w,const win16_style_palette *palette,i
 {if(count<0){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}return install(w,palette,FALSE,FALSE,FALSE,count,pixels,NULL,NULL);}
 BOOL win16_style_frame_scrollbars_install(HWND w,const win16_style_palette *palette)
 {return install(w,palette,FALSE,FALSE,TRUE,-1,NULL,NULL,NULL);}
+BOOL win16_style_frame_scrollbars_install_owned(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled)
+{
+    if(cancelled && *cancelled){SetLastError(ERROR_CANCELLED);return FALSE;}
+    return install(w,palette,FALSE,FALSE,TRUE,-1,NULL,owner,cancelled);
+}
+void win16_style_frame_scrollbars_palette_owned(HWND w,const win16_style_palette *palette,const void *owner)
+{
+    DWORD_PTR data;
+    if(GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&data) &&
+        ((control_style *)data)->frame_scrollbars && ((control_style *)data)->creation_owner==owner)
+        ((control_style *)data)->palette=*palette;
+}
+BOOL win16_style_tree_install_created(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled)
+{
+    DWORD_PTR data;
+    if(!ntw16s_control_protocol_is(w,WC_TREEVIEWW)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    if(!win16_style_frame_scrollbars_install_owned(w,palette,owner,cancelled))return FALSE;
+    if(!GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&data) ||
+        ((control_style *)data)->creation_owner!=owner){SetLastError(ERROR_CANCELLED);return FALSE;}
+    ((control_style *)data)->native_border=TRUE;
+    return TRUE;
+}
 void win16_style_frame_scrollbars_remove(HWND w)
 {
     DWORD_PTR data;

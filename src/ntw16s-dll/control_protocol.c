@@ -18,13 +18,19 @@ BOOL ntw16s_control_protocol_is(HWND w,const WCHAR *name)
     for(ntw16s_control_protocol *b=bindings;b;b=b->next)
         if(b->window==w && current(b))return (b->role==1 && !lstrcmpiW(name,L"BUTTON")) ||
             (b->role==2 && !lstrcmpiW(name,L"COMBOBOX")) || (b->role==3 && !lstrcmpiW(name,WC_TABCONTROLW)) ||
-            (b->role==4 && !lstrcmpiW(name,WC_HEADERW)) || (b->role==5 && !lstrcmpiW(name,WC_LISTVIEWW));
+            (b->role==4 && !lstrcmpiW(name,WC_HEADERW)) || (b->role==5 && !lstrcmpiW(name,WC_LISTVIEWW)) || (b->role==6 && !lstrcmpiW(name,WC_TREEVIEWW));
     return FALSE;
 }
 HMODULE ntw16s_control_protocol_list_module(HWND w)
 {
     for(ntw16s_control_protocol *b=bindings;b;b=b->next)
         if(b->window==w && b->role==5 && current(b))return b->native_module;
+    return NULL;
+}
+HMODULE ntw16s_control_protocol_tree_module(HWND w)
+{
+    for(ntw16s_control_protocol *b=bindings;b;b=b->next)
+        if(b->window==w && b->role==6 && current(b))return b->native_module;
     return NULL;
 }
 ntw16s_control_protocol *ntw16s_control_protocol_acquire(HWND w)
@@ -57,16 +63,17 @@ ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND w)
      * require initialized public protocol evidence, even a tab's real name. */
     role=!lstrcmpW(name,L"TButton")?1:!lstrcmpW(name,L"TComboBox")?2:
         (!lstrcmpW(name,WC_TABCONTROLW) || !lstrcmpW(name,L"TPageControl"))?3:!lstrcmpW(name,WC_HEADERW)?4:
-        (!lstrcmpW(name,WC_LISTVIEWW) || !lstrcmpW(name,L"TListView"))?5:0;
+        (!lstrcmpW(name,WC_LISTVIEWW) || !lstrcmpW(name,L"TListView"))?5:
+        (!lstrcmpW(name,WC_TREEVIEWW) || !lstrcmpW(name,L"TTreeView") || !lstrcmpW(name,L"TShellTreeView"))?6:0;
     if(!role)return NULL;
     WNDCLASSEXW native_class={.cbSize=sizeof(native_class)};
-    if(role>=3 && !GetClassInfoExW(NULL,role==3?WC_TABCONTROLW:role==4?WC_HEADERW:WC_LISTVIEWW,&native_class))return NULL;
+    if(role>=3 && !GetClassInfoExW(NULL,role==3?WC_TABCONTROLW:role==4?WC_HEADERW:role==5?WC_LISTVIEWW:WC_TREEVIEWW,&native_class))return NULL;
     HMODULE native_owner=NULL;
     /* Global common-control classes can report hInstance == NULL. Resolve
      * the registered native procedure's image, not a guessed DLL filename. */
     if(role>=3 && !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
         (const WCHAR *)(UINT_PTR)native_class.lpfnWndProc,&native_owner))return NULL;
-    if(owner!=((role==4 || (role==3 && !lstrcmpW(name,WC_TABCONTROLW)) || (role==5 && !lstrcmpW(name,WC_LISTVIEWW)))?native_owner:GetModuleHandleW(NULL)))return NULL;
+    if(owner!=((role==4 || (role==3 && !lstrcmpW(name,WC_TABCONTROLW)) || (role==5 && !lstrcmpW(name,WC_LISTVIEWW)) || (role==6 && !lstrcmpW(name,WC_TREEVIEWW)))?native_owner:GetModuleHandleW(NULL)))return NULL;
     if(role==3 && ((GetWindowLongPtrW(w,GWL_STYLE)&(TCS_BOTTOM|TCS_VERTICAL)) ||
         GetClassLongPtrW(w,GCL_CBWNDEXTRA)<(ULONG_PTR)native_class.cbWndExtra))return NULL;
     if(role>=4 && GetClassLongPtrW(w,GCL_CBWNDEXTRA)<(ULONG_PTR)native_class.cbWndExtra)return NULL;
@@ -137,6 +144,22 @@ ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND w)
             GetParent(header)==w && GetWindowThreadProcessId(header,NULL)==GetCurrentThreadId() &&
             GetClassNameW(header,header_name,ARRAYSIZE(header_name)) && !lstrcmpW(header_name,WC_HEADERW) &&
             (HMODULE)GetClassLongPtrW(header,GCLP_HMODULE)==native_owner;
+        if(valid)b->native_module=native_owner;
+    }
+    if(role==6){
+        LONG_PTR style=GetWindowLongPtrW(w,GWL_STYLE),ex=GetWindowLongPtrW(w,GWL_EXSTYLE);
+        TVHITTESTINFO hit={.pt={-30000,-30000}};
+        LRESULT count=SendMessageW(w,TVM_GETCOUNT,0,0);
+        LRESULT indent=current(b)?SendMessageW(w,TVM_GETINDENT,0,0):0;
+        LRESULT height=current(b)?SendMessageW(w,TVM_GETITEMHEIGHT,0,0):0;
+        LRESULT root=current(b)?SendMessageW(w,TVM_GETNEXTITEM,TVGN_ROOT,0):0;
+        LRESULT outside=current(b)?SendMessageW(w,TVM_HITTEST,0,(LPARAM)&hit):1;
+        LRESULT code=current(b)?SendMessageW(w,WM_GETDLGCODE,0,0):0;
+        valid=current(b) && (code&DLGC_WANTARROWS) && count>=0 && count<=INT_MAX &&
+            indent>0 && indent<=32767 && height>0 && height<=32767 && (!count || root) &&
+            !outside && !hit.hItem && (hit.flags&(TVHT_NOWHERE|TVHT_ABOVE|TVHT_TOLEFT)) &&
+            GetWindowThreadProcessId(GetParent(w),NULL)==GetCurrentThreadId() &&
+            !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) && (style&WS_CAPTION)!=WS_CAPTION && !(style&WS_THICKFRAME);
         if(valid)b->native_module=native_owner;
     }
     if(!valid){ntw16s_control_protocol_release(b);return NULL;}

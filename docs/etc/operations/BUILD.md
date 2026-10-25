@@ -137,3 +137,13 @@ ccache DIR/TEMPDIR/MAXSIZE=5G/BASEDIR写入生成的编译命令，直接cmake/n
 从登记scratch运行；只操作本次Job中新建实例，四页只读检查及实际Run按钮绘制/卸载，
 截图在卸载之前生成；不点击业务扫描/删除/移动/注册表命令。该检查需要用户提供的真实应用，
 不加入核心必需测试、不构成构建依赖。实际覆盖及限制见CURRENT和本S证据。
+
+T15 S8树回归入口：`core-tree-v5.exe <absolute-run16s.exe>`及`core-tree-v6.exe`，
+x86/x64分别执行；自包含原生/注入、96/144 DPI、三种已验证类、两档源字体、三种
+custom-draw路径、独立System位图、字体更新、数据/图像/几何、选择/展开取消、键盘/
+滚动、移除/延后销毁及RTL/伪类拒绝。`core-pending-frame-owner.exe <absolute-dll>`
+覆盖早显安装取消、独立所有者和正常卸载。包矩阵收六个新case，总数75。
+上述及报告行ASCII夹具仅关闭自己的GUI线程IME，以隔离已实测的无DLL原生MSCTF
+私有桌面退出等待；不修改产品/系统设置，不证明IME。COMCTL v6同步custom-draw中
+直接DestroyWindow的原生访问冲突单列，不计作支持。受控真实MD5及DK检查按本S证据，
+HD Tune管理员实测按用户要求默认skip、不计通过。

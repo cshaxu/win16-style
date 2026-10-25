@@ -19,7 +19,7 @@ struct ntw16s_creation_scope {
 };
 typedef struct attachment {
     unsigned calls;
-    BOOL detached,frame;
+    BOOL detached,tree;
     HWND themed,report_window,report_parent;
     HMODULE report_module;
     ntw16s_vb_fonts fonts;
@@ -48,8 +48,8 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     if(paint.active && !a->detached && !a->protocol)report_try_bind(w,a);
     if(paint.active && a->report_module && !a->detached){
         DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
-        if((style&LVS_TYPEMASK)==LVS_REPORT && !(style&(LVS_OWNERDRAWFIXED|LVS_OWNERDATA)) &&
-            !SendMessageW(w,LVM_ISGROUPVIEWENABLED,0,0) && !a->detached)
+        if((a->tree || ((style&LVS_TYPEMASK)==LVS_REPORT && !(style&(LVS_OWNERDRAWFIXED|LVS_OWNERDATA)) &&
+            !SendMessageW(w,LVM_ISGROUPVIEWENABLED,0,0))) && !a->detached)
             ntw16s_report_paint_enable(&paint,w,a->report_module,&a->detached);
     }
     result=DefSubclassProc(w,m,p,l);
@@ -83,13 +83,16 @@ static void report_try_bind(HWND w,attachment *a)
 {
     WCHAR name[64];
     if(!GetClassNameW(w,name,ARRAYSIZE(name)) ||
-        (lstrcmpW(name,WC_LISTVIEWW) && lstrcmpW(name,L"TListView")))return;
+        (lstrcmpW(name,WC_LISTVIEWW) && lstrcmpW(name,L"TListView") &&
+         lstrcmpW(name,WC_TREEVIEWW) && lstrcmpW(name,L"TTreeView") && lstrcmpW(name,L"TShellTreeView")))return;
     ntw16s_control_protocol *protocol=ntw16s_control_protocol_bind(w);
     if(!protocol)return;
-    HMODULE module=ntw16s_control_protocol_list_module(w);HWND parent=GetParent(w);
+    HMODULE module=ntw16s_control_protocol_list_module(w);
+    BOOL tree=ntw16s_control_protocol_tree_module(w)!=NULL;if(tree)module=ntw16s_control_protocol_tree_module(w);
+    HWND parent=GetParent(w);
     if(!a->detached && module && parent &&
         SetWindowSubclass(parent,report_notify,(UINT_PTR)w,(DWORD_PTR)a)){
-        a->protocol=protocol;a->report_window=w;a->report_parent=parent;a->report_module=module;
+        a->protocol=protocol;a->report_window=w;a->report_parent=parent;a->report_module=module;a->tree=tree;
     }else ntw16s_control_protocol_release(protocol);
 }
 static void report_unbind(attachment *a)
@@ -124,7 +127,7 @@ BOOL __cdecl Ntw16sWindowRemove(HWND w)
     RemoveWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc);
     a->detached=TRUE;report_unbind(a);
     /* Existing owners handle reentrant destruction/removal independently. */
-    if(a->frame)win16_style_remove(w);
+    win16_style_frame_remove_owned(w,a);
     win16_style_control_remove_owned(w,a);
     if(a->themed)ntw16s_theme_remove(a->themed,a);
     ntw16s_theme_remove(w,NULL);
@@ -157,7 +160,7 @@ BOOL __cdecl Ntw16sWindowTerminal(HWND w)
 
 static BOOL install_created(HWND w,DWORD original_style)
 {
-    BOOL control,edit,installed,report=FALSE;HWND parent;attachment *a;DWORD error;
+    BOOL control,edit,installed,report=FALSE,tree=FALSE;HWND parent;attachment *a;DWORD error;
     ntw16s_control_protocol *protocol=NULL;
     if(lookup(w))return TRUE;
     /* COMBOBOX installs its own internal list when construction finishes.
@@ -173,6 +176,7 @@ static BOOL install_created(HWND w,DWORD original_style)
         protocol=ntw16s_control_protocol_bind(w);
         if(!protocol && GetLastError()==ERROR_NOT_ENOUGH_MEMORY)return FALSE;
         report=protocol && ntw16s_control_protocol_list_module(w);
+        tree=protocol && ntw16s_control_protocol_tree_module(w);
         control=protocol && !report;
     }
     /* A custom client-only child and MDICLIENT keep application painting.
@@ -183,11 +187,12 @@ static BOOL install_created(HWND w,DWORD original_style)
     a=calloc(1,sizeof(*a));
     if(!a){ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
     a->calls=1;a->protocol=protocol;
-    if(report){a->report_window=w;a->report_module=ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}
+    if(report || tree){a->report_window=w;a->tree=tree;
+        a->report_module=tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}
     if(!SetWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc,(DWORD_PTR)a)){
         ntw16s_control_protocol_release(protocol);free(a);return FALSE;
     }
-    if(report && (!a->report_parent || !SetWindowSubclass(a->report_parent,report_notify,(UINT_PTR)w,(DWORD_PTR)a))){
+    if((report || tree) && (!a->report_parent || !SetWindowSubclass(a->report_parent,report_notify,(UINT_PTR)w,(DWORD_PTR)a))){
         DWORD error=GetLastError();Ntw16sWindowRemove(w);release(a);SetLastError(error);return FALSE;
     }
     SetLastError(ERROR_SUCCESS);
@@ -197,13 +202,13 @@ static BOOL install_created(HWND w,DWORD original_style)
             Ntw16sWindowRemove(info.hwndItem);
     }
     if(a->detached){release(a);SetLastError(ERROR_CANCELLED);return FALSE;}
-    if(control)installed=win16_style_control_install_created(w,edit,(original_style&WS_BORDER)!=0,
+    if(tree)installed=win16_style_tree_install_created(w,NULL,a,&a->detached);
+    else if(control)installed=win16_style_control_install_created(w,edit,(original_style&WS_BORDER)!=0,
         class_is(w,L"LISTBOX") && (original_style&LBS_USETABSTOPS),NULL,a,&a->detached);
     else if(report && !(original_style&(WS_BORDER|WS_THICKFRAME|WS_CAPTION)))installed=TRUE;
-    else installed=win16_style_install_created(w,NULL);
+    else installed=win16_style_install_created(w,NULL,a,&a->detached);
     error=GetLastError();
     if(installed && !a->detached){
-        a->frame=!control && (!report || (original_style&(WS_BORDER|WS_THICKFRAME|WS_CAPTION)));
         if(control){
             HWND themed=NULL;BOOL list=FALSE;
             if(class_is(w,L"COMBOBOX")){

@@ -2,11 +2,11 @@
 
 ## Current Work
 
-S7普通报告列表文字已交付：69实际包/八部署、安装12+2矩阵、真实DK/MD5/VB通过；
-实际P1远端195/严格归档重建12、184输入与188Git对象恢复校验、739映像占用0后安全清理，
-关闭S7并按既有授权顺序准入S8。保持M0/T15开放，不分配新T；HD Tune提权实测默认skip、
-不计通过。[S7记录](../history/M0-T15-S7-report-list.md)和[证据](../etc/evidence/report-list.json)
-保留x86测试rc修正/11px E8原型负例、实际覆盖和未覆盖面。
+S8有限树和早显frame取消修复已完成75/75实际包，187输入，同批四文件已双发布八摘要一致；
+安装16聚焦+2自动矩阵通过，等待实际远端/归档/清理复核，尚未关闭。保持M0/T15开放；完成本S闭环后自动续S9，
+进度/滑块/微调尚未完成。HD Tune提权实测默认skip、不计通过。见
+[S8记录](../history/M0-T15-S8-tree-controls.md)/[证据](../etc/evidence/tree-controls.json)。
+保留无关QUEUE/两个proposal改动，不准入新T。
 
 ## M0 T15 S8 Packet
 
@@ -14,7 +14,7 @@ S7普通报告列表文字已交付：69实际包/八部署、安装12+2矩阵�
 | --- | --- |
 | Identifier Mode | Continuation；S7完成后顺序准入S8，唯一活动S，不复用编号，不新开T |
 | Admission And Approval | 用户“批准 自动准入s任务 到t收口为止”“继续啊”；永久提交推送/双发布授权；HD Tune管理员实测按最新要求默认skip，除非用户明确恢复 |
-| Objective | 以树控件为首核实SysTreeView32/框架实际公开协议、绘制/字体/边框和回调，再核实进度/滑块/微调；原型证明后有限接入现有renderer，过大拆顺序S，明确应用自绘边界及T15生命周期审计交接 |
+| Objective | 本S限定SysTreeView32/TTreeView/TShellTreeView已初始化协议、文字/边框/滚动条和通知，及已复现的早显frame取消所有权；进度/滑块/微调移交顺序S9后核实，不在S8冒称完成 |
 | Non-goals | 不假定商用应用控件均标准、不猜私有VCL对象或item lParam、不盲按T前缀；不改原字体生成/标题/菜单/滚动条/原五头与声明/启动语义，不做全局设置/既有进程扫描注入/HD Tune提权实测，不把关主题或附着当实际像素适配 |
 | Reference Baseline | S7 P1 16df06a971e4af7406cbafbf65fc61e9353bf2bb同批0.15.0.0四文件已双发布；184输入/69包、远端195/严格归档重建12、八摘要/安装及安全清理通过；关闭P无binary change |
 | Candidate Proposal | [框架完成分解](../proposals/framework-completion.md)；[S7记录](../history/M0-T15-S7-report-list.md)/[证据](../etc/evidence/report-list.json)交接有限报告行和未覆盖边界 |
@@ -40,14 +40,14 @@ S7普通报告列表文字已交付：69实际包/八部署、安装12+2矩阵�
 
 ## Technical Baseline
 
-0.15.0.0 / S7普通报告列表文字四文件已双发布，184输入、69实际包406.962秒、安装12
-聚焦+2启动矩阵及真实DK/MD5/VB通过；旧包4负例/丢笔画原型4负例有效。报告行仅新建
-已拥有的初始化列表和同步paint/print准确DC，保留原生数据/图像/字体属性/列几何/
-custom-draw；新列表复用现有保笔画租约，标题/字体生成/菜单/滚动条/原五头/声明/
-18表、三组件四产物/ABI3/31导出/31detours32slots不变。P1实际远端195/严格归档重建12
-通过，184源码/八部署/八旧备份可恢复；739任务映像独占检查0占用后清理，仅11已审源
-交接S8，稳定Ninja/ccache和外部PNG保持。S7关闭、S8活动，T15开放；HD Tune提权默认skip。详情见[S7记录](../history/M0-T15-S7-report-list.md)
-及[证据](../etc/evidence/report-list.json)。S6已关闭，其他任务状态和改动保持。
+0.15.0.0 / S8有限原生/框架树文字、client-edge及嵌入滚动条，以及早显frame取消精确
+所有权已双发布；187输入、75/75实际包399.681秒、安装16聚焦+2自动启动矩阵与真实
+MD5/DK通过。冻结测试对旧包六负例有效；原生v6同步绘制内销毁0xc0000005单列边界，
+ASCII夹具仅隔离自身线程IME，IME/物理输入不冒称通过。原五头/声明/18表与既有标题/
+菜单/字体/滚动条算法、三组件四产物/ABI3/31导出/31detours32slots保持。当前S8等待
+实际远端/归档协调复核及精确scratch清理，不提前关闭；S9接收进度/滑块/微调，未准入
+前不实施。M0/T15开放，HD Tune管理员默认skip；其他任务状态和改动保留。
+详情见[S8记录](../history/M0-T15-S8-tree-controls.md)/[证据](../etc/evidence/tree-controls.json)。
 
 ## Recent Closure
 

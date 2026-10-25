@@ -1,0 +1,464 @@
+{
+  "schema": 1,
+  "packet": "M0 T15 S8",
+  "status": "verified and dual-published;16 focused installed checks+2 automatic matrices passed; awaiting actual remote/archive audit before closure",
+  "HD_Tune_elevated": "owner-requested default skip; not pass; no UAC requested",
+  "implementation": "finite verified native tree text and client-edge/nonclient bar renderer; exact pending-frame ownership; no new exports or products",
+  "baseline_commit": "34b74e61f8246ec93bc0324fbec4100522bf01a9",
+  "focused": {
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "build_root": "O:\\repos.hobby\\win16style\\build\\.ninja",
+    "build_jobs": 8,
+    "profile": "Focused",
+    "selection": "^core/(tree-v5|tree-v6|pending-frame-owner|abi)$",
+    "exit_code": 0,
+    "test_jobs": 1,
+    "status": "passed",
+    "tests": [
+      {
+        "test_seconds": 0.9132390000158921,
+        "architecture": "x86",
+        "skipped": [],
+        "configure_seconds": 1.4700033999979496,
+        "build_seconds": 4.760762299993075,
+        "tests": 2,
+        "passed": 2
+      },
+      {
+        "test_seconds": 11.93722840002738,
+        "architecture": "x64",
+        "skipped": [],
+        "configure_seconds": 1.3443135000416078,
+        "build_seconds": 5.7789580000098795,
+        "tests": 4,
+        "passed": 4
+      }
+    ],
+    "targets": "all"
+  },
+  "negative_cases": [
+    {
+      "case": "tree-v5",
+      "exit": 1,
+      "arch": "x86"
+    },
+    {
+      "case": "tree-v6",
+      "exit": 1,
+      "arch": "x86"
+    },
+    {
+      "case": "pending-frame-owner",
+      "exit": 1,
+      "arch": "x86"
+    },
+    {
+      "case": "tree-v5",
+      "exit": 1,
+      "arch": "x64"
+    },
+    {
+      "case": "tree-v6",
+      "exit": 1,
+      "arch": "x64"
+    },
+    {
+      "case": "pending-frame-owner",
+      "exit": 1,
+      "arch": "x64"
+    }
+  ],
+  "tree_native_limit": {
+    "case": "COMCTL v6 destroy HWND synchronously inside CDDS_PREPAINT",
+    "native_no_dll_exit": "0xc0000005",
+    "styled_exit": "0xc0000005",
+    "handling": "explicit native limitation; synchronous style removal and deferred window destroy tested instead"
+  },
+  "test_teardown": {
+    "native_no_dll_stack": [
+      "ntdll ZwWaitForSingleObject",
+      "MsCtfMonitor UninitLocalMsCtfMonitor",
+      "MSCTF TF_CanUninitialize",
+      "IMM32 CtfImmCoUninitialize"
+    ],
+    "handling": "ImmDisableIME(0) on ASCII fixture GUI thread only; no product/global changes",
+    "list_v5_seconds": 2.96,
+    "list_v6_seconds": 3.94,
+    "pending_frame_x86_seconds": 0.63,
+    "IME_acceptance": "not covered"
+  },
+  "real_MD5_prototype": {
+    "image": "D:/programs/misc/md5summer.exe",
+    "image_sha256": "4646ce4f638e7d7ec820e7540b39bb185234e1f151d780c734ca557d6dba7ed9",
+    "dll_sha256": "945bd39e91b483748cd30df8b14c2222852f5610b1579cd4a1d1c5660f340fd2",
+    "class": "TShellTreeView",
+    "nodes": 56,
+    "item_height": 16,
+    "indent": 19,
+    "glyph_rgb_pixels": 68,
+    "border_rgb_pixels": 4411,
+    "unchanged": "client geometry, native font property, selection, node count, image-list handle/count",
+    "first_run": "window close succeeded; process exit timed out; Job-owned instances reclaimed; not pass",
+    "native_repeat": "exit0 active0 total1",
+    "styled_repeat": "exit0 active0 total4",
+    "normal_display": "captured; move/minimize/restore verified"
+  },
+  "uncovered": [
+    "HD Tune elevated actual UI default skip",
+    "IME and physical input",
+    "accessibility and label editing",
+    "state image lists/checkboxes/async callbacks",
+    "cross-parent reparenting and multiple UI threads",
+    "tree private/custom application drawing",
+    "progress/trackbar/updown transferred to sequential S9"
+  ],
+  "preserved": "original five headers/resources.md and18 tables; existing title/font/menu/bar algorithms; three components/four products; ABI3/31 named +ordinal1;31 detours/32 slots",
+  "full_package": {
+    "jobs": 4,
+    "status": "passed",
+    "core_matrix": "separate Build-Core matrix required",
+    "cases": 75,
+    "seconds": 399.6810161,
+    "sha256": {
+      "demo.exe": "06ec7cd3f532abddb4de67a84e59dfd0b617aa5cb49b675c1d3992305d96efb7",
+      "ntw16s32.dll": "2212448070272f376361fc6cb00e55b81a28d2c7975f2ed2a18dc350eea7013f",
+      "ntw16s64.dll": "6f05eedbc9ed31d916979a8152e49df8f6eeeacb5a6635d72008c9d7c748222b",
+      "run16s.exe": "89784b206e4c04cce41957bd0f6c099288ab669416949abea18c08fa4a7c727e"
+    },
+    "package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s8-tree-final-2\\candidate",
+    "physical_input": "not-tested",
+    "full_integration": true
+  },
+  "clean_build": {
+    "status": "passed",
+    "build_root": "O:\\repos.hobby\\win16style\\build\\t15-package\\s8-tree-final-2\\clean-source\\build\\.ninja",
+    "targets": "all",
+    "profile": "Focused",
+    "build_jobs": 8,
+    "selection": "^core/abi$",
+    "exit_code": 0,
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "tests": [
+      {
+        "test_seconds": 0.5666772999684326,
+        "skipped": [],
+        "passed": 1,
+        "configure_seconds": 6.984727000002749,
+        "tests": 1,
+        "architecture": "x86",
+        "build_seconds": 29.95276680000825
+      },
+      {
+        "test_seconds": 0.5079173999838531,
+        "skipped": [],
+        "passed": 1,
+        "configure_seconds": 5.478122999949846,
+        "tests": 1,
+        "architecture": "x64",
+        "build_seconds": 35.54299450002145
+      }
+    ],
+    "test_jobs": 4
+  },
+  "publication": {
+    "status": "passed",
+    "tested_package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s8-tree-final-2\\candidate",
+    "test_result": "O:\\repos.hobby\\win16style\\build\\t15-package\\s8-tree-full\\result.json",
+    "files": [
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s8-tree-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe",
+        "after": "06ec7cd3f532abddb4de67a84e59dfd0b617aa5cb49b675c1d3992305d96efb7",
+        "before": "c848b1d379880d0125f8a7001233c8d7af080e3bd041c944f9158aeab2ad48c5",
+        "expected": "06ec7cd3f532abddb4de67a84e59dfd0b617aa5cb49b675c1d3992305d96efb7"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s8-tree-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
+        "after": "2212448070272f376361fc6cb00e55b81a28d2c7975f2ed2a18dc350eea7013f",
+        "before": "127b4f4ece4330eaa2de299dada69380f9eef6939d6dc387df234b0d230a5cda",
+        "expected": "2212448070272f376361fc6cb00e55b81a28d2c7975f2ed2a18dc350eea7013f"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s8-tree-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll",
+        "after": "6f05eedbc9ed31d916979a8152e49df8f6eeeacb5a6635d72008c9d7c748222b",
+        "before": "3aa9ab83b5a95de9465b86cebdfd2d9dd4d498d13a96e4455470cdadbf0f503a",
+        "expected": "6f05eedbc9ed31d916979a8152e49df8f6eeeacb5a6635d72008c9d7c748222b"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s8-tree-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
+        "after": "89784b206e4c04cce41957bd0f6c099288ab669416949abea18c08fa4a7c727e",
+        "before": "4bcded052675882fea2c5495206faad2e7bbfe8f89f7fa4997685ea886e1b167",
+        "expected": "89784b206e4c04cce41957bd0f6c099288ab669416949abea18c08fa4a7c727e"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s8-tree-publish\\before-1",
+        "path": "O:\\winnt\\system32\\demo.exe",
+        "after": "06ec7cd3f532abddb4de67a84e59dfd0b617aa5cb49b675c1d3992305d96efb7",
+        "before": "c848b1d379880d0125f8a7001233c8d7af080e3bd041c944f9158aeab2ad48c5",
+        "expected": "06ec7cd3f532abddb4de67a84e59dfd0b617aa5cb49b675c1d3992305d96efb7"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s8-tree-publish\\before-1",
+        "path": "O:\\winnt\\system32\\ntw16s32.dll",
+        "after": "2212448070272f376361fc6cb00e55b81a28d2c7975f2ed2a18dc350eea7013f",
+        "before": "127b4f4ece4330eaa2de299dada69380f9eef6939d6dc387df234b0d230a5cda",
+        "expected": "2212448070272f376361fc6cb00e55b81a28d2c7975f2ed2a18dc350eea7013f"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s8-tree-publish\\before-1",
+        "path": "O:\\winnt\\system32\\ntw16s64.dll",
+        "after": "6f05eedbc9ed31d916979a8152e49df8f6eeeacb5a6635d72008c9d7c748222b",
+        "before": "3aa9ab83b5a95de9465b86cebdfd2d9dd4d498d13a96e4455470cdadbf0f503a",
+        "expected": "6f05eedbc9ed31d916979a8152e49df8f6eeeacb5a6635d72008c9d7c748222b"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s8-tree-publish\\before-1",
+        "path": "O:\\winnt\\system32\\run16s.exe",
+        "after": "89784b206e4c04cce41957bd0f6c099288ab669416949abea18c08fa4a7c727e",
+        "before": "4bcded052675882fea2c5495206faad2e7bbfe8f89f7fa4997685ea886e1b167",
+        "expected": "89784b206e4c04cce41957bd0f6c099288ab669416949abea18c08fa4a7c727e"
+      }
+    ]
+  },
+  "source_inputs": 187,
+  "source_snapshot_sha256": "dbb3f989e13d02bdfa3da1ff53abe0be69cae9276df5bee9a7755ee632a6ae1f",
+  "real_final_package": {
+    "MD5summer": {
+      "observations": [
+        "TARGET pid=39160 creator-tree-root=37948 tid=11124 image=D:\\programs\\misc\\md5summer.exe",
+        "MODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s8-tree-final-2\\candidate\\ntw16s32.dll",
+        "WINDOW_STATES minimized=1 restored=1 moved=1 root_attachment_preserved=1",
+        "CLOSE sent=1 error=0 wait=258 code=259 window=0 visible=0",
+        "TARGET_EXIT=0",
+        "DK_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "result": "passed bounded own-instance observation and cleanup; prior failed runs retained separately"
+    },
+    "DoubleKiller": {
+      "observations": [
+        "TARGET pid=17560 creator-tree-root=39684 tid=40608 image=O:\\repos.hobby\\win16style\\build\\t15-controls\\s8-doublekiller\\DoubleKiller.exe",
+        "MODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s8-tree-final-2\\candidate\\ntw16s32.dll",
+        "S7_OWNED_SCAN_COMPLETE rows_from_app=2 scoped_fixture_only=1 no_delete_or_move=1",
+        "OWNED_CLOSE posted=1 wait=0 exit=0 window=0",
+        "DK_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "result": "passed bounded own-instance observation and cleanup; prior failed runs retained separately"
+    }
+  },
+  "real_failed_experiments": [
+    "x64 driver cannot load x86 observer:193; driver corrected to x86",
+    "first x86 DK driver: reports and two owned rows correct; close failed with stale5, repeat close wait0 exit0 Job0",
+    "MD5 prototype first process close timeout; bare and styled repeats and final package exited0; final first wait5s timed out then bounded second wait succeeded"
+  ],
+  "native_screenshots": {
+    "DoubleKiller.png": {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t15-s8\\DoubleKiller.png",
+      "sha256": "2464582e1c0adb170c76f95dc4c29bc3e493a7af30359a96bc265a0e257f7654"
+    },
+    "MD5summer.png": {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t15-s8\\MD5summer.png",
+      "sha256": "3eba381ddd298e1be5ad3e62eaa49dc65d44a1cbf0a6e0d1c3bfa7430a4ca08f"
+    },
+    "Tree-native.png": {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t15-s8\\Tree-native.png",
+      "sha256": "9a6e84e2833acd552950e651d5c210ee245995c89fb1712914342092f79148a3"
+    },
+    "Tree-styled.png": {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t15-s8\\Tree-styled.png",
+      "sha256": "802aa25a64f5d8098eb261e3c759d2889edbbdc5c24b7cc4397d7e7395afcaab"
+    }
+  },
+  "source_search": [
+    "rg frame_scrollbars_(remove|palette|install) and win16_style_install_created in src/tests: one automatic frame call uses exact owner; public wrappers retained; no new exports",
+    "rg source paths: only exact native tree and two proven main-EXE aliases; initialized protocol mandatory; no sibling dependency",
+    "git diff: title paint/layout/font/menu and original resource bodies unchanged"
+  ],
+  "implementation_statistics": {
+    "scope": [
+      "CMakeLists.txt",
+      "src/ntw16s-dll/attachment.c",
+      "src/ntw16s-dll/control_class.h",
+      "src/ntw16s-dll/control_protocol.c",
+      "src/ntw16s-dll/control_protocol.h",
+      "src/ntw16s-dll/controls.c",
+      "src/ntw16s-dll/controls.h",
+      "src/ntw16s-dll/win16_style.c",
+      "src/ntw16s-dll/win16_style.h",
+      "tests/ntw16s-dll/list_report.c",
+      "tools/Test-Package.ps1",
+      "tests/ntw16s-dll/pending_frame_owner.c",
+      "tests/ntw16s-dll/tree_controls.c",
+      "tests/ntw16s-dll/system_glyph_mask.h"
+    ],
+    "tracked_numstat": [
+      "21\t1\tCMakeLists.txt",
+      "18\t13\tsrc/ntw16s-dll/attachment.c",
+      "1\t1\tsrc/ntw16s-dll/control_class.h",
+      "27\t4\tsrc/ntw16s-dll/control_protocol.c",
+      "1\t0\tsrc/ntw16s-dll/control_protocol.h",
+      "29\t2\tsrc/ntw16s-dll/controls.c",
+      "3\t0\tsrc/ntw16s-dll/controls.h",
+      "23\t11\tsrc/ntw16s-dll/win16_style.c",
+      "2\t1\tsrc/ntw16s-dll/win16_style.h",
+      "5\t28\ttests/ntw16s-dll/list_report.c",
+      "6\t0\ttools/Test-Package.ps1"
+    ],
+    "new_files_lines": 201,
+    "added": 337,
+    "deleted": 61,
+    "net": 276
+  },
+  "preserved_other_work": [
+    "docs/states/QUEUE.md",
+    "docs/proposals/global-style-mode.md",
+    "docs/proposals/outline-window-move.md"
+  ],
+  "installed": [
+    {
+      "cases": [
+        {
+          "exit": 0,
+          "seconds": 0.1770801,
+          "name": "abi-x86"
+        },
+        {
+          "exit": 0,
+          "seconds": 0.5712124,
+          "name": "frame-x86"
+        },
+        {
+          "exit": 0,
+          "seconds": 6.3233285,
+          "name": "tree-v5-x86"
+        },
+        {
+          "exit": 0,
+          "seconds": 10.0324689,
+          "name": "tree-v6-x86"
+        },
+        {
+          "exit": 0,
+          "seconds": 0.1439166,
+          "name": "abi-x64"
+        },
+        {
+          "exit": 0,
+          "seconds": 0.409007,
+          "name": "frame-x64"
+        },
+        {
+          "exit": 0,
+          "seconds": 6.2623376,
+          "name": "tree-v5-x64"
+        },
+        {
+          "exit": 0,
+          "seconds": 14.9504826,
+          "name": "tree-v6-x64"
+        },
+        {
+          "exit": 0,
+          "seconds": 2.2587245,
+          "name": "automatic"
+        }
+      ],
+      "status": "passed",
+      "destination": "O:\\repos.hobby\\win16style\\assets",
+      "installed_hashes": "four exact matches"
+    },
+    {
+      "status": "passed",
+      "cases": [
+        {
+          "seconds": 0.3036684,
+          "name": "abi-x86",
+          "exit": 0
+        },
+        {
+          "seconds": 0.4734282,
+          "name": "frame-x86",
+          "exit": 0
+        },
+        {
+          "seconds": 7.946697,
+          "name": "tree-v5-x86",
+          "exit": 0
+        },
+        {
+          "seconds": 17.2060772,
+          "name": "tree-v6-x86",
+          "exit": 0
+        },
+        {
+          "seconds": 0.1703886,
+          "name": "abi-x64",
+          "exit": 0
+        },
+        {
+          "seconds": 0.3716957,
+          "name": "frame-x64",
+          "exit": 0
+        },
+        {
+          "seconds": 5.0516748,
+          "name": "tree-v5-x64",
+          "exit": 0
+        },
+        {
+          "seconds": 7.9372992,
+          "name": "tree-v6-x64",
+          "exit": 0
+        },
+        {
+          "seconds": 1.8915416,
+          "name": "automatic",
+          "exit": 0
+        }
+      ],
+      "installed_hashes": "four exact matches",
+      "destination": "O:/winnt/system32"
+    }
+  ],
+  "frozen_old_package_negatives": [
+    {
+      "exit": 1,
+      "case": "tree-v5",
+      "arch": "x86"
+    },
+    {
+      "exit": 1,
+      "case": "tree-v6",
+      "arch": "x86"
+    },
+    {
+      "exit": 1,
+      "case": "pending-frame-owner",
+      "arch": "x86"
+    },
+    {
+      "exit": 1,
+      "case": "tree-v5",
+      "arch": "x64"
+    },
+    {
+      "exit": 1,
+      "case": "tree-v6",
+      "arch": "x64"
+    },
+    {
+      "exit": 1,
+      "case": "pending-frame-owner",
+      "arch": "x64"
+    }
+  ],
+  "publication_occupancy": "RestartManager exact eight paths: owners0 before deployment"
+}
