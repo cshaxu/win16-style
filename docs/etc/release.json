@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T16 S2 P1",
-  "stage": "withdrawal verified and double-published; remote/recovery/closure pending",
+  "delivery": "M0 T16 S2 P2",
+  "stage": "S2/T16 closed by full outline feature withdrawal; product0.15.0.0;M0 open",
   "version": "0.15.0.0",
   "version_contract": "Owner-directed exact revert restores M0 T15 / 0.15.0.0 product metadata; governance delivery remains M0 T16 S2",
   "package_directory": "assets",
@@ -1394,7 +1394,41 @@
     "public_ABI": 3,
     "testing_limit": "owner requested short focused testing; no full91/99 replay; two SetWindowPos operations are not physical/native drag-loop tests",
     "known_open_debt": "T11 parallel Job counting remains unresolved; no related fix",
-    "remote": "pending",
-    "cleanup": "pending exact registered roots after recovery"
+    "remote": {
+      "status": "passed",
+      "commit": "07d752fc4b580ef3ddd7596f49523c7d1a8c5938",
+      "remote_files": 213,
+      "source_inputs": 197,
+      "deleted_paths_404": [
+        "src/ntw16s-dll/move.c",
+        "src/ntw16s-dll/move.h",
+        "tests/ntw16s-dll/outline_move.c"
+      ],
+      "recovered_objects": 201,
+      "old_backups_recoverable": 8,
+      "published_sha_matches": 8
+    },
+    "cleanup": {
+      "status": "passed; three exact registered roots removed after native guard and recovery",
+      "images": 169,
+      "positive_self_check": "exe/loaded DLL c0000043; unloaded DLL 00000000",
+      "roots": [
+        "O:\\repos.hobby\\win16style\\build\\t16-perf",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-clean",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-publish"
+      ],
+      "reparse_points": 0,
+      "retained": "stable build/.ninja and .ccache; T15 reviewed49 sources; earlier external PNGs; no other task scratch removed"
+    },
+    "recovery": {
+      "git_objects": 201,
+      "product_inputs": 197,
+      "product_snapshot_equals_baseline": true,
+      "old_backups_recoverable": 8,
+      "clean_snapshot": "independent same-197-input dual-width all build passed; no repeated archive rebuild",
+      "review": "actual P1 diff read; all CMake/src/tests/tools Git objects equal96e4721, no extra paths; three retired paths remote404"
+    },
+    "task_audit": "all196 baseline code paths equal; all3 feature-only paths deleted; source receipts/UI restored; version/ABI/resources/queue preserved; no residual feature registrations or product hooks",
+    "closure": "documentation only;197-input source snapshot and four double-published artifact hashes unchanged since P1"
   }
 }
