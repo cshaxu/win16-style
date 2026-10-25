@@ -2,28 +2,10 @@
 
 ## Current Work
 
-本轮准入M0 Td S13 HD Tune Pro只读调查；保持M0/T15开放及既有成果，不改产品输入。
-
-## M0 Td S13 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Governance；只读原生观察和证据文档，不分配新T |
-| Admission And Approval | 用户补充“还有hdtunepro也是”，沿用MD5summer调查方式 |
-| Objective | 核实实际文件/框架、DLL加载/主窗/内部控件附着及绘制，区分共同识别缺口和新增类型 |
-| Non-goals | 不执行Benchmark/写入/擦除/错误扫描，不操作已有实例，不改产品/系统设置/应用文件 |
-| Reference Baseline | 63a15c5，T15 S2四文件及Td S12识别边界；初始工作区干净 |
-| Candidate Proposal | [调查范围](../proposals/hdtune-controls.md) |
-| Files And ABI Surface | 六份调查文档/证据，产品输入和ABI不变 |
-| Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT和UI |
-| Verification | 自有Job/私有桌面、纯C观察hook、超时、裸/注入截图及逐控件状态，正常关闭/Job空；治理自测和实际远端读取 |
-| Expected Markers | HD_CLASSIFIED、HD_CLEANUP_OK；报告DLL和真实绘制不以模块存在替代 |
-| Asset Needs | build/td-s13-hdtune登记源码/原始日志/BMP，提炼后安全回收；外部PNG保留 |
-| Reporting Requirements | 实际PE位宽/路径/SHA、各类数量及未支持原因，对照MD5summer；无产品修复/发布须明确 |
-| Stop Conditions | 遇非自有实例、要求执行磁盘测试或权限/共享服务边界则停止该路径并记录 |
-| Exit Criteria | 原生证据和有限方案、门禁/提交推送及实际远端复核，关闭本S、M0/T15开放 |
-| Original Owner Request | “还有hdtunepro也是” |
-| Similar-Issue Sweep | 对照真实类身份、owner-draw拒绝、TreeView/common controls及无窗口绘制边界；不猜私有对象 |
+无活动任务包。Td S13 HD Tune Pro有限调查完成：真实高权限主窗/子控件与原生截图取得，
+主窗未附着及common-controls缺口已证实；主窗具体拒绝点和正常关闭失败未定位，不宣称修复。
+P1 3d43ff7实际取回六文档/四产物通过，167输入/八部署保持，登记scratch安全回收，S13关闭。
+M0/T15保持开放，既有S/债务不变；没有新T、产品代码变更或二进制发布。
 
 ## Identifier State
 
@@ -31,8 +13,8 @@
 - Last allocated T: 15
 - Last allocated Td S: 13
 - Owner allocation constraint: 只可自行划分后续S，不得自行分配新T；保持现有T15/M0。
-- Last delivery: M0 Td S12 P2 (P1 56f9e4f实际取回10文件通过，MD5summer调查关闭；产品仍为T15 S2)
-- Open task: T15等待用户外观验收；S2/S1关闭；Td S12/S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
+- Last delivery: M0 Td S13 P2 (P1 3d43ff7实际取回10文件通过，HD Tune有限调查关闭；产品仍为T15 S2)
+- Open task: T15等待用户外观验收；S2/S1关闭；Td S13/S12/S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
 
 ## Technical Baseline
 
@@ -49,6 +31,8 @@ Run真实填充c0c0c0，卸载f0f0f0，1843像素变化，关闭exit0/自有Job�
 T15 S1的VB6成果、T14 S3启动语义及既有标题/字体/菜单/滚动条保持；其他任务/债务状态不变。
 
 ## Recent Closure
+
+- [Td S13 HD Tune Pro调查](../history/M0-Td-S13-hdtune-controls.md)：经批准UAC取得正常显示对照，主窗未附着/标准控件支持缺口明确；关闭检查失败如实保留，无产品修复；P1远端10文件通过，scratch回收，S13关闭。
 
 - [Td S12 MD5summer控件调查](../history/M0-Td-S12-md5summer-controls.md)：原生双对照/4自有实例通过，主窗和内部Edit有效；框架类识别缺口/TreeView边界已明，无产品改动；P1远端10文件通过，scratch回收，S12关闭。
 

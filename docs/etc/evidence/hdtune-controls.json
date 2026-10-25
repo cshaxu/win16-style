@@ -375,5 +375,33 @@
     "Add rendering coverage for standard ListView/Header/Tab/Progress/Trackbar/UpDown separately.",
     "Audit icon/PushLike buttons preserving original graphics and client-edge EDIT ownership before changing current refusal rules.",
     "Investigate bounded normal-close failure before claiming lifecycle coverage."
-  ]
+  ],
+  "remote_p1": {
+    "commit": "3d43ff7759c1c4f280758f18eceada6346d735ee",
+    "files_verified": 10,
+    "manifest_sha256": "b805dc5780eb5e447e0c6c2d60ff6a4db29eaebaaeadc551a9203ef5953097e6",
+    "main_verified": true,
+    "coordinator_actual_diff_reviewed": true
+  },
+  "cleanup": {
+    "root": "build/td-s13-hdtune",
+    "files": 27,
+    "bytes": 2568591,
+    "no_live_owned_processes": true,
+    "no_reparse_points": true,
+    "status": "removed",
+    "PNG_acceptance_images_retained": true
+  },
+  "governance": {
+    "self_test_passed": true,
+    "negative_cases": 13,
+    "diff_check_passed": true
+  },
+  "closure": {
+    "Td_S13": "closed as bounded investigation",
+    "M0": "open",
+    "T15": "open",
+    "product_fix": false,
+    "binary_release": false
+  }
 }
