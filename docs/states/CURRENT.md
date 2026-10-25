@@ -2,10 +2,12 @@
 
 ## Current Work
 
-S11完成91实际包406.098秒、38安装、双发布八摘要、真实MD5/DK及标题掩码0差异；
-P1远端210/197输入、严格归档双DLL+4、201对象恢复及277映像安全清理通过，45已审
-源码和稳定缓存/外部PNG保留。关闭S11，按既有授权准入S12冻结全集审计，不新T。
-HD Tune管理员默认skip、不计通过；S12/T15/M0开放，任务级审计后停待用户验收。
+S12冻结18单位审计完成：15有限实现/回归、2原生保留/边界、1用户指定HD Tune提权skip，
+未将skip或附着计换肤通过。197产品/测试/构建输入与S11逐字节相同；按每S规范独立
+干净双宽/同批四文件91实际包389.556秒、双发布八摘要及14安装通过，真实MD5/DK
+正常显示/退出Job归零、标题掩码0差异。S12 P1待推送后的实际远端/归档/恢复/安全
+清理复核；S12/T15/M0保持开放，完成后关闭本T并停待用户验收，不准入新T。
+[审计记录](../history/M0-T15-S12-framework-audit.md)/[证据](../etc/evidence/framework-audit.json)。
 
 ## M0 T15 S12 Packet
 
@@ -14,14 +16,14 @@ HD Tune管理员默认skip、不计通过；S12/T15/M0开放，任务级审计�
 | Identifier Mode | Continuation；S11完整复核清理后顺序准入S12，唯一活动S，不新T |
 | Admission And Approval | 用户批准自动准入S直到T收口及永久提交推送；HD Tune提权默认skip |
 | Objective | 冻结S11已发布包和T15覆盖全集，逐项核对实现/像素/原生语义/所有权证据或明确原生保留及用户skip，满足任务级退出条件后关闭T15并停在用户验收 |
-| Non-goals | 不新增产品实现/组件/产物/T，不把附着当绘制、不把历史HD Tune当当前实测；不改资源/已确认效果、不用computer-use、不执行UAC、不修改兄弟仓库或其他任务 |
+| Non-goals | 不新增产品功能/组件/产物/T，不把附着当绘制、不把历史HD Tune当当前实测；不改资源/已确认效果、不用computer-use、不执行UAC、不修改兄弟仓库或其他任务 |
 | Reference Baseline | S11 P1 2bf6c55121d65aacde12a716d8f176eb566f6d09；197输入SHA1f196f850d88d876b3e18e14616c95220c5f8bed07ffd82b9afbe0b1c776ba73；91实际包/38安装/双发布八摘要/远端210/归档双DLL+4/201对象恢复/277映像安全清理通过 |
 | Candidate Proposal | [框架完成计划的Frozen framework coverage audit](../proposals/framework-completion.md)冻结18单位及完成谓词；[S11历史](../history/M0-T15-S11-updown-controls.md)/[证据](../etc/evidence/updown-controls.json) |
-| Files And ABI Surface | 仅任务覆盖审计/权威状态/证据；产品输入与四文件不变，35detours40slots、公开ABI3/31命名+ordinal1及三组件四产物保持 |
+| Files And ABI Surface | 任务覆盖审计/权威状态/证据；产品源码/测试输入不变，按每S规范独立双宽干净构建/同批四文件实际包；若重链接binary改变则双发布，35detours40slots、公开ABI3/31命名+ordinal1及三组件四产物保持 |
 | Applicable Rules | 完整Task Reading Set及EXECUTION任务级审计、来源/资源/执行卫生；M0固定，不新T、不改rules |
-| Verification | 按冻结18单位核对S1..S11及91实际包独立case/14聚焦/38安装/实际远端归档/源码与八部署摘要；明确HD Tune skip、自绘/特殊模式原生保留和真实x64 VB6/物理输入等未覆盖；来源/资源/治理门禁与实际远端内容复核 |
+| Verification | 按冻结18单位核对S1..S11及S11的91实际包独立case/14聚焦/38安装/实际远端归档；本S独立干净双宽/同批四文件实际包及必要双发布、安装/远端复核/安全清理；明确HD Tune skip、自绘/特殊模式原生保留和真实x64 VB6/物理输入等未覆盖；来源/资源/治理门禁与实际远端内容复核 |
 | Expected Markers | 每个覆盖单位有证据或明确原生保留/用户skip且接收权威可查；无未处置的范围内故障，未把不支持计通过 |
-| Asset Needs | build/t15-controls仅45已审源码；不新包/不生成运行实例，审核事实进入受控history/evidence；原生外部PNG和稳定缓存保留 |
+| Asset Needs | build/t15-controls承接45已审源码并登记本S原生包观察；build/t15-package登记S12干净包/实际包测试/发布备份，证据先提炼再安全清理；原生外部PNG和稳定缓存保留 |
 | Reporting Requirements | 逐项表明历史与当前、本机真实与自包含、模块/初始化/附着/绘制区别；同批四文件及实际部署摘要；完成才关闭T15，M0开放，停待用户验收 |
 | Stop Conditions | 出现已授权范围内未解决产品缺陷则不关闭T15，按授权续后续S；重大架构/安全边界或自绘私有对象不实施，报告证据与具体边界；不覆盖其他任务 |
 | Exit Criteria | 冻结全集全部证据核实/明示原生保留或用户skip，无隐含待做；权威一致、门禁/八摘要/推送与实际远端复核通过后关闭S12/T15，M0开放，不准入队列新T |
@@ -34,19 +36,19 @@ HD Tune管理员默认skip、不计通过；S12/T15/M0开放，任务级审计�
 - Last allocated T: 15
 - Last allocated Td S: 13
 - Owner allocation constraint: 只可自行划分后续S，不得自行分配新T；保持现有T15/M0。
-- Last delivery: M0 T15 S11 P2（远端210/197输入、归档双DLL+4、201对象恢复/277映像清理；S11关闭/准入S12）
+- Last delivery: M0 T15 S12 P1（独立91实际包/双发布及14安装本地通过，待实际远端/归档/清理复核）
 - Open task: T15自动续S实施/任务级审计中；S12活动，S11/S10/S9/S8/S7/S6/S5/S4/S3/S2/S1关闭；Td S13/S12/S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
 
 ## Technical Baseline
 
-0.15.0.0 / S11有限原生UpDown同批四文件已双发布，91实际包406.0985072秒及双宽安装
-通过。35进程内detours/40私有slots，公开ABI3/31命名导出+ordinal1、三组件四产物
-保持。实际DFC/DTB原生方向/状态及准确窗口/打印/原生兼容DC决定绘制，32弱DC容量
-不足或未知模式保留原生；DeleteDC/退役清除，既有owner引用保证生命周期。
-原五图形头/声明/18表、已确认标题/字体/菜单/滚动条算法及启动行为保持；同探针
-S10/S11真实MD5标题292x24黑掩码0差异。自有MD5/DK正常显示/关闭、Job归零。
-纯C17/GCC/Ninja/ccache；HD Tune管理员默认skip。S11实际远端/归档/清理复核通过并关闭；S12审计活动，
-T15须按[冻结全集](../proposals/framework-completion.md)另审计，M0保持开放。
+0.15.0.0 / S12任务审计同批四文件已双发布，197输入与S11相同，独立干净双宽构建、
+91实际包389.5561759秒、14安装及真实MD5/DK通过。18覆盖单位：15有限实现回归、
+2原生保留/未覆盖边界、1用户指定HD Tune提权skip；不宣称所有框架全部换肤。
+原生UpDown用实际DFC/DTB方向/状态及准确窗口/打印/原生兼容DC；32弱映射、退役
+清理和35进程内detours/40slots。公开ABI3/31命名+ordinal1、三组件四产物保持。
+原五头/声明/18表及已确认标题/字体/菜单/滚动条算法不变；S11/S12真实MD5标题
+292x24黑掩码0差异。纯C17/GCC/Ninja/ccache；S12待实际远端/归档/清理复核，
+T15/M0开放。有限支持及明确原生保留以[UI](../design/UI.md)和[审计](../history/M0-T15-S12-framework-audit.md)为准。
 
 ## Recent Closure
 

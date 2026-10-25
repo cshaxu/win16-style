@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T15 S11 P2",
-  "stage": "S11 closed:91 actual-package,38 installed,actual remote210/197 inputs,strict archive dual DLL+4,201-object recovery and277-image safe cleanup; S12 frozen coverage audit admitted;M0/T15 open",
+  "delivery": "M0 T15 S12 P1",
+  "stage": "Frozen18-unit T15 audit verified; independent91-case batch double published;remote review pending;S12/T15/M0 open",
   "version": "0.15.0.0",
   "version_contract": "Fixed T15 version; S/P distinguished by Git and artifact SHA; no new T allocated",
   "package_directory": "assets",
@@ -804,7 +804,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T15",
-      "sha256": "9bfbe1baa4c81eda8abc0c25edf27d8879702ea9395c8ef6f644b505f92a2843",
+      "sha256": "727011bba563acffd6865cb032aa47374de54893cb631ddf892532647654fc5c",
       "imports": [
         "advapi32.dll",
         "kernel32.dll",
@@ -816,7 +816,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T15",
-      "sha256": "ff6b557fc564617b59962655c4ad947f09b421fbb96f42a2ee347806bf15bb00",
+      "sha256": "f4611cd1a429eb7ce74aa9106f80198d93ce9aac28e6e14b7845fdb573078ae7",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -836,7 +836,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T15",
-      "sha256": "a34b1fcdc2e35cac89150d9527a0eaa7a593c80c4173b7f386ca9f5cb28794f2",
+      "sha256": "a7c7e89c95c10c6b3668de8885f1613350e03a771445fa5b407516041f40914b",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -851,7 +851,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T15",
-      "sha256": "15c4ab9e92700f033738964fab7936be360cc70f5bbf535a86ce82a0a9f2e289",
+      "sha256": "7a35c2d1338c3c7e7c2e066f25fc88656253262bec83d1fa85d605674d3f2392",
       "imports": [
         "kernel32.dll",
         "msvcrt.dll",
@@ -862,429 +862,233 @@
   "toolchains": {
     "toolchains": [
       {
+        "target": "i686-w64-mingw32",
         "version": "16.1.0",
         "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
-        "target": "i686-w64-mingw32",
         "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
         "architecture": "x86"
       },
       {
+        "target": "x86_64-w64-mingw32",
         "version": "16.1.0",
         "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
-        "target": "x86_64-w64-mingw32",
         "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
         "architecture": "x64"
       }
     ],
-    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
+    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
     "ccache_version": "ccache version 4.13.6",
-    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe"
+    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe"
   },
   "architecture": "C17 GCC Ninja ccache; three components/four products; ABI3/31 named exports+ordinal1;35 process-local detours/40 private slots",
-  "binary_batch_delivery": "M0 T15 S11 P1",
+  "binary_batch_delivery": "M0 T15 S12 P1",
   "verification": {
-    "focused": {
+    "S12_clean_build": {
       "tests": [
         {
-          "passed": 6,
-          "architecture": "x86",
-          "test_seconds": 2.5263206000090577,
-          "configure_seconds": 1.8343469999963418,
-          "build_seconds": 20.827751500008162,
           "skipped": [],
-          "tests": 6
+          "architecture": "x86",
+          "configure_seconds": 5.685548599984031,
+          "test_seconds": 0.6261179999564774,
+          "passed": 1,
+          "build_seconds": 42.69557109999005,
+          "tests": 1
         },
         {
-          "passed": 8,
-          "architecture": "x64",
-          "test_seconds": 8.259597300027963,
-          "configure_seconds": 1.7274473999859765,
-          "build_seconds": 19.72927539999364,
           "skipped": [],
-          "tests": 8
+          "architecture": "x64",
+          "configure_seconds": 4.7058442999841645,
+          "test_seconds": 0.7546417000121437,
+          "passed": 1,
+          "build_seconds": 38.656572600011714,
+          "tests": 1
         }
       ],
-      "targets": "all",
-      "build_root": "O:\\repos.hobby\\win16style\\build\\.ninja",
-      "exit_code": 0,
-      "test_jobs": 2,
       "architectures": [
         "x86",
         "x64"
       ],
-      "selection": "^(core/(abi|updown-v5|updown-v6|updown-owner|vb-font|control-protocol-owner|pending-frame-owner)|launch/startup-hooks)$",
-      "status": "passed",
+      "exit_code": 0,
+      "selection": "^core/abi$",
       "build_jobs": 8,
-      "profile": "Focused"
+      "build_root": "O:\\repos.hobby\\win16style\\build\\t15-package\\s12-final\\clean-source\\build\\.ninja",
+      "targets": "all",
+      "profile": "Focused",
+      "test_jobs": 4,
+      "status": "passed"
     },
-    "full_package": {
-      "cases": 91,
+    "S12_full_package": {
       "sha256": {
-        "demo.exe": "15c4ab9e92700f033738964fab7936be360cc70f5bbf535a86ce82a0a9f2e289",
-        "ntw16s32.dll": "ff6b557fc564617b59962655c4ad947f09b421fbb96f42a2ee347806bf15bb00",
-        "ntw16s64.dll": "a34b1fcdc2e35cac89150d9527a0eaa7a593c80c4173b7f386ca9f5cb28794f2",
-        "run16s.exe": "9bfbe1baa4c81eda8abc0c25edf27d8879702ea9395c8ef6f644b505f92a2843"
+        "demo.exe": "7a35c2d1338c3c7e7c2e066f25fc88656253262bec83d1fa85d605674d3f2392",
+        "ntw16s32.dll": "f4611cd1a429eb7ce74aa9106f80198d93ce9aac28e6e14b7845fdb573078ae7",
+        "ntw16s64.dll": "a7c7e89c95c10c6b3668de8885f1613350e03a771445fa5b407516041f40914b",
+        "run16s.exe": "727011bba563acffd6865cb032aa47374de54893cb631ddf892532647654fc5c"
       },
-      "status": "passed",
       "jobs": 4,
-      "seconds": 406.0985072,
       "full_integration": true,
-      "physical_input": "not-tested",
-      "core_matrix": "separate Build-Core matrix required",
-      "package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate"
-    },
-    "publication": {
+      "seconds": 389.5561759,
       "status": "passed",
+      "package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s12-final\\candidate",
+      "core_matrix": "separate Build-Core matrix required",
+      "cases": 91,
+      "physical_input": "not-tested"
+    },
+    "S12_publication": {
+      "tested_package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s12-final\\candidate",
       "files": [
         {
-          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-publish\\before-0",
+          "expected": "7a35c2d1338c3c7e7c2e066f25fc88656253262bec83d1fa85d605674d3f2392",
+          "before": "15c4ab9e92700f033738964fab7936be360cc70f5bbf535a86ce82a0a9f2e289",
           "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe",
-          "expected": "15c4ab9e92700f033738964fab7936be360cc70f5bbf535a86ce82a0a9f2e289",
-          "before": "6cbb3fa5be455dbd6fd86793d267ef78137a06f650d236de306ae00f4950ec73",
-          "after": "15c4ab9e92700f033738964fab7936be360cc70f5bbf535a86ce82a0a9f2e289"
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s12-publish\\before-0",
+          "after": "7a35c2d1338c3c7e7c2e066f25fc88656253262bec83d1fa85d605674d3f2392"
         },
         {
-          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-publish\\before-0",
+          "expected": "f4611cd1a429eb7ce74aa9106f80198d93ce9aac28e6e14b7845fdb573078ae7",
+          "before": "ff6b557fc564617b59962655c4ad947f09b421fbb96f42a2ee347806bf15bb00",
           "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
-          "expected": "ff6b557fc564617b59962655c4ad947f09b421fbb96f42a2ee347806bf15bb00",
-          "before": "f040f4694d78db89cdd99fea7eb427f10041ed4c38b2366530123ceaf0a7e1bd",
-          "after": "ff6b557fc564617b59962655c4ad947f09b421fbb96f42a2ee347806bf15bb00"
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s12-publish\\before-0",
+          "after": "f4611cd1a429eb7ce74aa9106f80198d93ce9aac28e6e14b7845fdb573078ae7"
         },
         {
-          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-publish\\before-0",
+          "expected": "a7c7e89c95c10c6b3668de8885f1613350e03a771445fa5b407516041f40914b",
+          "before": "a34b1fcdc2e35cac89150d9527a0eaa7a593c80c4173b7f386ca9f5cb28794f2",
           "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll",
-          "expected": "a34b1fcdc2e35cac89150d9527a0eaa7a593c80c4173b7f386ca9f5cb28794f2",
-          "before": "b09795790d239408f35ba5c60bb67c222d89aabff9fa443388fb341536a7c21e",
-          "after": "a34b1fcdc2e35cac89150d9527a0eaa7a593c80c4173b7f386ca9f5cb28794f2"
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s12-publish\\before-0",
+          "after": "a7c7e89c95c10c6b3668de8885f1613350e03a771445fa5b407516041f40914b"
         },
         {
-          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-publish\\before-0",
+          "expected": "727011bba563acffd6865cb032aa47374de54893cb631ddf892532647654fc5c",
+          "before": "9bfbe1baa4c81eda8abc0c25edf27d8879702ea9395c8ef6f644b505f92a2843",
           "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
-          "expected": "9bfbe1baa4c81eda8abc0c25edf27d8879702ea9395c8ef6f644b505f92a2843",
-          "before": "80491d1d084884fb664b4737dc36144640bee3e1145b00fffbf900915b42706c",
-          "after": "9bfbe1baa4c81eda8abc0c25edf27d8879702ea9395c8ef6f644b505f92a2843"
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s12-publish\\before-0",
+          "after": "727011bba563acffd6865cb032aa47374de54893cb631ddf892532647654fc5c"
         },
         {
-          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-publish\\before-1",
+          "expected": "7a35c2d1338c3c7e7c2e066f25fc88656253262bec83d1fa85d605674d3f2392",
+          "before": "15c4ab9e92700f033738964fab7936be360cc70f5bbf535a86ce82a0a9f2e289",
           "path": "O:\\winnt\\system32\\demo.exe",
-          "expected": "15c4ab9e92700f033738964fab7936be360cc70f5bbf535a86ce82a0a9f2e289",
-          "before": "6cbb3fa5be455dbd6fd86793d267ef78137a06f650d236de306ae00f4950ec73",
-          "after": "15c4ab9e92700f033738964fab7936be360cc70f5bbf535a86ce82a0a9f2e289"
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s12-publish\\before-1",
+          "after": "7a35c2d1338c3c7e7c2e066f25fc88656253262bec83d1fa85d605674d3f2392"
         },
         {
-          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-publish\\before-1",
+          "expected": "f4611cd1a429eb7ce74aa9106f80198d93ce9aac28e6e14b7845fdb573078ae7",
+          "before": "ff6b557fc564617b59962655c4ad947f09b421fbb96f42a2ee347806bf15bb00",
           "path": "O:\\winnt\\system32\\ntw16s32.dll",
-          "expected": "ff6b557fc564617b59962655c4ad947f09b421fbb96f42a2ee347806bf15bb00",
-          "before": "f040f4694d78db89cdd99fea7eb427f10041ed4c38b2366530123ceaf0a7e1bd",
-          "after": "ff6b557fc564617b59962655c4ad947f09b421fbb96f42a2ee347806bf15bb00"
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s12-publish\\before-1",
+          "after": "f4611cd1a429eb7ce74aa9106f80198d93ce9aac28e6e14b7845fdb573078ae7"
         },
         {
-          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-publish\\before-1",
+          "expected": "a7c7e89c95c10c6b3668de8885f1613350e03a771445fa5b407516041f40914b",
+          "before": "a34b1fcdc2e35cac89150d9527a0eaa7a593c80c4173b7f386ca9f5cb28794f2",
           "path": "O:\\winnt\\system32\\ntw16s64.dll",
-          "expected": "a34b1fcdc2e35cac89150d9527a0eaa7a593c80c4173b7f386ca9f5cb28794f2",
-          "before": "b09795790d239408f35ba5c60bb67c222d89aabff9fa443388fb341536a7c21e",
-          "after": "a34b1fcdc2e35cac89150d9527a0eaa7a593c80c4173b7f386ca9f5cb28794f2"
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s12-publish\\before-1",
+          "after": "a7c7e89c95c10c6b3668de8885f1613350e03a771445fa5b407516041f40914b"
         },
         {
-          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-publish\\before-1",
+          "expected": "727011bba563acffd6865cb032aa47374de54893cb631ddf892532647654fc5c",
+          "before": "9bfbe1baa4c81eda8abc0c25edf27d8879702ea9395c8ef6f644b505f92a2843",
           "path": "O:\\winnt\\system32\\run16s.exe",
-          "expected": "9bfbe1baa4c81eda8abc0c25edf27d8879702ea9395c8ef6f644b505f92a2843",
-          "before": "80491d1d084884fb664b4737dc36144640bee3e1145b00fffbf900915b42706c",
-          "after": "9bfbe1baa4c81eda8abc0c25edf27d8879702ea9395c8ef6f644b505f92a2843"
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s12-publish\\before-1",
+          "after": "727011bba563acffd6865cb032aa47374de54893cb631ddf892532647654fc5c"
         }
       ],
-      "test_result": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-full\\result.json",
-      "tested_package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate"
+      "test_result": "O:\\repos.hobby\\win16style\\build\\t15-package\\s12-full\\result.json",
+      "status": "passed"
     },
-    "installed": [
+    "S12_installed": [
       {
-        "installed_hashes": "four exact tested matches",
-        "status": "passed",
+        "cases": [
+          {
+            "name": "abi-x86",
+            "exit": 0,
+            "seconds": 0.1053426
+          },
+          {
+            "name": "updown-v5-x86",
+            "exit": 0,
+            "seconds": 4.642573
+          },
+          {
+            "name": "updown-v6-x86",
+            "exit": 0,
+            "seconds": 4.378383
+          },
+          {
+            "name": "abi-x64",
+            "exit": 0,
+            "seconds": 0.0894285
+          },
+          {
+            "name": "updown-v5-x64",
+            "exit": 0,
+            "seconds": 3.6980306
+          },
+          {
+            "name": "updown-v6-x64",
+            "exit": 0,
+            "seconds": 3.701306
+          },
+          {
+            "name": "automatic",
+            "exit": 0,
+            "seconds": 1.6757548
+          }
+        ],
         "progress_trackbar_dll_paths": "actual deployed path matched",
         "destination": "O:\\repos.hobby\\win16style\\assets",
-        "cases": [
-          {
-            "name": "abi-x86",
-            "seconds": 0.2444589,
-            "exit": 0
-          },
-          {
-            "name": "tree-v5-x86",
-            "seconds": 6.9779272,
-            "exit": 0
-          },
-          {
-            "name": "tree-v6-x86",
-            "seconds": 10.8694818,
-            "exit": 0
-          },
-          {
-            "name": "progress-v5-x86",
-            "seconds": 1.1523137,
-            "exit": 0
-          },
-          {
-            "name": "progress-v6-x86",
-            "seconds": 1.7272217,
-            "exit": 0
-          },
-          {
-            "name": "trackbar-v5-x86",
-            "seconds": 2.3395468,
-            "exit": 0
-          },
-          {
-            "name": "trackbar-v6-x86",
-            "seconds": 2.246718,
-            "exit": 0
-          },
-          {
-            "name": "updown-v5-x86",
-            "seconds": 4.431367,
-            "exit": 0
-          },
-          {
-            "name": "updown-v6-x86",
-            "seconds": 4.4061423,
-            "exit": 0
-          },
-          {
-            "name": "abi-x64",
-            "seconds": 0.1215908,
-            "exit": 0
-          },
-          {
-            "name": "tree-v5-x64",
-            "seconds": 4.6354471,
-            "exit": 0
-          },
-          {
-            "name": "tree-v6-x64",
-            "seconds": 7.8990838,
-            "exit": 0
-          },
-          {
-            "name": "progress-v5-x64",
-            "seconds": 0.8297966,
-            "exit": 0
-          },
-          {
-            "name": "progress-v6-x64",
-            "seconds": 1.1159771,
-            "exit": 0
-          },
-          {
-            "name": "trackbar-v5-x64",
-            "seconds": 1.7448449,
-            "exit": 0
-          },
-          {
-            "name": "trackbar-v6-x64",
-            "seconds": 1.9997341,
-            "exit": 0
-          },
-          {
-            "name": "updown-v5-x64",
-            "seconds": 3.5179427,
-            "exit": 0
-          },
-          {
-            "name": "updown-v6-x64",
-            "seconds": 3.4284375,
-            "exit": 0
-          },
-          {
-            "name": "automatic",
-            "seconds": 1.729533,
-            "exit": 0
-          }
-        ]
+        "installed_hashes": "four exact tested matches",
+        "status": "passed"
       },
       {
-        "installed_hashes": "four exact tested matches",
-        "status": "passed",
-        "progress_trackbar_dll_paths": "actual deployed path matched",
-        "destination": "O:/winnt/system32",
         "cases": [
           {
             "name": "abi-x86",
-            "seconds": 0.1068769,
-            "exit": 0
-          },
-          {
-            "name": "tree-v5-x86",
-            "seconds": 5.4225395,
-            "exit": 0
-          },
-          {
-            "name": "tree-v6-x86",
-            "seconds": 9.0807544,
-            "exit": 0
-          },
-          {
-            "name": "progress-v5-x86",
-            "seconds": 1.0707804,
-            "exit": 0
-          },
-          {
-            "name": "progress-v6-x86",
-            "seconds": 1.4386465,
-            "exit": 0
-          },
-          {
-            "name": "trackbar-v5-x86",
-            "seconds": 2.1572126,
-            "exit": 0
-          },
-          {
-            "name": "trackbar-v6-x86",
-            "seconds": 2.2563065,
-            "exit": 0
+            "exit": 0,
+            "seconds": 0.1005398
           },
           {
             "name": "updown-v5-x86",
-            "seconds": 4.3287691,
-            "exit": 0
+            "exit": 0,
+            "seconds": 4.4822083
           },
           {
             "name": "updown-v6-x86",
-            "seconds": 4.2005379,
-            "exit": 0
+            "exit": 0,
+            "seconds": 4.4251199
           },
           {
             "name": "abi-x64",
-            "seconds": 0.0989567,
-            "exit": 0
-          },
-          {
-            "name": "tree-v5-x64",
-            "seconds": 4.5112723,
-            "exit": 0
-          },
-          {
-            "name": "tree-v6-x64",
-            "seconds": 6.7373326,
-            "exit": 0
-          },
-          {
-            "name": "progress-v5-x64",
-            "seconds": 0.4971993,
-            "exit": 0
-          },
-          {
-            "name": "progress-v6-x64",
-            "seconds": 0.6850743,
-            "exit": 0
-          },
-          {
-            "name": "trackbar-v5-x64",
-            "seconds": 2.1304742,
-            "exit": 0
-          },
-          {
-            "name": "trackbar-v6-x64",
-            "seconds": 3.8888557,
-            "exit": 0
+            "exit": 0,
+            "seconds": 0.0894731
           },
           {
             "name": "updown-v5-x64",
-            "seconds": 6.2804087,
-            "exit": 0
+            "exit": 0,
+            "seconds": 3.7447496
           },
           {
             "name": "updown-v6-x64",
-            "seconds": 4.6874654,
-            "exit": 0
+            "exit": 0,
+            "seconds": 3.6071673
           },
           {
             "name": "automatic",
-            "seconds": 2.158592,
-            "exit": 0
+            "exit": 0,
+            "seconds": 1.7069677
           }
-        ]
+        ],
+        "progress_trackbar_dll_paths": "actual deployed path matched",
+        "destination": "O:/winnt/system32",
+        "installed_hashes": "four exact tested matches",
+        "status": "passed"
       }
     ],
-    "caption_comparison": {
+    "S12_caption": {
+      "baseline": "S11 actual final MD5 restored PNG",
       "height": 24,
-      "historical_difference": "outer corner only, title text and buttons zero",
-      "baseline": "S10 current same-probe raw restored capture",
       "width": 292,
-      "historical_png_differences": 2,
-      "black_mask_differences": 0,
-      "historical_diff_coordinates": [
-        "1,1",
-        "290,1"
-      ]
-    },
-    "HD_Tune_elevated": "skip by owner default, not passed; no UAC prompt"
-  },
-  "closure": {
-    "P1_actual_remote": {
-      "status": "passed",
-      "commit": "2bf6c55121d65aacde12a716d8f176eb566f6d09",
-      "remote_main": "2bf6c55121d65aacde12a716d8f176eb566f6d09",
-      "files": 210,
-      "source_inputs": 197,
-      "seconds": 16.549625400046352
-    },
-    "canonical_affected_rebuild": {
-      "architectures": [
-        "x86",
-        "x64"
-      ],
-      "tests": [
-        {
-          "configure_seconds": 5.503044900018722,
-          "passed": 2,
-          "build_seconds": 9.650282100017648,
-          "tests": 2,
-          "skipped": [],
-          "architecture": "x86",
-          "test_seconds": 0.7834917999571189
-        },
-        {
-          "configure_seconds": 4.854163599957246,
-          "passed": 2,
-          "build_seconds": 10.187841799983289,
-          "tests": 2,
-          "skipped": [],
-          "architecture": "x64",
-          "test_seconds": 0.8534237999701872
-        }
-      ],
-      "profile": "Focused",
-      "targets": "ntw16s,core-abi,core-pending-frame-owner",
-      "build_root": "O:\\repos.hobby\\win16style\\build\\t15-controls\\s11-canonical\\build\\.ninja",
-      "selection": "^core/(abi|pending-frame-owner)$",
-      "status": "passed",
-      "exit_code": 0,
-      "build_jobs": 8,
-      "test_jobs": 2
-    },
-    "P1_recovery_archive": {
-      "status": "passed",
-      "commit": "2bf6c55121d65aacde12a716d8f176eb566f6d09",
-      "source_inputs": 197,
-      "Git_objects": 201,
-      "old_backups": 8,
-      "archive_artifacts": 4,
-      "deployed_artifacts": 8,
-      "raw_recovery_EOL": [
-        "LICENSE",
-        "tools/Build-Package.ps1",
-        "tools/Verify-Governance.ps1"
-      ],
-      "archive_alternate_identity": [
-        "tools/Build-Package.ps1",
-        "tools/Verify-Governance.ps1"
-      ],
-      "original_DoubleKiller_equals_owned_copy": true
-    },
-    "cleanup": "completed: two exact registered task roots removed after actual remote/archive/recovery, native image guards and deployed hashes; reviewed sources restored; stable .ninja/.ccache and external PNG kept",
-    "closing_delivery": {
-      "delivery": "M0 T15 S11 P2",
-      "binary_change": "none; same91-case P1 batch and197 inputs",
-      "following_scope": "S12 frozen T15 coverage audit; no newT;HD Tune elevated default skip"
+      "black_mask_differences": 0
     }
   }
 }
