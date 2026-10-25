@@ -27,19 +27,36 @@ void ntw16s_vb_fonts_clear(ntw16s_vb_fonts *fonts)
     for(unsigned i=0;i<fonts->count;++i){win16_style_system_release(fonts->font[i]);free(fonts->glyphs[i]);}
     ZeroMemory(fonts,sizeof(*fonts));
 }
+void ntw16s_report_paint_enable(ntw16s_vb_paint *scope,HWND w,HMODULE module,const BOOL *cancelled)
+{
+    if(!scope->active || !module)return;
+    scope->report=TRUE;scope->window=w;scope->report_module=module;scope->cancelled=cancelled;
+}
+void ntw16s_report_paint_bind(HWND w,HDC dc)
+{
+    if(current && current->report && current->window==w)current->report_dc=dc;
+}
+BOOL ntw16s_report_paint_active(void)
+{return current && current->report;}
+BOOL ntw16s_report_paint_caller(HMODULE module)
+{return current && current->report && (module==current->report_module || module==GetModuleHandleW(NULL));}
 BOOL ntw16s_vb_paint_active(void)
-{return current && current->window;}
+{return current && current->window && (!current->cancelled || !*current->cancelled);}
 HFONT ntw16s_vb_paint_font(HDC dc)
 {
     ntw16s_vb_paint *scope=current;HFONT source;
     /* The scope also covers a runtime-owned memory DC during WM_PRINT or
      * double buffering. Never change a DC belonging to another HWND. */
-    if(!scope || !scope->window || (WindowFromDC(dc) && WindowFromDC(dc)!=scope->window))return NULL;
+    if(!ntw16s_vb_paint_active() || (scope->report && dc!=scope->report_dc) || (WindowFromDC(dc) && WindowFromDC(dc)!=scope->window))return NULL;
     ntw16s_vb_fonts *fonts=scope->fonts;
     source=(HFONT)GetCurrentObject(dc,OBJ_FONT);
     if(!source)return NULL;
+    if(scope->report){LOGFONTW lf;
+        if(GetObjectW(source,sizeof(lf),&lf)!=sizeof(lf) || lf.lfEscapement || lf.lfOrientation)return NULL;}
     for(unsigned i=0;i<fonts->count;++i)if(fonts->source[i]==source)return fonts->font[i];
     if(fonts->count==ARRAYSIZE(fonts->font))return NULL;
+    /* Report rows can be 11px too: reuse the existing stroke-preserving
+     * host System lease; existing controls keep their established policy. */
     HFONT font=win16_style_vb_font_acquire(source);
     if(font){fonts->source[fonts->count]=source;fonts->font[fonts->count++]=font;}
     return font;

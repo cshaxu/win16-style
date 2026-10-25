@@ -77,8 +77,8 @@ try{
         (Case 'uac-unit-64' (Join-Path $x64 'uac-unit.exe') @() @('UAC UNIT PASS cases=8'))
     )
     $cases+=@(
-        (Case 'vb-font-32' (Join-Path $x86 'core-vb-font.exe') @((Join-Path $x86 'vb-fixture/MSVBVM60.dll')) @('VB_FONT_ZERO_OK requested=12','VB_FONT_ZERO_OK requested=14','VB_FONT_ZERO_OK requested=16','VB_OWNERSHIP_OK leases_retired=32 maps_freed=32 sources_preserved=33')),
-        (Case 'vb-font-64' (Join-Path $x64 'core-vb-font.exe') @((Join-Path $x64 'vb-fixture/MSVBVM60.dll')) @('VB_FONT_ZERO_OK requested=12','VB_FONT_ZERO_OK requested=14','VB_FONT_ZERO_OK requested=16','VB_OWNERSHIP_OK leases_retired=32 maps_freed=32 sources_preserved=33')),
+        (Case 'vb-font-32' (Join-Path $x86 'core-vb-font.exe') @((Join-Path $x86 'vb-fixture/MSVBVM60.dll')) @('VB_FONT_ZERO_OK requested=12','VB_FONT_ZERO_OK requested=14','VB_FONT_ZERO_OK requested=16','VB_OWNERSHIP_OK leases_retired=32 maps_freed=32 sources_preserved=33','REPORT_TEXT_OWNERSHIP_OK exact_dc=1 barrier=1 cancelled=1')),
+        (Case 'vb-font-64' (Join-Path $x64 'core-vb-font.exe') @((Join-Path $x64 'vb-fixture/MSVBVM60.dll')) @('VB_FONT_ZERO_OK requested=12','VB_FONT_ZERO_OK requested=14','VB_FONT_ZERO_OK requested=16','VB_OWNERSHIP_OK leases_retired=32 maps_freed=32 sources_preserved=33','REPORT_TEXT_OWNERSHIP_OK exact_dc=1 barrier=1 cancelled=1')),
         (Case 'vb-controls-32' (Join-Path $x86 'core-vb.exe') @($run,(Join-Path $x86 'vb-fixture/MSVBVM60.dll')) @('VB_WINDOWED_OK bits=32 styled=1','VB_EDIT_OK undo=1','VB_EDIT_FONT_PIXELS changed=1','VB_CONTAINER_PAINT_OK label_changed=1','VB_CLEANUP_OK')),
         (Case 'vb-controls-64' (Join-Path $x64 'core-vb.exe') @($run,(Join-Path $x64 'vb-fixture/MSVBVM60.dll')) @('VB_WINDOWED_OK bits=64 styled=1','VB_EDIT_OK undo=1','VB_EDIT_FONT_PIXELS changed=1','VB_CONTAINER_PAINT_OK label_changed=1','VB_CLEANUP_OK'))
     )
@@ -105,6 +105,10 @@ try{
         (Case 'header-v6-64' (Join-Path $x64 'core-header-v6.exe') @($d64) @('HEADER_CONTROL_OK bits=64','callback_cases=5 roles_released=1')),
         (Case 'header-v6-dpi-32' (Join-Path $x86 'core-header-v6.exe') @($d32,'aware') @('HEADER_CONTROL_OK bits=32','aware=1','callback_cases=5 roles_released=1')),
         (Case 'header-v6-dpi-64' (Join-Path $x64 'core-header-v6.exe') @($d64,'aware') @('HEADER_CONTROL_OK bits=64','aware=1','callback_cases=5 roles_released=1')),
+        (Case 'list-report-v5-32' (Join-Path $x86 'core-list-report-v5.exe') @($run) @('LIST_REPORT_OK bits=32 styled=1','LIST_REPORT_SYSTEM_MASK_OK','LIST_REPORT_CALLBACK_RETIRE_OK','LIST_REPORT_CLEANUP_OK')),
+        (Case 'list-report-v5-64' (Join-Path $x64 'core-list-report-v5.exe') @($run) @('LIST_REPORT_OK bits=64 styled=1','LIST_REPORT_SYSTEM_MASK_OK','LIST_REPORT_CALLBACK_RETIRE_OK','LIST_REPORT_CLEANUP_OK')),
+        (Case 'list-report-v6-32' (Join-Path $x86 'core-list-report-v6.exe') @($run) @('LIST_REPORT_OK bits=32 styled=1','LIST_REPORT_SYSTEM_MASK_OK','LIST_REPORT_CALLBACK_RETIRE_OK','LIST_REPORT_CLEANUP_OK')),
+        (Case 'list-report-v6-64' (Join-Path $x64 'core-list-report-v6.exe') @($run) @('LIST_REPORT_OK bits=64 styled=1','LIST_REPORT_SYSTEM_MASK_OK','LIST_REPORT_CALLBACK_RETIRE_OK','LIST_REPORT_CLEANUP_OK')),
         (Case 'header-owner-32' (Join-Path $x86 'core-header-owner.exe') @() @('HEADER_OWNER_OK bits=32 cases=16 allocations=0 dc_restored=1')),
         (Case 'header-owner-64' (Join-Path $x64 'core-header-owner.exe') @() @('HEADER_OWNER_OK bits=64 cases=16 allocations=0 dc_restored=1')),
         (Case 'control-visibility-32' (Join-Path $x86 'core-control-visibility.exe') @($d32) @('CONTROL_VISIBILITY_OK bits=32 cases=16')),

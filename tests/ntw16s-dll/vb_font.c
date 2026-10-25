@@ -92,6 +92,31 @@ static int ownership(const WCHAR *runtime_path)
     printf("VB_OWNERSHIP_OK leases_retired=32 maps_freed=32 sources_preserved=33 allocations=%u/%u faults=2 barrier=1 capacity=32\n",live_allocations,baseline);
     return 0;
 }
+static int report_ownership(void)
+{
+    HWND w=CreateWindowW(L"STATIC",L"report lifetime",WS_OVERLAPPEDWINDOW,0,0,200,100,NULL,NULL,GetModuleHandleW(NULL),NULL);
+    CHECK(w);HDC dc=CreateCompatibleDC(NULL),other=CreateCompatibleDC(NULL);CHECK(dc && other);
+    HFONT source=CreateFontW(-16,0,0,0,FW_NORMAL,0,0,0,ANSI_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,NONANTIALIASED_QUALITY,DEFAULT_PITCH,L"Arial");CHECK(source);
+    HGDIOBJ old=SelectObject(dc,source);ntw16s_vb_fonts fonts={0},barrier={0};ntw16s_vb_paint scope,nested;BOOL cancelled=FALSE;
+    unsigned baseline=live_allocations;
+    ntw16s_vb_paint_begin(&scope,w,WM_PRINTCLIENT,&fonts);
+    ntw16s_report_paint_enable(&scope,w,GetModuleHandleW(L"USER32.dll"),&cancelled);
+    CHECK(ntw16s_report_paint_active() && ntw16s_report_paint_caller(GetModuleHandleW(NULL)));
+    CHECK(!ntw16s_report_paint_caller(GetModuleHandleW(L"KERNEL32.dll")));
+    CHECK(!ntw16s_vb_paint_font(dc));ntw16s_report_paint_bind(NULL,dc);CHECK(!ntw16s_vb_paint_font(dc));
+    ntw16s_report_paint_bind(w,dc);fail_next=1;CHECK(!ntw16s_vb_paint_font(dc) && !fonts.count && live_allocations==baseline);
+    HFONT font=ntw16s_vb_paint_font(dc);CHECK(font && fonts.count==1 && !ntw16s_vb_paint_font(other));
+    HFONT standard=win16_style_vb_font_acquire(source);CHECK(standard==font);win16_style_system_release(standard);
+    CHECK(GetCurrentObject(dc,OBJ_FONT)==source);
+    ntw16s_vb_paint_begin(&nested,w,WM_PRINTCLIENT,&barrier);CHECK(!ntw16s_vb_paint_font(dc));ntw16s_vb_paint_end(&nested);
+    CHECK(ntw16s_vb_paint_font(dc)==font);cancelled=TRUE;
+    CHECK(!ntw16s_vb_paint_active() && !ntw16s_vb_paint_font(dc));
+    LOGFONTW lf;CHECK(GetObjectW(font,sizeof(lf),&lf)==sizeof(lf));
+    ntw16s_vb_paint_end(&scope);ntw16s_vb_fonts_clear(&fonts);CHECK(live_allocations==baseline);
+    CHECK(!GetObjectW(font,sizeof(lf),&lf));CHECK(GetObjectW(source,sizeof(lf),&lf)==sizeof(lf));
+    SelectObject(dc,old);CHECK(DeleteObject(source) && DeleteDC(other) && DeleteDC(dc) && DestroyWindow(w));
+    puts("REPORT_TEXT_OWNERSHIP_OK exact_dc=1 barrier=1 cancelled=1 source_preserved=1 host_system=1 strokes=preserved oom=1 allocations=0");return 0;
+}
 static int worker(int argc,WCHAR **argv)
-{CHECK(argc==2);CHECK(!font_pixels());CHECK(!ownership(argv[1]));CHECK(!live_allocations);return 0;}
+{CHECK(argc==2);CHECK(!font_pixels());CHECK(!ownership(argv[1]));CHECK(!report_ownership());CHECK(!live_allocations);return 0;}
 int wmain(int argc,WCHAR **argv){return isolated_process(argc,argv,worker);}

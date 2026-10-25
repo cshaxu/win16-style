@@ -141,7 +141,7 @@ static BOOL WINAPI hook_enable_scroll(HWND w,UINT bar,UINT arrows)
     SetLastError(error);return result;
 }
 
-/* Process-local native text leaves. Outside an exact VB6 paint scope these
+/* Process-local native text leaves. Outside a verified VB6/report paint scope these
  * are transparent trampolines. The temporary font is restored before any
  * lease can be released; no application HFONT/property/layout is modified. */
 static _Thread_local unsigned vb_text_busy;
@@ -150,22 +150,41 @@ static BOOL vb_text_caller(const void *address)
     HMODULE caller=NULL;
     if(!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
             (const WCHAR *)address,&caller))return FALSE;
-    return caller==GetModuleHandleW(L"MSVBVM60.DLL") || caller==GetModuleHandleW(L"USER32.DLL") ||
+    return ntw16s_report_paint_caller(caller) || caller==GetModuleHandleW(L"MSVBVM60.DLL") || caller==GetModuleHandleW(L"USER32.DLL") ||
         caller==GetModuleHandleW(L"LPK.DLL") || caller==GetModuleHandleW(L"USP10.DLL") ||
         caller==GetModuleHandleW(L"GDI32FULL.DLL");
 }
-#define VB_TEXT_HOOK(NAME,TYPE,PARAMS,ARGS) \
+/* The report adapter promises only whole, reversible CP1252 runs. Keep
+ * measurements and unsupported language/RTL runs on the native font. */
+static BOOL report_wide_text(HDC dc,const WCHAR *text,int count)
+{
+    if(!ntw16s_report_paint_active())return TRUE;
+    if(count<0 || count>4096 || (GetTextAlign(dc)&TA_RTLREADING))return FALSE;
+    if(!count)return TRUE;
+    BOOL used=FALSE;char buffer[4096];
+    return text && WideCharToMultiByte(1252,WC_NO_BEST_FIT_CHARS,text,count,buffer,sizeof(buffer),NULL,&used)==count && !used;
+}
+static BOOL report_ansi_text(HDC dc,const char *text,int count)
+{
+    if(!ntw16s_report_paint_active())return TRUE;
+    if(!text || (GetTextAlign(dc)&TA_RTLREADING))return FALSE;
+    if(count==-1){count=0;while(count<=4096 && text[count])++count;}
+    if(count<0 || count>4096)return FALSE;
+    if(GetACP()!=1252)for(int i=0;i<count;++i)if((unsigned char)text[i]>=128)return FALSE;
+    return TRUE;
+}
+#define VB_TEXT_HOOK(NAME,TYPE,PARAMS,ARGS,ALLOW) \
 static __typeof__(&NAME) real_##NAME; \
 static TYPE WINAPI hook_##NAME PARAMS \
 { HFONT font=NULL,old=NULL;DWORD entry=GetLastError(),error;TYPE result; \
-  if(!vb_text_busy++ && ntw16s_vb_paint_active() && vb_text_caller(__builtin_return_address(0))){font=ntw16s_vb_paint_font(dc);if(font){old=SelectObject(dc,font);if(old==HGDI_ERROR)old=NULL;}} \
+  if(!vb_text_busy++ && (ALLOW) && ntw16s_vb_paint_active() && vb_text_caller(__builtin_return_address(0))){font=ntw16s_vb_paint_font(dc);if(font){old=SelectObject(dc,font);if(old==HGDI_ERROR)old=NULL;}} \
   SetLastError(entry);result=real_##NAME ARGS;error=GetLastError(); \
   if(old){SelectObject(dc,old);}--vb_text_busy;SetLastError(error);return result; }
-VB_TEXT_HOOK(DrawTextA,int,(HDC dc,LPCSTR text,int count,LPRECT rect,UINT format),(dc,text,count,rect,format))
-VB_TEXT_HOOK(DrawTextExA,int,(HDC dc,LPSTR text,int count,LPRECT rect,UINT format,LPDRAWTEXTPARAMS params),(dc,text,count,rect,format,params))
-VB_TEXT_HOOK(TextOutA,BOOL,(HDC dc,int x,int y,LPCSTR text,int count),(dc,x,y,text,count))
-VB_TEXT_HOOK(ExtTextOutA,BOOL,(HDC dc,int x,int y,UINT options,const RECT *rect,LPCSTR text,UINT count,const INT *dx),(dc,x,y,options,rect,text,count,dx))
-VB_TEXT_HOOK(TextOutW,BOOL,(HDC dc,int x,int y,LPCWSTR text,int count),(dc,x,y,text,count))
+VB_TEXT_HOOK(DrawTextA,int,(HDC dc,LPCSTR text,int count,LPRECT rect,UINT format),(dc,text,count,rect,format),(!ntw16s_report_paint_active() || !(format&DT_CALCRECT)) && report_ansi_text(dc,text,count))
+VB_TEXT_HOOK(DrawTextExA,int,(HDC dc,LPSTR text,int count,LPRECT rect,UINT format,LPDRAWTEXTPARAMS params),(dc,text,count,rect,format,params),(!ntw16s_report_paint_active() || !(format&DT_CALCRECT)) && report_ansi_text(dc,text,count))
+VB_TEXT_HOOK(TextOutA,BOOL,(HDC dc,int x,int y,LPCSTR text,int count),(dc,x,y,text,count),report_ansi_text(dc,text,count))
+VB_TEXT_HOOK(ExtTextOutA,BOOL,(HDC dc,int x,int y,UINT options,const RECT *rect,LPCSTR text,UINT count,const INT *dx),(dc,x,y,options,rect,text,count,dx),(!ntw16s_report_paint_active() || !(options&(ETO_GLYPH_INDEX|ETO_RTLREADING))) && report_ansi_text(dc,text,(int)count))
+VB_TEXT_HOOK(TextOutW,BOOL,(HDC dc,int x,int y,LPCWSTR text,int count),(dc,x,y,text,count),report_wide_text(dc,text,count))
 
 #undef VB_TEXT_HOOK
 
@@ -191,6 +210,8 @@ static BOOL WINAPI hook_ExtTextOutW(HDC dc,int x,int y,UINT options,const RECT *
             if(valid){text=decoded;options&=~ETO_GLYPH_INDEX;}
             else font=NULL;
         }
+        if(font && !(options&ETO_GLYPH_INDEX) &&
+            (!report_wide_text(dc,text,(int)count) || (ntw16s_report_paint_active() && (options&ETO_RTLREADING))))font=NULL;
         if(font)old=SelectObject(dc,font);
         if(!old || old==HGDI_ERROR){
             old=NULL;text=original_text;options=original_options;

@@ -1,0 +1,483 @@
+{
+  "schema": 1,
+  "packet": "M0 T15 S7",
+  "status": "S7 product locally verified/published; actual remote/archive review and cleanup pending",
+  "HD_Tune_elevated": "owner-requested default skip; not pass; no UAC requested",
+  "implementation": "finite initialized native report client text; existing stroke-preserving host System lease; original callbacks/data/colors/font properties retained",
+  "source_inputs": 184,
+  "source_snapshot_sha256": "7d41174e636c896ab214a3b74952e0f36325a3c97f040a65c9c043a2ebc6e926",
+  "baseline_commit": "86b546b9011db7da8f9bbaa7a4abeb3f70b0becd",
+  "full_package": {
+    "physical_input": "not-tested",
+    "full_integration": true,
+    "sha256": {
+      "demo.exe": "c848b1d379880d0125f8a7001233c8d7af080e3bd041c944f9158aeab2ad48c5",
+      "ntw16s32.dll": "127b4f4ece4330eaa2de299dada69380f9eef6939d6dc387df234b0d230a5cda",
+      "ntw16s64.dll": "3aa9ab83b5a95de9465b86cebdfd2d9dd4d498d13a96e4455470cdadbf0f503a",
+      "run16s.exe": "4bcded052675882fea2c5495206faad2e7bbfe8f89f7fa4997685ea886e1b167"
+    },
+    "jobs": 4,
+    "cases": 69,
+    "package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s7-report-strokes\\candidate",
+    "core_matrix": "separate Build-Core matrix required",
+    "status": "passed",
+    "seconds": 406.9624858
+  },
+  "clean_build": {
+    "selection": "^core/abi$",
+    "targets": "all",
+    "tests": [
+      {
+        "build_seconds": 43.07851949997712,
+        "architecture": "x86",
+        "configure_seconds": 6.601245900033973,
+        "test_seconds": 0.8426071000285447,
+        "tests": 1,
+        "passed": 1,
+        "skipped": []
+      },
+      {
+        "build_seconds": 46.313152299961075,
+        "architecture": "x64",
+        "configure_seconds": 6.834238599985838,
+        "test_seconds": 0.6998088999534957,
+        "tests": 1,
+        "passed": 1,
+        "skipped": []
+      }
+    ],
+    "test_jobs": 4,
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "build_root": "O:\\repos.hobby\\win16style\\build\\t15-package\\s7-report-strokes\\clean-source\\build\\.ninja",
+    "status": "passed",
+    "exit_code": 0,
+    "profile": "Focused",
+    "build_jobs": 8
+  },
+  "focused": {
+    "test_jobs": 4,
+    "exit_code": 0,
+    "tests": [
+      {
+        "skipped": [],
+        "passed": 3,
+        "configure_seconds": 2.8693725999910384,
+        "architecture": "x86",
+        "build_seconds": 11.521714099973906,
+        "tests": 3,
+        "test_seconds": 3.3513509999611415
+      },
+      {
+        "skipped": [],
+        "passed": 5,
+        "configure_seconds": 2.6051642999518663,
+        "architecture": "x64",
+        "build_seconds": 14.244455699983519,
+        "tests": 5,
+        "test_seconds": 13.114556199987419
+      }
+    ],
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "build_root": "O:\\repos.hobby\\win16style\\build\\.ninja",
+    "targets": "all",
+    "build_jobs": 8,
+    "selection": "^core/(list-report-v5|list-report-v6|vb-font|header-v5|header-v6)$",
+    "status": "passed",
+    "profile": "Focused"
+  },
+  "publication": {
+    "tested_package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s7-report-strokes\\candidate",
+    "files": [
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s7-report-publish\\before-0",
+        "before": "4005b56134fa7591fb8a4505abd045c5795c96e9e64008f0542364f2bfa5d394",
+        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe",
+        "after": "c848b1d379880d0125f8a7001233c8d7af080e3bd041c944f9158aeab2ad48c5",
+        "expected": "c848b1d379880d0125f8a7001233c8d7af080e3bd041c944f9158aeab2ad48c5"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s7-report-publish\\before-0",
+        "before": "66d3aa92de3b04429eedfef5b4a89bda135c11c5f2dcb085dff92b3d471e883c",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
+        "after": "127b4f4ece4330eaa2de299dada69380f9eef6939d6dc387df234b0d230a5cda",
+        "expected": "127b4f4ece4330eaa2de299dada69380f9eef6939d6dc387df234b0d230a5cda"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s7-report-publish\\before-0",
+        "before": "48c5096b542d7a8a9776f40e3cbc18c286d1dcc22a7d8afedb102e6ee1a304c1",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll",
+        "after": "3aa9ab83b5a95de9465b86cebdfd2d9dd4d498d13a96e4455470cdadbf0f503a",
+        "expected": "3aa9ab83b5a95de9465b86cebdfd2d9dd4d498d13a96e4455470cdadbf0f503a"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s7-report-publish\\before-0",
+        "before": "36df3221ec60e7639a31c36100c0298333188c8448f90b3b55fc8c2347c86851",
+        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
+        "after": "4bcded052675882fea2c5495206faad2e7bbfe8f89f7fa4997685ea886e1b167",
+        "expected": "4bcded052675882fea2c5495206faad2e7bbfe8f89f7fa4997685ea886e1b167"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s7-report-publish\\before-1",
+        "before": "4005b56134fa7591fb8a4505abd045c5795c96e9e64008f0542364f2bfa5d394",
+        "path": "O:\\winnt\\system32\\demo.exe",
+        "after": "c848b1d379880d0125f8a7001233c8d7af080e3bd041c944f9158aeab2ad48c5",
+        "expected": "c848b1d379880d0125f8a7001233c8d7af080e3bd041c944f9158aeab2ad48c5"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s7-report-publish\\before-1",
+        "before": "66d3aa92de3b04429eedfef5b4a89bda135c11c5f2dcb085dff92b3d471e883c",
+        "path": "O:\\winnt\\system32\\ntw16s32.dll",
+        "after": "127b4f4ece4330eaa2de299dada69380f9eef6939d6dc387df234b0d230a5cda",
+        "expected": "127b4f4ece4330eaa2de299dada69380f9eef6939d6dc387df234b0d230a5cda"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s7-report-publish\\before-1",
+        "before": "48c5096b542d7a8a9776f40e3cbc18c286d1dcc22a7d8afedb102e6ee1a304c1",
+        "path": "O:\\winnt\\system32\\ntw16s64.dll",
+        "after": "3aa9ab83b5a95de9465b86cebdfd2d9dd4d498d13a96e4455470cdadbf0f503a",
+        "expected": "3aa9ab83b5a95de9465b86cebdfd2d9dd4d498d13a96e4455470cdadbf0f503a"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s7-report-publish\\before-1",
+        "before": "36df3221ec60e7639a31c36100c0298333188c8448f90b3b55fc8c2347c86851",
+        "path": "O:\\winnt\\system32\\run16s.exe",
+        "after": "4bcded052675882fea2c5495206faad2e7bbfe8f89f7fa4997685ea886e1b167",
+        "expected": "4bcded052675882fea2c5495206faad2e7bbfe8f89f7fa4997685ea886e1b167"
+      }
+    ],
+    "test_result": "O:\\repos.hobby\\win16style\\build\\t15-package\\s7-package-strokes\\result.json",
+    "status": "passed"
+  },
+  "installed": {
+    "assets": {
+      "capture_directory": "O:/repos.hobby/win16style/build/t15-controls/s7-installed-assets/automatic",
+      "destination": "O:/repos.hobby/win16style/assets",
+      "list_profiles": 4,
+      "automatic": 1,
+      "status": "passed",
+      "abi": 2
+    },
+    "system32": {
+      "list_profiles": 4,
+      "status": "passed",
+      "capture_directory": "O:/repos.hobby/win16style/build/t15-controls/s7-installed-system32/automatic",
+      "abi": 2,
+      "automatic": 1,
+      "destination": "O:/winnt/system32"
+    }
+  },
+  "real_apps": {
+    "dk": {
+      "exit_code": 0,
+      "native_observation": [
+        "TARGET pid=22364 creator-tree-root=23484 tid=31940 image=O:\\repos.hobby\\win16style\\build\\t15-controls\\s7-doublekiller\\DoubleKiller.exe",
+        "MODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s7-report-strokes\\candidate\\ntw16s32.dll",
+        "S7_OWNED_SCAN_COMPLETE rows_from_app=2 scoped_fixture_only=1 no_delete_or_move=1",
+        "DK_CLEANUP_OK exit=0 active=0 total=4"
+      ]
+    },
+    "md5": {
+      "exit_code": 0,
+      "native_observation": [
+        "TARGET pid=9612 creator-tree-root=26616 tid=22500 image=D:\\programs\\misc\\md5summer.exe",
+        "MODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s7-report-strokes\\candidate\\ntw16s32.dll",
+        "CLOSE sent=1 error=0 wait=0 code=0 window=0 visible=0",
+        "TARGET_EXIT=0",
+        "DK_CLEANUP_OK exit=0 active=0 total=4"
+      ]
+    },
+    "vb6": {
+      "exit_code": 0,
+      "native_observation": [
+        "TARGET pid=28764 creator-tree-root=15956 tid=33324 image=O:\\WINNT\\madshow.exe",
+        "MODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s7-report-strokes\\candidate\\ntw16s32.dll",
+        "MODULE C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "VB_CLEANUP_OK exit=0 active=0 total=4"
+      ]
+    }
+  },
+  "artifacts": {
+    "run16s.exe": {
+      "architecture": "x64",
+      "version": "M0 T15",
+      "sha256": "4bcded052675882fea2c5495206faad2e7bbfe8f89f7fa4997685ea886e1b167",
+      "imports": [
+        "advapi32.dll",
+        "kernel32.dll",
+        "msvcrt.dll",
+        "ole32.dll",
+        "shell32.dll"
+      ]
+    },
+    "ntw16s32.dll": {
+      "architecture": "x86",
+      "version": "M0 T15",
+      "sha256": "127b4f4ece4330eaa2de299dada69380f9eef6939d6dc387df234b0d230a5cda",
+      "imports": [
+        "COMCTL32.dll",
+        "dwmapi.dll",
+        "GDI32.dll",
+        "KERNEL32.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-private-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "USER32.dll",
+        "UxTheme.dll",
+        "COMCTL32.dll"
+      ]
+    },
+    "ntw16s64.dll": {
+      "architecture": "x64",
+      "version": "M0 T15",
+      "sha256": "3aa9ab83b5a95de9465b86cebdfd2d9dd4d498d13a96e4455470cdadbf0f503a",
+      "imports": [
+        "COMCTL32.dll",
+        "dwmapi.dll",
+        "GDI32.dll",
+        "KERNEL32.dll",
+        "msvcrt.dll",
+        "USER32.dll",
+        "UxTheme.dll",
+        "COMCTL32.dll"
+      ]
+    },
+    "demo.exe": {
+      "architecture": "x64",
+      "version": "M0 T15",
+      "sha256": "c848b1d379880d0125f8a7001233c8d7af080e3bd041c944f9158aeab2ad48c5",
+      "imports": [
+        "kernel32.dll",
+        "msvcrt.dll",
+        "user32.dll"
+      ]
+    }
+  },
+  "toolchains": {
+    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
+    "toolchains": [
+      {
+        "architecture": "x86",
+        "version": "16.1.0",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
+        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
+        "target": "i686-w64-mingw32"
+      },
+      {
+        "architecture": "x64",
+        "version": "16.1.0",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
+        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
+        "target": "x86_64-w64-mingw32"
+      }
+    ],
+    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
+    "ccache_version": "ccache version 4.13.6"
+  },
+  "preservation": {
+    "source_files_unchanged": [
+      "font.c",
+      "win16_style.c",
+      "controls.c",
+      "tab_paint.c",
+      "header_paint.c",
+      "menu_bar.c",
+      "menu_bar_paint.c",
+      "menu_items.c",
+      "menu_layout.c",
+      "menu_paint.c",
+      "scroll_layout.c",
+      "scroll_track.c"
+    ],
+    "original_resources": "five headers/resources.md and18 compiled tables per DLL exact",
+    "prior_actual_caption_tab_pair": {
+      "old": {
+        "width": 340,
+        "height": 483,
+        "top48_sha256": "4ff6ded26ac4018b9991b043cbd74f6a5ab6d912a864eba9990cc980e62732bd",
+        "protocol_lines": [
+          "REPORT_TEXT row=0 column=0 value=a.bin",
+          "REPORT_TEXT row=0 column=1 value=O:\\repos.hobby\\win16style\\build\\t15-controls\\s7-doublekiller\\data\\",
+          "REPORT_TEXT row=0 column=2 value=32",
+          "REPORT_TEXT row=0 column=3 value=10/25/2026 5:11:40 AM",
+          "REPORT_TEXT row=0 column=4 value=91267E8A",
+          "REPORT_TEXT row=1 column=0 value=b.bin",
+          "REPORT_TEXT row=1 column=1 value=O:\\repos.hobby\\win16style\\build\\t15-controls\\s7-doublekiller\\data\\",
+          "REPORT_TEXT row=1 column=2 value=32",
+          "REPORT_TEXT row=1 column=3 value=10/25/2026 5:11:40 AM",
+          "REPORT_TEXT row=1 column=4 value=91267E8A",
+          "CUSTOM_DRAW stage=00000001 item=0 subitem=0 state=00000000 result=20 font_changed=0 font=MS Sans Serif height=-11 color_before=00000000,00000000 color_after=00000000,00000000 child_live=1 parent_live=1",
+          "CUSTOM_DRAW stage=00010001 item=0 subitem=0 state=00000211 result=2 font_changed=1 font=MS Sans Serif height=-11 color_before=00000000,00ffffff color_after=00000000,00eeeeee child_live=1 parent_live=1",
+          "CUSTOM_DRAW stage=00010001 item=1 subitem=0 state=00000201 result=2 font_changed=1 font=MS Sans Serif height=-11 color_before=00000000,00ffffff color_after=00000000,00eeeeee child_live=1 parent_live=1",
+          "CUSTOM_DRAW stage=00000001 item=0 subitem=0 state=00000000 result=20 font_changed=0 font=MS Sans Serif height=-11 color_before=00000000,00000000 color_after=00000000,00000000 child_live=1 parent_live=1",
+          "CUSTOM_DRAW stage=00010001 item=0 subitem=0 state=00000211 result=2 font_changed=1 font=MS Sans Serif height=-11 color_before=00000000,00ffffff color_after=00000000,00eeeeee child_live=1 parent_live=1",
+          "CUSTOM_DRAW stage=00010001 item=1 subitem=0 state=00000201 result=2 font_changed=1 font=MS Sans Serif height=-11 color_before=00000000,00ffffff color_after=00000000,00eeeeee child_live=1 parent_live=1",
+          "HEADER_ITEM i=0 ok=1 rect_ok=1 rect=0,0,138,17 width=138 format=4000 state=0 image=0 text=Filename",
+          "HEADER_ITEM i=1 ok=1 rect_ok=1 rect=138,0,259,17 width=121 format=4000 state=0 image=0 text=Path",
+          "HEADER_ITEM i=2 ok=1 rect_ok=1 rect=259,0,325,17 width=66 format=4001 state=0 image=0 text=Size",
+          "HEADER_ITEM i=3 ok=1 rect_ok=1 rect=325,0,409,17 width=84 format=4000 state=0 image=0 text=Date",
+          "HEADER_ITEM i=4 ok=1 rect_ok=1 rect=409,0,485,17 width=76 format=4000 state=0 image=0 text=CRC32"
+        ],
+        "state": [
+          "PROCESS pid=18668 tid=10192 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll root_attached=1",
+          "LIST_PROTOCOL attached=1 count=2 ext=00000522 view=0 header=00C2018C parent_ok=1 normal_images=00000000 small_images=00000000 state_images=0075F7B8 background=00ffffff text_background=00ffffff text_color=00000000",
+          "REPORT_ROLE cached_property=0 native_owner=69D60000 native_extra=4 actual_extra=4 header=00C2018C style=56810049",
+          "CUSTOM_DRAW_OBSERVE_DONE events=6 no_return_or_payload_changes=1 no_rows_inserted=1"
+        ]
+      },
+      "new": {
+        "width": 340,
+        "height": 483,
+        "top48_sha256": "4ff6ded26ac4018b9991b043cbd74f6a5ab6d912a864eba9990cc980e62732bd",
+        "protocol_lines": [
+          "REPORT_TEXT row=0 column=0 value=a.bin",
+          "REPORT_TEXT row=0 column=1 value=O:\\repos.hobby\\win16style\\build\\t15-controls\\s7-doublekiller\\data\\",
+          "REPORT_TEXT row=0 column=2 value=32",
+          "REPORT_TEXT row=0 column=3 value=10/25/2026 5:11:40 AM",
+          "REPORT_TEXT row=0 column=4 value=91267E8A",
+          "REPORT_TEXT row=1 column=0 value=b.bin",
+          "REPORT_TEXT row=1 column=1 value=O:\\repos.hobby\\win16style\\build\\t15-controls\\s7-doublekiller\\data\\",
+          "REPORT_TEXT row=1 column=2 value=32",
+          "REPORT_TEXT row=1 column=3 value=10/25/2026 5:11:40 AM",
+          "REPORT_TEXT row=1 column=4 value=91267E8A",
+          "CUSTOM_DRAW stage=00000001 item=0 subitem=0 state=00000000 result=20 font_changed=0 font=MS Sans Serif height=-11 color_before=00000000,00000000 color_after=00000000,00000000 child_live=1 parent_live=1",
+          "CUSTOM_DRAW stage=00010001 item=0 subitem=0 state=00000211 result=2 font_changed=1 font=MS Sans Serif height=-11 color_before=00000000,00ffffff color_after=00000000,00eeeeee child_live=1 parent_live=1",
+          "CUSTOM_DRAW stage=00010001 item=1 subitem=0 state=00000201 result=2 font_changed=1 font=MS Sans Serif height=-11 color_before=00000000,00ffffff color_after=00000000,00eeeeee child_live=1 parent_live=1",
+          "CUSTOM_DRAW stage=00000001 item=0 subitem=0 state=00000000 result=20 font_changed=0 font=MS Sans Serif height=-11 color_before=00000000,00000000 color_after=00000000,00000000 child_live=1 parent_live=1",
+          "CUSTOM_DRAW stage=00010001 item=0 subitem=0 state=00000211 result=2 font_changed=1 font=MS Sans Serif height=-11 color_before=00000000,00ffffff color_after=00000000,00eeeeee child_live=1 parent_live=1",
+          "CUSTOM_DRAW stage=00010001 item=1 subitem=0 state=00000201 result=2 font_changed=1 font=MS Sans Serif height=-11 color_before=00000000,00ffffff color_after=00000000,00eeeeee child_live=1 parent_live=1",
+          "HEADER_ITEM i=0 ok=1 rect_ok=1 rect=0,0,138,17 width=138 format=4000 state=0 image=0 text=Filename",
+          "HEADER_ITEM i=1 ok=1 rect_ok=1 rect=138,0,259,17 width=121 format=4000 state=0 image=0 text=Path",
+          "HEADER_ITEM i=2 ok=1 rect_ok=1 rect=259,0,325,17 width=66 format=4001 state=0 image=0 text=Size",
+          "HEADER_ITEM i=3 ok=1 rect_ok=1 rect=325,0,409,17 width=84 format=4000 state=0 image=0 text=Date",
+          "HEADER_ITEM i=4 ok=1 rect_ok=1 rect=409,0,485,17 width=76 format=4000 state=0 image=0 text=CRC32"
+        ],
+        "state": [
+          "PROCESS pid=18180 tid=8816 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\build\\t15-package\\s7-report-final\\candidate\\ntw16s32.dll root_attached=1",
+          "LIST_PROTOCOL attached=1 count=2 ext=00000522 view=0 header=00B60D2E parent_ok=1 normal_images=00000000 small_images=00000000 state_images=00717C08 background=00ffffff text_background=00ffffff text_color=00000000",
+          "REPORT_ROLE cached_property=1 native_owner=69D60000 native_extra=4 actual_extra=4 header=00B60D2E style=56810049",
+          "CUSTOM_DRAW_OBSERVE_DONE events=6 no_return_or_payload_changes=1 no_rows_inserted=1"
+        ]
+      }
+    },
+    "final_report_font": "existing stroke-preserving host System lease selected only for new report adapter; no font generator or established typography change"
+  },
+  "limits": [
+    "paint/print-only report text, not arbitrary immediate native drawing",
+    "group/nonreport/ownerdata/ownerdraw and unsupported client-edge/frame modes remain native",
+    "reparenting, label editing, full multilingual/RTL/IME/accessibility and physical input unproved",
+    "generic pending-frame cancellation analogy unconfirmed, retained for T15 lifecycle audit",
+    "HD Tune elevated real-app default skip; other families receive next S"
+  ],
+  "failures_and_corrections": {
+    "first_package": {
+      "error": "Package test failed: list-report-v5-32, exit 1",
+      "status": "failed-or-inconclusive"
+    },
+    "fixture_rc": "actual x86 legacy callback rc indeterminate, e.g.2001172212,5405,32,67179805; solid brush isolation still fails; public LVM_GETITEMRECT fixes fixture, strict assertions retained",
+    "point_sampling_package": {
+      "cases": 69,
+      "status": "passed",
+      "package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s7-report-corrected\\candidate",
+      "seconds": 359.3600634,
+      "sha256": {
+        "demo.exe": "a86d44302fabdd28754af3e979fa17351bafbfac38baed25529c3fa07b675444",
+        "ntw16s32.dll": "b50415c806822537116b57dae53de7753a403fc002d8e019058c61f4c95793db",
+        "ntw16s64.dll": "d5df8ded3c6c5729c7d2db0b438e0ecb2eb6654442e77dfa4c552871b0ac1b6a",
+        "run16s.exe": "c47096fe84351bfdc6ec788e660691f839c6ad1cad8ee9d121d9251d1fa69529"
+      },
+      "full_integration": true,
+      "jobs": 4,
+      "physical_input": "not-tested",
+      "core_matrix": "separate Build-Core matrix required"
+    },
+    "point_sampling_disposition": "69 pass in359.3600634s but superseded after real11px E/8 loss; never published",
+    "old_package_negative": {
+      "cases": 4,
+      "x86_x64_comctl5_6": "exit1 at unchanged glyph assertion; residual last-error5/126 incidental"
+    },
+    "point_prototype_negative": {
+      "cases": 4,
+      "x86_x64_comctl5_6": "exit1 at independent E8M0 bitmap mask assertion"
+    },
+    "initial_query": "non-paint group-query recursion corrected before accepted builds; narrow form also occurs with unchanged old package, no regression/fix claim"
+  },
+  "owned_fixture": {
+    "image_copy": "O:\\repos.hobby\\win16style\\build\\t15-controls\\s7-doublekiller\\DoubleKiller.exe",
+    "sha256": "cdd83ab909db749992d11ace2dff671493c0568d7a14697f8bef4b06d8647ca8",
+    "image_source": "D:/programs/misc/DoubleKiller.exe",
+    "files": [
+      {
+        "sha256": "630dcd2966c4336691125448bbb25b4ff412a49c732db2c8abc1b8581bd710dd",
+        "length": 32,
+        "name": "a.bin"
+      },
+      {
+        "sha256": "630dcd2966c4336691125448bbb25b4ff412a49c732db2c8abc1b8581bd710dd",
+        "length": 32,
+        "name": "b.bin"
+      },
+      {
+        "sha256": "72dbb7336c76780023f83da4c355f2eeea85733b13d3477697917790c1229084",
+        "length": 32,
+        "name": "c.bin"
+      }
+    ],
+    "data_hex": {
+      "a.bin": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "b.bin": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "c.bin": "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f"
+    }
+  },
+  "images": {
+    "DoubleKiller-list-before.png": {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t15-s7\\DoubleKiller-list-before.png",
+      "sha256": "add0252f1442eae5cfd8c4f7af74b760278fe9cf02b70e762638d3591f6453f3"
+    },
+    "DoubleKiller-list.png": {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t15-s7\\DoubleKiller-list.png",
+      "sha256": "7bb75248c9b6285248a6debad206df74ec181012666d7be2d3cc59b86a4c3ae9"
+    },
+    "DoubleKiller.png": {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t15-s7\\DoubleKiller.png",
+      "sha256": "bace9429ba9d3f7fb08b5bbb2ba31e87af6e07c0ab1859661c05f6f2e218aeff"
+    },
+    "MadShow.png": {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t15-s7\\MadShow.png",
+      "sha256": "f487e395421d3e6d774a726ffcfadda776983b655d5a6bc4461f59e4d21fee15"
+    },
+    "MD5summer.png": {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t15-s7\\MD5summer.png",
+      "sha256": "d0d03737cad6aee6b7fa84faa1d912cee35cd00404fc1906e40f99a13a39bdf1"
+    }
+  },
+  "change_statistics": {
+    "scope": "product/test/build only; docs/binaries excluded; new test counted explicitly",
+    "files": 10,
+    "added": 355,
+    "deleted": 28,
+    "net": 327,
+    "paths": [
+      "CMakeLists.txt",
+      "src/ntw16s-dll/attachment.c",
+      "src/ntw16s-dll/control_protocol.c",
+      "src/ntw16s-dll/control_protocol.h",
+      "src/ntw16s-dll/injection/window_titles.c",
+      "src/ntw16s-dll/vb_text.c",
+      "src/ntw16s-dll/vb_text.h",
+      "tests/ntw16s-dll/vb_font.c",
+      "tools/Test-Package.ps1",
+      "tests/ntw16s-dll/list_report.c"
+    ],
+    "old_paths": "none deleted/moved; original resources retained",
+    "other_tasks": "QUEUE and global-style-mode/outline-window-move proposals preserved unstaged"
+  }
+}

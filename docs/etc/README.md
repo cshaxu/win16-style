@@ -25,6 +25,7 @@
 | [evidence/control-protocols.json](evidence/control-protocols.json) | T15 S4初始化后框架协议角色、原生图像/PushLike/client-edge、实际应用及失败原型/发布证据 |
 | [evidence/tab-controls.json](evidence/tab-controls.json) | T15 S5原生/框架页签、原生布局/通知、字体同步、安装取消所有权与实际包验证；状态见CURRENT |
 | [evidence/header-controls.json](evidence/header-controls.json) | T15 S6原生文字表头协议/实际列与像素、通知/取消、回调与内存/DC所有权、有限保留模式及包验证 |
+| [evidence/report-list.json](evidence/report-list.json) | T15 S7受控报告列表文字、真实DK custom-draw/小字形、独立位图/负例/所有权及实际包发布证据 |
 | [product-contract.json](product-contract.json) | 架构权威的机器映射；组件/产物变化必须同步审核 |
 | [import](import/README.md) | 来源基线与 Git blob 清单；只作导入对照，不能成为构建输入 |
 | [operations/source-policy.md](operations/source-policy.md) | 导入来源处置及用户明确的原资源身份要求；完整保留原声明 |

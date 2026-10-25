@@ -2,11 +2,13 @@
 
 ## Current Work
 
-S6普通文字表头已完成：65实际包/10新增聚焦/12保留、DK/MD5/VB、双发布与八摘要，
-P1远端195；P2修正已提交测试LF回执后严格归档/远端192/双宽重建12通过，清理后关闭。
-按自动续S授权准入S7，固定M0/T15；列表行将独立核实既有custom-draw，不能把边框附着
-算作行绘制。HD Tune管理员实测继续默认skip、不计通过。[S6记录](../history/M0-T15-S6-header-controls.md)
-和[证据](../etc/evidence/header-controls.json)保留实际范围/回执修正及交接。
+S7普通报告列表文字已实现：保留真实DK custom-draw字体/颜色/返回值，经准确绘制DC
+暂借现有保细笔画System字形；11px E/8实际可读，标准控件/标题/菜单及原资源不变。
+最终同批四文件69/69实际包、双发布八摘要、安装12聚焦+2首次注入矩阵和真实DK/MD5/VB
+通过。旧包4负例及丢笔画原型4负例均检出。修正过x86测试未初始化rc假设，失败不隐去。
+待实际推送/远端/归档复核与scratch安全清理后才关闭S7；M0/T15保持开放，HD Tune提权
+实测默认skip、不计通过。[S7记录](../history/M0-T15-S7-report-list.md)和
+[证据](../etc/evidence/report-list.json)保留有限范围及未覆盖面。
 
 ## M0 T15 S7 Packet
 
@@ -35,20 +37,18 @@ P1远端195；P2修正已提交测试LF回执后严格归档/远端192/双宽重
 - Last allocated T: 15
 - Last allocated Td S: 13
 - Owner allocation constraint: 只可自行划分后续S，不得自行分配新T；保持现有T15/M0。
-- Last delivery: M0 T15 S6 P3（P1 937fab06产品/远端195，P2 82e9135回执修正/实际远端192与严格归档通过；本P关闭S6/准入S7）
+- Last delivery: M0 T15 S7 P1（本地69实际包/双发布/安装及真实应用通过；实际推送/远端与归档复核待完成，不提前关闭S7）
 - Open task: T15自动续S实施/任务级审计中；S7活动，S6/S5/S4/S3/S2/S1关闭；Td S13/S12/S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
 
 ## Technical Baseline
 
-0.15.0.0 / S6普通文字表头四文件已双发布，183输入/65实际包384.854秒、10聚焦/12保留、
-DK五列/四页及MD5/VB、八部署/12安装ABI表头与两启动矩阵通过；标题/页签顶部48行原样。
-P1实际远端195匹配；P2按已提交Git LF字节修正测试回执，不改C逻辑/资源/门禁/已测包，
-实际远端192/严格归档与导出源双宽重建12通过。三组件四产物/ABI3/31导出/31detours/
-32slots、原五头/声明和18表保持。报告行仍未实现，特殊表头格式保留原生；HD Tune
-本包提权实测依用户要求skip，不将历史观察计通过。[记录](../history/M0-T15-S6-header-controls.md)
-和[证据](../etc/evidence/header-controls.json)保留真实覆盖、失败/修正和未覆盖面。
-183源码/当前八文件/旧八备份可恢复；两scratch无reparse/活exe0、67DLL占用0，提炼后
-安全清理，仅七份已审观察器源码交接S7；稳定Ninja/ccache与外部PNG保留，其他状态保持。
+0.15.0.0 / S7普通报告列表文字四文件已双发布，184输入、69实际包406.962秒、安装12
+聚焦+2启动矩阵及真实DK/MD5/VB通过；旧包4负例/丢笔画原型4负例有效。报告行仅新建
+已拥有的初始化列表和同步paint/print准确DC，保留原生数据/图像/字体属性/列几何/
+custom-draw；新列表复用现有保笔画租约，标题/字体生成/菜单/滚动条/原五头/声明/
+18表、三组件四产物/ABI3/31导出/31detours32slots不变。当前P1仍待实际远端/归档
+复核与安全清理，不关闭S7/T15；HD Tune提权默认skip。详情见[S7记录](../history/M0-T15-S7-report-list.md)
+及[证据](../etc/evidence/report-list.json)。S6已关闭，其他任务状态和改动保持。
 
 ## Recent Closure
 
