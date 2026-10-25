@@ -6,17 +6,38 @@ T15经S12冻结18单位审计收口：15有限实现/回归、2原生保留/边�
 提权skip；不将附着、原生保留或skip冒充换肤成功。S12独立干净双宽、同批四文件
 91实际包389.556秒、14安装、双发布八摘要及真实MD5/DK/标题掩码0差异通过；实际
 远端207/197输入、严格归档双DLL+4、201对象恢复及258映像安全清理通过。49已审
-源码和稳定缓存/外部PNG保持。S12/T15关闭，M0开放；当前无活动任务包，停待用户
-外观验收，不自动准入队列候选。有限支持和未覆盖面见[审计](../history/M0-T15-S12-framework-audit.md)/[证据](../etc/evidence/framework-audit.json)。
+源码和稳定缓存/外部PNG保持。S12/T15关闭，M0开放；本次仅准入Td S14文档登记收口；停待用户
+外观验收，不准入候选产品实现。有限支持和未覆盖面见[审计](../history/M0-T15-S12-framework-audit.md)/[证据](../etc/evidence/framework-audit.json)。
+
+## M0 Td S14 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Governance；顺序准入Td S14，仅候选文档登记与提交收口，不新数值T |
+| Admission And Approval | 用户要求对话框proposal排第2位，随后批准本T收口提交推送；既有队列轮廓拖动/全局模式文档一并原样登记 |
+| Objective | 提交完整三项候选提案及队列顺序，实际远端复核后关闭文档S；T15保持关闭，M0开放 |
+| Non-goals | 不准入候选实现，不分配实现T/S/P、不改规则/产品/发布包，不重新运行产品测试或触发UAC |
+| Reference Baseline | 93137e231795018c4b8787d55d63733f369b4eb7；T15已收口，197产品输入及八部署摘要核对保持 |
+| Candidate Proposal | [对话框适配](../proposals/classic-folder-dialogs.md)、[轮廓拖动](../proposals/outline-window-move.md)、[全局模式](../proposals/global-style-mode.md)；顺序仅由QUEUE拥有 |
+| Files And ABI Surface | 仅QUEUE/三份proposal/CURRENT/本S历史；无产品源码、ABI或binary change |
+| Applicable Rules | Task Reading Set、EXECUTION、DOCUMENT、CONTRIBUTING；不覆盖其他工作，不破坏Git |
+| Verification | 治理SelfTest13负例、diff检查、队列1/2/3及局部链接、197源和八部署不变、实际提交/远端逐字节复核 |
+| Expected Markers | 候选顺序轮廓拖动/对话框/全局模式；全部未分配实现T编号；远端四文档完整且无悬空链接 |
+| Asset Needs | 无新增scratch根或产品包；复用已保留verify-remote.py，只产生可删除的远端原始收据 |
+| Reporting Requirements | 说明只提交候选登记、未启动实现；两份先前未跟踪proposal内容逐字节保留；不虚构编译/发布 |
+| Stop Conditions | 未授权产品范围或发现其他任务新增改动则保留并仅审查本次登记，不新T |
+| Exit Criteria | 文档门禁、提交推送及实际远端复核通过后关闭Td S14；无活动包，T15关闭/M0开放 |
+| Original Owner Request | 关于这个对话框风格问题，加入到队列第2位作为一个单独proposal；本T可以收口提交推送 |
+| Similar-Issue Sweep | 三项proposal与队列链接/顺序/边界一致；对话框API区分、原资源及三组件四产物限制保持 |
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 15
-- Last allocated Td S: 13
+- Last allocated Td S: 14
 - Owner allocation constraint: 不得自行分配新T；T15已收口并停待用户验收，M0保持开放，队列候选未准入。
 - Last delivery: M0 T15 S12 P2（冻结18单位审计/独立91实际包/14安装/远端207/197输入/201对象恢复/258映像清理；S12/T15关闭）
-- Open task: 无活动任务包；T15 S12/S11/S10/S9/S8/S7/S6/S5/S4/S3/S2/S1及T15关闭，M0开放等待用户验收；Td S13/S12/S11、T14 S3/T14、T13/T12/T11/T9/T8及Td S9/S10保持关闭；T10取消。
+- Open task: Td S14候选登记文档交付/远端复核；T15 S12/S11/S10/S9/S8/S7/S6/S5/S4/S3/S2/S1及T15关闭，M0开放等待用户验收；Td S13/S12/S11、T14 S3/T14、T13/T12/T11/T9/T8及Td S9/S10保持关闭；T10取消。
 
 ## Technical Baseline
 
