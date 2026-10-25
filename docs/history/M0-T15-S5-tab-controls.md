@@ -5,7 +5,9 @@ The baseline is c33417117f329fa07ddeb78aa9416d82079c7873 and the published S4 pa
 CURRENT owns status. Clean dual-width build, 55 actual-package cases, twelve new
 focused and twelve preservation cases pass. Both destinations are published with
 eight matching hashes, twelve installed ABI/tab/owner cases and two isolated
-installed-byte launch matrices pass. Actual remote review is pending.
+installed-byte launch matrices pass. P1 a4b7e22916dbd4572654138e861432cef1bb8694 is pushed; actual remote193 files
+match, including179 inputs and four products. Canonical archive rebuild12checks and safe cleanup complete; P2 records S5
+closure and S6 admission.
 Other tasks' queue/proposal edits are preserved and excluded from this delivery.
 
 ## Diagnosis and finite implementation
@@ -120,3 +122,34 @@ identities, filenames/PE widths, installed markers, skips and remote follow-up
 are in the indexed evidence and release record. T15/M0 remain open; the next
 family is list/header, followed by tree/progress/trackbar/updown and the separate
 finite task-level coverage audit, including the unconfirmed frame-owner analogy.
+
+
+## P1 actual remote and archive review
+
+Actual GitHub main193files match a4b7e22916dbd4572654138e861432cef1bb8694;
+179 source inputs and four products are included, plus actual changed metadata.
+The actual archive passes strict source/resource/governance negative gates.
+An initially over-strict raw-snapshot equality assertion failed on Build-Package.ps1.
+The full audit finds exactly two CRLF-to-LF differences, Build-Package.ps1 and
+Verify-Governance.ps1, both matching their explicitly recorded Git-blob SHA256.
+All product C/H/resources equal tested bytes. No content normalization is accepted
+by the strict source/resource gate. The exported source is rebuilt and native
+ABI/tab/cancellation contracts rechecked independently before final closure.
+
+
+## Closure and handoff
+
+Canonical exported source cleanly builds both widths and passes twelve ABI/tab/
+callback checks. Its isolated clean cache was cold (build60.998s/91.834s); ordinary
+iteration and package builds retain the stable Ninja/ccache paths. This extra
+build addresses the export-script EOL discrepancy; it is not a replacement for
+55 actual-tested-package cases. P1 remote193/archive strict gates pass.
+179 committed source identities/current8 deployment/old8 backup identities are
+verified recoverable. Both exact registered roots have no reparse points or live
+task executable; all68scratch DLLs have zero Restart Manager owners. Selected
+facts were extracted before obsolete package/build/log/probe trees were deleted.
+Only md5-driver.c,md5-probe.c,file-owners.c,verify-remote.py remain for the next S;
+admin probe/controller files are removed. Stable .ninja/.ccache and external PNG
+acceptance captures remain. S5 closes; S6 begins list/header public-protocol
+research and finite adaptation. T15/M0 and other tasks' changes remain open.
+Elevated HD Tune real-app tests now default to skip by the owner's instruction.

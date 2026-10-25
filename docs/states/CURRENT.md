@@ -2,32 +2,32 @@
 
 ## Current Work
 
-S5分页原型已实现，12新增聚焦/12保留、55实际包361.218秒通过；旧包双宽四负例检出，
-真实DK四页/MD5/VB正常退出且Job空、DK标题顶部24行原样。用户最新要求跳过HD Tune
-管理员实测且今后默认不测；本项记skip，不计通过，不再等待或重发UAC。八部署一致、12安装ABI/分页/取消与两启动矩阵通过；本地已发布、待提交推送/实际远端复核，
-S5/T15/M0保持开放，不分配新T。[本S记录](../history/M0-T15-S5-tab-controls.md)及
-[证据](../etc/evidence/tab-controls.json)登记当前事实和未覆盖面。
+S5已完成分页/回调所有权适配，55实际包/12新增聚焦/12保留、真实DK/MD5/VB、双发布、
+179输入/八摘要、P1远端193/实际归档严格门禁及重建12通过；安全清理后关闭。
+按用户自动续S授权准入S6，固定M0/T15；HD Tune管理员实测本次及后续默认skip，
+不计通过、不再弹UAC。[S5记录](../history/M0-T15-S5-tab-controls.md)及
+[证据](../etc/evidence/tab-controls.json)保留真实范围、失败尝试及交接。
 
-## M0 T15 S5 Packet
+## M0 T15 S6 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S4关闭后顺序准入S5，唯一活动S，不复用编号 |
-| Admission And Approval | 用户“批准 自动准入s任务 到t收口为止”；永久提交推送/双发布授权保持；用户最新要求本次及后续默认跳过HD Tune管理员实测，不再自动弹UAC |
-| Objective | 核实并适配HD Tune的SysTabControl32与DoubleKiller的TPageControl分页，保持原页面/数据/图标/选择/原生通知及输入行为；过大时明确交接自动拆续S |
-| Non-goals | 本S不实现列表/表头/树/进度/滑块/微调或自绘图表；不盲按类名前缀，不猜私有对象/过程；标题/字体策略/菜单/滚动条/原资源及启动传播不改 |
-| Reference Baseline | 502ec8389d20c89f80e1ee4b11a9b54ea67a39d2（严格归档/实际远端184通过）；产品5e8f880b9f893441cf61bf345218371b2c45b313四文件0.15.0.0，175输入/45包/12聚焦/八部署一致 |
-| Candidate Proposal | [框架完成分解](../proposals/framework-completion.md)；[前S事实/交接](../history/M0-T15-S4-control-protocols.md)及[证据](../etc/evidence/control-protocols.json) |
-| Files And ABI Surface | 唯一control renderer及私有分类/创建附着、纯C测试和可审原生探针；三组件四产物/ABI3/31导出保持，无新增产品或外部后端；新增内部hook先审容量 |
-| Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT、UI与来源策略；C17/MinGW GCC/Ninja/ccache；禁computer-use，兄弟仓库只读且不依赖 |
-| Verification | 先原生只读协议/布局/绘制与有限方案，再自包含双宽裸/注入对照、旧包负例/通知及生命周期；真实DK/MD5/VB保留；HD Tune管理员实测按用户最新指令skip；双宽干净四文件实际包/双发布/实际远端 |
-| Expected Markers | 正常显示标签/边框/图标/实际字形像素、Tab布局及DPI、选择/原生取消/键盘/焦点/通知数据、回调销毁/字体/资源释放；不以附着代替绘制 |
-| Asset Needs | build/t15-controls承接S4七份已审观察器/复核源码并登记本S诊断；build/t15-package登记新干净包/备份；先提炼后安全清理，稳定.ninja/.ccache和外部验收PNG保留 |
-| Reporting Requirements | 实测断点、原生/框架身份与初始化边界、有限方案/覆盖、旧包负例、实际包/两处发布/远端协调复核；不冒称未实现公共控件或应用页面已适配 |
-| Stop Conditions | 未授权提权/共享宿主/重大架构安全边界保留证据；不得扫描注入既有进程、改系统设置、吞应用回调或放宽门禁；安全识别失败明确交接，不造成功 |
-| Exit Criteria | 有限分页支持及负例/双宽回归、同批四文件实际包、binary变化双发布/八摘要/安装复验、提交推送/实际远端/协调复核及卫生后关闭S5；自动续后续S，T15另做覆盖审计 |
-| Original Owner Request | “好 怎么办吧”“批准 自动准入s任务 到t收口为止”；MD5summer/HD Tune等传统程序框架及公共控件适配 |
-| Similar-Issue Sweep | 标准SysTabControl32与真实超类/已验证TPageControl区别；普通/多行/按钮/图标/ownerdraw/空及隐藏控件，原生几何/通知/取消/回调生存期；未知初始化阶段不探测 |
+| Identifier Mode | Continuation；S5关闭后顺序准入S6，唯一活动S，不复用编号 |
+| Admission And Approval | 用户“批准 自动准入s任务 到t收口为止”；永久提交推送/双发布授权保持；最新要求本次及以后默认跳过HD Tune管理员实测，除非另行要求恢复 |
+| Objective | 定位SysListView32/TListView及SysHeader32公开协议和真实绘制断点，在现有renderer内完成可证的有限适配；保持原数据/图标/几何/通知/输入，过大自动拆续S |
+| Non-goals | 本S不实现树/进度/滑块/微调/应用自绘图表，不冒称任意VCL类或ownerdraw/ownerdata支持；标题/字体生成策略/菜单/滚动条/原资源/启动传播不改；不做HD Tune提权实测 |
+| Reference Baseline | a4b7e22916dbd4572654138e861432cef1bb8694四文件0.15.0.0已双发布/远端193及归档重建12通过；S5关闭记录本P；179输入/55包/八部署一致 |
+| Candidate Proposal | [框架完成分解](../proposals/framework-completion.md)；[S5记录](../history/M0-T15-S5-tab-controls.md)/[证据](../etc/evidence/tab-controls.json)及S4真实类交接 |
+| Files And ABI Surface | 私有控件分类/绘制/创建附着、纯C测试和原生观察器；三组件四产物/ABI3/31导出保持；无新产品/外部后端，新增内部hook先审容量 |
+| Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT、UI与来源策略；纯C17/MinGW GCC/Ninja/ccache；禁computer-use；兄弟仓库只读且不依赖 |
+| Verification | 先只读原生/真实DK与MD5协议、几何和绘制，再有限方案/自包含双宽原生对照、旧包负例/生命周期；双宽干净同批四文件实际包、两处发布/安装复验/远端归档复核；HD Tune管理员观察skip |
+| Expected Markers | 项目/列/文字/图标的实际像素和DPI；数据/选中/焦点/排序/列宽及重排的原生通知/取消保持；回调销毁及借用资源释放，不凭附着认定绘制生效 |
+| Asset Needs | build/t15-controls登记S6探针/日志并承接四份已审源码；build/t15-package登记新干净包/备份；先提炼后安全清理，稳定.ninja/.ccache与外部PNG保留 |
+| Reporting Requirements | 断点/角色识别、有限方案/受支持及保留模式、原生像素/语义/负例、实际包/八部署/远端协调复核和未覆盖面；不把HD Tune历史证据算本包通过 |
+| Stop Conditions | 共享宿主/既有进程注入/重大架构安全边界保留证据；不改全局设置/资源、不猜私有对象、不吞回调、不放宽门禁；未验证模式保留原生并明确交接 |
+| Exit Criteria | 有限列表/表头支持或有证据的进一步分解；相应双宽构建/四文件实际包、binary变更双发布/八摘要/安装复验、提交推送/实际远端/协调复核/清理后关闭S6；自动续S，T15另做覆盖审计 |
+| Original Owner Request | “好 怎么办吧”“批准 自动准入s任务 到t收口为止”；MD5summer/HD Tune等传统应用控件适配；“跳过这个测试 以后默认不测” |
+| Similar-Issue Sweep | 原生SysListView32/SysHeader32与真实TListView身份；报告/图标/ownerdata/ownerdraw/隐藏/ANSI与Unicode、图像/回调文字/扩展数据、原生列/输入/通知/取消/重排、回调生存期；不改未验证模式 |
 
 ## Identifier State
 
@@ -35,21 +35,23 @@ S5/T15/M0保持开放，不分配新T。[本S记录](../history/M0-T15-S5-tab-co
 - Last allocated T: 15
 - Last allocated Td S: 13
 - Owner allocation constraint: 只可自行划分后续S，不得自行分配新T；保持现有T15/M0。
-- Last delivery: M0 T15 S4 P3（c33417117f329fa07ddeb78aa9416d82079c7873已推送/实际远端184通过；S4关闭，S5活动）
-- Open task: T15自动续S实施/任务级审计中；S5活动，S4/S3/S2/S1关闭；Td S13/S12/S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
+- Last delivery: M0 T15 S5 P2（P1 a4b7e22916dbd4572654138e861432cef1bb8694已推送/远端193与归档重建12通过；本P记录关闭S5/准入S6）
+- Open task: T15自动续S实施/任务级审计中；S6活动，S5/S4/S3/S2/S1关闭；Td S13/S12/S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
 
 ## Technical Baseline
 
-0.15.0.0 / T15 S4已双发布/P1远端187；P2旧回执修复后严格归档/远端184通过，S4关闭。
-175输入、C17/GCC16.1/Ninja/ccache干净双宽，45实际包364.181秒/12聚焦通过；
-MD5summer四角色/下拉、HD Tune84基础控件/六图标/隐藏3/菜单取消/native exit2、
-DK四页及MadShow19保留；两处安装复验、八摘要一致。88注册CTest并非全部执行。
-三组件四产物/ABI3/31导出及31 detours/32slots不变；原五头/声明及18表保持。
-[本S记录](../history/M0-T15-S4-control-protocols.md)和[证据](../etc/evidence/control-protocols.json)
-保留失败视觉候选、原生窗口DPI96及未覆盖面；175输入/八部署身份重检，旧scratch清理，
-七份源码交接S5。T15/M0及其他任务/债务保持，继续分页及后续公共控件。
+0.15.0.0 / T15 S5四文件已双发布，P1远端193通过；179输入、55实际包361.218秒、
+12新增聚焦/12保留与实际归档双宽重建12通过。普通顶部/多行分页、回调取消安装与
+字体有效性、DK四页/MD5/VB保持；八部署/12安装ABI分页取消/两启动矩阵一致。
+HD Tune本包提权实测按最新用户指令skip，后续默认不测，不以S4历史代替本包证据。
+三组件四产物/ABI3/31导出/31detours/32slots、原五头/声明与18表保持。实际96/144DPI
+仅覆盖记录中的原生探针，不冒称物理输入或任意模式。[记录](../history/M0-T15-S5-tab-controls.md)
+及[证据](../etc/evidence/tab-controls.json)保留失败原型/行尾复核/未覆盖与安全清理事实。
+仅四份已审观察器源码交接S6，稳定Ninja/ccache与外部PNG保持；T15/M0及其他状态不变。
 
 ## Recent Closure
+
+- [T15 S5分页/回调所有权](../history/M0-T15-S5-tab-controls.md)：55实际包/双发布、远端193/严格归档重建12、八摘要/安装及安全清理通过；HD Tune提权按用户要求skip，S5关闭、自动续S6，M0/T15开放。
 
 - [T15 S4框架角色/图像控件](../history/M0-T15-S4-control-protocols.md)：45包/12聚焦、四实际应用及八部署通过；P1远端187、P2修复旧回执后严格归档/远端184通过；安全清理/七源交接后关闭，自动续S5，T15/M0开放。
 
@@ -101,11 +103,10 @@ DK四页及MadShow19保留；两处安装复验、八摘要一致。88注册CTes
 
 ## Last Packet Closure
 
-T15 S4 P1 5e8f880完成已初始化框架角色、原生图像/PushLike/client-edge适配；45包/
-12聚焦及MD5四角色、HD Tune84基础控件/六图标/隐藏3/菜单/正常exit2、DK/VB保留，
-双发布/安装/八摘要通过。远端187文件匹配，协调实际归档发现旧authored行尾回执；
-P2 502ec83仅修正已提交LF身份，不放宽门禁/改资源；导出源码干净双宽构建/ABI和
-四MZ/NE原生回归通过，实际P2严格归档/175输入等同重建证明、远端184通过。
-两登记scratch绝对边界/无reparse/活exe0/110DLL占用0，八旧备份可由c5e110b恢复；
-提炼证据后清除旧构建/包/日志/探针，七份必要源码留build/t15-controls转S5，稳定
-Ninja/ccache及外部PNG保留。S4关闭，自动准入S5；T15/M0及其他任务状态不变。
+T15 S5 P1 a4b7e22916dbd4572654138e861432cef1bb8694完成有限分页与取消安装所有权修复；
+55实际包/12新增聚焦/12保留、DK四页/MD5/VB、八部署/安装复验通过；HD Tune管理员
+实测按用户最新要求skip，以后默认不测。实际远端193匹配，归档严格门禁及导出源
+双宽重建12通过；两个PS脚本仅已记录CRLF/LF身份差异，产品C/H与原资源相同。
+179源码/当前八文件/旧八备份身份可恢复；两精确scratch边界无reparse/活exe0、
+68DLL占用0，提炼后清理，仅四观察器源码转S6；稳定缓存/外部PNG保留。S5关闭，
+本P自动准入S6继续列表/表头；固定M0/T15，其他任务改动和状态保持。

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "packet": "M0 T15 S5",
-  "status": "verified/published locally, optional elevated HD Tune skipped by owner; commit and actual remote review pending",
+  "status": "S5 closed after P1 actual remote/archive verification, optional HD Tune skip by owner and completed safe cleanup; S6 admitted; M0/T15 open",
   "baseline_commit": "c33417117f329fa07ddeb78aa9416d82079c7873",
   "scope": [
     "top ordinary and multiline native SysTabControl32",
@@ -505,5 +505,100 @@
     "added": 471,
     "deleted": 26,
     "net": 445
+  },
+  "P1_actual_remote": {
+    "status": "passed",
+    "commit": "a4b7e22916dbd4572654138e861432cef1bb8694",
+    "remote_main": "a4b7e22916dbd4572654138e861432cef1bb8694",
+    "files": 193,
+    "source_inputs": 179,
+    "seconds": 19.643624200019985,
+    "receipt_sha256": "4c87255bd5b5d00d16af3f20a86e3cabd4f24e304981f61618cf06cbbf42cddc"
+  },
+  "P1_actual_archive": {
+    "status": "passed",
+    "inputs": 179,
+    "artifacts": 4,
+    "archive_input_identity": "exact recorded raw or explicit Git-blob SHA; differences are only CRLF-to-LF",
+    "archive_vs_tested_snapshot_EOL_only": [
+      "tools/Build-Package.ps1",
+      "tools/Verify-Governance.ps1"
+    ],
+    "first_check": "over-strict equality against raw tested snapshot failed on Build-Package.ps1; explicit recorded Git identities and CRLF-only comparison pass for both build scripts; strict source/resource gates unchanged",
+    "rebuild": {
+      "profile": "Focused",
+      "architectures": [
+        "x86",
+        "x64"
+      ],
+      "build_jobs": 8,
+      "test_jobs": 4,
+      "status": "passed",
+      "targets": "all",
+      "selection": "^core/(abi|tab-controls|tab-controls-dpi|tab-controls-v5|tab-controls-v5-dpi|pending-control-owner)$",
+      "build_root": "O:\\repos.hobby\\win16style\\build\\t15-controls\\s5-committed-review\\build\\.ninja",
+      "exit_code": 0,
+      "tests": [
+        {
+          "test_seconds": 1.9336743999738246,
+          "configure_seconds": 7.208267999987584,
+          "skipped": [],
+          "architecture": "x86",
+          "build_seconds": 60.99820480000926,
+          "passed": 6,
+          "tests": 6
+        },
+        {
+          "test_seconds": 2.1667445999919437,
+          "configure_seconds": 5.188976700010244,
+          "skipped": [],
+          "architecture": "x64",
+          "build_seconds": 91.83416450000368,
+          "passed": 6,
+          "tests": 6
+        }
+      ]
+    },
+    "strict_source_resource_governance": "passed; no gate relaxation"
+  },
+  "closure": {
+    "P1": "a4b7e22916dbd4572654138e861432cef1bb8694",
+    "scope": "S5 only, M0/T15 remain open",
+    "source_inputs_recoverable_from_commit": 179,
+    "old_backups_recoverable_from_commit": "c33417117f329fa07ddeb78aa9416d82079c7873 assets; 8 hashes checked",
+    "deployed_rechecked": 8,
+    "cleanup_safety": {
+      "live_scratch_executables": 0,
+      "dlls": 68,
+      "reparse_points": 0,
+      "roots": [
+        "O:\\repos.hobby\\win16style\\build\\t15-controls",
+        "O:\\repos.hobby\\win16style\\build\\t15-package"
+      ],
+      "queries": [
+        {
+          "resources": 32,
+          "result": "RM_QUERY_OK resources=32 owners=0 reasons=0"
+        },
+        {
+          "resources": 32,
+          "result": "RM_QUERY_OK resources=32 owners=0 reasons=0"
+        },
+        {
+          "resources": 4,
+          "result": "RM_QUERY_OK resources=4 owners=0 reasons=0"
+        }
+      ],
+      "status": "safe-to-clean"
+    },
+    "keep_sources": [
+      "md5-driver.c",
+      "md5-probe.c",
+      "file-owners.c",
+      "verify-remote.py"
+    ],
+    "cleanup": "completed: deleted obsolete registered package/build/log/probe trees after evidence/recovery and no-reparse/live-exe0/68 DLL owners0 checks; retained only md5-driver.c,md5-probe.c,file-owners.c,verify-remote.py; stable .ninja/.ccache and external PNG preserved",
+    "closing_delivery": "M0 T15 S5 P2",
+    "following_scope": "list/header public protocols and finite adaptation; later tree/progress/trackbar/updown; elevated HD Tune observation defaults to skip"
   }
 }

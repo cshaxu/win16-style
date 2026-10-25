@@ -19,8 +19,12 @@ S4已完成MD5summer四个框架角色、HD Tune图像/PushLike及client-edge编
 
 ## 当前与后续有限分解
 
-- S5：分页控件，先核实HD Tune的SysTabControl32及DoubleKiller的TPageControl协议/绘制，
-  在既有renderer内适配标签/边框/图标/字体，保持选择/取消/通知/键盘/焦点及应用页面。
+- S5已关闭：普通顶部/多行SysTabControl32与已验证TPageControl分页、布局/通知/取消及
+  字体同步；55实际包/12聚焦/12保留、DK/MD5/VB、双发布/远端193/归档重建12及安全清理
+  通过。HD Tune本包管理员实测按用户要求skip，不据此承诺其真实页面；见
+  [记录](../history/M0-T15-S5-tab-controls.md)及[证据](../etc/evidence/tab-controls.json)。
+- 当前S6：列表/表头公开协议定位和有限适配，保持数据/图标/通知/布局/输入；过大则
+  按自动授权顺序拆续S，不通过宽泛类名或改系统设置实现。
 - 后续S：列表/表头、树、进度、滑块/微调逐类支持，保留数据/图标/选择/焦点/
   命令/键盘/原生通知，分别验证实际像素、DPI、卸载和资源。
 - 最后评估应用自绘图表/面板/无窗口标签的有限边界。不能凭模块加载/附着代替绘制，
@@ -33,5 +37,5 @@ S4已完成MD5summer四个框架角色、HD Tune图像/PushLike及client-edge编
 真实管理员探针，不再自动弹提示；除非用户另行要求恢复。此项记skip，不计通过，
 既有历史真实应用证据不冒充当前包复测；自包含双宽公共控件/包回归继续执行。
 
-CURRENT拥有唯一活动包。build/t15-controls承接S4已审的七份观察器/复核源码；build/t15-package
+CURRENT拥有唯一活动包。build/t15-controls仅承接S5已审的四份MD5观察器/占用与远端复核源码；build/t15-package
 登记每S新包和发布备份。原始证据先提炼后安全清理，稳定Ninja/ccache和外部验收PNG保留。
