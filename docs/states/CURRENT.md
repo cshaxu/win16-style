@@ -2,31 +2,55 @@
 
 ## Current Work
 
-无活动任务包。M0 Td S11 MadShow调查已完成并实际远端复核收口，M0开放。
-已证实VB6类名单兼容缺口、client-edge门槛及无窗口标签边界；仅调研，无产品变更。
-后续VB6控件适配列为未编号候选，尚未准入实施；T14及其他任务/债务状态保持。
+M0 T15 S1 verified：VB6/MadShow控件及客户区文字适配完成；同包31项、双发布和
+安装复验通过，等待P1提交推送及实际远端复核，不提前关闭。T15等待最终用户外观验收，
+M0开放；本次不扩大为全部VB6/OCX支持，既有任务/债务保持。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
-- Last allocated T: 14
+- Last allocated T: 15
 - Last allocated Td S: 11
 - Last delivery: M0 Td S11 P2 (P1 bb59d0a实际远端六文档通过；154产品输入/八部署未变；登记scratch已回收)
-- Open task: none；Td S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
+- Open task: T15 S1；Td S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
+
+## M0 T15 S1 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | New |
+| Admission And Approval | 用户批准VB6适配实施、必要时自动划分并执行后续S；提交推送和双发布沿用永久授权 |
+| Objective | 适配MadShow的VB6按钮、client-edge文本框及保留无窗口标签绘图的容器；验证受控标签字体路径 |
+| Non-goals | 不承诺所有VB/OCX；不修改兄弟仓库、系统设置、应用业务或原图形；不猜私有VB对象布局 |
+| Reference Baseline | 4a93d2e；T14 S3 0.14.0.0；Td S11原生类/窗口证据 |
+| Candidate Proposal | [VB6适配](../proposals/madshow-controls.md) |
+| Files And ABI Surface | DLL内部分类/绘制、原生测试及CMake/版本；三组件四产物，ABI3/31导出保持 |
+| Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT；Task Reading Set已读 |
+| Verification | 双宽原生自包含分类/绘制/清理测试；真实MadShow隔离实例、按钮/文本/标签消息及截图；双宽干净构建及完整实际包、原资源门禁 |
+| Expected Markers | VB_WINDOWED_OK、VB_CONTAINER_PAINT_OK、VB_EDIT_OK、VB_CLEANUP_OK；未覆盖与失败独立记录 |
+| Asset Needs | 原资源逐字节保留；scratch build/t15-vb、build/t15-package，仅本T拥有，证据提炼后安全回收；验收PNG保留于任务visualizations/win16style-t15-vb6 |
+| Reporting Requirements | 分类/绘制/实际交互分别证明；旧包负例、四文件八摘要、输入冻结、统计、提交推送及实际远端读取 |
+| Stop Conditions | 需要私有布局、全局设置或共享进程注入时停止该路径并给证据；不以模块存在代替实际绘制 |
+| Exit Criteria | 相关实测/双宽回归、同包发布复核；必要续S自动执行；T15完成后等待用户外观验收 |
+| Original Owner Request | 以VB6适配为重点；一个S装不下则多S自动准入执行，整个适配完成后停下来验收 |
+| Similar-Issue Sweep | 检查attachment/control_scope/controls全部类名单及容器、client-edge、字体释放、重复附着/清理 |
 
 ## Technical Baseline
 
-0.14.0.0 / T14 S3已验证/双发布/实际远端复核并收口；固定T14版本，由Git/SHA区分S3。
-154输入冻结、GCC16.1/Ninja/ccache干净双宽构建，27/27实际包253.77秒通过，
-双宽新单元/聚焦通过。MZ/NE系统Shell对照、独占/共享cmd/显式隐藏及无窗口共12路径；
-系统UI一次且stderr空，其他一次193无UI，退出4，精确映像/内核Job归零。
-S2无UI和S1双错误通道旧包均被检出；80份DLL/demo/UAC源逐字节保留。
-两处八摘要一致，已安装启动器12路径及双宽ABI3/31通过；原图形/声明/18表保留。
-73注册CTest未全部执行；物理Win+R/所有终端及历史两框来源不作已覆盖声明。
-新控制台创建瞬间仍可能短暂闪现，错误UI由Windows持有。详见
-[S3记录](../history/M0-T14-S3-console-errors.md)及[证据](../etc/evidence/console-error-routing.json)。
+0.15.0.0 / T15 S1本地verified并双发布；提交推送/实际远端复核待完成。
+163输入冻结，GCC16.1/Ninja/ccache干净双宽构建；31/31实际包250.62秒、
+最终双宽各5项聚焦及安装ABI/协议/真实MadShow通过，无skip。76注册CTest未全部执行。
+实际MadShow4按钮/13文本框/2分组附着及窗口less文字接入；两次整图一致，标题24行
+及画布与旧包相同。借用源字体/原编辑消息保留，32私有租约与映射释放、33源字体
+保留、分配配对0/0、容量/失败/屏障通过。宿主GDI总数另列观测，不假称全部OS缓存释放。
+两处八摘要一致；ABI3/31、原五头/声明/18表保持；三组件四产物，无第五文件。
+范围以[记录](../history/M0-T15-S1-vb6.md)及[证据](../etc/evidence/vb6-adaptation.json)为准；
+真实VB6只验证本机x86 MadShow，其他类/OCX/复杂文字和物理多屏未承诺。
+T14 S3启动错误语义、既有标题/标准字体/菜单/滚动条及其他任务状态保持。
 
 ## Recent Closure
+
+- [T15 S1 VB6适配（verified/待远端复核）](../history/M0-T15-S1-vb6.md)：31实际包/双发布及安装复验已通过，暂不标记收口。
 
 - [Td S11 MadShow控件调查](../history/M0-Td-S11-madshow-controls.md)：3有效对照/6自有实例，VB6的19控件分类及13个client-edge断点、无窗口标签边界已明；无产品改动；bb59d0a远端六文档通过，S11关闭。
 
@@ -72,4 +96,4 @@ M0 Td S11纯调查完成：本机MadShow为x86 VB6，实际DLL/四个入口detou
 3有效批次/6自有实例均正常退出、Job0；P1 bb59d0a实际取回六份文档通过，154产品
 输入及八部署摘要未变，无产品构建/发布。证据提炼后精确登记scratch已安全回收，
 提升只读进程预检无存活探针，稳定Ninja/ccache保留；治理自测通过。
-Td S11关闭，M0开放；产品T14等状态保持；VB6适配在QUEUE候选等待后续用户准入。
+Td S11关闭，M0开放；产品T14等状态保持；该调查后续已按新用户请求进入当前T15，调查本身不回写为产品交付。

@@ -76,6 +76,12 @@ try{
         (Case 'uac-unit-32' (Join-Path $x86 'uac-unit.exe') @() @('UAC UNIT PASS cases=8')),
         (Case 'uac-unit-64' (Join-Path $x64 'uac-unit.exe') @() @('UAC UNIT PASS cases=8'))
     )
+    $cases+=@(
+        (Case 'vb-font-32' (Join-Path $x86 'core-vb-font.exe') @((Join-Path $x86 'vb-fixture/MSVBVM60.dll')) @('VB_FONT_ZERO_OK requested=12','VB_FONT_ZERO_OK requested=14','VB_FONT_ZERO_OK requested=16','VB_OWNERSHIP_OK leases_retired=32 maps_freed=32 sources_preserved=33')),
+        (Case 'vb-font-64' (Join-Path $x64 'core-vb-font.exe') @((Join-Path $x64 'vb-fixture/MSVBVM60.dll')) @('VB_FONT_ZERO_OK requested=12','VB_FONT_ZERO_OK requested=14','VB_FONT_ZERO_OK requested=16','VB_OWNERSHIP_OK leases_retired=32 maps_freed=32 sources_preserved=33')),
+        (Case 'vb-controls-32' (Join-Path $x86 'core-vb.exe') @($run,(Join-Path $x86 'vb-fixture/MSVBVM60.dll')) @('VB_WINDOWED_OK bits=32 styled=1','VB_EDIT_OK undo=1','VB_EDIT_FONT_PIXELS changed=1','VB_CONTAINER_PAINT_OK label_changed=1','VB_CLEANUP_OK')),
+        (Case 'vb-controls-64' (Join-Path $x64 'core-vb.exe') @($run,(Join-Path $x64 'vb-fixture/MSVBVM60.dll')) @('VB_WINDOWED_OK bits=64 styled=1','VB_EDIT_OK undo=1','VB_EDIT_FONT_PIXELS changed=1','VB_CONTAINER_PAINT_OK label_changed=1','VB_CLEANUP_OK'))
+    )
     if($FullIntegration){
         $cases+=@(
             (Case 'creation-contract' (Join-Path $x64 'creation-contract-driver.exe') @($run,$d32,$d64,(Join-Path $x86 'creation-contract.exe'),(Join-Path $x64 'creation-contract.exe')) @('CREATION CONTRACT PASS 64') 520),

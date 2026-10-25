@@ -14,9 +14,9 @@
       "path": "src/ntw16s-dll/attachment.c",
       "source": "src/ntw16s-dll/attachment.c",
       "source_blob": "e467006ab99ada1846f9298b650c30605807466b",
-      "sha256": "0fec87597e901a7251a06b838189192a5474c11a2d6a3a59a3aba2a15e1c3c70",
+      "sha256": "84270028f5da4de702ad2c099daf855a6747c366b225f1635bed8afb9ce9ac2f",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -32,18 +32,18 @@
       "path": "src/ntw16s-dll/control_scope.c",
       "source": "src/ntw16s-dll/control_scope.c",
       "source_blob": "e7d2e565af452f8b618badb8e1df0d2ee644a77a",
-      "sha256": "c031ca3b4f23ad1431818861b480c49bdff5ca0ccd7cbe7f9954bf08d9a8e20c",
+      "sha256": "d192fdad564a121e7a0c7e8b792ac2e5393c288e23cb7caf8884c1a96f4f22f5",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
       "path": "src/ntw16s-dll/controls.c",
       "source": "src/ntw16s-dll/controls.c",
       "source_blob": "9bc3331d0f9fc3e3104059ab792670ab1579d65c",
-      "sha256": "5ae39749d8ff95d640784613451a6f371393deffa909439aa31c1d56bd8906ef",
+      "sha256": "c7e598570f8dc1c95403fa8d81e0e6bf1740dc7214bde651a1a6ebea281cc699",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -68,18 +68,18 @@
       "path": "src/ntw16s-dll/font.c",
       "source": "src/ntw16s-dll/font.c",
       "source_blob": "3bce01032d506f05bb571f8be35392f12c4dcebb",
-      "sha256": "4d66371f96e8c81c2dfb557d7274f24ebbb7f880971078049c300601bc73f961",
+      "sha256": "8ee09070abf99c9a171b009d4d83d56e916cab6bf8651be24f1090f0ad2414bd",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
       "path": "src/ntw16s-dll/font.h",
       "source": "src/ntw16s-dll/font.h",
       "source_blob": "772af2b70b85d897ea842003229b5d3e5795803e",
-      "sha256": "483b167c576bccce61c000a7b0ddf5ae9ed36892402e8aeabd2a4e6693396988",
+      "sha256": "94d1b584c77d3e27c26a83954b80a0cabb525904454ab6baf6e8c157b4f4d460",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -374,9 +374,9 @@
       "path": "src/ntw16s-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "ba8e6efd325b9a190c4b747dd5a1aa6a5696df48f9eac32ca1a1c42320e2fdb2",
+      "sha256": "e207cac9119ffb290fb400418e13fb8e298a581a66413bafcf92217e913e3913",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained",
       "notice": "Project-authored, repository MIT"
     },
     {
@@ -518,9 +518,9 @@
       "path": "src/run16s-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "82393101f2fa99283e93f4b9b44696e4ead79a833a2dfd2032d3071b4342292f",
+      "sha256": "0f514fb3b30a6ba693c443f3ac467c52349dd4485bc6a806b7e7d0ecbc1022c0",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -581,9 +581,9 @@
       "path": "src/ntw16s-dll/injection/window_titles.c",
       "source": "src/nthook32-dll/window_titles.cpp",
       "source_blob": "0a3d1cd942345edb25e879b9377311929551a0ec",
-      "sha256": "1bf8ab657967bd04f30bf0015a67cdeaacca33e314647d43de7229231a699c39",
+      "sha256": "d2ff549632667c06a809d04e7ff9e779cfb63821961811b4e90acacf80f8c48d",
       "disposition": "adapt",
-      "review": "T3 S2 same-DLL delayed binding and read-only native-target diagnostics; docs/proposals/launcher-injection.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending",
+      "review": "T3 S2 same-DLL delayed binding and read-only native-target diagnostics; docs/proposals/launcher-injection.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
     },
     {
@@ -734,9 +734,9 @@
       "path": "src/demo-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "fd8ebb8c52a84198e31e0eed2b0b0bb0f40aa5e16d4fe35e72371cb818170536",
+      "sha256": "7393a56e94534015943dc621c27a7cb7518c996ad1d5dcca3870426751e6451d",
       "disposition": "authored",
-      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained",
+      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained",
       "notice": "Project-authored source per frozen W16Style README; no third-party artwork"
     },
     {
@@ -1197,6 +1197,87 @@
       "notice": "Project-authored C17; project MIT license",
       "sha256": "9dee61cce6f1824be1d2fdfcd283e5f5e201326ade05ac3b165ac4d94f6680d0",
       "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes"
+    },
+    {
+      "path": "src/ntw16s-dll/control_class.h",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "sha256": "94d316e47581a1e174fe55da865d3e03455eda35b28f39af57506aa06040a4b8",
+      "review": "T15 S1: original private VB6 adaptation or self-contained native fixture; no copied external implementation"
+    },
+    {
+      "path": "src/ntw16s-dll/vb_text.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "sha256": "05a375003adbeac71de27a5ff1ccf3690c53382513f1c888ebe10b9f1e202f25",
+      "review": "T15 S1: original private VB6 adaptation or self-contained native fixture; no copied external implementation"
+    },
+    {
+      "path": "src/ntw16s-dll/vb_text.h",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "sha256": "f0fb75c0e46ea4ad2234a51c3a2fa95424c1187a92c935734fec88b52072506d",
+      "review": "T15 S1: original private VB6 adaptation or self-contained native fixture; no copied external implementation"
+    },
+    {
+      "path": "tests/integration/vb6_driver.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "sha256": "d4c73525c871cb93889caea3f4685abe1aba5ae103c390f27c89e2e52b4dd8be",
+      "review": "T15 S1: original private VB6 adaptation or self-contained native fixture; no copied external implementation"
+    },
+    {
+      "path": "tests/integration/vb6_probe.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "sha256": "0fab344949ebe06876306cd46a950082469eba4b9a79e26207f2f7ae8b00bae5",
+      "review": "T15 S1: original private VB6 adaptation or self-contained native fixture; no copied external implementation"
+    },
+    {
+      "path": "tests/ntw16s-dll/vb_controls.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "sha256": "78c988fa33ff004b5a3014cd679a72323b5b8b9ae8009a772bd2ec056f8a4076",
+      "review": "T15 S1: original private VB6 adaptation or self-contained native fixture; no copied external implementation"
+    },
+    {
+      "path": "tests/ntw16s-dll/vb_font.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "sha256": "04d17e2c2a2fca18ea6f8eb569792db4855877969c912d925181e20b660e55b8",
+      "review": "T15 S1: original private VB6 adaptation or self-contained native fixture; no copied external implementation"
+    },
+    {
+      "path": "tests/ntw16s-dll/vb_runtime.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "sha256": "670cc90885bc22ece682e736b3f08b9dbc31338837152b62b4eb725551c55913",
+      "review": "T15 S1: original private VB6 adaptation or self-contained native fixture; no copied external implementation"
+    },
+    {
+      "path": "tests/ntw16s-dll/vb_alloc.h",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "sha256": "ec4dfa34698a8ccc74c714e76c6775bc3bef501f31e3dc15daca00efdc80dd9e",
+      "review": "T15 S1: private allocation ownership fixture, no product ABI or external source dependency"
     }
   ]
 }

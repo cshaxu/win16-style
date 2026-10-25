@@ -1,3 +1,5 @@
+#include "vb_text.h"
+#include "control_class.h"
 #include "ntw16s.h"
 #include "native_api.h"
 #include "theme.h"
@@ -19,6 +21,7 @@ typedef struct attachment {
     unsigned calls;
     BOOL detached,frame,control;
     HWND themed;
+    ntw16s_vb_fonts fonts;
 } attachment;
 static _Thread_local ntw16s_creation_scope *current;
 static _Thread_local HHOOK creation_return_hook;
@@ -30,19 +33,17 @@ static attachment *lookup(HWND w)
     DWORD_PTR value;
     return GetWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc,&value)?(attachment *)value:NULL;
 }
-static BOOL class_is(HWND w,const WCHAR *name)
-{
-    WCHAR value[64];
-    return GetClassNameW(w,value,ARRAYSIZE(value)) && !lstrcmpiW(value,name);
-}
+#define class_is ntw16s_class_is
 static void release(attachment *a)
-{if(!--a->calls && a->detached)free(a);}
+{if(!--a->calls && a->detached){ntw16s_vb_fonts_clear(&a->fonts);free(a);}}
 static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
     attachment *a=(attachment *)data;LRESULT result;(void)id;
     ++a->calls;
     if(m==WM_NCDESTROY)(void)Ntw16sWindowTerminal(w);
+    ntw16s_vb_paint paint;ntw16s_vb_paint_begin(&paint,w,m,&a->fonts);
     result=DefSubclassProc(w,m,p,l);
+    ntw16s_vb_paint_end(&paint);
     release(a);return result;
 }
 BOOL __cdecl Ntw16sWindowAttached(HWND w)

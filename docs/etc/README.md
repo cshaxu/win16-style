@@ -16,6 +16,7 @@
 | [evidence/legacy-retry-cleanup.json](evidence/legacy-retry-cleanup.json) | T14 S2清理二次Shell、首次stderr/193、原生cmd和自有树清理及发布审计 |
 | [evidence/console-error-routing.json](evidence/console-error-routing.json) | T14 S3按控制台分流的原生UI/首次诊断、双旧版负例及双发布/审计证据 |
 | [evidence/madshow-controls.json](evidence/madshow-controls.json) | Td S11真实VB6应用的控件分类/原生状态/附着断点、有限候选及产品未变证据 |
+| [evidence/vb6-adaptation.json](evidence/vb6-adaptation.json) | T15 VB6分类、客户端字体/边框、真实MadShow对照、资源所有权、实际包及双发布证据 |
 | [release.json](release.json) | 当前开发包的输入/工具链/四文件哈希与验收范围，历史版本从对应Git提交取回 |
 | [product-contract.json](product-contract.json) | 架构权威的机器映射；组件/产物变化必须同步审核 |
 | [import](import/README.md) | 来源基线与 Git blob 清单；只作导入对照，不能成为构建输入 |

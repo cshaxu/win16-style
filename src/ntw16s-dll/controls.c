@@ -1,3 +1,4 @@
+#include "control_class.h"
 #include "controls.h"
 #include "control_glyphs.h"
 #include "combo_glyph.h"
@@ -35,34 +36,34 @@ static void dispose_control(control_style *s)
 {win16_style_system_release(s->font);free(s->tab_positions);free(s);}
 static LRESULT CALLBACK control_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static BOOL is_static(HWND w)
-{WCHAR name[16];return GetClassNameW(w,name,16) && !lstrcmpiW(name,L"STATIC");}
+{return ntw16s_class_is(w,L"STATIC");}
 static BOOL is_edit(HWND w)
-{WCHAR name[16];return GetClassNameW(w,name,16) && !lstrcmpiW(name,L"EDIT");}
+{return ntw16s_class_is(w,L"EDIT");}
 static BOOL is_list(HWND w)
 {WCHAR name[16];return GetClassNameW(w,name,16) && (!lstrcmpiW(name,L"LISTBOX") || !lstrcmpiW(name,L"ComboLBox"));}
 static BOOL is_combo(HWND w)
-{WCHAR name[16];return GetClassNameW(w,name,16) && !lstrcmpiW(name,L"COMBOBOX");}
+{return ntw16s_class_is(w,L"COMBOBOX");}
 static BOOL is_scroll(HWND w)
-{WCHAR name[16];return GetClassNameW(w,name,16) && !lstrcmpiW(name,L"SCROLLBAR");}
+{return ntw16s_class_is(w,L"SCROLLBAR");}
 static BOOL is_link(HWND w)
-{WCHAR name[16];return GetClassNameW(w,name,16) && !lstrcmpiW(name,L"SysLink");}
+{return ntw16s_class_is(w,L"SysLink");}
 static BOOL is_separator(HWND w)
 {DWORD type=(DWORD)GetWindowLongPtrW(w,GWL_STYLE)&SS_TYPEMASK;
  return is_static(w) && type>=SS_ETCHEDHORZ && type<=SS_ETCHEDFRAME;}
 
 static BOOL supported(HWND w)
 {
-    WCHAR name[16];DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),type=style&BS_TYPEMASK;
+    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),type=ntw16s_button_type(w,style);
     if(is_scroll(w))return !(style&SBS_SIZEGRIP);
     if(is_link(w))return TRUE;
     if(is_combo(w))return ((style&3)==CBS_DROPDOWNLIST || (style&3)==CBS_DROPDOWN || (style&3)==CBS_SIMPLE) &&
         !(style&(CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE));
     if(is_list(w))return !(style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA|LBS_USETABSTOPS));
-    if(is_edit(w))return !(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE);
+    if(is_edit(w))return ntw16s_vb_edit(w) || !(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE);
     if(is_static(w)){type=style&SS_TYPEMASK;return type==SS_LEFT || type==SS_CENTER || type==SS_RIGHT ||
         type==SS_ICON || type==SS_BITMAP || type==SS_SIMPLE || type==SS_LEFTNOWORDWRAP ||
         (type>=SS_BLACKRECT && type<=SS_WHITEFRAME) || (type>=SS_ETCHEDHORZ && type<=SS_ETCHEDFRAME);}
-    if(!GetClassNameW(w,name,16) || lstrcmpiW(name,L"BUTTON") || (style&(BS_ICON|BS_BITMAP|BS_PUSHLIKE)))return FALSE;
+    if(!ntw16s_class_is(w,L"BUTTON") || (style&(BS_ICON|BS_BITMAP|BS_PUSHLIKE)))return FALSE;
     if(type==BS_PUSHBUTTON || type==BS_DEFPUSHBUTTON || type==BS_GROUPBOX)return TRUE;
     return type==BS_CHECKBOX || type==BS_AUTOCHECKBOX || type==BS_RADIOBUTTON ||
         type==BS_AUTORADIOBUTTON || type==BS_3STATE || type==BS_AUTO3STATE;
@@ -80,7 +81,7 @@ static void frame(HDC dc,RECT r,COLORREF color,int width)
 
 static void other_control(HWND w,control_style *s,HDC dc,RECT r,HFONT font,const WCHAR *text,BOOL label)
 {
-    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);UINT type=style&(label?SS_TYPEMASK:BS_TYPEMASK);
+    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);UINT type=(label?(style&SS_TYPEMASK):ntw16s_button_type(w,style));
     int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));RECT bounds=r;TEXTMETRICW tm;
     UINT flags=DT_LEFT;BOOL pushed=!label && (SendMessageW(w,BM_GETSTATE,0,0)&BST_PUSHED);
     if(s->detached)return;
@@ -159,7 +160,7 @@ static void draw(HWND w,control_style *s,HDC dc)
 {
     RECT r,glyph,label,focus,pixel;int saved,x,y,row,column,height,length;
     UINT dpi=GetDpiForWindow(w);DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
-    UINT type=style&BS_TYPEMASK;LRESULT state,check;WCHAR *text;HFONT font;TEXTMETRICW tm;
+    UINT type=ntw16s_button_type(w,style);LRESULT state,check;WCHAR *text;HFONT font;TEXTMETRICW tm;
     BOOL radio=type==BS_RADIOBUTTON || type==BS_AUTORADIOBUTTON;
     BOOL label_control=is_static(w);
     if(label_control && (style&SS_TYPEMASK)==SS_ICON){
@@ -190,7 +191,8 @@ static void draw(HWND w,control_style *s,HDC dc)
     length=GetWindowTextLengthW(w);text=calloc((size_t)length+1,sizeof(WCHAR));
     if(!text)return;
     GetWindowTextW(w,text,length+1);
-    font=(HFONT)SendMessageW(w,WM_GETFONT,0,0);
+    font=s->font && (ntw16s_vb_frame(w) || ntw16s_vb_class(w,L"ThunderRT6CommandButton"))?
+        s->font:(HFONT)SendMessageW(w,WM_GETFONT,0,0);
     if(s->detached || !IsWindow(w)){free(text);return;}
     if(!font)font=(HFONT)GetStockObject(SYSTEM_FONT);
     saved=SaveDC(dc);if(!saved){free(text);return;}
@@ -843,9 +845,20 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
 {
     control_style *s=(control_style *)data;LRESULT result=0;HFONT previous=NULL,pinned=s->font,outbound=NULL;(void)id;++s->calls;
     win16_style_system_retain(pinned);
+    /* VB owns an IFont and can change it without WM_SETFONT. Query at the
+     * paint boundary; never overwrite that application's font property. */
+    if(!s->frame_scrollbars && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT) &&
+            (ntw16s_vb_frame(w) || ntw16s_vb_edit(w) || ntw16s_vb_class(w,L"ThunderRT6CommandButton"))){
+        HFONT source=(HFONT)SendMessageW(w,WM_GETFONT,0,0);
+        if(!s->detached && source!=s->original_font){
+            HFONT replacement=win16_style_vb_font_acquire(source);
+            previous=s->font;s->original_font=source;s->font=replacement?replacement:source;
+        }
+    }
     if(m==WM_SETFONT && !s->frame_scrollbars){
         HFONT original=win16_style_system_source((HFONT)a);
-        HFONT replacement=win16_style_system_acquire(original);
+        BOOL vb=ntw16s_vb_frame(w) || ntw16s_vb_edit(w) || ntw16s_vb_class(w,L"ThunderRT6CommandButton");
+        HFONT replacement=vb?win16_style_vb_font_acquire(original):win16_style_system_acquire(original);
         previous=s->font;s->original_font=original;
         s->font=replacement?replacement:original;
         outbound=s->font;win16_style_system_retain(outbound);
@@ -973,7 +986,9 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
             m==EM_REPLACESEL || m==EM_UNDO || m==WM_UNDO || m==WM_KEYDOWN || m==WM_CHAR ||
             (m==WM_MOUSEMOVE && GetCapture()==w && (a&MK_LBUTTON)) || m==WM_LBUTTONDOWN || m==WM_LBUTTONUP);
         if(suppress && s->list_suppression++==0)DefSubclassProc(w,WM_SETREDRAW,FALSE,0);
+        int native_dc=ntw16s_vb_edit(w) && (m==WM_PRINT || m==WM_PRINTCLIENT)?SaveDC((HDC)a):0;
         result=DefSubclassProc(w,m,a,b);
+        if(native_dc)RestoreDC((HDC)a,native_dc);
         if(suppress && --s->list_suppression==0 && !s->detached && !s->list_redraw_off)
             DefSubclassProc(w,WM_SETREDRAW,TRUE,0);
         if(suppress && !s->detached)RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME|RDW_UPDATENOW);
@@ -981,7 +996,8 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         if(!s->detached && (m==WM_PRINTCLIENT || (m==WM_PRINT && (b&PRF_CLIENT)) || m==WM_PAINT || m==WM_ENABLE))
             edit_border(w,s,(m==WM_PRINT || m==WM_PRINTCLIENT)?(HDC)a:NULL);
         if(!s->detached && (m==WM_NCPAINT || (m==WM_PRINT && (b&PRF_NONCLIENT))))
-            nonclient_scrollbars(w,s,m==WM_PRINT?(HDC)a:NULL);
+            {nonclient_scrollbars(w,s,m==WM_PRINT?(HDC)a:NULL);
+             if(ntw16s_vb_edit(w))list_border(w,s,m==WM_PRINT?(HDC)a:NULL);}
         else if(!s->detached && (m==WM_VSCROLL || m==WM_HSCROLL || m==WM_MOUSEWHEEL ||
             m==EM_LINESCROLL || m==WM_SETTEXT || m==WM_KEYDOWN || m==WM_CHAR))
             nonclient_scrollbars(w,s,NULL);
@@ -1001,6 +1017,16 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
      * height. Own its complete line rectangle without changing the stored
      * style or its outer geometry; detach reinstates native NC calculation. */
     else if(is_separator(w) && (m==WM_NCCALCSIZE || m==WM_NCPAINT))result=0;
+    else if(ntw16s_vb_frame(w)){
+        /* Unlike native GROUPBOX, a VB Frame owns children and paints its
+         * windowless labels. Always run the original painter first. */
+        result=DefSubclassProc(w,m,a,b);
+        if(!s->detached && (m==WM_PAINT || m==WM_PRINTCLIENT ||
+                (m==WM_PRINT && (b&PRF_CLIENT)))){
+            HDC dc=(m==WM_PAINT)?GetDC(w):(HDC)a;
+            if(dc){draw(w,s,dc);if(m==WM_PAINT)ReleaseDC(w,dc);}
+        }
+    }
     else if(m==WM_SETREDRAW){s->list_redraw_off=!a;result=DefSubclassProc(w,m,a,b);}
     else if(m==WM_PAINT){PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);present_control(w,s,dc,draw);EndPaint(w,&ps);}
     else if(m==WM_PRINT && is_separator(w)){

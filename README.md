@@ -133,6 +133,13 @@ Supported presentation includes classic title bars and system buttons, menu
 bars and popups, common standard controls, and scrollbars with square end
 buttons. Application-drawn content remains the application's responsibility.
 
+VB6 intrinsic command buttons, text boxes, and frames are also supported,
+including windowless client text painted by their VB6 containers. This path
+has been checked with the 32-bit MadShow application. It preserves native
+editing and button commands; custom ActiveX controls and arbitrary scripts or
+character sets are outside that verified scope.
+
+
 ## Build from source
 
 The implementation and native tests use **C17**, **MinGW-w64 GCC**, **Ninja**,

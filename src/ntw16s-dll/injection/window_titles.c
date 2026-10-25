@@ -3,6 +3,7 @@
 #include "unwind.h"
 #include "ntw16s-dll/ntw16s.h"
 #include "ntw16s-dll/native_api.h"
+#include "ntw16s-dll/vb_text.h"
 #include <wchar.h>
 #include <uxtheme.h>
 
@@ -140,6 +141,72 @@ static BOOL WINAPI hook_enable_scroll(HWND w,UINT bar,UINT arrows)
     SetLastError(error);return result;
 }
 
+/* Process-local native text leaves. Outside an exact VB6 paint scope these
+ * are transparent trampolines. The temporary font is restored before any
+ * lease can be released; no application HFONT/property/layout is modified. */
+static _Thread_local unsigned vb_text_busy;
+static BOOL vb_text_caller(const void *address)
+{
+    HMODULE caller=NULL;
+    if(!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+            (const WCHAR *)address,&caller))return FALSE;
+    return caller==GetModuleHandleW(L"MSVBVM60.DLL") || caller==GetModuleHandleW(L"USER32.DLL") ||
+        caller==GetModuleHandleW(L"LPK.DLL") || caller==GetModuleHandleW(L"USP10.DLL") ||
+        caller==GetModuleHandleW(L"GDI32FULL.DLL");
+}
+#define VB_TEXT_HOOK(NAME,TYPE,PARAMS,ARGS) \
+static __typeof__(&NAME) real_##NAME; \
+static TYPE WINAPI hook_##NAME PARAMS \
+{ HFONT font=NULL,old=NULL;DWORD entry=GetLastError(),error;TYPE result; \
+  if(!vb_text_busy++ && ntw16s_vb_paint_active() && vb_text_caller(__builtin_return_address(0))){font=ntw16s_vb_paint_font(dc);if(font){old=SelectObject(dc,font);if(old==HGDI_ERROR)old=NULL;}} \
+  SetLastError(entry);result=real_##NAME ARGS;error=GetLastError(); \
+  if(old){SelectObject(dc,old);}--vb_text_busy;SetLastError(error);return result; }
+VB_TEXT_HOOK(DrawTextA,int,(HDC dc,LPCSTR text,int count,LPRECT rect,UINT format),(dc,text,count,rect,format))
+VB_TEXT_HOOK(DrawTextExA,int,(HDC dc,LPSTR text,int count,LPRECT rect,UINT format,LPDRAWTEXTPARAMS params),(dc,text,count,rect,format,params))
+VB_TEXT_HOOK(TextOutA,BOOL,(HDC dc,int x,int y,LPCSTR text,int count),(dc,x,y,text,count))
+VB_TEXT_HOOK(ExtTextOutA,BOOL,(HDC dc,int x,int y,UINT options,const RECT *rect,LPCSTR text,UINT count,const INT *dx),(dc,x,y,options,rect,text,count,dx))
+VB_TEXT_HOOK(TextOutW,BOOL,(HDC dc,int x,int y,LPCWSTR text,int count),(dc,x,y,text,count))
+
+#undef VB_TEXT_HOOK
+
+/* USER's EDIT can submit shaped glyph IDs. Those IDs belong to its source
+ * font, not the replacement FNT. Reverse only verified CP1252 glyphs; any
+ * missing/complex glyph leaves the whole native run unchanged. Keep its dx,
+ * ETO_PDY, clipping and visual order, and do not reshape the recovered run. */
+static __typeof__(&ExtTextOutW) real_ExtTextOutW;
+static BOOL WINAPI hook_ExtTextOutW(HDC dc,int x,int y,UINT options,const RECT *rect,LPCWSTR text,UINT count,const INT *dx)
+{
+    DWORD entry=GetLastError(),error;HFONT font=NULL,old=NULL;WCHAR *decoded=NULL;char *encoded=NULL;BOOL result;LPCWSTR original_text=text;UINT original_options=options;
+    if(!vb_text_busy++ && ntw16s_vb_paint_active() && vb_text_caller(__builtin_return_address(0))){
+        font=ntw16s_vb_paint_font(dc);
+        if(font && (options&ETO_GLYPH_INDEX)){
+            BOOL valid=count<=4096 && !(options&ETO_RTLREADING) && !(GetTextAlign(dc)&TA_RTLREADING);
+            if(valid && count)decoded=HeapAlloc(GetProcessHeap(),0,count*sizeof(WCHAR));
+            if(count && !decoded)valid=FALSE;
+            if(valid)valid=ntw16s_vb_decode_glyphs(dc,text,count,decoded);
+            if(valid && count){
+                BOOL used_default=FALSE;encoded=HeapAlloc(GetProcessHeap(),0,count);
+                if(!encoded || WideCharToMultiByte(1252,WC_NO_BEST_FIT_CHARS,decoded,(int)count,encoded,(int)count,NULL,&used_default)!=(int)count || used_default)valid=FALSE;
+            }
+            if(valid){text=decoded;options&=~ETO_GLYPH_INDEX;}
+            else font=NULL;
+        }
+        if(font)old=SelectObject(dc,font);
+        if(!old || old==HGDI_ERROR){
+            old=NULL;text=original_text;options=original_options;
+            if(encoded){HeapFree(GetProcessHeap(),0,encoded);encoded=NULL;}
+        }
+    }
+    SetLastError(entry);
+    if(old && encoded)result=real_ExtTextOutA(dc,x,y,options,rect,encoded,count,dx);
+    else result=real_ExtTextOutW(dc,x,y,options,rect,text,count,dx);
+    error=GetLastError();
+    if(old)SelectObject(dc,old);
+    if(decoded)HeapFree(GetProcessHeap(),0,decoded);
+    if(encoded)HeapFree(GetProcessHeap(),0,encoded);
+    --vb_text_busy;SetLastError(error);return result;
+}
+
 LONG ntw16s_attach_titles(void)
 {
     LONG error=NO_ERROR;
@@ -165,6 +232,8 @@ LONG ntw16s_attach_titles(void)
     ATTACH(MessageBoxA);ATTACH(MessageBoxW);
     ATTACH(MessageBoxExA);ATTACH(MessageBoxExW);
     ATTACH(MessageBoxIndirectA);ATTACH(MessageBoxIndirectW);
+    ATTACH(DrawTextA);ATTACH(DrawTextExA);ATTACH(TextOutA);ATTACH(ExtTextOutA);
+    ATTACH(TextOutW);ATTACH(ExtTextOutW);
 #undef ATTACH
     return error;
 }

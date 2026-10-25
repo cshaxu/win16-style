@@ -1,0 +1,976 @@
+{
+  "schema": 1,
+  "delivery": "M0 T15 S1 P1",
+  "state": "verified and published; actual remote review pending",
+  "baseline": "4a93d2e270142cb978db8733c49213f8159a3f9a",
+  "target": {
+    "path": "O:/winnt/madshow.exe",
+    "bits": 32,
+    "sha256": "9d93484c7b230b584440b14e2d2dbb353f058be26e3385677349cff42e5db6b6",
+    "runtime_physical_path": "C:/Windows/SysWOW64/msvbvm60.dll",
+    "runtime_sha256": "898288bd3b21d0e7d5f406df2e0b69a5bbfa4f241baf29a2cdf8a3cf4d4619f2",
+    "runtime_logical_path": "C:/WINDOWS/SYSTEM32/MSVBVM60.DLL",
+    "note": "WOW64 physical identity established by Td S11; physical file digest rechecked here"
+  },
+  "native_cases": [
+    {
+      "name": "verified-bare",
+      "driver": [
+        "TARGET pid=7684 creator-tree-root=7684 tid=31040 image=O:\\WINNT\\madshow.exe",
+        "MODULE C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "VB_CLEANUP_OK exit=0 active=0 total=1"
+      ],
+      "summary": {
+        "buttons": 4,
+        "edits": 13,
+        "frames": 2,
+        "attached": 0,
+        "failures": 0
+      },
+      "raw_log_sha256": "0d9b5d54d8b11003dbe827ef6cce62e2fe0ba62cf907f604b6e16b56575b950e",
+      "driver_sha256": "eea566f26c02a4a35fa8d1be25e111475291148e586267161cad90c88d64e742",
+      "image_sha256": "d3727d38af73e61e7387087e95d7ee028240ea2a373973b9308fae34e9e63c2e",
+      "controls": [
+        "CONTROL class=ThunderRT6Timer text= attached=0 style=44010000 ex=00000004 size=0,0 font= height=0 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6Frame text=Result attached=0 style=56010007 ex=00000004 size=153,145 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=0 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=0 style=540100c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=0 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=0 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=0 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=0 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6Frame text=Settings attached=0 style=56010007 ex=00000004 size=153,257 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0.2 attached=0 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=1 attached=0 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6CommandButton text=&Clear attached=0 style=54012000 ex=00000004 size=65,25 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6CommandButton text=&Pause attached=0 style=54012000 ex=00000004 size=65,25 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6CommandButton text=&Grid attached=0 style=54012000 ex=00000004 size=65,25 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6CommandButton text=&Start attached=0 style=54012000 ex=00000004 size=65,25 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=10 attached=0 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=1 attached=0 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=2.5 attached=0 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0.01 attached=0 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=0 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6PictureBoxDC text= attached=0 style=56810000 ex=00000004 size=428,428 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL"
+      ]
+    },
+    {
+      "name": "verified-old",
+      "driver": [
+        "TARGET pid=40252 creator-tree-root=17132 tid=39736 image=O:\\WINNT\\madshow.exe",
+        "MODULE O:\\repos.hobby\\win16style\\build\\t15-vb\\old\\ntw16s32.dll",
+        "MODULE C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "VB_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "summary": {
+        "buttons": 4,
+        "edits": 13,
+        "frames": 2,
+        "attached": 0,
+        "failures": 0
+      },
+      "raw_log_sha256": "2179c30486d0b22c644e327017b8dc9af6e87c5f07b724613dde96f7c2c55c27",
+      "driver_sha256": "19220f7a32a32d82626139f000f9da0dd2f133b8938ac0b040f4f0d7eeae7a19",
+      "image_sha256": "074e31e606485343e3df051af6d07d11b29b4c7c3d52255fd3ca96253e68b475",
+      "controls": [
+        "CONTROL class=ThunderRT6Timer text= attached=0 style=44010000 ex=00000004 size=0,0 font= height=0 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6Frame text=Result attached=0 style=56010007 ex=00000004 size=153,145 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=0 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=0 style=540100c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=0 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=0 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=0 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=0 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6Frame text=Settings attached=0 style=56010007 ex=00000004 size=153,257 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0.2 attached=0 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=1 attached=0 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6CommandButton text=&Clear attached=0 style=54012000 ex=00000004 size=65,25 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6CommandButton text=&Pause attached=0 style=54012000 ex=00000004 size=65,25 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6CommandButton text=&Grid attached=0 style=54012000 ex=00000004 size=65,25 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6CommandButton text=&Start attached=0 style=54012000 ex=00000004 size=65,25 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=10 attached=0 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=1 attached=0 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=2.5 attached=0 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0.01 attached=0 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=0 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6PictureBoxDC text= attached=1 style=56810000 ex=00000004 size=420,420 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL"
+      ]
+    },
+    {
+      "name": "verified-new",
+      "driver": [
+        "TARGET pid=13372 creator-tree-root=3704 tid=23476 image=O:\\WINNT\\madshow.exe",
+        "MODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s32.dll",
+        "MODULE C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "VB_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "summary": {
+        "buttons": 4,
+        "edits": 13,
+        "frames": 2,
+        "attached": 19,
+        "failures": 0
+      },
+      "raw_log_sha256": "1f519698f3da27af1b520b0cb8872e5849839f9d76594fe6a764185557eaa038",
+      "driver_sha256": "0cd17cc53afe21c48d46efb3e0942f1a2340952c599533570ae5ebd1d72b6796",
+      "image_sha256": "d720d2fa437caf7b72c3b1552d108f676581c3503f3eb7a6b2c0f2c28596626c",
+      "controls": [
+        "CONTROL class=ThunderRT6Timer text= attached=0 style=44010000 ex=00000004 size=0,0 font= height=0 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6Frame text=Result attached=1 style=56010007 ex=00000004 size=153,145 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540100c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6Frame text=Settings attached=1 style=56010007 ex=00000004 size=153,257 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0.2 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=1 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6CommandButton text=&Clear attached=1 style=54012000 ex=00000004 size=65,25 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6CommandButton text=&Pause attached=1 style=54012000 ex=00000004 size=65,25 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6CommandButton text=&Grid attached=1 style=54012000 ex=00000004 size=65,25 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6CommandButton text=&Start attached=1 style=54012000 ex=00000004 size=65,25 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=10 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=1 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=2.5 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0.01 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6PictureBoxDC text= attached=1 style=56810000 ex=00000004 size=420,420 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL"
+      ]
+    },
+    {
+      "name": "verified-repeat",
+      "driver": [
+        "TARGET pid=33504 creator-tree-root=18816 tid=4440 image=O:\\WINNT\\madshow.exe",
+        "MODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate\\ntw16s32.dll",
+        "MODULE C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "VB_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "summary": {
+        "buttons": 4,
+        "edits": 13,
+        "frames": 2,
+        "attached": 19,
+        "failures": 0
+      },
+      "raw_log_sha256": "b66d8668505809f8d687bee024b5846db925a55d4f31272607e5769316c987bf",
+      "driver_sha256": "fd0c3490ae8bac083a4e45c478fdf35d94f278e3f677aeb902855f0e8aa50490",
+      "image_sha256": "d720d2fa437caf7b72c3b1552d108f676581c3503f3eb7a6b2c0f2c28596626c",
+      "controls": [
+        "CONTROL class=ThunderRT6Timer text= attached=0 style=44010000 ex=00000004 size=0,0 font= height=0 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6Frame text=Result attached=1 style=56010007 ex=00000004 size=153,145 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540100c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6Frame text=Settings attached=1 style=56010007 ex=00000004 size=153,257 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0.2 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=1 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6CommandButton text=&Clear attached=1 style=54012000 ex=00000004 size=65,25 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6CommandButton text=&Pause attached=1 style=54012000 ex=00000004 size=65,25 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6CommandButton text=&Grid attached=1 style=54012000 ex=00000004 size=65,25 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6CommandButton text=&Start attached=1 style=54012000 ex=00000004 size=65,25 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=10 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=1 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=2.5 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0.01 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6PictureBoxDC text= attached=1 style=56810000 ex=00000004 size=420,420 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL"
+      ]
+    },
+    {
+      "name": "installed-system",
+      "driver": [
+        "TARGET pid=39828 creator-tree-root=16316 tid=22440 image=O:\\WINNT\\madshow.exe",
+        "MODULE O:\\winnt\\system32\\ntw16s32.dll",
+        "MODULE C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "VB_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "summary": {
+        "buttons": 4,
+        "edits": 13,
+        "frames": 2,
+        "attached": 19,
+        "failures": 0
+      },
+      "raw_log_sha256": "979eb51aeb535e39c1908df4d1e6fa0ee9c025bf2d047dc79dd63cc2b6415892",
+      "driver_sha256": "30a5d8625cbc195d570f654c935b1564c73535f7923618b9f897d7f3ef9a9a4a",
+      "image_sha256": "d720d2fa437caf7b72c3b1552d108f676581c3503f3eb7a6b2c0f2c28596626c",
+      "controls": [
+        "CONTROL class=ThunderRT6Timer text= attached=0 style=44010000 ex=00000004 size=0,0 font= height=0 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6Frame text=Result attached=1 style=56010007 ex=00000004 size=153,145 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540100c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6Frame text=Settings attached=1 style=56010007 ex=00000004 size=153,257 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0.2 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=1 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6CommandButton text=&Clear attached=1 style=54012000 ex=00000004 size=65,25 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6CommandButton text=&Pause attached=1 style=54012000 ex=00000004 size=65,25 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6CommandButton text=&Grid attached=1 style=54012000 ex=00000004 size=65,25 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6CommandButton text=&Start attached=1 style=54012000 ex=00000004 size=65,25 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=10 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=1 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=2.5 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0.01 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6PictureBoxDC text= attached=1 style=56810000 ex=00000004 size=420,420 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL"
+      ]
+    },
+    {
+      "name": "installed-assets",
+      "driver": [
+        "TARGET pid=14708 creator-tree-root=23040 tid=33048 image=O:\\WINNT\\madshow.exe",
+        "MODULE O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
+        "MODULE C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "VB_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "summary": {
+        "buttons": 4,
+        "edits": 13,
+        "frames": 2,
+        "attached": 19,
+        "failures": 0
+      },
+      "raw_log_sha256": "25fff07a080559cf82619f9f9b080bd90635e831d253738e849b28e14a0789a9",
+      "driver_sha256": "8cb1c8d54029ca88523adf81aac12eb8482bb62d0c1b5d10ccbeb94b59c239c2",
+      "image_sha256": "d720d2fa437caf7b72c3b1552d108f676581c3503f3eb7a6b2c0f2c28596626c",
+      "controls": [
+        "CONTROL class=ThunderRT6Timer text= attached=0 style=44010000 ex=00000004 size=0,0 font= height=0 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6Frame text=Result attached=1 style=56010007 ex=00000004 size=153,145 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540100c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540108c0 ex=00000204 size=65,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6Frame text=Settings attached=1 style=56010007 ex=00000004 size=153,257 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0.2 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=1 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6CommandButton text=&Clear attached=1 style=54012000 ex=00000004 size=65,25 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6CommandButton text=&Pause attached=1 style=54012000 ex=00000004 size=65,25 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6CommandButton text=&Grid attached=1 style=54012000 ex=00000004 size=65,25 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6CommandButton text=&Start attached=1 style=54012000 ex=00000004 size=65,25 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=10 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=1 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=2.5 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0.01 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6TextBox text=0 attached=1 style=540100c1 ex=00000204 size=81,18 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "CONTROL class=ThunderRT6PictureBoxDC text= attached=1 style=56810000 ex=00000004 size=420,420 font=Tahoma height=-12 owner=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL"
+      ]
+    }
+  ],
+  "pixel_regions": {
+    "verified-bare": {
+      "width": 623,
+      "height": 481,
+      "sha256": "d3727d38af73e61e7387087e95d7ee028240ea2a373973b9308fae34e9e63c2e",
+      "title_sha256": "e012ff872757fe8cd8812fddd7d9b91c879f55ff528f94107bdcde121758117c",
+      "canvas_sha256": "80f43a9b78926ca043840d5dbefa84d05e418fa344c52b3a045e8f8cf12a0489"
+    },
+    "verified-old": {
+      "width": 615,
+      "height": 471,
+      "sha256": "074e31e606485343e3df051af6d07d11b29b4c7c3d52255fd3ca96253e68b475",
+      "title_sha256": "c566820438e96646345ac8894a759c60e763ee3f5585357190efddbf513d98c5",
+      "canvas_sha256": "38fcfe5644a80ee2d59b1881a95ac2562fab75fc747184f20971c569be7d5ac0"
+    },
+    "verified-new": {
+      "width": 615,
+      "height": 471,
+      "sha256": "d720d2fa437caf7b72c3b1552d108f676581c3503f3eb7a6b2c0f2c28596626c",
+      "title_sha256": "c566820438e96646345ac8894a759c60e763ee3f5585357190efddbf513d98c5",
+      "canvas_sha256": "38fcfe5644a80ee2d59b1881a95ac2562fab75fc747184f20971c569be7d5ac0"
+    },
+    "verified-repeat": {
+      "width": 615,
+      "height": 471,
+      "sha256": "d720d2fa437caf7b72c3b1552d108f676581c3503f3eb7a6b2c0f2c28596626c",
+      "title_sha256": "c566820438e96646345ac8894a759c60e763ee3f5585357190efddbf513d98c5",
+      "canvas_sha256": "38fcfe5644a80ee2d59b1881a95ac2562fab75fc747184f20971c569be7d5ac0"
+    }
+  },
+  "package": {
+    "status": "PACKAGE PASS",
+    "artifacts": {
+      "run16s.exe": {
+        "architecture": "x64",
+        "version": "M0 T15",
+        "sha256": "ebde18e6d0d59b97304abfd837830ff80547c9ae454f14cdd7da66c17f9ce79d",
+        "imports": [
+          "advapi32.dll",
+          "kernel32.dll",
+          "msvcrt.dll",
+          "ole32.dll",
+          "shell32.dll"
+        ]
+      },
+      "ntw16s32.dll": {
+        "architecture": "x86",
+        "version": "M0 T15",
+        "sha256": "e84ebfabdaba527f8fffcbf2d26aa444fda06628bf202d0ed9ae1f9ad4f7f477",
+        "imports": [
+          "COMCTL32.dll",
+          "dwmapi.dll",
+          "GDI32.dll",
+          "KERNEL32.dll",
+          "api-ms-win-crt-convert-l1-1-0.dll",
+          "api-ms-win-crt-heap-l1-1-0.dll",
+          "api-ms-win-crt-private-l1-1-0.dll",
+          "api-ms-win-crt-runtime-l1-1-0.dll",
+          "api-ms-win-crt-stdio-l1-1-0.dll",
+          "api-ms-win-crt-string-l1-1-0.dll",
+          "USER32.dll",
+          "UxTheme.dll",
+          "COMCTL32.dll"
+        ]
+      },
+      "ntw16s64.dll": {
+        "architecture": "x64",
+        "version": "M0 T15",
+        "sha256": "16a2de06048f7baab107daec79440229f85cece7139541dc3dcf0614775d058d",
+        "imports": [
+          "COMCTL32.dll",
+          "dwmapi.dll",
+          "GDI32.dll",
+          "KERNEL32.dll",
+          "msvcrt.dll",
+          "USER32.dll",
+          "UxTheme.dll",
+          "COMCTL32.dll"
+        ]
+      },
+      "demo.exe": {
+        "architecture": "x64",
+        "version": "M0 T15",
+        "sha256": "f5da4181bb4e354b90aeb3f3be89fe75b0dbb65930a2159bae3bf85383dc64e4",
+        "imports": [
+          "kernel32.dll",
+          "msvcrt.dll",
+          "user32.dll"
+        ]
+      }
+    },
+    "original_resource_tables_per_dll": 18
+  },
+  "matrix": {
+    "status": "passed",
+    "core_matrix": "separate Build-Core matrix required",
+    "package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate",
+    "seconds": 250.619371,
+    "cases": 31,
+    "sha256": {
+      "demo.exe": "f5da4181bb4e354b90aeb3f3be89fe75b0dbb65930a2159bae3bf85383dc64e4",
+      "ntw16s32.dll": "e84ebfabdaba527f8fffcbf2d26aa444fda06628bf202d0ed9ae1f9ad4f7f477",
+      "ntw16s64.dll": "16a2de06048f7baab107daec79440229f85cece7139541dc3dcf0614775d058d",
+      "run16s.exe": "ebde18e6d0d59b97304abfd837830ff80547c9ae454f14cdd7da66c17f9ce79d"
+    },
+    "physical_input": "not-tested",
+    "jobs": 4,
+    "full_integration": true
+  },
+  "publication": {
+    "tested_package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate",
+    "files": [
+      {
+        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe",
+        "after": "f5da4181bb4e354b90aeb3f3be89fe75b0dbb65930a2159bae3bf85383dc64e4",
+        "before": "0d2ecaf8f14ec2b483b02b98a325027cd34daf94a2a777f352748e644f089e97",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-publish\\before-0",
+        "expected": "f5da4181bb4e354b90aeb3f3be89fe75b0dbb65930a2159bae3bf85383dc64e4"
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
+        "after": "e84ebfabdaba527f8fffcbf2d26aa444fda06628bf202d0ed9ae1f9ad4f7f477",
+        "before": "8dffa4236a6c70d225b2a8a0104261bc68468ccd80bb85ba6a90a0fd63326318",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-publish\\before-0",
+        "expected": "e84ebfabdaba527f8fffcbf2d26aa444fda06628bf202d0ed9ae1f9ad4f7f477"
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll",
+        "after": "16a2de06048f7baab107daec79440229f85cece7139541dc3dcf0614775d058d",
+        "before": "a11b80bc15d55e46e69d6eea5e8dccf3339f04da6114379072031295a38430dd",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-publish\\before-0",
+        "expected": "16a2de06048f7baab107daec79440229f85cece7139541dc3dcf0614775d058d"
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
+        "after": "ebde18e6d0d59b97304abfd837830ff80547c9ae454f14cdd7da66c17f9ce79d",
+        "before": "fd03ec47d2a2779c797b355799d58d6ab54669b96d862b390cf4954d4a600b0c",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-publish\\before-0",
+        "expected": "ebde18e6d0d59b97304abfd837830ff80547c9ae454f14cdd7da66c17f9ce79d"
+      },
+      {
+        "path": "O:\\winnt\\system32\\demo.exe",
+        "after": "f5da4181bb4e354b90aeb3f3be89fe75b0dbb65930a2159bae3bf85383dc64e4",
+        "before": "0d2ecaf8f14ec2b483b02b98a325027cd34daf94a2a777f352748e644f089e97",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-publish\\before-1",
+        "expected": "f5da4181bb4e354b90aeb3f3be89fe75b0dbb65930a2159bae3bf85383dc64e4"
+      },
+      {
+        "path": "O:\\winnt\\system32\\ntw16s32.dll",
+        "after": "e84ebfabdaba527f8fffcbf2d26aa444fda06628bf202d0ed9ae1f9ad4f7f477",
+        "before": "8dffa4236a6c70d225b2a8a0104261bc68468ccd80bb85ba6a90a0fd63326318",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-publish\\before-1",
+        "expected": "e84ebfabdaba527f8fffcbf2d26aa444fda06628bf202d0ed9ae1f9ad4f7f477"
+      },
+      {
+        "path": "O:\\winnt\\system32\\ntw16s64.dll",
+        "after": "16a2de06048f7baab107daec79440229f85cece7139541dc3dcf0614775d058d",
+        "before": "a11b80bc15d55e46e69d6eea5e8dccf3339f04da6114379072031295a38430dd",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-publish\\before-1",
+        "expected": "16a2de06048f7baab107daec79440229f85cece7139541dc3dcf0614775d058d"
+      },
+      {
+        "path": "O:\\winnt\\system32\\run16s.exe",
+        "after": "ebde18e6d0d59b97304abfd837830ff80547c9ae454f14cdd7da66c17f9ce79d",
+        "before": "fd03ec47d2a2779c797b355799d58d6ab54669b96d862b390cf4954d4a600b0c",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-publish\\before-1",
+        "expected": "ebde18e6d0d59b97304abfd837830ff80547c9ae454f14cdd7da66c17f9ce79d"
+      }
+    ],
+    "test_result": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified-full\\result.json",
+    "status": "passed"
+  },
+  "toolchains": {
+    "ccache_version": "ccache version 4.13.6",
+    "toolchains": [
+      {
+        "version": "16.1.0",
+        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
+        "target": "i686-w64-mingw32",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
+        "architecture": "x86"
+      },
+      {
+        "version": "16.1.0",
+        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
+        "target": "x86_64-w64-mingw32",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
+        "architecture": "x64"
+      }
+    ],
+    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
+    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
+    "ninja_version": "1.13.2"
+  },
+  "clean_build": {
+    "selection": "^core/abi$",
+    "tests": [
+      {
+        "architecture": "x86",
+        "test_seconds": 0.4726621999870986,
+        "configure_seconds": 3.661956799973268,
+        "build_seconds": 19.28840979997767,
+        "skipped": [],
+        "tests": 1,
+        "passed": 1
+      },
+      {
+        "architecture": "x64",
+        "test_seconds": 0.5321021999698132,
+        "configure_seconds": 3.9762399999890476,
+        "build_seconds": 27.045013099967036,
+        "skipped": [],
+        "tests": 1,
+        "passed": 1
+      }
+    ],
+    "exit_code": 0,
+    "build_jobs": 8,
+    "build_root": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja",
+    "targets": "all",
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "test_jobs": 4,
+    "profile": "Focused",
+    "status": "passed"
+  },
+  "source_inputs": 163,
+  "preserved_source_files": [
+    {
+      "path": "src/demo-exe/README.md",
+      "sha256": "128f8367168db192b7b001428f78f01f2a52f28255cf10eff9981b6e1064b0de"
+    },
+    {
+      "path": "src/demo-exe/demo.manifest",
+      "sha256": "5ba292a6ddf280eed04da97c5f6ff77c006ee7d34cecc27ecc04f5f8105e7156"
+    },
+    {
+      "path": "src/demo-exe/gallery.c",
+      "sha256": "b4a80c1027fab08c9f2b3a9ce36380c59c23b7c4187aa278b71a801d2e97c506"
+    },
+    {
+      "path": "src/demo-exe/main.c",
+      "sha256": "431bc305c7bd2f2b7845333d685ab4eea8cf6ce0e873611641bbc5014519edc0"
+    },
+    {
+      "path": "src/ntw16s-dll/README.md",
+      "sha256": "cc82d3e2550db8fae77c697a6148eadd6fc06b237e76e40099ebceb0cc3ba097"
+    },
+    {
+      "path": "src/ntw16s-dll/api.h",
+      "sha256": "39f0fbf9693101904f458f67bfc07651f89130d2c257012dc6f961c1423c55a3"
+    },
+    {
+      "path": "src/ntw16s-dll/attachment.h",
+      "sha256": "7a5cde7dcf7fb6925373ec34b0877ff37b2175f19ecb5a9c2cfa5e52ee49a7ed"
+    },
+    {
+      "path": "src/ntw16s-dll/combo_glyph.h",
+      "sha256": "75b05a50bf02bbc8fcbd6c6f84948fcdbf82fa7f0fbbfc590a6e4eb94c3ffe34"
+    },
+    {
+      "path": "src/ntw16s-dll/control_glyphs.h",
+      "sha256": "75031b93af2382f8ce1f47d971f32efdfe00cb7000e0db09ef878a1b50adff83"
+    },
+    {
+      "path": "src/ntw16s-dll/controls.h",
+      "sha256": "d55004421db94183ce615c71b2cd6442d2ae6a1523da4c3b81bc4361b3497b3d"
+    },
+    {
+      "path": "src/ntw16s-dll/dllmain.c",
+      "sha256": "056212610fa33c9ad268fab84de07db2bcb9de41b5c215f37e0c2685751e397c"
+    },
+    {
+      "path": "src/ntw16s-dll/frame_buttons.h",
+      "sha256": "e7a472d76858c3d01fb1501a34d958ccd8337c8d8ccc36893c17ef9222bac0c5"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/context.c",
+      "sha256": "1240bbf321b7c6fc569f14121f4a99fed899061d1eb545479e2ac7ab8708620e"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/create_process.c",
+      "sha256": "40cbdcd65e01c312b5611f9db853a1ddf4086f7769c30eb7f3fca8e863cd396e"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/entry.c",
+      "sha256": "2268dd262061df17e243709f3c3052eb92cc6107251c40e093d56c22ac8e5e88"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/helper.c",
+      "sha256": "f56965350420607da31e224028eb6e55f869f794ff96d2ae159ba0b7d9b29125"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/injection.h",
+      "sha256": "d81b9945cd65c435e37dde6285303c571fea81fed7332054845d5c9b36e3e3e1"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/installer.c",
+      "sha256": "9203c3d9f16a5766b0e17e471bceac78eace0488a36f885ba6014308f21a2c78"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/intercept.h",
+      "sha256": "a3ff6fb2641671e5c7e8434df04a22db84beba1fe36a1626e27dca4dc6019221"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/AUTHORS.txt",
+      "sha256": "073b4e8b0a5a0cd9f4dfa838369f4fc7a4f47151d930b4e1fd891644060a897f"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/LICENSE.txt",
+      "sha256": "d5c2224982b0b95a16b098a561335fa93f3eaf4d0aa964b7843edb986df78dc8"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/src/buffer.c",
+      "sha256": "53228de3f2a14a390f6d97538d702c20a4388eea42e53b5b999532bab018287b"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/src/buffer.h",
+      "sha256": "9769702bd625249e59a19ede05c84365fcc7707e1fa0e5df08df42227cee13e3"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/src/hde/hde32.c",
+      "sha256": "5da4941e9044f7b325c7f952b5840089e365f374740b7fe7318805d08c0d6c32"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/src/hde/hde32.h",
+      "sha256": "5132de5be8ac7a9d054420f5caef0fb01437faa892f03b3cdc77f795973bf15a"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/src/hde/hde64.c",
+      "sha256": "824eafa315322e6da105a7ce4ec1fc0e0adeee0106d32152fbb0b59e709bd15c"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/src/hde/hde64.h",
+      "sha256": "e99aa4997bda14b534c614c3d8cb78a72c4aca91a1212c8b03ec605d1d75e36e"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/src/hde/pstdint.h",
+      "sha256": "604d1cdf45c5a95bc9cf1bbf39ca05ef83013541101d34971c5cd7577e3d5247"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/src/hde/table32.h",
+      "sha256": "43bf687a9fff071b5f46070db4d36c846f8e069cdc57485ee897c499aacdde23"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/src/hde/table64.h",
+      "sha256": "b774446d2f110ce954fb0a710f4693c5562ddbd8d56fe84106f2ee80db8b50a2"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/src/trampoline.c",
+      "sha256": "f13a169f803ff5a8e45c58ce668b4377a9878c0fc4452369b8a1325065186b2b"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/minhook/src/trampoline.h",
+      "sha256": "53ed9934492320617a27bfd952ffe7f5b7a4a1d09963d4512447082fe7b727b4"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/staging.c",
+      "sha256": "72e91020a744f8c7c89df3a1c9202222132d641d1fbe883d72342c408493af52"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/staging.h",
+      "sha256": "e31da102f73d70d538ce1298bc65209e3eebc2cc98178b05ff435a35aa9d4f85"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/startup_hooks.c",
+      "sha256": "55fa1acfd32b96978f225b69d40f0aebb61f3b7eaea9bf817a9ef46d091e90bd"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/startup_hooks.h",
+      "sha256": "4ad7e284ba05eff4e3c555286ee237ad44be65d833e006dfedd3cb154ef5647a"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/subclass32.def",
+      "sha256": "1bb586134e8c3bdbfde4122b502d373a12112d33435aa3956952f067e2f82551"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/subclass64.def",
+      "sha256": "7801e6b16a6795f252cb92a997594e1c32a72f6dfe178b5ff03eb08509bbec09"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/unwind.c",
+      "sha256": "a6966eb2be1cb4a9746cd51456f7bb8c52f627ca59fdc7317d28a890ab7378c8"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/unwind.h",
+      "sha256": "ccf03098093e0dbc6ea931b8ad7c7cb6bad33dba21103f661cb8a6eb8bd1f0d4"
+    },
+    {
+      "path": "src/ntw16s-dll/layout.c",
+      "sha256": "83cd34e01d35e27fc40c54e82460cab945b45d3a986b3d5ee2ec8ac9ab5c4ede"
+    },
+    {
+      "path": "src/ntw16s-dll/layout.h",
+      "sha256": "a55b5d4bad75fda24a46828966f0b8024c85dd52648ac8166e77ae94c541d2d3"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_bar.c",
+      "sha256": "dabb1ce65683a5b92ae396c1c56224eb7815cacd60d91fb5f196aa9d536244b7"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_bar.h",
+      "sha256": "7eba7d9c045131b8aebb7d7c8b87303b97d2eb8e52d9030388f6dd23af9731df"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_bar_paint.c",
+      "sha256": "209ab48d33f57207c33f90c412b9c294ed062683c789803dd207cf22fd66076f"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_glyphs.h",
+      "sha256": "03922a10b6a7b46e1792852b93f1e1590d45546a57a63cead41fb7b0f0eefa4e"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_items.c",
+      "sha256": "50ffdecade278016841546433fb6650c0c8e2e3d7996725eefb5e77e10be0706"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_items.h",
+      "sha256": "24dff3476635ede1304b7ee3bdf28c3639b4ded55826c8000e7142531ac69b18"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_layout.c",
+      "sha256": "cde752459255f121492daa908df6cd6201a549d0080d2cf73b8975b6042dc62c"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_layout.h",
+      "sha256": "e70959ddd21f2cb3d2904a7bf756f79066e839144d7ecc7174a97f026a065e19"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_paint.c",
+      "sha256": "00df595f7ab3f4471bd5d851930aac1e03d48430c45a8ed8ecb372dbdc108e84"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_paint.h",
+      "sha256": "59e3b90b9d362c2264ba6597c3508dd04815a1b17ea4b50317ab12865c628b22"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_scope.c",
+      "sha256": "21144a3223b75b502d9b5509dee8f0f3fe642ee2dfe9b04f24f104f60279f28c"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_scope.h",
+      "sha256": "e7f130982359c73f3aa790cdbe8915c2acf5aa2a4889dbd5dfda7855a652a699"
+    },
+    {
+      "path": "src/ntw16s-dll/native_api.c",
+      "sha256": "4dcd66856f892290468ba0785835b2060b873a679b2938337d4ca87fb0e75b6f"
+    },
+    {
+      "path": "src/ntw16s-dll/native_api.h",
+      "sha256": "2e8b3c5b585b9ee61afb597cacc3d18cfd15631de6eadc34fc2870c30ba657c8"
+    },
+    {
+      "path": "src/ntw16s-dll/ntw16s.h",
+      "sha256": "d10566f17c968fedc73459dd2f5d5b1f184f315e220a3feacd6d8281f9083b59"
+    },
+    {
+      "path": "src/ntw16s-dll/ntw16s32.def",
+      "sha256": "f2423aeaf38340653eb9c967a12762659dc8cb92aa8c46c927a6981d240cd912"
+    },
+    {
+      "path": "src/ntw16s-dll/ntw16s64.def",
+      "sha256": "4747660ae10ad0c73306f0f473f749b5ecbe216a83f6166795ea975e007b4a8a"
+    },
+    {
+      "path": "src/ntw16s-dll/resources.md",
+      "sha256": "211d1d1d85e65bef001990fb229bd5959e272e1992b95d9086acc7c67716b6a7"
+    },
+    {
+      "path": "src/ntw16s-dll/scroll_glyphs.h",
+      "sha256": "a748e7d89d52abf6225403244971da442c5b391ab877d1f248ddf2ca96001d40"
+    },
+    {
+      "path": "src/ntw16s-dll/scroll_layout.c",
+      "sha256": "0b1b344fcbe0ef2a8060ef140c539cefeb5fa79c7b93c322452513d15b95b4d0"
+    },
+    {
+      "path": "src/ntw16s-dll/scroll_layout.h",
+      "sha256": "b8398eafbc51af77a5e5ce72c4dd06f12e51a6cdf6bdd51cf2ef6275b0b9fcb4"
+    },
+    {
+      "path": "src/ntw16s-dll/scroll_track.c",
+      "sha256": "0b9c5d40849d321e3e467635d4c28b85c5897d8ee4dd8ec7bf3ed1d39fcd72ee"
+    },
+    {
+      "path": "src/ntw16s-dll/scroll_track.h",
+      "sha256": "36be02d2e879175c02863c495693d5c79dfa1cbca716419c6e0ec46b59c5934e"
+    },
+    {
+      "path": "src/ntw16s-dll/theme.c",
+      "sha256": "48eb05bc23f40eb99288a1c3d16ba07a8262be2a15a95725427238e730e3f6ac"
+    },
+    {
+      "path": "src/ntw16s-dll/theme.h",
+      "sha256": "0a0100203a7856d58d2a16389309440781f23d7e04e7d7a93db0cc5ad2415371"
+    },
+    {
+      "path": "src/ntw16s-dll/win16_style.c",
+      "sha256": "0f3b651b2d6aaf44fe2c51397cba2e52df0070c3eb0aabbd70e19c5ab5b971b9"
+    },
+    {
+      "path": "src/ntw16s-dll/win16_style.h",
+      "sha256": "f2c52b99f8d764a5175a85532e2ad2c7afc60e0f30117e60350b27c4f1e0ddf8"
+    },
+    {
+      "path": "src/run16s-exe/README.md",
+      "sha256": "ea47647f69ecf418c03a2bb9d29f9ef18b0d557ee44d3532ff8c988e52839db1"
+    },
+    {
+      "path": "src/run16s-exe/elevation.c",
+      "sha256": "d46cc63b89f7a2b461636f38cd3152acfdc1c827facdfd51090712f98adcc37a"
+    },
+    {
+      "path": "src/run16s-exe/elevation.h",
+      "sha256": "bbd2a7fe8ac746c16c8670842af694b7aa09d0d3c8212b732b1caf133c43e07a"
+    },
+    {
+      "path": "src/run16s-exe/main.c",
+      "sha256": "7b7480998de3a392c82f789fc3fa8d450ea38e25d81bc8163fbd0b8b57ec9c48"
+    },
+    {
+      "path": "src/run16s-exe/run16s.manifest",
+      "sha256": "3a0e0e8e26abcacaeaa7e3e84dc4b033367a524e94f8a16a46f1a00e9141f066"
+    },
+    {
+      "path": "src/run16s-exe/startup_error.c",
+      "sha256": "1623faa579edfbabac3fa6a58a5f0339983c507f116ad39bcabbb9868570cf1f"
+    },
+    {
+      "path": "src/run16s-exe/startup_error.h",
+      "sha256": "0421db650da4f08f2e27e1ad059433ef465e8059bb61ff173431bac5f29bd83a"
+    }
+  ],
+  "negative_tests": {
+    "old_package_exit": 1,
+    "old_sampler_exit": 1,
+    "old_sampler_mutation": "Only preserve_strokes BLACKONWHITE selection replaced with prior COLORONCOLOR; same final font test/source otherwise",
+    "old_package_failure": "exact VB framework coordinator attachment assertion; real old-package observer also reports 0/19 attached",
+    "sampler_failure": "closed zero cap assertion at requested12/native14 cell",
+    "old_package_stderr_sha256": "ffe80da3515ed3cadba7d760e62f087d784d89549819d7fa0b66d49e356327db",
+    "sampler_stderr_sha256": "105ef44b1c606259bc0ea0bddb725c9a650d3de143acc980d8442d38e4f26df0"
+  },
+  "ownership": {
+    "leases_retired": 32,
+    "maps_freed": 32,
+    "source_fonts_preserved": 33,
+    "outstanding_allocations": 0,
+    "allocation_failures": 2,
+    "nested_barrier": true,
+    "capacity": 32,
+    "method": "Production font.c/vb_text.c compiled only in private unit with calloc/free instrumentation; actual GetObject invalidates all retired leased HFONTs, borrowed sources remain valid. No public ABI instrumentation. Host USER/GDI total counts are observations, not ownership assertions."
+  },
+  "acceptance_images": [
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t15-vb6\\MadShow-after.png",
+      "sha256": "1c4759c5dbdc082f2a0180811af787367074166f1f0dce7e9a3b543170b02246"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t15-vb6\\MadShow-before.png",
+      "sha256": "27b77d76554c9ce6f05f42edd1f1aa634f202dd610dd175791f4713e843b3ac1"
+    }
+  ],
+  "not_covered": [
+    "Actual VB6 runtime/app coverage is x86 MadShow; x64 uses self-contained public message protocol fixture, not a real x64 VB6 engine",
+    "Other VB versions, intrinsic classes beyond command button/text box/frame, third-party OCX, arbitrary scripts and charsets",
+    "Physical keyboard/mouse/IME/accessibility operation; native commands and focus were tested",
+    "Real multi-UI-thread VB apps and physical cross-monitor DPI transitions",
+    "All registered CTests; final selected package and focused matrix are explicitly enumerated",
+    "Heavy molecular dynamics/numerical correctness; application canvas retained"
+  ],
+  "focused": {
+    "x86": {
+      "tests": 5,
+      "failures": 0,
+      "receipt_sha256": "db635c1ef9aebe8474dce5c0d82c82551a9b4954b3fcc8631b6e69a96d4b36d1"
+    },
+    "x64": {
+      "tests": 5,
+      "failures": 0,
+      "receipt_sha256": "5308200e65d04c00815c9dd8d5529100c6b79293b081e46bcab4255f39cb6863"
+    }
+  },
+  "registered_ctests": {
+    "x86": 29,
+    "x64": 47,
+    "all_executed": false
+  },
+  "failed_explorations": [
+    "Earlier glyph-index font substitution produced invalid glyphs; corrected with bounded verified reverse mapping and native fallback",
+    "COLORONCOLOR removed zero cap at 16-to-14 reduction; VB-only black-stroke sampling added and old-sampling negative fails",
+    "Narrow caller filter left native EDIT text unchanged; USER shaping pipeline included and actual pixel difference required",
+    "Initial total-GDI no-growth assertion also failed on unstyled144-DPI host caches; replaced by private allocation pairing and actual leased-HFONT retirement assertions. Host totals remain observations",
+    "RC numeric versions initially changed without FileVersion strings; package gate rejected and strings corrected before final freeze",
+    "Direct focused ctest missing owned capture environment was rejected before launching products; rerun with owned directory passed",
+    "Intermediate27-case package is superseded; only final31-case package published"
+  ],
+  "code_statistics": {
+    "command": "git diff --cached --numstat",
+    "scope": "CMakeLists.txt,src/,tests/,tools/",
+    "files": 20,
+    "added": 792,
+    "deleted": 41,
+    "net": 751,
+    "records": [
+      {
+        "path": "CMakeLists.txt",
+        "added": 33,
+        "deleted": 2
+      },
+      {
+        "path": "src/demo-exe/version.rc",
+        "added": 4,
+        "deleted": 4
+      },
+      {
+        "path": "src/ntw16s-dll/attachment.c",
+        "added": 7,
+        "deleted": 6
+      },
+      {
+        "path": "src/ntw16s-dll/control_class.h",
+        "added": 28,
+        "deleted": 0
+      },
+      {
+        "path": "src/ntw16s-dll/control_scope.c",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "path": "src/ntw16s-dll/controls.c",
+        "added": 39,
+        "deleted": 13
+      },
+      {
+        "path": "src/ntw16s-dll/font.c",
+        "added": 10,
+        "deleted": 6
+      },
+      {
+        "path": "src/ntw16s-dll/font.h",
+        "added": 2,
+        "deleted": 0
+      },
+      {
+        "path": "src/ntw16s-dll/injection/window_titles.c",
+        "added": 69,
+        "deleted": 0
+      },
+      {
+        "path": "src/ntw16s-dll/vb_text.c",
+        "added": 69,
+        "deleted": 0
+      },
+      {
+        "path": "src/ntw16s-dll/vb_text.h",
+        "added": 22,
+        "deleted": 0
+      },
+      {
+        "path": "src/ntw16s-dll/version.rc",
+        "added": 4,
+        "deleted": 4
+      },
+      {
+        "path": "src/run16s-exe/version.rc",
+        "added": 4,
+        "deleted": 4
+      },
+      {
+        "path": "tests/integration/vb6_driver.c",
+        "added": 109,
+        "deleted": 0
+      },
+      {
+        "path": "tests/integration/vb6_probe.c",
+        "added": 74,
+        "deleted": 0
+      },
+      {
+        "path": "tests/ntw16s-dll/vb_alloc.h",
+        "added": 9,
+        "deleted": 0
+      },
+      {
+        "path": "tests/ntw16s-dll/vb_controls.c",
+        "added": 130,
+        "deleted": 0
+      },
+      {
+        "path": "tests/ntw16s-dll/vb_font.c",
+        "added": 97,
+        "deleted": 0
+      },
+      {
+        "path": "tests/ntw16s-dll/vb_runtime.c",
+        "added": 74,
+        "deleted": 0
+      },
+      {
+        "path": "tools/Test-Package.ps1",
+        "added": 6,
+        "deleted": 0
+      }
+    ]
+  }
+}

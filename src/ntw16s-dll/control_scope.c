@@ -1,3 +1,4 @@
+#include "control_class.h"
 #include "controls.h"
 #include <stdlib.h>
 
@@ -12,8 +13,7 @@ struct win16_style_control_scope {
 static _Thread_local win16_style_control_scope *scopes;
 static _Thread_local HHOOK creation_hook;
 
-static BOOL class_is(HWND w,const WCHAR *expected)
-{WCHAR name[32];return GetClassNameW(w,name,32) && !lstrcmpiW(name,expected);}
+#define class_is ntw16s_class_is
 
 static LRESULT CALLBACK created(int code,WPARAM a,LPARAM b)
 {

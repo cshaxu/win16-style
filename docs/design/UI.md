@@ -70,3 +70,16 @@ USER对ownerdraw宽度另加宿主菜单字体的两个平均字符格；WM_MEAS
 重定向仍走UI；Console子系统创建瞬间仍可能短暂出现。不宣称消除任何控制台
 闪现或全Windows错误透明代理。普通PE及其他错误不走Shell裸运行，真实740的
 既有UAC分支保持。
+
+VB6适配只识别MSVBVM60注册的ThunderRT6CommandButton、ThunderRT6TextBox、
+ThunderRT6Frame，顶层ThunderRT6FormDC沿用既有标题。按钮复用绘制器，文本框
+保留原生编辑/客户区和client-edge分配，仅覆盖边框；分组先调用VB原始绘制，
+再叠加经典边框/标题，不吞掉无窗口标签。PictureBox画布保留原始绘制。
+
+VB自身拥有字体属性，不能假设WM_SETFONT生效。VB客户区文字接入限本次注入
+进程、已附着VB容器的同步paint/print作用域、VB运行库或USER原生文字调用者；
+其他附着窗口构成嵌套打印屏障，非VB应用自绘信息栏不参与。DC字体只临时替换，
+返回前恢复；按HWND缓存最多32个源字体租约，最后活动调用后卸载释放。
+VB专用FNT保持应用字高和advance，缩小时保留黑色细笔画；既有标题、菜单及
+标准控件的字体采样策略不变。TrueType glyph-index仅对可逆CP1252字形转换，
+保留dx/clip，复杂/未知或RTL索引整段保留原始绘制；不承诺任意语言/OCX。
