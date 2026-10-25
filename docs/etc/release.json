@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T15 S4 P2",
-  "stage": "P1 remote187 bytes match; P2 canonical provenance repair verified locally; S4/T15/M0 open pending actual P2 gate/remote review and cleanup",
+  "delivery": "M0 T15 S4 P3",
+  "stage": "S4 closed after P1 product/P2 provenance actual remote and coordinator review plus safe cleanup; S5 admitted; T15/M0 open",
   "version": "0.15.0.0",
   "version_contract": "Fixed T15 version; S/P distinguished by Git and artifact SHA; no new T allocated",
   "package_directory": "assets",
@@ -855,12 +855,12 @@
     "evidence": "docs/etc/evidence/control-protocols.json",
     "remote_review": {
       "status": "passed",
-      "commit": "5e8f880b9f893441cf61bf345218371b2c45b313",
-      "remote_main": "5e8f880b9f893441cf61bf345218371b2c45b313",
-      "files": 187,
+      "commit": "502ec8389d20c89f80e1ee4b11a9b54ea67a39d2",
+      "remote_main": "502ec8389d20c89f80e1ee4b11a9b54ea67a39d2",
+      "files": 184,
       "source_inputs": 175,
-      "seconds": 10.741016500047408,
-      "receipt_sha256": "b8b2710424a66c4c26dded1c8d8ebbed38ab379d648866d49fa98528f1e5bdb4"
+      "seconds": 9.421156800002791,
+      "receipt_sha256": "37f0f24167f6c61a98c06a4712f97a9f25520f53fd6f88274bdd34ec339c7a66"
     },
     "canonical_receipt_repair": {
       "P1": "actual22-file commit, original request and evidence reviewed;175 Git input identities/8 deployed files verified;other work excluded",
@@ -914,10 +914,38 @@
       "canonical_legacy_rejection": "LEGACY REJECTION PASS 4 cases stderr193 exit4 no_retry_ui exact_owned_processes",
       "canonical_probe_first_attempt": "missing WIN16STYLE_CAPTURE_DIR returned203; corrected harness setup then4 native cases passed",
       "strict_source_resource_gates": "pass after exact canonical receipt correction; no relaxation",
-      "P2_actual_remote": "pending"
+      "P2_actual_remote": {
+        "status": "passed",
+        "commit": "502ec8389d20c89f80e1ee4b11a9b54ea67a39d2",
+        "remote_main": "502ec8389d20c89f80e1ee4b11a9b54ea67a39d2",
+        "files": 184,
+        "source_inputs": 175,
+        "seconds": 9.421156800002791,
+        "receipt_sha256": "37f0f24167f6c61a98c06a4712f97a9f25520f53fd6f88274bdd34ec339c7a66"
+      },
+      "P2_actual_archive": {
+        "status": "passed",
+        "commit": "502ec8389d20c89f80e1ee4b11a9b54ea67a39d2",
+        "archive_inputs_equal_rebuilt_proof": 175,
+        "export_EOL_uses_recorded_raw_identity": [
+          "LICENSE"
+        ],
+        "deployed_unchanged": 8,
+        "strict_source_resource_governance_gates": "passed",
+        "initial_comparison_correction": "LICENSE ZIP export retains recorded raw CRLF identity; 175 archive inputs match rebuilt proof; exact Git identities checked separately"
+      }
     }
   },
   "architecture": "three components, four products; pure C17 MinGW GCC/Ninja/ccache; real-app observer is optional, no sibling dependency",
   "binary_batch_delivery": "M0 T15 S4 P1",
-  "source_snapshot_format": "SHA256 of UTF8 compact sorted-key JSON array of path/sha256/git_blob_sha256 when different"
+  "source_snapshot_format": "SHA256 of UTF8 compact sorted-key JSON array of path/sha256/git_blob_sha256 when different",
+  "closure": {
+    "P1": "5e8f880b9f893441cf61bf345218371b2c45b313",
+    "P2": "502ec8389d20c89f80e1ee4b11a9b54ea67a39d2",
+    "scope": "S4 only; task T15/M0 open",
+    "source_identity_recheck": 175,
+    "deployed_unchanged": 8,
+    "following_scope": "native/VCL tab controls; remaining families follow sequential S",
+    "cleanup": "completed: obsolete builds, package copies/backups, logs, probes and captures removed after extraction;7 reviewed observer/verifier source files retained under registered root for following S; stable build/.ninja, build/.ccache and external acceptance PNGs preserved"
+  }
 }

@@ -4,7 +4,9 @@ This S continues the owner's automatic sequential-S authorization under M0/T15.
 The reference is c5e110bbf987309699634184d5c8012f169fed0a, with S3 published bytes.
 Implementation, clean build, actual-package tests and double publication pass locally.
 P1 5e8f880b9f893441cf61bf345218371b2c45b313 is pushed and remote187-file bytes match.
-A strict committed-source provenance failure is corrected by P2 below; S4 remains open.
+P2 502ec8389d20c89f80e1ee4b11a9b54ea67a39d2 fixes the strict provenance issue and passes
+actual archive/remote184-file review. Safe cleanup completes; P3 closes S4 and admits S5.
+T15/M0 remain open.
 CURRENT alone owns admission/status. Other working-tree queue/proposal edits are preserved.
 
 ## Actual diagnosis and bounded implementation
@@ -95,8 +97,8 @@ ASCII structural fields are now parsed from raw bytes and the comparison passes.
 itself independently validated actual-package hashes. No failed pixel summary is counted pass.
 
 Exact SHA, cases, preserved source/resource hashes, selected native facts and limits are in
-[the evidence index](../etc/evidence/control-protocols.json). P1 remote/coordinator review and
-registered-scratch cleanup remain pending; T15/M0 remain open for automatic following S.
+[the evidence index](../etc/evidence/control-protocols.json). P1/P2 actual remote/coordinator reviews and safe registered-scratch cleanup pass;
+T15/M0 remain open for automatic following S.
 
 ## P2: canonical provenance correction
 
@@ -113,4 +115,18 @@ regression against the actual published launcher. Its first probe invocation lac
 capture-directory environment (203); the corrected native invocation passes all4 cases.
 The proof build is verification scratch and does not replace the tested/published P1 four files.
 No product Git input changed; all eight deployment hashes remain P1. This is metadata correction,
-not an additional styling change. P2 actual source gate/remote review and cleanup remain pending.
+not an additional styling change. Actual P2 archive gates pass;175 exported inputs equal the rebuilt proof (LICENSE uses its
+explicit recorded raw export-EOL identity). Remote184 files match in9.421 seconds. Eight
+published files remain unchanged. No validator or resource byte check was weakened.
+
+## Closure and handoff
+
+P1 remote187-file retrieval takes10.741 seconds; P2 remote184-file retrieval takes9.421 seconds.
+Sequential coordinator review reads actual commits/diffs, the original request, source identities
+and selected evidence. All other queue/proposal changes are excluded. Safe cleanup verifies exact
+workspace roots/no reparse points, live task executables0 and110 task DLL resources/owners0.
+All eight prior deployment bytes are recoverable from c5e110b assets. Obsolete S4 builds, package
+copies/backups, logs, probes and captures are removed after extraction. Seven reviewed observer/
+verifier sources transfer under build/t15-controls to following S; stable Ninja/ccache and
+external acceptance PNGs remain. S4 closes; S5 handles TabControl/TPageControl, with other
+families and final frozen-universe task audit still required before T15 can close.

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "task": "M0 T15 S4",
-  "status": "P1 remote187 bytes match; P2 canonical provenance repair verified locally; S4/T15/M0 open pending actual P2 gate/remote review and cleanup",
+  "status": "S4 closed after P1 product/P2 provenance actual remote and coordinator review plus safe cleanup; S5 admitted; T15/M0 open",
   "baseline": "c5e110bbf987309699634184d5c8012f169fed0a",
   "owner": "automatic sequential S through T15 closure; no new T; approved bounded one-shot HD Tune probes after automatic regression",
   "first_candidate": {
@@ -727,7 +727,22 @@
       "build/t15-controls",
       "build/t15-package"
     ],
-    "cleanup": "pending evidence/remote review; stable .ninja/.ccache and external PNGs preserved"
+    "cleanup": "completed: obsolete builds, package copies/backups, logs, probes and captures removed after extraction;7 reviewed observer/verifier source files retained under registered root for following S; stable build/.ninja, build/.ccache and external acceptance PNGs preserved",
+    "DLL_owner_check": "110 resources/0 owners",
+    "DLL_index_sha256": "cb3fa30a4c39a21e1b108758c3f82afc135acbcb188868c28199143b39667548",
+    "live_task_executables": 0,
+    "reparse_points": 0,
+    "backup_recovery": "all8 prior bytes recoverable from c5e110bbf987309699634184d5c8012f169fed0a assets",
+    "retained_sources": [
+      "controller.c",
+      "driver.c",
+      "probe.c",
+      "md5-driver.c",
+      "md5-probe.c",
+      "file-owners.c",
+      "verify-remote.py"
+    ],
+    "retained_owner": "following S under same T15; re-review fixed package label before recompiling"
   },
   "coordinator_review": {
     "P1": "actual22-file commit, original request and evidence reviewed;175 Git input identities/8 deployed files verified;other work excluded",
@@ -781,6 +796,166 @@
     "canonical_legacy_rejection": "LEGACY REJECTION PASS 4 cases stderr193 exit4 no_retry_ui exact_owned_processes",
     "canonical_probe_first_attempt": "missing WIN16STYLE_CAPTURE_DIR returned203; corrected harness setup then4 native cases passed",
     "strict_source_resource_gates": "pass after exact canonical receipt correction; no relaxation",
-    "P2_actual_remote": "pending"
+    "P2_actual_remote": {
+      "status": "passed",
+      "commit": "502ec8389d20c89f80e1ee4b11a9b54ea67a39d2",
+      "remote_main": "502ec8389d20c89f80e1ee4b11a9b54ea67a39d2",
+      "files": 184,
+      "source_inputs": 175,
+      "seconds": 9.421156800002791,
+      "receipt_sha256": "37f0f24167f6c61a98c06a4712f97a9f25520f53fd6f88274bdd34ec339c7a66"
+    },
+    "P2_actual_archive": {
+      "status": "passed",
+      "commit": "502ec8389d20c89f80e1ee4b11a9b54ea67a39d2",
+      "archive_inputs_equal_rebuilt_proof": 175,
+      "export_EOL_uses_recorded_raw_identity": [
+        "LICENSE"
+      ],
+      "deployed_unchanged": 8,
+      "strict_source_resource_governance_gates": "passed",
+      "initial_comparison_correction": "LICENSE ZIP export retains recorded raw CRLF identity; 175 archive inputs match rebuilt proof; exact Git identities checked separately"
+    }
+  },
+  "handoff": {
+    "HDTune": [
+      {
+        "detail": "DETAIL real=msctls_updown32 classproc=71DEF450 wndextra=4 classstyle=00004003 unicode=0 dlg=0",
+        "control": "CONTROL class=msctls_updown32 text=Spin1 attached=0 style=58000036 ex=00000004 size=18,20 font= height=0 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=SysListView32 classproc=71E15630 wndextra=4 classstyle=00004008 unicode=0 dlg=81",
+        "control": "CONTROL class=SysListView32 text=List1 attached=0 style=50218001 ex=00000204 size=549,88 font=MS Shell Dlg height=-11 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=SysHeader32 classproc=71E265D0 wndextra=4 classstyle=00004008 unicode=1 dlg=3",
+        "control": "CONTROL class=SysHeader32 text= attached=0 style=500000c0 ex=00000000 size=528,24 font=MS Shell Dlg height=-11 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=SysListView32 classproc=71E15630 wndextra=4 classstyle=00004008 unicode=0 dlg=81",
+        "control": "CONTROL class=SysListView32 text=List1 attached=0 style=50018001 ex=00000204 size=551,283 font=MS Shell Dlg height=-11 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=SysHeader32 classproc=71E265D0 wndextra=4 classstyle=00004008 unicode=1 dlg=3",
+        "control": "CONTROL class=SysHeader32 text= attached=0 style=500000c0 ex=00000000 size=547,24 font=MS Shell Dlg height=-11 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=msctls_progress32 classproc=71DB0790 wndextra=4 classstyle=00004003 unicode=0 dlg=0",
+        "control": "CONTROL class=msctls_progress32 text= attached=0 style=50000001 ex=00000004 size=114,13 font=MS Shell Dlg height=-11 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=SysListView32 classproc=71E15630 wndextra=4 classstyle=00004008 unicode=0 dlg=81",
+        "control": "CONTROL class=SysListView32 text=List1 attached=0 style=5001c005 ex=00000204 size=423,54 font=MS Shell Dlg height=-11 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=SysHeader32 classproc=71E265D0 wndextra=4 classstyle=00004008 unicode=1 dlg=3",
+        "control": "CONTROL class=SysHeader32 text= attached=0 style=500000c8 ex=00000000 size=419,0 font=MS Shell Dlg height=-11 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=msctls_updown32 classproc=71DEF450 wndextra=4 classstyle=00004003 unicode=0 dlg=0",
+        "control": "CONTROL class=msctls_updown32 text=Spin1 attached=0 style=50000036 ex=00000004 size=18,20 font= height=0 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=msctls_updown32 classproc=71DEF450 wndextra=4 classstyle=00004003 unicode=0 dlg=0",
+        "control": "CONTROL class=msctls_updown32 text=Spin1 attached=0 style=50000036 ex=00000004 size=18,20 font= height=0 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=msctls_progress32 classproc=71DB0790 wndextra=4 classstyle=00004003 unicode=0 dlg=0",
+        "control": "CONTROL class=msctls_progress32 text= attached=0 style=50000001 ex=00000004 size=401,16 font=MS Shell Dlg height=-11 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=SysListView32 classproc=71E15630 wndextra=4 classstyle=00004008 unicode=0 dlg=81",
+        "control": "CONTROL class=SysListView32 text=List1 attached=0 style=50018409 ex=00000204 size=551,319 font=MS Shell Dlg height=-11 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=SysHeader32 classproc=71E265D0 wndextra=4 classstyle=00004008 unicode=0 dlg=3",
+        "control": "CONTROL class=SysHeader32 text= attached=0 style=500000c0 ex=00000000 size=547,24 font=MS Shell Dlg height=-11 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=SysListView32 classproc=71E15630 wndextra=4 classstyle=00004008 unicode=0 dlg=81",
+        "control": "CONTROL class=SysListView32 text=List1 attached=0 style=5001c001 ex=00000204 size=423,54 font=MS Shell Dlg height=-11 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=SysHeader32 classproc=71E265D0 wndextra=4 classstyle=00004008 unicode=1 dlg=3",
+        "control": "CONTROL class=SysHeader32 text= attached=0 style=500000c8 ex=00000000 size=419,0 font=MS Shell Dlg height=-11 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=msctls_trackbar32 classproc=71DD4190 wndextra=4 classstyle=00004000 unicode=0 dlg=1",
+        "control": "CONTROL class=msctls_trackbar32 text=Slider1 attached=0 style=58010001 ex=00000204 size=99,33 font= height=0 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=msctls_progress32 classproc=71DB0790 wndextra=4 classstyle=00004003 unicode=0 dlg=0",
+        "control": "CONTROL class=msctls_progress32 text= attached=0 style=50000001 ex=00000004 size=99,15 font=MS Shell Dlg height=-11 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=msctls_progress32 classproc=71DB0790 wndextra=4 classstyle=00004003 unicode=0 dlg=0",
+        "control": "CONTROL class=msctls_progress32 text= attached=0 style=50000001 ex=00000004 size=99,15 font=MS Shell Dlg height=-11 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=msctls_updown32 classproc=71DEF450 wndextra=4 classstyle=00004003 unicode=0 dlg=0",
+        "control": "CONTROL class=msctls_updown32 text=Spin1 attached=0 style=50000032 ex=00000004 size=17,23 font= height=0 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=msctls_trackbar32 classproc=71DD4190 wndextra=4 classstyle=00004000 unicode=0 dlg=1",
+        "control": "CONTROL class=msctls_trackbar32 text=Slider1 attached=0 style=50010001 ex=00000204 size=410,31 font= height=0 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=msctls_progress32 classproc=71DB0790 wndextra=4 classstyle=00004003 unicode=0 dlg=0",
+        "control": "CONTROL class=msctls_progress32 text= attached=0 style=50000000 ex=00000004 size=261,13 font=MS Shell Dlg height=-11 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=msctls_updown32 classproc=71DEF450 wndextra=4 classstyle=00004003 unicode=0 dlg=0",
+        "control": "CONTROL class=msctls_updown32 text=Spin1 attached=0 style=58000036 ex=00000004 size=18,20 font= height=0 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=SysListView32 classproc=71E15630 wndextra=4 classstyle=00004008 unicode=0 dlg=81",
+        "control": "CONTROL class=SysListView32 text=List1 attached=0 style=50018001 ex=00000204 size=413,190 font=MS Shell Dlg height=-11 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=SysHeader32 classproc=71E265D0 wndextra=4 classstyle=00004008 unicode=1 dlg=3",
+        "control": "CONTROL class=SysHeader32 text= attached=0 style=500000c0 ex=00000000 size=409,24 font=MS Shell Dlg height=-11 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=msctls_progress32 classproc=71DB0790 wndextra=4 classstyle=00004003 unicode=0 dlg=0",
+        "control": "CONTROL class=msctls_progress32 text= attached=0 style=50000001 ex=00000004 size=93,15 font=MS Shell Dlg height=-11 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=msctls_updown32 classproc=71DEF450 wndextra=4 classstyle=00004003 unicode=0 dlg=0",
+        "control": "CONTROL class=msctls_updown32 text=Spin1 attached=0 style=58000036 ex=00000004 size=18,20 font= height=0 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      },
+      {
+        "detail": "DETAIL real=SysTabControl32 classproc=71DD5E20 wndextra=4 classstyle=0000400b unicode=1 dlg=81",
+        "control": "CONTROL class=SysTabControl32 text= attached=0 style=54030240 ex=00000004 size=771,504 font=MS Shell Dlg height=-11 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.9711_none_85b4ef87f7b1112b\\COMCTL32.dll"
+      }
+    ],
+    "DoubleKiller": [
+      {
+        "detail": "DETAIL real=TPageControl classproc=FFFF0EAE wndextra=4 classstyle=00000008 unicode=0 dlg=81",
+        "control": "CONTROL class=TPageControl text= attached=0 style=56010040 ex=00000000 size=696,322 font=MS Sans Serif height=-11 owner=D:\\programs\\misc\\DoubleKiller.exe"
+      },
+      {
+        "detail": "DETAIL real=TListView classproc=FFFF0DDA wndextra=4 classstyle=00000008 unicode=1 dlg=81",
+        "control": "CONTROL class=TListView text= attached=1 style=56810049 ex=00000000 size=504,294 font=MS Sans Serif height=-11 owner=D:\\programs\\misc\\DoubleKiller.exe"
+      },
+      {
+        "detail": "DETAIL real=SysHeader32 classproc=69DA1E70 wndextra=4 classstyle=00004008 unicode=0 dlg=3",
+        "control": "CONTROL class=SysHeader32 text= attached=0 style=500000c2 ex=00000000 size=504,17 font=MS Sans Serif height=-11 owner=C:\\WINDOWS\\WinSxS\\x86_microsoft.windows.common-controls_6595b64144ccf1df_5.82.26100.8521_none_cf9e08b68ea73d80\\COMCTL32.dll"
+      }
+    ],
+    "MD5summer": [
+      {
+        "detail": "DETAIL real=TShellTreeView classproc=FFFF0F39 wndextra=4 classstyle=00000008 unicode=0 dlg=81",
+        "control": "CONTROL class=TShellTreeView text= attached=0 style=5421001b ex=00000200 size=268,163 font=MS Sans Serif height=-11 owner=D:\\programs\\misc\\md5summer.exe"
+      }
+    ]
+  },
+  "closure": {
+    "P1": "5e8f880b9f893441cf61bf345218371b2c45b313",
+    "P2": "502ec8389d20c89f80e1ee4b11a9b54ea67a39d2",
+    "scope": "S4 only; task T15/M0 open",
+    "source_identity_recheck": 175,
+    "deployed_unchanged": 8,
+    "following_scope": "native/VCL tab controls; remaining families follow sequential S",
+    "cleanup": "completed: obsolete builds, package copies/backups, logs, probes and captures removed after extraction;7 reviewed observer/verifier source files retained under registered root for following S; stable build/.ninja, build/.ccache and external acceptance PNGs preserved"
   }
 }

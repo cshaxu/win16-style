@@ -11,11 +11,17 @@ S1 VB6和S2 DoubleKiller成果保持。S3已完成对话框早显、应用owner-
 [S3历史](../history/M0-T15-S3-dialog-menus.md)和[证据](../etc/evidence/framework-completion.json)
 承载，不把当时的候选/取消状态继续当成当前状态。
 
+S4已完成MD5summer四个框架角色、HD Tune图像/PushLike及client-edge编辑，45实际包/
+12聚焦、真实四应用/八部署通过；P1远端187、P2修复旧回执后严格归档/远端184通过。
+[本S历史](../history/M0-T15-S4-control-protocols.md)和
+[证据](../etc/evidence/control-protocols.json)保留空白图标失败候选及修后实际像素、
+行尾回执修正和未覆盖面。S4清理后关闭，必要观察器源码转交当前S5。
+
 ## 当前与后续有限分解
 
-- S4：MD5summer按钮/下拉的可靠来源与协议识别；HD Tune图标/PushLike按钮及原生
-  client-edge编辑边框。先只读协议证据，再自包含旧包负例，必要时明确交接拆续S。
-- 后续S：分页、列表/表头、树、进度、滑块/微调逐类支持，保留数据/图标/选择/焦点/
+- S5：分页控件，先核实HD Tune的SysTabControl32及DoubleKiller的TPageControl协议/绘制，
+  在既有renderer内适配标签/边框/图标/字体，保持选择/取消/通知/键盘/焦点及应用页面。
+- 后续S：列表/表头、树、进度、滑块/微调逐类支持，保留数据/图标/选择/焦点/
   命令/键盘/原生通知，分别验证实际像素、DPI、卸载和资源。
 - 最后评估应用自绘图表/面板/无窗口标签的有限边界。不能凭模块加载/附着代替绘制，
   不将一个真实应用的成功扩大为任意框架支持；T15另做冻结覆盖全集审计。
@@ -26,5 +32,5 @@ S1 VB6和S2 DoubleKiller成果保持。S3已完成对话框早显、应用owner-
 已获批准的HD Tune管理员探针每次180秒内、固定新建自有实例、无持久控制器或后续命令、
 不运行磁盘业务；系统UAC取消记未执行。用户要求自动回归完成后再弹本次提示。
 
-CURRENT拥有唯一活动包。build/t15-controls承接S3已审观察器源码；build/t15-package
+CURRENT拥有唯一活动包。build/t15-controls承接S4已审的七份观察器/复核源码；build/t15-package
 登记每S新包和发布备份。原始证据先提炼后安全清理，稳定Ninja/ccache和外部验收PNG保留。
