@@ -52,4 +52,4 @@ CURRENT中的完成审计。待准入候选及顺序见上表。
 
 [框架与公共控件完成计划](../proposals/framework-completion.md)已获自动续S授权，状态由CURRENT管理。
 
-[Win3.x局部轮廓拖动](../proposals/outline-window-move.md)已按用户明确请求准入；活动包由CURRENT管理，不再占候选顺序。
+[Win3.x局部轮廓拖动](../proposals/outline-window-move.md)已按用户要求由T16 S2整体撤回，不重新进入候选队列；状态由CURRENT管理。

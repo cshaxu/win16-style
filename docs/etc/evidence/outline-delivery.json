@@ -356,5 +356,6 @@
     ],
     "utility": "temporary native guard outside task roots removed after use"
   },
-  "audit_disposition": "all 16 frozen units reviewed against actual P1 diff/evidence; finite promises passed; native fallback and uncovered hardware/input boundaries explicit"
+  "audit_disposition": "all 16 frozen units reviewed against actual P1 diff/evidence; finite promises passed; native fallback and uncovered hardware/input boundaries explicit",
+  "subsequent_owner_withdrawal": "T16 S2 withdraws all S1 src/tests due to measured interactive latency; S1 records are historical, not current capability"
 }

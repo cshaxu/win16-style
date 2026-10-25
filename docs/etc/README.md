@@ -48,3 +48,5 @@
 - [T16实现与任务审计](../history/M0-T16-S1-outline-move.md)：16单位、原始依据、有限移动/原生边界及交付闭环。
 
 - [T16交付与审计证据](evidence/outline-delivery.json)：完整包、安装路径、视觉/资源保留及实际交付复核。
+
+- [T16 S2轮廓撤回](evidence/outline-withdrawal.json)：短计时、源码/测试原样撤回、恢复包及实际交付；S1资料仅作历史。

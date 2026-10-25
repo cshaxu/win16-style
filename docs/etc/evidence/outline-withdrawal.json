@@ -1,0 +1,267 @@
+{
+  "task": "M0 T16 S2",
+  "status": "verified/published;remote/cleanup pending",
+  "request": "withdraw whole T16 src/test feature; restore T15; preserve history/queue",
+  "product_version": "0.15.0.0",
+  "baseline": "96e47212da877bcb4e16178abea093b006bb343f",
+  "source_snapshot": "1f196f850d88d876b3e18e14616c95220c5f8bed07ffd82b9afbe0b1c776ba73",
+  "source_inputs": 197,
+  "source_revert": {
+    "status": "passed",
+    "baseline": "96e47212da877bcb4e16178abea093b006bb343f",
+    "normalized_git_code_paths": 196,
+    "deleted": [
+      "src/ntw16s-dll/move.c",
+      "src/ntw16s-dll/move.h",
+      "tests/ntw16s-dll/outline_move.c"
+    ],
+    "source_receipts": "restored to baseline",
+    "note": "all CMake/src/tests/tools equal baseline under Git LF normalization; original resources not rewritten"
+  },
+  "code_diff": {
+    "scope": "CMakeLists/src/tests/tools",
+    "added": 18,
+    "deleted": 859,
+    "net": -841
+  },
+  "performance_diagnosis": {
+    "method": "pure C -O3 instrumented same move.c before deletion; two owned surfaces,12 updates each; no product binary instrumentation",
+    "desktop": "Default",
+    "physical_DPI": 144,
+    "sizes": [
+      {
+        "width": 640,
+        "height": 400,
+        "mean_ms": 154.663,
+        "screen_readback_ms": 118.881,
+        "DwmFlush_ms": 31.963,
+        "ULW_ms": 0.624
+      },
+      {
+        "width": 1280,
+        "height": 700,
+        "mean_ms": 178.211,
+        "screen_readback_ms": 143.765,
+        "DwmFlush_ms": 30.635,
+        "ULW_ms": 0.837
+      }
+    ],
+    "resources": "GDI8 before/after both surfaces; worker signalled exit0; immediate Job accounting snapshot1, then kill-on-close Job closed; no active0 claim for this diagnostic",
+    "limit": "source microbenchmark supports bottleneck; not a profile of every target application"
+  },
+  "actual_package": {
+    "status": "passed",
+    "scope": "owner-directed short withdrawal regression; not full suite",
+    "cases": 8,
+    "seconds": 4.519919999991544,
+    "sha256": {
+      "demo.exe": "fecb7080bc073c79344d31bd4422cbb0381c371dd3ea36b67c6d9b016dd1ae0f",
+      "ntw16s32.dll": "06a8b2e44780d5bca625556ca9037902c8e8041bddc122932e0aabcd3acd7ffd",
+      "ntw16s64.dll": "5a91975de16915aa1021ead0f281d8ca44b6f7cfe5fbe863939c73c1103bcd13",
+      "run16s.exe": "3c6a0bb156afa2d4ecdb84a59301abf26978c371763fdd54c85d1180adc01c5d"
+    },
+    "records": [
+      {
+        "name": "abi32",
+        "seconds": 0.28441289998590946,
+        "exit": 0,
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-clean\\clean-source\\build\\.ninja\\x86\\core-abi.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-clean\\candidate\\ntw16s32.dll"
+        ],
+        "marker": "ABI PASS width=32",
+        "owned_job_active": 0
+      },
+      {
+        "name": "abi64",
+        "seconds": 0.27306989999487996,
+        "exit": 0,
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-clean\\clean-source\\build\\.ninja\\x64\\core-abi.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-clean\\candidate\\ntw16s64.dll"
+        ],
+        "marker": "ABI PASS width=64",
+        "owned_job_active": 0
+      },
+      {
+        "name": "demo-boundary",
+        "seconds": 0.3682961000013165,
+        "exit": 0,
+        "command": [
+          "C:\\Program Files\\Python313\\python.exe",
+          "-B",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-clean\\clean-source\\tests\\demo-exe\\boundary.py",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-clean\\candidate\\demo.exe"
+        ],
+        "marker": "DEMO BOUNDARY PASS",
+        "owned_job_active": 0
+      },
+      {
+        "name": "demo-pair",
+        "seconds": 2.4843937999685295,
+        "exit": 0,
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-clean\\clean-source\\build\\.ninja\\x64\\demo-observe.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-clean\\candidate\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-clean\\candidate\\ntw16s64.dll",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-clean\\candidate\\ntw16s32.dll",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-clean\\candidate\\demo.exe"
+        ],
+        "marker": "DEMO PAIR PASS",
+        "owned_job_active": 0
+      },
+      {
+        "name": "automatic",
+        "seconds": 2.188569499994628,
+        "exit": 0,
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-clean\\clean-source\\build\\.ninja\\x64\\launch-automatic.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-clean\\candidate\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-clean\\candidate\\ntw16s32.dll",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-clean\\candidate\\ntw16s64.dll",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-clean\\clean-source\\build\\.ninja\\x86\\launch-target.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-clean\\clean-source\\build\\.ninja\\x64\\launch-target.exe"
+        ],
+        "marker": "LAUNCH MATRIX PASS",
+        "owned_job_active": 0
+      },
+      {
+        "name": "cmd-nested",
+        "seconds": 3.234049800026696,
+        "exit": 0,
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-clean\\clean-source\\build\\.ninja\\x64\\cmd-nested.exe",
+          "--core",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-clean\\candidate"
+        ],
+        "marker": "CMD NESTED PASS core four native PE edges",
+        "owned_job_active": 0
+      },
+      {
+        "name": "position32",
+        "seconds": 0.4746140000061132,
+        "exit": 0,
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-clean\\candidate\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t16-perf\\native32.exe"
+        ],
+        "marker": "NATIVE_POSITION_OK bits=32 attached=1 moved=1 overlays=0",
+        "owned_job_active": 0
+      },
+      {
+        "name": "position64",
+        "seconds": 0.48729269998148084,
+        "exit": 0,
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-clean\\candidate\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t16-perf\\native64.exe"
+        ],
+        "marker": "NATIVE_POSITION_OK bits=64 attached=1 moved=1 overlays=0",
+        "owned_job_active": 0
+      }
+    ],
+    "physical_input": "not tested",
+    "motion": "two native SetWindowPos operations; native drag loop not automated; no custom outline feature remains",
+    "skipped_full_suite": "owner requested focused short testing; no full91/99 claim"
+  },
+  "clean_build": {
+    "profile": "Focused",
+    "build_root": "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-clean\\clean-source\\build\\.ninja",
+    "build_jobs": 8,
+    "tests": [
+      {
+        "passed": 1,
+        "skipped": [],
+        "architecture": "x86",
+        "configure_seconds": 10.13887009996688,
+        "tests": 1,
+        "test_seconds": 0.6729788999655284,
+        "build_seconds": 57.52541239996208
+      },
+      {
+        "passed": 1,
+        "skipped": [],
+        "architecture": "x64",
+        "configure_seconds": 6.974083100038115,
+        "tests": 1,
+        "test_seconds": 0.7991708000190556,
+        "build_seconds": 51.86702430003788
+      }
+    ],
+    "selection": "^core/abi$",
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "status": "passed",
+    "targets": "all",
+    "exit_code": 0,
+    "test_jobs": 4
+  },
+  "publication": {
+    "test_result": "O:\\repos.hobby\\win16style\\build\\t16-perf\\focused\\result.json",
+    "status": "passed",
+    "tested_package": "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-clean\\candidate",
+    "files": [
+      {
+        "after": "fecb7080bc073c79344d31bd4422cbb0381c371dd3ea36b67c6d9b016dd1ae0f",
+        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe",
+        "expected": "fecb7080bc073c79344d31bd4422cbb0381c371dd3ea36b67c6d9b016dd1ae0f",
+        "before": "3439e185c0238c2341e9bc05730c54cae773293c152358a0811348b4f3fbd29b",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-publish\\before-0"
+      },
+      {
+        "after": "06a8b2e44780d5bca625556ca9037902c8e8041bddc122932e0aabcd3acd7ffd",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
+        "expected": "06a8b2e44780d5bca625556ca9037902c8e8041bddc122932e0aabcd3acd7ffd",
+        "before": "fefe4c924f525437fef2c8a5b1a3130d413463db2fc9b5264ab96ce2062f24b2",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-publish\\before-0"
+      },
+      {
+        "after": "5a91975de16915aa1021ead0f281d8ca44b6f7cfe5fbe863939c73c1103bcd13",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll",
+        "expected": "5a91975de16915aa1021ead0f281d8ca44b6f7cfe5fbe863939c73c1103bcd13",
+        "before": "cc439f96f5a74b86c4ccdb3a51382b961f3be9951b9d7857e820ab250e9415c3",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-publish\\before-0"
+      },
+      {
+        "after": "3c6a0bb156afa2d4ecdb84a59301abf26978c371763fdd54c85d1180adc01c5d",
+        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
+        "expected": "3c6a0bb156afa2d4ecdb84a59301abf26978c371763fdd54c85d1180adc01c5d",
+        "before": "1ec99ab539d3a42d75f8373521d11fa994e9c7a72d98ac29da4c8ceb2bebea41",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-publish\\before-0"
+      },
+      {
+        "after": "fecb7080bc073c79344d31bd4422cbb0381c371dd3ea36b67c6d9b016dd1ae0f",
+        "path": "O:\\winnt\\system32\\demo.exe",
+        "expected": "fecb7080bc073c79344d31bd4422cbb0381c371dd3ea36b67c6d9b016dd1ae0f",
+        "before": "3439e185c0238c2341e9bc05730c54cae773293c152358a0811348b4f3fbd29b",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-publish\\before-1"
+      },
+      {
+        "after": "06a8b2e44780d5bca625556ca9037902c8e8041bddc122932e0aabcd3acd7ffd",
+        "path": "O:\\winnt\\system32\\ntw16s32.dll",
+        "expected": "06a8b2e44780d5bca625556ca9037902c8e8041bddc122932e0aabcd3acd7ffd",
+        "before": "fefe4c924f525437fef2c8a5b1a3130d413463db2fc9b5264ab96ce2062f24b2",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-publish\\before-1"
+      },
+      {
+        "after": "5a91975de16915aa1021ead0f281d8ca44b6f7cfe5fbe863939c73c1103bcd13",
+        "path": "O:\\winnt\\system32\\ntw16s64.dll",
+        "expected": "5a91975de16915aa1021ead0f281d8ca44b6f7cfe5fbe863939c73c1103bcd13",
+        "before": "cc439f96f5a74b86c4ccdb3a51382b961f3be9951b9d7857e820ab250e9415c3",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-publish\\before-1"
+      },
+      {
+        "after": "3c6a0bb156afa2d4ecdb84a59301abf26978c371763fdd54c85d1180adc01c5d",
+        "path": "O:\\winnt\\system32\\run16s.exe",
+        "expected": "3c6a0bb156afa2d4ecdb84a59301abf26978c371763fdd54c85d1180adc01c5d",
+        "before": "1ec99ab539d3a42d75f8373521d11fa994e9c7a72d98ac29da4c8ceb2bebea41",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\withdraw-publish\\before-1"
+      }
+    ]
+  },
+  "remote": "pending",
+  "recovery": "pending",
+  "cleanup": "pending"
+}

@@ -2,15 +2,30 @@
 
 ## Current Work
 
-无活动任务包。M0 T16 S1局部Win3.x轮廓移动已交付收口，版本0.16.0.0；
-M0保持开放，等待用户外观验收，不自动启动排队候选。
+用户明确批准追加T16独立S撤回整个轮廓效果；当前M0 T16 S2 Owner-Reopen，
+不复用S1，不新开T。前序短诊断已实测每更新155/178ms，主要屏幕读回和DwmFlush。
+停止优化实验，原样恢复T16前产品源码和测试，恢复原生移动，保留治理/历史/队列。
 
-P1 `684c732411fb20aa332a14592674d636032f3eb5`已推送并实际取回218文件，
-200产品输入/四发布物一致；独立归档双宽重建、ABI/四文件门禁和204对象恢复通过。
-完整99包、经典24及安装18检查通过；双发布八SHA一致。16单位全任务审计、
-1400映像占用/reparse检查和两个精确scratch根清理均完成，四张原生PNG保留。
-详见[收口记录](../history/M0-T16-S1-outline-move.md)及[结构化证据](../etc/evidence/outline-delivery.json)。
-Actor CheckBox只读发现已由用户要求的VB5/VB6专项接收，排队第3位，未实施。
+## M0 T16 S2 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Owner-Reopen；S1之后顺序S2，用户明确追加单独S撤回T16效果 |
+| Admission And Approval | 用户“对。追加一个单独T16的S任务来做”；永久提交推送/双发布授权保持 |
+| Objective | 原样撤回T16全部产品源码/测试及版本改动，恢复T15原生移动，保留历史及候选 |
+| Non-goals | 不继续优化/重做轮廓，不改其他视觉/原资源/传播，不新开T，不重复大矩阵 |
+| Reference Baseline | 当前5b10601；撤回目标96e47212da877bcb4e16178abea093b006bb343f，产品0.15.0.0 |
+| Candidate Proposal | [局部轮廓拖动](../proposals/outline-window-move.md)，本次按用户撤回 |
+| Files And ABI Surface | 恢复CMake/原7源及工具路径，删除move.c/h和outline_move.c，回执恢复；ABI3/35detours40slots，无新产品 |
+| Applicable Rules | Task Reading Set/C17/GCC/Ninja/ccache；禁computer-use/兄弟改动；参照T13 S2原样撤回版本先例 |
+| Verification | 全部CMake/src/tests/tools Git字节等同96e4721；干净双宽同包四文件及原资源门禁；仅聚焦包ABI/初始/传播/原生移动两次，不跑旧大矩阵 |
+| Expected Markers | 撤回差异完整、197输入、0.15产品元数据、无DefWindowProc新增拦截/轮廓对象；实际包和八部署SHA一致 |
+| Asset Needs | build/t16-perf保留短诊断/本S测试；build/t15-package仅本S withdraw-*子目录用于干净构建/包/备份，其他T15工作不动；先提炼再精确清理 |
+| Reporting Requirements | 治理T16 S2与恢复产品T15版本区分；记录未跑全集、发布/推送/实际远端及未覆盖；不把撤回称性能优化 |
+| Stop Conditions | 权限失败不扩大ACL；占用按既有已授权精确进程处置；不改原资源以掩盖源码/包检查 |
+| Exit Criteria | 原样源码/测试撤回、双宽构建、有限实际包验证、双发布八SHA、提交远端/恢复清理后关闭S2/T16 |
+| Original Owner Request | 移动边框很卡；用户决定取消整个效果并明确追加单独T16 S撤回 |
+| Similar-Issue Sweep | T16 commit中全部CMake/src/tests/tools与回执、版本/UI声明；仅历史/队列证据保留，无遗漏新拦截 |
 
 ## Identifier State
 
@@ -19,16 +34,17 @@ Actor CheckBox只读发现已由用户要求的VB5/VB6专项接收，排队第3�
 - Last allocated Td S: 14
 - Owner allocation constraint: 本次用户明确准入T16；仅可自动细分其必要后续S，不自行分配下一T，其他候选待准入。
 - Last delivery: M0 T16 S1 P2（P1实际远端218文件/200输入、归档双宽及四产物、204对象恢复、1400映像安全清理；S1/T16关闭）
-- Open task: 无；T16 S1/T16关闭，既有关闭/取消任务状态保持；M0开放等待用户验收。
+- Open task: T16 S2原样撤回轮廓效果；T16重新开放，S1历史关闭保持；M0开放。
 
 ## Technical Baseline
 
-0.16.0.0 / M0 T16 S1，200产品输入、三组件四产物、ABI3/31命名+ordinal1，
-37进程内detours/40slots。干净双宽、99实际包、24经典及18安装复核、双发布八SHA
-一致；原五头/声明和每DLL18表不变。标题/字体/菜单/滚动条算法保持，同场景旧/新
-双宽整图RGB0差异。纯C17/GCC/Ninja/ccache；有限普通默认过程轮廓移动，回退与
-未覆盖见[UI](../design/UI.md)。源码快照及四SHA由[release](../etc/release.json)承载。
-P1源码/四文件实际远端、归档双宽/四文件恢复及精确根清理均通过；S1/T16关闭，M0开放。
+T16 S2已撤回产品源码/测试，恢复0.15.0.0 / M0 T15元数据，197输入；治理仍为T16 S2。
+全部196个CMake/src/tests/tools路径等同96e4721；原五头/声明/每DLL18表保持，三组件
+四产物/ABI3/31命名+ordinal1、35私有detours/40slots。干净双宽all和同批四文件门禁
+通过；实际包8项聚焦4.51992秒、两处双发布八SHA及安装ABI32/64通过。测试范围按
+用户要求缩小，不冒称完整91/99全集或物理输入验收。原生定位各宽一次，轮廓功能已撤。
+[release](../etc/release.json)为当前发布身份，[S2撤回](../history/M0-T16-S2-outline-withdrawal.md)
+及[证据](../etc/evidence/outline-withdrawal.json)接收实际验证；P1远端/恢复清理待执行。
 
 ## Recent Closure
 

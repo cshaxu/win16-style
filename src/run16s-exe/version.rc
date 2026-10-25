@@ -1,8 +1,8 @@
 #include <windows.h>
 1 RT_MANIFEST "run16s-exe/run16s.manifest"
 1 VERSIONINFO
-FILEVERSION 0,16,0,0
-PRODUCTVERSION 0,16,0,0
+FILEVERSION 0,15,0,0
+PRODUCTVERSION 0,15,0,0
 FILEFLAGSMASK 0x3fL
 FILEFLAGS 0
 FILEOS VOS_NT_WINDOWS32
@@ -13,8 +13,8 @@ BEGIN
   BLOCK "040904b0"
   BEGIN
    VALUE "FileDescription", "Win16 Style launcher\0"
-   VALUE "FileVersion", "M0 T16\0"
-   VALUE "ProductVersion", "0.16.0.0\0"
+   VALUE "FileVersion", "M0 T15\0"
+   VALUE "ProductVersion", "0.15.0.0\0"
    VALUE "ProductName", "Win16 Style\0"
   END
  END
