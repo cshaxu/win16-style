@@ -1,6 +1,6 @@
 {
   "task": "M0 T15 S3",
-  "status": "S3 verified, published and installed checks passed; P1 commit/push/remote review pending",
+  "status": "S3 closed after P1 remote/coordinator review, cleanup and unchanged source/eight-deploy check; S4 automatically admitted",
   "owner_authorization": "automatic sequential S admission through T15 closure; no new T; necessary multiple one-shot admin probes separately explicitly approved",
   "baseline": "da2631f6b1a84f5b4e06eddd0c72c63dc8fd6bcb",
   "investigation": {
@@ -384,9 +384,8 @@
   "binary_release": true,
   "three_components_four_products": true,
   "next": [
-    "Commit/push P1, retrieve actual remote source/artifacts and coordinate review.",
-    "Extract evidence/clean only obsolete registered scratch, closeS3 with nextP.",
-    "Automatically admit S4 underT15/M0 and implement remaining standard/native framework controls; no newT."
+    "T15 S4: basic native/VCL protocols, icon/PushLike buttons and client-edge edits; finite scope inCURRENT.",
+    "Later approved S cover tab/list/header/tree/progress/trackbar/updown and finite application-drawn assessment; T15/M0 remain open."
   ],
   "probe_corrections": [
     "First final focused CTest invocation lacked mandatory owned WIN16STYLE_CAPTURE_DIR and did not execute product checks; corrected invocation passes all10.",
@@ -624,7 +623,8 @@
         }
       }
     },
-    "legacy_summary": "failures13 in inherited observer is 7 unsupported icon/PushLike buttons plus6 native client-edge edits. These are excluded S3 assertions and explicit next-S work, not claimed supported."
+    "legacy_summary": "failures13 in inherited observer is 7 unsupported icon/PushLike buttons plus6 native client-edge edits. These are excluded S3 assertions and explicit next-S work, not claimed supported.",
+    "status": "passed final hidden-release batch"
   },
   "publication": {
     "tested_package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s3-hidden-release\\candidate",
@@ -811,5 +811,295 @@
       "All four internal combo/list/multiline-edit/button suppression paths use shared visibility predicate; explicit application redraw and active bracket cleanup remain native.",
       "New top-level first-show only consumes a real pending enabled creation record; no existing-window scan or new bootstrap path."
     ]
+  },
+  "p1_remote_review": {
+    "status": "passed",
+    "commit": "239e70022c07bde317992eb1c78543e7109c6b93",
+    "remote_main": "239e70022c07bde317992eb1c78543e7109c6b93",
+    "files": 184,
+    "source_inputs": 170,
+    "seconds": 9.97675839997828,
+    "receipt_sha256": "8566e90593a4fa092813313a203811cac011996ba1af820c62485af4457daf85"
+  },
+  "coordinator_review": {
+    "status": "passed",
+    "role": "same-session sequential coordinator",
+    "actual_commit": "239e70022c07bde317992eb1c78543e7109c6b93",
+    "read": [
+      "actual git show --format=fuller --stat and staged source/test diff",
+      "original automatic S through T15 request and restricted one-shot UAC approvals",
+      "actual final41 case result/12focused XML/native app driver and observer snapshots",
+      "resource/source gates, exact title/font/control reconstruction and eight deployment hashes",
+      "actual remote184-file receipt"
+    ],
+    "scope": "S3 finite dialog/menu/hidden fixes only; 13 missing basic controls and further common controls remain next S; no T closure claim"
+  },
+  "cleanup_plan": {
+    "registered_roots": [
+      "build/t15-framework",
+      "build/t15-package"
+    ],
+    "transfer_destination": "build/t15-controls",
+    "retained_for_S4": [
+      "controller.c",
+      "driver.c",
+      "probe.c",
+      "file-owners.c",
+      "verify-remote.py"
+    ],
+    "retirement": "Extracted evidence/images survive; only now-obsolete S3 raw probes/packages removed after absolute-path/reparse/live-process/native-resource checks; stable .ninja/.ccache untouched",
+    "old_package_recovery_commit": "da2631f6b1a84f5b4e06eddd0c72c63dc8fd6bcb; all8 backups match Git four artifacts",
+    "retained_source_hashes": {
+      "controller.c": "ab3a591a62114be69ab89df0253902e7c7de299006a0b4962e8c69fd2c7d7b1d",
+      "driver.c": "837193c32f9fd218b3712a32ad77d17264ac22b68ee969b5c3e307ef9269472d",
+      "file-owners.c": "6c73285aa04fb564db13c4093396a6d5584db1496527df1ab754bf8eb7de79c8",
+      "probe.c": "8c7b1d3d80c2e065db732abc6fc70f105c657ef30dc1345031142de15cba22f2",
+      "verify-remote.py": "b8ef757e825ad8e6c224690d6c3ed2ccac63ac797b084861d39ba255d81de217"
+    }
+  },
+  "final_case_index": [
+    {
+      "name": "abi-x86",
+      "exit_code": 0,
+      "seconds": 0.2383745
+    },
+    {
+      "name": "abi-x64",
+      "exit_code": 0,
+      "seconds": 0.2477858
+    },
+    {
+      "name": "demo-boundary",
+      "exit_code": 0,
+      "seconds": 0.230534
+    },
+    {
+      "name": "demo-pair",
+      "exit_code": 0,
+      "seconds": 1.9084558
+    },
+    {
+      "name": "wait-contract",
+      "exit_code": 0,
+      "seconds": 7.3357638
+    },
+    {
+      "name": "font-layout-x64",
+      "exit_code": 0,
+      "seconds": 69.199074
+    },
+    {
+      "name": "font-layout-x86",
+      "exit_code": 0,
+      "seconds": 109.6890701
+    },
+    {
+      "name": "menu-cancel-x86",
+      "exit_code": 0,
+      "seconds": 68.9172647
+    },
+    {
+      "name": "startup-error-unit-32",
+      "exit_code": 0,
+      "seconds": 0.1896642
+    },
+    {
+      "name": "startup-error-unit-64",
+      "exit_code": 0,
+      "seconds": 0.1319768
+    },
+    {
+      "name": "legacy-rejection",
+      "exit_code": 0,
+      "seconds": 0.7673849
+    },
+    {
+      "name": "cli",
+      "exit_code": 0,
+      "seconds": 0.5592312
+    },
+    {
+      "name": "automatic",
+      "exit_code": 0,
+      "seconds": 1.6637352
+    },
+    {
+      "name": "startup-errors",
+      "exit_code": 0,
+      "seconds": 8.1857113
+    },
+    {
+      "name": "propagation",
+      "exit_code": 0,
+      "seconds": 5.8559419
+    },
+    {
+      "name": "cmd-nested",
+      "exit_code": 0,
+      "seconds": 2.6548838
+    },
+    {
+      "name": "long-path",
+      "exit_code": 0,
+      "seconds": 1.1545414
+    },
+    {
+      "name": "legacy-iat-32",
+      "exit_code": 0,
+      "seconds": 0.5470341
+    },
+    {
+      "name": "legacy-iat-64",
+      "exit_code": 0,
+      "seconds": 0.4948814
+    },
+    {
+      "name": "uac-unit-32",
+      "exit_code": 0,
+      "seconds": 0.446085
+    },
+    {
+      "name": "uac-unit-64",
+      "exit_code": 0,
+      "seconds": 0.3774613
+    },
+    {
+      "name": "cli-failures",
+      "exit_code": 0,
+      "seconds": 2.7408941
+    },
+    {
+      "name": "vb-font-32",
+      "exit_code": 0,
+      "seconds": 1.5702881
+    },
+    {
+      "name": "vb-font-64",
+      "exit_code": 0,
+      "seconds": 1.3956763
+    },
+    {
+      "name": "vb-controls-64",
+      "exit_code": 0,
+      "seconds": 2.0089291
+    },
+    {
+      "name": "vb-controls-32",
+      "exit_code": 0,
+      "seconds": 2.6249621
+    },
+    {
+      "name": "control-visibility-32",
+      "exit_code": 0,
+      "seconds": 1.3629661
+    },
+    {
+      "name": "control-visibility-64",
+      "exit_code": 0,
+      "seconds": 1.2924293
+    },
+    {
+      "name": "menu-cancel-x64",
+      "exit_code": 0,
+      "seconds": 68.1947156
+    },
+    {
+      "name": "dialog-scope-32",
+      "exit_code": 0,
+      "seconds": 19.6791404
+    },
+    {
+      "name": "theme-stage-32",
+      "exit_code": 0,
+      "seconds": 0.2490862
+    },
+    {
+      "name": "dialog-scope-64",
+      "exit_code": 0,
+      "seconds": 19.6400073
+    },
+    {
+      "name": "theme-stage-64",
+      "exit_code": 0,
+      "seconds": 0.2040545
+    },
+    {
+      "name": "superclass-64",
+      "exit_code": 0,
+      "seconds": 2.3310146
+    },
+    {
+      "name": "superclass-32",
+      "exit_code": 0,
+      "seconds": 2.8376299
+    },
+    {
+      "name": "rollback",
+      "exit_code": 0,
+      "seconds": 4.1813315
+    },
+    {
+      "name": "creation-contract",
+      "exit_code": 0,
+      "seconds": 10.0813747
+    },
+    {
+      "name": "dialogs",
+      "exit_code": 0,
+      "seconds": 69.3247159
+    },
+    {
+      "name": "dialog-show-32",
+      "exit_code": 0,
+      "seconds": 98.8773805
+    },
+    {
+      "name": "dialog-show-64",
+      "exit_code": 0,
+      "seconds": 99.7995926
+    },
+    {
+      "name": "messages",
+      "exit_code": 0,
+      "seconds": 84.0105858
+    }
+  ],
+  "cleanup_preflight": {
+    "live_processes": 0,
+    "primary_candidate_build_resources": 206,
+    "primary_resource_owners": 0,
+    "broader_resource_query": {
+      "resources": 682,
+      "error": 29,
+      "status": "failed diagnostic, not counted passed; primary module query plus zero live process/job ownership checks used"
+    },
+    "support_sources_retained_for_S4": {
+      "controller.c": "ab3a591a62114be69ab89df0253902e7c7de299006a0b4962e8c69fd2c7d7b1d",
+      "driver.c": "837193c32f9fd218b3712a32ad77d17264ac22b68ee969b5c3e307ef9269472d",
+      "file-owners.c": "6c73285aa04fb564db13c4093396a6d5584db1496527df1ab754bf8eb7de79c8",
+      "probe.c": "8c7b1d3d80c2e065db732abc6fc70f105c657ef30dc1345031142de15cba22f2",
+      "verify-remote.py": "b8ef757e825ad8e6c224690d6c3ed2ccac63ac797b084861d39ba255d81de217"
+    }
+  },
+  "cleanup": {
+    "status": "completed",
+    "removed": [
+      "O:/repos.hobby/win16style/build/t15-framework",
+      "O:/repos.hobby/win16style/build/t15-package"
+    ],
+    "checks": "absolute workspace descendants, no reparse, live process0, primary206 module owners0; broader682 query error29 retained as failed diagnostic",
+    "retained": [
+      "build/.ninja",
+      "build/.ccache",
+      "build/t15-controls necessary observer source transfer",
+      "external acceptance PNGs"
+    ],
+    "old_backups_recoverable_from_git": "da2631f6b1a84f5b4e06eddd0c72c63dc8fd6bcb all8 match four old artifacts"
+  },
+  "closure_rechecks": {
+    "source_inputs_unchanged": 170,
+    "deployed_copies_unchanged": 8,
+    "P1": "239e70022c07bde317992eb1c78543e7109c6b93",
+    "scope": "S3 only; T15/M0 open"
   }
 }

@@ -2,36 +2,28 @@
 
 ## Current Work
 
-T15按用户最新授权自动续S直到任务级收口；当前准入S3，保持M0且不分配新T。
+T15 S3已收口，按用户自动续S授权准入S4。保持M0/T15，不分配新T。
 
-## M0 T15 S3 Packet
+## M0 T15 S4 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；在S2后顺序分配S3，不复用已关闭编号 |
-| Admission And Approval | 用户批准所述S3/S4/公共控件后续分解，自动准入执行直到T15收口；永久提交推送/双发布授权保持 |
-| Objective | 定位并修复HD Tune主窗漏附着，查清关闭验证失败；建立可自包含检出旧包的原生回归 |
-| Non-goals | 不执行磁盘业务，不干预用户既有实例/共享宿主/全局设置；不先扩展其他控件或改已确认标题字体资源 |
-| Reference Baseline | da2631f，T15 S2四文件；Td S13真实高权限主窗root_attached=0及未定位关闭失败 |
-| Candidate Proposal | [实现分解](../proposals/framework-completion.md) |
-| Files And ABI Surface | 私有创建scope早显修复；window-aware菜单栏快照保留应用owner-draw测绘回调及重入销毁；隐藏控件的瞬时重绘保护及双宽C测试；三组件四产物/ABI3/31 detours/32 slots不变 |
-| Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT、UI；纯C17/GCC/Ninja/ccache，不使用computer-use |
-| Verification | 首先原生property-sheet/对话框创建回归与旧包负例，再双宽focused/full实际包、真实HD Tune正常显示/标题/菜单/关闭及原应用回归 |
-| Expected Markers | 每种A/W、modal/modeless、双宽及异常返回独立状态；主窗附着和像素须同时验证；清理区分正常/强制 |
-| Asset Needs | build/t15-framework、build/t15-package登记原始探针/日志/包备份，先提炼证据后安全回收；稳定Ninja/ccache保留 |
-| Reporting Requirements | 实测首个断点/最小方案、保留状态/输入、负例/覆盖/失败、双发布摘要、提交和实际远端复核；自动续S |
-| Stop Conditions | 越过权限/共享宿主或重大架构边界时保留证据；不得以弱化测试/误报附着掩盖失败 |
-| Exit Criteria | 本S有限修复/回归/同批四文件实际测试/双发布/提交推送及实际复核，再续S4；最终T15另审计覆盖全集 |
-| Original Owner Request | “批准 自动准入s任务 到t收口为止”，对应先主窗和关闭、基础控件、再逐类公共控件支持方案 |
-| Similar-Issue Sweep | 对照CreateWindow/CreateDialog/MessageBox/PropertySheet创建初始化边界、ANSI/Unicode和modal/modeless；不凭类名猜根因 |
-
-## S3 Verification Progress
-
-170输入冻结/干净双宽/来源资源/ABI3，41实际包352.435秒（4槽、无skip）、12聚焦、
-真实HD Tune/DK/MadShow通过。HD Tune主窗attached1；三个原隐藏按钮在显示和恢复后
-均隐藏，菜单打开/截图/取消正常，原生关闭2与裸对照一致、Job空；提权探针已退出。
-原资源、标题/字体/菜单/滚动条保持；已双发布八摘要一致，两处真实双宽启动及ABI复验通过。
-P1待提交推送/实际远端复核；S3尚未关闭，之后自动准入S4。其他控件未称已支持。
+| Identifier Mode | Continuation；S3关闭后顺序分配S4，无其他活动S，不复用编号 |
+| Admission And Approval | 用户“批准 自动准入s任务 到t收口为止”；后续必要HD Tune受限一次性管理员探针授权保持；永久提交推送/双发布授权保持 |
+| Objective | 补齐MD5summer基础按钮/下拉的可靠原生或已验证VCL协议识别；支持HD Tune标准图标/PushLike按钮和native client-edge编辑边框；过大时按明确交接拆续S |
+| Non-goals | 本S不扩展分页/列表/表头/树/进度/滑块/微调或应用图表；不猜私有对象、盲按T前缀、全局hook/系统设置；标题/字体/菜单/滚动条/原资源不改 |
+| Reference Baseline | 239e70022c07bde317992eb1c78543e7109c6b93，S3四文件0.15.0.0；170输入/41实际包/12聚焦/真实三应用及八部署一致，远端184文件通过 |
+| Candidate Proposal | [框架完成分解](../proposals/framework-completion.md)、[MD5summer调查](../proposals/md5summer-controls.md)、[HD Tune调查](../proposals/hdtune-controls.md) |
+| Files And ABI Surface | 私有分类/创建附着及唯一control renderer和纯C测试；三组件四产物/ABI3不变；无额外产品或外部后端依赖，新增内部钩子必须先审计容量 |
+| Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT、UI；C17/MinGW GCC/Ninja/ccache；禁computer-use，兄弟仓库只读且不依赖 |
+| Verification | 先真实只读协议/绘制证据和自包含旧包负例，再双宽核心/实际四文件包；已审原生观察器复用，真实MD5/HD Tune及DK/VB6保留；不得只看附着 |
+| Expected Markers | 按钮图像/勾选PushLike与点击键盘语义、编辑边框/原client及字体保存、假类拒绝/协议真实性、DPI/像素/卸载/资源；每类明确成功/失败/未覆盖 |
+| Asset Needs | build/t15-controls承接已审一次性观察器源码并登记本S诊断；build/t15-package登记新干净包/发布备份；证据先提炼后安全回收；稳定.ninja/.ccache保留 |
+| Reporting Requirements | 实际断点/有限方案、分类所有者/避免误接管证据、旧包负例、双宽包/发布摘要/实际远端复核；不冒称应用自绘或未实现公共控件已适配 |
+| Stop Conditions | 涉及未授权提权目标/共享宿主/重大架构安全边界保留证据；不通过跳过测试或假阳性掩盖失败；不能安全识别的类型明确交接续S |
+| Exit Criteria | 有限支持及其负例/回归/同批四文件包、按binary变化双发布、提交推送/远端协调复核与卫生后关闭S4；自动续后续S，T15最终另做覆盖审计 |
+| Original Owner Request | “好 怎么办吧”“批准 自动准入s任务 到t收口为止”；目标为MD5summer/HD Tune等现有传统程序控件适配 |
+| Similar-Issue Sweep | 原生/真实超类/旧VCL/VB6区别，BUTTON图像/PushLike/ownerdraw与EDIT clientedge各入口；同类标准控件及生命周期，禁止对未知初始化阶段发探测消息 |
 
 ## Identifier State
 
@@ -39,12 +31,12 @@ P1待提交推送/实际远端复核；S3尚未关闭，之后自动准入S4。�
 - Last allocated T: 15
 - Last allocated Td S: 13
 - Owner allocation constraint: 只可自行划分后续S，不得自行分配新T；保持现有T15/M0。
-- Last delivery: M0 Td S13 P2 (P1 3d43ff7实际取回10文件通过，HD Tune有限调查关闭；产品仍为T15 S2)
-- Open task: T15自动续S实施/任务级审计中；S3活动，S2/S1关闭；Td S13/S12/S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
+- Last delivery: M0 T15 S3 P2（P1 239e700实际远端184文件/协调复核及安全清理通过；S3关闭，S4准入）
+- Open task: T15自动续S实施/任务级审计中；S4活动，S3/S2/S1关闭；Td S13/S12/S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
 
 ## Technical Baseline
 
-0.15.0.0 / T15 S3四文件已本地验证、双发布及安装复验，P1提交/远端复核待完成。
+0.15.0.0 / T15 S3已双发布/安装复验、P1 239e700远端184文件/协调复核并收口。
 170输入、C17/GCC16.1/Ninja/ccache干净双宽，41实际包352.435秒/12聚焦无skip；
 真实HD Tune主窗/隐藏按钮/菜单取消及两款旧应用保留有证据。84注册CTest并非全部执行。
 三组件四产物/ABI3/31导出及31 detours/32slots不变，原五资源头/声明和18嵌入表保持。
@@ -53,6 +45,8 @@ P1待提交推送/实际远端复核；S3尚未关闭，之后自动准入S4。�
 T15 S1/S2成果、T14 S3启动语义及其他任务/债务状态不变。
 
 ## Recent Closure
+
+- [T15 S3对话框/菜单栏/隐藏状态](../history/M0-T15-S3-dialog-menus.md)：41实际包/12聚焦、真实HD Tune/DK/MadShow及八部署一致、P1远端184文件/协调复核通过；旧scratch安全回收，必要观察器转S4，S3关闭并自动续S4，T15/M0开放。
 
 - [Td S13 HD Tune Pro调查](../history/M0-Td-S13-hdtune-controls.md)：经批准UAC取得正常显示对照，主窗未附着/标准控件支持缺口明确；关闭检查失败如实保留，无产品修复；P1远端10文件通过，scratch回收，S13关闭。
 
@@ -100,12 +94,10 @@ T15 S1/S2成果、T14 S3启动语义及其他任务/债务状态不变。
 
 ## Last Packet Closure
 
-T15 S2完成原生超类分类、未知子窗口主题暂存/提交及客户端边框适配；真实DoubleKiller
-四页33控件附着，实际c0c0c0填充/卸载f0f0f0及消息/清理有证据。错误原型被强化像素
-负例检出且未发布；自定义分页/列表/标签/微调等仍保留原绘制。原资源声明、标题/字体/
-菜单/滚动条及VB6成果、三组件四产物/ABI3/31保持。35实际包260.64秒及10聚焦通过；
-八部署一致，真实DoubleKiller/MadShow、两处默认入口及安装双宽ABI通过。
-P1 330fed7实际取回167输入、四产物及文档共183文件，逐项匹配；协调角色读取实际
-commit/diff、请求和证据通过。源输入/八部署复核保持；证据提炼后两登记scratch按
-绝对路径/无存活进程/无reparse检查回收，旧备份可从8fc6ad0 Git恢复，稳定Ninja/ccache
-及外部验收PNG保留。S2关闭，T15等待用户外观验收，M0开放；其他任务/债务不变。
+T15 S3 P1 239e700完成应用自绘菜单栏同线程回调、对话框早显和隐藏控件重绘保护。
+真实HD Tune主窗/三隐藏按钮/菜单取消及正常exit2、DK/MadShow保留有证据；41实际包
+352.435秒、12聚焦、两处安装双宽启动/ABI与八摘要通过。实际取回远端170输入/四产物
+及变更文档共184文件逐项匹配，协调角色重读实际commit/diff/请求/证据通过。源码170/
+八部署复核保持；无reparse/零活进程/206主模块占用0检查后清理两旧scratch根；682资源
+宽查询返回29不计通过。旧八备份可从da2631f恢复，稳定缓存/外部截图保留；必要原生
+观察器源码转给登记S4根。S3关闭，自动准入S4；T15/M0及其他任务/债务状态保持。

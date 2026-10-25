@@ -2,7 +2,7 @@
 
 The owner approved automatic sequential S admission through T15 closure, without a new T.
 M0 remains fixed. Baseline da2631f6b1a84f5b4e06eddd0c72c63dc8fd6bcb was clean before S3.
-This P1 is locally verified and published; commit/push and actual remote review are pending.
+P1 239e70022c07bde317992eb1c78543e7109c6b93 is pushed; actual remote184-file retrieval and coordinator review pass.
 T15 remains open for the standard/native framework controls listed in its proposal.
 
 ## Diagnosis and bounded changes
@@ -73,6 +73,15 @@ excluded controls; it is not the root/visibility acceptance predicate.
 
 The actual root/menu screenshots and all case identities, failed experiments, hashes, batch,
 publication records and installed checks are in [evidence](../etc/evidence/framework-completion.json).
-P1 remote/coordinator review and S3 closure are still pending; T15/M0 must remain open.
+S3 is closed after actual P1 remote/coordinator review, source170/eight-deploy rechecks and safe cleanup; S4 is automatically admitted. T15/M0 remain open.
 
 Code scope: 11 product/build/test files, +456/-35, net+421; no moved/deleted paths. Per-file numstat, state owners and production-hit dispositions are in the evidence. Registered CTests: {'x86': 32, 'x64': 52}; not all executed.
+
+
+P2 closure: both registered S3 scratch roots were removed after absolute path/no-reparse/live
+process checks. A broad682-file Restart Manager diagnostic returned29 and is not called passed;
+all206 short-path primary product/build modules had0 owners, live scratch processes0, and owned
+case/native Jobs were already empty. Necessary native observer sources transfer to registered
+build/t15-controls for S4; stable Ninja/ccache and external PNGs remain. All eight old backups
+match four assets in baseline da2631f and remain recoverable from Git. No other task or user
+process was closed. Source170 inputs and eight deployed hashes remain unchanged from P1.

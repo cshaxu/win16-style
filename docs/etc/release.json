@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T15 S3 P1",
-  "stage": "S3 locally verified/published; remote review pending; T15/M0 remain open",
+  "delivery": "M0 T15 S3 P2",
+  "stage": "S3 closed after P1 actual remote/coordinator review and safe cleanup; S4 admitted, T15/M0 open",
   "version": "0.15.0.0",
   "version_contract": "Fixed T15 version; S/P distinguished by Git and artifact SHA; no new T allocated",
   "package_directory": "assets",
@@ -832,9 +832,25 @@
     "real_apps": "HD Tune460 x86 root/hidden buttons/menu/minimize-restore/close passed; DoubleKiller/MadShow preserved",
     "physical_input": "not-tested; owned native probes only",
     "evidence": "docs/etc/evidence/framework-completion.json",
-    "remote_review": "pending P1 push/retrieval"
+    "remote_review": {
+      "status": "passed",
+      "commit": "239e70022c07bde317992eb1c78543e7109c6b93",
+      "remote_main": "239e70022c07bde317992eb1c78543e7109c6b93",
+      "files": 184,
+      "source_inputs": 170,
+      "seconds": 9.97675839997828,
+      "receipt_sha256": "8566e90593a4fa092813313a203811cac011996ba1af820c62485af4457daf85"
+    }
   },
   "architecture": "three components, four products; pure C17 MinGW GCC/Ninja/ccache; real-app observer is optional, no sibling dependency",
   "binary_batch_delivery": "M0 T15 S3 P1",
-  "source_snapshot_format": "SHA256 of UTF8 compact sorted-key JSON array of path/sha256/git_blob_sha256 when different"
+  "source_snapshot_format": "SHA256 of UTF8 compact sorted-key JSON array of path/sha256/git_blob_sha256 when different",
+  "closure": {
+    "source_inputs_unchanged": 170,
+    "deployed_copies_unchanged": 8,
+    "P1": "239e70022c07bde317992eb1c78543e7109c6b93",
+    "scope": "S3 only; T15/M0 open",
+    "scratch_cleanup": "completed; necessary observers transferred to registered active S4 root",
+    "task_status": "S3 closed; S4 admitted; T15/M0 open"
+  }
 }
