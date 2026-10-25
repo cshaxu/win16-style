@@ -2,33 +2,33 @@
 
 ## Current Work
 
-S10滑块已完成最终193输入/83实际包427.192秒、双发布八摘要、安装28+2、真实MD5/DK
-及标题292x24掩码0差异；P1提交推送/实际远端归档/恢复与安全清理待做，S10/T15/M0
-保持开放。首次整包树10秒超时保留；旧/新四并发均复现，约5秒CPU接近10秒wall，
-两并发旧/新均通过；树case采用已有两slot权重，原10秒及功能断言不变，最终83通过。
+S10完成193输入/83实际包427.192秒、双发布八摘要、安装28+2、真实MD5/DK及标题掩码
+0差异；P1远端205、严格归档受影响双DLL+4、197对象恢复和588映像安全清理通过，
+33已审源码/稳定缓存/原生PNG保留。关闭S10并按既有授权顺序准入S11，不新T。
+首次树四并发10秒超时在旧/新均复现，两slot调度后83通过，原等待/断言未改。
 [本S记录](../history/M0-T15-S10-trackbar-controls.md)/[证据](../etc/evidence/trackbar-controls.json)。
-微调未猜状态，后续顺序S接收；HD Tune管理员实测继续默认skip、不计通过。
+HD Tune管理员默认skip、不计通过；S11活动，T15/M0保持开放并等待最终冻结全集审计。
 
-## M0 T15 S10 Packet
+## M0 T15 S11 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S9闭环后顺序准入S10，唯一活动S，不复用编号，不新开T |
-| Admission And Approval | 用户“批准 自动准入s任务 到t收口为止”“继续啊”；永久提交推送/双发布授权；HD Tune管理员实测按最新要求默认skip，除非用户明确恢复 |
-| Objective | 核实剩余msctls_trackbar32/msctls_updown32及必要精确框架别名的初始化协议、实际绘制/状态/通知与生命周期；原型后S10有限适配滑块native custom-draw，保持原生输入和应用通知；微调状态路径独立，接收者为顺序S11，完成后另做T15冻结全集审计 |
-| Non-goals | 不猜控件私有对象/状态，不盲按T前缀，不把关主题/附着当实际像素；不改系统全局设置/原五头/声明/已确认标题/菜单/字体/滚动条/启动语义，不做既有进程注入/HD Tune提权实测，不制造新T或第五产品 |
-| Reference Baseline | S9 P1 2721c043c2d1fd485b4ed8d1362974d269b2b22f同批0.15.0.0四文件已双发布；190输入/79包/安装20+2/远端203/归档双DLL+4检查及260映像清理通过；关闭P无binary change |
-| Candidate Proposal | [框架完成分解](../proposals/framework-completion.md)；[S9记录](../history/M0-T15-S9-progress-controls.md)/[证据](../etc/evidence/progress-controls.json)接收剩余两族；v5进度和特殊模式原生保留边界不默默扩张 |
-| Files And ABI Surface | 私有trackbar初始化角色/仅应用default时内部请求部件阶段和绘制/父通知观察及C17夹具；三组件四产物、ABI3/31命名导出+ordinal1 NONAME、31detours32slots保持；新hook/公共接口先审，不默认加产品/helper |
+| Identifier Mode | Continuation；S10复核清理后顺序准入S11，唯一活动S，不复用编号，不新T |
+| Admission And Approval | 用户“批准 自动准入s任务 到t收口为止”“继续啊”；永久提交推送/双发布授权；HD Tune管理员实测最新默认skip，除非用户明确恢复 |
+| Objective | 原生核实msctls_updown32及必要精确框架别名的初始化、UDN_DELTAPOS/buddy/鼠标键盘/捕获/取消与实际按下状态；据证据有限复用现有renderer和原箭头；无法证明的模式保留原生并明确边界，之后T15另冻结覆盖全集审计 |
+| Non-goals | 不猜控件私有对象/状态，不盲按T前缀/TSpinButton，不把关主题/附着当实际像素；不改系统全局设置/原五头/声明/已确认标题/菜单/字体/滚动条/启动语义，不注入既有进程，不做HD Tune提权实测，不新T或第五产品 |
+| Reference Baseline | S10 P1 61a2053477a42b7f4121b56b25072b1779aa89f1同批0.15.0.0四文件已双发布；193输入/83包/安装28+2/远端205/归档双DLL+4/197对象恢复及588映像清理通过；关闭P无binary change |
+| Candidate Proposal | [框架完成分解](../proposals/framework-completion.md)；[S10记录](../history/M0-T15-S10-trackbar-controls.md)/[证据](../etc/evidence/trackbar-controls.json)接收微调：无custom-draw，实测MSAA两按钮但state未提供pressed；不能以此认定不能通过其他公开原生路径适配 |
+| Files And ABI Surface | 私有初始化角色/有限原生绘制及必要精确父/新建buddy通知观察、C17夹具；三组件四产物、ABI3/31命名导出+ordinal1 NONAME、31detours32slots保持；新hook/公共接口先审，不默认加产品/helper |
 | Applicable Rules | EXECUTION/ARCHITECTURE/CODING/DOCUMENT/UI及来源策略；MinGW GCC/Ninja/稳定ccache，禁computer-use及兄弟仓库修改/依赖 |
-| Verification | 先核实原生模块/附加字节、范围/位置/方向/滑块与通道公开几何、buddy/UDN取消及custom-draw行为；普通/特殊/禁用/按下/焦点/键盘/捕获与后续状态，双宽v5/v6实际DPI/像素/数据/字体/卸载/资源/重入/旧包负例；干净同批四文件实际包/双发布/八摘要/安装/实际远端归档；HD Tune管理员skip |
-| Expected Markers | 区分模块/初始化/附着与实际绘制；正常可见窗口原生截图和像素、命中/几何/位置/通知/取消/应用绘制保持；未知或custom-draw不安全时保留原生，原图形表逐字节相同 |
-| Asset Needs | build/t15-controls承接S9已审22源码并登记本S新探针/日志；build/t15-package登记新干净包/备份；先提炼后核对根/祖先/reparse/映像占用及恢复来源再清理，保留稳定.ninja/.ccache和外部PNG |
-| Reporting Requirements | 每类先给原生状态/回调实际证据、最小实现路线和有限覆盖，不吞应用通知或绘制；不能证明pressed等状态时明确边界，不凭自绘猜测宣称保真；保留全部失败实验和未覆盖接收者 |
-| Stop Conditions | 需私有状态解码/全局hook或设置/共享宿主/既有进程注入时停在证据与方案；不扩权限、吞业务回调/取消或换资源，不放宽失败断言；范围过大按既有授权拆顺序S，不新T |
-| Exit Criteria | 完成经证实的有限族适配或有证据拆分/原生保留，双宽同批实际包、必要双发布八摘要/安装、提交推送/实际远端协调复核及安全清理后关闭S10；T15另冻结覆盖全集逐项审计后才可关闭 |
+| Verification | 先核实原生模块/附加字节、范围/位置/base/buddy/UDN变更和取消；h/v、按下/键盘保持/释放/捕获/移出/取消、范围端点/无效buddy与后续变更；双宽v5/v6实际DPI/像素/原生通知/数据/字体/卸载/资源/重入与旧包负例；干净同批四文件实际包/双发布/八摘要/安装/实际远端归档；HD Tune管理员skip |
+| Expected Markers | 区分模块/初始化/附着与实际绘制；正常可见窗口原生截图和像素、UDN/命中/几何/位置/取消/应用绘制保持；不能证明pressed等状态时保留原生，不改原图形表或应用数据 |
+| Asset Needs | build/t15-controls承接S10已审33源码并登记本S探针/日志；build/t15-package登记新干净包/备份；先提炼再核对精确根/祖先/reparse/映像占用/恢复来源后清理；稳定.ninja/.ccache/外部PNG保持 |
+| Reporting Requirements | 实现前给公开原生状态/回调实测、最小路线及有限覆盖；不吞业务回调/UDN取消或改buddy内容；MSAA失败仅该候选路径失败；保留失败/跳过/未覆盖及明确接收者，不靠重试/放宽断言宣称修复 |
+| Stop Conditions | 需私有状态解码/全局hook设置/共享宿主/既有进程注入或额外产品时停在证据与方案；不扩权限、换资源；过大按授权拆顺序S，不新T；无法验证的状态原生保留，不虚构完整支持 |
+| Exit Criteria | 完成经证实有限适配或证据充分的原生保留，双宽同批四文件实际包、必要双发布八摘要/安装、提交推送/实际远端协调复核与安全清理后关闭S11；T15须另做冻结覆盖全集逐项审计才可关闭 |
 | Original Owner Request | “好 怎么办吧”“批准 自动准入s任务 到t收口为止”“继续啊”；“跳过这个测试 以后默认不测” |
-| Similar-Issue Sweep | canonical/EXE超类/伪类、初始化/后续样式/位置、native custom-draw/owner-draw、范围反向与边界、buddy与原生取消、输入修饰键/焦点/捕获/按下、重入销毁/独立所有者及资源；不将消息驱动扩张为物理/IME验收 |
+| Similar-Issue Sweep | canonical/EXE超类/伪类、buddy设置/替换/销毁/共享、字体/范围/base/端点/加速、UDN取消/应用改delta、鼠标与键盘/捕获/释放/取消、重入卸载/独立所有者/资源；不把消息驱动扩张为物理/IME验收 |
 
 ## Identifier State
 
@@ -36,23 +36,25 @@ S10滑块已完成最终193输入/83实际包427.192秒、双发布八摘要、�
 - Last allocated T: 15
 - Last allocated Td S: 13
 - Owner allocation constraint: 只可自行划分后续S，不得自行分配新T；保持现有T15/M0。
-- Last delivery: M0 T15 S9 P2（P1远端203/受影响双DLL归档重建4/194对象恢复与260映像清理通过；关闭S9/准入S10，四文件保持）
-- Open task: T15自动续S实施/任务级审计中；S10活动，S9/S8/S7/S6/S5/S4/S3/S2/S1关闭；Td S13/S12/S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
+- Last delivery: M0 T15 S10 P2（P1远端205/193输入、受影响双DLL归档重建4/197对象恢复与588映像清理通过；关闭S10/准入S11，四文件保持）
+- Open task: T15自动续S实施/任务级审计中；S11活动，S10/S9/S8/S7/S6/S5/S4/S3/S2/S1关闭；Td S13/S12/S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
 
 ## Technical Baseline
 
-0.15.0.0 / 本机S10滑块同批四文件已双发布，193输入SHA由release.json保存；83实际包
-427.192秒、安装28聚焦+2自动矩阵、真实MD5/DK、标题292x24黑掩码0差异通过。
-P1提交推送/实际远端归档及安全清理尚待完成，当前Git交付基线仍S9 P2。普通v5/v6
-滑块/精确TTrackBar使用原生custom-draw矩形及CDIS_SELECTED；应用自身绘制/通知、
-范围/字体/布局/输入保持。特殊滑块及微调保持原生，微调交后续顺序S。树测试四并发
-旧/新均复现10秒超时，已有两slot权重限流后最终83通过，未改等待/功能断言。
-既有有限树/报告行/进度能力及原生保留边界继续，HD Tune管理员默认skip。
+0.15.0.0 / S10有限v5/v6滑块同批四文件已双发布，193输入、83实际包427.192秒、安装
+28聚焦+2自动矩阵、真实MD5/DK和标题292x24黑掩码0差异通过；P1远端205匹配，严格
+归档双DLL定向重建4、197对象恢复与588映像清理通过。普通滑块/精确TTrackBar使用
+原生custom-draw矩形及CDIS_SELECTED；应用绘制/通知、范围/字体/布局/输入保持。
+特殊滑块及微调保持原生，微调交S11；树四并发旧/新均复现10秒超时，两slot限流后
+最终83通过，未改等待/功能断言。既有有限树/报告行/进度及原生保留边界继续。
 纯C17/GCC/Ninja/ccache、原五头/声明/18表、已确认标题/字体/菜单/滚动条算法、
-三组件四产物、ABI3/31命名导出+ordinal1/31detours32slots保持；S10/T15/M0开放。
+三组件四产物、ABI3/31命名导出+ordinal1/31detours32slots保持；HD Tune管理员默认
+skip。S10关闭/自动续S11，T15/M0开放；关闭P不改产品输入和二进制。
 [本S记录](../history/M0-T15-S10-trackbar-controls.md)/[证据](../etc/evidence/trackbar-controls.json)。
 
 ## Recent Closure
+
+- [T15 S10滑块/树并发](../history/M0-T15-S10-trackbar-controls.md)：83包/八部署/安装28+2、真实MD5/DK、远端205/受影响双DLL归档重建4、197对象恢复与588映像清理通过；S10关闭/自动续S11，M0/T15开放。
 
 - [T15 S9进度/受控输入](../history/M0-T15-S9-progress-controls.md)：79包/八部署/安装20+2、真实MD5/DK/标题掩码、远端203/受影响双DLL归档重建4及260映像清理通过；S9关闭/自动续S10，M0/T15开放。
 
@@ -114,11 +116,13 @@ P1提交推送/实际远端归档及安全清理尚待完成，当前Git交付�
 
 ## Last Packet Closure
 
-S9 P1 2721c04完成有限v6进度与受控树消息输入，190输入、79实际包/双发布八摘要、安装
-20聚焦+2矩阵、真实MD5/DK和标题292x24掩码0差异通过；旧输入4/冻结旧产品2负例有效，
-未追认S8未记录的历史状态。实际远端203匹配，严格归档/原资源门禁、受影响双DLL定向
-重建4通过，避免重编无关测试。194 Git对象证明190源及八旧备份可恢复，八部署再次
-匹配；原程序自有副本未变。精确根/祖先/子目录reparse0，原生守卫正例拒绝运行EXE/
-加载DLL C0000043，卸载成功；260任务映像含两个长路径无占用，守卫退出后清理。
-保留22已审源码及稳定Ninja/ccache/外部PNG。本关闭P不改产品输入或binary；S9关闭并
-按既有授权顺序准入S10滑块/微调，M0/T15开放，HD Tune管理员默认skip。
+S10 P1 61a2053完成有限v5/v6滑块、default-only私有部件绘制和原生状态；193输入、83
+实际包427.192秒、双发布八摘要、安装28+2、真实MD5/DK和标题掩码0差异通过。首次
+整包树10秒超时在旧/新四并发均复现，约5秒CPU接近10秒wall；两并发通过，树case
+采用已有两slot权重，等待/功能断言不变，最终83通过，不以重试冒充修复。实际远端
+205匹配，严格归档/资源门禁、受影响双DLL定向重建4通过；197 Git对象证明193源及
+八旧备份可恢复，归档四/部署八再次匹配，原DK/自有副本未变。精确根/祖先/子目录
+reparse0，原生守卫运行EXE/加载DLL拒绝C0000043、卸载成功；588任务映像含四长路径
+无占用。所有任务/守卫退出后安全清理两根，33已审源码原样交接、缓存/外部PNG保持。
+本关闭P不改产品输入/binary；S10关闭/自动续S11微调公开状态与有限适配，T15/M0开放，
+HD Tune管理员默认skip；T15仍须另冻结覆盖全集审计。

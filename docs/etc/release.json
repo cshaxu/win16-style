@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T15 S10 P1",
-  "stage": "verified actual83/dual publication eight hashes/installed28+2/real MD5-DK; P1 push and remote/canonical/cleanup pending",
+  "delivery": "M0 T15 S10 P2",
+  "stage": "S10 closed: P1 actual remote205/193 source,strict archive affected dual DLL+4,197-object recovery and588-image safe cleanup;S11 admitted;M0/T15 open",
   "version": "0.15.0.0",
   "version_contract": "Fixed T15 version; S/P distinguished by Git and artifact SHA; no new T allocated",
   "package_directory": "assets",
@@ -1185,12 +1185,208 @@
       "width": 292,
       "height": 24,
       "black_mask_different": 0
+    },
+    "P1_actual_remote": {
+      "status": "passed",
+      "commit": "61a2053477a42b7f4121b56b25072b1779aa89f1",
+      "remote_main": "61a2053477a42b7f4121b56b25072b1779aa89f1",
+      "files": 205,
+      "source_inputs": 193,
+      "seconds": 12.36399809998693
     }
   },
   "architecture": "three components/four products; ABI3/31 named+ordinal1;31 detours/32 slots; original five graphics/provenance/18 tables preserved",
   "binary_batch_delivery": "M0 T15 S10 P1",
   "closure": {
-    "state": "S10 verification/publication passed; remote/canonical recovery/cleanup pending",
-    "scope": "finite trackbar adaptation and measured tree test concurrency correction;UpDown next sequential S; T15 frozen-universe audit still required"
+    "state": "S10 closed/S11 admitted;M0/T15 open",
+    "P1_actual_remote": {
+      "status": "passed",
+      "commit": "61a2053477a42b7f4121b56b25072b1779aa89f1",
+      "remote_main": "61a2053477a42b7f4121b56b25072b1779aa89f1",
+      "files": 205,
+      "source_inputs": 193,
+      "seconds": 12.36399809998693
+    },
+    "canonical_affected_rebuild": {
+      "architectures": [
+        "x86",
+        "x64"
+      ],
+      "build_jobs": 8,
+      "selection": "^core/(abi|pending-frame-owner)$",
+      "tests": [
+        {
+          "configure_seconds": 4.56756499997573,
+          "skipped": [],
+          "test_seconds": 0.7120024999603629,
+          "build_seconds": 8.357374600018375,
+          "tests": 2,
+          "passed": 2,
+          "architecture": "x86"
+        },
+        {
+          "configure_seconds": 4.582614300015848,
+          "skipped": [],
+          "test_seconds": 0.7858573999837972,
+          "build_seconds": 9.669592700025532,
+          "tests": 2,
+          "passed": 2,
+          "architecture": "x64"
+        }
+      ],
+      "profile": "Focused",
+      "exit_code": 0,
+      "build_root": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-canonical\\build\\.ninja",
+      "test_jobs": 2,
+      "targets": "ntw16s,core-abi,core-pending-frame-owner",
+      "status": "passed"
+    },
+    "canonical_scope": "actual P1 Git archive strict source/resource gates, affected x86/x64 DLL rebuild and4 ABI/pending-frame ownership tests;83 actual-package and28+2 installed UI checks separately cover product; do not rebuild unrelated executables",
+    "recovery": {
+      "status": "passed",
+      "commit": "61a2053477a42b7f4121b56b25072b1779aa89f1",
+      "source_inputs": 193,
+      "Git_objects": 197,
+      "raw_recovery_EOL": [
+        "LICENSE",
+        "tools/Build-Package.ps1",
+        "tools/Verify-Governance.ps1"
+      ],
+      "archive_alternate_identity": [
+        "tools/Build-Package.ps1",
+        "tools/Verify-Governance.ps1"
+      ],
+      "backups_recoverable": 8,
+      "archive_artifacts": 4,
+      "deployed_hashes": 8,
+      "owned_copy_original_unchanged": true
+    },
+    "cleanup_guard": {
+      "status": "passed",
+      "files": 588,
+      "long_paths": 4,
+      "positive": "IMAGE_GUARD_POSITIVE exe=c0000043 loaded_dll=c0000043 unloaded_dll=00000000",
+      "excluded_running_guard": "O:\\repos.hobby\\win16style\\build\\t15-controls\\s10-image-guard.exe",
+      "roots": [
+        "O:\\repos.hobby\\win16style\\build\\t15-controls",
+        "O:\\repos.hobby\\win16style\\build\\t15-package"
+      ],
+      "batches": [
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 12,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=12 no_write=1"
+        }
+      ]
+    },
+    "cleanup": "completed: exact two registered roots cleared after197-object recovery/strict archive/8-deployment checks/reparse0/588-image guard;33 reviewed source files restored;stable .ninja/.ccache and external PNG retained",
+    "retained_reviewed_sources": [
+      "file-owners.c",
+      "image-guard.c",
+      "md5-driver.c",
+      "md5-probe.c",
+      "s10-dk-owned-driver.c",
+      "s10-dk-owned-probe.c",
+      "s10-installed.ps1",
+      "s10-native-ranges-accessible.c",
+      "s10-native-ranges-color.c",
+      "s10-native-ranges-input.c",
+      "s10-native-ranges-paint.c",
+      "s10-native-ranges-theme.c",
+      "s10-native-ranges.c",
+      "s10-owned-folder.h",
+      "s10-tree-profile.c",
+      "s6-dk-probe.c",
+      "s6-list-header-api.c",
+      "s6-list-report.h",
+      "s7-dk-owned-driver.c",
+      "s7-dk-owned-probe.c",
+      "s7-owned-folder.h",
+      "s8-dk-owned-driver.c",
+      "s8-dk-owned-probe.c",
+      "s8-md5-probe.c",
+      "s8-owned-folder.h",
+      "s8-tree-native-destroy.c",
+      "s9-dk-owned-driver.c",
+      "s9-dk-owned-probe.c",
+      "s9-native-input.c",
+      "s9-native-protocols.c",
+      "s9-old-tree-seeded.c",
+      "s9-owned-folder.h",
+      "verify-remote.py"
+    ],
+    "binary_change": "none in closing P; same83-case P1 package",
+    "following_scope": "S11 native UpDown public input/state/UDN/buddy protocol and finite adaptation or evidence-backed native fallback; no newT;HD Tune elevated default skip;T15 frozen-universe audit remains"
   }
 }

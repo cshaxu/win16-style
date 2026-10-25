@@ -2,7 +2,8 @@
 
 S10 continues the owner's automatic sequential-S authorization under M0/T15.
 Baseline: c9853fb598617016ba18c17fb641c9498ad3a691. Implementation, clean dual-width build, actual83 matrix, dual publication/eight
-hashes, installed28+2 and actual MD5/DK checks pass. P1 push/review is pending.
+hashes, installed28+2 and actual MD5/DK checks pass. P1 61a2053477a42b7f4121b56b25072b1779aa89f1 is pushed; actual205-file review passes.
+P2 closes S10 after archive/recovery/cleanup and admits S11;M0/T15 remain open.
 CURRENT owns the live status. Queue/proposal edits from other work are preserved.
 
 ## Diagnosis and minimum implementation
@@ -76,8 +77,7 @@ state even during native mouse/keyboard pressed painting. S10 does not guess pri
 state or replace its drawing. Its finite investigation/implementation is received by
 the next sequential S, followed by the separate frozen-universe T15 coverage audit.
 M0/T15 remain open. Full package, publication, remote/archive review and cleanup
-facts will be recorded here and in [evidence](../etc/evidence/trackbar-controls.json)
-after they actually complete.
+facts are retained in [evidence](../etc/evidence/trackbar-controls.json).
 
 
 ## Actual delivery verification
@@ -97,5 +97,25 @@ MD5 title292x24 black glyph/border mask equals S9 with0 differences. Actual nati
 PNG captures remain outside the repository for owner acceptance. The structured
 record carries exact hashes, commands, case outcomes and finite exclusions.
 
-P1 commit/push and actual remote/canonical recovery/safe scratch cleanup remain
-pending; S10 and T15 are not closed on these local verification results alone.
+P1 actual remote205 files/193 inputs match in12.3639981s. Its real Git archive passes
+strict source/resource gates; affected dual DLL rebuild plus4 ABI/pending-frame tests
+pass (8.36/9.67s builds), separately from the83 actual-package and28+2 installed UI
+checks. No unrelated test executable rebuild is claimed.197 Git objects recover193
+inputs plus four old artifacts proving eight backups. Only known LICENSE/Build-Package/
+Verify-Governance Git-LF/raw-CRLF identities require explicit EOL recovery; archive
+alternate identity occurs for the two PS scripts only. No C receipt repair/gate relaxation.
+Archive four and deployed eight hashes match; original DK and its owned copy agree.
+
+Original five headers/provenance and confirmed title/font/menu/bar algorithms remain
+unchanged.10 implementation/test/build files add271/delete10/net261 lines (metadata,
+binaries and other work excluded). Queue and two unrelated proposal files are preserved.
+
+Exact registered roots/ancestors/descendants have reparse0. The native share0 guard
+rejects its runningEXE/loadedDLL C0000043 and accepts unloadedDLL00000000;588 task images,
+including four long paths, have no occupancy. After all owners/guard exit, both exact
+roots are cleared.33 reviewed C/H/Python/PowerShell diagnostic sources are restored
+byte-for-byte; stable .ninja/.ccache and external native PNG stay. P2 changes no product
+input or binary. S10 closes, S11 is automatically admitted, M0/T15 stay open. The next
+S must validate UpDown public-state semantics before choosing finite rendering/native
+fallback; HD Tune elevated UI remains defaultskip. T15 still requires its own frozen
+coverage audit; this S closure is not a universal-framework compatibility declaration.
