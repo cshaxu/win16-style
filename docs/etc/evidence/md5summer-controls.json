@@ -295,5 +295,27 @@
     "passed": true,
     "negative_cases": 13,
     "git_diff_check": true
+  },
+  "remote_p1": {
+    "commit": "56f9e4f818f53642c3f2c40c3fb41df533118010",
+    "files_verified": 10,
+    "manifest_sha256": "79af7740e701c63ffda076742b27f6a391e73f867ee667b68ad80c32d8563cb8",
+    "main_verified": true,
+    "coordinator_actual_diff_reviewed": true
+  },
+  "cleanup": {
+    "root": "build/td-s12-md-summer",
+    "files": 31,
+    "bytes": 2689580,
+    "no_live_owned_instances": true,
+    "no_reparse_points": true,
+    "acceptance_pngs_retained": true,
+    "status": "removed"
+  },
+  "closure": {
+    "s12": "closed",
+    "M0": "open",
+    "T15": "open",
+    "product_changed": false
   }
 }

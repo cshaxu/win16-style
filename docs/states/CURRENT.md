@@ -2,28 +2,9 @@
 
 ## Current Work
 
-本轮为M0 Td S12只读兼容调查；保留T15开放和S1/S2成果。不改产品输入，不预先承诺适配。
-
-## M0 Td S12 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Governance；仅调查和证据文档，不分配新T |
-| Admission And Approval | 用户要求核实同目录MD5 Summer样式未完全生效的原因；原生探针自有实例 |
-| Objective | 识别本机md5summer.exe框架、控件协议、加载/附着/绘制差异并给出有限路线 |
-| Non-goals | 不改产品代码/输入、系统设置或应用文件；不扫描文件、不生成校验文件、不操作用户实例 |
-| Reference Baseline | a13aa6e，T15 S2四产物；主线程工作区干净 |
-| Candidate Proposal | [调查说明](../proposals/md5summer-controls.md) |
-| Files And ABI Surface | CURRENT、QUEUE、支持证据及历史；产品/ABI/资源不变 |
-| Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT及UI；不使用computer-use |
-| Verification | 纯C观察探针；裸/已发布注入两自有隔离Job，消息超时、模块身份和真实打印截图、退出清理；治理自测和远端实际复核 |
-| Expected Markers | MD5_CLASSIFIED、MD5_CLEANUP_OK；区分模块/附着/像素，不宣称全部控件支持 |
-| Asset Needs | build/td-s12-md-summer登记探针源码/日志/BMP，证据提炼后安全回收；验收PNG外部保留 |
-| Reporting Requirements | 实际路径/SHA/位宽/框架、每类已附着和未支持面、截图与最小路线；明确未改产品未发布 |
-| Stop Conditions | 非自有实例、业务写入、无法有界退出或私有框架布局猜测即停止该路径 |
-| Exit Criteria | 有证据分类和建议；文档门禁、提交推送/实际远端复核；保持M0/T15开放 |
-| Original Owner Request | “同目录底下还有个MD5 Summer.exe，它的样式也没有完全地apply，是不是又有别的类型的控件需要应用” |
-| Similar-Issue Sweep | 对照S2原生超类名单、owner-draw拒绝和未支持common-controls；不把注册类名前缀当协议 |
+无活动任务包。Td S12已完成MD5summer只读调查，P1 56f9e4f实际取回六文档/四产物逐字节通过，
+167产品输入和八部署摘要保持，登记scratch安全回收，S12关闭。
+M0/T15保持开放，既有S1/S2成果及其他任务/债务保持；未新分配数值T，未改产品或发布二进制。
 
 ## Identifier State
 
@@ -31,8 +12,8 @@
 - Last allocated T: 15
 - Last allocated Td S: 12
 - Owner allocation constraint: 只可自行划分后续S，不得自行分配新T；保持现有T15/M0。
-- Last delivery: M0 T15 S2 P2 (P1 330fed7实际取回183文件通过；167输入/八部署一致；两登记scratch已回收)
-- Open task: T15等待用户外观验收；S2/S1关闭；Td S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
+- Last delivery: M0 Td S12 P2 (P1 56f9e4f实际取回10文件通过，MD5summer调查关闭；产品仍为T15 S2)
+- Open task: T15等待用户外观验收；S2/S1关闭；Td S12/S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
 
 ## Technical Baseline
 
@@ -49,6 +30,8 @@ Run真实填充c0c0c0，卸载f0f0f0，1843像素变化，关闭exit0/自有Job�
 T15 S1的VB6成果、T14 S3启动语义及既有标题/字体/菜单/滚动条保持；其他任务/债务状态不变。
 
 ## Recent Closure
+
+- [Td S12 MD5summer控件调查](../history/M0-Td-S12-md5summer-controls.md)：原生双对照/4自有实例通过，主窗和内部Edit有效；框架类识别缺口/TreeView边界已明，无产品改动；P1远端10文件通过，scratch回收，S12关闭。
 
 - [T15 S2 DoubleKiller适配](../history/M0-T15-S2-doublekiller.md)：35实际包/10聚焦、真实双应用及两处默认安装通过，P1远端183文件通过，scratch安全回收；S2关闭，T15/M0开放等待验收。
 
