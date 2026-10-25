@@ -30,6 +30,7 @@ NTW16S_API BOOL win16_style_control_remove(HWND window);
 /* Private terminal leaf: release owned state without gesture/font notices. */
 BOOL win16_style_control_terminal(HWND window);
 NTW16S_API BOOL win16_style_frame_scrollbars_install(HWND window,const win16_style_palette *palette);
+BOOL win16_style_trackbar_install_created(HWND,const win16_style_palette *,const void *,const BOOL *);
 BOOL win16_style_progress_install_created(HWND,const win16_style_palette *,const void *,const BOOL *);
 BOOL win16_style_tree_install_created(HWND,const win16_style_palette *,const void *,const BOOL *);
 BOOL win16_style_frame_scrollbars_install_owned(HWND,const win16_style_palette *,const void *,const BOOL *);

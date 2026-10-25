@@ -1,0 +1,1728 @@
+{
+  "schema": 1,
+  "packet": "M0 T15 S10",
+  "status": "verified actual83/dual publication eight hashes/installed28+2/real MD5-DK; P1 push and remote/canonical/cleanup pending",
+  "baseline_commit": "c9853fb598617016ba18c17fb641c9498ad3a691",
+  "implementation": "finite initialized native v5/v6 trackbar and exact main-EXE TTrackBar; native custom-draw part rectangles and CDIS_SELECTED; internal default-only part stages, untouched app-requested stages/returns; native ticks/focus/input/data/font/layout; same-window cache invalidation",
+  "focused": {
+    "exit_code": 0,
+    "build_root": "O:\\repos.hobby\\win16style\\build\\.ninja",
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "profile": "Focused",
+    "tests": [
+      {
+        "passed": 1,
+        "test_seconds": 0.8651474000071175,
+        "configure_seconds": 2.286919900041539,
+        "tests": 1,
+        "build_seconds": 9.183880399970803,
+        "architecture": "x86",
+        "skipped": []
+      },
+      {
+        "passed": 3,
+        "test_seconds": 3.270992700010538,
+        "configure_seconds": 3.0012951999669895,
+        "tests": 3,
+        "build_seconds": 8.724052499979734,
+        "architecture": "x64",
+        "skipped": []
+      }
+    ],
+    "targets": "ntw16s,core-trackbar-v5,core-trackbar-v6",
+    "status": "passed",
+    "build_jobs": 8,
+    "selection": "^core/(abi|trackbar-v5|trackbar-v6)$",
+    "test_jobs": 2
+  },
+  "preserved_other_work": [
+    "docs/states/QUEUE.md",
+    "docs/proposals/global-style-mode.md",
+    "docs/proposals/outline-window-move.md"
+  ],
+  "HD_Tune_elevated": "skip by owner default; not counted passed; no UAC prompt issued",
+  "old_product_negatives": [
+    {
+      "architecture": "x86",
+      "version": "v5",
+      "exit": 1,
+      "lines": [
+        "TRACKBAR_MODULE bits=32 pid=13228 path=O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll bootstrap_frame_attached=1",
+        "TRACKBAR_FAIL line=68 error=126 attached(w)",
+        "TRACKBAR_FAIL line=119 error=0 wait==WAIT_OBJECT_0 && !code"
+      ],
+      "old_launcher_sha256": "8e726c81ce188aabe6b9313a00ef7b76d7427d1ae4746a3bfe439361b8785672"
+    },
+    {
+      "architecture": "x86",
+      "version": "v6",
+      "exit": 1,
+      "lines": [
+        "TRACKBAR_MODULE bits=32 pid=19444 path=O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll bootstrap_frame_attached=1",
+        "TRACKBAR_FAIL line=68 error=126 attached(w)",
+        "TRACKBAR_FAIL line=119 error=0 wait==WAIT_OBJECT_0 && !code"
+      ],
+      "old_launcher_sha256": "8e726c81ce188aabe6b9313a00ef7b76d7427d1ae4746a3bfe439361b8785672"
+    },
+    {
+      "architecture": "x64",
+      "version": "v5",
+      "exit": 1,
+      "lines": [
+        "TRACKBAR_MODULE bits=64 pid=40876 path=O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll bootstrap_frame_attached=1",
+        "TRACKBAR_FAIL line=68 error=126 attached(w)",
+        "TRACKBAR_FAIL line=119 error=0 wait==WAIT_OBJECT_0 && !code"
+      ],
+      "old_launcher_sha256": "8e726c81ce188aabe6b9313a00ef7b76d7427d1ae4746a3bfe439361b8785672"
+    },
+    {
+      "architecture": "x64",
+      "version": "v6",
+      "exit": 1,
+      "lines": [
+        "TRACKBAR_MODULE bits=64 pid=40820 path=O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll bootstrap_frame_attached=1",
+        "TRACKBAR_FAIL line=68 error=126 attached(w)",
+        "TRACKBAR_FAIL line=119 error=0 wait==WAIT_OBJECT_0 && !code"
+      ],
+      "old_launcher_sha256": "8e726c81ce188aabe6b9313a00ef7b76d7427d1ae4746a3bfe439361b8785672"
+    }
+  ],
+  "native_protocols": {
+    "s10-ranges-x86-v5.txt": {
+      "sha256": "09de2fe4a77c627014a4db2bf73cc1ef375553f8ee32807498dbeff79045c448",
+      "selected_protocol_and_stage_counts": [
+        "TRACK_PROTOCOL vertical=0 range=-20,80 pos=30 thumb=155,2,166,24 channel=8,10,312,14 ticks=101",
+        "DRAW_COUNTS family=0 vertical=0 mode=0 pre=1 items=0",
+        "DRAW_COUNTS family=0 vertical=0 mode=1 pre=1 items=0",
+        "TRACK_PROTOCOL vertical=1 range=-20,80 pos=30 thumb=2,95,24,106 channel=8,10,192,14 ticks=101",
+        "DRAW_COUNTS family=0 vertical=1 mode=0 pre=1 items=0",
+        "DRAW_COUNTS family=0 vertical=1 mode=1 pre=1 items=0",
+        "UP_PROTOCOL vertical=0 range=-5,5 pos=0 error=0 base=10 buddy=1",
+        "DRAW_COUNTS family=1 vertical=0 mode=0 pre=0 items=0",
+        "DRAW_COUNTS family=1 vertical=0 mode=1 pre=0 items=0",
+        "UP_PROTOCOL vertical=1 range=-5,5 pos=0 error=0 base=10 buddy=1",
+        "DRAW_COUNTS family=1 vertical=1 mode=0 pre=0 items=0",
+        "DRAW_COUNTS family=1 vertical=1 mode=1 pre=0 items=0",
+        "RANGE_PROBE_OK bits=32 notices=8"
+      ],
+      "raw_log_policy": "SHA identifies raw scratch log; only decisive protocol/count/state excerpts retained here; reviewed C source can rerun observation"
+    },
+    "s10-ranges-x86-v6.txt": {
+      "sha256": "61c78f6934f16a524481f5b156e6ad2d814b06a0934fcc77aac0bbe3e7e9bfeb",
+      "selected_protocol_and_stage_counts": [
+        "TRACK_PROTOCOL vertical=0 range=-20,80 pos=30 thumb=155,2,166,21 channel=8,8,312,12 ticks=101",
+        "DRAW_COUNTS family=0 vertical=0 mode=0 pre=1 items=0",
+        "DRAW_COUNTS family=0 vertical=0 mode=1 pre=1 items=0",
+        "TRACK_PROTOCOL vertical=1 range=-20,80 pos=30 thumb=2,95,21,106 channel=8,8,192,12 ticks=101",
+        "DRAW_COUNTS family=0 vertical=1 mode=0 pre=1 items=0",
+        "DRAW_COUNTS family=0 vertical=1 mode=1 pre=1 items=0",
+        "UP_PROTOCOL vertical=0 range=-5,5 pos=0 error=0 base=10 buddy=1",
+        "DRAW_COUNTS family=1 vertical=0 mode=0 pre=0 items=0",
+        "DRAW_COUNTS family=1 vertical=0 mode=1 pre=0 items=0",
+        "UP_PROTOCOL vertical=1 range=-5,5 pos=0 error=0 base=10 buddy=1",
+        "DRAW_COUNTS family=1 vertical=1 mode=0 pre=0 items=0",
+        "DRAW_COUNTS family=1 vertical=1 mode=1 pre=0 items=0",
+        "RANGE_PROBE_OK bits=32 notices=8"
+      ],
+      "raw_log_policy": "SHA identifies raw scratch log; only decisive protocol/count/state excerpts retained here; reviewed C source can rerun observation"
+    },
+    "s10-ranges-x64-v5.txt": {
+      "sha256": "e438bb0a3a9ffba26d0803ddb05c8e20074727bf241d069bbac7d0a0ccb9ca41",
+      "selected_protocol_and_stage_counts": [
+        "TRACK_PROTOCOL vertical=0 range=-20,80 pos=30 thumb=155,2,166,24 channel=8,10,312,14 ticks=101",
+        "DRAW_COUNTS family=0 vertical=0 mode=0 pre=1 items=0",
+        "DRAW_COUNTS family=0 vertical=0 mode=1 pre=1 items=0",
+        "TRACK_PROTOCOL vertical=1 range=-20,80 pos=30 thumb=2,95,24,106 channel=8,10,192,14 ticks=101",
+        "DRAW_COUNTS family=0 vertical=1 mode=0 pre=1 items=0",
+        "DRAW_COUNTS family=0 vertical=1 mode=1 pre=1 items=0",
+        "UP_PROTOCOL vertical=0 range=-5,5 pos=0 error=0 base=10 buddy=1",
+        "DRAW_COUNTS family=1 vertical=0 mode=0 pre=0 items=0",
+        "DRAW_COUNTS family=1 vertical=0 mode=1 pre=0 items=0",
+        "UP_PROTOCOL vertical=1 range=-5,5 pos=0 error=0 base=10 buddy=1",
+        "DRAW_COUNTS family=1 vertical=1 mode=0 pre=0 items=0",
+        "DRAW_COUNTS family=1 vertical=1 mode=1 pre=0 items=0",
+        "RANGE_PROBE_OK bits=64 notices=8"
+      ],
+      "raw_log_policy": "SHA identifies raw scratch log; only decisive protocol/count/state excerpts retained here; reviewed C source can rerun observation"
+    },
+    "s10-ranges-x64-v6.txt": {
+      "sha256": "4e3f6ffba65a520da7c790a90bb4f9b27d6bca321ef3818f6d847480596a2918",
+      "selected_protocol_and_stage_counts": [
+        "TRACK_PROTOCOL vertical=0 range=-20,80 pos=30 thumb=155,2,166,21 channel=8,8,312,12 ticks=101",
+        "DRAW_COUNTS family=0 vertical=0 mode=0 pre=1 items=0",
+        "DRAW_COUNTS family=0 vertical=0 mode=1 pre=1 items=0",
+        "TRACK_PROTOCOL vertical=1 range=-20,80 pos=30 thumb=2,95,21,106 channel=8,8,192,12 ticks=101",
+        "DRAW_COUNTS family=0 vertical=1 mode=0 pre=1 items=0",
+        "DRAW_COUNTS family=0 vertical=1 mode=1 pre=1 items=0",
+        "UP_PROTOCOL vertical=0 range=-5,5 pos=0 error=0 base=10 buddy=1",
+        "DRAW_COUNTS family=1 vertical=0 mode=0 pre=0 items=0",
+        "DRAW_COUNTS family=1 vertical=0 mode=1 pre=0 items=0",
+        "UP_PROTOCOL vertical=1 range=-5,5 pos=0 error=0 base=10 buddy=1",
+        "DRAW_COUNTS family=1 vertical=1 mode=0 pre=0 items=0",
+        "DRAW_COUNTS family=1 vertical=1 mode=1 pre=0 items=0",
+        "RANGE_PROBE_OK bits=64 notices=8"
+      ],
+      "raw_log_policy": "SHA identifies raw scratch log; only decisive protocol/count/state excerpts retained here; reviewed C source can rerun observation"
+    },
+    "s10-ranges-theme-v5.txt": {
+      "sha256": "62e15a664e80a1322db5b2b47f049e2840f185aa4982142bf8d26acf7c415dc9",
+      "selected_protocol_and_stage_counts": [
+        "TRACK_PROTOCOL vertical=0 range=-20,80 pos=30 thumb=155,2,166,24 channel=8,10,312,14 ticks=101",
+        "DRAW_COUNTS family=0 vertical=0 mode=0 pre=1 items=0",
+        "DRAW_COUNTS family=0 vertical=0 mode=1 pre=1 items=0",
+        "DRAW_COUNTS family=0 vertical=0 mode=2 pre=2 items=0",
+        "TRACK_PROTOCOL vertical=1 range=-20,80 pos=30 thumb=2,95,24,106 channel=8,10,192,14 ticks=101",
+        "DRAW_COUNTS family=0 vertical=1 mode=0 pre=1 items=0",
+        "DRAW_COUNTS family=0 vertical=1 mode=1 pre=1 items=0",
+        "DRAW_COUNTS family=0 vertical=1 mode=2 pre=2 items=0",
+        "UP_PROTOCOL vertical=0 range=-5,5 pos=0 error=0 base=10 buddy=1",
+        "DRAW_COUNTS family=1 vertical=0 mode=0 pre=0 items=0",
+        "DRAW_COUNTS family=1 vertical=0 mode=1 pre=0 items=0",
+        "DRAW_COUNTS family=1 vertical=0 mode=2 pre=0 items=0",
+        "UP_PROTOCOL vertical=1 range=-5,5 pos=0 error=0 base=10 buddy=1",
+        "DRAW_COUNTS family=1 vertical=1 mode=0 pre=0 items=0",
+        "DRAW_COUNTS family=1 vertical=1 mode=1 pre=0 items=0",
+        "DRAW_COUNTS family=1 vertical=1 mode=2 pre=0 items=0",
+        "RANGE_PROBE_OK bits=64 notices=8"
+      ],
+      "raw_log_policy": "SHA identifies raw scratch log; only decisive protocol/count/state excerpts retained here; reviewed C source can rerun observation"
+    },
+    "s10-ranges-theme-v6.txt": {
+      "sha256": "7d01291a2571e3251b4abc3949b28ac11d04b3e6f5a4c6466d800d2fe4f32dd7",
+      "selected_protocol_and_stage_counts": [
+        "TRACK_PROTOCOL vertical=0 range=-20,80 pos=30 thumb=155,2,166,21 channel=8,8,312,12 ticks=101",
+        "DRAW_COUNTS family=0 vertical=0 mode=0 pre=1 items=0",
+        "DRAW_COUNTS family=0 vertical=0 mode=1 pre=1 items=3",
+        "DRAW_COUNTS family=0 vertical=0 mode=2 pre=2 items=3",
+        "TRACK_PROTOCOL vertical=1 range=-20,80 pos=30 thumb=2,95,21,106 channel=8,8,192,12 ticks=101",
+        "DRAW_COUNTS family=0 vertical=1 mode=0 pre=1 items=0",
+        "DRAW_COUNTS family=0 vertical=1 mode=1 pre=1 items=3",
+        "DRAW_COUNTS family=0 vertical=1 mode=2 pre=2 items=3",
+        "UP_PROTOCOL vertical=0 range=-5,5 pos=0 error=0 base=10 buddy=1",
+        "DRAW_COUNTS family=1 vertical=0 mode=0 pre=0 items=0",
+        "DRAW_COUNTS family=1 vertical=0 mode=1 pre=0 items=0",
+        "DRAW_COUNTS family=1 vertical=0 mode=2 pre=0 items=0",
+        "UP_PROTOCOL vertical=1 range=-5,5 pos=0 error=0 base=10 buddy=1",
+        "DRAW_COUNTS family=1 vertical=1 mode=0 pre=0 items=0",
+        "DRAW_COUNTS family=1 vertical=1 mode=1 pre=0 items=0",
+        "DRAW_COUNTS family=1 vertical=1 mode=2 pre=0 items=0",
+        "RANGE_PROBE_OK bits=64 notices=8"
+      ],
+      "raw_log_policy": "SHA identifies raw scratch log; only decisive protocol/count/state excerpts retained here; reviewed C source can rerun observation"
+    },
+    "s10-ranges-color-v5.txt": {
+      "sha256": "56908e368b99aa8a2e0f9adb2f9315be131aa317f13071036a75bce07157c876",
+      "selected_protocol_and_stage_counts": [
+        "TRACK_PROTOCOL vertical=0 range=-20,80 pos=30 thumb=155,2,166,24 channel=8,10,312,14 ticks=101",
+        "DRAW_COUNTS family=0 vertical=0 mode=0 pre=1 items=0",
+        "DRAW_COUNTS family=0 vertical=0 mode=1 pre=1 items=3",
+        "DRAW_COUNTS family=0 vertical=0 mode=2 pre=2 items=3",
+        "TRACK_PROTOCOL vertical=1 range=-20,80 pos=30 thumb=2,95,24,106 channel=8,10,192,14 ticks=101",
+        "DRAW_COUNTS family=0 vertical=1 mode=0 pre=1 items=0",
+        "DRAW_COUNTS family=0 vertical=1 mode=1 pre=1 items=3",
+        "DRAW_COUNTS family=0 vertical=1 mode=2 pre=2 items=3",
+        "UP_PROTOCOL vertical=0 range=-5,5 pos=0 error=0 base=10 buddy=1",
+        "DRAW_COUNTS family=1 vertical=0 mode=0 pre=0 items=0",
+        "DRAW_COUNTS family=1 vertical=0 mode=1 pre=0 items=0",
+        "DRAW_COUNTS family=1 vertical=0 mode=2 pre=0 items=0",
+        "UP_PROTOCOL vertical=1 range=-5,5 pos=0 error=0 base=10 buddy=1",
+        "DRAW_COUNTS family=1 vertical=1 mode=0 pre=0 items=0",
+        "DRAW_COUNTS family=1 vertical=1 mode=1 pre=0 items=0",
+        "DRAW_COUNTS family=1 vertical=1 mode=2 pre=0 items=0",
+        "RANGE_PROBE_OK bits=64 notices=8"
+      ],
+      "raw_log_policy": "SHA identifies raw scratch log; only decisive protocol/count/state excerpts retained here; reviewed C source can rerun observation"
+    },
+    "s10-ranges-input-v6.txt": {
+      "sha256": "e12eeb4f33696869a7d007b8b8e5be2db43cb7fd790adb7b14ee5a915d93c049",
+      "selected_native_pressed_observations": [
+        "CUSTOM family=0 mode=1 stage=00010001 part=2 state=00000001 rect=155,2,166,21",
+        "CUSTOM family=0 mode=1 stage=00000002 part=2 state=00000001 rect=155,2,166,21",
+        "IMAGE family=0 mode=1 stage=track-down rect=320,64 hash=e81bed9d capture=1 focus=1",
+        "IMAGE family=0 mode=1 stage=track-release rect=320,64 hash=dd9d642e capture=0 focus=1",
+        "CUSTOM family=0 mode=1 stage=00010001 part=2 state=00000001 rect=2,95,21,106",
+        "CUSTOM family=0 mode=1 stage=00000002 part=2 state=00000001 rect=95,2,106,21",
+        "IMAGE family=0 mode=1 stage=track-down rect=64,200 hash=63bb3415 capture=1 focus=1",
+        "IMAGE family=0 mode=1 stage=track-release rect=64,200 hash=1290abc7 capture=0 focus=1",
+        "RANGE_PROBE_OK bits=64 notices=12"
+      ],
+      "raw_log_policy": "SHA identifies raw scratch log; only decisive protocol/count/state excerpts retained here; reviewed C source can rerun observation"
+    },
+    "s10-ranges-accessible-v6.txt": {
+      "sha256": "61395693d59b24179038b8a7c07607b335262c88bbaeb7c699c019265453a88d",
+      "selected_public_state_observations": [
+        "ACCESS stage=ordinary hr=00000000 children=2 child0-state=00000000/3/00000000-role=00000000/3/52 child1-state=00000000/3/00000000-role=00000000/3/43 child2-state=00000000/3/00000000-role=00000000/3/43",
+        "ACCESS stage=delta-callback hr=00000000 children=2 child0-state=00000000/3/00000000-role=00000000/3/52 child1-state=00000000/3/00000000-role=00000000/3/43 child2-state=00000000/3/00000000-role=00000000/3/43",
+        "ACCESS stage=after-down hr=00000000 children=2 child0-state=00000000/3/00000000-role=00000000/3/52 child1-state=00000000/3/00000000-role=00000000/3/43 child2-state=00000000/3/00000000-role=00000000/3/43",
+        "ACCESS stage=cancel-key hr=00000000 children=2 child0-state=00000000/3/00000000-role=00000000/3/52 child1-state=00000000/3/00000000-role=00000000/3/43 child2-state=00000000/3/00000000-role=00000000/3/43",
+        "ACCESS stage=key-release hr=00000000 children=2 child0-state=00000000/3/00000000-role=00000000/3/52 child1-state=00000000/3/00000000-role=00000000/3/43 child2-state=00000000/3/00000000-role=00000000/3/43",
+        "ACCESS stage=key-repaint hr=00000000 children=2 child0-state=00000000/3/00000000-role=00000000/3/52 child1-state=00000000/3/00000000-role=00000000/3/43 child2-state=00000000/3/00000000-role=00000000/3/43"
+      ],
+      "raw_log_policy": "SHA identifies raw scratch log; only decisive protocol/count/state excerpts retained here; reviewed C source can rerun observation"
+    }
+  },
+  "pre_release_failures": [
+    {
+      "kind": "fixture preparation",
+      "details": "x86 stable-build launcher directory lacked its x86 DLL: install/resume error2; full four-file candidate subsequently passes x86 v5/v6; not product failure"
+    },
+    {
+      "kind": "owned DK fixture",
+      "details": "initial three identical alpha/beta/gamma files produced3 app duplicate rows, expected a.bin/b.bin two; corrected to equal32-byte a/b and distinct32-byte c; actual app subsequently produces2 and exits cleanly; no assertion relaxed"
+    },
+    {
+      "kind": "native v5 cache",
+      "details": "WM_THEMECHANGED does not regenerate cached part notifications in v5; own native WM_SYSCOLORCHANGE produces3 part callbacks; no global settings modified"
+    },
+    {
+      "kind": "full package failed",
+      "result": {
+        "error": "Package test failed: tree-v6-64, exit 1",
+        "status": "failed-or-inconclusive"
+      },
+      "cases_completed": 59,
+      "details": "tree-v6-64 aware0 styled child wait258 at10s after input assertions; full matrix not passed/not published"
+    }
+  ],
+  "scope": [
+    "x86/x64 v5/v6; native/styled;96 and actual PMv2 144 DPI",
+    "canonical/verified alias; h/v; five ticks/fixed-length combinations",
+    "visible normal WM_PAINT; PRINTCLIENT/PRINT parity; normal/pressed pixels from native CDIS_SELECTED",
+    "native capture/release/key/line/page/position; original geometry/font/data",
+    "app default sees only original PRE; explicit item/post requests and own whole/part pixels preserved",
+    "notification-time remove; application query-time remove/destroy; fake/special fallback;64 resource cycles/process"
+  ],
+  "uncovered": [
+    "HD Tune real elevated UI default skip",
+    "physical keyboard/mouse/IME/accessibility acceptance not claimed",
+    "RTL/reversed/selection-range/tooltips/unknown styles kept native",
+    "UpDown not implemented; no custom-draw and tested MSAA states do not expose pressed; next sequential S",
+    "native tick/focus rendering kept; no claim historical Win3.1 trackbar pixel replica"
+  ],
+  "preservation": {
+    "source_unchanged": [
+      "font.c",
+      "menu_bar.c",
+      "menu_bar_paint.c",
+      "menu_items.c",
+      "menu_layout.c",
+      "menu_paint.c",
+      "menu_scope.c",
+      "win16_style.c",
+      "scroll_layout.c",
+      "scroll_track.c"
+    ],
+    "original_resources": "five headers/resources.md byte-exact,18 tables/dll; strict gate passed",
+    "title_caption": {
+      "reference": "S9 MD5summer.png",
+      "width": 292,
+      "height": 24,
+      "black_mask_different": 0
+    },
+    "ABI": "3;31 named exports and ordinal1 NONAME;31 detours/32 slots;three components/four files"
+  },
+  "references": [
+    "https://learn.microsoft.com/en-us/windows/win32/controls/nm-customdraw-trackbar",
+    "https://learn.microsoft.com/en-us/windows/win32/controls/custom-draw-values",
+    "https://learn.microsoft.com/en-us/windows/win32/controls/trackbar-controls"
+  ],
+  "sources_review": "project authored C17; no external code copied; official API docs and own native observations only",
+  "tree_scheduler_diagnosis": {
+    "four_concurrent": [
+      {
+        "package": "old",
+        "trial": 1,
+        "exit": 1,
+        "sha256": "6c63b74b68100d2acb6d7ea7431b0eebdb865ad9ed76e5e7ff23accd6df1ebd9",
+        "tail": [
+          "TREE_INPUT_STATE_OK ctrl_preserved=1 neutral_moves=1 focus=1 control=0000 shift=0000 alt=0000 restored=1",
+          "PROFILE input_done wall_ms=9578 cpu_ms=4875",
+          "TREE_STAGE input_ok",
+          "PROFILE variant_done wall_ms=9641 cpu_ms=4921",
+          "TREE_VARIANT kind=2 small=1 draw=1 styled=1 glyph=314 nc=1556 native_geometry_data_font_images=1",
+          "PROFILE variant_begin wall_ms=9672 cpu_ms=4937",
+          "TREE_BEGIN kind=2 small=1 draw=2 styled=1",
+          "TREE_INPUT_STATE_OK ctrl_preserved=1 neutral_moves=1 focus=1 control=0000 shift=0000 alt=0000 restored=1",
+          "PROFILE input_done wall_ms=9875 cpu_ms=5078",
+          "TREE_STAGE input_ok",
+          "TREE_WORKER aware=0 styled=0 elapsed_ms=8093 wait=0 exit=0",
+          "TREE_WORKER aware=0 styled=1 elapsed_ms=10015 wait=258 exit=1"
+        ],
+        "stderr": "TREE_FAIL line=141 error=0 wait==WAIT_OBJECT_0 && !code\n"
+      },
+      {
+        "package": "old",
+        "trial": 2,
+        "exit": 1,
+        "sha256": "b335f68adee1373c8714391e50e39556da9ea649add070cf33abeb74b5ce0c9b",
+        "tail": [
+          "TREE_INPUT_STATE_OK ctrl_preserved=1 neutral_moves=1 focus=1 control=0000 shift=0000 alt=0000 restored=1",
+          "PROFILE input_done wall_ms=9531 cpu_ms=4656",
+          "TREE_STAGE input_ok",
+          "PROFILE variant_done wall_ms=9594 cpu_ms=4703",
+          "TREE_VARIANT kind=2 small=1 draw=1 styled=1 glyph=314 nc=1556 native_geometry_data_font_images=1",
+          "PROFILE variant_begin wall_ms=9641 cpu_ms=4750",
+          "TREE_BEGIN kind=2 small=1 draw=2 styled=1",
+          "TREE_INPUT_STATE_OK ctrl_preserved=1 neutral_moves=1 focus=1 control=0000 shift=0000 alt=0000 restored=1",
+          "PROFILE input_done wall_ms=9844 cpu_ms=4859",
+          "TREE_STAGE input_ok",
+          "TREE_WORKER aware=0 styled=0 elapsed_ms=8062 wait=0 exit=0",
+          "TREE_WORKER aware=0 styled=1 elapsed_ms=10016 wait=258 exit=1"
+        ],
+        "stderr": "TREE_FAIL line=141 error=0 wait==WAIT_OBJECT_0 && !code\n"
+      },
+      {
+        "package": "new",
+        "trial": 1,
+        "exit": 1,
+        "sha256": "77b35b6bf293fb3c709fb7f45f4bc9b78f06d004a7f59c9e3a5ef409b59371ea",
+        "tail": [
+          "TREE_BEGIN kind=2 small=1 draw=2 styled=1",
+          "TREE_INPUT_STATE_OK ctrl_preserved=1 neutral_moves=1 focus=1 control=0000 shift=0000 alt=0000 restored=1",
+          "PROFILE input_done wall_ms=9625 cpu_ms=5218",
+          "TREE_STAGE input_ok",
+          "PROFILE variant_done wall_ms=9688 cpu_ms=5250",
+          "TREE_VARIANT kind=2 small=1 draw=2 styled=1 glyph=0 nc=1556 native_geometry_data_font_images=1",
+          "TREE_CALLBACK_RETIRE_OK remove=1 deferred_destroy=1 reject_rtl_fake=1",
+          "TREE_CONTROL_OK bits=64 styled=1 aware=0 dpi=96 variants=18 keyboard=1 cancel=1 image_font_leases=preserved",
+          "TREE_ROOT_DESTROYED",
+          "TREE_SURFACE_FREED",
+          "TREE_WORKER aware=0 styled=0 elapsed_ms=7437 wait=0 exit=0",
+          "TREE_WORKER aware=0 styled=1 elapsed_ms=10016 wait=258 exit=1"
+        ],
+        "stderr": "TREE_FAIL line=141 error=0 wait==WAIT_OBJECT_0 && !code\n"
+      },
+      {
+        "package": "new",
+        "trial": 2,
+        "exit": 1,
+        "sha256": "dafa74186664134f2c05846984f5dc801b208443bc6ed47a9ed6664765a536bf",
+        "tail": [
+          "TREE_VARIANT kind=2 small=1 draw=0 styled=1 glyph=314 nc=1556 native_geometry_data_font_images=1",
+          "PROFILE variant_begin wall_ms=9188 cpu_ms=4625",
+          "TREE_BEGIN kind=2 small=1 draw=1 styled=1",
+          "TREE_INPUT_STATE_OK ctrl_preserved=1 neutral_moves=1 focus=1 control=0000 shift=0000 alt=0000 restored=1",
+          "PROFILE input_done wall_ms=9688 cpu_ms=4859",
+          "TREE_STAGE input_ok",
+          "PROFILE variant_done wall_ms=9750 cpu_ms=4906",
+          "TREE_VARIANT kind=2 small=1 draw=1 styled=1 glyph=314 nc=1556 native_geometry_data_font_images=1",
+          "PROFILE variant_begin wall_ms=9782 cpu_ms=4937",
+          "TREE_BEGIN kind=2 small=1 draw=2 styled=1",
+          "TREE_WORKER aware=0 styled=0 elapsed_ms=7468 wait=0 exit=0",
+          "TREE_WORKER aware=0 styled=1 elapsed_ms=10016 wait=258 exit=1"
+        ],
+        "stderr": "TREE_FAIL line=141 error=0 wait==WAIT_OBJECT_0 && !code\n"
+      }
+    ],
+    "change": "tree-v5/v6 cases use existing two-slot heavy weight, at Jobs4 at most2 concurrent trees; all child10s waits/function assertions unchanged; old/new two-concurrent4-context controls pass, longest8141ms; final83 matrix pending",
+    "two_concurrent": [
+      {
+        "package": "old",
+        "exit": 0,
+        "workers": [
+          "TREE_WORKER aware=0 styled=0 elapsed_ms=5109 wait=0 exit=0",
+          "TREE_WORKER aware=0 styled=1 elapsed_ms=5500 wait=0 exit=0",
+          "TREE_WORKER aware=1 styled=0 elapsed_ms=5391 wait=0 exit=0",
+          "TREE_WORKER aware=1 styled=1 elapsed_ms=8109 wait=0 exit=0"
+        ],
+        "marker": "TREE_CLEANUP_OK",
+        "sha256": "10b5757c2ee001af6a2fdcb555fa56f4d60fc325a2495b8ac7da0be9ea0db35c"
+      },
+      {
+        "package": "new",
+        "exit": 0,
+        "workers": [
+          "TREE_WORKER aware=0 styled=0 elapsed_ms=5109 wait=0 exit=0",
+          "TREE_WORKER aware=0 styled=1 elapsed_ms=5531 wait=0 exit=0",
+          "TREE_WORKER aware=1 styled=0 elapsed_ms=5547 wait=0 exit=0",
+          "TREE_WORKER aware=1 styled=1 elapsed_ms=8141 wait=0 exit=0"
+        ],
+        "marker": "TREE_CLEANUP_OK",
+        "sha256": "4fe05eadba1802b886737c9e02d2cef665c40f2e15df3eeaf4611ea5a819a6e2"
+      }
+    ]
+  },
+  "clean_build": {
+    "exit_code": 0,
+    "selection": "^core/abi$",
+    "targets": "all",
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "profile": "Focused",
+    "build_jobs": 8,
+    "status": "passed",
+    "tests": [
+      {
+        "tests": 1,
+        "build_seconds": 33.85230570001295,
+        "test_seconds": 0.49565729999449104,
+        "configure_seconds": 4.654030599980615,
+        "skipped": [],
+        "passed": 1,
+        "architecture": "x86"
+      },
+      {
+        "tests": 1,
+        "build_seconds": 35.89588169998024,
+        "test_seconds": 0.4784699000301771,
+        "configure_seconds": 4.871498900000006,
+        "skipped": [],
+        "passed": 1,
+        "architecture": "x64"
+      }
+    ],
+    "build_root": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja",
+    "test_jobs": 4
+  },
+  "pre_scheduler_real_apps": {
+    "MD5summer": {
+      "exit": 0,
+      "lines": [
+        "OWNED_VISIBLE hwnd=06F10A9C class=TMessageForm title=Information enabled=1",
+        "STARTUP_INFORMATION dismissed-owned-OK=1",
+        "OWNED_VISIBLE hwnd=04D40E04 class=TApplication title=MD5 for Windows enabled=1",
+        "OWNED_VISIBLE hwnd=01120EB2 class=TMain title=MD5Summer enabled=1",
+        "TARGET pid=29376 creator-tree-root=36968 tid=36960 image=D:\\programs\\misc\\md5summer.exe",
+        "MODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s10-final\\candidate\\ntw16s32.dll",
+        "POSTED_READINESS wait=0 elapsed_ms=16",
+        "WINDOW_STATES minimized=1 restored=1 moved=1 root_attachment_preserved=1",
+        "CLOSE sent=1 error=0 wait=0 code=0 window=0 visible=0",
+        "TARGET_EXIT=0",
+        "DK_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "sha256": "7586257da467fe3f70bd8f61d1cdaed1040c58fcbd111d9054feaab70c141018"
+    },
+    "DoubleKiller": {
+      "exit": 0,
+      "lines": [
+        "TARGET pid=7704 creator-tree-root=22836 tid=35368 image=O:\\repos.hobby\\win16style\\build\\t15-controls\\s10-doublekiller\\DoubleKiller.exe",
+        "MODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s10-final\\candidate\\ntw16s32.dll",
+        "S7_OWNED_SCAN_COMPLETE rows_from_app=2 scoped_fixture_only=1 no_delete_or_move=1",
+        "OWNED_CLOSE posted=1 wait=0 exit=0 window=0",
+        "DK_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "sha256": "34f14ba102d0b114cef3edf2281c53c0dc2570d59096cde1beb4dcbc9ac36af1"
+    }
+  },
+  "implementation_statistics": {
+    "scope": "product C/H, native C test, CMake and actual-package runner; excludes docs/metadata/binaries/other work",
+    "files": 10,
+    "added": 271,
+    "deleted": 10,
+    "net": 261,
+    "numstat": [
+      "15\t1\tCMakeLists.txt",
+      "2\t1\tsrc/ntw16s-dll/attachment.c",
+      "1\t1\tsrc/ntw16s-dll/control_class.h",
+      "17\t4\tsrc/ntw16s-dll/control_protocol.c",
+      "65\t2\tsrc/ntw16s-dll/controls.c",
+      "1\t0\tsrc/ntw16s-dll/controls.h",
+      "5\t1\ttools/Test-Package.ps1",
+      "34\t0\tsrc/ntw16s-dll/trackbar_paint.c (new)",
+      "7\t0\tsrc/ntw16s-dll/trackbar_paint.h (new)",
+      "124\t0\ttests/ntw16s-dll/trackbar_controls.c (new)"
+    ]
+  },
+  "bounded_package_partial": {
+    "tree-v5-32": [
+      "TREE_CONTROL_OK bits=32 styled=0 aware=0 dpi=96 variants=18 keyboard=1 cancel=1 image_font_leases=preserved",
+      "TREE_CONTROL_OK bits=32 styled=1 aware=0 dpi=96 variants=18 keyboard=1 cancel=1 image_font_leases=preserved",
+      "TREE_CONTROL_OK bits=32 styled=0 aware=1 dpi=144 variants=18 keyboard=1 cancel=1 image_font_leases=preserved",
+      "TREE_CONTROL_OK bits=32 styled=1 aware=1 dpi=144 variants=18 keyboard=1 cancel=1 image_font_leases=preserved",
+      "TREE_WORKER aware=0 styled=0 elapsed_ms=1469 wait=0 exit=0",
+      "TREE_WORKER aware=0 styled=1 elapsed_ms=4219 wait=0 exit=0",
+      "TREE_WORKER aware=1 styled=0 elapsed_ms=1781 wait=0 exit=0",
+      "TREE_WORKER aware=1 styled=1 elapsed_ms=4344 wait=0 exit=0",
+      "TREE_CLEANUP_OK"
+    ],
+    "tree-v6-32": [
+      "TREE_CONTROL_OK bits=32 styled=0 aware=0 dpi=96 variants=18 keyboard=1 cancel=1 image_font_leases=preserved",
+      "TREE_CONTROL_OK bits=32 styled=1 aware=0 dpi=96 variants=18 keyboard=1 cancel=1 image_font_leases=preserved",
+      "TREE_CONTROL_OK bits=32 styled=0 aware=1 dpi=144 variants=18 keyboard=1 cancel=1 image_font_leases=preserved",
+      "TREE_CONTROL_OK bits=32 styled=1 aware=1 dpi=144 variants=18 keyboard=1 cancel=1 image_font_leases=preserved",
+      "TREE_WORKER aware=0 styled=0 elapsed_ms=3390 wait=0 exit=0",
+      "TREE_WORKER aware=0 styled=1 elapsed_ms=6953 wait=0 exit=0",
+      "TREE_WORKER aware=1 styled=0 elapsed_ms=3531 wait=0 exit=0",
+      "TREE_WORKER aware=1 styled=1 elapsed_ms=7953 wait=0 exit=0",
+      "TREE_CLEANUP_OK"
+    ],
+    "trackbar-v5-32": [
+      "TRACKBAR_RESOURCE_OK cycles=64 gdi=5,5 user=2,2",
+      "TRACKBAR_CONTROL_OK bits=32 styled=0 aware=0 dpi=96 changed=0",
+      "TRACKBAR_RESOURCE_OK cycles=64 gdi=11,11 user=2,2",
+      "TRACKBAR_CONTROL_OK bits=32 styled=1 aware=0 dpi=96 changed=20",
+      "TRACKBAR_RESOURCE_OK cycles=64 gdi=5,5 user=2,2",
+      "TRACKBAR_CONTROL_OK bits=32 styled=0 aware=1 dpi=144 changed=0",
+      "TRACKBAR_RESOURCE_OK cycles=64 gdi=11,11 user=2,2",
+      "TRACKBAR_CONTROL_OK bits=32 styled=1 aware=1 dpi=144 changed=20",
+      "TRACKBAR_WORKER aware=0 styled=0 child_pid=20740 creator_pid=14660 elapsed_ms=1344 wait=0 exit=0",
+      "TRACKBAR_WORKER aware=0 styled=1 child_pid=31640 creator_pid=14660 elapsed_ms=2687 wait=0 exit=0",
+      "TRACKBAR_WORKER aware=1 styled=0 child_pid=19404 creator_pid=14660 elapsed_ms=1140 wait=0 exit=0",
+      "TRACKBAR_WORKER aware=1 styled=1 child_pid=31220 creator_pid=14660 elapsed_ms=2954 wait=0 exit=0",
+      "TRACKBAR_CLEANUP_OK"
+    ],
+    "trackbar-v6-32": [
+      "TRACKBAR_RESOURCE_OK cycles=64 gdi=9,9 user=2,2",
+      "TRACKBAR_CONTROL_OK bits=32 styled=0 aware=0 dpi=96 changed=0",
+      "TRACKBAR_RESOURCE_OK cycles=64 gdi=15,15 user=2,2",
+      "TRACKBAR_CONTROL_OK bits=32 styled=1 aware=0 dpi=96 changed=20",
+      "TRACKBAR_RESOURCE_OK cycles=64 gdi=9,9 user=2,2",
+      "TRACKBAR_CONTROL_OK bits=32 styled=0 aware=1 dpi=144 changed=0",
+      "TRACKBAR_RESOURCE_OK cycles=64 gdi=15,15 user=2,2",
+      "TRACKBAR_CONTROL_OK bits=32 styled=1 aware=1 dpi=144 changed=20",
+      "TRACKBAR_WORKER aware=0 styled=0 child_pid=19004 creator_pid=25848 elapsed_ms=1234 wait=0 exit=0",
+      "TRACKBAR_WORKER aware=0 styled=1 child_pid=36620 creator_pid=25848 elapsed_ms=2844 wait=0 exit=0",
+      "TRACKBAR_WORKER aware=1 styled=0 child_pid=32540 creator_pid=25848 elapsed_ms=1219 wait=0 exit=0",
+      "TRACKBAR_WORKER aware=1 styled=1 child_pid=37412 creator_pid=25848 elapsed_ms=2984 wait=0 exit=0",
+      "TRACKBAR_CLEANUP_OK"
+    ],
+    "tree-v5-64": [
+      "TREE_CONTROL_OK bits=64 styled=0 aware=0 dpi=96 variants=18 keyboard=1 cancel=1 image_font_leases=preserved",
+      "TREE_CONTROL_OK bits=64 styled=1 aware=0 dpi=96 variants=18 keyboard=1 cancel=1 image_font_leases=preserved",
+      "TREE_CONTROL_OK bits=64 styled=0 aware=1 dpi=144 variants=18 keyboard=1 cancel=1 image_font_leases=preserved",
+      "TREE_CONTROL_OK bits=64 styled=1 aware=1 dpi=144 variants=18 keyboard=1 cancel=1 image_font_leases=preserved",
+      "TREE_WORKER aware=0 styled=0 elapsed_ms=1250 wait=0 exit=0",
+      "TREE_WORKER aware=0 styled=1 elapsed_ms=4109 wait=0 exit=0",
+      "TREE_WORKER aware=1 styled=0 elapsed_ms=1406 wait=0 exit=0",
+      "TREE_WORKER aware=1 styled=1 elapsed_ms=3672 wait=0 exit=0",
+      "TREE_CLEANUP_OK"
+    ],
+    "tree-v6-64": [
+      "TREE_CONTROL_OK bits=64 styled=0 aware=0 dpi=96 variants=18 keyboard=1 cancel=1 image_font_leases=preserved",
+      "TREE_CONTROL_OK bits=64 styled=1 aware=0 dpi=96 variants=18 keyboard=1 cancel=1 image_font_leases=preserved",
+      "TREE_CONTROL_OK bits=64 styled=0 aware=1 dpi=144 variants=18 keyboard=1 cancel=1 image_font_leases=preserved",
+      "TREE_CONTROL_OK bits=64 styled=1 aware=1 dpi=144 variants=18 keyboard=1 cancel=1 image_font_leases=preserved",
+      "TREE_WORKER aware=0 styled=0 elapsed_ms=3422 wait=0 exit=0",
+      "TREE_WORKER aware=0 styled=1 elapsed_ms=9187 wait=0 exit=0",
+      "TREE_WORKER aware=1 styled=0 elapsed_ms=5265 wait=0 exit=0",
+      "TREE_WORKER aware=1 styled=1 elapsed_ms=4937 wait=0 exit=0",
+      "TREE_CLEANUP_OK"
+    ],
+    "trackbar-v5-64": [
+      "TRACKBAR_RESOURCE_OK cycles=64 gdi=5,5 user=2,2",
+      "TRACKBAR_CONTROL_OK bits=64 styled=0 aware=0 dpi=96 changed=0",
+      "TRACKBAR_RESOURCE_OK cycles=64 gdi=11,11 user=2,2",
+      "TRACKBAR_CONTROL_OK bits=64 styled=1 aware=0 dpi=96 changed=20",
+      "TRACKBAR_RESOURCE_OK cycles=64 gdi=5,5 user=2,2",
+      "TRACKBAR_CONTROL_OK bits=64 styled=0 aware=1 dpi=144 changed=0",
+      "TRACKBAR_RESOURCE_OK cycles=64 gdi=11,11 user=2,2",
+      "TRACKBAR_CONTROL_OK bits=64 styled=1 aware=1 dpi=144 changed=20",
+      "TRACKBAR_WORKER aware=0 styled=0 child_pid=25536 creator_pid=16536 elapsed_ms=813 wait=0 exit=0",
+      "TRACKBAR_WORKER aware=0 styled=1 child_pid=28720 creator_pid=16536 elapsed_ms=2484 wait=0 exit=0",
+      "TRACKBAR_WORKER aware=1 styled=0 child_pid=41836 creator_pid=16536 elapsed_ms=1015 wait=0 exit=0",
+      "TRACKBAR_WORKER aware=1 styled=1 child_pid=20136 creator_pid=16536 elapsed_ms=3188 wait=0 exit=0",
+      "TRACKBAR_CLEANUP_OK"
+    ],
+    "trackbar-v6-64": [
+      "TRACKBAR_RESOURCE_OK cycles=64 gdi=9,9 user=2,2",
+      "TRACKBAR_CONTROL_OK bits=64 styled=0 aware=0 dpi=96 changed=0",
+      "TRACKBAR_RESOURCE_OK cycles=64 gdi=15,15 user=2,2",
+      "TRACKBAR_CONTROL_OK bits=64 styled=1 aware=0 dpi=96 changed=20",
+      "TRACKBAR_RESOURCE_OK cycles=64 gdi=9,9 user=2,2",
+      "TRACKBAR_CONTROL_OK bits=64 styled=0 aware=1 dpi=144 changed=0",
+      "TRACKBAR_RESOURCE_OK cycles=64 gdi=15,15 user=2,2",
+      "TRACKBAR_CONTROL_OK bits=64 styled=1 aware=1 dpi=144 changed=20",
+      "TRACKBAR_WORKER aware=0 styled=0 child_pid=36916 creator_pid=12716 elapsed_ms=922 wait=0 exit=0",
+      "TRACKBAR_WORKER aware=0 styled=1 child_pid=39924 creator_pid=12716 elapsed_ms=2781 wait=0 exit=0",
+      "TRACKBAR_WORKER aware=1 styled=0 child_pid=27348 creator_pid=12716 elapsed_ms=1204 wait=0 exit=0",
+      "TRACKBAR_WORKER aware=1 styled=1 child_pid=11648 creator_pid=12716 elapsed_ms=2828 wait=0 exit=0",
+      "TRACKBAR_CLEANUP_OK"
+    ]
+  },
+  "source_inputs": 193,
+  "source_snapshot_sha256": "1c62dd1e6ceab74a4e82012f1e015af8cc8b20279f82c583e4611aaad4c4ddcb",
+  "full_package": {
+    "cases": 83,
+    "physical_input": "not-tested",
+    "jobs": 4,
+    "status": "passed",
+    "seconds": 427.1922904,
+    "sha256": {
+      "demo.exe": "6cbb3fa5be455dbd6fd86793d267ef78137a06f650d236de306ae00f4950ec73",
+      "ntw16s32.dll": "f040f4694d78db89cdd99fea7eb427f10041ed4c38b2366530123ceaf0a7e1bd",
+      "ntw16s64.dll": "b09795790d239408f35ba5c60bb67c222d89aabff9fa443388fb341536a7c21e",
+      "run16s.exe": "80491d1d084884fb664b4737dc36144640bee3e1145b00fffbf900915b42706c"
+    },
+    "core_matrix": "separate Build-Core matrix required",
+    "package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate",
+    "full_integration": true
+  },
+  "full_case_results": [
+    {
+      "seconds": 0.3143711,
+      "name": "abi-x86",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-abi.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll"
+      ]
+    },
+    {
+      "seconds": 0.3309101,
+      "name": "abi-x64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-abi.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll"
+      ]
+    },
+    {
+      "seconds": 0.5590561,
+      "name": "demo-boundary",
+      "command": "C:\\Program Files\\Python313\\python.exe",
+      "exit_code": 0,
+      "arguments": [
+        "-B",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\tests\\demo-exe\\boundary.py",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\demo.exe"
+      ]
+    },
+    {
+      "seconds": 4.435458,
+      "name": "demo-pair",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\demo-observe.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\demo.exe"
+      ]
+    },
+    {
+      "seconds": 9.1511344,
+      "name": "wait-contract",
+      "command": "C:\\Program Files\\Python313\\python.exe",
+      "exit_code": 0,
+      "arguments": [
+        "-B",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\tests\\run16s-exe\\wait.py",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\wait-target.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\wait-target.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\wait-gui-target.exe"
+      ]
+    },
+    {
+      "seconds": 69.5335596,
+      "name": "font-layout-x64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-font-layout.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll"
+      ]
+    },
+    {
+      "seconds": 97.0315594,
+      "name": "font-layout-x86",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-font-layout.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll"
+      ]
+    },
+    {
+      "seconds": 67.9532072,
+      "name": "menu-cancel-x86",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-menu-cancel.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll"
+      ]
+    },
+    {
+      "seconds": 0.2526247,
+      "name": "startup-error-unit-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\startup-error-unit.exe",
+      "exit_code": 0,
+      "arguments": []
+    },
+    {
+      "seconds": 0.2012947,
+      "name": "startup-error-unit-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\startup-error-unit.exe",
+      "exit_code": 0,
+      "arguments": []
+    },
+    {
+      "seconds": 1.5246904,
+      "name": "legacy-rejection",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\legacy-rejection.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe"
+      ]
+    },
+    {
+      "seconds": 0.9431542,
+      "name": "cli",
+      "command": "C:\\Program Files\\Python313\\python.exe",
+      "exit_code": 0,
+      "arguments": [
+        "-B",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\tests\\run16s-exe\\cli.py",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe"
+      ]
+    },
+    {
+      "seconds": 3.0735056,
+      "name": "automatic",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\launch-automatic.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\launch-target.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\launch-target.exe"
+      ]
+    },
+    {
+      "seconds": 9.2283692,
+      "name": "propagation",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\propagate-basic.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\propagate-target.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\propagate-target.exe"
+      ]
+    },
+    {
+      "seconds": 67.2654134,
+      "name": "menu-cancel-x64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-menu-cancel.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll"
+      ]
+    },
+    {
+      "seconds": 18.1712226,
+      "name": "startup-errors",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\startup-errors.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe"
+      ]
+    },
+    {
+      "seconds": 1.1492055,
+      "name": "legacy-iat-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\launch-staging.exe",
+      "exit_code": 0,
+      "arguments": [
+        "--parent",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate"
+      ]
+    },
+    {
+      "seconds": 2.1078155,
+      "name": "long-path",
+      "command": "C:\\Program Files\\Python313\\python.exe",
+      "exit_code": 0,
+      "arguments": [
+        "-B",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\tests\\run16s-exe\\long_path.py",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\launch-failures.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\launch-failures.exe"
+      ]
+    },
+    {
+      "seconds": 1.1654179,
+      "name": "legacy-iat-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\launch-staging.exe",
+      "exit_code": 0,
+      "arguments": [
+        "--parent",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate"
+      ]
+    },
+    {
+      "seconds": 1.1505524,
+      "name": "uac-unit-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\uac-unit.exe",
+      "exit_code": 0,
+      "arguments": []
+    },
+    {
+      "seconds": 5.6428259,
+      "name": "cmd-nested",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\cmd-nested.exe",
+      "exit_code": 0,
+      "arguments": [
+        "--core",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate"
+      ]
+    },
+    {
+      "seconds": 1.3758535,
+      "name": "uac-unit-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\uac-unit.exe",
+      "exit_code": 0,
+      "arguments": []
+    },
+    {
+      "seconds": 5.0774076,
+      "name": "cli-failures",
+      "command": "C:\\Program Files\\Python313\\python.exe",
+      "exit_code": 0,
+      "arguments": [
+        "-B",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\tests\\run16s-exe\\cli_failures.py",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\launch-target.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\launch-target.exe"
+      ]
+    },
+    {
+      "seconds": 3.0620594,
+      "name": "vb-font-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-vb-font.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\vb-fixture\\MSVBVM60.dll"
+      ]
+    },
+    {
+      "seconds": 2.3313692,
+      "name": "vb-font-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-vb-font.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\vb-fixture\\MSVBVM60.dll"
+      ]
+    },
+    {
+      "seconds": 1.4415625,
+      "name": "control-extensions-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-control-extensions.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll"
+      ]
+    },
+    {
+      "seconds": 1.7707791,
+      "name": "control-extensions-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-control-extensions.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll"
+      ]
+    },
+    {
+      "seconds": 0.411082,
+      "name": "control-protocol-owner-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-control-protocol-owner.exe",
+      "exit_code": 0,
+      "arguments": []
+    },
+    {
+      "seconds": 0.4838805,
+      "name": "control-protocol-owner-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-control-protocol-owner.exe",
+      "exit_code": 0,
+      "arguments": []
+    },
+    {
+      "seconds": 4.3237086,
+      "name": "vb-controls-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-vb.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\vb-fixture\\MSVBVM60.dll"
+      ]
+    },
+    {
+      "seconds": 5.4075024,
+      "name": "vb-controls-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-vb.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\vb-fixture\\MSVBVM60.dll"
+      ]
+    },
+    {
+      "seconds": 2.5955442,
+      "name": "tab-controls-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-tab-controls.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll"
+      ]
+    },
+    {
+      "seconds": 3.0128915,
+      "name": "tab-controls-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-tab-controls.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll"
+      ]
+    },
+    {
+      "seconds": 2.7963499,
+      "name": "tab-controls-dpi-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-tab-controls.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll",
+        "aware"
+      ]
+    },
+    {
+      "seconds": 2.3000013,
+      "name": "tab-controls-dpi-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-tab-controls.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll",
+        "aware"
+      ]
+    },
+    {
+      "seconds": 1.9374606,
+      "name": "tab-controls-v5-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-tab-controls-v5.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll"
+      ]
+    },
+    {
+      "seconds": 2.0505164,
+      "name": "tab-controls-v5-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-tab-controls-v5.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll"
+      ]
+    },
+    {
+      "seconds": 1.9300813,
+      "name": "tab-controls-v5-dpi-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-tab-controls-v5.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll",
+        "aware"
+      ]
+    },
+    {
+      "seconds": 2.2600744,
+      "name": "tab-controls-v5-dpi-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-tab-controls-v5.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll",
+        "aware"
+      ]
+    },
+    {
+      "seconds": 0.6434033,
+      "name": "pending-control-owner-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-pending-control-owner.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll"
+      ]
+    },
+    {
+      "seconds": 0.4571031,
+      "name": "pending-control-owner-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-pending-control-owner.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll"
+      ]
+    },
+    {
+      "seconds": 1.1198589,
+      "name": "header-v5-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-header-v5.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll"
+      ]
+    },
+    {
+      "seconds": 1.1005427,
+      "name": "header-v5-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-header-v5.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll"
+      ]
+    },
+    {
+      "seconds": 1.0318341,
+      "name": "header-v5-dpi-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-header-v5.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll",
+        "aware"
+      ]
+    },
+    {
+      "seconds": 1.3023581,
+      "name": "header-v5-dpi-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-header-v5.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll",
+        "aware"
+      ]
+    },
+    {
+      "seconds": 1.1100175,
+      "name": "header-v6-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-header-v6.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll"
+      ]
+    },
+    {
+      "seconds": 1.1392384,
+      "name": "header-v6-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-header-v6.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll"
+      ]
+    },
+    {
+      "seconds": 1.1039673,
+      "name": "header-v6-dpi-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-header-v6.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll",
+        "aware"
+      ]
+    },
+    {
+      "seconds": 1.369298,
+      "name": "header-v6-dpi-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-header-v6.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll",
+        "aware"
+      ]
+    },
+    {
+      "seconds": 11.6521663,
+      "name": "list-report-v5-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-list-report-v5.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe"
+      ]
+    },
+    {
+      "seconds": 0.7774191,
+      "name": "pending-frame-owner-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-pending-frame-owner.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll"
+      ]
+    },
+    {
+      "seconds": 13.9106722,
+      "name": "list-report-v5-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-list-report-v5.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe"
+      ]
+    },
+    {
+      "seconds": 13.8076244,
+      "name": "list-report-v6-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-list-report-v6.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe"
+      ]
+    },
+    {
+      "seconds": 17.458015,
+      "name": "list-report-v6-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-list-report-v6.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe"
+      ]
+    },
+    {
+      "seconds": 12.2859281,
+      "name": "tree-v5-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-tree-v5.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe"
+      ]
+    },
+    {
+      "seconds": 0.5595055,
+      "name": "pending-frame-owner-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-pending-frame-owner.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll"
+      ]
+    },
+    {
+      "seconds": 10.8493905,
+      "name": "tree-v5-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-tree-v5.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe"
+      ]
+    },
+    {
+      "seconds": 22.2608018,
+      "name": "tree-v6-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-tree-v6.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe"
+      ]
+    },
+    {
+      "seconds": 8.5528533,
+      "name": "trackbar-v5-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-trackbar-v5.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe"
+      ]
+    },
+    {
+      "seconds": 8.8337714,
+      "name": "trackbar-v6-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-trackbar-v6.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe"
+      ]
+    },
+    {
+      "seconds": 7.919168,
+      "name": "trackbar-v5-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-trackbar-v5.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe"
+      ]
+    },
+    {
+      "seconds": 8.1376557,
+      "name": "trackbar-v6-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-trackbar-v6.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe"
+      ]
+    },
+    {
+      "seconds": 2.308113,
+      "name": "progress-v5-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-progress-v5.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe"
+      ]
+    },
+    {
+      "seconds": 3.3336138,
+      "name": "progress-v6-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-progress-v6.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe"
+      ]
+    },
+    {
+      "seconds": 1.5605553,
+      "name": "progress-v5-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-progress-v5.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe"
+      ]
+    },
+    {
+      "seconds": 23.2977411,
+      "name": "tree-v6-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-tree-v6.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe"
+      ]
+    },
+    {
+      "seconds": 0.3766015,
+      "name": "header-owner-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-header-owner.exe",
+      "exit_code": 0,
+      "arguments": []
+    },
+    {
+      "seconds": 0.3157604,
+      "name": "header-owner-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-header-owner.exe",
+      "exit_code": 0,
+      "arguments": []
+    },
+    {
+      "seconds": 2.396104,
+      "name": "control-visibility-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-control-visibility.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll"
+      ]
+    },
+    {
+      "seconds": 2.1734973,
+      "name": "control-visibility-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-control-visibility.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll"
+      ]
+    },
+    {
+      "seconds": 3.17278,
+      "name": "progress-v6-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-progress-v6.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe"
+      ]
+    },
+    {
+      "seconds": 20.7101448,
+      "name": "dialog-scope-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-dialog-scope.exe",
+      "exit_code": 0,
+      "arguments": []
+    },
+    {
+      "seconds": 0.2544679,
+      "name": "theme-stage-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-theme-stage.exe",
+      "exit_code": 0,
+      "arguments": []
+    },
+    {
+      "seconds": 0.2481997,
+      "name": "theme-stage-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-theme-stage.exe",
+      "exit_code": 0,
+      "arguments": []
+    },
+    {
+      "seconds": 19.728869,
+      "name": "dialog-scope-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-dialog-scope.exe",
+      "exit_code": 0,
+      "arguments": []
+    },
+    {
+      "seconds": 2.5496831,
+      "name": "superclass-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-superclass.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe"
+      ]
+    },
+    {
+      "seconds": 3.3724912,
+      "name": "superclass-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-superclass.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe"
+      ]
+    },
+    {
+      "seconds": 5.1160682,
+      "name": "rollback",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\rollback-contract-driver.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\rollback-contract.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\rollback-contract.exe"
+      ]
+    },
+    {
+      "seconds": 12.7158646,
+      "name": "creation-contract",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\creation-contract-driver.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\creation-contract.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\creation-contract.exe"
+      ]
+    },
+    {
+      "seconds": 90.4440662,
+      "name": "dialog-show-64",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\core-dialog-show.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe"
+      ]
+    },
+    {
+      "seconds": 98.0891785,
+      "name": "dialog-show-32",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\core-dialog-show.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe"
+      ]
+    },
+    {
+      "seconds": 83.8484027,
+      "name": "dialogs",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\launch-automatic.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\launch-target.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\launch-target.exe",
+        "dialogs"
+      ]
+    },
+    {
+      "seconds": 81.0527877,
+      "name": "messages",
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\launch-automatic.exe",
+      "exit_code": 0,
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x86\\launch-target.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\clean-source\\build\\.ninja\\x64\\launch-target.exe",
+        "messages"
+      ]
+    }
+  ],
+  "publication": {
+    "tested_package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate",
+    "files": [
+      {
+        "after": "6cbb3fa5be455dbd6fd86793d267ef78137a06f650d236de306ae00f4950ec73",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe",
+        "expected": "6cbb3fa5be455dbd6fd86793d267ef78137a06f650d236de306ae00f4950ec73",
+        "before": "7494521fd57c7852c1ef7595c8b7e05ae8f4760f18d2934b71532ac0b6d3b900"
+      },
+      {
+        "after": "f040f4694d78db89cdd99fea7eb427f10041ed4c38b2366530123ceaf0a7e1bd",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
+        "expected": "f040f4694d78db89cdd99fea7eb427f10041ed4c38b2366530123ceaf0a7e1bd",
+        "before": "f3d1a74d36e2086dca2e1937b6514e2498814b4bdcc8bac7c07c3bbfe137d346"
+      },
+      {
+        "after": "b09795790d239408f35ba5c60bb67c222d89aabff9fa443388fb341536a7c21e",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll",
+        "expected": "b09795790d239408f35ba5c60bb67c222d89aabff9fa443388fb341536a7c21e",
+        "before": "285662161d21dde3de6f4c673d56db6f3ebed8a1e3df7cabd30a224cfe842676"
+      },
+      {
+        "after": "80491d1d084884fb664b4737dc36144640bee3e1145b00fffbf900915b42706c",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
+        "expected": "80491d1d084884fb664b4737dc36144640bee3e1145b00fffbf900915b42706c",
+        "before": "8e726c81ce188aabe6b9313a00ef7b76d7427d1ae4746a3bfe439361b8785672"
+      },
+      {
+        "after": "6cbb3fa5be455dbd6fd86793d267ef78137a06f650d236de306ae00f4950ec73",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-publish\\before-1",
+        "path": "O:\\winnt\\system32\\demo.exe",
+        "expected": "6cbb3fa5be455dbd6fd86793d267ef78137a06f650d236de306ae00f4950ec73",
+        "before": "7494521fd57c7852c1ef7595c8b7e05ae8f4760f18d2934b71532ac0b6d3b900"
+      },
+      {
+        "after": "f040f4694d78db89cdd99fea7eb427f10041ed4c38b2366530123ceaf0a7e1bd",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-publish\\before-1",
+        "path": "O:\\winnt\\system32\\ntw16s32.dll",
+        "expected": "f040f4694d78db89cdd99fea7eb427f10041ed4c38b2366530123ceaf0a7e1bd",
+        "before": "f3d1a74d36e2086dca2e1937b6514e2498814b4bdcc8bac7c07c3bbfe137d346"
+      },
+      {
+        "after": "b09795790d239408f35ba5c60bb67c222d89aabff9fa443388fb341536a7c21e",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-publish\\before-1",
+        "path": "O:\\winnt\\system32\\ntw16s64.dll",
+        "expected": "b09795790d239408f35ba5c60bb67c222d89aabff9fa443388fb341536a7c21e",
+        "before": "285662161d21dde3de6f4c673d56db6f3ebed8a1e3df7cabd30a224cfe842676"
+      },
+      {
+        "after": "80491d1d084884fb664b4737dc36144640bee3e1145b00fffbf900915b42706c",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-publish\\before-1",
+        "path": "O:\\winnt\\system32\\run16s.exe",
+        "expected": "80491d1d084884fb664b4737dc36144640bee3e1145b00fffbf900915b42706c",
+        "before": "8e726c81ce188aabe6b9313a00ef7b76d7427d1ae4746a3bfe439361b8785672"
+      }
+    ],
+    "test_result": "O:\\repos.hobby\\win16style\\build\\t15-package\\s10-full-bounded\\result.json",
+    "status": "passed"
+  },
+  "installed": [
+    {
+      "destination": "O:\\repos.hobby\\win16style\\assets",
+      "progress_trackbar_dll_paths": "actual deployed path matched",
+      "installed_hashes": "four exact tested matches",
+      "status": "passed",
+      "cases": [
+        {
+          "exit": 0,
+          "name": "abi-x86",
+          "seconds": 0.1110217
+        },
+        {
+          "exit": 0,
+          "name": "tree-v5-x86",
+          "seconds": 4.8670504
+        },
+        {
+          "exit": 0,
+          "name": "tree-v6-x86",
+          "seconds": 7.7104899
+        },
+        {
+          "exit": 0,
+          "name": "progress-v5-x86",
+          "seconds": 0.9175053
+        },
+        {
+          "exit": 0,
+          "name": "progress-v6-x86",
+          "seconds": 1.4421357
+        },
+        {
+          "exit": 0,
+          "name": "trackbar-v5-x86",
+          "seconds": 1.8824587
+        },
+        {
+          "exit": 0,
+          "name": "trackbar-v6-x86",
+          "seconds": 1.9544745
+        },
+        {
+          "exit": 0,
+          "name": "abi-x64",
+          "seconds": 0.1407528
+        },
+        {
+          "exit": 0,
+          "name": "tree-v5-x64",
+          "seconds": 4.172713
+        },
+        {
+          "exit": 0,
+          "name": "tree-v6-x64",
+          "seconds": 6.5805292
+        },
+        {
+          "exit": 0,
+          "name": "progress-v5-x64",
+          "seconds": 0.7596921
+        },
+        {
+          "exit": 0,
+          "name": "progress-v6-x64",
+          "seconds": 1.0796337
+        },
+        {
+          "exit": 0,
+          "name": "trackbar-v5-x64",
+          "seconds": 1.6650186
+        },
+        {
+          "exit": 0,
+          "name": "trackbar-v6-x64",
+          "seconds": 1.7377956
+        },
+        {
+          "exit": 0,
+          "name": "automatic",
+          "seconds": 1.8673149
+        }
+      ]
+    },
+    {
+      "destination": "O:/winnt/system32",
+      "progress_trackbar_dll_paths": "actual deployed path matched",
+      "installed_hashes": "four exact tested matches",
+      "status": "passed",
+      "cases": [
+        {
+          "exit": 0,
+          "name": "abi-x86",
+          "seconds": 0.1887554
+        },
+        {
+          "exit": 0,
+          "name": "tree-v5-x86",
+          "seconds": 5.0584103
+        },
+        {
+          "exit": 0,
+          "name": "tree-v6-x86",
+          "seconds": 8.6647135
+        },
+        {
+          "exit": 0,
+          "name": "progress-v5-x86",
+          "seconds": 1.3514187
+        },
+        {
+          "exit": 0,
+          "name": "progress-v6-x86",
+          "seconds": 1.5900123
+        },
+        {
+          "exit": 0,
+          "name": "trackbar-v5-x86",
+          "seconds": 2.0134033
+        },
+        {
+          "exit": 0,
+          "name": "trackbar-v6-x86",
+          "seconds": 2.1222313
+        },
+        {
+          "exit": 0,
+          "name": "abi-x64",
+          "seconds": 0.0942089
+        },
+        {
+          "exit": 0,
+          "name": "tree-v5-x64",
+          "seconds": 4.0196518
+        },
+        {
+          "exit": 0,
+          "name": "tree-v6-x64",
+          "seconds": 6.4262172
+        },
+        {
+          "exit": 0,
+          "name": "progress-v5-x64",
+          "seconds": 0.7401468
+        },
+        {
+          "exit": 0,
+          "name": "progress-v6-x64",
+          "seconds": 1.1060952
+        },
+        {
+          "exit": 0,
+          "name": "trackbar-v5-x64",
+          "seconds": 1.5064419
+        },
+        {
+          "exit": 0,
+          "name": "trackbar-v6-x64",
+          "seconds": 1.5883791
+        },
+        {
+          "exit": 0,
+          "name": "automatic",
+          "seconds": 1.7718854
+        }
+      ]
+    }
+  ],
+  "real_apps": {
+    "MD5summer": {
+      "exit": 0,
+      "lines": [
+        "OWNED_VISIBLE hwnd=013E0C98 class=TMessageForm title=Information enabled=1",
+        "STARTUP_INFORMATION dismissed-owned-OK=1",
+        "OWNED_VISIBLE hwnd=02380D9E class=TApplication title=MD5 for Windows enabled=1",
+        "OWNED_VISIBLE hwnd=0F9B0ADA class=TMain title=MD5Summer enabled=1",
+        "TARGET pid=16964 creator-tree-root=12156 tid=27444 image=D:\\programs\\misc\\md5summer.exe",
+        "MODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll",
+        "POSTED_READINESS wait=0 elapsed_ms=0",
+        "WINDOW_STATES minimized=1 restored=1 moved=1 root_attachment_preserved=1",
+        "CLOSE sent=1 error=0 wait=0 code=0 window=0 visible=0",
+        "TARGET_EXIT=0",
+        "DK_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "sha256": "70822c3565675c975224415987f185287fae07f12ee03a593b6dfb24cc6db2a5"
+    },
+    "DoubleKiller": {
+      "exit": 0,
+      "lines": [
+        "TARGET pid=41412 creator-tree-root=23092 tid=24048 image=O:\\repos.hobby\\win16style\\build\\t15-controls\\s10-doublekiller\\DoubleKiller.exe",
+        "MODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s10-bounded-final\\candidate\\ntw16s32.dll",
+        "S7_OWNED_SCAN_COMPLETE rows_from_app=2 scoped_fixture_only=1 no_delete_or_move=1",
+        "OWNED_CLOSE posted=1 wait=0 exit=0 window=0",
+        "DK_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "sha256": "1e5e69c0bcb556da90d0f771e6bcbeb26a4148228f6a42be968d8369b66cb386"
+    }
+  },
+  "native_screenshots": {
+    "DoubleKiller.png": {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t15-s10\\DoubleKiller.png",
+      "sha256": "6884c8c4a560035abcb3d8b1ce42c129beeb7ecf1830055075fa948cdc0a7236",
+      "origin": "native final actual-package BMP losslessly encoded PNG; no image generation"
+    },
+    "MD5summer.png": {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t15-s10\\MD5summer.png",
+      "sha256": "3eba381ddd298e1be5ad3e62eaa49dc65d44a1cbf0a6e0d1c3bfa7430a4ca08f",
+      "origin": "native final actual-package BMP losslessly encoded PNG; no image generation"
+    },
+    "vertical0.png": {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t15-s10\\vertical0.png",
+      "sha256": "c8c7162ee6b7d07766d315d318476b21644d44afdaeb00bd00f69c97514dc4c6",
+      "origin": "native final actual-package BMP losslessly encoded PNG; no image generation"
+    },
+    "vertical1.png": {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t15-s10\\vertical1.png",
+      "sha256": "21213cbccf3ecb75de1eb8855e6e299690b86888c31b5bfece82f1c0f48d9f22",
+      "origin": "native final actual-package BMP losslessly encoded PNG; no image generation"
+    }
+  }
+}

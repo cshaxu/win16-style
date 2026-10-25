@@ -2,11 +2,12 @@
 
 ## Current Work
 
-S9已完成79实际包/双发布八摘要、安装20+2、真实MD5/DK、标题掩码对照和实际远端203；
-190源/194 Git对象恢复、严格归档/受影响双DLL重建4及260映像安全清理通过，保留22
-已审源码/缓存/截图。关闭S9并按既有授权顺序准入S10；M0/T15开放，不新T。HD Tune
-管理员实测默认skip、不计通过。S8历史原生输入原因未追认；夹具已作受控状态修复。
-[S9记录](../history/M0-T15-S9-progress-controls.md)/[证据](../etc/evidence/progress-controls.json)。
+S10滑块已完成最终193输入/83实际包427.192秒、双发布八摘要、安装28+2、真实MD5/DK
+及标题292x24掩码0差异；P1提交推送/实际远端归档/恢复与安全清理待做，S10/T15/M0
+保持开放。首次整包树10秒超时保留；旧/新四并发均复现，约5秒CPU接近10秒wall，
+两并发旧/新均通过；树case采用已有两slot权重，原10秒及功能断言不变，最终83通过。
+[本S记录](../history/M0-T15-S10-trackbar-controls.md)/[证据](../etc/evidence/trackbar-controls.json)。
+微调未猜状态，后续顺序S接收；HD Tune管理员实测继续默认skip、不计通过。
 
 ## M0 T15 S10 Packet
 
@@ -14,11 +15,11 @@ S9已完成79实际包/双发布八摘要、安装20+2、真实MD5/DK、标题�
 | --- | --- |
 | Identifier Mode | Continuation；S9闭环后顺序准入S10，唯一活动S，不复用编号，不新开T |
 | Admission And Approval | 用户“批准 自动准入s任务 到t收口为止”“继续啊”；永久提交推送/双发布授权；HD Tune管理员实测按最新要求默认skip，除非用户明确恢复 |
-| Objective | 核实剩余msctls_trackbar32/msctls_updown32及必要精确框架别名的初始化协议、实际绘制/状态/通知与生命周期；原型后有限复用现有renderer，保持原生输入和取消；过大拆顺序S，完成后另做T15冻结全集审计 |
+| Objective | 核实剩余msctls_trackbar32/msctls_updown32及必要精确框架别名的初始化协议、实际绘制/状态/通知与生命周期；原型后S10有限适配滑块native custom-draw，保持原生输入和应用通知；微调状态路径独立，接收者为顺序S11，完成后另做T15冻结全集审计 |
 | Non-goals | 不猜控件私有对象/状态，不盲按T前缀，不把关主题/附着当实际像素；不改系统全局设置/原五头/声明/已确认标题/菜单/字体/滚动条/启动语义，不做既有进程注入/HD Tune提权实测，不制造新T或第五产品 |
 | Reference Baseline | S9 P1 2721c043c2d1fd485b4ed8d1362974d269b2b22f同批0.15.0.0四文件已双发布；190输入/79包/安装20+2/远端203/归档双DLL+4检查及260映像清理通过；关闭P无binary change |
 | Candidate Proposal | [框架完成分解](../proposals/framework-completion.md)；[S9记录](../history/M0-T15-S9-progress-controls.md)/[证据](../etc/evidence/progress-controls.json)接收剩余两族；v5进度和特殊模式原生保留边界不默默扩张 |
-| Files And ABI Surface | 私有初始化角色/有限原生绘制/必要父通知观察及C17夹具；三组件四产物、ABI3/31命名导出+ordinal1 NONAME、31detours32slots保持；新hook/公共接口先审，不默认加产品/helper |
+| Files And ABI Surface | 私有trackbar初始化角色/仅应用default时内部请求部件阶段和绘制/父通知观察及C17夹具；三组件四产物、ABI3/31命名导出+ordinal1 NONAME、31detours32slots保持；新hook/公共接口先审，不默认加产品/helper |
 | Applicable Rules | EXECUTION/ARCHITECTURE/CODING/DOCUMENT/UI及来源策略；MinGW GCC/Ninja/稳定ccache，禁computer-use及兄弟仓库修改/依赖 |
 | Verification | 先核实原生模块/附加字节、范围/位置/方向/滑块与通道公开几何、buddy/UDN取消及custom-draw行为；普通/特殊/禁用/按下/焦点/键盘/捕获与后续状态，双宽v5/v6实际DPI/像素/数据/字体/卸载/资源/重入/旧包负例；干净同批四文件实际包/双发布/八摘要/安装/实际远端归档；HD Tune管理员skip |
 | Expected Markers | 区分模块/初始化/附着与实际绘制；正常可见窗口原生截图和像素、命中/几何/位置/通知/取消/应用绘制保持；未知或custom-draw不安全时保留原生，原图形表逐字节相同 |
@@ -40,14 +41,16 @@ S9已完成79实际包/双发布八摘要、安装20+2、真实MD5/DK、标题�
 
 ## Technical Baseline
 
-0.15.0.0 / S9有限v6进度和树消息输入夹具已双发布：190输入、79/79实际包369.973秒，
-安装20聚焦+2自动矩阵、真实MD5/DK通过；标题292x24黑色掩码与S8相同。v5进度及
-特殊模式保持原生，不计已换肤；原生UI48受控试验、旧输入4/冻结旧产品2负例和最终
-288 Ctrl+288 neutral键盘状态/恢复检查通过，不假定S8一次历史失败根因。双位宽GCC/
-Ninja/ccache、原五头/声明/18表、标题/字体/菜单/滚动条算法、三组件四产物、ABI3/
-31命名导出+ordinal1/31detours32slots保持。实际远端203/严格归档双DLL定向重建4/194对象恢复与260映像清理通过，S9关闭；
-M0/T15开放，S10活动并接收滑块/微调；HD Tune管理员默认skip。
-详情见[S9记录](../history/M0-T15-S9-progress-controls.md)/[证据](../etc/evidence/progress-controls.json)。
+0.15.0.0 / 本机S10滑块同批四文件已双发布，193输入SHA由release.json保存；83实际包
+427.192秒、安装28聚焦+2自动矩阵、真实MD5/DK、标题292x24黑掩码0差异通过。
+P1提交推送/实际远端归档及安全清理尚待完成，当前Git交付基线仍S9 P2。普通v5/v6
+滑块/精确TTrackBar使用原生custom-draw矩形及CDIS_SELECTED；应用自身绘制/通知、
+范围/字体/布局/输入保持。特殊滑块及微调保持原生，微调交后续顺序S。树测试四并发
+旧/新均复现10秒超时，已有两slot权重限流后最终83通过，未改等待/功能断言。
+既有有限树/报告行/进度能力及原生保留边界继续，HD Tune管理员默认skip。
+纯C17/GCC/Ninja/ccache、原五头/声明/18表、已确认标题/字体/菜单/滚动条算法、
+三组件四产物、ABI3/31命名导出+ordinal1/31detours32slots保持；S10/T15/M0开放。
+[本S记录](../history/M0-T15-S10-trackbar-controls.md)/[证据](../etc/evidence/trackbar-controls.json)。
 
 ## Recent Closure
 

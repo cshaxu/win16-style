@@ -19,7 +19,7 @@ BOOL ntw16s_control_protocol_is(HWND w,const WCHAR *name)
     for(ntw16s_control_protocol *b=bindings;b;b=b->next)
         if(b->window==w && current(b))return (b->role==1 && !lstrcmpiW(name,L"BUTTON")) ||
             (b->role==2 && !lstrcmpiW(name,L"COMBOBOX")) || (b->role==3 && !lstrcmpiW(name,WC_TABCONTROLW)) ||
-            (b->role==4 && !lstrcmpiW(name,WC_HEADERW)) || (b->role==5 && !lstrcmpiW(name,WC_LISTVIEWW)) || (b->role==6 && !lstrcmpiW(name,WC_TREEVIEWW)) || (b->role==7 && !lstrcmpiW(name,PROGRESS_CLASSW));
+            (b->role==4 && !lstrcmpiW(name,WC_HEADERW)) || (b->role==5 && !lstrcmpiW(name,WC_LISTVIEWW)) || (b->role==6 && !lstrcmpiW(name,WC_TREEVIEWW)) || (b->role==7 && !lstrcmpiW(name,PROGRESS_CLASSW)) || (b->role==8 && !lstrcmpiW(name,TRACKBAR_CLASSW));
     return FALSE;
 }
 HMODULE ntw16s_control_protocol_list_module(HWND w)
@@ -66,16 +66,17 @@ ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND w)
         (!lstrcmpW(name,WC_TABCONTROLW) || !lstrcmpW(name,L"TPageControl"))?3:!lstrcmpW(name,WC_HEADERW)?4:
         (!lstrcmpW(name,WC_LISTVIEWW) || !lstrcmpW(name,L"TListView"))?5:
         (!lstrcmpW(name,WC_TREEVIEWW) || !lstrcmpW(name,L"TTreeView") || !lstrcmpW(name,L"TShellTreeView"))?6:
-        (!lstrcmpW(name,PROGRESS_CLASSW) || !lstrcmpW(name,L"TProgressBar"))?7:0;
+        (!lstrcmpW(name,PROGRESS_CLASSW) || !lstrcmpW(name,L"TProgressBar"))?7:
+        (!lstrcmpW(name,TRACKBAR_CLASSW) || !lstrcmpW(name,L"TTrackBar"))?8:0;
     if(!role)return NULL;
     WNDCLASSEXW native_class={.cbSize=sizeof(native_class)};
-    if(role>=3 && !GetClassInfoExW(NULL,role==3?WC_TABCONTROLW:role==4?WC_HEADERW:role==5?WC_LISTVIEWW:role==6?WC_TREEVIEWW:PROGRESS_CLASSW,&native_class))return NULL;
+    if(role>=3 && !GetClassInfoExW(NULL,role==3?WC_TABCONTROLW:role==4?WC_HEADERW:role==5?WC_LISTVIEWW:role==6?WC_TREEVIEWW:role==7?PROGRESS_CLASSW:TRACKBAR_CLASSW,&native_class))return NULL;
     HMODULE native_owner=NULL;
     /* Global common-control classes can report hInstance == NULL. Resolve
      * the registered native procedure's image, not a guessed DLL filename. */
     if(role>=3 && !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
         (const WCHAR *)(UINT_PTR)native_class.lpfnWndProc,&native_owner))return NULL;
-    if(owner!=((role==4 || (role==3 && !lstrcmpW(name,WC_TABCONTROLW)) || (role==5 && !lstrcmpW(name,WC_LISTVIEWW)) || (role==6 && !lstrcmpW(name,WC_TREEVIEWW)) || (role==7 && !lstrcmpW(name,PROGRESS_CLASSW)))?native_owner:GetModuleHandleW(NULL)))return NULL;
+    if(owner!=((role==4 || (role==3 && !lstrcmpW(name,WC_TABCONTROLW)) || (role==5 && !lstrcmpW(name,WC_LISTVIEWW)) || (role==6 && !lstrcmpW(name,WC_TREEVIEWW)) || (role==7 && !lstrcmpW(name,PROGRESS_CLASSW)) || (role==8 && !lstrcmpW(name,TRACKBAR_CLASSW)))?native_owner:GetModuleHandleW(NULL)))return NULL;
     if(role==7){
         DLLVERSIONINFO version={.cbSize=sizeof(version)};
         HRESULT (CALLBACK *get_version)(DLLVERSIONINFO *)=(void*)GetProcAddress(native_owner,"DllGetVersion");
@@ -179,6 +180,18 @@ ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND w)
             GetWindowThreadProcessId(GetParent(w),NULL)==GetCurrentThreadId();
         /* v5 returns0 for unsupported state/color getters. Do not guess
          * application colors or read undocumented native object storage. */
+        if(valid)b->native_module=native_owner;
+    }
+    if(role==8){
+        RECT thumb={0},channel={0};
+        LRESULT low=SendMessageW(w,TBM_GETRANGEMIN,0,0);
+        LRESULT high=current(b)?SendMessageW(w,TBM_GETRANGEMAX,0,0):0;
+        LRESULT position=current(b)?SendMessageW(w,TBM_GETPOS,0,0):0;
+        if(current(b))SendMessageW(w,TBM_GETTHUMBRECT,0,(LPARAM)&thumb);
+        if(current(b))SendMessageW(w,TBM_GETCHANNELRECT,0,(LPARAM)&channel);
+        valid=current(b) && low<=high && position>=low && position<=high &&
+            thumb.right>thumb.left && thumb.bottom>thumb.top && channel.right>channel.left && channel.bottom>channel.top &&
+            GetWindowThreadProcessId(GetParent(w),NULL)==GetCurrentThreadId();
         if(valid)b->native_module=native_owner;
     }
     if(!valid){ntw16s_control_protocol_release(b);return NULL;}

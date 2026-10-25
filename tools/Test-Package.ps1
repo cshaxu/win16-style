@@ -115,6 +115,10 @@ try{
         (Case 'pending-frame-owner-64' (Join-Path $x64 'core-pending-frame-owner.exe') @($d64) @('PENDING_FRAME_OWNER_OK failures=0')),
         (Case 'tree-v5-64' (Join-Path $x64 'core-tree-v5.exe') @($run) @('TREE_CONTROL_OK bits=64 styled=1','TREE_CALLBACK_RETIRE_OK','TREE_INPUT_STATE_OK ctrl_preserved=1 neutral_moves=1 focus=1 control=0000 shift=0000 alt=0000 restored=1','TREE_CLEANUP_OK')),
         (Case 'tree-v6-64' (Join-Path $x64 'core-tree-v6.exe') @($run) @('TREE_CONTROL_OK bits=64 styled=1','TREE_CALLBACK_RETIRE_OK','TREE_INPUT_STATE_OK ctrl_preserved=1 neutral_moves=1 focus=1 control=0000 shift=0000 alt=0000 restored=1','TREE_CLEANUP_OK')),
+        (Case 'trackbar-v5-32' (Join-Path $x86 'core-trackbar-v5.exe') @($run) @('TRACKBAR_CONTROL_OK bits=32 styled=1','bootstrap_frame_attached=1','TRACKBAR_CLEANUP_OK','TRACKBAR_RETIRE_FALLBACK_OK','TRACKBAR_RESOURCE_OK')),
+        (Case 'trackbar-v6-32' (Join-Path $x86 'core-trackbar-v6.exe') @($run) @('TRACKBAR_CONTROL_OK bits=32 styled=1','bootstrap_frame_attached=1','TRACKBAR_CLEANUP_OK','TRACKBAR_RETIRE_FALLBACK_OK','TRACKBAR_RESOURCE_OK')),
+        (Case 'trackbar-v5-64' (Join-Path $x64 'core-trackbar-v5.exe') @($run) @('TRACKBAR_CONTROL_OK bits=64 styled=1','bootstrap_frame_attached=1','TRACKBAR_CLEANUP_OK','TRACKBAR_RETIRE_FALLBACK_OK','TRACKBAR_RESOURCE_OK')),
+        (Case 'trackbar-v6-64' (Join-Path $x64 'core-trackbar-v6.exe') @($run) @('TRACKBAR_CONTROL_OK bits=64 styled=1','bootstrap_frame_attached=1','TRACKBAR_CLEANUP_OK','TRACKBAR_RETIRE_FALLBACK_OK','TRACKBAR_RESOURCE_OK')),
         (Case 'progress-v5-32' (Join-Path $x86 'core-progress-v5.exe') @($run) @('PROGRESS_CONTROL_OK bits=32 styled=1','bootstrap_frame_attached=1','PROGRESS_CLEANUP_OK')),
         (Case 'progress-v6-32' (Join-Path $x86 'core-progress-v6.exe') @($run) @('PROGRESS_CONTROL_OK bits=32 styled=1','bootstrap_frame_attached=1','PROGRESS_CLEANUP_OK','PROGRESS_QUERY_RETIRE_OK','PROGRESS_BOUNDARY_OK')),
         (Case 'progress-v5-64' (Join-Path $x64 'core-progress-v5.exe') @($run) @('PROGRESS_CONTROL_OK bits=64 styled=1','bootstrap_frame_attached=1','PROGRESS_CLEANUP_OK')),
@@ -151,7 +155,7 @@ try{
             $used=0;foreach($entry in $running){$used+=$entry.cost}
             while($pending.Count){
                 $case=$pending[0]
-                $cost=if($case.name -match '^(font-layout|menu-cancel|dialogs|messages)'){[Math]::Min(2,$Jobs)}else{1}
+                $cost=if($case.name -match '^(font-layout|menu-cancel|dialogs|messages|tree-v[56]-)'){[Math]::Min(2,$Jobs)}else{1}
                 if($used+$cost -gt $Jobs){break}
                 $pending.RemoveAt(0)
                 $directory=Join-Path $scratch $case.name;New-Item -ItemType Directory -Path $directory | Out-Null
