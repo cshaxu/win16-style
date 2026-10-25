@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T15 S9 P1",
-  "stage": "79 actual package tests/dual publication/20 installed checks+2 matrices passed; awaiting actual remote/archive and cleanup before S9 closure",
+  "delivery": "M0 T15 S9 P2",
+  "stage": "S9 closed after P1 actual remote203/strict archive dual affected DLL+4/194-object recovery/260-image cleanup; S10 admitted, M0/T15 open",
   "version": "0.15.0.0",
   "version_contract": "Fixed T15 version; S/P distinguished by Git and artifact SHA; no new T allocated",
   "package_directory": "assets",
@@ -1152,5 +1152,143 @@
     "tested_package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s9-progress-final\\candidate",
     "status": "passed",
     "test_result": "O:\\repos.hobby\\win16style\\build\\t15-package\\s9-progress-full\\result.json"
+  },
+  "closure": {
+    "delivery": "M0 T15 S9 P2",
+    "P1_actual_remote": {
+      "status": "passed",
+      "commit": "2721c043c2d1fd485b4ed8d1362974d269b2b22f",
+      "remote_main": "2721c043c2d1fd485b4ed8d1362974d269b2b22f",
+      "files": 203,
+      "source_inputs": 190,
+      "seconds": 13.09763810003642
+    },
+    "canonical_affected_rebuild": {
+      "build_jobs": 8,
+      "selection": "^core/(abi|pending-frame-owner)$",
+      "build_root": "O:\\repos.hobby\\win16style\\build\\t15-package\\s9-p1-archive\\build\\.ninja",
+      "status": "passed",
+      "exit_code": 0,
+      "architectures": [
+        "x86",
+        "x64"
+      ],
+      "profile": "Focused",
+      "tests": [
+        {
+          "configure_seconds": 4.598687100049574,
+          "architecture": "x86",
+          "test_seconds": 0.7833873000345193,
+          "skipped": [],
+          "build_seconds": 9.177739000006113,
+          "tests": 2,
+          "passed": 2
+        },
+        {
+          "configure_seconds": 4.293519900005776,
+          "architecture": "x64",
+          "test_seconds": 0.8025998999946751,
+          "skipped": [],
+          "build_seconds": 8.898620099993423,
+          "tests": 2,
+          "passed": 2
+        }
+      ],
+      "test_jobs": 2,
+      "targets": "ntw16s,core-abi,core-pending-frame-owner"
+    },
+    "recovery": {
+      "status": "passed",
+      "source_inputs": 190,
+      "Git_objects": 194,
+      "raw_recovery_EOL": [
+        "LICENSE",
+        "tools/Build-Package.ps1",
+        "tools/Verify-Governance.ps1"
+      ],
+      "archive_alternate_identity": [
+        "tools/Build-Package.ps1",
+        "tools/Verify-Governance.ps1"
+      ],
+      "backups_recoverable": 8,
+      "archive_artifacts": 4,
+      "deployed_hashes": 8
+    },
+    "cleanup_guard": {
+      "positive": "IMAGE_GUARD_POSITIVE exe=c0000043 loaded_dll=c0000043 unloaded_dll=00000000",
+      "batches": [
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "count": 4,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=4 no_write=1"
+        }
+      ],
+      "long_paths": 2,
+      "status": "passed",
+      "excluded_running_guard": "O:\\repos.hobby\\win16style\\build\\t15-controls\\s9-image-guard.exe",
+      "files": 260,
+      "roots": [
+        "O:\\repos.hobby\\win16style\\build\\t15-controls",
+        "O:\\repos.hobby\\win16style\\build\\t15-package"
+      ]
+    },
+    "cleanup": "completed: both exact registered roots cleared after194-object recovery/8-deployment checks/reparse0/260-image guard;22 reviewed sources restored for T15 audit; stable Ninja/ccache and external native PNG retained",
+    "retained_reviewed_sources": [
+      "file-owners.c",
+      "image-guard.c",
+      "md5-driver.c",
+      "md5-probe.c",
+      "verify-remote.py",
+      "s6-list-report.h",
+      "s6-dk-probe.c",
+      "s6-list-header-api.c",
+      "s7-dk-owned-driver.c",
+      "s7-dk-owned-probe.c",
+      "s7-owned-folder.h",
+      "s8-md5-probe.c",
+      "s8-dk-owned-driver.c",
+      "s8-dk-owned-probe.c",
+      "s8-owned-folder.h",
+      "s8-tree-native-destroy.c",
+      "s9-native-input.c",
+      "s9-native-protocols.c",
+      "s9-old-tree-seeded.c",
+      "s9-dk-owned-driver.c",
+      "s9-dk-owned-probe.c",
+      "s9-owned-folder.h"
+    ],
+    "binary_change": "none; same79-case P1 package",
+    "following_scope": "S10 native trackbar/updown evidence and finite adaptation; HD Tune elevated default skip; T15 open"
   }
 }

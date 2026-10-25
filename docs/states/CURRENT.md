@@ -2,33 +2,32 @@
 
 ## Current Work
 
-S9已完成受控树消息输入隔离和有限v6进度绘制：79/79实际包369.973秒、190输入、
-同批四文件双发布八摘要及安装20聚焦+2矩阵通过；实际MD5/DK关闭0/Job0，标题292x24
-黑色字形/边框掩码与S8相同。旧输入四个受控负例及冻结旧产品两负例有效；不追认S8
-历史未记录键状态的根因。S9等待实际远端/归档/清理复核，不提前关闭；M0/T15开放，
-不新开T，滑块/微调下一顺序S10接收；HD Tune管理员实测默认skip、不计通过。
+S9已完成79实际包/双发布八摘要、安装20+2、真实MD5/DK、标题掩码对照和实际远端203；
+190源/194 Git对象恢复、严格归档/受影响双DLL重建4及260映像安全清理通过，保留22
+已审源码/缓存/截图。关闭S9并按既有授权顺序准入S10；M0/T15开放，不新T。HD Tune
+管理员实测默认skip、不计通过。S8历史原生输入原因未追认；夹具已作受控状态修复。
 [S9记录](../history/M0-T15-S9-progress-controls.md)/[证据](../etc/evidence/progress-controls.json)。
 
-## M0 T15 S9 Packet
+## M0 T15 S10 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S8闭环后顺序准入S9，唯一活动S，不复用编号，不新开T |
+| Identifier Mode | Continuation；S9闭环后顺序准入S10，唯一活动S，不复用编号，不新开T |
 | Admission And Approval | 用户“批准 自动准入s任务 到t收口为止”“继续啊”；永久提交推送/双发布授权；HD Tune管理员实测按最新要求默认skip，除非用户明确恢复 |
-| Objective | 先核实S8原生无DLL树Down消息偶发失败的输入状态/可复现条件并隔离夹具不确定性；本S限定普通v6进度条公开协议/范围/状态/颜色与有限绘制；实测v5状态/颜色/步长getter不可用，及跑马灯/特殊边界保留原生；滑块/微调交下一顺序S10，T15另做冻结全集审计 |
-| Non-goals | 不先把原生输入失败归因于产品或按重试掩盖；不改系统输入/主题全局设置，不猜私有对象或盲按T前缀，不改原五头/声明/已确认标题/菜单/字体/滚动条/启动语义，不做既有进程注入/HD Tune提权实测 |
-| Reference Baseline | S8 P1 c26a99d196ceeb3e20382b14b3bfb41091be0c77同批0.15.0.0四文件已双发布；187输入/75包/安装16+2/远端201/归档串行10及377映像清理通过；关闭P无binary change |
-| Candidate Proposal | [框架完成分解](../proposals/framework-completion.md)；[S8记录](../history/M0-T15-S8-tree-controls.md)/[证据](../etc/evidence/tree-controls.json)交接剩余公共控件及原生输入不确定性 |
-| Files And ABI Surface | 私有初始化角色/有限原生绘制及C17夹具；三组件四产物、ABI3/31命名导出+ordinal1 NONAME、31detours32slots保持；新增内部hook先审，不默认加产品/helper |
+| Objective | 核实剩余msctls_trackbar32/msctls_updown32及必要精确框架别名的初始化协议、实际绘制/状态/通知与生命周期；原型后有限复用现有renderer，保持原生输入和取消；过大拆顺序S，完成后另做T15冻结全集审计 |
+| Non-goals | 不猜控件私有对象/状态，不盲按T前缀，不把关主题/附着当实际像素；不改系统全局设置/原五头/声明/已确认标题/菜单/字体/滚动条/启动语义，不做既有进程注入/HD Tune提权实测，不制造新T或第五产品 |
+| Reference Baseline | S9 P1 2721c043c2d1fd485b4ed8d1362974d269b2b22f同批0.15.0.0四文件已双发布；190输入/79包/安装20+2/远端203/归档双DLL+4检查及260映像清理通过；关闭P无binary change |
+| Candidate Proposal | [框架完成分解](../proposals/framework-completion.md)；[S9记录](../history/M0-T15-S9-progress-controls.md)/[证据](../etc/evidence/progress-controls.json)接收剩余两族；v5进度和特殊模式原生保留边界不默默扩张 |
+| Files And ABI Surface | 私有初始化角色/有限原生绘制/必要父通知观察及C17夹具；三组件四产物、ABI3/31命名导出+ordinal1 NONAME、31detours32slots保持；新hook/公共接口先审，不默认加产品/helper |
 | Applicable Rules | EXECUTION/ARCHITECTURE/CODING/DOCUMENT/UI及来源策略；MinGW GCC/Ninja/稳定ccache，禁computer-use及兄弟仓库修改/依赖 |
-| Verification | 原生键盘状态/焦点/选择/展开诊断及受控线程输入正负例；剩余族初始化公开范围/位置/步长/几何/通知/取消与真实像素，双宽v5/v6及实际DPI/数据/图像/字体/卸载/资源，旧包负例；双宽干净同批四文件实际包/双发布/八摘要/安装/实际远端归档，HD Tune管理员skip |
-| Expected Markers | 明确最后正常状态和首个异常输入节点、有限复现与隔离效果；准确类注册模块/已初始化公开协议、正常显示实际像素及原生数据/状态/通知保持，区分附着与绘制；未覆盖/拒绝/原生限制不计通过 |
-| Asset Needs | build/t15-controls承接S8已审16源码，登记本S新探针/日志；build/t15-package登记新干净包/备份；先提炼再校验根/reparse/映像占用及恢复来源后清理，保留稳定.ninja/.ccache与外部PNG |
-| Reporting Requirements | 每类先报告实际断点/原型和最小方案及有限覆盖；不以空控件、关闭主题、消息成功或附着宣称Win16像素生效；原生输入失败先取证，不抹除S8失败历史，明确接收与解决/边界 |
-| Stop Conditions | 需私有对象/全局hook或设置/共享宿主/既有进程注入时停在证据与方案；不扩权限、吞业务通知/取消或换资源，不放宽失败断言；范围过大拆顺序S，不新T |
-| Exit Criteria | 完成经证实的有限族适配与输入夹具处置或有证据拆分，双宽构建/同批实际包、必要双发布八摘要/安装、提交推送/实际远端协调复核及安全清理后关闭S9；T15须另做冻结全集审计 |
+| Verification | 先核实原生模块/附加字节、范围/位置/方向/滑块与通道公开几何、buddy/UDN取消及custom-draw行为；普通/特殊/禁用/按下/焦点/键盘/捕获与后续状态，双宽v5/v6实际DPI/像素/数据/字体/卸载/资源/重入/旧包负例；干净同批四文件实际包/双发布/八摘要/安装/实际远端归档；HD Tune管理员skip |
+| Expected Markers | 区分模块/初始化/附着与实际绘制；正常可见窗口原生截图和像素、命中/几何/位置/通知/取消/应用绘制保持；未知或custom-draw不安全时保留原生，原图形表逐字节相同 |
+| Asset Needs | build/t15-controls承接S9已审22源码并登记本S新探针/日志；build/t15-package登记新干净包/备份；先提炼后核对根/祖先/reparse/映像占用及恢复来源再清理，保留稳定.ninja/.ccache和外部PNG |
+| Reporting Requirements | 每类先给原生状态/回调实际证据、最小实现路线和有限覆盖，不吞应用通知或绘制；不能证明pressed等状态时明确边界，不凭自绘猜测宣称保真；保留全部失败实验和未覆盖接收者 |
+| Stop Conditions | 需私有状态解码/全局hook或设置/共享宿主/既有进程注入时停在证据与方案；不扩权限、吞业务回调/取消或换资源，不放宽失败断言；范围过大按既有授权拆顺序S，不新T |
+| Exit Criteria | 完成经证实的有限族适配或有证据拆分/原生保留，双宽同批实际包、必要双发布八摘要/安装、提交推送/实际远端协调复核及安全清理后关闭S10；T15另冻结覆盖全集逐项审计后才可关闭 |
 | Original Owner Request | “好 怎么办吧”“批准 自动准入s任务 到t收口为止”“继续啊”；“跳过这个测试 以后默认不测” |
-| Similar-Issue Sweep | 原生/EXE超类/伪类、初始化与延迟设置、app颜色/样式/回调、范围/步长/几何边界、输入修饰键/焦点/原生取消与重入销毁/独立所有者、资源和数据；不把消息输入扩大为物理/IME验收 |
+| Similar-Issue Sweep | canonical/EXE超类/伪类、初始化/后续样式/位置、native custom-draw/owner-draw、范围反向与边界、buddy与原生取消、输入修饰键/焦点/捕获/按下、重入销毁/独立所有者及资源；不将消息驱动扩张为物理/IME验收 |
 
 ## Identifier State
 
@@ -36,8 +35,8 @@ S9已完成受控树消息输入隔离和有限v6进度绘制：79/79实际包36
 - Last allocated T: 15
 - Last allocated Td S: 13
 - Owner allocation constraint: 只可自行划分后续S，不得自行分配新T；保持现有T15/M0。
-- Last delivery: M0 T15 S8 P2（P1远端201/归档串行10/191对象恢复与377映像清理通过；原生输入不确定性交S9，关闭S8/准入S9，四文件保持）
-- Open task: T15自动续S实施/任务级审计中；S9活动，S8/S7/S6/S5/S4/S3/S2/S1关闭；Td S13/S12/S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
+- Last delivery: M0 T15 S9 P2（P1远端203/受影响双DLL归档重建4/194对象恢复与260映像清理通过；关闭S9/准入S10，四文件保持）
+- Open task: T15自动续S实施/任务级审计中；S10活动，S9/S8/S7/S6/S5/S4/S3/S2/S1关闭；Td S13/S12/S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
 
 ## Technical Baseline
 
@@ -46,11 +45,13 @@ S9已完成受控树消息输入隔离和有限v6进度绘制：79/79实际包36
 特殊模式保持原生，不计已换肤；原生UI48受控试验、旧输入4/冻结旧产品2负例和最终
 288 Ctrl+288 neutral键盘状态/恢复检查通过，不假定S8一次历史失败根因。双位宽GCC/
 Ninja/ccache、原五头/声明/18表、标题/字体/菜单/滚动条算法、三组件四产物、ABI3/
-31命名导出+ordinal1/31detours32slots保持。S9等待实际远端/归档协调复核和安全清理；
-M0/T15开放，S10候选接收滑块/微调但尚未活动；HD Tune管理员默认skip。
+31命名导出+ordinal1/31detours32slots保持。实际远端203/严格归档双DLL定向重建4/194对象恢复与260映像清理通过，S9关闭；
+M0/T15开放，S10活动并接收滑块/微调；HD Tune管理员默认skip。
 详情见[S9记录](../history/M0-T15-S9-progress-controls.md)/[证据](../etc/evidence/progress-controls.json)。
 
 ## Recent Closure
+
+- [T15 S9进度/受控输入](../history/M0-T15-S9-progress-controls.md)：79包/八部署/安装20+2、真实MD5/DK/标题掩码、远端203/受影响双DLL归档重建4及260映像清理通过；S9关闭/自动续S10，M0/T15开放。
 
 - [T15 S8原生树/早显frame](../history/M0-T15-S8-tree-controls.md)：75包/八部署/安装16+2、实际MD5/DK、远端201/归档串行10及377映像清理通过；原生键盘偶发交S9，S8关闭/自动续S9，M0/T15开放。
 
@@ -110,11 +111,11 @@ M0/T15开放，S10候选接收滑块/微调但尚未活动；HD Tune管理员默
 
 ## Last Packet Closure
 
-S8 P1 c26a99d完成有限树及早显frame精确取消；75实际包/双发布八摘要、安装16聚焦+2
-自动矩阵、真实MD5/DK和冻结旧包六负例通过，187输入。实际远端201逐字节匹配，严格
-归档/资源门禁和串行重建10通过；初次并行的原生无DLL v5树键盘断言失败保留，并交
-当前S9核实，不假设根因、不将重试算修复。191 Git对象证明187源/八旧备份可恢复，
-八部署再次匹配，原程序自有副本仍相同。两精确根reparse0，原生独占守卫拒绝运行EXE/
-加载DLL C0000043、卸载成功；377任务映像含两个长路径无占用，守卫退出后清理。
-仅16已审探针源码承接后续T15审计，稳定Ninja/ccache及外部PNG保留。本关闭P无产品输入
-或binary change；关闭S8并按既有授权顺序准入S9，M0/T15开放，HD Tune管理员默认skip。
+S9 P1 2721c04完成有限v6进度与受控树消息输入，190输入、79实际包/双发布八摘要、安装
+20聚焦+2矩阵、真实MD5/DK和标题292x24掩码0差异通过；旧输入4/冻结旧产品2负例有效，
+未追认S8未记录的历史状态。实际远端203匹配，严格归档/原资源门禁、受影响双DLL定向
+重建4通过，避免重编无关测试。194 Git对象证明190源及八旧备份可恢复，八部署再次
+匹配；原程序自有副本未变。精确根/祖先/子目录reparse0，原生守卫正例拒绝运行EXE/
+加载DLL C0000043，卸载成功；260任务映像含两个长路径无占用，守卫退出后清理。
+保留22已审源码及稳定Ninja/ccache/外部PNG。本关闭P不改产品输入或binary；S9关闭并
+按既有授权顺序准入S10滑块/微调，M0/T15开放，HD Tune管理员默认skip。

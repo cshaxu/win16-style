@@ -35,9 +35,12 @@ S4已完成MD5summer四个框架角色、HD Tune图像/PushLike及client-edge编
   安装16+2、真实MD5/DK、远端201/归档串行10及377映像清理通过；
   [记录](../history/M0-T15-S8-tree-controls.md)/[证据](../etc/evidence/tree-controls.json)
   保留初次归档并行的原生无DLL树Down偶发失败，交S9核实，不凭重试宣称已修。
-- 当前S9限定树消息输入的线程局部隔离和普通v6进度绘制；v5进度因公开getter缺失保留
-  原生，滑块/微调由下一顺序S10接收。[记录](../history/M0-T15-S9-progress-controls.md)及
-  [证据](../etc/evidence/progress-controls.json)区分历史未明原因、受控负例和有限支持。
+- S9已关闭：受控树消息输入与有限v6进度，79实际包/八部署/安装20+2、实际MD5/DK/
+  标题掩码、远端203/受影响双DLL归档重建4及260映像清理通过；v5/特殊进度模式原生
+  保留，S8历史输入根因未追认。[记录](../history/M0-T15-S9-progress-controls.md)及
+  [证据](../etc/evidence/progress-controls.json)保留实际覆盖/边界。
+- 当前S10：剩余滑块/微调先核实原生公开状态/几何/按下/custom-draw与UDN取消，再
+  原型及有限适配，不猜私有状态、不吞应用绘制或通知；完成后T15另做冻结全集审计。
 - 后续S：列表/表头、树、进度、滑块/微调逐类支持，保留数据/图标/选择/焦点/
   命令/键盘/原生通知，分别验证实际像素、DPI、卸载和资源。
 - 最后评估应用自绘图表/面板/无窗口标签的有限边界。不能凭模块加载/附着代替绘制，
@@ -50,5 +53,5 @@ S4已完成MD5summer四个框架角色、HD Tune图像/PushLike及client-edge编
 真实管理员探针，不再自动弹提示；除非用户另行要求恢复。此项记skip，不计通过，
 既有历史真实应用证据不冒充当前包复测；自包含双宽公共控件/包回归继续执行。
 
-CURRENT拥有唯一活动包。build/t15-controls承接S8已审16份MD5/列表/树及原生边界观察器、映像占用与远端复核源码；build/t15-package
+CURRENT拥有唯一活动包。build/t15-controls承接S9已审22份MD5/列表/树/进度协议及原生输入边界观察器、映像占用与远端复核源码；build/t15-package
 登记每S新包和发布备份。原始证据先提炼后安全清理，稳定Ninja/ccache和外部验收PNG保留。

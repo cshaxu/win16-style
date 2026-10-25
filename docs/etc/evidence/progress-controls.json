@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "packet": "M0 T15 S9",
-  "status": "79 actual package tests/dual publication/20 installed checks+2 matrices passed; awaiting actual remote/archive and cleanup before S9 closure",
+  "status": "S9 closed after P1 actual remote203/strict archive dual affected DLL+4/194-object recovery/260-image cleanup; S10 admitted, M0/T15 open",
   "baseline_commit": "0caca59fa30ab2969c273b2da0a5cc1aaebac18a",
   "baseline_P2_actual_remote": {
     "status": "passed",
@@ -928,5 +928,141 @@
       "architecture": "x64",
       "case": "frozen-progress-v6-old-S8"
     }
-  ]
+  ],
+  "P1_actual_remote": {
+    "status": "passed",
+    "commit": "2721c043c2d1fd485b4ed8d1362974d269b2b22f",
+    "remote_main": "2721c043c2d1fd485b4ed8d1362974d269b2b22f",
+    "files": 203,
+    "source_inputs": 190,
+    "seconds": 13.09763810003642
+  },
+  "P1_recovery_archive": {
+    "status": "passed",
+    "source_inputs": 190,
+    "Git_objects": 194,
+    "raw_recovery_EOL": [
+      "LICENSE",
+      "tools/Build-Package.ps1",
+      "tools/Verify-Governance.ps1"
+    ],
+    "archive_alternate_identity": [
+      "tools/Build-Package.ps1",
+      "tools/Verify-Governance.ps1"
+    ],
+    "backups_recoverable": 8,
+    "archive_artifacts": 4,
+    "deployed_hashes": 8
+  },
+  "canonical_affected_rebuild": {
+    "build_jobs": 8,
+    "selection": "^core/(abi|pending-frame-owner)$",
+    "build_root": "O:\\repos.hobby\\win16style\\build\\t15-package\\s9-p1-archive\\build\\.ninja",
+    "status": "passed",
+    "exit_code": 0,
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "profile": "Focused",
+    "tests": [
+      {
+        "configure_seconds": 4.598687100049574,
+        "architecture": "x86",
+        "test_seconds": 0.7833873000345193,
+        "skipped": [],
+        "build_seconds": 9.177739000006113,
+        "tests": 2,
+        "passed": 2
+      },
+      {
+        "configure_seconds": 4.293519900005776,
+        "architecture": "x64",
+        "test_seconds": 0.8025998999946751,
+        "skipped": [],
+        "build_seconds": 8.898620099993423,
+        "tests": 2,
+        "passed": 2
+      }
+    ],
+    "test_jobs": 2,
+    "targets": "ntw16s,core-abi,core-pending-frame-owner"
+  },
+  "canonical_scope": "actual archive dual DLL build plus4 ABI/frame ownership tests;79 actual package and14 focused separately cover UI; avoid rebuilding unrelated executables",
+  "retained_reviewed_sources": {
+    "file-owners.c": "6c73285aa04fb564db13c4093396a6d5584db1496527df1ab754bf8eb7de79c8",
+    "image-guard.c": "1c5a49290cdfbd5944c9566b1bf11f1bc607397bb12491c11fe79578e38ed549",
+    "md5-driver.c": "e334bbbd0c764196abd48427126b8ef41eda725f1fb969e2c23d7005be275f53",
+    "md5-probe.c": "5423599d06e219df353d1c50f55cac8e90779dcc9656446011140864f64e7969",
+    "verify-remote.py": "b8ef757e825ad8e6c224690d6c3ed2ccac63ac797b084861d39ba255d81de217",
+    "s6-list-report.h": "17b97fd73b04aaa7cc1c7203c66eec9104e9b537191cae8925778be8b2bb3cc4",
+    "s6-dk-probe.c": "a8fd253ac4e66d21c94ed2a6f1aa6a194308bf3fbd0522374bd66f3175c9d288",
+    "s6-list-header-api.c": "d634a7d272533d42a30e1e9e7e01820dde8cbe0ef32b7d3cacf489cb2c01ea29",
+    "s7-dk-owned-driver.c": "4ae09231d37065a5fd2954d6812035cbe1726a9b4eb7954546efe84aad84e99d",
+    "s7-dk-owned-probe.c": "07438de907c8d01d25fba2670cd1dcdd6f0c543052f0f12a6e1c6004c3140da0",
+    "s7-owned-folder.h": "77a56db7626ccb4b66fb769d84e6dd873c2e89a77324c3762979a29a3cb5496c",
+    "s8-md5-probe.c": "1483293dd1a0ef1106b63cbfd3ae97c11bfa75de08d801c8e608e6a251158c05",
+    "s8-dk-owned-driver.c": "d1feb8568448ba38d63e54b97104c3baeaaa82f472a8064a75b075ab305c5a55",
+    "s8-dk-owned-probe.c": "eaefc7f31ee85cd22b4d0b5f4fab42a7153b82b54610082827e7b48d7212f009",
+    "s8-owned-folder.h": "7222c3d5ce6ac95ce60b74b0541bf33db02ca76cdadda0451f3c50696dc12c90",
+    "s8-tree-native-destroy.c": "d0c79dbb105d83ccd459a0544ed16327ffca7bdeb26100a11d1137cf0b2d0ce9",
+    "s9-native-input.c": "3ee913902c3058aa15fe579b1475343be75a1d6f7a95298ead79cd3b94a7e82d",
+    "s9-native-protocols.c": "64cfbe2ed15efc6d1b3ba0cb3697d099c2e578412270d8534a66e9c8172d07ee",
+    "s9-old-tree-seeded.c": "93bffbd05858603ac3fac8481c11d9620abc63156b940f24a2d8e733d6ceb4f7",
+    "s9-dk-owned-driver.c": "60592cf90b0ee1ff54a090a52dc5a40444e3ed4086dafe167650a19b48cb2539",
+    "s9-dk-owned-probe.c": "51ab2600c0c5e569c145d01f98734f5465bcc254ca80425cfc3871eefff94330",
+    "s9-owned-folder.h": "d73ff994a37fdac09ef814361b8fd6dfa2b6ec3f1c5e08bb1f0c75b492e06651"
+  },
+  "cleanup": "completed: both exact registered roots cleared after194-object recovery/8-deployment checks/reparse0/260-image guard;22 reviewed sources restored for T15 audit; stable Ninja/ccache and external native PNG retained",
+  "cleanup_guard": {
+    "positive": "IMAGE_GUARD_POSITIVE exe=c0000043 loaded_dll=c0000043 unloaded_dll=00000000",
+    "batches": [
+      {
+        "count": 32,
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+      },
+      {
+        "count": 32,
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+      },
+      {
+        "count": 32,
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+      },
+      {
+        "count": 32,
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+      },
+      {
+        "count": 32,
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+      },
+      {
+        "count": 32,
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+      },
+      {
+        "count": 32,
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+      },
+      {
+        "count": 32,
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+      },
+      {
+        "count": 4,
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=4 no_write=1"
+      }
+    ],
+    "long_paths": 2,
+    "status": "passed",
+    "excluded_running_guard": "O:\\repos.hobby\\win16style\\build\\t15-controls\\s9-image-guard.exe",
+    "files": 260,
+    "roots": [
+      "O:\\repos.hobby\\win16style\\build\\t15-controls",
+      "O:\\repos.hobby\\win16style\\build\\t15-package"
+    ]
+  },
+  "closing_delivery": "M0 T15 S9 P2",
+  "binary_change_in_closing_P": "none; same79-case-tested P1 four files retained at both roots"
 }

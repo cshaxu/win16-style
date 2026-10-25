@@ -1,7 +1,8 @@
 # M0 T15 S9 progress controls and deterministic tree message input
 
-Status: implementation and79-case actual-package verification passed, dual-published;
-installed20 checks+2 matrices passed; actual remote/closure audits pending. S9 remains open; M0/T15 stay open.
+Status: S9 closed after79-case actual package, dual publication, installed20+2,
+real MD5/DK/title-mask proof, actual remote203, strict archive/affected dual DLL
+rebuild4 and194-object recovery/260-image cleanup. S10 admitted; M0/T15 stay open.
 No new T is allocated. HD Tune elevated real-app checks remain owner-requested skip.
 Unrelated QUEUE and two proposals are preserved and excluded from delivery.
 
@@ -83,3 +84,25 @@ arbitrary application-painted gauges, v5 progress styling or exceptional modes.
 Trackbar/updown remain received by the next sequential S10. Input fixture isolation
 is fixed for the tested preconditions; no retroactive historical-cause claim.
 S9 closes only after installed/actual remote/strict archive/recovery/safe cleanup.
+
+## P2 sequential coordinator review and closure
+
+Read actual2721c04 diff/commit, original request and evidence, independently checked
+203 remote files including190 inputs/four binaries, exact archive inputs/resources
+and8 deployed hashes. Three raw source EOL identities reconstruct from Git; only
+two archived scripts differ using already recorded Git LF identities. All194 Git
+objects were read in one batch, proving190 source and8 old backups recoverable.
+Actual archive rebuilt affected x86/x64 DLLs and4 ABI/pending-frame checks;79 real
+package and14 focused checks provide the broader UI/retained matrix. Selected
+Ninja targets reuse ccache and avoid rebuilding unrelated executables/tests.
+
+Both exact roots and their ancestors/descendants had reparse0. Native FILE_OPEN
+exclusive-open guard writes no bytes; self EXE/loaded DLL failc0000043, unloaded
+DLL succeeds, then260 other task images including2 long paths open exclusively.
+Auditor was joined before removal; all22 retained reviewed source hashes restored,
+original owned application copy unchanged, stable Ninja/ccache and native PNGs kept.
+No unrelated user/project/process/sibling work was modified or removed. Same P1
+four files remain; closing P changes no product input or binary. S10 receives the
+remaining trackbar/updown research/finite adaptation, followed by T15-wide audit.
+S8 historical input cause remains unconfirmed, with verified fixture correction;
+v5 progress/exceptional modes remain native. HD Tune elevated remains default skip.
