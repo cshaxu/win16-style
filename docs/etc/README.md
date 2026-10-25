@@ -29,6 +29,7 @@
 | [evidence/tree-controls.json](evidence/tree-controls.json) | T15 S8原生/框架树的协议、实际字形/边框、通知/资源及早显frame精确所有权，真实MD5与负例/包证据 |
 | [evidence/progress-controls.json](evidence/progress-controls.json) | T15 S9受控原生树键盘夹具、有限v6进度协议/实际像素/状态/取消和v5/特殊模式原生保留及交付证据 |
 | [evidence/trackbar-controls.json](evidence/trackbar-controls.json) | T15 S10滑块原生部件/状态、应用绘制保留、缓存差异与树并发超时对照；当前结果见CURRENT |
+| [evidence/updown-controls.json](evidence/updown-controls.json) | T15 S11微调原生API状态、准确DC归属/释放、共享主题拒绝、旧包负例及实际包交付证据 |
 | [product-contract.json](product-contract.json) | 架构权威的机器映射；组件/产物变化必须同步审核 |
 | [import](import/README.md) | 来源基线与 Git blob 清单；只作导入对照，不能成为构建输入 |
 | [operations/source-policy.md](operations/source-policy.md) | 导入来源处置及用户明确的原资源身份要求；完整保留原声明 |

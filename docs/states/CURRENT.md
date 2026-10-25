@@ -2,12 +2,12 @@
 
 ## Current Work
 
-S10完成193输入/83实际包427.192秒、双发布八摘要、安装28+2、真实MD5/DK及标题掩码
-0差异；P1远端205、严格归档受影响双DLL+4、197对象恢复和588映像安全清理通过，
-33已审源码/稳定缓存/原生PNG保留。关闭S10并按既有授权顺序准入S11，不新T。
-首次树四并发10秒超时在旧/新均复现，两slot调度后83通过，原等待/断言未改。
-[本S记录](../history/M0-T15-S10-trackbar-controls.md)/[证据](../etc/evidence/trackbar-controls.json)。
-HD Tune管理员默认skip、不计通过；S11活动，T15/M0保持开放并等待最终冻结全集审计。
+S11有限原生UpDown/精确TUpDown完成，14聚焦、干净双宽、91实际包406.0985072秒通过；
+同批四文件已双发布/八摘要，安装复验完成。以原生API状态和准确DC归属绘制，
+不猜输入/捕获或共享主题句柄；原五头/声明、标题/字体/菜单/滚动条算法保持。
+实际远端/归档复核及安全清理待本P推送后执行，S11/T15/M0保持开放。
+HD Tune管理员默认skip、不计通过；下一S按冻结覆盖全集审计，不新T。
+[本S记录](../history/M0-T15-S11-updown-controls.md)/[证据](../etc/evidence/updown-controls.json)。
 
 ## M0 T15 S11 Packet
 
@@ -19,12 +19,12 @@ HD Tune管理员默认skip、不计通过；S11活动，T15/M0保持开放并等
 | Non-goals | 不猜控件私有对象/状态，不盲按T前缀/TSpinButton，不把关主题/附着当实际像素；不改系统全局设置/原五头/声明/已确认标题/菜单/字体/滚动条/启动语义，不注入既有进程，不做HD Tune提权实测，不新T或第五产品 |
 | Reference Baseline | S10 P1 61a2053477a42b7f4121b56b25072b1779aa89f1同批0.15.0.0四文件已双发布；193输入/83包/安装28+2/远端205/归档双DLL+4/197对象恢复及588映像清理通过；关闭P无binary change |
 | Candidate Proposal | [框架完成分解](../proposals/framework-completion.md)；[S10记录](../history/M0-T15-S10-trackbar-controls.md)/[证据](../etc/evidence/trackbar-controls.json)接收微调：无custom-draw，实测MSAA两按钮但state未提供pressed；不能以此认定不能通过其他公开原生路径适配 |
-| Files And ABI Surface | 私有初始化角色/有限原生绘制及必要精确父/新建buddy通知观察、C17夹具；三组件四产物、ABI3/31命名导出+ordinal1 NONAME、31detours32slots保持；新hook/公共接口先审，不默认加产品/helper |
+| Files And ABI Surface | 原生原型已审：不推测输入状态；新增进程内DrawFrameControl/DrawThemeBackground/CreateCompatibleDC/DeleteDC四个私有入口，仅准确已附着HWND/打印DC/原生兼容DC及COMCTL调用者；内部35detours40slots（原31/32不足），公开ABI3/31命名导出+ordinal1及三组件四产物保持；不使用主题句柄归属、不新增helper/全局桌面hook |
 | Applicable Rules | EXECUTION/ARCHITECTURE/CODING/DOCUMENT/UI及来源策略；MinGW GCC/Ninja/稳定ccache，禁computer-use及兄弟仓库修改/依赖 |
-| Verification | 先核实原生模块/附加字节、范围/位置/base/buddy/UDN变更和取消；h/v、按下/键盘保持/释放/捕获/移出/取消、范围端点/无效buddy与后续变更；双宽v5/v6实际DPI/像素/原生通知/数据/字体/卸载/资源/重入与旧包负例；干净同批四文件实际包/双发布/八摘要/安装/实际远端归档；HD Tune管理员skip |
+| Verification | 先核实原生模块/附加字节、范围/位置/base/buddy/UDN变更和取消；真实API状态、原生窗口DC/打印DC/多兼容DC关联及DeleteDC/移除清理、共享主题/未附着窗口/应用调用者拒绝；40槽溢出/abort；h/v、按下/键盘保持/释放/捕获/移出/取消、范围端点/无效buddy与后续变更；双宽v5/v6实际DPI/像素/原生通知/数据/字体/卸载/资源/重入与旧包负例；干净同批四文件实际包/双发布/八摘要/安装/实际远端归档；HD Tune管理员skip |
 | Expected Markers | 区分模块/初始化/附着与实际绘制；正常可见窗口原生截图和像素、UDN/命中/几何/位置/取消/应用绘制保持；不能证明pressed等状态时保留原生，不改原图形表或应用数据 |
 | Asset Needs | build/t15-controls承接S10已审33源码并登记本S探针/日志；build/t15-package登记新干净包/备份；先提炼再核对精确根/祖先/reparse/映像占用/恢复来源后清理；稳定.ninja/.ccache/外部PNG保持 |
-| Reporting Requirements | 实现前给公开原生状态/回调实测、最小路线及有限覆盖；不吞业务回调/UDN取消或改buddy内容；MSAA失败仅该候选路径失败；保留失败/跳过/未覆盖及明确接收者，不靠重试/放宽断言宣称修复 |
+| Reporting Requirements | 实现前给公开原生状态/回调实测、最小路线及有限覆盖；不吞业务回调/UDN取消或改buddy内容；MSAA失败仅该候选路径失败；四绘制API入口和40槽扩容已由本地原型/协调自审准入，属于既有进程内拦截的私有实现，非组件/公开ABI/安全边界变化；保留失败/跳过/未覆盖及明确接收者，不靠重试/放宽断言宣称修复 |
 | Stop Conditions | 需私有状态解码/全局hook设置/共享宿主/既有进程注入或额外产品时停在证据与方案；不扩权限、换资源；过大按授权拆顺序S，不新T；无法验证的状态原生保留，不虚构完整支持 |
 | Exit Criteria | 完成经证实有限适配或证据充分的原生保留，双宽同批四文件实际包、必要双发布八摘要/安装、提交推送/实际远端协调复核与安全清理后关闭S11；T15须另做冻结覆盖全集逐项审计才可关闭 |
 | Original Owner Request | “好 怎么办吧”“批准 自动准入s任务 到t收口为止”“继续啊”；“跳过这个测试 以后默认不测” |
@@ -36,21 +36,19 @@ HD Tune管理员默认skip、不计通过；S11活动，T15/M0保持开放并等
 - Last allocated T: 15
 - Last allocated Td S: 13
 - Owner allocation constraint: 只可自行划分后续S，不得自行分配新T；保持现有T15/M0。
-- Last delivery: M0 T15 S10 P2（P1远端205/193输入、受影响双DLL归档重建4/197对象恢复与588映像清理通过；关闭S10/准入S11，四文件保持）
+- Last delivery: M0 T15 S11 P1（本地91实际包/双发布及安装通过，待推送后实际远端复核；S11保持开放）
 - Open task: T15自动续S实施/任务级审计中；S11活动，S10/S9/S8/S7/S6/S5/S4/S3/S2/S1关闭；Td S13/S12/S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
 
 ## Technical Baseline
 
-0.15.0.0 / S10有限v5/v6滑块同批四文件已双发布，193输入、83实际包427.192秒、安装
-28聚焦+2自动矩阵、真实MD5/DK和标题292x24黑掩码0差异通过；P1远端205匹配，严格
-归档双DLL定向重建4、197对象恢复与588映像清理通过。普通滑块/精确TTrackBar使用
-原生custom-draw矩形及CDIS_SELECTED；应用绘制/通知、范围/字体/布局/输入保持。
-特殊滑块及微调保持原生，微调交S11；树四并发旧/新均复现10秒超时，两slot限流后
-最终83通过，未改等待/功能断言。既有有限树/报告行/进度及原生保留边界继续。
-纯C17/GCC/Ninja/ccache、原五头/声明/18表、已确认标题/字体/菜单/滚动条算法、
-三组件四产物、ABI3/31命名导出+ordinal1/31detours32slots保持；HD Tune管理员默认
-skip。S10关闭/自动续S11，T15/M0开放；关闭P不改产品输入和二进制。
-[本S记录](../history/M0-T15-S10-trackbar-controls.md)/[证据](../etc/evidence/trackbar-controls.json)。
+0.15.0.0 / S11有限原生UpDown同批四文件已双发布，91实际包406.0985072秒及双宽安装
+通过。35进程内detours/40私有slots，公开ABI3/31命名导出+ordinal1、三组件四产物
+保持。实际DFC/DTB原生方向/状态及准确窗口/打印/原生兼容DC决定绘制，32弱DC容量
+不足或未知模式保留原生；DeleteDC/退役清除，既有owner引用保证生命周期。
+原五图形头/声明/18表、已确认标题/字体/菜单/滚动条算法及启动行为保持；同探针
+S10/S11真实MD5标题292x24黑掩码0差异。自有MD5/DK正常显示/关闭、Job归零。
+纯C17/GCC/Ninja/ccache；HD Tune管理员默认skip。S11待实际远端/归档/清理复核，
+T15须按[冻结全集](../proposals/framework-completion.md)另审计，M0保持开放。
 
 ## Recent Closure
 

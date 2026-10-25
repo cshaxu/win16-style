@@ -10,6 +10,7 @@
 #include "header_paint.h"
 #include "progress_paint.h"
 #include "trackbar_paint.h"
+#include "updown_paint.h"
 #include <commctrl.h>
 #include <oleacc.h>
 #include <stdlib.h>
@@ -32,6 +33,7 @@ typedef struct control_style {
     unsigned header_epoch,progress_epoch;
     HWND track_parent,track_window;
     BOOL track_internal;
+    ntw16s_updown_paint updown;
     int header_pressed;
     BOOL scroll_reporting,scroll_key;
     LONG scroll_report;
@@ -47,6 +49,19 @@ static void dispose_control(control_style *s)
 {win16_style_system_release(s->font);ntw16s_control_protocol_release(s->protocol);free(s->tab_positions);free(s);}
 static LRESULT CALLBACK control_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static LRESULT CALLBACK trackbar_notify(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
+static BOOL updown_acquire(void *owner)
+{
+    control_style *s=owner;DWORD_PTR value;
+    if(s->detached || !GetWindowSubclass(s->updown.window,control_proc,(UINT_PTR)control_proc,&value) || value!=(DWORD_PTR)s)return FALSE;
+    ++s->calls;return TRUE;
+}
+static void updown_release(void *owner)
+{control_style *s=owner;if(!--s->calls && s->detached)dispose_control(s);}
+static ntw16s_updown_glyph *const updown_glyphs[]={
+    &scroll_uparrow,&scroll_dnarrow,&scroll_lfarrow,&scroll_rgarrow,
+    &scroll_uparrowd,&scroll_dnarrowd,&scroll_lfarrowd,&scroll_rgarrowd,
+    &scroll_uparrowi,&scroll_dnarrowi,&scroll_lfarrowi,&scroll_rgarrowi};
+
 static void trackbar_unbind(control_style *s)
 {
     DWORD_PTR value;
@@ -1040,6 +1055,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         if(!s->detached && win16_style_progress_changes(m))
             RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|(s->calls==1?RDW_UPDATENOW:0));
     }
+    else if(ntw16s_class_is(w,UPDOWN_CLASSW)){result=DefSubclassProc(w,m,a,b);}
     else if(ntw16s_class_is(w,TRACKBAR_CLASSW)){
         result=DefSubclassProc(w,m,a,b);
         if(!s->detached && m==WM_STYLECHANGED)SendMessageW(w,WM_SYSCOLORCHANGE,0,0);
@@ -1340,6 +1356,17 @@ void win16_style_frame_scrollbars_palette_owned(HWND w,const win16_style_palette
         ((control_style *)data)->frame_scrollbars && ((control_style *)data)->creation_owner==owner)
         ((control_style *)data)->palette=*palette;
 }
+BOOL win16_style_updown_install_created(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled)
+{
+    DWORD_PTR value;HMODULE native=ntw16s_control_protocol_updown_module(w);
+    if(!native || !ntw16s_updown_api_enabled()){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    if(!win16_style_frame_scrollbars_install_owned(w,palette,owner,cancelled))return FALSE;
+    if(!GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&value) ||
+        ((control_style *)value)->creation_owner!=owner){SetLastError(ERROR_CANCELLED);return FALSE;}
+    control_style *s=(control_style *)value;
+    ntw16s_updown_register(&s->updown,w,native,&s->palette,updown_glyphs,s,updown_acquire,updown_release);
+    return TRUE;
+}
 BOOL win16_style_trackbar_install_created(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled)
 {
     DWORD_PTR value;
@@ -1449,7 +1476,7 @@ BOOL win16_style_control_remove(HWND w)
     if(s->detached){if(!--s->calls)dispose_control(s);return TRUE;}
     if(!RemoveWindowSubclass(w,control_proc,(UINT_PTR)control_proc)){
         s->removing=FALSE;--s->calls;return FALSE;}
-    s->detached=TRUE;BOOL track=s->track_window!=NULL;trackbar_unbind(s);detach_combo_list(s);
+    s->detached=TRUE;ntw16s_updown_retire(&s->updown);BOOL track=s->track_window!=NULL;trackbar_unbind(s);detach_combo_list(s);
     if(s->font && IsWindow(w))SendMessageW(w,WM_SETFONT,(WPARAM)s->original_font,FALSE);
     if(IsWindow(w) && is_separator(w))SetWindowPos(w,NULL,0,0,0,0,
         SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
@@ -1480,7 +1507,7 @@ BOOL win16_style_control_terminal(HWND w)
     if(!RemoveWindowSubclass(w,control_proc,(UINT_PTR)control_proc)){
         SetLastError(ERROR_INVALID_STATE);return FALSE;
     }
-    ++s->calls;s->detached=TRUE;trackbar_unbind(s);
+    ++s->calls;s->detached=TRUE;ntw16s_updown_retire(&s->updown);trackbar_unbind(s);
     scroll_caret_destroy(w,s);
     scroll_stop_timer(w,s);
     result=terminal_combo_list(s);

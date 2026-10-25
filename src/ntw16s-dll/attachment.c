@@ -45,6 +45,7 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     ++a->calls;
     if(m==WM_NCDESTROY)(void)Ntw16sWindowTerminal(w);
     ntw16s_vb_paint paint;ntw16s_vb_paint_begin(&paint,w,m,&a->fonts);
+    if(paint.native_active)paint.native_dc=(HDC)p;
     if(paint.active && !a->detached && !a->protocol)report_try_bind(w,a);
     if(paint.active && a->report_module && !a->detached){
         DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
@@ -202,7 +203,8 @@ static BOOL install_created(HWND w,DWORD original_style)
             Ntw16sWindowRemove(info.hwndItem);
     }
     if(a->detached){release(a);SetLastError(ERROR_CANCELLED);return FALSE;}
-    if(class_is(w,TRACKBAR_CLASSW))installed=win16_style_trackbar_install_created(w,NULL,a,&a->detached);
+    if(class_is(w,UPDOWN_CLASSW))installed=win16_style_updown_install_created(w,NULL,a,&a->detached);
+    else if(class_is(w,TRACKBAR_CLASSW))installed=win16_style_trackbar_install_created(w,NULL,a,&a->detached);
     else if(class_is(w,PROGRESS_CLASSW))installed=win16_style_progress_install_created(w,NULL,a,&a->detached);
     else if(tree)installed=win16_style_tree_install_created(w,NULL,a,&a->detached);
     else if(control)installed=win16_style_control_install_created(w,edit,(original_style&WS_BORDER)!=0,

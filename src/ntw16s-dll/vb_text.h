@@ -7,7 +7,8 @@ typedef struct ntw16s_vb_fonts {
     unsigned count;
 } ntw16s_vb_fonts;
 typedef struct ntw16s_vb_paint {
-    struct ntw16s_vb_paint *previous;
+    struct ntw16s_vb_paint *previous,*native_previous;
+    HWND native_window;HDC native_dc;BOOL native_active;
     HWND window;
     ntw16s_vb_fonts *fonts;
     BOOL active,report;
@@ -22,6 +23,8 @@ BOOL ntw16s_report_paint_active(void);
 BOOL ntw16s_report_paint_caller(HMODULE);
 void ntw16s_vb_fonts_clear(ntw16s_vb_fonts *fonts);
 void ntw16s_vb_paint_end(ntw16s_vb_paint *scope);
+/* Independent HWND/DC metadata; no change to font eligibility or leases. */
+BOOL ntw16s_native_paint_target(HDC,HWND *);
 /* Borrowed until the attachment retires after its last active call; NULL means leave the native DC unchanged. */
 BOOL ntw16s_vb_paint_active(void);
 HFONT ntw16s_vb_paint_font(HDC dc);

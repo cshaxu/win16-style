@@ -44,7 +44,9 @@ S4已完成MD5summer四个框架角色、HD Tune图像/PushLike及client-edge编
   四并发10秒超时在旧/新均复现，沿用两slot限流，未改断言。见
   [记录](../history/M0-T15-S10-trackbar-controls.md)/[证据](../etc/evidence/trackbar-controls.json)。
 - 当前S11：微调先核实原生公开输入/UDN/buddy/捕获/取消与真实绘制状态；无custom-draw，
-  实测MSAA未暴露pressed，不能据此猜测。验证后有限复用现有renderer/原箭头，不能
+  实测MSAA未暴露pressed，不能据此猜测。后续原型确认DFC/DTB直接提供真实状态，
+  CreateCompatibleDC/DeleteDC能准确关联v6的两个原生缓冲DC；主题句柄共享，禁止据此归属。
+  准入四个已有进程内机制的私有入口/35detours40slots，公开ABI/四产物不变。有限复用现有renderer/原箭头，不能
   证明的状态保留原生并记录；完成后T15另做冻结全集审计。
 - 后续S：列表/表头、树、进度、滑块/微调逐类支持，保留数据/图标/选择/焦点/
   命令/键盘/原生通知，分别验证实际像素、DPI、卸载和资源。
@@ -60,3 +62,40 @@ S4已完成MD5summer四个框架角色、HD Tune图像/PushLike及client-edge编
 
 CURRENT拥有唯一活动包。build/t15-controls承接S10已审33份MD5/列表/树/进度/滑块/微调协议、并发时钟及原生输入边界观察器、映像占用与远端复核源码；build/t15-package
 登记每S新包和发布备份。原始证据先提炼后安全清理，稳定Ninja/ccache和外部验收PNG保留。
+
+后续任务级审计按本页冻结全集逐项核对；只有CURRENT准入时才分配下一S，不新增T。
+
+## Frozen framework coverage audit
+
+Scope is the owner-approved T15 framework/control work, not universal Windows theming.
+The universe below freezes at S11's tested four-file SHA/source identity when the following audit S is admitted. Each unit must
+have implementation+pixel/semantic/lifetime evidence, or an explicit safe native
+preservation/owner-directed skip. A mere attachment/module record never completes a unit.
+No new T, product component, security boundary or unapproved application injection.
+
+| Unit | Disposition and evidence receiver |
+| --- | --- |
+| New target activation/propagation and classic demo | Existing startup/ABI/automatic/propagation/creation/rollback/cmd cases, final actual package |
+| Existing caption/menu/font/scrollbar renderer | Unchanged source fingerprints, strict original-art checks, final font/menu/control matrices, paired real MD5 title mask |
+| VB6 native buttons/textbox/frame | S1 native protocol/real MadShow, final vb-controls/vb-font and exact lease ownership |
+| VB6 windowless text in owned container | S1 scoped native paint and reversible CP1252 glyph bridge; final font ownership; canvas/artwork retains app painting |
+| USER native framework superclasses | S2 RealGetWindowClass and initialized lifecycle; final superclass/theme-stage/visibility/dialog matrices |
+| Early dialogs/application owner-draw menu bar | S3 exact startup ownership and untouched callbacks; final dialog-show/dialog-scope/menu matrices |
+| Verified TButton/TComboBox | S4 public initialized roles; final control-extensions/control-protocol-owner |
+| Native image/imagelist/PushLike buttons and client-edge EDIT | S4 borrowed image state pixels and native edit semantics; final control-extensions incl COMCTL6 |
+| Ordinary top/multiline tab/TPageControl | S5 public geometry/item/image/font/cancel semantics; final v5/v6/96/144 cases |
+| Ordinary string headers | S6 column geometry/font and native notifications; final v5/v6/96/144 and exact owner tests |
+| Ordinary report-list/TListView text | S7 exact native custom-draw DC/font borrowing; app callback preserved; final four report cases; real DK app rows=2 |
+| Native tree/TTreeView/TShellTreeView | S8/S9 exact native text/DC/item semantics and controlled keyboard state; final four tree cases; real MD5 |
+| Ordinary v6 progress/TProgressBar | S9 public state/range painter and native app values; final v5/v6 cases; v5/special modes explicitly native |
+| Ordinary trackbar/TTrackBar | S10 actual native part rect/state, app customdraw retained; final v5/v6 cases |
+| Ordinary UpDown/TUpDown | S11 actual DFC/DTB state, exact original native DC attribution; final four UI/two owner/two startup capacity cases |
+| App drawing/custom VCL TSpinButton/THintCheckListBox, panels/charts/canvas | Native preservation; unknown private frameworks are not native aliases. User data/binding/layout/artwork retained. UI.md owns finite support boundary |
+| Special styles/RTL/ownerdata/complex scripts/OCX/multiple UI threads/dynamic cross-monitor DPI | Explicit finite exclusions per UI.md and S1..S11 evidence; not passed/not hidden implementation promises |
+| Real HD Tune current elevated UI | Owner-directed default skip; historical S3/S4 results retained as historical only; final core C fixtures do not replace current real-app acceptance |
+
+Completion predicate: every row has a cited disposition, no product-affecting failure
+remains open, S11 exact batch is published twice/installed/native screenshots and actual
+remote/archive/recovery verified, original resources intact, registered scratch safely
+cleared with required evidence retained. M0 remains open; user appearance acceptance
+comes after automatic delivery. No scheduled work or next candidate is admitted.

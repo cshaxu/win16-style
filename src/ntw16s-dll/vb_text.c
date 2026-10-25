@@ -3,10 +3,13 @@
 #include "font.h"
 #include <stdlib.h>
 typedef struct ntw16s_vb_glyphmap {WCHAR chars[224];WORD glyphs[224];BOOL valid;} ntw16s_vb_glyphmap;
-static _Thread_local ntw16s_vb_paint *current;
+static _Thread_local ntw16s_vb_paint *current,*native_current;
 void ntw16s_vb_paint_begin(ntw16s_vb_paint *scope,HWND w,UINT message,ntw16s_vb_fonts *fonts)
 {
     ZeroMemory(scope,sizeof(*scope));
+    if(message==WM_PAINT || message==WM_PRINT || message==WM_PRINTCLIENT || message==WM_ERASEBKGND){
+        scope->native_previous=native_current;scope->native_window=w;scope->native_active=TRUE;native_current=scope;
+    }
     BOOL edit=ntw16s_vb_edit(w);
     /* Native EDIT also draws synchronously during text, selection and focus
      * messages. Keep that real USER path inside the same bounded scope. */
@@ -19,9 +22,12 @@ void ntw16s_vb_paint_begin(ntw16s_vb_paint *scope,HWND w,UINT message,ntw16s_vb_
 }
 void ntw16s_vb_paint_end(ntw16s_vb_paint *scope)
 {
+    if(scope->native_active)native_current=scope->native_previous;
     if(!scope->active)return;
     current=scope->previous;
 }
+BOOL ntw16s_native_paint_target(HDC dc,HWND *w)
+{*w=native_current?native_current->native_window:NULL;return dc && native_current && native_current->native_dc==dc;}
 void ntw16s_vb_fonts_clear(ntw16s_vb_fonts *fonts)
 {
     for(unsigned i=0;i<fonts->count;++i){win16_style_system_release(fonts->font[i]);free(fonts->glyphs[i]);}

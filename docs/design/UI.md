@@ -175,5 +175,14 @@ skip，当前包只承诺自包含探针的有限覆盖。原标题/字体/菜�
 本次新控件安装/移除及样式变化时用该HWND的WM_SYSCOLORCHANGE使原生绘图缓存失效，
 不修改系统颜色/主题。v5/v6普通横纵、刻度布局和固定滑块长度有限覆盖；选择范围、
 反向/RTL、提示等未准入样式保持原生，跨父窗重挂解除绘制通知观察并恢复原生缓存。
-微调按钮尚未适配：无custom-draw，实测MSAA按钮state也未反映鼠标/键盘按下，不能
-靠这两个接口猜测其绘制状态。后续状态与有限方案由CURRENT接收，HD Tune提权默认skip。
+普通微调仅对初始化后验证的msctls_updown32或主EXE精确TUpDown，核对原生模块、附加
+字节、公开范围/base及同线程父窗。无custom-draw，MSAA状态不能证明pressed；有限适配
+直接使用原生COMCTL调用DrawFrameControl/DrawThemeBackground给出的方向和状态。仅
+准确已拥有HWND、同步打印DC或该原生调用者创建的兼容DC参与；主题句柄共享，不作
+窗口身份。32个线程私有弱DC关联不分配/删除原生DC，成功DeleteDC/移除/销毁时清除，
+容量不足保留原生。复用原scroll箭头内区，双轴同倍率缩放，不拉伸成宽箭头；边框沿用
+现有palette。不读私有对象，不推测捕获/输入状态，不改变UDN取消/应用改delta、buddy、
+范围、位置、字体、几何和输入。未知样式、RTL、额外边框及未知绘制参数保留原生。
+被动加载无启动API初始化时不宣称微调支持。进程内私有绘图/DC入口使detours为35、
+容量40，公开ABI3/31命名导出+ordinal1不变。HD Tune管理员真实UI仍默认skip，不把
+自包含微调适配扩张为所有框架自绘TSpinButton支持。

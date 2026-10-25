@@ -1,0 +1,1647 @@
+{
+  "schema": 1,
+  "packet": "M0 T15 S11",
+  "status": "verified locally:91 actual-package pass; double publication and installed verification passed; remote review pending",
+  "baseline_commit": "2608b6150a4bdad28ae18ce9fb9898f6f3dfad13",
+  "implementation": "Finite initialized native UpDown/exact main-EXE TUpDown; actual native DFC/DTB states; verified window/print/COMCTL compatible DC attribution; bounded32 weak DC map; no input/state inference",
+  "architecture": "C17 GCC Ninja ccache; three components/four products; ABI3/31 named exports+ordinal1;35 process-local detours/40 private slots",
+  "focused": {
+    "tests": [
+      {
+        "passed": 6,
+        "architecture": "x86",
+        "test_seconds": 2.5263206000090577,
+        "configure_seconds": 1.8343469999963418,
+        "build_seconds": 20.827751500008162,
+        "skipped": [],
+        "tests": 6
+      },
+      {
+        "passed": 8,
+        "architecture": "x64",
+        "test_seconds": 8.259597300027963,
+        "configure_seconds": 1.7274473999859765,
+        "build_seconds": 19.72927539999364,
+        "skipped": [],
+        "tests": 8
+      }
+    ],
+    "targets": "all",
+    "build_root": "O:\\repos.hobby\\win16style\\build\\.ninja",
+    "exit_code": 0,
+    "test_jobs": 2,
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "selection": "^(core/(abi|updown-v5|updown-v6|updown-owner|vb-font|control-protocol-owner|pending-frame-owner)|launch/startup-hooks)$",
+    "status": "passed",
+    "build_jobs": 8,
+    "profile": "Focused"
+  },
+  "development_comparison": [
+    {
+      "kind": "old",
+      "diagnostic": "UPDOWN_FAIL line=52 error=126 attached(w)\r\nUPDOWN_FAIL line=114 error=0 wait==WAIT_OBJECT_0 && !code\r\n",
+      "arch": "x86",
+      "exit": 1,
+      "markers": [
+        "UPDOWN_PASSIVE_OK loaded=1 api_init=0 unattached=1 native_pixels=1\r",
+        "UPDOWN_CONTROL_OK bits=32 styled=0 aware=0 dpi=96 variants=8\r"
+      ],
+      "version": "v5"
+    },
+    {
+      "kind": "old",
+      "diagnostic": "UPDOWN_FAIL line=52 error=126 attached(w)\r\nUPDOWN_FAIL line=114 error=0 wait==WAIT_OBJECT_0 && !code\r\n",
+      "arch": "x86",
+      "exit": 1,
+      "markers": [
+        "UPDOWN_PASSIVE_OK loaded=1 api_init=0 unattached=1 native_pixels=1\r",
+        "UPDOWN_CONTROL_OK bits=32 styled=0 aware=0 dpi=96 variants=8\r"
+      ],
+      "version": "v6"
+    },
+    {
+      "kind": "old",
+      "diagnostic": "UPDOWN_FAIL line=52 error=126 attached(w)\r\nUPDOWN_FAIL line=114 error=0 wait==WAIT_OBJECT_0 && !code\r\n",
+      "arch": "x64",
+      "exit": 1,
+      "markers": [
+        "UPDOWN_PASSIVE_OK loaded=1 api_init=0 unattached=1 native_pixels=1\r",
+        "UPDOWN_CONTROL_OK bits=64 styled=0 aware=0 dpi=96 variants=8\r"
+      ],
+      "version": "v5"
+    },
+    {
+      "kind": "old",
+      "diagnostic": "UPDOWN_FAIL line=52 error=126 attached(w)\r\nUPDOWN_FAIL line=114 error=0 wait==WAIT_OBJECT_0 && !code\r\n",
+      "arch": "x64",
+      "exit": 1,
+      "markers": [
+        "UPDOWN_PASSIVE_OK loaded=1 api_init=0 unattached=1 native_pixels=1\r",
+        "UPDOWN_CONTROL_OK bits=64 styled=0 aware=0 dpi=96 variants=8\r"
+      ],
+      "version": "v6"
+    },
+    {
+      "kind": "dev",
+      "diagnostic": "",
+      "arch": "x86",
+      "exit": 0,
+      "markers": [
+        "UPDOWN_PASSIVE_OK loaded=1 api_init=0 unattached=1 native_pixels=1\r",
+        "UPDOWN_CONTROL_OK bits=32 styled=0 aware=0 dpi=96 variants=8\r",
+        "UPDOWN_SHARED_THEME_OK unowned_native_with_owned_present=1\r",
+        "UPDOWN_CONTROL_OK bits=32 styled=1 aware=0 dpi=96 variants=8\r",
+        "UPDOWN_PASSIVE_OK loaded=1 api_init=0 unattached=1 native_pixels=1\r",
+        "UPDOWN_CONTROL_OK bits=32 styled=0 aware=1 dpi=144 variants=8\r",
+        "UPDOWN_SHARED_THEME_OK unowned_native_with_owned_present=1\r",
+        "UPDOWN_CONTROL_OK bits=32 styled=1 aware=1 dpi=144 variants=8\r",
+        "UPDOWN_CLEANUP_OK\r"
+      ],
+      "version": "v5"
+    },
+    {
+      "kind": "dev",
+      "diagnostic": "",
+      "arch": "x86",
+      "exit": 0,
+      "markers": [
+        "UPDOWN_PASSIVE_OK loaded=1 api_init=0 unattached=1 native_pixels=1\r",
+        "UPDOWN_CONTROL_OK bits=32 styled=0 aware=0 dpi=96 variants=8\r",
+        "UPDOWN_SHARED_THEME_OK unowned_native_with_owned_present=1\r",
+        "UPDOWN_CONTROL_OK bits=32 styled=1 aware=0 dpi=96 variants=8\r",
+        "UPDOWN_PASSIVE_OK loaded=1 api_init=0 unattached=1 native_pixels=1\r",
+        "UPDOWN_CONTROL_OK bits=32 styled=0 aware=1 dpi=144 variants=8\r",
+        "UPDOWN_SHARED_THEME_OK unowned_native_with_owned_present=1\r",
+        "UPDOWN_CONTROL_OK bits=32 styled=1 aware=1 dpi=144 variants=8\r",
+        "UPDOWN_CLEANUP_OK\r"
+      ],
+      "version": "v6"
+    },
+    {
+      "kind": "dev",
+      "diagnostic": "",
+      "arch": "x64",
+      "exit": 0,
+      "markers": [
+        "UPDOWN_PASSIVE_OK loaded=1 api_init=0 unattached=1 native_pixels=1\r",
+        "UPDOWN_CONTROL_OK bits=64 styled=0 aware=0 dpi=96 variants=8\r",
+        "UPDOWN_SHARED_THEME_OK unowned_native_with_owned_present=1\r",
+        "UPDOWN_CONTROL_OK bits=64 styled=1 aware=0 dpi=96 variants=8\r",
+        "UPDOWN_PASSIVE_OK loaded=1 api_init=0 unattached=1 native_pixels=1\r",
+        "UPDOWN_CONTROL_OK bits=64 styled=0 aware=1 dpi=144 variants=8\r",
+        "UPDOWN_SHARED_THEME_OK unowned_native_with_owned_present=1\r",
+        "UPDOWN_CONTROL_OK bits=64 styled=1 aware=1 dpi=144 variants=8\r",
+        "UPDOWN_CLEANUP_OK\r"
+      ],
+      "version": "v5"
+    },
+    {
+      "kind": "dev",
+      "diagnostic": "",
+      "arch": "x64",
+      "exit": 0,
+      "markers": [
+        "UPDOWN_PASSIVE_OK loaded=1 api_init=0 unattached=1 native_pixels=1\r",
+        "UPDOWN_CONTROL_OK bits=64 styled=0 aware=0 dpi=96 variants=8\r",
+        "UPDOWN_SHARED_THEME_OK unowned_native_with_owned_present=1\r",
+        "UPDOWN_CONTROL_OK bits=64 styled=1 aware=0 dpi=96 variants=8\r",
+        "UPDOWN_PASSIVE_OK loaded=1 api_init=0 unattached=1 native_pixels=1\r",
+        "UPDOWN_CONTROL_OK bits=64 styled=0 aware=1 dpi=144 variants=8\r",
+        "UPDOWN_SHARED_THEME_OK unowned_native_with_owned_present=1\r",
+        "UPDOWN_CONTROL_OK bits=64 styled=1 aware=1 dpi=144 variants=8\r",
+        "UPDOWN_CLEANUP_OK\r"
+      ],
+      "version": "v6"
+    }
+  ],
+  "caption_comparison": {
+    "height": 24,
+    "historical_difference": "outer corner only, title text and buttons zero",
+    "baseline": "S10 current same-probe raw restored capture",
+    "width": 292,
+    "historical_png_differences": 2,
+    "black_mask_differences": 0,
+    "historical_diff_coordinates": [
+      "1,1",
+      "290,1"
+    ]
+  },
+  "clean_build": {
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "build_root": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja",
+    "exit_code": 0,
+    "selection": "^core/abi$",
+    "profile": "Focused",
+    "build_jobs": 8,
+    "test_jobs": 4,
+    "status": "passed",
+    "targets": "all",
+    "tests": [
+      {
+        "passed": 1,
+        "build_seconds": 34.51569190004375,
+        "skipped": [],
+        "tests": 1,
+        "architecture": "x86",
+        "test_seconds": 0.46934790001250803,
+        "configure_seconds": 7.100586500018835
+      },
+      {
+        "passed": 1,
+        "build_seconds": 38.5071706000017,
+        "skipped": [],
+        "tests": 1,
+        "architecture": "x64",
+        "test_seconds": 0.5612141000456177,
+        "configure_seconds": 5.4277832000516355
+      }
+    ]
+  },
+  "package": {
+    "status": "PACKAGE PASS",
+    "artifacts": {
+      "run16s.exe": {
+        "architecture": "x64",
+        "version": "M0 T15",
+        "sha256": "9bfbe1baa4c81eda8abc0c25edf27d8879702ea9395c8ef6f644b505f92a2843",
+        "imports": [
+          "advapi32.dll",
+          "kernel32.dll",
+          "msvcrt.dll",
+          "ole32.dll",
+          "shell32.dll"
+        ]
+      },
+      "ntw16s32.dll": {
+        "architecture": "x86",
+        "version": "M0 T15",
+        "sha256": "ff6b557fc564617b59962655c4ad947f09b421fbb96f42a2ee347806bf15bb00",
+        "imports": [
+          "COMCTL32.dll",
+          "dwmapi.dll",
+          "GDI32.dll",
+          "KERNEL32.dll",
+          "api-ms-win-crt-convert-l1-1-0.dll",
+          "api-ms-win-crt-heap-l1-1-0.dll",
+          "api-ms-win-crt-private-l1-1-0.dll",
+          "api-ms-win-crt-runtime-l1-1-0.dll",
+          "api-ms-win-crt-stdio-l1-1-0.dll",
+          "api-ms-win-crt-string-l1-1-0.dll",
+          "USER32.dll",
+          "UxTheme.dll",
+          "COMCTL32.dll"
+        ]
+      },
+      "ntw16s64.dll": {
+        "architecture": "x64",
+        "version": "M0 T15",
+        "sha256": "a34b1fcdc2e35cac89150d9527a0eaa7a593c80c4173b7f386ca9f5cb28794f2",
+        "imports": [
+          "COMCTL32.dll",
+          "dwmapi.dll",
+          "GDI32.dll",
+          "KERNEL32.dll",
+          "msvcrt.dll",
+          "USER32.dll",
+          "UxTheme.dll",
+          "COMCTL32.dll"
+        ]
+      },
+      "demo.exe": {
+        "architecture": "x64",
+        "version": "M0 T15",
+        "sha256": "15c4ab9e92700f033738964fab7936be360cc70f5bbf535a86ce82a0a9f2e289",
+        "imports": [
+          "kernel32.dll",
+          "msvcrt.dll",
+          "user32.dll"
+        ]
+      }
+    },
+    "original_resource_tables_per_dll": 18
+  },
+  "negative_capacity": {
+    "x86": "STARTUP HOOK FAIL line=29 error=126",
+    "x64": "STARTUP HOOK FAIL line=29 error=126"
+  },
+  "native_research": {
+    "customdraw": "none",
+    "MSAA": "two buttons; state0 even pressed; candidate insufficient",
+    "capture": "WM_CANCELMODE releases capture while native pressed pixels persist",
+    "buddy_keys": "buddy subclass key path misses UpDown HWND input messages",
+    "v5": "DrawFrameControl arrow direction and DFCS_PUSHED/INACTIVE",
+    "v6": "DrawThemeBackground SPNP1..4 states1..4; DTBEx direct calls0",
+    "shared_HTHEME": "two controls and OpenThemeData(NULL,SPIN) same0x20001; never identity",
+    "compatible_DC": "native two cached DCs/control;48/48 nonprint attributable via exactWindowFromDC or bounded table;8 create/8 delete in route probe",
+    "buffered_paint": "Begin/EndBufferedPaint direct calls0"
+  },
+  "ownership": "production module source fixture:32 slots/33rd fallback/recovery;130 cycles;165 owned DC handles released;exact refs0;retire clears maps;wrong caller/thread and nested parent rejected",
+  "failed_measurements": [
+    "native noDLL aggregate GDI/USER fluctuates even GdiFlush; counts diagnostic only; no threshold increase/warmup/retry pass",
+    "GetObjectType can report type3 for deleted DC despite SaveDC0/GetDeviceCaps0; strict handle check uses successful DeleteDC and SaveDC0",
+    "first negative linker used hde86 object instead of hde32; corrected test harness path; no product change"
+  ],
+  "HD_Tune_elevated": "skip by owner default, not passed; no UAC prompt",
+  "limits": [
+    "only ordinary initialized native role9 and exact verified TUpDown",
+    "unknown/RTL/extra-edge/drawing parameters native fallback",
+    "passive DLL without startup API init remains unsupported/unattached and native",
+    "overflow native fallback; no extra products/global hooks/shared-class/system settings",
+    "message/API tests are not physical input/IME/accessibility or arbitrary framework support"
+  ],
+  "real_application_logs": {
+    "md5": "OWNED_VISIBLE hwnd=02A60B60 class=TApplication title=MD5 for Windows enabled=1\nOWNED_VISIBLE hwnd=03020CA8 class=TMessageForm title=Information enabled=1\nSTARTUP_INFORMATION dismissed-owned-OK=1\nOWNED_VISIBLE hwnd=05110912 class=TMain title=MD5Summer enabled=1\nTARGET pid=17104 creator-tree-root=19096 tid=22308 image=D:\\programs\\misc\\md5summer.exe\nMODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll\nPOSTED_READINESS wait=0 elapsed_ms=16\nWINDOW_STATES minimized=1 restored=1 moved=1 root_attachment_preserved=1\nCLOSE sent=1 error=0 wait=0 code=0 window=0 visible=0\nTARGET_EXIT=0\nDK_CLEANUP_OK exit=0 active=0 total=4\n",
+    "dk": "TARGET pid=35916 creator-tree-root=16280 tid=39496 image=O:\\repos.hobby\\win16style\\build\\t15-controls\\s11-doublekiller\\DoubleKiller.exe\nMODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll\nS7_OWNED_SCAN_COMPLETE rows_from_app=2 scoped_fixture_only=1 no_delete_or_move=1\nOWNED_CLOSE posted=1 wait=0 exit=0 window=0\nDK_CLEANUP_OK exit=0 active=0 total=4\n"
+  },
+  "preserved_other_work": [
+    "docs/states/QUEUE.md",
+    "docs/proposals/global-style-mode.md",
+    "docs/proposals/outline-window-move.md"
+  ],
+  "preserved_renderer_sources": [
+    {
+      "path": "src/ntw16s-dll/font.c",
+      "sha256": "8ee09070abf99c9a171b009d4d83d56e916cab6bf8651be24f1090f0ad2414bd",
+      "baseline_bytes_equal": true
+    },
+    {
+      "path": "src/ntw16s-dll/layout.c",
+      "sha256": "83cd34e01d35e27fc40c54e82460cab945b45d3a986b3d5ee2ec8ac9ab5c4ede",
+      "baseline_bytes_equal": true
+    },
+    {
+      "path": "src/ntw16s-dll/menu_bar.c",
+      "sha256": "2f4a7ee4c408df1350d9953d7ca0c7c7ac8c96e6977026ce365c5d85e5f49bd7",
+      "baseline_bytes_equal": true
+    },
+    {
+      "path": "src/ntw16s-dll/menu_bar_paint.c",
+      "sha256": "392b28274f295dfed1cbf48c464b194784fdb6af055eaff03fc0c530a074bd94",
+      "baseline_bytes_equal": true
+    },
+    {
+      "path": "src/ntw16s-dll/menu_items.c",
+      "sha256": "50ffdecade278016841546433fb6650c0c8e2e3d7996725eefb5e77e10be0706",
+      "baseline_bytes_equal": true
+    },
+    {
+      "path": "src/ntw16s-dll/menu_layout.c",
+      "sha256": "cde752459255f121492daa908df6cd6201a549d0080d2cf73b8975b6042dc62c",
+      "baseline_bytes_equal": true
+    },
+    {
+      "path": "src/ntw16s-dll/menu_paint.c",
+      "sha256": "00df595f7ab3f4471bd5d851930aac1e03d48430c45a8ed8ecb372dbdc108e84",
+      "baseline_bytes_equal": true
+    },
+    {
+      "path": "src/ntw16s-dll/menu_scope.c",
+      "sha256": "21144a3223b75b502d9b5509dee8f0f3fe642ee2dfe9b04f24f104f60279f28c",
+      "baseline_bytes_equal": true
+    },
+    {
+      "path": "src/ntw16s-dll/scroll_layout.c",
+      "sha256": "0b1b344fcbe0ef2a8060ef140c539cefeb5fa79c7b93c322452513d15b95b4d0",
+      "baseline_bytes_equal": true
+    },
+    {
+      "path": "src/ntw16s-dll/scroll_track.c",
+      "sha256": "0b9c5d40849d321e3e467635d4c28b85c5897d8ee4dd8ec7bf3ed1d39fcd72ee",
+      "baseline_bytes_equal": true
+    },
+    {
+      "path": "src/ntw16s-dll/win16_style.c",
+      "sha256": "eabf085ab8c4fca9a156a9b38288e6622ed47540c9fcd16160a32c00d68d1d72",
+      "baseline_bytes_equal": true
+    }
+  ],
+  "full_package": {
+    "cases": 91,
+    "sha256": {
+      "demo.exe": "15c4ab9e92700f033738964fab7936be360cc70f5bbf535a86ce82a0a9f2e289",
+      "ntw16s32.dll": "ff6b557fc564617b59962655c4ad947f09b421fbb96f42a2ee347806bf15bb00",
+      "ntw16s64.dll": "a34b1fcdc2e35cac89150d9527a0eaa7a593c80c4173b7f386ca9f5cb28794f2",
+      "run16s.exe": "9bfbe1baa4c81eda8abc0c25edf27d8879702ea9395c8ef6f644b505f92a2843"
+    },
+    "status": "passed",
+    "jobs": 4,
+    "seconds": 406.0985072,
+    "full_integration": true,
+    "physical_input": "not-tested",
+    "core_matrix": "separate Build-Core matrix required",
+    "package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate"
+  },
+  "full_package_cases": [
+    {
+      "name": "abi-x86",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-abi.exe",
+      "seconds": 0.3178656,
+      "exit_code": 0
+    },
+    {
+      "name": "abi-x64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-abi.exe",
+      "seconds": 0.3254921,
+      "exit_code": 0
+    },
+    {
+      "name": "demo-boundary",
+      "arguments": [
+        "-B",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\tests\\demo-exe\\boundary.py",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\demo.exe"
+      ],
+      "command": "C:\\Program Files\\Python313\\python.exe",
+      "seconds": 0.2898999,
+      "exit_code": 0
+    },
+    {
+      "name": "demo-pair",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\demo.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\demo-observe.exe",
+      "seconds": 1.985855,
+      "exit_code": 0
+    },
+    {
+      "name": "wait-contract",
+      "arguments": [
+        "-B",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\tests\\run16s-exe\\wait.py",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\wait-target.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\wait-target.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\wait-gui-target.exe"
+      ],
+      "command": "C:\\Program Files\\Python313\\python.exe",
+      "seconds": 7.5194537,
+      "exit_code": 0
+    },
+    {
+      "name": "font-layout-x64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-font-layout.exe",
+      "seconds": 67.6204139,
+      "exit_code": 0
+    },
+    {
+      "name": "font-layout-x86",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-font-layout.exe",
+      "seconds": 108.1602196,
+      "exit_code": 0
+    },
+    {
+      "name": "menu-cancel-x86",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-menu-cancel.exe",
+      "seconds": 67.3930993,
+      "exit_code": 0
+    },
+    {
+      "name": "startup-error-unit-32",
+      "arguments": [],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\startup-error-unit.exe",
+      "seconds": 0.2582172,
+      "exit_code": 0
+    },
+    {
+      "name": "startup-error-unit-64",
+      "arguments": [],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\startup-error-unit.exe",
+      "seconds": 0.115553,
+      "exit_code": 0
+    },
+    {
+      "name": "legacy-rejection",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\legacy-rejection.exe",
+      "seconds": 0.9351931,
+      "exit_code": 0
+    },
+    {
+      "name": "cli",
+      "arguments": [
+        "-B",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\tests\\run16s-exe\\cli.py",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "C:\\Program Files\\Python313\\python.exe",
+      "seconds": 0.5762309,
+      "exit_code": 0
+    },
+    {
+      "name": "automatic",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\launch-target.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\launch-target.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\launch-automatic.exe",
+      "seconds": 2.1639823,
+      "exit_code": 0
+    },
+    {
+      "name": "propagation",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\propagate-target.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\propagate-target.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\propagate-basic.exe",
+      "seconds": 6.1472897,
+      "exit_code": 0
+    },
+    {
+      "name": "startup-errors",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\startup-errors.exe",
+      "seconds": 11.2449429,
+      "exit_code": 0
+    },
+    {
+      "name": "long-path",
+      "arguments": [
+        "-B",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\tests\\run16s-exe\\long_path.py",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\launch-failures.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\launch-failures.exe"
+      ],
+      "command": "C:\\Program Files\\Python313\\python.exe",
+      "seconds": 1.2048494,
+      "exit_code": 0
+    },
+    {
+      "name": "cmd-nested",
+      "arguments": [
+        "--core",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\cmd-nested.exe",
+      "seconds": 2.7860191,
+      "exit_code": 0
+    },
+    {
+      "name": "legacy-iat-32",
+      "arguments": [
+        "--parent",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\launch-staging.exe",
+      "seconds": 0.6377918,
+      "exit_code": 0
+    },
+    {
+      "name": "cli-failures",
+      "arguments": [
+        "-B",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\tests\\run16s-exe\\cli_failures.py",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\launch-target.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\launch-target.exe"
+      ],
+      "command": "C:\\Program Files\\Python313\\python.exe",
+      "seconds": 2.6974587,
+      "exit_code": 0
+    },
+    {
+      "name": "legacy-iat-64",
+      "arguments": [
+        "--parent",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\launch-staging.exe",
+      "seconds": 0.6396462,
+      "exit_code": 0
+    },
+    {
+      "name": "uac-unit-32",
+      "arguments": [],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\uac-unit.exe",
+      "seconds": 0.4131725,
+      "exit_code": 0
+    },
+    {
+      "name": "uac-unit-64",
+      "arguments": [],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\uac-unit.exe",
+      "seconds": 0.5062288,
+      "exit_code": 0
+    },
+    {
+      "name": "vb-font-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\vb-fixture\\MSVBVM60.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-vb-font.exe",
+      "seconds": 1.8687898,
+      "exit_code": 0
+    },
+    {
+      "name": "vb-font-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\vb-fixture\\MSVBVM60.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-vb-font.exe",
+      "seconds": 1.3937712,
+      "exit_code": 0
+    },
+    {
+      "name": "vb-controls-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\vb-fixture\\MSVBVM60.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-vb.exe",
+      "seconds": 2.163726,
+      "exit_code": 0
+    },
+    {
+      "name": "vb-controls-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\vb-fixture\\MSVBVM60.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-vb.exe",
+      "seconds": 2.9131331,
+      "exit_code": 0
+    },
+    {
+      "name": "control-extensions-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-control-extensions.exe",
+      "seconds": 0.7060487,
+      "exit_code": 0
+    },
+    {
+      "name": "control-protocol-owner-32",
+      "arguments": [],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-control-protocol-owner.exe",
+      "seconds": 0.2524832,
+      "exit_code": 0
+    },
+    {
+      "name": "control-extensions-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-control-extensions.exe",
+      "seconds": 0.6348901,
+      "exit_code": 0
+    },
+    {
+      "name": "control-protocol-owner-64",
+      "arguments": [],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-control-protocol-owner.exe",
+      "seconds": 0.2165813,
+      "exit_code": 0
+    },
+    {
+      "name": "tab-controls-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-tab-controls.exe",
+      "seconds": 1.2228392,
+      "exit_code": 0
+    },
+    {
+      "name": "tab-controls-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-tab-controls.exe",
+      "seconds": 0.9830586,
+      "exit_code": 0
+    },
+    {
+      "name": "tab-controls-dpi-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll",
+        "aware"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-tab-controls.exe",
+      "seconds": 0.9615284,
+      "exit_code": 0
+    },
+    {
+      "name": "tab-controls-dpi-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll",
+        "aware"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-tab-controls.exe",
+      "seconds": 1.1749339,
+      "exit_code": 0
+    },
+    {
+      "name": "tab-controls-v5-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-tab-controls-v5.exe",
+      "seconds": 0.8173675,
+      "exit_code": 0
+    },
+    {
+      "name": "tab-controls-v5-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-tab-controls-v5.exe",
+      "seconds": 0.7566662,
+      "exit_code": 0
+    },
+    {
+      "name": "tab-controls-v5-dpi-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll",
+        "aware"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-tab-controls-v5.exe",
+      "seconds": 0.9865024,
+      "exit_code": 0
+    },
+    {
+      "name": "tab-controls-v5-dpi-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll",
+        "aware"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-tab-controls-v5.exe",
+      "seconds": 1.2174571,
+      "exit_code": 0
+    },
+    {
+      "name": "pending-control-owner-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-pending-control-owner.exe",
+      "seconds": 0.280463,
+      "exit_code": 0
+    },
+    {
+      "name": "pending-control-owner-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-pending-control-owner.exe",
+      "seconds": 0.2548413,
+      "exit_code": 0
+    },
+    {
+      "name": "header-v5-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-header-v5.exe",
+      "seconds": 0.6702115,
+      "exit_code": 0
+    },
+    {
+      "name": "header-v5-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-header-v5.exe",
+      "seconds": 0.5905623,
+      "exit_code": 0
+    },
+    {
+      "name": "header-v5-dpi-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll",
+        "aware"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-header-v5.exe",
+      "seconds": 0.6423021,
+      "exit_code": 0
+    },
+    {
+      "name": "header-v5-dpi-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll",
+        "aware"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-header-v5.exe",
+      "seconds": 0.7229884,
+      "exit_code": 0
+    },
+    {
+      "name": "header-v6-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-header-v6.exe",
+      "seconds": 0.9444668,
+      "exit_code": 0
+    },
+    {
+      "name": "header-v6-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-header-v6.exe",
+      "seconds": 0.7251758,
+      "exit_code": 0
+    },
+    {
+      "name": "header-v6-dpi-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll",
+        "aware"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-header-v6.exe",
+      "seconds": 0.694026,
+      "exit_code": 0
+    },
+    {
+      "name": "header-v6-dpi-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll",
+        "aware"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-header-v6.exe",
+      "seconds": 0.8717799,
+      "exit_code": 0
+    },
+    {
+      "name": "menu-cancel-x64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-menu-cancel.exe",
+      "seconds": 67.5640613,
+      "exit_code": 0
+    },
+    {
+      "name": "list-report-v5-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-list-report-v5.exe",
+      "seconds": 5.4848478,
+      "exit_code": 0
+    },
+    {
+      "name": "pending-frame-owner-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-pending-frame-owner.exe",
+      "seconds": 0.5061158,
+      "exit_code": 0
+    },
+    {
+      "name": "list-report-v5-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-list-report-v5.exe",
+      "seconds": 7.85066,
+      "exit_code": 0
+    },
+    {
+      "name": "list-report-v6-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-list-report-v6.exe",
+      "seconds": 9.6334559,
+      "exit_code": 0
+    },
+    {
+      "name": "list-report-v6-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-list-report-v6.exe",
+      "seconds": 11.7743606,
+      "exit_code": 0
+    },
+    {
+      "name": "tree-v5-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-tree-v5.exe",
+      "seconds": 9.9715739,
+      "exit_code": 0
+    },
+    {
+      "name": "pending-frame-owner-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-pending-frame-owner.exe",
+      "seconds": 0.5051546,
+      "exit_code": 0
+    },
+    {
+      "name": "tree-v5-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-tree-v5.exe",
+      "seconds": 8.193703,
+      "exit_code": 0
+    },
+    {
+      "name": "tree-v6-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-tree-v6.exe",
+      "seconds": 16.3921602,
+      "exit_code": 0
+    },
+    {
+      "name": "updown-v5-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-updown-v5.exe",
+      "seconds": 9.1032048,
+      "exit_code": 0
+    },
+    {
+      "name": "updown-v6-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-updown-v6.exe",
+      "seconds": 9.2167744,
+      "exit_code": 0
+    },
+    {
+      "name": "updown-owner-32",
+      "arguments": [],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-updown-owner.exe",
+      "seconds": 0.314482,
+      "exit_code": 0
+    },
+    {
+      "name": "startup-hooks-32",
+      "arguments": [],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\launch-startup-hooks.exe",
+      "seconds": 0.1243992,
+      "exit_code": 0
+    },
+    {
+      "name": "tree-v6-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-tree-v6.exe",
+      "seconds": 15.0218515,
+      "exit_code": 0
+    },
+    {
+      "name": "startup-hooks-64",
+      "arguments": [],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\launch-startup-hooks.exe",
+      "seconds": 0.1166291,
+      "exit_code": 0
+    },
+    {
+      "name": "updown-owner-64",
+      "arguments": [],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-updown-owner.exe",
+      "seconds": 0.3742152,
+      "exit_code": 0
+    },
+    {
+      "name": "trackbar-v5-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-trackbar-v5.exe",
+      "seconds": 9.1081436,
+      "exit_code": 0
+    },
+    {
+      "name": "trackbar-v6-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-trackbar-v6.exe",
+      "seconds": 9.6393411,
+      "exit_code": 0
+    },
+    {
+      "name": "updown-v5-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-updown-v5.exe",
+      "seconds": 12.2753622,
+      "exit_code": 0
+    },
+    {
+      "name": "updown-v6-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-updown-v6.exe",
+      "seconds": 12.5817581,
+      "exit_code": 0
+    },
+    {
+      "name": "progress-v5-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-progress-v5.exe",
+      "seconds": 1.7270348,
+      "exit_code": 0
+    },
+    {
+      "name": "progress-v5-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-progress-v5.exe",
+      "seconds": 1.4001536,
+      "exit_code": 0
+    },
+    {
+      "name": "progress-v6-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-progress-v6.exe",
+      "seconds": 3.365317,
+      "exit_code": 0
+    },
+    {
+      "name": "trackbar-v5-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-trackbar-v5.exe",
+      "seconds": 4.8705751,
+      "exit_code": 0
+    },
+    {
+      "name": "header-owner-32",
+      "arguments": [],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-header-owner.exe",
+      "seconds": 0.301304,
+      "exit_code": 0
+    },
+    {
+      "name": "header-owner-64",
+      "arguments": [],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-header-owner.exe",
+      "seconds": 0.2720338,
+      "exit_code": 0
+    },
+    {
+      "name": "trackbar-v6-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-trackbar-v6.exe",
+      "seconds": 4.7503887,
+      "exit_code": 0
+    },
+    {
+      "name": "progress-v6-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-progress-v6.exe",
+      "seconds": 1.991153,
+      "exit_code": 0
+    },
+    {
+      "name": "control-visibility-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-control-visibility.exe",
+      "seconds": 1.6135979,
+      "exit_code": 0
+    },
+    {
+      "name": "control-visibility-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-control-visibility.exe",
+      "seconds": 1.4581518,
+      "exit_code": 0
+    },
+    {
+      "name": "dialog-scope-64",
+      "arguments": [],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-dialog-scope.exe",
+      "seconds": 19.7316992,
+      "exit_code": 0
+    },
+    {
+      "name": "theme-stage-32",
+      "arguments": [],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-theme-stage.exe",
+      "seconds": 0.2064053,
+      "exit_code": 0
+    },
+    {
+      "name": "theme-stage-64",
+      "arguments": [],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-theme-stage.exe",
+      "seconds": 0.1816574,
+      "exit_code": 0
+    },
+    {
+      "name": "dialog-scope-32",
+      "arguments": [],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-dialog-scope.exe",
+      "seconds": 21.8788001,
+      "exit_code": 0
+    },
+    {
+      "name": "superclass-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-superclass.exe",
+      "seconds": 2.4115096,
+      "exit_code": 0
+    },
+    {
+      "name": "superclass-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-superclass.exe",
+      "seconds": 3.0350144,
+      "exit_code": 0
+    },
+    {
+      "name": "rollback",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\rollback-contract.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\rollback-contract.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\rollback-contract-driver.exe",
+      "seconds": 4.4785299,
+      "exit_code": 0
+    },
+    {
+      "name": "creation-contract",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\creation-contract.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\creation-contract.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\creation-contract-driver.exe",
+      "seconds": 10.8786711,
+      "exit_code": 0
+    },
+    {
+      "name": "dialog-show-32",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\core-dialog-show.exe",
+      "seconds": 91.0602248,
+      "exit_code": 0
+    },
+    {
+      "name": "dialog-show-64",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\core-dialog-show.exe",
+      "seconds": 93.9933587,
+      "exit_code": 0
+    },
+    {
+      "name": "dialogs",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\launch-target.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\launch-target.exe",
+        "dialogs"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\launch-automatic.exe",
+      "seconds": 71.7172656,
+      "exit_code": 0
+    },
+    {
+      "name": "messages",
+      "arguments": [
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x86\\launch-target.exe",
+        "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\launch-target.exe",
+        "messages"
+      ],
+      "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\clean-source\\build\\.ninja\\x64\\launch-automatic.exe",
+      "seconds": 78.4544483,
+      "exit_code": 0
+    }
+  ],
+  "publication": {
+    "status": "passed",
+    "files": [
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe",
+        "expected": "15c4ab9e92700f033738964fab7936be360cc70f5bbf535a86ce82a0a9f2e289",
+        "before": "6cbb3fa5be455dbd6fd86793d267ef78137a06f650d236de306ae00f4950ec73",
+        "after": "15c4ab9e92700f033738964fab7936be360cc70f5bbf535a86ce82a0a9f2e289"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
+        "expected": "ff6b557fc564617b59962655c4ad947f09b421fbb96f42a2ee347806bf15bb00",
+        "before": "f040f4694d78db89cdd99fea7eb427f10041ed4c38b2366530123ceaf0a7e1bd",
+        "after": "ff6b557fc564617b59962655c4ad947f09b421fbb96f42a2ee347806bf15bb00"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll",
+        "expected": "a34b1fcdc2e35cac89150d9527a0eaa7a593c80c4173b7f386ca9f5cb28794f2",
+        "before": "b09795790d239408f35ba5c60bb67c222d89aabff9fa443388fb341536a7c21e",
+        "after": "a34b1fcdc2e35cac89150d9527a0eaa7a593c80c4173b7f386ca9f5cb28794f2"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
+        "expected": "9bfbe1baa4c81eda8abc0c25edf27d8879702ea9395c8ef6f644b505f92a2843",
+        "before": "80491d1d084884fb664b4737dc36144640bee3e1145b00fffbf900915b42706c",
+        "after": "9bfbe1baa4c81eda8abc0c25edf27d8879702ea9395c8ef6f644b505f92a2843"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-publish\\before-1",
+        "path": "O:\\winnt\\system32\\demo.exe",
+        "expected": "15c4ab9e92700f033738964fab7936be360cc70f5bbf535a86ce82a0a9f2e289",
+        "before": "6cbb3fa5be455dbd6fd86793d267ef78137a06f650d236de306ae00f4950ec73",
+        "after": "15c4ab9e92700f033738964fab7936be360cc70f5bbf535a86ce82a0a9f2e289"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-publish\\before-1",
+        "path": "O:\\winnt\\system32\\ntw16s32.dll",
+        "expected": "ff6b557fc564617b59962655c4ad947f09b421fbb96f42a2ee347806bf15bb00",
+        "before": "f040f4694d78db89cdd99fea7eb427f10041ed4c38b2366530123ceaf0a7e1bd",
+        "after": "ff6b557fc564617b59962655c4ad947f09b421fbb96f42a2ee347806bf15bb00"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-publish\\before-1",
+        "path": "O:\\winnt\\system32\\ntw16s64.dll",
+        "expected": "a34b1fcdc2e35cac89150d9527a0eaa7a593c80c4173b7f386ca9f5cb28794f2",
+        "before": "b09795790d239408f35ba5c60bb67c222d89aabff9fa443388fb341536a7c21e",
+        "after": "a34b1fcdc2e35cac89150d9527a0eaa7a593c80c4173b7f386ca9f5cb28794f2"
+      },
+      {
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-publish\\before-1",
+        "path": "O:\\winnt\\system32\\run16s.exe",
+        "expected": "9bfbe1baa4c81eda8abc0c25edf27d8879702ea9395c8ef6f644b505f92a2843",
+        "before": "80491d1d084884fb664b4737dc36144640bee3e1145b00fffbf900915b42706c",
+        "after": "9bfbe1baa4c81eda8abc0c25edf27d8879702ea9395c8ef6f644b505f92a2843"
+      }
+    ],
+    "test_result": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-full\\result.json",
+    "tested_package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s11-final\\candidate"
+  },
+  "installed": [
+    {
+      "installed_hashes": "four exact tested matches",
+      "status": "passed",
+      "progress_trackbar_dll_paths": "actual deployed path matched",
+      "destination": "O:\\repos.hobby\\win16style\\assets",
+      "cases": [
+        {
+          "name": "abi-x86",
+          "seconds": 0.2444589,
+          "exit": 0
+        },
+        {
+          "name": "tree-v5-x86",
+          "seconds": 6.9779272,
+          "exit": 0
+        },
+        {
+          "name": "tree-v6-x86",
+          "seconds": 10.8694818,
+          "exit": 0
+        },
+        {
+          "name": "progress-v5-x86",
+          "seconds": 1.1523137,
+          "exit": 0
+        },
+        {
+          "name": "progress-v6-x86",
+          "seconds": 1.7272217,
+          "exit": 0
+        },
+        {
+          "name": "trackbar-v5-x86",
+          "seconds": 2.3395468,
+          "exit": 0
+        },
+        {
+          "name": "trackbar-v6-x86",
+          "seconds": 2.246718,
+          "exit": 0
+        },
+        {
+          "name": "updown-v5-x86",
+          "seconds": 4.431367,
+          "exit": 0
+        },
+        {
+          "name": "updown-v6-x86",
+          "seconds": 4.4061423,
+          "exit": 0
+        },
+        {
+          "name": "abi-x64",
+          "seconds": 0.1215908,
+          "exit": 0
+        },
+        {
+          "name": "tree-v5-x64",
+          "seconds": 4.6354471,
+          "exit": 0
+        },
+        {
+          "name": "tree-v6-x64",
+          "seconds": 7.8990838,
+          "exit": 0
+        },
+        {
+          "name": "progress-v5-x64",
+          "seconds": 0.8297966,
+          "exit": 0
+        },
+        {
+          "name": "progress-v6-x64",
+          "seconds": 1.1159771,
+          "exit": 0
+        },
+        {
+          "name": "trackbar-v5-x64",
+          "seconds": 1.7448449,
+          "exit": 0
+        },
+        {
+          "name": "trackbar-v6-x64",
+          "seconds": 1.9997341,
+          "exit": 0
+        },
+        {
+          "name": "updown-v5-x64",
+          "seconds": 3.5179427,
+          "exit": 0
+        },
+        {
+          "name": "updown-v6-x64",
+          "seconds": 3.4284375,
+          "exit": 0
+        },
+        {
+          "name": "automatic",
+          "seconds": 1.729533,
+          "exit": 0
+        }
+      ]
+    },
+    {
+      "installed_hashes": "four exact tested matches",
+      "status": "passed",
+      "progress_trackbar_dll_paths": "actual deployed path matched",
+      "destination": "O:/winnt/system32",
+      "cases": [
+        {
+          "name": "abi-x86",
+          "seconds": 0.1068769,
+          "exit": 0
+        },
+        {
+          "name": "tree-v5-x86",
+          "seconds": 5.4225395,
+          "exit": 0
+        },
+        {
+          "name": "tree-v6-x86",
+          "seconds": 9.0807544,
+          "exit": 0
+        },
+        {
+          "name": "progress-v5-x86",
+          "seconds": 1.0707804,
+          "exit": 0
+        },
+        {
+          "name": "progress-v6-x86",
+          "seconds": 1.4386465,
+          "exit": 0
+        },
+        {
+          "name": "trackbar-v5-x86",
+          "seconds": 2.1572126,
+          "exit": 0
+        },
+        {
+          "name": "trackbar-v6-x86",
+          "seconds": 2.2563065,
+          "exit": 0
+        },
+        {
+          "name": "updown-v5-x86",
+          "seconds": 4.3287691,
+          "exit": 0
+        },
+        {
+          "name": "updown-v6-x86",
+          "seconds": 4.2005379,
+          "exit": 0
+        },
+        {
+          "name": "abi-x64",
+          "seconds": 0.0989567,
+          "exit": 0
+        },
+        {
+          "name": "tree-v5-x64",
+          "seconds": 4.5112723,
+          "exit": 0
+        },
+        {
+          "name": "tree-v6-x64",
+          "seconds": 6.7373326,
+          "exit": 0
+        },
+        {
+          "name": "progress-v5-x64",
+          "seconds": 0.4971993,
+          "exit": 0
+        },
+        {
+          "name": "progress-v6-x64",
+          "seconds": 0.6850743,
+          "exit": 0
+        },
+        {
+          "name": "trackbar-v5-x64",
+          "seconds": 2.1304742,
+          "exit": 0
+        },
+        {
+          "name": "trackbar-v6-x64",
+          "seconds": 3.8888557,
+          "exit": 0
+        },
+        {
+          "name": "updown-v5-x64",
+          "seconds": 6.2804087,
+          "exit": 0
+        },
+        {
+          "name": "updown-v6-x64",
+          "seconds": 4.6874654,
+          "exit": 0
+        },
+        {
+          "name": "automatic",
+          "seconds": 2.158592,
+          "exit": 0
+        }
+      ]
+    }
+  ],
+  "source_inputs": 197,
+  "source_snapshot_sha256": "1f196f850d88d876b3e18e14616c95220c5f8bed07ffd82b9afbe0b1c776ba73",
+  "retained_reviewed_sources": [
+    "file-owners.c",
+    "image-guard.c",
+    "md5-driver.c",
+    "md5-probe.c",
+    "s10-dk-owned-driver.c",
+    "s10-dk-owned-probe.c",
+    "s10-installed.ps1",
+    "s10-native-ranges-accessible.c",
+    "s10-native-ranges-color.c",
+    "s10-native-ranges-input.c",
+    "s10-native-ranges-paint.c",
+    "s10-native-ranges-theme.c",
+    "s10-native-ranges.c",
+    "s10-owned-folder.h",
+    "s10-tree-profile.c",
+    "s11-dk-owned-driver.c",
+    "s11-dk-owned-probe.c",
+    "s11-installed.ps1",
+    "s11-old-startup.c",
+    "s11-owned-folder.h",
+    "s11-updown-api-route.c",
+    "s11-updown-buffer-route.c",
+    "s11-updown-dc-route.c",
+    "s11-updown-dc-table.c",
+    "s11-updown-key-route.c",
+    "s11-updown-native.c",
+    "s11-updown-theme-identity.c",
+    "s6-dk-probe.c",
+    "s6-list-header-api.c",
+    "s6-list-report.h",
+    "s7-dk-owned-driver.c",
+    "s7-dk-owned-probe.c",
+    "s7-owned-folder.h",
+    "s8-dk-owned-driver.c",
+    "s8-dk-owned-probe.c",
+    "s8-md5-probe.c",
+    "s8-owned-folder.h",
+    "s8-tree-native-destroy.c",
+    "s9-dk-owned-driver.c",
+    "s9-dk-owned-probe.c",
+    "s9-native-input.c",
+    "s9-native-protocols.c",
+    "s9-old-tree-seeded.c",
+    "s9-owned-folder.h",
+    "verify-remote.py"
+  ],
+  "diff_stats": {
+    "files": 17,
+    "added": 429,
+    "deleted": 12,
+    "scope": "implementation/test/build only; excludes docs/receipts/binaries/other task",
+    "details": [
+      {
+        "path": "CMakeLists.txt",
+        "added": 21,
+        "deleted": 1
+      },
+      {
+        "path": "src/ntw16s-dll/attachment.c",
+        "added": 3,
+        "deleted": 1
+      },
+      {
+        "path": "src/ntw16s-dll/control_class.h",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "path": "src/ntw16s-dll/control_protocol.c",
+        "added": 18,
+        "deleted": 4
+      },
+      {
+        "path": "src/ntw16s-dll/control_protocol.h",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "path": "src/ntw16s-dll/controls.c",
+        "added": 29,
+        "deleted": 2
+      },
+      {
+        "path": "src/ntw16s-dll/controls.h",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "path": "src/ntw16s-dll/injection/startup_hooks.c",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "path": "src/ntw16s-dll/injection/window_titles.c",
+        "added": 28,
+        "deleted": 0
+      },
+      {
+        "path": "src/ntw16s-dll/vb_text.c",
+        "added": 7,
+        "deleted": 1
+      },
+      {
+        "path": "src/ntw16s-dll/vb_text.h",
+        "added": 4,
+        "deleted": 1
+      },
+      {
+        "path": "tests/run16s-exe/startup_hooks.c",
+        "added": 13,
+        "deleted": 0
+      },
+      {
+        "path": "tools/Test-Package.ps1",
+        "added": 8,
+        "deleted": 0
+      },
+      {
+        "path": "src/ntw16s-dll/updown_paint.c",
+        "added": 103,
+        "deleted": 0
+      },
+      {
+        "path": "src/ntw16s-dll/updown_paint.h",
+        "added": 25,
+        "deleted": 0
+      },
+      {
+        "path": "tests/ntw16s-dll/updown_controls.c",
+        "added": 119,
+        "deleted": 0
+      },
+      {
+        "path": "tests/ntw16s-dll/updown_owner.c",
+        "added": 47,
+        "deleted": 0
+      }
+    ]
+  }
+}

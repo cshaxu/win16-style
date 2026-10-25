@@ -8,5 +8,6 @@ ntw16s_control_protocol *ntw16s_control_protocol_acquire(HWND);
 BOOL ntw16s_control_protocol_is(HWND,const WCHAR *);
 HMODULE ntw16s_control_protocol_list_module(HWND);
 HMODULE ntw16s_control_protocol_tree_module(HWND);
+HMODULE ntw16s_control_protocol_updown_module(HWND);
 void ntw16s_control_protocol_release(ntw16s_control_protocol *);
 #endif
