@@ -2,34 +2,32 @@
 
 ## Current Work
 
-S7普通报告列表文字已实现：保留真实DK custom-draw字体/颜色/返回值，经准确绘制DC
-暂借现有保细笔画System字形；11px E/8实际可读，标准控件/标题/菜单及原资源不变。
-最终同批四文件69/69实际包、双发布八摘要、安装12聚焦+2首次注入矩阵和真实DK/MD5/VB
-通过。旧包4负例及丢笔画原型4负例均检出。修正过x86测试未初始化rc假设，失败不隐去。
-待实际推送/远端/归档复核与scratch安全清理后才关闭S7；M0/T15保持开放，HD Tune提权
-实测默认skip、不计通过。[S7记录](../history/M0-T15-S7-report-list.md)和
-[证据](../etc/evidence/report-list.json)保留有限范围及未覆盖面。
+S7普通报告列表文字已交付：69实际包/八部署、安装12+2矩阵、真实DK/MD5/VB通过；
+实际P1远端195/严格归档重建12、184输入与188Git对象恢复校验、739映像占用0后安全清理，
+关闭S7并按既有授权顺序准入S8。保持M0/T15开放，不分配新T；HD Tune提权实测默认skip、
+不计通过。[S7记录](../history/M0-T15-S7-report-list.md)和[证据](../etc/evidence/report-list.json)
+保留x86测试rc修正/11px E8原型负例、实际覆盖和未覆盖面。
 
-## M0 T15 S7 Packet
+## M0 T15 S8 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S6关闭后顺序准入S7，唯一活动S，不复用编号 |
-| Admission And Approval | 用户“批准 自动准入s任务 到t收口为止”；永久提交推送/双发布授权保持；HD Tune管理员实测依最新要求默认skip，除非另行恢复 |
-| Objective | 核实SysListView32/TListView报告行的公开协议、native/custom-draw阶段及应用已有回调，先原型验证再有限接入现有renderer；保留数据/图标/选中/焦点/几何/原生通知，过大自动拆续S |
-| Non-goals | 不把既有边框当行绘制，不猜VCL对象或私有lParam，不任意填充真实应用的私有行对象；不改标题/字体生成/菜单/滚动条/原资源/启动，不实现树/进度/滑块/微调/任意自绘或虚拟数据模式，不做HD Tune提权实测 |
-| Reference Baseline | S6 P1 937fab06eec57c6ffd458bca18a45d3d51ca1a33四文件0.15.0.0已双发布；P2 82e9135ea612f0abd508035ce0facec28a3af3fd严格回执修正/远端192通过；183输入/65包/八部署保持 |
-| Candidate Proposal | [框架完成分解](../proposals/framework-completion.md)；[S6记录](../history/M0-T15-S6-header-controls.md)/[证据](../etc/evidence/header-controls.json)含列表/表头真实交接 |
-| Files And ABI Surface | 私有列表角色/绘制接入/受控父通知观察器与C17测试；保持三组件四产物、ABI3/31导出/现有detour容量，无额外运行产品/兄弟仓库依赖；新增内部hook先审 |
-| Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT、UI及来源策略；MinGW GCC/Ninja/稳定ccache；禁computer-use与兄弟仓库修改/依赖 |
-| Verification | 先原生双宽/COMCTL/DPI与真实自有DK/MD5只读绘制观察，区分应用自绘；自包含填充行/选中/图标/通知及应用回调对照、旧包负例/生命周期；双宽干净四文件实际包/双发布/安装/实际远端归档；HD Tune实测skip |
-| Expected Markers | 正常显示和填充行实际字形/颜色/图标/原生几何；应用custom-draw原返回与额外阶段边界、命令/数据/选中/焦点/回调销毁、DC/字体/观察器释放；实际目标DLL路径/摘要 |
-| Asset Needs | build/t15-controls登记S7原型/日志并承接七份已审源码；build/t15-package登记新干净包/备份；先提炼后清理，稳定.ninja/.ccache和外部PNG保留 |
-| Reporting Requirements | 先报告实际断点和验证过的有限路线，明确应用自绘/虚拟/特殊视图保留；包/双发布/远端协调复核和未覆盖面，不用空列表或附着代替有内容绘制证明 |
-| Stop Conditions | 无法保留应用回调/数据或需私有对象、共享宿主/既有进程注入/全局设置时保留证据与方案；不吞通知/改源图/放宽门禁；未验证模式维持原生并明确交接 |
-| Exit Criteria | 可证有限报告行接入或有证据的进一步分解；对应双宽构建/同批四文件实际包/必要双发布与八摘要/安装复验、提交推送/实际远端/协调复核和清理后关闭S7；自动续S，T15另做有限覆盖审计 |
-| Original Owner Request | “好 怎么办吧”“批准 自动准入s任务 到t收口为止”；传统程序框架/公共控件适配；“跳过这个测试 以后默认不测” |
-| Similar-Issue Sweep | 原生SysListView32与真实TListView、报告/非报告/ownerdraw/ownerdata、父custom-draw返回和额外阶段、图像/状态图/子项/编辑与隐藏、ANSI/Unicode、回调变更/销毁/独立所有权及借用DC/字体 |
+| Identifier Mode | Continuation；S7完成后顺序准入S8，唯一活动S，不复用编号，不新开T |
+| Admission And Approval | 用户“批准 自动准入s任务 到t收口为止”“继续啊”；永久提交推送/双发布授权；HD Tune管理员实测按最新要求默认skip，除非用户明确恢复 |
+| Objective | 以树控件为首核实SysTreeView32/框架实际公开协议、绘制/字体/边框和回调，再核实进度/滑块/微调；原型证明后有限接入现有renderer，过大拆顺序S，明确应用自绘边界及T15生命周期审计交接 |
+| Non-goals | 不假定商用应用控件均标准、不猜私有VCL对象或item lParam、不盲按T前缀；不改原字体生成/标题/菜单/滚动条/原五头与声明/启动语义，不做全局设置/既有进程扫描注入/HD Tune提权实测，不把关主题或附着当实际像素适配 |
+| Reference Baseline | S7 P1 16df06a971e4af7406cbafbf65fc61e9353bf2bb同批0.15.0.0四文件已双发布；184输入/69包、远端195/严格归档重建12、八摘要/安装及安全清理通过；关闭P无binary change |
+| Candidate Proposal | [框架完成分解](../proposals/framework-completion.md)；[S7记录](../history/M0-T15-S7-report-list.md)/[证据](../etc/evidence/report-list.json)交接有限报告行和未覆盖边界 |
+| Files And ABI Surface | 私有初始化角色/受控原生绘制或主题/边框接入及C17测试；三组件四产物、ABI3/31命名导出+ordinal1 NONAME、现有detour容量保持；新增内部hook先审，不默认加产品/helper |
+| Applicable Rules | EXECUTION/ARCHITECTURE/CODING/DOCUMENT/UI及来源策略；MinGW GCC/Ninja/稳定ccache，禁computer-use及兄弟仓库修改/依赖 |
+| Verification | 原生自包含填充树/进度/滑块/微调协议和真实自有MD5/DK观察；双宽COMCTL5/6/实际DPI，像素/数据/图像/选择/焦点/键盘/通知/取消/卸载/资源，旧包负例；双宽干净同批四文件实际包/双发布/安装/实际远端归档，HD Tune管理员skip |
+| Expected Markers | 准确类注册模块和已初始化公开协议、实际可见窗口/字形/边框像素、原API数据/范围/图像及通知保持，区分附着/绘制/资源释放；确认源HFONT与DC/节点所有权，异常/特殊模式真实fallback |
+| Asset Needs | build/t15-controls保留S7已审11源并登记本S新探针/日志；build/t15-package登记本S新干净包/备份；先提炼后校验根/reparse/映像占用并清理，保留稳定.ninja/.ccache及外部PNG |
+| Reporting Requirements | 先报告每类实际断点/可行路线/有限覆盖，再实施；不以空控件、消息成功或模块存在宣称样式完成；记录未覆盖/拒绝/拆分接收者，保留S7报告行及原有视觉效果 |
+| Stop Conditions | 需私有对象/全局hook或设置/共享宿主/既有进程注入才能实现时停在证据与方案；不扩权限、吞业务回调或换资源，不放宽失败断言；过大按既有授权拆后续S而非新T |
+| Exit Criteria | 完成经证实的有限原生族适配或有证据的拆分，相关双宽构建/同批包及实际测试、必要双发布八摘要/安装、提交推送/远端协调复核及安全清理后关闭S8；自动续S，T15须另做冻结全集审计，不在此凭单类关闭 |
+| Original Owner Request | “好 怎么办吧”“批准 自动准入s任务 到t收口为止”“继续啊”；“跳过这个测试 以后默认不测” |
+| Similar-Issue Sweep | 标准与EXE超类/伪类、初始化/延迟属性、app custom-draw/native状态及客户/非客户边框、父子重入/取消/销毁/独立所有者；非CP1252/复杂字形/图像/ownerdraw保留，S7 generic pending-frame类比须先有界复现，不凭推断修已确认标题 |
 
 ## Identifier State
 
@@ -37,8 +35,8 @@ S7普通报告列表文字已实现：保留真实DK custom-draw字体/颜色/�
 - Last allocated T: 15
 - Last allocated Td S: 13
 - Owner allocation constraint: 只可自行划分后续S，不得自行分配新T；保持现有T15/M0。
-- Last delivery: M0 T15 S7 P1（本地69实际包/双发布/安装及真实应用通过；实际推送/远端与归档复核待完成，不提前关闭S7）
-- Open task: T15自动续S实施/任务级审计中；S7活动，S6/S5/S4/S3/S2/S1关闭；Td S13/S12/S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
+- Last delivery: M0 T15 S7 P2（P1实际远端195/归档重建12及739映像安全清理通过；关闭S7、准入S8，四文件保持）
+- Open task: T15自动续S实施/任务级审计中；S8活动，S7/S6/S5/S4/S3/S2/S1关闭；Td S13/S12/S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
 
 ## Technical Baseline
 
@@ -46,11 +44,14 @@ S7普通报告列表文字已实现：保留真实DK custom-draw字体/颜色/�
 聚焦+2启动矩阵及真实DK/MD5/VB通过；旧包4负例/丢笔画原型4负例有效。报告行仅新建
 已拥有的初始化列表和同步paint/print准确DC，保留原生数据/图像/字体属性/列几何/
 custom-draw；新列表复用现有保笔画租约，标题/字体生成/菜单/滚动条/原五头/声明/
-18表、三组件四产物/ABI3/31导出/31detours32slots不变。当前P1仍待实际远端/归档
-复核与安全清理，不关闭S7/T15；HD Tune提权默认skip。详情见[S7记录](../history/M0-T15-S7-report-list.md)
+18表、三组件四产物/ABI3/31导出/31detours32slots不变。P1实际远端195/严格归档重建12
+通过，184源码/八部署/八旧备份可恢复；739任务映像独占检查0占用后清理，仅11已审源
+交接S8，稳定Ninja/ccache和外部PNG保持。S7关闭、S8活动，T15开放；HD Tune提权默认skip。详情见[S7记录](../history/M0-T15-S7-report-list.md)
 及[证据](../etc/evidence/report-list.json)。S6已关闭，其他任务状态和改动保持。
 
 ## Recent Closure
+
+- [T15 S7报告列表](../history/M0-T15-S7-report-list.md)：69包/八部署、安装12+2及真实DK/MD5/VB、远端195/严格归档重建12、739映像安全清理通过，S7关闭；自动续S8，M0/T15开放，HD Tune提权skip。
 
 - [T15 S6普通表头](../history/M0-T15-S6-header-controls.md)：65实际包/双发布及P1远端195，P2严格回执修正后远端192/归档重建12、安全清理通过；HD Tune提权skip，关闭S6/自动续S7，M0/T15开放。
 
@@ -106,9 +107,10 @@ custom-draw；新列表复用现有保笔画租约，标题/字体生成/菜单/
 
 ## Last Packet Closure
 
-S6 P1 937fab06完成普通文字表头及特殊格式原生保留；65实际包/10聚焦/12保留、真实
-DK/MD5/VB、八部署/安装通过，远端195匹配。严格归档查出新测试工作区CRLF回执，
-P2 82e9135只修正原Git LF身份，导出源双宽重建12、实际P2严格归档/远端192通过；
-已测四文件不变。183输入/八当前/八旧备份可恢复，精确两root无reparse/活exe0、
-67DLL占用0，提炼证据后清理，仅七份观察器源码转S7；稳定缓存/外部PNG保持。
-S6关闭、本P准入S7报告行研究/有限适配，M0/T15及其他任务保持，HD Tune管理员实测默认skip。
+S7 P1 16df06a完成有限报告列表文字与11px保笔画字形；69实际包/双发布八摘要、安装
+12聚焦+2矩阵、真实DK/MD5/VB及旧包4/丢笔画原型4负例通过。实际远端195匹配、严格
+归档/双宽重建12通过。188Git对象检查证明184输入/八旧备份可恢复，当前八部署再核对。
+精确两scratch无reparse；RM无法查询355字符路径，未据此删除。原生独占打开正例拒绝
+运行EXE/已载DLL C0000043，卸载后成功；739任务PE含六长路径全通过，无写入后清理。
+仅11已审辅助源转S8，稳定缓存与外部PNG保持；本关闭P不改binary，M0/T15及其他任务
+状态保持。S7关闭，本P准入S8树/剩余公共控件研究与有限适配，HD Tune管理员默认skip。

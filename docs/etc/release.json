@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T15 S7 P1",
-  "stage": "S7 product verified and published to both fixed roots; actual remote/archive review and cleanup pending; M0/T15 open",
+  "delivery": "M0 T15 S7 P2",
+  "stage": "S7 closed after P1 actual remote195/strict archive/canonical12/739-image safe cleanup; S8 admitted, M0/T15 open",
   "version": "0.15.0.0",
   "version_contract": "Fixed T15 version; S/P distinguished by Git and artifact SHA; no new T allocated",
   "package_directory": "assets",
@@ -1041,9 +1041,209 @@
       "reparenting, label editing, full multilingual/RTL/IME/accessibility and physical input unproved",
       "generic pending-frame cancellation analogy unconfirmed, retained for T15 lifecycle audit",
       "HD Tune elevated real-app default skip; other families receive next S"
-    ]
+    ],
+    "P1_actual_remote": {
+      "status": "passed",
+      "commit": "16df06a971e4af7406cbafbf65fc61e9353bf2bb",
+      "remote_main": "16df06a971e4af7406cbafbf65fc61e9353bf2bb",
+      "files": 195,
+      "source_inputs": 184,
+      "seconds": 11.765944999991916
+    },
+    "P1_actual_archive": {
+      "status": "passed",
+      "source_inputs": 184,
+      "recorded_alternate_git_bytes": [
+        "tools/Build-Package.ps1",
+        "tools/Verify-Governance.ps1"
+      ],
+      "archive_artifacts": 4,
+      "deployed_hashes": 8
+    },
+    "coordinator_review": {
+      "role": "same session, sequential independent audit of actual commit diff/requests/receipts",
+      "commit": "16df06a971e4af7406cbafbf65fc61e9353bf2bb",
+      "source_test_build_statistics": "10 files +355/-28 net327; docs/binaries excluded",
+      "preserved_other_work": "QUEUE and both untracked global/outline proposals untouched",
+      "scope": "S7 only, M0/T15 open; next native families require finite sequential S",
+      "issues": "no resource/ABI/helper expansion; x86 fixture rc and small-font prototype failures explicitly retained; real native data/callback preservation and independent mask checked"
+    },
+    "P1_canonical_build": {
+      "selection": "^core/(abi|vb-font|header-v5|header-v6|header-owner|list-report-v5|list-report-v6)$",
+      "exit_code": 0,
+      "targets": "all",
+      "status": "passed",
+      "architectures": [
+        "x86",
+        "x64"
+      ],
+      "build_jobs": 8,
+      "profile": "Focused",
+      "build_root": "O:\\repos.hobby\\win16style\\build\\t15-controls\\s7-committed-review\\build\\.ninja",
+      "test_jobs": 4,
+      "tests": [
+        {
+          "test_seconds": 2.788045900000725,
+          "build_seconds": 83.37575429998105,
+          "tests": 5,
+          "passed": 5,
+          "architecture": "x86",
+          "configure_seconds": 20.03912729996955,
+          "skipped": []
+        },
+        {
+          "test_seconds": 7.797655300004408,
+          "build_seconds": 68.91455719998339,
+          "tests": 7,
+          "passed": 7,
+          "architecture": "x64",
+          "configure_seconds": 9.293111700040754,
+          "skipped": []
+        }
+      ]
+    },
+    "final_old_source_test_negative": "four x86/x64 COMCTL5/6 final frozen executables each exit1 at unchanged-glyph assertion against S6 backup flat package"
   },
   "architecture": "three components, four products; no sibling build/runtime dependency; native real-app tests optional",
   "binary_batch_delivery": "M0 T15 S7 P1",
-  "source_snapshot_format": "SHA256 of UTF8 compact sorted-key JSON array of path/sha256/git_blob_sha256 when different"
+  "source_snapshot_format": "SHA256 of UTF8 compact sorted-key JSON array of path/sha256/git_blob_sha256 when different",
+  "closure": {
+    "scope": "S7 only; M0/T15 open",
+    "P1": "16df06a971e4af7406cbafbf65fc61e9353bf2bb",
+    "source_inputs_recoverable": 184,
+    "Git_blob_batch_reads": 188,
+    "backups_recoverable": 8,
+    "backup_commit": "86b546b9011db7da8f9bbaa7a4abeb3f70b0becd",
+    "deployed_rechecked": 8,
+    "cleanup_safety": {
+      "reparse_points": 0,
+      "rm_limit": "Normal355-char path error29, extended error6; no short aliases; no deletion attempted on failure",
+      "status": "safe-to-clean",
+      "method": "NtCreateFile FILE_OPEN read/write exclusive access, immediate close, no bytes/attributes written; running self and loaded DLL must refuse C0000043; unloaded succeeds",
+      "long_paths": 6,
+      "positive_control": "IMAGE_GUARD_POSITIVE exe=c0000043 loaded_dll=c0000043 unloaded_dll=00000000",
+      "resources": 739,
+      "excluded_own_joined_auditor": "s7-image-guard.exe; each invocation joined before deletion",
+      "queries": [
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 3,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=3 no_write=1"
+        }
+      ],
+      "live_task_images": 0,
+      "roots": [
+        "O:/repos.hobby/win16style/build/t15-controls",
+        "O:/repos.hobby/win16style/build/t15-package"
+      ]
+    },
+    "retained_reviewed_sources": [
+      "file-owners.c",
+      "md5-driver.c",
+      "md5-probe.c",
+      "verify-remote.py",
+      "s6-list-report.h",
+      "s6-dk-probe.c",
+      "s6-list-header-api.c",
+      "image-guard.c",
+      "s7-dk-owned-driver.c",
+      "s7-dk-owned-probe.c",
+      "s7-owned-folder.h"
+    ],
+    "binary_change_in_closing_P": "none; same69-case-tested P1 four files retained at both roots",
+    "cleanup": "completed: both exact registered roots cleaned after recovery/safety evidence;11 reviewed sources retained in t15-controls; t15-package removed; stable Ninja/ccache/external PNG preserved",
+    "closing_delivery": "M0 T15 S7 P2",
+    "following_scope": "initialized tree/progress/trackbar/updown protocols, finite renderer adapters and lifecycle audit; sequential S if necessary; HD Tune elevated defaults skip"
+  }
 }

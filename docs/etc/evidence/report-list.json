@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "packet": "M0 T15 S7",
-  "status": "S7 product locally verified/published; actual remote/archive review and cleanup pending",
+  "status": "S7 closed after actual P1 remote195/archive/rebuild12 and safe cleanup; S8 admitted; M0/T15 open",
   "HD_Tune_elevated": "owner-requested default skip; not pass; no UAC requested",
   "implementation": "finite initialized native report client text; existing stroke-preserving host System lease; original callbacks/data/colors/font properties retained",
   "source_inputs": 184,
@@ -435,6 +435,11 @@
       "a.bin": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
       "b.bin": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
       "c.bin": "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f"
+    },
+    "independent_crc32": {
+      "a.bin": "91267E8A",
+      "b.bin": "91267E8A",
+      "c.bin": "F6A606E3"
     }
   },
   "images": {
@@ -479,5 +484,554 @@
     ],
     "old_paths": "none deleted/moved; original resources retained",
     "other_tasks": "QUEUE and global-style-mode/outline-window-move proposals preserved unstaged"
-  }
+  },
+  "P1_actual_remote": {
+    "status": "passed",
+    "commit": "16df06a971e4af7406cbafbf65fc61e9353bf2bb",
+    "remote_main": "16df06a971e4af7406cbafbf65fc61e9353bf2bb",
+    "files": 195,
+    "source_inputs": 184,
+    "seconds": 11.765944999991916
+  },
+  "P1_actual_archive": {
+    "status": "passed",
+    "source_inputs": 184,
+    "recorded_alternate_git_bytes": [
+      "tools/Build-Package.ps1",
+      "tools/Verify-Governance.ps1"
+    ],
+    "archive_artifacts": 4,
+    "deployed_hashes": 8
+  },
+  "coordinator_review": {
+    "role": "same session, sequential independent audit of actual commit diff/requests/receipts",
+    "commit": "16df06a971e4af7406cbafbf65fc61e9353bf2bb",
+    "source_test_build_statistics": "10 files +355/-28 net327; docs/binaries excluded",
+    "preserved_other_work": "QUEUE and both untracked global/outline proposals untouched",
+    "scope": "S7 only, M0/T15 open; next native families require finite sequential S",
+    "issues": "no resource/ABI/helper expansion; x86 fixture rc and small-font prototype failures explicitly retained; real native data/callback preservation and independent mask checked"
+  },
+  "P1_canonical_build": {
+    "selection": "^core/(abi|vb-font|header-v5|header-v6|header-owner|list-report-v5|list-report-v6)$",
+    "exit_code": 0,
+    "targets": "all",
+    "status": "passed",
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "build_jobs": 8,
+    "profile": "Focused",
+    "build_root": "O:\\repos.hobby\\win16style\\build\\t15-controls\\s7-committed-review\\build\\.ninja",
+    "test_jobs": 4,
+    "tests": [
+      {
+        "test_seconds": 2.788045900000725,
+        "build_seconds": 83.37575429998105,
+        "tests": 5,
+        "passed": 5,
+        "architecture": "x86",
+        "configure_seconds": 20.03912729996955,
+        "skipped": []
+      },
+      {
+        "test_seconds": 7.797655300004408,
+        "build_seconds": 68.91455719998339,
+        "tests": 7,
+        "passed": 7,
+        "architecture": "x64",
+        "configure_seconds": 9.293111700040754,
+        "skipped": []
+      }
+    ]
+  },
+  "package_case_inventory": [
+    {
+      "name": "abi-x86",
+      "exit_code": 0,
+      "seconds": 0.2606429
+    },
+    {
+      "name": "abi-x64",
+      "exit_code": 0,
+      "seconds": 0.293225
+    },
+    {
+      "name": "demo-boundary",
+      "exit_code": 0,
+      "seconds": 0.4263617
+    },
+    {
+      "name": "demo-pair",
+      "exit_code": 0,
+      "seconds": 2.0572673
+    },
+    {
+      "name": "wait-contract",
+      "exit_code": 0,
+      "seconds": 8.0311963
+    },
+    {
+      "name": "font-layout-x64",
+      "exit_code": 0,
+      "seconds": 78.7428939
+    },
+    {
+      "name": "font-layout-x86",
+      "exit_code": 0,
+      "seconds": 150.3825695
+    },
+    {
+      "name": "menu-cancel-x86",
+      "exit_code": 0,
+      "seconds": 64.8217271
+    },
+    {
+      "name": "startup-error-unit-32",
+      "exit_code": 0,
+      "seconds": 0.3030087
+    },
+    {
+      "name": "startup-error-unit-64",
+      "exit_code": 0,
+      "seconds": 0.2395447
+    },
+    {
+      "name": "legacy-rejection",
+      "exit_code": 0,
+      "seconds": 1.1806856
+    },
+    {
+      "name": "cli",
+      "exit_code": 0,
+      "seconds": 0.7519905
+    },
+    {
+      "name": "automatic",
+      "exit_code": 0,
+      "seconds": 2.5194995
+    },
+    {
+      "name": "startup-errors",
+      "exit_code": 0,
+      "seconds": 11.4823428
+    },
+    {
+      "name": "propagation",
+      "exit_code": 0,
+      "seconds": 7.5474477
+    },
+    {
+      "name": "long-path",
+      "exit_code": 0,
+      "seconds": 1.6828555
+    },
+    {
+      "name": "cmd-nested",
+      "exit_code": 0,
+      "seconds": 3.7718365
+    },
+    {
+      "name": "legacy-iat-32",
+      "exit_code": 0,
+      "seconds": 0.8389994
+    },
+    {
+      "name": "legacy-iat-64",
+      "exit_code": 0,
+      "seconds": 0.8702869
+    },
+    {
+      "name": "uac-unit-32",
+      "exit_code": 0,
+      "seconds": 0.6868213
+    },
+    {
+      "name": "cli-failures",
+      "exit_code": 0,
+      "seconds": 3.8718265
+    },
+    {
+      "name": "uac-unit-64",
+      "exit_code": 0,
+      "seconds": 0.9134418
+    },
+    {
+      "name": "vb-font-32",
+      "exit_code": 0,
+      "seconds": 2.3637602
+    },
+    {
+      "name": "vb-font-64",
+      "exit_code": 0,
+      "seconds": 2.1104584
+    },
+    {
+      "name": "vb-controls-64",
+      "exit_code": 0,
+      "seconds": 6.276407
+    },
+    {
+      "name": "vb-controls-32",
+      "exit_code": 0,
+      "seconds": 7.3540058
+    },
+    {
+      "name": "control-extensions-32",
+      "exit_code": 0,
+      "seconds": 1.636384
+    },
+    {
+      "name": "control-extensions-64",
+      "exit_code": 0,
+      "seconds": 1.4024795
+    },
+    {
+      "name": "control-protocol-owner-32",
+      "exit_code": 0,
+      "seconds": 0.5498189
+    },
+    {
+      "name": "control-protocol-owner-64",
+      "exit_code": 0,
+      "seconds": 0.6993746
+    },
+    {
+      "name": "tab-controls-32",
+      "exit_code": 0,
+      "seconds": 1.6557258
+    },
+    {
+      "name": "tab-controls-64",
+      "exit_code": 0,
+      "seconds": 1.727475
+    },
+    {
+      "name": "tab-controls-dpi-32",
+      "exit_code": 0,
+      "seconds": 1.9141251
+    },
+    {
+      "name": "tab-controls-dpi-64",
+      "exit_code": 0,
+      "seconds": 1.470131
+    },
+    {
+      "name": "tab-controls-v5-32",
+      "exit_code": 0,
+      "seconds": 1.0602393
+    },
+    {
+      "name": "tab-controls-v5-64",
+      "exit_code": 0,
+      "seconds": 0.9100864
+    },
+    {
+      "name": "tab-controls-v5-dpi-32",
+      "exit_code": 0,
+      "seconds": 2.254383
+    },
+    {
+      "name": "tab-controls-v5-dpi-64",
+      "exit_code": 0,
+      "seconds": 2.1840354
+    },
+    {
+      "name": "pending-control-owner-64",
+      "exit_code": 0,
+      "seconds": 1.7730829
+    },
+    {
+      "name": "pending-control-owner-32",
+      "exit_code": 0,
+      "seconds": 2.4612308
+    },
+    {
+      "name": "header-v5-32",
+      "exit_code": 0,
+      "seconds": 1.7057159
+    },
+    {
+      "name": "header-v5-64",
+      "exit_code": 0,
+      "seconds": 1.6525761
+    },
+    {
+      "name": "header-v5-dpi-64",
+      "exit_code": 0,
+      "seconds": 1.8601434
+    },
+    {
+      "name": "header-v5-dpi-32",
+      "exit_code": 0,
+      "seconds": 2.2724748
+    },
+    {
+      "name": "header-v6-32",
+      "exit_code": 0,
+      "seconds": 1.8141237
+    },
+    {
+      "name": "header-v6-64",
+      "exit_code": 0,
+      "seconds": 1.6558527
+    },
+    {
+      "name": "header-v6-dpi-64",
+      "exit_code": 0,
+      "seconds": 1.2446006
+    },
+    {
+      "name": "header-v6-dpi-32",
+      "exit_code": 0,
+      "seconds": 1.7479084
+    },
+    {
+      "name": "list-report-v5-64",
+      "exit_code": 0,
+      "seconds": 8.9761796
+    },
+    {
+      "name": "list-report-v5-32",
+      "exit_code": 0,
+      "seconds": 11.9416247
+    },
+    {
+      "name": "menu-cancel-x64",
+      "exit_code": 0,
+      "seconds": 69.9602054
+    },
+    {
+      "name": "header-owner-32",
+      "exit_code": 0,
+      "seconds": 0.3629785
+    },
+    {
+      "name": "list-report-v6-64",
+      "exit_code": 0,
+      "seconds": 8.0500972
+    },
+    {
+      "name": "header-owner-64",
+      "exit_code": 0,
+      "seconds": 0.3978135
+    },
+    {
+      "name": "list-report-v6-32",
+      "exit_code": 0,
+      "seconds": 11.7715636
+    },
+    {
+      "name": "control-visibility-64",
+      "exit_code": 0,
+      "seconds": 1.6395717
+    },
+    {
+      "name": "control-visibility-32",
+      "exit_code": 0,
+      "seconds": 2.0459139
+    },
+    {
+      "name": "dialog-scope-64",
+      "exit_code": 0,
+      "seconds": 19.8250635
+    },
+    {
+      "name": "theme-stage-32",
+      "exit_code": 0,
+      "seconds": 0.1874297
+    },
+    {
+      "name": "theme-stage-64",
+      "exit_code": 0,
+      "seconds": 0.2451558
+    },
+    {
+      "name": "dialog-scope-32",
+      "exit_code": 0,
+      "seconds": 22.3155563
+    },
+    {
+      "name": "superclass-64",
+      "exit_code": 0,
+      "seconds": 2.1777307
+    },
+    {
+      "name": "superclass-32",
+      "exit_code": 0,
+      "seconds": 2.6841525
+    },
+    {
+      "name": "rollback",
+      "exit_code": 0,
+      "seconds": 3.9981674
+    },
+    {
+      "name": "creation-contract",
+      "exit_code": 0,
+      "seconds": 9.0645022
+    },
+    {
+      "name": "dialog-show-64",
+      "exit_code": 0,
+      "seconds": 89.6223097
+    },
+    {
+      "name": "dialog-show-32",
+      "exit_code": 0,
+      "seconds": 98.7574715
+    },
+    {
+      "name": "dialogs",
+      "exit_code": 0,
+      "seconds": 88.8270695
+    },
+    {
+      "name": "messages",
+      "exit_code": 0,
+      "seconds": 84.1211874
+    }
+  ],
+  "final_old_source_test_negative": "four x86/x64 COMCTL5/6 final frozen executables each exit1 at unchanged-glyph assertion against S6 backup flat package",
+  "cleanup": {
+    "state": "completed: both exact registered roots cleaned after recovery/safety evidence;11 reviewed sources retained in t15-controls; t15-package removed; stable Ninja/ccache/external PNG preserved",
+    "safety": {
+      "reparse_points": 0,
+      "rm_limit": "Normal355-char path error29, extended error6; no short aliases; no deletion attempted on failure",
+      "status": "safe-to-clean",
+      "method": "NtCreateFile FILE_OPEN read/write exclusive access, immediate close, no bytes/attributes written; running self and loaded DLL must refuse C0000043; unloaded succeeds",
+      "long_paths": 6,
+      "positive_control": "IMAGE_GUARD_POSITIVE exe=c0000043 loaded_dll=c0000043 unloaded_dll=00000000",
+      "resources": 739,
+      "excluded_own_joined_auditor": "s7-image-guard.exe; each invocation joined before deletion",
+      "queries": [
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 32,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1"
+        },
+        {
+          "resources": 3,
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=3 no_write=1"
+        }
+      ],
+      "live_task_images": 0,
+      "roots": [
+        "O:/repos.hobby/win16style/build/t15-controls",
+        "O:/repos.hobby/win16style/build/t15-package"
+      ]
+    },
+    "recovery": {
+      "status": "passed",
+      "source_inputs_recoverable": 184,
+      "Git_blob_batch_reads": 188,
+      "old_backup_files_recoverable": 8,
+      "backup_commit": "86b546b9011db7da8f9bbaa7a4abeb3f70b0becd",
+      "current_deployed_rechecked": 8,
+      "raw_EOL_restoration": "explicit recorded hashes checked, no resource or gate relaxation"
+    },
+    "retained_reviewed_sources": {
+      "file-owners.c": "6c73285aa04fb564db13c4093396a6d5584db1496527df1ab754bf8eb7de79c8",
+      "md5-driver.c": "e334bbbd0c764196abd48427126b8ef41eda725f1fb969e2c23d7005be275f53",
+      "md5-probe.c": "5423599d06e219df353d1c50f55cac8e90779dcc9656446011140864f64e7969",
+      "verify-remote.py": "b8ef757e825ad8e6c224690d6c3ed2ccac63ac797b084861d39ba255d81de217",
+      "s6-list-report.h": "17b97fd73b04aaa7cc1c7203c66eec9104e9b537191cae8925778be8b2bb3cc4",
+      "s6-dk-probe.c": "a8fd253ac4e66d21c94ed2a6f1aa6a194308bf3fbd0522374bd66f3175c9d288",
+      "s6-list-header-api.c": "d634a7d272533d42a30e1e9e7e01820dde8cbe0ef32b7d3cacf489cb2c01ea29",
+      "image-guard.c": "1c5a49290cdfbd5944c9566b1bf11f1bc607397bb12491c11fe79578e38ed549",
+      "s7-dk-owned-driver.c": "4ae09231d37065a5fd2954d6812035cbe1726a9b4eb7954546efe84aad84e99d",
+      "s7-dk-owned-probe.c": "07438de907c8d01d25fba2670cd1dcdd6f0c543052f0f12a6e1c6004c3140da0",
+      "s7-owned-folder.h": "77a56db7626ccb4b66fb769d84e6dd873c2e89a77324c3762979a29a3cb5496c"
+    },
+    "owned_DK_copy_recoverable": "read-only original D:/programs/misc/DoubleKiller.exe SHA matches;96 task-data bytes captured as hex",
+    "not_deleted": "stable build/.ninja and build/.ccache; external screenshots; all user files and other task roots"
+  },
+  "closing_delivery": "M0 T15 S7 P2"
 }

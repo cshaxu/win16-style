@@ -1,7 +1,7 @@
 # M0 T15 S7 report-list client text
 
-Status: final stroke-preserving package69/69 and dual publication/installed
-verification passed; actual remote/archive review and cleanup pending.
+Status: S7 closed after actual P1 remote195/archive/canonical rebuild12 and safe
+cleanup. S8 is admitted sequentially; M0/T15 remain open.
 M0/T15 remain open. HD Tune elevated real-app testing defaults to owner-requested
 skip, never pass. Other tasks' QUEUE and two proposal edits remain untouched.
 
@@ -114,3 +114,39 @@ See release.json for exact four hashes and structured evidence for all scopes,
 source statistics, raw-failure disposition and external screenshots. No fifth
 product, source/resource substitution or shared-class/global setting is introduced.
 S7 is still open pending pushed-content review and safe registered cleanup.
+
+
+## Actual P1 review and cleanup readiness
+
+P1 16df06a971e4af7406cbafbf65fc61e9353bf2bb is pushed;195 actual remote files
+(including184source inputs and four products) match in11.765945s. Actual Git
+archive strict source/resource/governance gates pass. Two build-script EOL
+identities use their already recorded canonical hashes; no C receipt repair or
+gate relaxation is needed. Archive source independently rebuilds both widths
+and passes12 ABI/report glyph/header/font owner checks. Its new build output is
+not substituted into the69-case-tested published batch.
+
+A single Git cat-file batch checks188objects:184current source identities and
+four S6 assets that recover all eight deployment backups. Current eight deployed
+hashes match. Exact registered roots contain no reparse points. Restart Manager
+cannot query the actual355-character long-path fixture (29; extended-path6;
+no existing short alias). No deletion follows that failed guard. A native C17
+NtCreateFile FILE_OPEN exclusive read/write-access probe writes no bytes or
+attributes; positive controls reject its running EXE and loaded passive DLL with
+C0000043, and accept the unloaded DLL. It then accepts all739other scratch
+EXE/DLL resources, including six long paths. All queries have joined before
+removing their own auditor. Reviewed sources are retained for the next S; stable
+Ninja/ccache and external PNGs are preserved. The original optional DK image is
+still byte-identical, and generated fixture96bytes are captured as hex.
+
+
+## P2 closure and handoff
+
+Recovery/safety evidence is extracted before cleanup. Both exact registered
+scratch roots are safely reclaimed; only11 reviewed helper sources remain in
+build/t15-controls, including the validated image-lock probe and real-app
+observers. Stable Ninja/ccache and external PNGs stay. The tested P1 four files
+remain unchanged in both deployed locations; this closing P has no binary
+change. S7 closes and S8 is admitted for finite tree/other native control protocol
+investigation and adaptations. T15 requires a later complete finite scope audit;
+it is not closed here. HD Tune elevated tests continue to default to skip.
