@@ -2,42 +2,21 @@
 
 ## Current Work
 
-S12冻结18单位审计完成：15有限实现/回归、2原生保留/边界、1用户指定HD Tune提权skip，
-未将skip或附着计换肤通过。197产品/测试/构建输入与S11逐字节相同；按每S规范独立
-干净双宽/同批四文件91实际包389.556秒、双发布八摘要及14安装通过，真实MD5/DK
-正常显示/退出Job归零、标题掩码0差异。S12 P1待推送后的实际远端/归档/恢复/安全
-清理复核；S12/T15/M0保持开放，完成后关闭本T并停待用户验收，不准入新T。
-[审计记录](../history/M0-T15-S12-framework-audit.md)/[证据](../etc/evidence/framework-audit.json)。
-
-## M0 T15 S12 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Continuation；S11完整复核清理后顺序准入S12，唯一活动S，不新T |
-| Admission And Approval | 用户批准自动准入S直到T收口及永久提交推送；HD Tune提权默认skip |
-| Objective | 冻结S11已发布包和T15覆盖全集，逐项核对实现/像素/原生语义/所有权证据或明确原生保留及用户skip，满足任务级退出条件后关闭T15并停在用户验收 |
-| Non-goals | 不新增产品功能/组件/产物/T，不把附着当绘制、不把历史HD Tune当当前实测；不改资源/已确认效果、不用computer-use、不执行UAC、不修改兄弟仓库或其他任务 |
-| Reference Baseline | S11 P1 2bf6c55121d65aacde12a716d8f176eb566f6d09；197输入SHA1f196f850d88d876b3e18e14616c95220c5f8bed07ffd82b9afbe0b1c776ba73；91实际包/38安装/双发布八摘要/远端210/归档双DLL+4/201对象恢复/277映像安全清理通过 |
-| Candidate Proposal | [框架完成计划的Frozen framework coverage audit](../proposals/framework-completion.md)冻结18单位及完成谓词；[S11历史](../history/M0-T15-S11-updown-controls.md)/[证据](../etc/evidence/updown-controls.json) |
-| Files And ABI Surface | 任务覆盖审计/权威状态/证据；产品源码/测试输入不变，按每S规范独立双宽干净构建/同批四文件实际包；若重链接binary改变则双发布，35detours40slots、公开ABI3/31命名+ordinal1及三组件四产物保持 |
-| Applicable Rules | 完整Task Reading Set及EXECUTION任务级审计、来源/资源/执行卫生；M0固定，不新T、不改rules |
-| Verification | 按冻结18单位核对S1..S11及S11的91实际包独立case/14聚焦/38安装/实际远端归档；本S独立干净双宽/同批四文件实际包及必要双发布、安装/远端复核/安全清理；明确HD Tune skip、自绘/特殊模式原生保留和真实x64 VB6/物理输入等未覆盖；来源/资源/治理门禁与实际远端内容复核 |
-| Expected Markers | 每个覆盖单位有证据或明确原生保留/用户skip且接收权威可查；无未处置的范围内故障，未把不支持计通过 |
-| Asset Needs | build/t15-controls承接45已审源码并登记本S原生包观察；build/t15-package登记S12干净包/实际包测试/发布备份，证据先提炼再安全清理；原生外部PNG和稳定缓存保留 |
-| Reporting Requirements | 逐项表明历史与当前、本机真实与自包含、模块/初始化/附着/绘制区别；同批四文件及实际部署摘要；完成才关闭T15，M0开放，停待用户验收 |
-| Stop Conditions | 出现已授权范围内未解决产品缺陷则不关闭T15，按授权续后续S；重大架构/安全边界或自绘私有对象不实施，报告证据与具体边界；不覆盖其他任务 |
-| Exit Criteria | 冻结全集全部证据核实/明示原生保留或用户skip，无隐含待做；权威一致、门禁/八摘要/推送与实际远端复核通过后关闭S12/T15，M0开放，不准入队列新T |
-| Original Owner Request | 批准 自动准入s任务 到t收口为止；继续啊；HD Tune跳过这个测试 以后默认不测 |
-| Similar-Issue Sweep | 六USER协议/精确VB6/初始化后九框架角色、菜单/对话框/图像/分页/表头/列表/树/进度/滑块/微调；自绘/特殊样式/语言/生命周期、真实应用及用户skip逐项处置 |
+T15经S12冻结18单位审计收口：15有限实现/回归、2原生保留/边界、1用户指定HD Tune
+提权skip；不将附着、原生保留或skip冒充换肤成功。S12独立干净双宽、同批四文件
+91实际包389.556秒、14安装、双发布八摘要及真实MD5/DK/标题掩码0差异通过；实际
+远端207/197输入、严格归档双DLL+4、201对象恢复及258映像安全清理通过。49已审
+源码和稳定缓存/外部PNG保持。S12/T15关闭，M0开放；当前无活动任务包，停待用户
+外观验收，不自动准入队列候选。有限支持和未覆盖面见[审计](../history/M0-T15-S12-framework-audit.md)/[证据](../etc/evidence/framework-audit.json)。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 15
 - Last allocated Td S: 13
-- Owner allocation constraint: 只可自行划分后续S，不得自行分配新T；保持现有T15/M0。
-- Last delivery: M0 T15 S12 P1（独立91实际包/双发布及14安装本地通过，待实际远端/归档/清理复核）
-- Open task: T15自动续S实施/任务级审计中；S12活动，S11/S10/S9/S8/S7/S6/S5/S4/S3/S2/S1关闭；Td S13/S12/S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
+- Owner allocation constraint: 不得自行分配新T；T15已收口并停待用户验收，M0保持开放，队列候选未准入。
+- Last delivery: M0 T15 S12 P2（冻结18单位审计/独立91实际包/14安装/远端207/197输入/201对象恢复/258映像清理；S12/T15关闭）
+- Open task: 无活动任务包；T15 S12/S11/S10/S9/S8/S7/S6/S5/S4/S3/S2/S1及T15关闭，M0开放等待用户验收；Td S13/S12/S11、T14 S3/T14、T13/T12/T11/T9/T8及Td S9/S10保持关闭；T10取消。
 
 ## Technical Baseline
 
@@ -47,10 +26,12 @@ S12冻结18单位审计完成：15有限实现/回归、2原生保留/边界、1
 原生UpDown用实际DFC/DTB方向/状态及准确窗口/打印/原生兼容DC；32弱映射、退役
 清理和35进程内detours/40slots。公开ABI3/31命名+ordinal1、三组件四产物保持。
 原五头/声明/18表及已确认标题/字体/菜单/滚动条算法不变；S11/S12真实MD5标题
-292x24黑掩码0差异。纯C17/GCC/Ninja/ccache；S12待实际远端/归档/清理复核，
-T15/M0开放。有限支持及明确原生保留以[UI](../design/UI.md)和[审计](../history/M0-T15-S12-framework-audit.md)为准。
+292x24黑掩码0差异。纯C17/GCC/Ninja/ccache；S12实际远端/归档/恢复/清理复核通过，
+S12/T15关闭，M0开放待用户外观验收。有限支持及明确原生保留以[UI](../design/UI.md)和[审计](../history/M0-T15-S12-framework-audit.md)为准。
 
 ## Recent Closure
+
+- [T15 S12冻结全集审计](../history/M0-T15-S12-framework-audit.md)：18单位明确处置，独立91包/14安装、八部署/真实MD5-DK、实际远端207/197输入、归档双DLL+4/201对象恢复及258映像清理通过；49源码保留，S12/T15关闭，M0开放待用户验收。
 
 - [T15 S11原生微调](../history/M0-T15-S11-updown-controls.md)：91实际包/38安装、八部署、远端210/197输入、归档双DLL+4/201对象恢复及277映像安全清理通过；S11关闭/续S12冻结全集审计，M0/T15开放。
 
@@ -116,7 +97,8 @@ T15/M0开放。有限支持及明确原生保留以[UI](../design/UI.md)和[审�
 
 ## Last Packet Closure
 
-S11 P1 2bf6c55完整交付91实际包/38安装、双发布八摘要、原生MD5/DK/标题0差异；
-实际远端210/197输入、归档双DLL+4、201对象恢复及277映像安全清理通过。45已审
-源码保留，稳定缓存/外部PNG不动。P2无产品输入/binary变化，关闭S11/续S12任务级
-冻结18单位审计，T15/M0开放；HD Tune管理员默认skip，未支持不计通过。
+S12 P1 7ed104b完整任务级审计18单位（15有限实现/回归、2原生保留/边界、1用户skip），
+独立197输入同源干净双宽、91实际包389.556秒/14安装、双发布八摘要、真实MD5/DK及
+标题0差异通过。实际远端207/197输入、归档双DLL+4、201对象恢复及258映像安全清理
+通过；49已审源码恢复、缓存/外部PNG保持。P2无产品输入/binary变化，S12/T15关闭，
+M0开放，停待用户验收，不新T或S；HDTune提权默认skip和有限边界不计通过。

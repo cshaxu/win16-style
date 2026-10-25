@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T15 S12 P1",
-  "stage": "Frozen18-unit T15 audit verified; independent91-case batch double published;remote review pending;S12/T15/M0 open",
+  "delivery": "M0 T15 S12 P2",
+  "stage": "S12/T15 closed:18-unit audit15 finite implementations/regressions,2 native/exclusion dispositions,1 owner skip; independent91 package/14 installed/real apps,remote207/197 inputs,strict archive dual DLL+4,recovery201 and258-image cleanup;M0 open;stop for owner acceptance",
   "version": "0.15.0.0",
   "version_contract": "Fixed T15 version; S/P distinguished by Git and artifact SHA; no new T allocated",
   "package_directory": "assets",
@@ -1089,6 +1089,76 @@
       "height": 24,
       "width": 292,
       "black_mask_differences": 0
+    }
+  },
+  "closure": {
+    "P1_actual_remote": {
+      "status": "passed",
+      "commit": "7ed104b189675a2517c44ad266f1684a4488a1b4",
+      "remote_main": "7ed104b189675a2517c44ad266f1684a4488a1b4",
+      "files": 207,
+      "source_inputs": 197,
+      "seconds": 14.400865599978715
+    },
+    "canonical_affected_rebuild": {
+      "build_root": "O:\\repos.hobby\\win16style\\build\\t15-controls\\s12-canonical\\build\\.ninja",
+      "status": "passed",
+      "tests": [
+        {
+          "skipped": [],
+          "test_seconds": 1.1701737000257708,
+          "architecture": "x86",
+          "build_seconds": 9.74339009996038,
+          "passed": 2,
+          "configure_seconds": 6.1443261000094935,
+          "tests": 2
+        },
+        {
+          "skipped": [],
+          "test_seconds": 1.0521301999688148,
+          "architecture": "x64",
+          "build_seconds": 11.77825329999905,
+          "passed": 2,
+          "configure_seconds": 5.991080300009344,
+          "tests": 2
+        }
+      ],
+      "selection": "^core/(abi|pending-frame-owner)$",
+      "targets": "ntw16s,core-abi,core-pending-frame-owner",
+      "test_jobs": 2,
+      "architectures": [
+        "x86",
+        "x64"
+      ],
+      "build_jobs": 8,
+      "exit_code": 0,
+      "profile": "Focused"
+    },
+    "P1_recovery_archive": {
+      "status": "passed",
+      "commit": "7ed104b189675a2517c44ad266f1684a4488a1b4",
+      "source_inputs": 197,
+      "Git_objects": 201,
+      "old_backups": 8,
+      "archive_artifacts": 4,
+      "deployed_artifacts": 8,
+      "raw_recovery_EOL": [
+        "LICENSE",
+        "tools/Build-Package.ps1",
+        "tools/Verify-Governance.ps1"
+      ],
+      "archive_alternate_identity": [
+        "tools/Build-Package.ps1",
+        "tools/Verify-Governance.ps1"
+      ],
+      "original_DoubleKiller_equals_owned_copy": true
+    },
+    "cleanup": "completed: exact registered two roots cleared after actual remote/archive/recovery/8 deployment hashes/reparse0/image guard; reviewed sources restored; stable .ninja/.ccache and external PNG retained",
+    "closing_delivery": {
+      "delivery": "M0 T15 S12 P2",
+      "binary_change": "none in closing P; same independent S12 P1 tested/published four files and197 inputs",
+      "task_disposition": "S12 andT15 closed after task-level frozen audit;M0 remains open;owner appearance acceptance pending;no newT/S admitted",
+      "scratch": "49 reviewed sources restored; stable .ninja/.ccache and external native PNG retained"
     }
   }
 }

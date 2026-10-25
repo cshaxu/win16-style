@@ -67,3 +67,27 @@ installed locations pass6 ABI/UpDown checks plus one automatic matrix each,14 to
 Real final-package MD5/DK close exit0/Jobs active0; MD5 caption292x24 black mask
 vs S11 has0 differences. Dual publication8 SHA values match; product197 inputs remain
 identical. Actual remote/archive/recovery/cleanup follow P1 push.
+
+
+P1 7ed104b189675a2517c44ad266f1684a4488a1b4 is pushed; actual GitHub207 files/197
+inputs match in14.4008656s. Coordinator reads the actual commit/diff, verifies0 changed
+C/test/build inputs,18 dispositions, independent91/91 cases in389.5561759s,14 installed
+checks and actual final-package MD5/DK. Clean builds42.70s x86/38.66s x64; ABI3/31 named
+exports+ordinal1,35 process-local detours/40 private slots, three components/four artifacts
+and original5 graphics/provenance/18 tables remain. Source/resource/governance gates pass.
+
+Actual P1 archive strict source/resource gates and affected dual DLL build+4 ABI/pending
+frame owner tests pass, separate from final same-four91-case/14-installed UI tests.
+201 Git objects recover197 inputs plus four prior artifacts, validating8 old backups.
+Only known LICENSE/two PowerShell raw/Git EOL identities differ; no C receipt repair.
+Archive4/deployed8 hashes match; original DK equals owned copy. Native share0 guard
+rejects runningEXE/loadedDLL C0000043, accepts unloadedDLL00000000. Exact roots and
+ancestors/descendants have reparse0;258 task images have no occupancy, task owners exit.
+Both registered roots are safely cleared;49 reviewed sources are restored byte-for-byte.
+Stable Ninja/ccache, original user work and external native PNG remain.
+
+P2 changes no product input or binary. All18 audited units have explicit evidence or
+native/skip dispositions; no unresolved authorized-scope product failure remains. S12
+and T15 close; M0 stays open and execution stops for owner appearance acceptance.
+Elevated HD Tune defaultskip, physical/IME/accessibility and finite framework/language
+limits remain explicit. Queue candidates are not admitted and existing TODOs stay open.
