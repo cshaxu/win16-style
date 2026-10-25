@@ -6,16 +6,20 @@
 #include <wchar.h>
 
 typedef struct theme_state {
+    struct theme_state *next;HWND window;BOOL staged;
     WCHAR *application,*ids;
     unsigned calls,epoch;
     BOOL active,detached;
     const void *owner;
 } theme_state;
+static _Thread_local theme_state *staged;
 static LRESULT CALLBACK theme_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static theme_state *state(HWND w)
 {
     DWORD_PTR data;
-    return GetWindowSubclass(w,theme_proc,(UINT_PTR)theme_proc,&data)?(theme_state *)data:NULL;
+    if(GetWindowSubclass(w,theme_proc,(UINT_PTR)theme_proc,&data))return (theme_state *)data;
+    for(theme_state *s=staged;s;s=s->next)if(s->window==w)return s;
+    return NULL;
 }
 static void release(theme_state *s)
 {if(!--s->calls && s->detached){free(s->application);free(s->ids);free(s);}}
@@ -39,11 +43,38 @@ BOOL ntw16s_theme_capture(HWND w)
     if(!SetWindowSubclass(w,theme_proc,(UINT_PTR)theme_proc,(DWORD_PTR)s)){free(s);return FALSE;}
     return TRUE;
 }
+/* A framework may replace its InitWndProc during WM_NCCREATE. Do not put a
+ * native subclass in that temporary chain just to record early theme calls. */
+BOOL ntw16s_theme_stage(HWND w)
+{
+    if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId()){SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;}
+    if(state(w))return TRUE;
+    theme_state *s=calloc(1,sizeof(*s));if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
+    s->staged=TRUE;s->window=w;s->next=staged;staged=s;return TRUE;
+}
+static void unstage(theme_state *s)
+{
+    theme_state **link=&staged;while(*link && *link!=s)link=&(*link)->next;
+    if(*link)*link=s->next;
+    s->next=NULL;s->staged=FALSE;
+}
+BOOL ntw16s_theme_commit(HWND w)
+{
+    theme_state *s=state(w);if(!s || !s->staged)return TRUE;
+    if(!SetWindowSubclass(w,theme_proc,(UINT_PTR)theme_proc,(DWORD_PTR)s))return FALSE;
+    unstage(s);return TRUE;
+}
+void ntw16s_theme_cancel_stage(HWND w)
+{
+    theme_state *s=state(w);if(!s || !s->staged)return;
+    unstage(s);++s->calls;s->detached=TRUE;release(s);
+}
 BOOL ntw16s_theme_terminal(HWND w,const void *owner)
 {
     theme_state *s;
     s=state(w);if(!s || (owner && s->owner!=owner))return TRUE;
-    if(!RemoveWindowSubclass(w,theme_proc,(UINT_PTR)theme_proc)){
+    if(s->staged)unstage(s);
+    else if(!RemoveWindowSubclass(w,theme_proc,(UINT_PTR)theme_proc)){
         SetLastError(ERROR_INVALID_STATE);return FALSE;
     }
     ++s->calls;s->detached=TRUE;release(s);
@@ -65,7 +96,7 @@ BOOL ntw16s_theme_retained(HWND w)
 void ntw16s_theme_remove(HWND w,const void *owner)
 {
     theme_state *s=state(w);if(!s || s->owner!=owner)return;
-    ++s->calls;RemoveWindowSubclass(w,theme_proc,(UINT_PTR)theme_proc);s->detached=TRUE;
+    ++s->calls;if(s->staged)unstage(s);else RemoveWindowSubclass(w,theme_proc,(UINT_PTR)theme_proc);s->detached=TRUE;
     if(s->active)native_theme(w,s->application,s->ids);
     release(s);
 }

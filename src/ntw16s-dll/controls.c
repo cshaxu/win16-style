@@ -40,7 +40,7 @@ static BOOL is_static(HWND w)
 static BOOL is_edit(HWND w)
 {return ntw16s_class_is(w,L"EDIT");}
 static BOOL is_list(HWND w)
-{WCHAR name[16];return GetClassNameW(w,name,16) && (!lstrcmpiW(name,L"LISTBOX") || !lstrcmpiW(name,L"ComboLBox"));}
+{WCHAR name[16];return ntw16s_class_is(w,L"LISTBOX") || (GetClassNameW(w,name,16) && !lstrcmpiW(name,L"ComboLBox"));}
 static BOOL is_combo(HWND w)
 {return ntw16s_class_is(w,L"COMBOBOX");}
 static BOOL is_scroll(HWND w)
@@ -59,7 +59,7 @@ static BOOL supported(HWND w)
     if(is_combo(w))return ((style&3)==CBS_DROPDOWNLIST || (style&3)==CBS_DROPDOWN || (style&3)==CBS_SIMPLE) &&
         !(style&(CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE));
     if(is_list(w))return !(style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA|LBS_USETABSTOPS));
-    if(is_edit(w))return ntw16s_vb_edit(w) || !(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE);
+    if(is_edit(w))return ntw16s_vb_edit(w) || ntw16s_native_superclass(w,L"EDIT") || !(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE);
     if(is_static(w)){type=style&SS_TYPEMASK;return type==SS_LEFT || type==SS_CENTER || type==SS_RIGHT ||
         type==SS_ICON || type==SS_BITMAP || type==SS_SIMPLE || type==SS_LEFTNOWORDWRAP ||
         (type>=SS_BLACKRECT && type<=SS_WHITEFRAME) || (type>=SS_ETCHEDHORZ && type<=SS_ETCHEDFRAME);}
@@ -760,10 +760,10 @@ static void present_control(HWND w,control_style *s,HDC target,
     void (*painter)(HWND,control_style *,HDC))
 {
     RECT dirty,client;HDC memory=NULL;HBITMAP bitmap=NULL,old=NULL;BOOL ready=FALSE;
-    WCHAR cls[16];BOOL group;int target_saved=0;
+    BOOL group;int target_saved=0;
     if(!target || GetClipBox(target,&dirty)==ERROR || !GetClientRect(w,&client) ||
         !IntersectRect(&dirty,&dirty,&client))return;
-    group=GetClassNameW(w,cls,16) && !lstrcmpiW(cls,L"BUTTON") &&
+    group=ntw16s_class_is(w,L"BUTTON") &&
         (GetWindowLongPtrW(w,GWL_STYLE)&BS_TYPEMASK)==BS_GROUPBOX;
     if(group){HWND sibling;RECT r;
         target_saved=SaveDC(target);if(!target_saved)return;
@@ -986,7 +986,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
             m==EM_REPLACESEL || m==EM_UNDO || m==WM_UNDO || m==WM_KEYDOWN || m==WM_CHAR ||
             (m==WM_MOUSEMOVE && GetCapture()==w && (a&MK_LBUTTON)) || m==WM_LBUTTONDOWN || m==WM_LBUTTONUP);
         if(suppress && s->list_suppression++==0)DefSubclassProc(w,WM_SETREDRAW,FALSE,0);
-        int native_dc=ntw16s_vb_edit(w) && (m==WM_PRINT || m==WM_PRINTCLIENT)?SaveDC((HDC)a):0;
+        int native_dc=(ntw16s_vb_edit(w) || ntw16s_native_superclass(w,L"EDIT")) && (m==WM_PRINT || m==WM_PRINTCLIENT)?SaveDC((HDC)a):0;
         result=DefSubclassProc(w,m,a,b);
         if(native_dc)RestoreDC((HDC)a,native_dc);
         if(suppress && --s->list_suppression==0 && !s->detached && !s->list_redraw_off)
@@ -997,7 +997,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
             edit_border(w,s,(m==WM_PRINT || m==WM_PRINTCLIENT)?(HDC)a:NULL);
         if(!s->detached && (m==WM_NCPAINT || (m==WM_PRINT && (b&PRF_NONCLIENT))))
             {nonclient_scrollbars(w,s,m==WM_PRINT?(HDC)a:NULL);
-             if(ntw16s_vb_edit(w))list_border(w,s,m==WM_PRINT?(HDC)a:NULL);}
+             if(ntw16s_vb_edit(w) || ntw16s_native_superclass(w,L"EDIT"))list_border(w,s,m==WM_PRINT?(HDC)a:NULL);}
         else if(!s->detached && (m==WM_VSCROLL || m==WM_HSCROLL || m==WM_MOUSEWHEEL ||
             m==EM_LINESCROLL || m==WM_SETTEXT || m==WM_KEYDOWN || m==WM_CHAR))
             nonclient_scrollbars(w,s,NULL);

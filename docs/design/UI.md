@@ -83,3 +83,11 @@ VB自身拥有字体属性，不能假设WM_SETFONT生效。VB客户区文字接
 VB专用FNT保持应用字高和advance，缩小时保留黑色细笔画；既有标题、菜单及
 标准控件的字体采样策略不变。TrueType glyph-index仅对可逆CP1252字形转换，
 保留dx/clip，复杂/未知或RTL索引整段保留原始绘制；不承诺任意语言/OCX。
+
+
+原生系统超类按RealGetWindowClass确认BUTTON/EDIT/STATIC/COMBOBOX/LISTBOX/SCROLLBAR协议，
+不依赖VCL类前缀或应用名。既有owner-draw等拒绝仍生效；非原生自绘控件不因此接管。
+未知新子窗口在WM_NCCREATE前仅暂存主题请求，不装子类；原生初始化完成后再提交，避免框架
+重设InitWndProc导致“记录存在、绘制失效”。取消/终结/未完成创建scope回收暂存节点。
+本机DoubleKiller只验证按钮/复选/原生编辑/下拉；分页/自绘列表、标签、动画/进度和
+自定义微调按钮保留原应用绘制。标题及已确认菜单、滚动条、VB6策略不变。

@@ -148,6 +148,7 @@ static BOOL install_created(HWND w,DWORD original_style)
             }
         }
     }
+    if(installed && !a->detached && a->themed!=w)ntw16s_theme_remove(w,NULL);
     if(a->detached){installed=FALSE;error=ERROR_CANCELLED;}
     if(!installed && !a->detached)Ntw16sWindowRemove(w);
     release(a);
@@ -168,6 +169,8 @@ static LRESULT CALLBACK creation_before(int code,WPARAM p,LPARAM l)
             if(!ntw16s_theme_capture((HWND)p)){
                 scope->result.failure=GetLastError();return 1;
             }
+        }else if((pending->style&WS_CHILD) && !ntw16s_theme_stage((HWND)p)){
+            scope->result.failure=GetLastError();return 1;
         }
     }
     SetLastError(saved);return CallNextHookEx(NULL,code,p,l);
@@ -192,14 +195,14 @@ static LRESULT CALLBACK creation_return(int code,WPARAM p,LPARAM l)
         if(created && class_is(m->hwnd,L"#32770")){
             SetLastError(saved);return result;
         }
-        if(m->message==WM_NCDESTROY){pending_window *pending=take_pending(scope,m->hwnd);free(pending);}
+        if(m->message==WM_NCDESTROY){pending_window *pending=take_pending(scope,m->hwnd);ntw16s_theme_cancel_stage(m->hwnd);free(pending);}
         if((created || m->message==WM_INITDIALOG) && IsWindow(m->hwnd)){
             pending_window *pending=take_pending(scope,m->hwnd);
             DWORD style=created?(DWORD)((const CREATESTRUCTW *)m->lParam)->style:
                 (DWORD)GetWindowLongPtrW(m->hwnd,GWL_STYLE);
             if(pending){style=pending->style;free(pending);}
             BOOL already=lookup(m->hwnd)!=NULL;
-            if(install_created(m->hwnd,style)){
+            if(ntw16s_theme_commit(m->hwnd) && install_created(m->hwnd,style)){
                 if(!already && lookup(m->hwnd))++scope->result.installed;
             }else{
                 DWORD error=GetLastError();
@@ -236,7 +239,7 @@ BOOL __cdecl Ntw16sCreationEnd(ntw16s_creation_scope *scope,ntw16s_creation_resu
     if(!scope || scope!=current){SetLastError(ERROR_INVALID_STATE);return FALSE;}
     if(scope->thread!=GetCurrentThreadId()){SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;}
     current=scope->previous;if(result)*result=scope->result;
-    while(scope->pending){pending_window *pending=scope->pending;scope->pending=pending->next;free(pending);}
+    while(scope->pending){pending_window *pending=scope->pending;scope->pending=pending->next;ntw16s_theme_cancel_stage(pending->window);free(pending);}
     if(!current){UnhookWindowsHookEx(creation_return_hook);creation_return_hook=NULL;
         UnhookWindowsHookEx(creation_before_hook);creation_before_hook=NULL;}
     free(scope);return TRUE;

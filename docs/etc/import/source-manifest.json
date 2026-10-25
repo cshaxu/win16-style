@@ -731,10 +731,10 @@
       "blob": "1c81eaa41fda9d96dfc07e8fb7707d2f2dcbafbc",
       "size": 3402,
       "sha256": "48eb05bc23f40eb99288a1c3d16ba07a8262be2a15a95725427238e730e3f6ac",
-      "action": "retain",
+      "action": "adapt",
       "destination": "src/ntw16s-dll/theme.c",
       "notice": "project-authored-review",
-      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task; T15 S2 retains frozen origin hashes and adds private deferred theme lifecycle, reviewed by native tests",
       "receiver": "style-core"
     },
     {
@@ -743,10 +743,10 @@
       "blob": "088ea9230823070a010d586058bd7b86aee5d93b",
       "size": 585,
       "sha256": "0a0100203a7856d58d2a16389309440781f23d7e04e7d7a93db0cc5ad2415371",
-      "action": "retain",
+      "action": "adapt",
       "destination": "src/ntw16s-dll/theme.h",
       "notice": "project-authored-review",
-      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task; T15 S2 retains frozen origin hashes and adds private deferred theme lifecycle, reviewed by native tests",
       "receiver": "style-core"
     },
     {

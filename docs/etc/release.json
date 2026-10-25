@@ -1,14 +1,15 @@
 {
   "schema": 1,
-  "delivery": "M0 T15 S1 P2",
-  "stage": "S1 closed after actual P1 remote review and scratch cleanup; T15 awaiting user appearance acceptance",
+  "delivery": "M0 T15 S2 P1",
+  "stage": "locally verified/published; actual remote review pending",
   "version": "0.15.0.0",
-  "version_contract": "Fixed T15 version; S/P distinguished by Git and artifact SHA",
+  "version_contract": "Fixed T15 version; S/P distinguished by Git and artifact SHA; no new T allocated",
   "package_directory": "assets",
+  "source_snapshot_sha256": "12f1737192b9c80fadd104bc9427d0dc4a1a72d7f326dffe3247ca768c7937ed",
   "source_inputs": [
     {
       "path": "CMakeLists.txt",
-      "sha256": "2f98d1b809ffe440b3eee1f71e9239c6ec851e14f3edbb7a28f59318c152405d"
+      "sha256": "c65a87ba1e98c66ec3d864425e02b6c44153068d70528db5832f109771965ebd"
     },
     {
       "path": "LICENSE",
@@ -45,7 +46,7 @@
     },
     {
       "path": "src/ntw16s-dll/attachment.c",
-      "sha256": "84270028f5da4de702ad2c099daf855a6747c366b225f1635bed8afb9ce9ac2f"
+      "sha256": "c98c3ee0b59153a94dcc2926fe0f24151be474d0b672f7000b10bdf55e701e0f"
     },
     {
       "path": "src/ntw16s-dll/attachment.h",
@@ -57,7 +58,7 @@
     },
     {
       "path": "src/ntw16s-dll/control_class.h",
-      "sha256": "94d316e47581a1e174fe55da865d3e03455eda35b28f39af57506aa06040a4b8"
+      "sha256": "588f1b57175b3d705bbc749af6f3d2badf8141e847b76851229bcae43524ae2a"
     },
     {
       "path": "src/ntw16s-dll/control_glyphs.h",
@@ -69,7 +70,7 @@
     },
     {
       "path": "src/ntw16s-dll/controls.c",
-      "sha256": "c7e598570f8dc1c95403fa8d81e0e6bf1740dc7214bde651a1a6ebea281cc699"
+      "sha256": "cf80cde80f33e559e471313369a952e2dca232f824712ab6111faf39754e43b8"
     },
     {
       "path": "src/ntw16s-dll/controls.h",
@@ -309,11 +310,11 @@
     },
     {
       "path": "src/ntw16s-dll/theme.c",
-      "sha256": "48eb05bc23f40eb99288a1c3d16ba07a8262be2a15a95725427238e730e3f6ac"
+      "sha256": "ba9db953cb6a0116ce70a51c192d6b535e9ed276030dfafa4eacd9e78bb45a4a"
     },
     {
       "path": "src/ntw16s-dll/theme.h",
-      "sha256": "0a0100203a7856d58d2a16389309440781f23d7e04e7d7a93db0cc5ad2415371"
+      "sha256": "b97ad1fe44e2303ccd6f80621f7a6a7d49f5e73a775949dec1dbfde536c45d81"
     },
     {
       "path": "src/ntw16s-dll/vb_text.c",
@@ -416,6 +417,14 @@
       "sha256": "4456ca4267b372696e822f7c9283e3e5afb2cb2afa6df6fd19dad32fdf4b3026"
     },
     {
+      "path": "tests/integration/doublekiller_driver.c",
+      "sha256": "8007faa18c53a1ef340aa00dadccb27e1bf4a46c330ab379b56cf845b3c3be44"
+    },
+    {
+      "path": "tests/integration/doublekiller_probe.c",
+      "sha256": "def4a92004af79b20f8980c769bffc9f933283d7bb569674c01586236fb2c40b"
+    },
+    {
       "path": "tests/integration/propagate_basic.c",
       "sha256": "f9fe8746f2d15d35558305b03fa0cf93cc66914e8706b20753383183adc309a8"
     },
@@ -468,8 +477,16 @@
       "sha256": "7c29eadf782751d8e45a221c82898f712e654afe56acad1f4b51dc17c6a28e17"
     },
     {
+      "path": "tests/ntw16s-dll/superclass.c",
+      "sha256": "ce1fdab7dc93e3ced04c99708b8b22860cb16f8366ed38b6c35565a9a1a696fb"
+    },
+    {
       "path": "tests/ntw16s-dll/terminal.rc",
       "sha256": "e82c7a5c6477a9e580b3fa10dab71fd653ff30b118e810e9e6c2b047edff14bb"
+    },
+    {
+      "path": "tests/ntw16s-dll/theme_stage.c",
+      "sha256": "09f3cd4ab101a9b3f2d4c945bdd4fc21f958d5bc3c38ebb13470ee14d4c1a9f7"
     },
     {
       "path": "tests/ntw16s-dll/vb_alloc.h",
@@ -631,7 +648,7 @@
     },
     {
       "path": "tools/Test-Package.ps1",
-      "sha256": "2e3d5e6406eee056749b600c87f4307b2882335c3879fff21599665c4ce1baf9"
+      "sha256": "a8e2dd1eec851709a1ed7db8744fb75fab332238bf355c07ba45e6255df02978"
     },
     {
       "path": "tools/Verify-Governance.ps1",
@@ -667,7 +684,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T15",
-      "sha256": "ebde18e6d0d59b97304abfd837830ff80547c9ae454f14cdd7da66c17f9ce79d",
+      "sha256": "ae04b2ba9f553df8defff7e205494080551b87fd180ff00dffa58c9b407a809d",
       "imports": [
         "advapi32.dll",
         "kernel32.dll",
@@ -679,7 +696,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T15",
-      "sha256": "e84ebfabdaba527f8fffcbf2d26aa444fda06628bf202d0ed9ae1f9ad4f7f477",
+      "sha256": "789bf8ed116c4c89aca5fc83c26806127ebf5124822e291fc78468348279474c",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -699,7 +716,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T15",
-      "sha256": "16a2de06048f7baab107daec79440229f85cece7139541dc3dcf0614775d058d",
+      "sha256": "d39b5f2f2304a8665e9ad9110ca146eedd6334ed1ffcbe239c22aa143d3622b7",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -714,7 +731,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T15",
-      "sha256": "f5da4181bb4e354b90aeb3f3be89fe75b0dbb65930a2159bae3bf85383dc64e4",
+      "sha256": "9ccac1ba4891c5b217a91269252541437889eb75f6cd54645c17e0cff1e7bd6c",
       "imports": [
         "kernel32.dll",
         "msvcrt.dll",
@@ -723,106 +740,86 @@
     }
   },
   "toolchains": {
+    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
     "ccache_version": "ccache version 4.13.6",
     "toolchains": [
       {
-        "version": "16.1.0",
-        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
-        "target": "i686-w64-mingw32",
+        "architecture": "x86",
         "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
-        "architecture": "x86"
+        "version": "16.1.0",
+        "target": "i686-w64-mingw32",
+        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6"
       },
       {
-        "version": "16.1.0",
-        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
-        "target": "x86_64-w64-mingw32",
+        "architecture": "x64",
         "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
-        "architecture": "x64"
+        "version": "16.1.0",
+        "target": "x86_64-w64-mingw32",
+        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad"
       }
     ],
-    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
-    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
-    "ninja_version": "1.13.2"
+    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe"
   },
   "verification": {
     "clean_build": {
-      "selection": "^core/abi$",
       "tests": [
         {
-          "architecture": "x86",
-          "test_seconds": 0.4726621999870986,
-          "configure_seconds": 3.661956799973268,
-          "build_seconds": 19.28840979997767,
-          "skipped": [],
+          "configure_seconds": 5.375974500027951,
+          "test_seconds": 0.764521999983117,
+          "build_seconds": 46.9595589999808,
           "tests": 1,
+          "architecture": "x86",
+          "skipped": [],
           "passed": 1
         },
         {
-          "architecture": "x64",
-          "test_seconds": 0.5321021999698132,
-          "configure_seconds": 3.9762399999890476,
-          "build_seconds": 27.045013099967036,
-          "skipped": [],
+          "configure_seconds": 5.387543999997433,
+          "test_seconds": 0.5689967999933288,
+          "build_seconds": 34.96519149997039,
           "tests": 1,
+          "architecture": "x64",
+          "skipped": [],
           "passed": 1
         }
       ],
-      "exit_code": 0,
       "build_jobs": 8,
-      "build_root": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\clean-source\\build\\.ninja",
+      "build_root": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja",
+      "selection": "^core/abi$",
       "targets": "all",
+      "status": "passed",
+      "profile": "Focused",
+      "exit_code": 0,
+      "test_jobs": 4,
       "architectures": [
         "x86",
         "x64"
-      ],
-      "test_jobs": 4,
-      "profile": "Focused",
-      "status": "passed"
+      ]
     },
     "package_matrix": {
-      "status": "passed",
       "core_matrix": "separate Build-Core matrix required",
-      "package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s1-verified\\candidate",
-      "seconds": 250.619371,
-      "cases": 31,
+      "status": "passed",
+      "full_integration": true,
+      "package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate",
+      "seconds": 260.6424144,
+      "cases": 35,
       "sha256": {
-        "demo.exe": "f5da4181bb4e354b90aeb3f3be89fe75b0dbb65930a2159bae3bf85383dc64e4",
-        "ntw16s32.dll": "e84ebfabdaba527f8fffcbf2d26aa444fda06628bf202d0ed9ae1f9ad4f7f477",
-        "ntw16s64.dll": "16a2de06048f7baab107daec79440229f85cece7139541dc3dcf0614775d058d",
-        "run16s.exe": "ebde18e6d0d59b97304abfd837830ff80547c9ae454f14cdd7da66c17f9ce79d"
+        "demo.exe": "9ccac1ba4891c5b217a91269252541437889eb75f6cd54645c17e0cff1e7bd6c",
+        "ntw16s32.dll": "789bf8ed116c4c89aca5fc83c26806127ebf5124822e291fc78468348279474c",
+        "ntw16s64.dll": "d39b5f2f2304a8665e9ad9110ca146eedd6334ed1ffcbe239c22aa143d3622b7",
+        "run16s.exe": "ae04b2ba9f553df8defff7e205494080551b87fd180ff00dffa58c9b407a809d"
       },
-      "physical_input": "not-tested",
       "jobs": 4,
-      "full_integration": true
+      "physical_input": "not-tested"
     },
     "resource_identity": "5 original headers + original provenance byte-exact, 18 embedded tables per DLL",
-    "abi": "3 / 31 named exports + NONAME ordinal1 helper; no new public exports",
-    "evidence": "docs/etc/evidence/vb6-adaptation.json",
-    "native_actual_cases": 6,
-    "deployed_copies": 8,
-    "acceptance": "Await user review of actual MadShow screenshot; no physical-input claim",
+    "abi": "3 / 31 named exports + NONAME ordinal1 helper; unchanged",
+    "evidence": "docs/etc/evidence/doublekiller-controls.json",
     "focused_tests": 10,
-    "registered_ctests": 76,
+    "deployed_copies": 8,
+    "registered_ctests": 79,
     "all_ctests_executed": false,
-    "p1_remote_review": {
-      "status": "passed",
-      "commit": "6246df6cc86947510e164d7a00eceb06b350e281",
-      "remote_main": "6246df6cc86947510e164d7a00eceb06b350e281",
-      "downloads": 177,
-      "source_inputs": 163,
-      "artifacts": 4,
-      "deployed_copies": 8,
-      "seconds": 10.72590990003664,
-      "receipt_sha256": "38dc6c67c957a4103a217a633fa6c37c2027718a049c46ddab2990ab18a2f9f5"
-    }
+    "acceptance": "Await user appearance review; no physical-input claim"
   },
-  "architecture": "three components, four products; pure C17 MinGW GCC/Ninja/ccache; optional real-app probe is not a core dependency",
-  "binary_batch_delivery": "M0 T15 S1 P1",
-  "closure": {
-    "p1": "6246df6cc86947510e164d7a00eceb06b350e281",
-    "source_inputs_unchanged": 163,
-    "deployed_copies_unchanged": 8,
-    "scratch_cleanup": "completed; details owned by evidence/vb6-adaptation.json",
-    "task_status": "S1 closed; T15 user appearance acceptance pending; M0 open"
-  }
+  "architecture": "three components, four products; pure C17 MinGW GCC/Ninja/ccache; real-app observer is optional, no sibling dependency",
+  "binary_batch_delivery": "M0 T15 S2 P1"
 }

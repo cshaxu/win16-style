@@ -1,0 +1,1078 @@
+{
+  "schema": 1,
+  "delivery": "M0 T15 S2 P1",
+  "state": "locally verified and published; remote review pending",
+  "baseline": "8fc6ad0010d8dcfcd0ba335933c24e0b8bbebe97",
+  "owner_constraint": "No new T allocation; continue T15 S2. M0 and T15 remain open for appearance review.",
+  "target": {
+    "path": "D:/programs/misc/DoubleKiller.exe",
+    "bits": 32,
+    "sha256": "cdd83ab909db749992d11ace2dff671493c0568d7a14697f8bef4b06d8647ca8",
+    "framework": "Delphi/VCL; native instance classes confirmed by USER, not inferred from name",
+    "pe_machine": "0x014c / PE32 x86"
+  },
+  "diagnosis": {
+    "baseline": "root attached; native VCL controls omitted by registered-name classifier",
+    "first_prototype_failure": "missing early theme capture: list create error 5023; owned Options probe timed out and Job cleaned",
+    "second_prototype_failure": "early theme subclass overwritten by VCL InitWndProc; attached=33 but Run fill=f0f0f0 and renderer observed only root paints",
+    "second_prototype_package": {
+      "full_integration": true,
+      "status": "passed",
+      "cases": 33,
+      "jobs": 4,
+      "seconds": 249.1539026,
+      "physical_input": "not-tested",
+      "sha256": {
+        "demo.exe": "4c8c17842a1c8a5efaf5f92770c949fc4bea3ddb2c470ed5334831581dcbe92d",
+        "ntw16s32.dll": "3430e27d1023d331f8f4cec177fe0f8ca67874a6d029074ffb73916fe073cc79",
+        "ntw16s64.dll": "8eee77c7058d635ee18b7d1506fb8eb9f309712e3d82a9d73b6a387b2ac1aabd",
+        "run16s.exe": "6f70d99dfb0014b57b5d2798fd0dca1375f44ba83ad46b097e296a30d3c1f713"
+      },
+      "package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-final\\candidate",
+      "core_matrix": "separate Build-Core matrix required"
+    },
+    "disposition": "Second prototype never published. Passing prior 33-case matrix did not establish real target rendering.",
+    "final": "Record early theme requests without subclassing. Commit after WM_CREATE, then install existing renderer using actual native class.",
+    "public_abi": "3 / 31 named exports + NONAME helper ordinal1 unchanged",
+    "new_runtime_hooks": 0,
+    "dllmain_changed": false
+  },
+  "negative_cases": [
+    {
+      "name": "old-negative32",
+      "exit_code": 1,
+      "tail": [
+        "SUPER_CREATE index=6",
+        "SUPER_REJECT_OK custom_name ownerdraw_button ownerdraw_list",
+        "SUPER_PROTOCOL_OK bits=32 styled=0 dpi=96 aware=0 types=7 clicks=2 undo=1 combo_cancel=1 source_retained=1",
+        "SUPER_CREATE index=0",
+        "SUPER FAIL line=81 error=126: attached(windows[i])",
+        "SUPER FAIL line=141 error=0: wait==WAIT_OBJECT_0 && !code && empty"
+      ],
+      "raw_sha256": "b585c934db4ee4395d2e0c29af2faa89cfc69f8b60761ca1d54d7a0e3f1cb6ea"
+    },
+    {
+      "name": "old-negative64",
+      "exit_code": 1,
+      "tail": [
+        "SUPER_CREATE index=6",
+        "SUPER_REJECT_OK custom_name ownerdraw_button ownerdraw_list",
+        "SUPER_PROTOCOL_OK bits=64 styled=0 dpi=96 aware=0 types=7 clicks=2 undo=1 combo_cancel=1 source_retained=1",
+        "SUPER_CREATE index=0",
+        "SUPER FAIL line=81 error=126: attached(windows[i])",
+        "SUPER FAIL line=141 error=0: wait==WAIT_OBJECT_0 && !code && empty"
+      ],
+      "raw_sha256": "835030836d6e88e18d2b5f17929742ede5e7e09765ded744a1a742995f1d8ab1"
+    },
+    {
+      "name": "preliminary-negative32",
+      "exit_code": 1,
+      "tail": [
+        "SUPER_CREATE index=4",
+        "SUPER_CREATE index=5",
+        "SUPER_CREATE index=6",
+        "SUPER_REJECT_OK custom_name ownerdraw_button ownerdraw_list",
+        "SUPER FAIL line=112 error=0: (actual_pixels[12*200+12]&0xffffff)==0xc0c0c0",
+        "SUPER FAIL line=149 error=0: wait==WAIT_OBJECT_0 && !code && empty"
+      ],
+      "raw_sha256": "8628ff8c238a44dd269f8da9c92aa6f3425b32481363abf6989e703579a4bb76"
+    },
+    {
+      "name": "actual-old",
+      "exit_code": 1,
+      "tail": [
+        "DK_REPORT_FAIL page=2",
+        "DK_REPORT_FAIL page=3",
+        "DK PROBE FAIL error=0 pid=32320",
+        "TARGET pid=32320 creator-tree-root=34932 tid=32380 image=D:\\programs\\misc\\DoubleKiller.exe",
+        "MODULE O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
+        "DK_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "raw_sha256": "94bb1c902d3c10f413249507e1f012aeca58d4bc4a56f079a8d7f19d98e08d87"
+    }
+  ],
+  "native_cases": [
+    {
+      "name": "actual-bare",
+      "driver": [
+        "TARGET pid=39632 creator-tree-root=39632 tid=21960 image=D:\\programs\\misc\\DoubleKiller.exe",
+        "DK_CLEANUP_OK exit=0 active=0 total=1"
+      ],
+      "pages": [
+        {
+          "page": 0,
+          "process": "PROCESS pid=39632 tid=21960 bits=32 dpi=96 dll= root_attached=0",
+          "summary": [
+            "SUMMARY buttons=28 edits=3 combos=2 attached=0 failures=0"
+          ],
+          "report_sha256": "783761f3e80f0226525fdd0b46127ba26d07338d93cc2773d3a547174313b59e"
+        },
+        {
+          "page": 1,
+          "process": "PROCESS pid=39632 tid=21960 bits=32 dpi=96 dll= root_attached=0",
+          "summary": [
+            "SUMMARY buttons=28 edits=3 combos=2 attached=0 failures=0"
+          ],
+          "report_sha256": "ce4831d38b596c77a4114eb0f0e757ff11628499563d41204ac4a85b630b600e"
+        },
+        {
+          "page": 2,
+          "process": "PROCESS pid=39632 tid=21960 bits=32 dpi=96 dll= root_attached=0",
+          "summary": [
+            "SUMMARY buttons=28 edits=3 combos=2 attached=0 failures=0"
+          ],
+          "report_sha256": "da9b3632f6c07550e431a3958c7b362a8b758d3e069ec2aed754c403707cc73e"
+        },
+        {
+          "page": 3,
+          "process": "PROCESS pid=39632 tid=21960 bits=32 dpi=96 dll= root_attached=0",
+          "summary": [
+            "SUMMARY buttons=28 edits=3 combos=2 attached=0 failures=0"
+          ],
+          "report_sha256": "74ef8a808fc6218cd725950e24053011ba6bb6177cf972402c909b6830d2b2fd"
+        }
+      ]
+    },
+    {
+      "name": "actual-old",
+      "driver": [
+        "DK_REPORT_FAIL page=0",
+        "DK_REPORT_FAIL page=1",
+        "DK_REPORT_FAIL page=2",
+        "DK_REPORT_FAIL page=3",
+        "DK PROBE FAIL error=0 pid=32320",
+        "TARGET pid=32320 creator-tree-root=34932 tid=32380 image=D:\\programs\\misc\\DoubleKiller.exe",
+        "MODULE O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
+        "DK_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "pages": [
+        {
+          "page": 0,
+          "process": "PROCESS pid=32320 tid=32380 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll root_attached=1",
+          "summary": [
+            "SUMMARY buttons=28 edits=3 combos=2 attached=3 failures=30"
+          ],
+          "report_sha256": "0fbaa84949be6480dc700f4820a11eed59a2f400e264a63076cbf5a793207627"
+        },
+        {
+          "page": 1,
+          "process": "PROCESS pid=32320 tid=32380 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll root_attached=1",
+          "summary": [
+            "SUMMARY buttons=28 edits=3 combos=2 attached=3 failures=30"
+          ],
+          "report_sha256": "7e302ccd5d0e7d4bfc9fcdd25577401a23dd22fc1cc137f5a711d004d7c58199"
+        },
+        {
+          "page": 2,
+          "process": "PROCESS pid=32320 tid=32380 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll root_attached=1",
+          "summary": [
+            "SUMMARY buttons=28 edits=3 combos=2 attached=3 failures=30"
+          ],
+          "report_sha256": "24c7506c873b28ea99eb564a1bd88c675006e209b0c92f17d4798a4b48c4d148"
+        },
+        {
+          "page": 3,
+          "process": "PROCESS pid=32320 tid=32380 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll root_attached=1",
+          "summary": [
+            "SUMMARY buttons=28 edits=3 combos=2 attached=3 failures=30"
+          ],
+          "report_sha256": "dc2a918a90660161db98ad511f4b0d0ec542c8f7c480d674d7ad4fca69543388"
+        }
+      ]
+    },
+    {
+      "name": "verified-proto",
+      "driver": [
+        "TARGET pid=34776 creator-tree-root=36668 tid=14876 image=D:\\programs\\misc\\DoubleKiller.exe",
+        "MODULE O:\\repos.hobby\\win16style\\build\\t15-doublekiller\\dev-package\\ntw16s32.dll",
+        "DK_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "pages": [
+        {
+          "page": 0,
+          "process": "PROCESS pid=34776 tid=14876 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\build\\t15-doublekiller\\dev-package\\ntw16s32.dll root_attached=1",
+          "summary": [
+            "DK_RENDER_OK removed=1 changed=1843 before_center=00c0c0c0 after_center=00f0f0f0",
+            "SUMMARY buttons=28 edits=3 combos=2 attached=33 failures=0"
+          ],
+          "report_sha256": "95c2a1e3f3046f858d9c7be23a39c3da6dd52b8c055bf5b899818564f7285b61"
+        },
+        {
+          "page": 1,
+          "process": "PROCESS pid=34776 tid=14876 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\build\\t15-doublekiller\\dev-package\\ntw16s32.dll root_attached=1",
+          "summary": [
+            "SUMMARY buttons=28 edits=3 combos=2 attached=33 failures=0"
+          ],
+          "report_sha256": "4f990c49aba52b30955ba87ae4b651a335b458340aadedad321d0d96313e3045"
+        },
+        {
+          "page": 2,
+          "process": "PROCESS pid=34776 tid=14876 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\build\\t15-doublekiller\\dev-package\\ntw16s32.dll root_attached=1",
+          "summary": [
+            "SUMMARY buttons=28 edits=3 combos=2 attached=33 failures=0"
+          ],
+          "report_sha256": "159c3f5dfb069c47040f9387d75b430aafcb8b4d955c0d33dcb48f3e425380c4"
+        },
+        {
+          "page": 3,
+          "process": "PROCESS pid=34776 tid=14876 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\build\\t15-doublekiller\\dev-package\\ntw16s32.dll root_attached=1",
+          "summary": [
+            "SUMMARY buttons=28 edits=3 combos=2 attached=33 failures=0"
+          ],
+          "report_sha256": "74170c082f08c468a563eb7c9088bf3616691cb2915597e3c0ea8506a942446a"
+        }
+      ]
+    },
+    {
+      "name": "final-actual",
+      "driver": [
+        "TARGET pid=19188 creator-tree-root=33760 tid=10092 image=D:\\programs\\misc\\DoubleKiller.exe",
+        "MODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s2-verified\\candidate\\ntw16s32.dll",
+        "DK_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "raw_sha256": "3bb1fe50a68ba19a83c550d696aff07568629fee96f3b1d18453a21fc3a73b38",
+      "pages": [
+        {
+          "page": 0,
+          "process": "PROCESS pid=19188 tid=10092 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\build\\t15-package\\s2-verified\\candidate\\ntw16s32.dll root_attached=1",
+          "markers": [
+            "DK_RENDER_OK removed=1 changed=1843 before_center=00c0c0c0 after_center=00f0f0f0",
+            "SUMMARY buttons=28 edits=3 combos=2 attached=33 failures=0"
+          ],
+          "report_sha256": "94f92df97d5429d8a1bd393bb1545ff68d9879aed4bfa5f49d0f4ba7a8e55e82"
+        },
+        {
+          "page": 1,
+          "process": "PROCESS pid=19188 tid=10092 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\build\\t15-package\\s2-verified\\candidate\\ntw16s32.dll root_attached=1",
+          "markers": [
+            "SUMMARY buttons=28 edits=3 combos=2 attached=33 failures=0"
+          ],
+          "report_sha256": "95c707b07e1302008ea86130f85bba509cc0b3cb416812d0f16a43065f24ac0f"
+        },
+        {
+          "page": 2,
+          "process": "PROCESS pid=19188 tid=10092 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\build\\t15-package\\s2-verified\\candidate\\ntw16s32.dll root_attached=1",
+          "markers": [
+            "SUMMARY buttons=28 edits=3 combos=2 attached=33 failures=0"
+          ],
+          "report_sha256": "b530f890a09f91116ed4201b3419445c40c720eef5e9d82ad8c91131c7bcb188"
+        },
+        {
+          "page": 3,
+          "process": "PROCESS pid=19188 tid=10092 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\build\\t15-package\\s2-verified\\candidate\\ntw16s32.dll root_attached=1",
+          "markers": [
+            "SUMMARY buttons=28 edits=3 combos=2 attached=33 failures=0"
+          ],
+          "report_sha256": "2dabe5454bfdf7aaeb37b3be05464616841148bd29f210948e5abdb9626ec1f9"
+        }
+      ]
+    },
+    {
+      "name": "final-madshow",
+      "driver": [
+        "TARGET pid=25948 creator-tree-root=29572 tid=19404 image=O:\\WINNT\\madshow.exe",
+        "MODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s2-verified\\candidate\\ntw16s32.dll",
+        "MODULE C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "VB_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "raw_sha256": "db2d9b20da32d0046f8a8439bc31eb43d58f91a8152ee90cc7084dbd9b91ec44"
+    },
+    {
+      "name": "delivery-actual",
+      "driver": [
+        "TARGET pid=2372 creator-tree-root=22892 tid=31820 image=D:\\programs\\misc\\DoubleKiller.exe",
+        "MODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s32.dll",
+        "DK_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "raw_sha256": "de5e20a05a80235bfa17dd208e291ada51d1e1a9e91f7e51f5c6161f01f84c0a",
+      "pages": [
+        {
+          "page": 0,
+          "process": "PROCESS pid=2372 tid=31820 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s32.dll root_attached=1",
+          "markers": [
+            "DK_RENDER_OK removed=1 changed=1843 before_center=00c0c0c0 after_center=00f0f0f0",
+            "SUMMARY buttons=28 edits=3 combos=2 attached=33 failures=0"
+          ],
+          "report_sha256": "43475d119d99480b7603e486708392ba040d009aedbf4235f436f733a1a515c2"
+        },
+        {
+          "page": 1,
+          "process": "PROCESS pid=2372 tid=31820 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s32.dll root_attached=1",
+          "markers": [
+            "SUMMARY buttons=28 edits=3 combos=2 attached=33 failures=0"
+          ],
+          "report_sha256": "8284ba307ea3baaadbea52587679e59af7c6db191cdb5cfb1294faaf3d30b190"
+        },
+        {
+          "page": 2,
+          "process": "PROCESS pid=2372 tid=31820 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s32.dll root_attached=1",
+          "markers": [
+            "SUMMARY buttons=28 edits=3 combos=2 attached=33 failures=0"
+          ],
+          "report_sha256": "51af4677ebee3e2783e54d3fb62b3638645410ab24d82d26a018c8a61cd99be7"
+        },
+        {
+          "page": 3,
+          "process": "PROCESS pid=2372 tid=31820 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s32.dll root_attached=1",
+          "markers": [
+            "SUMMARY buttons=28 edits=3 combos=2 attached=33 failures=0"
+          ],
+          "report_sha256": "04db0cccfd5b52a3e9cf52e5f6cd60e94f4107e08cc24c7d54a2dc27c120e111"
+        }
+      ]
+    },
+    {
+      "name": "delivery-madshow",
+      "driver": [
+        "TARGET pid=34056 creator-tree-root=27440 tid=14044 image=O:\\WINNT\\madshow.exe",
+        "MODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s32.dll",
+        "MODULE C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+        "VB_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "raw_sha256": "f7858676413915f31a4c48aff1e2343e98ef761dac2f760b36e30de298014599"
+    },
+    {
+      "name": "installed-assets",
+      "driver": [
+        "TARGET pid=20520 creator-tree-root=11996 tid=18868 image=D:\\programs\\misc\\DoubleKiller.exe",
+        "MODULE O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
+        "DK_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "raw_sha256": "493d82c0de6507c2093d478940f75120739ef0ace817e97e051860ca4f5fbf81",
+      "pages": [
+        {
+          "page": 0,
+          "process": "PROCESS pid=20520 tid=18868 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll root_attached=1",
+          "markers": [
+            "DK_RENDER_OK removed=1 changed=1843 before_center=00c0c0c0 after_center=00f0f0f0",
+            "SUMMARY buttons=28 edits=3 combos=2 attached=33 failures=0"
+          ],
+          "report_sha256": "34d4502bc87e34d0ac2373636ced8fac9a90f9cefbabf0e8570a684bca1f38b3"
+        },
+        {
+          "page": 1,
+          "process": "PROCESS pid=20520 tid=18868 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll root_attached=1",
+          "markers": [
+            "SUMMARY buttons=28 edits=3 combos=2 attached=33 failures=0"
+          ],
+          "report_sha256": "fc18fb04d8ac75b2f926e0247968fa424dfc6a78959a37408fb1663af66ce0f2"
+        },
+        {
+          "page": 2,
+          "process": "PROCESS pid=20520 tid=18868 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll root_attached=1",
+          "markers": [
+            "SUMMARY buttons=28 edits=3 combos=2 attached=33 failures=0"
+          ],
+          "report_sha256": "a8a0173023ad18b8ca9e979511dbee9a54e60788efc3f257893f8190ca5f1bf7"
+        },
+        {
+          "page": 3,
+          "process": "PROCESS pid=20520 tid=18868 bits=32 dpi=96 dll=O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll root_attached=1",
+          "markers": [
+            "SUMMARY buttons=28 edits=3 combos=2 attached=33 failures=0"
+          ],
+          "report_sha256": "ae3f4976ca88b170c63a5115c824fb62b44e0789523ea38b521d951cd56fec16"
+        }
+      ]
+    },
+    {
+      "name": "installed-system32",
+      "driver": [
+        "TARGET pid=18512 creator-tree-root=17152 tid=10440 image=D:\\programs\\misc\\DoubleKiller.exe",
+        "MODULE O:\\winnt\\system32\\ntw16s32.dll",
+        "DK_CLEANUP_OK exit=0 active=0 total=4"
+      ],
+      "raw_sha256": "af147a536e5c0e5ede3045f32b9a99de88eb27a13996b289a94c234c35be3b92",
+      "pages": [
+        {
+          "page": 0,
+          "process": "PROCESS pid=18512 tid=10440 bits=32 dpi=96 dll=O:\\winnt\\system32\\ntw16s32.dll root_attached=1",
+          "markers": [
+            "DK_RENDER_OK removed=1 changed=1843 before_center=00c0c0c0 after_center=00f0f0f0",
+            "SUMMARY buttons=28 edits=3 combos=2 attached=33 failures=0"
+          ],
+          "report_sha256": "8256e3ae01de6c49a04d3e3103a97b6de062e8bc92d50fe1da7d2d065c0fc47b"
+        },
+        {
+          "page": 1,
+          "process": "PROCESS pid=18512 tid=10440 bits=32 dpi=96 dll=O:\\winnt\\system32\\ntw16s32.dll root_attached=1",
+          "markers": [
+            "SUMMARY buttons=28 edits=3 combos=2 attached=33 failures=0"
+          ],
+          "report_sha256": "f6b38fbcf2103e5130adcc3fb185effca638a3a09224f4890a7de6ce4e1bec37"
+        },
+        {
+          "page": 2,
+          "process": "PROCESS pid=18512 tid=10440 bits=32 dpi=96 dll=O:\\winnt\\system32\\ntw16s32.dll root_attached=1",
+          "markers": [
+            "SUMMARY buttons=28 edits=3 combos=2 attached=33 failures=0"
+          ],
+          "report_sha256": "e8602ead992a57234ffb203f07c7fe7866dfde9a1bf5bf4ba96dd7068b6b060b"
+        },
+        {
+          "page": 3,
+          "process": "PROCESS pid=18512 tid=10440 bits=32 dpi=96 dll=O:\\winnt\\system32\\ntw16s32.dll root_attached=1",
+          "markers": [
+            "SUMMARY buttons=28 edits=3 combos=2 attached=33 failures=0"
+          ],
+          "report_sha256": "9f72f2eb36809eb37f2c7d25cbe78700cb6b3567f8ac8d0f1a0d8327e51a68e1"
+        }
+      ]
+    }
+  ],
+  "scope": {
+    "actual": "x86 ANSI DoubleKiller; four pages; buttons including 3-state checkboxes, edits and dropdowns",
+    "self_contained": "both widths, bare/styled x unaware96/PMv2 actual144; seven native superclass protocols; custom initializer replaces WNDPROC",
+    "unsupported": [
+      "VCL page/tab presentation",
+      "owner-draw THintCheckListBox",
+      "windowless labels/group artwork",
+      "custom TSpinButton",
+      "progress/animation",
+      "arbitrary OCX/frameworks",
+      "real x64 VCL application",
+      "physical input and multi-monitor changes"
+    ],
+    "business_actions": "No Run, scanning, delete, move, registry-setting actions. Only read-only enumeration, page focus, safe rendering detach, move/minimize/restore/close."
+  },
+  "preserved_sources": [
+    {
+      "path": "src/ntw16s-dll/win16_style.c",
+      "git_content_unchanged": true,
+      "sha256": "0f3b651b2d6aaf44fe2c51397cba2e52df0070c3eb0aabbd70e19c5ab5b971b9"
+    },
+    {
+      "path": "src/ntw16s-dll/font.c",
+      "git_content_unchanged": true,
+      "sha256": "8ee09070abf99c9a171b009d4d83d56e916cab6bf8651be24f1090f0ad2414bd"
+    },
+    {
+      "path": "src/ntw16s-dll/font.h",
+      "git_content_unchanged": true,
+      "sha256": "94d1b584c77d3e27c26a83954b80a0cabb525904454ab6baf6e8c157b4f4d460"
+    },
+    {
+      "path": "src/ntw16s-dll/vb_text.c",
+      "git_content_unchanged": true,
+      "sha256": "05a375003adbeac71de27a5ff1ccf3690c53382513f1c888ebe10b9f1e202f25"
+    },
+    {
+      "path": "src/ntw16s-dll/vb_text.h",
+      "git_content_unchanged": true,
+      "sha256": "f0fb75c0e46ea4ad2234a51c3a2fa95424c1187a92c935734fec88b52072506d"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/window_titles.c",
+      "git_content_unchanged": true,
+      "sha256": "d2ff549632667c06a809d04e7ff9e779cfb63821961811b4e90acacf80f8c48d"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_bar.c",
+      "git_content_unchanged": true,
+      "sha256": "dabb1ce65683a5b92ae396c1c56224eb7815cacd60d91fb5f196aa9d536244b7"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_bar_paint.c",
+      "git_content_unchanged": true,
+      "sha256": "209ab48d33f57207c33f90c412b9c294ed062683c789803dd207cf22fd66076f"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_items.c",
+      "git_content_unchanged": true,
+      "sha256": "50ffdecade278016841546433fb6650c0c8e2e3d7996725eefb5e77e10be0706"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_layout.c",
+      "git_content_unchanged": true,
+      "sha256": "cde752459255f121492daa908df6cd6201a549d0080d2cf73b8975b6042dc62c"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_paint.c",
+      "git_content_unchanged": true,
+      "sha256": "00df595f7ab3f4471bd5d851930aac1e03d48430c45a8ed8ecb372dbdc108e84"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_scope.c",
+      "git_content_unchanged": true,
+      "sha256": "21144a3223b75b502d9b5509dee8f0f3fe642ee2dfe9b04f24f104f60279f28c"
+    },
+    {
+      "path": "src/ntw16s-dll/scroll_layout.c",
+      "git_content_unchanged": true,
+      "sha256": "0b1b344fcbe0ef2a8060ef140c539cefeb5fa79c7b93c322452513d15b95b4d0"
+    },
+    {
+      "path": "src/ntw16s-dll/scroll_track.c",
+      "git_content_unchanged": true,
+      "sha256": "0b9c5d40849d321e3e467635d4c28b85c5897d8ee4dd8ec7bf3ed1d39fcd72ee"
+    }
+  ],
+  "pre_final_package_matrix": {
+    "jobs": 4,
+    "physical_input": "not-tested",
+    "package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-verified\\candidate",
+    "cases": 35,
+    "status": "passed",
+    "core_matrix": "separate Build-Core matrix required",
+    "full_integration": true,
+    "sha256": {
+      "demo.exe": "f2a1e4f7e5d12bd38b7c1cd0aed1be36e276b0d06674e726b15a8407ca44034d",
+      "ntw16s32.dll": "84c7512d7ed4df20e1505819bfc51113397f300b7c94e1c5fc43955b337da6e6",
+      "ntw16s64.dll": "661c21f7a8950309862b51f739d43b99a9c8a932642aab9fe3e0d00308f1cea3",
+      "run16s.exe": "0123f9673b572232263a231c99d31ddb21e678d007781d9be1124a3f454cca73"
+    },
+    "seconds": 267.0702726,
+    "disposition": "Passed 35; final group presentation guard sweep requires fresh final snapshot and package verification."
+  },
+  "final_pixels_before_group_guard_sweep": {
+    "client_changed": 29509,
+    "caption_top_24_changed": 0,
+    "width": 704,
+    "height": 483
+  },
+  "similar_issue_sweep": {
+    "command": "rg -n 'GetClassName|lstrcmpiW.*(BUTTON|EDIT|LISTBOX|COMBOBOX|SCROLLBAR)' attachment.c control_scope.c controls.c win16_style.c injection/window_titles.c",
+    "dispositions": [
+      {
+        "path": "control_class.h",
+        "action": "central native-instance classifier; six standard USER protocols only"
+      },
+      {
+        "path": "attachment.c",
+        "action": "shared classifier plus scoped staged/commit/cancel theme lifetime"
+      },
+      {
+        "path": "control_scope.c",
+        "action": "already consumes central classifier; no duplicate allowlist change"
+      },
+      {
+        "path": "controls.c is_list",
+        "action": "use central LISTBOX classifier; retain literal ComboLBox system special case"
+      },
+      {
+        "path": "controls.c present_control",
+        "action": "use central BUTTON classifier for group presentation guard; add aliased group detach case"
+      },
+      {
+        "path": "win16_style.c dialog class",
+        "action": "retain #32770 distinction; not a control protocol comparison"
+      },
+      {
+        "path": "injection/window_titles.c",
+        "action": "unchanged; no new hooks or title/scroll adaptation changes"
+      }
+    ]
+  },
+  "verification": {
+    "actual_package": {
+      "core_matrix": "separate Build-Core matrix required",
+      "status": "passed",
+      "full_integration": true,
+      "package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate",
+      "seconds": 260.6424144,
+      "cases": 35,
+      "sha256": {
+        "demo.exe": "9ccac1ba4891c5b217a91269252541437889eb75f6cd54645c17e0cff1e7bd6c",
+        "ntw16s32.dll": "789bf8ed116c4c89aca5fc83c26806127ebf5124822e291fc78468348279474c",
+        "ntw16s64.dll": "d39b5f2f2304a8665e9ad9110ca146eedd6334ed1ffcbe239c22aa143d3622b7",
+        "run16s.exe": "ae04b2ba9f553df8defff7e205494080551b87fd180ff00dffa58c9b407a809d"
+      },
+      "jobs": 4,
+      "physical_input": "not-tested"
+    },
+    "cases": [
+      {
+        "seconds": 0.2757151,
+        "name": "abi-x86",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s32.dll"
+        ],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x86\\core-abi.exe"
+      },
+      {
+        "seconds": 0.2597453,
+        "name": "abi-x64",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s64.dll"
+        ],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\core-abi.exe"
+      },
+      {
+        "seconds": 0.2348933,
+        "name": "demo-boundary",
+        "arguments": [
+          "-B",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\tests\\demo-exe\\boundary.py",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\demo.exe"
+        ],
+        "exit_code": 0,
+        "command": "C:\\Program Files\\Python313\\python.exe"
+      },
+      {
+        "seconds": 1.7327493,
+        "name": "demo-pair",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s64.dll",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s32.dll",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\demo.exe"
+        ],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\demo-observe.exe"
+      },
+      {
+        "seconds": 7.4050609,
+        "name": "wait-contract",
+        "arguments": [
+          "-B",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\tests\\run16s-exe\\wait.py",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s32.dll",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s64.dll",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x86\\wait-target.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\wait-target.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\wait-gui-target.exe"
+        ],
+        "exit_code": 0,
+        "command": "C:\\Program Files\\Python313\\python.exe"
+      },
+      {
+        "seconds": 71.9946674,
+        "name": "font-layout-x64",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s64.dll"
+        ],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\core-font-layout.exe"
+      },
+      {
+        "seconds": 105.1682252,
+        "name": "font-layout-x86",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s32.dll"
+        ],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x86\\core-font-layout.exe"
+      },
+      {
+        "seconds": 67.2430218,
+        "name": "menu-cancel-x86",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s32.dll"
+        ],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x86\\core-menu-cancel.exe"
+      },
+      {
+        "seconds": 0.1923693,
+        "name": "startup-error-unit-32",
+        "arguments": [],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x86\\startup-error-unit.exe"
+      },
+      {
+        "seconds": 0.1155724,
+        "name": "startup-error-unit-64",
+        "arguments": [],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\startup-error-unit.exe"
+      },
+      {
+        "seconds": 0.766648,
+        "name": "legacy-rejection",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\run16s.exe"
+        ],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\legacy-rejection.exe"
+      },
+      {
+        "seconds": 0.8948149,
+        "name": "cli",
+        "arguments": [
+          "-B",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\tests\\run16s-exe\\cli.py",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\run16s.exe"
+        ],
+        "exit_code": 0,
+        "command": "C:\\Program Files\\Python313\\python.exe"
+      },
+      {
+        "seconds": 1.9479232,
+        "name": "automatic",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s32.dll",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s64.dll",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x86\\launch-target.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\launch-target.exe"
+        ],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\launch-automatic.exe"
+      },
+      {
+        "seconds": 9.0617875,
+        "name": "startup-errors",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\run16s.exe"
+        ],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\startup-errors.exe"
+      },
+      {
+        "seconds": 6.0686319,
+        "name": "propagation",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s32.dll",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s64.dll",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x86\\propagate-target.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\propagate-target.exe"
+        ],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\propagate-basic.exe"
+      },
+      {
+        "seconds": 2.8830014,
+        "name": "cmd-nested",
+        "arguments": [
+          "--core",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate"
+        ],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\cmd-nested.exe"
+      },
+      {
+        "seconds": 1.4126532,
+        "name": "long-path",
+        "arguments": [
+          "-B",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\tests\\run16s-exe\\long_path.py",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s32.dll",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s64.dll",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x86\\launch-failures.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\launch-failures.exe"
+        ],
+        "exit_code": 0,
+        "command": "C:\\Program Files\\Python313\\python.exe"
+      },
+      {
+        "seconds": 0.7124556,
+        "name": "legacy-iat-32",
+        "arguments": [
+          "--parent",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate"
+        ],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x86\\launch-staging.exe"
+      },
+      {
+        "seconds": 0.7423401,
+        "name": "legacy-iat-64",
+        "arguments": [
+          "--parent",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate"
+        ],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\launch-staging.exe"
+      },
+      {
+        "seconds": 0.3866739,
+        "name": "uac-unit-32",
+        "arguments": [],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x86\\uac-unit.exe"
+      },
+      {
+        "seconds": 2.7946712,
+        "name": "cli-failures",
+        "arguments": [
+          "-B",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\tests\\run16s-exe\\cli_failures.py",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s32.dll",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s64.dll",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x86\\launch-target.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\launch-target.exe"
+        ],
+        "exit_code": 0,
+        "command": "C:\\Program Files\\Python313\\python.exe"
+      },
+      {
+        "seconds": 0.4320402,
+        "name": "uac-unit-64",
+        "arguments": [],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\uac-unit.exe"
+      },
+      {
+        "seconds": 1.5168575,
+        "name": "vb-font-32",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x86\\vb-fixture\\MSVBVM60.dll"
+        ],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x86\\core-vb-font.exe"
+      },
+      {
+        "seconds": 1.1973428,
+        "name": "vb-font-64",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\vb-fixture\\MSVBVM60.dll"
+        ],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\core-vb-font.exe"
+      },
+      {
+        "seconds": 2.3491936,
+        "name": "vb-controls-64",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\vb-fixture\\MSVBVM60.dll"
+        ],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\core-vb.exe"
+      },
+      {
+        "seconds": 2.7841008,
+        "name": "vb-controls-32",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x86\\vb-fixture\\MSVBVM60.dll"
+        ],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x86\\core-vb.exe"
+      },
+      {
+        "seconds": 0.302668,
+        "name": "theme-stage-32",
+        "arguments": [],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x86\\core-theme-stage.exe"
+      },
+      {
+        "seconds": 0.205442,
+        "name": "theme-stage-64",
+        "arguments": [],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\core-theme-stage.exe"
+      },
+      {
+        "seconds": 2.0096601,
+        "name": "superclass-64",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\run16s.exe"
+        ],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\core-superclass.exe"
+      },
+      {
+        "seconds": 2.4989684,
+        "name": "superclass-32",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\run16s.exe"
+        ],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x86\\core-superclass.exe"
+      },
+      {
+        "seconds": 66.6669774,
+        "name": "menu-cancel-x64",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s64.dll"
+        ],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\core-menu-cancel.exe"
+      },
+      {
+        "seconds": 4.3478118,
+        "name": "rollback",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s32.dll",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s64.dll",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x86\\rollback-contract.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\rollback-contract.exe"
+        ],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\rollback-contract-driver.exe"
+      },
+      {
+        "seconds": 9.8677003,
+        "name": "creation-contract",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s32.dll",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s64.dll",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x86\\creation-contract.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\creation-contract.exe"
+        ],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\creation-contract-driver.exe"
+      },
+      {
+        "seconds": 78.9450708,
+        "name": "dialogs",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s32.dll",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s64.dll",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x86\\launch-target.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\launch-target.exe",
+          "dialogs"
+        ],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\launch-automatic.exe"
+      },
+      {
+        "seconds": 80.4656976,
+        "name": "messages",
+        "arguments": [
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s32.dll",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate\\ntw16s64.dll",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x86\\launch-target.exe",
+          "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\launch-target.exe",
+          "messages"
+        ],
+        "exit_code": 0,
+        "command": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\clean-source\\build\\.ninja\\x64\\launch-automatic.exe"
+      }
+    ],
+    "focused": [
+      {
+        "architecture": "x86",
+        "tests": 5,
+        "failures": 0,
+        "junit_sha256": "0248d595644cf3ab3045f88ca9963a748925a0a39c1770b9732ca24c8cfff123"
+      },
+      {
+        "architecture": "x64",
+        "tests": 5,
+        "failures": 0,
+        "junit_sha256": "0c8b8c9b3fe510495335dc5be262e06e94082d49eed46668e697cea3b93b0684"
+      }
+    ],
+    "source_manifest": "124 decisions / 294 includes / 146 local imports; 23 source +9 third-party negative cases",
+    "resources": "5 original headers and provenance byte-exact, six substitution rejections, 18 original tables per DLL",
+    "registered_ctests": 79,
+    "all_ctests_executed": false,
+    "publication": {
+      "files": [
+        {
+          "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe",
+          "expected": "9ccac1ba4891c5b217a91269252541437889eb75f6cd54645c17e0cff1e7bd6c",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-publish\\before-0",
+          "before": "f5da4181bb4e354b90aeb3f3be89fe75b0dbb65930a2159bae3bf85383dc64e4",
+          "after": "9ccac1ba4891c5b217a91269252541437889eb75f6cd54645c17e0cff1e7bd6c"
+        },
+        {
+          "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
+          "expected": "789bf8ed116c4c89aca5fc83c26806127ebf5124822e291fc78468348279474c",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-publish\\before-0",
+          "before": "e84ebfabdaba527f8fffcbf2d26aa444fda06628bf202d0ed9ae1f9ad4f7f477",
+          "after": "789bf8ed116c4c89aca5fc83c26806127ebf5124822e291fc78468348279474c"
+        },
+        {
+          "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll",
+          "expected": "d39b5f2f2304a8665e9ad9110ca146eedd6334ed1ffcbe239c22aa143d3622b7",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-publish\\before-0",
+          "before": "16a2de06048f7baab107daec79440229f85cece7139541dc3dcf0614775d058d",
+          "after": "d39b5f2f2304a8665e9ad9110ca146eedd6334ed1ffcbe239c22aa143d3622b7"
+        },
+        {
+          "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
+          "expected": "ae04b2ba9f553df8defff7e205494080551b87fd180ff00dffa58c9b407a809d",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-publish\\before-0",
+          "before": "ebde18e6d0d59b97304abfd837830ff80547c9ae454f14cdd7da66c17f9ce79d",
+          "after": "ae04b2ba9f553df8defff7e205494080551b87fd180ff00dffa58c9b407a809d"
+        },
+        {
+          "path": "O:\\winnt\\system32\\demo.exe",
+          "expected": "9ccac1ba4891c5b217a91269252541437889eb75f6cd54645c17e0cff1e7bd6c",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-publish\\before-1",
+          "before": "f5da4181bb4e354b90aeb3f3be89fe75b0dbb65930a2159bae3bf85383dc64e4",
+          "after": "9ccac1ba4891c5b217a91269252541437889eb75f6cd54645c17e0cff1e7bd6c"
+        },
+        {
+          "path": "O:\\winnt\\system32\\ntw16s32.dll",
+          "expected": "789bf8ed116c4c89aca5fc83c26806127ebf5124822e291fc78468348279474c",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-publish\\before-1",
+          "before": "e84ebfabdaba527f8fffcbf2d26aa444fda06628bf202d0ed9ae1f9ad4f7f477",
+          "after": "789bf8ed116c4c89aca5fc83c26806127ebf5124822e291fc78468348279474c"
+        },
+        {
+          "path": "O:\\winnt\\system32\\ntw16s64.dll",
+          "expected": "d39b5f2f2304a8665e9ad9110ca146eedd6334ed1ffcbe239c22aa143d3622b7",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-publish\\before-1",
+          "before": "16a2de06048f7baab107daec79440229f85cece7139541dc3dcf0614775d058d",
+          "after": "d39b5f2f2304a8665e9ad9110ca146eedd6334ed1ffcbe239c22aa143d3622b7"
+        },
+        {
+          "path": "O:\\winnt\\system32\\run16s.exe",
+          "expected": "ae04b2ba9f553df8defff7e205494080551b87fd180ff00dffa58c9b407a809d",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-publish\\before-1",
+          "before": "ebde18e6d0d59b97304abfd837830ff80547c9ae454f14cdd7da66c17f9ce79d",
+          "after": "ae04b2ba9f553df8defff7e205494080551b87fd180ff00dffa58c9b407a809d"
+        }
+      ],
+      "status": "passed",
+      "tested_package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery\\candidate",
+      "test_result": "O:\\repos.hobby\\win16style\\build\\t15-package\\s2-delivery-full\\result.json"
+    },
+    "restart_manager": "0 actual owners immediately before publication; no user process terminated"
+  },
+  "final_pixels": {
+    "width": 704,
+    "height": 483,
+    "client_changed": 29509,
+    "caption_top_24_changed": 0
+  },
+  "final_screenshots": [
+    {
+      "name": "DoubleKiller-after.png",
+      "sha256": "8cad633848dc9774985f63ab8dac85f39655c04c1a99a3a14be4d2c043be1249"
+    },
+    {
+      "name": "DoubleKiller-before.png",
+      "sha256": "faac522e16bfe40f8507f1a0723edd72c28601aa90da4bcfc92a61877dd0de17"
+    },
+    {
+      "name": "DoubleKiller-options.png",
+      "sha256": "e8f7d5cb62ad15acb706424778f20467e307a66c19db69c1d34cea47287490c6"
+    }
+  ],
+  "task_audit": {
+    "state": "S2 locally verified, remote review and closure pending; T15/M0 open",
+    "original_request": "Make DoubleKiller use the style; only allocate S autonomously",
+    "actual_scope": "33 VCL native buttons/checks/edits/combos, actual fill, four pages, safe lifecycle",
+    "limitations": "Retain custom pages, owner-draw contents, windowless labels, custom spin/progress/animation; physical input and real x64 VCL untested",
+    "other_tasks": "Preserved; no unrelated dirty work at entry, no sibling modifications or dependencies"
+  },
+  "code_statistics": {
+    "command": "git diff --cached --numstat -- src tests tools CMakeLists.txt",
+    "files": 11,
+    "added": 504,
+    "deleted": 12,
+    "net": 492,
+    "production_renderer_files": 5,
+    "production_added": 62,
+    "production_deleted": 12,
+    "production_net": 50,
+    "retired_product_paths": [],
+    "ownership": "Native HWND/application HFONT/WNDPROC remain borrowed; staged theme strings/nodes owned by GUI thread; commit uses existing COMCTL subclass lifetime; no other dirty task at entry"
+  },
+  "stable_builds": {
+    "x86": "Ninja no work to do after cache warm",
+    "x64": "Ninja no work to do after cache warm",
+    "paths_preserved": [
+      "build/.ninja",
+      "build/.ccache"
+    ],
+    "scope": "Persistent build outputs are not substituted for the tested clean package"
+  },
+  "source_identity_sha256": "12f1737192b9c80fadd104bc9427d0dc4a1a72d7f326dffe3247ca768c7937ed"
+}

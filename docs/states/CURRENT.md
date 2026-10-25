@@ -2,30 +2,32 @@
 
 ## Current Work
 
-无活动任务包。M0 T15 S1已完成实际远端复核和登记scratch回收，S1关闭。
-本轮VB6/MadShow适配实现范围完成，T15保持开放等待用户外观验收；M0固定开放。
-三组件四产物及其他已关闭/取消任务、既有债务保持。
+M0 T15 S2 verified/published：DoubleKiller原生超类适配，35项实际包及10项双宽聚焦通过，
+真实DoubleKiller/MadShow及两处默认安装入口复验通过；待提交推送、实际远端复核及scratch回收。
+用户仅授权自行划分S，不自行分配新T。T15 S1保持关闭，T15/M0开放等待外观验收。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 15
 - Last allocated Td S: 11
+- Owner allocation constraint: 只可自行划分后续S，不得自行分配新T；保持现有T15/M0。
 - Last delivery: M0 T15 S1 P2 (P1 6246df6实际取回177文件通过；163输入/八部署一致；登记scratch已回收)
-- Open task: T15等待用户外观验收；S1关闭；Td S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
+- Open task: T15 S2 active；T15等待用户外观验收；S1关闭；Td S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
 
 ## Technical Baseline
 
-0.15.0.0 / T15 S1已双发布/安装复验/6246df6实际远端复核并收口，T15等待用户验收。
-163输入冻结，GCC16.1/Ninja/ccache干净双宽构建；31/31实际包250.62秒、
-最终双宽各5项聚焦及安装ABI/协议/真实MadShow通过，无skip。76注册CTest未全部执行。
-实际MadShow4按钮/13文本框/2分组附着及窗口less文字接入；两次整图一致，标题24行
-及画布与旧包相同。借用源字体/原编辑消息保留，32私有租约与映射释放、33源字体
-保留、分配配对0/0、容量/失败/屏障通过。宿主GDI总数另列观测，不假称全部OS缓存释放。
-两处八摘要一致；ABI3/31、原五头/声明/18表保持；三组件四产物，无第五文件。
-范围以[记录](../history/M0-T15-S1-vb6.md)及[证据](../etc/evidence/vb6-adaptation.json)为准；
-真实VB6只验证本机x86 MadShow，其他类/OCX/复杂文字和物理多屏未承诺。
-T14 S3启动错误语义、既有标题/标准字体/菜单/滚动条及其他任务状态保持。
+0.15.0.0 / T15 S2本地已验证/双发布，尚待实际远端复核，不作关闭声明。
+167输入冻结；纯C17/GCC16.1、Ninja/ccache干净双宽构建；35/35实际包260.64秒，
+另10项双宽聚焦、真实DoubleKiller/MadShow、两处默认启动及系统双宽ABI通过，无skip。
+79注册CTest未全部执行。DoubleKiller四页28按钮(含复选)/3编辑/2下拉共33控件附着；
+Run真实填充c0c0c0，卸载f0f0f0，1843像素变化，关闭exit0/自有Job空。
+标题顶部24行逐像素不变，客户区29509像素变化。自绘分页/列表/标签/微调等保持原应用。
+暂存主题不更改InitWndProc，原生初始化后提交；生产主题分配配对归零、失败/取消/终结/
+最新主题恢复通过。旧包双宽和“附着假阳性”原型均被强化测试检出，未发布错误原型。
+八部署摘要一致；ABI3/31、无新增hook/导出，原五头/声明/18表及三组件四产物保持。
+范围见[本S记录](../history/M0-T15-S2-doublekiller.md)和[证据](../etc/evidence/doublekiller-controls.json)。
+T15 S1的VB6成果、T14 S3启动语义及既有标题/字体/菜单/滚动条保持；其他任务/债务状态不变。
 
 ## Recent Closure
 
@@ -76,3 +78,24 @@ T15 S1完成MadShow按钮/文本框/分组与窗口less文字适配；目标19�
 四产物及变更文档共177文件，协调复核通过；源输入/部署摘要保持。证据提炼后
 两登记scratch按绝对路径/无活进程/无reparse检查回收，稳定Ninja/ccache和验收
 PNG保留。S1关闭，T15等待用户外观验收，M0开放；其他任务/债务状态保持。
+
+## M0 T15 S2 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Continuation |
+| Admission And Approval | 用户明确禁止自行分配新T，只可自行分S；本次沿用T15的S2，撤销未提交的T16误分配。用户请求让DoubleKiller应用本项目样式；允许范围内调查、原型、实现和完整交付，不关闭其他开放任务。 |
+| Objective | 定位本机DoubleKiller内部控件未换肤原因，以精确框架契约适配可验证控件。 |
+| Non-goals | 不进行重复文件扫描/删除/移动；不承诺任意自绘框架；不改标题、菜单、标准字体策略、原资源或兄弟仓库。 |
+| Reference Baseline | 8fc6ad0 / 0.15.0.0，干净工作区；T12启动修复及T15框架适配保持。 |
+| Candidate Proposal | [DoubleKiller控件](../proposals/doublekiller-controls.md) |
+| Files And ABI Surface | DLL私有分类/绘制及原生C测试、构建元数据、来源回执和交付文档；预期ABI3/31及三组件四产物保持。 |
+| Applicable Rules | 本次Task Reading Set全部已读；EXECUTION/ARCHITECTURE/CODING/DOCUMENT及UI/来源规范。 |
+| Verification | 自有Job/私有桌面裸与注入对照、真实类/注册者/附着/绘制证据；自包含双宽正负例/消息/清理；干净双宽同包回归、双发布、实际远端复核。 |
+| Expected Markers | DK_CLASSIFIED、DK_RENDER_OK、DK_CLEANUP_OK，有限等待/非零失败；未覆盖不计通过。 |
+| Asset Needs | 五原始图形头及声明字节保持；截图原生生成；scratch仅build/t15-doublekiller、build/t15-package，执行者负责提炼后安全回收；稳定.ninja/.ccache保留。 |
+| Reporting Requirements | 实际断点、最小修复、类别覆盖、负例、资源释放、包SHA/测试/发布/远端事实；其他任务改动保留。 |
+| Stop Conditions | 需私有对象布局猜测、额外产品、共享/既有进程注入、安全边界调整时停在证据与方案；不能完整验证则如实记录。 |
+| Exit Criteria | 本次有限控件闭环、经典/VB回归、35项实际包及聚焦回归通过，四文件双发布/提交推送/实际复核；用户外观验收另列。 |
+| Original Owner Request | 好 接下来看看 你能不能让doublekiller也应用我们样式。 |
+| Similar-Issue Sweep | 检索分类/控件scope/自动附着三处及自绘/容器路径，逐生产命中处置；不用应用名或仅类前缀判断。 |

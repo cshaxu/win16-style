@@ -14,9 +14,9 @@
       "path": "src/ntw16s-dll/attachment.c",
       "source": "src/ntw16s-dll/attachment.c",
       "source_blob": "e467006ab99ada1846f9298b650c30605807466b",
-      "sha256": "84270028f5da4de702ad2c099daf855a6747c366b225f1635bed8afb9ce9ac2f",
+      "sha256": "c98c3ee0b59153a94dcc2926fe0f24151be474d0b672f7000b10bdf55e701e0f",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -41,9 +41,9 @@
       "path": "src/ntw16s-dll/controls.c",
       "source": "src/ntw16s-dll/controls.c",
       "source_blob": "9bc3331d0f9fc3e3104059ab792670ab1579d65c",
-      "sha256": "c7e598570f8dc1c95403fa8d81e0e6bf1740dc7214bde651a1a6ebea281cc699",
+      "sha256": "cf80cde80f33e559e471313369a952e2dca232f824712ab6111faf39754e43b8",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -266,18 +266,18 @@
       "path": "src/ntw16s-dll/theme.c",
       "source": "src/ntw16s-dll/theme.c",
       "source_blob": "1c81eaa41fda9d96dfc07e8fb7707d2f2dcbafbc",
-      "sha256": "48eb05bc23f40eb99288a1c3d16ba07a8262be2a15a95725427238e730e3f6ac",
-      "disposition": "retain",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "sha256": "ba9db953cb6a0116ce70a51c192d6b535e9ed276030dfafa4eacd9e78bb45a4a",
+      "disposition": "adapt",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T15 S2: deferred theme recording/commit and native superclass adaptation; original notices retained",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
       "path": "src/ntw16s-dll/theme.h",
       "source": "src/ntw16s-dll/theme.h",
       "source_blob": "088ea9230823070a010d586058bd7b86aee5d93b",
-      "sha256": "0a0100203a7856d58d2a16389309440781f23d7e04e7d7a93db0cc5ad2415371",
-      "disposition": "retain",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "sha256": "b97ad1fe44e2303ccd6f80621f7a6a7d49f5e73a775949dec1dbfde536c45d81",
+      "disposition": "adapt",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T15 S2: deferred theme recording/commit and native superclass adaptation; original notices retained",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -1204,8 +1204,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "94d316e47581a1e174fe55da865d3e03455eda35b28f39af57506aa06040a4b8",
-      "review": "T15 S1: original private VB6 adaptation or self-contained native fixture; no copied external implementation"
+      "sha256": "588f1b57175b3d705bbc749af6f3d2badf8141e847b76851229bcae43524ae2a",
+      "review": "T15 S1: original private VB6 adaptation or self-contained native fixture; no copied external implementation; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained"
     },
     {
       "path": "src/ntw16s-dll/vb_text.c",
@@ -1278,6 +1278,42 @@
       "notice": "Project-authored C17; project MIT license",
       "sha256": "ec4dfa34698a8ccc74c714e76c6775bc3bef501f31e3dc15daca00efdc80dd9e",
       "review": "T15 S1: private allocation ownership fixture, no product ABI or external source dependency"
+    },
+    {
+      "path": "tests/ntw16s-dll/superclass.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "sha256": "ce1fdab7dc93e3ced04c99708b8b22860cb16f8366ed38b6c35565a9a1a696fb",
+      "review": "T15 S2 native superclass protocol or read-only actual DoubleKiller observer; no imported code"
+    },
+    {
+      "path": "tests/integration/doublekiller_probe.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "sha256": "def4a92004af79b20f8980c769bffc9f933283d7bb569674c01586236fb2c40b",
+      "review": "T15 S2 native superclass protocol or read-only actual DoubleKiller observer; no imported code"
+    },
+    {
+      "path": "tests/integration/doublekiller_driver.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "sha256": "8007faa18c53a1ef340aa00dadccb27e1bf4a46c330ab379b56cf845b3c3be44",
+      "review": "T15 S2 native superclass protocol or read-only actual DoubleKiller observer; no imported code"
+    },
+    {
+      "path": "tests/ntw16s-dll/theme_stage.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "sha256": "09f3cd4ab101a9b3f2d4c945bdd4fc21f958d5bc3c38ebb13470ee14d4c1a9f7",
+      "review": "T15 S2 private theme ownership or native superclass regression; no external code copied"
     }
   ]
 }

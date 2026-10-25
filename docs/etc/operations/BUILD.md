@@ -62,7 +62,7 @@ RCDATA 3为四产物的项目LICENSE，RCDATA 4为两个DLL的完整MinHook/HDE 
 旧Detours源码/声明只保留在其历史交付中，当前产品不使用Detours。
 
 
-同包运行验证使用独立观察/控制器，将候选四文件作为实际参数；默认15项聚焦测试（含真实交互式cmd四位宽边、6场景等待契约、双宽15场景菜单取消及字体布局探针）：
+同包运行验证使用独立观察/控制器，将候选四文件作为实际参数；默认31项聚焦测试（含真实交互式cmd四位宽边、6场景等待契约、双宽15场景菜单取消及字体布局探针）：
 
 ```powershell
 pwsh -NoProfile -File tools/Test-Package.ps1 -RunName package-test-new -Package build/t9-package/candidate-new/candidate -BuildRoot build/t9-package/candidate-new/clean-source/build/.ninja -SourceRoot build/t9-package/candidate-new/clean-source
@@ -80,7 +80,7 @@ run16s保持Console子系统，交互cmd自然等待启动器；控制台目标�
 
 用户指定的发布步骤：每S若有binary change，将已测试的同批四文件发布至assets根目录
 及O:/winnt/system32；系统目录原四文件备份至本S scratch，再逐项核对三处SHA。
-仅更新本项目四文件，遇占用/权限问题停止并记录。无binary change记录摘要比较。
+仅更新本项目四文件。占用时按EXECUTION核对实际PID/映像/启动时间，正常关闭、有限等待后可结束该已确认进程并继续替换；权限失败记录并停止，不扩大权限。无binary change记录摘要比较。
 部署入口（先完成同包测试，再运行）：
 
 ```powershell
@@ -125,3 +125,15 @@ ccache DIR/TEMPDIR/MAXSIZE=5G/BASEDIR写入生成的编译命令，直接cmake/n
 须提供自有scratch。包测试已有每case目录，使用相同的有界并行原则，-Jobs默认4、
 重UI占2 slots，保留所有必需标记和四文件测试前后摘要。-Jobs 1可做同集合串行对照。
 开发中先quick/focused，测试源码收敛后一次最终冻结、完整回归与同批包验证。
+
+
+原生超类回归入口：`core-superclass.exe <absolute-run16s.exe>`（分别运行x86/x64构建），
+自有私有桌面中覆盖裸/注入与96/144 DPI、初始化器重设窗口过程、实际经典填充/卸载、
+输入协议和清理。`core-theme-stage.exe`编译生产theme.c并核对暂存/提交/取消/终结、
+失败和所有私有分配归零。Test-Package两种位宽各收一例，FullIntegration总计35例。
+
+可选真实DoubleKiller检查：使用与实际目标相同位宽的
+`doublekiller-driver.exe <absolute-run16s.exe-or-bare> <absolute-target.exe> <absolute-doublekiller-probe.dll> <owned-output-prefix>`。
+从登记scratch运行；只操作本次Job中新建实例，四页只读检查及实际Run按钮绘制/卸载，
+截图在卸载之前生成；不点击业务扫描/删除/移动/注册表命令。该检查需要用户提供的真实应用，
+不加入核心必需测试、不构成构建依赖。实际覆盖及限制见CURRENT和本S证据。

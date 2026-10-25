@@ -72,3 +72,5 @@ PictureBox等其他附着窗口形成屏障。变体HFONT临时选入DC，返回
 当前交付结果及有限覆盖由[实施记录](../history/M0-T15-S1-vb6.md)和CURRENT拥有。
 资源验证直接断言私有租约句柄失效/源字体保留/分配配对，不用宿主总GDI缓存当作
 私有所有权的替代。每S双发布/实际远端复核后才收口；本次实现范围完成后等待用户验收。
+
+用户后续要求DoubleKiller换肤，并明确仅可自行划分S、不自行分配新T；同一T的S2承接此框架适配，见[DoubleKiller方案](doublekiller-controls.md)。

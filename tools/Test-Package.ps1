@@ -82,6 +82,12 @@ try{
         (Case 'vb-controls-32' (Join-Path $x86 'core-vb.exe') @($run,(Join-Path $x86 'vb-fixture/MSVBVM60.dll')) @('VB_WINDOWED_OK bits=32 styled=1','VB_EDIT_OK undo=1','VB_EDIT_FONT_PIXELS changed=1','VB_CONTAINER_PAINT_OK label_changed=1','VB_CLEANUP_OK')),
         (Case 'vb-controls-64' (Join-Path $x64 'core-vb.exe') @($run,(Join-Path $x64 'vb-fixture/MSVBVM60.dll')) @('VB_WINDOWED_OK bits=64 styled=1','VB_EDIT_OK undo=1','VB_EDIT_FONT_PIXELS changed=1','VB_CONTAINER_PAINT_OK label_changed=1','VB_CLEANUP_OK'))
     )
+    $cases+=@(
+        (Case 'theme-stage-32' (Join-Path $x86 'core-theme-stage.exe') @() @('THEME_STAGE_OWNERSHIP_OK bits=32','allocations=0 early_proc_unchanged=1')),
+        (Case 'theme-stage-64' (Join-Path $x64 'core-theme-stage.exe') @() @('THEME_STAGE_OWNERSHIP_OK bits=64','allocations=0 early_proc_unchanged=1')),
+        (Case 'superclass-32' (Join-Path $x86 'core-superclass.exe') @($run) @('SUPER_PROTOCOL_OK bits=32 styled=1','SUPER_RENDER_OK','SUPER_ACTUAL_FILL_OK','SUPER_REJECT_OK','SUPER_CLEANUP_OK')),
+        (Case 'superclass-64' (Join-Path $x64 'core-superclass.exe') @($run) @('SUPER_PROTOCOL_OK bits=64 styled=1','SUPER_RENDER_OK','SUPER_ACTUAL_FILL_OK','SUPER_REJECT_OK','SUPER_CLEANUP_OK'))
+    )
     if($FullIntegration){
         $cases+=@(
             (Case 'creation-contract' (Join-Path $x64 'creation-contract-driver.exe') @($run,$d32,$d64,(Join-Path $x86 'creation-contract.exe'),(Join-Path $x64 'creation-contract.exe')) @('CREATION CONTRACT PASS 64') 520),
