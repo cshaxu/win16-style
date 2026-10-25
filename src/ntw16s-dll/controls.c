@@ -7,6 +7,7 @@
 #include "font.h"
 #include "native_api.h"
 #include "tab_paint.h"
+#include "header_paint.h"
 #include <commctrl.h>
 #include <oleacc.h>
 #include <stdlib.h>
@@ -26,6 +27,8 @@ typedef struct control_style {
     UINT_PTR scroll_timer;
     unsigned scroll_epoch;
     unsigned tab_epoch;
+    unsigned header_epoch;
+    int header_pressed;
     BOOL scroll_reporting,scroll_key;
     LONG scroll_report;
     BOOL list_scrollbar,edit_scrollbars,frame_scrollbars,list_redraw_off;
@@ -58,6 +61,8 @@ static BOOL is_link(HWND w)
 {return ntw16s_class_is(w,L"SysLink");}
 static BOOL is_tab(HWND w)
 {return ntw16s_class_is(w,WC_TABCONTROLW);}
+static BOOL is_header(HWND w)
+{return ntw16s_class_is(w,WC_HEADERW);}
 static BOOL is_separator(HWND w)
 {DWORD type=(DWORD)GetWindowLongPtrW(w,GWL_STYLE)&SS_TYPEMASK;
  return is_static(w) && type>=SS_ETCHEDHORZ && type<=SS_ETCHEDFRAME;}
@@ -68,6 +73,7 @@ static BOOL supported(HWND w)
     if(is_scroll(w))return !(style&SBS_SIZEGRIP);
     if(is_link(w))return TRUE;
     if(is_tab(w))return win16_style_tab_supported(w);
+    if(is_header(w))return win16_style_header_supported(w);
     if(is_combo(w))return ((style&3)==CBS_DROPDOWNLIST || (style&3)==CBS_DROPDOWN || (style&3)==CBS_SIMPLE) &&
         !(style&(CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE));
     if(is_list(w))return !(style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA|LBS_USETABSTOPS));
@@ -916,19 +922,27 @@ static void draw_tab(HWND w,control_style *s,HDC dc)
         DefSubclassProc(w,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT);
     win16_style_system_release(font);
 }
+static void draw_header(HWND w,control_style *s,HDC dc)
+{
+    HFONT font=s->font;win16_style_system_retain(font);
+    if(!win16_style_header_paint(w,dc,&s->palette,font,&s->detached,&s->header_epoch,s->header_pressed) && !s->detached)
+        DefSubclassProc(w,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT);
+    win16_style_system_release(font);
+}
 static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
 {
     control_style *s=(control_style *)data;LRESULT result=0;HFONT previous=NULL,pinned=s->font,outbound=NULL;(void)id;++s->calls;
-    BOOL tab=is_tab(w);
+    BOOL tab=is_tab(w),header=is_header(w),native_font=tab || header;
     if(tab && win16_style_tab_changes(m))++s->tab_epoch;
+    if(header && win16_style_header_changes(m))++s->header_epoch;
     win16_style_system_retain(pinned);
     /* VB owns an IFont and can change it without WM_SETFONT. Query at the
      * paint boundary; never overwrite that application's font property. */
     if(!s->frame_scrollbars && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT) &&
-            (tab || ntw16s_vb_frame(w) || ntw16s_vb_edit(w) || ntw16s_vb_class(w,L"ThunderRT6CommandButton"))){
+            (native_font || ntw16s_vb_frame(w) || ntw16s_vb_edit(w) || ntw16s_vb_class(w,L"ThunderRT6CommandButton"))){
         HFONT source=(HFONT)SendMessageW(w,WM_GETFONT,0,0);
         if(!s->detached && source!=s->original_font){
-            HFONT replacement=tab?win16_style_system_acquire(source):win16_style_vb_font_acquire(source);
+            HFONT replacement=native_font?win16_style_system_acquire(source):win16_style_vb_font_acquire(source);
             previous=s->font;s->original_font=source;s->font=replacement?replacement:source;
         }
     }
@@ -942,7 +956,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         outbound=s->font;win16_style_system_retain(outbound);
         /* Native tab geometry/hit testing belongs to the application's font.
          * Only our painter borrows the existing System glyph lease. */
-        a=(WPARAM)(tab?original:s->font);
+        a=(WPARAM)(native_font?original:s->font);
     }
     if(m==WM_NCDESTROY){(void)win16_style_control_terminal(w);
         result=DefSubclassProc(w,m,a,b);}
@@ -952,6 +966,21 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         }else if(m==WM_PRINTCLIENT && win16_style_tab_supported(w))draw_tab(w,s,(HDC)a);
         else result=DefSubclassProc(w,m,a,b);
         if(!s->detached && win16_style_tab_changes(m))
+            RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|(s->calls==1?RDW_UPDATENOW:0));
+    }
+    else if(header){
+        if(m==WM_LBUTTONDOWN){
+            HDHITTESTINFO hit={.pt={(short)LOWORD(b),(short)HIWORD(b)}};
+            LRESULT item=SendMessageW(w,HDM_HITTEST,0,(LPARAM)&hit);
+            if(s->detached)goto finished;
+            s->header_pressed=(item>=0 && (hit.flags&HHT_ONHEADER))?(int)item:-1;
+        }
+        if(m==WM_LBUTTONUP || m==WM_CANCELMODE || m==WM_CAPTURECHANGED)s->header_pressed=-1;
+        if(m==WM_PAINT && win16_style_header_supported(w)){
+            PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);present_control(w,s,dc,draw_header);EndPaint(w,&ps);
+        }else if(m==WM_PRINTCLIENT && win16_style_header_supported(w))draw_header(w,s,(HDC)a);
+        else result=DefSubclassProc(w,m,a,b);
+        if(!s->detached && win16_style_header_changes(m))
             RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|(s->calls==1?RDW_UPDATENOW:0));
     }
     else if(is_link(w)){
@@ -1179,6 +1208,7 @@ static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL ori
     }else if(!frame_bars && (!supported(w) || is_edit(w)!=edit)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     s=calloc(1,sizeof(*s));if(!s)return FALSE;
     s->creation_owner=creation_owner;
+    s->header_pressed=-1;
     SetLastError(ERROR_SUCCESS);
     s->protocol=ntw16s_control_protocol_acquire(w);
     if(!s->protocol && GetLastError()==ERROR_ARITHMETIC_OVERFLOW){dispose_control(s);SetLastError(ERROR_ARITHMETIC_OVERFLOW);return FALSE;}

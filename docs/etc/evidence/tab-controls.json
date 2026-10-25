@@ -599,6 +599,15 @@
     ],
     "cleanup": "completed: deleted obsolete registered package/build/log/probe trees after evidence/recovery and no-reparse/live-exe0/68 DLL owners0 checks; retained only md5-driver.c,md5-probe.c,file-owners.c,verify-remote.py; stable .ninja/.ccache and external PNG preserved",
     "closing_delivery": "M0 T15 S5 P2",
-    "following_scope": "list/header public protocols and finite adaptation; later tree/progress/trackbar/updown; elevated HD Tune observation defaults to skip"
+    "following_scope": "list/header public protocols and finite adaptation; later tree/progress/trackbar/updown; elevated HD Tune observation defaults to skip",
+    "P2_actual_remote": {
+      "status": "passed",
+      "commit": "602ce8b34f16e42b0ef0d5c4379e6415bef0deb4",
+      "remote_main": "602ce8b34f16e42b0ef0d5c4379e6415bef0deb4",
+      "files": 188,
+      "source_inputs": 179,
+      "seconds": 10.109209300018847,
+      "receipt_sha256": "7cf995fe61ec87ea9479d13c09546a495b4bae429db78664f683eaf79a772a9e"
+    }
   }
 }

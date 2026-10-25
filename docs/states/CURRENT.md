@@ -2,11 +2,14 @@
 
 ## Current Work
 
-S5已完成分页/回调所有权适配，55实际包/12新增聚焦/12保留、真实DK/MD5/VB、双发布、
-179输入/八摘要、P1远端193/实际归档严格门禁及重建12通过；安全清理后关闭。
+S5已关闭，P2 602ce8b34f16e42b0ef0d5c4379e6415bef0deb4实际远端188通过。
+S6已完成列表/表头八组协议及真实DK观察，明确列表附着仅边框；本S先实现普通
+文字表头，列表行绘制交后续S。原型真实DK五列保持几何/数据，10项新增双宽
+聚焦及8项前期保留、65实际包384.854秒/12保留、真实DK/MD5/VB与八部署一致、
+12安装ABI/表头与两启动矩阵通过；S6已本地发布，待提交推送/实际远端复核。
 按用户自动续S授权准入S6，固定M0/T15；HD Tune管理员实测本次及后续默认skip，
-不计通过、不再弹UAC。[S5记录](../history/M0-T15-S5-tab-controls.md)及
-[证据](../etc/evidence/tab-controls.json)保留真实范围、失败尝试及交接。
+不计通过、不再弹UAC。[S6记录](../history/M0-T15-S6-header-controls.md)/[证据](../etc/evidence/header-controls.json)登记本S事实；
+[S5记录](../history/M0-T15-S5-tab-controls.md)保留上一交付范围及交接。
 
 ## M0 T15 S6 Packet
 
@@ -14,7 +17,7 @@ S5已完成分页/回调所有权适配，55实际包/12新增聚焦/12保留、
 | --- | --- |
 | Identifier Mode | Continuation；S5关闭后顺序准入S6，唯一活动S，不复用编号 |
 | Admission And Approval | 用户“批准 自动准入s任务 到t收口为止”；永久提交推送/双发布授权保持；最新要求本次及以后默认跳过HD Tune管理员实测，除非另行要求恢复 |
-| Objective | 定位SysListView32/TListView及SysHeader32公开协议和真实绘制断点，在现有renderer内完成可证的有限适配；保持原数据/图标/几何/通知/输入，过大自动拆续S |
+| Objective | 定位SysListView32/TListView及SysHeader32公开协议；本S先完成普通文字表头，复杂列格式保留原生，列表行内容交后续S；保持数据/几何/通知/输入 |
 | Non-goals | 本S不实现树/进度/滑块/微调/应用自绘图表，不冒称任意VCL类或ownerdraw/ownerdata支持；标题/字体生成策略/菜单/滚动条/原资源/启动传播不改；不做HD Tune提权实测 |
 | Reference Baseline | a4b7e22916dbd4572654138e861432cef1bb8694四文件0.15.0.0已双发布/远端193及归档重建12通过；S5关闭记录本P；179输入/55包/八部署一致 |
 | Candidate Proposal | [框架完成分解](../proposals/framework-completion.md)；[S5记录](../history/M0-T15-S5-tab-controls.md)/[证据](../etc/evidence/tab-controls.json)及S4真实类交接 |
