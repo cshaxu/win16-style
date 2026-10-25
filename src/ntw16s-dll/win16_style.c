@@ -9,6 +9,7 @@
 #include "menu_scope.h"
 #include "controls.h"
 #include "font.h"
+#include "move.h"
 #include <commctrl.h>
 #include <dwmapi.h>
 #include <windowsx.h>
@@ -38,6 +39,7 @@ typedef struct style_window {
 
 static LRESULT CALLBACK style_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static void dispose(style_window *);
+static BOOL move_valid(HWND,const void *);
 
 typedef struct print_children {
     HWND parent;
@@ -736,6 +738,7 @@ BOOL win16_style_remove(HWND w)
     if(!RemoveWindowSubclass(w,style_proc,STYLE_ID))return FALSE;
     ++s->calls;
     s->detached=TRUE;
+    win16_style_move_cancel(w);
     win16_style_control_remove_owned(w,s);
     while(s->menus)end_menu_scope(s);
     win16_style_menu_restore(&s->menu_items);
@@ -766,6 +769,7 @@ BOOL win16_style_frame_terminal(HWND w)
         SetLastError(ERROR_INVALID_STATE);return FALSE;
     }
     ++s->calls;s->detached=TRUE;
+    win16_style_move_cancel(w);
     while(s->menus)end_menu_scope(s);
     if(!--s->calls && s->detached)dispose(s);
     return TRUE;
@@ -792,6 +796,7 @@ static LRESULT CALLBACK style_proc(HWND w,UINT msg,WPARAM wp,LPARAM lp,
     }
     switch(msg){
     case WM_SHOWWINDOW:
+        if(!wp)win16_style_move_cancel(w);
         if(wp && s->pending_frame){
             RECT client;BOOL normal=!IsIconic(w)&&!IsZoomed(w);
             client_screen(w,&client);s->pending_frame=FALSE;
@@ -1059,6 +1064,7 @@ static LRESULT CALLBACK style_proc(HWND w,UINT msg,WPARAM wp,LPARAM lp,
         goto forward;
     case WM_CANCELMODE:
     case WM_CAPTURECHANGED:
+        win16_style_move_cancel(w);
         if(msg==WM_CANCELMODE && tracking_menu && tracking_menu->window==w)EndMenu();
         if(msg==WM_CANCELMODE && s->bar_keyboard)leave_bar(w,s,TRUE);
         if(!s->pressed)goto forward;
@@ -1083,21 +1089,58 @@ static LRESULT CALLBACK style_proc(HWND w,UINT msg,WPARAM wp,LPARAM lp,
          * binding; child notifications never invalidate unrelated bars. */
         break;
     case WM_DPICHANGED:
+        win16_style_move_cancel(w);
         result=DefSubclassProc(w,msg,wp,lp);
         if(!s->detached){refresh_font(w,s);frame_changed(w);}break;
     case WM_SETTINGCHANGE:
     case WM_SYSCOLORCHANGE:
     case WM_THEMECHANGED:
+        win16_style_move_cancel(w);
         result=DefSubclassProc(w,msg,wp,lp);
         if(!s->detached)paint(w,s,NULL);
         break;
     case WM_NCDESTROY:
         (void)win16_style_frame_terminal(w);
         result=DefSubclassProc(w,msg,wp,lp);break;
+    case WM_WINDOWPOSCHANGING:
+        if(lp && ((((WINDOWPOS *)lp)->flags&(SWP_NOMOVE|SWP_NOSIZE))!=(SWP_NOMOVE|SWP_NOSIZE)))
+            win16_style_move_cancel(w);
+        goto forward;
+    case WM_SIZE:
+        if(wp==SIZE_MINIMIZED || wp==SIZE_MAXIMIZED)win16_style_move_cancel(w);
+        goto forward;
+    case WM_STYLECHANGED:
+        win16_style_move_cancel(w);
+        goto forward;
+    case WM_DISPLAYCHANGE:
+        win16_style_move_cancel(w);
+        goto forward;
+    case WM_ACTIVATE:
+        if(LOWORD(wp)==WA_INACTIVE)win16_style_move_cancel(w);
+        goto forward;
     default:
 forward:
         result=DefSubclassProc(w,msg,wp,lp);break;
     }
     if(!--s->calls && s->detached)dispose(s);
     return result;
+}
+
+static BOOL move_valid(HWND window,const void *owner)
+{
+    style_window *s=state(window);
+    return s==owner && !s->detached;
+}
+
+BOOL win16_style_default_move(HWND w,WPARAM command,LPARAM point)
+{
+    style_window *s;BOOL handled;
+    if((command&0xfff0)!=SC_MOVE || ((command&15)!=0 && (command&15)!=HTCAPTION) ||
+       GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId())return FALSE;
+    s=state(w);if(!s || s->detached || s->dialog)return FALSE;
+    ++s->calls;
+    if(s->bar_keyboard)leave_bar(w,s,TRUE);
+    handled=!s->detached && win16_style_move(w,s->dpi,(command&15)==HTCAPTION,point,s,move_valid);
+    if(!--s->calls && s->detached)dispose(s);
+    return handled;
 }

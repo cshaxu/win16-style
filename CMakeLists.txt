@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.25)
-project(win16_style VERSION 0.15.0 LANGUAGES C RC)
+project(win16_style VERSION 0.16.0 LANGUAGES C RC)
 if(NOT MINGW OR NOT CMAKE_C_COMPILER_ID STREQUAL "GNU")
   message(FATAL_ERROR "The product profile requires native MinGW-w64 GCC C17")
 endif()
@@ -20,7 +20,7 @@ set(WIN16STYLE_X86_BUILD "${CMAKE_SOURCE_DIR}/build/.ninja/x86" CACHE PATH "Matc
 set(core_sources
   attachment.c control_scope.c control_protocol.c controls.c dllmain.c font.c header_paint.c progress_paint.c trackbar_paint.c updown_paint.c layout.c vb_text.c
   menu_bar.c menu_bar_paint.c menu_items.c menu_layout.c menu_paint.c
-  menu_scope.c native_api.c scroll_layout.c scroll_track.c tab_paint.c theme.c win16_style.c)
+  menu_scope.c move.c native_api.c scroll_layout.c scroll_track.c tab_paint.c theme.c win16_style.c)
 list(TRANSFORM core_sources PREPEND "src/ntw16s-dll/")
 if(WIN16STYLE_ARCH STREQUAL "x86")
   set(dll_name ntw16s32)
@@ -513,6 +513,30 @@ if(BUILD_TESTING)
   target_link_options(vb6-driver PRIVATE -municode)
   core_fixture(core-runtime runtime.c)
   core_fixture(core-frames frames.c)
+  add_executable(core-outline-move tests/ntw16s-dll/outline_move.c)
+  target_include_directories(core-outline-move PRIVATE src)
+  target_compile_definitions(core-outline-move PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_options(core-outline-move PRIVATE -municode)
+  target_link_libraries(core-outline-move PRIVATE user32 gdi32 dwmapi advapi32)
+  add_test(NAME core/outline-passive COMMAND ${test_driver} --name core/outline-passive -- $<TARGET_FILE:core-outline-move> $<TARGET_FILE:ntw16s>)
+  add_test(NAME core/outline-raster COMMAND ${test_driver} --name core/outline-raster -- $<TARGET_FILE:core-outline-move> --raster)
+  set_tests_properties(core/outline-raster PROPERTIES TIMEOUT 20)
+  set_tests_properties(core/outline-passive PROPERTIES TIMEOUT 30)
+  if(WIN16STYLE_ARCH STREQUAL "x64")
+    add_test(NAME core/outline-display32 COMMAND ${test_driver} --name core/outline-display32 --
+      "${WIN16STYLE_X86_BUILD}/core-outline-move.exe" --launch $<TARGET_FILE:run16s>
+      "${WIN16STYLE_X86_BUILD}/ntw16s32.dll" $<TARGET_FILE:ntw16s> "${WIN16STYLE_X86_BUILD}/core-outline-move.exe")
+    add_test(NAME core/outline-display64 COMMAND ${test_driver} --name core/outline-display64 --
+      $<TARGET_FILE:core-outline-move> --launch $<TARGET_FILE:run16s>
+      "${WIN16STYLE_X86_BUILD}/ntw16s32.dll" $<TARGET_FILE:ntw16s> $<TARGET_FILE:core-outline-move>)
+    add_test(NAME core/outline-display-unaware32 COMMAND ${test_driver} --name core/outline-display-unaware32 --
+      "${WIN16STYLE_X86_BUILD}/core-outline-move.exe" --launch $<TARGET_FILE:run16s>
+      "${WIN16STYLE_X86_BUILD}/ntw16s32.dll" $<TARGET_FILE:ntw16s> "${WIN16STYLE_X86_BUILD}/core-outline-move.exe" unaware)
+    add_test(NAME core/outline-display-unaware64 COMMAND ${test_driver} --name core/outline-display-unaware64 --
+      $<TARGET_FILE:core-outline-move> --launch $<TARGET_FILE:run16s>
+      "${WIN16STYLE_X86_BUILD}/ntw16s32.dll" $<TARGET_FILE:ntw16s> $<TARGET_FILE:core-outline-move> unaware)
+    set_tests_properties(core/outline-display32 core/outline-display64 core/outline-display-unaware32 core/outline-display-unaware64 PROPERTIES TIMEOUT 55 RUN_SERIAL TRUE)
+  endif()
   core_fixture(core-font win16_style_font.c)
   core_fixture(core-tabs win16_style_list_tabs.c)
   core_fixture(core-lifetime win16_style_control_lifetime.c)
@@ -561,6 +585,9 @@ if(BUILD_TESTING)
   get_property(registered_tests DIRECTORY PROPERTY TESTS)
   foreach(test IN LISTS registered_tests)
     set_tests_properties(${test} PROPERTIES RUN_SERIAL FALSE)
+    if(test MATCHES "^core/outline-display")
+      set_tests_properties(${test} PROPERTIES RUN_SERIAL TRUE)
+    endif()
     if(test MATCHES "^(core/(runtime|runtime-native|font-layout|menu-cancel)|launch/(dialogs|messages))$")
       set_tests_properties(${test} PROPERTIES LABELS "ui" PROCESSORS 2)
     elseif(test MATCHES "^compatibility/")
@@ -568,12 +595,12 @@ if(BUILD_TESTING)
     else()
       set_tests_properties(${test} PROPERTIES LABELS "integration")
     endif()
-    if(test MATCHES "^(core/(abi|geometry)|launch/(unwind|startup-hooks|payload|staging)|propagate/cmd-nested)$")
+    if(test MATCHES "^(core/(abi|geometry|outline-passive|outline-raster)|launch/(unwind|startup-hooks|payload|staging)|propagate/cmd-nested)$")
       set_tests_properties(${test} PROPERTIES LABELS "quick")
     endif()
   endforeach()
   set_tests_properties(core/edit-clipboard PROPERTIES RESOURCE_LOCK "private-clipboard")
-  add_custom_target(quick-tests DEPENDS ntw16s core-abi core-geometry
+  add_custom_target(quick-tests DEPENDS ntw16s core-abi core-geometry core-outline-move
     launch-unwind launch-startup-hooks launch-payload launch-staging)
   if(WIN16STYLE_ARCH STREQUAL "x64")
     add_dependencies(quick-tests cmd-nested run16s)

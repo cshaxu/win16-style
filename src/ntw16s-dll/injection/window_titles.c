@@ -5,6 +5,7 @@
 #include "ntw16s-dll/native_api.h"
 #include "ntw16s-dll/vb_text.h"
 #include "ntw16s-dll/updown_paint.h"
+#include "ntw16s-dll/move.h"
 #include <wchar.h>
 #include <uxtheme.h>
 
@@ -255,6 +256,15 @@ static BOOL WINAPI hook_DeleteDC(HDC dc)
     SetLastError(error);return result;
 }
 
+#define DEFAULT_WINDOW_HOOK(S) \
+static __typeof__(&DefWindowProc##S) real_DefWindowProc##S; \
+static LRESULT WINAPI hook_DefWindowProc##S(HWND w,UINT msg,WPARAM wp,LPARAM lp) \
+{ DWORD entry=GetLastError(); \
+  if(msg==WM_SYSCOMMAND && win16_style_default_move(w,wp,lp)){SetLastError(entry);return 0;} \
+  SetLastError(entry);return real_DefWindowProc##S(w,msg,wp,lp); }
+DEFAULT_WINDOW_HOOK(A)
+DEFAULT_WINDOW_HOOK(W)
+
 LONG ntw16s_attach_titles(void)
 {
     LONG error=NO_ERROR;
@@ -283,6 +293,7 @@ LONG ntw16s_attach_titles(void)
     ATTACH(DrawTextA);ATTACH(DrawTextExA);ATTACH(TextOutA);ATTACH(ExtTextOutA);
     ATTACH(TextOutW);ATTACH(ExtTextOutW);
     ATTACH(DrawFrameControl);ATTACH(DrawThemeBackground);ATTACH(CreateCompatibleDC);ATTACH(DeleteDC);
+    ATTACH(DefWindowProcA);ATTACH(DefWindowProcW);
 #undef ATTACH
     return error;
 }

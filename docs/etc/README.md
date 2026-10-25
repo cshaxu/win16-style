@@ -2,6 +2,7 @@
 
 | 路径 | 责任、用途及保留条件 |
 | --- | --- |
+| [evidence/outline-original.json](evidence/outline-original.json) | T16原始Win3.1 USER/GDI/VGA身份、调用地址、USER与VGA例程CPU执行参数；不包含系统二进制，不冒称完整VGA硬件/调色板运行 |
 | [screenshots/README.md](screenshots/README.md) | 用户明确要求公开的精选demo/真实XP Solitaire截图及英文来源/摘要；非原始测试抓图 |
 | [evidence/vdm-propagation-diagnosis.json](evidence/vdm-propagation-diagnosis.json) | 原生命令传播、冷/热/历史与双钩子独立诊断的精选状态/原始摘要；不替代产品包回归 |
 | [evidence/native-cmd-staging.json](evidence/native-cmd-staging.json) | T9真实嵌套cmd、外部导入表正负例及脱敏进程图/模块SHA；完整身份不公开 |
@@ -39,3 +40,11 @@
 | [operations/BUILD.md](operations/BUILD.md) | 本地构建、干净候选包、验证结果和使用/支持限制 |
 
 任务完成证据进入 history；原始日志及测试抓图保留在任务 scratch，不提交。用户明确要求的精选README展示图作为文档资源按上表索引，原始诊断材料仍不提交。
+
+- [T16轮廓移动验证登记](evidence/outline-validation.md)：冻结覆盖单位、离屏/显示分界与待补条件。
+
+- [Actor VB6复选框诊断](evidence/actor-checkbox.md)：实际类/状态/模块与分类缺口；未实施控件修复。
+
+- [T16实现与任务审计](../history/M0-T16-S1-outline-move.md)：16单位、原始依据、有限移动/原生边界及交付闭环。
+
+- [T16交付与审计证据](evidence/outline-delivery.json)：完整包、安装路径、视觉/资源保留及实际交付复核。

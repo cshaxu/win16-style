@@ -6,6 +6,7 @@ param(
     [ValidatePattern('^[a-z0-9-]+$')][string]$RunName='package-test',
     [ValidateRange(1,65535)][int]$Task=9,
     [switch]$FullIntegration,
+    [switch]$DeferDisplay,
     [ValidateRange(1,16)][int]$Jobs=4,
     [switch]$Worker
 )
@@ -22,6 +23,7 @@ if(!$Worker){
         '-Task',$Task,'-Package',('"'+$Package+'"'),'-BuildRoot',('"'+$BuildRoot+'"'),'-SourceRoot',('"'+$SourceRoot+'"'))
     $arguments+=@('-Jobs',$Jobs)
     if($FullIntegration){$arguments+='-FullIntegration'}
+    if($DeferDisplay){$arguments+='-DeferDisplay'}
     $job=Start-Process (Join-Path $PSHOME 'pwsh.exe') -ArgumentList $arguments -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $scratch 'worker.log') -RedirectStandardError (Join-Path $scratch 'worker.err')
     @{pid=$job.Id;result=(Join-Path $scratch 'result.json');progress=(Join-Path $scratch 'progress.json');maximum_seconds=1800}|ConvertTo-Json
     return
@@ -52,6 +54,14 @@ try{
     $cases=@(
         (Case 'abi-x86' (Join-Path $x86 'core-abi.exe') @($d32) @('ABI PASS width=32')),
         (Case 'abi-x64' (Join-Path $x64 'core-abi.exe') @($d64) @('ABI PASS width=64')),
+        (Case 'outline-passive32' (Join-Path $x86 'core-outline-move.exe') @($d32) @('OUTLINE_PASSIVE_OK native_command_veto_preserved=1')),
+        (Case 'outline-passive64' (Join-Path $x64 'core-outline-move.exe') @($d64) @('OUTLINE_PASSIVE_OK native_command_veto_preserved=1')),
+        (Case 'outline-raster32' (Join-Path $x86 'core-outline-move.exe') @('--raster') @('OUTLINE_GDI_REFERENCE_OK bits=32 original_strips=4 erase=exact')),
+        (Case 'outline-raster64' (Join-Path $x64 'core-outline-move.exe') @('--raster') @('OUTLINE_GDI_REFERENCE_OK bits=64 original_strips=4 erase=exact')),
+        (Case 'outline-display32' (Join-Path $x86 'core-outline-move.exe') @('--launch',$run,$d32,$d64,(Join-Path $x86 'core-outline-move.exe')) @('OUTLINE_MOVE_OK bits=32 scenarios=64','OUTLINE_PIXELS mismatch=0','OUTLINE_FINAL_PIXELS mode=0 differences=0','OUTLINE_FINAL_PIXELS mode=1 differences=0','active=0') 55),
+        (Case 'outline-display64' (Join-Path $x64 'core-outline-move.exe') @('--launch',$run,$d32,$d64,(Join-Path $x64 'core-outline-move.exe')) @('OUTLINE_MOVE_OK bits=64 scenarios=64','OUTLINE_PIXELS mismatch=0','OUTLINE_FINAL_PIXELS mode=0 differences=0','OUTLINE_FINAL_PIXELS mode=1 differences=0','active=0') 55),
+        (Case 'outline-display-unaware32' (Join-Path $x86 'core-outline-move.exe') @('--launch',$run,$d32,$d64,(Join-Path $x86 'core-outline-move.exe'),'unaware') @('OUTLINE_MOVE_OK bits=32 scenarios=64','OUTLINE_PIXELS mismatch=0','OUTLINE_FINAL_PIXELS mode=0 differences=0','OUTLINE_FINAL_PIXELS mode=1 differences=0','active=0') 55),
+        (Case 'outline-display-unaware64' (Join-Path $x64 'core-outline-move.exe') @('--launch',$run,$d32,$d64,(Join-Path $x64 'core-outline-move.exe'),'unaware') @('OUTLINE_MOVE_OK bits=64 scenarios=64','OUTLINE_PIXELS mismatch=0','OUTLINE_FINAL_PIXELS mode=0 differences=0','OUTLINE_FINAL_PIXELS mode=1 differences=0','active=0') 55),
         (Case 'demo-boundary' $python @('-B',(Join-Path $SourceRoot 'tests/demo-exe/boundary.py'),$demo) @('DEMO BOUNDARY PASS')),
         (Case 'demo-pair' (Join-Path $x64 'demo-observe.exe') @($run,$d64,$d32,$demo) @('DEMO OBSERVE PASS styled=0','DEMO OBSERVE PASS styled=1','DEMO PAIR PASS')),
         (Case 'wait-contract' $python @('-B',(Join-Path $SourceRoot 'tests/run16s-exe/wait.py'),$run,$d32,$d64,(Join-Path $x86 'wait-target.exe'),(Join-Path $x64 'wait-target.exe'),(Join-Path $x64 'wait-gui-target.exe')) @('WAIT CONTRACT PASS 6 cases') 190),
@@ -152,6 +162,13 @@ try{
             (Case 'messages' (Join-Path $x64 'launch-automatic.exe') ($pair+@('messages')) @('LAUNCH MATRIX PASS') 520)
         )
     }
+    # Deferred display validation cannot satisfy the publication gate.
+    $deferred=@()
+    if($DeferDisplay){
+        $deferred=@($cases | Where-Object { $_.name -match '^outline-display' } | ForEach-Object { $_.name })
+        if($deferred.Count -ne 4){throw 'Unexpected visible outline case inventory'}
+        $cases=@($cases | Where-Object { $_.name -notmatch '^outline-display' })
+    }
     $records=[System.Collections.Generic.List[object]]::new()
     $pending=[System.Collections.Generic.List[object]]::new()
     foreach($case in $cases){$pending.Add($case)}
@@ -163,7 +180,7 @@ try{
             $used=0;foreach($entry in $running){$used+=$entry.cost}
             while($pending.Count){
                 $case=$pending[0]
-                $cost=if($case.name -match '^(font-layout|menu-cancel|dialogs|messages|tree-v[56]-)'){[Math]::Min(2,$Jobs)}else{1}
+                $cost=if($case.name -match '^outline-display'){$Jobs}elseif($case.name -match '^(font-layout|menu-cancel|dialogs|messages|tree-v[56]-)'){[Math]::Min(2,$Jobs)}else{1}
                 if($used+$cost -gt $Jobs){break}
                 $pending.RemoveAt(0)
                 $directory=Join-Path $scratch $case.name;New-Item -ItemType Directory -Path $directory | Out-Null
@@ -209,7 +226,8 @@ try{
     }
     $after=Package-Hashes
     foreach($name in $before.Keys){if($before[$name] -ne $after[$name]){throw 'Package changed during testing'}}
-    @{status='passed';seconds=$totalTimer.Elapsed.TotalSeconds;jobs=$Jobs;cases=$records.Count;full_integration=[bool]$FullIntegration;package=$Package;sha256=$after;physical_input='not-tested';core_matrix='separate Build-Core matrix required'}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
+    $status=if($DeferDisplay){'display-deferred'}else{'passed'}
+    @{status=$status;deferred=$deferred;seconds=$totalTimer.Elapsed.TotalSeconds;jobs=$Jobs;cases=$records.Count;full_integration=[bool]$FullIntegration;package=$Package;sha256=$after;physical_input='not-tested';core_matrix='separate Build-Core matrix required'}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
 }catch{
     @{status='failed-or-inconclusive';error=$_.Exception.Message}|ConvertTo-Json|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
     exit 1

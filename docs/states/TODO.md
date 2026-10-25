@@ -11,4 +11,7 @@
 新增条目格式：`- [ ] TODO(High|Medium|Low): 问题；Owner；Evidence；Admission`。
 不得把待做实现藏在TODO中；可执行候选进入QUEUE，由新用户请求准入。
 
-- [ ] TODO(Medium): 复现并定位两次并行回滚Job活动计数断言失败；Owner：原生启动/测试观测；Evidence：[T11原生诊断](../history/M0-T11-S1-uac.md)，原断言旧/新各8轮64组合未复现；Admission：可复现原生日志或用户明确准入测试观测修订，不放宽原断言。
+- [ ] TODO(Medium): 复现并定位两次并行回滚Job活动计数断言失败；Owner：原生启动/测试观测；Evidence：[T11原生诊断](../history/M0-T11-S1-uac.md)，原断言旧/新各8轮64组合未复现；[T16离屏证据](../etc/evidence/outline-validation.md)再次观察active3而成员2，旧/新各3轮串行通过，原因仍未定；Admission：可复现原生日志或用户明确准入测试观测修订，不放宽原断言。
+
+
+Actor发现的VB选择控件缺口已按用户请求纳入[VB5/VB6专项候选](../proposals/vb5-vb6-controls.md)，不再作为零散实现债务。

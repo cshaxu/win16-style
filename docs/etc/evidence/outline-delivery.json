@@ -1,0 +1,229 @@
+{
+  "task": "M0 T16 S1",
+  "status": "verified and published; remote/closure pending",
+  "scope": "finite automatic-policy local outline moving through DefWindowProcA/W; no global setting/hook",
+  "source_snapshot": "072ff97b429028f463b63b9d95e0d244ef384cc23d112f644629caa82c4e3240",
+  "input_count": 200,
+  "package_cases": 99,
+  "display_configurations": 4,
+  "scenes_per_configuration": 64,
+  "frame_profiles": [
+    "thick3",
+    "fixed1"
+  ],
+  "actual_physical_DPI": 144,
+  "logical_DPI_profiles": [
+    144,
+    96
+  ],
+  "native_GDI_oracles": 16,
+  "caption_menu_full_scene_comparisons": [
+    {
+      "architecture": "x86",
+      "pixels": 614400,
+      "RGB_differences": 0,
+      "caption_menu_and_client": "entire same-position scene"
+    },
+    {
+      "architecture": "x64",
+      "pixels": 614400,
+      "RGB_differences": 0,
+      "caption_menu_and_client": "entire same-position scene"
+    }
+  ],
+  "renderer_preservation": [
+    {
+      "path": "src/ntw16s-dll/font.c",
+      "sha256": "8ee09070abf99c9a171b009d4d83d56e916cab6bf8651be24f1090f0ad2414bd"
+    },
+    {
+      "path": "src/ntw16s-dll/layout.c",
+      "sha256": "83cd34e01d35e27fc40c54e82460cab945b45d3a986b3d5ee2ec8ac9ab5c4ede"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_bar.c",
+      "sha256": "2f4a7ee4c408df1350d9953d7ca0c7c7ac8c96e6977026ce365c5d85e5f49bd7"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_bar_paint.c",
+      "sha256": "392b28274f295dfed1cbf48c464b194784fdb6af055eaff03fc0c530a074bd94"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_layout.c",
+      "sha256": "cde752459255f121492daa908df6cd6201a549d0080d2cf73b8975b6042dc62c"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_items.c",
+      "sha256": "50ffdecade278016841546433fb6650c0c8e2e3d7996725eefb5e77e10be0706"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_paint.c",
+      "sha256": "00df595f7ab3f4471bd5d851930aac1e03d48430c45a8ed8ecb372dbdc108e84"
+    },
+    {
+      "path": "src/ntw16s-dll/menu_scope.c",
+      "sha256": "21144a3223b75b502d9b5509dee8f0f3fe642ee2dfe9b04f24f104f60279f28c"
+    },
+    {
+      "path": "src/ntw16s-dll/controls.c",
+      "sha256": "53d9ac2fc285e8d06655438c8efc406c6e0c026acf2ac30d16721aedea784712"
+    },
+    {
+      "path": "src/ntw16s-dll/scroll_layout.c",
+      "sha256": "0b1b344fcbe0ef2a8060ef140c539cefeb5fa79c7b93c322452513d15b95b4d0"
+    },
+    {
+      "path": "src/ntw16s-dll/scroll_track.c",
+      "sha256": "0b9c5d40849d321e3e467635d4c28b85c5897d8ee4dd8ec7bf3ed1d39fcd72ee"
+    },
+    {
+      "path": "src/ntw16s-dll/header_paint.c",
+      "sha256": "9bcf190b4606c88c8ba5a9ece6a636682ea8a3a4251b6f820418355c96c0aad2"
+    },
+    {
+      "path": "src/ntw16s-dll/progress_paint.c",
+      "sha256": "a54b8d950b6f884a75121fa87a51d14679e1785ef0d6551451ed79155f3fa72e"
+    },
+    {
+      "path": "src/ntw16s-dll/trackbar_paint.c",
+      "sha256": "4531f2e11fd3dd5ac2d52d1856f338f420c45ecdff8fb71bdfaab0bfb53eea54"
+    },
+    {
+      "path": "src/ntw16s-dll/updown_paint.c",
+      "sha256": "484acfb8e5772e3f719ce3900cba1ff1477120c187e0db6ef9ec53671b8bcc36"
+    },
+    {
+      "path": "src/ntw16s-dll/tab_paint.c",
+      "sha256": "851b637c211182d994f27117d4ccde0993e59719916982c2cc95e7d98395603e"
+    },
+    {
+      "path": "src/ntw16s-dll/vb_text.c",
+      "sha256": "52af8705d1ff47741230b22dcafef24fa5818ec29b44300041ded6990c25ade6"
+    },
+    {
+      "path": "src/ntw16s-dll/control_class.h",
+      "sha256": "fba2ab83a8757d3eab5c1f5e1b3723893f47b00d55ea946d43f743094c3d3c58"
+    },
+    {
+      "function": "measure_window",
+      "sha256": "07cb60cf8d1d16c62b7fac17631dbc45a89d1938c292c5188413a8cce96f5da8"
+    },
+    {
+      "function": "layout",
+      "sha256": "e7aa8d9a1c17db5f866148248bd074854f62afba029bbf94aa346a875ac624af"
+    },
+    {
+      "function": "colors",
+      "sha256": "5af6017f52ae9a00f8e53c5ba6e037a03f641f40519f7b80455d945f5d18f86e"
+    },
+    {
+      "function": "fill",
+      "sha256": "da28fc74d2df588bbfe834b8c4beeda343f336141315556017f7919e30210a54"
+    },
+    {
+      "function": "outline",
+      "sha256": "a6bfaa8f28a19074890ee4aa0ae54c0d5f629e8eb043510b2923e6990fef1551"
+    },
+    {
+      "function": "button",
+      "sha256": "754ad35acae1770875bdb696036900a41f93f100469ff96dbba66e04ed3dc14f"
+    },
+    {
+      "function": "paint",
+      "sha256": "7b967a16c41d67d4e015c78cda40fc9f4994c63b3c6b5dd08d26a738d702f48d"
+    },
+    {
+      "function": "paint_menu_state",
+      "sha256": "37906a87b011707602eb67c5f388166ea61447d656ac091216fc6b058c74483b"
+    },
+    {
+      "function": "paint_button_state",
+      "sha256": "64bca8515ae5664dd2acdc63a231776949a6eb104762d59cbac91167e0231b61"
+    },
+    {
+      "function": "refresh_font",
+      "sha256": "e9cccb3306958a898155489ec6549696b4fb86e28308b3babb75011385ce07f1"
+    }
+  ],
+  "images": [
+    {
+      "file": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t16-s1\\during.png",
+      "sha256": "586142eb1b314ae76c0f1635144925fd5f059acba9fe89d84840b288fc778a34",
+      "width": 960,
+      "height": 640,
+      "source": "build\\t16-package\\full-final1\\outline-display64\\during.bmp",
+      "pixel_conversion": "lossless BGRA-to-RGB; no resize/redraw"
+    },
+    {
+      "file": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t16-s1\\committed.png",
+      "sha256": "00ccee5e3dceb16dd683b3d8c7ff1d3e719e74e20ca514a86e019d0d6240bbe1",
+      "width": 960,
+      "height": 640,
+      "source": "build\\t16-package\\full-final1\\outline-display64\\committed.bmp",
+      "pixel_conversion": "lossless BGRA-to-RGB; no resize/redraw"
+    },
+    {
+      "file": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t16-s1\\cancelled.png",
+      "sha256": "95668c4169beefd10298ad7645bebdeaf649a511659076c6ec569638c1557ea3",
+      "width": 960,
+      "height": 640,
+      "source": "build\\t16-package\\full-final1\\outline-display64\\cancelled.bmp",
+      "pixel_conversion": "lossless BGRA-to-RGB; no resize/redraw"
+    },
+    {
+      "file": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t16-s1\\caption-menu.png",
+      "sha256": "c73b80e208ad047416ee05de51939de8519b2779026988803cc44f551d0dc09b",
+      "width": 960,
+      "height": 640,
+      "source": "build\\t16-package\\visual-compare1\\snapshot-candidate-x64\\snapshot.bmp",
+      "pixel_conversion": "lossless BGRA-to-RGB; no resize/redraw"
+    }
+  ],
+  "negative": [
+    {
+      "command": "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-outline-move.exe",
+      "name": "old-x86",
+      "seconds": 1.4769679,
+      "exit": 1,
+      "arguments": [
+        "--launch",
+        "O:\\repos.hobby\\win16style\\build\\t16-package\\baseline\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t16-package\\baseline\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t16-package\\baseline\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-outline-move.exe"
+      ]
+    },
+    {
+      "command": "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-outline-move.exe",
+      "name": "old-x64",
+      "seconds": 1.0173947,
+      "exit": 1,
+      "arguments": [
+        "--launch",
+        "O:\\repos.hobby\\win16style\\build\\t16-package\\baseline\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t16-package\\baseline\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t16-package\\baseline\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-outline-move.exe"
+      ]
+    }
+  ],
+  "runtime_inputs": "no original OS binary/emulator/sibling dependency",
+  "private_detours": 37,
+  "capacity": 40,
+  "public_ABI": 3,
+  "public_named_exports": 31,
+  "helper_ordinal": 1,
+  "late_probe_failure": "installed-motion1 missed explicit standard-handle forwarding;45s timeout/active0; pure-C driver corrected, original deadline retained, installed-motion2 all4 pass; product bytes unchanged",
+  "bounds": [
+    "normal visible enabled top-level HWND reaching default procedure",
+    "dialog/MDI/max/iconic/RTL/disabled Move/existing capture/passive API use native fallback",
+    "unaware multi-monitor and system-aware DPI mismatch use native fallback",
+    "mouse edge Aero Snap not provided; keyboard Snap remains native",
+    "actual multi-monitor/dynamic cross-monitor/physical96,120,192/physical input/IME/accessibility not covered",
+    "modern RGB/integer DPI mapping, not original16-color palette/VGA framebuffer reproduction"
+  ],
+  "audit_units": 16,
+  "remote": "pending",
+  "recovery": "pending",
+  "cleanup": "pending"
+}

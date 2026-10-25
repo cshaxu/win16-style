@@ -2,32 +2,59 @@
 
 ## Current Work
 
-T15经S12冻结18单位审计收口：15有限实现/回归、2原生保留/边界、1用户指定HD Tune
-提权skip；不将附着、原生保留或skip冒充换肤成功。S12独立干净双宽、同批四文件
-91实际包389.556秒、14安装、双发布八摘要及真实MD5/DK/标题掩码0差异通过；实际
-远端207/197输入、严格归档双DLL+4、201对象恢复及258映像安全清理通过。49已审
-源码和稳定缓存/外部PNG保持。S12/T15关闭，M0开放；Td S14候选文档登记已收口；当前无活动任务包，停待用户
-外观验收，不准入候选产品实现。有限支持和未覆盖面见[审计](../history/M0-T15-S12-framework-audit.md)/[证据](../etc/evidence/framework-audit.json)。
+M0 T16 S1有限局部轮廓移动已实现；0.16.0.0完整99实际包/经典24/安装18通过，
+已按同批四文件双发布、八SHA一致。当前进行P1提交推送、实际远端、任务审计
+及恢复/清理闭环；S1/T16仍开放，M0固定，不启动其他候选。
+
+## M0 T16 S1 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | New；用户明确准入队列首位实现，顺序分配T16 S1，M0固定；必要后续S顺序自动拆分直到本T可验收 |
+| Admission And Approval | 用户“准入队列首位T任务开始执行到老规矩验收”；永久提交推送/双发布授权；不启动其余候选，HD Tune提权默认skip |
+| Objective | 核实Win3.x原始USER/GDI/VGA移动轮廓依据，冻结可复现栅格/交互规范，再完成已附着窗口的有限局部轮廓移动并回归、发布供验收 |
+| Non-goals | 不猜XOR/画刷/线宽效果，不修改全局拖动/主题设置，不全局hook/注入既有进程，不改原资源及已确认标题字体菜单滚动条，不扩张为全部缩放/MDI/吸附/任意自绘拖动 |
+| Reference Baseline | 96e47212da877bcb4e16178abea093b006bb343f；现部署0.15.0.0/197输入/三组件四产物/ABI3/35detours40slots；T15及Td S14保持关闭 |
+| Candidate Proposal | [Win3.x局部轮廓拖动](../proposals/outline-window-move.md)，正式研究/实现brief；[既有界面边界](../design/UI.md) |
+| Files And ABI Surface | 研究后审查win16_style及私有移动模块/原生C测试；审查新增DefWindowProcA/W进程内私有拦截，由应用已进入默认过程后处理SC_MOVE，保留应用否决；35增至37detours/40slots，无公开导出/组件/第五产品；对话框/被动显式API保留原生移动 |
+| Applicable Rules | 完整Task Reading Set、ARCHITECTURE/CODING/UI及来源策略；C17/GCC/Ninja/ccache；禁computer-use和兄弟修改/依赖 |
+| Verification | 原二进制版本/路径/SHA/段偏移/调用及原像素证据；双宽自有原生探针对照移动中真窗口不动、提交/取消/捕获丢失/销毁/重入/DPI及资源；旧包负例、既有标题/字体/菜单/滚动条及双宽传播；每S干净同批四文件实际包/双发布/八摘要/实际远端复核 |
+| Expected Markers | 先有原始实现依据与独立oracle，再有真实显示/轮廓截图及窗口矩形/消息/API/资源证明；未知模式明确原生回退，不冒称物理输入 |
+| Asset Needs | 登记build/t16-outline原始研究副本/探针/日志与build/t16-package干净包/备份；验收PNG保存C:/Users/neko/.codex/visualizations/2026/10/23/01a1699f-9927-7fc3-ab34-4b38128ff811/win16style-t16-s1；不复制原系统二进制进Git；既有t15-controls49源码/稳定缓存/外部PNG保持；本T证据提炼后检查精确根/reparse/映像占用并安全清理 |
+| Reporting Requirements | 先报告原始依据/最小实现/有限覆盖，再实现；区分现代API近似与原始二进制事实；版本/四文件SHA/实际包/原生截图/跳过未覆盖及任务审计完整交付 |
+| Stop Conditions | 无合法可用原始实现依据时明确报告缺口，不用截图猜测；需全局设置/共享宿主/既有进程注入或额外产品时停在证据与方案；重大边界不暗改 |
+| Exit Criteria | 原始证据足够、有限移动适配及全部本S验证/双发布/推送远端/安全清理闭环后关闭S；本T另冻结支持矩阵审计，完成则停待用户验收，M0保持开放 |
+| Original Owner Request | 准入队列首位T任务开始执行到老规矩验收；原proposal要求效果依据Win3.x原始GDI/USER/VGA二进制，不自己猜 |
+| Similar-Issue Sweep | 标题鼠标/SC_MOVE/键盘入口、WM_ENTERSIZEMOVE/MOVING/EXITSIZEMOVE、嵌套重入、捕获/取消/失活/终结、DPI多屏/约束、未附着窗口及系统设置保持 |
+
+## 当前进度与恢复收口
+
+用户最新要求当前拖拽T收口，原生桌面Default，已恢复完整显示验证。最终包
+四显示配置共256场景，厚/细、A/W、actual144/logical96，独立GDI/原生定位对照、
+取消/捕获/销毁/重入/资源均通过。新旧两宽同位置整图各614400像素RGB0差异。
+200输入已冻结，原五头/声明/18表保持。源码和测试结论由[交付审计](../history/M0-T16-S1-outline-move.md)
+及[证据](../etc/evidence/outline-delivery.json)接收；此前失败保留在验证登记/TODO，
+未修复T11 Job计数债务，不抹掉历史。所有当前自有显示测试已退出。
+Actor只读诊断和用户要求的VB5/VB6专项已列队列第3位，未夹带控件修复或预占T/S。
+完成实际远端、归档/恢复及精确根清理后才关闭；验收PNG在已登记外部目录保留。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
-- Last allocated T: 15
+- Last allocated T: 16
 - Last allocated Td S: 14
-- Owner allocation constraint: 不得自行分配新T；T15已收口并停待用户验收，M0保持开放，队列候选未准入。
+- Owner allocation constraint: 本次用户明确准入T16；仅可自动细分其必要后续S，不自行分配下一T，其他候选待准入。
 - Last delivery: M0 Td S14 P2（三项候选与队列登记；治理13负例/源197和八部署不变/P1实际远端207文件通过；仅文档收口）
-- Open task: 无活动任务包；Td S14候选文档登记关闭；T15 S12/S11/S10/S9/S8/S7/S6/S5/S4/S3/S2/S1及T15关闭，M0开放等待用户验收；Td S13/S12/S11、T14 S3/T14、T13/T12/T11/T9/T8及Td S9/S10保持关闭；T10取消。
+- Open task: T16 S1原始依据核实及有限轮廓移动实现；Td S14候选文档登记关闭；T15 S12/S11/S10/S9/S8/S7/S6/S5/S4/S3/S2/S1及T15关闭，M0开放等待用户验收；Td S13/S12/S11、T14 S3/T14、T13/T12/T11/T9/T8及Td S9/S10保持关闭；T10取消。
 
 ## Technical Baseline
 
-0.15.0.0 / S12任务审计同批四文件已双发布，197输入与S11相同，独立干净双宽构建、
-91实际包389.5561759秒、14安装及真实MD5/DK通过。18覆盖单位：15有限实现回归、
-2原生保留/未覆盖边界、1用户指定HD Tune提权skip；不宣称所有框架全部换肤。
-原生UpDown用实际DFC/DTB方向/状态及准确窗口/打印/原生兼容DC；32弱映射、退役
-清理和35进程内detours/40slots。公开ABI3/31命名+ordinal1、三组件四产物保持。
-原五头/声明/18表及已确认标题/字体/菜单/滚动条算法不变；S11/S12真实MD5标题
-292x24黑掩码0差异。纯C17/GCC/Ninja/ccache；S12实际远端/归档/恢复/清理复核通过，
-S12/T15关闭，M0开放待用户外观验收。有限支持及明确原生保留以[UI](../design/UI.md)和[审计](../history/M0-T15-S12-framework-audit.md)为准。
+0.16.0.0 / M0 T16 S1，200产品输入、三组件四产物、ABI3/31命名+ordinal1，
+37进程内detours/40slots。干净双宽、99实际包、24经典及18安装复核、双发布八SHA
+一致；原五头/声明和每DLL18表不变。标题/字体/菜单/滚动条算法保持，同场景旧/新
+双宽整图RGB0差异。纯C17/GCC/Ninja/ccache；有限普通默认过程轮廓移动，回退与
+未覆盖见[UI](../design/UI.md)。源码快照及四SHA由[release](../etc/release.json)承载。
+P1提交推送/实际远端与最后恢复清理尚待执行；不将本阶段标记为关闭，M0开放。
 
 ## Recent Closure
 

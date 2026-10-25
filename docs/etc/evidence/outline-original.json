@@ -1,0 +1,276 @@
+{
+  "scope": "M0 T16 S1 research; original USER CPU execution, stubbed GDI boundaries; not a running Win3.1 VGA guest",
+  "originals": [
+    {
+      "path": "O:\\winnt\\tests\\t436s3media\\SYSTEM\\USER.EXE",
+      "sha256": "98036967f8396b387da431699a9d3be95eb56fcd0118f529e1fc2f25105efac6",
+      "size": 264016
+    },
+    {
+      "path": "O:\\winnt\\tests\\t436s3media\\SYSTEM\\GDI.EXE",
+      "sha256": "6d28146961ab4733e167b1657289206ce16a856e431f843e4ee3d504836dfb6f",
+      "size": 220800
+    },
+    {
+      "path": "O:\\winnt\\tests\\t436s3media\\SYSTEM\\VGA.DRV",
+      "sha256": "53312ed013bda513c74e33659f4ee7d1b4f2b1cf1a06aed672432a8fbc4a820a",
+      "size": 73200
+    }
+  ],
+  "version": "3.10.0.103",
+  "chain": [
+    "USER 1:A7FC DefWindowProc -> 1:5D4F WM_SYSCOMMAND -> 1:032E dispatch",
+    "SC_MOVE F010 at USER 1:0452 -> USER 6:1413 move/size loop",
+    "USER 6:0D4D moving rectangle -> USER 13:086B preview update",
+    "USER 13:091C -> USER 1:8CA6 frame primitive -> GDI #400 FastWindowFrame 1:420E, fallback GDI #29 PATBLT",
+    "USER 13:0947 differential old/new strips -> GDI #29 PATBLT",
+    "GDI FastWindowFrame 1:42B1 dispatches display-driver entry [di+40]; original VGA FASTBORDER execution is recorded separately below"
+  ],
+  "brush": {
+    "creator": "USER 3:13E1..1445",
+    "actual_createbitmap_bytes": "5500aa005500aa005500aa005500aa00",
+    "anchor": "USER 13:08E7 SetBrushOrg(window +08,+0A)",
+    "rop": "0x005a0049 PATINVERT",
+    "thickness": "USER 13:08B4..08C6: window +2A bit04 -> DS:04F8, otherwise1; multiplied by DS:06A0/06B4 border metrics; research execution uses configurable fixture4/metric1, not proof of every installed profile"
+  },
+  "execution": [
+    {
+      "phase": "initial",
+      "rect": [
+        40,
+        50,
+        4,
+        96
+      ],
+      "rop": "0x5a0049"
+    },
+    {
+      "phase": "initial",
+      "rect": [
+        44,
+        50,
+        136,
+        4
+      ],
+      "rop": "0x5a0049"
+    },
+    {
+      "phase": "initial",
+      "rect": [
+        40,
+        146,
+        136,
+        4
+      ],
+      "rop": "0x5a0049"
+    },
+    {
+      "phase": "initial",
+      "rect": [
+        176,
+        54,
+        4,
+        96
+      ],
+      "rop": "0x5a0049"
+    },
+    {
+      "phase": "update",
+      "rect": [
+        61,
+        73,
+        4,
+        96
+      ],
+      "rop": "0x5a0049"
+    },
+    {
+      "phase": "update",
+      "rect": [
+        40,
+        54,
+        4,
+        96
+      ],
+      "rop": "0x5a0049"
+    },
+    {
+      "phase": "update",
+      "rect": [
+        61,
+        69,
+        136,
+        4
+      ],
+      "rop": "0x5a0049"
+    },
+    {
+      "phase": "update",
+      "rect": [
+        40,
+        50,
+        136,
+        4
+      ],
+      "rop": "0x5a0049"
+    },
+    {
+      "phase": "update",
+      "rect": [
+        197,
+        69,
+        4,
+        96
+      ],
+      "rop": "0x5a0049"
+    },
+    {
+      "phase": "update",
+      "rect": [
+        176,
+        50,
+        4,
+        96
+      ],
+      "rop": "0x5a0049"
+    },
+    {
+      "phase": "update",
+      "rect": [
+        65,
+        165,
+        136,
+        4
+      ],
+      "rop": "0x5a0049"
+    },
+    {
+      "phase": "update",
+      "rect": [
+        44,
+        146,
+        136,
+        4
+      ],
+      "rop": "0x5a0049"
+    },
+    {
+      "phase": "erase",
+      "rect": [
+        61,
+        69,
+        4,
+        96
+      ],
+      "rop": "0x5a0049"
+    },
+    {
+      "phase": "erase",
+      "rect": [
+        65,
+        69,
+        136,
+        4
+      ],
+      "rop": "0x5a0049"
+    },
+    {
+      "phase": "erase",
+      "rect": [
+        61,
+        165,
+        136,
+        4
+      ],
+      "rop": "0x5a0049"
+    },
+    {
+      "phase": "erase",
+      "rect": [
+        197,
+        73,
+        4,
+        96
+      ],
+      "rop": "0x5a0049"
+    }
+  ],
+  "independent_tool": "Unicorn2.1.4 x86 16-bit; original opcodes/NE relocations, only GDI/DC boundaries stubbed; Capstone5.0.9 available for decoding; ndisasm D0/D1 shift-count display bug not used as arithmetic truth",
+  "exclusions": [
+    "NT WOW USER/GDI/VGA in O:/winnt/system32 are smaller, different SHA and not the original Win3.1 oracle",
+    "USER segment18 path is scrollbar tracking, not SC_MOVE",
+    "No OS binaries, NE segment copies or third-party emulator are product/test dependencies"
+  ],
+  "vga_fastborder_execution": {
+    "entry": "VGA.DRV export17 FASTBORDER 1:2532 -> helper1:281D -> export1 BITBLT1:0466",
+    "parameters": {
+      "rect": [
+        40,
+        50,
+        180,
+        150
+      ],
+      "clip": [
+        0,
+        0,
+        640,
+        480
+      ],
+      "dx": 3,
+      "dy": 3,
+      "rop": "0x005a0049"
+    },
+    "calls": [
+      {
+        "rect": [
+          40,
+          50,
+          137,
+          3
+        ],
+        "rop": "0x5a0049"
+      },
+      {
+        "rect": [
+          43,
+          147,
+          137,
+          3
+        ],
+        "rop": "0x5a0049"
+      },
+      {
+        "rect": [
+          177,
+          50,
+          3,
+          97
+        ],
+        "rop": "0x5a0049"
+      },
+      {
+        "rect": [
+          40,
+          53,
+          3,
+          97
+        ],
+        "rop": "0x5a0049"
+      }
+    ],
+    "method": "Original VGA FASTBORDER opcodes executed under Unicorn; stack-allocation helper emulated and BITBLT boundary captured. Real VGA ports, planar latches and color palette were not executed. Geometry and ROP are observed, not a claim of complete VGA framebuffer emulation."
+  },
+  "modern_mapping": {
+    "palette": "Modern true-color RGB PATINVERT equivalent; not a claim of reproducing Win3.1 16-color palette-index complements",
+    "pattern": "Same alternating55/AA cells, integer device-cell rounding independently on both axes, anchored at original physical top-left",
+    "geometry": "VGA-default3 border units for thick frame,1 for fixed frame; no historical user profile import",
+    "compositor": "Owned per-drag layered overlay; hide/flush before sampling to exclude previous preview; no shared painting lock or global drag setting",
+    "dpi": "Per-monitor-aware coordinates are physical; unaware single-primary-display coordinates use absolute native SetWindowPos quantization. Unaware multiple-monitor and system-aware physical/logical DPI mismatch use native fallback.",
+    "native_quantization_evidence": "At physical144/logical96: logical SetWindowPos(43,75) gives physical(65,113). Scoped PMv2 SetWindowPos(64,112) still delivers app logical(43,75), then physical(65,113). Preview must match the native reachable position rather than bypass application positioning."
+  },
+  "keyboard": {
+    "loop": "USER6:0F9D/0FDE; GETKEYSTATE#106 at USER1:4F46; Ctrl=1, otherwise half caption-button metrics",
+    "vga_default": "USER3:1114 original close bitmap width36 ->18; 3:14EA/14F0 store18x18; 3:190F..1918 copies DS05FE/069E; half18 ->9",
+    "limit": "Historical profile grid overrides are not imported; modern step scales9 or1 by window DPI"
+  }
+}
