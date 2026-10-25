@@ -1447,8 +1447,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "review": "T15 S6 finite verified native header public protocol and string-only painter; native geometry/font/notifications retained; fixed item formats use original painter; callback/lifetime/OOM tests; no external code copied or original resource changes",
-      "sha256": "f5b9604395585a78b844c578c458cad5efb85a2acd2497efdf8dcdc7a8f59ec5"
+      "review": "T15 S6 finite verified native header public protocol and string-only painter; native geometry/font/notifications retained; fixed item formats use original painter; callback/lifetime/OOM tests; no external code copied or original resource changes; S6 P2 receipt corrected to already committed canonical LF bytes; no C token/logic change or gate relaxation",
+      "sha256": "aadb8cdfba05ba3affa8de3d75dbb43c741e63a185fbc42157212782649aedda"
     },
     {
       "path": "tests/ntw16s-dll/header_paint_owner.c",

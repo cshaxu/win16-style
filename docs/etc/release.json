@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T15 S6 P1",
-  "stage": "S6 finite ordinary-header verified and double-published; actual remote review pending; list rows follow; optional elevated HD Tune skipped by owner/default skip; M0/T15 open",
+  "delivery": "M0 T15 S6 P2",
+  "stage": "S6 P1 published/remote195 match; exact canonical LF test receipt repaired, strict gates/canonical rebuild12pass; P2 actual push/review pending; T15/M0 open",
   "version": "0.15.0.0",
   "version_contract": "Fixed T15 version; S/P distinguished by Git and artifact SHA; no new T allocated",
   "package_directory": "assets",
@@ -1094,6 +1094,60 @@
       ],
       "status": "published",
       "owner_query": "RM_QUERY_OK resources=8 owners=0 reasons=0"
+    },
+    "P1_actual_remote": {
+      "status": "passed",
+      "commit": "937fab06eec57c6ffd458bca18a45d3d51ca1a33",
+      "remote_main": "937fab06eec57c6ffd458bca18a45d3d51ca1a33",
+      "files": 195,
+      "source_inputs": 183,
+      "seconds": 13.265021200000774,
+      "receipt_sha256": "01d9f3c233cfb256476724e8bce35bac254515da59685e2228ae903e91e00b13"
+    },
+    "canonical_receipt_repair": {
+      "path": "tests/ntw16s-dll/header_controls.c",
+      "tested_raw_CRLF_sha256": "f5b9604395585a78b844c578c458cad5efb85a2acd2497efdf8dcdc7a8f59ec5",
+      "canonical_committed_LF_sha256": "aadb8cdfba05ba3affa8de3d75dbb43c741e63a185fbc42157212782649aedda",
+      "git_blob_unchanged": true,
+      "normalization": "CRLF to LF only",
+      "strict_gate_change": "none",
+      "initial_actual_archive_gate": "rejected P1 local content digest mismatch; gate unchanged",
+      "corrected_archive_gates": "strict source23/thirdparty9/resource6/governance13 pass after exact canonical receipt",
+      "canonical_export_rebuild": {
+        "targets": "all",
+        "architectures": [
+          "x86",
+          "x64"
+        ],
+        "exit_code": 0,
+        "tests": [
+          {
+            "tests": 6,
+            "skipped": [],
+            "architecture": "x86",
+            "configure_seconds": 3.8300947999814525,
+            "test_seconds": 1.5966984999831766,
+            "build_seconds": 24.646021200052928,
+            "passed": 6
+          },
+          {
+            "tests": 6,
+            "skipped": [],
+            "architecture": "x64",
+            "configure_seconds": 3.66606789996149,
+            "test_seconds": 1.57021109998459,
+            "build_seconds": 30.38962500001071,
+            "passed": 6
+          }
+        ],
+        "profile": "Focused",
+        "build_root": "O:\\repos.hobby\\win16style\\build\\t15-controls\\s6-committed-review\\build\\.ninja",
+        "test_jobs": 4,
+        "build_jobs": 8,
+        "status": "passed",
+        "selection": "^core/(abi|header-v5|header-v5-dpi|header-v6|header-v6-dpi|header-owner)$"
+      },
+      "binary_publication": "no binary change; original65-case-tested S6 P1 deployed batch retained"
     }
   },
   "architecture": "three components, four products; pure C17 MinGW GCC/Ninja/ccache; real-app observer is optional, no sibling dependency",

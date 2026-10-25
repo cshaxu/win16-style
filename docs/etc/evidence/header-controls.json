@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "packet": "M0 T15 S6",
-  "status": "verified/double-published locally with owner default HD Tune skip; commit/actual remote review pending",
+  "status": "P1 pushed/remote195 match; strict archive exposed authored test CRLF receipt, exact LF metadata repair and canonical rebuild12pass locally; P2 push/review pending",
   "baseline_commit": "602ce8b34f16e42b0ef0d5c4379e6415bef0deb4",
   "product_baseline": "a4b7e22916dbd4572654138e861432cef1bb8694",
   "authorization": "automatic sequential S through T15 audit; fixed M0; permanent publish/commit/push; elevated HD Tune defaults to owner-requested skip",
@@ -515,5 +515,59 @@
       "header_paint.c": "complete preflight before pixels, owned text/snapshot and SaveDC restored on failure/detach",
       "deferred_list": "existing frame attachment is not row renderer; native/client ownership to following S"
     }
+  },
+  "P1_actual_remote": {
+    "status": "passed",
+    "commit": "937fab06eec57c6ffd458bca18a45d3d51ca1a33",
+    "remote_main": "937fab06eec57c6ffd458bca18a45d3d51ca1a33",
+    "files": 195,
+    "source_inputs": 183,
+    "seconds": 13.265021200000774,
+    "receipt_sha256": "01d9f3c233cfb256476724e8bce35bac254515da59685e2228ae903e91e00b13"
+  },
+  "canonical_receipt_repair": {
+    "path": "tests/ntw16s-dll/header_controls.c",
+    "tested_raw_CRLF_sha256": "f5b9604395585a78b844c578c458cad5efb85a2acd2497efdf8dcdc7a8f59ec5",
+    "canonical_committed_LF_sha256": "aadb8cdfba05ba3affa8de3d75dbb43c741e63a185fbc42157212782649aedda",
+    "git_blob_unchanged": true,
+    "normalization": "CRLF to LF only",
+    "strict_gate_change": "none",
+    "initial_actual_archive_gate": "rejected P1 local content digest mismatch; gate unchanged",
+    "corrected_archive_gates": "strict source23/thirdparty9/resource6/governance13 pass after exact canonical receipt",
+    "canonical_export_rebuild": {
+      "targets": "all",
+      "architectures": [
+        "x86",
+        "x64"
+      ],
+      "exit_code": 0,
+      "tests": [
+        {
+          "tests": 6,
+          "skipped": [],
+          "architecture": "x86",
+          "configure_seconds": 3.8300947999814525,
+          "test_seconds": 1.5966984999831766,
+          "build_seconds": 24.646021200052928,
+          "passed": 6
+        },
+        {
+          "tests": 6,
+          "skipped": [],
+          "architecture": "x64",
+          "configure_seconds": 3.66606789996149,
+          "test_seconds": 1.57021109998459,
+          "build_seconds": 30.38962500001071,
+          "passed": 6
+        }
+      ],
+      "profile": "Focused",
+      "build_root": "O:\\repos.hobby\\win16style\\build\\t15-controls\\s6-committed-review\\build\\.ninja",
+      "test_jobs": 4,
+      "build_jobs": 8,
+      "status": "passed",
+      "selection": "^core/(abi|header-v5|header-v5-dpi|header-v6|header-v6-dpi|header-owner)$"
+    },
+    "binary_publication": "no binary change; original65-case-tested S6 P1 deployed batch retained"
   }
 }

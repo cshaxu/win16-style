@@ -6,7 +6,9 @@ files match. Other owners' queue/proposal edits are preserved and excluded.
 The clean S6 four-file package,65actual-package cases, ten new focused/twelve
 preservation cases and real DK/MD5/VB observations pass. Both destinations and
 eight hashes match; installed ABI/header12 and deployed-byte launch2 checks pass.
-Commit/push and actual remote/archive closure review are pending at this point.
+P1 937fab06eec57c6ffd458bca18a45d3d51ca1a33 is pushed; actual remote195
+files match. Strict archive review finds the test receipt issue below; P2 repair
+and subsequent actual review/cleanup must finish before closure.
 CURRENT alone owns status. Elevated HD Tune testing defaults to skip by the owner.
 
 ## Actual breakpoint and bounded implementation
@@ -94,3 +96,23 @@ UAC requests this S. Native probes do not claim physical input or arbitrary DPI.
 This is finite text-header support, not arbitrary frameworks, populated real DK
 row verification, custom painting or task T15 completion. List rows, tree,
 progress, trackbar/updown and final finite coverage audit continue in following S.
+
+
+## P2 exact canonical receipt correction
+
+Actual P1 archive strict source checking rejects the new authored header_controls.c
+receipt: its tested worktree was CRLF while Git already stores LF. Tested raw SHA
+is f5b9604395585a78b844c578c458cad5efb85a2acd2497efdf8dcdc7a8f59ec5;
+canonical existing Git SHA is aadb8cdfba05ba3affa8de3d75dbb43c741e63a185fbc42157212782649aedda.
+Both identities were explicitly captured in the original183-input release proof.
+P2 corrects that receipt to the actual Git bytes and normalizes only the local
+worktree to those same bytes; the tracked C blob and C tokens remain unchanged.
+No strict gate is relaxed and no graphics/notice changes occur.
+
+The actual export also differs from the tested raw snapshot only in the two
+already recorded build-script CRLF/LF identities. After the single exact receipt
+correction, strict source/thirdparty/resource/governance gates pass in the export.
+The canonical exported source builds both widths using the stable ccache in
+24.646s/30.390s and passes12 ABI/header/callback/owner checks. This is not a new
+published package: the original65-case-tested four files remain at both paths,
+and P2 records no binary change. Actual P2 remote/archive verification follows.
