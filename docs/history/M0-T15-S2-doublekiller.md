@@ -99,3 +99,21 @@ and this S's evidence. P1 is locally verified/published; remote review remains p
 Code review scope: 11 source/test/build files, +504/-12 (net492); five private renderer
 files account for +62/-12 (net50). No product paths retired, no unrelated work overwritten.
 Both persistent Ninja builds now report no work; shared ccache remains in place.
+
+## P2 actual remote review and closure
+
+P1 330fed79c6b9e09627a7c516bd670f53d4de9f59 is pushed to main. Actual GitHub raw
+retrieval checks 167 frozen inputs, four tested binaries and twelve changed documents
+(183 files), matching both Git objects and tested SHA values. A coordinator review
+reads the actual commit/diff, owner request and evidence, including the initial false
+positive and strengthened oracle. All 167 local inputs and eight deployed hashes
+remain unchanged. P2 changes only these closure records; product input/artifact identity
+remains P1, version 0.15.0.0.
+
+After evidence extraction, elevated process inspection finds no live scratch references.
+Both registered roots and descendants pass exact containment/no-reparse checks before
+removal: t15-doublekiller 433 files/143,179,993 bytes; t15-package 3,324 files/177,275,501
+bytes. All eight pre-publication backups are proven recoverable from 8fc6ad0 Git assets.
+No user process is terminated. Persistent Ninja/ccache and external native acceptance
+PNGs remain. S2 is closed; T15 and M0 remain open awaiting user appearance review.
+Unsupported custom presentation and physical/multimonitor boundaries remain explicit.

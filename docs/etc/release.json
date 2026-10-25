@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T15 S2 P1",
-  "stage": "locally verified/published; actual remote review pending",
+  "delivery": "M0 T15 S2 P2",
+  "stage": "S2 closed after actual P1 remote/coordinator review and safe cleanup; T15 awaiting appearance review",
   "version": "0.15.0.0",
   "version_contract": "Fixed T15 version; S/P distinguished by Git and artifact SHA; no new T allocated",
   "package_directory": "assets",
@@ -818,8 +818,28 @@
     "deployed_copies": 8,
     "registered_ctests": 79,
     "all_ctests_executed": false,
-    "acceptance": "Await user appearance review; no physical-input claim"
+    "acceptance": "Await user appearance review; no physical-input claim",
+    "p1_remote_review": {
+      "status": "passed",
+      "commit": "330fed79c6b9e09627a7c516bd670f53d4de9f59",
+      "remote_main": "330fed79c6b9e09627a7c516bd670f53d4de9f59",
+      "downloads": 183,
+      "source_inputs": 167,
+      "mode": "full",
+      "seconds": 11.521137100004125,
+      "manifest_sha256": "c5e94680d8875e52832774f008f4737a129f5f1d9712d90dd07774ada29e1597",
+      "receipt_sha256": "dbd56a02cbb84e7c84bc2968de9eba4b254d5e2697e64968803931919dc565d5",
+      "artifacts": 4,
+      "deployed_copies": 8
+    }
   },
   "architecture": "three components, four products; pure C17 MinGW GCC/Ninja/ccache; real-app observer is optional, no sibling dependency",
-  "binary_batch_delivery": "M0 T15 S2 P1"
+  "binary_batch_delivery": "M0 T15 S2 P1",
+  "closure": {
+    "p1": "330fed79c6b9e09627a7c516bd670f53d4de9f59",
+    "source_inputs_unchanged": 167,
+    "deployed_copies_unchanged": 8,
+    "scratch_cleanup": "completed; evidence/doublekiller-controls.json",
+    "task_status": "S2 closed; T15/M0 open for appearance acceptance"
+  }
 }

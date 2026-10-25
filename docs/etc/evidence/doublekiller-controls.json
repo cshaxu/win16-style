@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "delivery": "M0 T15 S2 P1",
-  "state": "locally verified and published; remote review pending",
+  "state": "S2 closed after P1 actual remote/coordinator review and safe cleanup; T15 appearance review pending",
   "baseline": "8fc6ad0010d8dcfcd0ba335933c24e0b8bbebe97",
   "owner_constraint": "No new T allocation; continue T15 S2. M0 and T15 remain open for appearance review.",
   "target": {
@@ -35,7 +35,18 @@
     "final": "Record early theme requests without subclassing. Commit after WM_CREATE, then install existing renderer using actual native class.",
     "public_abi": "3 / 31 named exports + NONAME helper ordinal1 unchanged",
     "new_runtime_hooks": 0,
-    "dllmain_changed": false
+    "dllmain_changed": false,
+    "temporary_trace": {
+      "sha256": "e534056bb9cf468b50ae2a29897d3bcb5f947f5f260f3f9f743b8d660d855033",
+      "paint_messages": 9,
+      "child_control_paint_messages": 0,
+      "last_samples": [
+        "PAINT 02DE091A BBe.DoubleKiller msg=f bars=1 face=00c0c0c0",
+        "PAINT 02DE091A BBe.DoubleKiller msg=f bars=1 face=00c0c0c0",
+        "PAINT 02DE091A BBe.DoubleKiller msg=f bars=1 face=00c0c0c0"
+      ],
+      "disposition": "diagnostic code removed; never published"
+    }
   },
   "negative_cases": [
     {
@@ -1046,7 +1057,7 @@
     }
   ],
   "task_audit": {
-    "state": "S2 locally verified, remote review and closure pending; T15/M0 open",
+    "state": "S2 closed; T15/M0 open for appearance acceptance",
     "original_request": "Make DoubleKiller use the style; only allocate S autonomously",
     "actual_scope": "33 VCL native buttons/checks/edits/combos, actual fill, four pages, safe lifecycle",
     "limitations": "Retain custom pages, owner-draw contents, windowless labels, custom spin/progress/animation; physical input and real x64 VCL untested",
@@ -1074,5 +1085,72 @@
     ],
     "scope": "Persistent build outputs are not substituted for the tested clean package"
   },
-  "source_identity_sha256": "12f1737192b9c80fadd104bc9427d0dc4a1a72d7f326dffe3247ca768c7937ed"
+  "source_identity_sha256": "12f1737192b9c80fadd104bc9427d0dc4a1a72d7f326dffe3247ca768c7937ed",
+  "p1_remote_review": {
+    "status": "passed",
+    "commit": "330fed79c6b9e09627a7c516bd670f53d4de9f59",
+    "remote_main": "330fed79c6b9e09627a7c516bd670f53d4de9f59",
+    "downloads": 183,
+    "source_inputs": 167,
+    "mode": "full",
+    "seconds": 11.521137100004125,
+    "manifest_sha256": "c5e94680d8875e52832774f008f4737a129f5f1d9712d90dd07774ada29e1597",
+    "receipt_sha256": "dbd56a02cbb84e7c84bc2968de9eba4b254d5e2697e64968803931919dc565d5",
+    "artifacts": 4,
+    "deployed_copies": 8
+  },
+  "coordinator_review": {
+    "status": "passed",
+    "commit_read": "330fed79c6b9e09627a7c516bd670f53d4de9f59",
+    "actual_diff": "27 files +1909/-118; private production changes limited to 5 files, +62/-12",
+    "requirements_checked": [
+      "Only S2 allocation under T15; M0/T15 open",
+      "Native superclass recognition and staged theme lifetime",
+      "Actual classic fill/detach, four pages, no business scans/deletes",
+      "Self-contained 7 types plus aliased group, resource ownership and old/prototype negatives",
+      "35 actual package, 10 focused, real MadShow, default installed launch and ABI",
+      "All 167 local inputs and eight deployments still match tested release",
+      "183 actual GitHub raw downloads match commit/tested identity",
+      "Original resources/title/font/menu/scroll/VB sources retained; three components/four files/ABI3/31",
+      "No sibling dependency or changes, no computer-use, no new runtime hooks"
+    ],
+    "physical_input": "not tested; no claim",
+    "remaining": "Appearance acceptance under T15; custom rendering exclusions recorded"
+  },
+  "cleanup": {
+    "backups": "all eight before files verified recoverable from 8fc6ad0 Git assets",
+    "process_check": "elevated Win32_Process, no live scratch references",
+    "status": "completed",
+    "roots": [
+      {
+        "bytes": 143179993,
+        "live_references": 0,
+        "reparse_points": 0,
+        "directories": 56,
+        "path": "O:\\repos.hobby\\win16style\\build\\t15-doublekiller",
+        "resolved_and_contained": true,
+        "files": 433
+      },
+      {
+        "bytes": 177275501,
+        "live_references": 0,
+        "reparse_points": 0,
+        "directories": 1513,
+        "path": "O:\\repos.hobby\\win16style\\build\\t15-package",
+        "resolved_and_contained": true,
+        "files": 3324
+      }
+    ],
+    "preserved": [
+      "build/.ninja",
+      "build/.ccache",
+      "external native acceptance PNGs"
+    ]
+  },
+  "closure": {
+    "p1": "330fed79c6b9e09627a7c516bd670f53d4de9f59",
+    "source_inputs_unchanged": 167,
+    "deployed_copies_unchanged": 8,
+    "p2_scope": "documentation-only closure; no source/artifact replacement"
+  }
 }
