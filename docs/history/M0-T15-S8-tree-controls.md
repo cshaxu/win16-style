@@ -1,8 +1,9 @@
 # M0 T15 S8 native tree controls and pending frame ownership
 
-Status: implementation and focused verification complete; same-four clean package
-75/75 full regression passed (399.681s), dual-published eight hashes. Installed16 focused+2 automatic matrices and frozen six old-package negatives
-passed. Actual remote/archive/safe cleanup remain; not yet closed. M0/T15 remain open.
+Status: S8 closed after75-case actual package, dual publication, installed16+2,
+real MD5/DK, P1 actual remote201, strict archive and serial canonical10,191-object
+recovery and377-image guarded cleanup. S9 admitted sequentially; M0/T15 stay open.
+One initial native keyboard flake is explicitly received by S9, not erased.
 HD Tune elevated real-app checks default to owner-requested skip, never pass.
 Unrelated QUEUE and two proposal changes are preserved and excluded from delivery.
 
@@ -97,3 +98,26 @@ summarized in evidence/release metadata. Title/font/menu/scrollbar retained matr
 passes; original five resource headers/provenance and18 compiled tables remain exact.
 No source or binary was swapped after the75-case run. P1 awaits push/actual remote
 and strict archive review; closure uses a separate P after safety/recovery checks.
+
+## P2 sequential coordinator review and closure
+
+Read the actual c26a99d commit/diff and original request, checked all201 actual
+remote files including187 inputs/four artifacts, strict archive receipts/resources
+and the187 input identities. Two archived scripts use recorded Git LF identities;
+LICENSE raw CRLF is exactly reconstructible.191 Git objects prove every input and
+the eight old deployment backups recoverable; archive4/current8 artifact hashes
+match. The first parallel canonical set passed9/10: native no-DLL v5 tree Down
+caret assertion failed once (157ms, no key/focus snapshot). Do not invent a cause
+or call the retry a fix. The same unchanged10 tests passed serially. S9 receives
+controlled native-input diagnosis and finite reproduction before T15 closure.
+
+Both exact registered scratch roots had no reparse; native FILE_OPEN/share0
+read-write-open guard (no writes) rejected its own running EXE and loaded DLL with
+c0000043, succeeded after unload, then opened377 other task images including two
+long paths. Auditor was joined before removal. All16 retained reviewed sources
+were hashed and restored; stable Ninja/ccache and external native PNGs remain.
+The owned DoubleKiller copy remained identical to the original. No user directory,
+process, sibling repo or unrelated QUEUE/two proposals was modified or cleaned.
+S8 closes with its finite support and explicitly transferred uncertainty; S9 is
+automatically admitted under the standing request. This P changes no product input
+or binary; the P1 package remains installed. HD Tune elevated remains default skip.

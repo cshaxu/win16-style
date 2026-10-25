@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T15 S8 P1",
-  "stage": "verified and dual-published;16 focused installed checks+2 automatic matrices passed; awaiting actual remote/archive audit before closure",
+  "delivery": "M0 T15 S8 P2",
+  "stage": "S8 closed after P1 actual remote201/strict archive+serial10/191-object recovery/377-image safety cleanup; S9 admitted; native input uncertainty received there; M0/T15 open",
   "version": "0.15.0.0",
   "version_contract": "Fixed T15 version; S/P distinguished by Git and artifact SHA; no new T allocated",
   "package_directory": "assets",
@@ -1033,7 +1033,67 @@
         "case": "pending-frame-owner",
         "arch": "x64"
       }
-    ]
+    ],
+    "P1_actual_remote": {
+      "status": "passed",
+      "commit": "c26a99d196ceeb3e20382b14b3bfb41091be0c77",
+      "remote_main": "c26a99d196ceeb3e20382b14b3bfb41091be0c77",
+      "files": 201,
+      "source_inputs": 187,
+      "seconds": 12.76518240000587
+    },
+    "actual_archive": {
+      "status": "passed",
+      "source_inputs": 187,
+      "Git_objects": 191,
+      "raw_recovery_line_endings": [
+        "LICENSE",
+        "tools/Build-Package.ps1",
+        "tools/Verify-Governance.ps1"
+      ],
+      "archive_alternate_identity": [
+        "tools/Build-Package.ps1",
+        "tools/Verify-Governance.ps1"
+      ],
+      "old_backups_recoverable": 8,
+      "archive_four_artifacts": 4,
+      "installed_hashes": 8
+    },
+    "archive_serial10": {
+      "profile": "Focused",
+      "exit_code": 0,
+      "build_root": "O:\\repos.hobby\\win16style\\build\\t15-package\\s8-p1-archive\\build\\.ninja",
+      "test_jobs": 1,
+      "build_jobs": 8,
+      "status": "passed",
+      "tests": [
+        {
+          "build_seconds": 1.2587288999930024,
+          "test_seconds": 5.799938799988013,
+          "passed": 4,
+          "configure_seconds": 4.399902200035285,
+          "skipped": [],
+          "tests": 4,
+          "architecture": "x86"
+        },
+        {
+          "build_seconds": 1.3102176999673247,
+          "test_seconds": 25.48119650001172,
+          "passed": 6,
+          "configure_seconds": 5.420460399996955,
+          "skipped": [],
+          "tests": 6,
+          "architecture": "x64"
+        }
+      ],
+      "targets": "all",
+      "architectures": [
+        "x86",
+        "x64"
+      ],
+      "selection": "^core/(abi|tree-v5|tree-v6|pending-frame-owner|header-owner|vb-font)$"
+    },
+    "archive_initial_native_keyboard_failure": "native no-DLL caret after Down; documented and received by S9; not silently passed"
   },
   "architecture": "three components/four products; ABI3/31 named+ordinal1;31 detours/32 slots; original resources exact",
   "source_snapshot_format": "SHA256 of UTF8 compact sorted-key JSON array of path/sha256/git_blob_sha256 when different",
@@ -1099,5 +1159,115 @@
         "expected": "89784b206e4c04cce41957bd0f6c099288ab669416949abea18c08fa4a7c727e"
       }
     ]
+  },
+  "closure": {
+    "delivery": "M0 T15 S8 P2",
+    "P1_actual_remote": {
+      "status": "passed",
+      "commit": "c26a99d196ceeb3e20382b14b3bfb41091be0c77",
+      "remote_main": "c26a99d196ceeb3e20382b14b3bfb41091be0c77",
+      "files": 201,
+      "source_inputs": 187,
+      "seconds": 12.76518240000587
+    },
+    "recovery": {
+      "status": "passed",
+      "source_inputs": 187,
+      "Git_objects": 191,
+      "raw_recovery_line_endings": [
+        "LICENSE",
+        "tools/Build-Package.ps1",
+        "tools/Verify-Governance.ps1"
+      ],
+      "archive_alternate_identity": [
+        "tools/Build-Package.ps1",
+        "tools/Verify-Governance.ps1"
+      ],
+      "old_backups_recoverable": 8,
+      "archive_four_artifacts": 4,
+      "installed_hashes": 8
+    },
+    "cleanup_guard": {
+      "batches": [
+        {
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+          "files": 32
+        },
+        {
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+          "files": 32
+        },
+        {
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+          "files": 32
+        },
+        {
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+          "files": 32
+        },
+        {
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+          "files": 32
+        },
+        {
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+          "files": 32
+        },
+        {
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+          "files": 32
+        },
+        {
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+          "files": 32
+        },
+        {
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+          "files": 32
+        },
+        {
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+          "files": 32
+        },
+        {
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+          "files": 32
+        },
+        {
+          "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=25 no_write=1",
+          "files": 25
+        }
+      ],
+      "status": "passed",
+      "excluded_running_guard": "O:\\repos.hobby\\win16style\\build\\t15-controls\\s8-image-guard.exe",
+      "positive_control": "IMAGE_GUARD_POSITIVE exe=c0000043 loaded_dll=c0000043 unloaded_dll=00000000",
+      "files": 377,
+      "roots": [
+        "O:\\repos.hobby\\win16style\\build\\t15-controls",
+        "O:\\repos.hobby\\win16style\\build\\t15-package"
+      ],
+      "long_paths": 2
+    },
+    "retained_reviewed_sources": [
+      "file-owners.c",
+      "image-guard.c",
+      "md5-driver.c",
+      "md5-probe.c",
+      "verify-remote.py",
+      "s6-list-report.h",
+      "s6-dk-probe.c",
+      "s6-list-header-api.c",
+      "s7-dk-owned-driver.c",
+      "s7-dk-owned-probe.c",
+      "s7-owned-folder.h",
+      "s8-md5-probe.c",
+      "s8-dk-owned-driver.c",
+      "s8-dk-owned-probe.c",
+      "s8-owned-folder.h",
+      "s8-tree-native-destroy.c"
+    ],
+    "cleanup": "completed: exact registered roots cleared after191-object recovery/8-deployment checks/reparse0/377 native exclusive image checks;16 reviewed sources retained for T15 audit; stable Ninja/ccache and native PNG preserved",
+    "binary_change": "none; same75-case-tested P1 four files retained",
+    "following_scope": "S9 input uncertainty diagnosis plus finite progress/trackbar/updown; HD Tune elevated skip; T15 open"
   }
 }

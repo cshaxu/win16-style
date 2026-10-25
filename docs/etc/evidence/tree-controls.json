@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "packet": "M0 T15 S8",
-  "status": "verified and dual-published;16 focused installed checks+2 automatic matrices passed; awaiting actual remote/archive audit before closure",
+  "status": "S8 closed after P1 actual remote201/strict archive+serial10/191-object recovery/377-image safety cleanup; S9 admitted; native input uncertainty received there; M0/T15 open",
   "HD_Tune_elevated": "owner-requested default skip; not pass; no UAC requested",
   "implementation": "finite verified native tree text and client-edge/nonclient bar renderer; exact pending-frame ownership; no new exports or products",
   "baseline_commit": "34b74e61f8246ec93bc0324fbec4100522bf01a9",
@@ -460,5 +460,539 @@
       "arch": "x64"
     }
   ],
-  "publication_occupancy": "RestartManager exact eight paths: owners0 before deployment"
+  "publication_occupancy": "RestartManager exact eight paths: owners0 before deployment",
+  "P1_actual_remote": {
+    "status": "passed",
+    "commit": "c26a99d196ceeb3e20382b14b3bfb41091be0c77",
+    "remote_main": "c26a99d196ceeb3e20382b14b3bfb41091be0c77",
+    "files": 201,
+    "source_inputs": 187,
+    "seconds": 12.76518240000587
+  },
+  "P1_recovery_and_archive": {
+    "status": "passed",
+    "source_inputs": 187,
+    "Git_objects": 191,
+    "raw_recovery_line_endings": [
+      "LICENSE",
+      "tools/Build-Package.ps1",
+      "tools/Verify-Governance.ps1"
+    ],
+    "archive_alternate_identity": [
+      "tools/Build-Package.ps1",
+      "tools/Verify-Governance.ps1"
+    ],
+    "old_backups_recoverable": 8,
+    "archive_four_artifacts": 4,
+    "installed_hashes": 8
+  },
+  "P1_archive_parallel_attempt": {
+    "status": "failed-or-inconclusive",
+    "error": "x64 build/test exit 4; inspect architecture run.log/run.err"
+  },
+  "native_keyboard_flake": {
+    "actual_context": "archive x64 core/tree-v5 first child; no DLL, aware0,kind0,small0,draw0",
+    "actual_failure": "line78 caret != children[0] after Down; native child exit1 in157ms; no key-state/focus snapshot",
+    "root_cause": "unconfirmed; do not attribute to renderer or invent modifier evidence",
+    "same_frozen_inputs_serial_result": {
+      "profile": "Focused",
+      "exit_code": 0,
+      "build_root": "O:\\repos.hobby\\win16style\\build\\t15-package\\s8-p1-archive\\build\\.ninja",
+      "test_jobs": 1,
+      "build_jobs": 8,
+      "status": "passed",
+      "tests": [
+        {
+          "build_seconds": 1.2587288999930024,
+          "test_seconds": 5.799938799988013,
+          "passed": 4,
+          "configure_seconds": 4.399902200035285,
+          "skipped": [],
+          "tests": 4,
+          "architecture": "x86"
+        },
+        {
+          "build_seconds": 1.3102176999673247,
+          "test_seconds": 25.48119650001172,
+          "passed": 6,
+          "configure_seconds": 5.420460399996955,
+          "skipped": [],
+          "tests": 6,
+          "architecture": "x64"
+        }
+      ],
+      "targets": "all",
+      "architectures": [
+        "x86",
+        "x64"
+      ],
+      "selection": "^core/(abi|tree-v5|tree-v6|pending-frame-owner|header-owner|vb-font)$"
+    },
+    "receiver": "M0 T15 S9 native input state isolation and bounded reproduction; T15 remains open",
+    "parallel_counts": {
+      "passed": 9,
+      "total": 10,
+      "failure": "one native no-DLL caret assertion"
+    }
+  },
+  "full_case_results": [
+    {
+      "name": "abi-x86",
+      "exit_code": 0,
+      "seconds": 0.2471776
+    },
+    {
+      "name": "abi-x64",
+      "exit_code": 0,
+      "seconds": 0.2532891
+    },
+    {
+      "name": "demo-boundary",
+      "exit_code": 0,
+      "seconds": 0.2313364
+    },
+    {
+      "name": "demo-pair",
+      "exit_code": 0,
+      "seconds": 1.8327047
+    },
+    {
+      "name": "wait-contract",
+      "exit_code": 0,
+      "seconds": 7.3331102
+    },
+    {
+      "name": "font-layout-x64",
+      "exit_code": 0,
+      "seconds": 65.3299084
+    },
+    {
+      "name": "font-layout-x86",
+      "exit_code": 0,
+      "seconds": 101.6340674
+    },
+    {
+      "name": "menu-cancel-x64",
+      "exit_code": 0,
+      "seconds": 72.9070842
+    },
+    {
+      "name": "menu-cancel-x86",
+      "exit_code": 0,
+      "seconds": 102.2937704
+    },
+    {
+      "name": "startup-error-unit-32",
+      "exit_code": 0,
+      "seconds": 0.4428798
+    },
+    {
+      "name": "startup-error-unit-64",
+      "exit_code": 0,
+      "seconds": 0.0943379
+    },
+    {
+      "name": "cli",
+      "exit_code": 0,
+      "seconds": 0.6031342
+    },
+    {
+      "name": "legacy-rejection",
+      "exit_code": 0,
+      "seconds": 0.8899584
+    },
+    {
+      "name": "automatic",
+      "exit_code": 0,
+      "seconds": 1.8788732
+    },
+    {
+      "name": "long-path",
+      "exit_code": 0,
+      "seconds": 1.247315
+    },
+    {
+      "name": "cmd-nested",
+      "exit_code": 0,
+      "seconds": 2.7211483
+    },
+    {
+      "name": "legacy-iat-32",
+      "exit_code": 0,
+      "seconds": 0.5698017
+    },
+    {
+      "name": "legacy-iat-64",
+      "exit_code": 0,
+      "seconds": 0.4423144
+    },
+    {
+      "name": "uac-unit-32",
+      "exit_code": 0,
+      "seconds": 0.4288446
+    },
+    {
+      "name": "uac-unit-64",
+      "exit_code": 0,
+      "seconds": 0.4346188
+    },
+    {
+      "name": "cli-failures",
+      "exit_code": 0,
+      "seconds": 2.7881806
+    },
+    {
+      "name": "propagation",
+      "exit_code": 0,
+      "seconds": 5.9278437
+    },
+    {
+      "name": "startup-errors",
+      "exit_code": 0,
+      "seconds": 8.4903256
+    },
+    {
+      "name": "vb-font-32",
+      "exit_code": 0,
+      "seconds": 1.7987271
+    },
+    {
+      "name": "vb-font-64",
+      "exit_code": 0,
+      "seconds": 1.6162517
+    },
+    {
+      "name": "control-extensions-64",
+      "exit_code": 0,
+      "seconds": 0.9383825
+    },
+    {
+      "name": "control-extensions-32",
+      "exit_code": 0,
+      "seconds": 1.1825067
+    },
+    {
+      "name": "control-protocol-owner-32",
+      "exit_code": 0,
+      "seconds": 0.2464071
+    },
+    {
+      "name": "vb-controls-32",
+      "exit_code": 0,
+      "seconds": 2.9926924
+    },
+    {
+      "name": "control-protocol-owner-64",
+      "exit_code": 0,
+      "seconds": 0.217673
+    },
+    {
+      "name": "vb-controls-64",
+      "exit_code": 0,
+      "seconds": 2.6678318
+    },
+    {
+      "name": "tab-controls-32",
+      "exit_code": 0,
+      "seconds": 1.5087191
+    },
+    {
+      "name": "tab-controls-64",
+      "exit_code": 0,
+      "seconds": 1.4618922
+    },
+    {
+      "name": "tab-controls-dpi-32",
+      "exit_code": 0,
+      "seconds": 1.5855457
+    },
+    {
+      "name": "tab-controls-dpi-64",
+      "exit_code": 0,
+      "seconds": 0.8770358
+    },
+    {
+      "name": "tab-controls-v5-32",
+      "exit_code": 0,
+      "seconds": 1.2268879
+    },
+    {
+      "name": "tab-controls-v5-64",
+      "exit_code": 0,
+      "seconds": 1.2017067
+    },
+    {
+      "name": "tab-controls-v5-dpi-32",
+      "exit_code": 0,
+      "seconds": 1.3111817
+    },
+    {
+      "name": "tab-controls-v5-dpi-64",
+      "exit_code": 0,
+      "seconds": 1.2879997
+    },
+    {
+      "name": "pending-control-owner-32",
+      "exit_code": 0,
+      "seconds": 0.2292188
+    },
+    {
+      "name": "pending-control-owner-64",
+      "exit_code": 0,
+      "seconds": 0.3199592
+    },
+    {
+      "name": "header-v5-32",
+      "exit_code": 0,
+      "seconds": 0.7094341
+    },
+    {
+      "name": "header-v5-64",
+      "exit_code": 0,
+      "seconds": 0.748578
+    },
+    {
+      "name": "header-v5-dpi-32",
+      "exit_code": 0,
+      "seconds": 0.8478009
+    },
+    {
+      "name": "header-v5-dpi-64",
+      "exit_code": 0,
+      "seconds": 0.6763431
+    },
+    {
+      "name": "header-v6-32",
+      "exit_code": 0,
+      "seconds": 0.6719369
+    },
+    {
+      "name": "header-v6-64",
+      "exit_code": 0,
+      "seconds": 0.6558662
+    },
+    {
+      "name": "header-v6-dpi-64",
+      "exit_code": 0,
+      "seconds": 0.5489723
+    },
+    {
+      "name": "header-v6-dpi-32",
+      "exit_code": 0,
+      "seconds": 0.8605487
+    },
+    {
+      "name": "list-report-v5-64",
+      "exit_code": 0,
+      "seconds": 5.5328944
+    },
+    {
+      "name": "pending-frame-owner-32",
+      "exit_code": 0,
+      "seconds": 0.4075127
+    },
+    {
+      "name": "list-report-v5-32",
+      "exit_code": 0,
+      "seconds": 7.228203
+    },
+    {
+      "name": "list-report-v6-64",
+      "exit_code": 0,
+      "seconds": 8.7196073
+    },
+    {
+      "name": "pending-frame-owner-64",
+      "exit_code": 0,
+      "seconds": 0.4718076
+    },
+    {
+      "name": "list-report-v6-32",
+      "exit_code": 0,
+      "seconds": 12.2036312
+    },
+    {
+      "name": "tree-v5-32",
+      "exit_code": 0,
+      "seconds": 13.9732923
+    },
+    {
+      "name": "header-owner-32",
+      "exit_code": 0,
+      "seconds": 0.3289027
+    },
+    {
+      "name": "header-owner-64",
+      "exit_code": 0,
+      "seconds": 0.3224069
+    },
+    {
+      "name": "tree-v5-64",
+      "exit_code": 0,
+      "seconds": 12.1415701
+    },
+    {
+      "name": "control-visibility-32",
+      "exit_code": 0,
+      "seconds": 2.5009267
+    },
+    {
+      "name": "control-visibility-64",
+      "exit_code": 0,
+      "seconds": 1.9354811
+    },
+    {
+      "name": "tree-v6-32",
+      "exit_code": 0,
+      "seconds": 23.5833726
+    },
+    {
+      "name": "tree-v6-64",
+      "exit_code": 0,
+      "seconds": 19.0529705
+    },
+    {
+      "name": "dialog-scope-32",
+      "exit_code": 0,
+      "seconds": 22.406035
+    },
+    {
+      "name": "dialog-scope-64",
+      "exit_code": 0,
+      "seconds": 22.0491757
+    },
+    {
+      "name": "theme-stage-32",
+      "exit_code": 0,
+      "seconds": 0.2518866
+    },
+    {
+      "name": "theme-stage-64",
+      "exit_code": 0,
+      "seconds": 0.2658245
+    },
+    {
+      "name": "superclass-64",
+      "exit_code": 0,
+      "seconds": 2.6941158
+    },
+    {
+      "name": "superclass-32",
+      "exit_code": 0,
+      "seconds": 3.2229807
+    },
+    {
+      "name": "rollback",
+      "exit_code": 0,
+      "seconds": 4.3501185
+    },
+    {
+      "name": "creation-contract",
+      "exit_code": 0,
+      "seconds": 10.1395561
+    },
+    {
+      "name": "dialog-show-64",
+      "exit_code": 0,
+      "seconds": 89.6393498
+    },
+    {
+      "name": "dialog-show-32",
+      "exit_code": 0,
+      "seconds": 96.8427063
+    },
+    {
+      "name": "dialogs",
+      "exit_code": 0,
+      "seconds": 78.7396044
+    },
+    {
+      "name": "messages",
+      "exit_code": 0,
+      "seconds": 80.6368956
+    }
+  ],
+  "retained_reviewed_sources": {
+    "file-owners.c": "6c73285aa04fb564db13c4093396a6d5584db1496527df1ab754bf8eb7de79c8",
+    "image-guard.c": "1c5a49290cdfbd5944c9566b1bf11f1bc607397bb12491c11fe79578e38ed549",
+    "md5-driver.c": "e334bbbd0c764196abd48427126b8ef41eda725f1fb969e2c23d7005be275f53",
+    "md5-probe.c": "5423599d06e219df353d1c50f55cac8e90779dcc9656446011140864f64e7969",
+    "verify-remote.py": "b8ef757e825ad8e6c224690d6c3ed2ccac63ac797b084861d39ba255d81de217",
+    "s6-list-report.h": "17b97fd73b04aaa7cc1c7203c66eec9104e9b537191cae8925778be8b2bb3cc4",
+    "s6-dk-probe.c": "a8fd253ac4e66d21c94ed2a6f1aa6a194308bf3fbd0522374bd66f3175c9d288",
+    "s6-list-header-api.c": "d634a7d272533d42a30e1e9e7e01820dde8cbe0ef32b7d3cacf489cb2c01ea29",
+    "s7-dk-owned-driver.c": "4ae09231d37065a5fd2954d6812035cbe1726a9b4eb7954546efe84aad84e99d",
+    "s7-dk-owned-probe.c": "07438de907c8d01d25fba2670cd1dcdd6f0c543052f0f12a6e1c6004c3140da0",
+    "s7-owned-folder.h": "77a56db7626ccb4b66fb769d84e6dd873c2e89a77324c3762979a29a3cb5496c",
+    "s8-md5-probe.c": "1483293dd1a0ef1106b63cbfd3ae97c11bfa75de08d801c8e608e6a251158c05",
+    "s8-dk-owned-driver.c": "d1feb8568448ba38d63e54b97104c3baeaaa82f472a8064a75b075ab305c5a55",
+    "s8-dk-owned-probe.c": "eaefc7f31ee85cd22b4d0b5f4fab42a7153b82b54610082827e7b48d7212f009",
+    "s8-owned-folder.h": "7222c3d5ce6ac95ce60b74b0541bf33db02ca76cdadda0451f3c50696dc12c90",
+    "s8-tree-native-destroy.c": "d0c79dbb105d83ccd459a0544ed16327ffca7bdeb26100a11d1137cf0b2d0ce9"
+  },
+  "cleanup_recovery": "passed and scratch reclaimed; original application copy unchanged;8 backups recoverable from Git",
+  "cleanup_guard": {
+    "batches": [
+      {
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+        "files": 32
+      },
+      {
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+        "files": 32
+      },
+      {
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+        "files": 32
+      },
+      {
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+        "files": 32
+      },
+      {
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+        "files": 32
+      },
+      {
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+        "files": 32
+      },
+      {
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+        "files": 32
+      },
+      {
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+        "files": 32
+      },
+      {
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+        "files": 32
+      },
+      {
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+        "files": 32
+      },
+      {
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=32 no_write=1",
+        "files": 32
+      },
+      {
+        "result": "EXCLUSIVE_IMAGE_GUARD_PASS files=25 no_write=1",
+        "files": 25
+      }
+    ],
+    "status": "passed",
+    "excluded_running_guard": "O:\\repos.hobby\\win16style\\build\\t15-controls\\s8-image-guard.exe",
+    "positive_control": "IMAGE_GUARD_POSITIVE exe=c0000043 loaded_dll=c0000043 unloaded_dll=00000000",
+    "files": 377,
+    "roots": [
+      "O:\\repos.hobby\\win16style\\build\\t15-controls",
+      "O:\\repos.hobby\\win16style\\build\\t15-package"
+    ],
+    "long_paths": 2
+  },
+  "cleanup": "completed: exact registered roots cleared after191-object recovery/8-deployment checks/reparse0/377 native exclusive image checks;16 reviewed sources retained for T15 audit; stable Ninja/ccache and native PNG preserved",
+  "closing_delivery": "M0 T15 S8 P2",
+  "binary_change_in_closing_P": "none; same75-case P1 four files remain identical at both roots"
 }
