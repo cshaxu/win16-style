@@ -2,22 +2,25 @@
 
 ## Current Work
 
-S4完成有限控件适配、45实际包/12聚焦、真实四应用/双发布、P1远端187及P2修复旧回执后
-严格归档/远端184复核、安全清理。按自动续S授权准入S5，T15/M0保持开放，不分配新T。
+S5分页原型已实现，12新增聚焦/12保留、55实际包361.218秒通过；旧包双宽四负例检出，
+真实DK四页/MD5/VB正常退出且Job空、DK标题顶部24行原样。用户最新要求跳过HD Tune
+管理员实测且今后默认不测；本项记skip，不计通过，不再等待或重发UAC。八部署一致、12安装ABI/分页/取消与两启动矩阵通过；本地已发布、待提交推送/实际远端复核，
+S5/T15/M0保持开放，不分配新T。[本S记录](../history/M0-T15-S5-tab-controls.md)及
+[证据](../etc/evidence/tab-controls.json)登记当前事实和未覆盖面。
 
 ## M0 T15 S5 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | Continuation；S4关闭后顺序准入S5，唯一活动S，不复用编号 |
-| Admission And Approval | 用户“批准 自动准入s任务 到t收口为止”；必要HD Tune受限一次性管理员探针及永久提交推送/双发布授权保持；系统UAC在自动回归后弹出 |
+| Admission And Approval | 用户“批准 自动准入s任务 到t收口为止”；永久提交推送/双发布授权保持；用户最新要求本次及后续默认跳过HD Tune管理员实测，不再自动弹UAC |
 | Objective | 核实并适配HD Tune的SysTabControl32与DoubleKiller的TPageControl分页，保持原页面/数据/图标/选择/原生通知及输入行为；过大时明确交接自动拆续S |
 | Non-goals | 本S不实现列表/表头/树/进度/滑块/微调或自绘图表；不盲按类名前缀，不猜私有对象/过程；标题/字体策略/菜单/滚动条/原资源及启动传播不改 |
 | Reference Baseline | 502ec8389d20c89f80e1ee4b11a9b54ea67a39d2（严格归档/实际远端184通过）；产品5e8f880b9f893441cf61bf345218371b2c45b313四文件0.15.0.0，175输入/45包/12聚焦/八部署一致 |
 | Candidate Proposal | [框架完成分解](../proposals/framework-completion.md)；[前S事实/交接](../history/M0-T15-S4-control-protocols.md)及[证据](../etc/evidence/control-protocols.json) |
 | Files And ABI Surface | 唯一control renderer及私有分类/创建附着、纯C测试和可审原生探针；三组件四产物/ABI3/31导出保持，无新增产品或外部后端；新增内部hook先审容量 |
 | Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT、UI与来源策略；C17/MinGW GCC/Ninja/ccache；禁computer-use，兄弟仓库只读且不依赖 |
-| Verification | 先原生只读协议/布局/绘制与有限方案，再自包含双宽裸/注入对照、旧包负例/通知及生命周期；真实DK/HD Tune与MD5/VB保留；双宽干净四文件实际包/双发布/实际远端 |
+| Verification | 先原生只读协议/布局/绘制与有限方案，再自包含双宽裸/注入对照、旧包负例/通知及生命周期；真实DK/MD5/VB保留；HD Tune管理员实测按用户最新指令skip；双宽干净四文件实际包/双发布/实际远端 |
 | Expected Markers | 正常显示标签/边框/图标/实际字形像素、Tab布局及DPI、选择/原生取消/键盘/焦点/通知数据、回调销毁/字体/资源释放；不以附着代替绘制 |
 | Asset Needs | build/t15-controls承接S4七份已审观察器/复核源码并登记本S诊断；build/t15-package登记新干净包/备份；先提炼后安全清理，稳定.ninja/.ccache和外部验收PNG保留 |
 | Reporting Requirements | 实测断点、原生/框架身份与初始化边界、有限方案/覆盖、旧包负例、实际包/两处发布/远端协调复核；不冒称未实现公共控件或应用页面已适配 |
@@ -32,7 +35,7 @@ S4完成有限控件适配、45实际包/12聚焦、真实四应用/双发布、
 - Last allocated T: 15
 - Last allocated Td S: 13
 - Owner allocation constraint: 只可自行划分后续S，不得自行分配新T；保持现有T15/M0。
-- Last delivery: M0 T15 S4 P2（P1 5e8f880远端187；P2 502ec83严格归档/远端184及协调复核通过；P3记录关闭/准入待推送复核）
+- Last delivery: M0 T15 S4 P3（c33417117f329fa07ddeb78aa9416d82079c7873已推送/实际远端184通过；S4关闭，S5活动）
 - Open task: T15自动续S实施/任务级审计中；S5活动，S4/S3/S2/S1关闭；Td S13/S12/S11关闭；T14 S3/T14保持关闭；T13/T12/T11/T9/T8关闭；T10取消；Td S9/S10保持关闭
 
 ## Technical Baseline

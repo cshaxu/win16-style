@@ -6,6 +6,7 @@
 #include "scroll_track.h"
 #include "font.h"
 #include "native_api.h"
+#include "tab_paint.h"
 #include <commctrl.h>
 #include <oleacc.h>
 #include <stdlib.h>
@@ -19,9 +20,12 @@ typedef struct control_style {
     BOOL edit_border;
     HWND combo_list;
     struct control_style *owner;
+    const void *creation_owner;
+    ntw16s_control_protocol *protocol;
     win16_scroll_track scroll;
     UINT_PTR scroll_timer;
     unsigned scroll_epoch;
+    unsigned tab_epoch;
     BOOL scroll_reporting,scroll_key;
     LONG scroll_report;
     BOOL list_scrollbar,edit_scrollbars,frame_scrollbars,list_redraw_off;
@@ -33,7 +37,7 @@ typedef struct control_style {
     int tab_count,*tab_positions;
 } control_style;
 static void dispose_control(control_style *s)
-{win16_style_system_release(s->font);free(s->tab_positions);free(s);}
+{win16_style_system_release(s->font);ntw16s_control_protocol_release(s->protocol);free(s->tab_positions);free(s);}
 static LRESULT CALLBACK control_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 /* DefWindowProc implements WM_SETREDRAW(TRUE) by setting WS_VISIBLE.
  * Never start an internal bracket on an application-hidden control. Nested
@@ -52,6 +56,8 @@ static BOOL is_scroll(HWND w)
 {return ntw16s_class_is(w,L"SCROLLBAR");}
 static BOOL is_link(HWND w)
 {return ntw16s_class_is(w,L"SysLink");}
+static BOOL is_tab(HWND w)
+{return ntw16s_class_is(w,WC_TABCONTROLW);}
 static BOOL is_separator(HWND w)
 {DWORD type=(DWORD)GetWindowLongPtrW(w,GWL_STYLE)&SS_TYPEMASK;
  return is_static(w) && type>=SS_ETCHEDHORZ && type<=SS_ETCHEDFRAME;}
@@ -61,6 +67,7 @@ static BOOL supported(HWND w)
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),type=ntw16s_button_type(w,style);
     if(is_scroll(w))return !(style&SBS_SIZEGRIP);
     if(is_link(w))return TRUE;
+    if(is_tab(w))return win16_style_tab_supported(w);
     if(is_combo(w))return ((style&3)==CBS_DROPDOWNLIST || (style&3)==CBS_DROPDOWN || (style&3)==CBS_SIMPLE) &&
         !(style&(CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE));
     if(is_list(w))return !(style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA|LBS_USETABSTOPS));
@@ -902,20 +909,30 @@ static void draw_sizebox(HWND w,control_style *s,HDC dc)
     IntersectClipRect(dc,client.left,client.top,client.right,client.bottom);
     FillRect(dc,&r,GetSysColorBrush(COLOR_SCROLLBAR));RestoreDC(dc,saved);
 }
+static void draw_tab(HWND w,control_style *s,HDC dc)
+{
+    HFONT font=s->font;win16_style_system_retain(font);
+    if(!win16_style_tab_paint(w,dc,&s->palette,font,&s->detached,&s->tab_epoch) && !s->detached)
+        DefSubclassProc(w,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT);
+    win16_style_system_release(font);
+}
 static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
 {
     control_style *s=(control_style *)data;LRESULT result=0;HFONT previous=NULL,pinned=s->font,outbound=NULL;(void)id;++s->calls;
+    BOOL tab=is_tab(w);
+    if(tab && win16_style_tab_changes(m))++s->tab_epoch;
     win16_style_system_retain(pinned);
     /* VB owns an IFont and can change it without WM_SETFONT. Query at the
      * paint boundary; never overwrite that application's font property. */
     if(!s->frame_scrollbars && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT) &&
-            (ntw16s_vb_frame(w) || ntw16s_vb_edit(w) || ntw16s_vb_class(w,L"ThunderRT6CommandButton"))){
+            (tab || ntw16s_vb_frame(w) || ntw16s_vb_edit(w) || ntw16s_vb_class(w,L"ThunderRT6CommandButton"))){
         HFONT source=(HFONT)SendMessageW(w,WM_GETFONT,0,0);
         if(!s->detached && source!=s->original_font){
-            HFONT replacement=win16_style_vb_font_acquire(source);
+            HFONT replacement=tab?win16_style_system_acquire(source):win16_style_vb_font_acquire(source);
             previous=s->font;s->original_font=source;s->font=replacement?replacement:source;
         }
     }
+    if(s->detached)goto finished;
     if(m==WM_SETFONT && !s->frame_scrollbars){
         HFONT original=win16_style_system_source((HFONT)a);
         BOOL vb=ntw16s_vb_frame(w) || ntw16s_vb_edit(w) || ntw16s_vb_class(w,L"ThunderRT6CommandButton");
@@ -923,10 +940,20 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         previous=s->font;s->original_font=original;
         s->font=replacement?replacement:original;
         outbound=s->font;win16_style_system_retain(outbound);
-        a=(WPARAM)s->font;
+        /* Native tab geometry/hit testing belongs to the application's font.
+         * Only our painter borrows the existing System glyph lease. */
+        a=(WPARAM)(tab?original:s->font);
     }
     if(m==WM_NCDESTROY){(void)win16_style_control_terminal(w);
         result=DefSubclassProc(w,m,a,b);}
+    else if(tab){
+        if(m==WM_PAINT && win16_style_tab_supported(w)){
+            PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);present_control(w,s,dc,draw_tab);EndPaint(w,&ps);
+        }else if(m==WM_PRINTCLIENT && win16_style_tab_supported(w))draw_tab(w,s,(HDC)a);
+        else result=DefSubclassProc(w,m,a,b);
+        if(!s->detached && win16_style_tab_changes(m))
+            RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|(s->calls==1?RDW_UPDATENOW:0));
+    }
     else if(is_link(w)){
         /* Preserve native markup, hit testing, focus and NM_CLICK/NM_RETURN.
          * Only the shared WM_SETFONT path above changes link typography. */
@@ -1120,6 +1147,16 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
             RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
     }
 finished:
+    if(m==WM_SETFONT && s->detached && IsWindow(w)){
+        /* A native setter can finish AFTER its callback removed this leaf,
+         * overwriting the font restored during removal with our retired
+         * variant. Settle only after that native call has returned. A new
+         * independent owner, if installed reentrantly, keeps its own source. */
+        DWORD_PTR successor;HFONT source=s->original_font;
+        if(GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&successor))
+            source=((control_style *)successor)->original_font;
+        SendMessageW(w,WM_SETFONT,(WPARAM)source,b);
+    }
     /* Native processing (including nested paint/remove/setfont) has finished
      * with the previous lease. Never delete the application's borrowed font. */
     win16_style_system_release(previous);
@@ -1129,7 +1166,7 @@ finished:
 }
 
 static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL original_border,BOOL frame_bars,
-    int tab_count,const int *tabs)
+    int tab_count,const int *tabs,const void *creation_owner,const BOOL *cancelled)
 {
     DWORD_PTR existing;control_style *s;BOOL result=TRUE,tabbed=tab_count>=0;LONG_PTR style=GetWindowLongPtrW(w,GWL_STYLE);
     if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId()){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
@@ -1141,12 +1178,17 @@ static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL ori
             SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
     }else if(!frame_bars && (!supported(w) || is_edit(w)!=edit)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     s=calloc(1,sizeof(*s));if(!s)return FALSE;
+    s->creation_owner=creation_owner;
+    SetLastError(ERROR_SUCCESS);
+    s->protocol=ntw16s_control_protocol_acquire(w);
+    if(!s->protocol && GetLastError()==ERROR_ARITHMETIC_OVERFLOW){dispose_control(s);SetLastError(ERROR_ARITHMETIC_OVERFLOW);return FALSE;}
     if(tabbed && tab_count){s->tab_positions=malloc((size_t)tab_count*sizeof(int));
-        if(!s->tab_positions){free(s);return FALSE;}
+        if(!s->tab_positions){dispose_control(s);return FALSE;}
         CopyMemory(s->tab_positions,tabs,(size_t)tab_count*sizeof(int));s->tab_count=tab_count;}
     s->edit_border=edit && original_border;
     s->frame_scrollbars=frame_bars;
     if(!frame_bars){s->original_font=(HFONT)SendMessageW(w,WM_GETFONT,0,0);
+        if(cancelled && *cancelled){dispose_control(s);SetLastError(ERROR_CANCELLED);return FALSE;}
         /* The font query may reenter installation. Do not replace that
          * successful attachment's subclass data with this outer attempt. */
         if(GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&existing)){
@@ -1179,11 +1221,14 @@ installed:
     return result;
 }
 BOOL win16_style_control_install(HWND w,const win16_style_palette *palette)
-{return install(w,palette,FALSE,FALSE,FALSE,-1,NULL);}
+{return install(w,palette,FALSE,FALSE,FALSE,-1,NULL,NULL,NULL);}
+BOOL win16_style_control_install_created(HWND w,BOOL edit,BOOL original_border,BOOL tabbed,
+    const win16_style_palette *palette,const void *owner,const BOOL *cancelled)
+{return install(w,palette,edit,original_border,FALSE,tabbed?0:-1,NULL,owner,cancelled);}
 BOOL win16_style_tabbed_list_install(HWND w,const win16_style_palette *palette,int count,const int *pixels)
-{if(count<0){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}return install(w,palette,FALSE,FALSE,FALSE,count,pixels);}
+{if(count<0){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}return install(w,palette,FALSE,FALSE,FALSE,count,pixels,NULL,NULL);}
 BOOL win16_style_frame_scrollbars_install(HWND w,const win16_style_palette *palette)
-{return install(w,palette,FALSE,FALSE,TRUE,-1,NULL);}
+{return install(w,palette,FALSE,FALSE,TRUE,-1,NULL,NULL,NULL);}
 void win16_style_frame_scrollbars_remove(HWND w)
 {
     DWORD_PTR data;
@@ -1234,7 +1279,7 @@ BOOL win16_style_list_scrollbar_enable(HWND w)
     RedrawWindow(w,NULL,NULL,RDW_FRAME|RDW_INVALIDATE);return TRUE;
 }
 BOOL win16_style_edit_install(HWND w,BOOL original_border,const win16_style_palette *palette)
-{return install(w,palette,TRUE,original_border,FALSE,-1,NULL);}
+{return install(w,palette,TRUE,original_border,FALSE,-1,NULL,NULL,NULL);}
 BOOL win16_style_edit_scrollbars_enable(HWND w)
 {
     DWORD_PTR data;LONG_PTR style=GetWindowLongPtrW(w,GWL_STYLE);
@@ -1271,6 +1316,14 @@ BOOL win16_style_control_remove(HWND w)
     RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);
     if(is_scroll(w) && GetFocus()==w)SendMessageW(w,WM_SETFOCUS,0,0);
     return TRUE;
+}
+BOOL win16_style_control_remove_owned(HWND w,const void *owner)
+{
+    DWORD_PTR data;
+    if(!owner || GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() ||
+        !GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&data) ||
+        ((control_style *)data)->creation_owner!=owner)return FALSE;
+    return win16_style_control_remove(w);
 }
 BOOL win16_style_control_terminal(HWND w)
 {

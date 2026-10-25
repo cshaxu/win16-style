@@ -956,6 +956,15 @@
     "source_identity_recheck": 175,
     "deployed_unchanged": 8,
     "following_scope": "native/VCL tab controls; remaining families follow sequential S",
-    "cleanup": "completed: obsolete builds, package copies/backups, logs, probes and captures removed after extraction;7 reviewed observer/verifier source files retained under registered root for following S; stable build/.ninja, build/.ccache and external acceptance PNGs preserved"
+    "cleanup": "completed: obsolete builds, package copies/backups, logs, probes and captures removed after extraction;7 reviewed observer/verifier source files retained under registered root for following S; stable build/.ninja, build/.ccache and external acceptance PNGs preserved",
+    "P3_remote": {
+      "status": "passed",
+      "commit": "c33417117f329fa07ddeb78aa9416d82079c7873",
+      "remote_main": "c33417117f329fa07ddeb78aa9416d82079c7873",
+      "files": 184,
+      "source_inputs": 175,
+      "seconds": 9.935853500035591,
+      "receipt_sha256": "c8818968a708755030f7236c8aa6e433f01414b8acae6e975ae42b8abc54ffeb"
+    }
   }
 }

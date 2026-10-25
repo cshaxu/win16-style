@@ -395,10 +395,10 @@
       "blob": "8c6380513ec16c21ff3b1e34b9ef14222cc4d837",
       "size": 3768,
       "sha256": "d55004421db94183ce615c71b2cd6442d2ae6a1523da4c3b81bc4361b3497b3d",
-      "action": "retain",
+      "action": "adapt",
       "destination": "src/ntw16s-dll/controls.h",
       "notice": "project-authored-review",
-      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task; T15 S5 adds private exact-creation-owner install/removal declarations; all public ABI declarations and notices retained",
       "receiver": "style-core"
     },
     {

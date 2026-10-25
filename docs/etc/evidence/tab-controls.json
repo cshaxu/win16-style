@@ -1,0 +1,509 @@
+{
+  "schema": 1,
+  "packet": "M0 T15 S5",
+  "status": "verified/published locally, optional elevated HD Tune skipped by owner; commit and actual remote review pending",
+  "baseline_commit": "c33417117f329fa07ddeb78aa9416d82079c7873",
+  "scope": [
+    "top ordinary and multiline native SysTabControl32",
+    "exact EXE-registered TPageControl after public-protocol verification",
+    "private pending-control-install ownership and native font-setter completion"
+  ],
+  "diagnosis": {
+    "tabs": "previous renderer has no verified tab role/painter; real DK and HD classes expose initialized tab APIs",
+    "native_global_class": "GetClassInfoEx hInstance may be NULL; registered native WNDPROC image identifies canonical class owner",
+    "late_font": "actual DK saved-procedure font update bypasses WM_SETFONT subclass; original prototype ellipsized labels; painter refresh now matches source font",
+    "pending_install": "old coordinator removal during WM_GETFONT/WM_SETFONT left a renderer subclass; first owner-only fix left late native setter pointing at a retired variant; final source-font settlement restores valid borrowed HFONT"
+  },
+  "preserved": [
+    "three components/four product files",
+    "ABI3/31 named exports/ordinal1 helper",
+    "31 detours/32 slots",
+    "original five resource headers and provenance bytes/18 compiled tables",
+    "native tab item/page geometry and font",
+    "native notification/TCN_SELCHANGING cancellation/keyboard",
+    "application page interior and visible child windows",
+    "borrowed image lists and application fonts"
+  ],
+  "native_matrix": {
+    "build_jobs": 8,
+    "test_jobs": 4,
+    "targets": "all",
+    "profile": "Focused",
+    "tests": [
+      {
+        "skipped": [],
+        "passed": 6,
+        "configure_seconds": 1.169958000013139,
+        "build_seconds": 4.419374999997672,
+        "architecture": "x86",
+        "test_seconds": 2.04231940000318,
+        "tests": 6
+      },
+      {
+        "skipped": [],
+        "passed": 6,
+        "configure_seconds": 1.3284284999826923,
+        "build_seconds": 5.2477452000021,
+        "architecture": "x64",
+        "test_seconds": 1.9603497000061907,
+        "tests": 6
+      }
+    ],
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "selection": "^core/(tab-controls|tab-controls-dpi|tab-controls-v5|tab-controls-v5-dpi|pending-control-owner|control-protocol-owner)$",
+    "build_root": "O:\\repos.hobby\\win16style\\build\\.ninja",
+    "status": "passed",
+    "exit_code": 0
+  },
+  "old_product_negatives": [
+    {
+      "test": "tab-controls",
+      "log": "O:\\repos.hobby\\win16style\\build\\t15-controls\\s5-old-tab-controls-32.txt",
+      "architecture": "x86",
+      "exit_code": 1
+    },
+    {
+      "test": "pending-control-owner",
+      "log": "O:\\repos.hobby\\win16style\\build\\t15-controls\\s5-old-pending-control-owner-32.txt",
+      "architecture": "x86",
+      "exit_code": 1
+    },
+    {
+      "test": "tab-controls",
+      "log": "O:\\repos.hobby\\win16style\\build\\t15-controls\\s5-old-tab-controls-64.txt",
+      "architecture": "x64",
+      "exit_code": 1
+    },
+    {
+      "test": "pending-control-owner",
+      "log": "O:\\repos.hobby\\win16style\\build\\t15-controls\\s5-old-pending-control-owner-64.txt",
+      "architecture": "x64",
+      "exit_code": 1
+    }
+  ],
+  "negative_markers": {
+    "s5-old-tab-controls-32.txt": [
+      "TAB_FONT clone=0 style=0 decorated=0 actual=060A18FC source=060A18FC",
+      "TAB_CONTROL_FAIL line=78 error=0: attached(w)==(k<2)"
+    ],
+    "s5-old-tab-controls-64.txt": [
+      "TAB_CONTROL_FAIL line=78 error=0: attached(w)==(k<2)",
+      "TAB_FONT clone=0 style=0 decorated=0 actual=00000000210a1804 source=00000000210a1804"
+    ],
+    "s5-old-pending-control-owner-32.txt": [
+      "PENDING_OWNER_OBSERVE mode=0 valid=1 application=0 fired=1 removed=1 leaf=1 scope_error=1223",
+      "PENDING_OWNER_FAIL line=39 error=126: fired && removed && !leaf_present && current==source && result.failure==ERROR_CANCELLED"
+    ],
+    "s5-old-pending-control-owner-64.txt": [
+      "PENDING_OWNER_OBSERVE mode=0 valid=1 application=0 fired=1 removed=1 leaf=1 scope_error=1223",
+      "PENDING_OWNER_FAIL line=39 error=126: fired && removed && !leaf_present && current==source && result.failure==ERROR_CANCELLED"
+    ]
+  },
+  "title_pixels": {
+    "application": "DoubleKiller",
+    "old": "published S4 baseline",
+    "new": "frozen S5 clean package",
+    "width_height_bpp": [
+      704,
+      483,
+      32
+    ],
+    "top_24_rows_exact": true,
+    "old_caption_sha256": "1f498e3f4c9ae0e4b72fa236d518851070c6a49075466263494ad31a206a3190",
+    "new_caption_sha256": "1f498e3f4c9ae0e4b72fa236d518851070c6a49075466263494ad31a206a3190"
+  },
+  "source_identity": {
+    "source_snapshot_sha256": "08e8c8f661839c2926ae12ca48b5fc9ee10365b27741de5f77117f9cb51eaf45"
+  },
+  "actual_applications": {
+    "DoubleKiller": [
+      "TARGET pid=18620 creator-tree-root=26092 tid=30128 image=D:\\programs\\misc\\DoubleKiller.exe",
+      "MODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s5-tabs\\candidate\\ntw16s32.dll",
+      "DK_CLEANUP_OK exit=0 active=0 total=4"
+    ],
+    "MD5summer": [
+      "OWNED_VISIBLE hwnd=028E0A6C class=TMessageForm title=Information enabled=1",
+      "STARTUP_INFORMATION dismissed-owned-OK=1",
+      "OWNED_VISIBLE hwnd=00D0052E class=TApplication title=MD5 for Windows enabled=1",
+      "OWNED_VISIBLE hwnd=00770A64 class=TMain title=MD5Summer enabled=1",
+      "TARGET pid=24508 creator-tree-root=32540 tid=29300 image=D:\\programs\\misc\\md5summer.exe",
+      "MODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s5-tabs\\candidate\\ntw16s32.dll",
+      "POSTED_READINESS wait=0 elapsed_ms=16",
+      "WINDOW_STATES minimized=1 restored=1 moved=1 root_attachment_preserved=1",
+      "CLOSE sent=1 error=0 wait=0 code=0 window=0 visible=0",
+      "TARGET_EXIT=0",
+      "DK_CLEANUP_OK exit=0 active=0 total=4"
+    ],
+    "MadShow": [
+      "TARGET pid=23004 creator-tree-root=29340 tid=28712 image=O:\\WINNT\\madshow.exe",
+      "MODULE O:\\repos.hobby\\win16style\\build\\t15-package\\s5-tabs\\candidate\\ntw16s32.dll",
+      "MODULE C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL",
+      "VB_CLEANUP_OK exit=0 active=0 total=4"
+    ]
+  },
+  "UAC": {
+    "authorization": "multiple bounded one-shot HD Tune UI-only probes, <=180 seconds; no disk tests/controller",
+    "timing": "after automatic regression completes",
+    "first_S5_observation": "cancelled before execution; numeric Win32 code not captured; not a pass",
+    "latest_owner_instruction": "跳过这个测试 以后默认不测",
+    "default": "skip HD Tune elevated real-app probe until owner explicitly requests it",
+    "final_S5": "skipped by owner; prior requester no longer running, no probe startup/status files or live task probe; no success claimed"
+  },
+  "known_failed_attempts": [
+    "native keyboard fixture initially assumed selection changed to2; native v6 actual focus policy requires native-vs-styled comparison",
+    "vertical native tabs return rotated private HFONT; excluded from source-handle assertion and preserve native pixels",
+    "FORCEICONLEFT requires FIXEDWIDTH; OS clears unsupported flag otherwise",
+    "initial pending-owner fixture COMCTL6 manifest prevented USER superclass classification; confirmed bug fixture uses native USER/v5; tab suite separately covers COMCTL5/6",
+    "task-only VB observer first link omitted oleacc/uuid; corrected before actual run; not a product defect",
+    "first installed-byte launcher checks reused one capture directory; append-only target logs caused count failure for system32; both independent directories passed on rerun; no product change"
+  ],
+  "coverage_limits": [
+    "native probes are not physical keyboard/mouse input",
+    "top horizontal tab subset only; button/owner-draw/bottom/vertical/force-alignment preserve native",
+    "tab geometry uses application padding; public protocol cannot read back arbitrary custom padding",
+    "shared hosts/existing processes untouched",
+    "frame pending-install ownership not changed or claimed fixed",
+    "list/header/tree/progress/trackbar/updown and custom paint deferred to following sequential S",
+    "current-package real HD Tune elevated UI verification skipped by owner; historical S4 app evidence does not count as S5 pass"
+  ],
+  "full_package": {
+    "sha256": {
+      "demo.exe": "8b028ee2785ae36d83b455b572a3c7da70f1e7dc58175bf6fde4581dbf0e715b",
+      "ntw16s32.dll": "7442f4fcdc97f9db9656eac02a2ecf357db2efc062adce9e5771931934bfd70f",
+      "ntw16s64.dll": "9c4b3bd437d91b138855125022a1c19f8feeaa15f35ed120ecc912f4e0e220ef",
+      "run16s.exe": "6f76aa51d809cbbd970b29224c2d178c584d52192aa2eb52b51b586d8f05b1ea"
+    },
+    "full_integration": true,
+    "jobs": 4,
+    "package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s5-tabs\\candidate",
+    "cases": 55,
+    "physical_input": "not-tested",
+    "core_matrix": "separate Build-Core matrix required",
+    "status": "passed",
+    "seconds": 361.2181442
+  },
+  "clean_build": {
+    "test_jobs": 4,
+    "build_jobs": 8,
+    "tests": [
+      {
+        "test_seconds": 0.46362389996647835,
+        "build_seconds": 23.021633800002746,
+        "passed": 1,
+        "architecture": "x86",
+        "configure_seconds": 4.0889553999877535,
+        "tests": 1,
+        "skipped": []
+      },
+      {
+        "test_seconds": 0.5156474999967031,
+        "build_seconds": 27.68567360000452,
+        "passed": 1,
+        "architecture": "x64",
+        "configure_seconds": 4.170460900000762,
+        "tests": 1,
+        "skipped": []
+      }
+    ],
+    "exit_code": 0,
+    "selection": "^core/abi$",
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "build_root": "O:\\repos.hobby\\win16style\\build\\t15-package\\s5-tabs\\clean-source\\build\\.ninja",
+    "status": "passed",
+    "profile": "Focused",
+    "targets": "all"
+  },
+  "package": {
+    "status": "PACKAGE PASS",
+    "artifacts": {
+      "run16s.exe": {
+        "architecture": "x64",
+        "version": "M0 T15",
+        "sha256": "6f76aa51d809cbbd970b29224c2d178c584d52192aa2eb52b51b586d8f05b1ea",
+        "imports": [
+          "advapi32.dll",
+          "kernel32.dll",
+          "msvcrt.dll",
+          "ole32.dll",
+          "shell32.dll"
+        ]
+      },
+      "ntw16s32.dll": {
+        "architecture": "x86",
+        "version": "M0 T15",
+        "sha256": "7442f4fcdc97f9db9656eac02a2ecf357db2efc062adce9e5771931934bfd70f",
+        "imports": [
+          "COMCTL32.dll",
+          "dwmapi.dll",
+          "GDI32.dll",
+          "KERNEL32.dll",
+          "api-ms-win-crt-convert-l1-1-0.dll",
+          "api-ms-win-crt-heap-l1-1-0.dll",
+          "api-ms-win-crt-private-l1-1-0.dll",
+          "api-ms-win-crt-runtime-l1-1-0.dll",
+          "api-ms-win-crt-stdio-l1-1-0.dll",
+          "api-ms-win-crt-string-l1-1-0.dll",
+          "USER32.dll",
+          "UxTheme.dll",
+          "COMCTL32.dll"
+        ]
+      },
+      "ntw16s64.dll": {
+        "architecture": "x64",
+        "version": "M0 T15",
+        "sha256": "9c4b3bd437d91b138855125022a1c19f8feeaa15f35ed120ecc912f4e0e220ef",
+        "imports": [
+          "COMCTL32.dll",
+          "dwmapi.dll",
+          "GDI32.dll",
+          "KERNEL32.dll",
+          "msvcrt.dll",
+          "USER32.dll",
+          "UxTheme.dll",
+          "COMCTL32.dll"
+        ]
+      },
+      "demo.exe": {
+        "architecture": "x64",
+        "version": "M0 T15",
+        "sha256": "8b028ee2785ae36d83b455b572a3c7da70f1e7dc58175bf6fde4581dbf0e715b",
+        "imports": [
+          "kernel32.dll",
+          "msvcrt.dll",
+          "user32.dll"
+        ]
+      }
+    },
+    "original_resource_tables_per_dll": 18
+  },
+  "preservation": {
+    "cases": 12,
+    "status": "passed",
+    "names": [
+      "frames",
+      "default",
+      "lifetime",
+      "terminal",
+      "control-present",
+      "scroll-native"
+    ],
+    "x86_wall_seconds": 27.08,
+    "x64_wall_seconds": 22.51
+  },
+  "gates": {
+    "governance": 13,
+    "source_negative": 23,
+    "third_party_negative": 9,
+    "resource_negative": 6,
+    "source_decisions": 124,
+    "include_edges": 294,
+    "receipts": 158,
+    "all": "passed"
+  },
+  "native_markers": [
+    "PENDING_OWNER_OK bits=32 cancel_getfont=1 cancel_setfont=1 independent=1 application_font_valid=1",
+    "PENDING_OWNER_OK bits=64 cancel_getfont=1 cancel_setfont=1 independent=1 application_font_valid=1",
+    "PROTOCOL_OWNER_OK bits=32 allocations=0 bindings=0 invalid=3 destroyed_query=1 oom=1 foreign_property=1 combo_impostor=1",
+    "PROTOCOL_OWNER_OK bits=64 allocations=0 bindings=0 invalid=3 destroyed_query=1 oom=1 foreign_property=1 combo_impostor=1",
+    "TAB_CONTROL_OK bits=32 dpi=144 aware=1 styled=4 preserved=10 native_geometry=1 item_data64=1 cancel=1 keyboard=1 late_native_font=1 destroy_query=1 early_queries=0 impostor=1",
+    "TAB_CONTROL_OK bits=32 dpi=144 aware=1 styled=4 preserved=10 native_geometry=1 item_data64=1 cancel=1 keyboard=1 late_native_font=1 destroy_query=1 early_queries=0 impostor=1",
+    "TAB_CONTROL_OK bits=32 dpi=96 aware=0 styled=4 preserved=10 native_geometry=1 item_data64=1 cancel=1 keyboard=1 late_native_font=1 destroy_query=1 early_queries=0 impostor=1",
+    "TAB_CONTROL_OK bits=32 dpi=96 aware=0 styled=4 preserved=10 native_geometry=1 item_data64=1 cancel=1 keyboard=1 late_native_font=1 destroy_query=1 early_queries=0 impostor=1",
+    "TAB_CONTROL_OK bits=64 dpi=144 aware=1 styled=4 preserved=10 native_geometry=1 item_data64=1 cancel=1 keyboard=1 late_native_font=1 destroy_query=1 early_queries=0 impostor=1",
+    "TAB_CONTROL_OK bits=64 dpi=144 aware=1 styled=4 preserved=10 native_geometry=1 item_data64=1 cancel=1 keyboard=1 late_native_font=1 destroy_query=1 early_queries=0 impostor=1",
+    "TAB_CONTROL_OK bits=64 dpi=96 aware=0 styled=4 preserved=10 native_geometry=1 item_data64=1 cancel=1 keyboard=1 late_native_font=1 destroy_query=1 early_queries=0 impostor=1",
+    "TAB_CONTROL_OK bits=64 dpi=96 aware=0 styled=4 preserved=10 native_geometry=1 item_data64=1 cancel=1 keyboard=1 late_native_font=1 destroy_query=1 early_queries=0 impostor=1"
+  ],
+  "actual_window_dpi": [
+    96,
+    144
+  ],
+  "deployment": {
+    "backup": [
+      {
+        "backup": "O:\\repos.hobby\\win16style\\build\\t15-package\\s5-tabs-backup\\0\\demo.exe",
+        "sha256": "c3deffe7f1a8e0e4b15073159ca0493e3a65940a6ec2fc88b1222ddf25797f72",
+        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe"
+      },
+      {
+        "backup": "O:\\repos.hobby\\win16style\\build\\t15-package\\s5-tabs-backup\\0\\ntw16s32.dll",
+        "sha256": "1904859d0c065eae6aec46031c431173a3e455da3543b7196b3556f030038ed8",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll"
+      },
+      {
+        "backup": "O:\\repos.hobby\\win16style\\build\\t15-package\\s5-tabs-backup\\0\\ntw16s64.dll",
+        "sha256": "52e1c9a7aeee532da501d4c06df2c1f8cf144111db92ddcbf4697cef378a838c",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll"
+      },
+      {
+        "backup": "O:\\repos.hobby\\win16style\\build\\t15-package\\s5-tabs-backup\\0\\run16s.exe",
+        "sha256": "b2b125eca8b68c34227570e85ab5928a6f5ec362297df5e1c3a6fda34d335b53",
+        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe"
+      },
+      {
+        "backup": "O:\\repos.hobby\\win16style\\build\\t15-package\\s5-tabs-backup\\1\\demo.exe",
+        "sha256": "c3deffe7f1a8e0e4b15073159ca0493e3a65940a6ec2fc88b1222ddf25797f72",
+        "path": "O:\\winnt\\system32\\demo.exe"
+      },
+      {
+        "backup": "O:\\repos.hobby\\win16style\\build\\t15-package\\s5-tabs-backup\\1\\ntw16s32.dll",
+        "sha256": "1904859d0c065eae6aec46031c431173a3e455da3543b7196b3556f030038ed8",
+        "path": "O:\\winnt\\system32\\ntw16s32.dll"
+      },
+      {
+        "backup": "O:\\repos.hobby\\win16style\\build\\t15-package\\s5-tabs-backup\\1\\ntw16s64.dll",
+        "sha256": "52e1c9a7aeee532da501d4c06df2c1f8cf144111db92ddcbf4697cef378a838c",
+        "path": "O:\\winnt\\system32\\ntw16s64.dll"
+      },
+      {
+        "backup": "O:\\repos.hobby\\win16style\\build\\t15-package\\s5-tabs-backup\\1\\run16s.exe",
+        "sha256": "b2b125eca8b68c34227570e85ab5928a6f5ec362297df5e1c3a6fda34d335b53",
+        "path": "O:\\winnt\\system32\\run16s.exe"
+      }
+    ],
+    "owner_query": "RM_QUERY_OK resources=8 owners=0 reasons=0",
+    "files": [
+      {
+        "sha256": "8b028ee2785ae36d83b455b572a3c7da70f1e7dc58175bf6fde4581dbf0e715b",
+        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe"
+      },
+      {
+        "sha256": "7442f4fcdc97f9db9656eac02a2ecf357db2efc062adce9e5771931934bfd70f",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll"
+      },
+      {
+        "sha256": "9c4b3bd437d91b138855125022a1c19f8feeaa15f35ed120ecc912f4e0e220ef",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll"
+      },
+      {
+        "sha256": "6f76aa51d809cbbd970b29224c2d178c584d52192aa2eb52b51b586d8f05b1ea",
+        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe"
+      },
+      {
+        "sha256": "8b028ee2785ae36d83b455b572a3c7da70f1e7dc58175bf6fde4581dbf0e715b",
+        "path": "O:\\winnt\\system32\\demo.exe"
+      },
+      {
+        "sha256": "7442f4fcdc97f9db9656eac02a2ecf357db2efc062adce9e5771931934bfd70f",
+        "path": "O:\\winnt\\system32\\ntw16s32.dll"
+      },
+      {
+        "sha256": "9c4b3bd437d91b138855125022a1c19f8feeaa15f35ed120ecc912f4e0e220ef",
+        "path": "O:\\winnt\\system32\\ntw16s64.dll"
+      },
+      {
+        "sha256": "6f76aa51d809cbbd970b29224c2d178c584d52192aa2eb52b51b586d8f05b1ea",
+        "path": "O:\\winnt\\system32\\run16s.exe"
+      }
+    ],
+    "status": "published"
+  },
+  "installed_verification": {
+    "assets": [
+      "ABI PASS width=32 version=3 public=31 private-bind-exports=0",
+      "TAB_CONTROL_OK bits=32 dpi=96 aware=0 styled=4 preserved=10 native_geometry=1 item_data64=1 cancel=1 keyboard=1 late_native_font=1 destroy_query=1 early_queries=0 impostor=1",
+      "PENDING_OWNER_OK bits=32 cancel_getfont=1 cancel_setfont=1 independent=1 application_font_valid=1",
+      "ABI PASS width=64 version=3 public=31 private-bind-exports=0",
+      "TAB_CONTROL_OK bits=64 dpi=96 aware=0 styled=4 preserved=10 native_geometry=1 item_data64=1 cancel=1 keyboard=1 late_native_font=1 destroy_query=1 early_queries=0 impostor=1",
+      "PENDING_OWNER_OK bits=64 cancel_getfont=1 cancel_setfont=1 independent=1 application_font_valid=1",
+      "LAUNCH MATRIX PASS actual x64 CLI -> x86/x64 plus native controls on private desktop"
+    ],
+    "system32": [
+      "ABI PASS width=32 version=3 public=31 private-bind-exports=0",
+      "TAB_CONTROL_OK bits=32 dpi=96 aware=0 styled=4 preserved=10 native_geometry=1 item_data64=1 cancel=1 keyboard=1 late_native_font=1 destroy_query=1 early_queries=0 impostor=1",
+      "PENDING_OWNER_OK bits=32 cancel_getfont=1 cancel_setfont=1 independent=1 application_font_valid=1",
+      "ABI PASS width=64 version=3 public=31 private-bind-exports=0",
+      "TAB_CONTROL_OK bits=64 dpi=96 aware=0 styled=4 preserved=10 native_geometry=1 item_data64=1 cancel=1 keyboard=1 late_native_font=1 destroy_query=1 early_queries=0 impostor=1",
+      "PENDING_OWNER_OK bits=64 cancel_getfont=1 cancel_setfont=1 independent=1 application_font_valid=1",
+      "LAUNCH MATRIX PASS actual x64 CLI -> x86/x64 plus native controls on private desktop"
+    ]
+  },
+  "similar_issue_search": {
+    "command": "rg -n creation_owner|control_install_created|control_remove_owned|protocol_(bind|acquire|release)|a->frame|WM_SETFONT src/ntw16s-dll",
+    "disposition": {
+      "attachment": "private owner-tag creation/removal, terminal release; frame ownership separate and unclaimed",
+      "controls": "coordinator tagged install; public APIs NULL tag; exact removal; role leases released at final disposal; detached font setter settled after native return",
+      "protocol": "GUI-thread refs, overflow/failure/removal/foreign token covered",
+      "unconfirmed_frame_analogy": "follow-up lifecycle owner; no frame/title edits or claim of fix"
+    }
+  },
+  "change_statistics": {
+    "scope": "product C/H, native tests, CMake and package runner; excludes docs/binaries/other owners",
+    "files": [
+      {
+        "path": "CMakeLists.txt",
+        "added": 22,
+        "deleted": 1
+      },
+      {
+        "path": "src/ntw16s-dll/attachment.c",
+        "added": 6,
+        "deleted": 7
+      },
+      {
+        "path": "src/ntw16s-dll/control_class.h",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "path": "src/ntw16s-dll/control_protocol.c",
+        "added": 44,
+        "deleted": 8
+      },
+      {
+        "path": "src/ntw16s-dll/control_protocol.h",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "path": "src/ntw16s-dll/controls.c",
+        "added": 63,
+        "deleted": 10
+      },
+      {
+        "path": "src/ntw16s-dll/controls.h",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "path": "tests/ntw16s-dll/control_protocol_owner.c",
+        "added": 4,
+        "deleted": 0
+      },
+      {
+        "path": "tools/Test-Package.ps1",
+        "added": 10,
+        "deleted": 0
+      },
+      {
+        "path": "src/ntw16s-dll/tab_paint.c",
+        "added": 123,
+        "deleted": 0
+      },
+      {
+        "path": "src/ntw16s-dll/tab_paint.h",
+        "added": 9,
+        "deleted": 0
+      },
+      {
+        "path": "tests/ntw16s-dll/tab_controls.c",
+        "added": 136,
+        "deleted": 0
+      },
+      {
+        "path": "tests/ntw16s-dll/pending_control_owner.c",
+        "added": 47,
+        "deleted": 0
+      }
+    ],
+    "added": 471,
+    "deleted": 26,
+    "net": 445
+  }
+}

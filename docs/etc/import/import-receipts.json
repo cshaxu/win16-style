@@ -14,9 +14,9 @@
       "path": "src/ntw16s-dll/attachment.c",
       "source": "src/ntw16s-dll/attachment.c",
       "source_blob": "e467006ab99ada1846f9298b650c30605807466b",
-      "sha256": "4a0fcb04b63a3d34282a3e7f5d60b694e1b1c64d878cbd617d7eeaaf874b193e",
+      "sha256": "3086cb215c5545331ffbc56af08c867b4f5c6a34185d867d4846a723d845d7d5",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T15 S4 verified initialized public control roles and native image/PushLike/client-edge support; original notices and resources preserved",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T15 S4 verified initialized public control roles and native image/PushLike/client-edge support; original notices and resources preserved; T15 S5 verified initialized native/TPageControl tab protocol, native geometry and borrowed image/font painting, pending-install exact ownership and cancellation cleanup; no external code copied, original notices/resources retained",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -41,18 +41,18 @@
       "path": "src/ntw16s-dll/controls.c",
       "source": "src/ntw16s-dll/controls.c",
       "source_blob": "9bc3331d0f9fc3e3104059ab792670ab1579d65c",
-      "sha256": "840b7291a45d997afaac15deb0f9f34d0846b1a854d8e87deb1b25ad92913e54",
+      "sha256": "60c3c6ca0a0acad80ac305adff95142e468a3d1b402ae566fd41e5b8c89b4217",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained; T15 S3: only begin transient native redraw brackets on WS_VISIBLE controls, preserving hidden state; font/render algorithms unchanged; T15 S4 verified initialized public control roles and native image/PushLike/client-edge support; original notices and resources preserved; BCM_GETIMAGELIST borrowed images, state pixels, explicit COMCTL6 and native disabled notification comparison",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained; T15 S3: only begin transient native redraw brackets on WS_VISIBLE controls, preserving hidden state; font/render algorithms unchanged; T15 S4 verified initialized public control roles and native image/PushLike/client-edge support; original notices and resources preserved; BCM_GETIMAGELIST borrowed images, state pixels, explicit COMCTL6 and native disabled notification comparison; T15 S5 verified initialized native/TPageControl tab protocol, native geometry and borrowed image/font painting, pending-install exact ownership and cancellation cleanup; no external code copied, original notices/resources retained",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
       "path": "src/ntw16s-dll/controls.h",
       "source": "src/ntw16s-dll/controls.h",
       "source_blob": "8c6380513ec16c21ff3b1e34b9ef14222cc4d837",
-      "sha256": "d55004421db94183ce615c71b2cd6442d2ae6a1523da4c3b81bc4361b3497b3d",
-      "disposition": "retain",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
+      "sha256": "87cb4b8c008883b9f18d6d5e243e9f5742a09903d1423c62be2f59b05e1a2067",
+      "disposition": "adapt",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T15 S5 verified initialized native/TPageControl tab protocol, native geometry and borrowed image/font painting, pending-install exact ownership and cancellation cleanup; no external code copied, original notices/resources retained",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -1204,8 +1204,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "8a7d6d093e757423862d8825700fe35f35724e79a3544f27d7dc2ffb7b1455e3",
-      "review": "T15 S1: original private VB6 adaptation or self-contained native fixture; no copied external implementation; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained; T15 S4 verified initialized public control roles and native image/PushLike/client-edge support; original notices and resources preserved"
+      "sha256": "71f0f2986fdbc0ecffa375392f95ac2692a2aec07164e8f6c38864e56ba12e87",
+      "review": "T15 S1: original private VB6 adaptation or self-contained native fixture; no copied external implementation; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained; T15 S4 verified initialized public control roles and native image/PushLike/client-edge support; original notices and resources preserved; T15 S5 verified initialized native/TPageControl tab protocol, native geometry and borrowed image/font painting, pending-install exact ownership and cancellation cleanup; no external code copied, original notices/resources retained"
     },
     {
       "path": "src/ntw16s-dll/vb_text.c",
@@ -1348,8 +1348,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "review": "T15 S4 public initialized control protocols, borrowed native image/PushLike and client-edge support; no external code copied",
-      "sha256": "42ee5181b187e4ed0c141e4021c0cc7ac2e9dfa6b10d052dcbfd04cf2d25c79b"
+      "review": "T15 S4 public initialized control protocols, borrowed native image/PushLike and client-edge support; no external code copied; T15 S5 verified initialized native/TPageControl tab protocol, native geometry and borrowed image/font painting, pending-install exact ownership and cancellation cleanup; no external code copied, original notices/resources retained",
+      "sha256": "0aa14fb055098dfcf29d0c2eb90828c98e2dfc04dc07e9d84deebe1c556837ad"
     },
     {
       "path": "src/ntw16s-dll/control_protocol.h",
@@ -1357,8 +1357,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "review": "T15 S4 public initialized control protocols, borrowed native image/PushLike and client-edge support; no external code copied",
-      "sha256": "39e2017d8d0dc47dc0026dfe751b29c23cc459db4635b8c0fe663c0876d04be4"
+      "review": "T15 S4 public initialized control protocols, borrowed native image/PushLike and client-edge support; no external code copied; T15 S5 verified initialized native/TPageControl tab protocol, native geometry and borrowed image/font painting, pending-install exact ownership and cancellation cleanup; no external code copied, original notices/resources retained",
+      "sha256": "115aec7d12c40a830063d45e39299958799c14d5d559c3253f40d8f430c4b05c"
     },
     {
       "path": "tests/ntw16s-dll/control_extensions.c",
@@ -1375,8 +1375,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "review": "T15 S4 public initialized control protocols, borrowed native image/PushLike and client-edge support; no external code copied",
-      "sha256": "58338407c6927e232a565f28879994d80a40c2335ab4959c62c7b1ed8874c312"
+      "review": "T15 S4 public initialized control protocols, borrowed native image/PushLike and client-edge support; no external code copied; T15 S5 verified initialized native/TPageControl tab protocol, native geometry and borrowed image/font painting, pending-install exact ownership and cancellation cleanup; no external code copied, original notices/resources retained",
+      "sha256": "3c482b0eda9c9d1c4f1ddfef9f71e7ce0c85986ad738d1fbe7e809adf5e86480"
     },
     {
       "path": "tests/ntw16s-dll/control_extensions.rc",
@@ -1386,6 +1386,42 @@
       "notice": "Project-authored C17; project MIT license",
       "review": "T15 S4 explicit common-controls6 native protocol fixture manifest using existing in-repository demo dependency; no external code copied",
       "sha256": "e82c7a5c6477a9e580b3fa10dab71fd653ff30b118e810e9e6c2b047edff14bb"
+    },
+    {
+      "path": "src/ntw16s-dll/tab_paint.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "review": "T15 S5 verified initialized native/TPageControl tab protocol, native geometry and borrowed image/font painting, pending-install exact ownership and cancellation cleanup; no external code copied, original notices/resources retained",
+      "sha256": "851b637c211182d994f27117d4ccde0993e59719916982c2cc95e7d98395603e"
+    },
+    {
+      "path": "src/ntw16s-dll/tab_paint.h",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "review": "T15 S5 verified initialized native/TPageControl tab protocol, native geometry and borrowed image/font painting, pending-install exact ownership and cancellation cleanup; no external code copied, original notices/resources retained",
+      "sha256": "3100829ee4e0de9bc29206b230702b60bd941622bc14cf8bd771c562f44354ba"
+    },
+    {
+      "path": "tests/ntw16s-dll/tab_controls.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "review": "T15 S5 verified initialized native/TPageControl tab protocol, native geometry and borrowed image/font painting, pending-install exact ownership and cancellation cleanup; no external code copied, original notices/resources retained",
+      "sha256": "5a2a9a7f28b00aad832429ec64b7fb2647b4efb6d3992de335cb3cd2ecbaa277"
+    },
+    {
+      "path": "tests/ntw16s-dll/pending_control_owner.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "review": "T15 S5 verified initialized native/TPageControl tab protocol, native geometry and borrowed image/font painting, pending-install exact ownership and cancellation cleanup; no external code copied, original notices/resources retained",
+      "sha256": "ca8129d04f810eb11d29ccd2d4667c099cc647069a0a07502fe43d46370569a3"
     }
   ]
 }

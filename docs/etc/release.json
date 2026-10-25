@@ -1,15 +1,15 @@
 {
   "schema": 1,
-  "delivery": "M0 T15 S4 P3",
-  "stage": "S4 closed after P1 product/P2 provenance actual remote and coordinator review plus safe cleanup; S5 admitted; T15/M0 open",
+  "delivery": "M0 T15 S5 P1",
+  "stage": "S5 tabs verified and double-published locally; optional HD Tune UAC skipped by owner/default skip; remote review pending; T15/M0 open",
   "version": "0.15.0.0",
   "version_contract": "Fixed T15 version; S/P distinguished by Git and artifact SHA; no new T allocated",
   "package_directory": "assets",
-  "source_snapshot_sha256": "1a79a1db035596fefe05a87bbc063c944e28ff120eaf130ae1e9d26874b13479",
+  "source_snapshot_sha256": "08e8c8f661839c2926ae12ca48b5fc9ee10365b27741de5f77117f9cb51eaf45",
   "source_inputs": [
     {
       "path": "CMakeLists.txt",
-      "sha256": "583c3501e16e3c3c85e0bb5a5555f32b3830dae6250fae2208857b0e2190be54"
+      "sha256": "18e4196b9ccd7d34e745184f0df05e63d44c64fcb2c3aca98edc5389856cd0d7"
     },
     {
       "path": "LICENSE",
@@ -46,7 +46,7 @@
     },
     {
       "path": "src/ntw16s-dll/attachment.c",
-      "sha256": "4a0fcb04b63a3d34282a3e7f5d60b694e1b1c64d878cbd617d7eeaaf874b193e"
+      "sha256": "3086cb215c5545331ffbc56af08c867b4f5c6a34185d867d4846a723d845d7d5"
     },
     {
       "path": "src/ntw16s-dll/attachment.h",
@@ -58,7 +58,7 @@
     },
     {
       "path": "src/ntw16s-dll/control_class.h",
-      "sha256": "8a7d6d093e757423862d8825700fe35f35724e79a3544f27d7dc2ffb7b1455e3"
+      "sha256": "71f0f2986fdbc0ecffa375392f95ac2692a2aec07164e8f6c38864e56ba12e87"
     },
     {
       "path": "src/ntw16s-dll/control_glyphs.h",
@@ -66,11 +66,11 @@
     },
     {
       "path": "src/ntw16s-dll/control_protocol.c",
-      "sha256": "42ee5181b187e4ed0c141e4021c0cc7ac2e9dfa6b10d052dcbfd04cf2d25c79b"
+      "sha256": "0aa14fb055098dfcf29d0c2eb90828c98e2dfc04dc07e9d84deebe1c556837ad"
     },
     {
       "path": "src/ntw16s-dll/control_protocol.h",
-      "sha256": "39e2017d8d0dc47dc0026dfe751b29c23cc459db4635b8c0fe663c0876d04be4"
+      "sha256": "115aec7d12c40a830063d45e39299958799c14d5d559c3253f40d8f430c4b05c"
     },
     {
       "path": "src/ntw16s-dll/control_scope.c",
@@ -78,11 +78,11 @@
     },
     {
       "path": "src/ntw16s-dll/controls.c",
-      "sha256": "840b7291a45d997afaac15deb0f9f34d0846b1a854d8e87deb1b25ad92913e54"
+      "sha256": "60c3c6ca0a0acad80ac305adff95142e468a3d1b402ae566fd41e5b8c89b4217"
     },
     {
       "path": "src/ntw16s-dll/controls.h",
-      "sha256": "d55004421db94183ce615c71b2cd6442d2ae6a1523da4c3b81bc4361b3497b3d"
+      "sha256": "87cb4b8c008883b9f18d6d5e243e9f5742a09903d1423c62be2f59b05e1a2067"
     },
     {
       "path": "src/ntw16s-dll/dllmain.c",
@@ -317,6 +317,14 @@
       "sha256": "36be02d2e879175c02863c495693d5c79dfa1cbca716419c6e0ec46b59c5934e"
     },
     {
+      "path": "src/ntw16s-dll/tab_paint.c",
+      "sha256": "851b637c211182d994f27117d4ccde0993e59719916982c2cc95e7d98395603e"
+    },
+    {
+      "path": "src/ntw16s-dll/tab_paint.h",
+      "sha256": "3100829ee4e0de9bc29206b230702b60bd941622bc14cf8bd771c562f44354ba"
+    },
+    {
       "path": "src/ntw16s-dll/theme.c",
       "sha256": "ba9db953cb6a0116ce70a51c192d6b535e9ed276030dfafa4eacd9e78bb45a4a"
     },
@@ -470,7 +478,7 @@
     },
     {
       "path": "tests/ntw16s-dll/control_protocol_owner.c",
-      "sha256": "58338407c6927e232a565f28879994d80a40c2335ab4959c62c7b1ed8874c312"
+      "sha256": "3c482b0eda9c9d1c4f1ddfef9f71e7ce0c85986ad738d1fbe7e809adf5e86480"
     },
     {
       "path": "tests/ntw16s-dll/control_visibility.c",
@@ -505,12 +513,20 @@
       "sha256": "46cabf843c3035c1d81da9871c7abf2bbe25071eb8281650fbed71d3d053d062"
     },
     {
+      "path": "tests/ntw16s-dll/pending_control_owner.c",
+      "sha256": "ca8129d04f810eb11d29ccd2d4667c099cc647069a0a07502fe43d46370569a3"
+    },
+    {
       "path": "tests/ntw16s-dll/runtime.c",
       "sha256": "7c29eadf782751d8e45a221c82898f712e654afe56acad1f4b51dc17c6a28e17"
     },
     {
       "path": "tests/ntw16s-dll/superclass.c",
       "sha256": "ce1fdab7dc93e3ced04c99708b8b22860cb16f8366ed38b6c35565a9a1a696fb"
+    },
+    {
+      "path": "tests/ntw16s-dll/tab_controls.c",
+      "sha256": "5a2a9a7f28b00aad832429ec64b7fb2647b4efb6d3992de335cb3cd2ecbaa277"
     },
     {
       "path": "tests/ntw16s-dll/terminal.rc",
@@ -602,8 +618,7 @@
     },
     {
       "path": "tests/run16s-exe/legacy_rejection.c",
-      "sha256": "0d93fceaa2d7f233e4c98d44cf929bcf2a21275d5177a7e6b6093036801b3cb8",
-      "git_blob_sha256": "ee931c0390948de1446acb4827804041a04329625d372d5bca6b5366d8348233"
+      "sha256": "ee931c0390948de1446acb4827804041a04329625d372d5bca6b5366d8348233"
     },
     {
       "path": "tests/run16s-exe/long_path.py",
@@ -680,7 +695,7 @@
     },
     {
       "path": "tools/Test-Package.ps1",
-      "sha256": "b0f0366c2de4de9f813e8dfc769cc2e23e8024fcd0654a5268510856fd4ad140"
+      "sha256": "6a12038a75c361765b777d022f78e93235744df93903cc76a1631fb4bd8e2eae"
     },
     {
       "path": "tools/Verify-Governance.ps1",
@@ -716,7 +731,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T15",
-      "sha256": "b2b125eca8b68c34227570e85ab5928a6f5ec362297df5e1c3a6fda34d335b53",
+      "sha256": "6f76aa51d809cbbd970b29224c2d178c584d52192aa2eb52b51b586d8f05b1ea",
       "imports": [
         "advapi32.dll",
         "kernel32.dll",
@@ -728,7 +743,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T15",
-      "sha256": "1904859d0c065eae6aec46031c431173a3e455da3543b7196b3556f030038ed8",
+      "sha256": "7442f4fcdc97f9db9656eac02a2ecf357db2efc062adce9e5771931934bfd70f",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -748,7 +763,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T15",
-      "sha256": "52e1c9a7aeee532da501d4c06df2c1f8cf144111db92ddcbf4697cef378a838c",
+      "sha256": "9c4b3bd437d91b138855125022a1c19f8feeaa15f35ed120ecc912f4e0e220ef",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -763,7 +778,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T15",
-      "sha256": "c3deffe7f1a8e0e4b15073159ca0493e3a65940a6ec2fc88b1222ddf25797f72",
+      "sha256": "8b028ee2785ae36d83b455b572a3c7da70f1e7dc58175bf6fde4581dbf0e715b",
       "imports": [
         "kernel32.dll",
         "msvcrt.dll",
@@ -772,180 +787,293 @@
     }
   },
   "toolchains": {
-    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
     "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
+    "ccache_version": "ccache version 4.13.6",
     "toolchains": [
       {
-        "version": "16.1.0",
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
         "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
         "target": "i686-w64-mingw32",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
+        "version": "16.1.0",
         "architecture": "x86"
       },
       {
-        "version": "16.1.0",
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
         "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
         "target": "x86_64-w64-mingw32",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
+        "version": "16.1.0",
         "architecture": "x64"
       }
     ],
-    "ccache_version": "ccache version 4.13.6"
+    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe"
   },
   "verification": {
+    "full_package": {
+      "sha256": {
+        "demo.exe": "8b028ee2785ae36d83b455b572a3c7da70f1e7dc58175bf6fde4581dbf0e715b",
+        "ntw16s32.dll": "7442f4fcdc97f9db9656eac02a2ecf357db2efc062adce9e5771931934bfd70f",
+        "ntw16s64.dll": "9c4b3bd437d91b138855125022a1c19f8feeaa15f35ed120ecc912f4e0e220ef",
+        "run16s.exe": "6f76aa51d809cbbd970b29224c2d178c584d52192aa2eb52b51b586d8f05b1ea"
+      },
+      "full_integration": true,
+      "jobs": 4,
+      "package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s5-tabs\\candidate",
+      "cases": 55,
+      "physical_input": "not-tested",
+      "core_matrix": "separate Build-Core matrix required",
+      "status": "passed",
+      "seconds": 361.2181442
+    },
     "clean_build": {
+      "test_jobs": 4,
+      "build_jobs": 8,
+      "tests": [
+        {
+          "test_seconds": 0.46362389996647835,
+          "build_seconds": 23.021633800002746,
+          "passed": 1,
+          "architecture": "x86",
+          "configure_seconds": 4.0889553999877535,
+          "tests": 1,
+          "skipped": []
+        },
+        {
+          "test_seconds": 0.5156474999967031,
+          "build_seconds": 27.68567360000452,
+          "passed": 1,
+          "architecture": "x64",
+          "configure_seconds": 4.170460900000762,
+          "tests": 1,
+          "skipped": []
+        }
+      ],
+      "exit_code": 0,
+      "selection": "^core/abi$",
       "architectures": [
         "x86",
         "x64"
       ],
+      "build_root": "O:\\repos.hobby\\win16style\\build\\t15-package\\s5-tabs\\clean-source\\build\\.ninja",
+      "status": "passed",
+      "profile": "Focused",
+      "targets": "all"
+    },
+    "native_matrix": {
       "build_jobs": 8,
       "test_jobs": 4,
-      "selection": "^core/abi$",
-      "exit_code": 0,
-      "profile": "Focused",
-      "build_root": "O:\\repos.hobby\\win16style\\build\\t15-package\\s4-imagelist\\clean-source\\build\\.ninja",
       "targets": "all",
-      "status": "passed",
+      "profile": "Focused",
       "tests": [
         {
-          "build_seconds": 21.785255800001323,
-          "configure_seconds": 3.6087002999847755,
-          "passed": 1,
-          "test_seconds": 0.4602207000134513,
-          "tests": 1,
           "skipped": [],
-          "architecture": "x86"
+          "passed": 6,
+          "configure_seconds": 1.169958000013139,
+          "build_seconds": 4.419374999997672,
+          "architecture": "x86",
+          "test_seconds": 2.04231940000318,
+          "tests": 6
         },
         {
-          "build_seconds": 31.422079400043003,
-          "configure_seconds": 3.8704827000037767,
-          "passed": 1,
-          "test_seconds": 0.4741597999818623,
-          "tests": 1,
           "skipped": [],
-          "architecture": "x64"
+          "passed": 6,
+          "configure_seconds": 1.3284284999826923,
+          "build_seconds": 5.2477452000021,
+          "architecture": "x64",
+          "test_seconds": 1.9603497000061907,
+          "tests": 6
         }
+      ],
+      "architectures": [
+        "x86",
+        "x64"
+      ],
+      "selection": "^core/(tab-controls|tab-controls-dpi|tab-controls-v5|tab-controls-v5-dpi|pending-control-owner|control-protocol-owner)$",
+      "build_root": "O:\\repos.hobby\\win16style\\build\\.ninja",
+      "status": "passed",
+      "exit_code": 0
+    },
+    "preservation": {
+      "cases": 12,
+      "status": "passed",
+      "names": [
+        "frames",
+        "default",
+        "lifetime",
+        "terminal",
+        "control-present",
+        "scroll-native"
+      ],
+      "x86_wall_seconds": 27.08,
+      "x64_wall_seconds": 22.51
+    },
+    "old_product_negatives": [
+      {
+        "test": "tab-controls",
+        "log": "O:\\repos.hobby\\win16style\\build\\t15-controls\\s5-old-tab-controls-32.txt",
+        "architecture": "x86",
+        "exit_code": 1
+      },
+      {
+        "test": "pending-control-owner",
+        "log": "O:\\repos.hobby\\win16style\\build\\t15-controls\\s5-old-pending-control-owner-32.txt",
+        "architecture": "x86",
+        "exit_code": 1
+      },
+      {
+        "test": "tab-controls",
+        "log": "O:\\repos.hobby\\win16style\\build\\t15-controls\\s5-old-tab-controls-64.txt",
+        "architecture": "x64",
+        "exit_code": 1
+      },
+      {
+        "test": "pending-control-owner",
+        "log": "O:\\repos.hobby\\win16style\\build\\t15-controls\\s5-old-pending-control-owner-64.txt",
+        "architecture": "x64",
+        "exit_code": 1
+      }
+    ],
+    "installed_verification": {
+      "assets": [
+        "ABI PASS width=32 version=3 public=31 private-bind-exports=0",
+        "TAB_CONTROL_OK bits=32 dpi=96 aware=0 styled=4 preserved=10 native_geometry=1 item_data64=1 cancel=1 keyboard=1 late_native_font=1 destroy_query=1 early_queries=0 impostor=1",
+        "PENDING_OWNER_OK bits=32 cancel_getfont=1 cancel_setfont=1 independent=1 application_font_valid=1",
+        "ABI PASS width=64 version=3 public=31 private-bind-exports=0",
+        "TAB_CONTROL_OK bits=64 dpi=96 aware=0 styled=4 preserved=10 native_geometry=1 item_data64=1 cancel=1 keyboard=1 late_native_font=1 destroy_query=1 early_queries=0 impostor=1",
+        "PENDING_OWNER_OK bits=64 cancel_getfont=1 cancel_setfont=1 independent=1 application_font_valid=1",
+        "LAUNCH MATRIX PASS actual x64 CLI -> x86/x64 plus native controls on private desktop"
+      ],
+      "system32": [
+        "ABI PASS width=32 version=3 public=31 private-bind-exports=0",
+        "TAB_CONTROL_OK bits=32 dpi=96 aware=0 styled=4 preserved=10 native_geometry=1 item_data64=1 cancel=1 keyboard=1 late_native_font=1 destroy_query=1 early_queries=0 impostor=1",
+        "PENDING_OWNER_OK bits=32 cancel_getfont=1 cancel_setfont=1 independent=1 application_font_valid=1",
+        "ABI PASS width=64 version=3 public=31 private-bind-exports=0",
+        "TAB_CONTROL_OK bits=64 dpi=96 aware=0 styled=4 preserved=10 native_geometry=1 item_data64=1 cancel=1 keyboard=1 late_native_font=1 destroy_query=1 early_queries=0 impostor=1",
+        "PENDING_OWNER_OK bits=64 cancel_getfont=1 cancel_setfont=1 independent=1 application_font_valid=1",
+        "LAUNCH MATRIX PASS actual x64 CLI -> x86/x64 plus native controls on private desktop"
       ]
     },
-    "package_matrix": {
-      "seconds": 364.1806654,
-      "sha256": {
-        "demo.exe": "c3deffe7f1a8e0e4b15073159ca0493e3a65940a6ec2fc88b1222ddf25797f72",
-        "ntw16s32.dll": "1904859d0c065eae6aec46031c431173a3e455da3543b7196b3556f030038ed8",
-        "ntw16s64.dll": "52e1c9a7aeee532da501d4c06df2c1f8cf144111db92ddcbf4697cef378a838c",
-        "run16s.exe": "b2b125eca8b68c34227570e85ab5928a6f5ec362297df5e1c3a6fda34d335b53"
-      },
-      "cases": 45,
-      "physical_input": "not-tested",
-      "full_integration": true,
-      "core_matrix": "separate Build-Core matrix required",
-      "package": "O:\\repos.hobby\\win16style\\build\\t15-package\\s4-imagelist\\candidate",
-      "status": "passed",
-      "jobs": 4
+    "UAC": {
+      "authorization": "multiple bounded one-shot HD Tune UI-only probes, <=180 seconds; no disk tests/controller",
+      "timing": "after automatic regression completes",
+      "first_S5_observation": "cancelled before execution; numeric Win32 code not captured; not a pass",
+      "latest_owner_instruction": "跳过这个测试 以后默认不测",
+      "default": "skip HD Tune elevated real-app probe until owner explicitly requests it",
+      "final_S5": "skipped by owner; prior requester no longer running, no probe startup/status files or live task probe; no success claimed"
     },
-    "focused_tests": 12,
-    "deployed_copies": 8,
-    "registered_ctests": 88,
-    "all_ctests_executed": false,
-    "resource_identity": "5 headers+provenance byte-exact;6 substitution negatives;18 embedded tables in each DLL",
-    "abi": "3;31 named exports + ordinal1 NONAME;31 detours/32 slots unchanged",
-    "real_apps": "MD5summer 4 roles/dropdown; HD Tune 84 basic controls/6 actual image lists/hidden3/menu/restore/native exit2; DK4pages and MadShow19 preserved",
-    "physical_input": "not tested; owned native probes only",
-    "reported_window_DPI": 96,
-    "evidence": "docs/etc/evidence/control-protocols.json",
-    "remote_review": {
-      "status": "passed",
-      "commit": "502ec8389d20c89f80e1ee4b11a9b54ea67a39d2",
-      "remote_main": "502ec8389d20c89f80e1ee4b11a9b54ea67a39d2",
-      "files": 184,
-      "source_inputs": 175,
-      "seconds": 9.421156800002791,
-      "receipt_sha256": "37f0f24167f6c61a98c06a4712f97a9f25520f53fd6f88274bdd34ec339c7a66"
+    "coverage_limits": [
+      "native probes are not physical keyboard/mouse input",
+      "top horizontal tab subset only; button/owner-draw/bottom/vertical/force-alignment preserve native",
+      "tab geometry uses application padding; public protocol cannot read back arbitrary custom padding",
+      "shared hosts/existing processes untouched",
+      "frame pending-install ownership not changed or claimed fixed",
+      "list/header/tree/progress/trackbar/updown and custom paint deferred to following sequential S",
+      "current-package real HD Tune elevated UI verification skipped by owner; historical S4 app evidence does not count as S5 pass"
+    ],
+    "title_pixels": {
+      "application": "DoubleKiller",
+      "old": "published S4 baseline",
+      "new": "frozen S5 clean package",
+      "width_height_bpp": [
+        704,
+        483,
+        32
+      ],
+      "top_24_rows_exact": true,
+      "old_caption_sha256": "1f498e3f4c9ae0e4b72fa236d518851070c6a49075466263494ad31a206a3190",
+      "new_caption_sha256": "1f498e3f4c9ae0e4b72fa236d518851070c6a49075466263494ad31a206a3190"
     },
-    "canonical_receipt_repair": {
-      "P1": "actual22-file commit, original request and evidence reviewed;175 Git input identities/8 deployed files verified;other work excluded",
-      "committed_source_gate_initial": "failed: one pre-existing authored legacy_rejection.c CRLF receipt disagreed with committed LF; P1 remote bytes match remains true",
-      "repair": {
-        "path": "tests/run16s-exe/legacy_rejection.c",
-        "disposition": "authored",
-        "old_worktree_sha256": "0d93fceaa2d7f233e4c98d44cf929bcf2a21275d5177a7e6b6093036801b3cb8",
-        "canonical_git_sha256": "ee931c0390948de1446acb4827804041a04329625d372d5bca6b5366d8348233",
-        "pre_existing_in": "c5e110bbf987309699634184d5c8012f169fed0a",
-        "product_source_Git_change": false,
-        "strict_gate_changed": false,
-        "resource_change": false,
-        "normalization": "CRLF -> LF only; already tracked Git blob unchanged",
-        "scope": "P2 provenance metadata repair; tested P1 raw/Git identities remain recorded"
-      },
-      "canonical_export_build": {
-        "profile": "Focused",
-        "build_jobs": 8,
-        "architectures": [
-          "x86",
-          "x64"
-        ],
-        "exit_code": 0,
-        "targets": "all",
-        "build_root": "O:\\repos.hobby\\win16style\\build\\t15-controls\\committed-review\\build\\.ninja",
-        "tests": [
-          {
-            "tests": 1,
-            "build_seconds": 24.85973590001231,
-            "architecture": "x86",
-            "passed": 1,
-            "test_seconds": 0.567791200010106,
-            "skipped": [],
-            "configure_seconds": 4.95115589996567
-          },
-          {
-            "tests": 1,
-            "build_seconds": 32.4322110999492,
-            "architecture": "x64",
-            "passed": 1,
-            "test_seconds": 0.5453244000091217,
-            "skipped": [],
-            "configure_seconds": 4.699590700038243
-          }
-        ],
-        "status": "passed",
-        "test_jobs": 4,
-        "selection": "^core/abi$"
-      },
-      "canonical_legacy_rejection": "LEGACY REJECTION PASS 4 cases stderr193 exit4 no_retry_ui exact_owned_processes",
-      "canonical_probe_first_attempt": "missing WIN16STYLE_CAPTURE_DIR returned203; corrected harness setup then4 native cases passed",
-      "strict_source_resource_gates": "pass after exact canonical receipt correction; no relaxation",
-      "P2_actual_remote": {
-        "status": "passed",
-        "commit": "502ec8389d20c89f80e1ee4b11a9b54ea67a39d2",
-        "remote_main": "502ec8389d20c89f80e1ee4b11a9b54ea67a39d2",
-        "files": 184,
-        "source_inputs": 175,
-        "seconds": 9.421156800002791,
-        "receipt_sha256": "37f0f24167f6c61a98c06a4712f97a9f25520f53fd6f88274bdd34ec339c7a66"
-      },
-      "P2_actual_archive": {
-        "status": "passed",
-        "commit": "502ec8389d20c89f80e1ee4b11a9b54ea67a39d2",
-        "archive_inputs_equal_rebuilt_proof": 175,
-        "export_EOL_uses_recorded_raw_identity": [
-          "LICENSE"
-        ],
-        "deployed_unchanged": 8,
-        "strict_source_resource_governance_gates": "passed",
-        "initial_comparison_correction": "LICENSE ZIP export retains recorded raw CRLF identity; 175 archive inputs match rebuilt proof; exact Git identities checked separately"
-      }
+    "gates": {
+      "governance": 13,
+      "source_negative": 23,
+      "third_party_negative": 9,
+      "resource_negative": 6,
+      "source_decisions": 124,
+      "include_edges": 294,
+      "receipts": 158,
+      "all": "passed"
+    },
+    "deployment": {
+      "backup": [
+        {
+          "backup": "O:\\repos.hobby\\win16style\\build\\t15-package\\s5-tabs-backup\\0\\demo.exe",
+          "sha256": "c3deffe7f1a8e0e4b15073159ca0493e3a65940a6ec2fc88b1222ddf25797f72",
+          "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe"
+        },
+        {
+          "backup": "O:\\repos.hobby\\win16style\\build\\t15-package\\s5-tabs-backup\\0\\ntw16s32.dll",
+          "sha256": "1904859d0c065eae6aec46031c431173a3e455da3543b7196b3556f030038ed8",
+          "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll"
+        },
+        {
+          "backup": "O:\\repos.hobby\\win16style\\build\\t15-package\\s5-tabs-backup\\0\\ntw16s64.dll",
+          "sha256": "52e1c9a7aeee532da501d4c06df2c1f8cf144111db92ddcbf4697cef378a838c",
+          "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll"
+        },
+        {
+          "backup": "O:\\repos.hobby\\win16style\\build\\t15-package\\s5-tabs-backup\\0\\run16s.exe",
+          "sha256": "b2b125eca8b68c34227570e85ab5928a6f5ec362297df5e1c3a6fda34d335b53",
+          "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe"
+        },
+        {
+          "backup": "O:\\repos.hobby\\win16style\\build\\t15-package\\s5-tabs-backup\\1\\demo.exe",
+          "sha256": "c3deffe7f1a8e0e4b15073159ca0493e3a65940a6ec2fc88b1222ddf25797f72",
+          "path": "O:\\winnt\\system32\\demo.exe"
+        },
+        {
+          "backup": "O:\\repos.hobby\\win16style\\build\\t15-package\\s5-tabs-backup\\1\\ntw16s32.dll",
+          "sha256": "1904859d0c065eae6aec46031c431173a3e455da3543b7196b3556f030038ed8",
+          "path": "O:\\winnt\\system32\\ntw16s32.dll"
+        },
+        {
+          "backup": "O:\\repos.hobby\\win16style\\build\\t15-package\\s5-tabs-backup\\1\\ntw16s64.dll",
+          "sha256": "52e1c9a7aeee532da501d4c06df2c1f8cf144111db92ddcbf4697cef378a838c",
+          "path": "O:\\winnt\\system32\\ntw16s64.dll"
+        },
+        {
+          "backup": "O:\\repos.hobby\\win16style\\build\\t15-package\\s5-tabs-backup\\1\\run16s.exe",
+          "sha256": "b2b125eca8b68c34227570e85ab5928a6f5ec362297df5e1c3a6fda34d335b53",
+          "path": "O:\\winnt\\system32\\run16s.exe"
+        }
+      ],
+      "owner_query": "RM_QUERY_OK resources=8 owners=0 reasons=0",
+      "files": [
+        {
+          "sha256": "8b028ee2785ae36d83b455b572a3c7da70f1e7dc58175bf6fde4581dbf0e715b",
+          "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe"
+        },
+        {
+          "sha256": "7442f4fcdc97f9db9656eac02a2ecf357db2efc062adce9e5771931934bfd70f",
+          "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll"
+        },
+        {
+          "sha256": "9c4b3bd437d91b138855125022a1c19f8feeaa15f35ed120ecc912f4e0e220ef",
+          "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll"
+        },
+        {
+          "sha256": "6f76aa51d809cbbd970b29224c2d178c584d52192aa2eb52b51b586d8f05b1ea",
+          "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe"
+        },
+        {
+          "sha256": "8b028ee2785ae36d83b455b572a3c7da70f1e7dc58175bf6fde4581dbf0e715b",
+          "path": "O:\\winnt\\system32\\demo.exe"
+        },
+        {
+          "sha256": "7442f4fcdc97f9db9656eac02a2ecf357db2efc062adce9e5771931934bfd70f",
+          "path": "O:\\winnt\\system32\\ntw16s32.dll"
+        },
+        {
+          "sha256": "9c4b3bd437d91b138855125022a1c19f8feeaa15f35ed120ecc912f4e0e220ef",
+          "path": "O:\\winnt\\system32\\ntw16s64.dll"
+        },
+        {
+          "sha256": "6f76aa51d809cbbd970b29224c2d178c584d52192aa2eb52b51b586d8f05b1ea",
+          "path": "O:\\winnt\\system32\\run16s.exe"
+        }
+      ],
+      "status": "published"
     }
   },
   "architecture": "three components, four products; pure C17 MinGW GCC/Ninja/ccache; real-app observer is optional, no sibling dependency",
-  "binary_batch_delivery": "M0 T15 S4 P1",
-  "source_snapshot_format": "SHA256 of UTF8 compact sorted-key JSON array of path/sha256/git_blob_sha256 when different",
-  "closure": {
-    "P1": "5e8f880b9f893441cf61bf345218371b2c45b313",
-    "P2": "502ec8389d20c89f80e1ee4b11a9b54ea67a39d2",
-    "scope": "S4 only; task T15/M0 open",
-    "source_identity_recheck": 175,
-    "deployed_unchanged": 8,
-    "following_scope": "native/VCL tab controls; remaining families follow sequential S",
-    "cleanup": "completed: obsolete builds, package copies/backups, logs, probes and captures removed after extraction;7 reviewed observer/verifier source files retained under registered root for following S; stable build/.ninja, build/.ccache and external acceptance PNGs preserved"
-  }
+  "binary_batch_delivery": "M0 T15 S5 P1",
+  "source_snapshot_format": "SHA256 of UTF8 compact sorted-key JSON array of path/sha256/git_blob_sha256 when different"
 }

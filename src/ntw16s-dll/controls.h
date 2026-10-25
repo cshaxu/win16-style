@@ -10,6 +10,11 @@
  * built-in SCROLLBAR is not yet adapted to its fixed-thumb presentation.
  * Unsupported families fail explicitly until implemented. */
 NTW16S_API BOOL win16_style_control_install(HWND window,const win16_style_palette *palette);
+/* Private automatic-creation transaction. The coordinator remains alive
+ * across native callbacks; only its exact owner tag may retire this leaf. */
+BOOL win16_style_control_install_created(HWND window,BOOL edit,BOOL original_border,BOOL tabbed,
+    const win16_style_palette *palette,const void *owner,const BOOL *cancelled);
+BOOL win16_style_control_remove_owned(HWND window,const void *owner);
 /* Tab positions are private native state with no public getter. The creator
  * must supply the current PIXEL positions, not dialog units: count0 means
  * default tabs, count1 a repeated interval, count>1 explicit positions.

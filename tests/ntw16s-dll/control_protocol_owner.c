@@ -36,6 +36,10 @@ static int worker(int argc,WCHAR **argv)
         ntw16s_control_protocol *b=ntw16s_control_protocol_bind(w);
         CHECK((b!=NULL)==(i==1));
         if(b){CHECK(allocations==1 && ntw16s_control_protocol_is(w,L"BUTTON") && !ntw16s_control_protocol_is(w,L"EDIT"));
+            CHECK(ntw16s_control_protocol_acquire(w)==b && b->refs==2);
+            ntw16s_control_protocol_release(b);CHECK(allocations==1 && b->refs==1);
+            b->refs=UINT_MAX;SetLastError(0);CHECK(!ntw16s_control_protocol_acquire(w) && GetLastError()==ERROR_ARITHMETIC_OVERFLOW);
+            b->refs=1;
             RemovePropW(w,key);CHECK(!ntw16s_control_protocol_is(w,L"BUTTON"));
             ntw16s_control_protocol_release(b);CHECK(!GetPropW(w,key));}
         CHECK(!allocations && !bindings);if(IsWindow(w))CHECK(DestroyWindow(w));

@@ -23,6 +23,7 @@
 | [evidence/framework-completion.json](evidence/framework-completion.json) | T15 S3原生菜单栏/对话框/隐藏状态修复、旧包负例、41实际包/12聚焦、真实三应用及双发布证据；后续状态见CURRENT |
 | [release.json](release.json) | 当前开发包的输入/工具链/四文件哈希与验收范围，历史版本从对应Git提交取回 |
 | [evidence/control-protocols.json](evidence/control-protocols.json) | T15 S4初始化后框架协议角色、原生图像/PushLike/client-edge、实际应用及失败原型/发布证据 |
+| [evidence/tab-controls.json](evidence/tab-controls.json) | T15 S5原生/框架页签、原生布局/通知、字体同步、安装取消所有权与实际包验证；状态见CURRENT |
 | [product-contract.json](product-contract.json) | 架构权威的机器映射；组件/产物变化必须同步审核 |
 | [import](import/README.md) | 来源基线与 Git blob 清单；只作导入对照，不能成为构建输入 |
 | [operations/source-policy.md](operations/source-policy.md) | 导入来源处置及用户明确的原资源身份要求；完整保留原声明 |

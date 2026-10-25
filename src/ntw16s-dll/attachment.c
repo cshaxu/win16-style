@@ -19,7 +19,7 @@ struct ntw16s_creation_scope {
 };
 typedef struct attachment {
     unsigned calls;
-    BOOL detached,frame,control;
+    BOOL detached,frame;
     HWND themed;
     ntw16s_vb_fonts fonts;
     ntw16s_control_protocol *protocol;
@@ -73,7 +73,7 @@ BOOL __cdecl Ntw16sWindowRemove(HWND w)
     a->detached=TRUE;
     /* Existing owners handle reentrant destruction/removal independently. */
     if(a->frame)win16_style_remove(w);
-    if(a->control)win16_style_control_remove(w);
+    win16_style_control_remove_owned(w,a);
     if(a->themed)ntw16s_theme_remove(a->themed,a);
     ntw16s_theme_remove(w,NULL);
     ntw16s_control_protocol_release(a->protocol);a->protocol=NULL;
@@ -140,13 +140,12 @@ static BOOL install_created(HWND w,DWORD original_style)
             Ntw16sWindowRemove(info.hwndItem);
     }
     if(a->detached){release(a);SetLastError(ERROR_CANCELLED);return FALSE;}
-    if(edit)installed=win16_style_edit_install(w,(original_style&WS_BORDER)!=0,NULL);
-    else if(control && class_is(w,L"LISTBOX") && (original_style&LBS_USETABSTOPS))
-        installed=win16_style_tabbed_list_install(w,NULL,0,NULL);
-    else installed=control?win16_style_control_install(w,NULL):win16_style_install_created(w,NULL);
+    if(control)installed=win16_style_control_install_created(w,edit,(original_style&WS_BORDER)!=0,
+        class_is(w,L"LISTBOX") && (original_style&LBS_USETABSTOPS),NULL,a,&a->detached);
+    else installed=win16_style_install_created(w,NULL);
     error=GetLastError();
     if(installed && !a->detached){
-        a->control=control;a->frame=!control;
+        a->frame=!control;
         if(control){
             HWND themed=NULL;BOOL list=FALSE;
             if(class_is(w,L"COMBOBOX")){
