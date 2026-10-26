@@ -14,15 +14,15 @@ S4优先取得VB5/VB6真实内建样本，验证OptionButton及编辑/列表/滚
 | --- | --- |
 | Identifier Mode | Continuation；S3实际远端/恢复/340映像清理后按用户顺序自动准入 |
 | Admission And Approval | 用户T17完整范围及自动连续S授权；永久提交推送/有binary change同批四文件双发布保持 |
-| Objective | 取得真实VB5/VB6内建控件可验证样本，核实初始化/注册/公开协议，优先OptionButton及编辑/列表/滚动/容器缺口，再按证据实施有限子集；148审计全集不缩小 |
+| Objective | 已取得原作者固定归档内建样本，S4实施真实VB5 Command/Check/Option/Frame/Text及VB6 Option普通模式；Combo/List/Scroll真实协议已通过，交下一S；148审计全集不缩小 |
 | Non-goals | 不凭前缀/C仿真推导支持、不读私有对象、不盲调ThunRTMain、不绕许可安装IDE/OCX；不改变标题/字体/菜单/滚动资源/算法或产品架构 |
 | Reference Baseline | S3 P1 2e250c2实际远端212文件/200输入/四文件，0.17.0.0；ABI3/31命名+ordinal1，35detours/40slots，Actor真实两框182源像素通过 |
 | Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[S1矩阵](../etc/evidence/vb-controls-audit.json)、[S3证据](../etc/evidence/vb-selection-controls.json) |
-| Files And ABI Surface | 双宽DLL内部准确类/角色/创建和字体所有权、原生探针/回归与来源回执；仅经证据准入后编辑，公开ABI不变，三组件四产物 |
+| Files And ABI Surface | control_class/controls、vb_text及原有runtime调用者限定；纯C原生样本观察器及双宽fixture/来源回执；只扩展准确MSVBVM50/60 owner，公开ABI不变，三组件四产物 |
 | Applicable Rules | Task Reading Set、UI/来源/架构/编码；C17/GCC/Ninja/ccache；禁computer-use/兄弟修改或依赖/用户既有进程操作/全局设置 |
 | Verification | 先真实运行库/应用身份和安全样本来源，正常显示/模块与实际owner/公开协议/像素/交互/清理；有限同类负例、双宽核心及实际包/双发布/实际远端；短聚焦测试 |
 | Expected Markers | 真实VB5/6分别记录模块路径SHA、PID/创建者/PE、类owner、加载/初始化/识别/实际绘制；Option/radio分组或编辑列表数据/通知、字体/几何/卸载/旧包检出 |
-| Asset Needs | build/t17-audit保留S1官方VB5 DLL和S3中间包4文件+3源覆盖/身份，可从最终P1 Git重构200中间输入；build/t17-controls登记本S探针/样本只读或自有副本/日志；build/t17-package登记构建/包/备份；外部win16style-t17-s4目录（本会话visualizations根）保留真实PNG；其他任务/缓存/已有PNG保持 |
+| Asset Needs | build/t17-audit保留S1官方VB5 DLL、S3中间包恢复和s4-intrinsic-samples（原作者固定归档ZIP/源/EXE/身份，仅自有观察，不复制进产品）；build/t17-controls登记本S探针/样本只读或自有副本/日志；build/t17-package登记构建/包/备份；外部win16style-t17-s4目录（本会话visualizations根）保留真实PNG；其他任务/缓存/已有PNG保持 |
 | Reporting Requirements | 真样本与仿真分别，按控件/版本/变体给成功/失败/skip/阻断接收；改产品前先说明根因最小方案，不用缺样本关闭T17或缩小请求 |
 | Stop Conditions | 未能建立真实初始化契约则不碰私有布局/泛名注入；重大许可/组件/安全边界需停证据方案；不得未经许可复制外部代码或新增产品 |
 | Exit Criteria | 有证据有限内建适配或清楚阻断、相应双宽同批四文件实际包/必要双发布/提交/实际远端/恢复清理后S4关闭再自动续后续S；T17仅最后独立完整审计后关闭 |
@@ -40,15 +40,17 @@ S4优先取得VB5/VB6真实内建样本，验证OptionButton及编辑/列表/滚
 
 ## Technical Baseline
 
-T17 S3产品0.17.0.0 / M0 T17，200输入，三组件四产物；普通VB6 CheckBox准确
-runtime owner接入，真实Actor两框各182源像素匹配，Value仍原0/1；图形变体原生保留。
-S2八页demo保持；VB5/OptionButton/OCX等缺口不据此清除。ABI3/31命名+ordinal1、
-35detours/40slots、原五头/声明逐字节和每DLL18表保持。标题demo top36 RGB差异0。
-独立干净双宽all/ABI及同批四文件通过，实际包11项17.08秒，旧核心/真实像素负例
-0.999/0.597秒检出；双发布八SHA、安装双宽ABI和实际Actor再验通过。
-[release](../etc/release.json)拥有200输入/包身份，[S3证据](../etc/evidence/vb-selection-controls.json)
-记录实际模块路径/SHA、有限状态/像素和明确未覆盖面。S3 P1 2e250c2实际远端212文件、恢复204产品对象、340映像清理完成；
-S3关闭并自动准入S4，T17/M0开放，无物理输入或全控件完成声明。
+T17 S4产品0.17.0.0 / M0 T17，201输入，三组件四产物；真实VB5准确Command/
+Check/Option/Frame/Text和VB6 Option接入，既有VB6 Check保持。原作者固定归档
+样例实际runtime50/60、x86、每版4Option+4Check源glyph各182像素及原分组/值通过。
+Combo/List/Scroll只验证公开数据协议，包装层样式交下一S，不算已适配。
+ABI3/31命名+ordinal1、35detours/40slots、原五头/声明/每DLL18表保持；原算法与
+92生产路径不变，仅4精确准入/调用者文件更改；demo标题top36 RGB对S3差异0。
+干净双宽all/ABI及同批四文件通过；13项实际包23.28秒，3个旧包负例检出。
+八部署SHA一致，安装ABI32/64及真实VB5/6再验通过。[release](../etc/release.json)
+拥有当前包身份，[S4证据](../etc/evidence/vb-intrinsic-controls.json)记录真实身份/有限
+状态/像素及未覆盖面。当前verified，待P1实际远端/恢复清理后关闭S4续下一S；
+T17/M0开放，不以普通样例替代148单位全变体/OCX审计，无物理键鼠完成声明。
 
 ## Recent Closure
 

@@ -36,7 +36,9 @@
       "class_owner": "runtime class registration must be observed per real HWND; no alias based on prefix",
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
-      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced"
+      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
+      "T17_S4_progress_evidence": "docs/etc/evidence/vb-intrinsic-controls.json",
+      "T17_S4_disposition": "limited authentic sample plain windowed support; remaining variants still require full matrix audit"
     },
     {
       "id": "VB6.CommandButton",
@@ -97,7 +99,9 @@
       "initialized": "not exercised by type-library inventory",
       "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
       "T17_S3_progress_evidence": "docs/etc/evidence/vb-selection-controls.json",
-      "T17_S3_disposition": "not passed; real sample/registration boundary received by next T17 implementation and final audit"
+      "T17_S3_disposition": "not passed; real sample/registration boundary received by next T17 implementation and final audit",
+      "T17_S4_progress_evidence": "docs/etc/evidence/vb-intrinsic-controls.json",
+      "T17_S4_disposition": "limited authentic sample plain windowed support; remaining variants still require full matrix audit"
     },
     {
       "id": "VB6.CheckBox",
@@ -128,7 +132,9 @@
       "initialized": "not exercised by type-library inventory",
       "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
       "T17_S3_progress_evidence": "docs/etc/evidence/vb-selection-controls.json",
-      "T17_S3_disposition": "plain VB6 actual Actor partial; other variants not declared supported"
+      "T17_S3_disposition": "plain VB6 actual Actor partial; other variants not declared supported",
+      "T17_S4_progress_evidence": "docs/etc/evidence/vb-intrinsic-controls.json",
+      "T17_S4_disposition": "limited authentic sample plain windowed support; remaining variants still require full matrix audit"
     },
     {
       "id": "VB5.OptionButton",
@@ -158,7 +164,9 @@
       "initialized": "not exercised by type-library inventory",
       "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
       "T17_S3_progress_evidence": "docs/etc/evidence/vb-selection-controls.json",
-      "T17_S3_disposition": "not passed; real sample/registration boundary received by next T17 implementation and final audit"
+      "T17_S3_disposition": "not passed; real sample/registration boundary received by next T17 implementation and final audit",
+      "T17_S4_progress_evidence": "docs/etc/evidence/vb-intrinsic-controls.json",
+      "T17_S4_disposition": "limited authentic sample plain windowed support; remaining variants still require full matrix audit"
     },
     {
       "id": "VB6.OptionButton",
@@ -188,7 +196,9 @@
       "initialized": "not exercised by type-library inventory",
       "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
       "T17_S3_progress_evidence": "docs/etc/evidence/vb-selection-controls.json",
-      "T17_S3_disposition": "not passed; real sample/registration boundary received by next T17 implementation and final audit"
+      "T17_S3_disposition": "not passed; real sample/registration boundary received by next T17 implementation and final audit",
+      "T17_S4_progress_evidence": "docs/etc/evidence/vb-intrinsic-controls.json",
+      "T17_S4_disposition": "limited authentic sample plain windowed support; remaining variants still require full matrix audit"
     },
     {
       "id": "VB5.TextBox",
@@ -217,7 +227,9 @@
       "class_owner": "runtime class registration must be observed per real HWND; no alias based on prefix",
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
-      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced"
+      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
+      "T17_S4_progress_evidence": "docs/etc/evidence/vb-intrinsic-controls.json",
+      "T17_S4_disposition": "limited authentic sample plain windowed support; remaining variants still require full matrix audit"
     },
     {
       "id": "VB6.TextBox",
@@ -275,7 +287,8 @@
       "class_owner": "runtime class registration must be observed per real HWND; no alias based on prefix",
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
-      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced"
+      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
+      "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference"
     },
     {
       "id": "VB6.ComboBox",
@@ -304,7 +317,8 @@
       "class_owner": "runtime class registration must be observed per real HWND; no alias based on prefix",
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
-      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced"
+      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
+      "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference"
     },
     {
       "id": "VB5.ListBox",
@@ -333,7 +347,8 @@
       "class_owner": "runtime class registration must be observed per real HWND; no alias based on prefix",
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
-      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced"
+      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
+      "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference"
     },
     {
       "id": "VB6.ListBox",
@@ -362,7 +377,8 @@
       "class_owner": "runtime class registration must be observed per real HWND; no alias based on prefix",
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
-      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced"
+      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
+      "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference"
     },
     {
       "id": "VB5.HScrollBar",
@@ -389,7 +405,8 @@
       "class_owner": "runtime class registration must be observed per real HWND; no alias based on prefix",
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
-      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced"
+      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
+      "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference"
     },
     {
       "id": "VB6.HScrollBar",
@@ -416,7 +433,8 @@
       "class_owner": "runtime class registration must be observed per real HWND; no alias based on prefix",
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
-      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced"
+      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
+      "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference"
     },
     {
       "id": "VB5.VScrollBar",
@@ -443,7 +461,8 @@
       "class_owner": "runtime class registration must be observed per real HWND; no alias based on prefix",
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
-      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced"
+      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
+      "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference"
     },
     {
       "id": "VB6.VScrollBar",
@@ -470,7 +489,8 @@
       "class_owner": "runtime class registration must be observed per real HWND; no alias based on prefix",
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
-      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced"
+      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
+      "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference"
     },
     {
       "id": "VB5.DriveListBox",
@@ -657,7 +677,9 @@
       "class_owner": "runtime class registration must be observed per real HWND; no alias based on prefix",
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
-      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced"
+      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
+      "T17_S4_progress_evidence": "docs/etc/evidence/vb-intrinsic-controls.json",
+      "T17_S4_disposition": "limited authentic sample plain windowed support; remaining variants still require full matrix audit"
     },
     {
       "id": "VB6.Frame",
@@ -1147,7 +1169,9 @@
       "class_owner": "runtime class registration must be observed per real HWND; no alias based on prefix",
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
-      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced"
+      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
+      "T17_S4_progress_evidence": "docs/etc/evidence/vb-intrinsic-controls.json",
+      "T17_S4_disposition": "limited authentic sample plain windowed support; remaining variants still require full matrix audit"
     },
     {
       "id": "VB6.Form",

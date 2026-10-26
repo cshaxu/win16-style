@@ -41,12 +41,12 @@ static LRESULT CALLBACK checkbox(HWND w,UINT m,WPARAM a,LPARAM b)
     if(!s)return DefWindowProcW(w,m,a,b);
     if(m==WM_GETFONT)return (LRESULT)native_font;
     if(m==WM_SETFONT){if(w==destroy_on_font){destroy_on_font=NULL;DestroyWindow(w);destroyed_checkbox=w;}return 0;}
-    if(m==WM_GETDLGCODE)return DLGC_BUTTON|DLGC_WANTCHARS;
+    if(m==WM_GETDLGCODE)return DLGC_BUTTON|DLGC_WANTCHARS|(((GetWindowLongPtrW(w,GWL_STYLE)&BS_TYPEMASK)==BS_RADIOBUTTON)?DLGC_RADIOBUTTON:0);
     if(m==BM_GETCHECK)return s->check;
     if(m==BM_GETSTATE)return s->check|s->state|(GetFocus()==w?BST_FOCUS:0);
     if(m==BM_SETCHECK){s->check=(UINT)a%3;InvalidateRect(w,NULL,TRUE);return 0;}
     if(m==BM_SETSTATE){s->state=a?BST_PUSHED:0;InvalidateRect(w,NULL,TRUE);return 0;}
-    if(m==BM_CLICK){s->check=(s->check+1)%3;InvalidateRect(w,NULL,TRUE);SendMessageW(GetParent(w),WM_COMMAND,MAKEWPARAM(GetDlgCtrlID(w),BN_CLICKED),(LPARAM)w);return 0;}
+    if(m==BM_CLICK){if((GetWindowLongPtrW(w,GWL_STYLE)&BS_TYPEMASK)==BS_RADIOBUTTON){WCHAR name[80];for(HWND sibling=GetWindow(GetParent(w),GW_CHILD);sibling;sibling=GetWindow(sibling,GW_HWNDNEXT))if(GetClassNameW(sibling,name,80) && !wcscmp(name,L"ThunderRT6OptionButton"))SendMessageW(sibling,BM_SETCHECK,sibling==w?BST_CHECKED:BST_UNCHECKED,0);}else s->check=(s->check+1)%3;InvalidateRect(w,NULL,TRUE);SendMessageW(GetParent(w),WM_COMMAND,MAKEWPARAM(GetDlgCtrlID(w),BN_CLICKED),(LPARAM)w);return 0;}
     if(m==WM_KEYDOWN && a==VK_SPACE){s->state=BST_PUSHED;return 0;}
     if(m==WM_KEYUP && a==VK_SPACE){s->state=0;return SendMessageW(w,BM_CLICK,0,0);}
     if(m==WM_PAINT){PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);checkbox_paint(w,dc,s);EndPaint(w,&ps);return 0;}
@@ -100,6 +100,8 @@ __declspec(dllexport) BOOL WINAPI VbRegister(void)
     if(!RegisterClassW(&cls))return FALSE;
     ZeroMemory(&cls,sizeof(cls));cls.hInstance=instance;cls.lpfnWndProc=checkbox;
     cls.lpszClassName=L"ThunderRT6CheckBox";if(!RegisterClassW(&cls))return FALSE;
+    cls.lpszClassName=L"ThunderRT6OptionButton";if(!RegisterClassW(&cls))return FALSE;
+    cls.lpszClassName=L"ThunderRT5CheckBox";if(!RegisterClassW(&cls))return FALSE; /* wrong-runtime negative */
     GetClassInfoW(NULL,L"EDIT",&cls);edit_proc=cls.lpfnWndProc;
     cls.hInstance=instance;cls.lpfnWndProc=edit;cls.lpszClassName=L"ThunderRT6TextBox";
     if(!RegisterClassW(&cls))return FALSE;
@@ -110,7 +112,7 @@ __declspec(dllexport) BOOL WINAPI VbRegister(void)
 __declspec(dllexport) void WINAPI VbRelease(void)
 {
     UnregisterClassW(L"ThunderRT6Frame",instance);UnregisterClassW(L"ThunderRT6TextBox",instance);
-    UnregisterClassW(L"ThunderRT6CheckBox",instance);UnregisterClassW(L"ThunderRT6CommandButton",instance);DeleteObject(native_font);native_font=NULL;
+    UnregisterClassW(L"ThunderRT6OptionButton",instance);UnregisterClassW(L"ThunderRT5CheckBox",instance);UnregisterClassW(L"ThunderRT6CheckBox",instance);UnregisterClassW(L"ThunderRT6CommandButton",instance);DeleteObject(native_font);native_font=NULL;
 }
 BOOL WINAPI DllMain(HINSTANCE module,DWORD reason,LPVOID reserved)
 {(void)reserved;if(reason==DLL_PROCESS_ATTACH)instance=module;return TRUE;}

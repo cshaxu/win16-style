@@ -198,3 +198,9 @@ T17 S3仅为MSVBVM60注册的准确ThunderRT6CheckBox接纳普通窗口化复选
 样式虽为AUTO3STATE，实测仍为0/1循环，不由style推导三态业务。图形/push-like/
 icon/bitmap/owner-draw未验证变体保留原生；运行时切入该类状态即移除本层painter，
 切回普通模式须新窗口/显式重新附着，不能冒称自动恢复。VB5/OptionButton待实证。
+
+T17 S4依据原作者真实VB5/6内建样本，准确接纳MSVBVM50注册的ThunderRT5CommandButton/
+CheckBox/OptionButton/Frame/TextBox和MSVBVM60的ThunderRT6OptionButton。VB5宿主
+ThunderRT5Form参与既有有限同步文字scope，调用者仅增加准确runtime50；不改字体算法。
+选择值/分组继续原VB过程；真实VB6 frame内还可能有PictureBoxDC中间容器，仍按原父窗
+语义分组，不扁平化重挂。图形选择变体保持原生，Combo/List/Scroll包装层交下一S。

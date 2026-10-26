@@ -37,3 +37,11 @@ owner-drawn variants remain native; a live transition retires this painter.
 Returning to a plain style requires a fresh attachment/window to resume it.
 VB5 and OptionButton are not inferred from this result. Real-application
 checks and independent C protocol fixtures are reported separately.
+
+T17 S4 adds exact MSVBVM50-owned ThunderRT5CommandButton/CheckBox/OptionButton,
+Frame and TextBox, plus MSVBVM60-owned ThunderRT6OptionButton. Public protocols
+and grouping were observed in the original vbAccelerator intrinsic samples
+by Steve McMahon; no sample code or binaries are part of the product. Runtime
+font/DC painting uses the existing bounded policy; the actual VB5 Form name
+is ThunderRT5Form. Choice controls share the same unsupported graphical-mode
+native fallback. ComboBox/ListBox/scrollbar wrappers remain separate work.

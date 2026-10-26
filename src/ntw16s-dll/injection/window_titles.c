@@ -152,7 +152,7 @@ static BOOL vb_text_caller(const void *address)
     HMODULE caller=NULL;
     if(!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
             (const WCHAR *)address,&caller))return FALSE;
-    return ntw16s_report_paint_caller(caller) || caller==GetModuleHandleW(L"MSVBVM60.DLL") || caller==GetModuleHandleW(L"USER32.DLL") ||
+    return ntw16s_report_paint_caller(caller) || (caller==GetModuleHandleW(L"MSVBVM60.DLL") || caller==GetModuleHandleW(L"MSVBVM50.DLL")) || caller==GetModuleHandleW(L"USER32.DLL") ||
         caller==GetModuleHandleW(L"LPK.DLL") || caller==GetModuleHandleW(L"USP10.DLL") ||
         caller==GetModuleHandleW(L"GDI32FULL.DLL");
 }

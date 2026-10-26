@@ -58,3 +58,5 @@
 - [T17 S2原生demo目录](evidence/vb-demo-gallery.json)：148审计单位的对应页/明确缺失项、有限原生展示及实际包交付；不等同VB/OCX适配。
 
 - [T17 S3选择控件](evidence/vb-selection-controls.json)：准确VB6普通CheckBox、真实Actor/独立C负例、VB5注册断点和明确变体边界。
+
+- [T17 S4真实内建控件](evidence/vb-intrinsic-controls.json)：固定原作者VB5/6样本、精确runtime/类/公开协议、有限按钮/Frame/Edit实现及下一S接收面。

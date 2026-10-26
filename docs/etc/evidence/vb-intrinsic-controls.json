@@ -1,0 +1,1055 @@
+{
+  "task": "M0 T17 S4",
+  "status": "verified and double-published; P1 remote pending",
+  "baseline": "25db0f5 S3 release",
+  "scope": "exact observed VB5 Command/Check/Option/Frame/TextBox and VB6 Option; Combo/List/Scroll public baseline handed to next S",
+  "root_cause": "classifier and runtime-specific bounded text caller/scope only recognized runtime60 classes; real runtime50 and both Option classes outside exact aliases; registration needs a real compiled project, not LoadLibrary alone",
+  "original_sample_admission": [
+    {
+      "author": "Steve McMahon, vbAccelerator",
+      "archive_commit": "390fd1029e44a407695c6ecff4248d7a345d30ef",
+      "archive": "VB5_XP_Styles_Demonstration_-_Manifest_Resource.zip",
+      "zip_sha256": "6ff0612514b246f5f1969614873bdce5804bb5bc691392f6c59163f2642742d3",
+      "image": "build\\t17-controls\\sample-vb5\\ResXpStylesTester.exe",
+      "image_sha256": "d4ee16efabcac00ae1cf8b453dad9640acbedbf6a86a1709ab2066d7db0fa467",
+      "runtime": 5,
+      "licensing": "original article copyright2003 and archive README attributesCC-BY1.0; archive rootCC0 is not taken as relicensing original work; local normal sample execution only; no copied code, redistribution, installation or registration",
+      "startup_review": "provided mMain.bas only InitCommonControlsEx and form.Show; Form_Load assigns embedded picture to Image; OK/Cancel UnloadMe; no file/process/network/registry operations",
+      "archive_repository": "https://github.com/tannerhelland/vbAccelerator-Archive",
+      "source_path": "VB/Code/Libraries/XP_Visual_Styles/Using_XP_Visual_Styles_in_VB/VB5_XP_Styles_Demonstration_-_Manifest_Resource.zip",
+      "download_url": "https://raw.githubusercontent.com/tannerhelland/vbAccelerator-Archive/390fd1029e44a407695c6ecff4248d7a345d30ef/VB/Code/Libraries/XP_Visual_Styles/Using_XP_Visual_Styles_in_VB/VB5_XP_Styles_Demonstration_-_Manifest_Resource.zip",
+      "original_article": "https://www.vbaccelerator.com/home/VB/Code/Libraries/XP_Visual_Styles/Using_XP_Visual_Styles_in_VB/article.asp",
+      "retained_test_path": "build/t17-audit/s4-intrinsic-samples/vb5/ResXpStylesTester.exe"
+    },
+    {
+      "author": "Steve McMahon, vbAccelerator",
+      "archive_commit": "390fd1029e44a407695c6ecff4248d7a345d30ef",
+      "archive": "VB6_XP_Styles_Demonstration_-_Manifest_Resource.zip",
+      "zip_sha256": "abf01019c99d58c480311cd62c0cfa08f04e1a2af8dd535e4eb0c06da9686c15",
+      "image": "build\\t17-controls\\sample-vb6\\ResXpStylesTester.exe",
+      "image_sha256": "5cd301d91e0b836eab93a4b20964029cc988ed6c2a78916f42444f3ca06f1a91",
+      "runtime": 6,
+      "licensing": "original article copyright2003 and archive README attributesCC-BY1.0; archive rootCC0 is not taken as relicensing original work; local normal sample execution only; no copied code, redistribution, installation or registration",
+      "startup_review": "provided mMain.bas only InitCommonControlsEx and form.Show; Form_Load assigns embedded picture to Image; OK/Cancel UnloadMe; no file/process/network/registry operations",
+      "archive_repository": "https://github.com/tannerhelland/vbAccelerator-Archive",
+      "source_path": "VB/Code/Libraries/XP_Visual_Styles/Using_XP_Visual_Styles_in_VB/VB6_XP_Styles_Demonstration_-_Manifest_Resource.zip",
+      "download_url": "https://raw.githubusercontent.com/tannerhelland/vbAccelerator-Archive/390fd1029e44a407695c6ecff4248d7a345d30ef/VB/Code/Libraries/XP_Visual_Styles/Using_XP_Visual_Styles_in_VB/VB6_XP_Styles_Demonstration_-_Manifest_Resource.zip",
+      "original_article": "https://www.vbaccelerator.com/home/VB/Code/Libraries/XP_Visual_Styles/Using_XP_Visual_Styles_in_VB/article.asp",
+      "retained_test_path": "build/t17-audit/s4-intrinsic-samples/vb6/ResXpStylesTester.exe"
+    }
+  ],
+  "bounded_local_scan": {
+    "scope": "bounded readonly recursive D:/programs executable scan,not executed; strings do not establish imported runtime",
+    "scanned": 132,
+    "seconds": 35.08713060000446,
+    "candidates": [
+      {
+        "path": "D:\\programs\\misc\\ChipGenius.exe",
+        "size": 145920,
+        "runtime_string_only": [
+          "MSVBVM60.DLL"
+        ],
+        "sha256": "e88256520d3da2d483186eaec3bf967155ff6f6abdc597233e8d87ab4a1a338a"
+      },
+      {
+        "path": "D:\\programs\\neko\\gui\\AC.exe",
+        "size": 241664,
+        "runtime_string_only": [
+          "MSVBVM60.DLL"
+        ],
+        "sha256": "f9a7bf5a1f8780873dd9d2eabf48e035b4e81efe8050a9f36bc26fadd2f2c644"
+      },
+      {
+        "path": "D:\\programs\\neko\\gui\\actor.exe",
+        "size": 98304,
+        "runtime_string_only": [
+          "MSVBVM60.DLL"
+        ],
+        "sha256": "df4887ba302322cd3fd8c3d542015f492e4de2619ee62532d66eb465bfb51500"
+      },
+      {
+        "path": "D:\\programs\\neko\\gui\\CountDown.exe",
+        "size": 90112,
+        "runtime_string_only": [
+          "MSVBVM60.DLL"
+        ],
+        "sha256": "669e73498d61fd56878251039d803799bdd2a982c888b7df85fa6e1e544b3d17"
+      },
+      {
+        "path": "D:\\programs\\neko\\gui\\CountDownMin.exe",
+        "size": 90112,
+        "runtime_string_only": [
+          "MSVBVM60.DLL"
+        ],
+        "sha256": "22adcc862812c23ee9f145a7b230ed0c6de9719f74a4badfb10fed19bf3ad104"
+      },
+      {
+        "path": "D:\\programs\\neko\\gui\\csplash.exe",
+        "size": 81920,
+        "runtime_string_only": [
+          "MSVBVM60.DLL"
+        ],
+        "sha256": "9c0de746d7e096820a9f1b75d24d2e92401c256f527ef4db99ff57928b068e19"
+      },
+      {
+        "path": "D:\\programs\\neko\\gui\\EXE2BAT.exe",
+        "size": 61440,
+        "runtime_string_only": [
+          "MSVBVM60.DLL"
+        ],
+        "sha256": "2aa41c6e46c14fa60f08a18bbf8010df631f282e322a52fcb724921bdc3ec741"
+      },
+      {
+        "path": "D:\\programs\\neko\\gui\\ForcLock.exe",
+        "size": 77824,
+        "runtime_string_only": [
+          "MSVBVM60.DLL"
+        ],
+        "sha256": "b1cd0ead88f462ed2934cf25a3347685af63928a6f334dee05392185aae3a0ab"
+      },
+      {
+        "path": "D:\\programs\\neko\\gui\\GlassPro.exe",
+        "size": 98304,
+        "runtime_string_only": [
+          "MSVBVM60.DLL"
+        ],
+        "sha256": "9486e0be690b263a8bf3879e199c9840157a13e545ed911e4d68d782d2dab9b9"
+      },
+      {
+        "path": "D:\\programs\\neko\\gui\\kbr.exe",
+        "size": 106496,
+        "runtime_string_only": [
+          "MSVBVM60.DLL"
+        ],
+        "sha256": "916f7b99c979c18a4da6100ca28ed98dfb24cdadedfd671f1a91180a5608163e"
+      },
+      {
+        "path": "D:\\programs\\neko\\gui\\madshow.exe",
+        "size": 200704,
+        "runtime_string_only": [
+          "MSVBVM60.DLL"
+        ],
+        "sha256": "9d93484c7b230b584440b14e2d2dbb353f058be26e3385677349cff42e5db6b6"
+      },
+      {
+        "path": "D:\\programs\\neko\\gui\\MsgBox.exe",
+        "size": 86016,
+        "runtime_string_only": [
+          "MSVBVM60.DLL"
+        ],
+        "sha256": "38f137b8340ad85dd7db694ea064381887e852bb4f5fa408d1ea76667b839a76"
+      },
+      {
+        "path": "D:\\programs\\neko\\gui\\MyCMD.exe",
+        "size": 126976,
+        "runtime_string_only": [
+          "MSVBVM60.DLL"
+        ],
+        "sha256": "5fc889fbb154ffae37f7e3956b47c858cbd129f90595db9301e7e3ac9be3fd95"
+      },
+      {
+        "path": "D:\\programs\\neko\\gui\\NekoBall.exe",
+        "size": 331776,
+        "runtime_string_only": [
+          "MSVBVM60.DLL"
+        ],
+        "sha256": "d169064b63cbfe2ff74d8ed3d47c59886231c36fd99a44c5ff9fb2266565eb8e"
+      },
+      {
+        "path": "D:\\programs\\neko\\gui\\nkcv.exe",
+        "size": 196608,
+        "runtime_string_only": [
+          "MSVBVM60.DLL"
+        ],
+        "sha256": "c57718694ba9fb42d01b299b91131b5adbd833fff4269bb11c648d8e9cc5d547"
+      },
+      {
+        "path": "D:\\programs\\neko\\gui\\notes.exe",
+        "size": 86016,
+        "runtime_string_only": [
+          "MSVBVM60.DLL"
+        ],
+        "sha256": "389b9533302601c4d403d5c2051fbe901875f9bf3f51d178a56a1c0e467fb521"
+      }
+    ]
+  },
+  "baseline_pixels": [
+    {
+      "version": 5,
+      "class": "ThunderRT5PictureBox",
+      "index": 0,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 5,
+      "class": "ThunderRT5CommandButton",
+      "index": 1,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 5,
+      "class": "ThunderRT5CommandButton",
+      "index": 2,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 5,
+      "class": "ThunderRT5CommandButton",
+      "index": 3,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 5,
+      "class": "ThunderRT5VScrollBar",
+      "index": 4,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 5,
+      "class": "ThunderRT5HScrollBar",
+      "index": 5,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 5,
+      "class": "ThunderRT5ComboBox",
+      "index": 6,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 5,
+      "class": "ThunderRT5ListBox",
+      "index": 7,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 5,
+      "class": "ThunderRT5ComboBox",
+      "index": 8,
+      "bare_equals_old_styled_bytes": false
+    },
+    {
+      "version": 5,
+      "class": "ThunderRT5Frame",
+      "index": 10,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 5,
+      "class": "ThunderRT5OptionButton",
+      "index": 11,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 5,
+      "class": "ThunderRT5OptionButton",
+      "index": 12,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 5,
+      "class": "ThunderRT5OptionButton",
+      "index": 13,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 5,
+      "class": "ThunderRT5OptionButton",
+      "index": 14,
+      "bare_equals_old_styled_bytes": false
+    },
+    {
+      "version": 5,
+      "class": "ThunderRT5Frame",
+      "index": 15,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 5,
+      "class": "ThunderRT5CheckBox",
+      "index": 16,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 5,
+      "class": "ThunderRT5CheckBox",
+      "index": 17,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 5,
+      "class": "ThunderRT5CheckBox",
+      "index": 18,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 5,
+      "class": "ThunderRT5CheckBox",
+      "index": 19,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 5,
+      "class": "ThunderRT5TextBox",
+      "index": 20,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 5,
+      "class": "ThunderRT5TextBox",
+      "index": 21,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 6,
+      "class": "ThunderRT6PictureBoxDC",
+      "index": 0,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 6,
+      "class": "ThunderRT6CommandButton",
+      "index": 1,
+      "bare_equals_old_styled_bytes": false
+    },
+    {
+      "version": 6,
+      "class": "ThunderRT6CommandButton",
+      "index": 2,
+      "bare_equals_old_styled_bytes": false
+    },
+    {
+      "version": 6,
+      "class": "ThunderRT6CommandButton",
+      "index": 3,
+      "bare_equals_old_styled_bytes": false
+    },
+    {
+      "version": 6,
+      "class": "ThunderRT6VScrollBar",
+      "index": 4,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 6,
+      "class": "ThunderRT6HScrollBar",
+      "index": 5,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 6,
+      "class": "ThunderRT6ComboBox",
+      "index": 6,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 6,
+      "class": "ThunderRT6ListBox",
+      "index": 7,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 6,
+      "class": "ThunderRT6ComboBox",
+      "index": 8,
+      "bare_equals_old_styled_bytes": false
+    },
+    {
+      "version": 6,
+      "class": "ThunderRT6Frame",
+      "index": 10,
+      "bare_equals_old_styled_bytes": false
+    },
+    {
+      "version": 6,
+      "class": "ThunderRT6PictureBoxDC",
+      "index": 11,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 6,
+      "class": "ThunderRT6OptionButton",
+      "index": 12,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 6,
+      "class": "ThunderRT6OptionButton",
+      "index": 13,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 6,
+      "class": "ThunderRT6OptionButton",
+      "index": 14,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 6,
+      "class": "ThunderRT6OptionButton",
+      "index": 15,
+      "bare_equals_old_styled_bytes": true
+    },
+    {
+      "version": 6,
+      "class": "ThunderRT6Frame",
+      "index": 16,
+      "bare_equals_old_styled_bytes": false
+    },
+    {
+      "version": 6,
+      "class": "ThunderRT6CheckBox",
+      "index": 17,
+      "bare_equals_old_styled_bytes": false
+    },
+    {
+      "version": 6,
+      "class": "ThunderRT6CheckBox",
+      "index": 18,
+      "bare_equals_old_styled_bytes": false
+    },
+    {
+      "version": 6,
+      "class": "ThunderRT6CheckBox",
+      "index": 19,
+      "bare_equals_old_styled_bytes": false
+    },
+    {
+      "version": 6,
+      "class": "ThunderRT6CheckBox",
+      "index": 20,
+      "bare_equals_old_styled_bytes": false
+    },
+    {
+      "version": 6,
+      "class": "ThunderRT6TextBox",
+      "index": 21,
+      "bare_equals_old_styled_bytes": false
+    },
+    {
+      "version": 6,
+      "class": "ThunderRT6TextBox",
+      "index": 22,
+      "bare_equals_old_styled_bytes": false
+    }
+  ],
+  "protocol_logs": {
+    "VB5": {
+      "bare": "SAMPLE_SHOW class=ThunderRT5Main title= hwnd=00430B78\nSAMPLE_SHOW class=ThunderRT5Form title=XP Visual Styles Tester - Manifest Stored in Resource hwnd=02640CBA\nACTOR_TARGET pid=10428 creator=8536 initial_pid=10428 bits=32 path=O:\\repos.hobby\\win16style\\build\\t17-controls\\sample-vb5\\ResXpStylesTester.exe dpi=96\nACTOR_RUNTIME base=740C0000 path=O:\\repos.hobby\\win16style\\build\\t17-controls\\sample-vb5\\MSVBVM50.DLL\nACTOR_MODULE_FILE actual=\\\\?\\O:\\repos.hobby\\win16style\\build\\t17-controls\\sample-vb5\\MSVBVM50.DLL\nSAMPLE_WINDOW hwnd=00E00B74 parent=02640CBA class=ThunderRT5PictureBox parent_class=ThunderRT5Form owner=740C0000 style=56010000 ex=00000204 text= font=BC0A0CF6\nSAMPLE_WINDOW hwnd=009A0DE2 parent=02640CBA class=ThunderRT5CommandButton parent_class=ThunderRT5Form owner=740C0000 style=54012000 ex=00000004 text=&Advanced... font=BC0A0CF6\nSAMPLE_WINDOW hwnd=00670E68 parent=02640CBA class=ThunderRT5CommandButton parent_class=ThunderRT5Form owner=740C0000 style=54012000 ex=00000004 text=Cancel font=0A0A0D46\nSAMPLE_WINDOW hwnd=02A30E6C parent=02640CBA class=ThunderRT5CommandButton parent_class=ThunderRT5Form owner=740C0000 style=54012001 ex=00000004 text=OK font=0A0A0D46\nSAMPLE_WINDOW hwnd=025D0ACA parent=02640CBA class=ThunderRT5VScrollBar parent_class=ThunderRT5Form owner=740C0000 style=54010001 ex=00000004 text= font=00000000\nSAMPLE_WINDOW hwnd=013F0ADE parent=02640CBA class=ThunderRT5HScrollBar parent_class=ThunderRT5Form owner=740C0000 style=54010000 ex=00000004 text= font=00000000\nSAMPLE_WINDOW hwnd=04350212 parent=02640CBA class=ThunderRT5ComboBox parent_class=ThunderRT5Form owner=740C0000 style=54010243 ex=00000000 text= font=0A0A0D46\nSAMPLE_COMBO hwnd=04350212 count=5 selected=-1 info=1 edit=04350212 list=0342071C error=18\nSAMPLE_WINDOW hwnd=012E076E parent=02640CBA class=ThunderRT5ListBox parent_class=ThunderRT5Form owner=740C0000 style=54210081 ex=00000204 text= font=0A0A0D46\nSAMPLE_LIST hwnd=012E076E count=9 selected=-1\nSAMPLE_WINDOW hwnd=04AD0876 parent=02640CBA class=ThunderRT5ComboBox parent_class=ThunderRT5Form owner=740C0000 style=54010242 ex=00000000 text= font=0A0A0D46\nSAMPLE_COMBO hwnd=04AD0876 count=3 selected=-1 info=1 edit=0765094C list=04AA0906 error=18\nSAMPLE_WINDOW hwnd=0765094C parent=04AD0876 class=Edit parent_class=ThunderRT5ComboBox owner=71D80000 style=50000380 ex=00000000 text= font=0A0A0D46\nSAMPLE_WINDOW hwnd=0117027A parent=02640CBA class=ThunderRT5Frame parent_class=ThunderRT5Form owner=740C0000 style=56010007 ex=00000004 text=Frame - Option Boxes font=0A0A0D46\nSAMPLE_WINDOW hwnd=02750760 parent=0117027A class=ThunderRT5OptionButton parent_class=ThunderRT5Frame owner=740C0000 style=54002004 ex=00000000 text=Option Item 4 font=0A0A0D46\nSAMPLE_BUTTON hwnd=02750760 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=03BE0722 parent=0117027A class=ThunderRT5OptionButton parent_class=ThunderRT5Frame owner=740C0000 style=54002004 ex=00000000 text=Option Item 3 font=0A0A0D46\nSAMPLE_BUTTON hwnd=03BE0722 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=07210922 parent=0117027A class=ThunderRT5OptionButton parent_class=ThunderRT5Frame owner=740C0000 style=54002004 ex=00000000 text=Option Item 2 font=0A0A0D46\nSAMPLE_BUTTON hwnd=07210922 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=0774094E parent=0117027A class=ThunderRT5OptionButton parent_class=ThunderRT5Frame owner=740C0000 style=54012004 ex=00000000 text=Option Item 1 font=0A0A0D46\nSAMPLE_BUTTON hwnd=0774094E dlg=20c0 check=1 state=1\nSAMPLE_WINDOW hwnd=0A09086E parent=02640CBA class=ThunderRT5Frame parent_class=ThunderRT5Form owner=740C0000 style=56010007 ex=00000004 text=Frame - Check boxes font=0A0A0D46\nSAMPLE_WINDOW hwnd=052D0240 parent=0A09086E class=ThunderRT5CheckBox parent_class=ThunderRT5Frame owner=740C0000 style=54012006 ex=00000004 text=Check Option 4 font=0A0A0D46\nSAMPLE_BUTTON hwnd=052D0240 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=00890A54 parent=0A09086E class=ThunderRT5CheckBox parent_class=ThunderRT5Frame owner=740C0000 style=54012006 ex=00000004 text=Check Option 3 font=0A0A0D46\nSAMPLE_BUTTON hwnd=00890A54 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=01460A7C parent=0A09086E class=ThunderRT5CheckBox parent_class=ThunderRT5Frame owner=740C0000 style=54012006 ex=00000004 text=Check Option 2 font=0A0A0D46\nSAMPLE_BUTTON hwnd=01460A7C dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=00CA0A7E parent=0A09086E class=ThunderRT5CheckBox parent_class=ThunderRT5Frame owner=740C0000 style=54012006 ex=00000004 text=Check Option 1 font=0A0A0D46\nSAMPLE_BUTTON hwnd=00CA0A7E dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=01040A86 parent=02640CBA class=ThunderRT5TextBox parent_class=ThunderRT5Form owner=740C0000 style=543100c4 ex=00000204 text=Test of a multi-line text box.\n\nThis multi-line control has both scroll bars visible\n\n font=0A0A0D46\nSAMPLE_WINDOW hwnd=02190670 parent=02640CBA class=ThunderRT5TextBox parent_class=ThunderRT5Form owner=740C0000 style=540100c0 ex=00000204 text=Test of a single line text box font=0A0A0D46\nACTOR_IMAGE hash=5389169807279259833\nSAMPLE_ROOT class_owner=740C0000 windows=22\nSAMPLE_PIXELS index=0 class=ThunderRT5PictureBox hash=6044436196493835024\nSAMPLE_PIXELS index=1 class=ThunderRT5CommandButton hash=17124731722624785094\nSAMPLE_PIXELS index=2 class=ThunderRT5CommandButton hash=4743957850965092635\nSAMPLE_PIXELS index=3 class=ThunderRT5CommandButton hash=3178750815958153557\nSAMPLE_PIXELS index=4 class=ThunderRT5VScrollBar hash=15902409057643114521\nSAMPLE_SCROLL_OK index=4 min=0 max=32767 pos=0 page=0\nSAMPLE_PIXELS index=5 class=ThunderRT5HScrollBar hash=868257633841785689\nSAMPLE_SCROLL_OK index=5 min=0 max=32767 pos=0 page=0\nSAMPLE_PIXELS index=6 class=ThunderRT5ComboBox hash=17074136147584877070\nSAMPLE_COMBO_SELECT_OK index=6 count=5 select1=1 drop_cancel=1\nSAMPLE_PIXELS index=7 class=ThunderRT5ListBox hash=4984228313527916599\nSAMPLE_LIST_SELECT_OK index=7 count=9 select1=1\nSAMPLE_PIXELS index=8 class=ThunderRT5ComboBox hash=12917264290057623893\nSAMPLE_COMBO_SELECT_OK index=8 count=3 select1=1 drop_cancel=1\nSAMPLE_PIXELS index=10 class=ThunderRT5Frame hash=12676691395294111007\nSAMPLE_PIXELS index=11 class=ThunderRT5OptionButton hash=7149221372865799016\nSAMPLE_OPTION_GROUP_OK index=11 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=12 class=ThunderRT5OptionButton hash=10364981851982515334\nSAMPLE_OPTION_GROUP_OK index=12 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=13 class=ThunderRT5OptionButton hash=8992662082591079508\nSAMPLE_OPTION_GROUP_OK index=13 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=14 class=ThunderRT5OptionButton hash=9809210818385408148\nSAMPLE_OPTION_GROUP_OK index=14 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=15 class=ThunderRT5Frame hash=3072325764185165433\nSAMPLE_PIXELS index=16 class=ThunderRT5CheckBox hash=8986585252686242869\nSAMPLE_CHECK_CYCLE_OK index=16 round2=initial\nSAMPLE_PIXELS index=17 class=ThunderRT5CheckBox hash=2774099812071113511\nSAMPLE_CHECK_CYCLE_OK index=17 round2=initial\nSAMPLE_PIXELS index=18 class=ThunderRT5CheckBox hash=1052994606495805765\nSAMPLE_CHECK_CYCLE_OK index=18 round2=initial\nSAMPLE_PIXELS index=19 class=ThunderRT5CheckBox hash=6350961052212119109\nSAMPLE_CHECK_CYCLE_OK index=19 round2=initial\nSAMPLE_PIXELS index=20 class=ThunderRT5TextBox hash=13827018734885693725\nSAMPLE_EDIT_OK index=20 text_restore=1 multiline=1 cross_process_replace_undo=not_covered\nSAMPLE_PIXELS index=21 class=ThunderRT5TextBox hash=2251834694473885364\nSAMPLE_EDIT_OK index=21 text_restore=1 multiline=0 cross_process_replace_undo=not_covered\nSAMPLE_PROTOCOL_PASS option=4 checkbox=4 combo=2 list=1 edit=2 scrollbar=2\nSAMPLE_PASS styled=0 count=22 active=0\n",
+      "old_styled": "SAMPLE_SHOW class=ThunderRT5Main title= hwnd=09B709C6\nSAMPLE_SHOW class=ThunderRT5Form title=XP Visual Styles Tester - Manifest Stored in Resource hwnd=04AC0906\nACTOR_TARGET pid=21888 creator=22628 initial_pid=22628 bits=32 path=O:\\repos.hobby\\win16style\\build\\t17-controls\\sample-vb5\\ResXpStylesTester.exe dpi=96\nACTOR_STYLE_MODULE base=6A440000 path=O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll\nACTOR_MODULE_FILE actual=\\\\?\\O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll\nACTOR_RUNTIME base=740C0000 path=O:\\repos.hobby\\win16style\\build\\t17-controls\\sample-vb5\\MSVBVM50.DLL\nACTOR_MODULE_FILE actual=\\\\?\\O:\\repos.hobby\\win16style\\build\\t17-controls\\sample-vb5\\MSVBVM50.DLL\nSAMPLE_WINDOW hwnd=0768094C parent=04AC0906 class=ThunderRT5PictureBox parent_class=ThunderRT5Form owner=740C0000 style=56010000 ex=00000204 text= font=4B0A0E7D\nSAMPLE_WINDOW hwnd=04370212 parent=04AC0906 class=ThunderRT5CommandButton parent_class=ThunderRT5Form owner=740C0000 style=54012000 ex=00000004 text=&Advanced... font=4B0A0E7D\nSAMPLE_WINDOW hwnd=0344071C parent=04AC0906 class=ThunderRT5CommandButton parent_class=ThunderRT5Form owner=740C0000 style=54012000 ex=00000004 text=Cancel font=BE0A1826\nSAMPLE_WINDOW hwnd=01410ADE parent=04AC0906 class=ThunderRT5CommandButton parent_class=ThunderRT5Form owner=740C0000 style=54012001 ex=00000004 text=OK font=BE0A1826\nSAMPLE_WINDOW hwnd=025F0ACA parent=04AC0906 class=ThunderRT5VScrollBar parent_class=ThunderRT5Form owner=740C0000 style=54010001 ex=00000004 text= font=00000000\nSAMPLE_WINDOW hwnd=009C0DE2 parent=04AC0906 class=ThunderRT5HScrollBar parent_class=ThunderRT5Form owner=740C0000 style=54010000 ex=00000004 text= font=00000000\nSAMPLE_WINDOW hwnd=00690E68 parent=04AC0906 class=ThunderRT5ComboBox parent_class=ThunderRT5Form owner=740C0000 style=54010243 ex=00000000 text= font=BE0A1826\nSAMPLE_COMBO hwnd=00690E68 count=5 selected=-1 info=1 edit=00690E68 list=00E20B74 error=18\nSAMPLE_WINDOW hwnd=02BE0BF8 parent=04AC0906 class=ThunderRT5ListBox parent_class=ThunderRT5Form owner=740C0000 style=54210081 ex=00000204 text= font=BE0A1826\nSAMPLE_LIST hwnd=02BE0BF8 count=9 selected=-1\nSAMPLE_WINDOW hwnd=005A0EF0 parent=04AC0906 class=ThunderRT5ComboBox parent_class=ThunderRT5Form owner=740C0000 style=54010242 ex=00000000 text= font=BE0A1826\nSAMPLE_COMBO hwnd=005A0EF0 count=3 selected=-1 info=1 edit=02770760 list=03C00722 error=18\nSAMPLE_WINDOW hwnd=02770760 parent=005A0EF0 class=Edit parent_class=ThunderRT5ComboBox owner=71D80000 style=50000380 ex=00000000 text= font=880A1157\nSAMPLE_WINDOW hwnd=01C40B90 parent=04AC0906 class=ThunderRT5Frame parent_class=ThunderRT5Form owner=740C0000 style=56010007 ex=00000004 text=Frame - Option Boxes font=BE0A1826\nSAMPLE_WINDOW hwnd=03860C42 parent=01C40B90 class=ThunderRT5OptionButton parent_class=ThunderRT5Frame owner=740C0000 style=54002004 ex=00000000 text=Option Item 4 font=BE0A1826\nSAMPLE_BUTTON hwnd=03860C42 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=01EB0A88 parent=01C40B90 class=ThunderRT5OptionButton parent_class=ThunderRT5Frame owner=740C0000 style=54002004 ex=00000000 text=Option Item 3 font=BE0A1826\nSAMPLE_BUTTON hwnd=01EB0A88 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=07230922 parent=01C40B90 class=ThunderRT5OptionButton parent_class=ThunderRT5Frame owner=740C0000 style=54002004 ex=00000000 text=Option Item 2 font=BE0A1826\nSAMPLE_BUTTON hwnd=07230922 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=0776094E parent=01C40B90 class=ThunderRT5OptionButton parent_class=ThunderRT5Frame owner=740C0000 style=54012004 ex=00000000 text=Option Item 1 font=BE0A1826\nSAMPLE_BUTTON hwnd=0776094E dlg=20c0 check=1 state=1\nSAMPLE_WINDOW hwnd=00CC0A7E parent=04AC0906 class=ThunderRT5Frame parent_class=ThunderRT5Form owner=740C0000 style=56010007 ex=00000004 text=Frame - Check boxes font=BE0A1826\nSAMPLE_WINDOW hwnd=0119027A parent=00CC0A7E class=ThunderRT5CheckBox parent_class=ThunderRT5Frame owner=740C0000 style=54012006 ex=00000004 text=Check Option 4 font=BE0A1826\nSAMPLE_BUTTON hwnd=0119027A dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=052F0240 parent=00CC0A7E class=ThunderRT5CheckBox parent_class=ThunderRT5Frame owner=740C0000 style=54012006 ex=00000004 text=Check Option 3 font=BE0A1826\nSAMPLE_BUTTON hwnd=052F0240 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=008B0A54 parent=00CC0A7E class=ThunderRT5CheckBox parent_class=ThunderRT5Frame owner=740C0000 style=54012006 ex=00000004 text=Check Option 2 font=BE0A1826\nSAMPLE_BUTTON hwnd=008B0A54 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=01480A7C parent=00CC0A7E class=ThunderRT5CheckBox parent_class=ThunderRT5Frame owner=740C0000 style=54012006 ex=00000004 text=Check Option 1 font=BE0A1826\nSAMPLE_BUTTON hwnd=01480A7C dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=00450B78 parent=04AC0906 class=ThunderRT5TextBox parent_class=ThunderRT5Form owner=740C0000 style=543100c4 ex=00000204 text=Test of a multi-line text box.\n\nThis multi-line control has both scroll bars visible\n\n font=BE0A1826\nSAMPLE_WINDOW hwnd=08660C7E parent=04AC0906 class=ThunderRT5TextBox parent_class=ThunderRT5Form owner=740C0000 style=540100c0 ex=00000204 text=Test of a single line text box font=BE0A1826\nACTOR_IMAGE hash=2438144292363543905\nSAMPLE_ROOT class_owner=740C0000 windows=22\nSAMPLE_PIXELS index=0 class=ThunderRT5PictureBox hash=6044436196493835024\nSAMPLE_PIXELS index=1 class=ThunderRT5CommandButton hash=17124731722624785094\nSAMPLE_PIXELS index=2 class=ThunderRT5CommandButton hash=4743957850965092635\nSAMPLE_PIXELS index=3 class=ThunderRT5CommandButton hash=3178750815958153557\nSAMPLE_PIXELS index=4 class=ThunderRT5VScrollBar hash=15902409057643114521\nSAMPLE_SCROLL_OK index=4 min=0 max=32767 pos=0 page=0\nSAMPLE_PIXELS index=5 class=ThunderRT5HScrollBar hash=868257633841785689\nSAMPLE_SCROLL_OK index=5 min=0 max=32767 pos=0 page=0\nSAMPLE_PIXELS index=6 class=ThunderRT5ComboBox hash=17074136147584877070\nSAMPLE_COMBO_SELECT_OK index=6 count=5 select1=1 drop_cancel=1\nSAMPLE_PIXELS index=7 class=ThunderRT5ListBox hash=4984228313527916599\nSAMPLE_LIST_SELECT_OK index=7 count=9 select1=1\nSAMPLE_PIXELS index=8 class=ThunderRT5ComboBox hash=12067848088617040239\nSAMPLE_COMBO_SELECT_OK index=8 count=3 select1=1 drop_cancel=1\nSAMPLE_PIXELS index=10 class=ThunderRT5Frame hash=12676691395294111007\nSAMPLE_PIXELS index=11 class=ThunderRT5OptionButton hash=7149221372865799016\nSAMPLE_OPTION_GROUP_OK index=11 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=12 class=ThunderRT5OptionButton hash=10364981851982515334\nSAMPLE_OPTION_GROUP_OK index=12 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=13 class=ThunderRT5OptionButton hash=8992662082591079508\nSAMPLE_OPTION_GROUP_OK index=13 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=14 class=ThunderRT5OptionButton hash=12375361089805058998\nSAMPLE_OPTION_GROUP_OK index=14 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=15 class=ThunderRT5Frame hash=3072325764185165433\nSAMPLE_PIXELS index=16 class=ThunderRT5CheckBox hash=8986585252686242869\nSAMPLE_CHECK_CYCLE_OK index=16 round2=initial\nSAMPLE_PIXELS index=17 class=ThunderRT5CheckBox hash=2774099812071113511\nSAMPLE_CHECK_CYCLE_OK index=17 round2=initial\nSAMPLE_PIXELS index=18 class=ThunderRT5CheckBox hash=1052994606495805765\nSAMPLE_CHECK_CYCLE_OK index=18 round2=initial\nSAMPLE_PIXELS index=19 class=ThunderRT5CheckBox hash=6350961052212119109\nSAMPLE_CHECK_CYCLE_OK index=19 round2=initial\nSAMPLE_PIXELS index=20 class=ThunderRT5TextBox hash=13827018734885693725\nSAMPLE_EDIT_OK index=20 text_restore=1 multiline=1 cross_process_replace_undo=not_covered\nSAMPLE_PIXELS index=21 class=ThunderRT5TextBox hash=2251834694473885364\nSAMPLE_EDIT_OK index=21 text_restore=1 multiline=0 cross_process_replace_undo=not_covered\nSAMPLE_PROTOCOL_PASS option=4 checkbox=4 combo=2 list=1 edit=2 scrollbar=2\nSAMPLE_PASS styled=1 count=22 active=0\n",
+      "development_new": "SAMPLE_SHOW class=ThunderRT5Main title= hwnd=010C0A86\nSAMPLE_SHOW class=ThunderRT5Form title=XP Visual Styles Tester - Manifest Stored in Resource hwnd=03C20722\nACTOR_TARGET pid=34296 creator=5128 initial_pid=5128 bits=32 path=O:\\repos.hobby\\win16style\\build\\t17-controls\\sample-vb5\\ResXpStylesTester.exe dpi=96\nACTOR_STYLE_MODULE base=6A440000 path=O:\\repos.hobby\\win16style\\build\\t17-controls\\s4-dev-package\\ntw16s32.dll\nACTOR_MODULE_FILE actual=\\\\?\\O:\\repos.hobby\\win16style\\build\\t17-controls\\s4-dev-package\\ntw16s32.dll\nACTOR_RUNTIME base=740C0000 path=O:\\repos.hobby\\win16style\\build\\t17-controls\\sample-vb5\\MSVBVM50.DLL\nACTOR_MODULE_FILE actual=\\\\?\\O:\\repos.hobby\\win16style\\build\\t17-controls\\sample-vb5\\MSVBVM50.DLL\nSAMPLE_WINDOW hwnd=027A0760 parent=03C20722 class=ThunderRT5PictureBox parent_class=ThunderRT5Form owner=740C0000 style=56010000 ex=00000204 text= font=780A1793\nSAMPLE_WINDOW hwnd=02C10BF8 parent=03C20722 class=ThunderRT5CommandButton parent_class=ThunderRT5Form owner=740C0000 style=54012000 ex=00000004 text=&Advanced... font=780A1793\nSAMPLE_WINDOW hwnd=006B0E68 parent=03C20722 class=ThunderRT5CommandButton parent_class=ThunderRT5Form owner=740C0000 style=54012000 ex=00000004 text=Cancel font=160A1529\nSAMPLE_WINDOW hwnd=00E40B74 parent=03C20722 class=ThunderRT5CommandButton parent_class=ThunderRT5Form owner=740C0000 style=54012001 ex=00000004 text=OK font=160A1529\nSAMPLE_WINDOW hwnd=009E0DE2 parent=03C20722 class=ThunderRT5VScrollBar parent_class=ThunderRT5Form owner=740C0000 style=54010001 ex=00000004 text= font=00000000\nSAMPLE_WINDOW hwnd=0346071C parent=03C20722 class=ThunderRT5HScrollBar parent_class=ThunderRT5Form owner=740C0000 style=54010000 ex=00000004 text= font=00000000\nSAMPLE_WINDOW hwnd=01430ADE parent=03C20722 class=ThunderRT5ComboBox parent_class=ThunderRT5Form owner=740C0000 style=54010243 ex=00000000 text= font=160A1529\nSAMPLE_COMBO hwnd=01430ADE count=5 selected=-1 info=1 edit=01430ADE list=04390212 error=18\nSAMPLE_WINDOW hwnd=076A094C parent=03C20722 class=ThunderRT5ListBox parent_class=ThunderRT5Form owner=740C0000 style=54210081 ex=00000204 text= font=160A1529\nSAMPLE_LIST hwnd=076A094C count=9 selected=-1\nSAMPLE_WINDOW hwnd=00690E58 parent=03C20722 class=ThunderRT5ComboBox parent_class=ThunderRT5Form owner=740C0000 style=54010242 ex=00000000 text= font=160A1529\nSAMPLE_COMBO hwnd=00690E58 count=3 selected=-1 info=1 edit=005C0EF0 list=01ED0A88 error=18\nSAMPLE_WINDOW hwnd=005C0EF0 parent=00690E58 class=Edit parent_class=ThunderRT5ComboBox owner=71D80000 style=50000380 ex=00000000 text= font=470A0D8B\nSAMPLE_WINDOW hwnd=04B20876 parent=03C20722 class=ThunderRT5Frame parent_class=ThunderRT5Form owner=740C0000 style=56010007 ex=00000004 text=Frame - Option Boxes font=160A1529\nSAMPLE_WINDOW hwnd=02030D98 parent=04B20876 class=ThunderRT5OptionButton parent_class=ThunderRT5Frame owner=740C0000 style=54002004 ex=00000000 text=Option Item 4 font=160A1529\nSAMPLE_BUTTON hwnd=02030D98 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=02680CBA parent=04B20876 class=ThunderRT5OptionButton parent_class=ThunderRT5Frame owner=740C0000 style=54002004 ex=00000000 text=Option Item 3 font=160A1529\nSAMPLE_BUTTON hwnd=02680CBA dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=07250922 parent=04B20876 class=ThunderRT5OptionButton parent_class=ThunderRT5Frame owner=740C0000 style=54002004 ex=00000000 text=Option Item 2 font=160A1529\nSAMPLE_BUTTON hwnd=07250922 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=0778094E parent=04B20876 class=ThunderRT5OptionButton parent_class=ThunderRT5Frame owner=740C0000 style=54012004 ex=00000000 text=Option Item 1 font=160A1529\nSAMPLE_BUTTON hwnd=0778094E dlg=20c0 check=1 state=1\nSAMPLE_WINDOW hwnd=014A0A7C parent=03C20722 class=ThunderRT5Frame parent_class=ThunderRT5Form owner=740C0000 style=56010007 ex=00000004 text=Frame - Check boxes font=160A1529\nSAMPLE_WINDOW hwnd=01C60B90 parent=014A0A7C class=ThunderRT5CheckBox parent_class=ThunderRT5Frame owner=740C0000 style=54012006 ex=00000004 text=Check Option 4 font=160A1529\nSAMPLE_BUTTON hwnd=01C60B90 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=011B027A parent=014A0A7C class=ThunderRT5CheckBox parent_class=ThunderRT5Frame owner=740C0000 style=54012006 ex=00000004 text=Check Option 3 font=160A1529\nSAMPLE_BUTTON hwnd=011B027A dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=05310240 parent=014A0A7C class=ThunderRT5CheckBox parent_class=ThunderRT5Frame owner=740C0000 style=54012006 ex=00000004 text=Check Option 2 font=160A1529\nSAMPLE_BUTTON hwnd=05310240 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=008D0A54 parent=014A0A7C class=ThunderRT5CheckBox parent_class=ThunderRT5Frame owner=740C0000 style=54012006 ex=00000004 text=Check Option 1 font=160A1529\nSAMPLE_BUTTON hwnd=008D0A54 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=09B909C6 parent=03C20722 class=ThunderRT5TextBox parent_class=ThunderRT5Form owner=740C0000 style=543100c4 ex=00000204 text=Test of a multi-line text box.\n\nThis multi-line control has both scroll bars visible\n\n font=160A1529\nSAMPLE_WINDOW hwnd=02A70E6C parent=03C20722 class=ThunderRT5TextBox parent_class=ThunderRT5Form owner=740C0000 style=540100c0 ex=00000204 text=Test of a single line text box font=160A1529\nACTOR_IMAGE hash=4225292827023533716\nSAMPLE_ROOT class_owner=740C0000 windows=22\nSAMPLE_PIXELS index=0 class=ThunderRT5PictureBox hash=6044436196493835024\nSAMPLE_PIXELS index=1 class=ThunderRT5CommandButton hash=6092299911425419797\nSAMPLE_PIXELS index=2 class=ThunderRT5CommandButton hash=13592503983951089365\nSAMPLE_PIXELS index=3 class=ThunderRT5CommandButton hash=10926674909206468565\nSAMPLE_PIXELS index=4 class=ThunderRT5VScrollBar hash=15902409057643114521\nSAMPLE_SCROLL_OK index=4 min=0 max=32767 pos=0 page=0\nSAMPLE_PIXELS index=5 class=ThunderRT5HScrollBar hash=868257633841785689\nSAMPLE_SCROLL_OK index=5 min=0 max=32767 pos=0 page=0\nSAMPLE_PIXELS index=6 class=ThunderRT5ComboBox hash=17074136147584877070\nSAMPLE_COMBO_SELECT_OK index=6 count=5 select1=1 drop_cancel=1\nSAMPLE_PIXELS index=7 class=ThunderRT5ListBox hash=4984228313527916599\nSAMPLE_LIST_SELECT_OK index=7 count=9 select1=1\nSAMPLE_PIXELS index=8 class=ThunderRT5ComboBox hash=12067848088617040239\nSAMPLE_COMBO_SELECT_OK index=8 count=3 select1=1 drop_cancel=1\nSAMPLE_PIXELS index=10 class=ThunderRT5Frame hash=5809650877045234277\nSAMPLE_PIXELS index=11 class=ThunderRT5OptionButton hash=5489073195633416124\nSAMPLE_OPTION_GROUP_OK index=11 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=12 class=ThunderRT5OptionButton hash=12251892067687706005\nSAMPLE_OPTION_GROUP_OK index=12 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=13 class=ThunderRT5OptionButton hash=5787002621847881932\nSAMPLE_OPTION_GROUP_OK index=13 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=14 class=ThunderRT5OptionButton hash=12093204452232153621\nSAMPLE_OPTION_GROUP_OK index=14 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=15 class=ThunderRT5Frame hash=2180935991618925484\nSAMPLE_PIXELS index=16 class=ThunderRT5CheckBox hash=16765542349863956389\nSAMPLE_CHECK_CYCLE_OK index=16 round2=initial\nSAMPLE_PIXELS index=17 class=ThunderRT5CheckBox hash=18253952673007485436\nSAMPLE_CHECK_CYCLE_OK index=17 round2=initial\nSAMPLE_PIXELS index=18 class=ThunderRT5CheckBox hash=14718775504080968885\nSAMPLE_CHECK_CYCLE_OK index=18 round2=initial\nSAMPLE_PIXELS index=19 class=ThunderRT5CheckBox hash=2903097414639958364\nSAMPLE_CHECK_CYCLE_OK index=19 round2=initial\nSAMPLE_PIXELS index=20 class=ThunderRT5TextBox hash=14603856593287597157\nSAMPLE_EDIT_OK index=20 text_restore=1 multiline=1 cross_process_replace_undo=not_covered\nSAMPLE_PIXELS index=21 class=ThunderRT5TextBox hash=7901490250484071196\nSAMPLE_EDIT_OK index=21 text_restore=1 multiline=0 cross_process_replace_undo=not_covered\nSAMPLE_PROTOCOL_PASS option=4 checkbox=4 combo=2 list=1 edit=2 scrollbar=2\nSAMPLE_PASS styled=1 count=22 active=0\n"
+    },
+    "VB6": {
+      "bare": "SAMPLE_SHOW class=ThunderRT6Main title= hwnd=01C30B90\nSAMPLE_SHOW class=ThunderRT6FormDC title=XP Visual Styles Tester - Manifest Stored in Resource hwnd=01EA0A88\nACTOR_TARGET pid=11452 creator=15316 initial_pid=11452 bits=32 path=O:\\repos.hobby\\win16style\\build\\t17-controls\\sample-vb6\\ResXpStylesTester.exe dpi=96\nACTOR_RUNTIME base=69660000 path=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL\nACTOR_MODULE_FILE actual=\\\\?\\C:\\Windows\\SysWOW64\\msvbvm60.dll\nSAMPLE_WINDOW hwnd=01110AA8 parent=01EA0A88 class=ThunderRT6PictureBoxDC parent_class=ThunderRT6FormDC owner=69660000 style=56010000 ex=00000204 text= font=510A0CAD\nSAMPLE_WINDOW hwnd=021F0AB0 parent=01EA0A88 class=ThunderRT6CommandButton parent_class=ThunderRT6FormDC owner=69660000 style=54012000 ex=00000004 text=&Advanced... font=510A0CAD\nSAMPLE_WINDOW hwnd=011B0AC0 parent=01EA0A88 class=ThunderRT6CommandButton parent_class=ThunderRT6FormDC owner=69660000 style=54012000 ex=00000004 text=Cancel font=C10A1841\nSAMPLE_WINDOW hwnd=02AD0AD8 parent=01EA0A88 class=ThunderRT6CommandButton parent_class=ThunderRT6FormDC owner=69660000 style=54012001 ex=00000004 text=OK font=C10A1841\nSAMPLE_WINDOW hwnd=019E0AE8 parent=01EA0A88 class=ThunderRT6VScrollBar parent_class=ThunderRT6FormDC owner=69660000 style=54010001 ex=00000004 text= font=00000000\nSAMPLE_WINDOW hwnd=02000D98 parent=01EA0A88 class=ThunderRT6HScrollBar parent_class=ThunderRT6FormDC owner=69660000 style=54010000 ex=00000004 text= font=00000000\nSAMPLE_WINDOW hwnd=00E70C72 parent=01EA0A88 class=ThunderRT6ComboBox parent_class=ThunderRT6FormDC owner=69660000 style=54010243 ex=00000000 text= font=C10A1841\nSAMPLE_COMBO hwnd=00E70C72 count=5 selected=-1 info=1 edit=00E70C72 list=00650E58 error=18\nSAMPLE_WINDOW hwnd=029E0A74 parent=01EA0A88 class=ThunderRT6ListBox parent_class=ThunderRT6FormDC owner=69660000 style=54210081 ex=00000204 text= font=C10A1841\nSAMPLE_LIST hwnd=029E0A74 count=9 selected=-1\nSAMPLE_WINDOW hwnd=023D0DDC parent=01EA0A88 class=ThunderRT6ComboBox parent_class=ThunderRT6FormDC owner=69660000 style=54010242 ex=00000000 text= font=C10A1841\nSAMPLE_COMBO hwnd=023D0DDC count=3 selected=-1 info=1 edit=04A208C4 list=05CC07A0 error=18\nSAMPLE_WINDOW hwnd=04A208C4 parent=023D0DDC class=Edit parent_class=ThunderRT6ComboBox owner=71D80000 style=50000380 ex=00000000 text= font=C10A1841\nSAMPLE_WINDOW hwnd=00440B78 parent=01EA0A88 class=ThunderRT6Frame parent_class=ThunderRT6FormDC owner=69660000 style=56010007 ex=00000004 text=Frame - Option Boxes font=C10A1841\nSAMPLE_WINDOW hwnd=08650C7E parent=00440B78 class=ThunderRT6PictureBoxDC parent_class=ThunderRT6Frame owner=69660000 style=56010000 ex=00000004 text= font=510A0CAD\nSAMPLE_WINDOW hwnd=02650CBA parent=08650C7E class=ThunderRT6OptionButton parent_class=ThunderRT6PictureBoxDC owner=69660000 style=54012004 ex=00000000 text=Option Item 1 font=C10A1841\nSAMPLE_BUTTON hwnd=02650CBA dlg=20c0 check=1 state=1\nSAMPLE_WINDOW hwnd=021A0670 parent=08650C7E class=ThunderRT6OptionButton parent_class=ThunderRT6PictureBoxDC owner=69660000 style=54002004 ex=00000000 text=Option Item 2 font=C10A1841\nSAMPLE_BUTTON hwnd=021A0670 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=01050A86 parent=08650C7E class=ThunderRT6OptionButton parent_class=ThunderRT6PictureBoxDC owner=69660000 style=54002004 ex=00000000 text=Option Item 3 font=C10A1841\nSAMPLE_BUTTON hwnd=01050A86 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=0A0A086E parent=08650C7E class=ThunderRT6OptionButton parent_class=ThunderRT6PictureBoxDC owner=69660000 style=54002004 ex=00000000 text=Option Item 4 font=C10A1841\nSAMPLE_BUTTON hwnd=0A0A086E dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=00CB0A7E parent=01EA0A88 class=ThunderRT6Frame parent_class=ThunderRT6FormDC owner=69660000 style=56010007 ex=00000004 text=Frame - Check boxes font=C10A1841\nSAMPLE_WINDOW hwnd=01470A7C parent=00CB0A7E class=ThunderRT6CheckBox parent_class=ThunderRT6Frame owner=69660000 style=54012006 ex=00000004 text=Check Option 4 font=C10A1841\nSAMPLE_BUTTON hwnd=01470A7C dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=008A0A54 parent=00CB0A7E class=ThunderRT6CheckBox parent_class=ThunderRT6Frame owner=69660000 style=54012006 ex=00000004 text=Check Option 3 font=C10A1841\nSAMPLE_BUTTON hwnd=008A0A54 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=052E0240 parent=00CB0A7E class=ThunderRT6CheckBox parent_class=ThunderRT6Frame owner=69660000 style=54012006 ex=00000004 text=Check Option 2 font=C10A1841\nSAMPLE_BUTTON hwnd=052E0240 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=0118027A parent=00CB0A7E class=ThunderRT6CheckBox parent_class=ThunderRT6Frame owner=69660000 style=54012006 ex=00000004 text=Check Option 1 font=C10A1841\nSAMPLE_BUTTON hwnd=0118027A dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=0775094E parent=01EA0A88 class=ThunderRT6TextBox parent_class=ThunderRT6FormDC owner=69660000 style=543100c4 ex=00000204 text=Test of a multi-line text box.\n\nThis multi-line control has both scroll bars visible\n\n font=C10A1841\nSAMPLE_WINDOW hwnd=07220922 parent=01EA0A88 class=ThunderRT6TextBox parent_class=ThunderRT6FormDC owner=69660000 style=540100c0 ex=00000204 text=Test of a single line text box font=C10A1841\nACTOR_IMAGE hash=7401124503179188409\nSAMPLE_ROOT class_owner=69660000 windows=23\nSAMPLE_PIXELS index=0 class=ThunderRT6PictureBoxDC hash=6044436196493835024\nSAMPLE_PIXELS index=1 class=ThunderRT6CommandButton hash=17124731722624785094\nSAMPLE_PIXELS index=2 class=ThunderRT6CommandButton hash=4743957850965092635\nSAMPLE_PIXELS index=3 class=ThunderRT6CommandButton hash=3178750815958153557\nSAMPLE_PIXELS index=4 class=ThunderRT6VScrollBar hash=15902409057643114521\nSAMPLE_SCROLL_OK index=4 min=0 max=32767 pos=0 page=0\nSAMPLE_PIXELS index=5 class=ThunderRT6HScrollBar hash=868257633841785689\nSAMPLE_SCROLL_OK index=5 min=0 max=32767 pos=0 page=0\nSAMPLE_PIXELS index=6 class=ThunderRT6ComboBox hash=17074136147584877070\nSAMPLE_COMBO_SELECT_OK index=6 count=5 select1=1 drop_cancel=1\nSAMPLE_PIXELS index=7 class=ThunderRT6ListBox hash=4984228313527916599\nSAMPLE_LIST_SELECT_OK index=7 count=9 select1=1\nSAMPLE_PIXELS index=8 class=ThunderRT6ComboBox hash=12917264290057623893\nSAMPLE_COMBO_SELECT_OK index=8 count=3 select1=1 drop_cancel=1\nSAMPLE_PIXELS index=10 class=ThunderRT6Frame hash=589664862726404383\nSAMPLE_PIXELS index=11 class=ThunderRT6PictureBoxDC hash=1278922945141777549\nSAMPLE_PIXELS index=12 class=ThunderRT6OptionButton hash=12375361089805058998\nSAMPLE_OPTION_GROUP_OK index=12 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=13 class=ThunderRT6OptionButton hash=8992662082591079508\nSAMPLE_OPTION_GROUP_OK index=13 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=14 class=ThunderRT6OptionButton hash=10364981851982515334\nSAMPLE_OPTION_GROUP_OK index=14 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=15 class=ThunderRT6OptionButton hash=7149221372865799016\nSAMPLE_OPTION_GROUP_OK index=15 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=16 class=ThunderRT6Frame hash=3072325764185165433\nSAMPLE_PIXELS index=17 class=ThunderRT6CheckBox hash=8986585252686242869\nSAMPLE_CHECK_CYCLE_OK index=17 round2=initial\nSAMPLE_PIXELS index=18 class=ThunderRT6CheckBox hash=2774099812071113511\nSAMPLE_CHECK_CYCLE_OK index=18 round2=initial\nSAMPLE_PIXELS index=19 class=ThunderRT6CheckBox hash=1052994606495805765\nSAMPLE_CHECK_CYCLE_OK index=19 round2=initial\nSAMPLE_PIXELS index=20 class=ThunderRT6CheckBox hash=6350961052212119109\nSAMPLE_CHECK_CYCLE_OK index=20 round2=initial\nSAMPLE_PIXELS index=21 class=ThunderRT6TextBox hash=13827018734885693725\nSAMPLE_EDIT_OK index=21 text_restore=1 multiline=1 cross_process_replace_undo=not_covered\nSAMPLE_PIXELS index=22 class=ThunderRT6TextBox hash=2251834694473885364\nSAMPLE_EDIT_OK index=22 text_restore=1 multiline=0 cross_process_replace_undo=not_covered\nSAMPLE_PROTOCOL_PASS option=4 checkbox=4 combo=2 list=1 edit=2 scrollbar=2\nSAMPLE_PASS styled=0 count=23 active=0\n",
+      "old_styled": "SAMPLE_SHOW class=ThunderRT6Main title= hwnd=04B10876\nSAMPLE_SHOW class=ThunderRT6FormDC title=XP Visual Styles Tester - Manifest Stored in Resource hwnd=02670CBA\nACTOR_TARGET pid=41896 creator=37460 initial_pid=37460 bits=32 path=O:\\repos.hobby\\win16style\\build\\t17-controls\\sample-vb6\\ResXpStylesTester.exe dpi=96\nACTOR_STYLE_MODULE base=6A440000 path=O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll\nACTOR_MODULE_FILE actual=\\\\?\\O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll\nACTOR_RUNTIME base=69660000 path=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL\nACTOR_MODULE_FILE actual=\\\\?\\C:\\Windows\\SysWOW64\\msvbvm60.dll\nSAMPLE_WINDOW hwnd=02400DDC parent=02670CBA class=ThunderRT6PictureBoxDC parent_class=ThunderRT6FormDC owner=69660000 style=56010000 ex=00000204 text= font=420A1B2D\nSAMPLE_WINDOW hwnd=05CF07A0 parent=02670CBA class=ThunderRT6CommandButton parent_class=ThunderRT6FormDC owner=69660000 style=54012000 ex=00000004 text=&Advanced... font=420A1B2D\nSAMPLE_WINDOW hwnd=04A408C4 parent=02670CBA class=ThunderRT6CommandButton parent_class=ThunderRT6FormDC owner=69660000 style=54012000 ex=00000004 text=Cancel font=EF0A114E\nSAMPLE_WINDOW hwnd=02A00A74 parent=02670CBA class=ThunderRT6CommandButton parent_class=ThunderRT6FormDC owner=69660000 style=54012001 ex=00000004 text=OK font=EF0A114E\nSAMPLE_WINDOW hwnd=00E90C72 parent=02670CBA class=ThunderRT6VScrollBar parent_class=ThunderRT6FormDC owner=69660000 style=54010001 ex=00000004 text= font=00000000\nSAMPLE_WINDOW hwnd=02AF0AD8 parent=02670CBA class=ThunderRT6HScrollBar parent_class=ThunderRT6FormDC owner=69660000 style=54010000 ex=00000004 text= font=00000000\nSAMPLE_WINDOW hwnd=01A00AE8 parent=02670CBA class=ThunderRT6ComboBox parent_class=ThunderRT6FormDC owner=69660000 style=54010243 ex=00000000 text= font=EF0A114E\nSAMPLE_COMBO hwnd=01A00AE8 count=5 selected=-1 info=1 edit=01A00AE8 list=011D0AC0 error=18\nSAMPLE_WINDOW hwnd=02210AB0 parent=02670CBA class=ThunderRT6ListBox parent_class=ThunderRT6FormDC owner=69660000 style=54210081 ex=00000204 text= font=EF0A114E\nSAMPLE_LIST hwnd=02210AB0 count=9 selected=-1\nSAMPLE_WINDOW hwnd=01130AA8 parent=02670CBA class=ThunderRT6ComboBox parent_class=ThunderRT6FormDC owner=69660000 style=54010242 ex=00000000 text= font=EF0A114E\nSAMPLE_COMBO hwnd=01130AA8 count=3 selected=-1 info=1 edit=021C0670 list=0A0C086E error=18\nSAMPLE_WINDOW hwnd=021C0670 parent=01130AA8 class=Edit parent_class=ThunderRT6ComboBox owner=71D80000 style=50000380 ex=00000000 text= font=DB0A167A\nSAMPLE_WINDOW hwnd=09B809C6 parent=02670CBA class=ThunderRT6Frame parent_class=ThunderRT6FormDC owner=69660000 style=56010007 ex=00000004 text=Frame - Option Boxes font=EF0A114E\nSAMPLE_WINDOW hwnd=02A60E6C parent=09B809C6 class=ThunderRT6PictureBoxDC parent_class=ThunderRT6Frame owner=69660000 style=56010000 ex=00000004 text= font=420A1B2D\nSAMPLE_WINDOW hwnd=04AD0906 parent=02A60E6C class=ThunderRT6OptionButton parent_class=ThunderRT6PictureBoxDC owner=69660000 style=54012004 ex=00000000 text=Option Item 1 font=EF0A114E\nSAMPLE_BUTTON hwnd=04AD0906 dlg=20c0 check=1 state=1\nSAMPLE_WINDOW hwnd=08670C7E parent=02A60E6C class=ThunderRT6OptionButton parent_class=ThunderRT6PictureBoxDC owner=69660000 style=54002004 ex=00000000 text=Option Item 2 font=EF0A114E\nSAMPLE_BUTTON hwnd=08670C7E dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=00460B78 parent=02A60E6C class=ThunderRT6OptionButton parent_class=ThunderRT6PictureBoxDC owner=69660000 style=54002004 ex=00000000 text=Option Item 3 font=EF0A114E\nSAMPLE_BUTTON hwnd=00460B78 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=00CD0A7E parent=02A60E6C class=ThunderRT6OptionButton parent_class=ThunderRT6PictureBoxDC owner=69660000 style=54002004 ex=00000000 text=Option Item 4 font=EF0A114E\nSAMPLE_BUTTON hwnd=00CD0A7E dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=01490A7C parent=02670CBA class=ThunderRT6Frame parent_class=ThunderRT6FormDC owner=69660000 style=56010007 ex=00000004 text=Frame - Check boxes font=EF0A114E\nSAMPLE_WINDOW hwnd=008C0A54 parent=01490A7C class=ThunderRT6CheckBox parent_class=ThunderRT6Frame owner=69660000 style=54012006 ex=00000004 text=Check Option 4 font=EF0A114E\nSAMPLE_BUTTON hwnd=008C0A54 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=05300240 parent=01490A7C class=ThunderRT6CheckBox parent_class=ThunderRT6Frame owner=69660000 style=54012006 ex=00000004 text=Check Option 3 font=EF0A114E\nSAMPLE_BUTTON hwnd=05300240 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=011A027A parent=01490A7C class=ThunderRT6CheckBox parent_class=ThunderRT6Frame owner=69660000 style=54012006 ex=00000004 text=Check Option 2 font=EF0A114E\nSAMPLE_BUTTON hwnd=011A027A dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=01C50B90 parent=01490A7C class=ThunderRT6CheckBox parent_class=ThunderRT6Frame owner=69660000 style=54012006 ex=00000004 text=Check Option 1 font=EF0A114E\nSAMPLE_BUTTON hwnd=01C50B90 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=0777094E parent=02670CBA class=ThunderRT6TextBox parent_class=ThunderRT6FormDC owner=69660000 style=543100c4 ex=00000204 text=Test of a multi-line text box.\n\nThis multi-line control has both scroll bars visible\n\n font=EF0A114E\nSAMPLE_WINDOW hwnd=07240922 parent=02670CBA class=ThunderRT6TextBox parent_class=ThunderRT6FormDC owner=69660000 style=540100c0 ex=00000204 text=Test of a single line text box font=EF0A114E\nACTOR_IMAGE hash=17860919306616191477\nSAMPLE_ROOT class_owner=69660000 windows=23\nSAMPLE_PIXELS index=0 class=ThunderRT6PictureBoxDC hash=6044436196493835024\nSAMPLE_PIXELS index=1 class=ThunderRT6CommandButton hash=6092299911425419797\nSAMPLE_PIXELS index=2 class=ThunderRT6CommandButton hash=13592503983951089365\nSAMPLE_PIXELS index=3 class=ThunderRT6CommandButton hash=10926674909206468565\nSAMPLE_PIXELS index=4 class=ThunderRT6VScrollBar hash=15902409057643114521\nSAMPLE_SCROLL_OK index=4 min=0 max=32767 pos=0 page=0\nSAMPLE_PIXELS index=5 class=ThunderRT6HScrollBar hash=868257633841785689\nSAMPLE_SCROLL_OK index=5 min=0 max=32767 pos=0 page=0\nSAMPLE_PIXELS index=6 class=ThunderRT6ComboBox hash=17074136147584877070\nSAMPLE_COMBO_SELECT_OK index=6 count=5 select1=1 drop_cancel=1\nSAMPLE_PIXELS index=7 class=ThunderRT6ListBox hash=4984228313527916599\nSAMPLE_LIST_SELECT_OK index=7 count=9 select1=1\nSAMPLE_PIXELS index=8 class=ThunderRT6ComboBox hash=12067848088617040239\nSAMPLE_COMBO_SELECT_OK index=8 count=3 select1=1 drop_cancel=1\nSAMPLE_PIXELS index=10 class=ThunderRT6Frame hash=14877414186237399364\nSAMPLE_PIXELS index=11 class=ThunderRT6PictureBoxDC hash=1278922945141777549\nSAMPLE_PIXELS index=12 class=ThunderRT6OptionButton hash=12375361089805058998\nSAMPLE_OPTION_GROUP_OK index=12 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=13 class=ThunderRT6OptionButton hash=8992662082591079508\nSAMPLE_OPTION_GROUP_OK index=13 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=14 class=ThunderRT6OptionButton hash=10364981851982515334\nSAMPLE_OPTION_GROUP_OK index=14 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=15 class=ThunderRT6OptionButton hash=7149221372865799016\nSAMPLE_OPTION_GROUP_OK index=15 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=16 class=ThunderRT6Frame hash=2180935991618925484\nSAMPLE_PIXELS index=17 class=ThunderRT6CheckBox hash=16765542349863956389\nSAMPLE_CHECK_CYCLE_OK index=17 round2=initial\nSAMPLE_PIXELS index=18 class=ThunderRT6CheckBox hash=18253952673007485436\nSAMPLE_CHECK_CYCLE_OK index=18 round2=initial\nSAMPLE_PIXELS index=19 class=ThunderRT6CheckBox hash=14718775504080968885\nSAMPLE_CHECK_CYCLE_OK index=19 round2=initial\nSAMPLE_PIXELS index=20 class=ThunderRT6CheckBox hash=2903097414639958364\nSAMPLE_CHECK_CYCLE_OK index=20 round2=initial\nSAMPLE_PIXELS index=21 class=ThunderRT6TextBox hash=14603856593287597157\nSAMPLE_EDIT_OK index=21 text_restore=1 multiline=1 cross_process_replace_undo=not_covered\nSAMPLE_PIXELS index=22 class=ThunderRT6TextBox hash=7901490250484071196\nSAMPLE_EDIT_OK index=22 text_restore=1 multiline=0 cross_process_replace_undo=not_covered\nSAMPLE_PROTOCOL_PASS option=4 checkbox=4 combo=2 list=1 edit=2 scrollbar=2\nSAMPLE_PASS styled=1 count=23 active=0\n",
+      "development_new": "SAMPLE_SHOW class=ThunderRT6Main title= hwnd=02630ACA\nSAMPLE_SHOW class=ThunderRT6FormDC title=XP Visual Styles Tester - Manifest Stored in Resource hwnd=04AF0906\nACTOR_TARGET pid=35428 creator=25316 initial_pid=25316 bits=32 path=O:\\repos.hobby\\win16style\\build\\t17-controls\\sample-vb6\\ResXpStylesTester.exe dpi=96\nACTOR_STYLE_MODULE base=6A440000 path=O:\\repos.hobby\\win16style\\build\\t17-controls\\s4-dev-package\\ntw16s32.dll\nACTOR_MODULE_FILE actual=\\\\?\\O:\\repos.hobby\\win16style\\build\\t17-controls\\s4-dev-package\\ntw16s32.dll\nACTOR_RUNTIME base=69660000 path=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL\nACTOR_MODULE_FILE actual=\\\\?\\C:\\Windows\\SysWOW64\\msvbvm60.dll\nSAMPLE_WINDOW hwnd=01160AA8 parent=04AF0906 class=ThunderRT6PictureBoxDC parent_class=ThunderRT6FormDC owner=69660000 style=56010000 ex=00000204 text= font=F70A186E\nSAMPLE_WINDOW hwnd=0A0F086E parent=04AF0906 class=ThunderRT6CommandButton parent_class=ThunderRT6FormDC owner=69660000 style=54012000 ex=00000004 text=&Advanced... font=F70A186E\nSAMPLE_WINDOW hwnd=021E0670 parent=04AF0906 class=ThunderRT6CommandButton parent_class=ThunderRT6FormDC owner=69660000 style=54012000 ex=00000004 text=Cancel font=CF0A1540\nSAMPLE_WINDOW hwnd=02230AB0 parent=04AF0906 class=ThunderRT6CommandButton parent_class=ThunderRT6FormDC owner=69660000 style=54012001 ex=00000004 text=OK font=CF0A1540\nSAMPLE_WINDOW hwnd=01A20AE8 parent=04AF0906 class=ThunderRT6VScrollBar parent_class=ThunderRT6FormDC owner=69660000 style=54010001 ex=00000004 text= font=00000000\nSAMPLE_WINDOW hwnd=00EB0C72 parent=04AF0906 class=ThunderRT6HScrollBar parent_class=ThunderRT6FormDC owner=69660000 style=54010000 ex=00000004 text= font=00000000\nSAMPLE_WINDOW hwnd=02B10AD8 parent=04AF0906 class=ThunderRT6ComboBox parent_class=ThunderRT6FormDC owner=69660000 style=54010243 ex=00000000 text= font=CF0A1540\nSAMPLE_COMBO hwnd=02B10AD8 count=5 selected=-1 info=1 edit=02B10AD8 list=02A20A74 error=18\nSAMPLE_WINDOW hwnd=04A608C4 parent=04AF0906 class=ThunderRT6ListBox parent_class=ThunderRT6FormDC owner=69660000 style=54210081 ex=00000204 text= font=CF0A1540\nSAMPLE_LIST hwnd=04A608C4 count=9 selected=-1\nSAMPLE_WINDOW hwnd=05D107A0 parent=04AF0906 class=ThunderRT6ComboBox parent_class=ThunderRT6FormDC owner=69660000 style=54010242 ex=00000000 text= font=CF0A1540\nSAMPLE_COMBO hwnd=05D107A0 count=3 selected=-1 info=1 edit=08690C7E list=00CF0A7E error=18\nSAMPLE_WINDOW hwnd=08690C7E parent=05D107A0 class=Edit parent_class=ThunderRT6ComboBox owner=71D80000 style=50000380 ex=00000000 text= font=330A0D49\nSAMPLE_WINDOW hwnd=010D0A86 parent=04AF0906 class=ThunderRT6Frame parent_class=ThunderRT6FormDC owner=69660000 style=56010007 ex=00000004 text=Frame - Option Boxes font=CF0A1540\nSAMPLE_WINDOW hwnd=03890C42 parent=010D0A86 class=ThunderRT6PictureBoxDC parent_class=ThunderRT6Frame owner=69660000 style=56010000 ex=00000004 text= font=F70A186E\nSAMPLE_WINDOW hwnd=03C30722 parent=03890C42 class=ThunderRT6OptionButton parent_class=ThunderRT6PictureBoxDC owner=69660000 style=54012004 ex=00000000 text=Option Item 1 font=CF0A1540\nSAMPLE_BUTTON hwnd=03C30722 dlg=20c0 check=1 state=1\nSAMPLE_WINDOW hwnd=02A80E6C parent=03890C42 class=ThunderRT6OptionButton parent_class=ThunderRT6PictureBoxDC owner=69660000 style=54002004 ex=00000000 text=Option Item 2 font=CF0A1540\nSAMPLE_BUTTON hwnd=02A80E6C dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=09BA09C6 parent=03890C42 class=ThunderRT6OptionButton parent_class=ThunderRT6PictureBoxDC owner=69660000 style=54002004 ex=00000000 text=Option Item 3 font=CF0A1540\nSAMPLE_BUTTON hwnd=09BA09C6 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=014B0A7C parent=03890C42 class=ThunderRT6OptionButton parent_class=ThunderRT6PictureBoxDC owner=69660000 style=54002004 ex=00000000 text=Option Item 4 font=CF0A1540\nSAMPLE_BUTTON hwnd=014B0A7C dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=008E0A54 parent=04AF0906 class=ThunderRT6Frame parent_class=ThunderRT6FormDC owner=69660000 style=56010007 ex=00000004 text=Frame - Check boxes font=CF0A1540\nSAMPLE_WINDOW hwnd=05320240 parent=008E0A54 class=ThunderRT6CheckBox parent_class=ThunderRT6Frame owner=69660000 style=54012006 ex=00000004 text=Check Option 4 font=CF0A1540\nSAMPLE_BUTTON hwnd=05320240 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=011C027A parent=008E0A54 class=ThunderRT6CheckBox parent_class=ThunderRT6Frame owner=69660000 style=54012006 ex=00000004 text=Check Option 3 font=CF0A1540\nSAMPLE_BUTTON hwnd=011C027A dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=01C70B90 parent=008E0A54 class=ThunderRT6CheckBox parent_class=ThunderRT6Frame owner=69660000 style=54012006 ex=00000004 text=Check Option 2 font=CF0A1540\nSAMPLE_BUTTON hwnd=01C70B90 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=04B30876 parent=008E0A54 class=ThunderRT6CheckBox parent_class=ThunderRT6Frame owner=69660000 style=54012006 ex=00000004 text=Check Option 1 font=CF0A1540\nSAMPLE_BUTTON hwnd=04B30876 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=0779094E parent=04AF0906 class=ThunderRT6TextBox parent_class=ThunderRT6FormDC owner=69660000 style=543100c4 ex=00000204 text=Test of a multi-line text box.\n\nThis multi-line control has both scroll bars visible\n\n font=CF0A1540\nSAMPLE_WINDOW hwnd=07260922 parent=04AF0906 class=ThunderRT6TextBox parent_class=ThunderRT6FormDC owner=69660000 style=540100c0 ex=00000204 text=Test of a single line text box font=CF0A1540\nACTOR_IMAGE hash=11108195264409690260\nSAMPLE_ROOT class_owner=69660000 windows=23\nSAMPLE_PIXELS index=0 class=ThunderRT6PictureBoxDC hash=6044436196493835024\nSAMPLE_PIXELS index=1 class=ThunderRT6CommandButton hash=6092299911425419797\nSAMPLE_PIXELS index=2 class=ThunderRT6CommandButton hash=13592503983951089365\nSAMPLE_PIXELS index=3 class=ThunderRT6CommandButton hash=10926674909206468565\nSAMPLE_PIXELS index=4 class=ThunderRT6VScrollBar hash=15902409057643114521\nSAMPLE_SCROLL_OK index=4 min=0 max=32767 pos=0 page=0\nSAMPLE_PIXELS index=5 class=ThunderRT6HScrollBar hash=868257633841785689\nSAMPLE_SCROLL_OK index=5 min=0 max=32767 pos=0 page=0\nSAMPLE_PIXELS index=6 class=ThunderRT6ComboBox hash=17074136147584877070\nSAMPLE_COMBO_SELECT_OK index=6 count=5 select1=1 drop_cancel=1\nSAMPLE_PIXELS index=7 class=ThunderRT6ListBox hash=4984228313527916599\nSAMPLE_LIST_SELECT_OK index=7 count=9 select1=1\nSAMPLE_PIXELS index=8 class=ThunderRT6ComboBox hash=12067848088617040239\nSAMPLE_COMBO_SELECT_OK index=8 count=3 select1=1 drop_cancel=1\nSAMPLE_PIXELS index=10 class=ThunderRT6Frame hash=4338921653074584677\nSAMPLE_PIXELS index=11 class=ThunderRT6PictureBoxDC hash=4721916846035101820\nSAMPLE_PIXELS index=12 class=ThunderRT6OptionButton hash=4806887121930141244\nSAMPLE_OPTION_GROUP_OK index=12 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=13 class=ThunderRT6OptionButton hash=5787002621847881932\nSAMPLE_OPTION_GROUP_OK index=13 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=14 class=ThunderRT6OptionButton hash=12251892067687706005\nSAMPLE_OPTION_GROUP_OK index=14 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=15 class=ThunderRT6OptionButton hash=5489073195633416124\nSAMPLE_OPTION_GROUP_OK index=15 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=16 class=ThunderRT6Frame hash=2180935991618925484\nSAMPLE_PIXELS index=17 class=ThunderRT6CheckBox hash=16765542349863956389\nSAMPLE_CHECK_CYCLE_OK index=17 round2=initial\nSAMPLE_PIXELS index=18 class=ThunderRT6CheckBox hash=18253952673007485436\nSAMPLE_CHECK_CYCLE_OK index=18 round2=initial\nSAMPLE_PIXELS index=19 class=ThunderRT6CheckBox hash=14718775504080968885\nSAMPLE_CHECK_CYCLE_OK index=19 round2=initial\nSAMPLE_PIXELS index=20 class=ThunderRT6CheckBox hash=2903097414639958364\nSAMPLE_CHECK_CYCLE_OK index=20 round2=initial\nSAMPLE_PIXELS index=21 class=ThunderRT6TextBox hash=14603856593287597157\nSAMPLE_EDIT_OK index=21 text_restore=1 multiline=1 cross_process_replace_undo=not_covered\nSAMPLE_PIXELS index=22 class=ThunderRT6TextBox hash=7901490250484071196\nSAMPLE_EDIT_OK index=22 text_restore=1 multiline=0 cross_process_replace_undo=not_covered\nSAMPLE_PROTOCOL_PASS option=4 checkbox=4 combo=2 list=1 edit=2 scrollbar=2\nSAMPLE_PASS styled=1 count=23 active=0\n"
+    }
+  },
+  "probe_corrections": [
+    "VB5 form is ThunderRT5Form, initial event filter incorrectly assumed FormDC and timed out; owned Job closed",
+    "cross-process GetWindowText reads cached custom caption rather than current edit buffer; WM_GETTEXT proved actual text set/restore; previous EM_REPLACESEL/undo failures were not valid product evidence",
+    "runtime-only LoadLibrary gives1411 before project registration; actual valid project now proves class names/owners instead of blind bootstrap"
+  ],
+  "tests": {
+    "status": "passed",
+    "seconds": 23.282347699976526,
+    "cases": [
+      {
+        "name": "abi-32",
+        "exit_code": 0,
+        "seconds": 0.0806373999803327,
+        "status": "passed",
+        "markers": [
+          "ABI PASS width=32"
+        ]
+      },
+      {
+        "name": "vb-32",
+        "exit_code": 0,
+        "seconds": 2.720633899967652,
+        "status": "passed",
+        "markers": [
+          "VB_CLEANUP_OK",
+          "VB_OPTION_OK group_native=1 source_pixels=182 wrong_runtime_rejected=1",
+          "VB_CHECKBOX_RETIRE_DESTROY_OK"
+        ]
+      },
+      {
+        "name": "font-32",
+        "exit_code": 0,
+        "seconds": 1.668487399991136,
+        "status": "passed",
+        "markers": [
+          "VB_OWNERSHIP_OK",
+          "REPORT_TEXT_OWNERSHIP_OK"
+        ]
+      },
+      {
+        "name": "abi-64",
+        "exit_code": 0,
+        "seconds": 0.06620180001482368,
+        "status": "passed",
+        "markers": [
+          "ABI PASS width=64"
+        ]
+      },
+      {
+        "name": "vb-64",
+        "exit_code": 0,
+        "seconds": 2.1469636999536306,
+        "status": "passed",
+        "markers": [
+          "VB_CLEANUP_OK",
+          "VB_OPTION_OK group_native=1 source_pixels=182 wrong_runtime_rejected=1",
+          "VB_CHECKBOX_RETIRE_DESTROY_OK"
+        ]
+      },
+      {
+        "name": "font-64",
+        "exit_code": 0,
+        "seconds": 1.4349951999611221,
+        "status": "passed",
+        "markers": [
+          "VB_OWNERSHIP_OK",
+          "REPORT_TEXT_OWNERSHIP_OK"
+        ]
+      },
+      {
+        "name": "demo-pair",
+        "exit_code": 0,
+        "seconds": 4.311383400054183,
+        "status": "passed",
+        "markers": [
+          "DEMO PAIR PASS"
+        ]
+      },
+      {
+        "name": "initial-dual",
+        "exit_code": 0,
+        "seconds": 1.573002599994652,
+        "status": "passed",
+        "markers": [
+          "LAUNCH MATRIX PASS"
+        ]
+      },
+      {
+        "name": "cmd-nested",
+        "exit_code": 0,
+        "seconds": 2.549958899966441,
+        "status": "passed",
+        "markers": [
+          "CMD NESTED PASS core four native PE edges"
+        ]
+      },
+      {
+        "name": "actual-vb5-bare",
+        "exit_code": 0,
+        "seconds": 1.6147387000382878,
+        "status": "passed",
+        "markers": [
+          "SAMPLE_PROTOCOL_PASS option=4 checkbox=4 combo=2 list=1 edit=2 scrollbar=2",
+          "SAMPLE_PASS styled=0"
+        ]
+      },
+      {
+        "name": "actual-vb5-styled",
+        "exit_code": 0,
+        "seconds": 1.8309447999927215,
+        "status": "passed",
+        "markers": [
+          "SAMPLE_PROTOCOL_PASS option=4 checkbox=4 combo=2 list=1 edit=2 scrollbar=2",
+          "SAMPLE_PASS styled=1",
+          "VB_SAMPLE_GLYPH_OK source_pixels=182 check=1"
+        ]
+      },
+      {
+        "name": "actual-vb6-bare",
+        "exit_code": 0,
+        "seconds": 1.4947621999890544,
+        "status": "passed",
+        "markers": [
+          "SAMPLE_PROTOCOL_PASS option=4 checkbox=4 combo=2 list=1 edit=2 scrollbar=2",
+          "SAMPLE_PASS styled=0"
+        ]
+      },
+      {
+        "name": "actual-vb6-styled",
+        "exit_code": 0,
+        "seconds": 1.7794171000132337,
+        "status": "passed",
+        "markers": [
+          "SAMPLE_PROTOCOL_PASS option=4 checkbox=4 combo=2 list=1 edit=2 scrollbar=2",
+          "SAMPLE_PASS styled=1",
+          "VB_SAMPLE_GLYPH_OK source_pixels=182 check=1"
+        ]
+      }
+    ],
+    "skips": [
+      "HD Tune elevated UI: owner default skip",
+      "no physical input/all-DPI/complete OCX validation"
+    ],
+    "sha256": {
+      "demo.exe": "31b5647f2257e196d78ce62657d772ed835020289a17fda1f7580a3f4ab6cc4c",
+      "ntw16s32.dll": "9dd95bcb561bcde0e0f7f1e15f3c80176d483f5f6bfe66c0bad3f89e7b8ef1d2",
+      "ntw16s64.dll": "43872d168a8363729ace91e49ab6c37b0a5a1ebd650f7090a38210e2c87393ab",
+      "run16s.exe": "9fb80edda1aa21f973180d0a497585ba905ab9e3a241d7ca94980d6f7ce56ac5"
+    },
+    "scope": "9 self-contained focused cases plus4 separately identified optional authentic VB5/6 pairs; no original binary becomes required dependency"
+  },
+  "publication": {
+    "test_result": "O:\\repos.hobby\\win16style\\build\\t17-package\\s4-test\\result.json",
+    "files": [
+      {
+        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s4-publish\\before-0",
+        "expected": "31b5647f2257e196d78ce62657d772ed835020289a17fda1f7580a3f4ab6cc4c",
+        "before": "c4a4c679c8ca10ff6cb19284a2c72fb492419089d074fbb923a8cd1c96f80ce4",
+        "after": "31b5647f2257e196d78ce62657d772ed835020289a17fda1f7580a3f4ab6cc4c"
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s4-publish\\before-0",
+        "expected": "9dd95bcb561bcde0e0f7f1e15f3c80176d483f5f6bfe66c0bad3f89e7b8ef1d2",
+        "before": "9f7feb511ab9882e330afd5bfdf709a69317721fa05d00fa21badb7165123b7b",
+        "after": "9dd95bcb561bcde0e0f7f1e15f3c80176d483f5f6bfe66c0bad3f89e7b8ef1d2"
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s4-publish\\before-0",
+        "expected": "43872d168a8363729ace91e49ab6c37b0a5a1ebd650f7090a38210e2c87393ab",
+        "before": "88f2f29aa7bfcd6fe5649d10dda1383ba0ea7f018fc4ed27f3886b96da76d96e",
+        "after": "43872d168a8363729ace91e49ab6c37b0a5a1ebd650f7090a38210e2c87393ab"
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s4-publish\\before-0",
+        "expected": "9fb80edda1aa21f973180d0a497585ba905ab9e3a241d7ca94980d6f7ce56ac5",
+        "before": "822838efd0c1fb5beed25d7efd727f99d2273db4cf3c6407b3a1b175f21a56a6",
+        "after": "9fb80edda1aa21f973180d0a497585ba905ab9e3a241d7ca94980d6f7ce56ac5"
+      },
+      {
+        "path": "O:\\winnt\\system32\\demo.exe",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s4-publish\\before-1",
+        "expected": "31b5647f2257e196d78ce62657d772ed835020289a17fda1f7580a3f4ab6cc4c",
+        "before": "c4a4c679c8ca10ff6cb19284a2c72fb492419089d074fbb923a8cd1c96f80ce4",
+        "after": "31b5647f2257e196d78ce62657d772ed835020289a17fda1f7580a3f4ab6cc4c"
+      },
+      {
+        "path": "O:\\winnt\\system32\\ntw16s32.dll",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s4-publish\\before-1",
+        "expected": "9dd95bcb561bcde0e0f7f1e15f3c80176d483f5f6bfe66c0bad3f89e7b8ef1d2",
+        "before": "9f7feb511ab9882e330afd5bfdf709a69317721fa05d00fa21badb7165123b7b",
+        "after": "9dd95bcb561bcde0e0f7f1e15f3c80176d483f5f6bfe66c0bad3f89e7b8ef1d2"
+      },
+      {
+        "path": "O:\\winnt\\system32\\ntw16s64.dll",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s4-publish\\before-1",
+        "expected": "43872d168a8363729ace91e49ab6c37b0a5a1ebd650f7090a38210e2c87393ab",
+        "before": "88f2f29aa7bfcd6fe5649d10dda1383ba0ea7f018fc4ed27f3886b96da76d96e",
+        "after": "43872d168a8363729ace91e49ab6c37b0a5a1ebd650f7090a38210e2c87393ab"
+      },
+      {
+        "path": "O:\\winnt\\system32\\run16s.exe",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s4-publish\\before-1",
+        "expected": "9fb80edda1aa21f973180d0a497585ba905ab9e3a241d7ca94980d6f7ce56ac5",
+        "before": "822838efd0c1fb5beed25d7efd727f99d2273db4cf3c6407b3a1b175f21a56a6",
+        "after": "9fb80edda1aa21f973180d0a497585ba905ab9e3a241d7ca94980d6f7ce56ac5"
+      }
+    ],
+    "status": "passed",
+    "tested_package": "O:\\repos.hobby\\win16style\\build\\t17-package\\s4-final\\candidate"
+  },
+  "uncovered": [
+    "authentic windowless variants, graphical buttons and application custom pictures remain outside this finite S",
+    "actual Ctrl/keyboard/IME/accessibility/resource property mutation not proven by cross-process BM_CLICK/text API",
+    "true VB5/6 are x86; x64 C fixture only, not actual64-bit VB",
+    "Combo/List/Scroll wrappers not implemented yet; exact public baseline retained for following S",
+    "no globally installed IDE/OCX; original samples are optional and never build/test hard dependencies"
+  ],
+  "original_endpoint_status": "TLS verification failed expired certificate; no bypass. Archived primary-authored page and original downloadable bytes at exact Git commit used as transport. Archive root CC0 not interpreted as original-work permission.",
+  "negatives": [
+    {
+      "name": "core",
+      "exit_code": 1,
+      "seconds": 0.8133454999770038,
+      "diagnostic": "VB FAIL line=75 error=0: attached(option_a) && attached(option_b) && !attached(wrong_runtime)\r\nVB FAIL line=154 error=0: wait==WAIT_OBJECT_0 && !code\r\n",
+      "scope": "missing Option exact alias"
+    },
+    {
+      "name": "actual-vb5",
+      "exit_code": 1,
+      "seconds": 1.1481455999892205,
+      "diagnostic": "VB_SAMPLE_FAIL line=99 error=0 (pixels[(top+MulDiv(y,dpi,96))*cx+MulDiv(x,dpi,96)]&0xffffff)==expected\r\n",
+      "scope": "actual source glyph mismatch"
+    },
+    {
+      "name": "actual-vb6",
+      "exit_code": 1,
+      "seconds": 1.2433390999794938,
+      "diagnostic": "VB_SAMPLE_FAIL line=99 error=0 (pixels[(top+MulDiv(y,dpi,96))*cx+MulDiv(x,dpi,96)]&0xffffff)==expected\r\n",
+      "scope": "actual source glyph mismatch"
+    }
+  ],
+  "clean_build": {
+    "targets": "all",
+    "selection": "^core/abi$",
+    "profile": "Focused",
+    "build_root": "O:\\repos.hobby\\win16style\\build\\t17-package\\s4-final\\clean-source\\build\\.ninja",
+    "exit_code": 0,
+    "status": "passed",
+    "build_jobs": 8,
+    "tests": [
+      {
+        "tests": 1,
+        "architecture": "x86",
+        "build_seconds": 60.88120369997341,
+        "configure_seconds": 6.366126600012649,
+        "test_seconds": 0.8306506000226364,
+        "skipped": [],
+        "passed": 1
+      },
+      {
+        "tests": 1,
+        "architecture": "x64",
+        "build_seconds": 57.96948319999501,
+        "configure_seconds": 7.483493399980944,
+        "test_seconds": 0.5586209999746643,
+        "skipped": [],
+        "passed": 1
+      }
+    ],
+    "test_jobs": 4,
+    "architectures": [
+      "x86",
+      "x64"
+    ]
+  },
+  "actual_package_logs": {
+    "VB5-bare": "SAMPLE_SHOW class=ThunderRT5Main title= hwnd=02C20E6C\nSAMPLE_SHOW class=ThunderRT5Form title=XP Visual Styles Tester - Manifest Stored in Resource hwnd=0797094C\nVB_SAMPLE_TARGET pid=29096 creator=33024 initial_pid=29096 bits=32 path=O:\\repos.hobby\\win16style\\build\\t17-audit\\s4-intrinsic-samples\\vb5\\ResXpStylesTester.exe dpi=96\nVB_SAMPLE_RUNTIME base=740C0000 path=O:\\repos.hobby\\win16style\\build\\t17-audit\\s4-intrinsic-samples\\vb5\\MSVBVM50.DLL\nVB_SAMPLE_MODULE_FILE actual=\\\\?\\O:\\repos.hobby\\win16style\\build\\t17-audit\\s4-intrinsic-samples\\vb5\\MSVBVM50.DLL\nSAMPLE_WINDOW hwnd=01710ADE parent=0797094C class=ThunderRT5PictureBox parent_class=ThunderRT5Form owner=740C0000 style=56010000 ex=00000204 text= font=F10A0D9D\nSAMPLE_WINDOW hwnd=01060B84 parent=0797094C class=ThunderRT5CommandButton parent_class=ThunderRT5Form owner=740C0000 style=54012000 ex=00000004 text=&Advanced... font=F10A0D9D\nSAMPLE_WINDOW hwnd=02EB0BF8 parent=0797094C class=ThunderRT5CommandButton parent_class=ThunderRT5Form owner=740C0000 style=54012000 ex=00000004 text=Cancel font=C20A09D6\nSAMPLE_WINDOW hwnd=0375071C parent=0797094C class=ThunderRT5CommandButton parent_class=ThunderRT5Form owner=740C0000 style=54012001 ex=00000004 text=OK font=C20A09D6\nSAMPLE_WINDOW hwnd=045A0212 parent=0797094C class=ThunderRT5VScrollBar parent_class=ThunderRT5Form owner=740C0000 style=54010001 ex=00000004 text= font=00000000\nSAMPLE_WINDOW hwnd=02870CBA parent=0797094C class=ThunderRT5HScrollBar parent_class=ThunderRT5Form owner=740C0000 style=54010000 ex=00000004 text= font=00000000\nSAMPLE_WINDOW hwnd=025E0DDC parent=0797094C class=ThunderRT5ComboBox parent_class=ThunderRT5Form owner=740C0000 style=54010243 ex=00000000 text= font=C20A09D6\nSAMPLE_COMBO hwnd=025E0DDC count=5 selected=-1 info=1 edit=025E0DDC list=021F0D98 error=18\nSAMPLE_WINDOW hwnd=00730EF0 parent=0797094C class=ThunderRT5ListBox parent_class=ThunderRT5Form owner=740C0000 style=54210081 ex=00000204 text= font=C20A09D6\nSAMPLE_LIST hwnd=00730EF0 count=9 selected=-1\nSAMPLE_WINDOW hwnd=03A50B36 parent=0797094C class=ThunderRT5ComboBox parent_class=ThunderRT5Form owner=740C0000 style=54010242 ex=00000000 text= font=C20A09D6\nSAMPLE_COMBO hwnd=03A50B36 count=3 selected=-1 info=1 edit=01CC0B90 list=00820E58 error=18\nSAMPLE_WINDOW hwnd=01CC0B90 parent=03A50B36 class=Edit parent_class=ThunderRT5ComboBox owner=71D80000 style=50000380 ex=00000000 text= font=C20A09D6\nSAMPLE_WINDOW hwnd=077F094E parent=0797094C class=ThunderRT5Frame parent_class=ThunderRT5Form owner=740C0000 style=56010007 ex=00000004 text=Frame - Option Boxes font=C20A09D6\nSAMPLE_WINDOW hwnd=02680ACA parent=077F094E class=ThunderRT5OptionButton parent_class=ThunderRT5Frame owner=740C0000 style=54002004 ex=00000000 text=Option Item 4 font=C20A09D6\nSAMPLE_BUTTON hwnd=02680ACA dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=00570B78 parent=077F094E class=ThunderRT5OptionButton parent_class=ThunderRT5Frame owner=740C0000 style=54002004 ex=00000000 text=Option Item 3 font=C20A09D6\nSAMPLE_BUTTON hwnd=00570B78 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=01260AC0 parent=077F094E class=ThunderRT5OptionButton parent_class=ThunderRT5Frame owner=740C0000 style=54002004 ex=00000000 text=Option Item 2 font=C20A09D6\nSAMPLE_BUTTON hwnd=01260AC0 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=02BC0A74 parent=077F094E class=ThunderRT5OptionButton parent_class=ThunderRT5Frame owner=740C0000 style=54012004 ex=00000000 text=Option Item 1 font=C20A09D6\nSAMPLE_BUTTON hwnd=02BC0A74 dlg=20c0 check=1 state=1\nSAMPLE_WINDOW hwnd=04B80876 parent=0797094C class=ThunderRT5Frame parent_class=ThunderRT5Form owner=740C0000 style=56010007 ex=00000004 text=Frame - Check boxes font=C20A09D6\nSAMPLE_WINDOW hwnd=00930A54 parent=04B80876 class=ThunderRT5CheckBox parent_class=ThunderRT5Frame owner=740C0000 style=54012006 ex=00000004 text=Check Option 4 font=C20A09D6\nSAMPLE_BUTTON hwnd=00930A54 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=09C609C6 parent=04B80876 class=ThunderRT5CheckBox parent_class=ThunderRT5Frame owner=740C0000 style=54012006 ex=00000004 text=Check Option 3 font=C20A09D6\nSAMPLE_BUTTON hwnd=09C609C6 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=05370240 parent=04B80876 class=ThunderRT5CheckBox parent_class=ThunderRT5Frame owner=740C0000 style=54012006 ex=00000004 text=Check Option 2 font=C20A09D6\nSAMPLE_BUTTON hwnd=05370240 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=0121027A parent=04B80876 class=ThunderRT5CheckBox parent_class=ThunderRT5Frame owner=740C0000 style=54012006 ex=00000004 text=Check Option 1 font=C20A09D6\nSAMPLE_BUTTON hwnd=0121027A dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=008E0E68 parent=0797094C class=ThunderRT5TextBox parent_class=ThunderRT5Form owner=740C0000 style=543100c4 ex=00000204 text=Test of a multi-line text box.\n\nThis multi-line control has both scroll bars visible\n\n font=C20A09D6\nSAMPLE_WINDOW hwnd=016C0B34 parent=0797094C class=ThunderRT5TextBox parent_class=ThunderRT5Form owner=740C0000 style=540100c0 ex=00000204 text=Test of a single line text box font=C20A09D6\nVB_SAMPLE_IMAGE hash=5389169807279259833\nSAMPLE_ROOT class_owner=740C0000 windows=22\nSAMPLE_PIXELS index=0 class=ThunderRT5PictureBox hash=6044436196493835024\nSAMPLE_PIXELS index=1 class=ThunderRT5CommandButton hash=17124731722624785094\nSAMPLE_PIXELS index=2 class=ThunderRT5CommandButton hash=4743957850965092635\nSAMPLE_PIXELS index=3 class=ThunderRT5CommandButton hash=3178750815958153557\nSAMPLE_PIXELS index=4 class=ThunderRT5VScrollBar hash=15902409057643114521\nSAMPLE_SCROLL_OK index=4 min=0 max=32767 pos=0 page=0\nSAMPLE_PIXELS index=5 class=ThunderRT5HScrollBar hash=868257633841785689\nSAMPLE_SCROLL_OK index=5 min=0 max=32767 pos=0 page=0\nSAMPLE_PIXELS index=6 class=ThunderRT5ComboBox hash=17074136147584877070\nSAMPLE_COMBO_SELECT_OK index=6 count=5 select1=1 drop_cancel=1\nSAMPLE_PIXELS index=7 class=ThunderRT5ListBox hash=4984228313527916599\nSAMPLE_LIST_SELECT_OK index=7 count=9 select1=1\nSAMPLE_PIXELS index=8 class=ThunderRT5ComboBox hash=12917264290057623893\nSAMPLE_COMBO_SELECT_OK index=8 count=3 select1=1 drop_cancel=1\nSAMPLE_PIXELS index=10 class=ThunderRT5Frame hash=12676691395294111007\nSAMPLE_PIXELS index=11 class=ThunderRT5OptionButton hash=7149221372865799016\nSAMPLE_OPTION_GROUP_OK index=11 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=12 class=ThunderRT5OptionButton hash=10364981851982515334\nSAMPLE_OPTION_GROUP_OK index=12 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=13 class=ThunderRT5OptionButton hash=8992662082591079508\nSAMPLE_OPTION_GROUP_OK index=13 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=14 class=ThunderRT5OptionButton hash=9809210818385408148\nSAMPLE_OPTION_GROUP_OK index=14 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=15 class=ThunderRT5Frame hash=3072325764185165433\nSAMPLE_PIXELS index=16 class=ThunderRT5CheckBox hash=8986585252686242869\nSAMPLE_CHECK_CYCLE_OK index=16 round2=initial\nSAMPLE_PIXELS index=17 class=ThunderRT5CheckBox hash=2774099812071113511\nSAMPLE_CHECK_CYCLE_OK index=17 round2=initial\nSAMPLE_PIXELS index=18 class=ThunderRT5CheckBox hash=1052994606495805765\nSAMPLE_CHECK_CYCLE_OK index=18 round2=initial\nSAMPLE_PIXELS index=19 class=ThunderRT5CheckBox hash=6350961052212119109\nSAMPLE_CHECK_CYCLE_OK index=19 round2=initial\nSAMPLE_PIXELS index=20 class=ThunderRT5TextBox hash=13827018734885693725\nSAMPLE_EDIT_OK index=20 text_restore=1 multiline=1 cross_process_replace_undo=not_covered\nSAMPLE_PIXELS index=21 class=ThunderRT5TextBox hash=2251834694473885364\nSAMPLE_EDIT_OK index=21 text_restore=1 multiline=0 cross_process_replace_undo=not_covered\nSAMPLE_PROTOCOL_PASS option=4 checkbox=4 combo=2 list=1 edit=2 scrollbar=2\nSAMPLE_PASS styled=0 count=22 active=0\n",
+    "VB5-styled": "SAMPLE_SHOW class=ThunderRT5Main title= hwnd=0CF4068E\nSAMPLE_SHOW class=ThunderRT5Form title=XP Visual Styles Tester - Manifest Stored in Resource hwnd=01FF0A88\nVB_SAMPLE_TARGET pid=20020 creator=18164 initial_pid=18164 bits=32 path=O:\\repos.hobby\\win16style\\build\\t17-audit\\s4-intrinsic-samples\\vb5\\ResXpStylesTester.exe dpi=96\nVB_SAMPLE_STYLE_MODULE base=6A440000 path=O:\\repos.hobby\\win16style\\build\\t17-package\\s4-final\\candidate\\ntw16s32.dll\nVB_SAMPLE_MODULE_FILE actual=\\\\?\\O:\\repos.hobby\\win16style\\build\\t17-package\\s4-final\\candidate\\ntw16s32.dll\nVB_SAMPLE_RUNTIME base=740C0000 path=O:\\repos.hobby\\win16style\\build\\t17-audit\\s4-intrinsic-samples\\vb5\\MSVBVM50.DLL\nVB_SAMPLE_MODULE_FILE actual=\\\\?\\O:\\repos.hobby\\win16style\\build\\t17-audit\\s4-intrinsic-samples\\vb5\\MSVBVM50.DLL\nSAMPLE_WINDOW hwnd=01B40AE8 parent=01FF0A88 class=ThunderRT5PictureBox parent_class=ThunderRT5Form owner=740C0000 style=56010000 ex=00000204 text= font=AD0A1852\nSAMPLE_WINDOW hwnd=0A24086E parent=01FF0A88 class=ThunderRT5CommandButton parent_class=ThunderRT5Form owner=740C0000 style=54012000 ex=00000004 text=&Advanced... font=AD0A1852\nSAMPLE_WINDOW hwnd=01270AA8 parent=01FF0A88 class=ThunderRT5CommandButton parent_class=ThunderRT5Form owner=740C0000 style=54012000 ex=00000004 text=Cancel font=190A1A9D\nSAMPLE_WINDOW hwnd=02380AB0 parent=01FF0A88 class=ThunderRT5CommandButton parent_class=ThunderRT5Form owner=740C0000 style=54012001 ex=00000004 text=OK font=190A1A9D\nSAMPLE_WINDOW hwnd=00FF0C72 parent=01FF0A88 class=ThunderRT5VScrollBar parent_class=ThunderRT5Form owner=740C0000 style=54010001 ex=00000004 text= font=00000000\nSAMPLE_WINDOW hwnd=087D0C7E parent=01FF0A88 class=ThunderRT5HScrollBar parent_class=ThunderRT5Form owner=740C0000 style=54010000 ex=00000004 text= font=00000000\nSAMPLE_WINDOW hwnd=02C20AD8 parent=01FF0A88 class=ThunderRT5ComboBox parent_class=ThunderRT5Form owner=740C0000 style=54010243 ex=00000000 text= font=190A1A9D\nSAMPLE_COMBO hwnd=02C20AD8 count=5 selected=-1 info=1 edit=02C20AD8 list=04BB08C4 error=18\nSAMPLE_WINDOW hwnd=00E20A7E parent=01FF0A88 class=ThunderRT5ListBox parent_class=ThunderRT5Form owner=740C0000 style=54210081 ex=00000204 text= font=190A1A9D\nSAMPLE_LIST hwnd=00E20A7E count=9 selected=-1\nSAMPLE_WINDOW hwnd=01EF033A parent=01FF0A88 class=ThunderRT5ComboBox parent_class=ThunderRT5Form owner=740C0000 style=54010242 ex=00000000 text= font=190A1A9D\nSAMPLE_COMBO hwnd=01EF033A count=3 selected=-1 info=1 edit=013C076E list=01260A86 error=18\nSAMPLE_WINDOW hwnd=013C076E parent=01EF033A class=Edit parent_class=ThunderRT5ComboBox owner=71D80000 style=50000380 ex=00000000 text= font=1B0A1651\nSAMPLE_WINDOW hwnd=02C30E6C parent=01FF0A88 class=ThunderRT5Frame parent_class=ThunderRT5Form owner=740C0000 style=56010007 ex=00000004 text=Frame - Option Boxes font=190A1A9D\nSAMPLE_WINDOW hwnd=02A90760 parent=02C30E6C class=ThunderRT5OptionButton parent_class=ThunderRT5Frame owner=740C0000 style=54002004 ex=00000000 text=Option Item 4 font=190A1A9D\nSAMPLE_BUTTON hwnd=02A90760 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=0798094C parent=02C30E6C class=ThunderRT5OptionButton parent_class=ThunderRT5Frame owner=740C0000 style=54002004 ex=00000000 text=Option Item 3 font=190A1A9D\nSAMPLE_BUTTON hwnd=0798094C dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=016D0B34 parent=02C30E6C class=ThunderRT5OptionButton parent_class=ThunderRT5Frame owner=740C0000 style=54002004 ex=00000000 text=Option Item 2 font=190A1A9D\nSAMPLE_BUTTON hwnd=016D0B34 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=008F0E68 parent=02C30E6C class=ThunderRT5OptionButton parent_class=ThunderRT5Frame owner=740C0000 style=54012004 ex=00000000 text=Option Item 1 font=190A1A9D\nSAMPLE_BUTTON hwnd=008F0E68 dlg=20c0 check=1 state=1\nSAMPLE_WINDOW hwnd=04B90876 parent=01FF0A88 class=ThunderRT5Frame parent_class=ThunderRT5Form owner=740C0000 style=56010007 ex=00000004 text=Frame - Check boxes font=190A1A9D\nSAMPLE_WINDOW hwnd=0122027A parent=04B90876 class=ThunderRT5CheckBox parent_class=ThunderRT5Frame owner=740C0000 style=54012006 ex=00000004 text=Check Option 4 font=190A1A9D\nSAMPLE_BUTTON hwnd=0122027A dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=05380240 parent=04B90876 class=ThunderRT5CheckBox parent_class=ThunderRT5Frame owner=740C0000 style=54012006 ex=00000004 text=Check Option 3 font=190A1A9D\nSAMPLE_BUTTON hwnd=05380240 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=09C709C6 parent=04B90876 class=ThunderRT5CheckBox parent_class=ThunderRT5Frame owner=740C0000 style=54012006 ex=00000004 text=Check Option 2 font=190A1A9D\nSAMPLE_BUTTON hwnd=09C709C6 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=00940A54 parent=04B90876 class=ThunderRT5CheckBox parent_class=ThunderRT5Frame owner=740C0000 style=54012006 ex=00000004 text=Check Option 1 font=190A1A9D\nSAMPLE_BUTTON hwnd=00940A54 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=0780094E parent=01FF0A88 class=ThunderRT5TextBox parent_class=ThunderRT5Form owner=740C0000 style=543100c4 ex=00000204 text=Test of a multi-line text box.\n\nThis multi-line control has both scroll bars visible\n\n font=190A1A9D\nSAMPLE_WINDOW hwnd=02BD0A74 parent=01FF0A88 class=ThunderRT5TextBox parent_class=ThunderRT5Form owner=740C0000 style=540100c0 ex=00000204 text=Test of a single line text box font=190A1A9D\nVB_SAMPLE_IMAGE hash=4225292827023533716\nSAMPLE_ROOT class_owner=740C0000 windows=22\nSAMPLE_PIXELS index=0 class=ThunderRT5PictureBox hash=6044436196493835024\nSAMPLE_PIXELS index=1 class=ThunderRT5CommandButton hash=6092299911425419797\nSAMPLE_PIXELS index=2 class=ThunderRT5CommandButton hash=13592503983951089365\nSAMPLE_PIXELS index=3 class=ThunderRT5CommandButton hash=10926674909206468565\nSAMPLE_PIXELS index=4 class=ThunderRT5VScrollBar hash=15902409057643114521\nSAMPLE_SCROLL_OK index=4 min=0 max=32767 pos=0 page=0\nSAMPLE_PIXELS index=5 class=ThunderRT5HScrollBar hash=868257633841785689\nSAMPLE_SCROLL_OK index=5 min=0 max=32767 pos=0 page=0\nSAMPLE_PIXELS index=6 class=ThunderRT5ComboBox hash=17074136147584877070\nSAMPLE_COMBO_SELECT_OK index=6 count=5 select1=1 drop_cancel=1\nSAMPLE_PIXELS index=7 class=ThunderRT5ListBox hash=4984228313527916599\nSAMPLE_LIST_SELECT_OK index=7 count=9 select1=1\nSAMPLE_PIXELS index=8 class=ThunderRT5ComboBox hash=12067848088617040239\nSAMPLE_COMBO_SELECT_OK index=8 count=3 select1=1 drop_cancel=1\nSAMPLE_PIXELS index=10 class=ThunderRT5Frame hash=5809650877045234277\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=11 class=ThunderRT5OptionButton hash=5489073195633416124\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_OPTION_GROUP_OK index=11 checked=1 siblings_cleared=1\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=12 class=ThunderRT5OptionButton hash=12251892067687706005\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_OPTION_GROUP_OK index=12 checked=1 siblings_cleared=1\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=13 class=ThunderRT5OptionButton hash=5787002621847881932\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_OPTION_GROUP_OK index=13 checked=1 siblings_cleared=1\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=14 class=ThunderRT5OptionButton hash=12093204452232153621\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_OPTION_GROUP_OK index=14 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=15 class=ThunderRT5Frame hash=2180935991618925484\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=16 class=ThunderRT5CheckBox hash=16765542349863956389\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_CHECK_CYCLE_OK index=16 round2=initial\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=17 class=ThunderRT5CheckBox hash=18253952673007485436\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_CHECK_CYCLE_OK index=17 round2=initial\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=18 class=ThunderRT5CheckBox hash=14718775504080968885\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_CHECK_CYCLE_OK index=18 round2=initial\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=19 class=ThunderRT5CheckBox hash=2903097414639958364\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_CHECK_CYCLE_OK index=19 round2=initial\nSAMPLE_PIXELS index=20 class=ThunderRT5TextBox hash=14603856593287597157\nSAMPLE_EDIT_OK index=20 text_restore=1 multiline=1 cross_process_replace_undo=not_covered\nSAMPLE_PIXELS index=21 class=ThunderRT5TextBox hash=7901490250484071196\nSAMPLE_EDIT_OK index=21 text_restore=1 multiline=0 cross_process_replace_undo=not_covered\nSAMPLE_PROTOCOL_PASS option=4 checkbox=4 combo=2 list=1 edit=2 scrollbar=2\nSAMPLE_PASS styled=1 count=22 active=0\n",
+    "VB6-bare": "SAMPLE_SHOW class=ThunderRT6Main title= hwnd=021E0AE0\nSAMPLE_SHOW class=ThunderRT6FormDC title=XP Visual Styles Tester - Manifest Stored in Resource hwnd=03A70B36\nVB_SAMPLE_TARGET pid=18168 creator=24288 initial_pid=18168 bits=32 path=O:\\repos.hobby\\win16style\\build\\t17-audit\\s4-intrinsic-samples\\vb6\\ResXpStylesTester.exe dpi=96\nVB_SAMPLE_RUNTIME base=69660000 path=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL\nVB_SAMPLE_MODULE_FILE actual=\\\\?\\C:\\Windows\\SysWOW64\\msvbvm60.dll\nSAMPLE_WINDOW hwnd=00850E58 parent=03A70B36 class=ThunderRT6PictureBoxDC parent_class=ThunderRT6FormDC owner=69660000 style=56010000 ex=00000204 text= font=320A0946\nSAMPLE_WINDOW hwnd=01CF0B90 parent=03A70B36 class=ThunderRT6CommandButton parent_class=ThunderRT6FormDC owner=69660000 style=54012000 ex=00000004 text=&Advanced... font=320A0946\nSAMPLE_WINDOW hwnd=00750EF0 parent=03A70B36 class=ThunderRT6CommandButton parent_class=ThunderRT6FormDC owner=69660000 style=54012000 ex=00000004 text=Cancel font=990A15D0\nSAMPLE_WINDOW hwnd=02600DDC parent=03A70B36 class=ThunderRT6CommandButton parent_class=ThunderRT6FormDC owner=69660000 style=54012001 ex=00000004 text=OK font=990A15D0\nSAMPLE_WINDOW hwnd=02210D98 parent=03A70B36 class=ThunderRT6VScrollBar parent_class=ThunderRT6FormDC owner=69660000 style=54010001 ex=00000004 text= font=00000000\nSAMPLE_WINDOW hwnd=0377071C parent=03A70B36 class=ThunderRT6HScrollBar parent_class=ThunderRT6FormDC owner=69660000 style=54010000 ex=00000004 text= font=00000000\nSAMPLE_WINDOW hwnd=045C0212 parent=03A70B36 class=ThunderRT6ComboBox parent_class=ThunderRT6FormDC owner=69660000 style=54010243 ex=00000000 text= font=990A15D0\nSAMPLE_COMBO hwnd=045C0212 count=5 selected=-1 info=1 edit=045C0212 list=02ED0BF8 error=18\nSAMPLE_WINDOW hwnd=01080B84 parent=03A70B36 class=ThunderRT6ListBox parent_class=ThunderRT6FormDC owner=69660000 style=54210081 ex=00000204 text= font=990A15D0\nSAMPLE_LIST hwnd=01080B84 count=9 selected=-1\nSAMPLE_WINDOW hwnd=01730ADE parent=03A70B36 class=ThunderRT6ComboBox parent_class=ThunderRT6FormDC owner=69660000 style=54010242 ex=00000000 text= font=990A15D0\nSAMPLE_COMBO hwnd=01730ADE count=3 selected=-1 info=1 edit=00590B78 list=01280AC0 error=18\nSAMPLE_WINDOW hwnd=00590B78 parent=01730ADE class=Edit parent_class=ThunderRT6ComboBox owner=71D80000 style=50000380 ex=00000000 text= font=990A15D0\nSAMPLE_WINDOW hwnd=0CF5068E parent=03A70B36 class=ThunderRT6Frame parent_class=ThunderRT6FormDC owner=69660000 style=56010007 ex=00000004 text=Frame - Option Boxes font=990A15D0\nSAMPLE_WINDOW hwnd=00B30DE2 parent=0CF5068E class=ThunderRT6PictureBoxDC parent_class=ThunderRT6Frame owner=69660000 style=56010000 ex=00000004 text= font=320A0946\nSAMPLE_WINDOW hwnd=02000A88 parent=00B30DE2 class=ThunderRT6OptionButton parent_class=ThunderRT6PictureBoxDC owner=69660000 style=54012004 ex=00000000 text=Option Item 1 font=990A15D0\nSAMPLE_BUTTON hwnd=02000A88 dlg=20c0 check=1 state=1\nSAMPLE_WINDOW hwnd=02BE0A74 parent=00B30DE2 class=ThunderRT6OptionButton parent_class=ThunderRT6PictureBoxDC owner=69660000 style=54002004 ex=00000000 text=Option Item 2 font=990A15D0\nSAMPLE_BUTTON hwnd=02BE0A74 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=0781094E parent=00B30DE2 class=ThunderRT6OptionButton parent_class=ThunderRT6PictureBoxDC owner=69660000 style=54002004 ex=00000000 text=Option Item 3 font=990A15D0\nSAMPLE_BUTTON hwnd=0781094E dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=04BA0876 parent=00B30DE2 class=ThunderRT6OptionButton parent_class=ThunderRT6PictureBoxDC owner=69660000 style=54002004 ex=00000000 text=Option Item 4 font=990A15D0\nSAMPLE_BUTTON hwnd=04BA0876 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=00950A54 parent=03A70B36 class=ThunderRT6Frame parent_class=ThunderRT6FormDC owner=69660000 style=56010007 ex=00000004 text=Frame - Check boxes font=990A15D0\nSAMPLE_WINDOW hwnd=09C809C6 parent=00950A54 class=ThunderRT6CheckBox parent_class=ThunderRT6Frame owner=69660000 style=54012006 ex=00000004 text=Check Option 4 font=990A15D0\nSAMPLE_BUTTON hwnd=09C809C6 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=05390240 parent=00950A54 class=ThunderRT6CheckBox parent_class=ThunderRT6Frame owner=69660000 style=54012006 ex=00000004 text=Check Option 3 font=990A15D0\nSAMPLE_BUTTON hwnd=05390240 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=0123027A parent=00950A54 class=ThunderRT6CheckBox parent_class=ThunderRT6Frame owner=69660000 style=54012006 ex=00000004 text=Check Option 2 font=990A15D0\nSAMPLE_BUTTON hwnd=0123027A dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=02C40E6C parent=00950A54 class=ThunderRT6CheckBox parent_class=ThunderRT6Frame owner=69660000 style=54012006 ex=00000004 text=Check Option 1 font=990A15D0\nSAMPLE_BUTTON hwnd=02C40E6C dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=00900E68 parent=03A70B36 class=ThunderRT6TextBox parent_class=ThunderRT6FormDC owner=69660000 style=543100c4 ex=00000204 text=Test of a multi-line text box.\n\nThis multi-line control has both scroll bars visible\n\n font=990A15D0\nSAMPLE_WINDOW hwnd=016E0B34 parent=03A70B36 class=ThunderRT6TextBox parent_class=ThunderRT6FormDC owner=69660000 style=540100c0 ex=00000204 text=Test of a single line text box font=990A15D0\nVB_SAMPLE_IMAGE hash=7401124503179188409\nSAMPLE_ROOT class_owner=69660000 windows=23\nSAMPLE_PIXELS index=0 class=ThunderRT6PictureBoxDC hash=6044436196493835024\nSAMPLE_PIXELS index=1 class=ThunderRT6CommandButton hash=17124731722624785094\nSAMPLE_PIXELS index=2 class=ThunderRT6CommandButton hash=4743957850965092635\nSAMPLE_PIXELS index=3 class=ThunderRT6CommandButton hash=3178750815958153557\nSAMPLE_PIXELS index=4 class=ThunderRT6VScrollBar hash=15902409057643114521\nSAMPLE_SCROLL_OK index=4 min=0 max=32767 pos=0 page=0\nSAMPLE_PIXELS index=5 class=ThunderRT6HScrollBar hash=868257633841785689\nSAMPLE_SCROLL_OK index=5 min=0 max=32767 pos=0 page=0\nSAMPLE_PIXELS index=6 class=ThunderRT6ComboBox hash=17074136147584877070\nSAMPLE_COMBO_SELECT_OK index=6 count=5 select1=1 drop_cancel=1\nSAMPLE_PIXELS index=7 class=ThunderRT6ListBox hash=4984228313527916599\nSAMPLE_LIST_SELECT_OK index=7 count=9 select1=1\nSAMPLE_PIXELS index=8 class=ThunderRT6ComboBox hash=12917264290057623893\nSAMPLE_COMBO_SELECT_OK index=8 count=3 select1=1 drop_cancel=1\nSAMPLE_PIXELS index=10 class=ThunderRT6Frame hash=589664862726404383\nSAMPLE_PIXELS index=11 class=ThunderRT6PictureBoxDC hash=1278922945141777549\nSAMPLE_PIXELS index=12 class=ThunderRT6OptionButton hash=12375361089805058998\nSAMPLE_OPTION_GROUP_OK index=12 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=13 class=ThunderRT6OptionButton hash=8992662082591079508\nSAMPLE_OPTION_GROUP_OK index=13 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=14 class=ThunderRT6OptionButton hash=10364981851982515334\nSAMPLE_OPTION_GROUP_OK index=14 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=15 class=ThunderRT6OptionButton hash=7149221372865799016\nSAMPLE_OPTION_GROUP_OK index=15 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=16 class=ThunderRT6Frame hash=3072325764185165433\nSAMPLE_PIXELS index=17 class=ThunderRT6CheckBox hash=8986585252686242869\nSAMPLE_CHECK_CYCLE_OK index=17 round2=initial\nSAMPLE_PIXELS index=18 class=ThunderRT6CheckBox hash=2774099812071113511\nSAMPLE_CHECK_CYCLE_OK index=18 round2=initial\nSAMPLE_PIXELS index=19 class=ThunderRT6CheckBox hash=1052994606495805765\nSAMPLE_CHECK_CYCLE_OK index=19 round2=initial\nSAMPLE_PIXELS index=20 class=ThunderRT6CheckBox hash=6350961052212119109\nSAMPLE_CHECK_CYCLE_OK index=20 round2=initial\nSAMPLE_PIXELS index=21 class=ThunderRT6TextBox hash=13827018734885693725\nSAMPLE_EDIT_OK index=21 text_restore=1 multiline=1 cross_process_replace_undo=not_covered\nSAMPLE_PIXELS index=22 class=ThunderRT6TextBox hash=2251834694473885364\nSAMPLE_EDIT_OK index=22 text_restore=1 multiline=0 cross_process_replace_undo=not_covered\nSAMPLE_PROTOCOL_PASS option=4 checkbox=4 combo=2 list=1 edit=2 scrollbar=2\nSAMPLE_PASS styled=0 count=23 active=0\n",
+    "VB6-styled": "SAMPLE_SHOW class=ThunderRT6Main title= hwnd=026C0ACA\nSAMPLE_SHOW class=ThunderRT6FormDC title=XP Visual Styles Tester - Manifest Stored in Resource hwnd=01280A86\nVB_SAMPLE_TARGET pid=35920 creator=36104 initial_pid=36104 bits=32 path=O:\\repos.hobby\\win16style\\build\\t17-audit\\s4-intrinsic-samples\\vb6\\ResXpStylesTester.exe dpi=96\nVB_SAMPLE_STYLE_MODULE base=6A440000 path=O:\\repos.hobby\\win16style\\build\\t17-package\\s4-final\\candidate\\ntw16s32.dll\nVB_SAMPLE_MODULE_FILE actual=\\\\?\\O:\\repos.hobby\\win16style\\build\\t17-package\\s4-final\\candidate\\ntw16s32.dll\nVB_SAMPLE_RUNTIME base=69660000 path=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL\nVB_SAMPLE_MODULE_FILE actual=\\\\?\\C:\\Windows\\SysWOW64\\msvbvm60.dll\nSAMPLE_WINDOW hwnd=013F076E parent=01280A86 class=ThunderRT6PictureBoxDC parent_class=ThunderRT6FormDC owner=69660000 style=56010000 ex=00000204 text= font=880A0C9F\nSAMPLE_WINDOW hwnd=00E50A7E parent=01280A86 class=ThunderRT6CommandButton parent_class=ThunderRT6FormDC owner=69660000 style=54012000 ex=00000004 text=&Advanced... font=880A0C9F\nSAMPLE_WINDOW hwnd=02C40AD8 parent=01280A86 class=ThunderRT6CommandButton parent_class=ThunderRT6FormDC owner=69660000 style=54012000 ex=00000004 text=Cancel font=EE0A0D07\nSAMPLE_WINDOW hwnd=087F0C7E parent=01280A86 class=ThunderRT6CommandButton parent_class=ThunderRT6FormDC owner=69660000 style=54012001 ex=00000004 text=OK font=EE0A0D07\nSAMPLE_WINDOW hwnd=01010C72 parent=01280A86 class=ThunderRT6VScrollBar parent_class=ThunderRT6FormDC owner=69660000 style=54010001 ex=00000004 text= font=00000000\nSAMPLE_WINDOW hwnd=0A26086E parent=01280A86 class=ThunderRT6HScrollBar parent_class=ThunderRT6FormDC owner=69660000 style=54010000 ex=00000004 text= font=00000000\nSAMPLE_WINDOW hwnd=01290AA8 parent=01280A86 class=ThunderRT6ComboBox parent_class=ThunderRT6FormDC owner=69660000 style=54010243 ex=00000000 text= font=EE0A0D07\nSAMPLE_COMBO hwnd=01290AA8 count=5 selected=-1 info=1 edit=01290AA8 list=01B60AE8 error=18\nSAMPLE_WINDOW hwnd=01600A7C parent=01280A86 class=ThunderRT6ListBox parent_class=ThunderRT6FormDC owner=69660000 style=54210081 ex=00000204 text= font=EE0A0D07\nSAMPLE_LIST hwnd=01600A7C count=9 selected=-1\nSAMPLE_WINDOW hwnd=02D60748 parent=01280A86 class=ThunderRT6ComboBox parent_class=ThunderRT6FormDC owner=69660000 style=54010242 ex=00000000 text= font=EE0A0D07\nSAMPLE_COMBO hwnd=02D60748 count=3 selected=-1 info=1 edit=01F1033A list=079A094C error=18\nSAMPLE_WINDOW hwnd=01F1033A parent=02D60748 class=Edit parent_class=ThunderRT6ComboBox owner=71D80000 style=50000380 ex=00000000 text= font=A50A18DB\nSAMPLE_WINDOW hwnd=021F0AE0 parent=01280A86 class=ThunderRT6Frame parent_class=ThunderRT6FormDC owner=69660000 style=56010007 ex=00000004 text=Frame - Option Boxes font=EE0A0D07\nSAMPLE_WINDOW hwnd=028A0CBA parent=021F0AE0 class=ThunderRT6PictureBoxDC parent_class=ThunderRT6Frame owner=69660000 style=56010000 ex=00000004 text= font=880A0C9F\nSAMPLE_WINDOW hwnd=03A80B36 parent=028A0CBA class=ThunderRT6OptionButton parent_class=ThunderRT6PictureBoxDC owner=69660000 style=54012004 ex=00000000 text=Option Item 1 font=EE0A0D07\nSAMPLE_BUTTON hwnd=03A80B36 dlg=20c0 check=1 state=1\nSAMPLE_WINDOW hwnd=016F0B34 parent=028A0CBA class=ThunderRT6OptionButton parent_class=ThunderRT6PictureBoxDC owner=69660000 style=54002004 ex=00000000 text=Option Item 2 font=EE0A0D07\nSAMPLE_BUTTON hwnd=016F0B34 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=00910E68 parent=028A0CBA class=ThunderRT6OptionButton parent_class=ThunderRT6PictureBoxDC owner=69660000 style=54002004 ex=00000000 text=Option Item 3 font=EE0A0D07\nSAMPLE_BUTTON hwnd=00910E68 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=00960A54 parent=028A0CBA class=ThunderRT6OptionButton parent_class=ThunderRT6PictureBoxDC owner=69660000 style=54002004 ex=00000000 text=Option Item 4 font=EE0A0D07\nSAMPLE_BUTTON hwnd=00960A54 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=02C50E6C parent=01280A86 class=ThunderRT6Frame parent_class=ThunderRT6FormDC owner=69660000 style=56010007 ex=00000004 text=Frame - Check boxes font=EE0A0D07\nSAMPLE_WINDOW hwnd=0124027A parent=02C50E6C class=ThunderRT6CheckBox parent_class=ThunderRT6Frame owner=69660000 style=54012006 ex=00000004 text=Check Option 4 font=EE0A0D07\nSAMPLE_BUTTON hwnd=0124027A dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=053A0240 parent=02C50E6C class=ThunderRT6CheckBox parent_class=ThunderRT6Frame owner=69660000 style=54012006 ex=00000004 text=Check Option 3 font=EE0A0D07\nSAMPLE_BUTTON hwnd=053A0240 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=09C909C6 parent=02C50E6C class=ThunderRT6CheckBox parent_class=ThunderRT6Frame owner=69660000 style=54012006 ex=00000004 text=Check Option 2 font=EE0A0D07\nSAMPLE_BUTTON hwnd=09C909C6 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=0CF6068E parent=02C50E6C class=ThunderRT6CheckBox parent_class=ThunderRT6Frame owner=69660000 style=54012006 ex=00000004 text=Check Option 1 font=EE0A0D07\nSAMPLE_BUTTON hwnd=0CF6068E dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=00B40DE2 parent=01280A86 class=ThunderRT6TextBox parent_class=ThunderRT6FormDC owner=69660000 style=543100c4 ex=00000204 text=Test of a multi-line text box.\n\nThis multi-line control has both scroll bars visible\n\n font=EE0A0D07\nSAMPLE_WINDOW hwnd=04BB0876 parent=01280A86 class=ThunderRT6TextBox parent_class=ThunderRT6FormDC owner=69660000 style=540100c0 ex=00000204 text=Test of a single line text box font=EE0A0D07\nVB_SAMPLE_IMAGE hash=11108195264409690260\nSAMPLE_ROOT class_owner=69660000 windows=23\nSAMPLE_PIXELS index=0 class=ThunderRT6PictureBoxDC hash=6044436196493835024\nSAMPLE_PIXELS index=1 class=ThunderRT6CommandButton hash=6092299911425419797\nSAMPLE_PIXELS index=2 class=ThunderRT6CommandButton hash=13592503983951089365\nSAMPLE_PIXELS index=3 class=ThunderRT6CommandButton hash=10926674909206468565\nSAMPLE_PIXELS index=4 class=ThunderRT6VScrollBar hash=15902409057643114521\nSAMPLE_SCROLL_OK index=4 min=0 max=32767 pos=0 page=0\nSAMPLE_PIXELS index=5 class=ThunderRT6HScrollBar hash=868257633841785689\nSAMPLE_SCROLL_OK index=5 min=0 max=32767 pos=0 page=0\nSAMPLE_PIXELS index=6 class=ThunderRT6ComboBox hash=17074136147584877070\nSAMPLE_COMBO_SELECT_OK index=6 count=5 select1=1 drop_cancel=1\nSAMPLE_PIXELS index=7 class=ThunderRT6ListBox hash=4984228313527916599\nSAMPLE_LIST_SELECT_OK index=7 count=9 select1=1\nSAMPLE_PIXELS index=8 class=ThunderRT6ComboBox hash=12067848088617040239\nSAMPLE_COMBO_SELECT_OK index=8 count=3 select1=1 drop_cancel=1\nSAMPLE_PIXELS index=10 class=ThunderRT6Frame hash=4338921653074584677\nSAMPLE_PIXELS index=11 class=ThunderRT6PictureBoxDC hash=4721916846035101820\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_PIXELS index=12 class=ThunderRT6OptionButton hash=4806887121930141244\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_OPTION_GROUP_OK index=12 checked=1 siblings_cleared=1\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=13 class=ThunderRT6OptionButton hash=5787002621847881932\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_OPTION_GROUP_OK index=13 checked=1 siblings_cleared=1\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=14 class=ThunderRT6OptionButton hash=12251892067687706005\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_OPTION_GROUP_OK index=14 checked=1 siblings_cleared=1\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=15 class=ThunderRT6OptionButton hash=5489073195633416124\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_OPTION_GROUP_OK index=15 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=16 class=ThunderRT6Frame hash=2180935991618925484\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=17 class=ThunderRT6CheckBox hash=16765542349863956389\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_CHECK_CYCLE_OK index=17 round2=initial\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=18 class=ThunderRT6CheckBox hash=18253952673007485436\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_CHECK_CYCLE_OK index=18 round2=initial\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=19 class=ThunderRT6CheckBox hash=14718775504080968885\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_CHECK_CYCLE_OK index=19 round2=initial\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=20 class=ThunderRT6CheckBox hash=2903097414639958364\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_CHECK_CYCLE_OK index=20 round2=initial\nSAMPLE_PIXELS index=21 class=ThunderRT6TextBox hash=14603856593287597157\nSAMPLE_EDIT_OK index=21 text_restore=1 multiline=1 cross_process_replace_undo=not_covered\nSAMPLE_PIXELS index=22 class=ThunderRT6TextBox hash=7901490250484071196\nSAMPLE_EDIT_OK index=22 text_restore=1 multiline=0 cross_process_replace_undo=not_covered\nSAMPLE_PROTOCOL_PASS option=4 checkbox=4 combo=2 list=1 edit=2 scrollbar=2\nSAMPLE_PASS styled=1 count=23 active=0\n"
+  },
+  "installed_logs": {
+    "VB5": "SAMPLE_SHOW class=ThunderRT5Main title= hwnd=01F4034E\nSAMPLE_SHOW class=ThunderRT5Form title=XP Visual Styles Tester - Manifest Stored in Resource hwnd=0142076E\nVB_SAMPLE_TARGET pid=39628 creator=39492 initial_pid=39492 bits=32 path=O:\\repos.hobby\\win16style\\build\\t17-audit\\s4-intrinsic-samples\\vb5\\ResXpStylesTester.exe dpi=96\nVB_SAMPLE_STYLE_MODULE base=6A440000 path=O:\\winnt\\system32\\ntw16s32.dll\nVB_SAMPLE_MODULE_FILE actual=\\\\?\\O:\\WINNT\\system32\\ntw16s32.dll\nVB_SAMPLE_RUNTIME base=740C0000 path=O:\\repos.hobby\\win16style\\build\\t17-audit\\s4-intrinsic-samples\\vb5\\MSVBVM50.DLL\nVB_SAMPLE_MODULE_FILE actual=\\\\?\\O:\\repos.hobby\\win16style\\build\\t17-audit\\s4-intrinsic-samples\\vb5\\MSVBVM50.DLL\nSAMPLE_WINDOW hwnd=04BE0876 parent=0142076E class=ThunderRT5PictureBox parent_class=ThunderRT5Form owner=740C0000 style=56010000 ex=00000204 text= font=370A109A\nSAMPLE_WINDOW hwnd=07640922 parent=0142076E class=ThunderRT5CommandButton parent_class=ThunderRT5Form owner=740C0000 style=54012000 ex=00000004 text=&Advanced... font=370A109A\nSAMPLE_WINDOW hwnd=0787094E parent=0142076E class=ThunderRT5CommandButton parent_class=ThunderRT5Form owner=740C0000 style=54012000 ex=00000004 text=Cancel font=700A1591\nSAMPLE_WINDOW hwnd=09CC09C6 parent=0142076E class=ThunderRT5CommandButton parent_class=ThunderRT5Form owner=740C0000 style=54012001 ex=00000004 text=OK font=700A1591\nSAMPLE_WINDOW hwnd=00990A54 parent=0142076E class=ThunderRT5VScrollBar parent_class=ThunderRT5Form owner=740C0000 style=54010001 ex=00000004 text= font=00000000\nSAMPLE_WINDOW hwnd=02C40A74 parent=0142076E class=ThunderRT5HScrollBar parent_class=ThunderRT5Form owner=740C0000 style=54010000 ex=00000004 text= font=00000000\nSAMPLE_WINDOW hwnd=012B0A86 parent=0142076E class=ThunderRT5ComboBox parent_class=ThunderRT5Form owner=740C0000 style=54010243 ex=00000000 text= font=700A1591\nSAMPLE_COMBO hwnd=012B0A86 count=5 selected=-1 info=1 edit=012B0A86 list=02070A88 error=18\nSAMPLE_WINDOW hwnd=023D0AB0 parent=0142076E class=ThunderRT5ListBox parent_class=ThunderRT5Form owner=740C0000 style=54210081 ex=00000204 text= font=700A1591\nSAMPLE_LIST hwnd=023D0AB0 count=9 selected=-1\nSAMPLE_WINDOW hwnd=01300AC0 parent=0142076E class=ThunderRT5ComboBox parent_class=ThunderRT5Form owner=740C0000 style=54010242 ex=00000000 text= font=700A1591\nSAMPLE_COMBO hwnd=01300AC0 count=3 selected=-1 info=1 edit=01790ADE list=026F0ACA error=18\nSAMPLE_WINDOW hwnd=01790ADE parent=01300AC0 class=Edit parent_class=ThunderRT5ComboBox owner=71D80000 style=50000380 ex=00000000 text= font=7A0A1B2B\nSAMPLE_WINDOW hwnd=02220AE0 parent=0142076E class=ThunderRT5Frame parent_class=ThunderRT5Form owner=740C0000 style=56010007 ex=00000004 text=Frame - Option Boxes font=700A1591\nSAMPLE_WINDOW hwnd=00610B78 parent=02220AE0 class=ThunderRT5OptionButton parent_class=ThunderRT5Frame owner=740C0000 style=54002004 ex=00000000 text=Option Item 4 font=700A1591\nSAMPLE_BUTTON hwnd=00610B78 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=010E0B84 parent=02220AE0 class=ThunderRT5OptionButton parent_class=ThunderRT5Frame owner=740C0000 style=54002004 ex=00000000 text=Option Item 3 font=700A1591\nSAMPLE_BUTTON hwnd=010E0B84 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=01D70B90 parent=02220AE0 class=ThunderRT5OptionButton parent_class=ThunderRT5Frame owner=740C0000 style=54002004 ex=00000000 text=Option Item 2 font=700A1591\nSAMPLE_BUTTON hwnd=01D70B90 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=028D0CBA parent=02220AE0 class=ThunderRT5OptionButton parent_class=ThunderRT5Frame owner=740C0000 style=54012004 ex=00000000 text=Option Item 1 font=700A1591\nSAMPLE_BUTTON hwnd=028D0CBA dlg=20c0 check=1 state=1\nSAMPLE_WINDOW hwnd=02F20BF8 parent=0142076E class=ThunderRT5Frame parent_class=ThunderRT5Form owner=740C0000 style=56010007 ex=00000004 text=Frame - Check boxes font=700A1591\nSAMPLE_WINDOW hwnd=02280D98 parent=02F20BF8 class=ThunderRT5CheckBox parent_class=ThunderRT5Frame owner=740C0000 style=54012006 ex=00000004 text=Check Option 4 font=700A1591\nSAMPLE_BUTTON hwnd=02280D98 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=02660DDC parent=02F20BF8 class=ThunderRT5CheckBox parent_class=ThunderRT5Frame owner=740C0000 style=54012006 ex=00000004 text=Check Option 3 font=700A1591\nSAMPLE_BUTTON hwnd=02660DDC dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=00B70DE2 parent=02F20BF8 class=ThunderRT5CheckBox parent_class=ThunderRT5Frame owner=740C0000 style=54012006 ex=00000004 text=Check Option 2 font=700A1591\nSAMPLE_BUTTON hwnd=00B70DE2 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=008D0E58 parent=02F20BF8 class=ThunderRT5CheckBox parent_class=ThunderRT5Frame owner=740C0000 style=54012006 ex=00000004 text=Check Option 1 font=700A1591\nSAMPLE_BUTTON hwnd=008D0E58 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=053D0240 parent=0142076E class=ThunderRT5TextBox parent_class=ThunderRT5Form owner=740C0000 style=543100c4 ex=00000204 text=Test of a multi-line text box.\n\nThis multi-line control has both scroll bars visible\n\n font=700A1591\nSAMPLE_WINDOW hwnd=0127027A parent=0142076E class=ThunderRT5TextBox parent_class=ThunderRT5Form owner=740C0000 style=540100c0 ex=00000204 text=Test of a single line text box font=700A1591\nVB_SAMPLE_IMAGE hash=4225292827023533716\nSAMPLE_ROOT class_owner=740C0000 windows=22\nSAMPLE_PIXELS index=0 class=ThunderRT5PictureBox hash=6044436196493835024\nSAMPLE_PIXELS index=1 class=ThunderRT5CommandButton hash=6092299911425419797\nSAMPLE_PIXELS index=2 class=ThunderRT5CommandButton hash=13592503983951089365\nSAMPLE_PIXELS index=3 class=ThunderRT5CommandButton hash=10926674909206468565\nSAMPLE_PIXELS index=4 class=ThunderRT5VScrollBar hash=15902409057643114521\nSAMPLE_SCROLL_OK index=4 min=0 max=32767 pos=0 page=0\nSAMPLE_PIXELS index=5 class=ThunderRT5HScrollBar hash=868257633841785689\nSAMPLE_SCROLL_OK index=5 min=0 max=32767 pos=0 page=0\nSAMPLE_PIXELS index=6 class=ThunderRT5ComboBox hash=17074136147584877070\nSAMPLE_COMBO_SELECT_OK index=6 count=5 select1=1 drop_cancel=1\nSAMPLE_PIXELS index=7 class=ThunderRT5ListBox hash=4984228313527916599\nSAMPLE_LIST_SELECT_OK index=7 count=9 select1=1\nSAMPLE_PIXELS index=8 class=ThunderRT5ComboBox hash=12067848088617040239\nSAMPLE_COMBO_SELECT_OK index=8 count=3 select1=1 drop_cancel=1\nSAMPLE_PIXELS index=10 class=ThunderRT5Frame hash=5809650877045234277\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=11 class=ThunderRT5OptionButton hash=5489073195633416124\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_OPTION_GROUP_OK index=11 checked=1 siblings_cleared=1\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=12 class=ThunderRT5OptionButton hash=12251892067687706005\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_OPTION_GROUP_OK index=12 checked=1 siblings_cleared=1\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=13 class=ThunderRT5OptionButton hash=5787002621847881932\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_OPTION_GROUP_OK index=13 checked=1 siblings_cleared=1\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=14 class=ThunderRT5OptionButton hash=12093204452232153621\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_OPTION_GROUP_OK index=14 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=15 class=ThunderRT5Frame hash=2180935991618925484\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=16 class=ThunderRT5CheckBox hash=16765542349863956389\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_CHECK_CYCLE_OK index=16 round2=initial\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=17 class=ThunderRT5CheckBox hash=18253952673007485436\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_CHECK_CYCLE_OK index=17 round2=initial\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=18 class=ThunderRT5CheckBox hash=14718775504080968885\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_CHECK_CYCLE_OK index=18 round2=initial\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=19 class=ThunderRT5CheckBox hash=2903097414639958364\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_CHECK_CYCLE_OK index=19 round2=initial\nSAMPLE_PIXELS index=20 class=ThunderRT5TextBox hash=14603856593287597157\nSAMPLE_EDIT_OK index=20 text_restore=1 multiline=1 cross_process_replace_undo=not_covered\nSAMPLE_PIXELS index=21 class=ThunderRT5TextBox hash=7901490250484071196\nSAMPLE_EDIT_OK index=21 text_restore=1 multiline=0 cross_process_replace_undo=not_covered\nSAMPLE_PROTOCOL_PASS option=4 checkbox=4 combo=2 list=1 edit=2 scrollbar=2\nSAMPLE_PASS styled=1 count=22 active=0\n",
+    "VB6": "SAMPLE_SHOW class=ThunderRT6Main title= hwnd=0CFB068E\nSAMPLE_SHOW class=ThunderRT6FormDC title=XP Visual Styles Tester - Manifest Stored in Resource hwnd=02DB0748\nVB_SAMPLE_TARGET pid=18508 creator=7764 initial_pid=7764 bits=32 path=O:\\repos.hobby\\win16style\\build\\t17-audit\\s4-intrinsic-samples\\vb6\\ResXpStylesTester.exe dpi=96\nVB_SAMPLE_STYLE_MODULE base=6A440000 path=O:\\winnt\\system32\\ntw16s32.dll\nVB_SAMPLE_MODULE_FILE actual=\\\\?\\O:\\WINNT\\system32\\ntw16s32.dll\nVB_SAMPLE_RUNTIME base=69660000 path=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL\nVB_SAMPLE_MODULE_FILE actual=\\\\?\\C:\\Windows\\SysWOW64\\msvbvm60.dll\nSAMPLE_WINDOW hwnd=0A2B086E parent=02DB0748 class=ThunderRT6PictureBoxDC parent_class=ThunderRT6FormDC owner=69660000 style=56010000 ex=00000204 text= font=510A1540\nSAMPLE_WINDOW hwnd=07A1094C parent=02DB0748 class=ThunderRT6CommandButton parent_class=ThunderRT6FormDC owner=69660000 style=54012000 ex=00000004 text=&Advanced... font=510A1540\nSAMPLE_WINDOW hwnd=01F6033A parent=02DB0748 class=ThunderRT6CommandButton parent_class=ThunderRT6FormDC owner=69660000 style=54012000 ex=00000004 text=Cancel font=FE0A18FA\nSAMPLE_WINDOW hwnd=01640A7C parent=02DB0748 class=ThunderRT6CommandButton parent_class=ThunderRT6FormDC owner=69660000 style=54012001 ex=00000004 text=OK font=FE0A18FA\nSAMPLE_WINDOW hwnd=012D0AA8 parent=02DB0748 class=ThunderRT6VScrollBar parent_class=ThunderRT6FormDC owner=69660000 style=54010001 ex=00000004 text= font=00000000\nSAMPLE_WINDOW hwnd=03AC0B36 parent=02DB0748 class=ThunderRT6HScrollBar parent_class=ThunderRT6FormDC owner=69660000 style=54010000 ex=00000004 text= font=00000000\nSAMPLE_WINDOW hwnd=01730B34 parent=02DB0748 class=ThunderRT6ComboBox parent_class=ThunderRT6FormDC owner=69660000 style=54010243 ex=00000000 text= font=FE0A18FA\nSAMPLE_COMBO hwnd=01730B34 count=5 selected=-1 info=1 edit=01730B34 list=01050C72 error=18\nSAMPLE_WINDOW hwnd=08830C7E parent=02DB0748 class=ThunderRT6ListBox parent_class=ThunderRT6FormDC owner=69660000 style=54210081 ex=00000204 text= font=FE0A18FA\nSAMPLE_LIST hwnd=08830C7E count=9 selected=-1\nSAMPLE_WINDOW hwnd=02C80AD8 parent=02DB0748 class=ThunderRT6ComboBox parent_class=ThunderRT6FormDC owner=69660000 style=54010242 ex=00000000 text= font=FE0A18FA\nSAMPLE_COMBO hwnd=02C80AD8 count=3 selected=-1 info=1 edit=02C90E6C list=00950E68 error=18\nSAMPLE_WINDOW hwnd=02C90E6C parent=02C80AD8 class=Edit parent_class=ThunderRT6ComboBox owner=71D80000 style=50000380 ex=00000000 text= font=230A1841\nSAMPLE_WINDOW hwnd=01F5034E parent=02DB0748 class=ThunderRT6Frame parent_class=ThunderRT6FormDC owner=69660000 style=56010007 ex=00000004 text=Frame - Option Boxes font=FE0A18FA\nSAMPLE_WINDOW hwnd=02B10760 parent=01F5034E class=ThunderRT6PictureBoxDC parent_class=ThunderRT6Frame owner=69660000 style=56010000 ex=00000004 text= font=510A1540\nSAMPLE_WINDOW hwnd=0143076E parent=02B10760 class=ThunderRT6OptionButton parent_class=ThunderRT6PictureBoxDC owner=69660000 style=54012004 ex=00000000 text=Option Item 1 font=FE0A18FA\nSAMPLE_BUTTON hwnd=0143076E dlg=20c0 check=1 state=1\nSAMPLE_WINDOW hwnd=0128027A parent=02B10760 class=ThunderRT6OptionButton parent_class=ThunderRT6PictureBoxDC owner=69660000 style=54002004 ex=00000000 text=Option Item 2 font=FE0A18FA\nSAMPLE_BUTTON hwnd=0128027A dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=053E0240 parent=02B10760 class=ThunderRT6OptionButton parent_class=ThunderRT6PictureBoxDC owner=69660000 style=54002004 ex=00000000 text=Option Item 3 font=FE0A18FA\nSAMPLE_BUTTON hwnd=053E0240 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=02F30BF8 parent=02B10760 class=ThunderRT6OptionButton parent_class=ThunderRT6PictureBoxDC owner=69660000 style=54002004 ex=00000000 text=Option Item 4 font=FE0A18FA\nSAMPLE_BUTTON hwnd=02F30BF8 dlg=20c0 check=0 state=0\nSAMPLE_WINDOW hwnd=008E0E58 parent=02DB0748 class=ThunderRT6Frame parent_class=ThunderRT6FormDC owner=69660000 style=56010007 ex=00000004 text=Frame - Check boxes font=FE0A18FA\nSAMPLE_WINDOW hwnd=00B80DE2 parent=008E0E58 class=ThunderRT6CheckBox parent_class=ThunderRT6Frame owner=69660000 style=54012006 ex=00000004 text=Check Option 4 font=FE0A18FA\nSAMPLE_BUTTON hwnd=00B80DE2 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=02670DDC parent=008E0E58 class=ThunderRT6CheckBox parent_class=ThunderRT6Frame owner=69660000 style=54012006 ex=00000004 text=Check Option 3 font=FE0A18FA\nSAMPLE_BUTTON hwnd=02670DDC dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=02290D98 parent=008E0E58 class=ThunderRT6CheckBox parent_class=ThunderRT6Frame owner=69660000 style=54012006 ex=00000004 text=Check Option 2 font=FE0A18FA\nSAMPLE_BUTTON hwnd=02290D98 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=02230AE0 parent=008E0E58 class=ThunderRT6CheckBox parent_class=ThunderRT6Frame owner=69660000 style=54012006 ex=00000004 text=Check Option 1 font=FE0A18FA\nSAMPLE_BUTTON hwnd=02230AE0 dlg=2080 check=0 state=0\nSAMPLE_WINDOW hwnd=028E0CBA parent=02DB0748 class=ThunderRT6TextBox parent_class=ThunderRT6FormDC owner=69660000 style=543100c4 ex=00000204 text=Test of a multi-line text box.\n\nThis multi-line control has both scroll bars visible\n\n font=FE0A18FA\nSAMPLE_WINDOW hwnd=01D80B90 parent=02DB0748 class=ThunderRT6TextBox parent_class=ThunderRT6FormDC owner=69660000 style=540100c0 ex=00000204 text=Test of a single line text box font=FE0A18FA\nVB_SAMPLE_IMAGE hash=11108195264409690260\nSAMPLE_ROOT class_owner=69660000 windows=23\nSAMPLE_PIXELS index=0 class=ThunderRT6PictureBoxDC hash=6044436196493835024\nSAMPLE_PIXELS index=1 class=ThunderRT6CommandButton hash=6092299911425419797\nSAMPLE_PIXELS index=2 class=ThunderRT6CommandButton hash=13592503983951089365\nSAMPLE_PIXELS index=3 class=ThunderRT6CommandButton hash=10926674909206468565\nSAMPLE_PIXELS index=4 class=ThunderRT6VScrollBar hash=15902409057643114521\nSAMPLE_SCROLL_OK index=4 min=0 max=32767 pos=0 page=0\nSAMPLE_PIXELS index=5 class=ThunderRT6HScrollBar hash=868257633841785689\nSAMPLE_SCROLL_OK index=5 min=0 max=32767 pos=0 page=0\nSAMPLE_PIXELS index=6 class=ThunderRT6ComboBox hash=17074136147584877070\nSAMPLE_COMBO_SELECT_OK index=6 count=5 select1=1 drop_cancel=1\nSAMPLE_PIXELS index=7 class=ThunderRT6ListBox hash=4984228313527916599\nSAMPLE_LIST_SELECT_OK index=7 count=9 select1=1\nSAMPLE_PIXELS index=8 class=ThunderRT6ComboBox hash=12067848088617040239\nSAMPLE_COMBO_SELECT_OK index=8 count=3 select1=1 drop_cancel=1\nSAMPLE_PIXELS index=10 class=ThunderRT6Frame hash=4338921653074584677\nSAMPLE_PIXELS index=11 class=ThunderRT6PictureBoxDC hash=4721916846035101820\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_PIXELS index=12 class=ThunderRT6OptionButton hash=4806887121930141244\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_OPTION_GROUP_OK index=12 checked=1 siblings_cleared=1\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=13 class=ThunderRT6OptionButton hash=5787002621847881932\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_OPTION_GROUP_OK index=13 checked=1 siblings_cleared=1\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=14 class=ThunderRT6OptionButton hash=12251892067687706005\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_OPTION_GROUP_OK index=14 checked=1 siblings_cleared=1\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=15 class=ThunderRT6OptionButton hash=5489073195633416124\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_OPTION_GROUP_OK index=15 checked=1 siblings_cleared=1\nSAMPLE_PIXELS index=16 class=ThunderRT6Frame hash=2180935991618925484\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=17 class=ThunderRT6CheckBox hash=16765542349863956389\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_CHECK_CYCLE_OK index=17 round2=initial\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=18 class=ThunderRT6CheckBox hash=18253952673007485436\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_CHECK_CYCLE_OK index=18 round2=initial\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=19 class=ThunderRT6CheckBox hash=14718775504080968885\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_CHECK_CYCLE_OK index=19 round2=initial\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=0\nSAMPLE_PIXELS index=20 class=ThunderRT6CheckBox hash=2903097414639958364\nVB_SAMPLE_GLYPH_OK source_pixels=182 check=1\nSAMPLE_CHECK_CYCLE_OK index=20 round2=initial\nSAMPLE_PIXELS index=21 class=ThunderRT6TextBox hash=14603856593287597157\nSAMPLE_EDIT_OK index=21 text_restore=1 multiline=1 cross_process_replace_undo=not_covered\nSAMPLE_PIXELS index=22 class=ThunderRT6TextBox hash=7901490250484071196\nSAMPLE_EDIT_OK index=22 text_restore=1 multiline=0 cross_process_replace_undo=not_covered\nSAMPLE_PROTOCOL_PASS option=4 checkbox=4 combo=2 list=1 edit=2 scrollbar=2\nSAMPLE_PASS styled=1 count=23 active=0\n"
+  },
+  "installed_ABI": "ABI32/64 passed; actual target DLL path O:/winnt/system32/ntw16s32.dll, eight hashes match tested package",
+  "module_identities": [
+    {
+      "case": "VB5-styled",
+      "path": "\\\\?\\O:\\repos.hobby\\win16style\\build\\t17-package\\s4-final\\candidate\\ntw16s32.dll",
+      "sha256": "9dd95bcb561bcde0e0f7f1e15f3c80176d483f5f6bfe66c0bad3f89e7b8ef1d2",
+      "bytes": 483654
+    },
+    {
+      "case": "VB5-styled",
+      "path": "\\\\?\\O:\\repos.hobby\\win16style\\build\\t17-audit\\s4-intrinsic-samples\\vb5\\MSVBVM50.DLL",
+      "sha256": "8611dc1b60ae5c383bba6cb3ffd8a51aeebff23b95844f0ab3d6e5ecd0fadc84",
+      "bytes": 1355776
+    },
+    {
+      "case": "VB6-styled",
+      "path": "\\\\?\\O:\\repos.hobby\\win16style\\build\\t17-package\\s4-final\\candidate\\ntw16s32.dll",
+      "sha256": "9dd95bcb561bcde0e0f7f1e15f3c80176d483f5f6bfe66c0bad3f89e7b8ef1d2",
+      "bytes": 483654
+    },
+    {
+      "case": "VB6-styled",
+      "path": "\\\\?\\C:\\Windows\\SysWOW64\\msvbvm60.dll",
+      "sha256": "898288bd3b21d0e7d5f406df2e0b69a5bbfa4f241baf29a2cdf8a3cf4d4619f2",
+      "bytes": 1436032
+    }
+  ],
+  "caption_preservation": {
+    "baseline": "S3 final-demo-injected.png",
+    "rectangle": [
+      0,
+      0,
+      862,
+      36
+    ],
+    "changed_RGB_pixels": 0,
+    "size": [
+      862,
+      724
+    ]
+  },
+  "screenshots": [
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s4\\vb5-bare.png",
+      "sha256": "35455c3ae8e222f319c650779cc154f8dfc59108b3fc04af27fc54badd49a7e0",
+      "source_BMP_sha256": "e585d254dd279325d98fc7305ccd41e59ae9a9953e569400722aa3623e90cfc0",
+      "size": [
+        609,
+        519
+      ],
+      "method": "native PrintWindow, owned normally visible private desktop window, lossless PNG, no editing",
+      "sample_author": "Steve McMahon / vbAccelerator, original sample via exact archive commit; demonstration only, no redistribution of original EXE"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s4\\vb5-styled.png",
+      "sha256": "aac504c828f8ab11ff4b9efdc8e7b1dcc7d08294ee9f03e26cfa73c15f012c38",
+      "source_BMP_sha256": "491183dff2e679e7a6756ebe4b1da25a0de19dc6252acd66fc527e47faf88834",
+      "size": [
+        601,
+        509
+      ],
+      "method": "native PrintWindow, owned normally visible private desktop window, lossless PNG, no editing",
+      "sample_author": "Steve McMahon / vbAccelerator, original sample via exact archive commit; demonstration only, no redistribution of original EXE"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s4\\vb6-bare.png",
+      "sha256": "81158216858331d9aa27941b4a6b34eaab55db3df995a0ea9fd9ce1c0cb38f95",
+      "source_BMP_sha256": "ac255c38d1b4c0cbce49e4edcabeceb040352f733fe8c544079850110ef600cc",
+      "size": [
+        609,
+        519
+      ],
+      "method": "native PrintWindow, owned normally visible private desktop window, lossless PNG, no editing",
+      "sample_author": "Steve McMahon / vbAccelerator, original sample via exact archive commit; demonstration only, no redistribution of original EXE"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s4\\vb6-styled.png",
+      "sha256": "ee03383354b9caa946640f946e68bfa4a6ac80d8f30993e785e7f29ef760d433",
+      "source_BMP_sha256": "5678c1675a3525a8d8d7c1a1efaf575a9994313c674fbdbd427a80bce77d4233",
+      "size": [
+        601,
+        509
+      ],
+      "method": "native PrintWindow, owned normally visible private desktop window, lossless PNG, no editing",
+      "sample_author": "Steve McMahon / vbAccelerator, original sample via exact archive commit; demonstration only, no redistribution of original EXE"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s4\\demo-injected.png",
+      "sha256": "bdf6a54e3eb05d3fe6d8a0ef76707a3bd7b4664568cff9e5daf0494e53f71a70",
+      "source_BMP_sha256": "23bdf41d880ca227ee4830af7da9550441956bb8a5abc0a0c3fa6169a8378d8b",
+      "size": [
+        862,
+        724
+      ],
+      "method": "native PrintWindow lossless PNG"
+    }
+  ],
+  "actual_protocol_scope": "both authentic versions: 4 radio and4 checkbox original glyph checks before/after selection, runtime grouping and native cycles,2 combos and1 list selection/drop/return baseline only,2 text set/restore,2 scroll getters; control fonts and outer rectangles preserved",
+  "preservation": {
+    "base_commit": "25db0f5338fd02468a47b917bef41c1700d05ec7",
+    "unchanged_production_paths": [
+      "src/demo-exe/catalog.c",
+      "src/demo-exe/catalog.rc",
+      "src/demo-exe/demo.manifest",
+      "src/demo-exe/gallery.c",
+      "src/demo-exe/main.c",
+      "src/demo-exe/version.rc",
+      "src/ntw16s-dll/api.h",
+      "src/ntw16s-dll/attachment.c",
+      "src/ntw16s-dll/attachment.h",
+      "src/ntw16s-dll/combo_glyph.h",
+      "src/ntw16s-dll/controls.h",
+      "src/ntw16s-dll/control_glyphs.h",
+      "src/ntw16s-dll/control_protocol.c",
+      "src/ntw16s-dll/control_protocol.h",
+      "src/ntw16s-dll/control_scope.c",
+      "src/ntw16s-dll/dllmain.c",
+      "src/ntw16s-dll/font.c",
+      "src/ntw16s-dll/font.h",
+      "src/ntw16s-dll/frame_buttons.h",
+      "src/ntw16s-dll/header_paint.c",
+      "src/ntw16s-dll/header_paint.h",
+      "src/ntw16s-dll/layout.c",
+      "src/ntw16s-dll/layout.h",
+      "src/ntw16s-dll/menu_bar.c",
+      "src/ntw16s-dll/menu_bar.h",
+      "src/ntw16s-dll/menu_bar_paint.c",
+      "src/ntw16s-dll/menu_glyphs.h",
+      "src/ntw16s-dll/menu_items.c",
+      "src/ntw16s-dll/menu_items.h",
+      "src/ntw16s-dll/menu_layout.c",
+      "src/ntw16s-dll/menu_layout.h",
+      "src/ntw16s-dll/menu_paint.c",
+      "src/ntw16s-dll/menu_paint.h",
+      "src/ntw16s-dll/menu_scope.c",
+      "src/ntw16s-dll/menu_scope.h",
+      "src/ntw16s-dll/native_api.c",
+      "src/ntw16s-dll/native_api.h",
+      "src/ntw16s-dll/ntw16s.h",
+      "src/ntw16s-dll/ntw16s32.def",
+      "src/ntw16s-dll/ntw16s64.def",
+      "src/ntw16s-dll/progress_paint.c",
+      "src/ntw16s-dll/progress_paint.h",
+      "src/ntw16s-dll/scroll_glyphs.h",
+      "src/ntw16s-dll/scroll_layout.c",
+      "src/ntw16s-dll/scroll_layout.h",
+      "src/ntw16s-dll/scroll_track.c",
+      "src/ntw16s-dll/scroll_track.h",
+      "src/ntw16s-dll/tab_paint.c",
+      "src/ntw16s-dll/tab_paint.h",
+      "src/ntw16s-dll/theme.c",
+      "src/ntw16s-dll/theme.h",
+      "src/ntw16s-dll/trackbar_paint.c",
+      "src/ntw16s-dll/trackbar_paint.h",
+      "src/ntw16s-dll/updown_paint.c",
+      "src/ntw16s-dll/updown_paint.h",
+      "src/ntw16s-dll/vb_text.h",
+      "src/ntw16s-dll/version.rc",
+      "src/ntw16s-dll/win16_style.c",
+      "src/ntw16s-dll/win16_style.h",
+      "src/run16s-exe/elevation.c",
+      "src/run16s-exe/elevation.h",
+      "src/run16s-exe/main.c",
+      "src/run16s-exe/run16s.manifest",
+      "src/run16s-exe/startup_error.c",
+      "src/run16s-exe/startup_error.h",
+      "src/run16s-exe/version.rc",
+      "src/ntw16s-dll/injection/context.c",
+      "src/ntw16s-dll/injection/create_process.c",
+      "src/ntw16s-dll/injection/entry.c",
+      "src/ntw16s-dll/injection/helper.c",
+      "src/ntw16s-dll/injection/injection.h",
+      "src/ntw16s-dll/injection/installer.c",
+      "src/ntw16s-dll/injection/intercept.h",
+      "src/ntw16s-dll/injection/staging.c",
+      "src/ntw16s-dll/injection/staging.h",
+      "src/ntw16s-dll/injection/startup_hooks.c",
+      "src/ntw16s-dll/injection/startup_hooks.h",
+      "src/ntw16s-dll/injection/subclass32.def",
+      "src/ntw16s-dll/injection/subclass64.def",
+      "src/ntw16s-dll/injection/unwind.c",
+      "src/ntw16s-dll/injection/unwind.h",
+      "src/ntw16s-dll/injection/minhook/src/buffer.c",
+      "src/ntw16s-dll/injection/minhook/src/buffer.h",
+      "src/ntw16s-dll/injection/minhook/src/trampoline.c",
+      "src/ntw16s-dll/injection/minhook/src/trampoline.h",
+      "src/ntw16s-dll/injection/minhook/src/hde/hde32.c",
+      "src/ntw16s-dll/injection/minhook/src/hde/hde32.h",
+      "src/ntw16s-dll/injection/minhook/src/hde/hde64.c",
+      "src/ntw16s-dll/injection/minhook/src/hde/hde64.h",
+      "src/ntw16s-dll/injection/minhook/src/hde/pstdint.h",
+      "src/ntw16s-dll/injection/minhook/src/hde/table32.h",
+      "src/ntw16s-dll/injection/minhook/src/hde/table64.h"
+    ],
+    "finite_changed_production_paths": [
+      "src/ntw16s-dll/control_class.h",
+      "src/ntw16s-dll/controls.c",
+      "src/ntw16s-dll/injection/window_titles.c",
+      "src/ntw16s-dll/vb_text.c"
+    ],
+    "actual_caption_top36_RGB_differences": 0,
+    "original_graphics": "all5 headers andresources.md byte-exact,18 tables/DLL",
+    "algorithms": "font.c/menu renderer/frame renderer/scrollbar algorithms unchanged; changed wrappers only extend exact runtime/class/caller admission"
+  },
+  "diff_statistics": {
+    "scope": "P1 staged before adding statistics; product/test subset CMake/src/tests/tools and all per-path numstat",
+    "code_added": 266,
+    "code_deleted": 18,
+    "code_net": 248,
+    "rows": [
+      {
+        "path": "CMakeLists.txt",
+        "added": "4",
+        "deleted": "0"
+      },
+      {
+        "path": "assets/demo.exe",
+        "added": "-",
+        "deleted": "-"
+      },
+      {
+        "path": "assets/ntw16s32.dll",
+        "added": "-",
+        "deleted": "-"
+      },
+      {
+        "path": "assets/ntw16s64.dll",
+        "added": "-",
+        "deleted": "-"
+      },
+      {
+        "path": "assets/run16s.exe",
+        "added": "-",
+        "deleted": "-"
+      },
+      {
+        "path": "docs/design/UI.md",
+        "added": "6",
+        "deleted": "0"
+      },
+      {
+        "path": "docs/etc/README.md",
+        "added": "2",
+        "deleted": "0"
+      },
+      {
+        "path": "docs/etc/evidence/vb-controls-audit.json",
+        "added": "40",
+        "deleted": "16"
+      },
+      {
+        "path": "docs/etc/evidence/vb-intrinsic-controls.json",
+        "added": "941",
+        "deleted": "0"
+      },
+      {
+        "path": "docs/etc/import/import-receipts.json",
+        "added": "23",
+        "deleted": "14"
+      },
+      {
+        "path": "docs/etc/release.json",
+        "added": "175",
+        "deleted": "186"
+      },
+      {
+        "path": "docs/history/M0-T17-S4-vb-intrinsics.md",
+        "added": "49",
+        "deleted": "0"
+      },
+      {
+        "path": "docs/states/CURRENT.md",
+        "added": "14",
+        "deleted": "12"
+      },
+      {
+        "path": "src/ntw16s-dll/README.md",
+        "added": "8",
+        "deleted": "0"
+      },
+      {
+        "path": "src/ntw16s-dll/control_class.h",
+        "added": "21",
+        "deleted": "11"
+      },
+      {
+        "path": "src/ntw16s-dll/controls.c",
+        "added": "2",
+        "deleted": "2"
+      },
+      {
+        "path": "src/ntw16s-dll/injection/window_titles.c",
+        "added": "1",
+        "deleted": "1"
+      },
+      {
+        "path": "src/ntw16s-dll/vb_text.c",
+        "added": "1",
+        "deleted": "1"
+      },
+      {
+        "path": "tests/integration/vb_intrinsic.c",
+        "added": "215",
+        "deleted": "0"
+      },
+      {
+        "path": "tests/ntw16s-dll/vb_controls.c",
+        "added": "9",
+        "deleted": "0"
+      },
+      {
+        "path": "tests/ntw16s-dll/vb_runtime.c",
+        "added": "5",
+        "deleted": "3"
+      }
+    ],
+    "other_owners": "preserved all other task sources/caches/snapshots; no production path deleted/moved; only own authored probe copied into tests"
+  }
+}

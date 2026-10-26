@@ -69,6 +69,10 @@ static int child(const WCHAR *runtime_path,BOOL styled,BOOL aware)
     HWND fake_check=CreateWindowW(impostor.lpszClassName,L"custom check",WS_CHILD,0,0,10,10,root,NULL,cls.hInstance,NULL);CHECK(fake_check);if(styled)CHECK(!attached(fake_check));
     HWND graphical=CreateWindowW(L"ThunderRT6CheckBox",L"native graphical",WS_CHILD|WS_VISIBLE|BS_AUTO3STATE|BS_PUSHLIKE,0,150,140,28,root,(HMENU)5,runtime,NULL);CHECK(graphical);if(styled)CHECK(!attached(graphical));
     HWND transition=CreateWindowW(L"ThunderRT6CheckBox",L"native transition",WS_CHILD|WS_VISIBLE|BS_AUTO3STATE,150,150,140,28,root,(HMENU)6,runtime,NULL);CHECK(transition);if(styled)CHECK(attached(transition));
+    HWND option_a=CreateWindowW(L"ThunderRT6OptionButton",L"Option A",WS_CHILD|WS_VISIBLE|BS_RADIOBUTTON|WS_GROUP,0,190,120,28,root,(HMENU)8,runtime,NULL);
+    HWND option_b=CreateWindowW(L"ThunderRT6OptionButton",L"Option B",WS_CHILD|WS_VISIBLE|BS_RADIOBUTTON,140,190,120,28,root,(HMENU)9,runtime,NULL);
+    HWND wrong_runtime=CreateWindowW(L"ThunderRT5CheckBox",L"wrong runtime",WS_CHILD|BS_AUTO3STATE,0,0,100,28,root,NULL,runtime,NULL);CHECK(option_a && option_b && wrong_runtime);
+    if(styled)CHECK(attached(option_a) && attached(option_b) && !attached(wrong_runtime));
     RECT geometry_before,geometry_after;GetClientRect(edit,&geometry_before);
 
     ShowWindow(root,SW_SHOWNORMAL);UpdateWindow(root);settle();
@@ -81,6 +85,11 @@ static int child(const WCHAR *runtime_path,BOOL styled,BOOL aware)
     GetClientRect(edit,&geometry_after);CHECK(EqualRect(&geometry_before,&geometry_after));
     if(styled){DWORD styled_edit=image(edit,NULL,0);CHECK(remove_control(edit));
         CHECK(image(edit,NULL,0)!=styled_edit);puts("VB_EDIT_FONT_PIXELS changed=1 native_font_property=preserved");}
+    SendMessageW(option_a,BM_CLICK,0,0);CHECK(SendMessageW(option_a,BM_GETCHECK,0,0)==1 && SendMessageW(option_b,BM_GETCHECK,0,0)==0);
+    SendMessageW(option_b,BM_CLICK,0,0);CHECK(SendMessageW(option_b,BM_GETCHECK,0,0)==1 && SendMessageW(option_a,BM_GETCHECK,0,0)==0);
+    if(styled){DWORD pixels[200*100];(void)image(option_b,pixels,ARRAYSIZE(pixels));RECT bounds;CHECK(GetClientRect(option_b,&bounds));int dpi=(int)GetDpiForWindow(option_b),top=(bounds.bottom-MulDiv(13,dpi,96))/2;
+        for(int y=0;y<13;++y)for(int x=0;x<14;++x){unsigned expected=control_checks[13+y][14+x]=='0'?0:0xffffff;CHECK((pixels[(top+MulDiv(y,dpi,96))*200+MulDiv(x,dpi,96)]&0xffffff)==expected);}}
+    CHECK(DestroyWindow(option_a) && DestroyWindow(option_b) && DestroyWindow(wrong_runtime));puts("VB_OPTION_OK group_native=1 source_pixels=182 wrong_runtime_rejected=1");
     HFONT check_font=(HFONT)SendMessageW(checkbox,WM_GETFONT,0,0);unsigned original_clicks=clicks;
     for(unsigned value=1;value<=3;++value){SendMessageW(checkbox,BM_CLICK,0,0);CHECK(SendMessageW(checkbox,BM_GETCHECK,0,0)==(LRESULT)(value%3));}
     CHECK(clicks==original_clicks+3 && (HFONT)SendMessageW(checkbox,WM_GETFONT,0,0)==check_font);

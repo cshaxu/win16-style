@@ -18,7 +18,7 @@ void ntw16s_vb_paint_begin(ntw16s_vb_paint *scope,HWND w,UINT message,ntw16s_vb_
     scope->previous=current;scope->active=TRUE;scope->fonts=fonts;current=scope;
     /* An attached non-VB child is a barrier during nested WM_PRINT. */
     if(ntw16s_vb_frame(w) || ntw16s_vb_edit(w) ||
-            ntw16s_vb_class(w,L"ThunderRT6FormDC"))scope->window=w;
+            (ntw16s_vb_class(w,L"ThunderRT6FormDC") || ntw16s_vb5_class(w,L"ThunderRT5Form")))scope->window=w;
 }
 void ntw16s_vb_paint_end(ntw16s_vb_paint *scope)
 {
