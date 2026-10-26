@@ -7,6 +7,23 @@
     "component_catalogue": "https://docwiki.embarcadero.com/RADStudio/Florence/en/VCL_Components_Categories_Index",
     "framework_boundary": "The catalogue is a VCL category seed, not proof that an arbitrary Delphi executable is VCL, that a T-prefixed class is a safe native alias, or that FireMonkey is HWND-rendered. Exact component availability varies by Delphi release."
   },
+  "framework_branches": [
+    {
+      "name": "legacy VCL",
+      "evidence": "MD5summer declares Borland Delphi 7; DoubleKiller has Borland Delphi runtime markers and historical USER observations",
+      "treatment": "eligible for exact native public-protocol audit"
+    },
+    {
+      "name": "modern static VCL",
+      "evidence": "JoyToKey and cnc-ddraw config are PE32 with Vcl.Forms/Vcl.Controls/Vcl.Themes metadata and no BPL imports",
+      "treatment": "eligible for a separate exact native public-protocol audit; no private object decoding"
+    },
+    {
+      "name": "FireMonkey",
+      "evidence": "https://github.com/Embarcadero/RADStudio13Demos/blob/main/Object%20Pascal/Multi-Device%20Samples/User%20Interface/CustomListBox/readme.md documents FMX TListBox/TButton/TStyleBook custom styling",
+      "treatment": "separate object-tree/custom-drawing branch. Same class names as VCL do not authorize a USER32/COMCTL renderer route; no FMX target has yet been identified or supported."
+    }
+  ],
   "frozen_vcl_ui_family_seed": {
     "count": 74,
     "groups": [
