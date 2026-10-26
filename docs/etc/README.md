@@ -62,3 +62,5 @@
 - [T17 S4真实内建控件](evidence/vb-intrinsic-controls.json)：固定原作者VB5/6样本、精确runtime/类/公开协议、有限按钮/Frame/Edit实现及下一S接收面。
 
 - [T17 S5列表与滚动包装层](evidence/vb-composite-controls.json)：真实VB5/6精确类、Combo原生编辑子控件字体所有权、原glyph像素与有限公开协议。
+
+- [T17 S6原生输入](evidence/vb-input-controls.json)：真实VB消息队列/通知与双宽自包含见证正负例，普通输入范围和未认证变体。

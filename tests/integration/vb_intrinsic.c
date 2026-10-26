@@ -13,6 +13,7 @@
 #include "../../src/ntw16s-dll/combo_glyph.h"
 #include "../../src/ntw16s-dll/scroll_glyphs.h"
 #include <oleacc.h>
+#include "vb_queue.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"VB_SAMPLE_FAIL line=%d error=%lu %s\n",__LINE__,GetLastError(),#x);ExitProcess(1);}}while(0)
 static void file_path(const WCHAR *path){
     HANDLE f=CreateFileW(path,GENERIC_READ,FILE_SHARE_READ|FILE_SHARE_WRITE|FILE_SHARE_DELETE,NULL,OPEN_EXISTING,0,NULL);
@@ -27,6 +28,10 @@ static HWND form;
 static DWORD pid;
 static HWND checks[80];
 static unsigned count;
+static HANDLE queue_mapping,queue_ready;
+static vb_queue_state *queue_state;
+static HMODULE queue_module;
+static HHOOK queue_get,queue_sent;
 static DWORD pump(HANDLE h,DWORD timeout){
     ULONGLONG end=GetTickCount64()+timeout;
     for(;;){
@@ -40,6 +45,54 @@ static DWORD pump(HANDLE h,DWORD timeout){
             DispatchMessageW(&m);
         }
     }
+}
+static void queue_prepare(void)
+{
+    WCHAR name[128],event_name[128];
+    CHECK(swprintf_s(name,128,L"Local\\Win16VBQueue-%lu-%llu",GetCurrentProcessId(),(unsigned long long)GetTickCount64())>0);
+    CHECK(swprintf_s(event_name,128,L"%ls-ready",name)>0);
+    queue_mapping=CreateFileMappingW(INVALID_HANDLE_VALUE,NULL,PAGE_READWRITE,0,sizeof(*queue_state),name);
+    CHECK(queue_mapping && GetLastError()!=ERROR_ALREADY_EXISTS);
+    queue_state=MapViewOfFile(queue_mapping,FILE_MAP_READ|FILE_MAP_WRITE,0,0,sizeof(*queue_state));
+    CHECK(queue_state);ZeroMemory(queue_state,sizeof(*queue_state));queue_state->size=sizeof(*queue_state);
+    CHECK(!wcscpy_s(queue_state->event_name,128,event_name));
+    queue_ready=CreateEventW(NULL,TRUE,FALSE,event_name);CHECK(queue_ready && GetLastError()!=ERROR_ALREADY_EXISTS);
+    CHECK(SetEnvironmentVariableW(VB_QUEUE_ENV,name));
+}
+static void queue_install(const WCHAR *path)
+{
+    queue_state->pid=pid;queue_state->tid=GetWindowThreadProcessId(form,NULL);
+    queue_module=LoadLibraryW(path);CHECK(queue_module);
+    HOOKPROC get=(HOOKPROC)(UINT_PTR)GetProcAddress(queue_module,"VbQueueGet");
+    HOOKPROC sent=(HOOKPROC)(UINT_PTR)GetProcAddress(queue_module,"VbQueueSent");
+    CHECK(get && sent);
+    queue_get=SetWindowsHookExW(WH_GETMESSAGE,get,queue_module,queue_state->tid);
+    queue_sent=SetWindowsHookExW(WH_CALLWNDPROC,sent,queue_module,queue_state->tid);
+    CHECK(queue_get && queue_sent);
+}
+static void queue_key(HWND window,WPARAM key)
+{
+    DWORD target_pid=0;CHECK(GetWindowThreadProcessId(window,&target_pid)==queue_state->tid && target_pid==pid);
+    CHECK(IsChild(form,window) && AttachThreadInput(GetCurrentThreadId(),queue_state->tid,TRUE));
+    SetActiveWindow(form);SetFocus(window);GUITHREADINFO gui={.cbSize=sizeof(gui)};
+    CHECK(GetGUIThreadInfo(queue_state->tid,&gui) && (gui.hwndFocus==window || IsChild(window,gui.hwndFocus)));
+    HWND destination=gui.hwndFocus;
+    CHECK(ResetEvent(queue_ready));queue_state->root=GetParent(window);queue_state->window=window;
+    queue_state->commands=queue_state->hscroll=queue_state->vscroll=0;
+    queue_state->acknowledgements=queue_state->rejected=0;
+    queue_state->command_code=queue_state->scroll_code=0;
+    ++queue_state->generation;MemoryBarrier();
+    UINT barrier=RegisterWindowMessageW(VB_QUEUE_MESSAGE);CHECK(barrier);
+    LPARAM key_data=1|((LPARAM)MapVirtualKeyW((UINT)key,MAPVK_VK_TO_VSC)<<16)|0x01000000;
+    CHECK(PostMessageW(window,barrier,queue_state->generation+1,0));
+    CHECK(PostMessageW(destination,WM_KEYDOWN,key,key_data) && PostMessageW(destination,WM_KEYUP,key,key_data|(LPARAM)0xc0000000u));
+    CHECK(PostMessageW(window,barrier,queue_state->generation,0));
+    CHECK(pump(queue_ready,3000)==WAIT_OBJECT_0);MemoryBarrier();
+    CHECK(queue_state->completed==(LONG)queue_state->generation);
+    CHECK(queue_state->acknowledgements==1 && queue_state->rejected==1);
+    CHECK(AttachThreadInput(GetCurrentThreadId(),queue_state->tid,FALSE));
+    printf("VB_SAMPLE_QUEUE_OK key=%u generation=%lu commands=%ld hscroll=%ld vscroll=%ld command_code=%lu scroll_code=%lu\n",
+        (unsigned)key,queue_state->generation,queue_state->commands,queue_state->hscroll,queue_state->vscroll,queue_state->command_code,queue_state->scroll_code);
 }
 static void CALLBACK shown(HWINEVENTHOOK h,DWORD e,HWND w,LONG object,LONG child,DWORD thread,DWORD time){
     (void)h;
@@ -139,7 +192,8 @@ static uint64_t capture(HWND w,const WCHAR *file,BOOL verify){
     return hash;
 }
 static int worker(int argc,WCHAR **argv){
-    CHECK(argc==4);
+    CHECK(argc==4 || argc==5);
+    if(argc==5)queue_prepare();
     BOOL styled=wcscmp(argv[1],L"bare")!=0;
     WCHAR command[2048],path[MAX_PATH],scratch[MAX_PATH];
     CHECK(GetEnvironmentVariableW(L"WIN16STYLE_CAPTURE_DIR",scratch,MAX_PATH));
@@ -161,6 +215,7 @@ static int worker(int argc,WCHAR **argv){
     CHECK(AssignProcessToJobObject(job,p.hProcess) && ResumeThread(p.hThread)==1 && pump(ready,12000)==WAIT_OBJECT_0);
     HANDLE target=OpenProcess(PROCESS_QUERY_INFORMATION|SYNCHRONIZE,FALSE,pid);
     CHECK(target && WaitForInputIdle(target,5000)==0 && IsWindowVisible(form) && !IsIconic(form));
+    if(queue_state)queue_install(argv[4]);
     DWORD size=MAX_PATH;
     CHECK(QueryFullProcessImageNameW(target,0,path,&size));
     BOOL wow=FALSE;CHECK(IsWow64Process(target,&wow) && wow);
@@ -204,11 +259,31 @@ static int worker(int argc,WCHAR **argv){
         else if(wcsstr(cls,L"ListBox")){++lists;LRESULT n=SendMessageW(w,LB_GETCOUNT,0,0);CHECK(n>1 && SendMessageW(w,LB_SETCURSEL,1,0)!=LB_ERR && SendMessageW(w,LB_GETCURSEL,0,0)==1);printf("SAMPLE_LIST_SELECT_OK index=%u count=%lld select1=1\n",i,(long long)n);}
         else if(wcsstr(cls,L"TextBox")){++edits;WCHAR original[512],actual[512];CHECK(SendMessageW(w,WM_GETTEXT,512,(LPARAM)original));CHECK(SendMessageW(w,WM_SETTEXT,0,(LPARAM)L"Native sample probe"));SendMessageW(w,WM_GETTEXT,512,(LPARAM)actual);CHECK(!wcscmp(actual,L"Native sample probe"));CHECK(SendMessageW(w,WM_SETTEXT,0,(LPARAM)original));SendMessageW(w,WM_GETTEXT,512,(LPARAM)actual);CHECK(!wcscmp(original,actual));printf("SAMPLE_EDIT_OK index=%u text_restore=1 multiline=%u cross_process_replace_undo=not_covered\n",i,(style&ES_MULTILINE)!=0);}
         else if(wcsstr(cls,L"ScrollBar")){++bars;SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_ALL};CHECK(GetScrollInfo(w,SB_CTL,&info));printf("SAMPLE_SCROLL_OK index=%u min=%d max=%d pos=%d page=%u\n",i,info.nMin,info.nMax,info.nPos,info.nPage);}
+        if(queue_state && wcsstr(cls,L"ComboBox")){
+            CHECK(SendMessageW(w,CB_GETCURSEL,0,0)==1);queue_key(w,VK_DOWN);
+            CHECK(SendMessageW(w,CB_GETCURSEL,0,0)==2);
+            CHECK(queue_state->commands==2 && queue_state->command_code==CBN_SELCHANGE);
+            printf("VB_SAMPLE_COMBO_INPUT_OK index=%u selected=2 commands=%ld\n",i,queue_state->commands);
+        }else if(queue_state && wcsstr(cls,L"ListBox")){
+            LRESULT n=SendMessageW(w,LB_GETCOUNT,0,0);queue_key(w,VK_END);
+            CHECK(SendMessageW(w,LB_GETCURSEL,0,0)==n-1);
+            CHECK(queue_state->commands==1 && queue_state->command_code==LBN_SELCHANGE);
+            printf("VB_SAMPLE_LIST_INPUT_OK index=%u selected=%lld commands=%ld\n",i,(long long)n-1,queue_state->commands);
+        }else if(queue_state && wcsstr(cls,L"ScrollBar")){
+            SCROLLINFO state={.cbSize=sizeof(state),.fMask=SIF_ALL};CHECK(GetScrollInfo(w,SB_CTL,&state));
+            int original=state.nPos;queue_key(w,VK_END);CHECK(GetScrollInfo(w,SB_CTL,&state));
+            CHECK(state.nPos>original && state.nPos<=state.nMax);int end=state.nPos;
+            queue_key(w,VK_HOME);CHECK(GetScrollInfo(w,SB_CTL,&state) && state.nPos==state.nMin);
+            CHECK(queue_state->scroll_code==SB_ENDSCROLL &&
+                ((style&SBS_VERT)?queue_state->vscroll==2 && !queue_state->hscroll:queue_state->hscroll==2 && !queue_state->vscroll));
+            printf("VB_SAMPLE_SCROLL_INPUT_OK index=%u end=%d home=%d hscroll=%ld vscroll=%ld\n",i,end,state.nPos,queue_state->hscroll,queue_state->vscroll);
+        }
         CHECK((HFONT)SendMessageW(w,WM_GETFONT,0,0)==original_font && GetWindowRect(w,&after_rect) && EqualRect(&original_rect,&after_rect));
     }
     CHECK(options==4 && checkboxes==4 && combos==2 && lists==1 && edits==2 && bars==2);
     printf("SAMPLE_PROTOCOL_PASS option=%u checkbox=%u combo=%u list=%u edit=%u scrollbar=%u\n",options,checkboxes,combos,lists,edits,bars);
 
+    if(queue_state){CHECK(UnhookWindowsHookEx(queue_get) && UnhookWindowsHookEx(queue_sent));queue_get=queue_sent=NULL;}
     SendMessageW(form,WM_CLOSE,0,0);
     CHECK(WaitForSingleObject(target,5000)==WAIT_OBJECT_0 && WaitForSingleObject(p.hProcess,5000)==WAIT_OBJECT_0);
     DWORD code;
@@ -233,6 +308,12 @@ static int worker(int argc,WCHAR **argv){
     CloseHandle(ready);
     CloseHandle(job);
     CloseHandle(port);
+    if(queue_state){
+        CHECK(FreeLibrary(queue_module) && UnmapViewOfFile(queue_state));queue_state=NULL;
+        CHECK(CloseHandle(queue_ready) && CloseHandle(queue_mapping));
+        CHECK(SetEnvironmentVariableW(VB_QUEUE_ENV,NULL));
+        puts("VB_SAMPLE_QUEUE_CLEANUP_OK owned_thread_hooks=0 mappings=0 events=0 active=0");
+    }
     printf("SAMPLE_PASS styled=%d count=%u active=0\n",styled,count);
     return 0;
 }

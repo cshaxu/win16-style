@@ -1618,8 +1618,35 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license; original sample attribution is evidence only",
-      "review": "T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S5 wrapper support and explicit native-child font lifetime contract; notices and original resources retained",
-      "sha256": "7a3a7a9dbd0d7e32784230b7f6a1fa341e991d88a426a3c9c56e039842de8090"
+      "review": "T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S5 wrapper support and explicit native-child font lifetime contract; notices and original resources retained; T17 S6 project-authored exact-owned-thread queue/notification witness, tagged FIFO acknowledgement, original VB5/6 queued input assertions and native double-width positive/negative lifecycle test; test-only files, no product renderer or original resource changes",
+      "sha256": "46c766c825c371e2cbbceb73c95ca409e7fa536daec9ecae8d05ad9c22176460"
+    },
+    {
+      "source_blob": null,
+      "disposition": "authored",
+      "source": null,
+      "path": "tests/integration/vb_queue.c",
+      "sha256": "97888cd838dc00db13686cdb21d65e71c15288b2d3556252d2a8bb1f8a489cc7",
+      "review": "T17 S6 project-authored exact-owned-thread queue/notification witness, tagged FIFO acknowledgement, original VB5/6 queued input assertions and native double-width positive/negative lifecycle test; test-only files, no product renderer or original resource changes",
+      "notice": "Project-authored C17 test; project MIT license"
+    },
+    {
+      "source_blob": null,
+      "disposition": "authored",
+      "source": null,
+      "path": "tests/integration/vb_queue.h",
+      "sha256": "c80d0e2da400497c706e80f2aa2922af335687eda70bf0b0dd55e35a17fc7a59",
+      "review": "T17 S6 project-authored exact-owned-thread queue/notification witness, tagged FIFO acknowledgement, original VB5/6 queued input assertions and native double-width positive/negative lifecycle test; test-only files, no product renderer or original resource changes",
+      "notice": "Project-authored C17 test; project MIT license"
+    },
+    {
+      "source_blob": null,
+      "disposition": "authored",
+      "source": null,
+      "path": "tests/integration/vb_queue_test.c",
+      "sha256": "655384eb7cb127cdae683145ab2d16f5d6baebb8fb03e85822a32f34e319124d",
+      "review": "T17 S6 project-authored exact-owned-thread queue/notification witness, tagged FIFO acknowledgement, original VB5/6 queued input assertions and native double-width positive/negative lifecycle test; test-only files, no product renderer or original resource changes",
+      "notice": "Project-authored C17 test; project MIT license"
     }
   ]
 }

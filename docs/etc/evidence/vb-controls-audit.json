@@ -290,7 +290,9 @@
       "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
       "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference",
       "T17_S5_progress_evidence": "docs/etc/evidence/vb-composite-controls.json",
-      "T17_S5_disposition": "ordinary real sample and independent native protocol coverage only; remaining listed variants still require audit"
+      "T17_S5_disposition": "ordinary real sample and independent native protocol coverage only; remaining listed variants still require audit",
+      "T17_S6_progress_evidence": "docs/etc/evidence/vb-input-controls.json",
+      "T17_S6_disposition": "original ordinary sample queued keyboard selection/End/Home and exact public parent notifications match bare/style; remaining frozen variants not certified"
     },
     {
       "id": "VB6.ComboBox",
@@ -322,7 +324,9 @@
       "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
       "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference",
       "T17_S5_progress_evidence": "docs/etc/evidence/vb-composite-controls.json",
-      "T17_S5_disposition": "ordinary real sample and independent native protocol coverage only; remaining listed variants still require audit"
+      "T17_S5_disposition": "ordinary real sample and independent native protocol coverage only; remaining listed variants still require audit",
+      "T17_S6_progress_evidence": "docs/etc/evidence/vb-input-controls.json",
+      "T17_S6_disposition": "original ordinary sample queued keyboard selection/End/Home and exact public parent notifications match bare/style; remaining frozen variants not certified"
     },
     {
       "id": "VB5.ListBox",
@@ -354,7 +358,9 @@
       "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
       "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference",
       "T17_S5_progress_evidence": "docs/etc/evidence/vb-composite-controls.json",
-      "T17_S5_disposition": "ordinary real sample and independent native protocol coverage only; remaining listed variants still require audit"
+      "T17_S5_disposition": "ordinary real sample and independent native protocol coverage only; remaining listed variants still require audit",
+      "T17_S6_progress_evidence": "docs/etc/evidence/vb-input-controls.json",
+      "T17_S6_disposition": "original ordinary sample queued keyboard selection/End/Home and exact public parent notifications match bare/style; remaining frozen variants not certified"
     },
     {
       "id": "VB6.ListBox",
@@ -386,7 +392,9 @@
       "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
       "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference",
       "T17_S5_progress_evidence": "docs/etc/evidence/vb-composite-controls.json",
-      "T17_S5_disposition": "ordinary real sample and independent native protocol coverage only; remaining listed variants still require audit"
+      "T17_S5_disposition": "ordinary real sample and independent native protocol coverage only; remaining listed variants still require audit",
+      "T17_S6_progress_evidence": "docs/etc/evidence/vb-input-controls.json",
+      "T17_S6_disposition": "original ordinary sample queued keyboard selection/End/Home and exact public parent notifications match bare/style; remaining frozen variants not certified"
     },
     {
       "id": "VB5.HScrollBar",
@@ -416,7 +424,9 @@
       "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
       "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference",
       "T17_S5_progress_evidence": "docs/etc/evidence/vb-composite-controls.json",
-      "T17_S5_disposition": "ordinary real sample and independent native protocol coverage only; remaining listed variants still require audit"
+      "T17_S5_disposition": "ordinary real sample and independent native protocol coverage only; remaining listed variants still require audit",
+      "T17_S6_progress_evidence": "docs/etc/evidence/vb-input-controls.json",
+      "T17_S6_disposition": "original ordinary sample queued keyboard selection/End/Home and exact public parent notifications match bare/style; remaining frozen variants not certified"
     },
     {
       "id": "VB6.HScrollBar",
@@ -446,7 +456,9 @@
       "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
       "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference",
       "T17_S5_progress_evidence": "docs/etc/evidence/vb-composite-controls.json",
-      "T17_S5_disposition": "ordinary real sample and independent native protocol coverage only; remaining listed variants still require audit"
+      "T17_S5_disposition": "ordinary real sample and independent native protocol coverage only; remaining listed variants still require audit",
+      "T17_S6_progress_evidence": "docs/etc/evidence/vb-input-controls.json",
+      "T17_S6_disposition": "original ordinary sample queued keyboard selection/End/Home and exact public parent notifications match bare/style; remaining frozen variants not certified"
     },
     {
       "id": "VB5.VScrollBar",
@@ -476,7 +488,9 @@
       "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
       "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference",
       "T17_S5_progress_evidence": "docs/etc/evidence/vb-composite-controls.json",
-      "T17_S5_disposition": "ordinary real sample and independent native protocol coverage only; remaining listed variants still require audit"
+      "T17_S5_disposition": "ordinary real sample and independent native protocol coverage only; remaining listed variants still require audit",
+      "T17_S6_progress_evidence": "docs/etc/evidence/vb-input-controls.json",
+      "T17_S6_disposition": "original ordinary sample queued keyboard selection/End/Home and exact public parent notifications match bare/style; remaining frozen variants not certified"
     },
     {
       "id": "VB6.VScrollBar",
@@ -506,7 +520,9 @@
       "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
       "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference",
       "T17_S5_progress_evidence": "docs/etc/evidence/vb-composite-controls.json",
-      "T17_S5_disposition": "ordinary real sample and independent native protocol coverage only; remaining listed variants still require audit"
+      "T17_S5_disposition": "ordinary real sample and independent native protocol coverage only; remaining listed variants still require audit",
+      "T17_S6_progress_evidence": "docs/etc/evidence/vb-input-controls.json",
+      "T17_S6_disposition": "original ordinary sample queued keyboard selection/End/Home and exact public parent notifications match bare/style; remaining frozen variants not certified"
     },
     {
       "id": "VB5.DriveListBox",
