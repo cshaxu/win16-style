@@ -4,11 +4,11 @@
   "status": "active: phase-one static inventory and existing-evidence reconciliation; no Delphi renderer change is implied",
   "scope_basis": {
     "proposal": "docs/proposals/delphi-win32-controls.md",
-    "component_catalogue": "https://docwiki.embarcadero.com/RADStudio/Alexandria/en/VCL_Components_Categories_Index",
+    "component_catalogue": "https://docwiki.embarcadero.com/RADStudio/Florence/en/VCL_Components_Categories_Index",
     "framework_boundary": "The catalogue is a VCL category seed, not proof that an arbitrary Delphi executable is VCL, that a T-prefixed class is a safe native alias, or that FireMonkey is HWND-rendered. Exact component availability varies by Delphi release."
   },
   "frozen_vcl_ui_family_seed": {
-    "count": 68,
+    "count": 74,
     "groups": [
       {"name": "forms_and_containers", "units": ["TForm", "TMDIForm", "TFrame", "TPanel", "TGroupBox", "TScrollBox", "TSplitter"]},
       {"name": "buttons_and_selection", "units": ["TButton", "TBitBtn", "TSpeedButton", "TCheckBox", "TRadioButton", "TRadioGroup"]},
@@ -17,9 +17,10 @@
       {"name": "menus_and_action_surfaces", "units": ["TMainMenu", "TPopupMenu", "TActionList", "TToolBar", "TCoolBar", "TStatusBar", "TControlBar"]},
       {"name": "common_controls", "units": ["TTreeView", "TListView", "THeaderControl", "TTabControl", "TPageControl", "TProgressBar", "TTrackBar", "TUpDown", "TDateTimePicker", "TMonthCalendar", "THotKey", "TAnimate"]},
       {"name": "grids_files_and_data", "units": ["TStringGrid", "TDrawGrid", "TValueListEditor", "TDirectoryListBox", "TDriveComboBox", "TFileListBox", "TDBGrid", "TDBEdit", "TDBComboBox", "TDBListBox", "TDBNavigator", "TDBLookupComboBox", "TDBLookupListBox"]},
-      {"name": "embedded_and_nonvisual", "units": ["TWebBrowser", "TMediaPlayer", "TOleContainer", "TTimer", "TTrayIcon", "TOpenDialog", "TSaveDialog"]}
+      {"name": "embedded_and_nonvisual", "units": ["TWebBrowser", "TMediaPlayer", "TOleContainer", "TTimer", "TTrayIcon", "TOpenDialog", "TSaveDialog"]},
+      {"name": "additional_and_legacy_vcl", "units": ["TButtonGroup", "TCategoryButtons", "TDockTabSet", "TTabSet", "TOutline", "TTabbedNotebook"]}
     ],
-    "completion_predicate": "Each unit must eventually be independently classified as a bounded public receiver, native preservation, nonvisual/no-style meaning, or a missing real owner/protocol with a named receiver. No group-level compatibility claim is permitted."
+    "completion_predicate": "Each unit must eventually be independently classified as a bounded public receiver, native preservation, nonvisual/no-style meaning, or a missing real owner/protocol with a named receiver. No group-level compatibility claim is permitted. The official category index also names BDE/dbExpress/Ribbon/Internet/Taskbar families; they remain version/package-dependent catalogue branches and must be added as exact units only after a real Delphi-version/package baseline is selected."
   },
   "local_static_candidates": [
     {
