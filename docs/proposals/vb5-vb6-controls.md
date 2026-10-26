@@ -5,7 +5,7 @@
 用户已明确准入M0 T17，并指定S1审计控件全貌，S2加入demo，S3及多个后续S实施，
 最后独立收口S。[S1审计](../etc/evidence/vb-controls-audit.md)、S2八页demo、S3普通
 VB6 CheckBox及S4真实VB5 Command/Check/Option/Frame/Text与VB6 Option已交付。
-S5精确Combo/List/Scroll有限适配已交付；当前[T17 S6](../states/CURRENT.md)接收真实输入/通知和变体；148单位和变体/
+S5精确Combo/List/Scroll有限适配、S6真实输入/通知已交付；当前[T17 S7](../states/CURRENT.md)接收文件/目录/驱动器列表；148单位和变体/
 OCX目标保持，不以Actor两框或一个普通样例代替全任务完成，M0固定。
 
 ## 已核实基线
@@ -14,7 +14,7 @@ OCX目标保持，不以Actor两框或一个普通样例代替全任务完成，
 记录准确MSVBVM60 CheckBox遗漏与修复；其AUTO3STATE style在真实Actor仍为0/1
 循环，状态不能只按style推导。[S4真实内建](../etc/evidence/vb-intrinsic-controls.json)
 取得原作者固定VB5/6样例，准确runtime50/60及类/公开协议，新增普通按钮/宿主支持。
-[S5](../etc/evidence/vb-composite-controls.json)已完成普通Combo/List/Scroll精确分类与原glyph绘制；实际scroll输入/通知交S6，更多图形/无窗口/
+[S5](../etc/evidence/vb-composite-controls.json)已完成普通Combo/List/Scroll精确分类与原glyph绘制；[S6](../etc/evidence/vb-input-controls.json)真实队列输入及通知已验证，更多图形/无窗口/
 OCX变体逐项状态见冻结矩阵及实施证据，不能由标准控件或原生demo推导为通过。
 
 ## 覆盖全集：先盘点，再冻结逐项验收表

@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T17 S6 P1",
-  "stage": "S6 verified/double-published;actual remote review pending;T17/M0 open",
+  "delivery": "M0 T17 S6 P2",
+  "stage": "S6 closed;T17/M0 open;S7 file/dir/drive lists admitted",
   "version": "0.17.0.0",
   "version_contract": "M0 T17; sequential S does not increment T version",
   "package_directory": "assets",
@@ -1037,8 +1037,49 @@
     }
   },
   "validation": {
-    "status": "passed locally;actual remote readback pending",
+    "status": "passed;P1 actual remote/recovery/cleanup complete",
     "source_inputs": 204,
     "evidence": "docs/etc/evidence/vb-input-controls.json"
+  },
+  "closure": {
+    "actual_remote": {
+      "status": "passed",
+      "commit": "d5ea84be97b65e7b1f2bcc192b6fafab512e9cc1",
+      "remote_main": "d5ea84be97b65e7b1f2bcc192b6fafab512e9cc1",
+      "files": 215,
+      "source_inputs": 204,
+      "seconds": 7.27938979999999,
+      "recovered_objects": 215,
+      "method": "actual raw GitHub HTTPS bytes compared to Git cat-file objects"
+    },
+    "recovery": {
+      "status": "passed",
+      "product_Git_objects": 208,
+      "source_inputs": 204,
+      "before_files_recoverable_from_94a1170": 8,
+      "deployed_SHA_matches": 8,
+      "external_PNG_SHA_matches": 4,
+      "retained_samples": "both original EXEs match pinned ZIP entries, official runtime50 SHA and original source/licensing/tree retained",
+      "clean_snapshot": "204 inputs matched final independent dual-width clean source; no repeated archive build",
+      "coordination_review": "actuald5ea84b and original148-unit goal reviewed;src unchanged, test/CMake adds224 removes1 net223;finite queued input proof does not certify pending variants/OCX"
+    },
+    "binary_change_in_closing_P": "none;204 inputs and8 deployment SHA unchanged since testedP1",
+    "cleanup": {
+      "status": "passed",
+      "preserved": "original samples/runtime/source/licensing/tree,t17-audit,other task work,stable caches,all external PNG",
+      "roots": [
+        {
+          "reparse_points": 0,
+          "images": 170,
+          "root": "O:\\repos.hobby\\win16style\\build\\t17-package"
+        },
+        {
+          "reparse_points": 0,
+          "images": 7,
+          "root": "O:\\repos.hobby\\win16style\\build\\t17-controls"
+        }
+      ],
+      "positive_self_check": "exe/loaded DLL c0000043;unloaded DLL00000000"
+    }
   }
 }

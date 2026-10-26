@@ -2,34 +2,34 @@
 
 ## Current Work
 
-M0 T17 S5精确VB5/6 Combo/List/Scroll包装层已交付关闭；顺序准入S6内建输入与
-变体验证。普通两种Combo、单列表及横纵scroll已有真实样例/原glyph证据；
-S6接收实际键盘/通知/状态变化及未认证变体，不把API getter或截图当全部交互。
+M0 T17 S6真实VB输入队列/通知已交付关闭；顺序准入S7 FileListBox/DirListBox/
+DriveListBox。S7先取得真实注册/公开协议和来源依据，再复用既有renderer；
+公共文件夹对话框仍属独立候选，不由文件列表适配暗中替换。
 S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真实变体连续分S、
 最后独立全任务审计。T17/M0开放，不启动其他候选，不缩小全集为普通样例。
-S6已实现精确自有线程队列/通知见证；15项14.12秒、双发布八SHA和安装4项通过，
-204输入、生产src全部保持S5，P1实际远端复核待完成，不预先关闭S6。
+S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
+映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T17 S6 Packet
+## M0 T17 S7 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S5实际远端214文件/恢复/333映像清理后按用户自动顺序S授权准入 |
+| Identifier Mode | Continuation；S6实际远端215文件/恢复/177映像清理后按用户自动顺序S授权准入 |
 | Admission And Approval | 用户T17完整控件目标、自动顺序S、永久提交推送及binary change同批四文件双发布；不新开T |
-| Objective | 核实并补齐真实VB5/6 Combo/List/Scroll输入、通知/状态和普通模式边界；盘点冻结变体的可测试来源与回退；148单位总体目标不变 |
-| Non-goals | 不动标题/字体算法/菜单/原glyph，不用C fixture冒称真实VB，不读私有VB对象，不暗装IDE/OCX，不夹带文件夹公共对话框候选 |
-| Reference Baseline | S5 P1 29253b7实际远端214文件/201输入，0.17.0.0，13项15.46秒/2负例/安装4项/双发布八SHA；ABI3/31命名+ordinal1、35detours/40slots |
-| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[冻结矩阵](../etc/evidence/vb-controls-audit.json)、[S5证据](../etc/evidence/vb-composite-controls.json) |
-| Files And ABI Surface | 原生C探针/测试及精确已拥有控件内部适配如实需要，先根因/最小方案；三组件四产物与公开ABI保持 |
+| Objective | 定位真实VB5/6 FileListBox/DirListBox/DriveListBox类、窗口与数据/路径/通知协议，核实图像来源并有限适配；补齐冻结矩阵中该组，148单位总体目标不变 |
+| Non-goals | 标题/字体算法/菜单/原glyph保持，不读VB私有对象，不以C模型冒称真VB；不暗装IDE/注册OCX，不替换公共目录对话框或生成近似图标 |
+| Reference Baseline | S6 P1 d5ea84b实际远端215文件/204输入，0.17.0.0，15项14.12秒/双宽队列正负例/安装4项/双发布八SHA；ABI3/31命名+ordinal1、35detours/40slots |
+| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[冻结矩阵](../etc/evidence/vb-controls-audit.json)、[S6输入证据](../etc/evidence/vb-input-controls.json) |
+| Files And ABI Surface | 双宽DLL内部精确角色/绘制接入与原生C探针/测试，先真实根因和最小方案；三组件四产物/公开ABI保持，新图形需来源审查而非随意替换 |
 | Applicable Rules | Task Reading Set/C17/GCC/Ninja/ccache；禁computer-use、兄弟修改/依赖、全局设置或非自有进程测试；发布占用按用户明确执行规范处理 |
-| Verification | 真实runtime50/60已显示样例先裸/样式输入对照；独立双宽模型核对通知/取消/捕获/源字体/资源；短聚焦同批包、必要双发布、实际安装及远端取回 |
-| Expected Markers | 目标映像/PID/创建者/准确runtime owner/DLL绝对路径SHA；加载/初始化/识别/实际绘制与输入分开；scroll实际位置及通知、combo/list键盘选择、取消/退出及active0 |
-| Asset Needs | 保留build/t17-audit官方runtime和s4-intrinsic-samples原作者ZIP/源/EXE/身份/tree；build/t17-controls登记本S探针/日志/截图，build/t17-package登记同批构建/包/备份；外部win16style-t17-s6（本会话visualizations根）存原生PNG；其他任务/缓存/旧图保持 |
+| Verification | 原作者真实样本来源/启动逻辑审查后裸/样式正常显示，准确runtime owner及公开协议/图像关系；独立双宽自包含正负例，短同批包/必要双发布/安装/实际远端 |
+| Expected Markers | PE/PID/创建者/runtime/DLL实际路径SHA，加载/初始化/识别/绘制分开；列表对象/路径/选择/键盘通知不变、图像所有权、取消/关闭active0及资源归还 |
+| Asset Needs | 保留build/t17-audit既有研究/runtime/原样本，登记其s7-filelist-samples用于新原作者样本来源/源码/许可/身份留存；build/t17-controls本S探针/日志/截图，build/t17-package同批构建/包/备份；外部win16style-t17-s7（本会话visualizations根）原生PNG；其他任务/缓存/旧图保持 |
 | Reporting Requirements | 真VB5/6与x64 C模型、native保持/已适配/失败/skip分开；真实键盘事件消息不冒称物理输入；未认证变体逐项有接收者，不假称T完成 |
 | Stop Conditions | 公开协议或来源/许可不成立保留原生并明确缺口；重大架构/安全/新增产品先停证据方案；不通过外部未审组件安装或私有对象布局补证 |
-| Exit Criteria | 有限真实输入/通知/资源验证或有证据阻断，必要干净双宽/同批包/双发布/推送/实际远端/恢复清理后关闭S6顺序续后续S；T17仍需148单位独立审计 |
+| Exit Criteria | 有限文件/目录/驱动器列表适配或逐项有证据阻断与明确接收，必要干净双宽/同批包/双发布/推送/实际远端/恢复清理后关闭S7续后续S；T17仍需148单位独立审计 |
 | Original Owner Request | VB5/VB6控件采用本项目样式；S1全貌、S2demo、S3和多个S实施，最后独立收口；自动推进到完整适配验收 |
-| Similar-Issue Sweep | 真实combo/list多模式及原生EDIT、外部字体setter/IFont变更、真实scroll键盘/通知与极值，普通/图形/owner-draw/无窗口变体的精确回退边界 |
+| Similar-Issue Sweep | VB5/6文件/目录/驱动器列表的准确owner/原生子控件、owner-draw与图像数据、路径选择和Change/Click通知、setter/晚创建/销毁；未知协议保留原生且列明确缺口 |
 
 ## Identifier State
 
@@ -37,24 +37,29 @@ S6已实现精确自有线程队列/通知见证；15项14.12秒、双发布八S
 - Last allocated T: 17
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T17并授权内部自动顺序S；不准入其他T候选。
-- Last delivery: M0 T17 S5 P2（13项15.46秒/2负例、安装4项、双发布八SHA、214远端/201输入、333映像清理；0.17.0.0）
-- Open task: T17 S6内建输入/变体验证；T17/M0开放，已有关闭/取消保持。
+- Last delivery: M0 T17 S6 P2（15项14.12秒/双宽队列正负例、安装4项、双发布八SHA、215远端/204输入、177映像清理；0.17.0.0）
+- Open task: T17 S7文件/目录/驱动器列表；T17/M0开放，已有关闭/取消保持。
 
 ## Technical Baseline
 
-T17 S5产品0.17.0.0，201输入/三组件四产物；真实runtime50/60准确普通Combo/
+T17 S6产品0.17.0.0，204输入/三组件四产物，生产src保持S5；真实runtime50/60准确普通Combo/
 List/HScroll/VScroll复用既有renderer、字号策略和原glyph。原生Combo EDIT按
 公开COMBOBOXINFO和类元数据接入，32私有字体租约上界，回调/重入移除/重挂
 归还。paint外WM_GETFONT源字体保持；paint内嵌套查询可见私有字体，不冒称全透明。
 原始标题/菜单/字体算法与其他生产路径不变，五原头/来源声明及每DLL18表保持。
-最终干净双宽all、13项聚焦实际包15.46秒、2旧包负例和4安装复测通过，八部署
+S6最终干净双宽all、15项聚焦实际包14.12秒、双宽见证正负例和4安装复测通过，八部署
 SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑点/scroll225
 内区源像素通过，标题top26 RGB对S4差异0。S5 scroll仅getter/像素，实际位置
-变化/通知与更多变体交S6；真实VB仅x86，x64模型不是64位VB。
-[release](../etc/release.json)拥有包身份，[S5证据](../etc/evidence/vb-composite-controls.json)
-拥有有限覆盖/未完成面；不能由局部样例证明148全集完成，无物理键鼠完成声明。
+变化/通知已由S6队列见证验证：Combo1->2/List1->8、scroll End32766/Home0，
+原生父通知一致。15项实际包14.12秒、双宽错误tag/无hook负例和安装4项通过；
+其他变体继续后续S。真实VB仅x86，x64模型不是64位VB。
+[release](../etc/release.json)拥有包身份，[S5外观](../etc/evidence/vb-composite-controls.json)
+及[S6输入](../etc/evidence/vb-input-controls.json)拥有有限覆盖/未完成面；不能由局部
+样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T17 S6真实输入](../history/M0-T17-S6-vb-input.md)：15项14.12秒/双宽队列正负例/安装4项，双发布八SHA、215远端/204输入/177映像清理；关闭S6续S7，T17/M0开放。
 
 - [T17 S5列表/滚动包装层](../history/M0-T17-S5-vb-composites.md)：13项15.46秒/2负例/安装4项、双发布八SHA、214远端/201输入/333映像清理；关闭S5续S6，T17/M0开放。
 
@@ -139,9 +144,9 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 
 ## Last Packet Closure
 
-T17 S5 P1 29253b7843d1a6a118604d179efee10b7c887d6a实际远端214文件/201输入/
-四产物逐字节通过；205产品对象恢复、8 before备份可从bc6f716复取、8部署及
-5外部PNG核对。原作者两EXE仍等于固定ZIP条目，官方runtime50 SHA保持。
-333映像全部无占用，reparse0及guard正例通过，仅清理两登记任务根；保留原
-样本/源/许可/tree和S1研究/其他任务/稳定缓存/全部PNG。S5关闭顺序准入S6，
-实际输入/通知及变体继续验证；完整148单位仍交后续S及最后独立全任务审计。
+T17 S6 P1 d5ea84be97b65e7b1f2bcc192b6fafab512e9cc1实际远端215文件/204输入/
+四产物逐字节通过；208产品对象恢复、8 before备份可从94a1170复取、8部署及
+4外部PNG核对。原作者两EXE仍等于固定ZIP条目，官方runtime50 SHA保持。
+177映像全部无占用，reparse0及guard正例通过，仅清理两登记任务根；保留原
+样本/源/许可/tree和S1研究/其他任务/稳定缓存/全部PNG。S6关闭顺序准入S7，
+文件列表及更多变体继续适配；完整148单位仍交后续S及最后独立全任务审计。

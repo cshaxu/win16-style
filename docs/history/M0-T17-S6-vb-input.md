@@ -1,7 +1,7 @@
 # M0 T17 S6 intrinsic queued input and notification validation
 
-S6实现了真实VB5/6输入队列与通知观察，干净包/发布/实际远端验证仍待完成，
-本记录不预先宣称关闭。[证据](../etc/evidence/vb-input-controls.json)拥有有限范围。
+S6真实VB5/6输入队列与通知观察已完成干净包/双发布/P1实际远端/恢复清理后关闭。
+T17/M0开放。[证据](../etc/evidence/vb-input-controls.json)拥有有限范围。
 
 直接发送WM_KEYDOWN绕过VB消息循环前处理：裸/样式滚动条均不变，不是样式
 回归的证据。焦点核实后投递End，二者都到32766，Home回0；无MSAA值变化事件，
@@ -26,3 +26,11 @@ x64为C模型。物理键鼠、IME、更多变体/OCX未认证，完整148单位
 保持S5，测试DLL仅是构建/测试辅助，不进产品包。重建二进制SHA变更仍执行
 同批发布，不将无产品代码修复说成没有新包。204输入/包SHA由release拥有。
 四外部PNG无损导出，标题top26完整RGB对S5差异0；其他变体继续交后续S。
+
+P1 d5ea84be97b65e7b1f2bcc192b6fafab512e9cc1实际HTTPS取回215文件，204产品
+输入/四产物逐字节匹配Git对象，远端main一致；208产品对象恢复、8旧备份可从
+94a1170复取、8部署/4PNG和两原样本/官方runtime50核对通过。CMake/测试增224
+删1净223，生产src无移动/修改/删除。177映像无占用、两根reparse0和guard正例
+通过后只回收登记scratch；所有原样本/研究/其他任务/稳定缓存/外部PNG保留。
+P2不改204输入和八部署SHA，关闭S6并按用户自动顺序S授权准入S7文件列表组；
+不将普通输入结果外推到148单位/全部变体和OCX。
