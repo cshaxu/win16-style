@@ -1,7 +1,7 @@
 # M0 T17 S8 authentic VB6 file and directory lists
 
-S8有限实现已通过同批双宽干净构建、包测试、双发布与安装复测，P1实际远端
-复核待完成，尚未关闭。T17/M0开放。[证据](../etc/evidence/vb6-file-controls.json)拥有范围。
+S8有限实现已通过同批双宽干净构建、包测试、双发布与安装复测、P1实际远端/
+恢复清理后关闭，顺序准入S9。T17/M0开放。[证据](../etc/evidence/vb6-file-controls.json)拥有范围。
 
 固定Code Architects树内28带EXE表单只有Photo Album包含文件组，实际仍是VB5。
 原vbAccelerator固定归档214个VB6 ZIP的表单/控件静态检查无失败，仅Compress-Z-It
@@ -35,3 +35,10 @@ demo保留即时相等谓词，新增warm/final为裸103->103、样式91->91；S
 模型/真实VB5及VB6共8项通过。原生正常显示PNG保留，标题top26对S7差异0。
 真实VB6 DriveListBox、过滤/多选/属性/路径变化变体与其余148全集仍交后续S；
 源/测试/CMake增65删25净40，无移动删除，应用状态所有者不变。T17不能由本S关闭。
+
+P1 6eef3b735c097f65ba363d40d3906aa035faa688实际HTTPS取回221文件/206输入/
+四产物，与Git对象匹配且main一致。210产品对象、8旧备份（cb12456）、8部署、
+2PNG及9原样本文件摘要核实。181映像独占检查、reparse0及guard正例通过后，
+只清理两登记任务根；所有原样本/私有清单/214 ZIP目录/研究/其他任务/稳定缓存/
+全部PNG保留。P2不改206输入或八部署，关闭S8并准入S9容器/无窗口承载；
+未认证VB6 DriveListBox/文件变体仍交后续真实样本S及最终审计。

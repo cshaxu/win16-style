@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T17 S8 P1",
-  "stage": "S8 verified/published; P1 actual remote pending; T17/M0 open",
+  "delivery": "M0 T17 S8 P2",
+  "stage": "S8 closed; S9 container/windowless host admitted; T17/M0 open",
   "version": "0.17.0.0",
   "version_contract": "M0 T17; sequential S does not increment T version",
   "package_directory": "assets",
@@ -1178,9 +1178,44 @@
     "limits": "Authentic VB6 DriveListBox, file-list filter/multiselect/attribute/path-change variants and untested languages/DPI remain with following T17 S/final148-unit audit. No physical input or universal OCX compatibility claim."
   },
   "validation": {
-    "status": "verified locally; actual remote pending",
+    "status": "passed; P1 actual remote/recovery/cleanup complete",
     "source_inputs": 206,
     "evidence": "docs/etc/evidence/vb6-file-controls.json"
   },
-  "closure": {}
+  "closure": {
+    "actual_remote": {
+      "status": "passed",
+      "commit": "6eef3b735c097f65ba363d40d3906aa035faa688",
+      "remote_main": "6eef3b735c097f65ba363d40d3906aa035faa688",
+      "files": 221,
+      "source_inputs": 206,
+      "seconds": 23.654145799999924,
+      "recovered_product_objects": 210,
+      "before_files_recoverable_from_cb12456": 8,
+      "deployed_SHA_matches": 8,
+      "external_PNG_SHA_matches": 2,
+      "original_sample_SHA_matches": 9,
+      "method": "actual raw GitHub HTTPS bytes compared to Git cat-file; product objects and eight backups recoverable"
+    },
+    "cleanup": {
+      "roots": [
+        {
+          "reparse_points": 0,
+          "images": 167,
+          "root": "O:\\repos.hobby\\win16style\\build\\t17-package",
+          "status": "passed"
+        },
+        {
+          "reparse_points": 0,
+          "images": 14,
+          "root": "O:\\repos.hobby\\win16style\\build\\t17-controls",
+          "status": "passed"
+        }
+      ],
+      "positive_self_check": "exe/loaded DLL c0000043; unloaded DLL00000000",
+      "preserved": "all original samples/ZIP source catalogues/private COM manifest/runtime/other tasks/stable caches/all external PNG",
+      "status": "passed"
+    },
+    "binary_change_in_closing_P": "none;206 inputs and8 deployment SHA unchanged since testedP1"
+  }
 }

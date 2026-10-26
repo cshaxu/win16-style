@@ -1,6 +1,6 @@
 {
   "task": "M0 T17 S8",
-  "status": "verified package and published; P1 actual remote pending; T17/M0 open",
+  "status": "S8 closed after actual remote/recovery/cleanup; S9 admitted; T17/M0 open",
   "baseline": "cb12456cf97694a68109b97d71f4130324cce2d9",
   "root_cause": "Authentic MSVBVM60-owned FileListBox already attaches via native ListBox superclass but lacks its exact VB System font role. DirListBox native owner-draw variable/string mode is rejected by generic owner-draw safety guard. Confirmed old S7 attached1/System text0 and attached0/System text0 respectively; injection is working.",
   "minimal_fix": "Extend exact runtime60 FileListBox/DirListBox identity only. Reuse S7 file-list painter and exact parent DRAWITEM DC scope, native images/data/layout/callbacks and existing fonts/borders/scrollbars. No new public export/product component/font algorithm/resource. Do not enable unverified VB6 DriveListBox.",
@@ -701,5 +701,41 @@
       "compressz-styled.png": "b1b8429b1020157d70b9f12e8c8f78643d2e1e9646835e4b259531d8d67b1d23"
     }
   },
-  "code_numstat": "8\t1\tCMakeLists.txt\n4\t2\tsrc/ntw16s-dll/README.md\n2\t2\tsrc/ntw16s-dll/control_class.h\n2\t1\ttests/demo-exe/observe.c\n18\t3\ttests/integration/vb_intrinsic.c\n7\t2\ttests/ntw16s-dll/vb_file_runtime.c\n24\t14\ttests/ntw16s-dll/vb_files.c\n"
+  "code_numstat": "8\t1\tCMakeLists.txt\n4\t2\tsrc/ntw16s-dll/README.md\n2\t2\tsrc/ntw16s-dll/control_class.h\n2\t1\ttests/demo-exe/observe.c\n18\t3\ttests/integration/vb_intrinsic.c\n7\t2\ttests/ntw16s-dll/vb_file_runtime.c\n24\t14\ttests/ntw16s-dll/vb_files.c\n",
+  "closure": {
+    "actual_remote": {
+      "status": "passed",
+      "commit": "6eef3b735c097f65ba363d40d3906aa035faa688",
+      "remote_main": "6eef3b735c097f65ba363d40d3906aa035faa688",
+      "files": 221,
+      "source_inputs": 206,
+      "seconds": 23.654145799999924,
+      "recovered_product_objects": 210,
+      "before_files_recoverable_from_cb12456": 8,
+      "deployed_SHA_matches": 8,
+      "external_PNG_SHA_matches": 2,
+      "original_sample_SHA_matches": 9,
+      "method": "actual raw GitHub HTTPS bytes compared to Git cat-file; product objects and eight backups recoverable"
+    },
+    "cleanup": {
+      "roots": [
+        {
+          "reparse_points": 0,
+          "images": 167,
+          "root": "O:\\repos.hobby\\win16style\\build\\t17-package",
+          "status": "passed"
+        },
+        {
+          "reparse_points": 0,
+          "images": 14,
+          "root": "O:\\repos.hobby\\win16style\\build\\t17-controls",
+          "status": "passed"
+        }
+      ],
+      "positive_self_check": "exe/loaded DLL c0000043; unloaded DLL00000000",
+      "preserved": "all original samples/ZIP source catalogues/private COM manifest/runtime/other tasks/stable caches/all external PNG",
+      "status": "passed"
+    },
+    "coordination_review": "Actual6eef3b7 and148-unit request reviewed. Exact runtime60 FileListBox/DirListBox only; source/test/CMake adds65 removes25 net40, no moves/deletions. Existing runtime owns images/data/callbacks, existing DLL owner scopes retain private leases. No unrelated edits overwritten. Original sample hashes preserved; no COM registration. MissingDrive/variants and unresolveddemoGDI recorded."
+  }
 }

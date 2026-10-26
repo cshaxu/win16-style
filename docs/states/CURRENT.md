@@ -2,34 +2,34 @@
 
 ## Current Work
 
-M0 T17 S8真实VB6 FileListBox/DirListBox已有限实现、同批包/双发布与安装8项通过，
-待P1实际远端复核；VB6 DriveListBox及更多变体仍未认证，交后续S/最终审计。
+M0 T17 S8真实VB6 FileListBox/DirListBox已交付关闭，顺序准入S9 PictureBox/
+无窗口文字与应用绘制承载；VB6 DriveListBox及更多文件变体仍交后续S/最终审计。
 公共文件夹对话框仍属独立候选，不由文件列表适配暗中替换。
 S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真实变体连续分S、
 最后独立全任务审计。T17/M0开放，不启动其他候选，不缩小全集为普通样例。
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T17 S8 Packet
+## M0 T17 S9 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S7 P1实际远端218文件/210对象恢复/182映像清理后按用户自动顺序S授权准入 |
+| Identifier Mode | Continuation；S8 P1实际远端221文件/210对象恢复/181映像清理后按用户自动顺序S授权准入 |
 | Admission And Approval | 用户T17完整控件目标、自动顺序S、永久提交推送及binary change同批四文件双发布；不新开T |
-| Objective | 取得独立真实VB6 FileListBox/DirListBox/DriveListBox注册和公开协议，有限接入；核对文件组选择/过滤/路径通知及popup/可见状态边界；148单位总体目标不变 |
-| Non-goals | 标题/字体算法/菜单/原glyph保持，不读VB私有对象，不以C模型冒称真VB；不暗装IDE/注册OCX，不替换公共目录对话框或生成近似图标 |
-| Reference Baseline | S7 P1 f058ffb实际远端218文件/206输入，0.17.0.0；19项首轮18通过/demo串行复测通过、三旧包负例、安装5项及双发布八SHA；ABI3/31命名+ordinal1、35detours/40slots |
-| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[冻结矩阵](../etc/evidence/vb-controls-audit.json)、[S7文件组证据](../etc/evidence/vb-file-controls.json) |
+| Objective | 审查真实VB5/6 PictureBox及其Label/Image/Shape/Line承载：准确runtime类/可见边界、无HWND对象与绘制API/图像所有权；有证据后有限复用现有边框/字体/scroll路径，保留应用绘图；148单位总体目标不变 |
+| Non-goals | 标题/字体算法/菜单/原glyph保持；不把应用bitmap/Image/Shape/Line重绘成新图，不读VB私有对象，不以C模型冒称真VB；不装IDE/注册OCX，不替换公共目录对话框 |
+| Reference Baseline | S8 P1 6eef3b7实际远端221文件/206输入，0.17.0.0；23项首轮22通过/补BMP对照通过、三旧包负例、安装8项/双发布八SHA；ABI3/31命名+ordinal1、35detours/40slots |
+| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[冻结矩阵](../etc/evidence/vb-controls-audit.json)、[真实内建来源](../etc/evidence/vb-intrinsic-controls.json)、[S8文件组](../etc/evidence/vb6-file-controls.json) |
 | Files And ABI Surface | 双宽DLL内部精确角色/绘制接入与原生C探针/测试，先真实根因和最小方案；三组件四产物/公开ABI保持，新图形需来源审查而非随意替换 |
 | Applicable Rules | Task Reading Set/C17/GCC/Ninja/ccache；禁computer-use、兄弟修改/依赖、全局设置或非自有进程测试；发布占用按用户明确执行规范处理 |
-| Verification | 原作者真实VB6样本身份/启动逻辑及许可审查，真实注册/runtime/公开协议；必要有限产品接入/双宽正负例/短同批包/双发布/安装/实际远端；诊断既有demo即时GDI观察不稳定，不放宽断言 |
-| Expected Markers | PE/PID/创建者/runtime/DLL实际路径SHA，加载/初始化/识别/绘制分开；列表对象/路径/选择/键盘通知不变、图像所有权、取消/关闭active0及资源归还 |
-| Asset Needs | 保留build/t17-audit既有研究/runtime/原样本和s7-filelist-samples，登记其s8-filelist-samples用于真实VB6来源/源码/许可/身份留存；build/t17-controls本S探针/日志/截图，build/t17-package同批构建/包/备份；外部win16style-t17-s8（本会话visualizations根）原生PNG；其他任务/缓存/旧图保持 |
+| Verification | 沿用固定原作者真实VB5/6 intrinsic/PhotoAlbum及必要新来源，明确有/无HWND与正常显示；图像像素/源字体/几何/子控件/输入不变及新边框/文字实际证据；双宽C正负例、短同批包/双发布/安装/实际远端；demo未定计数继续明确记录 |
+| Expected Markers | PE/PID/创建者/runtime/DLL路径SHA，加载/初始化/准确角色/实际绘制分开；PictureBox边框/子控件布局、标签实际文字与应用bitmap/自绘不变，paint/print/晚创建/移除和关闭active0及资源归还 |
+| Asset Needs | 保留build/t17-audit全部原样本/研究/runtime/归档，登记其s9-container-samples用于新来源/源码/许可/身份留存；build/t17-controls本S探针/日志/截图，build/t17-package同批构建/包/备份；外部win16style-t17-s9（本会话visualizations根）原生PNG；其他任务/缓存/旧图保持 |
 | Reporting Requirements | 真VB5/6与x64 C模型、native保持/已适配/失败/skip分开；真实键盘事件消息不冒称物理输入；未认证变体逐项有接收者，不假称T完成 |
 | Stop Conditions | 公开协议或来源/许可不成立保留原生并明确缺口；重大架构/安全/新增产品先停证据方案；不通过外部未审组件安装或私有对象布局补证 |
-| Exit Criteria | 真实VB6文件组有限适配及公开协议补证，逐项明确已覆盖/原生保留/有证据阻断与接收；干净双宽/同批包/双发布/推送/实际远端/恢复清理后关闭S8续后续S；T17仍需148单位独立审计 |
+| Exit Criteria | 真实容器/无窗口承载的有限适配或逐项有证据原生保留/阻断及明确接收，必要干净双宽/同批包/双发布/推送/实际远端/恢复清理后关闭S9续后续S；T17仍需148单位独立审计 |
 | Original Owner Request | VB5/VB6控件采用本项目样式；S1全貌、S2demo、S3和多个S实施，最后独立收口；自动推进到完整适配验收 |
-| Similar-Issue Sweep | VB5/6文件/目录/驱动器列表的准确owner/原生子控件、owner-draw与图像数据、路径选择和Change/Click通知、setter/晚创建/销毁；未知协议保留原生且列明确缺口 |
+| Similar-Issue Sweep | PictureBox/Frame/Form的有/无HWND标签、嵌套host/child、AutoRedraw/paint/print、Bitmap及Image/Shape/Line应用绘图、font setter/晚创建/移除；未知协议保留原生且列明确缺口 |
 
 ## Identifier State
 
@@ -37,12 +37,12 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 17
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T17并授权内部自动顺序S；不准入其他T候选。
-- Last delivery: M0 T17 S7 P2（19项首轮18通过/demo串行复测通过、三旧包负例、安装5项、双发布八SHA、218远端/206输入、182映像清理；0.17.0.0）
-- Open task: T17 S8真实VB6文件组及文件协议边界；T17/M0开放，已有关闭/取消保持。
+- Last delivery: M0 T17 S8 P2（23项首轮22通过/补BMP对照通过、三旧包负例、安装8项、双发布八SHA、221远端/206输入、181映像清理；0.17.0.0）
+- Open task: T17 S9 PictureBox/无窗口文字与应用绘图承载；T17/M0开放，已有关闭/取消保持。
 
 ## Technical Baseline
 
-S8候选0.17.0.0在S7路径上追加准确runtime60 FileListBox/DirListBox身份。真实
+S8已发布0.17.0.0在S7路径上追加准确runtime60 FileListBox/DirListBox身份。真实
 原作者Compress-Z-It经私有清单免注册COM激活；实际VB6类型/模块和两类控件核实，
 正常显示/System文字、End/Home/原生通知/选择归还及active0通过，未运行压缩或
 文件写入。双宽双版本C模型通过，16次VB6绘制GDI delta0/目录重挂退出；206输入。
@@ -73,6 +73,8 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T17 S8真实VB6文件组](../history/M0-T17-S8-vb6-files.md)：206输入/221实际远端、安装8项、双发布八SHA/三旧包负例、181映像清理；关闭S8续S9，T17/M0开放。
 
 - [T17 S7真实VB5文件组](../history/M0-T17-S7-vb-files.md)：206输入/218实际远端、安装5项、双发布八SHA/三旧包负例、182映像清理；关闭S7续S8，T17/M0开放。
 
