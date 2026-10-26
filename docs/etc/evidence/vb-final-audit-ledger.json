@@ -82,5 +82,12 @@
     }
   ],
   "completion_check": "30 + 20 + 98 = 148. A verifier must compare the set of ids to source_matrix and reject duplicates, omissions, or unknown ids.",
+  "local_discovery_after_p3": {
+    "method": "Read-only recursive filename check of O:\\winnt\\system32, O:\\winnt\\syswow64, and D:\\programs for the 34 frozen extension module names; separate source-file scan for .vbp/.frm/.ctl/.vbg and declaration names.",
+    "extension_module_matches": 0,
+    "source_file_candidates": 41,
+    "source_candidate_result": "All 41 candidates were a third-party registration profile format; none contained a VB project declaration or any frozen extension-control declaration.",
+    "consequence": "This local environment supplies no runnable, version-correct OCX wrapper sample. The 96 extension rows therefore remain correctly unimplemented without installing, registering, or guessing a control class. This discovery has no UAC, display, or user-input dependency."
+  },
   "result": "The ledger closes the accounting gap but does not close T17: it proves exactly which remaining inputs are needed for the 98 unverified rows and preserves the 20 rows for which styling would be unsafe."
 }
