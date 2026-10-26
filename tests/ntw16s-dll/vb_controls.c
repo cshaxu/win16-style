@@ -102,10 +102,11 @@ static int child(const WCHAR *runtime_path,BOOL styled,BOOL aware)
     CHECK(!composites(root,runtime,dll,styled));
     HWND group=CreateWindowExW(0,L"ThunderRT6Frame",L"Frame",WS_CHILD|WS_VISIBLE|BS_GROUPBOX,0,0,200,100,root,(HMENU)1,runtime,NULL);CHECK(group);
     HWND button=CreateWindowW(L"ThunderRT6CommandButton",L"&Press",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,210,0,100,30,root,(HMENU)2,runtime,NULL);CHECK(button);
+    HWND default_button=CreateWindowW(L"ThunderRT6CommandButton",L"&Default",WS_CHILD|WS_VISIBLE|WS_TABSTOP|BS_DEFPUSHBUTTON,0,120,140,28,root,(HMENU)10,runtime,NULL);CHECK(default_button);
     HWND edit=CreateWindowExW(WS_EX_CLIENTEDGE,L"ThunderRT6TextBox",L"native",WS_CHILD|WS_VISIBLE|ES_AUTOHSCROLL,210,40,100,24,root,(HMENU)3,runtime,NULL);CHECK(edit);
     HWND checkbox=CreateWindowW(L"ThunderRT6CheckBox",L"&Check",WS_CHILD|WS_VISIBLE|WS_TABSTOP|BS_AUTO3STATE,210,90,120,30,root,(HMENU)4,runtime,NULL);CHECK(checkbox);
     WCHAR real_check_class[80];CHECK(RealGetWindowClassW(checkbox,real_check_class,80) && wcscmp(real_check_class,L"Button") && wcscmp(real_check_class,L"BUTTON"));
-    if(styled)CHECK(attached(group) && attached(button) && attached(edit) && attached(checkbox));
+    if(styled)CHECK(attached(group) && attached(button) && attached(default_button) && attached(edit) && attached(checkbox));
     /* Same spelling under another registration owner must remain custom. */
     WNDCLASSW impostor={0};impostor.lpfnWndProc=DefWindowProcW;
     impostor.hInstance=cls.hInstance;impostor.lpszClassName=L"ThunderRT6CommandButton";
@@ -129,6 +130,13 @@ static int child(const WCHAR *runtime_path,BOOL styled,BOOL aware)
     SendMessageW(button,BM_CLICK,0,0);CHECK(clicks==1);
     SetFocus(button);SendMessageW(button,WM_KEYDOWN,VK_SPACE,0);SendMessageW(button,WM_KEYUP,VK_SPACE,0);CHECK(clicks==2);
     SendMessageW(button,WM_ENABLE,FALSE,0);SendMessageW(button,WM_ENABLE,TRUE,0);
+    unsigned command_clicks=clicks;SendMessageW(default_button,BM_CLICK,0,0);CHECK(clicks==command_clicks+1);
+    SetFocus(default_button);SendMessageW(default_button,WM_KEYDOWN,VK_SPACE,0);SendMessageW(default_button,WM_KEYUP,VK_SPACE,0);CHECK(clicks==command_clicks+2);
+    if(styled){DWORD default_pixels=image(default_button,NULL,0);SendMessageW(default_button,BM_SETSTYLE,BS_PUSHBUTTON,TRUE);
+        CHECK(attached(default_button) && image(default_button,NULL,0)!=default_pixels);
+        SendMessageW(default_button,BM_SETSTYLE,BS_DEFPUSHBUTTON,TRUE);CHECK(attached(default_button) && image(default_button,NULL,0)==default_pixels);
+        EnableWindow(default_button,FALSE);CHECK(!IsWindowEnabled(default_button) && attached(default_button));EnableWindow(default_button,TRUE);
+        puts("VB_COMMAND_DEFAULT_OK attached=1 default_border=1 style_transition=1 disabled=1 keyboard=1 notifications=2");}
     GetClientRect(edit,&geometry_after);CHECK(EqualRect(&geometry_before,&geometry_after));
     if(styled){DWORD styled_edit=image(edit,NULL,0);CHECK(remove_control(edit));
         CHECK(image(edit,NULL,0)!=styled_edit);puts("VB_EDIT_FONT_PIXELS changed=1 native_font_property=preserved");}
@@ -156,7 +164,7 @@ static int child(const WCHAR *runtime_path,BOOL styled,BOOL aware)
     puts("VB_CHECKBOX_GRAPHICAL_PUSHLIKE_OK value_click_font_geometry_preserved=1");
     CHECK(DestroyWindow(checkbox) && DestroyWindow(fake_check));CHECK(UnregisterClassW(L"ThunderRT6CheckBox",cls.hInstance));
     puts("VB_CHECKBOX_OK three_states=1 keyboard=1 notifications=4 owner_negative=1 font_preserved=1 detach=1");
-    CHECK(DestroyWindow(edit) && DestroyWindow(button) && DestroyWindow(custom));settle();
+    CHECK(DestroyWindow(edit) && DestroyWindow(button) && DestroyWindow(default_button) && DestroyWindow(custom));settle();
     DWORD pixels[200*100];DWORD styled_hash=image(group,pixels,ARRAYSIZE(pixels));
     CHECK((pixels[72*200+24]&0xffffff)==RGB(67,31,219));
     /* Host USER/font caches are observed separately. Private leases and

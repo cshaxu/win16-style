@@ -1,0 +1,22 @@
+{
+  "task": "M0 T17 S23",
+  "scope": "VB CommandButton default, cancel and flat appearance boundary.",
+  "actual_source_basis": [
+    "The original VB5 and VB6 XP Styles Demonstration forms declare cmdOK Default=True and cmdCancel Cancel=True with ordinary CommandButton captions.",
+    "The 3Ddefline source declares Appearance=Flat together with Style=Graphical and Picture, so its flat visual path is the already bounded owner-draw graphical CommandButton path, not a public BS_FLAT button style."
+  ],
+  "renderer_boundary": "An exact runtime-owned ThunderRT5/6CommandButton with public BS_PUSHBUTTON or BS_DEFPUSHBUTTON is handled by the existing BUTTON painter. The default border is selected from BS_DEFPUSHBUTTON only while enabled. Cancel remains dialog/runtime command routing, not a button paint or message rewrite. Graphical/flat picture controls remain under S10's ODT_BUTTON/DC scope.",
+  "current_witness": {
+    "x64_injected": "VB_COMMAND_DEFAULT_OK attached=1 default_border=1 style_transition=1 disabled=1 keyboard=1 notifications=2",
+    "x86_injected": "VB_COMMAND_DEFAULT_OK attached=1 default_border=1 style_transition=1 disabled=1 keyboard=1 notifications=2",
+    "native_controls": "Both bit widths preserve 11 native click notifications; injection is absent and the fixture's native BUTTON superclass owns the behavior.",
+    "private_desktop_ctest": "core/default and core/vb-controls require a private desktop. This session's CTest driver reached CreateDesktop/SetThreadDesktop and returned ERROR_ACCESS_DENIED (5), so those CTest cases are recorded as an environment skip; the same self-owned C fixture was exercised directly on its accessible native probe thread."
+  },
+  "result": "The only safe renderer-side differentiation is the existing BS_DEFPUSHBUTTON border. S23 adds an exact runtime-owned regression for attachment, default-to-push transition, disabled state, Space activation and parent notifications. No production implementation change is needed.",
+  "not_covered": [
+    "Private VB Cancel routing through a real modal runtime dialog.",
+    "Arbitrary Appearance=Flat controls without verified graphical owner-draw protocol.",
+    "Physical input and non-96-DPI rendering."
+  ],
+  "product_change": "test-only"
+}

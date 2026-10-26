@@ -27,6 +27,9 @@
 - [VB Frame容器](evidence/vb-frame-containers.json)：T17 S22真实 Frame/嵌套
   子控件边界与现有有限 renderer 路径；不作为私有容器状态支持声明。
 
+- [VB CommandButton状态变体](evidence/vb-command-button-variants.json)：T17 S23
+  default/cancel/flat 的真实公共边界与双宽 runtime witness；不作为私有对话框路由支持声明。
+
 - [VB6 DriveListBox审计](evidence/vb6-drivelistbox-audit.json)：T17 S14固定
   源码/PE/runtime 身份与有界样本缺失结论；不作为VB6 DriveListBox支持声明。
 

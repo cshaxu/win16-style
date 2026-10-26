@@ -2,10 +2,10 @@
 
 ## Current Work
 
-M0 T17 S22 Frame外观与嵌套容器变体审计已完成，顺序准入S23 VB CommandButton
-default/cancel/flat变体审计。S22确认Frame是精确runtime-owned group-box容器，子HWND
-独立分类、Label保持父DC文本范围；不作猜测性容器状态传播。用户未确认的UAC或可见桌面
-观察只能跳过该项，不阻塞其他自包含S工作。
+M0 T17 S23 CommandButton default/cancel/flat变体审计已完成，顺序准入S24 VB TextBox
+multiline/password/alignment变体审计。S23确认默认边框由公开 BS_DEFPUSHBUTTON 决定，
+Cancel保持dialog/runtime命令路由，flat图片样本继续走已验证的图形 owner-draw 路径；
+不发明私有样式位。用户未确认的UAC或可见桌面观察只能跳过该项，不阻塞其他自包含S工作。
 S17冻结35模块/66控件行；本机无所列官方OCX文件，故不安装/注册或从native class猜测
 wrapper支持，逐行保留未认证。无产品改动、无UAC/显示依赖；后续S18审计自包含的
 intrinsic图形选择default/disabled/picture变体。
@@ -43,26 +43,26 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T17 S23 Packet
+## M0 T17 S24 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S22 Frame容器变体审计关闭后，依用户T17自动顺序S授权准入 |
+| Identifier Mode | Continuation；S23 CommandButton状态变体审计关闭后，依用户T17自动顺序S授权准入 |
 | Admission And Approval | 用户T17完整控件目标、自动顺序S、永久提交推送及binary change同批四文件双发布；不新开T |
-| Objective | 审计并在真实/自有模型协议足够时适配VB CommandButton的default、cancel、flat和disabled/visible变体；保持原有caption、通知、焦点、图片及生命周期 |
+| Objective | 审计并在真实/自有模型协议足够时适配VB TextBox的multiline、password、alignment、disabled/visible变体；保持编辑、选择、撤销、IME和滚动语义 |
 | Non-goals | 原标题/字体/菜单/滚动条/原glyph保持；不读VB私有对象、不重画应用内容、不接管owner-draw、不装IDE/OCX、不新增T |
-| Reference Baseline | S10已覆盖有限图形CommandButton，S18覆盖图形选择图片；普通CommandButton尚未把default/cancel/flat状态作为独立验收，不能从常规BUTTON外推 |
-| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[S10图形CommandButton](../etc/evidence/vb-graphical-controls.json)、[S18图片/图标](../etc/evidence/vb-graphical-choice-variants.json)、[冻结148矩阵](../etc/evidence/vb-controls-audit.json) |
-| Files And ABI Surface | 先审计真实源码/已有自有C模型；只有公开HWND/BUTTON style/通知协议完整时才扩展既有双宽DLL/测试，不改ABI/三组件四产物 |
+| Reference Baseline | S4/S5覆盖普通runtime TextBox和原生编辑子控件字体范围；特殊编辑样式尚未作为独立验收，不能从普通ES_AUTOHSCROLL外推 |
+| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[S4内建](../etc/evidence/vb-intrinsic-controls.json)、[S5组合控件](../etc/evidence/vb-composite-controls.json)、[冻结148矩阵](../etc/evidence/vb-controls-audit.json) |
+| Files And ABI Surface | 先审计真实源码/已有自有C模型；只有公开HWND/EDIT style/消息协议完整时才扩展既有双宽DLL/测试，不改ABI/三组件四产物 |
 | Applicable Rules | Task Reading Set/C17/GCC/Ninja/ccache；禁computer-use、兄弟修改/依赖、全局设置或非自有进程测试；无显示/UAC结果仅作对应skip，不阻塞自包含审计 |
-| Verification | 记录真实runtime/owner/class/style、default/cancel/flat/disabled/visible状态、caption、通知、裸/注入与DC/资源所有权；实际与模型、x86实际与x64模型分开 |
+| Verification | 记录真实runtime/owner/class/style、multiline/password/alignment/disabled/visible、编辑/选择/撤销/滚动、裸/注入与DC/资源所有权；实际与模型、x86实际与x64模型分开 |
 | Expected Markers | 证实安全的有限路径或明确原生保留；应用文字/焦点/输入/字体/几何和资源所有权保持 |
 | Asset Needs | 仅已有登记样本/运行库/任务scratch；不复制第三方图片/OCX/二进制、不装IDE或注册组件 |
-| Reporting Requirements | 报告真实样本、模型、状态/绘制边界和未覆盖面；不由一个CommandButton外推，不称T17完成 |
+| Reporting Requirements | 报告真实样本、模型、状态/绘制边界和未覆盖面；不由一个TextBox外推，不称T17完成 |
 | Stop Conditions | 真实协议/来源不满足即保持原生；重大架构/安全/新增产品先停证据；不关闭/注入用户既有进程，也不等待UAC或屏幕可见性 |
-| Exit Criteria | 完成有界CommandButton状态变体审计；若有证实最小实现则双宽/同批包/必要发布/推送远端，否则提交审计。两种结果均保留148单位，T17开放 |
+| Exit Criteria | 完成有界TextBox状态变体审计；若有证实最小实现则双宽/同批包/必要发布/推送远端，否则提交审计。两种结果均保留148单位，T17开放 |
 | Original Owner Request | VB5/VB6控件采用本项目样式；S1全貌、S2demo、S3和多个S实施，最后独立收口；自动推进到完整适配验收 |
-| Similar-Issue Sweep | runtime50/60 CommandButton、BS_DEFPUSHBUTTON/BS_PUSHBUTTON、default/cancel/flat、disabled/visible/pressed/focus、caption/图片/owner-draw、通知、角色切换/资源退役、真实与模型边界 |
+| Similar-Issue Sweep | runtime50/60 TextBox、ES_MULTILINE/ES_PASSWORD/ES_CENTER/ES_RIGHT、disabled/visible/read-only/scroll、selection/undo/IME、font/edge、角色切换/资源退役、真实与模型边界 |
 
 ## Identifier State
 
@@ -70,8 +70,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 17
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T17并授权内部自动顺序S；不准入其他T候选。
-- Last delivery: M0 T17 S22 P1（VB Frame容器变体审计，无产品二进制变化；待推送远端后关闭）
-- Open task: T17 S23 VB CommandButton状态变体审计；复杂图片及148单位审计保留后续接收，T17/M0开放。
+- Last delivery: M0 T17 S23 P1（VB CommandButton状态变体审计，测试变化、无产品二进制变化；待推送远端后关闭）
+- Open task: T17 S24 VB TextBox特殊样式变体审计；复杂图片及148单位审计保留后续接收，T17/M0开放。
 
 ## Technical Baseline
 
@@ -120,6 +120,8 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T17 S23 CommandButton状态变体](../history/M0-T17-S23-vb-command-button-variants.md)：真实default/cancel/flat边界与双宽default runtime witness；无产品改动，S23关闭续S24，T17/M0开放。
 
 - [T17 S22 Frame容器](../history/M0-T17-S22-vb-frame-containers.md)：真实Frame/caption/嵌套子控件与既有有限路径复核；无产品改动，S22关闭续S23，T17/M0开放。
 
