@@ -1,0 +1,10 @@
+{
+  "task": "M0 T17 S28",
+  "frozen_rows": 148,
+  "frozen_intrinsic_version_rows": 52,
+  "frozen_extension_control_rows": 66,
+  "pre_audit_state_counts": {"audit only; not new support": 52, "sample blocked; not passed": 96},
+  "purpose": "Record the frozen matrix's stale pre-S2-to-S27 state before row-by-row reconciliation. These counts do not describe current product support.",
+  "required_disposition": ["verified public protocol with actual or bounded model evidence", "native preservation with explicit reason", "missing real sample or public wrapper protocol with a concrete receiver/condition"],
+  "completion_rule": "T17 cannot close until every frozen row has one of the required dispositions and the aggregate evidence proves the owner's requested VB5/VB6 styling scope without extrapolation."
+}
