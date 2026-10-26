@@ -1501,8 +1501,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "review": "T17 S28 optional direct-OLE host for an explicit user-supplied licensed OCX; no registration, installation, external binary inclusion or copied code. It verifies narrow OCX/standard-child attachment, filename identity rejection, and explicit negative attachment assertions for unsafe external OCX frames.",
-      "sha256": "3dedb182cae01d38e506002b5d8b640cf6a317b368d9a50cf43207901e257894"
+      "review": "T17 S28 optional direct-OLE host for an explicit user-supplied licensed OCX; no registration, installation, external binary inclusion or copied code. It verifies narrow OCX/standard-child attachment, filename identity rejection, explicit negative attachment assertions for unsafe external OCX frames, and bounded USER Edit text/selection or ScrollBar position round trips beneath an OCX wrapper.",
+      "sha256": "c816c2ffaccead263654eef7bd5fa4becad1fe0045556535d1e5854d5e8e2815"
     },
     {
       "path": "tests/ntw16s-dll/ocx_catalog.c",

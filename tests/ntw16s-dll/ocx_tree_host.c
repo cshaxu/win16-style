@@ -139,6 +139,8 @@ static BOOL CALLBACK found(HWND w,LPARAM value)
         else if(wcsstr(name,L"ListView"))value=SendMessageW(w,LVM_GETITEMCOUNT,0,0);
         else if(wcsstr(name,L"ProgressBar"))value=SendMessageW(w,PBM_GETPOS,0,0);
         else if(wcsstr(name,L"MSMask")){WCHAR mask[32];DWORD begin=0,end=0;CHECK(SetWindowTextW(w,L"12/34"));SendMessageW(w,EM_SETSEL,1,4);SendMessageW(w,EM_GETSEL,(WPARAM)&begin,(LPARAM)&end);CHECK(begin==1 && end==4);value=GetWindowTextW(w,mask,ARRAYSIZE(mask));wprintf(L"OCX_MASK_TEXT %ls selection=%lu:%lu\n",mask,begin,end);}
+        else if(!lstrcmpW(name,L"Edit")){WCHAR text[32];DWORD begin=0,end=0;CHECK(SetWindowTextW(w,L"alpha"));SendMessageW(w,EM_SETSEL,1,4);SendMessageW(w,EM_GETSEL,(WPARAM)&begin,(LPARAM)&end);CHECK(begin==1 && end==4);value=GetWindowTextW(w,text,ARRAYSIZE(text));CHECK(value==5 && !lstrcmpW(text,L"alpha"));wprintf(L"OCX_EDIT_TEXT %ls selection=%lu:%lu\n",text,begin,end);}
+        else if(!lstrcmpW(name,L"ScrollBar")){CHECK(SetScrollRange(w,SB_CTL,0,20,FALSE));CHECK(SetScrollPos(w,SB_CTL,12,TRUE)==0);value=GetScrollPos(w,SB_CTL);CHECK(value==12);wprintf(L"OCX_SCROLL_POS value=%lld\n",(long long)value);}
         else if(wcsstr(name,L"Slider")){SendMessageW(w,TBM_SETRANGEMIN,FALSE,0);SendMessageW(w,TBM_SETRANGEMAX,FALSE,20);SendMessageW(w,TBM_SETPOS,FALSE,12);value=SendMessageW(w,TBM_GETPOS,0,0);}
         else if(!lstrcmpW(name,TOOLBARCLASSNAMEW)){
             if(toolbar_test){
