@@ -10,6 +10,10 @@
   CheckBox/OptionButton的公开协议、双宽测试、同批四文件发布与保留变体；不作为
   所有 VB owner-draw 或图片按钮支持声明。
 
+- [VB图形选择图片/图标变体](evidence/vb-graphical-choice-variants.json)：T17 S18
+  精确公开 BM_GETIMAGE/BM_SETIMAGE 路径的双宽状态、资源和退役证据；不作为任意
+  VB 图片属性或 owner-draw 支持声明。
+
 - [VB6 DriveListBox审计](evidence/vb6-drivelistbox-audit.json)：T17 S14固定
   源码/PE/runtime 身份与有界样本缺失结论；不作为VB6 DriveListBox支持声明。
 
@@ -97,6 +101,10 @@
 
 - [T17 S13图形选择控件](evidence/vb-graphical-choices.json)：精确 VB 图形
   CheckBox/OptionButton 的状态/分组、退役与发布证据；复杂变体仍由后续 S 接收。
+
+- [T17 S18图形选择图片/图标](evidence/vb-graphical-choice-variants.json)：精确
+  图形 CheckBox/OptionButton 的公共位图/图标借用、状态、退役与双宽包证据；真实
+  图片属性样本、owner-draw 与复杂变体仍保留后续接收。
 
 - [T17 S14 VB6 DriveListBox审计](evidence/vb6-drivelistbox-audit.json)：唯一源码
   匹配实际为VB5运行时的反证与固定目录样本缺失；没有产品实现。

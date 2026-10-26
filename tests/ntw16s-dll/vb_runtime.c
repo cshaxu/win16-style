@@ -33,7 +33,7 @@ static LRESULT CALLBACK list(HWND w,UINT m,WPARAM a,LPARAM b)
 /* Independent C protocol fixture: deliberately has no USER BUTTON superclass.
  * It is not evidence about an actual VB Value implementation. Real Actor is
  * validated separately; this class makes a missing exact-alias regression fail. */
-typedef struct checkbox_state {UINT check,state;} checkbox_state;
+typedef struct checkbox_state {UINT check,state,image_type;HANDLE image;} checkbox_state;
 static HWND destroy_on_font,destroyed_checkbox;
 static unsigned late_checkbox_calls;
 __declspec(dllexport) void WINAPI VbCheckboxRetirementProbe(HWND w)
@@ -59,6 +59,8 @@ static LRESULT CALLBACK checkbox(HWND w,UINT m,WPARAM a,LPARAM b)
     if(m==WM_SETFONT){if(w==destroy_on_font){destroy_on_font=NULL;DestroyWindow(w);destroyed_checkbox=w;}return 0;}
     if(m==WM_GETDLGCODE)return DLGC_BUTTON|DLGC_WANTCHARS|(((GetWindowLongPtrW(w,GWL_STYLE)&BS_TYPEMASK)==BS_RADIOBUTTON)?DLGC_RADIOBUTTON:0);
     if(m==BM_GETCHECK)return s->check;
+    if(m==BM_GETIMAGE)return s->image && a==s->image_type?(LRESULT)s->image:0;
+    if(m==BM_SETIMAGE && (a==IMAGE_BITMAP || a==IMAGE_ICON)){HANDLE previous=a==s->image_type?s->image:NULL;s->image_type=(UINT)a;s->image=(HANDLE)b;InvalidateRect(w,NULL,TRUE);return (LRESULT)previous;}
     if(m==BM_GETSTATE)return s->check|s->state|(GetFocus()==w?BST_FOCUS:0);
     if(m==BM_SETCHECK){s->check=(UINT)a%3;InvalidateRect(w,NULL,TRUE);return 0;}
     if(m==BM_SETSTATE){s->state=a?BST_PUSHED:0;InvalidateRect(w,NULL,TRUE);return 0;}

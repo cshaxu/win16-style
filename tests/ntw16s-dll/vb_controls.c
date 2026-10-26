@@ -146,13 +146,13 @@ static int child(const WCHAR *runtime_path,BOOL styled,BOOL aware)
         for(int y=0;y<13;++y)for(int x=0;x<14;++x){unsigned expected=control_checks[y][14+x]=='0'?0:0xffffff;CHECK((pixels[(top+MulDiv(y,(int)dpi,96))*200+MulDiv(x,(int)dpi,96)]&0xffffff)==expected);}
         puts("VB_CHECKBOX_GLYPH_OK source_pixels=182 checked=1");CHECK(remove_control(checkbox) && !attached(checkbox));CHECK(image(checkbox,NULL,0)!=painted && (HFONT)SendMessageW(checkbox,WM_GETFONT,0,0)==check_font);}
     LONG_PTR transition_style=GetWindowLongPtrW(transition,GWL_STYLE);SetWindowLongPtrW(transition,GWL_STYLE,transition_style|BS_PUSHLIKE);
-    if(styled){DWORD fallback=image(transition,NULL,0);CHECK(remove_control(transition));CHECK(image(transition,NULL,0)==fallback);}
+    if(styled){DWORD graphical_transition=image(transition,NULL,0);CHECK(attached(transition));CHECK(remove_control(transition));CHECK(image(transition,NULL,0)!=graphical_transition);}
     HWND dying=CreateWindowW(L"ThunderRT6CheckBox",L"retirement callback",WS_CHILD|BS_AUTO3STATE,0,190,140,28,root,(HMENU)7,runtime,NULL);CHECK(dying);
-    if(styled){void (WINAPI *arm)(HWND)=(void *)GetProcAddress(runtime,"VbCheckboxRetirementProbe");unsigned (WINAPI *late)(void)=(void *)GetProcAddress(runtime,"VbCheckboxLateCalls");CHECK(arm && late && attached(dying));arm(dying);SetWindowLongPtrW(dying,GWL_STYLE,GetWindowLongPtrW(dying,GWL_STYLE)|BS_PUSHLIKE);CHECK(!IsWindow(dying) && !late());puts("VB_CHECKBOX_RETIRE_DESTROY_OK no_forward_after_destroy=1");}
+    if(styled){void (WINAPI *arm)(HWND)=(void *)GetProcAddress(runtime,"VbCheckboxRetirementProbe");unsigned (WINAPI *late)(void)=(void *)GetProcAddress(runtime,"VbCheckboxLateCalls");CHECK(arm && late && attached(dying));arm(dying);SendMessageW(dying,WM_SETFONT,SendMessageW(dying,WM_GETFONT,0,0),FALSE);CHECK(!IsWindow(dying) && !late());puts("VB_CHECKBOX_RETIRE_DESTROY_OK no_forward_after_destroy=1");}
     else CHECK(DestroyWindow(dying));
     SendMessageW(graphical,BM_CLICK,0,0);CHECK(SendMessageW(graphical,BM_GETCHECK,0,0)==BST_CHECKED);
     if(styled){DWORD graphical_styled=image(graphical,NULL,0);CHECK(remove_control(graphical) && !attached(graphical));CHECK(image(graphical,NULL,0)!=graphical_styled);}
-    CHECK(DestroyWindow(graphical) && DestroyWindow(transition));puts("VB_CHECKBOX_NATIVE_FALLBACK_OK unsupported_graphical=0 live_transition=1");
+    CHECK(DestroyWindow(graphical) && DestroyWindow(transition));puts("VB_CHECKBOX_GRAPHICAL_TRANSITION_OK live_transition=1 native_retire=1");
     puts("VB_CHECKBOX_GRAPHICAL_PUSHLIKE_OK value_click_font_geometry_preserved=1");
     CHECK(DestroyWindow(checkbox) && DestroyWindow(fake_check));CHECK(UnregisterClassW(L"ThunderRT6CheckBox",cls.hInstance));
     puts("VB_CHECKBOX_OK three_states=1 keyboard=1 notifications=4 owner_negative=1 font_preserved=1 detach=1");

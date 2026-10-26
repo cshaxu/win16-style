@@ -1,0 +1,33 @@
+{
+  "task": "M0 T17 S18",
+  "scope": "Exact runtime-owned VB graphical CheckBox and OptionButton with BS_PUSHLIKE and public BS_BITMAP or BS_ICON payloads.",
+  "root_cause": "S13 deliberately rejected every image-bearing graphical choice. The existing generic BUTTON painter already obtains image handles with BM_GETIMAGE and borrows rather than owns them, so that blanket rejection unnecessarily excluded the matching public-protocol subset.",
+  "minimal_fix": "Keep the exact runtime-owner and checkbox/radio type gates; remove only the BS_BITMAP/BS_ICON rejection. Reuse the existing painter and leave BM_GETIMAGE/BM_SETIMAGE ownership, checked state, grouping, notifications, fonts and geometry with the runtime.",
+  "native_proofs": {
+    "fixture": "Project-authored C17 non-USER-BUTTON runtime model. It is not a claim that an arbitrary VB image property or private object is supported.",
+    "injected_x64_and_x86": [
+      "VB_GRAPHICAL_CHOICE_OK styled=1 check_state=1 detach_native=1",
+      "VB_GRAPHICAL_PICTURE_OK borrowed=1 state=1 disabled=1 native_retire=1",
+      "VB_GRAPHICAL_ICON_OK borrowed=1 state=1 disabled=1 native_retire=1",
+      "VB_GRAPHICAL_OPTION_OK runtime_grouping=1 native_retire=1"
+    ],
+    "native_fallback_x64_and_x86": "The same fixture reports styled=0 and retains its native public state/image protocol without injection.",
+    "existing_regression": "core-vb direct injected child passed x64 and x86, including graphical role transition and explicit WM_SETFONT destruction/reentrancy retirement. Standard private-desktop CTest remains unavailable in this session because CreateDesktopW returned access denied; no visible-desktop result is claimed."
+  },
+  "package": {
+    "mode": "Dual-width Ninja rebuild and strict manually assembled same-snapshot four-file candidate; package checker and x64 launcher into x64/x86 fixture tests passed.",
+    "sha256": {
+      "run16s.exe": "870a66af73f08955054e9bf6a3bb397ebaeedc37df6588ce995e0bf650964b85",
+      "ntw16s32.dll": "6b3ea8c4856aa08b1697eef7325440a215070ec6df2ef2b398cc08f4f164cd4a",
+      "ntw16s64.dll": "b66c90c0c7af9507ea5181f2d0d2fccceed3ffd0c09dea8f727428564b983737",
+      "demo.exe": "32fc3f929f97bfe0a87249df130fb4be3291a24c2fee9c0ca90455074928a271"
+    }
+  },
+  "not_supported": [
+    "A real VB image-property sample was not available in the frozen inputs; this is a public-protocol model proof only.",
+    "BS_OWNERDRAW and unknown/complex graphical variants remain native.",
+    "There is no valid CheckBox/OptionButton default-button analogue in the admitted style set; it remains outside this change.",
+    "No physical mouse/keyboard or visible-desktop assertion is made by the native probes."
+  ],
+  "invariants": "No ABI, component/product count, original graphic resource, title, menu, font or scrollbar implementation changed. Image handles are neither replaced nor deleted by the renderer."
+}
