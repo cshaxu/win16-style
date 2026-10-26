@@ -9,7 +9,7 @@ S28干净双宽候选包已通过身份门禁，四文件在测试前后摘要�
 在本会话通过，72项在创建私有USER桌面前返回精确`PRIVATE_DESKTOP_CREATE_FAIL error=5`
 而记为skip。Test-Package现仅对该精确退出2/标记组合允许skip，其他失败仍中断；
 这不构成GUI回归或物理验收通过；四文件已以同批摘要发布至assets根目录和
-O:\\winnt\\system32，P1仍待本次提交、推送和远端复核。
+O:\\winnt\\system32；P1提交328a8b6已推送，远端main及发布清单/OCX证据实际复核通过。
 S17冻结35模块/66控件行；本机无所列官方OCX文件，故不安装/注册或从native class猜测
 wrapper支持，逐行保留未认证。S28现按用户授权仅在任务scratch中研究微软签名x86
 MSCOMCTL.OCX/COMCTL32.OCX：不安装/注册/发布，已证实有限公开TreeView、旧版Slider及
@@ -81,7 +81,7 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 17
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T17并授权内部自动顺序S；不准入其他T候选。
-- Last delivery: M0 T17 S28 P1 已本地发布（用户授权的官方签名x86微软OCX研究包以免注册公开OLE路径验证；TreeView、旧版Slider、旧版COMCTL32文本工具栏及MSMASK32标准EDIT路径已有自有探针覆盖。候选包15项通过/72项私有桌面错误5精确skip，assets/system32八摘要一致；待提交、推送和远端复核。）
+- Last delivery: M0 T17 S28 P2 已复核（P1 328a8b6已推送且origin/main实际匹配；用户授权的官方签名x86微软OCX研究包以免注册公开OLE路径验证；TreeView、旧版Slider、旧版COMCTL32文本工具栏及MSMASK32标准EDIT路径已有自有探针覆盖。候选包15项通过/72项私有桌面错误5精确skip，assets/system32八摘要一致；S28/T17仍开放。）
 - Open task: T17 S28 全148单位收口审计；T17/M0保持开放。已将一个真实、已许可的x86可视OCX及公开宿主协议纳入有限实现；其余扩展行仍逐项要求真实协议/惰性样本，不能以猜测性类名替代。
 
 ## Technical Baseline
