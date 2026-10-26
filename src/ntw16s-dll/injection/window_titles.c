@@ -156,6 +156,13 @@ static BOOL vb_text_caller(const void *address)
         caller==GetModuleHandleW(L"LPK.DLL") || caller==GetModuleHandleW(L"USP10.DLL") ||
         caller==GetModuleHandleW(L"GDI32FULL.DLL");
 }
+static BOOL vb_label_caller(const void *address)
+{
+    if(ntw16s_vb_direct_text_allowed())return TRUE;
+    HMODULE caller=NULL;
+    return GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+        (const WCHAR *)address,&caller) && (caller==GetModuleHandleW(L"MSVBVM50.DLL") || caller==GetModuleHandleW(L"MSVBVM60.DLL"));
+}
 /* The report adapter promises only whole, reversible CP1252 runs. Keep
  * measurements and unsupported language/RTL runs on the native font. */
 static BOOL report_wide_text(HDC dc,const WCHAR *text,int count)
@@ -182,13 +189,14 @@ static TYPE WINAPI hook_##NAME PARAMS \
   if(!vb_text_busy++ && (ALLOW) && ntw16s_vb_paint_active() && vb_text_caller(__builtin_return_address(0))){font=ntw16s_vb_paint_font(dc);if(font){old=SelectObject(dc,font);if(old==HGDI_ERROR)old=NULL;}} \
   SetLastError(entry);result=real_##NAME ARGS;error=GetLastError(); \
   if(old){SelectObject(dc,old);}--vb_text_busy;SetLastError(error);return result; }
-VB_TEXT_HOOK(DrawTextA,int,(HDC dc,LPCSTR text,int count,LPRECT rect,UINT format),(dc,text,count,rect,format),(!ntw16s_report_paint_active() || !(format&DT_CALCRECT)) && report_ansi_text(dc,text,count))
-VB_TEXT_HOOK(DrawTextExA,int,(HDC dc,LPSTR text,int count,LPRECT rect,UINT format,LPDRAWTEXTPARAMS params),(dc,text,count,rect,format,params),(!ntw16s_report_paint_active() || !(format&DT_CALCRECT)) && report_ansi_text(dc,text,count))
-VB_TEXT_HOOK(TextOutA,BOOL,(HDC dc,int x,int y,LPCSTR text,int count),(dc,x,y,text,count),report_ansi_text(dc,text,count))
-VB_TEXT_HOOK(ExtTextOutA,BOOL,(HDC dc,int x,int y,UINT options,const RECT *rect,LPCSTR text,UINT count,const INT *dx),(dc,x,y,options,rect,text,count,dx),(!ntw16s_report_paint_active() || !(options&(ETO_GLYPH_INDEX|ETO_RTLREADING))) && report_ansi_text(dc,text,(int)count))
-VB_TEXT_HOOK(TextOutW,BOOL,(HDC dc,int x,int y,LPCWSTR text,int count),(dc,x,y,text,count),report_wide_text(dc,text,count))
+VB_TEXT_HOOK(DrawTextA,int,(HDC dc,LPCSTR text,int count,LPRECT rect,UINT format),(dc,text,count,rect,format),((!ntw16s_report_paint_active() && ntw16s_vb_direct_text_allowed()) || !(format&DT_CALCRECT)) && vb_label_caller(__builtin_return_address(0)) && report_ansi_text(dc,text,count))
+VB_TEXT_HOOK(DrawTextExA,int,(HDC dc,LPSTR text,int count,LPRECT rect,UINT format,LPDRAWTEXTPARAMS params),(dc,text,count,rect,format,params),((!ntw16s_report_paint_active() && ntw16s_vb_direct_text_allowed()) || !(format&DT_CALCRECT)) && vb_label_caller(__builtin_return_address(0)) && report_ansi_text(dc,text,count))
+VB_TEXT_HOOK(TextOutA,BOOL,(HDC dc,int x,int y,LPCSTR text,int count),(dc,x,y,text,count),(ntw16s_vb_direct_text_allowed() || (GetMapMode(dc)==MM_TEXT && !(GetTextAlign(dc)&TA_UPDATECP))) && vb_label_caller(__builtin_return_address(0)) && report_ansi_text(dc,text,count))
+VB_TEXT_HOOK(ExtTextOutA,BOOL,(HDC dc,int x,int y,UINT options,const RECT *rect,LPCSTR text,UINT count,const INT *dx),(dc,x,y,options,rect,text,count,dx),ntw16s_vb_direct_text_allowed() && (!ntw16s_report_paint_active() || !(options&(ETO_GLYPH_INDEX|ETO_RTLREADING))) && report_ansi_text(dc,text,(int)count))
+VB_TEXT_HOOK(TextOutW,BOOL,(HDC dc,int x,int y,LPCWSTR text,int count),(dc,x,y,text,count),ntw16s_vb_direct_text_allowed() && report_wide_text(dc,text,count))
 
 #undef VB_TEXT_HOOK
+
 
 /* USER's EDIT can submit shaped glyph IDs. Those IDs belong to its source
  * font, not the replacement FNT. Reverse only verified CP1252 glyphs; any
@@ -198,7 +206,7 @@ static __typeof__(&ExtTextOutW) real_ExtTextOutW;
 static BOOL WINAPI hook_ExtTextOutW(HDC dc,int x,int y,UINT options,const RECT *rect,LPCWSTR text,UINT count,const INT *dx)
 {
     DWORD entry=GetLastError(),error;HFONT font=NULL,old=NULL;WCHAR *decoded=NULL;char *encoded=NULL;BOOL result;LPCWSTR original_text=text;UINT original_options=options;
-    if(!vb_text_busy++ && ntw16s_vb_paint_active() && vb_text_caller(__builtin_return_address(0))){
+    if(!vb_text_busy++ && ntw16s_vb_direct_text_allowed() && ntw16s_vb_paint_active() && vb_text_caller(__builtin_return_address(0))){
         font=ntw16s_vb_paint_font(dc);
         if(font && (options&ETO_GLYPH_INDEX)){
             BOOL valid=count<=4096 && !(options&ETO_RTLREADING) && !(GetTextAlign(dc)&TA_RTLREADING);

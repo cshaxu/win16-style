@@ -103,6 +103,13 @@ static inline BOOL ntw16s_class_is(HWND w,const WCHAR *expected)
 }
 static inline BOOL ntw16s_vb_frame(HWND w)
 {return ntw16s_vb_class(w,L"ThunderRT6Frame") || ntw16s_vb5_class(w,L"ThunderRT5Frame");}
+static inline BOOL ntw16s_vb_picture(HWND w)
+{
+    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
+    return (style&WS_CHILD) && (style&WS_CAPTION)!=WS_CAPTION && !(style&WS_THICKFRAME) &&
+        !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
+        (ntw16s_vb_class(w,L"ThunderRT6PictureBoxDC") || ntw16s_vb5_class(w,L"ThunderRT5PictureBox"));
+}
 static inline BOOL ntw16s_vb_edit(HWND w)
 {return ntw16s_vb_class(w,L"ThunderRT6TextBox") || ntw16s_vb5_class(w,L"ThunderRT5TextBox");}
 static inline UINT ntw16s_button_type(HWND w,DWORD style)

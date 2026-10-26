@@ -66,3 +66,14 @@ removal cancels the scope. T17 S8 also admits exact MSVBVM60-owned FileListBox
 and DirListBox, verified in the original Compress-Z-It sample. Generic
 owner-draw and unverified VB6 DriveListBox remain native. Self-contained C
 fixtures are distinct from authentic VB5/VB6 proof.
+
+# T17 S9 PictureBox scope
+
+Exact runtime-owned `ThunderRT5PictureBox` and `ThunderRT6PictureBoxDC`
+children reuse the existing border/scroll renderer. A bounded paint scope
+adapts direct runtime ANSI label drawing only; native measurements,
+`TabbedTextOutA` application Print, EXE drawing, bitmaps and geometry remain
+native. No new detours or public ABI. Unsupported RTL/frame roles retire.
+The self-contained `core-vb-containers` fixture is a C protocol model;
+optional authentic Alpha Icon Creator VB5/VB6 observations are separate.
+See the [container evidence](../../docs/etc/evidence/vb-container-controls.json).

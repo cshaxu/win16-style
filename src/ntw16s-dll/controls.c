@@ -1500,6 +1500,16 @@ BOOL win16_style_tree_install_created(HWND w,const win16_style_palette *palette,
     ((control_style *)data)->native_border=TRUE;
     return TRUE;
 }
+BOOL win16_style_picture_install_created(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled)
+{
+    DWORD_PTR data;
+    if(!ntw16s_vb_picture(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    if(!win16_style_frame_scrollbars_install_owned(w,palette,owner,cancelled))return FALSE;
+    if(!GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&data) ||
+        ((control_style *)data)->creation_owner!=owner){SetLastError(ERROR_CANCELLED);return FALSE;}
+    ((control_style *)data)->native_border=TRUE;
+    return TRUE;
+}
 void win16_style_frame_scrollbars_remove(HWND w)
 {
     DWORD_PTR data;

@@ -12,7 +12,6 @@
 #include "../../src/ntw16s-dll/control_glyphs.h"
 #include "../../src/ntw16s-dll/combo_glyph.h"
 #include "../../src/ntw16s-dll/scroll_glyphs.h"
-#include <oleacc.h>
 #include "vb_queue.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"VB_SAMPLE_FAIL line=%d error=%lu %s\n",__LINE__,GetLastError(),#x);ExitProcess(1);}}while(0)
 static void file_path(const WCHAR *path){
@@ -28,6 +27,27 @@ static HWND form;
 static DWORD pid;
 static HWND checks[80];
 static unsigned count;
+static unsigned about_closed;
+static WCHAR about_capture_dir[MAX_PATH];
+static uint64_t capture(HWND,const WCHAR *,BOOL);
+static BOOL CALLBACK capture_print(HWND w,LPARAM unused)
+{
+    (void)unused;WCHAR cls[80];GetClassNameW(w,cls,80);
+    if(!wcscmp(cls,L"ThunderRT5PictureBox") && !(GetWindowLongPtrW(w,GWL_STYLE)&WS_BORDER) && !(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE)){
+        WCHAR path[MAX_PATH];CHECK(swprintf_s(path,MAX_PATH,L"%ls/about-print.bmp",about_capture_dir)>0);
+        printf("VB_REAL_PRINT_IMAGE hash=%llu\n",(unsigned long long)capture(w,path,FALSE));
+    }
+    return TRUE;
+}
+static BOOL CALLBACK close_about(HWND w,LPARAM main)
+{
+    WCHAR cls[80],title[80];GetClassNameW(w,cls,80);GetWindowTextW(w,title,80);
+    if(w!=(HWND)main && !wcscmp(cls,L"ThunderRT5Form") && !wcscmp(title,L"About...")){
+        CHECK(EnumChildWindows(w,capture_print,0));
+        SendMessageW(w,WM_CLOSE,0,0);if(!IsWindow(w))++about_closed;
+    }
+    return TRUE;
+}
 static HANDLE queue_mapping,queue_ready;
 static vb_queue_state *queue_state;
 static HMODULE queue_module;
@@ -95,11 +115,11 @@ static void queue_key(HWND window,WPARAM key)
     printf("VB_SAMPLE_QUEUE_OK key=%u generation=%lu commands=%ld hscroll=%ld vscroll=%ld command_code=%lu scroll_code=%lu\n",
         (unsigned)key,queue_state->generation,queue_state->commands,queue_state->hscroll,queue_state->vscroll,queue_state->command_code,queue_state->scroll_code);
 }
-static void queue_survey(HWND window,BOOL popup)
+static void queue_survey(HWND window,LONG action)
 {
     DWORD owner=0;CHECK(GetWindowThreadProcessId(window,&owner)==queue_state->tid && owner==pid);
     queue_state->window=window;queue_state->root=GetParent(window);
-    queue_state->action=popup?VB_QUEUE_POPUP_SURVEY:VB_QUEUE_SURVEY;
+    queue_state->action=action?action:VB_QUEUE_SURVEY;
     ++queue_state->generation;CHECK(ResetEvent(queue_ready));MemoryBarrier();
     UINT marker=RegisterWindowMessageW(VB_QUEUE_MESSAGE);CHECK(marker);
     CHECK(PostMessageW(window,marker,queue_state->generation,0) && pump(queue_ready,3000)==WAIT_OBJECT_0);
@@ -108,6 +128,11 @@ static void queue_survey(HWND window,BOOL popup)
     printf("VB_FILE_SURVEY class=%ls attached=%ld font_records=%ld system_fonts=%ld draw_items=%ld draw_type=%lu draw_dc_window=%p popup_dc=%ld system_text=%ld native_text=%ld\n",
         cls,queue_state->attached,queue_state->font_records,queue_state->system_fonts,queue_state->draw_items,
         queue_state->draw_type,(void *)queue_state->draw_dc_window,queue_state->popup_dc,queue_state->system_text,queue_state->native_text);
+    if(action==VB_QUEUE_PAINT_SURVEY)printf("VB_NORMAL_PAINT class=%ls messages=%ld system_selected=%ld native_selected=%ld restored=%ld probe_error=%ld\n",cls,queue_state->paint_messages,queue_state->paint_system,queue_state->paint_native,queue_state->paint_restored,queue_state->paint_probe_error);
+    if(action==VB_QUEUE_PAINT_SURVEY)CHECK(queue_state->paint_restored && !queue_state->paint_probe_error);
+    if(action==VB_QUEUE_PAINT_SURVEY)printf("VB_NORMAL_BUFFER class=%ls system_selected=%ld native_selected=%ld\n",cls,queue_state->paint_system_memory,queue_state->paint_native_memory);
+    if(action==VB_QUEUE_PAINT_SURVEY && queue_state->paint_system_callsite)printf("VB_PAINT_SYSTEM_CALLSITE address=%p\n",(void *)queue_state->paint_system_callsite);
+    if(action==VB_QUEUE_PRINT_SAMPLE){printf("VB_REAL_PRINT_API calls=%ld api=%lu alignment=%lu restored=%ld error=%ld\n",queue_state->print_calls,queue_state->print_api,queue_state->print_alignment,queue_state->paint_restored,queue_state->paint_probe_error);CHECK(queue_state->paint_restored && !queue_state->paint_probe_error);}
     queue_state->action=0;
 }
 static void CALLBACK shown(HWINEVENTHOOK h,DWORD e,HWND w,LONG object,LONG child,DWORD thread,DWORD time){
@@ -275,9 +300,12 @@ static int worker(int argc,WCHAR **argv){
     }
     while(Module32NextW(snap,&mod));
     CloseHandle(snap);
+    BOOL about_print=!wcscmp(argv[3],L"about-print");
+    BOOL container_verify=!wcscmp(argv[3],L"containers-verify");
+    BOOL containers=container_verify || !wcscmp(argv[3],L"containers");
     BOOL filedir_verify=!wcscmp(argv[3],L"filedir-verify");
     BOOL file_verify=filedir_verify || !wcscmp(argv[3],L"files-verify");
-    BOOL inventory=file_verify || !wcscmp(argv[3],L"inventory");
+    BOOL inventory=about_print || containers || file_verify || !wcscmp(argv[3],L"inventory");
     CHECK(runtime && dll==styled && EnumChildWindows(form,collect,0) && (inventory?count>0:count>10));
     CHECK(swprintf_s(path,MAX_PATH,L"%ls/actor-%ls.bmp",scratch,styled?L"styled":L"bare")>0);
     printf("VB_SAMPLE_IMAGE hash=%llu\n",(unsigned long long)capture(form,path,FALSE));
@@ -318,6 +346,32 @@ static int worker(int argc,WCHAR **argv){
     CHECK(options==4 && checkboxes==4 && combos==2 && lists==1 && edits==2 && bars==2);
     printf("SAMPLE_PROTOCOL_PASS option=%u checkbox=%u combo=%u list=%u edit=%u scrollbar=%u\n",options,checkboxes,combos,lists,edits,bars);
     }else {
+        if(about_print){
+            CHECK(queue_state);HWND main=form,button=NULL;
+            CHECK(!wcscpy_s(about_capture_dir,MAX_PATH,scratch));
+            for(unsigned i=0;i<count;++i){WCHAR text[80];GetWindowTextW(checks[i],text,80);if(!wcscmp(text,L"About..."))button=checks[i];}
+            CHECK(button);queue_survey(button,VB_QUEUE_PRINT_SAMPLE);
+            CHECK(queue_state->print_calls>0 && queue_state->print_api==3);
+            CHECK(EnumThreadWindows(queue_state->tid,close_about,(LPARAM)main) && about_closed==1);form=main;
+        }
+        if(containers){
+            CHECK(queue_state);queue_survey(form,VB_QUEUE_PAINT_SURVEY);
+            unsigned pictures=0,label_hosts=0;
+            for(unsigned i=0;i<count;++i){WCHAR cls[100];GetClassNameW(checks[i],cls,100);
+                if(wcsstr(cls,L"PictureBox") || wcsstr(cls,L"Frame")){
+                    HFONT font=(HFONT)SendMessageW(checks[i],WM_GETFONT,0,0);RECT before,after,client_before,client_after;
+                    CHECK(GetWindowRect(checks[i],&before) && GetClientRect(checks[i],&client_before));
+                    queue_survey(checks[i],VB_QUEUE_PAINT_SURVEY);
+                    if(wcsstr(cls,L"PictureBox")){
+                        ++pictures;if(queue_state->paint_system>0)++label_hosts;
+                        if(container_verify)CHECK(styled?queue_state->attached==1:queue_state->paint_system==0);
+                    }
+                    CHECK((HFONT)SendMessageW(checks[i],WM_GETFONT,0,0)==font && GetWindowRect(checks[i],&after) && GetClientRect(checks[i],&client_after) && EqualRect(&before,&after) && EqualRect(&client_before,&client_after));
+                    CHECK(swprintf_s(path,MAX_PATH,L"%ls/container-%u.bmp",scratch,i)>0);(void)capture(checks[i],path,FALSE);
+                }
+            }
+            if(container_verify){CHECK(pictures>0 && (styled?label_hosts>0:label_hosts==0));printf("VB_REAL_CONTAINERS_OK pictures=%u system_label_hosts=%u font_geometry_preserved=1\n",pictures,label_hosts);}
+        }
         unsigned file_controls=0;CHECK(!file_verify || queue_state);
         if(queue_state)for(unsigned i=0;i<count;++i){
             WCHAR cls[100];GetClassNameW(checks[i],cls,100);
@@ -325,7 +379,7 @@ static int worker(int argc,WCHAR **argv){
                 HWND w=checks[i];BOOL drive=wcsstr(cls,L"DriveListBox")!=NULL;
                 HFONT source=(HFONT)SendMessageW(w,WM_GETFONT,0,0);RECT before,after;CHECK(GetWindowRect(w,&before));
                 LRESULT selection=SendMessageW(w,drive?CB_GETCURSEL:LB_GETCURSEL,0,0);
-                queue_survey(w,drive);
+                queue_survey(w,drive?VB_QUEUE_POPUP_SURVEY:VB_QUEUE_SURVEY);
                 if(file_verify){
                     CHECK((HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==runtime);
                     CHECK(styled?(queue_state->attached==1 && queue_state->system_text>0):queue_state->system_text==0);

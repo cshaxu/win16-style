@@ -39,3 +39,9 @@ readme1st.txt明确免费修改/使用；样本及依赖只在本地可选研究
 清单用公开类型库GUID作免注册COM绑定，不运行DllRegisterServer/安装zlib/改系统
 注册表。原EXE/DLL/源码/声明保持，未进入产品或必需测试；见
 [真实VB6文件组](../evidence/vb6-file-controls.json)。
+
+S9另行审查同一固定vbAccelerator归档中的Steve McMahon Alpha Icon Creator
+VB5/VB6原作者程序。保留原源码、资源及声明，仅本地可选运行；不把归档根CC0
+当作原作品重新授权。程序仅初始化自有窗口/同线程临时钩子，不执行文件选择、
+创建图标等写入操作；外部实现/图像/EXE/运行库不进入产品或必需测试。
+本仓库自编C协议模型只提供辨识色块，非真实VB、非替代产品图形。

@@ -11,7 +11,7 @@ typedef struct ntw16s_vb_paint {
     HWND native_window;HDC native_dc;BOOL native_active;
     HWND window;
     ntw16s_vb_fonts *fonts;
-    BOOL active,report;
+    BOOL active,report,label_only;
     HDC report_dc;
     HMODULE report_module;
     const BOOL *cancelled;
@@ -27,6 +27,7 @@ void ntw16s_vb_paint_end(ntw16s_vb_paint *scope);
 BOOL ntw16s_native_paint_target(HDC,HWND *);
 /* Borrowed until the attachment retires after its last active call; NULL means leave the native DC unchanged. */
 BOOL ntw16s_vb_paint_active(void);
+BOOL ntw16s_vb_direct_text_allowed(void);
 HFONT ntw16s_vb_paint_font(HDC dc);
 BOOL ntw16s_vb_decode_glyphs(HDC dc,const WCHAR *input,UINT count,WCHAR *decoded);
 #endif

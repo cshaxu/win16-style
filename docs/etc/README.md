@@ -68,3 +68,5 @@
 - [T17 S7文件控件](evidence/vb-file-controls.json)：真实VB5文件/目录/驱动器列表、准确owner-draw DC、图像所有权与双宽生命周期验证；VB6未认证范围另列。
 
 - [T17 S8真实VB6文件组](evidence/vb6-file-controls.json)：准确FileListBox/DirListBox、可选免注册原作者样本与双版本/双宽模型；VB6驱动器列表仍未认证。
+
+- [T17 S9 PictureBox承载](evidence/vb-container-controls.json)：真实双版本无窗口标签、应用Print保持及双宽自有资源/输入模型；未完成面明确保留。

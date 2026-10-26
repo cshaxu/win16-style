@@ -19,7 +19,7 @@ struct ntw16s_creation_scope {
 };
 typedef struct attachment {
     unsigned calls;
-    BOOL detached,tree,file_owner;
+    BOOL detached,tree,file_owner,picture;
     HWND themed,report_window,report_parent;
     HMODULE report_module;
     ntw16s_vb_fonts fonts;
@@ -43,11 +43,13 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
 {
     attachment *a=(attachment *)data;LRESULT result;(void)id;
     ++a->calls;
+    if(a->picture && !a->detached && m!=WM_DESTROY && m!=WM_NCDESTROY && !ntw16s_vb_picture(w))
+        (void)Ntw16sWindowRemove(w);
     if(a->file_owner && !a->detached && a->report_parent && m!=WM_DESTROY && m!=WM_NCDESTROY && GetParent(w)!=a->report_parent)
         (void)Ntw16sWindowRemove(w);
     if(m==WM_NCDESTROY)(void)Ntw16sWindowTerminal(w);
     ntw16s_vb_paint paint;ntw16s_vb_paint_begin(&paint,w,m,&a->fonts);
-    if(a->file_owner)paint.cancelled=&a->detached;
+    if(a->file_owner || a->picture)paint.cancelled=&a->detached;
     if(paint.native_active)paint.native_dc=(HDC)p;
     if(paint.active && !a->detached && !a->protocol)report_try_bind(w,a);
     if(paint.active && a->report_module && !a->file_owner && !a->detached){
@@ -184,7 +186,7 @@ BOOL __cdecl Ntw16sWindowTerminal(HWND w)
 
 static BOOL install_created(HWND w,DWORD original_style)
 {
-    BOOL control,edit,installed,report=FALSE,tree=FALSE;HWND parent;attachment *a;DWORD error;
+    BOOL control,edit,installed,report=FALSE,tree=FALSE,picture=ntw16s_vb_picture(w);HWND parent;attachment *a;DWORD error;
     ntw16s_control_protocol *protocol=NULL;
     if(lookup(w))return TRUE;
     /* COMBOBOX installs its own internal list when construction finishes.
@@ -205,12 +207,12 @@ static BOOL install_created(HWND w,DWORD original_style)
     }
     /* A custom client-only child and MDICLIENT keep application painting.
      * MDI child frames have WS_CAPTION and take the ordinary frame route. */
-    if(!control && !report && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME))){
+    if(!control && !report && !picture && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME))){
         SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
     }
     a=calloc(1,sizeof(*a));
     if(!a){ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    a->calls=1;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);
+    a->calls=1;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;
     if(report || tree || a->file_owner){a->report_window=w;a->tree=tree;
         a->report_module=a->file_owner?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}
     if(!SetWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc,(DWORD_PTR)a)){
@@ -230,6 +232,7 @@ static BOOL install_created(HWND w,DWORD original_style)
     else if(class_is(w,TRACKBAR_CLASSW))installed=win16_style_trackbar_install_created(w,NULL,a,&a->detached);
     else if(class_is(w,PROGRESS_CLASSW))installed=win16_style_progress_install_created(w,NULL,a,&a->detached);
     else if(tree)installed=win16_style_tree_install_created(w,NULL,a,&a->detached);
+    else if(picture)installed=win16_style_picture_install_created(w,NULL,a,&a->detached);
     else if(control)installed=win16_style_control_install_created(w,edit,(original_style&WS_BORDER)!=0,
         class_is(w,L"LISTBOX") && (original_style&LBS_USETABSTOPS),NULL,a,&a->detached);
     else if(report && !(original_style&(WS_BORDER|WS_THICKFRAME|WS_CAPTION)))installed=TRUE;

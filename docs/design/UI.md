@@ -222,3 +222,9 @@ T17 S7有限支持实际MSVBVM50注册的普通FileListBox、字符串可变高D
 S8追加真实MSVBVM60的FileListBox/DirListBox准确身份，复用同一绘制与所有权路径。
 普通文件列表End/Home经真实VB队列及原生父通知验证、选择归还；目录路径不改动。
 VB6 DriveListBox尚无真实样本，不由这两个控件或C模型推导为已支持。
+
+S9限于准确runtime拥有的ThunderRT5PictureBox/ThunderRT6PictureBoxDC子窗口。
+复用现有边框/滚动绘制，仅在paint内对runtime直接ANSI标签输出借用System字体；
+原生测量、应用Print/自绘、图像及几何保留。Label没有独立HWND，不扫描VB私有对象。
+RTL/框架角色变更退出适配；其他语言、绘制路径、AutoRedraw与无窗口复杂变体
+仍由后续S及最终148单位审计承担，不由局部样例扩张。
