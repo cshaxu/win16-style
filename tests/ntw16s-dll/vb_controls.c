@@ -54,8 +54,11 @@ static int composites(HWND root,HMODULE runtime,HMODULE dll,BOOL styled)
 {
     HWND combo=CreateWindowW(L"ThunderRT6ComboBox",L"",WS_CHILD|WS_VISIBLE|CBS_DROPDOWN,0,0,180,140,root,(HMENU)20,runtime,NULL);
     HWND list=CreateWindowExW(WS_EX_CLIENTEDGE,L"ThunderRT6ListBox",L"",WS_CHILD|WS_VISIBLE|LBS_EXTENDEDSEL|LBS_NOTIFY|WS_VSCROLL,0,0,180,80,root,(HMENU)21,runtime,NULL);CHECK(combo && list);
+    HWND dropdown_list=CreateWindowW(L"ThunderRT6ComboBox",L"",WS_CHILD|WS_VISIBLE|CBS_DROPDOWNLIST,0,100,180,120,root,(HMENU)22,runtime,NULL);
+    HWND simple_combo=CreateWindowW(L"ThunderRT6ComboBox",L"",WS_CHILD|WS_VISIBLE|CBS_SIMPLE,0,150,180,120,root,(HMENU)23,runtime,NULL);CHECK(dropdown_list && simple_combo);
     HFONT source=(HFONT)SendMessageW(combo,WM_GETFONT,0,0);CHECK(source && (HFONT)SendMessageW(list,WM_GETFONT,0,0)==source);
     for(unsigned i=0;i<5;++i){WCHAR text[40];swprintf_s(text,40,L"Native item %u",i);CHECK(SendMessageW(combo,CB_ADDSTRING,0,(LPARAM)text)!=CB_ERR && SendMessageW(list,LB_ADDSTRING,0,(LPARAM)text)!=LB_ERR);}
+    for(unsigned i=0;i<3;++i){WCHAR text[40];swprintf_s(text,40,L"Variant item %u",i);CHECK(SendMessageW(dropdown_list,CB_ADDSTRING,0,(LPARAM)text)!=CB_ERR && SendMessageW(simple_combo,CB_ADDSTRING,0,(LPARAM)text)!=CB_ERR);}
     SendMessageW(combo,CB_SETCURSEL,2,0);CHECK(SendMessageW(combo,CB_GETCURSEL,0,0)==2 && SendMessageW(combo,CB_GETCOUNT,0,0)==5);
     CHECK(SendMessageW(list,LB_SETSEL,TRUE,0)!=LB_ERR && SendMessageW(list,LB_SETSEL,TRUE,2)!=LB_ERR && SendMessageW(list,LB_GETSELCOUNT,0,0)==2);
     COMBOBOXINFO info={.cbSize=sizeof(info)};CHECK(GetComboBoxInfo(combo,&info) && info.hwndItem!=combo && GetParent(info.hwndItem)==combo);
@@ -65,6 +68,9 @@ static int composites(HWND root,HMODULE runtime,HMODULE dll,BOOL styled)
     HFONT underlying=(HFONT)CallWindowProcW(native.lpfnWndProc,info.hwndItem,WM_GETFONT,0,0);printf("VB_EDIT_NATIVE_DESCRIPTOR instance=%p proc=%p actual_owner=%p USER32=%p source=%p native_font=%p class_proc=%p unicode=%d extra=%lu/%d\n",(void *)native.hInstance,(void *)native.lpfnWndProc,(void *)GetClassLongPtrW(info.hwndItem,GCLP_HMODULE),(void *)GetModuleHandleW(L"USER32.DLL"),(void *)child_source,(void *)underlying,(void *)(UINT_PTR)GetClassLongPtrW(info.hwndItem,GCLP_WNDPROC),IsWindowUnicode(info.hwndItem),(unsigned long)GetClassLongPtrW(info.hwndItem,GCL_CBWNDEXTRA),native.cbWndExtra);fflush(stdout);CHECK(child_source && (styled?underlying!=child_source:underlying==child_source));
     if(styled){LOGFONTW lf;CHECK(GetObjectW(underlying,sizeof(lf),&lf)==sizeof(lf));printf("VB_COMPOSITE_NATIVE_FONT face=%ls height=%ld public_source_preserved=1\n",lf.lfFaceName,lf.lfHeight);}
     SendMessageW(combo,CB_SHOWDROPDOWN,TRUE,0);CHECK(SendMessageW(combo,CB_GETDROPPEDSTATE,0,0));SendMessageW(combo,CB_SHOWDROPDOWN,FALSE,0);CHECK(!SendMessageW(combo,CB_GETDROPPEDSTATE,0,0));
+    SendMessageW(dropdown_list,CB_SETCURSEL,2,0);CHECK(SendMessageW(dropdown_list,CB_GETCURSEL,0,0)==2);SendMessageW(dropdown_list,CB_SHOWDROPDOWN,TRUE,0);CHECK(SendMessageW(dropdown_list,CB_GETDROPPEDSTATE,0,0));SendMessageW(dropdown_list,CB_SHOWDROPDOWN,FALSE,0);CHECK(!SendMessageW(dropdown_list,CB_GETDROPPEDSTATE,0,0));
+    SendMessageW(simple_combo,CB_SETCURSEL,1,0);CHECK(SendMessageW(simple_combo,CB_GETCURSEL,0,0)==1);EnableWindow(simple_combo,FALSE);CHECK(!IsWindowEnabled(simple_combo));EnableWindow(simple_combo,TRUE);
+    if(styled){BOOL (__cdecl *attached)(HWND)=(void *)GetProcAddress(dll,"Ntw16sWindowAttached");CHECK(attached && attached(dropdown_list) && attached(simple_combo));puts("VB_COMBO_VARIANTS_OK dropdown=1 dropdownlist=1 simple=1 select=1 popup=1 disabled=1");}
     if(styled){BOOL (__cdecl *remove_window)(HWND)=(void *)GetProcAddress(dll,"Ntw16sWindowRemove");BOOL (__cdecl *install)(HWND,const void *)=(void *)GetProcAddress(dll,"win16_style_control_install");leaf_remove=(void *)GetProcAddress(dll,"win16_style_control_remove");CHECK(remove_window && install && leaf_remove);
         CHECK(remove_window(combo));CHECK((HFONT)SendMessageW(info.hwndItem,WM_GETFONT,0,0)==child_source && (HFONT)CallWindowProcW(native.lpfnWndProc,info.hwndItem,WM_GETFONT,0,0)==child_source);
         retiring_combo=combo;CHECK(SetWindowSubclass(info.hwndItem,retire_font,1,0) && install(combo,NULL));retire_on_font=TRUE;
@@ -84,7 +90,7 @@ static int composites(HWND root,HMODULE runtime,HMODULE dll,BOOL styled)
         CHECK(SetParent(info.hwndItem,root)==combo);SendMessageW(info.hwndItem,WM_NULL,0,0);CHECK((HFONT)CallWindowProcW(native.lpfnWndProc,info.hwndItem,WM_GETFONT,0,0)==child_source);CHECK(SetParent(info.hwndItem,combo)==root);CHECK(leaf_remove(combo));
     }
     CHECK((HFONT)SendMessageW(combo,WM_GETFONT,0,0)==source && (HFONT)SendMessageW(list,WM_GETFONT,0,0)==source);
-    CHECK(DestroyWindow(combo) && DestroyWindow(list));printf("VB_COMPOSITE_OK styled=%u data=5 multi_select=2 drop_cancel=1 child_font=1 detach_restore=%u setter_reentry=%u reparent_restore=%u\n",styled,styled,styled,styled);return 0;
+    CHECK(DestroyWindow(combo) && DestroyWindow(list) && DestroyWindow(dropdown_list) && DestroyWindow(simple_combo));printf("VB_COMPOSITE_OK styled=%u data=5 multi_select=2 drop_cancel=1 child_font=1 detach_restore=%u setter_reentry=%u reparent_restore=%u\n",styled,styled,styled,styled);return 0;
 }
 static int child(const WCHAR *runtime_path,BOOL styled,BOOL aware)
 {

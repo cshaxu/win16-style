@@ -1,0 +1,13 @@
+{
+  "task": "M0 T17 S25",
+  "scope": "VB ComboBox drop-down, drop-down-list and simple variants.",
+  "actual_source_basis": [
+    "The original VB5/VB6 XP Styles Demonstration contains both a normal editable ComboBox and Style=Dropdown List.",
+    "The ImageProcessor sources use several Style=Dropdown List controls."
+  ],
+  "renderer_boundary": "The exact ThunderRT5/6ComboBox path accepts the three public COMBOBOX styles. The existing renderer owns only the classic outer face, arrow and scoped list/EDIT font path; selection, popup, edit child and notifications remain native COMBOBOX responsibilities.",
+  "current_witness": {"x64_injected": "VB_COMBO_VARIANTS_OK dropdown=1 dropdownlist=1 simple=1 select=1 popup=1 disabled=1", "x86_injected": "VB_COMBO_VARIANTS_OK dropdown=1 dropdownlist=1 simple=1 select=1 popup=1 disabled=1", "native_controls": "bare x64/x86 retain native selection/popup behavior without renderer attachment."},
+  "result": "S25 adds test-only public-protocol coverage; no production binary change is necessary.",
+  "not_covered": ["Owner-draw ComboBox variants.", "Third-party ComboBox wrappers.", "Physical pointer popup interaction."],
+  "product_change": "test-only"
+}
