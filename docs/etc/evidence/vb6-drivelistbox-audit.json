@@ -1,0 +1,30 @@
+{
+  "task": "M0 T17 S14",
+  "status": "closed: bounded sample census found no authentic MSVBVM60 DriveListBox executable; no product change",
+  "question": "Whether the existing VB5 DriveListBox rendering path can safely be enabled for VB6.",
+  "method": "Read-only review of the previously pinned Code Architects source identity, its exact executable/import identity, the fixed 28-form VB6 review, and the fixed 214-archive VB6 catalogue. No IDE, OCX registration, download, arbitrary binary execution, desktop interaction, injection, or user process was used.",
+  "positive_source_match": {
+    "repository": "https://github.com/codearchitects/vbmigration-code-samples",
+    "commit": "3864ad0f9d3821d50ad467e91e68ccef5f77ea31",
+    "form": "photoalbum/VB6/PhotoAlbum.frm",
+    "form_blob": "99cb362c9617dddb9c63968ff01effae44236ec0",
+    "form_sha256": "a98848c17a5db743127880432ddcbbabed5a1c27299200d9ed06784974c92b8e",
+    "source_roles": ["FileListBox", "DriveListBox", "DirListBox"],
+    "exe": "photoalbum/VB6/PhotoAlbum.exe",
+    "exe_blob": "766df39d9a8b7f6de31d5590c9072b43162b4085",
+    "exe_sha256": "c3c28e74957dff6d2409fffd09c5070701d3d02ca9a6dbfae521df4f826984d3",
+    "actual_import": "MSVBVM50.DLL",
+    "actual_runtime_class": "ThunderRT5DriveListBox",
+    "disposition": "The directory name and source language are not runtime identity. This is an authentic VB5 executable and remains evidence only for the already-delivered VB5 path."
+  },
+  "negative_census": {
+    "fixed_vb6_form_review": 28,
+    "fixed_vb6_form_drivelistbox_matches": 1,
+    "fixed_vb6_archive_catalogue": 214,
+    "fixed_vb6_archive_drivelistbox_matches": 0,
+    "local_runtime60_candidates": ["ChipGenius", "actor", "madshow"],
+    "local_runtime60_drivelistbox_evidence": 0
+  },
+  "decision": "Do not add a ThunderRT6DriveListBox alias or alter the renderer. A guessed runtime60 class would violate the exact-owner rule and could make a different owner-draw/popup/image protocol look supported. The absence of a display/UAC session is irrelevant to this source and PE identity conclusion and was not treated as a blocker.",
+  "remaining": "An independently licensed/authentic x86 MSVBVM60 executable containing a normal DriveListBox is required before any runtime60 implementation S. VB5 remains supported as recorded in vb-file-controls.json."
+}
