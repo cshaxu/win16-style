@@ -6,7 +6,7 @@
   "dispositions": [
     {
       "kind": "verified_limited_public_protocol",
-      "count": 44,
+      "count": 46,
       "meaning": "A real sample and/or the self-owned dual-width runtime fixture establishes the exact runtime-owned HWND, DC, or standard-menu route. The cited S evidence defines the limited variant coverage; owner-draw, private runtime state, and unobserved variants remain outside the claim.",
       "groups": [
         {
@@ -53,6 +53,11 @@
           "ids": ["VB6.msdatgrd.ocx:DataGrid"],
           "evidence": ["T17 S28 current-package direct x86 OLE host", "docs/etc/evidence/vb-ocx-wrapper-contracts.json"],
           "boundary": "Only DataGrid's observed USER ScrollBar child is styled through the existing public range/position route. The DataGrid outer surface, cells, data binding, events, and all application/OCX drawing remain native."
+        },
+        {
+          "ids": ["VB5.comdlg32.ocx:CommonDialog", "VB6.comdlg32.ocx:CommonDialog"],
+          "evidence": ["T17 S28 current-package direct x86 OLE host auto-cancel", "docs/etc/evidence/vb-ocx-wrapper-contracts.json"],
+          "boundary": "Only the public CommonDialog ShowOpen route is verified: its real standard #32770 file dialog appears, is attached by the existing renderer, then is cancelled by the self-owned test callback. The CmDialogWndClass OCX helper remains native; no file selection, read/write, other dialog method, or custom hook behavior is claimed."
         }
       ]
     },
@@ -120,7 +125,7 @@
     },
     {
       "kind": "missing_real_sample_or_public_owner_protocol",
-      "count": 25,
+      "count": 23,
       "meaning": "No implementation is admitted from a filename or a guessed class name. These rows require the listed real runtime/OCX and a public child-HWND, COM-owner, or vendor host contract before any styling work can be safely scoped.",
       "groups": [
         {
@@ -129,7 +134,7 @@
           "receiver": "A runnable, version-correct DriveListBox sample that proves the owner-draw/DC and icon/data ownership path."
         },
         {
-          "ids": ["VB5.comdlg32.ocx:CommonDialog", "VB6.comdlg32.ocx:CommonDialog", "VB5.dbgrid32.ocx:DBGrid", "VB6.dbgrid32.ocx:DBGrid"],
+          "ids": ["VB5.dbgrid32.ocx:DBGrid", "VB6.dbgrid32.ocx:DBGrid"],
           "evidence": ["T17 S17"],
           "receiver": "The exact registered module plus a runnable licensed sample proving its child HWND or public COM ownership and drawing contract."
         },
@@ -146,7 +151,7 @@
       ]
     }
   ],
-  "completion_check": "44 + 79 + 25 = 148. A verifier must compare the set of ids to source_matrix and reject duplicates, omissions, or unknown ids.",
+  "completion_check": "46 + 79 + 23 = 148. A verifier must compare the set of ids to source_matrix and reject duplicates, omissions, or unknown ids.",
   "local_discovery_after_p3": {
     "method": "Read-only recursive filename check of O:\\winnt\\system32, O:\\winnt\\syswow64, and D:\\programs for the 34 frozen extension module names; separate source-file scan for .vbp/.frm/.ctl/.vbg and declaration names.",
     "extension_module_matches": 0,

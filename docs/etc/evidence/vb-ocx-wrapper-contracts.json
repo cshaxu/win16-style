@@ -112,6 +112,11 @@
       "Slider": "Slider20WndClass below CtlFrameWork_ReflectWindow reads position 12 through its public slider messages after activation, but remains attached=0 because the pre-activation creation geometry is not stable. It is not admitted through a late scan.",
       "ImageList": "ImageList20WndClass is an MSCOMCTL.OCX client surface with attached=0/protocol_bound=0; no standard HIMAGELIST contract follows from it.",
       "ImageCombo": "ImageCombo20WndClass is below CtlFrameWork_ReflectWindow and owns a USER ComboBox -> Edit pair. The outer surface and both nested controls report attached=0/protocol_bound=0 under the current package. The host writes/reads Edit text alpha and selection 1:4 only as a diagnostic; no child-only styling is admitted because it would ignore ImageCombo image/dropdown ownership."
+    },
+    "Current-CommonDialog-ShowOpen": {
+      "activation": "Current published x86 ntw16s32.dll injected by the self-owned candidate run16s host; direct DllGetClassObject/IOleObject/IPersistStreamInit activation of Microsoft-signed scratch COMDLG32.OCX; no registration or installation.",
+      "method": "The host obtains IDispatch::ShowOpen, installs an out-of-context EVENT_OBJECT_SHOW callback filtered to its own process only for the synchronous call, and posts WM_CLOSE solely to its own #32770 dialog. It does not set a filename, choose an item, read/write a file, or affect any user process/window.",
+      "result": "ShowOpen returns S_OK; a real #32770 dialog is observed with attached=1 under the current renderer and is closed by the callback. The nonvisual CmDialogWndClass OCX helper itself remains attached=0/protocol_bound=0. This proves the existing standard-dialog route, not CommonDialog's other methods or custom hooks."
     }
   },
   "non_goals": ["StatusBar", "TabStrip", "ListView", "MSCOMCTL Toolbar20 host", "COMCT232 UpDown/Animation", "COMCT332 CoolBar", "all OCX versions", "global hooks", "existing-window scanning"],

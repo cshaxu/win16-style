@@ -17,7 +17,7 @@ struct host {IOleClientSite client;IOleInPlaceSite place;IOleInPlaceFrame frame;
 #define CLIENT(p) CONTAINING_RECORD(p,host,client)
 #define PLACE(p) CONTAINING_RECORD(p,host,place)
 #define FRAME(p) CONTAINING_RECORD(p,host,frame)
-static BOOL (__cdecl *attached)(HWND);static BOOL list_mode,generic_mode,toolbar_test,report_view,allow_empty;static CLSID generic_clsid;static WCHAR expected_class[64];static UINT list_messages[32],list_message_count;
+static BOOL (__cdecl *attached)(HWND);static BOOL list_mode,generic_mode,toolbar_test,report_view,allow_empty,show_open_cancel;static CLSID generic_clsid;static WCHAR expected_class[64];static UINT list_messages[32],list_message_count;static BOOL common_dialog_seen,common_dialog_close_posted,common_dialog_attached;
 static HWND toolbar_window;static unsigned toolbar_pre,toolbar_item,toolbar_post;
 static HWND list_window;static unsigned list_pre,list_item,list_post;
 static HWND status_window;static unsigned status_pre,status_item,status_post;
@@ -65,6 +65,20 @@ static LRESULT CALLBACK list_tracker(int code,WPARAM w,LPARAM l)
             list_messages[list_message_count++]=message->message;
     }
     return CallNextHookEx(NULL,code,w,l);
+}
+/* This hook is scoped to the self-owned process and only exists while the
+ * explicit CommonDialog ShowOpen call is synchronously active.  It never
+ * interacts with user windows or selects/reads a file. */
+static void CALLBACK common_dialog_event(HWINEVENTHOOK hook,DWORD event,HWND w,LONG object,LONG child,DWORD thread,DWORD time)
+{
+    WCHAR name[32];
+    (void)hook;(void)event;(void)child;(void)thread;(void)time;
+    if(object!=OBJID_WINDOW || !w)return;
+    if(GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"#32770")){
+        common_dialog_seen=TRUE;
+        common_dialog_attached=attached&&attached(w);
+        if(PostMessageW(w,WM_CLOSE,0,0))common_dialog_close_posted=TRUE;
+    }
 }
 
 static HRESULT query(host *h,REFIID iid,void **out)
@@ -216,6 +230,7 @@ int wmain(int argc,WCHAR **argv)
             CHECK(wcslen(argv[++i])<ARRAYSIZE(expected_class));lstrcpyW(expected_class,argv[i]);
         }
         else if(!lstrcmpW(argv[i],L"--toolbar-test"))toolbar_test=TRUE;
+        else if(!lstrcmpW(argv[i],L"--show-open-auto-cancel"))show_open_cancel=TRUE;
         else if(!lstrcmpW(argv[i],L"--allow-empty"))allow_empty=TRUE;
         else if(!lstrcmpW(argv[i],L"--clsid") && i+1<argc){generic_mode=SUCCEEDED(CLSIDFromString(argv[++i],&generic_clsid));CHECK(generic_mode);}
         else CHECK(FALSE);
@@ -242,6 +257,16 @@ int wmain(int argc,WCHAR **argv)
     if(tracker){CHECK(UnhookWindowsHookEx(tracker));wprintf(L"OCX_LIST_MESSAGES");for(UINT i=0;i<list_message_count;++i)wprintf(L" %04x",list_messages[i]);wprintf(L"\n");}
     CHECK(SUCCEEDED(IOleObject_QueryInterface(object,&IID_IOleInPlaceObject,(void **)&inplace)) && SUCCEEDED(IOleInPlaceObject_SetObjectRects(inplace,&rect,&rect)));
     style=GetModuleHandleW(L"ntw16s32.dll");attached=style?(void *)GetProcAddress(style,"Ntw16sWindowAttached"):NULL;CHECK(attached);
+    if(show_open_cancel){
+        OLECHAR *property=L"ShowOpen";DISPID id;DISPPARAMS args={0};VARIANT result;HWINEVENTHOOK event_hook;
+        CHECK(SUCCEEDED(IOleObject_QueryInterface(object,&IID_IDispatch,(void **)&dispatch)) &&
+            SUCCEEDED(IDispatch_GetIDsOfNames(dispatch,&IID_NULL,&property,1,LOCALE_USER_DEFAULT,&id)));
+        event_hook=SetWinEventHook(EVENT_OBJECT_SHOW,EVENT_OBJECT_SHOW,NULL,common_dialog_event,GetCurrentProcessId(),0,WINEVENT_OUTOFCONTEXT);
+        CHECK(event_hook);VariantInit(&result);hr=IDispatch_Invoke(dispatch,id,&IID_NULL,LOCALE_USER_DEFAULT,DISPATCH_METHOD,&args,&result,NULL,NULL);
+        UnhookWinEvent(event_hook);VariantClear(&result);
+        wprintf(L"OCX_COMMONDIALOG_SHOWOPEN hr=%08lx seen=%u attached=%u close_posted=%u\n",(DWORD)hr,common_dialog_seen,common_dialog_attached,common_dialog_close_posted);
+        CHECK(SUCCEEDED(hr) && common_dialog_seen && common_dialog_attached && common_dialog_close_posted);
+    }
     RedrawWindow(h.window,NULL,NULL,RDW_INVALIDATE|RDW_ALLCHILDREN|RDW_UPDATENOW);
     CHECK(EnumChildWindows(h.window,found,(LPARAM)&state));
     if(!state.seen && allow_empty){wprintf(L"OCX_NO_CHILD class_factory=%08lx\n",(DWORD)generic_clsid.Data1);state.seen=TRUE;state.match=TRUE;}
