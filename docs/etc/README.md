@@ -39,6 +39,9 @@
 - [VB ListBox变体](evidence/vb-listbox-variants.json)：T17 S26真实样本与多选/排序
   证据缺口的边界；不作为owner-draw或未见样式支持声明。
 
+- [VB ScrollBar变体](evidence/vb-scrollbar-variants.json)：T17 S27真实动态范围/可见
+  性边界与既有API回归；不作为物理拖动验收声明。
+
 - [VB6 DriveListBox审计](evidence/vb6-drivelistbox-audit.json)：T17 S14固定
   源码/PE/runtime 身份与有界样本缺失结论；不作为VB6 DriveListBox支持声明。
 
