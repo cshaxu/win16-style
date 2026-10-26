@@ -2,10 +2,9 @@
 
 ## Current Work
 
-M0 T17 S19真实图形选择图片样本审计已完成，顺序准入S20 VB 控件数组及重复实例
-生命周期审计。S19确认既有真实图片样本均为CommandButton或普通选择控件，不能作为
-图片CheckBox/OptionButton证据；S18的公共协议模型边界保持。用户未确认的UAC或可见
-桌面观察只能跳过该项，不阻塞其他自包含S工作。
+M0 T17 S20控件数组重复实例生命周期已完成，顺序准入S21 VB Label 边框/对齐/图片
+变体审计。S20确认真实VB数组对应独立HWND并加入双宽销毁/重建/退役回归；私有集合语义
+不外推。用户未确认的UAC或可见桌面观察只能跳过该项，不阻塞其他自包含S工作。
 S17冻结35模块/66控件行；本机无所列官方OCX文件，故不安装/注册或从native class猜测
 wrapper支持，逐行保留未认证。无产品改动、无UAC/显示依赖；后续S18审计自包含的
 intrinsic图形选择default/disabled/picture变体。
@@ -43,24 +42,24 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T17 S20 Packet
+## M0 T17 S21 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S19真实图片样本审计关闭后，依用户T17自动顺序S授权准入 |
+| Identifier Mode | Continuation；S20控件数组生命周期闭环后，依用户T17自动顺序S授权准入 |
 | Admission And Approval | 用户T17完整控件目标、自动顺序S、永久提交推送及binary change同批四文件双发布；不新开T |
-| Objective | 审计并在真实/自有模型协议足够时适配 VB 控件数组与重复实例的创建、销毁、重挂和样式隔离；不能把一个索引实例的附着状态或图像/字体资源泄露给同类兄弟 |
-| Non-goals | 原标题/字体/菜单/滚动条/原glyph保持；不读VB私有对象、不替换应用图像/数据、不接管owner-draw、不装IDE/OCX、不新增T |
-| Reference Baseline | S19确认真实图片选择样本缺失；既有真实VB样本含OptionButton和CommandButton控件数组，但尚未将数组索引/重复实例作为独立生命周期接受项 |
-| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[S19样本审计](../etc/evidence/vb-graphical-choice-samples.json)、[S6输入](../etc/evidence/vb-input-controls.json)、[冻结148矩阵](../etc/evidence/vb-controls-audit.json) |
-| Files And ABI Surface | 先审计真实源码数组与现有自有C模型；只有公开HWND/owner/状态/资源协议完整时才扩展既有双宽DLL/测试，不改ABI/三组件四产物 |
+| Objective | 审计并在真实/自有模型协议足够时适配VB Label的边框、对齐、图片与无窗口承载变体；明确何时是应用DC绘制而非可安全附着的HWND |
+| Non-goals | 原标题/字体/菜单/滚动条/原glyph保持；不读VB私有对象、不重画应用图像/数据、不接管owner-draw、不装IDE/OCX、不新增T |
+| Reference Baseline | S20确认数组实例按HWND隔离；S15仅有Image/Shape/Line的无窗口边界，S9只对PictureBox内已有Label路径有有限适配，未认证Label边框/图片变体 |
+| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[S20数组](../etc/evidence/vb-control-arrays.json)、[S9容器](../etc/evidence/vb-container-controls.json)、[冻结148矩阵](../etc/evidence/vb-controls-audit.json) |
+| Files And ABI Surface | 先审计真实源码/已有自有C模型；只有公开HWND/DC/owner/资源协议完整时才扩展既有双宽DLL/测试，不改ABI/三组件四产物 |
 | Applicable Rules | Task Reading Set/C17/GCC/Ninja/ccache；禁computer-use、兄弟修改/依赖、全局设置或非自有进程测试；无显示/UAC结果仅作对应skip，不阻塞自包含审计 |
-| Verification | 记录数组实例的runtime/owner/class/style/父子关系、独立状态/字体/图片、销毁/重建/重挂与负例；实际与模型、x86实际与x64模型分开 |
-| Expected Markers | 每个实例独立附着/退役且无资源串扰，或明确保持原生；应用输入/通知/字体/几何/图像所有权保持 |
+| Verification | 记录真实runtime/owner/class/style、border/alignment/picture承载、裸/注入与DC/资源所有权；实际与模型、x86实际与x64模型分开 |
+| Expected Markers | 证实安全的有限路径或明确原生保留；应用文字/图片/输入/字体/几何和资源所有权保持 |
 | Asset Needs | 仅已有登记样本/运行库/任务scratch；不复制第三方图片/OCX/二进制、不装IDE或注册组件 |
-| Reporting Requirements | 报告实际样本、模型、数组创建/销毁边界和未覆盖面；不由单实例外推，不称T17完成 |
+| Reporting Requirements | 报告真实样本、模型、边框/图片/无窗口边界和未覆盖面；不由一个PictureBox或Label外推，不称T17完成 |
 | Stop Conditions | 真实协议/来源不满足即保持原生；重大架构/安全/新增产品先停证据；不关闭/注入用户既有进程，也不等待UAC或屏幕可见性 |
-| Exit Criteria | 完成有界数组生命周期审计；若有证实最小实现则双宽/同批包/必要发布/推送远端，否则提交审计。两种结果均保留148单位，T17开放 |
+| Exit Criteria | 完成有界Label变体审计；若有证实最小实现则双宽/同批包/必要发布/推送远端，否则提交审计。两种结果均保留148单位，T17开放 |
 | Original Owner Request | VB5/VB6控件采用本项目样式；S1全貌、S2demo、S3和多个S实施，最后独立收口；自动推进到完整适配验收 |
 | Similar-Issue Sweep | runtime50/60 graphical选择、BUTTON type/PushLike、BM_GETCHECK/BM_GETIMAGE、default/disabled/pressed/focus、radio分组/通知、图片/bitmap/icon/owner-draw、角色切换/资源退役、真实与模型边界 |
 
@@ -70,8 +69,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 17
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T17并授权内部自动顺序S；不准入其他T候选。
-- Last delivery: M0 T17 S19 P1（图形选择真实图片样本审计，无产品二进制变化；推送远端后关闭）
-- Open task: T17 S20 VB控件数组及重复实例生命周期审计；复杂图片及148单位审计保留后续接收，T17/M0开放。
+- Last delivery: M0 T17 S20 P1（VB控件数组双宽回归，无产品二进制变化；推送远端后关闭）
+- Open task: T17 S21 VB Label边框/对齐/图片变体审计；复杂图片及148单位审计保留后续接收，T17/M0开放。
 
 ## Technical Baseline
 
@@ -120,6 +119,8 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T17 S20控件数组](../history/M0-T17-S20-vb-control-arrays.md)：真实数组源码依据和双宽独立成员生命周期回归；无产品改动，S20关闭续S21，T17/M0开放。
 
 - [T17 S19图形选择真实图片样本](../history/M0-T17-S19-vb-graphical-choice-samples.md)：已登记VB5/VB6样本没有图片CheckBox/OptionButton；无产品改动，S19关闭续S20，T17/M0开放。
 

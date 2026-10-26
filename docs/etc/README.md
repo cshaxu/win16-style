@@ -18,6 +18,9 @@
   已登记 VB5/VB6 图片样本的控件块审计；确认没有真实图片 CheckBox/OptionButton，
   不将模型证明外推为真实控件支持。
 
+- [VB控件数组](evidence/vb-control-arrays.json)：T17 S20真实 VB5/VB6 控件数组
+  源码依据及双宽独立 HWND 销毁/重建/退役回归；不作为 VB 私有集合支持声明。
+
 - [VB6 DriveListBox审计](evidence/vb6-drivelistbox-audit.json)：T17 S14固定
   源码/PE/runtime 身份与有界样本缺失结论；不作为VB6 DriveListBox支持声明。
 
@@ -112,6 +115,9 @@
 
 - [T17 S19图形选择真实图片样本](evidence/vb-graphical-choice-samples.json)：已登记
   可运行和源码候选的控件块扫描；没有真实图片选择控件，S18模型边界保持不变。
+
+- [T17 S20控件数组](evidence/vb-control-arrays.json)：真实控件数组源码依据和自有
+  双宽 HWND 独立生命周期回归；私有集合与未获样本保持后续接收。
 
 - [T17 S14 VB6 DriveListBox审计](evidence/vb6-drivelistbox-audit.json)：唯一源码
   匹配实际为VB5运行时的反证与固定目录样本缺失；没有产品实现。

@@ -1249,8 +1249,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17 test; project MIT license",
-      "sha256": "0abb6079988d782268b0614cbeba33379fd51c2ce7ed43f09a82654f5402059b",
-      "review": "T17 S13 exact runtime-owned graphical push-like CheckBox protocol fixture; tests attachment, BM_GETCHECK state, classic face change and immediate native retirement; no external implementation or graphics copied; T17 S18 adds self-authored bitmap/icon public-payload and disable/retirement assertions"
+      "sha256": "1638bb83dddeac93a7adc458eee1e1efefc852bac04b6a72ff380ab133930bdf",
+      "review": "T17 S13 exact runtime-owned graphical push-like CheckBox protocol fixture; tests attachment, BM_GETCHECK state, classic face change and immediate native retirement; no external implementation or graphics copied; T17 S18 adds self-authored bitmap/icon public-payload and disable/retirement assertions; T17 S20 adds independent control-array sibling destruction, per-HWND state, recreation and explicit retirement assertions"
     },
     {
       "path": "tests/ntw16s-dll/vb_controls.c",

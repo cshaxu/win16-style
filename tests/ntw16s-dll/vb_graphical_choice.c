@@ -57,6 +57,13 @@ static int worker(int argc,WCHAR **argv)
     if(style){CHECK(attached(option_a)&&attached(option_b));SendMessageW(option_a,BM_CLICK,0,0);LRESULT a1=SendMessageW(option_a,BM_GETCHECK,0,0),b1=SendMessageW(option_b,BM_GETCHECK,0,0);DWORD first=image(option_a);SendMessageW(option_b,BM_CLICK,0,0);LRESULT a2=SendMessageW(option_a,BM_GETCHECK,0,0),b2=SendMessageW(option_b,BM_GETCHECK,0,0);DWORD second=image(option_b);printf("VB_GRAPHICAL_OPTION_TRACE a1=%lld b1=%lld a2=%lld b2=%lld first=%08lx second=%08lx\n",(long long)a1,(long long)b1,(long long)a2,(long long)b2,first,second);CHECK(a1==BST_CHECKED&&b1==BST_UNCHECKED&&b2==BST_CHECKED&&a2==BST_UNCHECKED);CHECK(remove(option_a)&&remove(option_b));}
     else {SendMessageW(option_a,BM_CLICK,0,0);CHECK(SendMessageW(option_a,BM_GETCHECK,0,0)==BST_CHECKED);SendMessageW(option_b,BM_CLICK,0,0);CHECK(SendMessageW(option_b,BM_GETCHECK,0,0)==BST_CHECKED&&SendMessageW(option_a,BM_GETCHECK,0,0)==BST_UNCHECKED);}
     puts("VB_GRAPHICAL_OPTION_OK runtime_grouping=1 native_retire=1");
+    HWND array[3]={0};for(unsigned i=0;i<ARRAYSIZE(array);++i)array[i]=CreateWindowW(L"ThunderRT6CheckBox",L"Array",WS_CHILD|WS_VISIBLE|BS_AUTOCHECKBOX|BS_PUSHLIKE,0,64+(int)i*10,70,20,root,(HMENU)(UINT_PTR)(100+i),runtime,NULL);
+    CHECK(array[0]&&array[1]&&array[2]);SendMessageW(array[0],BM_SETCHECK,BST_CHECKED,0);SendMessageW(array[2],BM_SETCHECK,BST_INDETERMINATE,0);
+    if(style){CHECK(attached(array[0])&&attached(array[1])&&attached(array[2]));}else CHECK(!style);
+    CHECK(DestroyWindow(array[1])&&SendMessageW(array[0],BM_GETCHECK,0,0)==BST_CHECKED&&SendMessageW(array[2],BM_GETCHECK,0,0)==BST_INDETERMINATE);
+    array[1]=CreateWindowW(L"ThunderRT6CheckBox",L"Array",WS_CHILD|WS_VISIBLE|BS_AUTOCHECKBOX|BS_PUSHLIKE,75,74,70,20,root,(HMENU)101,runtime,NULL);CHECK(array[1]);
+    if(style){CHECK(attached(array[0])&&attached(array[1])&&attached(array[2]));CHECK(remove(array[0])&&!attached(array[0])&&attached(array[1])&&attached(array[2]));}
+    CHECK(DestroyWindow(array[0])&&DestroyWindow(array[1])&&DestroyWindow(array[2]));puts("VB_GRAPHICAL_ARRAY_OK independent_state=1 sibling_retire=1 recreate=1");
     CHECK(DestroyWindow(root)&&UnregisterClassW(cls.lpszClassName,cls.hInstance));release_runtime();FreeLibrary(runtime);return 0;
 }
 int wmain(int argc,WCHAR **argv){return isolated_process(argc,argv,worker);}

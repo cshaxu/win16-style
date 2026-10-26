@@ -1,0 +1,20 @@
+{
+  "task": "M0 T17 S20",
+  "scope": "VB control-array repeated-instance lifetime for the existing exact graphical CheckBox/OptionButton renderer path.",
+  "actual_source_basis": {
+    "vb5": "MouseHook.frm contains OptionButton optTest indexes 0 and 1, plus indexed graphical CommandButton controls.",
+    "vb6": "MouseHook6.frm contains the matching OptionButton optTest indexes 0 and 1 and indexed graphical CommandButton controls.",
+    "meaning": "VB array indexes map to distinct runtime-created HWND instances; no shared renderer state or image/font ownership may be inferred from the common control name."
+  },
+  "native_contract": "The existing project-authored exact-runtime fixture creates three same-class graphical CheckBox instances with separate child IDs, assigns distinct BM_GETCHECK values, destroys the middle instance, recreates the same ID, and explicitly retires one sibling.",
+  "results": {
+    "injected_x64": "VB_GRAPHICAL_ARRAY_OK independent_state=1 sibling_retire=1 recreate=1",
+    "injected_x86": "VB_GRAPHICAL_ARRAY_OK independent_state=1 sibling_retire=1 recreate=1",
+    "native_x64": "VB_GRAPHICAL_ARRAY_OK independent_state=1 sibling_retire=1 recreate=1",
+    "native_x86": "VB_GRAPHICAL_ARRAY_OK independent_state=1 sibling_retire=1 recreate=1"
+  },
+  "coverage": "A destroyed sibling leaves the two surviving windows' public values intact; the recreated HWND independently attaches when injected; removing one renderer attachment does not remove its siblings. This supplements the existing option-group test without treating a C fixture as an arbitrary VB runtime proof.",
+  "product_change": "none; renderer already owns state per HWND. Only a C17 regression test and source receipt changed.",
+  "package_comparison": "No product output changed. The current assets hashes are S18: run16s 870a66af73f08955054e9bf6a3bb397ebaeedc37df6588ce995e0bf650964b85; ntw16s32 6b3ea8c4856aa08b1697eef7325440a215070ec6df2ef2b398cc08f4f164cd4a; ntw16s64 b66c90c0c7af9507ea5181f2d0d2fccceed3ffd0c09dea8f727428564b983737; demo 32fc3f929f97bfe0a87249df130fb4be3291a24c2fee9c0ca90455074928a271.",
+  "remaining": ["Actual VB Load/Unload-created controls and image-bearing selection arrays have no admitted runnable sample.", "VB private collection semantics remain outside the public HWND contract."]
+}
