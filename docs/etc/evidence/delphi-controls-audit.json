@@ -45,7 +45,8 @@
       "sha256": "a8f52fa32501548e8c8256690024e2d08e7b3c269ac26440e81319c710325bb6",
       "bits": 32,
       "version": "7.0.0.572",
-      "identity": "modern static VCL candidate: PE32 plus Vcl.Forms/Vcl.Controls/Vcl.Themes type metadata. A bare FMX substring was weaker evidence and is not treated as FireMonkey identity.",
+      "identity": "modern static VCL candidate: PE32 plus Vcl.Forms/Vcl.Controls/Vcl.Themes type metadata and no BPL import. A bare FMX substring was weaker evidence and is not treated as FireMonkey identity.",
+      "resource_boundary": "A raw TPF0 signature occurs only in a compressed/packed-looking payload; it is not sufficient to enumerate a form or infer its controls.",
       "known_live_surface": "none",
       "current_receiver": "read-only PE/resources and a self-owned bounded probe after framework identity is established"
     },
@@ -54,7 +55,8 @@
       "sha256": "e21131cca40be055b9cf728ed822474f2560793635fc323127b63ba9a838d5d6",
       "bits": 32,
       "version": "1.0.0.0",
-      "identity": "modern static VCL candidate: PE32 plus Vcl.Forms/Vcl.Controls/Vcl.Themes type metadata. A bare FMX substring was weaker evidence and is not treated as FireMonkey identity.",
+      "identity": "modern static VCL candidate: PE32 plus Vcl.Forms/Vcl.Controls/Vcl.Themes type metadata and no BPL import. A bare FMX substring was weaker evidence and is not treated as FireMonkey identity.",
+      "resource_boundary": "A raw TPF0 signature occurs only in a compressed/packed-looking payload; it is not sufficient to enumerate a form or infer its controls.",
       "known_live_surface": "none",
       "current_receiver": "read-only PE/resources and a self-owned bounded probe after framework identity is established"
     },
