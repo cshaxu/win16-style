@@ -38,7 +38,7 @@
     },
     {
       "kind": "native_preservation_required",
-      "count": 20,
+      "count": 21,
       "meaning": "The established receiver is application DC, embedded-object/data handling, nonvisual runtime work, or an unsafe host boundary. Repainting or attaching a guessed standard class would change application semantics, so preserving native behavior is the correct current disposition.",
       "groups": [
         {
@@ -47,15 +47,15 @@
           "boundary": "Application DC content and nonvisual timer helpers; no independently attachable native control was observed."
         },
         {
-          "ids": ["VB5.Data", "VB6.Data", "VB5.OLE", "VB6.OLE", "VB5.MDIForm", "VB6.MDIForm", "VB5.UserControl", "VB6.UserControl", "VB5.UserDocument", "VB6.UserDocument", "VB5.PropertyPage", "VB6.PropertyPage"],
-          "evidence": ["T17 S16"],
+          "ids": ["VB5.Data", "VB6.Data", "VB5.OLE", "VB6.OLE", "VB5.MDIForm", "VB6.MDIForm", "VB5.UserControl", "VB6.UserControl", "VB5.UserDocument", "VB6.UserDocument", "VB5.PropertyPage", "VB6.PropertyPage", "VB6.msscript.ocx:ScriptControl"],
+          "evidence": ["T17 S16", "T17 S28 native COM probe"],
           "boundary": "Data, embedded object, MDI, and design-time host contracts are not safely styleable without a real host protocol."
         }
       ]
     },
     {
       "kind": "missing_real_sample_or_public_owner_protocol",
-      "count": 98,
+      "count": 97,
       "meaning": "No implementation is admitted from a filename or a guessed class name. These rows require the listed real runtime/OCX and a public child-HWND, COM-owner, or vendor host contract before any styling work can be safely scoped.",
       "groups": [
         {
@@ -69,7 +69,7 @@
           "receiver": "The exact registered module plus a runnable licensed sample proving its child HWND or public COM ownership and drawing contract."
         },
         {
-          "ids": ["VB6.MSWLess.ocx:WLCheck", "VB6.MSWLess.ocx:WLCombo", "VB6.MSWLess.ocx:WLCommand", "VB6.MSWLess.ocx:WLFrame", "VB6.MSWLess.ocx:WLHScroll", "VB6.MSWLess.ocx:WLList", "VB6.MSWLess.ocx:WLOption", "VB6.MSWLess.ocx:WLText", "VB6.MSWLess.ocx:WLVScroll", "VB5.grid32.ocx:Grid", "VB6.grid32.ocx:Grid", "VB5.msoutl32.ocx:Outline", "VB6.msoutl32.ocx:Outline", "VB5.mschart.ocx:MSChart", "VB6.mschart.ocx:MSChart", "VB6.msscript.ocx:ScriptControl", "VB6.vbsql.ocx:Vbsql"],
+          "ids": ["VB6.MSWLess.ocx:WLCheck", "VB6.MSWLess.ocx:WLCombo", "VB6.MSWLess.ocx:WLCommand", "VB6.MSWLess.ocx:WLFrame", "VB6.MSWLess.ocx:WLHScroll", "VB6.MSWLess.ocx:WLList", "VB6.MSWLess.ocx:WLOption", "VB6.MSWLess.ocx:WLText", "VB6.MSWLess.ocx:WLVScroll", "VB5.grid32.ocx:Grid", "VB6.grid32.ocx:Grid", "VB5.msoutl32.ocx:Outline", "VB6.msoutl32.ocx:Outline", "VB5.mschart.ocx:MSChart", "VB6.mschart.ocx:MSChart", "VB6.vbsql.ocx:Vbsql"],
           "evidence": ["T17 S17"],
           "receiver": "A version-correct runtime and public owner/protocol evidence; a name resembling an intrinsic control is insufficient."
         },
@@ -81,13 +81,19 @@
       ]
     }
   ],
-  "completion_check": "30 + 20 + 98 = 148. A verifier must compare the set of ids to source_matrix and reject duplicates, omissions, or unknown ids.",
+  "completion_check": "30 + 21 + 97 = 148. A verifier must compare the set of ids to source_matrix and reject duplicates, omissions, or unknown ids.",
   "local_discovery_after_p3": {
     "method": "Read-only recursive filename check of O:\\winnt\\system32, O:\\winnt\\syswow64, and D:\\programs for the 34 frozen extension module names; separate source-file scan for .vbp/.frm/.ctl/.vbg and declaration names.",
     "extension_module_matches": 0,
     "source_file_candidates": 41,
     "source_candidate_result": "All 41 candidates were a third-party registration profile format; none contained a VB project declaration or any frozen extension-control declaration.",
-    "consequence": "This local environment supplies no runnable, version-correct OCX wrapper sample. The 96 extension rows therefore remain correctly unimplemented without installing, registering, or guessing a control class. This discovery has no UAC, display, or user-input dependency."
+    "consequence": "This local environment supplies no runnable, version-correct visual OCX wrapper sample. The discovery has no UAC, display, or user-input dependency."
   },
-  "result": "The ledger closes the accounting gap but does not close T17: it proves exactly which remaining inputs are needed for the 98 unverified rows and preserves the 20 rows for which styling would be unsafe."
+  "system_volume_followup": {
+    "method": "Read-only system-volume file, PE, signature, type-library, direct x86 COM creation, and OLE misc-status probes. No registration, installation, process injection, user interaction, or external module copy occurred.",
+    "office_mscomctl": "C:\\Program Files\\Microsoft Office\\root\\vfs\\System\\MSCOMCTL.OCX is Microsoft-signed but PE32+ AMD64. Its type library exposes TreeView, ListView, Toolbar, StatusBar, TabStrip, ProgressBar, Slider, and ImageCombo coclasses; an x86 process LoadLibrary attempt fails with ERROR_BAD_EXE_FORMAT (193), so it cannot validate or support x86 VB5/VB6 applications.",
+    "msscript": "C:\\Windows\\SysWOW64\\msscript.ocx is Microsoft-signed x86. MSScriptControl.ScriptControl CoCreateInstance succeeds, but IOleObject::GetMiscStatus returns OLEMISC_INVISIBLEATRUNTIME. It is therefore reclassified as native preservation rather than a visual styling candidate.",
+    "consequence": "The remaining 95 extension rows still require a version-correct visual component and a public host/child-window contract; this probe does not substitute generic common-control paths for that proof."
+  },
+  "result": "The ledger closes the accounting gap but does not close T17: it proves exactly which remaining inputs are needed for the 97 unverified rows and preserves the 21 rows for which styling would be unsafe."
 }

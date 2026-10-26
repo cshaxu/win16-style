@@ -69,7 +69,7 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 17
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T17并授权内部自动顺序S；不准入其他T候选。
-- Last delivery: M0 T17 S28 P4（148单位逐项账本及本机OCX/样本只读发现；仅文档/证据变化、四产品摘要未变；待本交付推送及实际远端复核后仍继续S28）
+- Last delivery: M0 T17 S28 P5（148单位逐项账本、x86非视觉ScriptControl及x64 Office OCX实测；仅文档/证据变化、四产品摘要未变；待本交付推送及实际远端复核后仍继续S28）
 - Open task: T17 S28 全148单位收口审计；T17/M0保持开放直到该审计有充分完成证据。
 
 ## Technical Baseline
