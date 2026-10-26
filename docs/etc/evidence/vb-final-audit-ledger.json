@@ -95,5 +95,11 @@
     "msscript": "C:\\Windows\\SysWOW64\\msscript.ocx is Microsoft-signed x86. MSScriptControl.ScriptControl CoCreateInstance succeeds, but IOleObject::GetMiscStatus returns OLEMISC_INVISIBLEATRUNTIME. It is therefore reclassified as native preservation rather than a visual styling candidate.",
     "consequence": "The remaining 95 extension rows still require a version-correct visual component and a public host/child-window contract; this probe does not substitute generic common-control paths for that proof."
   },
+  "user_accessible_followup": {
+    "method": "Read-only filename scan of Downloads, Desktop, Documents, OneDrive, ProgramData, and Windows Installer, plus archive-name scan for VB6/Visual Basic/ActiveX/OCX terms.",
+    "named_extension_module_matches": 0,
+    "candidate_archive_matches": 0,
+    "consequence": "No further locally available x86 visual OCX or installer can safely reduce the remaining set. The only next implementation input is an independently licensed, version-correct x86 visual component together with an inert self-owned sample or a documented public host contract; it must be supplied or become available externally."
+  },
   "result": "The ledger closes the accounting gap but does not close T17: it proves exactly which remaining inputs are needed for the 97 unverified rows and preserves the 21 rows for which styling would be unsafe."
 }
