@@ -1,0 +1,15 @@
+{
+  "task": "M0 T17 S16",
+  "status": "closed: no safe public host protocol established for Data, OLE, MDIForm or UserControl; no product change",
+  "scope": ["VB5.Data", "VB6.Data", "VB5.OLE", "VB6.OLE", "VB5.MDIForm", "VB6.MDIForm", "VB5.UserControl", "VB6.UserControl"],
+  "method": "Read-only review of the frozen matrix and fixed source/binary identities. No database open, OLE activation, URL launch, registry write, IDE/OCX registration, private VB object access, user-process injection, or desktop/UAC interaction.",
+  "findings": {
+    "data": "The fixed VB6 ScrollFrm source declares VB.Data with an absolute NWIND.MDB path, Access/ODBC and a SELECT record source, plus bound TextBox children. It is not a safe neutral visual fixture; drawing/navigation cannot be separated from data binding through a verified public runtime HWND contract.",
+    "mdi": "The fixed vbImgProc6 MDI sample has a real VB.MDIForm source and executable identity, but its MDIForm_Load constructs registry helpers; the same main form contains file deletion and ShellExecute/URL code. It was explicitly not admitted for execution. Generic MDICLIENT support cannot certify VB menu merge, child activation or wrapper lifetime.",
+    "ole": "No independently licensed, inert OLE container sample or public child-window protocol is present in the fixed corpus. Embedded/linked/in-place content and object menus remain owned by the hosted object.",
+    "usercontrol": "No fixed runtime50/60 UserControl sample establishes a windowed versus windowless/nested public protocol. Attaching by class-name inference could incorrectly consume user-defined drawing and events."
+  },
+  "decision": "Do not add broad host aliases or host painters. Existing frame and verified standard child-control paths remain available when their own exact public protocol succeeds; Data/OLE/MDI/UserControl hosts themselves and their data/embedded/client content remain native.",
+  "verification": "Matrix rows classify the controls as visible-data, embedded-container or host. Static source establishes the data and startup side-effect boundary. Absence of display/UAC capability was not used as a reason to defer this safety conclusion.",
+  "remaining": "A future S needs a separately licensed inert sample and explicit public HWND/protocol evidence for each host variant before an implementation can be contemplated. OCX inventory/actual public controls, graphical choice variants and the final 148-unit audit remain open."
+}

@@ -16,6 +16,9 @@
 - [VB无窗口内建控件审计](evidence/vb-windowless-controls.json)：T17 S15对
   Image/Shape/Line/Timer的应用绘制或非视觉边界；不作为宿主全量换肤声明。
 
+- [VB特殊内建宿主审计](evidence/vb-special-hosts-audit.json)：T17 S16对Data、
+  OLE、MDIForm、UserControl的数据/嵌入对象/宿主边界；不作为这些对象的换肤声明。
+
 | 路径 | 责任、用途及保留条件 |
 | --- | --- |
 | [evidence/outline-original.json](evidence/outline-original.json) | T16原始Win3.1 USER/GDI/VGA身份、调用地址、USER与VGA例程CPU执行参数；不包含系统二进制，不冒称完整VGA硬件/调色板运行 |
@@ -97,3 +100,6 @@
 
 - [T17 S15无窗口内建控件审计](evidence/vb-windowless-controls.json)：Image、
   Shape、Line保留应用绘制，Timer保留非视觉业务语义；没有产品实现。
+
+- [T17 S16特殊内建宿主审计](evidence/vb-special-hosts-audit.json)：Data/OLE/MDI/
+  UserControl保持数据、对象和客户端责任；没有产品实现。
