@@ -1,6 +1,6 @@
 {
   "task": "M0 T17 S7",
-  "status": "verified package and published; P1 actual remote pending; T17/M0 open",
+  "status": "S7 closed after actual remote/recovery/cleanup; S8 admitted; T17/M0 open",
   "baseline": "18c979d1e699afe36a6b4f14e7c115c48aea77ca",
   "root_cause": "Authentic VB5 FileListBox already has native ListBox superclass and attachment, but its exact VB font role was absent. DirListBox and DriveListBox are native ListBox/ComboBox superclasses rejected by the generic owner-draw safety guard. Their text and icons belong to runtime WM_DRAWITEM, not a failed DLL injection.",
   "implementation": "Exact MSVBVM50-owned classes and verified public styles only. Ordinary file list reuses existing list renderer; directory variable/string and drive fixed/string dropdown owner-draw keep native items/images/layout/callbacks. Bounded parent observer validates exact child/type/DC or its exact same-thread public combo popup; existing font policy applies only within that callback. Existing directory border/scrollbar and combo chrome reused. Reparent/removal cancels scope; no new ABI or product files.",
@@ -544,5 +544,40 @@
   "new_test_lines": {
     "tests/ntw16s-dll/vb_file_runtime.c": 79,
     "tests/ntw16s-dll/vb_files.c": 129
+  },
+  "closure": {
+    "actual_remote": {
+      "status": "passed",
+      "commit": "f058ffb9b42fa9320836c165fce227061c784757",
+      "remote_main": "f058ffb9b42fa9320836c165fce227061c784757",
+      "files": 218,
+      "source_inputs": 206,
+      "seconds": 24.02265350000016,
+      "recovered_product_objects": 210,
+      "before_files_recoverable_from_18c979d": 8,
+      "deployed_SHA_matches": 8,
+      "external_PNG_SHA_matches": 2,
+      "method": "actual raw GitHub HTTPS bytes compared to Git cat-file; product objects and eight backups recoverable"
+    },
+    "cleanup": {
+      "status": "passed",
+      "preserved": "audit/source/sample/private runtime/other tasks/stable caches/all external PNG",
+      "positive_self_check": "exe/loaded DLL c0000043; unloaded DLL00000000",
+      "roots": [
+        {
+          "images": 165,
+          "status": "passed",
+          "reparse_points": 0,
+          "root": "O:\\repos.hobby\\win16style\\build\\t17-package"
+        },
+        {
+          "images": 17,
+          "status": "passed",
+          "reparse_points": 0,
+          "root": "O:\\repos.hobby\\win16style\\build\\t17-controls"
+        }
+      ]
+    },
+    "coordination_review": "Actual f058ffb diff and original148-unit request reviewed; three exact VB5 classes only; product C/CMake/test adds424 removes20 net404, no file moves/deletions. Runtime owns original images/data/callbacks, DLL owns private font leases and observer lifecycle; no other task changes overwritten. VB6 and untested variants received by S8/following T17 S. Demo initial failure remains recorded, not declared repaired."
   }
 }

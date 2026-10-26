@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T17 S7 P1",
-  "stage": "S7 verified/published; P1 actual remote pending; T17/M0 open",
+  "delivery": "M0 T17 S7 P2",
+  "stage": "S7 closed; S8 actual VB6 file group admitted; T17/M0 open",
   "version": "0.17.0.0",
   "version_contract": "M0 T17; sequential S does not increment T version",
   "package_directory": "assets",
@@ -1137,9 +1137,43 @@
     "limits": "Authentic VB6 file controls not certified/adapted; special graphical/owner-draw list variants, RTL/complex runs, arbitrary DPI and148-unit catalogue remain with following T17 S and final audit. No directory path change/drive switch/physical input certification. Shared folder dialogs remain independent queued proposal."
   },
   "validation": {
-    "status": "verified locally; actual remote pending",
+    "status": "passed; P1 actual remote/recovery/cleanup complete",
     "source_inputs": 206,
     "evidence": "docs/etc/evidence/vb-file-controls.json"
   },
-  "closure": {}
+  "closure": {
+    "actual_remote": {
+      "status": "passed",
+      "commit": "f058ffb9b42fa9320836c165fce227061c784757",
+      "remote_main": "f058ffb9b42fa9320836c165fce227061c784757",
+      "files": 218,
+      "source_inputs": 206,
+      "seconds": 24.02265350000016,
+      "recovered_product_objects": 210,
+      "before_files_recoverable_from_18c979d": 8,
+      "deployed_SHA_matches": 8,
+      "external_PNG_SHA_matches": 2,
+      "method": "actual raw GitHub HTTPS bytes compared to Git cat-file; product objects and eight backups recoverable"
+    },
+    "cleanup": {
+      "status": "passed",
+      "preserved": "audit/source/sample/private runtime/other tasks/stable caches/all external PNG",
+      "positive_self_check": "exe/loaded DLL c0000043; unloaded DLL00000000",
+      "roots": [
+        {
+          "images": 165,
+          "status": "passed",
+          "reparse_points": 0,
+          "root": "O:\\repos.hobby\\win16style\\build\\t17-package"
+        },
+        {
+          "images": 17,
+          "status": "passed",
+          "reparse_points": 0,
+          "root": "O:\\repos.hobby\\win16style\\build\\t17-controls"
+        }
+      ]
+    },
+    "binary_change_in_closing_P": "none;206 inputs and8 deployment SHA unchanged since testedP1"
+  }
 }
