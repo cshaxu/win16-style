@@ -58,7 +58,7 @@
     },
     {
       "kind": "native_preservation_required",
-      "count": 71,
+      "count": 79,
       "meaning": "The established receiver is application DC, embedded-object/data handling, nonvisual runtime work, or an unsafe host boundary. Repainting or attaching a guessed standard class would change application semantics, so preserving native behavior is the correct current disposition.",
       "groups": [
         {
@@ -110,12 +110,17 @@
           "ids": ["VB6.mscomct2.ocx:Animation", "VB6.mscomct2.ocx:UpDown", "VB6.mscomct2.ocx:MonthView", "VB6.mscomct2.ocx:DTPicker", "VB6.mscomct2.ocx:FlatScrollBar"],
           "evidence": ["T17 S28 current-package direct x86 OLE host", "docs/etc/evidence/vb-ocx-wrapper-contracts.json"],
           "boundary": "The exact MSCOMCT2.OCX controls create only private Animation20WndClass, UpDown20WndClass, MonthView20WndClass, DTPicker20WndClass, or FlatSB20WndClass surfaces. No standard child HWND, content-neutral public drawing protocol, or safe host wrapper contract was observed; preserve all five natively."
+        },
+        {
+          "ids": ["VB6.mscomctl.ocx:Toolbar", "VB6.mscomctl.ocx:StatusBar", "VB6.mscomctl.ocx:TabStrip", "VB6.mscomctl.ocx:ListView", "VB6.mscomctl.ocx:ProgressBar", "VB6.mscomctl.ocx:Slider", "VB6.mscomctl.ocx:ImageList", "VB6.mscomctl.ocx:ImageCombo"],
+          "evidence": ["T17 S28 current-package direct x86 OLE host", "docs/etc/evidence/vb-ocx-wrapper-contracts.json"],
+          "boundary": "Apart from the separately verified TreeView, exact MSCOMCTL.OCX v6 controls are private *20WndClass/OCX surfaces. Slider20 reads a range/position only after activation but has no stable creation-time geometry. ImageCombo20 owns its image-combo protocol and its nested USER ComboBox/Edit remain unattached. No safe content-neutral public drawing contract was observed; preserve these eight natively."
         }
       ]
     },
     {
       "kind": "missing_real_sample_or_public_owner_protocol",
-      "count": 33,
+      "count": 25,
       "meaning": "No implementation is admitted from a filename or a guessed class name. These rows require the listed real runtime/OCX and a public child-HWND, COM-owner, or vendor host contract before any styling work can be safely scoped.",
       "groups": [
         {
@@ -124,7 +129,7 @@
           "receiver": "A runnable, version-correct DriveListBox sample that proves the owner-draw/DC and icon/data ownership path."
         },
         {
-          "ids": ["VB6.mscomctl.ocx:Toolbar", "VB6.mscomctl.ocx:StatusBar", "VB6.mscomctl.ocx:TabStrip", "VB6.mscomctl.ocx:ListView", "VB6.mscomctl.ocx:ProgressBar", "VB6.mscomctl.ocx:Slider", "VB6.mscomctl.ocx:ImageList", "VB6.mscomctl.ocx:ImageCombo", "VB5.comdlg32.ocx:CommonDialog", "VB6.comdlg32.ocx:CommonDialog", "VB5.dbgrid32.ocx:DBGrid", "VB6.dbgrid32.ocx:DBGrid"],
+          "ids": ["VB5.comdlg32.ocx:CommonDialog", "VB6.comdlg32.ocx:CommonDialog", "VB5.dbgrid32.ocx:DBGrid", "VB6.dbgrid32.ocx:DBGrid"],
           "evidence": ["T17 S17"],
           "receiver": "The exact registered module plus a runnable licensed sample proving its child HWND or public COM ownership and drawing contract."
         },
@@ -141,7 +146,7 @@
       ]
     }
   ],
-  "completion_check": "44 + 71 + 33 = 148. A verifier must compare the set of ids to source_matrix and reject duplicates, omissions, or unknown ids.",
+  "completion_check": "44 + 79 + 25 = 148. A verifier must compare the set of ids to source_matrix and reject duplicates, omissions, or unknown ids.",
   "local_discovery_after_p3": {
     "method": "Read-only recursive filename check of O:\\winnt\\system32, O:\\winnt\\syswow64, and D:\\programs for the 34 frozen extension module names; separate source-file scan for .vbp/.frm/.ctl/.vbg and declaration names.",
     "extension_module_matches": 0,

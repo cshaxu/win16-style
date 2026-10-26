@@ -103,6 +103,15 @@
       "MonthView": "MonthView coclass {232E456A-87C3-11D1-8BE3-0000F8754DA1} creates CtlFrameWork_ReflectWindow -> MonthView20WndClass, both owned by MSCOMCT2.OCX and attached=0/protocol_bound=0.",
       "DTPicker": "DTPicker coclass {20DD1B9E-87C4-11D1-8BE3-0000F8754DA1} creates CtlFrameWork_ReflectWindow -> DTPicker20WndClass, both owned by MSCOMCT2.OCX and attached=0/protocol_bound=0.",
       "FlatScrollBar": "FlatScrollBar coclass {FE38753A-44A3-11D1-B5B7-0000C09000C4} creates FlatSB20WndClass owned by MSCOMCT2.OCX with attached=0/protocol_bound=0. It is not a standard USER ScrollBar child."
+    },
+    "Current-MSCOMCTL-v6-sweep": {
+      "activation": "Current published x86 ntw16s32.dll injected by the self-owned candidate run16s host; direct DllGetClassObject/IOleObject/IPersistStreamInit activation of Microsoft-signed scratch MSCOMCTL.OCX; no registration or installation.",
+      "Toolbar": "Toolbar coclass {66833FE6-8583-11D1-B16A-00C0F0283628} creates Toolbar20WndClass -> msvb_lib_toolbar, both owned by MSCOMCTL.OCX and attached=0/protocol_bound=0.",
+      "StatusBar-and-TabStrip": "StatusBar20WndClass and TabStrip20WndClass are each below CtlFrameWork_ReflectWindow, owned by MSCOMCTL.OCX and attached=0/protocol_bound=0. StatusBar has no custom draw stages; TabStrip's public item count is 1.",
+      "ListView-and-ProgressBar": "ListView20WndClass and ProgressBar20WndClass are each below CtlFrameWork_ReflectWindow, owned by MSCOMCTL.OCX and attached=0/protocol_bound=0. ProgressBar reads range 0:30000 and position 0 but state 0 rather than a documented PBST state.",
+      "Slider": "Slider20WndClass below CtlFrameWork_ReflectWindow reads position 12 through its public slider messages after activation, but remains attached=0 because the pre-activation creation geometry is not stable. It is not admitted through a late scan.",
+      "ImageList": "ImageList20WndClass is an MSCOMCTL.OCX client surface with attached=0/protocol_bound=0; no standard HIMAGELIST contract follows from it.",
+      "ImageCombo": "ImageCombo20WndClass is below CtlFrameWork_ReflectWindow and owns a USER ComboBox -> Edit pair. The outer surface and both nested controls report attached=0/protocol_bound=0 under the current package. The host writes/reads Edit text alpha and selection 1:4 only as a diagnostic; no child-only styling is admitted because it would ignore ImageCombo image/dropdown ownership."
     }
   },
   "non_goals": ["StatusBar", "TabStrip", "ListView", "MSCOMCTL Toolbar20 host", "COMCT232 UpDown/Animation", "COMCT332 CoolBar", "all OCX versions", "global hooks", "existing-window scanning"],
