@@ -43,18 +43,18 @@
     {
       "path": "D:/programs/joytokey/JoyToKey.exe",
       "sha256": "a8f52fa32501548e8c8256690024e2d08e7b3c269ac26440e81319c710325bb6",
-      "bits": "not yet PE-verified in this audit",
+      "bits": 32,
       "version": "7.0.0.572",
-      "identity": "candidate only: TApplication/TForm/FMX static strings; not yet classified as VCL or FireMonkey",
+      "identity": "modern static VCL candidate: PE32 plus Vcl.Forms/Vcl.Controls/Vcl.Themes type metadata. A bare FMX substring was weaker evidence and is not treated as FireMonkey identity.",
       "known_live_surface": "none",
       "current_receiver": "read-only PE/resources and a self-owned bounded probe after framework identity is established"
     },
     {
       "path": "D:/programs/RedAlert/cnc-ddraw config.exe",
       "sha256": "e21131cca40be055b9cf728ed822474f2560793635fc323127b63ba9a838d5d6",
-      "bits": "not yet PE-verified in this audit",
+      "bits": 32,
       "version": "1.0.0.0",
-      "identity": "candidate only: TApplication/TForm/FMX static strings; not yet classified as VCL or FireMonkey",
+      "identity": "modern static VCL candidate: PE32 plus Vcl.Forms/Vcl.Controls/Vcl.Themes type metadata. A bare FMX substring was weaker evidence and is not treated as FireMonkey identity.",
       "known_live_surface": "none",
       "current_receiver": "read-only PE/resources and a self-owned bounded probe after framework identity is established"
     },
@@ -85,7 +85,7 @@
     "meaning": "Current display/session permissions prevent this native private-desktop probe from proving visible control behaviour. This is a precise skip, not a display pass and not a reason to use the user desktop."
   },
   "next_s1_work": [
-    "Read-only classify the two FMX-marked candidates by PE/resource/framework evidence before any launch.",
+    "Read-only extract VCL form/resource class declarations from the two modern static VCL candidates before any launch.",
     "Complete every one of the 68 seed units with a framework/version and public-receiver disposition; expand or split version-specific units where real evidence requires it.",
     "Run self-owned current-package probes only when the private desktop becomes available; retain error 5 as a skip otherwise.",
     "Define S2 demo correspondences only after the T18 matrix is complete; demo must not impersonate a real Delphi runtime."
