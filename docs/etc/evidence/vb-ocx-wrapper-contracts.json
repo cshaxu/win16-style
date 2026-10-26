@@ -117,6 +117,11 @@
       "activation": "Current published x86 ntw16s32.dll injected by the self-owned candidate run16s host; direct DllGetClassObject/IOleObject/IPersistStreamInit activation of Microsoft-signed scratch COMDLG32.OCX; no registration or installation.",
       "method": "The host obtains IDispatch::ShowOpen, installs an out-of-context EVENT_OBJECT_SHOW callback filtered to its own process only for the synchronous call, and posts WM_CLOSE solely to its own #32770 dialog. It does not set a filename, choose an item, read/write a file, or affect any user process/window.",
       "result": "ShowOpen returns S_OK; a real #32770 dialog is observed with attached=1 under the current renderer and is closed by the callback. The nonvisual CmDialogWndClass OCX helper itself remains attached=0/protocol_bound=0. This proves the existing standard-dialog route, not CommonDialog's other methods or custom hooks."
+    },
+    "Current-DBGrid-license-boundary": {
+      "activation": "Direct DllGetClassObject on Microsoft-signed scratch DBGRID32.OCX against DBGrid coclass {00028C00-0000-0000-0000-000000000046}; no registration or installation.",
+      "result": "Ordinary IClassFactory::CreateInstance returns CLASS_E_NOTLICENSED (0x80040112). The self-owned host then queries the component's public IClassFactory2: GetLicInfo returns S_OK and fRuntimeKeyAvail=1, but RequestLicKey again returns CLASS_E_NOTLICENSED. The probe treats that exact result as a successful licensing-boundary test, releases its own factory/module/window resources, and never guesses, supplies, stores, registers, or bypasses a key. No DBGrid object, data source, or database operation occurs.",
+      "consequence": "A real legitimately licensed runtime sample is still required before any DBGrid rendering or child-HWND claim can be assessed."
     }
   },
   "non_goals": ["StatusBar", "TabStrip", "ListView", "MSCOMCTL Toolbar20 host", "COMCT232 UpDown/Animation", "COMCT332 CoolBar", "all OCX versions", "global hooks", "existing-window scanning"],

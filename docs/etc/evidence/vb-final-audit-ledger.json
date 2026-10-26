@@ -135,8 +135,8 @@
         },
         {
           "ids": ["VB5.dbgrid32.ocx:DBGrid", "VB6.dbgrid32.ocx:DBGrid"],
-          "evidence": ["T17 S17"],
-          "receiver": "The exact registered module plus a runnable licensed sample proving its child HWND or public COM ownership and drawing contract."
+          "evidence": ["T17 S17", "T17 S28 current-package direct x86 OLE licensing probe"],
+          "receiver": "A legitimately licensed, runnable DBGrid sample proving its child HWND or public COM ownership and drawing contract. The observed unsigned-free direct path reports GetLicInfo=S_OK but RequestLicKey=CLASS_E_NOTLICENSED (0x80040112), so no license is guessed, copied, registered, or bypassed."
         },
         {
           "ids": ["VB6.MSWLess.ocx:WLCheck", "VB6.MSWLess.ocx:WLCombo", "VB6.MSWLess.ocx:WLCommand", "VB6.MSWLess.ocx:WLFrame", "VB6.MSWLess.ocx:WLHScroll", "VB6.MSWLess.ocx:WLList", "VB6.MSWLess.ocx:WLOption", "VB6.MSWLess.ocx:WLText", "VB6.MSWLess.ocx:WLVScroll", "VB5.grid32.ocx:Grid", "VB6.grid32.ocx:Grid", "VB5.msoutl32.ocx:Outline", "VB6.msoutl32.ocx:Outline", "VB5.mschart.ocx:MSChart", "VB6.mschart.ocx:MSChart", "VB6.vbsql.ocx:Vbsql"],

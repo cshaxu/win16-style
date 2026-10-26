@@ -17,7 +17,7 @@ struct host {IOleClientSite client;IOleInPlaceSite place;IOleInPlaceFrame frame;
 #define CLIENT(p) CONTAINING_RECORD(p,host,client)
 #define PLACE(p) CONTAINING_RECORD(p,host,place)
 #define FRAME(p) CONTAINING_RECORD(p,host,frame)
-static BOOL (__cdecl *attached)(HWND);static BOOL list_mode,generic_mode,toolbar_test,report_view,allow_empty,show_open_cancel;static CLSID generic_clsid;static WCHAR expected_class[64];static UINT list_messages[32],list_message_count;static BOOL common_dialog_seen,common_dialog_close_posted,common_dialog_attached;
+static BOOL (__cdecl *attached)(HWND);static BOOL list_mode,generic_mode,toolbar_test,report_view,allow_empty,show_open_cancel,runtime_license,expect_license_denied;static CLSID generic_clsid;static WCHAR expected_class[64];static UINT list_messages[32],list_message_count;static BOOL common_dialog_seen,common_dialog_close_posted,common_dialog_attached;
 static HWND toolbar_window;static unsigned toolbar_pre,toolbar_item,toolbar_post;
 static HWND list_window;static unsigned list_pre,list_item,list_post;
 static HWND status_window;static unsigned status_pre,status_item,status_post;
@@ -220,7 +220,7 @@ static const CLSID list_clsid={0xbdd1f04b,0x858b,0x11d1,{0xb1,0x6a,0x00,0xc0,0xf
 
 int wmain(int argc,WCHAR **argv)
 {
-    HRESULT hr;host h={0};WNDCLASSW wc={0};HMODULE module=NULL,style;IClassFactory *factory=NULL;IOleObject *object=NULL;IPersistStreamInit *persist=NULL;IDispatch *dispatch=NULL;IOleInPlaceObject *inplace=NULL;RECT rect={0,0,320,200};outcome state={.expected=TRUE};
+    HRESULT hr;host h={0};WNDCLASSW wc={0};HMODULE module=NULL,style;IClassFactory *factory=NULL;IClassFactory2 *factory2=NULL;BSTR runtime_key=NULL;IOleObject *object=NULL;IPersistStreamInit *persist=NULL;IDispatch *dispatch=NULL;IOleInPlaceObject *inplace=NULL;RECT rect={0,0,320,200};outcome state={.expected=TRUE};
     CHECK(argc>=2 && argc<=10);
     for(int i=2;i<argc;++i){
         if(!lstrcmpW(argv[i],L"--list"))list_mode=TRUE;
@@ -231,6 +231,8 @@ int wmain(int argc,WCHAR **argv)
         }
         else if(!lstrcmpW(argv[i],L"--toolbar-test"))toolbar_test=TRUE;
         else if(!lstrcmpW(argv[i],L"--show-open-auto-cancel"))show_open_cancel=TRUE;
+        else if(!lstrcmpW(argv[i],L"--runtime-license"))runtime_license=TRUE;
+        else if(!lstrcmpW(argv[i],L"--expect-license-denied"))expect_license_denied=TRUE;
         else if(!lstrcmpW(argv[i],L"--allow-empty"))allow_empty=TRUE;
         else if(!lstrcmpW(argv[i],L"--clsid") && i+1<argc){generic_mode=SUCCEEDED(CLSIDFromString(argv[++i],&generic_clsid));CHECK(generic_mode);}
         else CHECK(FALSE);
@@ -241,7 +243,22 @@ int wmain(int argc,WCHAR **argv)
     h.window=CreateWindowW(wc.lpszClassName,L"ocx-tree-host",WS_OVERLAPPEDWINDOW|WS_VISIBLE,0,0,320,200,NULL,NULL,wc.hInstance,NULL);CHECK(h.window);
     module=LoadLibraryW(argv[1]);CHECK(module);get_class_fn get_class=(void *)GetProcAddress(module,"DllGetClassObject");CHECK(get_class);
     hr=get_class(generic_mode?&generic_clsid:list_mode?&list_clsid:&tree_clsid,&IID_IClassFactory,(void **)&factory);CHECK(SUCCEEDED(hr));
-    hr=IClassFactory_CreateInstance(factory,NULL,&IID_IOleObject,(void **)&object);CHECK(SUCCEEDED(hr));
+    if(runtime_license){
+        LICINFO info={.cbLicInfo=sizeof(info)};HRESULT license_info_hr;
+        CHECK(SUCCEEDED(IClassFactory_QueryInterface(factory,&IID_IClassFactory2,(void **)&factory2)));
+        license_info_hr=IClassFactory2_GetLicInfo(factory2,&info);hr=license_info_hr;
+        if(SUCCEEDED(hr) && info.fRuntimeKeyAvail)hr=IClassFactory2_RequestLicKey(factory2,0,&runtime_key);
+        wprintf(L"OCX_RUNTIME_LICENSE info_hr=%08lx runtime_key_available=%u request_hr=%08lx\n",(DWORD)license_info_hr,info.fRuntimeKeyAvail,(DWORD)hr);
+        if(FAILED(hr) || !runtime_key){
+            BOOL expected=expect_license_denied && hr==CLASS_E_NOTLICENSED && !runtime_key;
+            if(runtime_key)SysFreeString(runtime_key);
+            IClassFactory2_Release(factory2);IClassFactory_Release(factory);FreeLibrary(module);DestroyWindow(h.window);CoUninitialize();
+            if(expected){puts("OCX_RUNTIME_LICENSE_DENIED_OK");return 0;}
+            return 1;
+        }
+        CHECK(SUCCEEDED(hr) && runtime_key);
+        hr=IClassFactory2_CreateInstanceLic(factory2,NULL,NULL,&IID_IOleObject,runtime_key,(void **)&object);CHECK(SUCCEEDED(hr));
+    }else{hr=IClassFactory_CreateInstance(factory,NULL,&IID_IOleObject,(void **)&object);CHECK(SUCCEEDED(hr));}
     CHECK(SUCCEEDED(IOleObject_SetClientSite(object,&h.client)) && SUCCEEDED(IOleObject_QueryInterface(object,&IID_IPersistStreamInit,(void **)&persist)));
     CHECK(SUCCEEDED(IPersistStreamInit_InitNew(persist)));OleSetContainedObject((IUnknown *)object,TRUE);
     if(list_mode || report_view){
@@ -271,5 +288,5 @@ int wmain(int argc,WCHAR **argv)
     CHECK(EnumChildWindows(h.window,found,(LPARAM)&state));
     if(!state.seen && allow_empty){wprintf(L"OCX_NO_CHILD class_factory=%08lx\n",(DWORD)generic_clsid.Data1);state.seen=TRUE;state.match=TRUE;}
     CHECK(state.seen && state.match);
-    IOleInPlaceObject_Release(inplace);if(dispatch)IDispatch_Release(dispatch);IPersistStreamInit_Release(persist);IOleObject_Close(object,OLECLOSE_NOSAVE);IOleObject_Release(object);IClassFactory_Release(factory);FreeLibrary(module);DestroyWindow(h.window);CoUninitialize();return 0;
+    IOleInPlaceObject_Release(inplace);if(dispatch)IDispatch_Release(dispatch);IPersistStreamInit_Release(persist);IOleObject_Close(object,OLECLOSE_NOSAVE);IOleObject_Release(object);if(runtime_key)SysFreeString(runtime_key);if(factory2)IClassFactory2_Release(factory2);IClassFactory_Release(factory);FreeLibrary(module);DestroyWindow(h.window);CoUninitialize();return 0;
 }
