@@ -54,3 +54,5 @@
 - [T17 VB控件首轮审计](evidence/vb-controls-audit.md)及[逐项矩阵](evidence/vb-controls-audit.json)：内建双版本、微软扩展、模块/样本和未完成目录证据；不是已支持声明。
 
 - [T17 S1审计交付](../history/M0-T17-S1-vb-control-audit.md)：148单位目录、真实类型库/源码缺口、三项短基线包验证及后续交接。
+
+- [T17 S2原生demo目录](evidence/vb-demo-gallery.json)：148审计单位的对应页/明确缺失项、有限原生展示及实际包交付；不等同VB/OCX适配。

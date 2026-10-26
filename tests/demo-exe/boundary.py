@@ -45,12 +45,14 @@ def system_crt(name):
         r'api-ms-win-crt-(conio|convert|environment|filesystem|heap|locale|math|multibyte|private|process|runtime|stdio|string|time|utility)-l1-1-0\.dll',name) is not None
 
 
-assert {name for name in imports if not system_crt(name)} == {'kernel32.dll', 'user32.dll'}, imports
+assert {name for name in imports if not system_crt(name)} == {'kernel32.dll', 'user32.dll', 'gdi32.dll', 'comctl32.dll', 'comdlg32.dll'}, imports
 root = Path(__file__).resolve().parents[2]
 sources = root/'src/demo-exe'
-assert {p.name for p in sources.glob('*.c')} == {'main.c', 'gallery.c'}
+assert {p.name for p in sources.glob('*.c')} == {'main.c', 'gallery.c', 'catalog.c'}
 for file in sources.glob('*.c'):
     text = file.read_text(encoding='utf-8')
-    assert not re.search(r'Ntw16s|win16_style_|LoadLibrary|GetProcAddress|GetEnvironmentVariable|GetCommandLine', text), file
+    assert not re.search(r'Ntw16s|win16_style_|GetProcAddress|GetEnvironmentVariable|GetCommandLine', text), file
+    loads = re.findall(r'LoadLibrary\w*\s*\([^;]+', text)
+    assert not loads or (file.name == 'catalog.c' and loads == ['LoadLibraryExW(L"Msftedit.dll",NULL,LOAD_LIBRARY_SEARCH_SYSTEM32)']), 'only fixed system RichEdit may be loaded'
     assert not re.search(r'#\s*include\s*"', text), 'demo cannot include private component headers'
-print('DEMO BOUNDARY PASS x64 GUI, Windows USER32/KERNEL32/system CRT only, no exports/delay imports or source style consumption; sha256='+hashlib.sha256(raw).hexdigest())
+print('DEMO BOUNDARY PASS x64 GUI, Windows USER32/GDI32/COMCTL32/COMDLG32/KERNEL32/system CRT only, no exports/delay imports or source style consumption; sha256='+hashlib.sha256(raw).hexdigest())

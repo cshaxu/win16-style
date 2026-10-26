@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <tlhelp32.h>
+#include <commctrl.h>
 #include <stdio.h>
 #include <wchar.h>
 #include <stdint.h>
@@ -8,7 +9,8 @@
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"DEMO OBSERVER FAIL %d error=%lu: %s\n",__LINE__,GetLastError(),#x);ExitProcess(1);}}while(0)
 static HANDLE tree,ready;
 static HWND observed;
-static HANDLE focus_ready;
+static HANDLE focus_ready,property_closed;
+static HWND property_window;
 static HWND focus_expected,dialog_window;
 static DWORD WINAPI about_call(void *argument)
 {
@@ -18,6 +20,7 @@ static DWORD WINAPI about_call(void *argument)
 static void CALLBACK interaction_event(HWINEVENTHOOK hook,DWORD event,HWND window,LONG object,LONG child,DWORD thread,DWORD time)
 {
     (void)hook;(void)thread;(void)time;
+    if(event==EVENT_OBJECT_DESTROY && object==OBJID_WINDOW && !child && window==property_window)SetEvent(property_closed);
     if(event==EVENT_OBJECT_FOCUS && object==OBJID_CLIENT && !child && window==focus_expected)SetEvent(focus_ready);
     if(event==EVENT_OBJECT_SHOW && object==OBJID_WINDOW && !child && observed && GetWindow(window,GW_OWNER)==observed){
         WCHAR title[80],cls[40];GetWindowTextW(window,title,ARRAYSIZE(title));GetClassNameW(window,cls,ARRAYSIZE(cls));
@@ -81,6 +84,38 @@ static pixels capture(HWND window,PCWSTR file)
     CHECK(WriteFile(output,data,size,&written,NULL) && written==size && CloseHandle(output));
     SelectObject(dc,previous);CHECK(DeleteObject(bitmap) && DeleteDC(dc));ReleaseDC(window,screen);return value;
 }
+static HWND catalog_window;
+static BOOL CALLBACK find_property(HWND w,LPARAM owner)
+{WCHAR name[80];if(GetWindow(w,GW_OWNER)==(HWND)owner && GetClassNameW(w,name,80) && !wcscmp(name,L"#32770"))property_window=w;return TRUE;}
+static BOOL CALLBACK find_catalog(HWND w,LPARAM owner)
+{
+    WCHAR name[80];if(GetWindow(w,GW_OWNER)==(HWND)owner && GetClassNameW(w,name,80) && !wcscmp(name,L"Win16StyleDemoCatalog"))catalog_window=w;
+    return TRUE;
+}
+static void catalog_pages(HWND main,DWORD thread,HANDLE target,BOOL styled,const WCHAR *scratch)
+{
+    static const WCHAR *titles[]={L"Buttons and states",L"Editing and lists",L"Files and scrollbars",L"Containers and drawing",L"Lists and toolbars",L"Ranges and dates",L"Text and special objects",L"MDI windows"};
+    DWORD initial=GetGuiResources(target,GR_GDIOBJECTS);WCHAR file[MAX_PATH];
+    CHECK(GetMenuItemCount(GetSubMenu(GetMenu(main),1))==8);
+    for(unsigned i=0;i<8;++i){
+        catalog_window=NULL;SendMessageW(main,WM_COMMAND,2000+i,0);CHECK(EnumThreadWindows(thread,find_catalog,(LPARAM)main));HWND w=catalog_window;
+        CHECK(w && IsWindowVisible(w));text(w,0,titles[i]);CHECK(WaitForInputIdle(target,3000)==0);
+        if(i==0){CHECK(IsDlgButtonChecked(w,2112)==BST_INDETERMINATE);SendDlgItemMessageW(w,2110,BM_CLICK,0,0);CHECK(IsDlgButtonChecked(w,2110)==BST_CHECKED);SendDlgItemMessageW(w,2122,BM_CLICK,0,0);CHECK(IsDlgButtonChecked(w,2122)==BST_CHECKED && !IsDlgButtonChecked(w,2121) && IsDlgButtonChecked(w,2123)==BST_CHECKED);CHECK(!IsWindowEnabled(GetDlgItem(w,2113)));}
+        if(i==1){for(int id=2211;id<=2213;++id)CHECK(SendDlgItemMessageW(w,id,CB_GETCOUNT,0,0)==8);CHECK(SendDlgItemMessageW(w,2222,LB_SETSEL,TRUE,0)!=LB_ERR && SendDlgItemMessageW(w,2222,LB_SETSEL,TRUE,2)!=LB_ERR && SendDlgItemMessageW(w,2222,LB_GETSELCOUNT,0,0)==2);CHECK(GetWindowLongPtrW(GetDlgItem(w,2202),GWL_STYLE)&ES_READONLY);}
+        if(i==2){CHECK(SendDlgItemMessageW(w,2302,LB_GETCOUNT,0,0)>=0 && SendDlgItemMessageW(w,2303,LB_GETCOUNT,0,0)>=0);CHECK(GetScrollPos(GetDlgItem(w,2311),SB_CTL)==30);SendMessageW(w,WM_HSCROLL,SB_LINERIGHT,(LPARAM)GetDlgItem(w,2311));CHECK(GetScrollPos(GetDlgItem(w,2311),SB_CTL)==31);}
+        if(i==3){CHECK(GetDlgItem(w,2400) && GetDlgItem(w,2405));}
+        if(i==4){CHECK(SendDlgItemMessageW(w,2502,TVM_GETCOUNT,0,0)==2 && SendDlgItemMessageW(w,2503,LVM_GETITEMCOUNT,0,0)==1 && SendDlgItemMessageW(w,2504,TCM_GETITEMCOUNT,0,0)==2);}
+        if(i==5){CHECK(SendDlgItemMessageW(w,2601,PBM_GETPOS,0,0)==45);SendMessageW(w,WM_COMMAND,2602,0);CHECK(SendDlgItemMessageW(w,2601,PBM_GETPOS,0,0)==50 && SendDlgItemMessageW(w,2603,TBM_GETPOS,0,0)==40 && SendDlgItemMessageW(w,2605,UDM_GETPOS,0,0)==25);}
+        if(i==6){WCHAR cls[80];CHECK(GetClassNameW(GetDlgItem(w,2701),cls,80) && !_wcsicmp(cls,L"RICHEDIT50W"));SendMessageW(w,WM_COMMAND,2721,0);text(w,2722,L"Record 2: Beta");SendMessageW(w,WM_COMMAND,2712,0);text(w,2712,L"&Stop timer");SendMessageW(w,WM_COMMAND,2712,0);text(w,2712,L"&Start timer");property_window=NULL;SendMessageW(w,WM_COMMAND,2731,0);EnumThreadWindows(thread,find_property,(LPARAM)w);CHECK(property_window);HWND tab=(HWND)SendMessageW(property_window,PSM_GETTABCONTROL,0,0);CHECK(tab && SendMessageW(tab,TCM_GETITEMCOUNT,0,0)==2);CHECK(SendMessageW(property_window,PSM_SETCURSEL,1,0));CHECK(ResetEvent(property_closed));CHECK(PostMessageW(property_window,WM_CLOSE,0,0) && PostMessageW(w,WM_NULL,0,0));DWORD closed=pump_wait(property_closed,3000);printf("DEMO PROPERTY CLOSE styled=%u wait=%lu exists=%d current=%p visible=%d\n",(unsigned)styled,closed,IsWindow(property_window),(void *)SendMessageW(property_window,PSM_GETCURRENTPAGEHWND,0,0),IsWindowVisible(property_window));fflush(stdout);CHECK(closed==WAIT_OBJECT_0 && !IsWindow(property_window));}
+        if(i==7){HWND client=GetDlgItem(w,2800);CHECK(client && GetWindow(client,GW_CHILD) && GetWindow(GetWindow(client,GW_CHILD),GW_HWNDNEXT));}
+        CHECK(swprintf_s(file,MAX_PATH,L"%ls\\catalog-%u-%u.bmp",scratch,(unsigned)styled,i)>0);SendMessageW(w,WM_NCACTIVATE,TRUE,0);UpdateWindow(w);pixels screenshot=capture(w,file);CHECK(screenshot.hash);
+        SendMessageW(w,WM_CLOSE,0,0);CHECK(!IsWindow(w));printf("DEMO CATALOG PAGE PASS styled=%u page=%u gdi=%lu\n",(unsigned)styled,i,GetGuiResources(target,GR_GDIOBJECTS));
+    }
+    /* One representative reopened page checks application-owned font retirement
+     * after native libraries have warmed, without replaying a full UI matrix. */
+    DWORD warm=GetGuiResources(target,GR_GDIOBJECTS);catalog_window=NULL;SendMessageW(main,WM_COMMAND,2000,0);EnumThreadWindows(thread,find_catalog,(LPARAM)main);CHECK(catalog_window);SendMessageW(catalog_window,WM_CLOSE,0,0);
+    CHECK(GetGuiResources(target,GR_GDIOBJECTS)==warm);printf("DEMO CATALOG PASS styled=%u pages=8 reopen=1 resources_stable=1 initial=%lu final=%lu\n",(unsigned)styled,initial,warm);
+}
 static int matrix(int argc,WCHAR **argv)
 {
     WCHAR scratch[MAX_PATH],package[MAX_PATH],launcher[MAX_PATH],image[MAX_PATH],path[MAX_PATH],command[32768];
@@ -92,7 +127,7 @@ static int matrix(int argc,WCHAR **argv)
     CHECK(swprintf_s(path,MAX_PATH,L"%ls\\ntw16s32.dll",package)>0 && CopyFileW(argv[3],path,FALSE));
     CHECK(swprintf_s(image,MAX_PATH,L"%ls\\demo.exe",package)>0 && CopyFileW(argv[4],image,FALSE));
     ready=CreateEventW(NULL,TRUE,FALSE,NULL);CHECK(ready);
-    focus_ready=CreateEventW(NULL,TRUE,FALSE,NULL);CHECK(focus_ready);
+    focus_ready=CreateEventW(NULL,TRUE,FALSE,NULL);property_closed=CreateEventW(NULL,TRUE,FALSE,NULL);CHECK(focus_ready && property_closed);
     HWINEVENTHOOK events=SetWinEventHook(EVENT_OBJECT_SHOW,EVENT_OBJECT_SHOW,NULL,shown,0,0,WINEVENT_OUTOFCONTEXT|WINEVENT_SKIPOWNPROCESS);CHECK(events);
     HWINEVENTHOOK interaction=SetWinEventHook(EVENT_OBJECT_CREATE,EVENT_OBJECT_VALUECHANGE,NULL,interaction_event,0,0,WINEVENT_OUTOFCONTEXT|WINEVENT_SKIPOWNPROCESS);CHECK(interaction);
     pixels screenshots[2];int advances[2];
@@ -107,7 +142,7 @@ static int matrix(int argc,WCHAR **argv)
         if(!AssignProcessToJobObject(tree,process.hProcess)){TerminateProcess(process.hProcess,1);CHECK(FALSE);}
         CHECK(ResumeThread(process.hThread)==1 && pump_wait(ready,30000)==WAIT_OBJECT_0 && observed);
         HWND w=observed;DWORD pid;GetWindowThreadProcessId(w,&pid);modules(pid,styled,package,image);text(w,0,L"Win16 Style Demo");
-        HANDLE target=OpenProcess(SYNCHRONIZE|PROCESS_QUERY_LIMITED_INFORMATION,FALSE,pid);CHECK(target && WaitForInputIdle(target,10000)==0);
+        HANDLE target=OpenProcess(SYNCHRONIZE|PROCESS_QUERY_INFORMATION,FALSE,pid);CHECK(target && WaitForInputIdle(target,10000)==0);
         DWORD gui_thread=GetWindowThreadProcessId(w,NULL);GUITHREADINFO gui={.cbSize=sizeof(gui)};
         CHECK(GetGUIThreadInfo(gui_thread,&gui) && gui.hwndFocus==GetDlgItem(w,101));
         HWND previous=gui.hwndFocus;
@@ -124,7 +159,7 @@ static int matrix(int argc,WCHAR **argv)
         text(w,101,L"Native text");text(w,108,L"Ready");CHECK(IsDlgButtonChecked(w,102)==BST_CHECKED && IsDlgButtonChecked(w,103)==BST_CHECKED);
         CHECK(SendDlgItemMessageW(w,105,LB_GETCOUNT,0,0)==6 && SendDlgItemMessageW(w,106,CB_GETCOUNT,0,0)==6);
         CHECK(SendDlgItemMessageW(w,105,LB_GETCURSEL,0,0)==1 && SendDlgItemMessageW(w,106,CB_GETCURSEL,0,0)==1);
-        CHECK(GetMenuItemCount(GetMenu(w))==2 && GetMenuItemCount(GetSubMenu(GetMenu(w),0))==3);
+        CHECK(GetMenuItemCount(GetMenu(w))==3 && GetMenuItemCount(GetSubMenu(GetMenu(w),0))==3);
         SendMessageW(w,WM_NCACTIVATE,TRUE,0);UpdateWindow(w);
         CHECK(swprintf_s(path,MAX_PATH,L"%ls\\demo-%ls.bmp",scratch,styled?L"injected":L"native")>0);screenshots[styled]=capture(w,path);
         LRESULT first=SendDlgItemMessageW(w,101,EM_POSFROMCHAR,0,0),last=SendDlgItemMessageW(w,101,EM_POSFROMCHAR,5,0);
@@ -155,13 +190,14 @@ static int matrix(int argc,WCHAR **argv)
         CHECK(pump_wait(about,25000)==WAIT_OBJECT_0 && dialog_window);
         DWORD about_code;CHECK(GetExitCodeThread(about,&about_code) && !about_code && !IsWindow(dialog_window) && IsWindowEnabled(w) && CloseHandle(about));
         printf("DEMO ABOUT/MOVE PASS styled=%u modal dialog opened/closed and exact window displacement\n",styled);
+        catalog_pages(w,gui_thread,target,styled,scratch);
         SendMessageW(w,WM_COMMAND,1002,0);CHECK(pump_wait(process.hProcess,10000)==WAIT_OBJECT_0);DWORD code;CHECK(GetExitCodeProcess(process.hProcess,&code) && !code);
         CHECK(WaitForSingleObject(target,10000)==WAIT_OBJECT_0 && CloseHandle(target));
         CloseHandle(process.hThread);CloseHandle(process.hProcess);CloseHandle(tree);tree=NULL;
         printf("DEMO OBSERVE PASS styled=%u same image, six classes, data/notifications/menu/window commands, text advance=%d caption pixels=%u\n",styled,advances[styled],screenshots[styled].caption);
     }
     CHECK(screenshots[0].hash!=screenshots[1].hash && screenshots[1].caption>screenshots[0].caption+500 && advances[1]==advances[0]);
-    CHECK(UnhookWinEvent(interaction) && UnhookWinEvent(events) && CloseHandle(focus_ready) && CloseHandle(ready));puts("DEMO PAIR PASS external module/appearance/business observations on private desktop; physical input not claimed");return 0;
+    CHECK(UnhookWinEvent(interaction) && UnhookWinEvent(events) && CloseHandle(focus_ready) && CloseHandle(property_closed) && CloseHandle(ready));puts("DEMO PAIR PASS external module/appearance/business observations on private desktop; physical input not claimed");return 0;
 }
 int wmain(int argc,WCHAR **argv)
 {return isolated_process(argc,argv,matrix);}

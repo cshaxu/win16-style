@@ -112,7 +112,7 @@ def main():
         else:
             subsystem, imports = application(path)
             assert subsystem == (2 if name == 'demo.exe' else 3)
-            assert {n for n in imports if not core.system_crt(n)} == ({'kernel32.dll', 'user32.dll'} if name == 'demo.exe' else {'kernel32.dll', 'shell32.dll', 'ole32.dll', 'advapi32.dll'})
+            assert {n for n in imports if not core.system_crt(n)} == ({'kernel32.dll', 'user32.dll', 'gdi32.dll', 'comctl32.dll', 'comdlg32.dll'} if name == 'demo.exe' else {'kernel32.dll', 'shell32.dll', 'ole32.dll', 'advapi32.dll'})
             digest = hashlib.sha256(raw).hexdigest()
         if args.built_root:
             assert hashlib.sha256((args.built_root/arch/name).read_bytes()).hexdigest() == digest, 'mixed build'

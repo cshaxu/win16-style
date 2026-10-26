@@ -1,0 +1,2648 @@
+{
+  "task": "M0 T17 S2",
+  "matrix_units": 148,
+  "demo_rows": [
+    {
+      "audit_id": "VB5.CommandButton",
+      "name": "CommandButton",
+      "page": 0,
+      "control_ids": [
+        2101,
+        2102,
+        2110,
+        2111,
+        2112,
+        2113,
+        2114,
+        2115,
+        2121,
+        2122,
+        2123,
+        2124,
+        2130
+      ],
+      "scope": "native counterpart; not the VB/OCX implementation",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.CommandButton",
+      "name": "CommandButton",
+      "page": 0,
+      "control_ids": [
+        2101,
+        2102,
+        2110,
+        2111,
+        2112,
+        2113,
+        2114,
+        2115,
+        2121,
+        2122,
+        2123,
+        2124,
+        2130
+      ],
+      "scope": "native counterpart; not the VB/OCX implementation",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.CheckBox",
+      "name": "CheckBox",
+      "page": 0,
+      "control_ids": [
+        2101,
+        2102,
+        2110,
+        2111,
+        2112,
+        2113,
+        2114,
+        2115,
+        2121,
+        2122,
+        2123,
+        2124,
+        2130
+      ],
+      "scope": "native counterpart; not the VB/OCX implementation",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.CheckBox",
+      "name": "CheckBox",
+      "page": 0,
+      "control_ids": [
+        2101,
+        2102,
+        2110,
+        2111,
+        2112,
+        2113,
+        2114,
+        2115,
+        2121,
+        2122,
+        2123,
+        2124,
+        2130
+      ],
+      "scope": "native counterpart; not the VB/OCX implementation",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.OptionButton",
+      "name": "OptionButton",
+      "page": 0,
+      "control_ids": [
+        2101,
+        2102,
+        2110,
+        2111,
+        2112,
+        2113,
+        2114,
+        2115,
+        2121,
+        2122,
+        2123,
+        2124,
+        2130
+      ],
+      "scope": "native counterpart; not the VB/OCX implementation",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.OptionButton",
+      "name": "OptionButton",
+      "page": 0,
+      "control_ids": [
+        2101,
+        2102,
+        2110,
+        2111,
+        2112,
+        2113,
+        2114,
+        2115,
+        2121,
+        2122,
+        2123,
+        2124,
+        2130
+      ],
+      "scope": "native counterpart; not the VB/OCX implementation",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.TextBox",
+      "name": "TextBox",
+      "page": 1,
+      "control_ids": [
+        2201,
+        2202,
+        2203,
+        2204,
+        2211,
+        2212,
+        2213,
+        2221,
+        2222
+      ],
+      "scope": "native editable/list counterpart; binding and OCX semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.TextBox",
+      "name": "TextBox",
+      "page": 1,
+      "control_ids": [
+        2201,
+        2202,
+        2203,
+        2204,
+        2211,
+        2212,
+        2213,
+        2221,
+        2222
+      ],
+      "scope": "native editable/list counterpart; binding and OCX semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.ComboBox",
+      "name": "ComboBox",
+      "page": 1,
+      "control_ids": [
+        2201,
+        2202,
+        2203,
+        2204,
+        2211,
+        2212,
+        2213,
+        2221,
+        2222
+      ],
+      "scope": "native editable/list counterpart; binding and OCX semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.ComboBox",
+      "name": "ComboBox",
+      "page": 1,
+      "control_ids": [
+        2201,
+        2202,
+        2203,
+        2204,
+        2211,
+        2212,
+        2213,
+        2221,
+        2222
+      ],
+      "scope": "native editable/list counterpart; binding and OCX semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.ListBox",
+      "name": "ListBox",
+      "page": 1,
+      "control_ids": [
+        2201,
+        2202,
+        2203,
+        2204,
+        2211,
+        2212,
+        2213,
+        2221,
+        2222
+      ],
+      "scope": "native editable/list counterpart; binding and OCX semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.ListBox",
+      "name": "ListBox",
+      "page": 1,
+      "control_ids": [
+        2201,
+        2202,
+        2203,
+        2204,
+        2211,
+        2212,
+        2213,
+        2221,
+        2222
+      ],
+      "scope": "native editable/list counterpart; binding and OCX semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.HScrollBar",
+      "name": "HScrollBar",
+      "page": 2,
+      "control_ids": [
+        2300,
+        2301,
+        2302,
+        2303,
+        2310,
+        2311,
+        2312
+      ],
+      "scope": "native scroll/list counterparts; OS directory listing, not VB file-control protocol or flat-scroll API",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.HScrollBar",
+      "name": "HScrollBar",
+      "page": 2,
+      "control_ids": [
+        2300,
+        2301,
+        2302,
+        2303,
+        2310,
+        2311,
+        2312
+      ],
+      "scope": "native scroll/list counterparts; OS directory listing, not VB file-control protocol or flat-scroll API",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.VScrollBar",
+      "name": "VScrollBar",
+      "page": 2,
+      "control_ids": [
+        2300,
+        2301,
+        2302,
+        2303,
+        2310,
+        2311,
+        2312
+      ],
+      "scope": "native scroll/list counterparts; OS directory listing, not VB file-control protocol or flat-scroll API",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.VScrollBar",
+      "name": "VScrollBar",
+      "page": 2,
+      "control_ids": [
+        2300,
+        2301,
+        2302,
+        2303,
+        2310,
+        2311,
+        2312
+      ],
+      "scope": "native scroll/list counterparts; OS directory listing, not VB file-control protocol or flat-scroll API",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.DriveListBox",
+      "name": "DriveListBox",
+      "page": 2,
+      "control_ids": [
+        2300,
+        2301,
+        2302,
+        2303,
+        2310,
+        2311,
+        2312
+      ],
+      "scope": "native scroll/list counterparts; OS directory listing, not VB file-control protocol or flat-scroll API",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.DriveListBox",
+      "name": "DriveListBox",
+      "page": 2,
+      "control_ids": [
+        2300,
+        2301,
+        2302,
+        2303,
+        2310,
+        2311,
+        2312
+      ],
+      "scope": "native scroll/list counterparts; OS directory listing, not VB file-control protocol or flat-scroll API",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.DirListBox",
+      "name": "DirListBox",
+      "page": 2,
+      "control_ids": [
+        2300,
+        2301,
+        2302,
+        2303,
+        2310,
+        2311,
+        2312
+      ],
+      "scope": "native scroll/list counterparts; OS directory listing, not VB file-control protocol or flat-scroll API",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.DirListBox",
+      "name": "DirListBox",
+      "page": 2,
+      "control_ids": [
+        2300,
+        2301,
+        2302,
+        2303,
+        2310,
+        2311,
+        2312
+      ],
+      "scope": "native scroll/list counterparts; OS directory listing, not VB file-control protocol or flat-scroll API",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.FileListBox",
+      "name": "FileListBox",
+      "page": 2,
+      "control_ids": [
+        2300,
+        2301,
+        2302,
+        2303,
+        2310,
+        2311,
+        2312
+      ],
+      "scope": "native scroll/list counterparts; OS directory listing, not VB file-control protocol or flat-scroll API",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.FileListBox",
+      "name": "FileListBox",
+      "page": 2,
+      "control_ids": [
+        2300,
+        2301,
+        2302,
+        2303,
+        2310,
+        2311,
+        2312
+      ],
+      "scope": "native scroll/list counterparts; OS directory listing, not VB file-control protocol or flat-scroll API",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.Frame",
+      "name": "Frame",
+      "page": 3,
+      "control_ids": [
+        2400,
+        2401,
+        2402,
+        2403,
+        2405
+      ],
+      "scope": "native frame/label plus app-owned drawing; chart, picture-clipping and VB drawing APIs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.Frame",
+      "name": "Frame",
+      "page": 3,
+      "control_ids": [
+        2400,
+        2401,
+        2402,
+        2403,
+        2405
+      ],
+      "scope": "native frame/label plus app-owned drawing; chart, picture-clipping and VB drawing APIs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.PictureBox",
+      "name": "PictureBox",
+      "page": 3,
+      "control_ids": [
+        2400,
+        2401,
+        2402,
+        2403,
+        2405
+      ],
+      "scope": "native frame/label plus app-owned drawing; chart, picture-clipping and VB drawing APIs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.PictureBox",
+      "name": "PictureBox",
+      "page": 3,
+      "control_ids": [
+        2400,
+        2401,
+        2402,
+        2403,
+        2405
+      ],
+      "scope": "native frame/label plus app-owned drawing; chart, picture-clipping and VB drawing APIs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.Label",
+      "name": "Label",
+      "page": 3,
+      "control_ids": [
+        2400,
+        2401,
+        2402,
+        2403,
+        2405
+      ],
+      "scope": "native frame/label plus app-owned drawing; chart, picture-clipping and VB drawing APIs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.Label",
+      "name": "Label",
+      "page": 3,
+      "control_ids": [
+        2400,
+        2401,
+        2402,
+        2403,
+        2405
+      ],
+      "scope": "native frame/label plus app-owned drawing; chart, picture-clipping and VB drawing APIs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.Image",
+      "name": "Image",
+      "page": 3,
+      "control_ids": [
+        2400,
+        2401,
+        2402,
+        2403,
+        2405
+      ],
+      "scope": "native frame/label plus app-owned drawing; chart, picture-clipping and VB drawing APIs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.Image",
+      "name": "Image",
+      "page": 3,
+      "control_ids": [
+        2400,
+        2401,
+        2402,
+        2403,
+        2405
+      ],
+      "scope": "native frame/label plus app-owned drawing; chart, picture-clipping and VB drawing APIs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.Shape",
+      "name": "Shape",
+      "page": 3,
+      "control_ids": [
+        2400,
+        2401,
+        2402,
+        2403,
+        2405
+      ],
+      "scope": "native frame/label plus app-owned drawing; chart, picture-clipping and VB drawing APIs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.Shape",
+      "name": "Shape",
+      "page": 3,
+      "control_ids": [
+        2400,
+        2401,
+        2402,
+        2403,
+        2405
+      ],
+      "scope": "native frame/label plus app-owned drawing; chart, picture-clipping and VB drawing APIs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.Line",
+      "name": "Line",
+      "page": 3,
+      "control_ids": [
+        2400,
+        2401,
+        2402,
+        2403,
+        2405
+      ],
+      "scope": "native frame/label plus app-owned drawing; chart, picture-clipping and VB drawing APIs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.Line",
+      "name": "Line",
+      "page": 3,
+      "control_ids": [
+        2400,
+        2401,
+        2402,
+        2403,
+        2405
+      ],
+      "scope": "native frame/label plus app-owned drawing; chart, picture-clipping and VB drawing APIs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.Timer",
+      "name": "Timer",
+      "page": 6,
+      "control_ids": [
+        2701,
+        2711,
+        2712,
+        2713,
+        2720,
+        2721,
+        2722,
+        2730,
+        2731
+      ],
+      "scope": "native rich text/property pages/file picker, timer and local records; numeric edit is not a general mask; binding/database/OCX dialogs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.Timer",
+      "name": "Timer",
+      "page": 6,
+      "control_ids": [
+        2701,
+        2711,
+        2712,
+        2713,
+        2720,
+        2721,
+        2722,
+        2730,
+        2731
+      ],
+      "scope": "native rich text/property pages/file picker, timer and local records; numeric edit is not a general mask; binding/database/OCX dialogs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.Data",
+      "name": "Data",
+      "page": 6,
+      "control_ids": [
+        2701,
+        2711,
+        2712,
+        2713,
+        2720,
+        2721,
+        2722,
+        2730,
+        2731
+      ],
+      "scope": "native rich text/property pages/file picker, timer and local records; numeric edit is not a general mask; binding/database/OCX dialogs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.Data",
+      "name": "Data",
+      "page": 6,
+      "control_ids": [
+        2701,
+        2711,
+        2712,
+        2713,
+        2720,
+        2721,
+        2722,
+        2730,
+        2731
+      ],
+      "scope": "native rich text/property pages/file picker, timer and local records; numeric edit is not a general mask; binding/database/OCX dialogs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.OLE",
+      "name": "OLE",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.OLE",
+      "name": "OLE",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.Form",
+      "name": "Form",
+      "page": -1,
+      "control_ids": [
+        1001,
+        1002,
+        1003,
+        2000,
+        2007
+      ],
+      "scope": "main demo top-level and native menus",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.Form",
+      "name": "Form",
+      "page": -1,
+      "control_ids": [
+        1001,
+        1002,
+        1003,
+        2000,
+        2007
+      ],
+      "scope": "main demo top-level and native menus",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.MDIForm",
+      "name": "MDIForm",
+      "page": 7,
+      "control_ids": [
+        2800
+      ],
+      "scope": "native counterpart; not the VB/OCX implementation",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.MDIForm",
+      "name": "MDIForm",
+      "page": 7,
+      "control_ids": [
+        2800
+      ],
+      "scope": "native counterpart; not the VB/OCX implementation",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.UserControl",
+      "name": "UserControl",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.UserControl",
+      "name": "UserControl",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.UserDocument",
+      "name": "UserDocument",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.UserDocument",
+      "name": "UserDocument",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.PropertyPage",
+      "name": "PropertyPage",
+      "page": 6,
+      "control_ids": [
+        2701,
+        2711,
+        2712,
+        2713,
+        2720,
+        2721,
+        2722,
+        2730,
+        2731
+      ],
+      "scope": "native rich text/property pages/file picker, timer and local records; numeric edit is not a general mask; binding/database/OCX dialogs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.PropertyPage",
+      "name": "PropertyPage",
+      "page": 6,
+      "control_ids": [
+        2701,
+        2711,
+        2712,
+        2713,
+        2720,
+        2721,
+        2722,
+        2730,
+        2731
+      ],
+      "scope": "native rich text/property pages/file picker, timer and local records; numeric edit is not a general mask; binding/database/OCX dialogs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.Menu",
+      "name": "Menu",
+      "page": -1,
+      "control_ids": [
+        1001,
+        1002,
+        1003,
+        2000,
+        2007
+      ],
+      "scope": "main demo top-level and native menus",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.Menu",
+      "name": "Menu",
+      "page": -1,
+      "control_ids": [
+        1001,
+        1002,
+        1003,
+        2000,
+        2007
+      ],
+      "scope": "main demo top-level and native menus",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.comctl32.ocx:Toolbar",
+      "name": "Toolbar",
+      "page": 4,
+      "control_ids": [
+        2500,
+        2501,
+        2502,
+        2503,
+        2504,
+        2505
+      ],
+      "scope": "native counterparts; OCX/SSTab container semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.comctl32.ocx:Toolbar",
+      "name": "Toolbar",
+      "page": 4,
+      "control_ids": [
+        2500,
+        2501,
+        2502,
+        2503,
+        2504,
+        2505
+      ],
+      "scope": "native counterparts; OCX/SSTab container semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.comctl32.ocx:StatusBar",
+      "name": "StatusBar",
+      "page": 4,
+      "control_ids": [
+        2500,
+        2501,
+        2502,
+        2503,
+        2504,
+        2505
+      ],
+      "scope": "native counterparts; OCX/SSTab container semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.comctl32.ocx:StatusBar",
+      "name": "StatusBar",
+      "page": 4,
+      "control_ids": [
+        2500,
+        2501,
+        2502,
+        2503,
+        2504,
+        2505
+      ],
+      "scope": "native counterparts; OCX/SSTab container semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.comctl32.ocx:TabStrip",
+      "name": "TabStrip",
+      "page": 4,
+      "control_ids": [
+        2500,
+        2501,
+        2502,
+        2503,
+        2504,
+        2505
+      ],
+      "scope": "native counterparts; OCX/SSTab container semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.comctl32.ocx:TabStrip",
+      "name": "TabStrip",
+      "page": 4,
+      "control_ids": [
+        2500,
+        2501,
+        2502,
+        2503,
+        2504,
+        2505
+      ],
+      "scope": "native counterparts; OCX/SSTab container semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.comctl32.ocx:TreeView",
+      "name": "TreeView",
+      "page": 4,
+      "control_ids": [
+        2500,
+        2501,
+        2502,
+        2503,
+        2504,
+        2505
+      ],
+      "scope": "native counterparts; OCX/SSTab container semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.comctl32.ocx:TreeView",
+      "name": "TreeView",
+      "page": 4,
+      "control_ids": [
+        2500,
+        2501,
+        2502,
+        2503,
+        2504,
+        2505
+      ],
+      "scope": "native counterparts; OCX/SSTab container semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.comctl32.ocx:ListView",
+      "name": "ListView",
+      "page": 4,
+      "control_ids": [
+        2500,
+        2501,
+        2502,
+        2503,
+        2504,
+        2505
+      ],
+      "scope": "native counterparts; OCX/SSTab container semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.comctl32.ocx:ListView",
+      "name": "ListView",
+      "page": 4,
+      "control_ids": [
+        2500,
+        2501,
+        2502,
+        2503,
+        2504,
+        2505
+      ],
+      "scope": "native counterparts; OCX/SSTab container semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.comctl32.ocx:ProgressBar",
+      "name": "ProgressBar",
+      "page": 5,
+      "control_ids": [
+        2601,
+        2602,
+        2603,
+        2604,
+        2605,
+        2611,
+        2612,
+        2613
+      ],
+      "scope": "native counterpart; not the VB/OCX implementation",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.comctl32.ocx:ProgressBar",
+      "name": "ProgressBar",
+      "page": 5,
+      "control_ids": [
+        2601,
+        2602,
+        2603,
+        2604,
+        2605,
+        2611,
+        2612,
+        2613
+      ],
+      "scope": "native counterpart; not the VB/OCX implementation",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.comctl32.ocx:Slider",
+      "name": "Slider",
+      "page": 5,
+      "control_ids": [
+        2601,
+        2602,
+        2603,
+        2604,
+        2605,
+        2611,
+        2612,
+        2613
+      ],
+      "scope": "native counterpart; not the VB/OCX implementation",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.comctl32.ocx:Slider",
+      "name": "Slider",
+      "page": 5,
+      "control_ids": [
+        2601,
+        2602,
+        2603,
+        2604,
+        2605,
+        2611,
+        2612,
+        2613
+      ],
+      "scope": "native counterpart; not the VB/OCX implementation",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.comctl32.ocx:ImageList",
+      "name": "ImageList",
+      "page": 4,
+      "control_ids": [
+        2500,
+        2501,
+        2502,
+        2503,
+        2504,
+        2505
+      ],
+      "scope": "native counterparts; OCX/SSTab container semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.comctl32.ocx:ImageList",
+      "name": "ImageList",
+      "page": 4,
+      "control_ids": [
+        2500,
+        2501,
+        2502,
+        2503,
+        2504,
+        2505
+      ],
+      "scope": "native counterparts; OCX/SSTab container semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.mscomctl.ocx:Toolbar",
+      "name": "Toolbar",
+      "page": 4,
+      "control_ids": [
+        2500,
+        2501,
+        2502,
+        2503,
+        2504,
+        2505
+      ],
+      "scope": "native counterparts; OCX/SSTab container semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.mscomctl.ocx:StatusBar",
+      "name": "StatusBar",
+      "page": 4,
+      "control_ids": [
+        2500,
+        2501,
+        2502,
+        2503,
+        2504,
+        2505
+      ],
+      "scope": "native counterparts; OCX/SSTab container semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.mscomctl.ocx:TabStrip",
+      "name": "TabStrip",
+      "page": 4,
+      "control_ids": [
+        2500,
+        2501,
+        2502,
+        2503,
+        2504,
+        2505
+      ],
+      "scope": "native counterparts; OCX/SSTab container semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.mscomctl.ocx:TreeView",
+      "name": "TreeView",
+      "page": 4,
+      "control_ids": [
+        2500,
+        2501,
+        2502,
+        2503,
+        2504,
+        2505
+      ],
+      "scope": "native counterparts; OCX/SSTab container semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.mscomctl.ocx:ListView",
+      "name": "ListView",
+      "page": 4,
+      "control_ids": [
+        2500,
+        2501,
+        2502,
+        2503,
+        2504,
+        2505
+      ],
+      "scope": "native counterparts; OCX/SSTab container semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.mscomctl.ocx:ProgressBar",
+      "name": "ProgressBar",
+      "page": 5,
+      "control_ids": [
+        2601,
+        2602,
+        2603,
+        2604,
+        2605,
+        2611,
+        2612,
+        2613
+      ],
+      "scope": "native counterpart; not the VB/OCX implementation",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.mscomctl.ocx:Slider",
+      "name": "Slider",
+      "page": 5,
+      "control_ids": [
+        2601,
+        2602,
+        2603,
+        2604,
+        2605,
+        2611,
+        2612,
+        2613
+      ],
+      "scope": "native counterpart; not the VB/OCX implementation",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.mscomctl.ocx:ImageList",
+      "name": "ImageList",
+      "page": 4,
+      "control_ids": [
+        2500,
+        2501,
+        2502,
+        2503,
+        2504,
+        2505
+      ],
+      "scope": "native counterparts; OCX/SSTab container semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.mscomctl.ocx:ImageCombo",
+      "name": "ImageCombo",
+      "page": 5,
+      "control_ids": [
+        2601,
+        2602,
+        2603,
+        2604,
+        2605,
+        2611,
+        2612,
+        2613
+      ],
+      "scope": "native counterpart; not the VB/OCX implementation",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.comct232.ocx:Animation",
+      "name": "Animation",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.comct232.ocx:Animation",
+      "name": "Animation",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.comct232.ocx:UpDown",
+      "name": "UpDown",
+      "page": 5,
+      "control_ids": [
+        2601,
+        2602,
+        2603,
+        2604,
+        2605,
+        2611,
+        2612,
+        2613
+      ],
+      "scope": "native counterpart; not the VB/OCX implementation",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.comct232.ocx:UpDown",
+      "name": "UpDown",
+      "page": 5,
+      "control_ids": [
+        2601,
+        2602,
+        2603,
+        2604,
+        2605,
+        2611,
+        2612,
+        2613
+      ],
+      "scope": "native counterpart; not the VB/OCX implementation",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.mscomct2.ocx:Animation",
+      "name": "Animation",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.mscomct2.ocx:UpDown",
+      "name": "UpDown",
+      "page": 5,
+      "control_ids": [
+        2601,
+        2602,
+        2603,
+        2604,
+        2605,
+        2611,
+        2612,
+        2613
+      ],
+      "scope": "native counterpart; not the VB/OCX implementation",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.mscomct2.ocx:MonthView",
+      "name": "MonthView",
+      "page": 5,
+      "control_ids": [
+        2601,
+        2602,
+        2603,
+        2604,
+        2605,
+        2611,
+        2612,
+        2613
+      ],
+      "scope": "native counterpart; not the VB/OCX implementation",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.mscomct2.ocx:DTPicker",
+      "name": "DTPicker",
+      "page": 5,
+      "control_ids": [
+        2601,
+        2602,
+        2603,
+        2604,
+        2605,
+        2611,
+        2612,
+        2613
+      ],
+      "scope": "native counterpart; not the VB/OCX implementation",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.mscomct2.ocx:FlatScrollBar",
+      "name": "FlatScrollBar",
+      "page": 2,
+      "control_ids": [
+        2300,
+        2301,
+        2302,
+        2303,
+        2310,
+        2311,
+        2312
+      ],
+      "scope": "native scroll/list counterparts; OS directory listing, not VB file-control protocol or flat-scroll API",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.comct332.ocx:CoolBar",
+      "name": "CoolBar",
+      "page": 4,
+      "control_ids": [
+        2500,
+        2501,
+        2502,
+        2503,
+        2504,
+        2505
+      ],
+      "scope": "native counterparts; OCX/SSTab container semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.comdlg32.ocx:CommonDialog",
+      "name": "CommonDialog",
+      "page": 6,
+      "control_ids": [
+        2701,
+        2711,
+        2712,
+        2713,
+        2720,
+        2721,
+        2722,
+        2730,
+        2731
+      ],
+      "scope": "native rich text/property pages/file picker, timer and local records; numeric edit is not a general mask; binding/database/OCX dialogs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.comdlg32.ocx:CommonDialog",
+      "name": "CommonDialog",
+      "page": 6,
+      "control_ids": [
+        2701,
+        2711,
+        2712,
+        2713,
+        2720,
+        2721,
+        2722,
+        2730,
+        2731
+      ],
+      "scope": "native rich text/property pages/file picker, timer and local records; numeric edit is not a general mask; binding/database/OCX dialogs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.richtx32.ocx:RichTextBox",
+      "name": "RichTextBox",
+      "page": 6,
+      "control_ids": [
+        2701,
+        2711,
+        2712,
+        2713,
+        2720,
+        2721,
+        2722,
+        2730,
+        2731
+      ],
+      "scope": "native rich text/property pages/file picker, timer and local records; numeric edit is not a general mask; binding/database/OCX dialogs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.richtx32.ocx:RichTextBox",
+      "name": "RichTextBox",
+      "page": 6,
+      "control_ids": [
+        2701,
+        2711,
+        2712,
+        2713,
+        2720,
+        2721,
+        2722,
+        2730,
+        2731
+      ],
+      "scope": "native rich text/property pages/file picker, timer and local records; numeric edit is not a general mask; binding/database/OCX dialogs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.tabctl32.ocx:SSTab",
+      "name": "SSTab",
+      "page": 4,
+      "control_ids": [
+        2500,
+        2501,
+        2502,
+        2503,
+        2504,
+        2505
+      ],
+      "scope": "native counterparts; OCX/SSTab container semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.tabctl32.ocx:SSTab",
+      "name": "SSTab",
+      "page": 4,
+      "control_ids": [
+        2500,
+        2501,
+        2502,
+        2503,
+        2504,
+        2505
+      ],
+      "scope": "native counterparts; OCX/SSTab container semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.msmask32.ocx:MaskEdBox",
+      "name": "MaskEdBox",
+      "page": 6,
+      "control_ids": [
+        2701,
+        2711,
+        2712,
+        2713,
+        2720,
+        2721,
+        2722,
+        2730,
+        2731
+      ],
+      "scope": "native rich text/property pages/file picker, timer and local records; numeric edit is not a general mask; binding/database/OCX dialogs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.msmask32.ocx:MaskEdBox",
+      "name": "MaskEdBox",
+      "page": 6,
+      "control_ids": [
+        2701,
+        2711,
+        2712,
+        2713,
+        2720,
+        2721,
+        2722,
+        2730,
+        2731
+      ],
+      "scope": "native rich text/property pages/file picker, timer and local records; numeric edit is not a general mask; binding/database/OCX dialogs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.msflxgrd.ocx:MSFlexGrid",
+      "name": "MSFlexGrid",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.msflxgrd.ocx:MSFlexGrid",
+      "name": "MSFlexGrid",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.mshflxgd.ocx:MSHFlexGrid",
+      "name": "MSHFlexGrid",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.dbgrid32.ocx:DBGrid",
+      "name": "DBGrid",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.dbgrid32.ocx:DBGrid",
+      "name": "DBGrid",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.dblist32.ocx:DBList",
+      "name": "DBList",
+      "page": 1,
+      "control_ids": [
+        2201,
+        2202,
+        2203,
+        2204,
+        2211,
+        2212,
+        2213,
+        2221,
+        2222
+      ],
+      "scope": "native editable/list counterpart; binding and OCX semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.dblist32.ocx:DBList",
+      "name": "DBList",
+      "page": 1,
+      "control_ids": [
+        2201,
+        2202,
+        2203,
+        2204,
+        2211,
+        2212,
+        2213,
+        2221,
+        2222
+      ],
+      "scope": "native editable/list counterpart; binding and OCX semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.dblist32.ocx:DBCombo",
+      "name": "DBCombo",
+      "page": 1,
+      "control_ids": [
+        2201,
+        2202,
+        2203,
+        2204,
+        2211,
+        2212,
+        2213,
+        2221,
+        2222
+      ],
+      "scope": "native editable/list counterpart; binding and OCX semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.dblist32.ocx:DBCombo",
+      "name": "DBCombo",
+      "page": 1,
+      "control_ids": [
+        2201,
+        2202,
+        2203,
+        2204,
+        2211,
+        2212,
+        2213,
+        2221,
+        2222
+      ],
+      "scope": "native editable/list counterpart; binding and OCX semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.msdatgrd.ocx:DataGrid",
+      "name": "DataGrid",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.msdatlst.ocx:DataList",
+      "name": "DataList",
+      "page": 1,
+      "control_ids": [
+        2201,
+        2202,
+        2203,
+        2204,
+        2211,
+        2212,
+        2213,
+        2221,
+        2222
+      ],
+      "scope": "native editable/list counterpart; binding and OCX semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.msdatlst.ocx:DataCombo",
+      "name": "DataCombo",
+      "page": 1,
+      "control_ids": [
+        2201,
+        2202,
+        2203,
+        2204,
+        2211,
+        2212,
+        2213,
+        2221,
+        2222
+      ],
+      "scope": "native editable/list counterpart; binding and OCX semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.msadodc.ocx:Adodc",
+      "name": "Adodc",
+      "page": 6,
+      "control_ids": [
+        2701,
+        2711,
+        2712,
+        2713,
+        2720,
+        2721,
+        2722,
+        2730,
+        2731
+      ],
+      "scope": "native rich text/property pages/file picker, timer and local records; numeric edit is not a general mask; binding/database/OCX dialogs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.msrdc20.ocx:MSRDC",
+      "name": "MSRDC",
+      "page": 6,
+      "control_ids": [
+        2701,
+        2711,
+        2712,
+        2713,
+        2720,
+        2721,
+        2722,
+        2730,
+        2731
+      ],
+      "scope": "native rich text/property pages/file picker, timer and local records; numeric edit is not a general mask; binding/database/OCX dialogs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.msrdc20.ocx:MSRDC",
+      "name": "MSRDC",
+      "page": 6,
+      "control_ids": [
+        2701,
+        2711,
+        2712,
+        2713,
+        2720,
+        2721,
+        2722,
+        2730,
+        2731
+      ],
+      "scope": "native rich text/property pages/file picker, timer and local records; numeric edit is not a general mask; binding/database/OCX dialogs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.msdatrep.ocx:DataRepeater",
+      "name": "DataRepeater",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.mschrt20.ocx:MSChart",
+      "name": "MSChart",
+      "page": 3,
+      "control_ids": [
+        2400,
+        2401,
+        2402,
+        2403,
+        2405
+      ],
+      "scope": "native frame/label plus app-owned drawing; chart, picture-clipping and VB drawing APIs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.mci32.ocx:MMControl",
+      "name": "MMControl",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.mci32.ocx:MMControl",
+      "name": "MMControl",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.picclp32.ocx:PictureClip",
+      "name": "PictureClip",
+      "page": 3,
+      "control_ids": [
+        2400,
+        2401,
+        2402,
+        2403,
+        2405
+      ],
+      "scope": "native frame/label plus app-owned drawing; chart, picture-clipping and VB drawing APIs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.picclp32.ocx:PictureClip",
+      "name": "PictureClip",
+      "page": 3,
+      "control_ids": [
+        2400,
+        2401,
+        2402,
+        2403,
+        2405
+      ],
+      "scope": "native frame/label plus app-owned drawing; chart, picture-clipping and VB drawing APIs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.mscomm32.ocx:MSComm",
+      "name": "MSComm",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.mscomm32.ocx:MSComm",
+      "name": "MSComm",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.msinet.ocx:Inet",
+      "name": "Inet",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.msinet.ocx:Inet",
+      "name": "Inet",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.msmapi32.ocx:MAPISession",
+      "name": "MAPISession",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.msmapi32.ocx:MAPISession",
+      "name": "MAPISession",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.msmapi32.ocx:MAPIMessages",
+      "name": "MAPIMessages",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.msmapi32.ocx:MAPIMessages",
+      "name": "MAPIMessages",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.mswinsck.ocx:Winsock",
+      "name": "Winsock",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.mswinsck.ocx:Winsock",
+      "name": "Winsock",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.sysinfo.ocx:SysInfo",
+      "name": "SysInfo",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.sysinfo.ocx:SysInfo",
+      "name": "SysInfo",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.MSWLess.ocx:WLCheck",
+      "name": "WLCheck",
+      "page": 0,
+      "control_ids": [
+        2101,
+        2102,
+        2110,
+        2111,
+        2112,
+        2113,
+        2114,
+        2115,
+        2121,
+        2122,
+        2123,
+        2124,
+        2130
+      ],
+      "scope": "native counterpart; not the VB/OCX implementation",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.MSWLess.ocx:WLCombo",
+      "name": "WLCombo",
+      "page": 1,
+      "control_ids": [
+        2201,
+        2202,
+        2203,
+        2204,
+        2211,
+        2212,
+        2213,
+        2221,
+        2222
+      ],
+      "scope": "native editable/list counterpart; binding and OCX semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.MSWLess.ocx:WLCommand",
+      "name": "WLCommand",
+      "page": 0,
+      "control_ids": [
+        2101,
+        2102,
+        2110,
+        2111,
+        2112,
+        2113,
+        2114,
+        2115,
+        2121,
+        2122,
+        2123,
+        2124,
+        2130
+      ],
+      "scope": "native counterpart; not the VB/OCX implementation",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.MSWLess.ocx:WLFrame",
+      "name": "WLFrame",
+      "page": 3,
+      "control_ids": [
+        2400,
+        2401,
+        2402,
+        2403,
+        2405
+      ],
+      "scope": "native frame/label plus app-owned drawing; chart, picture-clipping and VB drawing APIs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.MSWLess.ocx:WLHScroll",
+      "name": "WLHScroll",
+      "page": 2,
+      "control_ids": [
+        2300,
+        2301,
+        2302,
+        2303,
+        2310,
+        2311,
+        2312
+      ],
+      "scope": "native scroll/list counterparts; OS directory listing, not VB file-control protocol or flat-scroll API",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.MSWLess.ocx:WLList",
+      "name": "WLList",
+      "page": 1,
+      "control_ids": [
+        2201,
+        2202,
+        2203,
+        2204,
+        2211,
+        2212,
+        2213,
+        2221,
+        2222
+      ],
+      "scope": "native editable/list counterpart; binding and OCX semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.MSWLess.ocx:WLOption",
+      "name": "WLOption",
+      "page": 0,
+      "control_ids": [
+        2101,
+        2102,
+        2110,
+        2111,
+        2112,
+        2113,
+        2114,
+        2115,
+        2121,
+        2122,
+        2123,
+        2124,
+        2130
+      ],
+      "scope": "native counterpart; not the VB/OCX implementation",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.MSWLess.ocx:WLText",
+      "name": "WLText",
+      "page": 1,
+      "control_ids": [
+        2201,
+        2202,
+        2203,
+        2204,
+        2211,
+        2212,
+        2213,
+        2221,
+        2222
+      ],
+      "scope": "native editable/list counterpart; binding and OCX semantics not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.MSWLess.ocx:WLVScroll",
+      "name": "WLVScroll",
+      "page": 2,
+      "control_ids": [
+        2300,
+        2301,
+        2302,
+        2303,
+        2310,
+        2311,
+        2312
+      ],
+      "scope": "native scroll/list counterparts; OS directory listing, not VB file-control protocol or flat-scroll API",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.grid32.ocx:Grid",
+      "name": "Grid",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.grid32.ocx:Grid",
+      "name": "Grid",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.msoutl32.ocx:Outline",
+      "name": "Outline",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.msoutl32.ocx:Outline",
+      "name": "Outline",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.mschart.ocx:MSChart",
+      "name": "MSChart",
+      "page": 3,
+      "control_ids": [
+        2400,
+        2401,
+        2402,
+        2403,
+        2405
+      ],
+      "scope": "native frame/label plus app-owned drawing; chart, picture-clipping and VB drawing APIs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.mschart.ocx:MSChart",
+      "name": "MSChart",
+      "page": 3,
+      "control_ids": [
+        2400,
+        2401,
+        2402,
+        2403,
+        2405
+      ],
+      "scope": "native frame/label plus app-owned drawing; chart, picture-clipping and VB drawing APIs not implemented",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.msscript.ocx:ScriptControl",
+      "name": "ScriptControl",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB6.vbsql.ocx:Vbsql",
+      "name": "Vbsql",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.mciwndx.ocx:MCIWnd",
+      "name": "MCIWnd",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.mv141kn.ocx:MedView",
+      "name": "MedView",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    },
+    {
+      "audit_id": "VB5.mdtsg.ocx:SchGrid",
+      "name": "SchGrid",
+      "page": null,
+      "control_ids": [],
+      "scope": "no equivalent implementation in demo; nonvisual/embedded/app-content boundary or missing legacy visual counterpart; remains assigned to T17 implementation/final audit",
+      "real_VB_validation": "not established by S2 native demo"
+    }
+  ],
+  "pages": 8,
+  "architecture": "x64 native C17; never loads 32-bit VB/OCX",
+  "visual_limits": "existing renderer unchanged; calendar/date/ComboBoxEx/RichEdit/toolbars/icons may retain native rendering; image data are application-owned",
+  "tests": {
+    "status": "passed",
+    "seconds": 8.64573869999731,
+    "cases": [
+      {
+        "name": "abi32",
+        "exit_code": 0,
+        "seconds": 0.06889130000490695,
+        "marker": "ABI PASS width=32",
+        "status": "passed"
+      },
+      {
+        "name": "abi64",
+        "exit_code": 0,
+        "seconds": 0.06259360001422465,
+        "marker": "ABI PASS width=64",
+        "status": "passed"
+      },
+      {
+        "name": "demo-boundary",
+        "exit_code": 0,
+        "seconds": 0.2039128000033088,
+        "marker": "DEMO BOUNDARY PASS",
+        "status": "passed"
+      },
+      {
+        "name": "demo-pair",
+        "exit_code": 0,
+        "seconds": 3.9694476000149734,
+        "marker": "DEMO PAIR PASS",
+        "status": "passed"
+      },
+      {
+        "name": "initial-dual",
+        "exit_code": 0,
+        "seconds": 1.5616748000029474,
+        "marker": "LAUNCH MATRIX PASS",
+        "status": "passed"
+      },
+      {
+        "name": "cmd-nested",
+        "exit_code": 0,
+        "seconds": 2.7743229000479914,
+        "marker": "CMD NESTED PASS core four native PE edges",
+        "status": "passed"
+      }
+    ],
+    "sha256": {
+      "demo.exe": "b370c0655d7b94f775b23e2515d0923b0c65904753aaf28232be4a3e18f90e06",
+      "ntw16s32.dll": "40d57ff1741e655239d66071264b61cb30821d5a53dfef00ad0029b9208d456c",
+      "ntw16s64.dll": "226ee8c54ac13f2c363208a3ed1403bb215b4d842073886dc9fba2fbd0de9fd3",
+      "run16s.exe": "79afe5a703f1943e6e14a189d788bc1d255c5f6cdbd124abbd83480a90bd6cf9"
+    },
+    "scope": "six focused actual-package cases; private desktop/message/API, not physical input or all-OCX compatibility"
+  },
+  "delivery": {
+    "tested_package": "O:\\repos.hobby\\win16style\\build\\t17-package\\s2-clean\\candidate",
+    "status": "passed",
+    "files": [
+      {
+        "before": "fecb7080bc073c79344d31bd4422cbb0381c371dd3ea36b67c6d9b016dd1ae0f",
+        "expected": "b370c0655d7b94f775b23e2515d0923b0c65904753aaf28232be4a3e18f90e06",
+        "after": "b370c0655d7b94f775b23e2515d0923b0c65904753aaf28232be4a3e18f90e06",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s2-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe"
+      },
+      {
+        "before": "06a8b2e44780d5bca625556ca9037902c8e8041bddc122932e0aabcd3acd7ffd",
+        "expected": "40d57ff1741e655239d66071264b61cb30821d5a53dfef00ad0029b9208d456c",
+        "after": "40d57ff1741e655239d66071264b61cb30821d5a53dfef00ad0029b9208d456c",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s2-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll"
+      },
+      {
+        "before": "5a91975de16915aa1021ead0f281d8ca44b6f7cfe5fbe863939c73c1103bcd13",
+        "expected": "226ee8c54ac13f2c363208a3ed1403bb215b4d842073886dc9fba2fbd0de9fd3",
+        "after": "226ee8c54ac13f2c363208a3ed1403bb215b4d842073886dc9fba2fbd0de9fd3",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s2-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll"
+      },
+      {
+        "before": "3c6a0bb156afa2d4ecdb84a59301abf26978c371763fdd54c85d1180adc01c5d",
+        "expected": "79afe5a703f1943e6e14a189d788bc1d255c5f6cdbd124abbd83480a90bd6cf9",
+        "after": "79afe5a703f1943e6e14a189d788bc1d255c5f6cdbd124abbd83480a90bd6cf9",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s2-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe"
+      },
+      {
+        "before": "fecb7080bc073c79344d31bd4422cbb0381c371dd3ea36b67c6d9b016dd1ae0f",
+        "expected": "b370c0655d7b94f775b23e2515d0923b0c65904753aaf28232be4a3e18f90e06",
+        "after": "b370c0655d7b94f775b23e2515d0923b0c65904753aaf28232be4a3e18f90e06",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s2-publish\\before-1",
+        "path": "O:\\winnt\\system32\\demo.exe"
+      },
+      {
+        "before": "06a8b2e44780d5bca625556ca9037902c8e8041bddc122932e0aabcd3acd7ffd",
+        "expected": "40d57ff1741e655239d66071264b61cb30821d5a53dfef00ad0029b9208d456c",
+        "after": "40d57ff1741e655239d66071264b61cb30821d5a53dfef00ad0029b9208d456c",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s2-publish\\before-1",
+        "path": "O:\\winnt\\system32\\ntw16s32.dll"
+      },
+      {
+        "before": "5a91975de16915aa1021ead0f281d8ca44b6f7cfe5fbe863939c73c1103bcd13",
+        "expected": "226ee8c54ac13f2c363208a3ed1403bb215b4d842073886dc9fba2fbd0de9fd3",
+        "after": "226ee8c54ac13f2c363208a3ed1403bb215b4d842073886dc9fba2fbd0de9fd3",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s2-publish\\before-1",
+        "path": "O:\\winnt\\system32\\ntw16s64.dll"
+      },
+      {
+        "before": "3c6a0bb156afa2d4ecdb84a59301abf26978c371763fdd54c85d1180adc01c5d",
+        "expected": "79afe5a703f1943e6e14a189d788bc1d255c5f6cdbd124abbd83480a90bd6cf9",
+        "after": "79afe5a703f1943e6e14a189d788bc1d255c5f6cdbd124abbd83480a90bd6cf9",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s2-publish\\before-1",
+        "path": "O:\\winnt\\system32\\run16s.exe"
+      }
+    ],
+    "test_result": "O:\\repos.hobby\\win16style\\build\\t17-package\\s2-test\\result.json"
+  },
+  "screenshots": [
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s2\\catalog-0-0.png",
+      "sha256": "8e03cd0cffa17abdda465087af43ddcdb1c46d654437e869489ab9e2f3240c06",
+      "source_BMP_sha256": "670d88254887b3ef0e4e3003a162c90da88c961ffaab33aab43413e4c83cb431",
+      "size": [
+        1072,
+        878
+      ],
+      "capture": "native PrintWindow on owned private desktop; lossless RGB PNG, no composition or restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s2\\catalog-0-1.png",
+      "sha256": "1076d867a845f06da413d8847b807871c7d610eec86b3bb15a41fb27515c3a99",
+      "source_BMP_sha256": "e631222ba39dc128c2936c9b586bfe74279dc78b96e8d3c1ddb8e70ad176b882",
+      "size": [
+        1072,
+        878
+      ],
+      "capture": "native PrintWindow on owned private desktop; lossless RGB PNG, no composition or restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s2\\catalog-0-2.png",
+      "sha256": "0cc6d6e66fb8b0b18e3253e3ba0fa366e9000dfa863db258cd0d3ada54e4926a",
+      "source_BMP_sha256": "1d07f2f5d98a6e316a83bcb3e7ae32edb0e1797c070ae29f9fd44687c8e45a38",
+      "size": [
+        1072,
+        878
+      ],
+      "capture": "native PrintWindow on owned private desktop; lossless RGB PNG, no composition or restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s2\\catalog-0-3.png",
+      "sha256": "adabc3ec03d222f6a2aceb6c5bd35b2954097c51788202a4c859670053d063d9",
+      "source_BMP_sha256": "1c65c48f53d0919b06d93e1de1afd342a3855dd3f91a26fed310301dde40b699",
+      "size": [
+        1072,
+        878
+      ],
+      "capture": "native PrintWindow on owned private desktop; lossless RGB PNG, no composition or restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s2\\catalog-0-4.png",
+      "sha256": "49955ee18a20d1a45847a2943de7af8e8d4ead6d748d27c74c9d3fa4ec967528",
+      "source_BMP_sha256": "fa0258ca8a5d26d989c43710e95f9fdc9f01c6a8efd65928a05a4754da4f1604",
+      "size": [
+        1072,
+        878
+      ],
+      "capture": "native PrintWindow on owned private desktop; lossless RGB PNG, no composition or restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s2\\catalog-0-5.png",
+      "sha256": "5c98c9c01b49731d793f2a154c551fef5d5bb3e0c05fbff832151127c463c1f4",
+      "source_BMP_sha256": "883864572f028af372c7d3381a98f07b5d7a70ffc22c6086c41d66bb586ad130",
+      "size": [
+        1072,
+        878
+      ],
+      "capture": "native PrintWindow on owned private desktop; lossless RGB PNG, no composition or restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s2\\catalog-0-6.png",
+      "sha256": "5f5cf93bfa7326b473514817212c9126d56178ebad3baf82ed3117276e16c1a0",
+      "source_BMP_sha256": "895957154855cb2f8af7cb0f50d970758cbd9ff5e66e1ef7744cfbb68e45dac6",
+      "size": [
+        1072,
+        878
+      ],
+      "capture": "native PrintWindow on owned private desktop; lossless RGB PNG, no composition or restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s2\\catalog-0-7.png",
+      "sha256": "07452af02d5dfe6191df267d812e1daa1bf86a4d4d8351536a448d305b281eea",
+      "source_BMP_sha256": "a5bacc94be3d7c95cd7453cf597739f4f51368955145527bb02c152cd69e4d27",
+      "size": [
+        1072,
+        878
+      ],
+      "capture": "native PrintWindow on owned private desktop; lossless RGB PNG, no composition or restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s2\\catalog-1-0.png",
+      "sha256": "22af8ecef758f21f103f5c76e7180a87dc841ca63e136303bf4f648cc29d4dc1",
+      "source_BMP_sha256": "b920a60592ab4cd2c5971cf2e71bcc81da56ebcded0b57d9b5c90cc2d1a3ce87",
+      "size": [
+        1072,
+        878
+      ],
+      "capture": "native PrintWindow on owned private desktop; lossless RGB PNG, no composition or restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s2\\catalog-1-1.png",
+      "sha256": "78f7f25ff2a25464ec5d8e271cf1054ab43443d5d4f12ac71c057c826a2b54d4",
+      "source_BMP_sha256": "0522247e5abfd311e783a2396ad5251eb6b7d4b823ab24c1aeaece983adbb54e",
+      "size": [
+        1072,
+        878
+      ],
+      "capture": "native PrintWindow on owned private desktop; lossless RGB PNG, no composition or restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s2\\catalog-1-2.png",
+      "sha256": "d6a8021f4aea6c9aaef37635d85776b51715ec14d1979baa821386db0815b4fb",
+      "source_BMP_sha256": "b9d9c5da98097c4ba7e92c665b2e12946d09dff97c9bb80fa716b457fa964d8e",
+      "size": [
+        1072,
+        878
+      ],
+      "capture": "native PrintWindow on owned private desktop; lossless RGB PNG, no composition or restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s2\\catalog-1-3.png",
+      "sha256": "1cb778b16ec7e32bc4e2796e16f4a934e0a377164637deaaa906fd07f46c0ae2",
+      "source_BMP_sha256": "ff72743766044220ad84707d4806b5901dc620d8c7f2d7f8a5f282a6033c834d",
+      "size": [
+        1072,
+        878
+      ],
+      "capture": "native PrintWindow on owned private desktop; lossless RGB PNG, no composition or restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s2\\catalog-1-4.png",
+      "sha256": "f9b3e4f44f92a9ccdcf8453375a48090a9651ed7bd782f20092eb70db698a797",
+      "source_BMP_sha256": "074458b5066dec4065b9402b127acfc8567fc7ff10f8f655314faf4cf3b2c962",
+      "size": [
+        1072,
+        878
+      ],
+      "capture": "native PrintWindow on owned private desktop; lossless RGB PNG, no composition or restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s2\\catalog-1-5.png",
+      "sha256": "a15599d8348eaebd61388b5fcb70845603be570f52f28493ad45896d740e5375",
+      "source_BMP_sha256": "0c1d4abc5cf631338683a04bdf6b9bf1aa0ecb79b6d2882138c1f3f7141253cc",
+      "size": [
+        1072,
+        878
+      ],
+      "capture": "native PrintWindow on owned private desktop; lossless RGB PNG, no composition or restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s2\\catalog-1-6.png",
+      "sha256": "69c42433a0cf650a5a4f71a0e8b22b1d71158853db68662d01569de7ef734abd",
+      "source_BMP_sha256": "9848f728ca3f731d1c6c523dd5167b28c0821e5d259604b6dc6be08a47032328",
+      "size": [
+        1072,
+        878
+      ],
+      "capture": "native PrintWindow on owned private desktop; lossless RGB PNG, no composition or restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s2\\catalog-1-7.png",
+      "sha256": "4f3eba713dd8543a47367b130059ba581ac5700a3383744bf19ce25e4427c4ed",
+      "source_BMP_sha256": "368e2d62b9462c15a338e100f61046d016694ad104bf5b0ff163033b1761dfbf",
+      "size": [
+        1072,
+        878
+      ],
+      "capture": "native PrintWindow on owned private desktop; lossless RGB PNG, no composition or restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s2\\demo-injected.png",
+      "sha256": "bdf6a54e3eb05d3fe6d8a0ef76707a3bd7b4664568cff9e5daf0494e53f71a70",
+      "source_BMP_sha256": "23bdf41d880ca227ee4830af7da9550441956bb8a5abc0a0c3fa6169a8378d8b",
+      "size": [
+        862,
+        724
+      ],
+      "capture": "native PrintWindow on owned private desktop; lossless RGB PNG, no composition or restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s2\\demo-native.png",
+      "sha256": "e834bb78469f89d9d52f21d0687dad27a4f20070acd7a9b552254b25267f741b",
+      "source_BMP_sha256": "26f6e6a1c3fbf71422834aad76d20a3ef5fecd3b872b412a262c21895bac991f",
+      "size": [
+        862,
+        724
+      ],
+      "capture": "native PrintWindow on owned private desktop; lossless RGB PNG, no composition or restyling"
+    }
+  ],
+  "negative": {
+    "status": "old demo rejected as expected",
+    "exit_code": 1,
+    "seconds": 0.32855959999142215,
+    "diagnostic": "DEMO OBSERVER FAIL 162 error=18: GetMenuItemCount(GetMenu(w))==3 && GetMenuItemCount(GetSubMenu(GetMenu(w),0))==3\r\n",
+    "scope": "new gallery/menu absent in old demo; not a VB compatibility or renderer negative"
+  },
+  "preservation": {
+    "base_commit": "4386bad3b002c0b2a1f7e4460b75c0d6c6358920",
+    "unchanged_renderer_launcher_paths": [
+      "src/ntw16s-dll/api.h",
+      "src/ntw16s-dll/attachment.c",
+      "src/ntw16s-dll/attachment.h",
+      "src/ntw16s-dll/combo_glyph.h",
+      "src/ntw16s-dll/controls.c",
+      "src/ntw16s-dll/controls.h",
+      "src/ntw16s-dll/control_class.h",
+      "src/ntw16s-dll/control_glyphs.h",
+      "src/ntw16s-dll/control_protocol.c",
+      "src/ntw16s-dll/control_protocol.h",
+      "src/ntw16s-dll/control_scope.c",
+      "src/ntw16s-dll/dllmain.c",
+      "src/ntw16s-dll/font.c",
+      "src/ntw16s-dll/font.h",
+      "src/ntw16s-dll/frame_buttons.h",
+      "src/ntw16s-dll/header_paint.c",
+      "src/ntw16s-dll/header_paint.h",
+      "src/ntw16s-dll/layout.c",
+      "src/ntw16s-dll/layout.h",
+      "src/ntw16s-dll/menu_bar.c",
+      "src/ntw16s-dll/menu_bar.h",
+      "src/ntw16s-dll/menu_bar_paint.c",
+      "src/ntw16s-dll/menu_glyphs.h",
+      "src/ntw16s-dll/menu_items.c",
+      "src/ntw16s-dll/menu_items.h",
+      "src/ntw16s-dll/menu_layout.c",
+      "src/ntw16s-dll/menu_layout.h",
+      "src/ntw16s-dll/menu_paint.c",
+      "src/ntw16s-dll/menu_paint.h",
+      "src/ntw16s-dll/menu_scope.c",
+      "src/ntw16s-dll/menu_scope.h",
+      "src/ntw16s-dll/native_api.c",
+      "src/ntw16s-dll/native_api.h",
+      "src/ntw16s-dll/ntw16s.h",
+      "src/ntw16s-dll/ntw16s32.def",
+      "src/ntw16s-dll/ntw16s64.def",
+      "src/ntw16s-dll/progress_paint.c",
+      "src/ntw16s-dll/progress_paint.h",
+      "src/ntw16s-dll/README.md",
+      "src/ntw16s-dll/resources.md",
+      "src/ntw16s-dll/scroll_glyphs.h",
+      "src/ntw16s-dll/scroll_layout.c",
+      "src/ntw16s-dll/scroll_layout.h",
+      "src/ntw16s-dll/scroll_track.c",
+      "src/ntw16s-dll/scroll_track.h",
+      "src/ntw16s-dll/tab_paint.c",
+      "src/ntw16s-dll/tab_paint.h",
+      "src/ntw16s-dll/theme.c",
+      "src/ntw16s-dll/theme.h",
+      "src/ntw16s-dll/trackbar_paint.c",
+      "src/ntw16s-dll/trackbar_paint.h",
+      "src/ntw16s-dll/updown_paint.c",
+      "src/ntw16s-dll/updown_paint.h",
+      "src/ntw16s-dll/vb_text.c",
+      "src/ntw16s-dll/vb_text.h",
+      "src/ntw16s-dll/win16_style.c",
+      "src/ntw16s-dll/win16_style.h",
+      "src/ntw16s-dll/injection/context.c",
+      "src/ntw16s-dll/injection/create_process.c",
+      "src/ntw16s-dll/injection/entry.c",
+      "src/ntw16s-dll/injection/helper.c",
+      "src/ntw16s-dll/injection/injection.h",
+      "src/ntw16s-dll/injection/installer.c",
+      "src/ntw16s-dll/injection/intercept.h",
+      "src/ntw16s-dll/injection/staging.c",
+      "src/ntw16s-dll/injection/staging.h",
+      "src/ntw16s-dll/injection/startup_hooks.c",
+      "src/ntw16s-dll/injection/startup_hooks.h",
+      "src/ntw16s-dll/injection/subclass32.def",
+      "src/ntw16s-dll/injection/subclass64.def",
+      "src/ntw16s-dll/injection/unwind.c",
+      "src/ntw16s-dll/injection/unwind.h",
+      "src/ntw16s-dll/injection/window_titles.c",
+      "src/ntw16s-dll/injection/minhook/AUTHORS.txt",
+      "src/ntw16s-dll/injection/minhook/LICENSE.txt",
+      "src/ntw16s-dll/injection/minhook/src/buffer.c",
+      "src/ntw16s-dll/injection/minhook/src/buffer.h",
+      "src/ntw16s-dll/injection/minhook/src/trampoline.c",
+      "src/ntw16s-dll/injection/minhook/src/trampoline.h",
+      "src/ntw16s-dll/injection/minhook/src/hde/hde32.c",
+      "src/ntw16s-dll/injection/minhook/src/hde/hde32.h",
+      "src/ntw16s-dll/injection/minhook/src/hde/hde64.c",
+      "src/ntw16s-dll/injection/minhook/src/hde/hde64.h",
+      "src/ntw16s-dll/injection/minhook/src/hde/pstdint.h",
+      "src/ntw16s-dll/injection/minhook/src/hde/table32.h",
+      "src/ntw16s-dll/injection/minhook/src/hde/table64.h",
+      "src/run16s-exe/elevation.c",
+      "src/run16s-exe/elevation.h",
+      "src/run16s-exe/main.c",
+      "src/run16s-exe/README.md",
+      "src/run16s-exe/run16s.manifest",
+      "src/run16s-exe/startup_error.c",
+      "src/run16s-exe/startup_error.h"
+    ],
+    "comparison": "Git LF normalization; five original glyph headers and provenance also pass byte-exact identity gate"
+  },
+  "development_failures": [
+    "dev2: WaitForInputIdle was insufficient to assert modeless property window destruction; switched to exact native destroy event",
+    "dev3: styled close event timed out once; added deterministic post-dispatch modeless-sheet retirement before idle; final formal package close passed bare/styled"
+  ],
+  "cleanup_limits": "one representative warm buttons-page reopen GDI-stable; native modules/cache allocations after first load recorded, not claimed zero across all controls",
+  "integration_log_excerpt": "DEMO INTERACTION PASS styled=0 posted Tab=7 focus verified via GUI thread; dpi=144 scrollbar thickness=26\nDEMO DIALOG EVENT class=#32770 title=About Win16 Style Demo\nDEMO ABOUT/MOVE PASS styled=0 modal dialog opened/closed and exact window displacement\nDEMO CATALOG PAGE PASS styled=0 page=0 gdi=76\nDEMO CATALOG PAGE PASS styled=0 page=1 gdi=84\nDEMO CATALOG PAGE PASS styled=0 page=2 gdi=84\nDEMO CATALOG PAGE PASS styled=0 page=3 gdi=84\nDEMO CATALOG PAGE PASS styled=0 page=4 gdi=86\nDEMO CATALOG PAGE PASS styled=0 page=5 gdi=89\nDEMO DIALOG EVENT class=Win16StyleDemoCatalog title=Text and special objects\nDEMO PROPERTY CLOSE styled=0 wait=0 exists=0 current=0000000000000000 visible=0\nDEMO CATALOG PAGE PASS styled=0 page=6 gdi=103\nDEMO CATALOG PAGE PASS styled=0 page=7 gdi=103\nDEMO CATALOG PASS styled=0 pages=8 reopen=1 resources_stable=1 initial=63 final=103\nDEMO OBSERVE PASS styled=0 same image, six classes, data/notifications/menu/window commands, text advance=41 caption pixels=0\nDEMO INTERACTION PASS styled=1 posted Tab=7 focus verified via GUI thread; dpi=144 scrollbar thickness=26\nDEMO CAPTURE PASS styled=1 scrollbar arrow press/release position=29\nDEMO DIALOG EVENT class=#32770 title=About Win16 Style Demo\nDEMO ABOUT/MOVE PASS styled=1 modal dialog opened/closed and exact window displacement\nDEMO CATALOG PAGE PASS styled=1 page=0 gdi=69\nDEMO CATALOG PAGE PASS styled=1 page=1 gdi=71\nDEMO CATALOG PAGE PASS styled=1 page=2 gdi=71\nDEMO CATALOG PAGE PASS styled=1 page=3 gdi=71\nDEMO CATALOG PAGE PASS styled=1 page=4 gdi=75\nDEMO CATALOG PAGE PASS styled=1 page=5 gdi=78\nDEMO DIALOG EVENT class=Win16StyleDemoCatalog title=Text and special objects\nDEMO PROPERTY CLOSE styled=1 wait=0 exists=0 current=0000000000000000 visible=0\nDEMO CATALOG PAGE PASS styled=1 page=6 gdi=92\nDEMO CATALOG PAGE PASS styled=1 page=7 gdi=94\nDEMO CATALOG PASS styled=1 pages=8 reopen=1 resources_stable=1 initial=65 final=94\nDEMO OBSERVE PASS styled=1 same image, six classes, data/notifications/menu/window commands, text advance=41 caption pixels=26142\nDEMO PAIR PASS external module/appearance/business observations on private desktop; physical input not claimed\n",
+  "diff_statistics": {
+    "scope": "P1 staged snapshot before adding this statistics record; all textual paths and narrower CMake/src/tests/tools subset; no paths deleted/moved",
+    "text_added": 3109,
+    "text_deleted": 570,
+    "text_net": 2539,
+    "code_and_test_added": 352,
+    "code_and_test_deleted": 38,
+    "code_and_test_net": 314,
+    "files": [
+      {
+        "path": "CMakeLists.txt",
+        "added": "3",
+        "deleted": "3"
+      },
+      {
+        "path": "assets/demo.exe",
+        "added": "-",
+        "deleted": "-"
+      },
+      {
+        "path": "assets/ntw16s32.dll",
+        "added": "-",
+        "deleted": "-"
+      },
+      {
+        "path": "assets/ntw16s64.dll",
+        "added": "-",
+        "deleted": "-"
+      },
+      {
+        "path": "assets/run16s.exe",
+        "added": "-",
+        "deleted": "-"
+      },
+      {
+        "path": "docs/design/UI.md",
+        "added": "6",
+        "deleted": "0"
+      },
+      {
+        "path": "docs/etc/README.md",
+        "added": "2",
+        "deleted": "0"
+      },
+      {
+        "path": "docs/etc/evidence/vb-demo-gallery.json",
+        "added": "2526",
+        "deleted": "0"
+      },
+      {
+        "path": "docs/etc/import/import-receipts.json",
+        "added": "32",
+        "deleted": "14"
+      },
+      {
+        "path": "docs/etc/release.json",
+        "added": "142",
+        "deleted": "510"
+      },
+      {
+        "path": "docs/history/M0-T17-S2-native-demo.md",
+        "added": "40",
+        "deleted": "0"
+      },
+      {
+        "path": "docs/states/CURRENT.md",
+        "added": "9",
+        "deleted": "8"
+      },
+      {
+        "path": "src/demo-exe/README.md",
+        "added": "18",
+        "deleted": "10"
+      },
+      {
+        "path": "src/demo-exe/catalog.c",
+        "added": "241",
+        "deleted": "0"
+      },
+      {
+        "path": "src/demo-exe/catalog.rc",
+        "added": "19",
+        "deleted": "0"
+      },
+      {
+        "path": "src/demo-exe/gallery.c",
+        "added": "11",
+        "deleted": "3"
+      },
+      {
+        "path": "src/demo-exe/version.rc",
+        "added": "4",
+        "deleted": "4"
+      },
+      {
+        "path": "src/ntw16s-dll/version.rc",
+        "added": "4",
+        "deleted": "4"
+      },
+      {
+        "path": "src/run16s-exe/version.rc",
+        "added": "4",
+        "deleted": "4"
+      },
+      {
+        "path": "tests/demo-exe/boundary.py",
+        "added": "6",
+        "deleted": "4"
+      },
+      {
+        "path": "tests/demo-exe/observe.c",
+        "added": "41",
+        "deleted": "5"
+      },
+      {
+        "path": "tools/check_package.py",
+        "added": "1",
+        "deleted": "1"
+      }
+    ],
+    "preserved_owners": "all preexisting T15 retained sources, T17 S1 research, other-task scratch, stable caches and prior external PNG; only current S2 changes staged"
+  }
+}

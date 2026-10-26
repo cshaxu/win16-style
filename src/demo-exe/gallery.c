@@ -2,6 +2,12 @@
  * Windows owns appearance, control data, notifications and input behavior. */
 #include <windows.h>
 #include <stdio.h>
+BOOL demo_catalog_register(HINSTANCE);
+BOOL demo_catalog_menu(HMENU);
+void demo_catalog_open(HWND,unsigned);
+BOOL demo_catalog_message(MSG *);
+void demo_catalog_close(void);
+void demo_catalog_dispatched(void);
 enum {APPLY=100,EDIT_TEXT,CHECK_OPTION,RADIO_A,RADIO_B,LIST,COMBO,SCROLL,STATUS,
       LABEL,GROUP,RESET=1001,EXIT_APP,ABOUT};
 static const struct {
@@ -58,6 +64,7 @@ static LRESULT CALLBACK window_proc(HWND window,UINT message,WPARAM a,LPARAM b)
         return populate(window,creation->hInstance)?0:-1;}
     if(message==DM_GETDEFID)return MAKELRESULT(APPLY,DC_HASDEFID);
     if(message==WM_COMMAND){int id=LOWORD(a),notification=HIWORD(a);WCHAR text[256],line[300];
+        if(id>=2000 && id<2008){demo_catalog_open(window,(unsigned)(id-2000));return 0;}
         if(id==EXIT_APP){DestroyWindow(window);return 0;}
         if(id==RESET){reset(window);return 0;}
         if(id==ABOUT){MessageBoxW(window,L"A native Windows controls demonstration.",L"About Win16 Style Demo",MB_OK|MB_ICONINFORMATION);return 0;}
@@ -97,6 +104,7 @@ static HMENU menu(void)
        !AppendMenuW(file,MF_STRING,EXIT_APP,L"E&xit") || !AppendMenuW(help,MF_STRING,ABOUT,L"&About"))goto failure;
     if(!AppendMenuW(bar,MF_POPUP,(UINT_PTR)file,L"&File"))goto failure;
     file=NULL;
+    if(!demo_catalog_menu(bar))goto failure;
     if(!AppendMenuW(bar,MF_POPUP,(UINT_PTR)help,L"&Help"))goto failure;
     help=NULL;
     return bar;
@@ -111,7 +119,7 @@ int demo_run(HINSTANCE instance,int show)
     WNDCLASSW cls={0};MSG message;HMENU bar=menu();
     cls.lpfnWndProc=window_proc;cls.hInstance=instance;cls.hCursor=LoadCursorW(NULL,IDC_ARROW);
     cls.hbrBackground=(HBRUSH)(COLOR_BTNFACE+1);cls.lpszClassName=L"Win16StyleDemo";
-    if(!bar || !RegisterClassW(&cls)){if(bar)DestroyMenu(bar);return 1;}
+    if(!bar || !demo_catalog_register(instance) || !RegisterClassW(&cls)){if(bar)DestroyMenu(bar);return 1;}
     HWND window=CreateWindowW(cls.lpszClassName,L"Win16 Style Demo",WS_OVERLAPPEDWINDOW|WS_CLIPCHILDREN,
         CW_USEDEFAULT,CW_USEDEFAULT,600,500,NULL,bar,instance,NULL);
     if(!window){DestroyMenu(bar);return 1;}
@@ -121,6 +129,6 @@ int demo_run(HINSTANCE instance,int show)
     ShowWindow(window,show);UpdateWindow(window);SetFocus(GetDlgItem(window,EDIT_TEXT));
     int result;
     while((result=GetMessageW(&message,NULL,0,0))>0)
-        if(!IsDialogMessageW(window,&message)){TranslateMessage(&message);DispatchMessageW(&message);}
-    return result<0?1:(int)message.wParam;
+        if(!demo_catalog_message(&message) && !IsDialogMessageW(window,&message)){TranslateMessage(&message);DispatchMessageW(&message);demo_catalog_dispatched();}
+    demo_catalog_close();return result<0?1:(int)message.wParam;
 }

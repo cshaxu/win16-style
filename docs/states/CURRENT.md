@@ -21,7 +21,7 @@ S3起连续分S实施，最后独立收口S逐项审计；T17/M0开放，其他�
 | Applicable Rules | Task Reading Set/架构/编码/UI/资源来源；C17/GCC/Ninja/ccache；禁computer-use/兄弟依赖/全局注册 |
 | Verification | 新gallery每页一次正常/样式对照、有限状态/事件/退出，原有demo交互保留；双宽ABI、干净同批四文件实际聚焦包/系统导入/原资源门禁与双发布SHA；短测试不重复大矩阵 |
 | Expected Markers | native样例实际类/数量/页面、可交互状态和通知、资源释放/正常显示截图、裸/挂钩差异及DLL实际路径；不把展示当所有VB通过 |
-| Asset Needs | build/t17-audit保留S1原生研究/官方VB5 DLL按SHA交接未来实现；build/t17-package登记本T构建/包/探针/备份，先提炼后精确清理；保留其他任务49源码/缓存/外部图 |
+| Asset Needs | build/t17-audit保留S1原生研究/官方VB5 DLL按SHA交接未来实现；build/t17-package登记本T构建/包/探针/备份；外部win16style-t17-s2目录（本会话visualizations根）保留原生截图PNG供验收；先提炼后精确清理；保留其他任务49源码/缓存/外部图 |
 | Reporting Requirements | 明确native对应项、无视觉部件、应用图像/数据/嵌入对象保留和无合适对应项；实际测试时长/跳过面、四文件及双发布/远端；T17保持开放 |
 | Stop Conditions | 不能将32位OCX加载进64位demo；如需第四组件/第五产品/安全边界则先证据方案；不静默改变已确认视觉或新造图形资源 |
 | Exit Criteria | demo展示交付、双宽同包和有限实际测试、双发布八SHA、提交/实际远端/资产交接清理后关闭S2并续S3；不凭展示关闭T17 |
@@ -39,13 +39,14 @@ S3起连续分S实施，最后独立收口S逐项审计；T17/M0开放，其他�
 
 ## Technical Baseline
 
-T16 S2已收口并撤回产品源码/测试，恢复0.15.0.0 / M0 T15元数据，197输入；治理仍为T16 S2。
-全部196个CMake/src/tests/tools路径等同96e4721；原五头/声明/每DLL18表保持，三组件
-四产物/ABI3/31命名+ordinal1、35私有detours/40slots。干净双宽all和同批四文件门禁
-通过；实际包8项聚焦4.51992秒、两处双发布八SHA及安装ABI32/64通过。测试范围按
-用户要求缩小，不冒称完整91/99全集或物理输入验收。原生定位各宽一次，轮廓功能已撤。
-[release](../etc/release.json)为当前发布身份，[S2撤回](../history/M0-T16-S2-outline-withdrawal.md)
-及[证据](../etc/evidence/outline-withdrawal.json)接收实际验证；P1远端/恢复清理均通过。
+T17 S2产品0.17.0.0 / M0 T17，199输入，三组件四产物；demo新增8组原生样例，
+真实VB/OCX支持不由展示推导。93个renderer/launcher路径（除版本RC）保持基线4386bad；
+五资源头/原声明逐字节相同、每DLL18表、ABI3/31命名+ordinal1、35detours/40slots。
+独立干净双宽all/ABI及同批四文件通过，实际包六项8.64秒、旧包负例0.33秒检出；
+八部署SHA及安装双宽ABI通过。144DPI原生私有桌面消息/API/PrintWindow截图，
+无物理输入、真实VB/OCX或全DPI声明。[release](../etc/release.json)拥有当前包身份，
+[S2证据](../etc/evidence/vb-demo-gallery.json)记录布局/状态/关闭/资源和明确未覆盖面。
+本S仍verified，待P1实际远端/恢复/资产提炼清理后收口并自动续S3；T17/M0开放。
 
 ## Recent Closure
 
