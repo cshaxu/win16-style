@@ -13,6 +13,13 @@ static BOOL sampling;
 static HGDIOBJ (WINAPI *select_object)(HDC,HGDIOBJ);
 typedef struct import_observer {PVOID volatile *slot;PVOID original,replacement;} import_observer;
 static import_observer imports[3];static unsigned import_count;
+static BOOL observer_reject(const char *api,const char *stage,HMODULE module,DWORD error)
+{
+    SetLastError(error);
+    fprintf(stderr,"VB_QUEUE_IMPORT_REJECT api=%s stage=%s module=%p error=%lu slots=%u\n",
+        api,stage,(void *)module,error,import_count);
+    return FALSE;
+}
 static HGDIOBJ WINAPI observe_select(HDC dc,HGDIOBJ object)
 {
     HGDIOBJ result=select_object(dc,object);DWORD error=GetLastError();POINT origin,client={0,0};HWND window=WindowFromDC(dc);
@@ -31,11 +38,11 @@ static HGDIOBJ WINAPI observe_select(HDC dc,HGDIOBJ object)
 static BOOL observe_api_import(HMODULE module,const char *api,PVOID expected,PVOID replacement)
 {
     BYTE *base=(BYTE *)module;IMAGE_DOS_HEADER *dos=(void *)base;
-    if(!module || dos->e_magic!=IMAGE_DOS_SIGNATURE || dos->e_lfanew<0 || dos->e_lfanew>4096)return FALSE;
+    if(!module || dos->e_magic!=IMAGE_DOS_SIGNATURE || dos->e_lfanew<0 || dos->e_lfanew>4096)return observer_reject(api,"dos",module,ERROR_BAD_EXE_FORMAT);
     IMAGE_NT_HEADERS *nt=(void *)(base+dos->e_lfanew);DWORD size=nt->OptionalHeader.SizeOfImage;
-    if(nt->Signature!=IMAGE_NT_SIGNATURE)return FALSE;
+    if(nt->Signature!=IMAGE_NT_SIGNATURE)return observer_reject(api,"nt",module,ERROR_BAD_EXE_FORMAT);
     IMAGE_DATA_DIRECTORY directory=nt->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
-    if(!directory.VirtualAddress || directory.Size<sizeof(IMAGE_IMPORT_DESCRIPTOR) || directory.VirtualAddress>size || directory.Size>size-directory.VirtualAddress)return FALSE;
+    if(!directory.VirtualAddress || directory.Size<sizeof(IMAGE_IMPORT_DESCRIPTOR) || directory.VirtualAddress>size || directory.Size>size-directory.VirtualAddress)return observer_reject(api,"directory",module,ERROR_BAD_EXE_FORMAT);
     IMAGE_IMPORT_DESCRIPTOR *entry=(void *)(base+directory.VirtualAddress);
     for(unsigned i=0;i<directory.Size/sizeof(*entry) && entry[i].Name;++i){
         DWORD names=entry[i].OriginalFirstThunk,addresses=entry[i].FirstThunk;
@@ -53,17 +60,26 @@ static BOOL observe_api_import(HMODULE module,const char *api,PVOID expected,PVO
                         (LPCWSTR)(UINT_PTR)address->u1.Function,&owner))GetModuleFileNameW(owner,path,MAX_PATH);
                 fprintf(stderr,"VB_QUEUE_IMPORT_MISMATCH api=%s module=%p actual=%p expected=%p slots=%u actual_owner=%ls\n",
                     api,(void *)module,(void *)(UINT_PTR)address->u1.Function,expected,import_count,path);
-                return FALSE;
+                return observer_reject(api,import_count==ARRAYSIZE(imports)?"capacity":"expected-address",module,ERROR_INVALID_ADDRESS);
             }
             PVOID volatile *slot=(void *)&address->u1.Function;DWORD protect,unused;
-            if(!VirtualProtect((void *)slot,sizeof(*slot),PAGE_READWRITE,&protect))return FALSE;
+            if(!VirtualProtect((void *)slot,sizeof(*slot),PAGE_READWRITE,&protect))return observer_reject(api,"protect-write",module,GetLastError());
             PVOID old=InterlockedCompareExchangePointer(slot,replacement,expected);
             BOOL restored=VirtualProtect((void *)slot,sizeof(*slot),protect,&unused);
-            if(old!=expected)return FALSE;
-            imports[import_count++]=(import_observer){slot,old,replacement};return restored;
+            if(old!=expected){
+                WCHAR path[MAX_PATH]=L"";HMODULE owner=NULL;
+                if(GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                        (LPCWSTR)old,&owner))GetModuleFileNameW(owner,path,MAX_PATH);
+                fprintf(stderr,"VB_QUEUE_IMPORT_RACE api=%s module=%p slot=%p actual=%p expected=%p actual_owner=%ls\n",
+                    api,(void *)module,(void *)slot,old,expected,path);
+                return observer_reject(api,"compare-exchange",module,ERROR_INVALID_ADDRESS);
+            }
+            imports[import_count++]=(import_observer){slot,old,replacement};
+            if(!restored)return observer_reject(api,"protect-restore",module,GetLastError());
+            return TRUE;
         }
     }
-    return FALSE;
+    return observer_reject(api,"import-not-found",module,ERROR_PROC_NOT_FOUND);
 }
 static BOOL observe_import(HMODULE module)
 {return observe_api_import(module,"SelectObject",(PVOID)(UINT_PTR)select_object,(PVOID)(UINT_PTR)observe_select);}
@@ -71,9 +87,15 @@ static BOOL unobserve_imports(void)
 {
     BOOL ok=TRUE;
     while(import_count){import_observer *entry=&imports[--import_count];DWORD protect,unused;
-        if(!VirtualProtect((void *)entry->slot,sizeof(*entry->slot),PAGE_READWRITE,&protect)){ok=FALSE;continue;}
-        if(InterlockedCompareExchangePointer(entry->slot,entry->original,entry->replacement)!=entry->replacement)ok=FALSE;
-        if(!VirtualProtect((void *)entry->slot,sizeof(*entry->slot),protect,&unused))ok=FALSE;
+        if(!VirtualProtect((void *)entry->slot,sizeof(*entry->slot),PAGE_READWRITE,&protect)){
+            fprintf(stderr,"VB_QUEUE_IMPORT_RESTORE_FAILED stage=protect-write slot=%p error=%lu\n",(void *)entry->slot,GetLastError());ok=FALSE;continue;
+        }
+        if(InterlockedCompareExchangePointer(entry->slot,entry->original,entry->replacement)!=entry->replacement){
+            fprintf(stderr,"VB_QUEUE_IMPORT_RESTORE_FAILED stage=compare-exchange slot=%p error=%lu\n",(void *)entry->slot,ERROR_INVALID_ADDRESS);ok=FALSE;
+        }
+        if(!VirtualProtect((void *)entry->slot,sizeof(*entry->slot),protect,&unused)){
+            fprintf(stderr,"VB_QUEUE_IMPORT_RESTORE_FAILED stage=protect-restore slot=%p error=%lu\n",(void *)entry->slot,GetLastError());ok=FALSE;
+        }
     }
     return ok;
 }
@@ -98,14 +120,15 @@ static void graphical_survey(void)
     draw_frame=(void *)GetProcAddress(GetModuleHandleW(L"USER32.dll"),"DrawFrameControl");
     draw_text=(void *)GetProcAddress(GetModuleHandleW(L"USER32.dll"),"DrawTextA");
     bit_blt=(void *)GetProcAddress(GetModuleHandleW(L"GDI32.dll"),"BitBlt");
-    BOOL ok=draw_frame && draw_text && bit_blt &&
-        observe_api_import(runtime,"DrawFrameControl",(PVOID)(UINT_PTR)draw_frame,(PVOID)(UINT_PTR)observe_frame) &&
-        observe_api_import(runtime,"DrawTextA",(PVOID)(UINT_PTR)draw_text,(PVOID)(UINT_PTR)observe_draw_text) &&
-        observe_api_import(runtime,"BitBlt",(PVOID)(UINT_PTR)bit_blt,(PVOID)(UINT_PTR)observe_blt);
+    const char *stage="resolve";
+    BOOL ok=draw_frame && draw_text && bit_blt;
+    if(ok){stage="DrawFrameControl";ok=observe_api_import(runtime,"DrawFrameControl",(PVOID)(UINT_PTR)draw_frame,(PVOID)(UINT_PTR)observe_frame);}
+    if(ok){stage="DrawTextA";ok=observe_api_import(runtime,"DrawTextA",(PVOID)(UINT_PTR)draw_text,(PVOID)(UINT_PTR)observe_draw_text);}
+    if(ok){stage="BitBlt";ok=observe_api_import(runtime,"BitBlt",(PVOID)(UINT_PTR)bit_blt,(PVOID)(UINT_PTR)observe_blt);}
     if(ok)RedrawWindow(state->window,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
-    DWORD error=GetLastError();state->paint_restored=unobserve_imports();state->paint_probe_error=ok && state->paint_restored?0:ERROR_INVALID_STATE;
-    if(state->paint_probe_error)fprintf(stderr,"VB_QUEUE_GRAPHICAL_OBSERVER_FAILED module=%p install=%u restored=%ld native_error=%lu\n",
-        (void *)runtime,ok,state->paint_restored,error);
+    DWORD error=GetLastError();unsigned installed_slots=import_count;state->paint_restored=unobserve_imports();state->paint_probe_error=ok && state->paint_restored?0:ERROR_INVALID_STATE;
+    if(state->paint_probe_error)fprintf(stderr,"VB_QUEUE_GRAPHICAL_OBSERVER_FAILED module=%p stage=%s install=%u restored=%ld installed_slots=%u native_error=%lu\n",
+        (void *)runtime,stage,ok,state->paint_restored,installed_slots,error);
 }
 static BOOL (WINAPI *text_out)(HDC,int,int,LPCSTR,int);
 static BOOL (WINAPI *ext_text_out)(HDC,int,int,UINT,const RECT *,LPCSTR,UINT,const INT *);

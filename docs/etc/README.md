@@ -3,6 +3,9 @@
 - [VB图片变体](evidence/vb-picture-variants.json)：T17 S11真实十按钮/四状态像素、
   同批包、许可与原生观察器限制；不作为图形Check/Option或全集支持声明。
 
+- [VB观察器与生命周期](evidence/vb-observer-lifetime.json)：T17 S12有限GDI平台期、
+  临时IAT观察器严格诊断及非交互桌面边界；不作为全VB应用零增长或真实样本根因声明。
+
 | 路径 | 责任、用途及保留条件 |
 | --- | --- |
 | [evidence/outline-original.json](evidence/outline-original.json) | T16原始Win3.1 USER/GDI/VGA身份、调用地址、USER与VGA例程CPU执行参数；不包含系统二进制，不冒称完整VGA硬件/调色板运行 |

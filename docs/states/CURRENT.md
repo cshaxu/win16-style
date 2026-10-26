@@ -2,7 +2,11 @@
 
 ## Current Work
 
-M0 T17 S11有限交付已关闭，顺序准入S12原生观察器/资源所有权审计。
+M0 T17 S12观察器/资源所有权审计已完成，顺序准入S13图形选择控件审计。
+S12候选四文件聚焦包的x86/x64 VB5/VB6容器/图形对照通过；两轮GDI首跳后平台化、
+精确字体释放和严格IAT失败阶段均有证据。生产src不变，私有桌面全包UI矩阵因本执行
+会话无窗口站/桌面权限明确保留环境限制；不用current-desktop fallback伪造通过。
+S13先核实真实图形CheckBox/OptionButton默认路径，M0/T17保持开放。
 S11真实十个VB6图片按钮40状态内区保持；17包11.101秒/1旧负例/安装17项
 12.345秒、双发布八SHA、P1远端230文件/210输入/214恢复与370映像清理通过。
 生产src不变；图形Check/Option、复杂图片属性与许可/样本缺口保留后续接收，
@@ -21,26 +25,26 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T17 S12 Packet
+## M0 T17 S13 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S11 P1实际远端230文件/214对象恢复/370映像清理后按用户自动顺序S授权准入 |
+| Identifier Mode | Continuation；S12有限诊断与候选四文件聚焦包通过后，依用户T17自动顺序S授权准入 |
 | Admission And Approval | 用户T17完整控件目标、自动顺序S、永久提交推送及binary change同批四文件双发布；不新开T |
-| Objective | 接收S9完整GUI总GDI跳变和S11裸VB6观察器偶发安装失败，先做有界原生对象/导入状态诊断；继续保留图形选择/复杂图片样本与许可缺口，不用复测通过或扩大warm掩盖问题 |
-| Non-goals | 原标题/字体/菜单/滚动条/原glyph保持；不装IDE/注册OCX，不使用待许可更新控件，不读VB私有对象，不新增T，不扩大压力循环/sleep |
-| Reference Baseline | S11 P1 9adeb46实际远端230文件/210输入/214恢复；17包11.101秒/1旧负例/安装17项12.345秒/八SHA/370映像清理；产品src未变，ABI3/31命名+ordinal1及35detours/40slots保持 |
-| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[冻结148矩阵](../etc/evidence/vb-controls-audit.json)、[S11图片/观察器限制](../etc/evidence/vb-picture-variants.json)、[未解债务](TODO.md) |
-| Files And ABI Surface | 优先原生C观察器/自包含测试与证据；若证实产品所有权缺陷先报根因/最小方案后修既有双宽DLL；三组件四产物及公开ABI保持 |
+| Objective | 审计并在真实默认路径已证实后有限适配 VB5/VB6 图形 CheckBox/OptionButton；先识别运行库、窗口/owner-draw身份、绘制/DC、Value/分组/Click/键盘与图片变体，不能把普通Check/Option或图形Command结果外推 |
+| Non-goals | 原标题/字体/菜单/滚动条/原glyph保持；不装IDE/注册OCX，不使用待许可更新控件，不读VB私有对象，不新增T；图片/default/应用自绘或未知变体默认保留原生 |
+| Reference Baseline | S12观察器严格诊断、x86/x64 VB5/VB6两轮资源平台化与候选四文件包对照通过；生产src/ABI3/31命名+ordinal1、35detours/40slots保持 |
+| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[冻结148矩阵](../etc/evidence/vb-controls-audit.json)、[S11图片限制](../etc/evidence/vb-picture-variants.json)、[S12观察器](../etc/evidence/vb-observer-lifetime.json)、[未解债务](TODO.md) |
+| Files And ABI Surface | 先只读原生观察器、受控C fixture和证据；如默认绘制协议成立，仅在既有双宽DLL内部复用绘制器，不改公开ABI/三组件四产物 |
 | Applicable Rules | Task Reading Set/C17/GCC/Ninja/ccache；禁computer-use、兄弟修改/依赖、全局设置或非自有进程测试；发布占用按用户明确执行规范处理 |
-| Verification | 少量原生/样式GUI创建销毁对照，精确字体/DC/位图/句柄的创建归还与总GDI分开；IAT失败记录API/实际预期地址/模块/保护及恢复，不跟随未知hook；双宽/同批包/必要双发布/安装/实际远端/恢复清理 |
-| Expected Markers | 明确自有对象及逐对象释放，原生总GDI与私有字体分开；IAT具体失败阶段/地址/模块；目标PID/路径/SHA、active0与自有实例清理 |
-| Asset Needs | 保留build/t17-audit全部来源/runtime/研究/S11 recovered-product214对象；登记s12-observation-lifetime用于本S调查；build/t17-controls探针/日志，build/t17-package同批包/备份；全部既有外部PNG、稳定缓存/其他任务保持 |
-| Reporting Requirements | 失败/复现/未复现分别记录，不放宽断言或以扩大warm获得绿色；真VB与x64模型分开；图形选择/图片许可与样本缺口有后续接收，不假称T完成 |
-| Stop Conditions | 来源/许可未满足的控件不加载；重大架构/安全/新增产品先停证据；不关闭/注入用户既有进程，不规避未知API hook，不读私有VB对象补证 |
-| Exit Criteria | 有限观察器/所有权诊断或实测最小修复，双宽/同批包/必要双发布/安装/推送/远端/恢复清理后关闭S12；未定项明确接收，T17仍需余项与独立148单位审计 |
+| Verification | 实际类型/模块/位宽/路径、裸/注入对照和状态/像素/输入/通知/资源归还；x86真实VB与x64自包含模型分开；仅自有实例，有限等待；必要时双宽/同批包/双发布/远端复核 |
+| Expected Markers | 默认图形选择实际身份及绘制节点；Value/分组/Click/键盘/焦点/捕获原样、原字体/图像/几何不变；适配/保留路径、active0及资源释放明确 |
+| Asset Needs | 保留S12和S11登记资产/许可待答资料/原始PNG；新scratch必须精确登记；不复制第三方样本、OCX或图片入产品 |
+| Reporting Requirements | 默认、图片、default、disabled、ownerdraw和应用自绘分别报告；样本/许可或私有桌面权限不足明确skip，不用fallback或复测通过掩盖；不称T17完成 |
+| Stop Conditions | 来源/许可未满足或默认协议未证实时不加载；重大架构/安全/新增产品先停证据；不关闭/注入用户既有进程，不读私有VB对象补证 |
+| Exit Criteria | 已证实默认协议的有限实现及双宽/同批包/必要双发布/安装/推送/远端/恢复清理，或有界调查明确无实现；其余变体/148审计明确接收，T17保持余项 |
 | Original Owner Request | VB5/VB6控件采用本项目样式；S1全貌、S2demo、S3和多个S实施，最后独立收口；自动推进到完整适配验收 |
-| Similar-Issue Sweep | 临时IAT的解析/地址/页面保护/原样恢复及重入；按节点唯一字体/DC/位图所有者与原生缓存计数；图形Check/Option/图片的真实默认绘制与依赖许可 |
+| Similar-Issue Sweep | runtime50/60与普通/图形选择身份、button状态与ownerdraw、分组/焦点/输入、图片/default/disabled和应用自绘、字体/DC/位图唯一所有者 |
 
 ## Identifier State
 

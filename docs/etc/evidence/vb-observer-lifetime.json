@@ -1,0 +1,23 @@
+{
+  "task": "M0 T17 S12",
+  "status": "active diagnostic evidence; no product renderer change",
+  "scope": "Bounded native observation of the S9 aggregate-GDI report and S11 temporary graphical IAT observer. This is not a claim about every real VB application or zero process-wide GDI growth.",
+  "desktop_strategy": "The normal test contract remains a private desktop. For this host-only bounded diagnosis, the existing --private-worker entry was invoked directly in the executor's non-input Session 1 desktop; no common test framework or package-test fallback was retained. A self-owned probe recorded OpenInputDesktop=ERROR_ACCESS_DENIED (5), CreateDesktopW=ERROR_ACCESS_DENIED (5), WTSQueryUserToken=ERROR_PRIVILEGE_NOT_HELD (1314), and CreateWindowStationW=ERROR_ACCESS_DENIED (5), so no user desktop, existing window station, service, or process was touched.",
+  "gdi_lifetime": {
+    "fixture": "Self-authored x86/x64 VB5/VB6 PictureBox container fixture, two complete raw then injected lifecycle cycles in one owned process, GdiFlush after each cycle.",
+    "vb5_raw": ["cycle0 0->2 delta=2", "cycle1 2->2 delta=0"],
+    "vb5_styled": ["cycle0 0->4 delta=4", "cycle1 4->4 delta=0"],
+    "vb6_raw": ["cycle0 0->2 delta=2", "cycle1 2->2 delta=0"],
+    "vb6_styled": ["cycle0 0->4 delta=4", "cycle1 4->4 delta=0"],
+    "x86_repeat": "The same four raw/styled VB5/VB6 pairings recorded 0->2 then 2->2 (raw), and 0->4 then 4->4 (styled), with the same exact font-retirement checks.",
+    "exact_ownership": "Both styled cycles verify two distinct private font handles with GetObjectW=0 after callback retirement; source fonts remain valid; native input, image, geometry, RTL retirement, hooks, mappings and events close.",
+    "conclusion": "The observed first-cycle count is a bounded process cache effect in this fixture, not a per-cycle private-font leak. It does not establish ownership of all Windows GUI caches or cover arbitrary real VB applications."
+  },
+  "iat_observer": {
+    "instrumentation": "The test-only observer now emits rejection stage, API, expected/actual address and owner, page-protection failure, compare-exchange race and exact restoration failure. It still rejects unknown hooks and does not relax any assertion.",
+    "covered": "Self-authored graphical runtime exercised raw and injected paths on x86 and x64; one concurrent pair of x64 owned instances also passed. Each records native primitive/API behavior, style pixels, restoration and font release.",
+    "results": ["x86 graphical raw/injected passed", "x64 graphical raw/injected passed", "x64 two-instance concurrent raw/injected passed"],
+    "real_sample_limit": "The optional 3Ddefline and MouseHook6 external VB6 samples both fail CreateProcessW in this non-input desktop with ERROR_ILLEGAL_DLL_RELOCATION (623), before the temporary IAT observer installs. This is not attributed to the observer or product; no failure-stage IAT record exists from this host."
+  },
+  "remaining": "A future interactive-host audit may retry the original optional VB6 samples. Graphical Check/Option, complex image variants, DriveListBox and the independent 148-unit final audit remain outside S12."
+}

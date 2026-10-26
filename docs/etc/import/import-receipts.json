@@ -1626,8 +1626,8 @@
       "disposition": "authored",
       "source": null,
       "path": "tests/integration/vb_queue.c",
-      "sha256": "c705379bac352fb89f493e7fb209360c0ff9bd66b406f61fae8f799360947139",
-      "review": "T17 S6 project-authored exact-owned-thread queue/notification witness, tagged FIFO acknowledgement, original VB5/6 queued input assertions and native double-width positive/negative lifecycle test; test-only files, no product renderer or original resource changes; T17 S7 exact VB5 file-list roles and bounded owner-draw DC ownership; self-contained dual-width text/image/input/resource tests and optional authentic sample witness; no external implementation or original resources changed; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T17 S11 preserves strict observer failure and adds actual/expected import-owner diagnostics; no acceptance relaxation",
+      "sha256": "30288381c08d779e6606ee859736dfcf7bbb74ec1e25b76b097d0a205d079a29",
+      "review": "T17 S6 project-authored exact-owned-thread queue/notification witness, tagged FIFO acknowledgement, original VB5/6 queued input assertions and native double-width positive/negative lifecycle test; test-only files, no product renderer or original resource changes; T17 S7 exact VB5 file-list roles and bounded owner-draw DC ownership; self-contained dual-width text/image/input/resource tests and optional authentic sample witness; no external implementation or original resources changed; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T17 S11 preserves strict observer failure and adds actual/expected import-owner diagnostics; T17 S12 adds strict malformed/import/protection/race/restoration stage diagnostics without acceptance relaxation",
       "notice": "Project-authored C17 test; project MIT license"
     },
     {
@@ -1679,9 +1679,9 @@
       "path": "tests/ntw16s-dll/vb_containers.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d7f9b1d31fe790cfadffe18d050ffb1f471e63def0a8d6f88faa08bd9ee8ba5c",
+      "sha256": "21846d7561fdb55ec16b8fd073a088f482c265647d26e0ecdc15d75d4eb64ef0",
       "disposition": "authored",
-      "review": "T17 S9 project-authored pure C container protocol/lifetime model; actual VB evidence separate; no copied external code",
+      "review": "T17 S9 project-authored pure C container protocol/lifetime model; T17 S12 bounded two-cycle GDI plateau and exact private-font retirement witness; actual VB evidence separate; no copied external code",
       "notice": "Project-authored test, no external implementation/resources"
     },
     {

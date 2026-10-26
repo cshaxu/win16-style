@@ -37,7 +37,7 @@ static int pixels(HWND w)
     CHECK(SelectObject(dc,old) && DeleteObject(bitmap) && DeleteDC(dc) && ReleaseDC(w,screen));
     CHECK(image==144 && line==16);return 0;
 }
-static int child(const WCHAR *runtime_path,const WCHAR *witness_path,BOOL styled)
+static int child_cycle(const WCHAR *runtime_path,const WCHAR *witness_path,BOOL styled,unsigned cycle)
 {
     notices=0;
     HMODULE runtime=LoadLibraryW(runtime_path);CHECK(runtime);
@@ -111,15 +111,28 @@ static int child(const WCHAR *runtime_path,const WCHAR *witness_path,BOOL styled
     /* First-use GUI/font caches also change this count in the bare model.
      * Keep it diagnostic; ownership assertions above inspect the exact two
      * private fonts, native source fonts and every explicitly owned handle. */
-    GdiFlush();DWORD final_gdi=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);printf("VB_CONTAINER_FINAL_GDI initial=%lu final=%lu aggregate_diagnostic_only=1\n",initial_gdi,final_gdi);
-    printf("VB_CONTAINER_OK bits=%u vb=%u styled=%u fonts_images_native=1 late_create=1 wrong_owner=1 input=1 owned_resources_closed=1\n",(unsigned)(sizeof(void *)*8),vb,styled);return 0;
+    GdiFlush();DWORD final_gdi=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);printf("VB_CONTAINER_FINAL_GDI cycle=%u initial=%lu final=%lu aggregate_diagnostic_only=1\n",cycle,initial_gdi,final_gdi);
+    printf("VB_CONTAINER_OK bits=%u vb=%u styled=%u cycle=%u fonts_images_native=1 late_create=1 wrong_owner=1 input=1 owned_resources_closed=1\n",(unsigned)(sizeof(void *)*8),vb,styled,cycle);return 0;
+}
+static int child(const WCHAR *runtime_path,const WCHAR *witness_path,BOOL styled,unsigned cycles)
+{
+    CHECK(cycles>0 && cycles<=2);DWORD after=0;
+    for(unsigned cycle=0;cycle<cycles;++cycle){
+        GdiFlush();DWORD before=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);CHECK(!child_cycle(runtime_path,witness_path,styled,cycle));
+        GdiFlush();after=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);
+        printf("VB_CONTAINER_GDI_CYCLE cycle=%u before=%lu after=%lu delta=%ld\n",cycle,before,after,(LONG)after-(LONG)before);
+        if(cycle)CHECK(after<=before);
+    }
+    if(cycles==2)printf("VB_CONTAINER_GDI_PLATEAU cycles=2 recurrent_growth=0\n");
+    return 0;
 }
 static int worker(int argc,WCHAR **argv)
 {
-    CHECK(argc==4);WCHAR self[MAX_PATH],command[4096];CHECK(GetModuleFileNameW(NULL,self,MAX_PATH));
+    unsigned cycles=1;CHECK(argc==4 || (argc==6 && !wcscmp(argv[4],L"--repeat") && swscanf_s(argv[5],L"%u",&cycles)==1));CHECK(cycles>0 && cycles<=2);
+    WCHAR self[MAX_PATH],command[4096];CHECK(GetModuleFileNameW(NULL,self,MAX_PATH));
     for(unsigned mode=0;mode<2;++mode){
-        if(mode)swprintf_s(command,4096,L"\"%ls\" --wait \"%ls\" --child \"%ls\" \"%ls\" 1",argv[1],self,argv[2],argv[3]);
-        else swprintf_s(command,4096,L"\"%ls\" --child \"%ls\" \"%ls\" 0",self,argv[2],argv[3]);
+        if(mode)swprintf_s(command,4096,L"\"%ls\" --wait \"%ls\" --child \"%ls\" \"%ls\" 1 %u",argv[1],self,argv[2],argv[3],cycles);
+        else swprintf_s(command,4096,L"\"%ls\" --child \"%ls\" \"%ls\" 0 %u",self,argv[2],argv[3],cycles);
         HANDLE job=CreateJobObjectW(NULL,NULL);JOBOBJECT_EXTENDED_LIMIT_INFORMATION limits={0};limits.BasicLimitInformation.LimitFlags=JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;CHECK(job && SetInformationJobObject(job,JobObjectExtendedLimitInformation,&limits,sizeof(limits)));
         STARTUPINFOW si={.cb=sizeof(si)};PROCESS_INFORMATION process={0};si.dwFlags=STARTF_USESTDHANDLES;si.hStdInput=GetStdHandle(STD_INPUT_HANDLE);si.hStdOutput=GetStdHandle(STD_OUTPUT_HANDLE);si.hStdError=GetStdHandle(STD_ERROR_HANDLE);
         CHECK(CreateProcessW(NULL,command,NULL,NULL,TRUE,CREATE_SUSPENDED|CREATE_NO_WINDOW,NULL,NULL,&si,&process));CHECK(AssignProcessToJobObject(job,process.hProcess) && ResumeThread(process.hThread)==1);
@@ -129,4 +142,4 @@ static int worker(int argc,WCHAR **argv)
     return 0;
 }
 int wmain(int argc,WCHAR **argv)
-{if(argc==5 && !wcscmp(argv[1],L"--child"))return child(argv[2],argv[3],!wcscmp(argv[4],L"1"));return isolated_process(argc,argv,worker);}
+{unsigned cycles=0;if(argc==6 && !wcscmp(argv[1],L"--child") && swscanf_s(argv[5],L"%u",&cycles)==1)return child(argv[2],argv[3],!wcscmp(argv[4],L"1"),cycles);return isolated_process(argc,argv,worker);}
