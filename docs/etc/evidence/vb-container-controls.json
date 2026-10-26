@@ -1,6 +1,6 @@
 {
   "task": "M0 T17 S9",
-  "status": "verified and published; P1 actual remote/recovery/cleanup pending",
+  "status": "S9 closed after P1 actual remote/recovery/cleanup; S10 admitted; T17/M0 open",
   "baseline": "8ce767852f623038a0002d9a2585fed54d36e0c5",
   "root_cause": "Actual VB5/6 PictureBox is a runtime custom child, rejected by generic custom-child guard; labels are windowless runtime TextOutA calls inside that host. DLL loading/other controls already work. Broad font scope would alter application drawing and is deliberately excluded.",
   "minimal_fix": "Exact runtime50 ThunderRT5PictureBox/runtime60 ThunderRT6PictureBoxDC child identity, passive-font existing border/scroll leaf and bounded direct-runtime ANSI label scope. Native DT_CALCRECT, TabbedTextOutA Print, EXE drawing, image/line pixels and source properties remain native. No public ABI/export/detour addition.",
@@ -1212,5 +1212,49 @@
     "moves": 0
   },
   "final_batch_note": "Final2 rebuild after removal of an unused observer include and README trailing blank; no product behavior changed. First batch33/6/9 also passed but only final2 is submitted; its before-files are retained research, original S8 rollback files remain recoverable from8ce7678.",
-  "test_harness_correction": "Final2 first attempt incorrectly reused capture/log directories: CREATE_NEW failed80 and launch accounting included old log entries. Retained invalid result; fixed scratch orchestrator to require fresh unique roots; final2 fresh33 passed26.71s, six proper old-package assertions detected, installed9 passed3.13s."
+  "test_harness_correction": "Final2 first attempt incorrectly reused capture/log directories: CREATE_NEW failed80 and launch accounting included old log entries. Retained invalid result; fixed scratch orchestrator to require fresh unique roots; final2 fresh33 passed26.71s, six proper old-package assertions detected, installed9 passed3.13s.",
+  "closure": {
+    "actual_remote": {
+      "status": "passed",
+      "commit": "7a25f2b2705d9d462dfd603ab79e5be7a8f7b6a5",
+      "remote_main": "7a25f2b2705d9d462dfd603ab79e5be7a8f7b6a5",
+      "files": 227,
+      "source_inputs": 208,
+      "seconds": 12.513693500000954,
+      "recovered_product_objects": 212,
+      "deployed_SHA_matches": 8,
+      "original_S8_backup_files_recoverable": 8,
+      "intermediate_backup_files_retained": 8,
+      "intermediate_sha256": {
+        "run16s.exe": "69b7fdb9babba7342839fb021099469ec49170a3a1860107bc031d3d864faec5",
+        "ntw16s32.dll": "1cb1f5c0fb6659e3e1f70f0445b0c2909f9a7caacadf0d2c6a37491fbddc18d8",
+        "ntw16s64.dll": "9ff648545512120d6a968056df64e69d793ce8984828bfa98609d4c925ce3d2f",
+        "demo.exe": "9711feac5b6e3b5caa94307ca2b868e61a0a44e9bf9d947cbedf210330e4ab83"
+      },
+      "original_sample_SHA_matches": 18,
+      "private_runtime_SHA_matches": 1,
+      "external_PNG_SHA_matches": 4,
+      "method": "actual raw GitHub HTTPS bytes compared to Git cat-file, source receipts independently matched, actual remote main checked"
+    },
+    "cleanup": {
+      "preserved": "all admitted source/sample/archives/runtimes, research+intermediate package and212 remote-recovered objects, all PNG, stable Ninja/ccache, other task work",
+      "roots": [
+        {
+          "status": "passed",
+          "images": 346,
+          "root": "O:\\repos.hobby\\win16style\\build\\t17-package",
+          "reparse_points": 0
+        },
+        {
+          "status": "passed",
+          "images": 22,
+          "root": "O:\\repos.hobby\\win16style\\build\\t17-controls",
+          "reparse_points": 0
+        }
+      ],
+      "status": "passed",
+      "positive_self_check": "exe/loaded DLL c0000043;unloaded DLL00000000"
+    },
+    "coordination_review": "Actual7a25f2b diff, original148-unit request and raw evidence reviewed; exact runtime-owned PictureBox/ANSI labels only, native Print/app images retained;482add23del459net CMake/src/tests. Delphi proposal/QUEUE explicitly included at owner request; no new T. Private-font identities freed; aggregateGUI GDI remains unresolved TODO. S9 closes, S10 graphical selection variants admitted, T17/M0 open."
+  }
 }

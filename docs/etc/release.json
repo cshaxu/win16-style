@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T17 S9 P1",
-  "stage": "verified/published; actual remote and cleanup pending; T17/M0 open",
+  "delivery": "M0 T17 S9 P2",
+  "stage": "S9 closed; S10 graphical selection variants admitted; T17/M0 open",
   "version": "0.17.0.0",
   "version_contract": "M0 T17; sequential S does not increment T version",
   "package_directory": "assets",
@@ -1984,11 +1984,52 @@
     "limits": "True VB6 DriveListBox and file variants, graphical buttons, other intrinsic/OCX variants remain for next S/final148 audit. PictureBox AutoRedraw/complex windowless protocols/other languages and DPI unverified; no universal VB claim."
   },
   "validation": {
-    "status": "passed locally; actual remote pending",
+    "status": "passed; P1 actual remote/recovery/cleanup complete",
     "source_inputs": 208,
     "evidence": "docs/etc/evidence/vb-container-controls.json"
   },
   "closure": {
-    "status": "pending actual P1 remote/recovery/cleanup"
+    "actual_remote": {
+      "status": "passed",
+      "commit": "7a25f2b2705d9d462dfd603ab79e5be7a8f7b6a5",
+      "remote_main": "7a25f2b2705d9d462dfd603ab79e5be7a8f7b6a5",
+      "files": 227,
+      "source_inputs": 208,
+      "seconds": 12.513693500000954,
+      "recovered_product_objects": 212,
+      "deployed_SHA_matches": 8,
+      "original_S8_backup_files_recoverable": 8,
+      "intermediate_backup_files_retained": 8,
+      "intermediate_sha256": {
+        "run16s.exe": "69b7fdb9babba7342839fb021099469ec49170a3a1860107bc031d3d864faec5",
+        "ntw16s32.dll": "1cb1f5c0fb6659e3e1f70f0445b0c2909f9a7caacadf0d2c6a37491fbddc18d8",
+        "ntw16s64.dll": "9ff648545512120d6a968056df64e69d793ce8984828bfa98609d4c925ce3d2f",
+        "demo.exe": "9711feac5b6e3b5caa94307ca2b868e61a0a44e9bf9d947cbedf210330e4ab83"
+      },
+      "original_sample_SHA_matches": 18,
+      "private_runtime_SHA_matches": 1,
+      "external_PNG_SHA_matches": 4,
+      "method": "actual raw GitHub HTTPS bytes compared to Git cat-file, source receipts independently matched, actual remote main checked"
+    },
+    "cleanup": {
+      "preserved": "all admitted source/sample/archives/runtimes, research+intermediate package and212 remote-recovered objects, all PNG, stable Ninja/ccache, other task work",
+      "roots": [
+        {
+          "status": "passed",
+          "images": 346,
+          "root": "O:\\repos.hobby\\win16style\\build\\t17-package",
+          "reparse_points": 0
+        },
+        {
+          "status": "passed",
+          "images": 22,
+          "root": "O:\\repos.hobby\\win16style\\build\\t17-controls",
+          "reparse_points": 0
+        }
+      ],
+      "status": "passed",
+      "positive_self_check": "exe/loaded DLL c0000043;unloaded DLL00000000"
+    },
+    "coordination_review": "Actual7a25f2b diff, original148-unit request and raw evidence reviewed; exact runtime-owned PictureBox/ANSI labels only, native Print/app images retained;482add23del459net CMake/src/tests. Delphi proposal/QUEUE explicitly included at owner request; no new T. Private-font identities freed; aggregateGUI GDI remains unresolved TODO. S9 closes, S10 graphical selection variants admitted, T17/M0 open."
   }
 }
