@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T17 S4 P1",
-  "stage": "S4 verified/published; actual remote/recovery pending;T17/M0 open",
+  "delivery": "M0 T17 S4 P2",
+  "stage": "S4 closed;T17/M0 open;S5 Combo/List/Scroll wrappers admitted",
   "version": "0.17.0.0",
   "version_contract": "M0 T17; sequential S does not increment T version",
   "package_directory": "assets",
@@ -1179,9 +1179,49 @@
       "no globally installed IDE/OCX; original samples are optional and never build/test hard dependencies"
     ]
   },
-  "closure": {},
+  "closure": {
+    "actual_remote": {
+      "status": "passed",
+      "commit": "08d36658f4a76daa3528158dcc1441359f678193",
+      "remote_main": "08d36658f4a76daa3528158dcc1441359f678193",
+      "files": 213,
+      "source_inputs": 201,
+      "seconds": 11.10618629999226,
+      "recovered_objects": 213,
+      "method": "actual raw GitHub HTTPS bytes compared to Git cat-file objects"
+    },
+    "recovery": {
+      "status": "passed",
+      "product_Git_objects": 205,
+      "source_inputs": 201,
+      "backup_files_recoverable_from_25db0f5": 8,
+      "deployed_SHA_matches": 8,
+      "external_PNG_SHA_matches": 5,
+      "retained_authentic_samples": "2 original EXEs match pinned ZIP entries and recorded hashes; VB5 runtime exact official SHA; fixed author source/page/provenance retained in t17-audit/s4-intrinsic-samples",
+      "clean_snapshot": "201 product inputs matched independent clean dual-width all snapshot before P1; no repeated archive build",
+      "coordination_review": "actual08d3665 diff/original148-unit goal reviewed; finiteS4 support does not stand for completeT17; Combo/List/Scroll accepted by next S; other task ownership intact"
+    },
+    "cleanup": {
+      "roots": [
+        {
+          "reparse_points": 0,
+          "images": 170,
+          "root": "O:\\repos.hobby\\win16style\\build\\t17-package"
+        },
+        {
+          "reparse_points": 0,
+          "images": 8,
+          "root": "O:\\repos.hobby\\win16style\\build\\t17-controls"
+        }
+      ],
+      "preserved": "T17 audit research/official runtime/S3 recovery/original VB5+6 samples and source+ZIP+metadata;T15 reviewed sources;stable caches;all external PNG",
+      "status": "passed",
+      "positive_self_check": "exe/loaded DLL c0000043;unloaded DLL00000000"
+    },
+    "binary_change_in_closing_P": "none;201 inputs and8 published SHA unchanged since final testedP1"
+  },
   "validation": {
-    "status": "verified;actual remote/recovery pending",
+    "status": "passed;P1 actual remote/recovery/cleanup complete",
     "source_inputs": 201,
     "evidence": "docs/etc/evidence/vb-intrinsic-controls.json"
   }

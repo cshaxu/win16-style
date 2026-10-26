@@ -2,17 +2,20 @@
 
 ## 请求与状态
 
-用户已明确准入M0 T17，并指定S1审计控件全貌，S2将对应项加入demo.exe，
-S3及多个后续S实施，最后单独收口S完成任务审计。[S1全貌审计](../etc/evidence/vb-controls-audit.md)已交付关闭，S2原生demo八页、S3普通VB6 CheckBox已交付，当前[T17 S4](../states/CURRENT.md)
-继续真实内建控件验证与适配，M0固定；按真实盘点连续分S，不以Actor两控件修复代替全任务完成。
+用户已明确准入M0 T17，并指定S1审计控件全貌，S2加入demo，S3及多个后续S实施，
+最后独立收口S。[S1审计](../etc/evidence/vb-controls-audit.md)、S2八页demo、S3普通
+VB6 CheckBox及S4真实VB5 Command/Check/Option/Frame/Text与VB6 Option已交付。
+当前[T17 S5](../states/CURRENT.md)接收真实Combo/List/Scroll包装层；148单位和变体/
+OCX目标保持，不以Actor两框或一个普通样例代替全任务完成，M0固定。
 
 ## 已核实基线
 
-[Actor原生证据](../etc/evidence/actor-checkbox.md)：32位VB6；两个MSVBVM60注册的
-ThunderRT6CheckBox，自动三态，实际查询值1/0；当前BUTTON映射未包含该类。
-现有VB6适配只明确覆盖CommandButton、TextBox、Frame及有限容器文字作用域。
-现有标准/公共控件renderer可复用，但不能将标准控件测试等同于VB包装层已支持。
-VB5运行库和类注册路径尚未原型验证，不由VB6成功推导VB5成功。
+[Actor初始诊断](../etc/evidence/actor-checkbox.md)与[S3](../etc/evidence/vb-selection-controls.json)
+记录准确MSVBVM60 CheckBox遗漏与修复；其AUTO3STATE style在真实Actor仍为0/1
+循环，状态不能只按style推导。[S4真实内建](../etc/evidence/vb-intrinsic-controls.json)
+取得原作者固定VB5/6样例，准确runtime50/60及类/公开协议，新增普通按钮/宿主支持。
+当前Combo/List/Scroll只有真实公开数据协议基线，分类/绘制仍待S5；其它图形/无窗口/
+OCX变体逐项状态见冻结矩阵及实施证据，不能由标准控件或原生demo推导为通过。
 
 ## 覆盖全集：先盘点，再冻结逐项验收表
 

@@ -2,32 +2,32 @@
 
 ## Current Work
 
-M0 T17 S3普通VB6 CheckBox已交付关闭；当前顺序准入S4真实内建控件验证与适配。
-S1冻结148版本/控件单位，S2仅原生对应项；Actor两框已采用原glyph且业务值保持。
-S4优先取得VB5/VB6真实内建样本，验证OptionButton及编辑/列表/滚动/容器角色，
-据实际证据分批适配；不凭名称或C fixture推导真实支持。缺口继续接收直到最后
-独立任务审计，T17/M0开放，不启动其他T候选。
+M0 T17 S4真实VB5按钮/Frame/Text和VB6 Option已交付关闭；当前顺序准入S5
+ComboBox/ListBox/HScrollBar/VScrollBar包装层。原作者固定归档样本真实runtime5/6
+均已正常运行，公开数据协议及样式缺口有证据；S5复用该样本，避免重新寻找/安装。
+S1冻结148版本/控件单位，S2仅原生对应项；按真实变体连续分S、最后独立审计，
+T17/M0开放，不将当前普通样例支持替代全控件目标，不启动其他T候选。
 
-## M0 T17 S4 Packet
+## M0 T17 S5 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S3实际远端/恢复/340映像清理后按用户顺序自动准入 |
-| Admission And Approval | 用户T17完整范围及自动连续S授权；永久提交推送/有binary change同批四文件双发布保持 |
-| Objective | 已取得原作者固定归档内建样本，S4实施真实VB5 Command/Check/Option/Frame/Text及VB6 Option普通模式；Combo/List/Scroll真实协议已通过，交下一S；148审计全集不缩小 |
-| Non-goals | 不凭前缀/C仿真推导支持、不读私有对象、不盲调ThunRTMain、不绕许可安装IDE/OCX；不改变标题/字体/菜单/滚动资源/算法或产品架构 |
-| Reference Baseline | S3 P1 2e250c2实际远端212文件/200输入/四文件，0.17.0.0；ABI3/31命名+ordinal1，35detours/40slots，Actor真实两框182源像素通过 |
-| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[S1矩阵](../etc/evidence/vb-controls-audit.json)、[S3证据](../etc/evidence/vb-selection-controls.json) |
-| Files And ABI Surface | control_class/controls、vb_text及原有runtime调用者限定；纯C原生样本观察器及双宽fixture/来源回执；只扩展准确MSVBVM50/60 owner，公开ABI不变，三组件四产物 |
-| Applicable Rules | Task Reading Set、UI/来源/架构/编码；C17/GCC/Ninja/ccache；禁computer-use/兄弟修改或依赖/用户既有进程操作/全局设置 |
-| Verification | 先真实运行库/应用身份和安全样本来源，正常显示/模块与实际owner/公开协议/像素/交互/清理；有限同类负例、双宽核心及实际包/双发布/实际远端；短聚焦测试 |
-| Expected Markers | 真实VB5/6分别记录模块路径SHA、PID/创建者/PE、类owner、加载/初始化/识别/实际绘制；Option/radio分组或编辑列表数据/通知、字体/几何/卸载/旧包检出 |
-| Asset Needs | build/t17-audit保留S1官方VB5 DLL、S3中间包恢复和s4-intrinsic-samples（原作者固定归档ZIP/源/EXE/身份，仅自有观察，不复制进产品）；build/t17-controls登记本S探针/样本只读或自有副本/日志；build/t17-package登记构建/包/备份；外部win16style-t17-s4目录（本会话visualizations根）保留真实PNG；其他任务/缓存/已有PNG保持 |
-| Reporting Requirements | 真样本与仿真分别，按控件/版本/变体给成功/失败/skip/阻断接收；改产品前先说明根因最小方案，不用缺样本关闭T17或缩小请求 |
-| Stop Conditions | 未能建立真实初始化契约则不碰私有布局/泛名注入；重大许可/组件/安全边界需停证据方案；不得未经许可复制外部代码或新增产品 |
-| Exit Criteria | 有证据有限内建适配或清楚阻断、相应双宽同批四文件实际包/必要双发布/提交/实际远端/恢复清理后S4关闭再自动续后续S；T17仅最后独立完整审计后关闭 |
-| Original Owner Request | S1全貌审计、S2加入demo、S3和多个S实施，最后独立收口；目标VB5/VB6控件采用本项目样式 |
-| Similar-Issue Sweep | VB5/6 owner与类初始化、CheckBox/Option/Command分组及图形回退、Text/Combo/List/Scroll/Frame相关公开API、C native-superclass掩盖和伪类拒绝、非窗口文字/应用图像边界 |
+| Identifier Mode | Continuation；S4实际远端/恢复/178映像清理后，按用户连续S授权准入 |
+| Admission And Approval | 用户T17完整范围/自动顺序S，永久提交推送、binary change同批四文件双发布保持 |
+| Objective | 根据已验证真实runtime5/6的Combo/List/HScroll/VScroll公开协议，定位分类/子控件/字体/通知边界并适配，保留数据与输入；不缩小148单位总体目标 |
+| Non-goals | 不盲用前缀、不改VB私有对象、原标题/字体算法/菜单/原glyph不变；不以native demo或C fixture冒称实际VB；不夹带公共文件夹对话框候选 |
+| Reference Baseline | S4 P1 08d3665实际远端213文件/201输入/四文件，0.17.0.0；ABI3/31命名+ordinal1、35detours/40slots；真实VB5/6选择glyph/Frame/Text有限支持 |
+| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[冻结矩阵](../etc/evidence/vb-controls-audit.json)、[S4真实内建证据](../etc/evidence/vb-intrinsic-controls.json) |
+| Files And ABI Surface | 双宽DLL内部精确类/角色、combo/list/scroll接入与字体/资源所有权、纯C原生探针/回归及回执；三组件四产物、公开ABI不变；新范围需先证据/最小方案 |
+| Applicable Rules | Task Reading Set/源码/架构/编码/UI/来源；C17/GCC/Ninja/ccache；禁computer-use、兄弟修改/依赖、用户已有进程或全局设置操作 |
+| Verification | 先真实两版本正常显示、准确runtime owner及公开协议/子窗口关系；根因方案先报；双宽自包含正负例+另列实际样本、同批包、双发布八SHA/安装/实际远端；有限短测试 |
+| Expected Markers | 实际PE/PID/创建者/模块物理路径SHA、加载/初始化/角色/真实绘制分开；combo2模式/列表数据与选择/scroll范围位置、A/W与字体度量、通知/取消/捕获/销毁、旧包负例 |
+| Asset Needs | build/t17-audit继续保留S1官方runtime、S3中间包恢复、s4-intrinsic-samples原作者固定ZIP/源/EXE/身份/tree（研究/可选观察不入产品）；build/t17-controls登记本S源码/日志/截图/样本副本；build/t17-package登记构建/包/备份；外部win16style-t17-s5（本会话visualizations根）保存原生PNG；他任务/缓存/旧图保留 |
+| Reporting Requirements | 已显示/未适配/原生保留/失败或skip分开，实际VB5/6与x64 C模型分开；缺变体/OCX交后续S和最后审计，不据此宣称T17完成 |
+| Stop Conditions | 初始化或公开协议不成立则保留原生并列明确接收；新增组件/产品/重大安全/许可边界先停证据方案；不安装/注册未审OCX或依赖兄弟仓库 |
+| Exit Criteria | 有限包装层适配或有证据阻断、必要双宽真实/自包含及同批包/双发布/提交/实际远端/恢复清理后S5关闭续后续S；T17仅最后独立完整审计收口 |
+| Original Owner Request | VB5/VB6控件采用本项目样式；S1全貌、S2demo、S3和多个S实施，最后独立收口；继续自动推进 |
+| Similar-Issue Sweep | VB5/6准确owner与真实ComboBox/Edit/ComboLBox关系、ListBox类型/字体setter不生效、ANSI/GetWindowText缓存、滚动公开协议/捕获释放/嵌套创建及伪类拒绝 |
 
 ## Identifier State
 
@@ -35,8 +35,8 @@ S4优先取得VB5/VB6真实内建样本，验证OptionButton及编辑/列表/滚
 - Last allocated T: 17
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户明确准入T17并指定S顺序；可在T17内自动顺序拆S实施到独立收口，不准入其他候选。
-- Last delivery: M0 T17 S3 P2（普通VB6 CheckBox/真实Actor，11项17.08秒、双发布/安装，212远端/200输入，340映像清理；0.17.0.0）
-- Open task: T17 S4真实内建控件验证与适配；T17/M0开放，既有关闭/取消保持。
+- Last delivery: M0 T17 S4 P2（真实VB5/6内建，13项23.28秒、三负例、双发布/安装，213远端/201输入，178映像清理；0.17.0.0）
+- Open task: T17 S5 Combo/List/Scroll包装层；T17/M0开放，既有关闭/取消保持。
 
 ## Technical Baseline
 
@@ -49,10 +49,12 @@ ABI3/31命名+ordinal1、35detours/40slots、原五头/声明/每DLL18表保持�
 干净双宽all/ABI及同批四文件通过；13项实际包23.28秒，3个旧包负例检出。
 八部署SHA一致，安装ABI32/64及真实VB5/6再验通过。[release](../etc/release.json)
 拥有当前包身份，[S4证据](../etc/evidence/vb-intrinsic-controls.json)记录真实身份/有限
-状态/像素及未覆盖面。当前verified，待P1实际远端/恢复清理后关闭S4续下一S；
+状态/像素及未覆盖面。S4 P1 08d3665实际远端213文件/205产品对象恢复及178映像清理通过，关闭S4/续S5；
 T17/M0开放，不以普通样例替代148单位全变体/OCX审计，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T17 S4真实内建](../history/M0-T17-S4-vb-intrinsics.md)：VB5 Command/Check/Option/Frame/Text与VB6 Option，13项23.28秒、三负例、双发布/安装、213远端/201输入、178映像清理；关闭S4/续S5，T17开放。
 
 - [T17 S3 VB6 CheckBox](../history/M0-T17-S3-vb-checkbox.md)：真实Actor两框各182源像素、11项17.08秒、两个旧包负例、双发布/安装、212远端/200输入、340映像清理；关闭S3/续S4，T17开放。
 
@@ -132,8 +134,9 @@ T17/M0开放，不以普通样例替代148单位全变体/OCX审计，无物理�
 
 ## Last Packet Closure
 
-T17 S3 P1 2e250c2实际远端212文件/200输入/四产物通过，204产品对象恢复、16份
-before备份/8部署/18PNG核对。340映像/reparse0/正例guard后精确清理本S两根；
-S1研究、S3中间包4文件+3源覆盖/重构200输入、他任务源码/缓存/全部PNG交接。
-本S只交付真实普通VB6 CheckBox，VB5/OptionButton/其他变体缺口交S4/后续与
-最后独立审计。S3关闭/自动准入S4，T17/M0保持开放，候选队列不变。
+T17 S4 P1 08d3665实际远端213文件/201输入/四产物逐字节通过，205产品对象恢复、
+8 before备份/8部署/5PNG核对，原作者两EXE/ZIP/官方runtime身份保持。
+178映像无占用/reparse0/guard正例后精确清理两任务根；原样本/源码/许可页面/身份/
+固定归档tree元数据留t17-audit，其他任务源码、稳定缓存、所有外部PNG保持。
+S4关闭并顺序准入S5接收真实Combo/List/Scroll协议和样式缺口；148全集/变体/OCX
+仍由后续实施及最后独立审计接收，不把局部样例当作T17全部完成，M0开放。

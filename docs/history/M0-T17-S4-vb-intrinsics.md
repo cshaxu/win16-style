@@ -2,7 +2,7 @@
 
 ## Result and provenance
 
-当前verified双发布，待P1实际远端/恢复/清理；T17/M0开放。
+S4已完成P1实际远端/恢复/清理并关闭；T17/M0开放。
 [证据](../etc/evidence/vb-intrinsic-controls.json)拥有有限范围、模块实际路径/SHA、
 原生日志与截图和未完成项。准确MSVBVM50 owner的ThunderRT5CommandButton/
 CheckBox/OptionButton/Frame/TextBox和MSVBVM60的ThunderRT6OptionButton接入既有
@@ -42,8 +42,16 @@ ntw16s32.dll确为安装绝对路径。201输入/工具链/摘要由[release](..
 
 ## Delivery and next work
 
-P1实际远端待执行。下一S继续已取得证据的VB5/6 ComboBox/ListBox/HScrollBar/
-VScrollBar及其准确字体/子窗口/通知边界，不把当前只通过数据协议当作已换肤。
-S1冻结148单位及真实变体/微软扩展必测缺口继续接收，最后独立收口S才能审计T。
-保存原样本/源/ZIP/许可页面/身份至登记t17-audit/s4-intrinsic-samples；其他他任务
-源码、稳定缓存和PNG保持，证据提炼恢复后才清理本Sscratch。当前不称T17完成。
+P1 08d36658f4a76daa3528158dcc1441359f678193，实际HTTPS取回213文件，
+201产品输入及四产物逐字节匹配Git对象，远端main一致。恢复205产品对象、8旧
+before备份可从25db0f5取回、8部署SHA及5PNG一致；2原EXE逐字节等于固定ZIP
+条目、官方VB5 runtime SHA一致。代码/测试CMake/src/tests/tools增266删18净248，
+全仓numstat及保留状态所有者见证据；无产品路径移动/删除，无外部实现导入。
+实际diff和原始148单位目标协调复核通过，不以本S有限支持关闭T。
+
+178映像无占用、两精确根reparse0，guard正例exe/loaded DLL拒绝c0000043、
+unloaded通过后，仅清理build/t17-package和build/t17-controls。S1研究、S3中间
+包恢复资料、S4原作者样本/源/ZIP/页面/身份及固定归档tree元数据交接t17-audit，
+T15源码/稳定缓存和全部外部PNG保持。S4关闭，自动准入S5继续ComboBox/ListBox/
+HScrollBar/VScrollBar准确包装层与字体/子窗口/通知边界。S1冻结148单位及真实
+图形/无窗口/微软扩展必测缺口继续接收，最后独立任务审计才能收口T17。
