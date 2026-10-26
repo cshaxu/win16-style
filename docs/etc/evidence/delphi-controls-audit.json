@@ -64,7 +64,8 @@
       "bits": 32,
       "version": "7.0.0.572",
       "identity": "modern static VCL candidate: PE32 plus Vcl.Forms/Vcl.Controls/Vcl.Themes type metadata and no BPL import. A bare FMX substring was weaker evidence and is not treated as FireMonkey identity.",
-      "resource_boundary": "A raw TPF0 signature occurs only in a compressed/packed-looking payload; it is not sufficient to enumerate a form or infer its controls.",
+      "resource_forms": ["TAboutBox", "TAppCaptureDialog", "TAppLinkDialog", "TAppLinkItemDialog", "TAssignDialog", "TButtonAliasDialog", "TDeviceConfigDialog", "TDeviceTemplateDialog", "TGreetingDialog", "TImageForm", "TInputNameDialog", "TLicenseKeyDialog", "TMainForm", "TPreferenceDialog", "TTextDialog", "TVibrationDialog", "TWizardDialog"],
+      "resource_boundary": "The PE resource directory proves these named VCL form resources and VCLSTYLE exist. A raw TPF0 signature elsewhere is compressed/packed-looking and cannot enumerate the controls inside those forms.",
       "known_live_surface": "none",
       "current_receiver": "read-only PE/resources and a self-owned bounded probe after framework identity is established"
     },
@@ -74,7 +75,8 @@
       "bits": 32,
       "version": "1.0.0.0",
       "identity": "modern static VCL candidate: PE32 plus Vcl.Forms/Vcl.Controls/Vcl.Themes type metadata and no BPL import. A bare FMX substring was weaker evidence and is not treated as FireMonkey identity.",
-      "resource_boundary": "A raw TPF0 signature occurs only in a compressed/packed-looking payload; it is not sufficient to enumerate a form or infer its controls.",
+      "resource_forms": ["TConfigForm"],
+      "resource_boundary": "The PE resource directory proves the named VCL form resource and VCLSTYLE exist. A raw TPF0 signature elsewhere is compressed/packed-looking and cannot enumerate controls inside the form.",
       "known_live_surface": "none",
       "current_receiver": "read-only PE/resources and a self-owned bounded probe after framework identity is established"
     },
