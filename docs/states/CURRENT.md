@@ -2,7 +2,10 @@
 
 ## Current Work
 
-M0 T17 S17 Microsoft扩展OCX承载审计已完成，顺序准入S18图形选择状态变体审计。
+M0 T17 S18图形选择图片/图标公共协议已完成并发布，顺序准入S19实际VB图形选择
+图片样本对照审计。S18仅放开精确runtime-owned BS_PUSHLIKE CheckBox/OptionButton的
+BM_GETIMAGE bitmap/icon借用路径；复杂/owner-draw/default变体不外推。用户未确认的
+UAC或可见桌面观察只能跳过该项，不阻塞其他自包含S工作。
 S17冻结35模块/66控件行；本机无所列官方OCX文件，故不安装/注册或从native class猜测
 wrapper支持，逐行保留未认证。无产品改动、无UAC/显示依赖；后续S18审计自包含的
 intrinsic图形选择default/disabled/picture变体。
@@ -40,24 +43,24 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T17 S18 Packet
+## M0 T17 S19 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S17扩展OCX有界目录审计关闭后，依用户T17自动顺序S授权准入 |
+| Identifier Mode | Continuation；S18图片/图标公共协议关闭后，依用户T17自动顺序S授权准入 |
 | Admission And Approval | 用户T17完整控件目标、自动顺序S、永久提交推送及binary change同批四文件双发布；不新开T |
-| Objective | 审计并在现有自有原生模型与可信实际runtime路径可证实时有限适配VB图形CheckBox/OptionButton的default、disabled、picture/icon及角色切换变体；不能将S13的plain graphical选择外推，也不能替换应用图像 |
-| Non-goals | 原标题/字体/菜单/滚动条/原glyph保持；不读VB私有对象、不替换/删除BM_GETIMAGE图像、不接管应用owner-draw、不新增T；无真实runtime证据的变体保持原生 |
-| Reference Baseline | S13只认证无图像的精确runtime-owned BS_PUSHLIKE选择；S17 OCX无模块/协议。既有图像push按钮借用BM_GETIMAGE且保持图像所有权，需先验证能否安全复用到选择控件 |
-| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[S13图形选择](../etc/evidence/vb-graphical-choices.json)、[S11图片限制](../etc/evidence/vb-picture-variants.json)、[冻结148矩阵](../etc/evidence/vb-controls-audit.json) |
-| Files And ABI Surface | 先审计既有BUTTON图像/状态路径、受控C runtime模型与固定实际样本；协议成立才在既有双宽DLL复用绘制器/测试，不改公开ABI/三组件四产物 |
+| Objective | 审计冻结输入中真实VB图形选择图片样本的控件类型、运行时、公开style和BM_GETIMAGE协议，核对S18的模型边界；有精确证据才扩展，否则保留原生并形成后续接收 |
+| Non-goals | 原标题/字体/菜单/滚动条/原glyph保持；不读VB私有对象、不替换/删除图片、不接管owner-draw、不装IDE/OCX、不新增T |
+| Reference Baseline | S18只证明精确public bitmap/icon模型和现有借用绘制器；S11真实图片样本主要是CommandButton，不能自动等同CheckBox/OptionButton |
+| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[S18变体](../etc/evidence/vb-graphical-choice-variants.json)、[S11图片限制](../etc/evidence/vb-picture-variants.json)、[冻结148矩阵](../etc/evidence/vb-controls-audit.json) |
+| Files And ABI Surface | 先只读审计已登记样本和自有原生观察器；只有公开协议与所有权完整时才改既有双宽DLL/测试，不改ABI/三组件四产物 |
 | Applicable Rules | Task Reading Set/C17/GCC/Ninja/ccache；禁computer-use、兄弟修改/依赖、全局设置或非自有进程测试；无显示/UAC结果仅作对应skip，不阻塞自包含审计 |
-| Verification | 记录精确runtime/owner、style/BM_GETIMAGE/BM_GETCHECK、裸/注入普通/default/disabled/pressed/图片、键盘/通知/分组与退役；x86实际或明确缺失、x64模型和负例分开 |
-| Expected Markers | 已证明的状态/图片路径或明确原生拒绝；应用图像、数据、输入/通知、字体/几何与资源所有权保持，角色切换恢复原生 |
+| Verification | 记录样本路径/PE/runtime、精确类/owner/style、BM_GETIMAGE/BM_GETCHECK与裸/注入对照；模型与实际证据分开，x86实际与x64模型分开 |
+| Expected Markers | 真实证实的图片选择协议或明确缺失/不匹配；应用图片、数据、输入/通知、字体/几何和资源所有权保持 |
 | Asset Needs | 仅已有登记样本/运行库/任务scratch；不复制第三方图片/OCX/二进制、不装IDE或注册组件 |
-| Reporting Requirements | 分别报告default、disabled、picture/icon、复杂owner-draw、实际样本和模型；不由S13或CommandButton外推，不称T17完成 |
+| Reporting Requirements | 报告实际样本、模型、default/disabled/owner-draw边界和未覆盖面；不由CommandButton或模型外推，不称T17完成 |
 | Stop Conditions | 真实协议/来源不满足即保持原生；重大架构/安全/新增产品先停证据；不关闭/注入用户既有进程，也不等待UAC或屏幕可见性 |
-| Exit Criteria | 有证实边界则完成最小实现、双宽/同批包/必要发布/推送远端；否则提交有界审计和接收。两种结果均保留148单位，T17开放 |
+| Exit Criteria | 完成有界实际审计；若有证实最小实现则双宽/同批包/必要发布/推送远端，否则提交审计。两种结果均保留148单位，T17开放 |
 | Original Owner Request | VB5/VB6控件采用本项目样式；S1全貌、S2demo、S3和多个S实施，最后独立收口；自动推进到完整适配验收 |
 | Similar-Issue Sweep | runtime50/60 graphical选择、BUTTON type/PushLike、BM_GETCHECK/BM_GETIMAGE、default/disabled/pressed/focus、radio分组/通知、图片/bitmap/icon/owner-draw、角色切换/资源退役、真实与模型边界 |
 
@@ -67,8 +70,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 17
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T17并授权内部自动顺序S；不准入其他T候选。
-- Last delivery: M0 T17 S17 P1（扩展OCX目录审计，无产品二进制变化；推送远端后关闭）
-- Open task: T17 S18图形选择状态变体审计；复杂图片及148单位审计保留后续接收，T17/M0开放。
+- Last delivery: M0 T17 S18 P1（图形选择图片/图标实现、双宽原生证明和同批四文件发布待P2远端复核）
+- Open task: T17 S19实际VB图形选择图片样本对照审计；复杂图片及148单位审计保留后续接收，T17/M0开放。
 
 ## Technical Baseline
 
@@ -117,6 +120,8 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T17 S18图形选择图片/图标](../history/M0-T17-S18-vb-graphical-choice-variants.md)：精确公开图片/图标借用、状态、资源与双宽包验证；S18发布后顺序准入S19，T17/M0开放。
 
 - [T17 S11图片变体](../history/M0-T17-S11-vb-pictures.md)：真实十按钮/40状态内区保持、17包/1负例/安装17项、八SHA、230远端/210输入/214恢复/370映像清理；关闭S11续S12，M0/T17开放。
 

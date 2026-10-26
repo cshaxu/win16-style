@@ -11,6 +11,9 @@ S18 将精确 runtime-owned、`BS_PUSHLIKE` 的 VB CheckBox/OptionButton 图片�
 消息广播。完整证据、包摘要和明确未覆盖面见
 [S18 证据](../etc/evidence/vb-graphical-choice-variants.json)。
 
+同一候选包的四文件已发布到 `assets/` 和 `O:\winnt\system32`，两处逐项 SHA-256
+均与候选一致；随后直接从 `assets/run16s.exe` 重跑 x64 与 x86 图形选择探针成功。
+
 没有真实 VB 图片属性样本，因此不把模型证明扩张为任意 VB 图片控件；owner-draw、复杂
 变体和所谓 default CheckBox/OptionButton 仍保持原生。用户未确认的 UAC/显示观察也不
 阻塞本 S，且没有被计为通过。

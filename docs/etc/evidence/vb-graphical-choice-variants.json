@@ -21,7 +21,8 @@
       "ntw16s32.dll": "6b3ea8c4856aa08b1697eef7325440a215070ec6df2ef2b398cc08f4f164cd4a",
       "ntw16s64.dll": "b66c90c0c7af9507ea5181f2d0d2fccceed3ffd0c09dea8f727428564b983737",
       "demo.exe": "32fc3f929f97bfe0a87249df130fb4be3291a24c2fee9c0ca90455074928a271"
-    }
+    },
+    "publication": "The exact candidate hashes were verified in both assets/ and O:\\winnt\\system32, then the assets package reran the injected x64 and x86 graphical-choice probes."
   },
   "not_supported": [
     "A real VB image-property sample was not available in the frozen inputs; this is a public-protocol model proof only.",
