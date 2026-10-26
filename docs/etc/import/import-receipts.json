@@ -1249,7 +1249,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17 test; project MIT license",
-      "sha256": "83a13b5e8a52e0582122a1395e4cda37c391bd8a93fb39254ae3d3c38aac4ea3",
+      "sha256": "813d3b850b3b81e51016df63ee602e269a8bee0d5d0f545a5ec4121b88176626",
       "review": "T17 S13 exact runtime-owned graphical push-like CheckBox protocol fixture; tests attachment, BM_GETCHECK state, classic face change and immediate native retirement; no external implementation or graphics copied"
     },
     {
