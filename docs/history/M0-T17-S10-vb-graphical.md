@@ -44,3 +44,15 @@ x64模型不是64位VB。S9整体GUI GDI跳变仍未定位，TODO继续，未声
 当前为verified/published；P1实际远端、产品/备份恢复及登记scratch安全清理
 通过后由P2关闭S10并续后续S。T17/M0开放，另做最后148单位独立审计；HD Tune
 UAC仍默认skip，Delphi仍仅是已纳入S9提交的未编号队列候选。
+
+## P2 实际复核与关闭
+
+P1 `b5f502b2dbb94d9f92e9dba171ae1ec94dc24095` 已实际推送。对照原请求、
+实际Git diff与证据后，经HTTPS逐字节取回229文件/210输入/四产物，确认远端main。
+214产品对象另存研究恢复目录；八部署、42原样本/2私有清单/runtime/4PNG摘要
+通过，8 before备份可从facc895复取。代码/测试/CMake统计391增35删净356。
+
+映像独占guard正例：已映射EXE/DLL为c0000043，卸载DLL00000000。两个登记根
+共521+14映像无占用且reparse0后清理；研究原样本/归档/声明/私有运行库及清单/
+恢复对象/其他任务/稳定缓存/外部PNG全部保留。S10关闭，S11接收真实graphical
+CheckBox/OptionButton及图片/default复杂变体；T17/M0开放，未宣布148全集完成。

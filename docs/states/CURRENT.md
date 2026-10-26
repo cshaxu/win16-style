@@ -2,10 +2,10 @@
 
 ## Current Work
 
-M0 T17 S9 PictureBox有限适配已交付关闭，顺序准入S10图形按钮/选择控件变体。
-S10已有限实现真实双版本graphical CommandButton；最终41包/6旧包负例、双发布
-八SHA及安装11项通过，等待P1提交后的实际远端/恢复/清理。Check/Option及复杂
-图片/default变体继续后续S，不作为已支持；其余148单位仍需独立最终审计。
+M0 T17 S10图形命令按钮有限交付已关闭，顺序准入S11图形选择控件/图片变体。
+S10最终41包31.06秒、6旧包负例、双发布八SHA/安装11项通过，P1实际远端229
+文件/210输入/214对象恢复与535映像清理通过。Check/Option及复杂图片/default
+变体明确由S11继续核实，不作为已支持；其余148单位仍需独立最终审计。
 S9最终33实际包26.71秒、6旧包负例、双发布八SHA、安装9项通过，P1实际远端
 227文件/208输入/212对象恢复及368映像清理通过。Delphi proposal和队列编辑
 已按用户回复纳入7a25f2b，仅排队不启动新T。完整GUI总GDI变化留TODO，不声称
@@ -16,24 +16,24 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T17 S10 Packet
+## M0 T17 S11 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S9 P1实际远端227文件/212对象恢复/368映像清理后按用户自动顺序S授权准入 |
+| Identifier Mode | Continuation；S10 P1实际远端229文件/214对象恢复/535映像清理后按用户自动顺序S授权准入 |
 | Admission And Approval | 用户T17完整控件目标、自动顺序S、永久提交推送及binary change同批四文件双发布；不新开T |
-| Objective | 审查真实VB5/6 CommandButton/CheckBox/OptionButton graphical/picture/禁用/按下/焦点等S1变体，核实runtime准确类、公开style/owner-draw协议与应用图像所有权；先断点和最小方案再有限实现；148单位目标不缩小 |
+| Objective | 接收S10未认证的真实VB5/6 graphical CheckBox/OptionButton及picture/default/disabled-picture变体；审查样本/依赖/许可和准确owner-draw协议，区分runtime默认绘制与应用自绘；有证据后续用既有renderer，148单位不缩小 |
 | Non-goals | 已确认标题/字体算法/菜单/滚动/原glyph保持；不改应用bitmap/Image/Shape/Line，不读VB私有对象，不以C模型冒称真VB；不装IDE/注册OCX，不启动Delphi候选或替换公共目录对话框 |
-| Reference Baseline | S9 P1 7a25f2b实际远端227文件/208输入，0.17.0.0；最终33包/6旧包负例、安装9项/双发布八SHA，212对象恢复/368映像清理；ABI3/31命名+ordinal1、35detours/40slots |
-| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[冻结矩阵](../etc/evidence/vb-controls-audit.json)、[真实内建来源](../etc/evidence/vb-intrinsic-controls.json)、[S9容器](../etc/evidence/vb-container-controls.json) |
+| Reference Baseline | S10 P1 b5f502b实际远端229文件/210输入，0.17.0.0；41包/6旧包负例、安装11项/双发布八SHA，214对象恢复/535映像清理；ABI3/31命名+ordinal1、35detours/40slots |
+| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[冻结矩阵](../etc/evidence/vb-controls-audit.json)、[真实内建来源](../etc/evidence/vb-intrinsic-controls.json)、[S10图形按钮](../etc/evidence/vb-graphical-controls.json) |
 | Files And ABI Surface | 双宽DLL内部精确角色/绘制接入与原生C探针/测试，先真实根因和最小方案；三组件四产物/公开ABI保持，新图形需来源审查而非随意替换 |
 | Applicable Rules | Task Reading Set/C17/GCC/Ninja/ccache；禁computer-use、兄弟修改/依赖、全局设置或非自有进程测试；发布占用按用户明确执行规范处理 |
-| Verification | 固定原作者真实VB5/6样本/源码审查及必要来源准入；源图像/字体/几何/状态与正常显示对照，识别真owner-draw与既有普通按钮支持；双宽C正负例、有限事件驱动测试/同批包/双发布/安装/实际远端；未定GDI继续记录 |
+| Verification | 先用保留归档查找真实默认graphical选择/图像样本，缺少组件先核实私有免注册接入/公开C ABI与许可，不安装IDE/全局注册；Value/分组/通知/源图片/字体/布局及实际paint/print证据；双宽C与真实样本分开，同批包/必要双发布/安装/实际远端；未定GDI继续记录 |
 | Expected Markers | PE/PID/创建者/runtime/DLL路径SHA，加载/初始化/准确角色/实际绘制分开；graphical图像原像素、文本与状态边界，通知/焦点/捕获、paint/print/晚创建/移除、active0及唯一所有者释放 |
-| Asset Needs | 保留build/t17-audit全部原样本/研究/runtime/归档及S9恢复对象，登记其s10-selection-samples用于本S新研究/来源；build/t17-controls探针/日志/截图，build/t17-package同批包/备份；外部win16style-t17-s10（本会话visualizations根）原生PNG；其他任务/缓存/旧图保持 |
+| Asset Needs | 保留build/t17-audit全部原样本/研究/runtime/归档及S9/S10恢复对象，登记其s11-selection-variants用于本S研究/来源；build/t17-controls探针/日志/截图，build/t17-package同批包/备份；外部win16style-t17-s11（本会话visualizations根）原生PNG；其他任务/缓存/旧图保持 |
 | Reporting Requirements | 真VB5/6与x64 C模型、native保持/已适配/失败/skip分开；真实键盘事件消息不冒称物理输入；未认证变体逐项有接收者，不假称T完成 |
 | Stop Conditions | 公开协议或来源/许可不成立保留原生并明确缺口；重大架构/安全/新增产品先停证据方案；不通过外部未审组件安装或私有对象布局补证 |
-| Exit Criteria | 真实图形按钮/选择变体有限适配或逐项有证据原生保留/阻断及明确接收，干净双宽/同批包/必要双发布/推送/实际远端/恢复清理后关闭S10续S；T17仍需148单位独立审计 |
+| Exit Criteria | 真实图形选择/图像变体有限适配或逐项有证据原生保留/阻断及明确接收，干净双宽/同批包/必要双发布/推送/实际远端/恢复清理后关闭S11续S；T17仍需148单位独立审计 |
 | Original Owner Request | VB5/VB6控件采用本项目样式；S1全貌、S2demo、S3和多个S实施，最后独立收口；自动推进到完整适配验收 |
 | Similar-Issue Sweep | graphical/picture/普通/owner-draw/button类别的禁用/焦点/按下/默认/三态/分组、图像颜色与mask、回调重入/源属性setter/晚创建/移除；未知协议保持原生，缺少真实变体明确接收 |
 
@@ -43,10 +43,17 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 17
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T17并授权内部自动顺序S；不准入其他T候选。
-- Last delivery: M0 T17 S9 P2（33包/6旧包负例/安装9项，双发布八SHA、227远端/208输入、368映像清理；0.17.0.0）
-- Open task: T17 S10图形按钮/选择控件变体；T17/M0开放，已有关闭/取消保持。
+- Last delivery: M0 T17 S10 P2（41包/6旧包负例/安装11项，双发布八SHA、229远端/210输入、535映像清理；0.17.0.0）
+- Open task: T17 S11图形选择控件/图片变体；T17/M0开放，已有关闭/取消保持。
 
 ## Technical Baseline
+
+S10已发布0.17.0.0追加真实RT5/6 graphical CommandButton，精确ODT_BUTTON/DC/
+runtime primitive复用既有边框，ANSI caption借用System。Native返回/error/rect、
+源属性/图像/输入保留。41最终包31.06秒/6旧包负例/安装11项通过，八SHA一致；
+普通双版本整窗、既有PictureBox、标题/按钮外区域RGB差异0。210输入/214对象
+恢复及229实际远端、535映像清理通过。图形Check/Option/default/picture变体
+仍未认证；见[S10证据](../etc/evidence/vb-graphical-controls.json)，T17/M0开放。
 
 S9已发布0.17.0.0追加真实RT5PictureBox/RT6PictureBoxDC有限承载，runtime直接
 ANSI标签在paint内采用System，原生测量/Print/应用自绘/图像保持。最终33包
@@ -86,6 +93,8 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T17 S10图形命令按钮](../history/M0-T17-S10-vb-graphical.md)：41包/6负例/安装11项、双发布八SHA、229远端/210输入/214恢复/535映像清理；S10关闭续S11，T17/M0开放。
 
 - [T17 S9容器与无窗口标签](../history/M0-T17-S9-vb-containers.md)：最终33包/6负例/安装9项、双发布八SHA、227远端/208输入/212恢复/368映像清理；S9关闭续S10，T17/M0开放。
 
@@ -178,9 +187,9 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 
 ## Last Packet Closure
 
-T17 S9 P1 7a25f2b2705d9d462dfd603ab79e5be7a8f7b6a5实际远端227文件/208输入/
-四产物逐字节通过；212产品对象恢复，8原S8备份可从8ce7678复取；8中间批备份
-与留存研究包一致；18原样本、私有runtime和4PNG摘要核对。346+22映像无占用，
-reparse0及guard正例通过，仅清理两个登记任务根；所有原来源/运行库/研究/恢复
-对象/其他任务/稳定缓存/PNG保留。S9关闭续S10图形选择变体；VB6 Drive/文件变体
-及复杂无窗口/语言/DPI缺口继续明确后续接收，最后另做148单位审计，T17/M0开放。
+T17 S10 P1 b5f502b2dbb94d9f92e9dba171ae1ec94dc24095实际远端229文件/210输入/
+四产物逐字节通过，214产品对象恢复、8 before备份可从facc895复取；42原样本/
+2私有清单/runtime/4PNG核对。521+14映像无占用，reparse0/guard正例通过后仅清理
+两个登记任务根；所有原来源/运行库/研究/恢复对象/其他任务/稳定缓存/PNG保留。
+S10关闭续S11图形选择/图片变体；其余Drive/文件/无窗口/语言/DPI及未定GDI均
+继续后续接收，最后另做148单位审计，T17/M0开放。

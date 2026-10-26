@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T17 S10 P1",
-  "stage": "verified/published; actual remote/recovery/cleanup pending; T17/M0 open",
+  "delivery": "M0 T17 S10 P2",
+  "stage": "S10 closed; S11 graphical selection/image variants admitted; T17/M0 open",
   "version": "0.17.0.0",
   "version_contract": "M0 T17; sequential S does not increment T version",
   "package_directory": "assets",
@@ -2226,11 +2226,46 @@
     "limits": "Graphical CheckBox/OptionButton, default/picture/disabled-picture/complex bitmap variants need subsequent real-sample S; ordinary command/choice support retained. VB6 Drive/file variants, other intrinsic/OCX and whole148 independent audit remain; aggregate GUI GDI observation fromS9 remains unresolved TODO; actual DPI96 only; HD Tune UAC defaultskip."
   },
   "validation": {
-    "status": "passed locally; actual remote pending",
+    "status": "passed; P1 actual remote/recovery/cleanup complete",
     "source_inputs": 210,
     "evidence": "docs/etc/evidence/vb-graphical-controls.json"
   },
   "closure": {
-    "status": "pending actual P1 remote/recovery/cleanup"
+    "actual_remote": {
+      "status": "passed",
+      "commit": "b5f502b2dbb94d9f92e9dba171ae1ec94dc24095",
+      "remote_main": "b5f502b2dbb94d9f92e9dba171ae1ec94dc24095",
+      "files": 229,
+      "source_inputs": 210,
+      "seconds": 14.716217499997583,
+      "recovered_product_objects": 214,
+      "deployed_SHA_matches": 8,
+      "before_files_recoverable_from_facc895": 8,
+      "original_sample_SHA_matches": 42,
+      "private_activation_manifests": 2,
+      "private_runtime_SHA_matches": 1,
+      "external_PNG_SHA_matches": 4,
+      "method": "actual raw GitHub HTTPS bytes compared to Git cat-file, source identity and actual main independently checked"
+    },
+    "cleanup": {
+      "status": "passed",
+      "positive_self_check": "exe/loadedDLL c0000043; unloadedDLL00000000",
+      "preserved": "42 original sample files/private manifests/runtime/source archives and214 recovered product objects, other tasks, stable Ninja/ccache and all PNG",
+      "roots": [
+        {
+          "status": "passed",
+          "images": 521,
+          "reparse_points": 0,
+          "root": "O:\\repos.hobby\\win16style\\build\\t17-package"
+        },
+        {
+          "status": "passed",
+          "images": 14,
+          "reparse_points": 0,
+          "root": "O:\\repos.hobby\\win16style\\build\\t17-controls"
+        }
+      ]
+    },
+    "coordination_review": "Actualb5f502b diff, original148-unit request and native evidence reviewed. Exact runtime graphical CommandButton only; existing border factored in place, native return/error/rect and app data/images retained.391add35del356net CMake/src/tests. Native/default/picture choice gaps explicitly received byS11; aggregateGDI remainsTODO. No newT, original resource/ABI35hooks unchanged."
   }
 }

@@ -1,6 +1,6 @@
 {
   "task": "M0 T17 S10",
-  "status": "verified and published; P1 actual remote/recovery/cleanup pending",
+  "status": "S10 closed after actual P1 remote/recovery/cleanup; S11 admitted; T17/M0 open",
   "baseline": "facc8957651b9990f580b770218f1feae91b8eae",
   "root_cause": "Actual VB5/6 graphical CommandButton has runtime-owned ThunderRT5/6CommandButton, native Button superclass and BS_OWNERDRAW. Existing ordinary painter deliberately rejects that mode. Four controls per real sample still call DrawFrameControl(DFC_BUTTON,DFCS_BUTTONPUSH) on their exact child DC; DLL loading is not the failure.",
   "minimal_fix": "Private passive-font leaf and exact parent ODT_BUTTON scope; direct runtime DFC push primitive reuses factored existing button border. Native API runs first and its return/error/adjusted RECT are preserved. Source font/geometry/input and runtime image/body remain native; only runtime ANSI captions borrow the existing System font. No new detours, ABI, product components or original resource bytes.",
@@ -1619,5 +1619,43 @@
     "deletes": 35,
     "net": 356
   },
-  "final_batch_note": "Final3 includes completed real normal-paint/property/click witness and robust model class selection; preliminary final/final2 were clean-build prototypes only and were not published. Final3 actual41 passed31.06s,6old negatives1.95s, installed11 passed7.91s; one actual batch published."
+  "final_batch_note": "Final3 includes completed real normal-paint/property/click witness and robust model class selection; preliminary final/final2 were clean-build prototypes only and were not published. Final3 actual41 passed31.06s,6old negatives1.95s, installed11 passed7.91s; one actual batch published.",
+  "closure": {
+    "actual_remote": {
+      "status": "passed",
+      "commit": "b5f502b2dbb94d9f92e9dba171ae1ec94dc24095",
+      "remote_main": "b5f502b2dbb94d9f92e9dba171ae1ec94dc24095",
+      "files": 229,
+      "source_inputs": 210,
+      "seconds": 14.716217499997583,
+      "recovered_product_objects": 214,
+      "deployed_SHA_matches": 8,
+      "before_files_recoverable_from_facc895": 8,
+      "original_sample_SHA_matches": 42,
+      "private_activation_manifests": 2,
+      "private_runtime_SHA_matches": 1,
+      "external_PNG_SHA_matches": 4,
+      "method": "actual raw GitHub HTTPS bytes compared to Git cat-file, source identity and actual main independently checked"
+    },
+    "cleanup": {
+      "status": "passed",
+      "positive_self_check": "exe/loadedDLL c0000043; unloadedDLL00000000",
+      "preserved": "42 original sample files/private manifests/runtime/source archives and214 recovered product objects, other tasks, stable Ninja/ccache and all PNG",
+      "roots": [
+        {
+          "status": "passed",
+          "images": 521,
+          "reparse_points": 0,
+          "root": "O:\\repos.hobby\\win16style\\build\\t17-package"
+        },
+        {
+          "status": "passed",
+          "images": 14,
+          "reparse_points": 0,
+          "root": "O:\\repos.hobby\\win16style\\build\\t17-controls"
+        }
+      ]
+    },
+    "coordination_review": "Actualb5f502b diff, original148-unit request and native evidence reviewed. Exact runtime graphical CommandButton only; existing border factored in place, native return/error/rect and app data/images retained.391add35del356net CMake/src/tests. Native/default/picture choice gaps explicitly received byS11; aggregateGDI remainsTODO. No newT, original resource/ABI35hooks unchanged."
+  }
 }
