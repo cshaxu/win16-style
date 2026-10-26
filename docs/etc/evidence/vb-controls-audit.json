@@ -68,7 +68,9 @@
       "class_owner": "runtime class registration must be observed per real HWND; no alias based on prefix",
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
-      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced"
+      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
+      "T17_S11_progress_evidence": "docs/etc/evidence/vb-picture-variants.json",
+      "T17_S11_disposition": "ten true runtime60 image-only graphical commands; four native states,40 interiors unchanged; default/cancel/disabled-picture/mask remain unverified"
     },
     {
       "id": "VB5.CheckBox",

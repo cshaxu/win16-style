@@ -5,7 +5,7 @@
 用户已明确准入M0 T17，并指定S1审计控件全貌，S2加入demo，S3及多个后续S实施，
 最后独立收口S。[S1审计](../etc/evidence/vb-controls-audit.md)、S2八页demo、S3普通
 VB6 CheckBox及S4真实VB5 Command/Check/Option/Frame/Text与VB6 Option已交付。
-S5精确Combo/List/Scroll有限适配、S6真实输入/通知已交付；当前[T17 S7](../states/CURRENT.md)接收文件/目录/驱动器列表；148单位和变体/
+S5精确Combo/List/Scroll有限适配、S6真实输入/通知已交付；当前子任务及后续接收者由[CURRENT](../states/CURRENT.md)管理；148单位和变体/
 OCX目标保持，不以Actor两框或一个普通样例代替全任务完成，M0固定。
 
 ## 已核实基线

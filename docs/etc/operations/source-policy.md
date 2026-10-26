@@ -52,3 +52,12 @@ S10在同一固定归档审查原作者VB5/VB6 Windows Hook Library Mouse样本�
 DLL中的journal/global分支不执行，QueryUnload归还自有钩子。只点击源码确认无
 Click处理器的测试按钮以观察原生通知，不执行shell/文件/持久化操作。原实现、
 图像、EXE/DLL及运行库仅留研究目录，不进入产品/必需测试。
+
+S11另审Picinotti Duccio的3Ddefline，来自Code Architects固定提交
+3864ad0f9d3821d50ad467e91e68ccef5f77ea31，原作者源码声明Freeware并要求引用作者。
+17个原文件按Git blob核对，仅作可选本地研究；原样本/图片/代码不进入产品或
+必需测试。使用Windows既有签名有效的32位msscript.ocx；默认脚本仅计算sin曲面，
+不改表达式、不触发业务按钮。探针仅用公开消息改变并恢复启用/按下状态。
+Microsoft KB3096896更新包只读提取发现其许可要求有效VB6许可；未确认前不加载
+其中OCX，不安装或注册。其现下载SHA与官方历史文章所列值不同，分别记录，
+签名有效不被写成两份文件相同或许可已满足。

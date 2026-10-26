@@ -2,6 +2,8 @@
 
 # Deferred Debt
 
+- [ ] TODO(Medium): 两个裸VB6真实样本的临时IAT观察器首轮安装失败，六项有界诊断及最终17项未复现；Owner：T17后续原生观察器审计；Evidence：[S11](../etc/evidence/vb-picture-variants.json)，已加严格实际/预期地址和模块诊断，不放宽断言；Admission：现有T17自动后续S授权，需失败点日志定位，复测通过不视为修复。
+
 - [ ] TODO(Low): 核实frame卸载的DWM策略恢复；Owner：frame生命周期；Evidence：[win16_style.c](../../src/ntw16s-dll/win16_style.c)读取SDK标记set-only的DWMWA_NCRENDERING_POLICY，调查见[S3](../history/M0-T8-S3-popup-shadow.md)；Admission：后续显式生命周期修订，本轮保留已确认标题代码。
 
 菜单取消缺陷已修复关闭，见[修复审计](../history/M0-T7-menu-cancellation.md)。T6历史完成见

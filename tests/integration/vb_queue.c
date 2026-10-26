@@ -5,6 +5,7 @@
 #include "vb_queue.h"
 #include <wchar.h>
 #include <string.h>
+#include <stdio.h>
 static HANDLE mapping,event;
 static vb_queue_state *state;
 static UINT barrier;
@@ -46,7 +47,14 @@ static BOOL observe_api_import(HMODULE module,const char *api,PVOID expected,PVO
             IMAGE_IMPORT_BY_NAME *symbol=(void *)(base+name->u1.AddressOfData);
             size_t length=strlen(api)+1;
             if(size-name->u1.AddressOfData<sizeof(WORD)+length || memcmp(symbol->Name,api,length))continue;
-            if(import_count==ARRAYSIZE(imports) || (PVOID)(UINT_PTR)address->u1.Function!=expected)return FALSE;
+            if(import_count==ARRAYSIZE(imports) || (PVOID)(UINT_PTR)address->u1.Function!=expected){
+                WCHAR path[MAX_PATH]=L"";HMODULE owner=NULL;
+                if(GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                        (LPCWSTR)(UINT_PTR)address->u1.Function,&owner))GetModuleFileNameW(owner,path,MAX_PATH);
+                fprintf(stderr,"VB_QUEUE_IMPORT_MISMATCH api=%s module=%p actual=%p expected=%p slots=%u actual_owner=%ls\n",
+                    api,(void *)module,(void *)(UINT_PTR)address->u1.Function,expected,import_count,path);
+                return FALSE;
+            }
             PVOID volatile *slot=(void *)&address->u1.Function;DWORD protect,unused;
             if(!VirtualProtect((void *)slot,sizeof(*slot),PAGE_READWRITE,&protect))return FALSE;
             PVOID old=InterlockedCompareExchangePointer(slot,replacement,expected);
@@ -95,7 +103,9 @@ static void graphical_survey(void)
         observe_api_import(runtime,"DrawTextA",(PVOID)(UINT_PTR)draw_text,(PVOID)(UINT_PTR)observe_draw_text) &&
         observe_api_import(runtime,"BitBlt",(PVOID)(UINT_PTR)bit_blt,(PVOID)(UINT_PTR)observe_blt);
     if(ok)RedrawWindow(state->window,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
-    state->paint_restored=unobserve_imports();state->paint_probe_error=ok && state->paint_restored?0:ERROR_INVALID_STATE;
+    DWORD error=GetLastError();state->paint_restored=unobserve_imports();state->paint_probe_error=ok && state->paint_restored?0:ERROR_INVALID_STATE;
+    if(state->paint_probe_error)fprintf(stderr,"VB_QUEUE_GRAPHICAL_OBSERVER_FAILED module=%p install=%u restored=%ld native_error=%lu\n",
+        (void *)runtime,ok,state->paint_restored,error);
 }
 static BOOL (WINAPI *text_out)(HDC,int,int,LPCSTR,int);
 static BOOL (WINAPI *ext_text_out)(HDC,int,int,UINT,const RECT *,LPCSTR,UINT,const INT *);

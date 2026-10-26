@@ -290,7 +290,8 @@ static int worker(int argc,WCHAR **argv){
     BOOL dll=FALSE;
     CHECK(Module32FirstW(snap,&mod));
     do{
-        if(!_wcsicmp(mod.szModule,L"CompressZItLib6.dll") || !_wcsicmp(mod.szModule,L"vbalHook6.dll") || !_wcsicmp(mod.szModule,L"vbalHook.dll")){
+        if(!_wcsicmp(mod.szModule,L"CompressZItLib6.dll") || !_wcsicmp(mod.szModule,L"vbalHook6.dll") || !_wcsicmp(mod.szModule,L"vbalHook.dll") ||
+                !_wcsicmp(mod.szModule,L"msscript.ocx") || !_wcsicmp(mod.szModule,L"vbscript.dll")){
             printf("VB_SAMPLE_PRIVATE_COM base=%p path=%ls\n",(void *)mod.hModule,mod.szExePath);file_path(mod.szExePath);
         }
         if((!_wcsicmp(mod.szModule,L"MSVBVM60.DLL") || !_wcsicmp(mod.szModule,L"MSVBVM50.DLL"))){
@@ -306,13 +307,15 @@ static int worker(int argc,WCHAR **argv){
     }
     while(Module32NextW(snap,&mod));
     CloseHandle(snap);
+    printf("VB_GRAPHICAL_OBSERVER_DIAGNOSTICS available=1\n");
     BOOL about_print=!wcscmp(argv[3],L"about-print");
     BOOL container_verify=!wcscmp(argv[3],L"containers-verify");
     BOOL containers=container_verify || !wcscmp(argv[3],L"containers");
     BOOL filedir_verify=!wcscmp(argv[3],L"filedir-verify");
     BOOL file_verify=filedir_verify || !wcscmp(argv[3],L"files-verify");
     BOOL graphical_verify=!wcscmp(argv[3],L"graphical-verify");
-    BOOL graphical=graphical_verify || !wcscmp(argv[3],L"graphical-observe");
+    BOOL graphical_pictures=!wcscmp(argv[3],L"graphical-pictures");
+    BOOL graphical=graphical_verify || graphical_pictures || !wcscmp(argv[3],L"graphical-observe");
     BOOL inventory=graphical || about_print || containers || file_verify || !wcscmp(argv[3],L"inventory");
     CHECK(runtime && dll==styled && EnumChildWindows(form,collect,0) && (inventory?count>0:count>10));
     CHECK(swprintf_s(path,MAX_PATH,L"%ls/actor-%ls.bmp",scratch,styled?L"styled":L"bare")>0);
@@ -365,11 +368,33 @@ static int worker(int argc,WCHAR **argv){
                     queue_survey(w,VB_QUEUE_GRAPHICAL_SURVEY);++found;
                     CHECK(queue_state->paint_restored && !queue_state->paint_probe_error);
                     if(graphical_verify)CHECK(styled?(queue_state->attached && queue_state->system_text>0):!queue_state->system_text);
+                    /* Optional source-reviewed 3Ddefline: ten image-only
+                     * commands. Never use this mode to click business code. */
+                    if(graphical_pictures)CHECK(!wcscmp(cls,L"ThunderRT6CommandButton") && !GetWindowTextLengthW(w) &&
+                        queue_state->graphical_frames==1 && queue_state->graphical_type==DFC_BUTTON &&
+                        queue_state->graphical_state==DFCS_BUTTONPUSH && (styled?queue_state->attached:queue_state->attached==-1));
                     printf("VB_GRAPHICAL_API index=%u class=%ls attached=%ld frames=%ld type=%lu state=%lu rect=%ld,%ld,%ld,%ld dc_window=%p blits=%ld text=%ld restored=%ld\n",i,cls,queue_state->attached,queue_state->graphical_frames,queue_state->graphical_type,queue_state->graphical_state,queue_state->graphical_rect.left,queue_state->graphical_rect.top,queue_state->graphical_rect.right,queue_state->graphical_rect.bottom,(void *)queue_state->graphical_dc_window,queue_state->graphical_blits,queue_state->graphical_text,queue_state->paint_restored);
                     /* IAT wrappers change the direct caller; inspect actual
                      * style pixels after restoring imports, without wrappers. */
-                    graphical_pixel_check=graphical_verify && styled;
-                    CHECK(swprintf_s(path,MAX_PATH,L"%ls/graphical-%u.bmp",scratch,i)>0);(void)capture(w,path,FALSE);graphical_pixel_check=FALSE;
+                    graphical_pixel_check=(graphical_verify || graphical_pictures) && styled;
+                    CHECK(swprintf_s(path,MAX_PATH,L"%ls/graphical-%u.bmp",scratch,i)>0);uint64_t original_image=capture(w,path,FALSE);graphical_pixel_check=FALSE;
+                    if(graphical_pictures){
+                        LONG commands=queue_state->commands;CHECK(IsWindowEnabled(w) && !(button_state&BST_PUSHED));
+                        EnableWindow(w,FALSE);CHECK(!IsWindowEnabled(w));queue_survey(w,VB_QUEUE_GRAPHICAL_SURVEY);
+                        CHECK(queue_state->paint_restored && !queue_state->paint_probe_error && (queue_state->graphical_state&DFCS_INACTIVE));
+                        CHECK(swprintf_s(path,MAX_PATH,L"%ls/graphical-%u-disabled.bmp",scratch,i)>0);(void)capture(w,path,FALSE);
+                        EnableWindow(w,TRUE);SendMessageW(w,BM_SETSTATE,TRUE,0);CHECK(SendMessageW(w,BM_GETSTATE,0,0)&BST_PUSHED);
+                        queue_survey(w,VB_QUEUE_GRAPHICAL_SURVEY);
+                        CHECK(queue_state->paint_restored && !queue_state->paint_probe_error && (queue_state->graphical_state&DFCS_PUSHED));
+                        CHECK(swprintf_s(path,MAX_PATH,L"%ls/graphical-%u-pressed.bmp",scratch,i)>0);(void)capture(w,path,FALSE);
+                        SendMessageW(w,BM_SETSTATE,FALSE,0);
+                        CHECK(swprintf_s(path,MAX_PATH,L"%ls/graphical-%u-restored.bmp",scratch,i)>0);
+                        CHECK(capture(w,path,FALSE)==original_image);queue_survey(w,0);
+                        CHECK(queue_state->commands==commands && !GetCapture());
+                        RECT root_rect;CHECK(GetWindowRect(form,&root_rect));
+                        printf("VB_GRAPHICAL_PICTURE_STATES_OK index=%u disabled=1 pressed=1 restored_pixels=1 no_click=1 root_offset=%ld,%ld size=%ld,%ld\n",
+                            i,before.left-root_rect.left,before.top-root_rect.top,before.right-before.left,before.bottom-before.top);
+                    }
                     queue_survey(w,VB_QUEUE_PAINT_SURVEY);
                     if(graphical_verify)CHECK(styled?queue_state->paint_system>0:!queue_state->paint_system);
                     CHECK((HFONT)SendMessageW(w,WM_GETFONT,0,0)==source && SendMessageW(w,BM_GETSTATE,0,0)==button_state &&
@@ -384,7 +409,7 @@ static int worker(int argc,WCHAR **argv){
                     }
                 }
             }
-            CHECK(found>0);printf("VB_GRAPHICAL_INVENTORY_OK controls=%u\n",found);
+            CHECK(found>0 && (!graphical_pictures || found==10));printf("VB_GRAPHICAL_INVENTORY_OK controls=%u\n",found);
         }
         if(about_print){
             CHECK(queue_state);HWND main=form,button=NULL;

@@ -1,5 +1,8 @@
 # Supporting Material Index
 
+- [VB图片变体](evidence/vb-picture-variants.json)：T17 S11真实十按钮/四状态像素、
+  同批包、许可与原生观察器限制；不作为图形Check/Option或全集支持声明。
+
 | 路径 | 责任、用途及保留条件 |
 | --- | --- |
 | [evidence/outline-original.json](evidence/outline-original.json) | T16原始Win3.1 USER/GDI/VGA身份、调用地址、USER与VGA例程CPU执行参数；不包含系统二进制，不冒称完整VGA硬件/调色板运行 |
