@@ -48,7 +48,7 @@
     },
     {
       "kind": "native_preservation_required",
-      "count": 21,
+      "count": 29,
       "meaning": "The established receiver is application DC, embedded-object/data handling, nonvisual runtime work, or an unsafe host boundary. Repainting or attaching a guessed standard class would change application semantics, so preserving native behavior is the correct current disposition.",
       "groups": [
         {
@@ -60,12 +60,22 @@
           "ids": ["VB5.Data", "VB6.Data", "VB5.OLE", "VB6.OLE", "VB5.MDIForm", "VB6.MDIForm", "VB5.UserControl", "VB6.UserControl", "VB5.UserDocument", "VB6.UserDocument", "VB5.PropertyPage", "VB6.PropertyPage", "VB6.msscript.ocx:ScriptControl"],
           "evidence": ["T17 S16", "T17 S28 native COM probe"],
           "boundary": "Data, embedded object, MDI, and design-time host contracts are not safely styleable without a real host protocol."
+        },
+        {
+          "ids": ["VB5.picclp32.ocx:PictureClip", "VB6.picclp32.ocx:PictureClip", "VB5.msinet.ocx:Inet", "VB6.msinet.ocx:Inet", "VB5.sysinfo.ocx:SysInfo", "VB6.sysinfo.ocx:SysInfo"],
+          "evidence": ["T17 S28 direct x86 OLE host", "docs/etc/evidence/vb-ocx-wrapper-contracts.json"],
+          "boundary": "The official x86 OCXs create only their own PicClipWndClass, MSINETWndClass, or SysInfoWndClass client surface in the inert host. No standard child HWND, public custom-draw route, or safe host-border contract was observed; preserve native behavior."
+        },
+        {
+          "ids": ["VB5.mci32.ocx:MMControl", "VB6.mci32.ocx:MMControl"],
+          "evidence": ["T17 S28 direct x86 OLE host", "docs/etc/evidence/vb-ocx-wrapper-contracts.json"],
+          "boundary": "MCI32.OCX creates its private mciWndClass client surface and nine USER32 Button children with BS_OWNERDRAW (style low word 0x000B). Their private OCX parent owns the draw contract; no generic standard-control attachment is safe. Preserve the outer surface and its owner-draw buttons natively."
         }
       ]
     },
     {
       "kind": "missing_real_sample_or_public_owner_protocol",
-      "count": 88,
+      "count": 80,
       "meaning": "No implementation is admitted from a filename or a guessed class name. These rows require the listed real runtime/OCX and a public child-HWND, COM-owner, or vendor host contract before any styling work can be safely scoped.",
       "groups": [
         {
@@ -74,7 +84,7 @@
           "receiver": "A runnable, version-correct DriveListBox sample that proves the owner-draw/DC and icon/data ownership path."
         },
         {
-          "ids": ["VB5.comctl32.ocx:StatusBar", "VB6.comctl32.ocx:StatusBar", "VB5.comctl32.ocx:TabStrip", "VB6.comctl32.ocx:TabStrip", "VB5.comctl32.ocx:ListView", "VB6.comctl32.ocx:ListView", "VB5.comctl32.ocx:ProgressBar", "VB6.comctl32.ocx:ProgressBar", "VB5.comctl32.ocx:ImageList", "VB6.comctl32.ocx:ImageList", "VB6.mscomctl.ocx:Toolbar", "VB6.mscomctl.ocx:StatusBar", "VB6.mscomctl.ocx:TabStrip", "VB6.mscomctl.ocx:ListView", "VB6.mscomctl.ocx:ProgressBar", "VB6.mscomctl.ocx:Slider", "VB6.mscomctl.ocx:ImageList", "VB6.mscomctl.ocx:ImageCombo", "VB5.comct232.ocx:Animation", "VB6.comct232.ocx:Animation", "VB5.comct232.ocx:UpDown", "VB6.comct232.ocx:UpDown", "VB6.mscomct2.ocx:Animation", "VB6.mscomct2.ocx:UpDown", "VB6.mscomct2.ocx:MonthView", "VB6.mscomct2.ocx:DTPicker", "VB6.mscomct2.ocx:FlatScrollBar", "VB6.comct332.ocx:CoolBar", "VB5.comdlg32.ocx:CommonDialog", "VB6.comdlg32.ocx:CommonDialog", "VB5.richtx32.ocx:RichTextBox", "VB6.richtx32.ocx:RichTextBox", "VB5.tabctl32.ocx:SSTab", "VB6.tabctl32.ocx:SSTab", "VB5.msflxgrd.ocx:MSFlexGrid", "VB6.msflxgrd.ocx:MSFlexGrid", "VB6.mshflxgd.ocx:MSHFlexGrid", "VB5.dbgrid32.ocx:DBGrid", "VB6.dbgrid32.ocx:DBGrid", "VB5.dblist32.ocx:DBList", "VB6.dblist32.ocx:DBList", "VB5.dblist32.ocx:DBCombo", "VB6.dblist32.ocx:DBCombo", "VB6.msdatgrd.ocx:DataGrid", "VB6.msdatlst.ocx:DataList", "VB6.msdatlst.ocx:DataCombo", "VB6.msadodc.ocx:Adodc", "VB5.msrdc20.ocx:MSRDC", "VB6.msrdc20.ocx:MSRDC", "VB6.msdatrep.ocx:DataRepeater", "VB6.mschrt20.ocx:MSChart", "VB5.mci32.ocx:MMControl", "VB6.mci32.ocx:MMControl", "VB5.picclp32.ocx:PictureClip", "VB6.picclp32.ocx:PictureClip", "VB5.mscomm32.ocx:MSComm", "VB6.mscomm32.ocx:MSComm", "VB5.msinet.ocx:Inet", "VB6.msinet.ocx:Inet", "VB5.msmapi32.ocx:MAPISession", "VB6.msmapi32.ocx:MAPISession", "VB5.msmapi32.ocx:MAPIMessages", "VB6.msmapi32.ocx:MAPIMessages", "VB5.mswinsck.ocx:Winsock", "VB6.mswinsck.ocx:Winsock", "VB5.sysinfo.ocx:SysInfo", "VB6.sysinfo.ocx:SysInfo"],
+          "ids": ["VB5.comctl32.ocx:StatusBar", "VB6.comctl32.ocx:StatusBar", "VB5.comctl32.ocx:TabStrip", "VB6.comctl32.ocx:TabStrip", "VB5.comctl32.ocx:ListView", "VB6.comctl32.ocx:ListView", "VB5.comctl32.ocx:ProgressBar", "VB6.comctl32.ocx:ProgressBar", "VB5.comctl32.ocx:ImageList", "VB6.comctl32.ocx:ImageList", "VB6.mscomctl.ocx:Toolbar", "VB6.mscomctl.ocx:StatusBar", "VB6.mscomctl.ocx:TabStrip", "VB6.mscomctl.ocx:ListView", "VB6.mscomctl.ocx:ProgressBar", "VB6.mscomctl.ocx:Slider", "VB6.mscomctl.ocx:ImageList", "VB6.mscomctl.ocx:ImageCombo", "VB5.comct232.ocx:Animation", "VB6.comct232.ocx:Animation", "VB5.comct232.ocx:UpDown", "VB6.comct232.ocx:UpDown", "VB6.mscomct2.ocx:Animation", "VB6.mscomct2.ocx:UpDown", "VB6.mscomct2.ocx:MonthView", "VB6.mscomct2.ocx:DTPicker", "VB6.mscomct2.ocx:FlatScrollBar", "VB6.comct332.ocx:CoolBar", "VB5.comdlg32.ocx:CommonDialog", "VB6.comdlg32.ocx:CommonDialog", "VB5.richtx32.ocx:RichTextBox", "VB6.richtx32.ocx:RichTextBox", "VB5.tabctl32.ocx:SSTab", "VB6.tabctl32.ocx:SSTab", "VB5.msflxgrd.ocx:MSFlexGrid", "VB6.msflxgrd.ocx:MSFlexGrid", "VB6.mshflxgd.ocx:MSHFlexGrid", "VB5.dbgrid32.ocx:DBGrid", "VB6.dbgrid32.ocx:DBGrid", "VB5.dblist32.ocx:DBList", "VB6.dblist32.ocx:DBList", "VB5.dblist32.ocx:DBCombo", "VB6.dblist32.ocx:DBCombo", "VB6.msdatgrd.ocx:DataGrid", "VB6.msdatlst.ocx:DataList", "VB6.msdatlst.ocx:DataCombo", "VB6.msadodc.ocx:Adodc", "VB5.msrdc20.ocx:MSRDC", "VB6.msrdc20.ocx:MSRDC", "VB6.msdatrep.ocx:DataRepeater", "VB6.mschrt20.ocx:MSChart", "VB5.mscomm32.ocx:MSComm", "VB6.mscomm32.ocx:MSComm", "VB5.msmapi32.ocx:MAPISession", "VB6.msmapi32.ocx:MAPISession", "VB5.msmapi32.ocx:MAPIMessages", "VB6.msmapi32.ocx:MAPIMessages", "VB5.mswinsck.ocx:Winsock", "VB6.mswinsck.ocx:Winsock"],
           "evidence": ["T17 S17"],
           "receiver": "The exact registered module plus a runnable licensed sample proving its child HWND or public COM ownership and drawing contract."
         },
@@ -91,7 +101,7 @@
       ]
     }
   ],
-  "completion_check": "39 + 21 + 88 = 148. A verifier must compare the set of ids to source_matrix and reject duplicates, omissions, or unknown ids.",
+  "completion_check": "39 + 29 + 80 = 148. A verifier must compare the set of ids to source_matrix and reject duplicates, omissions, or unknown ids.",
   "local_discovery_after_p3": {
     "method": "Read-only recursive filename check of O:\\winnt\\system32, O:\\winnt\\syswow64, and D:\\programs for the 34 frozen extension module names; separate source-file scan for .vbp/.frm/.ctl/.vbg and declaration names.",
     "extension_module_matches": 0,
@@ -111,5 +121,5 @@
     "candidate_archive_matches": 0,
     "consequence": "No further locally available x86 visual OCX or installer can safely reduce the remaining set. The only next implementation input is an independently licensed, version-correct x86 visual component together with an inert self-owned sample or a documented public host contract; it must be supplied or become available externally."
   },
-  "result": "The ledger closes the accounting gap but does not close T17: 39 rows have bounded verified public paths, 21 require native preservation, and 88 still require a safe version-correct public contract or real sample."
+  "result": "The ledger closes the accounting gap but does not close T17: 39 rows have bounded verified public paths, 29 require native preservation, and 80 still require a safe version-correct public contract or real sample."
 }

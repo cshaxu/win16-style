@@ -16,8 +16,11 @@ MSCOMCTL.OCX/COMCTL32.OCX：不安装/注册/发布，已证实有限公开TreeV
 旧版COMCTL32文本工具栏路径；工具栏仅接入精确嵌套原生ToolbarWindow32及无图像普通/勾选按钮，
 所有图像、分隔、下拉、自绘变体原生保留。TabStrip回归即撤回、ProgressBar状态契约不足而原生保留，
 MSMASK32的MaskEdBox已证实为标准EDIT superclass，沿用既有EDIT适配；DataGrid等外部OCX临时frame
-位现明确拒绝，且只保留其标准USER子控件路径。RichTextBox/SSTab/FlatScrollBar外壳、StatusBar/ListView/
-MSCOMCTL Toolbar20及其余未证实行逐项原生保留。
+位现明确拒绝，且只保留其标准USER子控件路径。随后用当前已发布x86 DLL复测官方MCI32.OCX：其私有
+mciWndClass下九个USER32 Button均为BS_OWNERDRAW，故不以泛化BUTTON路径破坏OCX的WM_DRAWITEM契约；
+MMControl改列原生保留。SysInfo/Inet/PictureClip亦已在自有免注册OLE宿主逐项观察，均无标准子HWND或
+公开绘制协议而原生保留。RichTextBox/SSTab/FlatScrollBar外壳、StatusBar/ListView/MSCOMCTL Toolbar20
+及其余未证实行逐项原生保留；分类当前为39项有限验证、29项原生保留、80项待版本正确公开协议/样本。
 无UAC/显示依赖；后续S18审计自包含的
 intrinsic图形选择default/disabled/picture变体。
 S16的Data样本包含绝对数据库/绑定，MDI样本启动可写注册表并有Shell/Delete路径；
