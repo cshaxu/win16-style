@@ -11,6 +11,16 @@ static inline BOOL ntw16s_vb_class(HWND w,const WCHAR *name)
     return runtime && (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==runtime &&
         GetClassNameW(w,actual,ARRAYSIZE(actual)) && !lstrcmpiW(actual,name);
 }
+/* Exact VB6 windowed buttons share the existing paint/font policy. The VB
+ * runtime retains Value/Click behavior; style bits do not define its cycle. */
+static inline BOOL ntw16s_vb_button(HWND w)
+{return ntw16s_vb_class(w,L"ThunderRT6CommandButton") || ntw16s_vb_class(w,L"ThunderRT6CheckBox");}
+static inline BOOL ntw16s_vb_plain_checkbox(HWND w)
+{
+    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),type=style&BS_TYPEMASK;
+    return ntw16s_vb_class(w,L"ThunderRT6CheckBox") && !(style&(BS_PUSHLIKE|BS_ICON|BS_BITMAP)) &&
+        (type==BS_CHECKBOX || type==BS_AUTOCHECKBOX || type==BS_3STATE || type==BS_AUTO3STATE);
+}
 /* USER identifies standard superclasses independently of the registered name.
  * Limit the fallback to the standard protocols implemented by this renderer;
  * arbitrary T-prefixed/custom classes are not aliases. */
@@ -30,8 +40,7 @@ static inline BOOL ntw16s_class_is(HWND w,const WCHAR *expected)
         !lstrcmpiW(expected,L"STATIC") || !lstrcmpiW(expected,L"COMBOBOX") ||
         !lstrcmpiW(expected,L"LISTBOX") || !lstrcmpiW(expected,L"SCROLLBAR")) &&
         ntw16s_native_superclass(w,expected))return TRUE;
-    if(!lstrcmpiW(expected,L"BUTTON") && (ntw16s_vb_class(w,L"ThunderRT6CommandButton") ||
-        ntw16s_vb_class(w,L"ThunderRT6Frame")))return TRUE;
+    if(!lstrcmpiW(expected,L"BUTTON") && (ntw16s_vb_button(w) || ntw16s_vb_class(w,L"ThunderRT6Frame")))return TRUE;
     if(!lstrcmpiW(expected,L"EDIT"))return ntw16s_vb_class(w,L"ThunderRT6TextBox");
     return ntw16s_control_protocol_is(w,expected);
 }

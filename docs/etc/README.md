@@ -56,3 +56,5 @@
 - [T17 S1审计交付](../history/M0-T17-S1-vb-control-audit.md)：148单位目录、真实类型库/源码缺口、三项短基线包验证及后续交接。
 
 - [T17 S2原生demo目录](evidence/vb-demo-gallery.json)：148审计单位的对应页/明确缺失项、有限原生展示及实际包交付；不等同VB/OCX适配。
+
+- [T17 S3选择控件](evidence/vb-selection-controls.json)：准确VB6普通CheckBox、真实Actor/独立C负例、VB5注册断点和明确变体边界。

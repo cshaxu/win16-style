@@ -124,6 +124,7 @@ static BOOL is_separator(HWND w)
 static BOOL supported(HWND w)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),type=ntw16s_button_type(w,style);
+    if(ntw16s_vb_class(w,L"ThunderRT6CheckBox") && !ntw16s_vb_plain_checkbox(w))return FALSE;
     if(is_scroll(w))return !(style&SBS_SIZEGRIP);
     if(is_link(w))return TRUE;
     if(is_tab(w))return win16_style_tab_supported(w);
@@ -318,7 +319,7 @@ static void draw(HWND w,control_style *s,HDC dc)
     length=GetWindowTextLengthW(w);text=calloc((size_t)length+1,sizeof(WCHAR));
     if(!text)return;
     GetWindowTextW(w,text,length+1);
-    font=s->font && (ntw16s_vb_frame(w) || ntw16s_vb_class(w,L"ThunderRT6CommandButton") ||
+    font=s->font && (ntw16s_vb_frame(w) || ntw16s_vb_button(w) ||
         ntw16s_control_protocol_is(w,L"BUTTON"))?
         s->font:(HFONT)SendMessageW(w,WM_GETFONT,0,0);
     if(s->detached || !IsWindow(w)){free(text);return;}
@@ -997,10 +998,18 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
     if(tab && win16_style_tab_changes(m))++s->tab_epoch;
     if(header && win16_style_header_changes(m))++s->header_epoch;
     win16_style_system_retain(pinned);
+    /* Unverified graphical/owner-drawn VB variants stay native. A live
+     * transition retires only this painter; do not keep drawing a plain box. */
+    if(m!=WM_NCDESTROY && ntw16s_vb_class(w,L"ThunderRT6CheckBox") && !ntw16s_vb_plain_checkbox(w)){
+        if(m==WM_SETFONT)s->original_font=win16_style_system_source((HFONT)a);
+        result=DefSubclassProc(w,m,a,b);
+        if(!s->detached)win16_style_control_remove(w);
+        goto finished;
+    }
     /* VB owns an IFont and can change it without WM_SETFONT. Query at the
      * paint boundary; never overwrite that application's font property. */
     if(!s->frame_scrollbars && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT) &&
-            (native_font || ntw16s_vb_frame(w) || ntw16s_vb_edit(w) || ntw16s_vb_class(w,L"ThunderRT6CommandButton"))){
+            (native_font || ntw16s_vb_frame(w) || ntw16s_vb_edit(w) || ntw16s_vb_button(w))){
         HFONT source=(HFONT)SendMessageW(w,WM_GETFONT,0,0);
         if(!s->detached && source!=s->original_font){
             HFONT replacement=native_font?win16_style_system_acquire(source):win16_style_vb_font_acquire(source);
@@ -1010,7 +1019,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
     if(s->detached)goto finished;
     if(m==WM_SETFONT && !s->frame_scrollbars){
         HFONT original=win16_style_system_source((HFONT)a);
-        BOOL vb=ntw16s_vb_frame(w) || ntw16s_vb_edit(w) || ntw16s_vb_class(w,L"ThunderRT6CommandButton");
+        BOOL vb=ntw16s_vb_frame(w) || ntw16s_vb_edit(w) || ntw16s_vb_button(w);
         HFONT replacement=vb?win16_style_vb_font_acquire(original):win16_style_system_acquire(original);
         previous=s->font;s->original_font=original;
         s->font=replacement?replacement:original;

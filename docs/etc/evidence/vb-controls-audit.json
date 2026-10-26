@@ -95,7 +95,9 @@
       "class_owner": "runtime class registration must be observed per real HWND; no alias based on prefix",
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
-      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced"
+      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
+      "T17_S3_progress_evidence": "docs/etc/evidence/vb-selection-controls.json",
+      "T17_S3_disposition": "not passed; real sample/registration boundary received by next T17 implementation and final audit"
     },
     {
       "id": "VB6.CheckBox",
@@ -124,7 +126,9 @@
       "class_owner": "runtime class registration must be observed per real HWND; no alias based on prefix",
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
-      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced"
+      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
+      "T17_S3_progress_evidence": "docs/etc/evidence/vb-selection-controls.json",
+      "T17_S3_disposition": "plain VB6 actual Actor partial; other variants not declared supported"
     },
     {
       "id": "VB5.OptionButton",
@@ -152,7 +156,9 @@
       "class_owner": "runtime class registration must be observed per real HWND; no alias based on prefix",
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
-      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced"
+      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
+      "T17_S3_progress_evidence": "docs/etc/evidence/vb-selection-controls.json",
+      "T17_S3_disposition": "not passed; real sample/registration boundary received by next T17 implementation and final audit"
     },
     {
       "id": "VB6.OptionButton",
@@ -180,7 +186,9 @@
       "class_owner": "runtime class registration must be observed per real HWND; no alias based on prefix",
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
-      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced"
+      "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
+      "T17_S3_progress_evidence": "docs/etc/evidence/vb-selection-controls.json",
+      "T17_S3_disposition": "not passed; real sample/registration boundary received by next T17 implementation and final audit"
     },
     {
       "id": "VB5.TextBox",

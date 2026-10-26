@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <wchar.h>
 #include "isolated_process.h"
+#include "../../src/ntw16s-dll/control_glyphs.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"VB FAIL line=%u error=%lu: %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
 static unsigned clicks;
 static void settle(void)
@@ -55,13 +56,19 @@ static int child(const WCHAR *runtime_path,BOOL styled,BOOL aware)
     HWND group=CreateWindowExW(0,L"ThunderRT6Frame",L"Frame",WS_CHILD|WS_VISIBLE|BS_GROUPBOX,0,0,200,100,root,(HMENU)1,runtime,NULL);CHECK(group);
     HWND button=CreateWindowW(L"ThunderRT6CommandButton",L"&Press",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,210,0,100,30,root,(HMENU)2,runtime,NULL);CHECK(button);
     HWND edit=CreateWindowExW(WS_EX_CLIENTEDGE,L"ThunderRT6TextBox",L"native",WS_CHILD|WS_VISIBLE|ES_AUTOHSCROLL,210,40,100,24,root,(HMENU)3,runtime,NULL);CHECK(edit);
-    if(styled)CHECK(attached(group) && attached(button) && attached(edit));
+    HWND checkbox=CreateWindowW(L"ThunderRT6CheckBox",L"&Check",WS_CHILD|WS_VISIBLE|WS_TABSTOP|BS_AUTO3STATE,210,90,120,30,root,(HMENU)4,runtime,NULL);CHECK(checkbox);
+    WCHAR real_check_class[80];CHECK(RealGetWindowClassW(checkbox,real_check_class,80) && wcscmp(real_check_class,L"Button") && wcscmp(real_check_class,L"BUTTON"));
+    if(styled)CHECK(attached(group) && attached(button) && attached(edit) && attached(checkbox));
     /* Same spelling under another registration owner must remain custom. */
     WNDCLASSW impostor={0};impostor.lpfnWndProc=DefWindowProcW;
     impostor.hInstance=cls.hInstance;impostor.lpszClassName=L"ThunderRT6CommandButton";
     CHECK(RegisterClassW(&impostor));
     HWND custom=CreateWindowW(impostor.lpszClassName,L"custom",WS_CHILD,0,0,10,10,root,NULL,cls.hInstance,NULL);
     CHECK(custom);if(styled)CHECK(!attached(custom));
+    impostor.lpszClassName=L"ThunderRT6CheckBox";CHECK(RegisterClassW(&impostor));
+    HWND fake_check=CreateWindowW(impostor.lpszClassName,L"custom check",WS_CHILD,0,0,10,10,root,NULL,cls.hInstance,NULL);CHECK(fake_check);if(styled)CHECK(!attached(fake_check));
+    HWND graphical=CreateWindowW(L"ThunderRT6CheckBox",L"native graphical",WS_CHILD|WS_VISIBLE|BS_AUTO3STATE|BS_PUSHLIKE,0,150,140,28,root,(HMENU)5,runtime,NULL);CHECK(graphical);if(styled)CHECK(!attached(graphical));
+    HWND transition=CreateWindowW(L"ThunderRT6CheckBox",L"native transition",WS_CHILD|WS_VISIBLE|BS_AUTO3STATE,150,150,140,28,root,(HMENU)6,runtime,NULL);CHECK(transition);if(styled)CHECK(attached(transition));
     RECT geometry_before,geometry_after;GetClientRect(edit,&geometry_before);
 
     ShowWindow(root,SW_SHOWNORMAL);UpdateWindow(root);settle();
@@ -74,6 +81,22 @@ static int child(const WCHAR *runtime_path,BOOL styled,BOOL aware)
     GetClientRect(edit,&geometry_after);CHECK(EqualRect(&geometry_before,&geometry_after));
     if(styled){DWORD styled_edit=image(edit,NULL,0);CHECK(remove_control(edit));
         CHECK(image(edit,NULL,0)!=styled_edit);puts("VB_EDIT_FONT_PIXELS changed=1 native_font_property=preserved");}
+    HFONT check_font=(HFONT)SendMessageW(checkbox,WM_GETFONT,0,0);unsigned original_clicks=clicks;
+    for(unsigned value=1;value<=3;++value){SendMessageW(checkbox,BM_CLICK,0,0);CHECK(SendMessageW(checkbox,BM_GETCHECK,0,0)==(LRESULT)(value%3));}
+    CHECK(clicks==original_clicks+3 && (HFONT)SendMessageW(checkbox,WM_GETFONT,0,0)==check_font);
+    SetFocus(checkbox);SendMessageW(checkbox,WM_KEYDOWN,VK_SPACE,0);SendMessageW(checkbox,WM_KEYUP,VK_SPACE,0);CHECK(SendMessageW(checkbox,BM_GETCHECK,0,0)==BST_CHECKED && clicks==original_clicks+4);
+    EnableWindow(checkbox,FALSE);CHECK(!IsWindowEnabled(checkbox));EnableWindow(checkbox,TRUE);
+    if(styled){DWORD pixels[200*100];DWORD painted=image(checkbox,pixels,ARRAYSIZE(pixels));RECT bounds;CHECK(GetClientRect(checkbox,&bounds));UINT dpi=GetDpiForWindow(checkbox);int top=(bounds.bottom-MulDiv(13,(int)dpi,96))/2;
+        for(int y=0;y<13;++y)for(int x=0;x<14;++x){unsigned expected=control_checks[y][14+x]=='0'?0:0xffffff;CHECK((pixels[(top+MulDiv(y,(int)dpi,96))*200+MulDiv(x,(int)dpi,96)]&0xffffff)==expected);}
+        puts("VB_CHECKBOX_GLYPH_OK source_pixels=182 checked=1");CHECK(remove_control(checkbox) && !attached(checkbox));CHECK(image(checkbox,NULL,0)!=painted && (HFONT)SendMessageW(checkbox,WM_GETFONT,0,0)==check_font);}
+    LONG_PTR transition_style=GetWindowLongPtrW(transition,GWL_STYLE);SetWindowLongPtrW(transition,GWL_STYLE,transition_style|BS_PUSHLIKE);
+    if(styled){DWORD fallback=image(transition,NULL,0);CHECK(remove_control(transition));CHECK(image(transition,NULL,0)==fallback);}
+    HWND dying=CreateWindowW(L"ThunderRT6CheckBox",L"retirement callback",WS_CHILD|BS_AUTO3STATE,0,190,140,28,root,(HMENU)7,runtime,NULL);CHECK(dying);
+    if(styled){void (WINAPI *arm)(HWND)=(void *)GetProcAddress(runtime,"VbCheckboxRetirementProbe");unsigned (WINAPI *late)(void)=(void *)GetProcAddress(runtime,"VbCheckboxLateCalls");CHECK(arm && late && attached(dying));arm(dying);SetWindowLongPtrW(dying,GWL_STYLE,GetWindowLongPtrW(dying,GWL_STYLE)|BS_PUSHLIKE);CHECK(!IsWindow(dying) && !late());puts("VB_CHECKBOX_RETIRE_DESTROY_OK no_forward_after_destroy=1");}
+    else CHECK(DestroyWindow(dying));
+    CHECK(DestroyWindow(graphical) && DestroyWindow(transition));puts("VB_CHECKBOX_NATIVE_FALLBACK_OK initial_graphical=1 live_transition=1");
+    CHECK(DestroyWindow(checkbox) && DestroyWindow(fake_check));CHECK(UnregisterClassW(L"ThunderRT6CheckBox",cls.hInstance));
+    puts("VB_CHECKBOX_OK three_states=1 keyboard=1 notifications=4 owner_negative=1 font_preserved=1 detach=1");
     CHECK(DestroyWindow(edit) && DestroyWindow(button) && DestroyWindow(custom));settle();
     DWORD pixels[200*100];DWORD styled_hash=image(group,pixels,ARRAYSIZE(pixels));
     CHECK((pixels[72*200+24]&0xffffff)==RGB(67,31,219));
@@ -97,7 +120,7 @@ static int child(const WCHAR *runtime_path,BOOL styled,BOOL aware)
         CHECK(changed>20);printf("VB_LABEL_PIXELS changed=%u restored_after_detach=1\n",changed);
     }
     UINT dpi=GetDpiForWindow(root);
-    CHECK(DestroyWindow(root));CHECK(UnregisterClassW(impostor.lpszClassName,cls.hInstance));
+    CHECK(DestroyWindow(root));CHECK(UnregisterClassW(L"ThunderRT6CommandButton",cls.hInstance));
     capture_end();release();CHECK(FreeLibrary(runtime));
     printf("VB_WINDOWED_OK bits=%u styled=%u clicks=%u dpi=%u aware=%u\nVB_EDIT_OK undo=1\nVB_CONTAINER_PAINT_OK label_changed=%u sentinel=preserved handles=%lu,%lu\n",(unsigned)(sizeof(void *)*8),styled,clicks,dpi,aware,styled,before,after);
     return 0;

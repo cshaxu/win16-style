@@ -39,15 +39,15 @@ S1冻结148版本/控件单位，S2仅原生对应项展示；真实VB/OCX缺口
 
 ## Technical Baseline
 
-T17 S2产品0.17.0.0 / M0 T17，199输入，三组件四产物；demo新增8组原生样例，
-真实VB/OCX支持不由展示推导。93个renderer/launcher路径（除版本RC）保持基线4386bad；
-五资源头/原声明逐字节相同、每DLL18表、ABI3/31命名+ordinal1、35detours/40slots。
-独立干净双宽all/ABI及同批四文件通过，实际包六项8.64秒、旧包负例0.33秒检出；
-八部署SHA及安装双宽ABI通过。144DPI原生私有桌面消息/API/PrintWindow截图，
-无物理输入、真实VB/OCX或全DPI声明。[release](../etc/release.json)拥有当前包身份，
-[S2证据](../etc/evidence/vb-demo-gallery.json)记录布局/状态/关闭/资源和明确未覆盖面。
-S2 P1 eab7201实际远端210文件、恢复203产品对象、192映像安全清理完成；
-S2关闭，自动准入S3，T17/M0开放。
+T17 S3产品0.17.0.0 / M0 T17，200输入，三组件四产物；普通VB6 CheckBox准确
+runtime owner接入，真实Actor两框各182源像素匹配，Value仍原0/1；图形变体原生保留。
+S2八页demo保持；VB5/OptionButton/OCX等缺口不据此清除。ABI3/31命名+ordinal1、
+35detours/40slots、原五头/声明逐字节和每DLL18表保持。标题demo top36 RGB差异0。
+独立干净双宽all/ABI及同批四文件通过，实际包11项17.08秒，旧核心/真实像素负例
+0.999/0.597秒检出；双发布八SHA、安装双宽ABI和实际Actor再验通过。
+[release](../etc/release.json)拥有200输入/包身份，[S3证据](../etc/evidence/vb-selection-controls.json)
+记录实际模块路径/SHA、有限状态/像素和明确未覆盖面。当前verified，待P1实际远端/
+恢复/资产提炼清理后关闭S3并自动续下一S，T17/M0开放；无物理输入或全控件完成声明。
 
 ## Recent Closure
 

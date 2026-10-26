@@ -1,0 +1,907 @@
+{
+  "task": "M0 T17 S3",
+  "status": "final verified and double-published; P1 remote review pending",
+  "scope": "plain windowed VB6 CheckBox only; VB5/OptionButton not claimed",
+  "root_cause": "actual MSVBVM60-owned ThunderRT6CheckBox missing exact alias and VB paint/font selection; original classifier rejects real class while C native BUTTON superclass could hide this defect",
+  "minimal_fix": "exact runtime owner/name + ordinary checkbox modes, existing font/glyph renderer; runtime owns events and values; retire graphical/owner-draw transitions to native",
+  "real_actor": "32-bit actor.exe,2 controls; native Value alternates0/1 despite AUTO3STATE; API click4 each returns initial; verify182 original glyph pixels per control",
+  "core_fixture": "independent C class with no BUTTON native superclass, four bare/styled legacy/aware cases per architecture; three-state/keyboard/notifications/font/property/detach/owner negative/native graphical/live fallback; not real VB",
+  "raw_log_extracts": {
+    "bare2": {
+      "stdout": "ACTOR_TARGET pid=9968 creator_launcher=9968 bits=32 path=O:\\WINNT\\actor.exe dpi=96\nACTOR_RUNTIME base=69660000 path=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL\nACTOR_MODULE_FILE actual=\\\\?\\C:\\Windows\\SysWOW64\\msvbvm60.dll\nACTOR_IMAGE hash=11116652139545956406\nACTOR_CHECK index=0 hwnd=0546059A owner=69660000 style=54012006 dlgcode=2080 check=1 state=1 font=C50A1AF7\nACTOR_CHECK_IMAGE index=0 hash=4785725057469370299\nACTOR_CLICK index=0 round=0 check=0 state=8\nACTOR_CLICK index=0 round=1 check=1 state=9\nACTOR_CLICK index=0 round=2 check=0 state=8\nACTOR_CLICK index=0 round=3 check=1 state=9\nACTOR_CHECK index=1 hwnd=09D00828 owner=69660000 style=54012006 dlgcode=2080 check=0 state=0 font=C50A1AF7\nACTOR_CHECK_IMAGE index=1 hash=7935132604576318823\nACTOR_CLICK index=1 round=0 check=1 state=9\nACTOR_CLICK index=1 round=1 check=0 state=8\nACTOR_CLICK index=1 round=2 check=1 state=9\nACTOR_CLICK index=1 round=3 check=0 state=8\nACTOR_PASS styled=0 count=2 active=0\n",
+      "stderr": ""
+    },
+    "old3": {
+      "stdout": "ACTOR_TARGET pid=24304 creator_launcher=39228 bits=32 path=O:\\WINNT\\actor.exe dpi=96\nACTOR_STYLE_MODULE base=6A440000 path=O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll\nACTOR_MODULE_FILE actual=\\\\?\\O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll\nACTOR_RUNTIME base=69660000 path=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL\nACTOR_MODULE_FILE actual=\\\\?\\C:\\Windows\\SysWOW64\\msvbvm60.dll\nACTOR_IMAGE hash=10257652864602228281\nACTOR_CHECK index=0 hwnd=02E90E2A owner=69660000 style=54012006 dlgcode=2080 check=1 state=1 font=EF0A16CB\nACTOR_CHECK_IMAGE index=0 hash=4785725057469370299\nACTOR_CLICK index=0 round=0 check=0 state=8\nACTOR_CLICK index=0 round=1 check=1 state=9\nACTOR_CLICK index=0 round=2 check=0 state=8\nACTOR_CLICK index=0 round=3 check=1 state=9\nACTOR_CHECK index=1 hwnd=014A0D10 owner=69660000 style=54012006 dlgcode=2080 check=0 state=0 font=EF0A16CB\nACTOR_CHECK_IMAGE index=1 hash=7935132604576318823\nACTOR_CLICK index=1 round=0 check=1 state=9\nACTOR_CLICK index=1 round=1 check=0 state=8\nACTOR_CLICK index=1 round=2 check=1 state=9\nACTOR_CLICK index=1 round=3 check=0 state=8\nACTOR_PASS styled=1 count=2 active=0\n",
+      "stderr": ""
+    },
+    "dev-independent": {
+      "stdout": "VB_CHECKBOX_NATIVE_FALLBACK_OK initial_graphical=1 live_transition=1\nVB_CHECKBOX_OK three_states=1 keyboard=1 notifications=4 owner_negative=1 font_preserved=1 detach=1\nVB_HOST_GDI_OBSERVE 13,13\nVB_HOST_GDI_BATCH 0 13,13\nVB_HOST_GDI_BATCH 1 13,13\nVB_WINDOWED_OK bits=32 styled=0 clicks=6 dpi=96 aware=0\nVB_EDIT_OK undo=1\nVB_CONTAINER_PAINT_OK label_changed=0 sentinel=preserved handles=13,13\nVB_EDIT_FONT_PIXELS changed=1 native_font_property=preserved\nVB_CHECKBOX_GLYPH_OK source_pixels=182 checked=1\nVB_CHECKBOX_NATIVE_FALLBACK_OK initial_graphical=1 live_transition=1\nVB_CHECKBOX_OK three_states=1 keyboard=1 notifications=4 owner_negative=1 font_preserved=1 detach=1\nVB_HOST_GDI_OBSERVE 21,26\nVB_HOST_GDI_BATCH 0 26,43\nVB_HOST_GDI_BATCH 1 43,46\nVB_LABEL_PIXELS changed=767 restored_after_detach=1\nVB_WINDOWED_OK bits=32 styled=1 clicks=6 dpi=96 aware=0\nVB_EDIT_OK undo=1\nVB_CONTAINER_PAINT_OK label_changed=1 sentinel=preserved handles=43,46\nVB_CHECKBOX_NATIVE_FALLBACK_OK initial_graphical=1 live_transition=1\nVB_CHECKBOX_OK three_states=1 keyboard=1 notifications=4 owner_negative=1 font_preserved=1 detach=1\nVB_HOST_GDI_OBSERVE 13,13\nVB_HOST_GDI_BATCH 0 13,13\nVB_HOST_GDI_BATCH 1 13,13\nVB_WINDOWED_OK bits=32 styled=0 clicks=6 dpi=144 aware=1\nVB_EDIT_OK undo=1\nVB_CONTAINER_PAINT_OK label_changed=0 sentinel=preserved handles=13,13\nVB_EDIT_FONT_PIXELS changed=1 native_font_property=preserved\nVB_CHECKBOX_GLYPH_OK source_pixels=182 checked=1\nVB_CHECKBOX_NATIVE_FALLBACK_OK initial_graphical=1 live_transition=1\nVB_CHECKBOX_OK three_states=1 keyboard=1 notifications=4 owner_negative=1 font_preserved=1 detach=1\nVB_HOST_GDI_OBSERVE 21,26\nVB_HOST_GDI_BATCH 0 26,43\nVB_HOST_GDI_BATCH 1 43,45\nVB_LABEL_PIXELS changed=767 restored_after_detach=1\nVB_WINDOWED_OK bits=32 styled=1 clicks=6 dpi=144 aware=1\nVB_EDIT_OK undo=1\nVB_CONTAINER_PAINT_OK label_changed=1 sentinel=preserved handles=43,45\nVB_CLEANUP_OK bare/styled owned jobs closed\n",
+      "stderr": ""
+    },
+    "old-independent": {
+      "stdout": "VB_CHECKBOX_NATIVE_FALLBACK_OK initial_graphical=1 live_transition=1\nVB_CHECKBOX_OK three_states=1 keyboard=1 notifications=4 owner_negative=1 font_preserved=1 detach=1\nVB_HOST_GDI_OBSERVE 13,13\nVB_HOST_GDI_BATCH 0 13,13\nVB_HOST_GDI_BATCH 1 13,13\nVB_WINDOWED_OK bits=32 styled=0 clicks=6 dpi=96 aware=0\nVB_EDIT_OK undo=1\nVB_CONTAINER_PAINT_OK label_changed=0 sentinel=preserved handles=13,13\n",
+      "stderr": "VB FAIL line=61 error=0: attached(group) && attached(button) && attached(edit) && attached(checkbox)\nVB FAIL line=142 error=0: wait==WAIT_OBJECT_0 && !code\n"
+    },
+    "old-negative-actor": {
+      "stdout": "ACTOR_TARGET pid=9512 creator=7376 initial_pid=7376 bits=32 path=O:\\WINNT\\actor.exe dpi=96\nACTOR_STYLE_MODULE base=69270000 path=O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll\nACTOR_MODULE_FILE actual=\\\\?\\O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll\nACTOR_RUNTIME base=69110000 path=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL\nACTOR_MODULE_FILE actual=\\\\?\\C:\\Windows\\SysWOW64\\msvbvm60.dll\nACTOR_IMAGE hash=11071520460663395961\nACTOR_CHECK index=0 hwnd=05460D20 owner=69110000 style=54012006 dlgcode=2080 check=1 state=1 font=E00A1409\n",
+      "stderr": "ACTOR_FAIL line=92 error=0 (pixels[(top+MulDiv(y,dpi,96))*cx+MulDiv(x,dpi,96)]&0xffffff)==expected\n"
+    },
+    "dev-actor-oracle": {
+      "stdout": "ACTOR_TARGET pid=3496 creator=32092 initial_pid=32092 bits=32 path=O:\\WINNT\\actor.exe dpi=96\nACTOR_STYLE_MODULE base=6A440000 path=O:\\repos.hobby\\win16style\\build\\t17-controls\\dev-package\\ntw16s32.dll\nACTOR_MODULE_FILE actual=\\\\?\\O:\\repos.hobby\\win16style\\build\\t17-controls\\dev-package\\ntw16s32.dll\nACTOR_RUNTIME base=69660000 path=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL\nACTOR_MODULE_FILE actual=\\\\?\\C:\\Windows\\SysWOW64\\msvbvm60.dll\nACTOR_IMAGE hash=16883905881430682981\nACTOR_CHECK index=0 hwnd=02DF0C42 owner=69660000 style=54012006 dlgcode=2080 check=1 state=1 font=260A1383\nACTOR_GLYPH_OK source_pixels=182 check=1\nACTOR_CHECK_IMAGE index=0 hash=18057868072279778549\nACTOR_CLICK index=0 round=0 check=0 state=8\nACTOR_CLICK index=0 round=1 check=1 state=9\nACTOR_CLICK index=0 round=2 check=0 state=8\nACTOR_CLICK index=0 round=3 check=1 state=9\nACTOR_CHECK index=1 hwnd=034B0768 owner=69660000 style=54012006 dlgcode=2080 check=0 state=0 font=260A1383\nACTOR_GLYPH_OK source_pixels=182 check=0\nACTOR_CHECK_IMAGE index=1 hash=2233598216797254389\nACTOR_CLICK index=1 round=0 check=1 state=9\nACTOR_CLICK index=1 round=1 check=0 state=8\nACTOR_CLICK index=1 round=2 check=1 state=9\nACTOR_CLICK index=1 round=3 check=0 state=8\nACTOR_PASS styled=1 count=2 active=0\n",
+      "stderr": ""
+    }
+  },
+  "VB5_registration": "RUNTIME_LOADED path=O:\\repos.hobby\\win16style\\build\\t17-audit\\vb5\\MSVBVM50.DLL base=03900000 ThunRTMain=0390A1BF DllGetClassObject=00000000\nRUNTIME_CLASS name=ThunderRT5Form registered=0 owner=00000000 error=1411\nRUNTIME_CLASS name=ThunderRT5FormDC registered=0 owner=00000000 error=1411\nRUNTIME_CLASS name=ThunderRT5CommandButton registered=0 owner=00000000 error=1411\nRUNTIME_CLASS name=ThunderRT5CheckBox registered=0 owner=00000000 error=1411\nRUNTIME_CLASS name=ThunderRT5OptionButton registered=0 owner=00000000 error=1411\nRUNTIME_CLASS name=ThunderRT6CheckBox registered=0 owner=00000000 error=1411\nRUNTIME_REGISTRATION_BOUNDARY registered=0 no_bootstrap_or_private_layout=1\n",
+  "VB5_blocker": "official runtime loads with ThunRTMain export but no DllGetClassObject; no queried intrinsic class registered (1411); no valid project/bootstrap metadata or real VB5 app sample. Do not invoke ThunRTMain blindly or inspect private object layouts. Receiver next T17 S and final audit",
+  "development_observer_corrections": [
+    "first probe assumed3-state fromstyle and failed against both bare/styled; actual Actor2-state, corrected4-click equivalence",
+    "immediate owned Job accounting raced once; switched to bounded completion-port active-zero notification and retained empty accounting assertion",
+    "first C subclass fixture could hide missing alias through RealGetWindowClass BUTTON; replaced checkbox with independent C protocol, hardened old DLL negative now fails attachment exactly"
+  ],
+  "binary_change": true,
+  "formal_tests": {
+    "status": "passed",
+    "seconds": 17.076769699982833,
+    "cases": [
+      {
+        "name": "abi-32",
+        "exit_code": 0,
+        "seconds": 0.0638895999873057,
+        "markers": [
+          "ABI PASS width=32"
+        ],
+        "status": "passed"
+      },
+      {
+        "name": "vb-32",
+        "exit_code": 0,
+        "seconds": 2.481038699974306,
+        "markers": [
+          "VB_CLEANUP_OK",
+          "VB_CHECKBOX_GLYPH_OK",
+          "VB_CHECKBOX_NATIVE_FALLBACK_OK",
+          "VB_CHECKBOX_RETIRE_DESTROY_OK"
+        ],
+        "status": "passed"
+      },
+      {
+        "name": "font-32",
+        "exit_code": 0,
+        "seconds": 1.5903640000033192,
+        "markers": [
+          "VB_OWNERSHIP_OK",
+          "REPORT_TEXT_OWNERSHIP_OK"
+        ],
+        "status": "passed"
+      },
+      {
+        "name": "abi-64",
+        "exit_code": 0,
+        "seconds": 0.057309399999212474,
+        "markers": [
+          "ABI PASS width=64"
+        ],
+        "status": "passed"
+      },
+      {
+        "name": "vb-64",
+        "exit_code": 0,
+        "seconds": 1.9612260999856517,
+        "markers": [
+          "VB_CLEANUP_OK",
+          "VB_CHECKBOX_GLYPH_OK",
+          "VB_CHECKBOX_NATIVE_FALLBACK_OK",
+          "VB_CHECKBOX_RETIRE_DESTROY_OK"
+        ],
+        "status": "passed"
+      },
+      {
+        "name": "font-64",
+        "exit_code": 0,
+        "seconds": 1.3653582999831997,
+        "markers": [
+          "VB_OWNERSHIP_OK",
+          "REPORT_TEXT_OWNERSHIP_OK"
+        ],
+        "status": "passed"
+      },
+      {
+        "name": "demo-pair",
+        "exit_code": 0,
+        "seconds": 3.9295561999897473,
+        "markers": [
+          "DEMO PAIR PASS"
+        ],
+        "status": "passed"
+      },
+      {
+        "name": "initial-dual",
+        "exit_code": 0,
+        "seconds": 1.567199899989646,
+        "markers": [
+          "LAUNCH MATRIX PASS"
+        ],
+        "status": "passed"
+      },
+      {
+        "name": "cmd-nested",
+        "exit_code": 0,
+        "seconds": 2.536082800012082,
+        "markers": [
+          "CMD NESTED PASS core four native PE edges"
+        ],
+        "status": "passed"
+      },
+      {
+        "name": "actor-bare",
+        "exit_code": 0,
+        "seconds": 0.6302005999605171,
+        "markers": [
+          "ACTOR_PASS styled=0"
+        ],
+        "status": "passed"
+      },
+      {
+        "name": "actor-styled",
+        "exit_code": 0,
+        "seconds": 0.8865886999992654,
+        "markers": [
+          "ACTOR_PASS styled=1",
+          "ACTOR_GLYPH_OK source_pixels=182 check=1",
+          "ACTOR_GLYPH_OK source_pixels=182 check=0"
+        ],
+        "status": "passed"
+      }
+    ],
+    "sha256": {
+      "demo.exe": "c4a4c679c8ca10ff6cb19284a2c72fb492419089d074fbb923a8cd1c96f80ce4",
+      "ntw16s32.dll": "9f7feb511ab9882e330afd5bfdf709a69317721fa05d00fa21badb7165123b7b",
+      "ntw16s64.dll": "88f2f29aa7bfcd6fe5649d10dda1383ba0ea7f018fc4ed27f3886b96da76d96e",
+      "run16s.exe": "822838efd0c1fb5beed25d7efd727f99d2273db4cf3c6407b3a1b175f21a56a6"
+    },
+    "skips": [
+      "HD Tune elevated UI: owner default skip",
+      "VB5 actual application/OptionButton/OCX: missing proven sample, not passed"
+    ],
+    "scope": "focused actual-package/native tests; C fixtures not real VB, Actor actual separate; no physical input or all-OCX claim"
+  },
+  "publication": {
+    "status": "passed",
+    "test_result": "O:\\repos.hobby\\win16style\\build\\t17-package\\s3-final-test\\result.json",
+    "tested_package": "O:\\repos.hobby\\win16style\\build\\t17-package\\s3-final\\candidate",
+    "files": [
+      {
+        "before": "9d175646cc0347f1e223cd5fbd247622a703c528c01584a0c3dfdd37be468e01",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s3-final-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe",
+        "after": "c4a4c679c8ca10ff6cb19284a2c72fb492419089d074fbb923a8cd1c96f80ce4",
+        "expected": "c4a4c679c8ca10ff6cb19284a2c72fb492419089d074fbb923a8cd1c96f80ce4"
+      },
+      {
+        "before": "964c3f51cc997fa3ec623411678d46a2db0cf635a58941a536e7816df943aa34",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s3-final-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
+        "after": "9f7feb511ab9882e330afd5bfdf709a69317721fa05d00fa21badb7165123b7b",
+        "expected": "9f7feb511ab9882e330afd5bfdf709a69317721fa05d00fa21badb7165123b7b"
+      },
+      {
+        "before": "05c5d0865ee463533535c429c6f11b735b1e278d6c80acd910abc1559e2a0a12",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s3-final-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll",
+        "after": "88f2f29aa7bfcd6fe5649d10dda1383ba0ea7f018fc4ed27f3886b96da76d96e",
+        "expected": "88f2f29aa7bfcd6fe5649d10dda1383ba0ea7f018fc4ed27f3886b96da76d96e"
+      },
+      {
+        "before": "3252a28bf2da5cce838161dcb5b5d93b2c2c42b80d9d0edd16be0c7344173482",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s3-final-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
+        "after": "822838efd0c1fb5beed25d7efd727f99d2273db4cf3c6407b3a1b175f21a56a6",
+        "expected": "822838efd0c1fb5beed25d7efd727f99d2273db4cf3c6407b3a1b175f21a56a6"
+      },
+      {
+        "before": "9d175646cc0347f1e223cd5fbd247622a703c528c01584a0c3dfdd37be468e01",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s3-final-publish\\before-1",
+        "path": "O:\\winnt\\system32\\demo.exe",
+        "after": "c4a4c679c8ca10ff6cb19284a2c72fb492419089d074fbb923a8cd1c96f80ce4",
+        "expected": "c4a4c679c8ca10ff6cb19284a2c72fb492419089d074fbb923a8cd1c96f80ce4"
+      },
+      {
+        "before": "964c3f51cc997fa3ec623411678d46a2db0cf635a58941a536e7816df943aa34",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s3-final-publish\\before-1",
+        "path": "O:\\winnt\\system32\\ntw16s32.dll",
+        "after": "9f7feb511ab9882e330afd5bfdf709a69317721fa05d00fa21badb7165123b7b",
+        "expected": "9f7feb511ab9882e330afd5bfdf709a69317721fa05d00fa21badb7165123b7b"
+      },
+      {
+        "before": "05c5d0865ee463533535c429c6f11b735b1e278d6c80acd910abc1559e2a0a12",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s3-final-publish\\before-1",
+        "path": "O:\\winnt\\system32\\ntw16s64.dll",
+        "after": "88f2f29aa7bfcd6fe5649d10dda1383ba0ea7f018fc4ed27f3886b96da76d96e",
+        "expected": "88f2f29aa7bfcd6fe5649d10dda1383ba0ea7f018fc4ed27f3886b96da76d96e"
+      },
+      {
+        "before": "3252a28bf2da5cce838161dcb5b5d93b2c2c42b80d9d0edd16be0c7344173482",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s3-final-publish\\before-1",
+        "path": "O:\\winnt\\system32\\run16s.exe",
+        "after": "822838efd0c1fb5beed25d7efd727f99d2273db4cf3c6407b3a1b175f21a56a6",
+        "expected": "822838efd0c1fb5beed25d7efd727f99d2273db4cf3c6407b3a1b175f21a56a6"
+      }
+    ]
+  },
+  "negatives": [
+    {
+      "name": "core",
+      "exit_code": 1,
+      "seconds": 0.9985591999720782,
+      "diagnostic": "VB FAIL line=61 error=0: attached(group) && attached(button) && attached(edit) && attached(checkbox)\r\nVB FAIL line=142 error=0: wait==WAIT_OBJECT_0 && !code\r\n",
+      "assertion": "exact alias attachment"
+    },
+    {
+      "name": "actor",
+      "exit_code": 1,
+      "seconds": 0.597286999982316,
+      "diagnostic": "ACTOR_FAIL line=90 error=0 (pixels[(top+MulDiv(y,dpi,96))*cx+MulDiv(x,dpi,96)]&0xffffff)==expected\r\n",
+      "assertion": "actual glyph pixels"
+    }
+  ],
+  "clean_build": {
+    "tests": [
+      {
+        "test_seconds": 0.8424475999781862,
+        "architecture": "x86",
+        "configure_seconds": 4.840252500027418,
+        "skipped": [],
+        "tests": 1,
+        "build_seconds": 35.799516599974595,
+        "passed": 1
+      },
+      {
+        "test_seconds": 0.530544999986887,
+        "architecture": "x64",
+        "configure_seconds": 6.1867985999560915,
+        "skipped": [],
+        "tests": 1,
+        "build_seconds": 40.94087310001487,
+        "passed": 1
+      }
+    ],
+    "build_root": "O:\\repos.hobby\\win16style\\build\\t17-package\\s3-final\\clean-source\\build\\.ninja",
+    "test_jobs": 4,
+    "exit_code": 0,
+    "targets": "all",
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "profile": "Focused",
+    "status": "passed",
+    "selection": "^core/abi$",
+    "build_jobs": 8
+  },
+  "screenshots": [
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s3\\final-actor-bare.png",
+      "sha256": "ab6bb03c4aa1dd97964a3c2357f95d189ca0a5687343e43869b01675040e436f",
+      "source_BMP_sha256": "5f6b0a854f2d6c03e74b33c8b489fbd8f91609c3b71566d45e266ec01a21c6a7",
+      "size": [
+        335,
+        214
+      ],
+      "method": "native PrintWindow private desktop, lossless PNG; no editing"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s3\\final-check-bare-0.png",
+      "sha256": "acd6a35aacd9641b90e7220bc80ac3a17026d2dc02ad7364868f54d24168e6e1",
+      "source_BMP_sha256": "aa02efa2c51a08c2c247a94dfbadc7c4340940ca8058d63477fced99e5decb0e",
+      "size": [
+        89,
+        17
+      ],
+      "method": "native PrintWindow private desktop, lossless PNG; no editing"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s3\\final-check-bare-1.png",
+      "sha256": "02ad282d4d48a2a27f460ce53f741bc2578fd3bb5c2e6934994b49f10af13998",
+      "source_BMP_sha256": "f8939943ce428229361d5cfd373fa5c25b40413ce91455933b32db5a4159ce8c",
+      "size": [
+        89,
+        17
+      ],
+      "method": "native PrintWindow private desktop, lossless PNG; no editing"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s3\\final-actor-styled.png",
+      "sha256": "99251b3928da79dbf361488147afadb4a74fe5f80097f4dbfa7fa585573d3513",
+      "source_BMP_sha256": "0df95ac9445aaf7115c67fb121b09fee064b989b5a321b1fe88e4e1c08d1baa2",
+      "size": [
+        335,
+        214
+      ],
+      "method": "native PrintWindow private desktop, lossless PNG; no editing"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s3\\final-check-styled-0.png",
+      "sha256": "02b4544c00f0a060814374456878b45bb29b03ebbd7efc251d4c9d994a4758e4",
+      "source_BMP_sha256": "e90416d7ce502796a7543906ea341e109b42e616fa71d569ebdb376b2185a3a6",
+      "size": [
+        89,
+        17
+      ],
+      "method": "native PrintWindow private desktop, lossless PNG; no editing"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s3\\final-check-styled-1.png",
+      "sha256": "65dd5dd53018b1d4a8427bc65c564992ad33b421c0a268aa9b8b7bfe7f31ec31",
+      "source_BMP_sha256": "da00c964b36e0189f234c6a9d12addc34d3aede2cabffc180173ca195be91a69",
+      "size": [
+        89,
+        17
+      ],
+      "method": "native PrintWindow private desktop, lossless PNG; no editing"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s3\\final-catalog-1-0.png",
+      "sha256": "22af8ecef758f21f103f5c76e7180a87dc841ca63e136303bf4f648cc29d4dc1",
+      "source_BMP_sha256": "b920a60592ab4cd2c5971cf2e71bcc81da56ebcded0b57d9b5c90cc2d1a3ce87",
+      "size": [
+        1072,
+        878
+      ],
+      "method": "native PrintWindow private desktop, lossless PNG; no editing"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s3\\final-demo-injected.png",
+      "sha256": "bdf6a54e3eb05d3fe6d8a0ef76707a3bd7b4664568cff9e5daf0494e53f71a70",
+      "source_BMP_sha256": "23bdf41d880ca227ee4830af7da9550441956bb8a5abc0a0c3fa6169a8378d8b",
+      "size": [
+        862,
+        724
+      ],
+      "method": "native PrintWindow private desktop, lossless PNG; no editing"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s3\\final-demo-native.png",
+      "sha256": "e834bb78469f89d9d52f21d0687dad27a4f20070acd7a9b552254b25267f741b",
+      "source_BMP_sha256": "26f6e6a1c3fbf71422834aad76d20a3ef5fecd3b872b412a262c21895bac991f",
+      "size": [
+        862,
+        724
+      ],
+      "method": "native PrintWindow private desktop, lossless PNG; no editing"
+    }
+  ],
+  "caption_preservation": {
+    "previous": "S2 actual native demo-injected.png",
+    "current": "S3 actual native demo-injected.png",
+    "rectangle": [
+      0,
+      0,
+      862,
+      36
+    ],
+    "changed_RGB_pixels": 0,
+    "size": [
+      862,
+      724
+    ]
+  },
+  "actual_application_logs": {
+    "actor-bare": "ACTOR_TARGET pid=5528 creator=33324 initial_pid=5528 bits=32 path=O:\\WINNT\\actor.exe dpi=96\nACTOR_RUNTIME base=69660000 path=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL\nACTOR_MODULE_FILE actual=\\\\?\\C:\\Windows\\SysWOW64\\msvbvm60.dll\nACTOR_IMAGE hash=1311329739525772255\nACTOR_CHECK index=0 hwnd=08910C54 owner=69660000 style=54012006 dlgcode=2080 check=1 state=1 font=220A162E\nACTOR_CHECK_IMAGE index=0 hash=4785725057469370299\nACTOR_CLICK index=0 round=0 check=0 state=8\nACTOR_CLICK index=0 round=1 check=1 state=9\nACTOR_CLICK index=0 round=2 check=0 state=8\nACTOR_CLICK index=0 round=3 check=1 state=9\nACTOR_CHECK index=1 hwnd=03E10D4E owner=69660000 style=54012006 dlgcode=2080 check=0 state=0 font=220A162E\nACTOR_CHECK_IMAGE index=1 hash=7935132604576318823\nACTOR_CLICK index=1 round=0 check=1 state=9\nACTOR_CLICK index=1 round=1 check=0 state=8\nACTOR_CLICK index=1 round=2 check=1 state=9\nACTOR_CLICK index=1 round=3 check=0 state=8\nACTOR_PASS styled=0 count=2 active=0\n",
+    "actor-styled": "ACTOR_TARGET pid=24240 creator=30152 initial_pid=30152 bits=32 path=O:\\WINNT\\actor.exe dpi=96\nACTOR_STYLE_MODULE base=6A440000 path=O:\\repos.hobby\\win16style\\build\\t17-package\\s3-final\\candidate\\ntw16s32.dll\nACTOR_MODULE_FILE actual=\\\\?\\O:\\repos.hobby\\win16style\\build\\t17-package\\s3-final\\candidate\\ntw16s32.dll\nACTOR_RUNTIME base=69660000 path=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL\nACTOR_MODULE_FILE actual=\\\\?\\C:\\Windows\\SysWOW64\\msvbvm60.dll\nACTOR_IMAGE hash=15472987405229205589\nACTOR_CHECK index=0 hwnd=016B0C88 owner=69660000 style=54012006 dlgcode=2080 check=1 state=1 font=560A1B1C\nACTOR_GLYPH_OK source_pixels=182 check=1\nACTOR_CHECK_IMAGE index=0 hash=18057868072279778549\nACTOR_CLICK index=0 round=0 check=0 state=8\nACTOR_CLICK index=0 round=1 check=1 state=9\nACTOR_CLICK index=0 round=2 check=0 state=8\nACTOR_CLICK index=0 round=3 check=1 state=9\nACTOR_CHECK index=1 hwnd=04130B9C owner=69660000 style=54012006 dlgcode=2080 check=0 state=0 font=560A1B1C\nACTOR_GLYPH_OK source_pixels=182 check=0\nACTOR_CHECK_IMAGE index=1 hash=2233598216797254389\nACTOR_CLICK index=1 round=0 check=1 state=9\nACTOR_CLICK index=1 round=1 check=0 state=8\nACTOR_CLICK index=1 round=2 check=1 state=9\nACTOR_CLICK index=1 round=3 check=0 state=8\nACTOR_PASS styled=1 count=2 active=0\n"
+  },
+  "installed_actor_log": "ACTOR_TARGET pid=17188 creator=36112 initial_pid=36112 bits=32 path=O:\\WINNT\\actor.exe dpi=96\nACTOR_STYLE_MODULE base=6A440000 path=O:\\winnt\\system32\\ntw16s32.dll\nACTOR_MODULE_FILE actual=\\\\?\\O:\\WINNT\\system32\\ntw16s32.dll\nACTOR_RUNTIME base=69660000 path=C:\\WINDOWS\\SYSTEM32\\MSVBVM60.DLL\nACTOR_MODULE_FILE actual=\\\\?\\C:\\Windows\\SysWOW64\\msvbvm60.dll\nACTOR_IMAGE hash=5464425755768501045\nACTOR_CHECK index=0 hwnd=01060E80 owner=69660000 style=54012006 dlgcode=2080 check=1 state=1 font=3C0A13E8\nACTOR_GLYPH_OK source_pixels=182 check=1\nACTOR_CHECK_IMAGE index=0 hash=18057868072279778549\nACTOR_CLICK index=0 round=0 check=0 state=8\nACTOR_CLICK index=0 round=1 check=1 state=9\nACTOR_CLICK index=0 round=2 check=0 state=8\nACTOR_CLICK index=0 round=3 check=1 state=9\nACTOR_CHECK index=1 hwnd=070C0734 owner=69660000 style=54012006 dlgcode=2080 check=0 state=0 font=3C0A13E8\nACTOR_GLYPH_OK source_pixels=182 check=0\nACTOR_CHECK_IMAGE index=1 hash=2233598216797254389\nACTOR_CLICK index=1 round=0 check=1 state=9\nACTOR_CLICK index=1 round=1 check=0 state=8\nACTOR_CLICK index=1 round=2 check=1 state=9\nACTOR_CLICK index=1 round=3 check=0 state=8\nACTOR_PASS styled=1 count=2 active=0\n",
+  "installed_ABI": "ABI32/64 pass against O:/winnt/system32 DLLs, exact8SHA",
+  "module_identities": [
+    {
+      "absolute_physical_path": "\\\\?\\O:\\repos.hobby\\win16style\\build\\t17-package\\s3-final\\candidate\\ntw16s32.dll",
+      "sha256": "9f7feb511ab9882e330afd5bfdf709a69317721fa05d00fa21badb7165123b7b",
+      "bytes": 476961
+    },
+    {
+      "absolute_physical_path": "\\\\?\\C:\\Windows\\SysWOW64\\msvbvm60.dll",
+      "sha256": "898288bd3b21d0e7d5f406df2e0b69a5bbfa4f241baf29a2cdf8a3cf4d4619f2",
+      "bytes": 1436032
+    }
+  ],
+  "application_identity": {
+    "path": "O:/winnt/actor.exe",
+    "sha256": "df4887ba302322cd3fd8c3d542015f492e4de2619ee62532d66eb465bfb51500",
+    "bytes": 98304
+  },
+  "uncovered": [
+    "actual Actor keyboard/physical input/capture and IME/accessibility not certified by BM_CLICK/API evidence",
+    "real VB5 application, OptionButton and other actual OCX/variants absent; no inferred support",
+    "graphical variants native fallback is verified with C fixture, not an authentic graphical VB sample",
+    "live return from graphical mode requires new attachment/window, not automatically restyled",
+    "not complete91/full-DPI or physical desktop acceptance"
+  ],
+  "preservation": {
+    "base": "1cfe75abcbaa775aacdb7fc5bf010bb93ac2b4d2",
+    "unchanged_production_paths": [
+      "src/demo-exe/catalog.c",
+      "src/demo-exe/catalog.rc",
+      "src/demo-exe/demo.manifest",
+      "src/demo-exe/gallery.c",
+      "src/demo-exe/main.c",
+      "src/demo-exe/version.rc",
+      "src/ntw16s-dll/api.h",
+      "src/ntw16s-dll/attachment.c",
+      "src/ntw16s-dll/attachment.h",
+      "src/ntw16s-dll/combo_glyph.h",
+      "src/ntw16s-dll/controls.h",
+      "src/ntw16s-dll/control_glyphs.h",
+      "src/ntw16s-dll/control_protocol.c",
+      "src/ntw16s-dll/control_protocol.h",
+      "src/ntw16s-dll/control_scope.c",
+      "src/ntw16s-dll/dllmain.c",
+      "src/ntw16s-dll/font.c",
+      "src/ntw16s-dll/font.h",
+      "src/ntw16s-dll/frame_buttons.h",
+      "src/ntw16s-dll/header_paint.c",
+      "src/ntw16s-dll/header_paint.h",
+      "src/ntw16s-dll/layout.c",
+      "src/ntw16s-dll/layout.h",
+      "src/ntw16s-dll/menu_bar.c",
+      "src/ntw16s-dll/menu_bar.h",
+      "src/ntw16s-dll/menu_bar_paint.c",
+      "src/ntw16s-dll/menu_glyphs.h",
+      "src/ntw16s-dll/menu_items.c",
+      "src/ntw16s-dll/menu_items.h",
+      "src/ntw16s-dll/menu_layout.c",
+      "src/ntw16s-dll/menu_layout.h",
+      "src/ntw16s-dll/menu_paint.c",
+      "src/ntw16s-dll/menu_paint.h",
+      "src/ntw16s-dll/menu_scope.c",
+      "src/ntw16s-dll/menu_scope.h",
+      "src/ntw16s-dll/native_api.c",
+      "src/ntw16s-dll/native_api.h",
+      "src/ntw16s-dll/ntw16s.h",
+      "src/ntw16s-dll/ntw16s32.def",
+      "src/ntw16s-dll/ntw16s64.def",
+      "src/ntw16s-dll/progress_paint.c",
+      "src/ntw16s-dll/progress_paint.h",
+      "src/ntw16s-dll/scroll_glyphs.h",
+      "src/ntw16s-dll/scroll_layout.c",
+      "src/ntw16s-dll/scroll_layout.h",
+      "src/ntw16s-dll/scroll_track.c",
+      "src/ntw16s-dll/scroll_track.h",
+      "src/ntw16s-dll/tab_paint.c",
+      "src/ntw16s-dll/tab_paint.h",
+      "src/ntw16s-dll/theme.c",
+      "src/ntw16s-dll/theme.h",
+      "src/ntw16s-dll/trackbar_paint.c",
+      "src/ntw16s-dll/trackbar_paint.h",
+      "src/ntw16s-dll/updown_paint.c",
+      "src/ntw16s-dll/updown_paint.h",
+      "src/ntw16s-dll/vb_text.c",
+      "src/ntw16s-dll/vb_text.h",
+      "src/ntw16s-dll/version.rc",
+      "src/ntw16s-dll/win16_style.c",
+      "src/ntw16s-dll/win16_style.h",
+      "src/run16s-exe/elevation.c",
+      "src/run16s-exe/elevation.h",
+      "src/run16s-exe/main.c",
+      "src/run16s-exe/run16s.manifest",
+      "src/run16s-exe/startup_error.c",
+      "src/run16s-exe/startup_error.h",
+      "src/run16s-exe/version.rc",
+      "src/ntw16s-dll/injection/context.c",
+      "src/ntw16s-dll/injection/create_process.c",
+      "src/ntw16s-dll/injection/entry.c",
+      "src/ntw16s-dll/injection/helper.c",
+      "src/ntw16s-dll/injection/injection.h",
+      "src/ntw16s-dll/injection/installer.c",
+      "src/ntw16s-dll/injection/intercept.h",
+      "src/ntw16s-dll/injection/staging.c",
+      "src/ntw16s-dll/injection/staging.h",
+      "src/ntw16s-dll/injection/startup_hooks.c",
+      "src/ntw16s-dll/injection/startup_hooks.h",
+      "src/ntw16s-dll/injection/subclass32.def",
+      "src/ntw16s-dll/injection/subclass64.def",
+      "src/ntw16s-dll/injection/unwind.c",
+      "src/ntw16s-dll/injection/unwind.h",
+      "src/ntw16s-dll/injection/window_titles.c",
+      "src/ntw16s-dll/injection/minhook/src/buffer.c",
+      "src/ntw16s-dll/injection/minhook/src/buffer.h",
+      "src/ntw16s-dll/injection/minhook/src/trampoline.c",
+      "src/ntw16s-dll/injection/minhook/src/trampoline.h",
+      "src/ntw16s-dll/injection/minhook/src/hde/hde32.c",
+      "src/ntw16s-dll/injection/minhook/src/hde/hde32.h",
+      "src/ntw16s-dll/injection/minhook/src/hde/hde64.c",
+      "src/ntw16s-dll/injection/minhook/src/hde/hde64.h",
+      "src/ntw16s-dll/injection/minhook/src/hde/pstdint.h",
+      "src/ntw16s-dll/injection/minhook/src/hde/table32.h",
+      "src/ntw16s-dll/injection/minhook/src/hde/table64.h"
+    ],
+    "changes": "only2 production .c/.h files; glyph/font/menu/title/scroll resources/algorithms unchanged",
+    "actual_caption_RGB_differences": 0
+  },
+  "interim_verification": {
+    "tests": {
+      "status": "passed",
+      "seconds": 18.509948000020813,
+      "cases": [
+        {
+          "name": "abi-32",
+          "exit_code": 0,
+          "seconds": 0.0618417999939993,
+          "markers": [
+            "ABI PASS width=32"
+          ],
+          "status": "passed"
+        },
+        {
+          "name": "vb-32",
+          "exit_code": 0,
+          "seconds": 2.563733799965121,
+          "markers": [
+            "VB_CLEANUP_OK",
+            "VB_CHECKBOX_GLYPH_OK",
+            "VB_CHECKBOX_NATIVE_FALLBACK_OK"
+          ],
+          "status": "passed"
+        },
+        {
+          "name": "font-32",
+          "exit_code": 0,
+          "seconds": 1.72757340001408,
+          "markers": [
+            "VB_OWNERSHIP_OK",
+            "REPORT_TEXT_OWNERSHIP_OK"
+          ],
+          "status": "passed"
+        },
+        {
+          "name": "abi-64",
+          "exit_code": 0,
+          "seconds": 0.07003250002162531,
+          "markers": [
+            "ABI PASS width=64"
+          ],
+          "status": "passed"
+        },
+        {
+          "name": "vb-64",
+          "exit_code": 0,
+          "seconds": 1.9100975000183098,
+          "markers": [
+            "VB_CLEANUP_OK",
+            "VB_CHECKBOX_GLYPH_OK",
+            "VB_CHECKBOX_NATIVE_FALLBACK_OK"
+          ],
+          "status": "passed"
+        },
+        {
+          "name": "font-64",
+          "exit_code": 0,
+          "seconds": 1.3820824000285938,
+          "markers": [
+            "VB_OWNERSHIP_OK",
+            "REPORT_TEXT_OWNERSHIP_OK"
+          ],
+          "status": "passed"
+        },
+        {
+          "name": "demo-pair",
+          "exit_code": 0,
+          "seconds": 3.9958913000300527,
+          "markers": [
+            "DEMO PAIR PASS"
+          ],
+          "status": "passed"
+        },
+        {
+          "name": "initial-dual",
+          "exit_code": 0,
+          "seconds": 1.7368864999734797,
+          "markers": [
+            "LAUNCH MATRIX PASS"
+          ],
+          "status": "passed"
+        },
+        {
+          "name": "cmd-nested",
+          "exit_code": 0,
+          "seconds": 3.073307000042405,
+          "markers": [
+            "CMD NESTED PASS core four native PE edges"
+          ],
+          "status": "passed"
+        },
+        {
+          "name": "actor-bare",
+          "exit_code": 0,
+          "seconds": 0.8895010999985971,
+          "markers": [
+            "ACTOR_PASS styled=0"
+          ],
+          "status": "passed"
+        },
+        {
+          "name": "actor-styled",
+          "exit_code": 0,
+          "seconds": 1.090509999950882,
+          "markers": [
+            "ACTOR_PASS styled=1",
+            "ACTOR_GLYPH_OK source_pixels=182 check=1",
+            "ACTOR_GLYPH_OK source_pixels=182 check=0"
+          ],
+          "status": "passed"
+        }
+      ],
+      "sha256": {
+        "demo.exe": "9d175646cc0347f1e223cd5fbd247622a703c528c01584a0c3dfdd37be468e01",
+        "ntw16s32.dll": "964c3f51cc997fa3ec623411678d46a2db0cf635a58941a536e7816df943aa34",
+        "ntw16s64.dll": "05c5d0865ee463533535c429c6f11b735b1e278d6c80acd910abc1559e2a0a12",
+        "run16s.exe": "3252a28bf2da5cce838161dcb5b5d93b2c2c42b80d9d0edd16be0c7344173482"
+      },
+      "skips": [
+        "HD Tune elevated UI: owner default skip",
+        "VB5 actual application/OptionButton/OCX: missing proven sample, not passed"
+      ],
+      "scope": "focused actual-package/native tests; C fixtures not real VB, Actor actual separate; no physical input or all-OCX claim"
+    },
+    "publication": {
+      "tested_package": "O:\\repos.hobby\\win16style\\build\\t17-package\\s3-clean\\candidate",
+      "status": "passed",
+      "test_result": "O:\\repos.hobby\\win16style\\build\\t17-package\\s3-test\\result.json",
+      "files": [
+        {
+          "after": "9d175646cc0347f1e223cd5fbd247622a703c528c01584a0c3dfdd37be468e01",
+          "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe",
+          "expected": "9d175646cc0347f1e223cd5fbd247622a703c528c01584a0c3dfdd37be468e01",
+          "before": "b370c0655d7b94f775b23e2515d0923b0c65904753aaf28232be4a3e18f90e06",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s3-publish\\before-0"
+        },
+        {
+          "after": "964c3f51cc997fa3ec623411678d46a2db0cf635a58941a536e7816df943aa34",
+          "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
+          "expected": "964c3f51cc997fa3ec623411678d46a2db0cf635a58941a536e7816df943aa34",
+          "before": "40d57ff1741e655239d66071264b61cb30821d5a53dfef00ad0029b9208d456c",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s3-publish\\before-0"
+        },
+        {
+          "after": "05c5d0865ee463533535c429c6f11b735b1e278d6c80acd910abc1559e2a0a12",
+          "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll",
+          "expected": "05c5d0865ee463533535c429c6f11b735b1e278d6c80acd910abc1559e2a0a12",
+          "before": "226ee8c54ac13f2c363208a3ed1403bb215b4d842073886dc9fba2fbd0de9fd3",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s3-publish\\before-0"
+        },
+        {
+          "after": "3252a28bf2da5cce838161dcb5b5d93b2c2c42b80d9d0edd16be0c7344173482",
+          "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
+          "expected": "3252a28bf2da5cce838161dcb5b5d93b2c2c42b80d9d0edd16be0c7344173482",
+          "before": "79afe5a703f1943e6e14a189d788bc1d255c5f6cdbd124abbd83480a90bd6cf9",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s3-publish\\before-0"
+        },
+        {
+          "after": "9d175646cc0347f1e223cd5fbd247622a703c528c01584a0c3dfdd37be468e01",
+          "path": "O:\\winnt\\system32\\demo.exe",
+          "expected": "9d175646cc0347f1e223cd5fbd247622a703c528c01584a0c3dfdd37be468e01",
+          "before": "b370c0655d7b94f775b23e2515d0923b0c65904753aaf28232be4a3e18f90e06",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s3-publish\\before-1"
+        },
+        {
+          "after": "964c3f51cc997fa3ec623411678d46a2db0cf635a58941a536e7816df943aa34",
+          "path": "O:\\winnt\\system32\\ntw16s32.dll",
+          "expected": "964c3f51cc997fa3ec623411678d46a2db0cf635a58941a536e7816df943aa34",
+          "before": "40d57ff1741e655239d66071264b61cb30821d5a53dfef00ad0029b9208d456c",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s3-publish\\before-1"
+        },
+        {
+          "after": "05c5d0865ee463533535c429c6f11b735b1e278d6c80acd910abc1559e2a0a12",
+          "path": "O:\\winnt\\system32\\ntw16s64.dll",
+          "expected": "05c5d0865ee463533535c429c6f11b735b1e278d6c80acd910abc1559e2a0a12",
+          "before": "226ee8c54ac13f2c363208a3ed1403bb215b4d842073886dc9fba2fbd0de9fd3",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s3-publish\\before-1"
+        },
+        {
+          "after": "3252a28bf2da5cce838161dcb5b5d93b2c2c42b80d9d0edd16be0c7344173482",
+          "path": "O:\\winnt\\system32\\run16s.exe",
+          "expected": "3252a28bf2da5cce838161dcb5b5d93b2c2c42b80d9d0edd16be0c7344173482",
+          "before": "79afe5a703f1943e6e14a189d788bc1d255c5f6cdbd124abbd83480a90bd6cf9",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s3-publish\\before-1"
+        }
+      ]
+    },
+    "note": "superseded after review changed native-message/retirement order; archive retained at build/t17-audit/s3-interim-release, not final delivery"
+  },
+  "retirement_order_review": "native message completes before painter retirement; callback destruction probe passed both final and interim, so no claim of reproduced interim crash or negative detection",
+  "interim_screenshots": [
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s3\\actor-bare.png",
+      "sha256": "522ec1b2b462e25085451809ece17cf90ed914843e28ee7a8f86a0656116d24f",
+      "source_BMP_sha256": "eedd4c40f4f143864449ebed393fd149a2635485b1142b8914e565ba225dea5c",
+      "size": [
+        335,
+        214
+      ],
+      "method": "owned private-desktop native PrintWindow; lossless RGB PNG, no restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s3\\check-bare-0.png",
+      "sha256": "acd6a35aacd9641b90e7220bc80ac3a17026d2dc02ad7364868f54d24168e6e1",
+      "source_BMP_sha256": "aa02efa2c51a08c2c247a94dfbadc7c4340940ca8058d63477fced99e5decb0e",
+      "size": [
+        89,
+        17
+      ],
+      "method": "owned private-desktop native PrintWindow; lossless RGB PNG, no restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s3\\check-bare-1.png",
+      "sha256": "02ad282d4d48a2a27f460ce53f741bc2578fd3bb5c2e6934994b49f10af13998",
+      "source_BMP_sha256": "f8939943ce428229361d5cfd373fa5c25b40413ce91455933b32db5a4159ce8c",
+      "size": [
+        89,
+        17
+      ],
+      "method": "owned private-desktop native PrintWindow; lossless RGB PNG, no restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s3\\actor-styled.png",
+      "sha256": "cf9c5f4e72264dd478401f1079042bd8bc0280effe3f9d8b1662c810e62914d9",
+      "source_BMP_sha256": "482cfb04ad4c139f72a557766f1e12271c3c3da950aa0e4dc5f16da654a48d92",
+      "size": [
+        335,
+        214
+      ],
+      "method": "owned private-desktop native PrintWindow; lossless RGB PNG, no restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s3\\check-styled-0.png",
+      "sha256": "02b4544c00f0a060814374456878b45bb29b03ebbd7efc251d4c9d994a4758e4",
+      "source_BMP_sha256": "e90416d7ce502796a7543906ea341e109b42e616fa71d569ebdb376b2185a3a6",
+      "size": [
+        89,
+        17
+      ],
+      "method": "owned private-desktop native PrintWindow; lossless RGB PNG, no restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s3\\check-styled-1.png",
+      "sha256": "65dd5dd53018b1d4a8427bc65c564992ad33b421c0a268aa9b8b7bfe7f31ec31",
+      "source_BMP_sha256": "da00c964b36e0189f234c6a9d12addc34d3aede2cabffc180173ca195be91a69",
+      "size": [
+        89,
+        17
+      ],
+      "method": "owned private-desktop native PrintWindow; lossless RGB PNG, no restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s3\\catalog-1-0.png",
+      "sha256": "22af8ecef758f21f103f5c76e7180a87dc841ca63e136303bf4f648cc29d4dc1",
+      "source_BMP_sha256": "b920a60592ab4cd2c5971cf2e71bcc81da56ebcded0b57d9b5c90cc2d1a3ce87",
+      "size": [
+        1072,
+        878
+      ],
+      "method": "owned private-desktop native PrintWindow; lossless RGB PNG, no restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s3\\demo-injected.png",
+      "sha256": "bdf6a54e3eb05d3fe6d8a0ef76707a3bd7b4664568cff9e5daf0494e53f71a70",
+      "source_BMP_sha256": "23bdf41d880ca227ee4830af7da9550441956bb8a5abc0a0c3fa6169a8378d8b",
+      "size": [
+        862,
+        724
+      ],
+      "method": "owned private-desktop native PrintWindow; lossless RGB PNG, no restyling"
+    },
+    {
+      "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s3\\demo-native.png",
+      "sha256": "e834bb78469f89d9d52f21d0687dad27a4f20070acd7a9b552254b25267f741b",
+      "source_BMP_sha256": "26f6e6a1c3fbf71422834aad76d20a3ef5fecd3b872b412a262c21895bac991f",
+      "size": [
+        862,
+        724
+      ],
+      "method": "owned private-desktop native PrintWindow; lossless RGB PNG, no restyling"
+    }
+  ],
+  "diff_statistics": {
+    "scope": "P1 staged pre-statistics record; narrow product/test subset CMake/src/tests/tools plus all numstat rows",
+    "code_added": 309,
+    "code_deleted": 8,
+    "code_net": 301,
+    "rows": [
+      {
+        "path": "CMakeLists.txt",
+        "added": "6",
+        "deleted": "0"
+      },
+      {
+        "path": "assets/demo.exe",
+        "added": "-",
+        "deleted": "-"
+      },
+      {
+        "path": "assets/ntw16s32.dll",
+        "added": "-",
+        "deleted": "-"
+      },
+      {
+        "path": "assets/ntw16s64.dll",
+        "added": "-",
+        "deleted": "-"
+      },
+      {
+        "path": "assets/run16s.exe",
+        "added": "-",
+        "deleted": "-"
+      },
+      {
+        "path": "docs/design/UI.md",
+        "added": "6",
+        "deleted": "0"
+      },
+      {
+        "path": "docs/etc/README.md",
+        "added": "2",
+        "deleted": "0"
+      },
+      {
+        "path": "docs/etc/evidence/vb-controls-audit.json",
+        "added": "12",
+        "deleted": "4"
+      },
+      {
+        "path": "docs/etc/evidence/vb-selection-controls.json",
+        "added": "803",
+        "deleted": "0"
+      },
+      {
+        "path": "docs/etc/import/import-receipts.json",
+        "added": "19",
+        "deleted": "10"
+      },
+      {
+        "path": "docs/etc/release.json",
+        "added": "208",
+        "deleted": "147"
+      },
+      {
+        "path": "docs/history/M0-T17-S3-vb-checkbox.md",
+        "added": "48",
+        "deleted": "0"
+      },
+      {
+        "path": "docs/states/CURRENT.md",
+        "added": "9",
+        "deleted": "9"
+      },
+      {
+        "path": "src/ntw16s-dll/README.md",
+        "added": "8",
+        "deleted": "0"
+      },
+      {
+        "path": "src/ntw16s-dll/control_class.h",
+        "added": "11",
+        "deleted": "2"
+      },
+      {
+        "path": "src/ntw16s-dll/controls.c",
+        "added": "12",
+        "deleted": "3"
+      },
+      {
+        "path": "tests/integration/vb_actor.c",
+        "added": "204",
+        "deleted": "0"
+      },
+      {
+        "path": "tests/ntw16s-dll/vb_controls.c",
+        "added": "25",
+        "deleted": "2"
+      },
+      {
+        "path": "tests/ntw16s-dll/vb_runtime.c",
+        "added": "43",
+        "deleted": "1"
+      }
+    ],
+    "other_owners": "preserved T17 S1 research, T15 retained49 sources, stable caches and prior PNG; no old paths deleted/moved"
+  }
+}

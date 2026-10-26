@@ -192,3 +192,9 @@ skip，当前包只承诺自包含探针的有限覆盖。原标题/字体/菜�
 被动加载无启动API初始化时不宣称微调支持。进程内私有绘图/DC入口使detours为35、
 容量40，公开ABI3/31命名导出+ordinal1不变。HD Tune管理员真实UI仍默认skip，不把
 自包含微调适配扩张为所有框架自绘TSpinButton支持。
+
+T17 S3仅为MSVBVM60注册的准确ThunderRT6CheckBox接纳普通窗口化复选框，
+复用既有glyph和VB字号保留策略，不替代VB Value/Click/键盘处理。Actor实际
+样式虽为AUTO3STATE，实测仍为0/1循环，不由style推导三态业务。图形/push-like/
+icon/bitmap/owner-draw未验证变体保留原生；运行时切入该类状态即移除本层painter，
+切回普通模式须新窗口/显式重新附着，不能冒称自动恢复。VB5/OptionButton待实证。

@@ -29,3 +29,11 @@ Static runtime/TLS cleanup retains thread notifications; DllMain performs no GUI
 Consumers retain the DLL until all HWNDs, scopes, font leases and callbacks
 have ended on their owning GUI threads. Explicit removal restores borrowed
 application state; WM_NCDESTROY owns final attached resource release.
+
+T17 S3 adds exact MSVBVM60-owned ThunderRT6CheckBox for ordinary windowed
+checkboxes. The runtime owns Value, click and keyboard behavior. Existing
+System glyph/font painting is reused. Graphical/push-like/icon/bitmap and
+owner-drawn variants remain native; a live transition retires this painter.
+Returning to a plain style requires a fresh attachment/window to resume it.
+VB5 and OptionButton are not inferred from this result. Real-application
+checks and independent C protocol fixtures are reported separately.
