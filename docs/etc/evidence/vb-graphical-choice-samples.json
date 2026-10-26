@@ -1,0 +1,37 @@
+{
+  "task": "M0 T17 S19",
+  "scope": "Read-only audit of already registered real VB graphical-picture inputs for CheckBox/OptionButton evidence.",
+  "method": "A C-independent source-block scanner matched only properties inside each VB CheckBox or OptionButton Begin/End block. It did not treat a Picture property on a neighbouring CommandButton or Image as a choice-control property.",
+  "runnable_samples": {
+    "mouse_vb5": {
+      "executable": "build/t17-audit/s10-selection-samples/mouse-vb5/Mouse/MouseHook.exe",
+      "choices": ["CheckBox chkSelect", "OptionButton optTest[0]", "OptionButton optTest[1]"],
+      "picture_choices": 0,
+      "graphical_choice_style": 0,
+      "separate_graphical_command_buttons": 4
+    },
+    "mouse_vb6": {
+      "executable": "build/t17-audit/s10-selection-samples/mouse-vb6/Mouse/MouseHook6.exe",
+      "choices": ["CheckBox chkSelect", "OptionButton optTest[0]", "OptionButton optTest[1]"],
+      "picture_choices": 0,
+      "graphical_choice_style": 0,
+      "separate_graphical_command_buttons": 4
+    },
+    "3ddefline_vb6": {
+      "executable": "build/t17-audit/s11-selection-variants/3ddefline/3Ddefline.exe",
+      "picture_controls": 10,
+      "picture_control_class": "CommandButton",
+      "choice_controls": 0
+    }
+  },
+  "source_only_candidates": {
+    "count": 2,
+    "controls": ["photoalbum/VB6/PhotoAlbum.frm: CheckBox Check1", "ProgrammingMicrosoftVisualBasic6/VB6/16 - LogSvr/frmLog.frm: CheckBox chkActive"],
+    "picture_choices": 0,
+    "reason_not_runtime_evidence": "No matching admitted executable with an authenticated runtime/owner observation exists."
+  },
+  "conclusion": "The registered real inputs provide no graphical bitmap/icon CheckBox or OptionButton. S18 remains a bounded public-protocol model proof; it is neither contradicted nor strengthened into an actual-VB image-control claim.",
+  "product_change": "none",
+  "package_comparison": "The current assets four-file package remains the S18 tested package; no file was rebuilt or republished for this documentation-only audit.",
+  "remaining": ["Find an original, licensed and runnable VB5/VB6 sample with a graphical image CheckBox or OptionButton before extending behavior.", "BS_OWNERDRAW, arbitrary private image-property paths and default-button claims remain outside the admitted contract."]
+}

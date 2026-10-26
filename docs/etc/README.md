@@ -14,6 +14,10 @@
   精确公开 BM_GETIMAGE/BM_SETIMAGE 路径的双宽状态、资源和退役证据；不作为任意
   VB 图片属性或 owner-draw 支持声明。
 
+- [VB图形选择真实图片样本](evidence/vb-graphical-choice-samples.json)：T17 S19
+  已登记 VB5/VB6 图片样本的控件块审计；确认没有真实图片 CheckBox/OptionButton，
+  不将模型证明外推为真实控件支持。
+
 - [VB6 DriveListBox审计](evidence/vb6-drivelistbox-audit.json)：T17 S14固定
   源码/PE/runtime 身份与有界样本缺失结论；不作为VB6 DriveListBox支持声明。
 
@@ -105,6 +109,9 @@
 - [T17 S18图形选择图片/图标](evidence/vb-graphical-choice-variants.json)：精确
   图形 CheckBox/OptionButton 的公共位图/图标借用、状态、退役与双宽包证据；真实
   图片属性样本、owner-draw 与复杂变体仍保留后续接收。
+
+- [T17 S19图形选择真实图片样本](evidence/vb-graphical-choice-samples.json)：已登记
+  可运行和源码候选的控件块扫描；没有真实图片选择控件，S18模型边界保持不变。
 
 - [T17 S14 VB6 DriveListBox审计](evidence/vb6-drivelistbox-audit.json)：唯一源码
   匹配实际为VB5运行时的反证与固定目录样本缺失；没有产品实现。
