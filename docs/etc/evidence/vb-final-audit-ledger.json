@@ -58,7 +58,7 @@
     },
     {
       "kind": "native_preservation_required",
-      "count": 43,
+      "count": 51,
       "meaning": "The established receiver is application DC, embedded-object/data handling, nonvisual runtime work, or an unsafe host boundary. Repainting or attaching a guessed standard class would change application semantics, so preserving native behavior is the correct current disposition.",
       "groups": [
         {
@@ -90,12 +90,17 @@
           "ids": ["VB5.dblist32.ocx:DBList", "VB6.dblist32.ocx:DBList", "VB6.msadodc.ocx:Adodc", "VB5.msrdc20.ocx:MSRDC", "VB6.msrdc20.ocx:MSRDC", "VB6.msdatrep.ocx:DataRepeater"],
           "evidence": ["T17 S28 current-package direct x86 OLE host", "docs/etc/evidence/vb-ocx-wrapper-contracts.json"],
           "boundary": "The exact observed DBList, Adodc, MSRDC, and DataRepeater instances expose only their private OCX surface in the inert host. No data source, query, connection, report or binding operation was invoked; without a standard child or public content-neutral draw route, preserve them natively."
+        },
+        {
+          "ids": ["VB5.mscomm32.ocx:MSComm", "VB6.mscomm32.ocx:MSComm", "VB5.msmapi32.ocx:MAPISession", "VB6.msmapi32.ocx:MAPISession", "VB5.msmapi32.ocx:MAPIMessages", "VB6.msmapi32.ocx:MAPIMessages", "VB5.mswinsck.ocx:Winsock", "VB6.mswinsck.ocx:Winsock"],
+          "evidence": ["T17 S28 current-package direct x86 OLE host", "docs/etc/evidence/vb-ocx-wrapper-contracts.json"],
+          "boundary": "MSComm, Winsock, MAPISession and MAPIMessages expose only their private OCX windows in inert activation. No port, socket, MAPI logon/message operation, standard child HWND, or content-neutral public draw route exists; preserve native behavior."
         }
       ]
     },
     {
       "kind": "missing_real_sample_or_public_owner_protocol",
-      "count": 61,
+      "count": 53,
       "meaning": "No implementation is admitted from a filename or a guessed class name. These rows require the listed real runtime/OCX and a public child-HWND, COM-owner, or vendor host contract before any styling work can be safely scoped.",
       "groups": [
         {
@@ -104,7 +109,7 @@
           "receiver": "A runnable, version-correct DriveListBox sample that proves the owner-draw/DC and icon/data ownership path."
         },
         {
-          "ids": ["VB5.comctl32.ocx:StatusBar", "VB6.comctl32.ocx:StatusBar", "VB5.comctl32.ocx:TabStrip", "VB6.comctl32.ocx:TabStrip", "VB5.comctl32.ocx:ListView", "VB6.comctl32.ocx:ListView", "VB5.comctl32.ocx:ProgressBar", "VB6.comctl32.ocx:ProgressBar", "VB5.comctl32.ocx:ImageList", "VB6.comctl32.ocx:ImageList", "VB6.mscomctl.ocx:Toolbar", "VB6.mscomctl.ocx:StatusBar", "VB6.mscomctl.ocx:TabStrip", "VB6.mscomctl.ocx:ListView", "VB6.mscomctl.ocx:ProgressBar", "VB6.mscomctl.ocx:Slider", "VB6.mscomctl.ocx:ImageList", "VB6.mscomctl.ocx:ImageCombo", "VB5.comct232.ocx:Animation", "VB6.comct232.ocx:Animation", "VB5.comct232.ocx:UpDown", "VB6.comct232.ocx:UpDown", "VB6.mscomct2.ocx:Animation", "VB6.mscomct2.ocx:UpDown", "VB6.mscomct2.ocx:MonthView", "VB6.mscomct2.ocx:DTPicker", "VB6.mscomct2.ocx:FlatScrollBar", "VB6.comct332.ocx:CoolBar", "VB5.comdlg32.ocx:CommonDialog", "VB6.comdlg32.ocx:CommonDialog", "VB5.dbgrid32.ocx:DBGrid", "VB6.dbgrid32.ocx:DBGrid", "VB5.mscomm32.ocx:MSComm", "VB6.mscomm32.ocx:MSComm", "VB5.msmapi32.ocx:MAPISession", "VB6.msmapi32.ocx:MAPISession", "VB5.msmapi32.ocx:MAPIMessages", "VB6.msmapi32.ocx:MAPIMessages", "VB5.mswinsck.ocx:Winsock", "VB6.mswinsck.ocx:Winsock"],
+          "ids": ["VB5.comctl32.ocx:StatusBar", "VB6.comctl32.ocx:StatusBar", "VB5.comctl32.ocx:TabStrip", "VB6.comctl32.ocx:TabStrip", "VB5.comctl32.ocx:ListView", "VB6.comctl32.ocx:ListView", "VB5.comctl32.ocx:ProgressBar", "VB6.comctl32.ocx:ProgressBar", "VB5.comctl32.ocx:ImageList", "VB6.comctl32.ocx:ImageList", "VB6.mscomctl.ocx:Toolbar", "VB6.mscomctl.ocx:StatusBar", "VB6.mscomctl.ocx:TabStrip", "VB6.mscomctl.ocx:ListView", "VB6.mscomctl.ocx:ProgressBar", "VB6.mscomctl.ocx:Slider", "VB6.mscomctl.ocx:ImageList", "VB6.mscomctl.ocx:ImageCombo", "VB5.comct232.ocx:Animation", "VB6.comct232.ocx:Animation", "VB5.comct232.ocx:UpDown", "VB6.comct232.ocx:UpDown", "VB6.mscomct2.ocx:Animation", "VB6.mscomct2.ocx:UpDown", "VB6.mscomct2.ocx:MonthView", "VB6.mscomct2.ocx:DTPicker", "VB6.mscomct2.ocx:FlatScrollBar", "VB6.comct332.ocx:CoolBar", "VB5.comdlg32.ocx:CommonDialog", "VB6.comdlg32.ocx:CommonDialog", "VB5.dbgrid32.ocx:DBGrid", "VB6.dbgrid32.ocx:DBGrid"],
           "evidence": ["T17 S17"],
           "receiver": "The exact registered module plus a runnable licensed sample proving its child HWND or public COM ownership and drawing contract."
         },
@@ -121,7 +126,7 @@
       ]
     }
   ],
-  "completion_check": "44 + 43 + 61 = 148. A verifier must compare the set of ids to source_matrix and reject duplicates, omissions, or unknown ids.",
+  "completion_check": "44 + 51 + 53 = 148. A verifier must compare the set of ids to source_matrix and reject duplicates, omissions, or unknown ids.",
   "local_discovery_after_p3": {
     "method": "Read-only recursive filename check of O:\\winnt\\system32, O:\\winnt\\syswow64, and D:\\programs for the 34 frozen extension module names; separate source-file scan for .vbp/.frm/.ctl/.vbg and declaration names.",
     "extension_module_matches": 0,
@@ -141,5 +146,5 @@
     "candidate_archive_matches": 0,
     "consequence": "No further locally available x86 visual OCX or installer can safely reduce the remaining set. The only next implementation input is an independently licensed, version-correct x86 visual component together with an inert self-owned sample or a documented public host contract; it must be supplied or become available externally."
   },
-  "result": "The ledger closes the accounting gap but does not close T17: 44 rows have bounded verified public paths, 43 require native preservation, and 61 still require a safe version-correct public contract or real sample."
+  "result": "The ledger closes the accounting gap but does not close T17: 44 rows have bounded verified public paths, 51 require native preservation, and 53 still require a safe version-correct public contract or real sample."
 }

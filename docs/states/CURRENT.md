@@ -23,7 +23,7 @@ MMControl改列原生保留。SysInfo/Inet/PictureClip亦已在自有免注册OL
 OCX client surface，故同样原生保留；DBCombo/DataCombo的USER Edit和DataList的USER ScrollBar已在当前包
 通过文本选择及范围位置回读，DataGrid的USER ScrollBar也已同样验证，限定复用既有renderer，外壳/绑定/
 自绘不变。DBList/Adodc/MSRDC/DataRepeater无标准子HWND而原生保留；FlatScrollBar外壳、StatusBar/ListView/
-MSCOMCTL Toolbar20及其余未证实行逐项保留。分类当前为44项有限验证、43项原生保留、61项待版本正确公开协议/样本。
+MSCOMCTL Toolbar20及其余未证实行逐项保留。MSComm/Winsock/MAPI仅有私有非视觉承载而原生保留；分类当前为44项有限验证、51项原生保留、53项待版本正确公开协议/样本。
 无UAC/显示依赖；后续S18审计自包含的
 intrinsic图形选择default/disabled/picture变体。
 S16的Data样本包含绝对数据库/绑定，MDI样本启动可写注册表并有Shell/Delete路径；
