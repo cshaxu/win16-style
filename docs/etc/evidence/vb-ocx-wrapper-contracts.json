@@ -89,6 +89,12 @@
       "ProgressBar": "CtlFrameWork_ReflectWindow -> ProgressBarWndClass reports attached=0 and protocol_bound=0. PBM_GETRANGE observes 0:30000, PBM_GETPOS 0, and GETSTATE 0 rather than a documented PBST state.",
       "ImageList": "ImageListWndClass reports attached=0 and protocol_bound=0. It is a visible OCX client surface in this host, not evidence for a standard HIMAGELIST contract.",
       "ListView": "CtlFrameWork_ReflectWindow -> ListViewWndClass reports attached=0 and protocol_bound=0 after setting report View before activation. The outer wrapper supplies OCX_LIST_DRAW pre=1, item=0, post=0 only; its native SysHeader32 is subsequently created by COMCTL32.DLL and remains attached=1 through the existing header route. No late scan or wrapper attachment is performed."
+    },
+    "Current-COMCT232-COMCT332-sweep": {
+      "activation": "Current published x86 ntw16s32.dll injected by the self-owned candidate run16s host; direct DllGetClassObject/IOleObject/IPersistStreamInit activation of Microsoft-signed scratch COMCT232.OCX and COMCT332.OCX; no registration or installation.",
+      "Animation": "COMCT232 Animation coclass {1E216240-1B7D-11CF-9D53-00AA003C9CB6} creates CtlFrameWork_ReflectWindow -> AnimationWndClass, both owned by COMCT232.OCX and attached=0/protocol_bound=0. No native animation child is observed.",
+      "UpDown": "COMCT232 UpDown coclass {026371C0-1B7C-11CF-9D53-00AA003C9CB6} creates CtlFrameWork_ReflectWindow -> UpDownWndClass, both owned by COMCT232.OCX and attached=0/protocol_bound=0. No native msctls_updown32 child is observed.",
+      "CoolBar": "COMCT332 CoolBar coclass {38911D92-E448-11D0-84A3-00DD01104159} creates nested ThunderRT6UserControlDC windows owned by MSVBVM60.DLL, each attached=0/protocol_bound=0. No standard common-control child or content-neutral public draw route is observed."
     }
   },
   "non_goals": ["StatusBar", "TabStrip", "ListView", "MSCOMCTL Toolbar20 host", "COMCT232 UpDown/Animation", "COMCT332 CoolBar", "all OCX versions", "global hooks", "existing-window scanning"],
