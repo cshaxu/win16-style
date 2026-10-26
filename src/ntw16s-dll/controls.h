@@ -15,6 +15,10 @@ NTW16S_API BOOL win16_style_control_install(HWND window,const win16_style_palett
 BOOL win16_style_control_install_created(HWND window,BOOL edit,BOOL original_border,BOOL tabbed,
     const win16_style_palette *palette,const void *owner,const BOOL *cancelled);
 BOOL win16_style_control_remove_owned(HWND window,const void *owner);
+/* After the native API, only an exact runtime-owned owner-draw push primitive
+ * inside its parent's verified DRAWITEM DC may reuse the button chrome. */
+BOOL win16_style_graphical_frame(HDC,const RECT *,UINT,UINT,const void *);
+BOOL win16_style_graphical_frame_prepare(HDC,const RECT *,UINT,UINT,const void *,RECT *);
 /* Tab positions are private native state with no public getter. The creator
  * must supply the current PIXEL positions, not dialog units: count0 means
  * default tabs, count1 a repeated interval, count>1 explicit positions.

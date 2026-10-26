@@ -77,3 +77,12 @@ native. No new detours or public ABI. Unsupported RTL/frame roles retire.
 The self-contained `core-vb-containers` fixture is a C protocol model;
 optional authentic Alpha Icon Creator VB5/VB6 observations are separate.
 See the [container evidence](../../docs/etc/evidence/vb-container-controls.json).
+
+T17 S10 adds exact runtime-owned VB5/VB6 `CommandButton` owner-draw push
+primitives. The runtime keeps owner drawing, images, input and source font
+properties. Only a verified parent `ODT_BUTTON` DC and a direct runtime
+`DrawFrameControl` call can borrow existing button chrome; native API return,
+rectangle and error semantics remain authoritative. Runtime ANSI caption
+drawing uses the existing bounded System lease. App drawing, unsupported
+frame flags/rectangles, wrong owners, reparenting and role changes stay native.
+Graphical CheckBox/OptionButton and unverified variants remain separate work.

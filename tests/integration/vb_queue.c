@@ -69,6 +69,34 @@ static BOOL unobserve_imports(void)
     }
     return ok;
 }
+static BOOL (WINAPI *draw_frame)(HDC,LPRECT,UINT,UINT);
+static BOOL (WINAPI *bit_blt)(HDC,int,int,int,int,HDC,int,int,DWORD);
+static int (WINAPI *draw_text)(HDC,LPCSTR,int,LPRECT,UINT);
+static BOOL WINAPI observe_frame(HDC dc,LPRECT rect,UINT type,UINT flags)
+{
+    DWORD error=GetLastError();++state->graphical_frames;state->graphical_type=type;state->graphical_state=flags;
+    state->graphical_dc_window=WindowFromDC(dc);if(rect)state->graphical_rect=*rect;
+    SetLastError(error);return draw_frame(dc,rect,type,flags);
+}
+static BOOL WINAPI observe_blt(HDC dc,int x,int y,int cx,int cy,HDC from,int sx,int sy,DWORD rop)
+{++state->graphical_blits;return bit_blt(dc,x,y,cx,cy,from,sx,sy,rop);}
+static int WINAPI observe_draw_text(HDC dc,LPCSTR text,int count,LPRECT rect,UINT format)
+{++state->graphical_text;return draw_text(dc,text,count,rect,format);}
+static void graphical_survey(void)
+{
+    state->graphical_frames=state->graphical_blits=state->graphical_text=0;
+    state->graphical_type=state->graphical_state=0;state->graphical_dc_window=NULL;SetRectEmpty(&state->graphical_rect);
+    HMODULE runtime=(HMODULE)GetClassLongPtrW(state->window,GCLP_HMODULE);
+    draw_frame=(void *)GetProcAddress(GetModuleHandleW(L"USER32.dll"),"DrawFrameControl");
+    draw_text=(void *)GetProcAddress(GetModuleHandleW(L"USER32.dll"),"DrawTextA");
+    bit_blt=(void *)GetProcAddress(GetModuleHandleW(L"GDI32.dll"),"BitBlt");
+    BOOL ok=draw_frame && draw_text && bit_blt &&
+        observe_api_import(runtime,"DrawFrameControl",(PVOID)(UINT_PTR)draw_frame,(PVOID)(UINT_PTR)observe_frame) &&
+        observe_api_import(runtime,"DrawTextA",(PVOID)(UINT_PTR)draw_text,(PVOID)(UINT_PTR)observe_draw_text) &&
+        observe_api_import(runtime,"BitBlt",(PVOID)(UINT_PTR)bit_blt,(PVOID)(UINT_PTR)observe_blt);
+    if(ok)RedrawWindow(state->window,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
+    state->paint_restored=unobserve_imports();state->paint_probe_error=ok && state->paint_restored?0:ERROR_INVALID_STATE;
+}
 static BOOL (WINAPI *text_out)(HDC,int,int,LPCSTR,int);
 static BOOL (WINAPI *ext_text_out)(HDC,int,int,UINT,const RECT *,LPCSTR,UINT,const INT *);
 static LONG (WINAPI *tabbed_text_out)(HDC,int,int,LPCSTR,int,int,const INT *,int);
@@ -160,7 +188,8 @@ static void survey(void)
     state->attached=attached?attached(state->window):-1;
     state->font_records=state->system_fonts=state->draw_items=state->popup_dc=state->system_text=state->native_text=0;
     state->draw_dc_window=NULL;state->draw_type=0;
-    if(state->action==VB_QUEUE_PAINT_SURVEY)paint_survey(module);
+    if(state->action==VB_QUEUE_GRAPHICAL_SURVEY)graphical_survey();
+    else if(state->action==VB_QUEUE_PAINT_SURVEY)paint_survey(module);
     else RedrawWindow(state->window,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW|RDW_FRAME);
     if(state->action==VB_QUEUE_POPUP_SURVEY){
         COMBOBOXINFO combo={.cbSize=sizeof(combo)};
@@ -200,7 +229,7 @@ __declspec(dllexport) LRESULT CALLBACK VbQueueGet(int code,WPARAM a,LPARAM b)
         if(message->message==barrier && message->hwnd==state->window){
             if(message->wParam!=state->generation)InterlockedIncrement(&state->rejected);
             else {
-                if(state->action==VB_QUEUE_SURVEY || state->action==VB_QUEUE_POPUP_SURVEY || state->action==VB_QUEUE_PAINT_SURVEY)survey();
+                if(state->action==VB_QUEUE_SURVEY || state->action==VB_QUEUE_POPUP_SURVEY || state->action==VB_QUEUE_PAINT_SURVEY || state->action==VB_QUEUE_GRAPHICAL_SURVEY)survey();
                 if(state->action==VB_QUEUE_PRINT_SAMPLE)print_sample();
                 InterlockedIncrement(&state->acknowledgements);
                 InterlockedExchange(&state->completed,(LONG)state->generation);

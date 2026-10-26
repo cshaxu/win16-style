@@ -11,6 +11,7 @@
 #include "progress_paint.h"
 #include "trackbar_paint.h"
 #include "updown_paint.h"
+#include "vb_text.h"
 #include <commctrl.h>
 #include <oleacc.h>
 #include <stdlib.h>
@@ -209,6 +210,59 @@ static void frame(HDC dc,RECT r,COLORREF color,int width)
     DeleteObject(brush);
 }
 
+static RECT button_border(HDC dc,RECT r,const win16_style_palette *palette,int u,int border,BOOL pushed)
+{
+    RECT bounds=r,corner;
+    frame(dc,bounds,palette->edge,border);
+    SetDCBrushColor(dc,palette->light);
+    SetRect(&corner,r.left,r.top,r.left+u,r.top+u);FillRect(dc,&corner,(HBRUSH)GetStockObject(DC_BRUSH));
+    OffsetRect(&corner,r.right-r.left-u,0);FillRect(dc,&corner,(HBRUSH)GetStockObject(DC_BRUSH));
+    OffsetRect(&corner,0,r.bottom-r.top-u);FillRect(dc,&corner,(HBRUSH)GetStockObject(DC_BRUSH));
+    OffsetRect(&corner,-(r.right-r.left-u),0);FillRect(dc,&corner,(HBRUSH)GetStockObject(DC_BRUSH));
+    InflateRect(&bounds,-border,-border);
+    RECT strip=bounds;int band=pushed?u:2*u;
+    SetDCBrushColor(dc,pushed?palette->shadow:palette->light);
+    strip.bottom=strip.top+band;FillRect(dc,&strip,(HBRUSH)GetStockObject(DC_BRUSH));
+    strip=bounds;strip.right=strip.left+band;FillRect(dc,&strip,(HBRUSH)GetStockObject(DC_BRUSH));
+    if(!pushed){SetDCBrushColor(dc,palette->shadow);
+        for(int i=0;i<2;++i){strip=bounds;InflateRect(&strip,-i*u,-i*u);
+            strip.top=strip.bottom-u;FillRect(dc,&strip,(HBRUSH)GetStockObject(DC_BRUSH));
+            strip=bounds;InflateRect(&strip,-i*u,-i*u);
+            strip.left=strip.right-u;FillRect(dc,&strip,(HBRUSH)GetStockObject(DC_BRUSH));}}
+    return bounds;
+}
+static control_style *graphical_target(HDC dc,UINT type,UINT flags,const void *address,HWND *w)
+{
+    DWORD_PTR value;HMODULE caller=NULL;
+    const UINT allowed=DFCS_BUTTONPUSH|DFCS_PUSHED|DFCS_INACTIVE|DFCS_ADJUSTRECT;
+    if(type!=DFC_BUTTON || !(flags&DFCS_BUTTONPUSH) || (flags&~allowed) ||
+            !ntw16s_report_paint_target(dc,w) || !ntw16s_vb_graphical_button(*w) ||
+            !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(const WCHAR *)address,&caller) ||
+            caller!=(HMODULE)GetClassLongPtrW(*w,GCLP_HMODULE) ||
+            !GetWindowSubclass(*w,control_proc,(UINT_PTR)control_proc,&value))return NULL;
+    control_style *s=(void *)value;return !s->detached && s->frame_scrollbars?s:NULL;
+}
+BOOL win16_style_graphical_frame_prepare(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,RECT *copy)
+{
+    HWND w;
+    /* Ordinary API calls remain untouched, including parameter validation.
+     * Copy only a trusted owned-runtime primitive inside its exact scope. */
+    if(!rect || !copy || !graphical_target(dc,type,flags,address,&w))return FALSE;
+    *copy=*rect;return TRUE;
+}
+BOOL win16_style_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address)
+{
+    HWND w;RECT client;POINT origin;control_style *s=graphical_target(dc,type,flags,address,&w);
+    if(!s || !rect || !GetClientRect(w,&client) || !EqualRect(rect,&client) ||
+            GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) || !GetViewportOrgEx(dc,&origin) || origin.x || origin.y)return FALSE;
+    int saved=SaveDC(dc);if(!saved)return FALSE;
+    int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
+    /* This native primitive owns its face before VB draws the caption/image.
+     * The native call has already preserved its return/rect/error semantics. */
+    SetDCBrushColor(dc,s->palette.face);FillRect(dc,rect,(HBRUSH)GetStockObject(DC_BRUSH));
+    (void)button_border(dc,*rect,&s->palette,u,u,(flags&DFCS_PUSHED)!=0);
+    RestoreDC(dc,saved);return TRUE;
+}
 static void other_control(HWND w,control_style *s,HDC dc,RECT r,HFONT font,const WCHAR *text,BOOL label)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);UINT type=(label?(style&SS_TYPEMASK):ntw16s_button_type(w,style));
@@ -243,27 +297,8 @@ static void other_control(HWND w,control_style *s,HDC dc,RECT r,HFONT font,const
          * second rectangle. USER 25:18BC suppresses default emphasis when
          * disabled. Native BUTTON/dialog code still owns all these states. */
         int border=(type==BS_DEFPUSHBUTTON && IsWindowEnabled(w)?2:1)*u;
-        RECT corner;
         SetDCBrushColor(dc,s->palette.face);FillRect(dc,&bounds,(HBRUSH)GetStockObject(DC_BRUSH));
-        frame(dc,bounds,s->palette.edge,border);
-        /* The original clears just the four outer corner cells. */
-        SetDCBrushColor(dc,s->palette.light);
-        SetRect(&corner,r.left,r.top,r.left+u,r.top+u);FillRect(dc,&corner,(HBRUSH)GetStockObject(DC_BRUSH));
-        OffsetRect(&corner,r.right-r.left-u,0);FillRect(dc,&corner,(HBRUSH)GetStockObject(DC_BRUSH));
-        OffsetRect(&corner,0,r.bottom-r.top-u);FillRect(dc,&corner,(HBRUSH)GetStockObject(DC_BRUSH));
-        OffsetRect(&corner,-(r.right-r.left-u),0);FillRect(dc,&corner,(HBRUSH)GetStockObject(DC_BRUSH));
-        InflateRect(&bounds,-border,-border);
-        {RECT strip=bounds;int band=pushed?u:2*u;
-            SetDCBrushColor(dc,pushed?s->palette.shadow:s->palette.light);
-            strip.bottom=strip.top+band;FillRect(dc,&strip,(HBRUSH)GetStockObject(DC_BRUSH));
-            strip=bounds;strip.right=strip.left+band;FillRect(dc,&strip,(HBRUSH)GetStockObject(DC_BRUSH));
-            /* A depressed Win3.1 button loses the lower/right relief; it
-             * is not a raised bevel with its colours reversed (1:8F91). */
-            if(!pushed){int i;SetDCBrushColor(dc,s->palette.shadow);
-                for(i=0;i<2;++i){strip=bounds;InflateRect(&strip,-i*u,-i*u);
-                    strip.top=strip.bottom-u;FillRect(dc,&strip,(HBRUSH)GetStockObject(DC_BRUSH));
-                    strip=bounds;InflateRect(&strip,-i*u,-i*u);
-                    strip.left=strip.right-u;FillRect(dc,&strip,(HBRUSH)GetStockObject(DC_BRUSH));}}}
+        bounds=button_border(dc,r,&s->palette,u,border,pushed);
         InflateRect(&bounds,-3*u,-3*u);if(pushed)OffsetRect(&bounds,u,u);
         flags=DT_CENTER|DT_VCENTER|DT_SINGLELINE;
     }else {flags=type==SS_CENTER?DT_CENTER:type==SS_RIGHT?DT_RIGHT:DT_LEFT;

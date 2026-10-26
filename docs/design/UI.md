@@ -228,3 +228,10 @@ S9限于准确runtime拥有的ThunderRT5PictureBox/ThunderRT6PictureBoxDC子窗�
 原生测量、应用Print/自绘、图像及几何保留。Label没有独立HWND，不扫描VB私有对象。
 RTL/框架角色变更退出适配；其他语言、绘制路径、AutoRedraw与无窗口复杂变体
 仍由后续S及最终148单位审计承担，不由局部样例扩张。
+
+S10对真实VB5/VB6普通graphical CommandButton，以准确runtime类/BS_OWNERDRAW/
+ODT_BUTTON父通知及DC绑定为边界，仅runtime直接push primitive复用既有按钮
+边框，ANSI caption复用既有System；原生API返回、RECT调整和错误保持。图片、
+native绘制/字体属性、输入/通知由运行库/应用持有；app直接绘图、特殊frame标志/
+子矩形/未知所有者和角色转换保持原生。graphical Check/Option、default及图片
+复杂变体未认证，不把命令按钮或x64 C模型当作全集支持。

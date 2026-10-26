@@ -38,6 +38,7 @@ void ntw16s_report_paint_enable(ntw16s_vb_paint *scope,HWND w,HMODULE module,con
 {
     if(!scope->active || !module)return;
     scope->report=TRUE;scope->window=w;scope->report_module=module;scope->cancelled=cancelled;
+    if(ntw16s_vb_graphical_button(w))scope->label_only=TRUE;
 }
 void ntw16s_report_paint_bind(HWND w,HDC dc)
 {
@@ -45,6 +46,13 @@ void ntw16s_report_paint_bind(HWND w,HDC dc)
 }
 BOOL ntw16s_report_paint_active(void)
 {return current && current->report;}
+BOOL ntw16s_report_paint_target(HDC dc,HWND *w)
+{
+    *w=NULL;
+    if(!current || !current->report || !dc || current->report_dc!=dc ||
+            (current->cancelled && *current->cancelled))return FALSE;
+    *w=current->window;return *w!=NULL;
+}
 BOOL ntw16s_report_paint_caller(HMODULE module)
 {return current && current->report && (module==current->report_module || module==GetModuleHandleW(NULL));}
 BOOL ntw16s_vb_paint_active(void)

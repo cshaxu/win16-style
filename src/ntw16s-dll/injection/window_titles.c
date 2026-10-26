@@ -5,6 +5,7 @@
 #include "ntw16s-dll/native_api.h"
 #include "ntw16s-dll/vb_text.h"
 #include "ntw16s-dll/updown_paint.h"
+#include "ntw16s-dll/controls.h"
 #include <wchar.h>
 #include <uxtheme.h>
 
@@ -245,7 +246,11 @@ static __typeof__(&DeleteDC) real_DeleteDC;
 static BOOL WINAPI hook_DrawFrameControl(HDC dc,LPRECT rect,UINT type,UINT state)
 {
     DWORD entry=GetLastError();BOOL drawn=ntw16s_updown_draw_frame(dc,rect,type,state,__builtin_return_address(0));
-    SetLastError(entry);return drawn?TRUE:real_DrawFrameControl(dc,rect,type,state);
+    if(drawn){SetLastError(entry);return TRUE;}
+    RECT original;BOOL graphical=win16_style_graphical_frame_prepare(dc,rect,type,state,__builtin_return_address(0),&original);
+    SetLastError(entry);BOOL result=real_DrawFrameControl(dc,rect,type,state);DWORD error=GetLastError();
+    if(result && graphical)win16_style_graphical_frame(dc,&original,type,state,__builtin_return_address(0));
+    SetLastError(error);return result;
 }
 static HRESULT WINAPI hook_DrawThemeBackground(HTHEME theme,HDC dc,int part,int state,const RECT *rect,const RECT *clip)
 {

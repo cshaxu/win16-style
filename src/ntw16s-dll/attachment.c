@@ -19,7 +19,7 @@ struct ntw16s_creation_scope {
 };
 typedef struct attachment {
     unsigned calls;
-    BOOL detached,tree,file_owner,picture;
+    BOOL detached,tree,file_owner,picture,button_owner;
     HWND themed,report_window,report_parent;
     HMODULE report_module;
     ntw16s_vb_fonts fonts;
@@ -45,11 +45,13 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     ++a->calls;
     if(a->picture && !a->detached && m!=WM_DESTROY && m!=WM_NCDESTROY && !ntw16s_vb_picture(w))
         (void)Ntw16sWindowRemove(w);
-    if(a->file_owner && !a->detached && a->report_parent && m!=WM_DESTROY && m!=WM_NCDESTROY && GetParent(w)!=a->report_parent)
+    if(a->button_owner && !a->detached && m!=WM_DESTROY && m!=WM_NCDESTROY && !ntw16s_vb_graphical_button(w))
+        (void)Ntw16sWindowRemove(w);
+    if((a->file_owner || a->button_owner) && !a->detached && a->report_parent && m!=WM_DESTROY && m!=WM_NCDESTROY && GetParent(w)!=a->report_parent)
         (void)Ntw16sWindowRemove(w);
     if(m==WM_NCDESTROY)(void)Ntw16sWindowTerminal(w);
     ntw16s_vb_paint paint;ntw16s_vb_paint_begin(&paint,w,m,&a->fonts);
-    if(a->file_owner || a->picture)paint.cancelled=&a->detached;
+    if(a->file_owner || a->picture || a->button_owner)paint.cancelled=&a->detached;
     if(paint.native_active)paint.native_dc=(HDC)p;
     if(paint.active && !a->detached && !a->protocol)report_try_bind(w,a);
     if(paint.active && a->report_module && !a->file_owner && !a->detached){
@@ -69,9 +71,10 @@ static LRESULT CALLBACK report_notify(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR i
     DWORD entry=GetLastError();attachment *a=(attachment *)data;BOOL draw=FALSE;HWND list=a->report_window;HDC dc=NULL;DWORD stage=0;
     ntw16s_vb_paint file_paint;BOOL file_active=FALSE;
     ++a->calls;
-    if(a->file_owner && !a->detached && m==WM_DRAWITEM && l && GetParent(list)==w && ntw16s_vb_owner_file(list)){
+    if((a->file_owner || a->button_owner) && !a->detached && m==WM_DRAWITEM && l && GetParent(list)==w &&
+            (a->button_owner?ntw16s_vb_graphical_button(list):ntw16s_vb_owner_file(list))){
         DRAWITEMSTRUCT *item=(DRAWITEMSTRUCT *)l;
-        if(item->hwndItem==list && item->hDC && item->CtlType==(ntw16s_vb_drive(list)?ODT_COMBOBOX:ODT_LISTBOX)){
+        if(item->hwndItem==list && item->hDC && item->CtlType==(a->button_owner?ODT_BUTTON:ntw16s_vb_drive(list)?ODT_COMBOBOX:ODT_LISTBOX)){
             HWND target=WindowFromDC(item->hDC);BOOL valid=!target || target==list;
             if(!valid && ntw16s_vb_drive(list)){
                 COMBOBOXINFO combo={.cbSize=sizeof(combo)};
@@ -87,7 +90,7 @@ static LRESULT CALLBACK report_notify(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR i
             }
         }
     }
-    if(!a->file_owner && m==WM_NOTIFY && l){
+    if(!a->file_owner && !a->button_owner && m==WM_NOTIFY && l){
         NMHDR *header=(NMHDR *)l;
         if(header->hwndFrom==list && header->code==NM_CUSTOMDRAW){
             NMCUSTOMDRAW *cd=(NMCUSTOMDRAW *)l;dc=cd->hdc;stage=cd->dwDrawStage;draw=TRUE;
@@ -212,13 +215,13 @@ static BOOL install_created(HWND w,DWORD original_style)
     }
     a=calloc(1,sizeof(*a));
     if(!a){ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    a->calls=1;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;
-    if(report || tree || a->file_owner){a->report_window=w;a->tree=tree;
-        a->report_module=a->file_owner?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}
+    a->calls=1;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);
+    if(report || tree || a->file_owner || a->button_owner){a->report_window=w;a->tree=tree;
+        a->report_module=(a->file_owner || a->button_owner)?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}
     if(!SetWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc,(DWORD_PTR)a)){
         ntw16s_control_protocol_release(protocol);free(a);return FALSE;
     }
-    if((report || tree || a->file_owner) && (!a->report_parent || !SetWindowSubclass(a->report_parent,report_notify,(UINT_PTR)w,(DWORD_PTR)a))){
+    if((report || tree || a->file_owner || a->button_owner) && (!a->report_parent || !SetWindowSubclass(a->report_parent,report_notify,(UINT_PTR)w,(DWORD_PTR)a))){
         DWORD error=GetLastError();Ntw16sWindowRemove(w);release(a);SetLastError(error);return FALSE;
     }
     SetLastError(ERROR_SUCCESS);
@@ -233,6 +236,7 @@ static BOOL install_created(HWND w,DWORD original_style)
     else if(class_is(w,PROGRESS_CLASSW))installed=win16_style_progress_install_created(w,NULL,a,&a->detached);
     else if(tree)installed=win16_style_tree_install_created(w,NULL,a,&a->detached);
     else if(picture)installed=win16_style_picture_install_created(w,NULL,a,&a->detached);
+    else if(a->button_owner)installed=win16_style_frame_scrollbars_install_owned(w,NULL,a,&a->detached);
     else if(control)installed=win16_style_control_install_created(w,edit,(original_style&WS_BORDER)!=0,
         class_is(w,L"LISTBOX") && (original_style&LBS_USETABSTOPS),NULL,a,&a->detached);
     else if(report && !(original_style&(WS_BORDER|WS_THICKFRAME|WS_CAPTION)))installed=TRUE;

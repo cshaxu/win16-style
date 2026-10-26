@@ -45,3 +45,10 @@ VB5/VB6原作者程序。保留原源码、资源及声明，仅本地可选运�
 当作原作品重新授权。程序仅初始化自有窗口/同线程临时钩子，不执行文件选择、
 创建图标等写入操作；外部实现/图像/EXE/运行库不进入产品或必需测试。
 本仓库自编C协议模型只提供辨识色块，非真实VB、非替代产品图形。
+
+S10在同一固定归档审查原作者VB5/VB6 Windows Hook Library Mouse样本及原源码。
+仅可选私有COM清单绑定原GHook类，不注册/安装组件；LoadTypeLibEx使用REGKIND_NONE
+读取公开GUID。Form_Load只请求WH_MOUSE，该路径固定GetCurrentThreadId/hInstance0；
+DLL中的journal/global分支不执行，QueryUnload归还自有钩子。只点击源码确认无
+Click处理器的测试按钮以观察原生通知，不执行shell/文件/持久化操作。原实现、
+图像、EXE/DLL及运行库仅留研究目录，不进入产品/必需测试。

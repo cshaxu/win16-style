@@ -7,6 +7,7 @@
 #define VB_QUEUE_POPUP_SURVEY 2
 #define VB_QUEUE_PAINT_SURVEY 3
 #define VB_QUEUE_PRINT_SAMPLE 4
+#define VB_QUEUE_GRAPHICAL_SURVEY 5
 typedef struct vb_queue_state {
     DWORD size,pid,tid,generation;
     HWND root,window;
@@ -20,6 +21,8 @@ typedef struct vb_queue_state {
     ULONG_PTR paint_system_callsite;
     HFONT paint_system_font;
     LONG print_calls;DWORD print_alignment,print_api;
+    LONG graphical_frames,graphical_blits,graphical_text;
+    DWORD graphical_type,graphical_state;HWND graphical_dc_window;RECT graphical_rect;
     WCHAR event_name[128];
 } vb_queue_state;
 #endif

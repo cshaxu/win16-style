@@ -28,6 +28,7 @@ BOOL ntw16s_native_paint_target(HDC,HWND *);
 /* Borrowed until the attachment retires after its last active call; NULL means leave the native DC unchanged. */
 BOOL ntw16s_vb_paint_active(void);
 BOOL ntw16s_vb_direct_text_allowed(void);
+BOOL ntw16s_report_paint_target(HDC,HWND *);
 HFONT ntw16s_vb_paint_font(HDC dc);
 BOOL ntw16s_vb_decode_glyphs(HDC dc,const WCHAR *input,UINT count,WCHAR *decoded);
 #endif

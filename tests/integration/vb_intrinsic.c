@@ -24,6 +24,7 @@ static void file_path(const WCHAR *path){
 }
 static HANDLE job,ready,port;
 static HWND form;
+static BOOL graphical_pixel_check;
 static DWORD pid;
 static HWND checks[80];
 static unsigned count;
@@ -200,6 +201,11 @@ static uint64_t capture(HWND w,const WCHAR *file,BOOL verify){
     for(size_t i=0; i<(size_t)cx*cy*4;
     ++i)hash=(hash^b[i])*1099511628211ull;
     WCHAR role[100];GetClassNameW(w,role,100);
+    if(graphical_pixel_check && wcsstr(role,L"CommandButton") && (GetWindowLongPtrW(w,GWL_STYLE)&BS_TYPEMASK)==BS_OWNERDRAW){
+        int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));DWORD *pixels=data;
+        CHECK(cx>u && cy>u && (pixels[0]&0xffffff)==0xffffff && (pixels[u]&0xffffff)==0);
+        printf("VB_GRAPHICAL_FRAME_PIXELS_OK scale=%d unobserved_print=1\n",u);
+    }
     if(verify && wcsstr(role,L"ComboBox")){
         COMBOBOXINFO combo={.cbSize=sizeof(combo)};CHECK(GetComboBoxInfo(w,&combo));
         POINT origin={0,0};CHECK(ClientToScreen(w,&origin));int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
@@ -284,7 +290,7 @@ static int worker(int argc,WCHAR **argv){
     BOOL dll=FALSE;
     CHECK(Module32FirstW(snap,&mod));
     do{
-        if(!_wcsicmp(mod.szModule,L"CompressZItLib6.dll")){
+        if(!_wcsicmp(mod.szModule,L"CompressZItLib6.dll") || !_wcsicmp(mod.szModule,L"vbalHook6.dll") || !_wcsicmp(mod.szModule,L"vbalHook.dll")){
             printf("VB_SAMPLE_PRIVATE_COM base=%p path=%ls\n",(void *)mod.hModule,mod.szExePath);file_path(mod.szExePath);
         }
         if((!_wcsicmp(mod.szModule,L"MSVBVM60.DLL") || !_wcsicmp(mod.szModule,L"MSVBVM50.DLL"))){
@@ -305,7 +311,9 @@ static int worker(int argc,WCHAR **argv){
     BOOL containers=container_verify || !wcscmp(argv[3],L"containers");
     BOOL filedir_verify=!wcscmp(argv[3],L"filedir-verify");
     BOOL file_verify=filedir_verify || !wcscmp(argv[3],L"files-verify");
-    BOOL inventory=about_print || containers || file_verify || !wcscmp(argv[3],L"inventory");
+    BOOL graphical_verify=!wcscmp(argv[3],L"graphical-verify");
+    BOOL graphical=graphical_verify || !wcscmp(argv[3],L"graphical-observe");
+    BOOL inventory=graphical || about_print || containers || file_verify || !wcscmp(argv[3],L"inventory");
     CHECK(runtime && dll==styled && EnumChildWindows(form,collect,0) && (inventory?count>0:count>10));
     CHECK(swprintf_s(path,MAX_PATH,L"%ls/actor-%ls.bmp",scratch,styled?L"styled":L"bare")>0);
     printf("VB_SAMPLE_IMAGE hash=%llu\n",(unsigned long long)capture(form,path,FALSE));
@@ -346,6 +354,38 @@ static int worker(int argc,WCHAR **argv){
     CHECK(options==4 && checkboxes==4 && combos==2 && lists==1 && edits==2 && bars==2);
     printf("SAMPLE_PROTOCOL_PASS option=%u checkbox=%u combo=%u list=%u edit=%u scrollbar=%u\n",options,checkboxes,combos,lists,edits,bars);
     }else {
+        if(graphical){
+            CHECK(queue_state);unsigned found=0;
+            for(unsigned i=0;i<count;++i){HWND w=checks[i];WCHAR cls[100];GetClassNameW(w,cls,100);
+                if((wcsstr(cls,L"CommandButton") || wcsstr(cls,L"CheckBox") || wcsstr(cls,L"OptionButton")) &&
+                        (GetWindowLongPtrW(w,GWL_STYLE)&BS_TYPEMASK)==BS_OWNERDRAW){
+                    HFONT source=(HFONT)SendMessageW(w,WM_GETFONT,0,0);RECT before,after,client_before,client_after;
+                    LRESULT button_state=SendMessageW(w,BM_GETSTATE,0,0);
+                    CHECK(GetWindowRect(w,&before) && GetClientRect(w,&client_before));
+                    queue_survey(w,VB_QUEUE_GRAPHICAL_SURVEY);++found;
+                    CHECK(queue_state->paint_restored && !queue_state->paint_probe_error);
+                    if(graphical_verify)CHECK(styled?(queue_state->attached && queue_state->system_text>0):!queue_state->system_text);
+                    printf("VB_GRAPHICAL_API index=%u class=%ls attached=%ld frames=%ld type=%lu state=%lu rect=%ld,%ld,%ld,%ld dc_window=%p blits=%ld text=%ld restored=%ld\n",i,cls,queue_state->attached,queue_state->graphical_frames,queue_state->graphical_type,queue_state->graphical_state,queue_state->graphical_rect.left,queue_state->graphical_rect.top,queue_state->graphical_rect.right,queue_state->graphical_rect.bottom,(void *)queue_state->graphical_dc_window,queue_state->graphical_blits,queue_state->graphical_text,queue_state->paint_restored);
+                    /* IAT wrappers change the direct caller; inspect actual
+                     * style pixels after restoring imports, without wrappers. */
+                    graphical_pixel_check=graphical_verify && styled;
+                    CHECK(swprintf_s(path,MAX_PATH,L"%ls/graphical-%u.bmp",scratch,i)>0);(void)capture(w,path,FALSE);graphical_pixel_check=FALSE;
+                    queue_survey(w,VB_QUEUE_PAINT_SURVEY);
+                    if(graphical_verify)CHECK(styled?queue_state->paint_system>0:!queue_state->paint_system);
+                    CHECK((HFONT)SendMessageW(w,WM_GETFONT,0,0)==source && SendMessageW(w,BM_GETSTATE,0,0)==button_state &&
+                        GetWindowRect(w,&after) && GetClientRect(w,&client_after) && EqualRect(&before,&after) && EqualRect(&client_before,&client_after));
+                    printf("VB_GRAPHICAL_PROPERTIES_OK index=%u source_font=%p geometry_state_preserved=1 dpi=%u\n",i,(void *)source,GetDpiForWindow(w));
+                    /* These optional Mouse sample buttons have no Click
+                     * handler; their native notification is safe to observe. */
+                    if(graphical_verify && IsWindowEnabled(w)){
+                        LONG commands=queue_state->commands;SendMessageW(w,BM_CLICK,0,0);queue_survey(w,0);
+                        CHECK(queue_state->commands==commands+1 && queue_state->command_code==BN_CLICKED);
+                        printf("VB_GRAPHICAL_CLICK_OK index=%u native_parent_notification=1\n",i);
+                    }
+                }
+            }
+            CHECK(found>0);printf("VB_GRAPHICAL_INVENTORY_OK controls=%u\n",found);
+        }
         if(about_print){
             CHECK(queue_state);HWND main=form,button=NULL;
             CHECK(!wcscpy_s(about_capture_dir,MAX_PATH,scratch));
