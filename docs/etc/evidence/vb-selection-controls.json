@@ -1,6 +1,6 @@
 {
   "task": "M0 T17 S3",
-  "status": "final verified and double-published; P1 remote review pending",
+  "status": "S3 closed after actual P1 remote/recovery/cleanup; finite plain VB6 CheckBox delivered; T17/M0 open",
   "scope": "plain windowed VB6 CheckBox only; VB5/OptionButton not claimed",
   "root_cause": "actual MSVBVM60-owned ThunderRT6CheckBox missing exact alias and VB paint/font selection; original classifier rejects real class while C native BUTTON superclass could hide this defect",
   "minimal_fix": "exact runtime owner/name + ordinary checkbox modes, existing font/glyph renderer; runtime owns events and values; retire graphical/owner-draw transitions to native",
@@ -903,5 +903,44 @@
       }
     ],
     "other_owners": "preserved T17 S1 research, T15 retained49 sources, stable caches and prior PNG; no old paths deleted/moved"
+  },
+  "remote_review": {
+    "status": "passed",
+    "commit": "2e250c2afc8dcb0cbff45bc0e80318970c097dee",
+    "remote_main": "2e250c2afc8dcb0cbff45bc0e80318970c097dee",
+    "files": 212,
+    "source_inputs": 200,
+    "seconds": 7.037119500047993,
+    "recovered_objects": 212,
+    "method": "actual raw GitHub HTTPS bytes compared to Git cat-file objects"
+  },
+  "recovery": {
+    "status": "passed",
+    "Git_product_objects": 204,
+    "actual_remote_files": 212,
+    "source_inputs": 200,
+    "recoverable_before_files": 16,
+    "deployed_SHA_matches": 8,
+    "external_PNG_SHA_matches": 18,
+    "interim_retained": "build/t17-audit/s3-interim-release:4 binaries+3 source overrides+identity; all200 interim source hashes reconstruct using final P1 plus overrides",
+    "clean_snapshot": "200 final inputs equal independent clean snapshot; dual-width all and actual final package tests passed",
+    "coordination_review": "actual2e250c2 diff and original broad T17/S3 scope reviewed; only2 production code files changed, no renderer algorithm/resource fork, misses retained in matrix; narrowed result not task completion"
+  },
+  "cleanup": {
+    "status": "passed",
+    "roots": [
+      {
+        "reparse_points": 0,
+        "images": 334,
+        "root": "O:\\repos.hobby\\win16style\\build\\t17-package"
+      },
+      {
+        "reparse_points": 0,
+        "images": 6,
+        "root": "O:\\repos.hobby\\win16style\\build\\t17-controls"
+      }
+    ],
+    "positive_self_check": "exe/loaded DLL c0000043;unloaded DLL00000000",
+    "preserved": "T17 S1 research plus superseded S3 package and source overrides in t17-audit;T15 reviewed sources;stable caches;all external PNG"
   }
 }
