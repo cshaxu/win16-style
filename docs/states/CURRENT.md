@@ -2,10 +2,10 @@
 
 ## Current Work
 
-M0 T17 S28 已按用户明确缩小后的范围收口：148 个冻结单位逐项有处置，46 项为
-有限公开协议支持、79 项必须保留原生、23 项（含 DriveListBox 和外部 OCX）明确延期
-至 TODO 并保持原生。T17 已关闭，当前无活动任务包；M0 仍开放，队列顺序不变。
-以下段落为 T17 的技术基线/历史证据，不覆盖此状态。
+M0 T17 已按用户明确缩小后的范围收口；23 项 VB 延期项保留在 TODO。用户现明确
+准入队列首项 M0 T18 S1：Delphi Win32 控件全貌审计。S1 先冻结真实框架/版本/控件/
+变体全集及样本证据，复核现有 VCL 有限支持，不能在没有公开承载和绘制协议时猜测实现。
+以下段落为 T17 的技术基线/历史证据，不覆盖 T18 状态。
 
 M0 T17 S27 ScrollBar范围/位置/禁用变体已完成，顺序准入S28 全148单位收口审计。
 S27以自有runtime双宽见证避开私有桌面错误5，验证H/V范围、页大小、位置和禁用；
@@ -65,14 +65,35 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
+## M0 T18 S1 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | New；用户批准收口T17并进入队列首位候选，首次分配T18/S1 |
+| Admission And Approval | 用户要求进入下一个T；T18采用proposal的S1全貌审计起步。后续实施须逐S按用户已建立的发布/推送规范执行，不自动越过证据边界 |
+| Objective | 冻结 Delphi Win32 实际框架、版本、控件、关键变体和真实样本全集；逐项复核已有VCL路径、缺口与安全接收者，为S2 demo对应展示及后续有限实施建立可审计基线 |
+| Non-goals | 本S不猜测Delphi私有对象/类名前缀、不改产品ABI/三组件四产物、不引入Delphi/IDE/C++/MSVC、不修改系统或兄弟仓库；不把既有DoubleKiller/MD5summer单例等同Delphi全貌 |
+| Reference Baseline | [Delphi专项proposal](../proposals/delphi-win32-controls.md)、T15框架审计、现有TButton/TComboBox与原生公共控件有限协议；T17延期项保持TODO，不回退已确认标题/菜单/字体/滚动条/资源 |
+| Candidate Proposal | [Delphi Win32控件完整审计与Win3.x风格适配](../proposals/delphi-win32-controls.md) |
+| Files And ABI Surface | S1仅新增审计台账、证据和原生探针（如需）；生产源码、导出、产品文件及原始五个图形头不改。后续仅在真实公开HWND/DC/调用者协议上接入现有renderer |
+| Applicable Rules | Task Reading Set、C17/MinGW GCC/Ninja/ccache、来源策略、禁止computer-use/全局hook/既有进程扫描；自有隔离实例、限时清理，真实应用为兼容证据而非必需构建依赖 |
+| Verification | 审计台账逐行验证PE位宽/路径/SHA、框架依据、注册类与实际class owner、HWND或DC承载、公开协议、资源/事件所有者、测试入口和接收者；治理门禁及现有四产物摘要保持检查 |
+| Expected Markers | 版本/框架/控件/变体全集有固定条目；已有VCL路径逐条分类为可复用、真实缺陷、原生保留或缺样本；自包含测试与真实应用兼容测试明确分列 |
+| Asset Needs | 仅已存在本机应用及经来源审查的可读样本；不安装/注册运行包或第三方组件，不把外部二进制、图片或资源纳入产品、assets、system32、构建输入或必需测试 |
+| Reporting Requirements | 报告冻结总数、框架和位宽分布、每个已支持/未知边界、首个可安全实施断点、样本/权限/显示限制及S2接收范围；不把探针当物理验收 |
+| Stop Conditions | 无公开协议、许可/来源不明、需要私有对象解析、全局设置/注入既有进程、重大架构扩张时停止该单位并记录TODO或后续S接收者；不以类名前缀或截图推断支持 |
+| Exit Criteria | 完成可复核的冻结台账、审计证据与自包含基线；只有该台账定义足够的S2范围才关闭S1并顺序准入S2，T18继续开放 |
+| Original Owner Request | 队列首位 Delphi Win32 控件完整审计与Win3.x风格适配；像VB专项一样先全貌审计、demo对应展示、多个S实施、最后独立收口 |
+| Similar-Issue Sweep | VCL/FireMonkey、ANSI/Unicode、静态/运行包、窗口/无窗口/owner-draw、标准/公共控件、数据/网格、菜单/主题、图像/字体、晚创建/重建、x86/x64及第三方组件 |
+
 ## Identifier State
 
 - Milestone: M0 (fixed)
-- Last allocated T: 17
+- Last allocated T: 18
 - Last allocated Td S: 14
-- Owner allocation constraint: T17已按用户明确范围关闭；未经用户新请求不准入队列候选。
-- Last delivery: M0 T17 S28 P15（待本次治理验证、提交、推送及远端复核）：全148单位审计收口，23项延期TODO；无产品二进制变化。
-- Open task: 无；M0开放，候选队列保持未编号。
+- Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
+- Last delivery: M0 T17 S28 P15 51f73a4已推送及远端复核：全148单位审计收口，23项延期TODO；无产品二进制变化。
+- Open task: T18 S1 Delphi Win32全貌审计；M0/T18开放。
 
 ## Technical Baseline
 
