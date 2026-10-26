@@ -2,26 +2,40 @@
 
 ## Current Work
 
-无活动任务包。用户已由独立M0 T16 S2原样撤回整套T16轮廓拖动源码/测试；
-S2/T16关闭（撤回），M0保持开放，产品恢复0.15.0.0 / M0 T15原生移动行为。
-不继续优化或重新排队，不自动启动任何候选；其他任务关闭/取消状态保持。
+用户明确准入原队列第3项，分配M0 T17，当前S1审计控件全貌；已冻结两版本/内建及扩展目录，真实状态实现缺口留给后续S；工作区准入前干净，
+基线202c4ee556bd88a4610a9c62d93d5e728617aa57，既有关闭/取消任务及TODO保持。
+S1已冻结148个版本/控件单位并完成干净基线双宽及三项短包（2.03秒）；正在提交/远端复核，S2扩充原生64位demo，S3起按盘点连续分S适配，最后
+单独收口S做全任务审计。允许在此T内自动顺序准入后续S，不提前占其编号。
 
-P1 `07d752fc4b580ef3ddd7596f49523c7d1a8c5938`已推送并实际取回213文件，
-三退休路径远端404；全部196个CMake/src/tests/tools Git内容等同96e4721，
-197产品输入快照亦等同基线。干净双宽/同批四产物及8项聚焦实际包（4.51992秒）
-通过，双发布八SHA和安装ABI32/64通过；201对象恢复、169映像占用及精确根清理完成。
-实际源/版本/有限测试与撤回事实见[收口记录](../history/M0-T16-S2-outline-withdrawal.md)
-及[证据](../etc/evidence/outline-withdrawal.json)。原五头/声明、既有标题字体菜单滚动条
-保持，Actor/VB候选及队列顺序保留。S1仅作已撤回历史，功能/像素测试未证明流畅性。
+## M0 T17 S1 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | New；用户明确准入原队列第3项，T17 S1，M0固定 |
+| Admission And Approval | 用户指定S1审计、S2 demo、S3及多个S实施、最后独立收口；永久提交推送/按需双发布保持 |
+| Objective | 冻结VB5/VB6内建/微软扩展控件目录、关键变体、真实模块/类/绘制边界、已有覆盖/缺口与后续S接收者 |
+| Non-goals | S1不修改renderer或伪造全部支持；不改标题/字体/菜单/滚动条/原资源，不改兄弟仓库，不引入VB编译器/IDE必需依赖 |
+| Reference Baseline | 202c4ee；产品0.15.0.0、197输入、三组件四产物、ABI3/35detours40slots；T16撤回状态保持 |
+| Candidate Proposal | [VB5/VB6完整适配](../proposals/vb5-vb6-controls.md)，由本包和用户指定S顺序控制 |
+| Files And ABI Surface | S1审计文档/纯C观测scratch，不改公开ABI；S2保持64位纯C demo，以native对应项展示，真实VB由独立32位探针验证 |
+| Applicable Rules | 全Task Reading Set/ARCHITECTURE/CODING/UI/来源策略；纯C17/GCC/Ninja/ccache；无computer-use/兄弟依赖 |
+| Verification | 微软目录与真实type library/本地模块路径SHA对照、精确代码命中盘点；真实/仿真分别标记；短聚焦验证，不重复长矩阵 |
+| Expected Markers | 完整目录逐项行、HWND/无窗口/非可视分类、模块所有者、变体/事件/数据/清理契约、缺样本阻断及接收者；四初始化状态不混淆 |
+| Asset Needs | build/t17-audit为只读观测/官方研究包/原生探针和日志；build/t17-package为后续本T候选包/备份；S1额外登记build/t15-package/t17-s1-audit-baseline作未改产品的同源干净重建，研究C源码/官方VB5 DLL按矩阵SHA交接后续S并在本T结束清理，无用基线包先提炼后精确清理；保留其他任务源码/缓存/截图 |
+| Reporting Requirements | S1先报告全貌及缺口，再分S；可用样本不等于完整支持，demo native对应项不等于真实VB验证；未覆盖/许可/环境限制如实记录 |
+| Stop Conditions | 不全局注册OCX、不安装IDE/关闭安全/注入既有进程；缺真实模块或许可则记录，不从仿真推断通过；重大架构改变先给证据方案 |
+| Exit Criteria | S1完成目录/变体冻结、准确缺口及接收者、必要构建/短包和治理检查、提交推送实际远端后关闭S1并续S2；T17保持开放 |
+| Original Owner Request | 准入队列第3条；S1审计全貌，S2加入demo，S3和多个S实施，最后单独收口S完成 |
+| Similar-Issue Sweep | 所有MSVBVM60/Thunder精确命中、按钮/编辑/列表/滚动/容器/无窗口/特殊及微软OCX；VB5单列，不凭类前缀或native测试冒称VB支持 |
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
-- Last allocated T: 16
+- Last allocated T: 17
 - Last allocated Td S: 14
-- Owner allocation constraint: 本次用户明确准入T16；仅可自动细分其必要后续S，不自行分配下一T，其他候选待准入。
+- Owner allocation constraint: 用户明确准入T17并指定S顺序；可在T17内自动顺序拆S实施到独立收口，不准入其他候选。
 - Last delivery: M0 T16 S2 P2（整套轮廓撤回；196代码路径/197输入等同T15，8项短包/双发布/远端213文件/201对象恢复及169映像清理完成）
-- Open task: 无；T16 S2/T16关闭（撤回），S1历史保留；M0开放。
+- Open task: T17 S1审计，T17/M0开放；既有任务关闭/取消状态保持。
 
 ## Technical Baseline
 

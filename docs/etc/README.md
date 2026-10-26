@@ -50,3 +50,7 @@
 - [T16交付与审计证据](evidence/outline-delivery.json)：完整包、安装路径、视觉/资源保留及实际交付复核。
 
 - [T16 S2轮廓撤回](evidence/outline-withdrawal.json)：短计时、源码/测试原样撤回、恢复包及实际交付；S1资料仅作历史。
+
+- [T17 VB控件首轮审计](evidence/vb-controls-audit.md)及[逐项矩阵](evidence/vb-controls-audit.json)：内建双版本、微软扩展、模块/样本和未完成目录证据；不是已支持声明。
+
+- [T17 S1审计交付](../history/M0-T17-S1-vb-control-audit.md)：148单位目录、真实类型库/源码缺口、三项短基线包验证及后续交接。

@@ -11,7 +11,6 @@ CURRENT 是唯一活动工作权威；本文件拥有顺序，各 proposal 拥�
 | --- | --- | --- | --- |
 | 1 | [Win3.x 文件夹选择与公共对话框适配](../proposals/classic-folder-dialogs.md) | 用户仅要求排队；正式准入后先确认真实调用接口、经典资源/布局依据及回调/返回语义 | 在现有双宽DLL内有限适配经典目录选择布局与图标，保留路径/PIDL/对象、取消/回调及所有权；不分发旧系统DLL，原生证据、回退矩阵及四文件交付 |
 | 2 | [run16s 登录全局样式模式](../proposals/global-style-mode.md) | 用户另行准入；协调现有活动包，并先完成全局接入架构规则修订及双宽原型验证 | 复用run16s管理桌面双宽钩子，保持三组件四产物；登录启动/托盘/排除/退出语义及实际包验证，退出后保留已有样式与DLL传播 |
-| 3 | [VB5/VB6 控件完整盘点与适配](../proposals/vb5-vb6-controls.md) | 用户要求增加独立T级候选；保持当前活动包，实施前冻结双运行库/内建及微软扩展控件矩阵 | 以Actor CheckBox缺口为入口，按完整控件/变体清单连续拆S、保留VB属性/事件，真实VB5/VB6分别验证；每S四文件交付，最终全任务审计后验收 |
 
 [VB6框架控件外观](../proposals/madshow-controls.md)已按用户请求准入产品实现，范围及自动续S授权由CURRENT管理。
 
@@ -53,3 +52,5 @@ CURRENT中的完成审计。待准入候选及顺序见上表。
 [框架与公共控件完成计划](../proposals/framework-completion.md)已获自动续S授权，状态由CURRENT管理。
 
 [Win3.x局部轮廓拖动](../proposals/outline-window-move.md)已按用户要求由T16 S2整体撤回，不重新进入候选队列；状态由CURRENT管理。
+
+[VB5/VB6完整盘点与适配](../proposals/vb5-vb6-controls.md)已由用户准入T17，S顺序由CURRENT管理，不再占候选队列。
