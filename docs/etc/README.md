@@ -24,6 +24,9 @@
 - [VB Label变体](evidence/vb-label-variants.json)：T17 S21真实边框/对齐/数组
   Label 与运行时无窗口 DC 承载边界；不作为独立 STATIC 控件支持声明。
 
+- [VB Frame容器](evidence/vb-frame-containers.json)：T17 S22真实 Frame/嵌套
+  子控件边界与现有有限 renderer 路径；不作为私有容器状态支持声明。
+
 - [VB6 DriveListBox审计](evidence/vb6-drivelistbox-audit.json)：T17 S14固定
   源码/PE/runtime 身份与有界样本缺失结论；不作为VB6 DriveListBox支持声明。
 
@@ -124,6 +127,9 @@
 
 - [T17 S21 Label变体](evidence/vb-label-variants.json)：Label 的真实边框/对齐
   源码和无独立 HWND 运行时边界；保持父 DC 绘制，不作猜测性 STATIC 附着。
+
+- [T17 S22 Frame容器](evidence/vb-frame-containers.json)：Frame caption/嵌套
+  子控件的真实协议边界；保留 runtime 可见性和禁用语义。
 
 - [T17 S14 VB6 DriveListBox审计](evidence/vb6-drivelistbox-audit.json)：唯一源码
   匹配实际为VB5运行时的反证与固定目录样本缺失；没有产品实现。

@@ -1,0 +1,14 @@
+{
+  "task": "M0 T17 S22",
+  "scope": "VB Frame caption and nested-container boundary audit.",
+  "actual_source_basis": [
+    "Mouse VB5/VB6: Frame fraTest has caption Test Frame, a TextBox child and a windowless Label child.",
+    "PhotoAlbum VB6 source: Frame1 contains FileListBox, DriveListBox and DirListBox; its admitted executable/runtime identity remains the existing S14 VB5 mismatch and is not used as a VB6 runtime proof.",
+    "The authentic S4 runtime inventory contains runtime-owned ThunderRT5/6Frame and nested PictureBox/OptionButton paths."
+  ],
+  "renderer_boundary": "ntw16s_vb_frame admits only exact runtime-owned Frame HWNDs and maps its public group-box protocol to the existing BUTTON painter. Child HWNDs are separately classified; windowless Labels stay in the parent's scoped DC text path. Visibility and enablement remain native runtime state, rather than being propagated by a renderer-side global operation.",
+  "existing_tests": "core-vb creates an exact runtime-owned Frame and asserts attachment alongside the child controls; S4 authentic x86 observations preserve frame font/geometry while verifying nested PictureBox, OptionButton and CheckBox behavior. S9 covers scoped PictureBox text/DC ownership.",
+  "result": "No product change. Caption, nested-child ownership and state semantics already match the limited public protocol. The source-only PhotoAlbum runtime mismatch prevents any broader VB6 File/Drive conclusion.",
+  "not_covered": ["Dynamic VB container Load/Unload without an admitted runnable sample.", "Private Frame appearance or application-owned drawing.", "Physical input/other DPI."],
+  "product_change": "none"
+}
