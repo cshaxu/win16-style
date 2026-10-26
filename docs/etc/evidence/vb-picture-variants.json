@@ -1,6 +1,6 @@
 {
   "task": "M0 T17 S11",
-  "status": "verified/published; actual P1 remote/recovery/cleanup pending",
+  "status": "S11 closed after actual P1 remote/recovery/cleanup; S12 admitted; M0/T17 open",
   "baseline": "5580bbbb9411304ed012bdbb0663c9da4f1c9c23",
   "product_change": false,
   "finding": "Real x86 VB6 image-only graphical CommandButton already uses S10's exact runtime ODT_BUTTON/DFC_BUTTON path. Ten observed controls need no renderer change.",
@@ -1876,5 +1876,37 @@
     "VB_SAMPLE_INVENTORY_OK windows=11 selection_unchanged=1",
     "VB_SAMPLE_QUEUE_CLEANUP_OK owned_thread_hooks=0 mappings=0 events=0 active=0"
   ],
-  "code_numstat": "30\t5\ttests/integration/vb_intrinsic.c\n12\t2\ttests/integration/vb_queue.c\n"
+  "code_numstat": "30\t5\ttests/integration/vb_intrinsic.c\n12\t2\ttests/integration/vb_queue.c\n",
+  "remote_review": {
+    "status": "passed",
+    "commit": "9adeb46de68adaf65a28bec21b504bbf5a7ce008",
+    "remote_main": "9adeb46de68adaf65a28bec21b504bbf5a7ce008",
+    "actual_raw_files": 230,
+    "source_inputs": 210,
+    "recovered_product_objects": 214,
+    "deployed_SHA_matches": 8,
+    "before_files_recoverable_from_5580bbbb": 8,
+    "original_source_files": 17,
+    "external_PNG": 2,
+    "seconds": 13.353
+  },
+  "cleanup": {
+    "roots": [
+      {
+        "root": "O:\\repos.hobby\\win16style\\build\\t17-package",
+        "status": "passed",
+        "images": 350,
+        "reparse_points": 0
+      },
+      {
+        "root": "O:\\repos.hobby\\win16style\\build\\t17-controls",
+        "status": "passed",
+        "images": 20,
+        "reparse_points": 0
+      }
+    ],
+    "status": "passed",
+    "preserved": "all audit/research/original sources, unused licensed update data,214 recovered objects,stable Ninja/ccache,external2PNG and other task directories",
+    "positive_self_check": "exe/loadedDLL c0000043; unloadedDLL00000000"
+  }
 }

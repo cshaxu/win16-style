@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "delivery": "M0 T17 S11 P1",
-  "stage": "verified/published; P1 remote pending; M0/T17 open",
+  "delivery": "M0 T17 S11 P2",
+  "stage": "development acceptance; S11 closed, S12 admitted; M0/T17 open",
   "version": "0.17.0.0",
   "version_contract": "M0 T17; sequential S does not increment T version",
   "package_directory": "assets",
@@ -1744,11 +1744,44 @@
     }
   },
   "validation": {
-    "status": "passed locally; remote pending",
+    "status": "passed including actual P1 remote/recovery/cleanup",
     "source_inputs": 210,
     "evidence": "docs/etc/evidence/vb-picture-variants.json"
   },
   "closure": {
-    "status": "P1 actual remote/recovery/cleanup pending"
+    "status": "passed; S11 closed; M0/T17 open",
+    "evidence": "docs/etc/evidence/vb-picture-variants.json",
+    "remote": {
+      "status": "passed",
+      "commit": "9adeb46de68adaf65a28bec21b504bbf5a7ce008",
+      "remote_main": "9adeb46de68adaf65a28bec21b504bbf5a7ce008",
+      "actual_raw_files": 230,
+      "source_inputs": 210,
+      "recovered_product_objects": 214,
+      "deployed_SHA_matches": 8,
+      "before_files_recoverable_from_5580bbbb": 8,
+      "original_source_files": 17,
+      "external_PNG": 2,
+      "seconds": 13.353
+    },
+    "cleanup": {
+      "roots": [
+        {
+          "root": "O:\\repos.hobby\\win16style\\build\\t17-package",
+          "status": "passed",
+          "images": 350,
+          "reparse_points": 0
+        },
+        {
+          "root": "O:\\repos.hobby\\win16style\\build\\t17-controls",
+          "status": "passed",
+          "images": 20,
+          "reparse_points": 0
+        }
+      ],
+      "status": "passed",
+      "preserved": "all audit/research/original sources, unused licensed update data,214 recovered objects,stable Ninja/ccache,external2PNG and other task directories",
+      "positive_self_check": "exe/loadedDLL c0000043; unloadedDLL00000000"
+    }
   }
 }
