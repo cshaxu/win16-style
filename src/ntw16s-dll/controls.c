@@ -180,7 +180,8 @@ static BOOL supported(HWND w)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),type=ntw16s_button_type(w,style);
     if(ntw16s_vb_owner_file(w))return TRUE;
-    if((ntw16s_vb_checkbox(w) || ntw16s_vb_option(w)) && !ntw16s_vb_plain_choice(w))return FALSE;
+    if((ntw16s_vb_checkbox(w) || ntw16s_vb_option(w)) &&
+        !ntw16s_vb_plain_choice(w) && !ntw16s_vb_graphical_choice(w))return FALSE;
     if(is_scroll(w))return !(style&SBS_SIZEGRIP);
     if(is_link(w))return TRUE;
     if(is_tab(w))return win16_style_tab_supported(w);
@@ -1091,7 +1092,8 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
     win16_style_system_retain(pinned);
     /* Unverified graphical/owner-drawn VB variants stay native. A live
      * transition retires only this painter; do not keep drawing a plain box. */
-    if(m!=WM_NCDESTROY && (ntw16s_vb_checkbox(w) || ntw16s_vb_option(w)) && !ntw16s_vb_plain_choice(w)){
+    if(m!=WM_NCDESTROY && (ntw16s_vb_checkbox(w) || ntw16s_vb_option(w)) &&
+            !ntw16s_vb_plain_choice(w) && !ntw16s_vb_graphical_choice(w)){
         if(m==WM_SETFONT)s->original_font=win16_style_system_source((HFONT)a);
         result=DefSubclassProc(w,m,a,b);
         if(!s->detached)win16_style_control_remove(w);

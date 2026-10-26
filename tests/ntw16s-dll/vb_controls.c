@@ -114,7 +114,7 @@ static int child(const WCHAR *runtime_path,BOOL styled,BOOL aware)
     CHECK(custom);if(styled)CHECK(!attached(custom));
     impostor.lpszClassName=L"ThunderRT6CheckBox";CHECK(RegisterClassW(&impostor));
     HWND fake_check=CreateWindowW(impostor.lpszClassName,L"custom check",WS_CHILD,0,0,10,10,root,NULL,cls.hInstance,NULL);CHECK(fake_check);if(styled)CHECK(!attached(fake_check));
-    HWND graphical=CreateWindowW(L"ThunderRT6CheckBox",L"native graphical",WS_CHILD|WS_VISIBLE|BS_AUTO3STATE|BS_PUSHLIKE,0,150,140,28,root,(HMENU)5,runtime,NULL);CHECK(graphical);if(styled)CHECK(!attached(graphical));
+    HWND graphical=CreateWindowW(L"ThunderRT6CheckBox",L"graphical check",WS_CHILD|WS_VISIBLE|BS_AUTO3STATE|BS_PUSHLIKE,0,150,140,28,root,(HMENU)5,runtime,NULL);CHECK(graphical);if(styled)CHECK(attached(graphical));
     HWND transition=CreateWindowW(L"ThunderRT6CheckBox",L"native transition",WS_CHILD|WS_VISIBLE|BS_AUTO3STATE,150,150,140,28,root,(HMENU)6,runtime,NULL);CHECK(transition);if(styled)CHECK(attached(transition));
     HWND option_a=CreateWindowW(L"ThunderRT6OptionButton",L"Option A",WS_CHILD|WS_VISIBLE|BS_RADIOBUTTON|WS_GROUP,0,190,120,28,root,(HMENU)8,runtime,NULL);
     HWND option_b=CreateWindowW(L"ThunderRT6OptionButton",L"Option B",WS_CHILD|WS_VISIBLE|BS_RADIOBUTTON,140,190,120,28,root,(HMENU)9,runtime,NULL);
@@ -150,7 +150,10 @@ static int child(const WCHAR *runtime_path,BOOL styled,BOOL aware)
     HWND dying=CreateWindowW(L"ThunderRT6CheckBox",L"retirement callback",WS_CHILD|BS_AUTO3STATE,0,190,140,28,root,(HMENU)7,runtime,NULL);CHECK(dying);
     if(styled){void (WINAPI *arm)(HWND)=(void *)GetProcAddress(runtime,"VbCheckboxRetirementProbe");unsigned (WINAPI *late)(void)=(void *)GetProcAddress(runtime,"VbCheckboxLateCalls");CHECK(arm && late && attached(dying));arm(dying);SetWindowLongPtrW(dying,GWL_STYLE,GetWindowLongPtrW(dying,GWL_STYLE)|BS_PUSHLIKE);CHECK(!IsWindow(dying) && !late());puts("VB_CHECKBOX_RETIRE_DESTROY_OK no_forward_after_destroy=1");}
     else CHECK(DestroyWindow(dying));
-    CHECK(DestroyWindow(graphical) && DestroyWindow(transition));puts("VB_CHECKBOX_NATIVE_FALLBACK_OK initial_graphical=1 live_transition=1");
+    SendMessageW(graphical,BM_CLICK,0,0);CHECK(SendMessageW(graphical,BM_GETCHECK,0,0)==BST_CHECKED);
+    if(styled){DWORD graphical_styled=image(graphical,NULL,0);CHECK(remove_control(graphical) && !attached(graphical));CHECK(image(graphical,NULL,0)!=graphical_styled);}
+    CHECK(DestroyWindow(graphical) && DestroyWindow(transition));puts("VB_CHECKBOX_NATIVE_FALLBACK_OK unsupported_graphical=0 live_transition=1");
+    puts("VB_CHECKBOX_GRAPHICAL_PUSHLIKE_OK value_click_font_geometry_preserved=1");
     CHECK(DestroyWindow(checkbox) && DestroyWindow(fake_check));CHECK(UnregisterClassW(L"ThunderRT6CheckBox",cls.hInstance));
     puts("VB_CHECKBOX_OK three_states=1 keyboard=1 notifications=4 owner_negative=1 font_preserved=1 detach=1");
     CHECK(DestroyWindow(edit) && DestroyWindow(button) && DestroyWindow(custom));settle();

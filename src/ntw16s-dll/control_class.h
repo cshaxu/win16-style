@@ -50,6 +50,19 @@ static inline BOOL ntw16s_vb_plain_choice(HWND w)
     if(ntw16s_vb_option(w))return type==BS_RADIOBUTTON || type==BS_AUTORADIOBUTTON;
     return ntw16s_vb_checkbox(w) && (type==BS_CHECKBOX || type==BS_AUTOCHECKBOX || type==BS_3STATE || type==BS_AUTO3STATE);
 }
+/* VB graphical selection controls are not owner-drawn applications: the
+ * runtime retains Value/Click/grouping while USER exposes its button face as
+ * a push-like choice.  Admit only that observed public style combination;
+ * image-backed, icon-backed and owner-drawn variants retain their native
+ * painter until a separate real-runtime protocol proves their ownership. */
+static inline BOOL ntw16s_vb_graphical_choice(HWND w)
+{
+    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),type=style&BS_TYPEMASK;
+    if(!(style&BS_PUSHLIKE) || style&(BS_ICON|BS_BITMAP))return FALSE;
+    if(ntw16s_vb_option(w))return type==BS_RADIOBUTTON || type==BS_AUTORADIOBUTTON;
+    return ntw16s_vb_checkbox(w) &&
+        (type==BS_CHECKBOX || type==BS_AUTOCHECKBOX || type==BS_3STATE || type==BS_AUTO3STATE);
+}
 /* USER identifies standard superclasses independently of the registered name.
  * Limit the fallback to the standard protocols implemented by this renderer;
  * arbitrary T-prefixed/custom classes are not aliases. */
