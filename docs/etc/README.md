@@ -6,6 +6,10 @@
 - [VB观察器与生命周期](evidence/vb-observer-lifetime.json)：T17 S12有限GDI平台期、
   临时IAT观察器严格诊断及非交互桌面边界；不作为全VB应用零增长或真实样本根因声明。
 
+- [VB图形选择控件](evidence/vb-graphical-choices.json)：T17 S13精确图形
+  CheckBox/OptionButton的公开协议、双宽测试、同批四文件发布与保留变体；不作为
+  所有 VB owner-draw 或图片按钮支持声明。
+
 | 路径 | 责任、用途及保留条件 |
 | --- | --- |
 | [evidence/outline-original.json](evidence/outline-original.json) | T16原始Win3.1 USER/GDI/VGA身份、调用地址、USER与VGA例程CPU执行参数；不包含系统二进制，不冒称完整VGA硬件/调色板运行 |
@@ -78,3 +82,6 @@
 - [T17 S9 PictureBox承载](evidence/vb-container-controls.json)：真实双版本无窗口标签、应用Print保持及双宽自有资源/输入模型；未完成面明确保留。
 
 - [T17 S10图形命令按钮](evidence/vb-graphical-controls.json)：真实双版本owner-draw通知/primitive，原生返回/图像/应用绘制保持与有限覆盖。
+
+- [T17 S13图形选择控件](evidence/vb-graphical-choices.json)：精确 VB 图形
+  CheckBox/OptionButton 的状态/分组、退役与发布证据；复杂变体仍由后续 S 接收。

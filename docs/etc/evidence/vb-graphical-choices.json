@@ -1,0 +1,40 @@
+{
+  "task": "M0 T17 S13",
+  "status": "closed after P1 implementation, P2 option coverage, P3 four-file publication and remote review; T17/M0 remain open",
+  "scope": "Exact runtime-owned VB graphical CheckBox and OptionButton only. This does not generalize to bitmap, icon, application-owner-draw, default-button, disabled-picture, OCX, or arbitrary Button controls.",
+  "root_cause": "The existing ordinary-choice path deliberately rejects BS_PUSHLIKE controls. Real VB graphical choices retain a native BUTTON public protocol and store their selected state in BM_GETCHECK, so their face was left native even after the surrounding VB form was attached.",
+  "minimal_fix": "Accept a choice only after the existing exact VB runtime/owner checks, a public checkbox/radio type check, and BS_PUSHLIKE; reject BS_ICON and BS_BITMAP. Reuse the existing BUTTON face painter and native BM_GETCHECK state. No VB private-object access, ABI, hook, resource, title, menu, font, scrollbar, or product-count change.",
+  "implementation": {
+    "files": [
+      "src/ntw16s-dll/control_class.h",
+      "src/ntw16s-dll/controls.c"
+    ],
+    "contract": "Plain and graphical choices share the existing exact attach/retire ownership path. The runtime continues to own Value, automatic grouping, keyboard/click notifications, image content, and unsupported role changes. A detached graphical control returns to native drawing."
+  },
+  "native_tests": {
+    "target": "core-vb-graphical-choice",
+    "widths": ["x86", "x64"],
+    "markers": [
+      "VB_GRAPHICAL_CHOICE_OK styled=1 check_state=1 detach_native=1",
+      "VB_GRAPHICAL_OPTION_TRACE a1=1 b1=0 a2=0 b2=1",
+      "VB_GRAPHICAL_OPTION_OK runtime_grouping=1 native_retire=1"
+    ],
+    "coverage": "Exact owner acceptance, graphic checkbox selected state, option-button native radio grouping, detach-to-native retirement, source-font/geometry preservation and resource cleanup. The x64 fixture is a C protocol model, not a claim of x64 VB runtime support."
+  },
+  "package": {
+    "mode": "strict manually assembled same-snapshot four-file candidate after normal dual-width Ninja build; package checker and focused package-driven x86/x64 probes passed",
+    "sha256": {
+      "run16s.exe": "870a66af73f08955054e9bf6a3bb397ebaeedc37df6588ce995e0bf650964b85",
+      "ntw16s32.dll": "105f305e239d09cb3b4d34f0fd835645b2f16f1088032e5a5898d3e1464fd9ac",
+      "ntw16s64.dll": "5734f26c6d1312e7a4f6ac13353d3da84c81dba8bc7c6dc5fe8f57e9f5c2b2f1",
+      "demo.exe": "32fc3f929f97bfe0a87249df130fb4be3291a24c2fee9c0ca90455074928a271"
+    },
+    "publication": "The identical four files were verified in assets/ and O:\\winnt\\system32. P3 records the tracked assets update."
+  },
+  "commits": [
+    "21fff5314c2e7e3ca2075aae053ce621dc8229e3",
+    "dbf0c3f41a70b304ad9865281b7f35d1dbd8ddc2",
+    "d87771d721d370b75cff4dcb7af2f571c2c4be04"
+  ],
+  "remaining": "No trusted actual VB6 DriveListBox executable has yet been established. The PhotoAlbum source tree labels a VB6 form but the admitted executable imports MSVBVM50, so it is evidence for VB5 only. S14 must locate or explicitly record the lack of an authentic runtime60 sample before enabling runtime60 DriveListBox."
+}

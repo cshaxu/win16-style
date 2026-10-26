@@ -2,7 +2,10 @@
 
 ## Current Work
 
-M0 T17 S12观察器/资源所有权审计已完成，顺序准入S13图形选择控件审计。
+M0 T17 S13图形选择控件已完成，顺序准入S14真实VB6 DriveListBox样本/身份审计。
+S13精确runtime-owned BS_PUSHLIKE CheckBox/OptionButton复用既有BUTTON face painter；
+x86/x64选择/分组/退役对照、严格同快照四文件与assets/system32双发布通过，P1-P3
+均已推送并远端复核。位图/图标/复杂owner-draw及默认变体仍原生保留，不称全集。
 S12候选四文件聚焦包的x86/x64 VB5/VB6容器/图形对照通过；两轮GDI首跳后平台化、
 精确字体释放和严格IAT失败阶段均有证据。生产src不变，私有桌面全包UI矩阵因本执行
 会话无窗口站/桌面权限明确保留环境限制；不用current-desktop fallback伪造通过。
@@ -25,26 +28,26 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T17 S13 Packet
+## M0 T17 S14 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S12有限诊断与候选四文件聚焦包通过后，依用户T17自动顺序S授权准入 |
+| Identifier Mode | Continuation；S13实际发布后，依用户T17自动顺序S授权准入 |
 | Admission And Approval | 用户T17完整控件目标、自动顺序S、永久提交推送及binary change同批四文件双发布；不新开T |
-| Objective | 审计并在真实默认路径已证实后有限适配 VB5/VB6 图形 CheckBox/OptionButton；先识别运行库、窗口/owner-draw身份、绘制/DC、Value/分组/Click/键盘与图片变体，不能把普通Check/Option或图形Command结果外推 |
-| Non-goals | 原标题/字体/菜单/滚动条/原glyph保持；不装IDE/注册OCX，不使用待许可更新控件，不读VB私有对象，不新增T；图片/default/应用自绘或未知变体默认保留原生 |
-| Reference Baseline | S12观察器严格诊断、x86/x64 VB5/VB6两轮资源平台化与候选四文件包对照通过；生产src/ABI3/31命名+ordinal1、35detours/40slots保持 |
-| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[冻结148矩阵](../etc/evidence/vb-controls-audit.json)、[S11图片限制](../etc/evidence/vb-picture-variants.json)、[S12观察器](../etc/evidence/vb-observer-lifetime.json)、[未解债务](TODO.md) |
-| Files And ABI Surface | 先只读原生观察器、受控C fixture和证据；如默认绘制协议成立，仅在既有双宽DLL内部复用绘制器，不改公开ABI/三组件四产物 |
-| Applicable Rules | Task Reading Set/C17/GCC/Ninja/ccache；禁computer-use、兄弟修改/依赖、全局设置或非自有进程测试；发布占用按用户明确执行规范处理 |
-| Verification | 实际类型/模块/位宽/路径、裸/注入对照和状态/像素/输入/通知/资源归还；x86真实VB与x64自包含模型分开；仅自有实例，有限等待；必要时双宽/同批包/双发布/远端复核 |
-| Expected Markers | 默认图形选择实际身份及绘制节点；Value/分组/Click/键盘/焦点/捕获原样、原字体/图像/几何不变；适配/保留路径、active0及资源释放明确 |
-| Asset Needs | 保留S12和S11登记资产/许可待答资料/原始PNG；新scratch必须精确登记；不复制第三方样本、OCX或图片入产品 |
-| Reporting Requirements | 默认、图片、default、disabled、ownerdraw和应用自绘分别报告；样本/许可或私有桌面权限不足明确skip，不用fallback或复测通过掩盖；不称T17完成 |
-| Stop Conditions | 来源/许可未满足或默认协议未证实时不加载；重大架构/安全/新增产品先停证据；不关闭/注入用户既有进程，不读私有VB对象补证 |
-| Exit Criteria | 已证实默认协议的有限实现及双宽/同批包/必要双发布/安装/推送/远端/恢复清理，或有界调查明确无实现；其余变体/148审计明确接收，T17保持余项 |
+| Objective | 建立可信真实VB6 DriveListBox运行时样本、模块/类/绘制/弹出列表身份；仅在实际MSVBVM60默认协议可复现时提出最小适配。不能将VB6源码标签、VB5 PhotoAlbum二进制、VB5实现或C模型冒充为真实VB6认证 |
+| Non-goals | 原标题/字体/菜单/滚动条/原glyph保持；不装IDE/注册OCX、不下载或执行任意未知二进制、不读VB私有对象、不新增T；没有真实样本时不以猜测性runtime60别名扩张产品 |
+| Reference Baseline | S13图形选择已发布；S8的runtime60 FileListBox/DirListBox已认证，但DriveListBox明确未认证。PhotoAlbum的VB6源码树与其MSVBVM50实际EXE不一致，只作反例 |
+| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[S8 VB6文件组](../etc/evidence/vb6-file-controls.json)、[S13图形选择](../etc/evidence/vb-graphical-choices.json)、[冻结148矩阵](../etc/evidence/vb-controls-audit.json) |
+| Files And ABI Surface | 先只读既有固定研究目录、PE/import/运行时清单和受控原生观察器；仅有实际协议、最小代码与自包含负例后才改既有双宽DLL，不改公开ABI/三组件四产物 |
+| Applicable Rules | Task Reading Set/C17/GCC/Ninja/ccache；禁computer-use、兄弟修改/依赖、全局设置或非自有进程测试；无显示/UAC结果仅作对应skip，不阻塞其余审计 |
+| Verification | 路径/SHA/PE/import、实际MSVBVM60模块、注册类/owner、父DRAWITEM或popup DC、裸/注入状态与资源退役分层记录；真实VB5/6与x64 C模型严格分开 |
+| Expected Markers | 可复查的真实runtime60样本身份，或有界样本缺失结论；任何候选实现必须有精确accept/reject、正常/弹出/取消/重挂/retire与双宽负例证据 |
+| Asset Needs | 只保留现有登记样本/源码/运行库和scratch证据；不复制第三方二进制/图片到产品或必需测试，不安装IDE或OCX |
+| Reporting Requirements | 记录检索范围、每个样本为何接受/拒绝、显示权限skip与未覆盖；没有真实runtime60证明不得说“VB6 DriveListBox支持”，不称T17完成 |
+| Stop Conditions | 样本来源/许可或运行时身份不满足即不运行/不加载；重大架构/安全/新增产品先停证据；不关闭/注入用户既有进程，不以UAC未点或屏幕不可捕获阻塞无界面工作 |
+| Exit Criteria | 有真实协议则完成有限实现、双宽/同批包/必要双发布/推送远端；无样本则提交有界审计和明确接收者。两种结果都将其余148单位保留，T17开放 |
 | Original Owner Request | VB5/VB6控件采用本项目样式；S1全貌、S2demo、S3和多个S实施，最后独立收口；自动推进到完整适配验收 |
-| Similar-Issue Sweep | runtime50/60与普通/图形选择身份、button状态与ownerdraw、分组/焦点/输入、图片/default/disabled和应用自绘、字体/DC/位图唯一所有者 |
+| Similar-Issue Sweep | runtime50/60文件控件身份、源码/EXE运行时不一致、combobox popup与owner-draw DC、目录/驱动器图像来源、取消/重挂/资源所有权、真实样本与C模型边界 |
 
 ## Identifier State
 
@@ -52,8 +55,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 17
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T17并授权内部自动顺序S；不准入其他T候选。
-- Last delivery: M0 T17 S11 P2（17包/1负例/安装17项、八SHA、230远端/210输入/214恢复/370映像清理；0.17.0.0）
-- Open task: T17 S12原生观察器/资源所有权审计；图形选择/复杂图片缺口保留后续接收，T17/M0开放。
+- Last delivery: M0 T17 S13 P3（图形选择四文件发布，assets/system32八SHA一致；P1-P3已推送并远端复核）
+- Open task: T17 S14真实VB6 DriveListBox样本/身份审计；复杂图片及148单位审计保留后续接收，T17/M0开放。
 
 ## Technical Baseline
 
