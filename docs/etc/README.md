@@ -36,6 +36,9 @@
 - [VB ComboBox变体](evidence/vb-combo-variants.json)：T17 S25三种公共组合框样式的
   真实来源边界与双宽 runtime witness；不作为owner-draw支持声明。
 
+- [VB ListBox变体](evidence/vb-listbox-variants.json)：T17 S26真实样本与多选/排序
+  证据缺口的边界；不作为owner-draw或未见样式支持声明。
+
 - [VB6 DriveListBox审计](evidence/vb6-drivelistbox-audit.json)：T17 S14固定
   源码/PE/runtime 身份与有界样本缺失结论；不作为VB6 DriveListBox支持声明。
 

@@ -1,0 +1,12 @@
+{
+  "task": "M0 T17 S26",
+  "scope": "VB ListBox multi-selection, sorting, disabled and scroll boundary.",
+  "actual_source_basis": [
+    "The admitted Mouse VB5/VB6 and XP Styles sources contain ordinary ListBox controls.",
+    "The AlphaIcon VB5 source uses a ListBox whose Enabled state is changed by application workflow."
+  ],
+  "renderer_boundary": "The existing exact ThunderRT5/6ListBox path handles public list drawing, selection and scrollbar updates. It does not change data ordering, selection or Enabled state; those remain native LISTBOX/VB responsibilities.",
+  "result": "The existing self-owned runtime regression already covers LBS_EXTENDEDSEL selection and native font/scrollbar ownership. No admitted source shows Sorted or multi-simple selection, so no claim or product extension is made for those unobserved variants.",
+  "not_covered": ["A real admitted Sorted or LBS_MULTIPLESEL sample.", "Owner-draw list boxes.", "Physical mouse range selection."],
+  "product_change": "none"
+}
