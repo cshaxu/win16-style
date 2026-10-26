@@ -1,6 +1,6 @@
 {
   "task": "M0 T17 S5",
-  "status": "verified and double-published;P1 remote review pending;T17/M0 open",
+  "status": "S5 closed afterP1 actual remote/recovery/333-image cleanup;T17/M0 open",
   "baseline": "bc6f716 S4 P2",
   "scope": [
     "exact runtime50/60 ComboBox dropdown and dropdown-list",
@@ -396,5 +396,46 @@
     "scope": "CMakeLists/src/tests",
     "added": 222,
     "deleted": 12
+  },
+  "closure": {
+    "binary_change_in_closing_P": "none;201 inputs and8 deploy SHA unchanged since testedP1",
+    "recovery": {
+      "status": "passed",
+      "product_Git_objects": 205,
+      "source_inputs": 201,
+      "before_files_recoverable_from_bc6f716": 8,
+      "deployed_SHA_matches": 8,
+      "external_PNG_SHA_matches": 5,
+      "retained_samples": "both EXEs match pinned original ZIP entries; official runtime50 SHA exact;original sources/licensing/tree preserved",
+      "clean_source": "201 current inputs matched final clean-source snapshot beforeP1;no redundant archive rebuild",
+      "coordination_review": "actual29253b7 diff and original148-unit request reviewed;only3src paths changed;S5 finite scope and remaining input/variant gaps explicitly transferred;not completeT17"
+    },
+    "cleanup": {
+      "status": "passed",
+      "positive_self_check": "exe/loaded DLL c0000043;unloaded DLL00000000",
+      "roots": [
+        {
+          "root": "O:\\repos.hobby\\win16style\\build\\t17-package",
+          "images": 324,
+          "reparse_points": 0
+        },
+        {
+          "root": "O:\\repos.hobby\\win16style\\build\\t17-controls",
+          "images": 9,
+          "reparse_points": 0
+        }
+      ],
+      "preserved": "T17 audit original samples/source/runtime/provenance,other task sources,stable caches,and all external PNG"
+    },
+    "actual_remote": {
+      "status": "passed",
+      "commit": "29253b7843d1a6a118604d179efee10b7c887d6a",
+      "remote_main": "29253b7843d1a6a118604d179efee10b7c887d6a",
+      "files": 214,
+      "source_inputs": 201,
+      "seconds": 8.447502600029111,
+      "recovered_objects": 214,
+      "method": "actual raw GitHub HTTPS bytes compared to Git cat-file objects"
+    }
   }
 }

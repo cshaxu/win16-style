@@ -2,62 +2,60 @@
 
 ## Current Work
 
-M0 T17 S4真实VB5按钮/Frame/Text和VB6 Option已交付关闭；当前顺序准入S5
-ComboBox/ListBox/HScrollBar/VScrollBar包装层。原作者固定归档样本真实runtime5/6
-均已正常运行，公开数据协议及样式缺口有证据；S5复用该样本，避免重新寻找/安装。S5最终13项15.46秒、双发布八SHA和安装4项已通过，P1实际远端复核待完成；T17开放。
-S1冻结148版本/控件单位，S2仅原生对应项；按真实变体连续分S、最后独立审计，
-T17/M0开放，不将当前普通样例支持替代全控件目标，不启动其他T候选。
+M0 T17 S5精确VB5/6 Combo/List/Scroll包装层已交付关闭；顺序准入S6内建输入与
+变体验证。普通两种Combo、单列表及横纵scroll已有真实样例/原glyph证据；
+S6接收实际键盘/通知/状态变化及未认证变体，不把API getter或截图当全部交互。
+S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真实变体连续分S、
+最后独立全任务审计。T17/M0开放，不启动其他候选，不缩小全集为普通样例。
 
-## M0 T17 S5 Packet
+## M0 T17 S6 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S4实际远端/恢复/178映像清理后，按用户连续S授权准入 |
-| Admission And Approval | 用户T17完整范围/自动顺序S，永久提交推送、binary change同批四文件双发布保持 |
-| Objective | 根据已验证真实runtime5/6的Combo/List/HScroll/VScroll公开协议，定位分类/子控件/字体/通知边界并适配，保留数据与输入；不缩小148单位总体目标 |
-| Non-goals | 不盲用前缀、不改VB私有对象、原标题/字体算法/菜单/原glyph不变；不以native demo或C fixture冒称实际VB；不夹带公共文件夹对话框候选 |
-| Reference Baseline | S4 P1 08d3665实际远端213文件/201输入/四文件，0.17.0.0；ABI3/31命名+ordinal1、35detours/40slots；真实VB5/6选择glyph/Frame/Text有限支持 |
-| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[冻结矩阵](../etc/evidence/vb-controls-audit.json)、[S4真实内建证据](../etc/evidence/vb-intrinsic-controls.json) |
-| Files And ABI Surface | 双宽DLL内部精确类/角色、combo/list/scroll接入与字体/资源所有权、纯C原生探针/回归及回执；三组件四产物、公开ABI不变；新范围需先证据/最小方案 |
-| Applicable Rules | Task Reading Set/源码/架构/编码/UI/来源；C17/GCC/Ninja/ccache；禁computer-use、兄弟修改/依赖、用户已有进程或全局设置操作 |
-| Verification | 先真实两版本正常显示、准确runtime owner及公开协议/子窗口关系；根因方案先报；双宽自包含正负例+另列实际样本、同批包、双发布八SHA/安装/实际远端；有限短测试 |
-| Expected Markers | 实际PE/PID/创建者/模块物理路径SHA、加载/初始化/角色/真实绘制分开；combo2模式/列表数据与选择/scroll范围位置、A/W与字体度量、通知/取消/捕获/销毁、旧包负例 |
-| Asset Needs | build/t17-audit继续保留S1官方runtime、S3中间包恢复、s4-intrinsic-samples原作者固定ZIP/源/EXE/身份/tree（研究/可选观察不入产品）；build/t17-controls登记本S源码/日志/截图/样本副本；build/t17-package登记构建/包/备份；外部win16style-t17-s5（本会话visualizations根）保存原生PNG；他任务/缓存/旧图保留 |
-| Reporting Requirements | 已显示/未适配/原生保留/失败或skip分开，实际VB5/6与x64 C模型分开；缺变体/OCX交后续S和最后审计，不据此宣称T17完成 |
-| Stop Conditions | 初始化或公开协议不成立则保留原生并列明确接收；新增组件/产品/重大安全/许可边界先停证据方案；不安装/注册未审OCX或依赖兄弟仓库 |
-| Exit Criteria | 有限包装层适配或有证据阻断、必要双宽真实/自包含及同批包/双发布/提交/实际远端/恢复清理后S5关闭续后续S；T17仅最后独立完整审计收口 |
-| Original Owner Request | VB5/VB6控件采用本项目样式；S1全貌、S2demo、S3和多个S实施，最后独立收口；继续自动推进 |
-| Similar-Issue Sweep | VB5/6准确owner与真实ComboBox/Edit/ComboLBox关系、ListBox类型/字体setter不生效、ANSI/GetWindowText缓存、滚动公开协议/捕获释放/嵌套创建及伪类拒绝 |
+| Identifier Mode | Continuation；S5实际远端214文件/恢复/333映像清理后按用户自动顺序S授权准入 |
+| Admission And Approval | 用户T17完整控件目标、自动顺序S、永久提交推送及binary change同批四文件双发布；不新开T |
+| Objective | 核实并补齐真实VB5/6 Combo/List/Scroll输入、通知/状态和普通模式边界；盘点冻结变体的可测试来源与回退；148单位总体目标不变 |
+| Non-goals | 不动标题/字体算法/菜单/原glyph，不用C fixture冒称真实VB，不读私有VB对象，不暗装IDE/OCX，不夹带文件夹公共对话框候选 |
+| Reference Baseline | S5 P1 29253b7实际远端214文件/201输入，0.17.0.0，13项15.46秒/2负例/安装4项/双发布八SHA；ABI3/31命名+ordinal1、35detours/40slots |
+| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[冻结矩阵](../etc/evidence/vb-controls-audit.json)、[S5证据](../etc/evidence/vb-composite-controls.json) |
+| Files And ABI Surface | 原生C探针/测试及精确已拥有控件内部适配如实需要，先根因/最小方案；三组件四产物与公开ABI保持 |
+| Applicable Rules | Task Reading Set/C17/GCC/Ninja/ccache；禁computer-use、兄弟修改/依赖、全局设置或非自有进程测试；发布占用按用户明确执行规范处理 |
+| Verification | 真实runtime50/60已显示样例先裸/样式输入对照；独立双宽模型核对通知/取消/捕获/源字体/资源；短聚焦同批包、必要双发布、实际安装及远端取回 |
+| Expected Markers | 目标映像/PID/创建者/准确runtime owner/DLL绝对路径SHA；加载/初始化/识别/实际绘制与输入分开；scroll实际位置及通知、combo/list键盘选择、取消/退出及active0 |
+| Asset Needs | 保留build/t17-audit官方runtime和s4-intrinsic-samples原作者ZIP/源/EXE/身份/tree；build/t17-controls登记本S探针/日志/截图，build/t17-package登记同批构建/包/备份；外部win16style-t17-s6（本会话visualizations根）存原生PNG；其他任务/缓存/旧图保持 |
+| Reporting Requirements | 真VB5/6与x64 C模型、native保持/已适配/失败/skip分开；真实键盘事件消息不冒称物理输入；未认证变体逐项有接收者，不假称T完成 |
+| Stop Conditions | 公开协议或来源/许可不成立保留原生并明确缺口；重大架构/安全/新增产品先停证据方案；不通过外部未审组件安装或私有对象布局补证 |
+| Exit Criteria | 有限真实输入/通知/资源验证或有证据阻断，必要干净双宽/同批包/双发布/推送/实际远端/恢复清理后关闭S6顺序续后续S；T17仍需148单位独立审计 |
+| Original Owner Request | VB5/VB6控件采用本项目样式；S1全貌、S2demo、S3和多个S实施，最后独立收口；自动推进到完整适配验收 |
+| Similar-Issue Sweep | 真实combo/list多模式及原生EDIT、外部字体setter/IFont变更、真实scroll键盘/通知与极值，普通/图形/owner-draw/无窗口变体的精确回退边界 |
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 17
 - Last allocated Td S: 14
-- Owner allocation constraint: 用户明确准入T17并指定S顺序；可在T17内自动顺序拆S实施到独立收口，不准入其他候选。
-- Last delivery: M0 T17 S4 P2（真实VB5/6内建，13项23.28秒、三负例、双发布/安装，213远端/201输入，178映像清理；0.17.0.0）
-- Open task: T17 S5 Combo/List/Scroll包装层；T17/M0开放，既有关闭/取消保持。
+- Owner allocation constraint: 用户准入T17并授权内部自动顺序S；不准入其他T候选。
+- Last delivery: M0 T17 S5 P2（13项15.46秒/2负例、安装4项、双发布八SHA、214远端/201输入、333映像清理；0.17.0.0）
+- Open task: T17 S6内建输入/变体验证；T17/M0开放，已有关闭/取消保持。
 
 ## Technical Baseline
 
-S5当前候选已同批双发布，0.17.0.0；准确Combo/List/Scroll及原生Combo EDIT
-所有权适配，13项15.46秒/2旧负例/安装4项通过，201输入及八SHA一致。
-[本S证据](../etc/evidence/vb-composite-controls.json)；P1推送/实际远端待复核，
-不是S已关闭或全T完成。下方S4保留作当前已完成远端复核基线。
-
-T17 S4产品0.17.0.0 / M0 T17，201输入，三组件四产物；真实VB5准确Command/
-Check/Option/Frame/Text和VB6 Option接入，既有VB6 Check保持。原作者固定归档
-样例实际runtime50/60、x86、每版4Option+4Check源glyph各182像素及原分组/值通过。
-Combo/List/Scroll只验证公开数据协议，包装层样式交下一S，不算已适配。
-ABI3/31命名+ordinal1、35detours/40slots、原五头/声明/每DLL18表保持；原算法与
-92生产路径不变，仅4精确准入/调用者文件更改；demo标题top36 RGB对S3差异0。
-干净双宽all/ABI及同批四文件通过；13项实际包23.28秒，3个旧包负例检出。
-八部署SHA一致，安装ABI32/64及真实VB5/6再验通过。[release](../etc/release.json)
-拥有当前包身份，[S4证据](../etc/evidence/vb-intrinsic-controls.json)记录真实身份/有限
-状态/像素及未覆盖面。S4 P1 08d3665实际远端213文件/205产品对象恢复及178映像清理通过，关闭S4/续S5；
-T17/M0开放，不以普通样例替代148单位全变体/OCX审计，无物理键鼠完成声明。
+T17 S5产品0.17.0.0，201输入/三组件四产物；真实runtime50/60准确普通Combo/
+List/HScroll/VScroll复用既有renderer、字号策略和原glyph。原生Combo EDIT按
+公开COMBOBOXINFO和类元数据接入，32私有字体租约上界，回调/重入移除/重挂
+归还。paint外WM_GETFONT源字体保持；paint内嵌套查询可见私有字体，不冒称全透明。
+原始标题/菜单/字体算法与其他生产路径不变，五原头/来源声明及每DLL18表保持。
+最终干净双宽all、13项聚焦实际包15.46秒、2旧包负例和4安装复测通过，八部署
+SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑点/scroll225
+内区源像素通过，标题top26 RGB对S4差异0。S5 scroll仅getter/像素，实际位置
+变化/通知与更多变体交S6；真实VB仅x86，x64模型不是64位VB。
+[release](../etc/release.json)拥有包身份，[S5证据](../etc/evidence/vb-composite-controls.json)
+拥有有限覆盖/未完成面；不能由局部样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T17 S5列表/滚动包装层](../history/M0-T17-S5-vb-composites.md)：13项15.46秒/2负例/安装4项、双发布八SHA、214远端/201输入/333映像清理；关闭S5续S6，T17/M0开放。
+
 
 - [T17 S4真实内建](../history/M0-T17-S4-vb-intrinsics.md)：VB5 Command/Check/Option/Frame/Text与VB6 Option，13项23.28秒、三负例、双发布/安装、213远端/201输入、178映像清理；关闭S4/续S5，T17开放。
 
@@ -139,9 +137,9 @@ T17/M0开放，不以普通样例替代148单位全变体/OCX审计，无物理�
 
 ## Last Packet Closure
 
-T17 S4 P1 08d3665实际远端213文件/201输入/四产物逐字节通过，205产品对象恢复、
-8 before备份/8部署/5PNG核对，原作者两EXE/ZIP/官方runtime身份保持。
-178映像无占用/reparse0/guard正例后精确清理两任务根；原样本/源码/许可页面/身份/
-固定归档tree元数据留t17-audit，其他任务源码、稳定缓存、所有外部PNG保持。
-S4关闭并顺序准入S5接收真实Combo/List/Scroll协议和样式缺口；148全集/变体/OCX
-仍由后续实施及最后独立审计接收，不把局部样例当作T17全部完成，M0开放。
+T17 S5 P1 29253b7843d1a6a118604d179efee10b7c887d6a实际远端214文件/201输入/
+四产物逐字节通过；205产品对象恢复、8 before备份可从bc6f716复取、8部署及
+5外部PNG核对。原作者两EXE仍等于固定ZIP条目，官方runtime50 SHA保持。
+333映像全部无占用，reparse0及guard正例通过，仅清理两登记任务根；保留原
+样本/源/许可/tree和S1研究/其他任务/稳定缓存/全部PNG。S5关闭顺序准入S6，
+实际输入/通知及变体继续验证；完整148单位仍交后续S及最后独立全任务审计。
