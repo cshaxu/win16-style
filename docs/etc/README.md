@@ -45,6 +45,9 @@
 - [VB最终审计基线](evidence/vb-final-audit-baseline.json)：T17 S28冻结148行的审计前
   状态计数与逐项完成谓词；不是当前支持清单。
 
+- [VB最终审计分类](evidence/vb-final-audit-classification.json)：T17 S28未对齐行按
+  wrapper协议、应用内容及真实样本缺口的可审计分类；不是支持声明。
+
 - [VB6 DriveListBox审计](evidence/vb6-drivelistbox-audit.json)：T17 S14固定
   源码/PE/runtime 身份与有界样本缺失结论；不作为VB6 DriveListBox支持声明。
 

@@ -1,0 +1,23 @@
+{
+  "task": "M0 T17 S28",
+  "remaining_without_later_matrix_reference": 131,
+  "by_receiver": {
+    "extension_exact_module_child_hwnd_com_owner_first": 76,
+    "extension_exact_owner_protocol_first": 17,
+    "extension_vendor_owner_host_border_only": 3,
+    "container_text": 10,
+    "special_data": 8,
+    "application_content": 6,
+    "file_scroll": 6,
+    "menu_existing": 2,
+    "nonvisual": 2,
+    "edit_list": 1
+  },
+  "non_extension_open_rows": 35,
+  "classification": {
+    "requires_real_wrapper_or_protocol": "96 extension rows; no module registration, child HWND/COM owner or vendor protocol may be invented.",
+    "application_or_windowless_content": "16 rows are DC/application/self-drawn or nonvisual and must remain native unless a safe host drawing contract is established.",
+    "missing_intrinsic_sample_or_host_boundary": "19 rows need a real runnable source/protocol to move beyond existing limited evidence."
+  },
+  "result": "The remaining matrix cannot honestly be marked supported from current evidence. S28 must retain the row-level receiver and condition rather than turn these counts into product claims."
+}
