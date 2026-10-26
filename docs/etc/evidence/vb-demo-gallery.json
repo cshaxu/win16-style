@@ -2644,5 +2644,35 @@
       }
     ],
     "preserved_owners": "all preexisting T15 retained sources, T17 S1 research, other-task scratch, stable caches and prior external PNG; only current S2 changes staged"
-  }
+  },
+  "remote_review": {
+    "status": "passed",
+    "commit": "eab7201438bf039cfd19d06dbf8f8b5dfb05ba14",
+    "remote_main": "eab7201438bf039cfd19d06dbf8f8b5dfb05ba14",
+    "files": 210,
+    "source_inputs": 199,
+    "seconds": 7.588882200012449,
+    "recovered_objects": 210,
+    "method": "actual HTTPS response bytes compared to Git cat-file objects; recovered to owned scratch"
+  },
+  "recovery": {
+    "status": "passed",
+    "product_git_objects": 203,
+    "actual_remote_objects": 210,
+    "source_inputs": 199,
+    "backups_recoverable_from_baseline": 8,
+    "double_published_SHA_matches": 8,
+    "external_PNG_SHA_matches": 18,
+    "clean_snapshot": "199 current inputs matched clean-source before P1; independent dual-width all succeeded; no redundant archive rebuild",
+    "coordination_review": "actual eab7201 commit/diff read against original S2 request; native equivalence boundaries preserved; no DLL renderer changes or other owners overwritten"
+  },
+  "cleanup": {
+    "root": "O:\\repos.hobby\\win16style\\build\\t17-package",
+    "images": 192,
+    "positive_self_check": "exe/loaded DLL c0000043;unloaded00000000",
+    "reparse_points": 0,
+    "preserved": "T17 S1 audit and VB5 reference DLL; T15 49 sources; stable caches and all external PNG",
+    "status": "passed"
+  },
+  "status": "S2 closed after P1 actual remote, recovery and cleanup; native gallery only; T17/M0 open"
 }

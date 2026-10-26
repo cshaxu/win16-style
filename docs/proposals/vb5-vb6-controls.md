@@ -3,8 +3,8 @@
 ## 请求与状态
 
 用户已明确准入M0 T17，并指定S1审计控件全貌，S2将对应项加入demo.exe，
-S3及多个后续S实施，最后单独收口S完成任务审计。[S1全貌审计](../etc/evidence/vb-controls-audit.md)已交付关闭，当前[T17 S2](../states/CURRENT.md)
-扩充原生demo，M0固定；按真实盘点连续分S，不以Actor两控件修复代替全任务完成。
+S3及多个后续S实施，最后单独收口S完成任务审计。[S1全貌审计](../etc/evidence/vb-controls-audit.md)已交付关闭，S2原生demo八页已交付，当前[T17 S3](../states/CURRENT.md)
+处理选择控件和VB5基础接入，M0固定；按真实盘点连续分S，不以Actor两控件修复代替全任务完成。
 
 ## 已核实基线
 

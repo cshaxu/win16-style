@@ -2,7 +2,7 @@
 
 ## Scope and result
 
-User指定S2；当前verified并双发布，待P1远端/恢复/清理，不能提前称closed。
+User指定S2；S2已完成P1实际远端/恢复/清理并关闭，当前包0.17.0.0。
 原64位demo主窗/Apply/Reset/About保留；Controls新增八页，纯C原生Windows
 对应项，禁止冒称真实VB/32位OCX。148审计单位对应页、应用内容/无视觉/缺失
 对照逐项见[证据](../etc/evidence/vb-demo-gallery.json)，真实支持由后续S接收。
@@ -35,6 +35,10 @@ HD Tune管理员测试默认skip；无真实VB5、OCX或完整91/全DPI验证。
 
 ## Delivery review
 
-P1提交/实际远端尚待执行。S2结束前提炼证据并只清理自有精确scratch；
-S1研究资料/官方VB5 DLL交接后续T17，稳定缓存/他任务源码及外部PNG保留。
-T17/M0开放；下一S按用户顺序处理选择按钮和VB5运行库基础接入，不提前关闭T。
+P1 eab7201438bf039cfd19d06dbf8f8b5dfb05ba14，实际GitHub210文件/199产品输入
+及四文件逐字节通过；恢复203产品对象、8旧备份可从4386bad取回、8发布SHA和18PNG核对。
+实际Git diff/原请求协调复核通过；CMake/src/tests/tools增加352删除38净314行，
+P1统计范围和逐文件numstat见证据（文档统计记录前快照，区别源码与全仓）。无路径移动/删除。
+192映像均无占用、reparse0，正例exe/loadedDLL拒绝c0000043、unloaded通过后，
+仅清理精确build/t17-package。T17 S1研究/官方VB5 DLL、T15源码、稳定缓存、原外部图
+及本次18PNG保留。S2关闭并按用户顺序准入S3；T17/M0开放，不称全部VB已适配。
