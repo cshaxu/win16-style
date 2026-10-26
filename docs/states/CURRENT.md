@@ -2,9 +2,9 @@
 
 ## Current Work
 
-M0 T17 已按用户明确缩小后的范围收口；23 项 VB 延期项保留在 TODO。用户现明确
-准入队列首项 M0 T18 S1：Delphi Win32 控件全貌审计。S1 先冻结真实框架/版本/控件/
-变体全集及样本证据，复核现有 VCL 有限支持，不能在没有公开承载和绘制协议时猜测实现。
+M0 T17 已按用户明确缩小后的范围收口；23 项 VB 延期项保留在 TODO。T18 S1 已冻结
+Delphi VCL 74 个 UI 家族种子、框架分支、五个固定候选及逐项证据接收者；顺序准入
+T18 S2 demo 对应展示，只对可安全映射的原生协议建立模型，不能用 demo 冒充 Delphi。
 以下段落为 T17 的技术基线/历史证据，不覆盖 T18 状态。
 
 M0 T17 S27 ScrollBar范围/位置/禁用变体已完成，顺序准入S28 全148单位收口审计。
@@ -65,24 +65,24 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S1 Packet
+## M0 T18 S2 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | New；用户批准收口T17并进入队列首位候选，首次分配T18/S1 |
-| Admission And Approval | 用户要求进入下一个T；T18采用proposal的S1全貌审计起步。后续实施须逐S按用户已建立的发布/推送规范执行，不自动越过证据边界 |
-| Objective | 冻结 Delphi Win32 实际框架、版本、控件、关键变体和真实样本全集；逐项复核已有VCL路径、缺口与安全接收者，为S2 demo对应展示及后续有限实施建立可审计基线 |
-| Non-goals | 本S不猜测Delphi私有对象/类名前缀、不改产品ABI/三组件四产物、不引入Delphi/IDE/C++/MSVC、不修改系统或兄弟仓库；不把既有DoubleKiller/MD5summer单例等同Delphi全貌 |
-| Reference Baseline | [Delphi专项proposal](../proposals/delphi-win32-controls.md)、T15框架审计、现有TButton/TComboBox与原生公共控件有限协议；T17延期项保持TODO，不回退已确认标题/菜单/字体/滚动条/资源 |
+| Identifier Mode | Continuation；S1 Delphi全貌审计关闭后依T18阶段计划顺序准入S2 |
+| Admission And Approval | 用户批准进入队列首项T18；S1已建立74项证据接收者。S2仅按审计结论构建demo对应展示，后续实施仍须逐S按发布/推送规范执行 |
+| Objective | 为已证明可映射的原生 USER/COMCTL 协议补齐demo可视/交互对应，并为canvas、数据、嵌入和非可视项登记明确“无等价demo/原生保留”说明 |
+| Non-goals | demo不实现或伪装Delphi运行时、不新增第五产品、不猜测私有对象/类名前缀、不改产品ABI或既有标题/菜单/字体/滚动条/资源；不以demo模型认证真实VCL/FMX |
+| Reference Baseline | [T18 S1审计](../etc/evidence/delphi-controls-audit.json)、[Delphi专项proposal](../proposals/delphi-win32-controls.md)、现有demo目录与T15有限原生协议 |
 | Candidate Proposal | [Delphi Win32控件完整审计与Win3.x风格适配](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | S1仅新增审计台账、证据和原生探针（如需）；生产源码、导出、产品文件及原始五个图形头不改。后续仅在真实公开HWND/DC/调用者协议上接入现有renderer |
-| Applicable Rules | Task Reading Set、C17/MinGW GCC/Ninja/ccache、来源策略、禁止computer-use/全局hook/既有进程扫描；自有隔离实例、限时清理，真实应用为兼容证据而非必需构建依赖 |
-| Verification | 审计台账逐行验证PE位宽/路径/SHA、框架依据、注册类与实际class owner、HWND或DC承载、公开协议、资源/事件所有者、测试入口和接收者；治理门禁及现有四产物摘要保持检查 |
-| Expected Markers | 版本/框架/控件/变体全集有固定条目；已有VCL路径逐条分类为可复用、真实缺陷、原生保留或缺样本；自包含测试与真实应用兼容测试明确分列 |
-| Asset Needs | 仅已存在本机应用及经来源审查的可读样本；不安装/注册运行包或第三方组件，不把外部二进制、图片或资源纳入产品、assets、system32、构建输入或必需测试 |
-| Reporting Requirements | 报告冻结总数、框架和位宽分布、每个已支持/未知边界、首个可安全实施断点、样本/权限/显示限制及S2接收范围；不把探针当物理验收 |
-| Stop Conditions | 无公开协议、许可/来源不明、需要私有对象解析、全局设置/注入既有进程、重大架构扩张时停止该单位并记录TODO或后续S接收者；不以类名前缀或截图推断支持 |
-| Exit Criteria | 完成可复核的冻结台账、审计证据与自包含基线；只有该台账定义足够的S2范围才关闭S1并顺序准入S2，T18继续开放 |
+| Files And ABI Surface | demo-exe源码/测试可为已映射协议扩展；不改run16s或DLL ABI/导出，原始五个图形头保持。没有安全语义的项目只改文档说明，不硬加控件 |
+| Applicable Rules | C17/MinGW GCC/Ninja/ccache、来源策略、禁computer-use/全局hook/既有进程扫描；自包含demo测试与真实Delphi兼容测试分列 |
+| Verification | 裸demo与run16s demo对照，逐个新增模型验证状态、键盘/通知、取消、资源释放与既有gallery不退化；双宽干净构建及同批四文件实际包测试 |
+| Expected Markers | 每个demo条目链接S1 receiver；模型能区分裸/样式启动且不改变业务语义；不能映射项有明确原生保留标记 |
+| Asset Needs | 仅项目已有资源和自编C模型；不复制Delphi/第三方二进制、图片或资源，不安装/注册运行包 |
+| Reporting Requirements | 报告新增模型、真实框架对应边界、未映射项、测试覆盖与二进制发布状态；不将demo结果扩张为真实VCL/FMX验收 |
+| Stop Conditions | 需要私有VCL/FMX对象、应用绘图、数据绑定、嵌入或第五产品时停止该项并转后续S；无安全等价模型则登记保留 |
+| Exit Criteria | 所有S1可映射 receiver 均有适当demo对应或有明确无等价理由；完成双宽包闭环后关闭S2并顺序准入首个实施S |
 | Original Owner Request | 队列首位 Delphi Win32 控件完整审计与Win3.x风格适配；像VB专项一样先全貌审计、demo对应展示、多个S实施、最后独立收口 |
 | Similar-Issue Sweep | VCL/FireMonkey、ANSI/Unicode、静态/运行包、窗口/无窗口/owner-draw、标准/公共控件、数据/网格、菜单/主题、图像/字体、晚创建/重建、x86/x64及第三方组件 |
 
@@ -92,8 +92,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T17 S28 P15 51f73a4已推送及远端复核：全148单位审计收口，23项延期TODO；无产品二进制变化。
-- Open task: T18 S1 Delphi Win32全貌审计；M0/T18开放。
+- Last delivery: M0 T18 S1 P9（待本次治理验证、提交、推送及远端复核）：74项审计冻结、五候选与框架/接收者边界；无产品二进制变化。
+- Open task: T18 S2 Delphi原生协议demo对应展示；M0/T18开放。
 
 ## Technical Baseline
 
@@ -142,6 +142,9 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T18 S1 Delphi控件全貌审计](../history/M0-T18-S1-delphi-control-audit.md)：74项VCL
+  UI种子逐项接收者、五固定候选与VCL/FMX边界；无产品二进制变化，S1关闭续S2，T18/M0开放。
 
 - [T17 S28 VB全148单位最终审计](../history/M0-T17-S28-vb-final-audit.md)：46项有限
   公开协议、79项原生保留、23项按用户决定延期TODO；无产品二进制变化，S28/T17关闭，M0开放。

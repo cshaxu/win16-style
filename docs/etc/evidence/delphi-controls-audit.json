@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "task": "M0 T18 S1",
-  "status": "active: phase-one static inventory and existing-evidence reconciliation; no Delphi renderer change is implied",
+  "status": "closed: 74-unit VCL seed, framework branches, five fixed local candidates and one-to-one evidence receivers are frozen; private-desktop observation is an exact error-5 skip; no Delphi renderer change is implied",
   "scope_basis": {
     "proposal": "docs/proposals/delphi-win32-controls.md",
     "component_catalogue": "https://docwiki.embarcadero.com/RADStudio/Florence/en/VCL_Components_Categories_Index",
@@ -114,10 +114,9 @@
     "result": "PRIVATE_DESKTOP_CREATE_FAIL error=5",
     "meaning": "Current display/session permissions prevent this native private-desktop probe from proving visible control behaviour. This is a precise skip, not a display pass and not a reason to use the user desktop."
   },
-  "next_s1_work": [
-    "Read-only extract VCL form/resource class declarations from the two modern static VCL candidates before any launch.",
-    "Complete every one of the 68 seed units with a framework/version and public-receiver disposition; expand or split version-specific units where real evidence requires it.",
-    "Run self-owned current-package probes only when the private desktop becomes available; retain error 5 as a skip otherwise.",
-    "Define S2 demo correspondences only after the T18 matrix is complete; demo must not impersonate a real Delphi runtime."
+  "s2_handoff": [
+    "Create demo correspondences only for the bounded native USER/COMCTL receiver rows; demo must identify them as protocol models, not Delphi runtime controls.",
+    "Do not add a demo equivalent for canvas/data/embedded/nonvisual rows; list their preservation boundary instead.",
+    "Keep the two modern static VCL candidates and legacy VCL samples as optional compatibility inputs; run them only in a self-owned private desktop when that API is available, and preserve error 5 as skip otherwise."
   ]
 }
