@@ -69,7 +69,7 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 17
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T17并授权内部自动顺序S；不准入其他T候选。
-- Last delivery: M0 T17 S27 P2（VB H/VScrollBar状态变体，测试变化、无产品二进制变化；推送远端后关闭）
+- Last delivery: M0 T17 S28 P3（148单位逐项账本；仅文档/证据变化、四产品摘要未变；待本交付推送及实际远端复核后仍继续S28）
 - Open task: T17 S28 全148单位收口审计；T17/M0保持开放直到该审计有充分完成证据。
 
 ## Technical Baseline
@@ -119,6 +119,9 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T17 S27 ScrollBar变体](../history/M0-T17-S27-vb-scrollbar-variants.md)：自有双宽runtime
+  见证H/V范围、页大小、位置和禁用；无产品二进制变化，S27关闭续S28，T17/M0开放。
 
 - [T17 S26 ListBox变体](../history/M0-T17-S26-vb-listbox-variants.md)：真实普通/extended选择与未见样式边界；无产品改动，S26关闭续S27，T17/M0开放。
 

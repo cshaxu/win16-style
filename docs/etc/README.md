@@ -48,6 +48,9 @@
 - [VB最终审计分类](evidence/vb-final-audit-classification.json)：T17 S28未对齐行按
   wrapper协议、应用内容及真实样本缺口的可审计分类；不是支持声明。
 
+- [VB最终审计逐项账本](evidence/vb-final-audit-ledger.json)：T17 S28将冻结的148项
+  逐项归入有限公开协议见证、必须原生保留或缺少真实协议/样本；不是将未验证OCX宣称为支持。
+
 - [VB6 DriveListBox审计](evidence/vb6-drivelistbox-audit.json)：T17 S14固定
   源码/PE/runtime 身份与有界样本缺失结论；不作为VB6 DriveListBox支持声明。
 
