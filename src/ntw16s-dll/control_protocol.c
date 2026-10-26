@@ -3,6 +3,7 @@
 #include <shlwapi.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <wchar.h>
 
 struct ntw16s_control_protocol {
     struct ntw16s_control_protocol *next;
@@ -12,6 +13,45 @@ struct ntw16s_control_protocol {
 };
 static _Thread_local ntw16s_control_protocol *bindings;
 static const WCHAR key[]=L"ntw16s.private.control-protocol.v1";
+/* These official OCX wrappers expose the matching standard control message
+ * surface. Admission remains exact: the child and reflector must share one
+ * known COMCTL32.OCX/MSCOMCTL.OCX owner; no class prefix is accepted. */
+static unsigned ocx_common_control_owner(HWND w,HMODULE owner,const WCHAR *name,WNDCLASSEXW *native)
+{
+    WCHAR path[MAX_PATH],parent_name[64];HWND parent=GetParent(w);
+    const WCHAR *base;
+    unsigned role=!lstrcmpW(name,L"TreeViewWndClass") || !lstrcmpW(name,L"TreeView20WndClass")?6:
+        !lstrcmpW(name,L"ProgressBarWndClass") || !lstrcmpW(name,L"ProgressBar20WndClass")?7:
+        !lstrcmpW(name,L"SliderWndClass") || !lstrcmpW(name,L"Slider20WndClass")?8:0;
+    if(!role || !owner ||
+        !GetModuleFileNameW(owner,path,ARRAYSIZE(path)))return FALSE;
+    base=wcsrchr(path,L'\\');base=base?base+1:path;
+    if((lstrcmpiW(base,L"MSCOMCTL.OCX") && lstrcmpiW(base,L"COMCTL32.OCX")) || !parent ||
+        (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)!=owner ||
+        !GetClassNameW(parent,parent_name,ARRAYSIZE(parent_name)) ||
+        lstrcmpW(parent_name,L"CtlFrameWork_ReflectWindow"))return FALSE;
+    native->cbSize=sizeof(*native);
+    return GetClassInfoExW(owner,name,native)?role:0;
+}
+/* Old COMCTL32.OCX hosts a real ToolbarWindow32 below its own wrapper.  The
+ * direct parent and both registered module identities are the contract; a
+ * class prefix alone is never enough to admit this nested common control. */
+static unsigned ocx_toolbar_owner(HWND w,HMODULE owner,const WCHAR *name,WNDCLASSEXW *native,HMODULE *native_owner)
+{
+    WCHAR path[MAX_PATH],parent_name[64];HWND parent=GetParent(w);HMODULE wrapper;const WCHAR *base;
+    if(lstrcmpW(name,TOOLBARCLASSNAMEW) || !owner || !parent ||
+        !GetClassNameW(parent,parent_name,ARRAYSIZE(parent_name)) || lstrcmpW(parent_name,L"ToolbarWndClass"))return 0;
+    wrapper=(HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE);
+    if(!wrapper || !GetModuleFileNameW(wrapper,path,ARRAYSIZE(path)))return 0;
+    base=wcsrchr(path,L'\\');base=base?base+1:path;
+    if(lstrcmpiW(base,L"COMCTL32.OCX") && lstrcmpiW(base,L"MSCOMCTL.OCX"))return 0;
+    native->cbSize=sizeof(*native);
+    if(!GetClassInfoExW(NULL,TOOLBARCLASSNAMEW,native) ||
+        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+            (const WCHAR *)(UINT_PTR)native->lpfnWndProc,native_owner) || owner!=*native_owner ||
+        GetClassLongPtrW(w,GCL_CBWNDEXTRA)<(ULONG_PTR)native->cbWndExtra)return 0;
+    return 10;
+}
 static BOOL current(const ntw16s_control_protocol *b)
 {return IsWindow(b->window) && GetPropW(b->window,key)==(HANDLE)b;}
 BOOL ntw16s_control_protocol_is(HWND w,const WCHAR *name)
@@ -20,6 +60,12 @@ BOOL ntw16s_control_protocol_is(HWND w,const WCHAR *name)
         if(b->window==w && current(b))return (b->role==1 && !lstrcmpiW(name,L"BUTTON")) ||
             (b->role==2 && !lstrcmpiW(name,L"COMBOBOX")) || (b->role==3 && !lstrcmpiW(name,WC_TABCONTROLW)) ||
             (b->role==4 && !lstrcmpiW(name,WC_HEADERW)) || (b->role==5 && !lstrcmpiW(name,WC_LISTVIEWW)) || (b->role==6 && !lstrcmpiW(name,WC_TREEVIEWW)) || (b->role==7 && !lstrcmpiW(name,PROGRESS_CLASSW)) || (b->role==8 && !lstrcmpiW(name,TRACKBAR_CLASSW)) || (b->role==9 && !lstrcmpiW(name,UPDOWN_CLASSW));
+    return FALSE;
+}
+BOOL ntw16s_control_protocol_toolbar(HWND w)
+{
+    for(ntw16s_control_protocol *b=bindings;b;b=b->next)
+        if(b->window==w && b->role==10 && current(b))return TRUE;
     return FALSE;
 }
 HMODULE ntw16s_control_protocol_list_module(HWND w)
@@ -61,30 +107,31 @@ void ntw16s_control_protocol_release(ntw16s_control_protocol *b)
 }
 ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND w)
 {
-    WCHAR name[64];unsigned role;DWORD process;
-    HMODULE owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+    WCHAR name[64];unsigned role;DWORD process;WNDCLASSEXW native_class={.cbSize=sizeof(native_class)};
+    HMODULE owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE),toolbar_native=NULL;
     if(GetWindowThreadProcessId(w,&process)!=GetCurrentThreadId() || process!=GetCurrentProcessId() ||
         !(GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD) ||
         !GetClassNameW(w,name,ARRAYSIZE(name)) || GetPropW(w,key))return NULL;
     /* No prefix aliases or private VCL object/procedure decoding. All roles
      * require initialized public protocol evidence, even a tab's real name. */
+    unsigned ocx_role=ocx_common_control_owner(w,owner,name,&native_class);
+    unsigned toolbar_role=ocx_toolbar_owner(w,owner,name,&native_class,&toolbar_native);
     role=!lstrcmpW(name,L"TButton")?1:!lstrcmpW(name,L"TComboBox")?2:
         (!lstrcmpW(name,WC_TABCONTROLW) || !lstrcmpW(name,L"TPageControl"))?3:!lstrcmpW(name,WC_HEADERW)?4:
         (!lstrcmpW(name,WC_LISTVIEWW) || !lstrcmpW(name,L"TListView"))?5:
         (!lstrcmpW(name,WC_TREEVIEWW) || !lstrcmpW(name,L"TTreeView") || !lstrcmpW(name,L"TShellTreeView"))?6:
         (!lstrcmpW(name,PROGRESS_CLASSW) || !lstrcmpW(name,L"TProgressBar"))?7:
         (!lstrcmpW(name,TRACKBAR_CLASSW) || !lstrcmpW(name,L"TTrackBar"))?8:
-        (!lstrcmpW(name,UPDOWN_CLASSW) || !lstrcmpW(name,L"TUpDown"))?9:0;
+        (!lstrcmpW(name,UPDOWN_CLASSW) || !lstrcmpW(name,L"TUpDown"))?9:ocx_role?ocx_role:toolbar_role;
     if(!role)return NULL;
-    WNDCLASSEXW native_class={.cbSize=sizeof(native_class)};
-    if(role>=3 && !GetClassInfoExW(NULL,role==3?WC_TABCONTROLW:role==4?WC_HEADERW:role==5?WC_LISTVIEWW:role==6?WC_TREEVIEWW:role==7?PROGRESS_CLASSW:role==8?TRACKBAR_CLASSW:UPDOWN_CLASSW,&native_class))return NULL;
-    HMODULE native_owner=NULL;
+    if(role>=3 && !ocx_role && !toolbar_role && !GetClassInfoExW(NULL,role==3?WC_TABCONTROLW:role==4?WC_HEADERW:role==5?WC_LISTVIEWW:role==6?WC_TREEVIEWW:role==7?PROGRESS_CLASSW:role==8?TRACKBAR_CLASSW:UPDOWN_CLASSW,&native_class))return NULL;
+    HMODULE native_owner=ocx_role?owner:toolbar_role?toolbar_native:NULL;
     /* Global common-control classes can report hInstance == NULL. Resolve
      * the registered native procedure's image, not a guessed DLL filename. */
-    if(role>=3 && !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+    if(role>=3 && !ocx_role && !toolbar_role && !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
         (const WCHAR *)(UINT_PTR)native_class.lpfnWndProc,&native_owner))return NULL;
-    if(owner!=((role==4 || (role==3 && !lstrcmpW(name,WC_TABCONTROLW)) || (role==5 && !lstrcmpW(name,WC_LISTVIEWW)) || (role==6 && !lstrcmpW(name,WC_TREEVIEWW)) || (role==7 && !lstrcmpW(name,PROGRESS_CLASSW)) || (role==8 && !lstrcmpW(name,TRACKBAR_CLASSW)) || (role==9 && !lstrcmpW(name,UPDOWN_CLASSW)))?native_owner:GetModuleHandleW(NULL)))return NULL;
-    if(role==7){
+    if(owner!=((ocx_role||toolbar_role)?native_owner:(role==4 || (role==3 && !lstrcmpW(name,WC_TABCONTROLW)) || (role==5 && !lstrcmpW(name,WC_LISTVIEWW)) || (role==6 && !lstrcmpW(name,WC_TREEVIEWW)) || (role==7 && !lstrcmpW(name,PROGRESS_CLASSW)) || (role==8 && !lstrcmpW(name,TRACKBAR_CLASSW)) || (role==9 && !lstrcmpW(name,UPDOWN_CLASSW)))?native_owner:GetModuleHandleW(NULL)))return NULL;
+    if(role==7 && !ocx_role){
         DLLVERSIONINFO version={.cbSize=sizeof(version)};
         HRESULT (CALLBACK *get_version)(DLLVERSIONINFO *)=(void*)GetProcAddress(native_owner,"DllGetVersion");
         if(!get_version || FAILED(get_version(&version)) || version.dwMajorVersion<6)return NULL;
@@ -157,7 +204,8 @@ ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND w)
         valid=current(b) && (style&LVS_TYPEMASK)==LVS_REPORT && !(style&(LVS_OWNERDRAWFIXED|LVS_OWNERDATA)) &&
             count>=0 && count<=INT_MAX && selected>=0 && selected<=count && header &&
             GetParent(header)==w && GetWindowThreadProcessId(header,NULL)==GetCurrentThreadId() &&
-            GetClassNameW(header,header_name,ARRAYSIZE(header_name)) && !lstrcmpW(header_name,WC_HEADERW) &&
+            GetClassNameW(header,header_name,ARRAYSIZE(header_name)) &&
+            !lstrcmpW(header_name,WC_HEADERW) &&
             (HMODULE)GetClassLongPtrW(header,GCLP_HMODULE)==native_owner;
         if(valid)b->native_module=native_owner;
     }
@@ -206,6 +254,15 @@ ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND w)
         LRESULT base=current(b)?SendMessageW(w,UDM_GETBASE,0,0):0;
         valid=current(b) && !(low==INT_MAX && high==INT_MIN) && (base==10 || base==16) &&
             GetWindowThreadProcessId(GetParent(w),NULL)==GetCurrentThreadId();
+        if(valid)b->native_module=native_owner;
+    }
+    if(role==10){
+        LRESULT count=SendMessageW(w,TB_BUTTONCOUNT,0,0);SIZE size={0};
+        valid=current(b) && count>=0 && count<=1024 &&
+            GetWindowThreadProcessId(GetParent(w),NULL)==GetCurrentThreadId() &&
+            SendMessageW(w,TB_GETMAXSIZE,0,(LPARAM)&size) && size.cx>=0 && size.cy>=0;
+        /* The OCX can populate public buttons after in-place activation. The
+         * painter validates every draw pass and emits no guessed pixels. */
         if(valid)b->native_module=native_owner;
     }
     if(!valid){ntw16s_control_protocol_release(b);return NULL;}

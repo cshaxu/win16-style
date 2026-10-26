@@ -1,0 +1,84 @@
+{
+  "task": "M0 T17 S28",
+  "scope": "Optional x86 research against an explicit Microsoft-signed OCX in task scratch; no registration, installation, product input, or required CTest dependency.",
+  "module": {
+    "path": "scratch/admin/SYSTEM/comctl32.Ocx",
+    "activation": "Direct DllGetClassObject plus public IOleObject/IPersistStreamInit in a self-owned native host"
+  },
+  "observed": {
+    "TreeView": {
+      "class": "TreeViewWndClass",
+      "parent": "CtlFrameWork_ReflectWindow",
+      "public_contract": "TVM_GETCOUNT and TVM_INSERTITEMW",
+      "result": "attached=1; inserting a self-owned probe node yields count=1. A byte-identical COMCTL32 module renamed away from COMCTL32.OCX leaves TreeViewWndClass attached=0."
+    },
+    "Slider": {
+      "old_class": "SliderWndClass under COMCTL32.OCX",
+      "new_class": "Slider20WndClass under MSCOMCTL.OCX",
+      "parent": "CtlFrameWork_ReflectWindow",
+      "public_contract": "TBM_SETRANGEMIN/TBM_SETRANGEMAX/TBM_SETPOS/TBM_GETPOS",
+      "result": "The old class has a stable creation-time contract and remains attached=1; the self-owned range/position probe reads back 12. A byte-identical COMCTL32 module renamed away from COMCTL32.OCX leaves SliderWndClass attached=0. Slider20's same public messages become valid after activation but its creation-time geometry is not stable, so it is explicitly asserted attached=0 rather than added through a late existing-window scan."
+    },
+    "TabStrip": {
+      "class": "TabStripWndClass",
+      "parent": "CtlFrameWork_ReflectWindow",
+      "public_contract": "TCM_GETITEMCOUNT",
+      "result": "native count is 1. An initial renderer experiment changed it to 0, so TabStrip admission was removed and remains native."
+    },
+    "ProgressBar": {
+      "class": "ProgressBarWndClass",
+      "parent": "CtlFrameWork_ReflectWindow",
+      "public_contract": "PBM_GETRANGE/PBM_GETPOS/PBM_GETSTATE",
+      "result": "range is 0..30000 and position is 0, but GETSTATE returns 0 rather than a documented PBST state. It remains native; no state/color behavior is guessed."
+    },
+    "Toolbar": {
+      "class": "ToolbarWindow32",
+      "parent": "ToolbarWndClass",
+      "public_contract": "TB_BUTTONSTRUCTSIZE/TB_ADDBUTTONSW/TB_CHECKBUTTON/TB_GETSTATE/TB_BUTTONCOUNT plus default-route NM_CUSTOMDRAW",
+      "result": "The old COMCTL32.OCX wrapper hosts a native child rather than exposing toolbar messages on its wrapper. A self-owned two-button text-only probe remains attached=1, count=2 and retains checked state. The wrapper reports pre=1, item=2 and post=1 custom-draw stages only after its default route. A byte-identical module renamed away from COMCTL32.OCX is attached=0 and receives no item/post stages. The renderer is limited to text-only ordinary/check buttons; image-list, separator, drop-down, owner-draw and unsupported style variants remain native."
+    },
+    "ListView": {
+      "old_class": "ListViewWndClass",
+      "old_structure": "COMCTL32.OCX wrapper -> native SysHeader32; report View property set before activation",
+      "new_class": "ListView20WndClass",
+      "new_structure": "MSCOMCTL.OCX wrapper -> msvb_lib_header",
+      "result": "The old wrapper only delivers prepaint (pre=1, item=0, post=0) and its native header is created after the outer ListView WM_CREATE boundary; the current creation transaction correctly rejects the outer wrapper rather than performing a late scan or half-install. The separately created old native SysHeader32 remains attached through the existing header path. The new wrapper's header is private and remains native."
+    },
+    "StatusBar": {
+      "old_class": "StatusBarWndClass",
+      "new_class": "StatusBar20WndClass",
+      "parent": "CtlFrameWork_ReflectWindow",
+      "public_contract": "SB_GETPARTS returns 2 on both observed wrappers",
+      "result": "Both are OCX-owned wrappers rather than native StatusBarWindow32 children. A parent observer sees no NM_CUSTOMDRAW stage on either wrapper (pre=0, item=0, post=0), so both remain native."
+    },
+    "COMCT232-and-COMCT332": {
+      "modules": ["ComCt232.ocx", "ComCt332.ocx"],
+      "public_activation": "Direct DllGetClassObject/IOleObject host against UpDown, Animation and CoolBar coclasses",
+      "result": "ComCt232 UpDown is UpDownWndClass and Animation is AnimationWndClass, each directly under CtlFrameWork_ReflectWindow with no native msctls_updown32/animation child. ComCt332 CoolBar activates through ThunderRT6UserControlDC container windows. These are OCX/VB-owned renderers, not standard common-control aliases, so existing UpDown/toolbar painters are not applied."
+    },
+    "MaskEdBox": {
+      "class": "MSMaskWndClass",
+      "module": "MSMASK32.OCX",
+      "public_contract": "USER standard EDIT superclass; WM_SETTEXT/WM_GETTEXT and EM_SETSEL/EM_GETSEL",
+      "result": "The existing standard EDIT path attaches=1. The direct self-owned probe writes and reads 12/34, then selects and reads back 1:4. A byte-identical module renamed away from MSMASK32.OCX has the same attachment and round trips, which is expected because admission follows the USER superclass contract rather than a guessed OCX filename. Existing bounded EDIT presentation is therefore applicable; mask parsing/validation/formatting remain with the native control."
+    },
+    "DataGrid": {
+      "class": "DataGridWndClass",
+      "module": "MSDatGrd.OCX",
+      "public_contract": "No stable standard-control or public drawing contract was observed on the outer OCX window; its final style is a custom child client surface (0x56800000).",
+      "result": "An OCX can transiently request frame bits while it constructs its outer window. The creation path now rejects a generic child frame whose registered class belongs to an external module unless an existing exact public protocol admits it. The native probe asserts DataGridWndClass attached=0; its USER32 ScrollBar child remains attached=1 through the ordinary standard-control path. This prevents a stale frame attachment without scanning or introspecting OCX private state."
+    },
+    "External-OCX-boundaries": {
+      "RichTextBox": "RichTextWndClass from RICHTX32.OCX is an OCX-owned custom client surface and remains attached=0.",
+      "SSTab": "SSTabCtlWndClass from TABCTL32.OCX is an OCX-owned custom client surface and remains attached=0.",
+      "FlatScrollBar": "FlatSB20WndClass from MSCOMCT2.OCX is an OCX-owned custom client surface and remains attached=0.",
+      "MonthView-and-DTPicker": "MonthView20WndClass and DTPicker20WndClass from MSCOMCT2.OCX are OCX-owned custom client surfaces and remain attached=0.",
+      "Old-UpDown": "UpDownWndClass from COMCT232.OCX is an OCX-owned wrapper, not a native msctls_updown32 child, and remains attached=0.",
+      "FlexGrid-and-Chart": "MSFlexGridWndClass, MSHFlexGridWndClass, and MSChart20WndClass are OCX-owned custom client surfaces and remain attached=0 in the inert direct-OLE host; no grid/chart data or methods were invoked.",
+      "Dialog-and-nonvisual-hosts": "CmDialogWndClass, MSCommWndClass, MSWINSCKWndClass, AdodcWndClass, and mapiSesWndClass are OCX-owned windows and remain attached=0. The probe performed only InitNew/in-place activation; it did not show a dialog, open a port, connect a socket, set a data source, or log on to MAPI.",
+      "Data-bound-standard-children": "DBComboWndClass and DataComboWndClass expose a USER32 Edit child; DataListWndClass exposes a USER32 ScrollBar child. Each outer OCX window remains attached=0 while the observed standard child remains attached=1. DBListWndClass exposes no standard child in the same inert host. This is bounded reuse of an existing renderer, not a claim to style data binding, lists, grids, or any OCX-owned drawing."
+    }
+  },
+  "non_goals": ["StatusBar", "TabStrip", "ListView", "MSCOMCTL Toolbar20 host", "COMCT232 UpDown/Animation", "COMCT332 CoolBar", "all OCX versions", "global hooks", "existing-window scanning"],
+  "verification": "x86 direct OLE host through candidate run16s; exact owner/reflector, attachment state and public-message round trips recorded."
+}

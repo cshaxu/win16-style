@@ -5,8 +5,20 @@
 M0 T17 S27 ScrollBar范围/位置/禁用变体已完成，顺序准入S28 全148单位收口审计。
 S27以自有runtime双宽见证避开私有桌面错误5，验证H/V范围、页大小、位置和禁用；
 S28逐项核对后续证据，不把早期矩阵的陈旧状态当作当前实现结论。
+S28干净双宽候选包已通过身份门禁，四文件在测试前后摘要一致；实际包87项中15项
+在本会话通过，72项在创建私有USER桌面前返回精确`PRIVATE_DESKTOP_CREATE_FAIL error=5`
+而记为skip。Test-Package现仅对该精确退出2/标记组合允许skip，其他失败仍中断；
+这不构成GUI回归或物理验收通过；四文件已以同批摘要发布至assets根目录和
+O:\\winnt\\system32，P1仍待本次提交、推送和远端复核。
 S17冻结35模块/66控件行；本机无所列官方OCX文件，故不安装/注册或从native class猜测
-wrapper支持，逐行保留未认证。无产品改动、无UAC/显示依赖；后续S18审计自包含的
+wrapper支持，逐行保留未认证。S28现按用户授权仅在任务scratch中研究微软签名x86
+MSCOMCTL.OCX/COMCTL32.OCX：不安装/注册/发布，已证实有限公开TreeView、旧版Slider及
+旧版COMCTL32文本工具栏路径；工具栏仅接入精确嵌套原生ToolbarWindow32及无图像普通/勾选按钮，
+所有图像、分隔、下拉、自绘变体原生保留。TabStrip回归即撤回、ProgressBar状态契约不足而原生保留，
+MSMASK32的MaskEdBox已证实为标准EDIT superclass，沿用既有EDIT适配；DataGrid等外部OCX临时frame
+位现明确拒绝，且只保留其标准USER子控件路径。RichTextBox/SSTab/FlatScrollBar外壳、StatusBar/ListView/
+MSCOMCTL Toolbar20及其余未证实行逐项原生保留。
+无UAC/显示依赖；后续S18审计自包含的
 intrinsic图形选择default/disabled/picture变体。
 S16的Data样本包含绝对数据库/绑定，MDI样本启动可写注册表并有Shell/Delete路径；
 OLE/UserControl无惰性公开协议样本，均不主动接管。无产品改动、无UAC/显示依赖；
@@ -49,14 +61,14 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | Identifier Mode | Continuation；S27 ScrollBar状态变体审计关闭后，依用户T17自动顺序S授权准入的最后全任务审计 |
 | Admission And Approval | 用户T17完整控件目标、自动顺序S、永久提交推送及binary change同批四文件双发布；不新开T |
 | Objective | 审计冻结的148个VB5/VB6/微软扩展单位与S2-S27的实际证据、实现和测试，逐项决定已验证、原生保留或缺少协议/样本；不缩小目标 |
-| Non-goals | 原标题/字体/菜单/滚动条/原glyph保持；不读VB私有对象、不重画应用内容、不接管owner-draw、不装IDE/OCX、不新增T |
+| Non-goals | 原标题/字体/菜单/滚动条/原glyph保持；不读VB私有对象、不重画应用内容、不接管owner-draw、不装IDE/OCX到系统、不新增T；经用户授权仅可在登记scratch免注册研究官方签名OCX |
 | Reference Baseline | 冻结矩阵有148行（52 audit-only、96 sample-blocked）；S2-S27已增加有限真实样本与自有runtime覆盖，但矩阵状态尚未全量对齐 |
 | Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[S5组合控件](../etc/evidence/vb-composite-controls.json)、[S6输入](../etc/evidence/vb-input-controls.json)、[冻结148矩阵](../etc/evidence/vb-controls-audit.json) |
 | Files And ABI Surface | 以矩阵、证据、源码和测试为审计输入；仅在已证明的公开HWND/DC/API协议上实现，不改ABI/三组件四产物 |
 | Applicable Rules | Task Reading Set/C17/GCC/Ninja/ccache；禁computer-use、兄弟修改/依赖、全局设置或非自有进程测试；无显示/UAC结果仅作对应skip，不阻塞自包含审计 |
 | Verification | 每行关联真实样本/模型、协议、产物回归和未覆盖面；检查双宽构建、当前四文件摘要、治理门禁与来源声明 |
 | Expected Markers | 148行均有明确处置/证据接收者；仅所有可实现单位有足够证据时才可收口T17，否则如实保持T17开放 |
-| Asset Needs | 仅已有登记样本/运行库/任务scratch；不复制第三方图片/OCX/二进制、不装IDE或注册组件 |
+| Asset Needs | 仅已有登记样本/运行库/任务scratch；官方签名研究包可在登记scratch免注册解包和探测，不能进入产品、assets、system32、构建输入或必需测试；不复制第三方图片/OCX/二进制、不装IDE或注册组件 |
 | Reporting Requirements | 报告逐项计数、已支持范围、原生保留、样本/协议缺口和是否达到T17完成条件 |
 | Stop Conditions | 真实协议/来源不满足即保持原生；重大架构/安全/新增产品先停证据；不关闭/注入用户既有进程，也不等待UAC或屏幕可见性 |
 | Exit Criteria | 完成全148单位处置审计和双宽/包回归；只有审计证明原请求已满足才能关闭T17，否则保持开放并列出精确接收条件 |
@@ -69,8 +81,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 17
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T17并授权内部自动顺序S；不准入其他T候选。
-- Last delivery: M0 T17 S28 P6（148单位逐项账本及用户可访问目录/安装缓存只读发现；仅文档/证据变化、四产品摘要未变；待本交付推送及实际远端复核后保持S28等待真实x86可视OCX输入）
-- Open task: T17 S28 全148单位收口审计；T17/M0保持开放。已完成三轮无UAC只读发现；只有取得真实、已许可的x86可视OCX及公开宿主协议/惰性样本，才能继续97项未验证扩展行，不能以猜测性类名替代。
+- Last delivery: M0 T17 S28 P1 已本地发布（用户授权的官方签名x86微软OCX研究包以免注册公开OLE路径验证；TreeView、旧版Slider、旧版COMCTL32文本工具栏及MSMASK32标准EDIT路径已有自有探针覆盖。候选包15项通过/72项私有桌面错误5精确skip，assets/system32八摘要一致；待提交、推送和远端复核。）
+- Open task: T17 S28 全148单位收口审计；T17/M0保持开放。已将一个真实、已许可的x86可视OCX及公开宿主协议纳入有限实现；其余扩展行仍逐项要求真实协议/惰性样本，不能以猜测性类名替代。
 
 ## Technical Baseline
 

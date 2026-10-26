@@ -18,8 +18,10 @@ static int isolated_process(int argc,WCHAR **argv,int (*worker)(int,WCHAR **))
     SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOGPFAULTERRORBOX|SEM_NOOPENFILEERRORBOX);
     if(argc>1 && !wcscmp(argv[1],L"--private-worker"))return worker(argc-1,argv+1);
     swprintf_s(name,80,L"Win16CoreWorker-%lu",GetCurrentProcessId());
-    desktop=CreateDesktopW(name,NULL,NULL,0,GENERIC_ALL,NULL);
-    if(!desktop || !GetModuleFileNameW(NULL,image,MAX_PATH))return 2;
+    desktop=CreateDesktopW(name,NULL,NULL,0,DESKTOP_CREATEWINDOW|DESKTOP_ENUMERATE|
+        DESKTOP_READOBJECTS|DESKTOP_WRITEOBJECTS|DESKTOP_SWITCHDESKTOP,NULL);
+    if(!desktop){fprintf(stderr,"PRIVATE_DESKTOP_CREATE_FAIL error=%lu\n",GetLastError());return 2;}
+    if(!GetModuleFileNameW(NULL,image,MAX_PATH)){fprintf(stderr,"PRIVATE_DESKTOP_IMAGE_FAIL error=%lu\n",GetLastError());CloseDesktop(desktop);return 2;}
     if(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" --private-worker",image)<0)return 3;
     for(i=1;i<argc;++i){
         if(wcschr(argv[i],L'"') || wcscat_s(command,ARRAYSIZE(command),L" \"") ||

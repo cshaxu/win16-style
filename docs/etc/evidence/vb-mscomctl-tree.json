@@ -1,0 +1,40 @@
+{
+  "task": "M0 T17 S28",
+  "scope": "One version-correct x86 Microsoft Common Controls TreeView path only; not a claim for all VB extensions or all MSCOMCTL versions.",
+  "source": {
+    "url": "https://download.microsoft.com/download/B/A/5/BA51304F-1DFB-4DAE-BC4F-F54323018562/VB60SP6-KB3096896-x86-ENU.msi",
+    "package": "VB60SP6-KB3096896-x86-ENU.msi",
+    "download_sha256": "917b65a22b60bddeae603f5692436f727d4f1213d72a6f801706ba5480a36661",
+    "signature": "Valid Microsoft Corporation Authenticode signature; extracted administratively to task scratch only",
+    "historical_hash_note": "The current Microsoft download hash differs from the historical SHA-256 published by the linked KB. The mismatch is recorded; no claim is made that the two files are identical."
+  },
+  "safety": {
+    "installed": false,
+    "registered": false,
+    "product_input": false,
+    "required_test_input": false,
+    "research_location": "build/t17-s28-ocx-research (ignored task scratch, to be removed after evidence is retained)"
+  },
+  "observed_public_contract": {
+    "ocx": "MSCOMCTL.OCX x86, 1070232 bytes",
+    "coclass": "TreeView {C74190B6-8589-11D1-B16A-00C0F0283628}",
+    "activation": "Direct DllGetClassObject, IClassFactory, IOleObject and IPersistStreamInit; no registry lookup",
+    "child_class": "TreeView20WndClass",
+    "parent_class": "CtlFrameWork_ReflectWindow",
+    "module_identity": "Both classes report the same loaded MSCOMCTL.OCX HMODULE",
+    "protocol": "Existing public TreeView checks: child/same-thread ownership, cbWndExtra, WM_GETDLGCODE, TVM_GETCOUNT, TVM_GETINDENT, TVM_GETITEMHEIGHT, TVM_GETNEXTITEM, TVM_HITTEST, non-RTL and non-frame styles. No OCX private object data is read."
+  },
+  "pre_fix": "The styled process contained ntw16s32.dll but TreeView20WndClass reported attached=0, because only SysTreeView32, TTreeView and TShellTreeView reached the protocol binder.",
+  "implementation": "Add a narrow TreeView20WndClass admission path only when the child and CtlFrameWork_ReflectWindow parent are both registered by a module whose loaded filename is MSCOMCTL.OCX. It reuses the existing TreeView public-protocol validator and existing tree painter; no new renderer, hook, ABI, graphics resource or OCX dependency is introduced.",
+  "listview_diagnostic": {
+    "contract": "The same direct OLE host can set the public IDispatch View property to report mode before activation. It then creates ListView20WndClass and an MSCOMCTL-owned msvb_lib_header.",
+    "result": "The current scoped creation hook sees the early window messages, but no stable ListView public contract exists at the bounded attachment point. The final product intentionally reports attached=0 for this ListView path.",
+    "decision": "ListView remains native. No global hook, existing-window scan, OCX registration, or private-object inspection was added. A future implementation needs a separately reviewed, explicit OCX activation boundary."
+  },
+  "verification": {
+    "positive": "Candidate run16s injected the self-owned x86 core-ocx-tree-host with the extracted MSCOMCTL.OCX. Output: OCX_TREE_HOST_RESULT class=TreeView20WndClass attached=1 expected=1 dpi=96; exit=0.",
+    "negative": "The same scratch OCX byte stream under filename mscomctl-renamed.OCX created the same class but output attached=0 expected=0; exit=0. This detects an over-broad class-name-only implementation.",
+    "permanent_probe": "tests/ntw16s-dll/ocx_tree_host.c is a pure-C optional native probe. It requires an explicit user-supplied licensed path, never registers the component, and is not part of required CTest or package inputs.",
+    "remaining": "ListView, Toolbar, StatusBar, TabStrip, ProgressBar, Slider, ImageCombo and every other OCX row remain unverified and native. This evidence covers neither their window contracts nor their painting."
+  }
+}

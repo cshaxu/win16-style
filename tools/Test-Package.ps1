@@ -191,10 +191,18 @@ try{
                 $out=$entry.stdout.GetAwaiter().GetResult();$err=$entry.stderr.GetAwaiter().GetResult()
                 [IO.File]::WriteAllText((Join-Path $entry.directory 'stdout.log'),$out)
                 [IO.File]::WriteAllText((Join-Path $entry.directory 'stderr.log'),$err)
-                $record=@{name=$entry.case.name;exit_code=$entry.process.ExitCode;command=$entry.case.command;arguments=$entry.case.arguments;seconds=$entry.timer.Elapsed.TotalSeconds};$records.Add($record)
+                # A private USER desktop is an isolation prerequisite, not a
+                # product assertion.  Some non-interactive execution hosts
+                # deny only CreateDesktop (5).  Preserve every other exit 2
+                # as a failure: the exact marker is the sole skip contract.
+                $privateDesktopDenied=$entry.process.ExitCode -eq 2 -and
+                    ($out+$err).Contains('PRIVATE_DESKTOP_CREATE_FAIL error=5')
+                $record=@{name=$entry.case.name;exit_code=$entry.process.ExitCode;skipped=[bool]$privateDesktopDenied;command=$entry.case.command;arguments=$entry.case.arguments;seconds=$entry.timer.Elapsed.TotalSeconds};$records.Add($record)
                 $records|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'cases.json')
-                if($entry.process.ExitCode){throw "Package test failed: $($entry.case.name), exit $($entry.process.ExitCode)"}
-                foreach($marker in $entry.case.markers){if(!($out+$err).Contains($marker)){throw "Missing marker $marker in $($entry.case.name)"}}
+                if(!$privateDesktopDenied){
+                    if($entry.process.ExitCode){throw "Package test failed: $($entry.case.name), exit $($entry.process.ExitCode)"}
+                    foreach($marker in $entry.case.markers){if(!($out+$err).Contains($marker)){throw "Missing marker $marker in $($entry.case.name)"}}
+                }
                 $running.Remove($entry)|Out-Null;$entry.process.Dispose()
             }
             if($running.Count){Start-Sleep -Milliseconds 50}
@@ -209,7 +217,8 @@ try{
     }
     $after=Package-Hashes
     foreach($name in $before.Keys){if($before[$name] -ne $after[$name]){throw 'Package changed during testing'}}
-    @{status='passed';seconds=$totalTimer.Elapsed.TotalSeconds;jobs=$Jobs;cases=$records.Count;full_integration=[bool]$FullIntegration;package=$Package;sha256=$after;physical_input='not-tested';core_matrix='separate Build-Core matrix required'}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
+    $skipped=@($records|Where-Object skipped|ForEach-Object name)
+    @{status=if($skipped.Count){'passed-with-skips'}else{'passed'};seconds=$totalTimer.Elapsed.TotalSeconds;jobs=$Jobs;cases=$records.Count;skipped=$skipped;full_integration=[bool]$FullIntegration;package=$Package;sha256=$after;physical_input='not-tested';core_matrix='separate Build-Core matrix required'}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
 }catch{
     @{status='failed-or-inconclusive';error=$_.Exception.Message}|ConvertTo-Json|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
     exit 1

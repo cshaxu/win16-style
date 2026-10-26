@@ -1,15 +1,15 @@
 {
   "schema": 1,
-  "delivery": "M0 T17 S11 P2",
-  "stage": "development acceptance; S11 closed, S12 admitted; M0/T17 open",
+  "delivery": "M0 T17 S28 P1",
+  "stage": "development acceptance; S28 active; M0/T17 open; package passed-with-skips",
   "version": "0.17.0.0",
   "version_contract": "M0 T17; sequential S does not increment T version",
   "package_directory": "assets",
-  "source_snapshot_sha256": "337bd964952b671ab6ac302309867f091cc3ccf2759ae4b490e405fab28f22bb",
+  "source_snapshot_sha256": "b71b01c4596b977764c961d7ec68597eeec8fef3c23dc668118687933ae2f832",
   "source_inputs": [
     {
       "path": "CMakeLists.txt",
-      "sha256": "0eea527fba2b313cc3f7f4067c5a16c64182cfd3e98f144ff67c765c70a600af"
+      "sha256": "27b6f38af1113656743d2388f1eb3227b341f982475c43ab51c750e83cda8515"
     },
     {
       "path": "LICENSE",
@@ -54,7 +54,7 @@
     },
     {
       "path": "src/ntw16s-dll/attachment.c",
-      "sha256": "c09b9cef6c512c00831c21d89f2046ce8389f7e232bb55a8f9434dce3e54514d"
+      "sha256": "7a3d2dc23c98f20fc660e12e7f580b2ed42d82b9f7010812e1764265ac8650b3"
     },
     {
       "path": "src/ntw16s-dll/attachment.h",
@@ -74,11 +74,11 @@
     },
     {
       "path": "src/ntw16s-dll/control_protocol.c",
-      "sha256": "99a681920625410ca0e2215c2afe3fcf4352722f08b030c9bded4072db8a2599"
+      "sha256": "8bc998a7fa09464421752cd80d5bbf5baeb52f0dc87e80be3eb7226bcbf94749"
     },
     {
       "path": "src/ntw16s-dll/control_protocol.h",
-      "sha256": "9bb2f30b6ddc4525e3e97551ca131acfc04a4fcfc97a3944b8880f3a3fa2b171"
+      "sha256": "c55a6761028efe67368d9617505a48614bbb0b39a1f41c45d60d5d89f67dbc94"
     },
     {
       "path": "src/ntw16s-dll/control_scope.c",
@@ -86,11 +86,11 @@
     },
     {
       "path": "src/ntw16s-dll/controls.c",
-      "sha256": "4826e62be022ad5492308e3046591f8ecea8c4af64009e6b15b6575cf5f768f2"
+      "sha256": "dcd4f59ffe6a90c11c318d4424aca40bd9b9bce75d7fa28fc5b22025ed050a0d"
     },
     {
       "path": "src/ntw16s-dll/controls.h",
-      "sha256": "ae6ff64e3bc01b2530a2ff60aeb2d2f6efac854616044e0fe8fe955ad3b551bb"
+      "sha256": "1f258fdde894850db4af669370621e2b9523e616626512041193d58224e71d9c"
     },
     {
       "path": "src/ntw16s-dll/dllmain.c",
@@ -570,7 +570,7 @@
     },
     {
       "path": "tests/ntw16s-dll/isolated_process.h",
-      "sha256": "0a3753d9f9d2f9d9ebe8e05ce94c2b63c263e4dc6dd9eb554394c6f1be2de3a3"
+      "sha256": "cafe8d7365df384e11847a4590ee5c21f8a1c3f21a6eb3af803c28b15d1c632b"
     },
     {
       "path": "tests/ntw16s-dll/list_report.c",
@@ -811,7 +811,7 @@
     },
     {
       "path": "tools/Publish-Package.ps1",
-      "sha256": "e95bb0648f8c86266118e1b627d5d08c61bba052e966671a726cae198090d186"
+      "sha256": "f24aa24b33a5e33802ca45b5c7d2974d366cff077d9c2a0262dc04f59e71c185"
     },
     {
       "path": "tools/Test-BuildExitCode.ps1",
@@ -819,7 +819,7 @@
     },
     {
       "path": "tools/Test-Package.ps1",
-      "sha256": "0990f4ddb1a94df677746cd308e38dfe2eb972ef730230990d5c05ebde6d380e"
+      "sha256": "3b25ad205770901c5bad3968fc3a65d47d4e15266f87608aad2ef338c8ce7689"
     },
     {
       "path": "tools/Verify-Governance.ps1",
@@ -849,6 +849,22 @@
     {
       "path": "tools/verify_source_manifest.py",
       "sha256": "628e955168d9e49907967dd02471afb399d175ccb3fbb8546c14386ff5a2c0f6"
+    },
+    {
+      "path": "src/ntw16s-dll/toolbar_paint.c",
+      "sha256": "c564c32f695f15763565ce991f2b6e6abc4a8d04e2628c4198f12328a53b479a"
+    },
+    {
+      "path": "src/ntw16s-dll/toolbar_paint.h",
+      "sha256": "7a63f1ba5e6bd9536d5c778279e0ef6faec1042d4b13c8e50c0a968674651489"
+    },
+    {
+      "path": "tests/ntw16s-dll/ocx_catalog.c",
+      "sha256": "a5a76418f17d8b08fc8665dd5fefaffa8137f5a508d15c7c2fd2f9862e4343b1"
+    },
+    {
+      "path": "tests/ntw16s-dll/ocx_tree_host.c",
+      "sha256": "3dedb182cae01d38e506002b5d8b640cf6a317b368d9a50cf43207901e257894"
     }
   ],
   "source_snapshot_format": "SHA256 of UTF8 compact sorted-key JSON array of path/sha256/git_blob_sha256 when different",
@@ -856,7 +872,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T17",
-      "sha256": "34e570856123c7a3ff62a909e91f46a0418514c9faef5833d8e76e3b892d8103",
+      "sha256": "167cc44e5ea78a987da960f585a1990eeaafb74f3399cf398eeef55639711346",
       "imports": [
         "advapi32.dll",
         "kernel32.dll",
@@ -868,7 +884,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T17",
-      "sha256": "48be415cbd686837771fd2e0e8dc0ad97e36a91d3078857dc5039ef639c14c4b",
+      "sha256": "71c95f15724baa01c5286d82e0496d8f256413190b9742f32b988da104a317ce",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -888,7 +904,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T17",
-      "sha256": "8adafd8489c33723111b2aac8206a6dd70a920e4fb1d3f3d4e0caf355982db36",
+      "sha256": "d24d6338f38bbfa22745114c7decf8e3da1bbe8898d6f8afc4582e3d5e192b41",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -903,7 +919,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T17",
-      "sha256": "e6735c6ef1ede5f4f62e7294bcfb877c6316572fabc761d12b0cc4ba0f9492df",
+      "sha256": "24f81683ef56d977e648bbb0f6df1f4061d7d9b883719bf6087f7c2f2dd4f638",
       "imports": [
         "comctl32.dll",
         "comdlg32.dll",
@@ -915,364 +931,118 @@
     }
   },
   "toolchains": {
+    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
     "toolchains": [
       {
-        "architecture": "x86",
         "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
         "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
+        "architecture": "x86",
         "target": "i686-w64-mingw32",
         "version": "16.1.0"
       },
       {
-        "architecture": "x64",
         "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
         "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
+        "architecture": "x64",
         "target": "x86_64-w64-mingw32",
         "version": "16.1.0"
       }
     ],
-    "ccache_version": "ccache version 4.13.6",
-    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
-    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe"
+    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
+    "ccache_version": "ccache version 4.13.6"
   },
   "architecture": "C17 GCC Ninja ccache; three components/four products; ABI3/31 named exports+ordinal1;35 process-local detours/40 private slots",
-  "binary_batch_delivery": "M0 T17 S11 P1",
+  "binary_batch_delivery": "M0 T17 S28 P1",
   "verification": {
     "actual_package": {
-      "status": "passed",
-      "mode": "final",
-      "cases": [
-        {
-          "name": "abi-32",
-          "command": [
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x86\\core-abi.exe",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\candidate\\ntw16s32.dll"
-          ],
-          "markers": [
-            "ABI PASS"
-          ],
-          "exit": 0,
-          "status": "passed",
-          "expected_failure": false,
-          "seconds": 0.047,
-          "error": ""
-        },
-        {
-          "name": "queue-32",
-          "command": [
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x86\\vb-queue-test.exe",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
-          ],
-          "markers": [
-            "VB_QUEUE_UNIT_OK",
-            "wrong_tag_rejected=1 notification=1 no_hook_negative=1 resources_closed=1"
-          ],
-          "exit": 0,
-          "status": "passed",
-          "expected_failure": false,
-          "seconds": 0.207,
-          "error": ""
-        },
-        {
-          "name": "font-32",
-          "command": [
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x86\\core-vb-font.exe",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x86\\vb-fixture\\MSVBVM60.dll"
-          ],
-          "markers": [
-            "VB_OWNERSHIP_OK"
-          ],
-          "exit": 0,
-          "status": "passed",
-          "expected_failure": false,
-          "seconds": 1.54,
-          "error": ""
-        },
-        {
-          "name": "abi-64",
-          "command": [
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x64\\core-abi.exe",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\candidate\\ntw16s64.dll"
-          ],
-          "markers": [
-            "ABI PASS"
-          ],
-          "exit": 0,
-          "status": "passed",
-          "expected_failure": false,
-          "seconds": 0.038,
-          "error": ""
-        },
-        {
-          "name": "queue-64",
-          "command": [
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x64\\vb-queue-test.exe",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x64\\vb-queue-witness.dll"
-          ],
-          "markers": [
-            "VB_QUEUE_UNIT_OK",
-            "wrong_tag_rejected=1 notification=1 no_hook_negative=1 resources_closed=1"
-          ],
-          "exit": 0,
-          "status": "passed",
-          "expected_failure": false,
-          "seconds": 0.213,
-          "error": ""
-        },
-        {
-          "name": "font-64",
-          "command": [
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x64\\core-vb-font.exe",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x64\\vb-fixture\\MSVBVM60.dll"
-          ],
-          "markers": [
-            "VB_OWNERSHIP_OK"
-          ],
-          "exit": 0,
-          "status": "passed",
-          "expected_failure": false,
-          "seconds": 1.331,
-          "error": ""
-        },
-        {
-          "name": "graphical-x86-vb5",
-          "command": [
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x86\\core-vb-graphical.exe",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\candidate\\run16s.exe",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x86\\vb-graphical-fixture\\MSVBVM50.dll",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
-          ],
-          "markers": [
-            "VB_GRAPHICAL_CORE_OK",
-            "VB_GRAPHICAL_API_OK",
-            "VB_GRAPHICAL_SCOPE_OK",
-            "VB_GRAPHICAL_RETIRE_OK"
-          ],
-          "exit": 0,
-          "status": "passed",
-          "expected_failure": false,
-          "seconds": 1.403,
-          "error": ""
-        },
-        {
-          "name": "graphical-x86-vb6",
-          "command": [
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x86\\core-vb-graphical.exe",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\candidate\\run16s.exe",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x86\\vb-graphical-fixture\\MSVBVM60.dll",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
-          ],
-          "markers": [
-            "VB_GRAPHICAL_CORE_OK",
-            "VB_GRAPHICAL_API_OK",
-            "VB_GRAPHICAL_SCOPE_OK",
-            "VB_GRAPHICAL_RETIRE_OK"
-          ],
-          "exit": 0,
-          "status": "passed",
-          "expected_failure": false,
-          "seconds": 1.282,
-          "error": ""
-        },
-        {
-          "name": "graphical-x64-vb5",
-          "command": [
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x64\\core-vb-graphical.exe",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\candidate\\run16s.exe",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x64\\vb-graphical-fixture\\MSVBVM50.dll",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x64\\vb-queue-witness.dll"
-          ],
-          "markers": [
-            "VB_GRAPHICAL_CORE_OK",
-            "VB_GRAPHICAL_API_OK",
-            "VB_GRAPHICAL_SCOPE_OK",
-            "VB_GRAPHICAL_RETIRE_OK"
-          ],
-          "exit": 0,
-          "status": "passed",
-          "expected_failure": false,
-          "seconds": 1.019,
-          "error": ""
-        },
-        {
-          "name": "graphical-x64-vb6",
-          "command": [
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x64\\core-vb-graphical.exe",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\candidate\\run16s.exe",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x64\\vb-graphical-fixture\\MSVBVM60.dll",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x64\\vb-queue-witness.dll"
-          ],
-          "markers": [
-            "VB_GRAPHICAL_CORE_OK",
-            "VB_GRAPHICAL_API_OK",
-            "VB_GRAPHICAL_SCOPE_OK",
-            "VB_GRAPHICAL_RETIRE_OK"
-          ],
-          "exit": 0,
-          "status": "passed",
-          "expected_failure": false,
-          "seconds": 0.986,
-          "error": ""
-        },
-        {
-          "name": "real-graphical-vb5-0",
-          "command": [
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x86\\vb-intrinsic-observe.exe",
-            "bare",
-            "O:\\repos.hobby\\win16style\\build\\t17-audit\\s10-selection-samples\\mouse-vb5\\Mouse\\MouseHook.exe",
-            "graphical-verify",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
-          ],
-          "markers": [
-            "VB_GRAPHICAL_INVENTORY_OK controls=4",
-            "VB_GRAPHICAL_PROPERTIES_OK",
-            "VB_NORMAL_PAINT",
-            "VB_GRAPHICAL_CLICK_OK",
-            "SAMPLE_PASS"
-          ],
-          "exit": 0,
-          "status": "passed",
-          "expected_failure": false,
-          "seconds": 0.74,
-          "error": ""
-        },
-        {
-          "name": "real-graphical-vb5-1",
-          "command": [
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x86\\vb-intrinsic-observe.exe",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\candidate\\run16s.exe",
-            "O:\\repos.hobby\\win16style\\build\\t17-audit\\s10-selection-samples\\mouse-vb5\\Mouse\\MouseHook.exe",
-            "graphical-verify",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
-          ],
-          "markers": [
-            "VB_GRAPHICAL_INVENTORY_OK controls=4",
-            "VB_GRAPHICAL_PROPERTIES_OK",
-            "VB_NORMAL_PAINT",
-            "VB_GRAPHICAL_CLICK_OK",
-            "SAMPLE_PASS",
-            "VB_GRAPHICAL_FRAME_PIXELS_OK"
-          ],
-          "exit": 0,
-          "status": "passed",
-          "expected_failure": false,
-          "seconds": 1.797,
-          "error": ""
-        },
-        {
-          "name": "real-graphical-vb6-0",
-          "command": [
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x86\\vb-intrinsic-observe.exe",
-            "bare",
-            "O:\\repos.hobby\\win16style\\build\\t17-audit\\s10-selection-samples\\mouse-vb6\\Mouse\\MouseHook6.exe",
-            "graphical-verify",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
-          ],
-          "markers": [
-            "VB_GRAPHICAL_INVENTORY_OK controls=4",
-            "VB_GRAPHICAL_PROPERTIES_OK",
-            "VB_NORMAL_PAINT",
-            "VB_GRAPHICAL_CLICK_OK",
-            "SAMPLE_PASS"
-          ],
-          "exit": 0,
-          "status": "passed",
-          "expected_failure": false,
-          "seconds": 0.617,
-          "error": ""
-        },
-        {
-          "name": "real-graphical-vb6-1",
-          "command": [
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x86\\vb-intrinsic-observe.exe",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\candidate\\run16s.exe",
-            "O:\\repos.hobby\\win16style\\build\\t17-audit\\s10-selection-samples\\mouse-vb6\\Mouse\\MouseHook6.exe",
-            "graphical-verify",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
-          ],
-          "markers": [
-            "VB_GRAPHICAL_INVENTORY_OK controls=4",
-            "VB_GRAPHICAL_PROPERTIES_OK",
-            "VB_NORMAL_PAINT",
-            "VB_GRAPHICAL_CLICK_OK",
-            "SAMPLE_PASS",
-            "VB_GRAPHICAL_FRAME_PIXELS_OK"
-          ],
-          "exit": 0,
-          "status": "passed",
-          "expected_failure": false,
-          "seconds": 1.648,
-          "error": ""
-        },
-        {
-          "name": "pictures-0",
-          "command": [
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x86\\vb-intrinsic-observe.exe",
-            "bare",
-            "O:\\repos.hobby\\win16style\\build\\t17-audit\\s11-selection-variants\\3ddefline\\3Ddefline.exe",
-            "graphical-pictures",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
-          ],
-          "markers": [
-            "VB_GRAPHICAL_INVENTORY_OK controls=10",
-            "VB_GRAPHICAL_PICTURE_STATES_OK index=10",
-            "VB_SAMPLE_QUEUE_CLEANUP_OK",
-            "SAMPLE_PASS"
-          ],
-          "exit": 0,
-          "status": "passed",
-          "expected_failure": false,
-          "seconds": 1.812,
-          "error": ""
-        },
-        {
-          "name": "pictures-1",
-          "command": [
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x86\\vb-intrinsic-observe.exe",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\candidate\\run16s.exe",
-            "O:\\repos.hobby\\win16style\\build\\t17-audit\\s11-selection-variants\\3ddefline\\3Ddefline.exe",
-            "graphical-pictures",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
-          ],
-          "markers": [
-            "VB_GRAPHICAL_INVENTORY_OK controls=10",
-            "VB_GRAPHICAL_PICTURE_STATES_OK index=10",
-            "VB_SAMPLE_QUEUE_CLEANUP_OK",
-            "SAMPLE_PASS"
-          ],
-          "exit": 0,
-          "status": "passed",
-          "expected_failure": false,
-          "seconds": 1.583,
-          "error": ""
-        },
-        {
-          "name": "demo",
-          "command": [
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja\\x64\\demo-observe.exe",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\candidate\\run16s.exe",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\candidate\\ntw16s64.dll",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\candidate\\ntw16s32.dll",
-            "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\candidate\\demo.exe"
-          ],
-          "markers": [
-            "DEMO PAIR PASS"
-          ],
-          "exit": 0,
-          "status": "passed",
-          "expected_failure": false,
-          "seconds": 5.018,
-          "error": ""
-        }
-      ],
-      "seconds": 11.101,
-      "jobs": 3,
+      "status": "passed-with-skips",
+      "seconds": 12.7461364,
+      "physical_input": "not-tested",
+      "package": "O:\\repos.hobby\\win16style\\build\\t17-package\\s28-candidate7\\candidate",
       "sha256": {
-        "demo.exe": "e6735c6ef1ede5f4f62e7294bcfb877c6316572fabc761d12b0cc4ba0f9492df",
-        "ntw16s32.dll": "48be415cbd686837771fd2e0e8dc0ad97e36a91d3078857dc5039ef639c14c4b",
-        "ntw16s64.dll": "8adafd8489c33723111b2aac8206a6dd70a920e4fb1d3f3d4e0caf355982db36",
-        "run16s.exe": "34e570856123c7a3ff62a909e91f46a0418514c9faef5833d8e76e3b892d8103"
-      }
+        "demo.exe": "24f81683ef56d977e648bbb0f6df1f4061d7d9b883719bf6087f7c2f2dd4f638",
+        "ntw16s32.dll": "71c95f15724baa01c5286d82e0496d8f256413190b9742f32b988da104a317ce",
+        "ntw16s64.dll": "d24d6338f38bbfa22745114c7decf8e3da1bbe8898d6f8afc4582e3d5e192b41",
+        "run16s.exe": "167cc44e5ea78a987da960f585a1990eeaafb74f3399cf398eeef55639711346"
+      },
+      "jobs": 4,
+      "cases": 87,
+      "skipped": [
+        "demo-pair",
+        "font-layout-x86",
+        "font-layout-x64",
+        "menu-cancel-x86",
+        "menu-cancel-x64",
+        "startup-errors",
+        "legacy-rejection",
+        "automatic",
+        "propagation",
+        "cmd-nested",
+        "vb-font-32",
+        "vb-font-64",
+        "vb-controls-32",
+        "vb-controls-64",
+        "control-extensions-32",
+        "control-extensions-64",
+        "control-protocol-owner-32",
+        "control-protocol-owner-64",
+        "tab-controls-32",
+        "tab-controls-64",
+        "tab-controls-dpi-32",
+        "tab-controls-dpi-64",
+        "tab-controls-v5-32",
+        "tab-controls-v5-64",
+        "tab-controls-v5-dpi-32",
+        "tab-controls-v5-dpi-64",
+        "pending-control-owner-32",
+        "pending-control-owner-64",
+        "header-v5-32",
+        "header-v5-64",
+        "header-v5-dpi-32",
+        "header-v5-dpi-64",
+        "header-v6-32",
+        "header-v6-64",
+        "header-v6-dpi-32",
+        "header-v6-dpi-64",
+        "list-report-v5-32",
+        "list-report-v5-64",
+        "list-report-v6-32",
+        "list-report-v6-64",
+        "pending-frame-owner-32",
+        "tree-v5-32",
+        "tree-v6-32",
+        "pending-frame-owner-64",
+        "tree-v5-64",
+        "tree-v6-64",
+        "updown-v5-32",
+        "updown-v6-32",
+        "updown-owner-32",
+        "updown-v5-64",
+        "updown-v6-64",
+        "updown-owner-64",
+        "trackbar-v5-32",
+        "trackbar-v6-32",
+        "trackbar-v5-64",
+        "trackbar-v6-64",
+        "progress-v5-32",
+        "progress-v6-32",
+        "progress-v5-64",
+        "progress-v6-64",
+        "header-owner-32",
+        "header-owner-64",
+        "control-visibility-32",
+        "control-visibility-64",
+        "dialog-scope-32",
+        "dialog-scope-64",
+        "dialog-show-32",
+        "dialog-show-64",
+        "theme-stage-32",
+        "theme-stage-64",
+        "superclass-32",
+        "superclass-64"
+      ],
+      "full_integration": false,
+      "core_matrix": "separate Build-Core matrix required"
     },
     "negative": {
       "status": "passed",
@@ -1646,142 +1416,187 @@
       }
     },
     "publication": {
-      "test_result": "O:\\repos.hobby\\win16style\\build\\t17-controls\\s11-final\\result.json",
-      "tested_package": "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\candidate",
+      "tested_package": "O:\\repos.hobby\\win16style\\build\\t17-package\\s28-candidate7\\candidate",
       "files": [
         {
-          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-publish\\before-0",
-          "expected": "e6735c6ef1ede5f4f62e7294bcfb877c6316572fabc761d12b0cc4ba0f9492df",
-          "before": "411f3ef8cd17305d1b43940e90b7088ac0ecd1b9bb35d52afff5a245fc0ef95e",
           "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe",
-          "after": "e6735c6ef1ede5f4f62e7294bcfb877c6316572fabc761d12b0cc4ba0f9492df"
+          "expected": "24f81683ef56d977e648bbb0f6df1f4061d7d9b883719bf6087f7c2f2dd4f638",
+          "before": "24f81683ef56d977e648bbb0f6df1f4061d7d9b883719bf6087f7c2f2dd4f638",
+          "after": "24f81683ef56d977e648bbb0f6df1f4061d7d9b883719bf6087f7c2f2dd4f638",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s28-publish8\\before-0"
         },
         {
-          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-publish\\before-0",
-          "expected": "48be415cbd686837771fd2e0e8dc0ad97e36a91d3078857dc5039ef639c14c4b",
-          "before": "79290710e451cfe4b37aa7df0eabb1f34fd4cad99d644e98318da37ed3acf7c2",
           "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
-          "after": "48be415cbd686837771fd2e0e8dc0ad97e36a91d3078857dc5039ef639c14c4b"
+          "expected": "71c95f15724baa01c5286d82e0496d8f256413190b9742f32b988da104a317ce",
+          "before": "71c95f15724baa01c5286d82e0496d8f256413190b9742f32b988da104a317ce",
+          "after": "71c95f15724baa01c5286d82e0496d8f256413190b9742f32b988da104a317ce",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s28-publish8\\before-0"
         },
         {
-          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-publish\\before-0",
-          "expected": "8adafd8489c33723111b2aac8206a6dd70a920e4fb1d3f3d4e0caf355982db36",
-          "before": "ba596087e0b15b1aa9c07d0bb99a995a9edf024f7d316e15ce72eea216cf7785",
           "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll",
-          "after": "8adafd8489c33723111b2aac8206a6dd70a920e4fb1d3f3d4e0caf355982db36"
+          "expected": "d24d6338f38bbfa22745114c7decf8e3da1bbe8898d6f8afc4582e3d5e192b41",
+          "before": "d24d6338f38bbfa22745114c7decf8e3da1bbe8898d6f8afc4582e3d5e192b41",
+          "after": "d24d6338f38bbfa22745114c7decf8e3da1bbe8898d6f8afc4582e3d5e192b41",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s28-publish8\\before-0"
         },
         {
-          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-publish\\before-0",
-          "expected": "34e570856123c7a3ff62a909e91f46a0418514c9faef5833d8e76e3b892d8103",
-          "before": "7ec2898785ca2a7b3d3b9c83b333bc9e2f8a9db26919cc55559958e669b4cef3",
           "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
-          "after": "34e570856123c7a3ff62a909e91f46a0418514c9faef5833d8e76e3b892d8103"
+          "expected": "167cc44e5ea78a987da960f585a1990eeaafb74f3399cf398eeef55639711346",
+          "before": "167cc44e5ea78a987da960f585a1990eeaafb74f3399cf398eeef55639711346",
+          "after": "167cc44e5ea78a987da960f585a1990eeaafb74f3399cf398eeef55639711346",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s28-publish8\\before-0"
         },
         {
-          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-publish\\before-1",
-          "expected": "e6735c6ef1ede5f4f62e7294bcfb877c6316572fabc761d12b0cc4ba0f9492df",
-          "before": "411f3ef8cd17305d1b43940e90b7088ac0ecd1b9bb35d52afff5a245fc0ef95e",
           "path": "O:\\winnt\\system32\\demo.exe",
-          "after": "e6735c6ef1ede5f4f62e7294bcfb877c6316572fabc761d12b0cc4ba0f9492df"
+          "expected": "24f81683ef56d977e648bbb0f6df1f4061d7d9b883719bf6087f7c2f2dd4f638",
+          "before": "32fc3f929f97bfe0a87249df130fb4be3291a24c2fee9c0ca90455074928a271",
+          "after": "24f81683ef56d977e648bbb0f6df1f4061d7d9b883719bf6087f7c2f2dd4f638",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s28-publish8\\before-1"
         },
         {
-          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-publish\\before-1",
-          "expected": "48be415cbd686837771fd2e0e8dc0ad97e36a91d3078857dc5039ef639c14c4b",
-          "before": "79290710e451cfe4b37aa7df0eabb1f34fd4cad99d644e98318da37ed3acf7c2",
           "path": "O:\\winnt\\system32\\ntw16s32.dll",
-          "after": "48be415cbd686837771fd2e0e8dc0ad97e36a91d3078857dc5039ef639c14c4b"
+          "expected": "71c95f15724baa01c5286d82e0496d8f256413190b9742f32b988da104a317ce",
+          "before": "6b3ea8c4856aa08b1697eef7325440a215070ec6df2ef2b398cc08f4f164cd4a",
+          "after": "71c95f15724baa01c5286d82e0496d8f256413190b9742f32b988da104a317ce",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s28-publish8\\before-1"
         },
         {
-          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-publish\\before-1",
-          "expected": "8adafd8489c33723111b2aac8206a6dd70a920e4fb1d3f3d4e0caf355982db36",
-          "before": "ba596087e0b15b1aa9c07d0bb99a995a9edf024f7d316e15ce72eea216cf7785",
           "path": "O:\\winnt\\system32\\ntw16s64.dll",
-          "after": "8adafd8489c33723111b2aac8206a6dd70a920e4fb1d3f3d4e0caf355982db36"
+          "expected": "d24d6338f38bbfa22745114c7decf8e3da1bbe8898d6f8afc4582e3d5e192b41",
+          "before": "b66c90c0c7af9507ea5181f2d0d2fccceed3ffd0c09dea8f727428564b983737",
+          "after": "d24d6338f38bbfa22745114c7decf8e3da1bbe8898d6f8afc4582e3d5e192b41",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s28-publish8\\before-1"
         },
         {
-          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-publish\\before-1",
-          "expected": "34e570856123c7a3ff62a909e91f46a0418514c9faef5833d8e76e3b892d8103",
-          "before": "7ec2898785ca2a7b3d3b9c83b333bc9e2f8a9db26919cc55559958e669b4cef3",
           "path": "O:\\winnt\\system32\\run16s.exe",
-          "after": "34e570856123c7a3ff62a909e91f46a0418514c9faef5833d8e76e3b892d8103"
-        }
-      ],
-      "status": "passed"
-    },
-    "clean_build": {
-      "tests": [
-        {
-          "build_seconds": 11.234976699997787,
-          "test_seconds": 0.4072717000017292,
-          "passed": 1,
-          "configure_seconds": 2.7426923000020906,
-          "tests": 1,
-          "architecture": "x86",
-          "skipped": []
-        },
-        {
-          "build_seconds": 12.301299700004165,
-          "test_seconds": 0.3755841000020155,
-          "passed": 1,
-          "configure_seconds": 2.2776844999971217,
-          "tests": 1,
-          "architecture": "x64",
-          "skipped": []
+          "expected": "167cc44e5ea78a987da960f585a1990eeaafb74f3399cf398eeef55639711346",
+          "before": "870a66af73f08955054e9bf6a3bb397ebaeedc37df6588ce995e0bf650964b85",
+          "after": "167cc44e5ea78a987da960f585a1990eeaafb74f3399cf398eeef55639711346",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s28-publish8\\before-1"
         }
       ],
       "status": "passed",
-      "exit_code": 0,
-      "profile": "Focused",
+      "test_status": "passed-with-skips",
+      "test_result": "O:\\repos.hobby\\win16style\\build\\t17-package\\s28-package-test7\\result.json",
+      "skipped": [
+        "demo-pair",
+        "font-layout-x86",
+        "font-layout-x64",
+        "menu-cancel-x86",
+        "menu-cancel-x64",
+        "startup-errors",
+        "legacy-rejection",
+        "automatic",
+        "propagation",
+        "cmd-nested",
+        "vb-font-32",
+        "vb-font-64",
+        "vb-controls-32",
+        "vb-controls-64",
+        "control-extensions-32",
+        "control-extensions-64",
+        "control-protocol-owner-32",
+        "control-protocol-owner-64",
+        "tab-controls-32",
+        "tab-controls-64",
+        "tab-controls-dpi-32",
+        "tab-controls-dpi-64",
+        "tab-controls-v5-32",
+        "tab-controls-v5-64",
+        "tab-controls-v5-dpi-32",
+        "tab-controls-v5-dpi-64",
+        "pending-control-owner-32",
+        "pending-control-owner-64",
+        "header-v5-32",
+        "header-v5-64",
+        "header-v5-dpi-32",
+        "header-v5-dpi-64",
+        "header-v6-32",
+        "header-v6-64",
+        "header-v6-dpi-32",
+        "header-v6-dpi-64",
+        "list-report-v5-32",
+        "list-report-v5-64",
+        "list-report-v6-32",
+        "list-report-v6-64",
+        "pending-frame-owner-32",
+        "tree-v5-32",
+        "tree-v6-32",
+        "pending-frame-owner-64",
+        "tree-v5-64",
+        "tree-v6-64",
+        "updown-v5-32",
+        "updown-v6-32",
+        "updown-owner-32",
+        "updown-v5-64",
+        "updown-v6-64",
+        "updown-owner-64",
+        "trackbar-v5-32",
+        "trackbar-v6-32",
+        "trackbar-v5-64",
+        "trackbar-v6-64",
+        "progress-v5-32",
+        "progress-v6-32",
+        "progress-v5-64",
+        "progress-v6-64",
+        "header-owner-32",
+        "header-owner-64",
+        "control-visibility-32",
+        "control-visibility-64",
+        "dialog-scope-32",
+        "dialog-scope-64",
+        "dialog-show-32",
+        "dialog-show-64",
+        "theme-stage-32",
+        "theme-stage-64",
+        "superclass-32",
+        "superclass-64"
+      ]
+    },
+    "clean_build": {
       "selection": "^core/abi$",
+      "profile": "Focused",
+      "build_jobs": 8,
       "architectures": [
         "x86",
         "x64"
       ],
       "test_jobs": 4,
-      "build_root": "O:\\repos.hobby\\win16style\\build\\t17-package\\s11-final2\\clean-source\\build\\.ninja",
-      "build_jobs": 8,
+      "build_root": "O:\\repos.hobby\\win16style\\build\\t17-package\\s28-candidate7\\clean-source\\build\\.ninja",
+      "tests": [
+        {
+          "test_seconds": 0.41886710000107996,
+          "tests": 1,
+          "skipped": [],
+          "architecture": "x86",
+          "configure_seconds": 3.4475719000038225,
+          "build_seconds": 13.573312499996973,
+          "passed": 1
+        },
+        {
+          "test_seconds": 0.4230078000036883,
+          "tests": 1,
+          "skipped": [],
+          "architecture": "x64",
+          "configure_seconds": 3.3734775999982958,
+          "build_seconds": 16.73899700000038,
+          "passed": 1
+        }
+      ],
+      "exit_code": 0,
+      "status": "passed",
       "targets": "all"
     }
   },
   "validation": {
-    "status": "passed including actual P1 remote/recovery/cleanup",
-    "source_inputs": 210,
-    "evidence": "docs/etc/evidence/vb-picture-variants.json"
+    "status": "passed with explicit private-desktop skips; not full GUI/physical acceptance",
+    "source_inputs": 214,
+    "evidence": "docs/etc/evidence/vb-ocx-wrapper-contracts.json"
   },
   "closure": {
-    "status": "passed; S11 closed; M0/T17 open",
-    "evidence": "docs/etc/evidence/vb-picture-variants.json",
-    "remote": {
-      "status": "passed",
-      "commit": "9adeb46de68adaf65a28bec21b504bbf5a7ce008",
-      "remote_main": "9adeb46de68adaf65a28bec21b504bbf5a7ce008",
-      "actual_raw_files": 230,
-      "source_inputs": 210,
-      "recovered_product_objects": 214,
-      "deployed_SHA_matches": 8,
-      "before_files_recoverable_from_5580bbbb": 8,
-      "original_source_files": 17,
-      "external_PNG": 2,
-      "seconds": 13.353
-    },
-    "cleanup": {
-      "roots": [
-        {
-          "root": "O:\\repos.hobby\\win16style\\build\\t17-package",
-          "status": "passed",
-          "images": 350,
-          "reparse_points": 0
-        },
-        {
-          "root": "O:\\repos.hobby\\win16style\\build\\t17-controls",
-          "status": "passed",
-          "images": 20,
-          "reparse_points": 0
-        }
-      ],
-      "status": "passed",
-      "preserved": "all audit/research/original sources, unused licensed update data,214 recovered objects,stable Ninja/ccache,external2PNG and other task directories",
-      "positive_self_check": "exe/loadedDLL c0000043; unloadedDLL00000000"
-    }
+    "status": "S28 active; T17/M0 open; 72 GUI cases skipped because CreateDesktop returned error 5",
+    "evidence": "docs/etc/evidence/vb-final-audit-ledger.json",
+    "remote": null,
+    "cleanup": null
   }
 }

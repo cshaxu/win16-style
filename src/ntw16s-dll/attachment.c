@@ -113,7 +113,8 @@ static void report_try_bind(HWND w,attachment *a)
     WCHAR name[64];
     if(!GetClassNameW(w,name,ARRAYSIZE(name)) ||
         (lstrcmpW(name,WC_LISTVIEWW) && lstrcmpW(name,L"TListView") &&
-         lstrcmpW(name,WC_TREEVIEWW) && lstrcmpW(name,L"TTreeView") && lstrcmpW(name,L"TShellTreeView")))return;
+         lstrcmpW(name,WC_TREEVIEWW) && lstrcmpW(name,L"TTreeView") && lstrcmpW(name,L"TShellTreeView") &&
+         lstrcmpW(name,L"TreeView20WndClass")))return;
     ntw16s_control_protocol *protocol=ntw16s_control_protocol_bind(w);
     if(!protocol)return;
     HMODULE module=ntw16s_control_protocol_list_module(w);
@@ -189,7 +190,7 @@ BOOL __cdecl Ntw16sWindowTerminal(HWND w)
 
 static BOOL install_created(HWND w,DWORD original_style)
 {
-    BOOL control,edit,installed,report=FALSE,tree=FALSE,picture=ntw16s_vb_picture(w);HWND parent;attachment *a;DWORD error;
+    BOOL control,edit,installed,report=FALSE,tree=FALSE,picture=ntw16s_vb_picture(w);HWND parent;HMODULE owner;attachment *a;DWORD error;
     ntw16s_control_protocol *protocol=NULL;
     if(lookup(w))return TRUE;
     /* COMBOBOX installs its own internal list when construction finishes.
@@ -207,6 +208,15 @@ static BOOL install_created(HWND w,DWORD original_style)
         report=protocol && ntw16s_control_protocol_list_module(w);
         tree=protocol && ntw16s_control_protocol_tree_module(w);
         control=protocol && !report;
+    }
+    owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+    /* An external OCX can create itself with frame bits during construction
+     * and then become a custom client surface.  Without an explicitly
+     * verified public protocol it must stay native; only an application-owned
+     * generic child frame may use the ordinary frame path. */
+    if(!control && !report && !tree && !picture && (original_style&WS_CHILD) &&
+            owner && owner!=GetModuleHandleW(NULL)){
+        ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
     }
     /* A custom client-only child and MDICLIENT keep application painting.
      * MDI child frames have WS_CAPTION and take the ordinary frame route. */
@@ -231,9 +241,11 @@ static BOOL install_created(HWND w,DWORD original_style)
             Ntw16sWindowRemove(info.hwndItem);
     }
     if(a->detached){release(a);SetLastError(ERROR_CANCELLED);return FALSE;}
-    if(class_is(w,UPDOWN_CLASSW))installed=win16_style_updown_install_created(w,NULL,a,&a->detached);
-    else if(class_is(w,TRACKBAR_CLASSW))installed=win16_style_trackbar_install_created(w,NULL,a,&a->detached);
-    else if(class_is(w,PROGRESS_CLASSW))installed=win16_style_progress_install_created(w,NULL,a,&a->detached);
+    if(protocol && ntw16s_control_protocol_toolbar(w))
+        installed=win16_style_toolbar_install_created(w,NULL,a,&a->detached);
+    else if(protocol && ntw16s_control_protocol_is(w,UPDOWN_CLASSW))installed=win16_style_updown_install_created(w,NULL,a,&a->detached);
+    else if(protocol && ntw16s_control_protocol_is(w,TRACKBAR_CLASSW))installed=win16_style_trackbar_install_created(w,NULL,a,&a->detached);
+    else if(protocol && ntw16s_control_protocol_is(w,PROGRESS_CLASSW))installed=win16_style_progress_install_created(w,NULL,a,&a->detached);
     else if(tree)installed=win16_style_tree_install_created(w,NULL,a,&a->detached);
     else if(picture)installed=win16_style_picture_install_created(w,NULL,a,&a->detached);
     else if(a->button_owner)installed=win16_style_frame_scrollbars_install_owned(w,NULL,a,&a->detached);

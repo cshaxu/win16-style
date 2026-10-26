@@ -9,6 +9,7 @@
 #include "tab_paint.h"
 #include "header_paint.h"
 #include "progress_paint.h"
+#include "toolbar_paint.h"
 #include "trackbar_paint.h"
 #include "updown_paint.h"
 #include "vb_text.h"
@@ -37,6 +38,8 @@ typedef struct control_style {
     unsigned header_epoch,progress_epoch;
     HWND track_parent,track_window;
     BOOL track_internal;
+    HWND toolbar_parent,toolbar_window;
+    BOOL toolbar_internal;
     ntw16s_updown_paint updown;
     int header_pressed;
     BOOL scroll_reporting,scroll_key;
@@ -53,6 +56,7 @@ static void dispose_control(control_style *s)
 {for(unsigned i=0;i<s->combo_font_count;++i)win16_style_system_release(s->combo_fonts[i]);win16_style_system_release(s->font);ntw16s_control_protocol_release(s->protocol);free(s->tab_positions);free(s);}
 static LRESULT CALLBACK control_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static LRESULT CALLBACK trackbar_notify(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
+static LRESULT CALLBACK toolbar_notify(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static BOOL updown_acquire(void *owner)
 {
     control_style *s=owner;DWORD_PTR value;
@@ -124,6 +128,13 @@ static void trackbar_unbind(control_style *s)
         value==(DWORD_PTR)s)RemoveWindowSubclass(s->track_parent,trackbar_notify,(UINT_PTR)s->track_window);
     s->track_parent=NULL;s->track_internal=FALSE;
 }
+static void toolbar_unbind(control_style *s)
+{
+    DWORD_PTR value;
+    if(s->toolbar_parent && GetWindowSubclass(s->toolbar_parent,toolbar_notify,(UINT_PTR)s->toolbar_window,&value) &&
+        value==(DWORD_PTR)s)RemoveWindowSubclass(s->toolbar_parent,toolbar_notify,(UINT_PTR)s->toolbar_window);
+    s->toolbar_parent=NULL;s->toolbar_internal=FALSE;
+}
 /* Extra part notifications are private to this renderer, and are requested
  * only after the application returned exactly CDRF_DODEFAULT. Its own requested
  * stages and all non-drawing notifications keep their original route/result. */
@@ -150,6 +161,30 @@ static LRESULT CALLBACK trackbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UIN
     if(!--s->calls && s->detached)dispose_control(s);
     SetLastError(error);return result;
 }
+/* The OCX wrapper retains command routing and its return values.  Item drawing
+ * is requested only after it selects the default custom-draw route. */
+static LRESULT CALLBACK toolbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
+{
+    control_style *s=(control_style *)data;DWORD entry=GetLastError();LRESULT result;BOOL internal=FALSE;
+    ++s->calls;NMCUSTOMDRAW *draw=NULL;
+    if(m==WM_NOTIFY && l && !s->detached && GetParent(s->toolbar_window)==parent){
+        NMHDR *header=(NMHDR *)l;
+        if(header->hwndFrom==s->toolbar_window && header->code==NM_CUSTOMDRAW)draw=(NMCUSTOMDRAW *)l;
+    }
+    if(draw && draw->dwDrawStage!=CDDS_PREPAINT && s->toolbar_internal)internal=TRUE;
+    if(m==WM_NCDESTROY){RemoveWindowSubclass(parent,toolbar_notify,id);s->toolbar_parent=NULL;s->toolbar_internal=FALSE;}
+    SetLastError(entry);result=internal?CDRF_DODEFAULT:DefSubclassProc(parent,m,p,l);DWORD error=GetLastError();
+    if(draw && !s->detached){
+        if(draw->dwDrawStage==CDDS_PREPAINT){
+            s->toolbar_internal=result==CDRF_DODEFAULT && win16_style_toolbar_supported(s->toolbar_window);
+            if(s->toolbar_internal)result=CDRF_NOTIFYITEMDRAW|CDRF_NOTIFYPOSTPAINT;
+        }else if(internal && draw->dwDrawStage==CDDS_ITEMPREPAINT &&
+            win16_style_toolbar_part(s->toolbar_window,draw,&s->palette))result=CDRF_SKIPDEFAULT;
+        else if(internal && draw->dwDrawStage==CDDS_POSTPAINT)s->toolbar_internal=FALSE;
+    }
+    if(!--s->calls && s->detached)dispose_control(s);
+    SetLastError(error);return result;
+}
 
 /* DefWindowProc implements WM_SETREDRAW(TRUE) by setting WS_VISIBLE.
  * Never start an internal bracket on an application-hidden control. Nested
@@ -169,7 +204,7 @@ static BOOL is_scroll(HWND w)
 static BOOL is_link(HWND w)
 {return ntw16s_class_is(w,L"SysLink");}
 static BOOL is_tab(HWND w)
-{return ntw16s_class_is(w,WC_TABCONTROLW);}
+{return ntw16s_class_is(w,WC_TABCONTROLW) || ntw16s_control_protocol_is(w,WC_TABCONTROLW);}
 static BOOL is_header(HWND w)
 {return ntw16s_class_is(w,WC_HEADERW);}
 static BOOL is_separator(HWND w)
@@ -186,7 +221,7 @@ static BOOL supported(HWND w)
     if(is_link(w))return TRUE;
     if(is_tab(w))return win16_style_tab_supported(w);
     if(is_header(w))return win16_style_header_supported(w);
-    if(ntw16s_class_is(w,PROGRESS_CLASSW))return win16_style_progress_supported(w);
+    if(ntw16s_class_is(w,PROGRESS_CLASSW) || ntw16s_control_protocol_is(w,PROGRESS_CLASSW))return win16_style_progress_supported(w);
     if(is_combo(w))return ((style&3)==CBS_DROPDOWNLIST || (style&3)==CBS_DROPDOWN || (style&3)==CBS_SIMPLE) &&
         !(style&(CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE));
     if(is_list(w))return !(style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA|LBS_USETABSTOPS));
@@ -1084,7 +1119,7 @@ static void draw_progress(HWND w,control_style *s,HDC dc)
 static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
 {
     control_style *s=(control_style *)data;LRESULT result=0;HFONT previous=NULL,pinned=s->font,outbound=NULL;(void)id;++s->calls;
-    BOOL tab=is_tab(w),header=is_header(w),progress=ntw16s_class_is(w,PROGRESS_CLASSW),native_font=tab || header;
+    BOOL tab=is_tab(w),header=is_header(w),progress=ntw16s_class_is(w,PROGRESS_CLASSW) || ntw16s_control_protocol_is(w,PROGRESS_CLASSW),native_font=tab || header;
     BOOL combo_paint=ntw16s_vb_combo(w) && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT);if(combo_paint)++s->combo_paints;
     if(progress && win16_style_progress_changes(m))++s->progress_epoch;
     if(tab && win16_style_tab_changes(m))++s->tab_epoch;
@@ -1158,7 +1193,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
             RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|(s->calls==1?RDW_UPDATENOW:0));
     }
     else if(ntw16s_class_is(w,UPDOWN_CLASSW)){result=DefSubclassProc(w,m,a,b);}
-    else if(ntw16s_class_is(w,TRACKBAR_CLASSW)){
+    else if(ntw16s_class_is(w,TRACKBAR_CLASSW) || ntw16s_control_protocol_is(w,TRACKBAR_CLASSW)){
         result=DefSubclassProc(w,m,a,b);
         if(!s->detached && m==WM_STYLECHANGED)SendMessageW(w,WM_SYSCOLORCHANGE,0,0);
         if(!s->detached && s->track_parent && GetParent(w)!=s->track_parent){
@@ -1520,6 +1555,20 @@ BOOL win16_style_trackbar_install_created(HWND w,const win16_style_palette *pale
     if(!--s->calls && s->detached)dispose_control(s);
     return okay;
 }
+BOOL win16_style_toolbar_install_created(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled)
+{
+    DWORD_PTR value;
+    if(!ntw16s_control_protocol_toolbar(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    if(!win16_style_frame_scrollbars_install_owned(w,palette,owner,cancelled))return FALSE;
+    if(!GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&value) ||
+        ((control_style *)value)->creation_owner!=owner){SetLastError(ERROR_CANCELLED);return FALSE;}
+    control_style *s=(control_style *)value;++s->calls;s->toolbar_window=w;s->toolbar_parent=GetParent(w);
+    BOOL okay=s->toolbar_parent && SetWindowSubclass(s->toolbar_parent,toolbar_notify,(UINT_PTR)w,(DWORD_PTR)s);
+    if(s->detached)okay=FALSE;
+    if(!okay && !s->detached)win16_style_control_remove_owned(w,owner);
+    if(!--s->calls && s->detached)dispose_control(s);
+    return okay;
+}
 BOOL win16_style_progress_install_created(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled)
 {
     if(!win16_style_progress_supported(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
@@ -1622,7 +1671,7 @@ BOOL win16_style_control_remove(HWND w)
     if(s->detached){if(!--s->calls)dispose_control(s);return TRUE;}
     if(!RemoveWindowSubclass(w,control_proc,(UINT_PTR)control_proc)){
         s->removing=FALSE;--s->calls;return FALSE;}
-    s->detached=TRUE;ntw16s_updown_retire(&s->updown);BOOL track=s->track_window!=NULL;trackbar_unbind(s);combo_text_unbind(s,FALSE);detach_combo_list(s);
+    s->detached=TRUE;ntw16s_updown_retire(&s->updown);BOOL track=s->track_window!=NULL;trackbar_unbind(s);toolbar_unbind(s);combo_text_unbind(s,FALSE);detach_combo_list(s);
     if(s->font && IsWindow(w))SendMessageW(w,WM_SETFONT,(WPARAM)s->original_font,FALSE);
     if(IsWindow(w) && is_separator(w))SetWindowPos(w,NULL,0,0,0,0,
         SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
@@ -1653,7 +1702,7 @@ BOOL win16_style_control_terminal(HWND w)
     if(!RemoveWindowSubclass(w,control_proc,(UINT_PTR)control_proc)){
         SetLastError(ERROR_INVALID_STATE);return FALSE;
     }
-    ++s->calls;s->detached=TRUE;ntw16s_updown_retire(&s->updown);trackbar_unbind(s);
+    ++s->calls;s->detached=TRUE;ntw16s_updown_retire(&s->updown);trackbar_unbind(s);toolbar_unbind(s);
     scroll_caret_destroy(w,s);
     scroll_stop_timer(w,s);
     combo_text_unbind(s,TRUE);result=terminal_combo_list(s);

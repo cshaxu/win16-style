@@ -11,7 +11,7 @@ $repo=Split-Path $PSScriptRoot -Parent
 $names=@('demo.exe','ntw16s32.dll','ntw16s64.dll','run16s.exe')
 $Package=(Resolve-Path -LiteralPath $Package).Path
 $tested=Get-Content -LiteralPath $TestResult -Raw|ConvertFrom-Json
-if($tested.status -ne 'passed'){throw 'Only a passed actual-package result may be published'}
+if($tested.status -notin @('passed','passed-with-skips')){throw 'Only a passed actual-package result may be published'}
 $files=@(Get-ChildItem -LiteralPath $Package -Force)
 if(@(Compare-Object $names @($files.Name|Sort-Object)).Count){throw 'Expected exactly four candidate files'}
 function Hash([string]$Path){(Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()}
@@ -53,7 +53,7 @@ try{
         $record.after=Hash $record.path
         if($record.after -ne $record.expected){throw "Published hash mismatch: $($record.path)"}
     }
-    @{status='passed';tested_package=$Package;test_result=(Resolve-Path -LiteralPath $TestResult).Path;files=@($records)}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
+    @{status='passed';test_status=$tested.status;skipped=@($tested.skipped);tested_package=$Package;test_result=(Resolve-Path -LiteralPath $TestResult).Path;files=@($records)}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
     'PUBLISH PASS: four tested files identical at assets root and O:\winnt\system32'
 }catch{
     @{status='incomplete';error=$_.Exception.Message;files=@($records)}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8

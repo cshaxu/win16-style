@@ -51,6 +51,12 @@
 - [VB最终审计逐项账本](evidence/vb-final-audit-ledger.json)：T17 S28将冻结的148项
   逐项归入有限公开协议见证、必须原生保留或缺少真实协议/样本；不是将未验证OCX宣称为支持。
 
+- [VB MSCOMCTL TreeView](evidence/vb-mscomctl-tree.json)：T17 S28对用户授权下载的官方
+  x86研究包所作的免注册、公开OLE/TreeView协议验证；只覆盖一个TreeView路径。ListView的同次诊断未形成安全接入时机，仍保持原生，不使OCX成为产品或必需测试输入。
+
+- [VB OCX wrapper contracts](evidence/vb-ocx-wrapper-contracts.json)：同一研究包中
+  COMCTL32.OCX包装窗口的公开消息、附着结果和明确回退边界；不把目录发现扩大为全部OCX支持。
+
 - [VB6 DriveListBox审计](evidence/vb6-drivelistbox-audit.json)：T17 S14固定
   源码/PE/runtime 身份与有界样本缺失结论；不作为VB6 DriveListBox支持声明。
 
