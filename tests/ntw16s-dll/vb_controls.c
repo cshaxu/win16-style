@@ -112,9 +112,11 @@ static int child(const WCHAR *runtime_path,BOOL styled,BOOL aware)
     HWND edit=CreateWindowExW(WS_EX_CLIENTEDGE,L"ThunderRT6TextBox",L"native",WS_CHILD|WS_VISIBLE|ES_AUTOHSCROLL,210,40,100,24,root,(HMENU)3,runtime,NULL);CHECK(edit);
     HWND multiline=CreateWindowExW(WS_EX_CLIENTEDGE,L"ThunderRT6TextBox",L"alpha\r\nbeta",WS_CHILD|WS_VISIBLE|ES_MULTILINE|ES_AUTOVSCROLL|WS_VSCROLL|WS_HSCROLL,0,152,140,36,root,(HMENU)11,runtime,NULL);CHECK(multiline);
     HWND password=CreateWindowExW(WS_EX_CLIENTEDGE,L"ThunderRT6TextBox",L"secret",WS_CHILD|WS_VISIBLE|ES_PASSWORD|ES_CENTER|ES_AUTOHSCROLL,150,152,140,28,root,(HMENU)12,runtime,NULL);CHECK(password);
+    HWND hscroll=CreateWindowW(L"ThunderRT6HScrollBar",L"",WS_CHILD|WS_VISIBLE|SBS_HORZ,0,194,140,17,root,(HMENU)13,runtime,NULL);
+    HWND vscroll=CreateWindowW(L"ThunderRT6VScrollBar",L"",WS_CHILD|WS_VISIBLE|SBS_VERT,300,0,17,140,root,(HMENU)14,runtime,NULL);CHECK(hscroll && vscroll);
     HWND checkbox=CreateWindowW(L"ThunderRT6CheckBox",L"&Check",WS_CHILD|WS_VISIBLE|WS_TABSTOP|BS_AUTO3STATE,210,90,120,30,root,(HMENU)4,runtime,NULL);CHECK(checkbox);
     WCHAR real_check_class[80];CHECK(RealGetWindowClassW(checkbox,real_check_class,80) && wcscmp(real_check_class,L"Button") && wcscmp(real_check_class,L"BUTTON"));
-    if(styled)CHECK(attached(group) && attached(button) && attached(default_button) && attached(edit) && attached(multiline) && attached(password) && attached(checkbox));
+    if(styled)CHECK(attached(group) && attached(button) && attached(default_button) && attached(edit) && attached(multiline) && attached(password) && attached(hscroll) && attached(vscroll) && attached(checkbox));
     /* Same spelling under another registration owner must remain custom. */
     WNDCLASSW impostor={0};impostor.lpfnWndProc=DefWindowProcW;
     impostor.hInstance=cls.hInstance;impostor.lpszClassName=L"ThunderRT6CommandButton";
@@ -141,6 +143,12 @@ static int child(const WCHAR *runtime_path,BOOL styled,BOOL aware)
     CHECK(SendMessageW(multiline,EM_SETREADONLY,TRUE,0));SetFocus(multiline);SendMessageW(multiline,WM_CHAR,L'Z',0);GetWindowTextW(multiline,text,80);CHECK(!wcscmp(text,multiline_original));
     SendMessageW(password,EM_SETPASSWORDCHAR,L'*',0);CHECK(SendMessageW(password,EM_GETPASSWORDCHAR,0,0)==L'*');
     CHECK(((DWORD)GetWindowLongPtrW(password,GWL_STYLE)&(ES_PASSWORD|ES_CENTER))==(ES_PASSWORD|ES_CENTER));
+    SCROLLINFO scroll={.cbSize=sizeof(scroll),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS,.nMin=-12,.nMax=200000,.nPage=23,.nPos=123456};
+    CHECK(SetScrollInfo(hscroll,SB_CTL,&scroll,TRUE)>=0 && SetScrollInfo(vscroll,SB_CTL,&scroll,TRUE)>=0);
+    scroll.fMask=SIF_RANGE|SIF_PAGE|SIF_POS;scroll.nMin=scroll.nMax=scroll.nPage=scroll.nPos=0;
+    CHECK(GetScrollInfo(hscroll,SB_CTL,&scroll) && scroll.nMin==-12 && scroll.nMax==200000 && scroll.nPage==23 && scroll.nPos==123456);
+    EnableWindow(vscroll,FALSE);CHECK(!IsWindowEnabled(vscroll));EnableWindow(vscroll,TRUE);
+    if(styled)puts("VB_SCROLLBAR_VARIANTS_OK horizontal=1 vertical=1 range=1 page=1 position=1 disabled=1");
     SendMessageW(button,BM_CLICK,0,0);CHECK(clicks==1);
     SetFocus(button);SendMessageW(button,WM_KEYDOWN,VK_SPACE,0);SendMessageW(button,WM_KEYUP,VK_SPACE,0);CHECK(clicks==2);
     SendMessageW(button,WM_ENABLE,FALSE,0);SendMessageW(button,WM_ENABLE,TRUE,0);
@@ -182,7 +190,7 @@ static int child(const WCHAR *runtime_path,BOOL styled,BOOL aware)
     puts("VB_CHECKBOX_GRAPHICAL_PUSHLIKE_OK value_click_font_geometry_preserved=1");
     CHECK(DestroyWindow(checkbox) && DestroyWindow(fake_check));CHECK(UnregisterClassW(L"ThunderRT6CheckBox",cls.hInstance));
     puts("VB_CHECKBOX_OK three_states=1 keyboard=1 notifications=4 owner_negative=1 font_preserved=1 detach=1");
-    CHECK(DestroyWindow(edit) && DestroyWindow(multiline) && DestroyWindow(password) && DestroyWindow(button) && DestroyWindow(default_button) && DestroyWindow(custom));settle();
+    CHECK(DestroyWindow(edit) && DestroyWindow(multiline) && DestroyWindow(password) && DestroyWindow(hscroll) && DestroyWindow(vscroll) && DestroyWindow(button) && DestroyWindow(default_button) && DestroyWindow(custom));settle();
     DWORD pixels[200*100];DWORD styled_hash=image(group,pixels,ARRAYSIZE(pixels));
     CHECK((pixels[72*200+24]&0xffffff)==RGB(67,31,219));
     /* Host USER/font caches are observed separately. Private leases and

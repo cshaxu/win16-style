@@ -3,7 +3,8 @@
   "scope": "VB HScrollBar/VScrollBar public range and visibility boundary.",
   "actual_source_basis": ["The admitted VB5/VB6 XP Styles forms contain both HScrollBar and VScrollBar.", "ImageProcessor dynamically changes the visible state and Max of horizontal and vertical scrollbars."],
   "renderer_boundary": "Exact ThunderRT5/6 H/VScrollBar maps to the existing SCROLLBAR renderer. Existing public SIF_RANGE/SIF_PAGE/SIF_POS handling and native scroll notifications remain the sole data/input contract.",
-  "existing_witness": "S6 records actual End/Home and range behavior, while win16_style_scroll_api exercises long range, external SetScrollInfo and list/Combo cases. No product source change is needed.",
+  "current_witness": {"x64_injected": "VB_SCROLLBAR_VARIANTS_OK horizontal=1 vertical=1 range=1 page=1 position=1 disabled=1", "x86_injected": "VB_SCROLLBAR_VARIANTS_OK horizontal=1 vertical=1 range=1 page=1 position=1 disabled=1"},
+  "existing_witness": "S6 records actual End/Home and range behavior, while win16_style_scroll_api exercises long range, external SetScrollInfo and list/Combo cases. The current private-desktop API test skips with ERROR_ACCESS_DENIED (5), but the runtime-owned probe above avoids that unavailable desktop dependency.",
   "not_covered": ["A runnable real VB sample varying every range/page state.", "Physical pointer drag on the current desktop."],
-  "product_change": "none"
+  "product_change": "test-only"
 }
