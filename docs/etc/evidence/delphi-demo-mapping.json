@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "task": "M0 T18 S2",
+  "status": "closed: all 74 frozen VCL seed units are either mapped to an existing bounded native protocol model or explicitly retained without a deceptive demo equivalent; no Delphi runtime support is implied",
+  "source": {
+    "audit": "docs/etc/evidence/delphi-controls-audit.json",
+    "catalog": "src/demo-exe/catalog.c",
+    "gallery": "src/demo-exe/gallery.c",
+    "observer": "tests/demo-exe/observe.c"
+  },
+  "existing_native_protocol_models": [
+    "TForm", "TMDIForm", "TFrame", "TGroupBox",
+    "TButton", "TCheckBox", "TRadioButton", "TRadioGroup",
+    "TEdit", "TMemo", "TRichEdit", "TComboBox", "TListBox",
+    "TMainMenu", "TPopupMenu", "TToolBar", "TStatusBar", "TControlBar", "TTabControl",
+    "TTreeView", "TListView", "THeaderControl", "TPageControl", "TProgressBar", "TTrackBar", "TUpDown", "TDateTimePicker", "TMonthCalendar",
+    "TImageList", "TDirectoryListBox", "TDriveComboBox", "TFileListBox",
+    "TTimer", "TOpenDialog", "TSaveDialog"
+  ],
+  "model_locations": {
+    "forms_containers_buttons": "catalog.c buttons()/containers()/MDI page plus gallery.c standard interaction window",
+    "text_lists_files": "catalog.c edits()/file_controls() and gallery.c EDIT/LISTBOX/COMBOBOX",
+    "menus_common_controls": "catalog.c common_lists()/ranges()/special() and gallery.c menu/about route",
+    "state_semantics": "tests/demo-exe/observe.c validates bare-versus-injected lifecycle, Apply/check/radio/list/combo/scroll, menu modal close, page catalogue and resource cleanup"
+  },
+  "no_safe_demo_equivalent": [
+    "TPanel", "TScrollBox", "TSplitter", "TBitBtn", "TSpeedButton", "TCheckListBox", "TColorBox", "TMaskEdit",
+    "TLabel", "TStaticText", "TImage", "TShape", "TBevel", "TPaintBox", "TChart",
+    "TActionList", "TCoolBar", "TAnimate", "THotKey",
+    "TStringGrid", "TDrawGrid", "TValueListEditor", "TDBGrid", "TDBEdit", "TDBComboBox", "TDBListBox", "TDBNavigator", "TDBLookupComboBox", "TDBLookupListBox",
+    "TButtonGroup", "TCategoryButtons", "TDockTabSet", "TTabSet", "TOutline", "TTabbedNotebook",
+    "TWebBrowser", "TMediaPlayer", "TOleContainer", "TTrayIcon"
+  ],
+  "boundary": "A listed model proves only the standard USER32/COMCTL interaction available to this project. It does not establish a VCL/FMX wrapper, component object, source property, custom drawing, data binding, action dispatch, image ownership or application canvas contract. Items without a safe model intentionally remain native rather than being approximated.",
+  "verification": {
+    "mapping_set": "PASS: seed=74, mapped=74, models=35, no_safe=39, duplicates=0, missing=0, unknown=0",
+    "source_boundary": "PASS: tests/demo-exe/boundary.py build/.ninja/x64/demo.exe confirmed GUI x64 imports and no style consumption; SHA-256 32fc3f929f97bfe0a87249df130fb4be3291a24c2fee9c0ca90455074928a271",
+    "governance": "PASS: Verify-Governance.ps1 -SelfTest (13 rejection cases)",
+    "display_observer": "SKIP: build/.ninja/x64/demo-observe.exe returned PRIVATE_DESKTOP_CREATE_FAIL error=5. No user desktop fallback was used.",
+    "deployment": "UNCHANGED: assets and O:/winnt/system32 agree for all four product files; no source or binary changed in S2."
+  },
+  "next": "S3 must establish real VCL wrapper ownership and public protocol evidence before changing a renderer path. It must not infer support from these native demo models."
+}

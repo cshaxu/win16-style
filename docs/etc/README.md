@@ -1,8 +1,11 @@
 # Supporting Material Index
 
-- [Delphi 控件审计](evidence/delphi-controls-audit.json)：T18 S1 的 VCL 68 个 UI 家族
-  种子、五个本机候选的固定身份及既有有限公共协议接收者；当前是进行中的审计，
+- [Delphi 控件审计](evidence/delphi-controls-audit.json)：T18 S1 的 VCL 74 个 UI 家族
+  种子、五个本机候选的固定身份及既有有限公共协议接收者；这是冻结审计，
   不是 Delphi 或 FMX 已获支持的声明。
+
+- [Delphi demo 对应](evidence/delphi-demo-mapping.json)：T18 S2 将 S1 控件种子逐项
+  映射到现有纯原生 demo 模型或无安全等价模型的保留边界；不证明 VCL/FMX 运行时支持。
 
 - [VB图片变体](evidence/vb-picture-variants.json)：T17 S11真实十按钮/四状态像素、
   同批包、许可与原生观察器限制；不作为图形Check/Option或全集支持声明。
