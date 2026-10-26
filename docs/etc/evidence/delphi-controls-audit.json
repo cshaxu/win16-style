@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "task": "M0 T18 S1",
+  "status": "active: phase-one static inventory and existing-evidence reconciliation; no Delphi renderer change is implied",
+  "scope_basis": {
+    "proposal": "docs/proposals/delphi-win32-controls.md",
+    "component_catalogue": "https://docwiki.embarcadero.com/RADStudio/Alexandria/en/VCL_Components_Categories_Index",
+    "framework_boundary": "The catalogue is a VCL category seed, not proof that an arbitrary Delphi executable is VCL, that a T-prefixed class is a safe native alias, or that FireMonkey is HWND-rendered. Exact component availability varies by Delphi release."
+  },
+  "frozen_vcl_ui_family_seed": {
+    "count": 68,
+    "groups": [
+      {"name": "forms_and_containers", "units": ["TForm", "TMDIForm", "TFrame", "TPanel", "TGroupBox", "TScrollBox", "TSplitter"]},
+      {"name": "buttons_and_selection", "units": ["TButton", "TBitBtn", "TSpeedButton", "TCheckBox", "TRadioButton", "TRadioGroup"]},
+      {"name": "text_and_lists", "units": ["TEdit", "TMemo", "TRichEdit", "TMaskEdit", "TComboBox", "TListBox", "TCheckListBox", "TColorBox"]},
+      {"name": "windowless_or_application_drawing", "units": ["TLabel", "TStaticText", "TImage", "TShape", "TBevel", "TPaintBox", "TChart", "TImageList"]},
+      {"name": "menus_and_action_surfaces", "units": ["TMainMenu", "TPopupMenu", "TActionList", "TToolBar", "TCoolBar", "TStatusBar", "TControlBar"]},
+      {"name": "common_controls", "units": ["TTreeView", "TListView", "THeaderControl", "TTabControl", "TPageControl", "TProgressBar", "TTrackBar", "TUpDown", "TDateTimePicker", "TMonthCalendar", "THotKey", "TAnimate"]},
+      {"name": "grids_files_and_data", "units": ["TStringGrid", "TDrawGrid", "TValueListEditor", "TDirectoryListBox", "TDriveComboBox", "TFileListBox", "TDBGrid", "TDBEdit", "TDBComboBox", "TDBListBox", "TDBNavigator", "TDBLookupComboBox", "TDBLookupListBox"]},
+      {"name": "embedded_and_nonvisual", "units": ["TWebBrowser", "TMediaPlayer", "TOleContainer", "TTimer", "TTrayIcon", "TOpenDialog", "TSaveDialog"]}
+    ],
+    "completion_predicate": "Each unit must eventually be independently classified as a bounded public receiver, native preservation, nonvisual/no-style meaning, or a missing real owner/protocol with a named receiver. No group-level compatibility claim is permitted."
+  },
+  "local_static_candidates": [
+    {
+      "path": "D:/programs/misc/DoubleKiller.exe",
+      "sha256": "cdd83ab909db749992d11ace2dff671493c0568d7a14697f8bef4b06d8647ca8",
+      "bits": 32,
+      "version": "1.6.1.80",
+      "identity": "VCL confirmed by historical native USER observations and Borland Delphi/TApplication/TForm static markers",
+      "known_live_surface": "TPageControl, TListView and VCL-owned wrappers; prior exact public renderer contracts are reusable only after current-package revalidation",
+      "current_receiver": "existing doublekiller native probe; private-desktop launch currently skips with error 5"
+    },
+    {
+      "path": "D:/programs/misc/md5summer.exe",
+      "sha256": "4646ce4f638e7d7ec820e7540b39bb185234e1f151d780c734ca557d6dba7ed9",
+      "bits": 32,
+      "version": "1.2.0.11",
+      "identity": "VCL confirmed; the executable declares 'Written in Borland Delphi 7' and has Borland Delphi/TApplication/TForm static markers",
+      "known_live_surface": "TMain, TShellTreeView, TPanel, TComboBox, TButton and a native Edit child; prior data distinguishes the native Edit route from opaque VCL wrappers",
+      "current_receiver": "existing MD5summer probe/evidence; private-desktop launch currently skips with error 5"
+    },
+    {
+      "path": "D:/programs/joytokey/JoyToKey.exe",
+      "sha256": "a8f52fa32501548e8c8256690024e2d08e7b3c269ac26440e81319c710325bb6",
+      "bits": "not yet PE-verified in this audit",
+      "version": "7.0.0.572",
+      "identity": "candidate only: TApplication/TForm/FMX static strings; not yet classified as VCL or FireMonkey",
+      "known_live_surface": "none",
+      "current_receiver": "read-only PE/resources and a self-owned bounded probe after framework identity is established"
+    },
+    {
+      "path": "D:/programs/RedAlert/cnc-ddraw config.exe",
+      "sha256": "e21131cca40be055b9cf728ed822474f2560793635fc323127b63ba9a838d5d6",
+      "bits": "not yet PE-verified in this audit",
+      "version": "1.0.0.0",
+      "identity": "candidate only: TApplication/TForm/FMX static strings; not yet classified as VCL or FireMonkey",
+      "known_live_surface": "none",
+      "current_receiver": "read-only PE/resources and a self-owned bounded probe after framework identity is established"
+    },
+    {
+      "path": "D:/programs/misc/HDTunePro.exe",
+      "sha256": "c6c4e51fbc93778f18732a2aec10f54188f247adfb452e7f87c2cb2bcdd6d9ea",
+      "bits": 32,
+      "version": "4.60.0.0",
+      "identity": "framework unclassified; no Delphi/FMX static marker was found in this bounded scan",
+      "known_live_surface": "historical elevated observations show standard USER/COMCTL classes but do not establish Delphi ownership",
+      "current_receiver": "not a Delphi proof; elevated real-app probing remains owner-default skip"
+    }
+  ],
+  "reusable_bounded_receivers": [
+    {"families": ["TButton", "TComboBox"], "evidence": "M0 T15 S4", "boundary": "only after initialized public native protocol and registration owner checks; no class-prefix inference"},
+    {"families": ["TPageControl", "TTabControl"], "evidence": "M0 T15 S5", "boundary": "ordinary initialized public tab route only"},
+    {"families": ["THeaderControl", "TListView", "TTreeView", "TShellTreeView", "TProgressBar", "TTrackBar", "TUpDown"], "evidence": "M0 T15 S6-S11", "boundary": "only the exact underlying native common-control protocol and validated public drawing scope"}
+  ],
+  "known_non_receivers_pending_separate_evidence": [
+    "FMX candidates: do not assume HWND controls or reuse VCL paths",
+    "TPanel, TLabel, TImage, TShape, TBevel, TPaintBox, TChart and custom canvas surfaces: application/framework drawing remains native until a content-neutral public drawing contract exists",
+    "TStringGrid, TDrawGrid and DB controls: do not reinterpret cells, bindings or owner-draw callbacks",
+    "TWebBrowser, TMediaPlayer, TOleContainer and nonvisual components: not generic renderer targets"
+  ],
+  "environment_result": {
+    "probe": "build/.ninja/x86/doublekiller-driver.exe --help",
+    "result": "PRIVATE_DESKTOP_CREATE_FAIL error=5",
+    "meaning": "Current display/session permissions prevent this native private-desktop probe from proving visible control behaviour. This is a precise skip, not a display pass and not a reason to use the user desktop."
+  },
+  "next_s1_work": [
+    "Read-only classify the two FMX-marked candidates by PE/resource/framework evidence before any launch.",
+    "Complete every one of the 68 seed units with a framework/version and public-receiver disposition; expand or split version-specific units where real evidence requires it.",
+    "Run self-owned current-package probes only when the private desktop becomes available; retain error 5 as a skip otherwise.",
+    "Define S2 demo correspondences only after the T18 matrix is complete; demo must not impersonate a real Delphi runtime."
+  ]
+}
