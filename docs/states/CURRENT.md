@@ -2,31 +2,31 @@
 
 ## Current Work
 
-用户明确准入原队列第3项，分配M0 T17，当前S1审计控件全貌；已冻结两版本/内建及扩展目录，真实状态实现缺口留给后续S；工作区准入前干净，
-基线202c4ee556bd88a4610a9c62d93d5e728617aa57，既有关闭/取消任务及TODO保持。
-S1已冻结148个版本/控件单位并完成干净基线双宽及三项短包（2.03秒）；正在提交/远端复核，S2扩充原生64位demo，S3起按盘点连续分S适配，最后
-单独收口S做全任务审计。允许在此T内自动顺序准入后续S，不提前占其编号。
+M0 T17 S1控件全貌审计已交付关闭；当前顺序准入S2，按用户要求扩充demo.exe。
+S1冻结148版本/控件单位，真实应用/OCX/变体缺口交后续S，不冒称已全部适配。
+S2用纯C64位原生对应项展示控件、状态和交互；32位VB/OCX真实验证仍在独立探针。
+S3起连续分S实施，最后独立收口S逐项审计；T17/M0开放，其他候选不启动。
 
-## M0 T17 S1 Packet
+## M0 T17 S2 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | New；用户明确准入原队列第3项，T17 S1，M0固定 |
-| Admission And Approval | 用户指定S1审计、S2 demo、S3及多个S实施、最后独立收口；永久提交推送/按需双发布保持 |
-| Objective | 冻结VB5/VB6内建/微软扩展控件目录、关键变体、真实模块/类/绘制边界、已有覆盖/缺口与后续S接收者 |
-| Non-goals | S1不修改renderer或伪造全部支持；不改标题/字体/菜单/滚动条/原资源，不改兄弟仓库，不引入VB编译器/IDE必需依赖 |
-| Reference Baseline | 202c4ee；产品0.15.0.0、197输入、三组件四产物、ABI3/35detours40slots；T16撤回状态保持 |
-| Candidate Proposal | [VB5/VB6完整适配](../proposals/vb5-vb6-controls.md)，由本包和用户指定S顺序控制 |
-| Files And ABI Surface | S1审计文档/纯C观测scratch，不改公开ABI；S2保持64位纯C demo，以native对应项展示，真实VB由独立32位探针验证 |
-| Applicable Rules | 全Task Reading Set/ARCHITECTURE/CODING/UI/来源策略；纯C17/GCC/Ninja/ccache；无computer-use/兄弟依赖 |
-| Verification | 微软目录与真实type library/本地模块路径SHA对照、精确代码命中盘点；真实/仿真分别标记；短聚焦验证，不重复长矩阵 |
-| Expected Markers | 完整目录逐项行、HWND/无窗口/非可视分类、模块所有者、变体/事件/数据/清理契约、缺样本阻断及接收者；四初始化状态不混淆 |
-| Asset Needs | build/t17-audit为只读观测/官方研究包/原生探针和日志；build/t17-package为后续本T候选包/备份；S1额外登记build/t15-package/t17-s1-audit-baseline作未改产品的同源干净重建，研究C源码/官方VB5 DLL按矩阵SHA交接后续S并在本T结束清理，无用基线包先提炼后精确清理；保留其他任务源码/缓存/截图 |
-| Reporting Requirements | S1先报告全貌及缺口，再分S；可用样本不等于完整支持，demo native对应项不等于真实VB验证；未覆盖/许可/环境限制如实记录 |
-| Stop Conditions | 不全局注册OCX、不安装IDE/关闭安全/注入既有进程；缺真实模块或许可则记录，不从仿真推断通过；重大架构改变先给证据方案 |
-| Exit Criteria | S1完成目录/变体冻结、准确缺口及接收者、必要构建/短包和治理检查、提交推送实际远端后关闭S1并续S2；T17保持开放 |
-| Original Owner Request | 准入队列第3条；S1审计全貌，S2加入demo，S3和多个S实施，最后单独收口S完成 |
-| Similar-Issue Sweep | 所有MSVBVM60/Thunder精确命中、按钮/编辑/列表/滚动/容器/无窗口/特殊及微软OCX；VB5单列，不凭类前缀或native测试冒称VB支持 |
+| Identifier Mode | Continuation；用户指定S2加入demo，S1完成实际远端后顺序准入 |
+| Admission And Approval | 用户T17整任务及S顺序授权，永久提交推送/有binary change双发布保持 |
+| Objective | 将S1目录的可见控件族以真实原生对应项加入64位demo，提供状态/数据/交互展示和明确非视觉/应用内容边界 |
+| Non-goals | 不把native demo冒称真实VB或32位OCX，不内建renderer，不改DLL视觉/字体/资源/传播；不新组件/第五产物或VB编译器依赖 |
+| Reference Baseline | S1 P1 944402a已实际远端208文件/197输入，产品仍0.15.0.0；S2产品版本转T17，原四文件构建发布 |
+| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)及[S1矩阵](../etc/evidence/vb-controls-audit.json)；用户指定S2 |
+| Files And ABI Surface | demo gallery/main/版本、必要CMake/native系统导入门禁及对应测试；demo仍64位纯C native API，不导入ntw16s；可按需链接COMCTL32/GDI32和固定系统RichEdit；公开DLL ABI不变 |
+| Applicable Rules | Task Reading Set/架构/编码/UI/资源来源；C17/GCC/Ninja/ccache；禁computer-use/兄弟依赖/全局注册 |
+| Verification | 新gallery每页一次正常/样式对照、有限状态/事件/退出，原有demo交互保留；双宽ABI、干净同批四文件实际聚焦包/系统导入/原资源门禁与双发布SHA；短测试不重复大矩阵 |
+| Expected Markers | native样例实际类/数量/页面、可交互状态和通知、资源释放/正常显示截图、裸/挂钩差异及DLL实际路径；不把展示当所有VB通过 |
+| Asset Needs | build/t17-audit保留S1原生研究/官方VB5 DLL按SHA交接未来实现；build/t17-package登记本T构建/包/探针/备份，先提炼后精确清理；保留其他任务49源码/缓存/外部图 |
+| Reporting Requirements | 明确native对应项、无视觉部件、应用图像/数据/嵌入对象保留和无合适对应项；实际测试时长/跳过面、四文件及双发布/远端；T17保持开放 |
+| Stop Conditions | 不能将32位OCX加载进64位demo；如需第四组件/第五产品/安全边界则先证据方案；不静默改变已确认视觉或新造图形资源 |
+| Exit Criteria | demo展示交付、双宽同包和有限实际测试、双发布八SHA、提交/实际远端/资产交接清理后关闭S2并续S3；不凭展示关闭T17 |
+| Original Owner Request | S1审计控件全貌，S2将这些控件加入demo.exe，S3和多个S负责实施，最后收口S |
+| Similar-Issue Sweep | 原demo Apply/列表/焦点/菜单保留，新增每控件族、native系统库所有者/有无HWND/自绘内容边界；实际VB证据与C对应项分开 |
 
 ## Identifier State
 
@@ -34,8 +34,8 @@ S1已冻结148个版本/控件单位并完成干净基线双宽及三项短包�
 - Last allocated T: 17
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户明确准入T17并指定S顺序；可在T17内自动顺序拆S实施到独立收口，不准入其他候选。
-- Last delivery: M0 T16 S2 P2（整套轮廓撤回；196代码路径/197输入等同T15，8项短包/双发布/远端213文件/201对象恢复及169映像清理完成）
-- Open task: T17 S1审计，T17/M0开放；既有任务关闭/取消状态保持。
+- Last delivery: M0 T17 S1 P2（148单位审计；基线双宽/三项包2.03秒、208远端文件、147映像清理和研究资产交接；无产品变化）
+- Open task: T17 S2原生demo控件展示；T17/M0开放，既有关闭/取消保持。
 
 ## Technical Baseline
 
@@ -48,6 +48,8 @@ T16 S2已收口并撤回产品源码/测试，恢复0.15.0.0 / M0 T15元数据�
 及[证据](../etc/evidence/outline-withdrawal.json)接收实际验证；P1远端/恢复清理均通过。
 
 ## Recent Closure
+
+- [T17 S1 VB全貌审计](../history/M0-T17-S1-vb-control-audit.md)：148单位、原始VB5/VB6目录/真实类型库与源码缺口；三项基线包2.03秒、208远端文件和147映像清理完成，研究资产交接S2/后续；S1关闭，T17开放。
 
 - [T16 S2轮廓效果撤回](../history/M0-T16-S2-outline-withdrawal.md)：产品0.15.0.0，196代码/197输入恢复T15，8项实际包4.52秒、双发布八SHA、远端213文件及三404、201对象恢复、169映像精确根清理通过；S2/T16关闭（撤回），M0开放。
 
@@ -121,8 +123,8 @@ T16 S2已收口并撤回产品源码/测试，恢复0.15.0.0 / M0 T15元数据�
 
 ## Last Packet Closure
 
-T16 S2 P1实际提交/diff与用户撤回指令逐项核对：新增模块/拦截/测试/注册全部撤回，
-196代码路径和197输入快照等同基线，原资源/ABI/队列保持。远端213文件实际读取、
-三删除路径404、201对象恢复/八备份可恢复以及169映像/reparse0后精确清理通过。
-P2只关闭记录，产品源码/四发布文件未再改动。S2/T16关闭（撤回），M0开放。
-按用户要求短聚焦测试，不虚构完整91/99或物理拖动测试；既有T11债务保留。
+T17 S1 P1 944402a实际远端208文件/197输入及四现发布文件通过；实际diff/目录/原始
+请求复核完成。S1仅审计，197产品输入/八部署SHA不变，不虚构新增适配或发布。
+干净基线双宽及三项实际包2.03秒，147映像无占用/reparse0后清理精确基线根；
+T17研究C源码/官方VB5 DLL按SHA交接后续S，继续登记。S1关闭，用户指定S2顺序准入，
+T17/M0保持开放；真实必测缺口仍由后续实施S接收，不可据native demo消除。

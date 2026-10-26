@@ -4401,5 +4401,82 @@
     "targets": "all",
     "status": "passed"
   },
-  "S1_delivery": "verified audit; P1 push/actual remote pending; T17 stays open"
+  "S1_delivery": "S1 closed after P1 actual remote; T17 open, S2 admitted for native demo counterparts",
+  "S1_remote": {
+    "status": "passed",
+    "commit": "944402af36a7507269ea5efad90071c9e105570e",
+    "files": 208,
+    "inputs": 197,
+    "deployed_SHA_matches": 8
+  },
+  "S1_tested_baseline_artifacts": {
+    "status": "PACKAGE PASS",
+    "artifacts": {
+      "run16s.exe": {
+        "architecture": "x64",
+        "version": "M0 T15",
+        "sha256": "2e5afacbf6dfcd364a830955289623871cd41dd287e9144f449596c3b98d6243",
+        "imports": [
+          "advapi32.dll",
+          "kernel32.dll",
+          "msvcrt.dll",
+          "ole32.dll",
+          "shell32.dll"
+        ]
+      },
+      "ntw16s32.dll": {
+        "architecture": "x86",
+        "version": "M0 T15",
+        "sha256": "3ec03298afd94cf38d31ba835c8824a02a5adc72eeea2b817bfb91b2ee0d7757",
+        "imports": [
+          "COMCTL32.dll",
+          "dwmapi.dll",
+          "GDI32.dll",
+          "KERNEL32.dll",
+          "api-ms-win-crt-convert-l1-1-0.dll",
+          "api-ms-win-crt-heap-l1-1-0.dll",
+          "api-ms-win-crt-private-l1-1-0.dll",
+          "api-ms-win-crt-runtime-l1-1-0.dll",
+          "api-ms-win-crt-stdio-l1-1-0.dll",
+          "api-ms-win-crt-string-l1-1-0.dll",
+          "USER32.dll",
+          "UxTheme.dll",
+          "COMCTL32.dll"
+        ]
+      },
+      "ntw16s64.dll": {
+        "architecture": "x64",
+        "version": "M0 T15",
+        "sha256": "4de5a3bdfabb147fc08ff44076c7c528a910a9e5466da0fe5414e6b6996e4bdc",
+        "imports": [
+          "COMCTL32.dll",
+          "dwmapi.dll",
+          "GDI32.dll",
+          "KERNEL32.dll",
+          "msvcrt.dll",
+          "USER32.dll",
+          "UxTheme.dll",
+          "COMCTL32.dll"
+        ]
+      },
+      "demo.exe": {
+        "architecture": "x64",
+        "version": "M0 T15",
+        "sha256": "fe3ea7afb4321986d9d71dccdd6b2fdaed7e76beedc49b5ee99d28635e16b901",
+        "imports": [
+          "kernel32.dll",
+          "msvcrt.dll",
+          "user32.dll"
+        ]
+      }
+    },
+    "original_resource_tables_per_dll": 18
+  },
+  "S1_cleanup": {
+    "reparse": 0,
+    "images": 147,
+    "status": "passed; exact S1 baseline root removed after147 image checks/reparse0",
+    "root": "O:\\repos.hobby\\win16style\\build\\t15-package\\t17-s1-audit-baseline"
+  },
+  "S1_retained_handoff": "build/t17-audit pure-C probes/typelib logs and official VB5 runtime identity retained for T17 implementation; not product dependencies"
 }
