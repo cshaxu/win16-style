@@ -248,13 +248,20 @@ static int worker(int argc,WCHAR **argv){
     do{if(entry.th32ProcessID==pid){parent=entry.th32ParentProcessID;break;}}while(Process32NextW(process_snapshot,&entry));CloseHandle(process_snapshot);
     CHECK(parent==(styled?p.dwProcessId:GetCurrentProcessId()));
     printf("VB_SAMPLE_TARGET pid=%lu creator=%lu initial_pid=%lu bits=32 path=%ls dpi=%u\n",pid,parent,p.dwProcessId,path,GetDpiForWindow(form));
-    HANDLE snap=CreateToolhelp32Snapshot(TH32CS_SNAPMODULE|TH32CS_SNAPMODULE32,pid);
+    HANDLE snap=INVALID_HANDLE_VALUE;unsigned retries=0;
+    do{snap=CreateToolhelp32Snapshot(TH32CS_SNAPMODULE|TH32CS_SNAPMODULE32,pid);
+        if(snap!=INVALID_HANDLE_VALUE || GetLastError()!=ERROR_BAD_LENGTH)break;
+    }while(++retries<8);
+    printf("VB_SAMPLE_MODULE_SNAPSHOT bad_length_retries=%u error=%lu\n",retries,snap==INVALID_HANDLE_VALUE?GetLastError():0);
     CHECK(snap!=INVALID_HANDLE_VALUE);
     MODULEENTRY32W mod= {.dwSize=sizeof(mod)};
     HMODULE runtime=NULL;
     BOOL dll=FALSE;
     CHECK(Module32FirstW(snap,&mod));
     do{
+        if(!_wcsicmp(mod.szModule,L"CompressZItLib6.dll")){
+            printf("VB_SAMPLE_PRIVATE_COM base=%p path=%ls\n",(void *)mod.hModule,mod.szExePath);file_path(mod.szExePath);
+        }
         if((!_wcsicmp(mod.szModule,L"MSVBVM60.DLL") || !_wcsicmp(mod.szModule,L"MSVBVM50.DLL"))){
             runtime=mod.hModule;
             printf("VB_SAMPLE_RUNTIME base=%p path=%ls\n",(void *)runtime,mod.szExePath);
@@ -268,7 +275,8 @@ static int worker(int argc,WCHAR **argv){
     }
     while(Module32NextW(snap,&mod));
     CloseHandle(snap);
-    BOOL file_verify=!wcscmp(argv[3],L"files-verify");
+    BOOL filedir_verify=!wcscmp(argv[3],L"filedir-verify");
+    BOOL file_verify=filedir_verify || !wcscmp(argv[3],L"files-verify");
     BOOL inventory=file_verify || !wcscmp(argv[3],L"inventory");
     CHECK(runtime && dll==styled && EnumChildWindows(form,collect,0) && (inventory?count>0:count>10));
     CHECK(swprintf_s(path,MAX_PATH,L"%ls/actor-%ls.bmp",scratch,styled?L"styled":L"bare")>0);
@@ -325,11 +333,18 @@ static int worker(int argc,WCHAR **argv){
                     CHECK(SendMessageW(w,drive?CB_GETCURSEL:LB_GETCURSEL,0,0)==selection);
                     if(drive){SendMessageW(w,CB_SHOWDROPDOWN,TRUE,0);queue_key(w,VK_ESCAPE);
                         CHECK(!SendMessageW(w,CB_GETDROPPEDSTATE,0,0) && SendMessageW(w,CB_GETCURSEL,0,0)==selection);}
+                    if(filedir_verify && wcsstr(cls,L"FileListBox")){
+                        LRESULT n=SendMessageW(w,LB_GETCOUNT,0,0);CHECK(n>1);
+                        queue_key(w,VK_END);CHECK(SendMessageW(w,LB_GETCURSEL,0,0)==n-1 && queue_state->commands>0);
+                        queue_key(w,VK_HOME);CHECK(SendMessageW(w,LB_GETCURSEL,0,0)==0 && queue_state->commands>0);
+                        SendMessageW(w,LB_SETCURSEL,(WPARAM)selection,0);CHECK(SendMessageW(w,LB_GETCURSEL,0,0)==selection);
+                        puts("VB_REAL_FILE_INPUT_OK queued_end_home=1 parent_notifications=1 selection_restored=1");
+                    }
                     ++file_controls;
                 }
             }
         }
-        if(file_verify){CHECK(file_controls==3);puts("VB_REAL_FILES_OK runtime_owned=3 actual_system_text=3 font_geometry_selection_preserved=1 drive_escape=1");}
+        if(file_verify){CHECK(file_controls==(filedir_verify?2u:3u));printf("VB_REAL_FILES_OK runtime_owned=%u styled=%u actual_system_controls=%u font_geometry_selection_preserved=1 drive_escape=%u\n",file_controls,styled,styled?file_controls:0,!filedir_verify);}
         printf("VB_SAMPLE_INVENTORY_OK windows=%u selection_unchanged=1\n",count);
     }
 

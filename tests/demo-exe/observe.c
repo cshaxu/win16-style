@@ -114,7 +114,8 @@ static void catalog_pages(HWND main,DWORD thread,HANDLE target,BOOL styled,const
     /* One representative reopened page checks application-owned font retirement
      * after native libraries have warmed, without replaying a full UI matrix. */
     DWORD warm=GetGuiResources(target,GR_GDIOBJECTS);catalog_window=NULL;SendMessageW(main,WM_COMMAND,2000,0);EnumThreadWindows(thread,find_catalog,(LPARAM)main);CHECK(catalog_window);SendMessageW(catalog_window,WM_CLOSE,0,0);
-    CHECK(GetGuiResources(target,GR_GDIOBJECTS)==warm);printf("DEMO CATALOG PASS styled=%u pages=8 reopen=1 resources_stable=1 initial=%lu final=%lu\n",(unsigned)styled,initial,warm);
+    DWORD final=GetGuiResources(target,GR_GDIOBJECTS);printf("DEMO CATALOG RESOURCE SAMPLE styled=%u warm=%lu final=%lu\n",(unsigned)styled,warm,final);
+    CHECK(final==warm);printf("DEMO CATALOG PASS styled=%u pages=8 reopen=1 resources_stable=1 initial=%lu final=%lu\n",(unsigned)styled,initial,warm);
 }
 static int matrix(int argc,WCHAR **argv)
 {

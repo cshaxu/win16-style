@@ -578,6 +578,7 @@
         }
       ]
     },
-    "coordination_review": "Actual f058ffb diff and original148-unit request reviewed; three exact VB5 classes only; product C/CMake/test adds424 removes20 net404, no file moves/deletions. Runtime owns original images/data/callbacks, DLL owns private font leases and observer lifecycle; no other task changes overwritten. VB6 and untested variants received by S8/following T17 S. Demo initial failure remains recorded, not declared repaired."
+    "coordination_review": "Actual f058ffb diff and original148-unit request reviewed; three exact VB5 classes only; product C/CMake/test adds423 removes20 net403, no file moves/deletions. Runtime owns original images/data/callbacks, DLL owns private font leases and observer lifecycle; no other task changes overwritten. VB6 and untested variants received by S8/following T17 S. Demo initial failure remains recorded, not declared repaired.",
+    "numstat_correction": "S8 re-summed actual P1 numstat:423 additions/20 deletions/net403; previous closure arithmetic424/404 was off by1, no source or test claim changed"
   }
 }

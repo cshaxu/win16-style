@@ -66,3 +66,5 @@
 - [T17 S6原生输入](evidence/vb-input-controls.json)：真实VB消息队列/通知与双宽自包含见证正负例，普通输入范围和未认证变体。
 
 - [T17 S7文件控件](evidence/vb-file-controls.json)：真实VB5文件/目录/驱动器列表、准确owner-draw DC、图像所有权与双宽生命周期验证；VB6未认证范围另列。
+
+- [T17 S8真实VB6文件组](evidence/vb6-file-controls.json)：准确FileListBox/DirListBox、可选免注册原作者样本与双版本/双宽模型；VB6驱动器列表仍未认证。

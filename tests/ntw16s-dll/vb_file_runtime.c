@@ -7,6 +7,11 @@ static HFONT font;
 static WNDPROC list_proc,combo_proc;
 static HWND remove_on_draw;
 static unsigned notices;
+#ifdef VB_FILE_RUNTIME60
+static const WCHAR *names[]={L"ThunderRT6FileListBox",L"ThunderRT6DirListBox"};
+#else
+static const WCHAR *names[]={L"ThunderRT5FileListBox",L"ThunderRT5DirListBox",L"ThunderRT5DriveListBox"};
+#endif
 static LRESULT CALLBACK files(HWND w,UINT m,WPARAM a,LPARAM b)
 {
     WCHAR cls[80];GetClassNameW(w,cls,80);
@@ -58,7 +63,6 @@ __declspec(dllexport) BOOL WINAPI VbFileRegister(void)
     if(!font)return FALSE;
     WNDCLASSW cls={.hInstance=instance,.lpfnWndProc=parent,.lpszClassName=L"VBFileFixtureParent"};
     if(!RegisterClassW(&cls))return FALSE;
-    const WCHAR *names[]={L"ThunderRT5FileListBox",L"ThunderRT5DirListBox",L"ThunderRT5DriveListBox"};
     for(unsigned i=0;i<ARRAYSIZE(names);++i){
         if(!GetClassInfoW(NULL,i==2?L"COMBOBOX":L"LISTBOX",&cls))return FALSE;
         if(i==2)combo_proc=cls.lpfnWndProc;else list_proc=cls.lpfnWndProc;
@@ -69,10 +73,11 @@ __declspec(dllexport) BOOL WINAPI VbFileRegister(void)
 }
 __declspec(dllexport) void WINAPI VbFileRemoveOnDraw(HWND w){remove_on_draw=w;}
 __declspec(dllexport) unsigned WINAPI VbFileNotices(void){return notices;}
+__declspec(dllexport) unsigned WINAPI VbFileVersion(void){return ARRAYSIZE(names)==2?6:5;}
 __declspec(dllexport) BOOL WINAPI VbFileRelease(void)
 {
-    const WCHAR *names[]={L"ThunderRT5FileListBox",L"ThunderRT5DirListBox",L"ThunderRT5DriveListBox",L"VBFileFixtureParent"};
     for(unsigned i=0;i<ARRAYSIZE(names);++i)if(!UnregisterClassW(names[i],instance))return FALSE;
+    if(!UnregisterClassW(L"VBFileFixtureParent",instance))return FALSE;
     return DeleteObject(font);
 }
 BOOL WINAPI DllMain(HINSTANCE module,DWORD reason,LPVOID reserved)

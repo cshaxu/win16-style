@@ -32,3 +32,10 @@ About.frm声明freeware/as-is；不据此推断整个镜像的源码许可。样
 图像不进入产品或必需测试，不安装/注册外部组件。实际图像仍由原运行库绘制；
 独立C模型只生成测试辨识色块，不是替代产品资源。固定身份与边界见
 [文件控件证据](../evidence/vb-file-controls.json)。
+
+S8原作者Benjamin Dowse的Compress-Z-It示例来自vbAccelerator固定归档提交，
+readme1st.txt明确免费修改/使用；样本及依赖只在本地可选研究中运行。其Form_Load
+仅构造压缩类，类初始化仅赋默认值；不调用压缩按钮/文件写入方法。测试侧本地
+清单用公开类型库GUID作免注册COM绑定，不运行DllRegisterServer/安装zlib/改系统
+注册表。原EXE/DLL/源码/声明保持，未进入产品或必需测试；见
+[真实VB6文件组](../evidence/vb6-file-controls.json)。

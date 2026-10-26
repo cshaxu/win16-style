@@ -40,7 +40,9 @@ static int child(const WCHAR *runtime_path,const WCHAR *witness_path,BOOL styled
     BOOL (WINAPI *registration)(void)=(void *)GetProcAddress(runtime,"VbFileRegister");
     BOOL (WINAPI *release)(void)=(void *)GetProcAddress(runtime,"VbFileRelease");
     void (WINAPI *retire)(HWND)=(void *)GetProcAddress(runtime,"VbFileRemoveOnDraw");
-    CHECK(registration && release && retire && registration());
+    unsigned (WINAPI *version)(void)=(void *)GetProcAddress(runtime,"VbFileVersion");
+    CHECK(registration && release && retire && version && registration());
+    BOOL vb6=version()==6;unsigned total=vb6?2:3;
     HMODULE dll=GetModuleHandleW(sizeof(void *)==8?L"ntw16s64.dll":L"ntw16s32.dll");
     BOOL (__cdecl *attached)(HWND)=dll?(void *)GetProcAddress(dll,"Ntw16sWindowAttached"):NULL;
     BOOL (__cdecl *remove)(HWND)=dll?(void *)GetProcAddress(dll,"Ntw16sWindowRemove"):NULL;
@@ -54,9 +56,9 @@ static int child(const WCHAR *runtime_path,const WCHAR *witness_path,BOOL styled
     HOOKPROC get=(HOOKPROC)(UINT_PTR)GetProcAddress(witness,"VbQueueGet"),sent=(HOOKPROC)(UINT_PTR)GetProcAddress(witness,"VbQueueSent");CHECK(get && sent);
     HHOOK get_hook=SetWindowsHookExW(WH_GETMESSAGE,get,witness,state->tid),sent_hook=SetWindowsHookExW(WH_CALLWNDPROC,sent,witness,state->tid);CHECK(get_hook && sent_hook);
     HWND root=CreateWindowW(L"VBFileFixtureParent",L"File controls",WS_OVERLAPPEDWINDOW,0,0,450,300,NULL,NULL,runtime,NULL);CHECK(root);
-    const WCHAR *names[]={L"ThunderRT5FileListBox",L"ThunderRT5DirListBox",L"ThunderRT5DriveListBox"};
+    const WCHAR *names[]={vb6?L"ThunderRT6FileListBox":L"ThunderRT5FileListBox",vb6?L"ThunderRT6DirListBox":L"ThunderRT5DirListBox",L"ThunderRT5DriveListBox"};
     HWND controls[3];HFONT sources[3];
-    for(unsigned i=0;i<3;++i){DWORD style=WS_CHILD|WS_VISIBLE|(i==2?(CBS_DROPDOWNLIST|CBS_OWNERDRAWFIXED|CBS_HASSTRINGS):(LBS_NOTIFY|LBS_HASSTRINGS|(i==1?LBS_OWNERDRAWVARIABLE:0)));
+    for(unsigned i=0;i<total;++i){DWORD style=WS_CHILD|WS_VISIBLE|(i==2?(CBS_DROPDOWNLIST|CBS_OWNERDRAWFIXED|CBS_HASSTRINGS):(LBS_NOTIFY|LBS_HASSTRINGS|(i==1?LBS_OWNERDRAWVARIABLE:0)));
         controls[i]=CreateWindowExW(i==2?0:WS_EX_CLIENTEDGE,names[i],L"",style,(int)i*140,0,130,i==2?150:100,root,(HMENU)(UINT_PTR)(i+1),runtime,NULL);CHECK(controls[i]);
         sources[i]=(HFONT)SendMessageW(controls[i],WM_GETFONT,0,0);CHECK(sources[i]);
         for(unsigned item=0;item<3;++item){WCHAR text[40];swprintf_s(text,40,L"Native item %u",item);CHECK(SendMessageW(controls[i],i==2?CB_ADDSTRING:LB_ADDSTRING,0,(LPARAM)text)>=0);}
@@ -68,19 +70,19 @@ static int child(const WCHAR *runtime_path,const WCHAR *witness_path,BOOL styled
         if(i)CHECK(image_pixels(controls[i],i==2)==(i==2?144u:432u));
         printf("VB_FILES_RENDER_OK index=%u styled=%u system_text=%ld native_text=%ld\n",i,styled,state->system_text,state->native_text);
     }
-    WNDCLASSW impostor;CHECK(GetClassInfoW(NULL,L"LISTBOX",&impostor));impostor.hInstance=GetModuleHandleW(NULL);impostor.lpszClassName=L"ThunderRT5DirListBox";CHECK(RegisterClassW(&impostor));
+    WNDCLASSW impostor;CHECK(GetClassInfoW(NULL,L"LISTBOX",&impostor));impostor.hInstance=GetModuleHandleW(NULL);impostor.lpszClassName=names[1];CHECK(RegisterClassW(&impostor));
     HWND wrong=CreateWindowW(impostor.lpszClassName,L"",WS_CHILD|WS_VISIBLE|LBS_OWNERDRAWVARIABLE|LBS_HASSTRINGS,0,120,130,80,root,(HMENU)9,impostor.hInstance,NULL);CHECK(wrong);
     CHECK(SendMessageW(wrong,LB_ADDSTRING,0,(LPARAM)L"Untrusted owner")>=0);
     CHECK(!survey(state,event,wrong,VB_QUEUE_SURVEY));CHECK(state->system_text==0 && (!styled || !attached(wrong)));
     CHECK(DestroyWindow(wrong) && UnregisterClassW(impostor.lpszClassName,impostor.hInstance));
     DWORD gdi_before=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);
-    for(unsigned repeat=0;repeat<8;++repeat)for(unsigned i=0;i<3;++i){
+    for(unsigned repeat=0;repeat<8;++repeat)for(unsigned i=0;i<total;++i){
         CHECK(!survey(state,event,controls[i],VB_QUEUE_SURVEY));
     }
     DWORD gdi_after=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);CHECK(gdi_after<=gdi_before+2);
-    printf("VB_FILES_OWNERSHIP_OK wrong_runtime_owner_rejected=1 native_images_preserved=2 repeat_surveys=24 gdi_delta=%ld\n",(LONG)(gdi_after-gdi_before));
+    printf("VB_FILES_OWNERSHIP_OK wrong_runtime_owner_rejected=1 native_images_preserved=%u repeat_surveys=%u gdi_delta=%ld\n",total-1,total*8,(LONG)(gdi_after-gdi_before));
     ShowWindow(root,SW_SHOWNOACTIVATE);
-    for(unsigned i=0;i<3;++i){
+    for(unsigned i=0;i<total;++i){
         CHECK(SetFocus(controls[i]) || GetFocus()==controls[i]);
         state->commands=0;
         CHECK(PostMessageW(controls[i],WM_KEYDOWN,i==2?VK_DOWN:VK_END,1));
@@ -88,27 +90,35 @@ static int child(const WCHAR *runtime_path,const WCHAR *witness_path,BOOL styled
         CHECK(!survey(state,event,controls[i],0));
         CHECK(SendMessageW(controls[i],i==2?CB_GETCURSEL:LB_GETCURSEL,0,0)==2 && state->commands>0);
     }
-    SendMessageW(controls[2],CB_SHOWDROPDOWN,TRUE,0);CHECK(SendMessageW(controls[2],CB_GETDROPPEDSTATE,0,0));
+    if(!vb6){SendMessageW(controls[2],CB_SHOWDROPDOWN,TRUE,0);CHECK(SendMessageW(controls[2],CB_GETDROPPEDSTATE,0,0));
     CHECK(PostMessageW(controls[2],WM_KEYDOWN,VK_ESCAPE,1) && !survey(state,event,controls[2],0));
     CHECK(!SendMessageW(controls[2],CB_GETDROPPEDSTATE,0,0) && SendMessageW(controls[2],CB_GETCURSEL,0,0)==2);
-    puts("VB_FILES_INPUT_OK queued_keys=3 parent_notifications=3 popup_escape=1 selection_preserved=1");
+    }
+    printf("VB_FILES_INPUT_OK queued_keys=%u parent_notifications=%u popup_escape=%u selection_preserved=1\n",total,total,!vb6);
     if(styled){
         retire(controls[1]);CHECK(!survey(state,event,controls[1],VB_QUEUE_SURVEY));CHECK(!attached(controls[1]) && state->system_text==0);
         CHECK(image_pixels(controls[1],FALSE)==432);
-        CHECK(!survey(state,event,controls[2],VB_QUEUE_SURVEY));CHECK(attached(controls[2]));
+        HWND second=CreateWindowW(L"VBFileFixtureParent",L"directory parent",WS_OVERLAPPEDWINDOW,0,0,300,200,NULL,NULL,runtime,NULL);CHECK(second);
+        HWND directory=CreateWindowW(names[1],L"",WS_CHILD|WS_VISIBLE|LBS_OWNERDRAWVARIABLE|LBS_HASSTRINGS,0,0,130,80,root,(HMENU)8,runtime,NULL);CHECK(directory);
+        CHECK(SendMessageW(directory,LB_ADDSTRING,0,(LPARAM)L"Directory")>=0);
+        CHECK(!survey(state,event,directory,VB_QUEUE_SURVEY) && attached(directory) && state->system_text>0);
+        CHECK(SetParent(directory,second)==root);SendMessageW(directory,WM_NULL,0,0);
+        CHECK(!survey(state,event,directory,VB_QUEUE_SURVEY) && !attached(directory) && !state->system_text);
+        CHECK(image_pixels(directory,FALSE)==144 && DestroyWindow(second));
+        if(!vb6){CHECK(!survey(state,event,controls[2],VB_QUEUE_SURVEY));CHECK(attached(controls[2]));
         HWND other=CreateWindowW(L"VBFileFixtureParent",L"other",WS_OVERLAPPEDWINDOW,0,0,300,200,NULL,NULL,runtime,NULL);CHECK(other);
         CHECK(SetParent(controls[2],other)==root);SendMessageW(controls[2],WM_NULL,0,0);CHECK(!attached(controls[2]));
         CHECK(!survey(state,event,controls[2],VB_QUEUE_SURVEY) && state->system_text==0);
         CHECK(image_pixels(controls[2],TRUE)==144);
-        CHECK(SetParent(controls[2],root)==other && DestroyWindow(other));
+        CHECK(SetParent(controls[2],root)==other && DestroyWindow(other));}
         CHECK(remove(controls[0]));CHECK(!survey(state,event,controls[0],VB_QUEUE_SURVEY) && !state->system_text);
-        puts("VB_FILES_RETIRE_OK draw_callback=1 reparent=1 file_remove=1");
+        printf("VB_FILES_RETIRE_OK draw_callback=1 reparent=1 drive_reparent=%u file_remove=1\n",!vb6);
     }
-    for(unsigned i=0;i<3;++i){LOGFONTW font;CHECK(GetObjectW(sources[i],sizeof(font),&font)==sizeof(font));}
+    for(unsigned i=0;i<total;++i){LOGFONTW font;CHECK(GetObjectW(sources[i],sizeof(font),&font)==sizeof(font));}
     CHECK(DestroyWindow(root) && UnhookWindowsHookEx(get_hook) && UnhookWindowsHookEx(sent_hook));
     CHECK(FreeLibrary(witness) && UnmapViewOfFile(state) && CloseHandle(mapping) && CloseHandle(event));
     CHECK(SetEnvironmentVariableW(VB_QUEUE_ENV,NULL) && release() && FreeLibrary(runtime));
-    printf("VB_FILES_OK bits=%u styled=%u source_fonts_preserved=1 resources_closed=1\n",(unsigned)(sizeof(void *)*8),styled);return 0;
+    printf("VB_FILES_OK bits=%u styled=%u vb=%u source_fonts_preserved=1 resources_closed=1\n",(unsigned)(sizeof(void *)*8),styled,vb6?6:5);return 0;
 }
 static int worker(int argc,WCHAR **argv)
 {

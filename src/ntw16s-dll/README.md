@@ -62,5 +62,7 @@ directory/drive owner-draw controls keep runtime images, data and callbacks;
 only text on the exact DRAWITEM DC borrows the existing System font. Native
 drive items/popup and application path logic remain authoritative. Directory
 borders/scrollbars and drive chrome reuse existing primitives. Reparenting or
-removal cancels the scope. Generic owner-draw and unverified VB6 file wrappers
-remain native. Self-contained C fixtures are distinct from authentic VB5 proof.
+removal cancels the scope. T17 S8 also admits exact MSVBVM60-owned FileListBox
+and DirListBox, verified in the original Compress-Z-It sample. Generic
+owner-draw and unverified VB6 DriveListBox remain native. Self-contained C
+fixtures are distinct from authentic VB5/VB6 proof.

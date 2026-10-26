@@ -24,11 +24,11 @@ static inline BOOL ntw16s_vb_option(HWND w)
 static inline BOOL ntw16s_vb_combo(HWND w)
 {return ntw16s_vb_class(w,L"ThunderRT6ComboBox") || ntw16s_vb5_class(w,L"ThunderRT5ComboBox") || ntw16s_vb5_class(w,L"ThunderRT5DriveListBox");}
 static inline BOOL ntw16s_vb_list(HWND w)
-{return ntw16s_vb_class(w,L"ThunderRT6ListBox") || ntw16s_vb5_class(w,L"ThunderRT5ListBox") || ntw16s_vb5_class(w,L"ThunderRT5FileListBox") || ntw16s_vb5_class(w,L"ThunderRT5DirListBox");}
+{return ntw16s_vb_class(w,L"ThunderRT6ListBox") || ntw16s_vb_class(w,L"ThunderRT6FileListBox") || ntw16s_vb_class(w,L"ThunderRT6DirListBox") || ntw16s_vb5_class(w,L"ThunderRT5ListBox") || ntw16s_vb5_class(w,L"ThunderRT5FileListBox") || ntw16s_vb5_class(w,L"ThunderRT5DirListBox");}
 static inline BOOL ntw16s_vb_drive(HWND w)
 {return ntw16s_vb5_class(w,L"ThunderRT5DriveListBox");}
 static inline BOOL ntw16s_vb_directory(HWND w)
-{return ntw16s_vb5_class(w,L"ThunderRT5DirListBox");}
+{return ntw16s_vb5_class(w,L"ThunderRT5DirListBox") || ntw16s_vb_class(w,L"ThunderRT6DirListBox");}
 /* Only the observed intrinsic owner-draw modes; native runtime keeps images,
  * item data, measurement and input. Unsupported live styles stay native. */
 static inline BOOL ntw16s_vb_owner_file(HWND w)

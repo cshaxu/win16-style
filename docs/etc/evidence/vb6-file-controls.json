@@ -1,0 +1,705 @@
+{
+  "task": "M0 T17 S8",
+  "status": "verified package and published; P1 actual remote pending; T17/M0 open",
+  "baseline": "cb12456cf97694a68109b97d71f4130324cce2d9",
+  "root_cause": "Authentic MSVBVM60-owned FileListBox already attaches via native ListBox superclass but lacks its exact VB System font role. DirListBox native owner-draw variable/string mode is rejected by generic owner-draw safety guard. Confirmed old S7 attached1/System text0 and attached0/System text0 respectively; injection is working.",
+  "minimal_fix": "Extend exact runtime60 FileListBox/DirListBox identity only. Reuse S7 file-list painter and exact parent DRAWITEM DC scope, native images/data/layout/callbacks and existing fonts/borders/scrollbars. No new public export/product component/font algorithm/resource. Do not enable unverified VB6 DriveListBox.",
+  "sample": {
+    "author": "Benjamin Dowse, original Compress-Z-It readme1st.txt and original project copyright",
+    "repository": "https://github.com/tannerhelland/vbAccelerator-Archive",
+    "commit": "390fd1029e44a407695c6ecff4248d7a345d30ef",
+    "path": "VB/Code/Libraries/Compression/Compressing_and_Expanding_With_zLib/VB6_CompressZ-It_Code.zip",
+    "archive_blob": "11acff37ac4ba276a93019d2990ec5175fa9d8d1",
+    "archive_sha256": "9c94acc777d20abe7c78ba1f3a8c34fb97e08e33ff031ba8c9ba0abf97bc5297",
+    "licensing": "Original readme explicitly permits free use/modification; all original source/notices retained for optional local execution. No sample code/images/EXE/DLL enter products or mandatory tests. Archive rootCC0 is not treated as relicensing original work.",
+    "startup": "frmZLibCompress.Form_Load constructs CompressZIt; Class_Initialize only sets two default fields. Compression/data/string/file-write callbacks not invoked. No zlib installed/loaded for idle source review path. Own working directory, queued file selection only, no directory/drive navigation.",
+    "private_activation": "Project-authored sample-local XML binds exact original CompressZItLib6.dll coclass and typelib obtained by native LoadTypeLibEx(REGKIND_NONE). Actual module path logged. No COM registration/unregistration, system DLL installation or global activation setting.",
+    "COM_documentation": "https://learn.microsoft.com/en-us/visualstudio/deployment/deploying-com-components-with-clickonce?view=visualstudio",
+    "classid": "{5D4582FC-FCF5-11D3-B06C-00500427A693}",
+    "typelib": "{5D4582FA-FCF5-11D3-B06C-00500427A693} version2.0",
+    "files": {
+      "CompressZIt.cls": "7ae04d908d9734aad40d3bd993f4b8d4420a7f81b621cc38c03ee9256fcdb399",
+      "CompressZItLib6.dll": "cdf6f0a102b9004a6a9c47c0dc3f45970d007b72be87ff1dbef59c8178ff9108",
+      "CompressZItLib6.vbp": "e8ba5eb108d92fd9e6053ec2db76f8480ea6e320c44ea7df9a83a9a9663e49d9",
+      "CZDEMO6.exe": "36728710ef7fb5f3a508b244b041498c13af75c8a30fd9c94eb50ddd19deccbe",
+      "CZDEMO6.exe.manifest": "30462421a70b298f549ae4c2efe7df70129bd23eaf0cf9665661b9c8fc19a1ad",
+      "CZDEMO6.VBP": "5a303c4b909dfa4fa52e2defd395b0d1e7938408331627be0c1ae06a153c380f",
+      "czdemofrm.frm": "34aba8b808b673f8129c58d53f6f4ef63d2e2e334ca9b635113bd3502ffc7f0f",
+      "czdemofrm.frx": "d4c3755f0573e374d98b3dc36d0616686ae78a6076d6af0aaed4861ca623633e",
+      "readme1st.txt": "917383e9f1197cdb6bdb8d63b1e48e83a77e1141568abc7403d32f54d9033086"
+    },
+    "runtime": {
+      "absolute_final_path": "C:\\Windows\\SysWOW64\\msvbvm60.dll",
+      "sha256": "898288bd3b21d0e7d5f406df2e0b69a5bbfa4f241baf29a2cdf8a3cf4d4619f2",
+      "width": 32
+    },
+    "registry_observation": "HKCU and HKLM Registry32 Software/Classes/CLSID/{5D4582FC-FCF5-11D3-B06C-00500427A693} absent after successful private activation"
+  },
+  "bounded_source_search": "Fixed Code Architects mirror:28 forms under15 native-EXE roots, only PhotoAlbum has file controls and actualVB5. MP3Player actualVB6 has none and not executed. Fixed vbAccelerator catalogue214 VB6 archives, no download/parse failures, only Compress-Z-It contains FileListBox/DirListBox; no DriveListBox. Source identities/catalogue retained, no arbitrary binary execution or IDE/OCX registration.",
+  "tests": {
+    "core": "core-vb-files <run16s.exe> <same-width vb-file-fixture/MSVBVM50.dll|MSVBVM60.dll> <same-width witness>; CTest core/vb-files and core/vb6-files. Models separately expose only proven VB5 three/VB6 two classes and never ship.",
+    "real": "vb-intrinsic-observe <bare|run16s.exe> <explicit optional CZDEMO6.exe> filedir-verify <x86 witness>; owned working/capture directory with at least two files required",
+    "coverage": "System text output, native callback images432px, wrong runtime owner, source fonts/data/selection,16 VB6 repeated surveys GDI delta0,queued keys/parent notifications,reentrant removal,new-directory reparenting and cleanup; real End/Home notifications/selection restore, exact runtime/private COM/style module paths and final paths",
+    "probe_correction": "One native Toolhelp module snapshot returned ERROR_BAD_LENGTH24 during loader activity. Test observer now retries only this documented transient condition up to8 immediate attempts, logs retry count and still fails if unsuccessful; no sleeps or ignored failures.",
+    "demo_resource_observation": "S7 initial instantaneous GDI equality failed and one serial rerun passed. S8 adds actual warm/final diagnostic values while keeping exact predicate. No claimed root-cause fix without reproduction/evidence."
+  },
+  "preserved": "three components/four products; public ABI3/31 named+ordinal1; original five glyph headers/resources.md; existing titles/menu/font algorithms/application images/data/callbacks",
+  "remaining": "Authentic VB6 DriveListBox, file-list filter/multiselect/attribute/path-change variants and untested languages/DPI remain with following T17 S/final148-unit audit. No physical input or universal OCX compatibility claim.",
+  "package": {
+    "status": "passed after recorded input-fixture correction",
+    "cases": 23,
+    "first_pass": 22,
+    "seconds": 23.482036000000107,
+    "sha256": {
+      "demo.exe": "d664fdeb6882f0918f26052a4685bec054cf9d77f3059d01f63b70bff486d27b",
+      "ntw16s32.dll": "e129b9c6b9b842c82d951fb257acf8b9938b8bac1f7aed3c75aad3b0bbedfa06",
+      "ntw16s64.dll": "7d882c37378c0756de293ffcfc12fef9050b8ba158d6480096ee231d5743f937",
+      "run16s.exe": "f91df7002d1c2208730ef2e5dc627e35c42b2d3947f77a99a4fc69cf476fd7c6"
+    },
+    "jobs": 3,
+    "demo": "serialized; exact GDI bound retained, no claimed fix"
+  },
+  "cases": [
+    {
+      "name": "abi-32",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\core-abi.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\candidate\\ntw16s32.dll"
+      ],
+      "markers": [
+        "ABI PASS"
+      ],
+      "exit_code": 0,
+      "seconds": 0.06300239999995938,
+      "passed": true
+    },
+    {
+      "name": "queue-32",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-queue-test.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
+      ],
+      "markers": [
+        "VB_QUEUE_UNIT_OK",
+        "wrong_tag_rejected=1 notification=1 no_hook_negative=1 resources_closed=1"
+      ],
+      "exit_code": 0,
+      "seconds": 0.2425172000000657,
+      "passed": true
+    },
+    {
+      "name": "vb-32",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\core-vb.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-fixture\\MSVBVM60.dll"
+      ],
+      "markers": [
+        "VB_CLEANUP_OK",
+        "VB_COMPOSITE_OK styled=1"
+      ],
+      "exit_code": 0,
+      "seconds": 8.798754700000018,
+      "passed": true
+    },
+    {
+      "name": "font-32",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\core-vb-font.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-fixture\\MSVBVM60.dll"
+      ],
+      "markers": [
+        "VB_OWNERSHIP_OK"
+      ],
+      "exit_code": 0,
+      "seconds": 1.78619290000006,
+      "passed": true
+    },
+    {
+      "name": "abi-64",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\core-abi.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\candidate\\ntw16s64.dll"
+      ],
+      "markers": [
+        "ABI PASS"
+      ],
+      "exit_code": 0,
+      "seconds": 0.05529500000011467,
+      "passed": true
+    },
+    {
+      "name": "queue-64",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\vb-queue-test.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\vb-queue-witness.dll"
+      ],
+      "markers": [
+        "VB_QUEUE_UNIT_OK",
+        "wrong_tag_rejected=1 notification=1 no_hook_negative=1 resources_closed=1"
+      ],
+      "exit_code": 0,
+      "seconds": 0.23941430000013497,
+      "passed": true
+    },
+    {
+      "name": "vb-64",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\core-vb.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\vb-fixture\\MSVBVM60.dll"
+      ],
+      "markers": [
+        "VB_CLEANUP_OK",
+        "VB_COMPOSITE_OK styled=1"
+      ],
+      "exit_code": 0,
+      "seconds": 7.422731500000054,
+      "passed": true
+    },
+    {
+      "name": "font-64",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\core-vb-font.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\vb-fixture\\MSVBVM60.dll"
+      ],
+      "markers": [
+        "VB_OWNERSHIP_OK"
+      ],
+      "exit_code": 0,
+      "seconds": 1.9524926999999934,
+      "passed": true
+    },
+    {
+      "name": "launch",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\launch-automatic.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\launch-target.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\launch-target.exe"
+      ],
+      "markers": [
+        "LAUNCH MATRIX PASS"
+      ],
+      "exit_code": 0,
+      "seconds": 1.850163099999918,
+      "passed": true
+    },
+    {
+      "name": "cmd",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\cmd-nested.exe",
+        "--core",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\candidate"
+      ],
+      "markers": [
+        "CMD NESTED PASS"
+      ],
+      "exit_code": 0,
+      "seconds": 2.2341530000001057,
+      "passed": true
+    },
+    {
+      "name": "real-vb5-0",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-intrinsic-observe.exe",
+        "bare",
+        "O:\\repos.hobby\\win16style\\build\\t17-audit\\s4-intrinsic-samples\\vb5\\ResXpStylesTester.exe",
+        "observe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
+      ],
+      "markers": [
+        "SAMPLE_PASS styled=0",
+        "VB_SAMPLE_SCROLL_INPUT_OK",
+        "VB_SAMPLE_COMBO_INPUT_OK",
+        "VB_SAMPLE_LIST_INPUT_OK",
+        "VB_SAMPLE_QUEUE_CLEANUP_OK"
+      ],
+      "exit_code": 0,
+      "seconds": 2.3339375000000473,
+      "passed": true
+    },
+    {
+      "name": "real-vb5-1",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-intrinsic-observe.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-audit\\s4-intrinsic-samples\\vb5\\ResXpStylesTester.exe",
+        "verify",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
+      ],
+      "markers": [
+        "SAMPLE_PASS styled=1",
+        "VB_SAMPLE_SCROLL_INPUT_OK",
+        "VB_SAMPLE_COMBO_INPUT_OK",
+        "VB_SAMPLE_LIST_INPUT_OK",
+        "VB_SAMPLE_QUEUE_CLEANUP_OK"
+      ],
+      "exit_code": 0,
+      "seconds": 5.798479499999985,
+      "passed": true
+    },
+    {
+      "name": "real-vb6-0",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-intrinsic-observe.exe",
+        "bare",
+        "O:\\repos.hobby\\win16style\\build\\t17-audit\\s4-intrinsic-samples\\vb6\\ResXpStylesTester.exe",
+        "observe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
+      ],
+      "markers": [
+        "SAMPLE_PASS styled=0",
+        "VB_SAMPLE_SCROLL_INPUT_OK",
+        "VB_SAMPLE_COMBO_INPUT_OK",
+        "VB_SAMPLE_LIST_INPUT_OK",
+        "VB_SAMPLE_QUEUE_CLEANUP_OK"
+      ],
+      "exit_code": 0,
+      "seconds": 2.0244107000000895,
+      "passed": true
+    },
+    {
+      "name": "real-vb6-1",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-intrinsic-observe.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-audit\\s4-intrinsic-samples\\vb6\\ResXpStylesTester.exe",
+        "verify",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
+      ],
+      "markers": [
+        "SAMPLE_PASS styled=1",
+        "VB_SAMPLE_SCROLL_INPUT_OK",
+        "VB_SAMPLE_COMBO_INPUT_OK",
+        "VB_SAMPLE_LIST_INPUT_OK",
+        "VB_SAMPLE_QUEUE_CLEANUP_OK"
+      ],
+      "exit_code": 0,
+      "seconds": 5.481571000000031,
+      "passed": true
+    },
+    {
+      "name": "files-x86",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\core-vb-files.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-file-fixture\\MSVBVM50.dll",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
+      ],
+      "markers": [
+        "VB_FILES_OK",
+        "VB_FILES_RETIRE_OK",
+        "VB_FILES_INPUT_OK",
+        "gdi_delta=0"
+      ],
+      "exit_code": 0,
+      "seconds": 2.53619249999997,
+      "passed": true
+    },
+    {
+      "name": "files-x64",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\core-vb-files.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\vb-file-fixture\\MSVBVM50.dll",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\vb-queue-witness.dll"
+      ],
+      "markers": [
+        "VB_FILES_OK",
+        "VB_FILES_RETIRE_OK",
+        "VB_FILES_INPUT_OK",
+        "gdi_delta=0"
+      ],
+      "exit_code": 0,
+      "seconds": 2.22233899999992,
+      "passed": true
+    },
+    {
+      "name": "real-files-0",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-intrinsic-observe.exe",
+        "bare",
+        "O:\\repos.hobby\\win16style\\build\\t17-audit\\s7-filelist-samples\\photoalbum\\PhotoAlbum.exe",
+        "files-verify",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
+      ],
+      "markers": [
+        "VB_REAL_FILES_OK",
+        "SAMPLE_PASS styled=0",
+        "VB_SAMPLE_QUEUE_CLEANUP_OK"
+      ],
+      "exit_code": 0,
+      "seconds": 1.6188305000000582,
+      "passed": true,
+      "initial_result": {
+        "passed": true,
+        "exit_code": 0,
+        "seconds": 1.6188305000000582,
+        "diagnosis": "test directory omitted BMP required by original PhotoAlbum filter; empty file list has no text output, not product regression"
+      },
+      "rerun": {
+        "name": "real-files-0",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-intrinsic-observe.exe",
+          "bare",
+          "O:\\repos.hobby\\win16style\\build\\t17-audit\\s7-filelist-samples\\photoalbum\\PhotoAlbum.exe",
+          "files-verify",
+          "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
+        ],
+        "exit_code": 0,
+        "seconds": 0.7024249000000964,
+        "passed": true,
+        "stderr": ""
+      }
+    },
+    {
+      "name": "real-files-1",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-intrinsic-observe.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-audit\\s7-filelist-samples\\photoalbum\\PhotoAlbum.exe",
+        "files-verify",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
+      ],
+      "markers": [
+        "VB_REAL_FILES_OK",
+        "SAMPLE_PASS styled=1",
+        "VB_SAMPLE_QUEUE_CLEANUP_OK"
+      ],
+      "exit_code": 1,
+      "seconds": 1.2012849000000188,
+      "passed": true,
+      "initial_result": {
+        "passed": false,
+        "exit_code": 1,
+        "seconds": 1.2012849000000188,
+        "diagnosis": "test directory omitted BMP required by original PhotoAlbum filter; empty file list has no text output, not product regression"
+      },
+      "rerun": {
+        "name": "real-files-1",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-intrinsic-observe.exe",
+          "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\candidate\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t17-audit\\s7-filelist-samples\\photoalbum\\PhotoAlbum.exe",
+          "files-verify",
+          "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
+        ],
+        "exit_code": 0,
+        "seconds": 1.430317099999911,
+        "passed": true,
+        "stderr": ""
+      }
+    },
+    {
+      "name": "vb6-files-x86",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\core-vb-files.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-file-fixture\\MSVBVM60.dll",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
+      ],
+      "markers": [
+        "VB_FILES_OK",
+        "vb=6",
+        "VB_FILES_RETIRE_OK",
+        "reparent=1",
+        "gdi_delta=0"
+      ],
+      "exit_code": 0,
+      "seconds": 1.7419384000002083,
+      "passed": true
+    },
+    {
+      "name": "vb6-files-x64",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\core-vb-files.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\vb-file-fixture\\MSVBVM60.dll",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\vb-queue-witness.dll"
+      ],
+      "markers": [
+        "VB_FILES_OK",
+        "vb=6",
+        "VB_FILES_RETIRE_OK",
+        "reparent=1",
+        "gdi_delta=0"
+      ],
+      "exit_code": 0,
+      "seconds": 1.3786827999999787,
+      "passed": true
+    },
+    {
+      "name": "real-vb6-files-0",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-intrinsic-observe.exe",
+        "bare",
+        "O:\\repos.hobby\\win16style\\build\\t17-audit\\s8-filelist-samples\\compressz\\CZDEMO6.exe",
+        "filedir-verify",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
+      ],
+      "markers": [
+        "VB_REAL_FILES_OK",
+        "VB_REAL_FILE_INPUT_OK",
+        "VB_SAMPLE_PRIVATE_COM",
+        "SAMPLE_PASS styled=0",
+        "VB_SAMPLE_QUEUE_CLEANUP_OK"
+      ],
+      "exit_code": 0,
+      "seconds": 0.6534982000000582,
+      "passed": true
+    },
+    {
+      "name": "real-vb6-files-1",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-intrinsic-observe.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-audit\\s8-filelist-samples\\compressz\\CZDEMO6.exe",
+        "filedir-verify",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
+      ],
+      "markers": [
+        "VB_REAL_FILES_OK",
+        "VB_REAL_FILE_INPUT_OK",
+        "VB_SAMPLE_PRIVATE_COM",
+        "SAMPLE_PASS styled=1",
+        "VB_SAMPLE_QUEUE_CLEANUP_OK"
+      ],
+      "exit_code": 0,
+      "seconds": 0.9046170999999958,
+      "passed": true
+    },
+    {
+      "name": "demo",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\demo-observe.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\candidate\\demo.exe"
+      ],
+      "markers": [
+        "DEMO PAIR PASS"
+      ],
+      "exit_code": 0,
+      "seconds": 5.433728100000053,
+      "passed": true
+    }
+  ],
+  "negative": [
+    {
+      "name": "old-vb6-files-x86",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\core-vb-files.exe",
+        "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-file-fixture\\MSVBVM60.dll",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
+      ],
+      "exit_code": 1,
+      "seconds": 0.635336499999994,
+      "passed": false,
+      "stderr": "VB_FILES_FAIL line=67 error=126 styled?(state->attached && state->system_text>0):state->system_text==0\r\nVB_FILES_FAIL line=134 error=0 wait==WAIT_OBJECT_0 && !code\r\n"
+    },
+    {
+      "name": "old-vb6-files-x64",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\core-vb-files.exe",
+        "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\vb-file-fixture\\MSVBVM60.dll",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\vb-queue-witness.dll"
+      ],
+      "exit_code": 1,
+      "seconds": 0.47672800000009374,
+      "passed": false,
+      "stderr": "VB_FILES_FAIL line=67 error=126 styled?(state->attached && state->system_text>0):state->system_text==0\r\nVB_FILES_FAIL line=134 error=0 wait==WAIT_OBJECT_0 && !code\r\n"
+    },
+    {
+      "name": "old-real-vb6-files-1",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-intrinsic-observe.exe",
+        "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-audit\\s8-filelist-samples\\compressz\\CZDEMO6.exe",
+        "filedir-verify",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
+      ],
+      "exit_code": 1,
+      "seconds": 0.5163414000001012,
+      "passed": false,
+      "stderr": "VB_SAMPLE_FAIL line=331 error=0 styled?(queue_state->attached==1 && queue_state->system_text>0):queue_state->system_text==0\r\n"
+    }
+  ],
+  "installed": {
+    "status": "passed",
+    "cases": [
+      {
+        "name": "abi-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\core-abi.exe",
+          "O:\\winnt\\system32\\ntw16s32.dll"
+        ],
+        "exit_code": 0,
+        "seconds": 0.06293370000003051,
+        "passed": true
+      },
+      {
+        "name": "abi-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\core-abi.exe",
+          "O:\\winnt\\system32\\ntw16s64.dll"
+        ],
+        "exit_code": 0,
+        "seconds": 0.06157009999992624,
+        "passed": true
+      },
+      {
+        "name": "files-x86",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\core-vb-files.exe",
+          "O:\\winnt\\system32\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-file-fixture\\MSVBVM50.dll",
+          "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
+        ],
+        "exit_code": 0,
+        "seconds": 1.8936145999998644,
+        "passed": true
+      },
+      {
+        "name": "files-x64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\core-vb-files.exe",
+          "O:\\winnt\\system32\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\vb-file-fixture\\MSVBVM50.dll",
+          "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\vb-queue-witness.dll"
+        ],
+        "exit_code": 0,
+        "seconds": 1.4734644999998636,
+        "passed": true
+      },
+      {
+        "name": "real-files-1",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-intrinsic-observe.exe",
+          "O:\\winnt\\system32\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t17-audit\\s7-filelist-samples\\photoalbum\\PhotoAlbum.exe",
+          "files-verify",
+          "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
+        ],
+        "exit_code": 0,
+        "seconds": 1.8035112999998546,
+        "passed": true
+      },
+      {
+        "name": "vb6-files-x86",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\core-vb-files.exe",
+          "O:\\winnt\\system32\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-file-fixture\\MSVBVM60.dll",
+          "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
+        ],
+        "exit_code": 0,
+        "seconds": 1.3002708000001348,
+        "passed": true
+      },
+      {
+        "name": "vb6-files-x64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\core-vb-files.exe",
+          "O:\\winnt\\system32\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\vb-file-fixture\\MSVBVM60.dll",
+          "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x64\\vb-queue-witness.dll"
+        ],
+        "exit_code": 0,
+        "seconds": 0.9091091000000233,
+        "passed": true
+      },
+      {
+        "name": "real-vb6-files-1",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-intrinsic-observe.exe",
+          "O:\\winnt\\system32\\run16s.exe",
+          "O:\\repos.hobby\\win16style\\build\\t17-audit\\s8-filelist-samples\\compressz\\CZDEMO6.exe",
+          "filedir-verify",
+          "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\clean-source\\build\\.ninja\\x86\\vb-queue-witness.dll"
+        ],
+        "exit_code": 0,
+        "seconds": 0.9206338000001324,
+        "passed": true
+      }
+    ]
+  },
+  "publication": {
+    "test_result": "O:\\repos.hobby\\win16style\\build\\t17-controls\\s8-followup-tests\\result.json",
+    "tested_package": "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-final\\candidate",
+    "files": [
+      {
+        "after": "d664fdeb6882f0918f26052a4685bec054cf9d77f3059d01f63b70bff486d27b",
+        "expected": "d664fdeb6882f0918f26052a4685bec054cf9d77f3059d01f63b70bff486d27b",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe",
+        "before": "cdfbdbd41c85af03619cfa36c07b544c7d04f4be1aa6d75bcf543d03ae463353"
+      },
+      {
+        "after": "e129b9c6b9b842c82d951fb257acf8b9938b8bac1f7aed3c75aad3b0bbedfa06",
+        "expected": "e129b9c6b9b842c82d951fb257acf8b9938b8bac1f7aed3c75aad3b0bbedfa06",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
+        "before": "b4ce88434c5bc9aef26f723ea20ab4d4a29cb7aafabbe7bfd6f1f346c78c745e"
+      },
+      {
+        "after": "7d882c37378c0756de293ffcfc12fef9050b8ba158d6480096ee231d5743f937",
+        "expected": "7d882c37378c0756de293ffcfc12fef9050b8ba158d6480096ee231d5743f937",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll",
+        "before": "c4116205588a2974b0a98d6eccc1a290c793f013ea79f1ec004ded69737b8a7f"
+      },
+      {
+        "after": "f91df7002d1c2208730ef2e5dc627e35c42b2d3947f77a99a4fc69cf476fd7c6",
+        "expected": "f91df7002d1c2208730ef2e5dc627e35c42b2d3947f77a99a4fc69cf476fd7c6",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
+        "before": "ea8960602d7b1ceb16e1a26a46d7941605cfe1fbee09c049d88dc478966b4d1c"
+      },
+      {
+        "after": "d664fdeb6882f0918f26052a4685bec054cf9d77f3059d01f63b70bff486d27b",
+        "expected": "d664fdeb6882f0918f26052a4685bec054cf9d77f3059d01f63b70bff486d27b",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-publish\\before-1",
+        "path": "O:\\winnt\\system32\\demo.exe",
+        "before": "cdfbdbd41c85af03619cfa36c07b544c7d04f4be1aa6d75bcf543d03ae463353"
+      },
+      {
+        "after": "e129b9c6b9b842c82d951fb257acf8b9938b8bac1f7aed3c75aad3b0bbedfa06",
+        "expected": "e129b9c6b9b842c82d951fb257acf8b9938b8bac1f7aed3c75aad3b0bbedfa06",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-publish\\before-1",
+        "path": "O:\\winnt\\system32\\ntw16s32.dll",
+        "before": "b4ce88434c5bc9aef26f723ea20ab4d4a29cb7aafabbe7bfd6f1f346c78c745e"
+      },
+      {
+        "after": "7d882c37378c0756de293ffcfc12fef9050b8ba158d6480096ee231d5743f937",
+        "expected": "7d882c37378c0756de293ffcfc12fef9050b8ba158d6480096ee231d5743f937",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-publish\\before-1",
+        "path": "O:\\winnt\\system32\\ntw16s64.dll",
+        "before": "c4116205588a2974b0a98d6eccc1a290c793f013ea79f1ec004ded69737b8a7f"
+      },
+      {
+        "after": "f91df7002d1c2208730ef2e5dc627e35c42b2d3947f77a99a4fc69cf476fd7c6",
+        "expected": "f91df7002d1c2208730ef2e5dc627e35c42b2d3947f77a99a4fc69cf476fd7c6",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t17-package\\s8-publish\\before-1",
+        "path": "O:\\winnt\\system32\\run16s.exe",
+        "before": "ea8960602d7b1ceb16e1a26a46d7941605cfe1fbee09c049d88dc478966b4d1c"
+      }
+    ],
+    "status": "passed"
+  },
+  "visual": {
+    "native_PNG_root": "C:/Users/neko/.codex/visualizations/2026/10/23/01a1699f-9927-7fc3-ab34-4b38128ff811/win16style-t17-s8",
+    "actual_DPI": 96,
+    "title_top26_RGB_difference": 0,
+    "files": {
+      "compressz-bare.png": "153644f88faa097fd3466b0d3828fa84044f115b5e0f72eb1e68df1ede553e4e",
+      "compressz-styled.png": "b1b8429b1020157d70b9f12e8c8f78643d2e1e9646835e4b259531d8d67b1d23"
+    }
+  },
+  "code_numstat": "8\t1\tCMakeLists.txt\n4\t2\tsrc/ntw16s-dll/README.md\n2\t2\tsrc/ntw16s-dll/control_class.h\n2\t1\ttests/demo-exe/observe.c\n18\t3\ttests/integration/vb_intrinsic.c\n7\t2\ttests/ntw16s-dll/vb_file_runtime.c\n24\t14\ttests/ntw16s-dll/vb_files.c\n"
+}
