@@ -21,6 +21,9 @@
 - [VB控件数组](evidence/vb-control-arrays.json)：T17 S20真实 VB5/VB6 控件数组
   源码依据及双宽独立 HWND 销毁/重建/退役回归；不作为 VB 私有集合支持声明。
 
+- [VB Label变体](evidence/vb-label-variants.json)：T17 S21真实边框/对齐/数组
+  Label 与运行时无窗口 DC 承载边界；不作为独立 STATIC 控件支持声明。
+
 - [VB6 DriveListBox审计](evidence/vb6-drivelistbox-audit.json)：T17 S14固定
   源码/PE/runtime 身份与有界样本缺失结论；不作为VB6 DriveListBox支持声明。
 
@@ -118,6 +121,9 @@
 
 - [T17 S20控件数组](evidence/vb-control-arrays.json)：真实控件数组源码依据和自有
   双宽 HWND 独立生命周期回归；私有集合与未获样本保持后续接收。
+
+- [T17 S21 Label变体](evidence/vb-label-variants.json)：Label 的真实边框/对齐
+  源码和无独立 HWND 运行时边界；保持父 DC 绘制，不作猜测性 STATIC 附着。
 
 - [T17 S14 VB6 DriveListBox审计](evidence/vb6-drivelistbox-audit.json)：唯一源码
   匹配实际为VB5运行时的反证与固定目录样本缺失；没有产品实现。

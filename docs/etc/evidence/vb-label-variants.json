@@ -1,0 +1,17 @@
+{
+  "task": "M0 T17 S21",
+  "scope": "VB Label border, alignment, picture-adjacent and windowless-host variants.",
+  "actual_evidence": {
+    "source_variants": [
+      "Mouse VB5/VB6: lblMousePos and lblStatus use BorderStyle=Fixed Single; lblInfo is an indexed Label array.",
+      "3Ddefline VB6: lblFunction uses right alignment beside a graphical CommandButton set.",
+      "ScrollFrm VB6: lblLabels is an indexed right-aligned Fixed Single Label array.",
+      "Other admitted VB6 sources include center-aligned and Inside Solid labels, plus PictureBox/Image content."
+    ],
+    "runtime_boundary": "The existing authentic S4 runtime inventory enumerated 23 runtime-owned child HWNDs (buttons, Frame, PictureBox, ComboBox, ListBox, TextBox and ScrollBar) but no Label class, despite source Labels. Label rendering therefore belongs to the runtime parent DC, not an independently attachable STATIC HWND."
+  },
+  "existing_path": "ntw16s_vb_paint_begin scopes runtime FormDC/PictureBox/Frame paint; imported DrawText/TextOut hooks borrow the System font only inside that owned scope. The label-only barrier prevents unrelated nested child drawing from being restyled. This preserves the runtime's alignment calculation, border painting, Picture/Image content and application DC ownership.",
+  "result": "No product change is safe or needed for these variants. Attaching a guessed STATIC or redrawing borders would either find no target HWND or overwrite runtime/application DC content. Existing S9 container and direct-text tests remain the admitted renderer proof; S21 records the source/runtime boundary rather than claiming every Label visual feature is rewritten.",
+  "not_covered": ["Physical input and non-96-DPI rendering.", "Arbitrary custom user-drawn Labels or private IFont properties.", "A separate HWND-based Label implementation, because no admitted runtime evidence supports one."],
+  "product_change": "none"
+}
