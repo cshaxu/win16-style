@@ -25,6 +25,15 @@
     "local_runtime60_candidates": ["ChipGenius", "actor", "madshow"],
     "local_runtime60_drivelistbox_evidence": 0
   },
+  "official_public_followup": {
+    "source": "https://www.hec.usace.army.mil/software/hec-ras/download.aspx",
+    "candidate": "HEC-RAS 4.1 installer, offered by the official USACE archive as a 49.7 MB public download",
+    "reason": "A public discussion identifies HEC-RAS project selection as using ThunderRT6DriveListBox; this is only a lead, not runtime proof.",
+    "downloaded_to_task_scratch_only": "HEC-RAS_410_Setup.exe SHA-256 71F8F1F191B087AA016DCDECFB84E4A08D8D5B429C13EA51DA5CE3CA97E28C34",
+    "signature": "Valid; signer CN=United States Army Corps of Engineers, Hydrologic Engineering Center",
+    "static_result": "The signed 32-bit InstallShield launcher was not run or installed. Its extracted overlay is an InstallShield data stream with no directly readable MSI/OLE, CAB, or ZIP container, so no program image was obtained or executed.",
+    "disposition": "Do not use the lead to infer a renderer contract. A safely extractable, version-identified executable or another legitimate runnable sample remains required."
+  },
   "decision": "Do not add a ThunderRT6DriveListBox alias or alter the renderer. A guessed runtime60 class would violate the exact-owner rule and could make a different owner-draw/popup/image protocol look supported. The absence of a display/UAC session is irrelevant to this source and PE identity conclusion and was not treated as a blocker.",
   "remaining": "An independently licensed/authentic x86 MSVBVM60 executable containing a normal DriveListBox is required before any runtime60 implementation S. VB5 remains supported as recorded in vb-file-controls.json."
 }
