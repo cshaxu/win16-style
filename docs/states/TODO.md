@@ -2,6 +2,16 @@
 
 # Deferred Debt
 
+- [ ] TODO(Medium): 延期的 VB5/VB6 DriveListBox 与外部 OCX 外观适配（23 个冻结单位：
+  VB5/VB6 DriveListBox、DBGrid、MSWLess 的 9 个控件、grid32 Grid、msoutl32 Outline、
+  mschart MSChart、vbsql Vbsql、MCIWnd、MedView、SchGrid）；Owner：未来经用户明确准入的
+  后续任务；Evidence：[S28 最终审计台账](../etc/evidence/vb-final-audit-ledger.json)、
+  [DriveListBox 审计](../etc/evidence/vb6-drivelistbox-audit.json)、
+  [OCX wrapper 合约](../etc/evidence/vb-ocx-wrapper-contracts.json)。当前明确不支持这些
+  单位，保留原生外观、绘制、数据与许可语义，且不把类名或文件名当作公开协议；Admission：
+  合法、版本正确的 x86 运行时/样本以及公开 child-HWND、COM owner 或供应商 host 绘制合约，
+  先以免注册、自有宿主探针验证，不猜测、复制、注册或绕过许可证。
+
 - [ ] TODO(Medium): 两个裸VB6真实样本的临时IAT观察器首轮安装失败，S12自包含x86/x64及一次并发对照未复现；外部样本在当前非输入桌面于CreateProcessW前报623，未产生IAT失败节点；Owner：T17后续原生观察器审计；Evidence：[S11](../etc/evidence/vb-picture-variants.json)、[S12](../etc/evidence/vb-observer-lifetime.json)，严格实际/预期地址、模块、保护及恢复诊断保持，不放宽断言；Admission：现有T17自动后续S授权，需交互宿主真实失败日志定位，复测通过不视为修复。
 
 - [ ] TODO(Low): 核实frame卸载的DWM策略恢复；Owner：frame生命周期；Evidence：[win16_style.c](../../src/ntw16s-dll/win16_style.c)读取SDK标记set-only的DWMWA_NCRENDERING_POLICY，调查见[S3](../history/M0-T8-S3-popup-shadow.md)；Admission：后续显式生命周期修订，本轮保留已确认标题代码。

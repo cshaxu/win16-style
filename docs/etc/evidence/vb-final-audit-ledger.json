@@ -124,9 +124,9 @@
       ]
     },
     {
-      "kind": "missing_real_sample_or_public_owner_protocol",
+      "kind": "owner_deferred_missing_real_sample_or_public_owner_protocol",
       "count": 23,
-      "meaning": "No implementation is admitted from a filename or a guessed class name. These rows require the listed real runtime/OCX and a public child-HWND, COM-owner, or vendor host contract before any styling work can be safely scoped.",
+      "meaning": "On 2026-10-26 the owner explicitly deferred these unsupported rows to TODO. They remain intentionally native; this is neither a support claim nor permission to infer a protocol from a filename or guessed class name. A future implementation requires the listed real runtime/OCX and a public child-HWND, COM-owner, or vendor host contract.",
       "groups": [
         {
           "ids": ["VB5.DriveListBox", "VB6.DriveListBox"],
@@ -151,7 +151,7 @@
       ]
     }
   ],
-  "completion_check": "46 + 79 + 23 = 148. A verifier must compare the set of ids to source_matrix and reject duplicates, omissions, or unknown ids.",
+  "completion_check": "46 + 79 + 23 = 148. The 23 deferred rows are deliberately unsupported and are listed in docs/states/TODO.md. A verifier must compare the set of ids to source_matrix and reject duplicates, omissions, or unknown ids.",
   "local_discovery_after_p3": {
     "method": "Read-only recursive filename check of O:\\winnt\\system32, O:\\winnt\\syswow64, and D:\\programs for the 34 frozen extension module names; separate source-file scan for .vbp/.frm/.ctl/.vbg and declaration names.",
     "extension_module_matches": 0,

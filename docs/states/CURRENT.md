@@ -2,6 +2,11 @@
 
 ## Current Work
 
+M0 T17 S28 已按用户明确缩小后的范围收口：148 个冻结单位逐项有处置，46 项为
+有限公开协议支持、79 项必须保留原生、23 项（含 DriveListBox 和外部 OCX）明确延期
+至 TODO 并保持原生。T17 已关闭，当前无活动任务包；M0 仍开放，队列顺序不变。
+以下段落为 T17 的技术基线/历史证据，不覆盖此状态。
+
 M0 T17 S27 ScrollBar范围/位置/禁用变体已完成，顺序准入S28 全148单位收口审计。
 S27以自有runtime双宽见证避开私有桌面错误5，验证H/V范围、页大小、位置和禁用；
 S28逐项核对后续证据，不把早期矩阵的陈旧状态当作当前实现结论。
@@ -23,7 +28,7 @@ MMControl改列原生保留。SysInfo/Inet/PictureClip亦已在自有免注册OL
 OCX client surface，故同样原生保留；DBCombo/DataCombo的USER Edit和DataList的USER ScrollBar已在当前包
 通过文本选择及范围位置回读，DataGrid的USER ScrollBar也已同样验证，限定复用既有renderer，外壳/绑定/
 自绘不变。DBList/Adodc/MSRDC/DataRepeater无标准子HWND而原生保留；FlatScrollBar外壳、StatusBar/ListView/
-MSCOMCTL Toolbar20及其余未证实行逐项保留。MSComm/Winsock/MAPI仅有私有非视觉承载而原生保留；旧COMCTL32的StatusBar/TabStrip/ListView/ProgressBar/ImageList也已由当前包的免注册自有宿主确认是私有外壳：ListView仅有prepaint且后建SysHeader32仍走既有标准路径，其他没有稳定的内容中性协议，均原生保留。COMCT232的Animation/UpDown、COMCT332的CoolBar和MSCOMCT2的Animation/UpDown/MonthView/DTPicker/FlatScrollBar都已分别确认仅为私有OCX/VB外壳、没有标准子控件，故原生保留。新版MSCOMCTL除已限量验证的TreeView外，其余八个private *20WndClass外壳也均原生保留。COMDLG32的真实ShowOpen #32770文件对话框已由自有宿主自动取消并确认附着当前renderer（OCX helper自身仍原生）；DBGRID32的公开许可路径两次精确返回CLASS_E_NOTLICENSED，未绕过许可、仍需合法样本。USACE官方历史HEC-RAS 4.1安装包已仅下载到任务scratch并验证签名/SHA，但InstallShield数据流不能在不执行安装器的边界内静态取得程序，故也不作为运行样本；分类当前为46项有限验证、79项原生保留、23项待版本正确公开协议/样本。
+MSCOMCTL Toolbar20及其余未证实行逐项保留。MSComm/Winsock/MAPI仅有私有非视觉承载而原生保留；旧COMCTL32的StatusBar/TabStrip/ListView/ProgressBar/ImageList也已由当前包的免注册自有宿主确认是私有外壳：ListView仅有prepaint且后建SysHeader32仍走既有标准路径，其他没有稳定的内容中性协议，均原生保留。COMCT232的Animation/UpDown、COMCT332的CoolBar和MSCOMCT2的Animation/UpDown/MonthView/DTPicker/FlatScrollBar都已分别确认仅为私有OCX/VB外壳、没有标准子控件，故原生保留。新版MSCOMCTL除已限量验证的TreeView外，其余八个private *20WndClass外壳也均原生保留。COMDLG32的真实ShowOpen #32770文件对话框已由自有宿主自动取消并确认附着当前renderer（OCX helper自身仍原生）；DBGRID32的公开许可路径两次精确返回CLASS_E_NOTLICENSED，未绕过许可、仍需合法样本。USACE官方历史HEC-RAS 4.1安装包已仅下载到任务scratch并验证签名/SHA，但InstallShield数据流不能在不执行安装器的边界内静态取得程序，故也不作为运行样本；分类为46项有限验证、79项原生保留、23项按用户决定延期至TODO。
 无UAC/显示依赖；后续S18审计自包含的
 intrinsic图形选择default/disabled/picture变体。
 S16的Data样本包含绝对数据库/绑定，MDI样本启动可写注册表并有Shell/Delete路径；
@@ -60,35 +65,14 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T17 S28 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Continuation；S27 ScrollBar状态变体审计关闭后，依用户T17自动顺序S授权准入的最后全任务审计 |
-| Admission And Approval | 用户T17完整控件目标、自动顺序S、永久提交推送及binary change同批四文件双发布；不新开T |
-| Objective | 审计冻结的148个VB5/VB6/微软扩展单位与S2-S27的实际证据、实现和测试，逐项决定已验证、原生保留或缺少协议/样本；不缩小目标 |
-| Non-goals | 原标题/字体/菜单/滚动条/原glyph保持；不读VB私有对象、不重画应用内容、不接管owner-draw、不装IDE/OCX到系统、不新增T；经用户授权仅可在登记scratch免注册研究官方签名OCX |
-| Reference Baseline | 冻结矩阵有148行（52 audit-only、96 sample-blocked）；S2-S27已增加有限真实样本与自有runtime覆盖，但矩阵状态尚未全量对齐 |
-| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[S5组合控件](../etc/evidence/vb-composite-controls.json)、[S6输入](../etc/evidence/vb-input-controls.json)、[冻结148矩阵](../etc/evidence/vb-controls-audit.json) |
-| Files And ABI Surface | 以矩阵、证据、源码和测试为审计输入；仅在已证明的公开HWND/DC/API协议上实现，不改ABI/三组件四产物 |
-| Applicable Rules | Task Reading Set/C17/GCC/Ninja/ccache；禁computer-use、兄弟修改/依赖、全局设置或非自有进程测试；无显示/UAC结果仅作对应skip，不阻塞自包含审计 |
-| Verification | 每行关联真实样本/模型、协议、产物回归和未覆盖面；检查双宽构建、当前四文件摘要、治理门禁与来源声明 |
-| Expected Markers | 148行均有明确处置/证据接收者；仅所有可实现单位有足够证据时才可收口T17，否则如实保持T17开放 |
-| Asset Needs | 仅已有登记样本/运行库/任务scratch；官方签名研究包可在登记scratch免注册解包和探测，不能进入产品、assets、system32、构建输入或必需测试；不复制第三方图片/OCX/二进制、不装IDE或注册组件 |
-| Reporting Requirements | 报告逐项计数、已支持范围、原生保留、样本/协议缺口和是否达到T17完成条件 |
-| Stop Conditions | 真实协议/来源不满足即保持原生；重大架构/安全/新增产品先停证据；不关闭/注入用户既有进程，也不等待UAC或屏幕可见性 |
-| Exit Criteria | 完成全148单位处置审计和双宽/包回归；只有审计证明原请求已满足才能关闭T17，否则保持开放并列出精确接收条件 |
-| Original Owner Request | VB5/VB6控件采用本项目样式；S1全貌、S2demo、S3和多个S实施，最后独立收口；自动推进到完整适配验收 |
-| Similar-Issue Sweep | 20 intrinsic/6 host-menu/66 Microsoft extension rows、VB5/6差异、window/windowless/nonvisual/embedded、owner-draw、资源/字体/输入/生命周期、实际/模型/缺样本边界 |
-
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 17
 - Last allocated Td S: 14
-- Owner allocation constraint: 用户准入T17并授权内部自动顺序S；不准入其他T候选。
-- Last delivery: M0 T17 S28 P2 已复核（P1 328a8b6已推送且origin/main实际匹配；用户授权的官方签名x86微软OCX研究包以免注册公开OLE路径验证；TreeView、旧版Slider、旧版COMCTL32文本工具栏及MSMASK32标准EDIT路径已有自有探针覆盖。候选包15项通过/72项私有桌面错误5精确skip，assets/system32八摘要一致；S28/T17仍开放。）
-- Open task: T17 S28 全148单位收口审计；T17/M0保持开放。已将一个真实、已许可的x86可视OCX及公开宿主协议纳入有限实现；其余扩展行仍逐项要求真实协议/惰性样本，不能以猜测性类名替代。
+- Owner allocation constraint: T17已按用户明确范围关闭；未经用户新请求不准入队列候选。
+- Last delivery: M0 T17 S28 P15（待本次治理验证、提交、推送及远端复核）：全148单位审计收口，23项延期TODO；无产品二进制变化。
+- Open task: 无；M0开放，候选队列保持未编号。
 
 ## Technical Baseline
 
@@ -137,6 +121,9 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T17 S28 VB全148单位最终审计](../history/M0-T17-S28-vb-final-audit.md)：46项有限
+  公开协议、79项原生保留、23项按用户决定延期TODO；无产品二进制变化，S28/T17关闭，M0开放。
 
 - [T17 S27 ScrollBar变体](../history/M0-T17-S27-vb-scrollbar-variants.md)：自有双宽runtime
   见证H/V范围、页大小、位置和禁用；无产品二进制变化，S27关闭续S28，T17/M0开放。
@@ -254,9 +241,5 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 
 ## Last Packet Closure
 
-S11 P1 9adeb46de68adaf65a28bec21b504bbf5a7ce008实际远端230文件/210输入/四产物
-逐字节通过，214产品对象恢复，8 before从5580bbbb复取核对，17原样本与2PNG
-SHA保持；350+20映像无占用/reparse0/guard正例通过后仅清理两个登记根。
-所有原来源/runtime/许可待答数据/研究/恢复对象/稳定缓存/其他任务与PNG保留。
-S11关闭，顺序准入S12观察器/资源审计；图形选择/复杂图片/Drive等缺口仍需后续S，
-最后另做148单位独立审计，M0/T17开放。
+T17 S28 P15 待本次治理验证、提交、推送及远端复核：全148单位以46项有限公开协议、
+79项原生保留及23项用户延期TODO收口；无产品二进制变化，现有四文件不重新发布。
