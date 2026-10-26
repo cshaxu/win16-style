@@ -2,7 +2,10 @@
 
 ## Current Work
 
-M0 T17 S16特殊内建可见宿主审计已完成，顺序准入S17 Microsoft扩展OCX承载审计。
+M0 T17 S17 Microsoft扩展OCX承载审计已完成，顺序准入S18图形选择状态变体审计。
+S17冻结35模块/66控件行；本机无所列官方OCX文件，故不安装/注册或从native class猜测
+wrapper支持，逐行保留未认证。无产品改动、无UAC/显示依赖；后续S18审计自包含的
+intrinsic图形选择default/disabled/picture变体。
 S16的Data样本包含绝对数据库/绑定，MDI样本启动可写注册表并有Shell/Delete路径；
 OLE/UserControl无惰性公开协议样本，均不主动接管。无产品改动、无UAC/显示依赖；
 后续S17盘点官方扩展OCX的版本、可见性、公共native承载与既有renderer复用路径。
@@ -37,26 +40,26 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T17 S17 Packet
+## M0 T17 S18 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S16特殊宿主安全边界审计关闭后，依用户T17自动顺序S授权准入 |
+| Identifier Mode | Continuation；S17扩展OCX有界目录审计关闭后，依用户T17自动顺序S授权准入 |
 | Admission And Approval | 用户T17完整控件目标、自动顺序S、永久提交推送及binary change同批四文件双发布；不新开T |
-| Objective | 对冻结的Microsoft VB5/VB6官方扩展OCX目录按确切模块/版本盘点可见控件、非可见部件、公共native HWND与现有renderer可复用面；先区分官方扩展、第三方和无证据模块，再按可安全验证的有限单元选择后续实现 |
-| Non-goals | 原标题/字体/菜单/滚动条/原glyph保持；不注册/安装OCX、不修改系统注册表、不把模块文件名或demo对应页当作控件协议，不新增T；不运行数据/媒体/网络业务 |
-| Reference Baseline | S1冻结35个扩展模块/66控件行；S16特殊宿主保持原生。已有普通公共控件renderer只能在实际native协议已证明时复用，不能借VB前缀或COM注册猜测 |
-| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[冻结148矩阵](../etc/evidence/vb-controls-audit.json)、[S16特殊宿主](../etc/evidence/vb-special-hosts-audit.json)、[T15框架审计](../etc/evidence/framework-audit.json) |
-| Files And ABI Surface | 先只读固定模块清单/版本/许可证、源样本和受控C公共native模型；仅有官方模块及精确协议后才改既有DLL，不改公开ABI/三组件四产物 |
-| Applicable Rules | Task Reading Set/C17/GCC/Ninja/ccache；禁computer-use、兄弟修改/依赖、全局设置或非自有进程测试；无显示/UAC结果仅作对应skip，不阻塞目录审计 |
-| Verification | 每行记录模块路径/SHA/版本/许可、可视性、真实类或无HWND、原生/注入边界；任何实现有x86真实或明确替代证据、x64自包含回归、负例和资源退役 |
-| Expected Markers | 完整扩展目录处置与下一实施切片；官方native控件仅在精确公共协议成立时接纳，其余明确原生/阻断 |
-| Asset Needs | 仅既有登记模块/来源/任务scratch；不复制或分发OCX/二进制、不安装IDE或新注册表项 |
-| Reporting Requirements | 逐行区分官方、第三方、版本/许可缺失、无视觉意义、可验证协议和未覆盖；不称T17完成 |
-| Stop Conditions | 许可/模块/协议未满足即不加载；重大架构/安全/新增产品先停证据；不关闭/注入用户既有进程，也不等待UAC或屏幕可见性 |
-| Exit Criteria | 完成扩展目录有界审计并准入一个明确有限的后续S，或完成其最小实现/双宽包发布；其余148单位保留，T17开放 |
+| Objective | 审计并在现有自有原生模型与可信实际runtime路径可证实时有限适配VB图形CheckBox/OptionButton的default、disabled、picture/icon及角色切换变体；不能将S13的plain graphical选择外推，也不能替换应用图像 |
+| Non-goals | 原标题/字体/菜单/滚动条/原glyph保持；不读VB私有对象、不替换/删除BM_GETIMAGE图像、不接管应用owner-draw、不新增T；无真实runtime证据的变体保持原生 |
+| Reference Baseline | S13只认证无图像的精确runtime-owned BS_PUSHLIKE选择；S17 OCX无模块/协议。既有图像push按钮借用BM_GETIMAGE且保持图像所有权，需先验证能否安全复用到选择控件 |
+| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[S13图形选择](../etc/evidence/vb-graphical-choices.json)、[S11图片限制](../etc/evidence/vb-picture-variants.json)、[冻结148矩阵](../etc/evidence/vb-controls-audit.json) |
+| Files And ABI Surface | 先审计既有BUTTON图像/状态路径、受控C runtime模型与固定实际样本；协议成立才在既有双宽DLL复用绘制器/测试，不改公开ABI/三组件四产物 |
+| Applicable Rules | Task Reading Set/C17/GCC/Ninja/ccache；禁computer-use、兄弟修改/依赖、全局设置或非自有进程测试；无显示/UAC结果仅作对应skip，不阻塞自包含审计 |
+| Verification | 记录精确runtime/owner、style/BM_GETIMAGE/BM_GETCHECK、裸/注入普通/default/disabled/pressed/图片、键盘/通知/分组与退役；x86实际或明确缺失、x64模型和负例分开 |
+| Expected Markers | 已证明的状态/图片路径或明确原生拒绝；应用图像、数据、输入/通知、字体/几何与资源所有权保持，角色切换恢复原生 |
+| Asset Needs | 仅已有登记样本/运行库/任务scratch；不复制第三方图片/OCX/二进制、不装IDE或注册组件 |
+| Reporting Requirements | 分别报告default、disabled、picture/icon、复杂owner-draw、实际样本和模型；不由S13或CommandButton外推，不称T17完成 |
+| Stop Conditions | 真实协议/来源不满足即保持原生；重大架构/安全/新增产品先停证据；不关闭/注入用户既有进程，也不等待UAC或屏幕可见性 |
+| Exit Criteria | 有证实边界则完成最小实现、双宽/同批包/必要发布/推送远端；否则提交有界审计和接收。两种结果均保留148单位，T17开放 |
 | Original Owner Request | VB5/VB6控件采用本项目样式；S1全貌、S2demo、S3和多个S实施，最后独立收口；自动推进到完整适配验收 |
-| Similar-Issue Sweep | 官方/第三方模块身份、版本/许可、可视/非可视、OCX窗口化/无窗口、COM注册/私有manifest、标准公共控件/自绘、数据/媒体业务、x86真实与x64模型边界 |
+| Similar-Issue Sweep | runtime50/60 graphical选择、BUTTON type/PushLike、BM_GETCHECK/BM_GETIMAGE、default/disabled/pressed/focus、radio分组/通知、图片/bitmap/icon/owner-draw、角色切换/资源退役、真实与模型边界 |
 
 ## Identifier State
 
@@ -64,8 +67,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 17
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T17并授权内部自动顺序S；不准入其他T候选。
-- Last delivery: M0 T17 S16 P1（特殊内建宿主边界审计，无产品二进制变化；推送远端后关闭）
-- Open task: T17 S17 Microsoft扩展OCX承载审计；复杂图片及148单位审计保留后续接收，T17/M0开放。
+- Last delivery: M0 T17 S17 P1（扩展OCX目录审计，无产品二进制变化；推送远端后关闭）
+- Open task: T17 S18图形选择状态变体审计；复杂图片及148单位审计保留后续接收，T17/M0开放。
 
 ## Technical Baseline
 

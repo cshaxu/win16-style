@@ -1,0 +1,23 @@
+{
+  "task": "M0 T17 S17",
+  "status": "closed: frozen official extension rows audited; no installed authentic OCX module or real wrapper protocol available; no product change",
+  "scope": {
+    "frozen_modules": 35,
+    "frozen_control_rows": 66,
+    "families": ["comctl32.ocx", "mscomctl.ocx", "comdlg32.ocx", "msmask32.ocx", "msflxgrd.ocx", "msdatgrd.ocx", "msdatlst.ocx", "msdatrep.ocx", "mci32.ocx", "msinet.ocx", "msoutl32.ocx", "mciwndx.ocx"]
+  },
+  "method": "Read the frozen matrix and existing renderer evidence, then read-only enumerate the named module files in SysWOW64 and System32. No download, installer, registration, COM activation, process injection, system setting, UAC, desktop interaction, or media/data/network operation.",
+  "results": {
+    "module_files_found_syswow64": 0,
+    "module_files_found_system32": 0,
+    "real_ocx_instance_protocols": 0,
+    "separate_existing_native_paths": "Existing renderer support for public SysTabControl32, SysTreeView32, SysListView32, progress and trackbar is intentionally not presented as proof that an OCX wrapper supplies the same classes, child windows, fonts, image ownership, event or COM lifetime."
+  },
+  "classification": {
+    "window_wrappers": "Toolbar/StatusBar/TabStrip/TreeView/ListView/ProgressBar/Slider/ImageCombo and grid/data/media wrappers require exact component version, public child-HWND owner and event/property evidence.",
+    "nonvisual_or_delegating": "ImageList/CommonDialog/Inet do not by themselves establish a visual HWND to style.",
+    "legacy_or_hosted": "Outline/MCIWnd and data/media components additionally require vendor/version and hosted-content ownership evidence."
+  },
+  "decision": "Do not install or register any component and do not extend aliases. Every frozen extension row remains explicitly unverified rather than silently excluded. A future implementation requires an independently licensed authentic component plus an inert, self-owned instance and public protocol evidence.",
+  "remaining": "The absence is a bounded environment/asset fact, not a task blocker: graphical intrinsic choice default/disabled/picture variants can still be studied in subsequent T17 S tasks. Final T17 cannot claim all 148 units complete while these rows lack evidence."
+}

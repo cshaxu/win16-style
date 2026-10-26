@@ -19,6 +19,9 @@
 - [VB特殊内建宿主审计](evidence/vb-special-hosts-audit.json)：T17 S16对Data、
   OLE、MDIForm、UserControl的数据/嵌入对象/宿主边界；不作为这些对象的换肤声明。
 
+- [VB扩展OCX审计](evidence/vb-extension-ocx-audit.json)：T17 S17对冻结官方扩展
+  模块/控件行与本机模块缺失的有界结论；不作为任意OCX支持声明。
+
 | 路径 | 责任、用途及保留条件 |
 | --- | --- |
 | [evidence/outline-original.json](evidence/outline-original.json) | T16原始Win3.1 USER/GDI/VGA身份、调用地址、USER与VGA例程CPU执行参数；不包含系统二进制，不冒称完整VGA硬件/调色板运行 |
@@ -103,3 +106,6 @@
 
 - [T17 S16特殊内建宿主审计](evidence/vb-special-hosts-audit.json)：Data/OLE/MDI/
   UserControl保持数据、对象和客户端责任；没有产品实现。
+
+- [T17 S17扩展OCX审计](evidence/vb-extension-ocx-audit.json)：官方扩展目录、
+  公共控件已有路径与缺少真实wrapper协议的边界；没有产品实现。
