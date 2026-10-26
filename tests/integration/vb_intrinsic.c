@@ -10,6 +10,9 @@
 #include <stdint.h>
 #include "../ntw16s-dll/isolated_process.h"
 #include "../../src/ntw16s-dll/control_glyphs.h"
+#include "../../src/ntw16s-dll/combo_glyph.h"
+#include "../../src/ntw16s-dll/scroll_glyphs.h"
+#include <oleacc.h>
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"VB_SAMPLE_FAIL line=%d error=%lu %s\n",__LINE__,GetLastError(),#x);ExitProcess(1);}}while(0)
 static void file_path(const WCHAR *path){
     HANDLE f=CreateFileW(path,GENERIC_READ,FILE_SHARE_READ|FILE_SHARE_WRITE|FILE_SHARE_DELETE,NULL,OPEN_EXISTING,0,NULL);
@@ -94,7 +97,30 @@ static uint64_t capture(HWND w,const WCHAR *file,BOOL verify){
     BYTE *b=data;
     for(size_t i=0; i<(size_t)cx*cy*4;
     ++i)hash=(hash^b[i])*1099511628211ull;
-    if(verify){RECT client;CHECK(GetClientRect(w,&client));int dpi=(int)GetDpiForWindow(w);int top=(client.bottom-MulDiv(13,dpi,96))/2;CHECK(top>=0 && cx>=MulDiv(14,dpi,96) && cy>=top+MulDiv(13,dpi,96));
+    WCHAR role[100];GetClassNameW(w,role,100);
+    if(verify && wcsstr(role,L"ComboBox")){
+        COMBOBOXINFO combo={.cbSize=sizeof(combo)};CHECK(GetComboBoxInfo(w,&combo));
+        POINT origin={0,0};CHECK(ClientToScreen(w,&origin));int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
+        RECT arrow=combo.rcButton;InflateRect(&arrow,-u,-u);
+        int left=(arrow.left+arrow.right-7*u)/2+origin.x-r.left,top=(arrow.top+arrow.bottom-9*u)/2+origin.y-r.top;
+        CHECK(left>=0 && top>=0 && left+7*u<=cx && top+9*u<=cy);
+        unsigned checked=0;DWORD *pixels=data;
+        for(int y=0;y<9;++y)for(int x=0;x<7;++x)if(combo_arrow[y][x]=='0'){
+            DWORD expected=IsWindowEnabled(w)?0:0x808080;
+            CHECK((pixels[(top+y*u)*cx+left+x*u]&0xffffff)==expected);++checked;
+        }
+        printf("VB_SAMPLE_COMBO_GLYPH_OK black_source_pixels=%u scale=%d\n",checked,u);
+    }else if(verify && wcsstr(role,L"ScrollBar")){
+        BOOL vertical=(GetWindowLongPtrW(w,GWL_STYLE)&SBS_VERT)!=0;int cross=vertical?cx:cy;
+        SCROLLBARINFO bar={.cbSize=sizeof(bar)};CHECK(GetScrollBarInfo(w,OBJID_CLIENT,&bar));
+        const char (*glyph)[18]=(bar.rgstate[1]&STATE_SYSTEM_UNAVAILABLE)?(vertical?scroll_uparrowi:scroll_lfarrowi):(vertical?scroll_uparrow:scroll_lfarrow);
+        const DWORD colors[4]={0,0xffffff,0x808080,0xc0c0c0};DWORD *pixels=data;unsigned checked=0;
+        for(int y=1;y<16;++y)for(int x=1;x<16;++x){int px=MulDiv(x,cross,17),py=MulDiv(y,cross,17);
+            if(px==MulDiv(x+1,cross,17) || py==MulDiv(y+1,cross,17))continue;
+            CHECK(px<cx && py<cy && (pixels[py*cx+px]&0xffffff)==colors[glyph[y][x]-'0']);++checked;
+        }
+        CHECK(checked);printf("VB_SAMPLE_SCROLL_GLYPH_OK vertical=%d pixels=%u square=%d\n",vertical,checked,cross);
+    }else if(verify){RECT client;CHECK(GetClientRect(w,&client));int dpi=(int)GetDpiForWindow(w);int top=(client.bottom-MulDiv(13,dpi,96))/2;CHECK(top>=0 && cx>=MulDiv(14,dpi,96) && cy>=top+MulDiv(13,dpi,96));
         LRESULT check=SendMessageW(w,BM_GETCHECK,0,0);CHECK(check==0 || check==1);DWORD *pixels=data;WCHAR cls[100];GetClassNameW(w,cls,100);unsigned row=wcsstr(cls,L"OptionButton")?13:0;
         for(int y=0;y<13;++y)for(int x=0;x<14;++x){DWORD expected=control_checks[row+y][x+(check?14:0)]=='0'?0:0xffffff;CHECK((pixels[(top+MulDiv(y,dpi,96))*cx+MulDiv(x,dpi,96)]&0xffffff)==expected);}
         printf("VB_SAMPLE_GLYPH_OK source_pixels=182 check=%lld\n",(long long)check);
@@ -170,7 +196,7 @@ static int worker(int argc,WCHAR **argv){
     unsigned options=0,checkboxes=0,combos=0,lists=0,edits=0,bars=0;
     for(unsigned i=0;i<count;++i){HWND w=checks[i];WCHAR cls[100];GetClassNameW(w,cls,100);DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);HMODULE owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);HFONT original_font=(HFONT)SendMessageW(w,WM_GETFONT,0,0);RECT original_rect,after_rect;CHECK(GetWindowRect(w,&original_rect));
         if(owner!=runtime)continue;
-        CHECK(swprintf_s(path,MAX_PATH,L"%ls/control-%u.bmp",scratch,i)>0);uint64_t hash=capture(w,path,!wcscmp(argv[3],L"verify") && (wcsstr(cls,L"OptionButton") || wcsstr(cls,L"CheckBox")));printf("SAMPLE_PIXELS index=%u class=%ls hash=%llu\n",i,cls,(unsigned long long)hash);
+        CHECK(swprintf_s(path,MAX_PATH,L"%ls/control-%u.bmp",scratch,i)>0);uint64_t hash=capture(w,path,!wcscmp(argv[3],L"verify") && (wcsstr(cls,L"OptionButton") || wcsstr(cls,L"CheckBox") || wcsstr(cls,L"ComboBox") || wcsstr(cls,L"ScrollBar")));printf("SAMPLE_PIXELS index=%u class=%ls hash=%llu\n",i,cls,(unsigned long long)hash);
         if(owner!=runtime)continue;
         if(wcsstr(cls,L"OptionButton")){++options;if(!IsWindowEnabled(w))continue;SendMessageW(w,BM_CLICK,0,0);CHECK(SendMessageW(w,BM_GETCHECK,0,0)==BST_CHECKED);for(unsigned j=0;j<count;++j){WCHAR other[100];GetClassNameW(checks[j],other,100);if(checks[j]!=w && wcsstr(other,L"OptionButton") && GetParent(checks[j])==GetParent(w))CHECK(SendMessageW(checks[j],BM_GETCHECK,0,0)==BST_UNCHECKED);}CHECK(swprintf_s(path,MAX_PATH,L"%ls/selected-%u.bmp",scratch,i)>0);(void)capture(w,path,!wcscmp(argv[3],L"verify"));printf("SAMPLE_OPTION_GROUP_OK index=%u checked=1 siblings_cleared=1\n",i);}
         else if(wcsstr(cls,L"CheckBox")){++checkboxes;if(!IsWindowEnabled(w))continue;LRESULT original=SendMessageW(w,BM_GETCHECK,0,0);SendMessageW(w,BM_CLICK,0,0);CHECK(swprintf_s(path,MAX_PATH,L"%ls/selected-%u.bmp",scratch,i)>0);(void)capture(w,path,!wcscmp(argv[3],L"verify"));SendMessageW(w,BM_CLICK,0,0);CHECK(SendMessageW(w,BM_GETCHECK,0,0)==original);printf("SAMPLE_CHECK_CYCLE_OK index=%u round2=initial\n",i);}

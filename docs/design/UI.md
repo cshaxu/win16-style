@@ -204,3 +204,11 @@ CheckBox/OptionButton/Frame/TextBox和MSVBVM60的ThunderRT6OptionButton。VB5宿
 ThunderRT5Form参与既有有限同步文字scope，调用者仅增加准确runtime50；不改字体算法。
 选择值/分组继续原VB过程；真实VB6 frame内还可能有PictureBoxDC中间容器，仍按原父窗
 语义分组，不扁平化重挂。图形选择变体保持原生，Combo/List/Scroll包装层交下一S。
+
+T17 S5对真实runtime50/60准确ComboBox/ListBox/HScrollBar/VScrollBar复用既有
+renderer与原glyph。普通下拉/下拉列表、单选列表及横纵滚动条有限支持；不据此
+认证简单组合、owner-draw、勾选列表、RTL或所有字体属性变化。可编辑Combo的
+真正原生EDIT仅按COMBOBOXINFO和公开类信息接入，使用既有字号保留策略。
+正常WM_GETFONT返回应用源字体；同步paint内原生绘图查询可见私有字体，最多
+32种租约，容量不足保留源字体；重入移除、换父窗口和销毁时按所属节点归还。
+标题/菜单/字体算法、原图形资源及应用自绘不变，公共文件夹对话框仍属独立候选。

@@ -21,6 +21,12 @@ static inline BOOL ntw16s_vb_checkbox(HWND w)
 {return ntw16s_vb_class(w,L"ThunderRT6CheckBox") || ntw16s_vb5_class(w,L"ThunderRT5CheckBox");}
 static inline BOOL ntw16s_vb_option(HWND w)
 {return ntw16s_vb_class(w,L"ThunderRT6OptionButton") || ntw16s_vb5_class(w,L"ThunderRT5OptionButton");}
+static inline BOOL ntw16s_vb_combo(HWND w)
+{return ntw16s_vb_class(w,L"ThunderRT6ComboBox") || ntw16s_vb5_class(w,L"ThunderRT5ComboBox");}
+static inline BOOL ntw16s_vb_list(HWND w)
+{return ntw16s_vb_class(w,L"ThunderRT6ListBox") || ntw16s_vb5_class(w,L"ThunderRT5ListBox");}
+static inline BOOL ntw16s_vb_scroll(HWND w)
+{return ntw16s_vb_class(w,L"ThunderRT6HScrollBar") || ntw16s_vb_class(w,L"ThunderRT6VScrollBar") || ntw16s_vb5_class(w,L"ThunderRT5HScrollBar") || ntw16s_vb5_class(w,L"ThunderRT5VScrollBar");}
 /* The runtime retains Value/Click/group behavior, independent of style bits. */
 static inline BOOL ntw16s_vb_button(HWND w)
 {return ntw16s_vb_class(w,L"ThunderRT6CommandButton") || ntw16s_vb5_class(w,L"ThunderRT5CommandButton") || ntw16s_vb_checkbox(w) || ntw16s_vb_option(w);}
@@ -40,6 +46,31 @@ static inline BOOL ntw16s_native_superclass(HWND w,const WCHAR *expected)
     return GetClassNameW(w,registered,ARRAYSIZE(registered)) && lstrcmpiW(registered,expected) &&
         RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpiW(real,expected);
 }
+/* Only the actual native EDIT named by this runtime combo's public relation.
+ * No extra window search or transient HFONT replacement in the application. */
+static inline BOOL ntw16s_vb_combo_edit(HWND w)
+{
+    HWND parent=GetParent(w);WCHAR name[32];COMBOBOXINFO info={.cbSize=sizeof(info)};
+    WNDCLASSEXW native={.cbSize=sizeof(native)};HMODULE owner=NULL;
+    if(!parent || !ntw16s_vb_combo(parent) || GetWindowThreadProcessId(parent,NULL)!=GetCurrentThreadId() ||
+        GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() ||
+        !GetClassNameW(w,name,ARRAYSIZE(name)) || lstrcmpiW(name,L"EDIT") ||
+        !GetClassInfoExW(NULL,L"EDIT",&native) ||
+        GetClassLongPtrW(w,GCL_CBWNDEXTRA)<(ULONG_PTR)native.cbWndExtra)return FALSE;
+    BOOL resolved=GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+            (const WCHAR *)(UINT_PTR)native.lpfnWndProc,&owner);
+    HMODULE registered=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+    if(!resolved || owner!=registered){
+        /* The class descriptor can expose an A/W dispatch thunk (for example
+         * in NTDLL) rather than the HWND's native USER class procedure. */
+        WNDPROC actual=(WNDPROC)(UINT_PTR)GetClassLongPtrW(w,GCLP_WNDPROC);
+        if(native.hInstance || registered!=GetModuleHandleW(L"USER32.DLL"))return FALSE;
+        if(actual!=native.lpfnWndProc &&
+            (!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                (const WCHAR *)(UINT_PTR)actual,&owner) || owner!=registered))return FALSE;
+    }
+    return GetComboBoxInfo(parent,&info) && info.hwndCombo==parent && info.hwndItem==w;
+}
 static inline BOOL ntw16s_class_is(HWND w,const WCHAR *expected)
 {
     WCHAR name[64];
@@ -51,6 +82,9 @@ static inline BOOL ntw16s_class_is(HWND w,const WCHAR *expected)
         !lstrcmpiW(expected,L"LISTBOX") || !lstrcmpiW(expected,L"SCROLLBAR")) &&
         ntw16s_native_superclass(w,expected))return TRUE;
     if(!lstrcmpiW(expected,L"BUTTON") && (ntw16s_vb_button(w) || (ntw16s_vb_class(w,L"ThunderRT6Frame") || ntw16s_vb5_class(w,L"ThunderRT5Frame"))))return TRUE;
+    if(!lstrcmpiW(expected,L"COMBOBOX") && ntw16s_vb_combo(w))return TRUE;
+    if(!lstrcmpiW(expected,L"LISTBOX") && ntw16s_vb_list(w))return TRUE;
+    if(!lstrcmpiW(expected,L"SCROLLBAR") && ntw16s_vb_scroll(w))return TRUE;
     if(!lstrcmpiW(expected,L"EDIT"))return ntw16s_vb_class(w,L"ThunderRT6TextBox") || ntw16s_vb5_class(w,L"ThunderRT5TextBox");
     return ntw16s_control_protocol_is(w,expected);
 }

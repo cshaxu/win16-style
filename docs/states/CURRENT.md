@@ -4,7 +4,7 @@
 
 M0 T17 S4真实VB5按钮/Frame/Text和VB6 Option已交付关闭；当前顺序准入S5
 ComboBox/ListBox/HScrollBar/VScrollBar包装层。原作者固定归档样本真实runtime5/6
-均已正常运行，公开数据协议及样式缺口有证据；S5复用该样本，避免重新寻找/安装。
+均已正常运行，公开数据协议及样式缺口有证据；S5复用该样本，避免重新寻找/安装。S5最终13项15.46秒、双发布八SHA和安装4项已通过，P1实际远端复核待完成；T17开放。
 S1冻结148版本/控件单位，S2仅原生对应项；按真实变体连续分S、最后独立审计，
 T17/M0开放，不将当前普通样例支持替代全控件目标，不启动其他T候选。
 
@@ -39,6 +39,11 @@ T17/M0开放，不将当前普通样例支持替代全控件目标，不启动�
 - Open task: T17 S5 Combo/List/Scroll包装层；T17/M0开放，既有关闭/取消保持。
 
 ## Technical Baseline
+
+S5当前候选已同批双发布，0.17.0.0；准确Combo/List/Scroll及原生Combo EDIT
+所有权适配，13项15.46秒/2旧负例/安装4项通过，201输入及八SHA一致。
+[本S证据](../etc/evidence/vb-composite-controls.json)；P1推送/实际远端待复核，
+不是S已关闭或全T完成。下方S4保留作当前已完成远端复核基线。
 
 T17 S4产品0.17.0.0 / M0 T17，201输入，三组件四产物；真实VB5准确Command/
 Check/Option/Frame/Text和VB6 Option接入，既有VB6 Check保持。原作者固定归档

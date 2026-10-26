@@ -1,0 +1,400 @@
+{
+  "task": "M0 T17 S5",
+  "status": "verified and double-published;P1 remote review pending;T17/M0 open",
+  "baseline": "bc6f716 S4 P2",
+  "scope": [
+    "exact runtime50/60 ComboBox dropdown and dropdown-list",
+    "ordinary ListBox",
+    "HScrollBar/VScrollBar",
+    "native combo EDIT font ownership"
+  ],
+  "cause": "S4 classifier omitted exact VB Combo/List/Scroll wrappers; runtime ignores parent WM_SETFONT, and native combo EDIT requires separate verified binding. The real manifested EDIT is COMCTL32; unmanifested USER32 class metadata can expose an NTDLL A/W dispatch thunk. Public COMBOBOXINFO and native class owner/procedure metadata distinguish these without private layouts.",
+  "implementation": "existing renderer/glyphs/font algorithm, precise runtime aliases; native child caches at most32 private leases, explicit callback/binding lifetime, normal removal/reparent restores source. WM_GETFONT outside paint preserves app source; synchronous painter nested queries may observe private font. Capacity fallback retains application source.",
+  "core_test": "core-vb <run16s.exe> <same-width vb-fixture/MSVBVM60.dll>; four bare/styled legacy/aware contexts, five items, two multiselect items, dropdown close, native child font, removal/reentrant setter/reparent, forty font changes with bounded resources; C fixture is not actual VB runtime",
+  "actual_test": "vb-intrinsic-observe <run16s.exe|bare> <optional original sample exe> <verify|observe>; explicit optional samples and own desktop/Job",
+  "provenance": "original samples and runtime identities remain in vb-intrinsic-controls.json; no external implementation copied, no sample binaries distributed or OCX registered",
+  "development": {
+    "x86": "pass,96/144DPI;40 source fonts each context deleted,71 additional GDI objects within80 bound",
+    "real_VB6": "pass:2 Combo arrows each32 black source pixels;2 scroll first arrows each225 interior pixels,17pxsquare; publicselection/dropcancel/font/geometry and close active0",
+    "native_screenshot": "build/t17-controls/s5-real-pixels/actor-styled.bmp"
+  },
+  "limits": [
+    "real VB5/6 are x86, x64 C fixture is not64bitVB",
+    "current actual samples only ordinary single list and two combo modes; simple/owner-draw/check list/RTL and live IFont mutation not proven",
+    "physical keyboard/IME/accessibility not claimed; public native API and finite message tests only",
+    "remaining148 catalogue units and variants stay with T17 subsequent S and final independent audit",
+    "original title/menu/font algorithms and5glyph headers/provenance unchanged; shared folder dialogs unaffected",
+    "S5 actual scrollbar verification is range/position getters plus pixel oracle; target keyboard/mouse notifications and live scrollbar movement remain for following S. Combo/List tests use public messages, not physical input."
+  ],
+  "pre_release_failures": [
+    {
+      "candidate": "s5-final",
+      "stage": "source gate",
+      "reason": "authored README/test receipt stale; refreshed owned receipts, no compile/publication"
+    },
+    {
+      "candidate": "s5-clean",
+      "cases": 13,
+      "passed": 12,
+      "seconds": 12.137274800043087,
+      "reason": "x64 native EDIT descriptor and actual class process both system dispatch module, native registered hInstance=NULL and class ownerUSER32; initial guard falsely rejected. Added exact descriptor/actual procedure equality for public USER32 class; no shared class modification"
+    }
+  ],
+  "negative": [
+    {
+      "old": "S4 assets at bc6f716",
+      "test": "new core-vb x86",
+      "exit": 1,
+      "seconds": 1.2984608,
+      "assertion": "native internal EDIT font remains unadapted"
+    },
+    {
+      "old": "S4 assets at bc6f716",
+      "test": "real VB6 glyph observer",
+      "exit": 1,
+      "seconds": 1.4903515,
+      "assertion": "first scrollbar arrow original225 pixel mismatch"
+    }
+  ],
+  "package": {
+    "status": "passed",
+    "cases": 13,
+    "seconds": 15.45616699999664,
+    "sha256": {
+      "demo.exe": "4c45a89f302a1cbbc157a6d73844b1ed0b1841f705fa5db89695040158600a0b",
+      "ntw16s32.dll": "ce7e2b10da181416b6594eb2c9bc978bea7bc135b7d9172e404eefd82c14c66d",
+      "ntw16s64.dll": "74128221f61374850f4e1242005b05982561204f40ebb21d471356fa234d5ed5",
+      "run16s.exe": "30636951e0fbc685769d99757fbf398ee14678aca3da3bfe83024266184f7179"
+    },
+    "package": "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\candidate",
+    "jobs": 3,
+    "physical_input": "not tested",
+    "scope": "9 self-contained +4 optional actual VB5/6; focused S5 regression,not full148-unitT"
+  },
+  "cases": [
+    {
+      "name": "abi-32",
+      "exit_code": 0,
+      "seconds": 0.14434659999096766,
+      "passed": true,
+      "markers": [
+        "ABI PASS"
+      ],
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\clean-source\\build\\.ninja\\x86\\core-abi.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\candidate\\ntw16s32.dll"
+      ]
+    },
+    {
+      "name": "vb-32",
+      "exit_code": 0,
+      "seconds": 9.794964900007471,
+      "passed": true,
+      "markers": [
+        "VB_CLEANUP_OK",
+        "VB_COMPOSITE_OK styled=1",
+        "VB_COMPOSITE_FONT_BOUND_OK sources=40"
+      ],
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\clean-source\\build\\.ninja\\x86\\core-vb.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\clean-source\\build\\.ninja\\x86\\vb-fixture\\MSVBVM60.dll"
+      ]
+    },
+    {
+      "name": "font-32",
+      "exit_code": 0,
+      "seconds": 1.798699699982535,
+      "passed": true,
+      "markers": [
+        "VB_OWNERSHIP_OK"
+      ],
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\clean-source\\build\\.ninja\\x86\\core-vb-font.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\clean-source\\build\\.ninja\\x86\\vb-fixture\\MSVBVM60.dll"
+      ]
+    },
+    {
+      "name": "abi-64",
+      "exit_code": 0,
+      "seconds": 0.05680459999712184,
+      "passed": true,
+      "markers": [
+        "ABI PASS"
+      ],
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\clean-source\\build\\.ninja\\x64\\core-abi.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\candidate\\ntw16s64.dll"
+      ]
+    },
+    {
+      "name": "vb-64",
+      "exit_code": 0,
+      "seconds": 8.493770400003996,
+      "passed": true,
+      "markers": [
+        "VB_CLEANUP_OK",
+        "VB_COMPOSITE_OK styled=1",
+        "VB_COMPOSITE_FONT_BOUND_OK sources=40"
+      ],
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\clean-source\\build\\.ninja\\x64\\core-vb.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\clean-source\\build\\.ninja\\x64\\vb-fixture\\MSVBVM60.dll"
+      ]
+    },
+    {
+      "name": "font-64",
+      "exit_code": 0,
+      "seconds": 1.883805699995719,
+      "passed": true,
+      "markers": [
+        "VB_OWNERSHIP_OK"
+      ],
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\clean-source\\build\\.ninja\\x64\\core-vb-font.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\clean-source\\build\\.ninja\\x64\\vb-fixture\\MSVBVM60.dll"
+      ]
+    },
+    {
+      "name": "demo",
+      "exit_code": 0,
+      "seconds": 6.462537399958819,
+      "passed": true,
+      "markers": [
+        "DEMO PAIR PASS"
+      ],
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\clean-source\\build\\.ninja\\x64\\demo-observe.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\candidate\\demo.exe"
+      ]
+    },
+    {
+      "name": "launch",
+      "exit_code": 0,
+      "seconds": 2.0189821000094526,
+      "passed": true,
+      "markers": [
+        "LAUNCH MATRIX PASS"
+      ],
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\clean-source\\build\\.ninja\\x64\\launch-automatic.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\candidate\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\candidate\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\clean-source\\build\\.ninja\\x86\\launch-target.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\clean-source\\build\\.ninja\\x64\\launch-target.exe"
+      ]
+    },
+    {
+      "name": "cmd",
+      "exit_code": 0,
+      "seconds": 2.8126866000238806,
+      "passed": true,
+      "markers": [
+        "CMD NESTED PASS"
+      ],
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\clean-source\\build\\.ninja\\x64\\cmd-nested.exe",
+        "--core",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\candidate"
+      ]
+    },
+    {
+      "name": "real-vb5-0",
+      "exit_code": 0,
+      "seconds": 1.3138270999770612,
+      "passed": true,
+      "markers": [
+        "SAMPLE_PASS styled=0",
+        "SAMPLE_PROTOCOL_PASS"
+      ],
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\clean-source\\build\\.ninja\\x86\\vb-intrinsic-observe.exe",
+        "bare",
+        "O:\\repos.hobby\\win16style\\build\\t17-audit\\s4-intrinsic-samples\\vb5\\ResXpStylesTester.exe",
+        "observe"
+      ]
+    },
+    {
+      "name": "real-vb5-1",
+      "exit_code": 0,
+      "seconds": 3.1122885000077076,
+      "passed": true,
+      "markers": [
+        "SAMPLE_PASS styled=1",
+        "SAMPLE_PROTOCOL_PASS",
+        "VB_SAMPLE_COMBO_GLYPH_OK",
+        "VB_SAMPLE_SCROLL_GLYPH_OK"
+      ],
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\clean-source\\build\\.ninja\\x86\\vb-intrinsic-observe.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-audit\\s4-intrinsic-samples\\vb5\\ResXpStylesTester.exe",
+        "verify"
+      ]
+    },
+    {
+      "name": "real-vb6-0",
+      "exit_code": 0,
+      "seconds": 1.3533482000348158,
+      "passed": true,
+      "markers": [
+        "SAMPLE_PASS styled=0",
+        "SAMPLE_PROTOCOL_PASS"
+      ],
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\clean-source\\build\\.ninja\\x86\\vb-intrinsic-observe.exe",
+        "bare",
+        "O:\\repos.hobby\\win16style\\build\\t17-audit\\s4-intrinsic-samples\\vb6\\ResXpStylesTester.exe",
+        "observe"
+      ]
+    },
+    {
+      "name": "real-vb6-1",
+      "exit_code": 0,
+      "seconds": 2.5575664000352845,
+      "passed": true,
+      "markers": [
+        "SAMPLE_PASS styled=1",
+        "SAMPLE_PROTOCOL_PASS",
+        "VB_SAMPLE_COMBO_GLYPH_OK",
+        "VB_SAMPLE_SCROLL_GLYPH_OK"
+      ],
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\clean-source\\build\\.ninja\\x86\\vb-intrinsic-observe.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\candidate\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t17-audit\\s4-intrinsic-samples\\vb6\\ResXpStylesTester.exe",
+        "verify"
+      ]
+    }
+  ],
+  "installed": [
+    {
+      "name": "abi32",
+      "exit": 0,
+      "passed": true,
+      "seconds": 0.06287989998236299
+    },
+    {
+      "name": "abi64",
+      "exit": 0,
+      "passed": true,
+      "seconds": 0.056162499997299165
+    },
+    {
+      "name": "vb5",
+      "exit": 0,
+      "passed": true,
+      "seconds": 2.843609400035348
+    },
+    {
+      "name": "vb6",
+      "exit": 0,
+      "passed": true,
+      "seconds": 2.8492036999668926
+    }
+  ],
+  "screenshots": {
+    "images": [
+      {
+        "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s5\\vb5-bare.png",
+        "sha256": "35455c3ae8e222f319c650779cc154f8dfc59108b3fc04af27fc54badd49a7e0",
+        "size": [
+          609,
+          519
+        ],
+        "native_source": "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\focused-tests\\real-vb5-0\\actor-bare.bmp"
+      },
+      {
+        "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s5\\vb5-styled.png",
+        "sha256": "4dab0e2b87ea8ff41f5a0ed699487ebdec953eb2344d79305792ed94b0861c38",
+        "size": [
+          601,
+          509
+        ],
+        "native_source": "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\focused-tests\\real-vb5-1\\actor-styled.bmp"
+      },
+      {
+        "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s5\\vb6-bare.png",
+        "sha256": "b12c8fd41ab785d1b0d7bd063eea9640258f02366427d696042ae0cd3c41183d",
+        "size": [
+          609,
+          519
+        ],
+        "native_source": "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\focused-tests\\real-vb6-0\\actor-bare.bmp"
+      },
+      {
+        "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s5\\vb6-styled.png",
+        "sha256": "13b79495a5e70d9877bd2675ca250913a16461f701a80c237ab693653ad8bb4d",
+        "size": [
+          601,
+          509
+        ],
+        "native_source": "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\focused-tests\\real-vb6-1\\actor-styled.bmp"
+      },
+      {
+        "path": "C:\\Users\\neko\\.codex\\visualizations\\2026\\10\\23\\01a1699f-9927-7fc3-ab34-4b38128ff811\\win16style-t17-s5\\demo-styled.png",
+        "sha256": "bdf6a54e3eb05d3fe6d8a0ef76707a3bd7b4664568cff9e5daf0494e53f71a70",
+        "size": [
+          862,
+          724
+        ],
+        "native_source": "O:\\repos.hobby\\win16style\\build\\t17-package\\s5-release\\focused-tests\\demo\\demo-injected.bmp"
+      }
+    ],
+    "caption_top26_RGB_changed_pixels": 0
+  },
+  "publication_occupiers": [
+    {
+      "path": "C:\\Windows\\System32\\cmd.exe",
+      "forced": true,
+      "result": "exited",
+      "start": "01dd64f069773d53",
+      "pid": 35096,
+      "normal_close_sent": false
+    },
+    {
+      "path": "O:\\WINNT\\system32\\ntcon.exe",
+      "forced": false,
+      "result": "exited",
+      "start": "01dd64f17c17b76a",
+      "pid": 35968,
+      "normal_close_sent": false
+    },
+    {
+      "path": "O:\\WINNT\\system32\\ntsrv.exe",
+      "forced": true,
+      "result": "exited",
+      "start": "01dd64f17c0d83a3",
+      "pid": 27396,
+      "normal_close_sent": false
+    },
+    {
+      "pid": 10352,
+      "result": "already exited"
+    }
+  ],
+  "publication_note": "Only these freshly RM-verified eight-file occupiers closed per explicit user publication rule; separate from self-owned test trees; no services started/restarted or injected for tests",
+  "source_inputs": 201,
+  "source_snapshot_sha256": "bf06a84ac78ab3aa860f345606297bc1fd483999bbf492a4b993f2a3d952f8f8",
+  "source_review": {
+    "command": "rg exact role/font/child/lifetime paths;git diff -- src tests CMakeLists.txt;byte compare unchanged production paths vsbc6f716",
+    "production_changed": [
+      "src/ntw16s-dll/README.md",
+      "src/ntw16s-dll/control_class.h",
+      "src/ntw16s-dll/controls.c"
+    ],
+    "remaining_production": "no moves/deletions;all other production files byte-identical to S4;not third-party source import",
+    "test_scope": "13 focused package cases,4 installed; no full148 claims"
+  },
+  "diff_numstat": "1\t1\tCMakeLists.txt\n-\t-\tassets/demo.exe\n-\t-\tassets/ntw16s32.dll\n-\t-\tassets/ntw16s64.dll\n-\t-\tassets/run16s.exe\n8\t0\tdocs/design/UI.md\n2\t0\tdocs/etc/README.md\n24\t8\tdocs/etc/evidence/vb-controls-audit.json\n12\t12\tdocs/etc/import/import-receipts.json\n5\t0\tdocs/etc/operations/source-policy.md\n119\t285\tdocs/etc/release.json\n6\t1\tdocs/states/CURRENT.md\n10\t0\tsrc/ntw16s-dll/README.md\n34\t0\tsrc/ntw16s-dll/control_class.h\n81\t8\tsrc/ntw16s-dll/controls.c\n28\t2\ttests/integration/vb_intrinsic.c\n47\t0\ttests/ntw16s-dll/vb_controls.c\n21\t1\ttests/ntw16s-dll/vb_runtime.c\n",
+  "code_counts": {
+    "scope": "CMakeLists/src/tests",
+    "added": 222,
+    "deleted": 12
+  }
+}

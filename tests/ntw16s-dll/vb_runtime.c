@@ -3,7 +3,7 @@
  * module deliberately registers the known class names under its own HMODULE.
  * Native BUTTON/EDIT retain their real USER message/notification contracts. */
 static HINSTANCE instance;
-static WNDPROC button_proc,edit_proc;
+static WNDPROC button_proc,edit_proc,combo_proc,list_proc;
 static HFONT native_font;
 static WORD digit_glyphs[5],unmapped_glyph;
 static LRESULT CALLBACK button(HWND w,UINT m,WPARAM a,LPARAM b)
@@ -12,6 +12,22 @@ static LRESULT CALLBACK button(HWND w,UINT m,WPARAM a,LPARAM b)
     if(m==WM_SETFONT)return 0;
     LRESULT result=CallWindowProcW(button_proc,w,m,a,b);
     if(m==WM_CREATE)CallWindowProcW(button_proc,w,WM_SETFONT,(WPARAM)native_font,FALSE);
+    return result;
+}
+static LRESULT CALLBACK combo(HWND w,UINT m,WPARAM a,LPARAM b)
+{
+    if(m==WM_GETFONT)return (LRESULT)native_font;
+    if(m==WM_SETFONT)return 0;
+    LRESULT result=CallWindowProcW(combo_proc,w,m,a,b);
+    if(m==WM_CREATE)CallWindowProcW(combo_proc,w,WM_SETFONT,(WPARAM)native_font,FALSE);
+    return result;
+}
+static LRESULT CALLBACK list(HWND w,UINT m,WPARAM a,LPARAM b)
+{
+    if(m==WM_GETFONT)return (LRESULT)native_font;
+    if(m==WM_SETFONT)return 0;
+    LRESULT result=CallWindowProcW(list_proc,w,m,a,b);
+    if(m==WM_CREATE)CallWindowProcW(list_proc,w,WM_SETFONT,(WPARAM)native_font,FALSE);
     return result;
 }
 /* Independent C protocol fixture: deliberately has no USER BUTTON superclass.
@@ -105,12 +121,16 @@ __declspec(dllexport) BOOL WINAPI VbRegister(void)
     GetClassInfoW(NULL,L"EDIT",&cls);edit_proc=cls.lpfnWndProc;
     cls.hInstance=instance;cls.lpfnWndProc=edit;cls.lpszClassName=L"ThunderRT6TextBox";
     if(!RegisterClassW(&cls))return FALSE;
+    GetClassInfoW(NULL,L"COMBOBOX",&cls);combo_proc=cls.lpfnWndProc;cls.hInstance=instance;cls.lpfnWndProc=combo;cls.lpszClassName=L"ThunderRT6ComboBox";if(!RegisterClassW(&cls))return FALSE;
+    GetClassInfoW(NULL,L"LISTBOX",&cls);list_proc=cls.lpfnWndProc;cls.hInstance=instance;cls.lpfnWndProc=list;cls.lpszClassName=L"ThunderRT6ListBox";if(!RegisterClassW(&cls))return FALSE;
+    GetClassInfoW(NULL,L"SCROLLBAR",&cls);cls.hInstance=instance;cls.lpszClassName=L"ThunderRT6HScrollBar";if(!RegisterClassW(&cls))return FALSE;cls.lpszClassName=L"ThunderRT6VScrollBar";if(!RegisterClassW(&cls))return FALSE;
     ZeroMemory(&cls,sizeof(cls));cls.hInstance=instance;cls.lpfnWndProc=container;
     cls.hCursor=LoadCursorW(NULL,IDC_ARROW);cls.lpszClassName=L"ThunderRT6Frame";
     return RegisterClassW(&cls)!=0;
 }
 __declspec(dllexport) void WINAPI VbRelease(void)
 {
+    UnregisterClassW(L"ThunderRT6ComboBox",instance);UnregisterClassW(L"ThunderRT6ListBox",instance);UnregisterClassW(L"ThunderRT6HScrollBar",instance);UnregisterClassW(L"ThunderRT6VScrollBar",instance);
     UnregisterClassW(L"ThunderRT6Frame",instance);UnregisterClassW(L"ThunderRT6TextBox",instance);
     UnregisterClassW(L"ThunderRT6OptionButton",instance);UnregisterClassW(L"ThunderRT5CheckBox",instance);UnregisterClassW(L"ThunderRT6CheckBox",instance);UnregisterClassW(L"ThunderRT6CommandButton",instance);DeleteObject(native_font);native_font=NULL;
 }

@@ -45,3 +45,13 @@ by Steve McMahon; no sample code or binaries are part of the product. Runtime
 font/DC painting uses the existing bounded policy; the actual VB5 Form name
 is ThunderRT5Form. Choice controls share the same unsupported graphical-mode
 native fallback. ComboBox/ListBox/scrollbar wrappers remain separate work.
+
+T17 S5 admits exact runtime50/60 ComboBox, ListBox, HScrollBar and VScrollBar
+wrappers observed in the same original samples. Public native data/input
+protocols remain authoritative; existing glyphs and font policy are reused.
+The editable combo child is verified through COMBOBOXINFO and native class
+metadata. Its private System-font leases are bounded to 32 variants per owner,
+held through reentrant native painting/setters and restored on removal or
+reparenting. Outside synchronous painting WM_GETFONT preserves the application
+source font; painting-time nested queries can observe the private painter font.
+No arbitrary EDIT children, private VB object layouts or global font changes.

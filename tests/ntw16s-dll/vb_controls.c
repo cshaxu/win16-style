@@ -1,8 +1,10 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
+#include <commctrl.h>
 #include "isolated_process.h"
 #include "../../src/ntw16s-dll/control_glyphs.h"
+#include "../../src/ntw16s-dll/control_class.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"VB FAIL line=%u error=%lu: %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
 static unsigned clicks;
 static void settle(void)
@@ -40,6 +42,50 @@ static DWORD image(HWND w,DWORD *pixels,UINT count)
     if(!RestoreDC(surface.dc,saved))ExitProcess(1);
     return hash;
 }
+static BOOL (__cdecl *leaf_remove)(HWND);
+static HWND retiring_combo;static BOOL retire_on_font;
+static LRESULT CALLBACK retire_font(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
+{
+    (void)id;(void)data;
+    if(m==WM_SETFONT && retire_on_font){retire_on_font=FALSE;if(!leaf_remove(retiring_combo))ExitProcess(91);}
+    return DefSubclassProc(w,m,a,b);
+}
+static int composites(HWND root,HMODULE runtime,HMODULE dll,BOOL styled)
+{
+    HWND combo=CreateWindowW(L"ThunderRT6ComboBox",L"",WS_CHILD|WS_VISIBLE|CBS_DROPDOWN,0,0,180,140,root,(HMENU)20,runtime,NULL);
+    HWND list=CreateWindowExW(WS_EX_CLIENTEDGE,L"ThunderRT6ListBox",L"",WS_CHILD|WS_VISIBLE|LBS_EXTENDEDSEL|LBS_NOTIFY|WS_VSCROLL,0,0,180,80,root,(HMENU)21,runtime,NULL);CHECK(combo && list);
+    HFONT source=(HFONT)SendMessageW(combo,WM_GETFONT,0,0);CHECK(source && (HFONT)SendMessageW(list,WM_GETFONT,0,0)==source);
+    for(unsigned i=0;i<5;++i){WCHAR text[40];swprintf_s(text,40,L"Native item %u",i);CHECK(SendMessageW(combo,CB_ADDSTRING,0,(LPARAM)text)!=CB_ERR && SendMessageW(list,LB_ADDSTRING,0,(LPARAM)text)!=LB_ERR);}
+    SendMessageW(combo,CB_SETCURSEL,2,0);CHECK(SendMessageW(combo,CB_GETCURSEL,0,0)==2 && SendMessageW(combo,CB_GETCOUNT,0,0)==5);
+    CHECK(SendMessageW(list,LB_SETSEL,TRUE,0)!=LB_ERR && SendMessageW(list,LB_SETSEL,TRUE,2)!=LB_ERR && SendMessageW(list,LB_GETSELCOUNT,0,0)==2);
+    COMBOBOXINFO info={.cbSize=sizeof(info)};CHECK(GetComboBoxInfo(combo,&info) && info.hwndItem!=combo && GetParent(info.hwndItem)==combo);
+    HFONT child_source=(HFONT)SendMessageW(info.hwndItem,WM_GETFONT,0,0);WNDCLASSEXW native={.cbSize=sizeof(native)};CHECK(GetClassInfoExW(NULL,L"EDIT",&native));
+    HMODULE descriptor_owner=NULL,actual_owner=NULL;BOOL descriptor_resolved=GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(const WCHAR *)(UINT_PTR)native.lpfnWndProc,&descriptor_owner);BOOL actual_resolved=GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(const WCHAR *)(UINT_PTR)GetClassLongPtrW(info.hwndItem,GCLP_WNDPROC),&actual_owner);
+    WCHAR combo_class[80];GetClassNameW(combo,combo_class,80);printf("VB_COMPOSITE_IDENTITY alias=%d child_relation=%d combo_class=%ls combo_owner=%p runtime=%p descriptor_module=%d/%p actual_module=%d/%p parent=%p combo=%p\n",ntw16s_vb_combo(combo),ntw16s_vb_combo_edit(info.hwndItem),combo_class,(void *)GetClassLongPtrW(combo,GCLP_HMODULE),(void *)runtime,descriptor_resolved,(void *)descriptor_owner,actual_resolved,(void *)actual_owner,(void *)GetParent(info.hwndItem),(void *)combo);
+    HFONT underlying=(HFONT)CallWindowProcW(native.lpfnWndProc,info.hwndItem,WM_GETFONT,0,0);printf("VB_EDIT_NATIVE_DESCRIPTOR instance=%p proc=%p actual_owner=%p USER32=%p source=%p native_font=%p class_proc=%p unicode=%d extra=%lu/%d\n",(void *)native.hInstance,(void *)native.lpfnWndProc,(void *)GetClassLongPtrW(info.hwndItem,GCLP_HMODULE),(void *)GetModuleHandleW(L"USER32.DLL"),(void *)child_source,(void *)underlying,(void *)(UINT_PTR)GetClassLongPtrW(info.hwndItem,GCLP_WNDPROC),IsWindowUnicode(info.hwndItem),(unsigned long)GetClassLongPtrW(info.hwndItem,GCL_CBWNDEXTRA),native.cbWndExtra);fflush(stdout);CHECK(child_source && (styled?underlying!=child_source:underlying==child_source));
+    if(styled){LOGFONTW lf;CHECK(GetObjectW(underlying,sizeof(lf),&lf)==sizeof(lf));printf("VB_COMPOSITE_NATIVE_FONT face=%ls height=%ld public_source_preserved=1\n",lf.lfFaceName,lf.lfHeight);}
+    SendMessageW(combo,CB_SHOWDROPDOWN,TRUE,0);CHECK(SendMessageW(combo,CB_GETDROPPEDSTATE,0,0));SendMessageW(combo,CB_SHOWDROPDOWN,FALSE,0);CHECK(!SendMessageW(combo,CB_GETDROPPEDSTATE,0,0));
+    if(styled){BOOL (__cdecl *remove_window)(HWND)=(void *)GetProcAddress(dll,"Ntw16sWindowRemove");BOOL (__cdecl *install)(HWND,const void *)=(void *)GetProcAddress(dll,"win16_style_control_install");leaf_remove=(void *)GetProcAddress(dll,"win16_style_control_remove");CHECK(remove_window && install && leaf_remove);
+        CHECK(remove_window(combo));CHECK((HFONT)SendMessageW(info.hwndItem,WM_GETFONT,0,0)==child_source && (HFONT)CallWindowProcW(native.lpfnWndProc,info.hwndItem,WM_GETFONT,0,0)==child_source);
+        retiring_combo=combo;CHECK(SetWindowSubclass(info.hwndItem,retire_font,1,0) && install(combo,NULL));retire_on_font=TRUE;
+        SendMessageW(info.hwndItem,WM_SETFONT,(WPARAM)child_source,FALSE);CHECK(!retire_on_font && IsWindow(combo) && (HFONT)CallWindowProcW(native.lpfnWndProc,info.hwndItem,WM_GETFONT,0,0)==child_source);CHECK(RemoveWindowSubclass(info.hwndItem,retire_font,1));
+        CHECK(install(combo,NULL));
+        HFONT sources[40];DWORD gdi_before=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);
+        for(unsigned i=0;i<ARRAYSIZE(sources);++i){
+            sources[i]=CreateFontW(-(12+(int)i),0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,ANSI_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Tahoma");CHECK(sources[i]);
+            SendMessageW(info.hwndItem,WM_SETFONT,(WPARAM)sources[i],FALSE);
+            CHECK((HFONT)SendMessageW(info.hwndItem,WM_GETFONT,0,0)==sources[i]);
+            LOGFONTW font;CHECK(GetObjectW((HFONT)CallWindowProcW(native.lpfnWndProc,info.hwndItem,WM_GETFONT,0,0),sizeof(font),&font)==sizeof(font));
+        }
+        DWORD gdi_after=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);CHECK(gdi_after<=gdi_before+80);
+        SendMessageW(info.hwndItem,WM_SETFONT,(WPARAM)child_source,FALSE);
+        for(unsigned i=0;i<ARRAYSIZE(sources);++i)CHECK(DeleteObject(sources[i]));
+        printf("VB_COMPOSITE_FONT_BOUND_OK sources=40 gdi_delta=%ld application_fonts_deleted=40\n",(LONG)(gdi_after-gdi_before));
+        CHECK(SetParent(info.hwndItem,root)==combo);SendMessageW(info.hwndItem,WM_NULL,0,0);CHECK((HFONT)CallWindowProcW(native.lpfnWndProc,info.hwndItem,WM_GETFONT,0,0)==child_source);CHECK(SetParent(info.hwndItem,combo)==root);CHECK(leaf_remove(combo));
+    }
+    CHECK((HFONT)SendMessageW(combo,WM_GETFONT,0,0)==source && (HFONT)SendMessageW(list,WM_GETFONT,0,0)==source);
+    CHECK(DestroyWindow(combo) && DestroyWindow(list));printf("VB_COMPOSITE_OK styled=%u data=5 multi_select=2 drop_cancel=1 child_font=1 detach_restore=%u setter_reentry=%u reparent_restore=%u\n",styled,styled,styled,styled);return 0;
+}
 static int child(const WCHAR *runtime_path,BOOL styled,BOOL aware)
 {
     if(aware)CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));
@@ -53,6 +99,7 @@ static int child(const WCHAR *runtime_path,BOOL styled,BOOL aware)
     WNDCLASSW cls={0};cls.lpfnWndProc=parent_proc;cls.hInstance=GetModuleHandleW(NULL);cls.lpszClassName=L"VBProtocolParent";
     CHECK(RegisterClassW(&cls));
     HWND root=CreateWindowW(cls.lpszClassName,L"VB protocol",WS_OVERLAPPEDWINDOW,0,0,360,240,NULL,NULL,cls.hInstance,NULL);CHECK(root);
+    CHECK(!composites(root,runtime,dll,styled));
     HWND group=CreateWindowExW(0,L"ThunderRT6Frame",L"Frame",WS_CHILD|WS_VISIBLE|BS_GROUPBOX,0,0,200,100,root,(HMENU)1,runtime,NULL);CHECK(group);
     HWND button=CreateWindowW(L"ThunderRT6CommandButton",L"&Press",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,210,0,100,30,root,(HMENU)2,runtime,NULL);CHECK(button);
     HWND edit=CreateWindowExW(WS_EX_CLIENTEDGE,L"ThunderRT6TextBox",L"native",WS_CHILD|WS_VISIBLE|ES_AUTOHSCROLL,210,40,100,24,root,(HMENU)3,runtime,NULL);CHECK(edit);

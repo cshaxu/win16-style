@@ -288,7 +288,9 @@
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
       "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
-      "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference"
+      "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference",
+      "T17_S5_progress_evidence": "docs/etc/evidence/vb-composite-controls.json",
+      "T17_S5_disposition": "ordinary real sample and independent native protocol coverage only; remaining listed variants still require audit"
     },
     {
       "id": "VB6.ComboBox",
@@ -318,7 +320,9 @@
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
       "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
-      "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference"
+      "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference",
+      "T17_S5_progress_evidence": "docs/etc/evidence/vb-composite-controls.json",
+      "T17_S5_disposition": "ordinary real sample and independent native protocol coverage only; remaining listed variants still require audit"
     },
     {
       "id": "VB5.ListBox",
@@ -348,7 +352,9 @@
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
       "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
-      "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference"
+      "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference",
+      "T17_S5_progress_evidence": "docs/etc/evidence/vb-composite-controls.json",
+      "T17_S5_disposition": "ordinary real sample and independent native protocol coverage only; remaining listed variants still require audit"
     },
     {
       "id": "VB6.ListBox",
@@ -378,7 +384,9 @@
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
       "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
-      "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference"
+      "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference",
+      "T17_S5_progress_evidence": "docs/etc/evidence/vb-composite-controls.json",
+      "T17_S5_disposition": "ordinary real sample and independent native protocol coverage only; remaining listed variants still require audit"
     },
     {
       "id": "VB5.HScrollBar",
@@ -406,7 +414,9 @@
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
       "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
-      "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference"
+      "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference",
+      "T17_S5_progress_evidence": "docs/etc/evidence/vb-composite-controls.json",
+      "T17_S5_disposition": "ordinary real sample and independent native protocol coverage only; remaining listed variants still require audit"
     },
     {
       "id": "VB6.HScrollBar",
@@ -434,7 +444,9 @@
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
       "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
-      "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference"
+      "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference",
+      "T17_S5_progress_evidence": "docs/etc/evidence/vb-composite-controls.json",
+      "T17_S5_disposition": "ordinary real sample and independent native protocol coverage only; remaining listed variants still require audit"
     },
     {
       "id": "VB5.VScrollBar",
@@ -462,7 +474,9 @@
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
       "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
-      "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference"
+      "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference",
+      "T17_S5_progress_evidence": "docs/etc/evidence/vb-composite-controls.json",
+      "T17_S5_disposition": "ordinary real sample and independent native protocol coverage only; remaining listed variants still require audit"
     },
     {
       "id": "VB6.VScrollBar",
@@ -490,7 +504,9 @@
       "hook_loaded": "not observed in this S1 readonly inventory",
       "initialized": "not exercised by type-library inventory",
       "actual_rendering": "not tested here; earlier finite evidence explicitly referenced",
-      "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference"
+      "T17_S4_protocol_evidence": "authentic VB5/VB6 data/getter baseline; styling pending next S, not passed by alias inference",
+      "T17_S5_progress_evidence": "docs/etc/evidence/vb-composite-controls.json",
+      "T17_S5_disposition": "ordinary real sample and independent native protocol coverage only; remaining listed variants still require audit"
     },
     {
       "id": "VB5.DriveListBox",

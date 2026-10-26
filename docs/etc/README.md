@@ -60,3 +60,5 @@
 - [T17 S3选择控件](evidence/vb-selection-controls.json)：准确VB6普通CheckBox、真实Actor/独立C负例、VB5注册断点和明确变体边界。
 
 - [T17 S4真实内建控件](evidence/vb-intrinsic-controls.json)：固定原作者VB5/6样本、精确runtime/类/公开协议、有限按钮/Frame/Edit实现及下一S接收面。
+
+- [T17 S5列表与滚动包装层](evidence/vb-composite-controls.json)：真实VB5/6精确类、Combo原生编辑子控件字体所有权、原glyph像素与有限公开协议。
