@@ -21,8 +21,9 @@ mciWndClass下九个USER32 Button均为BS_OWNERDRAW，故不以泛化BUTTON路�
 MMControl改列原生保留。SysInfo/Inet/PictureClip亦已在自有免注册OLE宿主逐项观察，均无标准子HWND或
 公开绘制协议而原生保留。当前包再验证RichTextBox、SSTab、MSFlexGrid/MSHFlexGrid和MSChart均仅有私有
 OCX client surface，故同样原生保留；DBCombo/DataCombo的USER Edit和DataList的USER ScrollBar已在当前包
-通过文本选择及范围位置回读，限定复用既有renderer，外壳/绑定/自绘不变。FlatScrollBar外壳、StatusBar/
-ListView/MSCOMCTL Toolbar20及其余未证实行逐项保留。分类当前为43项有限验证、37项原生保留、68项待版本正确公开协议/样本。
+通过文本选择及范围位置回读，DataGrid的USER ScrollBar也已同样验证，限定复用既有renderer，外壳/绑定/
+自绘不变。DBList/Adodc/MSRDC/DataRepeater无标准子HWND而原生保留；FlatScrollBar外壳、StatusBar/ListView/
+MSCOMCTL Toolbar20及其余未证实行逐项保留。分类当前为44项有限验证、43项原生保留、61项待版本正确公开协议/样本。
 无UAC/显示依赖；后续S18审计自包含的
 intrinsic图形选择default/disabled/picture变体。
 S16的Data样本包含绝对数据库/绑定，MDI样本启动可写注册表并有Shell/Delete路径；
