@@ -78,11 +78,11 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | Candidate Proposal | [Delphi Win32控件完整审计与Win3.x风格适配](../proposals/delphi-win32-controls.md) |
 | Files And ABI Surface | 可增加自包含纯C探针/测试；仅在真实公开协议已证明且最小修复明确时改ntw16s32/64，ABI/导出和原五图形头不变 |
 | Applicable Rules | C17/MinGW GCC/Ninja/ccache、来源策略、禁computer-use/全局hook/既有进程扫描；自包含测试与真实VCL兼容测试分列；私有桌面error=5只能skip |
-| Verification | 固定实际映像、SHA/位宽/框架依据；逐窗口记录创建者、类、父子、绘制/消息所有者、DLL加载/初始化/附着；有改动则双宽干净构建、同批四文件实际包测试和部署复核 |
+| Verification | 固定实际映像、SHA/位宽/框架依据；逐窗口记录创建者、类、父子、绘制/消息所有者、DLL加载/初始化/附着；当前五个自有私有桌面探针均在CreateDesktopW前以error=5退出，详见[探针证据](../etc/evidence/delphi-basic-vcl-probe.json)，不得以历史结果替代；有改动则双宽干净构建、同批四文件实际包测试和部署复核 |
 | Expected Markers | 明确的VCL身份、真实native HWND或明确无HWND、公开协议命中或不命中、正常/禁用/焦点/键盘/通知/销毁结果；绝不以模块加载作样式成功结论 |
 | Asset Needs | 仅现有固定候选和自编C探针；不复制Delphi/第三方二进制、图片或资源，不安装/注册运行包 |
 | Reporting Requirements | 报告实际断点、最小方案、每个真实接收者/保留项、测试与skip、二进制发布状态；不将一个VCL应用外推为全部Delphi/FMX |
-| Stop Conditions | 需要私有对象布局、应用绘图、数据绑定、嵌入、owner-draw契约或第五产品时停止该项并交后续S；实际修复前必须先记录根因和最小方案 |
+| Stop Conditions | 需要私有对象布局、应用绘图、数据绑定、嵌入、owner-draw契约或第五产品时停止该项并交后续S；当前agent会话缺少CreateDesktopW权限，按证据保持active-blocked，恢复条件是相同自有探针可创建专用桌面；实际修复前必须先记录根因和最小方案 |
 | Exit Criteria | 至少完成基础真实VCL wrapper的有限接收者审计，任何产品改动有完整双宽包闭环；明确交接下一控件组或关闭条件 |
 | Original Owner Request | 队列首位 Delphi Win32 控件完整审计与Win3.x风格适配；像VB专项一样先全貌审计、demo对应展示、多个S实施、最后独立收口 |
 | Similar-Issue Sweep | VCL/FireMonkey、ANSI/Unicode、静态/运行包、窗口/无窗口/owner-draw、标准/公共控件、数据/网格、菜单/主题、图像/字体、晚创建/重建、x86/x64及第三方组件 |
@@ -93,8 +93,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S2 P1（待本次治理验证、提交、推送及远端复核）：74项种子映射35个已有原生协议模型及39个原生保留边界；无产品二进制变化。
-- Open task: T18 S3 Delphi基础VCL wrapper与公共协议取证；M0/T18开放。
+- Last delivery: M0 T18 S3 P1（待本次治理验证、提交、推送及远端复核）：基础VCL自有探针CreateDesktopW权限阻断、当前源码契约与历史真实证据分离；无产品二进制变化。
+- Open task: T18 S3 Delphi基础VCL wrapper与公共协议取证（active-blocked：等待自有私有桌面权限）；M0/T18开放。
 
 ## Technical Baseline
 

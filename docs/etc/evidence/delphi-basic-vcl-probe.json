@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "task": "M0 T18 S3",
+  "status": "active-blocked: current self-owned private-desktop probes cannot create a desktop in this agent session; no target process was started and no current-package VCL display claim is made",
+  "scope": ["TForm/basic children", "TButton/TComboBox public protocol", "TEdit/native child", "TListBox/native child"],
+  "fixed_inputs": [
+    {"path": "D:/programs/misc/DoubleKiller.exe", "sha256": "cdd83ab909db749992d11ace2dff671493c0568d7a14697f8bef4b06d8647ca8", "bits": 32, "framework": "VCL confirmed by S1"},
+    {"path": "D:/programs/misc/md5summer.exe", "sha256": "4646ce4f638e7d7ec820e7540b39bb185234e1f151d780c734ca557d6dba7ed9", "bits": 32, "framework": "VCL confirmed by S1"}
+  ],
+  "current_source_contract": {
+    "path": "src/ntw16s-dll/control_protocol.c",
+    "rule": "TButton accepts only after same-thread child ownership plus DLGC_BUTTON, native BUTTON extra bytes, positive bounded BCM_GETIDEALSIZE, bounded BM_GETCHECK and BM_GETSTATE. TComboBox accepts only after GetComboBoxInfo establishes self/item/list relationship and bounded public item/selection state.",
+    "negative_guards": "No VCL private-object inspection; no class-prefix inference; custom TButton, owner-draw and malformed protocol remain rejected by tests/ntw16s-dll/control_protocol_owner.c and tests/ntw16s-dll/superclass.c.",
+    "current_runtime_conclusion": "Not re-executed: source reading is not a current-package rendering result."
+  },
+  "historical_real_vcl_evidence": {
+    "DoubleKiller": "M0 T15 S2 used self-owned x86 instances at 96 DPI across four pages: 28 buttons, 3 edits and 2 combos; 33 attached and failures=0, with an explicit pixel detach proof. See docs/etc/evidence/doublekiller-controls.json.",
+    "MD5summer": "M0 Td S12 proved that the outer VCL TComboBox/TButton wrappers were not automatically native aliases; only its actual EDIT child was attached. See docs/etc/evidence/md5summer-controls.json.",
+    "boundary": "These are historical evidence at earlier package identities, retained to guide S3. They are not substituted for a current binary run."
+  },
+  "current_probe_attempts": [
+    {"command": "build/.ninja/x86/core-superclass.exe assets/run16s.exe", "result": "PRIVATE_DESKTOP_CREATE_FAIL error=5", "target_started": false},
+    {"command": "build/.ninja/x86/core-control-protocol-owner.exe", "result": "PRIVATE_DESKTOP_CREATE_FAIL error=5", "target_started": false},
+    {"command": "build/.ninja/x64/core-superclass.exe assets/run16s.exe", "result": "PRIVATE_DESKTOP_CREATE_FAIL error=5", "target_started": false},
+    {"command": "build/.ninja/x64/core-control-protocol-owner.exe", "result": "PRIVATE_DESKTOP_CREATE_FAIL error=5", "target_started": false},
+    {"command": "build/.ninja/x86/doublekiller-driver.exe assets/run16s.exe D:/programs/misc/DoubleKiller.exe build/.ninja/x86/doublekiller-probe.dll build/t18-s3-doublekiller/run", "result": "PRIVATE_DESKTOP_CREATE_FAIL error=5", "target_started": false}
+  ],
+  "root_cause": "isolated_process.h returns before CreateProcess when CreateDesktopW on the current window station fails with Win32 error 5 (access denied). The observed failure is therefore agent-session desktop authority, not a target launch, injection, wrapper or renderer result.",
+  "safety": "No current-desktop fallback, computer-use, WinSta0 DACL change, system setting, existing process scan or target execution was used. The owned driver scratch was not created because isolation failed before it could write.",
+  "recovery": "Run the unchanged self-owned probes from an agent session that can CreateDesktopW, or provide an equivalent dedicated isolated desktop authority. Re-run all five commands and compare loaded DLL SHA, attachment, public protocol, pixel/interaction and cleanup markers before any renderer change or S3 closure.",
+  "next": "Keep S3 active. A later S cannot claim basic VCL current-package regression until this exact private-desktop prerequisite is restored."
+}
