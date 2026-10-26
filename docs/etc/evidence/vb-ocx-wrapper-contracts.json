@@ -81,6 +81,14 @@
       "Data-bound-private-surfaces": "The same inert current-package probe observes DBListWndClass, AdodcWndClass, DataRepeaterWndClass, and rdcWndClass as OCX-owned client surfaces with attached=0 and protocol_bound=0, and no standard child HWND. It performs no connection, query, source assignment, reporting, or data operation; preserve those outer controls natively.",
       "SysInfo-Inet-PictureClip": "The direct x86 OLE host activates SysInfoWndClass, MSINETWndClass, and PicClipWndClass from the official OCXs. Each outer OCX client surface remains attached=0 and exposes no observed standard child HWND or public custom-draw contract. Preserve native behavior; do not infer that type-library OLEMISC visibility alone proves a safe styling route.",
       "MMControl": "MCI32.OCX creates an outer mciWndClass and nine USER32 Button children. Every observed Button has low style 0x000B (BS_OWNERDRAW), remains attached=0, and is owned by the private mciWndClass surface. Do not route these through generic BUTTON painting: that would replace the OCX's WM_DRAWITEM contract without a public owner/drawing protocol."
+    },
+    "Current-old-COMCTL-sweep": {
+      "activation": "Current published x86 ntw16s32.dll injected by the self-owned candidate run16s host; direct DllGetClassObject/IOleObject/IPersistStreamInit activation of the Microsoft-signed scratch COMCTL32.OCX; no registration or installation.",
+      "StatusBar": "CtlFrameWork_ReflectWindow -> StatusBarWndClass reports attached=0 and protocol_bound=0. The observer records OCX_STATUS_DRAW pre=0, item=0, post=0.",
+      "TabStrip": "CtlFrameWork_ReflectWindow -> TabStripWndClass reports attached=0 and protocol_bound=0; the public item count is 1. Earlier renderer admission changed the count and was removed.",
+      "ProgressBar": "CtlFrameWork_ReflectWindow -> ProgressBarWndClass reports attached=0 and protocol_bound=0. PBM_GETRANGE observes 0:30000, PBM_GETPOS 0, and GETSTATE 0 rather than a documented PBST state.",
+      "ImageList": "ImageListWndClass reports attached=0 and protocol_bound=0. It is a visible OCX client surface in this host, not evidence for a standard HIMAGELIST contract.",
+      "ListView": "CtlFrameWork_ReflectWindow -> ListViewWndClass reports attached=0 and protocol_bound=0 after setting report View before activation. The outer wrapper supplies OCX_LIST_DRAW pre=1, item=0, post=0 only; its native SysHeader32 is subsequently created by COMCTL32.DLL and remains attached=1 through the existing header route. No late scan or wrapper attachment is performed."
     }
   },
   "non_goals": ["StatusBar", "TabStrip", "ListView", "MSCOMCTL Toolbar20 host", "COMCT232 UpDown/Animation", "COMCT332 CoolBar", "all OCX versions", "global hooks", "existing-window scanning"],
