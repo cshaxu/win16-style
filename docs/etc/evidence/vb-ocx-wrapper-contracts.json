@@ -95,6 +95,14 @@
       "Animation": "COMCT232 Animation coclass {1E216240-1B7D-11CF-9D53-00AA003C9CB6} creates CtlFrameWork_ReflectWindow -> AnimationWndClass, both owned by COMCT232.OCX and attached=0/protocol_bound=0. No native animation child is observed.",
       "UpDown": "COMCT232 UpDown coclass {026371C0-1B7C-11CF-9D53-00AA003C9CB6} creates CtlFrameWork_ReflectWindow -> UpDownWndClass, both owned by COMCT232.OCX and attached=0/protocol_bound=0. No native msctls_updown32 child is observed.",
       "CoolBar": "COMCT332 CoolBar coclass {38911D92-E448-11D0-84A3-00DD01104159} creates nested ThunderRT6UserControlDC windows owned by MSVBVM60.DLL, each attached=0/protocol_bound=0. No standard common-control child or content-neutral public draw route is observed."
+    },
+    "Current-MSCOMCT2-sweep": {
+      "activation": "Current published x86 ntw16s32.dll injected by the self-owned candidate run16s host; direct DllGetClassObject/IOleObject/IPersistStreamInit activation of Microsoft-signed scratch MSCOMCT2.OCX; no registration or installation.",
+      "Animation": "Animation coclass {B09DE715-87C1-11D1-8BE3-0000F8754DA1} creates CtlFrameWork_ReflectWindow -> Animation20WndClass, both owned by MSCOMCT2.OCX and attached=0/protocol_bound=0.",
+      "UpDown": "UpDown coclass {603C7E80-87C2-11D1-8BE3-0000F8754DA1} creates CtlFrameWork_ReflectWindow -> UpDown20WndClass, both owned by MSCOMCT2.OCX and attached=0/protocol_bound=0.",
+      "MonthView": "MonthView coclass {232E456A-87C3-11D1-8BE3-0000F8754DA1} creates CtlFrameWork_ReflectWindow -> MonthView20WndClass, both owned by MSCOMCT2.OCX and attached=0/protocol_bound=0.",
+      "DTPicker": "DTPicker coclass {20DD1B9E-87C4-11D1-8BE3-0000F8754DA1} creates CtlFrameWork_ReflectWindow -> DTPicker20WndClass, both owned by MSCOMCT2.OCX and attached=0/protocol_bound=0.",
+      "FlatScrollBar": "FlatScrollBar coclass {FE38753A-44A3-11D1-B5B7-0000C09000C4} creates FlatSB20WndClass owned by MSCOMCT2.OCX with attached=0/protocol_bound=0. It is not a standard USER ScrollBar child."
     }
   },
   "non_goals": ["StatusBar", "TabStrip", "ListView", "MSCOMCTL Toolbar20 host", "COMCT232 UpDown/Animation", "COMCT332 CoolBar", "all OCX versions", "global hooks", "existing-window scanning"],
