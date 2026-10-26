@@ -19,7 +19,7 @@
 typedef struct control_style {
     win16_style_palette palette;
     unsigned calls;
-    BOOL detached,removing;
+    BOOL detached,removing,file_owner;
     HFONT font,original_font;
     BOOL edit_border;
     HWND combo_list,combo_edit,combo_parent;
@@ -178,6 +178,7 @@ static BOOL is_separator(HWND w)
 static BOOL supported(HWND w)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),type=ntw16s_button_type(w,style);
+    if(ntw16s_vb_owner_file(w))return TRUE;
     if((ntw16s_vb_checkbox(w) || ntw16s_vb_option(w)) && !ntw16s_vb_plain_choice(w))return FALSE;
     if(is_scroll(w))return !(style&SBS_SIZEGRIP);
     if(is_link(w))return TRUE;
@@ -506,7 +507,7 @@ static void draw_combo(HWND w,control_style *s,HDC dc)
     u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));GetClientRect(w,&client);
     /* Native child EDIT owns its caret, text, selection and IME. Do not paint
      * over that child while drawing the combo's surrounding chrome. */
-    if(editable)ExcludeClipRect(dc,info.rcItem.left,info.rcItem.top,info.rcItem.right,info.rcItem.bottom);
+    if(editable || ntw16s_vb_drive(w))ExcludeClipRect(dc,info.rcItem.left,info.rcItem.top,info.rcItem.right,info.rcItem.bottom);
     if(simple){RECT list;
         if(GetWindowRect(info.hwndList,&list)){
             MapWindowPoints(NULL,w,(POINT *)&list,2);ExcludeClipRect(dc,list.left,list.top,list.right,list.bottom);}
@@ -529,7 +530,7 @@ static void draw_combo(HWND w,control_style *s,HDC dc)
     SetDCBrushColor(dc,IsWindowEnabled(w)?s->palette.edge:s->palette.shadow);
     for(y=0;y<9;++y)for(x=0;x<7;++x)if(combo_arrow[y][x]=='0'){
         SetRect(&pixel,left+x*u,top+y*u,left+(x+1)*u,top+(y+1)*u);FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));}
-    if(editable){RestoreDC(dc,saved);free(label);return;}
+    if(editable || ntw16s_vb_drive(w)){RestoreDC(dc,saved);free(label);return;}
     text=info.rcItem;selected=GetFocus()==w && !pressed;
     SetDCBrushColor(dc,selected?s->palette.active:s->palette.light);FillRect(dc,&text,(HBRUSH)GetStockObject(DC_BRUSH));
     SelectObject(dc,font?font:GetStockObject(SYSTEM_FONT));SetBkMode(dc,TRANSPARENT);
@@ -1173,6 +1174,21 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
                 m==WM_LBUTTONDOWN || m==WM_LBUTTONUP || m==WM_KEYDOWN))RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
             if(redraw)scroll_caret_sync(w,s);}
     }
+    else if(s->file_owner){
+        /* Runtime owner-draw remains authoritative. Overlay chrome only after
+         * its native paint; never clear or recreate the image/text item. */
+        if(ntw16s_vb_owner_file(w) && ntw16s_vb_directory(w) && embedded_scroll_input(w,s,m,a,b))result=0;
+        else result=DefSubclassProc(w,m,a,b);
+        if(!s->detached && ntw16s_vb_owner_file(w)){
+            if(m==WM_PAINT){
+                if(ntw16s_vb_drive(w)){HDC dc=GetDC(w);if(dc){draw_combo(w,s,dc);ReleaseDC(w,dc);}}
+                else {list_border(w,s,NULL);nonclient_scrollbars(w,s,NULL);}
+            }else if(m==WM_PRINTCLIENT && ntw16s_vb_drive(w))draw_combo(w,s,(HDC)a);
+            else if(m==WM_NCPAINT || (m==WM_PRINT && (b&PRF_NONCLIENT))){
+                if(ntw16s_vb_directory(w)){list_border(w,s,m==WM_PRINT?(HDC)a:NULL);nonclient_scrollbars(w,s,m==WM_PRINT?(HDC)a:NULL);}
+            }
+        }
+    }
     else if(is_combo(w)){
         if(m==WM_SETREDRAW){s->list_redraw_off=!a;result=DefSubclassProc(w,m,a,b);}
         else if(m==WM_PAINT){PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);present_control(w,s,dc,draw_combo);EndPaint(w,&ps);}
@@ -1367,6 +1383,7 @@ static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL ori
         CopyMemory(s->tab_positions,tabs,(size_t)tab_count*sizeof(int));s->tab_count=tab_count;}
     s->edit_border=edit && original_border;
     s->frame_scrollbars=frame_bars;
+    s->file_owner=!frame_bars && ntw16s_vb_owner_file(w);
     if(!frame_bars){s->original_font=(HFONT)SendMessageW(w,WM_GETFONT,0,0);
         if(cancelled && *cancelled){dispose_control(s);SetLastError(ERROR_CANCELLED);return FALSE;}
         /* The font query may reenter installation. Do not replace that
@@ -1379,7 +1396,7 @@ static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL ori
     /* Child attachment and WM_SETFONT can synchronously remove/destroy us.
      * Retain this attempt until its result is known, just like a callback. */
     ++s->calls;
-    if(!frame_bars && is_combo(w)){
+    if(!frame_bars && is_combo(w) && !s->file_owner){
         COMBOBOXINFO info={.cbSize=sizeof(info)};
         if(!ntw16s_native_get_combo_info(w,&info) || !win16_style_control_install(info.hwndList,palette)){
             if(!s->detached)win16_style_control_remove(w);

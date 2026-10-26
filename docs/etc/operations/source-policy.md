@@ -25,3 +25,10 @@ T17 S5沿用S4同一原作者样例，只扩展准确runtime50/60 Combo/List/Scr
 本层字体所有权；没有复制外部实现或新增图形资源。EDIT身份通过原生公开类及
 COMBOBOXINFO确认，包括USER32的系统分派过程与COMCTL32 v6实际注册类，
 不读取或解释私有过程令牌。32字体租约上界、源字体归还及回调存活均属本DLL。
+
+T17 S7用固定Code Architects镜像提交的原作者Photo Album作可选本地研究样本，
+实际PE依赖MSVBVM50而非目录标签VB6。原作者Salvatore Totaro/PaperQuack的
+About.frm声明freeware/as-is；不据此推断整个镜像的源码许可。样本实现、EXE和
+图像不进入产品或必需测试，不安装/注册外部组件。实际图像仍由原运行库绘制；
+独立C模型只生成测试辨识色块，不是替代产品资源。固定身份与边界见
+[文件控件证据](../evidence/vb-file-controls.json)。

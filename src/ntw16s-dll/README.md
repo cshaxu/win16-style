@@ -55,3 +55,12 @@ held through reentrant native painting/setters and restored on removal or
 reparenting. Outside synchronous painting WM_GETFONT preserves the application
 source font; painting-time nested queries can observe the private painter font.
 No arbitrary EDIT children, private VB object layouts or global font changes.
+
+T17 S7 adds exact MSVBVM50-owned FileListBox, DirListBox and DriveListBox.
+The ordinary file list uses the existing list renderer. Verified string-based
+directory/drive owner-draw controls keep runtime images, data and callbacks;
+only text on the exact DRAWITEM DC borrows the existing System font. Native
+drive items/popup and application path logic remain authoritative. Directory
+borders/scrollbars and drive chrome reuse existing primitives. Reparenting or
+removal cancels the scope. Generic owner-draw and unverified VB6 file wrappers
+remain native. Self-contained C fixtures are distinct from authentic VB5 proof.

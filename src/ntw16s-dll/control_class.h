@@ -22,9 +22,22 @@ static inline BOOL ntw16s_vb_checkbox(HWND w)
 static inline BOOL ntw16s_vb_option(HWND w)
 {return ntw16s_vb_class(w,L"ThunderRT6OptionButton") || ntw16s_vb5_class(w,L"ThunderRT5OptionButton");}
 static inline BOOL ntw16s_vb_combo(HWND w)
-{return ntw16s_vb_class(w,L"ThunderRT6ComboBox") || ntw16s_vb5_class(w,L"ThunderRT5ComboBox");}
+{return ntw16s_vb_class(w,L"ThunderRT6ComboBox") || ntw16s_vb5_class(w,L"ThunderRT5ComboBox") || ntw16s_vb5_class(w,L"ThunderRT5DriveListBox");}
 static inline BOOL ntw16s_vb_list(HWND w)
-{return ntw16s_vb_class(w,L"ThunderRT6ListBox") || ntw16s_vb5_class(w,L"ThunderRT5ListBox");}
+{return ntw16s_vb_class(w,L"ThunderRT6ListBox") || ntw16s_vb5_class(w,L"ThunderRT5ListBox") || ntw16s_vb5_class(w,L"ThunderRT5FileListBox") || ntw16s_vb5_class(w,L"ThunderRT5DirListBox");}
+static inline BOOL ntw16s_vb_drive(HWND w)
+{return ntw16s_vb5_class(w,L"ThunderRT5DriveListBox");}
+static inline BOOL ntw16s_vb_directory(HWND w)
+{return ntw16s_vb5_class(w,L"ThunderRT5DirListBox");}
+/* Only the observed intrinsic owner-draw modes; native runtime keeps images,
+ * item data, measurement and input. Unsupported live styles stay native. */
+static inline BOOL ntw16s_vb_owner_file(HWND w)
+{
+    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
+    if(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING))return FALSE;
+    if(ntw16s_vb_directory(w))return (style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA|LBS_HASSTRINGS))==(LBS_OWNERDRAWVARIABLE|LBS_HASSTRINGS);
+    return ntw16s_vb_drive(w) && (style&(3|CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE|CBS_HASSTRINGS))==(CBS_DROPDOWNLIST|CBS_OWNERDRAWFIXED|CBS_HASSTRINGS);
+}
 static inline BOOL ntw16s_vb_scroll(HWND w)
 {return ntw16s_vb_class(w,L"ThunderRT6HScrollBar") || ntw16s_vb_class(w,L"ThunderRT6VScrollBar") || ntw16s_vb5_class(w,L"ThunderRT5HScrollBar") || ntw16s_vb5_class(w,L"ThunderRT5VScrollBar");}
 /* The runtime retains Value/Click/group behavior, independent of style bits. */

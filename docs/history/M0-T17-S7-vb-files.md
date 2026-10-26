@@ -1,0 +1,32 @@
+# M0 T17 S7 VB5 file, directory and drive lists
+
+S7有限实现已完成同批双宽干净构建、包测试和双发布；P1实际远端复核待完成，
+尚未关闭。T17/M0开放。[证据](../etc/evidence/vb-file-controls.json)拥有范围及限制。
+
+真实Photo Album的PE依赖MSVBVM50，不能由镜像VB6目录名推断版本。原作者
+Salvatore Totaro/PaperQuack，镜像固定提交及Git blob、源码/声明保留在登记研究根；
+不导入外部实现、图像或EXE。真实FileListBox已有native superclass/附着，但缺少
+准确VB字体角色；Dir/Drive被既有owner-draw保护拒绝，并非启动/注入失败。
+
+最小改动为准确runtime50角色、公开style/DRAWITEM协议和同线程父通知观察。
+目录/驱动器的原生回调仍拥有图标、项目布局、数据和返回值，只在准确DC上借用
+既有System字体；目录边框/滚动和驱动器外框/箭头复用现有renderer。不是通用
+ownerdraw接管，不读私有VB对象，不替换公共对话框。三组件四产物、ABI3/31命名
+加ordinal1、标题/菜单/字体算法与五原glyph/来源声明保持。
+
+原型外层paint字体作用域过宽，combo打印每次增长1个GDI对象；取消叠绘仍增长。
+仅在准确父DRAWITEM中替换后，24轮绘制GDI delta0，回调内移除与换父窗退回
+原生通过。保留原资源断言，没有放宽上界。新双宽纯C模型验证原生色块432/144
+像素、文字记录、源字体/数据、错误runtime-owner拒绝、队列按键及父通知、Esc、
+销毁清理；模型不冒充真实VB。真实VB5三个控件正常显示、实际System文字、源
+HFONT/几何/选择保持和Drive Esc/active0通过；未改变驱动器或目录路径。
+
+干净双宽all编译12.27/18.89秒，Ninja8/ccache；19项包并行17.83秒首轮18通过。
+demo八页即时GDI数量断言首轮失败，串行5.01秒复测通过，原因未定，原始失败
+保留；不能声称首轮全通过或已修好该不稳定观察。三个旧包负例均在实际文字
+谓词失败，证明新增测试可检出旧实现。原生标题top26对S6差异0，正常显示截图
+无损PNG保留。双发布八SHA、安装双宽ABI/文件组和真实VB5共5项通过。
+
+真实VB6文件组、本组未覆盖的特殊style/语言/DPI、窗口无句柄容器及微软OCX等
+148单位全集仍交后续S/独立审计；不以本S有限成功关闭T17。HD Tune提权默认skip。
+测试入口及逐项结果见证据；当前没有物理键鼠完成声明。

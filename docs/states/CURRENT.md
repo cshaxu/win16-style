@@ -2,8 +2,8 @@
 
 ## Current Work
 
-M0 T17 S6真实VB输入队列/通知已交付关闭；顺序准入S7 FileListBox/DirListBox/
-DriveListBox。S7先取得真实注册/公开协议和来源依据，再复用既有renderer；
+M0 T17 S7真实VB5 FileListBox/DirListBox/DriveListBox已实现并完成同批包/双发布/
+安装5项，待P1实际远端复核后关闭；VB6文件组与更多变体交后续S。
 公共文件夹对话框仍属独立候选，不由文件列表适配暗中替换。
 S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真实变体连续分S、
 最后独立全任务审计。T17/M0开放，不启动其他候选，不缩小全集为普通样例。
@@ -41,6 +41,13 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Open task: T17 S7文件/目录/驱动器列表；T17/M0开放，已有关闭/取消保持。
 
 ## Technical Baseline
+
+S7候选0.17.0.0新增准确runtime50文件列表角色与父DRAWITEM DC作用域；目录/
+驱动器保留原生图像、数据、项目布局和回调，复用既有边框/滚动/箭头/字体。
+206输入，双宽all干净构建；19项首轮18通过，demo即时GDI断言首轮失败、串行
+5.01秒复测通过，原因未定；其余包括双宽新文件组/真实VB5及旧普通VB5/6通过。
+双宽模型和真实旧包三负例检出缺口，24次绘制GDI delta0；八部署SHA一致、安装
+5项通过，标题top26对S6像素差异0。有限范围见[S7证据](../etc/evidence/vb-file-controls.json)。
 
 T17 S6产品0.17.0.0，204输入/三组件四产物，生产src保持S5；真实runtime50/60准确普通Combo/
 List/HScroll/VScroll复用既有renderer、字号策略和原glyph。原生Combo EDIT按

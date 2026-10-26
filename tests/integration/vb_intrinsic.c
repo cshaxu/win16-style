@@ -79,6 +79,7 @@ static void queue_key(HWND window,WPARAM key)
     HWND destination=gui.hwndFocus;
     CHECK(ResetEvent(queue_ready));queue_state->root=GetParent(window);queue_state->window=window;
     queue_state->commands=queue_state->hscroll=queue_state->vscroll=0;
+    queue_state->action=0;
     queue_state->acknowledgements=queue_state->rejected=0;
     queue_state->command_code=queue_state->scroll_code=0;
     ++queue_state->generation;MemoryBarrier();
@@ -93,6 +94,21 @@ static void queue_key(HWND window,WPARAM key)
     CHECK(AttachThreadInput(GetCurrentThreadId(),queue_state->tid,FALSE));
     printf("VB_SAMPLE_QUEUE_OK key=%u generation=%lu commands=%ld hscroll=%ld vscroll=%ld command_code=%lu scroll_code=%lu\n",
         (unsigned)key,queue_state->generation,queue_state->commands,queue_state->hscroll,queue_state->vscroll,queue_state->command_code,queue_state->scroll_code);
+}
+static void queue_survey(HWND window,BOOL popup)
+{
+    DWORD owner=0;CHECK(GetWindowThreadProcessId(window,&owner)==queue_state->tid && owner==pid);
+    queue_state->window=window;queue_state->root=GetParent(window);
+    queue_state->action=popup?VB_QUEUE_POPUP_SURVEY:VB_QUEUE_SURVEY;
+    ++queue_state->generation;CHECK(ResetEvent(queue_ready));MemoryBarrier();
+    UINT marker=RegisterWindowMessageW(VB_QUEUE_MESSAGE);CHECK(marker);
+    CHECK(PostMessageW(window,marker,queue_state->generation,0) && pump(queue_ready,3000)==WAIT_OBJECT_0);
+    CHECK(queue_state->completed==(LONG)queue_state->generation);MemoryBarrier();
+    WCHAR cls[100];GetClassNameW(window,cls,100);
+    printf("VB_FILE_SURVEY class=%ls attached=%ld font_records=%ld system_fonts=%ld draw_items=%ld draw_type=%lu draw_dc_window=%p popup_dc=%ld system_text=%ld native_text=%ld\n",
+        cls,queue_state->attached,queue_state->font_records,queue_state->system_fonts,queue_state->draw_items,
+        queue_state->draw_type,(void *)queue_state->draw_dc_window,queue_state->popup_dc,queue_state->system_text,queue_state->native_text);
+    queue_state->action=0;
 }
 static void CALLBACK shown(HWINEVENTHOOK h,DWORD e,HWND w,LONG object,LONG child,DWORD thread,DWORD time){
     (void)h;
@@ -121,10 +137,18 @@ static BOOL CALLBACK collect(HWND w,LPARAM ignored)
 {
     (void)ignored;WCHAR cls[100],text[120];GetClassNameW(w,cls,100);GetWindowTextW(w,text,120);
     HWND parent=GetParent(w);WCHAR parent_class[100];GetClassNameW(parent,parent_class,100);
+    WCHAR real_class[100];CHECK(RealGetWindowClassW(w,real_class,100));
+    printf("SAMPLE_REAL_CLASS hwnd=%p registered=%ls real=%ls\n",(void *)w,cls,real_class);
     printf("SAMPLE_WINDOW hwnd=%p parent=%p class=%ls parent_class=%ls owner=%p style=%08lx ex=%08lx text=%ls font=%p\n",(void *)w,(void *)parent,cls,parent_class,(void *)GetClassLongPtrW(w,GCLP_HMODULE),(DWORD)GetWindowLongPtrW(w,GWL_STYLE),(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE),text,(void *)SendMessageW(w,WM_GETFONT,0,0));
     if(wcsstr(cls,L"OptionButton") || wcsstr(cls,L"CheckBox"))printf("SAMPLE_BUTTON hwnd=%p dlg=%llx check=%lld state=%lld\n",(void *)w,(unsigned long long)SendMessageW(w,WM_GETDLGCODE,0,0),(long long)SendMessageW(w,BM_GETCHECK,0,0),(long long)SendMessageW(w,BM_GETSTATE,0,0));
     if(wcsstr(cls,L"ComboBox")) {COMBOBOXINFO i={.cbSize=sizeof(i)};BOOL ok=GetComboBoxInfo(w,&i);printf("SAMPLE_COMBO hwnd=%p count=%lld selected=%lld info=%d edit=%p list=%p error=%lu\n",(void *)w,(long long)SendMessageW(w,CB_GETCOUNT,0,0),(long long)SendMessageW(w,CB_GETCURSEL,0,0),ok,(void *)i.hwndItem,(void *)i.hwndList,GetLastError());}
     if(wcsstr(cls,L"ListBox"))printf("SAMPLE_LIST hwnd=%p count=%lld selected=%lld\n",(void *)w,(long long)SendMessageW(w,LB_GETCOUNT,0,0),(long long)SendMessageW(w,LB_GETCURSEL,0,0));
+    if(wcsstr(cls,L"DriveListBox")){
+        COMBOBOXINFO combo={.cbSize=sizeof(combo)};BOOL valid=GetComboBoxInfo(w,&combo);
+        printf("VB_FILE_DRIVE_PROTOCOL info=%d count=%lld selected=%lld item=%p list=%p owner_draw=%u has_strings=%u\n",
+            valid,(long long)SendMessageW(w,CB_GETCOUNT,0,0),(long long)SendMessageW(w,CB_GETCURSEL,0,0),
+            (void *)combo.hwndItem,(void *)combo.hwndList,((DWORD)GetWindowLongPtrW(w,GWL_STYLE)&(CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE))!=0,((DWORD)GetWindowLongPtrW(w,GWL_STYLE)&CBS_HASSTRINGS)!=0);
+    }
     if(count<80)checks[count++]=w;
     return TRUE;
 }
@@ -244,10 +268,13 @@ static int worker(int argc,WCHAR **argv){
     }
     while(Module32NextW(snap,&mod));
     CloseHandle(snap);
-    CHECK(runtime && dll==styled && EnumChildWindows(form,collect,0) && count>10);
+    BOOL file_verify=!wcscmp(argv[3],L"files-verify");
+    BOOL inventory=file_verify || !wcscmp(argv[3],L"inventory");
+    CHECK(runtime && dll==styled && EnumChildWindows(form,collect,0) && (inventory?count>0:count>10));
     CHECK(swprintf_s(path,MAX_PATH,L"%ls/actor-%ls.bmp",scratch,styled?L"styled":L"bare")>0);
     printf("VB_SAMPLE_IMAGE hash=%llu\n",(unsigned long long)capture(form,path,FALSE));
     printf("SAMPLE_ROOT class_owner=%p windows=%u\n",(void *)GetClassLongPtrW(form,GCLP_HMODULE),count);
+    if(!inventory){
     unsigned options=0,checkboxes=0,combos=0,lists=0,edits=0,bars=0;
     for(unsigned i=0;i<count;++i){HWND w=checks[i];WCHAR cls[100];GetClassNameW(w,cls,100);DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);HMODULE owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);HFONT original_font=(HFONT)SendMessageW(w,WM_GETFONT,0,0);RECT original_rect,after_rect;CHECK(GetWindowRect(w,&original_rect));
         if(owner!=runtime)continue;
@@ -282,6 +309,29 @@ static int worker(int argc,WCHAR **argv){
     }
     CHECK(options==4 && checkboxes==4 && combos==2 && lists==1 && edits==2 && bars==2);
     printf("SAMPLE_PROTOCOL_PASS option=%u checkbox=%u combo=%u list=%u edit=%u scrollbar=%u\n",options,checkboxes,combos,lists,edits,bars);
+    }else {
+        unsigned file_controls=0;CHECK(!file_verify || queue_state);
+        if(queue_state)for(unsigned i=0;i<count;++i){
+            WCHAR cls[100];GetClassNameW(checks[i],cls,100);
+            if(wcsstr(cls,L"FileListBox") || wcsstr(cls,L"DirListBox") || wcsstr(cls,L"DriveListBox")){
+                HWND w=checks[i];BOOL drive=wcsstr(cls,L"DriveListBox")!=NULL;
+                HFONT source=(HFONT)SendMessageW(w,WM_GETFONT,0,0);RECT before,after;CHECK(GetWindowRect(w,&before));
+                LRESULT selection=SendMessageW(w,drive?CB_GETCURSEL:LB_GETCURSEL,0,0);
+                queue_survey(w,drive);
+                if(file_verify){
+                    CHECK((HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==runtime);
+                    CHECK(styled?(queue_state->attached==1 && queue_state->system_text>0):queue_state->system_text==0);
+                    CHECK((HFONT)SendMessageW(w,WM_GETFONT,0,0)==source && GetWindowRect(w,&after) && EqualRect(&before,&after));
+                    CHECK(SendMessageW(w,drive?CB_GETCURSEL:LB_GETCURSEL,0,0)==selection);
+                    if(drive){SendMessageW(w,CB_SHOWDROPDOWN,TRUE,0);queue_key(w,VK_ESCAPE);
+                        CHECK(!SendMessageW(w,CB_GETDROPPEDSTATE,0,0) && SendMessageW(w,CB_GETCURSEL,0,0)==selection);}
+                    ++file_controls;
+                }
+            }
+        }
+        if(file_verify){CHECK(file_controls==3);puts("VB_REAL_FILES_OK runtime_owned=3 actual_system_text=3 font_geometry_selection_preserved=1 drive_escape=1");}
+        printf("VB_SAMPLE_INVENTORY_OK windows=%u selection_unchanged=1\n",count);
+    }
 
     if(queue_state){CHECK(UnhookWindowsHookEx(queue_get) && UnhookWindowsHookEx(queue_sent));queue_get=queue_sent=NULL;}
     SendMessageW(form,WM_CLOSE,0,0);
