@@ -1,0 +1,18 @@
+{
+  "task": "M0 T17 S24",
+  "scope": "VB TextBox multiline, scroll, read-only, password and alignment boundary.",
+  "actual_source_basis": [
+    "The original VB5 and VB6 XP Styles Demonstration forms contain a TextBox with MultiLine=True and ScrollBars=Both alongside a normal single-line TextBox.",
+    "The ImageProcessor source uses Locked TextBox instances, confirming that user editing state must remain native runtime/EDIT behavior."
+  ],
+  "renderer_boundary": "Exact runtime-owned ThunderRT5/6TextBox uses the existing EDIT control path. A multiline child gets early theme capture and the existing classic scrollbar path; text storage, selection, Undo, password character, alignment, readonly and IME remain native EDIT responsibilities.",
+  "current_witness": {
+    "x64_injected": "VB_TEXTBOX_VARIANTS_OK multiline=1 scroll=1 undo=1 readonly=1 password=1 center=1 native_retire=1",
+    "x86_injected": "VB_TEXTBOX_VARIANTS_OK multiline=1 scroll=1 undo=1 readonly=1 password=1 center=1 native_retire=1",
+    "native_controls": "x64/x86 bare fixtures retain native EDIT behavior and no renderer attachment."
+  },
+  "semantic_correction": "EM_REPLACESEL is an application/programmatic edit and remains allowed on a read-only Windows EDIT. The regression therefore verifies that WM_CHAR is rejected after EM_SETREADONLY while programmatic API semantics are left unchanged.",
+  "result": "S24 adds test-only coverage; production path already supplies the safe classic border/font/scrollbar adaptation without rewriting EDIT text semantics.",
+  "not_covered": ["Real runtime password form sample.", "IME composition on a physical desktop.", "RichTextBox and third-party edit wrappers."],
+  "product_change": "test-only"
+}

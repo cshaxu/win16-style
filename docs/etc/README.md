@@ -30,6 +30,9 @@
 - [VB CommandButton状态变体](evidence/vb-command-button-variants.json)：T17 S23
   default/cancel/flat 的真实公共边界与双宽 runtime witness；不作为私有对话框路由支持声明。
 
+- [VB TextBox特殊变体](evidence/vb-textbox-variants.json)：T17 S24多行、只读、密码和
+  对齐的真实公共边界与双宽 runtime witness；不作为富文本或IME完整支持声明。
+
 - [VB6 DriveListBox审计](evidence/vb6-drivelistbox-audit.json)：T17 S14固定
   源码/PE/runtime 身份与有界样本缺失结论；不作为VB6 DriveListBox支持声明。
 

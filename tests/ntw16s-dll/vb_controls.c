@@ -104,9 +104,11 @@ static int child(const WCHAR *runtime_path,BOOL styled,BOOL aware)
     HWND button=CreateWindowW(L"ThunderRT6CommandButton",L"&Press",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,210,0,100,30,root,(HMENU)2,runtime,NULL);CHECK(button);
     HWND default_button=CreateWindowW(L"ThunderRT6CommandButton",L"&Default",WS_CHILD|WS_VISIBLE|WS_TABSTOP|BS_DEFPUSHBUTTON,0,120,140,28,root,(HMENU)10,runtime,NULL);CHECK(default_button);
     HWND edit=CreateWindowExW(WS_EX_CLIENTEDGE,L"ThunderRT6TextBox",L"native",WS_CHILD|WS_VISIBLE|ES_AUTOHSCROLL,210,40,100,24,root,(HMENU)3,runtime,NULL);CHECK(edit);
+    HWND multiline=CreateWindowExW(WS_EX_CLIENTEDGE,L"ThunderRT6TextBox",L"alpha\r\nbeta",WS_CHILD|WS_VISIBLE|ES_MULTILINE|ES_AUTOVSCROLL|WS_VSCROLL|WS_HSCROLL,0,152,140,36,root,(HMENU)11,runtime,NULL);CHECK(multiline);
+    HWND password=CreateWindowExW(WS_EX_CLIENTEDGE,L"ThunderRT6TextBox",L"secret",WS_CHILD|WS_VISIBLE|ES_PASSWORD|ES_CENTER|ES_AUTOHSCROLL,150,152,140,28,root,(HMENU)12,runtime,NULL);CHECK(password);
     HWND checkbox=CreateWindowW(L"ThunderRT6CheckBox",L"&Check",WS_CHILD|WS_VISIBLE|WS_TABSTOP|BS_AUTO3STATE,210,90,120,30,root,(HMENU)4,runtime,NULL);CHECK(checkbox);
     WCHAR real_check_class[80];CHECK(RealGetWindowClassW(checkbox,real_check_class,80) && wcscmp(real_check_class,L"Button") && wcscmp(real_check_class,L"BUTTON"));
-    if(styled)CHECK(attached(group) && attached(button) && attached(default_button) && attached(edit) && attached(checkbox));
+    if(styled)CHECK(attached(group) && attached(button) && attached(default_button) && attached(edit) && attached(multiline) && attached(password) && attached(checkbox));
     /* Same spelling under another registration owner must remain custom. */
     WNDCLASSW impostor={0};impostor.lpfnWndProc=DefWindowProcW;
     impostor.hInstance=cls.hInstance;impostor.lpszClassName=L"ThunderRT6CommandButton";
@@ -127,6 +129,12 @@ static int child(const WCHAR *runtime_path,BOOL styled,BOOL aware)
     WCHAR text[80];SendMessageW(edit,EM_SETSEL,1,4);SendMessageW(edit,EM_REPLACESEL,TRUE,(LPARAM)L"8");
     GetWindowTextW(edit,text,80);CHECK(!wcscmp(text,L"n8ve"));CHECK(SendMessageW(edit,EM_UNDO,0,0));
     GetWindowTextW(edit,text,80);CHECK(!wcscmp(text,L"native"));
+    WCHAR multiline_original[80];GetWindowTextW(multiline,multiline_original,80);CHECK(((DWORD)GetWindowLongPtrW(multiline,GWL_STYLE)&(ES_MULTILINE|WS_VSCROLL|WS_HSCROLL))==(ES_MULTILINE|WS_VSCROLL|WS_HSCROLL));
+    SendMessageW(multiline,EM_SETSEL,0,5);SendMessageW(multiline,EM_REPLACESEL,TRUE,(LPARAM)L"first");GetWindowTextW(multiline,text,80);CHECK(wcscmp(text,multiline_original));
+    CHECK(SendMessageW(multiline,EM_UNDO,0,0));GetWindowTextW(multiline,text,80);CHECK(!wcscmp(text,multiline_original));
+    CHECK(SendMessageW(multiline,EM_SETREADONLY,TRUE,0));SetFocus(multiline);SendMessageW(multiline,WM_CHAR,L'Z',0);GetWindowTextW(multiline,text,80);CHECK(!wcscmp(text,multiline_original));
+    SendMessageW(password,EM_SETPASSWORDCHAR,L'*',0);CHECK(SendMessageW(password,EM_GETPASSWORDCHAR,0,0)==L'*');
+    CHECK(((DWORD)GetWindowLongPtrW(password,GWL_STYLE)&(ES_PASSWORD|ES_CENTER))==(ES_PASSWORD|ES_CENTER));
     SendMessageW(button,BM_CLICK,0,0);CHECK(clicks==1);
     SetFocus(button);SendMessageW(button,WM_KEYDOWN,VK_SPACE,0);SendMessageW(button,WM_KEYUP,VK_SPACE,0);CHECK(clicks==2);
     SendMessageW(button,WM_ENABLE,FALSE,0);SendMessageW(button,WM_ENABLE,TRUE,0);
@@ -140,6 +148,10 @@ static int child(const WCHAR *runtime_path,BOOL styled,BOOL aware)
     GetClientRect(edit,&geometry_after);CHECK(EqualRect(&geometry_before,&geometry_after));
     if(styled){DWORD styled_edit=image(edit,NULL,0);CHECK(remove_control(edit));
         CHECK(image(edit,NULL,0)!=styled_edit);puts("VB_EDIT_FONT_PIXELS changed=1 native_font_property=preserved");}
+    if(styled){DWORD styled_multiline=image(multiline,NULL,0),styled_password=image(password,NULL,0);
+        CHECK(remove_control(multiline) && remove_control(password) && !attached(multiline) && !attached(password));
+        CHECK(image(multiline,NULL,0)!=styled_multiline && image(password,NULL,0)!=styled_password);
+        puts("VB_TEXTBOX_VARIANTS_OK multiline=1 scroll=1 undo=1 readonly=1 password=1 center=1 native_retire=1");}
     SendMessageW(option_a,BM_CLICK,0,0);CHECK(SendMessageW(option_a,BM_GETCHECK,0,0)==1 && SendMessageW(option_b,BM_GETCHECK,0,0)==0);
     SendMessageW(option_b,BM_CLICK,0,0);CHECK(SendMessageW(option_b,BM_GETCHECK,0,0)==1 && SendMessageW(option_a,BM_GETCHECK,0,0)==0);
     if(styled){DWORD pixels[200*100];(void)image(option_b,pixels,ARRAYSIZE(pixels));RECT bounds;CHECK(GetClientRect(option_b,&bounds));int dpi=(int)GetDpiForWindow(option_b),top=(bounds.bottom-MulDiv(13,dpi,96))/2;
@@ -164,7 +176,7 @@ static int child(const WCHAR *runtime_path,BOOL styled,BOOL aware)
     puts("VB_CHECKBOX_GRAPHICAL_PUSHLIKE_OK value_click_font_geometry_preserved=1");
     CHECK(DestroyWindow(checkbox) && DestroyWindow(fake_check));CHECK(UnregisterClassW(L"ThunderRT6CheckBox",cls.hInstance));
     puts("VB_CHECKBOX_OK three_states=1 keyboard=1 notifications=4 owner_negative=1 font_preserved=1 detach=1");
-    CHECK(DestroyWindow(edit) && DestroyWindow(button) && DestroyWindow(default_button) && DestroyWindow(custom));settle();
+    CHECK(DestroyWindow(edit) && DestroyWindow(multiline) && DestroyWindow(password) && DestroyWindow(button) && DestroyWindow(default_button) && DestroyWindow(custom));settle();
     DWORD pixels[200*100];DWORD styled_hash=image(group,pixels,ARRAYSIZE(pixels));
     CHECK((pixels[72*200+24]&0xffffff)==RGB(67,31,219));
     /* Host USER/font caches are observed separately. Private leases and
