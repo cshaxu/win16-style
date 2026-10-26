@@ -1,0 +1,26 @@
+{
+  "task": "M0 T17 S15",
+  "status": "closed: Image/Shape/Line are application-owned windowless content and Timer is nonvisual; no product change",
+  "scope": ["VB5.Image", "VB6.Image", "VB5.Shape", "VB6.Shape", "VB5.Line", "VB6.Line", "VB5.Timer", "VB6.Timer"],
+  "method": "Read-only review of the frozen 148-unit matrix, fixed VB5/VB6 form sources, and prior native runtime60 MadShow window inventory. No private VB object inspection, desktop interaction, UAC, injection of user processes, IDE/OCX registration, or application data operation.",
+  "findings": {
+    "image": {
+      "kind": "windowless content",
+      "source_examples": ["VB5/VB6 XP Styles frmTestControls: VB.Image imgTest", "PhotoAlbum VB form: multiple VB.Image declarations"],
+      "ownership": "The runtime draws image pixels, stretch, transparency, border and Click behavior through its host canvas. There is no independently verified HWND/public native control contract."
+    },
+    "shape_line": {
+      "kind": "windowless content",
+      "source_examples": ["VB6 MP3Player PlayList: VB.Shape", "VB6 PhoneBook frm_Find: VB.Line", "VB6 Mastermind Form1: many VB.Shape declarations"],
+      "ownership": "Geometry, fill, pen width/style and color are application drawing. Replacing them would change program-owned graphics rather than apply a system control style."
+    },
+    "timer": {
+      "kind": "nonvisual",
+      "runtime60_observation": "MadShow exposes ThunderRT6Timer with style 0x44010000, WS_EX_CLIENTEDGE and size 0,0; it was deliberately not attached by the prior native probe.",
+      "ownership": "Interval, enabled state, callback timing and lifetime are program behavior; the helper window is not a user-visible Timer UI."
+    }
+  },
+  "decision": "Preserve all eight units as native application content/nonvisual behavior. Do not attach a painter merely because the containing Form or PictureBox is attached. Existing PictureBox/PictureBoxDC synchronous text scope remains the only separately proven container path and does not authorize Image/Shape/Line replacement.",
+  "verification": "The negative decision is checked by frozen matrix rows, fixed source declarations and the prior native runtime60 timer inventory. No display/UAC condition is needed to establish the absence of a public visual HWND contract, so no unavailable desktop result was treated as blocking.",
+  "remaining": "This is not a claim that every parent container is fully styled. Visual data/OLE, UserControl/MDI hosts, complex PictureBox drawing, graphical choice picture/default variants, extension OCX controls and final 148-unit audit remain in later T17 S tasks."
+}

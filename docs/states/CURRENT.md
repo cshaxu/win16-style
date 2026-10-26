@@ -2,7 +2,10 @@
 
 ## Current Work
 
-M0 T17 S14真实VB6 DriveListBox样本/身份审计已完成，顺序准入S15无窗口内建控件承载审计。
+M0 T17 S15无窗口内建控件承载审计已完成，顺序准入S16特殊内建可见宿主审计。
+S15确认Image/Shape/Line是应用DC上的无窗口内容，Timer是零尺寸非视觉运行库helper；
+不附着、不重画、不干预计时，保留既有PictureBox有限scope。无产品改动、无UAC/显示依赖；
+后续S16审核Data/OLE/MDI/UserControl的真实可见承载边界。
 S14固定资料唯一DriveListBox源码命中为PhotoAlbum/VB6，但同提交EXE实际导入MSVBVM50
 并注册ThunderRT5类；28表单/214 archive未找到第二个真实runtime60候选，故不猜测性
 扩展VB5实现。无产品改动、无UAC/显示依赖；后续S15审计Image/Shape/Line/Timer边界。
@@ -31,26 +34,26 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T17 S15 Packet
+## M0 T17 S16 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S14有界身份审计关闭后，依用户T17自动顺序S授权准入 |
+| Identifier Mode | Continuation；S15无窗口/非视觉边界审计关闭后，依用户T17自动顺序S授权准入 |
 | Admission And Approval | 用户T17完整控件目标、自动顺序S、永久提交推送及binary change同批四文件双发布；不新开T |
-| Objective | 审计VB5/VB6 Image、Shape、Line及Timer的真实HWND/承载/绘制边界，区分可由现有附着窗口有限承载的视觉边框与应用自绘/无窗口/无视觉对象；不得因类名或父窗附着而全局覆盖VB绘制 |
-| Non-goals | 原标题/字体/菜单/滚动条/原glyph保持；不重画应用图片、Shape/Line几何、计时业务或无窗口Label；不读VB私有对象、不新增T、不把C模型称真实VB |
-| Reference Baseline | S9仅认证PictureBox/PictureBoxDC的同步文字scope；S14证实缺少真实VB6 DriveListBox不应猜测扩展。冻结矩阵将Image/Shape/Line列为应用自绘或无窗口，Timer为无视觉对象 |
-| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[冻结148矩阵](../etc/evidence/vb-controls-audit.json)、[S9容器](../etc/evidence/vb-container-controls.json)、[S14 DriveListBox](../etc/evidence/vb6-drivelistbox-audit.json) |
-| Files And ABI Surface | 先只读固定真实样本/运行库、原生窗口树与受控C绘制夹具；只有独立公开窗口协议成立时才在既有DLL复用边框，不改公开ABI/三组件四产物 |
+| Objective | 审计VB5/VB6 Data、OLE、MDIForm、UserControl的真实可见承载、窗口/宿主边界、公共协议与数据/嵌入对象所有权；仅对已证实的标准子窗口提出最小适配，不因宿主类名覆盖数据绑定或嵌入对象 |
+| Non-goals | 原标题/字体/菜单/滚动条/原glyph保持；不访问数据、运行OLE对象、注册OCX、读取私有VB对象或把demo对应页伪装为真实VB；不新增T |
+| Reference Baseline | S15明确无窗口Image/Shape/Line和非视觉Timer原生保留；现有VB Form/PictureBox与标准原生子控件的有限路径保持，Data/OLE/MDI/UserControl尚无统一协议认证 |
+| Candidate Proposal | [VB完整适配](../proposals/vb5-vb6-controls.md)、[冻结148矩阵](../etc/evidence/vb-controls-audit.json)、[S15无窗口审计](../etc/evidence/vb-windowless-controls.json)、[S9容器](../etc/evidence/vb-container-controls.json) |
+| Files And ABI Surface | 先只读固定样本/运行库、PE/窗口/模块观察和受控C宿主模型；仅有精确公开子窗口协议时改既有双宽DLL，不改公开ABI/三组件四产物 |
 | Applicable Rules | Task Reading Set/C17/GCC/Ninja/ccache；禁computer-use、兄弟修改/依赖、全局设置或非自有进程测试；无显示/UAC结果仅作对应skip，不阻塞审计 |
-| Verification | 按版本记录路径/SHA/runtime、真实HWND或无窗口、父DC/调用者、裸/注入像素/状态与销毁；验证图片/形状/线/计时业务不被改写，真实VB与x64 C模型分开 |
-| Expected Markers | 每对象的可视承载和所有者结论；若有受支持宿主边框则正常/重绘/销毁与负例，否则应用自绘或无视觉语义明确保留 |
-| Asset Needs | 仅使用现有登记运行库/许可样本和任务scratch，不复制第三方图像/二进制、不装IDE或OCX |
-| Reporting Requirements | 明确无窗口、应用自绘、可适配边框、环境skip和未覆盖项；不把父窗附着或模块加载说成控件已换肤，不称T17完成 |
-| Stop Conditions | 来源/许可或公开协议不满足即保持原生；重大架构/安全/新增产品先停证据；不关闭/注入用户既有进程，也不等待UAC或屏幕可见性 |
-| Exit Criteria | 有证实边界则完成有限实现及双宽/同批包/必要发布/推送远端；若全属无窗口/应用自绘则提交有界审计并接收。两种结果均保留其余148单位，T17开放 |
+| Verification | 实际版本/模块/类/承载HWND、裸/注入状态、数据/OLE不访问及卸载分层记录；真实VB与自包含C模型分开，必要测试只拥有自身进程 |
+| Expected Markers | 每种宿主的可见/非可见和公共协议结论；支持时标准子窗正常/销毁/资源恢复，未认证或数据/嵌入内容明确保持原生 |
+| Asset Needs | 仅用现有登记样本/运行库/scratch，不复制第三方二进制/数据库/图片，不装IDE或OCX |
+| Reporting Requirements | 记录许可/样本/环境skip、数据/OLE未运行和未覆盖；不把模块加载或父窗附着说成宿主已换肤，不称T17完成 |
+| Stop Conditions | 来源/许可或公共协议不满足即保持原生；重大架构/安全/新增产品先停证据；不关闭/注入用户既有进程，也不等待UAC或屏幕可见性 |
+| Exit Criteria | 有协议则完成有限实现及双宽/同批包/必要发布/推送远端；无协议则提交有界审计和接收者。两种结果均保留其余148单位，T17开放 |
 | Original Owner Request | VB5/VB6控件采用本项目样式；S1全貌、S2demo、S3和多个S实施，最后独立收口；自动推进到完整适配验收 |
-| Similar-Issue Sweep | runtime50/60的无窗口/顶层/子窗口承载、PictureBoxDC与FormDC同步文字scope、图片/Shape/Line应用绘制、Timer隐藏helper、Print/AutoRedraw/销毁、真实样本与C模型边界 |
+| Similar-Issue Sweep | runtime50/60的Data/OLE/MDI/UserControl承载、标准子窗口与无窗口客户区、数据绑定/嵌入对象、Mdi client/子窗、OCX/许可证、Print/销毁、真实样本与C模型边界 |
 
 ## Identifier State
 
@@ -58,8 +61,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 17
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T17并授权内部自动顺序S；不准入其他T候选。
-- Last delivery: M0 T17 S14 P1（VB6 DriveListBox有界样本审计，无产品二进制变化；推送远端后关闭）
-- Open task: T17 S15无窗口内建控件承载审计；复杂图片及148单位审计保留后续接收，T17/M0开放。
+- Last delivery: M0 T17 S15 P1（无窗口内建控件边界审计，无产品二进制变化；推送远端后关闭）
+- Open task: T17 S16特殊内建可见宿主审计；复杂图片及148单位审计保留后续接收，T17/M0开放。
 
 ## Technical Baseline
 

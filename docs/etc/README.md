@@ -13,6 +13,9 @@
 - [VB6 DriveListBox审计](evidence/vb6-drivelistbox-audit.json)：T17 S14固定
   源码/PE/runtime 身份与有界样本缺失结论；不作为VB6 DriveListBox支持声明。
 
+- [VB无窗口内建控件审计](evidence/vb-windowless-controls.json)：T17 S15对
+  Image/Shape/Line/Timer的应用绘制或非视觉边界；不作为宿主全量换肤声明。
+
 | 路径 | 责任、用途及保留条件 |
 | --- | --- |
 | [evidence/outline-original.json](evidence/outline-original.json) | T16原始Win3.1 USER/GDI/VGA身份、调用地址、USER与VGA例程CPU执行参数；不包含系统二进制，不冒称完整VGA硬件/调色板运行 |
@@ -91,3 +94,6 @@
 
 - [T17 S14 VB6 DriveListBox审计](evidence/vb6-drivelistbox-audit.json)：唯一源码
   匹配实际为VB5运行时的反证与固定目录样本缺失；没有产品实现。
+
+- [T17 S15无窗口内建控件审计](evidence/vb-windowless-controls.json)：Image、
+  Shape、Line保留应用绘制，Timer保留非视觉业务语义；没有产品实现。
