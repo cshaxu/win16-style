@@ -1168,7 +1168,13 @@
       "exe_sha256": "5ab67a153d24d7999e3c8bd67aff684e04aca0bfaae224b1988ded325f2477de",
       "ocx_sha256": "a4f1e65fba5e24439fba8b638f71c110daa2acccd6c7d2eb10eee6c02839e4a8",
       "private_manifest_exe_sha256": "798b2fa315b2741246734fc60a07afc58b6033799b0627c065293efdbcbe5f50",
-      "method": "Source EviLabel UserControl.Paint calls UserControl.Print; sample was statically checked for writes and launches, private COM activation, no registration, isolated owned job terminated intentionally after capture. Label fitted 160x50 entirely on desktop; source caption UPDATE visible with 186 black pixels. Bare/current/candidate captures show zero RGB differences. This proves the observed Print variant only."
+      "method": "Source EviLabel UserControl.Paint calls UserControl.Print; sample was statically checked for writes and launches, private COM activation, no registration, isolated owned job terminated intentionally after capture. Label fitted 160x50 entirely on desktop; source caption UPDATE visible with 186 black pixels. Bare/current/candidate captures show zero RGB differences. This proves the observed Print variant only.",
+      "evi_frame_additional": {
+        "sample": "Same source-pinned EviControlsCollection sample; Sample.frm EviFrame9, EviFrame.ctl uses UserControl.Print for caption MaskedBox. Private COM activation; no install or registration.",
+        "method": "Optional scratch-only C observer moves owned 185x105 control fully inside isolated 427x320 96-DPI desktop, captures client via PrintWindow, compares bare with assets release; close owned job intentionally because sample has two top forms.",
+        "result": "Caption band y=0..27: 0 of 5180 RGB pixels differ; 209 RGB pixels differ only in rows 43..51 and 74..84, where internal edit and Label text appears. Native/custom caption MaskedBox visually present. Both sample probes returned success; this does not attribute every changed pixel to a particular child.",
+        "limits": "One additional VB6 x86 custom control and one 96-DPI state, synthetic observation; not an exhaustive UserControl.Print or other DPI proof. The first retry to an existing screenshot directory correctly failed ERROR_FILE_EXISTS and was not counted; fresh directories succeeded."
+      }
     },
     "model": "Self-owned VB5/VB6 fixture x86/x64: 401 model label pixels changed while other client RGB pixels, including 566 Print and 694 application drawing ink pixels, remain identical; fonts, image, input and parent/role lifecycle preserved. Reentrant Ntw16sWindowRemove before drawing yields native label pixels. The early prototype without cancelled guard fails this negative in all four combinations; old release lacks label changes.",
     "limitations": [
