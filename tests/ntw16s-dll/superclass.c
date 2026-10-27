@@ -40,14 +40,14 @@ static DWORD image(HWND w,DWORD *pixels,UINT count)
     return hash;
 }
 
-static WNDPROC native_procs[7];
-static const WCHAR *class_names[]={L"RenamedPush",L"RenamedCheck",L"TEdit",L"RenamedCombo",L"TListBox",L"RenamedStatic",L"RenamedScroll"};
+static WNDPROC native_procs[10];
+static const WCHAR *class_names[]={L"RenamedPush",L"RenamedCheck",L"TEdit",L"RenamedCombo",L"TListBox",L"RenamedStatic",L"RenamedScroll",L"TCheckBox",L"TRadioButton",L"TGroupBox"};
 /* Like a framework InitWndProc, registration itself is custom. The system
  * instance type is established by calling the saved native procedure. */
 static LRESULT CALLBACK framework_proc(HWND w,UINT m,WPARAM a,LPARAM b)
 {
     WCHAR cls[64];GetClassNameW(w,cls,64);
-    for(unsigned i=0;i<7;++i)if(!wcscmp(cls,class_names[i]))return CallWindowProcW(native_procs[i],w,m,a,b);
+    for(unsigned i=0;i<ARRAYSIZE(class_names);++i)if(!wcscmp(cls,class_names[i]))return CallWindowProcW(native_procs[i],w,m,a,b);
     return DefWindowProcW(w,m,a,b);
 }
 static LRESULT CALLBACK initializer_proc(HWND w,UINT m,WPARAM a,LPARAM b)
@@ -59,7 +59,7 @@ static BOOL superclass(const WCHAR *base,const WCHAR *name)
 {
     WNDCLASSEXW c={.cbSize=sizeof(c)};
     if(!GetClassInfoExW(NULL,base,&c))return FALSE;
-    for(unsigned i=0;i<7;++i)if(!wcscmp(name,class_names[i]))native_procs[i]=c.lpfnWndProc;
+    for(unsigned i=0;i<ARRAYSIZE(class_names);++i)if(!wcscmp(name,class_names[i]))native_procs[i]=c.lpfnWndProc;
     c.lpfnWndProc=initializer_proc;c.hInstance=GetModuleHandleW(NULL);c.lpszClassName=name;c.style&=~CS_GLOBALCLASS;
     return RegisterClassExW(&c)!=0;
 }
@@ -74,6 +74,7 @@ static int child(BOOL styled,BOOL aware)
     const WCHAR *bases[]={L"BUTTON",L"BUTTON",L"EDIT",L"COMBOBOX",L"LISTBOX",L"STATIC",L"SCROLLBAR"};
     const WCHAR *names[]={L"RenamedPush",L"RenamedCheck",L"TEdit",L"RenamedCombo",L"TListBox",L"RenamedStatic",L"RenamedScroll"};
     for(unsigned i=0;i<ARRAYSIZE(bases);++i)CHECK(superclass(bases[i],names[i]));
+    for(unsigned i=7;i<ARRAYSIZE(class_names);++i)CHECK(superclass(L"BUTTON",class_names[i]));
     WNDCLASSW cls={0};cls.lpfnWndProc=parent_proc;cls.hInstance=instance;cls.lpszClassName=L"SuperclassParent";
     CHECK(RegisterClassW(&cls));
     HWND root=CreateWindowW(cls.lpszClassName,L"Superclass protocol",WS_OVERLAPPEDWINDOW,0,0,560,420,NULL,NULL,instance,NULL);CHECK(root);
@@ -100,6 +101,19 @@ static int child(BOOL styled,BOOL aware)
     SetFocus(windows[0]);SendMessageW(windows[0],WM_KEYDOWN,VK_SPACE,0);SendMessageW(windows[0],WM_KEYUP,VK_SPACE,0);CHECK(clicks==2);
     SendMessageW(windows[1],BM_SETCHECK,BST_CHECKED,0);CHECK(SendMessageW(windows[1],BM_GETCHECK,0,0)==BST_CHECKED);
     SendMessageW(windows[1],BM_SETCHECK,BST_UNCHECKED,0);
+    HWND choice[3];const DWORD choice_styles[]={BS_AUTO3STATE,BS_AUTORADIOBUTTON,BS_GROUPBOX};
+    for(unsigned i=0;i<ARRAYSIZE(choice);++i){
+        choice[i]=CreateWindowW(class_names[7+i],L"Choice",WS_CHILD|WS_VISIBLE|choice_styles[i],10+(int)i*150,340,140,40,root,(HMENU)(UINT_PTR)(30+i),instance,NULL);CHECK(choice[i]);
+        WCHAR real[64];CHECK(RealGetWindowClassW(choice[i],real,ARRAYSIZE(real)) && !_wcsicmp(real,L"BUTTON"));
+        if(styled)CHECK(attached(choice[i]));
+        SendMessageW(choice[i],WM_SETFONT,(WPARAM)source,TRUE);
+    }
+    unsigned prior_clicks=clicks;
+    for(unsigned i=1;i<=3;++i){SendMessageW(choice[0],BM_CLICK,0,0);CHECK(SendMessageW(choice[0],BM_GETCHECK,0,0)==(LRESULT)(i%3));}
+    SendMessageW(choice[1],BM_CLICK,0,0);CHECK(SendMessageW(choice[1],BM_GETCHECK,0,0)==BST_CHECKED && clicks==prior_clicks+4);
+    if(styled)for(unsigned i=0;i<ARRAYSIZE(choice);++i){DWORD before=image(choice[i],NULL,0);CHECK(remove_control(choice[i]) && !attached(choice[i]));CHECK(image(choice[i],NULL,0)!=before);CHECK((HFONT)SendMessageW(choice[i],WM_GETFONT,0,0)==source);}
+    for(unsigned i=0;i<ARRAYSIZE(choice);++i)CHECK(DestroyWindow(choice[i]));
+    printf("SUPER_VCL_CHOICE_OK native_superclass=3 state_click=1 styled=%u detach_pixels=%u\n",styled,styled);
     SendMessageW(windows[2],WM_SETTEXT,0,(LPARAM)L"12345");SendMessageW(windows[2],EM_SETSEL,1,4);
     SendMessageW(windows[2],EM_REPLACESEL,TRUE,(LPARAM)L"8");WCHAR text[80];GetWindowTextW(windows[2],text,80);CHECK(!wcscmp(text,L"185"));
     CHECK(SendMessageW(windows[2],EM_UNDO,0,0));GetWindowTextW(windows[2],text,80);CHECK(!wcscmp(text,L"12345"));
@@ -127,6 +141,7 @@ static int child(BOOL styled,BOOL aware)
     UINT dpi=GetDpiForWindow(root);CHECK(DestroyWindow(root));settle();capture_end();
     LOGFONTW lf;CHECK(GetObjectW(source,sizeof(lf),&lf));CHECK(DeleteObject(source));
     for(unsigned i=0;i<7;++i)CHECK(UnregisterClassW(names[i],instance));
+    for(unsigned i=7;i<ARRAYSIZE(class_names);++i)CHECK(UnregisterClassW(class_names[i],instance));
     CHECK(UnregisterClassW(custom.lpszClassName,instance) && UnregisterClassW(cls.lpszClassName,instance));
     printf("SUPER_PROTOCOL_OK bits=%u styled=%u dpi=%u aware=%u types=7 clicks=2 undo=1 combo_cancel=1 source_retained=1\n",(unsigned)(sizeof(void *)*8),styled,dpi,aware);
     return 0;

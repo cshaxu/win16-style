@@ -1294,8 +1294,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-    "sha256": "2b8855da89d40199148c45e8479fa3c2a669fd26bd61f4cf8d77e3971d717536",
-      "review": "T15 S2 native superclass protocol or read-only actual DoubleKiller observer; no imported code"
+    "sha256": "de48372a6f80ce09dbdc82c6d6c40647206a38fa61380d94023f17ac31b93222",
+      "review": "T15 S2 native superclass protocol or read-only actual DoubleKiller observer; T18 S8 adds self-authored BUTTON superclass models with VCL-style registered names, native click/state and styled-to-native pixel checks; no imported code"
     },
     {
       "path": "tests/integration/doublekiller_probe.c",

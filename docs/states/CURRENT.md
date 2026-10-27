@@ -6,7 +6,7 @@ M0 T17 已按用户明确缩小后的范围收口；23 项 VB 延期项保留在
 Delphi VCL 74 个 UI 家族种子、框架分支、五个固定候选及逐项证据接收者；T18 S2 已将
 全部种子逐项归入35个既有原生协议模型或39个明确的原生保留边界。S4 已完成首组
 精确 TEdit/TListBox与TTabControl公开协议实现、干净双宽四文件包和双发布；实际 Delphi 显示集成
-仍统一留给T18最终收口。S6已发布精确THeaderControl；顺序准入 S7 审核范围控件；不得用 demo
+仍统一留给T18最终收口。S7已完成范围控件审计；顺序准入 S8 审核基础按钮与选择控件；不得用 demo
 冒充 Delphi。
 以下段落为 T17 的技术基线/历史证据，不覆盖 T18 状态。
 
@@ -68,13 +68,13 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S7 Packet
+## M0 T18 S8 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；用户明确先实现一切可由公开协议证明的代码，真实Delphi集成统一留给T18收口；S6完成后顺序准入S7 |
+| Identifier Mode | Continuation；用户明确先实现一切可由公开协议证明的代码，真实Delphi集成统一留给T18收口；S7已交付复核，顺序准入S8 |
 | Admission And Approval | 用户批准进入队列首项T18，并明确要求先完成能以公开协议实现的代码和自包含测试；S4/S5已交付基础编辑/列表及页签有限实现和四文件发布，S3的error=5集成缺口仍保留至最终收口 |
-| Objective | 审核既有TProgressBar、TTrackBar、TUpDown的公共COMCTL角色与精确VCL wrapper映射；仅补足可证明的缺口 |
+| Objective | 审核TButton、TCheckBox、TRadioButton及TGroupBox的注册身份、公开BUTTON协议、已有绘制和变体边界；对可证明的普通wrapper缺口增加有限实现及双宽自有探针 |
 | Non-goals | 不把demo等价项当成VCL支持；不读取私有对象布局、不仅凭T前缀接纳、不新增第五产品；不接管canvas、数据库、嵌入/非视觉、图像/custom-draw或owner-draw；不改既有标题/菜单/字体/滚动条/资源 |
 | Reference Baseline | [T18 S1审计](../etc/evidence/delphi-controls-audit.json)、[S2对应账本](../etc/evidence/delphi-demo-mapping.json)、[S3转交](../history/M0-T18-S3-vcl-probe-transfer.md)、[S4公开协议](../etc/evidence/delphi-basic-protocols.json)、[S5页签协议](../etc/evidence/delphi-tab-protocol.json)、[S6表头证据](../etc/evidence/delphi-list-tree-header-protocol.json)、[Delphi专项proposal](../proposals/delphi-win32-controls.md)及T15有限公开协议 |
 | Candidate Proposal | [Delphi Win32控件完整审计与Win3.x风格适配](../proposals/delphi-win32-controls.md) |
@@ -82,7 +82,7 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | Applicable Rules | C17/MinGW GCC/Ninja/ccache、来源策略、禁computer-use/全局hook/既有进程扫描；真实应用集成与自包含测试分列；私有桌面error=5只能skip，留T18最终收口 |
 | Verification | 双宽干净构建；新旧正/负例证明公开消息、注册/模块身份、状态、键盘/通知、移除/销毁和资源释放；同批四文件实际包测试。真实VCL应用验证是已登记的最终集成项，不得以历史结果替代 |
 | Expected Markers | 每个角色有类/模块/公开消息交集、正例附着与负例拒绝、裸/注入行为和清理标记；绝不以模块加载或名称匹配作样式成功结论 |
-| Current Evidence | S7已核对现有三角色与双宽正负例，干净四文件包87项通过、0跳过；初轮demo GDI计数下降误报已按非增长条件修正。自有私有桌面不等于物理输入；真实Delphi集成仍待T18收口。 |
+| Current Evidence | S7的三角色已有精确公共协议、双宽正负例；a0fbdce已远端复核。S8的同名BUTTON超类模型在双宽96/144 DPI检查选择状态、通知和卸载像素；干净包87项通过、0跳过并双发布，待提交推送。真实Delphi各版本的wrapper及物理输入尚未证明。 |
 | Asset Needs | 仅现有固定候选和自编C探针；不复制Delphi/第三方二进制、图片或资源，不安装/注册运行包 |
 | Reporting Requirements | 报告新增角色、公开协议/负例、测试与集成缺口、二进制发布状态；不将自包含模型或一个VCL应用外推为全部Delphi/FMX |
 | Stop Conditions | 需要私有对象布局、应用绘图、数据绑定、嵌入、owner-draw契约或第五产品时停止该项并交后续S；真实VCL应用显示验证统一留T18最终收口；实际修复前必须先记录根因和最小方案 |
@@ -96,8 +96,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S6 P1：THeaderControl公共协议及自包含正负例，干净双宽四文件、87项包测试0跳过、双发布，e4f26dc已推送。GUI探针在自有隔离桌面运行，不等同物理输入验收；真实Delphi集成仍待完成。
-- Open task: T18 S7 Delphi公共进度、滑块与微调角色审计；M0/T18开放。
+- Last delivery: M0 T18 S7 P1：范围控件已有协议审计，干净双宽四文件包87项0跳过、双发布，a0fbdce已实际远端复核；真实Delphi集成仍待完成。
+- Open task: T18 S8 Delphi基础按钮与选择控件公开协议审计和有限适配；M0/T18开放。
 
 ## Technical Baseline
 
@@ -146,6 +146,8 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T18 S7范围控件审计](../history/M0-T18-S7-vcl-range-audit.md)：既有协议核对及87项私有桌面包测试、双发布与实际远端复核；真实Delphi集成和物理输入仍待独立验证。
 
 - [T18 S5页签公开协议](../history/M0-T18-S5-vcl-tabs.md)：TTabControl补入既有TPageControl
   协议、两种伪类拒绝、干净双宽包和同批双发布；日期/月历/热键因无renderer保留，真实Delphi集成仍留T18收口。

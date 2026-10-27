@@ -1,0 +1,9 @@
+{
+  "task": "M0 T18 S8",
+  "finding": "The existing USER superclass path recognizes a BUTTON protocol by RealGetWindowClass; no class-name-only admission or production-source change is needed for that path.",
+  "historical_actual": "The T15 S2 owned DoubleKiller observation identified TCheckBox as a native BUTTON superclass; that historical observation is not a current-package integration result.",
+  "self_contained": "The C fixture registers TCheckBox, TRadioButton and TGroupBox as real native BUTTON superclasses, exercises auto-three-state and radio clicks, checks notification counts and styled/detached pixel differences, and retains the borrowed font. x86/x64 at 96 and 144 DPI pass bare and styled; each worker job becomes empty.",
+  "package": {"status":"passed", "cases":87, "skipped":0, "seconds":346.4579401, "physical_input":"not-tested", "publish":"assets root and O:/winnt/system32; all four files match tested package"},
+  "sha256": {"demo.exe":"0a5dacba477182dcf46ae50772dfdc3ae9367303529992f44931a65352866dea", "ntw16s32.dll":"e4ea475358012fb79bbee8736b644059f1ceb883a2fee3cbf6d0592840da6b64", "ntw16s64.dll":"e257707b639829d192825c9a418b5d5e0cbaa90415528abe1b11091505776edb", "run16s.exe":"f6868ed003dbb03f1fd01f679fdc2870beebecce95659a80ce21fc384d8d433f"},
+  "limitations": "These fixtures do not prove how every Delphi version registers those names. Custom controls lacking native superclass or an independently verified public protocol remain outside this proof. Physical input and actual Delphi integration remain for the T18 final audit."
+}
