@@ -144,6 +144,8 @@ def validate(manifest, inventory, abi, receipts, files, external=None):
                 "receipt missing review/notice")
         raw = files.get(path)
         require(raw is not None and hashlib.sha256(raw).hexdigest() == receipt["sha256"], "local content digest mismatch")
+        if Path(path).suffix.lower() in {".c", ".h"}:
+            require(b"\r\n" not in raw, "source text must use LF")
         if receipt["source"] is None:
             require(receipt["source_blob"] is None and receipt["disposition"] == "authored", "invalid authored receipt")
             require(path not in destinations | external_destinations, "authored receipt bypasses source disposition")
@@ -228,6 +230,17 @@ def self_test(manifest, inventory, abi, local_files):
     receipts = {"schema": 1, "files": [receipt]}
     files = {entry["destination"]: raw}
     validate(m, inventory, abi, receipts, files)
+    crlf = raw.replace(b"\n", b"\r\n")
+    require(crlf != raw, "LF fixture missing newlines")
+    crlf_receipts = copy.deepcopy(receipts)
+    crlf_receipts["files"][0]["sha256"] = hashlib.sha256(crlf).hexdigest()
+    try:
+        validate(m, inventory, abi, crlf_receipts, {entry["destination"]: crlf})
+    except ValueError as error:
+        require(str(error) == "source text must use LF", "wrong CRLF rejection")
+    else:
+        raise ValueError("CRLF source with matching receipt was accepted")
+    print("Source LF SelfTest PASS: matching CRLF receipt rejected")
     import_cases = ("tampered-local", "substitution-with-updated-receipt", "missing-receipt", "unsafe-destination",
                     "duplicate-receipt", "empty-notice", "missing-Detours-license")
     for name in import_cases:
