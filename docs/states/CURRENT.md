@@ -6,7 +6,7 @@ M0 T17 已按用户明确缩小后的范围收口；23 项 VB 延期项保留在
 Delphi VCL 74 个 UI 家族种子、框架分支、五个固定候选及逐项证据接收者；T18 S2 已将
 全部种子逐项归入35个既有原生协议模型或39个明确的原生保留边界。S4 已完成首组
 精确 TEdit/TListBox与TTabControl公开协议实现、干净双宽四文件包和双发布；实际 Delphi 显示集成
-仍统一留给T18最终收口。S10已完成组合框与列表验证；S11已完成工具栏文字边界修复、真实DoubleKiller复测及提交推送复核；S12真实MD5summer补证及远端复核完成；S13真实树控件与VB6 actor复测、双宽干净构建、91项包测试和双发布完成，待远端复核；不得用 demo
+仍统一留给T18最终收口。S10已完成组合框与列表验证；S11已完成工具栏文字边界修复、真实DoubleKiller复测及提交推送复核；S12真实MD5summer补证及远端复核完成；S13双宽干净构建、真实树控件与VB6 actor复测、91项包测试、双发布及远端aae1565复核完成；准入S14纠正S12遗漏的独立包闭环；不得用 demo
 冒充 Delphi。
 以下段落为 T17 的技术基线/历史证据，不覆盖 T18 状态。
 
@@ -68,26 +68,26 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S13 Packet
+## M0 T18 S14 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S12 bbf88d7已推送并读取实际远端；按用户希望在桌面恢复后继续测试，顺序准入S13 |
-| Admission And Approval | 用户批准T18连续实施并要求桌面恢复后继续原生测试；真实应用测试自动执行，无需用户操作 |
-| Objective | 用当前已发布包和自有隔离实例复测MD5summer实际TShellTreeView绘制变化、公开状态保持与清理 |
-| Non-goals | 不将单一应用外推全部Delphi；不操作用户现有进程、不执行文件扫描/修改、无computer-use、不测HD Tune提权 |
-| Reference Baseline | [S11](../history/M0-T18-S11-toolbar-text-bounds.md)、[S3转交](../history/M0-T18-S3-vcl-probe-transfer.md)、[历史MD5summer证据](../etc/evidence/md5summer-controls.json) |
+| Identifier Mode | Corrective；S12沿用S11包且提前收口，S13已完成独立包和远端复核；顺序准入S14补充S12真实应用对应的独立包闭环 |
+| Admission And Approval | 用户授权连续S及桌面恢复后原生测试；按项目每S交付规范纠正遗漏，不重用S12编号 |
+| Objective | 以S14独立源码快照双宽构建、同批四文件包测试，并用该候选包复测真实MD5summer裸/样式与组合框语义 |
+| Non-goals | 不将单一应用推广为全部Delphi；不使用computer-use、不测试HD Tune提权、不操作既有进程或发起文件扫描 |
+| Reference Baseline | [S12记录及更正](../history/M0-T18-S12-md5summer-current.md)、[S13证据](../history/M0-T18-S13-md5-tree-current.md) |
 | Candidate Proposal | [Delphi Win32控件完整审计与Win3.x风格适配](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 自有任务scratch及证据文档；无计划产品代码、ABI、图形资源变更 |
-| Applicable Rules | C17/MinGW GCC/Ninja/ccache、自有私有桌面及Job隔离；精确记录当前包摘要和失败、超时、清理；禁止依赖兄弟仓库 |
-| Verification | 使用当前已测试发布包，记录实际程序和DLL路径/SHA，探针检查树控件附着、移除前后绘制差异、公开状态保持及Job清理；依据测试结果保留未覆盖项 |
-| Expected Markers | 精确目标与DLL、树附着、移除前后像素、项目/字体/选中/图像与几何保持及零自有存活进程；每个失败如实报告 |
-| Asset Needs | 本机MD5summer真实程序和既有自编探针源码，仅作自有进程观察；不分发第三方程序 |
-| Reporting Requirements | 区分已通过实测、未覆盖和原生保留；不把目标模块加载等同绘制成功 |
-| Stop Conditions | 真实目标不匹配、隔离不可用或需要破坏性应用操作时停止对应探针并记录，不修改系统设置 |
-| Exit Criteria | 当前包真实样本证据和限制已记录、必要回归及交付完成；T18继续开放 |
-| Original Owner Request | 队列首位 Delphi Win32 控件完整审计与Win3.x风格适配；用户希望桌面恢复后继续测试 |
-| Similar-Issue Sweep | x86/x64、旧/新VCL、窗口/无窗口、原生/owner-draw和应用特定行为均不凭单样本推广 |
+| Files And ABI Surface | 自有scratch和证据文档；不计划变更产品源码、ABI或图形资源 |
+| Applicable Rules | C17/MinGW GCC/Ninja/ccache；自有私有桌面及Job隔离；每S实际同批包测试、摘要比较与必要双发布 |
+| Verification | 干净双宽构建、候选四文件包测试、真实MD5summer裸/注入启动、组合框状态和窗口移动恢复、目标路径/SHA及自有进程清理 |
+| Expected Markers | 包测试零失败；真实样本DLL身份、正确附着、组合框开关/选择、退出与Job active0；明确skip和失败 |
+| Asset Needs | 本机MD5summer和已有自编探针，仅作自有进程观察，不分发第三方程序 |
+| Reporting Requirements | 分离真实应用、模型和未覆盖；S12历史不改写为当时独立构建成功 |
+| Stop Conditions | 目标身份不匹配、隔离不可用或需破坏性业务操作时停止对应测试并记录 |
+| Exit Criteria | S14独立包构建、测试、必要发布、证据、提交推送及远端复核完成，T18保持开放 |
+| Original Owner Request | Delphi控件连续适配和桌面恢复后自测；每S编译、测试、必要发布、提交推送 |
+| Similar-Issue Sweep | 比对当前和已部署四文件；真实x86应用、双宽模型、owner-draw和其他DPI不互相替代 |
 
 ## Identifier State
 
@@ -95,8 +95,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S12 P1：当前包真实MD5summer裸/样式探针及清理通过；bbf88d7已实际远端复核。
-- Open task: T18 S13 独立干净构建、真实应用和91项包测试通过、双发布完成，待远端复核；M0/T18开放。
+- Last delivery: M0 T18 S13 P2：独立双宽包91项0跳过、真实MD5summer及VB6 actor、双发布；aae1565已实际远端复核。
+- Open task: T18 S14 纠正S12独立包闭环；M0/T18开放。
 
 ## Technical Baseline
 
