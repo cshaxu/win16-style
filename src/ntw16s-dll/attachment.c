@@ -623,6 +623,9 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
         (void)Ntw16sWindowRemove(w);
     if(a->button_owner && !a->detached && m!=WM_DESTROY && m!=WM_NCDESTROY && !ntw16s_vb_graphical_button(w))
         (void)Ntw16sWindowRemove(w);
+    if(a->file_owner && !a->detached && m!=WM_DESTROY && m!=WM_NCDESTROY &&
+        ntw16s_vb_class(w,L"ThunderRT6ListBox") && !ntw16s_vb_checklist_owner(w))
+        (void)Ntw16sWindowRemove(w);
     if((a->file_owner || a->button_owner || a->checklist) && !a->detached && a->report_parent && m!=WM_DESTROY && m!=WM_NCDESTROY && GetParent(w)!=a->report_parent)
         (void)Ntw16sWindowRemove(w);
     if(m==WM_NCDESTROY)(void)Ntw16sWindowTerminal(w);
@@ -993,7 +996,7 @@ static BOOL install_created(HWND w,DWORD original_style)
     else if(picture)installed=win16_style_picture_install_created(w,NULL,a,&a->detached);
     else if(a->button_owner)installed=win16_style_frame_scrollbars_install_owned(w,NULL,a,&a->detached);
     else if(control)installed=win16_style_control_install_created(w,edit,(original_style&WS_BORDER)!=0,
-        class_is(w,L"LISTBOX") && (original_style&LBS_USETABSTOPS),NULL,a,&a->detached);
+        class_is(w,L"LISTBOX") && (original_style&LBS_USETABSTOPS) && !a->file_owner,NULL,a,&a->detached);
     else if(report && !(original_style&(WS_BORDER|WS_THICKFRAME|WS_CAPTION)))installed=TRUE;
     else installed=win16_style_install_created(w,NULL,a,&a->detached);
     error=GetLastError();

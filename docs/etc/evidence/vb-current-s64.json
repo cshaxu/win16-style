@@ -770,5 +770,21 @@
       "Prior intermittent viewer-only timeout has not been root-caused; a successful current run does not resolve it."
     ],
     "accounting": "Production controls.c 14 additions/5 deletions, net +9. Related native test fixture and package markers changed; no original resource bytes changed. Search: rg -n \"win16_style_vb_checklist|LB_ITEMFROMPOINT|LB_GETITEMRECT|vb_checklist_unchanged\" src/ntw16s-dll."
+  },
+  "vb6_checkbox_list_text_p19": {
+    "scope": "96 DPI MSVBVM60-owned ThunderRT6ListBox fixed owner-draw, strings and multiple selection; bounded parent WM_DRAWITEM and target DC.",
+    "sample": "CBMXfer.exe original SHA256 91d4d422380c54efec4690cd7262cf6cf5041872375b5fcc6178571198d1cd34; scratch embedded-manifest copy SHA256 4bf18907f00e4d3380f75168a73f0d3799eac62377e2efdd5ee892c12bd92c48",
+    "sample_observation": "Real 32-bit runtime: hidden list temporarily exposed and two fixture rows added; observed Courier text via ExtTextOutW. Private diagnostic showed existing Win16 System font in bounded draw scope. Candidate displayed 5 selection and enable states; one earlier run exited normally, final run timed out on exit and owned job was killed. Same intermittent viewer-only timeout observed with previously released DLL; cause not established.",
+    "models": "x86/x64 verify glyph states, foreign Unicode native fallback, source WM_GETFONT preservation, reentrant changes, RTL style retirement and cleanup. Old x86 package failed the new attachment expectation.",
+    "package": "20 focused actual-package cases passed with zero skips; clean x86/x64 build; four same-snapshot files published to assets root and O:\\winnt\\system32 with eight matching SHA256; installed x86/x64 models passed.",
+    "limits": [
+      "VB5 not verified",
+      "other DPI not covered",
+      "real list was originally hidden and temporarily exposed",
+      "physical input not verified",
+      "intermittent sample viewer exit timeout remains unresolved"
+    ],
+    "ntw16s32_sha256": "1a15b8db5d0d4c39ed6b5e4e458db7cc066a8a22f64d1552118f7a73a1e2123a",
+    "ntw16s64_sha256": "22be6a7d6ae9ccb9447b77871de113fb1b7f123fe9caa202ee680fcfde8766ef"
   }
 }

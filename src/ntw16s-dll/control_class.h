@@ -29,12 +29,21 @@ static inline BOOL ntw16s_vb_drive(HWND w)
 {return ntw16s_vb5_class(w,L"ThunderRT5DriveListBox");}
 static inline BOOL ntw16s_vb_directory(HWND w)
 {return ntw16s_vb5_class(w,L"ThunderRT5DirListBox") || ntw16s_vb_class(w,L"ThunderRT6DirListBox");}
+static inline BOOL ntw16s_vb_checklist_owner(HWND w)
+{
+    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
+    return (style&WS_CHILD) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
+        GetDpiForWindow(w)==96 && ntw16s_vb_class(w,L"ThunderRT6ListBox") &&
+        (style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_HASSTRINGS|LBS_MULTIPLESEL|LBS_EXTENDEDSEL|LBS_NODATA))==
+            (LBS_OWNERDRAWFIXED|LBS_HASSTRINGS|LBS_MULTIPLESEL);
+}
 /* Only the observed intrinsic owner-draw modes; native runtime keeps images,
  * item data, measurement and input. Unsupported live styles stay native. */
 static inline BOOL ntw16s_vb_owner_file(HWND w)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
     if(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING))return FALSE;
+    if(ntw16s_vb_checklist_owner(w))return TRUE;
     if(ntw16s_vb_directory(w))return (style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA|LBS_HASSTRINGS))==(LBS_OWNERDRAWVARIABLE|LBS_HASSTRINGS);
     return ntw16s_vb_drive(w) && (style&(3|CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE|CBS_HASSTRINGS))==(CBS_DROPDOWNLIST|CBS_OWNERDRAWFIXED|CBS_HASSTRINGS);
 }

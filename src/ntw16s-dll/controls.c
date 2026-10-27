@@ -1309,7 +1309,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         outbound=s->font;win16_style_system_retain(outbound);
         /* Native tab geometry/hit testing belongs to the application's font.
          * Only our painter borrows the existing System glyph lease. */
-        a=(WPARAM)(native_font?original:s->font);
+        a=(WPARAM)((native_font || ntw16s_vb_checklist_owner(w))?original:s->font);
     }
     if(m==WM_NCDESTROY){(void)win16_style_control_terminal(w);
         result=DefSubclassProc(w,m,a,b);}
