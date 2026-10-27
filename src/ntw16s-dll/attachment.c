@@ -239,7 +239,7 @@ BOOL __cdecl Ntw16sWindowTerminal(HWND w)
 
 static BOOL install_created(HWND w,DWORD original_style)
 {
-    BOOL control,edit,installed,report=FALSE,tree=FALSE,picture=ntw16s_vb_picture(w),checklist=checklist_identity(w);HWND parent;HMODULE owner;attachment *a;DWORD error;
+    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=checklist_identity(w);HWND parent;HMODULE owner;attachment *a;DWORD error;
     ntw16s_control_protocol *protocol=NULL;
     if(lookup(w))return TRUE;
     /* COMBOBOX installs its own internal list when construction finishes.
@@ -257,7 +257,8 @@ static BOOL install_created(HWND w,DWORD original_style)
         if(!protocol && GetLastError()==ERROR_NOT_ENOUGH_MEMORY)return FALSE;
         report=protocol && ntw16s_control_protocol_list_module(w);
         tree=protocol && ntw16s_control_protocol_tree_module(w);
-        control=protocol && !report;
+        legacy_progress=protocol && ntw16s_control_protocol_legacy_progress(w);
+        control=protocol && !report && !legacy_progress;
         edit=protocol && ntw16s_control_protocol_is(w,L"EDIT");
     }
     owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
@@ -265,13 +266,13 @@ static BOOL install_created(HWND w,DWORD original_style)
      * and then become a custom client surface.  Without an explicitly
      * verified public protocol it must stay native; only an application-owned
      * generic child frame may use the ordinary frame path. */
-    if(!control && !report && !tree && !picture && !checklist && (original_style&WS_CHILD) &&
+    if(!control && !report && !tree && !picture && !checklist && !legacy_progress && (original_style&WS_CHILD) &&
             owner && owner!=GetModuleHandleW(NULL)){
         ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
     }
     /* A custom client-only child and MDICLIENT keep application painting.
      * MDI child frames have WS_CAPTION and take the ordinary frame route. */
-    if(!control && !report && !picture && !checklist && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME))){
+    if(!control && !report && !picture && !checklist && !legacy_progress && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME))){
         SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
     }
     a=calloc(1,sizeof(*a));
@@ -293,6 +294,7 @@ static BOOL install_created(HWND w,DWORD original_style)
     }
     if(a->detached){release(a);SetLastError(ERROR_CANCELLED);return FALSE;}
     if(a->checklist)installed=TRUE;
+    else if(legacy_progress)installed=win16_style_legacy_progress_border_install_created(w,NULL,a,&a->detached);
     else if(protocol && ntw16s_control_protocol_toolbar(w))
         installed=win16_style_toolbar_install_created(w,NULL,a,&a->detached);
     else if(protocol && ntw16s_control_protocol_is(w,UPDOWN_CLASSW))installed=win16_style_updown_install_created(w,NULL,a,&a->detached);

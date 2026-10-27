@@ -44,7 +44,7 @@ typedef struct control_style {
     int header_pressed;
     BOOL scroll_reporting,scroll_key;
     LONG scroll_report;
-    BOOL list_scrollbar,edit_scrollbars,frame_scrollbars,native_border,list_redraw_off;
+    BOOL list_scrollbar,edit_scrollbars,frame_scrollbars,native_border,list_redraw_off,legacy_progress_border;
     unsigned list_suppression;
     HWND list_capture_before;
     LONG embedded_object;
@@ -1136,6 +1136,24 @@ static void draw_progress(HWND w,control_style *s,HDC dc)
     if(!win16_style_progress_paint(w,dc,&s->palette,&s->detached,&s->progress_epoch) && !s->detached)
         DefSubclassProc(w,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT);
 }
+/* The v5 progress color and state getters are unavailable. Only paint the
+ * verified static edge, after the native procedure; leave the client intact. */
+static void legacy_progress_border(HWND w,control_style *s,HDC target)
+{
+    RECT outer,client;POINT origin={0,0};DWORD saved_error=GetLastError();
+    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
+    if(!ntw16s_control_protocol_legacy_progress(w) ||
+        !(ex&WS_EX_STATICEDGE) || (ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_CLIENTEDGE)) ||
+        (style&(PBS_MARQUEE|WS_HSCROLL|WS_VSCROLL)) ||
+        !GetWindowRect(w,&outer) || !GetClientRect(w,&client) || !ClientToScreen(w,&origin))goto done;
+    int width=outer.right-outer.left,height=outer.bottom-outer.top;
+    int left=origin.x-outer.left,top=origin.y-outer.top;
+    if(width<3 || height<3 || left<1 || top<1 || left+client.right>=width || top+client.bottom>=height)goto done;
+    RECT bounds={0,0,width,height};HDC dc=target?target:GetWindowDC(w);if(!dc)goto done;
+    int saved=SaveDC(dc);if(saved){frame(dc,bounds,s->palette.edge,1);RestoreDC(dc,saved);}
+    if(!target)ReleaseDC(w,dc);
+done: SetLastError(saved_error);
+}
 static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
 {
     control_style *s=(control_style *)data;LRESULT result=0;HFONT previous=NULL,pinned=s->font,outbound=NULL;(void)id;++s->calls;
@@ -1235,6 +1253,8 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         if(!s->detached && s->native_border && (m==WM_NCPAINT || (m==WM_PRINT && (b&PRF_NONCLIENT)))){
             list_border(w,s,m==WM_PRINT?(HDC)a:NULL);nonclient_scrollbars(w,s,m==WM_PRINT?(HDC)a:NULL);
         }
+        if(!s->detached && s->legacy_progress_border && (m==WM_NCPAINT || (m==WM_PRINT && (b&PRF_NONCLIENT))))
+            legacy_progress_border(w,s,m==WM_PRINT?(HDC)a:NULL);
     }
     else if(is_scroll(w) && (GetWindowLongPtrW(w,GWL_STYLE)&SBS_SIZEBOX)){
         if(m==WM_PAINT){PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);present_control(w,s,dc,draw_sizebox);EndPaint(w,&ps);}
@@ -1595,6 +1615,17 @@ BOOL win16_style_progress_install_created(HWND w,const win16_style_palette *pale
     /* No text or font property belongs to this painter. Reuse the owned
      * passive-font leaf; the progress branch owns its paint, not bar input. */
     return win16_style_frame_scrollbars_install_owned(w,palette,owner,cancelled);
+}
+BOOL win16_style_legacy_progress_border_install_created(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled)
+{
+    DWORD_PTR data;
+    if(!ntw16s_control_protocol_legacy_progress(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    if(!win16_style_frame_scrollbars_install_owned(w,palette,owner,cancelled))return FALSE;
+    if(!GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&data) ||
+        ((control_style *)data)->creation_owner!=owner){SetLastError(ERROR_CANCELLED);return FALSE;}
+    ((control_style *)data)->legacy_progress_border=TRUE;
+    RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);
+    return TRUE;
 }
 BOOL win16_style_tree_install_created(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled)
 {

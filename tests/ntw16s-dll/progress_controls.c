@@ -57,7 +57,8 @@ static int child(BOOL styled,BOOL aware)
         DWORD style=WS_CHILD|WS_VISIBLE|(vertical?PBS_VERTICAL:0)|(smooth?PBS_SMOOTH:0)|((kind&&smooth)?PBS_SMOOTHREVERSE:0);int width=vertical?36:300,height=vertical?80:30;
         HWND w=CreateWindowExW(WS_EX_NOPARENTNOTIFY,classes[kind],L"",style,0,0,width,height,root,(HMENU)41,parent.hInstance,NULL);CHECK(w);
         LRESULT initial_state=SendMessageW(w,PBM_GETSTATE,0,0);BOOL capability=initial_state>=PBST_NORMAL && initial_state<=PBST_PAUSED,classic=styled&&capability;
-        if(styled){CHECK(attached(w)==classic);}
+        BOOL legacy=styled && !capability && kind==1 && (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_STATICEDGE);
+        if(styled){CHECK(attached(w)==(classic||legacy));}
         if(classic)++supported;else ++fallback;
         RECT client,before,after;GetClientRect(w,&client);before=client;COLORREF bar=RGB(31,127,219),background=RGB(241,239,233);
         SendMessageW(w,PBM_SETRANGE32,0,100);LRESULT oldstep=SendMessageW(w,PBM_SETSTEP,7,0);(void)oldstep;SendMessageW(w,PBM_SETPOS,50,0);SendMessageW(w,PBM_SETBARCOLOR,0,bar);SendMessageW(w,PBM_SETBKCOLOR,0,background);
@@ -73,13 +74,38 @@ static int child(BOOL styled,BOOL aware)
             SendMessageW(w,PBM_SETSTATE,PBST_PAUSED,0);EnableWindow(w,FALSE);capture(w,classic_pixels,FALSE);CHECK(count_color(classic_pixels,client,RGB(128,128,128))>10);EnableWindow(w,TRUE);SendMessageW(w,PBM_SETSTATE,PBST_NORMAL,0);SendMessageW(w,PBM_SETPOS,50,0);
         }
         HFONT font=CreateFontW(-13,0,0,0,FW_NORMAL,0,0,0,ANSI_CHARSET,0,0,0,0,L"Arial");CHECK(font);SendMessageW(w,WM_SETFONT,(WPARAM)font,FALSE);HFONT stored=(HFONT)SendMessageW(w,WM_GETFONT,0,0);capture(w,classic_pixels,FALSE);
-        if(classic){CHECK(remove_style(w)&&!attached(w));}
+        if(classic || legacy){CHECK(remove_style(w)&&!attached(w));}
         capture(w,native_pixels,FALSE);unsigned difference=0;for(int y=0;y<client.bottom;++y)for(int x=0;x<client.right;++x)difference+=(native_pixels[y*320+x]&0xffffff)!=(classic_pixels[y*320+x]&0xffffff);CHECK(classic?difference>10:difference==0);
         PBRANGE range={0};SendMessageW(w,PBM_GETRANGE,0,(LPARAM)&range);GetClientRect(w,&after);CHECK(range.iLow==0 && range.iHigh==100 && SendMessageW(w,PBM_GETPOS,0,0)==50 && (HFONT)SendMessageW(w,WM_GETFONT,0,0)==stored && EqualRect(&before,&after));
         printf("PROGRESS_VARIANT kind=%u vertical=%u smooth=%u styled=%u capable=%u pixels=%u native_data_geometry_font=1\n",kind,vertical,smooth,styled,capability,difference);
         CHECK(DestroyWindow(w)&&DeleteObject(font));
     }
     if(styled){
+        if(!supported){
+            HWND edge=CreateWindowExW(WS_EX_STATICEDGE,L"TProgressBar",L"",WS_CHILD|WS_VISIBLE|PBS_SMOOTH,
+                0,0,300,30,root,(HMENU)49,parent.hInstance,NULL);CHECK(edge && attached(edge));
+            SendMessageW(edge,PBM_SETRANGE32,0,100);SendMessageW(edge,PBM_SETPOS,42,0);
+            SendMessageW(edge,PBM_SETBARCOLOR,0,RGB(31,127,219));SendMessageW(edge,PBM_SETBKCOLOR,0,RGB(241,239,233));
+            capture(edge,classic_pixels,TRUE);DWORD gdi_before=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);
+            for(unsigned repeat=0;repeat<12;repeat++)capture(edge,classic_pixels,TRUE);
+            GdiFlush();CHECK(GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS)<=gdi_before);
+            RECT outer,client;POINT origin={0,0};CHECK(GetWindowRect(edge,&outer) && GetClientRect(edge,&client) && ClientToScreen(edge,&origin));
+            int left=origin.x-outer.left,top=origin.y-outer.top,width=outer.right-outer.left,height=outer.bottom-outer.top;
+            CHECK(left>=1 && top>=1 && left+client.right<width && top+client.bottom<height);
+            capture(edge,classic_pixels,TRUE);CHECK(remove_style(edge) && !attached(edge));capture(edge,native_pixels,TRUE);
+            unsigned border_diff=0,client_diff=0;
+            for(int y=0;y<height;y++)for(int x=0;x<width;x++)if((classic_pixels[y*320+x]&0xffffff)!=(native_pixels[y*320+x]&0xffffff)){
+                if(x>=left && x<left+client.right && y>=top && y<top+client.bottom)client_diff++;else border_diff++;}
+            CHECK(border_diff>0 && client_diff==0 && SendMessageW(edge,PBM_GETPOS,0,0)==42);
+            CHECK(DestroyWindow(edge));
+            edge=CreateWindowExW(WS_EX_STATICEDGE,L"TProgressBar",L"",WS_CHILD|PBS_MARQUEE,0,0,300,30,root,(HMENU)49,parent.hInstance,NULL);
+            CHECK(edge && !attached(edge) && DestroyWindow(edge));
+            edge=CreateWindowExW(WS_EX_STATICEDGE,L"TProgressBar",L"",WS_CHILD|PBS_SMOOTH,0,0,300,30,root,(HMENU)49,parent.hInstance,NULL);
+            CHECK(edge && attached(edge));SetWindowLongPtrW(edge,GWL_STYLE,GetWindowLongPtrW(edge,GWL_STYLE)|PBS_MARQUEE);
+            capture(edge,classic_pixels,TRUE);CHECK(remove_style(edge));capture(edge,native_pixels,TRUE);
+            CHECK(!memcmp(classic_pixels,native_pixels,sizeof(classic_pixels)) && DestroyWindow(edge));
+            printf("PROGRESS_V5_BORDER_OK bits=%u dpi=%u border_changed=%u client_changed=0 native_position=42 style_fallback=1 gdi_stable=1\n",(unsigned)sizeof(void*)*8,GetDpiForWindow(root),border_diff);
+        }
         HWND w=CreateWindowW(PROGRESS_CLASSW,L"",WS_CHILD|PBS_MARQUEE,0,0,300,30,root,(HMENU)42,parent.hInstance,NULL);CHECK(w&&!attached(w));CHECK(DestroyWindow(w));
         w=CreateWindowExW(WS_EX_LAYOUTRTL,PROGRESS_CLASSW,L"",WS_CHILD|PBS_SMOOTH,0,0,300,30,root,(HMENU)43,parent.hInstance,NULL);CHECK(w&&!attached(w));CHECK(DestroyWindow(w));
         if(supported){
@@ -95,7 +121,7 @@ static int child(BOOL styled,BOOL aware)
             if(action==3){CHECK(SendMessageW(w,PBM_GETPOS,0,0)==75);capture(w,classic_pixels,FALSE);RECT bounds;GetClientRect(w,&bounds);int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));CHECK(count_color(classic_pixels,bounds,RGB(31,127,219))==(unsigned)((bounds.right-2*u)*75/100*(bounds.bottom-2*u)));}
             if(IsWindow(w))CHECK(DestroyWindow(w));}action=0;puts("PROGRESS_QUERY_RETIRE_OK remove=1 destroy=1 mutate=1");}
         if(!supported){emulate_state=TRUE;w=CreateWindowW(L"TProgressBar",L"",WS_CHILD|PBS_SMOOTH,0,0,300,30,root,(HMENU)48,parent.hInstance,NULL);CHECK(w&&!attached(w));CHECK(DestroyWindow(w));emulate_state=FALSE;puts("PROGRESS_V5_CAPABILITY_GUARD_OK emulated_state_not_enough=1");}
-        CHECK(UnregisterClassW(L"TProgressBar",parent.hInstance));WNDCLASSW fake={.lpfnWndProc=DefWindowProcW,.hInstance=parent.hInstance,.lpszClassName=L"TProgressBar",.cbWndExtra=sizeof(void*)};CHECK(RegisterClassW(&fake));w=CreateWindowW(fake.lpszClassName,L"",WS_CHILD,0,0,300,30,root,(HMENU)45,parent.hInstance,NULL);CHECK(w&&!attached(w));CHECK(DestroyWindow(w));
+        CHECK(UnregisterClassW(L"TProgressBar",parent.hInstance));WNDCLASSW fake={.lpfnWndProc=DefWindowProcW,.hInstance=parent.hInstance,.lpszClassName=L"TProgressBar",.cbWndExtra=sizeof(void*)};CHECK(RegisterClassW(&fake));w=CreateWindowExW(WS_EX_STATICEDGE,fake.lpszClassName,L"",WS_CHILD,0,0,300,30,root,(HMENU)45,parent.hInstance,NULL);CHECK(w&&!attached(w));CHECK(DestroyWindow(w));
     }
     printf("PROGRESS_CONTROL_OK bits=%u styled=%u aware=%u dpi=%u supported=%u native_fallback=%u\n",(unsigned)sizeof(void*)*8,styled,aware,GetDpiForWindow(root),supported,fallback);
     CHECK(DestroyWindow(root)&&SelectObject(dc,previous)&&DeleteObject(bitmap)&&DeleteDC(dc));return 0;

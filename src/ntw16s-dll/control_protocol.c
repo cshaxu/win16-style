@@ -69,6 +69,12 @@ BOOL ntw16s_control_protocol_toolbar(HWND w)
         if(b->window==w && b->role==10 && current(b))return TRUE;
     return FALSE;
 }
+BOOL ntw16s_control_protocol_legacy_progress(HWND w)
+{
+    for(ntw16s_control_protocol *b=bindings;b;b=b->next)
+        if(b->window==w && b->role==13 && current(b))return TRUE;
+    return FALSE;
+}
 HMODULE ntw16s_control_protocol_list_module(HWND w)
 {
     for(ntw16s_control_protocol *b=bindings;b;b=b->next)
@@ -137,7 +143,10 @@ ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND w)
     if(role==7 && !ocx_role){
         DLLVERSIONINFO version={.cbSize=sizeof(version)};
         HRESULT (CALLBACK *get_version)(DLLVERSIONINFO *)=(void*)GetProcAddress(native_owner,"DllGetVersion");
-        if(!get_version || FAILED(get_version(&version)) || version.dwMajorVersion<6)return NULL;
+        if(!get_version || FAILED(get_version(&version)))return NULL;
+        if(version.dwMajorVersion==5 && !lstrcmpW(name,L"TProgressBar") &&
+            (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_STATICEDGE))role=13;
+        else if(version.dwMajorVersion<6)return NULL;
     }
     if(role==3 && ((GetWindowLongPtrW(w,GWL_STYLE)&(TCS_BOTTOM|TCS_VERTICAL)) ||
         GetClassLongPtrW(w,GCL_CBWNDEXTRA)<(ULONG_PTR)native_class.cbWndExtra))return NULL;
@@ -191,6 +200,18 @@ ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND w)
             GetClassLongPtrW(w,GCL_CBWNDEXTRA)>=(ULONG_PTR)native.cbWndExtra &&
             !(style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA)) && count>=0 &&
             (selected==LB_ERR || (selected>=0 && selected<count)) && height>0 &&
+            GetWindowThreadProcessId(GetParent(w),NULL)==GetCurrentThreadId();
+    }else if(role==13){
+        DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
+        PBRANGE range={INT_MAX,INT_MIN};LRESULT low=SendMessageW(w,PBM_GETRANGE,TRUE,(LPARAM)&range);
+        LRESULT high=current(b)?SendMessageW(w,PBM_GETRANGE,FALSE,0):0;
+        LRESULT pos=current(b)?SendMessageW(w,PBM_GETPOS,0,0):0;
+        LRESULT state=current(b)?SendMessageW(w,PBM_GETSTATE,0,0):-1;
+        valid=current(b) && (ex&WS_EX_STATICEDGE) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_CLIENTEDGE)) &&
+            !(style&(PBS_MARQUEE|WS_HSCROLL|WS_VSCROLL)) && range.iLow<=range.iHigh &&
+            GetClassLongPtrW(w,GCL_CBWNDEXTRA)>=(ULONG_PTR)native_class.cbWndExtra &&
+            (int)(INT_PTR)low==range.iLow && (int)(INT_PTR)high==range.iHigh &&
+            (int)(INT_PTR)pos>=range.iLow && (int)(INT_PTR)pos<=range.iHigh && state==0 &&
             GetWindowThreadProcessId(GetParent(w),NULL)==GetCurrentThreadId();
     }else if(role==3){
         RECT input={0,0,300,200},display=input,inverse;TC_HITTESTINFO hit={.pt={-30000,-30000}};
