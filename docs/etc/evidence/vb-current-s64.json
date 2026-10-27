@@ -203,5 +203,79 @@
       "Does not establish real-app cross-process observer support",
       "No VB5/VB6 full compatibility claim"
     ]
+  },
+  "real_intrinsic_p3": {
+    "scope": "Two independently compiled original x86 samples using actual runtime50/runtime60; original provenance and license in docs/history/M0-T17-S4-vb-intrinsics.md and evidence vb-intrinsic-controls.json. The samples are not required build dependencies.",
+    "installed_dll": "O:/repos.hobby/win16style/assets/ntw16s32.dll",
+    "installed_dll_sha256": "34df3026e281221d59ea8c6c6c91d7781f42d6fd7fcb112e813e9b465f055a21",
+    "counts_each": {
+      "option": 4,
+      "checkbox": 4,
+      "combo": 2,
+      "list": 1,
+      "edit": 2,
+      "scrollbar": 2
+    },
+    "behavior": "Option group, two-click checkbox cycles, combo selection and dropdown cancellation, list selection, text change and restoration, scrollbar public state; styled glyph pixel checks use project original resources.",
+    "samples": [
+      {
+        "version": "VB5",
+        "target": "build/t17-audit/s4-intrinsic-samples/vb5/ResXpStylesTester.exe",
+        "target_sha256": "d4ee16efabcac00ae1cf8b453dad9640acbedbf6a86a1709ab2066d7db0fa467",
+        "runtime": "build/t17-audit/s4-intrinsic-samples/vb5/MSVBVM50.DLL",
+        "runtime_sha256": "8611dc1b60ae5c383bba6cb3ffd8a51aeebff23b95844f0ab3d6e5ecd0fadc84",
+        "dpi": 96,
+        "results": {
+          "styled": {
+            "outcome": "passed",
+            "pid": 10540,
+            "windows": 22,
+            "job_remaining": 0,
+            "screenshot_sha256": "ae6a3e73786c7520df443bd2437b2bb1b8291d0913f844bf87bc9a11497dad51",
+            "log": "build/t18-s64-vb5-real-package/output.txt"
+          },
+          "bare": {
+            "outcome": "passed",
+            "pid": 29456,
+            "windows": 22,
+            "job_remaining": 0,
+            "screenshot_sha256": "0cba607cbbe5993005e1353842c1cf33cc5e7782ceade7bf114dc6e7275827ee",
+            "log": "build/t18-s64-vb5-real-bare/output.txt"
+          }
+        }
+      },
+      {
+        "version": "VB6",
+        "target": "build/t17-audit/s4-intrinsic-samples/vb6/ResXpStylesTester.exe",
+        "target_sha256": "5cd301d91e0b836eab93a4b20964029cc988ed6c2a78916f42444f3ca06f1a91",
+        "runtime": "C:/Windows/SysWOW64/MSVBVM60.DLL",
+        "runtime_sha256": "898288bd3b21d0e7d5f406df2e0b69a5bbfa4f241baf29a2cdf8a3cf4d4619f2",
+        "dpi": 96,
+        "results": {
+          "styled": {
+            "outcome": "passed",
+            "pid": 33132,
+            "windows": 23,
+            "job_remaining": 0,
+            "screenshot_sha256": "ae6a3e73786c7520df443bd2437b2bb1b8291d0913f844bf87bc9a11497dad51",
+            "log": "build/t18-s64-vb6-real-package/output.txt"
+          },
+          "bare": {
+            "outcome": "passed",
+            "pid": 30580,
+            "windows": 23,
+            "job_remaining": 0,
+            "screenshot_sha256": "0cba607cbbe5993005e1353842c1cf33cc5e7782ceade7bf114dc6e7275827ee",
+            "log": "build/t18-s64-vb6-real-bare/output.txt"
+          }
+        }
+      }
+    ],
+    "limitations": [
+      "Synthetic messages; no physical keyboard or IME verification",
+      "Selection and state are bounded to these sample variants and 96 DPI",
+      "No notification counts, real drag, direct replace/undo, full GDI lifetime, deferred OCX or DriveListBox proof",
+      "Only actual 32-bit VB runtimes; no 64-bit VB runtime claim"
+    ]
   }
 }
