@@ -683,8 +683,9 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     /* VB can first create this UserControl under a temporary parent, then
      * reparent it during initialization. Bind only at its first real paint. */
     if(m==WM_PAINT && a->vb_user_candidate && !a->vb_user_attempted && !a->detached){
-        DWORD saved=GetLastError();HWND parent=GetParent(w);a->vb_user_attempted=TRUE;
+        DWORD saved=GetLastError();HWND parent=GetParent(w);
         if(vb_user_edge_identity(w,parent)){
+            a->vb_user_attempted=TRUE;
             a->vb_user_parent=parent;a->vb_user_edge=TRUE;
             BOOL installed=win16_style_grid_install_created(w,NULL,a,&a->detached);
             if(installed && !a->detached)RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);
@@ -987,7 +988,7 @@ static BOOL install_created(HWND w,DWORD original_style)
         date_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TDateTimePicker") &&
             RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TDateTimePicker");
     }
-    BOOL vb_user_edge=vb_user_edge_identity(w,GetParent(w));
+    BOOL vb_user_edge=vb_user_edge_role(w,GetParent(w));
     /* An external OCX can create itself with frame bits during construction
      * and then become a custom client surface.  Without an explicitly
      * verified public protocol it must stay native; only an application-owned

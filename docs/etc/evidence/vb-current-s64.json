@@ -1099,5 +1099,32 @@
       "limits": "Focused cases only; full integration and real VB6 transition not covered."
     },
     "production_diff": "attachment.c +11/-3; controls.c +2/-1, net +9 total. Search: rg -n vb_user_edge_(role|identity|valid|dormant) src/ntw16s-dll/attachment.c src/ntw16s-dll/controls.c; one existing attachment owns lifetime, controls painter forwards dormant messages, explicit unsupported-role removal remains. No ABI or resource change."
+  },
+  "vb_usercontrol_edge_late_p39": {
+    "source": "Real VB5 MSVBVM50 sample from https://github.com/tannerhelland/vbAccelerator-Archive/tree/390fd1029e44a407695c6ecff4248d7a345d30ef/VB/Code/Controls/UserControl_OLE_Extensions/IOLEControl, same private activation setup as P32. No new OCX rendering support claimed.",
+    "root_cause": "An exact runtime UserControl created without WS_EX_CLIENTEDGE was rejected before any lifetime observation. Adding the edge later could not trigger a new creation attachment. Actual sample was originally unedged; the native observer simulated later style changes via SetWindowLongPtr/SetWindowPos and forced a paint; this is not an application COM property event.",
+    "fix": "Allow only existing exact VB5/VB6 role to stage without CLIENTEDGE, while keeping native theme/client drawing. Do not consume the first bind attempt until a qualifying edge exists at paint; bind current parent then. Already-bound removal/restoration and invalid role retirement remain unchanged.",
+    "real_vb5": "96 DPI x86, source-pinned and private reg-free. Initial unedged old vs candidate PrintWindow 385x261 had zero differing RGB pixels. After synthetic edge addition, 2568 changed edge pixels, zero changed interior pixels. Window then returned to original unedged client rectangle and font, nested list selection changed/restored, instance exited with own job empty. This is not physical input or a COM property call.",
+    "real_vb6_restore": "The previously P36 embedded VB6 x86 sample was separately run against P38: after synthetic remove/re-add, P38 image hash returned to initial 11146709906693620837, whereas P37 restoration hash was 16821804390992247989. Left/right key messages and font/client held; own job terminated before registry-saving shutdown. Raw FNV hashes are not SHA. Bare and styled geometries differ, so no cross-mode identical-client assertion.",
+    "model": "VB5/VB6 fixture x86/x64: no-edge paint and temporary-parent transition, later edge attach, restored initial geometry/font, P38 behavior, invalid roles and dormant reparent. Old P38 release fails new late-attachment assertion in all four combinations; its printed last error 126 is stale, not a diagnosed cause.",
+    "limitations": [
+      "Only one actual VB5 sample and one actual VB6 sample, x86/96 DPI; VB6 initial-no-edge-to-edge remains a model-only case.",
+      "Real application COM property changes, physical input, other DPI and custom nonclient/OCX painting not verified.",
+      "If no later WM_PAINT occurs after an edge is added, initial observation remains staged until the next paint."
+    ],
+    "delivery": {
+      "build": "clean C17 GCC/Ninja/ccache x86/x64; PE ABI, source/resource/governance self-tests passed",
+      "package": "18 focused actual-package cases passed, zero skipped, 13.32 seconds",
+      "actual_package_samples": "Real VB5 initial-unedged sample confirms same initial/candidate unframed and changed edge, nested list selection restored, own job exited; real VB6 embedded sample confirms edge restoration and key messages, force-terminated own job to avoid registry write.",
+      "sha256": {
+        "demo.exe": "ffea0f2cf4d66c5f456b673487c76e54e4d560b7d26d6854befcb3c41069408f",
+        "ntw16s32.dll": "7351079eb7757df0c2f1cc93cae04b5ec6a803e6ec132445c134bdda457c68e1",
+        "ntw16s64.dll": "7c037aefa42fdf26c6d0d96c3ad803017b923e6987b330f6d943208b332f407a",
+        "run16s.exe": "0cdb36e767fe8d9a7a422a2099e302d95c77db62bdd7eb89d39143bf7f44bb51"
+      },
+      "published": "assets root and O:/winnt/system32 each match tested four-file SHA",
+      "limits": "Focused cases only; no real VB6 initially-unedged sample, COM setter or other DPI."
+    },
+    "production_diff": "attachment.c +3/-2, net +1; tests vb_user_edge.c +2/-2; package test markers +4/-4. Search rg -n vb_user_edge_(role|identity)|vb_user_attempted src/ntw16s-dll/attachment.c: existing single attachment owns observation and renderer; theme removal path retained. No ABI or original resource changes."
   }
 }
