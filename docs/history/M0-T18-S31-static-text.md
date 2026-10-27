@@ -68,3 +68,5 @@ applications, non-ASCII text and full T18 integration remain unverified. The
 the x64 wheel is
 `19729cbaf892e6de8e4d57e0bb7faf9c5857c58708159cffd610c1117dd5059e`.
 Scratch remains registered until evidence and final T18 handoff are settled.
+P1 `ae48c36` was pushed and all 14 changed files were retrieved from the
+actual remote commit and matched their Git blobs.
