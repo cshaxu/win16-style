@@ -6,7 +6,7 @@ M0 T17 已按用户明确缩小后的范围收口；23 项 VB 延期项保留在
 Delphi VCL 74 个 UI 家族种子、框架分支、五个固定候选及逐项证据接收者；T18 S2 已将
 全部种子逐项归入35个既有原生协议模型或39个明确的原生保留边界。S4 已完成首组
 精确 TEdit/TListBox与TTabControl公开协议实现、干净双宽四文件包和双发布；实际 Delphi 显示集成
-仍统一留给T18最终收口。S10已完成组合框与列表验证；S11已完成工具栏文字边界修复和真实DoubleKiller复测，等待提交复核；不得用 demo
+仍统一留给T18最终收口。S10已完成组合框与列表验证；S11已完成工具栏文字边界修复、真实DoubleKiller复测及提交推送复核；顺序准入S12真实MD5summer补证；不得用 demo
 冒充 Delphi。
 以下段落为 T17 的技术基线/历史证据，不覆盖 T18 状态。
 
@@ -68,27 +68,26 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S11 Packet
+## M0 T18 S12 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；用户明确先实现一切可由公开协议证明的代码，真实Delphi集成统一留给T18收口；S10已交付复核，顺序准入S11 |
-| Admission And Approval | 用户批准进入队列首项T18，并明确要求先完成能以公开协议实现的代码和自包含测试；S4/S5已交付基础编辑/列表及页签有限实现和四文件发布，S3的error=5集成缺口仍保留至最终收口 |
-| Objective | 审核TToolBar/TStatusBar与已有VB OCX工具栏公开协议；优先复现并修复工具栏TB_GETBUTTONTEXTW无容量限制的固定缓冲区风险，再评估可证明的接入边界 |
-| Non-goals | 不把demo等价项当成VCL支持；不读取私有对象布局、不仅凭T前缀接纳、不新增第五产品；不接管canvas、数据库、嵌入/非视觉、图像/custom-draw或owner-draw；不改既有标题/菜单/字体/滚动条/资源 |
-| Reference Baseline | [T18 S1审计](../etc/evidence/delphi-controls-audit.json)、[S2对应账本](../etc/evidence/delphi-demo-mapping.json)、[S3转交](../history/M0-T18-S3-vcl-probe-transfer.md)、[S4公开协议](../etc/evidence/delphi-basic-protocols.json)、[S5页签协议](../etc/evidence/delphi-tab-protocol.json)、[S6表头证据](../etc/evidence/delphi-list-tree-header-protocol.json)、[Delphi专项proposal](../proposals/delphi-win32-controls.md)及T15有限公开协议 |
+| Identifier Mode | Continuation；S11 e214eff已推送并读取实际远端；按用户希望在桌面恢复后继续测试，顺序准入S12 |
+| Admission And Approval | 用户批准T18连续实施并要求桌面恢复后继续原生测试；真实应用测试自动执行，无需用户操作 |
+| Objective | 用当前已发布包和自有隔离实例复测真实MD5summer，补证基础控件、组合框交互、窗口移动恢复和进程清理 |
+| Non-goals | 不将单一应用外推全部Delphi；不操作用户现有进程、不执行文件扫描/修改、无computer-use、不测HD Tune提权 |
+| Reference Baseline | [S11](../history/M0-T18-S11-toolbar-text-bounds.md)、[S3转交](../history/M0-T18-S3-vcl-probe-transfer.md)、[历史MD5summer证据](../etc/evidence/md5summer-controls.json) |
 | Candidate Proposal | [Delphi Win32控件完整审计与Win3.x风格适配](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 可改ntw16s32/64内部角色判断和增加自包含纯C测试；ABI/导出、三组件四产物和原五图形头不变 |
-| Applicable Rules | C17/MinGW GCC/Ninja/ccache、来源策略、禁computer-use/全局hook/既有进程扫描；真实应用集成与自包含测试分列；私有桌面error=5只能skip，留T18最终收口 |
-| Verification | 双宽干净构建；新旧正/负例证明公开消息、注册/模块身份、状态、键盘/通知、移除/销毁和资源释放；同批四文件实际包测试。真实VCL应用验证是已登记的最终集成项，不得以历史结果替代 |
-| Expected Markers | 每个角色有类/模块/公开消息交集、正例附着与负例拒绝、裸/注入行为和清理标记；绝不以模块加载或名称匹配作样式成功结论 |
-| Current Evidence | S10组合框/列表模型和aabb9b9已实际远端复核。S11原生探针证明旧TB_GETBUTTONTEXTW在700字符时改写189个守卫字符；受限TB_GETBUTTONINFOW修复后v5/v6双宽及510/511边界均通过。真实DoubleKiller四页各33控件附着、零失败并清理自有进程；双宽干净包91项0跳过、同批四文件双发布摘要一致。Delphi工具栏和状态栏仍需自身证据。 |
-| Asset Needs | 仅现有固定候选和自编C探针；不复制Delphi/第三方二进制、图片或资源，不安装/注册运行包 |
-| Reporting Requirements | 报告新增角色、公开协议/负例、测试与集成缺口、二进制发布状态；不将自包含模型或一个VCL应用外推为全部Delphi/FMX |
-| Stop Conditions | 需要私有对象布局、应用绘图、数据绑定、嵌入、owner-draw契约或第五产品时停止该项并交后续S；真实VCL应用显示验证统一留T18最终收口；实际修复前必须先记录根因和最小方案 |
-| Exit Criteria | 每个接入项仅以公开协议完成有限实现和双宽包闭环；无稳定公共协议的项明确保留至后续接收者；真实应用集成缺口明确保留 |
-| Original Owner Request | 队列首位 Delphi Win32 控件完整审计与Win3.x风格适配；像VB专项一样先全貌审计、demo对应展示、多个S实施、最后独立收口 |
-| Similar-Issue Sweep | VCL/FireMonkey、ANSI/Unicode、静态/运行包、窗口/无窗口/owner-draw、标准/公共控件、数据/网格、菜单/主题、图像/字体、晚创建/重建、x86/x64及第三方组件 |
+| Files And ABI Surface | 自有任务scratch及证据文档；无计划产品代码、ABI、图形资源变更 |
+| Applicable Rules | C17/MinGW GCC/Ninja/ccache、自有私有桌面及Job隔离；精确记录当前包摘要和失败、超时、清理；禁止依赖兄弟仓库 |
+| Verification | 使用当前已测试发布包，记录实际程序和DLL路径/SHA，探针检查附着、交互、移动恢复及Job清理；依据测试结果保留未覆盖项 |
+| Expected Markers | 精确目标与DLL、root和标准控件附着、组合框开关选择、窗口恢复及零自有存活进程；每个失败如实报告 |
+| Asset Needs | 本机MD5summer真实程序和既有自编探针源码，仅作自有进程观察；不分发第三方程序 |
+| Reporting Requirements | 区分已通过实测、未覆盖和原生保留；不把目标模块加载等同绘制成功 |
+| Stop Conditions | 真实目标不匹配、隔离不可用或需要破坏性应用操作时停止对应探针并记录，不修改系统设置 |
+| Exit Criteria | 当前包真实样本证据和限制已记录、必要回归及交付完成；T18继续开放 |
+| Original Owner Request | 队列首位 Delphi Win32 控件完整审计与Win3.x风格适配；用户希望桌面恢复后继续测试 |
+| Similar-Issue Sweep | x86/x64、旧/新VCL、窗口/无窗口、原生/owner-draw和应用特定行为均不凭单样本推广 |
 
 ## Identifier State
 
@@ -96,8 +95,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S10 P1：组合框/列表超类模型、双宽96/144 DPI及87项包测试0跳过、双发布，aabb9b9已实际远端复核；真实Delphi集成仍待完成。
-- Open task: T18 S11 工具栏文字边界及公开协议审计；M0/T18开放。
+- Last delivery: M0 T18 S11 P1：工具栏边界修复、91项包测试0跳过、真实DoubleKiller四页、双发布；e214eff已实际远端复核。
+- Open task: T18 S12 当前包真实MD5summer隔离复测；M0/T18开放。
 
 ## Technical Baseline
 
