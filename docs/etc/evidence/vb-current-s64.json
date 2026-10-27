@@ -1126,5 +1126,29 @@
       "limits": "Focused cases only; no real VB6 initially-unedged sample, COM setter or other DPI."
     },
     "production_diff": "attachment.c +3/-2, net +1; tests vb_user_edge.c +2/-2; package test markers +4/-4. Search rg -n vb_user_edge_(role|identity)|vb_user_attempted src/ntw16s-dll/attachment.c: existing single attachment owns observation and renderer; theme removal path retained. No ABI or original resource changes."
+  },
+  "vb6_usercontrol_late_real_p40": {
+    "sample": "Same source-pinned original VB6 Icon Picker sample and private registration-free activation as vb6_usercontrol_p32; no installation or registry change.",
+    "entry": "vb-intrinsic-observe.exe <launcher-or-bare> <private-sample-exe> vb6-user-edge-late; WIN16STYLE_CAPTURE_DIR must name a fresh private directory. This is an explicitly optional research probe, not a package prerequisite; absent sample is not a passing result.",
+    "actual": "At 96 DPI resize owned window to 220x180 fully within 427x320 desktop; exact old P38 and current P39 styled images had zero RGB differences before edge addition and 1584 edge RGB differences, zero interior differences after synthetic SetWindowLongPtr/SetWindowPos and redraw. Verify styled top-left border pixel black; private Edit text, UserControl font and geometry preserved, checkbox BM_CLICK toggled/restored, normal owned-job exit. Bare and current exit 0; P38 exits 1 at vb6_edge_black.",
+    "initial_probe_limit": "An earlier unresized 313x301 capture was partly outside the isolated desktop. Its apparent pixel counts are discarded; only the fitted-window result above is used.",
+    "limits": [
+      "One real VB6 x86 sample at 96 DPI; synthetic window messages, not actual COM property setters or physical input.",
+      "Probe adds an edge directly to a private research OCX-hosted UserControl; this does not add OCX product support.",
+      "Optional external sample may require legal/source acquisition and private manifest, and is not a build or standard-package dependency."
+    ],
+    "delivery": {
+      "build": "clean x86/x64 C17 GCC/Ninja/ccache and PE/ABI/source/resource/governance gates passed; no product source changes",
+      "package": "18 focused package cases passed, zero skipped, 13.79 seconds; optional real VB6 research probe separately passed using the clean-built observer and candidate",
+      "sha256": {
+        "demo.exe": "60777d856507bdba4729dbcc612d4694a1c80ec929847a2f2875f7a267675366",
+        "ntw16s32.dll": "6cf039eb358006d3c7d8983f57aaff3a71a558bf010fba16b6621622393b562d",
+        "ntw16s64.dll": "8fe646b98ec556f01c015c24dddb174baee62868d3486f72ce9defd6e5d3bd53",
+        "run16s.exe": "03005ae044eb02563e715ad49a6d541440089d4b9e3f4b733f8c5f977131001e"
+      },
+      "published": "all four clean rebuild hashes differ from previous release, so identical tested batch deployed to assets root and O:/winnt/system32",
+      "limits": "Full package matrix, physical input, actual COM property setter and other DPI remain unverified."
+    },
+    "diff": "tests/integration/vb_intrinsic.c +10/-1, net +9; no production source changes or resource changes. Optional mode retains existing 12s launch timeout, owned job and normal cleanup."
   }
 }
