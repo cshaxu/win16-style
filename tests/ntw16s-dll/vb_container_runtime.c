@@ -82,13 +82,16 @@ __declspec(dllexport) BOOL WINAPI VbMdiRegister(void)
 __declspec(dllexport) BOOL WINAPI VbMdiRelease(void)
 {return UnregisterClassW(mdi_class,instance);}
 #ifdef VB_CONTAINER_RUNTIME60
+static const WCHAR user_edge_class[]=L"ThunderRT6UserControlDC";
+#else
+static const WCHAR user_edge_class[]=L"ThunderRT5UserControl";
+#endif
 __declspec(dllexport) BOOL WINAPI VbUserEdgeRegister(void)
 {
-    WNDCLASSW cls={.style=CS_OWNDC,.hInstance=instance,.lpfnWndProc=picture,.lpszClassName=L"ThunderRT6UserControlDC",.hbrBackground=GetStockObject(WHITE_BRUSH)};
+    WNDCLASSW cls={.style=CS_OWNDC,.hInstance=instance,.lpfnWndProc=picture,.lpszClassName=user_edge_class,.hbrBackground=GetStockObject(WHITE_BRUSH)};
     return RegisterClassW(&cls)!=0;
 }
 __declspec(dllexport) BOOL WINAPI VbUserEdgeRelease(void)
-{return UnregisterClassW(L"ThunderRT6UserControlDC",instance);}
-#endif
+{return UnregisterClassW(user_edge_class,instance);}
 BOOL WINAPI DllMain(HINSTANCE h,DWORD reason,LPVOID reserved)
 {(void)h;(void)reason;(void)reserved;return TRUE;}

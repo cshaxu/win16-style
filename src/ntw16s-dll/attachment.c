@@ -342,7 +342,7 @@ static BOOL vb_user_edge_identity(HWND w,HWND parent)
     return parent && GetParent(w)==parent && (style&WS_CHILD) &&
         (style&WS_CAPTION)!=WS_CAPTION && !(style&(WS_THICKFRAME|WS_HSCROLL|WS_VSCROLL)) &&
         (ex&WS_EX_CLIENTEDGE) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_TOOLWINDOW|WS_EX_LAYERED)) &&
-        ntw16s_vb_class(w,L"ThunderRT6UserControlDC");
+        (ntw16s_vb_class(w,L"ThunderRT6UserControlDC") || ntw16s_vb5_class(w,L"ThunderRT5UserControl"));
 }
 BOOL ntw16s_vb_user_edge_valid(HWND w)
 {

@@ -1046,5 +1046,33 @@
       },
       "published": "All four tested files copied to project assets root and O:/winnt/system32 and eight SHA-256 values verified."
     }
+  },
+  "vb5_usercontrol_edge_p37": {
+    "source_repository": "https://github.com/tannerhelland/vbAccelerator-Archive",
+    "source_commit": "390fd1029e44a407695c6ecff4248d7a345d30ef",
+    "archive": "VB/Code/Controls/AVI_Player/Transparent_AVI_Player/VB5_Transparent_AVI_Player_Full_Source.zip",
+    "archive_sha256": "2a8ef3efc791229aa8fecf16517548b8cbbfee63e92dd74137ba6746e5fb6a40",
+    "research": "Privately copied original application, OCX, AVI, VB5 runtime and SSubTmr with embedded registration-free manifest; no system COM registration. Sample source checked for startup file writes and process-launch operations. Privately built observer closes its own job. OCX itself is for research, not a packaged dependency or a blanket OCX support claim.",
+    "actual": "Real x86 VB5 runtime ThunderRT5UserControl with WS_EX_CLIENTEDGE, 96 DPI. Candidate vs old released package 373x141 PrintWindow comparison: 2040 changed border RGB pixels and zero changed interior RGB pixels. Native and styled sample both returned client 369x137 and original font handle in their own process, toggled Running checkbox with BM_CLICK twice, restored its initial state and exited with own job empty. Candidate DLL absolute path recorded in probe output. These are synthetic messages, not physical-input verification.",
+    "model": "Self-contained x86 and x64 model passes identity, nonclient pixels, input, font, client geometry, unsupported style and parent/role retirement. Both widths of old release fail the new positive attached assertion. Last error 126 at that assertion was not established as the cause.",
+    "limitations": [
+      "One VB5 x86 sample, 96 DPI only.",
+      "Not a claim for other UserControl roles, custom nonclient drawing, RTL, scrolling or other external OCX behavior.",
+      "Normal window processing and BM_CLICK messages observed; physical input, assistive technology and other DPI not verified."
+    ],
+    "delivery": {
+      "build": "clean C17 GCC/Ninja/ccache x86/x64, PE ABI and source/resource/governance self-tests passed",
+      "package": "18 focused actual-package cases passed, zero skipped, 13.77 seconds",
+      "actual_package_sample": "real VB5 x86 sample rerun with candidate ntw16s32.dll, same 373x141 image hash as candidate; Running toggled/restored and normal own-job exit",
+      "sha256": {
+        "demo.exe": "a3b972a36484234ac2fe9161712c837d060a7f83853277567fd6fb56b4f60783",
+        "ntw16s32.dll": "ccbb309ceba4b7b644c9257d8a4a43a9f895725ed8901f7154a7741ca2f98539",
+        "ntw16s64.dll": "c46784441b5206e3c27837e8a4fd9a2d8f235a29fe2c897e7d6ea2ba2e400c85",
+        "run16s.exe": "72b62fc4b61a35fdf1fdc199936445cd270caf2d205a24ab3adeef501130a953"
+      },
+      "published": "assets root and O:/winnt/system32, four files each match tested SHA",
+      "limits": "Focused test only, full integration and other DPI pending."
+    },
+    "production_diff": "src/ntw16s-dll/attachment.c: 1 addition, 1 deletion, net 0. rg -n vb_user_edge_identity src/ntw16s-dll established a single shared owner and existing VB6 path is preserved; no exports or resources changed."
   }
 }
