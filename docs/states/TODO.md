@@ -2,6 +2,12 @@
 
 # Deferred Debt
 
+- [ ] TODO(Medium): S34模块TEdit重复创建的进程级GDI预热差异；Owner：T18资源与
+  最终验收。Evidence：双宽候选20次中前期从约12增至52、后续稳定并回落至50；
+  x64未注入对照从9增至13。已验证精确控件重入移除和进程退出，但尚未区分
+  延迟缓存与残留对象；Admission：按对象来源和生命周期做对照，不以短暂稳定
+  或进程退出冒称全过程零泄漏。
+
 - [ ] TODO(High): 对话框回归测试效率；Owner：T18后续测试效率S。Evidence：S33
   实际包双宽 dialog-scope 约25秒、dialog-show 约115秒，均通过；完整 dialogs
   集成约85秒。Admission：分阶段计时，保留所有ANSI/Unicode、显示方式、DPI、

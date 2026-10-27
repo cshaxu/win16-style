@@ -112,7 +112,7 @@ void ntw16s_control_protocol_release(ntw16s_control_protocol *b)
     if(current(b))RemovePropW(b->window,key);
     free(b);
 }
-ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND w)
+static ntw16s_control_protocol *bind_protocol(HWND w,HMODULE verified_edit_owner)
 {
     WCHAR name[64];unsigned role;DWORD process;WNDCLASSEXW native_class={.cbSize=sizeof(native_class)};
     HMODULE owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE),toolbar_native=NULL;
@@ -133,13 +133,14 @@ ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND w)
         (!lstrcmpW(name,UPDOWN_CLASSW) || !lstrcmpW(name,L"TUpDown"))?9:
         !lstrcmpW(name,L"TEdit")?11:!lstrcmpW(name,L"TListBox")?12:ocx_role?ocx_role:toolbar_role;
     if(!role)return NULL;
+    if(verified_edit_owner && role!=11)return NULL;
     if(role>=3 && role<=9 && !ocx_role && !toolbar_role && !GetClassInfoExW(NULL,role==3?WC_TABCONTROLW:role==4?WC_HEADERW:role==5?WC_LISTVIEWW:role==6?WC_TREEVIEWW:role==7?PROGRESS_CLASSW:role==8?TRACKBAR_CLASSW:UPDOWN_CLASSW,&native_class))return NULL;
     HMODULE native_owner=ocx_role?owner:toolbar_role?toolbar_native:NULL;
     /* Global common-control classes can report hInstance == NULL. Resolve
      * the registered native procedure's image, not a guessed DLL filename. */
     if(role>=3 && role<=9 && !ocx_role && !toolbar_role && !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
         (const WCHAR *)(UINT_PTR)native_class.lpfnWndProc,&native_owner))return NULL;
-    if(owner!=((ocx_role||toolbar_role)?native_owner:((role==4 && !lstrcmpW(name,WC_HEADERW)) || (role==3 && !lstrcmpW(name,WC_TABCONTROLW)) || (role==5 && !lstrcmpW(name,WC_LISTVIEWW)) || (role==6 && !lstrcmpW(name,WC_TREEVIEWW)) || (role==7 && !lstrcmpW(name,PROGRESS_CLASSW)) || (role==8 && !lstrcmpW(name,TRACKBAR_CLASSW)) || (role==9 && !lstrcmpW(name,UPDOWN_CLASSW)))?native_owner:GetModuleHandleW(NULL)))return NULL;
+    if(owner!=((role==11 && verified_edit_owner)?verified_edit_owner:(ocx_role||toolbar_role)?native_owner:((role==4 && !lstrcmpW(name,WC_HEADERW)) || (role==3 && !lstrcmpW(name,WC_TABCONTROLW)) || (role==5 && !lstrcmpW(name,WC_LISTVIEWW)) || (role==6 && !lstrcmpW(name,WC_TREEVIEWW)) || (role==7 && !lstrcmpW(name,PROGRESS_CLASSW)) || (role==8 && !lstrcmpW(name,TRACKBAR_CLASSW)) || (role==9 && !lstrcmpW(name,UPDOWN_CLASSW)))?native_owner:GetModuleHandleW(NULL)))return NULL;
     if(role==7 && !ocx_role){
         DLLVERSIONINFO version={.cbSize=sizeof(version)};
         HRESULT (CALLBACK *get_version)(DLLVERSIONINFO *)=(void*)GetProcAddress(native_owner,"DllGetVersion");
@@ -311,3 +312,7 @@ ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND w)
     if(!valid){ntw16s_control_protocol_release(b);return NULL;}
     b->role=role;return b;
 }
+ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND w)
+{return bind_protocol(w,NULL);}
+ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_edit(HWND w,HMODULE owner)
+{return owner?bind_protocol(w,owner):NULL;}

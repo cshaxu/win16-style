@@ -111,7 +111,7 @@ static inline BOOL ntw16s_class_is(HWND w,const WCHAR *expected)
     if(!lstrcmpiW(expected,L"COMBOBOX") && ntw16s_vb_combo(w))return TRUE;
     if(!lstrcmpiW(expected,L"LISTBOX") && ntw16s_vb_list(w))return TRUE;
     if(!lstrcmpiW(expected,L"SCROLLBAR") && ntw16s_vb_scroll(w))return TRUE;
-    if(!lstrcmpiW(expected,L"EDIT"))return ntw16s_vb_class(w,L"ThunderRT6TextBox") || ntw16s_vb5_class(w,L"ThunderRT5TextBox");
+    if(!lstrcmpiW(expected,L"EDIT"))return ntw16s_vb_class(w,L"ThunderRT6TextBox") || ntw16s_vb5_class(w,L"ThunderRT5TextBox") || ntw16s_control_protocol_is(w,expected);
     return ntw16s_control_protocol_is(w,expected);
 }
 static inline BOOL ntw16s_vb_frame(HWND w)

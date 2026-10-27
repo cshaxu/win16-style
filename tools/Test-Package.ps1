@@ -167,6 +167,8 @@ try{
         (Case 'vcl-static-64' $run @('--wait',(Join-Path $x64 'core-vcl-static.exe')) @('VCL_STATIC_OK bits=64 font_preserved=1 fake_rejected=1 nested_native=1')),
         (Case 'vcl-static-bare-32' (Join-Path $x86 'core-vcl-static.exe') @('bare') @('VCL_STATIC_BARE_OK bits=32 font_preserved=1')),
         (Case 'vcl-static-bare-64' (Join-Path $x64 'core-vcl-static.exe') @('bare') @('VCL_STATIC_BARE_OK bits=64 font_preserved=1')),
+        (Case 'vcl-edit-module-32' $run @('--wait',(Join-Path $x86 'core-vcl-edit-module.exe'),(Join-Path $x86 'vcl-edit-module-fixture.dll')) @('VCL_EDIT_MODULE_OK bits=32 fake_paint_rejected=1 selection=1 readonly=1 multiline=1 scroll=1 reentrant_remove=1 cleanup=1')),
+        (Case 'vcl-edit-module-64' $run @('--wait',(Join-Path $x64 'core-vcl-edit-module.exe'),(Join-Path $x64 'vcl-edit-module-fixture.dll')) @('VCL_EDIT_MODULE_OK bits=64 fake_paint_rejected=1 selection=1 readonly=1 multiline=1 scroll=1 reentrant_remove=1 cleanup=1')),
         (Case 'spin-32' $run @('--wait',(Join-Path $x86 'core-spin-controls.exe')) @('SPIN_CONTROL_NESTED_OK','SPIN_CONTROL_OK bits=32','outside=0','SPIN_CONTROL_CLIP_OK','SPIN_CONTROL_REENTRANT_OK','SPIN_CONTROL_BOUNDARY_OK')),
         (Case 'spin-64' $run @('--wait',(Join-Path $x64 'core-spin-controls.exe')) @('SPIN_CONTROL_NESTED_OK','SPIN_CONTROL_OK bits=64','outside=0','SPIN_CONTROL_CLIP_OK','SPIN_CONTROL_REENTRANT_OK','SPIN_CONTROL_BOUNDARY_OK')),
         (Case 'spin-dpi-32' $run @('--wait',(Join-Path $x86 'core-spin-controls.exe'),'aware') @('SPIN_CONTROL_NESTED_OK','SPIN_CONTROL_OK bits=32','outside=0','SPIN_CONTROL_CLIP_OK','SPIN_CONTROL_REENTRANT_OK','SPIN_CONTROL_BOUNDARY_OK')),

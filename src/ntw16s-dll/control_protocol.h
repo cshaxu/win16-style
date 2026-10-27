@@ -4,6 +4,8 @@
 /* A verified role belongs to one newly created HWND on its GUI thread. */
 typedef struct ntw16s_control_protocol ntw16s_control_protocol;
 ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND);
+/* Internal: owner is accepted only after the actual EDIT forwarding witness. */
+ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_edit(HWND,HMODULE);
 ntw16s_control_protocol *ntw16s_control_protocol_acquire(HWND);
 BOOL ntw16s_control_protocol_is(HWND,const WCHAR *);
 HMODULE ntw16s_control_protocol_list_module(HWND);

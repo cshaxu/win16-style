@@ -93,6 +93,11 @@ S33完整实际包127项零skip、双发布及P1 `0f75c4a`远端八文件通过�
 真实双宽VCL TEdit存在运行时DLL所有者未附着，S33未完成审计转交后续S。
 当前准入S34研究该缺口；T18/M0保持开放。
 
+S34本地已验证：真实双宽VCL TEdit附着及输入、96 DPI自有模块正负例、
+多行滚动和重入移除通过；干净包22项零skip、双发布及安装复验完成。
+GDI初期增长后稳定的差异保留TODO；P1推送与实际远端复核前S34仍开放。
+详见[S34记录](../history/M0-T18-S34-vcl-module-edit.md)。
+
 ## Identifier State
 
 - Milestone: M0 (fixed)
