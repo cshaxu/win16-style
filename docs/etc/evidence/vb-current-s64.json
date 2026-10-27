@@ -786,5 +786,26 @@
     ],
     "ntw16s32_sha256": "1a15b8db5d0d4c39ed6b5e4e458db7cc066a8a22f64d1552118f7a73a1e2123a",
     "ntw16s64_sha256": "22be6a7d6ae9ccb9447b77871de113fb1b7f123fe9caa202ee680fcfde8766ef"
+  },
+  "vb6_checkbox_list_installed_p21": {
+    "target": "CBMXfer embedded-manifest scratch copy, SHA256 4bf18907f00e4d3380f75168a73f0d3799eac62377e2efdd5ee892c12bd92c48",
+    "runtime": "actual x86 MSVBVM60, DPI 96",
+    "target_pid": 27784,
+    "launcher_pid": 6772,
+    "dll": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
+    "dll_sha256": "1a15b8db5d0d4c39ed6b5e4e458db7cc066a8a22f64d1552118f7a73a1e2123a",
+    "method": "Private desktop and kill-on-close owned job. Exact hidden runtime list temporarily shown and two own fixture rows inserted. Native operations toggle selected and enabled states; five control captures match prior candidate byte-for-byte. Target and launcher exited 0; job empty.",
+    "capture_sha256": {
+      "checklist-before.bmp": "1baf922919efa08eb7a75a5661435dde7d39625fa3bce858723dcfcbcd87d5ff",
+      "checklist-after.bmp": "5cf8ebe4a3fd327dcf096d4572778c0d920bedec00ae4895f8e6c54c18244cc2",
+      "disabled-checked.bmp": "459e53fef373ae55b4eba91a30eb597a9aed08ca0b5952e50c0999feb47dbac3",
+      "disabled-clear.bmp": "be9d5a8087b171a36dce083283a956933847e7cce579b523cbac1fcd319de9a8",
+      "enabled-restored.bmp": "c3cb694c39257d4781a6873e1e7c91b336421a6a8b8775d34e6315d1c141a376"
+    },
+    "limits": [
+      "One real VB6 application at 96 DPI, hidden control temporarily exposed; not physical input.",
+      "A prior intermittent viewer-only exit timeout occurred with both old and current builds; this passing run does not establish its cause or fix.",
+      "VB5, other DPI, accessibility and IME remain unverified."
+    ]
   }
 }
