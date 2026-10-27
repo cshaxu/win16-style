@@ -68,35 +68,30 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S33 Packet
+## M0 T18 S34 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S32 P1双发布及远端八文件复核通过，T18保持开放 |
-| Admission And Approval | 用户要求可做控件先实现、最终统一集成，并授权T18连续S；不新开T |
-| Objective | 汇总并验证T18冻结的74个VCL家族，完成可运行的最终集成和覆盖审计 |
-| Non-goals | 不将原生模型冒称真实Delphi，不把未证实的owner或OCX边界写为已支持，不改兄弟仓库 |
-| Reference Baseline | [S26逐项台账](../history/M0-T18-S26-control-audit.md)、[S31静态文本](../history/M0-T18-S31-static-text.md)、[S32效率](../history/M0-T18-S32-menu-efficiency.md)及任务历次证据 |
-| Candidate Proposal | [Delphi Win32控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 当前治理与证据，必要的自有测试；产品更改须先按独立S准入 |
-| Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；自有隔离实例，有限等待 |
-| Verification | 核实74项逐一状态与证据、真实样本及双位宽模型；执行适当完整包和安装回归，明确skip与物理输入边界 |
-| Expected Markers | 每项有明确支持范围或保留理由；失败与跳过不作通过；不凭局部样本宣称全集支持 |
-| Asset Needs | 登记build/t18-s33-final-audit任务scratch；保留S31/S32证据直至完成提炼 |
-| Reporting Requirements | 实际覆盖、未实现、限制、测试和四文件摘要；提交推送及远端实际复核 |
-| Stop Conditions | 发现可安全实现且在已授权范围的缺口时准入后续S；无法证明的边界如实记录，不臆造 |
-| Exit Criteria | 完成逐项审计、实际集成与交付后，按已授权范围决定T18收口；M0开放 |
-| Original Owner Request | 能做的全部实现并测试，最后在T任务收口时统一做集成测试 |
-| Similar-Issue Sweep | 复核真实owner与模型身份、异常/超时、显示桌面和既有延期项 |
+| Identifier Mode | Continuation；S33 P1完整包、双发布与远端复核完成，未完成的逐项审计转交后续S |
+| Admission And Approval | 用户要求能做控件继续实现并授权T18连续S；不新开T |
+| Objective | 研究并在安全契约成立时修复真实运行时DLL拥有的VCL TEdit无法接入的问题 |
+| Non-goals | 不依据类名放开任意DLL，不影响标题、字体、菜单、资源或应用自绘，不将单样本扩展为全集 |
+| Reference Baseline | [S33进度](../history/M0-T18-S33-integration-progress.md)、[S31静态文本](../history/M0-T18-S31-static-text.md)、[S9编辑超类](../history/M0-T18-S9-vcl-edit-superclass.md) |
+| Candidate Proposal | [Delphi Win32控件完整审计](../proposals/delphi-win32-controls.md)及S33真实双宽TEdit未附着证据 |
+| Files And ABI Surface | 现有C DLL内部身份、附着和必要自有测试；不新增产品或公开ABI |
+| Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；自有隔离实例、有限等待 |
+| Verification | 实测真实窗口对原生EDIT过程转发、调用者与所有者；双宽正负例、伪类拒绝、文本输入/选择/重入/移除、DPI、资源，真实应用及同批实际包 |
+| Expected Markers | 证明安全身份后有限接入；旧包负例、保留协议与应用行为；若无可靠契约则记录证据并保持原生 |
+| Asset Needs | 登记build/t18-s34-vcl-edit任务scratch，保留S33原始证据 |
+| Reporting Requirements | 明确原生过程、所有者、允许与拒绝边界；双宽实际包、必要双发布、提交推送及远端复核 |
+| Stop Conditions | 不能以任意模块/类名、私有字段或像素猜测；缺少安全身份时不得泛化接管 |
+| Exit Criteria | 真实样本与负例证明最小实现或明确无法安全接入，并交回74项最终审计；T18/M0开放 |
+| Original Owner Request | 可实现的控件先实现并跑测试，最终集中集成；无需额外确认 |
+| Similar-Issue Sweep | 同一运行时拥有的列表、树等只记录证据，不因TEdit协议自动泛化 |
 
-S32 P1 `6e62c28`已推送并实际取回八个变更文件逐字节核对，双宽20项
-聚焦包、双发布及安装探针通过；S32关闭并准入S33。T18/M0保持开放。
-
-S33进行中：独立双宽干净构建及完整实际包127项零skip通过，双发布及
-安装复验完成；真实双宽DelphiVCL4Python样本在144 DPI使用本批DLL，
-正常/禁用TStaticText附着、源字体保留且关闭成功，标题顶部26行与旧包
-差异0。74项工作台账正在核对，不等同支持全集。对话框显示用例双宽各约
-115秒，需在T18内后续定位并处理测试效率。详见[S33进度](../history/M0-T18-S33-integration-progress.md)。
+S33完整实际包127项零skip、双发布及P1 `0f75c4a`远端八文件通过；
+真实双宽VCL TEdit存在运行时DLL所有者未附着，S33未完成审计转交后续S。
+当前准入S34研究该缺口；T18/M0保持开放。
 
 ## Identifier State
 
@@ -104,8 +99,8 @@ S33进行中：独立双宽干净构建及完整实际包127项零skip通过，�
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S32：20项聚焦包、双发布、双宽安装复验及6e62c28远端八文件复核。
-- Open task: T18 S33 最终集成与逐项审计；M0/T18开放。
+- Last delivery: M0 T18 S33 P1：127项完整包、双发布、真实双宽样本及0f75c4a远端八文件复核；最终审计尚未完成。
+- Open task: T18 S34 运行时模块拥有的VCL TEdit；M0/T18开放。
 
 ## Technical Baseline
 
@@ -154,6 +149,8 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T18 S33集成进度](../history/M0-T18-S33-integration-progress.md)：127项完整包、双发布及真实双宽控件调查；未完成审计转后续S。
 
 - [T18 S32菜单测试效率](../history/M0-T18-S32-menu-efficiency.md)：双宽菜单5.55/4.97秒、20项聚焦包、双发布及P1远端八文件复核。
 

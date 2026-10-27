@@ -41,3 +41,28 @@ limitations remain in TODO. The observed x86/x64 dialog-scope cases took about
 85/92 seconds; these are recorded for a subsequent T18 efficiency S rather
 than silently deleting scenarios. S33 and T18 remain open pending further
 row-by-row review and the user's requested efficiency work.
+
+A follow-up self-owned 144-DPI DelphiVCL4Python 1.0.7 gallery on the
+published package found that the x64 runtime registers multiple child classes
+in its `DelphiVCL.pyd` module; TEdit, TTreeView, TListView and other observed
+HWNDs were unattached. This is an actual sample gap, not evidence that every
+same-named application has the same registration or visual defect. An x86
+one-control witness confirmed TEdit is likewise owned by its runtime DLL and
+unattached. Both widths reported a positive native EDIT limit, a valid zero
+selection and nonempty formatting rectangle, and native-matching class extra
+bytes (4 x86, 8 x64). The production owner test in `control_protocol.c`
+requires the main EXE for this role, so the observed DLL owner cannot pass it.
+Those public checks do not prove native procedure forwarding or sufficient
+identity, so simply allowing arbitrary module-owned same-name windows is not
+justified. S34 must test the actual forwarding/caller relationship, fake-class
+rejection, semantics and lifecycle before any implementation.
+
+The first x86 gallery observations timed out because the task-scratch observer
+DLL had a decorated stdcall export. A captured Python exception identified
+`DkInspect` missing; rebuilding that observer with `--kill-at` allowed the
+single-control x86 witness to pass. The failed runs and exact observer source
+are retained in S33 scratch; no product defect is inferred from that observer
+failure. All examples were owned and automatically closed. P1 `0f75c4a` was
+pushed and all eight changed files were read from that actual remote commit and
+matched. S33 is transferred to S34 for the concrete TEdit gap; the unfinished
+74-row final audit and integration decision remain open under T18.

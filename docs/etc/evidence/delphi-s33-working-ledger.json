@@ -1,5 +1,5 @@
 {
-  "status": "S33 working evidence ledger; historical S26 rows require audit against later evidence; no name-only support claims",
+  "status": "S33 provisional ledger; real observed runtime evidence is bounded; unresolved rows remain unverified",
   "scope": "74 frozen S1 VCL families; TSpinButton is separately discovered and not counted",
   "search_boundary": "exact source/test/history identifier search and bounded static name leads from four fixed samples; absence is not universal proof",
   "next_candidate": "S33 final integration and row-by-row audit; unverified owners and protocol gaps remain open",
@@ -89,6 +89,10 @@
           "docs/history/M0-T18-S15-modern-vcl-observation.md",
           "docs/history/M0-T18-S22-speedbutton.md"
         ]
+      },
+      "s33_runtime_sample": {
+        "evidence": "M0 T18 S33 gallery64-protocol; owner DelphiVCL4Python 1.0.7 x64; 144 DPI",
+        "observation": "Visible child class was registered by DelphiVCL.pyd and reported unattached by current assets DLL. Single sample only; no behavior or general version claim."
       }
     },
     {
@@ -115,6 +119,10 @@
         "history_mentions": [
           "docs/history/M0-T18-S8-vcl-choice-protocol.md"
         ]
+      },
+      "s33_runtime_sample": {
+        "evidence": "M0 T18 S33 gallery64-protocol; owner DelphiVCL4Python 1.0.7 x64; 144 DPI",
+        "observation": "Visible child class was registered by DelphiVCL.pyd and reported unattached by current assets DLL. Single sample only; no behavior or general version claim."
       }
     },
     {
@@ -208,6 +216,10 @@
         "source_mentions": [],
         "test_mentions": [],
         "history_mentions": []
+      },
+      "s33_runtime_sample": {
+        "evidence": "M0 T18 S33 gallery64-protocol; owner DelphiVCL4Python 1.0.7 x64; 144 DPI",
+        "observation": "Visible child class was registered by DelphiVCL.pyd and reported unattached by current assets DLL. Single sample only; no behavior or general version claim."
       }
     },
     {
@@ -302,6 +314,10 @@
         "source_mentions": [],
         "test_mentions": [],
         "history_mentions": []
+      },
+      "s33_runtime_sample": {
+        "evidence": "M0 T18 S33 gallery64-protocol; owner DelphiVCL4Python 1.0.7 x64; 144 DPI",
+        "observation": "Visible child class was registered by DelphiVCL.pyd and reported unattached by current assets DLL. Single sample only; no behavior or general version claim."
       }
     },
     {
@@ -331,6 +347,10 @@
         "history_mentions": [
           "docs/history/M0-T18-S4-basic-vcl-protocols.md"
         ]
+      },
+      "s33_runtime_sample": {
+        "evidence": "M0 T18 S33 gallery64-protocol and edit32-fixed; 144 DPI",
+        "observation": "Both x86 and x64 reported runtime-DLL class owner and unattached. Public EDIT limit, selection and formatting rectangle were valid and class extra bytes matched native. Existing owner gate requires EXE, so this module-owned case fails before protocol admission; forwarding and full lifecycle are not yet proved."
       }
     },
     {
@@ -356,6 +376,10 @@
         "history_mentions": [
           "docs/history/M0-T18-S9-vcl-edit-superclass.md"
         ]
+      },
+      "s33_runtime_sample": {
+        "evidence": "M0 T18 S33 gallery64-protocol; owner DelphiVCL4Python 1.0.7 x64; 144 DPI",
+        "observation": "Visible child class was registered by DelphiVCL.pyd and reported unattached by current assets DLL. Single sample only; no behavior or general version claim."
       }
     },
     {
@@ -504,6 +528,10 @@
         "source_mentions": [],
         "test_mentions": [],
         "history_mentions": []
+      },
+      "s33_runtime_sample": {
+        "evidence": "M0 T18 S33 gallery64-protocol; owner DelphiVCL4Python 1.0.7 x64; 144 DPI",
+        "observation": "Visible child class was registered by DelphiVCL.pyd and reported unattached by current assets DLL. Single sample only; no behavior or general version claim."
       }
     },
     {
@@ -758,6 +786,10 @@
         "history_mentions": [
           "docs/history/M0-T18-S11-toolbar-text-bounds.md"
         ]
+      },
+      "s33_runtime_sample": {
+        "evidence": "M0 T18 S33 gallery64-protocol; owner DelphiVCL4Python 1.0.7 x64; 144 DPI",
+        "observation": "Visible child class was registered by DelphiVCL.pyd and reported unattached by current assets DLL. Single sample only; no behavior or general version claim."
       }
     },
     {
@@ -804,6 +836,10 @@
           "docs/history/M0-T18-S11-toolbar-text-bounds.md",
           "docs/history/M0-T18-S25-status-bar.md"
         ]
+      },
+      "s33_runtime_sample": {
+        "evidence": "M0 T18 S33 gallery64-protocol; owner DelphiVCL4Python 1.0.7 x64; 144 DPI",
+        "observation": "Visible child class was registered by DelphiVCL.pyd and reported unattached by current assets DLL. Single sample only; no behavior or general version claim."
       }
     },
     {
@@ -822,6 +858,10 @@
         "source_mentions": [],
         "test_mentions": [],
         "history_mentions": []
+      },
+      "s33_runtime_sample": {
+        "evidence": "M0 T18 S33 gallery64-protocol; owner DelphiVCL4Python 1.0.7 x64; 144 DPI",
+        "observation": "Visible child class was registered by DelphiVCL.pyd and reported unattached by current assets DLL. Single sample only; no behavior or general version claim."
       }
     },
     {
@@ -848,6 +888,10 @@
           "tests/ntw16s-dll/tree_controls.c"
         ],
         "history_mentions": []
+      },
+      "s33_runtime_sample": {
+        "evidence": "M0 T18 S33 gallery64-protocol; owner DelphiVCL4Python 1.0.7 x64; 144 DPI",
+        "observation": "Visible child class was registered by DelphiVCL.pyd and reported unattached by current assets DLL. Single sample only; no behavior or general version claim."
       }
     },
     {
@@ -875,6 +919,10 @@
           "tests/ntw16s-dll/list_report.c"
         ],
         "history_mentions": []
+      },
+      "s33_runtime_sample": {
+        "evidence": "M0 T18 S33 gallery64-protocol; owner DelphiVCL4Python 1.0.7 x64; 144 DPI",
+        "observation": "Visible child class was registered by DelphiVCL.pyd and reported unattached by current assets DLL. Single sample only; no behavior or general version claim."
       }
     },
     {
@@ -1012,6 +1060,10 @@
         "history_mentions": [
           "docs/history/M0-T18-S7-vcl-range-audit.md"
         ]
+      },
+      "s33_runtime_sample": {
+        "evidence": "M0 T18 S33 gallery64-protocol; owner DelphiVCL4Python 1.0.7 x64; 144 DPI",
+        "observation": "Visible child class was registered by DelphiVCL.pyd and reported unattached by current assets DLL. Single sample only; no behavior or general version claim."
       }
     },
     {
@@ -1060,6 +1112,10 @@
         "source_mentions": [],
         "test_mentions": [],
         "history_mentions": []
+      },
+      "s33_runtime_sample": {
+        "evidence": "M0 T18 S33 gallery64-protocol; owner DelphiVCL4Python 1.0.7 x64; 144 DPI",
+        "observation": "Visible child class was registered by DelphiVCL.pyd and reported unattached by current assets DLL. Single sample only; no behavior or general version claim."
       }
     },
     {
@@ -1141,6 +1197,10 @@
         "source_mentions": [],
         "test_mentions": [],
         "history_mentions": []
+      },
+      "s33_runtime_sample": {
+        "evidence": "M0 T18 S33 gallery64-protocol; owner DelphiVCL4Python 1.0.7 x64; 144 DPI",
+        "observation": "Visible child class was registered by DelphiVCL.pyd and reported unattached by current assets DLL. Single sample only; no behavior or general version claim."
       }
     },
     {
@@ -1163,6 +1223,10 @@
         "source_mentions": [],
         "test_mentions": [],
         "history_mentions": []
+      },
+      "s33_runtime_sample": {
+        "evidence": "M0 T18 S33 gallery64-protocol; owner DelphiVCL4Python 1.0.7 x64; 144 DPI",
+        "observation": "Visible child class was registered by DelphiVCL.pyd and reported unattached by current assets DLL. Single sample only; no behavior or general version claim."
       }
     },
     {
