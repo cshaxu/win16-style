@@ -118,7 +118,8 @@ ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND w)
     unsigned ocx_role=ocx_common_control_owner(w,owner,name,&native_class);
     unsigned toolbar_role=ocx_toolbar_owner(w,owner,name,&native_class,&toolbar_native);
     role=!lstrcmpW(name,L"TButton")?1:!lstrcmpW(name,L"TComboBox")?2:
-        (!lstrcmpW(name,WC_TABCONTROLW) || !lstrcmpW(name,L"TPageControl") || !lstrcmpW(name,L"TTabControl"))?3:!lstrcmpW(name,WC_HEADERW)?4:
+        (!lstrcmpW(name,WC_TABCONTROLW) || !lstrcmpW(name,L"TPageControl") || !lstrcmpW(name,L"TTabControl"))?3:
+        (!lstrcmpW(name,WC_HEADERW) || !lstrcmpW(name,L"THeaderControl"))?4:
         (!lstrcmpW(name,WC_LISTVIEWW) || !lstrcmpW(name,L"TListView"))?5:
         (!lstrcmpW(name,WC_TREEVIEWW) || !lstrcmpW(name,L"TTreeView") || !lstrcmpW(name,L"TShellTreeView"))?6:
         (!lstrcmpW(name,PROGRESS_CLASSW) || !lstrcmpW(name,L"TProgressBar"))?7:
@@ -132,7 +133,7 @@ ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND w)
      * the registered native procedure's image, not a guessed DLL filename. */
     if(role>=3 && role<=9 && !ocx_role && !toolbar_role && !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
         (const WCHAR *)(UINT_PTR)native_class.lpfnWndProc,&native_owner))return NULL;
-    if(owner!=((ocx_role||toolbar_role)?native_owner:(role==4 || (role==3 && !lstrcmpW(name,WC_TABCONTROLW)) || (role==5 && !lstrcmpW(name,WC_LISTVIEWW)) || (role==6 && !lstrcmpW(name,WC_TREEVIEWW)) || (role==7 && !lstrcmpW(name,PROGRESS_CLASSW)) || (role==8 && !lstrcmpW(name,TRACKBAR_CLASSW)) || (role==9 && !lstrcmpW(name,UPDOWN_CLASSW)))?native_owner:GetModuleHandleW(NULL)))return NULL;
+    if(owner!=((ocx_role||toolbar_role)?native_owner:((role==4 && !lstrcmpW(name,WC_HEADERW)) || (role==3 && !lstrcmpW(name,WC_TABCONTROLW)) || (role==5 && !lstrcmpW(name,WC_LISTVIEWW)) || (role==6 && !lstrcmpW(name,WC_TREEVIEWW)) || (role==7 && !lstrcmpW(name,PROGRESS_CLASSW)) || (role==8 && !lstrcmpW(name,TRACKBAR_CLASSW)) || (role==9 && !lstrcmpW(name,UPDOWN_CLASSW)))?native_owner:GetModuleHandleW(NULL)))return NULL;
     if(role==7 && !ocx_role){
         DLLVERSIONINFO version={.cbSize=sizeof(version)};
         HRESULT (CALLBACK *get_version)(DLLVERSIONINFO *)=(void*)GetProcAddress(native_owner,"DllGetVersion");

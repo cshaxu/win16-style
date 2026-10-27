@@ -34,7 +34,11 @@ static DWORD image(HWND w,DWORD *pixels,UINT count)
     int saved=SaveDC(surface.dc);if(!saved)ExitProcess(1);
     RECT clear={0,0,200,100};FillRect(surface.dc,&clear,GetStockObject(WHITE_BRUSH));
     WCHAR cls[64];GetClassNameW(w,cls,64);
-    if(!wcscmp(cls,L"ThunderRT6TextBox"))SendMessageW(w,WM_PRINT,(WPARAM)surface.dc,PRF_CLIENT|PRF_ERASEBKGND);
+    /* TextBox style owns its client font as well as its client-edge and
+     * multiline scrollbar non-client pixels.  Capture both ownership areas;
+     * PRF_CLIENT alone can be identical at high DPI after USER scales the
+     * source font, even though the attached window is visibly styled. */
+    if(!wcscmp(cls,L"ThunderRT6TextBox"))SendMessageW(w,WM_PRINT,(WPARAM)surface.dc,PRF_NONCLIENT|PRF_CLIENT|PRF_ERASEBKGND);
     else SendMessageW(w,WM_PRINTCLIENT,(WPARAM)surface.dc,PRF_CLIENT);
     GdiFlush();DWORD hash=2166136261u;
     for(UINT i=0;i<200*100;++i)hash=(hash^surface.bits[i])*16777619u;
@@ -164,7 +168,9 @@ static int child(const WCHAR *runtime_path,BOOL styled,BOOL aware)
         CHECK(image(edit,NULL,0)!=styled_edit);puts("VB_EDIT_FONT_PIXELS changed=1 native_font_property=preserved");}
     if(styled){DWORD styled_multiline=image(multiline,NULL,0),styled_password=image(password,NULL,0);
         CHECK(remove_control(multiline) && remove_control(password) && !attached(multiline) && !attached(password));
-        CHECK(image(multiline,NULL,0)!=styled_multiline && image(password,NULL,0)!=styled_password);
+        DWORD native_multiline=image(multiline,NULL,0),native_password=image(password,NULL,0);
+        printf("VB_TEXTBOX_PIXELS dpi=%u styled=%08lx/%08lx native=%08lx/%08lx\n",GetDpiForWindow(multiline),(unsigned long)styled_multiline,(unsigned long)styled_password,(unsigned long)native_multiline,(unsigned long)native_password);
+        CHECK(native_multiline!=styled_multiline && native_password!=styled_password);
         puts("VB_TEXTBOX_VARIANTS_OK multiline=1 scroll=1 undo=1 readonly=1 password=1 center=1 native_retire=1");}
     SendMessageW(option_a,BM_CLICK,0,0);CHECK(SendMessageW(option_a,BM_GETCHECK,0,0)==1 && SendMessageW(option_b,BM_GETCHECK,0,0)==0);
     SendMessageW(option_b,BM_CLICK,0,0);CHECK(SendMessageW(option_b,BM_GETCHECK,0,0)==1 && SendMessageW(option_a,BM_GETCHECK,0,0)==0);

@@ -1,0 +1,13 @@
+{
+  "task":"M0 T18 S6",
+  "scope":{"existing":["TListView","TTreeView","TShellTreeView"],"added":"THeaderControl"},
+  "rule":"Only an exact application-owned THeaderControl native-superclass registration is admitted; native SysHeader32 remains separately exact and an impostor THeaderControl registration is rejected.",
+  "desktop_native":{
+    "header":"x86/x64, common-controls v5/v6: pass",
+    "dpi":"x86 v5 and x64 v6 at 144 DPI: pass",
+    "markers":"HEADER_CONTROL_OK; styled=2; preserved=2; impostor=1"
+  },
+  "package":{"cases":87,"skipped":0,"seconds":351.3449777,"status":"passed"},
+  "capture_correction":"At 144 DPI a TextBox PRF_CLIENT-only snapshot can remain identical after USER scales the source font. The authored fixture now captures its owned PRF_NONCLIENT plus PRF_CLIENT surface; focused x64 styled-aware probe recorded distinct multiline/password hashes and passed.",
+  "limitations":"This is a self-contained public-protocol proof, not a claim that all Delphi or FMX controls are supported. Real Delphi application integration remains T18 final-closure work."
+}

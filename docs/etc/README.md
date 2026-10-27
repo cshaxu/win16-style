@@ -156,6 +156,9 @@
 
 - [T17 S9 PictureBox承载](evidence/vb-container-controls.json)：真实双版本无窗口标签、应用Print保持及双宽自有资源/输入模型；未完成面明确保留。
 
+- [T18 S6 VCL列表、树与表头](evidence/delphi-list-tree-header-protocol.json)：精确
+  THeaderControl wrapper、x86/x64、v5/v6 与144-DPI原生证据；真实 Delphi 集成仍待T18收口。
+
 - [T17 S10图形命令按钮](evidence/vb-graphical-controls.json)：真实双版本owner-draw通知/primitive，原生返回/图像/应用绘制保持与有限覆盖。
 
 - [T17 S13图形选择控件](evidence/vb-graphical-choices.json)：精确 VB 图形

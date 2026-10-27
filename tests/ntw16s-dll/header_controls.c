@@ -61,6 +61,7 @@ static int worker(int argc,WCHAR **argv)
     HFONT font=CreateFontW(-13,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,ANSI_CHARSET,0,0,0,0,L"Arial");CHECK(font);
     HFONT late=CreateFontW(-19,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,ANSI_CHARSET,0,0,0,0,L"Arial");CHECK(late);
     WNDCLASSEXW native={.cbSize=sizeof(native)};CHECK(GetClassInfoExW(NULL,WC_HEADERW,&native));
+    WNDCLASSEXW alias=native;alias.hInstance=instance;alias.lpszClassName=L"THeaderControl";alias.style&=~CS_GLOBALCLASS;CHECK(RegisterClassExW(&alias));
     capture image={0};image.dc=CreateCompatibleDC(NULL);CHECK(image.dc);
     BITMAPINFO bi={.bmiHeader={.biSize=sizeof(BITMAPINFOHEADER),.biWidth=360,.biHeight=-50,.biPlanes=1,.biBitCount=32}};
     image.bitmap=CreateDIBSection(image.dc,&bi,DIB_RGB_COLORS,(void**)&image.bits,NULL,0);CHECK(image.bitmap);image.old=SelectObject(image.dc,image.bitmap);CHECK(image.old);
@@ -113,9 +114,13 @@ static int worker(int argc,WCHAR **argv)
         LOGFONTW valid;CHECK(GetObjectW((HFONT)SendMessageW(w,WM_GETFONT,0,0),sizeof(valid),&valid));
         CHECK(!GetPropW(w,L"ntw16s.private.control-protocol.v1") && DestroyWindow(w));
     }
+    ntw16s_creation_scope *scope=begin(TRUE);CHECK(scope);
+    HWND wrapped=CreateWindowW(L"THeaderControl",L"",WS_CHILD|WS_VISIBLE,0,0,360,26,parent,NULL,instance,NULL);ntw16s_creation_result result={0};CHECK(wrapped && end(scope,&result) && attached(wrapped));
+    HDITEMW wrapped_item={.mask=HDI_WIDTH|HDI_TEXT|HDI_FORMAT,.cxy=100,.pszText=L"VCL header",.fmt=HDF_STRING};CHECK(SendMessageW(wrapped,HDM_INSERTITEMW,0,(LPARAM)&wrapped_item)==0 && remove_style(wrapped) && DestroyWindow(wrapped));
     /* Exact-name EXE impostor must not inherit the native module's role. */
     wc.lpszClassName=WC_HEADERW;wc.lpfnWndProc=DefWindowProcW;wc.cbWndExtra=native.cbWndExtra;CHECK(RegisterClassW(&wc));
-    ntw16s_creation_scope *scope=begin(TRUE);CHECK(scope);HWND fake=CreateWindowW(WC_HEADERW,L"fake",WS_CHILD,0,0,100,20,parent,NULL,instance,NULL);ntw16s_creation_result result={0};CHECK(fake && end(scope,&result) && !attached(fake) && DestroyWindow(fake));
+    scope=begin(TRUE);CHECK(scope);HWND fake=CreateWindowW(WC_HEADERW,L"fake",WS_CHILD,0,0,100,20,parent,NULL,instance,NULL);CHECK(fake && end(scope,&result) && !attached(fake) && DestroyWindow(fake));
+    CHECK(UnregisterClassW(L"THeaderControl",instance));alias.lpfnWndProc=DefWindowProcW;alias.lpszClassName=L"THeaderControl";CHECK(RegisterClassExW(&alias));scope=begin(TRUE);CHECK(scope);fake=CreateWindowW(L"THeaderControl",L"fake",WS_CHILD,0,0,100,20,parent,NULL,instance,NULL);CHECK(fake && end(scope,&result) && !attached(fake) && DestroyWindow(fake));
     UINT dpi=GetDpiForWindow(parent);CHECK(owner_draws>0);SelectObject(image.dc,image.old);CHECK(DeleteObject(image.bitmap) && DeleteDC(image.dc));CHECK(DestroyWindow(parent) && DeleteObject(font) && DeleteObject(late) && FreeLibrary(dll));
     printf("HEADER_CONTROL_OK bits=%u dpi=%u aware=%u styled=%u preserved=%u native_geometry=1 order=1 data=1 cancel=1 click_native=1 formats_preserved=3 late_native_font=1 callback_cases=5 roles_released=1 impostor=1\n",(unsigned)(sizeof(void*)*8),dpi,aware,styled,preserved);return 0;
 }

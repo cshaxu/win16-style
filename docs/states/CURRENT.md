@@ -68,15 +68,15 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S6 Packet
+## M0 T18 S7 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；用户明确先实现一切可由公开协议证明的代码，真实Delphi集成统一留给T18收口；S5完成后顺序准入S6 |
+| Identifier Mode | Continuation；用户明确先实现一切可由公开协议证明的代码，真实Delphi集成统一留给T18收口；S6完成后顺序准入S7 |
 | Admission And Approval | 用户批准进入队列首项T18，并明确要求先完成能以公开协议实现的代码和自包含测试；S4/S5已交付基础编辑/列表及页签有限实现和四文件发布，S3的error=5集成缺口仍保留至最终收口 |
-| Objective | 审核既有TListView、TTreeView/TShellTreeView、THeaderControl公共COMCTL角色的实际精确类映射、模块身份和自包含正/负例；仅补足可证明的缺口 |
+| Objective | 审核既有TProgressBar、TTrackBar、TUpDown的公共COMCTL角色与精确VCL wrapper映射；仅补足可证明的缺口 |
 | Non-goals | 不把demo等价项当成VCL支持；不读取私有对象布局、不仅凭T前缀接纳、不新增第五产品；不接管canvas、数据库、嵌入/非视觉、图像/custom-draw或owner-draw；不改既有标题/菜单/字体/滚动条/资源 |
-| Reference Baseline | [T18 S1审计](../etc/evidence/delphi-controls-audit.json)、[S2对应账本](../etc/evidence/delphi-demo-mapping.json)、[S3转交](../history/M0-T18-S3-vcl-probe-transfer.md)、[S4公开协议](../etc/evidence/delphi-basic-protocols.json)、[S5页签协议](../etc/evidence/delphi-tab-protocol.json)、[Delphi专项proposal](../proposals/delphi-win32-controls.md)及T15有限公开协议 |
+| Reference Baseline | [T18 S1审计](../etc/evidence/delphi-controls-audit.json)、[S2对应账本](../etc/evidence/delphi-demo-mapping.json)、[S3转交](../history/M0-T18-S3-vcl-probe-transfer.md)、[S4公开协议](../etc/evidence/delphi-basic-protocols.json)、[S5页签协议](../etc/evidence/delphi-tab-protocol.json)、[S6表头证据](../etc/evidence/delphi-list-tree-header-protocol.json)、[Delphi专项proposal](../proposals/delphi-win32-controls.md)及T15有限公开协议 |
 | Candidate Proposal | [Delphi Win32控件完整审计与Win3.x风格适配](../proposals/delphi-win32-controls.md) |
 | Files And ABI Surface | 可改ntw16s32/64内部角色判断和增加自包含纯C测试；ABI/导出、三组件四产物和原五图形头不变 |
 | Applicable Rules | C17/MinGW GCC/Ninja/ccache、来源策略、禁computer-use/全局hook/既有进程扫描；真实应用集成与自包含测试分列；私有桌面error=5只能skip，留T18最终收口 |
