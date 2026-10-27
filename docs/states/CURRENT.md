@@ -68,29 +68,29 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S60 Packet
+## M0 T18 S61 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S59 P1 9c7b752已推送，远端7文件复核 |
+| Identifier Mode | Continuation；S60 P1 1f4a8da已推送，远端16文件复核 |
 | Admission And Approval | 用户授权T18内自动实施可做控件，不新开T |
-| Objective | 实现运行库拥有的TTabControl经原生绘制见证后的有限标签样式 |
-| Non-goals | 不修改标签数据、布局、输入、应用回调和图形资源 |
-| Reference Baseline | [S59真实转发](../history/M0-T18-S59-observation.md)、[S5标签](../history/M0-T18-S5-vcl-tabs.md) |
+| Objective | 核实真实VCL TGroupBox的原生协议和安全有限适配 |
+| Non-goals | 保留子控件、标题、应用绘制、布局及原图形资源 |
+| Reference Baseline | [S60标签](../history/M0-T18-S60-vcl-tab.md)、[S53组框](../history/M0-T18-S53-radio-frame.md)、[S59对账](../history/M0-T18-S59-observation.md) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 双宽原生C模型与现有DLL；不增加产品或公共ABI |
-| Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例 |
-| Verification | 真实双宽转发、标签选择和绘制，假类/不支持模式回退、生命周期、实际包 |
-| Expected Markers | 精确运行库转发与公开协议成功后附着，未知身份保持原生 |
-| Asset Needs | 登记build/t18-s60-tab；复用S59双宽运行库 |
-| Reporting Requirements | 有限范围、真实绘制、负例、未覆盖、双发布及远端复核 |
-| Stop Conditions | 无可证明安全身份、绘制或生命周期时不泛化 |
-| Exit Criteria | 双宽实现与模型/真实样本、实际包与远端复核；T18保持开放 |
-| Original Owner Request | 高效率完成可实现控件和测试，T收口统一集成 |
-| Similar-Issue Sweep | TTabControl/TPageControl、上/下/竖向、owner-draw及图像标签 |
+| Files And ABI Surface | 自有双宽C探针及必要既有DLL修改，不新增产物或ABI |
+| Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例、限时回收 |
+| Verification | 双宽真实身份和绘制调用、标题/子窗口、对照及生命周期；实际包 |
+| Expected Markers | 可验证原生绘制及公开协议时接入，未知所有权保持原生 |
+| Asset Needs | 登记build/t18-s61-groupbox，复用合法双宽运行库 |
+| Reporting Requirements | 证据、有限范围、未覆盖、双发布与远端复核 |
+| Stop Conditions | 无内容中性或标题安全绘制契约时不泛化 |
+| Exit Criteria | 有限实现与测试或具体证据接收，独立同批包；T18保持开放 |
+| Original Owner Request | 高效率完成可做控件和测试，最终统一集成 |
+| Similar-Issue Sweep | TGroupBox、TRadioGroup及无窗口父绘制 |
 
-S59 P1 `9c7b752`已远端复核；真实双宽TTabControl未附着但WM_PAINT转发系统
-过程，两个标签及几何公开协议有效。现仅针对该可验证路径实施。
+S60 P1 `1f4a8da`远端16文件逐字节复核；真实双宽普通TTabControl已有限适配。
+TGroupBox仍为模型证据，S61核实真实运行库及安全边界。
 
 ## Identifier State
 
@@ -98,8 +98,8 @@ S59 P1 `9c7b752`已远端复核；真实双宽TTabControl未附着但WM_PAINT转
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S59 P1：14项聚焦包、双发布及9c7b752远端7文件复核。
-- Open task: T18 S60 真实VCL TTabControl有限适配；M0/T18开放。
+- Last delivery: M0 T18 S60 P1：16项聚焦包、双发布及1f4a8da远端16文件复核。
+- Open task: T18 S61 真实VCL TGroupBox调查；M0/T18开放。
 
 ## Technical Baseline
 
@@ -404,3 +404,11 @@ S59已完成真实双宽TTabControl原生转发观察及74族阶段对账（24�
 S60双宽真实TTabControl普通两标签附着及像素对照通过；自有模型验证假转发、
 选中、自绘回退和换父，旧包双宽负例检出。干净包16项无跳过、双发布和安装
 双宽通过；待提交推送远端复核。其他标签变体和物理输入仍未覆盖。
+
+S61真实双宽TGroupBox是runtime自绘容器而非native BUTTON；双宽运行库均以
+DrawThemeBackground part4绘制(0,12)-(250,120)，背景填充使用父坐标与平移。
+此调用与S53已证实的标题穿线风险相同，目前没有安全标题剪裁边界；不把它归为
+普通BUTTON协议。保留应用原生绘制，具体证据待本S记录与交付。
+
+S61真实双宽TGroupBox为runtime自绘，主题边框与S53同类，标题安全边界未证实；
+保持原生并列TODO。干净包12项零跳过、双发布及安装双宽通过，待提交远端复核。
