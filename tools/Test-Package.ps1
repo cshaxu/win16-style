@@ -86,6 +86,8 @@ try{
     )
     $cases+=@(
         (Case 'vb-checklist-32' (Join-Path $x86 'core-vb-checklist.exe') @($run,(Join-Path $x86 'vb-checklist-fixture/MSVBVM60.dll')) @('VB_CHECKLIST_OK bits=32 styled=1 selected=1 restored=1 wrong_geometry=1 wrong_source=1 wrong_caller=1 disabled_states=1 mismatched_state_native=1 reentrant_disable_native=1 reentrant_style_native=1 reentrant_reparent_lifecycle=1 system_text=1 unicode_fallback=1 source_font_preserved=1 role_retirement=1 mixed_fallback=1')),
+        (Case 'vb-user-edge-32' (Join-Path $x86 'core-vb-user-edge.exe') @($run,(Join-Path $x86 'vb-container-fixture/MSVBVM60.dll')) @('VB_USER_EDGE_OK bits=32 styled=1 edge=1 pixels=1 input=1 role_retire=1 wrong_owner=1 unsupported=1')),
+        (Case 'vb-user-edge-64' (Join-Path $x64 'core-vb-user-edge.exe') @($run,(Join-Path $x64 'vb-container-fixture/MSVBVM60.dll')) @('VB_USER_EDGE_OK bits=64 styled=1 edge=1 pixels=1 input=1 role_retire=1 wrong_owner=1 unsupported=1')),
         (Case 'vb5-mdi-32' (Join-Path $x86 'core-vb-mdi.exe') @($run,(Join-Path $x86 'vb-container-fixture/MSVBVM50.dll')) @('VB_MDI_OK bits=32 vb=5 styled=1 attached=1 wrong_parent_native=1 button_maximize=1 maximize_restore=1 destroyed=1')),
         (Case 'vb6-mdi-32' (Join-Path $x86 'core-vb-mdi.exe') @($run,(Join-Path $x86 'vb-container-fixture/MSVBVM60.dll')) @('VB_MDI_OK bits=32 vb=6 styled=1 attached=1 wrong_parent_native=1 button_maximize=1 maximize_restore=1 destroyed=1')),
         (Case 'vb5-mdi-64' (Join-Path $x64 'core-vb-mdi.exe') @($run,(Join-Path $x64 'vb-container-fixture/MSVBVM50.dll')) @('VB_MDI_OK bits=64 vb=5 styled=1 attached=1 wrong_parent_native=1 button_maximize=1 maximize_restore=1 destroyed=1')),

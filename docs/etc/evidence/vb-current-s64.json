@@ -1020,5 +1020,31 @@
     "license_info": "Public IClassFactory2 GetLicInfo succeeded: fRuntimeKeyAvail=1 and fLicVerified=0. No key was requested or extracted, and no licensed creation, registry modification or license bypass was attempted.",
     "control": "The locally installed DAO 3.6 class {00000100-0000-0010-8000-00AA006D2EA4} instantiated normally in a separate x86 process, using the pre-existing system DAO360.DLL. This demonstrates this COM control can work, but does not establish interchangeability with the sample DAO 3.51 reference.",
     "limits": "The VB Data HWND was not created and the sample was not rerun using this DAO version. Two different DAO 3.5 DLL versions returned the same public factory result; cannot infer every deployment or application is unlicensed."
+  },
+  "vb6_usercontrol_edge_p36": {
+    "source": "https://github.com/KirillOsenkov/PolyhedronExplorerVB6/tree/a07a9635900c802d21e3815dc38a9890828370fa",
+    "sample_sha256": "2419b79bce832d37722a73f758023eb72a002c5dcdeb1aca576906db92e1e922",
+    "sample_note": "Original executable contains UserControl ctlPolyViewer directly, not an OCX dependency. Source declares VB.UserControl BorderStyle=1 and handles client painting/keyboard with OpenGL. Startup reads Volumeter settings and can save on shutdown; read-only registry check found no prior key, private job was terminated after observation to avoid the sample SaveSettings path. This is deliberate cleanup, not a normal-exit test.",
+    "actual_observation": "Real x86 VB6 at 96 DPI: runtime-owned ThunderRT6UserControlDC, WS_EX_CLIENTEDGE, final parent PictureBox. Existing released DLL left its system edge native; a direct candidate first bound too early while VB used a temporary parent, so deferred binding at first paint followed by parent/role guard was introduced. In final candidate current vs new PrintWindow 222x221 images differ in 1756 RGB border pixels and zero interior pixels; client 218x217 and font handle preserved, native right/left key messages dispatched, and owned process job emptied. This is pixel preservation evidence, not a physical interaction or OpenGL visual oracle.",
+    "self_contained": "x86/x64 project-authored runtime model validates black edge, preserved application image pixels/font/client, button and key messages, temporary-parent-before-paint, role/parent retirement, wrong owner and unsupported RTL/scroll variants. Both old released-width DLLs fail attachment assertion, while both new candidates pass.",
+    "limits": [
+      "Only real VB6 x86, 96 DPI, one embedded UserControl; VB5 and other DPI are not validated.",
+      "Sample is terminated via owned job to avoid author application registry writes; normal application shutdown and physical input remain uncovered.",
+      "Not a claim that arbitrary UserControl, OCX rendering, custom nonclient paint, or all OpenGL scenarios are supported.",
+      "No new graphics or external source copied into product."
+    ],
+    "actual_display": "Additional own-instance window-DC BitBlt comparison: target screen rect (20,45)-(242,266), GetClipBox=(0,0)-(222,221), both native old package and candidate fully in 427x320 private desktop; 1756 changed border RGB pixels and 0 interior RGB pixels. The window DC is not a physical-input/accessibility proof.",
+    "delivery": {
+      "build": "Same-source clean x86/x64 GCC/Ninja/ccache; ABI, source manifest, original graphics and governance gates passed.",
+      "package_tests": "16 focused actual-package tests passed in 13.20 seconds, zero skips, including user-edge 32/64, VB5/VB6 MDI 32/64, VB controls 32/64, demo and propagation.",
+      "actual_sample": "The real VB6 embedded UserControl was rerun using the actual candidate DLL, 96 DPI; complete 222x221 window DC, client 218x217, right/left key messages, own job empty. Sample deliberately terminated before registry-saving shutdown.",
+      "sha256": {
+        "demo.exe": "5738ffb80c05062946bbb6ce5afe3a7326f601d2c84ede99dd86be2908a813e8",
+        "ntw16s32.dll": "1a94a8616517f94e72b94ebff2cb865f571b5d4aaf036b9c020642621cecc512",
+        "ntw16s64.dll": "537f390b5cbd290ca415cc128342718c31bf4a2ff0c22b99c238f61ca62a678a",
+        "run16s.exe": "9cff7b1d45b666796b7efcdb01c1b1b31b55d30de036e03d0c74db57b4353bab"
+      },
+      "published": "All four tested files copied to project assets root and O:/winnt/system32 and eight SHA-256 values verified."
+    }
   }
 }

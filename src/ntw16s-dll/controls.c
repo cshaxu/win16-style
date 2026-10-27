@@ -3,6 +3,7 @@
 /* Internal guard for a witnessed VCL group button. */
 BOOL ntw16s_group_button_valid(HWND);
 BOOL ntw16s_grid_valid(HWND);
+BOOL ntw16s_vb_user_edge_valid(HWND);
 BOOL ntw16s_vcl_toolbar_valid(HWND);
 BOOL ntw16s_vcl_tab_valid(HWND);
 #include "controls.h"
@@ -1274,7 +1275,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
     win16_style_system_retain(pinned);
     /* A verified VCL control belongs only to its original parent and role.
      * Let the native transition finish, then retire this exact attachment. */
-    if(m!=WM_NCDESTROY && (!ntw16s_group_button_valid(w) || !ntw16s_grid_valid(w) || !ntw16s_vcl_toolbar_valid(w) || !ntw16s_vcl_tab_valid(w))){
+    if(m!=WM_NCDESTROY && (!ntw16s_group_button_valid(w) || !ntw16s_grid_valid(w) || !ntw16s_vb_user_edge_valid(w) || !ntw16s_vcl_toolbar_valid(w) || !ntw16s_vcl_tab_valid(w))){
         if(m==WM_SETFONT)s->original_font=win16_style_system_source((HFONT)a);
         result=DefSubclassProc(w,m,a,b);
         if(!s->detached && IsWindow(w) && Ntw16sWindowRemove(w) && IsWindow(w))InvalidateRect(w,NULL,TRUE);
