@@ -606,6 +606,12 @@ if(BUILD_TESTING)
   target_link_libraries(core-vcl-grid-module PRIVATE user32 gdi32 comctl32)
   target_link_options(core-vcl-grid-module PRIVATE -municode ${explicit_manifest_options})
 
+  add_library(vcl-radio-module-fixture SHARED tests/ntw16s-dll/vcl_group_module_fixture.c)
+  set_target_properties(vcl-radio-module-fixture PROPERTIES PREFIX "")
+  target_compile_definitions(vcl-radio-module-fixture PRIVATE _WIN32_WINNT=0x0A00 T18_RADIO)
+  target_link_libraries(vcl-radio-module-fixture PRIVATE user32 gdi32 comctl32)
+  target_link_options(vcl-radio-module-fixture PRIVATE -Wl,--kill-at)
+
   add_library(vcl-group-module-fixture SHARED tests/ntw16s-dll/vcl_group_module_fixture.c)
   set_target_properties(vcl-group-module-fixture PROPERTIES PREFIX "")
   target_compile_definitions(vcl-group-module-fixture PRIVATE _WIN32_WINNT=0x0A00)

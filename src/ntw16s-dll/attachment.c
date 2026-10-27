@@ -140,9 +140,9 @@ static BOOL group_button_identity(HWND w)
         (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==owner &&
         (style&WS_CHILD) && (style&BS_TYPEMASK)==BS_RADIOBUTTON &&
         !(style&(BS_BITMAP|BS_ICON|BS_PUSHLIKE)) && !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
-        GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TGroupButton") &&
-        RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TGroupButton") &&
-        GetClassNameW(parent,parent_name,ARRAYSIZE(parent_name)) && !lstrcmpW(parent_name,L"TRadioGroup");
+        GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TGroupButton") || !lstrcmpW(name,L"TRadioButton")) &&
+        RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(name,real) &&
+        (!lstrcmpW(name,L"TRadioButton") || (GetClassNameW(parent,parent_name,ARRAYSIZE(parent_name)) && !lstrcmpW(parent_name,L"TRadioGroup")));
 }
 static BOOL grid_identity(HWND w,HMODULE owner,HWND parent)
 {

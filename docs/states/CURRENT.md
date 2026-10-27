@@ -68,29 +68,29 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S61 Packet
+## M0 T18 S62 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S60 P1 1f4a8da已推送，远端16文件复核 |
+| Identifier Mode | Continuation；S61 P1 b167067远端7文件复核通过 |
 | Admission And Approval | 用户授权T18内自动实施可做控件，不新开T |
-| Objective | 核实真实VCL TGroupBox的原生协议和安全有限适配 |
-| Non-goals | 保留子控件、标题、应用绘制、布局及原图形资源 |
-| Reference Baseline | [S60标签](../history/M0-T18-S60-vcl-tab.md)、[S53组框](../history/M0-T18-S53-radio-frame.md)、[S59对账](../history/M0-T18-S59-observation.md) |
+| Objective | 核实真实VCL TRadioButton和TMemo的窗口及公开原生协议，实施可验证范围 |
+| Non-goals | 保留输入、选择、文字、布局、回调及原图形资源 |
+| Reference Baseline | [S59对账](../history/M0-T18-S59-observation.md)、[S60标签](../history/M0-T18-S60-vcl-tab.md)、[S34编辑](../history/M0-T18-S34-vcl-module-edit.md) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 自有双宽C探针及必要既有DLL修改，不新增产物或ABI |
-| Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例、限时回收 |
-| Verification | 双宽真实身份和绘制调用、标题/子窗口、对照及生命周期；实际包 |
-| Expected Markers | 可验证原生绘制及公开协议时接入，未知所有权保持原生 |
-| Asset Needs | 登记build/t18-s61-groupbox，复用合法双宽运行库 |
-| Reporting Requirements | 证据、有限范围、未覆盖、双发布与远端复核 |
-| Stop Conditions | 无内容中性或标题安全绘制契约时不泛化 |
-| Exit Criteria | 有限实现与测试或具体证据接收，独立同批包；T18保持开放 |
-| Original Owner Request | 高效率完成可做控件和测试，最终统一集成 |
-| Similar-Issue Sweep | TGroupBox、TRadioGroup及无窗口父绘制 |
+| Files And ABI Surface | 自有双宽原生C探针及必要既有DLL修改，不增产物或ABI |
+| Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例限时回收 |
+| Verification | 双宽真实owner、原生过程、输入与文本；有实现时模型负例及实际包 |
+| Expected Markers | 经验证原生协议及调用所有权才能接入；未知路径回退 |
+| Asset Needs | 登记build/t18-s62-radio-memo，复用合法双宽运行库 |
+| Reporting Requirements | 实际绘制、操作、负例、未覆盖、双发布及远端复核 |
+| Stop Conditions | 无真实所有权或安全内容契约时不按名称猜测 |
+| Exit Criteria | 有证据的有限实现或明确后续接收，实际包交付；T18保持开放 |
+| Original Owner Request | 高效率实现可做控件，真实应用全量集成集中T收口 |
+| Similar-Issue Sweep | 独立radio、TMemo、TEdit多行与组合框子窗口 |
 
-S60 P1 `1f4a8da`远端16文件逐字节复核；真实双宽普通TTabControl已有限适配。
-TGroupBox仍为模型证据，S61核实真实运行库及安全边界。
+S61 P1 `b167067`远端7文件复核；真实TGroupBox自绘标题边界未证实，已列TODO。
+S62已完成TRadioButton有限适配、14项聚焦包、双发布及已安装双宽模型；TMemo实际未附着并保留后续定位，P1待提交和远端复核。
 
 ## Identifier State
 
@@ -98,8 +98,8 @@ TGroupBox仍为模型证据，S61核实真实运行库及安全边界。
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S60 P1：16项聚焦包、双发布及1f4a8da远端16文件复核。
-- Open task: T18 S61 真实VCL TGroupBox调查；M0/T18开放。
+- Last delivery: M0 T18 S61 P1：12项聚焦包、双发布及b167067远端7文件复核。
+- Open task: T18 S62 真实VCL RadioButton与Memo调查；M0/T18开放。
 
 ## Technical Baseline
 
