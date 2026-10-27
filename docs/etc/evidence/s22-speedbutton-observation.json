@@ -1,0 +1,57 @@
+{
+  "task": "M0 T18 S22 P1",
+  "sample": {
+    "original": "D:/programs/RedAlert/cnc-ddraw config.exe",
+    "sha256": "e21131cca40be055b9cf728ed822474f2560793635fc323127b63ba9a838d5d6",
+    "bits": 32,
+    "execution": "task-local copy and scratch INI on isolated desktop",
+    "dpi": 144
+  },
+  "resource": {
+    "tp_f0_form_classes": [
+      "DisplayBtn",
+      "AdvancedBtn",
+      "CompatibilityBtn",
+      "HotkeyBtn",
+      "RestoreDefaultsBtn"
+    ],
+    "class": "TSpeedButton",
+    "flat": true,
+    "conclusion": "resource declares five objects; visible runtime navigation is not independently identified as five HWNDs"
+  },
+  "observation": {
+    "visible_nav_panel": "TPanel; 350x702 at 144 DPI",
+    "msaa_child_count": 0,
+    "uia_descendant_count": 0,
+    "paint": "one panel FillRect followed by DrawTextW calls on panel DC; 11 owned EXE import observations restored",
+    "navigation": {
+      "visible_toggle_counts": [
+        4,
+        4,
+        4
+      ],
+      "visible_combo_counts": [
+        1,
+        2,
+        1
+      ],
+      "capture_after": [
+        0,
+        0
+      ]
+    },
+    "original_ini_sha256": "47bc143a85fe84a0cc6c9ead9a0d12b8ff6c51395f84be8ca4846d6555633f85",
+    "job_active_after": 0
+  },
+  "probe_sha256": {
+    "probe.c": "dce6968bd54c2545d7339a1735e9d8667faf24655f573a8c39fcfbddb70ba115",
+    "panel-uia.c": "8fcb052224b2e455b650d15119b4f5d6286e95ed2b6c6d249afd651584708c83",
+    "nav-proof.c": "3bc72320b85c1fe0f6ece9f80c65ca7a1265ff2363d7184ef80395596f37cbae"
+  },
+  "boundary": "No public per-button identity or state was exposed by the two accessibility paths in this sample. Do not infer arbitrary application canvas calls from coordinates, text, image contents or internal EXE offsets.",
+  "sources": [
+    "https://docwiki.embarcadero.com/Libraries/Sydney/en/Vcl.Controls.TGraphicControl",
+    "https://docwiki.embarcadero.com/Libraries/Sydney/en/Vcl.Buttons.TSpeedButton.Glyph",
+    "https://docwiki.embarcadero.com/Libraries/Sydney/en/Vcl.Buttons.TSpeedButton.Flat"
+  ]
+}
