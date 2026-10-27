@@ -68,34 +68,29 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S42 Packet
+## M0 T18 S43 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S41 P1双发布与远端七文件核对通过，S42首次准入 |
-| Admission And Approval | 用户授权T18内自动实施可做控件并完成测试，不新开T |
-| Objective | 为真实运行时拥有的VCL TDateTimePicker实施有限Win16下拉按钮适配，保留原生日期与日历 |
-| Non-goals | 不重画日期字段或日历，不修改标题、字体、菜单、原图形或无见证的其他控件 |
-| Reference Baseline | [S41日期调查](../history/M0-T18-S41-date-picker-audit.md)、[S39颜色框](../history/M0-T18-S39-vcl-color-combo.md)、[S40屏幕差异](../history/M0-T18-S40-color-screen.md) |
+| Identifier Mode | Continuation；S42 P1 b6db3e6远端十二文件实际核对通过，S43首次准入 |
+| Admission And Approval | 用户授权T18自动实施可做控件；桌面可用后自行原生验证，不新开T |
+| Objective | 调查真实VCL TStatusBar所有权、公开状态和现有原生状态栏适配可复用边界 |
+| Non-goals | 不猜测自绘或字体契约，不修改标题、原资源及应用内容 |
+| Reference Baseline | [S42日期控件](../history/M0-T18-S42-vcl-date-picker.md)、[S25原生状态栏](../history/M0-T18-S25-status-bar.md)、[S26盘点](../history/M0-T18-S26-control-audit.md) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 现有C DLL身份及有限绘制、双宽自有测试；不增产品文件或公开ABI |
-| Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；隔离自有实例、有时限回收 |
-| Verification | native转发见证、公开按钮几何、日期/键盘/日历/通知、DPI/裁剪、嵌套/异常/资源、旧包负例、实际包 |
-| Expected Markers | 仅公开按钮区变化，日期和应用绘制不受影响，输入和弹层保持；不支持变体原生回退 |
-| Asset Needs | 登记build/t18-s42-date-picker；保留S41双宽探针与首轮退出异常记录 |
-| Reporting Requirements | 准确契约、真实与自有双宽正负例、输入像素、未覆盖及探针失败；双发布提交推送远端复核 |
-| Stop Conditions | 不能保留日期字段、键盘、通知或生命周期时不得泛化，保留原生并记录 |
-| Exit Criteria | 有证据的有限实现或明确安全边界、同批实际包与交付；T18/M0开放 |
-| Original Owner Request | 能做的控件全部实现并测试，最终集中集成；不反复要求用户测试 |
-| Similar-Issue Sweep | 普通系统日期控件、VCL不同样式与checked/updown、自绘及日历弹层 |
+| Files And ABI Surface | 自有原生探针和治理证据；实施须先验证真实公开契约 |
+| Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；隔离自有实例、有限等待与清理 |
+| Verification | 双宽真实样本，窗口身份与转发，公开分区、文字、简单及边框状态，必要时有界像素对照 |
+| Expected Markers | 区分真实支持、内容安全边界和仍未覆盖变体，不以C模型冒充真实运行时 |
+| Asset Needs | 登记build/t18-s43-status-audit，复用S31合法研究样本 |
+| Reporting Requirements | 明确实际结果、证据与限制，遵循S交付和远端复核 |
+| Stop Conditions | 无可验证内容中性契约时不泛化，不干预应用绘制 |
+| Exit Criteria | 安全复用方案或明确边界与后续接收；T18/M0保持开放 |
+| Original Owner Request | 能做的先实现与测试，真实集成在T收口；不让用户手工执行整套测试 |
+| Similar-Issue Sweep | 普通、简单、自绘分区，运行时与应用所有者区别 |
 
-S42双宽真实Delphi日期按钮与自有异常/重入探针通过；旧版负例检出未附着。
-干净双宽构建、16项聚焦实际包（9.23秒、零skip）、双发布及安装双宽复验通过。
-S41首次退出异常和S40屏幕机制仍未解决；完整集成与物理输入未执行。S42 P1待提交、推送及远端复核。
-
-S41 P1 `a85346e`已推送，GitHub实际取回七文件逐字节一致；12项聚焦包、
-双发布及system32双宽入口通过。双宽真实日期控件公开按钮可试绘并恢复日期；
-64位探针首轮退出1的节点未定位，单独重跑通过不作为修复；S41关闭，T18/M0开放。
+S42 P1 `b6db3e6`已推送，GitHub实际取回12文件逐字节一致；16项聚焦实际包、双发布与
+已安装双宽入口通过。S41首次退出异常、S40屏幕机制及完整集成仍未解决；T18/M0开放。
 
 ## Identifier State
 
@@ -103,8 +98,8 @@ S41 P1 `a85346e`已推送，GitHub实际取回七文件逐字节一致；12项�
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S41：12项聚焦包、双发布、双宽日期控件调查及a85346e远端七文件复核。
-- Open task: T18 S42 真实VCL日期控件有限按钮；M0/T18开放。
+- Last delivery: M0 T18 S42：16项聚焦包、双发布、双宽日期控件及b6db3e6远端十二文件复核。
+- Open task: T18 S43 真实VCL状态栏调查；M0/T18开放。
 
 ## Technical Baseline
 
@@ -153,6 +148,8 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T18 S42 VCL日期按钮](../history/M0-T18-S42-vcl-date-picker.md)：双宽真实样本、16项包、双发布与b6db3e6远端复核。
 
 - [T18 S41 VCL日期控件调查](../history/M0-T18-S41-date-picker-audit.md)：双宽真实弹层与键盘、按钮试绘、12项聚焦包与双发布；首轮探针异常未定位。
 
