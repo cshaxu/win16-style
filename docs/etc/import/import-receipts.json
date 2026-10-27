@@ -1379,6 +1379,15 @@
       "sha256": "31877a0cb5548f2d2b0996f1fa71f76d38905776222c32f5a0d7df3a2711463e"
     },
     {
+      "path": "tests/ntw16s-dll/toolbar_text_bounds.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "review": "T18 S11 self-owned native toolbar text boundary regression for v5/v6 and both bitnesses.",
+      "sha256": "daac9598e44c9a8374961058dbc206ec4a1898b39c3d52097a4485a07dd15c60"
+    },
+    {
       "path": "tests/ntw16s-dll/control_protocol_owner.c",
       "source": null,
       "source_blob": null,
@@ -1555,8 +1564,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "review": "T17 S28 exact old COMCTL32.OCX nested text-only ToolbarWindow32 contract. It uses only public toolbar buttons/custom-draw after the wrapper selects CDRF_DODEFAULT; image, split/drop-down, separator and owner-draw variants preserve native rendering. No external code or graphics copied.",
-      "sha256": "c564c32f695f15763565ce991f2b6e6abc4a8d04e2628c4198f12328a53b479a"
+      "review": "T17 S28 exact old COMCTL32.OCX nested text-only ToolbarWindow32 contract. It uses only public toolbar buttons/custom-draw after the wrapper selects CDRF_DODEFAULT; image, split/drop-down, separator and owner-draw variants preserve native rendering. No external code or graphics copied. T18 S11 bounds native toolbar text retrieval and falls back when truncated.",
+      "sha256": "0ae5b88660c0ba23f2f4e5a2f023bb52c13874f7f43a545f5b3fbaa6fff5c48e"
     },
     {
       "path": "src/ntw16s-dll/toolbar_paint.h",

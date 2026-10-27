@@ -9,12 +9,17 @@
 static BOOL button(HWND w,int index,TBBUTTON *out,WCHAR *text,int capacity,RECT *rect)
 {
     static const BYTE permitted=BTNS_AUTOSIZE|BTNS_CHECK|BTNS_GROUP|BTNS_CHECKGROUP|BTNS_NOPREFIX|BTNS_SHOWTEXT;
-    LRESULT length;
+    TBBUTTONINFOW info={0};
     ZeroMemory(out,sizeof(*out));
     if(!SendMessageW(w,TB_GETBUTTON,index,(LPARAM)out) || out->iBitmap!=I_IMAGENONE || !out->idCommand ||
         (out->fsStyle&~permitted) || (out->fsStyle&BTNS_SEP) || !text || capacity<2)return FALSE;
-    length=SendMessageW(w,TB_GETBUTTONTEXTW,out->idCommand,(LPARAM)text);
-    if(length<0 || length>=capacity || !text[0] || !SendMessageW(w,TB_GETITEMRECT,index,(LPARAM)rect) ||
+    /* TB_GETBUTTONTEXT has no capacity argument: even a length preflight
+     * cannot prevent a reentrant text change from overflowing this buffer.
+     * A full buffer is conservatively treated as truncated and stays native. */
+    info.cbSize=sizeof(info);info.dwMask=TBIF_TEXT;info.pszText=text;info.cchText=capacity;
+    text[0]=0;text[capacity-1]=0;
+    if(SendMessageW(w,TB_GETBUTTONINFOW,out->idCommand,(LPARAM)&info)<0 || !text[0] ||
+        wcsnlen(text,(size_t)capacity)>=(size_t)(capacity-1) || !SendMessageW(w,TB_GETITEMRECT,index,(LPARAM)rect) ||
         rect->right<=rect->left || rect->bottom<=rect->top)return FALSE;
     return TRUE;
 }
