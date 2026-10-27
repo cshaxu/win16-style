@@ -960,5 +960,36 @@
     "first_attempt": "Reused capture paths failed with ERROR_FILE_EXISTS (80), before conclusion; distinct fresh capture paths passed.",
     "binary_change": "No product source change; clean rebuild produced four different SHA-256 binaries, all four actually published and verified at both fixed destinations.",
     "actual_package": "Clean dual-width build and 12 focused actual package tests passed with zero skips in 5.98 s; installed asset DLL SHA fc4f975dc0d57cb164717667e50ee360039a9017c4b4152982ff4040a298c138; both real samples passed again on the installed build."
+  },
+  "vb5_usercontrol_p32": {
+    "source": "https://github.com/tannerhelland/vbAccelerator-Archive/tree/390fd1029e44a407695c6ecff4248d7a345d30ef/VB/Code/Controls/UserControl_OLE_Extensions/IOLEControl",
+    "archive_sha256": "8a2fd55a731b4eb11fa539a35ef96ba959c9c2dacdab67bfedad312e992649b1",
+    "original_exe_sha256": "1e152bf82c4df6c3c68da944acd15ca43a76aa6465504c33d50e1b776a921353",
+    "original_ocx_sha256": "a32df9004633da06c0f0041ac92db8ce955d8bccc3a3a9d35ac01238389c170a",
+    "manifest_copy_sha256": "50a6aa660918f74b53d0729abfb487b13c487b88e5a6e5616c45b9ffabb94807",
+    "research_only": "Original VB5 application and component loaded only from private scratch using an embedded activation manifest, no installation or registration. Source reviewed: UserControl wraps a ListBox and uses IOleControl FreezeEvents callback, which logs to that list; the host form has no other application code.",
+    "observed": "Real x86 MSVBVM50 owns ThunderRT5UserControl and its ThunderRT5ListBox superclass ListBox. Bare and installed styled instances see two list items and restore selection after choosing the other item; both exit with owned job empty. The scratch-only diagnostic DLL reports wrapper ERROR_NOT_SUPPORTED/50 (native retained), ListBox installed=1 and attached=1; last-error after success is stale and not a failure.",
+    "display": "First PrintWindow screenshot of styled form clipped at x202/y191. Isolated desktop measured 427x320 and original window extended beyond it; relocating and resizing only the own instance to 400x290 yielded full window DC clip and full styled frame. Native and styled window DC screenshots are not pixel-exact oracles.",
+    "limits": [
+      "VB5 x86 one sample at 96 DPI; VB6 UserControl and other wrapper variants not verified.",
+      "Selection via LB_SETCURSEL, not physical input or event notifications.",
+      "Thread-specific external observer installation returned error 126 in both bare and styled; no claim about its cause or about click notification.",
+      "OCX is a research sample only, no new product dependency or OCX appearance support."
+    ],
+    "package": "Same-snapshot clean x86/x64 build, 12 focused package tests passed, zero skips in 15.14s; candidate package reran both real applications. Four different rebuilt binary hashes were published to both destinations and verified."
+  },
+  "vb6_usercontrol_p32": {
+    "source": "https://github.com/tannerhelland/vbAccelerator-Archive/tree/390fd1029e44a407695c6ecff4248d7a345d30ef/VB/Code/Controls/Icon_Controls/Icon_Selector",
+    "source_archive_sha256": "080e33cf4c14920d9e91c812641a691d177300fb55407b083437561a7573122f",
+    "exe_sha256": "d3544bc79c512ec53cdb411bff8765672722706875325686969c6a6dfc7d5d36",
+    "private_manifest_copy_sha256": "0bd3537dba3c5bfaf10cf296c8677202491ca9cac361aa82df6e47b9a742cc7f",
+    "ocx_sha256": "550134c2027be4a3fbaf4001c9b5bfa27aa80b89c2200bdc88caa0a951476292",
+    "method": "Original VB6 sample with private manifest preserving original v6 common-controls dependency and adding private UserControl/SSubTmr COM activation; no registration. Source reviewed: default filename is empty, no browse button invoked; both bare and styled instances closed normally with own jobs empty.",
+    "actual": "Runtime-owned ThunderRT6UserControlDC has nested ThunderRT6CommandButton and ThunderRT6TextBox plus application-owned owner-drawn multicolumn ListBox. Instrumented same-source scratch DLL reports host rejected error 50; both VB nested command and edit installed=1 attached=1; owner-drawn list declined error 50. Last-error on successful cases is stale and is not an error. Candidate package runs the real app successfully.",
+    "limits": [
+      "One x86 VB6 sample at 96 DPI, no user-input or notification test for this sample.",
+      "Custom owner-drawn list contents and UserControl surface remain application-owned; no blanket OCX styling or compatibility claim.",
+      "No physical input or other DPI."
+    ]
   }
 }

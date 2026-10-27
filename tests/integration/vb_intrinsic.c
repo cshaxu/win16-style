@@ -343,9 +343,23 @@ static int worker(int argc,WCHAR **argv){
     BOOL real_vb5_checklist=!wcscmp(argv[3],L"real-vb5-checklist");
     BOOL real_vb5_sorted=!wcscmp(argv[3],L"real-vb5-sorted-list");
     BOOL real_vb6_sorted_combo=!wcscmp(argv[3],L"real-vb6-sorted-combo");
+    BOOL usercontrol_verify=!wcscmp(argv[3],L"real-vb5-usercontrol");
     BOOL mdi_verify=!wcscmp(argv[3],L"real-vb-mdi");
-    BOOL inventory=mdi_verify || real_vb6_sorted_combo || real_vb5_sorted || real_vb5_checklist || real_vb5_picture || graphical || about_print || containers || file_verify || real_graphical || real_checkbox || real_picture || real_vb5_check || real_vb5_custom || close_vb5_squash || real_disabled_picture || !wcscmp(argv[3],L"inventory");
+    BOOL inventory=usercontrol_verify || mdi_verify || real_vb6_sorted_combo || real_vb5_sorted || real_vb5_checklist || real_vb5_picture || graphical || about_print || containers || file_verify || real_graphical || real_checkbox || real_picture || real_vb5_check || real_vb5_custom || close_vb5_squash || real_disabled_picture || !wcscmp(argv[3],L"inventory");
     CHECK(runtime && dll==styled && EnumChildWindows(form,collect,0) && (inventory?count>0:count>10));
+    if(usercontrol_verify){
+        HWND container=NULL,list=NULL;
+        for(unsigned i=0;i<count;++i){WCHAR name[80];GetClassNameW(checks[i],name,80);
+            if(!wcscmp(name,L"ThunderRT5UserControl") && (HMODULE)GetClassLongPtrW(checks[i],GCLP_HMODULE)==runtime)container=checks[i];
+            if(!wcscmp(name,L"ThunderRT5ListBox") && (HMODULE)GetClassLongPtrW(checks[i],GCLP_HMODULE)==runtime)list=checks[i];
+        }
+        CHECK(container && list && GetParent(list)==container && GetParent(container)==form);
+        LRESULT count_before=SendMessageW(list,LB_GETCOUNT,0,0),original=SendMessageW(list,LB_GETCURSEL,0,0);
+        CHECK(count_before==2 && original>=0 && original<count_before);
+        LRESULT other=original?0:1;CHECK(SendMessageW(list,LB_SETCURSEL,(WPARAM)other,0)==other && SendMessageW(list,LB_GETCURSEL,0,0)==other);
+        CHECK(SendMessageW(list,LB_SETCURSEL,(WPARAM)original,0)==original && SendMessageW(list,LB_GETCURSEL,0,0)==original && SendMessageW(list,LB_GETCOUNT,0,0)==count_before);
+        printf("VB_REAL_USERCONTROL_OK styled=%u runtime5=1 nested_list=1 count=2 selection_restored=1\n",styled);
+    }
     if(real_vb5_picture){
       CHECK(!wcscpy_s(picture_dir,MAX_PATH,scratch));HMENU menu=GetMenu(form);CHECK(menu);UINT id=about_menu(menu);CHECK(id && id!=(UINT)-1);CHECK(PostMessageW(form,WM_COMMAND,MAKEWPARAM(id,0),0));DWORD tid=GetWindowThreadProcessId(form,NULL);for(unsigned tries=0;tries<200 && !picture_about;++tries){EnumThreadWindows(tid,locate_about,(LPARAM)form);if(!picture_about)Sleep(10);}CHECK(picture_about);CHECK(EnumChildWindows(picture_about,picture_buttons,0));CHECK(picture_count==2);CHECK(SendMessageW(picture_about,WM_CLOSE,0,0)==0);printf("VB5_PICTURE_SAMPLE_OK buttons=%u pressed_restore=1 disabled_restore=1 no_click=1\n",picture_count);
     }
