@@ -46,5 +46,7 @@ assets and O:/winnt/system32; eight installed SHA-256 values match:
 | ntw16s64.dll (x64) | `48b2db31ecc05957881ae8b299479034526d1a7cb2374d0af6f9c293bca7cdfd` |
 | run16s.exe (x64) | `40e2eb172b81a05574a5049cd5ceb1f5dd2fb4e53d1667dd4bbf658c67ffd929` |
 
-S32 is verified locally; P1 delivery and remote review remain pending. M0 and
-T18 remain open, and final T18 integration and coverage audit are not implied.
+P1 `6e62c28` was pushed; all eight changed files, including the four binaries,
+were fetched from that actual GitHub commit and matched their Git blobs. S32
+is closed. M0 and T18 remain open; final T18 integration and coverage audit
+continue under S33.

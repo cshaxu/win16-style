@@ -68,33 +68,29 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S32 Packet
+## M0 T18 S33 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S31双发布及P1远端复核完成，T18保持开放 |
-| Admission And Approval | 用户要求短时测试并授权T18自动连续S；不新开T |
-| Objective | 定位并修复菜单取消回归双宽各约73秒的测试效率问题 |
-| Non-goals | 不删减取消、嵌套、DPI、阴影、生命周期或失败诊断；不改产品视觉和原图形资源 |
-| Reference Baseline | [S31交付](../history/M0-T18-S31-static-text.md)、[S30效率](../history/M0-T18-S30-font-efficiency.md)、s31-focus1实际包记录 |
-| Candidate Proposal | [Delphi Win32控件完整审计](../proposals/delphi-win32-controls.md)及用户测试效率要求 |
-| Files And ABI Surface | 自有菜单原生测试和必要测试工具；不新增产品文件或公开ABI |
-| Applicable Rules | C17、MinGW GCC、Ninja、ccache；自有隔离实例，有限等待，兄弟仓库只读 |
-| Verification | 测量分阶段耗时，双宽对照完整场景、DPI、取消、阴影和资源；同批四文件实际包测试 |
-| Expected Markers | 原检查及负例保留，耗时改善可复核；不静默降低断言或扩大等待 |
-| Asset Needs | 登记build/t18-s32-menu-efficiency任务scratch；S31证据暂留T18最终验收 |
-| Reporting Requirements | 报告前后耗时、覆盖、失败及跳过；实际包、必要双发布、提交推送及远端复核 |
-| Stop Conditions | 无法证明覆盖和安全等价时保留原测试并说明原因，继续可独立工作 |
-| Exit Criteria | 完成有证据的提速或保留结论、独立双宽包和治理交付；T18/M0开放 |
-| Original Owner Request | 可做控件先实现和自行验证；测试不得无谓耗时，每S按执行规范交付 |
-| Similar-Issue Sweep | 固定等待、重复截图及资源预热；不把减少场景或放松断言冒充提速 |
+| Identifier Mode | Continuation；S32 P1双发布及远端八文件复核通过，T18保持开放 |
+| Admission And Approval | 用户要求可做控件先实现、最终统一集成，并授权T18连续S；不新开T |
+| Objective | 汇总并验证T18冻结的74个VCL家族，完成可运行的最终集成和覆盖审计 |
+| Non-goals | 不将原生模型冒称真实Delphi，不把未证实的owner或OCX边界写为已支持，不改兄弟仓库 |
+| Reference Baseline | [S26逐项台账](../history/M0-T18-S26-control-audit.md)、[S31静态文本](../history/M0-T18-S31-static-text.md)、[S32效率](../history/M0-T18-S32-menu-efficiency.md)及任务历次证据 |
+| Candidate Proposal | [Delphi Win32控件完整审计](../proposals/delphi-win32-controls.md) |
+| Files And ABI Surface | 当前治理与证据，必要的自有测试；产品更改须先按独立S准入 |
+| Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；自有隔离实例，有限等待 |
+| Verification | 核实74项逐一状态与证据、真实样本及双位宽模型；执行适当完整包和安装回归，明确skip与物理输入边界 |
+| Expected Markers | 每项有明确支持范围或保留理由；失败与跳过不作通过；不凭局部样本宣称全集支持 |
+| Asset Needs | 登记build/t18-s33-final-audit任务scratch；保留S31/S32证据直至完成提炼 |
+| Reporting Requirements | 实际覆盖、未实现、限制、测试和四文件摘要；提交推送及远端实际复核 |
+| Stop Conditions | 发现可安全实现且在已授权范围的缺口时准入后续S；无法证明的边界如实记录，不臆造 |
+| Exit Criteria | 完成逐项审计、实际集成与交付后，按已授权范围决定T18收口；M0开放 |
+| Original Owner Request | 能做的全部实现并测试，最后在T任务收口时统一做集成测试 |
+| Similar-Issue Sweep | 复核真实owner与模型身份、异常/超时、显示桌面和既有延期项 |
 
-S31已完成：18项聚焦包零skip、双发布、真实双宽VCL及ae48c36远端14文件
-复核；异常回调实验与VB间歇超时如实保留。S32先定位菜单测试耗时。
-
-S32本地已验证：测试锚点使完整菜单x86/x64降至5.55/4.97秒；20项聚焦
-包零skip、双宽干净构建及双发布通过。P1提交推送及实际远端复核前S32仍开放，
-详细证据见 [S32记录](../history/M0-T18-S32-menu-efficiency.md)。
+S32 P1 `6e62c28`已推送并实际取回八个变更文件逐字节核对，双宽20项
+聚焦包、双发布及安装探针通过；S32关闭并准入S33。T18/M0保持开放。
 
 ## Identifier State
 
@@ -102,8 +98,8 @@ S32本地已验证：测试锚点使完整菜单x86/x64降至5.55/4.97秒；20�
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S31：18项聚焦包、双发布、真实双宽VCL及ae48c36远端14文件复核；异常及VB间歇超时保留。
-- Open task: T18 S32 菜单测试效率；M0/T18开放。
+- Last delivery: M0 T18 S32：20项聚焦包、双发布、双宽安装复验及6e62c28远端八文件复核。
+- Open task: T18 S33 最终集成与逐项审计；M0/T18开放。
 
 ## Technical Baseline
 
@@ -152,6 +148,8 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T18 S32菜单测试效率](../history/M0-T18-S32-menu-efficiency.md)：双宽菜单5.55/4.97秒、20项聚焦包、双发布及P1远端八文件复核。
 
 - [T18 S31 VCL静态文本](../history/M0-T18-S31-static-text.md)：双宽模型与真实VCL、18项聚焦包、双发布及P1远端复核；限定ASCII和普通绘制。
 
