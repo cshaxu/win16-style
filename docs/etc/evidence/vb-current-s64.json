@@ -1009,5 +1009,16 @@
     "private_activation": "Separately tried registration-free manifest and files local to own copy: DAO350 3.50.3602.1 extracted statically from Microsoft historical NEWDAO.EXE mirror (archive unsigned; SHA a796d21ad233b47314bb583020d1e8f96afa28e60da2cf067c77103b339a1cc4; extracted DLL SHA 1f6e7500807df4cce102b8ef3018794345126f03025d711666983d3f4a65c734); Jet 3.51.3328.0 extracted statically from Microsoft-signed Jet35SP3 archive SHA c69ca0e856b941bcd9137e9a280e9d6c65316e58aa37fd65b45e4115406da2b3. No installers, registration, licensing changes or global settings. Application PID 29492 changed dialog to Data Access Error; database SHA unchanged and own process exited with job cleanup.",
     "com_probe": "Independent native x86 COM probe activates only own private context without opening database: CoCreateInstance=0x80040112; DllGetClassObject(IClassFactory)=S_OK; IClassFactory::CreateInstance=0x80040112 CLASS_E_NOTLICENSED; dao350.dll loaded from own folder, msjet35.dll not loaded. This establishes that this private 3.50 DAO activation attempt did not instantiate a licensed object; it does not identify the exact class responsible for the bare app error or establish that another legitimate DAO version behaves the same. No license bypass attempted.",
     "remaining": "Find a lawful, isolated, correctly licensed DAO 3.51 setup or an unbound real VB.Data sample; then observe actual HWND and renderer before considering code. User-approved downloads and all research binaries remain scratch only. No product change."
+  },
+  "vb6_data_dao351_p35": {
+    "scope": "Registration-free DAO 3.51 comparison for the P34 real VB6 Data sample; no database opened.",
+    "source": "https://github.com/Yonaba/Win64-Installer-ArcView3.x/tree/16c317c3688f7735564bf11c40103df62634bbe4/Shared/DAO",
+    "dll_version": "3.51.1608.0",
+    "dll_sha256": "a4b20735be317a924d2e36707baaf911fbae890ca53c5044fb506f15d33bcb6d",
+    "signature": "No Authenticode signature on this historical DLL; copied only into task-owned scratch.",
+    "factory": "CoCreateInstance returned 0x80040112; DllGetClassObject(IClassFactory) succeeded and IClassFactory::CreateInstance returned 0x80040112. The DAO DLL loaded from scratch; msjet35 was not loaded.",
+    "license_info": "Public IClassFactory2 GetLicInfo succeeded: fRuntimeKeyAvail=1 and fLicVerified=0. No key was requested or extracted, and no licensed creation, registry modification or license bypass was attempted.",
+    "control": "The locally installed DAO 3.6 class {00000100-0000-0010-8000-00AA006D2EA4} instantiated normally in a separate x86 process, using the pre-existing system DAO360.DLL. This demonstrates this COM control can work, but does not establish interchangeability with the sample DAO 3.51 reference.",
+    "limits": "The VB Data HWND was not created and the sample was not rerun using this DAO version. Two different DAO 3.5 DLL versions returned the same public factory result; cannot infer every deployment or application is unlicensed."
   }
 }
