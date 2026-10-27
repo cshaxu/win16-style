@@ -6,7 +6,7 @@ M0 T17 已按用户明确缩小后的范围收口；23 项 VB 延期项保留在
 Delphi VCL 74 个 UI 家族种子、框架分支、五个固定候选及逐项证据接收者；T18 S2 已将
 全部种子逐项归入35个既有原生协议模型或39个明确的原生保留边界。S4 已完成首组
 精确 TEdit/TListBox与TTabControl公开协议实现、干净双宽四文件包和双发布；实际 Delphi 显示集成
-仍统一留给T18最终收口。S10已完成组合框与列表验证；S11已完成工具栏文字边界修复、真实DoubleKiller复测及提交推送复核；S12真实MD5summer补证及远端复核完成；S13双宽干净构建、真实树控件与VB6 actor复测、91项包测试、双发布及远端aae1565复核完成；S14纠正S12独立包闭环并完成双发布及远端f1ac9ff复核；S15核实现代VCL候选及公开状态边界，双宽包、91项低并发回归、双发布及远端4032bcf复核完成；S16追踪真实开关绘制及输入、双宽包91项通过、双发布及远端5e48716复核完成；S17修复进度观察竞争并减少字体重复选取，双宽包92项通过、双发布及远端b3c2a8b复核完成；S18完成开关公开状态调查、双宽包92项及双发布，远端2edd749已复核；S19实现可审计聚焦包回归，聚焦10项、标准93项、双发布及远端d583890复核完成；准入S20继续开关视觉适配；S20恢复隔离桌面并验证开关及VB/VCL聚焦包，未证实的开关适配移交TODO；S21完成有限复选图形与双宽96/144 DPI验证，P4远端2245db3已复核；其应用裁剪外缘和显式禁用仍列TODO；准入S22调查VCL SpeedButton，P1已完成真实样本公开契约调查、14项聚焦包及双发布，待远端复核；不得用 demo
+仍统一留给T18最终收口。S10已完成组合框与列表验证；S11已完成工具栏文字边界修复、真实DoubleKiller复测及提交推送复核；S12真实MD5summer补证及远端复核完成；S13双宽干净构建、真实树控件与VB6 actor复测、91项包测试、双发布及远端aae1565复核完成；S14纠正S12独立包闭环并完成双发布及远端f1ac9ff复核；S15核实现代VCL候选及公开状态边界，双宽包、91项低并发回归、双发布及远端4032bcf复核完成；S16追踪真实开关绘制及输入、双宽包91项通过、双发布及远端5e48716复核完成；S17修复进度观察竞争并减少字体重复选取，双宽包92项通过、双发布及远端b3c2a8b复核完成；S18完成开关公开状态调查、双宽包92项及双发布，远端2edd749已复核；S19实现可审计聚焦包回归，聚焦10项、标准93项、双发布及远端d583890复核完成；准入S20继续开关视觉适配；S20恢复隔离桌面并验证开关及VB/VCL聚焦包，未证实的开关适配移交TODO；S21完成有限复选图形与双宽96/144 DPI验证，P4远端2245db3已复核；其应用裁剪外缘和显式禁用仍列TODO；S22完成真实SpeedButton公开契约调查、14项聚焦包及双发布，cb2ffef远端已复核；无安全契约的外观接收TODO；准入S23核验真实VCL进度条；不得用 demo
 冒充 Delphi。
 以下段落为 T17 的技术基线/历史证据，不覆盖 T18 状态。
 
@@ -68,26 +68,26 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S22 Packet
+## M0 T18 S23 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S21有限复选图形及验证已交付并复核，剩余外缘与显式禁用接收TODO；T18保持开放 |
-| Admission And Approval | 用户要求全面控件适配、可实施部分自动连续准入S，不新开T；用户延期VB项目保持原判定 |
-| Objective | 调查冻结清单的VCL TSpeedButton无窗口或窗口承载、绘制与输入契约，能安全适配时实施 |
-| Non-goals | 不猜私有VCL字段、不覆盖应用图像或owner-draw内容；不改变标题、菜单、字体、原图形资源及用户配置 |
-| Reference Baseline | [VCL全集](../etc/evidence/delphi-controls-audit.json)、[S2模型边界](../etc/evidence/delphi-demo-mapping.json)、[S21回归](../history/M0-T18-S21-vcl-checklist.md) |
+| Identifier Mode | Continuation；S22公开对象契约调查已交付，未实现的无窗口按钮接收TODO；T18保持开放 |
+| Admission And Approval | 用户要求全面控件适配和自动连续S，不新开T；用户延期VB项目保持原判定 |
+| Objective | 使用真实VCL样本核验TProgressBar的实际原生协议和已有renderer，并处理可证明的缺口 |
+| Non-goals | 不触发文件扫描、磁盘测试或修改用户配置；不猜私有对象布局，不改变标题、字体、菜单及原图形资源 |
+| Reference Baseline | [VCL全集](../etc/evidence/delphi-controls-audit.json)、[S7范围审计](../history/M0-T18-S7-vcl-range-audit.md)、[S22](../history/M0-T18-S22-speedbutton.md) |
 | Candidate Proposal | [Delphi Win32控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 自有纯C探针、必要双宽DLL内部和测试；不增产品文件、不改公开ABI |
-| Applicable Rules | C17、MinGW GCC、Ninja、ccache；自有隔离副本、有限等待和完整清理；不可修改兄弟仓库 |
-| Verification | 核实真实程序身份、可见控件和公开绘制作用域；检查图像、按下、禁用、焦点、鼠标/键盘及生命周期；相关双宽实际包回归 |
-| Expected Markers | 可观测准确承载、应用回调和原生状态保留；未证实样本或状态不得冒称通过 |
-| Asset Needs | 登记build/t18-s22-speedbutton任务scratch；现有真实程序仅使用自有副本和隔离配置 |
-| Reporting Requirements | 明确真实样本和版本、图像及输入语义、证实与未覆盖范围；不由模型外推全部VCL或VB |
-| Stop Conditions | 需依赖私有对象布局、猜控件身份、修改应用业务数据或覆盖应用绘图时保留原生并记录后续接收 |
-| Exit Criteria | 可证明路径实现并通过相关实际包测试；否则留下可复核证据和接收者；T18继续开放 |
-| Original Owner Request | 尽可能实现全部可做控件，连续S自主实施；每S构建测试并按规范发布、提交及远端复核 |
-| Similar-Issue Sweep | 图像、透明、Flat/Down/Disabled状态、事件派发、剪裁、重入及现有VB和标准按钮保持 |
+| Files And ABI Surface | 自有原生C探针、必要双宽DLL内部和测试；三组件四产物与公开ABI不变 |
+| Applicable Rules | C17、MinGW GCC、Ninja、ccache；自有隔离样本与有限等待、完整清理；兄弟仓库只读 |
+| Verification | 核实真实进度条类、位宽、模块、范围/状态消息、实际画面与目标DLL；如实现则覆盖正反状态、资源及双宽相关包回归 |
+| Expected Markers | 区分真实协议、附着与绘制；不以空进度条或模拟器证明全部变体，无法读取的状态明确记录 |
+| Asset Needs | 登记build/t18-s23-progress任务scratch，真实程序使用自有副本和隔离配置 |
+| Reporting Requirements | 报告实际目标版本、已验证和未验证状态、DPI及测试范围；不将C模型称为真实Delphi或VB全集 |
+| Stop Conditions | 必须执行扫描或写入用户数据、猜测私有对象状态或覆盖应用回调时停止该方案并保留原生 |
+| Exit Criteria | 可证明路径完成实现和相关包测试；否则记录实际证据及后续接收；T18继续开放 |
+| Original Owner Request | 实现全部可做控件，自动连续S，每S按规范构建测试发布、提交及远端复核 |
+| Similar-Issue Sweep | 同一进度族的普通/禁用、范围、状态、任务切换及既有VB/原生控件保持 |
 
 ## Identifier State
 
@@ -95,8 +95,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S22 P1：真实无窗口按钮公开协议调查、双宽14项聚焦包及双发布完成；待提交和远端复核。
-- Open task: T18 S22 VCL SpeedButton绘制契约与适配；M0/T18开放。
+- Last delivery: M0 T18 S22 P1：真实无窗口按钮公开协议调查、双宽14项聚焦包及双发布完成；cb2ffef证据及四文件实际远端复核通过。
+- Open task: T18 S23 真实VCL进度条公开协议与绘制；M0/T18开放。
 
 ## Technical Baseline
 

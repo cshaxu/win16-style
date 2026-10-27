@@ -42,3 +42,5 @@ S15包测试进度文件共享冲突已由[S17记录](../history/M0-T18-S17-test
 - [ ] TODO(Medium): 现代 VCL `TToggleSwitch` 的经典外观尚未实现；Owner：未来经证据准入的 VCL 控件适配。Evidence：[S20](../history/M0-T18-S20-desktop-evidence.md)。Admission：真实版本可复核的公开状态或内容中性绘制契约、开关/禁用/焦点/DPI及输入语义；不得依据像素、固定图集位置或私有字段猜测状态。
 
 - [ ] TODO(Medium): VCL复选列表的应用裁剪外缘与显式DFCS_INACTIVE图形尚未适配；Owner：T18后续控件审计。Evidence：[S21](../history/M0-T18-S21-vcl-checklist.md)。Admission：保留应用裁剪、回调和状态的可验证绘制契约，覆盖真实多DPI及禁用/焦点；不能以81个可绘制内部像素冒充完整图形。
+
+- [ ] TODO(Medium): VCL无窗口 `TSpeedButton` 尚未适配；Owner：T18后续控件审计。Evidence：[S22](../history/M0-T18-S22-speedbutton.md)。Admission：真实版本可复核的公开对象/绘制边界，须保留应用图像、透明、Flat/Down/Disabled和事件；不得以文本、坐标、颜色或静态地址猜测控件。
