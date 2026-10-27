@@ -68,29 +68,29 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S58 Packet
+## M0 T18 S59 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S57 P1 6a4141e已推送，远端18文件逐字节复核 |
-| Admission And Approval | 用户授权T18内自动实施可做控件与测试；不新开T |
-| Objective | 自动验证VCL工具栏裁切按钮和64项上限的原生回退 |
-| Non-goals | 不改变按钮布局、命令、回调、图片及应用资源 |
-| Reference Baseline | [S57工具栏](../history/M0-T18-S57-vcl-toolbar.md)、[S56调查](../history/M0-T18-S56-controlbar.md) |
+| Identifier Mode | Continuation；S58 P1 b327e1b已推送，远端11文件逐字节复核 |
+| Admission And Approval | 用户授权T18内自动完成可做控件和测试；不新开T |
+| Objective | 对尚无真实owner证据的VCL容器/通用控件进行双宽样本观察并选择可做项 |
+| Non-goals | 不将观察当作完整支持，不覆盖应用数据或无窗口绘制 |
+| Reference Baseline | [S38控件台账](../history/M0-T18-S38-control-audit.md)、[S58工具栏边界](../history/M0-T18-S58-toolbar-boundaries.md) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 双宽自有C模型，必要时既有DLL；不新增产物或ABI |
-| Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例限时清理 |
-| Verification | 64/65项、裁切、应用回调、零号按钮和原生像素对照，双宽实际包 |
-| Expected Markers | 超限/裁切回退、边界内有效绘制，不干预调用和按钮 |
-| Asset Needs | 登记build/t18-s58-toolbar-tests，复用S57模型 |
-| Reporting Requirements | 已证实与未覆盖范围、测试耗时、发布及远端复核 |
-| Stop Conditions | 无法区分被动回退和实际绘制时不得标为通过 |
-| Exit Criteria | 有区分度的自动测试及实际包交付；T18保持开放 |
-| Original Owner Request | 能做的代码与测试先完成，真实应用全量集成留T收口 |
-| Similar-Issue Sweep | 裁切、工具栏上限与重复ID |
+| Files And ABI Surface | 自有双宽原生探针；有证据时修改既有DLL与测试，无新增产物或ABI |
+| Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例，有限等待与回收 |
+| Verification | 样本成功/失败、实际owner、窗口类、附着与可见效果逐项记录；同批包 |
+| Expected Markers | 新发现精确接收者和可验证边界，不凭名字扩张 |
+| Asset Needs | 登记build/t18-s59-observation，复用合法双宽VCL运行库 |
+| Reporting Requirements | 实际观察、未覆盖、后续接收及构建发布复核 |
+| Stop Conditions | 无真实样本或可验证契约时对应项保留，不阻塞其他可做项 |
+| Exit Criteria | 有限样本证据及后续接收，实际包交付；T18/M0保持开放 |
+| Original Owner Request | 能做的先实施和测试，真实应用全量集成在T收口 |
+| Similar-Issue Sweep | VCL窗口容器、Common Control和无窗口对象 |
 
-S57 P1 `6a4141e`远端18文件逐字节复核通过，双宽实际绘制和有限负例通过；
-裁切和64项性能上限需自包含边界测试，T18/M0保持开放。
+S58 P1 `b327e1b`远端11文件逐字节复核通过；工具栏裁切和64/65项模型通过，
+图像/其他DPI等仍未覆盖。S59继续调查其他原先缺少真实owner的族。
 
 ## Identifier State
 
@@ -98,8 +98,8 @@ S57 P1 `6a4141e`远端18文件逐字节复核通过，双宽实际绘制和有�
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S57 P1：18项聚焦包、双发布及6a4141e远端18文件复核。
-- Open task: T18 S58 VCL工具栏裁切与数量边界测试；M0/T18开放。
+- Last delivery: M0 T18 S58 P1：14项聚焦包、双发布及b327e1b远端11文件复核。
+- Open task: T18 S59 剩余VCL窗口族双宽观察；M0/T18开放。
 
 ## Technical Baseline
 
@@ -390,3 +390,13 @@ S57双宽真实文本工具栏确认item绘制和id=0命令；重复ID、图像�
 
 S58双宽原生模型裁切与64/65项边界通过，实际包14项零跳过、双发布及安装
 双宽入口通过；待提交推送远端复核。其他图片、多DPI和全T集成仍未覆盖。
+
+S59真实双宽DelphiVCL 1.0.7样本中Splitter/Bevel/PaintBox可创建，但包装对象无
+Handle，窗口枚举仅见TTabControl及其系统updown；不得按HWND猜测应用无窗口内容。
+同一样本TTabControl含两标签，运行库将WM_PAINT转发系统SysTabControl32，公开
+数量/选择/几何有效，TTabControl未附着、系统updown已附着；可作为后续S受限适配
+候选。其他样本未暴露的族仍需各自证据，不视作已实现。
+
+S59已完成真实双宽TTabControl原生转发观察及74族阶段对账（24有限路径、2原生
+保留、48尚无证据确认实现；不是待编码数量）。干净包14项无跳过、双发布及
+安装双宽通过；等待提交推送及远端复核，TTabControl真实runtime缺口接后续S。
