@@ -1925,7 +1925,7 @@
       "path": "tests/ntw16s-dll/vcl_bitbtn_module.c",
       "source": null,
       "source_blob": null,
-      "sha256": "eae9b29d0d03ece5af4e0d0cd3c89b268c69b91f3f7915fabfae15bfef0d06bb",
+      "sha256": "0ba65a452f6cac2338eaaddc571c63a361332ca7eeddaae3f9b5785cf9c557fd",
       "disposition": "authored",
       "review": "T18 S49 self-owned owner-draw bit button protocol and glyph protection test; real Delphi verification separate",
       "notice": "Project-authored C17; project MIT license"
@@ -1934,7 +1934,7 @@
       "path": "tests/ntw16s-dll/vcl_bitbtn_module_fixture.c",
       "source": null,
       "source_blob": null,
-      "sha256": "410bfb84e87c9ce2abb0c45cb4f985ffed407b3549d8c533d87da0a4f8d48414",
+      "sha256": "d1258a5180c38a832899007109d5b66a6742842737efedf5ff61fe7cb4b4cc24",
       "disposition": "authored",
       "review": "T18 S49 self-owned owner-draw bit button protocol and glyph protection test; real Delphi verification separate",
       "notice": "Project-authored C17; project MIT license"

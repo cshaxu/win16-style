@@ -581,7 +581,7 @@ if(BUILD_TESTING)
   add_executable(core-vcl-bitbtn-module tests/ntw16s-dll/vcl_bitbtn_module.c tests/ntw16s-dll/control_extensions.rc)
   target_include_directories(core-vcl-bitbtn-module PRIVATE src)
   target_compile_definitions(core-vcl-bitbtn-module PRIVATE _WIN32_WINNT=0x0A00)
-  target_link_libraries(core-vcl-bitbtn-module PRIVATE user32 gdi32 comctl32)
+  target_link_libraries(core-vcl-bitbtn-module PRIVATE user32 gdi32 comctl32 uxtheme)
   target_link_options(core-vcl-bitbtn-module PRIVATE -municode ${explicit_manifest_options})
 
   add_executable(core-superclass tests/ntw16s-dll/superclass.c)

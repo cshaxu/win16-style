@@ -72,5 +72,3 @@ S15包测试进度文件共享冲突已由[S17记录](../history/M0-T18-S17-test
 - [ ] TODO(Medium): S47首轮x86日期模块异常回归进程GDI计数27降至25导致相等断言失败；Owner：T18资源与最终验收。Evidence：[S48](../history/M0-T18-S48-date-gdi-test.md)精确区域句柄及故意泄漏负例通过、预热后重复计数不增长；初始进程总数波动原因仍未定位，不能据此证明所有GDI泄漏均不存在。Admission：定位进程级波动及其他资源的独立所有权，不把重试视作根因修复。
 
 - [ ] TODO(Medium): Delphi `TStatusBar` 其余版本、简单/凸起/无边框/RTL及自绘末分区外观仍未认证；Owner：T18后续控件及最终集成审计。Evidence：[S47](../history/M0-T18-S47-status-icon.md)证实一个真实runtime图标末分区和双宽C模型；自绘末分区仍原生。Admission：真实样本、公开绘制入口与所有权证据，保留文字、图像、自绘回调、裁剪及生命周期。
-
-- [ ] TODO(Medium): TBitBtn owner-draw exception/unwind, foreign-caller and nested-draw negative coverage remains incomplete; Owner: T18 S50. Evidence: [S49](../history/M0-T18-S49-bitbtn.md) proves bounded normal path, clip and reentrant removal only. Admission: native self-owned dual-width tests and corrective code if needed; retain runtime callback and application glyph ownership.

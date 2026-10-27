@@ -68,58 +68,33 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S49 Packet
+## M0 T18 S50 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S48 P1 e60569b远端十文件实际核对通过，S49首次准入 |
-| Admission And Approval | 用户授权T18内自动完成可做控件；不新开T |
-| Objective | 调查真实VCL TBitBtn的可验证绘制和应用图像边界，实施可安全适配的范围 |
-| Non-goals | 不覆盖应用图像、文字、点击/键盘、焦点及自绘语义，不修改原资源 |
-| Reference Baseline | [S38真实控件调查](../history/M0-T18-S38-control-audit.md)、[S48资源测试](../history/M0-T18-S48-date-gdi-test.md)、[S39颜色框](../history/M0-T18-S39-vcl-color-combo.md) |
+| Identifier Mode | Continuation；S49 P1 142044f已推送，远端16文件逐字节复核 |
+| Admission And Approval | 用户授权T18内自动实施及测试，不新开T |
+| Objective | 完成S49 TBitBtn异常、调用者身份与嵌套绘制的双宽负例和生命周期验证，必要时修正 |
+| Non-goals | 不改变应用文字、图像、回调及输入所有权，不修改原资源 |
+| Reference Baseline | [S49交付](../history/M0-T18-S49-bitbtn.md)、[S48资源测试](../history/M0-T18-S48-date-gdi-test.md) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 自有原生探针；有证据时修改既有C DLL及双宽测试，不增产物或ABI |
-| Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；隔离自有实例、有限等待与清理 |
-| Verification | 双宽真实运行时、普通/图像/禁用/按下/焦点，公开绘制调用和图像保护、DPI/剪裁、消息/资源 |
-| Expected Markers | 真实证据区分应用绘制与框架，避免凭类名或固定坐标覆盖内容 |
-| Asset Needs | 登记build/t18-s49-bitbtn，复用S38合法双宽真实样本 |
-| Reporting Requirements | 具体绘制链、可支持和未覆盖范围、负例/性能及双发布远端复核 |
-| Stop Conditions | 无可靠所有权或内容中性边界时不泛化 |
-| Exit Criteria | 有证据的实现或明确后续接收，实际包交付；T18/M0保持开放 |
-| Original Owner Request | 能做的先实现并测试，真实集成集中最终收口；测试不应无谓耗时 |
-| Similar-Issue Sweep | 位图/图标、owner-draw和无窗口SpeedButton，状态与DPI |
+| Files And ABI Surface | 自有原生C模型及必要的既有DLL修正，不增产物或ABI |
+| Applicable Rules | M0、C17、GCC、Ninja、ccache；隔离自有实例、有限等待与清理 |
+| Verification | x86/x64异常展开、foreign caller、嵌套DC与退休；干净构建、实际包及原资源门禁 |
+| Expected Markers | 身份不符无接管；异常后作用域清除、可继续绘制并退休；nested scope正确恢复 |
+| Asset Needs | 登记build/t18-s50-bitbtn，复用S49模型和真实样本 |
+| Reporting Requirements | 明确测试通过、失败、未覆盖及发布状态，T18最终真实集成单独收口 |
+| Stop Conditions | 无可证实安全所有权时保留原生绘制，不推断全版本支持 |
+| Exit Criteria | 覆盖已知负例或记录明确不可复现原因，同批实际包及远端复核 |
+| Original Owner Request | 先完成能做的代码和测试，集成在T收口时统一完成，避免无谓长测试 |
+| Similar-Issue Sweep | 逐层检查自绘按钮的重入、调用者与退出清理 |
 
-S48 P1 `e60569b`已推送，GitHub实际取回十文件逐字节一致；16项并发包、双发布与
-system32双宽入口通过。日期区域精确释放及故意泄漏负例通过；进程GDI总数波动根因
-仍未定位留TODO。S40屏幕机制及S41首次退出异常亦未解决；T18/M0开放。
+S49 P1 `142044f`远端16文件逐字节复核通过；20项聚焦包无跳过，已双发布，
+144 DPI真实TBitBtn双宽与模型通过。异常、非运行库调用及嵌套测试由S50接收。
 
-S49进行中：自有DelphiVCL4Python 1.0.7双宽144 DPI TBitBtn未附着；正常、BM_SETSTATE
-按下和禁用/恢复共各6个WM_DRAWITEM，状态可区分，runtime DrawFrameControl/DrawEdge
-IAT观察已安装但无调用。DrawThemeBackground观察点未能安装，不可据此断言不存在主题
-绘制。自有实例已关闭、观察已恢复；下一步追踪实际框架绘制入口并保护应用图像。
-
-S49补充：仅自有scratch诊断构建对进程内DrawThemeBackground入口跟踪，双宽各观察到
-DelphiVCL.pyd作为调用者，按钮客户区矩形(0,0,130,48)，主题part 1及状态3、5；
-有内存DC和直接窗口DC两种。此证据不等同于所有回调的状态映射或安全替换；自有
-探针已退出，原发布产品未改。下一步需关联每个WM_DRAWITEM与具体主题调用，验证
-焦点/禁用/按下、图像及裁剪，再决定能否复用现有按钮renderer。
-
-S49阶段关联补充：自有双宽WM_DRAWITEM与主题调用同步跟踪显示，pressed的itemState
-0x11对应主题state 3；但disabled itemState 0x4及normal itemState 0均出现主题state 5。
-因此不能仅按主题state推断禁用；必须以该回调的公开状态、目标DC和运行库调用者共同
-约束。该发现未构成实现；仍需验证图像、焦点、裁剪及回调重入。
-
-S49进一步：真实双宽图像按钮的WM_DRAWITEM状态与运行库DrawThemeBackground调用
-使用同一DC，pressed 0x11/主题3，disabled 0x4及normal 0均主题5；加入自有16x16
-位图后屏幕出现128个标记像素。仅scratch原型在受控回调内替换背景，同窗双宽各
-6068像素变化，128个位图标记像素及内部44个暗色像素均不变。该试验依赖临时环境
-变量传递回调上下文，不能直接用于产品；图像多状态、焦点、点击、裁剪、异常与重入
-尚未验证，原发布未改，S49保持开放。
-
-S49输入补证：双宽自有真实位图按钮同窗原生与scratch原型各收到一次BM_CLICK产生的
-BN_CLICKED，SetFocus成功；再次对照均为背景6068像素变化、128个位图标记像素不变。
-这是合成消息而非物理输入；原型上下文仍依赖临时环境变量，生产实现、图像多变体、
-剪裁、异常与重入仍未验证；不宣称按钮已发布或全部支持。
+S50双宽异常、foreign caller和共享内存DC嵌套模型通过；窗口DC内层拒绝符合
+所有权检查。独立干净包12项聚焦测试无跳过，双发布及system32双宽入口通过；
+等待提交推送和远端复核。真实应用全量与未验证变体仍留T18最终集成。
 
 ## Identifier State
 
@@ -127,8 +102,8 @@ BN_CLICKED，SetFocus成功；再次对照均为背景6068像素变化、128个�
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S48：16项并发包、双发布、日期区域精确测试及e60569b远端十文件复核。
-- Open task: T18 S49 真实VCL TBitBtn绘制调查；M0/T18开放。
+- Last delivery: M0 T18 S49 P1：20项聚焦包、双发布及142044f远端16文件复核。
+- Open task: T18 S50 TBitBtn异常、调用者及嵌套绘制验证；M0/T18开放。
 
 ## Technical Baseline
 
