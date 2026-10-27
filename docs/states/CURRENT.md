@@ -76,7 +76,7 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | Admission And Approval | 用户要求自动连续S实现可做控件，不新开T；既定VB延期范围不擅自改变 |
 | Objective | 审核VCL状态栏的真实所有者、版本、公开状态和绘制协议；安全可证实的普通变体实现经典外观 |
 | Non-goals | 不猜测私有对象或覆盖应用自绘、图像、文字和通知；不更改标题、菜单、字体和原图形资源 |
-| Reference Baseline | [S11工具栏与状态栏边界](../history/M0-T18-S11-toolbar-text-bounds.md)、[Delphi目录](../etc/evidence/delphi-controls-audit.json)、[S24进度条研究](../history/M0-T18-S24-progress-colors.md) |
+| Reference Baseline | [S11工具栏与状态栏边界](../history/M0-T18-S11-toolbar-text-bounds.md)、[Delphi目录](../etc/evidence/delphi-controls-audit.json)、[S25状态栏观察](../history/M0-T18-S25-status-bar.md)、[S24进度条研究](../history/M0-T18-S24-progress-colors.md) |
 | Candidate Proposal | [Delphi Win32控件完整审计](../proposals/delphi-win32-controls.md) |
 | Files And ABI Surface | 自有纯C模型、原生观察器、必要双宽DLL内部；不增加产品文件或修改公开ABI |
 | Applicable Rules | C17、MinGW GCC、Ninja、ccache；仅自有隔离实例、有限等待和清理；兄弟仓库只读 |
