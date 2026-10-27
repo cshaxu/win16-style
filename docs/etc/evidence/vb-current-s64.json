@@ -999,5 +999,15 @@
     "source_sha256": "e82c48d34edc285ef5e86ca4a7cd5b029f6547e07e0a77c17ab9d3343249509c",
     "dll_source_sha256": "974a3777a55980014eea7f498b6bca905c1a8a360488e612ce85ec12f7decb6f",
     "limit": "These observations bound the failure to DLL-module hook registration in this execution environment; they do not prove why USER returns 126, do not validate cross-process event notifications, and do not prove all past 126 failures share the same cause."
+  },
+  "vb6_data_sample_p34": {
+    "source": "https://github.com/Astar236/Digital-Examination-System.vbp/tree/5b56639030937c43e3986a521150e7eee6116bce",
+    "exe_sha256": "16283b1cbba0b1919d726a45a1002df550d154eb68621b048cc49a94b919b47d",
+    "database_sha256": "97a08cf87debe5e7ae9bead3d32f1290cb1cf58c350fc1205301e709f1c305eb",
+    "source_review": "Login.frm has visible VB.Data Data4 and relative DataBase.mdb; no absolute author database path. Startup Main.frm Log in button only shows login; operations were limited to this button, not login, navigation or editing. Form_Unload can unload other forms; on failure the own job was terminated rather than treating that as normal shutdown.",
+    "bare": "x86 real VB6 PID 25028 on private desktop: main appears, own Log in BM_CLICK produces Project1 dialog Class not registered; visible Data form did not appear. DataBase.mdb scratch copy unchanged. DAO.DBEngine.35 CLSID and referenced DAO typelib version 4.0 absent in 32-bit registry; this fact alone does not prove which registration was missing.",
+    "private_activation": "Separately tried registration-free manifest and files local to own copy: DAO350 3.50.3602.1 extracted statically from Microsoft historical NEWDAO.EXE mirror (archive unsigned; SHA a796d21ad233b47314bb583020d1e8f96afa28e60da2cf067c77103b339a1cc4; extracted DLL SHA 1f6e7500807df4cce102b8ef3018794345126f03025d711666983d3f4a65c734); Jet 3.51.3328.0 extracted statically from Microsoft-signed Jet35SP3 archive SHA c69ca0e856b941bcd9137e9a280e9d6c65316e58aa37fd65b45e4115406da2b3. No installers, registration, licensing changes or global settings. Application PID 29492 changed dialog to Data Access Error; database SHA unchanged and own process exited with job cleanup.",
+    "com_probe": "Independent native x86 COM probe activates only own private context without opening database: CoCreateInstance=0x80040112; DllGetClassObject(IClassFactory)=S_OK; IClassFactory::CreateInstance=0x80040112 CLASS_E_NOTLICENSED; dao350.dll loaded from own folder, msjet35.dll not loaded. This establishes that this private 3.50 DAO activation attempt did not instantiate a licensed object; it does not identify the exact class responsible for the bare app error or establish that another legitimate DAO version behaves the same. No license bypass attempted.",
+    "remaining": "Find a lawful, isolated, correctly licensed DAO 3.51 setup or an unbound real VB.Data sample; then observe actual HWND and renderer before considering code. User-approved downloads and all research binaries remain scratch only. No product change."
   }
 }
