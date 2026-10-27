@@ -277,5 +277,141 @@
       "No notification counts, real drag, direct replace/undo, full GDI lifetime, deferred OCX or DriveListBox proof",
       "Only actual 32-bit VB runtimes; no 64-bit VB runtime claim"
     ]
+  },
+  "real_intrinsic_notifications_p4": {
+    "scope": "Self-owned test-only instrumentation of the existing renderer subclass in actual x86 VB5/VB6 samples; P2 release DLL was not modified. Each BEFORE and AFTER surrounds DefSubclassProc for WM_COMMAND with a VB runtime-owned child.",
+    "diagnostic_dll_sha256": "03e216d3a427d8f24845301bbff6b0af4dfefe6fb55eb21d479b63dcfdb56421",
+    "instrumented_source_sha256": "23b8d8e30a52413b40d312a6194f9dcc0d6ebac3509632d1d0ca43144677f4fc",
+    "dpi": 96,
+    "samples": [
+      {
+        "version": "VB5",
+        "pid": 27072,
+        "thread_id": 26700,
+        "pairs": [
+          {
+            "class": "ThunderRT5TextBox",
+            "code": 1024,
+            "pairs": 3
+          },
+          {
+            "class": "ThunderRT5TextBox",
+            "code": 768,
+            "pairs": 3
+          },
+          {
+            "class": "ThunderRT5TextBox",
+            "code": 256,
+            "pairs": 1
+          },
+          {
+            "class": "ThunderRT5ComboBox",
+            "code": 7,
+            "pairs": 2
+          },
+          {
+            "class": "ThunderRT5ComboBox",
+            "code": 10,
+            "pairs": 2
+          },
+          {
+            "class": "ThunderRT5ComboBox",
+            "code": 8,
+            "pairs": 2
+          },
+          {
+            "class": "ThunderRT5TextBox",
+            "code": 512,
+            "pairs": 2
+          },
+          {
+            "class": "ThunderRT5OptionButton",
+            "code": 0,
+            "pairs": 4
+          },
+          {
+            "class": "ThunderRT5CheckBox",
+            "code": 0,
+            "pairs": 8
+          }
+        ],
+        "total_pairs": 27,
+        "screenshot_sha256": "ec059852fdbd488957c97798337c691bf506b8dc227d72b8f91363094dc71a3d",
+        "log": "build/t18-s64-vb5-notify/notify.txt"
+      },
+      {
+        "version": "VB6",
+        "pid": 19816,
+        "thread_id": 8872,
+        "pairs": [
+          {
+            "class": "ThunderRT6TextBox",
+            "code": 1024,
+            "pairs": 3
+          },
+          {
+            "class": "ThunderRT6TextBox",
+            "code": 768,
+            "pairs": 3
+          },
+          {
+            "class": "ThunderRT6TextBox",
+            "code": 256,
+            "pairs": 1
+          },
+          {
+            "class": "ThunderRT6ComboBox",
+            "code": 7,
+            "pairs": 2
+          },
+          {
+            "class": "ThunderRT6ComboBox",
+            "code": 10,
+            "pairs": 2
+          },
+          {
+            "class": "ThunderRT6ComboBox",
+            "code": 8,
+            "pairs": 2
+          },
+          {
+            "class": "ThunderRT6TextBox",
+            "code": 512,
+            "pairs": 2
+          },
+          {
+            "class": "ThunderRT6OptionButton",
+            "code": 0,
+            "pairs": 4
+          },
+          {
+            "class": "ThunderRT6CheckBox",
+            "code": 0,
+            "pairs": 8
+          }
+        ],
+        "total_pairs": 27,
+        "screenshot_sha256": "ae6a3e73786c7520df443bd2437b2bb1b8291d0913f844bf87bc9a11497dad51",
+        "log": "build/t18-s64-vb6-notify/notify.txt"
+      }
+    ],
+    "limitations": [
+      "Counts cover full observed lifetime including setup, not only intentional input",
+      "Matched before/after does not independently prove the VB application event handler executed",
+      "Synthetic messages, not physical keyboard or mouse; scroll/list notifications and IME unverified",
+      "One VB5 diagnostic screenshot differed by 12676 bytes; one diagnostic and release repeat matched, cause remains unknown",
+      "VB6 screenshot matches prior release screenshot byte-for-byte",
+      "Diagnostic code is not a shipped binary; observation may perturb timing"
+    ],
+    "vb5_screenshot_followup": {
+      "first_diagnostic_sha256": "ec059852fdbd488957c97798337c691bf506b8dc227d72b8f91363094dc71a3d",
+      "first_release_sha256": "ae6a3e73786c7520df443bd2437b2bb1b8291d0913f844bf87bc9a11497dad51",
+      "same_size_headers": "579534 bytes, identical 54-byte BMP headers, 12676 differing bytes in pixel payload",
+      "release_repeat_sha256": "ae6a3e73786c7520df443bd2437b2bb1b8291d0913f844bf87bc9a11497dad51",
+      "diagnostic_repeat_sha256": "ae6a3e73786c7520df443bd2437b2bb1b8291d0913f844bf87bc9a11497dad51",
+      "diagnostic_repeat_pid": 28220,
+      "diagnostic_repeat_notification_pairs": 27,
+      "interpretation": "A single release and diagnostic repeat matched each other and original release screenshot; the first diagnostic outlier was not reproduced. Cause remains unknown; this does not establish absence of visual effects."
+    }
   }
 }
