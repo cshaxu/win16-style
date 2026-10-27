@@ -9,7 +9,7 @@ struct ntw16s_control_protocol {
     struct ntw16s_control_protocol *next;
     HWND window;
     unsigned role,refs;
-    BOOL runtime_trackbar;
+    BOOL runtime_trackbar,runtime_toolbar;
     HMODULE native_module;
 };
 static _Thread_local ntw16s_control_protocol *bindings;
@@ -68,6 +68,12 @@ BOOL ntw16s_control_protocol_toolbar(HWND w)
 {
     for(ntw16s_control_protocol *b=bindings;b;b=b->next)
         if(b->window==w && b->role==10 && current(b))return TRUE;
+    return FALSE;
+}
+BOOL ntw16s_control_protocol_runtime_toolbar(HWND w)
+{
+    for(ntw16s_control_protocol *b=bindings;b;b=b->next)
+        if(b->window==w && b->role==10 && b->runtime_toolbar && current(b))return TRUE;
     return FALSE;
 }
 BOOL ntw16s_control_protocol_runtime_trackbar(HWND w)
@@ -138,7 +144,7 @@ static ntw16s_control_protocol *bind_protocol(HWND w,HMODULE verified_owner,unsi
         (!lstrcmpW(name,PROGRESS_CLASSW) || !lstrcmpW(name,L"TProgressBar"))?7:
         (!lstrcmpW(name,TRACKBAR_CLASSW) || !lstrcmpW(name,L"TTrackBar"))?8:
         (!lstrcmpW(name,UPDOWN_CLASSW) || !lstrcmpW(name,L"TUpDown"))?9:
-        !lstrcmpW(name,L"TEdit")?11:!lstrcmpW(name,L"TListBox")?12:ocx_role?ocx_role:toolbar_role;
+        (verified_owner && !lstrcmpW(name,L"TToolBar"))?10:!lstrcmpW(name,L"TEdit")?11:!lstrcmpW(name,L"TListBox")?12:ocx_role?ocx_role:toolbar_role;
     if(!role)return NULL;
     if(verified_owner && (role!=verified_role || (role==8 && lstrcmpW(name,L"TTrackBar"))))return NULL;
     if(role>=3 && role<=9 && !ocx_role && !toolbar_role && !GetClassInfoExW(NULL,role==3?WC_TABCONTROLW:role==4?WC_HEADERW:role==5?WC_LISTVIEWW:role==6?WC_TREEVIEWW:role==7?PROGRESS_CLASSW:role==8?TRACKBAR_CLASSW:UPDOWN_CLASSW,&native_class))return NULL;
@@ -317,10 +323,12 @@ static ntw16s_control_protocol *bind_protocol(HWND w,HMODULE verified_owner,unsi
         if(valid)b->native_module=native_owner;
     }
     if(!valid){ntw16s_control_protocol_release(b);return NULL;}
-    b->role=role;b->runtime_trackbar=verified_owner && role==8;return b;
+    b->role=role;b->runtime_trackbar=verified_owner && role==8;b->runtime_toolbar=verified_owner && role==10;return b;
 }
 ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND w)
 {return bind_protocol(w,NULL,0);}
+ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_toolbar(HWND w,HMODULE owner)
+{return owner?bind_protocol(w,owner,10):NULL;}
 ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_group_button(HWND w,HMODULE owner)
 {return owner?bind_protocol(w,owner,1):NULL;}
 ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_edit(HWND w,HMODULE owner)

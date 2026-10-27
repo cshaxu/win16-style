@@ -7,6 +7,7 @@
 
 /* The fixture calls the real COMCTL toolbar with the production reader. */
 BOOL ntw16s_control_protocol_toolbar(HWND w){return w!=NULL;}
+BOOL ntw16s_control_protocol_runtime_toolbar(HWND w){(void)w;return FALSE;}
 HFONT win16_style_system_acquire(HFONT source){return source;}
 void win16_style_system_release(HFONT font){(void)font;}
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"TOOLBAR_BOUNDS_FAIL line=%u error=%lu: %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)

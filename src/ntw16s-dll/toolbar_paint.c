@@ -11,7 +11,7 @@ static BOOL button(HWND w,int index,TBBUTTON *out,WCHAR *text,int capacity,RECT 
     static const BYTE permitted=BTNS_AUTOSIZE|BTNS_CHECK|BTNS_GROUP|BTNS_CHECKGROUP|BTNS_NOPREFIX|BTNS_SHOWTEXT;
     TBBUTTONINFOW info={0};
     ZeroMemory(out,sizeof(*out));
-    if(!SendMessageW(w,TB_GETBUTTON,index,(LPARAM)out) || out->iBitmap!=I_IMAGENONE || !out->idCommand ||
+    if(!SendMessageW(w,TB_GETBUTTON,index,(LPARAM)out) || out->iBitmap!=I_IMAGENONE || (!out->idCommand && !ntw16s_control_protocol_runtime_toolbar(w)) ||
         (out->fsStyle&~permitted) || (out->fsStyle&BTNS_SEP) || !text || capacity<2)return FALSE;
     /* TB_GETBUTTONTEXT has no capacity argument: even a length preflight
      * cannot prevent a reentrant text change from overflowing this buffer.
@@ -29,8 +29,9 @@ BOOL win16_style_toolbar_supported(HWND w)
     if(!ntw16s_control_protocol_toolbar(w) || (GetWindowLongPtrW(w,GWL_EXSTYLE)&
         (WS_EX_CLIENTEDGE|WS_EX_STATICEDGE|WS_EX_LAYOUTRTL|WS_EX_RTLREADING)))return FALSE;
     count=SendMessageW(w,TB_BUTTONCOUNT,0,0);
-    if(count<0 || count>1024)return FALSE;
-    for(int i=0;i<count;++i)if(!button(w,i,&item,text,ARRAYSIZE(text),&rect))return FALSE;
+    if(count<0 || count>1024 || (ntw16s_control_protocol_runtime_toolbar(w) && count>64))return FALSE;
+    for(int i=0;i<count;++i)if(!button(w,i,&item,text,ARRAYSIZE(text),&rect) ||
+        (ntw16s_control_protocol_runtime_toolbar(w) && SendMessageW(w,TB_COMMANDTOINDEX,item.idCommand,0)!=i))return FALSE;
     return TRUE;
 }
 static void fill(HDC dc,const RECT *r,COLORREF color)
