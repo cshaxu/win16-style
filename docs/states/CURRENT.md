@@ -89,6 +89,10 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | Original Owner Request | 做完可实现控件并自行测试；每S按规范构建测试、发布、提交与远端复核 |
 | Similar-Issue Sweep | VB标签、TStaticText、TPanel内文字、应用字体/宽度与Unicode；未验证项不计通过 |
 
+S29进展：[真实标签与字体度量](../history/M0-T18-S29-label.md)：MD5summer窗口内TLabel资源和实际
+DrawText路径相符，原始76x13矩形小于系统字体103x16度量；安全身份和布局缺口转TODO。
+14项聚焦包和双发布通过；字体布局用例耗时79/64秒，已登记立即优化；待提交推送及远端复核。
+
 ## Identifier State
 
 - Milestone: M0 (fixed)
