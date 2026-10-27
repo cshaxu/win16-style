@@ -89,6 +89,10 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | Original Owner Request | 做完可实现控件并自行测试；每S按规范构建测试、发布、提交与远端复核 |
 | Similar-Issue Sweep | 原生包装/框架自绘、数据绑定/图像、跨版本及既有VB路径；未验证项不计通过 |
 
+S26进展：[隔离桌面重测记录](../history/M0-T18-S26-control-audit.md)。沙箱外自有隔离桌面可用，
+双宽协议模型、真实DoubleKiller及VB6 Actor探针通过有限检查；74项证据台账已列缺口和接收者，
+50项真实owner仍未证实，TSpinButton为下一实施候选。S26同批包已完成双发布，待提交推送及远端复核。
+
 ## Identifier State
 
 - Milestone: M0 (fixed)

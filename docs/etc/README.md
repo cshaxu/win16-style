@@ -1,5 +1,8 @@
 # Supporting Material Index
 
+- [Delphi S26逐项台账](evidence/delphi-s26-current-ledger.json)：冻结的74个家族、当前有限证据、
+  样本名称线索和未解决接收者；50项真实owner仍未证实，不代表全量适配。
+
 - [Delphi 控件审计](evidence/delphi-controls-audit.json)：T18 S1 的 VCL 74 个 UI 家族
   种子、五个本机候选的固定身份及既有有限公共协议接收者；这是冻结审计，
   不是 Delphi 或 FMX 已获支持的声明。
