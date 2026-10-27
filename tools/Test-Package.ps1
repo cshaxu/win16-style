@@ -63,8 +63,8 @@ try{
         (Case 'demo-boundary' $python @('-B',(Join-Path $SourceRoot 'tests/demo-exe/boundary.py'),$demo) @('DEMO BOUNDARY PASS')),
         (Case 'demo-pair' (Join-Path $x64 'demo-observe.exe') @($run,$d64,$d32,$demo) @('DEMO OBSERVE PASS styled=0','DEMO OBSERVE PASS styled=1','DEMO PAIR PASS')),
         (Case 'wait-contract' $python @('-B',(Join-Path $SourceRoot 'tests/run16s-exe/wait.py'),$run,$d32,$d64,(Join-Path $x86 'wait-target.exe'),(Join-Path $x64 'wait-target.exe'),(Join-Path $x64 'wait-gui-target.exe')) @('WAIT CONTRACT PASS 6 cases') 190),
-        (Case 'font-layout-x86' (Join-Path $x86 'core-font-layout.exe') @($d32) @('FONT LAYOUT PASS 2 contexts 12 font variants') 180),
-        (Case 'font-layout-x64' (Join-Path $x64 'core-font-layout.exe') @($d64) @('FONT LAYOUT PASS 2 contexts 12 font variants') 180),
+        (Case 'font-layout-x86' (Join-Path $x86 'core-font-layout.exe') @($d32) @('FONT WARMUP SELFTEST PASS transient=1 rising=1 real_gdi_leak=1 cleanup=1','FONT LAYOUT PASS 2 contexts 12 font variants') 180),
+        (Case 'font-layout-x64' (Join-Path $x64 'core-font-layout.exe') @($d64) @('FONT WARMUP SELFTEST PASS transient=1 rising=1 real_gdi_leak=1 cleanup=1','FONT LAYOUT PASS 2 contexts 12 font variants') 180),
         (Case 'menu-cancel-x86' (Join-Path $x86 'core-menu-cancel.exe') @($d32) @('MENU CANCEL PASS 15 scenarios','MENU SHADOW SCOPE PASS aware=0','MENU SHADOW SCOPE PASS aware=1') 150),
         (Case 'menu-cancel-x64' (Join-Path $x64 'core-menu-cancel.exe') @($d64) @('MENU CANCEL PASS 15 scenarios','MENU SHADOW SCOPE PASS aware=0','MENU SHADOW SCOPE PASS aware=1') 150),
         (Case 'startup-errors' (Join-Path $x64 'startup-errors.exe') @($run) @('STARTUP ERRORS PASS 2 formats Windows-Shell/private-console/shared-cmd/hidden-console one_error_channel exit4 jobs_empty') 100),
@@ -184,6 +184,8 @@ try{
     )
     if($FullIntegration){
         $cases+=@(
+            (Case 'font-stress-32' (Join-Path $x86 'core-font-layout.exe') @($d32,'--stress') @('FONT WARMUP STRESS PASS context=0 rounds=8','FONT WARMUP STRESS PASS context=1 rounds=8','FONT LAYOUT PASS 2 contexts 12 font variants') 180),
+            (Case 'font-stress-64' (Join-Path $x64 'core-font-layout.exe') @($d64,'--stress') @('FONT WARMUP STRESS PASS context=0 rounds=8','FONT WARMUP STRESS PASS context=1 rounds=8','FONT LAYOUT PASS 2 contexts 12 font variants') 180),
             (Case 'creation-contract' (Join-Path $x64 'creation-contract-driver.exe') @($run,$d32,$d64,(Join-Path $x86 'creation-contract.exe'),(Join-Path $x64 'creation-contract.exe')) @('CREATION CONTRACT PASS 64') 520),
             (Case 'rollback' (Join-Path $x64 'rollback-contract-driver.exe') @($run,$d32,$d64,(Join-Path $x86 'rollback-contract.exe'),(Join-Path $x64 'rollback-contract.exe')) @('ROLLBACK PASS parent=32','ROLLBACK PASS parent=64') 320),
             (Case 'dialogs' (Join-Path $x64 'launch-automatic.exe') ($pair+@('dialogs')) @('LAUNCH MATRIX PASS') 520),

@@ -49,7 +49,6 @@ S15包测试进度文件共享冲突已由[S17记录](../history/M0-T18-S17-test
 
 - [ ] TODO(Medium): Delphi 无窗口 `TLabel` 尚未取得可安全区分应用画布的绘制身份；Owner：T18后续控件适配及最终审计。Evidence：[S29](../history/M0-T18-S29-label.md)。Admission：公开可验证的标签所有权及布局契约，保留字体/字号、透明、对齐、加速键及Unicode；不得按文字、坐标或私有对象字段猜测。
 
-- [ ] TODO(High): 字体布局回归单次耗时过长；Owner：T18紧接的测试效率S。Evidence：[S29](../history/M0-T18-S29-label.md)：本机x86 79.06秒、x64 63.51秒，含多轮字体/控件预热；Admission：定位耗时并优化，保留字形、布局、两DPI上下文及资源生命周期检查，不把减少覆盖冒充加速。
 
 - [ ] TODO(Medium): ComCtl32 v5 `TProgressBar` 客户区填充仍为原生；Owner：后续进度条适配。Evidence：[S23](../history/M0-T18-S23-progress-border.md)、[S24](../history/M0-T18-S24-progress-colors.md)。Admission：不触发可观察的探测性颜色设置或猜测绘制实现，能可靠获取或保留原生颜色及状态并保留应用语义；现仅适配经验证的非客户区边框。
 

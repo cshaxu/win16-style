@@ -10,6 +10,37 @@ static install_fn install_frame,install_control;
 static BOOL (__cdecl *install_edit)(HWND,BOOL,const win16_style_palette *);
 static remove_fn remove_frame,remove_control;
 static BOOL verify_pixels;
+typedef struct warm_stability {DWORD previous;unsigned samples,nonincreases;} warm_stability;
+/* A bounded warmup needs two consecutive non-increasing post-cleanup counts.
+ * Any growth restarts the streak; the final independent before/after assertion
+ * remains in force. A plateau is not a claim about the whole process lifetime. */
+static BOOL warm_sample(warm_stability *state,DWORD count)
+{
+    if(state->samples){if(count<=state->previous)++state->nonincreases;else state->nonincreases=0;}
+    state->previous=count;++state->samples;
+    return state->samples>=3 && state->nonincreases>=2;
+}
+static void warm_selftest(void)
+{
+    warm_stability transient={0},growing={0},oscillating={0},actual={0};
+    const DWORD sequence[]={22,45,43,43},leaks[]={10,11,12,13,14,15,16,17},jitter[]={10,11,10,11,10,11,10,11};
+    for(unsigned i=0;i<ARRAYSIZE(sequence);++i){BOOL ready=warm_sample(&transient,sequence[i]);CHECK(ready==(i==3));}
+    for(unsigned i=0;i<ARRAYSIZE(leaks);++i)CHECK(!warm_sample(&growing,leaks[i]));
+    for(unsigned i=0;i<ARRAYSIZE(jitter);++i)CHECK(!warm_sample(&oscillating,jitter[i]));
+    HDC probe_dc=CreateCompatibleDC(NULL);HBITMAP probe_bitmap=CreateBitmap(2,2,1,32,NULL);CHECK(probe_dc && probe_bitmap);
+    HGDIOBJ old_bitmap=SelectObject(probe_dc,probe_bitmap);CHECK(old_bitmap);
+    HBRUSH prime=CreateSolidBrush(RGB(4,5,6));RECT area={0,0,2,2};CHECK(prime && FillRect(probe_dc,&area,prime) && DeleteObject(prime));GdiFlush();
+    HDC held[4]={0};DWORD before=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS),previous=before;
+    CHECK(!warm_sample(&actual,before));
+    for(unsigned i=0;i<ARRAYSIZE(held);++i){held[i]=CreateCompatibleDC(NULL);CHECK(held[i]);GdiFlush();
+        DWORD now=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);printf("FONT WARMUP LEAK PROBE iteration=%u previous=%lu now=%lu\n",i,previous,now);
+        CHECK(now>previous && !warm_sample(&actual,now));previous=now;}
+    for(unsigned i=0;i<ARRAYSIZE(held);++i)CHECK(DeleteDC(held[i]));
+    GdiFlush();
+    CHECK(GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS)<=before);
+    CHECK(SelectObject(probe_dc,old_bitmap));CHECK(DeleteObject(probe_bitmap));CHECK(DeleteDC(probe_dc));
+    puts("FONT WARMUP SELFTEST PASS transient=1 rising=1 real_gdi_leak=1 cleanup=1");
+}
 static void settle(void)
 {MSG m;while(PeekMessageW(&m,NULL,0,0,PM_REMOVE)){TranslateMessage(&m);DispatchMessageW(&m);}GdiFlush();}
 static RECT rect(HWND w,HWND parent)
@@ -201,19 +232,27 @@ static void controls_case(unsigned scale,unsigned bold)
 }
 static int worker(int argc,WCHAR **argv)
 {
-    CHECK(argc==2 || (argc==3 && !wcscmp(argv[2],L"--menu-only")));HMODULE dll=LoadLibraryExW(argv[1],NULL,LOAD_WITH_ALTERED_SEARCH_PATH);CHECK(dll);
+    BOOL menu_only=argc==3 && !wcscmp(argv[2],L"--menu-only"),stress=argc==3 && !wcscmp(argv[2],L"--stress");
+    CHECK(argc==2 || menu_only || stress);HMODULE dll=LoadLibraryExW(argv[1],NULL,LOAD_WITH_ALTERED_SEARCH_PATH);CHECK(dll);
     install_frame=(install_fn)(void *)GetProcAddress(dll,"win16_style_install");remove_frame=(remove_fn)(void *)GetProcAddress(dll,"win16_style_remove");
     install_control=(install_fn)(void *)GetProcAddress(dll,"win16_style_control_install");remove_control=(remove_fn)(void *)GetProcAddress(dll,"win16_style_control_remove");CHECK(install_frame && remove_frame && install_control && remove_control);
     install_edit=(void *)GetProcAddress(dll,"win16_style_edit_install");CHECK(install_edit);
+    if(!menu_only)warm_selftest();
     for(unsigned context=0;context<2;++context){
         CHECK(SetThreadDpiAwarenessContext(context?DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2:DPI_AWARENESS_CONTEXT_UNAWARE));
-        if(argc==3){menu_case();continue;}
-        /* USER lazily allocates per-class/font caches on first use. Warm every
-         * tested variant before checking repeated attach/detach ownership. */
-        for(unsigned warm=0;warm<8;++warm){
+        if(menu_only){menu_case();continue;}
+        /* USER lazily allocates per-class/font caches. Exercise every variant
+         * in each cycle, stopping only after bounded post-cleanup stability. */
+        warm_stability warm_state={0};BOOL stable=FALSE;
+        for(unsigned warm=0;warm<8 && (stress || !stable);++warm){
             dialog_case();for(unsigned dpi=96;dpi<=192;dpi+=48)for(unsigned bold=0;bold<2;++bold)controls_case(dpi,bold);
             settle();
+            DWORD count=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);
+            stable=warm_sample(&warm_state,count);
+            printf("FONT WARMUP context=%u iteration=%u gdi=%lu stable=%u\n",context,warm,count,stable);
         }
+        CHECK(stable);
+        if(stress){CHECK(warm_state.samples==8);printf("FONT WARMUP STRESS PASS context=%u rounds=8\n",context);}
         verify_pixels=TRUE;menu_case();reentrant_case();settle();
         DWORD before=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);
         dialog_case();for(unsigned dpi=96;dpi<=192;dpi+=48)for(unsigned bold=0;bold<2;++bold)controls_case(dpi,bold);
@@ -223,6 +262,6 @@ static int worker(int argc,WCHAR **argv)
         CHECK(after<=before);
         verify_pixels=FALSE;
     }
-    CHECK(FreeLibrary(dll));if(argc==3){puts("FONT MENU ONLY PASS: proportional bar/popup subset, not the full control matrix");return 0;}puts("FONT LAYOUT PASS 2 contexts 12 font variants native dialog and 84 control scenarios; repeated after warmup; actual candidate DLL");return 0;
+    CHECK(FreeLibrary(dll));if(menu_only){puts("FONT MENU ONLY PASS: proportional bar/popup subset, not the full control matrix");return 0;}puts("FONT LAYOUT PASS 2 contexts 12 font variants native dialog and 84 control scenarios; repeated after warmup; actual candidate DLL");return 0;
 }
 int wmain(int argc,WCHAR **argv){return isolated_process(argc,argv,worker);}

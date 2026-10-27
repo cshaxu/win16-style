@@ -1103,9 +1103,9 @@
       "path": "tests/ntw16s-dll/font_layout.c",
       "source": null,
       "source_blob": null,
-      "sha256": "dc151005ba49df21c7d1d381e95145aafba1514433e25fa0d9339af4778d72a2",
+      "sha256": "b1b697beda98b4b8ce826c426e858fb6b4c96c60d38b4c1a2d4c948be5d03eff",
       "disposition": "authored",
-      "review": "T8 actual candidate native DS_SETFONT dialog and app font/rect/metrics updates across awareness contexts and nominal sizes; no physical-input claim; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved T18 S17 batches font selection while retaining each single-character extent assertion.",
+      "review": "T8 actual candidate native DS_SETFONT dialog and app font/rect/metrics updates across awareness contexts and nominal sizes; no physical-input claim; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved T18 S17 batches font selection while retaining each single-character extent assertion.; T18 S30 bounded GDI stability warmup and real leak witness, full font oracles retained",
       "notice": "Project-authored C17 native probe, MIT"
     },
     {
