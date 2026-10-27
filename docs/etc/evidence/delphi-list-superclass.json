@@ -1,0 +1,8 @@
+{
+  "task":"M0 T18 S10",
+  "finding":"The existing native COMBOBOX/LISTBOX superclass path uses Windows' real instance identity and retains native data ownership. No production-source change is established by this fixture.",
+  "fixture":"Self-owned C uses TComboBox and TListBox names over native superclasses. x86/x64 at 96/144 DPI cover selection, popup open/cancel, item data after detach, extended multi-selection, owner-draw rejection and styled-to-detached pixels.",
+  "package":{"status":"passed","cases":87,"skipped":0,"seconds":345.9052362,"physical_input":"not-tested","publish":"assets root and O:/winnt/system32, tested four-file hashes matched"},
+  "sha256":{"demo.exe":"e5b036ce8dede5974868cfcc55512f1f0d263fae21d48330932f967fd6ce071c","ntw16s32.dll":"e1c2380000a37b82546927fc1b46b45205527e7f4f445c2311c20b7f144ba355","ntw16s64.dll":"7abbdc8df740af6b7dfb0e82ade0acc0d12e18a5df5088c640ad9ade7c8ba73b","run16s.exe":"5edf5e031f5ea9b3ea819bc226458fce3dbf06049dea39211995f7354c522911"},
+  "limitations":"The model does not prove Delphi-specific object or owner-draw semantics, actual VCL applications, all combo variants, keyboard/IME or physical input. Those remain for separate integration and task-level audit."
+}

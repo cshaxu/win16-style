@@ -6,7 +6,7 @@ M0 T17 已按用户明确缩小后的范围收口；23 项 VB 延期项保留在
 Delphi VCL 74 个 UI 家族种子、框架分支、五个固定候选及逐项证据接收者；T18 S2 已将
 全部种子逐项归入35个既有原生协议模型或39个明确的原生保留边界。S4 已完成首组
 精确 TEdit/TListBox与TTabControl公开协议实现、干净双宽四文件包和双发布；实际 Delphi 显示集成
-仍统一留给T18最终收口。S8已完成基础按钮超类验证；顺序准入S9审核编辑控件变体；不得用 demo
+仍统一留给T18最终收口。S9已完成编辑超类模型验证；顺序准入S10审核组合框与列表；不得用 demo
 冒充 Delphi。
 以下段落为 T17 的技术基线/历史证据，不覆盖 T18 状态。
 
@@ -68,13 +68,13 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S9 Packet
+## M0 T18 S10 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；用户明确先实现一切可由公开协议证明的代码，真实Delphi集成统一留给T18收口；S8已交付复核，顺序准入S9 |
+| Identifier Mode | Continuation；用户明确先实现一切可由公开协议证明的代码，真实Delphi集成统一留给T18收口；S9已交付复核，顺序准入S10 |
 | Admission And Approval | 用户批准进入队列首项T18，并明确要求先完成能以公开协议实现的代码和自包含测试；S4/S5已交付基础编辑/列表及页签有限实现和四文件发布，S3的error=5集成缺口仍保留至最终收口 |
-| Objective | 审核TEdit、TMemo、TMaskEdit和TRichEdit的原生EDIT超类及公开协议边界；优先用自包含双宽探针验证多行文本、滚动与状态，并仅修复证据支持的缺口 |
+| Objective | 审核TComboBox、TListBox及特殊owner-draw列表的公开协议和原生超类；验证项目数据、选择、下拉、卸载与拒绝边界，仅修复证据支持的缺口 |
 | Non-goals | 不把demo等价项当成VCL支持；不读取私有对象布局、不仅凭T前缀接纳、不新增第五产品；不接管canvas、数据库、嵌入/非视觉、图像/custom-draw或owner-draw；不改既有标题/菜单/字体/滚动条/资源 |
 | Reference Baseline | [T18 S1审计](../etc/evidence/delphi-controls-audit.json)、[S2对应账本](../etc/evidence/delphi-demo-mapping.json)、[S3转交](../history/M0-T18-S3-vcl-probe-transfer.md)、[S4公开协议](../etc/evidence/delphi-basic-protocols.json)、[S5页签协议](../etc/evidence/delphi-tab-protocol.json)、[S6表头证据](../etc/evidence/delphi-list-tree-header-protocol.json)、[Delphi专项proposal](../proposals/delphi-win32-controls.md)及T15有限公开协议 |
 | Candidate Proposal | [Delphi Win32控件完整审计与Win3.x风格适配](../proposals/delphi-win32-controls.md) |
@@ -82,7 +82,7 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | Applicable Rules | C17/MinGW GCC/Ninja/ccache、来源策略、禁computer-use/全局hook/既有进程扫描；真实应用集成与自包含测试分列；私有桌面error=5只能skip，留T18最终收口 |
 | Verification | 双宽干净构建；新旧正/负例证明公开消息、注册/模块身份、状态、键盘/通知、移除/销毁和资源释放；同批四文件实际包测试。真实VCL应用验证是已登记的最终集成项，不得以历史结果替代 |
 | Expected Markers | 每个角色有类/模块/公开消息交集、正例附着与负例拒绝、裸/注入行为和清理标记；绝不以模块加载或名称匹配作样式成功结论 |
-| Current Evidence | S8同名BUTTON超类模型及973b4a0已实际远端复核。S9 EDIT超类模型双宽96/144 DPI通过，干净包87项0跳过并双发布，待提交推送；C模型不代表真实Delphi，掩码语义与TRichEdit仍未覆盖。 |
+| Current Evidence | S9 EDIT超类模型及4a8b10e已远端复核。S10组合框/列表超类模型双宽96/144 DPI通过，干净包87项0跳过并双发布，待提交推送；C模型不代表真实Delphi或owner-draw行为。 |
 | Asset Needs | 仅现有固定候选和自编C探针；不复制Delphi/第三方二进制、图片或资源，不安装/注册运行包 |
 | Reporting Requirements | 报告新增角色、公开协议/负例、测试与集成缺口、二进制发布状态；不将自包含模型或一个VCL应用外推为全部Delphi/FMX |
 | Stop Conditions | 需要私有对象布局、应用绘图、数据绑定、嵌入、owner-draw契约或第五产品时停止该项并交后续S；真实VCL应用显示验证统一留T18最终收口；实际修复前必须先记录根因和最小方案 |
@@ -96,8 +96,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S8 P1：BUTTON超类选择控件模型、双宽96/144 DPI及87项包测试0跳过、双发布，973b4a0已实际远端复核；真实Delphi集成仍待完成。
-- Open task: T18 S9 Delphi编辑控件变体公开协议审计和有限适配；M0/T18开放。
+- Last delivery: M0 T18 S9 P1：EDIT超类模型、双宽96/144 DPI及87项包测试0跳过、双发布，4a8b10e已实际远端复核；真实Delphi集成仍待完成。
+- Open task: T18 S10 Delphi组合框与列表协议审计和有限适配；M0/T18开放。
 
 ## Technical Baseline
 
@@ -146,6 +146,8 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T18 S9编辑超类](../history/M0-T18-S9-vcl-edit-superclass.md)：双宽多行原生模型、87项包测试、双发布及远端复核；掩码和RichEdit语义仍待独立验证。
 
 - [T18 S8选择控件超类](../history/M0-T18-S8-vcl-choice-protocol.md)：双宽自有超类模型及87项包测试、双发布和远端复核；真实Delphi各版本尚未证明。
 

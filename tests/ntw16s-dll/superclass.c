@@ -41,7 +41,7 @@ static DWORD image(HWND w,DWORD *pixels,UINT count)
 }
 
 static WNDPROC native_procs[12];
-static const WCHAR *class_names[]={L"RenamedPush",L"RenamedCheck",L"TEdit",L"RenamedCombo",L"TListBox",L"RenamedStatic",L"RenamedScroll",L"TCheckBox",L"TRadioButton",L"TGroupBox",L"TMemo",L"TMaskEdit"};
+static const WCHAR *class_names[]={L"RenamedPush",L"RenamedCheck",L"TEdit",L"TComboBox",L"TListBox",L"RenamedStatic",L"RenamedScroll",L"TCheckBox",L"TRadioButton",L"TGroupBox",L"TMemo",L"TMaskEdit"};
 /* Like a framework InitWndProc, registration itself is custom. The system
  * instance type is established by calling the saved native procedure. */
 static LRESULT CALLBACK framework_proc(HWND w,UINT m,WPARAM a,LPARAM b)
@@ -72,7 +72,7 @@ static int child(BOOL styled,BOOL aware)
     BOOL (__cdecl *remove_control)(HWND)=dll?(void *)GetProcAddress(dll,"Ntw16sWindowRemove"):NULL;
     CHECK(styled?(dll && attached && remove_control):!dll);
     const WCHAR *bases[]={L"BUTTON",L"BUTTON",L"EDIT",L"COMBOBOX",L"LISTBOX",L"STATIC",L"SCROLLBAR"};
-    const WCHAR *names[]={L"RenamedPush",L"RenamedCheck",L"TEdit",L"RenamedCombo",L"TListBox",L"RenamedStatic",L"RenamedScroll"};
+    const WCHAR *names[]={L"RenamedPush",L"RenamedCheck",L"TEdit",L"TComboBox",L"TListBox",L"RenamedStatic",L"RenamedScroll"};
     for(unsigned i=0;i<ARRAYSIZE(bases);++i)CHECK(superclass(bases[i],names[i]));
     for(unsigned i=7;i<10;++i)CHECK(superclass(L"BUTTON",class_names[i]));
     for(unsigned i=10;i<ARRAYSIZE(class_names);++i)CHECK(superclass(L"EDIT",class_names[i]));
@@ -95,7 +95,8 @@ static int child(BOOL styled,BOOL aware)
     HWND impostor=CreateWindowW(L"TButton",L"custom",WS_CHILD,0,0,10,10,root,NULL,instance,NULL);CHECK(impostor);
     HWND ownerdraw=CreateWindowW(names[0],L"owner",WS_CHILD|BS_OWNERDRAW,0,0,10,10,root,NULL,instance,NULL);CHECK(ownerdraw);
     HWND custom_list=CreateWindowW(names[4],L"",WS_CHILD|LBS_OWNERDRAWFIXED|LBS_HASSTRINGS,0,0,10,10,root,NULL,instance,NULL);CHECK(custom_list);
-    if(styled)CHECK(!attached(impostor) && !attached(ownerdraw) && !attached(custom_list));
+    HWND custom_combo=CreateWindowW(names[3],L"",WS_CHILD|CBS_DROPDOWNLIST|CBS_OWNERDRAWFIXED|CBS_HASSTRINGS,0,0,100,80,root,NULL,instance,NULL);CHECK(custom_combo);
+    if(styled)CHECK(!attached(impostor) && !attached(ownerdraw) && !attached(custom_list) && !attached(custom_combo));
     puts("SUPER_REJECT_OK custom_name ownerdraw_button ownerdraw_list");
     ShowWindow(root,SW_SHOWNORMAL);UpdateWindow(root);settle();
     SendMessageW(windows[0],BM_CLICK,0,0);CHECK(clicks==1);
@@ -138,6 +139,15 @@ static int child(BOOL styled,BOOL aware)
     SendMessageW(windows[3],CB_SHOWDROPDOWN,TRUE,0);CHECK(SendMessageW(windows[3],CB_GETDROPPEDSTATE,0,0));
     SendMessageW(windows[3],CB_SHOWDROPDOWN,FALSE,0);CHECK(!SendMessageW(windows[3],CB_GETDROPPEDSTATE,0,0));
     CHECK(SendMessageW(windows[4],LB_SETCURSEL,1,0)!=LB_ERR && SendMessageW(windows[4],LB_GETCURSEL,0,0)==1);
+    const LPARAM item_data=(LPARAM)(UINT_PTR)0x1234abcd;
+    CHECK(SendMessageW(windows[3],CB_SETITEMDATA,1,item_data)!=CB_ERR && SendMessageW(windows[3],CB_GETITEMDATA,1,0)==item_data);
+    CHECK(SendMessageW(windows[4],LB_SETITEMDATA,1,item_data)!=LB_ERR && SendMessageW(windows[4],LB_GETITEMDATA,1,0)==item_data);
+    HWND multi=CreateWindowW(names[4],L"",WS_CHILD|WS_VISIBLE|LBS_EXTENDEDSEL|LBS_NOTIFY,250,250,180,80,root,(HMENU)50,instance,NULL);CHECK(multi);
+    if(styled)CHECK(attached(multi));
+    CHECK(SendMessageW(multi,LB_ADDSTRING,0,(LPARAM)L"one")!=LB_ERR && SendMessageW(multi,LB_ADDSTRING,0,(LPARAM)L"two")!=LB_ERR);
+    CHECK(SendMessageW(multi,LB_SETSEL,TRUE,0)!=LB_ERR && SendMessageW(multi,LB_SETSEL,TRUE,1)!=LB_ERR && SendMessageW(multi,LB_GETSELCOUNT,0,0)==2);
+    if(styled)CHECK(remove_control(multi) && !attached(multi));
+    CHECK(SendMessageW(multi,LB_GETSELCOUNT,0,0)==2 && DestroyWindow(multi));
     RECT geometry_before[7],geometry_after;DWORD hashes[7];
     for(unsigned i=0;i<7;++i){GetClientRect(windows[i],&geometry_before[i]);hashes[i]=image(windows[i],NULL,0);}
     if(styled){
@@ -150,10 +160,14 @@ static int child(BOOL styled,BOOL aware)
             CHECK(!attached(windows[i]));GetClientRect(windows[i],&geometry_after);CHECK(EqualRect(&geometry_before[i],&geometry_after));
             CHECK((HFONT)SendMessageW(windows[i],WM_GETFONT,0,0)==source || i==6);
         }
+        CHECK(SendMessageW(windows[3],CB_GETITEMDATA,1,0)==item_data && SendMessageW(windows[3],CB_GETCURSEL,0,0)==1);
+        CHECK(SendMessageW(windows[4],LB_GETITEMDATA,1,0)==item_data && SendMessageW(windows[4],LB_GETCURSEL,0,0)==1);
+        CHECK(image(windows[3],NULL,0)!=hashes[3] && image(windows[4],NULL,0)!=hashes[4]);
         DWORD group_hash=image(group,NULL,0);CHECK(remove_control(group));CHECK(image(group,NULL,0)!=group_hash);
         puts("SUPER_GROUP_OK native_alias=1 detach_pixels=1");
         puts("SUPER_RENDER_OK button edit pixels_changed=1 geometry_restored=1");
     }
+    printf("SUPER_VCL_LIST_OK item_data_selection=1 multiselect=1 ownerdraw_rejected=%u detach_pixels=%u styled=%u\n",styled,styled,styled);
     UINT dpi=GetDpiForWindow(root);CHECK(DestroyWindow(root));settle();capture_end();
     LOGFONTW lf;CHECK(GetObjectW(source,sizeof(lf),&lf));CHECK(DeleteObject(source));
     for(unsigned i=0;i<7;++i)CHECK(UnregisterClassW(names[i],instance));
