@@ -4,6 +4,11 @@
 /* Test-only DLL: its class is owned outside the EXE. The synthetic delayed
  * native initialization exercises creation-scope admission; it does not
  * claim to reproduce a Delphi runtime's actual creation order. */
+#ifdef T18_MEMO
+#define EDIT_CLASS L"TMemo"
+#else
+#define EDIT_CLASS L"TEdit"
+#endif
 static HINSTANCE owner;
 static WNDPROC native_edit;
 static BOOL fake,enabled;
@@ -27,21 +32,27 @@ __declspec(dllexport) BOOL WINAPI FixtureRegister(BOOL impostor)
     if(!VirtualProtect(thunk,4096,PAGE_EXECUTE_READ,&old)){VirtualFree(thunk,0,MEM_RELEASE);thunk=NULL;return FALSE;}
     FlushInstructionCache(GetCurrentProcess(),thunk,sizeof(code));
     c.style=CS_DBLCLKS|CS_HREDRAW|CS_VREDRAW;c.cbWndExtra=n.cbWndExtra;c.hCursor=LoadCursorW(NULL,IDC_IBEAM);
-    c.hInstance=owner;c.lpszClassName=L"TEdit";c.lpfnWndProc=initial;
+    c.hInstance=owner;c.lpszClassName=EDIT_CLASS;c.lpfnWndProc=initial;
     if(RegisterClassExW(&c))return TRUE;
     VirtualFree(thunk,0,MEM_RELEASE);thunk=NULL;return FALSE;
 }
 __declspec(dllexport) HWND WINAPI FixtureCreate(HWND parent,BOOL multiline)
 {
     DWORD style=WS_CHILD|WS_VISIBLE|WS_CLIPSIBLINGS|WS_TABSTOP|ES_AUTOHSCROLL|ES_AUTOVSCROLL;
+#ifdef T18_MEMO
+    multiline=TRUE;
+#endif
     if(multiline)style|=ES_MULTILINE|WS_VSCROLL|WS_HSCROLL;
-    HWND w=CreateWindowExW(WS_EX_CLIENTEDGE,L"TEdit",L"probe",style,20,20,220,multiline?70:28,parent,NULL,owner,NULL);
+    HWND w=CreateWindowExW(WS_EX_CLIENTEDGE,EDIT_CLASS,L"probe",style,20,20,220,multiline?70:28,parent,NULL,owner,NULL);
     if(w){CREATESTRUCTW cs={0};cs.hwndParent=parent;cs.hInstance=owner;cs.style=GetWindowLongPtrW(w,GWL_STYLE);
-        cs.dwExStyle=GetWindowLongPtrW(w,GWL_EXSTYLE);cs.lpszClass=L"TEdit";cs.lpszName=L"probe";cs.cx=220;cs.cy=28;
+        cs.dwExStyle=GetWindowLongPtrW(w,GWL_EXSTYLE);cs.lpszClass=EDIT_CLASS;cs.lpszName=L"probe";cs.cx=220;cs.cy=28;
         enabled=TRUE;CallWindowProcW(native_edit,w,WM_NCCREATE,0,(LPARAM)&cs);CallWindowProcW(native_edit,w,WM_CREATE,0,(LPARAM)&cs);}
+#ifdef T18_MEMO
+    if(w)SendMessageW(w,EM_SETLIMITTEXT,0,0);
+#endif
     return w;
 }
 __declspec(dllexport) BOOL WINAPI FixtureUnregister(void)
-{BOOL ok=UnregisterClassW(L"TEdit",owner);if(thunk){ok=VirtualFree(thunk,0,MEM_RELEASE)&&ok;thunk=NULL;}return ok;}
+{BOOL ok=UnregisterClassW(EDIT_CLASS,owner);if(thunk){ok=VirtualFree(thunk,0,MEM_RELEASE)&&ok;thunk=NULL;}return ok;}
 BOOL WINAPI DllMain(HINSTANCE h,DWORD reason,LPVOID unused)
 {(void)unused;if(reason==DLL_PROCESS_ATTACH)owner=h;return TRUE;}

@@ -1,0 +1,459 @@
+{
+  "scope": "74 frozen T18 VCL families; interim accounting through S63, limited implementations do not imply complete coverage",
+  "classification": {
+    "bounded": "at least one implemented and evidenced limited path, not full family completion",
+    "native": "explicit prior decision to preserve native appearance; further requested styling may remain",
+    "pending": "no evidenced implementation for this family in reviewed ledger; includes no-visual and unsupported candidates pending final disposition"
+  },
+  "counts": {
+    "bounded": 26,
+    "pending": 46,
+    "native": 2
+  },
+  "rows": [
+    {
+      "unit": "TForm",
+      "status": "bounded",
+      "evidence": "S38 ledger",
+      "detail": "Sample root attached in both widths and title capture matches S31 baseline in top 26 rows; not proof for all VCL forms or custom titles."
+    },
+    {
+      "unit": "TMDIForm",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TFrame",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TPanel",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "Real MD5summer and modern VCL panel samples are application-owned; no general panel drawing protocol is proved."
+    },
+    {
+      "unit": "TGroupBox",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "Native BUTTON-superclass model; actual Delphi variant needs evidence."
+    },
+    {
+      "unit": "TScrollBox",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TSplitter",
+      "status": "pending",
+      "evidence": "S59",
+      "detail": "Actual sample is windowless; safe draw identity and styling not established."
+    },
+    {
+      "unit": "TButton",
+      "status": "bounded",
+      "evidence": "S38 ledger",
+      "detail": "Bounded native BUTTON public protocol; DoubleKiller sample attached."
+    },
+    {
+      "unit": "TBitBtn",
+      "status": "bounded",
+      "evidence": "S49/S50",
+      "detail": "Real dual-width runtime and glyph/owner-draw finite adaptation; other variants remain open."
+    },
+    {
+      "unit": "TSpeedButton",
+      "status": "native",
+      "evidence": "S38 ledger",
+      "detail": "Windowless sample lacks safe public content-neutral protocol; explicit TODO."
+    },
+    {
+      "unit": "TCheckBox",
+      "status": "bounded",
+      "evidence": "S38 ledger",
+      "detail": "Native superclass model; observed attached DoubleKiller checkboxes."
+    },
+    {
+      "unit": "TRadioButton",
+      "status": "bounded",
+      "evidence": "S62",
+      "detail": "Ordinary same-runtime parent, witnessed native BUTTON paint and protocol; other variants and physical input unverified."
+    },
+    {
+      "unit": "TRadioGroup",
+      "status": "bounded",
+      "evidence": "S51-S53",
+      "detail": "Real child radio buttons styled; outer container frame remains native and open."
+    },
+    {
+      "unit": "TEdit",
+      "status": "bounded",
+      "evidence": "S38 ledger",
+      "detail": "Exact native EDIT protocol; owner-draw and impostors rejected."
+    },
+    {
+      "unit": "TMemo",
+      "status": "bounded",
+      "evidence": "S63",
+      "detail": "Ordinary multiline runtime-owned TMemo with witnessed native EDIT paint and public protocol; other variants and physical input unverified."
+    },
+    {
+      "unit": "TRichEdit",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "RichEdit and actual Delphi semantics need separate validation."
+    },
+    {
+      "unit": "TMaskEdit",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "EDIT model does not implement or prove Delphi masking."
+    },
+    {
+      "unit": "TComboBox",
+      "status": "bounded",
+      "evidence": "S38 ledger",
+      "detail": "Bounded native COMBOBOX protocol; DoubleKiller sample attached."
+    },
+    {
+      "unit": "TListBox",
+      "status": "bounded",
+      "evidence": "S38 ledger",
+      "detail": "Exact native LISTBOX protocol; owner-draw and impostors rejected."
+    },
+    {
+      "unit": "TCheckListBox",
+      "status": "bounded",
+      "evidence": "S38 ledger",
+      "detail": "Only observed THintCheckListBox primitive and clipped interior; no general class claim."
+    },
+    {
+      "unit": "TColorBox",
+      "status": "bounded",
+      "evidence": "S39/S40",
+      "detail": "Real dual-width bounded dropdown button; screen discrepancy remains open."
+    },
+    {
+      "unit": "TLabel",
+      "status": "native",
+      "evidence": "S38 ledger",
+      "detail": "Real windowless label drawing identified in sample; no general public label ownership contract, so no product substitution."
+    },
+    {
+      "unit": "TStaticText",
+      "status": "bounded",
+      "evidence": "S38 ledger",
+      "detail": "Same-thread actual STATIC forwarding; ASCII screen text with source font retained; print, RTL and non-ASCII stay native. Not a general VCL version claim."
+    },
+    {
+      "unit": "TImage",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TShape",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TBevel",
+      "status": "pending",
+      "evidence": "S59",
+      "detail": "Actual sample is windowless; safe draw identity and styling not established."
+    },
+    {
+      "unit": "TPaintBox",
+      "status": "pending",
+      "evidence": "S59",
+      "detail": "Actual sample is windowless application canvas; preserve app content; no style contract established."
+    },
+    {
+      "unit": "TChart",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TImageList",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TMainMenu",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TPopupMenu",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TActionList",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TToolBar",
+      "status": "bounded",
+      "evidence": "S57/S58",
+      "detail": "Real bounded text-only buttons; image/other modes remain native or unverified."
+    },
+    {
+      "unit": "TCoolBar",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TStatusBar",
+      "status": "bounded",
+      "evidence": "S44-S47",
+      "detail": "Real dual-width bounded pane/frame paths; other pane and owner-draw variants open."
+    },
+    {
+      "unit": "TControlBar",
+      "status": "pending",
+      "evidence": "S56",
+      "detail": "Real container remains unstyled; safe content-neutral frame contract not yet established."
+    },
+    {
+      "unit": "TTreeView",
+      "status": "bounded",
+      "evidence": "S38 ledger",
+      "detail": "Bounded native tree protocol; real MD5summer TShellTreeView separately observed."
+    },
+    {
+      "unit": "TListView",
+      "status": "bounded",
+      "evidence": "S38 ledger",
+      "detail": "Bounded native list-view protocol; custom draw remains separate."
+    },
+    {
+      "unit": "THeaderControl",
+      "status": "bounded",
+      "evidence": "S38 ledger",
+      "detail": "Native superclass and owner identity validated; impostor rejected."
+    },
+    {
+      "unit": "TTabControl",
+      "status": "bounded",
+      "evidence": "S5/S59",
+      "detail": "Native model implemented; S59 real runtime is unattached, so this sample still requires implementation."
+    },
+    {
+      "unit": "TPageControl",
+      "status": "bounded",
+      "evidence": "S38 ledger",
+      "detail": "Ordinary public tab protocol; DoubleKiller sample attached."
+    },
+    {
+      "unit": "TProgressBar",
+      "status": "bounded",
+      "evidence": "S38 ledger",
+      "detail": "Bounded v5 frame and other existing protocol; v5 fill remains TODO."
+    },
+    {
+      "unit": "TTrackBar",
+      "status": "bounded",
+      "evidence": "S38 ledger",
+      "detail": "Bounded native range protocol; version and variant limitations apply."
+    },
+    {
+      "unit": "TUpDown",
+      "status": "bounded",
+      "evidence": "S38 ledger",
+      "detail": "Bounded native range protocol; version and variant limitations apply."
+    },
+    {
+      "unit": "TDateTimePicker",
+      "status": "bounded",
+      "evidence": "S42/S48",
+      "detail": "Real dual-width bounded dropdown button; other modes remain native."
+    },
+    {
+      "unit": "TMonthCalendar",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "THotKey",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TAnimate",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "DoubleKiller reports application-owned TAnimate attached=0; drawing and state contract require investigation."
+    },
+    {
+      "unit": "TStringGrid",
+      "status": "bounded",
+      "evidence": "S54/S55",
+      "detail": "Real bounded nonclient border/scrollbars; custom cells and interaction remain open."
+    },
+    {
+      "unit": "TDrawGrid",
+      "status": "bounded",
+      "evidence": "S54/S55",
+      "detail": "Real bounded nonclient border/scrollbars; custom cells and interaction remain open."
+    },
+    {
+      "unit": "TValueListEditor",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TDirectoryListBox",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TDriveComboBox",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TFileListBox",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TDBGrid",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TDBEdit",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TDBComboBox",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TDBListBox",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TDBNavigator",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TDBLookupComboBox",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TDBLookupListBox",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TWebBrowser",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TMediaPlayer",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TOleContainer",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TTimer",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TTrayIcon",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TOpenDialog",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TSaveDialog",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TButtonGroup",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TCategoryButtons",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TDockTabSet",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TTabSet",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TOutline",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    },
+    {
+      "unit": "TTabbedNotebook",
+      "status": "pending",
+      "evidence": "S38 ledger",
+      "detail": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence."
+    }
+  ]
+}

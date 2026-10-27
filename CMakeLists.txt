@@ -520,6 +520,12 @@ if(BUILD_TESTING)
   target_link_libraries(core-vcl-static PRIVATE user32 gdi32 comctl32)
   target_link_options(core-vcl-static PRIVATE -municode ${explicit_manifest_options})
 
+  add_library(vcl-memo-module-fixture SHARED tests/ntw16s-dll/vcl_edit_module_fixture.c)
+  set_target_properties(vcl-memo-module-fixture PROPERTIES PREFIX "")
+  target_compile_definitions(vcl-memo-module-fixture PRIVATE T18_MEMO)
+  target_link_libraries(vcl-memo-module-fixture PRIVATE user32)
+  target_link_options(vcl-memo-module-fixture PRIVATE -Wl,--kill-at)
+
   add_library(vcl-edit-module-fixture SHARED tests/ntw16s-dll/vcl_edit_module_fixture.c)
   set_target_properties(vcl-edit-module-fixture PROPERTIES PREFIX "")
   target_link_libraries(vcl-edit-module-fixture PRIVATE user32)

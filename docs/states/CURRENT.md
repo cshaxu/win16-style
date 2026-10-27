@@ -68,15 +68,15 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S62 Packet
+## M0 T18 S63 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S61 P1 b167067远端7文件复核通过 |
+| Identifier Mode | Continuation；S62 P1 aef4407远端14文件复核通过 |
 | Admission And Approval | 用户授权T18内自动实施可做控件，不新开T |
-| Objective | 核实真实VCL TRadioButton和TMemo的窗口及公开原生协议，实施可验证范围 |
+| Objective | 定位真实VCL TMemo附着失败的首个条件，按可验证公开协议实施有限支持 |
 | Non-goals | 保留输入、选择、文字、布局、回调及原图形资源 |
-| Reference Baseline | [S59对账](../history/M0-T18-S59-observation.md)、[S60标签](../history/M0-T18-S60-vcl-tab.md)、[S34编辑](../history/M0-T18-S34-vcl-module-edit.md) |
+| Reference Baseline | [S62结果](../history/M0-T18-S62-radio-memo.md)、[S34编辑](../history/M0-T18-S34-vcl-module-edit.md) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
 | Files And ABI Surface | 自有双宽原生C探针及必要既有DLL修改，不增产物或ABI |
 | Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例限时回收 |
@@ -87,10 +87,10 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | Stop Conditions | 无真实所有权或安全内容契约时不按名称猜测 |
 | Exit Criteria | 有证据的有限实现或明确后续接收，实际包交付；T18保持开放 |
 | Original Owner Request | 高效率实现可做控件，真实应用全量集成集中T收口 |
-| Similar-Issue Sweep | 独立radio、TMemo、TEdit多行与组合框子窗口 |
+| Similar-Issue Sweep | TMemo、TEdit多行与组合框子窗口 |
 
 S61 P1 `b167067`远端7文件复核；真实TGroupBox自绘标题边界未证实，已列TODO。
-S62已完成TRadioButton有限适配、14项聚焦包、双发布及已安装双宽模型；TMemo实际未附着并保留后续定位，P1待提交和远端复核。
+S62 P1 aef4407远端14文件已复核；S63已实现普通TMemo有限适配、14项聚焦包和双发布，P1待提交及远端复核。
 
 ## Identifier State
 
@@ -98,8 +98,8 @@ S62已完成TRadioButton有限适配、14项聚焦包、双发布及已安装双
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S61 P1：12项聚焦包、双发布及b167067远端7文件复核。
-- Open task: T18 S62 真实VCL RadioButton与Memo调查；M0/T18开放。
+- Last delivery: M0 T18 S62 P1：14项聚焦包、双发布及aef4407远端14文件复核。
+- Open task: T18 S63 真实VCL TMemo调查；M0/T18开放。
 
 ## Technical Baseline
 

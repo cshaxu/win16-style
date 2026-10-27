@@ -932,8 +932,8 @@ static BOOL install_created(HWND w,DWORD original_style)
             RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TStaticText") &&
             (type==SS_LEFT || type==SS_CENTER || type==SS_RIGHT || type==SS_SIMPLE || type==SS_LEFTNOWORDWRAP) &&
             !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING));
-        edit_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TEdit") &&
-            RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TEdit");
+        edit_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TEdit") || !lstrcmpW(name,L"TMemo")) &&
+            RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(name,real);
         tab_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TTabControl") &&
             RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TTabControl") &&
             !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING));

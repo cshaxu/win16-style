@@ -30,7 +30,7 @@ static int run(int argc,WCHAR **argv)
     ShowWindow(root,SW_HIDE);ShowWindow(root,SW_SHOW);CHECK(IsWindowVisible(root));
     for(unsigned mode=0;mode<3;++mode){
         CHECK(reg(mode==0));HWND edit=create(root,mode==2);CHECK(edit && IsWindowVisible(edit));
-        CHECK(SendMessageW(edit,EM_GETLIMITTEXT,0,0)>0);CHECK(!attached(edit));
+        CHECK((DWORD)SendMessageW(edit,EM_GETLIMITTEXT,0,0)>0);CHECK(!attached(edit));
         CHECK(RedrawWindow(edit,NULL,NULL,RDW_INVALIDATE|RDW_FRAME|RDW_UPDATENOW));
         if(!mode)CHECK(!attached(edit));
         else {
