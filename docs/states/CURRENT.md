@@ -68,73 +68,30 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S45 Packet
+## M0 T18 S46 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S44 P1 0df464d远端十四文件实际核对通过，S45首次准入 |
+| Identifier Mode | Continuation；S45 P1 a129ce5远端十五文件实际核对通过，S46首次准入 |
 | Admission And Approval | 用户授权T18内自动实施可做控件；不新开T |
-| Objective | 调查真实VCL状态栏第二分区在S44对照中未观察到变化的原因，必要时按证据修复 |
-| Non-goals | 不改应用文字、图标、owner-draw内容、简单模式、标题、字体或原图形 |
-| Reference Baseline | [S44真实状态栏适配](../history/M0-T18-S44-vcl-status.md)、[S43状态栏调查](../history/M0-T18-S43-vcl-status-audit.md)、[S40屏幕对照](../history/M0-T18-S40-color-screen.md) |
+| Objective | 研究有尺寸手柄状态栏末分区为空或带图标时可保留应用内容的绘制入口 |
+| Non-goals | 不覆盖应用图标、自绘、文字和输入，不修改标题、字体或原图形 |
+| Reference Baseline | [S45状态栏末分区](../history/M0-T18-S45-status-last-pane.md)、[S44真实状态栏](../history/M0-T18-S44-vcl-status.md)、[S40屏幕对照](../history/M0-T18-S40-color-screen.md) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 自有双宽原生探针；修复如必要限定既有C DLL，不增产物或ABI |
+| Files And ABI Surface | 自有原生探针；如有可证实方案仅修改既有C组件，不增产物或ABI |
 | Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；隔离自有实例、有限等待与清理 |
-| Verification | 同窗同DC与屏幕对照，重绘/恢复/公开分区状态、owner-draw及图标，双宽实际包 |
-| Expected Markers | 区分绘制入口缺失、应用状态及屏幕采样差异，不凭未变像素猜测根因 |
-| Asset Needs | 登记build/t18-s45-status-pane，复用S44双宽真实探针 |
-| Reporting Requirements | 首个可证断点、负例、受影响范围与未覆盖面，必要双发布与远端复核 |
-| Stop Conditions | 不具备保留应用内容与生命周期的证据时不泛化 |
-| Exit Criteria | 有证据的修复或明确边界并记录后续接收，实际包交付；T18/M0保持开放 |
+| Verification | 双宽真实及C模型，空文字/图标/自绘/裁剪、绘制时序与调用者、重入和GDI、同窗DC对照 |
+| Expected Markers | 不因猜测绘制入口而覆盖应用内容；明确已支持和原生保留范围 |
+| Asset Needs | 登记build/t18-s46-status-variants，复用S45真实探针 |
+| Reporting Requirements | 实际调用与绘制次序、像素/内容变化、负例及限制，必要双发布与远端复核 |
+| Stop Conditions | 无可靠所有权和内容中性边界时不泛化 |
+| Exit Criteria | 有证据的实现或保留边界和后续接收，实际包交付；T18/M0保持开放 |
 | Original Owner Request | 能做的先实现测试，真实集成集中最终收口，不让用户手工测试 |
-| Similar-Issue Sweep | 分区变更、重绘、无边框、简单模式及S40屏幕采样 |
+| Similar-Issue Sweep | 末分区空文字、图标、owner-draw、裁剪及多版本控件 |
 
-S44 P1 `0df464d`已推送，GitHub实际取回十四文件逐字节一致；24项聚焦包、双发布与
-system32双宽入口通过。真实样本仅首分区观察到边框变化；完整T18集成未执行。
-S41首次退出异常及S40屏幕机制仍未解决；T18/M0开放。
-
-S45进行中：自有双宽真实VCL状态栏在恢复普通文字后显式同步重绘；同一窗口的屏幕
-和WM_PRINTCLIENT DC移除前后均仅首分区变化440像素、边外0，第二分区无变化。x64公开
-读回两分区类型均0、文本正确；不能把缺口归因于未重绘或屏幕采样。下一步跟踪实际
-原生绘制调用和矩形，确定是否与SB_GETRECT不匹配；当前尚无产品修复和最终结论。
-
-S45补充双宽诊断构建（仅登记scratch，不发布）：`ntw16s_status_frame`跟踪表明真实
-TStatusBar有两个公开普通分区但只收到首分区绘制调用。x64原生comctl v6自有窗口无
-SBARS_SIZEGRIP时收到两个分区矩形；打开该标志后仅收到首分区；x86带手柄对照与真实
-VCL同样仅首分区。观察关联限定该系统版本及样本；原生对照编译出现多manifest链接
-警告且程序退出0，comctl版本应继续独立核实。不是仅凭截屏推断根因。后续应研究最后
-分区在内容绘制前可安全接入的公开边界，并补充无手柄x86及变体，不覆盖应用绘制。
-
-S45进一步验证：自有原生对照直接从注册状态栏过程所属模块读取版本，两位宽均为
-WinSxS ComCtl32 6.16；双宽无手柄均观察到两分区绘制入口，带手柄均仅首分区。
-先前多manifest警告仍记录，版本实测消除了对该运行时版本的疑问。仅scratch诊断
-观察现有DrawTextW入口无状态栏调用；ExtTextOutW在双宽分别见到对应两个分区的坐标，
-调用者是gdi32full而不是comctl本身，尚无法由此安全区分应用绘制或覆盖图标/自绘。
-不可据此直接在文字调用前插框；继续寻找有所有权证据的早期绘制边界。
-
-S45继续：仅scratch调试构建额外观察DrawTextExW及DrawThemeTextEx，两个位宽普通分区
-测试未见comctl直接调用这些入口；不能推断其他绘制API不存在。追加DrawThemeText入口后
-32/64位自有进程均在启动返回0xC0000142，观察未执行；这是诊断构建失败，具体原因待查，
-不影响已发布产品，也不能作为该入口未调用的证据。相关scratch已登记，S45仍开放。
-
-S45新证据：诊断构建在第三个临时观察钩子后超过40项hook容量，双宽实际记录
-DeleteDC注册error 122；此前0xC0000142由此解释。仅scratch容量扩到48后，真实VCL及
-原生6.16双宽都观察到comctl直接调用DrawThemeText，末分区的文本矩形可区分。
-仅scratch受限原型在该调用前为有文字、无图标、普通末分区补框；真实双宽144 DPI
-同窗移除对照的屏幕和WM_PRINTCLIENT DC均有首框440、末框804变化，分区边外0，
-文字及owner-draw测试恢复。该原型并未交付，空文本、图标、自绘、裁剪、其他版本、
-重入、异常和hook容量等仍须正式回归；不能把单一样本扩大为完整支持。
-
-S45新验证：尺寸手柄自有runtime-superclass模型双宽144 DPI沿用S44测试，图标、自绘、
-裁剪、简单/无边/凸起及重入移除/变更/销毁通过。另一个自有双宽末分区探针在96 DPI
-证实普通末分区变590像素、边外0，裁剪变79像素、裁剪外0；空文字、带图标、自绘
-末分区均原生保留，owner-draw原始数据正确。旧发布x64在普通末分区changed断言失败。
-新探针最初因根窗口以WS_VISIBLE创建导致附着未建立而失败；改为先创建再Show后双宽
-通过。测试仍为scratch且原型未发布，主题API hook初始化、复杂文本/重入和完整矩阵
-须正式实现验证；空文字和带图标等未实现范围不能冒称全部完成。
-
-S45正式候选双宽真实窗口两分区屏幕/DC各1244像素、边外0；26项聚焦包8.50秒零skip、
-双发布及system32双宽入口通过。空文字、图标、自绘末分区保留原生；P1待提交推送复核。
+S45 P1 `a129ce5`已推送，GitHub实际取回十五文件逐字节一致；26项聚焦包、双发布与
+system32双宽入口通过。真实样本双分区均有变化；空文字/图标/自绘末分区仍原生。
+S40屏幕机制及S41首次退出异常仍未解决；完整集成留T18收口。
 
 ## Identifier State
 
@@ -142,8 +99,8 @@ S45正式候选双宽真实窗口两分区屏幕/DC各1244像素、边外0；26�
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S44：24项聚焦包、双发布、真实状态栏有限适配及0df464d远端十四文件复核。
-- Open task: T18 S45 真实状态栏第二分区调查；M0/T18开放。
+- Last delivery: M0 T18 S45：26项聚焦包、双发布、状态栏末分区有限适配及a129ce5远端十五文件复核。
+- Open task: T18 S46 状态栏空文字和图标末分区调查；M0/T18开放。
 
 ## Technical Baseline
 
@@ -192,6 +149,8 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T18 S45状态栏末分区](../history/M0-T18-S45-status-last-pane.md)：双宽真实分区、26项包、双发布及a129ce5远端复核。
 
 - [T18 S44 VCL状态栏](../history/M0-T18-S44-vcl-status.md)：双宽真实首分区、24项包、双发布及0df464d远端复核。
 
