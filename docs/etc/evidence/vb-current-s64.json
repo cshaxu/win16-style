@@ -916,5 +916,23 @@
     ],
     "installed_dll_sha256": "72874f53422c9a6f2e3d196dc9b2908c6883bdc9db9a9b2bfe5d29c46de587ac",
     "binary_change": false
+  },
+  "vb6_sorted_combo_p29": {
+    "source": "https://github.com/sjgray/cbm-transfer/tree/6122eaa2484c4477e65157e65ba7db9734ff5027/V1",
+    "original_exe_sha256": "91d4d422380c54efec4690cd7262cf6cf5041872375b5fcc6178571198d1cd34",
+    "embedded_manifest_copy_sha256": "4bf18907f00e4d3380f75168a73f0d3799eac62377e2efdd5ee892c12bd92c48",
+    "sample": "CBMXfer source txtLocalDir is editable sorted VB6 ComboBox, runtime class owner MSVBVM60, native style 0x54010342. Private activation copy with unregistered COMCTL dependency, original executable and resources not modified. Separate per-instance scratch App.Path and ini restrict app file activity.",
+    "probe": "tests/integration/vb_intrinsic.c real-vb6-sorted-combo: real x86 runtime, 96 DPI, exact CBS_SORT and CBS_DROPDOWN with initially empty history. Three self-owned strings added unsorted, order verified, dropdown opened and cancelled, strings removed, original text, selection and font restored. No selection event is triggered, avoiding the application directory-change handler. Native and installed package both exit normally using PostMessage WM_CLOSE and have zero remaining job processes.",
+    "visual": "tests/integration/vb6_sorted_combo_compare.py: PrintWindow of list 281x41, 1056 changed RGB pixels vs native. Native vs native negative is rejected; difference is evidence of drawing change, not a classic-pixel oracle.",
+    "lifecycle_investigation": "Old observer SendMessage WM_CLOSE after actions: native none/add/drop passed, native both timed out; styled none passed, styled add/drop/both timed out, one run each, all isolated. Timeouts destroyed main form yet main UI thread remained in win32u NtUserWaitMessage; private diagnostic saw WM_CLOSE, WM_DESTROY and WM_NCDESTROY. Changing only the observer to PostMessage WM_CLOSE gave 4/4 native and 4/4 styled exits under same isolated action matrix. This implicates cross-thread synchronous close in this probe scenario; it does not establish the cause of all previous timeouts or a product fix. All timed-out instances were owned and killed with their jobs.",
+    "other_candidate": "VB6 IconEditor original and styled both produced run-time error 0 before form creation, with private OCX and SSubTmr6 loaded. No inference about its list or product style.",
+    "installed_dll_sha256": "72874f53422c9a6f2e3d196dc9b2908c6883bdc9db9a9b2bfe5d29c46de587ac",
+    "limits": [
+      "Real x86 VB6 sample at 96 DPI only.",
+      "Window messages, no physical input, actual app event ordering, IME or accessibility assertions.",
+      "Prior intermittent timeouts in other probe flows remain unresolved; no general lifecycle claim.",
+      "Private sample OCX is not a product dependency or OCX support expansion."
+    ],
+    "binary_change": false
   }
 }

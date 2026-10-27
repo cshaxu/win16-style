@@ -1690,8 +1690,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license; original sample attribution is evidence only",
-      "review": "T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S5 wrapper support and explicit native-child font lifetime contract; notices and original resources retained; T17 S6 project-authored exact-owned-thread queue/notification witness, tagged FIFO acknowledgement, original VB5/6 queued input assertions and native double-width positive/negative lifecycle test; test-only files, no product renderer or original resource changes; T17 S7 exact VB5 file-list roles and bounded owner-draw DC ownership; self-contained dual-width text/image/input/resource tests and optional authentic sample witness; no external implementation or original resources changed; T17 S8 exact observed VB6 FileListBox/DirListBox roles, dual-version file protocol models and authentic private-activation witness; native image/font/data ownership and original notices preserved; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T17 S11 optional source-reviewed image-only true VB6 observer: ten controls, native disabled/pressed flags, no Click, pixel/state/property restoration; no external code/resources copied; T18 S64 P25 real VB5 picture button observer without clicks; T18 S64 P26 pressed-state image witness; T18 S64 P27 optional real VB5 checklist keyboard and lifecycle; T18 S64 P28 optional real VB5 sorted multiselect witness",
-      "sha256": "31e0c32b90ca2e13213b8830f35125c75f74757d122ff1a0375fb42de57aae18"
+      "review": "T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S5 wrapper support and explicit native-child font lifetime contract; notices and original resources retained; T17 S6 project-authored exact-owned-thread queue/notification witness, tagged FIFO acknowledgement, original VB5/6 queued input assertions and native double-width positive/negative lifecycle test; test-only files, no product renderer or original resource changes; T17 S7 exact VB5 file-list roles and bounded owner-draw DC ownership; self-contained dual-width text/image/input/resource tests and optional authentic sample witness; no external implementation or original resources changed; T17 S8 exact observed VB6 FileListBox/DirListBox roles, dual-version file protocol models and authentic private-activation witness; native image/font/data ownership and original notices preserved; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T17 S11 optional source-reviewed image-only true VB6 observer: ten controls, native disabled/pressed flags, no Click, pixel/state/property restoration; no external code/resources copied; T18 S64 P25 real VB5 picture button observer without clicks; T18 S64 P26 pressed-state image witness; T18 S64 P27 optional real VB5 checklist keyboard and lifecycle; T18 S64 P28 optional real VB5 sorted multiselect witness; T18 S64 P29 optional real VB6 sorted combo and queued close",
+      "sha256": "677477847f7ee0cb032c03e741a91e23974fc03041d8cf30a8d55763f92c4205"
     },
     {
       "source_blob": null,
@@ -2060,6 +2060,15 @@
       "sha256": "133a056c9ea727abfe7c45a0193745e0f890ea068f55f67f55fca8b8742df593",
       "disposition": "authored",
       "review": "T18 S64 P28 optional VB5 sorted list capture comparison",
+      "notice": "Project-authored test; optional external sample not redistributed or required"
+    },
+    {
+      "path": "tests/integration/vb6_sorted_combo_compare.py",
+      "source": null,
+      "source_blob": null,
+      "sha256": "3628edbe7c7d78c0eeced4d9a063b1e5ab8ab62164e6d6609db2cccd0cb10d74",
+      "disposition": "authored",
+      "review": "T18 S64 P29 optional real VB6 sorted combo list capture comparison",
       "notice": "Project-authored test; optional external sample not redistributed or required"
     }
   ]
