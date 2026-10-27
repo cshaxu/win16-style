@@ -1760,7 +1760,7 @@
       "path": "tests/ntw16s-dll/checklist.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3dc09a533cf7d7b05f26b5a60b7c91b372b65f62958ea49c61d9669ddc1de6f8",
+      "sha256": "495226875fba291b9c7f5033786afb2b20d1204214bab71c98397a46c513181c",
       "disposition": "authored",
       "review": "T18 S21 self-contained native checklist scope, original glyph, negative and lifecycle model; not a Delphi runtime",
       "notice": "Project-authored C17; project MIT license"
