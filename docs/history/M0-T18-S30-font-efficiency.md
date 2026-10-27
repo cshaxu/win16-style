@@ -61,3 +61,5 @@ The `--menu-only` path also passed on x86. No production source, graphics or
 public ABI changed. The same tested four files were published to assets and
 O:/winnt/system32, with all eight deployed SHA-256 values matching the tested
 package. Test changes update only the corresponding adapted-source receipt.
+P1 `f079892` was pushed; all ten changed files, including all four assets,
+were retrieved from the actual remote commit and matched their Git blobs.

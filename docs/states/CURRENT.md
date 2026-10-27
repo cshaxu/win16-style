@@ -68,30 +68,28 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S30 Packet
+## M0 T18 S31 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S29标签调查、双发布及P1远端复核完成，T18保持开放 |
+| Identifier Mode | Continuation；S30测试效率交付及远端复核完成，T18保持开放 |
 | Admission And Approval | 用户要求自动连续S实现可做控件，不新开T；既定VB延期范围不擅自改变 |
-| Objective | 定位并优化字体布局聚焦回归79/64秒耗时，保证用户要求的短时测试和既有检查有效性 |
-| Non-goals | 不删减原字形、布局、双DPI上下文、字体资源生命周期和失败诊断；不改产品外观及原图形资源 |
-| Reference Baseline | [S29标签及耗时](../history/M0-T18-S29-label.md)、tests/ntw16s-dll/font_layout.c、S29实际包结果、[测试效率历史](../history/M0-Td-S9-test-efficiency.md) |
+| Objective | 调查真实 Delphi TStaticText 窗口及公开协议，安全复用或补充可验证的样式适配 |
+| Non-goals | 不猜测私有对象、不干预应用自绘、原图形资源和已确认外观 |
+| Reference Baseline | [S26控件台账](../history/M0-T18-S26-control-audit.md)、[S30测试效率](../history/M0-T18-S30-font-efficiency.md)及现有原生STATIC适配 |
 | Candidate Proposal | [Delphi Win32控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 自有原生测试、必要的测试工具与证据；不增加产品文件或公开ABI |
+| Files And ABI Surface | 真实样本探针、必要时现有renderer和原生测试；不增加产品文件或公开ABI |
 | Applicable Rules | C17、MinGW GCC、Ninja、ccache；仅自有隔离实例、有限等待和清理；兄弟仓库只读 |
-| Verification | 先测量耗时来源；双宽两上下文覆盖对照、实际字形像素与原生布局、资源稳定及故障注入；同批四文件实际包测试 |
-| Expected Markers | 原有功能/负例不丢失，耗时有可复核改善；明确对照次数和环境，失败不静默重试 |
-| Asset Needs | 登记build/t18-s30-font-efficiency任务scratch；S29及历史探针暂留交接，S25截图暂留T18验收 |
-| Reporting Requirements | 报告实测前后时间、覆盖清单、失败/跳过项和资源边界；实际包、必要双发布、提交及远端复核 |
-| Stop Conditions | 无法证明等价或稳定时不删除覆盖、不降低断言；明确原因并继续可独立控件工作 |
-| Exit Criteria | 验证的等价提速或有证据的保留结论，独立双宽包与治理交付完成；后续继续窗口化TStaticText，T18/M0开放 |
+| Verification | 自有实例核实类、位宽、模块、父子关系、字体及绘制；必要时双宽正负例，同批四文件实际包测试 |
+| Expected Markers | 区分真实协议、已覆盖路径和无法安全识别的边界，记录实际结果 |
+| Asset Needs | 登记build/t18-s31-static-text任务scratch；既有T18探针暂留交接和最终验收 |
+| Reporting Requirements | 报告真实样本、适配边界、测试与遗漏；实际包、必要双发布、提交及远端复核 |
+| Stop Conditions | 缺乏安全公开契约时保留原生行为并记录原因，继续独立控件工作 |
+| Exit Criteria | 完成有证据的有限适配或原生保留结论、独立双宽包及治理交付；T18/M0开放 |
 | Original Owner Request | 做完可实现控件并自行测试；每S按规范构建测试、发布、提交与远端复核 |
-| Similar-Issue Sweep | 其他重复预热/串行等待、缓存污染、偶发GDI计数与用户要求的短时测试；不静默放宽生命周期断言 |
+| Similar-Issue Sweep | 相似原生STATIC超类、无窗口标签和应用自绘边界，不扩张未经验证的身份 |
 
-S30验证：双宽干净构建及同批四文件14项聚焦包通过、零skip，耗时46.32秒；
-x86原八轮压力测试通过，x64压力及全量集成留T18收口。双发布八摘要一致，
-待提交推送及实际远端复核。
+S31准入；先查已有桌面探针和真实样本，保留自有隔离原则。
 
 ## Identifier State
 
@@ -99,8 +97,8 @@ x86原八轮压力测试通过，x64压力及全量集成留T18收口。双发�
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S29：两个真实标签绘制样本、14项聚焦包、双发布及c36f5ba远端七文件复核；标签缺口和字体测试耗时留TODO。
-- Open task: T18 S30 字体布局测试效率；M0/T18开放。
+- Last delivery: M0 T18 S30：14项聚焦包46.32秒、双发布，f079892远端十文件复核；x64压力与全量集成留最终验收。
+- Open task: T18 S31 TStaticText调查；M0/T18开放。
 
 ## Technical Baseline
 
@@ -149,6 +147,8 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T18 S30字体测试效率](../history/M0-T18-S30-font-efficiency.md)：双宽聚焦14项零skip、双发布及f079892远端十文件复核；完整压力测试保留T18收口。
 
 - [T18 S29无窗口标签调查](../history/M0-T18-S29-label.md)：真实标签身份、字体度量和Unicode绘制边界、14项聚焦包及双发布；安全契约未证实，P1远端七文件复核通过。
 
