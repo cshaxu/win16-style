@@ -162,6 +162,20 @@ try{
         (Case 'checklist-32' (Join-Path $x86 'core-checklist.exe') @($run) @('CHECKLIST_MODEL_OK bits=32 styled=0','CHECKLIST_MODEL_OK bits=32 styled=1 checked_mismatch=0','CHECKLIST_PUSHED_OK bits=32','CHECKLIST_CLEANUP_OK')),
         (Case 'checklist-64' (Join-Path $x64 'core-checklist.exe') @($run) @('CHECKLIST_MODEL_OK bits=64 styled=0','CHECKLIST_MODEL_OK bits=64 styled=1 checked_mismatch=0','CHECKLIST_PUSHED_OK bits=64','CHECKLIST_CLEANUP_OK'))
     )
+    $cases+=@(
+        (Case 'status-v5-32' $run @('--wait',(Join-Path $x86 'core-status-controls.exe')) @('STATUS_LIVE_OK bits=32','STATUS_CONTROL_OK bits=32','STATUS_CLIP_OK','STATUS_BOUNDARY_OK','STATUS_CONTROL_CLEANUP_OK')),
+        (Case 'status-v5-64' $run @('--wait',(Join-Path $x64 'core-status-controls.exe')) @('STATUS_LIVE_OK bits=64','STATUS_CONTROL_OK bits=64','STATUS_CLIP_OK','STATUS_BOUNDARY_OK','STATUS_CONTROL_CLEANUP_OK')),
+        (Case 'status-v6-32' $run @('--wait',(Join-Path $x86 'core-status-controls-v6.exe')) @('STATUS_LIVE_OK bits=32','STATUS_CONTROL_OK bits=32','STATUS_CLIP_OK','STATUS_BOUNDARY_OK','STATUS_CONTROL_CLEANUP_OK')),
+        (Case 'status-v6-64' $run @('--wait',(Join-Path $x64 'core-status-controls-v6.exe')) @('STATUS_LIVE_OK bits=64','STATUS_CONTROL_OK bits=64','STATUS_CLIP_OK','STATUS_BOUNDARY_OK','STATUS_CONTROL_CLEANUP_OK')),
+        (Case 'status-v5-dpi-32' $run @('--wait',(Join-Path $x86 'core-status-controls.exe'),'aware') @('STATUS_LIVE_OK bits=32','STATUS_CONTROL_OK bits=32','STATUS_CLIP_OK','STATUS_BOUNDARY_OK','aware=1','STATUS_CONTROL_CLEANUP_OK')),
+        (Case 'status-v5-dpi-64' $run @('--wait',(Join-Path $x64 'core-status-controls.exe'),'aware') @('STATUS_LIVE_OK bits=64','STATUS_CONTROL_OK bits=64','STATUS_CLIP_OK','STATUS_BOUNDARY_OK','aware=1','STATUS_CONTROL_CLEANUP_OK')),
+        (Case 'status-v6-dpi-32' $run @('--wait',(Join-Path $x86 'core-status-controls-v6.exe'),'aware') @('STATUS_LIVE_OK bits=32','STATUS_CONTROL_OK bits=32','STATUS_CLIP_OK','STATUS_BOUNDARY_OK','aware=1','STATUS_CONTROL_CLEANUP_OK')),
+        (Case 'status-v6-dpi-64' $run @('--wait',(Join-Path $x64 'core-status-controls-v6.exe'),'aware') @('STATUS_LIVE_OK bits=64','STATUS_CONTROL_OK bits=64','STATUS_CLIP_OK','STATUS_BOUNDARY_OK','aware=1','STATUS_CONTROL_CLEANUP_OK')),
+        (Case 'status-passive-v5-32' (Join-Path $x86 'core-status-controls.exe') @('passive',$d32) @('STATUS_PASSIVE_OK bits=32 unattached=1')),
+        (Case 'status-passive-v5-64' (Join-Path $x64 'core-status-controls.exe') @('passive',$d64) @('STATUS_PASSIVE_OK bits=64 unattached=1')),
+        (Case 'status-passive-v6-32' (Join-Path $x86 'core-status-controls-v6.exe') @('passive',$d32) @('STATUS_PASSIVE_OK bits=32 unattached=1')),
+        (Case 'status-passive-v6-64' (Join-Path $x64 'core-status-controls-v6.exe') @('passive',$d64) @('STATUS_PASSIVE_OK bits=64 unattached=1'))
+    )
     if($FullIntegration){
         $cases+=@(
             (Case 'creation-contract' (Join-Path $x64 'creation-contract-driver.exe') @($run,$d32,$d64,(Join-Path $x86 'creation-contract.exe'),(Join-Path $x64 'creation-contract.exe')) @('CREATION CONTRACT PASS 64') 520),

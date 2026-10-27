@@ -5,6 +5,7 @@
 #include "theme.h"
 #include <commctrl.h>
 #include <stdlib.h>
+#include <wchar.h>
 
 /* This coordinator composes the one existing renderer. It observes only
  * creation inside explicit caller scopes; it never scans a desktop or infers
@@ -19,7 +20,8 @@ struct ntw16s_creation_scope {
 };
 typedef struct attachment {
     unsigned calls;
-    BOOL detached,tree,file_owner,picture,button_owner,checklist;
+    BOOL detached,tree,file_owner,picture,button_owner,checklist,status;
+    unsigned status_epoch;
     HWND themed,report_window,report_parent;
     HMODULE report_module;
     ntw16s_vb_fonts fonts;
@@ -35,6 +37,67 @@ typedef struct checklist_draw_scope {
     RECT item;
 } checklist_draw_scope;
 static _Thread_local checklist_draw_scope *checklist_current;
+
+/* Status frames are drawn by the native common control before text, icons
+ * and WM_DRAWITEM. A per-message snapshot makes nested unrelated drawing a
+ * barrier and allows a changing or destroyed control to fall back safely. */
+typedef struct status_draw_scope {
+    struct status_draw_scope *previous;
+    attachment *owner; HWND window; HDC dc; HMODULE native;
+    unsigned epoch,count; RECT panes[64];
+} status_draw_scope;
+static _Thread_local status_draw_scope *status_current;
+static LONG status_hooks_ready;
+void ntw16s_status_hooks_enable(void){InterlockedExchange(&status_hooks_ready,1);}
+
+static BOOL status_system_module(HMODULE image)
+{
+    WCHAR path[MAX_PATH],system[MAX_PATH],winsxs[MAX_PATH];DWORD n;
+    n=GetModuleFileNameW(image,path,ARRAYSIZE(path));if(!n || n>=ARRAYSIZE(path))return FALSE;
+    WCHAR *base=wcsrchr(path,L'\\');if(!base || lstrcmpiW(base+1,L"comctl32.dll"))return FALSE;
+    *base=L'\0';n=GetSystemDirectoryW(system,ARRAYSIZE(system));
+    if(n && n<ARRAYSIZE(system) && !lstrcmpiW(path,system))return TRUE;
+    n=GetWindowsDirectoryW(winsxs,ARRAYSIZE(winsxs));if(!n || n+8>=ARRAYSIZE(winsxs))return FALSE;
+    lstrcatW(winsxs,L"\\WinSxS\\");size_t length=wcslen(winsxs);
+    return wcslen(path)>length && CompareStringOrdinal(path,(int)length,winsxs,(int)length,TRUE)==CSTR_EQUAL;
+}
+
+static BOOL status_identity(HWND w,HMODULE *native)
+{
+    WCHAR name[64];DWORD pid=0;WNDCLASSEXW cls={.cbSize=sizeof(cls)};HMODULE image=NULL;
+    if(GetWindowThreadProcessId(w,&pid)!=GetCurrentThreadId() || pid!=GetCurrentProcessId() ||
+        !(GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD) ||
+        (GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) ||
+        !GetClassNameW(w,name,ARRAYSIZE(name)) || lstrcmpiW(name,STATUSCLASSNAMEW) ||
+        !GetClassInfoExW(NULL,STATUSCLASSNAMEW,&cls) ||
+        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+            (LPCWSTR)(UINT_PTR)cls.lpfnWndProc,&image) ||
+        !status_system_module(image) ||
+        (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)!=image ||
+        GetClassLongPtrW(w,GCLP_WNDPROC)!=(ULONG_PTR)cls.lpfnWndProc ||
+        GetClassLongPtrW(w,GCL_CBWNDEXTRA)<(ULONG_PTR)cls.cbWndExtra)return FALSE;
+    if(native)*native=image;
+    return TRUE;
+}
+
+/* Called only after the original native drawing call has completed. */
+void ntw16s_status_frame(HDC dc,const RECT *rect,const RECT *clip,const void *caller)
+{
+    status_draw_scope *s=status_current;HMODULE module=NULL;HWND w,scoped=NULL;BOOL matches=FALSE;POINT origin;
+    if(!s || !s->owner || s->owner->detached || s->epoch!=s->owner->status_epoch || !dc || !rect ||
+        !status_identity(s->window,NULL) || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
+        !GetViewportOrgEx(dc,&origin) || origin.x || origin.y ||
+        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+            (LPCWSTR)caller,&module) || module!=s->native)return;
+    if(ntw16s_native_paint_target(dc,&scoped) && scoped!=s->window)return;
+    w=WindowFromDC(dc);if(s->dc?dc!=s->dc:w!=s->window)return;
+    for(unsigned i=0;i<s->count;++i)if(EqualRect(rect,&s->panes[i])){matches=TRUE;break;}
+    if(!matches || s->owner->detached || s->epoch!=s->owner->status_epoch)return;
+    int saved=SaveDC(dc);if(!saved)return;
+    if(!clip || IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom)!=ERROR)
+        FrameRect(dc,rect,(HBRUSH)GetStockObject(BLACK_BRUSH));
+    RestoreDC(dc,saved);
+}
 
 /* This precise superclass was observed in a real VCL application. It still
  * owns every item and callback; this identity never aliases generic lists. */
@@ -80,8 +143,29 @@ static void release(attachment *a)
 {if(!--a->calls && a->detached){ntw16s_vb_fonts_clear(&a->fonts);free(a);}}
 static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
-    attachment *a=(attachment *)data;LRESULT result;(void)id;
+    attachment *a=(attachment *)data;LRESULT result;DWORD status_error=GetLastError();BOOL status=a->status;(void)id;
     ++a->calls;
+    if(a->status && (m==SB_SETPARTS || m==SB_SETTEXTA || m==SB_SETTEXTW || m==SB_SIMPLE ||
+        m==SB_SETICON || m==SB_SETMINHEIGHT || m==WM_SETFONT || m==WM_STYLECHANGED ||
+        m==WM_SIZE || m==WM_ENABLE || m==WM_SETTINGCHANGE || m==WM_DESTROY || m==WM_NCDESTROY))++a->status_epoch;
+    status_draw_scope scope={0},*prior=status_current;
+    BOOL painting=a->status && !a->detached && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT);
+    if(prior && prior->window!=w)status_current=NULL;
+    if(painting){
+        scope.previous=status_current;scope.owner=a;scope.window=w;scope.dc=m==WM_PAINT?NULL:(HDC)p;scope.epoch=a->status_epoch;
+        if(status_identity(w,&scope.native) && !SendMessageW(w,SB_ISSIMPLE,0,0) && !a->detached && scope.epoch==a->status_epoch){
+            LRESULT count=SendMessageW(w,SB_GETPARTS,0,0);
+            if(count>0 && count<=64 && !a->detached && scope.epoch==a->status_epoch){
+                for(unsigned i=0;i<(unsigned)count;++i){RECT r={0};LRESULT type=SendMessageW(w,SB_GETTEXTLENGTHW,i,0);
+                    if(a->detached || scope.epoch!=a->status_epoch)break;
+                    if((HIWORD(type)&~SBT_OWNERDRAW) || !SendMessageW(w,SB_GETRECT,i,(LPARAM)&r))continue;
+                    if(a->detached || scope.epoch!=a->status_epoch)break;
+                    scope.panes[scope.count++]=r;
+                }
+            }
+        }
+        status_current=&scope;
+    }
     if(a->picture && !a->detached && m!=WM_DESTROY && m!=WM_NCDESTROY && !ntw16s_vb_picture(w))
         (void)Ntw16sWindowRemove(w);
     if(a->button_owner && !a->detached && m!=WM_DESTROY && m!=WM_NCDESTROY && !ntw16s_vb_graphical_button(w))
@@ -99,9 +183,12 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
             !SendMessageW(w,LVM_ISGROUPVIEWENABLED,0,0))) && !a->detached)
             ntw16s_report_paint_enable(&paint,w,a->report_module,&a->detached);
     }
+    if(status)SetLastError(status_error);
     result=DefSubclassProc(w,m,p,l);
+    if(status)status_error=GetLastError();
     ntw16s_vb_paint_end(&paint);
-    release(a);return result;
+    status_current=prior;
+    release(a);if(status)SetLastError(status_error);return result;
 }
 /* Observe this verified child's native custom/owner-draw DC. Never request extra stages,
  * rewrite the application's result, select its font, or inspect item lParam. */
@@ -239,7 +326,7 @@ BOOL __cdecl Ntw16sWindowTerminal(HWND w)
 
 static BOOL install_created(HWND w,DWORD original_style)
 {
-    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=checklist_identity(w);HWND parent;HMODULE owner;attachment *a;DWORD error;
+    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=checklist_identity(w),status=InterlockedCompareExchange(&status_hooks_ready,0,0)!=0 && status_identity(w,NULL);HWND parent;HMODULE owner;attachment *a;DWORD error;
     ntw16s_control_protocol *protocol=NULL;
     if(lookup(w))return TRUE;
     /* COMBOBOX installs its own internal list when construction finishes.
@@ -251,7 +338,7 @@ static BOOL install_created(HWND w,DWORD original_style)
     control=(original_style&WS_CHILD) && (edit || class_is(w,L"BUTTON") || class_is(w,L"STATIC") ||
         class_is(w,L"LISTBOX") || class_is(w,L"COMBOBOX") || class_is(w,L"SCROLLBAR") || class_is(w,L"SysLink"));
     if(checklist)control=FALSE;
-    if(!control && !checklist && (original_style&WS_CHILD)){
+    if(!control && !checklist && !status && (original_style&WS_CHILD)){
         SetLastError(ERROR_SUCCESS);
         protocol=ntw16s_control_protocol_bind(w);
         if(!protocol && GetLastError()==ERROR_NOT_ENOUGH_MEMORY)return FALSE;
@@ -266,18 +353,18 @@ static BOOL install_created(HWND w,DWORD original_style)
      * and then become a custom client surface.  Without an explicitly
      * verified public protocol it must stay native; only an application-owned
      * generic child frame may use the ordinary frame path. */
-    if(!control && !report && !tree && !picture && !checklist && !legacy_progress && (original_style&WS_CHILD) &&
+    if(!control && !report && !tree && !picture && !checklist && !legacy_progress && !status && (original_style&WS_CHILD) &&
             owner && owner!=GetModuleHandleW(NULL)){
         ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
     }
     /* A custom client-only child and MDICLIENT keep application painting.
      * MDI child frames have WS_CAPTION and take the ordinary frame route. */
-    if(!control && !report && !picture && !checklist && !legacy_progress && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME))){
+    if(!control && !report && !picture && !checklist && !legacy_progress && !status && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME))){
         SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
     }
     a=calloc(1,sizeof(*a));
     if(!a){ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    a->calls=1;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;
+    a->calls=1;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;a->status=status;
     if(report || tree || a->file_owner || a->button_owner || a->checklist){a->report_window=w;a->tree=tree;
         a->report_module=(a->file_owner || a->button_owner)?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}
     if(!SetWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc,(DWORD_PTR)a)){
@@ -293,7 +380,7 @@ static BOOL install_created(HWND w,DWORD original_style)
             Ntw16sWindowRemove(info.hwndItem);
     }
     if(a->detached){release(a);SetLastError(ERROR_CANCELLED);return FALSE;}
-    if(a->checklist)installed=TRUE;
+    if(a->checklist || a->status)installed=TRUE;
     else if(legacy_progress)installed=win16_style_legacy_progress_border_install_created(w,NULL,a,&a->detached);
     else if(protocol && ntw16s_control_protocol_toolbar(w))
         installed=win16_style_toolbar_install_created(w,NULL,a,&a->detached);

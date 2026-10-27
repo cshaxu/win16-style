@@ -493,9 +493,7 @@ if(BUILD_TESTING)
   target_link_libraries(core-progress-color-v5 PRIVATE user32 comctl32)
   target_link_options(core-progress-color-v5 PRIVATE -municode)
 
-  # The launcher supplies the DLL to this isolated, same-width target.  It is
-  # intentionally not in the passing package matrix until status styling is
-  # implemented; the current release is an explicit negative control.
+  # The package test launches this isolated, same-width target through run16s.
   add_executable(core-status-controls tests/ntw16s-dll/status_controls.c)
   target_compile_definitions(core-status-controls PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_libraries(core-status-controls PRIVATE user32 gdi32 comctl32)

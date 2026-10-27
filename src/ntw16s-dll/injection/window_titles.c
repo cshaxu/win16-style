@@ -9,6 +9,10 @@
 #include <wchar.h>
 #include <uxtheme.h>
 
+/* Private, synchronous coordinator scope; not part of the public ABI. */
+void ntw16s_status_frame(HDC,const RECT *,const RECT *,const void *);
+void ntw16s_status_hooks_enable(void);
+
 /* The original trampoline leaves are bound privately to this same DLL.
  * No renderer LoadLibrary/GetProcAddress, GUI allocation or binding in DllMain. */
 static INIT_ONCE title_once=INIT_ONCE_STATIC_INIT;
@@ -22,6 +26,7 @@ static BOOL CALLBACK bind_titles(PINIT_ONCE once,void *parameter,void **context)
     ntw16s_native_api api={sizeof(api),real_get_scroll,real_set_scroll,real_set_theme};
     if(!ntw16s_bind_native_api(&api))return FALSE;
     ntw16s_updown_api_enable();
+    ntw16s_status_hooks_enable();
     InterlockedExchange(&style_ready,1);return TRUE;
 }
 typedef struct title_scope { ntw16s_creation_scope *creation;DWORD failure; } title_scope;
@@ -240,6 +245,7 @@ static BOOL WINAPI hook_ExtTextOutW(HDC dc,int x,int y,UINT options,const RECT *
 }
 
 static __typeof__(&DrawFrameControl) real_DrawFrameControl;
+static __typeof__(&DrawEdge) real_DrawEdge;
 static __typeof__(&DrawThemeBackground) real_DrawThemeBackground;
 static __typeof__(&CreateCompatibleDC) real_CreateCompatibleDC;
 static __typeof__(&DeleteDC) real_DeleteDC;
@@ -253,10 +259,21 @@ static BOOL WINAPI hook_DrawFrameControl(HDC dc,LPRECT rect,UINT type,UINT state
     if(result)win16_style_checklist_frame(dc,rect,type,state,__builtin_return_address(0));
     SetLastError(error);return result;
 }
+static BOOL WINAPI hook_DrawEdge(HDC dc,LPRECT rect,UINT edge,UINT flags)
+{
+    RECT original={0};BOOL eligible=rect && edge==BDR_SUNKENOUTER && flags==(BF_RECT|BF_ADJUST);
+    if(eligible)original=*rect;
+    BOOL result=real_DrawEdge(dc,rect,edge,flags);DWORD error=GetLastError();
+    if(result && eligible)ntw16s_status_frame(dc,&original,NULL,__builtin_return_address(0));
+    SetLastError(error);return result;
+}
 static HRESULT WINAPI hook_DrawThemeBackground(HTHEME theme,HDC dc,int part,int state,const RECT *rect,const RECT *clip)
 {
     DWORD entry=GetLastError();BOOL drawn=ntw16s_updown_draw_theme(theme,dc,part,state,rect,clip,__builtin_return_address(0));
-    SetLastError(entry);return drawn?S_OK:real_DrawThemeBackground(theme,dc,part,state,rect,clip);
+    SetLastError(entry);if(drawn)return S_OK;
+    HRESULT result=real_DrawThemeBackground(theme,dc,part,state,rect,clip);DWORD error=GetLastError();
+    if(SUCCEEDED(result) && part==1 && state==0)ntw16s_status_frame(dc,rect,clip,__builtin_return_address(0));
+    SetLastError(error);return result;
 }
 static HDC WINAPI hook_CreateCompatibleDC(HDC source)
 {
@@ -296,7 +313,7 @@ LONG ntw16s_attach_titles(void)
     ATTACH(MessageBoxIndirectA);ATTACH(MessageBoxIndirectW);
     ATTACH(DrawTextA);ATTACH(DrawTextExA);ATTACH(TextOutA);ATTACH(ExtTextOutA);
     ATTACH(TextOutW);ATTACH(ExtTextOutW);
-    ATTACH(DrawFrameControl);ATTACH(DrawThemeBackground);ATTACH(CreateCompatibleDC);ATTACH(DeleteDC);
+    ATTACH(DrawFrameControl);ATTACH(DrawEdge);ATTACH(DrawThemeBackground);ATTACH(CreateCompatibleDC);ATTACH(DeleteDC);
 #undef ATTACH
     return error;
 }

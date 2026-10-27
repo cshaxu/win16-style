@@ -96,6 +96,7 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
 - Last delivery: M0 T18 S24：20项聚焦包、99项标准包、双发布及511620b远端四文件复核；客户区未适配转TODO。
+- S25 candidate: 原生系统状态栏有限边框已本地实现，最终同批包36项零跳过、双发布与安装入口复测通过；真实Delphi仍待核实，提交推送及远端复核待完成。
 - Open task: T18 S25 状态栏公开协议与有限适配；M0/T18开放。
 
 ## Technical Baseline
