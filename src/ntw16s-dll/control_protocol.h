@@ -6,6 +6,9 @@ typedef struct ntw16s_control_protocol ntw16s_control_protocol;
 ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND);
 /* Internal: owner is accepted only after the actual EDIT forwarding witness. */
 ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_edit(HWND,HMODULE);
+/* Internal: the owner must have forwarded WM_PAINT to native TRACKBAR. */
+ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_trackbar(HWND,HMODULE);
+BOOL ntw16s_control_protocol_runtime_trackbar(HWND);
 ntw16s_control_protocol *ntw16s_control_protocol_acquire(HWND);
 BOOL ntw16s_control_protocol_is(HWND,const WCHAR *);
 HMODULE ntw16s_control_protocol_list_module(HWND);

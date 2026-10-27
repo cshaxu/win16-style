@@ -13,6 +13,7 @@
 #include "trackbar_paint.h"
 #include "updown_paint.h"
 #include "vb_text.h"
+#include "injection/unwind.h"
 #include <commctrl.h>
 #include <oleacc.h>
 #include <stdlib.h>
@@ -52,6 +53,26 @@ typedef struct control_style {
     SIZE scroll_caret_size;
     int tab_count,*tab_positions;
 } control_style;
+typedef struct track_paint_scope {
+    struct track_paint_scope *previous;
+    control_style *owner;
+    const NMCUSTOMDRAW *draw;
+    HDC dc;
+    UINT_PTR item;
+    RECT rect;
+    BOOL active,pending;
+} track_paint_scope;
+static _Thread_local track_paint_scope *track_paint;
+static void track_paint_end(void *data)
+{track_paint_scope *scope=data;track_paint=scope->previous;}
+static NTW16S_UNWIND_FUNCTION LRESULT track_paint_dispatch(control_style *s,HWND w,UINT m,WPARAM a,LPARAM b)
+{
+    track_paint_scope scope={.previous=track_paint,.owner=s};ntw16s_unwind_scope unwind;
+    DWORD entry=GetLastError(),error;LRESULT result;
+    track_paint=&scope;NTW16S_UNWIND_BEGIN(unwind,track_paint_end,&scope);
+    SetLastError(entry);result=DefSubclassProc(w,m,a,b);error=GetLastError();
+    NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
+}
 static void dispose_control(control_style *s)
 {for(unsigned i=0;i<s->combo_font_count;++i)win16_style_system_release(s->combo_fonts[i]);win16_style_system_release(s->font);ntw16s_control_protocol_release(s->protocol);free(s->tab_positions);free(s);}
 static LRESULT CALLBACK control_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
@@ -145,6 +166,32 @@ static LRESULT CALLBACK trackbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UIN
     if(m==WM_NOTIFY && l && !s->detached && GetParent(s->track_window)==parent){
         NMHDR *header=(NMHDR *)l;
         if(header->hwndFrom==s->track_window && header->code==NM_CUSTOMDRAW)draw=(NMCUSTOMDRAW *)l;
+    }
+    if(draw && ntw16s_control_protocol_runtime_trackbar(s->track_window)){
+        track_paint_scope *scope=track_paint;
+        BOOL match=scope && scope->owner==s && scope->active && scope->draw==draw && scope->dc==draw->hdc;
+        if(match && draw->dwDrawStage==CDDS_ITEMPOSTPAINT && scope->pending && scope->item==draw->dwItemSpec){
+            scope->pending=FALSE;
+            if(EqualRect(&scope->rect,&draw->rc))win16_style_trackbar_runtime_border(s->track_window,draw,&s->palette);
+            result=CDRF_DODEFAULT;
+        }else if(match && draw->dwDrawStage==CDDS_POSTPAINT){scope->active=FALSE;result=CDRF_DODEFAULT;}
+        else {
+            SetLastError(entry);result=DefSubclassProc(parent,m,p,l);DWORD error=GetLastError();
+            if(!s->detached && scope && track_paint==scope && scope->owner==s){
+                if(draw->dwDrawStage==CDDS_PREPAINT && result==CDRF_NOTIFYITEMDRAW &&
+                   win16_style_trackbar_supported(s->track_window)){
+                    scope->draw=draw;scope->dc=draw->hdc;scope->active=TRUE;
+                    result=CDRF_NOTIFYITEMDRAW|CDRF_NOTIFYPOSTPAINT;
+                }else if(match && draw->dwDrawStage==CDDS_ITEMPREPAINT && result==CDRF_DODEFAULT && !scope->pending &&
+                    (draw->dwItemSpec==TBCD_CHANNEL || draw->dwItemSpec==TBCD_THUMB)){
+                    scope->item=draw->dwItemSpec;scope->rect=draw->rc;scope->pending=TRUE;result=CDRF_NOTIFYPOSTPAINT;
+                }
+            }
+            if(!--s->calls && s->detached)dispose_control(s);
+            SetLastError(error);return result;
+        }
+        if(!--s->calls && s->detached)dispose_control(s);
+        SetLastError(entry);return result;
     }
     if(draw && draw->dwDrawStage!=CDDS_PREPAINT && s->track_internal)internal=TRUE;
     if(m==WM_NCDESTROY){RemoveWindowSubclass(parent,trackbar_notify,id);s->track_parent=NULL;s->track_internal=FALSE;}
@@ -1232,7 +1279,9 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
     }
     else if(ntw16s_class_is(w,UPDOWN_CLASSW)){result=DefSubclassProc(w,m,a,b);}
     else if(ntw16s_class_is(w,TRACKBAR_CLASSW) || ntw16s_control_protocol_is(w,TRACKBAR_CLASSW)){
-        result=DefSubclassProc(w,m,a,b);
+        if(ntw16s_control_protocol_runtime_trackbar(w) && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT))
+            result=track_paint_dispatch(s,w,m,a,b);
+        else result=DefSubclassProc(w,m,a,b);
         if(!s->detached && m==WM_STYLECHANGED)SendMessageW(w,WM_SYSCOLORCHANGE,0,0);
         if(!s->detached && s->track_parent && GetParent(w)!=s->track_parent){
             trackbar_unbind(s);SendMessageW(w,WM_SYSCOLORCHANGE,0,0);

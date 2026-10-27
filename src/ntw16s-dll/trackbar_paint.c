@@ -4,10 +4,27 @@
 BOOL win16_style_trackbar_supported(HWND w)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
+    DWORD allowed=TBS_AUTOTICKS|TBS_VERT|TBS_TOP|TBS_BOTH|TBS_NOTICKS|TBS_FIXEDLENGTH;
+    if(ntw16s_control_protocol_runtime_trackbar(w))allowed|=TBS_ENABLESELRANGE;
     return ntw16s_control_protocol_is(w,TRACKBAR_CLASSW) &&
-        !(style&0xffffu&~(TBS_AUTOTICKS|TBS_VERT|TBS_TOP|TBS_BOTH|TBS_NOTICKS|TBS_FIXEDLENGTH)) &&
+        !(style&0xffffu&~allowed) &&
         !(style&(WS_BORDER|WS_HSCROLL|WS_VSCROLL)) &&
         !(ex&(WS_EX_CLIENTEDGE|WS_EX_STATICEDGE|WS_EX_LAYOUTRTL|WS_EX_RTLREADING));
+}
+BOOL win16_style_trackbar_runtime_border(HWND w,const NMCUSTOMDRAW *draw,const win16_style_palette *palette)
+{
+    RECT client,r=draw->rc;POINT window_origin,viewport_origin;
+    if(!ntw16s_control_protocol_runtime_trackbar(w) || !win16_style_trackbar_supported(w) || !draw->hdc ||
+       GetMapMode(draw->hdc)!=MM_TEXT || (GetLayout(draw->hdc)&LAYOUT_RTL) ||
+       !GetWindowOrgEx(draw->hdc,&window_origin) || window_origin.x || window_origin.y ||
+       !GetViewportOrgEx(draw->hdc,&viewport_origin) || viewport_origin.x || viewport_origin.y ||
+       (draw->dwItemSpec!=TBCD_CHANNEL && draw->dwItemSpec!=TBCD_THUMB) || !GetClientRect(w,&client) ||
+       r.left<client.left || r.top<client.top || r.right>client.right || r.bottom>client.bottom ||
+       r.right<=r.left || r.bottom<=r.top)return FALSE;
+    int saved=SaveDC(draw->hdc);if(!saved)return FALSE;
+    SetDCBrushColor(draw->hdc,palette->edge);
+    FrameRect(draw->hdc,&r,(HBRUSH)GetStockObject(DC_BRUSH));
+    RestoreDC(draw->hdc,saved);return TRUE;
 }
 BOOL win16_style_trackbar_part(HWND w,const NMCUSTOMDRAW *draw,const win16_style_palette *palette)
 {
