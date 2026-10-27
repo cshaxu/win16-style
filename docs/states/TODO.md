@@ -45,6 +45,8 @@ S15包测试进度文件共享冲突已由[S17记录](../history/M0-T18-S17-test
 
 - [ ] TODO(Medium): VCL无窗口 `TSpeedButton` 尚未适配；Owner：T18后续控件审计。Evidence：[S22](../history/M0-T18-S22-speedbutton.md)。Admission：真实版本可复核的公开对象/绘制边界，须保留应用图像、透明、Flat/Down/Disabled和事件；不得以文本、坐标、颜色或静态地址猜测控件。
 
+- [ ] TODO(Medium): VCL `TPanel` 自绘背景和边框尚未适配；Owner：T18后续控件适配及最终审计。Evidence：[S28](../history/M0-T18-S28-panel.md)。Admission：可验证的公开绘制及颜色/继承契约，区分父窗背景与应用自定义色和bevel，保留子控件、剪裁、布局及交互；不得依据类名或画刷颜色猜测。
+
 - [ ] TODO(Medium): ComCtl32 v5 `TProgressBar` 客户区填充仍为原生；Owner：后续进度条适配。Evidence：[S23](../history/M0-T18-S23-progress-border.md)、[S24](../history/M0-T18-S24-progress-colors.md)。Admission：不触发可观察的探测性颜色设置或猜测绘制实现，能可靠获取或保留原生颜色及状态并保留应用语义；现仅适配经验证的非客户区边框。
 
 - [ ] TODO(Medium): 真实 Delphi `TStatusBar` 包装控件与简单、凸起、无边框及RTL变体仍未认证；Owner：T18后续控件及最终集成审计。Evidence：[S25](../history/M0-T18-S25-status-bar.md)。Admission：真实合法样本与准确注册/公开协议，保留字体、图像、自绘回调及生命周期；S25只证明原生状态栏的有限分区边框，不把C模型当作真实VCL。

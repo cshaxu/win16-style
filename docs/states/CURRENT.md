@@ -89,6 +89,9 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | Original Owner Request | 做完可实现控件并自行测试；每S按规范构建测试、发布、提交与远端复核 |
 | Similar-Issue Sweep | TPanel/TFrame/TGroupBox及已有VB容器、嵌套控件和应用自绘；未验证项不计通过 |
 
+S28进展：[真实面板证据](../history/M0-T18-S28-panel.md)：两个真实VCL样本与公开属性表明不宜猜测背景；
+安全接入缺口转TODO。16项聚焦包和双发布通过，待提交推送及远端复核。
+
 ## Identifier State
 
 - Milestone: M0 (fixed)
