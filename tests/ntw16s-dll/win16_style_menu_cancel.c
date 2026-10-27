@@ -171,6 +171,13 @@ static int matrix(int argc,WCHAR **argv)
     for(unsigned context=0;context<2;++context){
     CHECK(SetThreadDpiAwarenessContext(context?DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2:DPI_AWARENESS_CONTEXT_UNAWARE));
     native_popup();border_checks=hidden_shadows=0;
+    /* Keep an owned active window between cases. Destroying the active window
+     * leaves USER to resolve activation against another desktop window and can
+     * add seconds to every subsequent case. All case assertions precede the
+     * switch, and each tested window is still independently destroyed. */
+    HWND anchor=CreateWindowW(cls.lpszClassName,L"Menu test activation anchor",WS_OVERLAPPEDWINDOW,
+        10,10,150,100,NULL,NULL,cls.hInstance,NULL);CHECK(anchor);
+    ShowWindow(anchor,SW_SHOWNORMAL);
     for(scenario=0;scenario<(preview_only?1u:15u);++scenario){
         HWND w=CreateWindowW(cls.lpszClassName,L"Menu cancellation",WS_OVERLAPPEDWINDOW,
             30,30,650,350,NULL,NULL,cls.hInstance,NULL);CHECK(w);
@@ -226,10 +233,11 @@ static int matrix(int argc,WCHAR **argv)
         CHECK(GetMenuItemInfoW(b,0,TRUE,&item) && !(item.fType&MFT_OWNERDRAW));
         MENUINFO restored_a={.cbSize=sizeof(restored_a),.fMask=MIM_STYLE},restored_b=restored_a;
         CHECK(GetMenuInfo(a,&restored_a) && GetMenuInfo(b,&restored_b) && restored_a.dwStyle==original_a.dwStyle && restored_b.dwStyle==original_b.dwStyle);
-        KillTimer(w,99);CHECK(remove_style(w) && DestroyWindow(w) && DestroyWindow(other));drain();
+        KillTimer(w,99);SetActiveWindow(anchor);CHECK(GetActiveWindow()==anchor);
+        CHECK(remove_style(w) && DestroyWindow(w) && DestroyWindow(other));drain();
         printf("MENU CANCEL CASE PASS %u native loop/focus/capture/hover/item restoration\n",scenario);
     }
-    CHECK(border_checks && hidden_shadows);native_popup();
+    CHECK(DestroyWindow(anchor));CHECK(border_checks && hidden_shadows);native_popup();
     printf("MENU SHADOW SCOPE PASS aware=%u border-checks=%u hidden-associated=%u\n",context,border_checks,hidden_shadows);
     }
     CHECK(SystemParametersInfoW(SPI_GETDROPSHADOW,0,&after_setting,0) && GetClassInfoW(NULL,L"#32768",&after_class));
