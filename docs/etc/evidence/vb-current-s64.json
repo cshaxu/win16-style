@@ -857,5 +857,22 @@
       "Native messages are not physical mouse input; no IME or accessibility assertion.",
       "No real VB5 Picture/DownPicture/DisabledPicture property sample was found."
     ]
+  },
+  "vb5_picture_buttons_p25": {
+    "source": "https://github.com/tannerhelland/vbAccelerator-Archive/tree/390fd1029e44a407695c6ecff4248d7a345d30ef/VB/Code/Controls/Menus/Popup_Menu_ActiveX_DLL",
+    "original_exe_sha256": "3075c8c04faa49a6ed3220ba49f3e80e07489faaa58f5585e26a77c3b00da5fb",
+    "embedded_manifest_copy_sha256": "be97425d6e58613aca247d82bd70a20c94acf5c45554bc0f6afed75e7ec8e294",
+    "private_cnewmenu_sha256": "842d9cb8dc0fb01feadffe4bc556178124050f79767adb675a4340529ddc9f97",
+    "sample": "Author VB5 MenuTest, original source fAbout.frm defines two graphical CommandButton Picture properties. Private scratch COMCTL32, cNewMenu, SSubTmr and MSVBVM50, embedded manifest; no installation or registration, no product dependency.",
+    "probe": "tests/integration/vb_intrinsic.c real-vb5-picture-buttons opens About by its exact menu command, captures 2 runtime-owned 129x33 buttons, disables and re-enables them, closes dialog and app; button click handlers open websites and are never invoked. Both native and installed style processes exit normally, owned jobs empty.",
+    "result": "tests/integration/vb5_picture_compare.py verifies 2 controls times 3 states, all 18150 inner RGB pixels unchanged, original and styled frame differs, disabled differs from normal and restored equals normal. One altered interior pixel is rejected at (10,10).",
+    "installed_dll_sha256": "72874f53422c9a6f2e3d196dc9b2908c6883bdc9db9a9b2bfe5d29c46de587ac",
+    "limits": [
+      "A real VB5 x86 sample at 96 DPI only; default disabled image processing, not explicitly assigned DisabledPicture.",
+      "DownPicture and pressed state were not tested; button handlers would open webpages so no button click was performed.",
+      "Other DPI, physical input, IME and accessibility not covered.",
+      "External OCX used only as sample dependency, user-deferred OCX and DriveListBox styling unchanged."
+    ],
+    "binary_change": false
   }
 }

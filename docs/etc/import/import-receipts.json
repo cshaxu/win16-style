@@ -1690,8 +1690,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license; original sample attribution is evidence only",
-      "review": "T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S5 wrapper support and explicit native-child font lifetime contract; notices and original resources retained; T17 S6 project-authored exact-owned-thread queue/notification witness, tagged FIFO acknowledgement, original VB5/6 queued input assertions and native double-width positive/negative lifecycle test; test-only files, no product renderer or original resource changes; T17 S7 exact VB5 file-list roles and bounded owner-draw DC ownership; self-contained dual-width text/image/input/resource tests and optional authentic sample witness; no external implementation or original resources changed; T17 S8 exact observed VB6 FileListBox/DirListBox roles, dual-version file protocol models and authentic private-activation witness; native image/font/data ownership and original notices preserved; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T17 S11 optional source-reviewed image-only true VB6 observer: ten controls, native disabled/pressed flags, no Click, pixel/state/property restoration; no external code/resources copied",
-      "sha256": "01f67cb54672db771b5372d0d379151420d02b8db8175bc27aa654f675342638"
+      "review": "T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S5 wrapper support and explicit native-child font lifetime contract; notices and original resources retained; T17 S6 project-authored exact-owned-thread queue/notification witness, tagged FIFO acknowledgement, original VB5/6 queued input assertions and native double-width positive/negative lifecycle test; test-only files, no product renderer or original resource changes; T17 S7 exact VB5 file-list roles and bounded owner-draw DC ownership; self-contained dual-width text/image/input/resource tests and optional authentic sample witness; no external implementation or original resources changed; T17 S8 exact observed VB6 FileListBox/DirListBox roles, dual-version file protocol models and authentic private-activation witness; native image/font/data ownership and original notices preserved; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T17 S11 optional source-reviewed image-only true VB6 observer: ten controls, native disabled/pressed flags, no Click, pixel/state/property restoration; no external code/resources copied; T18 S64 P25 real VB5 picture button observer without clicks",
+      "sha256": "4e0ddd85fc08fdc1425751e0d017838de5a53f8b2b013f73ae93d1a26ee2f520"
     },
     {
       "source_blob": null,
@@ -2034,6 +2034,15 @@
       "notice": "Project-authored C17 native test; no external source or resources copied",
       "review": "T18 S64 VB6 checklist public protocol model and bounded pixel/state/negative cases; fixture is not an actual VB runtime; T18 S64 disabled checkbox list state and matching source offsets; T18 S64 reentrant window state and parent revalidation, disable/style negative and reparent lifecycle model; T18 S64 P19 scoped VB6 checkbox list text and retirement witness; T18 S64 P22 mixed-script fallback witness; T18 S64 P23 real VB5 checkbox list",
       "sha256": "70adea10c435b928aa33af8ec2547587dfd2ed23c558d8374a3e242a544ab71e"
+    },
+    {
+      "path": "tests/integration/vb5_picture_compare.py",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e1bf531178da9c2aac5f416bd13e4a1f8b16437a031d1c3e29595b5ad14dbb14",
+      "disposition": "authored",
+      "review": "T18 S64 P25 optional real VB5 picture-state pixel comparator",
+      "notice": "Project-authored test; optional external sample not redistributed or required"
     }
   ]
 }
