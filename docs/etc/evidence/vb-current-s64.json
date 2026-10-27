@@ -899,5 +899,22 @@
       "Private sample COM dependencies are not installed, registered, shipped or required."
     ],
     "binary_change": false
+  },
+  "vb5_sorted_multiselect_p28": {
+    "source": "https://github.com/tannerhelland/vbAccelerator-Archive/tree/390fd1029e44a407695c6ecff4248d7a345d30ef/VB/Code/Controls/Icon_Controls/Icon_Editor",
+    "exe_sha256": "994fe27558b530aea4d72473afb053178a3dab3c460f791c204b5e2654d3e00b",
+    "embedded_manifest_copy_sha256": "338e8e19d5105eb7f1ae3e6ba65cae4496fd89de647c5c43f5f530e4063feb10",
+    "private_ocx_sha256": "f36207acde4d120a5325fa17e2b2d034821aadf6ebe955f25920e6627e390b48",
+    "sample": "Original x86 MSVBVM50 app, source frmDeviceImage sets Sorted and MultiSelect Simple. Scratch embedded manifest and private unregistered OCX/SSubTmr; external components are not shipped or product dependencies.",
+    "procedure": "tests/integration/vb_intrinsic.c real-vb5-sorted-list opens exact own device-image dialog, waits for visible initialized form, chooses runtime-owned nonempty 0x5401008b list, inserts three unique rows, verifies increasing sorted positions and two selected rows, deletes test rows, checks every original item text, item data and selection, cancels dialog. Native and installed styled output pass at 96 DPI.",
+    "visual": "tests/integration/vb5_sorted_compare.py compares PrintWindow 153x121; actual installed style differs from native by 7527 RGB pixels. Native-versus-native comparison correctly fails. This demonstrates an observed difference, not a pixel-accurate classic-style oracle.",
+    "lifecycle": "Source Form_Load reads MRU registry; Form_QueryUnload writes MRU to HKCU and tries HKLM. To avoid that user-environment mutation, probe cancels dialog and terminates only its own job; exit is deliberate and is not normal application cleanup. Both jobs report active=0.",
+    "limits": [
+      "One real VB5 x86 app, 96 DPI; native messages, no physical input, IME or accessibility assertion.",
+      "Forced job termination means normal shutdown and process-owned GDI release behavior not validated.",
+      "OCX only used as private research dependency; no OCX styling or DriveListBox work."
+    ],
+    "installed_dll_sha256": "72874f53422c9a6f2e3d196dc9b2908c6883bdc9db9a9b2bfe5d29c46de587ac",
+    "binary_change": false
   }
 }
