@@ -29,11 +29,13 @@ static inline BOOL ntw16s_vb_drive(HWND w)
 {return ntw16s_vb5_class(w,L"ThunderRT5DriveListBox");}
 static inline BOOL ntw16s_vb_directory(HWND w)
 {return ntw16s_vb5_class(w,L"ThunderRT5DirListBox") || ntw16s_vb_class(w,L"ThunderRT6DirListBox");}
+static inline BOOL ntw16s_vb_checklist_class(HWND w)
+{return ntw16s_vb_class(w,L"ThunderRT6ListBox") || ntw16s_vb5_class(w,L"ThunderRT5ListBox");}
 static inline BOOL ntw16s_vb_checklist_owner(HWND w)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
     return (style&WS_CHILD) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
-        GetDpiForWindow(w)==96 && ntw16s_vb_class(w,L"ThunderRT6ListBox") &&
+        GetDpiForWindow(w)==96 && ntw16s_vb_checklist_class(w) &&
         (style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_HASSTRINGS|LBS_MULTIPLESEL|LBS_EXTENDEDSEL|LBS_NODATA))==
             (LBS_OWNERDRAWFIXED|LBS_HASSTRINGS|LBS_MULTIPLESEL);
 }

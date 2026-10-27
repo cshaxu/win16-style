@@ -817,5 +817,24 @@
       "Covers this one representative mixed run, not all scripts, shaping or fonts."
     ],
     "product_change": false
+  },
+  "vb5_checkbox_list_p23": {
+    "source": "https://github.com/tannerhelland/vbAccelerator-Archive/tree/390fd1029e44a407695c6ecff4248d7a345d30ef/VB/Tips/Responding_to_AppCommands",
+    "archive_sha256": "f4cd2b9113bb940421a4bafc1fac003b63256ab94fc5ce5e5d45e49bc2301416",
+    "exe_sha256": "1e8524b8f9743f0f3e61a26020ad855e0c23e6cfdcbd7e69cf88fa41898172f3",
+    "sample": "Original TestAppCommands.exe imports MSVBVM50; copied original runtime and unregistered SSubTmr/COMCTL in private research directory, external manifest and local source XML. The project does not ship or depend on them.",
+    "real_before": "At 96 DPI actual runtime-owned ThunderRT5ListBox style 0x542100d9, 45 items; original and previous package before/after/restored images identical and click 0->1->0.",
+    "drawing": "Research-only private diagnostic: MSVBVM50 BitBlt 11x11 from 44x11 source, SRCCOPY, item.left+0 and item.top+2; offsets 0,11,22,33 correspond enabled clear/checked and disabled clear/checked. ExtTextOutW uses Tahoma in native sample.",
+    "change": "Recognize exact runtime-owned VB5 checklist in existing bounded renderer and owner-draw text scope; use VB5 item x offset 0, retain VB6 offset 2. Preserve runtime item/state/callback, other geometries and unverified modes native.",
+    "real_package": "Fresh package exact x86 DLL used for native mouse-message toggle and restore, disabled and disabled-checked captures; four 11x11 glyphs each match original checked/unchecked 121 pixels. Five images byte-identical to earlier candidate, target and launcher exited 0, owned job empty.",
+    "model": "x86 and x64 self-contained VB5 and VB6 runtime fixtures passed existing geometry, false caller/source, reentrancy, Unicode fallback, font preservation and role retirement; old package fails VB5 glyph by 121 pixels on both widths. x64 is a protocol model, not a real 64-bit VB5 runtime.",
+    "package": "22 actual package focused cases passed, 0 skipped. Double clean build, original resources byte-exact, four same-snapshot products published to assets root and O:\\winnt\\system32 with all eight hashes verified. Installed x86/x64 VB5 model passed.",
+    "dll32_sha256": "72874f53422c9a6f2e3d196dc9b2908c6883bdc9db9a9b2bfe5d29c46de587ac",
+    "dll64_sha256": "29cbf15352639473b73d95b25754288aa71db4d532bf5e2bbc4aaf500f6c249d",
+    "limits": [
+      "Only one real VB5 x86 application and DPI 96; additional runtime versions, DPI, RTL and other bitmap geometry are unverified.",
+      "Native mouse messages, not physical input; IME and accessibility not tested.",
+      "No OCX or DriveListBox style support added; private dependency only used for research."
+    ]
   }
 }

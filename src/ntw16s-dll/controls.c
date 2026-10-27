@@ -344,14 +344,14 @@ BOOL win16_style_checklist_frame(HDC dc,const RECT *rect,UINT type,UINT flags,co
         !ntw16s_checklist_draw_target(dc,rect,address))return FALSE;
     return checklist_glyph(dc,rect,flags);
 }
-/* VB6 draws the checkbox as an 11x11 runtime-owned bitmap, directly onto
+/* VB5 and VB6 draw the checkbox as an 11x11 runtime-owned bitmap, directly onto
  * the list's DC. Restrict this to the witnessed identity, geometry and
  * public list state; other bitmaps and unsupported layouts remain native. */
 static BOOL vb_checklist_unchanged(HWND w,HDC dc,HWND parent,DWORD style,DWORD ex,BOOL enabled)
 {
     return IsWindow(w) && WindowFromDC(dc)==w && GetParent(w)==parent &&
         (DWORD)GetWindowLongPtrW(w,GWL_STYLE)==style && (DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE)==ex &&
-        IsWindowEnabled(w)==enabled && ntw16s_vb_class(w,L"ThunderRT6ListBox");
+        IsWindowEnabled(w)==enabled && ntw16s_vb_checklist_class(w);
 }
 BOOL win16_style_vb_checklist(HDC dc,int x,int y,int width,int height,HDC source,int sx,int sy,DWORD rop,const void *address)
 {
@@ -363,7 +363,7 @@ BOOL win16_style_vb_checklist(HDC dc,int x,int y,int width,int height,HDC source
         GetObjectW(GetCurrentObject(source,OBJ_BITMAP),sizeof(bitmap),&bitmap)!=sizeof(bitmap) ||
         bitmap.bmWidth!=44 || bitmap.bmHeight!=11 ||
         !(w=WindowFromDC(dc)) || GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() ||
-        !ntw16s_vb_class(w,L"ThunderRT6ListBox") || GetDpiForWindow(w)!=96 ||
+        !ntw16s_vb_checklist_class(w) || GetDpiForWindow(w)!=96 ||
         GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
         !GetViewportOrgEx(dc,&origin) || origin.x || origin.y ||
         !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
@@ -378,7 +378,7 @@ BOOL win16_style_vb_checklist(HDC dc,int x,int y,int width,int height,HDC source
     if(HIWORD(hit)==0 && vb_checklist_unchanged(w,dc,parent,style,ex,enabled) &&
         SendMessageW(w,LB_GETITEMRECT,(WPARAM)index,(LPARAM)&item)!=LB_ERR &&
         vb_checklist_unchanged(w,dc,parent,style,ex,enabled) &&
-        x==item.left+2 && y==item.top+2 && item.right-x>=width && item.bottom-y>=height){
+        x==item.left+(ntw16s_vb5_class(w,L"ThunderRT5ListBox")?0:2) && y==item.top+2 && item.right-x>=width && item.bottom-y>=height){
         RECT glyph={x,y,x+width,y+height};
         result=checklist_glyph(dc,&glyph,(sx%22)==11?DFCS_CHECKED:0);
     }

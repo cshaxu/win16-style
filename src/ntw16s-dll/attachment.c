@@ -624,7 +624,7 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     if(a->button_owner && !a->detached && m!=WM_DESTROY && m!=WM_NCDESTROY && !ntw16s_vb_graphical_button(w))
         (void)Ntw16sWindowRemove(w);
     if(a->file_owner && !a->detached && m!=WM_DESTROY && m!=WM_NCDESTROY &&
-        ntw16s_vb_class(w,L"ThunderRT6ListBox") && !ntw16s_vb_checklist_owner(w))
+        ntw16s_vb_checklist_class(w) && !ntw16s_vb_checklist_owner(w))
         (void)Ntw16sWindowRemove(w);
     if((a->file_owner || a->button_owner || a->checklist) && !a->detached && a->report_parent && m!=WM_DESTROY && m!=WM_NCDESTROY && GetParent(w)!=a->report_parent)
         (void)Ntw16sWindowRemove(w);
