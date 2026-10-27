@@ -836,5 +836,26 @@
       "Native mouse messages, not physical input; IME and accessibility not tested.",
       "No OCX or DriveListBox style support added; private dependency only used for research."
     ]
+  },
+  "vb5_checkbox_installed_font_p24": {
+    "sample_sha256": "1e8524b8f9743f0f3e61a26020ad855e0c23e6cfdcbd7e69cf88fa41898172f3",
+    "actual_installed_dll": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
+    "actual_installed_dll_sha256": "72874f53422c9a6f2e3d196dc9b2908c6883bdc9db9a9b2bfe5d29c46de587ac",
+    "installed_pid": 25636,
+    "dpi": 96,
+    "result": "Real runtime list 45 items, native mouse-message selection 0 to 1 to 0, original enabled/font/state restored; installed target/launcher exit zero and owned job empty. Five capture files match exact package and private diagnostic byte-for-byte.",
+    "diagnostic": "Private instrumented current source records ExtTextOutW selection of Win16 System height 13 weight 700 in active scoped report paint, with source font Tahoma; private diagnostic is not product. Five images identical between diagnostic and exact package.",
+    "sha256": {
+      "vb5-before.bmp": "5b40d9dfe66bd0ca0465c48b5575be0bb27585e48a45fa329fae2b51687293de",
+      "vb5-after.bmp": "9a9b8f842daaaf3cc1521a19b738331e62189ffe995a63d8feec31ea980a913e",
+      "vb5-restored.bmp": "5b40d9dfe66bd0ca0465c48b5575be0bb27585e48a45fa329fae2b51687293de",
+      "vb5-disabled.bmp": "ce8c6f3c662be0057c9bbee59ca9705b376e50ee0fef5e7da69fa1c65908d44c",
+      "vb5-disabled-checked.bmp": "731176c5060ff88eeefc4aeaaf230a28b86890be099a452f45b8eeb887724c6b"
+    },
+    "limits": [
+      "One VB5 x86 runtime and one 96 DPI sample, not other versions or DPI.",
+      "Native messages are not physical mouse input; no IME or accessibility assertion.",
+      "No real VB5 Picture/DownPicture/DisabledPicture property sample was found."
+    ]
   }
 }
