@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "task": "M0 T18 S47",
+  "sample": "DelphiVCL4Python 1.0.7",
+  "records": [
+    {
+      "bits": 32,
+      "dpi": 144,
+      "screen_changed": 1172,
+      "print_changed": 1171,
+      "first_pane": 440,
+      "icon_last_screen": 732,
+      "icon_last_print": 731,
+      "outside_pane_edges": 0,
+      "normal_text_restored": true,
+      "owner_draw_data": "0x12345678",
+      "report_sha256": "f4002d102c962911d4a8101e9afb30d24e7512c767f5213ebb0ae7f52ba43c20"
+    },
+    {
+      "bits": 64,
+      "dpi": 144,
+      "screen_changed": 1172,
+      "print_changed": 1171,
+      "first_pane": 440,
+      "icon_last_screen": 732,
+      "icon_last_print": 731,
+      "outside_pane_edges": 0,
+      "normal_text_restored": true,
+      "owner_draw_data": "0x12345678",
+      "report_sha256": "e1627bc2a59f987405757a7c8c457e2045707ca245448ac5786b2e9b4894a0de"
+    }
+  ],
+  "caveats": [
+    "Owner-drawn last panes remain native.",
+    "System rendered tested 16/32/48 input icons as 32x32; not proof of every icon and DPI.",
+    "S47 first package run failed x86 date GDI count 27->25; retry passed but cause remains unresolved.",
+    "Other runtime versions, physical input and full integration were not tested."
+  ]
+}

@@ -69,4 +69,6 @@ S15包测试进度文件共享冲突已由[S17记录](../history/M0-T18-S17-test
 
 - [ ] TODO(Medium): ComCtl32 v5 `TProgressBar` 客户区填充仍为原生；Owner：后续进度条适配。Evidence：[S23](../history/M0-T18-S23-progress-border.md)、[S24](../history/M0-T18-S24-progress-colors.md)。Admission：不触发可观察的探测性颜色设置或猜测绘制实现，能可靠获取或保留原生颜色及状态并保留应用语义；现仅适配经验证的非客户区边框。
 
-- [ ] TODO(Medium): Delphi `TStatusBar` 其余版本、简单/凸起/无边框/RTL及图标和自绘末分区外观仍未认证；Owner：T18后续控件及最终集成审计。Evidence：[S46](../history/M0-T18-S46-empty-status-pane.md)证实一个真实runtime空文字无图标末分区及双宽C模型；图标及自绘末分区仍原生。Admission：真实样本、公开绘制入口与所有权证据，保留文字、图像、自绘回调、裁剪及生命周期。
+- [ ] TODO(Medium): S47首轮x86日期模块异常回归进程GDI计数27降至25导致相等断言失败；Owner：T18资源与最终验收。Evidence：[S47](../history/M0-T18-S47-status-icon.md)单独及低并发同包复测通过，但首次下降原因未定位。Admission：区分精确资源租约与进程级波动，不把重试视作修复。
+
+- [ ] TODO(Medium): Delphi `TStatusBar` 其余版本、简单/凸起/无边框/RTL及自绘末分区外观仍未认证；Owner：T18后续控件及最终集成审计。Evidence：[S47](../history/M0-T18-S47-status-icon.md)证实一个真实runtime图标末分区和双宽C模型；自绘末分区仍原生。Admission：真实样本、公开绘制入口与所有权证据，保留文字、图像、自绘回调、裁剪及生命周期。

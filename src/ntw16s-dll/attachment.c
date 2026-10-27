@@ -181,6 +181,30 @@ void ntw16s_status_text_frame(HDC dc,const RECT *text,UINT flags,const void *add
     int saved=SaveDC(dc);if(saved){FrameRect(dc,&pane,(HBRUSH)GetStockObject(BLACK_BRUSH));RestoreDC(dc,saved);}
 }
 
+/* For a size-grip pane, native comctl draws its icon before its text.
+ * Frame only the verified native pane before the same icon is painted. */
+void ntw16s_status_icon_frame(HDC dc,int x,int y,int cx,int cy,HICON icon,const void *address)
+{
+    status_draw_scope *s=status_current;HMODULE module=NULL;POINT origin;RECT pane;HWND window;
+    LRESULT parts,type,current;
+    if(!s || !s->owner || s->owner->detached || s->epoch!=s->owner->status_epoch || s->count<2 ||
+        !(GetWindowLongPtrW(s->window,GWL_STYLE)&SBARS_SIZEGRIP) || !status_identity(s->window,s->owner,NULL) ||
+        !dc || !icon || cx<=0 || cy<=0 ||
+        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+            (LPCWSTR)address,&module) || module!=s->native || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
+        !GetViewportOrgEx(dc,&origin) || origin.x || origin.y)return;
+    window=WindowFromDC(dc);if(s->dc?dc!=s->dc:window!=s->window)return;
+    pane=s->panes[s->count-1];
+    if(x<pane.left || x>=pane.right || (LONGLONG)y+cy<=pane.top || y>=pane.bottom)return;
+    parts=SendMessageW(s->window,SB_GETPARTS,0,0);
+    if(s->owner->detached || s->epoch!=s->owner->status_epoch || parts!=(LRESULT)s->count)return;
+    type=SendMessageW(s->window,SB_GETTEXTLENGTHW,s->count-1,0);
+    if(s->owner->detached || s->epoch!=s->owner->status_epoch || HIWORD(type)!=0)return;
+    current=SendMessageW(s->window,SB_GETICON,s->count-1,0);
+    if(s->owner->detached || s->epoch!=s->owner->status_epoch || (HICON)current!=icon)return;
+    int saved=SaveDC(dc);if(saved){FrameRect(dc,&pane,(HBRUSH)GetStockObject(BLACK_BRUSH));RestoreDC(dc,saved);}
+}
+
 /* Called only after the original native drawing call has completed. */
 void ntw16s_status_frame(HDC dc,const RECT *rect,const RECT *clip,const void *caller)
 {
