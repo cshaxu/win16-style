@@ -1068,6 +1068,15 @@
       "s33_runtime_sample": {
         "evidence": "M0 T18 S33 gallery64-protocol; owner DelphiVCL4Python 1.0.7 x64; 144 DPI",
         "observation": "Visible child class was registered by DelphiVCL.pyd and reported unattached by current assets DLL. Single sample only; no behavior or general version claim."
+      },
+      "s36_runtime_sample": {
+        "evidence": "M0 T18 S36 track32/track64 owned DelphiVCL4Python 1.0.7, published assets at 144 DPI",
+        "observation": "Both widths unattached, class owner is the VCL runtime module; native class extra bytes match, WM_PAINT and WM_NCPAINT forward to system trackbar from that same owner. Public range 0..10, position 0->5->0 and nonempty thumb/channel observed, import observer restored. Default style 0x61 includes TBS_ENABLESELRANGE (0x20), which the existing painter explicitly rejects; no visual adaptation claimed.",
+        "remaining": "Independently inspect selection range/ticks, native custom-draw/parent contract and input before considering owner or style admission.",
+        "selection_evidence": "Both widths: default empty (-1,-1), TBM_SETSEL 2..7 observed, TBM_CLEARSEL restores empty, TBM_GETNUMTICS=11. Initial x64 experiment attempted SETSEL(-1,-1) and observed clamp to (0,0); the owned instance exited, corrected repeat used CLEARSEL. Visual selection rendering and parent custom-draw contract remain unproved.",
+        "custom_draw_evidence": "Both x86/x64 styled and x64 bare: parent returns CDRF_NOTIFYITEMDRAW (32) for PREPAINT, then observed channel/thumb item stages returning CDRF_DODEFAULT (0). Fifteen notifications in the bounded sequence; same-thread parent observer removed and import observer restored. Existing painter only takes over after PREPAINT CDRF_DODEFAULT, and explicitly rejects TBS_ENABLESELRANGE. App callbacks, selection interior and future non-default results require independent preservation tests.",
+        "postpaint_experiment": "On each width, test-only private ITEMPOSTPAINT request after application ITEMPREPAINT returned default produced channel/thumb outer-frame overlay: 294 RGB pixels changed, zero outside those two one-pixel perimeters with selection 2..7. All 16 original observed notifications remained, original app results passed through, selection cleared and position restored, observers removed. Only one runtime/state at 144 DPI; disabled, pressed, reentry, alternative app results and pixel semantics remain unproved. Not product code or a full Win16 claim.",
+        "state_experiments": "Both widths: disabled and synthetic mouse-down scenarios retained exact application callback sequences (19/22), enabled state and capture restored; each overlay changed 294 perimeter pixels with zero elsewhere. A synthetic application channel CDRF_SKIPDEFAULT case left the channel untouched and changed only 54 thumb-perimeter pixels. A synthetic application callback removed the outer observer during item prepaint; both widths preserved its return, applied no subsequent overlay, and restored ranges, imports and owned hooks. These are scratch experiments, not production lifecycle proof or physical input."
       }
     },
     {
