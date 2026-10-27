@@ -353,12 +353,12 @@ BOOL win16_style_vb_checklist(HDC dc,int x,int y,int width,int height,HDC source
     HMODULE caller=NULL;HWND w;POINT origin;RECT item;LRESULT hit,index;BITMAP bitmap;
     DWORD style,ex;BOOL result=FALSE;
     if(active || !dc || !source || width!=11 || height!=11 || rop!=SRCCOPY ||
-        (sx!=0 && sx!=11) || sy!=0 || GetObjectType(source)!=OBJ_MEMDC ||
+        (sx!=0 && sx!=11 && sx!=22 && sx!=33) || sy!=0 || GetObjectType(source)!=OBJ_MEMDC ||
         GetObjectW(GetCurrentObject(source,OBJ_BITMAP),sizeof(bitmap),&bitmap)!=sizeof(bitmap) ||
         bitmap.bmWidth!=44 || bitmap.bmHeight!=11 ||
         !(w=WindowFromDC(dc)) || GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() ||
         !ntw16s_vb_class(w,L"ThunderRT6ListBox") || GetDpiForWindow(w)!=96 ||
-        !IsWindowEnabled(w) || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
+        (IsWindowEnabled(w)?sx>=22:sx<22) || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
         !GetViewportOrgEx(dc,&origin) || origin.x || origin.y ||
         !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
             (const WCHAR *)address,&caller) || caller!=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE))return FALSE;
@@ -371,7 +371,7 @@ BOOL win16_style_vb_checklist(HDC dc,int x,int y,int width,int height,HDC source
     if(HIWORD(hit)==0 && SendMessageW(w,LB_GETITEMRECT,(WPARAM)index,(LPARAM)&item)!=LB_ERR &&
         x==item.left+2 && y==item.top+2 && item.right-x>=width && item.bottom-y>=height){
         RECT glyph={x,y,x+width,y+height};
-        result=checklist_glyph(dc,&glyph,sx==11?DFCS_CHECKED:0);
+        result=checklist_glyph(dc,&glyph,(sx%22)==11?DFCS_CHECKED:0);
     }
     active=FALSE;return result;
 }

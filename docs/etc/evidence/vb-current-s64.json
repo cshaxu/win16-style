@@ -725,5 +725,28 @@
       "Whole application compatibility or other checkbox list variants is not claimed."
     ],
     "code_accounting": "Production src diff: 50 additions, 7 deletions, net +43; original painter and source bitmap resources remain. Search: rg -n \"win16_style_checklist_frame|ntw16s_vb_list|hook_DrawFrameControl|BitBlt\" src/ntw16s-dll; existing Delphi checklist path reused glyph routine, original native BitBlt is always called before bounded overlay."
+  },
+  "vb6_checkbox_list_disabled_p17": {
+    "baseline": "T18 S64 P16 d72cc99; real sample and private activation details in vb6_checkbox_list_p16.",
+    "root_cause": "P16 intentionally preserved disabled windows. Scratch-only BitBlt diagnostics on the actual MSVBVM60 list showed 44x11 source x=22 when disabled and unchecked and x=33 when disabled and checked; LB_GETSEL values 0/1 agreed in this sample.",
+    "change": "Accept source offsets 22/33 only when the observed list is disabled, retaining 0/11 only when enabled. Offset modulo 22 selects the same original unchecked/checked glyph used by standard controls; offset/window-state mismatch stays native. No new API or hook.",
+    "real_test": "Original research-only VB6 x86 sample on private desktop at 96 DPI, embedded private COM manifest and private scratch input. The previously hidden actual list was exposed and two test items inserted; native messages selected an item, EnableWindow disabled it, LB_SETSEL cleared it and EnableWindow restored it. Exact tested candidate loaded from its package path; the two disabled and enabled-restored captures each matched 121 original glyph pixels, state reads 1/0/0 and the owned job exited zero. Bare comparison also exited successfully. No actual user input claimed.",
+    "models": "Self-contained x86/x64 fixtures cover disabled unchecked/checked, re-enable, incorrect state/bitmap offset native fallback, wrong source, geometry and caller, and cleanup. The prior d72cc99 installed package failed the new disabled positive test on both widths, while the candidate and installed replacement passed both widths.",
+    "regression": "18 focused actual-package tests, zero skips, 13.37 seconds; includes both new models, both prior Delphi checklist models, VB owner-draw and ordinary controls, ABI, demo, injection and propagation. Full suite and font regression not repeated this batch.",
+    "source_snapshot_sha256": "c3733ef65b1f116023244747ecc98198897ef520fa1119fe705ffc6dc9cf0ca4",
+    "sha256": {
+      "demo.exe": "5ade24dd23ba0f77d83737e1e4522860a525b1aba981e3ce3c594374f5573150",
+      "ntw16s32.dll": "e3b4e90fb3611d2d9b3b6715966ad4dc52024f6e36ad776acdfab1173a731a7b",
+      "ntw16s64.dll": "4ab251e1e7f9c2e36c2452b17c45da4d6a84356fad85f9b732174d8b8f0e461e",
+      "run16s.exe": "f1b1d5d27e4b590e35f6e26b168f2c2966faecfc0c333ba35bc4d9b0e980dcae"
+    },
+    "publication": "Same-batch four tested artifacts published to assets root and O:/winnt/system32, eight SHA-256 comparisons passed; installed package retested both model widths.",
+    "limits": [
+      "Only one real VB6 x86 sample at 96 DPI; VB5, RTL, other DPIs, unfamiliar source offsets and sizes remain native.",
+      "Real control was temporarily exposed by the probe, not through the usual application navigation; physical mouse/keyboard, IME and accessibility unverified.",
+      "Earlier intermittent viewer-only shutdown timeouts are not explained by this one successful result.",
+      "Additional global-looking BitBlt interception remains strictly scoped to the current launched process; no global hooks or modifications of existing processes."
+    ],
+    "accounting": "Production controls.c: 3 additions, 3 deletions, net zero. Tests and focused package markers changed; original resource headers remain byte-exact. Search rg -n \"win16_style_vb_checklist|sx!=|IsWindowEnabled|checklist_glyph\" src/ntw16s-dll."
   }
 }
