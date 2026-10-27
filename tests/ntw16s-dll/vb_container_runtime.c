@@ -66,5 +66,20 @@ __declspec(dllexport) void WINAPI VbContainerRetire(HWND w)
 {model *p=(void *)GetWindowLongPtrW(w,GWLP_USERDATA);if(p)p->retire=TRUE;}
 __declspec(dllexport) BOOL WINAPI VbContainerRelease(void)
 {return UnregisterClassW(class_name,instance) && DeleteObject(source_font);}
+#ifdef VB_CONTAINER_RUNTIME60
+static const WCHAR mdi_class[]=L"ThunderRT6FormDC";
+#else
+static const WCHAR mdi_class[]=L"ThunderRT5Form";
+#endif
+static LRESULT CALLBACK mdi_child(HWND w,UINT msg,WPARAM a,LPARAM b)
+{return DefMDIChildProcW(w,msg,a,b);}
+__declspec(dllexport) BOOL WINAPI VbMdiRegister(void)
+{
+    GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(const WCHAR *)(UINT_PTR)VbMdiRegister,(HMODULE *)&instance);
+    WNDCLASSW cls={.hInstance=instance,.lpfnWndProc=mdi_child,.lpszClassName=mdi_class,.hbrBackground=GetStockObject(WHITE_BRUSH)};
+    return RegisterClassW(&cls)!=0;
+}
+__declspec(dllexport) BOOL WINAPI VbMdiRelease(void)
+{return UnregisterClassW(mdi_class,instance);}
 BOOL WINAPI DllMain(HINSTANCE h,DWORD reason,LPVOID reserved)
 {(void)h;(void)reason;(void)reserved;return TRUE;}

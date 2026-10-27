@@ -934,5 +934,23 @@
       "Private sample OCX is not a product dependency or OCX support expansion."
     ],
     "binary_change": false
+  },
+  "vb_mdi_p30": {
+    "source": "https://github.com/tannerhelland/vbAccelerator-Archive/tree/390fd1029e44a407695c6ecff4248d7a345d30ef/VB/Code/Libraries/Splitting/Splitting_on_MDI_Forms",
+    "original_vb5_sha256": "ac22c102e5dfc292505cac7234e4080055bf31b8712024d96dee6c24233e2071",
+    "original_vb6_sha256": "ab74c41d247a09609b0d1a77df98e550b9e4b429bcf540de00034f41ae4cf1da",
+    "scratch_vb5_manifest_copy_sha256": "9124dc7fd4aa3ad1a8b64970c96300a3ec920fbfe6ca1914cfc23eceef1e2330",
+    "scratch_vb6_manifest_copy_sha256": "e762f86179129821452427dbe77e51b34f0e167c68aece21c8b06a63d6c7ffae",
+    "baseline": "Actual VB5 pid 12156, VB6 pid 31016: 32-bit 96 DPI runtime-owned WS_EX_MDICHILD windows under USER32 MDIClient entered install_created then were rejected by external-class guard error 50. Private instrumentation DLL and registration-free sample copies only. Existing package screenshots show modern MDI child captions.",
+    "candidate": "Scratch restricted prototype applied existing classic frame to visible normal child in each actual application. Both closed normally, their private jobs became empty. Native model exercises same public MDI identity, maximize, restore, destruction and wrong parent on x86/x64 for both simulated versions; previous assets DLL rejected by test.",
+    "limits": [
+      "Authentic samples only x86 at 96 DPI, no physical input.",
+      "Maximized MDI merged-menu appearance remains system-native by existing design.",
+      "Tests use project-authored runtime models, not official x64 VB runtimes.",
+      "Private SSubTmr and runtimes are research-only, not product dependencies."
+    ],
+    "candidate_actual_package": "Both real samples ran against candidate ntw16s32.dll SHA 983701ae2e7c1e52baa6330cd28d954c488b00d9ba01d01d585a9efd1177b1c2; both visible and exited with zero active job members. Screenshots are task scratch 5-package/actor-styled.bmp and 6-package/actor-styled.bmp.",
+    "package_test": "Clean MinGW x86/x64 builds and ABI passed; 14 focused actual-package cases passed, zero skipped, 12.08 seconds. Old released x86 package failed the same attached assertion.",
+    "publication": "Four tested files were published to assets root and O:/winnt/system32 with matching SHA-256; build/t18-package/s64p30-mdi-publish/result.json records all eight."
   }
 }

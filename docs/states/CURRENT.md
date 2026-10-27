@@ -74,7 +74,7 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | --- | --- |
 | Identifier Mode | Continuation；S63 P1 b047a90远端15文件复核通过 |
 | Admission And Approval | 用户授权T18内自动实施可做控件，不新开T |
-| Objective | 核实真实VCL编辑及无窗口候选的公开绘制协议，并修正VB原生探针跨进程文本读取、同线程队列观察、真实禁用状态和图形选择图像像素回归；验证并适配真实VB5/VB6运行库图形单选框与复选框的有限owner-draw外框 |
+| Objective | 核实真实VCL编辑及无窗口候选的公开绘制协议，并修正VB原生探针跨进程文本读取、同线程队列观察、真实禁用状态和图形选择图像像素回归；验证并适配真实VB5/VB6运行库图形单选框与复选框的有限owner-draw外框，并修复真实VB5/VB6 MDI子窗体标题 |
 | Non-goals | 保留输入、选择、文字、布局、回调及原图形资源 |
 | Reference Baseline | [S63 Memo](../history/M0-T18-S63-memo.md)、[S34编辑](../history/M0-T18-S34-vcl-module-edit.md) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
@@ -82,7 +82,7 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例限时回收 |
 | Verification | 双宽真实owner、原生过程、输入与文本；有实现时模型负例及实际包 |
 | Expected Markers | 经验证原生协议及调用所有权才能接入；未知路径回退 |
-| Asset Needs | 登记build/t18-s62-radio-memo及build/t18-s64-vb-*，复用合法双宽运行库，结束前提炼证据并安全清理自有scratch |
+| Asset Needs | 登记build/t18-s62-radio-memo及build/t18-s64-vb-*（含MDI真实样本、私有诊断），复用合法双宽运行库，结束前提炼证据并安全清理自有scratch |
 | Reporting Requirements | 实际绘制、操作、负例、未覆盖、双发布及远端复核 |
 | Stop Conditions | 无真实所有权或安全内容契约时不按名称猜测 |
 | Exit Criteria | 有证据的有限实现或明确后续接收，实际包交付；T18保持开放 |
@@ -456,3 +456,7 @@ DrawThemeBackground part4绘制(0,12)-(250,120)，背景填充使用父坐标与
 
 S61真实双宽TGroupBox为runtime自绘，主题边框与S53同类，标题安全边界未证实；
 保持原生并列TODO。干净包12项零跳过、双发布及安装双宽通过，待提交远端复核。
+
+S64继续验证VB5/VB6真实MDI子窗体：两代原程序均由运行库持有子窗体类，创建时被外部类保护以错误50拒绝；受限原型在隔离桌面实际绘出经典标题并正常退出。后续P验证准确运行库/类/MDI父窗体身份、最大化/恢复及旧包负例，未知和外部OCX边界保持原状；测试通过后按规则双宽打包、双发布和复核。
+
+S64 P30 已以实际VB5/VB6应用及双宽自有模型修复MDI子窗体普通状态标题；错误50实证，旧包负例检出，新四文件聚焦包14项通过无skip，assets及system32八项摘要一致。最大化菜单合并仍按原系统行为，真实样本仅x86/96 DPI。待提交推送及远端复核；T18/S64保持开放。
