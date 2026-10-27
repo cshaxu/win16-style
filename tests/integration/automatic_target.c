@@ -81,8 +81,16 @@ static DWORD WINAPI windows(void *unused)
         CHECK(!SendMessageW(children[0],WM_GETFONT,0,0));
         CHECK(DestroyWindow(root));
     }
+    /* Keep an owned window alive while successive modal windows close. This
+     * does not change their owner, close messages, results, or assertions. */
+    HWND anchor=NULL;
+    if(dialog_suite || message_suite){
+        anchor=CreateWindowW(L"STATIC",L"Integration test anchor",WS_OVERLAPPEDWINDOW,0,0,120,80,NULL,NULL,cls.hInstance,NULL);
+        CHECK(anchor);ShowWindow(anchor,SW_SHOW);
+    }
     if(dialog_suite)dialogs();
     if(message_suite)messages();
+    if(anchor)CHECK(DestroyWindow(anchor));
     record("GUI-thread-complete");
     return 0;
 }

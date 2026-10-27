@@ -15,12 +15,12 @@ static void scope_free(void *p)
 #undef calloc
 #undef free
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"DIALOG_SCOPE_FAIL line=%u error=%lu %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
-static BOOL nested,detach,unsupported;static unsigned failures,observed;
+static BOOL nested,detach,unsupported;static unsigned failures,observed;static HWND anchor;
 static void finish(HWND w)
 {
     if(!Ntw16sWindowAttached(w))++failures;
     if(detach && (!Ntw16sWindowRemove(w) || Ntw16sWindowAttached(w)))++failures;
-    ++observed;EndDialog(w,73);
+    ++observed;if(GetActiveWindow()!=w)++failures;EndDialog(w,73);
 }
 static VOID CALLBACK finish_timer(HWND w,UINT m,UINT_PTR id,DWORD time)
 {(void)m;(void)time;KillTimer(w,id);finish(w);}
@@ -95,6 +95,8 @@ static int owner_reentry(void)
 static int worker(int argc,WCHAR **argv)
 {
     (void)argc;(void)argv;CHECK(!owner_reentry());fail_next=TRUE;CHECK(!Ntw16sCreationBegin(TRUE) && !live);
+    anchor=CreateWindowW(L"STATIC",L"Dialog scope anchor",WS_OVERLAPPEDWINDOW,0,0,120,80,NULL,NULL,GetModuleHandleW(NULL),NULL);
+    CHECK(anchor);ShowWindow(anchor,SW_SHOW);
     struct {DLGTEMPLATE d;WORD menu,cls,title;} t={.d={.style=WS_POPUP|WS_CAPTION|WS_SYSMENU,.cx=180,.cy=100}};
     for(unsigned i=0;i<12;++i){nested=(i&1)!=0;detach=(i&2)!=0;unsupported=(i&4)!=0;
         ntw16s_creation_scope *scope=Ntw16sCreationBegin(TRUE);CHECK(scope);
@@ -103,6 +105,7 @@ static int worker(int argc,WCHAR **argv)
         printf("SCOPE_DIAG i=%u installed=%lu failure=%lu observed=%u before=%u errors=%u live=%u current=%p\n",i,(unsigned long)result.installed,(unsigned long)result.failure,observed,before,failures,live,(void*)current);
         CHECK(result.installed==1 && !result.failure && observed==before+1 && !failures && !live && !current && !creation_before_hook && !creation_return_hook);
     }
+    CHECK(DestroyWindow(anchor));
     WNDCLASSW c={0};c.lpfnWndProc=reject;c.hInstance=GetModuleHandleW(NULL);c.lpszClassName=L"ScopeRejectedCreate";
     CHECK(RegisterClassW(&c));ntw16s_creation_scope *scope=Ntw16sCreationBegin(TRUE);CHECK(scope);
     CHECK(!CreateWindowW(c.lpszClassName,L"reject",WS_OVERLAPPEDWINDOW,0,0,100,100,NULL,NULL,c.hInstance,NULL));

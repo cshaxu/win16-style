@@ -8,11 +8,6 @@
   延迟缓存与残留对象；Admission：按对象来源和生命周期做对照，不以短暂稳定
   或进程退出冒称全过程零泄漏。
 
-- [ ] TODO(High): 对话框回归测试效率；Owner：T18后续测试效率S。Evidence：S33
-  实际包双宽 dialog-scope 约25秒、dialog-show 约115秒，均通过；完整 dialogs
-  集成约85秒。Admission：分阶段计时，保留所有ANSI/Unicode、显示方式、DPI、
-  生命周期、资源及负例断言，不扩大等待或减少覆盖，先验证再替换。
-
 - [ ] TODO(Medium): VB组合回归出现间歇性30秒子进程超时；Owner：T18后续测试及
   最终验收。Evidence：[S31](../history/M0-T18-S31-static-text.md)中新旧包均在
   同环境复现、随后分别通过；Admission：定位实际阻塞与退出条件，不把重试通过

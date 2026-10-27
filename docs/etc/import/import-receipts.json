@@ -608,7 +608,7 @@
       "path": "tests/integration/automatic_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4f2e49140dce57d209fd6af6b0ea59ed042178f54dcb44fa0c25ade185a913ab",
+      "sha256": "00c312b95b8029a0ac40edc5752a1f73a742e80802a1f41cf18b4ae787178b7f",
       "disposition": "authored",
       "review": "T3 S2 native MB_OK single-button oracle, exact witnesses and Unicode targets; docs/history/M0-T3-S2-bootstrap.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
@@ -1349,7 +1349,7 @@
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
       "review": "; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes",
-      "sha256": "dbded1e1908d2e0ad4246bf96167abfb272363fcd3dcc56e2f51f691c7edbaa4"
+      "sha256": "8221e72e6c9b6ab753a56cfe6a4ed1b10e019dd3aaceba8dfeadbaf997e97c86"
     },
     {
       "path": "tests/ntw16s-dll/dialog_show.c",
@@ -1358,7 +1358,7 @@
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
       "review": "; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes",
-      "sha256": "08b441b8baa55e9e69c535a8ddcb475d920b1d4eeb8321f344931e1abf729d90"
+      "sha256": "7c2a625fc0c52ed26d1d91a02ea9345a448a23ec353deb64761a9c3b39e1245e"
     },
     {
       "path": "tests/ntw16s-dll/control_visibility.c",

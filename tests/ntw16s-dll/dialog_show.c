@@ -10,6 +10,7 @@ static BOOL (__cdecl *remove_style)(HWND);
 static BOOL styled;
 static unsigned kind,failures,observed,measured,drawn;
 static HMENU menu;
+static HWND anchor;
 static DWORD frame_image(HWND w)
 {
     RECT r;GetWindowRect(w,&r);int width=r.right-r.left,height=r.bottom-r.top;
@@ -42,6 +43,7 @@ static void verify(HWND w)
         GetWindowTextW(w,caption,128);EXPECT(!wcscmp(caption,L"Title formatted during initialization"));
     }
     ++observed;
+    EXPECT(GetActiveWindow()==w);
     EndDialog(w,73);
 }
 static VOID CALLBACK timer(HWND w,UINT m,UINT_PTR id,DWORD now)
@@ -88,6 +90,8 @@ static int child(BOOL enable,BOOL aware)
     struct {DLGTEMPLATE d;WORD menu,cls,title;} t={.d={.style=WS_POPUP|WS_CAPTION|WS_SYSMENU|WS_THICKFRAME,.cx=220,.cy=120}};
     HWND startup=CreateWindowW(L"STATIC",L"startup override",WS_POPUP,0,0,1,1,NULL,NULL,GetModuleHandleW(NULL),NULL);
     CHECK(startup);ShowWindow(startup,SW_HIDE);CHECK(DestroyWindow(startup));
+    anchor=CreateWindowW(L"STATIC",L"Dialog test anchor",WS_OVERLAPPEDWINDOW,0,0,120,80,NULL,NULL,GetModuleHandleW(NULL),NULL);
+    CHECK(anchor);ShowWindow(anchor,SW_SHOW);
     for(unsigned repeat=0;repeat<4;++repeat){
         for(unsigned ansi=0;ansi<(repeat?1u:2u);++ansi)for(kind=repeat?1u:0u;kind<(repeat?2u:6u);++kind){
             unsigned before=observed;INT_PTR result=ansi?
@@ -100,6 +104,7 @@ static int child(BOOL enable,BOOL aware)
         GdiFlush();DWORD resources=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);
         printf("DIALOG_GDI styled=%u repeat=%u resources=%lu\n",styled,repeat,resources);
     }
+    CHECK(DestroyWindow(anchor));
     printf("DIALOG_SHOW_OK bits=%u styled=%u aware=%u cases=15 owner_draw_callbacks=1 initialization_active=1 initial_hidden_preserved=1 pixels=1 native_return=73 gdi_observed=1\n",(unsigned)(sizeof(void*)*8),styled,aware);return 0;
 }
 static int worker(int argc,WCHAR **argv)
