@@ -1765,5 +1765,25 @@
       "review": "T18 S21 self-contained native checklist scope, original glyph, negative and lifecycle model; not a Delphi runtime",
       "notice": "Project-authored C17; project MIT license"
     }
+,
+    {
+      "path": "tests/ntw16s-dll/progress_v5_color_witness.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "850e78c28f20e54dba3d05d42a88f39660a842edc8b49990bb04ac5d825b07fc",
+      "disposition": "authored",
+      "review": "T18 S24 self-contained native v5 color message and creation timing witness; no Delphi runtime or third-party code",
+      "notice": "Project-authored C17; project MIT license"
+    }
+,
+    {
+      "path": "tests/ntw16s-dll/progress_v5_detour_witness.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "3a96793bade539ed926c9f29114f76c1757c078c40c994ad5560c8c06cd78676",
+      "disposition": "authored",
+      "review": "T18 S24 self-owned process witness for existing startup trampoline and v5 native WNDPROC direct calls; no product hook installed",
+      "notice": "Project-authored C17; project MIT license"
+    }
   ]
 }

@@ -488,6 +488,17 @@ if(BUILD_TESTING)
     add_test(NAME core/dialog-show COMMAND ${test_driver} --name core/dialog-show -- $<TARGET_FILE:core-dialog-show> $<TARGET_FILE:run16s>)
   endif()
 
+  add_executable(core-progress-color-v5 tests/ntw16s-dll/progress_v5_color_witness.c)
+  target_compile_definitions(core-progress-color-v5 PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_libraries(core-progress-color-v5 PRIVATE user32 comctl32)
+  target_link_options(core-progress-color-v5 PRIVATE -municode)
+
+  add_executable(core-progress-detour-v5 tests/ntw16s-dll/progress_v5_detour_witness.c
+    ${injection_root}/startup_hooks.c ${minhook_root}/buffer.c ${minhook_root}/trampoline.c ${hde_source})
+  target_compile_definitions(core-progress-detour-v5 PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_libraries(core-progress-detour-v5 PRIVATE user32 comctl32)
+  target_link_options(core-progress-detour-v5 PRIVATE -municode)
+
   add_executable(core-superclass tests/ntw16s-dll/superclass.c)
   target_compile_definitions(core-superclass PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_libraries(core-superclass PRIVATE user32 gdi32)
