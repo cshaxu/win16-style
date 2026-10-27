@@ -496,5 +496,20 @@
       "Physical input, IME and unobserved image formats",
       "All VB5/VB6 controls or OCX"
     ]
+  },
+  "graphical_real_sample_p7": {
+    "source_repository": "https://github.com/thetrik/VbPng",
+    "source_commit": "5fa8f4f2d2b2e74eb24786d32c59259fcd867b1d",
+    "source_form": "VbSources/Test_EXE_Linked/frmMain.frm",
+    "source_project": "VbSources/Test_EXE_Linked/VbPngTest.vbp",
+    "source_binary": "VbSources/Test_EXE_Linked/VbPngTest.exe",
+    "binary_sha256": "c2f2eca0d2d3134654b2ae0639e7a4657f2493e4eb3fdddf24c2c411eef6c476",
+    "source_observation": "Two graphical VB.OptionButton controls and one graphical VB.CheckBox have Picture properties; the source DownPicture is on a separate VB.CommandButton. This is static source evidence only; binary/source equivalence and DisabledPicture are not established.",
+    "private_ocx_sha256": "0a5958691d595cf37e4d4e77dee4994ec031558c1e9a94f019655a9319166e08",
+    "private_manifest_sha256": "ebff9d878ca7257fcfc67e2b666fe615cef8db85bc98a96f54e4dffddb1150fa",
+    "manifest_evidence": "LoadTypeLibEx(REGKIND_NONE) returned S_OK, library {6B7E6392-850A-101B-AFC0-4210102A8DA7} version 1.5 and class IDs for Toolbar, StatusBar, ImageList. Private manifest mapped those classes without registration.",
+    "attempt": "Private desktop, isolated self-owned job and bounded observer. Sample created ThunderRT6Main and a modal error, but no main form. Error: Component comctl32.Ocx or one of its dependencies not correctly registered: a file is missing or invalid. Observer timed out waiting for main form and job cleanup followed. Cause not identified; manifest is not proof of successful activation.",
+    "not_covered": "No real graphical control was created or styled; Picture, DownPicture, DisabledPicture, input and image preservation remain unverified. First sandboxed attempt returned PRIVATE_DESKTOP_CREATE_FAIL error 5; escalated private-desktop attempt progressed to application error.",
+    "boundary": "Downloaded binary and unmodified Microsoft OCX are research-only scratch; no registration, installation, redistribution or product source changes."
   }
 }
