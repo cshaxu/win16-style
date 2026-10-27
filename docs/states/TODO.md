@@ -45,4 +45,4 @@ S15包测试进度文件共享冲突已由[S17记录](../history/M0-T18-S17-test
 
 - [ ] TODO(Medium): VCL无窗口 `TSpeedButton` 尚未适配；Owner：T18后续控件审计。Evidence：[S22](../history/M0-T18-S22-speedbutton.md)。Admission：真实版本可复核的公开对象/绘制边界，须保留应用图像、透明、Flat/Down/Disabled和事件；不得以文本、坐标、颜色或静态地址猜测控件。
 
-- [ ] TODO(Medium): ComCtl32 v5 `TProgressBar` 客户区填充仍为原生；Owner：T18后续进度条审计。Evidence：[S23](../history/M0-T18-S23-progress-border.md)。Admission：不触发可观察的探测性颜色设置，能可靠获取原生颜色及状态并保留应用语义；现仅适配经验证的非客户区边框。
+- [ ] TODO(Medium): ComCtl32 v5 `TProgressBar` 客户区填充仍为原生；Owner：后续进度条适配。Evidence：[S23](../history/M0-T18-S23-progress-border.md)、[S24](../history/M0-T18-S24-progress-colors.md)。Admission：不触发可观察的探测性颜色设置或猜测绘制实现，能可靠获取或保留原生颜色及状态并保留应用语义；现仅适配经验证的非客户区边框。

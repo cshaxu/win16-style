@@ -6,7 +6,7 @@ M0 T17 已按用户明确缩小后的范围收口；23 项 VB 延期项保留在
 Delphi VCL 74 个 UI 家族种子、框架分支、五个固定候选及逐项证据接收者；T18 S2 已将
 全部种子逐项归入35个既有原生协议模型或39个明确的原生保留边界。S4 已完成首组
 精确 TEdit/TListBox与TTabControl公开协议实现、干净双宽四文件包和双发布；实际 Delphi 显示集成
-仍统一留给T18最终收口。S10已完成组合框与列表验证；S11已完成工具栏文字边界修复、真实DoubleKiller复测及提交推送复核；S12真实MD5summer补证及远端复核完成；S13双宽干净构建、真实树控件与VB6 actor复测、91项包测试、双发布及远端aae1565复核完成；S14纠正S12独立包闭环并完成双发布及远端f1ac9ff复核；S15核实现代VCL候选及公开状态边界，双宽包、91项低并发回归、双发布及远端4032bcf复核完成；S16追踪真实开关绘制及输入、双宽包91项通过、双发布及远端5e48716复核完成；S17修复进度观察竞争并减少字体重复选取，双宽包92项通过、双发布及远端b3c2a8b复核完成；S18完成开关公开状态调查、双宽包92项及双发布，远端2edd749已复核；S19实现可审计聚焦包回归，聚焦10项、标准93项、双发布及远端d583890复核完成；准入S20继续开关视觉适配；S20恢复隔离桌面并验证开关及VB/VCL聚焦包，未证实的开关适配移交TODO；S21完成有限复选图形与双宽96/144 DPI验证，P4远端2245db3已复核；其应用裁剪外缘和显式禁用仍列TODO；S22完成真实SpeedButton公开契约调查、14项聚焦包及双发布，cb2ffef远端已复核；无安全契约的外观接收TODO；S23已实现真实VCL v5进度条有限外框并通过22项聚焦包与双发布，33f4d0d远端已复核；S24 P1已证实消息观察漏直接调用、局部原生过程trampoline模型可捕获；20项聚焦包与双发布完成，d12fded远端已复核；继续验证产品安全启动边界；不得用 demo
+仍统一留给T18最终收口。S10已完成组合框与列表验证；S11已完成工具栏文字边界修复、真实DoubleKiller复测及提交推送复核；S12真实MD5summer补证及远端复核完成；S13双宽干净构建、真实树控件与VB6 actor复测、91项包测试、双发布及远端aae1565复核完成；S14纠正S12独立包闭环并完成双发布及远端f1ac9ff复核；S15核实现代VCL候选及公开状态边界，双宽包、91项低并发回归、双发布及远端4032bcf复核完成；S16追踪真实开关绘制及输入、双宽包91项通过、双发布及远端5e48716复核完成；S17修复进度观察竞争并减少字体重复选取，双宽包92项通过、双发布及远端b3c2a8b复核完成；S18完成开关公开状态调查、双宽包92项及双发布，远端2edd749已复核；S19实现可审计聚焦包回归，聚焦10项、标准93项、双发布及远端d583890复核完成；准入S20继续开关视觉适配；S20恢复隔离桌面并验证开关及VB/VCL聚焦包，未证实的开关适配移交TODO；S21完成有限复选图形与双宽96/144 DPI验证，P4远端2245db3已复核；其应用裁剪外缘和显式禁用仍列TODO；S22完成真实SpeedButton公开契约调查、14项聚焦包及双发布，cb2ffef远端已复核；无安全契约的外观接收TODO；S23已实现真实VCL v5进度条有限外框并通过22项聚焦包与双发布，33f4d0d远端已复核；S24证实消息观察可漏直接调用，绘制追踪尚无完整安全契约；20项聚焦包、99项标准包及双发布完成，511620b远端四文件已复核；客户区转TODO，准入S25状态栏；不得用 demo
 冒充 Delphi。
 以下段落为 T17 的技术基线/历史证据，不覆盖 T18 状态。
 
@@ -68,26 +68,26 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S24 Packet
+## M0 T18 S25 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S23有限v5进度外框已交付并复核，客户区仍原生；T18保持开放 |
+| Identifier Mode | Continuation；S24进度条客户区研究以明确证据转交TODO，T18保持开放 |
 | Admission And Approval | 用户要求自动连续S实现可做控件，不新开T；既定VB延期范围不擅自改变 |
-| Objective | 调研v5进度条颜色和状态从创建到绘制的公开追踪契约，若完整可证明则实现客户区样式 |
-| Non-goals | 不以探测性颜色setter改变真实应用状态，不猜私有对象布局、颜色或丢失事件；不更改标题、菜单、字体和原图形资源 |
-| Reference Baseline | [S23真实v5外框及getter边界](../history/M0-T18-S23-progress-border.md)、[S7范围审计](../history/M0-T18-S7-vcl-range-audit.md)、[S24模型](../history/M0-T18-S24-progress-colors.md) |
+| Objective | 审核VCL状态栏的真实所有者、版本、公开状态和绘制协议；安全可证实的普通变体实现经典外观 |
+| Non-goals | 不猜测私有对象或覆盖应用自绘、图像、文字和通知；不更改标题、菜单、字体和原图形资源 |
+| Reference Baseline | [S11工具栏与状态栏边界](../history/M0-T18-S11-toolbar-text-bounds.md)、[Delphi目录](../etc/evidence/delphi-controls-audit.json)、[S24进度条研究](../history/M0-T18-S24-progress-colors.md) |
 | Candidate Proposal | [Delphi Win32控件完整审计](../proposals/delphi-win32-controls.md) |
 | Files And ABI Surface | 自有纯C模型、原生观察器、必要双宽DLL内部；不增加产品文件或修改公开ABI |
 | Applicable Rules | C17、MinGW GCC、Ninja、ccache；仅自有隔离实例、有限等待和清理；兄弟仓库只读 |
-| Verification | 对照v5设置与返回、创建阶段及后续消息、显式颜色/默认/重入/生命周期和真实样本；双宽相关包回归 |
-| Expected Markers | 证明从创建起没有漏掉影响颜色的消息、保留所有getter/setter语义和客户端数据；任何不确定路径继续原生 |
-| Asset Needs | 登记build/t18-s24-progress-colors任务scratch，真实应用仅使用自有副本和隔离配置 |
-| Reporting Requirements | 逐项说明可追踪和漏观测边界、真假样本及DPI；不得把默认颜色假设等同产品兼容 |
-| Stop Conditions | 需要猜未知状态、篡改应用可见setter、读取私有对象或依赖系统全局设置时保持原生并记录接收者 |
-| Exit Criteria | 完整可证明契约实现并通过实际包测试，或记录明确证据和后续接收；T18保持开放 |
+| Verification | 双宽v5/v6自有原生模型、样式正负例、文本/分区/图像/自绘和生命周期；真实VCL样本按可用性单列 |
+| Expected Markers | 实际绘制有证据，公开状态及回调不变，未知所有者与不支持变体回退；旧实现负例可复现 |
+| Asset Needs | 登记build/t18-s25-status任务scratch；真实应用仅使用自有副本和隔离配置 |
+| Reporting Requirements | 明确真实VCL与C模型、已适配和原生保留变体、DPI及未覆盖面 |
+| Stop Conditions | 无法证明所有权或保留应用绘制语义时保持原生并记录接收者 |
+| Exit Criteria | 已证实变体实现及实际包通过，或记录明确证据和后续接收；T18保持开放 |
 | Original Owner Request | 做完可实现控件并自行测试；每S按规范构建测试、发布、提交与远端复核 |
-| Similar-Issue Sweep | 自定义颜色、WM_CREATE重入、外部发送者、跨线程消息、动态样式、取消与既有v6/VB路径保持 |
+| Similar-Issue Sweep | 普通/简单模式、多个分区、owner-draw、图像、尺寸变化、重入与既有VB/公共控件路径 |
 
 ## Identifier State
 
@@ -95,9 +95,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S24 P1：双宽颜色消息及原生过程模型、20项聚焦包与双发布完成；d12fded源码与四文件逐字节远端复核通过。
-- Subsequent verification: 自有隔离桌面普通实际包99项全部通过、零跳过（355.27秒）；双宽入口实验发现TLS更早及第二事务返回5023，仍未证明安全产品接入，详见S24历史；完整集成另行进行。
-- Open task: T18 S24 v5进度条颜色与创建期公开契约；M0/T18开放。
+- Last delivery: M0 T18 S24：20项聚焦包、99项标准包、双发布及511620b远端四文件复核；客户区未适配转TODO。
+- Open task: T18 S25 状态栏公开协议与有限适配；M0/T18开放。
 
 ## Technical Baseline
 
