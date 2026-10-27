@@ -991,5 +991,13 @@
       "Custom owner-drawn list contents and UserControl surface remain application-owned; no blanket OCX styling or compatibility claim.",
       "No physical input or other DPI."
     ]
+  },
+  "hook_126_diagnostic_p33": {
+    "purpose": "Bound the previous real-sample UI thread observer installation failure; no target injection or product workaround.",
+    "method": "Project-authored standalone C EXE and DLL, compiled with native MinGW x86 and x64. Neither loads run16s or ntw16s. Each registers WH_GETMESSAGE on its own thread and immediately unhooks each success; tests a loaded minimal DLL export, an EXE callback with EXE module, an EXE callback with NULL module, and an existing user32 export with user32 module. No message is dispatched to the user32 export.",
+    "actual": "On both widths minimal DLL and user32 module cases returned NULL/126. EXE module and NULL-module cases returned valid hooks/error 0; all successes immediately unhooked. Real VB5 observer had both cross-thread hook registrations return NULL/126 before any callback. Copying witness DLL from O: to a private C: temp directory did not change the failure; loaded module path and export pointers were valid.",
+    "source_sha256": "e82c48d34edc285ef5e86ca4a7cd5b029f6547e07e0a77c17ab9d3343249509c",
+    "dll_source_sha256": "974a3777a55980014eea7f498b6bca905c1a8a360488e612ce85ec12f7decb6f",
+    "limit": "These observations bound the failure to DLL-module hook registration in this execution environment; they do not prove why USER returns 126, do not validate cross-process event notifications, and do not prove all past 126 failures share the same cause."
   }
 }
