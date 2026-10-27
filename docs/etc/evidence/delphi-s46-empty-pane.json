@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "task": "M0 T18 S46",
+  "sample": "DelphiVCL4Python 1.0.7",
+  "records": [
+    {
+      "bits": 32,
+      "dpi": 144,
+      "screen_changed": 1244,
+      "print_changed": 1244,
+      "first_pane": 440,
+      "empty_last_pane": 804,
+      "outside_pane_edges": 0,
+      "last_text_empty": true,
+      "owner_draw_data": "0x12345678",
+      "report_sha256": "67ce79f214df13f80c0debd3400397f86a0e770d817a386fdbfebccc0db15b14"
+    },
+    {
+      "bits": 64,
+      "dpi": 144,
+      "screen_changed": 1244,
+      "print_changed": 1244,
+      "first_pane": 440,
+      "empty_last_pane": 804,
+      "outside_pane_edges": 0,
+      "last_text_empty": true,
+      "owner_draw_data": "0x12345678",
+      "report_sha256": "0e23475199c9892c0f40eccdaa00eaaa383f40d50f33f83f04552d5899994802"
+    }
+  ],
+  "caveats": [
+    "Icon and owner-drawn last panes remain native.",
+    "Other runtime versions, physical input and full integration were not tested."
+  ]
+}

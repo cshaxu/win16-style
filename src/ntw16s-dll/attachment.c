@@ -154,7 +154,7 @@ static BOOL status_identity(HWND w,attachment *a,HMODULE *native)
 }
 
 /* The themed native status control omits the final pane background when it
- * owns a sizing grip. Only a native text call for a nonempty, icon-free,
+ * owns a sizing grip. Only a native text call for an icon-free,
  * ordinary final pane supplies a verified pre-content drawing boundary. */
 void ntw16s_status_text_frame(HDC dc,const RECT *text,UINT flags,const void *address)
 {
@@ -175,7 +175,7 @@ void ntw16s_status_text_frame(HDC dc,const RECT *text,UINT flags,const void *add
     parts=SendMessageW(s->window,SB_GETPARTS,0,0);
     if(s->owner->detached || s->epoch!=s->owner->status_epoch || parts!=(LRESULT)s->count)return;
     type=SendMessageW(s->window,SB_GETTEXTLENGTHW,s->count-1,0);
-    if(s->owner->detached || s->epoch!=s->owner->status_epoch || HIWORD(type)!=0 || !LOWORD(type))return;
+    if(s->owner->detached || s->epoch!=s->owner->status_epoch || HIWORD(type)!=0)return;
     icon=SendMessageW(s->window,SB_GETICON,s->count-1,0);
     if(s->owner->detached || s->epoch!=s->owner->status_epoch || icon)return;
     int saved=SaveDC(dc);if(saved){FrameRect(dc,&pane,(HBRUSH)GetStockObject(BLACK_BRUSH));RestoreDC(dc,saved);}
