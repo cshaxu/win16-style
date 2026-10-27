@@ -345,6 +345,15 @@ static control_style *graphical_target(HDC dc,UINT type,UINT flags,const void *a
             !GetWindowSubclass(*w,control_proc,(UINT_PTR)control_proc,&value))return NULL;
     control_style *s=(void *)value;return !s->detached && s->frame_scrollbars?s:NULL;
 }
+BOOL win16_style_bitbtn_face(HWND w,HDC dc,const RECT *rect,const RECT *clip,UINT state)
+{
+    if(!w || !dc || !rect || rect->right-rect->left<4 || rect->bottom-rect->top<4)return FALSE;
+    int saved=SaveDC(dc);if(!saved)return FALSE;
+    if(clip && IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom)==ERROR){RestoreDC(dc,saved);return FALSE;}
+    win16_style_palette palette;win16_style_default_palette(&palette);int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
+    SetDCBrushColor(dc,palette.face);FillRect(dc,rect,(HBRUSH)GetStockObject(DC_BRUSH));
+    (void)button_border(dc,*rect,&palette,u,u,(state&ODS_SELECTED)!=0);RestoreDC(dc,saved);return TRUE;
+}
 BOOL win16_style_graphical_frame_prepare(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,RECT *copy)
 {
     HWND w;

@@ -17,6 +17,7 @@ BOOL win16_style_control_install_created(HWND window,BOOL edit,BOOL original_bor
 BOOL win16_style_control_remove_owned(HWND window,const void *owner);
 /* After the native API, only an exact runtime-owned owner-draw push primitive
  * inside its parent's verified DRAWITEM DC may reuse the button chrome. */
+BOOL win16_style_bitbtn_face(HWND,HDC,const RECT *,const RECT *,UINT);
 BOOL win16_style_graphical_frame(HDC,const RECT *,UINT,UINT,const void *);
 BOOL win16_style_graphical_frame_prepare(HDC,const RECT *,UINT,UINT,const void *,RECT *);
 BOOL win16_style_checklist_frame(HDC,const RECT *,UINT,UINT,const void *);

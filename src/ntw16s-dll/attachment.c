@@ -30,6 +30,7 @@ typedef struct attachment {
     BOOL color_candidate,color_attempted,color_installed;
     BOOL date_candidate,date_attempted,date_installed;
     BOOL status_candidate,status_attempted,status_installed;
+    BOOL bit_candidate,bit_verified;
     HMODULE status_witness_owner; HWND status_parent;
     DWORD edit_original_style;
     HMODULE edit_witness_owner;
@@ -57,6 +58,9 @@ typedef struct checklist_draw_scope {
     RECT item;
 } checklist_draw_scope;
 static _Thread_local checklist_draw_scope *checklist_current;
+typedef struct bit_draw_scope {struct bit_draw_scope *previous;attachment *owner;HWND window;HDC dc;RECT item;UINT state;BOOL completed;} bit_draw_scope;
+static _Thread_local bit_draw_scope *bit_current;
+
 
 /* Status frames are drawn by the native common control before text, icons
  * and WM_DRAWITEM. A per-message snapshot makes nested unrelated drawing a
@@ -120,6 +124,28 @@ void ntw16s_spin_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *
     FrameRect(dc,rect,(HBRUSH)GetStockObject(BLACK_BRUSH));RestoreDC(dc,saved);
 }
 
+static BOOL bit_identity(HWND w,HMODULE owner)
+{
+    WCHAR name[64],real[64];DWORD pid=0,style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
+    return owner && GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
+        (style&WS_CHILD) && (style&BS_TYPEMASK)==BS_OWNERDRAW &&
+        !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
+        GetWindowThreadProcessId(GetParent(w),NULL)==GetCurrentThreadId() &&
+        (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==owner &&
+        GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TBitBtn") &&
+        RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TBitBtn");
+}
+void ntw16s_bit_theme_frame(HDC dc,int part,const RECT *rect,const RECT *clip,const void *address)
+{
+    bit_draw_scope *s=bit_current;HMODULE caller=NULL;RECT client;POINT origin;
+    if(!s || !s->owner || s->owner->detached || !dc || dc!=s->dc || part!=1 || !rect ||
+        !bit_identity(s->window,s->owner->report_module) || GetParent(s->window)!=s->owner->report_parent ||
+        !GetClientRect(s->window,&client) || !EqualRect(rect,&client) || !EqualRect(&s->item,&client) ||
+        GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) || !GetViewportOrgEx(dc,&origin) || origin.x || origin.y ||
+        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+            (LPCWSTR)address,&caller) || caller!=s->owner->report_module)return;
+    if(win16_style_bitbtn_face(s->window,dc,rect,clip,s->state) && !s->owner->detached)s->owner->bit_verified=TRUE;
+}
 static BOOL status_system_module(HMODULE image)
 {
     WCHAR path[MAX_PATH],system[MAX_PATH],winsxs[MAX_PATH];DWORD n;
@@ -585,6 +611,19 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     if(print_clip){DWORD saved=GetLastError();DeleteObject(print_clip);SetLastError(saved);}
     release(a);if(status || color)SetLastError(status_error);return result;
 }
+static void bit_draw_end(void *data)
+{
+    bit_draw_scope *scope=data;bit_current=scope->previous;
+    if(!scope->completed)release(scope->owner);
+}
+static NTW16S_UNWIND_FUNCTION LRESULT bit_draw_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,const DRAWITEMSTRUCT *item)
+{
+    bit_draw_scope scope={bit_current,a,item->hwndItem,item->hDC,item->rcItem,item->itemState,FALSE};ntw16s_unwind_scope unwind;
+    DWORD entry=GetLastError(),error;LRESULT result;bit_current=&scope;
+    NTW16S_UNWIND_BEGIN(unwind,bit_draw_end,&scope);
+    SetLastError(entry);result=DefSubclassProc(w,m,p,l);error=GetLastError();scope.completed=TRUE;
+    NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
+}
 /* Observe this verified child's native custom/owner-draw DC. Never request extra stages,
  * rewrite the application's result, select its font, or inspect item lParam. */
 static LRESULT CALLBACK report_notify(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
@@ -593,6 +632,13 @@ static LRESULT CALLBACK report_notify(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR i
     ntw16s_vb_paint file_paint;BOOL file_active=FALSE;
     checklist_draw_scope checklist_scope;BOOL checklist_active=FALSE;
     ++a->calls;
+    if(a->bit_candidate && !a->detached && m==WM_DRAWITEM && l && GetParent(list)==w && bit_identity(list,a->report_module)){
+        const DRAWITEMSTRUCT *item=(const DRAWITEMSTRUCT *)l;
+        if(item->CtlType==ODT_BUTTON && item->itemAction==ODA_DRAWENTIRE && item->hwndItem==list && item->hDC){
+            HWND target=WindowFromDC(item->hDC);
+            if(!target || target==list){SetLastError(entry);LRESULT result=bit_draw_dispatch(a,w,m,p,l,item);DWORD error=GetLastError();release(a);SetLastError(error);return result;}
+        }
+    }
     if(a->checklist && !a->detached && m==WM_DRAWITEM && l && GetParent(list)==w && checklist_identity(list)){
         const DRAWITEMSTRUCT *item=(const DRAWITEMSTRUCT *)l;
         if(item->CtlType==ODT_LISTBOX && item->hwndItem==list && item->hDC && item->itemID!=(UINT)-1 &&
@@ -620,7 +666,7 @@ static LRESULT CALLBACK report_notify(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR i
             }
         }
     }
-    if(!a->file_owner && !a->button_owner && !a->checklist && m==WM_NOTIFY && l){
+    if(!a->file_owner && !a->button_owner && !a->checklist && !a->bit_candidate && m==WM_NOTIFY && l){
         NMHDR *header=(NMHDR *)l;
         if(header->hwndFrom==list && header->code==NM_CUSTOMDRAW){
             NMCUSTOMDRAW *cd=(NMCUSTOMDRAW *)l;dc=cd->hdc;stage=cd->dwDrawStage;draw=TRUE;
@@ -668,7 +714,7 @@ BOOL __cdecl Ntw16sWindowAttached(HWND w)
     if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId()){
         SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
     }
-    attachment *a=lookup(w);return a && (!a->static_candidate || a->static_verified) && (!a->edit_candidate || a->edit_installed) && (!a->track_candidate || a->track_installed) && (!a->color_candidate || a->color_installed) && (!a->date_candidate || a->date_installed) && (!a->status_candidate || a->status_installed);
+    attachment *a=lookup(w);return a && (!a->static_candidate || a->static_verified) && (!a->edit_candidate || a->edit_installed) && (!a->track_candidate || a->track_installed) && (!a->color_candidate || a->color_installed) && (!a->date_candidate || a->date_installed) && (!a->status_candidate || a->status_installed) && (!a->bit_candidate || a->bit_verified);
 }
 void __cdecl Ntw16sScrollChanged(HWND w)
 {
@@ -722,7 +768,7 @@ BOOL __cdecl Ntw16sWindowTerminal(HWND w)
 static BOOL install_created(HWND w,DWORD original_style)
 {
     BOOL ready=InterlockedCompareExchange(&status_hooks_ready,0,0)!=0;
-    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=checklist_identity(w),status=ready && status_identity(w,NULL,NULL),spin=ready && spin_identity(w),status_candidate=FALSE,static_candidate=FALSE,edit_candidate=FALSE,track_candidate=FALSE,color_candidate=FALSE,date_candidate=FALSE;HWND parent;HMODULE owner;attachment *a;DWORD error;
+    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=checklist_identity(w),status=ready && status_identity(w,NULL,NULL),spin=ready && spin_identity(w),status_candidate=FALSE,bit_candidate=FALSE,static_candidate=FALSE,edit_candidate=FALSE,track_candidate=FALSE,color_candidate=FALSE,date_candidate=FALSE;HWND parent;HMODULE owner;attachment *a;DWORD error;
     ntw16s_control_protocol *protocol=NULL;
     if(lookup(w))return TRUE;
     /* COMBOBOX installs its own internal list when construction finishes.
@@ -758,6 +804,7 @@ static BOOL install_created(HWND w,DWORD original_style)
             RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TTrackBar");
         color_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TColorBox") &&
             RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TColorBox");
+        bit_candidate=ready && bit_identity(w,owner);
         status_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TStatusBar") &&
             RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TStatusBar");
         date_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TDateTimePicker") &&
@@ -767,25 +814,25 @@ static BOOL install_created(HWND w,DWORD original_style)
      * and then become a custom client surface.  Without an explicitly
      * verified public protocol it must stay native; only an application-owned
      * generic child frame may use the ordinary frame path. */
-    if(!control && !report && !tree && !picture && !checklist && !legacy_progress && !status && !spin && !static_candidate && !edit_candidate && !track_candidate && !color_candidate && !date_candidate && !status_candidate && (original_style&WS_CHILD) &&
+    if(!control && !report && !tree && !picture && !checklist && !legacy_progress && !status && !spin && !static_candidate && !edit_candidate && !track_candidate && !color_candidate && !date_candidate && !status_candidate && !bit_candidate && (original_style&WS_CHILD) &&
             owner && owner!=GetModuleHandleW(NULL)){
         ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
     }
     /* A custom client-only child and MDICLIENT keep application painting.
      * MDI child frames have WS_CAPTION and take the ordinary frame route. */
-    if(!control && !report && !picture && !checklist && !legacy_progress && !status && !spin && !static_candidate && !edit_candidate && !track_candidate && !color_candidate && !date_candidate && !status_candidate && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME))){
+    if(!control && !report && !picture && !checklist && !legacy_progress && !status && !spin && !static_candidate && !edit_candidate && !track_candidate && !color_candidate && !date_candidate && !status_candidate && !bit_candidate && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME))){
         SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
     }
     a=calloc(1,sizeof(*a));
     if(!a){ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
     a->calls=1;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;a->status=status;a->spin=spin;a->static_candidate=static_candidate;
-    a->edit_candidate=edit_candidate;a->edit_original_style=original_style;a->track_candidate=track_candidate;a->color_candidate=color_candidate;a->date_candidate=date_candidate;a->status_candidate=status_candidate;
-    if(report || tree || a->file_owner || a->button_owner || a->checklist){a->report_window=w;a->tree=tree;
-        a->report_module=(a->file_owner || a->button_owner)?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}
+    a->edit_candidate=edit_candidate;a->edit_original_style=original_style;a->track_candidate=track_candidate;a->color_candidate=color_candidate;a->date_candidate=date_candidate;a->status_candidate=status_candidate;a->bit_candidate=bit_candidate;
+    if(report || tree || a->file_owner || a->button_owner || a->checklist || a->bit_candidate){a->report_window=w;a->tree=tree;
+        a->report_module=(a->file_owner || a->button_owner || a->bit_candidate)?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}
     if(!SetWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc,(DWORD_PTR)a)){
         ntw16s_control_protocol_release(protocol);free(a);return FALSE;
     }
-    if((report || tree || a->file_owner || a->button_owner || a->checklist) && (!a->report_parent || !SetWindowSubclass(a->report_parent,report_notify,(UINT_PTR)w,(DWORD_PTR)a))){
+    if((report || tree || a->file_owner || a->button_owner || a->checklist || a->bit_candidate) && (!a->report_parent || !SetWindowSubclass(a->report_parent,report_notify,(UINT_PTR)w,(DWORD_PTR)a))){
         DWORD error=GetLastError();Ntw16sWindowRemove(w);release(a);SetLastError(error);return FALSE;
     }
     SetLastError(ERROR_SUCCESS);
@@ -795,7 +842,7 @@ static BOOL install_created(HWND w,DWORD original_style)
             Ntw16sWindowRemove(info.hwndItem);
     }
     if(a->detached){release(a);SetLastError(ERROR_CANCELLED);return FALSE;}
-    if(a->checklist || a->status || a->spin || a->static_candidate || a->edit_candidate || a->track_candidate || a->color_candidate || a->date_candidate || a->status_candidate)installed=TRUE;
+    if(a->checklist || a->status || a->spin || a->static_candidate || a->edit_candidate || a->track_candidate || a->color_candidate || a->date_candidate || a->status_candidate || a->bit_candidate)installed=TRUE;
     else if(legacy_progress)installed=win16_style_legacy_progress_border_install_created(w,NULL,a,&a->detached);
     else if(protocol && ntw16s_control_protocol_toolbar(w))
         installed=win16_style_toolbar_install_created(w,NULL,a,&a->detached);
@@ -827,7 +874,7 @@ static BOOL install_created(HWND w,DWORD original_style)
             }
         }
     }
-    if(installed && !a->detached && !a->edit_candidate && !a->track_candidate && !a->color_candidate && !a->date_candidate && !a->status_candidate && a->themed!=w)ntw16s_theme_remove(w,NULL);
+    if(installed && !a->detached && !a->edit_candidate && !a->track_candidate && !a->color_candidate && !a->date_candidate && !a->status_candidate && !a->bit_candidate && a->themed!=w)ntw16s_theme_remove(w,NULL);
     if(a->detached){installed=FALSE;error=ERROR_CANCELLED;}
     if(!installed && !a->detached)Ntw16sWindowRemove(w);
     release(a);

@@ -12,6 +12,7 @@
 
 /* Private, synchronous coordinator scope; not part of the public ABI. */
 void ntw16s_status_frame(HDC,const RECT *,const RECT *,const void *);
+void ntw16s_bit_theme_frame(HDC,int,const RECT *,const RECT *,const void *);
 void ntw16s_status_text_frame(HDC,const RECT *,UINT,const void *);
 void ntw16s_status_icon_frame(HDC,int,int,int,int,HICON,const void *);
 void ntw16s_status_hooks_enable(void);
@@ -324,6 +325,7 @@ static HRESULT WINAPI hook_DrawThemeBackground(HTHEME theme,HDC dc,int part,int 
     SetLastError(entry);if(drawn)return S_OK;
     HRESULT result=real_DrawThemeBackground(theme,dc,part,state,rect,clip);DWORD error=GetLastError();
     if(SUCCEEDED(result) && part==1 && state==0)ntw16s_status_frame(dc,rect,clip,__builtin_return_address(0));
+    if(SUCCEEDED(result))ntw16s_bit_theme_frame(dc,part,rect,clip,__builtin_return_address(0));
     SetLastError(error);return result;
 }
 static HDC WINAPI hook_CreateCompatibleDC(HDC source)
