@@ -604,5 +604,29 @@
       "One actual VB6 sample at 96 DPI; not evidence for all applications, VB5 default drawing, arbitrary Picture/DisabledPicture combinations, accessibility, IME or physical input.",
       "The sample with embedded COM mapping is a modified-manifest copy; no OCX or research binary is installed, registered, distributed or required by the product."
     ]
+  },
+  "graphical_real_vb5_checkbox_p12": {
+    "source": "https://github.com/darcfx/darcfx-submissions/tree/46012cf6dfbee4e809c2139f32d2b60f22104e5b/vb/games/forms/tetris",
+    "binary_sha256": "32dbc2fd081693685a04383a7bbff64689cc6ee9fe89deb4ed99a17307977b8e",
+    "runtime_sha256": "8611dc1b60ae5c383bba6cb3ffd8a51aeebff23b95844f0ab3d6e5ecd0fadc84",
+    "sample_boundary": "Original executable imports MSVBVM50.DLL. Source form defines graphical Check1 and Check2; the binary showed matching ThunderRT5CheckBox controls. Original bundled PIECES.DAT produced VB error 62 before form show. For this probe only, a scratch copy retained the original bytes and appended numeric zero values. Original data SHA-256 ca02b9b745c04187739f623478df04b924641c229598bfbfa90297dc0858164e; padded data SHA-256 177f4e38ea90556ac735859085f6b21bfbad201638ecb8654344dc1b5d6f2164. Cause of the data mismatch is unknown; game correctness is not claimed.",
+    "real_owner": "Runtime-owned ThunderRT5CheckBox, BS_OWNERDRAW; temporary diagnostic DLL observed direct MSVBVM50 DrawFrameControl DFC_BUTTON state 0x10,0x110,0x210,0x410,0x510,0x610 at 96 DPI; no application-owner draw inference.",
+    "change": "Extend the existing runtime-owned ODT_BUTTON/DC/direct-caller path and DFCS_CHECKED handling solely to ThunderRT5CheckBox. Application owns native content, text, value, grouping, events and resources; VB5 OptionButton is not admitted by this change.",
+    "real_test": "tests/integration/vb_intrinsic.c real-graphical-vb5-check. In private desktop bare, old package and exact candidate, the source-reviewed Show Next Piece checkbox was temporarily enabled, toggled twice using native mouse messages and restored to its initial checked/disabled/style/font state. Each owned job reached zero remaining processes.",
+    "visual": "Previous package and candidate direct-control PrintWindow images at 96 DPI differ by 876 RGB pixels within a 96x24 capture; development and candidate screenshots match SHA-256 8e5a82d23253510abd9250cccf7b296636ea105139b39696648009b1c308ce3d. Whole-form paired captures differed below y=51; no physical input or general title equivalence is claimed.",
+    "negative_control": "Native VB5 protocol models on x86/x64 fail against the previous package at the exact styled checkbox attachment assertion, and pass with the candidate. These are architecture models, not actual 64-bit VB5.",
+    "package": "16 focused actual-package tests, 0 skips, 13.11 s. Includes VB5/VB6 owner-draw models, existing VB graphical/control paths, ABI, demo and propagation. Installed assets launcher retested both model widths.",
+    "sha256": {
+      "demo.exe": "ec04e73d8ca8cf17f13869e3c8e87eeae14454534650b46f4064c27881b4409d",
+      "ntw16s32.dll": "75b8248acf122cbd5d6ca5594834b61145cefdb44b2358ad7d81fd651f682825",
+      "ntw16s64.dll": "153e94fcba25626381a4f67c1fc7f2b374d569da40d9bd294afff0acb2031dd2",
+      "run16s.exe": "0057f3c9c84b011d4d399291c96254f8f9cc23f6d482d568e6b5548ab34df6db"
+    },
+    "publication": "Four clean-built tested files published to assets root and O:/winnt/system32, eight SHA-256 comparisons passed.",
+    "limitations": [
+      "Real runtime evidence uses one x86 VB5 program at 96 DPI with padded scratch data; no general gameplay or application compatibility claim.",
+      "VB5 owner-draw OptionButton, Picture/DownPicture/DisabledPicture variants, other DPIs, IME, accessibility and physical input remain unverified.",
+      "User-deferred OCX and DriveListBox remain out of scope; original external binary and diagnostic DLL are not redistributed."
+    ]
   }
 }

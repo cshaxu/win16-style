@@ -320,8 +320,25 @@ static int worker(int argc,WCHAR **argv){
     BOOL real_graphical=!wcscmp(argv[3],L"real-graphical-option");
     BOOL real_checkbox=!wcscmp(argv[3],L"real-graphical-checkbox");
     BOOL real_picture=!wcscmp(argv[3],L"real-graphical-picture");
-    BOOL inventory=graphical || about_print || containers || file_verify || real_graphical || real_checkbox || real_picture || !wcscmp(argv[3],L"inventory");
+    BOOL real_vb5_check=!wcscmp(argv[3],L"real-graphical-vb5-check");
+    BOOL inventory=graphical || about_print || containers || file_verify || real_graphical || real_checkbox || real_picture || real_vb5_check || !wcscmp(argv[3],L"inventory");
     CHECK(runtime && dll==styled && EnumChildWindows(form,collect,0) && (inventory?count>0:count>10));
+    if(real_vb5_check){
+        HWND check=NULL;WCHAR text[120],cls[100];
+        for(unsigned i=0;i<count;++i){GetClassNameW(checks[i],cls,100);CHECK(vb_control_text(checks[i],text,120));
+            if(!wcscmp(cls,L"ThunderRT5CheckBox") && !wcscmp(text,L"Show Next Piece"))check=checks[i];}
+        CHECK(check && IsWindowVisible(check) && !IsWindowEnabled(check));CHECK(((DWORD)GetWindowLongPtrW(check,GWL_STYLE)&BS_TYPEMASK)==BS_OWNERDRAW);
+        LRESULT initial=SendMessageW(check,BM_GETCHECK,0,0);HFONT font=(HFONT)SendMessageW(check,WM_GETFONT,0,0);LONG_PTR style=GetWindowLongPtrW(check,GWL_STYLE);
+        EnableWindow(check,TRUE);CHECK(IsWindowEnabled(check));
+        for(unsigned pass=0;pass<2;++pass){LRESULT before=SendMessageW(check,BM_GETCHECK,0,0);
+            SendMessageW(check,WM_LBUTTONDOWN,MK_LBUTTON,MAKELPARAM(5,5));SendMessageW(check,WM_LBUTTONUP,0,MAKELPARAM(5,5));
+            for(unsigned wait=0;wait<50 && SendMessageW(check,BM_GETCHECK,0,0)==before;++wait)Sleep(10);
+            CHECK(SendMessageW(check,BM_GETCHECK,0,0)!=before);}
+        CHECK(SendMessageW(check,BM_GETCHECK,0,0)==initial);EnableWindow(check,FALSE);
+        CHECK(!IsWindowEnabled(check) && GetWindowLongPtrW(check,GWL_STYLE)==style && (HFONT)SendMessageW(check,WM_GETFONT,0,0)==font);
+        CHECK(swprintf_s(path,MAX_PATH,L"%ls/vb5-checkbox.bmp",scratch)>0);(void)capture(check,path,FALSE);
+        puts("VB5_REAL_GRAPHICAL_CHECK_OK toggles=2 disabled_restored=1");
+    }
     if(real_checkbox){
         HWND check=NULL;WCHAR text[120],cls[100];
         for(unsigned i=0;i<count;++i){CHECK(vb_control_text(checks[i],text,120));GetClassNameW(checks[i],cls,100);

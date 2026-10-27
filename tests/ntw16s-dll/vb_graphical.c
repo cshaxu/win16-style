@@ -86,14 +86,16 @@ static int child(const WCHAR *runtime_path,const WCHAR *witness_path,BOOL styled
         if(styled)CHECK(normal!=checked);
         mode(0);CHECK(DestroyWindow(option));
         puts("VB6_GRAPHICAL_OPTION_OK ownerdraw=1 checked_frame=1 native_image=1");
-        HWND check=CreateWindowW(L"ThunderRT6CheckBox",L"Check",WS_CHILD|WS_VISIBLE|BS_OWNERDRAW,170,90,150,35,root,(HMENU)6,runtime,NULL);
+    }
+    {
+        BOOL vb6=!wcscmp(name,L"ThunderRT6CommandButton");
+        HWND check=CreateWindowW(vb6?L"ThunderRT6CheckBox":L"ThunderRT5CheckBox",L"Check",WS_CHILD|WS_VISIBLE|BS_OWNERDRAW,170,90,150,35,root,(HMENU)6,runtime,NULL);
         CHECK(check);SendMessageW(check,WM_SETFONT,(WPARAM)source,FALSE);
         CHECK(!survey(state,event,check,VB_QUEUE_SURVEY) && (styled?state->attached && state->system_text>0:!state->system_text));
-        CHECK(!image(check,styled,TRUE,&normal));mode(5);CHECK(!image(check,FALSE,TRUE,&checked));
-        api_state(&rr,&ee,&flags);CHECK(flags&DFCS_CHECKED);if(styled)CHECK(normal!=checked);
+        uint64_t normal,checked;CHECK(!image(check,styled,TRUE,&normal));mode(5);CHECK(!image(check,FALSE,TRUE,&checked));
+        RECT rr;DWORD ee,flags;api_state(&rr,&ee,&flags);CHECK(flags&DFCS_CHECKED);if(styled)CHECK(normal!=checked);
         mode(0);CHECK(DestroyWindow(check));
-        puts("VB6_GRAPHICAL_CHECK_OK ownerdraw=1 checked_frame=1 native_image=1");
-
+        puts(vb6?"VB6_GRAPHICAL_CHECK_OK ownerdraw=1 checked_frame=1 native_image=1":"VB5_GRAPHICAL_CHECK_OK ownerdraw=1 checked_frame=1 native_image=1");
     }
     uint64_t outside,inside;CHECK(!image(w,FALSE,FALSE,&outside) && !image(w,styled,TRUE,&inside));
     CHECK(styled?outside!=inside:outside==inside);
