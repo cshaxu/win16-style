@@ -1187,7 +1187,12 @@
         "run16s.exe": "1e50947d71f9dd64a537ff0175b63f6a146476aaf4c693fc674f1bc050611023"
       },
       "published": "assets root and O:/winnt/system32 each match tested four-file SHA",
-      "limits": "Focused cases only; real samples x86 at 96 DPI; no physical input, accessibility, other Print variants or full integration matrix."
+      "limits": "Focused cases only; real samples x86 at 96 DPI; no physical input, accessibility, other Print variants or full integration matrix.",
+      "post_release_vb_regression": {
+        "package": "Clean four-file candidate individually SHA-256 matched assets before testing; assets root contains README and is rejected as a package by the exact-four-files gate.",
+        "result": "34 focused cases passed, zero skipped, 28.01 seconds, four workers; includes VB5/VB6 fixture checklist, UserControl labels/edges, MDI, graphical choice, text, font, queue and windowed controls in x86/x64, plus mandatory baseline.",
+        "limits": "A focused model regression, not a real-VB x64 claim or full integration/physical-input pass."
+      }
     }
   }
 }
