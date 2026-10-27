@@ -130,7 +130,7 @@ static ntw16s_control_protocol *bind_protocol(HWND w,HMODULE verified_owner,unsi
      * require initialized public protocol evidence, even a tab's real name. */
     unsigned ocx_role=ocx_common_control_owner(w,owner,name,&native_class);
     unsigned toolbar_role=ocx_toolbar_owner(w,owner,name,&native_class,&toolbar_native);
-    role=!lstrcmpW(name,L"TButton")?1:!lstrcmpW(name,L"TComboBox")?2:
+    role=(!lstrcmpW(name,L"TButton") || (verified_owner && !lstrcmpW(name,L"TGroupButton")))?1:!lstrcmpW(name,L"TComboBox")?2:
         (!lstrcmpW(name,WC_TABCONTROLW) || !lstrcmpW(name,L"TPageControl") || !lstrcmpW(name,L"TTabControl"))?3:
         (!lstrcmpW(name,WC_HEADERW) || !lstrcmpW(name,L"THeaderControl"))?4:
         (!lstrcmpW(name,WC_LISTVIEWW) || !lstrcmpW(name,L"TListView"))?5:
@@ -321,6 +321,8 @@ static ntw16s_control_protocol *bind_protocol(HWND w,HMODULE verified_owner,unsi
 }
 ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND w)
 {return bind_protocol(w,NULL,0);}
+ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_group_button(HWND w,HMODULE owner)
+{return owner?bind_protocol(w,owner,1):NULL;}
 ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_edit(HWND w,HMODULE owner)
 {return owner?bind_protocol(w,owner,11):NULL;}
 ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_trackbar(HWND w,HMODULE owner)
