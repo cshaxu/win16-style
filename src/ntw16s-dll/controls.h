@@ -21,6 +21,7 @@ BOOL win16_style_bitbtn_face(HWND,HDC,const RECT *,const RECT *,UINT);
 BOOL win16_style_graphical_frame(HDC,const RECT *,UINT,UINT,const void *);
 BOOL win16_style_graphical_frame_prepare(HDC,const RECT *,UINT,UINT,const void *,RECT *);
 BOOL win16_style_checklist_frame(HDC,const RECT *,UINT,UINT,const void *);
+BOOL win16_style_vb_checklist(HDC,int,int,int,int,HDC,int,int,DWORD,const void *);
 /* Internal coordinator scope for the currently dispatched checklist DRAWITEM. */
 BOOL ntw16s_checklist_draw_target(HDC,const RECT *,const void *);
 /* Tab positions are private native state with no public getter. The creator

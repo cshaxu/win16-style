@@ -698,5 +698,32 @@
       "VB5 Picture/DownPicture/DisabledPicture remains unverified; OCX and DriveListBox are user-deferred.",
       "External EXE and FRX are research-only and are not project build dependencies."
     ]
+  },
+  "vb6_checkbox_list_p16": {
+    "source": "https://github.com/sjgray/cbm-transfer/tree/6122eaa2484c4477e65157e65ba7db9734ff5027/V1",
+    "sample_sha256": "91d4d422380c54efec4690cd7262cf6cf5041872375b5fcc6178571198d1cd34",
+    "scratch_modified_exe_sha256": "4bf18907f00e4d3380f75168a73f0d3799eac62377e2efdd5ee892c12bd92c48",
+    "sample_boundary": "Research-only x86 VB6 EXE; original is unchanged. A private copy carries RT_MANIFEST for private Microsoft ComDlg32.ocx; configuration and fixture.seq are confined to scratch. No OCX installation, registration, product dependency or device command. Viewer control is temporarily exposed and two test strings inserted; this is not the normal application page workflow.",
+    "root_cause": "Real MSVBVM60 directly calls BitBlt SRCCOPY to the ThunderRT6ListBox DC, 11x11 at item offset 2,2, using a 44x11 bitmap; unselected source x=0 and selected x=11. The existing owner-draw DrawFrameControl path does not receive these blits.",
+    "implementation": "After successful native BitBlt, only exact VB6 runtime caller/class owner, GUI thread, 96 DPI, list style, window DC, memory source bitmap 44x11, offsets 0/11, item geometry and enabled LTR state receive the original control_checks glyph scaled to 11x11. Native result/error and unknown calls stay native. Item lookup is guarded against recursive hook entry; selected state comes from witnessed bitmap offset, not a reentrant LB_GETSEL query. Hook capacity increases 40 to 48, ABI unchanged.",
+    "real_test": "Exact clean candidate ntw16s32.dll loaded from its absolute candidate path; MSVBVM60 class owner matches runtime. Own file fixture.seq opened, target shown temporarily, two items inserted, native mouse messages toggle LB_GETSEL 0 to 1. Each 11x11 capture matches 121 original resource pixels for its unchecked/checked state. Candidate and launcher exited normally with job active count zero in this run. Bare and old styled before/after captures were identical; exact candidate differs.",
+    "models": "Project-authored 32/64-bit runtime fixtures, not real VB on x64; checkbox states, restore, wrong geometry, wrong source dimensions, wrong caller, disabled native fallback, API last error and resource teardown. Both models reject old released package and pass candidate.",
+    "regression": "24 focused actual-package cases, 0 skips, 58.63 s, including checkbox models, existing Delphi checklist, VB controls, owner buttons, menu cancellation, font layout, ABI, demo and propagation. Not full integration.",
+    "source_snapshot_sha256": "3554cdf7c456d515e732e0de14e3aa346bd947455d80dcca143ae7b3a55d5a83",
+    "sha256": {
+      "demo.exe": "072dbab69286590082f44a8aff1a96d528177a58907835cbc5967bed1907e75d",
+      "ntw16s32.dll": "f008e0934c9bc524f47969ae3a07a9e5caf5c9d62dc4923cb5be316ac40e5ae0",
+      "ntw16s64.dll": "e9b771b4fc272e4c7afbc78b2cd8e5371d6efe79b9c92e8dc66be98776cdcdf5",
+      "run16s.exe": "94a40b26a5b2cf908169d2a32358f94e7c01dba25f6169a203d8ec99613f315c"
+    },
+    "publication": "Four tested same-batch files published to assets root and O:/winnt/system32; eight hashes verified, installed x86/x64 model passes.",
+    "limits": [
+      "One actual VB6 x86 sample, 96 DPI; other DPI, VB5, unsupported bitmap offsets, disabled, RTL and unknown layouts remain native.",
+      "No physical mouse/keyboard, IME or accessibility validation; the test uses native messages and temporary control visibility.",
+      "Prior viewer-only shutdown timeouts occurred in both diagnostic and released-style runs; one successful final run does not establish their cause or resolution.",
+      "Separate exact target-thread observer hooks returned error 126; both witness DLL exports resolved. Private diagnostic interception provided the BitBlt evidence.",
+      "Whole application compatibility or other checkbox list variants is not claimed."
+    ],
+    "code_accounting": "Production src diff: 50 additions, 7 deletions, net +43; original painter and source bitmap resources remain. Search: rg -n \"win16_style_checklist_frame|ntw16s_vb_list|hook_DrawFrameControl|BitBlt\" src/ntw16s-dll; existing Delphi checklist path reused glyph routine, original native BitBlt is always called before bounded overlay."
   }
 }
