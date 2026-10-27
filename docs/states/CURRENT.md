@@ -6,7 +6,7 @@ M0 T17 已按用户明确缩小后的范围收口；23 项 VB 延期项保留在
 Delphi VCL 74 个 UI 家族种子、框架分支、五个固定候选及逐项证据接收者；T18 S2 已将
 全部种子逐项归入35个既有原生协议模型或39个明确的原生保留边界。S4 已完成首组
 精确 TEdit/TListBox与TTabControl公开协议实现、干净双宽四文件包和双发布；实际 Delphi 显示集成
-仍统一留给T18最终收口。S10已完成组合框与列表验证；S11已完成工具栏文字边界修复、真实DoubleKiller复测及提交推送复核；S12真实MD5summer补证及远端复核完成；S13双宽干净构建、真实树控件与VB6 actor复测、91项包测试、双发布及远端aae1565复核完成；S14纠正S12独立包闭环：91项包测试、真实MD5summer及VB6 actor复测和双发布通过，待远端复核；不得用 demo
+仍统一留给T18最终收口。S10已完成组合框与列表验证；S11已完成工具栏文字边界修复、真实DoubleKiller复测及提交推送复核；S12真实MD5summer补证及远端复核完成；S13双宽干净构建、真实树控件与VB6 actor复测、91项包测试、双发布及远端aae1565复核完成；S14纠正S12独立包闭环并完成双发布及远端f1ac9ff复核；顺序准入S15核实现代VCL候选的实际承载；不得用 demo
 冒充 Delphi。
 以下段落为 T17 的技术基线/历史证据，不覆盖 T18 状态。
 
@@ -68,26 +68,26 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S14 Packet
+## M0 T18 S15 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Corrective；S12沿用S11包且提前收口，S13已完成独立包和远端复核；顺序准入S14补充S12真实应用对应的独立包闭环 |
-| Admission And Approval | 用户授权连续S及桌面恢复后原生测试；按项目每S交付规范纠正遗漏，不重用S12编号 |
-| Objective | 以S14独立源码快照双宽构建、同批四文件包测试，并用该候选包复测真实MD5summer裸/样式与组合框语义 |
-| Non-goals | 不将单一应用推广为全部Delphi；不使用computer-use、不测试HD Tune提权、不操作既有进程或发起文件扫描 |
-| Reference Baseline | [S12记录及更正](../history/M0-T18-S12-md5summer-current.md)、[S13证据](../history/M0-T18-S13-md5-tree-current.md) |
+| Identifier Mode | Continuation；S14纠正包f1ac9ff已推送并读取实际远端，顺序准入S15 |
+| Admission And Approval | 用户批准T18持续实施及原生探针，要求先完成可实现的控件并在T收口时整体验证 |
+| Objective | 核实固定现代VCL候选cnc-ddraw config的窗口/控件实际承载及现有接入断点，依据可证明的公开协议寻找可实现项 |
+| Non-goals | 不仅凭类名或demo推断VCL支持；不写业务配置、不操作既有进程、不使用computer-use或测试HD Tune提权 |
+| Reference Baseline | [T18覆盖审计](../etc/evidence/delphi-controls-audit.json)、[S14纠正记录](../history/M0-T18-S14-md5-independent-package.md)、当前既有renderer |
 | Candidate Proposal | [Delphi Win32控件完整审计与Win3.x风格适配](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 自有scratch和证据文档；不计划变更产品源码、ABI或图形资源 |
-| Applicable Rules | C17/MinGW GCC/Ninja/ccache；自有私有桌面及Job隔离；每S实际同批包测试、摘要比较与必要双发布 |
-| Verification | 干净双宽构建、候选四文件包测试、真实MD5summer裸/注入启动、组合框状态和窗口移动恢复、目标路径/SHA及自有进程清理 |
-| Expected Markers | 包测试零失败；真实样本DLL身份、正确附着、组合框开关/选择、退出与Job active0；明确skip和失败 |
-| Asset Needs | 本机MD5summer和已有自编探针，仅作自有进程观察，不分发第三方程序 |
-| Reporting Requirements | 分离真实应用、模型和未覆盖；S12历史不改写为当时独立构建成功 |
-| Stop Conditions | 目标身份不匹配、隔离不可用或需破坏性业务操作时停止对应测试并记录 |
-| Exit Criteria | S14独立包构建、测试、必要发布、证据、提交推送及远端复核完成，T18保持开放 |
-| Original Owner Request | Delphi控件连续适配和桌面恢复后自测；每S编译、测试、必要发布、提交推送 |
-| Similar-Issue Sweep | 比对当前和已部署四文件；真实x86应用、双宽模型、owner-draw和其他DPI不互相替代 |
+| Files And ABI Surface | 首先自有scratch和纯C探针；如能证明最小公开协议适配，再按实际范围记录DLL内部改动；不改变ABI及原资源 |
+| Applicable Rules | C17/MinGW GCC/Ninja/ccache；仅自有隔离实例、有限等待、受控数据及清理；同批双宽产品包与必要双发布 |
+| Verification | 先核对候选路径/SHA、启动副作用与隔离；若安全启动，分别证明DLL载入、控件识别、实际绘制和语义；针对实际改变运行双宽及包测试 |
+| Expected Markers | 可核验进程及模块路径/SHA、控件类及所有者、公开消息状态、绘制前后证据、关闭和自有Job active0；异常如实记录 |
+| Asset Needs | 本机已审计候选及任务scratch，不安装组件、不分发第三方二进制 |
+| Reporting Requirements | 区分现代VCL实测与模型结果；未覆盖的控件、DPI及版本不宣称支持 |
+| Stop Conditions | 需要对用户原有配置写入、私有对象布局、绕过许可或全局hook时停止对应路径并记录具体边界 |
+| Exit Criteria | 完成有证据的有限实现或明确定位与后续接收；按规范完成本S包交付及远端复核，T18保持开放 |
+| Original Owner Request | Delphi控件全面审计与持续实现，桌面可用后自行测试 |
+| Similar-Issue Sweep | 经典与现代VCL、静态/包、ANSI/Unicode、owner/custom draw及已有标准控件协议独立核实 |
 
 ## Identifier State
 
@@ -95,8 +95,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S13 P2：独立双宽包91项0跳过、真实MD5summer及VB6 actor、双发布；aae1565已实际远端复核。
-- Open task: T18 S14 纠正S12独立包闭环已验证及双发布，待远端复核；M0/T18开放。
+- Last delivery: M0 T18 S14 P1：独立双宽包91项0跳过、真实MD5summer及VB6 actor、双发布；f1ac9ff已实际远端复核。
+- Open task: T18 S15 现代VCL真实候选承载与接入调查；M0/T18开放。
 
 ## Technical Baseline
 
