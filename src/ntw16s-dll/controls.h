@@ -44,6 +44,7 @@ BOOL win16_style_toolbar_install_created(HWND,const win16_style_palette *,const 
 BOOL win16_style_progress_install_created(HWND,const win16_style_palette *,const void *,const BOOL *);
 BOOL win16_style_legacy_progress_border_install_created(HWND,const win16_style_palette *,const void *,const BOOL *);
 BOOL win16_style_tree_install_created(HWND,const win16_style_palette *,const void *,const BOOL *);
+BOOL win16_style_grid_install_created(HWND,const win16_style_palette *,const void *,const BOOL *);
 BOOL win16_style_picture_install_created(HWND,const win16_style_palette *,const void *,const BOOL *);
 BOOL win16_style_frame_scrollbars_install_owned(HWND,const win16_style_palette *,const void *,const BOOL *);
 void win16_style_frame_scrollbars_palette_owned(HWND,const win16_style_palette *,const void *);

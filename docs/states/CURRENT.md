@@ -68,29 +68,29 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S53 Packet
+## M0 T18 S54 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S52 P1 613fa4f已推送，远端12文件逐字节复核 |
+| Identifier Mode | Continuation；S53 P1 37afecf已推送，远端7文件逐字节复核 |
 | Admission And Approval | 用户授权T18内自动完成可实施控件；不新开T |
-| Objective | 调查真实TRadioGroup容器边框绘制和安全适配边界 |
-| Non-goals | 不改变选项、标题、背景、布局、事件或应用所有图像资源 |
-| Reference Baseline | [S51单选组](../history/M0-T18-S51-radio-group.md)、[S52生命周期](../history/M0-T18-S52-group-lifecycle.md)、[S28面板](../history/M0-T18-S28-panel.md) |
+| Objective | 调查真实VCL TStringGrid/TDrawGrid的窗口、内容和滚动边界，实施可证实范围 |
+| Non-goals | 不覆盖应用单元格内容、编辑、数据、布局、输入或资源 |
+| Reference Baseline | [S38控件审计](../history/M0-T18-S38-control-audit.md)、[S53组框边界](../history/M0-T18-S53-radio-frame.md) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 自有原生探针；证据充分时修改现有DLL及双宽测试，不增产物或ABI |
-| Applicable Rules | M0、C17、GCC、Ninja、ccache；仅自有隔离实例 |
-| Verification | 双宽真实绘制所有权、裁剪、标题与状态；有实现时验证输入/布局/退役及实际包 |
-| Expected Markers | 内容中性边框及稳定绘制范围，未知模式保留原生 |
-| Asset Needs | 登记build/t18-s53-radio-frame，复用真实双宽样本 |
-| Reporting Requirements | 实际绘制链、覆盖和限制、同批包及远端复核 |
-| Stop Conditions | 无公开且可区分的绘制契约不得重画应用内容 |
-| Exit Criteria | 可安全实现或明确证据接收者，干净包交付；T18保持开放 |
-| Original Owner Request | 能做的代码和测试先完成，真实应用全量集成统一留T收口 |
-| Similar-Issue Sweep | VCL组框、普通单选组及关联容器 |
+| Files And ABI Surface | 双宽自有原生探针；有证据时修改现有DLL与测试，不增产品或ABI |
+| Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例限时清理 |
+| Verification | 双宽真实窗口身份、滚动与输入、内容边界；如实现则验证绘制及实际包 |
+| Expected Markers | 独立于应用内容的可验证边框/滚动契约；不明区域保留原生 |
+| Asset Needs | 登记build/t18-s54-grid，复用合法双宽样本 |
+| Reporting Requirements | 确定支持面、失败和未覆盖、双发布与远端复核 |
+| Stop Conditions | 无公开、内容中性的安全边界时不泛化绘制 |
+| Exit Criteria | 安全有限实现或独立可复核证据与接收者，同批包交付；T18保持开放 |
+| Original Owner Request | 先完成能做的代码和测试，真实应用全量集成统一在T收口 |
+| Similar-Issue Sweep | VCL字符串网格、自绘网格和原生滚动条 |
 
-S52 P1 `613fa4f`远端12文件逐字节复核通过；16项聚焦包与双发布完成，
-单选组父窗口和owner-draw变化的双宽模型已覆盖，组框绘制尚待调查。
+S53 P1 `37afecf`远端7文件逐字节复核通过；组框原型会覆盖标题，未合入，
+独立留TODO；不以此阻止其余控件调查。T18/M0保持开放。
 
 ## Identifier State
 
@@ -98,8 +98,8 @@ S52 P1 `613fa4f`远端12文件逐字节复核通过；16项聚焦包与双发布
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S52 P1：16项聚焦包、双发布及613fa4f远端12文件复核。
-- Open task: T18 S53 TRadioGroup外层组框调查；M0/T18开放。
+- Last delivery: M0 T18 S53 P1：12项聚焦包、双发布及37afecf远端7文件复核。
+- Open task: T18 S54 VCL字符串及自绘网格调查；M0/T18开放。
 
 ## Technical Baseline
 
@@ -366,3 +366,7 @@ S53自有双宽144 DPI真实TRadioGroup主题part 4由runtime绘制；父组自�
 
 S53独立干净包12项聚焦测试无跳过，二进制摘要变化故双发布，系统入口双宽
 通过；主题组框原型因覆盖标题未进入产品，待提交推送及远端复核。
+
+S54双宽真实空网格及模型通过：客户区对照无变化，水平消息滚动有效，旧包负例
+检出；最终干净包16项聚焦回归无跳过，双发布及system32双宽入口通过。垂直滚动、
+非空/自绘单元、编辑、物理拖拽及其他DPI仍未覆盖，已记录TODO；待提交推送复核。

@@ -2,6 +2,7 @@
 #include "attachment.h"
 /* Internal guard for a witnessed VCL group button. */
 BOOL ntw16s_group_button_valid(HWND);
+BOOL ntw16s_grid_valid(HWND);
 #include "controls.h"
 #include "control_glyphs.h"
 #include "combo_glyph.h"
@@ -1222,9 +1223,9 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
     if(tab && win16_style_tab_changes(m))++s->tab_epoch;
     if(header && win16_style_header_changes(m))++s->header_epoch;
     win16_style_system_retain(pinned);
-    /* A verified VCL radio belongs only to its original group and role.
+    /* A verified VCL control belongs only to its original parent and role.
      * Let the native transition finish, then retire this exact attachment. */
-    if(m!=WM_NCDESTROY && !ntw16s_group_button_valid(w)){
+    if(m!=WM_NCDESTROY && (!ntw16s_group_button_valid(w) || !ntw16s_grid_valid(w))){
         if(m==WM_SETFONT)s->original_font=win16_style_system_source((HFONT)a);
         result=DefSubclassProc(w,m,a,b);
         if(!s->detached && IsWindow(w) && Ntw16sWindowRemove(w) && IsWindow(w))InvalidateRect(w,NULL,TRUE);
@@ -1700,6 +1701,15 @@ BOOL win16_style_tree_install_created(HWND w,const win16_style_palette *palette,
 {
     DWORD_PTR data;
     if(!ntw16s_control_protocol_is(w,WC_TREEVIEWW)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    if(!win16_style_frame_scrollbars_install_owned(w,palette,owner,cancelled))return FALSE;
+    if(!GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&data) ||
+        ((control_style *)data)->creation_owner!=owner){SetLastError(ERROR_CANCELLED);return FALSE;}
+    ((control_style *)data)->native_border=TRUE;
+    return TRUE;
+}
+BOOL win16_style_grid_install_created(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled)
+{
+    DWORD_PTR data;
     if(!win16_style_frame_scrollbars_install_owned(w,palette,owner,cancelled))return FALSE;
     if(!GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&data) ||
         ((control_style *)data)->creation_owner!=owner){SetLastError(ERROR_CANCELLED);return FALSE;}
