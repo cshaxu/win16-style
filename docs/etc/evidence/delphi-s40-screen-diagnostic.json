@@ -1,0 +1,759 @@
+{
+  "schema": 1,
+  "task": "M0 T18 S40",
+  "status": "bounded investigation; rendering or capture mechanism unresolved",
+  "target": "DelphiVCL4Python 1.0.7 x86/x64 TColorBox; self-owned private desktops, 144 DPI",
+  "old_package": "build/t18-package/s38-clean1/candidate",
+  "new_package": "assets",
+  "item_rect": [
+    3,
+    3,
+    101,
+    19
+  ],
+  "observed": "In captured samples the two application DRAWITEM DCs were identical and matched post-redraw screen pixels; in changing samples the pre-redraw screen did not match either DC. This locates the difference after that sampled draw, but does not determine causation or compare rates.",
+  "flush_limitation": "Five old and five new x86 cases after successful DwmFlush had no item difference; too small to establish causation; no global setting was changed.",
+  "scope_limitations": [
+    "No physical input",
+    "One runtime version, machine and DPI",
+    "Only app item rectangle directly compared with drawing DC",
+    "Sampling and observer can affect timing",
+    "Raw scratch retained while active"
+  ],
+  "samples": [
+    {
+      "prefix": "twodc-old-1",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc-old-2",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc-old-3",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc-old-4",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc-old-5",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc-new-1",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc-new-2",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc-new-3",
+      "screen_item_difference": 1396,
+      "prior_dc_vs_screen_before": 1396,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc-new-4",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc-new-5",
+      "screen_item_difference": 1396,
+      "prior_dc_vs_screen_before": 1396,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc-old-6",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc-old-7",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc-old-8",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc-old-9",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc-old-10",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc-old-11",
+      "screen_item_difference": 1396,
+      "prior_dc_vs_screen_before": 1396,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc-old-12",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc-old-13",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc-old-14",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc-old-15",
+      "screen_item_difference": 1396,
+      "prior_dc_vs_screen_before": 1396,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc64-old-1",
+      "screen_item_difference": 1396,
+      "prior_dc_vs_screen_before": 1396,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc64-old-2",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc64-old-3",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc64-old-4",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc64-old-5",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc64-old-6",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc64-new-1",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc64-new-2",
+      "screen_item_difference": 1396,
+      "prior_dc_vs_screen_before": 1396,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc64-new-3",
+      "screen_item_difference": 1396,
+      "prior_dc_vs_screen_before": 1396,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc64-new-4",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc64-new-5",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "twodc64-new-6",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": []
+    },
+    {
+      "prefix": "flush-old-1",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": [
+        "00000000"
+      ]
+    },
+    {
+      "prefix": "flush-old-2",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": [
+        "00000000"
+      ]
+    },
+    {
+      "prefix": "flush-old-3",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": [
+        "00000000"
+      ]
+    },
+    {
+      "prefix": "flush-old-4",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": [
+        "00000000"
+      ]
+    },
+    {
+      "prefix": "flush-old-5",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": [
+        "00000000"
+      ]
+    },
+    {
+      "prefix": "flush-new-1",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": [
+        "00000000"
+      ]
+    },
+    {
+      "prefix": "flush-new-2",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": [
+        "00000000"
+      ]
+    },
+    {
+      "prefix": "flush-new-3",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": [
+        "00000000"
+      ]
+    },
+    {
+      "prefix": "flush-new-4",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": [
+        "00000000"
+      ]
+    },
+    {
+      "prefix": "flush-new-5",
+      "screen_item_difference": 0,
+      "prior_dc_vs_screen_before": 0,
+      "prior_dc_vs_screen_after": 0,
+      "redraw_dc_vs_screen_after": 0,
+      "prior_vs_redraw_dc": 0,
+      "draw_dc": [
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=1 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0",
+        "COLOR_DRAW_DC prior=0 captured=1 map=1 org=0,0 viewport=0,0 clip=2:3,3,101,19 from_target=0"
+      ],
+      "dwmflush": [
+        "00000000"
+      ]
+    }
+  ]
+}
