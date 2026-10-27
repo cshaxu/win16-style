@@ -6,7 +6,7 @@ M0 T17 已按用户明确缩小后的范围收口；23 项 VB 延期项保留在
 Delphi VCL 74 个 UI 家族种子、框架分支、五个固定候选及逐项证据接收者；T18 S2 已将
 全部种子逐项归入35个既有原生协议模型或39个明确的原生保留边界。S4 已完成首组
 精确 TEdit/TListBox与TTabControl公开协议实现、干净双宽四文件包和双发布；实际 Delphi 显示集成
-仍统一留给T18最终收口。S10已完成组合框与列表验证；S11已完成工具栏文字边界修复、真实DoubleKiller复测及提交推送复核；S12真实MD5summer补证及远端复核完成；S13双宽干净构建、真实树控件与VB6 actor复测、91项包测试、双发布及远端aae1565复核完成；S14纠正S12独立包闭环并完成双发布及远端f1ac9ff复核；S15核实现代VCL候选及公开状态边界，双宽包、91项低并发回归、双发布及远端4032bcf复核完成；S16追踪真实开关绘制及输入、双宽包91项通过、双发布及远端5e48716复核完成；S17修复进度观察竞争并减少字体重复选取，双宽包92项通过、双发布及远端b3c2a8b复核完成；S18完成开关公开状态子树调查、双宽包92项通过和双发布，待远端复核；开关样式仍待适配；不得用 demo
+仍统一留给T18最终收口。S10已完成组合框与列表验证；S11已完成工具栏文字边界修复、真实DoubleKiller复测及提交推送复核；S12真实MD5summer补证及远端复核完成；S13双宽干净构建、真实树控件与VB6 actor复测、91项包测试、双发布及远端aae1565复核完成；S14纠正S12独立包闭环并完成双发布及远端f1ac9ff复核；S15核实现代VCL候选及公开状态边界，双宽包、91项低并发回归、双发布及远端4032bcf复核完成；S16追踪真实开关绘制及输入、双宽包91项通过、双发布及远端5e48716复核完成；S17修复进度观察竞争并减少字体重复选取，双宽包92项通过、双发布及远端b3c2a8b复核完成；S18完成开关公开状态调查、双宽包92项及双发布，远端2edd749已复核；准入S19实现可审计的聚焦包回归，开关样式仍待适配；不得用 demo
 冒充 Delphi。
 以下段落为 T17 的技术基线/历史证据，不覆盖 T18 状态。
 
@@ -68,27 +68,26 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S18 Packet
+## M0 T18 S19 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S17包及远端b3c2a8b已复核，顺序准入S18；真实TToggleSwitch为T18新增覆盖单位 |
-| Admission And Approval | 用户批准T18连续实现和自有原生探针，先完成可实现控件；不新开T |
-| Objective | 进一步核查真实TToggleSwitch的无障碍子树和公开状态提供者，寻找不依赖私有布局或固定主题图集的样式接入并实施可证明部分 |
-| Non-goals | 不按颜色或固定图集猜状态、不读写VCL私有字段、不修改用户游戏配置、不使用computer-use或全局hook；保留原图形资源和既有标题字体菜单效果 |
-| Reference Baseline | [S15公开状态观察](../history/M0-T18-S15-modern-vcl-observation.md)、[S16真实绘制追踪](../history/M0-T18-S16-toggle-trace.md)、[S17测试修复](../history/M0-T18-S17-test-efficiency.md) |
-| Candidate Proposal | [Delphi Win32控件完整审计与Win3.x风格适配](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 自有C探针与scratch；只在公开契约和交互语义证实后改双宽DLL内部，公开ABI和四产物保持 |
-| Applicable Rules | C17/MinGW GCC/Ninja/ccache；自有副本、私有桌面、限定时限和完整回收；同批包测试及必要双发布 |
-| Verification | 原生及注入的真实样本检查UIA/MSAA子树、状态变化、键盘和鼠标消息；如实现则补双宽正负例、像素、焦点、资源和已有控件回归 |
-| Expected Markers | 精确目标/DLL路径与SHA、真实开关状态提供者及变迁、绘制结果、事件语义、原配置不变及Job active0；缺失能力必须报告 |
-| Current Evidence | 原生/注入副本的4个开关UIA根节点均无Toggle接口且子树为0；MSAA子项为0，同一开关视觉切换并恢复时MSAA角色10/状态1048576不变，BM_GETCHECK均0；原游戏INI摘要未变，自有Job清空。现有公开状态路径不足以直接替换为复选框，S16最终StretchBlt可供后续研究无状态视觉适配，不据此宣称已实现。 |
-| Asset Needs | build/t18-s15-modern自有副本及build/t18-s18-toggle scratch；外部样本不进入产品或必需测试 |
-| Reporting Requirements | 区分公开接口、程序图集观察、实际样式与未覆盖；不把单个样本推广到全部VCL或VB |
-| Stop Conditions | 无可靠状态契约、需要VCL私有对象、影响既有进程/用户配置或无法保留原生交互时，不在产品中猜测，继续寻找其他可证明路径 |
-| Exit Criteria | 可证明路径完成实现及验证；否则保留真实证据和接收路径，按规范完成同批包与远端复核，T18仍开放 |
-| Original Owner Request | Delphi控件完整适配、先做能实现的部分，原生自行测试；保持VB及已有外观 |
-| Similar-Issue Sweep | 不同VCL版本、主题、DPI、disabled、焦点、图像及owner-draw变体独立核实；禁止由类名推广 |
+| Identifier Mode | Continuation；S18证据、包及远端2edd749已复核，顺序准入S19；T18和开关适配保持开放 |
+| Admission And Approval | 用户要求每S编译、包测、提交发布，同时明确每项测试不应无谓耗时、整合集成在T收口；允许本T自动续S |
+| Objective | 为实际四文件包测试增加明确可审计的聚焦用例选择，默认完整集合保持；后续S按实际改动运行相关测试，T收口仍做完整集成 |
+| Non-goals | 不删默认测试、不改变测试断言或跳过规则、不将聚焦标为完整、不绕开身份/双宽基础门禁；不改产品renderer或原图形 |
+| Reference Baseline | [S17效率](../history/M0-T18-S17-test-efficiency.md)、[S18状态证据](../history/M0-T18-S18-toggle-accessibility.md)、现有包测试和执行规则 |
+| Candidate Proposal | [Delphi Win32控件适配](../proposals/delphi-win32-controls.md)及[构建与测试效率](../proposals/build-test-efficiency.md) |
+| Files And ABI Surface | tools/Test-Package.ps1及相关自包含工具测试；不改产品源码、ABI及四产物职责 |
+| Applicable Rules | C17/MinGW GCC/Ninja/ccache；明确测试选择和未运行列表；双宽干净构建、实际包测试、必要发布和远端复核 |
+| Verification | 默认完整用例集合不变；未知/重复/空计划等负例拒绝，聚焦必须包含双宽ABI、demo边界和启动传播基础；聚焦及完整各自真实运行并明确覆盖与耗时 |
+| Expected Markers | 聚焦/完整标签和完整已选/未运行列表、包身份门禁、必要基础用例、失败仍中断；T收口不以聚焦结果替代完整集成 |
+| Asset Needs | 自有build/t18-s19-focus scratch；无第三方依赖、不操作用户进程 |
+| Reporting Requirements | 报告实际用例和耗时、不宣称未执行的矩阵通过；S15菜单/树偶发超时不作为已修复 |
+| Stop Conditions | 不能证明默认集合及身份门禁保持，或聚焦结果无法防止误报完整通过时，不启用聚焦发布 |
+| Exit Criteria | 安全选择入口、拒绝负例、实际聚焦及默认全包验证、双发布和远端复核完成；然后继续开关样式适配 |
+| Original Owner Request | 每个S交付，同时测试不要无谓长时间重复，完整集成集中T收口；不新开T |
+| Similar-Issue Sweep | 空/未知/重复名称、跳过、进度锁、测试错误、完整集成选项和包身份分别检查 |
 
 ## Identifier State
 
@@ -96,8 +95,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S17 P1：进度锁冲突修复、字体矩阵提速、双宽包92项0跳过、双发布；b3c2a8b已实际远端复核。
-- Open task: T18 S18 真实VCL开关公开状态调查、双发布完成，待远端复核；M0/T18开放。
+- Last delivery: M0 T18 S18 P1：真实开关无障碍子树及状态变迁、双宽包92项0跳过、双发布；2edd749已实际远端复核。
+- Open task: T18 S19 可审计的聚焦包测试入口；VCL开关样式仍待实现，M0/T18开放。
 
 ## Technical Baseline
 
