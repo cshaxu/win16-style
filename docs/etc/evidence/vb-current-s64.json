@@ -677,5 +677,26 @@
       "One x86 program and 96 DPI only; no physical input, IME or accessibility claim.",
       "Private OCX is only an optional research dependency, is not installed or registered, and does not expand the user-deferred OCX support scope."
     ]
+  },
+  "graphical_real_disabledpicture_p15": {
+    "source": "https://github.com/JacobHell0/Minesweeper/tree/14792f3ae8db90f9b55bccae1a7380b3a64cd479",
+    "exe_sha256": "fccc3d4e657843189b39fad5230f81bc1bfe3517dcd1a64d62ac0c15a1bdb296",
+    "frx_sha256": "e61c74a1693598138b92399c513f154c188772e212572abf51bc1a3b013a50bf",
+    "probe": "Original x86 VB6 sample, 96 DPI, isolated private desktop and owned job; select source-reviewed Easy menu, enumerate only the owned UI thread, disable and restore the first graphical tile without clicking it. Compare original and exact candidate. Window-show event may be missed; bounded thread enumeration finds the visible game form.",
+    "pixel_test": "49x49 source DisabledPicture BMP is byte-for-byte embedded in executable. Its 43x43 interior matches both captures exactly (3698 RGB pixels total); normal and disabled differ at 328 interior pixels; normal and restored captures match.",
+    "negative": "Replacing the disabled capture with the normal capture fails at pixel (3,3); this verifies comparison sensitivity and does not establish a product regression.",
+    "package": "16 focused package cases, zero skips, 13.47 s; fresh double-width build; installed VB5 graphical architecture models pass x86/x64.",
+    "sha256": {
+      "demo.exe": "7af76b6a44b99677ff46636238f4b7eee4bd16e5bd3271806f68565b7d192647",
+      "ntw16s32.dll": "a5001fda878ffa328384d4bed7fb1663c6da00916870db1c4d97f2967d4af5c1",
+      "ntw16s64.dll": "18ad98a2dd1c1c56e3ac89b837766d80cfdaa699f77c8edc6c01983021bbdcde",
+      "run16s.exe": "98614a979899cc254b2325f29126a88c0db69891114abc662f092dd8eec7e00d"
+    },
+    "publication": "Four tested files published to assets root and O:/winnt/system32; eight hashes match.",
+    "limitations": [
+      "One actual VB6 x86 sample at 96 DPI; no physical input, IME, accessibility, other DPI or universal compatibility claim.",
+      "VB5 Picture/DownPicture/DisabledPicture remains unverified; OCX and DriveListBox are user-deferred.",
+      "External EXE and FRX are research-only and are not project build dependencies."
+    ]
   }
 }

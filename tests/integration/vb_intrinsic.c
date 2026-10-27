@@ -137,6 +137,13 @@ static void queue_survey(HWND window,LONG action)
     if(action==VB_QUEUE_PRINT_SAMPLE){printf("VB_REAL_PRINT_API calls=%ld api=%lu alignment=%lu restored=%ld error=%ld\n",queue_state->print_calls,queue_state->print_api,queue_state->print_alignment,queue_state->paint_restored,queue_state->paint_probe_error);CHECK(queue_state->paint_restored && !queue_state->paint_probe_error);}
     queue_state->action=0;
 }
+/* Only enumerate the UI thread of our own target, not arbitrary processes. */
+static BOOL CALLBACK vb_disabled_game(HWND w,LPARAM data)
+{
+    WCHAR cls[100],title[120];GetClassNameW(w,cls,100);GetWindowTextW(w,title,120);
+    if(!wcscmp(cls,L"ThunderRT6FormDC") && !wcscmp(title,L"MineSweeper") && IsWindowVisible(w)){*(HWND *)data=w;return FALSE;}
+    return TRUE;
+}
 static void CALLBACK shown(HWINEVENTHOOK h,DWORD e,HWND w,LONG object,LONG child,DWORD thread,DWORD time){
     (void)h;
     (void)e;
@@ -324,8 +331,30 @@ static int worker(int argc,WCHAR **argv){
     BOOL real_picture=!wcscmp(argv[3],L"real-graphical-picture");
     BOOL real_vb5_check=!wcscmp(argv[3],L"real-graphical-vb5-check");
     BOOL real_vb5_custom=!wcscmp(argv[3],L"real-vb5-custom");
-    BOOL inventory=graphical || about_print || containers || file_verify || real_graphical || real_checkbox || real_picture || real_vb5_check || real_vb5_custom || close_vb5_squash || !wcscmp(argv[3],L"inventory");
+    BOOL real_disabled_picture=!wcscmp(argv[3],L"real-vb6-disabled-picture");
+    BOOL inventory=graphical || about_print || containers || file_verify || real_graphical || real_checkbox || real_picture || real_vb5_check || real_vb5_custom || close_vb5_squash || real_disabled_picture || !wcscmp(argv[3],L"inventory");
     CHECK(runtime && dll==styled && EnumChildWindows(form,collect,0) && (inventory?count>0:count>10));
+    HWND original_form=form;
+    if(real_disabled_picture){
+        HWND easy=NULL,tile=NULL,game=NULL;WCHAR text[120],cls[100],file[MAX_PATH];
+        for(unsigned i=0;i<count;++i){CHECK(vb_control_text(checks[i],text,120));if(!wcscmp(text,L"Easy"))easy=checks[i];}
+        CHECK(easy && GetDpiForWindow(form)==96);DWORD tid=GetWindowThreadProcessId(form,NULL);
+        SendMessageW(easy,WM_LBUTTONDOWN,MK_LBUTTON,MAKELPARAM(5,5));SendMessageW(easy,WM_LBUTTONUP,0,MAKELPARAM(5,5));
+        /* The show event can arrive during SendMessage and be missed. Restrict
+         * the bounded fallback to the already-owned target UI thread. */
+        for(unsigned retry=0;retry<100 && !game;++retry){EnumThreadWindows(tid,vb_disabled_game,(LPARAM)&game);if(!game)Sleep(10);}
+        CHECK(game && WaitForInputIdle(target,5000)==0);form=game;count=0;CHECK(EnumChildWindows(form,collect,0));
+        for(unsigned i=0;i<count;++i){GetClassNameW(checks[i],cls,100);CHECK(vb_control_text(checks[i],text,120));
+            if(!wcscmp(cls,L"ThunderRT6CommandButton") && !text[0] && IsWindowVisible(checks[i]) &&
+                ((DWORD)GetWindowLongPtrW(checks[i],GWL_STYLE)&BS_TYPEMASK)==BS_OWNERDRAW){tile=checks[i];break;}}
+        CHECK(tile && IsWindowEnabled(tile));HFONT font=(HFONT)SendMessageW(tile,WM_GETFONT,0,0);LONG_PTR style=GetWindowLongPtrW(tile,GWL_STYLE);
+        CHECK(swprintf_s(file,MAX_PATH,L"%ls/tile-normal.bmp",scratch)>0);uint64_t normal=capture(tile,file,FALSE);
+        EnableWindow(tile,FALSE);CHECK(!IsWindowEnabled(tile));CHECK(swprintf_s(file,MAX_PATH,L"%ls/tile-disabled.bmp",scratch)>0);
+        uint64_t disabled=capture(tile,file,FALSE);EnableWindow(tile,TRUE);
+        CHECK(IsWindowEnabled(tile) && GetWindowLongPtrW(tile,GWL_STYLE)==style && (HFONT)SendMessageW(tile,WM_GETFONT,0,0)==font);
+        CHECK(swprintf_s(file,MAX_PATH,L"%ls/tile-restored.bmp",scratch)>0);uint64_t restored=capture(tile,file,FALSE);
+        CHECK(normal==restored && disabled!=normal);puts("VB_REAL_DISABLED_PICTURE_OK disabled=1 restored=1 no_tile_click=1");
+    }
     if(real_vb5_custom){
         HWND style_button=NULL,check=NULL;WCHAR text[120],cls[100],file[MAX_PATH];
         for(unsigned i=0;i<count;++i){GetClassNameW(checks[i],cls,100);CHECK(vb_control_text(checks[i],text,120));
@@ -428,7 +457,6 @@ static int worker(int argc,WCHAR **argv){
         }
         CHECK(options==2 && checkboxes==1 && commands==1);puts("VB_REAL_PICTURE_STATES_OK options=2 checkbox=1 command=1 selected=1 pressed=1 disabled=1 restored=1");
     }
-    HWND original_form=form;
     if(real_graphical){
         HWND start=NULL;WCHAR text[120];
         for(unsigned i=0;i<count;++i){CHECK(vb_control_text(checks[i],text,120));if(!wcscmp(text,L"Test Yourself"))start=checks[i];}
@@ -631,7 +659,7 @@ static int worker(int argc,WCHAR **argv){
 
     if(queue_state){CHECK(UnhookWindowsHookEx(queue_get) && UnhookWindowsHookEx(queue_sent));queue_get=queue_sent=NULL;}
     SendMessageW(form,WM_CLOSE,0,0);
-    if(real_graphical && original_form!=form && IsWindow(original_form))SendMessageW(original_form,WM_CLOSE,0,0);
+    if((real_graphical || real_disabled_picture) && original_form!=form && IsWindow(original_form))SendMessageW(original_form,WM_CLOSE,0,0);
     CHECK(WaitForSingleObject(target,5000)==WAIT_OBJECT_0 && WaitForSingleObject(p.hProcess,5000)==WAIT_OBJECT_0);
     DWORD code;
     CHECK(GetExitCodeProcess(target,&code) && !code);
