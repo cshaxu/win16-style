@@ -1150,5 +1150,44 @@
       "limits": "Full package matrix, physical input, actual COM property setter and other DPI remain unverified."
     },
     "diff": "tests/integration/vb_intrinsic.c +10/-1, net +9; no production source changes or resource changes. Optional mode retains existing 12s launch timeout, owned job and normal cleanup."
+  },
+  "vb_usercontrol_label_p41": {
+    "root_cause": "VB runtime-owned UserControl can contain windowless VB.Label children, but the existing PictureBox-only bounded label font scope did not include that UserControl. In both real VB5 and VB6 Icon Picker samples the two label regions were pixel-identical between unstyled and old styled versions.",
+    "fix": "Extend the existing limited runtime-caller ANSI label scope only to already-owned exact VB5/VB6 UserControl roles. Keep native measurement, EXE direct drawing and UserControl native rendering; scope is cancelled if its attachment is removed during reentrant paint. Ntw16sWindowAttached now reports the active label scope even while the UserControl has no client edge; this is attachment state, not proof a label was actually drawn.",
+    "vb5_sample": {
+      "source": "https://github.com/tannerhelland/vbAccelerator-Archive/tree/390fd1029e44a407695c6ecff4248d7a345d30ef/VB/Code/Controls/Icon_Controls/Icon_Selector",
+      "archive_sha256": "5245f765d1702535416a53debffbedc4e7a461984332082dd7a43ed4dfd7c656",
+      "exe_sha256": "57ba557524ad21486282f597531b68b590c199fa5db414fa38cee41fd96e0b3a",
+      "ocx_sha256": "657e59d7098e9c2d3a933985a1c0e471ed8e5e731913b85a93789e673496c702",
+      "private_manifest_exe_sha256": "dea4c58f41942e784d7053b2e83b9cd68f6de30d8cb9670e4e01cdbeb5c7dff6",
+      "method": "Private COM activation, original runtime and owned isolated process; no installation or COM registration. At 96 DPI the 220x180 UserControl was fitted within 427x320 private desktop. Native state and two labels were observed; font, text, checkbox and geometry restored; own job exited normally."
+    },
+    "vb6_sample": "Same source-reviewed, private Icon Picker sample as vb6_usercontrol_p32. At 96 DPI 220x180, old vs candidate screenshot RGB differences were 1358 pixels confined to the two visible label bands (x=4..163, y=6..14 and 50..58), with other pixels unchanged; font/text/checkbox/geometry restored and process exited. The VB5 counterpart yielded the same captured image hashes. Synthetic messages, not physical input.",
+    "actual_print_negative": {
+      "source": "https://github.com/CetinOzdil/EviControlsCollection/tree/37c89e05c3a4a61e81827a5cf0d528dc35065825",
+      "exe_sha256": "5ab67a153d24d7999e3c8bd67aff684e04aca0bfaae224b1988ded325f2477de",
+      "ocx_sha256": "a4f1e65fba5e24439fba8b638f71c110daa2acccd6c7d2eb10eee6c02839e4a8",
+      "private_manifest_exe_sha256": "798b2fa315b2741246734fc60a07afc58b6033799b0627c065293efdbcbe5f50",
+      "method": "Source EviLabel UserControl.Paint calls UserControl.Print; sample was statically checked for writes and launches, private COM activation, no registration, isolated owned job terminated intentionally after capture. Label fitted 160x50 entirely on desktop; source caption UPDATE visible with 186 black pixels. Bare/current/candidate captures show zero RGB differences. This proves the observed Print variant only."
+    },
+    "model": "Self-owned VB5/VB6 fixture x86/x64: 401 model label pixels changed while other client RGB pixels, including 566 Print and 694 application drawing ink pixels, remain identical; fonts, image, input and parent/role lifecycle preserved. Reentrant Ntw16sWindowRemove before drawing yields native label pixels. The early prototype without cancelled guard fails this negative in all four combinations; old release lacks label changes.",
+    "limitations": [
+      "Only one real VB5 and one real VB6 sample at 96 DPI; actual UserControl.Print preservation shown for one VB6 example.",
+      "Application Print variations, alternate DC mappings and runtime versions not generally proven; no physical input, IME or accessibility claim.",
+      "No user OCX/DriveListBox support added; external OCX only used as private research sample."
+    ],
+    "delivery": {
+      "build": "Clean C17 GCC/Ninja/ccache x86/x64; PE/ABI, source manifest, original resource identity and governance self-tests passed. Initial clean build failed because the standalone font test lacked the new attachment stub; fixed and rebuilt cleanly.",
+      "package": "18 focused actual-package cases passed, zero skips, 14.03 seconds; separate focused package run included both standalone font tests, 10 cases passed, zero skips, 6.07 seconds. Full matrix not run.",
+      "actual_package_samples": "Real private VB5 and VB6 samples both produce label image FNV 5270016212897058301; client, font, text and checkbox restored; normal owned-job exit. Real EviLabel UserControl.Print image FNV 5242120429987328164, identical to old/native; own job intentionally terminated after capture.",
+      "sha256": {
+        "demo.exe": "a3a64f6c52eecfa3b58a30bab2f06afb79dcc536deb55cf1a085154fc66521c8",
+        "ntw16s32.dll": "64b8f3118ff40287b90ae493e17183ab7df7fb62159846fa96e94be522b75c8d",
+        "ntw16s64.dll": "a88144cdeb23235eeb06dcc3702190e0ed9af248c816330056c970d8ae443e22",
+        "run16s.exe": "1e50947d71f9dd64a537ff0175b63f6a146476aaf4c693fc674f1bc050611023"
+      },
+      "published": "assets root and O:/winnt/system32 each match tested four-file SHA",
+      "limits": "Focused cases only; real samples x86 at 96 DPI; no physical input, accessibility, other Print variants or full integration matrix."
+    }
   }
 }

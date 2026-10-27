@@ -346,6 +346,13 @@ static BOOL vb_user_edge_role(HWND w,HWND parent)
 }
 static BOOL vb_user_edge_identity(HWND w,HWND parent)
 {return vb_user_edge_role(w,parent) && (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE);}
+BOOL ntw16s_vb_user_label_target(HWND w)
+{
+    attachment *a=lookup(w);
+    if(!a || a->detached || !a->vb_user_candidate)return FALSE;
+    HWND parent=GetParent(w);
+    return vb_user_edge_role(w,parent) && (!a->vb_user_parent || a->vb_user_parent==parent);
+}
 BOOL ntw16s_vb_user_edge_dormant(HWND w)
 {
     attachment *a=lookup(w);
@@ -652,7 +659,7 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
         (void)Ntw16sWindowRemove(w);
     if(m==WM_NCDESTROY)(void)Ntw16sWindowTerminal(w);
     ntw16s_vb_paint paint;ntw16s_vb_paint_begin(&paint,w,m,&a->fonts);
-    if(a->file_owner || a->picture || a->button_owner)paint.cancelled=&a->detached;
+    if(a->file_owner || a->picture || a->button_owner || a->vb_user_candidate)paint.cancelled=&a->detached;
     if(paint.native_active)paint.native_dc=(HDC)p;
     if(paint.active && !a->detached && !a->protocol)report_try_bind(w,a);
     if(paint.active && a->report_module && !a->file_owner && !a->detached){
@@ -886,7 +893,7 @@ BOOL __cdecl Ntw16sWindowAttached(HWND w)
     if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId()){
         SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
     }
-    attachment *a=lookup(w);return a && (!a->vb_user_candidate || (a->vb_user_edge && vb_user_edge_identity(w,a->vb_user_parent))) && (!a->static_candidate || a->static_verified) && (!a->edit_candidate || a->edit_installed) && (!a->group_button_candidate || a->group_button_installed) && (!a->grid_candidate || a->grid_installed) && (!a->vcl_toolbar_candidate || a->vcl_toolbar_installed) && (!a->track_candidate || a->track_installed) && (!a->tab_candidate || a->tab_installed) && (!a->color_candidate || a->color_installed) && (!a->date_candidate || a->date_installed) && (!a->status_candidate || a->status_installed) && (!a->bit_candidate || a->bit_verified);
+    attachment *a=lookup(w);return a && (!a->vb_user_candidate || ntw16s_vb_user_label_target(w)) && (!a->static_candidate || a->static_verified) && (!a->edit_candidate || a->edit_installed) && (!a->group_button_candidate || a->group_button_installed) && (!a->grid_candidate || a->grid_installed) && (!a->vcl_toolbar_candidate || a->vcl_toolbar_installed) && (!a->track_candidate || a->track_installed) && (!a->tab_candidate || a->tab_installed) && (!a->color_candidate || a->color_installed) && (!a->date_candidate || a->date_installed) && (!a->status_candidate || a->status_installed) && (!a->bit_candidate || a->bit_verified);
 }
 void __cdecl Ntw16sScrollChanged(HWND w)
 {

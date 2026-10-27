@@ -2,6 +2,7 @@
 #include "control_class.h"
 #include "font.h"
 #include <stdlib.h>
+BOOL ntw16s_vb_user_label_target(HWND);
 typedef struct ntw16s_vb_glyphmap {WCHAR chars[224];WORD glyphs[224];BOOL valid;} ntw16s_vb_glyphmap;
 static _Thread_local ntw16s_vb_paint *current,*native_current;
 void ntw16s_vb_paint_begin(ntw16s_vb_paint *scope,HWND w,UINT message,ntw16s_vb_fonts *fonts)
@@ -17,7 +18,7 @@ void ntw16s_vb_paint_begin(ntw16s_vb_paint *scope,HWND w,UINT message,ntw16s_vb_
     if(message==WM_NCDESTROY || message==WM_DESTROY)return;
     scope->previous=current;scope->active=TRUE;scope->fonts=fonts;current=scope;
     /* An attached non-VB child is a barrier during nested WM_PRINT. */
-    scope->label_only=ntw16s_vb_picture(w);
+    scope->label_only=ntw16s_vb_picture(w) || ntw16s_vb_user_label_target(w);
     if(ntw16s_vb_frame(w) || ntw16s_vb_edit(w) || scope->label_only ||
             (ntw16s_vb_class(w,L"ThunderRT6FormDC") || ntw16s_vb5_class(w,L"ThunderRT5Form")))scope->window=w;
 }

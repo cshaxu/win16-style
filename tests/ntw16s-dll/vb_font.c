@@ -6,6 +6,12 @@
 #include "ntw16s-dll/vb_text.h"
 #include "isolated_process.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"VB FONT FAIL %u error=%lu\n",__LINE__,GetLastError());return 1;}}while(0)
+/* This standalone font test does not link the window attachment module. */
+BOOL ntw16s_vb_user_label_target(HWND window)
+{
+    (void)window;
+    return FALSE;
+}
 static int font_pixels(void)
 {
     HDC dc=CreateCompatibleDC(NULL);HBITMAP bitmap=CreateBitmap(128,64,1,1,NULL);
