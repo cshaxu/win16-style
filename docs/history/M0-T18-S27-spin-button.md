@@ -105,3 +105,18 @@ focused package. The staged product-source diff is 70 additions and eight
 deletions across two C files; the new native test is 153 lines and the build
 and package-runner additions total ten lines. The old generic custom-control
 fallback remains in place for all windows that fail the exact new gates.
+
+A later native observer compared the old S26 package and the installed S27
+package in separate owned DoubleKiller instances, using direct 15x19 client-DC
+captures. In each run it captured parent-disabled, enabled-normal, upper-held
+and lower-held states and verified `0 -> 10 -> 0`, restored checkbox and mouse
+capture, and zero active job processes. Each corresponding S26/S27 state had
+77 changed RGB pixels, all on the two measured frame perimeters; the remaining
+interior pixels were identical. This is a single real x86 application at 96
+DPI and synthetic mouse messages, not physical input or a second application.
+
+P1 `302e8a3` was pushed, and the actual GitHub raw bytes for all 13 changed
+source, documentation and product files matched the local commit. S27 closes
+with the bounded implementation and the limitations above; T18 and M0 remain
+open. The successor S investigates the real VCL panel family; unsupported
+families and remaining evidence gaps remain in the S26 ledger and TODO.
