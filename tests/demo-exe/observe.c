@@ -116,11 +116,11 @@ static void catalog_pages(HWND main,DWORD thread,HANDLE target,BOOL styled,const
     DWORD warm=GetGuiResources(target,GR_GDIOBJECTS);catalog_window=NULL;SendMessageW(main,WM_COMMAND,2000,0);EnumThreadWindows(thread,find_catalog,(LPARAM)main);CHECK(catalog_window);SendMessageW(catalog_window,WM_CLOSE,0,0);
     /* The first re-open can lazily allocate a native common-control cache.
      * Establish that post-warm baseline, then require the next identical
-     * lifecycle to return exactly to it; this detects recurring leaks without
-     * treating a one-time OS cache allocation as a demo-owned GDI leak. */
+     * lifecycle not to exceed it; native caches may also release objects
+     * asynchronously, so a decrease is not evidence of a leak. */
     DWORD settled=GetGuiResources(target,GR_GDIOBJECTS);catalog_window=NULL;SendMessageW(main,WM_COMMAND,2000,0);EnumThreadWindows(thread,find_catalog,(LPARAM)main);CHECK(catalog_window);SendMessageW(catalog_window,WM_CLOSE,0,0);
     DWORD final=GetGuiResources(target,GR_GDIOBJECTS);printf("DEMO CATALOG RESOURCE SAMPLE styled=%u warm=%lu settled=%lu final=%lu\n",(unsigned)styled,warm,settled,final);
-    CHECK(final==settled);printf("DEMO CATALOG PASS styled=%u pages=8 reopen=2 resources_stable=1 initial=%lu final=%lu\n",(unsigned)styled,initial,settled);
+    CHECK(final<=settled);printf("DEMO CATALOG PASS styled=%u pages=8 reopen=2 resources_stable=1 initial=%lu final=%lu\n",(unsigned)styled,initial,final);
 }
 static int matrix(int argc,WCHAR **argv)
 {

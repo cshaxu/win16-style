@@ -2,7 +2,7 @@
   "task":"M0 T18 S6",
   "scope":{"existing":["TListView","TTreeView","TShellTreeView"],"added":"THeaderControl"},
   "rule":"Only an exact application-owned THeaderControl native-superclass registration is admitted; native SysHeader32 remains separately exact and an impostor THeaderControl registration is rejected.",
-  "desktop_native":{
+  "private_desktop_native":{
     "header":"x86/x64, common-controls v5/v6: pass",
     "dpi":"x86 v5 and x64 v6 at 144 DPI: pass",
     "markers":"HEADER_CONTROL_OK; styled=2; preserved=2; impostor=1"

@@ -1,0 +1,14 @@
+{
+  "task": "M0 T18 S7",
+  "scope": ["TProgressBar", "TTrackBar", "TUpDown"],
+  "finding": "Existing exact main-EXE wrapper roles validate initialized public COMCTL protocols; no additional product change was established by this audit.",
+  "coverage": {
+    "progress": "v6 ordinary horizontal/vertical, smooth and state changes; v5 capability guard retains native behavior",
+    "trackbar": "v5/v6, two orientations, ticks and fixed length, native custom-draw ownership and input",
+    "updown": "v5/v6, two orientations and sizes, buddy, input, notification cancellation and changed delta"
+  },
+  "negative_and_lifetime": "Each role has an exact-name impostor rejection and callback removal/destruction checks; trackbar checks bounded GDI/USER counts. UpDown records total GDI/USER counts but does not assert a zero-delta total.",
+  "package": "S7 clean candidate: 87 cases passed with no skips in 347.55 seconds on self-owned private desktops; native fixture is not a real Delphi application. Four tested files published to assets and O:/winnt/system32 with matching SHA-256.",
+  "demo_observer": "An initial run reported styled GDI counts 91, 91, 88 and failed an equality assertion despite a decrease. The revised second-reopen check rejects growth above the settled count and reports the actual final value; it does not establish the source of the decrease or prove zero leakage.",
+  "limits": "Special styles and application custom drawing retain native behavior. Real Delphi runtime/package variants and physical input require separate evidence at T18 final closure."
+}

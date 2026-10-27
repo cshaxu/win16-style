@@ -159,6 +159,9 @@
 - [T18 S6 VCL列表、树与表头](evidence/delphi-list-tree-header-protocol.json)：精确
   THeaderControl wrapper、x86/x64、v5/v6 与144-DPI原生证据；真实 Delphi 集成仍待T18收口。
 
+- [T18 S7 VCL范围控件审计](evidence/delphi-range-controls-audit.json)：现有进度、滑块、
+  微调公开协议和测试边界；真实 Delphi 及物理输入仍需独立验证。
+
 - [T17 S10图形命令按钮](evidence/vb-graphical-controls.json)：真实双版本owner-draw通知/primitive，原生返回/图像/应用绘制保持与有限覆盖。
 
 - [T17 S13图形选择控件](evidence/vb-graphical-choices.json)：精确 VB 图形
