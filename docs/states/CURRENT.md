@@ -6,7 +6,7 @@ M0 T17 已按用户明确缩小后的范围收口；23 项 VB 延期项保留在
 Delphi VCL 74 个 UI 家族种子、框架分支、五个固定候选及逐项证据接收者；T18 S2 已将
 全部种子逐项归入35个既有原生协议模型或39个明确的原生保留边界。S4 已完成首组
 精确 TEdit/TListBox与TTabControl公开协议实现、干净双宽四文件包和双发布；实际 Delphi 显示集成
-仍统一留给T18最终收口。S10已完成组合框与列表验证；S11已完成工具栏文字边界修复、真实DoubleKiller复测及提交推送复核；S12真实MD5summer补证及远端复核完成；S13双宽干净构建、真实树控件与VB6 actor复测、91项包测试、双发布及远端aae1565复核完成；S14纠正S12独立包闭环并完成双发布及远端f1ac9ff复核；S15核实现代VCL候选及公开状态边界，双宽包、91项低并发回归、双发布及远端4032bcf复核完成；S16追踪真实开关绘制及输入、双宽包91项通过、双发布及远端5e48716复核完成；S17修复进度观察竞争并减少字体重复选取，双宽包92项通过及双发布完成，待远端复核；不得用 demo
+仍统一留给T18最终收口。S10已完成组合框与列表验证；S11已完成工具栏文字边界修复、真实DoubleKiller复测及提交推送复核；S12真实MD5summer补证及远端复核完成；S13双宽干净构建、真实树控件与VB6 actor复测、91项包测试、双发布及远端aae1565复核完成；S14纠正S12独立包闭环并完成双发布及远端f1ac9ff复核；S15核实现代VCL候选及公开状态边界，双宽包、91项低并发回归、双发布及远端4032bcf复核完成；S16追踪真实开关绘制及输入、双宽包91项通过、双发布及远端5e48716复核完成；S17修复进度观察竞争并减少字体重复选取，双宽包92项通过、双发布及远端b3c2a8b复核完成；准入S18继续开关公开状态与样式适配；不得用 demo
 冒充 Delphi。
 以下段落为 T17 的技术基线/历史证据，不覆盖 T18 状态。
 
@@ -68,27 +68,26 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S17 Packet
+## M0 T18 S18 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S16实证及远端5e48716已复核，顺序准入S17；T18与开关适配保持开放 |
-| Admission And Approval | 用户明确要求测试效率、普通操作不可无谓长测，并授权本T自动准入后续S；不新增T |
-| Objective | 修复包测试器进度文件读取竞争；调查并优化字体测试固定八轮预热，保持所有变体及GDI资源断言和负例检出能力 |
-| Non-goals | 不删测试、降低语义断言或改产品renderer/资源；不因复测通过宣称S15菜单/树偶发超时已修；不改系统全局设置 |
-| Reference Baseline | [S15测试失败证据](../history/M0-T18-S15-modern-vcl-observation.md)、[S16绘制追踪](../history/M0-T18-S16-toggle-trace.md)、[效率方案](../proposals/build-test-efficiency.md) |
-| Candidate Proposal | [Delphi Win32控件适配](../proposals/delphi-win32-controls.md)及既有[构建与测试效率](../proposals/build-test-efficiency.md) |
-| Files And ABI Surface | tests/ntw16s-dll/font_layout.c、tools/Test-Package.ps1及必要测试/清单；产品源码和ABI不变 |
-| Applicable Rules | C17/MinGW GCC/Ninja/ccache；负例证明不掩盖测试错误；双宽干净构建、同批实际包测试及必要双发布 |
-| Verification | 进度观察锁竞争复现旧失败和新行为；全变体、每种DPI、截图度量及最终资源比较不减，实际双宽耗时前后对照；新旧负例与完整包回归 |
-| Expected Markers | 观察进度期间无共享失败且真实测试失败仍非零；字体每变体预热与最终计数完成，资源泄漏负例仍失败；耗时及范围如实记录 |
-| Current Evidence | 旧进度写入在只读共享锁下复现ERROR_SHARING_VIOLATION；新路径仅跳过共享/锁冲突并恢复，非共享错误仍抛出。字体保持95字符原API、全部8轮和GDI断言，改为两次字体选择；双宽矩阵通过，32位75.30秒对S16的103.75秒、64位65.07秒对65.54秒；故意改变一个字宽的负例仍失败。待干净包与真实并发观察验证。 |
-| Asset Needs | 自有build/t18-s17-efficiency scratch；不读取兄弟项目作为依赖，不触碰用户进程 |
-| Reporting Requirements | 给出实际前后耗时、负例及未覆盖，区分效率改善与S15尚未定位的产品/时限问题 |
-| Stop Conditions | 不能证明资源判据等价或无法有效检出泄漏时，保留原八轮并只交付经验证的观察竞争修复 |
-| Exit Criteria | 安全测试效率修复及所有必要验证、同批构建、测试、双发布、提交推送和远端复核；之后继续VCL开关绘制适配 |
-| Original Owner Request | 测试不要无谓反复耗时，S任务按规范编译测试交付；已准入T18继续控件适配 |
-| Similar-Issue Sweep | 并发读写、超时、真实测试错误、资源平台化及每DPI/字体变体覆盖分别核对，其他失败保留原断言 |
+| Identifier Mode | Continuation；S17包及远端b3c2a8b已复核，顺序准入S18；真实TToggleSwitch为T18新增覆盖单位 |
+| Admission And Approval | 用户批准T18连续实现和自有原生探针，先完成可实现控件；不新开T |
+| Objective | 进一步核查真实TToggleSwitch的无障碍子树和公开状态提供者，寻找不依赖私有布局或固定主题图集的样式接入并实施可证明部分 |
+| Non-goals | 不按颜色或固定图集猜状态、不读写VCL私有字段、不修改用户游戏配置、不使用computer-use或全局hook；保留原图形资源和既有标题字体菜单效果 |
+| Reference Baseline | [S15公开状态观察](../history/M0-T18-S15-modern-vcl-observation.md)、[S16真实绘制追踪](../history/M0-T18-S16-toggle-trace.md)、[S17测试修复](../history/M0-T18-S17-test-efficiency.md) |
+| Candidate Proposal | [Delphi Win32控件完整审计与Win3.x风格适配](../proposals/delphi-win32-controls.md) |
+| Files And ABI Surface | 自有C探针与scratch；只在公开契约和交互语义证实后改双宽DLL内部，公开ABI和四产物保持 |
+| Applicable Rules | C17/MinGW GCC/Ninja/ccache；自有副本、私有桌面、限定时限和完整回收；同批包测试及必要双发布 |
+| Verification | 原生及注入的真实样本检查UIA/MSAA子树、状态变化、键盘和鼠标消息；如实现则补双宽正负例、像素、焦点、资源和已有控件回归 |
+| Expected Markers | 精确目标/DLL路径与SHA、真实开关状态提供者及变迁、绘制结果、事件语义、原配置不变及Job active0；缺失能力必须报告 |
+| Asset Needs | build/t18-s15-modern自有副本及build/t18-s18-toggle scratch；外部样本不进入产品或必需测试 |
+| Reporting Requirements | 区分公开接口、程序图集观察、实际样式与未覆盖；不把单个样本推广到全部VCL或VB |
+| Stop Conditions | 无可靠状态契约、需要VCL私有对象、影响既有进程/用户配置或无法保留原生交互时，不在产品中猜测，继续寻找其他可证明路径 |
+| Exit Criteria | 可证明路径完成实现及验证；否则保留真实证据和接收路径，按规范完成同批包与远端复核，T18仍开放 |
+| Original Owner Request | Delphi控件完整适配、先做能实现的部分，原生自行测试；保持VB及已有外观 |
+| Similar-Issue Sweep | 不同VCL版本、主题、DPI、disabled、焦点、图像及owner-draw变体独立核实；禁止由类名推广 |
 
 ## Identifier State
 
@@ -96,8 +95,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S16 P1：真实VCL开关绘制与输入追踪、双宽包91项0跳过、双发布；5e48716已实际远端复核。
-- Open task: T18 S17 包测试效率与观察竞争修复已验证及双发布，待远端复核；VCL开关样式仍待实现，M0/T18开放。
+- Last delivery: M0 T18 S17 P1：进度锁冲突修复、字体矩阵提速、双宽包92项0跳过、双发布；b3c2a8b已实际远端复核。
+- Open task: T18 S18 真实VCL开关公开状态与适配；M0/T18开放。
 
 ## Technical Baseline
 
