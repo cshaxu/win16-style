@@ -1691,7 +1691,7 @@
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license; original sample attribution is evidence only",
       "review": "T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S5 wrapper support and explicit native-child font lifetime contract; notices and original resources retained; T17 S6 project-authored exact-owned-thread queue/notification witness, tagged FIFO acknowledgement, original VB5/6 queued input assertions and native double-width positive/negative lifecycle test; test-only files, no product renderer or original resource changes; T17 S7 exact VB5 file-list roles and bounded owner-draw DC ownership; self-contained dual-width text/image/input/resource tests and optional authentic sample witness; no external implementation or original resources changed; T17 S8 exact observed VB6 FileListBox/DirListBox roles, dual-version file protocol models and authentic private-activation witness; native image/font/data ownership and original notices preserved; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T17 S11 optional source-reviewed image-only true VB6 observer: ten controls, native disabled/pressed flags, no Click, pixel/state/property restoration; no external code/resources copied",
-      "sha256": "0a4898a9b8ba1cd714969ec05164c5e3ff19663f7f1b411784f4bc16f27e0531"
+      "sha256": "83a9a387651cc7d655167e705252411c16fa79fd756706cd73c1070e4d9c7f1d"
     },
     {
       "source_blob": null,
@@ -2009,6 +2009,24 @@
       "sha256": "f440d45c218e5747e6eb25f489fa064f848709ffe0f200f196f05493790ff4b2",
       "disposition": "authored",
       "review": "T18 S60 self-owned tab superclass forwarding, selection and reparent model; real Delphi verification separate",
+      "notice": "Project-authored C17; project MIT license"
+    },
+    {
+      "path": "tests/integration/vb_control_text.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "29f699142ed6d7bcda53cecc8861a61cb4cffcfaa9593e09ca9fe55f5fd78c0f",
+      "disposition": "authored",
+      "review": "T18 S64 bounded cross-process VB observer text retrieval and native dual-width regression",
+      "notice": "Project-authored C17; project MIT license"
+    },
+    {
+      "path": "tests/integration/vb_control_text_test.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "9de85e60fbecfc9c04d5a430c11ad622836847d0e1bcfeea79d5803e5388e528",
+      "disposition": "authored",
+      "review": "T18 S64 bounded cross-process VB observer text retrieval and native dual-width regression",
       "notice": "Project-authored C17; project MIT license"
     }
   ]

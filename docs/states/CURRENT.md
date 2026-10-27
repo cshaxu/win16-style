@@ -68,29 +68,29 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S63 Packet
+## M0 T18 S64 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S62 P1 aef4407远端14文件复核通过 |
+| Identifier Mode | Continuation；S63 P1 b047a90远端15文件复核通过 |
 | Admission And Approval | 用户授权T18内自动实施可做控件，不新开T |
-| Objective | 定位真实VCL TMemo附着失败的首个条件，按可验证公开协议实施有限支持 |
+| Objective | 核实真实VCL编辑及无窗口候选的公开绘制协议，并修正VB原生探针跨进程文本读取与回归 |
 | Non-goals | 保留输入、选择、文字、布局、回调及原图形资源 |
-| Reference Baseline | [S62结果](../history/M0-T18-S62-radio-memo.md)、[S34编辑](../history/M0-T18-S34-vcl-module-edit.md) |
+| Reference Baseline | [S63 Memo](../history/M0-T18-S63-memo.md)、[S34编辑](../history/M0-T18-S34-vcl-module-edit.md) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 自有双宽原生C探针及必要既有DLL修改，不增产物或ABI |
+| Files And ABI Surface | 自有双宽原生C探针、VB观察器及必要既有DLL修改，不增产物或ABI |
 | Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例限时回收 |
 | Verification | 双宽真实owner、原生过程、输入与文本；有实现时模型负例及实际包 |
 | Expected Markers | 经验证原生协议及调用所有权才能接入；未知路径回退 |
-| Asset Needs | 登记build/t18-s62-radio-memo，复用合法双宽运行库 |
+| Asset Needs | 登记build/t18-s62-radio-memo及build/t18-s64-vb-*，复用合法双宽运行库，结束前提炼证据并安全清理自有scratch |
 | Reporting Requirements | 实际绘制、操作、负例、未覆盖、双发布及远端复核 |
 | Stop Conditions | 无真实所有权或安全内容契约时不按名称猜测 |
 | Exit Criteria | 有证据的有限实现或明确后续接收，实际包交付；T18保持开放 |
 | Original Owner Request | 高效率实现可做控件，真实应用全量集成集中T收口 |
-| Similar-Issue Sweep | TMemo、TEdit多行与组合框子窗口 |
+| Similar-Issue Sweep | TMaskEdit、TRichEdit、TBevel、TPaintBox、TImage与VB跨进程控件文本读取 |
 
 S61 P1 `b167067`远端7文件复核；真实TGroupBox自绘标题边界未证实，已列TODO。
-S62 P1 aef4407远端14文件已复核；S63已实现普通TMemo有限适配、14项聚焦包和双发布，P1待提交及远端复核。
+S62 P1 aef4407远端14文件已复核；S63 P1 b047a90远端15文件已复核；S64调查TMaskEdit、TRichEdit及可取得的无窗口候选。 当前包VB模型及字体12项通过、无skip；真实Actor两复选框原glyph/四次点击及作业回收通过；真实MadShow裸/样式双对照记录21个VB6窗口并正常退出；跨进程观察器返回126仍未解；单线程夹具改用NULL模块参数后通过。独立诊断DLL在UI线程记录20个MadShow可视子窗口安装成功，截图与发布DLL逐字节一致；修正跨进程文本读回后，MadShow裸/样式一字段字符输入/选择/恢复及Actor一字段文本修改/选择/恢复均通过；物理输入、IME和通知未覆盖，见[有界复核](../etc/evidence/vb-current-s64.json)，既往间歇超时根因仍未确定。S64 P1已修正VB观察器跨进程文本读取并完成双宽负例、14项实际包与双发布；待提交及远端复核，S64原VCL范围仍开放。
 
 ## Identifier State
 
@@ -98,8 +98,8 @@ S62 P1 aef4407远端14文件已复核；S63已实现普通TMemo有限适配、14
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S62 P1：14项聚焦包、双发布及aef4407远端14文件复核。
-- Open task: T18 S63 真实VCL TMemo调查；M0/T18开放。
+- Last delivery: M0 T18 S63 P1：14项聚焦包、双发布及b047a90远端15文件复核。
+- Open task: T18 S64 VCL编辑和无窗口候选调查；M0/T18开放。
 
 ## Technical Baseline
 

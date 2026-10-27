@@ -13,6 +13,7 @@
 #include "../../src/ntw16s-dll/combo_glyph.h"
 #include "../../src/ntw16s-dll/scroll_glyphs.h"
 #include "vb_queue.h"
+#include "vb_control_text.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"VB_SAMPLE_FAIL line=%d error=%lu %s\n",__LINE__,GetLastError(),#x);ExitProcess(1);}}while(0)
 static void file_path(const WCHAR *path){
     HANDLE f=CreateFileW(path,GENERIC_READ,FILE_SHARE_READ|FILE_SHARE_WRITE|FILE_SHARE_DELETE,NULL,OPEN_EXISTING,0,NULL);
@@ -161,7 +162,7 @@ static void CALLBACK shown(HWINEVENTHOOK h,DWORD e,HWND w,LONG object,LONG child
 }
 static BOOL CALLBACK collect(HWND w,LPARAM ignored)
 {
-    (void)ignored;WCHAR cls[100],text[120];GetClassNameW(w,cls,100);GetWindowTextW(w,text,120);
+    (void)ignored;WCHAR cls[100],text[120];GetClassNameW(w,cls,100);CHECK(vb_control_text(w,text,120));
     HWND parent=GetParent(w);WCHAR parent_class[100];GetClassNameW(parent,parent_class,100);
     WCHAR real_class[100];CHECK(RealGetWindowClassW(w,real_class,100));
     printf("SAMPLE_REAL_CLASS hwnd=%p registered=%ls real=%ls\n",(void *)w,cls,real_class);
@@ -414,7 +415,7 @@ static int worker(int argc,WCHAR **argv){
         if(about_print){
             CHECK(queue_state);HWND main=form,button=NULL;
             CHECK(!wcscpy_s(about_capture_dir,MAX_PATH,scratch));
-            for(unsigned i=0;i<count;++i){WCHAR text[80];GetWindowTextW(checks[i],text,80);if(!wcscmp(text,L"About..."))button=checks[i];}
+            for(unsigned i=0;i<count;++i){WCHAR text[80];CHECK(vb_control_text(checks[i],text,80));if(!wcscmp(text,L"About..."))button=checks[i];}
             CHECK(button);queue_survey(button,VB_QUEUE_PRINT_SAMPLE);
             CHECK(queue_state->print_calls>0 && queue_state->print_api==3);
             CHECK(EnumThreadWindows(queue_state->tid,close_about,(LPARAM)main) && about_closed==1);form=main;

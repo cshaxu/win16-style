@@ -1,0 +1,193 @@
+{
+  "task": "M0 T18 S64",
+  "date": "2026-10-27",
+  "scope": "Current published package regression; bounded VB6 Actor checkbox sample and self-owned dual-width VB fixture, not full VB5/VB6 acceptance.",
+  "package": {
+    "launcher_sha256": "b595dee056a35da5e7236b5112ca3a34b6e04034209760b0c0326e412f5ae164",
+    "ntw16s32_sha256": "8a6fbd7a4ec3087eff7d4352c24ec9adb9f870fb9467361bf217e4350afb4a3f"
+  },
+  "real_actor": {
+    "image": "O:\\winnt\\actor.exe",
+    "sha256": "df4887ba302322cd3fd8c3d542015f492e4de2619ee62532d66eb465bfb51500",
+    "runtime": "C:\\Windows\\SysWOW64\\msvbvm60.dll",
+    "runtime_sha256": "898288bd3b21d0e7d5f406df2e0b69a5bbfa4f241baf29a2cdf8a3cf4d4619f2",
+    "dpi": 96,
+    "owned_pid": 20984,
+    "launcher_pid": 20992,
+    "dll_path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
+    "outcome": "Two actual runtime-owned checkbox glyphs each match 182 original resource pixels; four BM_CLICK messages per checkbox restored original check state, font and style; child process exited and owned job was empty.",
+    "probe": "tests/integration/vb_actor.c",
+    "capture_scratch": "build/t18-s64-vb-actor",
+    "not_covered": [
+      "physical input",
+      "all VB controls",
+      "other DPI",
+      "all runtime versions"
+    ],
+    "corrected_edit_test": {
+      "bare_pid": 2324,
+      "styled_pid": 14316,
+      "dpi": 96,
+      "result": "Both own instances: a runtime-owned numeric textbox changed 0 to 2 via WM_SETTEXT, read back through WM_GETTEXT, restored to 0, and EM_GETSEL returned (0,1); process exited and owned job empty.",
+      "prior_observer_error": "The first probe used cross-process GetWindowTextW after mutation and falsely reported failure; preserved logs are not counted as application failures.",
+      "logs": [
+        "build/t18-s64-vb-actor-edit/wm-bare/output.txt",
+        "build/t18-s64-vb-actor-edit/wm-styled/output.txt"
+      ],
+      "limitations": [
+        "one numeric field",
+        "no physical input, IME or independent notification assertion"
+      ]
+    }
+  },
+  "model_regression": {
+    "result_file": "build/t18-package/s64-vb-control-check1/result.json",
+    "status": "passed-focused",
+    "case_count": 12,
+    "seconds": 12.2369806,
+    "skipped": [],
+    "targets": [
+      "vb-controls-32",
+      "vb-controls-64",
+      "vb-font-32",
+      "vb-font-64"
+    ],
+    "note": "These are self-owned fixtures; x64 models do not represent an actual 64-bit VB runtime."
+  },
+  "known_timeout": "The S31 intermittent VB child timeout did not recur in this run; cause remains unproven and TODO remains open.",
+  "real_madshow": {
+    "image": "O:\\winnt\\madshow.exe",
+    "sha256": "9d93484c7b230b584440b14e2d2dbb353f058be26e3385677349cff42e5db6b6",
+    "runtime": "C:\\Windows\\SysWOW64\\msvbvm60.dll",
+    "dpi": 96,
+    "styled_pid": 11244,
+    "bare_pid": 26412,
+    "classes": {
+      "ThunderRT6Timer": 1,
+      "ThunderRT6Frame": 2,
+      "ThunderRT6TextBox": 13,
+      "ThunderRT6CommandButton": 4,
+      "ThunderRT6PictureBoxDC": 1
+    },
+    "capture_files": {
+      "styled": {
+        "path": "build/t18-s64-vb-madshow/actor-styled.bmp",
+        "sha256": "be67ca531175bb85d899651b9104a9f978969722147766bcaf8c243934746625"
+      },
+      "bare": {
+        "path": "build/t18-s64-vb-madshow/actor-bare.bmp",
+        "sha256": "036d082b23dc632099654e78f1371c1b76692d0bf2cbdd9ebf52d7f77a74f4ec"
+      }
+    },
+    "outcome": "Both owned instances produced the same 21 runtime-owned child classes, preserved selection in inventory mode, exited successfully and left no owned processes; current style DLL appeared only in styled instance. Images visibly differ, but this inventory does not establish per-control hook attachment or input behavior.",
+    "not_covered": [
+      "per-control attachment",
+      "physical input",
+      "individual control pixel and interaction changes",
+      "other DPI"
+    ],
+    "attachment_observer_attempt": {
+      "status": "not_observed",
+      "method": "Temporary self-owned x86 observer based on tests/integration/vb_intrinsic.c and vb_queue.c, targeted only at the newly launched instance UI thread.",
+      "failure": "WH_GETMESSAGE and WH_CALLWNDPROC SetWindowsHookExW returned NULL with ERROR_MOD_NOT_FOUND (126) before per-control survey. The controller successfully loaded the witness and resolved both exports.",
+      "independent_control": "An independently rebuilt same-source witness in task scratch also returned 126 for both hooks; no claim about renderer attachment follows.",
+      "cleanup": "Process exit closed its owned kill-on-close job; no existing process was targeted.",
+      "logs": [
+        "build/t18-s64-vb-attachment/module-diag.txt",
+        "build/t18-s64-vb-attachment/independent-diag.txt"
+      ],
+      "unresolved": "Underlying cause of 126 remains unproven; no renderer attachment conclusion follows.",
+      "single_process_control": "Correction: the same-thread vb-queue-test passed after setting hMod=NULL for the current-process hook procedure. Its earlier 126 with non-NULL module was an invalid same-thread control, and cannot be used to infer a general observer or environment failure. The original cross-process 126 remains unexplained.",
+      "reference": "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexw"
+    },
+    "instrumented_build": {
+      "scope": "Self-owned scratch-only copy of S63 source; adds one file trace immediately after install_created decides installed. Not a shipped DLL and not a direct query of the released DLL.",
+      "diagnostic_dll_sha256": "9427d4204db1826ddf40ab097af87745b3fbd5980fccbc4616a77cc3118a674b",
+      "attachment_source_sha256": "cbb8fcbf2f9f85af786d0e08a6c476cd5306f062c237d1be02dd9b69bcbfa37b",
+      "build": "x86 GCC C17 Ninja ccache; core/abi passed; diagnostic copy also built x64 but only x86 used for real VB6 sample",
+      "target_pid": 22700,
+      "ui_thread_id": 19868,
+      "matched_child_results": {
+        "ThunderRT6TextBox": 13,
+        "ThunderRT6CommandButton": 4,
+        "ThunderRT6Frame": 2,
+        "ThunderRT6PictureBoxDC": 1
+      },
+      "matching": "All 20 child HWND/class pairs from inventory matched installed=1 in trace; nonvisual ThunderRT6Timer did not appear in installation trace. Root ThunderRT6FormDC installed=1; hidden ThunderRT6Main installed=0.",
+      "trace_lines": [
+        "pid=22700 tid=19868 hwnd=019A00B0 class=ThunderRT6Main installed=0",
+        "pid=22700 tid=19868 hwnd=0037032E class=ThunderRT6FormDC installed=1",
+        "pid=22700 tid=19868 hwnd=004401D4 class=ThunderRT6Frame installed=1",
+        "pid=22700 tid=19868 hwnd=01DE054A class=ThunderRT6TextBox installed=1",
+        "pid=22700 tid=19868 hwnd=004E0552 class=ThunderRT6TextBox installed=1",
+        "pid=22700 tid=19868 hwnd=004A0554 class=ThunderRT6TextBox installed=1",
+        "pid=22700 tid=19868 hwnd=008E0556 class=ThunderRT6TextBox installed=1",
+        "pid=22700 tid=19868 hwnd=066906F8 class=ThunderRT6TextBox installed=1",
+        "pid=22700 tid=19868 hwnd=00570712 class=ThunderRT6TextBox installed=1",
+        "pid=22700 tid=19868 hwnd=01620722 class=ThunderRT6Frame installed=1",
+        "pid=22700 tid=19868 hwnd=00710756 class=ThunderRT6TextBox installed=1",
+        "pid=22700 tid=19868 hwnd=00C9075E class=ThunderRT6TextBox installed=1",
+        "pid=22700 tid=19868 hwnd=010B0764 class=ThunderRT6CommandButton installed=1",
+        "pid=22700 tid=19868 hwnd=0119078A class=ThunderRT6CommandButton installed=1",
+        "pid=22700 tid=19868 hwnd=044C0820 class=ThunderRT6CommandButton installed=1",
+        "pid=22700 tid=19868 hwnd=01FB08C6 class=ThunderRT6CommandButton installed=1",
+        "pid=22700 tid=19868 hwnd=0884090E class=ThunderRT6TextBox installed=1",
+        "pid=22700 tid=19868 hwnd=047F093E class=ThunderRT6TextBox installed=1",
+        "pid=22700 tid=19868 hwnd=0AF409B8 class=ThunderRT6TextBox installed=1",
+        "pid=22700 tid=19868 hwnd=04540AA2 class=ThunderRT6TextBox installed=1",
+        "pid=22700 tid=19868 hwnd=01A10906 class=ThunderRT6TextBox installed=1",
+        "pid=22700 tid=19868 hwnd=04F40942 class=ThunderRT6PictureBoxDC installed=1"
+      ],
+      "screenshot_sha256": "be67ca531175bb85d899651b9104a9f978969722147766bcaf8c243934746625",
+      "comparison": "Complete diagnostic screenshot SHA-256 equals the earlier same-sample released DLL screenshot; this does not prove absence of all diagnostic effects.",
+      "limitations": [
+        "instrumented test build, not production DLL introspection",
+        "physical input not covered",
+        "does not prove every visual state or all VB5/VB6 controls",
+        "cross-process observer failure remains unexplained"
+      ]
+    },
+    "edit_interaction_attempt": {
+      "scope": "One runtime-owned editable ThunderRT6TextBox containing 0.1, in separate self-owned bare and released-package styled instances, DPI 96. No simulator buttons or disk operations.",
+      "target_text": "0.1",
+      "settext_control": "WM_SETTEXT to 0.2 returned 0 and did not change the value in bare instance; setting original value returned 1. This was not tested against styled instance in that first control.",
+      "char_control": "In both bare (PID 12156) and styled (PID 5040), AttachThreadInput and SetFocus succeeded and EM_SETSEL/EM_GETSEL returned (2,3); synchronous WM_CHAR for 2 did not change the observed text. The original value remained 0.1 after the attempted restoration. Both tests reported failure rather than passing the intended interaction assertion.",
+      "conclusion": "The same behavior on bare and styled is not evidence of a style regression. Cause is undetermined; synthetic input is not a successful editing or notification test, and no physical keyboard claim is made.",
+      "cleanup": "Probe exited nonzero, closing its kill-on-close job; instances were self-owned.",
+      "logs": [
+        "build/t18-s64-vb-edit/bare/output.txt",
+        "build/t18-s64-vb-edit/focus-bare/output.txt",
+        "build/t18-s64-vb-edit/focus-styled/output.txt"
+      ],
+      "correction": "Earlier value_ok=0 was read using GetWindowTextW from another process. Windows does not provide reliable cross-process control-text reads through GetWindowTextW; it is not proof that WM_CHAR failed or that the text remained unchanged. Both corrected probes read the control through WM_GETTEXT.",
+      "corrected_result": {
+        "bare_pid": 4292,
+        "styled_pid": 30408,
+        "dpi": 96,
+        "result": "Both own instances: successful AttachThreadInput/SetFocus, EM_SETSEL and EM_GETSEL=(2,3), WM_CHAR produced 0.2 as read with WM_GETTEXT, WM_SETTEXT restored 0.1 as read with WM_GETTEXT, normal process exit and owned job empty.",
+        "logs": [
+          "build/t18-s64-vb-edit/wm-restore-bare/output.txt",
+          "build/t18-s64-vb-edit/wm-restore-styled/output.txt"
+        ],
+        "limitations": [
+          "one numeric field",
+          "synthetic WM_CHAR is not physical keyboard input",
+          "no independent notification count or IME",
+          "same-process application state beyond window text not independently checked"
+        ]
+      }
+    }
+  },
+  "observer_text_fix": {
+    "scope": "Two cross-process VB observer control reads only: child inventory text and About button lookup; top-level window title retrieval and in-process vb6-probe were not changed.",
+    "problem": "GetWindowTextW returns cached caption rather than querying an edit control in another process. Actor path control previously appeared empty; actual WM_GETTEXT reports O:\\winnt.",
+    "implementation": "SendMessageTimeoutW(WM_GETTEXT) with a 1000 ms bounded wait, initialized buffer, and explicit failure; user input and product renderer are unchanged.",
+    "regression": "Self-owned isolated x86 and x64 cross-process EDIT controls set and read a Unicode string, reject invalid HWND and clean up. Modified old GetWindowTextW implementation failed on the expected string in both widths, exit 1; fixed version passed with legacy_equal=0.",
+    "final_real_actor": "Fresh 32-bit Actor under installed assets DLL reports O:\\winnt, 0 and 1 text values, 13 windows and job empty; log build/t18-s64-vbtext-final-actor/output.txt.",
+    "limits": [
+      "One real VB6 app and x86 runtime; model x64 is not a 64-bit VB runtime",
+      "No physical keyboard, IME or independent notification assertion",
+      "Other optional observers and custom control protocols not covered"
+    ]
+  }
+}
