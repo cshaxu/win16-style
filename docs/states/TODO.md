@@ -2,9 +2,10 @@
 
 # Deferred Debt
 
-- [ ] TODO(High): 菜单取消回归耗时过长；Owner：T18后续测试效率S。Evidence：
-  [S31](../history/M0-T18-S31-static-text.md)首批两宽各约73秒，均通过；Admission：
-  定位实际耗时，保留全部取消、嵌套、DPI和清理断言，以用户要求的短测试为目标。
+- [ ] TODO(High): 对话框回归测试效率；Owner：T18后续测试效率S。Evidence：S33
+  实际包双宽 dialog-scope 约25秒、dialog-show 约115秒，均通过；完整 dialogs
+  集成约85秒。Admission：分阶段计时，保留所有ANSI/Unicode、显示方式、DPI、
+  生命周期、资源及负例断言，不扩大等待或减少覆盖，先验证再替换。
 
 - [ ] TODO(Medium): VB组合回归出现间歇性30秒子进程超时；Owner：T18后续测试及
   最终验收。Evidence：[S31](../history/M0-T18-S31-static-text.md)中新旧包均在

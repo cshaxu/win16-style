@@ -1,0 +1,1623 @@
+{
+  "status": "S33 working evidence ledger; historical S26 rows require audit against later evidence; no name-only support claims",
+  "scope": "74 frozen S1 VCL families; TSpinButton is separately discovered and not counted",
+  "search_boundary": "exact source/test/history identifier search and bounded static name leads from four fixed samples; absence is not universal proof",
+  "next_candidate": "S33 final integration and row-by-row audit; unverified owners and protocol gaps remain open",
+  "rows": [
+    {
+      "unit": "TForm",
+      "group": "forms_and_containers",
+      "s1_plan": "requires_real_vcl_owner_and_public_protocol",
+      "s1_receiver": "self-owned legacy and modern VCL instances plus public USER/COMCTL role checks; existing renderer use is allowed only after the exact wrapper proves the same native protocol",
+      "s2_native_model": true,
+      "current_assessment": "bounded-real-runtime-sample",
+      "assessment_evidence": "T18 S33: DelphiVCL4Python 1.0.7 x86/x64 isolated owned form, 144 DPI",
+      "scope": "Sample root attached in both widths and title capture matches S31 baseline in top 26 rows; not proof for all VCL forms or custom titles.",
+      "remaining_work": "Other versions, modal and MDI variants, title customization and real physical interaction require independent evidence.",
+      "receiver": "T18 final integration; unsupported variants remain native",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\DoubleKiller.exe",
+        "D:\\programs\\misc\\md5summer.exe",
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TMDIForm",
+      "group": "forms_and_containers",
+      "s1_plan": "requires_real_vcl_owner_and_public_protocol",
+      "s1_receiver": "self-owned legacy and modern VCL instances plus public USER/COMCTL role checks; existing renderer use is allowed only after the exact wrapper proves the same native protocol",
+      "s2_native_model": true,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TFrame",
+      "group": "forms_and_containers",
+      "s1_plan": "requires_real_vcl_owner_and_public_protocol",
+      "s1_receiver": "self-owned legacy and modern VCL instances plus public USER/COMCTL role checks; existing renderer use is allowed only after the exact wrapper proves the same native protocol",
+      "s2_native_model": true,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TPanel",
+      "group": "forms_and_containers",
+      "s1_plan": "requires_real_vcl_owner_and_public_protocol",
+      "s1_receiver": "self-owned legacy and modern VCL instances plus public USER/COMCTL role checks; existing renderer use is allowed only after the exact wrapper proves the same native protocol",
+      "s2_native_model": false,
+      "current_assessment": "real-unattached",
+      "assessment_evidence": "S12/S15",
+      "scope": "Real MD5summer and modern VCL panel samples are application-owned; no general panel drawing protocol is proved.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\md5summer.exe",
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": [
+          "docs/history/M0-T18-S15-modern-vcl-observation.md",
+          "docs/history/M0-T18-S22-speedbutton.md"
+        ]
+      }
+    },
+    {
+      "unit": "TGroupBox",
+      "group": "forms_and_containers",
+      "s1_plan": "requires_real_vcl_owner_and_public_protocol",
+      "s1_receiver": "self-owned legacy and modern VCL instances plus public USER/COMCTL role checks; existing renderer use is allowed only after the exact wrapper proves the same native protocol",
+      "s2_native_model": true,
+      "current_assessment": "native-model-only",
+      "assessment_evidence": "S8",
+      "scope": "Native BUTTON-superclass model; actual Delphi variant needs evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\md5summer.exe",
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [
+          "tests/ntw16s-dll/superclass.c"
+        ],
+        "history_mentions": [
+          "docs/history/M0-T18-S8-vcl-choice-protocol.md"
+        ]
+      }
+    },
+    {
+      "unit": "TScrollBox",
+      "group": "forms_and_containers",
+      "s1_plan": "requires_real_vcl_owner_and_public_protocol",
+      "s1_receiver": "self-owned legacy and modern VCL instances plus public USER/COMCTL role checks; existing renderer use is allowed only after the exact wrapper proves the same native protocol",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\DoubleKiller.exe",
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TSplitter",
+      "group": "forms_and_containers",
+      "s1_plan": "requires_real_vcl_owner_and_public_protocol",
+      "s1_receiver": "self-owned legacy and modern VCL instances plus public USER/COMCTL role checks; existing renderer use is allowed only after the exact wrapper proves the same native protocol",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\md5summer.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TButton",
+      "group": "buttons_and_selection",
+      "s1_plan": "requires_real_vcl_owner_and_public_protocol",
+      "s1_receiver": "self-owned legacy and modern VCL instances plus public USER/COMCTL role checks; existing renderer use is allowed only after the exact wrapper proves the same native protocol",
+      "s2_native_model": true,
+      "current_assessment": "exact-protocol",
+      "assessment_evidence": "S3/S26",
+      "scope": "Bounded native BUTTON public protocol; DoubleKiller sample attached.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\DoubleKiller.exe",
+        "D:\\programs\\misc\\md5summer.exe",
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [
+          "src/ntw16s-dll/control_protocol.c"
+        ],
+        "test_mentions": [
+          "tests/integration/doublekiller_probe.c",
+          "tests/ntw16s-dll/control_extensions.c",
+          "tests/ntw16s-dll/control_protocol_owner.c",
+          "tests/ntw16s-dll/superclass.c"
+        ],
+        "history_mentions": [
+          "docs/history/M0-T18-S1-delphi-control-audit.md"
+        ]
+      }
+    },
+    {
+      "unit": "TBitBtn",
+      "group": "buttons_and_selection",
+      "s1_plan": "application_or_framework_canvas_preserve_until_public_drawing_contract",
+      "s1_receiver": "a future exact owner-draw or content-neutral public drawing contract; no generic standard-control alias or application painting interception",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TSpeedButton",
+      "group": "buttons_and_selection",
+      "s1_plan": "application_or_framework_canvas_preserve_until_public_drawing_contract",
+      "s1_receiver": "a future exact owner-draw or content-neutral public drawing contract; no generic standard-control alias or application painting interception",
+      "s2_native_model": false,
+      "current_assessment": "native-preserved",
+      "assessment_evidence": "S22",
+      "scope": "Windowless sample lacks safe public content-neutral protocol; explicit TODO.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\DoubleKiller.exe",
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": [
+          "docs/history/M0-T18-S22-speedbutton.md"
+        ]
+      }
+    },
+    {
+      "unit": "TCheckBox",
+      "group": "buttons_and_selection",
+      "s1_plan": "requires_real_vcl_owner_and_public_protocol",
+      "s1_receiver": "self-owned legacy and modern VCL instances plus public USER/COMCTL role checks; existing renderer use is allowed only after the exact wrapper proves the same native protocol",
+      "s2_native_model": true,
+      "current_assessment": "native-model-and-sample",
+      "assessment_evidence": "S8/S26",
+      "scope": "Native superclass model; observed attached DoubleKiller checkboxes.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\DoubleKiller.exe",
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [
+          "tests/ntw16s-dll/superclass.c"
+        ],
+        "history_mentions": [
+          "docs/history/M0-T18-S8-vcl-choice-protocol.md"
+        ]
+      }
+    },
+    {
+      "unit": "TRadioButton",
+      "group": "buttons_and_selection",
+      "s1_plan": "requires_real_vcl_owner_and_public_protocol",
+      "s1_receiver": "self-owned legacy and modern VCL instances plus public USER/COMCTL role checks; existing renderer use is allowed only after the exact wrapper proves the same native protocol",
+      "s2_native_model": true,
+      "current_assessment": "native-model-only",
+      "assessment_evidence": "S8",
+      "scope": "Native BUTTON-superclass model; actual Delphi variant needs evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [
+          "tests/ntw16s-dll/superclass.c"
+        ],
+        "history_mentions": [
+          "docs/history/M0-T18-S8-vcl-choice-protocol.md"
+        ]
+      }
+    },
+    {
+      "unit": "TRadioGroup",
+      "group": "buttons_and_selection",
+      "s1_plan": "requires_real_vcl_owner_and_public_protocol",
+      "s1_receiver": "self-owned legacy and modern VCL instances plus public USER/COMCTL role checks; existing renderer use is allowed only after the exact wrapper proves the same native protocol",
+      "s2_native_model": true,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TEdit",
+      "group": "text_and_lists",
+      "s1_plan": "requires_real_vcl_owner_and_public_protocol",
+      "s1_receiver": "self-owned legacy and modern VCL instances plus public USER/COMCTL role checks; existing renderer use is allowed only after the exact wrapper proves the same native protocol",
+      "s2_native_model": true,
+      "current_assessment": "exact-protocol",
+      "assessment_evidence": "S4",
+      "scope": "Exact native EDIT protocol; owner-draw and impostors rejected.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\DoubleKiller.exe",
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [
+          "src/ntw16s-dll/control_protocol.c"
+        ],
+        "test_mentions": [
+          "tests/ntw16s-dll/control_protocol_owner.c",
+          "tests/ntw16s-dll/superclass.c"
+        ],
+        "history_mentions": [
+          "docs/history/M0-T18-S4-basic-vcl-protocols.md"
+        ]
+      }
+    },
+    {
+      "unit": "TMemo",
+      "group": "text_and_lists",
+      "s1_plan": "requires_real_vcl_owner_and_public_protocol",
+      "s1_receiver": "self-owned legacy and modern VCL instances plus public USER/COMCTL role checks; existing renderer use is allowed only after the exact wrapper proves the same native protocol",
+      "s2_native_model": true,
+      "current_assessment": "native-model-only",
+      "assessment_evidence": "S9",
+      "scope": "EDIT superclass model; actual Delphi object and behaviors not proved.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [
+          "tests/ntw16s-dll/superclass.c"
+        ],
+        "history_mentions": [
+          "docs/history/M0-T18-S9-vcl-edit-superclass.md"
+        ]
+      }
+    },
+    {
+      "unit": "TRichEdit",
+      "group": "text_and_lists",
+      "s1_plan": "requires_real_vcl_owner_and_public_protocol",
+      "s1_receiver": "self-owned legacy and modern VCL instances plus public USER/COMCTL role checks; existing renderer use is allowed only after the exact wrapper proves the same native protocol",
+      "s2_native_model": true,
+      "current_assessment": "needs-real-owner",
+      "assessment_evidence": "S9",
+      "scope": "RichEdit and actual Delphi semantics need separate validation.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\DoubleKiller.exe",
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": [
+          "docs/history/M0-T18-S9-vcl-edit-superclass.md"
+        ]
+      }
+    },
+    {
+      "unit": "TMaskEdit",
+      "group": "text_and_lists",
+      "s1_plan": "requires_real_vcl_owner_and_public_protocol",
+      "s1_receiver": "self-owned legacy and modern VCL instances plus public USER/COMCTL role checks; existing renderer use is allowed only after the exact wrapper proves the same native protocol",
+      "s2_native_model": false,
+      "current_assessment": "native-model-only",
+      "assessment_evidence": "S9",
+      "scope": "EDIT model does not implement or prove Delphi masking.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [
+          "tests/ntw16s-dll/superclass.c"
+        ],
+        "history_mentions": [
+          "docs/history/M0-T18-S9-vcl-edit-superclass.md"
+        ]
+      }
+    },
+    {
+      "unit": "TComboBox",
+      "group": "text_and_lists",
+      "s1_plan": "requires_real_vcl_owner_and_public_protocol",
+      "s1_receiver": "self-owned legacy and modern VCL instances plus public USER/COMCTL role checks; existing renderer use is allowed only after the exact wrapper proves the same native protocol",
+      "s2_native_model": true,
+      "current_assessment": "exact-protocol",
+      "assessment_evidence": "S10/S26",
+      "scope": "Bounded native COMBOBOX protocol; DoubleKiller sample attached.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\DoubleKiller.exe",
+        "D:\\programs\\misc\\md5summer.exe",
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [
+          "src/ntw16s-dll/control_protocol.c"
+        ],
+        "test_mentions": [
+          "tests/ntw16s-dll/control_protocol_owner.c",
+          "tests/ntw16s-dll/superclass.c"
+        ],
+        "history_mentions": [
+          "docs/history/M0-T18-S10-vcl-list-superclass.md",
+          "docs/history/M0-T18-S15-modern-vcl-observation.md",
+          "docs/history/M0-T18-S22-speedbutton.md"
+        ]
+      }
+    },
+    {
+      "unit": "TListBox",
+      "group": "text_and_lists",
+      "s1_plan": "requires_real_vcl_owner_and_public_protocol",
+      "s1_receiver": "self-owned legacy and modern VCL instances plus public USER/COMCTL role checks; existing renderer use is allowed only after the exact wrapper proves the same native protocol",
+      "s2_native_model": true,
+      "current_assessment": "exact-protocol",
+      "assessment_evidence": "S4/S10",
+      "scope": "Exact native LISTBOX protocol; owner-draw and impostors rejected.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\md5summer.exe",
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [
+          "src/ntw16s-dll/control_protocol.c"
+        ],
+        "test_mentions": [
+          "tests/ntw16s-dll/control_protocol_owner.c",
+          "tests/ntw16s-dll/superclass.c"
+        ],
+        "history_mentions": [
+          "docs/history/M0-T18-S10-vcl-list-superclass.md",
+          "docs/history/M0-T18-S4-basic-vcl-protocols.md"
+        ]
+      }
+    },
+    {
+      "unit": "TCheckListBox",
+      "group": "text_and_lists",
+      "s1_plan": "application_or_framework_canvas_preserve_until_public_drawing_contract",
+      "s1_receiver": "a future exact owner-draw or content-neutral public drawing contract; no generic standard-control alias or application painting interception",
+      "s2_native_model": false,
+      "current_assessment": "narrow-sample-only",
+      "assessment_evidence": "S21",
+      "scope": "Only observed THintCheckListBox primitive and clipped interior; no general class claim.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\DoubleKiller.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": [
+          "docs/history/M0-T18-S21-vcl-checklist.md"
+        ]
+      }
+    },
+    {
+      "unit": "TColorBox",
+      "group": "text_and_lists",
+      "s1_plan": "application_or_framework_canvas_preserve_until_public_drawing_contract",
+      "s1_receiver": "a future exact owner-draw or content-neutral public drawing contract; no generic standard-control alias or application painting interception",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TLabel",
+      "group": "windowless_or_application_drawing",
+      "s1_plan": "application_or_framework_canvas_preserve_until_public_drawing_contract",
+      "s1_receiver": "a future exact owner-draw or content-neutral public drawing contract; no generic standard-control alias or application painting interception",
+      "s2_native_model": false,
+      "current_assessment": "real-windowless-native-preserved",
+      "assessment_evidence": "T18 S29: x86 MD5summer resource and bounded native import observation",
+      "scope": "Real windowless label drawing identified in sample; no general public label ownership contract, so no product substitution.",
+      "remaining_work": "Safe public ownership, geometry, Unicode and application drawing separation remain unproved.",
+      "receiver": "TODO VCL windowless label; T18 final integration",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\DoubleKiller.exe",
+        "D:\\programs\\misc\\md5summer.exe",
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TStaticText",
+      "group": "windowless_or_application_drawing",
+      "s1_plan": "application_or_framework_canvas_preserve_until_public_drawing_contract",
+      "s1_receiver": "a future exact owner-draw or content-neutral public drawing contract; no generic standard-control alias or application painting interception",
+      "s2_native_model": false,
+      "current_assessment": "bounded-real-runtime-sample",
+      "assessment_evidence": "T18 S31: DelphiVCL4Python 1.0.7 x86/x64 and native v6 models",
+      "scope": "Same-thread actual STATIC forwarding; ASCII screen text with source font retained; print, RTL and non-ASCII stay native. Not a general VCL version claim.",
+      "remaining_work": "Real static-linked Delphi, other versions, non-ASCII, DPI beyond observed 144 and physical interaction remain unverified.",
+      "receiver": "T18 final integration; unsupported variants retain native behavior",
+      "static_sample_leads": [
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TImage",
+      "group": "windowless_or_application_drawing",
+      "s1_plan": "application_or_framework_canvas_preserve_until_public_drawing_contract",
+      "s1_receiver": "a future exact owner-draw or content-neutral public drawing contract; no generic standard-control alias or application painting interception",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\DoubleKiller.exe",
+        "D:\\programs\\misc\\md5summer.exe",
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TShape",
+      "group": "windowless_or_application_drawing",
+      "s1_plan": "application_or_framework_canvas_preserve_until_public_drawing_contract",
+      "s1_receiver": "a future exact owner-draw or content-neutral public drawing contract; no generic standard-control alias or application painting interception",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TBevel",
+      "group": "windowless_or_application_drawing",
+      "s1_plan": "application_or_framework_canvas_preserve_until_public_drawing_contract",
+      "s1_receiver": "a future exact owner-draw or content-neutral public drawing contract; no generic standard-control alias or application painting interception",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\DoubleKiller.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TPaintBox",
+      "group": "windowless_or_application_drawing",
+      "s1_plan": "application_or_framework_canvas_preserve_until_public_drawing_contract",
+      "s1_receiver": "a future exact owner-draw or content-neutral public drawing contract; no generic standard-control alias or application painting interception",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\DoubleKiller.exe",
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TChart",
+      "group": "windowless_or_application_drawing",
+      "s1_plan": "application_or_framework_canvas_preserve_until_public_drawing_contract",
+      "s1_receiver": "a future exact owner-draw or content-neutral public drawing contract; no generic standard-control alias or application painting interception",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TImageList",
+      "group": "windowless_or_application_drawing",
+      "s1_plan": "version_package_or_embedded_owner_required",
+      "s1_receiver": "a version-correct VCL package/sample that establishes an HWND, object owner and drawing responsibility; legacy Win3.1-named controls are not presumed equivalent to this project's renderer",
+      "s2_native_model": true,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\DoubleKiller.exe",
+        "D:\\programs\\misc\\md5summer.exe",
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TMainMenu",
+      "group": "menus_and_action_surfaces",
+      "s1_plan": "requires_real_vcl_owner_and_public_protocol",
+      "s1_receiver": "self-owned legacy and modern VCL instances plus public USER/COMCTL role checks; existing renderer use is allowed only after the exact wrapper proves the same native protocol",
+      "s2_native_model": true,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\DoubleKiller.exe",
+        "D:\\programs\\misc\\md5summer.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TPopupMenu",
+      "group": "menus_and_action_surfaces",
+      "s1_plan": "requires_real_vcl_owner_and_public_protocol",
+      "s1_receiver": "self-owned legacy and modern VCL instances plus public USER/COMCTL role checks; existing renderer use is allowed only after the exact wrapper proves the same native protocol",
+      "s2_native_model": true,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\DoubleKiller.exe",
+        "D:\\programs\\misc\\md5summer.exe",
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TActionList",
+      "group": "menus_and_action_surfaces",
+      "s1_plan": "version_package_or_embedded_owner_required",
+      "s1_receiver": "a version-correct VCL package/sample that establishes an HWND, object owner and drawing responsibility; legacy Win3.1-named controls are not presumed equivalent to this project's renderer",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TToolBar",
+      "group": "menus_and_action_surfaces",
+      "s1_plan": "requires_real_vcl_owner_and_public_protocol",
+      "s1_receiver": "self-owned legacy and modern VCL instances plus public USER/COMCTL role checks; existing renderer use is allowed only after the exact wrapper proves the same native protocol",
+      "s2_native_model": true,
+      "current_assessment": "needs-real-owner",
+      "assessment_evidence": "S11",
+      "scope": "Existing text-toolbar bounded reader is OCX scoped, not a Delphi toolbar claim.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": [
+          "docs/history/M0-T18-S11-toolbar-text-bounds.md"
+        ]
+      }
+    },
+    {
+      "unit": "TCoolBar",
+      "group": "menus_and_action_surfaces",
+      "s1_plan": "version_package_or_embedded_owner_required",
+      "s1_receiver": "a version-correct VCL package/sample that establishes an HWND, object owner and drawing responsibility; legacy Win3.1-named controls are not presumed equivalent to this project's renderer",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TStatusBar",
+      "group": "menus_and_action_surfaces",
+      "s1_plan": "requires_real_vcl_owner_and_public_protocol",
+      "s1_receiver": "self-owned legacy and modern VCL instances plus public USER/COMCTL role checks; existing renderer use is allowed only after the exact wrapper proves the same native protocol",
+      "s2_native_model": true,
+      "current_assessment": "native-model-only",
+      "assessment_evidence": "S25",
+      "scope": "Native status pane frames only; real Delphi wrapper remains TODO.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [
+          "tests/ntw16s-dll/status_controls.c"
+        ],
+        "history_mentions": [
+          "docs/history/M0-T18-S11-toolbar-text-bounds.md",
+          "docs/history/M0-T18-S25-status-bar.md"
+        ]
+      }
+    },
+    {
+      "unit": "TControlBar",
+      "group": "menus_and_action_surfaces",
+      "s1_plan": "requires_real_vcl_owner_and_public_protocol",
+      "s1_receiver": "self-owned legacy and modern VCL instances plus public USER/COMCTL role checks; existing renderer use is allowed only after the exact wrapper proves the same native protocol",
+      "s2_native_model": true,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TTreeView",
+      "group": "common_controls",
+      "s1_plan": "requires_real_vcl_owner_and_public_common_control_protocol",
+      "s1_receiver": "self-owned VCL instance and existing common-control protocol tests; custom draw, data, image and exceptional styles remain separate",
+      "s2_native_model": true,
+      "current_assessment": "exact-protocol",
+      "assessment_evidence": "S6/S13",
+      "scope": "Bounded native tree protocol; real MD5summer TShellTreeView separately observed.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [
+          "src/ntw16s-dll/attachment.c",
+          "src/ntw16s-dll/control_protocol.c"
+        ],
+        "test_mentions": [
+          "tests/ntw16s-dll/tree_controls.c"
+        ],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TListView",
+      "group": "common_controls",
+      "s1_plan": "requires_real_vcl_owner_and_public_common_control_protocol",
+      "s1_receiver": "self-owned VCL instance and existing common-control protocol tests; custom draw, data, image and exceptional styles remain separate",
+      "s2_native_model": true,
+      "current_assessment": "exact-protocol",
+      "assessment_evidence": "S6",
+      "scope": "Bounded native list-view protocol; custom draw remains separate.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\DoubleKiller.exe",
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [
+          "src/ntw16s-dll/attachment.c",
+          "src/ntw16s-dll/control_protocol.c"
+        ],
+        "test_mentions": [
+          "tests/ntw16s-dll/list_report.c"
+        ],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "THeaderControl",
+      "group": "common_controls",
+      "s1_plan": "requires_real_vcl_owner_and_public_common_control_protocol",
+      "s1_receiver": "self-owned VCL instance and existing common-control protocol tests; custom draw, data, image and exceptional styles remain separate",
+      "s2_native_model": true,
+      "current_assessment": "exact-protocol",
+      "assessment_evidence": "S6",
+      "scope": "Native superclass and owner identity validated; impostor rejected.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [
+          "src/ntw16s-dll/control_protocol.c"
+        ],
+        "test_mentions": [
+          "tests/ntw16s-dll/header_controls.c"
+        ],
+        "history_mentions": [
+          "docs/history/M0-T18-S6-vcl-lists-trees-headers.md"
+        ]
+      }
+    },
+    {
+      "unit": "TTabControl",
+      "group": "common_controls",
+      "s1_plan": "requires_real_vcl_owner_and_public_protocol",
+      "s1_receiver": "self-owned legacy and modern VCL instances plus public USER/COMCTL role checks; existing renderer use is allowed only after the exact wrapper proves the same native protocol",
+      "s2_native_model": true,
+      "current_assessment": "exact-protocol",
+      "assessment_evidence": "S5",
+      "scope": "Ordinary public tab protocol, excluded modes retain native behavior.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [
+          "src/ntw16s-dll/control_protocol.c"
+        ],
+        "test_mentions": [
+          "tests/ntw16s-dll/tab_controls.c"
+        ],
+        "history_mentions": [
+          "docs/history/M0-T18-S5-vcl-tabs.md"
+        ]
+      }
+    },
+    {
+      "unit": "TPageControl",
+      "group": "common_controls",
+      "s1_plan": "requires_real_vcl_owner_and_public_common_control_protocol",
+      "s1_receiver": "self-owned VCL instance and existing common-control protocol tests; custom draw, data, image and exceptional styles remain separate",
+      "s2_native_model": true,
+      "current_assessment": "exact-protocol",
+      "assessment_evidence": "S5/S26",
+      "scope": "Ordinary public tab protocol; DoubleKiller sample attached.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\DoubleKiller.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [
+          "src/ntw16s-dll/control_protocol.c"
+        ],
+        "test_mentions": [
+          "tests/integration/doublekiller_probe.c",
+          "tests/ntw16s-dll/tab_controls.c"
+        ],
+        "history_mentions": [
+          "docs/history/M0-T18-S5-vcl-tabs.md"
+        ]
+      }
+    },
+    {
+      "unit": "TProgressBar",
+      "group": "common_controls",
+      "s1_plan": "requires_real_vcl_owner_and_public_common_control_protocol",
+      "s1_receiver": "self-owned VCL instance and existing common-control protocol tests; custom draw, data, image and exceptional styles remain separate",
+      "s2_native_model": true,
+      "current_assessment": "exact-protocol",
+      "assessment_evidence": "S23/S24/S26",
+      "scope": "Bounded v5 frame and other existing protocol; v5 fill remains TODO.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\DoubleKiller.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [
+          "src/ntw16s-dll/control_protocol.c"
+        ],
+        "test_mentions": [
+          "tests/ntw16s-dll/progress_controls.c"
+        ],
+        "history_mentions": [
+          "docs/history/M0-T18-S23-progress-border.md",
+          "docs/history/M0-T18-S7-vcl-range-audit.md"
+        ]
+      }
+    },
+    {
+      "unit": "TTrackBar",
+      "group": "common_controls",
+      "s1_plan": "requires_real_vcl_owner_and_public_common_control_protocol",
+      "s1_receiver": "self-owned VCL instance and existing common-control protocol tests; custom draw, data, image and exceptional styles remain separate",
+      "s2_native_model": true,
+      "current_assessment": "exact-protocol",
+      "assessment_evidence": "S7",
+      "scope": "Bounded native range protocol; version and variant limitations apply.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [
+          "src/ntw16s-dll/control_protocol.c"
+        ],
+        "test_mentions": [
+          "tests/ntw16s-dll/trackbar_controls.c"
+        ],
+        "history_mentions": [
+          "docs/history/M0-T18-S7-vcl-range-audit.md"
+        ]
+      }
+    },
+    {
+      "unit": "TUpDown",
+      "group": "common_controls",
+      "s1_plan": "requires_real_vcl_owner_and_public_common_control_protocol",
+      "s1_receiver": "self-owned VCL instance and existing common-control protocol tests; custom draw, data, image and exceptional styles remain separate",
+      "s2_native_model": true,
+      "current_assessment": "exact-protocol",
+      "assessment_evidence": "S7",
+      "scope": "Bounded native range protocol; version and variant limitations apply.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [
+          "src/ntw16s-dll/control_protocol.c"
+        ],
+        "test_mentions": [
+          "tests/ntw16s-dll/updown_controls.c"
+        ],
+        "history_mentions": [
+          "docs/history/M0-T18-S7-vcl-range-audit.md"
+        ]
+      }
+    },
+    {
+      "unit": "TDateTimePicker",
+      "group": "common_controls",
+      "s1_plan": "requires_real_vcl_owner_and_public_common_control_protocol",
+      "s1_receiver": "self-owned VCL instance and existing common-control protocol tests; custom draw, data, image and exceptional styles remain separate",
+      "s2_native_model": true,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TMonthCalendar",
+      "group": "common_controls",
+      "s1_plan": "requires_real_vcl_owner_and_public_common_control_protocol",
+      "s1_receiver": "self-owned VCL instance and existing common-control protocol tests; custom draw, data, image and exceptional styles remain separate",
+      "s2_native_model": true,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "THotKey",
+      "group": "common_controls",
+      "s1_plan": "requires_real_vcl_owner_and_public_common_control_protocol",
+      "s1_receiver": "self-owned VCL instance and existing common-control protocol tests; custom draw, data, image and exceptional styles remain separate",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TAnimate",
+      "group": "common_controls",
+      "s1_plan": "version_package_or_embedded_owner_required",
+      "s1_receiver": "a version-correct VCL package/sample that establishes an HWND, object owner and drawing responsibility; legacy Win3.1-named controls are not presumed equivalent to this project's renderer",
+      "s2_native_model": false,
+      "current_assessment": "real-unattached",
+      "assessment_evidence": "S26",
+      "scope": "DoubleKiller reports application-owned TAnimate attached=0; drawing and state contract require investigation.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\DoubleKiller.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TStringGrid",
+      "group": "grids_files_and_data",
+      "s1_plan": "application_or_framework_canvas_preserve_until_public_drawing_contract",
+      "s1_receiver": "a future exact owner-draw or content-neutral public drawing contract; no generic standard-control alias or application painting interception",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\md5summer.exe",
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TDrawGrid",
+      "group": "grids_files_and_data",
+      "s1_plan": "application_or_framework_canvas_preserve_until_public_drawing_contract",
+      "s1_receiver": "a future exact owner-draw or content-neutral public drawing contract; no generic standard-control alias or application painting interception",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\md5summer.exe",
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TValueListEditor",
+      "group": "grids_files_and_data",
+      "s1_plan": "application_or_framework_canvas_preserve_until_public_drawing_contract",
+      "s1_receiver": "a future exact owner-draw or content-neutral public drawing contract; no generic standard-control alias or application painting interception",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TDirectoryListBox",
+      "group": "grids_files_and_data",
+      "s1_plan": "version_package_or_embedded_owner_required",
+      "s1_receiver": "a version-correct VCL package/sample that establishes an HWND, object owner and drawing responsibility; legacy Win3.1-named controls are not presumed equivalent to this project's renderer",
+      "s2_native_model": true,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TDriveComboBox",
+      "group": "grids_files_and_data",
+      "s1_plan": "version_package_or_embedded_owner_required",
+      "s1_receiver": "a version-correct VCL package/sample that establishes an HWND, object owner and drawing responsibility; legacy Win3.1-named controls are not presumed equivalent to this project's renderer",
+      "s2_native_model": true,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TFileListBox",
+      "group": "grids_files_and_data",
+      "s1_plan": "version_package_or_embedded_owner_required",
+      "s1_receiver": "a version-correct VCL package/sample that establishes an HWND, object owner and drawing responsibility; legacy Win3.1-named controls are not presumed equivalent to this project's renderer",
+      "s2_native_model": true,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TDBGrid",
+      "group": "grids_files_and_data",
+      "s1_plan": "application_or_framework_canvas_preserve_until_public_drawing_contract",
+      "s1_receiver": "a future exact owner-draw or content-neutral public drawing contract; no generic standard-control alias or application painting interception",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TDBEdit",
+      "group": "grids_files_and_data",
+      "s1_plan": "application_or_framework_canvas_preserve_until_public_drawing_contract",
+      "s1_receiver": "a future exact owner-draw or content-neutral public drawing contract; no generic standard-control alias or application painting interception",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TDBComboBox",
+      "group": "grids_files_and_data",
+      "s1_plan": "application_or_framework_canvas_preserve_until_public_drawing_contract",
+      "s1_receiver": "a future exact owner-draw or content-neutral public drawing contract; no generic standard-control alias or application painting interception",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TDBListBox",
+      "group": "grids_files_and_data",
+      "s1_plan": "application_or_framework_canvas_preserve_until_public_drawing_contract",
+      "s1_receiver": "a future exact owner-draw or content-neutral public drawing contract; no generic standard-control alias or application painting interception",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TDBNavigator",
+      "group": "grids_files_and_data",
+      "s1_plan": "application_or_framework_canvas_preserve_until_public_drawing_contract",
+      "s1_receiver": "a future exact owner-draw or content-neutral public drawing contract; no generic standard-control alias or application painting interception",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TDBLookupComboBox",
+      "group": "grids_files_and_data",
+      "s1_plan": "version_package_or_embedded_owner_required",
+      "s1_receiver": "a version-correct VCL package/sample that establishes an HWND, object owner and drawing responsibility; legacy Win3.1-named controls are not presumed equivalent to this project's renderer",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TDBLookupListBox",
+      "group": "grids_files_and_data",
+      "s1_plan": "version_package_or_embedded_owner_required",
+      "s1_receiver": "a version-correct VCL package/sample that establishes an HWND, object owner and drawing responsibility; legacy Win3.1-named controls are not presumed equivalent to this project's renderer",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TWebBrowser",
+      "group": "embedded_and_nonvisual",
+      "s1_plan": "embedded_nonvisual_or_system_dialog_boundary",
+      "s1_receiver": "existing system-dialog route only where a real common dialog appears; embedded, nonvisual and shell-owned content remains native",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TMediaPlayer",
+      "group": "embedded_and_nonvisual",
+      "s1_plan": "embedded_nonvisual_or_system_dialog_boundary",
+      "s1_receiver": "existing system-dialog route only where a real common dialog appears; embedded, nonvisual and shell-owned content remains native",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TOleContainer",
+      "group": "embedded_and_nonvisual",
+      "s1_plan": "embedded_nonvisual_or_system_dialog_boundary",
+      "s1_receiver": "existing system-dialog route only where a real common dialog appears; embedded, nonvisual and shell-owned content remains native",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TTimer",
+      "group": "embedded_and_nonvisual",
+      "s1_plan": "embedded_nonvisual_or_system_dialog_boundary",
+      "s1_receiver": "existing system-dialog route only where a real common dialog appears; embedded, nonvisual and shell-owned content remains native",
+      "s2_native_model": true,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\DoubleKiller.exe",
+        "D:\\programs\\misc\\md5summer.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TTrayIcon",
+      "group": "embedded_and_nonvisual",
+      "s1_plan": "embedded_nonvisual_or_system_dialog_boundary",
+      "s1_receiver": "existing system-dialog route only where a real common dialog appears; embedded, nonvisual and shell-owned content remains native",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TOpenDialog",
+      "group": "embedded_and_nonvisual",
+      "s1_plan": "embedded_nonvisual_or_system_dialog_boundary",
+      "s1_receiver": "existing system-dialog route only where a real common dialog appears; embedded, nonvisual and shell-owned content remains native",
+      "s2_native_model": true,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\DoubleKiller.exe",
+        "D:\\programs\\misc\\md5summer.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TSaveDialog",
+      "group": "embedded_and_nonvisual",
+      "s1_plan": "embedded_nonvisual_or_system_dialog_boundary",
+      "s1_receiver": "existing system-dialog route only where a real common dialog appears; embedded, nonvisual and shell-owned content remains native",
+      "s2_native_model": true,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\misc\\DoubleKiller.exe",
+        "D:\\programs\\misc\\md5summer.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TButtonGroup",
+      "group": "additional_and_legacy_vcl",
+      "s1_plan": "version_package_or_embedded_owner_required",
+      "s1_receiver": "a version-correct VCL package/sample that establishes an HWND, object owner and drawing responsibility; legacy Win3.1-named controls are not presumed equivalent to this project's renderer",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TCategoryButtons",
+      "group": "additional_and_legacy_vcl",
+      "s1_plan": "application_or_framework_canvas_preserve_until_public_drawing_contract",
+      "s1_receiver": "a future exact owner-draw or content-neutral public drawing contract; no generic standard-control alias or application painting interception",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [
+        "D:\\programs\\RedAlert\\cnc-ddraw config.exe",
+        "D:\\programs\\joytokey\\JoyToKey.exe"
+      ],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TDockTabSet",
+      "group": "additional_and_legacy_vcl",
+      "s1_plan": "version_package_or_embedded_owner_required",
+      "s1_receiver": "a version-correct VCL package/sample that establishes an HWND, object owner and drawing responsibility; legacy Win3.1-named controls are not presumed equivalent to this project's renderer",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TTabSet",
+      "group": "additional_and_legacy_vcl",
+      "s1_plan": "version_package_or_embedded_owner_required",
+      "s1_receiver": "a version-correct VCL package/sample that establishes an HWND, object owner and drawing responsibility; legacy Win3.1-named controls are not presumed equivalent to this project's renderer",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TOutline",
+      "group": "additional_and_legacy_vcl",
+      "s1_plan": "version_package_or_embedded_owner_required",
+      "s1_receiver": "a version-correct VCL package/sample that establishes an HWND, object owner and drawing responsibility; legacy Win3.1-named controls are not presumed equivalent to this project's renderer",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    },
+    {
+      "unit": "TTabbedNotebook",
+      "group": "additional_and_legacy_vcl",
+      "s1_plan": "version_package_or_embedded_owner_required",
+      "s1_receiver": "a version-correct VCL package/sample that establishes an HWND, object owner and drawing responsibility; legacy Win3.1-named controls are not presumed equivalent to this project's renderer",
+      "s2_native_model": false,
+      "current_assessment": "runtime-owner-unverified",
+      "assessment_evidence": "S1/S2 + bounded S26 name scan",
+      "scope": "No current real VCL owner and content-neutral contract were established by these bounded inputs; search leads and demo models are not support evidence.",
+      "remaining_work": "Validate actual owner, behavior and relevant states; preserve application data, content and native fallback.",
+      "receiver": "T18 final integration audit; an earlier admitted T18 implementation S may resolve this evidence gap",
+      "static_sample_leads": [],
+      "search_leads": {
+        "source_mentions": [],
+        "test_mentions": [],
+        "history_mentions": []
+      }
+    }
+  ]
+}
