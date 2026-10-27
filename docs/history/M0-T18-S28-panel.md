@@ -89,4 +89,7 @@ x64 DLL `b94f098150db0cc674a16efab8ccbfc7e29fcdb82f64c4452b3d9a4540dfbd66`,
 launcher `25c201c3336fbb3a91ebc0f7de1997dbc239c8968b7bb5352489b52e85265fed`.
 No panel styling is implied by this package. Physical input, unrelated
 applications, unobserved drawing APIs and the T18 final integration remain
-unverified. S28 awaits commit, push and remote verification; T18 remains open.
+unverified. P1 `f30725a` was pushed, and all seven changed files were fetched
+from GitHub and matched to their committed blobs. S28 closes as an investigation
+with the panel gap explicitly retained in TODO; the next T18 S investigates
+windowless label drawing. T18 and M0 remain open.

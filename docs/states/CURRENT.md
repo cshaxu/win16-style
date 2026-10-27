@@ -7,7 +7,7 @@ Delphi VCL 74 个 UI 家族种子、框架分支、五个固定候选及逐项�
 全部种子逐项归入35个既有原生协议模型或39个明确的原生保留边界。S4 已完成首组
 精确 TEdit/TListBox与TTabControl公开协议实现、干净双宽四文件包和双发布；实际 Delphi 显示集成
 仍统一留给T18最终收口。S10已完成组合框与列表验证；S11已完成工具栏文字边界修复、真实DoubleKiller复测及提交推送复核；S12真实MD5summer补证及远端复核完成；S13双宽干净构建、真实树控件与VB6 actor复测、91项包测试、双发布及远端aae1565复核完成；S14纠正S12独立包闭环并完成双发布及远端f1ac9ff复核；S15核实现代VCL候选及公开状态边界，双宽包、91项低并发回归、双发布及远端4032bcf复核完成；S16追踪真实开关绘制及输入、双宽包91项通过、双发布及远端5e48716复核完成；S17修复进度观察竞争并减少字体重复选取，双宽包92项通过、双发布及远端b3c2a8b复核完成；S18完成开关公开状态调查、双宽包92项及双发布，远端2edd749已复核；S19实现可审计聚焦包回归，聚焦10项、标准93项、双发布及远端d583890复核完成；准入S20继续开关视觉适配；S20恢复隔离桌面并验证开关及VB/VCL聚焦包，未证实的开关适配移交TODO；S21完成有限复选图形与双宽96/144 DPI验证，P4远端2245db3已复核；其应用裁剪外缘和显式禁用仍列TODO；S22完成真实SpeedButton公开契约调查、14项聚焦包及双发布，cb2ffef远端已复核；无安全契约的外观接收TODO；S23已实现真实VCL v5进度条有限外框并通过22项聚焦包与双发布，33f4d0d远端已复核；S24进度客户区转TODO；S25原生状态栏有限边框、36项聚焦包及双发布完成，2be886a远端复核通过，真实Delphi待证；准入S26逐项盘点剩余家族；不得用 demo
-冒充 Delphi。S26已以74项证据台账、聚焦包和双发布收口，50项真实owner尚待证实；S27真实TSpinButton有限边框已交付，S28准入真实TPanel调查。
+冒充 Delphi。S26已以74项证据台账、聚焦包和双发布收口，50项真实owner尚待证实；S27真实TSpinButton有限边框已交付；S28面板缺口按证据保留，S29准入标签绘制调查。
 以下段落为 T17 的技术基线/历史证据，不覆盖 T18 状态。
 
 M0 T17 S27 ScrollBar范围/位置/禁用变体已完成，顺序准入S28 全148单位收口审计。
@@ -68,29 +68,26 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S28 Packet
+## M0 T18 S29 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S27有限微调边框、双发布及P1远端复核完成，T18保持开放 |
+| Identifier Mode | Continuation；S28真实面板证据、双发布及P1远端复核完成，T18保持开放 |
 | Admission And Approval | 用户要求自动连续S实现可做控件，不新开T；既定VB延期范围不擅自改变 |
-| Objective | 调查真实Delphi TPanel窗口的所有权、外观及公开绘制边界，能安全实现则完成有限适配；不可证明时保留原生并记录证据 |
+| Objective | 调查真实Delphi TLabel及无窗口文字的所有权、字体与公开绘制边界；能安全保留布局和内容时完成有限适配 |
 | Non-goals | 不把该样本推广为全部Delphi控件；不猜测私有对象、不改标题、菜单、字体及原图形资源 |
-| Reference Baseline | [S26台账](../etc/evidence/delphi-s26-current-ledger.json)、[MD5summer真实观察](../history/M0-T18-S12-md5summer-current.md)、[现代VCL观察](../history/M0-T18-S15-modern-vcl-observation.md)、[S27微调交付](../history/M0-T18-S27-spin-button.md) |
+| Reference Baseline | [S26台账](../etc/evidence/delphi-s26-current-ledger.json)、[S28面板取证](../history/M0-T18-S28-panel.md)、[VB标签范围](../history/M0-T17-S21-vb-label-variants.md)、[S27微调交付](../history/M0-T18-S27-spin-button.md) |
 | Candidate Proposal | [Delphi Win32控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 自有TPanel观察器、必要时精确公开绘制适配和双宽测试；不增加产品文件或公开ABI |
+| Files And ABI Surface | 自有文字绘制观察器、必要时精确公开字体绘制适配和双宽测试；不增加产品文件或公开ABI |
 | Applicable Rules | C17、MinGW GCC、Ninja、ccache；仅自有隔离实例、有限等待和清理；兄弟仓库只读 |
-| Verification | 固定实际应用身份、正常显示和所有权，比较裸/样式绘制；如改代码则双宽正负例、剪裁/重入/生命周期、非目标回归与同批四文件包 |
-| Expected Markers | 明确应用拥有的像素和子控件职责；仅公开且内容中性的绘制路径可接入，保留颜色、布局、输入及应用内容 |
-| Asset Needs | 登记build/t18-s28-panel任务scratch；S27及S26探针暂留交接，S25截图暂留build/t18-s25-status供验收 |
+| Verification | 固定真实样本与字形度量，追踪同线程窗口/DC/调用者、文字与字体所有权；如改代码则双宽正负例、剪裁/重入/生命周期、非目标回归与同批包 |
+| Expected Markers | 区分可证明的标签调用与任意应用画布文字，保留布局、文字内容、颜色、回调、字体资源及未验证路径 |
+| Asset Needs | 登记build/t18-s29-label任务scratch；S28、S27及S26探针暂留交接，S25截图暂留build/t18-s25-status供验收 |
 | Reporting Requirements | 真实样本、模型及跳过边界分开报告；给出实际包、二进制变更时双发布、提交及远端复核 |
-| Stop Conditions | 无法证明安全绘制边界时不猜测类名、像素或应用私有字段，不接管应用绘图 |
-| Exit Criteria | TPanel有限适配及验证完成或有证据地保留原生，双宽包测试与治理交付完成；T18和M0保持开放 |
+| Stop Conditions | 无法安全区分标签与应用画布时不按文字、坐标、颜色或私有字段猜测，不接管绘图 |
+| Exit Criteria | TLabel有限适配及验证完成或有证据地保留原生，双宽包测试与治理交付完成；T18和M0保持开放 |
 | Original Owner Request | 做完可实现控件并自行测试；每S按规范构建测试、发布、提交与远端复核 |
-| Similar-Issue Sweep | TPanel/TFrame/TGroupBox及已有VB容器、嵌套控件和应用自绘；未验证项不计通过 |
-
-S28进展：[真实面板证据](../history/M0-T18-S28-panel.md)：两个真实VCL样本与公开属性表明不宜猜测背景；
-安全接入缺口转TODO。16项聚焦包和双发布通过，待提交推送及远端复核。
+| Similar-Issue Sweep | VB标签、TStaticText、TPanel内文字、应用字体/宽度与Unicode；未验证项不计通过 |
 
 ## Identifier State
 
@@ -98,8 +95,8 @@ S28进展：[真实面板证据](../history/M0-T18-S28-panel.md)：两个真实V
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S27：真实TSpinButton有限边框、30项聚焦包、双发布及302e8a3远端13文件复核；其他框架变体未推定支持。
-- Open task: T18 S28 真实TPanel绘制边界调查与可行适配；M0/T18开放。
+- Last delivery: M0 T18 S28：两个真实TPanel样本、16项聚焦包、双发布及f30725a远端七文件复核；面板缺口保留TODO。
+- Open task: T18 S29 真实TLabel与无窗口文字绘制调查；M0/T18开放。
 
 ## Technical Baseline
 
@@ -148,6 +145,8 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T18 S28真实面板调查](../history/M0-T18-S28-panel.md)：两个真实样本、公开颜色属性、16项聚焦包及双发布；安全契约待证并保留TODO，P1远端七文件复核通过。
 
 - [T18 S27真实微调有限边框](../history/M0-T18-S27-spin-button.md)：真实四状态像素/输入、双宽模型、30项聚焦包、双发布及P1远端复核；真实键盘和其他应用仍待验证。
 
