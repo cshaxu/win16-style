@@ -1,4 +1,7 @@
 #include "control_class.h"
+#include "attachment.h"
+/* Internal guard for a witnessed VCL group button. */
+BOOL ntw16s_group_button_valid(HWND);
 #include "controls.h"
 #include "control_glyphs.h"
 #include "combo_glyph.h"
@@ -1219,6 +1222,14 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
     if(tab && win16_style_tab_changes(m))++s->tab_epoch;
     if(header && win16_style_header_changes(m))++s->header_epoch;
     win16_style_system_retain(pinned);
+    /* A verified VCL radio belongs only to its original group and role.
+     * Let the native transition finish, then retire this exact attachment. */
+    if(m!=WM_NCDESTROY && !ntw16s_group_button_valid(w)){
+        if(m==WM_SETFONT)s->original_font=win16_style_system_source((HFONT)a);
+        result=DefSubclassProc(w,m,a,b);
+        if(!s->detached && IsWindow(w) && Ntw16sWindowRemove(w) && IsWindow(w))InvalidateRect(w,NULL,TRUE);
+        goto finished;
+    }
     /* Unverified graphical/owner-drawn VB variants stay native. A live
      * transition retires only this painter; do not keep drawing a plain box. */
     if(m!=WM_NCDESTROY && (ntw16s_vb_checkbox(w) || ntw16s_vb_option(w)) &&

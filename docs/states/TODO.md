@@ -73,4 +73,4 @@ S15包测试进度文件共享冲突已由[S17记录](../history/M0-T18-S17-test
 
 - [ ] TODO(Medium): Delphi `TStatusBar` 其余版本、简单/凸起/无边框/RTL及自绘末分区外观仍未认证；Owner：T18后续控件及最终集成审计。Evidence：[S47](../history/M0-T18-S47-status-icon.md)证实一个真实runtime图标末分区和双宽C模型；自绘末分区仍原生。Admission：真实样本、公开绘制入口与所有权证据，保留文字、图像、自绘回调、裁剪及生命周期。
 
-- [ ] TODO(Medium): TGroupButton after parent/role/style change and TRadioGroup container chrome are not verified. Owner: T18 next control/lifecycle work. Evidence: [S51](../history/M0-T18-S51-radio-group.md) covers same-parent ordinary radio only. Admission: self-owned reparent/role transitions, safe fallback and separately verified group-container paint boundary.
+- [ ] TODO(Medium): TRadioGroup container chrome and additional TGroupButton lifecycle variants are not verified. Owner: T18 next control/lifecycle work. Evidence: [S51](../history/M0-T18-S51-radio-group.md) covers the ordinary radio; [S52](../history/M0-T18-S52-group-lifecycle.md) covers one reparent and owner-draw transition. Admission: separately verified group-container paint boundary and further parent/role cases.

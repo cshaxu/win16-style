@@ -35,6 +35,7 @@ typedef struct attachment {
     HMODULE status_witness_owner; HWND status_parent;
     DWORD edit_original_style;
     HMODULE edit_witness_owner,group_button_witness_owner;
+    HWND group_button_parent;
     HMODULE track_witness_owner;
     HMODULE color_witness_owner;
     HWND color_parent;
@@ -304,6 +305,12 @@ static attachment *lookup(HWND w)
 {
     DWORD_PTR value;
     return GetWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc,&value)?(attachment *)value:NULL;
+}
+BOOL ntw16s_group_button_valid(HWND w)
+{
+    attachment *a=lookup(w);
+    return !a || a->detached || !a->group_button_candidate || !a->group_button_installed ||
+        (a->group_button_parent==GetParent(w) && group_button_identity(w));
 }
 BOOL ntw16s_static_call_begin(ntw16s_static_call *scope,WNDPROC proc,HWND w,UINT message,const void *address)
 {
@@ -586,7 +593,7 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
         if(protocol && !a->detached){
             a->protocol=protocol;
             BOOL installed=win16_style_control_install_created(w,FALSE,FALSE,FALSE,NULL,a,&a->detached);
-            if(installed && !a->detached){a->group_button_installed=TRUE;InvalidateRect(w,NULL,TRUE);}
+            if(installed && !a->detached){a->group_button_parent=GetParent(w);a->group_button_installed=TRUE;InvalidateRect(w,NULL,TRUE);}
             else if(!a->detached){win16_style_control_remove_owned(w,a);ntw16s_control_protocol_release(a->protocol);a->protocol=NULL;}
         }else if(protocol)ntw16s_control_protocol_release(protocol);
         SetLastError(saved);

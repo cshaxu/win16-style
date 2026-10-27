@@ -68,29 +68,29 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S51 Packet
+## M0 T18 S52 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S50 P1 7a9e822已推送，远端12文件逐字节复核 |
+| Identifier Mode | Continuation；S51 P1 276510a已推送，远端15文件逐字节复核 |
 | Admission And Approval | 用户授权T18内自动完成可实施控件；不新开T |
-| Objective | 调查真实VCL TRadioGroup的窗口结构、绘制与可安全复用的边界 |
-| Non-goals | 不改变应用内容、选项分组、输入、通知、布局和资源 |
-| Reference Baseline | [S38控件盘点](../history/M0-T18-S38-control-audit.md)、[S50按钮作用域](../history/M0-T18-S50-bitbtn-scope.md) |
+| Objective | 检验并处理TGroupButton附着后的父窗口、控件类型及样式变化 |
+| Non-goals | 不改变应用选项、输入、资源和原生回调所有权 |
+| Reference Baseline | [S51单选组](../history/M0-T18-S51-radio-group.md)、[S50作用域](../history/M0-T18-S50-bitbtn-scope.md) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 自有C原生探针；有证据时改既有DLL和双宽测试，不增产品或ABI |
+| Files And ABI Surface | 双宽自有C模型，必要时修改既有DLL；不新增产物或ABI |
 | Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例、限时和清理 |
-| Verification | 双宽真实VCL父子控件、绘制来源与状态；若适配则验证鼠标键盘、裁剪、资源及同批包 |
-| Expected Markers | 区分容器与子选项、原生和自绘，未确认所有权时保留原生 |
-| Asset Needs | 登记build/t18-s51-radio-group，复用S38真实样本 |
-| Reporting Requirements | 精确说明覆盖、负例、未覆盖、发布和远端复核 |
-| Stop Conditions | 无可验证内容中性绘制边界不得泛化 |
-| Exit Criteria | 安全有限实现或明确逐项证据和后续接收，同批包交付；T18保持开放 |
-| Original Owner Request | 先做可实施的代码及测试，真实应用整体集成统一留T收口 |
-| Similar-Issue Sweep | 真实组框、radio子控件及VCL无窗口容器 |
+| Verification | 父窗口及角色变化、原生回退、字体所有权、重入/退役；旧版负例与双宽实际包 |
+| Expected Markers | 不符合原本所有权或样式边界时退出接管且保留应用状态 |
+| Asset Needs | 登记build/t18-s52-group-lifetime，复用S51模型 |
+| Reporting Requirements | 精确变更、负例、未覆盖、双发布与远端复核 |
+| Stop Conditions | 无法验证安全退役时不推断支持、不泛化 |
+| Exit Criteria | 可验证的受限修复或明示证据和接收者，同批包交付；T18保持开放 |
+| Original Owner Request | 能实施的代码和测试先完成，真实应用全量集成统一留T收口 |
+| Similar-Issue Sweep | 同一控件的重设父窗口、类型和图像样式 |
 
-S50 P1 `7a9e822`远端12文件逐字节复核通过；12项聚焦包无跳过、双发布及
-system32双宽入口通过，T18整体真实应用集成和未覆盖控件仍待后续处理。
+S51 P1 `276510a`远端15文件逐字节复核通过；双宽真实样本及18项聚焦包通过、
+已双发布。父窗口和角色变化属于新S52的验证范围，组框外观仍待独立调查。
 
 ## Identifier State
 
@@ -98,8 +98,8 @@ system32双宽入口通过，T18整体真实应用集成和未覆盖控件仍待
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S50 P1：12项聚焦包、双发布及7a9e822远端12文件复核。
-- Open task: T18 S51 TRadioGroup绘制及交互调查；M0/T18开放。
+- Last delivery: M0 T18 S51 P1：18项聚焦包、双发布及276510a远端15文件复核。
+- Open task: T18 S52 单选项父窗口和角色变化；M0/T18开放。
 
 ## Technical Baseline
 
@@ -353,3 +353,7 @@ S51自有真实DelphiVCL 1.0.7双宽144 DPI：TRadioGroup容器和两个TGroupBu
 S51双宽自有模型与真实Delphi单选组候选均通过，旧包负例双宽检出；独立干净包
 18项聚焦测试零跳过，assets/system32双发布与系统入口双宽通过。外层组框和动态
 换父/角色未验证，已移交TODO；待提交推送及远端复核。
+
+S52旧包双宽换父负例确认附着未退出；候选退役并恢复字体、调度重绘，双宽模型
+覆盖换父和owner-draw类型变化。最终干净包16项聚焦测试无跳过、双发布及安装
+入口双宽通过；等待提交推送与远端复核。组框与其他变体仍留T18。
