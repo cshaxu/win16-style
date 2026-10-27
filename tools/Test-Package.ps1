@@ -85,6 +85,8 @@ try{
         (Case 'uac-unit-64' (Join-Path $x64 'uac-unit.exe') @() @('UAC UNIT PASS cases=8'))
     )
     $cases+=@(
+        (Case 'vb-graphical-choice-32' $run @('--wait',(Join-Path $x86 'core-vb-graphical-choice.exe'),$run,(Join-Path $x86 'vb-fixture/MSVBVM60.dll')) @('VB_GRAPHICAL_PICTURE_OK borrowed=1 state=1 disabled=1 native_retire=1','VB_GRAPHICAL_ICON_OK borrowed=1 state=1 disabled=1 native_retire=1','VB_GRAPHICAL_IMAGE_PIXELS_OK bitmap=256 icon=256 checked=1','VB_GRAPHICAL_ARRAY_OK independent_state=1 sibling_retire=1 recreate=1')),
+        (Case 'vb-graphical-choice-64' $run @('--wait',(Join-Path $x64 'core-vb-graphical-choice.exe'),$run,(Join-Path $x64 'vb-fixture/MSVBVM60.dll')) @('VB_GRAPHICAL_PICTURE_OK borrowed=1 state=1 disabled=1 native_retire=1','VB_GRAPHICAL_ICON_OK borrowed=1 state=1 disabled=1 native_retire=1','VB_GRAPHICAL_IMAGE_PIXELS_OK bitmap=256 icon=256 checked=1','VB_GRAPHICAL_ARRAY_OK independent_state=1 sibling_retire=1 recreate=1')),
         (Case 'vb-queue-32' (Join-Path $x86 'vb-queue-test.exe') @((Join-Path $x86 'vb-queue-witness.dll')) @('VB_QUEUE_UNIT_OK bits=32 wrong_tag_rejected=1 notification=1 no_hook_negative=1 resources_closed=1')),
         (Case 'vb-queue-64' (Join-Path $x64 'vb-queue-test.exe') @((Join-Path $x64 'vb-queue-witness.dll')) @('VB_QUEUE_UNIT_OK bits=64 wrong_tag_rejected=1 notification=1 no_hook_negative=1 resources_closed=1')),
         (Case 'vb-control-text-32' (Join-Path $x86 'vb-control-text-test.exe') @() @('VB_CONTROL_TEXT_OK bits=32 cross_process=1 unicode=1 invalid_window=1 cleanup=1')),

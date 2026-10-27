@@ -481,5 +481,20 @@
     ],
     "candidate_dll_sha256": "ed2f091ce0e35699cdb732811f001ae2e06226570a12a2b471f16785e3ccaf03",
     "observer": "tests/integration/vb_intrinsic.c argument disabled"
+  },
+  "graphical_image_p6": {
+    "scope": "Project-authored C model of runtime-owned graphical selection controls with BS_PUSHLIKE and public bitmap/icon handles. Neither x86 nor x64 fixture is an actual VB runtime.",
+    "enabled_checks": "The existing 16x16 sentinel bitmap and icon each contribute exactly 256 original-color pixels when unchecked and checked; handles remain borrowed and are later retired by test owner.",
+    "negative_controls": [
+      "Scratch-only x86/x64 DLL changed to suppress all image drawing: both failed at bitmap 256-pixel assertion (exit 1).",
+      "Separate scratch-only x86/x64 DLL suppressed only icons: bitmap assertion passed and both failed at icon 256-pixel assertion (exit 1). These fault DLLs were not released."
+    ],
+    "package": "14 focused same-batch tests passed 11.73 s, no skips; both installed launchers passed both bit widths.",
+    "not_covered": [
+      "Real VB Picture/DownPicture/DisabledPicture properties or owner-draw controls",
+      "Exact disabled image pixels",
+      "Physical input, IME and unobserved image formats",
+      "All VB5/VB6 controls or OCX"
+    ]
   }
 }
