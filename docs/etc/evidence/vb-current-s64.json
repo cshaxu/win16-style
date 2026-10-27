@@ -952,5 +952,13 @@
     "candidate_actual_package": "Both real samples ran against candidate ntw16s32.dll SHA 983701ae2e7c1e52baa6330cd28d954c488b00d9ba01d01d585a9efd1177b1c2; both visible and exited with zero active job members. Screenshots are task scratch 5-package/actor-styled.bmp and 6-package/actor-styled.bmp.",
     "package_test": "Clean MinGW x86/x64 builds and ABI passed; 14 focused actual-package cases passed, zero skipped, 12.08 seconds. Old released x86 package failed the same attached assertion.",
     "publication": "Four tested files were published to assets root and O:/winnt/system32 with matching SHA-256; build/t18-package/s64p30-mdi-publish/result.json records all eight."
+  },
+  "vb_mdi_button_p31": {
+    "actual": "VB5 and VB6 x86 authentic applications on isolated desktop at 96 DPI, installed P30 DLL: hit-test HTMAXBUTTON (9), synthetic non-client down and client button up, verified maximized, WM_MDIRESTORE, normal process exit and empty job. Native baseline also maximized/restored.",
+    "model": "Self-owned C model x86/x64 and VB5/VB6 runtime identities tests styled button dispatch plus maximize/restore and wrong parent fallback; native baseline maximizes via WM_MDIMAXIMIZE.",
+    "scope": "Maximized merged menu visuals and physical input not asserted. Screenshots captured immediately after transition may contain incomplete repaint in both native and styled instances; they are not treated as a pixel oracle.",
+    "first_attempt": "Reused capture paths failed with ERROR_FILE_EXISTS (80), before conclusion; distinct fresh capture paths passed.",
+    "binary_change": "No product source change; clean rebuild produced four different SHA-256 binaries, all four actually published and verified at both fixed destinations.",
+    "actual_package": "Clean dual-width build and 12 focused actual package tests passed with zero skips in 5.98 s; installed asset DLL SHA fc4f975dc0d57cb164717667e50ee360039a9017c4b4152982ff4040a298c138; both real samples passed again on the installed build."
   }
 }

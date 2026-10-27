@@ -343,7 +343,8 @@ static int worker(int argc,WCHAR **argv){
     BOOL real_vb5_checklist=!wcscmp(argv[3],L"real-vb5-checklist");
     BOOL real_vb5_sorted=!wcscmp(argv[3],L"real-vb5-sorted-list");
     BOOL real_vb6_sorted_combo=!wcscmp(argv[3],L"real-vb6-sorted-combo");
-    BOOL inventory=real_vb6_sorted_combo || real_vb5_sorted || real_vb5_checklist || real_vb5_picture || graphical || about_print || containers || file_verify || real_graphical || real_checkbox || real_picture || real_vb5_check || real_vb5_custom || close_vb5_squash || real_disabled_picture || !wcscmp(argv[3],L"inventory");
+    BOOL mdi_verify=!wcscmp(argv[3],L"real-vb-mdi");
+    BOOL inventory=mdi_verify || real_vb6_sorted_combo || real_vb5_sorted || real_vb5_checklist || real_vb5_picture || graphical || about_print || containers || file_verify || real_graphical || real_checkbox || real_picture || real_vb5_check || real_vb5_custom || close_vb5_squash || real_disabled_picture || !wcscmp(argv[3],L"inventory");
     CHECK(runtime && dll==styled && EnumChildWindows(form,collect,0) && (inventory?count>0:count>10));
     if(real_vb5_picture){
       CHECK(!wcscpy_s(picture_dir,MAX_PATH,scratch));HMENU menu=GetMenu(form);CHECK(menu);UINT id=about_menu(menu);CHECK(id && id!=(UINT)-1);CHECK(PostMessageW(form,WM_COMMAND,MAKEWPARAM(id,0),0));DWORD tid=GetWindowThreadProcessId(form,NULL);for(unsigned tries=0;tries<200 && !picture_about;++tries){EnumThreadWindows(tid,locate_about,(LPARAM)form);if(!picture_about)Sleep(10);}CHECK(picture_about);CHECK(EnumChildWindows(picture_about,picture_buttons,0));CHECK(picture_count==2);CHECK(SendMessageW(picture_about,WM_CLOSE,0,0)==0);printf("VB5_PICTURE_SAMPLE_OK buttons=%u pressed_restore=1 disabled_restore=1 no_click=1\n",picture_count);
@@ -511,6 +512,28 @@ static int worker(int argc,WCHAR **argv){
         for(unsigned i=0;i<50 && !IsWindowVisible(next);++i)Sleep(10);
         CHECK(IsWindowVisible(next) && SendMessageW(choice,BM_GETCHECK,0,0)==BST_CHECKED);
         puts("VB_REAL_GRAPHICAL_OPTION_OK runtime6=1 ownerdraw=1 selected=1 event=1");
+    }
+    if(mdi_verify){
+        HWND mdi=NULL,child=NULL;
+        for(unsigned i=0;i<count;i++){
+            WCHAR cls[80];GetClassNameW(checks[i],cls,80);
+            if(!wcscmp(cls,L"MDIClient"))mdi=checks[i];
+            else if((GetWindowLongPtrW(checks[i],GWL_EXSTYLE)&WS_EX_MDICHILD) && IsWindowVisible(checks[i]))child=checks[i];
+        }
+        CHECK(mdi && child && GetParent(child)==mdi);DWORD_PTR result=0;
+        if(styled){
+            RECT r;CHECK(GetWindowRect(child,&r));POINT point={r.right-10,r.top+10};
+            CHECK(SendMessageW(child,WM_NCHITTEST,0,MAKELPARAM(point.x,point.y))==HTMAXBUTTON);
+            CHECK(SendMessageTimeoutW(child,WM_NCLBUTTONDOWN,HTMAXBUTTON,MAKELPARAM(point.x,point.y),SMTO_ABORTIFHUNG|SMTO_BLOCK,3000,&result));
+            CHECK(ScreenToClient(child,&point));
+            CHECK(SendMessageTimeoutW(child,WM_LBUTTONUP,0,MAKELPARAM(point.x,point.y),SMTO_ABORTIFHUNG|SMTO_BLOCK,3000,&result));
+            for(unsigned i=0;i<100 && !IsZoomed(child);++i)Sleep(10);
+            CHECK(IsZoomed(child));
+        }else CHECK(SendMessageTimeoutW(mdi,WM_MDIMAXIMIZE,(WPARAM)child,0,SMTO_ABORTIFHUNG|SMTO_BLOCK,3000,&result) && IsZoomed(child));
+        CHECK(swprintf_s(path,MAX_PATH,L"%ls/mdi-max.bmp",scratch)>0);(void)capture(form,path,FALSE);
+        CHECK(SendMessageTimeoutW(mdi,WM_MDIRESTORE,(WPARAM)child,0,SMTO_ABORTIFHUNG|SMTO_BLOCK,3000,&result) && !IsZoomed(child));
+        CHECK(swprintf_s(path,MAX_PATH,L"%ls/mdi-restored.bmp",scratch)>0);(void)capture(form,path,FALSE);
+        printf("VB_REAL_MDI_OK styled=%u button=%u maximized=1 restored=1\n",styled,styled);
     }
     CHECK(swprintf_s(path,MAX_PATH,L"%ls/actor-%ls.bmp",scratch,styled?L"styled":L"bare")>0);
     printf("VB_SAMPLE_IMAGE hash=%llu\n",(unsigned long long)capture(form,path,FALSE));

@@ -16,10 +16,13 @@ static int child(const WCHAR *runtime,BOOL styled){
  CLIENTCREATESTRUCT info={.idFirstChild=100};client=CreateWindowW(L"MDICLIENT",NULL,WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN,0,0,480,300,frame,(HMENU)1,inst,&info);CHECK(client);
  HWND w=CreateMDIWindowW(name,L"Document",WS_VISIBLE|WS_OVERLAPPEDWINDOW,10,10,240,180,client,dll,0);CHECK(w && (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_MDICHILD));
  ShowWindow(frame,SW_SHOWNOACTIVATE);UpdateWindow(frame);CHECK(!styled || attached(w));
- CHECK((HWND)SendMessageW(client,WM_MDIGETACTIVE,0,0)==w);SendMessageW(client,WM_MDIMAXIMIZE,(WPARAM)w,0);CHECK(IsZoomed(w));SendMessageW(client,WM_MDIRESTORE,(WPARAM)w,0);CHECK(!IsZoomed(w));CHECK(!styled || attached(w));
+ CHECK((HWND)SendMessageW(client,WM_MDIGETACTIVE,0,0)==w);
+ if(styled){RECT r;CHECK(GetWindowRect(w,&r));POINT point={r.right-10,r.top+10};CHECK(SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(point.x,point.y))==HTMAXBUTTON);SendMessageW(w,WM_NCLBUTTONDOWN,HTMAXBUTTON,MAKELPARAM(point.x,point.y));CHECK(ScreenToClient(w,&point));SendMessageW(w,WM_LBUTTONUP,0,MAKELPARAM(point.x,point.y));MSG msg;while(PeekMessageW(&msg,NULL,0,0,PM_REMOVE)){TranslateMessage(&msg);DispatchMessageW(&msg);}CHECK(IsZoomed(w));}
+ else SendMessageW(client,WM_MDIMAXIMIZE,(WPARAM)w,0);
+ CHECK(IsZoomed(w));SendMessageW(client,WM_MDIRESTORE,(WPARAM)w,0);CHECK(!IsZoomed(w));CHECK(!styled || attached(w));
  HWND wrong=CreateWindowW(name,L"wrong parent",WS_CHILD|WS_CAPTION,0,0,100,80,frame,(HMENU)2,dll,NULL);CHECK(wrong);CHECK(!styled || !attached(wrong));CHECK(DestroyWindow(wrong));
  SendMessageW(client,WM_MDIDESTROY,(WPARAM)w,0);CHECK(!IsWindow(w));CHECK(DestroyWindow(frame));client=NULL;CHECK(UnregisterClassW(cls.lpszClassName,inst) && release() && FreeLibrary(dll));
- printf("VB_MDI_OK bits=%u vb=%u styled=%u attached=%u wrong_parent_native=1 maximize_restore=1 destroyed=1\n",(unsigned)(8*sizeof(void*)),vb5?5:6,styled,styled);return 0;
+ printf("VB_MDI_OK bits=%u vb=%u styled=%u attached=%u wrong_parent_native=1 button_maximize=%u maximize_restore=1 destroyed=1\n",(unsigned)(8*sizeof(void*)),vb5?5:6,styled,styled,styled);return 0;
 }
 static int worker(int argc,WCHAR **argv){CHECK(argc==3);WCHAR self[MAX_PATH],cmd[2048];CHECK(GetModuleFileNameW(NULL,self,MAX_PATH));for(unsigned mode=0;mode<2;mode++){
  if(mode)swprintf_s(cmd,2048,L"\"%ls\" --wait \"%ls\" --child \"%ls\" 1",argv[1],self,argv[2]);else swprintf_s(cmd,2048,L"\"%ls\" --child \"%ls\" 0",self,argv[2]);
