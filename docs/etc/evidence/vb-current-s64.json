@@ -585,5 +585,24 @@
       "VB5 sample found in vbAccelerator archive uses an application-owned subclass and additional OCX, so its own drawing cannot establish default runtime behavior."
     ],
     "reproduction": "Copy the pinned original binary and Microsoft-signed COMCTL32.OCX into a disposable directory. Extract RT_MANIFEST type 24, id 1, language 0x419, preserve its Common-Controls 6.0 dependency, add a private file comctl32.Ocx with typelib {6B7E6392-850A-101B-AFC0-4210102A8DA7} version 1.5 and Apartment comClass mappings Toolbar {612A8624-0FB3-11CE-8747-524153480004}, StatusBar {6B7E638F-850A-101B-AFC0-4210102A8DA7}, ImageList {58DA8D8F-9D6A-101B-AFC0-4210102A8DA7}; replace that manifest resource only in the copy. Run optional native observer with real-graphical-picture mode into separate fresh WIN16STYLE_CAPTURE_DIR directories for bare and package, then run python tests/integration/vb_picture_compare.py BARE_DIR STYLED_DIR."
+  },
+  "graphical_real_downpicture_p11": {
+    "sample": "Same research-only VbPng private-manifest copy and provenance recorded in graphical_real_picture_p10; no product dependency.",
+    "probe": "tests/integration/vb_intrinsic.c real-graphical-picture additionally finds the original Command1 whose source has Picture and DownPicture. BM_SETSTATE TRUE/FALSE changes and restores pressed state without invoking its click handler; captures normal, pressed, restored and disabled states, original font/style/selection retained.",
+    "picture_evidence": "tests/integration/vb_picture_compare.py compares 10 control states and 66,752 picture-region RGB pixel pairs between bare and exact candidate. The Command1 normal versus pressed image regions differ at 473 pixels; candidate matches the corresponding original states. Restored capture equals normal in both runs.",
+    "negative_control": "In scratch copies, replacing pressed capture with the corresponding normal capture in both bare and styled sets causes the comparator to fail with sample DownPicture did not change the picture region.",
+    "vb5_sample": "Original VB5 vbAccelerator ODBtnDemo.exe SHA-256 10a22d2ee6e6a14a1f0cca3457b7f535ac4be3361034cd9036eae087f96f63ed from pinned archive 390fd1029e44a407695c6ecff4248d7a345d30ef was run bare in a private desktop with temporary, unregistered COM components and existing private MSVBVM50. It displayed three BS_OWNERDRAW ThunderRT5OptionButton and three BS_OWNERDRAW ThunderRT5CheckBox windows. Source explicitly installs an application-owned WM_DRAWITEM subclass and its standard mode draws with application code, so it is not evidence of the VB5 runtime default drawing protocol.",
+    "vb5_other_candidate": "Read-only source review identified a separate VB5 rich-text chat executable with graphical picture checkboxes. Automatic approval rejected the proposed isolated execution as unacceptable risk, stating Form_Load calls Winsock Listen and might open a listening port. That executable was not run. Source and proposed action were not used to circumvent the rejection.",
+    "package": "14 focused actual-package tests, 0 skips, 11.78 s. Product source unchanged; clean rebuild changed binary hashes; same tested four files published to both destinations and installed model passed x86/x64.",
+    "sha256": {
+      "demo.exe": "e731f276bd3984eea1a9bd37307295bb554b5994a5afc8970609bf11b201a78a",
+      "ntw16s32.dll": "cdacee0add3695446fe656075de1942d848f417f6819e5b64678021423d09291",
+      "ntw16s64.dll": "7c921e042e55768cfd85cfd14e85b48f20833a4a4530adb9f42b95bb7a000abc",
+      "run16s.exe": "29d947f61be7fa1c13b78f6fe0065200ddba4392942e6f1c8c195812d9ca17e9"
+    },
+    "limitations": [
+      "One actual VB6 sample at 96 DPI; not evidence for all applications, VB5 default drawing, arbitrary Picture/DisabledPicture combinations, accessibility, IME or physical input.",
+      "The sample with embedded COM mapping is a modified-manifest copy; no OCX or research binary is installed, registered, distributed or required by the product."
+    ]
   }
 }

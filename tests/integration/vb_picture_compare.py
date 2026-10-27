@@ -11,7 +11,8 @@ from pathlib import Path
 CASES = ((3, "normal", 125, 125), (3, "disabled", 125, 125),
          (4, "normal", 125, 121), (4, "disabled", 125, 121),
          (6, "normal", 129, 53), (6, "checked", 129, 53),
-         (6, "disabled", 129, 53))
+         (6, "disabled", 129, 53), (8, "normal", 149, 53),
+         (8, "pressed", 149, 53), (8, "disabled", 149, 53))
 
 
 def pixels(path, width, height):
@@ -45,7 +46,15 @@ def compare(bare, styled):
                 total += 1
         if len(colors) < 4:
             raise ValueError(f"picture region lacks expected image data: {name}")
-    print(f"VB_REAL_PICTURE_COMPARE_OK cases={len(CASES)} pixels={total} normal_selected_disabled=1")
+    normal = pixels(bare / "control-8-normal.bmp", 149, 53)
+    pressed = pixels(bare / "control-8-pressed.bmp", 149, 53)
+    image_changes = sum(normal[(y * 149 + x) * 4:(y * 149 + x) * 4 + 3] !=
+                        pressed[(y * 149 + x) * 4:(y * 149 + x) * 4 + 3]
+                        for y in range(5, 33) for x in range(5, 144))
+    if not image_changes:
+        raise ValueError("sample DownPicture did not change the picture region")
+    print(f"VB_REAL_PICTURE_COMPARE_OK cases={len(CASES)} pixels={total} "
+          f"normal_selected_disabled_pressed=1 downpicture_changed={image_changes}")
 
 
 if __name__ == "__main__":

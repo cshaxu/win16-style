@@ -336,16 +336,23 @@ static int worker(int argc,WCHAR **argv){
         puts("VB_REAL_GRAPHICAL_CHECK_OK runtime6=1 ownerdraw=1 toggles=2 restored=1");
     }
     if(real_picture){
-        unsigned options=0,checkboxes=0;
+        unsigned options=0,checkboxes=0,commands=0;
         for(unsigned i=0;i<count;++i){
             WCHAR cls[100],text[120],file[MAX_PATH];HWND w=checks[i];GetClassNameW(w,cls,100);CHECK(vb_control_text(w,text,120));
             BOOL check=!wcscmp(cls,L"ThunderRT6CheckBox") && !wcscmp(text,L"Check1");
             BOOL option=!wcscmp(cls,L"ThunderRT6OptionButton") && !wcscmp(text,L"Option1");
-            if(!check && !option)continue;
+            BOOL command=!wcscmp(cls,L"ThunderRT6CommandButton") && !wcscmp(text,L"Command1");
+            if(!check && !option && !command)continue;
             LONG_PTR style=GetWindowLongPtrW(w,GWL_STYLE);CHECK((style&BS_TYPEMASK)==BS_OWNERDRAW);
             LRESULT initial=SendMessageW(w,BM_GETCHECK,0,0);HFONT font=(HFONT)SendMessageW(w,WM_GETFONT,0,0);
-            CHECK(swprintf_s(file,MAX_PATH,L"%ls/control-%u-normal.bmp",scratch,i)>0);(void)capture(w,file,FALSE);
-            if(check){
+            CHECK(swprintf_s(file,MAX_PATH,L"%ls/control-%u-normal.bmp",scratch,i)>0);uint64_t normal=capture(w,file,FALSE);
+            if(command){
+                ++commands;CHECK(!(SendMessageW(w,BM_GETSTATE,0,0)&BST_PUSHED));
+                SendMessageW(w,BM_SETSTATE,TRUE,0);CHECK(SendMessageW(w,BM_GETSTATE,0,0)&BST_PUSHED);
+                CHECK(swprintf_s(file,MAX_PATH,L"%ls/control-%u-pressed.bmp",scratch,i)>0);(void)capture(w,file,FALSE);
+                SendMessageW(w,BM_SETSTATE,FALSE,0);CHECK(!(SendMessageW(w,BM_GETSTATE,0,0)&BST_PUSHED));
+                CHECK(swprintf_s(file,MAX_PATH,L"%ls/control-%u-restored.bmp",scratch,i)>0);CHECK(capture(w,file,FALSE)==normal);
+            }else if(check){
                 ++checkboxes;CHECK(initial==BST_UNCHECKED);
                 for(unsigned pass=0;pass<2;++pass){LRESULT before=SendMessageW(w,BM_GETCHECK,0,0);
                     SendMessageW(w,WM_LBUTTONDOWN,MK_LBUTTON,MAKELPARAM(5,5));SendMessageW(w,WM_LBUTTONUP,0,MAKELPARAM(5,5));
@@ -359,7 +366,7 @@ static int worker(int argc,WCHAR **argv){
             CHECK((HFONT)SendMessageW(w,WM_GETFONT,0,0)==font && GetWindowLongPtrW(w,GWL_STYLE)==style && SendMessageW(w,BM_GETCHECK,0,0)==initial);
             printf("VB_REAL_PICTURE_CONTROL index=%u class=%ls normal_disabled_restored=1\n",i,cls);
         }
-        CHECK(options==2 && checkboxes==1);puts("VB_REAL_PICTURE_STATES_OK options=2 checkbox=1 selected=1 disabled=1 restored=1");
+        CHECK(options==2 && checkboxes==1 && commands==1);puts("VB_REAL_PICTURE_STATES_OK options=2 checkbox=1 command=1 selected=1 pressed=1 disabled=1 restored=1");
     }
     HWND original_form=form;
     if(real_graphical){
