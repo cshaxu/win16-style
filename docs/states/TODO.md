@@ -31,3 +31,9 @@ Actor发现的VB选择控件缺口已按用户请求纳入[VB5/VB6专项候选](
 - [ ] TODO(Medium): demo八页reopen即时GDI相等断言曾偶发失败，S7串行复测通过；S8新增warm/final诊断为103->103及91->91，未复现且未放宽断言；Owner：T17后续测试观察/独立最终审计；Evidence：[S7](../etc/evidence/vb-file-controls.json)及[S8](../etc/evidence/vb6-file-controls.json)；Admission：用户T17完整测试/后续S授权范围，需实测定位，不凭复测通过宣称根因已修。
 
 - [ ] TODO(Low): S9容器的首轮总GDI跳变在S12两轮x64 VB5/VB6原生对照中均于第二轮平台化；Owner：T17最终独立审计；Evidence：[S9容器](../etc/evidence/vb-container-controls.json)、[S12](../etc/evidence/vb-observer-lifetime.json)，精确两份私有字体移除后GetObject为0，第二轮增量0；Admission：只在最终148单位审计需要把该有限模型结论扩展到真实应用时，逐对象另行证明，不能称全进程零增长。
+
+- [ ] TODO(Medium): S15 x86菜单取消测试case 0一次超时并反复绘制，单独同包复测通过；Owner：菜单取消测试及renderer；Evidence：[S15观察](../history/M0-T18-S15-modern-vcl-observation.md)；Admission：复现时采集计时/绘制和窗口状态定位，不因复测通过认定根因已修，不放宽断言。
+
+- [ ] TODO(Medium): S15 x64 v6树控件包测试一次在18变体末尾超过10秒子进程期限，单独同包复测通过；Owner：公共树控件测试与renderer；Evidence：[S15观察](../history/M0-T18-S15-modern-vcl-observation.md)；Admission：采集可复现的耗时及绘制/退出阶段信息，查明原因，不将复测通过视为修复或放宽语义断言。
+
+- [ ] TODO(Medium): S15包测试进度文件被观察端读取时，测试器写入遭共享冲突而整轮退出；Owner：包测试工具；Evidence：[S15观察](../history/M0-T18-S15-modern-vcl-observation.md)；Admission：以原子发布或可共享读取方式修正并用并发观察负例验证，不吞掉真实测试错误。
