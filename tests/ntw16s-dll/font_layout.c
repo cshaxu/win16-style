@@ -31,9 +31,13 @@ static HFONT system_font(HWND w,HFONT original)
     CHECK(GetTextMetricsW(dc,&after) && after.tmHeight==before.tmHeight &&
         after.tmAscent==before.tmAscent && after.tmInternalLeading==before.tmInternalLeading &&
         after.tmExternalLeading==before.tmExternalLeading);
-    for(WCHAR ch=32;ch<127;++ch){SIZE oldsize,newsize;SelectObject(dc,original?original:GetStockObject(SYSTEM_FONT));
-        CHECK(GetTextExtentPoint32W(dc,&ch,1,&oldsize));SelectObject(dc,font?font:GetStockObject(SYSTEM_FONT));
-        CHECK(GetTextExtentPoint32W(dc,&ch,1,&newsize) && newsize.cx==oldsize.cx);}
+    /* Keep the same single-character extent oracle, but avoid switching
+     * fonts twice for each of the 95 characters in every warmup pass. */
+    SIZE original_sizes[95];SelectObject(dc,original?original:GetStockObject(SYSTEM_FONT));
+    for(WCHAR ch=32;ch<127;++ch)CHECK(GetTextExtentPoint32W(dc,&ch,1,&original_sizes[ch-32]));
+    SelectObject(dc,font?font:GetStockObject(SYSTEM_FONT));
+    for(WCHAR ch=32;ch<127;++ch){SIZE measured;
+        CHECK(GetTextExtentPoint32W(dc,&ch,1,&measured) && measured.cx==original_sizes[ch-32].cx);}
     HGDIOBJ ef=SelectObject(expected,base);CHECK(GetTextMetricsW(expected,&sys));
     /* Independent host-System raster oracle. Exact pixel comparison rejects
      * merely renaming a Tahoma/MS Sans Serif font and the previous S1 DLL. */

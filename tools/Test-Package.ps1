@@ -11,6 +11,7 @@ param(
 )
 $ErrorActionPreference='Stop'
 $repo=Split-Path $PSScriptRoot -Parent
+. (Join-Path $PSScriptRoot 'Set-PackageProgress.ps1')
 $scratch=Join-Path $repo "build/t$Task-package/$RunName"
 $Package=(Resolve-Path -LiteralPath $Package).Path
 $BuildRoot=(Resolve-Path -LiteralPath $BuildRoot).Path
@@ -50,6 +51,7 @@ try{
     $pair=@($run,$d32,$d64,(Join-Path $x86 'launch-target.exe'),(Join-Path $x64 'launch-target.exe'))
     $tree=@($run,$d32,$d64,(Join-Path $x86 'propagate-target.exe'),(Join-Path $x64 'propagate-target.exe'))
     $cases=@(
+        (Case 'progress-sharing' (Join-Path $PSHOME 'pwsh.exe') @('-NoProfile','-File',(Join-Path $SourceRoot 'tests/tooling/package_progress_lock.ps1')) @('PACKAGE_PROGRESS_LOCK PASS old-fails locked-skip recovered nonsharing-fails')),
         (Case 'abi-x86' (Join-Path $x86 'core-abi.exe') @($d32) @('ABI PASS width=32')),
         (Case 'abi-x64' (Join-Path $x64 'core-abi.exe') @($d64) @('ABI PASS width=64')),
         (Case 'demo-boundary' $python @('-B',(Join-Path $SourceRoot 'tests/demo-exe/boundary.py'),$demo) @('DEMO BOUNDARY PASS')),
@@ -157,6 +159,7 @@ try{
         )
     }
     $records=[System.Collections.Generic.List[object]]::new()
+    $progressConflicts=0
     $pending=[System.Collections.Generic.List[object]]::new()
     foreach($case in $cases){$pending.Add($case)}
     $running=[System.Collections.Generic.List[object]]::new()
@@ -182,7 +185,8 @@ try{
                 $used+=$cost
             }
             if(([DateTime]::UtcNow-$lastProgress).TotalSeconds -ge 1){
-                @($running | ForEach-Object {@{name=$_.case.name;pid=$_.process.Id;seconds=$_.timer.Elapsed.TotalSeconds;budget=$_.case.seconds}})|ConvertTo-Json|Set-Content (Join-Path $scratch 'progress.json')
+                $progressJson=@($running | ForEach-Object {@{name=$_.case.name;pid=$_.process.Id;seconds=$_.timer.Elapsed.TotalSeconds;budget=$_.case.seconds}})|ConvertTo-Json
+                if (!(Set-PackageProgress -Path (Join-Path $scratch 'progress.json') -Json $progressJson)) { ++$progressConflicts }
                 $lastProgress=[DateTime]::UtcNow
             }
             foreach($entry in $running.ToArray()){
@@ -222,7 +226,7 @@ try{
     $after=Package-Hashes
     foreach($name in $before.Keys){if($before[$name] -ne $after[$name]){throw 'Package changed during testing'}}
     $skipped=@($records|Where-Object skipped|ForEach-Object name)
-    @{status=if($skipped.Count){'passed-with-skips'}else{'passed'};seconds=$totalTimer.Elapsed.TotalSeconds;jobs=$Jobs;cases=$records.Count;skipped=$skipped;full_integration=[bool]$FullIntegration;package=$Package;sha256=$after;physical_input='not-tested';core_matrix='separate Build-Core matrix required'}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
+    @{status=if($skipped.Count){'passed-with-skips'}else{'passed'};seconds=$totalTimer.Elapsed.TotalSeconds;jobs=$Jobs;cases=$records.Count;skipped=$skipped;progress_sharing_conflicts=$progressConflicts;full_integration=[bool]$FullIntegration;package=$Package;sha256=$after;physical_input='not-tested';core_matrix='separate Build-Core matrix required'}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
 }catch{
     @{status='failed-or-inconclusive';error=$_.Exception.Message}|ConvertTo-Json|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
     exit 1

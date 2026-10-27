@@ -36,4 +36,5 @@ Actor发现的VB选择控件缺口已按用户请求纳入[VB5/VB6专项候选](
 
 - [ ] TODO(Medium): S15 x64 v6树控件包测试一次在18变体末尾超过10秒子进程期限，单独同包复测通过；Owner：公共树控件测试与renderer；Evidence：[S15观察](../history/M0-T18-S15-modern-vcl-observation.md)；Admission：采集可复现的耗时及绘制/退出阶段信息，查明原因，不将复测通过视为修复或放宽语义断言。
 
-- [ ] TODO(Medium): S15包测试进度文件被观察端读取时，测试器写入遭共享冲突而整轮退出；Owner：包测试工具；Evidence：[S15观察](../history/M0-T18-S15-modern-vcl-observation.md)；Admission：以原子发布或可共享读取方式修正并用并发观察负例验证，不吞掉真实测试错误。
+
+S15包测试进度文件共享冲突已由[S17记录](../history/M0-T18-S17-test-efficiency.md)修复并验证；菜单和树控件超时仍未定位。

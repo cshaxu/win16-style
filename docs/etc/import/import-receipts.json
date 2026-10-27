@@ -1103,9 +1103,9 @@
       "path": "tests/ntw16s-dll/font_layout.c",
       "source": null,
       "source_blob": null,
-      "sha256": "fa54e1900b9d270f503de5a0daaf83cd12d285eaff3568407c668b8136cdb843",
+      "sha256": "dc151005ba49df21c7d1d381e95145aafba1514433e25fa0d9339af4778d72a2",
       "disposition": "authored",
-      "review": "T8 actual candidate native DS_SETFONT dialog and app font/rect/metrics updates across awareness contexts and nominal sizes; no physical-input claim; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved",
+      "review": "T8 actual candidate native DS_SETFONT dialog and app font/rect/metrics updates across awareness contexts and nominal sizes; no physical-input claim; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved T18 S17 batches font selection while retaining each single-character extent assertion.",
       "notice": "Project-authored C17 native probe, MIT"
     },
     {
