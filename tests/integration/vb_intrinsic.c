@@ -357,6 +357,32 @@ static int worker(int argc,WCHAR **argv){
     }
     CHECK(options==4 && checkboxes==4 && combos==2 && lists==1 && edits==2 && bars==2);
     printf("SAMPLE_PROTOCOL_PASS option=%u checkbox=%u combo=%u list=%u edit=%u scrollbar=%u\n",options,checkboxes,combos,lists,edits,bars);
+    if(!wcscmp(argv[3],L"disabled")){
+        unsigned tested=0;
+        for(unsigned i=0;i<count;++i){
+            HWND w=checks[i];WCHAR cls[100];GetClassNameW(w,cls,100);
+            BOOL choice=wcsstr(cls,L"CheckBox") || wcsstr(cls,L"OptionButton");
+            BOOL combo=wcsstr(cls,L"ComboBox")!=NULL;
+            if((!choice && !combo) || !IsWindowEnabled(w))continue;
+            LONG_PTR style=GetWindowLongPtrW(w,GWL_STYLE);
+            HFONT font=(HFONT)SendMessageW(w,WM_GETFONT,0,0);
+            LRESULT prior=choice?SendMessageW(w,BM_GETCHECK,0,0):SendMessageW(w,CB_GETCURSEL,0,0);
+            CHECK(swprintf_s(path,MAX_PATH,L"%ls/normal-%u.bmp",scratch,i)>0);
+            uint64_t normal=capture(w,path,FALSE);
+            EnableWindow(w,FALSE);CHECK(!IsWindowEnabled(w));
+            /* Do not send BM_CLICK: VB may process an explicitly sent click
+             * even though a disabled control cannot receive a user click. */
+            CHECK(swprintf_s(path,MAX_PATH,L"%ls/disabled-%u.bmp",scratch,i)>0);
+            uint64_t disabled=capture(w,path,styled);
+            if(styled){CHECK(normal!=disabled);}
+            EnableWindow(w,TRUE);CHECK(IsWindowEnabled(w));
+            CHECK((choice?SendMessageW(w,BM_GETCHECK,0,0):SendMessageW(w,CB_GETCURSEL,0,0))==prior &&
+                GetWindowLongPtrW(w,GWL_STYLE)==style && (HFONT)SendMessageW(w,WM_GETFONT,0,0)==font);
+            printf("VB_DISABLED_OK class=%ls index=%u state_preserved=1 pixels_changed=%d restored=1\n",cls,i,normal!=disabled);
+            ++tested;
+        }
+        CHECK(tested==10);printf("VB_DISABLED_SAMPLE_OK count=%u styled=%d\n",tested,styled);
+    }
     }else {
         if(graphical){
             CHECK(queue_state);unsigned found=0;

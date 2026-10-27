@@ -74,7 +74,7 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | --- | --- |
 | Identifier Mode | Continuation；S63 P1 b047a90远端15文件复核通过 |
 | Admission And Approval | 用户授权T18内自动实施可做控件，不新开T |
-| Objective | 核实真实VCL编辑及无窗口候选的公开绘制协议，并修正VB原生探针跨进程文本读取与同线程队列观察回归 |
+| Objective | 核实真实VCL编辑及无窗口候选的公开绘制协议，并修正VB原生探针跨进程文本读取、同线程队列观察和真实禁用状态回归 |
 | Non-goals | 保留输入、选择、文字、布局、回调及原图形资源 |
 | Reference Baseline | [S63 Memo](../history/M0-T18-S63-memo.md)、[S34编辑](../history/M0-T18-S34-vcl-module-edit.md) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
@@ -90,7 +90,7 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | Similar-Issue Sweep | TMaskEdit、TRichEdit、TBevel、TPaintBox、TImage与VB跨进程控件文本读取 |
 
 S61 P1 `b167067`远端7文件复核；真实TGroupBox自绘标题边界未证实，已列TODO。
-S62 P1 aef4407远端14文件已复核；S63 P1 b047a90远端15文件已复核；S64调查TMaskEdit、TRichEdit及可取得的无窗口候选。 当前包VB模型及字体12项通过、无skip；真实Actor两复选框原glyph/四次点击及作业回收通过；真实MadShow裸/样式双对照记录21个VB6窗口并正常退出；跨进程观察器返回126仍未解；单线程夹具改用NULL模块参数后通过。独立诊断DLL在UI线程记录20个MadShow可视子窗口安装成功，截图与发布DLL逐字节一致；修正跨进程文本读回后，MadShow裸/样式一字段字符输入/选择/恢复及Actor一字段文本修改/选择/恢复均通过；物理输入、IME和通知未覆盖，见[有界复核](../etc/evidence/vb-current-s64.json)，既往间歇超时根因仍未确定。S64 P1 daa6d5b已推送并远端复核13文件；P2 6022aa2已推送且远端10文件复核；真实VB5/VB6原作者样本裸启动与当前包对照均通过，验证单选、复选、组合、列表、编辑和滚动原生语义及原glyph，证据见VB记录。P3 77c684f已推送并远端核对；自有VB5/VB6诊断构建各记录27条WM_COMMAND前后成对，无法独立证明应用事件处理器且VB5首次截图有差异，诊断和发布各一次复测匹配但原因仍未明。自有双宽跨进程同桌面126仍未解释，S64原VCL范围仍开放。
+S62 P1 aef4407远端14文件已复核；S63 P1 b047a90远端15文件已复核；S64调查TMaskEdit、TRichEdit及可取得的无窗口候选。 当前包VB模型及字体12项通过、无skip；真实Actor两复选框原glyph/四次点击及作业回收通过；真实MadShow裸/样式双对照记录21个VB6窗口并正常退出；跨进程观察器返回126仍未解；单线程夹具改用NULL模块参数后通过。独立诊断DLL在UI线程记录20个MadShow可视子窗口安装成功，截图与发布DLL逐字节一致；修正跨进程文本读回后，MadShow裸/样式一字段字符输入/选择/恢复及Actor一字段文本修改/选择/恢复均通过；物理输入、IME和通知未覆盖，见[有界复核](../etc/evidence/vb-current-s64.json)，既往间歇超时根因仍未确定。S64 P1 daa6d5b已推送并远端复核13文件；P2 6022aa2已推送且远端10文件复核；真实VB5/VB6原作者样本裸启动与当前包对照均通过，验证单选、复选、组合、列表、编辑和滚动原生语义及原glyph，证据见VB记录。P3 77c684f已推送并远端核对；P4 a1311f8已推送并远端核对；P5已将真实VB5/VB6各10个选择/组合控件禁用、原glyph与恢复检查纳入可选观察器；双宽干净包14项、两处发布及安装样本通过，待远端复核。自有VB5/VB6诊断构建各记录27条WM_COMMAND前后成对，无法独立证明应用事件处理器且VB5首次截图有差异，诊断和发布各一次复测匹配但原因仍未明。自有双宽跨进程同桌面126仍未解释，S64原VCL范围仍开放。
 
 ## Identifier State
 

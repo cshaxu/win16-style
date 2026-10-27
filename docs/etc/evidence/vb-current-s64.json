@@ -413,5 +413,73 @@
       "diagnostic_repeat_notification_pairs": 27,
       "interpretation": "A single release and diagnostic repeat matched each other and original release screenshot; the first diagnostic outlier was not reproduced. Cause remains unknown; this does not establish absence of visual effects."
     }
+  },
+  "real_disabled_p5": {
+    "scope": "Actual x86 VB5/VB6 intrinsic samples at DPI 96; two bare and two styled processes, no external controls. Enabled state, font, window style and check/selection were restored after programmatic disable/reenable. Styled glyphs match original project resources.",
+    "samples": [
+      {
+        "version": "VB5",
+        "mode": "bare",
+        "pid": 21352,
+        "window_count": 22,
+        "checked_controls": 10,
+        "pixels_changed": 3,
+        "source_glyph_checks": null,
+        "log": "build/t18-s64-vb-disabled/vb5-bare-repo/output.txt",
+        "job_remaining": 0
+      },
+      {
+        "version": "VB5",
+        "mode": "styled",
+        "pid": 14976,
+        "window_count": 22,
+        "checked_controls": 10,
+        "pixels_changed": 10,
+        "source_glyph_checks": {
+          "choice_182_pixels_each": 8,
+          "combo_32_pixels_each": 2
+        },
+        "log": "build/t18-s64-vb-disabled/vb5-installed/output.txt",
+        "job_remaining": 0
+      },
+      {
+        "version": "VB6",
+        "mode": "bare",
+        "pid": 27908,
+        "window_count": 23,
+        "checked_controls": 10,
+        "pixels_changed": 3,
+        "source_glyph_checks": null,
+        "log": "build/t18-s64-vb-disabled/vb6-bare-repo/output.txt",
+        "job_remaining": 0
+      },
+      {
+        "version": "VB6",
+        "mode": "styled",
+        "pid": 30756,
+        "window_count": 23,
+        "checked_controls": 10,
+        "pixels_changed": 10,
+        "source_glyph_checks": {
+          "choice_182_pixels_each": 8,
+          "combo_32_pixels_each": 2
+        },
+        "log": "build/t18-s64-vb-disabled/vb6-installed/output.txt",
+        "job_remaining": 0
+      }
+    ],
+    "false_starts": [
+      "The initial test incorrectly expected EnableWindow(FALSE) to return nonzero for a previously enabled window; all four controls aborted before useful validation.",
+      "Sending BM_CLICK explicitly to disabled controls changed check state in bare and styled samples; it is not equivalent to a user clicking a disabled control and was removed from the final scenario.",
+      "The initial expectation that bare PrintWindow must differ for every disabled control failed in both baselines; final bare runs report differences but do not assert them."
+    ],
+    "limitations": [
+      "Programmatic EnableWindow and PrintWindow, not physical mouse/keyboard",
+      "No actual disabled click, focus traversal, accessibility, IME or application notification assertions",
+      "One runtime version and DPI per sample; no OCX, DriveListBox or third-party variants",
+      "Does not establish that every pixel of disabled label matches Windows 3.x"
+    ],
+    "candidate_dll_sha256": "ed2f091ce0e35699cdb732811f001ae2e06226570a12a2b471f16785e3ccaf03",
+    "observer": "tests/integration/vb_intrinsic.c argument disabled"
   }
 }
