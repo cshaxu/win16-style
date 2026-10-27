@@ -68,57 +68,30 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S38 Packet
+## M0 T18 S39 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S37 P1双发布与远端17文件核对通过，S38首次准入 |
+| Identifier Mode | Continuation；S38 P1双发布与远端七文件核对通过，S39首次准入 |
 | Admission And Approval | 用户授权T18内自动实施可做控件并完成测试，不新开T |
-| Objective | 恢复74家族逐项审计，优先找出有真实owner和可保留应用语义的下一可实现缺口 |
-| Non-goals | 不把demo或类名当成真实Delphi支持；不动已确认标题、菜单、字体及原图形 |
-| Reference Baseline | [S37滑块](../history/M0-T18-S37-vcl-trackbar.md)、[S33台账](../etc/evidence/delphi-s33-working-ledger.json)、[S26审计](../history/M0-T18-S26-control-audit.md) |
+| Objective | 为真实运行时拥有的VCL TColorBox实施有限Win16下拉按钮适配，保留应用自绘色块 |
+| Non-goals | 不重画项目、应用文字或色块，不改变标题、字体、菜单、原图形和其他owner-draw控件 |
+| Reference Baseline | [S38调查](../history/M0-T18-S38-control-audit.md)、[S37模块见证](../history/M0-T18-S37-vcl-trackbar.md)、[S38台账](../etc/evidence/delphi-s38-working-ledger.json) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 当前证据台账、原生自有探针及必要实现；不增产品文件或公开ABI |
+| Files And ABI Surface | 现有C DLL身份及组合框有限绘制、双宽自有测试；不增产品文件或公开ABI |
 | Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；隔离自有实例、有时限回收 |
-| Verification | 真实窗口owner及位宽、公开契约、未支持原因、应用语义、双宽模型和必要实际包 |
-| Expected Markers | 每个推进项有明确观察与证据；未证实变体如实保留，不冒称全集完成 |
-| Asset Needs | 登记build/t18-s38-control-audit；保留S37证据直至安全提炼和清理 |
-| Reporting Requirements | 逐项盘点进展、真实样本与缺口、当前覆盖及未覆盖；按产品S交付规范 |
-| Stop Conditions | 无可证明契约时不泛化拦截或覆盖应用绘制；转可独立推进的其他项 |
-| Exit Criteria | 完成可执行下一项的证据与实现或清楚转交；T18/M0开放 |
+| Verification | 真实native转发见证、owner-draw保留、各DPI/裁剪、禁用展开焦点/选择通知、重入/销毁与资源，旧包负例与实际包 |
+| Expected Markers | 仅公开按钮区域改变，色块及应用绘制无改变，原生消息、状态与生命周期保留；无证据变体原生退回 |
+| Asset Needs | 登记build/t18-s39-color-combo；沿用并保留S38双宽观察证据 |
+| Reporting Requirements | 安全接入契约、真实样本及自包含双宽负例、像素与状态、未覆盖项；双发布提交推送远端复核 |
+| Stop Conditions | 不能保留应用色块、输入、通知或生命周期时不得泛化，保留原生并记录 |
+| Exit Criteria | 有证据的有限实现或明确安全边界、同批实际包与交付；T18/M0开放 |
 | Original Owner Request | 能做的控件全部实现并测试，最终集中集成；不反复要求用户测试 |
-| Similar-Issue Sweep | 在全部74家族中检查同类owner/公开协议而非只看单个控件 |
+| Similar-Issue Sweep | 同类owner-draw组合框、原生v5/v6与VCL普通组合框，不按类名泛化 |
 
-S37 P1 `5a78183`已推送，GitHub实际取回17文件逐字节一致；双宽24项聚焦包
-与两个发布位置的双宽入口通过。真实VCL样本双宽各294像素变化全部位于
-滑槽/滑块外缘，未声明所有VCL支持。S37关闭，T18/M0保持开放。
-
-S38初检：S33台账冻结74家族，其中47行标记runtime-owner-unverified；这是
-S33当时的分类，不可忽略S34/S37后来证据，也不代表47项均可或均不可实现。
-下一步逐项关联更新及真实样本，优先处理尚未验证但存在可观察实例的控件。
-
-S38已建立[工作台账](../etc/evidence/delphi-s38-working-ledger.json)：在隔离
-自有实例中观察DelphiVCL4Python 1.0.7双宽、144 DPI的七个先前缺少owner证据
-的真实窗口；全部未附着。TBitBtn是BS_OWNERDRAW，双宽均收到WM_DRAWITEM；
-其所属模块DrawFrameControl/DrawEdge导入观察在一次重画中均无调用，探针和
-实例已恢复退出。这不能证明不存在其他绘制入口，不得按类名改绘。下一步
-追查主题/其他绘制调用或转向具备更清楚公开契约的真实控件。
-双宽TColorBox和TDateTimePicker进一步确认类模块转发WM_PAINT/WM_NCPAINT
-到对应系统过程。颜色框184项、选中0，公开箭头区(105,1)-(129,21)，
-下拉可打开显示并关闭，选择不变；现有完整combo renderer明确拒绝owner-draw，
-不能直接使用，否则可能覆盖颜色项。日期控件公开取回2026-10-27；尚无
-对应renderer，日期弹层及输入未验证。下一步验证颜色框仅箭头/边框的安全
-接入与应用自绘像素、交互和回调，不宣称已支持。
-双宽144 DPI隔离样本的scratch试绘复用原Win3.1 combo glyph、按DPI逐坐标
-缩放，在公开箭头区各变化480像素，区域外0；重画恢复。先前整数两倍的试绘
-因按钮内高不足而拒绝，不能据此放大覆盖色块。该试绘未进入产品，按下、
-禁用、焦点、嵌套重绘、应用回调和资源寿命仍需验证。
-追加双宽禁用及程序展开状态试绘，各480像素变化均在箭头区内；样本分别
-观察到enabled=0和下拉展开=1。焦点、状态恢复的独立断言、实际选择通知、
-嵌套及生命周期仍未验证；试绘不是产品实现。
-S38调查证据已整理至[历史](../history/M0-T18-S38-control-audit.md)；独立双宽
-包12项聚焦通过零skip，测试9.15秒，二进制重建摘要变化，已双发布并验证
-system32双宽入口。P1待提交、推送与实际远端核对，74行其余缺口仍开放。
+S38 P1 `e0c5eed`已推送，GitHub实际取回七文件逐字节一致；12项聚焦
+双宽包与两个发布位置摘要一致。TColorBox试绘仅为可行性，非产品支持；
+S38关闭，T18/M0开放，其他74行未完成项继续保留。
 
 ## Identifier State
 
@@ -126,8 +99,8 @@ system32双宽入口。P1待提交、推送与实际远端核对，74行其余�
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S37：24项聚焦包、双发布、真实双宽滑块及5a78183远端17文件复核。
-- Open task: T18 S38 恢复74家族逐项审计；M0/T18开放。
+- Last delivery: M0 T18 S38：12项聚焦包、双发布、真实双宽控件调查及e0c5eed远端七文件复核。
+- Open task: T18 S39 运行时VCL颜色组合框有限按钮；M0/T18开放。
 
 ## Technical Baseline
 
@@ -176,6 +149,8 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T18 S38 VCL控件调查](../history/M0-T18-S38-control-audit.md)：七类真实窗口与颜色框试绘、12项聚焦包、双发布及P1远端七文件复核。
 
 - [T18 S37运行时VCL滑块](../history/M0-T18-S37-vcl-trackbar.md)：24项聚焦包、双发布、真实双宽像素对照及P1远端17文件复核。
 

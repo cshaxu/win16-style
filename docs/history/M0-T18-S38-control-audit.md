@@ -47,5 +47,5 @@ the latter's two installed-entry probes passed. Both destinations matched:
 | ntw16s64.dll | `c847eb5d651f5d72ad4a0c9a50f2d7499a4465929f2b9be464c084e68ab0dcd7` |
 | run16s.exe | `bf9857ae5f16360160bc31b59b89a115fef38792ff17b4d9d44a8efedcc61aa6` |
 
-P1 commit and actual remote verification are pending. The bounded color-combo
+P1 `e0c5eed` was pushed and all seven changed files were fetched from the actual GitHub commit and matched byte for byte. The bounded color-combo
 prototype and all other incomplete rows transfer to subsequent T18 work.
