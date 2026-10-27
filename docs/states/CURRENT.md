@@ -68,74 +68,30 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S37 Packet
+## M0 T18 S38 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S36 P1双发布和远端七文件复核完成，剩余74项审计转后续S |
-| Admission And Approval | 用户授权T18内自动实现可做控件并完成测试，不新开T |
-| Objective | 在证据支持下为运行时DLL拥有的真实VCL TTrackBar实现保留原生内容的有限经典边框 |
-| Non-goals | 不依据类名放宽任意模块，不覆盖应用自绘、选区、刻度和输入，不改变标题、字体、菜单或原图形资源 |
-| Reference Baseline | [S36双宽真实滑块调查](../history/M0-T18-S36-trackbar-audit.md)、[S34运行时TEdit](../history/M0-T18-S34-vcl-module-edit.md)、[T15原生滑块](../history/M0-T15-S10-trackbar-controls.md) |
-| Candidate Proposal | [Delphi Win32控件完整审计](../proposals/delphi-win32-controls.md)及S36后绘制边框探针 |
-| Files And ABI Surface | 现有C DLL身份、滑块绘制及自有双宽测试；不新增产品文件或公开ABI |
-| Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；自有隔离实例与有限等待 |
-| Verification | 真实转发/同owner见证；原生v5/v6与运行时双宽，应用默认和非默认回调、选区、刻度、禁用/输入、裁剪、DPI、重入/销毁与资源；旧包负例及实际包 |
-| Expected Markers | 精确支持范围内边框变化、内部内容和原有应用通知保留；无证据变体原生退回；所有权/状态失败拒绝 |
-| Asset Needs | 登记build/t18-s37-vcl-trackbar任务scratch，保留S36原始截图与观察记录 |
-| Reporting Requirements | 根因、候选契约、真实样本与负例、像素和输入范围、未覆盖项；双宽同批包、双发布、提交推送及远端复核 |
-| Stop Conditions | 不能保留应用自绘结果、选区/刻度或生命周期时不得泛化，保留原生并记录 |
-| Exit Criteria | 有证据的有限实现或明确安全边界、独立包与交付；T18/M0开放，后续恢复未完成审计 |
+| Identifier Mode | Continuation；S37 P1双发布与远端17文件核对通过，S38首次准入 |
+| Admission And Approval | 用户授权T18内自动实施可做控件并完成测试，不新开T |
+| Objective | 恢复74家族逐项审计，优先找出有真实owner和可保留应用语义的下一可实现缺口 |
+| Non-goals | 不把demo或类名当成真实Delphi支持；不动已确认标题、菜单、字体及原图形 |
+| Reference Baseline | [S37滑块](../history/M0-T18-S37-vcl-trackbar.md)、[S33台账](../etc/evidence/delphi-s33-working-ledger.json)、[S26审计](../history/M0-T18-S26-control-audit.md) |
+| Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
+| Files And ABI Surface | 当前证据台账、原生自有探针及必要实现；不增产品文件或公开ABI |
+| Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；隔离自有实例、有时限回收 |
+| Verification | 真实窗口owner及位宽、公开契约、未支持原因、应用语义、双宽模型和必要实际包 |
+| Expected Markers | 每个推进项有明确观察与证据；未证实变体如实保留，不冒称全集完成 |
+| Asset Needs | 登记build/t18-s38-control-audit；保留S37证据直至安全提炼和清理 |
+| Reporting Requirements | 逐项盘点进展、真实样本与缺口、当前覆盖及未覆盖；按产品S交付规范 |
+| Stop Conditions | 无可证明契约时不泛化拦截或覆盖应用绘制；转可独立推进的其他项 |
+| Exit Criteria | 完成可执行下一项的证据与实现或清楚转交；T18/M0开放 |
 | Original Owner Request | 能做的控件全部实现并测试，最终集中集成；不反复要求用户测试 |
-| Similar-Issue Sweep | 既有trackbar v5/v6和TTrackBar、其他框架包装与非默认绘制结果，不扩大到无证据类 |
+| Similar-Issue Sweep | 在全部74家族中检查同类owner/公开协议而非只看单个控件 |
 
-S36 P1 `fd608d0`已推送并实际取回七个变更文件逐字节核对；双宽18项
-聚焦包、双发布及安装探针通过。双宽真实TTrackBar有限边框可行性和反例
-证据转交S37；其他74项审计未完成，T18/M0开放。
-
-S37进行中：真实双宽样本嵌套WM_PRINTCLIENT证实内外绘制通知拥有
-不同NMCUSTOMDRAW及HDC；scratch按绘制上下文配对私人后绘制并在
-嵌套结束后恢复，观察到内层深度2→1、外层→0，实例及导入槽清理通过。
-x64逐项记录的18次应用回调及返回值与未配对方案一致；
-x64应用跳过原生滑槽的模拟中，配对方案保留滑槽，仅改变滑块外缘54像素；
-仅可行性实验，尚需伪类、应用非默认回调、销毁与产品回归，
-未改产品或发布。证据保留于已登记build/t18-s37-vcl-trackbar。
-
-桌面恢复复核：受限进程创建私有桌面仍为error=5；获准的自有探针可创建并
-关闭私有桌面。真实DelphiVCL4Python x86/x64窗口在该桌面正常显示并截图，
-运行嵌套绘制后自动关闭；当前发布版的TTrackBar仍未附着。两次复测的原始
-记录为desktop-recheck32和desktop-recheck，不能视为产品修复或最终集成通过。
-
-S37候选代码进行中：加入真实系统过程转发见证及保留原生内容的私人后绘制；
-双宽增量构建及ABI通过。测试先因原生缓存仅触发PREPAINT，清除缓存后双宽
-自有C模块通过伪类拒绝、嵌套、应用默认/后绘制回调、选区、应用跳过滑槽、
-禁用和重入移除；滑槽跳过对照变化56像素均在滑块外缘。旧包双宽均因正例
-未附着失败。真实双宽VCL样本附着，直接控件对照各294像素变化，边界为公开
-滑槽/滑块外缘，选区与11刻度、位置恢复；整窗截图标题区域无变化。上述是
-候选实验，非最终包验收；独立真实应用回调透明、其他DPI、销毁与完整资源
-边界仍需验证。实验构建日志登记于build/t18-vcl-trackbar，候选与证据位于
-build/t18-s37-vcl-trackbar；干净包、回归、双发布和远端复核仍待完成。
-
-后续资源门禁未通过：首个干净包20项聚焦测试通过，但新增GDI重复创建/销毁
-检测后候选无法直接发布。64位96轮候选第64轮53、后续峰值59；同进程系统
-滑块对照53→53；较早28轮测试系统/候选均有20左右至43左右的非平稳上升，
-先移除样式再销毁也出现上升。原因尚未确定，不能宣称泄漏或零泄漏。该新增
-测试及清单已在工作区改变，首个干净包不再是最终源码快照，须先定位并复测，
-然后重建、重跑实际包。诊断可通过S37_GDI_NATIVE/S37_GDI_REMOVE/S37_GDI_TRACE
-在自有隔离实例复现；未修改assets/system32。
-
-资源对照补证：双宽各384轮，候选及标准系统滑块四组均在第352轮57，
-最后32轮峰值57。24轮默认回归只记录全进程计数，不把非平稳的首轮波动
-误判为资源回收证明；长轮模式单独检查稳定平台。此证据不证明整个进程
-零增长。源测试修改后必须重新生成最终同批四文件包并复测。
-双宽裁剪测试新增通过：各209个裁剪区域内像素变化，区域外0；绘制回调中
-销毁与显式移除均通过。此次测试在第二次干净构建快照后加入，故该包仍非
-最终包，需重新构建与实际包测试。
-
-S37最终同批第三个干净包24项聚焦回归通过、零skip；assets及system32双发布
-八个摘要一致，两个位置的双宽入口验证通过，发布后真实双宽VCL控件各294个
-变化像素均为公开滑块/滑槽外缘。P1待提交推送及实际远端逐文件复核；
-S37/T18/M0保持开放，未运行的整包和真实输入不得表述为已通过。
+S37 P1 `5a78183`已推送，GitHub实际取回17文件逐字节一致；双宽24项聚焦包
+与两个发布位置的双宽入口通过。真实VCL样本双宽各294像素变化全部位于
+滑槽/滑块外缘，未声明所有VCL支持。S37关闭，T18/M0保持开放。
 
 ## Identifier State
 
@@ -143,8 +99,8 @@ S37/T18/M0保持开放，未运行的整包和真实输入不得表述为已通�
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S36：18项聚焦包、双发布、双宽真实滑块调查及fd608d0远端七文件复核。
-- Open task: T18 S37 运行时VCL滑块有限边框；M0/T18开放。
+- Last delivery: M0 T18 S37：24项聚焦包、双发布、真实双宽滑块及5a78183远端17文件复核。
+- Open task: T18 S38 恢复74家族逐项审计；M0/T18开放。
 
 ## Technical Baseline
 
@@ -193,6 +149,8 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T18 S37运行时VCL滑块](../history/M0-T18-S37-vcl-trackbar.md)：24项聚焦包、双发布、真实双宽像素对照及P1远端17文件复核。
 
 - [T18 S36滑块调查](../history/M0-T18-S36-trackbar-audit.md)：双宽真实样本、后绘制可行性、18项聚焦包、双发布及P1远端七文件复核；其余审计未完成。
 

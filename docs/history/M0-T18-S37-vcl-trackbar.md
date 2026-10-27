@@ -53,6 +53,6 @@ passed the x86/x64 entry probes. The four tested hashes match both locations:
 | ntw16s64.dll | `5d791db707a52858dec6ea5deb7b65c66516ea760cb2d7e1632074ec04e84388` |
 | run16s.exe | `28a465b122e8c733ecaa1c718b18d5f87efa638155940fd58eedf3850c7d1192` |
 
-P1 remote verification is pending. The larger T18 74-row audit remains open;
+P1 `5a78183` was pushed; all 17 changed files were retrieved from the actual GitHub commit and matched byte for byte. The larger T18 74-row audit remains open;
 the short whole-process GDI variation and untested real-app combinations are
 not converted to success claims.
