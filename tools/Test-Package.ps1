@@ -155,8 +155,8 @@ try{
         (Case 'theme-stage-64' (Join-Path $x64 'core-theme-stage.exe') @() @('THEME_STAGE_OWNERSHIP_OK bits=64','allocations=0 early_proc_unchanged=1')),
         (Case 'superclass-32' (Join-Path $x86 'core-superclass.exe') @($run) @('SUPER_PROTOCOL_OK bits=32 styled=1','SUPER_VCL_CHOICE_OK native_superclass=3 state_click=1 styled=1 detach_pixels=1','SUPER_VCL_EDIT_OK native_superclass=2 multiline_undo_readonly_scroll=1 styled=1 detach_pixels=1','SUPER_VCL_LIST_OK item_data_selection=1 multiselect=1 ownerdraw_rejected=1 detach_pixels=1 styled=1','SUPER_RENDER_OK','SUPER_ACTUAL_FILL_OK','SUPER_REJECT_OK','SUPER_CLEANUP_OK')),
         (Case 'superclass-64' (Join-Path $x64 'core-superclass.exe') @($run) @('SUPER_PROTOCOL_OK bits=64 styled=1','SUPER_VCL_CHOICE_OK native_superclass=3 state_click=1 styled=1 detach_pixels=1','SUPER_VCL_EDIT_OK native_superclass=2 multiline_undo_readonly_scroll=1 styled=1 detach_pixels=1','SUPER_VCL_LIST_OK item_data_selection=1 multiselect=1 ownerdraw_rejected=1 detach_pixels=1 styled=1','SUPER_RENDER_OK','SUPER_ACTUAL_FILL_OK','SUPER_REJECT_OK','SUPER_CLEANUP_OK')),
-        (Case 'checklist-32' (Join-Path $x86 'core-checklist.exe') @($run) @('CHECKLIST_MODEL_OK bits=32 styled=0','CHECKLIST_MODEL_OK bits=32 styled=1 checked_mismatch=0','CHECKLIST_CLEANUP_OK')),
-        (Case 'checklist-64' (Join-Path $x64 'core-checklist.exe') @($run) @('CHECKLIST_MODEL_OK bits=64 styled=0','CHECKLIST_MODEL_OK bits=64 styled=1 checked_mismatch=0','CHECKLIST_CLEANUP_OK'))
+        (Case 'checklist-32' (Join-Path $x86 'core-checklist.exe') @($run) @('CHECKLIST_MODEL_OK bits=32 styled=0','CHECKLIST_MODEL_OK bits=32 styled=1 checked_mismatch=0','CHECKLIST_PUSHED_OK bits=32','CHECKLIST_CLEANUP_OK')),
+        (Case 'checklist-64' (Join-Path $x64 'core-checklist.exe') @($run) @('CHECKLIST_MODEL_OK bits=64 styled=0','CHECKLIST_MODEL_OK bits=64 styled=1 checked_mismatch=0','CHECKLIST_PUSHED_OK bits=64','CHECKLIST_CLEANUP_OK'))
     )
     if($FullIntegration){
         $cases+=@(

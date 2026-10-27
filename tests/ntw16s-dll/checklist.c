@@ -19,7 +19,7 @@ static LRESULT CALLBACK parent_proc(HWND w,UINT m,WPARAM a,LPARAM b)
             RECT r=d->rcItem;r.left+=1+frame_offset;r.right=r.left+frame_size;r.bottom=r.top+frame_size;
             BOOL ok=DrawFrameControl(d->hDC,&r,DFC_BUTTON,DFCS_BUTTONCHECK|frame_flags);
             if(ok){
-                unsigned diff=0,valid=0;int col=(frame_flags&DFCS_CHECKED)?14:0;
+                unsigned diff=0,valid=0;int col=((frame_flags&DFCS_CHECKED)?1:0)*14+((frame_flags&DFCS_PUSHED)?2:0)*14;
                 for(int y=0;y<frame_size;y++)for(int x=0;x<frame_size;x++){
                     int sx=0,sy=0;for(int j=0;j<14;j++)if(MulDiv(j,frame_size,14)<=x && MulDiv(j+1,frame_size,14)>x){sx=j;break;}
                     for(int j=0;j<13;j++)if(MulDiv(j,frame_size,13)<=y && MulDiv(j+1,frame_size,13)>y){sy=j;break;}
@@ -34,8 +34,9 @@ static LRESULT CALLBACK parent_proc(HWND w,UINT m,WPARAM a,LPARAM b)
     }
     return DefWindowProcW(w,m,a,b);
 }
-static int child(BOOL styled)
+static int child(BOOL styled,BOOL aware)
 {
+    if(aware)CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));
     HINSTANCE instance=GetModuleHandleW(NULL);WNDCLASSEXW c={.cbSize=sizeof(c)};
     CHECK(GetClassInfoExW(NULL,L"LISTBOX",&c));list_proc=c.lpfnWndProc;c.lpfnWndProc=list_wrapper;
     c.hInstance=instance;c.lpszClassName=L"THintCheckListBox";c.style&=~CS_GLOBALCLASS;CHECK(RegisterClassExW(&c));
@@ -56,11 +57,16 @@ static int child(BOOL styled)
     if(styled){frame_flags=DFCS_CHECKED;
         CHECK(SendMessageW(target,LB_SETITEMHEIGHT,0,24)!=LB_ERR);frame_size=19;callbacks=0;
         CHECK(RedrawWindow(target,NULL,NULL,RDW_INVALIDATE|RDW_ERASE|RDW_UPDATENOW));GdiFlush();
-        if(GetDpiForWindow(target)>=120)CHECK(callbacks && measured>0 && mismatched==0);
+        if(GetDpiForWindow(target)>=120){CHECK(callbacks && measured>0 && mismatched==0);printf("CHECKLIST_DPI_OK bits=%u dpi=%u scaled=19\n",(unsigned)(sizeof(void*)*8),GetDpiForWindow(target));}
+        else printf("CHECKLIST_DPI_SKIP bits=%u dpi=%u scaled=19\n",(unsigned)(sizeof(void*)*8),GetDpiForWindow(target));
         frame_size=13;frame_offset=40;callbacks=0;
         CHECK(RedrawWindow(target,NULL,NULL,RDW_INVALIDATE|RDW_ERASE|RDW_UPDATENOW));GdiFlush();CHECK(callbacks && measured>0 && mismatched>0);frame_offset=0;
         HWND unsupported=CreateWindowW(c.lpszClassName,L"",WS_CHILD|LBS_OWNERDRAWVARIABLE|LBS_HASSTRINGS,0,0,100,50,root,NULL,instance,NULL);
         CHECK(unsupported && !attached(unsupported));CHECK(DestroyWindow(unsupported));
+    }
+    if(styled){frame_flags=DFCS_CHECKED|DFCS_PUSHED;callbacks=0;
+        CHECK(RedrawWindow(target,NULL,NULL,RDW_INVALIDATE|RDW_ERASE|RDW_UPDATENOW));GdiFlush();CHECK(callbacks && measured>0 && mismatched==0);
+        printf("CHECKLIST_PUSHED_OK bits=%u pixels=%u\n",(unsigned)(sizeof(void*)*8),measured);
     }
     frame_flags=DFCS_CHECKED|DFCS_INACTIVE;callbacks=0;CHECK(RedrawWindow(target,NULL,NULL,RDW_INVALIDATE|RDW_ERASE|RDW_UPDATENOW));GdiFlush();CHECK(callbacks && measured>0);
     unsigned disabled_before=mismatched;
@@ -74,9 +80,9 @@ static int child(BOOL styled)
 static int worker(int argc,WCHAR **argv)
 {
     CHECK(argc==2);WCHAR self[MAX_PATH],command[2048];CHECK(GetModuleFileNameW(NULL,self,MAX_PATH));
-    for(unsigned mode=0;mode<2;mode++){
-        if(mode)swprintf_s(command,2048,L"\"%ls\" --wait \"%ls\" --child styled",argv[1],self);
-        else swprintf_s(command,2048,L"\"%ls\" --child bare",self);
+    for(unsigned aware=0;aware<2;aware++)for(unsigned mode=0;mode<2;mode++){
+        if(mode)swprintf_s(command,2048,L"\"%ls\" --wait \"%ls\" --child %ls",argv[1],self,aware?L"styled-aware":L"styled");
+        else swprintf_s(command,2048,L"\"%ls\" --child %ls",self,aware?L"bare-aware":L"bare");
         HANDLE job=CreateJobObjectW(NULL,NULL);JOBOBJECT_EXTENDED_LIMIT_INFORMATION limits={0};limits.BasicLimitInformation.LimitFlags=JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
         CHECK(job && SetInformationJobObject(job,JobObjectExtendedLimitInformation,&limits,sizeof(limits)));
         STARTUPINFOW si={.cb=sizeof(si)};PROCESS_INFORMATION pi={0};si.dwFlags=STARTF_USESTDHANDLES;si.hStdInput=GetStdHandle(STD_INPUT_HANDLE);si.hStdOutput=GetStdHandle(STD_OUTPUT_HANDLE);si.hStdError=GetStdHandle(STD_ERROR_HANDLE);
@@ -85,10 +91,10 @@ static int worker(int argc,WCHAR **argv)
         DWORD code=1,wait=WaitForSingleObject(pi.hProcess,20000);if(wait==WAIT_OBJECT_0)GetExitCodeProcess(pi.hProcess,&code);else TerminateJobObject(job,ERROR_TIMEOUT);
         JOBOBJECT_BASIC_ACCOUNTING_INFORMATION info={0};ULONGLONG deadline=GetTickCount64()+5000;
         do {CHECK(QueryInformationJobObject(job,JobObjectBasicAccountingInformation,&info,sizeof(info),NULL));if(!info.ActiveProcesses)break;Sleep(10);}while(GetTickCount64()<deadline);
-        fprintf(stderr,"CHECKLIST_PROCESS mode=%u wait=%lu exit=%lu active=%lu total=%lu\n",mode,wait,code,info.ActiveProcesses,info.TotalProcesses);
+        if(wait!=WAIT_OBJECT_0 || code || info.ActiveProcesses)fprintf(stderr,"CHECKLIST_PROCESS mode=%u wait=%lu exit=%lu active=%lu total=%lu\n",mode,wait,code,info.ActiveProcesses,info.TotalProcesses);
         CloseHandle(pi.hThread);CloseHandle(pi.hProcess);CloseHandle(job);CHECK(wait==WAIT_OBJECT_0 && code==0 && info.ActiveProcesses==0);
     }
-    puts("CHECKLIST_CLEANUP_OK jobs=2");return 0;
+    puts("CHECKLIST_CLEANUP_OK jobs=4");return 0;
 }
 int wmain(int argc,WCHAR **argv)
-{if(argc==3 && !wcscmp(argv[1],L"--child"))return child(!wcscmp(argv[2],L"styled"));return isolated_process(argc,argv,worker);}
+{if(argc==3 && !wcscmp(argv[1],L"--child"))return child(!wcsncmp(argv[2],L"styled",6),wcsstr(argv[2],L"aware")!=NULL);return isolated_process(argc,argv,worker);}
