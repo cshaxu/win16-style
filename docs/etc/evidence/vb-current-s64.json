@@ -887,5 +887,17 @@
       "IME and accessibility not tested; external COM components were private sample-only dependencies."
     ],
     "binary_change": false
+  },
+  "vb5_checkbox_keyboard_p27": {
+    "sample": "Same source-reviewed VB5 AppCommand sample and private unregistered dependencies as P23; original executable SHA256 1e8524b8f9743f0f3e61a26020ad855e0c23e6cfdcbd7e69cf88fa41898172f3.",
+    "probe": "tests/integration/vb_intrinsic.c real-vb5-checklist, x86 target and 96 DPI; exact runtime class, owner and parent. Native and installed style separately execute native mouse messages and space key messages: selection 0 to 1 to 0; disabled/checked state captured and restored; both owned jobs empty on normal exit.",
+    "comparator": "tests/integration/vb5_checklist_compare.py checks four states with 484 original resource glyph pixels and native negative; disabled-checked pixel mutation is rejected.",
+    "installed_dll_sha256": "72874f53422c9a6f2e3d196dc9b2908c6883bdc9db9a9b2bfe5d29c46de587ac",
+    "limitations": [
+      "Sent window messages, not physical keyboard or mouse; event ordering and accessibility not claimed.",
+      "One real x86 VB5 sample at 96 DPI; other runtime builds and DPI not covered.",
+      "Private sample COM dependencies are not installed, registered, shipped or required."
+    ],
+    "binary_change": false
   }
 }
