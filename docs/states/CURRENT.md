@@ -68,39 +68,30 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S48 Packet
+## M0 T18 S49 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S47 P1 a6baff4远端十三文件实际核对通过，S48首次准入 |
-| Admission And Approval | 用户授权T18内自动实施可做工作及提高测试效率；不新开T |
-| Objective | 查明日期控件异常测试的进程GDI计数波动并在不掩盖泄漏的前提下修复测试稳定性 |
-| Non-goals | 不放宽真实泄漏断言，不改变产品样式、资源、ABI或分区语义 |
-| Reference Baseline | [S47图标状态栏](../history/M0-T18-S47-status-icon.md)、[S42日期按钮](../history/M0-T18-S42-vcl-date-picker.md)、[S39颜色框](../history/M0-T18-S39-vcl-color-combo.md) |
+| Identifier Mode | Continuation；S48 P1 e60569b远端十文件实际核对通过，S49首次准入 |
+| Admission And Approval | 用户授权T18内自动完成可做控件；不新开T |
+| Objective | 调查真实VCL TBitBtn的可验证绘制和应用图像边界，实施可安全适配的范围 |
+| Non-goals | 不覆盖应用图像、文字、点击/键盘、焦点及自绘语义，不修改原资源 |
+| Reference Baseline | [S38真实控件调查](../history/M0-T18-S38-control-audit.md)、[S48资源测试](../history/M0-T18-S48-date-gdi-test.md)、[S39颜色框](../history/M0-T18-S39-vcl-color-combo.md) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 自有C测试与工具；必要时仅在有证据时修改既有C组件 |
+| Files And ABI Surface | 自有原生探针；有证据时修改既有C DLL及双宽测试，不增产物或ABI |
 | Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；隔离自有实例、有限等待与清理 |
-| Verification | 重现或对照过程GDI计数变化，精确租约、负例泄漏检出、双宽并发/串行短测及实际包 |
-| Expected Markers | 记录首次27→25，保留资源释放证据和真实泄漏检出，不将重试通过当作根因 |
-| Asset Needs | 登记build/t18-s48-date-gdi，复用S47实际包和测试 |
-| Reporting Requirements | 失败根因或明确未定位、测试覆盖和时间、负例与限制，按规则发布及远端复核 |
-| Stop Conditions | 无法区分波动与真实泄漏时保留严格断言，不伪造通过 |
-| Exit Criteria | 有证据的测试修复或明确边界，实际包交付；T18/M0保持开放 |
-| Original Owner Request | 能做的先实现测试，测试不应无谓耗时，真实集成集中最终收口 |
-| Similar-Issue Sweep | 日期和颜色框异常释放、进程预热及系统GDI对象波动 |
+| Verification | 双宽真实运行时、普通/图像/禁用/按下/焦点，公开绘制调用和图像保护、DPI/剪裁、消息/资源 |
+| Expected Markers | 真实证据区分应用绘制与框架，避免凭类名或固定坐标覆盖内容 |
+| Asset Needs | 登记build/t18-s49-bitbtn，复用S38合法双宽真实样本 |
+| Reporting Requirements | 具体绘制链、可支持和未覆盖范围、负例/性能及双发布远端复核 |
+| Stop Conditions | 无可靠所有权或内容中性边界时不泛化 |
+| Exit Criteria | 有证据的实现或明确后续接收，实际包交付；T18/M0保持开放 |
+| Original Owner Request | 能做的先实现并测试，真实集成集中最终收口；测试不应无谓耗时 |
+| Similar-Issue Sweep | 位图/图标、owner-draw和无窗口SpeedButton，状态与DPI |
 
-S47 P1 `a6baff4`已推送，GitHub实际取回十三文件逐字节一致；26项低并发包、双发布与
-system32双宽入口通过。首轮日期GDI计数27→25失败未定位；完整T18集成未执行。
-S40屏幕机制及S41首次退出异常仍未解决；T18/M0开放。
-
-S48进行中：原S47首轮x86异常前后GDI 27→25失败；本轮相同包串行短测第1次
-27→27通过、第2次20→27失败，尚不能证明是预热或泄漏。自有不抛异常、同一次
-WM_PRINTCLIENT路径的双宽各4次均通过，初始计数在20与27之间变化，前后各次均相等；
-本小样本未复现计数跳变，不能作为无泄漏结论。下一步需精确追踪临时区域句柄释放、
-构造故意泄漏负例及更有针对性的计数对照；当前严格断言未更改。
-
-S48双宽精确区域及故意泄漏负例、预热重复计数通过；进程总数波动原因未定留TODO。
-16项并发包7.41秒零skip、双发布及system32双宽入口通过；P1待提交推送复核。
+S48 P1 `e60569b`已推送，GitHub实际取回十文件逐字节一致；16项并发包、双发布与
+system32双宽入口通过。日期区域精确释放及故意泄漏负例通过；进程GDI总数波动根因
+仍未定位留TODO。S40屏幕机制及S41首次退出异常亦未解决；T18/M0开放。
 
 ## Identifier State
 
@@ -108,8 +99,8 @@ S48双宽精确区域及故意泄漏负例、预热重复计数通过；进程�
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S47：26项聚焦包、双发布、图标末分区适配及a6baff4远端十三文件复核。
-- Open task: T18 S48 日期异常测试GDI计数调查；M0/T18开放。
+- Last delivery: M0 T18 S48：16项并发包、双发布、日期区域精确测试及e60569b远端十文件复核。
+- Open task: T18 S49 真实VCL TBitBtn绘制调查；M0/T18开放。
 
 ## Technical Baseline
 
@@ -158,6 +149,8 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T18 S48日期GDI测试](../history/M0-T18-S48-date-gdi-test.md)：双宽精确区域与泄漏负例、16项并发包及e60569b远端复核；总数波动仍未定位。
 
 - [T18 S47图标末分区](../history/M0-T18-S47-status-icon.md)：双宽真实窗口、26项包、双发布及a6baff4远端复核；首轮GDI波动留TODO。
 
