@@ -52,5 +52,7 @@ The test-only diff before staging is +8/-0 in automatic_target.c, +5/-2 in
 dialog_scope.c and +5/-0 in dialog_show.c: 18 added, 2 removed, net 16.
 One early scratch experiment started its styled child with different hidden
 startup semantics and failed visibility; it was discarded and is not counted
-as a test pass. S35 is locally verified; P1 push and remote review remain
-pending. T18/M0 and the deferred task-level audit remain open.
+as a test pass. P1 `c3b1d09` was pushed; all 11 changed files including
+the four assets were retrieved from GitHub and matched. P2 `ca0eea5` closed
+S35 and admitted S36; its actual remote CURRENT was verified. T18/M0 and
+the deferred task-level audit remain open.
