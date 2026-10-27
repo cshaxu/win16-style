@@ -38,3 +38,5 @@ Actor发现的VB选择控件缺口已按用户请求纳入[VB5/VB6专项候选](
 
 
 S15包测试进度文件共享冲突已由[S17记录](../history/M0-T18-S17-test-efficiency.md)修复并验证；菜单和树控件超时仍未定位。
+
+- [ ] TODO(Medium): 现代 VCL `TToggleSwitch` 的经典外观尚未实现；Owner：未来经证据准入的 VCL 控件适配。Evidence：[S20](../history/M0-T18-S20-desktop-evidence.md)。Admission：真实版本可复核的公开状态或内容中性绘制契约、开关/禁用/焦点/DPI及输入语义；不得依据像素、固定图集位置或私有字段猜测状态。

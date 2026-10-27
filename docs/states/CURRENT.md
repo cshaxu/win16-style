@@ -6,7 +6,7 @@ M0 T17 已按用户明确缩小后的范围收口；23 项 VB 延期项保留在
 Delphi VCL 74 个 UI 家族种子、框架分支、五个固定候选及逐项证据接收者；T18 S2 已将
 全部种子逐项归入35个既有原生协议模型或39个明确的原生保留边界。S4 已完成首组
 精确 TEdit/TListBox与TTabControl公开协议实现、干净双宽四文件包和双发布；实际 Delphi 显示集成
-仍统一留给T18最终收口。S10已完成组合框与列表验证；S11已完成工具栏文字边界修复、真实DoubleKiller复测及提交推送复核；S12真实MD5summer补证及远端复核完成；S13双宽干净构建、真实树控件与VB6 actor复测、91项包测试、双发布及远端aae1565复核完成；S14纠正S12独立包闭环并完成双发布及远端f1ac9ff复核；S15核实现代VCL候选及公开状态边界，双宽包、91项低并发回归、双发布及远端4032bcf复核完成；S16追踪真实开关绘制及输入、双宽包91项通过、双发布及远端5e48716复核完成；S17修复进度观察竞争并减少字体重复选取，双宽包92项通过、双发布及远端b3c2a8b复核完成；S18完成开关公开状态调查、双宽包92项及双发布，远端2edd749已复核；S19实现可审计聚焦包回归，聚焦10项、标准93项、双发布及远端d583890复核完成；准入S20继续开关视觉适配；S20 P1恢复隔离桌面、真实开关和VB/VCL聚焦包复测并双发布，仍在调查；不得用 demo
+仍统一留给T18最终收口。S10已完成组合框与列表验证；S11已完成工具栏文字边界修复、真实DoubleKiller复测及提交推送复核；S12真实MD5summer补证及远端复核完成；S13双宽干净构建、真实树控件与VB6 actor复测、91项包测试、双发布及远端aae1565复核完成；S14纠正S12独立包闭环并完成双发布及远端f1ac9ff复核；S15核实现代VCL候选及公开状态边界，双宽包、91项低并发回归、双发布及远端4032bcf复核完成；S16追踪真实开关绘制及输入、双宽包91项通过、双发布及远端5e48716复核完成；S17修复进度观察竞争并减少字体重复选取，双宽包92项通过、双发布及远端b3c2a8b复核完成；S18完成开关公开状态调查、双宽包92项及双发布，远端2edd749已复核；S19实现可审计聚焦包回归，聚焦10项、标准93项、双发布及远端d583890复核完成；准入S20继续开关视觉适配；S20恢复隔离桌面并验证开关及VB/VCL聚焦包，未证实的开关适配移交TODO；准入S21调查VCL复选列表；不得用 demo
 冒充 Delphi。
 以下段落为 T17 的技术基线/历史证据，不覆盖 T18 状态。
 
@@ -68,26 +68,26 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S20 Packet
+## M0 T18 S21 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S19聚焦/标准验证及远端d583890已复核，顺序准入S20；T18保持开放 |
-| Admission And Approval | 用户要求完成可实现控件并自行测试，允许本T连续S；按已交付聚焦入口选择相关测试，不新开T |
-| Objective | 基于S16实际内存DC到开关HWND的StretchBlt，研究无需读取或猜测VCL开关状态的视觉适配；契约可靠时实现并验证 |
-| Non-goals | 不按颜色/图集位置猜开关值、不读取VCL私有布局、不替换原始图形资源、不修改用户配置或既有进程；不更改标题字体菜单及现有renderer语义 |
-| Reference Baseline | [S16绘制追踪](../history/M0-T18-S16-toggle-trace.md)、[S18状态观察](../history/M0-T18-S18-toggle-accessibility.md)、[S19聚焦测试](../history/M0-T18-S19-focused-package.md) |
-| Candidate Proposal | [Delphi Win32控件完整审计与Win3.x风格适配](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 自有C探针及必要双宽DLL内部；公开ABI、三个组件和原图形字节不变 |
-| Applicable Rules | C17/MinGW GCC/Ninja/ccache；精确窗口/DC/线程所有者、受控自有副本及资源回收；各S相关包测试、T收口全量集成 |
-| Verification | 同一真实开关及模型的开/关、disabled、焦点、鼠标/键盘、DPI、绘制前后对比、失败回退和负例；保留事件/内容/应用状态并回归双宽相关路径 |
-| Expected Markers | 真实绘制作用域与结果可观测、未知内容安全回退、原生事件与切换状态保留、资源和Job清理；不能以附着或仅灰度截图宣称完整 |
-| Asset Needs | build/t18-s15-modern自有副本、build/t18-s20-toggle scratch；不分发第三方样本或图像 |
-| Reporting Requirements | 明确支持的样本/变体、像素与输入证据、不支持的主题及DPI；其他VCL和VB覆盖不外推 |
-| Stop Conditions | 必须猜测状态、改应用业务数据、依赖私有布局/固定主题图集、改变用户配置或无法保留原生输入时，不将该方案作为产品实现 |
-| Exit Criteria | 可证明路径实现并通过相关包/实际探针；不可证明则提供可复核实验及后续接收，T18继续开放 |
-| Original Owner Request | 全面控件适配、先做能实现的部分、每S编译测试发布、测试避免无谓长跑 |
-| Similar-Issue Sweep | 不同DPI、普通/disabled/focus、背景和图像、跨线程/重入/销毁、标准控件及VB现有绘制保持 |
+| Identifier Mode | Continuation；S20视觉方案未获可靠契约，证据和接收者已登记；T18保持开放 |
+| Admission And Approval | 用户要求全面控件适配、可实施部分连续准入S，不新开T；历史VB延期按用户决定保持 |
+| Objective | 调查冻结清单的VCL TCheckListBox实际承载、复选和绘制契约，能安全适配时实施 |
+| Non-goals | 不猜测私有对象布局或覆盖owner-draw业务内容；不变更标题、字体、菜单、原图形资源或其他任务改动 |
+| Reference Baseline | [S1控件全集](../etc/evidence/delphi-controls-audit.json)、[S2映射](../etc/evidence/delphi-demo-mapping.json)、[S20探针](../history/M0-T18-S20-desktop-evidence.md) |
+| Candidate Proposal | [Delphi Win32控件完整审计](../proposals/delphi-win32-controls.md) |
+| Files And ABI Surface | 自有原生C探针、必要双宽DLL内部和对应测试；三组件四产物与公开ABI不变 |
+| Applicable Rules | C17、MinGW GCC、Ninja、ccache；隔离自有样本、有限超时及完整清理；不修改应用业务数据和用户配置 |
+| Verification | 找到真实版本样本后核对裸/注入身份与实际绘制，验证勾选、键鼠、禁用、焦点、回调、DPI、销毁及双宽模型；相关聚焦包测试 |
+| Expected Markers | 精确类及模块所有权、原生消息和绘制责任、状态与通知保留，失败回退；没有真实证据时不得伪称支持 |
+| Asset Needs | 登记build/t18-s21-checklist任务scratch；现有真实应用仅使用受控副本和隔离配置 |
+| Reporting Requirements | 说明样本版本、实测边界、失败和跳过；不能由C模型外推真实Delphi或VB全集 |
+| Stop Conditions | 需要读取私有布局、猜测owner-draw内容、改变业务数据或覆盖应用回调时，保留原生并记录后续接收 |
+| Exit Criteria | 可证明路径实现并通过相关测试及发布；否则记录实际调查和下一接收者；T18继续开放 |
+| Original Owner Request | 完整盘点并做可实现控件；每S编译测试发布，实际集成在任务收口时进行，避免无谓长测 |
+| Similar-Issue Sweep | 普通与owner-draw列表、复选、图像、虚拟列表、重入销毁和已有VB/标准控件保持 |
 
 ## Identifier State
 
@@ -96,7 +96,7 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
 - Last delivery: M0 T18 S20 P1：隔离桌面恢复、真实开关证据及VB/VCL聚焦包12项通过、双发布；6ea9bc3已实际远端复核。
-- Open task: T18 S20 VCL开关无私有状态视觉适配；M0/T18开放。
+- Open task: T18 S21 VCL复选列表真实协议与适配；M0/T18开放。
 
 ## Technical Baseline
 
