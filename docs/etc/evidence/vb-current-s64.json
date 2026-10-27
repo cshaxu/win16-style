@@ -628,5 +628,29 @@
       "VB5 owner-draw OptionButton, Picture/DownPicture/DisabledPicture variants, other DPIs, IME, accessibility and physical input remain unverified.",
       "User-deferred OCX and DriveListBox remain out of scope; original external binary and diagnostic DLL are not redistributed."
     ]
+  },
+  "graphical_real_vb5_option_p13": {
+    "source": "https://github.com/darcfx/darcfx-submissions/tree/46012cf6dfbee4e809c2139f32d2b60f22104e5b/vb/games/forms/squash",
+    "binary_sha256": "e3835398bffe2341994375aa2b3b3bac39902220c814ae3ed2afcc904e0a4882",
+    "runtime_sha256": "8611dc1b60ae5c383bba6cb3ffd8a51aeebff23b95844f0ab3d6e5ecd0fadc84",
+    "real_owner": "Original x86 offline executable imports MSVBVM50.DLL. Its native ThunderRT5OptionButton Mouse and Keyboard windows have BS_OWNERDRAW. Scratch diagnostic DLL observed direct MSVBVM50 DrawFrameControl DFC_BUTTON states 0x10,0x110,0x410,0x610 at 96 DPI.",
+    "change": "Extend existing exact runtime-owned ODT_BUTTON/DC/direct-caller pathway and DFCS_CHECKED handling to ThunderRT5OptionButton; retain application/runtimes state, selection grouping, content and resources.",
+    "real_test": "tests/integration/vb_intrinsic.c real-graphical-vb5-option starts source-reviewed original executable on a self-owned private desktop, closes its two exact Jongmin Baek startup dialogs, temporarily enables Mouse, selects it and then Keyboard with native mouse messages, restores selection/group, disabled state, styles and fonts, and exits with zero owned processes. Bare, previous package and exact candidate succeeded.",
+    "false_start": "The original observer timed out during exit because the source-reviewed application displays two timer-triggered own modal prompts. The isolated job was closed; the optional observer handles only those exact titles from its own job. No user processes are touched.",
+    "visual": "Previous package and candidate direct-control PrintWindow images differ by 397 RGB pixels in a 57x25 capture; development and candidate images match SHA-256 0fc2c7908cfe6d1f6e7b1647f47107ae882cc6cccf5cf1196994e6153ba42bc7. This is bounded to the one x86 sample at 96 DPI.",
+    "negative_control": "x86/x64 VB5 protocol models fail against previous package at styled option attachment assertion and pass with candidate. The x64 model is not a real x64 VB5 runtime.",
+    "package": "16 focused actual-package tests, 0 skips, 14.21 s. Includes VB5/VB6 graphical models and existing choice/control paths, ABI, demo and propagation. Installed assets launcher retested VB5 model both widths.",
+    "sha256": {
+      "demo.exe": "347eaa2fdc772afe69375830fd0805a6c7ce35023db04efd9d35c1329977860d",
+      "ntw16s32.dll": "d08dcb7f284e3d7400532b812c01ab27787e51d894d78f57872870f873a93467",
+      "ntw16s64.dll": "4763315ffba8869c73a51517fba5ed0bb22a65a500b2b792b2bed6adddaba930",
+      "run16s.exe": "3a0206306c3222ec247b7e01a674b7298d2c37fdb9c5d635f83d595e43ff715f"
+    },
+    "publication": "Exact four tested artifacts published to assets root and O:/winnt/system32; eight SHA-256 comparisons passed.",
+    "limitations": [
+      "Actual VB5 runtime sample is x86 at 96 DPI; no general compatibility, other DPI, physical input, IME or accessibility claim.",
+      "VB5 Picture/DownPicture/DisabledPicture combinations and other user-deferred OCX/DriveListBox remain unverified.",
+      "Original external executable and diagnostic DLL are research-only, not distributed or required for build."
+    ]
   }
 }

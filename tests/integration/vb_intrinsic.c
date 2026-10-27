@@ -25,7 +25,7 @@ static void file_path(const WCHAR *path){
 }
 static HANDLE job,ready,port;
 static HWND form;
-static BOOL graphical_pixel_check;
+static BOOL graphical_pixel_check,close_vb5_squash;
 static DWORD pid;
 static HWND checks[80];
 static unsigned count;
@@ -154,6 +154,7 @@ static void CALLBACK shown(HWINEVENTHOOK h,DWORD e,HWND w,LONG object,LONG child
     }
     if(own){
         WCHAR title[160];GetWindowTextW(w,title,160);printf("SAMPLE_SHOW class=%ls title=%ls hwnd=%p\n",cls,title,(void *)w);fflush(stdout);
+        if(close_vb5_squash && !wcscmp(cls,L"#32770") && !wcscmp(title,L"Jongmin Baek")){PostMessageW(w,WM_CLOSE,0,0);return;}
         if(!wcsstr(cls,L"Form") || GetParent(w))return;
         form=w;
         pid=candidate;
@@ -250,6 +251,7 @@ static uint64_t capture(HWND w,const WCHAR *file,BOOL verify){
 static int worker(int argc,WCHAR **argv){
     CHECK(argc==4 || argc==5);
     if(argc==5)queue_prepare();
+    close_vb5_squash=!wcscmp(argv[3],L"real-graphical-vb5-option");
     BOOL styled=wcscmp(argv[1],L"bare")!=0;
     WCHAR command[2048],path[MAX_PATH],scratch[MAX_PATH];
     CHECK(GetEnvironmentVariableW(L"WIN16STYLE_CAPTURE_DIR",scratch,MAX_PATH));
@@ -321,8 +323,31 @@ static int worker(int argc,WCHAR **argv){
     BOOL real_checkbox=!wcscmp(argv[3],L"real-graphical-checkbox");
     BOOL real_picture=!wcscmp(argv[3],L"real-graphical-picture");
     BOOL real_vb5_check=!wcscmp(argv[3],L"real-graphical-vb5-check");
-    BOOL inventory=graphical || about_print || containers || file_verify || real_graphical || real_checkbox || real_picture || real_vb5_check || !wcscmp(argv[3],L"inventory");
+    BOOL inventory=graphical || about_print || containers || file_verify || real_graphical || real_checkbox || real_picture || real_vb5_check || close_vb5_squash || !wcscmp(argv[3],L"inventory");
     CHECK(runtime && dll==styled && EnumChildWindows(form,collect,0) && (inventory?count>0:count>10));
+    if(close_vb5_squash){
+        CHECK(ResetEvent(ready));(void)pump(ready,500);
+        HWND mouse=NULL,keyboard=NULL;WCHAR text[120],cls[100];
+        for(unsigned i=0;i<count;++i){GetClassNameW(checks[i],cls,100);CHECK(vb_control_text(checks[i],text,120));
+            if(!wcscmp(cls,L"ThunderRT5OptionButton") && !wcscmp(text,L"Mouse"))mouse=checks[i];
+            if(!wcscmp(cls,L"ThunderRT5OptionButton") && !wcscmp(text,L"Keyboard"))keyboard=checks[i];}
+        CHECK(mouse && keyboard && !IsWindowEnabled(mouse));
+        CHECK(((DWORD)GetWindowLongPtrW(mouse,GWL_STYLE)&BS_TYPEMASK)==BS_OWNERDRAW && ((DWORD)GetWindowLongPtrW(keyboard,GWL_STYLE)&BS_TYPEMASK)==BS_OWNERDRAW);
+        LRESULT mouse_initial=SendMessageW(mouse,BM_GETCHECK,0,0),keyboard_initial=SendMessageW(keyboard,BM_GETCHECK,0,0);
+        HFONT mouse_font=(HFONT)SendMessageW(mouse,WM_GETFONT,0,0),keyboard_font=(HFONT)SendMessageW(keyboard,WM_GETFONT,0,0);
+        LONG_PTR mouse_style=GetWindowLongPtrW(mouse,GWL_STYLE),keyboard_style=GetWindowLongPtrW(keyboard,GWL_STYLE);
+        EnableWindow(mouse,TRUE);CHECK(IsWindowEnabled(mouse));
+        for(unsigned pass=0;pass<2;++pass){HWND choice=pass?keyboard:mouse;
+            SendMessageW(choice,WM_LBUTTONDOWN,MK_LBUTTON,MAKELPARAM(5,5));SendMessageW(choice,WM_LBUTTONUP,0,MAKELPARAM(5,5));
+            for(unsigned wait=0;wait<50 && SendMessageW(choice,BM_GETCHECK,0,0)!=BST_CHECKED;++wait)Sleep(10);
+            CHECK(SendMessageW(choice,BM_GETCHECK,0,0)==BST_CHECKED);}
+        CHECK(SendMessageW(mouse,BM_GETCHECK,0,0)==mouse_initial && SendMessageW(keyboard,BM_GETCHECK,0,0)==keyboard_initial);
+        EnableWindow(mouse,FALSE);CHECK(!IsWindowEnabled(mouse));
+        CHECK(GetWindowLongPtrW(mouse,GWL_STYLE)==mouse_style && GetWindowLongPtrW(keyboard,GWL_STYLE)==keyboard_style &&
+            (HFONT)SendMessageW(mouse,WM_GETFONT,0,0)==mouse_font && (HFONT)SendMessageW(keyboard,WM_GETFONT,0,0)==keyboard_font);
+        CHECK(swprintf_s(path,MAX_PATH,L"%ls/vb5-option.bmp",scratch)>0);(void)capture(keyboard,path,FALSE);
+        puts("VB5_REAL_GRAPHICAL_OPTION_OK selection=1 group_restore=1 disabled_restore=1");
+    }
     if(real_vb5_check){
         HWND check=NULL;WCHAR text[120],cls[100];
         for(unsigned i=0;i<count;++i){GetClassNameW(checks[i],cls,100);CHECK(vb_control_text(checks[i],text,120));

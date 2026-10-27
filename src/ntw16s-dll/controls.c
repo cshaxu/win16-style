@@ -347,7 +347,8 @@ static control_style *graphical_target(HDC dc,UINT type,UINT flags,const void *a
     if(type!=DFC_BUTTON || !(flags&DFCS_BUTTONPUSH) || (flags&~allowed) ||
             !ntw16s_report_paint_target(dc,w) || !ntw16s_vb_graphical_button(*w) ||
             ((flags&DFCS_CHECKED) && !ntw16s_vb_class(*w,L"ThunderRT6OptionButton") &&
-             !ntw16s_vb_class(*w,L"ThunderRT6CheckBox") && !ntw16s_vb5_class(*w,L"ThunderRT5CheckBox")) ||
+             !ntw16s_vb_class(*w,L"ThunderRT6CheckBox") && !ntw16s_vb5_class(*w,L"ThunderRT5CheckBox") &&
+             !ntw16s_vb5_class(*w,L"ThunderRT5OptionButton")) ||
             !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(const WCHAR *)address,&caller) ||
             caller!=(HMODULE)GetClassLongPtrW(*w,GCLP_HMODULE) ||
             !GetWindowSubclass(*w,control_proc,(UINT_PTR)control_proc,&value))return NULL;

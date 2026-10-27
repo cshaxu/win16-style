@@ -77,15 +77,16 @@ static int child(const WCHAR *runtime_path,const WCHAR *witness_path,BOOL styled
     HWND w=CreateWindowW(name,L"Graphical",WS_CHILD|WS_VISIBLE|BS_OWNERDRAW,0,0,150,35,root,(HMENU)1,runtime,NULL);CHECK(w);
     HFONT source=font();SendMessageW(w,WM_SETFONT,(WPARAM)source,FALSE);RECT before,after;CHECK(GetWindowRect(w,&before));
     CHECK(!survey(state,event,w,VB_QUEUE_SURVEY) && (styled?state->attached && state->system_text>0:!state->system_text));CHECK(!pixels(w,styled));
-    if(!wcscmp(name,L"ThunderRT6CommandButton")){
-        HWND option=CreateWindowW(L"ThunderRT6OptionButton",L"Option",WS_CHILD|WS_VISIBLE|BS_OWNERDRAW,170,50,150,35,root,(HMENU)5,runtime,NULL);
+    {
+        BOOL vb6=!wcscmp(name,L"ThunderRT6CommandButton");
+        HWND option=CreateWindowW(vb6?L"ThunderRT6OptionButton":L"ThunderRT5OptionButton",L"Option",WS_CHILD|WS_VISIBLE|BS_OWNERDRAW,170,50,150,35,root,(HMENU)5,runtime,NULL);
         CHECK(option);SendMessageW(option,WM_SETFONT,(WPARAM)source,FALSE);
         CHECK(!survey(state,event,option,VB_QUEUE_SURVEY) && (styled?state->attached && state->system_text>0:!state->system_text));
         uint64_t normal,checked;CHECK(!image(option,styled,TRUE,&normal));mode(5);
         CHECK(!image(option,FALSE,TRUE,&checked));RECT rr;DWORD ee,flags;api_state(&rr,&ee,&flags);CHECK(flags&DFCS_CHECKED);
         if(styled)CHECK(normal!=checked);
         mode(0);CHECK(DestroyWindow(option));
-        puts("VB6_GRAPHICAL_OPTION_OK ownerdraw=1 checked_frame=1 native_image=1");
+        puts(vb6?"VB6_GRAPHICAL_OPTION_OK ownerdraw=1 checked_frame=1 native_image=1":"VB5_GRAPHICAL_OPTION_OK ownerdraw=1 checked_frame=1 native_image=1");
     }
     {
         BOOL vb6=!wcscmp(name,L"ThunderRT6CommandButton");
