@@ -31,7 +31,7 @@ static DWORD image(HWND w,DWORD *pixels,UINT count)
     int saved=SaveDC(surface.dc);if(!saved)ExitProcess(1);
     RECT clear={0,0,200,100};FillRect(surface.dc,&clear,GetStockObject(WHITE_BRUSH));
     WCHAR cls[64];GetClassNameW(w,cls,64);
-    if(!wcscmp(cls,L"TEdit"))SendMessageW(w,WM_PRINT,(WPARAM)surface.dc,PRF_CLIENT|PRF_ERASEBKGND);
+    if(!wcscmp(cls,L"TEdit") || !wcscmp(cls,L"TMemo") || !wcscmp(cls,L"TMaskEdit"))SendMessageW(w,WM_PRINT,(WPARAM)surface.dc,PRF_NONCLIENT|PRF_CLIENT|PRF_ERASEBKGND);
     else SendMessageW(w,WM_PRINTCLIENT,(WPARAM)surface.dc,PRF_CLIENT);
     GdiFlush();DWORD hash=2166136261u;
     for(UINT i=0;i<200*100;++i)hash=(hash^surface.bits[i])*16777619u;
@@ -40,8 +40,8 @@ static DWORD image(HWND w,DWORD *pixels,UINT count)
     return hash;
 }
 
-static WNDPROC native_procs[10];
-static const WCHAR *class_names[]={L"RenamedPush",L"RenamedCheck",L"TEdit",L"RenamedCombo",L"TListBox",L"RenamedStatic",L"RenamedScroll",L"TCheckBox",L"TRadioButton",L"TGroupBox"};
+static WNDPROC native_procs[12];
+static const WCHAR *class_names[]={L"RenamedPush",L"RenamedCheck",L"TEdit",L"RenamedCombo",L"TListBox",L"RenamedStatic",L"RenamedScroll",L"TCheckBox",L"TRadioButton",L"TGroupBox",L"TMemo",L"TMaskEdit"};
 /* Like a framework InitWndProc, registration itself is custom. The system
  * instance type is established by calling the saved native procedure. */
 static LRESULT CALLBACK framework_proc(HWND w,UINT m,WPARAM a,LPARAM b)
@@ -74,7 +74,8 @@ static int child(BOOL styled,BOOL aware)
     const WCHAR *bases[]={L"BUTTON",L"BUTTON",L"EDIT",L"COMBOBOX",L"LISTBOX",L"STATIC",L"SCROLLBAR"};
     const WCHAR *names[]={L"RenamedPush",L"RenamedCheck",L"TEdit",L"RenamedCombo",L"TListBox",L"RenamedStatic",L"RenamedScroll"};
     for(unsigned i=0;i<ARRAYSIZE(bases);++i)CHECK(superclass(bases[i],names[i]));
-    for(unsigned i=7;i<ARRAYSIZE(class_names);++i)CHECK(superclass(L"BUTTON",class_names[i]));
+    for(unsigned i=7;i<10;++i)CHECK(superclass(L"BUTTON",class_names[i]));
+    for(unsigned i=10;i<ARRAYSIZE(class_names);++i)CHECK(superclass(L"EDIT",class_names[i]));
     WNDCLASSW cls={0};cls.lpfnWndProc=parent_proc;cls.hInstance=instance;cls.lpszClassName=L"SuperclassParent";
     CHECK(RegisterClassW(&cls));
     HWND root=CreateWindowW(cls.lpszClassName,L"Superclass protocol",WS_OVERLAPPEDWINDOW,0,0,560,420,NULL,NULL,instance,NULL);CHECK(root);
@@ -114,6 +115,21 @@ static int child(BOOL styled,BOOL aware)
     if(styled)for(unsigned i=0;i<ARRAYSIZE(choice);++i){DWORD before=image(choice[i],NULL,0);CHECK(remove_control(choice[i]) && !attached(choice[i]));CHECK(image(choice[i],NULL,0)!=before);CHECK((HFONT)SendMessageW(choice[i],WM_GETFONT,0,0)==source);}
     for(unsigned i=0;i<ARRAYSIZE(choice);++i)CHECK(DestroyWindow(choice[i]));
     printf("SUPER_VCL_CHOICE_OK native_superclass=3 state_click=1 styled=%u detach_pixels=%u\n",styled,styled);
+    HWND memo=CreateWindowExW(WS_EX_CLIENTEDGE,L"TMemo",L"alpha\r\nbeta\r\ngamma\r\ndelta\r\nepsilon",WS_CHILD|WS_VISIBLE|ES_MULTILINE|ES_AUTOVSCROLL|WS_VSCROLL,10,250,180,60,root,(HMENU)41,instance,NULL);CHECK(memo);
+    HWND mask=CreateWindowExW(WS_EX_CLIENTEDGE,L"TMaskEdit",L"12345",WS_CHILD|WS_VISIBLE|ES_AUTOHSCROLL,210,250,150,30,root,(HMENU)42,instance,NULL);CHECK(mask);
+    WCHAR real_edit[64];CHECK(RealGetWindowClassW(memo,real_edit,ARRAYSIZE(real_edit)) && !_wcsicmp(real_edit,L"EDIT"));
+    CHECK(RealGetWindowClassW(mask,real_edit,ARRAYSIZE(real_edit)) && !_wcsicmp(real_edit,L"EDIT"));
+    if(styled)CHECK(attached(memo) && attached(mask));
+    SendMessageW(memo,WM_SETFONT,(WPARAM)source,TRUE);SendMessageW(mask,WM_SETFONT,(WPARAM)source,TRUE);
+    CHECK(SendMessageW(memo,EM_GETLINECOUNT,0,0)>=5);SendMessageW(memo,EM_SETSEL,0,5);SendMessageW(memo,EM_REPLACESEL,TRUE,(LPARAM)L"first");
+    CHECK(SendMessageW(memo,EM_UNDO,0,0));CHECK(SendMessageW(memo,EM_SETREADONLY,TRUE,0));
+    WCHAR memo_text[128];GetWindowTextW(memo,memo_text,ARRAYSIZE(memo_text));CHECK(!wcscmp(memo_text,L"alpha\r\nbeta\r\ngamma\r\ndelta\r\nepsilon"));
+    SendMessageW(memo,EM_LINESCROLL,0,2);CHECK(SendMessageW(memo,EM_GETFIRSTVISIBLELINE,0,0)>0);
+    if(styled){DWORD before_memo=image(memo,NULL,0),before_mask=image(mask,NULL,0);CHECK(remove_control(memo) && remove_control(mask));
+        CHECK(!attached(memo) && !attached(mask));CHECK(image(memo,NULL,0)!=before_memo && image(mask,NULL,0)!=before_mask);
+        CHECK((HFONT)SendMessageW(memo,WM_GETFONT,0,0)==source && (HFONT)SendMessageW(mask,WM_GETFONT,0,0)==source);}
+    CHECK(DestroyWindow(memo) && DestroyWindow(mask));
+    printf("SUPER_VCL_EDIT_OK native_superclass=2 multiline_undo_readonly_scroll=1 styled=%u detach_pixels=%u\n",styled,styled);
     SendMessageW(windows[2],WM_SETTEXT,0,(LPARAM)L"12345");SendMessageW(windows[2],EM_SETSEL,1,4);
     SendMessageW(windows[2],EM_REPLACESEL,TRUE,(LPARAM)L"8");WCHAR text[80];GetWindowTextW(windows[2],text,80);CHECK(!wcscmp(text,L"185"));
     CHECK(SendMessageW(windows[2],EM_UNDO,0,0));GetWindowTextW(windows[2],text,80);CHECK(!wcscmp(text,L"12345"));

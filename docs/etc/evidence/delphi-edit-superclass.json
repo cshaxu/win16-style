@@ -1,0 +1,8 @@
+{
+  "task":"M0 T18 S9",
+  "finding":"The existing native EDIT superclass route recognizes the actual USER instance type independently of the registered name; no production-source change is established by this model.",
+  "fixture":"Self-owned C registers TMemo and TMaskEdit names over native EDIT. Both widths at 96/144 DPI check native superclass identity, multi-line replacement/undo, read-only setting, scroll position, font preservation and styled-to-detached print pixels.",
+  "package":{"status":"passed","cases":87,"skipped":0,"seconds":345.5004579,"physical_input":"not-tested","publish":"assets root and O:/winnt/system32, tested four-file hashes matched"},
+  "sha256":{"demo.exe":"b7020ef71afde815daad31cf3fbd66c77f2f08c92671e36bfc058b25911699cc","ntw16s32.dll":"17b15a7f4b5f2d191745b90598da60060cc9e7f4611eac616202fcb8af173946","ntw16s64.dll":"4c7797aaf56483f9f138a6453add7feca826827d1a80ceb7c669fc63d599cd6b","run16s.exe":"01ffa4e574c127568931cf71f32bd83242c40efb22ead964fdf358cbdedb90f7"},
+  "limitations":"TMaskEdit is only a plain EDIT superclass model: mask formatting, validation, input and real Delphi behavior are not verified. The read-only check verifies setting and unchanged text, not an attempted edit. TRichEdit is a distinct implementation and is not covered. Actual Delphi applications and physical input remain for T18 final integration."
+}

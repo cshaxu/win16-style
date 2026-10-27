@@ -165,6 +165,9 @@
 - [T18 S8 VCL选择控件超类](evidence/delphi-choice-protocol.json)：三个同名原生BUTTON
   超类模型的状态、通知、像素和卸载；真实Delphi版本仍需另验。
 
+- [T18 S9 EDIT超类模型](evidence/delphi-edit-superclass.json)：多行编辑、撤销、
+  滚动及卸载对照；掩码语义和真实Delphi应用不在本模型证明范围。
+
 - [T17 S10图形命令按钮](evidence/vb-graphical-controls.json)：真实双版本owner-draw通知/primitive，原生返回/图像/应用绘制保持与有限覆盖。
 
 - [T17 S13图形选择控件](evidence/vb-graphical-choices.json)：精确 VB 图形
