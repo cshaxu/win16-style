@@ -53,6 +53,6 @@ x86/x64 installed-entry probes. The four tested hashes match both locations:
 | ntw16s64.dll | `5160fda1acd67f71eda972ab3e5921e06119f88dd08a5ea37ecdc170e7f983f6` |
 | run16s.exe | `27c06800b855686892e702b79d9459e9548e1a82fe55959bfa8cc04bbe4a515f` |
 
-P1 commit and actual remote verification are pending. The intermittent screen
+P1 `7cb84f2` was pushed; all 12 changed files were retrieved from the actual GitHub commit and matched byte for byte. The intermittent screen
 comparison and unverified framework variants stay open for follow-up; the
 larger T18 audit is not complete.

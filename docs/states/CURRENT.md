@@ -68,65 +68,30 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S39 Packet
+## M0 T18 S40 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S38 P1双发布与远端七文件核对通过，S39首次准入 |
+| Identifier Mode | Continuation；S39 P1双发布与远端12文件核对通过，S40首次准入 |
 | Admission And Approval | 用户授权T18内自动实施可做控件并完成测试，不新开T |
-| Objective | 为真实运行时拥有的VCL TColorBox实施有限Win16下拉按钮适配，保留应用自绘色块 |
-| Non-goals | 不重画项目、应用文字或色块，不改变标题、字体、菜单、原图形和其他owner-draw控件 |
-| Reference Baseline | [S38调查](../history/M0-T18-S38-control-audit.md)、[S37模块见证](../history/M0-T18-S37-vcl-trackbar.md)、[S38台账](../etc/evidence/delphi-s38-working-ledger.json) |
+| Objective | 调查真实TColorBox展开状态偶发按钮外屏幕像素差异，判断原生重绘与候选的责任边界 |
+| Non-goals | 不掩盖异常、不仅凭离屏结果判定屏幕效果，不改应用色块/数据、标题、字体、菜单或原图形 |
+| Reference Baseline | [S39颜色框](../history/M0-T18-S39-vcl-color-combo.md)、[S38调查](../history/M0-T18-S38-control-audit.md) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 现有C DLL身份及组合框有限绘制、双宽自有测试；不增产品文件或公开ABI |
+| Files And ABI Surface | 已登记自有原生探针和必要现有C DLL修复，不增加产品文件或公开ABI |
 | Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；隔离自有实例、有时限回收 |
-| Verification | 真实native转发见证、owner-draw保留、各DPI/裁剪、禁用展开焦点/选择通知、重入/销毁与资源，旧包负例与实际包 |
-| Expected Markers | 仅公开按钮区域改变，色块及应用绘制无改变，原生消息、状态与生命周期保留；无证据变体原生退回 |
-| Asset Needs | 登记build/t18-s39-color-combo；沿用并保留S38双宽观察证据 |
-| Reporting Requirements | 安全接入契约、真实样本及自包含双宽负例、像素与状态、未覆盖项；双发布提交推送远端复核 |
-| Stop Conditions | 不能保留应用色块、输入、通知或生命周期时不得泛化，保留原生并记录 |
-| Exit Criteria | 有证据的有限实现或明确安全边界、同批实际包与交付；T18/M0开放 |
+| Verification | 成对记录WM_DRAWITEM状态/DC、控件与弹层几何、屏幕与离屏像素、消息顺序、焦点，双宽原生与候选对照 |
+| Expected Markers | 找到可复现差异及最后正常节点；区分候选引入、应用/原生重画、采样问题；不由相关性推断因果 |
+| Asset Needs | 登记build/t18-s40-color-screen；保留S39原始证据 |
+| Reporting Requirements | 根因或明确未决证据、受影响范围、验证限制；按产品S规范构建、必要双发布、提交与远端复核 |
+| Stop Conditions | 未排除候选破坏色块时不得扩展样式范围；不修改系统全局设置或现有用户进程 |
+| Exit Criteria | 清晰定位并修复可控缺陷或有界保留并转交后续；T18/M0开放 |
 | Original Owner Request | 能做的控件全部实现并测试，最终集中集成；不反复要求用户测试 |
-| Similar-Issue Sweep | 同类owner-draw组合框、原生v5/v6与VCL普通组合框，不按类名泛化 |
+| Similar-Issue Sweep | 检查普通owner-draw组合框与没有S39样式时的相同绘制行为 |
 
-S38 P1 `e0c5eed`已推送，GitHub实际取回七文件逐字节一致；12项聚焦
-双宽包与两个发布位置摘要一致。TColorBox试绘仅为可行性，非产品支持；
-S38关闭，T18/M0开放，其他74行未完成项继续保留。
-
-S39原型：真实双宽TColorBox自有实例的观察器在WM_PAINT原生绘制后仅绘按钮，
-两版均观察到4次paint/4次试绘，退出时嵌套深度0、子控件/父控件子类均恢复；
-打开关闭期间WM_COMMAND通知序列7、10、8与无试绘对照相同，184项与选中0
-保持。证据在build/t18-s39-color-combo；这仍是scratch原型，不证明键盘、
-选择改变、禁用/焦点切换、裁剪和生命周期完全透明，也尚无产品变更。
-S39候选现已加入严格TColorBox/native COMBOBOX转发见证和仅按钮区域绘制；
-双宽增量构建与自有C模型通过伪类拒绝、键盘选择、popup、owner-draw色块、
-裁剪及原生DC裁剪状态、重入移除和销毁。双宽旧包正例均因未附着失败；
-双宽真实VCL样本正常/禁用状态按钮区各480像素变化、区域外0。展开状态
-屏幕采样曾有按钮外差异，离屏WM_PRINTCLIENT重验后双宽均480/0，通知序列
-均为7、10、8、7、10、8；屏幕差异成因尚未定位，不冒称屏幕对照通过。
-实验编译日志在build/t18-color-combo，当前候选未发布；还需自绘像素/通知
-变体、资源和异常清理验证、来源收据、独立包、双发布及远端复核。
-追加自有双宽嵌套打印与应用绘制异常展开测试均通过；一次异常前后GDI计数
-不变，1024次重复打印的后64次计数稳定（x86 54→54、x64 58→58）。
-WM_PRINTCLIENT原生返回时裁剪区曾排除按钮，现保留调用方输入裁剪用于绘制
-并恢复原生返回裁剪；双宽像素和DC状态对照通过。模型96 DPI，真实样本
-144 DPI；不同输入/主题及屏幕展开差异仍需明确列为未覆盖。
-串行x64展开屏幕对照仍有按钮外1718像素差异；两组焦点均在颜色框、列表
-和窗口位置一致，原因未查明。离屏打印中双宽仅按钮区变化、通知序列一致；
-因此屏幕展开状态仍未验证，不能用离屏成功替代。后续交付必须如实记录此
-限制，避免宣称完整颜色框或全部变体已适配。
-随后同一自有窗口中，展开状态保持不变，先截屏、移除样式并重画再截屏；
-双宽各480像素变化全在按钮区、区外0，焦点仍为颜色框且弹出保持展开。
-这是同实例前后证据，不解释先前跨进程截图差异；其根因仍未确定。
-最终包发布后x86同实例展开屏幕复测一次仍出现按钮外1718像素差异。追加
-四组仅原生重画及四组移除后重画：仅重画一组也出现相同1718像素区外差异、
-其余三组为0；移除后重画一组出现1718、其余三组为0（均另有480按钮像素）。
-可确定差异不以移除样式为必要条件，但其根因未查明，不能宣称所有屏幕
-重绘状态已验证。实际包20项聚焦零skip并双发布，最终样本与提交记录待整理。
-S39交付证据已汇入[历史](../history/M0-T18-S39-vcl-color-combo.md)；实际
-同批四文件20项聚焦通过无skip、20.54秒，两处各双宽安装入口通过并核对
-八摘要。跨/同实例偶发屏幕差异仍未定位，不扩张为全面成功；P1待提交推送
-及实际远端复核，S39/T18/M0保持开放。
+S39 P1 `7cb84f2`已推送，GitHub实际取回12文件逐字节一致；20项聚焦包、
+双发布及两位置双宽入口通过。真实样本离屏结果限于按钮区；展开屏幕在
+仅重画及移除后均偶发1718像素区外差异，原因未定。S39关闭，T18/M0开放。
 
 ## Identifier State
 
@@ -134,8 +99,8 @@ S39交付证据已汇入[历史](../history/M0-T18-S39-vcl-color-combo.md)；实
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S38：12项聚焦包、双发布、真实双宽控件调查及e0c5eed远端七文件复核。
-- Open task: T18 S39 运行时VCL颜色组合框有限按钮；M0/T18开放。
+- Last delivery: M0 T18 S39：20项聚焦包、双发布、真实双宽颜色框及7cb84f2远端12文件复核。
+- Open task: T18 S40 颜色框展开屏幕差异调查；M0/T18开放。
 
 ## Technical Baseline
 
@@ -184,6 +149,8 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T18 S39 VCL颜色组合框](../history/M0-T18-S39-vcl-color-combo.md)：20项聚焦包、双发布、双宽像素与通知对照及P1远端12文件复核；偶发屏幕差异交S40。
 
 - [T18 S38 VCL控件调查](../history/M0-T18-S38-control-audit.md)：七类真实窗口与颜色框试绘、12项聚焦包、双发布及P1远端七文件复核。
 
