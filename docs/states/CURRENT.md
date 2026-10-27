@@ -68,54 +68,30 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S41 Packet
+## M0 T18 S42 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S40 P1双发布与远端七文件核对通过，S41首次准入 |
+| Identifier Mode | Continuation；S41 P1双发布与远端七文件核对通过，S42首次准入 |
 | Admission And Approval | 用户授权T18内自动实施可做控件并完成测试，不新开T |
-| Objective | 调查真实运行时拥有的VCL TDateTimePicker及日期弹层，寻找保留原生日期行为的Win16适配路径 |
-| Non-goals | 不改日期数据、弹层行为、标题、字体、菜单或原图形，不以类名推断完整支持 |
-| Reference Baseline | [S38真实日期控件](../history/M0-T18-S38-control-audit.md)、[S39颜色框](../history/M0-T18-S39-vcl-color-combo.md)、[S40屏幕调查](../history/M0-T18-S40-color-screen.md) |
+| Objective | 为真实运行时拥有的VCL TDateTimePicker实施有限Win16下拉按钮适配，保留原生日期与日历 |
+| Non-goals | 不重画日期字段或日历，不修改标题、字体、菜单、原图形或无见证的其他控件 |
+| Reference Baseline | [S41日期调查](../history/M0-T18-S41-date-picker-audit.md)、[S39颜色框](../history/M0-T18-S39-vcl-color-combo.md)、[S40屏幕差异](../history/M0-T18-S40-color-screen.md) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 自有隔离原生探针及必要既有C模块，不增产品文件或公开ABI |
+| Files And ABI Surface | 现有C DLL身份及有限绘制、双宽自有测试；不增产品文件或公开ABI |
 | Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；隔离自有实例、有时限回收 |
-| Verification | 双宽真实native转发、公开控件/按钮几何、日期/弹层/键盘/通知、绘制所有权及生命周期；未覆盖面明确 |
-| Expected Markers | 可复现真实外观缺口与精确可实施契约；应用数据、输入及弹层不被覆盖 |
-| Asset Needs | 登记build/t18-s41-date-picker；保留S38真实样本与S40证据 |
-| Reporting Requirements | 准确owner/位宽、候选契约、操作及像素证据、未覆盖变体；每S按构建、必要双发布、提交远端复核规范 |
-| Stop Conditions | 无法区分自绘或保留日期/输入/通知时不得泛化重画；不修改系统设置或用户现有进程 |
-| Exit Criteria | 得出可执行适配或有界保留并转交后续；T18/M0开放 |
+| Verification | native转发见证、公开按钮几何、日期/键盘/日历/通知、DPI/裁剪、嵌套/异常/资源、旧包负例、实际包 |
+| Expected Markers | 仅公开按钮区变化，日期和应用绘制不受影响，输入和弹层保持；不支持变体原生回退 |
+| Asset Needs | 登记build/t18-s42-date-picker；保留S41双宽探针与首轮退出异常记录 |
+| Reporting Requirements | 准确契约、真实与自有双宽正负例、输入像素、未覆盖及探针失败；双发布提交推送远端复核 |
+| Stop Conditions | 不能保留日期字段、键盘、通知或生命周期时不得泛化，保留原生并记录 |
+| Exit Criteria | 有证据的有限实现或明确安全边界、同批实际包与交付；T18/M0开放 |
 | Original Owner Request | 能做的控件全部实现并测试，最终集中集成；不反复要求用户测试 |
-| Similar-Issue Sweep | 原生日期控件及VCL包装、多版本样本、弹层与普通owner-draw边界 |
+| Similar-Issue Sweep | 普通系统日期控件、VCL不同样式与checked/updown、自绘及日历弹层 |
 
-S40 P1 `922393c`已推送，GitHub实际取回七文件逐字节一致；12项聚焦包与
-双发布通过。偶发屏幕差异在旧/新样本均出现，应用两次绘图DC相同而先前
-屏幕不同，具体呈现或采样机制未定，留[TODO](TODO.md)；S40关闭，T18/M0开放。
-
-S41首轮真实双宽144 DPI自有样本：TDateTimePicker未附着，其类模块将
-WM_PAINT/WM_NCPAINT转发对应系统过程；DTM_GETDATETIMEPICKERINFO成功，
-公开按钮区(104,0)-(130,48)。原生鼠标消息打开同进程SysMonthCal32，
-双方各发一次DTN_DROPDOWN/DTN_CLOSEUP、无日期变更，关闭后原日期不变；
-观察器与实例均退出。数据在build/t18-s41-date-picker；只证明本机单版本
-及一组状态，键盘、其他日期/样式、画面裁剪和异常生命周期仍待验证。
-将样本控件高度设为24后，双宽公开按钮区(104,0)-(130,24)；scratch试绘
-复用原combo glyph并按DPI逐坐标缩放，各改变552个像素且按钮外0。随后重画
-恢复，鼠标消息仍可打开/关闭同进程日历并保持日期，通知各一次；试绘未入
-产品，尚未验证实际键盘编辑、按下/禁用、checkbox、日期变更及应用自绘边界。
-双宽样本追加合成键盘消息：焦点位于日期框，VK_UP使2026-10-27变为
-2026-11-27、发出一次日期变化通知，随后原值通过公开消息恢复。弹层关闭
-本身未变更日期；这不是物理键盘或其他日期字段的覆盖。下拉按钮试绘仅为
-隔离原型，按下/禁用、checkbox、日历内部及应用自绘边界仍未验证。
-追加双宽禁用和展开状态：分别改变552与555个像素，均在公开按钮区内；
-展开时公开stateButton=8。64位展开探针首轮在输出完整控件报告后以1退出，
-未取得正常截图/退出确认，精确失败节点未定位；单独重跑通过，不能把
-重跑通过当作首轮根因。checkbox、日历内部、自绘变体及物理输入仍未覆盖。
-调查记录与样本边界见[S41历史](../history/M0-T18-S41-date-picker-audit.md)
-和[证据](../etc/evidence/delphi-s41-date-audit.json)；下一步独立包验证并
-按治理转交有界实现，不把scratch试绘当作产品效果。
-S41独立包12项聚焦通过无skip、10.41秒；重建摘要变化，已双发布并复测
-system32双宽入口。P1待提交推送和实际远端复核，S41/T18/M0仍开放。
+S41 P1 `a85346e`已推送，GitHub实际取回七文件逐字节一致；12项聚焦包、
+双发布及system32双宽入口通过。双宽真实日期控件公开按钮可试绘并恢复日期；
+64位探针首轮退出1的节点未定位，单独重跑通过不作为修复；S41关闭，T18/M0开放。
 
 ## Identifier State
 
@@ -123,8 +99,8 @@ system32双宽入口。P1待提交推送和实际远端复核，S41/T18/M0仍开
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S40：12项聚焦包、双发布、双宽绘图DC调查及922393c远端七文件复核。
-- Open task: T18 S41 真实VCL日期控件与弹层调查；M0/T18开放。
+- Last delivery: M0 T18 S41：12项聚焦包、双发布、双宽日期控件调查及a85346e远端七文件复核。
+- Open task: T18 S42 真实VCL日期控件有限按钮；M0/T18开放。
 
 ## Technical Baseline
 
@@ -173,6 +149,8 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T18 S41 VCL日期控件调查](../history/M0-T18-S41-date-picker-audit.md)：双宽真实弹层与键盘、按钮试绘、12项聚焦包与双发布；首轮探针异常未定位。
 
 - [T18 S40颜色框屏幕调查](../history/M0-T18-S40-color-screen.md)：旧/新双宽绘图DC对照、12项聚焦包及双发布；具体屏幕机制留TODO。
 

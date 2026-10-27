@@ -42,5 +42,5 @@ both system32 x86/x64 installed-entry probes passed. Both locations matched:
 | ntw16s64.dll | `75d89a697a64b3764c19cf5fe63036a6c8f114c2b931458b3af561905427f3a1` |
 | run16s.exe | `44c40ad4887138bbfec749b44bebfc079753d50f3a6af66110587d7ffa5a1ea2` |
 
-P1 commit and actual remote verification are pending; the remaining T18
+P1 `a85346e` was pushed and all seven changed files were retrieved from the actual GitHub commit and matched byte for byte; the remaining T18
 inventory and the screen mechanism from S40 remain open.
