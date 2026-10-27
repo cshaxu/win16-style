@@ -47,7 +47,9 @@ rows are still unfinished. A subsequent S must first implement and verify
 runtime-owned trackbar identity and a bounded postpaint policy with independent
 C tests for application draw results, selection, clipping, DPI, state, reentry,
 cleanup and a genuine old-build negative; it must not infer compatibility for
-other controls from this sample. The 74-row audit must then resume. This S remains active until push and actual remote review.
+other controls from this sample. The 74-row audit must then resume. P1 `fd608d0` was pushed; all seven changed files including four assets
+were retrieved from the actual GitHub commit and matched. S36 transfers the
+verified trackbar candidate to S37; the remaining 74-row audit is not complete.
 
 
 The S36 independent clean x86/x64 GCC 16.1.0 / Ninja / ccache 4.13.6 build

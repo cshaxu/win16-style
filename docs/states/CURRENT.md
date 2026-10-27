@@ -68,51 +68,30 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S36 Packet
+## M0 T18 S37 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S35双发布与P1远端11文件复核完成，T18保持开放 |
-| Admission And Approval | 用户要求可实现控件先实现并授权T18连续S；不新开T |
-| Objective | 恢复S33未完成的74项逐项审计，核对后续证据并定位安全可实现的下一个缺口 |
-| Non-goals | 不将原生模型或类名当作真实Delphi支持，不改兄弟仓库，不将未知项伪称完成 |
-| Reference Baseline | [S33集成进度](../history/M0-T18-S33-integration-progress.md)、[工作台账](../etc/evidence/delphi-s33-working-ledger.json)、[S34真实TEdit](../history/M0-T18-S34-vcl-module-edit.md) |
-| Candidate Proposal | [Delphi Win32控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 当前审计证据及必要自有原生探针；产品实现须在后续S明确准入 |
-| Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；自有隔离实例、有限等待 |
-| Verification | 逐项核对真实owner、公开协议、现有renderer和变体；明确模型、真实样本、未覆盖与接收者 |
-| Expected Markers | 74项冻结集合无遗漏；实际样本和未证实项明确区分；发现可安全实现的缺口转后续S |
-| Asset Needs | 登记build/t18-s36-vcl-audit任务scratch，保留S33/S34必要证据 |
-| Reporting Requirements | 列明可实现候选、证据、风险与未完成项；同批实际包、必要发布、提交推送及远端复核 |
-| Stop Conditions | 不依据类名、私有字段或固定像素猜测；不能把未证实契约写成已支持 |
-| Exit Criteria | 完成有证据的逐项审计并准入下一实现S或解释实际缺口；T18/M0开放 |
-| Original Owner Request | 能做的都实现并测试，最后统一做集成；不得无谓拖慢测试 |
-| Similar-Issue Sweep | 运行时DLL拥有的树、列表、滚动、页签及自绘控件分别核实，不泛化TEdit结论 |
+| Identifier Mode | Continuation；S36 P1双发布和远端七文件复核完成，剩余74项审计转后续S |
+| Admission And Approval | 用户授权T18内自动实现可做控件并完成测试，不新开T |
+| Objective | 在证据支持下为运行时DLL拥有的真实VCL TTrackBar实现保留原生内容的有限经典边框 |
+| Non-goals | 不依据类名放宽任意模块，不覆盖应用自绘、选区、刻度和输入，不改变标题、字体、菜单或原图形资源 |
+| Reference Baseline | [S36双宽真实滑块调查](../history/M0-T18-S36-trackbar-audit.md)、[S34运行时TEdit](../history/M0-T18-S34-vcl-module-edit.md)、[T15原生滑块](../history/M0-T15-S10-trackbar-controls.md) |
+| Candidate Proposal | [Delphi Win32控件完整审计](../proposals/delphi-win32-controls.md)及S36后绘制边框探针 |
+| Files And ABI Surface | 现有C DLL身份、滑块绘制及自有双宽测试；不新增产品文件或公开ABI |
+| Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；自有隔离实例与有限等待 |
+| Verification | 真实转发/同owner见证；原生v5/v6与运行时双宽，应用默认和非默认回调、选区、刻度、禁用/输入、裁剪、DPI、重入/销毁与资源；旧包负例及实际包 |
+| Expected Markers | 精确支持范围内边框变化、内部内容和原有应用通知保留；无证据变体原生退回；所有权/状态失败拒绝 |
+| Asset Needs | 登记build/t18-s37-vcl-trackbar任务scratch，保留S36原始截图与观察记录 |
+| Reporting Requirements | 根因、候选契约、真实样本与负例、像素和输入范围、未覆盖项；双宽同批包、双发布、提交推送及远端复核 |
+| Stop Conditions | 不能保留应用自绘结果、选区/刻度或生命周期时不得泛化，保留原生并记录 |
+| Exit Criteria | 有证据的有限实现或明确安全边界、独立包与交付；T18/M0开放，后续恢复未完成审计 |
+| Original Owner Request | 能做的控件全部实现并测试，最终集中集成；不反复要求用户测试 |
+| Similar-Issue Sweep | 既有trackbar v5/v6和TTrackBar、其他框架包装与非默认绘制结果，不扩大到无证据类 |
 
-S35 P1 `c3b1d09`已推送并实际取回11个变更文件逐字节复核；双宽18项
-聚焦包、完整对话框/消息框矩阵、双发布及安装探针通过。S35关闭、S36准入；
-T18/M0开放。
-
-S36进行中：真实DelphiVCL4Python双宽144 DPI TTrackBar由运行时DLL拥有且
-未附着；WM_PAINT/WM_NCPAINT实测转发系统滑块过程，范围0..10、位置
-0→5→0、thumb/channel有效，观察导入槽已恢复。默认style 0x61包含既有
-painter明确拒绝的TBS_ENABLESELRANGE，不能仅放宽所有者后声称适配；
-双宽实测选择范围空→2..7→清空及11刻度，首轮以SETSEL(-1,-1)
-恢复被夹为0..0，后续以CLEARSEL正确恢复；选择可视绘制、父通知和真实
-输入语义仍待调查。双宽样本及x64裸对照的父窗口PREPAINT均返回
-CDRF_NOTIFYITEMDRAW(32)，通道/滑块逐项返回默认值；观察器未改返回值
-并已移除。既有renderer只接管父窗口默认PREPAINT，不能覆盖应用回调。
-双宽测试性逐项绘制后边框对照在选区2..7时各改变294个外缘像素，
-外缘以外0变化，原16次应用通知、选区/位置恢复及观察器移除通过；
-仅144 DPI单样本；补充双宽禁用和合成按下对照，应用回调序列
-一致且每次仅外缘294像素变化；模拟应用跳过滑槽绘制时滑槽未被覆盖，
-重入移除观察器后停止叠加并恢复状态。这些是scratch实验，非产品生命周期
-证明；其他DPI、物理输入与更多回调变体未证实，不是产品修复。
-原始证据在已登记
-build/t18-s36-vcl-audit，未改产品；已识别可进一步验证的有限后绘制候选。
-见[S36记录](../history/M0-T18-S36-trackbar-audit.md)，其余74项审计仍未完成。
-独立双宽构建、18项聚焦包零skip、双发布及安装复验通过；P1提交推送
-与实际远端复核前S36保持开放。
+S36 P1 `fd608d0`已推送并实际取回七个变更文件逐字节核对；双宽18项
+聚焦包、双发布及安装探针通过。双宽真实TTrackBar有限边框可行性和反例
+证据转交S37；其他74项审计未完成，T18/M0开放。
 
 ## Identifier State
 
@@ -120,8 +99,8 @@ build/t18-s36-vcl-audit，未改产品；已识别可进一步验证的有限后
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S35：18项聚焦包及完整对话框/消息框矩阵、双发布、c3b1d09远端11文件复核。
-- Open task: T18 S36 恢复74项逐项审计；M0/T18开放。
+- Last delivery: M0 T18 S36：18项聚焦包、双发布、双宽真实滑块调查及fd608d0远端七文件复核。
+- Open task: T18 S37 运行时VCL滑块有限边框；M0/T18开放。
 
 ## Technical Baseline
 
@@ -170,6 +149,8 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T18 S36滑块调查](../history/M0-T18-S36-trackbar-audit.md)：双宽真实样本、后绘制可行性、18项聚焦包、双发布及P1远端七文件复核；其余审计未完成。
 
 - [T18 S35对话框测试效率](../history/M0-T18-S35-dialog-efficiency.md)：双宽范围/显示、完整对话框与消息框提速，双发布及P1远端11文件复核。
 
