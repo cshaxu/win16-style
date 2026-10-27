@@ -6,12 +6,16 @@ param(
     [ValidatePattern('^[a-z0-9-]+$')][string]$RunName='package-test',
     [ValidateRange(1,65535)][int]$Task=9,
     [switch]$FullIntegration,
+    [AllowEmptyString()][string]$Focus,
     [ValidateRange(1,16)][int]$Jobs=4,
     [switch]$Worker
 )
 $ErrorActionPreference='Stop'
 $repo=Split-Path $PSScriptRoot -Parent
 . (Join-Path $PSScriptRoot 'Set-PackageProgress.ps1')
+. (Join-Path $PSScriptRoot 'Select-PackageCases.ps1')
+$focusSpecified=$PSBoundParameters.ContainsKey('Focus')
+if ($focusSpecified -and $FullIntegration) { throw 'Focused and full integration modes cannot be combined' }
 $scratch=Join-Path $repo "build/t$Task-package/$RunName"
 $Package=(Resolve-Path -LiteralPath $Package).Path
 $BuildRoot=(Resolve-Path -LiteralPath $BuildRoot).Path
@@ -23,6 +27,7 @@ if(!$Worker){
         '-Task',$Task,'-Package',('"'+$Package+'"'),'-BuildRoot',('"'+$BuildRoot+'"'),'-SourceRoot',('"'+$SourceRoot+'"'))
     $arguments+=@('-Jobs',$Jobs)
     if($FullIntegration){$arguments+='-FullIntegration'}
+    if($focusSpecified){$arguments+=@('-Focus',$Focus)}
     $job=Start-Process (Join-Path $PSHOME 'pwsh.exe') -ArgumentList $arguments -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $scratch 'worker.log') -RedirectStandardError (Join-Path $scratch 'worker.err')
     @{pid=$job.Id;result=(Join-Path $scratch 'result.json');progress=(Join-Path $scratch 'progress.json');maximum_seconds=1800}|ConvertTo-Json
     return
@@ -52,6 +57,7 @@ try{
     $tree=@($run,$d32,$d64,(Join-Path $x86 'propagate-target.exe'),(Join-Path $x64 'propagate-target.exe'))
     $cases=@(
         (Case 'progress-sharing' (Join-Path $PSHOME 'pwsh.exe') @('-NoProfile','-File',(Join-Path $SourceRoot 'tests/tooling/package_progress_lock.ps1')) @('PACKAGE_PROGRESS_LOCK PASS old-fails locked-skip recovered nonsharing-fails')),
+        (Case 'plan-selection' (Join-Path $PSHOME 'pwsh.exe') @('-NoProfile','-File',(Join-Path $SourceRoot 'tests/tooling/package_case_selection.ps1')) @('PACKAGE_PLAN PASS default focused unknown duplicate empty missing-required rejected')),
         (Case 'abi-x86' (Join-Path $x86 'core-abi.exe') @($d32) @('ABI PASS width=32')),
         (Case 'abi-x64' (Join-Path $x64 'core-abi.exe') @($d64) @('ABI PASS width=64')),
         (Case 'demo-boundary' $python @('-B',(Join-Path $SourceRoot 'tests/demo-exe/boundary.py'),$demo) @('DEMO BOUNDARY PASS')),
@@ -158,6 +164,9 @@ try{
             (Case 'messages' (Join-Path $x64 'launch-automatic.exe') ($pair+@('messages')) @('LAUNCH MATRIX PASS') 520)
         )
     }
+    $plan=if($focusSpecified){Select-PackageCases -Cases $cases -Focus $Focus}else{Select-PackageCases -Cases $cases}
+    if($FullIntegration){$plan.coverage='full-integration'}
+    $cases=@($plan.cases)
     $records=[System.Collections.Generic.List[object]]::new()
     $progressConflicts=0
     $pending=[System.Collections.Generic.List[object]]::new()
@@ -226,7 +235,8 @@ try{
     $after=Package-Hashes
     foreach($name in $before.Keys){if($before[$name] -ne $after[$name]){throw 'Package changed during testing'}}
     $skipped=@($records|Where-Object skipped|ForEach-Object name)
-    @{status=if($skipped.Count){'passed-with-skips'}else{'passed'};seconds=$totalTimer.Elapsed.TotalSeconds;jobs=$Jobs;cases=$records.Count;skipped=$skipped;progress_sharing_conflicts=$progressConflicts;full_integration=[bool]$FullIntegration;package=$Package;sha256=$after;physical_input='not-tested';core_matrix='separate Build-Core matrix required'}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
+    $status=if($plan.coverage -eq 'focused'){if($skipped.Count){'passed-focused-with-skips'}else{'passed-focused'}}elseif($skipped.Count){'passed-with-skips'}else{'passed'}
+    @{status=$status;coverage=$plan.coverage;requested_cases=@($plan.requested);selected_cases=@($cases | ForEach-Object name);omitted_cases=@($plan.omitted);seconds=$totalTimer.Elapsed.TotalSeconds;jobs=$Jobs;cases=$records.Count;skipped=$skipped;progress_sharing_conflicts=$progressConflicts;full_integration=[bool]$FullIntegration;package=$Package;sha256=$after;physical_input='not-tested';core_matrix='separate Build-Core matrix required'}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
 }catch{
     @{status='failed-or-inconclusive';error=$_.Exception.Message}|ConvertTo-Json|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
     exit 1

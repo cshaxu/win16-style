@@ -62,7 +62,8 @@ RCDATA 3为四产物的项目LICENSE，RCDATA 4为两个DLL的完整MinHook/HDE 
 旧Detours源码/声明只保留在其历史交付中，当前产品不使用Detours。
 
 
-同包运行验证使用独立观察/控制器，将候选四文件作为实际参数；默认31项聚焦测试（含真实交互式cmd四位宽边、6场景等待契约、双宽15场景菜单取消及字体布局探针）：
+同包运行验证使用独立观察/控制器，将候选四文件作为实际参数；默认执行脚本登记的
+全部标准包用例，包括真实交互式cmd、等待契约、双宽菜单取消和字体布局：
 
 ```powershell
 pwsh -NoProfile -File tools/Test-Package.ps1 -RunName package-test-new -Package build/t9-package/candidate-new/candidate -BuildRoot build/t9-package/candidate-new/clean-source/build/.ninja -SourceRoot build/t9-package/candidate-new/clean-source
@@ -71,6 +72,12 @@ pwsh -NoProfile -File tools/Test-Package.ps1 -RunName package-test-new -Package 
 传入`-FullIntegration`另外执行64字段对照、回滚、八对话框及六消息框；它仍不替代
 完整core矩阵或物理验收。工具记录每例参数/退出码/必要标记和四文件前后哈希，
 隐藏worker总预算1800秒，单例120/320/520秒。发布时只复制被测四文件，不换包。
+
+每S可按活动包的改动范围显式传入例如`-Focus 'font-layout-x86,font-layout-x64'`。
+工具自动加入双位宽ABI、demo边界/双行为、首次启动和传播及工具自检；未知、重复、
+空计划或仅含基础用例的计划会拒绝。结果标为`passed-focused`或
+`passed-focused-with-skips`，并列出请求、执行和未运行的用例；它不能与
+`-FullIntegration`同时使用，也不能替代T收口的完整集成与独立core矩阵。
 
 原图形资源检查：`python tools/verify_resource_identity.py --self-test`。两DLL须包含
 全部18个原始栅格表及RCDATA5完整来源说明；禁止构建时生成替代图形。

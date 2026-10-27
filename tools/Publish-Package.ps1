@@ -8,10 +8,12 @@ param(
 )
 $ErrorActionPreference='Stop'
 $repo=Split-Path $PSScriptRoot -Parent
+. (Join-Path $PSScriptRoot 'Select-PackageCases.ps1')
 $names=@('demo.exe','ntw16s32.dll','ntw16s64.dll','run16s.exe')
 $Package=(Resolve-Path -LiteralPath $Package).Path
 $tested=Get-Content -LiteralPath $TestResult -Raw|ConvertFrom-Json
-if($tested.status -notin @('passed','passed-with-skips')){throw 'Only a passed actual-package result may be published'}
+if($tested.status -notin @('passed','passed-with-skips','passed-focused','passed-focused-with-skips')){throw 'Only a passed actual-package result may be published'}
+Assert-PackageCoverage -Result $tested
 $files=@(Get-ChildItem -LiteralPath $Package -Force)
 if(@(Compare-Object $names @($files.Name|Sort-Object)).Count){throw 'Expected exactly four candidate files'}
 function Hash([string]$Path){(Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()}
