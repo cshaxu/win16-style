@@ -74,7 +74,7 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | --- | --- |
 | Identifier Mode | Continuation；S63 P1 b047a90远端15文件复核通过 |
 | Admission And Approval | 用户授权T18内自动实施可做控件，不新开T |
-| Objective | 核实真实VCL编辑及无窗口候选的公开绘制协议，并修正VB原生探针跨进程文本读取、同线程队列观察、真实禁用状态和图形选择图像像素回归 |
+| Objective | 核实真实VCL编辑及无窗口候选的公开绘制协议，并修正VB原生探针跨进程文本读取、同线程队列观察、真实禁用状态和图形选择图像像素回归；验证并适配真实VB6运行库图形单选框的有限owner-draw外框 |
 | Non-goals | 保留输入、选择、文字、布局、回调及原图形资源 |
 | Reference Baseline | [S63 Memo](../history/M0-T18-S63-memo.md)、[S34编辑](../history/M0-T18-S34-vcl-module-edit.md) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
@@ -88,6 +88,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | Exit Criteria | 有证据的有限实现或明确后续接收，实际包交付；T18保持开放 |
 | Original Owner Request | 高效率实现可做控件，真实应用全量集成集中T收口 |
 | Similar-Issue Sweep | TMaskEdit、TRichEdit、TBevel、TPaintBox、TImage与VB跨进程控件文本读取 |
+
+S64 P8 已实现并测试真实VB6 owner-draw图形单选框：精确运行库身份、父ODT_BUTTON/原DC及直接运行库DrawFrameControl；保持原生文字、图片、事件与其他owner-draw，验证真实应用及双宽模型、旧包负例和发布。真实样本原始x86裸/样式皆创建BS_OWNERDRAW控件并完成事件；诊断DLL观察普通、选中和按下primitive，候选及实际包接入该外框并保留事件；真实x86样本原版/候选通过，双宽模型通过且旧包双宽负例检出，14项实际包零跳过，双发布八SHA通过；P8待提交推送远端复核，未覆盖VB5/复选及真实Picture属性。
 
 S61 P1 `b167067`远端7文件复核；真实TGroupBox自绘标题边界未证实，已列TODO。
 S62 P1 aef4407远端14文件已复核；S63 P1 b047a90远端15文件已复核；S64调查TMaskEdit、TRichEdit及可取得的无窗口候选。 当前包VB模型及字体12项通过、无skip；真实Actor两复选框原glyph/四次点击及作业回收通过；真实MadShow裸/样式双对照记录21个VB6窗口并正常退出；跨进程观察器返回126仍未解；单线程夹具改用NULL模块参数后通过。独立诊断DLL在UI线程记录20个MadShow可视子窗口安装成功，截图与发布DLL逐字节一致；修正跨进程文本读回后，MadShow裸/样式一字段字符输入/选择/恢复及Actor一字段文本修改/选择/恢复均通过；物理输入、IME和通知未覆盖，见[有界复核](../etc/evidence/vb-current-s64.json)，既往间歇超时根因仍未确定。S64 P1 daa6d5b已推送并远端复核13文件；P2 6022aa2已推送且远端10文件复核；真实VB5/VB6原作者样本裸启动与当前包对照均通过，验证单选、复选、组合、列表、编辑和滚动原生语义及原glyph，证据见VB记录。P3 77c684f已推送并远端核对；P4 a1311f8已推送并远端核对；P5 af3c372已推送且远端9文件复核；P6图形选择模型的位图/图标256像素断言及两种故障负例均双宽通过；14项实际包与双发布完成，004141f远端已复核。P7找到原作者VB6图片控件样本；私有桌面启动后报告COMCTL32.OCX或依赖无效，主窗未出现，免注册清单未成功，真实图片属性仍缺证；详见VB记录。自有VB5/VB6诊断构建各记录27条WM_COMMAND前后成对，无法独立证明应用事件处理器且VB5首次截图有差异，诊断和发布各一次复测匹配但原因仍未明。自有双宽跨进程同桌面126仍未解释，S64原VCL范围仍开放。

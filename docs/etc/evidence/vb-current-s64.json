@@ -511,5 +511,31 @@
     "attempt": "Private desktop, isolated self-owned job and bounded observer. Sample created ThunderRT6Main and a modal error, but no main form. Error: Component comctl32.Ocx or one of its dependencies not correctly registered: a file is missing or invalid. Observer timed out waiting for main form and job cleanup followed. Cause not identified; manifest is not proof of successful activation.",
     "not_covered": "No real graphical control was created or styled; Picture, DownPicture, DisabledPicture, input and image preservation remain unverified. First sandboxed attempt returned PRIVATE_DESKTOP_CREATE_FAIL error 5; escalated private-desktop attempt progressed to application error.",
     "boundary": "Downloaded binary and unmodified Microsoft OCX are research-only scratch; no registration, installation, redistribution or product source changes."
+  },
+  "graphical_real_option_p8": {
+    "source": "https://github.com/CodeJeetu/CovidDiagnostics/tree/a88af2adff083d12f49a6c79fea47324f514ae64",
+    "binary": "Project1.exe",
+    "binary_sha256": "0eb1697e91d92a7f8210d44a8f707ace6d3aa05224aaed7f6b90cd77f4531b5c",
+    "sample_boundary": "Original external x86 VB6 binary and source used only as optional research fixture, not redistributed or a build dependency. Source form has graphical options without Picture; do not infer image-property coverage.",
+    "real_owner": "ThunderRT6OptionButton owned by MSVBVM60.DLL; style 0x5401000b, BS_OWNERDRAW. Direct runtime DrawFrameControl DFC_BUTTON states 0x10, 0x410 and 0x610 observed in scratch-only diagnostic DLL.",
+    "change": "Exact runtime-owned VB6 OptionButton BS_OWNERDRAW, verified parent ODT_BUTTON DC, runtime caller and exact client rect reuse existing graphical command face; DFCS_CHECKED gives selected face. Native text, images, events, layout and other owner-draw remain runtime owned. VB5 owner-draw option and checkbox are not admitted.",
+    "real_test": "tests/integration/vb_intrinsic.c real-graphical-option: private desktop bare and tested package, 96 DPI, app own page transition and WM_LBUTTONDOWN/UP selection, checked state and next frame visibility; both owned jobs exited with zero processes. Original app with x86 candidate ran from packaged DLL.",
+    "negative_control": "x86/x64 native owner-draw model fails against previous assets package at the styled attachment assertion, passes with candidate; model is not a real x64 VB runtime.",
+    "draw_evidence": "Private diagnostic build accepted exact VB6 option calls for state 0x10, 0x410 and 0x610. Same-size real sample screenshots previous and candidate differ by 2228 RGB pixels bounded (123,280)-(443,320); outside this bound, including title, byte-identical in this pair. This is bounded to one app/DPI and not general visual acceptance.",
+    "test_package": "14 focused actual-package cases passed without skips in 12.76 s, includes x86/x64 owner-draw model, existing VB graphical choice and core controls, ABI, demo, initial injection and propagation.",
+    "publication": "Same four clean-built candidate files published to assets root and O:/winnt/system32, eight SHA-256 comparisons passed.",
+    "sha256": {
+      "demo.exe": "072afc6ffc6290382318d406653c4eef96011dd9a548206f7aef0addd569142f",
+      "ntw16s32.dll": "edd6984a62c3c1720c050460929a02a8ec79f782d737d918c584989074c1f122",
+      "ntw16s64.dll": "5610f95cbacc6272246b85ce35c37980f1bf944ae515264270c70bae9f29d0d5",
+      "run16s.exe": "6a6d03f12462e7aaef17ae188dd7bbbb6919832998517774b5411814954f3253"
+    },
+    "limitations": [
+      "Only the observed VB6 OptionButton runtime/class and owner-draw primitive path; no VB5 owner-draw option or checkbox claim.",
+      "No actual Picture, DownPicture, DisabledPicture, IME, accessibility or physical input validation.",
+      "Prior frame visibility check initially raced in the styled case; bounded 500 ms wait passed subsequent bare/candidate runs; no claim of physical input.",
+      "Real sample stdout and images are task scratch; neither application nor scratch diagnostic DLL is a product or test dependency."
+    ],
+    "scope_exclusions": "No third-party code or graphic resources copied; no ABI or fifth product."
   }
 }

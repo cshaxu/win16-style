@@ -317,8 +317,35 @@ static int worker(int argc,WCHAR **argv){
     BOOL graphical_verify=!wcscmp(argv[3],L"graphical-verify");
     BOOL graphical_pictures=!wcscmp(argv[3],L"graphical-pictures");
     BOOL graphical=graphical_verify || graphical_pictures || !wcscmp(argv[3],L"graphical-observe");
-    BOOL inventory=graphical || about_print || containers || file_verify || !wcscmp(argv[3],L"inventory");
+    BOOL real_graphical=!wcscmp(argv[3],L"real-graphical-option");
+    BOOL inventory=graphical || about_print || containers || file_verify || real_graphical || !wcscmp(argv[3],L"inventory");
     CHECK(runtime && dll==styled && EnumChildWindows(form,collect,0) && (inventory?count>0:count>10));
+    HWND original_form=form;
+    if(real_graphical){
+        HWND start=NULL;WCHAR text[120];
+        for(unsigned i=0;i<count;++i){CHECK(vb_control_text(checks[i],text,120));if(!wcscmp(text,L"Test Yourself"))start=checks[i];}
+        CHECK(start && ResetEvent(ready));SendMessageW(start,BM_CLICK,0,0);
+        CHECK(pump(ready,5000)==WAIT_OBJECT_0 && IsWindowVisible(form));
+        count=0;CHECK(EnumChildWindows(form,collect,0));HWND go=NULL;
+        for(unsigned i=0;i<count;++i){CHECK(vb_control_text(checks[i],text,120));if(!wcscmp(text,L"Ready"))go=checks[i];}
+        CHECK(go);SendMessageW(go,BM_CLICK,0,0);count=0;CHECK(EnumChildWindows(form,collect,0));
+        HWND choice=NULL,next=NULL;WCHAR cls[100],parent_text[120];
+        for(unsigned i=0;i<count;++i){
+            GetClassNameW(checks[i],cls,100);CHECK(vb_control_text(checks[i],text,120));
+            if(!wcscmp(cls,L"ThunderRT6Frame") && !wcscmp(text,L"Frame2"))next=checks[i];
+            if(!wcscmp(cls,L"ThunderRT6OptionButton") && !wcscmp(text,L"Light")){
+                CHECK(vb_control_text(GetParent(checks[i]),parent_text,120));
+                if(!wcscmp(parent_text,L"Frame1"))choice=checks[i];
+            }
+        }
+        CHECK(choice && next && IsWindowVisible(choice) && !IsWindowVisible(next));
+        CHECK(((DWORD)GetWindowLongPtrW(choice,GWL_STYLE)&BS_TYPEMASK)==BS_OWNERDRAW);
+        SendMessageW(choice,WM_LBUTTONDOWN,MK_LBUTTON,MAKELPARAM(5,5));
+        SendMessageW(choice,WM_LBUTTONUP,0,MAKELPARAM(5,5));
+        for(unsigned i=0;i<50 && !IsWindowVisible(next);++i)Sleep(10);
+        CHECK(IsWindowVisible(next) && SendMessageW(choice,BM_GETCHECK,0,0)==BST_CHECKED);
+        puts("VB_REAL_GRAPHICAL_OPTION_OK runtime6=1 ownerdraw=1 selected=1 event=1");
+    }
     CHECK(swprintf_s(path,MAX_PATH,L"%ls/actor-%ls.bmp",scratch,styled?L"styled":L"bare")>0);
     printf("VB_SAMPLE_IMAGE hash=%llu\n",(unsigned long long)capture(form,path,FALSE));
     printf("SAMPLE_ROOT class_owner=%p windows=%u\n",(void *)GetClassLongPtrW(form,GCLP_HMODULE),count);
@@ -496,6 +523,7 @@ static int worker(int argc,WCHAR **argv){
 
     if(queue_state){CHECK(UnhookWindowsHookEx(queue_get) && UnhookWindowsHookEx(queue_sent));queue_get=queue_sent=NULL;}
     SendMessageW(form,WM_CLOSE,0,0);
+    if(real_graphical && original_form!=form && IsWindow(original_form))SendMessageW(original_form,WM_CLOSE,0,0);
     CHECK(WaitForSingleObject(target,5000)==WAIT_OBJECT_0 && WaitForSingleObject(p.hProcess,5000)==WAIT_OBJECT_0);
     DWORD code;
     CHECK(GetExitCodeProcess(target,&code) && !code);

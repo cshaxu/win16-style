@@ -20,7 +20,12 @@ __declspec(dllexport) BOOL WINAPI VbGraphicalRegister(void)
             !GetClassInfoW(NULL,L"BUTTON",&cls))return FALSE;
     native_button=cls.lpfnWndProc;cls.lpfnWndProc=button;cls.hInstance=instance;cls.lpszClassName=name;
     source=CreateFontW(-13,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,ANSI_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Tahoma");
-    return source && RegisterClassW(&cls);
+    if(!source || !RegisterClassW(&cls))return FALSE;
+#ifdef VB_GRAPHICAL_RUNTIME60
+    cls.lpszClassName=L"ThunderRT6OptionButton";
+    if(!RegisterClassW(&cls)){UnregisterClassW(name,instance);return FALSE;}
+#endif
+    return TRUE;
 }
 __declspec(dllexport) HFONT WINAPI VbGraphicalFont(void){return source;}
 __declspec(dllexport) void WINAPI VbGraphicalMode(unsigned value){mode=value;}
@@ -41,6 +46,7 @@ __declspec(dllexport) LRESULT WINAPI VbGraphicalDraw(const DRAWITEMSTRUCT *item)
     if(mode==2)flags|=DFCS_FLAT;
     if(mode==3)InflateRect(&rect,-1,-1);
     if(mode==4)flags|=DFCS_ADJUSTRECT;
+    if(mode==5)flags|=DFCS_CHECKED;
     SetLastError(0x5a17);
     if(!DrawFrameControl(item->hDC,&rect,DFC_BUTTON,flags))ExitProcess(93);
     api_error=GetLastError();api_rect=rect;api_flags=flags;
@@ -53,6 +59,11 @@ __declspec(dllexport) LRESULT WINAPI VbGraphicalDraw(const DRAWITEMSTRUCT *item)
     RestoreDC(item->hDC,saved);return TRUE;
 }
 __declspec(dllexport) BOOL WINAPI VbGraphicalRelease(void)
-{return UnregisterClassW(name,instance) && DeleteObject(source);}
+{
+#ifdef VB_GRAPHICAL_RUNTIME60
+    if(!UnregisterClassW(L"ThunderRT6OptionButton",instance))return FALSE;
+#endif
+    return UnregisterClassW(name,instance) && DeleteObject(source);
+}
 BOOL WINAPI DllMain(HINSTANCE h,DWORD reason,LPVOID reserved)
 {(void)h;(void)reason;(void)reserved;return TRUE;}

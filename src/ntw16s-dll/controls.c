@@ -343,9 +343,10 @@ BOOL win16_style_checklist_frame(HDC dc,const RECT *rect,UINT type,UINT flags,co
 static control_style *graphical_target(HDC dc,UINT type,UINT flags,const void *address,HWND *w)
 {
     DWORD_PTR value;HMODULE caller=NULL;
-    const UINT allowed=DFCS_BUTTONPUSH|DFCS_PUSHED|DFCS_INACTIVE|DFCS_ADJUSTRECT;
+    const UINT allowed=DFCS_BUTTONPUSH|DFCS_PUSHED|DFCS_INACTIVE|DFCS_ADJUSTRECT|DFCS_CHECKED;
     if(type!=DFC_BUTTON || !(flags&DFCS_BUTTONPUSH) || (flags&~allowed) ||
             !ntw16s_report_paint_target(dc,w) || !ntw16s_vb_graphical_button(*w) ||
+            ((flags&DFCS_CHECKED) && !ntw16s_vb_class(*w,L"ThunderRT6OptionButton")) ||
             !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(const WCHAR *)address,&caller) ||
             caller!=(HMODULE)GetClassLongPtrW(*w,GCLP_HMODULE) ||
             !GetWindowSubclass(*w,control_proc,(UINT_PTR)control_proc,&value))return NULL;
@@ -378,7 +379,7 @@ BOOL win16_style_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,co
     /* This native primitive owns its face before VB draws the caption/image.
      * The native call has already preserved its return/rect/error semantics. */
     SetDCBrushColor(dc,s->palette.face);FillRect(dc,rect,(HBRUSH)GetStockObject(DC_BRUSH));
-    (void)button_border(dc,*rect,&s->palette,u,u,(flags&DFCS_PUSHED)!=0);
+    (void)button_border(dc,*rect,&s->palette,u,u,(flags&(DFCS_PUSHED|DFCS_CHECKED))!=0);
     RestoreDC(dc,saved);return TRUE;
 }
 static void other_control(HWND w,control_style *s,HDC dc,RECT r,HFONT font,const WCHAR *text,BOOL label)
@@ -1236,7 +1237,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
     /* Unverified graphical/owner-drawn VB variants stay native. A live
      * transition retires only this painter; do not keep drawing a plain box. */
     if(m!=WM_NCDESTROY && (ntw16s_vb_checkbox(w) || ntw16s_vb_option(w)) &&
-            !ntw16s_vb_plain_choice(w) && !ntw16s_vb_graphical_choice(w)){
+            !ntw16s_vb_plain_choice(w) && !ntw16s_vb_graphical_choice(w) && !ntw16s_vb_graphical_button(w)){
         if(m==WM_SETFONT)s->original_font=win16_style_system_source((HFONT)a);
         result=DefSubclassProc(w,m,a,b);
         if(!s->detached)win16_style_control_remove(w);

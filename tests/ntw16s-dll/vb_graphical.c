@@ -71,12 +71,22 @@ static int child(const WCHAR *runtime_path,const WCHAR *witness_path,BOOL styled
     HANDLE event=CreateEventW(NULL,TRUE,FALSE,event_name);CHECK(event && SetEnvironmentVariableW(VB_QUEUE_ENV,mapping_name));
     HMODULE witness=LoadLibraryW(witness_path);CHECK(witness);HOOKPROC get=(void *)GetProcAddress(witness,"VbQueueGet"),sent=(void *)GetProcAddress(witness,"VbQueueSent");
     BOOL (WINAPI *disconnect)(void)=(void *)GetProcAddress(witness,"VbQueueDisconnect");CHECK(get && sent && disconnect);
-    HHOOK get_hook=SetWindowsHookExW(WH_GETMESSAGE,get,witness,state->tid),sent_hook=SetWindowsHookExW(WH_CALLWNDPROC,sent,witness,state->tid);CHECK(get_hook && sent_hook);
+    HHOOK get_hook=SetWindowsHookExW(WH_GETMESSAGE,get,NULL,state->tid),sent_hook=SetWindowsHookExW(WH_CALLWNDPROC,sent,NULL,state->tid);CHECK(get_hook && sent_hook);
     WNDCLASSW cls={.hInstance=GetModuleHandleW(NULL),.lpfnWndProc=parent,.lpszClassName=L"GraphicalParent"};CHECK(RegisterClassW(&cls));
     HWND root=CreateWindowW(cls.lpszClassName,L"Graphical model",WS_POPUP,0,0,400,250,NULL,NULL,cls.hInstance,NULL);CHECK(root);ShowWindow(root,SW_SHOWNOACTIVATE);
     HWND w=CreateWindowW(name,L"Graphical",WS_CHILD|WS_VISIBLE|BS_OWNERDRAW,0,0,150,35,root,(HMENU)1,runtime,NULL);CHECK(w);
     HFONT source=font();SendMessageW(w,WM_SETFONT,(WPARAM)source,FALSE);RECT before,after;CHECK(GetWindowRect(w,&before));
     CHECK(!survey(state,event,w,VB_QUEUE_SURVEY) && (styled?state->attached && state->system_text>0:!state->system_text));CHECK(!pixels(w,styled));
+    if(!wcscmp(name,L"ThunderRT6CommandButton")){
+        HWND option=CreateWindowW(L"ThunderRT6OptionButton",L"Option",WS_CHILD|WS_VISIBLE|BS_OWNERDRAW,170,50,150,35,root,(HMENU)5,runtime,NULL);
+        CHECK(option);SendMessageW(option,WM_SETFONT,(WPARAM)source,FALSE);
+        CHECK(!survey(state,event,option,VB_QUEUE_SURVEY) && (styled?state->attached && state->system_text>0:!state->system_text));
+        uint64_t normal,checked;CHECK(!image(option,styled,TRUE,&normal));mode(5);
+        CHECK(!image(option,FALSE,TRUE,&checked));RECT rr;DWORD ee,flags;api_state(&rr,&ee,&flags);CHECK(flags&DFCS_CHECKED);
+        if(styled)CHECK(normal!=checked);
+        mode(0);CHECK(DestroyWindow(option));
+        puts("VB6_GRAPHICAL_OPTION_OK ownerdraw=1 checked_frame=1 native_image=1");
+    }
     uint64_t outside,inside;CHECK(!image(w,FALSE,FALSE,&outside) && !image(w,styled,TRUE,&inside));
     CHECK(styled?outside!=inside:outside==inside);
     for(unsigned variant=2;variant<=3;++variant){mode(variant);CHECK(!image(w,FALSE,FALSE,&outside) && !image(w,FALSE,TRUE,&inside) && outside==inside);}mode(0);
