@@ -4,6 +4,7 @@
 #include "native_api.h"
 #include "theme.h"
 #include "static_text.h"
+#include "combo_glyph.h"
 #include "injection/unwind.h"
 #include <commctrl.h>
 #include <stdlib.h>
@@ -25,9 +26,12 @@ typedef struct attachment {
     BOOL detached,tree,file_owner,picture,button_owner,checklist,status,spin,static_candidate,static_verified;
     BOOL edit_candidate,edit_attempted,edit_installed;
     BOOL track_candidate,track_attempted,track_installed;
+    BOOL color_candidate,color_attempted,color_installed;
     DWORD edit_original_style;
     HMODULE edit_witness_owner;
     HMODULE track_witness_owner;
+    HMODULE color_witness_owner;
+    HWND color_parent;
     unsigned status_epoch;
     HWND themed,report_window,report_parent;
     HMODULE report_module;
@@ -203,6 +207,16 @@ BOOL ntw16s_static_call_begin(ntw16s_static_call *scope,WNDPROC proc,HWND w,UINT
     WNDCLASSEXW native={.cbSize=sizeof(native)};HMODULE caller=NULL,native_owner=NULL,owner;
     ZeroMemory(scope,sizeof(*scope));
     if(message==WM_PAINT && static_paint && static_paint->window==w &&
+       static_paint->owner->color_candidate && !static_paint->owner->detached &&
+       !static_paint->owner->color_attempted && lookup(w)==static_paint->owner &&
+       GetClassInfoExW(NULL,L"COMBOBOX",&native) && proc==native.lpfnWndProc &&
+       GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+           (LPCWSTR)address,&caller)){
+        owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+        if(owner && caller==owner)static_paint->owner->color_witness_owner=owner;
+    }
+    native.cbSize=sizeof(native);
+    if(message==WM_PAINT && static_paint && static_paint->window==w &&
        static_paint->owner->track_candidate && !static_paint->owner->detached &&
        !static_paint->owner->track_attempted && lookup(w)==static_paint->owner &&
        GetClassInfoExW(NULL,TRACKBAR_CLASSW,&native) && proc==native.lpfnWndProc &&
@@ -266,14 +280,88 @@ static void static_paint_end(void *data)
 static NTW16S_UNWIND_FUNCTION LRESULT static_paint_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l)
 {
     static_paint_scope scope={static_paint,a,w,FALSE};ntw16s_unwind_scope unwind;LRESULT result;DWORD entry=GetLastError(),error;
-    static_paint=((a->static_candidate || a->edit_candidate || a->track_candidate) && !a->detached && m==WM_PAINT)?&scope:NULL;
+    static_paint=((a->static_candidate || a->edit_candidate || a->track_candidate || a->color_candidate) && !a->detached && m==WM_PAINT)?&scope:NULL;
     NTW16S_UNWIND_BEGIN(unwind,static_paint_end,&scope);
     SetLastError(entry);result=DefSubclassProc(w,m,p,l);error=GetLastError();scope.completed=TRUE;
     NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
 }
+typedef struct color_print_scope {attachment *owner;HRGN clip;BOOL completed,nested;} color_print_scope;
+static void color_print_end(void *data)
+{
+    color_print_scope *scope=data;
+    if(!scope->completed){DeleteObject(scope->clip);if(!scope->nested)release(scope->owner);}
+}
+static NTW16S_UNWIND_FUNCTION LRESULT color_print_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,HRGN clip)
+{
+    color_print_scope scope={a,clip,FALSE,static_paint!=NULL};ntw16s_unwind_scope unwind;
+    DWORD entry=GetLastError(),error;LRESULT result;
+    NTW16S_UNWIND_BEGIN(unwind,color_print_end,&scope);
+    SetLastError(entry);result=scope.nested?static_paint_dispatch(a,w,m,p,l):DefSubclassProc(w,m,p,l);
+    error=GetLastError();scope.completed=TRUE;NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
+}
+/* The application owns owner-drawn swatches and text. Only the documented
+ * native button rectangle is eligible for post-paint chrome. */
+static BOOL color_identity(HWND w,attachment *a,COMBOBOXINFO *info)
+{
+    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
+    WNDCLASSEXW native={.cbSize=sizeof(native)};RECT client,overlap;
+    if(a->detached || !IsWindow(w) || !a->color_witness_owner ||
+       (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)!=a->color_witness_owner ||
+       (style&3)!=CBS_DROPDOWNLIST || !(style&CBS_OWNERDRAWFIXED) || !(style&CBS_HASSTRINGS) ||
+       (style&CBS_OWNERDRAWVARIABLE) || (ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) ||
+       !GetParent(w) || (a->color_parent && GetParent(w)!=a->color_parent) ||
+       GetWindowThreadProcessId(GetParent(w),NULL)!=GetCurrentThreadId() ||
+       !GetClassInfoExW(NULL,L"COMBOBOX",&native) ||
+       GetClassLongPtrW(w,GCL_CBWNDEXTRA)<(ULONG_PTR)native.cbWndExtra ||
+       !GetComboBoxInfo(w,info) || a->detached || info->hwndCombo!=w || info->hwndItem!=w ||
+       !info->hwndList || GetWindowThreadProcessId(info->hwndList,NULL)!=GetCurrentThreadId() ||
+       !GetClientRect(w,&client) || info->rcButton.left<client.left || info->rcButton.top<client.top ||
+       info->rcButton.right>client.right || info->rcButton.bottom>client.bottom || IsRectEmpty(&info->rcButton) ||
+       IntersectRect(&overlap,&info->rcButton,&info->rcItem))return FALSE;
+    LRESULT count=SendMessageW(w,CB_GETCOUNT,0,0);if(a->detached || count<0)return FALSE;
+    LRESULT selected=SendMessageW(w,CB_GETCURSEL,0,0);
+    return !a->detached && IsWindow(w) && (selected==CB_ERR || (selected>=0 && selected<count));
+}
+static void color_button(HWND w,attachment *a,HDC dc,const RECT *dirty)
+{
+    COMBOBOXINFO info={.cbSize=sizeof(info)};RECT r,q;POINT origin;win16_style_palette palette;
+    if(!dc || !color_identity(w,a,&info) || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
+       !GetWindowOrgEx(dc,&origin) || origin.x || origin.y ||
+       !GetViewportOrgEx(dc,&origin) || origin.x || origin.y)return;
+    int dpi=(int)GetDpiForWindow(w);if(dpi<=0 || dpi>768)return;
+    int u=max(1,MulDiv(1,dpi,96)),gw=MulDiv(7,dpi,96),gh=MulDiv(9,dpi,96);
+    r=info.rcButton;if(r.right-r.left<gw+2*u || r.bottom-r.top<gh+2*u)return;
+    BOOL pressed=SendMessageW(w,CB_GETDROPPEDSTATE,0,0)!=0;
+    if(a->detached || !IsWindow(w) || GetParent(w)!=a->color_parent)return;
+    int saved=SaveDC(dc);if(!saved)return;
+    if(IntersectClipRect(dc,r.left,r.top,r.right,r.bottom)==ERROR ||
+       (dirty && IntersectClipRect(dc,dirty->left,dirty->top,dirty->right,dirty->bottom)==ERROR)){
+        RestoreDC(dc,saved);return;
+    }
+    win16_style_default_palette(&palette);HBRUSH brush=(HBRUSH)GetStockObject(DC_BRUSH);
+    SetDCBrushColor(dc,palette.face);FillRect(dc,&r,brush);SetDCBrushColor(dc,palette.edge);
+    for(int i=0;i<u;++i){FrameRect(dc,&r,brush);InflateRect(&r,-1,-1);}
+    q=r;SetDCBrushColor(dc,pressed?palette.shadow:palette.light);q.bottom=q.top+u;FillRect(dc,&q,brush);
+    q=r;q.right=q.left+u;FillRect(dc,&q,brush);
+    q=r;SetDCBrushColor(dc,pressed?palette.light:palette.shadow);q.top=q.bottom-u;FillRect(dc,&q,brush);
+    q=r;q.left=q.right-u;FillRect(dc,&q,brush);
+    int left=(r.left+r.right-gw)/2+(pressed?u:0),top=(r.top+r.bottom-gh)/2+(pressed?u:0);
+    SetDCBrushColor(dc,IsWindowEnabled(w)?palette.edge:palette.shadow);
+    for(int y=0;y<9;++y)for(int x=0;x<7;++x)if(combo_arrow[y][x]=='0'){
+        SetRect(&q,left+MulDiv(x,dpi,96),top+MulDiv(y,dpi,96),
+            left+MulDiv(x+1,dpi,96),top+MulDiv(y+1,dpi,96));FillRect(dc,&q,brush);
+    }
+    RestoreDC(dc,saved);
+}
 static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
-    attachment *a=(attachment *)data;LRESULT result;DWORD status_error=GetLastError();BOOL status=a->status||a->spin;(void)id;
+    attachment *a=(attachment *)data;LRESULT result;DWORD status_error=GetLastError();BOOL status=a->status||a->spin,color=a->color_candidate;(void)id;
+    RECT color_dirty;BOOL color_update=a->color_candidate && m==WM_PAINT && GetUpdateRect(w,&color_dirty,FALSE);
+    HRGN print_clip=NULL;int print_clip_kind=-1;
+    if(a->color_installed && !a->detached && m==WM_PRINTCLIENT && p){
+        print_clip=CreateRectRgn(0,0,0,0);
+        if(print_clip)print_clip_kind=GetClipRgn((HDC)p,print_clip);
+    }
     ++a->calls;
     if(a->status && (m==SB_SETPARTS || m==SB_SETTEXTA || m==SB_SETTEXTW || m==SB_SIMPLE ||
         m==SB_SETICON || m==SB_SETMINHEIGHT || m==WM_SETFONT || m==WM_STYLECHANGED ||
@@ -320,11 +408,12 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
             !SendMessageW(w,LVM_ISGROUPVIEWENABLED,0,0))) && !a->detached)
             ntw16s_report_paint_enable(&paint,w,a->report_module,&a->detached);
     }
-    if(status)SetLastError(status_error);
-    if(static_paint || ((a->static_candidate || a->edit_candidate || a->track_candidate) && !a->detached && m==WM_PAINT))
+    if(status || color)SetLastError(status_error);
+    if(print_clip)result=color_print_dispatch(a,w,m,p,l,print_clip);
+    else if(static_paint || ((a->static_candidate || a->edit_candidate || a->track_candidate || a->color_candidate) && !a->detached && m==WM_PAINT))
         result=static_paint_dispatch(a,w,m,p,l);
     else result=DefSubclassProc(w,m,p,l);
-    if(status)status_error=GetLastError();
+    if(status || color)status_error=GetLastError();
     ntw16s_vb_paint_end(&paint);
     status_current=prior;
     spin_current=spin_prior;
@@ -355,7 +444,23 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
         }else if(protocol)ntw16s_control_protocol_release(protocol);
         SetLastError(saved);
     }
-    release(a);if(status)SetLastError(status_error);return result;
+    if(m==WM_PAINT && a->color_candidate && !a->color_attempted && !a->detached && a->color_witness_owner){
+        DWORD saved=GetLastError();COMBOBOXINFO info={.cbSize=sizeof(info)};a->color_attempted=TRUE;
+        if(color_identity(w,a,&info)){a->color_parent=GetParent(w);a->color_installed=TRUE;}
+        SetLastError(saved);
+    }
+    if(a->color_installed && !a->detached && ((m==WM_PRINTCLIENT && print_clip_kind>=0) || (m==WM_PAINT && color_update))){
+        DWORD saved=GetLastError();HDC dc=m==WM_PRINTCLIENT?(HDC)p:GetDC(w);
+        if(dc){
+            if(m==WM_PRINTCLIENT){int state=SaveDC(dc);if(state){
+                if(SelectClipRgn(dc,print_clip_kind?print_clip:NULL)!=ERROR)color_button(w,a,dc,NULL);
+                RestoreDC(dc,state);
+            }}else {color_button(w,a,dc,&color_dirty);ReleaseDC(w,dc);}
+        }
+        SetLastError(saved);
+    }
+    if(print_clip){DWORD saved=GetLastError();DeleteObject(print_clip);SetLastError(saved);}
+    release(a);if(status || color)SetLastError(status_error);return result;
 }
 /* Observe this verified child's native custom/owner-draw DC. Never request extra stages,
  * rewrite the application's result, select its font, or inspect item lParam. */
@@ -440,7 +545,7 @@ BOOL __cdecl Ntw16sWindowAttached(HWND w)
     if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId()){
         SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
     }
-    attachment *a=lookup(w);return a && (!a->static_candidate || a->static_verified) && (!a->edit_candidate || a->edit_installed) && (!a->track_candidate || a->track_installed);
+    attachment *a=lookup(w);return a && (!a->static_candidate || a->static_verified) && (!a->edit_candidate || a->edit_installed) && (!a->track_candidate || a->track_installed) && (!a->color_candidate || a->color_installed);
 }
 void __cdecl Ntw16sScrollChanged(HWND w)
 {
@@ -494,7 +599,7 @@ BOOL __cdecl Ntw16sWindowTerminal(HWND w)
 static BOOL install_created(HWND w,DWORD original_style)
 {
     BOOL ready=InterlockedCompareExchange(&status_hooks_ready,0,0)!=0;
-    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=checklist_identity(w),status=ready && status_identity(w,NULL),spin=ready && spin_identity(w),static_candidate=FALSE,edit_candidate=FALSE,track_candidate=FALSE;HWND parent;HMODULE owner;attachment *a;DWORD error;
+    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=checklist_identity(w),status=ready && status_identity(w,NULL),spin=ready && spin_identity(w),static_candidate=FALSE,edit_candidate=FALSE,track_candidate=FALSE,color_candidate=FALSE;HWND parent;HMODULE owner;attachment *a;DWORD error;
     ntw16s_control_protocol *protocol=NULL;
     if(lookup(w))return TRUE;
     /* COMBOBOX installs its own internal list when construction finishes.
@@ -528,24 +633,26 @@ static BOOL install_created(HWND w,DWORD original_style)
             RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TEdit");
         track_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TTrackBar") &&
             RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TTrackBar");
+        color_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TColorBox") &&
+            RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TColorBox");
     }
     /* An external OCX can create itself with frame bits during construction
      * and then become a custom client surface.  Without an explicitly
      * verified public protocol it must stay native; only an application-owned
      * generic child frame may use the ordinary frame path. */
-    if(!control && !report && !tree && !picture && !checklist && !legacy_progress && !status && !spin && !static_candidate && !edit_candidate && !track_candidate && (original_style&WS_CHILD) &&
+    if(!control && !report && !tree && !picture && !checklist && !legacy_progress && !status && !spin && !static_candidate && !edit_candidate && !track_candidate && !color_candidate && (original_style&WS_CHILD) &&
             owner && owner!=GetModuleHandleW(NULL)){
         ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
     }
     /* A custom client-only child and MDICLIENT keep application painting.
      * MDI child frames have WS_CAPTION and take the ordinary frame route. */
-    if(!control && !report && !picture && !checklist && !legacy_progress && !status && !spin && !static_candidate && !edit_candidate && !track_candidate && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME))){
+    if(!control && !report && !picture && !checklist && !legacy_progress && !status && !spin && !static_candidate && !edit_candidate && !track_candidate && !color_candidate && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME))){
         SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
     }
     a=calloc(1,sizeof(*a));
     if(!a){ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
     a->calls=1;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;a->status=status;a->spin=spin;a->static_candidate=static_candidate;
-    a->edit_candidate=edit_candidate;a->edit_original_style=original_style;a->track_candidate=track_candidate;
+    a->edit_candidate=edit_candidate;a->edit_original_style=original_style;a->track_candidate=track_candidate;a->color_candidate=color_candidate;
     if(report || tree || a->file_owner || a->button_owner || a->checklist){a->report_window=w;a->tree=tree;
         a->report_module=(a->file_owner || a->button_owner)?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}
     if(!SetWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc,(DWORD_PTR)a)){
@@ -561,7 +668,7 @@ static BOOL install_created(HWND w,DWORD original_style)
             Ntw16sWindowRemove(info.hwndItem);
     }
     if(a->detached){release(a);SetLastError(ERROR_CANCELLED);return FALSE;}
-    if(a->checklist || a->status || a->spin || a->static_candidate || a->edit_candidate || a->track_candidate)installed=TRUE;
+    if(a->checklist || a->status || a->spin || a->static_candidate || a->edit_candidate || a->track_candidate || a->color_candidate)installed=TRUE;
     else if(legacy_progress)installed=win16_style_legacy_progress_border_install_created(w,NULL,a,&a->detached);
     else if(protocol && ntw16s_control_protocol_toolbar(w))
         installed=win16_style_toolbar_install_created(w,NULL,a,&a->detached);
@@ -593,7 +700,7 @@ static BOOL install_created(HWND w,DWORD original_style)
             }
         }
     }
-    if(installed && !a->detached && !a->edit_candidate && !a->track_candidate && a->themed!=w)ntw16s_theme_remove(w,NULL);
+    if(installed && !a->detached && !a->edit_candidate && !a->track_candidate && !a->color_candidate && a->themed!=w)ntw16s_theme_remove(w,NULL);
     if(a->detached){installed=FALSE;error=ERROR_CANCELLED;}
     if(!installed && !a->detached)Ntw16sWindowRemove(w);
     release(a);
