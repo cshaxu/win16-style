@@ -1785,5 +1785,15 @@
       "review": "T18 S24 self-owned process witness for existing startup trampoline and v5 native WNDPROC direct calls; no product hook installed",
       "notice": "Project-authored C17; project MIT license"
     }
+,
+    {
+      "path": "tests/ntw16s-dll/status_controls.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "927543e5982e9123f7c4ff33918f6a67c3331be535b9be12f5a496bf9f7cca93",
+      "disposition": "authored",
+      "review": "T18 S25 native status bar actual-launch regression with owner-draw, icon and frame pixel boundaries",
+      "notice": "Project-authored C17; project MIT license"
+    }
   ]
 }

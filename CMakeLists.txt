@@ -493,6 +493,19 @@ if(BUILD_TESTING)
   target_link_libraries(core-progress-color-v5 PRIVATE user32 comctl32)
   target_link_options(core-progress-color-v5 PRIVATE -municode)
 
+  # The launcher supplies the DLL to this isolated, same-width target.  It is
+  # intentionally not in the passing package matrix until status styling is
+  # implemented; the current release is an explicit negative control.
+  add_executable(core-status-controls tests/ntw16s-dll/status_controls.c)
+  target_compile_definitions(core-status-controls PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_libraries(core-status-controls PRIVATE user32 gdi32 comctl32)
+  target_link_options(core-status-controls PRIVATE -municode)
+  add_executable(core-status-controls-v6 tests/ntw16s-dll/status_controls.c tests/ntw16s-dll/control_extensions.rc)
+  target_include_directories(core-status-controls-v6 PRIVATE src)
+  target_compile_definitions(core-status-controls-v6 PRIVATE NTW16S_STATUS_V6 UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_libraries(core-status-controls-v6 PRIVATE user32 gdi32 comctl32)
+  target_link_options(core-status-controls-v6 PRIVATE -municode ${explicit_manifest_options})
+
   add_executable(core-progress-detour-v5 tests/ntw16s-dll/progress_v5_detour_witness.c
     ${injection_root}/startup_hooks.c ${minhook_root}/buffer.c ${minhook_root}/trampoline.c ${hde_source})
   target_compile_definitions(core-progress-detour-v5 PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
