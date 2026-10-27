@@ -13,6 +13,9 @@
 - [Delphi 基础公开协议](evidence/delphi-basic-protocols.json)：T18 S4 的精确 TEdit/TListBox
   USER32协议、正/负例与双宽包交付；真实 Delphi 显示集成仍明确保留到 T18 收口。
 
+- [Delphi 页签公开协议](evidence/delphi-tab-protocol.json)：T18 S5 对 TPageControl/TTabControl
+  的有限原生页签合约、双名负例及未实现日期/热键边界；不代表真实 Delphi 集成已完成。
+
 - [VB图片变体](evidence/vb-picture-variants.json)：T17 S11真实十按钮/四状态像素、
   同批包、许可与原生观察器限制；不作为图形Check/Option或全集支持声明。
 

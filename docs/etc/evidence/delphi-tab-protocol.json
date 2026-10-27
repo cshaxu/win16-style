@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "task": "M0 T18 S5",
+  "status": "closed: exact TTabControl admitted to the established public native tab contract; TPageControl retained",
+  "accepted": {
+    "classes": ["TPageControl", "TTabControl"],
+    "contract": ["exact registered class", "application-module ownership", "native SysTabControl32 cbWndExtra", "DLGC_WANTARROWS", "TCM_GETITEMCOUNT/GETCURSEL", "outside TCM_HITTEST", "reversible TCM_ADJUSTRECT"],
+    "renderer": "existing tab painter; preserves native item/page rectangles, image list, item extra data, notifications, cancellation, keyboard routing and source font ownership"
+  },
+  "negative": "Both exact VCL names are re-registered with DefWindowProc after the positive fixtures. The protocol rejects them; this detects a class-name-only mapping.",
+  "not_implemented": {
+    "families": ["TDateTimePicker", "TMonthCalendar", "THotKey"],
+    "reason": "the product has no renderer or verified public drawing contract for these classes. Adding their names alone would not produce Win16 styling and would be deceptive."
+  },
+  "verification": {
+    "focused_compile": "x86/x64 core-tab-controls and both DLLs compile; private-desktop execution returned exact error=5 skip in both widths",
+    "clean_matrix": "clean x86/x64 all/core-abi completed; the wrapper script race reading a live run.log is documented as inconclusive bookkeeping, while each owned architecture log records core/abi PASS and PE PASS",
+    "package": "four-file M0 T18 package identity PASS; actual Test-Package 87 cases passed-with-skips, 72 private-desktop GUI cases skipped",
+    "publication": "tested candidate hashes were copied to assets root and O:/winnt/system32 with verified backups"
+  },
+  "final_integration": "real Delphi wrapper startup/display/input/cleanup remains required at T18 closure; no current Delphi application pass is claimed"
+}

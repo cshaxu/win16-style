@@ -60,6 +60,7 @@ static int worker(int argc,WCHAR **argv)
     HINSTANCE instance=GetModuleHandleW(NULL);WNDCLASSW wc={.lpfnWndProc=owner,.hInstance=instance,.lpszClassName=L"TabFixtureOwner"};CHECK(RegisterClassW(&wc));
     WNDCLASSEXA cls={.cbSize=sizeof(cls)};CHECK(GetClassInfoExA(NULL,WC_TABCONTROLA,&cls));native=cls.lpfnWndProc;
     cls.lpfnWndProc=superclass;cls.hInstance=instance;cls.lpszClassName="TPageControl";cls.style&=~CS_GLOBALCLASS;CHECK(RegisterClassExA(&cls));
+    cls.lpszClassName="TTabControl";CHECK(RegisterClassExA(&cls));
     HWND parent=CreateWindowW(wc.lpszClassName,L"tabs",WS_OVERLAPPEDWINDOW,0,0,700,450,NULL,NULL,instance,NULL);CHECK(parent);ShowWindow(parent,SW_SHOW);
     HFONT font=CreateFontW(-13,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,ANSI_CHARSET,0,0,0,0,L"Arial");CHECK(font);
     snapshot image={0};CHECK(start(&image));
@@ -69,12 +70,13 @@ static int worker(int argc,WCHAR **argv)
     FillRect(icon_dc,&icon_rect,GetStockObject(DC_BRUSH));SelectObject(icon_dc,previous_icon);
     CHECK(ImageList_Add(icons,icon,NULL)==0 && DeleteObject(icon) && DeleteDC(icon_dc));
     const DWORD styles[]={0,TCS_MULTILINE|TCS_HOTTRACK,TCS_BUTTONS,TCS_OWNERDRAWFIXED,TCS_BOTTOM,TCS_VERTICAL|TCS_MULTILINE,TCS_FIXEDWIDTH|TCS_FORCEICONLEFT};
+    const char *classes[]={WC_TABCONTROLA,"TPageControl","TTabControl"};
     unsigned styled=0,preserved=0,dpi=GetDpiForWindow(parent);
-    for(unsigned clone=0;clone<2;++clone)for(unsigned k=0;k<ARRAYSIZE(styles);++k){
+    for(unsigned clone=0;clone<ARRAYSIZE(classes);++clone)for(unsigned k=0;k<ARRAYSIZE(styles);++k){
         HWND pair[2];RECT item_rects[2],pages[2];DWORD hashes[2];LRESULT keyboard[2];
         for(unsigned decorated=0;decorated<2;++decorated){
             ntw16s_creation_scope *scope=decorated?begin(TRUE):NULL;CHECK(!decorated || scope);
-            pair[decorated]=CreateWindowA(clone?"TPageControl":WC_TABCONTROLA,"",WS_CHILD|WS_VISIBLE|WS_TABSTOP|styles[k],0,0,300,200,parent,(HMENU)(UINT_PTR)(10+decorated),instance,NULL);
+            pair[decorated]=CreateWindowA(classes[clone],"",WS_CHILD|WS_VISIBLE|WS_TABSTOP|styles[k],0,0,300,200,parent,(HMENU)(UINT_PTR)(10+decorated),instance,NULL);
             HWND w=pair[decorated];CHECK(w);if(scope){ntw16s_creation_result r={0};CHECK(end(scope,&r));CHECK(attached(w)==(k<2));}
             CHECK(SendMessageW(w,TCM_SETITEMEXTRA,64,0));SendMessageW(w,WM_SETFONT,(WPARAM)font,FALSE);
             SendMessageW(w,TCM_SETIMAGELIST,0,(LPARAM)icons);
@@ -126,8 +128,10 @@ static int worker(int argc,WCHAR **argv)
     destroy_query=armed=TRUE;paint(&image,w);CHECK(!IsWindow(w) && !armed);
     CHECK(DeleteObject(late));
     CHECK(!early && query_count);
-    CHECK(UnregisterClassA("TPageControl",instance));cls.lpfnWndProc=DefWindowProcA;CHECK(RegisterClassExA(&cls));
+    CHECK(UnregisterClassA("TPageControl",instance));CHECK(UnregisterClassA("TTabControl",instance));cls.lpfnWndProc=DefWindowProcA;cls.lpszClassName="TPageControl";CHECK(RegisterClassExA(&cls));cls.lpszClassName="TTabControl";CHECK(RegisterClassExA(&cls));
     scope=begin(TRUE);CHECK(scope);w=CreateWindowA("TPageControl","fake",WS_CHILD,0,0,100,30,parent,NULL,instance,NULL);
+    CHECK(w && end(scope,&result) && !attached(w) && DestroyWindow(w));
+    scope=begin(TRUE);CHECK(scope);w=CreateWindowA("TTabControl","fake",WS_CHILD,0,0,100,30,parent,NULL,instance,NULL);
     CHECK(w && end(scope,&result) && !attached(w) && DestroyWindow(w));
     SelectObject(image.dc,image.old);CHECK(DeleteObject(image.bitmap) && DeleteDC(image.dc));
     CHECK(DestroyWindow(parent) && DeleteObject(font) && ImageList_Destroy(icons) && FreeLibrary(dll));

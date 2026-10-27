@@ -118,7 +118,7 @@ ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND w)
     unsigned ocx_role=ocx_common_control_owner(w,owner,name,&native_class);
     unsigned toolbar_role=ocx_toolbar_owner(w,owner,name,&native_class,&toolbar_native);
     role=!lstrcmpW(name,L"TButton")?1:!lstrcmpW(name,L"TComboBox")?2:
-        (!lstrcmpW(name,WC_TABCONTROLW) || !lstrcmpW(name,L"TPageControl"))?3:!lstrcmpW(name,WC_HEADERW)?4:
+        (!lstrcmpW(name,WC_TABCONTROLW) || !lstrcmpW(name,L"TPageControl") || !lstrcmpW(name,L"TTabControl"))?3:!lstrcmpW(name,WC_HEADERW)?4:
         (!lstrcmpW(name,WC_LISTVIEWW) || !lstrcmpW(name,L"TListView"))?5:
         (!lstrcmpW(name,WC_TREEVIEWW) || !lstrcmpW(name,L"TTreeView") || !lstrcmpW(name,L"TShellTreeView"))?6:
         (!lstrcmpW(name,PROGRESS_CLASSW) || !lstrcmpW(name,L"TProgressBar"))?7:

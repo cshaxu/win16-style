@@ -5,8 +5,8 @@
 M0 T17 已按用户明确缩小后的范围收口；23 项 VB 延期项保留在 TODO。T18 S1 已冻结
 Delphi VCL 74 个 UI 家族种子、框架分支、五个固定候选及逐项证据接收者；T18 S2 已将
 全部种子逐项归入35个既有原生协议模型或39个明确的原生保留边界。S4 已完成首组
-精确 TEdit/TListBox 公开协议实现、干净双宽四文件包和双发布；实际 Delphi 显示集成
-仍统一留给T18最终收口。顺序准入 S5 继续现有公共 common-control 协议；不得用 demo
+精确 TEdit/TListBox与TTabControl公开协议实现、干净双宽四文件包和双发布；实际 Delphi 显示集成
+仍统一留给T18最终收口。顺序准入 S6 审核已有公共列表/树/表头角色；不得用 demo
 冒充 Delphi。
 以下段落为 T17 的技术基线/历史证据，不覆盖 T18 状态。
 
@@ -68,15 +68,15 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S5 Packet
+## M0 T18 S6 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；用户明确先实现一切可由公开协议证明的代码，真实Delphi集成统一留给T18收口；S4完成后顺序准入S5 |
-| Admission And Approval | 用户批准进入队列首项T18，并明确要求先完成能以公开协议实现的代码和自包含测试；S4已交付TEdit/TListBox有限实现及四文件发布，S3的error=5集成缺口仍保留至最终收口 |
-| Objective | 审核并仅在既有COMCTL公共协议、注册/模块身份和自包含正/负例能够同时成立时，接入TTabControl、TPageControl、TDateTimePicker、TMonthCalendar、THotKey对应的初始化后 native wrapper路径 |
+| Identifier Mode | Continuation；用户明确先实现一切可由公开协议证明的代码，真实Delphi集成统一留给T18收口；S5完成后顺序准入S6 |
+| Admission And Approval | 用户批准进入队列首项T18，并明确要求先完成能以公开协议实现的代码和自包含测试；S4/S5已交付基础编辑/列表及页签有限实现和四文件发布，S3的error=5集成缺口仍保留至最终收口 |
+| Objective | 审核既有TListView、TTreeView/TShellTreeView、THeaderControl公共COMCTL角色的实际精确类映射、模块身份和自包含正/负例；仅补足可证明的缺口 |
 | Non-goals | 不把demo等价项当成VCL支持；不读取私有对象布局、不仅凭T前缀接纳、不新增第五产品；不接管canvas、数据库、嵌入/非视觉、图像/custom-draw或owner-draw；不改既有标题/菜单/字体/滚动条/资源 |
-| Reference Baseline | [T18 S1审计](../etc/evidence/delphi-controls-audit.json)、[S2对应账本](../etc/evidence/delphi-demo-mapping.json)、[S3转交](../history/M0-T18-S3-vcl-probe-transfer.md)、[S4公开协议](../etc/evidence/delphi-basic-protocols.json)、[Delphi专项proposal](../proposals/delphi-win32-controls.md)及T15有限公开协议 |
+| Reference Baseline | [T18 S1审计](../etc/evidence/delphi-controls-audit.json)、[S2对应账本](../etc/evidence/delphi-demo-mapping.json)、[S3转交](../history/M0-T18-S3-vcl-probe-transfer.md)、[S4公开协议](../etc/evidence/delphi-basic-protocols.json)、[S5页签协议](../etc/evidence/delphi-tab-protocol.json)、[Delphi专项proposal](../proposals/delphi-win32-controls.md)及T15有限公开协议 |
 | Candidate Proposal | [Delphi Win32控件完整审计与Win3.x风格适配](../proposals/delphi-win32-controls.md) |
 | Files And ABI Surface | 可改ntw16s32/64内部角色判断和增加自包含纯C测试；ABI/导出、三组件四产物和原五图形头不变 |
 | Applicable Rules | C17/MinGW GCC/Ninja/ccache、来源策略、禁computer-use/全局hook/既有进程扫描；真实应用集成与自包含测试分列；私有桌面error=5只能skip，留T18最终收口 |
@@ -95,8 +95,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S4 P1（待本次治理验证、提交、推送及远端复核）：TEdit/TListBox仅按公开USER32协议、精确注册/模块身份接入；干净双宽、87项实际包（72个error=5 GUI skip）及同批四文件双发布完成；真实Delphi集成仍未执行。
-- Open task: T18 S5 Delphi公共common-control协议审计与有限wrapper实现；M0/T18开放。
+- Last delivery: M0 T18 S5 P1（待本次治理验证、提交、推送及远端复核）：TTabControl补入既有TPageControl公开页签协议，双名正/负例、干净双宽、87项实际包（72个error=5 GUI skip）及同批四文件双发布完成；真实Delphi集成仍未执行。
+- Open task: T18 S6 Delphi公共列表/树/表头角色审计与有限wrapper实现；M0/T18开放。
 
 ## Technical Baseline
 
@@ -145,6 +145,9 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T18 S5页签公开协议](../history/M0-T18-S5-vcl-tabs.md)：TTabControl补入既有TPageControl
+  协议、两种伪类拒绝、干净双宽包和同批双发布；日期/月历/热键因无renderer保留，真实Delphi集成仍留T18收口。
 
 - [T18 S4基础VCL公开协议](../history/M0-T18-S4-basic-vcl-protocols.md)：精确TEdit/TListBox
   的公开消息、模块/注册身份、旧实现负例、干净双宽包和同批双发布；真实Delphi集成仍留T18收口。
