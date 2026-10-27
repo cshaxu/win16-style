@@ -68,29 +68,29 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S57 Packet
+## M0 T18 S58 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S56 P1 35814cb已推送，远端7文件逐字节复核 |
-| Admission And Approval | 用户授权T18内自动实施可做控件；不新开T |
-| Objective | 实施并验证真实VCL TToolBar可证实的文本按钮绘制路径 |
-| Non-goals | 不干预应用回调、按钮命令、图像、布局和未验证变体 |
-| Reference Baseline | [S56 ControlBar证据](../history/M0-T18-S56-controlbar.md)、[现有工具栏契约](../history/M0-T18-S11-toolbar-text-bounds.md) |
+| Identifier Mode | Continuation；S57 P1 6a4141e已推送，远端18文件逐字节复核 |
+| Admission And Approval | 用户授权T18内自动实施可做控件与测试；不新开T |
+| Objective | 自动验证VCL工具栏裁切按钮和64项上限的原生回退 |
+| Non-goals | 不改变按钮布局、命令、回调、图片及应用资源 |
+| Reference Baseline | [S57工具栏](../history/M0-T18-S57-vcl-toolbar.md)、[S56调查](../history/M0-T18-S56-controlbar.md) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 双宽自有C模型及现有DLL代码，不新增产物或ABI |
-| Applicable Rules | M0、C17、GCC、Ninja、ccache；仅自有隔离实例 |
-| Verification | 真实双宽原生过程和通知、零号命令、文字/图像/多项/回退、回调与生命周期；实际包 |
-| Expected Markers | 唯一零号按钮及身份可验证时绘制；重复ID、图像及未知模式保留原生 |
-| Asset Needs | 登记build/t18-s57-toolbar，复用双宽合法样本 |
-| Reporting Requirements | 绘制与按钮语义、负例、未覆盖、双发布和远端复核 |
-| Stop Conditions | 通知、所有权或按钮唯一性不足时不修改其他工具栏 |
-| Exit Criteria | 可证实的有限实现及双宽回归或明确证据接收者；T18保持开放 |
-| Original Owner Request | 先完成能做的代码和测试，真实应用整体集成留T收口 |
-| Similar-Issue Sweep | 真实VCL文本工具栏、零号按钮、图像/重复命令与既有OCX工具栏 |
+| Files And ABI Surface | 双宽自有C模型，必要时既有DLL；不新增产物或ABI |
+| Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例限时清理 |
+| Verification | 64/65项、裁切、应用回调、零号按钮和原生像素对照，双宽实际包 |
+| Expected Markers | 超限/裁切回退、边界内有效绘制，不干预调用和按钮 |
+| Asset Needs | 登记build/t18-s58-toolbar-tests，复用S57模型 |
+| Reporting Requirements | 已证实与未覆盖范围、测试耗时、发布及远端复核 |
+| Stop Conditions | 无法区分被动回退和实际绘制时不得标为通过 |
+| Exit Criteria | 有区分度的自动测试及实际包交付；T18保持开放 |
+| Original Owner Request | 能做的代码与测试先完成，真实应用全量集成留T收口 |
+| Similar-Issue Sweep | 裁切、工具栏上限与重复ID |
 
-S56 P1 `35814cb`远端7文件逐字节复核通过；真实双宽TToolBar支持原生逐项
-通知及id=0按钮，但尚未实现样式；外层TControlBar绘制仍留TODO。
+S57 P1 `6a4141e`远端18文件逐字节复核通过，双宽实际绘制和有限负例通过；
+裁切和64项性能上限需自包含边界测试，T18/M0保持开放。
 
 ## Identifier State
 
@@ -98,8 +98,8 @@ S56 P1 `35814cb`远端7文件逐字节复核通过；真实双宽TToolBar支持�
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S56 P1：14项聚焦包、双发布及35814cb远端7文件复核。
-- Open task: T18 S57 VCL TToolBar文本按钮有限适配；M0/T18开放。
+- Last delivery: M0 T18 S57 P1：18项聚焦包、双发布及6a4141e远端18文件复核。
+- Open task: T18 S58 VCL工具栏裁切与数量边界测试；M0/T18开放。
 
 ## Technical Baseline
 
@@ -387,3 +387,6 @@ S56完成14项聚焦包、双发布和安装双宽入口；文本工具栏id=0�
 S57双宽真实文本工具栏确认item绘制和id=0命令；重复ID、图像、应用skip和
 换父模型通过，旧包双宽负例检出。独立干净包18项零跳过，双发布及系统入口
 双宽通过；待提交推送远端复核。被裁切按钮、图像、64项上限及其他DPI留未覆盖。
+
+S58双宽原生模型裁切与64/65项边界通过，实际包14项零跳过、双发布及安装
+双宽入口通过；待提交推送远端复核。其他图片、多DPI和全T集成仍未覆盖。

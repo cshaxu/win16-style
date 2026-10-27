@@ -1979,7 +1979,7 @@
       "path": "tests/ntw16s-dll/vcl_toolbar_module.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ea7929fff3dcc92909c32d22f5349911a379ca4aef347b036b9e49c96b31d608",
+      "sha256": "84c3448131229e54bea7398205146baa9de54225fe2ae931f89b927a6cebcce0",
       "disposition": "authored",
       "review": "T18 S57 self-owned toolbar zero-command and native fallback/callback/lifecycle model; real Delphi verification separate",
       "notice": "Project-authored C17; project MIT license"
@@ -1988,7 +1988,7 @@
       "path": "tests/ntw16s-dll/vcl_toolbar_module_fixture.c",
       "source": null,
       "source_blob": null,
-      "sha256": "568eed62b6522d09ed0dbdf20a43a7ad5bb5c4440f2138cac9973ad30edd4542",
+      "sha256": "5adac5ca3f51966c143d6a1f7194a1d65555eac0b2244f22237bac3bf8b9deb8",
       "disposition": "authored",
       "review": "T18 S57 self-owned toolbar zero-command and native fallback/callback/lifecycle model; real Delphi verification separate",
       "notice": "Project-authored C17; project MIT license"
