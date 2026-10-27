@@ -7,7 +7,7 @@ Delphi VCL 74 个 UI 家族种子、框架分支、五个固定候选及逐项�
 全部种子逐项归入35个既有原生协议模型或39个明确的原生保留边界。S4 已完成首组
 精确 TEdit/TListBox与TTabControl公开协议实现、干净双宽四文件包和双发布；实际 Delphi 显示集成
 仍统一留给T18最终收口。S10已完成组合框与列表验证；S11已完成工具栏文字边界修复、真实DoubleKiller复测及提交推送复核；S12真实MD5summer补证及远端复核完成；S13双宽干净构建、真实树控件与VB6 actor复测、91项包测试、双发布及远端aae1565复核完成；S14纠正S12独立包闭环并完成双发布及远端f1ac9ff复核；S15核实现代VCL候选及公开状态边界，双宽包、91项低并发回归、双发布及远端4032bcf复核完成；S16追踪真实开关绘制及输入、双宽包91项通过、双发布及远端5e48716复核完成；S17修复进度观察竞争并减少字体重复选取，双宽包92项通过、双发布及远端b3c2a8b复核完成；S18完成开关公开状态调查、双宽包92项及双发布，远端2edd749已复核；S19实现可审计聚焦包回归，聚焦10项、标准93项、双发布及远端d583890复核完成；准入S20继续开关视觉适配；S20恢复隔离桌面并验证开关及VB/VCL聚焦包，未证实的开关适配移交TODO；S21完成有限复选图形与双宽96/144 DPI验证，P4远端2245db3已复核；其应用裁剪外缘和显式禁用仍列TODO；S22完成真实SpeedButton公开契约调查、14项聚焦包及双发布，cb2ffef远端已复核；无安全契约的外观接收TODO；S23已实现真实VCL v5进度条有限外框并通过22项聚焦包与双发布，33f4d0d远端已复核；S24进度客户区转TODO；S25原生状态栏有限边框、36项聚焦包及双发布完成，2be886a远端复核通过，真实Delphi待证；准入S26逐项盘点剩余家族；不得用 demo
-冒充 Delphi。
+冒充 Delphi。S26已以74项证据台账、聚焦包和双发布收口，50项真实owner尚待证实；S27准入真实TSpinButton有限边框。
 以下段落为 T17 的技术基线/历史证据，不覆盖 T18 状态。
 
 M0 T17 S27 ScrollBar范围/位置/禁用变体已完成，顺序准入S28 全148单位收口审计。
@@ -68,30 +68,26 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S26 Packet
+## M0 T18 S27 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S25原生状态栏有限边框已发布并远端复核，T18保持开放 |
+| Identifier Mode | Continuation；S26证据台账、双发布及P1远端复核完成，T18保持开放 |
 | Admission And Approval | 用户要求自动连续S实现可做控件，不新开T；既定VB延期范围不擅自改变 |
-| Objective | 逐项核对冻结的74个VCL家族及现有S交付，识别仍可实施的控件和明确的下一S接收者，不提前宣称全集完成 |
-| Non-goals | 不把原生模型当成真实Delphi；不猜测私有对象或跳过未完成项，不改标题、菜单、字体和原图形资源 |
-| Reference Baseline | [Delphi冻结目录](../etc/evidence/delphi-controls-audit.json)、[demo映射](../etc/evidence/delphi-demo-mapping.json)、[S25状态栏](../history/M0-T18-S25-status-bar.md)、T18已交付历史 |
+| Objective | 实现已观察真实DoubleKiller TSpinEdit内TSpinButton的有限经典边框，保留应用箭头及输入；无法证明安全时保留原生 |
+| Non-goals | 不把该样本推广为全部Delphi控件；不猜测私有对象、不改标题、菜单、字体及原图形资源 |
+| Reference Baseline | [S26台账](../etc/evidence/delphi-s26-current-ledger.json)、[S26真实微调探针](../history/M0-T18-S26-control-audit.md)、[S11标准UpDown](../history/M0-T15-S11-updown-controls.md) |
 | Candidate Proposal | [Delphi Win32控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 逐项证据台账、必要的自有原生观察器；不增加产品文件或修改公开ABI |
+| Files And ABI Surface | 精确微调窗口身份、绘制生命周期与同线程公开primitive作用域、双宽自有探针；不增加产品文件或公开ABI |
 | Applicable Rules | C17、MinGW GCC、Ninja、ccache；仅自有隔离实例、有限等待和清理；兄弟仓库只读 |
-| Verification | 对照74单位全集、历史交付、源代码和现有测试，核对遗漏/重复；必要的自有样本观察单列 |
-| Expected Markers | 74项逐一有当前证据、缺口及接收者；区分可实施、原生保留、非视觉和真实样本缺口 |
-| Asset Needs | 登记build/t18-s26-control-audit任务scratch；S25截图暂留build/t18-s25-status供T18验收 |
-| Reporting Requirements | 数量及每项边界可追溯；选择下一可实施S，真实应用与模型分开 |
-| Stop Conditions | 无法确认协议的单位不标为已支持，不擅自改变用户延期的VB范围 |
-| Exit Criteria | 74项盘点可复核且下一实施接收者明确；T18和M0保持开放 |
+| Verification | 双宽自有模型正负例、重入与资源释放；真实DoubleKiller像素/输入及初始/禁用/按下/恢复；96/144 DPI、非目标回归、同批四文件包与双发布 |
+| Expected Markers | 精确窗口与调用者、DC剪裁/映射、DFCS_ADJUSTRECT及原生返回/错误不变，应用箭头、数值与通知不变，非目标零改动 |
+| Asset Needs | 登记build/t18-s27-spin任务scratch；S26探针暂留build/t18-s26-control-audit供交接，S25截图暂留build/t18-s25-status供验收 |
+| Reporting Requirements | 模型与真实样本分开报告，列未覆盖变体；给出实际包、双发布、提交及远端复核 |
+| Stop Conditions | 无法安全识别目标、保留原生语义或通过负例时不扩张接管，记录证据并保留原生 |
+| Exit Criteria | 有限真实微调边框安全实现或证据明确不可行，双宽包测试及治理交付完成；T18和M0保持开放 |
 | Original Owner Request | 做完可实现控件并自行测试；每S按规范构建测试、发布、提交与远端复核 |
-| Similar-Issue Sweep | 原生包装/框架自绘、数据绑定/图像、跨版本及既有VB路径；未验证项不计通过 |
-
-S26进展：[隔离桌面重测记录](../history/M0-T18-S26-control-audit.md)。沙箱外自有隔离桌面可用，
-双宽协议模型、真实DoubleKiller及VB6 Actor探针通过有限检查；74项证据台账已列缺口和接收者，
-50项真实owner仍未证实，TSpinButton为下一实施候选。S26同批包已完成双发布，待提交推送及远端复核。
+| Similar-Issue Sweep | 已有DrawFrameControl截获、其他UpDown/VB控件、伪同名窗口、应用自绘、禁用与DPI；未验证项不计通过 |
 
 ## Identifier State
 
@@ -99,8 +95,8 @@ S26进展：[隔离桌面重测记录](../history/M0-T18-S26-control-audit.md)�
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S25：原生状态栏有限边框、36项零跳过、双发布与安装入口复测；2be886a源码及四文件远端复核通过，真实Delphi仍待核实。
-- Open task: T18 S26 冻结全集剩余可实施项盘点；M0/T18开放。
+- Last delivery: M0 T18 S26：74项有限证据台账、12项聚焦包、双发布及9039105远端八文件复核；50项真实owner未证实，真实微调仅探针原型。
+- Open task: T18 S27 真实TSpinButton有限边框；M0/T18开放。
 
 ## Technical Baseline
 
@@ -149,6 +145,8 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T18 S26逐项证据台账](../history/M0-T18-S26-control-audit.md)：74项分类、50项真实owner缺口、12项聚焦包及双发布；P1远端八文件复核通过。真实TSpinButton原型交S27，不视为已发布实现。
 
 - [T18 S10组合框与列表超类](../history/M0-T18-S10-vcl-list-superclass.md)：双宽自有模型、87项包测试、双发布及远端复核；真实Delphi及owner-draw语义另验。
 

@@ -1,11 +1,11 @@
-# M0 T18 S26 — control audit (in progress)
+# M0 T18 S26 — control audit
 
 The frozen S1 catalogue contains 74 unique VCL family names. The S2 demo
 mapping is a native-model inventory, not proof that a Delphi wrapper is
 supported. A name search of production source, native tests and T18 history
 found 12, 18 and 21 names respectively; these are only leads for individual
-protocol review. The 74-row disposition and the next implementation receiver
-are not yet complete. S26 and T18 remain open.
+protocol review. The 74-row ledger records the bounded findings and unresolved
+evidence receivers; it does not claim that all families are implemented.
 
 A [provisional ledger](../etc/evidence/delphi-s26-current-ledger.json) joins
 the frozen set, S1 receiver, S2 model inventory, exact source-name leads and
@@ -190,3 +190,11 @@ it had loaded the new DLL but did not complete the assertions. A fresh owned
 output folder fixed that test-input collision: both checkbox glyph comparisons
 passed at 182 source pixels and `ACTOR_PASS styled=1 count=2 active=0` confirmed
 normal cleanup. This repeat does not enlarge the VB coverage claim.
+
+P1 `90391053ef677bc93fa3c9293db3cb60a964dc11` was pushed and its actual
+GitHub raw content for the four products, ledger, history, index and CURRENT
+was fetched and matched to the eight local Git blobs. S26 closes with 50
+runtime-owner gaps still explicitly recorded; the next T18 S is admitted for
+the observed `TSpinButton` frame, subject to independent implementation and
+negative tests. T18 and M0 remain open. The S26 scratch and the S25 screenshots
+remain temporarily registered for the successor task and T18 acceptance.
