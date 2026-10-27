@@ -163,6 +163,10 @@ try{
         (Case 'checklist-64' (Join-Path $x64 'core-checklist.exe') @($run) @('CHECKLIST_MODEL_OK bits=64 styled=0','CHECKLIST_MODEL_OK bits=64 styled=1 checked_mismatch=0','CHECKLIST_PUSHED_OK bits=64','CHECKLIST_CLEANUP_OK'))
     )
     $cases+=@(
+        (Case 'vcl-static-32' $run @('--wait',(Join-Path $x86 'core-vcl-static.exe')) @('VCL_STATIC_OK bits=32 font_preserved=1 fake_rejected=1 nested_native=1')),
+        (Case 'vcl-static-64' $run @('--wait',(Join-Path $x64 'core-vcl-static.exe')) @('VCL_STATIC_OK bits=64 font_preserved=1 fake_rejected=1 nested_native=1')),
+        (Case 'vcl-static-bare-32' (Join-Path $x86 'core-vcl-static.exe') @('bare') @('VCL_STATIC_BARE_OK bits=32 font_preserved=1')),
+        (Case 'vcl-static-bare-64' (Join-Path $x64 'core-vcl-static.exe') @('bare') @('VCL_STATIC_BARE_OK bits=64 font_preserved=1')),
         (Case 'spin-32' $run @('--wait',(Join-Path $x86 'core-spin-controls.exe')) @('SPIN_CONTROL_NESTED_OK','SPIN_CONTROL_OK bits=32','outside=0','SPIN_CONTROL_CLIP_OK','SPIN_CONTROL_REENTRANT_OK','SPIN_CONTROL_BOUNDARY_OK')),
         (Case 'spin-64' $run @('--wait',(Join-Path $x64 'core-spin-controls.exe')) @('SPIN_CONTROL_NESTED_OK','SPIN_CONTROL_OK bits=64','outside=0','SPIN_CONTROL_CLIP_OK','SPIN_CONTROL_REENTRANT_OK','SPIN_CONTROL_BOUNDARY_OK')),
         (Case 'spin-dpi-32' $run @('--wait',(Join-Path $x86 'core-spin-controls.exe'),'aware') @('SPIN_CONTROL_NESTED_OK','SPIN_CONTROL_OK bits=32','outside=0','SPIN_CONTROL_CLIP_OK','SPIN_CONTROL_REENTRANT_OK','SPIN_CONTROL_BOUNDARY_OK')),

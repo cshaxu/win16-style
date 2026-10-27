@@ -2,6 +2,15 @@
 
 # Deferred Debt
 
+- [ ] TODO(High): 菜单取消回归耗时过长；Owner：T18后续测试效率S。Evidence：
+  [S31](../history/M0-T18-S31-static-text.md)首批两宽各约73秒，均通过；Admission：
+  定位实际耗时，保留全部取消、嵌套、DPI和清理断言，以用户要求的短测试为目标。
+
+- [ ] TODO(Medium): VB组合回归出现间歇性30秒子进程超时；Owner：T18后续测试及
+  最终验收。Evidence：[S31](../history/M0-T18-S31-static-text.md)中新旧包均在
+  同环境复现、随后分别通过；Admission：定位实际阻塞与退出条件，不把重试通过
+  当作根因已解决，也不放宽原语义或超时断言。
+
 - [ ] TODO(Medium): 延期的 VB5/VB6 DriveListBox 与外部 OCX 外观适配（23 个冻结单位：
   VB5/VB6 DriveListBox、DBGrid、MSWLess 的 9 个控件、grid32 Grid、msoutl32 Outline、
   mschart MSChart、vbsql Vbsql、MCIWnd、MedView、SchGrid）；Owner：未来经用户明确准入的

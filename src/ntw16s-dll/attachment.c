@@ -3,6 +3,8 @@
 #include "ntw16s.h"
 #include "native_api.h"
 #include "theme.h"
+#include "static_text.h"
+#include "injection/unwind.h"
 #include <commctrl.h>
 #include <stdlib.h>
 #include <wchar.h>
@@ -20,7 +22,7 @@ struct ntw16s_creation_scope {
 };
 typedef struct attachment {
     unsigned calls;
-    BOOL detached,tree,file_owner,picture,button_owner,checklist,status,spin;
+    BOOL detached,tree,file_owner,picture,button_owner,checklist,status,spin,static_candidate,static_verified;
     unsigned status_epoch;
     HWND themed,report_window,report_parent;
     HMODULE report_module;
@@ -28,6 +30,9 @@ typedef struct attachment {
     ntw16s_control_protocol *protocol;
 } attachment;
 static _Thread_local ntw16s_creation_scope *current;
+typedef struct static_paint_scope {struct static_paint_scope *previous;attachment *owner;HWND window;BOOL completed;} static_paint_scope;
+static _Thread_local static_paint_scope *static_paint;
+static _Thread_local ntw16s_static_call *static_call;
 static _Thread_local HHOOK creation_return_hook;
 static _Thread_local HHOOK creation_before_hook;
 typedef struct checklist_draw_scope {
@@ -188,9 +193,59 @@ static attachment *lookup(HWND w)
     DWORD_PTR value;
     return GetWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc,&value)?(attachment *)value:NULL;
 }
+BOOL ntw16s_static_call_begin(ntw16s_static_call *scope,WNDPROC proc,HWND w,UINT message,const void *address)
+{
+    WNDCLASSEXW native={.cbSize=sizeof(native)};HMODULE caller=NULL,native_owner=NULL,owner;
+    ZeroMemory(scope,sizeof(*scope));
+    if(message!=WM_PAINT || !static_paint || static_paint->window!=w ||
+       static_paint->owner->detached || lookup(w)!=static_paint->owner ||
+       !GetClassInfoExW(NULL,L"STATIC",&native) || proc!=native.lpfnWndProc ||
+       !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+            (LPCWSTR)address,&caller) ||
+       !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+            (LPCWSTR)(UINT_PTR)proc,&native_owner))return FALSE;
+    owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+    if(!owner || caller!=owner || !native_owner)return FALSE;
+    scope->previous=static_call;scope->window=w;scope->native_module=native_owner;
+    scope->cancelled=&static_paint->owner->detached;scope->active=TRUE;
+    static_call=scope;static_paint->owner->static_verified=TRUE;return TRUE;
+}
+BOOL ntw16s_static_call_suspend(ntw16s_static_call *scope)
+{
+    if(!static_call)return FALSE;
+    ZeroMemory(scope,sizeof(*scope));scope->previous=static_call;scope->active=TRUE;static_call=scope;return TRUE;
+}
+void ntw16s_static_call_end(void *data)
+{
+    ntw16s_static_call *scope=data;if(scope->active){static_call=scope->previous;scope->active=FALSE;}
+}
+HFONT ntw16s_static_text_font(HDC dc,LPCWSTR text,int count,UINT flags,const void *address)
+{
+    ntw16s_static_call *s=static_call;HMODULE caller=NULL;HWND from;HFONT source;
+    if(!s || !s->active || !s->cancelled || *s->cancelled || !static_paint ||
+       static_paint->window!=s->window || !dc || !text || (flags&(DT_CALCRECT|DT_RTLREADING|DT_MODIFYSTRING)) ||
+       (GetLayout(dc)&LAYOUT_RTL) || !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|
+       GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) || caller!=s->native_module)return NULL;
+    from=WindowFromDC(dc);if(from && from!=s->window)return NULL;
+    if(count< -1)return NULL;
+    if(count==-1){count=0;while(count<4096 && text[count])++count;if(count==4096)return NULL;}
+    if(count>4096)return NULL;
+    for(int i=0;i<count;++i)if(text[i]>0x7f)return NULL;
+    source=(HFONT)GetCurrentObject(dc,OBJ_FONT);return source?win16_style_system_acquire(source):NULL;
+}
 #define class_is ntw16s_class_is
 static void release(attachment *a)
 {if(!--a->calls && a->detached){ntw16s_vb_fonts_clear(&a->fonts);free(a);}}
+static void static_paint_end(void *data)
+{static_paint_scope *scope=data;static_paint=scope->previous;if(!scope->completed)release(scope->owner);}
+static NTW16S_UNWIND_FUNCTION LRESULT static_paint_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l)
+{
+    static_paint_scope scope={static_paint,a,w,FALSE};ntw16s_unwind_scope unwind;LRESULT result;DWORD entry=GetLastError(),error;
+    static_paint=(a->static_candidate && !a->detached && m==WM_PAINT)?&scope:NULL;
+    NTW16S_UNWIND_BEGIN(unwind,static_paint_end,&scope);
+    SetLastError(entry);result=DefSubclassProc(w,m,p,l);error=GetLastError();scope.completed=TRUE;
+    NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
+}
 static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
     attachment *a=(attachment *)data;LRESULT result;DWORD status_error=GetLastError();BOOL status=a->status||a->spin;(void)id;
@@ -241,7 +296,9 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
             ntw16s_report_paint_enable(&paint,w,a->report_module,&a->detached);
     }
     if(status)SetLastError(status_error);
-    result=DefSubclassProc(w,m,p,l);
+    if(static_paint || (a->static_candidate && !a->detached && m==WM_PAINT))
+        result=static_paint_dispatch(a,w,m,p,l);
+    else result=DefSubclassProc(w,m,p,l);
     if(status)status_error=GetLastError();
     ntw16s_vb_paint_end(&paint);
     status_current=prior;
@@ -331,7 +388,7 @@ BOOL __cdecl Ntw16sWindowAttached(HWND w)
     if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId()){
         SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
     }
-    return lookup(w)!=NULL;
+    attachment *a=lookup(w);return a && (!a->static_candidate || a->static_verified);
 }
 void __cdecl Ntw16sScrollChanged(HWND w)
 {
@@ -385,7 +442,7 @@ BOOL __cdecl Ntw16sWindowTerminal(HWND w)
 static BOOL install_created(HWND w,DWORD original_style)
 {
     BOOL ready=InterlockedCompareExchange(&status_hooks_ready,0,0)!=0;
-    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=checklist_identity(w),status=ready && status_identity(w,NULL),spin=ready && spin_identity(w);HWND parent;HMODULE owner;attachment *a;DWORD error;
+    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=checklist_identity(w),status=ready && status_identity(w,NULL),spin=ready && spin_identity(w),static_candidate=FALSE;HWND parent;HMODULE owner;attachment *a;DWORD error;
     ntw16s_control_protocol *protocol=NULL;
     if(lookup(w))return TRUE;
     /* COMBOBOX installs its own internal list when construction finishes.
@@ -408,22 +465,30 @@ static BOOL install_created(HWND w,DWORD original_style)
         edit=protocol && ntw16s_control_protocol_is(w,L"EDIT");
     }
     owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+    if(!control && !report && !tree && !picture && !checklist && !legacy_progress && !status && !spin &&
+       (original_style&WS_CHILD) && owner){
+        WCHAR name[64],real[64];DWORD type=original_style&SS_TYPEMASK;
+        static_candidate=GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TStaticText") &&
+            RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TStaticText") &&
+            (type==SS_LEFT || type==SS_CENTER || type==SS_RIGHT || type==SS_SIMPLE || type==SS_LEFTNOWORDWRAP) &&
+            !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING));
+    }
     /* An external OCX can create itself with frame bits during construction
      * and then become a custom client surface.  Without an explicitly
      * verified public protocol it must stay native; only an application-owned
      * generic child frame may use the ordinary frame path. */
-    if(!control && !report && !tree && !picture && !checklist && !legacy_progress && !status && !spin && (original_style&WS_CHILD) &&
+    if(!control && !report && !tree && !picture && !checklist && !legacy_progress && !status && !spin && !static_candidate && (original_style&WS_CHILD) &&
             owner && owner!=GetModuleHandleW(NULL)){
         ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
     }
     /* A custom client-only child and MDICLIENT keep application painting.
      * MDI child frames have WS_CAPTION and take the ordinary frame route. */
-    if(!control && !report && !picture && !checklist && !legacy_progress && !status && !spin && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME))){
+    if(!control && !report && !picture && !checklist && !legacy_progress && !status && !spin && !static_candidate && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME))){
         SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
     }
     a=calloc(1,sizeof(*a));
     if(!a){ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    a->calls=1;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;a->status=status;a->spin=spin;
+    a->calls=1;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;a->status=status;a->spin=spin;a->static_candidate=static_candidate;
     if(report || tree || a->file_owner || a->button_owner || a->checklist){a->report_window=w;a->tree=tree;
         a->report_module=(a->file_owner || a->button_owner)?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}
     if(!SetWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc,(DWORD_PTR)a)){
@@ -439,7 +504,7 @@ static BOOL install_created(HWND w,DWORD original_style)
             Ntw16sWindowRemove(info.hwndItem);
     }
     if(a->detached){release(a);SetLastError(ERROR_CANCELLED);return FALSE;}
-    if(a->checklist || a->status || a->spin)installed=TRUE;
+    if(a->checklist || a->status || a->spin || a->static_candidate)installed=TRUE;
     else if(legacy_progress)installed=win16_style_legacy_progress_border_install_created(w,NULL,a,&a->detached);
     else if(protocol && ntw16s_control_protocol_toolbar(w))
         installed=win16_style_toolbar_install_created(w,NULL,a,&a->detached);

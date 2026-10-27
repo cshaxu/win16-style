@@ -6,6 +6,7 @@
 #include "ntw16s-dll/vb_text.h"
 #include "ntw16s-dll/updown_paint.h"
 #include "ntw16s-dll/controls.h"
+#include "ntw16s-dll/static_text.h"
 #include <wchar.h>
 #include <uxtheme.h>
 
@@ -204,6 +205,37 @@ VB_TEXT_HOOK(TextOutW,BOOL,(HDC dc,int x,int y,LPCWSTR text,int count),(dc,x,y,t
 
 #undef VB_TEXT_HOOK
 
+static __typeof__(&CallWindowProcW) real_CallWindowProcW;
+static NTW16S_UNWIND_FUNCTION LRESULT WINAPI hook_CallWindowProcW(WNDPROC proc,HWND w,UINT message,WPARAM wp,LPARAM lp)
+{
+    ntw16s_static_call call;ntw16s_unwind_scope unwind;LRESULT result;DWORD entry=GetLastError(),error;
+    if(!ntw16s_static_call_begin(&call,proc,w,message,__builtin_return_address(0)) && !ntw16s_static_call_suspend(&call)){
+        SetLastError(entry);return real_CallWindowProcW(proc,w,message,wp,lp);
+    }
+    NTW16S_UNWIND_BEGIN(unwind,ntw16s_static_call_end,&call);
+    SetLastError(entry);result=real_CallWindowProcW(proc,w,message,wp,lp);error=GetLastError();
+    NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
+}
+static __typeof__(&DrawTextW) real_DrawTextW;
+typedef struct static_font_borrow {HDC dc;HFONT font;HGDIOBJ previous;} static_font_borrow;
+static void static_font_return(void *data)
+{
+    static_font_borrow *borrow=data;
+    if(borrow->previous)SelectObject(borrow->dc,borrow->previous);
+    if(borrow->font)win16_style_system_release(borrow->font);
+}
+static NTW16S_UNWIND_FUNCTION int WINAPI hook_DrawTextW(HDC dc,LPCWSTR text,int count,LPRECT rect,UINT flags)
+{
+    DWORD entry=GetLastError(),error;HFONT font=ntw16s_static_text_font(dc,text,count,flags,__builtin_return_address(0));
+    HGDIOBJ old=font?SelectObject(dc,font):NULL;
+    if(old==HGDI_ERROR)old=NULL;
+    if(!font){SetLastError(entry);return real_DrawTextW(dc,text,count,rect,flags);}
+    static_font_borrow borrow={dc,font,old};ntw16s_unwind_scope unwind;int result;
+    NTW16S_UNWIND_BEGIN(unwind,static_font_return,&borrow);
+    SetLastError(entry);result=real_DrawTextW(dc,text,count,rect,flags);error=GetLastError();
+    NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
+}
+
 
 /* USER's EDIT can submit shaped glyph IDs. Those IDs belong to its source
  * font, not the replacement FNT. Reverse only verified CP1252 glyphs; any
@@ -316,6 +348,7 @@ LONG ntw16s_attach_titles(void)
     ATTACH(MessageBoxIndirectA);ATTACH(MessageBoxIndirectW);
     ATTACH(DrawTextA);ATTACH(DrawTextExA);ATTACH(TextOutA);ATTACH(ExtTextOutA);
     ATTACH(TextOutW);ATTACH(ExtTextOutW);
+    ATTACH(CallWindowProcW);ATTACH(DrawTextW);
     ATTACH(DrawFrameControl);ATTACH(DrawEdge);ATTACH(DrawThemeBackground);ATTACH(CreateCompatibleDC);ATTACH(DeleteDC);
 #undef ATTACH
     return error;
