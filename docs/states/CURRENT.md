@@ -6,7 +6,7 @@ M0 T17 已按用户明确缩小后的范围收口；23 项 VB 延期项保留在
 Delphi VCL 74 个 UI 家族种子、框架分支、五个固定候选及逐项证据接收者；T18 S2 已将
 全部种子逐项归入35个既有原生协议模型或39个明确的原生保留边界。S4 已完成首组
 精确 TEdit/TListBox与TTabControl公开协议实现、干净双宽四文件包和双发布；实际 Delphi 显示集成
-仍统一留给T18最终收口。S10已完成组合框与列表验证；S11已完成工具栏文字边界修复、真实DoubleKiller复测及提交推送复核；S12真实MD5summer补证通过，待交付复核；不得用 demo
+仍统一留给T18最终收口。S10已完成组合框与列表验证；S11已完成工具栏文字边界修复、真实DoubleKiller复测及提交推送复核；S12真实MD5summer补证及远端复核完成；顺序准入S13树控件实际绘制复测；不得用 demo
 冒充 Delphi。
 以下段落为 T17 的技术基线/历史证据，不覆盖 T18 状态。
 
@@ -68,20 +68,20 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S12 Packet
+## M0 T18 S13 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S11 e214eff已推送并读取实际远端；按用户希望在桌面恢复后继续测试，顺序准入S12 |
+| Identifier Mode | Continuation；S12 bbf88d7已推送并读取实际远端；按用户希望在桌面恢复后继续测试，顺序准入S13 |
 | Admission And Approval | 用户批准T18连续实施并要求桌面恢复后继续原生测试；真实应用测试自动执行，无需用户操作 |
-| Objective | 用当前已发布包和自有隔离实例复测真实MD5summer，补证基础控件、组合框交互、窗口移动恢复和进程清理 |
+| Objective | 用当前已发布包和自有隔离实例复测MD5summer实际TShellTreeView绘制变化、公开状态保持与清理 |
 | Non-goals | 不将单一应用外推全部Delphi；不操作用户现有进程、不执行文件扫描/修改、无computer-use、不测HD Tune提权 |
 | Reference Baseline | [S11](../history/M0-T18-S11-toolbar-text-bounds.md)、[S3转交](../history/M0-T18-S3-vcl-probe-transfer.md)、[历史MD5summer证据](../etc/evidence/md5summer-controls.json) |
 | Candidate Proposal | [Delphi Win32控件完整审计与Win3.x风格适配](../proposals/delphi-win32-controls.md) |
 | Files And ABI Surface | 自有任务scratch及证据文档；无计划产品代码、ABI、图形资源变更 |
 | Applicable Rules | C17/MinGW GCC/Ninja/ccache、自有私有桌面及Job隔离；精确记录当前包摘要和失败、超时、清理；禁止依赖兄弟仓库 |
-| Verification | 使用当前已测试发布包，记录实际程序和DLL路径/SHA，探针检查附着、交互、移动恢复及Job清理；依据测试结果保留未覆盖项 |
-| Expected Markers | 精确目标与DLL、root和标准控件附着、组合框开关选择、窗口恢复及零自有存活进程；每个失败如实报告 |
+| Verification | 使用当前已测试发布包，记录实际程序和DLL路径/SHA，探针检查树控件附着、移除前后绘制差异、公开状态保持及Job清理；依据测试结果保留未覆盖项 |
+| Expected Markers | 精确目标与DLL、树附着、移除前后像素、项目/字体/选中/图像与几何保持及零自有存活进程；每个失败如实报告 |
 | Asset Needs | 本机MD5summer真实程序和既有自编探针源码，仅作自有进程观察；不分发第三方程序 |
 | Reporting Requirements | 区分已通过实测、未覆盖和原生保留；不把目标模块加载等同绘制成功 |
 | Stop Conditions | 真实目标不匹配、隔离不可用或需要破坏性应用操作时停止对应探针并记录，不修改系统设置 |
@@ -95,8 +95,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S11 P1：工具栏边界修复、91项包测试0跳过、真实DoubleKiller四页、双发布；e214eff已实际远端复核。
-- Open task: T18 S12 当前包真实MD5summer隔离复测已通过，待提交推送复核；M0/T18开放。
+- Last delivery: M0 T18 S12 P1：当前包真实MD5summer裸/样式探针及清理通过；bbf88d7已实际远端复核。
+- Open task: T18 S13 当前包真实MD5summer树控件绘制复测；M0/T18开放。
 
 ## Technical Baseline
 
