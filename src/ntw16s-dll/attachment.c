@@ -29,6 +29,8 @@ typedef struct attachment {
     BOOL track_candidate,track_attempted,track_installed;
     BOOL color_candidate,color_attempted,color_installed;
     BOOL date_candidate,date_attempted,date_installed;
+    BOOL status_candidate,status_attempted,status_installed;
+    HMODULE status_witness_owner; HWND status_parent;
     DWORD edit_original_style;
     HMODULE edit_witness_owner;
     HMODULE track_witness_owner;
@@ -130,20 +132,23 @@ static BOOL status_system_module(HMODULE image)
     return wcslen(path)>length && CompareStringOrdinal(path,(int)length,winsxs,(int)length,TRUE)==CSTR_EQUAL;
 }
 
-static BOOL status_identity(HWND w,HMODULE *native)
+static BOOL status_identity(HWND w,attachment *a,HMODULE *native)
 {
     WCHAR name[64];DWORD pid=0;WNDCLASSEXW cls={.cbSize=sizeof(cls)};HMODULE image=NULL;
     if(GetWindowThreadProcessId(w,&pid)!=GetCurrentThreadId() || pid!=GetCurrentProcessId() ||
         !(GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD) ||
         (GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) ||
-        !GetClassNameW(w,name,ARRAYSIZE(name)) || lstrcmpiW(name,STATUSCLASSNAMEW) ||
-        !GetClassInfoExW(NULL,STATUSCLASSNAMEW,&cls) ||
+        !GetClassNameW(w,name,ARRAYSIZE(name)) || !GetClassInfoExW(NULL,STATUSCLASSNAMEW,&cls) ||
         !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-            (LPCWSTR)(UINT_PTR)cls.lpfnWndProc,&image) ||
-        !status_system_module(image) ||
-        (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)!=image ||
-        GetClassLongPtrW(w,GCLP_WNDPROC)!=(ULONG_PTR)cls.lpfnWndProc ||
+            (LPCWSTR)(UINT_PTR)cls.lpfnWndProc,&image) || !status_system_module(image) ||
         GetClassLongPtrW(w,GCL_CBWNDEXTRA)<(ULONG_PTR)cls.cbWndExtra)return FALSE;
+    if(lstrcmpiW(name,STATUSCLASSNAMEW)){
+        if(!a || !a->status_candidate || !a->status_witness_owner || a->detached ||
+            lstrcmpW(name,L"TStatusBar") || (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)!=a->status_witness_owner ||
+            GetWindowThreadProcessId(GetParent(w),NULL)!=GetCurrentThreadId() ||
+            (a->status_parent && GetParent(w)!=a->status_parent))return FALSE;
+    }else if((HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)!=image ||
+        GetClassLongPtrW(w,GCLP_WNDPROC)!=(ULONG_PTR)cls.lpfnWndProc)return FALSE;
     if(native)*native=image;
     return TRUE;
 }
@@ -153,7 +158,7 @@ void ntw16s_status_frame(HDC dc,const RECT *rect,const RECT *clip,const void *ca
 {
     status_draw_scope *s=status_current;HMODULE module=NULL;HWND w,scoped=NULL;BOOL matches=FALSE;POINT origin;
     if(!s || !s->owner || s->owner->detached || s->epoch!=s->owner->status_epoch || !dc || !rect ||
-        !status_identity(s->window,NULL) || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
+        !status_identity(s->window,s->owner,NULL) || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
         !GetViewportOrgEx(dc,&origin) || origin.x || origin.y ||
         !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
             (LPCWSTR)caller,&module) || module!=s->native)return;
@@ -210,6 +215,16 @@ BOOL ntw16s_static_call_begin(ntw16s_static_call *scope,WNDPROC proc,HWND w,UINT
 {
     WNDCLASSEXW native={.cbSize=sizeof(native)};HMODULE caller=NULL,native_owner=NULL,owner;
     ZeroMemory(scope,sizeof(*scope));
+    if(message==WM_PAINT && static_paint && static_paint->window==w &&
+       static_paint->owner->status_candidate && !static_paint->owner->detached &&
+       !static_paint->owner->status_attempted && lookup(w)==static_paint->owner &&
+       GetClassInfoExW(NULL,STATUSCLASSNAMEW,&native) && proc==native.lpfnWndProc &&
+       GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+           (LPCWSTR)address,&caller)){
+        owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+        if(owner && caller==owner)static_paint->owner->status_witness_owner=owner;
+    }
+    native.cbSize=sizeof(native);
     if(message==WM_PAINT && static_paint && static_paint->window==w &&
        static_paint->owner->date_candidate && !static_paint->owner->detached &&
        !static_paint->owner->date_attempted && lookup(w)==static_paint->owner &&
@@ -294,7 +309,7 @@ static void static_paint_end(void *data)
 static NTW16S_UNWIND_FUNCTION LRESULT static_paint_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l)
 {
     static_paint_scope scope={static_paint,a,w,FALSE};ntw16s_unwind_scope unwind;LRESULT result;DWORD entry=GetLastError(),error;
-    static_paint=((a->static_candidate || a->edit_candidate || a->track_candidate || a->color_candidate || a->date_candidate) && !a->detached && m==WM_PAINT)?&scope:NULL;
+    static_paint=((a->static_candidate || a->edit_candidate || a->track_candidate || a->color_candidate || a->date_candidate || a->status_candidate) && !a->detached && m==WM_PAINT)?&scope:NULL;
     NTW16S_UNWIND_BEGIN(unwind,static_paint_end,&scope);
     SetLastError(entry);result=DefSubclassProc(w,m,p,l);error=GetLastError();scope.completed=TRUE;
     NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
@@ -422,7 +437,7 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     if(prior && prior->window!=w)status_current=NULL;
     if(painting){
         scope.previous=status_current;scope.owner=a;scope.window=w;scope.dc=m==WM_PAINT?NULL:(HDC)p;scope.epoch=a->status_epoch;
-        if(status_identity(w,&scope.native) && !SendMessageW(w,SB_ISSIMPLE,0,0) && !a->detached && scope.epoch==a->status_epoch){
+        if(status_identity(w,a,&scope.native) && !SendMessageW(w,SB_ISSIMPLE,0,0) && !a->detached && scope.epoch==a->status_epoch){
             LRESULT count=SendMessageW(w,SB_GETPARTS,0,0);
             if(count>0 && count<=64 && !a->detached && scope.epoch==a->status_epoch){
                 for(unsigned i=0;i<(unsigned)count;++i){RECT r={0};LRESULT type=SendMessageW(w,SB_GETTEXTLENGTHW,i,0);
@@ -454,7 +469,7 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     }
     if(status || color)SetLastError(status_error);
     if(print_clip)result=color_print_dispatch(a,w,m,p,l,print_clip,&paint,prior,spin_prior);
-    else if(static_paint || ((a->static_candidate || a->edit_candidate || a->track_candidate || a->color_candidate || a->date_candidate) && !a->detached && m==WM_PAINT))
+    else if(static_paint || ((a->static_candidate || a->edit_candidate || a->track_candidate || a->color_candidate || a->date_candidate || a->status_candidate) && !a->detached && m==WM_PAINT))
         result=static_paint_dispatch(a,w,m,p,l);
     else result=DefSubclassProc(w,m,p,l);
     if(status || color)status_error=GetLastError();
@@ -491,6 +506,11 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     if(m==WM_PAINT && a->color_candidate && !a->color_attempted && !a->detached && a->color_witness_owner){
         DWORD saved=GetLastError();COMBOBOXINFO info={.cbSize=sizeof(info)};a->color_attempted=TRUE;
         if(color_identity(w,a,&info)){a->color_parent=GetParent(w);a->color_installed=TRUE;}
+        SetLastError(saved);
+    }
+    if(m==WM_PAINT && a->status_candidate && !a->status_attempted && !a->detached && a->status_witness_owner){
+        DWORD saved=GetLastError();a->status_attempted=TRUE;
+        if(status_identity(w,a,NULL)){a->status_parent=GetParent(w);a->status_installed=TRUE;a->status=TRUE;InvalidateRect(w,NULL,TRUE);}
         SetLastError(saved);
     }
     if(m==WM_PAINT && a->date_candidate && !a->date_attempted && !a->detached && a->date_witness_owner){
@@ -596,7 +616,7 @@ BOOL __cdecl Ntw16sWindowAttached(HWND w)
     if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId()){
         SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
     }
-    attachment *a=lookup(w);return a && (!a->static_candidate || a->static_verified) && (!a->edit_candidate || a->edit_installed) && (!a->track_candidate || a->track_installed) && (!a->color_candidate || a->color_installed) && (!a->date_candidate || a->date_installed);
+    attachment *a=lookup(w);return a && (!a->static_candidate || a->static_verified) && (!a->edit_candidate || a->edit_installed) && (!a->track_candidate || a->track_installed) && (!a->color_candidate || a->color_installed) && (!a->date_candidate || a->date_installed) && (!a->status_candidate || a->status_installed);
 }
 void __cdecl Ntw16sScrollChanged(HWND w)
 {
@@ -650,7 +670,7 @@ BOOL __cdecl Ntw16sWindowTerminal(HWND w)
 static BOOL install_created(HWND w,DWORD original_style)
 {
     BOOL ready=InterlockedCompareExchange(&status_hooks_ready,0,0)!=0;
-    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=checklist_identity(w),status=ready && status_identity(w,NULL),spin=ready && spin_identity(w),static_candidate=FALSE,edit_candidate=FALSE,track_candidate=FALSE,color_candidate=FALSE,date_candidate=FALSE;HWND parent;HMODULE owner;attachment *a;DWORD error;
+    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=checklist_identity(w),status=ready && status_identity(w,NULL,NULL),spin=ready && spin_identity(w),status_candidate=FALSE,static_candidate=FALSE,edit_candidate=FALSE,track_candidate=FALSE,color_candidate=FALSE,date_candidate=FALSE;HWND parent;HMODULE owner;attachment *a;DWORD error;
     ntw16s_control_protocol *protocol=NULL;
     if(lookup(w))return TRUE;
     /* COMBOBOX installs its own internal list when construction finishes.
@@ -686,6 +706,8 @@ static BOOL install_created(HWND w,DWORD original_style)
             RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TTrackBar");
         color_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TColorBox") &&
             RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TColorBox");
+        status_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TStatusBar") &&
+            RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TStatusBar");
         date_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TDateTimePicker") &&
             RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TDateTimePicker");
     }
@@ -693,19 +715,19 @@ static BOOL install_created(HWND w,DWORD original_style)
      * and then become a custom client surface.  Without an explicitly
      * verified public protocol it must stay native; only an application-owned
      * generic child frame may use the ordinary frame path. */
-    if(!control && !report && !tree && !picture && !checklist && !legacy_progress && !status && !spin && !static_candidate && !edit_candidate && !track_candidate && !color_candidate && !date_candidate && (original_style&WS_CHILD) &&
+    if(!control && !report && !tree && !picture && !checklist && !legacy_progress && !status && !spin && !static_candidate && !edit_candidate && !track_candidate && !color_candidate && !date_candidate && !status_candidate && (original_style&WS_CHILD) &&
             owner && owner!=GetModuleHandleW(NULL)){
         ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
     }
     /* A custom client-only child and MDICLIENT keep application painting.
      * MDI child frames have WS_CAPTION and take the ordinary frame route. */
-    if(!control && !report && !picture && !checklist && !legacy_progress && !status && !spin && !static_candidate && !edit_candidate && !track_candidate && !color_candidate && !date_candidate && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME))){
+    if(!control && !report && !picture && !checklist && !legacy_progress && !status && !spin && !static_candidate && !edit_candidate && !track_candidate && !color_candidate && !date_candidate && !status_candidate && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME))){
         SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
     }
     a=calloc(1,sizeof(*a));
     if(!a){ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
     a->calls=1;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;a->status=status;a->spin=spin;a->static_candidate=static_candidate;
-    a->edit_candidate=edit_candidate;a->edit_original_style=original_style;a->track_candidate=track_candidate;a->color_candidate=color_candidate;a->date_candidate=date_candidate;
+    a->edit_candidate=edit_candidate;a->edit_original_style=original_style;a->track_candidate=track_candidate;a->color_candidate=color_candidate;a->date_candidate=date_candidate;a->status_candidate=status_candidate;
     if(report || tree || a->file_owner || a->button_owner || a->checklist){a->report_window=w;a->tree=tree;
         a->report_module=(a->file_owner || a->button_owner)?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}
     if(!SetWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc,(DWORD_PTR)a)){
@@ -721,7 +743,7 @@ static BOOL install_created(HWND w,DWORD original_style)
             Ntw16sWindowRemove(info.hwndItem);
     }
     if(a->detached){release(a);SetLastError(ERROR_CANCELLED);return FALSE;}
-    if(a->checklist || a->status || a->spin || a->static_candidate || a->edit_candidate || a->track_candidate || a->color_candidate || a->date_candidate)installed=TRUE;
+    if(a->checklist || a->status || a->spin || a->static_candidate || a->edit_candidate || a->track_candidate || a->color_candidate || a->date_candidate || a->status_candidate)installed=TRUE;
     else if(legacy_progress)installed=win16_style_legacy_progress_border_install_created(w,NULL,a,&a->detached);
     else if(protocol && ntw16s_control_protocol_toolbar(w))
         installed=win16_style_toolbar_install_created(w,NULL,a,&a->detached);
@@ -753,7 +775,7 @@ static BOOL install_created(HWND w,DWORD original_style)
             }
         }
     }
-    if(installed && !a->detached && !a->edit_candidate && !a->track_candidate && !a->color_candidate && !a->date_candidate && a->themed!=w)ntw16s_theme_remove(w,NULL);
+    if(installed && !a->detached && !a->edit_candidate && !a->track_candidate && !a->color_candidate && !a->date_candidate && !a->status_candidate && a->themed!=w)ntw16s_theme_remove(w,NULL);
     if(a->detached){installed=FALSE;error=ERROR_CANCELLED;}
     if(!installed && !a->detached)Ntw16sWindowRemove(w);
     release(a);

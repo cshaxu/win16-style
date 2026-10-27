@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "task": "M0 T18 S44",
+  "sample": "DelphiVCL4Python 1.0.7",
+  "records": [
+    {
+      "bits": 32,
+      "dpi": 144,
+      "attached": true,
+      "window_class": "TStatusBar",
+      "same_window_remove_compare": true,
+      "changed_pixels": 440,
+      "outside_public_pane_edges": 0,
+      "changed_pane": "first only in observed sequence",
+      "ordinary_text_preserved": true,
+      "owner_draw_data": "0x12345678",
+      "simple_mode_restored": true,
+      "report_sha256": "1059ce0ee105f4abe85775687a47e5e9604db5c7a4f9a802e35ca706009317bf"
+    },
+    {
+      "bits": 64,
+      "dpi": 144,
+      "attached": true,
+      "window_class": "TStatusBar",
+      "same_window_remove_compare": true,
+      "changed_pixels": 440,
+      "outside_public_pane_edges": 0,
+      "changed_pane": "first only in observed sequence",
+      "ordinary_text_preserved": true,
+      "owner_draw_data": "0x12345678",
+      "simple_mode_restored": true,
+      "report_sha256": "95e65eddcd3e0b7992d8f0d5373f536da574f176e79710ea5abd9735b901be0d"
+    }
+  ],
+  "caveats": [
+    "Second pane had no observed difference in this sequence.",
+    "Observer could not install the DrawThemeBackground import hook; no absence inferred.",
+    "Only one runtime and one style were observed; physical input and full integration were not tested."
+  ]
+}
