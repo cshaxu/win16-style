@@ -1961,7 +1961,7 @@
       "path": "tests/ntw16s-dll/vcl_grid_module.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3b8cef75d1955da75e43e3204b89d24c44ba6a8ec3056bf0c94fbdd105fb4288",
+      "sha256": "3c21fa29530f67422ae24221111bce4057c07e952b52343578d4174d1e6fd734",
       "disposition": "authored",
       "review": "T18 S54 self-owned grid nonclient, public scroll and client preservation model; real Delphi verification separate",
       "notice": "Project-authored C17; project MIT license"
@@ -1970,7 +1970,7 @@
       "path": "tests/ntw16s-dll/vcl_grid_module_fixture.c",
       "source": null,
       "source_blob": null,
-      "sha256": "70fd10c571b230f3ac199e580cfd7cd58034c70f1f798170fca180ada4fcc9a4",
+      "sha256": "45c25577a1b04b245a2e7d74bbb610f6277252dcb70ac8e900eb0d16e98b4c18",
       "disposition": "authored",
       "review": "T18 S54 self-owned grid nonclient, public scroll and client preservation model; real Delphi verification separate",
       "notice": "Project-authored C17; project MIT license"
