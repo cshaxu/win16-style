@@ -6,7 +6,7 @@ M0 T17 已按用户明确缩小后的范围收口；23 项 VB 延期项保留在
 Delphi VCL 74 个 UI 家族种子、框架分支、五个固定候选及逐项证据接收者；T18 S2 已将
 全部种子逐项归入35个既有原生协议模型或39个明确的原生保留边界。S4 已完成首组
 精确 TEdit/TListBox与TTabControl公开协议实现、干净双宽四文件包和双发布；实际 Delphi 显示集成
-仍统一留给T18最终收口。S10已完成组合框与列表验证；S11已完成工具栏文字边界修复、真实DoubleKiller复测及提交推送复核；S12真实MD5summer补证及远端复核完成；S13双宽干净构建、真实树控件与VB6 actor复测、91项包测试、双发布及远端aae1565复核完成；S14纠正S12独立包闭环并完成双发布及远端f1ac9ff复核；S15核实现代VCL候选的实际承载及公开状态边界，双宽构建、91项低并发包测试和双发布完成，待远端复核；不得用 demo
+仍统一留给T18最终收口。S10已完成组合框与列表验证；S11已完成工具栏文字边界修复、真实DoubleKiller复测及提交推送复核；S12真实MD5summer补证及远端复核完成；S13双宽干净构建、真实树控件与VB6 actor复测、91项包测试、双发布及远端aae1565复核完成；S14纠正S12独立包闭环并完成双发布及远端f1ac9ff复核；S15核实现代VCL候选及公开状态边界，双宽包、91项低并发回归、双发布及远端4032bcf复核完成；准入S16追踪真实开关绘制；不得用 demo
 冒充 Delphi。
 以下段落为 T17 的技术基线/历史证据，不覆盖 T18 状态。
 
@@ -68,26 +68,26 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S15 Packet
+## M0 T18 S16 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S14纠正包f1ac9ff已推送并读取实际远端，顺序准入S15 |
-| Admission And Approval | 用户批准T18持续实施及原生探针，要求先完成可实现的控件并在T收口时整体验证 |
-| Objective | 核实固定现代VCL候选cnc-ddraw config的窗口/控件实际承载及现有接入断点，依据可证明的公开协议寻找可实现项 |
-| Non-goals | 不仅凭类名或demo推断VCL支持；不写业务配置、不操作既有进程、不使用computer-use或测试HD Tune提权 |
-| Reference Baseline | [T18覆盖审计](../etc/evidence/delphi-controls-audit.json)、[S14纠正记录](../history/M0-T18-S14-md5-independent-package.md)、当前既有renderer |
+| Identifier Mode | Continuation；S15已实际远端复核，顺序准入S16；TToggleSwitch为真实应用新发现的覆盖单位，不从冻结种子中遗漏 |
+| Admission And Approval | 用户批准T18持续实施、优先完成能实现的控件及原生自动探针；不新增T |
+| Objective | 在自有cnc-ddraw配置副本上追踪准确TToggleSwitch的绘制API、调用者、DC和状态，评估能保留VCL状态/事件的最小样式适配 |
+| Non-goals | 不读写VCL私有字段、不凭类名猜状态、不修改游戏配置、不使用computer-use或全局hook；不改变已确认标题字体菜单和原图形资源 |
+| Reference Baseline | [S15真实观察](../history/M0-T18-S15-modern-vcl-observation.md)、[T18覆盖审计](../etc/evidence/delphi-controls-audit.json)、现有VB owner-draw范围 |
 | Candidate Proposal | [Delphi Win32控件完整审计与Win3.x风格适配](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 首先自有scratch和纯C探针；如能证明最小公开协议适配，再按实际范围记录DLL内部改动；不改变ABI及原资源 |
-| Applicable Rules | C17/MinGW GCC/Ninja/ccache；仅自有隔离实例、有限等待、受控数据及清理；scratch为build/t18-s15-modern，归本S回收；同批双宽产品包与必要双发布 |
-| Verification | 先核对候选路径/SHA、启动副作用与隔离；若安全启动，分别证明DLL载入、控件识别、实际绘制和语义；针对实际改变运行双宽及包测试 |
-| Expected Markers | 可核验进程及模块路径/SHA、控件类及所有者、公开消息状态、绘制前后证据、关闭和自有Job active0；异常如实记录 |
-| Asset Needs | 本机已审计候选及任务scratch，不安装组件、不分发第三方二进制 |
-| Reporting Requirements | 区分现代VCL实测与模型结果；未覆盖的控件、DPI及版本不宣称支持 |
-| Stop Conditions | 需要对用户原有配置写入、私有对象布局、绕过许可或全局hook时停止对应路径并记录具体边界 |
-| Exit Criteria | 完成有证据的有限实现或明确定位与后续接收；按规范完成本S包交付及远端复核，T18保持开放 |
-| Original Owner Request | Delphi控件全面审计与持续实现，桌面可用后自行测试 |
-| Similar-Issue Sweep | 经典与现代VCL、静态/包、ANSI/Unicode、owner/custom draw及已有标准控件协议独立核实 |
+| Files And ABI Surface | 自有纯C任务探针及scratch；如公开绘制契约成立，可有限修改双宽DLL内部，不改公开ABI或产物数 |
+| Applicable Rules | C17/MinGW GCC/Ninja/ccache；精确目标身份、任务副本、自有私有桌面和Job；完整同批包测试与必要双发布 |
+| Verification | 先追踪真实开关绘制正反状态及禁用/焦点、调用者和DC所有权；可行时验证点击/键盘/通知、负例、双宽和原始资源；保持原应用配置不变 |
+| Expected Markers | 目标及DLL路径/SHA、同一开关不同状态下绘制调用与实际像素、状态语义、清理；任何无法验证的契约和失败单列 |
+| Asset Needs | 已登记build/t18-s15-modern副本及新S scratch，原第三方二进制只用于本地研究，不提交分发 |
+| Reporting Requirements | 区分探针、实际绘制与交互结果，不将单一VCL样本扩张到所有框架或VB控件 |
+| Stop Conditions | 需要VCL私有布局、全局设置/全局hook、修改用户配置或无法保留原生语义时停止该实施并记录具体证据 |
+| Exit Criteria | 公开契约可靠则实现并测试；否则交付可复查的断点与明确下一步；按规范完成本S包交付和远端复核，T18开放 |
+| Original Owner Request | Delphi控件全面盘点与持续实施，用户要求能做的先做、测试自行完成 |
+| Similar-Issue Sweep | 新发现开关、其他owner-draw和无窗口控件逐项界定；不以VB或标准按钮推断VCL实现 |
 
 ## Identifier State
 
@@ -95,8 +95,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S14 P1：独立双宽包91项0跳过、真实MD5summer及VB6 actor、双发布；f1ac9ff已实际远端复核。
-- Open task: T18 S15 现代VCL真实候选调查与双发布完成，待远端复核；M0/T18开放。
+- Last delivery: M0 T18 S15 P1：真实现代VCL绘制与状态调查、双宽包91项0跳过、双发布；4032bcf已实际远端复核。
+- Open task: T18 S16 真实VCL开关绘制路径与适配；M0/T18开放。
 
 ## Technical Baseline
 
