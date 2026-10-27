@@ -96,6 +96,7 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
 - Last delivery: M0 T18 S24 P1：双宽颜色消息及原生过程模型、20项聚焦包与双发布完成；d12fded源码与四文件逐字节远端复核通过。
+- Subsequent verification: 自有隔离桌面普通实际包99项全部通过、零跳过（355.27秒）；双宽入口实验发现TLS更早及第二事务返回5023，仍未证明安全产品接入，详见S24历史；完整集成另行进行。
 - Open task: T18 S24 v5进度条颜色与创建期公开契约；M0/T18开放。
 
 ## Technical Baseline
