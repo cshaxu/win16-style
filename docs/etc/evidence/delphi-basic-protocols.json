@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "task": "M0 T18 S4",
+  "status": "closed: bounded public-protocol support added; real Delphi integration remains explicitly deferred to T18 closure",
+  "scope": {
+    "accepted": ["exact TEdit", "exact TListBox"],
+    "existing_paths_reused": ["native BUTTON", "native COMBOBOX", "native EDIT", "native LISTBOX"],
+    "rejected": ["class-name-only matches", "foreign-module classes", "DefWindowProc impostors", "owner-draw and virtual list boxes", "private VCL object inspection"]
+  },
+  "admission_contract": {
+    "identity": "exact registered name, USER32 native superclass extra bytes, current-process parent/thread relationship, and executable-module ownership",
+    "TEdit": ["EM_GETLIMITTEXT returns positive", "EM_GETSEL returns a valid range", "EM_GETRECT is non-empty"],
+    "TListBox": ["LB_GETCOUNT and LB_GETCURSEL are valid", "LB_GETITEMHEIGHT is positive", "LBS_OWNERDRAWFIXED, LBS_OWNERDRAWVARIABLE and LBS_NODATA are rejected"],
+    "attachment": "TEdit receives the existing edit lifecycle path; TListBox uses the existing standard list renderer. No ABI/export, resource, font, menu, title or scrollbar rule changed."
+  },
+  "negative_regression": "control_protocol_owner registers app-owned TEdit/TListBox names with DefWindowProc and native cbWndExtra; both are rejected because the required public protocol is absent. This detects an old name-and-owner-only implementation.",
+  "self_contained_test": "superclass registers exact app-owned TEdit/TListBox native-superclass fixtures, checks attached rendering and cleanup under injection. Both widths compile; GUI execution is a precise PRIVATE_DESKTOP_CREATE_FAIL error=5 skip in this session, not a pass.",
+  "build": {
+    "clean": "Build-Core clean source x86/x64 all, core/abi: passed (x86 1/1, x64 1/1)",
+    "package": "check_package.py: PACKAGE PASS, exactly four M0 T18 files, 18 retained glyph tables per DLL",
+    "package_test": "Test-Package: 87 cases passed-with-skips; non-GUI package cases passed, 72 private-desktop GUI cases including both new protocol-owner and superclass pairs skipped at error=5",
+    "publication": "same tested hashes copied to assets root and O:/winnt/system32 with verified backups"
+  },
+  "limits": [
+    "No current Delphi executable was started or claimed styled.",
+    "TEdit/TListBox are limited to the documented public USER32 contracts; TMemo, mask/rich edit, data-bound, owner-draw, virtual and canvas paths retain their separate boundaries.",
+    "The private-desktop limitation and a real VCL injection/display/interaction witness remain mandatory T18-final integration items."
+  ]
+}

@@ -4,9 +4,10 @@
 
 M0 T17 已按用户明确缩小后的范围收口；23 项 VB 延期项保留在 TODO。T18 S1 已冻结
 Delphi VCL 74 个 UI 家族种子、框架分支、五个固定候选及逐项证据接收者；T18 S2 已将
-全部种子逐项归入35个既有原生协议模型或39个明确的原生保留边界。顺序准入 T18 S3，
-先按公开协议逐组实现并做自包含正/负例测试，真实Delphi应用集成统一留给T18最终收口；
-不得用 demo 冒充 Delphi。
+全部种子逐项归入35个既有原生协议模型或39个明确的原生保留边界。S4 已完成首组
+精确 TEdit/TListBox 公开协议实现、干净双宽四文件包和双发布；实际 Delphi 显示集成
+仍统一留给T18最终收口。顺序准入 S5 继续现有公共 common-control 协议；不得用 demo
+冒充 Delphi。
 以下段落为 T17 的技术基线/历史证据，不覆盖 T18 状态。
 
 M0 T17 S27 ScrollBar范围/位置/禁用变体已完成，顺序准入S28 全148单位收口审计。
@@ -67,15 +68,15 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S4 Packet
+## M0 T18 S5 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；用户明确将真实Delphi应用集成后移至T18收口，S3转交后顺序准入S4 |
-| Admission And Approval | 用户批准进入队列首项T18，并明确要求先完成能以公开协议实现的代码和自包含测试；S1冻结74项接收者，S2完成35个原生模型/39个保留边界账本，S3的error=5集成缺口保留至最终收口 |
-| Objective | 实现第一组可公开验证的VCL基础按钮/选择与编辑/列表 wrapper接入：只接纳与USER BUTTON、EDIT、COMBOBOX、LISTBOX公开消息和注册/模块身份相符的实例，并添加自包含正/负例回归 |
-| Non-goals | 不把demo等价项当成VCL支持；不读取私有对象布局、不仅凭T前缀接纳、不新增第五产品；不接管canvas、数据库、嵌入/非视觉或owner-draw；不改既有标题/菜单/字体/滚动条/资源 |
-| Reference Baseline | [T18 S1审计](../etc/evidence/delphi-controls-audit.json)、[S2对应账本](../etc/evidence/delphi-demo-mapping.json)、[S3转交](../history/M0-T18-S3-vcl-probe-transfer.md)、[Delphi专项proposal](../proposals/delphi-win32-controls.md)及T15有限公开协议 |
+| Identifier Mode | Continuation；用户明确先实现一切可由公开协议证明的代码，真实Delphi集成统一留给T18收口；S4完成后顺序准入S5 |
+| Admission And Approval | 用户批准进入队列首项T18，并明确要求先完成能以公开协议实现的代码和自包含测试；S4已交付TEdit/TListBox有限实现及四文件发布，S3的error=5集成缺口仍保留至最终收口 |
+| Objective | 审核并仅在既有COMCTL公共协议、注册/模块身份和自包含正/负例能够同时成立时，接入TTabControl、TPageControl、TDateTimePicker、TMonthCalendar、THotKey对应的初始化后 native wrapper路径 |
+| Non-goals | 不把demo等价项当成VCL支持；不读取私有对象布局、不仅凭T前缀接纳、不新增第五产品；不接管canvas、数据库、嵌入/非视觉、图像/custom-draw或owner-draw；不改既有标题/菜单/字体/滚动条/资源 |
+| Reference Baseline | [T18 S1审计](../etc/evidence/delphi-controls-audit.json)、[S2对应账本](../etc/evidence/delphi-demo-mapping.json)、[S3转交](../history/M0-T18-S3-vcl-probe-transfer.md)、[S4公开协议](../etc/evidence/delphi-basic-protocols.json)、[Delphi专项proposal](../proposals/delphi-win32-controls.md)及T15有限公开协议 |
 | Candidate Proposal | [Delphi Win32控件完整审计与Win3.x风格适配](../proposals/delphi-win32-controls.md) |
 | Files And ABI Surface | 可改ntw16s32/64内部角色判断和增加自包含纯C测试；ABI/导出、三组件四产物和原五图形头不变 |
 | Applicable Rules | C17/MinGW GCC/Ninja/ccache、来源策略、禁computer-use/全局hook/既有进程扫描；真实应用集成与自包含测试分列；私有桌面error=5只能skip，留T18最终收口 |
@@ -84,7 +85,7 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | Asset Needs | 仅现有固定候选和自编C探针；不复制Delphi/第三方二进制、图片或资源，不安装/注册运行包 |
 | Reporting Requirements | 报告新增角色、公开协议/负例、测试与集成缺口、二进制发布状态；不将自包含模型或一个VCL应用外推为全部Delphi/FMX |
 | Stop Conditions | 需要私有对象布局、应用绘图、数据绑定、嵌入、owner-draw契约或第五产品时停止该项并交后续S；真实VCL应用显示验证统一留T18最终收口；实际修复前必须先记录根因和最小方案 |
-| Exit Criteria | 第一组基础wrapper仅以公开协议完成有限实现和双宽包闭环；每个无法安全泛化项有明确后续接收者；真实应用集成缺口明确保留 |
+| Exit Criteria | 每个接入项仅以公开协议完成有限实现和双宽包闭环；无稳定公共协议的项明确保留至后续接收者；真实应用集成缺口明确保留 |
 | Original Owner Request | 队列首位 Delphi Win32 控件完整审计与Win3.x风格适配；像VB专项一样先全貌审计、demo对应展示、多个S实施、最后独立收口 |
 | Similar-Issue Sweep | VCL/FireMonkey、ANSI/Unicode、静态/运行包、窗口/无窗口/owner-draw、标准/公共控件、数据/网格、菜单/主题、图像/字体、晚创建/重建、x86/x64及第三方组件 |
 
@@ -94,8 +95,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S3 P2（待本次治理验证、提交、推送及远端复核）：用户授权真实应用集成后移；CreateDesktopW error=5转为T18最终集成缺口，S3转交S4；无产品二进制变化。
-- Open task: T18 S4 Delphi基础VCL公开协议wrapper实现；M0/T18开放。
+- Last delivery: M0 T18 S4 P1（待本次治理验证、提交、推送及远端复核）：TEdit/TListBox仅按公开USER32协议、精确注册/模块身份接入；干净双宽、87项实际包（72个error=5 GUI skip）及同批四文件双发布完成；真实Delphi集成仍未执行。
+- Open task: T18 S5 Delphi公共common-control协议审计与有限wrapper实现；M0/T18开放。
 
 ## Technical Baseline
 
@@ -144,6 +145,9 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T18 S4基础VCL公开协议](../history/M0-T18-S4-basic-vcl-protocols.md)：精确TEdit/TListBox
+  的公开消息、模块/注册身份、旧实现负例、干净双宽包和同批双发布；真实Delphi集成仍留T18收口。
 
 - [T18 S3基础VCL探针转交](../history/M0-T18-S3-vcl-probe-transfer.md)：当前自有隔离桌面error=5
   发生于目标启动前；按用户授权将真实应用集成后移T18收口，S3转交S4，T18/M0开放。

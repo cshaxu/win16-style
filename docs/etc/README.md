@@ -10,6 +10,9 @@
 - [Delphi 基础VCL探针](evidence/delphi-basic-vcl-probe.json)：T18 S3 的真实基础wrapper
   取证状态；当前私有桌面创建返回error 5，明确是未启动目标的环境阻断，不是产品通过或失败。
 
+- [Delphi 基础公开协议](evidence/delphi-basic-protocols.json)：T18 S4 的精确 TEdit/TListBox
+  USER32协议、正/负例与双宽包交付；真实 Delphi 显示集成仍明确保留到 T18 收口。
+
 - [VB图片变体](evidence/vb-picture-variants.json)：T17 S11真实十按钮/四状态像素、
   同批包、许可与原生观察器限制；不作为图形Check/Option或全集支持声明。
 

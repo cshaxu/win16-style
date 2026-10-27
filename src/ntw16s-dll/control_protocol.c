@@ -59,7 +59,8 @@ BOOL ntw16s_control_protocol_is(HWND w,const WCHAR *name)
     for(ntw16s_control_protocol *b=bindings;b;b=b->next)
         if(b->window==w && current(b))return (b->role==1 && !lstrcmpiW(name,L"BUTTON")) ||
             (b->role==2 && !lstrcmpiW(name,L"COMBOBOX")) || (b->role==3 && !lstrcmpiW(name,WC_TABCONTROLW)) ||
-            (b->role==4 && !lstrcmpiW(name,WC_HEADERW)) || (b->role==5 && !lstrcmpiW(name,WC_LISTVIEWW)) || (b->role==6 && !lstrcmpiW(name,WC_TREEVIEWW)) || (b->role==7 && !lstrcmpiW(name,PROGRESS_CLASSW)) || (b->role==8 && !lstrcmpiW(name,TRACKBAR_CLASSW)) || (b->role==9 && !lstrcmpiW(name,UPDOWN_CLASSW));
+            (b->role==4 && !lstrcmpiW(name,WC_HEADERW)) || (b->role==5 && !lstrcmpiW(name,WC_LISTVIEWW)) || (b->role==6 && !lstrcmpiW(name,WC_TREEVIEWW)) || (b->role==7 && !lstrcmpiW(name,PROGRESS_CLASSW)) || (b->role==8 && !lstrcmpiW(name,TRACKBAR_CLASSW)) || (b->role==9 && !lstrcmpiW(name,UPDOWN_CLASSW)) ||
+            (b->role==11 && !lstrcmpiW(name,L"EDIT")) || (b->role==12 && !lstrcmpiW(name,L"LISTBOX"));
     return FALSE;
 }
 BOOL ntw16s_control_protocol_toolbar(HWND w)
@@ -122,13 +123,14 @@ ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND w)
         (!lstrcmpW(name,WC_TREEVIEWW) || !lstrcmpW(name,L"TTreeView") || !lstrcmpW(name,L"TShellTreeView"))?6:
         (!lstrcmpW(name,PROGRESS_CLASSW) || !lstrcmpW(name,L"TProgressBar"))?7:
         (!lstrcmpW(name,TRACKBAR_CLASSW) || !lstrcmpW(name,L"TTrackBar"))?8:
-        (!lstrcmpW(name,UPDOWN_CLASSW) || !lstrcmpW(name,L"TUpDown"))?9:ocx_role?ocx_role:toolbar_role;
+        (!lstrcmpW(name,UPDOWN_CLASSW) || !lstrcmpW(name,L"TUpDown"))?9:
+        !lstrcmpW(name,L"TEdit")?11:!lstrcmpW(name,L"TListBox")?12:ocx_role?ocx_role:toolbar_role;
     if(!role)return NULL;
-    if(role>=3 && !ocx_role && !toolbar_role && !GetClassInfoExW(NULL,role==3?WC_TABCONTROLW:role==4?WC_HEADERW:role==5?WC_LISTVIEWW:role==6?WC_TREEVIEWW:role==7?PROGRESS_CLASSW:role==8?TRACKBAR_CLASSW:UPDOWN_CLASSW,&native_class))return NULL;
+    if(role>=3 && role<=9 && !ocx_role && !toolbar_role && !GetClassInfoExW(NULL,role==3?WC_TABCONTROLW:role==4?WC_HEADERW:role==5?WC_LISTVIEWW:role==6?WC_TREEVIEWW:role==7?PROGRESS_CLASSW:role==8?TRACKBAR_CLASSW:UPDOWN_CLASSW,&native_class))return NULL;
     HMODULE native_owner=ocx_role?owner:toolbar_role?toolbar_native:NULL;
     /* Global common-control classes can report hInstance == NULL. Resolve
      * the registered native procedure's image, not a guessed DLL filename. */
-    if(role>=3 && !ocx_role && !toolbar_role && !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+    if(role>=3 && role<=9 && !ocx_role && !toolbar_role && !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
         (const WCHAR *)(UINT_PTR)native_class.lpfnWndProc,&native_owner))return NULL;
     if(owner!=((ocx_role||toolbar_role)?native_owner:(role==4 || (role==3 && !lstrcmpW(name,WC_TABCONTROLW)) || (role==5 && !lstrcmpW(name,WC_LISTVIEWW)) || (role==6 && !lstrcmpW(name,WC_TREEVIEWW)) || (role==7 && !lstrcmpW(name,PROGRESS_CLASSW)) || (role==8 && !lstrcmpW(name,TRACKBAR_CLASSW)) || (role==9 && !lstrcmpW(name,UPDOWN_CLASSW)))?native_owner:GetModuleHandleW(NULL)))return NULL;
     if(role==7 && !ocx_role){
@@ -138,7 +140,7 @@ ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND w)
     }
     if(role==3 && ((GetWindowLongPtrW(w,GWL_STYLE)&(TCS_BOTTOM|TCS_VERTICAL)) ||
         GetClassLongPtrW(w,GCL_CBWNDEXTRA)<(ULONG_PTR)native_class.cbWndExtra))return NULL;
-    if(role>=4 && GetClassLongPtrW(w,GCL_CBWNDEXTRA)<(ULONG_PTR)native_class.cbWndExtra)return NULL;
+    if(role>=4 && role<=9 && GetClassLongPtrW(w,GCL_CBWNDEXTRA)<(ULONG_PTR)native_class.cbWndExtra)return NULL;
     ntw16s_control_protocol *b=calloc(1,sizeof(*b));
     if(!b){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return NULL;}
     b->window=w;b->refs=1;b->next=bindings;bindings=b;
@@ -170,6 +172,25 @@ ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND w)
                 valid=current(b) && (selected==CB_ERR || (selected>=0 && selected<count));
             }
         }
+    }else if(role==11){
+        WNDCLASSEXW native={.cbSize=sizeof(native)};RECT format={0};
+        LRESULT limit=SendMessageW(w,EM_GETLIMITTEXT,0,0);
+        LRESULT selection=current(b)?SendMessageW(w,EM_GETSEL,0,0):-1;
+        if(current(b))SendMessageW(w,EM_GETRECT,0,(LPARAM)&format);
+        valid=current(b) && GetClassInfoExW(NULL,L"EDIT",&native) &&
+            GetClassLongPtrW(w,GCL_CBWNDEXTRA)>=(ULONG_PTR)native.cbWndExtra &&
+            limit>0 && selection!=-1 && format.right>format.left && format.bottom>format.top &&
+            GetWindowThreadProcessId(GetParent(w),NULL)==GetCurrentThreadId();
+    }else if(role==12){
+        WNDCLASSEXW native={.cbSize=sizeof(native)};DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
+        LRESULT count=SendMessageW(w,LB_GETCOUNT,0,0);
+        LRESULT selected=current(b)?SendMessageW(w,LB_GETCURSEL,0,0):-2;
+        LRESULT height=current(b)?SendMessageW(w,LB_GETITEMHEIGHT,0,0):0;
+        valid=current(b) && GetClassInfoExW(NULL,L"LISTBOX",&native) &&
+            GetClassLongPtrW(w,GCL_CBWNDEXTRA)>=(ULONG_PTR)native.cbWndExtra &&
+            !(style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA)) && count>=0 &&
+            (selected==LB_ERR || (selected>=0 && selected<count)) && height>0 &&
+            GetWindowThreadProcessId(GetParent(w),NULL)==GetCurrentThreadId();
     }else if(role==3){
         RECT input={0,0,300,200},display=input,inverse;TC_HITTESTINFO hit={.pt={-30000,-30000}};
         LRESULT declared=SendMessageW(w,WM_GETDLGCODE,0,0);

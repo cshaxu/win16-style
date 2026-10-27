@@ -208,6 +208,7 @@ static BOOL install_created(HWND w,DWORD original_style)
         report=protocol && ntw16s_control_protocol_list_module(w);
         tree=protocol && ntw16s_control_protocol_tree_module(w);
         control=protocol && !report;
+        edit=protocol && ntw16s_control_protocol_is(w,L"EDIT");
     }
     owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
     /* An external OCX can create itself with frame bits during construction

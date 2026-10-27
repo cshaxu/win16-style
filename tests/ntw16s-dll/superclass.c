@@ -31,7 +31,7 @@ static DWORD image(HWND w,DWORD *pixels,UINT count)
     int saved=SaveDC(surface.dc);if(!saved)ExitProcess(1);
     RECT clear={0,0,200,100};FillRect(surface.dc,&clear,GetStockObject(WHITE_BRUSH));
     WCHAR cls[64];GetClassNameW(w,cls,64);
-    if(!wcscmp(cls,L"RenamedEdit"))SendMessageW(w,WM_PRINT,(WPARAM)surface.dc,PRF_CLIENT|PRF_ERASEBKGND);
+    if(!wcscmp(cls,L"TEdit"))SendMessageW(w,WM_PRINT,(WPARAM)surface.dc,PRF_CLIENT|PRF_ERASEBKGND);
     else SendMessageW(w,WM_PRINTCLIENT,(WPARAM)surface.dc,PRF_CLIENT);
     GdiFlush();DWORD hash=2166136261u;
     for(UINT i=0;i<200*100;++i)hash=(hash^surface.bits[i])*16777619u;
@@ -41,7 +41,7 @@ static DWORD image(HWND w,DWORD *pixels,UINT count)
 }
 
 static WNDPROC native_procs[7];
-static const WCHAR *class_names[]={L"RenamedPush",L"RenamedCheck",L"RenamedEdit",L"RenamedCombo",L"RenamedList",L"RenamedStatic",L"RenamedScroll"};
+static const WCHAR *class_names[]={L"RenamedPush",L"RenamedCheck",L"TEdit",L"RenamedCombo",L"TListBox",L"RenamedStatic",L"RenamedScroll"};
 /* Like a framework InitWndProc, registration itself is custom. The system
  * instance type is established by calling the saved native procedure. */
 static LRESULT CALLBACK framework_proc(HWND w,UINT m,WPARAM a,LPARAM b)
@@ -72,7 +72,7 @@ static int child(BOOL styled,BOOL aware)
     BOOL (__cdecl *remove_control)(HWND)=dll?(void *)GetProcAddress(dll,"Ntw16sWindowRemove"):NULL;
     CHECK(styled?(dll && attached && remove_control):!dll);
     const WCHAR *bases[]={L"BUTTON",L"BUTTON",L"EDIT",L"COMBOBOX",L"LISTBOX",L"STATIC",L"SCROLLBAR"};
-    const WCHAR *names[]={L"RenamedPush",L"RenamedCheck",L"RenamedEdit",L"RenamedCombo",L"RenamedList",L"RenamedStatic",L"RenamedScroll"};
+    const WCHAR *names[]={L"RenamedPush",L"RenamedCheck",L"TEdit",L"RenamedCombo",L"TListBox",L"RenamedStatic",L"RenamedScroll"};
     for(unsigned i=0;i<ARRAYSIZE(bases);++i)CHECK(superclass(bases[i],names[i]));
     WNDCLASSW cls={0};cls.lpfnWndProc=parent_proc;cls.hInstance=instance;cls.lpszClassName=L"SuperclassParent";
     CHECK(RegisterClassW(&cls));

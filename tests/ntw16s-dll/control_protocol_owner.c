@@ -30,6 +30,8 @@ static int worker(int argc,WCHAR **argv)
     WNDCLASSEXW native={.cbSize=sizeof(native)};CHECK(GetClassInfoExW(NULL,L"BUTTON",&native));
     WNDCLASSW wc={.hInstance=instance,.lpfnWndProc=button,.cbWndExtra=native.cbWndExtra,.lpszClassName=L"TButton"};CHECK(RegisterClassW(&wc));
     wc.lpfnWndProc=DefWindowProcW;wc.lpszClassName=L"TComboBox";CHECK(RegisterClassW(&wc));
+    wc.lpszClassName=L"TEdit";CHECK(RegisterClassW(&wc));
+    wc.lpszClassName=L"TListBox";CHECK(RegisterClassW(&wc));
     HWND parent=CreateWindowW(L"STATIC",L"owner",WS_POPUP,0,0,200,100,NULL,NULL,instance,NULL);CHECK(parent);
     for(unsigned i=1;i<=4;++i){
         HWND w=CreateWindowW(L"TButton",L"test",WS_CHILD,0,0,100,30,parent,(HMENU)(UINT_PTR)i,instance,NULL);CHECK(w);
@@ -50,7 +52,13 @@ static int worker(int argc,WCHAR **argv)
     CHECK(RemovePropW(w,key)==(HANDLE)(UINT_PTR)123 && DestroyWindow(w));
     w=CreateWindowW(L"TComboBox",L"fake",WS_CHILD,0,0,100,30,parent,NULL,instance,NULL);CHECK(w);
     CHECK(!ntw16s_control_protocol_bind(w) && !allocations && !bindings && !GetPropW(w,key));
+    CHECK(DestroyWindow(w));
+    w=CreateWindowW(L"TEdit",L"fake",WS_CHILD,0,0,100,30,parent,NULL,instance,NULL);CHECK(w);
+    CHECK(!ntw16s_control_protocol_bind(w) && !allocations && !bindings && !GetPropW(w,key));
+    CHECK(DestroyWindow(w));
+    w=CreateWindowW(L"TListBox",L"fake",WS_CHILD,0,0,100,30,parent,NULL,instance,NULL);CHECK(w);
+    CHECK(!ntw16s_control_protocol_bind(w) && !allocations && !bindings && !GetPropW(w,key));
     CHECK(DestroyWindow(w) && DestroyWindow(parent));
-    printf("PROTOCOL_OWNER_OK bits=%u allocations=0 bindings=0 invalid=3 destroyed_query=1 oom=1 foreign_property=1 combo_impostor=1\n",(unsigned)(sizeof(void*)*8));return 0;
+    printf("PROTOCOL_OWNER_OK bits=%u allocations=0 bindings=0 invalid=5 destroyed_query=1 oom=1 foreign_property=1 combo_edit_list_impostor=1\n",(unsigned)(sizeof(void*)*8));return 0;
 }
 int wmain(int argc,WCHAR **argv){return isolated_process(argc,argv,worker);}
