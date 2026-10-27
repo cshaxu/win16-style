@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "task": "M0 T18 S41",
+  "status": "in-progress prototype, not product support",
+  "target": {
+    "runtime": "DelphiVCL4Python 1.0.7",
+    "dpi": 144,
+    "pyd_sha256": {
+      "x86": "2272062b0e7e847a05a6344e2b31a04ed1edb5a52c0bf78a149e35739613eece",
+      "x64": "d7b856b9bc7d9fc411324c21584a8cbfd8c8f17bba00f65dae054a61bc35db76"
+    }
+  },
+  "public_protocol": {
+    "class": "TDateTimePicker",
+    "module_owner": "DelphiVCL.pyd",
+    "attached": false,
+    "native_wm_paint_and_ncpaint_forwarded": true,
+    "client": [
+      0,
+      0,
+      130,
+      24
+    ],
+    "button": [
+      104,
+      0,
+      130,
+      24
+    ],
+    "closed_state": 0,
+    "popup_class": "SysMonthCal32",
+    "popup_owned_by_target_process": true,
+    "drop_notifications": 1,
+    "close_notifications": 1,
+    "popup_date_unchanged": true
+  },
+  "keyboard_model": {
+    "focus": true,
+    "input": "synthetic WM_KEYDOWN/UP VK_UP",
+    "before": "2026-10-27",
+    "after": "2026-11-27",
+    "date_change_notifications": 1,
+    "original_value_restored": true
+  },
+  "scratch_overlay": {
+    "uses_original_combo_glyph": true,
+    "coordinate_scaling": "per-coordinate DPI proportion",
+    "normal_changed_per_width": 552,
+    "disabled_changed_per_width": 552,
+    "open_changed_per_width": 555,
+    "changed_outside_button": 0,
+    "open_button_state": 8,
+    "product_change": false
+  },
+  "limitations": [
+    "Only one runtime version, machine and 144 DPI",
+    "Real physical input, date formats, checked/unchecked, custom draw and popup internals not verified",
+    "One x64 open-state probe returned 1 after writing report; exact failure node unknown; isolated retry succeeded, not root cause",
+    "Temporary overlay is not integrated into product"
+  ],
+  "scratch": "build/t18-s41-date-picker"
+}
