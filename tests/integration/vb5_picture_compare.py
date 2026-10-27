@@ -13,7 +13,7 @@ from vb_picture_compare import pixels
 def compare(bare, styled):
     total = 0
     for index in range(2):
-        for state in ("normal", "disabled", "restored"):
+        for state in ("normal", "pressed", "disabled", "restored"):
             name = f"button-{index}-{state}.bmp"
             original = pixels(bare / name, 129, 33)
             actual = pixels(styled / name, 129, 33)
@@ -32,11 +32,12 @@ def compare(bare, styled):
                 raise ValueError(f"picture region lacks image detail: {name}")
         for folder in (bare, styled):
             normal = pixels(folder / f"button-{index}-normal.bmp", 129, 33)
+            pressed = pixels(folder / f"button-{index}-pressed.bmp", 129, 33)
             disabled = pixels(folder / f"button-{index}-disabled.bmp", 129, 33)
             restored = pixels(folder / f"button-{index}-restored.bmp", 129, 33)
-            if normal == disabled or normal != restored:
+            if normal == pressed or normal == disabled or normal != restored:
                 raise ValueError(f"button {index} failed disabled/restored check: {folder}")
-    print(f"VB5_REAL_PICTURE_COMPARE_OK buttons=2 states=3 interior_pixels={total} no_button_click=1")
+    print(f"VB5_REAL_PICTURE_COMPARE_OK buttons=2 states=4 interior_pixels={total} no_button_click=1")
 
 
 if __name__ == "__main__":

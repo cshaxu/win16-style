@@ -874,5 +874,18 @@
       "External OCX used only as sample dependency, user-deferred OCX and DriveListBox styling unchanged."
     ],
     "binary_change": false
+  },
+  "vb5_picture_pressed_p26": {
+    "source": "Same source-reviewed VB5 PopupMenu demo as P25; two graphical CommandButtons have Picture set, and no custom DownPicture.",
+    "method": "Self-owned private desktop instances, native and installed assets launcher; exact About menu only, set BM_SETSTATE(TRUE), verify BM_GETSTATE has BST_PUSHED, capture, set FALSE, verify clear; no button Click or external webpage. Followed by disabled/restored checks and clean job exit.",
+    "result": "Two controls in normal, pressed, disabled and restored states: 24,200 interior RGB pixels match native and installed style, frames differ. Pressed and disabled images differ from normal, restored image equals normal. Mutating one pressed image pixel is rejected at (10,10).",
+    "probe": "tests/integration/vb_intrinsic.c real-vb5-picture-buttons; tests/integration/vb5_picture_compare.py",
+    "dll_sha256": "72874f53422c9a6f2e3d196dc9b2908c6883bdc9db9a9b2bfe5d29c46de587ac",
+    "limits": [
+      "BM_SETSTATE is not physical input, and no click is sent.",
+      "No explicit DownPicture or custom DisabledPicture in this application; only one x86 runtime at 96 DPI.",
+      "IME and accessibility not tested; external COM components were private sample-only dependencies."
+    ],
+    "binary_change": false
   }
 }
