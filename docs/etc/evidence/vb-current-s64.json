@@ -748,5 +748,27 @@
       "Additional global-looking BitBlt interception remains strictly scoped to the current launched process; no global hooks or modifications of existing processes."
     ],
     "accounting": "Production controls.c: 3 additions, 3 deletions, net zero. Tests and focused package markers changed; original resource headers remain byte-exact. Search rg -n \"win16_style_vb_checklist|sx!=|IsWindowEnabled|checklist_glyph\" src/ntw16s-dll."
+  },
+  "vb6_checkbox_list_reentrancy_p18": {
+    "baseline": "T18 S64 P17 7e3edb0; actual sample, source and private activation boundaries documented in vb6_checkbox_list_p16 and p17.",
+    "root_cause": "In the P17 implementation, the list can run application code while synchronously answering LB_ITEMFROMPOINT or LB_GETITEMRECT. If it becomes disabled in that interval the hook used the previous enabled snapshot and overpainted the original blit with a stale glyph. On x86 and x64 self-contained runtime fixtures the old package overwrote all 121 expected native pixels after reentrant disabling.",
+    "change": "Capture parent, full style/exstyle and enabled state. After each synchronous query validate HWND, DC-window association, parent, registered VB6 runtime class, styles and enabled state; on any change retain the original already-completed BitBlt. Existing per-thread recursion guard remains. No new hooks or ABI.",
+    "models": "x86/x64 native fixtures simulate disabling and style mutation while answering LB_ITEMFROMPOINT, verify native pixels remain, then restore and verify normal glyph. The old package fails the disable negative on both widths; candidate and installed package pass. Reparent during query is checked for lifecycle and later style recovery, not native pixels: Windows made the original DC unreadable. Destroy/reuse during callback has not been separately tested.",
+    "real_sample": "Private x86 VB6 sample at 96 DPI with temporary list exposure and synthetic items. Exact candidate loaded from package path, checked and disabled state changes succeed, process and owned job exit cleanly in this run. Five screenshots (unchecked, checked, disabled checked, disabled unchecked and restored) are byte-for-byte equal to P17 captures. No physical input or full application claim.",
+    "regression": "18 focused same-package tests, zero skips, 17.06 seconds; includes both checklist models, existing Delphi checklist, VB owner-draw and standard controls, ABI, demo, injection and propagation. Full suite not repeated.",
+    "source_snapshot_sha256": "5fad0af4477a2b610ae4aa5a551829b363538f6d6cfd5750a1aa2be24f59b832",
+    "sha256": {
+      "demo.exe": "733dff54f9601421e65eb4086407e1703d3f1a39f3f5776f1586793f53ee021e",
+      "ntw16s32.dll": "571087e39a4e48081e4d6bd720883ed4c5b09bb98b41c6d1e1e025c2b5c33787",
+      "ntw16s64.dll": "556496d8f47e10bfa39165a3ff74cb1978437cdfdec68ca77eb9ef00f1c6ea62",
+      "run16s.exe": "c15fa6d35384b598a37a458f81a8bb2596e2267bc354b540de20d0264b88b06e"
+    },
+    "publication": "Four same-batch tested files installed to assets root and O:/winnt/system32, eight hashes verified; installed x86/x64 checklist models passed.",
+    "limits": [
+      "Real sample remains one VB6 x86 application at 96 DPI, with temporarily exposed list; VB5, RTL and other DPI paths remain native.",
+      "Reparent test proves lifecycle/recovery only; no native-pixel comparison for the invalidated DC. Destroy/reuse during a callback, physical input, IME and accessibility remain unverified.",
+      "Prior intermittent viewer-only timeout has not been root-caused; a successful current run does not resolve it."
+    ],
+    "accounting": "Production controls.c 14 additions/5 deletions, net +9. Related native test fixture and package markers changed; no original resource bytes changed. Search: rg -n \"win16_style_vb_checklist|LB_ITEMFROMPOINT|LB_GETITEMRECT|vb_checklist_unchanged\" src/ntw16s-dll."
   }
 }
