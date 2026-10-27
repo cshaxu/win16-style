@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "task": "M0 T18 S45",
+  "sample": "DelphiVCL4Python 1.0.7",
+  "records": [
+    {
+      "bits": 32,
+      "dpi": 144,
+      "screen_changed": 1244,
+      "print_changed": 1244,
+      "first_pane": 440,
+      "last_pane": 804,
+      "outside_pane_edges": 0,
+      "normal_text_restored": true,
+      "owner_draw_data": "0x12345678",
+      "report_sha256": "139036c54cda5ce787a64e287c3afcbf9d270bd459d05d422a0d3f1f1ce51bed"
+    },
+    {
+      "bits": 64,
+      "dpi": 144,
+      "screen_changed": 1244,
+      "print_changed": 1244,
+      "first_pane": 440,
+      "last_pane": 804,
+      "outside_pane_edges": 0,
+      "normal_text_restored": true,
+      "owner_draw_data": "0x12345678",
+      "report_sha256": "0df12a28d9cf44eda5982e979f11727d47fb69b9b28ef5b8c79e1331b2f23f0c"
+    }
+  ],
+  "caveats": [
+    "Empty, icon and owner-drawn last panes deliberately remain native.",
+    "Other runtime versions, physical input and full integration not tested.",
+    "Diagnostic-only extra hooks initially exceeded 40 hook slots and failed error 122; production adds only one and retains capacity 40."
+  ]
+}

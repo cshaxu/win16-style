@@ -33,6 +33,8 @@ __declspec(dllexport) BOOL WINAPI FixtureRegister(BOOL impostor)
 }
 __declspec(dllexport) HWND WINAPI FixtureCreate(HWND parent,BOOL ignored)
 {(void)ignored;return CreateWindowW(L"TStatusBar",L"",WS_CHILD|WS_VISIBLE|CCS_BOTTOM,0,0,400,30,parent,(HMENU)(INT_PTR)9,owner,NULL);}
+__declspec(dllexport) HWND WINAPI FixtureCreateGrip(HWND parent,BOOL ignored)
+{(void)ignored;return CreateWindowW(L"TStatusBar",L"",WS_CHILD|WS_VISIBLE|CCS_BOTTOM|SBARS_SIZEGRIP,0,0,400,30,parent,(HMENU)(INT_PTR)9,owner,NULL);}
 __declspec(dllexport) BOOL WINAPI FixtureUnregister(void)
 {BOOL ok=UnregisterClassW(L"TStatusBar",owner);if(thunk){ok=VirtualFree(thunk,0,MEM_RELEASE)&&ok;thunk=NULL;}return ok;}
 BOOL WINAPI DllMain(HINSTANCE h,DWORD reason,LPVOID unused)

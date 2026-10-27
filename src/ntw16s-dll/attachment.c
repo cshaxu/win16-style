@@ -153,6 +153,34 @@ static BOOL status_identity(HWND w,attachment *a,HMODULE *native)
     return TRUE;
 }
 
+/* The themed native status control omits the final pane background when it
+ * owns a sizing grip. Only a native text call for a nonempty, icon-free,
+ * ordinary final pane supplies a verified pre-content drawing boundary. */
+void ntw16s_status_text_frame(HDC dc,const RECT *text,UINT flags,const void *address)
+{
+    status_draw_scope *s=status_current;HMODULE module=NULL;POINT origin;RECT pane;HWND window;
+    LRESULT parts,icon,type;
+    if(!s || !s->owner || s->owner->detached || s->epoch!=s->owner->status_epoch ||
+        s->count<2 || !text || (flags&(DT_CALCRECT|DT_RTLREADING)) ||
+        !(GetWindowLongPtrW(s->window,GWL_STYLE)&SBARS_SIZEGRIP) ||
+        !status_identity(s->window,s->owner,NULL) ||
+        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+            (LPCWSTR)address,&module) || module!=s->native || !dc ||
+        GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
+        !GetViewportOrgEx(dc,&origin) || origin.x || origin.y)return;
+    window=WindowFromDC(dc);if(s->dc?dc!=s->dc:window!=s->window)return;
+    pane=s->panes[s->count-1];
+    if(text->left<=pane.left || text->left>=pane.right || text->right>pane.right ||
+        text->right<=text->left || text->top>=pane.bottom || text->bottom<=pane.top)return;
+    parts=SendMessageW(s->window,SB_GETPARTS,0,0);
+    if(s->owner->detached || s->epoch!=s->owner->status_epoch || parts!=(LRESULT)s->count)return;
+    type=SendMessageW(s->window,SB_GETTEXTLENGTHW,s->count-1,0);
+    if(s->owner->detached || s->epoch!=s->owner->status_epoch || HIWORD(type)!=0 || !LOWORD(type))return;
+    icon=SendMessageW(s->window,SB_GETICON,s->count-1,0);
+    if(s->owner->detached || s->epoch!=s->owner->status_epoch || icon)return;
+    int saved=SaveDC(dc);if(saved){FrameRect(dc,&pane,(HBRUSH)GetStockObject(BLACK_BRUSH));RestoreDC(dc,saved);}
+}
+
 /* Called only after the original native drawing call has completed. */
 void ntw16s_status_frame(HDC dc,const RECT *rect,const RECT *clip,const void *caller)
 {

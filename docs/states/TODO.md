@@ -69,4 +69,4 @@ S15包测试进度文件共享冲突已由[S17记录](../history/M0-T18-S17-test
 
 - [ ] TODO(Medium): ComCtl32 v5 `TProgressBar` 客户区填充仍为原生；Owner：后续进度条适配。Evidence：[S23](../history/M0-T18-S23-progress-border.md)、[S24](../history/M0-T18-S24-progress-colors.md)。Admission：不触发可观察的探测性颜色设置或猜测绘制实现，能可靠获取或保留原生颜色及状态并保留应用语义；现仅适配经验证的非客户区边框。
 
-- [ ] TODO(Medium): Delphi `TStatusBar` 其余版本、简单/凸起/无边框/RTL变体和真实第二分区外观仍未认证；Owner：T18后续控件及最终集成审计。Evidence：[S44](../history/M0-T18-S44-vcl-status.md)只证实一个真实runtime首分区边框、双宽C模型及应用内容保留；S43主题调用观察点未能安装。Admission：真实样本、公开绘制入口与所有权证据，保留文字、图像、自绘回调、裁剪及生命周期。
+- [ ] TODO(Medium): Delphi `TStatusBar` 其余版本、简单/凸起/无边框/RTL及空文字、图标和自绘末分区外观仍未认证；Owner：T18后续控件及最终集成审计。Evidence：[S45](../history/M0-T18-S45-status-last-pane.md)证实一个真实runtime有文字无图标的末分区边框和双宽C模型；空文字、图标及自绘末分区仍原生。Admission：真实样本、公开绘制入口与所有权证据，保留文字、图像、自绘回调、裁剪及生命周期。

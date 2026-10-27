@@ -567,6 +567,12 @@ if(BUILD_TESTING)
   target_link_libraries(core-vcl-status-module PRIVATE user32 gdi32 comctl32)
   target_link_options(core-vcl-status-module PRIVATE -municode ${explicit_manifest_options})
 
+  add_executable(core-vcl-status-pane tests/ntw16s-dll/vcl_status_pane.c tests/ntw16s-dll/control_extensions.rc)
+  target_include_directories(core-vcl-status-pane PRIVATE src)
+  target_compile_definitions(core-vcl-status-pane PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_libraries(core-vcl-status-pane PRIVATE user32 gdi32 comctl32)
+  target_link_options(core-vcl-status-pane PRIVATE -municode ${explicit_manifest_options})
+
   add_executable(core-superclass tests/ntw16s-dll/superclass.c)
   target_compile_definitions(core-superclass PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_libraries(core-superclass PRIVATE user32 gdi32)

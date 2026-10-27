@@ -12,6 +12,7 @@
 
 /* Private, synchronous coordinator scope; not part of the public ABI. */
 void ntw16s_status_frame(HDC,const RECT *,const RECT *,const void *);
+void ntw16s_status_text_frame(HDC,const RECT *,UINT,const void *);
 void ntw16s_status_hooks_enable(void);
 void ntw16s_spin_frame(HDC,const RECT *,UINT,UINT,const void *);
 
@@ -279,6 +280,13 @@ static BOOL WINAPI hook_ExtTextOutW(HDC dc,int x,int y,UINT options,const RECT *
 
 static __typeof__(&DrawFrameControl) real_DrawFrameControl;
 static __typeof__(&DrawEdge) real_DrawEdge;
+static __typeof__(&DrawThemeText) real_DrawThemeText;
+static HRESULT WINAPI hook_DrawThemeText(HTHEME theme,HDC dc,int part,int state,LPCWSTR text,int count,DWORD flags,DWORD flags2,const RECT *rect)
+{
+    DWORD saved=GetLastError();
+    ntw16s_status_text_frame(dc,rect,flags,__builtin_return_address(0));
+    SetLastError(saved);return real_DrawThemeText(theme,dc,part,state,text,count,flags,flags2,rect);
+}
 static __typeof__(&DrawThemeBackground) real_DrawThemeBackground;
 static __typeof__(&CreateCompatibleDC) real_CreateCompatibleDC;
 static __typeof__(&DeleteDC) real_DeleteDC;
@@ -349,7 +357,7 @@ LONG ntw16s_attach_titles(void)
     ATTACH(DrawTextA);ATTACH(DrawTextExA);ATTACH(TextOutA);ATTACH(ExtTextOutA);
     ATTACH(TextOutW);ATTACH(ExtTextOutW);
     ATTACH(CallWindowProcW);ATTACH(DrawTextW);
-    ATTACH(DrawFrameControl);ATTACH(DrawEdge);ATTACH(DrawThemeBackground);ATTACH(CreateCompatibleDC);ATTACH(DeleteDC);
+    ATTACH(DrawFrameControl);ATTACH(DrawEdge);ATTACH(DrawThemeBackground);ATTACH(DrawThemeText);ATTACH(CreateCompatibleDC);ATTACH(DeleteDC);
 #undef ATTACH
     return error;
 }
