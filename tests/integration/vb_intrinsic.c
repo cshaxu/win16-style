@@ -318,8 +318,22 @@ static int worker(int argc,WCHAR **argv){
     BOOL graphical_pictures=!wcscmp(argv[3],L"graphical-pictures");
     BOOL graphical=graphical_verify || graphical_pictures || !wcscmp(argv[3],L"graphical-observe");
     BOOL real_graphical=!wcscmp(argv[3],L"real-graphical-option");
-    BOOL inventory=graphical || about_print || containers || file_verify || real_graphical || !wcscmp(argv[3],L"inventory");
+    BOOL real_checkbox=!wcscmp(argv[3],L"real-graphical-checkbox");
+    BOOL inventory=graphical || about_print || containers || file_verify || real_graphical || real_checkbox || !wcscmp(argv[3],L"inventory");
     CHECK(runtime && dll==styled && EnumChildWindows(form,collect,0) && (inventory?count>0:count>10));
+    if(real_checkbox){
+        HWND check=NULL;WCHAR text[120],cls[100];
+        for(unsigned i=0;i<count;++i){CHECK(vb_control_text(checks[i],text,120));GetClassNameW(checks[i],cls,100);
+            if(!wcscmp(cls,L"ThunderRT6CheckBox") && !wcscmp(text,L"seam concealment"))check=checks[i];}
+        CHECK(check && IsWindowVisible(check));CHECK(((DWORD)GetWindowLongPtrW(check,GWL_STYLE)&BS_TYPEMASK)==BS_OWNERDRAW);
+        LRESULT initial=SendMessageW(check,BM_GETCHECK,0,0);
+        for(unsigned pass=0;pass<2;++pass){LRESULT before=SendMessageW(check,BM_GETCHECK,0,0);
+            SendMessageW(check,WM_LBUTTONDOWN,MK_LBUTTON,MAKELPARAM(5,5));SendMessageW(check,WM_LBUTTONUP,0,MAKELPARAM(5,5));
+            for(unsigned wait=0;wait<50 && SendMessageW(check,BM_GETCHECK,0,0)==before;++wait)Sleep(10);
+            CHECK(SendMessageW(check,BM_GETCHECK,0,0)!=before);}
+        CHECK(SendMessageW(check,BM_GETCHECK,0,0)==initial);
+        puts("VB_REAL_GRAPHICAL_CHECK_OK runtime6=1 ownerdraw=1 toggles=2 restored=1");
+    }
     HWND original_form=form;
     if(real_graphical){
         HWND start=NULL;WCHAR text[120];

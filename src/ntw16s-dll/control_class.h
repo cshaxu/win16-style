@@ -129,7 +129,7 @@ static inline BOOL ntw16s_vb_graphical_button(HWND w)
     return (style&WS_CHILD) && (style&BS_TYPEMASK)==BS_OWNERDRAW &&
         !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
         (ntw16s_vb_class(w,L"ThunderRT6CommandButton") || ntw16s_vb5_class(w,L"ThunderRT5CommandButton") ||
-         ntw16s_vb_class(w,L"ThunderRT6OptionButton"));
+         (ntw16s_vb_class(w,L"ThunderRT6OptionButton") || ntw16s_vb_class(w,L"ThunderRT6CheckBox")));
 }
 static inline BOOL ntw16s_vb_edit(HWND w)
 {return ntw16s_vb_class(w,L"ThunderRT6TextBox") || ntw16s_vb5_class(w,L"ThunderRT5TextBox");}

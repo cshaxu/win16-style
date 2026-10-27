@@ -24,6 +24,8 @@ __declspec(dllexport) BOOL WINAPI VbGraphicalRegister(void)
 #ifdef VB_GRAPHICAL_RUNTIME60
     cls.lpszClassName=L"ThunderRT6OptionButton";
     if(!RegisterClassW(&cls)){UnregisterClassW(name,instance);return FALSE;}
+    cls.lpszClassName=L"ThunderRT6CheckBox";
+    if(!RegisterClassW(&cls)){UnregisterClassW(L"ThunderRT6OptionButton",instance);UnregisterClassW(name,instance);return FALSE;}
 #endif
     return TRUE;
 }
@@ -61,7 +63,7 @@ __declspec(dllexport) LRESULT WINAPI VbGraphicalDraw(const DRAWITEMSTRUCT *item)
 __declspec(dllexport) BOOL WINAPI VbGraphicalRelease(void)
 {
 #ifdef VB_GRAPHICAL_RUNTIME60
-    if(!UnregisterClassW(L"ThunderRT6OptionButton",instance))return FALSE;
+    if(!UnregisterClassW(L"ThunderRT6CheckBox",instance) || !UnregisterClassW(L"ThunderRT6OptionButton",instance))return FALSE;
 #endif
     return UnregisterClassW(name,instance) && DeleteObject(source);
 }

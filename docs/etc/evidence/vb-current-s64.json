@@ -537,5 +537,29 @@
       "Real sample stdout and images are task scratch; neither application nor scratch diagnostic DLL is a product or test dependency."
     ],
     "scope_exclusions": "No third-party code or graphic resources copied; no ABI or fifth product."
+  },
+  "graphical_real_checkbox_p9": {
+    "source": "https://github.com/DeepSOIC/SplineTravel/tree/42a81aa84404efea62eb44ace5793689b40aae66",
+    "binary": "SplineTravel.exe",
+    "binary_sha256": "4ba996a20bd740c4044dece89b71c455e8bf42facc92eb0e6bdade653fdf2fed",
+    "sample_boundary": "Original x86 VB6 application is optional research input, not redistributed or a project dependency. App writes a preset when exiting; its executable and presets were isolated under task scratch. Static source uses a graphical checkbox without Picture.",
+    "real_owner": "ThunderRT6CheckBox owned by MSVBVM60.DLL, style 0x5401000b. Runtime called DFC_BUTTON DrawFrameControl with states 0x410, 0x610 and 0x210; scratch-only diagnostic build observed the calls.",
+    "change": "Extend exact runtime-owned VB6 BS_OWNERDRAW checkbox to the existing verified ODT_BUTTON DC scope and checked face. Runtime still owns native text, images, events and state. No generic owner-draw, VB5 or non-VB checkbox broadening.",
+    "real_test": "tests/integration/vb_intrinsic.c real-graphical-checkbox; original bare and candidate at 96 DPI used two WM_LBUTTONDOWN/UP toggles, restored original BM_GETCHECK, then exited with zero job processes. Candidate used exact packaged x86 DLL.",
+    "real_image": "Individual checkbox PrintWindow 119x21: previous package FNV hash 10979937233700477346, candidate 12861850955268838005; 674 RGB pixels differ. Original whole-form screenshot clipped the target, so only direct-control capture is claimed.",
+    "model": "Dual-width native owner-draw model tests selected and normal faces plus original 81 image pixels; prior package fails attachment assertion for x86 and x64, candidate passes. x64 is a protocol model, not a real x64 VB6 runtime.",
+    "package": "14 focused actual-package cases passed with 0 skips in 12.64 s; tests include both widths of graphical checkbox/option and existing choice/control paths.",
+    "sha256": {
+      "demo.exe": "fd7bc64bdca7c9df8c9896d8bfd8838f9041f18dfa99c2d073e032ed508d85e1",
+      "ntw16s32.dll": "769e60e04c741910370a987ab91fb9ef65b90831b2e37ac305a6b522672e0c9a",
+      "ntw16s64.dll": "59ed031ad00fe2e19e7d968a5f0a2d182083b883b9c1b459af1091c3af4e1bb7",
+      "run16s.exe": "7209c4b5c9e0f98455505c12672a94ec0fffc1d034401cc4241ca143f06d9a61"
+    },
+    "publication": "Candidate published to assets root and O:/winnt/system32; four files at each destination match the tested SHA-256.",
+    "limitations": [
+      "Real VB5, graphical checkbox Picture/DownPicture/DisabledPicture, DPI other than 96 and physical input remain unverified.",
+      "The sample control is outside its clipped whole-form image; a separate direct-control capture verifies drawing, not full visible-desktop appearance.",
+      "No OCX or DriveListBox work; both remain user-deferred."
+    ]
   }
 }
