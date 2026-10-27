@@ -496,6 +496,11 @@ if(BUILD_TESTING)
     add_test(NAME core/superclass COMMAND ${test_driver} --name core/superclass -- $<TARGET_FILE:core-superclass> $<TARGET_FILE:run16s>)
   endif()
 
+  add_executable(core-checklist tests/ntw16s-dll/checklist.c)
+  target_compile_definitions(core-checklist PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_libraries(core-checklist PRIVATE user32 gdi32)
+  target_link_options(core-checklist PRIVATE -municode)
+
   add_executable(core-vb-font tests/ntw16s-dll/vb_font.c src/ntw16s-dll/font.c src/ntw16s-dll/vb_text.c)
   target_include_directories(core-vb-font PRIVATE src)
   target_compile_definitions(core-vb-font PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)

@@ -267,6 +267,26 @@ static RECT button_border(HDC dc,RECT r,const win16_style_palette *palette,int u
             strip.left=strip.right-u;FillRect(dc,&strip,(HBRUSH)GetStockObject(DC_BRUSH));}}
     return bounds;
 }
+BOOL win16_style_checklist_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address)
+{
+    const UINT allowed=DFCS_CHECKED|DFCS_PUSHED;
+    if(type!=DFC_BUTTON || (flags&15u)!=DFCS_BUTTONCHECK || (flags&~allowed) ||
+        !ntw16s_checklist_draw_target(dc,rect,address))return FALSE;
+    int width=rect->right-rect->left,height=rect->bottom-rect->top;
+    if(width>256 || height>256)return FALSE;
+    DWORD *pixels=calloc((size_t)width*(size_t)height,sizeof(*pixels));if(!pixels)return FALSE;
+    int column=((flags&DFCS_CHECKED)?1:0)+((flags&DFCS_PUSHED)?2:0);
+    for(int y=0;y<13;y++)for(int x=0;x<14;x++){
+        int left=MulDiv(x,width,14),right=MulDiv(x+1,width,14);
+        int top=MulDiv(y,height,13),bottom=MulDiv(y+1,height,13);
+        DWORD color=control_checks[y][column*14+x]=='0'?0:0x00ffffff;
+        for(int py=top;py<bottom;py++)for(int px=left;px<right;px++)pixels[py*width+px]=color;
+    }
+    BITMAPINFO info={0};info.bmiHeader.biSize=sizeof(info.bmiHeader);
+    info.bmiHeader.biWidth=width;info.bmiHeader.biHeight=-height;info.bmiHeader.biPlanes=1;info.bmiHeader.biBitCount=32;
+    int drawn=SetDIBitsToDevice(dc,rect->left,rect->top,(DWORD)width,(DWORD)height,0,0,0,(UINT)height,pixels,&info,DIB_RGB_COLORS);
+    free(pixels);return drawn!=0;
+}
 static control_style *graphical_target(HDC dc,UINT type,UINT flags,const void *address,HWND *w)
 {
     DWORD_PTR value;HMODULE caller=NULL;

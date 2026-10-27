@@ -19,7 +19,7 @@ struct ntw16s_creation_scope {
 };
 typedef struct attachment {
     unsigned calls;
-    BOOL detached,tree,file_owner,picture,button_owner;
+    BOOL detached,tree,file_owner,picture,button_owner,checklist;
     HWND themed,report_window,report_parent;
     HMODULE report_module;
     ntw16s_vb_fonts fonts;
@@ -28,6 +28,45 @@ typedef struct attachment {
 static _Thread_local ntw16s_creation_scope *current;
 static _Thread_local HHOOK creation_return_hook;
 static _Thread_local HHOOK creation_before_hook;
+typedef struct checklist_draw_scope {
+    struct checklist_draw_scope *previous;
+    attachment *owner;
+    HDC dc;
+    RECT item;
+} checklist_draw_scope;
+static _Thread_local checklist_draw_scope *checklist_current;
+
+/* This precise superclass was observed in a real VCL application. It still
+ * owns every item and callback; this identity never aliases generic lists. */
+static BOOL checklist_identity(HWND w)
+{
+    WCHAR name[64],real[64];DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
+    DWORD ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE),pid=0;
+    return GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
+        GetWindowThreadProcessId(GetParent(w),NULL)==GetCurrentThreadId() &&
+        (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==GetModuleHandleW(NULL) &&
+        GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"THintCheckListBox") &&
+        RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpiW(real,L"LISTBOX") &&
+        (style&(WS_CHILD|LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA|LBS_HASSTRINGS))==
+            (WS_CHILD|LBS_OWNERDRAWFIXED|LBS_HASSTRINGS) &&
+        !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING));
+}
+BOOL ntw16s_checklist_draw_target(HDC dc,const RECT *r,const void *address)
+{
+    checklist_draw_scope *s=checklist_current;HMODULE module=NULL;POINT origin;
+    if(!s || !s->owner || s->owner->detached || !r || dc!=s->dc ||
+        !checklist_identity(s->owner->report_window) || GetParent(s->owner->report_window)!=s->owner->report_parent ||
+        WindowFromDC(dc)!=s->owner->report_window || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
+        !GetViewportOrgEx(dc,&origin) || origin.x || origin.y ||
+        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+            (const WCHAR *)address,&module) || module!=(HMODULE)GetClassLongPtrW(s->owner->report_window,GCLP_HMODULE))return FALSE;
+    int dpi=(int)GetDpiForWindow(s->owner->report_window);
+    int max_side=MulDiv(16,dpi,96);
+    return dpi>0 && r->left>=s->item.left && r->top>=s->item.top &&
+        r->right<=s->item.right && r->bottom<=s->item.bottom &&
+        r->left-s->item.left<=max_side && r->right-r->left>0 && r->bottom-r->top>0 &&
+        r->right-r->left<=max_side && r->bottom-r->top<=max_side;
+}
 static LRESULT CALLBACK attachment_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static void report_try_bind(HWND,attachment *);
 
@@ -47,7 +86,7 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
         (void)Ntw16sWindowRemove(w);
     if(a->button_owner && !a->detached && m!=WM_DESTROY && m!=WM_NCDESTROY && !ntw16s_vb_graphical_button(w))
         (void)Ntw16sWindowRemove(w);
-    if((a->file_owner || a->button_owner) && !a->detached && a->report_parent && m!=WM_DESTROY && m!=WM_NCDESTROY && GetParent(w)!=a->report_parent)
+    if((a->file_owner || a->button_owner || a->checklist) && !a->detached && a->report_parent && m!=WM_DESTROY && m!=WM_NCDESTROY && GetParent(w)!=a->report_parent)
         (void)Ntw16sWindowRemove(w);
     if(m==WM_NCDESTROY)(void)Ntw16sWindowTerminal(w);
     ntw16s_vb_paint paint;ntw16s_vb_paint_begin(&paint,w,m,&a->fonts);
@@ -70,7 +109,16 @@ static LRESULT CALLBACK report_notify(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR i
 {
     DWORD entry=GetLastError();attachment *a=(attachment *)data;BOOL draw=FALSE;HWND list=a->report_window;HDC dc=NULL;DWORD stage=0;
     ntw16s_vb_paint file_paint;BOOL file_active=FALSE;
+    checklist_draw_scope checklist_scope;BOOL checklist_active=FALSE;
     ++a->calls;
+    if(a->checklist && !a->detached && m==WM_DRAWITEM && l && GetParent(list)==w && checklist_identity(list)){
+        const DRAWITEMSTRUCT *item=(const DRAWITEMSTRUCT *)l;
+        if(item->CtlType==ODT_LISTBOX && item->hwndItem==list && item->hDC && item->itemID!=(UINT)-1 &&
+            WindowFromDC(item->hDC)==list){
+            checklist_scope=(checklist_draw_scope){checklist_current,a,item->hDC,item->rcItem};
+            checklist_current=&checklist_scope;checklist_active=TRUE;
+        }
+    }
     if((a->file_owner || a->button_owner) && !a->detached && m==WM_DRAWITEM && l && GetParent(list)==w &&
             (a->button_owner?ntw16s_vb_graphical_button(list):ntw16s_vb_owner_file(list))){
         DRAWITEMSTRUCT *item=(DRAWITEMSTRUCT *)l;
@@ -90,7 +138,7 @@ static LRESULT CALLBACK report_notify(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR i
             }
         }
     }
-    if(!a->file_owner && !a->button_owner && m==WM_NOTIFY && l){
+    if(!a->file_owner && !a->button_owner && !a->checklist && m==WM_NOTIFY && l){
         NMHDR *header=(NMHDR *)l;
         if(header->hwndFrom==list && header->code==NM_CUSTOMDRAW){
             NMCUSTOMDRAW *cd=(NMCUSTOMDRAW *)l;dc=cd->hdc;stage=cd->dwDrawStage;draw=TRUE;
@@ -99,6 +147,7 @@ static LRESULT CALLBACK report_notify(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR i
     }
     if(m==WM_NCDESTROY){RemoveWindowSubclass(w,report_notify,id);a->report_parent=NULL;}
     SetLastError(entry);LRESULT result=DefSubclassProc(w,m,p,l);DWORD error=GetLastError();
+    if(checklist_active)checklist_current=checklist_scope.previous;
     if(file_active)ntw16s_vb_paint_end(&file_paint);
     if(draw && !a->detached && !(result&CDRF_SKIPDEFAULT) &&
         (stage==CDDS_PREPAINT || stage==CDDS_ITEMPREPAINT || stage==(CDDS_ITEMPREPAINT|CDDS_SUBITEM)))
@@ -190,7 +239,7 @@ BOOL __cdecl Ntw16sWindowTerminal(HWND w)
 
 static BOOL install_created(HWND w,DWORD original_style)
 {
-    BOOL control,edit,installed,report=FALSE,tree=FALSE,picture=ntw16s_vb_picture(w);HWND parent;HMODULE owner;attachment *a;DWORD error;
+    BOOL control,edit,installed,report=FALSE,tree=FALSE,picture=ntw16s_vb_picture(w),checklist=checklist_identity(w);HWND parent;HMODULE owner;attachment *a;DWORD error;
     ntw16s_control_protocol *protocol=NULL;
     if(lookup(w))return TRUE;
     /* COMBOBOX installs its own internal list when construction finishes.
@@ -201,7 +250,8 @@ static BOOL install_created(HWND w,DWORD original_style)
     edit=(original_style&WS_CHILD) && class_is(w,L"EDIT");
     control=(original_style&WS_CHILD) && (edit || class_is(w,L"BUTTON") || class_is(w,L"STATIC") ||
         class_is(w,L"LISTBOX") || class_is(w,L"COMBOBOX") || class_is(w,L"SCROLLBAR") || class_is(w,L"SysLink"));
-    if(!control && (original_style&WS_CHILD)){
+    if(checklist)control=FALSE;
+    if(!control && !checklist && (original_style&WS_CHILD)){
         SetLastError(ERROR_SUCCESS);
         protocol=ntw16s_control_protocol_bind(w);
         if(!protocol && GetLastError()==ERROR_NOT_ENOUGH_MEMORY)return FALSE;
@@ -215,24 +265,24 @@ static BOOL install_created(HWND w,DWORD original_style)
      * and then become a custom client surface.  Without an explicitly
      * verified public protocol it must stay native; only an application-owned
      * generic child frame may use the ordinary frame path. */
-    if(!control && !report && !tree && !picture && (original_style&WS_CHILD) &&
+    if(!control && !report && !tree && !picture && !checklist && (original_style&WS_CHILD) &&
             owner && owner!=GetModuleHandleW(NULL)){
         ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
     }
     /* A custom client-only child and MDICLIENT keep application painting.
      * MDI child frames have WS_CAPTION and take the ordinary frame route. */
-    if(!control && !report && !picture && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME))){
+    if(!control && !report && !picture && !checklist && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME))){
         SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
     }
     a=calloc(1,sizeof(*a));
     if(!a){ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    a->calls=1;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);
-    if(report || tree || a->file_owner || a->button_owner){a->report_window=w;a->tree=tree;
+    a->calls=1;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;
+    if(report || tree || a->file_owner || a->button_owner || a->checklist){a->report_window=w;a->tree=tree;
         a->report_module=(a->file_owner || a->button_owner)?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}
     if(!SetWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc,(DWORD_PTR)a)){
         ntw16s_control_protocol_release(protocol);free(a);return FALSE;
     }
-    if((report || tree || a->file_owner || a->button_owner) && (!a->report_parent || !SetWindowSubclass(a->report_parent,report_notify,(UINT_PTR)w,(DWORD_PTR)a))){
+    if((report || tree || a->file_owner || a->button_owner || a->checklist) && (!a->report_parent || !SetWindowSubclass(a->report_parent,report_notify,(UINT_PTR)w,(DWORD_PTR)a))){
         DWORD error=GetLastError();Ntw16sWindowRemove(w);release(a);SetLastError(error);return FALSE;
     }
     SetLastError(ERROR_SUCCESS);
@@ -242,7 +292,8 @@ static BOOL install_created(HWND w,DWORD original_style)
             Ntw16sWindowRemove(info.hwndItem);
     }
     if(a->detached){release(a);SetLastError(ERROR_CANCELLED);return FALSE;}
-    if(protocol && ntw16s_control_protocol_toolbar(w))
+    if(a->checklist)installed=TRUE;
+    else if(protocol && ntw16s_control_protocol_toolbar(w))
         installed=win16_style_toolbar_install_created(w,NULL,a,&a->detached);
     else if(protocol && ntw16s_control_protocol_is(w,UPDOWN_CLASSW))installed=win16_style_updown_install_created(w,NULL,a,&a->detached);
     else if(protocol && ntw16s_control_protocol_is(w,TRACKBAR_CLASSW))installed=win16_style_trackbar_install_created(w,NULL,a,&a->detached);

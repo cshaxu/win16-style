@@ -19,6 +19,9 @@ BOOL win16_style_control_remove_owned(HWND window,const void *owner);
  * inside its parent's verified DRAWITEM DC may reuse the button chrome. */
 BOOL win16_style_graphical_frame(HDC,const RECT *,UINT,UINT,const void *);
 BOOL win16_style_graphical_frame_prepare(HDC,const RECT *,UINT,UINT,const void *,RECT *);
+BOOL win16_style_checklist_frame(HDC,const RECT *,UINT,UINT,const void *);
+/* Internal coordinator scope for the currently dispatched checklist DRAWITEM. */
+BOOL ntw16s_checklist_draw_target(HDC,const RECT *,const void *);
 /* Tab positions are private native state with no public getter. The creator
  * must supply the current PIXEL positions, not dialog units: count0 means
  * default tabs, count1 a repeated interval, count>1 explicit positions.

@@ -250,6 +250,7 @@ static BOOL WINAPI hook_DrawFrameControl(HDC dc,LPRECT rect,UINT type,UINT state
     RECT original;BOOL graphical=win16_style_graphical_frame_prepare(dc,rect,type,state,__builtin_return_address(0),&original);
     SetLastError(entry);BOOL result=real_DrawFrameControl(dc,rect,type,state);DWORD error=GetLastError();
     if(result && graphical)win16_style_graphical_frame(dc,&original,type,state,__builtin_return_address(0));
+    if(result)win16_style_checklist_frame(dc,rect,type,state,__builtin_return_address(0));
     SetLastError(error);return result;
 }
 static HRESULT WINAPI hook_DrawThemeBackground(HTHEME theme,HDC dc,int part,int state,const RECT *rect,const RECT *clip)
