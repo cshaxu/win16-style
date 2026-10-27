@@ -267,3 +267,5 @@ T18 S64 P23 扩展至真实 VB5 Checkbox ListBox：同一 96 DPI、精确运行�
 VB5/VB6 MDI 普通子窗体：仅对已证实由对应运行库注册、直接位于系统 MDIClient 下且具有 MDI 子窗体和标题标志的 ThunderRT5Form / ThunderRT6FormDC 复用现有标题绘制。最大化时保留系统 MDI 菜单合并行为；应用客户区、输入及其他运行库/OCX 窗口保持自身职责。
 
 VB5/VB6 UserControl 的有限标准边缘：对真实运行库持有的 ThunderRT5UserControl 或 ThunderRT6UserControlDC，仅在存在 WS_EX_CLIENTEDGE 且不具备滚动条、RTL、工具窗或分层等特殊角色时，于首次绘制绑定当前父窗口并复用既有非客户区边框；应用的客户区绘制、字体和输入仍由应用负责。初始化时的临时父窗口不作为长期身份；绑定后角色或父窗口发生变化则退役。无边缘、特殊风格和外部控件的其余外观不因此获得支持声明。
+
+已绑定的 UserControl 临时移除 WS_EX_CLIENTEDGE 时暂停边缘绘制，保留原生绘制和准确父窗角色观察；恢复边缘后继续原有绘制，换父或切换至不支持角色时仍完全退役。初始没有客户边缘的控件不因此自动接入。

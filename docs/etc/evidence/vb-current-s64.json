@@ -1074,5 +1074,30 @@
       "limits": "Focused test only, full integration and other DPI pending."
     },
     "production_diff": "src/ntw16s-dll/attachment.c: 1 addition, 1 deletion, net 0. rg -n vb_user_edge_identity src/ntw16s-dll established a single shared owner and existing VB6 path is preserved; no exports or resources changed."
+  },
+  "vb_usercontrol_edge_restore_p38": {
+    "root_cause": "P37 removes the complete attachment after the application clears WS_EX_CLIENTEDGE. When the edge is later restored, no creation hook runs again and the native edge remains. Real VB5 sample source vbalAVIPlayer.ctl pSetBorder and pSetWinExStyle documents public Appearance/BorderStyle transitions using SetWindowLong and SetWindowPos. The native probe simulated this API sequence; it did not invoke COM property setters.",
+    "fix": "For an already attached exact VB5/VB6 UserControl at the original parent, leave the painter installed but forward all messages without style painting while CLIENTEDGE is absent. Resume when the same valid role returns with CLIENTEDGE. A changed parent or unsupported role still retires the attachment. Attachment query reports false while dormant. An initially unedged control is not newly intercepted.",
+    "real_sample": "Private registration-free VB5 x86 AVI sample, 96 DPI: previous release image hash 5813839032861991376 before and 16324624234403114223 after restoring edge; candidate 5813839032861991376 both before and after. With edge removed, native and candidate images both hash 6052154301297933451. Client rectangle/font preserved and Running checkbox BM_CLICK toggle restored; own job closed normally. Hash is probe FNV, not SHA.",
+    "model": "VB5/VB6 models pass at x86/x64 for edge removal, paint while dormant, restore and resumed attachment; original font/client retained. Unedged reparent retires before restoration. Four prior-release negative tests failed at restored attachment, not at first attach. Probe printed last error 126, not established causal.",
+    "limitations": [
+      "Actual COM property calls, physical input, UI automation/accessibility, other DPI and real VB6 transition are not covered.",
+      "Initially unedged controls are not attached later. Unknown, RTL, scroll, tool/layered, and changed-parent roles remain native.",
+      "No additional OCX rendering or general OCX compatibility claim."
+    ],
+    "delivery": {
+      "build": "clean C17 GCC/Ninja/ccache x86/x64, PE ABI and source/resource/governance gates passed",
+      "package": "18 focused actual-package cases passed, zero skipped, 12.98 seconds",
+      "actual_package_sample": "real VB5 x86 candidate DLL; before/removed/restored hashes 5813839032861991376/6052154301297933451/5813839032861991376; Running toggled/restored, own-job normal exit",
+      "sha256": {
+        "demo.exe": "88f7579f018be7793090fb3f604b1e7564ae1a1e61ed2542f1b18e25028ca2f9",
+        "ntw16s32.dll": "9e0679ad30e6cd25a7d07c8c38860b6d7bb08d8ac89208e93f9cb65222b97741",
+        "ntw16s64.dll": "121d46566b3d2d67d451b8672fcd61a344f28891fcd83b6a1f6637fac9b3f6c3",
+        "run16s.exe": "7b4a7e411b1f399350230c439a74e70fd6933440cd85469bf17efefb33c470f6"
+      },
+      "published": "assets root and O:/winnt/system32 each match tested four-file SHA",
+      "limits": "Focused cases only; full integration and real VB6 transition not covered."
+    },
+    "production_diff": "attachment.c +11/-3; controls.c +2/-1, net +9 total. Search: rg -n vb_user_edge_(role|identity|valid|dormant) src/ntw16s-dll/attachment.c src/ntw16s-dll/controls.c; one existing attachment owns lifetime, controls painter forwards dormant messages, explicit unsupported-role removal remains. No ABI or resource change."
   }
 }

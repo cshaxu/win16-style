@@ -336,13 +336,21 @@ BOOL ntw16s_group_button_valid(HWND w)
     return !a || a->detached || !a->group_button_candidate || !a->group_button_installed ||
         (a->group_button_parent==GetParent(w) && group_button_identity(w));
 }
-static BOOL vb_user_edge_identity(HWND w,HWND parent)
+static BOOL vb_user_edge_role(HWND w,HWND parent)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
     return parent && GetParent(w)==parent && (style&WS_CHILD) &&
         (style&WS_CAPTION)!=WS_CAPTION && !(style&(WS_THICKFRAME|WS_HSCROLL|WS_VSCROLL)) &&
-        (ex&WS_EX_CLIENTEDGE) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_TOOLWINDOW|WS_EX_LAYERED)) &&
+        !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_TOOLWINDOW|WS_EX_LAYERED)) &&
         (ntw16s_vb_class(w,L"ThunderRT6UserControlDC") || ntw16s_vb5_class(w,L"ThunderRT5UserControl"));
+}
+static BOOL vb_user_edge_identity(HWND w,HWND parent)
+{return vb_user_edge_role(w,parent) && (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE);}
+BOOL ntw16s_vb_user_edge_dormant(HWND w)
+{
+    attachment *a=lookup(w);
+    return a && !a->detached && a->vb_user_edge && vb_user_edge_role(w,a->vb_user_parent) &&
+        !(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE);
 }
 BOOL ntw16s_vb_user_edge_valid(HWND w)
 {
@@ -877,7 +885,7 @@ BOOL __cdecl Ntw16sWindowAttached(HWND w)
     if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId()){
         SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
     }
-    attachment *a=lookup(w);return a && (!a->vb_user_candidate || a->vb_user_edge) && (!a->static_candidate || a->static_verified) && (!a->edit_candidate || a->edit_installed) && (!a->group_button_candidate || a->group_button_installed) && (!a->grid_candidate || a->grid_installed) && (!a->vcl_toolbar_candidate || a->vcl_toolbar_installed) && (!a->track_candidate || a->track_installed) && (!a->tab_candidate || a->tab_installed) && (!a->color_candidate || a->color_installed) && (!a->date_candidate || a->date_installed) && (!a->status_candidate || a->status_installed) && (!a->bit_candidate || a->bit_verified);
+    attachment *a=lookup(w);return a && (!a->vb_user_candidate || (a->vb_user_edge && vb_user_edge_identity(w,a->vb_user_parent))) && (!a->static_candidate || a->static_verified) && (!a->edit_candidate || a->edit_installed) && (!a->group_button_candidate || a->group_button_installed) && (!a->grid_candidate || a->grid_installed) && (!a->vcl_toolbar_candidate || a->vcl_toolbar_installed) && (!a->track_candidate || a->track_installed) && (!a->tab_candidate || a->tab_installed) && (!a->color_candidate || a->color_installed) && (!a->date_candidate || a->date_installed) && (!a->status_candidate || a->status_installed) && (!a->bit_candidate || a->bit_verified);
 }
 void __cdecl Ntw16sScrollChanged(HWND w)
 {
