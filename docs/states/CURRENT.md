@@ -6,7 +6,7 @@ M0 T17 已按用户明确缩小后的范围收口；23 项 VB 延期项保留在
 Delphi VCL 74 个 UI 家族种子、框架分支、五个固定候选及逐项证据接收者；T18 S2 已将
 全部种子逐项归入35个既有原生协议模型或39个明确的原生保留边界。S4 已完成首组
 精确 TEdit/TListBox与TTabControl公开协议实现、干净双宽四文件包和双发布；实际 Delphi 显示集成
-仍统一留给T18最终收口。S10已完成组合框与列表验证；S11已完成工具栏文字边界修复、真实DoubleKiller复测及提交推送复核；S12真实MD5summer补证及远端复核完成；S13双宽干净构建、真实树控件与VB6 actor复测、91项包测试、双发布及远端aae1565复核完成；S14纠正S12独立包闭环并完成双发布及远端f1ac9ff复核；S15核实现代VCL候选及公开状态边界，双宽包、91项低并发回归、双发布及远端4032bcf复核完成；S16追踪真实开关绘制及输入、双宽包91项通过、双发布及远端5e48716复核完成；S17修复进度观察竞争并减少字体重复选取，双宽包92项通过、双发布及远端b3c2a8b复核完成；S18完成开关公开状态调查、双宽包92项及双发布，远端2edd749已复核；S19实现可审计聚焦包回归，聚焦10项、标准93项、双发布及远端d583890复核完成；准入S20继续开关视觉适配；S20恢复隔离桌面并验证开关及VB/VCL聚焦包，未证实的开关适配移交TODO；S21完成有限复选图形与双宽96/144 DPI验证，P4远端2245db3已复核；其应用裁剪外缘和显式禁用仍列TODO；S22完成真实SpeedButton公开契约调查、14项聚焦包及双发布，cb2ffef远端已复核；无安全契约的外观接收TODO；S23已实现真实VCL v5进度条有限外框并通过22项聚焦包与双发布，33f4d0d远端已复核；S24证实消息观察可漏直接调用，绘制追踪尚无完整安全契约；20项聚焦包、99项标准包及双发布完成，511620b远端四文件已复核；客户区转TODO，准入S25状态栏；不得用 demo
+仍统一留给T18最终收口。S10已完成组合框与列表验证；S11已完成工具栏文字边界修复、真实DoubleKiller复测及提交推送复核；S12真实MD5summer补证及远端复核完成；S13双宽干净构建、真实树控件与VB6 actor复测、91项包测试、双发布及远端aae1565复核完成；S14纠正S12独立包闭环并完成双发布及远端f1ac9ff复核；S15核实现代VCL候选及公开状态边界，双宽包、91项低并发回归、双发布及远端4032bcf复核完成；S16追踪真实开关绘制及输入、双宽包91项通过、双发布及远端5e48716复核完成；S17修复进度观察竞争并减少字体重复选取，双宽包92项通过、双发布及远端b3c2a8b复核完成；S18完成开关公开状态调查、双宽包92项及双发布，远端2edd749已复核；S19实现可审计聚焦包回归，聚焦10项、标准93项、双发布及远端d583890复核完成；准入S20继续开关视觉适配；S20恢复隔离桌面并验证开关及VB/VCL聚焦包，未证实的开关适配移交TODO；S21完成有限复选图形与双宽96/144 DPI验证，P4远端2245db3已复核；其应用裁剪外缘和显式禁用仍列TODO；S22完成真实SpeedButton公开契约调查、14项聚焦包及双发布，cb2ffef远端已复核；无安全契约的外观接收TODO；S23已实现真实VCL v5进度条有限外框并通过22项聚焦包与双发布，33f4d0d远端已复核；S24进度客户区转TODO；S25原生状态栏有限边框、36项聚焦包及双发布完成，2be886a远端复核通过，真实Delphi待证；准入S26逐项盘点剩余家族；不得用 demo
 冒充 Delphi。
 以下段落为 T17 的技术基线/历史证据，不覆盖 T18 状态。
 
@@ -68,26 +68,26 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S25 Packet
+## M0 T18 S26 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S24进度条客户区研究以明确证据转交TODO，T18保持开放 |
+| Identifier Mode | Continuation；S25原生状态栏有限边框已发布并远端复核，T18保持开放 |
 | Admission And Approval | 用户要求自动连续S实现可做控件，不新开T；既定VB延期范围不擅自改变 |
-| Objective | 审核VCL状态栏的真实所有者、版本、公开状态和绘制协议；安全可证实的普通变体实现经典外观 |
-| Non-goals | 不猜测私有对象或覆盖应用自绘、图像、文字和通知；不更改标题、菜单、字体和原图形资源 |
-| Reference Baseline | [S11工具栏与状态栏边界](../history/M0-T18-S11-toolbar-text-bounds.md)、[Delphi目录](../etc/evidence/delphi-controls-audit.json)、[S25状态栏观察](../history/M0-T18-S25-status-bar.md)、[S24进度条研究](../history/M0-T18-S24-progress-colors.md) |
+| Objective | 逐项核对冻结的74个VCL家族及现有S交付，识别仍可实施的控件和明确的下一S接收者，不提前宣称全集完成 |
+| Non-goals | 不把原生模型当成真实Delphi；不猜测私有对象或跳过未完成项，不改标题、菜单、字体和原图形资源 |
+| Reference Baseline | [Delphi冻结目录](../etc/evidence/delphi-controls-audit.json)、[demo映射](../etc/evidence/delphi-demo-mapping.json)、[S25状态栏](../history/M0-T18-S25-status-bar.md)、T18已交付历史 |
 | Candidate Proposal | [Delphi Win32控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 自有纯C模型、原生观察器、必要双宽DLL内部；不增加产品文件或修改公开ABI |
+| Files And ABI Surface | 逐项证据台账、必要的自有原生观察器；不增加产品文件或修改公开ABI |
 | Applicable Rules | C17、MinGW GCC、Ninja、ccache；仅自有隔离实例、有限等待和清理；兄弟仓库只读 |
-| Verification | 双宽v5/v6自有原生模型、样式正负例、文本/分区/图像/自绘和生命周期；真实VCL样本按可用性单列 |
-| Expected Markers | 实际绘制有证据，公开状态及回调不变，未知所有者与不支持变体回退；旧实现负例可复现 |
-| Asset Needs | 登记build/t18-s25-status任务scratch；真实应用仅使用自有副本和隔离配置 |
-| Reporting Requirements | 明确真实VCL与C模型、已适配和原生保留变体、DPI及未覆盖面 |
-| Stop Conditions | 无法证明所有权或保留应用绘制语义时保持原生并记录接收者 |
-| Exit Criteria | 已证实变体实现及实际包通过，或记录明确证据和后续接收；T18保持开放 |
+| Verification | 对照74单位全集、历史交付、源代码和现有测试，核对遗漏/重复；必要的自有样本观察单列 |
+| Expected Markers | 74项逐一有当前证据、缺口及接收者；区分可实施、原生保留、非视觉和真实样本缺口 |
+| Asset Needs | 登记build/t18-s26-control-audit任务scratch；S25截图暂留build/t18-s25-status供T18验收 |
+| Reporting Requirements | 数量及每项边界可追溯；选择下一可实施S，真实应用与模型分开 |
+| Stop Conditions | 无法确认协议的单位不标为已支持，不擅自改变用户延期的VB范围 |
+| Exit Criteria | 74项盘点可复核且下一实施接收者明确；T18和M0保持开放 |
 | Original Owner Request | 做完可实现控件并自行测试；每S按规范构建测试、发布、提交与远端复核 |
-| Similar-Issue Sweep | 普通/简单模式、多个分区、owner-draw、图像、尺寸变化、重入与既有VB/公共控件路径 |
+| Similar-Issue Sweep | 原生包装/框架自绘、数据绑定/图像、跨版本及既有VB路径；未验证项不计通过 |
 
 ## Identifier State
 
@@ -95,9 +95,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S24：20项聚焦包、99项标准包、双发布及511620b远端四文件复核；客户区未适配转TODO。
-- S25 candidate: 原生系统状态栏有限边框已本地实现，最终同批包36项零跳过、双发布与安装入口复测通过；真实Delphi仍待核实，提交推送及远端复核待完成。
-- Open task: T18 S25 状态栏公开协议与有限适配；M0/T18开放。
+- Last delivery: M0 T18 S25：原生状态栏有限边框、36项零跳过、双发布与安装入口复测；2be886a源码及四文件远端复核通过，真实Delphi仍待核实。
+- Open task: T18 S26 冻结全集剩余可实施项盘点；M0/T18开放。
 
 ## Technical Baseline
 
