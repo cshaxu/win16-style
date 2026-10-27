@@ -95,7 +95,7 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S20 P1：隔离桌面恢复、真实开关证据及VB/VCL聚焦包12项通过、双发布；待推送及实际远端复核。
+- Last delivery: M0 T18 S20 P1：隔离桌面恢复、真实开关证据及VB/VCL聚焦包12项通过、双发布；6ea9bc3已实际远端复核。
 - Open task: T18 S20 VCL开关无私有状态视觉适配；M0/T18开放。
 
 ## Technical Baseline
