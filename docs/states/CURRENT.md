@@ -5,7 +5,8 @@
 M0 T17 已按用户明确缩小后的范围收口；23 项 VB 延期项保留在 TODO。T18 S1 已冻结
 Delphi VCL 74 个 UI 家族种子、框架分支、五个固定候选及逐项证据接收者；T18 S2 已将
 全部种子逐项归入35个既有原生协议模型或39个明确的原生保留边界。顺序准入 T18 S3，
-仅对真实VCL wrapper与公共协议做基础控件取证；不得用 demo 冒充 Delphi。
+先按公开协议逐组实现并做自包含正/负例测试，真实Delphi应用集成统一留给T18最终收口；
+不得用 demo 冒充 Delphi。
 以下段落为 T17 的技术基线/历史证据，不覆盖 T18 状态。
 
 M0 T17 S27 ScrollBar范围/位置/禁用变体已完成，顺序准入S28 全148单位收口审计。
@@ -66,24 +67,24 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S3 Packet
+## M0 T18 S4 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S2 demo对应关闭后依T18阶段计划顺序准入S3 |
-| Admission And Approval | 用户批准进入队列首项T18；S1冻结74项接收者，S2完成35个原生模型/39个保留边界账本。S3只可按该账本对真实VCL wrapper作有限取证和最小修复 |
-| Objective | 以真实、自有的VCL目标建立基础 USER32 wrapper（窗体、普通按钮/选择、编辑/列表）是否存在、谁拥有绘制及是否命中现有公开renderer协议的证据；若发现实际断点，提出最小修复 |
-| Non-goals | 不把demo等价项当成VCL支持；不猜测私有对象/类名前缀、不新增第五产品、不接管canvas、数据库、嵌入/非视觉或owner-draw；不改既有标题/菜单/字体/滚动条/资源 |
-| Reference Baseline | [T18 S1审计](../etc/evidence/delphi-controls-audit.json)、[S2对应账本](../etc/evidence/delphi-demo-mapping.json)、[Delphi专项proposal](../proposals/delphi-win32-controls.md)及T15有限公开协议 |
+| Identifier Mode | Continuation；用户明确将真实Delphi应用集成后移至T18收口，S3转交后顺序准入S4 |
+| Admission And Approval | 用户批准进入队列首项T18，并明确要求先完成能以公开协议实现的代码和自包含测试；S1冻结74项接收者，S2完成35个原生模型/39个保留边界账本，S3的error=5集成缺口保留至最终收口 |
+| Objective | 实现第一组可公开验证的VCL基础按钮/选择与编辑/列表 wrapper接入：只接纳与USER BUTTON、EDIT、COMBOBOX、LISTBOX公开消息和注册/模块身份相符的实例，并添加自包含正/负例回归 |
+| Non-goals | 不把demo等价项当成VCL支持；不读取私有对象布局、不仅凭T前缀接纳、不新增第五产品；不接管canvas、数据库、嵌入/非视觉或owner-draw；不改既有标题/菜单/字体/滚动条/资源 |
+| Reference Baseline | [T18 S1审计](../etc/evidence/delphi-controls-audit.json)、[S2对应账本](../etc/evidence/delphi-demo-mapping.json)、[S3转交](../history/M0-T18-S3-vcl-probe-transfer.md)、[Delphi专项proposal](../proposals/delphi-win32-controls.md)及T15有限公开协议 |
 | Candidate Proposal | [Delphi Win32控件完整审计与Win3.x风格适配](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 可增加自包含纯C探针/测试；仅在真实公开协议已证明且最小修复明确时改ntw16s32/64，ABI/导出和原五图形头不变 |
-| Applicable Rules | C17/MinGW GCC/Ninja/ccache、来源策略、禁computer-use/全局hook/既有进程扫描；自包含测试与真实VCL兼容测试分列；私有桌面error=5只能skip |
-| Verification | 固定实际映像、SHA/位宽/框架依据；逐窗口记录创建者、类、父子、绘制/消息所有者、DLL加载/初始化/附着；当前五个自有私有桌面探针均在CreateDesktopW前以error=5退出，详见[探针证据](../etc/evidence/delphi-basic-vcl-probe.json)，不得以历史结果替代；有改动则双宽干净构建、同批四文件实际包测试和部署复核 |
-| Expected Markers | 明确的VCL身份、真实native HWND或明确无HWND、公开协议命中或不命中、正常/禁用/焦点/键盘/通知/销毁结果；绝不以模块加载作样式成功结论 |
+| Files And ABI Surface | 可改ntw16s32/64内部角色判断和增加自包含纯C测试；ABI/导出、三组件四产物和原五图形头不变 |
+| Applicable Rules | C17/MinGW GCC/Ninja/ccache、来源策略、禁computer-use/全局hook/既有进程扫描；真实应用集成与自包含测试分列；私有桌面error=5只能skip，留T18最终收口 |
+| Verification | 双宽干净构建；新旧正/负例证明公开消息、注册/模块身份、状态、键盘/通知、移除/销毁和资源释放；同批四文件实际包测试。真实VCL应用验证是已登记的最终集成项，不得以历史结果替代 |
+| Expected Markers | 每个角色有类/模块/公开消息交集、正例附着与负例拒绝、裸/注入行为和清理标记；绝不以模块加载或名称匹配作样式成功结论 |
 | Asset Needs | 仅现有固定候选和自编C探针；不复制Delphi/第三方二进制、图片或资源，不安装/注册运行包 |
-| Reporting Requirements | 报告实际断点、最小方案、每个真实接收者/保留项、测试与skip、二进制发布状态；不将一个VCL应用外推为全部Delphi/FMX |
-| Stop Conditions | 需要私有对象布局、应用绘图、数据绑定、嵌入、owner-draw契约或第五产品时停止该项并交后续S；当前agent会话缺少CreateDesktopW权限，按证据保持active-blocked，恢复条件是相同自有探针可创建专用桌面；实际修复前必须先记录根因和最小方案 |
-| Exit Criteria | 至少完成基础真实VCL wrapper的有限接收者审计，任何产品改动有完整双宽包闭环；明确交接下一控件组或关闭条件 |
+| Reporting Requirements | 报告新增角色、公开协议/负例、测试与集成缺口、二进制发布状态；不将自包含模型或一个VCL应用外推为全部Delphi/FMX |
+| Stop Conditions | 需要私有对象布局、应用绘图、数据绑定、嵌入、owner-draw契约或第五产品时停止该项并交后续S；真实VCL应用显示验证统一留T18最终收口；实际修复前必须先记录根因和最小方案 |
+| Exit Criteria | 第一组基础wrapper仅以公开协议完成有限实现和双宽包闭环；每个无法安全泛化项有明确后续接收者；真实应用集成缺口明确保留 |
 | Original Owner Request | 队列首位 Delphi Win32 控件完整审计与Win3.x风格适配；像VB专项一样先全貌审计、demo对应展示、多个S实施、最后独立收口 |
 | Similar-Issue Sweep | VCL/FireMonkey、ANSI/Unicode、静态/运行包、窗口/无窗口/owner-draw、标准/公共控件、数据/网格、菜单/主题、图像/字体、晚创建/重建、x86/x64及第三方组件 |
 
@@ -93,8 +94,8 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S3 P1（待本次治理验证、提交、推送及远端复核）：基础VCL自有探针CreateDesktopW权限阻断、当前源码契约与历史真实证据分离；无产品二进制变化。
-- Open task: T18 S3 Delphi基础VCL wrapper与公共协议取证（active-blocked：等待自有私有桌面权限）；M0/T18开放。
+- Last delivery: M0 T18 S3 P2（待本次治理验证、提交、推送及远端复核）：用户授权真实应用集成后移；CreateDesktopW error=5转为T18最终集成缺口，S3转交S4；无产品二进制变化。
+- Open task: T18 S4 Delphi基础VCL公开协议wrapper实现；M0/T18开放。
 
 ## Technical Baseline
 
@@ -143,6 +144,9 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T18 S3基础VCL探针转交](../history/M0-T18-S3-vcl-probe-transfer.md)：当前自有隔离桌面error=5
+  发生于目标启动前；按用户授权将真实应用集成后移T18收口，S3转交S4，T18/M0开放。
 
 - [T18 S2 Delphi demo对应](../history/M0-T18-S2-delphi-demo-mapping.md)：74项种子精确分为35个
   原生协议模型及39个保留边界；demo观察器私有桌面error=5精确skip，无产品二进制变化，S2关闭续S3，T18/M0开放。

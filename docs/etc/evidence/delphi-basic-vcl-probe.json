@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "task": "M0 T18 S3",
-  "status": "active-blocked: current self-owned private-desktop probes cannot create a desktop in this agent session; no target process was started and no current-package VCL display claim is made",
+  "status": "transferred: current self-owned private-desktop probes cannot create a desktop in this agent session; at owner direction, real-app integration is deferred to T18 final closure while later S tasks implement only bounded public-protocol paths",
   "scope": ["TForm/basic children", "TButton/TComboBox public protocol", "TEdit/native child", "TListBox/native child"],
   "fixed_inputs": [
     {"path": "D:/programs/misc/DoubleKiller.exe", "sha256": "cdd83ab909db749992d11ace2dff671493c0568d7a14697f8bef4b06d8647ca8", "bits": 32, "framework": "VCL confirmed by S1"},
@@ -28,5 +28,5 @@
   "root_cause": "isolated_process.h returns before CreateProcess when CreateDesktopW on the current window station fails with Win32 error 5 (access denied). The observed failure is therefore agent-session desktop authority, not a target launch, injection, wrapper or renderer result.",
   "safety": "No current-desktop fallback, computer-use, WinSta0 DACL change, system setting, existing process scan or target execution was used. The owned driver scratch was not created because isolation failed before it could write.",
   "recovery": "Run the unchanged self-owned probes from an agent session that can CreateDesktopW, or provide an equivalent dedicated isolated desktop authority. Re-run all five commands and compare loaded DLL SHA, attachment, public protocol, pixel/interaction and cleanup markers before any renderer change or S3 closure.",
-  "next": "Keep S3 active. A later S cannot claim basic VCL current-package regression until this exact private-desktop prerequisite is restored."
+  "next": "S4 and later may add only bounded public-protocol code plus self-contained unit/negative tests. They must retain this current real-app integration gap for T18 final closure and must not claim a current Delphi application pass."
 }
