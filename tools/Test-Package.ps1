@@ -85,6 +85,8 @@ try{
         (Case 'uac-unit-64' (Join-Path $x64 'uac-unit.exe') @() @('UAC UNIT PASS cases=8'))
     )
     $cases+=@(
+        (Case 'vb-queue-32' (Join-Path $x86 'vb-queue-test.exe') @((Join-Path $x86 'vb-queue-witness.dll')) @('VB_QUEUE_UNIT_OK bits=32 wrong_tag_rejected=1 notification=1 no_hook_negative=1 resources_closed=1')),
+        (Case 'vb-queue-64' (Join-Path $x64 'vb-queue-test.exe') @((Join-Path $x64 'vb-queue-witness.dll')) @('VB_QUEUE_UNIT_OK bits=64 wrong_tag_rejected=1 notification=1 no_hook_negative=1 resources_closed=1')),
         (Case 'vb-control-text-32' (Join-Path $x86 'vb-control-text-test.exe') @() @('VB_CONTROL_TEXT_OK bits=32 cross_process=1 unicode=1 invalid_window=1 cleanup=1')),
         (Case 'vb-control-text-64' (Join-Path $x64 'vb-control-text-test.exe') @() @('VB_CONTROL_TEXT_OK bits=64 cross_process=1 unicode=1 invalid_window=1 cleanup=1')),
         (Case 'vb-font-32' (Join-Path $x86 'core-vb-font.exe') @((Join-Path $x86 'vb-fixture/MSVBVM60.dll')) @('VB_FONT_ZERO_OK requested=12','VB_FONT_ZERO_OK requested=14','VB_FONT_ZERO_OK requested=16','VB_OWNERSHIP_OK leases_retired=32 maps_freed=32 sources_preserved=33','REPORT_TEXT_OWNERSHIP_OK exact_dc=1 barrier=1 cancelled=1')),

@@ -189,5 +189,19 @@
       "No physical keyboard, IME or independent notification assertion",
       "Other optional observers and custom control protocols not covered"
     ]
+  },
+  "vb_queue_p2": {
+    "scope": "The self-owned same-thread vb-queue unit fixture only; cross-process hook installation is a separate unresolved problem.",
+    "old_result": "Original S64 P1 x86 and x64 vb-queue-test each failed at hook installation with error 126, exit 1.",
+    "fix": "For callbacks targeting the current thread in the current process, pass NULL hMod while keeping the callback DLL loaded and explicitly freeing it after unhook.",
+    "reference": "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexw",
+    "verified": "x86 and x64 queue tests passed, including wrong tag rejection, notification and post-unhook negative; clean package focused 14 cases in 11.37 seconds no skips; both installed launchers passed each architecture.",
+    "cross_process_control": "Separate x86 and x64 owned-process EDIT tests each failed to install WH_CALLWNDPROC with non-NULL DLL hMod and error 126. Controller and target were on the same private desktop; GetModuleHandleEx(FROM_ADDRESS) returned the supplied module. Cause remains undetermined; same-thread fix is not a solution.",
+    "test_source": "tests/integration/vb_queue_test.c",
+    "limitations": [
+      "No production renderer change",
+      "Does not establish real-app cross-process observer support",
+      "No VB5/VB6 full compatibility claim"
+    ]
   }
 }

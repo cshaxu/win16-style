@@ -1716,7 +1716,7 @@
       "disposition": "authored",
       "source": null,
       "path": "tests/integration/vb_queue_test.c",
-      "sha256": "655384eb7cb127cdae683145ab2d16f5d6baebb8fb03e85822a32f34e319124d",
+      "sha256": "7662969707f30c6b273df6b1d5c74e2cf6764348222043e38cf96896294176e6",
       "review": "T17 S6 project-authored exact-owned-thread queue/notification witness, tagged FIFO acknowledgement, original VB5/6 queued input assertions and native double-width positive/negative lifecycle test; test-only files, no product renderer or original resource changes",
       "notice": "Project-authored C17 test; project MIT license"
     },

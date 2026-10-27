@@ -38,7 +38,9 @@ static int worker(int argc,WCHAR **argv)
     SetScrollRange(bar,SB_CTL,0,10,FALSE);state->root=root;state->window=bar;
     HMODULE dll=LoadLibraryW(argv[1]);CHECK(dll);
     HOOKPROC get=(HOOKPROC)(UINT_PTR)GetProcAddress(dll,"VbQueueGet"),sent=(HOOKPROC)(UINT_PTR)GetProcAddress(dll,"VbQueueSent");CHECK(get && sent);
-    HHOOK get_hook=SetWindowsHookExW(WH_GETMESSAGE,get,dll,state->tid),sent_hook=SetWindowsHookExW(WH_CALLWNDPROC,sent,dll,state->tid);CHECK(get_hook && sent_hook);
+    /* Both hooks target this process's current thread; USER expects NULL
+     * for hMod in that case even when the callbacks come from a loaded DLL. */
+    HHOOK get_hook=SetWindowsHookExW(WH_GETMESSAGE,get,NULL,state->tid),sent_hook=SetWindowsHookExW(WH_CALLWNDPROC,sent,NULL,state->tid);CHECK(get_hook && sent_hook);
     UINT marker=RegisterWindowMessageW(VB_QUEUE_MESSAGE);CHECK(marker);
     CHECK(PostMessageW(bar,marker,8,0) && PostMessageW(root,WM_APP+1,0,(LPARAM)bar) && PostMessageW(bar,marker,7,0));
     CHECK(pump(event,3000)==WAIT_OBJECT_0 && state->completed==7 && state->acknowledgements==1 && state->rejected==1);
