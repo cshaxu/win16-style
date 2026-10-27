@@ -351,6 +351,10 @@
       "s33_runtime_sample": {
         "evidence": "M0 T18 S33 gallery64-protocol and edit32-fixed; 144 DPI",
         "observation": "Both x86 and x64 reported runtime-DLL class owner and unattached. Public EDIT limit, selection and formatting rectangle were valid and class extra bytes matched native. Existing owner gate requires EXE, so this module-owned case fails before protocol admission; forwarding and full lifecycle are not yet proved."
+      },
+      "s34_delivery": {
+        "evidence": "M0 T18 S34 P1 eeb6f38; real DelphiVCL4Python 1.0.7 x86/x64 and self-owned test",
+        "scope": "Newly created exact TEdit with runtime module owner, actual same-thread system EDIT WM_PAINT forwarding and public protocol; one sample at 144 DPI and native model at 96 DPI. Other runtimes and variants not universally proved."
       }
     },
     {

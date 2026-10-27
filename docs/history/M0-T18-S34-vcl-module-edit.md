@@ -66,5 +66,6 @@ src/ntw16s-dll` and `rg -n -C 2 'static_text|CallWindowProcW'
 src/ntw16s-dll/attachment.c src/ntw16s-dll/injection/window_titles.c`; only
 TEdit was admitted, other runtime-owned roles remain for separate evidence.
 The old EXE-owned edit binding remains available, and the new candidate does
-not broaden any other role. This S is locally verified; P1 push and remote
-review remain pending. T18/M0 remain open.
+not broaden any other role. P1 `eeb6f38` was pushed; all 16 changed files including four assets were
+retrieved from the actual remote commit and matched. S34 is closed; T18/M0
+remain open and S35 addresses dialog-test efficiency.

@@ -68,35 +68,30 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S34 Packet
+## M0 T18 S35 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S33 P1完整包、双发布与远端复核完成，未完成的逐项审计转交后续S |
-| Admission And Approval | 用户要求能做控件继续实现并授权T18连续S；不新开T |
-| Objective | 研究并在安全契约成立时修复真实运行时DLL拥有的VCL TEdit无法接入的问题 |
-| Non-goals | 不依据类名放开任意DLL，不影响标题、字体、菜单、资源或应用自绘，不将单样本扩展为全集 |
-| Reference Baseline | [S33进度](../history/M0-T18-S33-integration-progress.md)、[S31静态文本](../history/M0-T18-S31-static-text.md)、[S9编辑超类](../history/M0-T18-S9-vcl-edit-superclass.md) |
-| Candidate Proposal | [Delphi Win32控件完整审计](../proposals/delphi-win32-controls.md)及S33真实双宽TEdit未附着证据 |
-| Files And ABI Surface | 现有C DLL内部身份、附着和必要自有测试；不新增产品或公开ABI |
-| Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；自有隔离实例、有限等待 |
-| Verification | 实测真实窗口对原生EDIT过程转发、调用者与所有者；双宽正负例、伪类拒绝、文本输入/选择/重入/移除、DPI、资源，真实应用及同批实际包 |
-| Expected Markers | 证明安全身份后有限接入；旧包负例、保留协议与应用行为；若无可靠契约则记录证据并保持原生 |
-| Asset Needs | 登记build/t18-s34-vcl-edit任务scratch，保留S33原始证据 |
-| Reporting Requirements | 明确原生过程、所有者、允许与拒绝边界；双宽实际包、必要双发布、提交推送及远端复核 |
-| Stop Conditions | 不能以任意模块/类名、私有字段或像素猜测；缺少安全身份时不得泛化接管 |
-| Exit Criteria | 真实样本与负例证明最小实现或明确无法安全接入，并交回74项最终审计；T18/M0开放 |
-| Original Owner Request | 可实现的控件先实现并跑测试，最终集中集成；无需额外确认 |
-| Similar-Issue Sweep | 同一运行时拥有的列表、树等只记录证据，不因TEdit协议自动泛化 |
+| Identifier Mode | Continuation；S34 P1双发布、双宽真实VCL及远端16文件复核完成，T18保持开放 |
+| Admission And Approval | 用户要求测试不无谓耗时并授权T18连续S；不新开T |
+| Objective | 定位并安全改善对话框显示和范围测试的重复等待 |
+| Non-goals | 不减少ANSI/Unicode、DPI、显示路径、生命周期、资源断言或失败诊断，不改产品视觉 |
+| Reference Baseline | [S33完整集成](../history/M0-T18-S33-integration-progress.md)、[S32菜单效率](../history/M0-T18-S32-menu-efficiency.md)、S33实际包日志 |
+| Candidate Proposal | [Delphi Win32控件完整审计](../proposals/delphi-win32-controls.md)及用户测试效率要求 |
+| Files And ABI Surface | 自有对话框原生测试和必要测试工具；不新增产品文件或公开ABI |
+| Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；自有隔离实例和有限等待 |
+| Verification | 分阶段计时、双宽完整场景与资源/焦点对照、必要负例，同批四文件实际包 |
+| Expected Markers | 所有原测试语义保留，前后耗时和差异可复核，不静默重试或扩大等待 |
+| Asset Needs | 登记build/t18-s35-dialog-efficiency任务scratch；保留S34及S33原始证据 |
+| Reporting Requirements | 明确耗时来源、前后数据、覆盖及未解决项；实际包、必要双发布、提交推送与远端复核 |
+| Stop Conditions | 无法证明覆盖和安全等价时保留原测试并记录，不以减少断言换取速度 |
+| Exit Criteria | 有证据的提速或保留结论、独立双宽包和治理交付；T18/M0开放 |
+| Original Owner Request | 测试不得无谓耗时，可实现控件继续推进，最终集中集成 |
+| Similar-Issue Sweep | dialog-scope、dialog-show及启动dialogs/messages套件；分别测量，不以猜测归因 |
 
-S33完整实际包127项零skip、双发布及P1 `0f75c4a`远端八文件通过；
-真实双宽VCL TEdit存在运行时DLL所有者未附着，S33未完成审计转交后续S。
-当前准入S34研究该缺口；T18/M0保持开放。
-
-S34本地已验证：真实双宽VCL TEdit附着及输入、96 DPI自有模块正负例、
-多行滚动和重入移除通过；干净包22项零skip、双发布及安装复验完成。
-GDI初期增长后稳定的差异保留TODO；P1推送与实际远端复核前S34仍开放。
-详见[S34记录](../history/M0-T18-S34-vcl-module-edit.md)。
+S34 P1 `eeb6f38`已推送并实际取回16个变更文件逐字节复核；双宽22项
+聚焦包、双发布、真实VCL和安装探针通过。S34关闭、S35准入；T18/M0开放，
+S33未完成的74项审计仍须继续。
 
 ## Identifier State
 
@@ -104,8 +99,8 @@ GDI初期增长后稳定的差异保留TODO；P1推送与实际远端复核前S3
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S33 P1：127项完整包、双发布、真实双宽样本及0f75c4a远端八文件复核；最终审计尚未完成。
-- Open task: T18 S34 运行时模块拥有的VCL TEdit；M0/T18开放。
+- Last delivery: M0 T18 S34：22项聚焦包、双发布、真实双宽VCL及eeb6f38远端16文件复核；最终审计尚未完成。
+- Open task: T18 S35 对话框测试效率；M0/T18开放。
 
 ## Technical Baseline
 
@@ -154,6 +149,8 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T18 S34运行时模块TEdit](../history/M0-T18-S34-vcl-module-edit.md)：双宽真实样本、22项聚焦包、双发布及P1远端16文件复核。
 
 - [T18 S33集成进度](../history/M0-T18-S33-integration-progress.md)：127项完整包、双发布及真实双宽控件调查；未完成审计转后续S。
 
