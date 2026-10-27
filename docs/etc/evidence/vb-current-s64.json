@@ -561,5 +561,29 @@
       "The sample control is outside its clipped whole-form image; a separate direct-control capture verifies drawing, not full visible-desktop appearance.",
       "No OCX or DriveListBox work; both remain user-deferred."
     ]
+  },
+  "graphical_real_picture_p10": {
+    "source": "https://github.com/thetrik/VbPng/tree/5fa8f4f2d2b2e74eb24786d32c59259fcd867b1d/VbSources/Test_EXE_Linked",
+    "original_binary_sha256": "c2f2eca0d2d3134654b2ae0639e7a4657f2493e4eb3fdddf24c2c411eef6c476",
+    "private_manifest_copy_sha256": "95e3afcabcaf1fdf6f625c8aa63d9f15f90682acd82d0131441a549c0361bfdd",
+    "private_ocx_sha256": "0a5958691d595cf37e4d4e77dee4994ec031558c1e9a94f019655a9319166e08",
+    "activation_correction": "Original binary contains RT_MANIFEST id 1, language 0x419; this explains why the earlier adjacent external manifest did not supply the private COM mapping. A scratch-only copy had its embedded manifest extended with the private typelib and Toolbar, StatusBar, ImageList COM classes; the resulting application opened without registration. The original binary and OCX were preserved.",
+    "real_test": "Self-owned x86 VB6 instance, private desktop, DPI 96, source-reviewed application. tests/integration/vb_intrinsic.c real-graphical-picture captures two picture OptionButtons and one picture CheckBox in normal and disabled states, plus selected checkbox; two native mouse messages toggle and restore checkbox, enabled state, source font and window style retained; bare and exact candidate exited cleanly with zero remaining processes.",
+    "pixel_test": "tests/integration/vb_picture_compare.py compared seven sample-specific image rectangles: 55,076 RGB pixel pairs equal between bare and styled, each full control image differs. The selected checkbox image and disabled states are included. Out-of-region caption and border are deliberately excluded.",
+    "negative_control": "Mutating the checked checkbox image at (60,10) in a scratch-only copy made the comparator fail with the exact coordinate. It does not claim to distinguish old package styling.",
+    "package": "14 focused actual-package tests, 0 skips, 12.08 s. Product source unchanged; clean rebuild changed artifact hashes and was published to both destinations; installed launcher passed x86/x64 model.",
+    "sha256": {
+      "demo.exe": "018af92ca28487e969bccc71c658b405d61d0b0ca0aec34fe68d20f00f0a12cf",
+      "ntw16s32.dll": "c16084650403e9a64615bb273055bbdc93c1c310de672aa44024f146dc2c42ea",
+      "ntw16s64.dll": "79ce9d5c8b7051e17f18f1ca1e96f6b6d48b52c2fed600ee0161fcc814d00649",
+      "run16s.exe": "c88fdb3bdb6adebbf4985cec7e79110d0f3d21f1cfba41380ed3db9c37b505f9"
+    },
+    "limitations": [
+      "Sample is a modified-manifest copy, not an unmodified original execution; no registration or external binary distributed.",
+      "Only one real VB6 sample and 96 DPI. Actual VB5 and Picture/DownPicture/DisabledPicture combinations beyond the seven observed states remain unverified.",
+      "Image-region pixel equality does not prove accessibility, IME or physical input.",
+      "VB5 sample found in vbAccelerator archive uses an application-owned subclass and additional OCX, so its own drawing cannot establish default runtime behavior."
+    ],
+    "reproduction": "Copy the pinned original binary and Microsoft-signed COMCTL32.OCX into a disposable directory. Extract RT_MANIFEST type 24, id 1, language 0x419, preserve its Common-Controls 6.0 dependency, add a private file comctl32.Ocx with typelib {6B7E6392-850A-101B-AFC0-4210102A8DA7} version 1.5 and Apartment comClass mappings Toolbar {612A8624-0FB3-11CE-8747-524153480004}, StatusBar {6B7E638F-850A-101B-AFC0-4210102A8DA7}, ImageList {58DA8D8F-9D6A-101B-AFC0-4210102A8DA7}; replace that manifest resource only in the copy. Run optional native observer with real-graphical-picture mode into separate fresh WIN16STYLE_CAPTURE_DIR directories for bare and package, then run python tests/integration/vb_picture_compare.py BARE_DIR STYLED_DIR."
   }
 }
