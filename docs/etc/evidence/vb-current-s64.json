@@ -807,5 +807,15 @@
       "A prior intermittent viewer-only exit timeout occurred with both old and current builds; this passing run does not establish its cause or fix.",
       "VB5, other DPI, accessibility and IME remain unverified."
     ]
+  },
+  "vb6_checkbox_mixed_fallback_p22": {
+    "scope": "Native fixture for VB6 runtime-owned checkbox list at 96 DPI, actual assets package in both 32-bit and 64-bit model processes.",
+    "checks": "Draw a single mixed Latin and CJK ExtTextOutW run; compare pixel hash while attached and after explicit removal, verifying entire mixed run remains native. Also check Latin-only changes, Chinese-only remains native, source font preserved, role retirement and prior glyph/reentrancy assertions.",
+    "results": "Both architectures print VB_CHECKLIST_OK and mixed_fallback=1. These are protocol fixtures; no actual 64-bit VB runtime is claimed.",
+    "limitations": [
+      "This is not a real VB5 sample or physical interaction.",
+      "Covers this one representative mixed run, not all scripts, shaping or fonts."
+    ],
+    "product_change": false
   }
 }

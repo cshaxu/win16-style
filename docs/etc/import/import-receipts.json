@@ -2023,8 +2023,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17 native test; no external source or resources copied",
-      "review": "T18 S64 VB6 checklist public protocol model and bounded pixel/state/negative cases; fixture is not an actual VB runtime; T18 S64 disabled checkbox list state and matching source offsets; T18 S64 reentrant window state and parent revalidation, disable/style negative and reparent lifecycle model; T18 S64 P19 scoped VB6 checkbox list text and retirement witness",
-      "sha256": "2309e9474011226ee037812e4c7daa322453de9e149011357354b3b361b5381b"
+      "review": "T18 S64 VB6 checklist public protocol model and bounded pixel/state/negative cases; fixture is not an actual VB runtime; T18 S64 disabled checkbox list state and matching source offsets; T18 S64 reentrant window state and parent revalidation, disable/style negative and reparent lifecycle model; T18 S64 P19 scoped VB6 checkbox list text and retirement witness; T18 S64 P22 mixed-script fallback witness",
+      "sha256": "0e3f35949b297cb46a4e2b1fb49610362e097496eff65fff7119c8416a4f3d80"
     },
     {
       "path": "tests/ntw16s-dll/vb_checklist_runtime.c",
@@ -2032,8 +2032,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17 native test; no external source or resources copied",
-      "review": "T18 S64 VB6 checklist public protocol model and bounded pixel/state/negative cases; fixture is not an actual VB runtime; T18 S64 disabled checkbox list state and matching source offsets; T18 S64 reentrant window state and parent revalidation, disable/style negative and reparent lifecycle model; T18 S64 P19 scoped VB6 checkbox list text and retirement witness",
-      "sha256": "07d95dd9c2186c0eee5d72023e2a1bd8021b6b694ec114646b45003e15ced323"
+      "review": "T18 S64 VB6 checklist public protocol model and bounded pixel/state/negative cases; fixture is not an actual VB runtime; T18 S64 disabled checkbox list state and matching source offsets; T18 S64 reentrant window state and parent revalidation, disable/style negative and reparent lifecycle model; T18 S64 P19 scoped VB6 checkbox list text and retirement witness; T18 S64 P22 mixed-script fallback witness",
+      "sha256": "55df4b749ce9c5b295f7e939906b1da057ff2e4bdc96bceb8b4627c116d76a06"
     }
   ]
 }
