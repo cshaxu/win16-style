@@ -68,45 +68,30 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S47 Packet
+## M0 T18 S48 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S46 P1 1b7650f远端十二文件实际核对通过，S47首次准入 |
-| Admission And Approval | 用户授权T18内自动实施可做控件；不新开T |
-| Objective | 研究有尺寸手柄的状态栏末分区含图标时的安全绘制次序并实施可证实适配 |
-| Non-goals | 不覆盖应用图标、自绘、文字和输入，不修改标题、字体或原图形 |
-| Reference Baseline | [S46空末分区](../history/M0-T18-S46-empty-status-pane.md)、[S45末分区](../history/M0-T18-S45-status-last-pane.md)、[S44真实状态栏](../history/M0-T18-S44-vcl-status.md) |
+| Identifier Mode | Continuation；S47 P1 a6baff4远端十三文件实际核对通过，S48首次准入 |
+| Admission And Approval | 用户授权T18内自动实施可做工作及提高测试效率；不新开T |
+| Objective | 查明日期控件异常测试的进程GDI计数波动并在不掩盖泄漏的前提下修复测试稳定性 |
+| Non-goals | 不放宽真实泄漏断言，不改变产品样式、资源、ABI或分区语义 |
+| Reference Baseline | [S47图标状态栏](../history/M0-T18-S47-status-icon.md)、[S42日期按钮](../history/M0-T18-S42-vcl-date-picker.md)、[S39颜色框](../history/M0-T18-S39-vcl-color-combo.md) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 自有原生探针；如有可证实方案仅修改既有C组件，不增产物或ABI |
+| Files And ABI Surface | 自有C测试与工具；必要时仅在有证据时修改既有C组件 |
 | Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；隔离自有实例、有限等待与清理 |
-| Verification | 双宽真实及C模型，图标像素/绘制顺序、裁剪、owner-draw、空文字、重入与GDI、同窗DC对照 |
-| Expected Markers | 证实图标与应用内容不受破坏，不能因文字调用猜测图标位置 |
-| Asset Needs | 登记build/t18-s47-status-icon，复用S46双宽真实探针 |
-| Reporting Requirements | 绘制次序和所有权、像素及状态变化、负例和限制；必要双发布与远端复核 |
-| Stop Conditions | 无可靠内容中性边界时不泛化 |
-| Exit Criteria | 有证据的实现或明确后续接收，实际包交付；T18/M0保持开放 |
-| Original Owner Request | 能做的先实现测试，真实集成集中最终收口，不让用户手工测试 |
-| Similar-Issue Sweep | 不同图标大小、透明与裁剪、空文字、自绘及多版本控件 |
+| Verification | 重现或对照过程GDI计数变化，精确租约、负例泄漏检出、双宽并发/串行短测及实际包 |
+| Expected Markers | 记录首次27→25，保留资源释放证据和真实泄漏检出，不将重试通过当作根因 |
+| Asset Needs | 登记build/t18-s48-date-gdi，复用S47实际包和测试 |
+| Reporting Requirements | 失败根因或明确未定位、测试覆盖和时间、负例与限制，按规则发布及远端复核 |
+| Stop Conditions | 无法区分波动与真实泄漏时保留严格断言，不伪造通过 |
+| Exit Criteria | 有证据的测试修复或明确边界，实际包交付；T18/M0保持开放 |
+| Original Owner Request | 能做的先实现测试，测试不应无谓耗时，真实集成集中最终收口 |
+| Similar-Issue Sweep | 日期和颜色框异常释放、进程预热及系统GDI对象波动 |
 
-S46 P1 `1b7650f`已推送，GitHub实际取回十二文件逐字节一致；26项聚焦包、双发布与
-system32双宽入口通过。图标和自绘末分区仍原生；完整T18集成未执行。
+S47 P1 `a6baff4`已推送，GitHub实际取回十三文件逐字节一致；26项低并发包、双发布与
+system32双宽入口通过。首轮日期GDI计数27→25失败未定位；完整T18集成未执行。
 S40屏幕机制及S41首次退出异常仍未解决；T18/M0开放。
-
-S47进行中：自有双宽comctl v6带图标末分区绘制跟踪确认，WM_PRINTCLIENT中本机
-DrawIconEx先于DrawThemeText，由comctl所属模块调用；32x32图标位于(124,-3)，部分
-超过23像素高分区，故不能在文字调用时覆盖图标。仅scratch原型验证图标调用前、
-核对公开图标句柄及分区身份后补框；双宽自有模型各551分区边缘像素变化、分区内部
-非边缘0，图标内容未见变化。尚须验证完整画布边外、图标尺寸/透明/裁剪、应用回调、
-真实Delphi、生命周期与异常，诊断额外hook不属于产品；本轮尚无产品发布。
-
-S47进行中：正式候选新增受验证comctl调用者和图标句柄约束的图标绘制前边框；双宽96 DPI
-16/32/48输入、半透明和重入移除模型通过，整画布边框外0；系统实绘尺寸为32x32。真实
-双宽144 DPI试验屏幕首/末440/732、打印440/731、边外0，文字和owner-draw返回不变。
-S46旧版在图标边框正例失败。仍待独立干净包、hook容量回归、发布和提交；尚未交付。
-
-S47最终双宽真实窗口图标边框、整画布边外0；首轮日期GDI计数27→25失败原因未定，
-单项及26项低并发复测通过、双发布和system32双宽入口通过；P1待提交推送复核。
 
 ## Identifier State
 
@@ -114,8 +99,8 @@ S47最终双宽真实窗口图标边框、整画布边外0；首轮日期GDI计�
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S46：26项聚焦包、双发布、空末分区适配及1b7650f远端十二文件复核。
-- Open task: T18 S47 状态栏图标末分区调查；M0/T18开放。
+- Last delivery: M0 T18 S47：26项聚焦包、双发布、图标末分区适配及a6baff4远端十三文件复核。
+- Open task: T18 S48 日期异常测试GDI计数调查；M0/T18开放。
 
 ## Technical Baseline
 
@@ -164,6 +149,8 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T18 S47图标末分区](../history/M0-T18-S47-status-icon.md)：双宽真实窗口、26项包、双发布及a6baff4远端复核；首轮GDI波动留TODO。
 
 - [T18 S46空末分区](../history/M0-T18-S46-empty-status-pane.md)：双宽真实窗口、26项包、双发布及1b7650f远端复核。
 
