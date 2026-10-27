@@ -68,34 +68,30 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S44 Packet
+## M0 T18 S45 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S43 P1 5a5089e远端七文件实际核对通过，S44首次准入 |
+| Identifier Mode | Continuation；S44 P1 0df464d远端十四文件实际核对通过，S45首次准入 |
 | Admission And Approval | 用户授权T18内自动实施可做控件；不新开T |
-| Objective | 实施经真实运行时转发见证的有限VCL TStatusBar分区边框适配，并验证绘制入口 |
+| Objective | 调查真实VCL状态栏第二分区在S44对照中未观察到变化的原因，必要时按证据修复 |
 | Non-goals | 不改应用文字、图标、owner-draw内容、简单模式、标题、字体或原图形 |
-| Reference Baseline | [S43真实状态栏调查](../history/M0-T18-S43-vcl-status-audit.md)、[S25原生状态栏](../history/M0-T18-S25-status-bar.md)、[S42异常清理](../history/M0-T18-S42-vcl-date-picker.md) |
+| Reference Baseline | [S44真实状态栏适配](../history/M0-T18-S44-vcl-status.md)、[S43状态栏调查](../history/M0-T18-S43-vcl-status-audit.md)、[S40屏幕对照](../history/M0-T18-S40-color-screen.md) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 现有C DLL身份与绘制、自有双宽回归；不增产品文件和公开ABI |
+| Files And ABI Surface | 自有双宽原生探针；修复如必要限定既有C DLL，不增产物或ABI |
 | Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；隔离自有实例、有限等待与清理 |
-| Verification | native转发见证和反例，真实VCL公开分区及绘制调用、普通/简单/自绘/图标、裁剪/重入/生命周期，双宽实际包 |
-| Expected Markers | 只改变已验证分区边框，应用内容和回调不变；不支持变体保留原生 |
-| Asset Needs | 登记build/t18-s44-vcl-status，复用S43双宽真实探针 |
-| Reporting Requirements | 限定身份、实际像素与绘制入口、正负例和未覆盖面，双发布与远端复核 |
-| Stop Conditions | 找不到可验证的绘制入口或无法保留内容时不泛化、不交付不安全样式 |
-| Exit Criteria | 有证据的有限实现或明确安全边界，实际包交付；T18/M0保持开放 |
-| Original Owner Request | 能做的先实现测试，实际集成集中最终收口，不让用户手工测试 |
-| Similar-Issue Sweep | 原生状态栏及未见证同名类，简单/边框/owner-draw/图标/RTL |
+| Verification | 同窗同DC与屏幕对照，重绘/恢复/公开分区状态、owner-draw及图标，双宽实际包 |
+| Expected Markers | 区分绘制入口缺失、应用状态及屏幕采样差异，不凭未变像素猜测根因 |
+| Asset Needs | 登记build/t18-s45-status-pane，复用S44双宽真实探针 |
+| Reporting Requirements | 首个可证断点、负例、受影响范围与未覆盖面，必要双发布与远端复核 |
+| Stop Conditions | 不具备保留应用内容与生命周期的证据时不泛化 |
+| Exit Criteria | 有证据的修复或明确边界并记录后续接收，实际包交付；T18/M0保持开放 |
+| Original Owner Request | 能做的先实现测试，真实集成集中最终收口，不让用户手工测试 |
+| Similar-Issue Sweep | 分区变更、重绘、无边框、简单模式及S40屏幕采样 |
 
-S43 P1 `5a5089e`已推送，GitHub实际取回七文件逐字节一致；18项聚焦包与双发布通过。
-双宽真实VCL状态栏尚未附着；公开文字、自绘和简单模式、临时分区框试绘见S43。
-S41首次退出异常及S40屏幕机制仍未解决；完整集成留T18收口。
-
-S44候选真实双宽首分区同窗440像素边框、边外0；其他真实分区尚未证明。双宽96/144 DPI
-自有模型与旧版负例、24项聚焦包（10.28秒零skip）、双发布及system32双宽入口通过。
-原资源不变，完整T18集成未执行。P1待提交推送及实际远端复核。
+S44 P1 `0df464d`已推送，GitHub实际取回十四文件逐字节一致；24项聚焦包、双发布与
+system32双宽入口通过。真实样本仅首分区观察到边框变化；完整T18集成未执行。
+S41首次退出异常及S40屏幕机制仍未解决；T18/M0开放。
 
 ## Identifier State
 
@@ -103,8 +99,8 @@ S44候选真实双宽首分区同窗440像素边框、边外0；其他真实分�
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S43：18项聚焦包、双发布、真实状态栏调查及5a5089e远端七文件复核。
-- Open task: T18 S44 真实VCL状态栏有限适配；M0/T18开放。
+- Last delivery: M0 T18 S44：24项聚焦包、双发布、真实状态栏有限适配及0df464d远端十四文件复核。
+- Open task: T18 S45 真实状态栏第二分区调查；M0/T18开放。
 
 ## Technical Baseline
 
@@ -153,6 +149,8 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T18 S44 VCL状态栏](../history/M0-T18-S44-vcl-status.md)：双宽真实首分区、24项包、双发布及0df464d远端复核。
 
 - [T18 S43真实VCL状态栏调查](../history/M0-T18-S43-vcl-status-audit.md)：双宽真实分区/自绘证据、18项包及5a5089e远端复核。
 
