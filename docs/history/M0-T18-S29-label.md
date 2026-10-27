@@ -104,4 +104,8 @@ points passed the bounded spin-model checks at 96/144 DPI. SHA-256: demo
 `e0bf369a000437f4718c25350cba5d533537e8556da4680deee9ae8c4371e36f`.
 This is a rebuilt batch with no label-style implementation. Real physical
 input, other font families and languages, and T18 full integration remain
-unverified. S29 awaits commit, push and remote verification; T18 remains open.
+unverified. P1 `c36f5ba` was pushed and all seven changed files were fetched
+from GitHub and matched to their committed blobs. S29 closes as an
+investigation with the label gap retained in TODO; the next T18 S addresses the
+observed test-time regression before windowed `TStaticText` investigation.
+T18 and M0 remain open.
