@@ -92,6 +92,20 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 S42 P1 `b6db3e6`已推送，GitHub实际取回12文件逐字节一致；16项聚焦实际包、双发布与
 已安装双宽入口通过。S41首次退出异常、S40屏幕机制及完整集成仍未解决；T18/M0开放。
 
+S43进行中：真实DelphiVCL4Python 1.0.7自有x86/x64实例在144 DPI均为runtime拥有的
+TStatusBar，当前未附着；观察到该模块向注册的native状态栏过程转发WM_PAINT和
+WM_NCPAINT。公开两分区及Ready/Count: 42原样回读，导入观察已恢复、实例已关闭。
+这尚非可安全适配或所有版本的证明。首轮x86探针因自编观察DLL导出装饰名错误未启动
+观察而返回1；修正探针导出后通过，失败记录保留在登记scratch。下一步核实原生
+DrawEdge/主题绘制调用、owner-draw与简单模式，再评估安全复用现有renderer。
+S43补充：双宽公开两分区普通文字、简单模式切换及owner-draw原始数据0x12345678
+均确认；恢复父窗口与IAT观察。系统comctl v6的DrawEdge IAT观察已安装但未观察到调用，
+DrawThemeBackground观察未安装，不能认为不存在主题调用。临时直接FrameRect仅改变两分区
+边缘各1244像素、边外0；这是原型而非产品实现。首轮导出错误保持记录。
+
+S43双宽干净构建、18项聚焦包6.56秒零skip、双发布及system32双宽v6复验通过；
+真实分区和自绘调查完成，实际superclass实现尚未交付。P1待提交推送及远端核对。
+
 ## Identifier State
 
 - Milestone: M0 (fixed)

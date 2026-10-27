@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "task": "M0 T18 S43",
+  "type": "self-owned DelphiVCL4Python 1.0.7 status bar audit",
+  "records": [
+    {
+      "bits": 32,
+      "dpi": 144,
+      "window_class": "TStatusBar",
+      "attached": false,
+      "native_paint_forward": true,
+      "native_nonclient_paint_forward": true,
+      "ordinary_text": [
+        "Ready",
+        "Count: 42"
+      ],
+      "parts": [
+        [
+          0,
+          2,
+          200,
+          24
+        ],
+        [
+          202,
+          2,
+          584,
+          24
+        ]
+      ],
+      "simple_toggle_restored": true,
+      "owner_draw_data": "0x12345678",
+      "drawedge_import_observer_installed": true,
+      "drawedge_observed": 0,
+      "theme_import_observer_installed": false,
+      "manual_frame_changed_pixels": 1244,
+      "changed_pixels_outside_edges": 0,
+      "report_sha256": "885d9f990581df4ce4bac4299fd3a3eb73c3b3581c9b5e364f7e1df8fb3cbfe6",
+      "screenshot_sha256": "a1ed7c8728df124602baddee9178352874ed907f54e1474242f4841fb10e0be2"
+    },
+    {
+      "bits": 64,
+      "dpi": 144,
+      "window_class": "TStatusBar",
+      "attached": false,
+      "native_paint_forward": true,
+      "native_nonclient_paint_forward": true,
+      "ordinary_text": [
+        "Ready",
+        "Count: 42"
+      ],
+      "parts": [
+        [
+          0,
+          2,
+          200,
+          24
+        ],
+        [
+          202,
+          2,
+          584,
+          24
+        ]
+      ],
+      "simple_toggle_restored": true,
+      "owner_draw_data": "0x12345678",
+      "drawedge_import_observer_installed": true,
+      "drawedge_observed": 0,
+      "theme_import_observer_installed": false,
+      "manual_frame_changed_pixels": 1244,
+      "changed_pixels_outside_edges": 0,
+      "report_sha256": "b2967708757639a2caec56c8f979b67e73ad12a5ecbfe903cb30cdee7b1cf804",
+      "screenshot_sha256": "a1ed7c8728df124602baddee9178352874ed907f54e1474242f4841fb10e0be2"
+    }
+  ],
+  "caveats": [
+    "Manual overlay was scratch only, not product styling.",
+    "DrawThemeBackground observer was not installed; its absence cannot be inferred.",
+    "x86 first attempt failed due to decorated observer export, corrected for subsequent run.",
+    "Physical input, other runtime versions and accessibility remain untested."
+  ]
+}
