@@ -44,5 +44,5 @@ system32 x86/x64 installed-entry probes passed. Both locations matched:
 | ntw16s64.dll | `bd8287ff4641ba17d0221eda388733cd2e91e344c7cb5c6b841067b13737e25b` |
 | run16s.exe | `a4a10c9780f26d1b01462e5aeec8ca6e7650f0e0ff6a7a03bdd94fbc6d566ff6` |
 
-P1 commit and actual remote verification are pending. The remaining T18
+P1 `922393c` was pushed; all seven changed files were retrieved from the actual GitHub commit and matched byte for byte. The remaining T18
 control inventory is not complete; the screen mechanism is unresolved.

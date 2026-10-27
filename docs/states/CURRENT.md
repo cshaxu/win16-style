@@ -68,47 +68,30 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S40 Packet
+## M0 T18 S41 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S39 P1双发布与远端12文件核对通过，S40首次准入 |
+| Identifier Mode | Continuation；S40 P1双发布与远端七文件核对通过，S41首次准入 |
 | Admission And Approval | 用户授权T18内自动实施可做控件并完成测试，不新开T |
-| Objective | 调查真实TColorBox展开状态偶发按钮外屏幕像素差异，判断原生重绘与候选的责任边界 |
-| Non-goals | 不掩盖异常、不仅凭离屏结果判定屏幕效果，不改应用色块/数据、标题、字体、菜单或原图形 |
-| Reference Baseline | [S39颜色框](../history/M0-T18-S39-vcl-color-combo.md)、[S38调查](../history/M0-T18-S38-control-audit.md) |
+| Objective | 调查真实运行时拥有的VCL TDateTimePicker及日期弹层，寻找保留原生日期行为的Win16适配路径 |
+| Non-goals | 不改日期数据、弹层行为、标题、字体、菜单或原图形，不以类名推断完整支持 |
+| Reference Baseline | [S38真实日期控件](../history/M0-T18-S38-control-audit.md)、[S39颜色框](../history/M0-T18-S39-vcl-color-combo.md)、[S40屏幕调查](../history/M0-T18-S40-color-screen.md) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 已登记自有原生探针和必要现有C DLL修复，不增加产品文件或公开ABI |
+| Files And ABI Surface | 自有隔离原生探针及必要既有C模块，不增产品文件或公开ABI |
 | Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；隔离自有实例、有时限回收 |
-| Verification | 成对记录WM_DRAWITEM状态/DC、控件与弹层几何、屏幕与离屏像素、消息顺序、焦点，双宽原生与候选对照 |
-| Expected Markers | 找到可复现差异及最后正常节点；区分候选引入、应用/原生重画、采样问题；不由相关性推断因果 |
-| Asset Needs | 登记build/t18-s40-color-screen；保留S39原始证据 |
-| Reporting Requirements | 根因或明确未决证据、受影响范围、验证限制；按产品S规范构建、必要双发布、提交与远端复核 |
-| Stop Conditions | 未排除候选破坏色块时不得扩展样式范围；不修改系统全局设置或现有用户进程 |
-| Exit Criteria | 清晰定位并修复可控缺陷或有界保留并转交后续；T18/M0开放 |
+| Verification | 双宽真实native转发、公开控件/按钮几何、日期/弹层/键盘/通知、绘制所有权及生命周期；未覆盖面明确 |
+| Expected Markers | 可复现真实外观缺口与精确可实施契约；应用数据、输入及弹层不被覆盖 |
+| Asset Needs | 登记build/t18-s41-date-picker；保留S38真实样本与S40证据 |
+| Reporting Requirements | 准确owner/位宽、候选契约、操作及像素证据、未覆盖变体；每S按构建、必要双发布、提交远端复核规范 |
+| Stop Conditions | 无法区分自绘或保留日期/输入/通知时不得泛化重画；不修改系统设置或用户现有进程 |
+| Exit Criteria | 得出可执行适配或有界保留并转交后续；T18/M0开放 |
 | Original Owner Request | 能做的控件全部实现并测试，最终集中集成；不反复要求用户测试 |
-| Similar-Issue Sweep | 检查普通owner-draw组合框与没有S39样式时的相同绘制行为 |
+| Similar-Issue Sweep | 原生日期控件及VCL包装、多版本样本、弹层与普通owner-draw边界 |
 
-S39 P1 `7cb84f2`已推送，GitHub实际取回12文件逐字节一致；20项聚焦包、
-双发布及两位置双宽入口通过。真实样本离屏结果限于按钮区；展开屏幕在
-仅重画及移除后均偶发1718像素区外差异，原因未定。S39关闭，T18/M0开放。
-
-S40初检：此前两组出现1718像素区外变化的自有x86记录中，焦点均在颜色框、
-弹出列表位于控件正下方；采样之间均有原生WM_PAINT及颜色框WM_DRAWITEM，
-该条目状态为0x1000、项目矩形(3,3)-(101,19)。其中一组并未移除样式，
-因此不能归因于移除动作。仍需同进程无样式/有样式对照及绘制DC像素证据，
-目前不能判断原生绘制、窗口合成或探针采样的因果。原始S39数据保留。
-S40追加配对DC证据：真实双宽旧/新样本均捕获异常，在项目矩形内有1396
-像素不同；重画前最后一次与重画后的应用DRAWITEM DC彼此完全相同，且均
-等于重画后的屏幕，不等于重画前屏幕。此证据将分歧定位在应用绘制DC之后
-的屏幕呈现/采样链，不能推断具体系统模块或变化频率。无主动重画的x86
-旧/新各5次100ms采样均不变；先调用DwmFlush成功后旧/新各5次未再触发，
-样本小且没有证明因果。双宽长帧与缺失的物理桌面输入仍未覆盖。
-证据汇总在[诊断台账](../etc/evidence/delphi-s40-screen-diagnostic.json)和
-[调查记录](../history/M0-T18-S40-color-screen.md)。本S无产品源码变更，
-准备按规范进行独立双宽包与聚焦回归；差异具体机制保持未决。
-独立包12项聚焦通过无skip、10.94秒，二进制重建摘要变化，已双发布并
-复测system32双宽入口；P1待提交推送及实际远端复核。屏幕机制仍未判定。
+S40 P1 `922393c`已推送，GitHub实际取回七文件逐字节一致；12项聚焦包与
+双发布通过。偶发屏幕差异在旧/新样本均出现，应用两次绘图DC相同而先前
+屏幕不同，具体呈现或采样机制未定，留[TODO](TODO.md)；S40关闭，T18/M0开放。
 
 ## Identifier State
 
@@ -116,8 +99,8 @@ S40追加配对DC证据：真实双宽旧/新样本均捕获异常，在项目�
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S39：20项聚焦包、双发布、真实双宽颜色框及7cb84f2远端12文件复核。
-- Open task: T18 S40 颜色框展开屏幕差异调查；M0/T18开放。
+- Last delivery: M0 T18 S40：12项聚焦包、双发布、双宽绘图DC调查及922393c远端七文件复核。
+- Open task: T18 S41 真实VCL日期控件与弹层调查；M0/T18开放。
 
 ## Technical Baseline
 
@@ -166,6 +149,8 @@ SHA一致。真实两版本每版Combo2/List1/Scroll2正常显示，combo32黑�
 样例证明148全集完成，无物理键鼠完成声明。
 
 ## Recent Closure
+
+- [T18 S40颜色框屏幕调查](../history/M0-T18-S40-color-screen.md)：旧/新双宽绘图DC对照、12项聚焦包及双发布；具体屏幕机制留TODO。
 
 - [T18 S39 VCL颜色组合框](../history/M0-T18-S39-vcl-color-combo.md)：20项聚焦包、双发布、双宽像素与通知对照及P1远端12文件复核；偶发屏幕差异交S40。
 

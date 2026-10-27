@@ -2,6 +2,12 @@
 
 # Deferred Debt
 
+- [ ] TODO(Medium): 展开TColorBox时偶发屏幕采样与应用绘图DC不一致；Owner：T18
+  后续真实应用验收。Evidence：[S40调查](../history/M0-T18-S40-color-screen.md)：
+  双宽旧/新包均复现，应用前后DRAWITEM DC相同而重画前屏幕不同，具体呈现或
+  采样机制未确定。Admission：可观察显示环境和能区分应用blit、窗口合成、
+  遮挡及DC采样的证据；不凭少量DwmFlush结果修改系统设置或声称因果。
+
 - [ ] TODO(Medium): S34模块TEdit重复创建的进程级GDI预热差异；Owner：T18资源与
   最终验收。Evidence：双宽候选20次中前期从约12增至52、后续稳定并回落至50；
   x64未注入对照从9增至13。已验证精确控件重入移除和进程退出，但尚未区分
