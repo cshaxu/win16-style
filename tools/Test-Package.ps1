@@ -163,6 +163,12 @@ try{
         (Case 'checklist-64' (Join-Path $x64 'core-checklist.exe') @($run) @('CHECKLIST_MODEL_OK bits=64 styled=0','CHECKLIST_MODEL_OK bits=64 styled=1 checked_mismatch=0','CHECKLIST_PUSHED_OK bits=64','CHECKLIST_CLEANUP_OK'))
     )
     $cases+=@(
+        (Case 'spin-32' $run @('--wait',(Join-Path $x86 'core-spin-controls.exe')) @('SPIN_CONTROL_NESTED_OK','SPIN_CONTROL_OK bits=32','outside=0','SPIN_CONTROL_CLIP_OK','SPIN_CONTROL_REENTRANT_OK','SPIN_CONTROL_BOUNDARY_OK')),
+        (Case 'spin-64' $run @('--wait',(Join-Path $x64 'core-spin-controls.exe')) @('SPIN_CONTROL_NESTED_OK','SPIN_CONTROL_OK bits=64','outside=0','SPIN_CONTROL_CLIP_OK','SPIN_CONTROL_REENTRANT_OK','SPIN_CONTROL_BOUNDARY_OK')),
+        (Case 'spin-dpi-32' $run @('--wait',(Join-Path $x86 'core-spin-controls.exe'),'aware') @('SPIN_CONTROL_NESTED_OK','SPIN_CONTROL_OK bits=32','outside=0','SPIN_CONTROL_CLIP_OK','SPIN_CONTROL_REENTRANT_OK','SPIN_CONTROL_BOUNDARY_OK')),
+        (Case 'spin-dpi-64' $run @('--wait',(Join-Path $x64 'core-spin-controls.exe'),'aware') @('SPIN_CONTROL_NESTED_OK','SPIN_CONTROL_OK bits=64','outside=0','SPIN_CONTROL_CLIP_OK','SPIN_CONTROL_REENTRANT_OK','SPIN_CONTROL_BOUNDARY_OK')),
+        (Case 'spin-passive-32' (Join-Path $x86 'core-spin-controls.exe') @('passive',$d32) @('SPIN_CONTROL_PASSIVE_OK bits=32 unattached=1')),
+        (Case 'spin-passive-64' (Join-Path $x64 'core-spin-controls.exe') @('passive',$d64) @('SPIN_CONTROL_PASSIVE_OK bits=64 unattached=1')),
         (Case 'status-v5-32' $run @('--wait',(Join-Path $x86 'core-status-controls.exe')) @('STATUS_LIVE_OK bits=32','STATUS_CONTROL_OK bits=32','STATUS_CLIP_OK','STATUS_BOUNDARY_OK','STATUS_CONTROL_CLEANUP_OK')),
         (Case 'status-v5-64' $run @('--wait',(Join-Path $x64 'core-status-controls.exe')) @('STATUS_LIVE_OK bits=64','STATUS_CONTROL_OK bits=64','STATUS_CLIP_OK','STATUS_BOUNDARY_OK','STATUS_CONTROL_CLEANUP_OK')),
         (Case 'status-v6-32' $run @('--wait',(Join-Path $x86 'core-status-controls-v6.exe')) @('STATUS_LIVE_OK bits=32','STATUS_CONTROL_OK bits=32','STATUS_CLIP_OK','STATUS_BOUNDARY_OK','STATUS_CONTROL_CLEANUP_OK')),

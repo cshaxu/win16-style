@@ -89,6 +89,9 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | Original Owner Request | 做完可实现控件并自行测试；每S按规范构建测试、发布、提交与远端复核 |
 | Similar-Issue Sweep | 已有DrawFrameControl截获、其他UpDown/VB控件、伪同名窗口、应用自绘、禁用与DPI；未验证项不计通过 |
 
+S27进展：[有限边框证据](../history/M0-T18-S27-spin-button.md)：真实DoubleKiller、双宽96/144 DPI模型、
+30项聚焦包及双发布已通过；产品提交与远端复核待完成，未运行完整T18集成矩阵。
+
 ## Identifier State
 
 - Milestone: M0 (fixed)

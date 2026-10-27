@@ -193,6 +193,12 @@ skip，当前包只承诺自包含探针的有限覆盖。原标题/字体/菜�
 容量40，公开ABI3/31命名导出+ordinal1不变。HD Tune管理员真实UI仍默认skip，不把
 自包含微调适配扩张为所有框架自绘TSpinButton支持。
 
+T18 S27另外限定接纳同线程、主EXE拥有的精确TSpinButton，其父窗须为主EXE拥有的
+TSpinEdit且真实基础类为EDIT；被动加载、默认窗口过程、未知样式或DC映射回退原生。
+只在该窗口的受控消息内、由主EXE调用的匹配DrawFrameControl成功之后，在原矩形
+画一像素黑边；保留原调用结果、错误、调整矩形、剪裁、应用箭头及输入。实证范围
+是真实DoubleKiller及自有双宽模型；其余应用、不同样式与未验证变体不能推定支持。
+
 T17 S3仅为MSVBVM60注册的准确ThunderRT6CheckBox接纳普通窗口化复选框，
 复用既有glyph和VB字号保留策略，不替代VB Value/Click/键盘处理。Actor实际
 样式虽为AUTO3STATE，实测仍为0/1循环，不由style推导三态业务。图形/push-like/

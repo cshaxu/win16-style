@@ -20,7 +20,7 @@ struct ntw16s_creation_scope {
 };
 typedef struct attachment {
     unsigned calls;
-    BOOL detached,tree,file_owner,picture,button_owner,checklist,status;
+    BOOL detached,tree,file_owner,picture,button_owner,checklist,status,spin;
     unsigned status_epoch;
     HWND themed,report_window,report_parent;
     HMODULE report_module;
@@ -49,6 +49,56 @@ typedef struct status_draw_scope {
 static _Thread_local status_draw_scope *status_current;
 static LONG status_hooks_ready;
 void ntw16s_status_hooks_enable(void){InterlockedExchange(&status_hooks_ready,1);}
+
+/* Scope is active only while dispatching the observed control's own paint or
+ * pointer/enable messages. Unrelated nested attachment messages are barriers. */
+typedef struct spin_draw_scope {attachment *owner;HWND window,parent;HDC dc;} spin_draw_scope;
+static _Thread_local spin_draw_scope *spin_current;
+
+static BOOL spin_identity(HWND w)
+{
+    HWND parent=GetParent(w);DWORD pid=0;WCHAR name[64],real[64],parent_name[64],parent_real[64];
+    WNDCLASSEXW wide={.cbSize=sizeof(wide)};WNDCLASSEXA ansi={.cbSize=sizeof(ansi)};
+    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
+    if(!GetClassInfoExW(GetModuleHandleW(NULL),L"TSpinButton",&wide) ||
+       !GetClassInfoExA(GetModuleHandleW(NULL),"TSpinButton",&ansi))return FALSE;
+    return parent && GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
+        GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() && (style&WS_CHILD) &&
+        !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) && GetClassLongPtrW(w,GCL_CBWNDEXTRA)==0 &&
+        (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==GetModuleHandleW(NULL) &&
+        (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==GetModuleHandleW(NULL) &&
+        GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TSpinButton") &&
+        wide.lpfnWndProc && ansi.lpfnWndProc &&
+        wide.lpfnWndProc!=DefWindowProcW && wide.lpfnWndProc!=DefWindowProcA &&
+        ansi.lpfnWndProc!=DefWindowProcW && ansi.lpfnWndProc!=DefWindowProcA &&
+        RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TSpinButton") &&
+        GetClassNameW(parent,parent_name,ARRAYSIZE(parent_name)) && !lstrcmpW(parent_name,L"TSpinEdit") &&
+        RealGetWindowClassW(parent,parent_real,ARRAYSIZE(parent_real)) && !lstrcmpiW(parent_real,L"EDIT");
+}
+
+/* Forward the native primitive first. Its adjusted rectangle, return value and
+ * error remain caller-owned; this overlay never draws the application arrow. */
+void ntw16s_spin_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *caller)
+{
+    spin_draw_scope *s=spin_current;HMODULE module=NULL;RECT client,clip;POINT points[2];
+    const UINT allowed=DFCS_BUTTONPUSH|DFCS_PUSHED|DFCS_ADJUSTRECT;
+    if(!s || !s->owner || s->owner->detached || !dc || !rect || type!=DFC_BUTTON ||
+       (flags&~allowed) || (flags&(DFCS_BUTTONPUSH|DFCS_ADJUSTRECT))!=(DFCS_BUTTONPUSH|DFCS_ADJUSTRECT) ||
+       !spin_identity(s->window) || GetParent(s->window)!=s->parent || WindowFromDC(dc)!=s->window ||
+       (s->dc && s->dc!=dc) || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
+       !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+            (LPCWSTR)caller,&module) || module!=GetModuleHandleW(NULL) || !GetClientRect(s->window,&client) ||
+       client.right<=0 || client.bottom<=0 || client.right>256 || client.bottom>256 ||
+       rect->left!=0 || rect->top!=0 || rect->right!=client.right || rect->bottom<=0 ||
+       GetClipBox(dc,&clip)==ERROR || clip.left<rect->left || clip.top<rect->top ||
+       clip.right>rect->right || clip.bottom>rect->bottom)return;
+    points[0]=(POINT){rect->left,rect->top};points[1]=(POINT){rect->right,rect->bottom};
+    if(!LPtoDP(dc,points,2) || points[0].x!=0 || points[1].x!=client.right ||
+       points[0].y<0 || points[1].y>client.bottom || points[1].y<=points[0].y ||
+       (points[0].y!=0 && points[1].y!=client.bottom) || s->owner->detached)return;
+    int saved=SaveDC(dc);if(!saved)return;
+    FrameRect(dc,rect,(HBRUSH)GetStockObject(BLACK_BRUSH));RestoreDC(dc,saved);
+}
 
 static BOOL status_system_module(HMODULE image)
 {
@@ -143,12 +193,19 @@ static void release(attachment *a)
 {if(!--a->calls && a->detached){ntw16s_vb_fonts_clear(&a->fonts);free(a);}}
 static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
-    attachment *a=(attachment *)data;LRESULT result;DWORD status_error=GetLastError();BOOL status=a->status;(void)id;
+    attachment *a=(attachment *)data;LRESULT result;DWORD status_error=GetLastError();BOOL status=a->status||a->spin;(void)id;
     ++a->calls;
     if(a->status && (m==SB_SETPARTS || m==SB_SETTEXTA || m==SB_SETTEXTW || m==SB_SIMPLE ||
         m==SB_SETICON || m==SB_SETMINHEIGHT || m==WM_SETFONT || m==WM_STYLECHANGED ||
         m==WM_SIZE || m==WM_ENABLE || m==WM_SETTINGCHANGE || m==WM_DESTROY || m==WM_NCDESTROY))++a->status_epoch;
     status_draw_scope scope={0},*prior=status_current;
+    spin_draw_scope spin_scope={0},*spin_prior=spin_current;
+    BOOL spin_message=a->spin && !a->detached && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT ||
+        m==WM_LBUTTONDOWN || m==WM_LBUTTONUP || m==WM_MOUSEMOVE || m==WM_ENABLE || m==WM_CANCELMODE ||
+        m==WM_SETFOCUS || m==WM_KILLFOCUS);
+    if(spin_prior)spin_current=NULL;
+    if(spin_message){spin_scope.owner=a;spin_scope.window=w;spin_scope.parent=GetParent(w);
+        spin_scope.dc=(m==WM_PRINT || m==WM_PRINTCLIENT)?(HDC)p:NULL;spin_current=&spin_scope;}
     BOOL painting=a->status && !a->detached && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT);
     if(prior && prior->window!=w)status_current=NULL;
     if(painting){
@@ -188,6 +245,7 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     if(status)status_error=GetLastError();
     ntw16s_vb_paint_end(&paint);
     status_current=prior;
+    spin_current=spin_prior;
     release(a);if(status)SetLastError(status_error);return result;
 }
 /* Observe this verified child's native custom/owner-draw DC. Never request extra stages,
@@ -326,7 +384,8 @@ BOOL __cdecl Ntw16sWindowTerminal(HWND w)
 
 static BOOL install_created(HWND w,DWORD original_style)
 {
-    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=checklist_identity(w),status=InterlockedCompareExchange(&status_hooks_ready,0,0)!=0 && status_identity(w,NULL);HWND parent;HMODULE owner;attachment *a;DWORD error;
+    BOOL ready=InterlockedCompareExchange(&status_hooks_ready,0,0)!=0;
+    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=checklist_identity(w),status=ready && status_identity(w,NULL),spin=ready && spin_identity(w);HWND parent;HMODULE owner;attachment *a;DWORD error;
     ntw16s_control_protocol *protocol=NULL;
     if(lookup(w))return TRUE;
     /* COMBOBOX installs its own internal list when construction finishes.
@@ -338,7 +397,7 @@ static BOOL install_created(HWND w,DWORD original_style)
     control=(original_style&WS_CHILD) && (edit || class_is(w,L"BUTTON") || class_is(w,L"STATIC") ||
         class_is(w,L"LISTBOX") || class_is(w,L"COMBOBOX") || class_is(w,L"SCROLLBAR") || class_is(w,L"SysLink"));
     if(checklist)control=FALSE;
-    if(!control && !checklist && !status && (original_style&WS_CHILD)){
+    if(!control && !checklist && !status && !spin && (original_style&WS_CHILD)){
         SetLastError(ERROR_SUCCESS);
         protocol=ntw16s_control_protocol_bind(w);
         if(!protocol && GetLastError()==ERROR_NOT_ENOUGH_MEMORY)return FALSE;
@@ -353,18 +412,18 @@ static BOOL install_created(HWND w,DWORD original_style)
      * and then become a custom client surface.  Without an explicitly
      * verified public protocol it must stay native; only an application-owned
      * generic child frame may use the ordinary frame path. */
-    if(!control && !report && !tree && !picture && !checklist && !legacy_progress && !status && (original_style&WS_CHILD) &&
+    if(!control && !report && !tree && !picture && !checklist && !legacy_progress && !status && !spin && (original_style&WS_CHILD) &&
             owner && owner!=GetModuleHandleW(NULL)){
         ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
     }
     /* A custom client-only child and MDICLIENT keep application painting.
      * MDI child frames have WS_CAPTION and take the ordinary frame route. */
-    if(!control && !report && !picture && !checklist && !legacy_progress && !status && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME))){
+    if(!control && !report && !picture && !checklist && !legacy_progress && !status && !spin && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME))){
         SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
     }
     a=calloc(1,sizeof(*a));
     if(!a){ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    a->calls=1;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;a->status=status;
+    a->calls=1;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;a->status=status;a->spin=spin;
     if(report || tree || a->file_owner || a->button_owner || a->checklist){a->report_window=w;a->tree=tree;
         a->report_module=(a->file_owner || a->button_owner)?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}
     if(!SetWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc,(DWORD_PTR)a)){
@@ -380,7 +439,7 @@ static BOOL install_created(HWND w,DWORD original_style)
             Ntw16sWindowRemove(info.hwndItem);
     }
     if(a->detached){release(a);SetLastError(ERROR_CANCELLED);return FALSE;}
-    if(a->checklist || a->status)installed=TRUE;
+    if(a->checklist || a->status || a->spin)installed=TRUE;
     else if(legacy_progress)installed=win16_style_legacy_progress_border_install_created(w,NULL,a,&a->detached);
     else if(protocol && ntw16s_control_protocol_toolbar(w))
         installed=win16_style_toolbar_install_created(w,NULL,a,&a->detached);

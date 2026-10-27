@@ -12,6 +12,7 @@
 /* Private, synchronous coordinator scope; not part of the public ABI. */
 void ntw16s_status_frame(HDC,const RECT *,const RECT *,const void *);
 void ntw16s_status_hooks_enable(void);
+void ntw16s_spin_frame(HDC,const RECT *,UINT,UINT,const void *);
 
 /* The original trampoline leaves are bound privately to this same DLL.
  * No renderer LoadLibrary/GetProcAddress, GUI allocation or binding in DllMain. */
@@ -253,10 +254,12 @@ static BOOL WINAPI hook_DrawFrameControl(HDC dc,LPRECT rect,UINT type,UINT state
 {
     DWORD entry=GetLastError();BOOL drawn=ntw16s_updown_draw_frame(dc,rect,type,state,__builtin_return_address(0));
     if(drawn){SetLastError(entry);return TRUE;}
+    RECT spin_original={0};if(rect)spin_original=*rect;
     RECT original;BOOL graphical=win16_style_graphical_frame_prepare(dc,rect,type,state,__builtin_return_address(0),&original);
     SetLastError(entry);BOOL result=real_DrawFrameControl(dc,rect,type,state);DWORD error=GetLastError();
     if(result && graphical)win16_style_graphical_frame(dc,&original,type,state,__builtin_return_address(0));
     if(result)win16_style_checklist_frame(dc,rect,type,state,__builtin_return_address(0));
+    if(result && rect)ntw16s_spin_frame(dc,&spin_original,type,state,__builtin_return_address(0));
     SetLastError(error);return result;
 }
 static BOOL WINAPI hook_DrawEdge(HDC dc,LPRECT rect,UINT edge,UINT flags)

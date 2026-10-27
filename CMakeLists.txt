@@ -495,6 +495,10 @@ if(BUILD_TESTING)
 
   # The package test launches this isolated, same-width target through run16s.
   add_executable(core-status-controls tests/ntw16s-dll/status_controls.c)
+  add_executable(core-spin-controls tests/ntw16s-dll/spin_controls.c)
+  target_compile_definitions(core-spin-controls PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_libraries(core-spin-controls PRIVATE user32 gdi32 comctl32)
+  target_link_options(core-spin-controls PRIVATE -municode)
   target_compile_definitions(core-status-controls PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_libraries(core-status-controls PRIVATE user32 gdi32 comctl32)
   target_link_options(core-status-controls PRIVATE -municode)
