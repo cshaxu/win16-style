@@ -68,29 +68,29 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S55 Packet
+## M0 T18 S56 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S54 P1 86b28a0已推送，远端15文件逐字节复核 |
+| Identifier Mode | Continuation；S55 P1 7e25bbf已推送，远端11文件逐字节复核 |
 | Admission And Approval | 用户授权T18内自动实施可做控件与测试；不新开T |
-| Objective | 验证非空VCL字符串网格及纵向滚动，必要时修复S54范围内问题 |
-| Non-goals | 不改变网格数据、单元格绘制、布局、输入和资源所有权 |
-| Reference Baseline | [S54网格](../history/M0-T18-S54-grid.md)、[S38控件审计](../history/M0-T18-S38-control-audit.md) |
+| Objective | 调查真实VCL TControlBar的窗口与公开绘制边界，实施可验证范围 |
+| Non-goals | 不改变工具栏/子控件、应用图像、布局、输入及资源所有权 |
+| Reference Baseline | [S38控件审计](../history/M0-T18-S38-control-audit.md)、[S54网格](../history/M0-T18-S54-grid.md) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 自有双宽原生探针，必要时既有DLL与测试；不增加产物或ABI |
-| Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例及有限等待 |
-| Verification | 双宽真实非空单元格、纵向/水平位置、前后像素及输入语义；实际包与资源门禁 |
-| Expected Markers | 同窗客户端内容无意外改变、公开滚动正确、正常退役 |
-| Asset Needs | 登记build/t18-s55-grid-content，复用双宽合法样本 |
-| Reporting Requirements | 证据与限制、测试耗时、包摘要、发布及远端复核 |
-| Stop Conditions | 不能可靠设置真实数据或确认绘制所有权时明确记录，不伪造成功 |
-| Exit Criteria | 已验证有限范围或明确接收者，双宽同批包及远端复核；T18保持开放 |
-| Original Owner Request | 能做的代码与测试先完成，真实应用全量集成留T收口 |
-| Similar-Issue Sweep | 字符串/自绘网格、横竖滚动及不同显示范围 |
+| Files And ABI Surface | 自有双宽原生探针；安全时修改既有DLL及测试，不增产品或ABI |
+| Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例限时清理 |
+| Verification | 双宽真实窗口结构、父子/绘制边界；有实现时验证内容、输入及实际包 |
+| Expected Markers | 独立于应用内容且有确定所有权的绘制边界，未知情况原生保留 |
+| Asset Needs | 登记build/t18-s56-controlbar，复用双宽合法样本 |
+| Reporting Requirements | 证据和限制、包摘要、发布及远端复核 |
+| Stop Conditions | 不能安全区分应用内容时不得猜测或泛化绘制 |
+| Exit Criteria | 可验证有限实现或准确证据及接收者，同批包交付；T18保持开放 |
+| Original Owner Request | 先完成能做的代码和测试，真实应用整体集成集中在T收口 |
+| Similar-Issue Sweep | VCL ControlBar及其工具栏/子控件 |
 
-S54 P1 `86b28a0`远端15文件逐字节复核通过；空样本、水平滚动及非客户区
-双宽验证与双发布完成，非空内容和纵向滚动由S55继续。
+S55 P1 `7e25bbf`远端11文件逐字节复核通过；真实双宽非空单元及纵向合成
+消息、12项聚焦包和双发布完成，自绘/物理拖动等留后续真实集成。
 
 ## Identifier State
 
@@ -98,8 +98,8 @@ S54 P1 `86b28a0`远端15文件逐字节复核通过；空样本、水平滚动�
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S54 P1：16项聚焦包、双发布及86b28a0远端15文件复核。
-- Open task: T18 S55 VCL非空网格和纵向滚动验证；M0/T18开放。
+- Last delivery: M0 T18 S55 P1：12项聚焦包、双发布及7e25bbf远端11文件复核。
+- Open task: T18 S56 VCL TControlBar绘制调查；M0/T18开放。
 
 ## Technical Baseline
 
@@ -374,3 +374,12 @@ S54双宽真实空网格及模型通过：客户区对照无变化，水平消�
 S55双宽真实非空字符串网格值保持，横/纵向合成消息及客户区对照通过；纵向
 加入自有模型，12项聚焦包无跳过、双发布及安装入口双宽通过，待提交推送复核。
 自绘、物理拖动、编辑和更多DPI仍未覆盖，T18保持开放。
+
+S56真实双宽TControlBar含TToolBar；容器填充同时出现自窗口DC、内存DC与
+父坐标系，DrawEdge发生在内存DC，无法安全归属边线。内部TToolBar在自身绘制
+期间由runtime转发系统ToolbarWindow32的WM_PRINTCLIENT；文本按钮id=0、bitmap=-2，
+公开按钮查询可用。自有观察器临时请求item通知后，两宽均收到item=0、应用返回
+默认；尚未实现或验证实际样式/按钮交互。保留为后续S，不推断组框已支持。
+
+S56完成14项聚焦包、双发布和安装双宽入口；文本工具栏id=0逐项通知证据已获，
+尚未实现，拟后续S验证；容器边线所有权不足留TODO，待提交推送和远端复核。
