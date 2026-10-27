@@ -30,6 +30,7 @@ typedef struct attachment {
     BOOL grid_candidate,grid_attempted,grid_installed;
     BOOL vcl_toolbar_candidate,vcl_toolbar_attempted,vcl_toolbar_installed;
     BOOL track_candidate,track_attempted,track_installed;
+    BOOL tab_candidate,tab_attempted,tab_installed;
     BOOL color_candidate,color_attempted,color_installed;
     BOOL date_candidate,date_attempted,date_installed;
     BOOL status_candidate,status_attempted,status_installed;
@@ -38,7 +39,7 @@ typedef struct attachment {
     DWORD edit_original_style;
     HMODULE edit_witness_owner,group_button_witness_owner;
     HWND group_button_parent,grid_parent,vcl_toolbar_parent; HMODULE grid_owner,vcl_toolbar_owner,vcl_toolbar_witness;
-    HMODULE track_witness_owner;
+    HMODULE track_witness_owner,tab_witness_owner; HWND tab_parent;
     HMODULE color_witness_owner;
     HWND color_parent;
     HMODULE date_witness_owner;
@@ -345,6 +346,13 @@ BOOL ntw16s_vcl_toolbar_valid(HWND w)
     return !a || a->detached || !a->vcl_toolbar_candidate || !a->vcl_toolbar_installed ||
         vcl_toolbar_identity(w,a->vcl_toolbar_owner,a->vcl_toolbar_parent);
 }
+BOOL ntw16s_vcl_tab_valid(HWND w)
+{
+    attachment *a=lookup(w);WCHAR name[64];
+    return !a || a->detached || !a->tab_candidate || !a->tab_installed ||
+        (GetParent(w)==a->tab_parent && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TTabControl") &&
+         !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)));
+}
 BOOL ntw16s_static_call_begin(ntw16s_static_call *scope,WNDPROC proc,HWND w,UINT message,const void *address)
 {
     WNDCLASSEXW native={.cbSize=sizeof(native)};HMODULE caller=NULL,native_owner=NULL,owner;
@@ -417,6 +425,15 @@ BOOL ntw16s_static_call_begin(ntw16s_static_call *scope,WNDPROC proc,HWND w,UINT
        GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) &&
        caller==static_paint->owner->vcl_toolbar_owner)static_paint->owner->vcl_toolbar_witness=caller;
     native.cbSize=sizeof(native);
+    if(message==WM_PAINT && static_paint && static_paint->window==w &&
+       static_paint->owner->tab_candidate && !static_paint->owner->detached &&
+       !static_paint->owner->tab_attempted && lookup(w)==static_paint->owner &&
+       GetParent(w)==static_paint->owner->tab_parent && GetClassInfoExW(NULL,WC_TABCONTROLW,&native) && proc==native.lpfnWndProc &&
+       GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller)){
+        owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+        if(owner && caller==owner)static_paint->owner->tab_witness_owner=owner;
+    }
+    native.cbSize=sizeof(native);
     if(message!=WM_PAINT || !static_paint || static_paint->window!=w ||
        static_paint->owner->detached || lookup(w)!=static_paint->owner ||
        !GetClassInfoExW(NULL,L"STATIC",&native) || proc!=native.lpfnWndProc ||
@@ -461,7 +478,7 @@ static void static_paint_end(void *data)
 static NTW16S_UNWIND_FUNCTION LRESULT static_paint_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l)
 {
     static_paint_scope scope={static_paint,a,w,FALSE};ntw16s_unwind_scope unwind;LRESULT result;DWORD entry=GetLastError(),error;
-    static_paint=((a->static_candidate || a->edit_candidate || a->group_button_candidate || a->grid_candidate || a->vcl_toolbar_candidate || a->track_candidate || a->color_candidate || a->date_candidate || a->status_candidate) && !a->detached && m==WM_PAINT)?&scope:NULL;
+    static_paint=((a->static_candidate || a->edit_candidate || a->group_button_candidate || a->grid_candidate || a->vcl_toolbar_candidate || a->track_candidate || a->tab_candidate || a->color_candidate || a->date_candidate || a->status_candidate) && !a->detached && m==WM_PAINT)?&scope:NULL;
     NTW16S_UNWIND_BEGIN(unwind,static_paint_end,&scope);
     SetLastError(entry);result=DefSubclassProc(w,m,p,l);error=GetLastError();scope.completed=TRUE;
     NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
@@ -621,7 +638,7 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     }
     if(status || color)SetLastError(status_error);
     if(print_clip)result=color_print_dispatch(a,w,m,p,l,print_clip,&paint,prior,spin_prior);
-    else if(static_paint || ((a->static_candidate || a->edit_candidate || a->group_button_candidate || a->grid_candidate || a->vcl_toolbar_candidate || a->track_candidate || a->color_candidate || a->date_candidate || a->status_candidate) && !a->detached && m==WM_PAINT))
+    else if(static_paint || ((a->static_candidate || a->edit_candidate || a->group_button_candidate || a->grid_candidate || a->vcl_toolbar_candidate || a->track_candidate || a->tab_candidate || a->color_candidate || a->date_candidate || a->status_candidate) && !a->detached && m==WM_PAINT))
         result=static_paint_dispatch(a,w,m,p,l);
     else result=DefSubclassProc(w,m,p,l);
     if(status || color)status_error=GetLastError();
@@ -674,6 +691,16 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
             if(installed && !a->detached){a->edit_installed=TRUE;InvalidateRect(w,NULL,TRUE);}
             else if(!a->detached){win16_style_control_remove_owned(w,a);if(a->themed){ntw16s_theme_remove(w,a);a->themed=NULL;}
                 ntw16s_control_protocol_release(a->protocol);a->protocol=NULL;}
+        }else if(protocol)ntw16s_control_protocol_release(protocol);
+        SetLastError(saved);
+    }
+    if(m==WM_PAINT && a->tab_candidate && !a->tab_attempted && !a->detached && a->tab_witness_owner){
+        DWORD saved=GetLastError();a->tab_attempted=TRUE;
+        ntw16s_control_protocol *protocol=GetParent(w)==a->tab_parent?ntw16s_control_protocol_bind_verified_tab(w,a->tab_witness_owner):NULL;
+        if(protocol && !a->detached){a->protocol=protocol;
+            BOOL installed=win16_style_control_install_created(w,FALSE,FALSE,FALSE,NULL,a,&a->detached);
+            if(installed && !a->detached){a->tab_installed=TRUE;InvalidateRect(w,NULL,TRUE);}
+            else if(!a->detached){win16_style_control_remove_owned(w,a);ntw16s_control_protocol_release(a->protocol);a->protocol=NULL;}
         }else if(protocol)ntw16s_control_protocol_release(protocol);
         SetLastError(saved);
     }
@@ -821,7 +848,7 @@ BOOL __cdecl Ntw16sWindowAttached(HWND w)
     if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId()){
         SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
     }
-    attachment *a=lookup(w);return a && (!a->static_candidate || a->static_verified) && (!a->edit_candidate || a->edit_installed) && (!a->group_button_candidate || a->group_button_installed) && (!a->grid_candidate || a->grid_installed) && (!a->vcl_toolbar_candidate || a->vcl_toolbar_installed) && (!a->track_candidate || a->track_installed) && (!a->color_candidate || a->color_installed) && (!a->date_candidate || a->date_installed) && (!a->status_candidate || a->status_installed) && (!a->bit_candidate || a->bit_verified);
+    attachment *a=lookup(w);return a && (!a->static_candidate || a->static_verified) && (!a->edit_candidate || a->edit_installed) && (!a->group_button_candidate || a->group_button_installed) && (!a->grid_candidate || a->grid_installed) && (!a->vcl_toolbar_candidate || a->vcl_toolbar_installed) && (!a->track_candidate || a->track_installed) && (!a->tab_candidate || a->tab_installed) && (!a->color_candidate || a->color_installed) && (!a->date_candidate || a->date_installed) && (!a->status_candidate || a->status_installed) && (!a->bit_candidate || a->bit_verified);
 }
 void __cdecl Ntw16sScrollChanged(HWND w)
 {
@@ -875,7 +902,7 @@ BOOL __cdecl Ntw16sWindowTerminal(HWND w)
 static BOOL install_created(HWND w,DWORD original_style)
 {
     BOOL ready=InterlockedCompareExchange(&status_hooks_ready,0,0)!=0;
-    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=checklist_identity(w),status=ready && status_identity(w,NULL,NULL),spin=ready && spin_identity(w),status_candidate=FALSE,bit_candidate=FALSE,static_candidate=FALSE,edit_candidate=FALSE,group_button_candidate=FALSE,grid_candidate=FALSE,vcl_toolbar_candidate=FALSE,track_candidate=FALSE,color_candidate=FALSE,date_candidate=FALSE;HWND parent;HMODULE owner;attachment *a;DWORD error;
+    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=checklist_identity(w),status=ready && status_identity(w,NULL,NULL),spin=ready && spin_identity(w),status_candidate=FALSE,bit_candidate=FALSE,static_candidate=FALSE,edit_candidate=FALSE,group_button_candidate=FALSE,grid_candidate=FALSE,vcl_toolbar_candidate=FALSE,track_candidate=FALSE,tab_candidate=FALSE,color_candidate=FALSE,date_candidate=FALSE;HWND parent;HMODULE owner;attachment *a;DWORD error;
     ntw16s_control_protocol *protocol=NULL;
     if(lookup(w))return TRUE;
     /* COMBOBOX installs its own internal list when construction finishes.
@@ -907,6 +934,9 @@ static BOOL install_created(HWND w,DWORD original_style)
             !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING));
         edit_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TEdit") &&
             RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TEdit");
+        tab_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TTabControl") &&
+            RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TTabControl") &&
+            !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING));
         track_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TTrackBar") &&
             RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TTrackBar");
         color_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TColorBox") &&
@@ -924,19 +954,19 @@ static BOOL install_created(HWND w,DWORD original_style)
      * and then become a custom client surface.  Without an explicitly
      * verified public protocol it must stay native; only an application-owned
      * generic child frame may use the ordinary frame path. */
-    if(!control && !report && !tree && !picture && !checklist && !legacy_progress && !status && !spin && !static_candidate && !edit_candidate && !group_button_candidate && !grid_candidate && !vcl_toolbar_candidate && !track_candidate && !color_candidate && !date_candidate && !status_candidate && !bit_candidate && (original_style&WS_CHILD) &&
+    if(!control && !report && !tree && !picture && !checklist && !legacy_progress && !status && !spin && !static_candidate && !edit_candidate && !group_button_candidate && !grid_candidate && !vcl_toolbar_candidate && !track_candidate && !tab_candidate && !color_candidate && !date_candidate && !status_candidate && !bit_candidate && (original_style&WS_CHILD) &&
             owner && owner!=GetModuleHandleW(NULL)){
         ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
     }
     /* A custom client-only child and MDICLIENT keep application painting.
      * MDI child frames have WS_CAPTION and take the ordinary frame route. */
-    if(!control && !report && !picture && !checklist && !legacy_progress && !status && !spin && !static_candidate && !edit_candidate && !group_button_candidate && !grid_candidate && !vcl_toolbar_candidate && !track_candidate && !color_candidate && !date_candidate && !status_candidate && !bit_candidate && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME))){
+    if(!control && !report && !picture && !checklist && !legacy_progress && !status && !spin && !static_candidate && !edit_candidate && !group_button_candidate && !grid_candidate && !vcl_toolbar_candidate && !track_candidate && !tab_candidate && !color_candidate && !date_candidate && !status_candidate && !bit_candidate && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME))){
         SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
     }
     a=calloc(1,sizeof(*a));
     if(!a){ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
     a->calls=1;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;a->status=status;a->spin=spin;a->static_candidate=static_candidate;
-    a->edit_candidate=edit_candidate;a->group_button_candidate=group_button_candidate;a->grid_candidate=grid_candidate;a->vcl_toolbar_candidate=vcl_toolbar_candidate;a->vcl_toolbar_owner=owner;a->vcl_toolbar_parent=GetParent(w);a->grid_owner=owner;a->grid_parent=GetParent(w);a->edit_original_style=original_style;a->track_candidate=track_candidate;a->color_candidate=color_candidate;a->date_candidate=date_candidate;a->status_candidate=status_candidate;a->bit_candidate=bit_candidate;
+    a->edit_candidate=edit_candidate;a->group_button_candidate=group_button_candidate;a->grid_candidate=grid_candidate;a->vcl_toolbar_candidate=vcl_toolbar_candidate;a->vcl_toolbar_owner=owner;a->vcl_toolbar_parent=GetParent(w);a->grid_owner=owner;a->grid_parent=GetParent(w);a->edit_original_style=original_style;a->track_candidate=track_candidate;a->tab_candidate=tab_candidate;a->tab_parent=GetParent(w);a->color_candidate=color_candidate;a->date_candidate=date_candidate;a->status_candidate=status_candidate;a->bit_candidate=bit_candidate;
     if(report || tree || a->file_owner || a->button_owner || a->checklist || a->bit_candidate){a->report_window=w;a->tree=tree;
         a->report_module=(a->file_owner || a->button_owner || a->bit_candidate)?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}
     if(!SetWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc,(DWORD_PTR)a)){
@@ -952,7 +982,7 @@ static BOOL install_created(HWND w,DWORD original_style)
             Ntw16sWindowRemove(info.hwndItem);
     }
     if(a->detached){release(a);SetLastError(ERROR_CANCELLED);return FALSE;}
-    if(a->checklist || a->status || a->spin || a->static_candidate || a->edit_candidate || a->group_button_candidate || a->grid_candidate || a->vcl_toolbar_candidate || a->track_candidate || a->color_candidate || a->date_candidate || a->status_candidate || a->bit_candidate)installed=TRUE;
+    if(a->checklist || a->status || a->spin || a->static_candidate || a->edit_candidate || a->group_button_candidate || a->grid_candidate || a->vcl_toolbar_candidate || a->track_candidate || a->tab_candidate || a->color_candidate || a->date_candidate || a->status_candidate || a->bit_candidate)installed=TRUE;
     else if(legacy_progress)installed=win16_style_legacy_progress_border_install_created(w,NULL,a,&a->detached);
     else if(protocol && ntw16s_control_protocol_toolbar(w))
         installed=win16_style_toolbar_install_created(w,NULL,a,&a->detached);
@@ -984,7 +1014,7 @@ static BOOL install_created(HWND w,DWORD original_style)
             }
         }
     }
-    if(installed && !a->detached && !a->edit_candidate && !a->group_button_candidate && !a->grid_candidate && !a->vcl_toolbar_candidate && !a->track_candidate && !a->color_candidate && !a->date_candidate && !a->status_candidate && !a->bit_candidate && a->themed!=w)ntw16s_theme_remove(w,NULL);
+    if(installed && !a->detached && !a->edit_candidate && !a->group_button_candidate && !a->grid_candidate && !a->vcl_toolbar_candidate && !a->track_candidate && !a->tab_candidate && !a->color_candidate && !a->date_candidate && !a->status_candidate && !a->bit_candidate && a->themed!=w)ntw16s_theme_remove(w,NULL);
     if(a->detached){installed=FALSE;error=ERROR_CANCELLED;}
     if(!installed && !a->detached)Ntw16sWindowRemove(w);
     release(a);

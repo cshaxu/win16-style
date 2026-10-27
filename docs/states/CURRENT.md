@@ -68,29 +68,29 @@ S1冻结148版本/控件单位，S2原生对应项，S3-S5有限实现；按真�
 S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/204输入、177
 映像安全清理通过；生产src保持S5。其他变体和微软OCX仍交后续S及最终全集审计。
 
-## M0 T18 S59 Packet
+## M0 T18 S60 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S58 P1 b327e1b已推送，远端11文件逐字节复核 |
-| Admission And Approval | 用户授权T18内自动完成可做控件和测试；不新开T |
-| Objective | 对尚无真实owner证据的VCL容器/通用控件进行双宽样本观察并选择可做项 |
-| Non-goals | 不将观察当作完整支持，不覆盖应用数据或无窗口绘制 |
-| Reference Baseline | [S38控件台账](../history/M0-T18-S38-control-audit.md)、[S58工具栏边界](../history/M0-T18-S58-toolbar-boundaries.md) |
+| Identifier Mode | Continuation；S59 P1 9c7b752已推送，远端7文件复核 |
+| Admission And Approval | 用户授权T18内自动实施可做控件，不新开T |
+| Objective | 实现运行库拥有的TTabControl经原生绘制见证后的有限标签样式 |
+| Non-goals | 不修改标签数据、布局、输入、应用回调和图形资源 |
+| Reference Baseline | [S59真实转发](../history/M0-T18-S59-observation.md)、[S5标签](../history/M0-T18-S5-vcl-tabs.md) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 自有双宽原生探针；有证据时修改既有DLL与测试，无新增产物或ABI |
-| Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例，有限等待与回收 |
-| Verification | 样本成功/失败、实际owner、窗口类、附着与可见效果逐项记录；同批包 |
-| Expected Markers | 新发现精确接收者和可验证边界，不凭名字扩张 |
-| Asset Needs | 登记build/t18-s59-observation，复用合法双宽VCL运行库 |
-| Reporting Requirements | 实际观察、未覆盖、后续接收及构建发布复核 |
-| Stop Conditions | 无真实样本或可验证契约时对应项保留，不阻塞其他可做项 |
-| Exit Criteria | 有限样本证据及后续接收，实际包交付；T18/M0保持开放 |
-| Original Owner Request | 能做的先实施和测试，真实应用全量集成在T收口 |
-| Similar-Issue Sweep | VCL窗口容器、Common Control和无窗口对象 |
+| Files And ABI Surface | 双宽原生C模型与现有DLL；不增加产品或公共ABI |
+| Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例 |
+| Verification | 真实双宽转发、标签选择和绘制，假类/不支持模式回退、生命周期、实际包 |
+| Expected Markers | 精确运行库转发与公开协议成功后附着，未知身份保持原生 |
+| Asset Needs | 登记build/t18-s60-tab；复用S59双宽运行库 |
+| Reporting Requirements | 有限范围、真实绘制、负例、未覆盖、双发布及远端复核 |
+| Stop Conditions | 无可证明安全身份、绘制或生命周期时不泛化 |
+| Exit Criteria | 双宽实现与模型/真实样本、实际包与远端复核；T18保持开放 |
+| Original Owner Request | 高效率完成可实现控件和测试，T收口统一集成 |
+| Similar-Issue Sweep | TTabControl/TPageControl、上/下/竖向、owner-draw及图像标签 |
 
-S58 P1 `b327e1b`远端11文件逐字节复核通过；工具栏裁切和64/65项模型通过，
-图像/其他DPI等仍未覆盖。S59继续调查其他原先缺少真实owner的族。
+S59 P1 `9c7b752`已远端复核；真实双宽TTabControl未附着但WM_PAINT转发系统
+过程，两个标签及几何公开协议有效。现仅针对该可验证路径实施。
 
 ## Identifier State
 
@@ -98,8 +98,8 @@ S58 P1 `b327e1b`远端11文件逐字节复核通过；工具栏裁切和64/65项
 - Last allocated T: 18
 - Last allocated Td S: 14
 - Owner allocation constraint: 用户准入T18队列首项；T18内可按其明确的阶段计划细分S，不准入其他T候选。
-- Last delivery: M0 T18 S58 P1：14项聚焦包、双发布及b327e1b远端11文件复核。
-- Open task: T18 S59 剩余VCL窗口族双宽观察；M0/T18开放。
+- Last delivery: M0 T18 S59 P1：14项聚焦包、双发布及9c7b752远端7文件复核。
+- Open task: T18 S60 真实VCL TTabControl有限适配；M0/T18开放。
 
 ## Technical Baseline
 
@@ -400,3 +400,7 @@ Handle，窗口枚举仅见TTabControl及其系统updown；不得按HWND猜测�
 S59已完成真实双宽TTabControl原生转发观察及74族阶段对账（24有限路径、2原生
 保留、48尚无证据确认实现；不是待编码数量）。干净包14项无跳过、双发布及
 安装双宽通过；等待提交推送及远端复核，TTabControl真实runtime缺口接后续S。
+
+S60双宽真实TTabControl普通两标签附着及像素对照通过；自有模型验证假转发、
+选中、自绘回退和换父，旧包双宽负例检出。干净包16项无跳过、双发布和安装
+双宽通过；待提交推送远端复核。其他标签变体和物理输入仍未覆盖。

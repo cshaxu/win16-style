@@ -333,5 +333,7 @@ ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_group_button(HWND
 {return owner?bind_protocol(w,owner,1):NULL;}
 ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_edit(HWND w,HMODULE owner)
 {return owner?bind_protocol(w,owner,11):NULL;}
+ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_tab(HWND w,HMODULE owner)
+{return owner?bind_protocol(w,owner,3):NULL;}
 ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_trackbar(HWND w,HMODULE owner)
 {return owner?bind_protocol(w,owner,8):NULL;}
