@@ -2,6 +2,24 @@
   "schema": 1,
   "files": [
     {
+      "path": "tests/ntw16s-dll/status_font_stock_live.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "df12333795b11e3ea156c9a6486ab41738eb07eb34b7b1733b824a94aafab813",
+      "disposition": "authored",
+      "review": "T18 S64 P118 native two-status live font lease lifetime regression",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/status_font_stock.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e73db06289f1f906c7cc97ff5bdfa85dcea1412357ca6d7fafe69d61df378d7f",
+      "disposition": "authored",
+      "review": "T18 S64 P118 project-authored stock-font lease ownership regression",
+      "notice": "Project-authored test; uses in-repository font source under existing notices"
+    },
+    {
       "path": "tests/ntw16s-dll/status_font_isolation.c",
       "source": null,
       "source_blob": null,
@@ -185,9 +203,9 @@
       "path": "src/ntw16s-dll/font.c",
       "source": "src/ntw16s-dll/font.c",
       "source_blob": "3bce01032d506f05bb571f8be35392f12c4dcebb",
-      "sha256": "25ecc826d3a4b1e9c5904a69d6e8471f3a31f86ea7a048fc23892978d9a5a69c",
+      "sha256": "e7b2cb18ff2d8243ef6fb0bb9bbd9b2f8ebc1b934c62e74073c63220946598a5",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T18 S64 P117 isolated font lease and lifecycle verification",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T18 S64 P117 isolated font lease and lifecycle verification; T18 S64 P118 prevent freeing an existing font variant on isolated stock-font fast path",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {

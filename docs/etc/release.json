@@ -1,16 +1,16 @@
 {
   "schema": 1,
-  "delivery": "M0 T18 S64 P117",
+  "delivery": "M0 T18 S64 P118",
   "stage": "development acceptance; M0/T18/S64 open; focused package tests passed",
   "version": "0.18.0.0",
   "version_contract": "M0 T18; sequential S does not increment T version",
   "package_directory": "assets",
-  "source_snapshot_sha256": "f755e093817d1f6f08d6c6f712632de2c7c5ffeb3f57c00eb78e292d52ddc1be",
+  "source_snapshot_sha256": "051ab6f70709760d6d058723c5dba3ca7c5902cabf9c508eaa52df5771d5e574",
   "source_snapshot_format": "SHA256 of the clean build snapshot.json bytes",
   "source_inputs": [
     {
       "path": "CMakeLists.txt",
-      "sha256": "0b0df082af279fcd07630561222316d954d4e939901333640a05612458f9de56"
+      "sha256": "8cb9de1bf692276a1db419815ed7f21b34411b26436e97b9e8e615bbe3661b75"
     },
     {
       "path": "LICENSE",
@@ -98,7 +98,7 @@
     },
     {
       "path": "src/ntw16s-dll/font.c",
-      "sha256": "25ecc826d3a4b1e9c5904a69d6e8471f3a31f86ea7a048fc23892978d9a5a69c"
+      "sha256": "e7b2cb18ff2d8243ef6fb0bb9bbd9b2f8ebc1b934c62e74073c63220946598a5"
     },
     {
       "path": "src/ntw16s-dll/font.h",
@@ -449,7 +449,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T18",
-      "sha256": "946cc06362a0cd4f040a18237c0e8ac8e306bec3f085442bfc757ad9dce9d22d",
+      "sha256": "9a4ca558e2ab815842b045aeee2355bd66572acadd8fe8243a722e265540b29e",
       "imports": [
         "advapi32.dll",
         "kernel32.dll",
@@ -461,7 +461,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T18",
-      "sha256": "00fbc01bdb8d8d1e0490bb341a399dfa8efff086db69a1493c1cfd8e47e43418",
+      "sha256": "adb46412dc7532f4b078d8e85f90d8200f15d28822e5db350eea94d0418eef08",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -481,7 +481,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T18",
-      "sha256": "d100da1c51f0ff334665f9664c6e2cf7b2481e8ff82a5f473a634edcd61c77aa",
+      "sha256": "78599307b9f388541ea9f2eb8e6d1e1ffe65155cba534d7bd55cf90535c3789e",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -496,7 +496,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T18",
-      "sha256": "cb7c870237ffc6aeb9acb1cbc48a51f40de79b4528101cd727b3ddb05f522838",
+      "sha256": "9ffa2b2094470eba7470a7c103bb87dc52c080182c237d2f8a7512938ff51cb6",
       "imports": [
         "comctl32.dll",
         "comdlg32.dll",
@@ -529,7 +529,7 @@
     ]
   },
   "architecture": "C17, MinGW GCC, Ninja and ccache; three components, four product files; existing ABI retained",
-  "binary_batch_delivery": "M0 T18 S64 P117",
+  "binary_batch_delivery": "M0 T18 S64 P118",
   "verification": {
     "clean_build": {
       "architectures": [
@@ -537,65 +537,61 @@
         "x64"
       ],
       "status": "passed",
-      "build_jobs": 8,
-      "build_root": "O:\\repos.hobby\\win16style\\build\\t18-package\\s64-status-simple-p117-candidate8\\clean-source\\build\\.ninja",
+      "test_jobs": 4,
+      "build_root": "O:\\repos.hobby\\win16style\\build\\t18-package\\s64-font-lease-p118-candidate1\\clean-source\\build\\.ninja",
       "profile": "Focused",
       "exit_code": 0,
-      "selection": "^core/abi$",
+      "targets": "all",
       "tests": [
         {
-          "passed": 1,
           "skipped": [],
+          "tests": 1,
+          "build_seconds": 35.68396660001599,
+          "test_seconds": 0.5462168999947608,
+          "passed": 1,
           "architecture": "x86",
-          "test_seconds": 0.430018300015945,
-          "configure_seconds": 4.684475499991095,
-          "build_seconds": 28.968502700008685,
-          "tests": 1
+          "configure_seconds": 5.415608500014059
         },
         {
-          "passed": 1,
           "skipped": [],
+          "tests": 1,
+          "build_seconds": 48.681716699997196,
+          "test_seconds": 0.7276913000096101,
+          "passed": 1,
           "architecture": "x64",
-          "test_seconds": 0.47004859999287874,
-          "configure_seconds": 5.021636099991156,
-          "build_seconds": 34.15798200000427,
-          "tests": 1
+          "configure_seconds": 5.994737500004703
         }
       ],
-      "test_jobs": 4,
-      "targets": "all"
+      "selection": "^core/abi$",
+      "build_jobs": 8
     },
     "actual_package": [
       {
         "status": "passed-focused",
-        "cases": 30,
-        "seconds": 15.5646524,
+        "cases": 26,
+        "seconds": 17.0407182,
         "skipped": [],
         "sha256": {
-          "demo.exe": "cb7c870237ffc6aeb9acb1cbc48a51f40de79b4528101cd727b3ddb05f522838",
-          "ntw16s32.dll": "00fbc01bdb8d8d1e0490bb341a399dfa8efff086db69a1493c1cfd8e47e43418",
-          "ntw16s64.dll": "d100da1c51f0ff334665f9664c6e2cf7b2481e8ff82a5f473a634edcd61c77aa",
-          "run16s.exe": "946cc06362a0cd4f040a18237c0e8ac8e306bec3f085442bfc757ad9dce9d22d"
+          "demo.exe": "9ffa2b2094470eba7470a7c103bb87dc52c080182c237d2f8a7512938ff51cb6",
+          "ntw16s32.dll": "adb46412dc7532f4b078d8e85f90d8200f15d28822e5db350eea94d0418eef08",
+          "ntw16s64.dll": "78599307b9f388541ea9f2eb8e6d1e1ffe65155cba534d7bd55cf90535c3789e",
+          "run16s.exe": "9a4ca558e2ab815842b045aeee2355bd66572acadd8fe8243a722e265540b29e"
         },
         "requested_cases": [
-          "vcl-status-simple-32",
-          "vcl-status-simple-64",
-          "vcl-status-font-alias-32",
-          "vcl-status-font-alias-64",
+          "status-font-stock-32",
+          "status-font-stock-64",
+          "status-font-stock-live-32",
+          "status-font-stock-live-64",
           "status-font-isolation-32",
           "status-font-isolation-64",
+          "vcl-status-font-alias-32",
+          "vcl-status-font-alias-64",
+          "vcl-status-simple-32",
+          "vcl-status-simple-64",
           "vcl-status-module-32",
           "vcl-status-module-64",
           "vcl-status-pane-32",
           "vcl-status-pane-64",
-          "status-v5-32",
-          "status-v5-64",
-          "status-v6-32",
-          "status-v6-64",
-          "vcl-combo-module-32",
-          "vcl-combo-module-64",
-          "vcl-combo-list-module-32",
-          "vcl-combo-list-module-64",
           "vcl-combo-simple-module-32",
           "vcl-combo-simple-module-64",
           "vb-controls-32",
@@ -607,7 +603,7 @@
   },
   "validation": {
     "status": "focused automated native tests; physical input and full integration not tested",
-    "evidence": "docs/history/M0-T18-S64-P117-simple-status.md"
+    "evidence": "docs/history/M0-T18-S64-P118-font-stock-ownership.md"
   },
   "closure": {
     "status": "M0/T18/S64 remain open; this is a bounded development delivery",

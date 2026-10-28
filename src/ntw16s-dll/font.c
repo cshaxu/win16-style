@@ -117,7 +117,7 @@ static HFONT system_acquire(HFONT source,UINT menu_dpi,BOOL preserve_strokes,BOO
     TEXTMETRICW tm,system;char face[32],actual[32];BOOL ok=FALSE;
     unsigned cursor=118+225*4,sum=0,maxwidth=0;system_variant *v=NULL;
     source=win16_style_system_source(source);
-    for(v=variants;!isolated && v;v=v->next)if(!v->isolated && v->source==source && v->menu_dpi==menu_dpi && v->preserve_strokes==preserve_strokes){
+    if(!isolated)for(v=variants;v;v=v->next)if(!v->isolated && v->source==source && v->menu_dpi==menu_dpi && v->preserve_strokes==preserve_strokes){
         if(v->refs==UINT_MAX)return NULL;
         ++v->refs;return v->font;
     }
