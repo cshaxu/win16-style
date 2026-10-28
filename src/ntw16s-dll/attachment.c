@@ -343,7 +343,7 @@ static BOOL vb_data_role(HWND w,HWND parent)
     return parent && GetParent(w)==parent && (style&(WS_CHILD|WS_BORDER))==(WS_CHILD|WS_BORDER) &&
         (style&WS_CAPTION)!=WS_CAPTION && !(style&(WS_THICKFRAME|WS_HSCROLL|WS_VSCROLL)) &&
         !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_TOOLWINDOW|WS_EX_LAYERED)) &&
-        GetDpiForWindow(w)==96 && ntw16s_vb_class(w,L"ThunderRT6Data");
+        (GetDpiForWindow(w)==96 || GetDpiForWindow(w)==144) && ntw16s_vb_class(w,L"ThunderRT6Data");
 }
 BOOL ntw16s_vb_data_valid(HWND w)
 {

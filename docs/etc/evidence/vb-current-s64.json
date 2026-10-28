@@ -1370,5 +1370,21 @@
       "run16s.exe": "e0644cd9bea1e2ff74981d9bf27ba59905d605cb8e283b1dfe22109707b7ee71"
     },
     "limits": "Only one real VB6 x86 app, one 96-DPI layout, hidden control intentionally shown; uses DAO3.6 surrogate rather than real DAO3.5. VB5 Data, physical input, other DPI, full integration and commercial use of the sample are not proven."
+  },
+  "vb6_data_144dpi_p52": {
+    "context": "A native per-monitor-aware probe measured one local monitor at 144 effective DPI. The P51 private research copy was given a PerMonitorV2 manifest; neither machine DPI nor user registry was changed. The first unaware observer reported virtualized 452x19 logical client coordinates; the per-monitor-aware observer corrected this to 678x29 physical pixels. For complete screenshots the owned hidden control was temporarily shown at 200x35 physical pixels, with 194x29 client.",
+    "observed_runtime": "The real x86 MSVBVM60 owned Data control draws native 11x13/8x13 source bitmaps at y=8; x coordinates relative to client are 4,24,width-33,width-15, and pressed glyph shifts by one pixel. The original runtime does not scale these bitmaps.",
+    "implementation": "Extend exact Data frame role to observed 144 DPI. Arrow overlay accepts only 144 DPI with 29px client height (96 remains 22px), preserves the 17px original glyph geometry by extending face rows rather than stretching the arrow, and uses the existing resources and original first/last marks. Other DPI and unobserved arrow geometry remain native.",
+    "real_verification": "At 144 DPI the published baseline kept native Data; candidate actual application pressed/cancelled all four, checked capture and release, checked disabled state, and moved bound private records 1→2→727→726→1. Database SHA256 dfb0194a5b9d7986d5a5ce2ca86567c245ebb97a3792dd1142b1327a077b599c unchanged; normal exit. New vs old shows 1885 client button pixels and 694 nonclient pixels changed, zero central-title pixels changed. The same actual 96 DPI styled screenshot SHA256 d2eebed668a861de4bcdc120d2300bbe05695fff732e5030a9d01e506cea5f91 is unchanged.",
+    "model": "144 DPI per-monitor-aware self-contained x86/x64 tests verify 4 states, 4 click notifications, center, foreign caller, clip, wrong owner, unsupported role and reparent. Both previous release tests failed at missing attachment, both candidate and each deployed path passed. They return skip 77 when system DPI is not 144; that alternate environment was not available to exercise the skip. 96-DPI x86/x64 model also passed.",
+    "delivery": "Clean x86/x64 build, 14 focused same-package cases passed with no skips in 8.72s; separate 144-DPI tests passed on actual package and all four installation combinations. Same package passed the x86 real 144 DPI sample and prior 96 DPI real sample. Eight deployed file hashes equal the tested package.",
+    "sha256": {
+      "demo.exe": "45d11a46dcda4579963e94b47c52ffd387e079f4530989f1dfb4a861e4840223",
+      "ntw16s32.dll": "fe2b082262a237aef2f861677d35b9f6c413890078ab12f52b82468fe1269770",
+      "ntw16s64.dll": "3d45cc4c18dbfbf5dfeb575fe95dbec167b0534f0098c88cd5bdc54942ee4290",
+      "run16s.exe": "21a44f972d230e5d1cbaf4998852d632b15bc6c1480df0bd5f9863897f47bcc9"
+    },
+    "limits": "Single real x86 VB6 app with a private DAO3.6 surrogate and a patched DPI-aware manifest; the Data control is initially hidden and is temporarily revealed. Neither genuine DAO3.5 nor VB5 Data, other DPI, physical input, high contrast or full integration were tested.",
+    "vb5_search": "A published VB6 sample cannot simply switch to the previously used VB5 runtime: comparing the sample PE import names to that VB5 runtime export table showed 2 missing names of 75 (__vbaVarLateMemSt, __vbaVarLateMemCallLd); no patched sample was executed. Five other candidate binaries examined imported MSVBVM60 rather than MSVBVM50; a real VB5 Data sample is still needed."
   }
 }

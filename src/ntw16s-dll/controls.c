@@ -772,37 +772,39 @@ static void scroll_arrow(HDC dc,RECT r,const char bits[17][18],const win16_style
 }
 
 /* The runtime owns navigation and paints its native bitmap first. This
- * bounded overlay accepts only the observed 96-DPI public-DC geometry. */
+ * bounded overlay accepts only observed 96/144-DPI public-DC geometry. */
 void win16_style_vb_data_arrow(HDC dc,int x,int y,int width,int height,HDC source,int sx,int sy,int sw,int sh,DWORD rop,const void *caller)
 {
     HWND w=WindowFromDC(dc);RECT client;POINT origin,viewport;BITMAP bitmap={0};HMODULE owner=NULL;
     if(!w || GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() || !ntw16s_vb_data_attached(w) ||
        !ntw16s_vb_class(w,L"ThunderRT6Data") || !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(const WCHAR *)caller,&owner) ||
-       owner!=GetModuleHandleW(L"MSVBVM60.DLL") || GetDpiForWindow(w)!=96 ||
-       !GetClientRect(w,&client) || client.right<70 || client.bottom!=22 || rop!=SRCCOPY || sx || sy || height!=13 || sh!=13 || width!=sw || (y!=4 && y!=5) ||
+       owner!=GetModuleHandleW(L"MSVBVM60.DLL") ||
+       !GetClientRect(w,&client) || client.right<70 || !((GetDpiForWindow(w)==96 && client.bottom==22) || (GetDpiForWindow(w)==144 && client.bottom==29)) || rop!=SRCCOPY || sx || sy || height!=13 || sh!=13 || width!=sw || (y!=(client.bottom-13)/2 && y!=(client.bottom-13)/2+1) ||
        GetMapMode(dc)!=MM_TEXT || GetLayout(dc)!=0 || !GetWindowOrgEx(dc,&origin) || origin.x || origin.y ||
        !GetViewportOrgEx(dc,&viewport) || viewport.x || viewport.y ||
        !GetObjectW(GetCurrentObject(source,OBJ_BITMAP),sizeof(bitmap),&bitmap) || bitmap.bmWidth!=sw || bitmap.bmHeight!=sh)return;
     int n=-1;const int xs[4]={4,24,client.right-33,client.right-15};
     const int starts[4]={0,18,client.right-35,client.right-18},widths[4]={18,17,17,18};
-    for(int i=0;i<4;++i)if(x==xs[i]+(y-4) && width==(i==0 || i==3?11:8)){n=i;break;}
+    int base_y=(client.bottom-13)/2;
+    for(int i=0;i<4;++i)if(x==xs[i]+(y-base_y) && width==(i==0 || i==3?11:8)){n=i;break;}
     if(n<0)return;
-    BOOL disabled=!IsWindowEnabled(w),pressed=(y==5);const char (*bits)[18]=n<2?
+    BOOL disabled=!IsWindowEnabled(w),pressed=(y==base_y+1);const char (*bits)[18]=n<2?
         (disabled?scroll_lfarrowi:pressed?scroll_lfarrowd:scroll_lfarrow):
         (disabled?scroll_rgarrowi:pressed?scroll_rgarrowd:scroll_rgarrow);
     win16_style_palette palette;win16_style_default_palette(&palette);
-    COLORREF colors[4]={palette.edge,palette.light,palette.shadow,palette.face};DWORD pixels[18*22];
-    for(int j=0;j<22;++j){int by=j<2?j:j>=20?j-5:j<4?2:j<17?j-2:14;
+    COLORREF colors[4]={palette.edge,palette.light,palette.shadow,palette.face};DWORD pixels[18*29];
+    int extra=client.bottom-17,mid=extra/2;
+    for(int j=0;j<client.bottom;++j){int by=j<2?j:j>=client.bottom-2?j-extra:j<2+mid?2:j<15+mid?j-mid:14;
         for(int i=0;i<widths[n];++i){int bx=i<2?i:i>=widths[n]-2?i-(widths[n]-17):i;if(bx>14)bx=14;
             COLORREF c=colors[bits[by][bx]-'0'];pixels[j*widths[n]+i]=((DWORD)GetRValue(c)<<16)|((DWORD)GetGValue(c)<<8)|GetBValue(c);}}
     if(n==0 || n==3){int column=n==0?1:8;unsigned mark=0;
         for(int j=0;j<13;++j)for(int i=0;i<2;++i)if(GetPixel(source,column+i,j)==RGB(0,0,0)){
-            int px=x+column+i-starts[n],py=y+j;if(px>=0 && px<widths[n] && py>=0 && py<22){COLORREF c=disabled?palette.shadow:palette.edge;
+            int px=x+column+i-starts[n],py=y+j;if(px>=0 && px<widths[n] && py>=0 && py<client.bottom){COLORREF c=disabled?palette.shadow:palette.edge;
                 pixels[py*widths[n]+px]=((DWORD)GetRValue(c)<<16)|((DWORD)GetGValue(c)<<8)|GetBValue(c);++mark;}}
         if(mark!=22)return;
     }
-    BITMAPINFO info={0};info.bmiHeader=(BITMAPINFOHEADER){.biSize=sizeof(BITMAPINFOHEADER),.biWidth=widths[n],.biHeight=-22,.biPlanes=1,.biBitCount=32,.biCompression=BI_RGB};
-    (void)SetDIBitsToDevice(dc,starts[n],0,widths[n],22,0,0,0,22,pixels,&info,DIB_RGB_COLORS);
+    BITMAPINFO info={0};info.bmiHeader=(BITMAPINFOHEADER){.biSize=sizeof(BITMAPINFOHEADER),.biWidth=widths[n],.biHeight=-client.bottom,.biPlanes=1,.biBitCount=32,.biCompression=BI_RGB};
+    (void)SetDIBitsToDevice(dc,starts[n],0,widths[n],client.bottom,0,0,0,client.bottom,pixels,&info,DIB_RGB_COLORS);
 }
 
 static BOOL scroll_layout(HWND w,win16_scroll_layout *layout)

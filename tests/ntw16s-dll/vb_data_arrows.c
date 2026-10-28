@@ -4,8 +4,13 @@
 #include <wchar.h>
 #include "isolated_process.h"
 #define CHECK(x) do { if (!(x)) { fprintf(stderr,"VB_DATA_ARROW_FAIL line=%d error=%lu %s\n",__LINE__,GetLastError(),#x); return 1; } } while (0)
+#ifdef VB_DATA_DPI_144
+#define W 194
+#define H 29
+#else
 #define W 140
 #define H 22
+#endif
 typedef struct capture { DWORD pixels[2][4][W*H]; RECT client[2]; BOOL ready[2]; } capture;
 static unsigned notices;
 static LRESULT CALLBACK parent_proc(HWND w,UINT m,WPARAM a,LPARAM b) { if(m==WM_COMMAND && b) ++notices; return DefWindowProcW(w,m,a,b); }
@@ -60,4 +65,11 @@ static int worker(int argc,WCHAR **argv) {
  for(int mode=0;mode<2;mode++){unsigned changed=0,restored=0;for(int i=0;i<W*H;i++){changed+=(cap->pixels[mode][0][i]&0xffffff)!=(cap->pixels[mode][1][i]&0xffffff);restored+=(cap->pixels[mode][0][i]&0xffffff)!=(cap->pixels[mode][2][i]&0xffffff);}CHECK(changed && !restored);}
  printf("VB_DATA_ARROW_OK bits=%u states=4 middle_preserved=1 input=4 wrong_caller=1 clip=1 wrong_owner=1 unsupported=1 reparent=1\n",(unsigned)(8*sizeof(void*))); CHECK(UnmapViewOfFile(cap) && CloseHandle(map) && SetEnvironmentVariableW(L"WIN16STYLE_VB_DATA_ARROW_CAPTURE",NULL)); return 0;
 }
-int wmain(int argc,WCHAR **argv){if(argc==4 && !wcscmp(argv[1],L"--child"))return child(argv[2],!wcscmp(argv[3],L"1"));return isolated_process(argc,argv,worker);}
+int wmain(int argc,WCHAR **argv){
+#ifdef VB_DATA_DPI_144
+ if(!SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2)){fprintf(stderr,"VB_DATA_DPI_CONTEXT_FAIL error=%lu\n",GetLastError());return 1;}
+ if(GetDpiForSystem()!=144){printf("VB_DATA_DPI_SKIP expected=144 actual=%u\n",GetDpiForSystem());return 77;}
+#endif
+ if(argc==4 && !wcscmp(argv[1],L"--child"))return child(argv[2],!wcscmp(argv[3],L"1"));
+ return isolated_process(argc,argv,worker);
+}

@@ -13,7 +13,7 @@ static void paint(HWND w,HDC dc,state *s)
   /* Native first/last marker: exactly two columns of eleven black pixels. */
   if(n==0 || n==3){RECT mark={n==0?1:8,1,n==0?3:10,12};FillRect(mem,&mark,GetStockObject(BLACK_BRUSH));}
   else {RECT mark={2,3,6,10};FillRect(mem,&mark,GetStockObject(BLACK_BRUSH));}
-  int delta=s->pressed==n?1:0;StretchBlt(dc,xs[n]+delta,4+delta,width,13,mem,0,0,width,13,SRCCOPY);
+  int delta=s->pressed==n?1:0;StretchBlt(dc,xs[n]+delta,(r.bottom-13)/2+delta,width,13,mem,0,0,width,13,SRCCOPY);
   SelectObject(mem,old);DeleteObject(bitmap);
  }
  DeleteDC(mem);if(saved)RestoreDC(dc,saved);
