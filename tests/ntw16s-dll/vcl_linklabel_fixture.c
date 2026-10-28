@@ -19,6 +19,7 @@ static LRESULT CALLBACK dispatch(HWND w,UINT m,WPARAM p,LPARAM l)
 static LRESULT CALLBACK initial(HWND w,UINT m,WPARAM p,LPARAM l)
 {LRESULT result=dispatch(w,m,p,l);if(m==WM_NCCREATE)SetWindowLongPtrW(w,GWLP_WNDPROC,(LONG_PTR)thunk);return result;}
 __declspec(dllexport) void WINAPI FixtureSetForeign(foreign_fn fn){foreign_paint=fn;}
+__declspec(dllexport) void WINAPI FixtureSetMode(int value){fake=value;}
 __declspec(dllexport) BOOL WINAPI FixtureRegister(int impostor)
 {
     WNDCLASSEXW n={.cbSize=sizeof(n)},c={.cbSize=sizeof(c)};DWORD old;
@@ -45,10 +46,10 @@ __declspec(dllexport) HWND WINAPI FixtureCreate(HWND parent,BOOL multiline)
 #ifdef T18_MEMO
     multiline=TRUE;
 #endif
-    (void)multiline;
-    HWND w=CreateWindowExW(0,EDIT_CLASS,L"<a id=\"probe\">Open</a>",style,20,20,220,40,parent,NULL,owner,NULL);
+    LPCWSTR initial_text=multiline?L"":L"<a id=\"probe\">Open</a>";
+    HWND w=CreateWindowExW(0,EDIT_CLASS,initial_text,style,20,20,220,40,parent,NULL,owner,NULL);
     if(w){CREATESTRUCTW cs={0};cs.hwndParent=parent;cs.hInstance=owner;cs.style=GetWindowLongPtrW(w,GWL_STYLE);
-        cs.dwExStyle=GetWindowLongPtrW(w,GWL_EXSTYLE);cs.lpszClass=EDIT_CLASS;cs.lpszName=L"<a id=\"probe\">Open</a>";cs.cx=220;cs.cy=40;
+        cs.dwExStyle=GetWindowLongPtrW(w,GWL_EXSTYLE);cs.lpszClass=EDIT_CLASS;cs.lpszName=initial_text;cs.cx=220;cs.cy=40;
         enabled=TRUE;CallWindowProcW(native_edit,w,WM_NCCREATE,0,(LPARAM)&cs);CallWindowProcW(native_edit,w,WM_CREATE,0,(LPARAM)&cs);SendMessageW(w,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),FALSE);}
 #ifdef T18_MEMO
     if(w)SendMessageW(w,EM_SETLIMITTEXT,0,0);

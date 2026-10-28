@@ -844,6 +844,11 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
             else if(!a->detached){win16_style_control_remove_owned(w,a);if(a->themed){ntw16s_theme_remove(w,a);a->themed=NULL;}
                 ntw16s_control_protocol_release(a->protocol);a->protocol=NULL;}
         }else if(protocol)ntw16s_control_protocol_release(protocol);
+        /* An empty link has no ideal height. Retry on a later paint only
+         * after a fresh same-owner native SysLink forwarding witness. */
+        if(a->link_candidate && !a->detached && !a->edit_installed){
+            a->edit_attempted=FALSE;a->edit_witness_owner=NULL;
+        }
         SetLastError(saved);
     }
     if(m==WM_PAINT && a->tab_candidate && !a->tab_attempted && !a->detached && a->tab_witness_owner){
