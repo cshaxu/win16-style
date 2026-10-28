@@ -257,6 +257,12 @@ try{
         (Case 'vcl-push-module-64' $run @('--wait',(Join-Path $x64 'core-vcl-push-module.exe'),(Join-Path $x64 'vcl-push-module-fixture.dll')) @('VCL_PUSH_MODULE_OK bits=64 fake=1 foreign=1 wrong_parent=1 bitmap=1 native=1 click=1 keyboard=1 reparent=1 role=1 font_restore=1 cleanup=1')),
         (Case 'vcl-combo-module-32' $run @('--wait',(Join-Path $x86 'core-vcl-combo-module.exe'),(Join-Path $x86 'vcl-combo-module-fixture.dll')) @('VCL_COMBO_MODULE_OK bits=32 fake=1 foreign=1 wrong_parent=1 select=1 font=1 open_remove=1 reparent=1 role=1 query_reparent=1 cleanup=1')),
         (Case 'vcl-combo-module-64' $run @('--wait',(Join-Path $x64 'core-vcl-combo-module.exe'),(Join-Path $x64 'vcl-combo-module-fixture.dll')) @('VCL_COMBO_MODULE_OK bits=64 fake=1 foreign=1 wrong_parent=1 select=1 font=1 open_remove=1 reparent=1 role=1 query_reparent=1 cleanup=1')),
+        (Case 'vcl-status-simple-32' $run @('--wait',(Join-Path $x86 'core-vcl-status-simple.exe'),(Join-Path $x86 'vcl-status-module-fixture.dll')) @('SIMPLE_FONT_SWITCH_OK','SIMPLE_NONASCII_FALLBACK_OK','SIMPLE_LONG_FALLBACK_OK','SIMPLE_REENTRANT_FALLBACK_OK mode=1','SIMPLE_REENTRANT_FALLBACK_OK mode=2','SIMPLE_LIFECYCLE','SIMPLE_MODEL_OK')),
+        (Case 'vcl-status-simple-64' $run @('--wait',(Join-Path $x64 'core-vcl-status-simple.exe'),(Join-Path $x64 'vcl-status-module-fixture.dll')) @('SIMPLE_FONT_SWITCH_OK','SIMPLE_NONASCII_FALLBACK_OK','SIMPLE_LONG_FALLBACK_OK','SIMPLE_REENTRANT_FALLBACK_OK mode=1','SIMPLE_REENTRANT_FALLBACK_OK mode=2','SIMPLE_LIFECYCLE','SIMPLE_MODEL_OK')),
+        (Case 'status-font-isolation-32' (Join-Path $x86 'core-status-font-isolation.exe') @() @('STATUS_FONT_ISOLATION_OK shared=1 independent=1 retain=1 cleanup=1')),
+        (Case 'status-font-isolation-64' (Join-Path $x64 'core-status-font-isolation.exe') @() @('STATUS_FONT_ISOLATION_OK shared=1 independent=1 retain=1 cleanup=1')),
+        (Case 'vcl-status-font-alias-32' $run @('--wait',(Join-Path $x86 'core-vcl-status-font-alias.exe'),(Join-Path $x86 'vcl-status-module-fixture.dll')) @('ALIAS_REUSED','ALIAS_OK')),
+        (Case 'vcl-status-font-alias-64' $run @('--wait',(Join-Path $x64 'core-vcl-status-font-alias.exe'),(Join-Path $x64 'vcl-status-module-fixture.dll')) @('ALIAS_REUSED','ALIAS_OK')),
         (Case 'vcl-combo-simple-module-32' $run @('--wait',(Join-Path $x86 'core-vcl-combo-simple-module.exe'),(Join-Path $x86 'vcl-combo-module-fixture.dll')) @('VCL_COMBO_SIMPLE_MODULE_OK bits=32 fake=1 foreign=1 wrong_parent=1 select=1 font=1 list_remove=1 reparent=1 role=1 mode_change=1 query_reparent=1 cleanup=1')),
         (Case 'vcl-combo-simple-module-64' $run @('--wait',(Join-Path $x64 'core-vcl-combo-simple-module.exe'),(Join-Path $x64 'vcl-combo-module-fixture.dll')) @('VCL_COMBO_SIMPLE_MODULE_OK bits=64 fake=1 foreign=1 wrong_parent=1 select=1 font=1 list_remove=1 reparent=1 role=1 mode_change=1 query_reparent=1 cleanup=1')),
         (Case 'vcl-combo-list-module-32' $run @('--wait',(Join-Path $x86 'core-vcl-combo-list-module.exe'),(Join-Path $x86 'vcl-combo-module-fixture.dll')) @('VCL_COMBO_LIST_MODULE_OK bits=32 fake=1 foreign=1 wrong_parent=1 select=1 font=1 open_remove=1 reparent=1 role=1 mode_change=1 query_reparent=1 cleanup=1')),
@@ -311,7 +317,7 @@ try{
             $used=0;foreach($entry in $running){$used+=$entry.cost}
             while($pending.Count){
                 $case=$pending[0]
-                $cost=if($case.name -match '^(font-layout|menu-cancel|dialogs|messages|tree-v[56]-)'){[Math]::Min(2,$Jobs)}else{1}
+                $cost=if($case.name -match '^vcl-status-font-alias-'){$Jobs}elseif($case.name -match '^(font-layout|menu-cancel|dialogs|messages|tree-v[56]-)'){[Math]::Min(2,$Jobs)}else{1}
                 if($used+$cost -gt $Jobs){break}
                 $pending.RemoveAt(0)
                 $directory=Join-Path $scratch $case.name;New-Item -ItemType Directory -Path $directory | Out-Null
@@ -342,8 +348,8 @@ try{
                 [IO.File]::WriteAllText((Join-Path $entry.directory 'stderr.log'),$err)
                 # A private USER desktop is an isolation prerequisite, not a
                 # product assertion.  Some non-interactive execution hosts
-                # deny only CreateDesktop (5).  Preserve every other exit 2
-                # as a failure: the exact marker is the sole skip contract.
+                # deny only CreateDesktop (5). Other skips require an exact, case-specific
+                # environmental marker and are reported separately.
                 $caseSkipped=Test-PackageCaseSkip -Name $entry.case.name -ExitCode $entry.process.ExitCode -Output ($out+$err)
                 $record=@{name=$entry.case.name;exit_code=$entry.process.ExitCode;skipped=[bool]$caseSkipped;command=$entry.case.command;arguments=$entry.case.arguments;seconds=$entry.timer.Elapsed.TotalSeconds};$records.Add($record)
                 $records|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'cases.json')

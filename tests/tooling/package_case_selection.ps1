@@ -36,6 +36,10 @@ $skipCases=@(
     @{name='other';code=77;output="VB_CHECKLIST_144_SKIP dpi=96`n";expected=$false},
     @{name='vb5-checklist-dpi144-32';code=77;output="VB_CHECKLIST_144_SKIP dpi=0`n";expected=$false},
     @{name='vb5-checklist-dpi144-32';code=77;output="VB_CHECKLIST_144_SKIP dpi=96 extra`n";expected=$false},
+    @{name='vcl-status-font-alias-32';code=2;output="ALIAS_SKIP no_handle_reuse attempts=1200`n";expected=$true},
+    @{name='vcl-status-font-alias-64';code=1;output="ALIAS_SKIP no_handle_reuse attempts=1200`n";expected=$false},
+    @{name='other';code=2;output="ALIAS_SKIP no_handle_reuse attempts=1200`n";expected=$false},
+    @{name='vcl-status-font-alias-32';code=2;output="ALIAS_SKIP no_handle_reuse attempts=1200 extra`n";expected=$false},
     @{name='other';code=2;output='PRIVATE_DESKTOP_CREATE_FAIL error=5';expected=$true},
     @{name='other';code=2;output='PRIVATE_DESKTOP_CREATE_FAIL error=6';expected=$false}
 )

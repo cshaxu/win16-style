@@ -150,7 +150,7 @@ static int worker(int argc,WCHAR **argv)
     status_window=create_status(root);CHECK(status_window&&attached(status_window));
     SendMessageW(status_window,SB_SIMPLE,TRUE,0);CHECK(SendMessageW(status_window,SB_ISSIMPLE,0,0));CHECK(SendMessageW(status_window,SB_SETTEXTW,SB_SIMPLEID,(LPARAM)L"simple"));
     capture(status_window,dc,bits,styled_pixels);CHECK(remove_style(status_window)&&!attached(status_window));capture(status_window,dc,bits,native_pixels);
-    CHECK(!memcmp(styled_pixels,native_pixels,sizeof(styled_pixels)));CHECK(DestroyWindow(status_window));status_window=NULL;
+    CHECK(memcmp(styled_pixels,native_pixels,sizeof(styled_pixels)));CHECK(DestroyWindow(status_window));status_window=NULL;
     status_window=create_status(root);CHECK(status_window&&attached(status_window));
     CHECK(SendMessageW(status_window,SB_SETTEXTW,SBT_OWNERDRAW,(LPARAM)0x12345678));remove_in_draw=TRUE;capture(status_window,dc,bits,styled_pixels);
     CHECK(!remove_in_draw && !attached(status_window) && owner_data==0x12345678);CHECK(DestroyWindow(status_window));status_window=NULL;

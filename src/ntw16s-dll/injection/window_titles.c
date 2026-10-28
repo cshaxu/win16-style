@@ -232,6 +232,8 @@ static NTW16S_UNWIND_FUNCTION LRESULT WINAPI hook_CallWindowProcW(WNDPROC proc,H
     SetLastError(entry);result=real_CallWindowProcW(proc,w,message,wp,lp);error=GetLastError();
     NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
 }
+HFONT ntw16s_status_simple_font(HDC,LPCWSTR,int,UINT,const void *,void **);
+void ntw16s_status_simple_return(void *,HFONT);
 static __typeof__(&DrawTextW) real_DrawTextW;
 typedef struct static_font_borrow {HDC dc;HFONT font;HGDIOBJ previous;} static_font_borrow;
 static void static_font_return(void *data)
@@ -249,6 +251,21 @@ static NTW16S_UNWIND_FUNCTION int WINAPI hook_DrawTextW(HDC dc,LPCWSTR text,int 
     static_font_borrow borrow={dc,font,old};ntw16s_unwind_scope unwind;int result;
     NTW16S_UNWIND_BEGIN(unwind,static_font_return,&borrow);
     SetLastError(entry);result=real_DrawTextW(dc,text,count,rect,flags);error=GetLastError();
+    NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
+}
+
+
+typedef struct status_font_borrow {HDC dc;HFONT font;HGDIOBJ previous;void *token;} status_font_borrow;
+static void status_font_return(void *data){status_font_borrow *b=data;if(b->previous)SelectObject(b->dc,b->previous);ntw16s_status_simple_return(b->token,b->font);}
+static __typeof__(&DrawTextExW) real_DrawTextExW;
+static NTW16S_UNWIND_FUNCTION int WINAPI hook_DrawTextExW(HDC dc,LPWSTR text,int count,LPRECT rect,UINT flags,LPDRAWTEXTPARAMS params)
+{
+    DWORD entry=GetLastError(),error;void *token=NULL;HFONT font=ntw16s_status_simple_font(dc,text,count,flags,__builtin_return_address(0),&token);
+    HGDIOBJ old=font?SelectObject(dc,font):NULL;if(old==HGDI_ERROR)old=NULL;
+    if(!font){SetLastError(entry);return real_DrawTextExW(dc,text,count,rect,flags,params);}
+    status_font_borrow borrow={dc,font,old,token};ntw16s_unwind_scope unwind;int result;
+    NTW16S_UNWIND_BEGIN(unwind,status_font_return,&borrow);
+    SetLastError(entry);result=real_DrawTextExW(dc,text,count,rect,flags,params);error=GetLastError();
     NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
 }
 
@@ -525,7 +542,7 @@ LONG ntw16s_attach_titles(void)
     ATTACH(MessageBoxIndirectA);ATTACH(MessageBoxIndirectW);
     ATTACH(DrawTextA);ATTACH(DrawTextExA);ATTACH(TextOutA);ATTACH(ExtTextOutA);
     ATTACH(TextOutW);ATTACH(ExtTextOutW);
-    ATTACH(CallWindowProcW);ATTACH(DrawTextW);
+    ATTACH(CallWindowProcW);ATTACH(DrawTextW);ATTACH(DrawTextExW);
     ATTACH(Polyline);ATTACH(BitBlt);ATTACH(StretchBlt);ATTACH(DrawFrameControl);ATTACH(DrawEdge);ATTACH(DrawThemeBackground);ATTACH(DrawThemeText);ATTACH(DrawThemeTextEx);ATTACH(DrawIconEx);ATTACH(CreateCompatibleDC);ATTACH(DeleteDC);ATTACH(SelectObject);ATTACH(DeleteObject);
 #undef ATTACH
     return error;

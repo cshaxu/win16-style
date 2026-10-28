@@ -98,7 +98,7 @@ typedef struct system_variant {
     HANDLE resource;
     unsigned refs;
     UINT menu_dpi;
-    BOOL preserve_strokes;
+    BOOL preserve_strokes,isolated;
 } system_variant;
 static _Thread_local system_variant *variants;
 static LONG variant_serial;
@@ -109,7 +109,7 @@ HFONT win16_style_system_source(HFONT font)
     return font;
 }
 
-static HFONT system_acquire(HFONT source,UINT menu_dpi,BOOL preserve_strokes)
+static HFONT system_acquire(HFONT source,UINT menu_dpi,BOOL preserve_strokes,BOOL isolated)
 {
     HDC original=NULL,src=NULL,dst=NULL;HFONT base=NULL,font=NULL;
     HBITMAP a=NULL,b=NULL;HGDIOBJ oa=NULL,ob=NULL,of=NULL,oo=NULL;
@@ -117,7 +117,7 @@ static HFONT system_acquire(HFONT source,UINT menu_dpi,BOOL preserve_strokes)
     TEXTMETRICW tm,system;char face[32],actual[32];BOOL ok=FALSE;
     unsigned cursor=118+225*4,sum=0,maxwidth=0;system_variant *v=NULL;
     source=win16_style_system_source(source);
-    for(v=variants;v;v=v->next)if(v->source==source && v->menu_dpi==menu_dpi && v->preserve_strokes==preserve_strokes){
+    for(v=variants;!isolated && v;v=v->next)if(!v->isolated && v->source==source && v->menu_dpi==menu_dpi && v->preserve_strokes==preserve_strokes){
         if(v->refs==UINT_MAX)return NULL;
         ++v->refs;return v->font;
     }
@@ -195,7 +195,7 @@ done:
     if(src)DeleteDC(src);
     if(dst)DeleteDC(dst);
     free(data);
-    if(ok && resource){v->source=source;v->menu_dpi=menu_dpi;v->preserve_strokes=preserve_strokes;v->font=font;v->resource=resource;v->refs=1;v->next=variants;variants=v;return font;}
+    if(ok && resource){v->source=source;v->menu_dpi=menu_dpi;v->preserve_strokes=preserve_strokes;v->isolated=isolated;v->font=font;v->resource=resource;v->refs=1;v->next=variants;variants=v;return font;}
     free(v);
     if(ok)return font;
     if(font)DeleteObject(font);
@@ -204,15 +204,18 @@ done:
 }
 
 HFONT win16_style_system_acquire(HFONT source)
-{return system_acquire(source,0,FALSE);}
+{return system_acquire(source,0,FALSE,FALSE);}
+
+HFONT win16_style_system_acquire_isolated(HFONT source)
+{return system_acquire(source,0,FALSE,TRUE);}
 
 HFONT win16_style_vb_font_acquire(HFONT source)
-{return system_acquire(source,0,TRUE);}
+{return system_acquire(source,0,TRUE,FALSE);}
 
 HFONT win16_style_menu_font_acquire(UINT dpi)
 {
     if(dpi<48 || dpi>384)return NULL;
-    return system_acquire(NULL,dpi,FALSE);
+    return system_acquire(NULL,dpi,FALSE,FALSE);
 }
 
 void win16_style_system_release(HFONT font)
@@ -222,6 +225,12 @@ void win16_style_system_release(HFONT font)
         if(v->font==font){if(!--v->refs){*p=v->next;DeleteObject(v->font);RemoveFontMemResourceEx(v->resource);free(v);}return;}
         p=&v->next;
     }
+}
+
+BOOL win16_style_system_try_retain(HFONT font)
+{
+    for(system_variant *v=variants;v;v=v->next)if(v->font==font){if(v->refs==UINT_MAX)return FALSE;++v->refs;return TRUE;}
+    return FALSE;
 }
 
 void win16_style_system_retain(HFONT font)

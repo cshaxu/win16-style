@@ -11,6 +11,8 @@ NTW16S_API void win16_style_font_release(HFONT font);
  * cell height and per-character advances. Stock/System inputs stay borrowed.
  * A successful acquire must be released after all native users restore font. */
 HFONT win16_style_system_acquire(HFONT source);
+HFONT win16_style_system_acquire_isolated(HFONT source);
+BOOL win16_style_system_try_retain(HFONT font);
 /* VB client text keeps thin strokes when reducing to the native cell. */
 HFONT win16_style_vb_font_acquire(HFONT source);
 /* Private menu lease: System16 uniformly scaled by window DPI. */

@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <wchar.h>
+#include <limits.h>
 
 /* This coordinator composes the one existing renderer. It observes only
  * creation inside explicit caller scopes; it never scans a desktop or infers
@@ -42,6 +43,8 @@ typedef struct attachment {
     BOOL group_frame_candidate,group_frame_verified,group_frame_retired; HWND group_frame_parent;
     BOOL panel_frame_candidate,panel_frame_verified,panel_frame_retired; HWND panel_frame_parent;
     HMODULE status_witness_owner; HWND status_parent;
+    HFONT status_cached_font,status_cached_source;LOGFONTW status_font_log;TEXTMETRICW status_font_metrics;
+    int status_font_widths[96];unsigned status_font_borrows;BOOL status_font_invalid;
     DWORD edit_original_style,combo_original_type;
     HMODULE edit_witness_owner,group_button_witness_owner;
     HWND combo_parent,group_button_parent,grid_parent,vcl_toolbar_parent; HMODULE grid_owner,vcl_toolbar_owner,vcl_toolbar_witness;
@@ -79,7 +82,7 @@ static _Thread_local bit_draw_scope *bit_current;
 typedef struct status_draw_scope {
     struct status_draw_scope *previous;
     attachment *owner; HWND window; HDC dc; HMODULE native;
-    unsigned epoch,count; RECT panes[64];
+    unsigned epoch,count; BOOL simple; int simple_length; WCHAR simple_text[513]; RECT panes[64];
 } status_draw_scope;
 static _Thread_local status_draw_scope *status_current;
 static LONG status_hooks_ready;
@@ -385,6 +388,47 @@ static BOOL status_identity(HWND w,attachment *a,HMODULE *native)
         GetClassLongPtrW(w,GCLP_WNDPROC)!=(ULONG_PTR)cls.lpfnWndProc)return FALSE;
     if(native)*native=image;
     return TRUE;
+}
+
+/* Borrow a private font only for verified native simple-status text. */
+HFONT ntw16s_status_simple_font(HDC dc,LPCWSTR text,int count,UINT flags,const void *address,void **token)
+{
+    status_draw_scope *s=status_current;HMODULE caller=NULL;POINT origin;HWND from;HFONT source;LOGFONTW log={0};TEXTMETRICW tm={0};int widths[96]={0};
+    if(token)*token=NULL;
+    if(!token || !s || !s->owner || !s->owner->status_candidate || !s->simple || s->owner->detached || s->epoch!=s->owner->status_epoch ||
+       !dc || !text || (flags&(DT_RTLREADING|DT_MODIFYSTRING)) || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
+       !GetViewportOrgEx(dc,&origin) || origin.x || origin.y || !status_identity(s->window,s->owner,NULL) || !IsWindowEnabled(s->window) ||
+       !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) || caller!=GetModuleHandleW(L"uxtheme.dll"))return NULL;
+    from=WindowFromDC(dc);if(s->dc?dc!=s->dc:from!=s->window)return NULL;
+    if(count< -1)return NULL;
+    if(count==-1){count=0;while(count<4096 && text[count])++count;if(count==4096)return NULL;}
+    if(count<=0 || count>4096)return NULL;
+    for(int i=0;i<count;++i)if(text[i]>0x7f)return NULL;
+    if(s->simple_length!=count || memcmp(s->simple_text,text,(size_t)count*sizeof(WCHAR)))return NULL;
+    if(!status_identity(s->window,s->owner,NULL) || s->owner->detached || s->epoch!=s->owner->status_epoch)return NULL;
+    source=(HFONT)GetCurrentObject(dc,OBJ_FONT);
+    if(!source || GetObjectW(source,sizeof(log),&log)!=sizeof(log) || !GetTextMetricsW(dc,&tm))return NULL;
+    for(unsigned i=0;i<96;++i){WCHAR character=(WCHAR)(32+i);SIZE extent;
+        if(!GetTextExtentPoint32W(dc,&character,1,&extent))return NULL;
+        widths[i]=extent.cx;
+    }
+    attachment *a=s->owner;
+    BOOL changed=a->status_font_invalid || a->status_cached_source!=source || memcmp(&a->status_font_log,&log,sizeof(log)) || memcmp(&a->status_font_metrics,&tm,sizeof(tm)) || memcmp(a->status_font_widths,widths,sizeof(widths));
+    if(changed){
+        if(a->status_font_borrows)return NULL;
+        win16_style_system_release(a->status_cached_font);a->status_cached_font=NULL;a->status_cached_source=NULL;
+        a->status_font_invalid=FALSE;HFONT replacement=win16_style_system_acquire_isolated(source);if(!replacement)return NULL;
+        a->status_cached_source=source;a->status_cached_font=replacement;a->status_font_log=log;a->status_font_metrics=tm;memcpy(a->status_font_widths,widths,sizeof(widths));
+    }
+    if(!a->status_cached_font || a->status_font_borrows==UINT_MAX)return NULL;
+    if(a->status_cached_font!=source && !win16_style_system_try_retain(a->status_cached_font))return NULL;
+    ++a->status_font_borrows;*token=a;return a->status_cached_font;
+}
+void ntw16s_status_simple_return(void *token,HFONT font)
+{
+    attachment *a=token;if(!a || !a->status_font_borrows)return;
+    win16_style_system_release(font);--a->status_font_borrows;
+    if(!a->status_font_borrows && a->status_font_invalid){win16_style_system_release(a->status_cached_font);a->status_cached_font=NULL;a->status_cached_source=NULL;}
 }
 
 /* The themed native status control omits the final pane background when it
@@ -769,7 +813,7 @@ void ntw16s_panel_polyline(HDC dc,const POINT *points,int count,const void *call
  RestoreDC(dc,saved);
 }
 static void release(attachment *a)
-{if(!--a->calls && a->detached){ntw16s_vb_fonts_clear(&a->fonts);free(a);}}
+{if(!--a->calls && a->detached){win16_style_system_release(a->status_cached_font);ntw16s_vb_fonts_clear(&a->fonts);free(a);}}
 static void static_paint_end(void *data)
 {static_paint_scope *scope=data;static_paint=scope->previous;if(!scope->completed)release(scope->owner);}
 static NTW16S_UNWIND_FUNCTION LRESULT static_paint_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l)
@@ -905,7 +949,8 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
         if(print_clip)print_clip_kind=GetClipRgn((HDC)p,print_clip);
     }
     ++a->calls;
-    if(a->status && (m==SB_SETPARTS || m==SB_SETTEXTA || m==SB_SETTEXTW || m==SB_SIMPLE ||
+    if(a->status && (m==WM_SETFONT || m==WM_FONTCHANGE || m==WM_SETTINGCHANGE || m==WM_THEMECHANGED || m==WM_DPICHANGED))a->status_font_invalid=TRUE;
+    if(a->status && (m==WM_SETTEXT || m==SB_SETPARTS || m==SB_SETTEXTA || m==SB_SETTEXTW || m==SB_SIMPLE ||
         m==SB_SETICON || m==SB_SETMINHEIGHT || m==WM_SETFONT || m==WM_STYLECHANGED ||
         m==WM_SIZE || m==WM_ENABLE || m==WM_SETTINGCHANGE || m==WM_DESTROY || m==WM_NCDESTROY))++a->status_epoch;
     status_draw_scope scope={0},*prior=status_current;
@@ -921,7 +966,17 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     if(prior && prior->window!=w)status_current=NULL;
     if(painting){
         scope.previous=status_current;scope.owner=a;scope.window=w;scope.dc=m==WM_PAINT?NULL:(HDC)p;scope.epoch=a->status_epoch;
-        if(status_identity(w,a,&scope.native) && !SendMessageW(w,SB_ISSIMPLE,0,0) && !a->detached && scope.epoch==a->status_epoch){
+        scope.simple=status_identity(w,a,&scope.native) && SendMessageW(w,SB_ISSIMPLE,0,0) && !a->detached && scope.epoch==a->status_epoch;
+        if(scope.simple){
+            LRESULT length=SendMessageW(w,SB_GETTEXTLENGTHW,0,0);
+            if(a->detached || scope.epoch!=a->status_epoch || HIWORD(length)!=0 || LOWORD(length)==0 || LOWORD(length)>512)scope.simple=FALSE;
+            else {
+                int copied=GetWindowTextW(w,scope.simple_text,(int)LOWORD(length)+1);
+                if(a->detached || scope.epoch!=a->status_epoch || copied!=(int)LOWORD(length) || !status_identity(w,a,NULL))scope.simple=FALSE;
+                else scope.simple_length=copied;
+            }
+        }
+        if(!scope.simple && status_identity(w,a,&scope.native) && !SendMessageW(w,SB_ISSIMPLE,0,0) && !a->detached && scope.epoch==a->status_epoch){
             LRESULT count=SendMessageW(w,SB_GETPARTS,0,0);
             if(count>0 && count<=64 && !a->detached && scope.epoch==a->status_epoch){
                 for(unsigned i=0;i<(unsigned)count;++i){RECT r={0};LRESULT type=SendMessageW(w,SB_GETTEXTLENGTHW,i,0);

@@ -1,0 +1,5 @@
+#include <windows.h>
+#include <stdio.h>
+#include "../../src/ntw16s-dll/font.h"
+#define CHECK(x) do{if(!(x)){fprintf(stderr,"FONT_ISOLATION_FAIL line=%d %s\n",__LINE__,#x);return 1;}}while(0)
+int main(void){HFONT source=CreateFontW(-18,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Arial");CHECK(source);HFONT shared=win16_style_system_acquire(source);CHECK(shared&&shared!=source);HFONT independent=win16_style_system_acquire_isolated(source);CHECK(independent&&independent!=source&&independent!=shared);CHECK(win16_style_system_source(independent)==source);HFONT again=win16_style_system_acquire(source);CHECK(again==shared);CHECK(win16_style_system_try_retain(independent));win16_style_system_release(independent);win16_style_system_release(again);win16_style_system_release(shared);LOGFONTW lf;CHECK(GetObjectW(independent,sizeof(lf),&lf)==sizeof(lf));win16_style_system_release(independent);CHECK(!GetObjectW(independent,sizeof(lf),&lf));CHECK(DeleteObject(source));puts("STATUS_FONT_ISOLATION_OK shared=1 independent=1 retain=1 cleanup=1");return 0;}
