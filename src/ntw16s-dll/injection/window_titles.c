@@ -296,6 +296,14 @@ static HRESULT WINAPI hook_DrawThemeText(HTHEME theme,HDC dc,int part,int state,
     ntw16s_status_text_frame(dc,rect,flags,__builtin_return_address(0));
     SetLastError(saved);return real_DrawThemeText(theme,dc,part,state,text,count,flags,flags2,rect);
 }
+void ntw16s_group_frame(HDC,int,int,const RECT *,const RECT *,LPCWSTR,int,DWORD,const void *,BOOL);
+static __typeof__(&DrawThemeTextEx) real_DrawThemeTextEx;
+static HRESULT WINAPI hook_DrawThemeTextEx(HTHEME theme,HDC dc,int part,int state,LPCWSTR text,int count,DWORD flags,LPRECT rect,const DTTOPTS *options)
+{
+ HRESULT result=real_DrawThemeTextEx(theme,dc,part,state,text,count,flags,rect,options);DWORD error=GetLastError();
+ if(SUCCEEDED(result))ntw16s_group_frame(dc,part,state,rect,NULL,text,count,flags,__builtin_return_address(0),TRUE);
+ SetLastError(error);return result;
+}
 static __typeof__(&DrawThemeBackground) real_DrawThemeBackground;
 static __typeof__(&BitBlt) real_BitBlt;
 static __typeof__(&StretchBlt) real_StretchBlt;
@@ -340,6 +348,7 @@ static HRESULT WINAPI hook_DrawThemeBackground(HTHEME theme,HDC dc,int part,int 
     HRESULT result=real_DrawThemeBackground(theme,dc,part,state,rect,clip);DWORD error=GetLastError();
     if(SUCCEEDED(result) && part==1 && state==0)ntw16s_status_frame(dc,rect,clip,__builtin_return_address(0));
     if(SUCCEEDED(result))ntw16s_bit_theme_frame(dc,part,rect,clip,__builtin_return_address(0));
+    if(SUCCEEDED(result))ntw16s_group_frame(dc,part,state,rect,clip,NULL,0,0,__builtin_return_address(0),FALSE);
     SetLastError(error);return result;
 }
 static HDC WINAPI hook_CreateCompatibleDC(HDC source)
@@ -381,7 +390,7 @@ LONG ntw16s_attach_titles(void)
     ATTACH(DrawTextA);ATTACH(DrawTextExA);ATTACH(TextOutA);ATTACH(ExtTextOutA);
     ATTACH(TextOutW);ATTACH(ExtTextOutW);
     ATTACH(CallWindowProcW);ATTACH(DrawTextW);
-    ATTACH(BitBlt);ATTACH(StretchBlt);ATTACH(DrawFrameControl);ATTACH(DrawEdge);ATTACH(DrawThemeBackground);ATTACH(DrawThemeText);ATTACH(DrawIconEx);ATTACH(CreateCompatibleDC);ATTACH(DeleteDC);
+    ATTACH(BitBlt);ATTACH(StretchBlt);ATTACH(DrawFrameControl);ATTACH(DrawEdge);ATTACH(DrawThemeBackground);ATTACH(DrawThemeText);ATTACH(DrawThemeTextEx);ATTACH(DrawIconEx);ATTACH(CreateCompatibleDC);ATTACH(DeleteDC);
 #undef ATTACH
     return error;
 }
