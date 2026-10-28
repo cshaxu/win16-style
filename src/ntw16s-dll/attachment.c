@@ -6,6 +6,7 @@
 #include "static_text.h"
 #include "combo_glyph.h"
 #include "injection/unwind.h"
+#include "status_theme.h"
 #include <commctrl.h>
 #include <oleacc.h>
 #include <stdlib.h>
@@ -82,9 +83,10 @@ static _Thread_local bit_draw_scope *bit_current;
 typedef struct status_draw_scope {
     struct status_draw_scope *previous;
     attachment *owner; HWND window; HDC dc; HMODULE native;
-    unsigned epoch,count; BOOL simple; int simple_length; WCHAR simple_text[513]; RECT panes[64];
+    unsigned epoch,count; BOOL simple; int simple_length; WCHAR simple_text[513]; RECT panes[64]; BOOL pane_text_allowed[64];
 } status_draw_scope;
 static _Thread_local status_draw_scope *status_current;
+static _Thread_local ntw16s_status_theme_scope *status_theme_current;
 static LONG status_hooks_ready;
 void ntw16s_status_hooks_enable(void){InterlockedExchange(&status_hooks_ready,1);}
 
@@ -390,12 +392,33 @@ static BOOL status_identity(HWND w,attachment *a,HMODULE *native)
     return TRUE;
 }
 
+BOOL ntw16s_status_theme_begin(ntw16s_status_theme_scope *t,HDC dc,int part,int state,LPCWSTR text,int count,DWORD flags,const RECT *rect,const void *address)
+{
+    status_draw_scope *s=status_current;HMODULE caller=NULL;POINT origin;HWND from;BOOL pane=FALSE;
+    if(!t || (!s && !status_theme_current))return FALSE;
+    memset(t,0,sizeof(*t));t->previous=status_theme_current;status_theme_current=t;
+    if(!s || !s->owner || !s->owner->status_candidate || s->simple || s->owner->detached || s->epoch!=s->owner->status_epoch ||
+       !dc || !text || !rect || part || state || (flags&(DT_RTLREADING|DT_MODIFYSTRING|DT_CALCRECT)) ||
+       !IsWindowEnabled(s->window) || !status_identity(s->window,s->owner,NULL) || GetMapMode(dc)!=MM_TEXT ||
+       (GetLayout(dc)&LAYOUT_RTL) || !GetViewportOrgEx(dc,&origin) || origin.x || origin.y ||
+       !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) || caller!=s->native)return TRUE;
+    from=WindowFromDC(dc);if(s->dc?dc!=s->dc:from!=s->window)return TRUE;
+    for(unsigned i=0;i<s->count;++i){RECT p=s->panes[i];if(s->pane_text_allowed[i] && rect->left>=p.left && rect->left<p.right && rect->right<=p.right && rect->right>rect->left && rect->top<p.bottom && rect->bottom>p.top){pane=TRUE;break;}}
+    if(!pane || count< -1)return TRUE;
+    if(count==-1){count=0;while(count<513 && text[count])++count;}
+    if(count<=0 || count>512)return TRUE;
+    for(int i=0;i<count;++i)if(text[i]>0x7f)return TRUE;
+    memcpy(t->text,text,(size_t)count*sizeof(WCHAR));t->length=count;t->dc=dc;t->paint=s;t->valid=TRUE;return TRUE;
+}
+void ntw16s_status_theme_end(void *data)
+{ntw16s_status_theme_scope *t=data;if(status_theme_current==t)status_theme_current=t->previous;}
+
 /* Borrow a private font only for verified native simple-status text. */
 HFONT ntw16s_status_simple_font(HDC dc,LPCWSTR text,int count,UINT flags,const void *address,void **token)
 {
     status_draw_scope *s=status_current;HMODULE caller=NULL;POINT origin;HWND from;HFONT source;LOGFONTW log={0};TEXTMETRICW tm={0};int widths[96]={0};
     if(token)*token=NULL;
-    if(!token || !s || !s->owner || !s->owner->status_candidate || !s->simple || s->owner->detached || s->epoch!=s->owner->status_epoch ||
+    if(!token || !s || !s->owner || !s->owner->status_candidate || s->owner->detached || s->epoch!=s->owner->status_epoch ||
        !dc || !text || (flags&(DT_RTLREADING|DT_MODIFYSTRING)) || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
        !GetViewportOrgEx(dc,&origin) || origin.x || origin.y || !status_identity(s->window,s->owner,NULL) || !IsWindowEnabled(s->window) ||
        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) || caller!=GetModuleHandleW(L"uxtheme.dll"))return NULL;
@@ -404,7 +427,8 @@ HFONT ntw16s_status_simple_font(HDC dc,LPCWSTR text,int count,UINT flags,const v
     if(count==-1){count=0;while(count<4096 && text[count])++count;if(count==4096)return NULL;}
     if(count<=0 || count>4096)return NULL;
     for(int i=0;i<count;++i)if(text[i]>0x7f)return NULL;
-    if(s->simple_length!=count || memcmp(s->simple_text,text,(size_t)count*sizeof(WCHAR)))return NULL;
+    if(s->simple){if(s->simple_length!=count || memcmp(s->simple_text,text,(size_t)count*sizeof(WCHAR)))return NULL;}
+    else {ntw16s_status_theme_scope *t=status_theme_current;if(!t || !t->valid || t->paint!=s || t->dc!=dc || t->length!=count || memcmp(t->text,text,(size_t)count*sizeof(WCHAR)))return NULL;}
     if(!status_identity(s->window,s->owner,NULL) || s->owner->detached || s->epoch!=s->owner->status_epoch)return NULL;
     source=(HFONT)GetCurrentObject(dc,OBJ_FONT);
     if(!source || GetObjectW(source,sizeof(log),&log)!=sizeof(log) || !GetTextMetricsW(dc,&tm))return NULL;
@@ -853,6 +877,12 @@ static NTW16S_UNWIND_FUNCTION LRESULT color_print_dispatch(attachment *a,HWND w,
     SetLastError(entry);result=scope.nested?static_paint_dispatch(a,w,m,p,l):DefSubclassProc(w,m,p,l);
     error=GetLastError();scope.completed=TRUE;NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
 }
+typedef struct status_print_unwind {attachment *owner;ntw16s_vb_paint *paint;status_draw_scope *prior;spin_draw_scope *spin_prior;BOOL completed,nested;} status_print_unwind;
+static void status_print_end(void *data)
+{status_print_unwind *s=data;if(!s->completed){ntw16s_vb_paint_end(s->paint);status_current=s->prior;spin_current=s->spin_prior;if(!s->nested)release(s->owner);}}
+static NTW16S_UNWIND_FUNCTION LRESULT status_print_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,ntw16s_vb_paint *paint,status_draw_scope *prior,spin_draw_scope *spin_prior)
+{status_print_unwind state={a,paint,prior,spin_prior,FALSE,static_paint!=NULL};ntw16s_unwind_scope unwind;DWORD entry=GetLastError(),error;LRESULT result;
+ NTW16S_UNWIND_BEGIN(unwind,status_print_end,&state);SetLastError(entry);result=state.nested?static_paint_dispatch(a,w,m,p,l):DefSubclassProc(w,m,p,l);error=GetLastError();state.completed=TRUE;NTW16S_UNWIND_END(unwind);SetLastError(error);return result;}
 /* The application owns owner-drawn swatches and text. Only the documented
  * native button rectangle is eligible for post-paint chrome. */
 static BOOL color_identity(HWND w,attachment *a,COMBOBOXINFO *info)
@@ -983,7 +1013,7 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
                     if(a->detached || scope.epoch!=a->status_epoch)break;
                     if((HIWORD(type)&~SBT_OWNERDRAW) || !SendMessageW(w,SB_GETRECT,i,(LPARAM)&r))continue;
                     if(a->detached || scope.epoch!=a->status_epoch)break;
-                    scope.panes[scope.count++]=r;
+                    scope.pane_text_allowed[scope.count]=HIWORD(type)==0;scope.panes[scope.count++]=r;
                 }
             }
         }
@@ -1011,7 +1041,8 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
             ntw16s_report_paint_enable(&paint,w,a->report_module,&a->detached);
     }
     if(status || color)SetLastError(status_error);
-    if(print_clip)result=color_print_dispatch(a,w,m,p,l,print_clip,&paint,prior,spin_prior);
+    if(m==WM_PRINTCLIENT && status_current==&scope)result=status_print_dispatch(a,w,m,p,l,&paint,prior,spin_prior);
+    else if(print_clip)result=color_print_dispatch(a,w,m,p,l,print_clip,&paint,prior,spin_prior);
     else if(a->modern_spin && spin_message)result=modern_spin_dispatch(a,w,m,p,l,&spin_scope,spin_prior,prior,&paint);
     else if(static_paint || ((a->static_candidate || a->scroll_candidate || a->edit_candidate || a->group_button_candidate || a->grid_candidate || a->vcl_toolbar_candidate || a->track_candidate || a->tab_candidate || a->color_candidate || a->date_candidate || a->status_candidate || a->group_frame_candidate || a->panel_frame_candidate) && !a->detached && m==WM_PAINT))
         result=static_paint_dispatch(a,w,m,p,l);

@@ -8,6 +8,7 @@
 #include "ntw16s-dll/updown_paint.h"
 #include "ntw16s-dll/controls.h"
 #include "ntw16s-dll/static_text.h"
+#include "ntw16s-dll/status_theme.h"
 #include "ntw16s-dll/win16_style.h"
 #include <wchar.h>
 #include <uxtheme.h>
@@ -320,11 +321,15 @@ static BOOL WINAPI hook_DrawIconEx(HDC dc,int x,int y,HICON icon,int cx,int cy,U
     SetLastError(saved);return real_DrawIconEx(dc,x,y,icon,cx,cy,step,brush,flags);
 }
 static __typeof__(&DrawThemeText) real_DrawThemeText;
-static HRESULT WINAPI hook_DrawThemeText(HTHEME theme,HDC dc,int part,int state,LPCWSTR text,int count,DWORD flags,DWORD flags2,const RECT *rect)
+static NTW16S_UNWIND_FUNCTION HRESULT WINAPI hook_DrawThemeText(HTHEME theme,HDC dc,int part,int state,LPCWSTR text,int count,DWORD flags,DWORD flags2,const RECT *rect)
 {
-    DWORD saved=GetLastError();
+    DWORD saved=GetLastError(),error;HRESULT result;ntw16s_status_theme_scope scope;ntw16s_unwind_scope unwind;
     ntw16s_status_text_frame(dc,rect,flags,__builtin_return_address(0));
-    SetLastError(saved);return real_DrawThemeText(theme,dc,part,state,text,count,flags,flags2,rect);
+    BOOL entered=ntw16s_status_theme_begin(&scope,dc,part,state,text,count,flags,rect,__builtin_return_address(0));
+    if(!entered){SetLastError(saved);return real_DrawThemeText(theme,dc,part,state,text,count,flags,flags2,rect);}
+    NTW16S_UNWIND_BEGIN(unwind,ntw16s_status_theme_end,&scope);
+    SetLastError(saved);result=real_DrawThemeText(theme,dc,part,state,text,count,flags,flags2,rect);error=GetLastError();
+    NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
 }
 void ntw16s_group_frame(HDC,int,int,const RECT *,const RECT *,LPCWSTR,int,DWORD,const void *,BOOL);
 static __typeof__(&DrawThemeTextEx) real_DrawThemeTextEx;

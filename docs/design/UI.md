@@ -299,3 +299,5 @@ T18 S64 P113：以上已见证的普通 Delphi `TRadioButton` 和 `TGroupButton`
 T18 S64 P114：经自身原生COMBOBOX绘制见证及公开协议验证的同运行库普通可编辑
 `TComboBox` 复用现有外壳及列表绘制；外壳保留应用字体，独立原生编辑子窗口
 负责文字。原生选择、弹出及回调保持，换父或不支持角色时退役。
+
+普通已见证 Delphi TStatusBar 多分区的 ASCII 文字可复用 System 字体租约；未知、自绘、非 ASCII 和无边框角色保留原生文字。图标与应用字体句柄保持。[验证范围](../history/M0-T18-S64-P119-status-pane-font.md)。

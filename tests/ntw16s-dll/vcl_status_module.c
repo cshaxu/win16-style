@@ -117,6 +117,7 @@ static int worker(int argc,WCHAR **argv)
     HWND root=CreateWindowW(parent.lpszClassName,L"status protocol",WS_OVERLAPPEDWINDOW,0,0,430,180,NULL,NULL,parent.hInstance,NULL);CHECK(root && attached(root));ShowWindow(root,SW_SHOWNA);
     CHECK(reg(TRUE));HWND bogus=create_status(root);CHECK(bogus && !attached(bogus));CHECK(DestroyWindow(bogus) && unreg());CHECK(reg(FALSE));
     status_window=create_status(root);CHECK(status_window);
+    SendMessageW(status_window,WM_SETFONT,(WPARAM)GetStockObject(SYSTEM_FONT),TRUE);
     if(!attached(status_window)){fprintf(stderr,"STATUS_CONTROL_UNATTACHED bits=%u\n",(unsigned)sizeof(void*)*8);return 1;}
     int edges[2]={120,-1};CHECK(SendMessageW(status_window,SB_SETPARTS,2,(LPARAM)edges));
     CHECK(SendMessageW(status_window,SB_SETTEXTW,0,(LPARAM)L"ordinary"));
