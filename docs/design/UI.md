@@ -315,3 +315,5 @@ T18 S64 P114：经自身原生COMBOBOX绘制见证及公开协议验证的同运
 已见证的 Delphi `TMonthCalendar` 单月标题可使用现有浅蓝背景；标题文字及字体仍由原控件绘制，未验证状态回退原生。范围见 [日历标题记录](../history/M0-T18-S64-P127-month-header.md)。
 
 在已见证的96 DPI Delphi `TMonthCalendar` 中，适合原绘制矩形的受限西文文字可使用等比例 System 位图字形；空间不足及未验证语言回退原生，应用字体和布局不变。[范围](../history/M0-T18-S64-P128-month-font.md)。
+
+已见证的 Delphi `TValueListEditor` 内嵌编辑按钮在正常与按下状态可复用经典按钮外框；应用负责省略号、输入与事件，其他状态回退原生。[范围](../history/M0-T18-S64-P129-valuelist-button.md)。
