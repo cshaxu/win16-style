@@ -1340,5 +1340,19 @@
     "states": "Four separate button presses each captured the pointer and were cancelled; disabled prototype marks use gray. At 70x22 original and post-cancel prototype images have identical FNV-1a 17694242210860542887. Both widths were sample window sizes, not CPU architectures; actual runtime remains x86.",
     "performance": "One 100-redraw observation: published package 172584 us, initial per-pixel GDI prototype 2436599 us, bulk DIB prototype 157594 us. Same private desktop and sample; these are single observations, not a stable benchmark or latency guarantee. Initial prototype rejected, optimized prototype not yet production.",
     "limit": "No mouse-up/actual record navigation, lifecycle, clipping, reentrancy, high-contrast, other DPI, VB5, independent real target or x64 runtime evidence. No product update, release, or acceptance; next step implement scoped identity and bulk drawing with dual-width positive/negative regression and complete same-batch package."
+  },
+  "vb6_data_arrows_p50": {
+    "implementation": "After the real StretchBlt returns successfully, intercept only an attached same-thread MSVBVM60 ThunderRT6Data, caller address in same runtime, 96 DPI, 22px client height and observed bitmap geometry. Render using existing scroll glyph resources in a bulk DIB and preserve first/last markers from native bitmaps. Input, data, title, native draw return and last error remain owned by runtime. Nonmatching context remains native.",
+    "coverage": "x86/x64 self-owned runtime model, four states, all four clicks/notifications, 140px width center preserved, foreign caller, wrong class owner, DC clip, unsupported roles and reparent. Old released package fails both widths on four button pixel assertion; new package passes. Model is not actual VB x64.",
+    "real": "x86 sample private DAO3.6 surrogate; 70px and 140px client, temporarily revealed hidden control. All four pressed and cancelled with capture release; 140px center differs by zero pixels and buttons by 1409 vs old diagnostic sample. No mouse-up or database navigation on real sample; owned job was terminated after capture.",
+    "package": "GCC/Ninja/ccache clean x86/x64; 16 focused same-package cases passed, 7.375 s, no skips; full matrix and physical input not tested. Actual candidate sample passed; 100 redraw single observation 214915 us; private DB SHA 97a08cf87debe5e7ae9bead3d32f1290cb1cf58c350fc1205301e709f1c305eb unchanged. Four-file package deployed to both fixed destinations with eight equal SHA; both installed paths passed both model widths.",
+    "sha256": {
+      "demo.exe": "cb328377386e51bcbf4d9277ec89ed6410cac4546fdafb44ac38e87c20778a92",
+      "ntw16s32.dll": "6a538990b397722432feb99497c98a726548195dc7d9f74e446ac3f0556d6730",
+      "ntw16s64.dll": "d1c9b87762b4c039f4a91ac15be61be6736d9d7d10ccd7fd01af1cff163510dd",
+      "run16s.exe": "91338aec3e8425bfb63e2df20c317f6c1f595e2d55d633bd051827b1a128bf95"
+    },
+    "limits": "No actual DAO3.5, record navigation, normal sample exit, VB5 Data, other DPI, high contrast or physical input. Private scratch prototype and surrogate are not packaged; original graphic resources and ABI unchanged.",
+    "change_review": "Production sources +49/-1 (attachment, controls, header, interception); test and CMake changes separate. Search rg -n \"StretchBlt|vb_data|scroll_glyph\" src/ntw16s-dll: existing font uses retain original paths; the only new interception delegates to original first and preserves its result/error; exact Data role routes to existing original glyph assets."
   }
 }

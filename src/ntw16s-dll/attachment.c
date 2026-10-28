@@ -350,6 +350,11 @@ BOOL ntw16s_vb_data_valid(HWND w)
     attachment *a=lookup(w);
     return !a || a->detached || !a->vb_data_edge || vb_data_role(w,a->vb_data_parent);
 }
+BOOL ntw16s_vb_data_attached(HWND w)
+{
+    attachment *a=lookup(w);
+    return a && !a->detached && a->vb_data_edge && vb_data_role(w,a->vb_data_parent);
+}
 static BOOL vb_user_edge_role(HWND w,HWND parent)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);

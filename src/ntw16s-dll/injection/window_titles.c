@@ -298,6 +298,13 @@ static HRESULT WINAPI hook_DrawThemeText(HTHEME theme,HDC dc,int part,int state,
 }
 static __typeof__(&DrawThemeBackground) real_DrawThemeBackground;
 static __typeof__(&BitBlt) real_BitBlt;
+static __typeof__(&StretchBlt) real_StretchBlt;
+static BOOL WINAPI hook_StretchBlt(HDC dc,int x,int y,int width,int height,HDC source,int sx,int sy,int sw,int sh,DWORD rop)
+{
+    BOOL result=real_StretchBlt(dc,x,y,width,height,source,sx,sy,sw,sh,rop);DWORD error=GetLastError();
+    if(result)win16_style_vb_data_arrow(dc,x,y,width,height,source,sx,sy,sw,sh,rop,__builtin_return_address(0));
+    SetLastError(error);return result;
+}
 static BOOL WINAPI hook_BitBlt(HDC dc,int x,int y,int width,int height,HDC source,int sx,int sy,DWORD rop)
 {
     BOOL result=real_BitBlt(dc,x,y,width,height,source,sx,sy,rop);DWORD error=GetLastError();
@@ -374,7 +381,7 @@ LONG ntw16s_attach_titles(void)
     ATTACH(DrawTextA);ATTACH(DrawTextExA);ATTACH(TextOutA);ATTACH(ExtTextOutA);
     ATTACH(TextOutW);ATTACH(ExtTextOutW);
     ATTACH(CallWindowProcW);ATTACH(DrawTextW);
-    ATTACH(BitBlt);ATTACH(DrawFrameControl);ATTACH(DrawEdge);ATTACH(DrawThemeBackground);ATTACH(DrawThemeText);ATTACH(DrawIconEx);ATTACH(CreateCompatibleDC);ATTACH(DeleteDC);
+    ATTACH(BitBlt);ATTACH(StretchBlt);ATTACH(DrawFrameControl);ATTACH(DrawEdge);ATTACH(DrawThemeBackground);ATTACH(DrawThemeText);ATTACH(DrawIconEx);ATTACH(CreateCompatibleDC);ATTACH(DeleteDC);
 #undef ATTACH
     return error;
 }
