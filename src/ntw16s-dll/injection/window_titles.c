@@ -7,6 +7,7 @@
 #include "ntw16s-dll/updown_paint.h"
 #include "ntw16s-dll/controls.h"
 #include "ntw16s-dll/static_text.h"
+#include "ntw16s-dll/win16_style.h"
 #include <wchar.h>
 #include <uxtheme.h>
 
@@ -34,6 +35,17 @@ static BOOL CALLBACK bind_titles(PINIT_ONCE once,void *parameter,void **context)
     ntw16s_status_hooks_enable();
     InterlockedExchange(&style_ready,1);return TRUE;
 }
+static const WCHAR menu_owner_property[]=L"Win16Style.T18.MenuOwner";
+static int menu_owner_marker;
+static void mark_menu_owner(HWND w,const void *caller)
+{ WCHAR cls[64],real[64];DWORD pid=0;HMODULE origin=NULL;
+ if(w && GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
+    !(GetWindowLongPtrW(w,GWL_STYLE)&(WS_VISIBLE|WS_CHILD)) &&
+    (GetWindowLongPtrW(w,GWL_STYLE)&WS_POPUP) && (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_TOOLWINDOW) &&
+    GetClassNameW(w,cls,64) && !lstrcmpW(cls,L"TPUtilWindow") &&
+    RealGetWindowClassW(w,real,64) && !lstrcmpW(real,cls) &&
+    GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)caller,&origin) && origin==(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE))SetPropW(w,menu_owner_property,(HANDLE)&menu_owner_marker);
+}
 typedef struct title_scope { ntw16s_creation_scope *creation;DWORD failure; } title_scope;
 static BOOL begin_titles(title_scope *scope,BOOL modal)
 {
@@ -57,7 +69,7 @@ static NTW16S_UNWIND_FUNCTION HWND WINAPI window_##S(DWORD ex,T cls,T text,DWORD
   NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); { result=create_##S(ex,cls,text,style,x,y,cx,cy,parent,menu,instance,param);error=GetLastError(); \
   } NTW16S_UNWIND_END(unwind); \
   if(scope.failure){if(result)DestroyWindow(result);result=NULL;error=scope.failure;} \
-  SetLastError(error);return result; }
+  if(result){mark_menu_owner(result,__builtin_return_address(0));} SetLastError(error);return result; }
 WINDOW_HOOK(A,LPCSTR)
 WINDOW_HOOK(W,LPCWSTR)
 
@@ -362,6 +374,27 @@ static BOOL WINAPI hook_DeleteDC(HDC dc)
     SetLastError(error);return result;
 }
 
+
+static __typeof__(&TrackPopupMenu) real_TrackPopupMenu;
+typedef struct popup_owner_scope { HWND window;BOOL installed; } popup_owner_scope;
+static void popup_owner_end(void *data)
+{
+ popup_owner_scope *scope=data;BOOL installed=scope->installed;HWND w=scope->window;
+ scope->installed=FALSE;if(installed && IsWindow(w))win16_style_frame_remove_owned(w,scope);
+}
+static NTW16S_UNWIND_FUNCTION BOOL WINAPI hook_TrackPopupMenu(HMENU m,UINT flags,int x,int y,int reserved,HWND w,const RECT *r)
+{
+ ntw16s_unwind_scope unwind;popup_owner_scope scope={w,FALSE};DWORD incoming=GetLastError(),pid=0,error;BOOL result;
+ if(GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
+    GetPropW(w,menu_owner_property)==(HANDLE)&menu_owner_marker &&
+    !(GetWindowLongPtrW(w,GWL_STYLE)&(WS_VISIBLE|WS_CHILD)) &&
+    (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_TOOLWINDOW))
+     scope.installed=win16_style_menu_owner_install_created(w,&scope,NULL);
+ NTW16S_UNWIND_BEGIN(unwind,popup_owner_end,&scope);
+ SetLastError(incoming);result=real_TrackPopupMenu(m,flags,x,y,reserved,w,r);error=GetLastError();
+ NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
+}
+
 LONG ntw16s_attach_titles(void)
 {
     LONG error=NO_ERROR;
@@ -380,6 +413,7 @@ LONG ntw16s_attach_titles(void)
     if(!error)error=(LONG)ntw16s_hooks_attach(&real_enable_scroll,(void *)hook_enable_scroll);
     if(!error)error=(LONG)ntw16s_hooks_attach(&real_set_theme,(void *)hook_set_theme);
 #define ATTACH(NAME) do { real_##NAME=NAME; if(!error)error=(LONG)ntw16s_hooks_attach(&real_##NAME,(void *)hook_##NAME); } while(0)
+    ATTACH(TrackPopupMenu);
     ATTACH(CreateDialogParamA);ATTACH(CreateDialogParamW);
     ATTACH(CreateDialogIndirectParamA);ATTACH(CreateDialogIndirectParamW);
     ATTACH(DialogBoxParamA);ATTACH(DialogBoxParamW);

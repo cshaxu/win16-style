@@ -9,6 +9,7 @@
 #include "menu_scope.h"
 #include "controls.h"
 #include "font.h"
+#include "injection/unwind.h"
 #include <commctrl.h>
 #include <dwmapi.h>
 #include <windowsx.h>
@@ -24,7 +25,7 @@ typedef struct style_window {
     win16_style_palette palette;
     HFONT title_font,menu_font; /* Title unchanged; menu owns a System variant. */
     UINT dpi, calls;
-    BOOL active, detached, hot, system_menu, dialog;
+    BOOL active, detached, hot, system_menu, dialog, menu_only;
     int pressed,bar_selected,bar_direction,bar_hover;
     BOOL bar_keyboard;
     HWND bar_focus;
@@ -37,6 +38,7 @@ typedef struct style_window {
 } style_window;
 
 static LRESULT CALLBACK style_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
+static LRESULT CALLBACK style_proc_body(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static void dispose(style_window *);
 
 typedef struct print_children {
@@ -714,6 +716,18 @@ static BOOL install_frame(HWND w,const win16_style_palette *p,BOOL creating,cons
     return TRUE;
 }
 
+/* A transient menu owner never takes over its hidden window's frame. */
+BOOL win16_style_menu_owner_install_created(HWND w,const void *owner,const BOOL *cancelled)
+{
+ if(!local_window(w)||state(w)){SetLastError(ERROR_INVALID_STATE);return FALSE;}
+ style_window *s=calloc(1,sizeof(*s));if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
+ s->creation_owner=owner;s->menu_only=TRUE;s->dpi=GetDpiForWindow(w);if(!s->dpi)s->dpi=96;
+ win16_style_default_palette(&s->palette);s->menu_font=win16_style_menu_font_acquire(s->dpi);
+ if(!s->menu_font || (cancelled&&*cancelled)){dispose(s);SetLastError(ERROR_CANCELLED);return FALSE;}
+ if(!SetWindowSubclass(w,style_proc,STYLE_ID,(DWORD_PTR)s)){DWORD error=GetLastError();dispose(s);SetLastError(error);return FALSE;}
+ return TRUE;
+}
+
 BOOL win16_style_install(HWND w,const win16_style_palette *p)
 {return install_frame(w,p,FALSE,NULL,NULL);}
 
@@ -732,6 +746,7 @@ BOOL win16_style_remove(HWND w)
     style_window *s;RECT client;BOOL normal;
     if(!local_window(w))return FALSE;
     s=state(w);if(!s){SetLastError(ERROR_NOT_FOUND);return FALSE;}
+    if(s->menu_only){if(!RemoveWindowSubclass(w,style_proc,STYLE_ID))return FALSE;++s->calls;s->detached=TRUE;while(s->menus)end_menu_scope(s);win16_style_menu_restore(&s->menu_items);if(!--s->calls)dispose(s);return TRUE;}
     normal=!IsIconic(w)&&!IsZoomed(w);client_screen(w,&client);
     if(!RemoveWindowSubclass(w,style_proc,STYLE_ID))return FALSE;
     ++s->calls;
@@ -771,12 +786,29 @@ BOOL win16_style_frame_terminal(HWND w)
     return TRUE;
 }
 
-static LRESULT CALLBACK style_proc(HWND w,UINT msg,WPARAM wp,LPARAM lp,
+typedef struct menu_dispatch_scope { style_window *state;BOOL returned; } menu_dispatch_scope;
+static void menu_dispatch_end(void *data)
+{
+    menu_dispatch_scope *scope=data;style_window *s=scope->state;
+    if(!scope->returned && !--s->calls && s->detached)dispose(s);
+}
+static NTW16S_UNWIND_FUNCTION LRESULT CALLBACK style_proc(HWND w,UINT msg,WPARAM wp,LPARAM lp,
+    UINT_PTR id,DWORD_PTR data)
+{
+    style_window *s=(style_window *)data;ntw16s_unwind_scope unwind;
+    if(!s->menu_only)return style_proc_body(w,msg,wp,lp,id,data);
+    menu_dispatch_scope scope={s,FALSE};LRESULT result;
+    NTW16S_UNWIND_BEGIN(unwind,menu_dispatch_end,&scope);
+    result=style_proc_body(w,msg,wp,lp,id,data);scope.returned=TRUE;
+    NTW16S_UNWIND_END(unwind);return result;
+}
+static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
     UINT_PTR id,DWORD_PTR data)
 {
     style_window *s=(style_window *)data;
     LRESULT result=0;win16_style_layout l;POINT point;RECT r;
     (void)id;++s->calls;
+    if(s->menu_only && msg!=WM_ENTERMENULOOP && msg!=WM_EXITMENULOOP && msg!=WM_INITMENUPOPUP && msg!=WM_MENUCHAR && msg!=WM_MEASUREITEM && msg!=WM_DRAWITEM && msg!=WM_NCDESTROY)goto forward;
     /* Maximized MDI children merge their controls into the frame menu.
      * Preserve DefMDIChildProc's native geometry/dispatch for that state;
      * merged-control retro painting is a separate S4 menu surface. */

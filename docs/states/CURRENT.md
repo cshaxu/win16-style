@@ -78,11 +78,11 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | Non-goals | 不处理非视觉控件及应用自绘；保留输入、选择、文字、布局、回调及原图形资源；此前授权延期的23项不自动重新准入 |
 | Reference Baseline | [S63 Memo](../history/M0-T18-S63-memo.md)、[S34编辑](../history/M0-T18-S34-vcl-module-edit.md) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
-| Files And ABI Surface | 自有双宽原生C探针、VB观察器及必要既有DLL修改，不增产物或ABI |
+| Files And ABI Surface | 自有双宽原生C探针、VB观察器及必要既有DLL修改；Delphi右键菜单新增TrackPopupMenu受限作用域，无新增公共ABI或产品文件 |
 | Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例限时回收 |
 | Verification | 双宽真实owner、原生过程、输入与文本；有实现时模型负例及实际包 |
 | Expected Markers | 经验证原生协议及调用所有权才能接入；未知路径回退 |
-| Asset Needs | 登记build/t18-s62-radio-memo、build/t18-s64-vb-*（含MDI真实样本、私有诊断）及build/t18-package/s64-group-frame-*及s64-radio-frame-*（同批包与回归），复用合法双宽运行库，结束前提炼证据并安全清理自有scratch |
+| Asset Needs | 登记build/t18-s62-radio-memo、build/t18-s64-vb-*（含MDI真实样本、私有诊断）及build/t18-package/s64-group-frame-*及s64-radio-frame-*及s64-popup-*（同批包与回归），复用合法双宽运行库，结束前提炼证据并安全清理自有scratch |
 | Reporting Requirements | 实际绘制、操作、负例、未覆盖、双发布及远端复核 |
 | Stop Conditions | 无真实所有权或安全内容契约时不按名称猜测 |
 | Exit Criteria | 有证据的有限实现或明确后续接收，实际包交付；T18保持开放 |
@@ -590,3 +590,13 @@ S64 P71普通Delphi TGroupBox有限边框已实现：仅新建组框自身WM_PAI
 S64准入Delphi TRadioGroup普通容器边框：真实双宽144 DPI样本确认同P71主题背景及标题路径；临时候选在标题及两个选项区域零像素变化、边框区域变化，BM_CLICK选择1/0→0/1→1/0。仅把准确TRadioGroup纳入相同自身WM_PAINT、所有者、背景见证与标题保护路径，保留选项与事件、禁用及其他异常原生回退；需双宽独立模型复用P71的裁剪/范围外/重入/换父/空标题负例，旧包检出、真实样本及同批实际包回归、双发布与远端复核。T18/S64开放。
 
 S64 P72 Delphi TRadioGroup普通容器边框已实现：复用P71受限绘制scope和背景/标题验证，真实双宽144 DPI实际包各变616像素、标题与两个选项区域均零变化；两个真实TGroupButton以BM_CLICK切换并恢复1/0→0/1→1/0。自有双宽模型覆盖范围外/裁剪/换父/重入/空标题/禁用/错误所有者，旧包双宽负例检出；干净四文件实际包22项聚焦零skip、23.07秒，双发布八摘要及安装双宽模型通过，原资源未变。其他DPI、真实空标题/禁用外观、物理输入及完整矩阵未覆盖，标题仍用框架字体。[证据](../history/M0-T18-S64-P72-delphi-radio-frame.md)。待提交推送远端复核，T18/S64开放。
+
+S64准入普通Delphi右键菜单缺口：真实双宽主菜单已使用现有renderer；真实x86 TPopupMenu由同线程隐藏TPUtilWindow负责WM_ENTERMENULOOP、WM_INITMENUPOPUP及退出，当前未接入且菜单项保持原生。拟只对本次进程新建的准确隐藏工具窗口以菜单消息范围复用现有菜单渲染/原生通知与清理，不改其窗口边框、绘制或业务，不覆盖原本owner-draw/图片项。先验证真实双宽窗口所有权、消息/应用回调、嵌套及关闭恢复、自有双宽负例、生命周期与旧包检出；未通过保留原生。实施须同批双宽实际包、回归、双发布及远端复核；T18/S64开放。
+
+S64 Delphi右键菜单双宽临时原型：真实样本右键菜单由同线程隐藏TPUtilWindow接收消息，原发布包普通项未换肤；主菜单及嵌套菜单双宽绘制与Esc恢复通过。创建期临时附着未收到菜单消息，原因未独立证实；仅在scratch试验TrackPopupMenu调用期接入，双宽真实样本打开项类型256、Esc后恢复0、菜单循环退出。应用回调、owner-draw、嵌套右键菜单、异常退出、DPI变化及生命周期尚未验证；未改产品、未发布。[证据](../history/M0-T18-S64-delphi-popup-investigation.md)。T18/S64开放。
+
+S64右键菜单原型补证：仅标记启动期创建且调用者与类模块一致的工具窗口，临时接入由调用作用域所有并使用现有异常展开清理；自编模型双宽验证原始应用初始化、owner-draw数据、非目标类/可见窗口回退、菜单打开时销毁窗口，旧包双宽负例检出；真实样本双宽仍生效。嵌套重入、异常展开、错误模块、DPI及资源核算仍待验证；尚未并入产品或发布。T18/S64开放。
+
+S64右键菜单后续原型补证：TPM_RECURSE同宿主嵌套菜单及错误创建模块原生回退双宽通过；未带TPM_RECURSE的首轮模型无效不计。x86 WM_INITMENUPOPUP直接抛异常时原生和候选均以c000041d退出，不证明清理或产品回归；须另设计有效异常验证。无产品或二进制变更，T18/S64开放。
+
+S64 P73 已实现 Delphi 普通右键菜单有限接入：新建隐藏TPUtilWindow经创建者/类模块一致校验后，仅在TrackPopupMenu调用期间复用现有菜单绘制，不改其窗口框架或应用owner-draw项。真实Delphi双宽144 DPI实际包显示并恢复，模型双宽96/144 DPI、嵌套、原始回调、销毁与错误模块通过，旧包双宽检出；GDI有限观测1→1，异常展开和其他API/版本未覆盖。干净双宽四文件包20项聚焦无skip，双发布及安装双宽模型通过，原资源不变。[证据](../history/M0-T18-S64-P73-delphi-popup.md)。待提交推送远端复核；T18/S64开放。

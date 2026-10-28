@@ -23,6 +23,7 @@ NTW16S_API BOOL win16_style_install(HWND window, const win16_style_palette *pale
  * WM_SIZE before their creator has returned and initialized client state. */
 BOOL win16_style_install_created(HWND window,const win16_style_palette *palette,const void *owner,const BOOL *cancelled);
 BOOL win16_style_frame_remove_owned(HWND window,const void *owner);
+BOOL win16_style_menu_owner_install_created(HWND window,const void *owner,const BOOL *cancelled);
 NTW16S_API BOOL win16_style_remove(HWND window);
 /* Private terminal leaf, shared with the native NCDESTROY handler. */
 BOOL win16_style_frame_terminal(HWND window);

@@ -1,0 +1,22 @@
+# M0 T18 S64 P73: Delphi ordinary popup menu
+
+A real DelphiVCL4Python 1.0.7 `TPopupMenu` sent its menu messages to a hidden, same-thread `TPUtilWindow`, which was not handled by the ordinary frame path. The existing menu renderer therefore did not receive the popup messages. The earlier creation-time subclass experiment did not receive these messages; its precise bypass reason remains unproven. See [investigation](M0-T18-S64-delphi-popup-investigation.md).
+
+The creation facade records an eligible new hidden popup utility window only when its exact real/class names, style, same thread/process and creating call-site/class module match. For observed `TrackPopupMenu` calls, a temporary owner-scoped subclass borrows the existing menu renderer; it neither changes the utility window's frame nor overrides application owner-draw items. The application sees original item data on popup initialization, then ordinary items are temporarily adapted and restored. Nested calls reuse the active owner; cleanup is bound to the creating call scope. Other classes, visible windows, other modules and unobserved APIs remain native. This is a limited observed Delphi path, not a claim of complete VCL menu coverage. No public export or product file is added; source identity and original graphics/provenance gates passed.
+
+A self-contained C model exercised application initialization and data, owner-draw item preservation, different class, visible owner, wrong creating module, nested `TPM_RECURSE`, owner destruction during display, ordinary item restoration, unchanged surviving owner style/geometry and repeated open/close. The actual package passed x86/x64 at 96 and 144 DPI; each recorded GDI count 1 before and 1 after two additional opens (limited observation, not whole-process leak proof). Old installed DLLs failed the ordinary-item positive assertion in both widths; bare native controls passed. A direct exception from a system-dispatched callback terminated both native and candidate x86 processes with `0xc000041d`; this is not a valid exception-cleanup test. A cleanup scope protects the new menu-only dispatch, but exceptional unwind behavior remains unverified. Physical keyboard/mouse input, all Delphi versions and other popup APIs are unverified.
+
+Real, self-owned DelphiVCL4Python x86 and x64 samples used the actual candidate DLLs at 144 DPI: main/nested menu opened, Escape restored the original type and ID, and the right-click item was owner-draw while open and restored afterward; the owner menu loop exited and the owned process closed. Native screenshots used API capture, not computer-use. Real sample logs identify candidate DLL absolute paths. These observations do not prove all app callbacks or other DPI combinations.
+
+A same-snapshot clean x86/x64 build used GCC 16.1.0, Ninja and ccache 4.13.6. Snapshot manifest SHA-256 `917735e76d82c0a8fc968720d76c35cdef806c6b473512b32ea0716c33ae24db`; x86/x64 build durations 47.95/56.40 seconds. The actual four-file package passed 20 focused cases with no skips in 55.36 seconds, including the new four popup cases, menu cancellation, font layout, group/radio frames, mandatory ABI/startup/propagation checks. Font-layout cases consumed 44.52 and 35.21 seconds; the new popup cases each took at most 1.47 seconds. This was not the full regression matrix.
+
+The four tested files were backed up and published to `assets/` and `O:/winnt/system32`; both destinations matched the tested hashes. The installed popup model passed in both bitnesses from both locations.
+
+| File | SHA-256 |
+| --- | --- |
+| run16s.exe | `7a9d869c354cee063c299b316a82df778f7acf25bb48bef150f6e4ebeb0d5976` |
+| ntw16s32.dll | `2a8191925415c54cfe0ac4969492677d7dc21330c4f65b0ec22dcb08461aaaf1` |
+| ntw16s64.dll | `d874ed962167071716aedcf5a17d4a179c65cb6ca5862e047b38ad239eb893f7` |
+| demo.exe | `ec61f37fef92b13de8d1231b89799d7eafd4365d892e5a120f970b8a32c51194` |
+
+Production code diff: `window_titles.c` +35/-1, `win16_style.c` +34/-2, `win16_style.h` +1/-0; existing frame, menu, application item and lifecycle owners remain responsible for their established paths. The similar-issue search `rg -n 'TrackPopupMenu|SetWindowLongPtr|SetWindowLongW' src/ntw16s-dll` found existing renderer TrackPopupMenuEx calls; they retain their established frame/menu handling. Only the observed runtime `TrackPopupMenu` path is newly adapted, not unknown callers. T18/S64 remain open; subsequent audit must cover ordinary visible controls still outstanding under the user-scoped objective.
