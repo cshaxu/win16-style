@@ -952,3 +952,5 @@ S64 P138 标准TMaskEdit有限接入已完成双宽干净构建、22项实际包
 S64 主菜单台账补证：P138 855719c远端源码、测试、清单及四产物blob已核对。P73已有真实TMainMenu及嵌套菜单证据，旧S63统计遗漏；当前assets双宽真实DelphiVCL4Python 1.0.7在观察到的96 DPI实际主菜单与嵌套菜单打开、type 0→256、Esc关闭并恢复type 0及ID 2，右键TPopupMenu也正常恢复，实例正常退出。仅消息级及单运行库，其他版本/DPI/物理输入和回调未覆盖。更新[逐项对账](../history/M0-T18-S64-control-inventory.md)：Delphi有限路径37、原生/未证实29、非视觉/内容6、独立对话框2；仍不是准确剩余工作数。未改产品或发布。M0/T18/S64开放。
 
 S64 TBevel调查：自有DelphiVCL4Python 1.0.7 x86/96 DPI样例只创建默认Bevel；公开属性Shape=bsBox、Style=bsLowered，绑定对象无Handle，窗口枚举无对应子HWND，原生截图显示其框架绘制；真实根窗已附着，进程正常退出。不能仅凭位置/颜色从共享画布猜测控件身份，亦不能将此等同应用自绘而排除；须继续调查框架绘制所有权和裁剪。初次x86驱动名写错未运行，随后更正通过；未改产品或发布，scratch登记build/t18-s64-vb-mask-survey。M0/T18/S64开放。
+
+S64 TBevel补证：真实DelphiVCL4Python双宽96 DPI样本两个默认Bevel共享父窗DC及一次WM_PAINT，分别以窗口坐标原点和裁剪区定位，绘制两次Polyline；临时观察器恢复、自有实例退出。x86样本的OBJID_CLIENT无障碍查询成功但子对象数为0，仅说明该provider未暴露这两个控件，不能推广其他版本。几何与颜色不能安全区分应用绘制，继续寻找框架身份见证，不将无窗口控件排除；[证据](../history/M0-T18-S64-bevel-investigation.md)。无产品改动，M0/T18/S64保持开放。
