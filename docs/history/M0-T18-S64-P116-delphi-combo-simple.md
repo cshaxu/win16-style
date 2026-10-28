@@ -1,0 +1,18 @@
+# M0 T18 S64 P116: Delphi simple combo
+
+Real DelphiVCL4Python 1.0.7 x86/x64 at 144 DPI uses a same-owner TComboBox with CBS_SIMPLE, its own WM_PAINT forwarding to USER COMBOBOX, an EDIT child and a permanently visible ComboLBox child. P115 attached the EDIT but not the shell. This change adds CBS_SIMPLE to the existing owner/thread, native-paint witness, parent and public-protocol checks; the existing renderer keeps the edit and list children in charge of their contents and uses the current combo list and scrollbar styling. Switching to a different combo role, owner-draw or reparenting retires the exact attachment. Other and unverified paths keep their existing rules. No public ABI or graphical resource changes.
+
+In actual Delphi at both widths, selecting item 1 changed the editable text to `Second`, reading back selection 1 and leaving the list visible; restoring 0 worked in both the previous package and the new package. Thirty-two list items were present. The new package attached the shell, while the previous one did not. Removing shell styling in the actual package kept the separate EDIT attached with the same font handle and kept the list HWND valid; targets and launchers exited 0 and owned jobs emptied. A native screenshot of the active candidate showed System-styled list text and classic scrollbar. The probe's CB_GETDROPPEDSTATE remains true for this always-visible control, so `closed=0` in the generic observer is expected and is not evidence of an open-popup defect. Synthetic messages are not physical input.
+
+The self-contained native fixture, with a real USER combo initialized under a same-owner class, covers genuine versus false or foreign witnesses, wrong parent, selection, application font, removal while the list is visible, reparent, owner-draw and live transition to editable mode, a reentrant query and cleanup. The P115 saved package fails the attached assertion in x86 and x64; the P116 package and both installed locations pass both widths. The fixture's EDIT is not independently attached; the real sample separately validates that state. Two initial attempts to load a newly compiled scratch observer failed because its dynamically linked GCC runtime dependencies were absent; rebuilding that observer with static runtime resolved the test setup. A separate run used a relative launcher path and failed to find the target. These are failures, not passing test cases.
+
+Clean C17 GCC 16.1.0, Ninja and ccache 4.13.6 double-width build passed PE/ABI and byte-exact resource checks. The same four-file package passed 20 focused tests in 12.54 seconds without skips. Both assets root and O:/winnt/system32 received the tested files with matching SHA-256; the installed native fixture passed both widths at both locations. Snapshot SHA-256: `fc05cb9fdaed0affd92912120e027ea35c067d02df67952d35fada416d0d2813`. Physical input, IME, other DPI, Delphi versions, RTL, owner-draw and full T18 integration remain unverified. M0/T18/S64 remain open.
+
+| File | SHA-256 |
+| --- | --- |
+| run16s.exe | `5e2214020c00adca9b0235866511ac36183e7c045fe714a32b0b715fc6194b43` |
+| ntw16s32.dll | `2cbfb6f1c5140edd60825e6e4c09497bf750793b9044cff9dbd427d727c89786` |
+| ntw16s64.dll | `b1efd1a4982386dcde8503a6db3748767fd5878d9ec5c5cb7302d93a647befde` |
+| demo.exe | `3f93ffef07c5f753afdf091475edd5285d84a41729edc341e872781cc0fd11e8` |
+
+Search `rg -n 'combo_identity|combo_same_role|CBS_SIMPLE|combo_passthrough' src/ntw16s-dll` identifies admission, role validation and the retained existing rendering/ownership paths. Scope counts for source, fixture, CMake and package selector are 7 added and 2 removed tracked lines plus the new 8-line native test: 15 added, 2 removed, net 13, excluding documents, receipts and binary files.
