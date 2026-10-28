@@ -633,4 +633,4 @@ S64准入禁用Delphi TPanel外圈候选：真实双宽144 DPI禁用凸/凹样�
 
 S64 P81禁用Delphi面板外圈已实现：真实双宽144 DPI实际包凸/凹各369/368外圈像素变化、无边框零变化，含子按钮的父DC内部零变化（非子窗口独立截图）；双宽模型覆盖禁用切换、绘制中切换、裁剪、重入及换父，旧包双宽和去状态保护x86负例检出。干净双宽包18项聚焦13.51秒零skip，双发布八摘要及安装双宽模型通过，原资源不变；其他DPI、物理输入及完整矩阵未覆盖。第二内圈仍有应用绘制歧义未合入。[证据](../history/M0-T18-S64-P81-disabled-delphi-panel.md)。提交5124bbf已推送，直接读取远端main、四产物、关键源码、测试及记录均与提交字节一致；T18/S64开放。
 
-S64 P83 SpeedButton逐窗主题试验：双宽自有真实样本对父TPanel调用SetWindowTheme空字符串均S_OK，正控显示面板HWND打开BUTTON主题由成功变失败而NULL HWND仍成功；对应未改设置对照的250×120父DC图各零RGB差异。与先前框架OpenThemeData(NULL,button)一致，不能据此概括所有版本或状态；目标关闭后退出，未独立核验退出码/作业活动。无产品或二进制改动，双发布八摘要与P81测试包一致；[调查](../history/M0-T18-S64-delphi-speedbutton-investigation.md)，待提交推送及远端复核。T18/S64开放。
+S64 P83 SpeedButton逐窗主题试验：双宽自有真实样本对父TPanel调用SetWindowTheme空字符串均S_OK，正控显示面板HWND打开BUTTON主题由成功变失败而NULL HWND仍成功；对应未改设置对照的250×120父DC图各零RGB差异。与先前框架OpenThemeData(NULL,button)一致，不能据此概括所有版本或状态；目标关闭后退出，未独立核验退出码/作业活动。无产品或二进制改动，双发布八摘要与P81测试包一致；[调查](../history/M0-T18-S64-delphi-speedbutton-investigation.md)；提交5d2c294已推送，远端main、记录与四产物直接读取均与提交一致。T18/S64开放。
