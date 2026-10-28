@@ -992,3 +992,7 @@ S64 P153 TDBComboBox有限接入完成：精确CBS_DROPDOWN、同父同owner、A
 S64 Delphi台账更正：P148/P152/P153的三个有限交付已从待核实名单移出，但表中有限清单及标题数字未同步；现补入TDBGrid、TDBEdit、TDBComboBox，逐项核对40有限、26待核实、6非视觉/内容及2独立对话框，共74且无重复。有限不等于全部完成。[台账](../history/M0-T18-S64-control-inventory.md)。无产品二进制改动，M0/T18/S64开放。
 
 S64 TDBLookupComboBox调查：真实x86 ANSI样本不呈现标准COMBOBOX协议，按钮以同owner的COMBOBOX主题调用绘制；自有鼠标消息可打开独立TPopupDataList，但Escape后仍可见，不能称取消通过。scratch扩展既有下拉身份后截图0像素变化，诊断显示主题调用时static_paint作用域为空，尚不能区分未附着和另一绘制路径。真实实例正常退出；未改产品或发布。[证据](../history/M0-T18-S64-lookup-investigation.md)。M0/T18/S64保持开放。
+
+S64 TDBLookupComboBox补证：真实创建阶段IsWindowUnicode=1、ready=1，先前scratch要求ANSI导致候选0；稍后发布版控件为ANSI。仅scratch移除该前提后候选1、WM_PAINT和主题绘制作用域命中，实际按钮区域289像素变化，x86样本正常退出；附着后窗口Unicode标志变为1，WM_GETTEXT A/W均返回空，不能证明绑定值、非ASCII或选择语义安全。弹出列表LB_GETCOUNT为0，仍需明确原生交互及双宽负例；未改产品或发布。[证据](../history/M0-T18-S64-lookup-investigation.md)。M0/T18/S64开放。
+
+S64 查找列表选择补证：发布版及scratch候选在自有x86样本点击102×130弹层中部后均隐藏弹层、控件截图各变化1378像素并正常退出；选择前后两版截图差异各289像素且仅限按钮，文本区一致。首次误将选择后的新数据送入原记录专用断言，两版均失败，分离测试后通过；尚未读取数据键或验证持久化、回调、非ASCII、物理输入及取消。未改产品或发布。[调查](../history/M0-T18-S64-lookup-investigation.md)。M0/T18/S64开放。
