@@ -82,7 +82,7 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例限时回收 |
 | Verification | 双宽真实owner、原生过程、输入与文本；有实现时模型负例及实际包 |
 | Expected Markers | 经验证原生协议及调用所有权才能接入；未知路径回退 |
-| Asset Needs | 登记build/t18-s62-radio-memo、build/t18-s64-vb-*（含MDI真实样本、私有诊断）、build/t18-s64-vcl-value-survey、build/t18-s64-vb-mask-survey及build/t18-package/s64-group-frame-*及s64-radio-frame-*、s64-popup-*、s64-panel-*、s64-labeled-edit-*、s64-numberbox-*、s64-list-*、s64-short-*、s64-valuegrid-*、s64-smallgrid-*、s64-controlbar-*及s64-multiline-frame-*（同批包与回归），复用合法双宽运行库，结束前提炼证据并安全清理自有scratch |
+| Asset Needs | 登记build/t18-s62-radio-memo、build/t18-s64-vb-*（含MDI真实样本、私有诊断）、build/t18-s64-vcl-value-survey、build/t18-s64-vb-mask-survey及build/t18-package/s64-group-frame-*及s64-radio-frame-*、s64-popup-*、s64-panel-*、s64-labeled-edit-*、s64-numberbox-*、s64-list-*、s64-short-*、s64-valuegrid-*、s64-smallgrid-*、s64-controlbar-*、s64-multiline-frame-*及s64-mask-*（同批包与回归），复用合法双宽运行库，结束前提炼证据并安全清理自有scratch |
 | Reporting Requirements | 实际绘制、操作、负例、未覆盖、双发布及远端复核 |
 | Stop Conditions | 无真实所有权或安全内容契约时不按名称猜测 |
 | Exit Criteria | 有证据的有限实现或明确后续接收，实际包交付；T18保持开放 |
@@ -942,3 +942,9 @@ S64 多行EDIT最终候选：局部WM_NCPAINT裁剪负例双宽检出，修正�
 S64 多行EDIT无边框负例修正：标记顶边并排除右侧滚动条范围，正确候选双宽检查区改写0/180像素；scratch同时取消外层及list_border内层边框限制的故障版双宽改写180/180并被断言拒绝。原失败的整体移除差异探针保留为无效，不以其结果称通过。已纳入模型，须重新干净同批构建、实际包验证和发布；M0/T18/S64开放。
 
 S64 P137 多行EDIT外框已完成双宽干净构建、20项实际包回归（19.92秒、零skip）和真实双宽TMemo复测；区域裁剪及无边框故障负例双宽检出。assets/system32八摘要一致，两处双宽安装模型通过。[证据](../history/M0-T18-S64-P137-multiline-frame.md)。提交及远端复核待完成；其他DPI、物理输入和完整集成未覆盖，TMaskEdit仍属scratch调查。M0/T18/S64开放。
+
+S64 标准TMaskEdit有限接入准入：真实Delphi XE x86 96 DPI样例自身WM_PAINT经同类owner转发系统EDIT，现发布包不附着；仅将精确Unicode TMaskEdit纳入既有同owner/线程、原生绘制见证和单行EDIT协议，复用现有外框及字体策略，不实现mask规则、不接管应用内容或派生类。原型对真实样例附着且同窗移除边框672、客户区388像素，字体变更与既有策略一致；日期样例地区文本异常，只将16个位置裸/样式输入结果一致作为有界证据，不称有效日期语义。须双宽原生fixture的伪绘制负例、选择/只读/移除、旧包负例、真实样例及同批包回归、双发布与远端复核；中文字体质量及其他DPI未覆盖。P137 3adebfa远端源码、测试、清单及四文件blob已复核；M0/T18/S64开放。
+
+S64 标准TMaskEdit候选实施：精确类经既有同owner/线程、同窗原生绘制见证与单行EDIT协议后复用renderer；双宽自有模型伪绘制拒绝、选择、只读、外框和移除通过，旧包双宽附着断言失败。真实x86 Delphi XE日期样例候选同窗边框672、客户区388像素，字体从私有System恢复原字体，实例正常退出；日本地区mask输入异常同裸版，仅限一致性证据。需同批干净包、相邻回归、真实样例及双发布远端复核。M0/T18/S64开放。
+
+S64 P138 标准TMaskEdit有限接入已完成双宽干净构建、22项实际包聚焦回归（20.30秒、零skip）、真实x86 Delphi XE样例672外框/388客户区像素与字体对照；P137双宽附着负例检出。assets/system32八摘要一致，两处双宽安装模型通过。[证据](../history/M0-T18-S64-P138-mask-edit.md)。提交和远端复核待完成；日文样例日期异常、其他mask/DPI/物理输入及完整集成未覆盖。M0/T18/S64开放。

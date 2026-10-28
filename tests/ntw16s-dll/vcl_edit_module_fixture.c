@@ -4,7 +4,9 @@
 /* Test-only DLL: its class is owned outside the EXE. The synthetic delayed
  * native initialization exercises creation-scope admission; it does not
  * claim to reproduce a Delphi runtime's actual creation order. */
-#ifdef T18_MEMO
+#ifdef T18_MASK
+#define EDIT_CLASS L"TMaskEdit"
+#elif defined(T18_MEMO)
 #define EDIT_CLASS L"TMemo"
 #else
 #define EDIT_CLASS L"TEdit"
