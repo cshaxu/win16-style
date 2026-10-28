@@ -1,7 +1,9 @@
 #define UNICODE
 #include <windows.h>
 #include <string.h>
-#ifdef T18_PUSH
+#if defined(T18_CHECK)
+#define BUTTON_CLASS L"TCheckBox"
+#elif defined(T18_PUSH)
 #define BUTTON_CLASS L"TButton"
 #elif defined(T18_RADIO)
 #define BUTTON_CLASS L"TRadioButton"
@@ -9,18 +11,29 @@
 #define BUTTON_CLASS L"TGroupButton"
 #endif
 static HINSTANCE owner;static WNDPROC native_button;static BOOL fake,enabled;static void *thunk;
-#ifdef T18_PUSH
+#if defined(T18_PUSH) || defined(T18_CHECK)
 typedef LRESULT (WINAPI *foreign_fn)(WNDPROC,HWND,UINT,WPARAM,LPARAM);
 static foreign_fn foreign_paint;
 static unsigned clicks;
+#ifdef T18_CHECK
+static HWND reparent_child,reparent_to;
+__declspec(dllexport) void WINAPI FixtureReparentOnBackground(HWND child,HWND parent){reparent_child=child;reparent_to=parent;}
+#endif
 __declspec(dllexport) unsigned WINAPI FixtureClicks(void){return clicks;}
 __declspec(dllexport) void WINAPI FixtureForeign(foreign_fn fn){foreign_paint=fn;}
 #endif
 static LRESULT CALLBACK group_proc(HWND w,UINT m,WPARAM p,LPARAM l)
 {
+#ifdef T18_CHECK
+    if(m==WM_ERASEBKGND || m==WM_PRINTCLIENT){if(reparent_child){HWND child=reparent_child;reparent_child=NULL;SetParent(child,reparent_to);}RECT r;GetClientRect(w,&r);HBRUSH brush=CreateSolidBrush(RGB(42,123,56));if(brush){FillRect((HDC)p,&r,brush);DeleteObject(brush);}return 1;}
+#endif
     if(m==WM_COMMAND && HIWORD(p)==BN_CLICKED && l){
-#ifdef T18_PUSH
+#if defined(T18_PUSH) || defined(T18_CHECK)
         ++clicks;
+#ifdef T18_CHECK
+        HWND child=(HWND)l;LRESULT state=SendMessageW(child,BM_GETCHECK,0,0);
+        SendMessageW(child,BM_SETCHECK,state==BST_UNCHECKED?BST_CHECKED:BST_UNCHECKED,0);
+#endif
 #else
         HWND child=(HWND)l;for(HWND it=GetWindow(w,GW_CHILD);it;it=GetWindow(it,GW_HWNDNEXT))SendMessageW(it,BM_SETCHECK,it==child?BST_CHECKED:BST_UNCHECKED,0);
 #endif
@@ -29,7 +42,7 @@ static LRESULT CALLBACK group_proc(HWND w,UINT m,WPARAM p,LPARAM l)
     return DefWindowProcW(w,m,p,l);
 }
 static LRESULT CALLBACK dispatch(HWND w,UINT m,WPARAM p,LPARAM l){
-#ifdef T18_PUSH
+#if defined(T18_PUSH) || defined(T18_CHECK)
 if(enabled && fake==2 && m==WM_PAINT && foreign_paint)return foreign_paint(native_button,w,m,p,l);
 #endif
 return (!enabled || (fake&&m==WM_PAINT))?DefWindowProcW(w,m,p,l):CallWindowProcW(native_button,w,m,p,l);}
@@ -43,8 +56,12 @@ unsigned char code[]={0xb8,0,0,0,0,0xff,0xe0};void *target=(void*)dispatch;memcp
 memcpy(thunk,code,sizeof(code));if(!VirtualProtect(thunk,4096,PAGE_EXECUTE_READ,&old))return FALSE;FlushInstructionCache(GetCurrentProcess(),thunk,sizeof(code));c.hInstance=owner;c.lpszClassName=L"TRadioGroup";c.lpfnWndProc=group_proc;if(!RegisterClassExW(&c))return FALSE;c.style=CS_DBLCLKS|CS_HREDRAW|CS_VREDRAW;c.cbWndExtra=n.cbWndExtra;c.lpszClassName=BUTTON_CLASS;c.lpfnWndProc=initial;return RegisterClassExW(&c)!=0;}
 __declspec(dllexport) HWND WINAPI FixtureGroup(HWND parent){return CreateWindowW(L"TRadioGroup",L"Group",WS_CHILD|WS_VISIBLE,0,0,300,120,parent,NULL,owner,NULL);}
 __declspec(dllexport) HWND WINAPI FixtureCreate(HWND parent,BOOL first){
-#ifdef T18_PUSH
+#if defined(T18_PUSH) || defined(T18_CHECK)
+#ifdef T18_CHECK
+DWORD style=WS_CHILD|WS_VISIBLE|WS_TABSTOP|BS_3STATE;
+#else
 DWORD style=WS_CHILD|WS_VISIBLE|WS_TABSTOP|(first?BS_DEFPUSHBUTTON:BS_PUSHBUTTON);
+#endif
 #else
 DWORD style=WS_CHILD|WS_VISIBLE|BS_RADIOBUTTON|(first?WS_TABSTOP|WS_GROUP:0);
 #endif

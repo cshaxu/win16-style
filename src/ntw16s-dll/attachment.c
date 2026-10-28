@@ -300,6 +300,7 @@ static BOOL group_button_identity(HWND w)
         (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==owner && (style&WS_CHILD) &&
         !(style&(BS_BITMAP|BS_ICON|BS_PUSHLIKE)) && !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
         GetClassNameW(w,name,ARRAYSIZE(name)) && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(name,real)))return FALSE;
+    if(!lstrcmpW(name,L"TCheckBox"))return (style&BS_TYPEMASK)==BS_3STATE;
     if(!lstrcmpW(name,L"TButton"))
         return (style&BS_TYPEMASK)==BS_PUSHBUTTON || (style&BS_TYPEMASK)==BS_DEFPUSHBUTTON;
     return (style&BS_TYPEMASK)==BS_RADIOBUTTON &&
@@ -503,6 +504,13 @@ BOOL ntw16s_group_push_button(HWND w)
     return a && !a->detached && a->group_button_candidate && a->group_button_installed &&
         a->group_button_parent==GetParent(w) && group_button_identity(w) &&
         GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TButton");
+}
+BOOL ntw16s_group_check_button(HWND w)
+{
+    attachment *a=lookup(w);WCHAR name[64];
+    return a && !a->detached && a->group_button_candidate && a->group_button_installed &&
+        a->group_button_parent==GetParent(w) && group_button_identity(w) &&
+        GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TCheckBox");
 }
 static BOOL vb_data_role(HWND w,HWND parent)
 {

@@ -3,6 +3,7 @@
 /* Internal guard for a witnessed VCL group button. */
 BOOL ntw16s_group_button_valid(HWND);
 BOOL ntw16s_group_push_button(HWND);
+BOOL ntw16s_group_check_button(HWND);
 BOOL ntw16s_grid_valid(HWND);
 BOOL ntw16s_vb_user_edge_valid(HWND);
 BOOL ntw16s_vb_data_valid(HWND);
@@ -26,6 +27,7 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include "vb_text.h"
 #include "injection/unwind.h"
 #include <commctrl.h>
+#include <uxtheme.h>
 #include <oleacc.h>
 #include <stdlib.h>
 #include <limits.h>
@@ -639,7 +641,12 @@ static void draw(HWND w,control_style *s,HDC dc)
     GetClientRect(w,&r);SetDCBrushColor(dc,s->palette.light);
     /* A group box surrounds sibling controls, not an opaque child surface.
      * Repainting its interior erases those siblings during ordinary motion. */
-    if(label_control || type!=BS_GROUPBOX)FillRect(dc,&r,(HBRUSH)GetStockObject(DC_BRUSH));
+    if(label_control || type!=BS_GROUPBOX){
+        BOOL check_parent=ntw16s_group_check_button(w);
+        BOOL parent_painted=check_parent && SUCCEEDED(DrawThemeParentBackground(w,dc,&r));
+        if(s->detached || !IsWindow(w) || (check_parent && !ntw16s_group_check_button(w))){RestoreDC(dc,saved);free(text);return;}
+        if(!parent_painted)FillRect(dc,&r,(HBRUSH)GetStockObject(DC_BRUSH));
+    }
     if(label_control || type==BS_PUSHBUTTON || type==BS_DEFPUSHBUTTON || type==BS_GROUPBOX || (style&BS_PUSHLIKE)){
         other_control(w,s,dc,r,font,text,label_control);RestoreDC(dc,saved);free(text);return;}
     height=MulDiv(13,(int)dpi,96);glyph=r;glyph.top+=(r.bottom-height)/2;

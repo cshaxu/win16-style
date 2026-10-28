@@ -136,7 +136,7 @@ static ntw16s_control_protocol *bind_protocol(HWND w,HMODULE verified_owner,unsi
      * require initialized public protocol evidence, even a tab's real name. */
     unsigned ocx_role=ocx_common_control_owner(w,owner,name,&native_class);
     unsigned toolbar_role=ocx_toolbar_owner(w,owner,name,&native_class,&toolbar_native);
-    role=(!lstrcmpW(name,L"TButton") || (verified_owner && (!lstrcmpW(name,L"TGroupButton") || !lstrcmpW(name,L"TRadioButton"))))?1:!lstrcmpW(name,L"TComboBox")?2:
+    role=(!lstrcmpW(name,L"TButton") || (verified_owner && (!lstrcmpW(name,L"TGroupButton") || !lstrcmpW(name,L"TRadioButton") || !lstrcmpW(name,L"TCheckBox"))))?1:!lstrcmpW(name,L"TComboBox")?2:
         (!lstrcmpW(name,WC_TABCONTROLW) || !lstrcmpW(name,L"TPageControl") || !lstrcmpW(name,L"TTabControl"))?3:
         (!lstrcmpW(name,WC_HEADERW) || !lstrcmpW(name,L"THeaderControl"))?4:
         (!lstrcmpW(name,WC_LISTVIEWW) || !lstrcmpW(name,L"TListView"))?5:

@@ -740,3 +740,7 @@ S64 P110新版Delphi微调按钮有限交付：真实双宽144 DPI按住截图�
 S64准入新版Delphi普通TButton候选：P110真实双宽样本在TNotebook/TPage内按钮未附着、Segoe UI，类owner为DelphiVCL.pyd；双宽公开BUTTON消息与理想尺寸有效，自身WM_PAINT经同owner转发系统BUTTON，原生异步BM_CLICK各触发一次回调。拟扩展现有同运行库BUTTON见证与协议，只接普通/默认文字按钮，保留位图、图标、owner-draw、RTL；先做双宽真样本及未见证/错owner/角色切换/交互负例，干净包测试后按规范双发布。T18/S64开放。
 
 S64 P111新版Delphi普通TButton有限交付：真实双宽144 DPI运行库拥有的Notebook页面按钮经自身原生BUTTON绘制见证及协议验证后附着；120×28按钮对25高System文字先缩小上下留白，必要时整段等比适配避免裁切。双宽真实样本点击回调各一次、页面切换及自有进程清理正常；双宽模型覆盖未见证、错误调用者/父owner、位图、键盘、重挂及字体恢复，P110旧包双宽附着断言失败。干净同批包20项7.25秒零skip，双发布八摘要一致，两个位置双宽安装模型通过；其他DPI、长文本、本地化、物理输入及全集未覆盖。[证据](../history/M0-T18-S64-P111-delphi-push.md)。M0/T18/S64开放。
+
+S64准入新版Delphi普通TCheckBox候选：P111真实DelphiVCL4Python 1.0.7双宽144 DPI样本主窗已附着但运行库拥有的精确TCheckBox未附着；自身WM_PAINT同owner转发系统BUTTON、公开理想尺寸与check/state协议有效，style为BS_3STATE。原版及P111双宽异步BM_CLICK均0→1并各一次OnClick，探针零退出且作业为空。拟仅同owner父子、自身原生绘制见证及公开协议成立时接纳该普通角色复用现有glyph/字体，保留状态与回调；先双宽真实样本和未见证/错owner/位图/角色变化负例，再干净包聚焦回归及规范双发布。M0/T18/S64开放。
+
+S64 P112新版Delphi普通TCheckBox有限交付：真实双宽144 DPI样本运行库拥有控件未附着，精确BS_3STATE、自身同owner转发原生BUTTON及公开协议经验证后复用现有字体/glyph；父背景先按系统父绘制API呈现，避免初版候选白块，重入后复核角色。实际包双宽0→1、OnClick各一次及作业清理正常；双宽自有模型验证假见证/错误来源/父owner/位图、三态/键盘、定制背景及背景绘制内换父；P111双宽附着断言失败。干净四文件包22项22.82秒零skip，双发布八摘要及两处双宽安装模型通过；其他DPI、真实三态、物理输入、复杂背景及全集未覆盖。[证据](../history/M0-T18-S64-P112-delphi-checkbox.md)。M0/T18/S64开放。
