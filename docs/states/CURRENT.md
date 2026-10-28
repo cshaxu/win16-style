@@ -73,9 +73,9 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | Continuation；S63 P1 b047a90远端15文件复核通过 |
-| Admission And Approval | 用户授权T18内自动实施可做控件，不新开T |
+| Admission And Approval | 用户授权T18内自动实施可做控件，不新开T；后续明确只处理普通可见VB5/VB6及Delphi控件，非视觉控件和应用自绘不追查 |
 | Objective | 核实真实VCL编辑及无窗口候选的公开绘制协议，并修正VB原生探针跨进程文本读取、同线程队列观察、真实禁用状态和图形选择图像像素回归；验证并适配真实VB5/VB6运行库图形单选框与复选框的有限owner-draw外框，并修复真实VB5/VB6 MDI子窗体标题 |
-| Non-goals | 保留输入、选择、文字、布局、回调及原图形资源 |
+| Non-goals | 不处理非视觉控件及应用自绘；保留输入、选择、文字、布局、回调及原图形资源；此前授权延期的23项不自动重新准入 |
 | Reference Baseline | [S63 Memo](../history/M0-T18-S63-memo.md)、[S34编辑](../history/M0-T18-S34-vcl-module-edit.md) |
 | Candidate Proposal | [Delphi控件完整审计](../proposals/delphi-win32-controls.md) |
 | Files And ABI Surface | 自有双宽原生C探针、VB观察器及必要既有DLL修改，不增产物或ABI |
@@ -574,3 +574,7 @@ S64 P65继续隔离VB5 VisData：P64一次异常地址与探针共享加载返�
 S64 P66以独立查询线程避免调试循环被同步消息阻塞：VB5数据库树首次返回0项，随后四次错误1460超时，不能据此判空；自有UI线程快照处于NtDelayExecution，参数为非警觉相对等待200毫秒，原始栈中MSREPL地址并非已验证调用帧，根因未定。MDB摘要不变，沿用P65注册及文件选择模拟限制；无产品或二进制变更。[证据](../history/M0-T18-S64-P66-vb5-tree-wait.md)。真实VB5 Data仍未覆盖，T18/S64开放。
 
 S64 P67补充真实VB5密码掩码：已审计x86样本的普通单行TextBox临时通过原生消息设置掩码，原版及发布版96 DPI均显示等长不同文字相同图、短文字不同图，并恢复文字、掩码和字体句柄；原版与样式图1669像素不同，不能逐像素归因。首次样式探针因截图文件重名失败，独立目录重试通过；强制回收自有作业，不代表正常退出；非应用原始PasswordChar属性，附着及实际字形未独立验证。[证据](../history/M0-T18-S64-P67-vb5-password-dynamic.md)。无产品或二进制改动，VB5 Data未解决，T18/S64开放。
+
+S64用户收窄后续范围：只处理普通可见VB5/VB6及Delphi控件，非视觉控件和应用自绘不再追查；框架对普通控件的默认绘制不因由框架完成而自动排除。先前明确延期的23个VB单位仍在TODO，已记录历史事实不改写。此前148行及Delphi 74家族不是本轮剩余数量；须按新范围重核后逐项给出真实实现及验证状态。T18/S64开放。
+
+S64 P68普通控件范围与TGroupBox定位：用户排除非视觉及应用自绘后，框架默认普通控件仍在范围、23项既有延期不变；历史冻结行数不是当前剩余实现数。真实DelphiVCL4Python双宽144 DPI自有样本中，目标TGroupBox未附着；主题模块在该窗口DC以DrawTextExW绘制标题，矩形(8,0)-(87,25)，观察器调用后恢复IAT并关闭自有实例。前期x86观察器导出名错误不计通过；边框与文字先后顺序、通用裁剪及其他变体仍未验证，尚无产品修复。[证据](../history/M0-T18-S64-P68-ordinary-scope-group-caption.md)。T18/S64开放。
