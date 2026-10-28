@@ -958,3 +958,5 @@ S64 TBevel补证：真实DelphiVCL4Python双宽96 DPI样本两个默认Bevel共�
 S64 TBevel公开接口补查：VCL文档存在FindControl与ControlAtPos对象方法，尚未证明注入式纯C可在不同静态链接程序中安全调用。真实x86绑定以Point及两至四参数测试均返回TypeError，不能由绑定失败推断底层Delphi方法失败；实例正常退出。详见[调查](../history/M0-T18-S64-bevel-investigation.md)。不据此声称样式已实现，M0/T18/S64保持开放。
 
 S64 TSplitter调查：真实DelphiVCL4Python默认alLeft样本的x86裸版及双宽样式版均在父窗DC使用与父窗相同的画刷填充20像素宽区域，未观察到独立边框；探针恢复、自有进程退出。仅为默认单样本，未验证拖动、变体或像素对照，不能将家族列为已实现；[证据](../history/M0-T18-S64-splitter-investigation.md)。无产品改动，M0/T18/S64开放。
+
+S64 TSplitter交互补证：真实VCL双宽裸版及样式版消息级拖动35像素，面板150→185且松开后捕获释放；WM_CANCELMODE和此前Escape尝试均未阻止第二次拖动，不能称取消通过或推断回归。x86 Beveled变体在父窗共享DC调用两次FrameRect，尚不能仅凭几何识别控件。其他方向、物理输入与外观对照未覆盖；[证据](../history/M0-T18-S64-splitter-investigation.md)。无产品改动，M0/T18/S64开放。
