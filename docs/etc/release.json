@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "delivery": "M0 T18 S64 P126",
+  "delivery": "M0 T18 S64 P127",
   "stage": "development acceptance; M0/T18/S64 open; focused package tests passed",
   "version": "0.18.0.0",
   "version_contract": "M0 T18; sequential S does not increment T version",
   "package_directory": "assets",
-  "source_snapshot_sha256": "c942f5b82852d6f58185c8ea2768a7ac33eaa912a6fca8e39dcc12291015781d",
+  "source_snapshot_sha256": "f23de1e5d0e0ed11f2442dd3062475fa58fe0cd778398dcc46b5011d3f111641",
   "source_snapshot_format": "SHA256 of the clean build snapshot.json bytes",
   "source_inputs": [
     {
@@ -54,7 +54,7 @@
     },
     {
       "path": "src/ntw16s-dll/attachment.c",
-      "sha256": "f38a92d180c3c501b74b498ce4272669311ad8692db53f3f360c3d2b6d435582"
+      "sha256": "cd450a99422c2ff8223887e7f2141d8a1800121eb239884c134e607ebdcb433d"
     },
     {
       "path": "src/ntw16s-dll/attachment.h",
@@ -238,7 +238,7 @@
     },
     {
       "path": "src/ntw16s-dll/injection/window_titles.c",
-      "sha256": "87a995e0b2da13f1843f8a93821a40419db93b0575c720a65d8d1828368f3ef5"
+      "sha256": "b760a3e14508e972a6ffc27e9bd08809f225bc919b1569cdf3c9ec3bd9a41dcc"
     },
     {
       "path": "src/ntw16s-dll/layout.c",
@@ -453,7 +453,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T18",
-      "sha256": "1d97502a3c492709ad23c24a1de947dee4bb21d3e813c190691d8bd831201eee",
+      "sha256": "47e2ed071a6ff500800c9e4f2558e875de4208596042f3d9d8d4e2e4148f8f56",
       "imports": [
         "advapi32.dll",
         "kernel32.dll",
@@ -465,7 +465,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T18",
-      "sha256": "7aa7488871eaf4787d152f3cd00534c51eeb5b1903bc690f335b329c39fc8a29",
+      "sha256": "b4d5cd08f25e001363839c6d3ab6eca4b15eb6d91261b38ef09258456caca9d6",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -485,7 +485,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T18",
-      "sha256": "a96e3b6c681e7544f32f0c3f24b861b3799f60704cef7f61abfdb76df8ea1a6b",
+      "sha256": "52f20934a1c7885c29fc7f3544343524842de8b985ef52417da7d49e7d6ed151",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -500,7 +500,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T18",
-      "sha256": "eed3f50c1bad7cce299e766c85af3191eb0a321f42c14bc0cafc4b237e002714",
+      "sha256": "72ee440a658031f658d35fdeea39d97ad425b762310eef595385bb6a3d1cd610",
       "imports": [
         "comctl32.dll",
         "comdlg32.dll",
@@ -533,53 +533,53 @@
     ]
   },
   "architecture": "C17, MinGW GCC, Ninja and ccache; three components, four product files; existing ABI retained",
-  "binary_batch_delivery": "M0 T18 S64 P126",
+  "binary_batch_delivery": "M0 T18 S64 P127",
   "verification": {
     "clean_build": {
       "test_jobs": 4,
+      "profile": "Focused",
+      "selection": "^core/abi$",
       "status": "passed",
       "exit_code": 0,
-      "targets": "all",
       "architectures": [
         "x86",
         "x64"
       ],
-      "profile": "Focused",
+      "build_root": "O:\\repos.hobby\\win16style\\build\\t18-package\\s64-month-p127-candidate1\\clean-source\\build\\.ninja",
+      "build_jobs": 8,
+      "targets": "all",
       "tests": [
         {
-          "test_seconds": 0.5371949999826029,
-          "skipped": [],
-          "build_seconds": 33.82640290001291,
-          "configure_seconds": 5.407588800007943,
+          "configure_seconds": 5.532645500003127,
           "tests": 1,
+          "architecture": "x86",
+          "test_seconds": 0.4956436000065878,
+          "skipped": [],
           "passed": 1,
-          "architecture": "x86"
+          "build_seconds": 35.11833570001181
         },
         {
-          "test_seconds": 0.4906268999911845,
-          "skipped": [],
-          "build_seconds": 40.65579219997744,
-          "configure_seconds": 5.828577400010545,
+          "configure_seconds": 5.129017000028398,
           "tests": 1,
+          "architecture": "x64",
+          "test_seconds": 0.49516599997878075,
+          "skipped": [],
           "passed": 1,
-          "architecture": "x64"
+          "build_seconds": 40.06668139999965
         }
-      ],
-      "build_root": "O:\\repos.hobby\\win16style\\build\\t18-package\\s64-month-p126-candidate1\\clean-source\\build\\.ninja",
-      "selection": "^core/abi$",
-      "build_jobs": 8
+      ]
     },
     "actual_package": [
       {
         "status": "passed-focused",
         "cases": 29,
-        "seconds": 22.7133661,
+        "seconds": 23.2443041,
         "skipped": [],
         "sha256": {
-          "demo.exe": "eed3f50c1bad7cce299e766c85af3191eb0a321f42c14bc0cafc4b237e002714",
-          "ntw16s32.dll": "7aa7488871eaf4787d152f3cd00534c51eeb5b1903bc690f335b329c39fc8a29",
-          "ntw16s64.dll": "a96e3b6c681e7544f32f0c3f24b861b3799f60704cef7f61abfdb76df8ea1a6b",
-          "run16s.exe": "1d97502a3c492709ad23c24a1de947dee4bb21d3e813c190691d8bd831201eee"
+          "demo.exe": "72ee440a658031f658d35fdeea39d97ad425b762310eef595385bb6a3d1cd610",
+          "ntw16s32.dll": "b4d5cd08f25e001363839c6d3ab6eca4b15eb6d91261b38ef09258456caca9d6",
+          "ntw16s64.dll": "52f20934a1c7885c29fc7f3544343524842de8b985ef52417da7d49e7d6ed151",
+          "run16s.exe": "47e2ed071a6ff500800c9e4f2558e875de4208596042f3d9d8d4e2e4148f8f56"
         },
         "requested_cases": [
           "month-model-32",
@@ -610,7 +610,7 @@
   },
   "validation": {
     "status": "focused automated native tests; physical input and full integration not tested",
-    "evidence": "docs/history/M0-T18-S64-P126-month-selection.md"
+    "evidence": "docs/history/M0-T18-S64-P127-month-header.md"
   },
   "closure": {
     "status": "M0/T18/S64 remain open; this is a bounded development delivery",

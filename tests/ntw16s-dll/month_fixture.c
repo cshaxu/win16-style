@@ -1,9 +1,10 @@
 #define _WIN32_WINNT 0x0A00
 #include <windows.h>
 #include <commctrl.h>
-static HINSTANCE instance;static WNDPROC native_proc;static BOOL fake,raise_paint;static HWND switch_parent;typedef LRESULT (WINAPI *forwardfn)(WNDPROC,HWND,UINT,WPARAM,LPARAM);static forwardfn foreign_forward;
+static HINSTANCE instance;static WNDPROC native_proc;static BOOL fake,raise_paint;static HWND switch_parent,query_parent;static int query_mode;typedef LRESULT (WINAPI *forwardfn)(WNDPROC,HWND,UINT,WPARAM,LPARAM);static forwardfn foreign_forward;
 static LRESULT CALLBACK parent_proc(HWND w,UINT m,WPARAM p,LPARAM l){return DefWindowProcW(w,m,p,l);}
-static LRESULT CALLBACK hotkey_proc(HWND w,UINT m,WPARAM p,LPARAM l){if(fake&&m==WM_PAINT)return DefWindowProcW(w,m,p,l);if(foreign_forward&&m==WM_PAINT)return foreign_forward(native_proc,w,m,p,l);LRESULT result=CallWindowProcW(native_proc,w,m,p,l);if(switch_parent&&m==WM_PAINT){HWND parent=switch_parent;switch_parent=NULL;SetParent(w,parent);}if(raise_paint&&m==WM_PAINT){raise_paint=FALSE;RaiseException(0xe0425342u,0,0,NULL);}return result;}
+static LRESULT CALLBACK hotkey_proc(HWND w,UINT m,WPARAM p,LPARAM l){if(m==MCM_GETCALENDARCOUNT && query_mode){int action=query_mode;query_mode=0;if(action==1)SetParent(w,query_parent);else if(action==2)RaiseException(0xe0425342u,0,0,NULL);else if(action==3)SendMessageW(w,WM_PAINT,0,0);}if(fake&&m==WM_PAINT)return DefWindowProcW(w,m,p,l);if(foreign_forward&&m==WM_PAINT)return foreign_forward(native_proc,w,m,p,l);LRESULT result=CallWindowProcW(native_proc,w,m,p,l);if(switch_parent&&m==WM_PAINT){HWND parent=switch_parent;switch_parent=NULL;SetParent(w,parent);}if(raise_paint&&m==WM_PAINT){raise_paint=FALSE;RaiseException(0xe0425342u,0,0,NULL);}return result;}
+__declspec(dllexport) void WINAPI FixtureQuery(int mode,HWND parent){query_mode=mode;query_parent=parent;}
 __declspec(dllexport) void WINAPI FixtureChangeParent(HWND p){switch_parent=p;}
 __declspec(dllexport) void WINAPI FixtureFake(BOOL value){fake=value;}
 __declspec(dllexport) void WINAPI FixtureForward(forwardfn f){foreign_forward=f;}

@@ -330,12 +330,14 @@ static BOOL WINAPI hook_DrawIconEx(HDC dc,int x,int y,HICON icon,int cx,int cy,U
     ntw16s_status_icon_frame(dc,x,y,cx,cy,icon,__builtin_return_address(0));
     SetLastError(saved);return real_DrawIconEx(dc,x,y,icon,cx,cy,step,brush,flags);
 }
+void ntw16s_month_header_text(HTHEME,HDC,int,int,const RECT *,DWORD,const void *);
 void ntw16s_month_selection_background(HTHEME,HDC,int,int,const RECT *,const RECT *,const void *);
 void ntw16s_month_selection_text(HTHEME,HDC,int,int,const RECT *,DWORD,const void *);
 static __typeof__(&DrawThemeText) real_DrawThemeText;
 static NTW16S_UNWIND_FUNCTION HRESULT WINAPI hook_DrawThemeText(HTHEME theme,HDC dc,int part,int state,LPCWSTR text,int count,DWORD flags,DWORD flags2,const RECT *rect)
 {
     DWORD saved=GetLastError(),error;HRESULT result;ntw16s_status_theme_scope scope;ntw16s_unwind_scope unwind;
+    ntw16s_month_header_text(theme,dc,part,state,rect,flags,__builtin_return_address(0));
     ntw16s_month_selection_text(theme,dc,part,state,rect,flags,__builtin_return_address(0));
     ntw16s_status_text_frame(dc,rect,flags,__builtin_return_address(0));
     BOOL entered=ntw16s_status_theme_begin(&scope,dc,part,state,text,count,flags,rect,__builtin_return_address(0));

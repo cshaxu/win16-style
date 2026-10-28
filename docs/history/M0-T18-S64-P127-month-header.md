@@ -1,0 +1,11 @@
+# M0 T18 S64 P127: month-calendar title background
+
+The real x86 Delphi XE sample, its source and safe observation boundary are documented in [the investigation](M0-T18-S64-monthcalendar-investigation.md). Its native title text rectangle matched the public single-calendar `MCGIP_CALENDARHEADER` rectangle at 96 DPI. The bounded change fills this rectangle using the existing active palette immediately before the system draws the title text, preserving the native font, text, layout, theme and application colors. It requires a fresh same-window system paint witness, matching owner, theme and caller, the exact public rectangle, black theme text and an enabled control; unsupported cases fall back to native drawing. The synchronous grid query is guarded against reentry and its guard is released during exception unwinding. No new hook, export, resource or product file is introduced.
+
+The real sample had 5743 changed pixels within the public title rectangle, 459 within the selected date and 512 within arrow rectangles, with zero elsewhere. P126 instead showed zero title pixels while retaining the other two regions. A next-month and previous-month sequence returned from November 2015 to December and back, with capture released. The sample was forcibly terminated in its own isolated job to avoid its close handler changing system locale; this is not normal shutdown evidence.
+
+Self-owned x86 and x64 models checked the title, arrow and selected pixels, date, minimum layout, application colors and theme, disabled fallback, wrong owner/caller, fake/stale witness, reparenting, nested paint and exception recovery. A deliberately broken exception cleanup failed the title assertion on both widths; the corrected implementation passed both. The original graphic assets and provenance remained byte-identical. Other DPI, themes, multi-calendar title, physical input, complete lifecycle and full T18 integration remain unverified.
+
+The clean C17 MinGW GCC/Ninja/ccache dual-width build, ABI and original-resource gates passed. The actual four-file package passed 29 focused cases in 23.24 seconds without skips; the real sample confirmed the same pixel results against that package. Both assets and O:/winnt/system32 matched all four hashes and passed both installed-width models.
+
+M0/T18/S64 remain open.

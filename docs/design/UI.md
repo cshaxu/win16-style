@@ -311,3 +311,5 @@ T18 S64 P114：经自身原生COMBOBOX绘制见证及公开协议验证的同运
 已见证的 Unicode Delphi `TMonthCalendar` 单选控件可在保持原生主题与布局时复用经典翻月箭头；其余日历内容由原控件绘制。范围见 [日历箭头记录](../history/M0-T18-S64-P125-month-arrows.md)。
 
 已见证的 Delphi `TMonthCalendar` 普通选中日期可使用现有浅蓝选中色；日期文字与布局由原控件保留，未验证状态回退原生。范围见 [日历选中日期记录](../history/M0-T18-S64-P126-month-selection.md)。
+
+已见证的 Delphi `TMonthCalendar` 单月标题可使用现有浅蓝背景；标题文字及字体仍由原控件绘制，未验证状态回退原生。范围见 [日历标题记录](../history/M0-T18-S64-P127-month-header.md)。
