@@ -32,9 +32,9 @@
       "path": "tests/ntw16s-dll/popup_list_model.c",
       "source": null,
       "source_blob": null,
-      "sha256": "21c737bcb9b18f6c7137e2026cb19f85213a34a5466aa5a4e5977e5743f5e311",
+      "sha256": "af6c5ce768b816ad48e364df1448e7f81dcc4ba64bb74128051d69064819a68d",
       "disposition": "authored",
-      "review": "T18 S64 native popup list dual-width model; T18 S64 short popup list and dynamic scrollbar transitions; T18 S64 value editor native frame; T18 S64 bounded app-owned TDBGrid frame and model",
+      "review": "T18 S64 native popup list dual-width model; T18 S64 short popup list and dynamic scrollbar transitions; T18 S64 value editor native frame; T18 S64 bounded app-owned TDBGrid frame and model; T18 S64 hidden and absent scrollbar model distinction",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
