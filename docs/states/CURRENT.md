@@ -988,3 +988,7 @@ S64 P152 TDBEdit有限接入完成：同窗绘制作用域、精确类、ANSI ED
 S64 TDBComboBox有限候选准入：真实x86 ANSI CBS_DROPDOWN同owner样本以CallWindowProcA转发系统COMBOBOX；scratch原型出现经典框，下拉/取消保留选择，实际内存绑定完成250→111→记录往返111→输入恢复250并正常退出。窗口Unicode标志随附着改变；修正ANSI原生类模型后，ACP1252下Café经A/W消息读取一致，伪绘制、错误owner、换父及重入回退通过；真实数值字段不接受字母，不能称真实多语言输入通过。拟仅接入精确ANSI绘制见证和CBS_DROPDOWN，保留同owner/父窗和既有协议约束；须双宽模型、旧版负例、实际包/真实样本与双发布，其他样式、编码、DPI及物理输入未覆盖。M0/T18/S64开放。
 
 S64 P153 TDBComboBox有限接入完成：精确CBS_DROPDOWN、同父同owner、ANSI原生绘制见证后复用组合框renderer；真实x86数值绑定样本以实际候选包完成250→111→记录往返111→恢复250及正常退出，截图428处变化。双宽ANSI模型含伪绘制、错误owner、未准入类型、Unicode见证回退、换父/重入及ACP1252 A/W文本；旧版双宽和x86两种故障负例检出。同批干净包24项20.15秒零skip、双发布八摘要及两处双宽安装模型通过。[证据](../history/M0-T18-S64-P153-dbcombo.md)。真实多语言输入、其他类型/编码/DPI、物理输入及完整集成未覆盖；提交和远端复核待完成。M0/T18/S64开放。
+
+S64 Delphi台账更正：P148/P152/P153的三个有限交付已从待核实名单移出，但表中有限清单及标题数字未同步；现补入TDBGrid、TDBEdit、TDBComboBox，逐项核对40有限、26待核实、6非视觉/内容及2独立对话框，共74且无重复。有限不等于全部完成。[台账](../history/M0-T18-S64-control-inventory.md)。无产品二进制改动，M0/T18/S64开放。
+
+S64 TDBLookupComboBox调查：真实x86 ANSI样本不呈现标准COMBOBOX协议，按钮以同owner的COMBOBOX主题调用绘制；自有鼠标消息可打开独立TPopupDataList，但Escape后仍可见，不能称取消通过。scratch扩展既有下拉身份后截图0像素变化，诊断显示主题调用时static_paint作用域为空，尚不能区分未附着和另一绘制路径。真实实例正常退出；未改产品或发布。[证据](../history/M0-T18-S64-lookup-investigation.md)。M0/T18/S64保持开放。
