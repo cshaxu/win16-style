@@ -288,20 +288,23 @@ void ntw16s_spin_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *
     FrameRect(dc,rect,(HBRUSH)GetStockObject(BLACK_BRUSH));RestoreDC(dc,saved);
 }
 
-/* Only a native-protocol child of the same-runtime VCL radio group. */
+/* Same-runtime VCL buttons must witness the registered BUTTON procedure in
+ * their own paint before the native message contract can be bound. */
 static BOOL group_button_identity(HWND w)
 {
     WCHAR name[64],real[64],parent_name[64];HWND parent=GetParent(w);
     HMODULE owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),pid=0;
-    return owner && parent && GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
+    if(!(owner && parent && GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
         GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() &&
-        (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==owner &&
-        (style&WS_CHILD) && (style&BS_TYPEMASK)==BS_RADIOBUTTON &&
+        (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==owner && (style&WS_CHILD) &&
         !(style&(BS_BITMAP|BS_ICON|BS_PUSHLIKE)) && !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
-        GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TGroupButton") || !lstrcmpW(name,L"TRadioButton")) &&
-        RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(name,real) &&
-        (!lstrcmpW(name,L"TRadioButton") || (GetClassNameW(parent,parent_name,ARRAYSIZE(parent_name)) && !lstrcmpW(parent_name,L"TRadioGroup")));
+        GetClassNameW(w,name,ARRAYSIZE(name)) && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(name,real)))return FALSE;
+    if(!lstrcmpW(name,L"TButton"))
+        return (style&BS_TYPEMASK)==BS_PUSHBUTTON || (style&BS_TYPEMASK)==BS_DEFPUSHBUTTON;
+    return (style&BS_TYPEMASK)==BS_RADIOBUTTON &&
+        (!lstrcmpW(name,L"TRadioButton") || (!lstrcmpW(name,L"TGroupButton") &&
+         GetClassNameW(parent,parent_name,ARRAYSIZE(parent_name)) && !lstrcmpW(parent_name,L"TRadioGroup")));
 }
 static BOOL grid_identity(HWND w,HMODULE owner,HWND parent)
 {
@@ -493,6 +496,13 @@ BOOL ntw16s_group_button_valid(HWND w)
     attachment *a=lookup(w);
     return !a || a->detached || !a->group_button_candidate || !a->group_button_installed ||
         (a->group_button_parent==GetParent(w) && group_button_identity(w));
+}
+BOOL ntw16s_group_push_button(HWND w)
+{
+    attachment *a=lookup(w);WCHAR name[64];
+    return a && !a->detached && a->group_button_candidate && a->group_button_installed &&
+        a->group_button_parent==GetParent(w) && group_button_identity(w) &&
+        GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TButton");
 }
 static BOOL vb_data_role(HWND w,HWND parent)
 {

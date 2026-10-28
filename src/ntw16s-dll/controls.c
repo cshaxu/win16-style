@@ -2,6 +2,7 @@
 #include "attachment.h"
 /* Internal guard for a witnessed VCL group button. */
 BOOL ntw16s_group_button_valid(HWND);
+BOOL ntw16s_group_push_button(HWND);
 BOOL ntw16s_grid_valid(HWND);
 BOOL ntw16s_vb_user_edge_valid(HWND);
 BOOL ntw16s_vb_data_valid(HWND);
@@ -447,12 +448,46 @@ BOOL win16_style_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,co
     (void)button_border(dc,*rect,&s->palette,u,u,(flags&(DFCS_PUSHED|DFCS_CHECKED))!=0);
     RestoreDC(dc,saved);return TRUE;
 }
+/* Keep the bitmap glyph's proportions when a VCL button is shorter than its
+ * source font plus the classic border. The application retains its font and
+ * layout; only the text image is fitted inside the button's existing face. */
+static BOOL fit_push_text(HDC target,HFONT font,const WCHAR *text,const RECT *bounds,COLORREF face,COLORREF ink,SIZE *drawn)
+{
+    RECT measure={0,0,0,0};
+    if(!DrawTextW(target,text,-1,&measure,DT_CALCRECT|DT_SINGLELINE))return FALSE;
+    int width=measure.right,height=measure.bottom,available_width=bounds->right-bounds->left,available_height=bounds->bottom-bounds->top;
+    if(width<=0 || height<=0 || width>4096 || height>256 || available_width<=0 || available_height<=0 ||
+       (width<=available_width && height<=available_height))return FALSE;
+    int out_width=width,out_height=height;
+    if(out_width>available_width){out_height=MulDiv(out_height,available_width,out_width);out_width=available_width;}
+    if(out_height>available_height){out_width=MulDiv(out_width,available_height,out_height);out_height=available_height;}
+    if(out_width<=0 || out_height<=0)return FALSE;
+    HDC memory=CreateCompatibleDC(target);if(!memory)return FALSE;
+    HBITMAP bitmap=CreateCompatibleBitmap(target,width,height);if(!bitmap){DeleteDC(memory);return FALSE;}
+    HGDIOBJ old=SelectObject(memory,bitmap),old_font=SelectObject(memory,font);BOOL ok=FALSE;
+    if(old && old!=HGDI_ERROR && old_font && old_font!=HGDI_ERROR){
+        RECT r={0,0,width,height};SetDCBrushColor(memory,face);FillRect(memory,&r,(HBRUSH)GetStockObject(DC_BRUSH));
+        SetBkMode(memory,TRANSPARENT);SetTextColor(memory,ink);
+        if(DrawTextW(memory,text,-1,&r,DT_SINGLELINE)){
+            int saved=SaveDC(target);
+            if(saved){SetStretchBltMode(target,COLORONCOLOR);
+                int x=bounds->left+(available_width-out_width)/2,y=bounds->top+(available_height-out_height)/2;
+                ok=StretchBlt(target,x,y,out_width,out_height,memory,0,0,width,height,SRCCOPY);
+                RestoreDC(target,saved);
+            }
+        }
+    }
+    if(old_font && old_font!=HGDI_ERROR)SelectObject(memory,old_font);
+    if(old && old!=HGDI_ERROR)SelectObject(memory,old);
+    DeleteObject(bitmap);DeleteDC(memory);
+    if(ok){drawn->cx=out_width;drawn->cy=out_height;}return ok;
+}
 static void other_control(HWND w,control_style *s,HDC dc,RECT r,HFONT font,const WCHAR *text,BOOL label)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);UINT type=(label?(style&SS_TYPEMASK):ntw16s_button_type(w,style));
     int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));RECT bounds=r;TEXTMETRICW tm;
     LRESULT button_state=label?0:SendMessageW(w,BM_GETSTATE,0,0);
-    UINT flags=DT_LEFT;BOOL pushed=(button_state&BST_PUSHED)!=0;
+    UINT flags=DT_LEFT;BOOL pushed=(button_state&BST_PUSHED)!=0,fit=!label && ntw16s_group_push_button(w);SIZE fitted={0};
     if(!label && (style&BS_PUSHLIKE))pushed=pushed || SendMessageW(w,BM_GETCHECK,0,0)!=BST_UNCHECKED;
     if(s->detached)return;
     SelectObject(dc,font);GetTextMetricsW(dc,&tm);SetBkMode(dc,TRANSPARENT);SetTextColor(dc,s->palette.edge);
@@ -483,7 +518,7 @@ static void other_control(HWND w,control_style *s,HDC dc,RECT r,HFONT font,const
         int border=(type==BS_DEFPUSHBUTTON && IsWindowEnabled(w)?2:1)*u;
         SetDCBrushColor(dc,s->palette.face);FillRect(dc,&bounds,(HBRUSH)GetStockObject(DC_BRUSH));
         bounds=button_border(dc,r,&s->palette,u,border,pushed);
-        InflateRect(&bounds,-3*u,-3*u);if(pushed)OffsetRect(&bounds,u,u);
+        InflateRect(&bounds,-3*u,fit?-u:-3*u);if(pushed)OffsetRect(&bounds,u,u);
         flags=DT_CENTER|DT_VCENTER|DT_SINGLELINE;
     }else {flags=type==SS_CENTER?DT_CENTER:type==SS_RIGHT?DT_RIGHT:DT_LEFT;
         /* StaticCallback expands tabs and preserves explicit line breaks.
@@ -543,12 +578,14 @@ static void other_control(HWND w,control_style *s,HDC dc,RECT r,HFONT font,const
         if(GetFocus()==w){RECT focus=bounds;InflateRect(&focus,-u,-u);DrawFocusRect(dc,&focus);}
         return;
     }
-    DrawTextW(dc,text,-1,&bounds,flags);
+    BOOL fitted_text=fit && fit_push_text(dc,font,text,&bounds,s->palette.face,IsWindowEnabled(w)?s->palette.edge:s->palette.shadow,&fitted);
+    if(!fitted_text)DrawTextW(dc,text,-1,&bounds,flags);
     if(!label && GetFocus()==w){
         /* USER 25:15DE..1694 bounds focus around the measured label, not
          * around the whole button face. Default status is independent. */
         RECT focus=bounds,measure={0,0,0,0};int width,height;
         DrawTextW(dc,text,-1,&measure,DT_CALCRECT|DT_SINGLELINE);
+        if(fitted_text){measure.right=fitted.cx;measure.bottom=fitted.cy;}
         width=min(bounds.right-bounds.left,measure.right+4*u);
         height=min(bounds.bottom-bounds.top,measure.bottom+3*u);
         focus.left+=(bounds.right-bounds.left-width)/2;focus.right=focus.left+width;
