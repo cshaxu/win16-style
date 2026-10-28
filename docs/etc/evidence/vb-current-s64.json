@@ -1257,17 +1257,28 @@
           "vb_usercontrol_label_p41"
         ],
         "boundary": "Exact runtime-owned windowed roles; observed edge and runtime ANSI label drawing only. Application-owned client drawing and unverified variants remain outside the claim."
+      },
+      {
+        "ids": [
+          "VB6.Data"
+        ],
+        "from": "native_preservation_required",
+        "to": "verified_limited_public_protocol",
+        "evidence": [
+          "vb6_data_border_p47"
+        ],
+        "boundary": "96 DPI standard outer border only; native navigation graphics and actual DAO3.5/navigation remain unverified."
       }
     ],
     "current_counts": {
-      "limited_row_evidence": 48,
-      "historically_native_or_unverified": 77,
+      "limited_row_evidence": 49,
+      "historically_native_or_unverified": 76,
       "user_deferred": 23
     },
     "limits": [
-      "77 is a historical receiver category, not a count of proven unimplementable or visually styled controls. It includes nonvisual helpers, application content, and private/unverified OCX or host surfaces.",
-      "23 explicitly deferred units remain TODO; the 48 limited rows each have uncovered variants and do not mean full support. MDI child evidence belongs to already counted VB5/6.Form rows and is not counted as full MDIForm support.",
-      "No row-by-row refresh beyond the two named UserControl changes was performed; do not infer a definitive number of remaining implementation changes."
+      "76 is a historical category, not a count of proven unimplementable or fully styled controls.",
+      "23 explicitly deferred units remain TODO; the 49 limited rows still have uncovered variants and do not mean full support.",
+      "Only the named UserControl and VB6 Data rows were refreshed; no definitive remaining implementation count is implied."
     ],
     "check": "All 148 frozen IDs matched the historical ledger exactly once; no duplicates or missing IDs."
   },
@@ -1293,5 +1304,19 @@
       "result": "AccessibleObjectFromWindow(OBJID_CLIENT) S_OK but zero child objects; AccessibleObjectFromWindow(OBJID_NATIVEOM, IID_IDispatch) returned E_FAIL (0x80004005), no object in either mode. These observations cover only this partially initialized sample.",
       "synthetic_press": "A bounded WM_LBUTTONDOWN followed by WM_CANCELMODE at the first-arrow location returned successfully but produced no capture and an identical image, both with the partially initialized host initially disabled and after explicitly enabling the owned host. No database navigation was intended; this is not evidence of a valid pressed state or actual navigation. Observer forcibly terminated only its owned jobs after capture; normal application shutdown was not tested."
     }
+  },
+  "vb6_data_border_p47": {
+    "scope": "Exact ThunderRT6Data owned by MSVBVM60, standard child border and 96 DPI only; only nonclient border; Data glyphs and navigation remain native.",
+    "real_sample": "Privately copied VB6 sample; sample hides Data control so one was synthetically shown after normal initialization. Its class compatibility bridge maps the old DAO CLSID to the public installed DAO 3.6 class and uses locally copied VB5DB.DLL; this is a research-only surrogate, not genuine DAO 3.5.",
+    "dao360_sha256": "c2da31acb8836c976c22843862eec36114d4fd3c42e8642190f4c4629273ad3e",
+    "vb5db_mirror": "https://github.com/joncampbell123/windows_sdk_collection/blob/d2552b4753e8bbd7d2b9193c555120543d8c248e/win/win9xnt.vs60/OS/SYSTEM/VB5DB.DLL",
+    "vb5db_sha256": "d7cf39e673a87fac5d5abaf81c572d422675b9f0fbe18d4eb4e7c20f3d3038cd",
+    "sample_source": "https://github.com/Astar236/Digital-Examination-System.vbp/tree/5b56639030937c43e3986a521150e7eee6116bce",
+    "sample_sha256": "16283b1cbba0b1919d726a45a1002df550d154eb68621b048cc49a94b919b47d",
+    "private_database_sha256_before_after": "97a08cf87debe5e7ae9bead3d32f1290cb1cf58c350fc1205301e709f1c305eb",
+    "real_pixel_comparison": "At 96 DPI each normal/pressed/disabled frame differed in exactly 301 nonclient pixels and zero pixels inside actual 70x22 client. Mouse down captured; WM_CANCELMODE released capture and restored original image.",
+    "automated_model": "x86 and x64 isolated project-authored model verifies four states, client pixels, cancellation, notification, wrong owner, unsupported roles and reparent retirement. Previous package fails because attachment is absent.",
+    "limits": "Actual VB6 sample x86 only, surrogate DAO3.6 and forced visibility; no real DAO3.5, actual database navigation, VB5, other DPI, physical input, or normal sample shutdown. Owned sample was job-terminated after capture.",
+    "delivery": "Clean dual-width package: 14 focused cases passed with no skips in 12.74 seconds; clean actual package real-sample captures matched the prototype nonclient comparison. Eight deployed file hashes checked at assets and O:/winnt/system32."
   }
 }
