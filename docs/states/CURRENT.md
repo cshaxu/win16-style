@@ -826,3 +826,7 @@ S64 P121 Delphi RichEditURL外框及滚动条已交付：真实DoubleKiller x86/
 S64 准入 P122 标准Unicode Delphi TRichEdit：作者Delphi XE示例x86/96 DPI真实TRichEdit经CallWindowProcW转发注册RichEdit20W，P121未附着；scratch候选复用现有外框/滚动条，真实样本客户区零像素差异、格式/选择保持，样式启用时字符插入及撤销恢复全文。首次错误使用创建期ANSI编码筛选导致已支持DoubleKiller漏接，已修正并由两种编码模型及真实样本复测。x64 Unicode异常模型暴露已有WM_PAINT异常时VB绘制TLS未归还；scratch在拥有该绘制作用域的异常清理中恢复，双宽ANSI/Unicode模型通过，故意移除清理x64负例访问冲突。拟将两项修复一起纳入当前S；须双宽干净同批包、异常/控件回归、真实样本、双发布及远端复核，当前未发布。M0/T18/S64开放。
 
 S64 P122 Unicode Delphi TRichEdit 外框及滚动条已交付：真实 x86 Delphi XE 样本的 Unicode 绘制见证后接入，对照外缘变化812像素、客户区0像素；附着时编辑/撤销、格式、选择和事件掩码保持。真实 DoubleKiller ANSI 行为复测通过。修复 x64 绘制异常后 VB TLS 作用域未恢复，定向负例重现访问冲突；双宽 ANSI/Unicode 模型及共享绘制回归通过。干净同批包25项14.30秒无skip，双发布八摘要一致、两个位置双宽安装模型通过；其他版本/DPI、物理输入、完整IME及全集未覆盖。[证据](../history/M0-T18-S64-P122-rich-unicode.md)。M0/T18/S64开放。
+
+S64 TScrollBox 调查：作者 Delphi XE x86/96 DPI 真实图像容器在 P122 未附着；原生与发布版横纵行滚动均0→8→0并正常退出。同线程临时观察确认该样本 WM_NCPAINT 经 DefWindowProcW，导入已恢复。scratch 原型复用现有外框/滚动条，实际同窗对称重绘对照客户区0、非客户区10232像素变化，行滚动恢复并退出；初版仅安装被动滚动 helper 无视觉变化，不计成功。类名准入尚不安全，所有权/绘制见证、显隐/拖动/换父/异常、双宽模型和实际包尚待完成；未改产品或发布。[证据](../history/M0-T18-S64-scrollbox-investigation.md)，scratch build/t18-s64-vb-scrollbox-survey。M0/T18/S64开放。
+
+S64 TScrollBox 显隐补证：真实样本两按钮在裸版及scratch原型中均使style依次56300000→56100000→56000000→56300000，原显示状态恢复、两个实例正常退出及自有作业清空；未验证隐藏期间像素和交互。[调查](../history/M0-T18-S64-scrollbox-investigation.md)。
