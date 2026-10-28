@@ -65,7 +65,7 @@ typedef struct attachment {
     ntw16s_control_protocol *protocol;
 } attachment;
 static _Thread_local ntw16s_creation_scope *current;
-typedef struct static_paint_scope {struct static_paint_scope *previous;attachment *owner;HWND window;ntw16s_vb_paint *owned_paint;void *status_prior,*spin_prior;BOOL completed;BOOL group_background;int group_state;RECT group_rect;BOOL panel_first,panel_enabled;HWND panel_parent;HDC panel_dc;POINT panel_points[3];COLORREF panel_color;} static_paint_scope;
+typedef struct static_paint_scope {struct static_paint_scope *previous;attachment *owner;HWND window;ntw16s_vb_paint *owned_paint;void *status_prior,*spin_prior;BOOL completed;BOOL month_selected;HTHEME month_theme;HDC month_dc;RECT month_rect,month_clip;BOOL month_has_clip;BOOL group_background;int group_state;RECT group_rect;BOOL panel_first,panel_enabled;HWND panel_parent;HDC panel_dc;POINT panel_points[3];COLORREF panel_color;} static_paint_scope;
 static _Thread_local static_paint_scope *static_paint;
 static _Thread_local ntw16s_static_call *static_call;
 static _Thread_local HHOOK creation_return_hook;
@@ -892,6 +892,21 @@ void ntw16s_month_arrow(HTHEME theme,HDC dc,int part,int state,const RECT *r,con
     !rich_identity(s->window,s->owner) || !native || GetWindowTheme(s->window)!=theme ||
     !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) || caller!=native)return;
  win16_style_month_arrow(dc,r,clip,part,state);
+}
+static BOOL month_draw_identity(static_paint_scope *s,HTHEME theme,HDC dc,const void *address)
+{HMODULE caller=NULL,native=GetModuleHandleW(L"comctl32.dll");return s && s->owner->rich_month && s->owner->rich_witness && !s->owner->detached && dc && native &&
+ rich_identity(s->window,s->owner) && GetWindowTheme(s->window)==theme &&
+ GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) && caller==native;}
+void ntw16s_month_selection_background(HTHEME theme,HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address)
+{static_paint_scope *s=static_paint;if(!s)return;s->month_selected=FALSE;if(part!=MC_GRIDCELLBACKGROUND || (state!=MCGCB_SELECTED && state!=MCGCB_SELECTEDNOTFOCUSED) || !r || r->right<=r->left || r->bottom<=r->top || !month_draw_identity(s,theme,dc,address))return;
+ s->month_selected=TRUE;s->month_theme=theme;s->month_dc=dc;s->month_rect=*r;s->month_has_clip=clip!=NULL;if(clip)s->month_clip=*clip;}
+void ntw16s_month_selection_text(HTHEME theme,HDC dc,int part,int state,const RECT *r,DWORD flags,const void *address)
+{static_paint_scope *s=static_paint;if(!s||!s->month_selected)return;s->month_selected=FALSE;COLORREF foreground;RECT *cell=&s->month_rect;
+ if(part!=MC_GRIDCELL || state!=6 || !r || !IsWindowEnabled(s->window) || (flags&DT_CALCRECT) || theme!=s->month_theme || dc!=s->month_dc ||
+    r->left!=cell->left || r->top!=cell->top || r->right>cell->right || r->bottom!=cell->bottom ||
+    !month_draw_identity(s,theme,dc,address) || FAILED(GetThemeColor(theme,part,state,TMT_TEXTCOLOR,&foreground)) || foreground!=RGB(0,0,0))return;
+ int saved=SaveDC(dc);if(!saved)return;if(s->month_has_clip && IntersectClipRect(dc,s->month_clip.left,s->month_clip.top,s->month_clip.right,s->month_clip.bottom)==ERROR){RestoreDC(dc,saved);return;}
+ win16_style_palette palette;win16_style_default_palette(&palette);HBRUSH brush=(HBRUSH)GetStockObject(DC_BRUSH);SetDCBrushColor(dc,palette.active);FillRect(dc,cell,brush);RestoreDC(dc,saved);
 }
 static void release(attachment *a)
 {if(!--a->calls && a->detached){win16_style_system_release(a->status_cached_font);ntw16s_vb_fonts_clear(&a->fonts);free(a);}}
