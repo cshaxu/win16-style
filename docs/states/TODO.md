@@ -62,7 +62,7 @@ S15包测试进度文件共享冲突已由[S17记录](../history/M0-T18-S17-test
 
 - [ ] TODO(Medium): VCL无窗口 `TSpeedButton` 尚未适配；Owner：T18后续控件审计。Evidence：[S22](../history/M0-T18-S22-speedbutton.md)。Admission：真实版本可复核的公开对象/绘制边界，须保留应用图像、透明、Flat/Down/Disabled和事件；不得以文本、坐标、颜色或静态地址猜测控件。
 
-- [ ] TODO(Medium): VCL `TPanel` 自绘背景和边框尚未适配；Owner：T18后续控件适配及最终审计。Evidence：[S28](../history/M0-T18-S28-panel.md)。Admission：可验证的公开绘制及颜色/继承契约，区分父窗背景与应用自定义色和bevel，保留子控件、剪裁、布局及交互；不得依据类名或画刷颜色猜测。
+- [ ] TODO(Medium): VCL `TPanel` 未识别的背景、自定义色、其他边框变体及运行库版本仍待核实；Owner：T18后续控件适配及最终审计。Evidence：[S28](../history/M0-T18-S28-panel.md)、[S64 P75](../history/M0-T18-S64-P75-delphi-panel-frame.md)：已实现真实默认凸起/凹陷外圈的受限路径，未接管背景。Admission：保留子控件、颜色、裁剪、布局及交互；不得依据类名或颜色单独猜测。
 
 - [ ] TODO(Medium): Delphi 无窗口 `TLabel` 尚未取得可安全区分应用画布的绘制身份；Owner：T18后续控件适配及最终审计。Evidence：[S29](../history/M0-T18-S29-label.md)。Admission：公开可验证的标签所有权及布局契约，保留字体/字号、透明、对齐、加速键及Unicode；不得按文字、坐标或私有对象字段猜测。
 
@@ -83,6 +83,6 @@ S15包测试进度文件共享冲突已由[S17记录](../history/M0-T18-S17-test
 
 - [ ] TODO(Medium): VCL TTabControl owner-draw, alternative orientations, image tabs, runtime versions and physical input remain native or unverified. Owner: T18 final integration. Evidence: [S60](../history/M0-T18-S60-vcl-tab.md) covers ordinary two-tab x86/x64 actual runtime and self-owned fake/reparent model. Admission: distinct native semantics and rendering evidence per variant.
 
-- [ ] TODO(Medium): VCL TGroupBox real runtime container remains native; Owner: T18 control audit. Evidence: [S61](../history/M0-T18-S61-groupbox.md) observes runtime theme group frame and translated background; [S53](../history/M0-T18-S53-radio-frame.md) shows an analogous direct overlay crosses a title. Admission: exact title/clip and child-content ownership evidence.
+- [ ] TODO(Medium): VCL TGroupBox variants beyond the ordinary enabled group remain unverified; Owner: T18 control audit. Evidence: [S61](../history/M0-T18-S61-groupbox.md), [S64 P71](../history/M0-T18-S64-P71-delphi-group-frame.md). The ordinary enabled frame is implemented; additional runtime versions, disabled states and DPI require separate title/clip and child-content evidence.
 
 - [ ] TODO(Medium): VCL TMemo additional runtime versions, DPI, long text, IME, physical input and complex scrolling remain unverified. Owner: T18 final integration. Evidence: [S63](../history/M0-T18-S63-memo.md) covers ordinary multiline actual x86/x64 and native model selection, read-only and scrolling. Admission: verify each remaining version and semantic variant without changing application data ownership.

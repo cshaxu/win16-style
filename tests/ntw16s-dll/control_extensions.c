@@ -1,5 +1,6 @@
 #include "ntw16s-dll/attachment.h"
 #include <commctrl.h>
+#include <imm.h>
 #include <stdio.h>
 #include <wchar.h>
 #include "isolated_process.h"
@@ -47,7 +48,7 @@ static unsigned color_count(DWORD color)
 {unsigned n=0;for(unsigned i=0;i<200*80;++i)if((image.bits[i]&0xffffff)==color)++n;return n;}
 static int worker(int argc,WCHAR **argv)
 {
-    CHECK(argc>=2);BOOL protocol_only=argc>2 && !wcscmp(argv[2],L"protocol");
+    CHECK(argc>=2);CHECK(ImmDisableIME(0));BOOL protocol_only=argc>2 && !wcscmp(argv[2],L"protocol");
     HMODULE dll=LoadLibraryW(argv[1]);CHECK(dll);
     ntw16s_creation_scope *(__cdecl *begin)(BOOL)=(void*)GetProcAddress(dll,"Ntw16sCreationBegin");
     BOOL (__cdecl *end)(ntw16s_creation_scope*,ntw16s_creation_result*)=(void*)GetProcAddress(dll,"Ntw16sCreationEnd");

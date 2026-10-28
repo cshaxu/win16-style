@@ -1,6 +1,7 @@
 /* Project-owned native popup model; run in an isolated desktop and process. */
 #include <windows.h>
 #include <stdio.h>
+#include <imm.h>
 #include <wchar.h>
 #include "isolated_process.h"
 static HMENU active;static BOOL styled, destroy_owner, nested_owner;static unsigned init_seen,timer_seen,failed;
@@ -19,7 +20,7 @@ static VOID CALLBACK timer(HWND w,UINT msg,UINT_PTR id,DWORD time){UINT t,u;ULON
  if(destroy_owner){DestroyWindow(w);} EndMenu();}
 
 static int worker(int argc,WCHAR **argv){
- if(argc<2 || argc>3){return 2;} BOOL expected=argc==2 || wcscmp(argv[2],L"--native")!=0;
+ if(argc<2 || argc>3){return 2;} if(!ImmDisableIME(0)){return 3;} BOOL expected=argc==2 || wcscmp(argv[2],L"--native")!=0;
  if(argc==3 && !wcscmp(argv[2],L"--aware"))check(SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2)!=NULL,"dpi-context");
  WNDCLASSW a={.lpfnWndProc=proc,.hInstance=GetModuleHandleW(NULL),.lpszClassName=L"TPUtilWindow"};
  WNDCLASSW b=a;b.lpszClassName=L"OtherUtility";check(RegisterClassW(&a)!=0,"register-a");check(RegisterClassW(&b)!=0,"register-b");

@@ -331,6 +331,14 @@ static BOOL WINAPI hook_BitBlt(HDC dc,int x,int y,int width,int height,HDC sourc
     if(result)win16_style_vb_checklist(dc,x,y,width,height,source,sx,sy,rop,__builtin_return_address(0));
     SetLastError(error);return result;
 }
+void ntw16s_panel_polyline(HDC,const POINT *,int,const void *,BOOL (WINAPI *)(HDC,const POINT *,int));
+static __typeof__(&Polyline) real_Polyline;
+static BOOL WINAPI hook_Polyline(HDC dc,const POINT *points,int count)
+{
+ BOOL result=real_Polyline(dc,points,count);DWORD error=GetLastError();
+ if(result)ntw16s_panel_polyline(dc,points,count,__builtin_return_address(0),real_Polyline);
+ SetLastError(error);return result;
+}
 static __typeof__(&CreateCompatibleDC) real_CreateCompatibleDC;
 static __typeof__(&DeleteDC) real_DeleteDC;
 static BOOL WINAPI hook_DrawFrameControl(HDC dc,LPRECT rect,UINT type,UINT state)
@@ -424,7 +432,7 @@ LONG ntw16s_attach_titles(void)
     ATTACH(DrawTextA);ATTACH(DrawTextExA);ATTACH(TextOutA);ATTACH(ExtTextOutA);
     ATTACH(TextOutW);ATTACH(ExtTextOutW);
     ATTACH(CallWindowProcW);ATTACH(DrawTextW);
-    ATTACH(BitBlt);ATTACH(StretchBlt);ATTACH(DrawFrameControl);ATTACH(DrawEdge);ATTACH(DrawThemeBackground);ATTACH(DrawThemeText);ATTACH(DrawThemeTextEx);ATTACH(DrawIconEx);ATTACH(CreateCompatibleDC);ATTACH(DeleteDC);
+    ATTACH(Polyline);ATTACH(BitBlt);ATTACH(StretchBlt);ATTACH(DrawFrameControl);ATTACH(DrawEdge);ATTACH(DrawThemeBackground);ATTACH(DrawThemeText);ATTACH(DrawThemeTextEx);ATTACH(DrawIconEx);ATTACH(CreateCompatibleDC);ATTACH(DeleteDC);
 #undef ATTACH
     return error;
 }
