@@ -1280,6 +1280,18 @@
       "Only one x86 VB6 sample, 96 DPI, originally hidden controls and incomplete initialization; no database binding, real navigation, pressed/focus state, valid application-created visible control, other runtime/DPI or VB5 proof.",
       "No product change. A safe adaptation still needs a normally initialized, legitimately licensed real sample and a public way to identify each draw and state without replacing application data or resource ownership. No system-wide hooks or existing user process were touched."
     ],
-    "scratch": "build/t18-s64-vb-data/p45-enumerate and p45-diag; all spawned processes were owned and their jobs terminated after capture."
+    "scratch": "build/t18-s64-vb-data/p45-enumerate and p45-diag; all spawned processes were owned and their jobs terminated after capture.",
+    "dao360_factory_p46": {
+      "path": "C:/Program Files (x86)/Common Files/Microsoft Shared/DAO/DAO360.DLL",
+      "sha256": "c2da31acb8836c976c22843862eec36114d4fd3c42e8642190f4c4629273ad3e",
+      "method": "Standalone x86 C probe uses LoadLibrary and DllGetClassObject directly, no registry modification and no database.",
+      "old_class": "CLSID {00000010-0000-0010-8000-00AA006D2EA4}: factory HRESULT 0x80040111 CLASS_E_CLASSNOTAVAILABLE; no factory/creation attempt.",
+      "new_class": "CLSID {00000100-0000-0010-8000-00AA006D2EA4}: factory and CreateInstance both S_OK, object released. This does not establish interface compatibility and cannot replace the old class."
+    },
+    "public_state_p46": {
+      "method": "Public MSAA and OBJID_NATIVEOM on the same sample Data HWND after forced show, bare and current package, 96 DPI; no COM method or database action invoked.",
+      "result": "AccessibleObjectFromWindow(OBJID_CLIENT) S_OK but zero child objects; AccessibleObjectFromWindow(OBJID_NATIVEOM, IID_IDispatch) returned E_FAIL (0x80004005), no object in either mode. These observations cover only this partially initialized sample.",
+      "synthetic_press": "A bounded WM_LBUTTONDOWN followed by WM_CANCELMODE at the first-arrow location returned successfully but produced no capture and an identical image, both with the partially initialized host initially disabled and after explicitly enabling the owned host. No database navigation was intended; this is not evidence of a valid pressed state or actual navigation. Observer forcibly terminated only its owned jobs after capture; normal application shutdown was not tested."
+    }
   }
 }
