@@ -56,7 +56,7 @@ typedef struct attachment {
     ntw16s_control_protocol *protocol;
 } attachment;
 static _Thread_local ntw16s_creation_scope *current;
-typedef struct static_paint_scope {struct static_paint_scope *previous;attachment *owner;HWND window;BOOL completed;BOOL group_background;RECT group_rect;BOOL panel_first;HWND panel_parent;HDC panel_dc;POINT panel_points[3];COLORREF panel_color;} static_paint_scope;
+typedef struct static_paint_scope {struct static_paint_scope *previous;attachment *owner;HWND window;BOOL completed;BOOL group_background;int group_state;RECT group_rect;BOOL panel_first;HWND panel_parent;HDC panel_dc;POINT panel_points[3];COLORREF panel_color;} static_paint_scope;
 static _Thread_local static_paint_scope *static_paint;
 static _Thread_local ntw16s_static_call *static_call;
 static _Thread_local HHOOK creation_return_hook;
@@ -527,7 +527,7 @@ void ntw16s_group_frame(HDC dc,int part,int state,const RECT *rect,const RECT *c
 {
  static_paint_scope *scope=static_paint;attachment *a=scope?scope->owner:NULL; HWND w=scope?scope->window:NULL,parent=w?GetParent(w):NULL;
  WCHAR cls[64],real[64],caption[512];HMODULE module=NULL;RECT client={0},frame={0};POINT org={0},view={0};DWORD pid=0;
- if(!a||a->detached||!a->group_frame_candidate||a->group_frame_retired||lookup(w)!=a||!parent||part!=4||state!=1||!rect||!IsWindowEnabled(w)||
+ if(!a||a->detached||!a->group_frame_candidate||a->group_frame_retired||lookup(w)!=a||!parent||part!=4||!rect||!((state==1&&IsWindowEnabled(w))||(state==2&&!IsWindowEnabled(w)))||
     GetWindowThreadProcessId(w,&pid)!=GetCurrentThreadId()||pid!=GetCurrentProcessId()||GetWindowThreadProcessId(parent,NULL)!=GetCurrentThreadId()||
     (a->group_frame_parent&&a->group_frame_parent!=parent)||
     !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)caller,&module)||
@@ -538,11 +538,11 @@ void ntw16s_group_frame(HDC dc,int part,int state,const RECT *rect,const RECT *c
  if(is_text){int n;if(!text||count<=0||count>=512||flags!=0||(n=GetWindowTextW(w,caption,512))!=count||wcsncmp(caption,text,(size_t)count)||
       rect->left<0||rect->right>client.right||rect->top!=0||rect->bottom<=0||rect->bottom>=client.bottom)return;
     frame=(RECT){0,rect->top+(rect->bottom-rect->top)/2,client.right,client.bottom};
-    if(!scope->group_background||!EqualRect(&frame,&scope->group_rect))return;
- }else {if(rect->left!=0||rect->top<0||rect->right!=client.right||rect->bottom!=client.bottom)return;scope->group_background=TRUE;scope->group_rect=*rect;
+    if(!scope->group_background||scope->group_state!=state||!EqualRect(&frame,&scope->group_rect))return;
+ }else {if(rect->left!=0||rect->top<0||rect->right!=client.right||rect->bottom!=client.bottom)return;scope->group_background=TRUE;scope->group_state=state;scope->group_rect=*rect;
     if(GetWindowTextLengthW(w)!=0||rect->top!=0)return;
     frame=*rect;}
- if(a->detached||a->group_frame_retired||static_paint!=scope||lookup(w)!=a||GetParent(w)!=parent)return;
+ if(a->detached||a->group_frame_retired||static_paint!=scope||lookup(w)!=a||GetParent(w)!=parent||IsWindowEnabled(w)!=(state==1))return;
  int saved=SaveDC(dc);if(!saved)return;if(clip)IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom);
  if(is_text)ExcludeClipRect(dc,rect->left,rect->top,rect->right,rect->bottom);
  if(FrameRect(dc,&frame,(HBRUSH)GetStockObject(BLACK_BRUSH))&&!a->detached){a->group_frame_parent=parent;a->group_frame_verified=TRUE;}RestoreDC(dc,saved);
