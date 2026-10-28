@@ -1,0 +1,18 @@
+# M0 T18 S64 P89: Delphi labeled edit
+
+Real DelphiVCL4Python 1.0.7 x86/x64 TLabeledEdit windows were not attached despite forwarding their own WM_PAINT to the native EDIT procedure. Exact newly created TLabeledEdit is now a passive candidate; the existing same-thread class-owner native paint witness and initialized EDIT protocol are required, and the verified role rejects ES_MULTILINE. It reuses the existing edit renderer. No exports, product files, original graphics or provenance were added or changed. The separate framework label is untouched; it is not claimed to have acquired classic styling.
+
+At actual 144 DPI, final-package x86/x64 default and masked real instances attached and displayed the classic edit; observer-restored IAT and text, selected text, and WM_CHAR outcomes matched old assets. After Application.Run began, a registered real OnChange handler observed exactly one callback with `7robe` or `72/34` respectively, matching the old package for both widths. Four final-package runs exited target and launcher with zero and had zero job processes. Comparing final-package and old same-width screenshots after the callback gave zero changed RGB pixels in the label rectangle and 1,128 changes in the edit rectangle per width. This is not a physical-input, exhaustive mask or other Delphi version guarantee. The real label remains native and is a separate outstanding normal-control target.
+
+The self-contained dual-width native model rejects no native paint and a foreign native-paint caller, checks the edit protocol and selection/read-only input, keeps an outside marker across a limited redraw, and removes the style during WM_CTLCOLOREDIT before destruction. Old assets fail the positive attachment assertion on both widths. The initial limited-redraw test failed on both widths while earlier full invalidation remained pending; clearing that pending region before establishing the marker made the corrected isolated check pass. This is one clipping scenario, not a proof of every clip/DC path. The first two callback-driver runs reported active=1 immediately after launcher exit; bounded job accounting polling then observed zero and the reported final runs passed. No cause of the scheduling interval is claimed. The diagnostics only use self-owned bounded processes.
+
+A clean same-snapshot C17 MinGW GCC/Ninja/ccache four-file build passed source, original-resource, governance and x86/x64 ABI gates; x86/x64 build time 22.40/27.12 seconds. Snapshot manifest SHA256 `c5188d1af62191f76489e06a1931c5fac9af0e5ade4001017c2e942e56c81c6f`. The exact package passed 14 focused cases in 6.55 seconds, zero skips, including both new models, adjacent TEdit/TMemo and mandatory launcher and propagation cases. Earlier candidate 2 did not pass its clipping test and was not published. Four files were published to assets and O:/winnt/system32, and installed native models passed both widths in both locations; eight deployment hashes matched.
+
+| File | SHA256 |
+| --- | --- |
+| run16s.exe | `2735543002c7b975df8d89082db0821cecd6bf477f2eba4251d4ab2ba8d403bb` |
+| ntw16s32.dll | `f453e2282160ca95f21ecf5ce95474b935b1e2c260d1cc5cfb1e65818b4e8ad3` |
+| ntw16s64.dll | `6afe39daeed00f08a464775e48625fc6b05bfa3555206c32dc43e13af0d9bc3d` |
+| demo.exe | `d32ee0a329c1d7e6458e766733fc3212d78a469ca6a1dc8114ffbdcdfc516ecf` |
+
+Other DPI and real VCL versions, physical input, all mask syntax and validation, unusual styles, repeated create/destroy resource accounting and exhaustive clipping remain unverified. T18 and S64 remain open. See [investigation](M0-T18-S64-delphi-labelededit-investigation.md).

@@ -82,7 +82,7 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例限时回收 |
 | Verification | 双宽真实owner、原生过程、输入与文本；有实现时模型负例及实际包 |
 | Expected Markers | 经验证原生协议及调用所有权才能接入；未知路径回退 |
-| Asset Needs | 登记build/t18-s62-radio-memo、build/t18-s64-vb-*（含MDI真实样本、私有诊断）及build/t18-package/s64-group-frame-*及s64-radio-frame-*、s64-popup-*及s64-panel-*（同批包与回归），复用合法双宽运行库，结束前提炼证据并安全清理自有scratch |
+| Asset Needs | 登记build/t18-s62-radio-memo、build/t18-s64-vb-*（含MDI真实样本、私有诊断）及build/t18-package/s64-group-frame-*及s64-radio-frame-*、s64-popup-*、s64-panel-*及s64-labeled-edit-*（同批包与回归），复用合法双宽运行库，结束前提炼证据并安全清理自有scratch |
 | Reporting Requirements | 实际绘制、操作、负例、未覆盖、双发布及远端复核 |
 | Stop Conditions | 无真实所有权或安全内容契约时不按名称猜测 |
 | Exit Criteria | 有证据的有限实现或明确后续接收，实际包交付；T18保持开放 |
@@ -646,3 +646,9 @@ S64 TScrollBar禁用鼠标补证：真实双宽横竖旧版在明确禁用后收
 S64 P85 Delphi TScrollBar有限适配已实现：仅本次创建控件自身WM_PAINT由类所有模块转发系统SCROLLBAR后绑定现有renderer；双宽真实横竖144 DPI实际包附着，正常键/箭头通知及位置与旧包一致，禁用直接键鼠消息对照一致。双宽96/144模型覆盖假绘制、错误调用模块、裁剪、横竖、输入、禁用消息、换父及通知内移除；旧包双宽和去关键保护x86负例检出。干净四文件包18项8.17秒零skip，双发布八摘要及安装双宽模型通过，原资源不变。其他版本、拖动、物理输入及完整集成未覆盖；禁用直接鼠标导致原版读回范围归零原因未定。[证据](../history/M0-T18-S64-P85-delphi-scrollbar.md)。提交a979217已推送，远端main、四产物、关键源码、测试及证据直接读取均与提交一致；T18/S64开放。
 
 S64 P87真实Delphi滚动事件补证：双宽横竖旧/新包的翻页消息顺序、位置26→25与捕获释放一致；在Application.Run消息循环后触发真实OnScroll，双宽横竖事件参数/位置相同，回调将var位置改40时两版都保留并读回40。消息循环前触发的早期探针超时，x64裸样本出现python313.dll访问异常、回调未进入；只确认上述时序相关，根因未定，失败不算通过。无产品/二进制变更，双发布八摘要与P85一致；物理输入、滑块拖动及更多版本仍未覆盖。[证据](../history/M0-T18-S64-P87-delphi-scroll-events.md)。提交a4c149d已推送，直接读取远端main、记录及四产物均与提交一致；T18/S64开放。
+
+S64准入普通Delphi TLabeledEdit候选：双宽144 DPI真实样本当前未附着、编辑区保持现代；裸/样式进程均观察自身WM_PAINT与EM_REPLACESEL由类所有模块转发系统EDIT，选择替换probe→pXbe并恢复。拟仅将准确新建TLabeledEdit纳入既有EDIT被动候选及原生绘制见证与协议，保持标签、文本、掩码、输入和回调；先验双宽真实普通/掩码、错误身份/裁剪/重入及旧包负例，再干净双宽包、聚焦测试、双发布及远端复核。[调查](../history/M0-T18-S64-delphi-labelededit-investigation.md)。T18/S64开放。
+
+S64 TLabeledEdit候选进展：双宽144 DPI实际候选包普通与掩码样本均附着；原版和候选的合成字符输入分别一致为probe→7robe、12/34→72/34，文本及探针导入恢复；标签截图区域双宽零像素变化，编辑区各1157像素变化。干净四文件构建通过，14项聚焦实际包6.57秒零skip，旧包双宽附着正例均被检出；来源及原资源门禁通过。当前代码和模型尚未提交、未发布；实际OnChange、裁剪、生命周期完整性及最终复核仍待补，标签仍为框架原绘制，不声称已换肤。T18/S64开放。
+
+S64 P89已实现普通Delphi TLabeledEdit编辑区：精确新建候选经同所有者native EDIT绘制见证及协议验证后复用既有renderer，标签保留框架绘制且仍待适配。真实双宽144 DPI最终包普通/掩码OnChange与旧版一致、目标及启动器零退出且自有作业清空；标签区域零变化、编辑区各1128像素变化。双宽模型验证假绘制、错误调用者、有限裁剪、输入/只读和重入移除，旧包双宽负例检出；干净四文件包14项聚焦6.55秒零skip，双发布八摘要及安装双宽模型通过。首轮裁剪测试残留全区失效而失败，清理待处理区域后重测；其他DPI/掩码/资源重复循环未覆盖。[证据](../history/M0-T18-S64-P89-delphi-labelededit.md)。待提交推送与远端复核，T18/S64开放。
