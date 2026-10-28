@@ -1,16 +1,16 @@
 {
   "schema": 1,
-  "delivery": "M0 T18 S64 P130",
+  "delivery": "M0 T18 S64 P131",
   "stage": "development acceptance; M0/T18/S64 open; focused package tests passed",
   "version": "0.18.0.0",
   "version_contract": "M0 T18; sequential S does not increment T version",
   "package_directory": "assets",
-  "source_snapshot_sha256": "be3f38e317c8d60137ca4bb326b2aefb23cc49372a07eaefe0ccaa763e73c03d",
+  "source_snapshot_sha256": "469697e3884c6429c2f73d3a808734a80193f7d3aaab97de3c693ee03ceca623",
   "source_snapshot_format": "SHA256 of the clean build snapshot.json bytes",
   "source_inputs": [
     {
       "path": "CMakeLists.txt",
-      "sha256": "adb519ae51cce094208d49f7290fb1b19ff47deaf82c3ecc64d4d062cc88c589"
+      "sha256": "f2540c36dee8822be408d9de779c9b2caa65c5c9be254764bf8a9f61e232ba1a"
     },
     {
       "path": "LICENSE",
@@ -54,7 +54,7 @@
     },
     {
       "path": "src/ntw16s-dll/attachment.c",
-      "sha256": "e6353a7b7a6e8fd7256e11c4d5a790f58756d189d4ae1fcc6ca5dcb989705d67"
+      "sha256": "76815fe2796c58dd3e5527879a4ac7ea9164376ce4889edf6a0e5bc984861fb1"
     },
     {
       "path": "src/ntw16s-dll/attachment.h",
@@ -457,7 +457,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T18",
-      "sha256": "245a03b968abdaa53693618563303c8a01a551b5fd5391e7f8b31382eced9dd2",
+      "sha256": "e81083c9aab7f3339743f53eaac4f81c51bb3948cfac3c73f5531cfb7befc1c1",
       "imports": [
         "advapi32.dll",
         "kernel32.dll",
@@ -469,7 +469,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T18",
-      "sha256": "ca890d1e73b479b54abdb4f19be28706781b588c6708043c289d8968f15f68a5",
+      "sha256": "39115808079729a5f2b86d0095975934587927e7901d705f098c9fc8e6653bf8",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -489,7 +489,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T18",
-      "sha256": "cf21c37d0dd66df945ae9e81fca8833c0ac1f151cba7ce8b1fb46bc6d382aaee",
+      "sha256": "8decd0c98056461e33c36b2a8401e1f12c1b3c9308d6f218f743a3155212bddd",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -504,7 +504,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T18",
-      "sha256": "cbafddbf9511b7d4e84ffdd33bfbfb5c34eebc42db4d9e3fb0170b9dc9f17afb",
+      "sha256": "25b770dc05d610a4b791cd011d554c2c8292826bf52297021e190b6b5b89b111",
       "imports": [
         "comctl32.dll",
         "comdlg32.dll",
@@ -516,95 +516,113 @@
     }
   },
   "toolchains": {
-    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
     "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
+    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
     "ccache_version": "ccache version 4.13.6",
     "toolchains": [
       {
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
-        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
         "architecture": "x86",
-        "version": "16.1.0",
-        "target": "i686-w64-mingw32"
+        "target": "i686-w64-mingw32",
+        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
+        "version": "16.1.0"
       },
       {
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
-        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
         "architecture": "x64",
-        "version": "16.1.0",
-        "target": "x86_64-w64-mingw32"
+        "target": "x86_64-w64-mingw32",
+        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
+        "version": "16.1.0"
       }
     ]
   },
   "architecture": "C17, MinGW GCC, Ninja and ccache; three components, four product files; existing ABI retained",
-  "binary_batch_delivery": "M0 T18 S64 P130",
+  "binary_batch_delivery": "M0 T18 S64 P131",
   "verification": {
     "clean_build": {
-      "profile": "Focused",
-      "tests": [
-        {
-          "build_seconds": 45.59599979998893,
-          "skipped": [],
-          "passed": 1,
-          "tests": 1,
-          "architecture": "x86",
-          "configure_seconds": 7.42771650000941,
-          "test_seconds": 0.6216499000147451
-        },
-        {
-          "build_seconds": 69.66597619999084,
-          "skipped": [],
-          "passed": 1,
-          "tests": 1,
-          "architecture": "x64",
-          "configure_seconds": 6.576975100004347,
-          "test_seconds": 0.6443434999964666
-        }
-      ],
-      "targets": "all",
-      "exit_code": 0,
       "build_jobs": 8,
       "selection": "^core/abi$",
+      "test_jobs": 4,
+      "targets": "all",
+      "status": "passed",
       "architectures": [
         "x86",
         "x64"
       ],
-      "build_root": "O:\\repos.hobby\\win16style\\build\\t18-package\\s64-dropdown-p130-candidate1\\clean-source\\build\\.ninja",
-      "test_jobs": 4,
-      "status": "passed"
+      "build_root": "O:\\repos.hobby\\win16style\\build\\t18-package\\s64-list-p131-candidate1\\clean-source\\build\\.ninja",
+      "tests": [
+        {
+          "passed": 1,
+          "architecture": "x86",
+          "test_seconds": 0.7048773000133224,
+          "tests": 1,
+          "skipped": [],
+          "configure_seconds": 6.382921999989776,
+          "build_seconds": 48.363518700003624
+        },
+        {
+          "passed": 1,
+          "architecture": "x64",
+          "test_seconds": 0.526707399985753,
+          "tests": 1,
+          "skipped": [],
+          "configure_seconds": 6.298171000002185,
+          "build_seconds": 48.62297879997641
+        }
+      ],
+      "profile": "Focused",
+      "exit_code": 0
     },
     "actual_package": [
       {
         "status": "passed-focused",
-        "cases": 27,
-        "seconds": 27.0611964,
+        "cases": 22,
+        "seconds": 8.6908778,
         "skipped": [],
         "sha256": {
-          "demo.exe": "cbafddbf9511b7d4e84ffdd33bfbfb5c34eebc42db4d9e3fb0170b9dc9f17afb",
-          "ntw16s32.dll": "ca890d1e73b479b54abdb4f19be28706781b588c6708043c289d8968f15f68a5",
-          "ntw16s64.dll": "cf21c37d0dd66df945ae9e81fca8833c0ac1f151cba7ce8b1fb46bc6d382aaee",
-          "run16s.exe": "245a03b968abdaa53693618563303c8a01a551b5fd5391e7f8b31382eced9dd2"
+          "demo.exe": "25b770dc05d610a4b791cd011d554c2c8292826bf52297021e190b6b5b89b111",
+          "ntw16s32.dll": "39115808079729a5f2b86d0095975934587927e7901d705f098c9fc8e6653bf8",
+          "ntw16s64.dll": "8decd0c98056461e33c36b2a8401e1f12c1b3c9308d6f218f743a3155212bddd",
+          "run16s.exe": "e81083c9aab7f3339743f53eaac4f81c51bb3948cfac3c73f5531cfb7befc1c1"
         },
         "requested_cases": [
+          "popup-list-model-32",
+          "popup-list-model-64",
           "inplace-model-32",
           "inplace-model-64",
-          "theme-track-32",
-          "theme-track-64",
-          "theme-track-cancel-32",
-          "theme-track-cancel-64",
+          "rich-model-32",
+          "rich-model-64",
+          "hotkey-model-32",
+          "hotkey-model-64",
+          "box-model-32",
+          "box-model-64",
           "month-model-32",
           "month-model-64",
-          "vcl-bitbtn-module-32",
-          "vcl-bitbtn-module-64",
-          "vcl-modern-spin-32",
-          "vcl-modern-spin-64",
+          "theme-track-32",
+          "theme-track-64"
+        ]
+      },
+      {
+        "status": "passed-focused",
+        "cases": 17,
+        "seconds": 20.7441942,
+        "skipped": [],
+        "sha256": {
+          "demo.exe": "25b770dc05d610a4b791cd011d554c2c8292826bf52297021e190b6b5b89b111",
+          "ntw16s32.dll": "39115808079729a5f2b86d0095975934587927e7901d705f098c9fc8e6653bf8",
+          "ntw16s64.dll": "8decd0c98056461e33c36b2a8401e1f12c1b3c9308d6f218f743a3155212bddd",
+          "run16s.exe": "e81083c9aab7f3339743f53eaac4f81c51bb3948cfac3c73f5531cfb7befc1c1"
+        },
+        "requested_cases": [
           "startup-hooks-32",
           "startup-hooks-64",
           "vb-controls-32",
           "vb-controls-64",
           "menu-cancel-x86",
           "menu-cancel-x64",
-          "cmd-nested"
+          "cmd-nested",
+          "rich-wide-32",
+          "rich-wide-64"
         ]
       }
     ],
@@ -612,7 +630,7 @@
   },
   "validation": {
     "status": "focused automated native tests; physical input and full integration not tested",
-    "evidence": "docs/history/M0-T18-S64-P130-valuelist-dropdown.md"
+    "evidence": "docs/history/M0-T18-S64-P131-popup-list.md"
   },
   "closure": {
     "status": "M0/T18/S64 remain open; this is a bounded development delivery",

@@ -882,3 +882,9 @@ S64 P129 TValueListEditor 内嵌按钮有限适配已交付：真实Delphi XE x8
 S64 准入 P130 TValueListEditor 下拉箭头：真实x86 Delphi XE 96 DPI编辑行使用COMBOBOX主题part1，P129保留现代箭头；Alt+Down打开13项 TPopupListbox，选第2项并向焦点编辑器发送Enter后文字与条目一致、弹层关闭且捕获释放。scratch按主题句柄生命周期和同编辑器WM_PAINT验证复用既有按钮face及原7×9图形，同窗按钮内340、外部0像素变化，箭头63/63匹配原资源。双宽模型覆盖正常、裁剪、非paint调用、禁用/悬停/按下回退；P129及故意反转图形判断负例双宽检出，theme tracker检查句柄关闭及BUTTON别名冲突。拟纳入同S，需同批干净包、真实样本、双发布和远端复核；真实其他DPI、物理输入及弹出列表本身的样式未覆盖。M0/T18/S64开放。
 
 S64 P130 TValueListEditor 下拉箭头有限适配已交付：真实Delphi XE x86/96 DPI正式包同窗按钮340、外部0像素变化，原箭头63/63匹配；13项下拉选第2项、回填一致、弹层关闭和捕获释放正常。双宽模型覆盖剪裁、作用域、原图形及禁用/悬停/按下回退，P129和反转图形负例均检出；theme tracker双宽检查关闭和BUTTON别名。干净同批包27项27.06秒无skip，双发布八摘要及两位置双宽安装模型通过。弹出列表外观、真实其他DPI/版本及物理输入未覆盖。[证据](../history/M0-T18-S64-P130-valuelist-dropdown.md)。M0/T18/S64开放。
+
+S64 下拉列表调查续作：真实x86样本的TPopupListbox先作为本进程同线程应用控件的子窗创建，显示前换父到桌面；应用模块在WM_PAINT转发到USER32 LISTBOX。scratch候选在换父后验证转发、仅重绘外框和滚动条，同窗移除对照非客户区2268像素、客户区0，字体和13项保持，选择回填及捕获释放正常；同步刷新前无变化不能视为生效。候选尚未进入产品：需要双宽模型、错误owner/伪转发、换父和生命周期、滚动、DPI及实际包回归。限定保留原生客户区和字体，未验证路径回退；scratch登记build/t18-s64-vcl-value-survey。[调查](../history/M0-T18-S64-valuelist-investigation.md)。M0/T18/S64开放。
+
+S64 列表候选实施中：限定应用自身TValueListEditor/TInplaceEditList创建的Unicode TPopupListbox，换父到桌面后由同owner对USER32 LISTBOX的WM_PAINT转发见证，复用非客户区renderer，客户区、字体和数据保持原生；未匹配或owner-draw保留原生。双宽模型初步覆盖错误父窗、伪绘制、owner-draw、选择、滚动、像素、字体和换父；旧P130双宽不能通过正例。真实x86样本同窗移除非客户区2268、客户区0，选择回填正常。尚须干净同批包、相关回归、双发布和远端复核；其他Delphi版本、真实高DPI及物理输入未覆盖。M0/T18/S64开放。
+
+S64 列表候选已完成干净双宽构建、实际四文件包22项聚焦回归（8.69秒、零skip）、真实样本复测和assets/system32双发布，两处各通过双宽安装模型；同批摘要见[release](../etc/release.json)，[证据](../history/M0-T18-S64-P131-popup-list.md)。远端提交复核待完成；其他Delphi版本、真实高DPI、物理输入及全量集成仍未覆盖。M0/T18/S64开放。
