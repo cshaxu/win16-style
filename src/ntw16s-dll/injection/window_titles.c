@@ -26,6 +26,7 @@ BOOL ntw16s_controlbar_edge_active(void);
 BOOL ntw16s_controlbar_edge_allowed(UINT);
 void ntw16s_controlbar_edge(HDC,const RECT *,UINT,UINT,const void *);
 void ntw16s_bit_theme_frame(HDC,int,const RECT *,const RECT *,const void *);
+void ntw16s_nav_theme(HDC,int,int,const RECT *,const RECT *,const void *);
 void ntw16s_inplace_button(HDC,int,int,const RECT *,const RECT *,const void *);
 void ntw16s_inplace_dropdown(HDC,int,int,const RECT *,const RECT *,const void *);
 BOOL ntw16s_inplace_paint(HDC);
@@ -516,6 +517,7 @@ static HRESULT WINAPI hook_DrawThemeBackground(HTHEME theme,HDC dc,int part,int 
     HRESULT result=real_DrawThemeBackground(theme,dc,part,state,rect,clip);DWORD error=GetLastError();
     if(textglow && !ntw16s_theme_glow_end(theme,glow))ntw16s_modern_spin_theme_begin(dc,NULL);
     if(SUCCEEDED(result) && ntw16s_theme_button_end(theme,ticket)){
+        ntw16s_nav_theme(dc,part,state,rect,clip,__builtin_return_address(0));
         ntw16s_inplace_button(dc,part,state,rect,clip,__builtin_return_address(0));
         ntw16s_modern_spin_theme(dc,part,state,rect,clip,__builtin_return_address(0));}
     if(SUCCEEDED(result) && combo.eligible && ntw16s_theme_combo_end(theme,combo))ntw16s_inplace_dropdown(dc,part,state,rect,clip,__builtin_return_address(0));
