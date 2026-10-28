@@ -570,3 +570,5 @@ S64 P63追踪VB5 VisData自有进程：清单版记录20次动态加载均成功
 S64 P64隔离VB5 VisData注册诊断：只对自有进程屏蔽8种受观察注册写入、类型库改REGKIND_NONE；负例确认拒绝及模拟成功均未创建指定测试键。拒绝写入时样本自身类型库RegisterTypeLib返回8002801c；模拟类型库/类注册成功并自动对专用提示选No后，真实ThunderRT5MDIForm可见，但这不是正常注册启动。私有数据库打开试验先后退出c000041d/c0000005，因探针改变行为不能归因，数据库摘要不变；未出现Data控件。仅检查指定键，不能证明全注册表无变化；无产品变更。[证据](../history/M0-T18-S64-P64-vb5-registration-isolation.md)。T18/S64开放。
 
 S64 P65继续隔离VB5 VisData：P64一次异常地址与探针共享加载返回断点相同，存在探针干扰线索；移除这些断点后出现真实文件对话框。原生按钮消息两次未完成选择；经自编负例验证的私有GetOpenFileName模拟返回自有MDB路径后，观察到Database Window/SQL Statement及TreeView外壳，但未证明树内容、Data控件或导航；MDB摘要不变、指定注册测试键不存在，不能声称整个注册表未变。无产品更改。[证据](../history/M0-T18-S64-P65-vb5-database-window.md)。T18/S64开放。
+
+S64 P66以独立查询线程避免调试循环被同步消息阻塞：VB5数据库树首次返回0项，随后四次错误1460超时，不能据此判空；自有UI线程快照处于NtDelayExecution，参数为非警觉相对等待200毫秒，原始栈中MSREPL地址并非已验证调用帧，根因未定。MDB摘要不变，沿用P65注册及文件选择模拟限制；无产品或二进制变更。[证据](../history/M0-T18-S64-P66-vb5-tree-wait.md)。真实VB5 Data仍未覆盖，T18/S64开放。

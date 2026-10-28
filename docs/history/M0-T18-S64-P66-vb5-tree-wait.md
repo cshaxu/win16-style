@@ -1,0 +1,7 @@
+# M0 T18 S64 P66: bounded VB5 database-tree wait observation
+
+Using the P65 private VisData diagnostic with the same target-only simulated registry and file-selection behavior, an independent query thread allowed the debugger event loop to continue. The first `TVM_GETCOUNT` returned zero; four subsequent queries timed out with error 1460. The initial zero is an early observation, not proof that the database tree is empty. The diagnostic did not establish normal database initialization, a Data control, or navigation.
+
+A bounded snapshot of the owned UI thread during the timeouts found its instruction pointer at `ntdll!NtDelayExecution+0xc`. The observed call requested a non-alertable relative interval of -2,000,000 100-nanosecond units (200 ms). Raw stack memory included a value within `MSREPL40.DLL`; this was not a validated stack frame and does not establish the caller or cause. The temporary thread suspension was resumed. The target ran in the existing bounded owned job and the probe exited with code 0; that code reports diagnostic completion, not an application or integration-test pass.
+
+The private database SHA-256 remained `dfb0194a5b9d7986d5a5ce2ca86567c245ebb97a3792dd1142b1327a077b599c`. P65's registry and file-selection simulation limitations remain applicable: these observations are not unmodified application behavior and do not establish that all registry writes were prevented. No product source, tracked test, resource, or binary changed. VB5 Data behavior remains unresolved; T18 and S64 remain open.
