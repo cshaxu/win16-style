@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
+#include <stdint.h>
 #include "isolated_process.h"
 
 #define CHECK(x) do { if (!(x)) { fprintf(stderr,"VB_CHECKLIST_144_FAIL line=%d error=%lu: %s\n",__LINE__,GetLastError(),#x); return 1; } } while (0)
@@ -31,7 +32,10 @@ static int child(const WCHAR *runtime,BOOL styled)
     HMODULE dll=LoadLibraryW(runtime);CHECK(dll);
     BOOL (WINAPI *reg)(void)=(void *)GetProcAddress(dll,"VbListRegister");
     BOOL (WINAPI *release)(void)=(void *)GetProcAddress(dll,"VbListRelease");
-    draw=(void *)GetProcAddress(dll,"VbListDraw");CHECK(reg && release && draw && reg());
+    draw=(void *)GetProcAddress(dll,"VbListDraw");
+    uint64_t (WINAPI *text_hash)(void)=(void *)GetProcAddress(dll,"VbListTextHash");
+    void (WINAPI *text_mode)(unsigned)=(void *)GetProcAddress(dll,"VbListTextMode");
+    CHECK(reg && release && draw && text_hash && text_mode && reg());
     BOOL vb5=GetModuleHandleW(L"MSVBVM50.DLL")==dll;
     HINSTANCE self=GetModuleHandleW(NULL);
     WNDCLASSW c={.hInstance=self,.lpfnWndProc=parent,.lpszClassName=L"VBList144Parent"};
@@ -42,6 +46,9 @@ static int child(const WCHAR *runtime,BOOL styled)
         10,10,150,70,root,NULL,dll,NULL);CHECK(list && GetDpiForWindow(list)==144);
     CHECK(SendMessageW(list,LB_SETITEMHEIGHT,0,vb5?23:22)!=LB_ERR);
     CHECK(SendMessageW(list,LB_ADDSTRING,0,(LPARAM)L"first")!=LB_ERR);
+    HFONT source_font=CreateFontW(-16,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,ANSI_CHARSET,
+        OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Courier New");
+    CHECK(source_font);SendMessageW(list,WM_SETFONT,(WPARAM)source_font,FALSE);
     ShowWindow(root,SW_SHOWNOACTIVATE);UpdateWindow(root);
     expected=styled;selected=FALSE;CHECK(repaint());
     CHECK(SendMessageW(list,LB_SETSEL,TRUE,0)!=LB_ERR);selected=TRUE;CHECK(repaint());
@@ -50,9 +57,25 @@ static int child(const WCHAR *runtime,BOOL styled)
     CHECK(SendMessageW(list,LB_SETSEL,FALSE,0)!=LB_ERR);selected=FALSE;CHECK(repaint());
     EnableWindow(list,TRUE);expected=styled;CHECK(repaint());
     CHECK(SendMessageW(list,LB_SETITEMHEIGHT,0,24)!=LB_ERR);expected=FALSE;CHECK(repaint());
-    CHECK(DestroyWindow(root) && UnregisterClassW(c.lpszClassName,self) && release() && FreeLibrary(dll));
-    printf("VB_CHECKLIST_144_OK bits=%u vb5=%u styled=%u states=4 invalid_geometry=1\n",
-        (unsigned)(8*sizeof(void *)),vb5,styled);
+    CHECK(SendMessageW(list,LB_SETITEMHEIGHT,0,vb5?23:22)!=LB_ERR);expected=styled;
+    if(styled){
+        HMODULE sdll=GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");
+        BOOL (__cdecl *attached)(HWND)=sdll?(void *)GetProcAddress(sdll,"Ntw16sWindowAttached"):NULL;
+        BOOL (__cdecl *remove)(HWND)=sdll?(void *)GetProcAddress(sdll,"Ntw16sWindowRemove"):NULL;
+        CHECK(attached && remove && attached(list));
+        text_mode(1);CHECK(repaint());uint64_t foreign=text_hash();
+        text_mode(2);CHECK(repaint());uint64_t mixed=text_hash();
+        text_mode(0);CHECK(repaint());uint64_t classic=text_hash();
+        CHECK((HFONT)SendMessageW(list,WM_GETFONT,0,0)==source_font);
+        CHECK(remove(list) && !attached(list));CHECK(repaint());CHECK(text_hash()!=classic);
+        CHECK((HFONT)SendMessageW(list,WM_GETFONT,0,0)==source_font);
+        text_mode(1);CHECK(repaint() && text_hash()==foreign);
+        text_mode(2);CHECK(repaint() && text_hash()==mixed);
+        text_mode(0);
+    }
+    CHECK(DestroyWindow(root) && UnregisterClassW(c.lpszClassName,self) && release() && FreeLibrary(dll) && DeleteObject(source_font));
+    printf("VB_CHECKLIST_144_OK bits=%u vb5=%u styled=%u states=4 invalid_geometry=1 text_scope=%u\n",
+        (unsigned)(8*sizeof(void *)),vb5,styled,styled);
     return 0;
 }
 static int worker(int argc,WCHAR **argv)

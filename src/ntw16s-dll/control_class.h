@@ -34,8 +34,9 @@ static inline BOOL ntw16s_vb_checklist_class(HWND w)
 static inline BOOL ntw16s_vb_checklist_owner(HWND w)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
+    UINT dpi=GetDpiForWindow(w);
     return (style&WS_CHILD) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
-        GetDpiForWindow(w)==96 && ntw16s_vb_checklist_class(w) &&
+        (dpi==96 || dpi==144) && ntw16s_vb_checklist_class(w) &&
         (style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_HASSTRINGS|LBS_MULTIPLESEL|LBS_EXTENDEDSEL|LBS_NODATA))==
             (LBS_OWNERDRAWFIXED|LBS_HASSTRINGS|LBS_MULTIPLESEL);
 }
