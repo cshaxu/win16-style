@@ -530,7 +530,7 @@ void ntw16s_group_frame(HDC dc,int part,int state,const RECT *rect,const RECT *c
     (a->group_frame_parent&&a->group_frame_parent!=parent)||
     !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)caller,&module)||
     module!=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)||module!=(HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)||WindowFromDC(dc)!=w||
-    !GetClassNameW(w,cls,64)||lstrcmpW(cls,L"TGroupBox")||!RealGetWindowClassW(w,real,64)||lstrcmpW(real,cls)||!(GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD)||
+    !GetClassNameW(w,cls,64)||(lstrcmpW(cls,L"TGroupBox")&&lstrcmpW(cls,L"TRadioGroup"))||!RealGetWindowClassW(w,real,64)||lstrcmpW(real,cls)||!(GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD)||
     (GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING))||GetMapMode(dc)!=MM_TEXT||GetLayout(dc)!=0||
     !GetWindowOrgEx(dc,&org)||!GetViewportOrgEx(dc,&view)||org.x||org.y||view.x||view.y||!GetClientRect(w,&client)||client.right<4||client.bottom<4)return;
  if(is_text){int n;if(!text||count<=0||count>=512||flags!=0||(n=GetWindowTextW(w,caption,512))!=count||wcsncmp(caption,text,(size_t)count)||
@@ -1043,7 +1043,7 @@ static BOOL install_created(HWND w,DWORD original_style)
         color_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TColorBox") &&
             RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TColorBox");
         bit_candidate=ready && bit_identity(w,owner);
-        group_frame_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TGroupBox") && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,name);
+        group_frame_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TGroupBox") || !lstrcmpW(name,L"TRadioGroup")) && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,name);
         group_button_candidate=ready && group_button_identity(w);
         grid_candidate=ready && grid_identity(w,owner,GetParent(w));
         vcl_toolbar_candidate=ready && vcl_toolbar_identity(w,owner,GetParent(w));
