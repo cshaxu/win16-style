@@ -1318,5 +1318,20 @@
     "automated_model": "x86 and x64 isolated project-authored model verifies four states, client pixels, cancellation, notification, wrong owner, unsupported roles and reparent retirement. Previous package fails because attachment is absent.",
     "limits": "Actual VB6 sample x86 only, surrogate DAO3.6 and forced visibility; no real DAO3.5, actual database navigation, VB5, other DPI, physical input, or normal sample shutdown. Owned sample was job-terminated after capture.",
     "delivery": "Clean dual-width package: 14 focused cases passed with no skips in 12.74 seconds; clean actual package real-sample captures matched the prototype nonclient comparison. Eight deployed file hashes checked at assets and O:/winnt/system32."
+  },
+  "vb6_data_arrows_p48": {
+    "target": "Same x86 VB6 Data sample and private DAO3.6 surrogate as P47; Data control normally hidden, temporarily shown in a private desktop. 96 DPI; client 70x22.",
+    "method": "Separate task-scratch diagnostic DLL logged successful calls, HWND, coordinates and caller module for StretchBlt, DrawFrameControl, DrawEdge, FillRect, Rectangle and PatBlt. Observer sent WM_LBUTTONDOWN and WM_CANCELMODE for each of four buttons; no WM_LBUTTONUP or record navigation. Owned job reclaimed after capture.",
+    "caller": "Four direct StretchBlt calls from MSVBVM60 into Data HWND DC; 11x13, 8x13, 8x13, 11x13 bitmaps, SRCCOPY. No DrawFrameControl/DrawEdge/FillRect/Rectangle/PatBlt call observed with this Data HWND DC in this run; this does not identify the border-drawing mechanism or exclude other APIs.",
+    "states": "Enabled destinations x/y: 4/4, 24/4, 37/4, 55/4. Pressing each of the four moves its own image by (1,1); all four captured mouse on press and released on cancel. Disabled source bitmaps hash-identical to enabled, so source hash alone cannot classify disabled state.",
+    "source_hash_fnv64": [
+      "8619633540682850296",
+      "4090588555967646507",
+      "5744490539097851819",
+      "9861900435608839576"
+    ],
+    "database_sha256_before_after": "97a08cf87debe5e7ae9bead3d32f1290cb1cf58c350fc1205301e709f1c305eb",
+    "next": "Investigate whether existing Win3.1 arrow resources can be composed while preserving first/last markers and native enabled/pressed semantics; validate drawing order, clip, caller and state lifetime before product change. Do not infer from pixel shifts alone.",
+    "limits": "One sample, one 96 DPI x86 runtime and DAO surrogate; no native DAO3.5, true record navigation, physical input, or normal sample shutdown. No product change; graphics remain native except P47 outer border."
   }
 }
