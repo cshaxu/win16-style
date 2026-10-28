@@ -26,7 +26,7 @@ struct ntw16s_creation_scope {
 typedef struct attachment {
     unsigned calls;
     BOOL detached,tree,file_owner,picture,button_owner,checklist,status,spin,static_candidate,static_verified;
-    BOOL edit_candidate,edit_attempted,edit_installed,link_candidate,spinedit_candidate;
+    BOOL edit_candidate,edit_attempted,edit_installed,link_candidate,spinedit_candidate,modern_spin,modern_spin_verified;
     BOOL scroll_candidate,scroll_attempted,scroll_installed; HWND scroll_parent; HMODULE scroll_witness;
     BOOL group_button_candidate,group_button_attempted,group_button_installed;
     BOOL grid_candidate,grid_attempted,grid_installed;
@@ -87,7 +87,14 @@ void ntw16s_status_hooks_enable(void){InterlockedExchange(&status_hooks_ready,1)
 
 /* Scope is active only while dispatching the observed control's own paint or
  * pointer/enable messages. Unrelated nested attachment messages are barriers. */
-typedef struct spin_draw_scope {attachment *owner;HWND window,parent;HDC dc;} spin_draw_scope;
+typedef struct spin_buffers { DWORD background[4096],original[4096];BYTE valid[4096]; } spin_buffers;
+typedef struct spin_draw_scope {
+    attachment *owner; HWND window,parent; HDC dc,clones[16],snapshot_dc; HGDIOBJ snapshot_bitmap;
+    spin_buffers *buffers; RECT halves[2]; int states[2]; struct spin_draw_scope *previous_stack;
+} spin_draw_scope;
+static _Thread_local spin_draw_scope *spin_stack;
+static void spin_buffers_clear(spin_draw_scope *s)
+{ if(s->buffers){HeapFree(GetProcessHeap(),0,s->buffers);s->buffers=NULL;} }
 static _Thread_local spin_draw_scope *spin_current;
 
 static BOOL spin_identity(HWND w)
@@ -109,6 +116,152 @@ static BOOL spin_identity(HWND w)
         RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TSpinButton") &&
         GetClassNameW(parent,parent_name,ARRAYSIZE(parent_name)) && !lstrcmpW(parent_name,L"TSpinEdit") &&
         RealGetWindowClassW(parent,parent_real,ARRAYSIZE(parent_real)) && !lstrcmpiW(parent_real,L"EDIT");
+}
+
+/* Newer VCL paints a buffered themed TSpinButton under a witnessed EDIT.
+ * Only a buffer derived in this exact paint and copied to this exact window
+ * can be composed; unrelated or uncertain images keep their native pixels. */
+static BOOL modern_spin_shape(HWND w)
+{
+    HWND p=GetParent(w);WCHAR c[64],r[64],pc[64],pr[64];DWORD pid=0;
+    HMODULE owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+    return p && owner && owner==(HMODULE)GetClassLongPtrW(p,GCLP_HMODULE) &&
+        GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
+        GetWindowThreadProcessId(p,NULL)==GetCurrentThreadId() && (GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD) &&
+        GetClassLongPtrW(w,GCL_CBWNDEXTRA)==0 && !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
+        GetClassNameW(w,c,64) && !lstrcmpW(c,L"TSpinButton") && RealGetWindowClassW(w,r,64) && !lstrcmpW(r,c) &&
+        GetClassNameW(p,pc,64) && !lstrcmpW(pc,L"TSpinEdit") && RealGetWindowClassW(p,pr,64) && !lstrcmpW(pr,pc);
+}
+void ntw16s_modern_spin_dc_created(HDC source,HDC result)
+{
+    spin_draw_scope *s=spin_current;
+    if(!s || !s->owner->modern_spin || !result || (WindowFromDC(source)!=s->window && (!s->dc || source!=s->dc)))return;
+    for(unsigned i=0;i<16;i++)if(!s->clones[i]){s->clones[i]=result;return;}
+}
+static void spin_snapshot_invalidate(spin_draw_scope *s)
+{
+    s->snapshot_dc=NULL;s->snapshot_bitmap=NULL;s->states[0]=s->states[1]=0;
+    if(s->buffers)memset(s->buffers->valid,0,sizeof(s->buffers->valid));
+}
+/* Invalidate before forwarding every new theme draw on the witnessed DC.
+ * An unknown theme or a failed draw must never leave its old pixels eligible. */
+void ntw16s_modern_spin_theme_begin(HDC dc,const RECT *rect)
+{
+    spin_draw_scope *s=spin_current;RECT client,safe;SIZE_T got=0;POINT pt[2];
+    if(!s || !s->buffers || s->snapshot_dc!=dc)return;
+    if(!rect || !ReadProcessMemory(GetCurrentProcess(),rect,&safe,sizeof(safe),&got) || got!=sizeof(safe) ||
+       !GetClientRect(s->window,&client) || client.right<=0 || client.bottom<=0 || client.right>64 || client.bottom>64){
+        spin_snapshot_invalidate(s);return;
+    }
+    pt[0]=(POINT){safe.left,safe.top};pt[1]=(POINT){safe.right,safe.bottom};
+    if(!LPtoDP(dc,pt,2) || pt[0].x!=0 || pt[1].x!=client.right || pt[0].y<0 || pt[1].y>client.bottom ||
+       pt[1].y<=pt[0].y || !((pt[0].y==0 && pt[1].y<client.bottom) || (pt[0].y>0 && pt[1].y==client.bottom))){
+        spin_snapshot_invalidate(s);return;
+    }
+    s->states[pt[0].y==0?0:1]=0;
+    for(int y=pt[0].y;y<pt[1].y;y++)for(int x=0;x<client.right;x++)s->buffers->valid[y*64+x]=0;
+}
+void ntw16s_modern_spin_dc_deleted(HDC dc)
+{
+    for(spin_draw_scope *s=spin_stack;s;s=s->previous_stack){
+        for(unsigned i=0;i<16;i++)if(s->clones[i]==dc)s->clones[i]=NULL;
+        if(s->snapshot_dc==dc)spin_snapshot_invalidate(s);
+    }
+}
+void ntw16s_modern_spin_selected(HDC dc)
+{
+    for(spin_draw_scope *s=spin_stack;s;s=s->previous_stack)
+        if(s->snapshot_dc==dc && GetCurrentObject(dc,OBJ_BITMAP)!=s->snapshot_bitmap)spin_snapshot_invalidate(s);
+}
+void ntw16s_modern_spin_object_deleted(HGDIOBJ object)
+{
+    for(spin_draw_scope *s=spin_stack;s;s=s->previous_stack)
+        if(s->snapshot_bitmap==object)spin_snapshot_invalidate(s);
+}
+typedef struct spin_dib {HDC dc;HBITMAP bitmap;HGDIOBJ old;DWORD *pixels;} spin_dib;
+static void spin_dib_close(spin_dib *d)
+{ SelectObject(d->dc,d->old);DeleteObject(d->bitmap);DeleteDC(d->dc); }
+static BOOL spin_dib_open(HDC source,int width,int height,spin_dib *d)
+{
+    BITMAPINFO info={0};info.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);info.bmiHeader.biWidth=width;
+    info.bmiHeader.biHeight=-height;info.bmiHeader.biPlanes=1;info.bmiHeader.biBitCount=32;info.bmiHeader.biCompression=BI_RGB;
+    d->dc=CreateCompatibleDC(source);if(!d->dc)return FALSE;
+    d->bitmap=CreateDIBSection(source,&info,DIB_RGB_COLORS,(void**)&d->pixels,NULL,0);
+    if(!d->bitmap){DeleteDC(d->dc);return FALSE;}
+    d->old=SelectObject(d->dc,d->bitmap);
+    if(!d->old || d->old==HGDI_ERROR){DeleteObject(d->bitmap);DeleteDC(d->dc);return FALSE;}
+    int saved=SaveDC(source);BOOL ok=FALSE;
+    if(saved){SetViewportOrgEx(source,0,0,NULL);SetWindowOrgEx(source,0,0,NULL);SelectClipRgn(source,NULL);
+        ok=BitBlt(d->dc,0,0,width,height,source,0,0,SRCCOPY);GdiFlush();RestoreDC(source,saved);}
+    if(!ok){spin_dib_close(d);return FALSE;}return TRUE;
+}
+static BOOL spin_full_clip(HDC dc,const POINT pt[2])
+{
+    int saved=SaveDC(dc);if(!saved)return FALSE;
+    SetViewportOrgEx(dc,0,0,NULL);SetWindowOrgEx(dc,0,0,NULL);
+    RECT bounds;int kind=GetClipBox(dc,&bounds);BOOL covered=FALSE;
+    if(kind!=ERROR && kind!=NULLREGION && bounds.left<=pt[0].x && bounds.top<=pt[0].y &&
+       bounds.right>=pt[1].x && bounds.bottom>=pt[1].y){
+        HRGN clip=CreateRectRgn(0,0,0,0);
+        if(clip){
+            int have=GetClipRgn(dc,clip);
+            if(have==0)covered=TRUE;
+            else if(have==1){
+                HRGN missing=CreateRectRgn(pt[0].x,pt[0].y,pt[1].x,pt[1].y);
+                if(missing){covered=CombineRgn(missing,missing,clip,RGN_DIFF)==NULLREGION;DeleteObject(missing);}
+            }
+            DeleteObject(clip);
+        }
+    }
+    RestoreDC(dc,saved);return covered;
+}
+void ntw16s_modern_spin_theme(HDC dc,int part,int state,const RECT *rect,const RECT *clip,const void *caller)
+{
+    spin_draw_scope *s=spin_current;HMODULE module=NULL;BOOL owned=FALSE;RECT client;POINT pt[2];
+    if(!s || !s->owner->modern_spin || s->owner->detached || !rect || clip || part!=1 || state<1 || state>4 ||
+       !modern_spin_shape(s->window) || GetParent(s->window)!=s->parent || !ntw16s_control_protocol_is(s->parent,L"EDIT") ||
+       GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
+       !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)caller,&module) ||
+       module!=(HMODULE)GetClassLongPtrW(s->window,GCLP_HMODULE) || !GetClientRect(s->window,&client))return;
+    if(WindowFromDC(dc)==s->window)owned=TRUE;
+    for(unsigned i=0;i<16;i++)if(s->clones[i]==dc)owned=TRUE;
+    if(!owned || rect->left!=0 || rect->top!=0 || rect->right!=client.right || rect->bottom<=0 ||
+       client.right<=0 || client.bottom<=0 || client.right>64 || client.bottom>64)return;
+    pt[0]=(POINT){rect->left,rect->top};pt[1]=(POINT){rect->right,rect->bottom};
+    if(!LPtoDP(dc,pt,2) || pt[0].x!=0 || pt[1].x!=client.right || pt[0].y<0 || pt[1].y>client.bottom ||
+       pt[1].y<=pt[0].y || !((pt[0].y==0 && pt[1].y<client.bottom) || (pt[0].y>0 && pt[1].y==client.bottom)))return;
+    if(!spin_full_clip(dc,pt))return;
+    if(!s->buffers){s->buffers=HeapAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY,sizeof(*s->buffers));if(!s->buffers)return;}
+    if(s->snapshot_dc!=dc || s->snapshot_bitmap!=GetCurrentObject(dc,OBJ_BITMAP)){
+        s->snapshot_dc=dc;s->snapshot_bitmap=GetCurrentObject(dc,OBJ_BITMAP);
+        memset(s->buffers->valid,0,sizeof(s->buffers->valid));s->states[0]=s->states[1]=0;
+    }
+    int half=pt[0].y==0?0:1;s->states[half]=0;
+    for(int y=pt[0].y;y<pt[1].y;y++)for(int x=0;x<client.right;x++)s->buffers->valid[y*64+x]=0;
+    spin_dib d={0};if(!spin_dib_open(dc,client.right,client.bottom,&d))return;
+    for(int y=pt[0].y;y<pt[1].y;y++)for(int x=0;x<client.right;x++){
+        int at=y*64+x;s->buffers->background[at]=d.pixels[y*client.right+x]&0x00ffffff;s->buffers->valid[at]=1;
+    }
+    spin_dib_close(&d);s->halves[half]=(RECT){pt[0].x,pt[0].y,pt[1].x,pt[1].y};s->states[half]=state;
+}
+void ntw16s_modern_spin_blit(HDC dest,int x,int y,int width,int height,HDC source,int sx,int sy,DWORD rop)
+{
+    spin_draw_scope *s=spin_current;RECT r;
+    if(!s || !s->buffers || !s->owner->modern_spin || s->owner->detached || !modern_spin_shape(s->window) ||
+       GetParent(s->window)!=s->parent || !ntw16s_control_protocol_is(s->parent,L"EDIT") || !GetClientRect(s->window,&r) ||
+       (WindowFromDC(dest)!=s->window && (!s->dc || dest!=s->dc)) || source!=s->snapshot_dc ||
+       GetCurrentObject(source,OBJ_BITMAP)!=s->snapshot_bitmap || x<0 || y<0 || sx!=x || sy!=y ||
+       width<=0 || height<=0 || x>r.right-width || y>r.bottom-height || r.right>64 || r.bottom>64 ||
+       rop!=SRCCOPY || !s->states[0] || !s->states[1])return;
+    for(int j=y;j<y+height;j++)for(int i=x;i<x+width;i++)if(!s->buffers->valid[j*64+i])return;
+    spin_dib d={0};if(!spin_dib_open(source,r.right,r.bottom,&d))return;
+    for(int j=y;j<y+height;j++)for(int i=x;i<x+width;i++)s->buffers->original[j*64+i]=d.pixels[j*r.right+i];
+    for(int half=0;half<2;half++)if(!win16_style_bitbtn_face(s->window,d.dc,&s->halves[half],NULL,s->states[half]==3?ODS_SELECTED:0)){spin_dib_close(&d);return;}
+    GdiFlush();for(int j=y;j<y+height;j++)for(int i=x;i<x+width;i++){
+        int at=j*64+i;if((s->buffers->original[at]&0x00ffffff)!=s->buffers->background[at])d.pixels[j*r.right+i]=s->buffers->original[at];
+    }
+    BOOL copied=BitBlt(dest,x,y,width,height,d.dc,x,y,SRCCOPY);spin_dib_close(&d);
+    if(copied && !s->owner->detached)s->owner->modern_spin_verified=TRUE;
 }
 
 /* Forward the native primitive first. Its adjusted rectangle, return value and
@@ -596,6 +749,21 @@ static NTW16S_UNWIND_FUNCTION LRESULT static_paint_dispatch(attachment *a,HWND w
     SetLastError(entry);result=DefSubclassProc(w,m,p,l);error=GetLastError();scope.completed=TRUE;
     NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
 }
+typedef struct modern_spin_unwind {
+    spin_draw_scope *scope,*prior;status_draw_scope *status_prior;ntw16s_vb_paint *paint;attachment *owner;BOOL completed,nested;
+} modern_spin_unwind;
+static void modern_spin_end(void *data)
+{
+    modern_spin_unwind *s=data;if(!s->completed){spin_current=s->prior;spin_stack=s->scope->previous_stack;
+        spin_buffers_clear(s->scope);status_current=s->status_prior;ntw16s_vb_paint_end(s->paint);if(!s->nested)release(s->owner);}
+}
+static NTW16S_UNWIND_FUNCTION LRESULT modern_spin_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,spin_draw_scope *scope,spin_draw_scope *prior,status_draw_scope *status_prior,ntw16s_vb_paint *paint)
+{
+    modern_spin_unwind state={scope,prior,status_prior,paint,a,FALSE,static_paint!=NULL};ntw16s_unwind_scope unwind;
+    DWORD entry=GetLastError(),error;LRESULT result;NTW16S_UNWIND_BEGIN(unwind,modern_spin_end,&state);
+    SetLastError(entry);result=state.nested?static_paint_dispatch(a,w,m,p,l):DefSubclassProc(w,m,p,l);
+    error=GetLastError();state.completed=TRUE;NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
+}
 typedef struct color_print_scope {attachment *owner;HRGN clip;BOOL completed,nested;ntw16s_vb_paint *paint;status_draw_scope *status_prior;spin_draw_scope *spin_prior;} color_print_scope;
 static void color_print_end(void *data)
 {
@@ -716,7 +884,8 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
         m==WM_SETFOCUS || m==WM_KILLFOCUS);
     if(spin_prior)spin_current=NULL;
     if(spin_message){spin_scope.owner=a;spin_scope.window=w;spin_scope.parent=GetParent(w);
-        spin_scope.dc=(m==WM_PRINT || m==WM_PRINTCLIENT)?(HDC)p:NULL;spin_current=&spin_scope;}
+        spin_scope.dc=(m==WM_PRINT || m==WM_PRINTCLIENT)?(HDC)p:NULL;spin_current=&spin_scope;
+        spin_scope.previous_stack=spin_stack;spin_stack=&spin_scope;}
     BOOL painting=a->status && !a->detached && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT);
     if(prior && prior->window!=w)status_current=NULL;
     if(painting){
@@ -757,12 +926,14 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     }
     if(status || color)SetLastError(status_error);
     if(print_clip)result=color_print_dispatch(a,w,m,p,l,print_clip,&paint,prior,spin_prior);
+    else if(a->modern_spin && spin_message)result=modern_spin_dispatch(a,w,m,p,l,&spin_scope,spin_prior,prior,&paint);
     else if(static_paint || ((a->static_candidate || a->scroll_candidate || a->edit_candidate || a->group_button_candidate || a->grid_candidate || a->vcl_toolbar_candidate || a->track_candidate || a->tab_candidate || a->color_candidate || a->date_candidate || a->status_candidate || a->group_frame_candidate || a->panel_frame_candidate) && !a->detached && m==WM_PAINT))
         result=static_paint_dispatch(a,w,m,p,l);
     else result=DefSubclassProc(w,m,p,l);
     if(status || color)status_error=GetLastError();
     ntw16s_vb_paint_end(&paint);
     status_current=prior;
+    if(spin_message){spin_stack=spin_scope.previous_stack;spin_buffers_clear(&spin_scope);}
     spin_current=spin_prior;
     if(m==WM_PAINT && a->vcl_toolbar_candidate && !a->vcl_toolbar_attempted && !a->detached && a->vcl_toolbar_witness){
         DWORD saved=GetLastError();a->vcl_toolbar_attempted=TRUE;
@@ -1005,7 +1176,7 @@ BOOL __cdecl Ntw16sWindowAttached(HWND w)
     if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId()){
         SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
     }
-    attachment *a=lookup(w);return a && (!a->vb_data_candidate || a->vb_data_edge) && (!a->vb_user_candidate || ntw16s_vb_user_label_target(w)) && (!a->static_candidate || a->static_verified) && (!a->scroll_candidate || (a->scroll_installed && GetParent(w)==a->scroll_parent)) && (!a->edit_candidate || a->edit_installed) && (!a->group_button_candidate || a->group_button_installed) && (!a->grid_candidate || a->grid_installed) && (!a->vcl_toolbar_candidate || a->vcl_toolbar_installed) && (!a->track_candidate || a->track_installed) && (!a->tab_candidate || a->tab_installed) && (!a->color_candidate || a->color_installed) && (!a->date_candidate || a->date_installed) && (!a->status_candidate || a->status_installed) && (!a->bit_candidate || a->bit_verified) && (!a->group_frame_candidate || (a->group_frame_verified && !a->group_frame_retired && GetParent(w)==a->group_frame_parent)) && (!a->panel_frame_candidate || (a->panel_frame_verified && !a->panel_frame_retired && GetParent(w)==a->panel_frame_parent));
+    attachment *a=lookup(w);return a && (!a->modern_spin || a->modern_spin_verified) && (!a->vb_data_candidate || a->vb_data_edge) && (!a->vb_user_candidate || ntw16s_vb_user_label_target(w)) && (!a->static_candidate || a->static_verified) && (!a->scroll_candidate || (a->scroll_installed && GetParent(w)==a->scroll_parent)) && (!a->edit_candidate || a->edit_installed) && (!a->group_button_candidate || a->group_button_installed) && (!a->grid_candidate || a->grid_installed) && (!a->vcl_toolbar_candidate || a->vcl_toolbar_installed) && (!a->track_candidate || a->track_installed) && (!a->tab_candidate || a->tab_installed) && (!a->color_candidate || a->color_installed) && (!a->date_candidate || a->date_installed) && (!a->status_candidate || a->status_installed) && (!a->bit_candidate || a->bit_verified) && (!a->group_frame_candidate || (a->group_frame_verified && !a->group_frame_retired && GetParent(w)==a->group_frame_parent)) && (!a->panel_frame_candidate || (a->panel_frame_verified && !a->panel_frame_retired && GetParent(w)==a->panel_frame_parent));
 }
 void __cdecl Ntw16sScrollChanged(HWND w)
 {
@@ -1059,7 +1230,7 @@ BOOL __cdecl Ntw16sWindowTerminal(HWND w)
 static BOOL install_created(HWND w,DWORD original_style)
 {
     BOOL ready=InterlockedCompareExchange(&status_hooks_ready,0,0)!=0;
-    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=checklist_identity(w),status=ready && status_identity(w,NULL,NULL),spin=ready && spin_identity(w),status_candidate=FALSE,bit_candidate=FALSE,group_frame_candidate=FALSE,panel_frame_candidate=FALSE,static_candidate=FALSE,scroll_candidate=FALSE,edit_candidate=FALSE,group_button_candidate=FALSE,grid_candidate=FALSE,vcl_toolbar_candidate=FALSE,track_candidate=FALSE,tab_candidate=FALSE,color_candidate=FALSE,date_candidate=FALSE;HWND parent;HMODULE owner;attachment *a;DWORD error;
+    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=checklist_identity(w),status=ready && status_identity(w,NULL,NULL),spin=ready && (spin_identity(w)||modern_spin_shape(w)),status_candidate=FALSE,bit_candidate=FALSE,group_frame_candidate=FALSE,panel_frame_candidate=FALSE,static_candidate=FALSE,scroll_candidate=FALSE,edit_candidate=FALSE,group_button_candidate=FALSE,grid_candidate=FALSE,vcl_toolbar_candidate=FALSE,track_candidate=FALSE,tab_candidate=FALSE,color_candidate=FALSE,date_candidate=FALSE;HWND parent;HMODULE owner;attachment *a;DWORD error;
     ntw16s_control_protocol *protocol=NULL;
     if(lookup(w))return TRUE;
     /* COMBOBOX installs its own internal list when construction finishes.
@@ -1133,7 +1304,7 @@ static BOOL install_created(HWND w,DWORD original_style)
     }
     a=calloc(1,sizeof(*a));
     if(!a){ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    a->calls=1;a->group_frame_candidate=group_frame_candidate;a->panel_frame_candidate=panel_frame_candidate;a->vb_user_candidate=vb_user_edge;a->vb_data_candidate=vb_data_edge;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;a->status=status;a->spin=spin;a->static_candidate=static_candidate;
+    a->calls=1;a->group_frame_candidate=group_frame_candidate;a->panel_frame_candidate=panel_frame_candidate;a->vb_user_candidate=vb_user_edge;a->vb_data_candidate=vb_data_edge;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;a->status=status;a->spin=spin;a->modern_spin=spin&&modern_spin_shape(w);a->static_candidate=static_candidate;
     a->scroll_candidate=scroll_candidate;a->scroll_parent=GetParent(w);a->edit_candidate=edit_candidate;a->link_candidate=edit_candidate && class_is(w,L"TLinkLabel");a->spinedit_candidate=edit_candidate && class_is(w,L"TSpinEdit");a->group_button_candidate=group_button_candidate;a->grid_candidate=grid_candidate;a->vcl_toolbar_candidate=vcl_toolbar_candidate;a->vcl_toolbar_owner=owner;a->vcl_toolbar_parent=GetParent(w);a->grid_owner=owner;a->grid_parent=GetParent(w);a->edit_original_style=original_style;a->track_candidate=track_candidate;a->tab_candidate=tab_candidate;a->tab_parent=GetParent(w);a->color_candidate=color_candidate;a->date_candidate=date_candidate;a->status_candidate=status_candidate;a->bit_candidate=bit_candidate;
     if(report || tree || a->file_owner || a->button_owner || a->checklist || a->bit_candidate){a->report_window=w;a->tree=tree;
         a->report_module=(a->file_owner || a->button_owner || a->bit_candidate)?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}

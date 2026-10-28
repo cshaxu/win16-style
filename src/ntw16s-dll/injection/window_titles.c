@@ -1,6 +1,7 @@
 #include "intercept.h"
 #include "startup_hooks.h"
 #include "unwind.h"
+#include "theme_track.h"
 #include "ntw16s-dll/ntw16s.h"
 #include "ntw16s-dll/native_api.h"
 #include "ntw16s-dll/vb_text.h"
@@ -316,6 +317,72 @@ static HRESULT WINAPI hook_DrawThemeTextEx(HTHEME theme,HDC dc,int part,int stat
  if(SUCCEEDED(result))ntw16s_group_frame(dc,part,state,rect,NULL,text,count,flags,__builtin_return_address(0),TRUE);
  SetLastError(error);return result;
 }
+static __typeof__(&OpenThemeData) real_OpenThemeData;
+static __typeof__(&OpenThemeDataEx) real_OpenThemeDataEx;
+static __typeof__(&CloseThemeData) real_CloseThemeData;
+typedef HTHEME (WINAPI *theme_dpi_fn)(HWND,LPCWSTR,UINT);
+static theme_dpi_fn real_OpenThemeDataForDpi;
+typedef struct theme_unwind { BOOL active, closing; HTHEME handle; } theme_unwind;
+static void theme_end(void *data)
+{
+    theme_unwind *scope=data;
+    if (!scope->active) return;
+    if (scope->closing) ntw16s_theme_close_end(scope->handle,FALSE);
+    else ntw16s_theme_open_cancel();
+    scope->active=FALSE;
+}
+static int theme_kind(LPCWSTR name)
+{
+    WCHAR safe[9];SIZE_T got=0;
+    if(!name || !ReadProcessMemory(GetCurrentProcess(),name,safe,7*sizeof(WCHAR),&got) || got!=7*sizeof(WCHAR))
+        return NTW16S_THEME_OTHER;
+    if(safe[6]==0 && !lstrcmpiW(safe,L"BUTTON"))return NTW16S_THEME_BUTTON;
+    if(!ReadProcessMemory(GetCurrentProcess(),name,safe,sizeof(safe),&got) || got!=sizeof(safe))return NTW16S_THEME_OTHER;
+    return safe[8]==0 && !lstrcmpiW(safe,L"TEXTGLOW")?NTW16S_THEME_TEXTGLOW:NTW16S_THEME_OTHER;
+}
+static NTW16S_UNWIND_FUNCTION HTHEME WINAPI hook_OpenThemeData(HWND w,LPCWSTR name)
+{
+    DWORD entry=GetLastError(),error;HTHEME h;ntw16s_unwind_scope unwind;
+    theme_unwind scope={TRUE,FALSE,NULL};ntw16s_theme_ticket ticket=ntw16s_theme_open_begin();
+    NTW16S_UNWIND_BEGIN(unwind,theme_end,&scope);
+    SetLastError(entry);h=real_OpenThemeData(w,name);error=GetLastError();
+    ntw16s_theme_open_end(ticket,h,h?theme_kind(name):NTW16S_THEME_OTHER);scope.active=FALSE;
+    NTW16S_UNWIND_END(unwind);SetLastError(error);return h;
+}
+static NTW16S_UNWIND_FUNCTION HTHEME WINAPI hook_OpenThemeDataEx(HWND w,LPCWSTR name,DWORD flags)
+{
+    DWORD entry=GetLastError(),error;HTHEME h;ntw16s_unwind_scope unwind;
+    theme_unwind scope={TRUE,FALSE,NULL};ntw16s_theme_ticket ticket=ntw16s_theme_open_begin();
+    NTW16S_UNWIND_BEGIN(unwind,theme_end,&scope);
+    SetLastError(entry);h=real_OpenThemeDataEx(w,name,flags);error=GetLastError();
+    ntw16s_theme_open_end(ticket,h,h?theme_kind(name):NTW16S_THEME_OTHER);scope.active=FALSE;
+    NTW16S_UNWIND_END(unwind);SetLastError(error);return h;
+}
+static NTW16S_UNWIND_FUNCTION HTHEME WINAPI hook_OpenThemeDataForDpi(HWND w,LPCWSTR name,UINT dpi)
+{
+    DWORD entry=GetLastError(),error;HTHEME h;ntw16s_unwind_scope unwind;
+    theme_unwind scope={TRUE,FALSE,NULL};ntw16s_theme_ticket ticket=ntw16s_theme_open_begin();
+    NTW16S_UNWIND_BEGIN(unwind,theme_end,&scope);
+    SetLastError(entry);h=real_OpenThemeDataForDpi(w,name,dpi);error=GetLastError();
+    ntw16s_theme_open_end(ticket,h,h?theme_kind(name):NTW16S_THEME_OTHER);scope.active=FALSE;
+    NTW16S_UNWIND_END(unwind);SetLastError(error);return h;
+}
+static NTW16S_UNWIND_FUNCTION HRESULT WINAPI hook_CloseThemeData(HTHEME h)
+{
+    DWORD entry=GetLastError(),error;HRESULT result;ntw16s_unwind_scope unwind;
+    theme_unwind scope={TRUE,TRUE,h};ntw16s_theme_close_begin(h);
+    NTW16S_UNWIND_BEGIN(unwind,theme_end,&scope);
+    SetLastError(entry);result=real_CloseThemeData(h);error=GetLastError();
+    ntw16s_theme_close_end(h,SUCCEEDED(result));scope.active=FALSE;
+    NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
+}
+void ntw16s_modern_spin_dc_created(HDC,HDC);
+void ntw16s_modern_spin_dc_deleted(HDC);
+void ntw16s_modern_spin_selected(HDC);
+void ntw16s_modern_spin_object_deleted(HGDIOBJ);
+void ntw16s_modern_spin_theme_begin(HDC,const RECT *);
+void ntw16s_modern_spin_theme(HDC,int,int,const RECT *,const RECT *,const void *);
+void ntw16s_modern_spin_blit(HDC,int,int,int,int,HDC,int,int,DWORD);
 static __typeof__(&DrawThemeBackground) real_DrawThemeBackground;
 static __typeof__(&BitBlt) real_BitBlt;
 static __typeof__(&StretchBlt) real_StretchBlt;
@@ -328,6 +395,7 @@ static BOOL WINAPI hook_StretchBlt(HDC dc,int x,int y,int width,int height,HDC s
 static BOOL WINAPI hook_BitBlt(HDC dc,int x,int y,int width,int height,HDC source,int sx,int sy,DWORD rop)
 {
     BOOL result=real_BitBlt(dc,x,y,width,height,source,sx,sy,rop);DWORD error=GetLastError();
+    if(result)ntw16s_modern_spin_blit(dc,x,y,width,height,source,sx,sy,rop);
     if(result)win16_style_vb_checklist(dc,x,y,width,height,source,sx,sy,rop,__builtin_return_address(0));
     SetLastError(error);return result;
 }
@@ -341,6 +409,20 @@ static BOOL WINAPI hook_Polyline(HDC dc,const POINT *points,int count)
 }
 static __typeof__(&CreateCompatibleDC) real_CreateCompatibleDC;
 static __typeof__(&DeleteDC) real_DeleteDC;
+static __typeof__(&SelectObject) real_SelectObject;
+static __typeof__(&DeleteObject) real_DeleteObject;
+static HGDIOBJ WINAPI hook_SelectObject(HDC dc,HGDIOBJ object)
+{
+    HGDIOBJ old=real_SelectObject(dc,object);DWORD error=GetLastError();
+    if(old && old!=HGDI_ERROR)ntw16s_modern_spin_selected(dc);
+    SetLastError(error);return old;
+}
+static BOOL WINAPI hook_DeleteObject(HGDIOBJ object)
+{
+    BOOL result=real_DeleteObject(object);DWORD error=GetLastError();
+    if(result)ntw16s_modern_spin_object_deleted(object);
+    SetLastError(error);return result;
+}
 static BOOL WINAPI hook_DrawFrameControl(HDC dc,LPRECT rect,UINT type,UINT state)
 {
     DWORD entry=GetLastError();BOOL drawn=ntw16s_updown_draw_frame(dc,rect,type,state,__builtin_return_address(0));
@@ -363,9 +445,16 @@ static BOOL WINAPI hook_DrawEdge(HDC dc,LPRECT rect,UINT edge,UINT flags)
 }
 static HRESULT WINAPI hook_DrawThemeBackground(HTHEME theme,HDC dc,int part,int state,const RECT *rect,const RECT *clip)
 {
-    DWORD entry=GetLastError();BOOL drawn=ntw16s_updown_draw_theme(theme,dc,part,state,rect,clip,__builtin_return_address(0));
+    DWORD entry=GetLastError();ntw16s_theme_ticket ticket=ntw16s_theme_button_begin(theme);
+    ntw16s_theme_ticket glow=ntw16s_theme_glow_begin(theme);
+    BOOL textglow=part==1 && state==0 && glow.eligible;
+    if(!textglow)ntw16s_modern_spin_theme_begin(dc,rect);
+    BOOL drawn=ntw16s_updown_draw_theme(theme,dc,part,state,rect,clip,__builtin_return_address(0));
     SetLastError(entry);if(drawn)return S_OK;
     HRESULT result=real_DrawThemeBackground(theme,dc,part,state,rect,clip);DWORD error=GetLastError();
+    if(textglow && !ntw16s_theme_glow_end(theme,glow))ntw16s_modern_spin_theme_begin(dc,NULL);
+    if(SUCCEEDED(result) && ntw16s_theme_button_end(theme,ticket))
+        ntw16s_modern_spin_theme(dc,part,state,rect,clip,__builtin_return_address(0));
     if(SUCCEEDED(result) && part==1 && state==0)ntw16s_status_frame(dc,rect,clip,__builtin_return_address(0));
     if(SUCCEEDED(result))ntw16s_bit_theme_frame(dc,part,rect,clip,__builtin_return_address(0));
     if(SUCCEEDED(result))ntw16s_group_frame(dc,part,state,rect,clip,NULL,0,0,__builtin_return_address(0),FALSE);
@@ -374,11 +463,12 @@ static HRESULT WINAPI hook_DrawThemeBackground(HTHEME theme,HDC dc,int part,int 
 static HDC WINAPI hook_CreateCompatibleDC(HDC source)
 {
     HDC result=real_CreateCompatibleDC(source);DWORD error=GetLastError();
+    ntw16s_modern_spin_dc_created(source,result);
     ntw16s_updown_dc_created(source,result,__builtin_return_address(0));SetLastError(error);return result;
 }
 static BOOL WINAPI hook_DeleteDC(HDC dc)
 {
-    BOOL result=real_DeleteDC(dc);DWORD error=GetLastError();if(result)ntw16s_updown_dc_deleted(dc);
+    BOOL result=real_DeleteDC(dc);DWORD error=GetLastError();if(result){ntw16s_modern_spin_dc_deleted(dc);ntw16s_updown_dc_deleted(dc);}
     SetLastError(error);return result;
 }
 
@@ -421,6 +511,10 @@ LONG ntw16s_attach_titles(void)
     if(!error)error=(LONG)ntw16s_hooks_attach(&real_enable_scroll,(void *)hook_enable_scroll);
     if(!error)error=(LONG)ntw16s_hooks_attach(&real_set_theme,(void *)hook_set_theme);
 #define ATTACH(NAME) do { real_##NAME=NAME; if(!error)error=(LONG)ntw16s_hooks_attach(&real_##NAME,(void *)hook_##NAME); } while(0)
+    ATTACH(OpenThemeData);ATTACH(OpenThemeDataEx);ATTACH(CloseThemeData);
+    FARPROC dpi_symbol=GetProcAddress(GetModuleHandleW(L"uxtheme.dll"),"OpenThemeDataForDpi");
+    memcpy(&real_OpenThemeDataForDpi,&dpi_symbol,sizeof(dpi_symbol));
+    if(real_OpenThemeDataForDpi && !error)error=(LONG)ntw16s_hooks_attach(&real_OpenThemeDataForDpi,(void *)hook_OpenThemeDataForDpi);
     ATTACH(TrackPopupMenu);
     ATTACH(CreateDialogParamA);ATTACH(CreateDialogParamW);
     ATTACH(CreateDialogIndirectParamA);ATTACH(CreateDialogIndirectParamW);
@@ -432,7 +526,7 @@ LONG ntw16s_attach_titles(void)
     ATTACH(DrawTextA);ATTACH(DrawTextExA);ATTACH(TextOutA);ATTACH(ExtTextOutA);
     ATTACH(TextOutW);ATTACH(ExtTextOutW);
     ATTACH(CallWindowProcW);ATTACH(DrawTextW);
-    ATTACH(Polyline);ATTACH(BitBlt);ATTACH(StretchBlt);ATTACH(DrawFrameControl);ATTACH(DrawEdge);ATTACH(DrawThemeBackground);ATTACH(DrawThemeText);ATTACH(DrawThemeTextEx);ATTACH(DrawIconEx);ATTACH(CreateCompatibleDC);ATTACH(DeleteDC);
+    ATTACH(Polyline);ATTACH(BitBlt);ATTACH(StretchBlt);ATTACH(DrawFrameControl);ATTACH(DrawEdge);ATTACH(DrawThemeBackground);ATTACH(DrawThemeText);ATTACH(DrawThemeTextEx);ATTACH(DrawIconEx);ATTACH(CreateCompatibleDC);ATTACH(DeleteDC);ATTACH(SelectObject);ATTACH(DeleteObject);
 #undef ATTACH
     return error;
 }

@@ -35,7 +35,7 @@
 #include "minhook/src/buffer.h"
 #include "minhook/src/trampoline.h"
 #include <string.h>
-#define HOOK_LIMIT 48
+#define HOOK_LIMIT 56
 typedef struct hook_entry {
     void *target,*replacement,*trampoline;
     void *slot;
