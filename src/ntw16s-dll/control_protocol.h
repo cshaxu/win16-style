@@ -6,6 +6,8 @@ typedef struct ntw16s_control_protocol ntw16s_control_protocol;
 ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND);
 /* Internal: owner is accepted only after the actual EDIT forwarding witness. */
 ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_edit(HWND,HMODULE);
+/* Internal: owner forwarded this control's WM_PAINT to system SysLink. */
+ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_link(HWND,HMODULE);
 ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_scroll(HWND,HMODULE);
 /* Internal: exact group button with a witnessed native BUTTON WM_PAINT. */
 ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_group_button(HWND,HMODULE);

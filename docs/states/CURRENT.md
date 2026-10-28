@@ -700,3 +700,7 @@ S64 MediaPlayer同模块负例及主题来源：自有C模型中窗口类、绘�
 S64 MediaPlayer公开可访问性调查：真实144 DPI Delphi样本经当前P93包双宽启动，MSAA AccessibleObjectFromWindow/get_accChildCount均S_OK但子数0；独立UIA客户端ElementFromHandle/FindAll(TreeScope_Children)/Length也均S_OK、子数0，故当前样本无法从这两套接口获取九按钮的公开边界和状态。自有目标/启动器均零退出且作业清空，临时观察IAT恢复；不外推其他版本，未改产品。[证据](../history/M0-T18-S64-delphi-mediaplayer-investigation.md)。T18/S64开放。
 
 S64准入Delphi TLinkLabel标准协议候选：当前P93双宽真实运行库样本144 DPI，TLinkLabel未附着，但自身WM_PAINT由类所有者转发注册SysLink过程，LM_GETITEM成功返回link及启用状态；系统SysLink现有路径只改变字体，保留markup、焦点、点击及通知。拟仅对准确新建类、本人同线程WM_PAINT的同所有者原生过程见证及初始化协议成立后复用该路径；先验证双宽状态/事件/字体/生命周期、错误调用者与未见证负例及旧包检出，再进行双宽干净包、回归、双发布和远端复核。TNotebook/TPage默认样本仅确认运行库窗口和未附着；MaskEdit/RichEdit/ScrollBox因包装不可用未取得样本。[证据](../history/M0-T18-S64-delphi-linklabel-investigation.md)。T18/S64开放。
+
+S64 TLinkLabel在制候选（未发布）：工作区修改attachment/control_protocol/controls，见证本窗口WM_PAINT同所有者转发系统SysLink后复用现有字体路径。初版把DLGC_WANTTAB当作必备导致双宽真实样本协议绑定失败，实测返回DLGC_STATIC且LM_GETIDEALHEIGHT=25，修正后双宽真实样本附着并由Segoe UI -18转为Win16 System 00000007高度25，LM_GETITEM仍返回原ID及启用状态；四次旧/新样本目标和启动器零退出、自有作业清空。临时观察IAT禁用以免改变调用来源；此仅初步字体/协议证据，尚缺链接点击键盘/状态、无见证及错误来源/重入/移除测试、同批干净构建、实际包和双发布，候选不准声称交付。M0/T18/S64开放。
+
+S64 P107 Delphi TLinkLabel有限适配已发布：精确新建窗口自身WM_PAINT同所有者转发系统SysLink且初始化协议通过后复用已有字体路径，原生控件保留markup/通知/状态。实际包真实双宽144 DPI字体从Segoe UI -18变Win16 System 25，链接ID保留；旧/新真实样本合成输入回调一致，但直接向禁用窗口发消息仍触发回调，不能声称真实禁用输入已验证。自有双宽模型通过未见证/错误调用者、点击/回车、禁用链接项、visited、字体恢复及通知内重入移除；旧包双宽正向断言失败。干净四文件实际包16项聚焦零skip、6.68秒；双发布八摘要及两位置双宽安装模型通过，原资源不变。物理输入、真实复杂markup/其他DPI及全矩阵未覆盖。[证据](../history/M0-T18-S64-P107-delphi-linklabel.md)。T18/S64开放。

@@ -259,7 +259,7 @@ static BOOL is_combo(HWND w)
 static BOOL is_scroll(HWND w)
 {return ntw16s_class_is(w,L"SCROLLBAR");}
 static BOOL is_link(HWND w)
-{return ntw16s_class_is(w,L"SysLink");}
+{return ntw16s_class_is(w,L"SysLink") || ntw16s_control_protocol_is(w,WC_LINK);}
 static BOOL is_tab(HWND w)
 {return ntw16s_class_is(w,WC_TABCONTROLW) || ntw16s_control_protocol_is(w,WC_TABCONTROLW);}
 static BOOL is_header(HWND w)
