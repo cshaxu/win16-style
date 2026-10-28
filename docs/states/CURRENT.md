@@ -82,7 +82,7 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例限时回收 |
 | Verification | 双宽真实owner、原生过程、输入与文本；有实现时模型负例及实际包 |
 | Expected Markers | 经验证原生协议及调用所有权才能接入；未知路径回退 |
-| Asset Needs | 登记build/t18-s62-radio-memo、build/t18-s64-vb-*（含MDI真实样本、私有诊断）、build/t18-s64-vcl-value-survey及build/t18-package/s64-group-frame-*及s64-radio-frame-*、s64-popup-*、s64-panel-*、s64-labeled-edit-*、s64-numberbox-*、s64-list-*、s64-short-*及s64-valuegrid-*（同批包与回归），复用合法双宽运行库，结束前提炼证据并安全清理自有scratch |
+| Asset Needs | 登记build/t18-s62-radio-memo、build/t18-s64-vb-*（含MDI真实样本、私有诊断）、build/t18-s64-vcl-value-survey及build/t18-package/s64-group-frame-*及s64-radio-frame-*、s64-popup-*、s64-panel-*、s64-labeled-edit-*、s64-numberbox-*、s64-list-*、s64-short-*、s64-valuegrid-*及s64-smallgrid-*（同批包与回归），复用合法双宽运行库，结束前提炼证据并安全清理自有scratch |
 | Reporting Requirements | 实际绘制、操作、负例、未覆盖、双发布及远端复核 |
 | Stop Conditions | 无真实所有权或安全内容契约时不按名称猜测 |
 | Exit Criteria | 有证据的有限实现或明确后续接收，实际包交付；T18保持开放 |
@@ -896,3 +896,7 @@ S64 短列表候选完成双宽干净构建及实际包26项聚焦回归（21.17
 S64 网格外框候选：P132远端5e9bcfb及源码、测试、清单、四产物blob已复核。真实Delphi XE x86/96 DPI样本的应用自身TValueListEditor带WS_EX_CLIENTEDGE但无滚动条，既有TStringGrid/TDrawGrid准入不覆盖；scratch以精确owner、类名、父窗、边界及同窗WM_PAINT复用既有网格非客户区renderer，同窗移除外框846、客户区0像素，A-100可追加Z，进程正常退出。拟仅接入应用自身同角色窗口、不重绘单元格；需双宽模型及无clientedge/换父负例、旧包检出、相邻网格和编辑器回归、真实包复测与双发布。其他版本、数据绑定、物理输入和真实高DPI未覆盖。M0/T18/S64开放。
 
 S64 网格外框候选完成干净双宽构建、实际包24项聚焦回归（19.84秒、零skip）、真实样本846/0像素及编辑/下拉复测，P132双宽负例检出；assets/system32四文件摘要一致，各通过双宽安装模型。[证据](../history/M0-T18-S64-P133-value-grid.md)。提交与远端复核待完成；其他版本、绑定、物理输入、真实高DPI及完整集成未覆盖。M0/T18/S64开放。
+
+S64 无滚动条网格候选：P133远端a321631源码、测试、清单及四产物blob已复核。真实DelphiVCL4Python 1.0.7双宽/144 DPI的TStringGrid和TDrawGrid在3×3内容可放下时无滚动条且P133不附着；x86 scratch移除类准入中的滚动条前提但保留公开GetScrollInfo校验，同窗同步重绘/移除后两类各外框1704、客户区0像素变化，字符串数据保持。首轮未对初次附着后的异步重画同步导致TDrawGrid零差异，已纠正并保留不计通过。拟保留精确类、线程、owner、父窗、clientedge及滚动信息校验，覆盖有无滚动条切换、负例和双宽真实样本，需干净包、回归与双发布。M0/T18/S64开放。
+
+S64 无滚动条网格候选已完成双宽干净构建、24项实际包聚焦回归（20.20秒、零skip）、双宽真实样本各类1704/0像素及数据复测，P133双宽负例检出；assets/system32八摘要一致、两处双宽安装模型通过。[证据](../history/M0-T18-S64-P134-small-grid.md)。提交与远端复核待完成；其他版本/DPI、真实输入及完整集成未覆盖。M0/T18/S64开放。

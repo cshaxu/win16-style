@@ -329,7 +329,7 @@ static BOOL grid_identity(HWND w,HMODULE owner,HWND parent)
         GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() && (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==owner &&
         (style&WS_CHILD) && (ex&WS_EX_CLIENTEDGE) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
         GetClassNameW(w,name,ARRAYSIZE(name)) &&
-        (((style&(WS_HSCROLL|WS_VSCROLL)) && (!lstrcmpW(name,L"TStringGrid") || !lstrcmpW(name,L"TDrawGrid"))) ||
+        ((!lstrcmpW(name,L"TStringGrid") || !lstrcmpW(name,L"TDrawGrid")) ||
          (owner==GetModuleHandleW(NULL) && IsWindowUnicode(w) && !lstrcmpW(name,L"TValueListEditor"))) &&
         RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(name,real);
 }
