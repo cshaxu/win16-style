@@ -361,13 +361,14 @@ BOOL win16_style_vb_checklist(HDC dc,int x,int y,int width,int height,HDC source
 {
     static _Thread_local BOOL active;
     HMODULE caller=NULL;HWND w,parent;POINT origin;RECT item;LRESULT hit,index;BITMAP bitmap;
-    DWORD style,ex;BOOL result=FALSE,enabled;
+    DWORD style,ex;BOOL result=FALSE,enabled;UINT dpi;
     if(active || !dc || !source || width!=11 || height!=11 || rop!=SRCCOPY ||
         (sx!=0 && sx!=11 && sx!=22 && sx!=33) || sy!=0 || GetObjectType(source)!=OBJ_MEMDC ||
         GetObjectW(GetCurrentObject(source,OBJ_BITMAP),sizeof(bitmap),&bitmap)!=sizeof(bitmap) ||
         bitmap.bmWidth!=44 || bitmap.bmHeight!=11 ||
         !(w=WindowFromDC(dc)) || GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() ||
-        !ntw16s_vb_checklist_class(w) || GetDpiForWindow(w)!=96 ||
+        !ntw16s_vb_checklist_class(w) ||
+        ((dpi=GetDpiForWindow(w))!=96 && (dpi!=144 || !ntw16s_vb_class(w,L"ThunderRT6ListBox"))) ||
         GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
         !GetViewportOrgEx(dc,&origin) || origin.x || origin.y ||
         !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
@@ -382,7 +383,9 @@ BOOL win16_style_vb_checklist(HDC dc,int x,int y,int width,int height,HDC source
     if(HIWORD(hit)==0 && vb_checklist_unchanged(w,dc,parent,style,ex,enabled) &&
         SendMessageW(w,LB_GETITEMRECT,(WPARAM)index,(LPARAM)&item)!=LB_ERR &&
         vb_checklist_unchanged(w,dc,parent,style,ex,enabled) &&
-        x==item.left+(ntw16s_vb5_class(w,L"ThunderRT5ListBox")?0:2) && y==item.top+2 && item.right-x>=width && item.bottom-y>=height){
+        x==item.left+(ntw16s_vb5_class(w,L"ThunderRT5ListBox")?0:2) &&
+        (dpi==144?(item.bottom-item.top==22 && y==item.top+5):y==item.top+2) &&
+        item.right-x>=width && item.bottom-y>=height){
         RECT glyph={x,y,x+width,y+height};
         result=checklist_glyph(dc,&glyph,(sx%22)==11?DFCS_CHECKED:0);
     }
