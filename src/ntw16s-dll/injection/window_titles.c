@@ -223,6 +223,10 @@ VB_TEXT_HOOK(TextOutW,BOOL,(HDC dc,int x,int y,LPCWSTR text,int count),(dc,x,y,t
 #undef VB_TEXT_HOOK
 
 void ntw16s_rich_witness(WNDPROC,HWND,UINT,const void *,BOOL);
+void ntw16s_box_witness(HWND,UINT,const void *);
+static __typeof__(&DefWindowProcW) real_DefWindowProcW;
+static LRESULT WINAPI hook_DefWindowProcW(HWND w,UINT msg,WPARAM wp,LPARAM lp)
+{DWORD entry=GetLastError();ntw16s_box_witness(w,msg,__builtin_return_address(0));SetLastError(entry);return real_DefWindowProcW(w,msg,wp,lp);}
 static __typeof__(&CallWindowProcA) real_CallWindowProcA;
 static LRESULT WINAPI hook_CallWindowProcA(WNDPROC proc,HWND w,UINT message,WPARAM wp,LPARAM lp)
 {DWORD entry=GetLastError();ntw16s_rich_witness(proc,w,message,__builtin_return_address(0),FALSE);SetLastError(entry);return real_CallWindowProcA(proc,w,message,wp,lp);}
@@ -552,7 +556,7 @@ LONG ntw16s_attach_titles(void)
     ATTACH(MessageBoxIndirectA);ATTACH(MessageBoxIndirectW);
     ATTACH(DrawTextA);ATTACH(DrawTextExA);ATTACH(TextOutA);ATTACH(ExtTextOutA);
     ATTACH(TextOutW);ATTACH(ExtTextOutW);
-    ATTACH(CallWindowProcA);ATTACH(CallWindowProcW);ATTACH(DrawTextW);ATTACH(DrawTextExW);
+    ATTACH(DefWindowProcW);ATTACH(CallWindowProcA);ATTACH(CallWindowProcW);ATTACH(DrawTextW);ATTACH(DrawTextExW);
     ATTACH(Polyline);ATTACH(BitBlt);ATTACH(StretchBlt);ATTACH(DrawFrameControl);ATTACH(DrawEdge);ATTACH(DrawThemeBackground);ATTACH(DrawThemeText);ATTACH(DrawThemeTextEx);ATTACH(DrawIconEx);ATTACH(CreateCompatibleDC);ATTACH(DeleteDC);ATTACH(SelectObject);ATTACH(DeleteObject);
 #undef ATTACH
     return error;

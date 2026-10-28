@@ -830,3 +830,7 @@ S64 P122 Unicode Delphi TRichEdit 外框及滚动条已交付：真实 x86 Delph
 S64 TScrollBox 调查：作者 Delphi XE x86/96 DPI 真实图像容器在 P122 未附着；原生与发布版横纵行滚动均0→8→0并正常退出。同线程临时观察确认该样本 WM_NCPAINT 经 DefWindowProcW，导入已恢复。scratch 原型复用现有外框/滚动条，实际同窗对称重绘对照客户区0、非客户区10232像素变化，行滚动恢复并退出；初版仅安装被动滚动 helper 无视觉变化，不计成功。类名准入尚不安全，所有权/绘制见证、显隐/拖动/换父/异常、双宽模型和实际包尚待完成；未改产品或发布。[证据](../history/M0-T18-S64-scrollbox-investigation.md)，scratch build/t18-s64-vb-scrollbox-survey。M0/T18/S64开放。
 
 S64 TScrollBox 显隐补证：真实样本两按钮在裸版及scratch原型中均使style依次56300000→56100000→56000000→56300000，原显示状态恢复、两个实例正常退出及自有作业清空；未验证隐藏期间像素和交互。[调查](../history/M0-T18-S64-scrollbox-investigation.md)。
+
+S64 准入 P123 Delphi TScrollBox 有限外框及滚动条：真实 x86 Delphi XE 样本注册类过程在应用模块，WM_NCPAINT 到 DefWindowProcW 的直接调用来自 USER32；scratch 仅在精确同窗口、同线程、同所有者父窗和类过程、Unicode、client-edge及当前非客户区派发中见证该调用，复用原边框和滚动 renderer。实际同窗客户区0、非客户区10232像素变化；样本行滚动0→8→0，下箭头0→8、滑块到116并释放捕获，显隐状态恢复。双宽自有模型通过错误owner、伪绘制、外部调用、异常、失效见证、换父及角色变化，旧包双宽负例检出。尚须检查嵌套、状态与资源、全局钩子容量/别名/回滚、干净同批包及双发布；M0/T18/S64开放。
+
+S64 P123 Delphi Unicode TScrollBox 有限外框及滚动条已交付：真实 x86 Delphi XE 96 DPI 样本同窗客户区0、非客户区10232像素变化；横纵行滚动恢复、下箭头0→8、滑块到116且释放捕获、显隐状态恢复。双宽模型验证伪绘制、错误所有者/调用者、异常、见证失效、换父及角色退役，P122双宽负例检出；干净同批包27项22.43秒无skip，双发布八摘要及两位置双宽安装模型通过。其他版本/DPI、物理输入、隐藏状态像素和完整资源生命周期未覆盖。[证据](../history/M0-T18-S64-P123-scrollbox.md)。M0/T18/S64开放。

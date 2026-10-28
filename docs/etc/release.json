@@ -1,16 +1,16 @@
 {
   "schema": 1,
-  "delivery": "M0 T18 S64 P122",
+  "delivery": "M0 T18 S64 P123",
   "stage": "development acceptance; M0/T18/S64 open; focused package tests passed",
   "version": "0.18.0.0",
   "version_contract": "M0 T18; sequential S does not increment T version",
   "package_directory": "assets",
-  "source_snapshot_sha256": "e2454fce13c5ece6c836fdaef4f5c9ac989c4ade1a2405534497b6c11d33745b",
+  "source_snapshot_sha256": "acc3f46123d55cf983a77e7b439e35563257afba0f69162fa8919d51c0c1d993",
   "source_snapshot_format": "SHA256 of the clean build snapshot.json bytes",
   "source_inputs": [
     {
       "path": "CMakeLists.txt",
-      "sha256": "65d5c8b6526363eab8275e68c86034a64377ed1ef675ccc31fd048fb981b63ce"
+      "sha256": "140b266bc11cbad153e014ee3405c544aed998b7ea52d9f823c67a7b0979d35e"
     },
     {
       "path": "LICENSE",
@@ -54,7 +54,7 @@
     },
     {
       "path": "src/ntw16s-dll/attachment.c",
-      "sha256": "75439b0d211bc141c646444c332101a6411e433047414ac53d658fbc7e9955db"
+      "sha256": "06f3ca63ef4de1a1ab342e9e55c5d13291cab43d8e32d50c542408d1c3567d8b"
     },
     {
       "path": "src/ntw16s-dll/attachment.h",
@@ -238,7 +238,7 @@
     },
     {
       "path": "src/ntw16s-dll/injection/window_titles.c",
-      "sha256": "464351411f820912c676cf476ada238de08e6532097148729fd4bdfcd7a81f50"
+      "sha256": "b9375aba9bc2661a03a37db0233526117325d3d42c377ce03c2d5d0c986b6901"
     },
     {
       "path": "src/ntw16s-dll/layout.c",
@@ -453,7 +453,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T18",
-      "sha256": "b9442cac2207c570d4e4e826cb7fb3a1cc65c2155941e5a875fd8601e12d352d",
+      "sha256": "feb46f0c532c8feb4a6fd44498666a1b7fd539f20958872a6c7d425716c11216",
       "imports": [
         "advapi32.dll",
         "kernel32.dll",
@@ -465,7 +465,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T18",
-      "sha256": "f875838ba05a8b1d101343276c4e9f7156232476614a805c63b6e075201f9a86",
+      "sha256": "494ebefb535bd50ae94d8c3f84ced44f1d49eee0a7b3ae5b8e2572473c71c9da",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -485,7 +485,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T18",
-      "sha256": "dd4aa6ec8b499d478adae4f0ae234fcdfb4256c08c14b5c6d775f22a73ec11a4",
+      "sha256": "d3f45bc65eccc8bf2484e0db6bd62e2bb8467e9b50463486c9d229d03118ea31",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -500,7 +500,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T18",
-      "sha256": "eb6b2d01af2373c303b5e8e1a146ad13eea8708a68b9896a6c5cb392e18b947e",
+      "sha256": "33a53dcab50fd1ffde08dc29a4949fe33528de92697130b76c3d8caf75196b47",
       "imports": [
         "comctl32.dll",
         "comdlg32.dll",
@@ -533,71 +533,73 @@
     ]
   },
   "architecture": "C17, MinGW GCC, Ninja and ccache; three components, four product files; existing ABI retained",
-  "binary_batch_delivery": "M0 T18 S64 P122",
+  "binary_batch_delivery": "M0 T18 S64 P123",
   "verification": {
     "clean_build": {
-      "selection": "^core/abi$",
+      "exit_code": 0,
+      "targets": "all",
+      "profile": "Focused",
       "tests": [
         {
-          "skipped": [],
-          "test_seconds": 0.44108970000525005,
           "tests": 1,
-          "build_seconds": 38.664021599979606,
           "architecture": "x86",
-          "configure_seconds": 5.461344400013331,
-          "passed": 1
+          "build_seconds": 44.61688870002399,
+          "passed": 1,
+          "configure_seconds": 5.886723500007065,
+          "test_seconds": 0.5480481999984477,
+          "skipped": []
         },
         {
-          "skipped": [],
-          "test_seconds": 0.4792961999773979,
           "tests": 1,
-          "build_seconds": 43.03018289999454,
           "architecture": "x64",
-          "configure_seconds": 5.3010132999916095,
-          "passed": 1
+          "build_seconds": 51.913129699998535,
+          "passed": 1,
+          "configure_seconds": 6.5124027999991085,
+          "test_seconds": 0.6364020000037272,
+          "skipped": []
         }
       ],
-      "build_root": "O:\\repos.hobby\\win16style\\build\\t18-package\\s64-rich-unicode-p122-candidate1\\clean-source\\build\\.ninja",
       "architectures": [
         "x86",
         "x64"
       ],
-      "exit_code": 0,
-      "targets": "all",
       "test_jobs": 4,
+      "build_root": "O:\\repos.hobby\\win16style\\build\\t18-package\\s64-scrollbox-p123-candidate1\\clean-source\\build\\.ninja",
       "status": "passed",
-      "profile": "Focused",
-      "build_jobs": 8
+      "build_jobs": 8,
+      "selection": "^core/abi$"
     },
     "actual_package": [
       {
         "status": "passed-focused",
-        "cases": 25,
-        "seconds": 14.2973918,
+        "cases": 27,
+        "seconds": 22.4289565,
         "skipped": [],
         "sha256": {
-          "demo.exe": "eb6b2d01af2373c303b5e8e1a146ad13eea8708a68b9896a6c5cb392e18b947e",
-          "ntw16s32.dll": "f875838ba05a8b1d101343276c4e9f7156232476614a805c63b6e075201f9a86",
-          "ntw16s64.dll": "dd4aa6ec8b499d478adae4f0ae234fcdfb4256c08c14b5c6d775f22a73ec11a4",
-          "run16s.exe": "b9442cac2207c570d4e4e826cb7fb3a1cc65c2155941e5a875fd8601e12d352d"
+          "demo.exe": "33a53dcab50fd1ffde08dc29a4949fe33528de92697130b76c3d8caf75196b47",
+          "ntw16s32.dll": "494ebefb535bd50ae94d8c3f84ced44f1d49eee0a7b3ae5b8e2572473c71c9da",
+          "ntw16s64.dll": "d3f45bc65eccc8bf2484e0db6bd62e2bb8467e9b50463486c9d229d03118ea31",
+          "run16s.exe": "feb46f0c532c8feb4a6fd44498666a1b7fd539f20958872a6c7d425716c11216"
         },
         "requested_cases": [
+          "box-model-32",
+          "box-model-64",
           "rich-model-32",
           "rich-model-64",
           "rich-wide-32",
           "rich-wide-64",
           "startup-hooks-32",
           "startup-hooks-64",
-          "vcl-scroll-module-32",
-          "vcl-scroll-module-64",
-          "vcl-status-pane-font-32",
-          "vcl-status-pane-font-64",
-          "vcl-modern-spin-32",
-          "vcl-modern-spin-64",
-          "vcl-color-module-32",
-          "vcl-color-module-64",
           "vb-controls-32",
           "vb-controls-64",
+          "vcl-modern-spin-32",
+          "vcl-modern-spin-64",
+          "vcl-status-pane-font-32",
+          "vcl-status-pane-font-64",
+          "vcl-scroll-module-32",
+          "vcl-scroll-module-64",
+          "menu-cancel-x86",
+          "menu-cancel-x64",
           "cmd-nested"
         ]
       }
@@ -606,7 +608,7 @@
   },
   "validation": {
     "status": "focused automated native tests; physical input and full integration not tested",
-    "evidence": "docs/history/M0-T18-S64-P122-rich-unicode.md"
+    "evidence": "docs/history/M0-T18-S64-P123-scrollbox.md"
   },
   "closure": {
     "status": "M0/T18/S64 remain open; this is a bounded development delivery",
