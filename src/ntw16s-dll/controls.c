@@ -1613,7 +1613,23 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
          * Original flat EDIT borders are painted inside the client area. */
         if(embedded_scroll_input(w,s,m,a,b))goto finished;
         if(s->edit_scrollbars && (m==WM_NCMOUSEMOVE || m==WM_NCMOUSELEAVE))goto finished;
-        if(s->edit_scrollbars && m==WM_NCPAINT){nonclient_scrollbars(w,s,NULL);goto finished;}
+        if(s->edit_scrollbars && m==WM_NCPAINT){
+            nonclient_scrollbars(w,s,NULL);
+            if(!s->detached && (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE)){
+                if(a==1)list_border(w,s,NULL);
+                else if(a){
+                    HRGN region=CreateRectRgn(0,0,0,0);
+                    if(region){
+                        if(CombineRgn(region,(HRGN)a,NULL,RGN_COPY)!=ERROR){
+                            HDC dc=GetDCEx(w,region,DCX_WINDOW|DCX_CACHE|DCX_INTERSECTRGN);
+                            if(dc){list_border(w,s,dc);ReleaseDC(w,dc);region=NULL;}
+                        }
+                        if(region)DeleteObject(region);
+                    }
+                }
+            }
+            goto finished;
+        }
         if(s->edit_scrollbars && m==WM_SETREDRAW)s->list_redraw_off=!a;
         {BOOL suppress=s->edit_scrollbars && can_suppress_redraw(w,s) &&
             (m==WM_VSCROLL || m==WM_HSCROLL || m==WM_MOUSEWHEEL || m==EM_LINESCROLL || m==WM_SETTEXT ||

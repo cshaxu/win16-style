@@ -82,7 +82,7 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例限时回收 |
 | Verification | 双宽真实owner、原生过程、输入与文本；有实现时模型负例及实际包 |
 | Expected Markers | 经验证原生协议及调用所有权才能接入；未知路径回退 |
-| Asset Needs | 登记build/t18-s62-radio-memo、build/t18-s64-vb-*（含MDI真实样本、私有诊断）、build/t18-s64-vcl-value-survey、build/t18-s64-vb-mask-survey及build/t18-package/s64-group-frame-*及s64-radio-frame-*、s64-popup-*、s64-panel-*、s64-labeled-edit-*、s64-numberbox-*、s64-list-*、s64-short-*、s64-valuegrid-*、s64-smallgrid-*及s64-controlbar-*（同批包与回归），复用合法双宽运行库，结束前提炼证据并安全清理自有scratch |
+| Asset Needs | 登记build/t18-s62-radio-memo、build/t18-s64-vb-*（含MDI真实样本、私有诊断）、build/t18-s64-vcl-value-survey、build/t18-s64-vb-mask-survey及build/t18-package/s64-group-frame-*及s64-radio-frame-*、s64-popup-*、s64-panel-*、s64-labeled-edit-*、s64-numberbox-*、s64-list-*、s64-short-*、s64-valuegrid-*、s64-smallgrid-*、s64-controlbar-*及s64-multiline-frame-*（同批包与回归），复用合法双宽运行库，结束前提炼证据并安全清理自有scratch |
 | Reporting Requirements | 实际绘制、操作、负例、未覆盖、双发布及远端复核 |
 | Stop Conditions | 无真实所有权或安全内容契约时不按名称猜测 |
 | Exit Criteria | 有证据的有限实现或明确后续接收，实际包交付；T18保持开放 |
@@ -920,3 +920,25 @@ S64 TMaskEdit补证：同窗附着时WM_GETFONT为私有Win16 System高13，移�
 S64 P136 菜单测试焦点收尾：在原取消、焦点、捕获和内容恢复断言后、销毁测试窗口前，显式SetFocus到同线程自有anchor并验证当前焦点；x86/x64、P135旧包及P136候选各一次双DPI 15场景完整通过，约5–6秒。该变化仅限测试，未改变产品或原断言；等待具体系统根因仍未知。原失败保留记录，正式测试已修改，须重新干净同批构建及实际包回归。TMaskEdit另外在真实样例16个位置逐次发送数字消息，裸与原型文本和选择逐项相同、恢复原文；日期格式异常，不能认定有效掩码输入或普遍行为。
 
 S64 P136 ControlBar八种常规边框完成双宽干净包、28项实际包聚焦回归（19.44秒，无skip，含双宽完整菜单），真实双宽样本八边框736/客户区0、无边框0，点击回调正常；P135双宽负例检出。assets/system32八摘要一致，两处安装双宽模型通过；[证据](../history/M0-T18-S64-P136-controlbar-bevels.md)。提交和远端复核待完成；其他版本/DPI、物理输入和完整集成未覆盖，TMaskEdit仍为独立scratch研究。M0/T18/S64开放。
+
+S64 TMaskEdit派生样例补证：作者数字mask样例为TplMaskEdit，源码为纵向对齐显式启用ES_MULTILINE并设置编辑矩形；真实类同owner转发系统EDIT绘制。scratch将该确切派生类及其多行角色纳入后附着，16个位置数字7的实际文本/选择与裸运行逐项相同，首两位确有插入并还原，进程及自有job正常退出；但同窗移除外框0、客户区2像素，未证明外框生效，须继续追查。该私有类与单个样例不能证明标准TMaskEdit普遍行为；未改产品或发布。[调查](../history/M0-T18-S64-maskedit-investigation.md)。P136 5594309已推送并核对远端源码、测试、清单及四产物blob；M0/T18/S64开放。
+
+S64 多行EDIT外框调查：现有edit_scrollbars的WM_NCPAINT提前返回而绕开list_border；scratch在既有分支内对WS_EX_CLIENTEDGE补用现有外框后，真实TplMaskEdit同窗移除非客户区628/客户区2像素变化，原16项数字输入/选择仍与裸运行一致且作业正常退出。仅证实单样例及该路径，滚动条共存、裁剪、其他DPI、TMemo和双宽回归未验证；未改正式产品。[调查](../history/M0-T18-S64-maskedit-investigation.md)，M0/T18/S64开放。
+
+S64 多行EDIT外框候选准入：已有已验证EDIT身份和edit_scrollbars作用域内，仅在WM_NCPAINT早返回前对WS_EX_CLIENTEDGE调用既有list_border；不增加类名或改变应用数据、文字、滚动和图形资源。真实TplMaskEdit研究原型同窗外框628/客户区2像素，16位置数字输入/选择与裸一致。自有TMemo双宽带双滚动条模型在旧包外侧0并失败、原型1144/客户区0且选择、只读、滚动、重入移除通过；须正式纳入测试、独立边框裁剪与无clientedge负例、干净包相邻回归和双发布；真实其他DPI、物理输入及异常未覆盖。M0/T18/S64开放。
+
+S64 多行EDIT外框实施中：正式代码补WM_NCPAINT受限clientedge外框，双宽TEdit及TMemo各模型边框1144/客户区0、输入/只读/滚动/重入移除通过；旧包双宽边框0负例检出。干净包构建中；裁剪、无边框和真实TMemo回归仍待证实，不将scratch派生类加入产品。M0/T18/S64开放。
+
+S64 多行外框包验证：双宽干净构建、实际同批包20项聚焦20.77秒零skip通过；第一次因测试名写错被门禁拒绝，未计通过。额外无clientedge诊断在已创建后动态清除该位，外侧仍有636像素变化（双滚动条及窗口重计算混入），断言失败，不能推定新分支违规或将其算通过；需以绘图调用见证隔离边框及检查区域裁剪，再完成真实TMemo、发布和远端复核。候选未发布，M0/T18/S64开放。
+
+S64 多行EDIT补证：真实DelphiVCL4Python 1.0.7 x86/x64 144 DPI TMemo加载实际候选均已附着，两行文本、选择1..3和恢复通过，自有实例正常退出；不是多DPI或物理输入验收。x86无clientedge诊断调整为旧包能运行至该检查后，旧包与候选均得到边缘636/客户区0像素变化、原零差异断言均失败，证明该计数在旧包也存在但不证明逐像素相同或原因；裁剪仍未验证，候选尚未发布。M0/T18/S64开放。
+
+S64 多行EDIT裁剪补证：实际候选下自有x86/x64 TMemo模型以内存DC限定左20像素，WM_PRINT各区域内1400/区域外0像素变化；这是既有打印路径，不证明本次WM_NCPAINT早返回路径的更新区域裁剪。无clientedge旧/新计数均636仍不足证明逐像素一致。两种真实位宽TMemo内容/选择/恢复和正常退出通过；待完善窗口非客户区裁剪与无边框对照，再发布。M0/T18/S64开放。
+
+S64 多行非客户区裁剪缺陷及修正：局部WM_NCPAINT只请求左20像素时，首个候选在区域内20/区域外200像素绘制；新分支复制传入region并以GetDCEx结合可见区域后调用既有外框，wParam=1保持整窗；失败时不绘制，复制区域与DC按API所有权释放。自有双宽模型旧候选均在裁剪断言失败，修正候选均内20/外0并通过外框1144、滚动、选择、只读及退役；源码及实际包需干净重建复测。无clientedge旧/新同为636像素但差异来源仍待查。M0/T18/S64开放。
+
+S64 多行EDIT最终候选：局部WM_NCPAINT裁剪负例双宽检出，修正后双宽内20/外0；同批干净包20项19.62秒无skip，真实双宽TMemo附着、输入/选择/恢复及正常退出通过。无clientedge探针额外构造故意移除外层边框条件的scratch负例，仍与候选同为636外侧变化且原零差异断言失败；该探针无法区分内层list_border边框条件和滚动条/窗口变化，不能计为有效负例。须设计独立作用域见证或逐像素可归因负例再完成发布；当前未发布，M0/T18/S64开放。
+
+S64 多行EDIT无边框负例修正：标记顶边并排除右侧滚动条范围，正确候选双宽检查区改写0/180像素；scratch同时取消外层及list_border内层边框限制的故障版双宽改写180/180并被断言拒绝。原失败的整体移除差异探针保留为无效，不以其结果称通过。已纳入模型，须重新干净同批构建、实际包验证和发布；M0/T18/S64开放。
+
+S64 P137 多行EDIT外框已完成双宽干净构建、20项实际包回归（19.92秒、零skip）和真实双宽TMemo复测；区域裁剪及无边框故障负例双宽检出。assets/system32八摘要一致，两处双宽安装模型通过。[证据](../history/M0-T18-S64-P137-multiline-frame.md)。提交及远端复核待完成；其他DPI、物理输入和完整集成未覆盖，TMaskEdit仍属scratch调查。M0/T18/S64开放。
