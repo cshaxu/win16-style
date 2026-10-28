@@ -978,3 +978,5 @@ S64 TDBGrid隐藏滚动条复核：真实x86 Delphi样本改为私有单列单�
 S64 TDBGrid隐藏滚动条证据及测试收口：真实单列单行样本无可见滚动条，旧版和P148截图1304像素变化全部在外侧两像素、内容区0；双宽模型区分滚动信息不可用与可查询但隐藏，隐藏→显示→隐藏、内容不变与回收通过；强制要求可见滚动条的x86故障DLL被新断言检出。此前P148记录过度概括已补正；不变更产品二进制，真实动态数据变换、其他DPI及物理输入未测。[证据](../history/M0-T18-S64-P148-dbgrid.md)。M0/T18/S64开放。
 
 S64真实TDBEdit调查：公开厂商原始x86演示配临时MIDAS及仅目标线程法语加拿大locale启动；第二页两个可见TDBEdit为只读，WM_PAINT由应用owner通过CallWindowProcA转发已注册ANSI EDIT，现有W见证未命中。仅scratch的精确ANSI见证原型记录owner并出现91×21截图483处RGB变化（外缘432、客户区51）；原型含临时locale和日志，绝不发布。输入因只读未改变，关闭均超时由自有job回收；可写绑定、清理、双宽负例尚未验证。[证据、第三方摘要与失败](../history/M0-T18-S64-data-aware-sample.md)。M0/T18/S64开放。
+
+S64 TDBEdit可写绑定补证：厂商演示源码由公开试用包使用开源解包器只读提取、未安装；自有样本经导航栏进入编辑后，基线与scratch ANSI见证原型均以同步跨进程WM_GETTEXT验证Roberto→RobertoX→Roberto，提交恢复值后下一条Bruce、返回Roberto，目标均正常退出。省略插入的测试负例被断言拒绝并由自有job回收。此前GetWindowText不能可靠证明动态文本，首次亦未进入编辑模式；仅消息级、单x86样本，文件持久化、双宽模型及物理输入未覆盖，scratch含临时locale和日志不得发布。[证据](../history/M0-T18-S64-data-aware-sample.md)。M0/T18/S64开放。
