@@ -1427,7 +1427,8 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         else result=DefSubclassProc(w,m,a,b);
     }
     else if(is_scroll(w)){
-        if(scroll_input(w,s,m,a,b))result=0;
+        if(ntw16s_control_protocol_is(w,L"SCROLLBAR") && !IsWindowEnabled(w) && (m==WM_KEYDOWN || m==WM_KEYUP || m==WM_LBUTTONDOWN || m==WM_LBUTTONDBLCLK || m==WM_LBUTTONUP))result=DefSubclassProc(w,m,a,b);
+        else if(scroll_input(w,s,m,a,b))result=0;
         else if(m==WM_SETFOCUS || m==WM_SIZE)scroll_caret_sync(w,s);
         else if(m==WM_KILLFOCUS)scroll_caret_destroy(w,s);
         else if(m==SBM_GETSCROLLINFO){SCROLLINFO *info=(SCROLLINFO *)b;

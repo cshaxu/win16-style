@@ -61,7 +61,7 @@ BOOL ntw16s_control_protocol_is(HWND w,const WCHAR *name)
         if(b->window==w && current(b))return (b->role==1 && !lstrcmpiW(name,L"BUTTON")) ||
             (b->role==2 && !lstrcmpiW(name,L"COMBOBOX")) || (b->role==3 && !lstrcmpiW(name,WC_TABCONTROLW)) ||
             (b->role==4 && !lstrcmpiW(name,WC_HEADERW)) || (b->role==5 && !lstrcmpiW(name,WC_LISTVIEWW)) || (b->role==6 && !lstrcmpiW(name,WC_TREEVIEWW)) || (b->role==7 && !lstrcmpiW(name,PROGRESS_CLASSW)) || (b->role==8 && !lstrcmpiW(name,TRACKBAR_CLASSW)) || (b->role==9 && !lstrcmpiW(name,UPDOWN_CLASSW)) ||
-            (b->role==11 && !lstrcmpiW(name,L"EDIT")) || (b->role==12 && !lstrcmpiW(name,L"LISTBOX"));
+            (b->role==11 && !lstrcmpiW(name,L"EDIT")) || (b->role==12 && !lstrcmpiW(name,L"LISTBOX")) || (b->role==14 && !lstrcmpiW(name,L"SCROLLBAR"));
     return FALSE;
 }
 BOOL ntw16s_control_protocol_toolbar(HWND w)
@@ -144,7 +144,7 @@ static ntw16s_control_protocol *bind_protocol(HWND w,HMODULE verified_owner,unsi
         (!lstrcmpW(name,PROGRESS_CLASSW) || !lstrcmpW(name,L"TProgressBar"))?7:
         (!lstrcmpW(name,TRACKBAR_CLASSW) || !lstrcmpW(name,L"TTrackBar"))?8:
         (!lstrcmpW(name,UPDOWN_CLASSW) || !lstrcmpW(name,L"TUpDown"))?9:
-        (verified_owner && !lstrcmpW(name,L"TToolBar"))?10:(!lstrcmpW(name,L"TEdit") || (verified_owner && !lstrcmpW(name,L"TMemo") && (GetWindowLongPtrW(w,GWL_STYLE)&ES_MULTILINE)))?11:!lstrcmpW(name,L"TListBox")?12:ocx_role?ocx_role:toolbar_role;
+        (verified_owner && !lstrcmpW(name,L"TToolBar"))?10:(!lstrcmpW(name,L"TEdit") || (verified_owner && !lstrcmpW(name,L"TMemo") && (GetWindowLongPtrW(w,GWL_STYLE)&ES_MULTILINE)))?11:!lstrcmpW(name,L"TListBox")?12:(verified_owner && !lstrcmpW(name,L"TScrollBar"))?14:ocx_role?ocx_role:toolbar_role;
     if(!role)return NULL;
     if(verified_owner && (role!=verified_role || (role==8 && lstrcmpW(name,L"TTrackBar"))))return NULL;
     if(role>=3 && role<=9 && !ocx_role && !toolbar_role && !GetClassInfoExW(NULL,role==3?WC_TABCONTROLW:role==4?WC_HEADERW:role==5?WC_LISTVIEWW:role==6?WC_TREEVIEWW:role==7?PROGRESS_CLASSW:role==8?TRACKBAR_CLASSW:UPDOWN_CLASSW,&native_class))return NULL;
@@ -204,6 +204,15 @@ static ntw16s_control_protocol *bind_protocol(HWND w,HMODULE verified_owner,unsi
         valid=current(b) && GetClassInfoExW(NULL,L"EDIT",&native) &&
             GetClassLongPtrW(w,GCL_CBWNDEXTRA)>=(ULONG_PTR)native.cbWndExtra &&
             (DWORD)limit>0 && selection!=-1 && format.right>format.left && format.bottom>format.top &&
+            GetWindowThreadProcessId(GetParent(w),NULL)==GetCurrentThreadId();
+    }else if(role==14){
+        WNDCLASSEXW native={.cbSize=sizeof(native)};SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_ALL};
+        DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
+        BOOL ok=GetScrollInfo(w,SB_CTL,&info);
+        valid=current(b) && ok && GetClassInfoExW(NULL,L"SCROLLBAR",&native) &&
+            GetClassLongPtrW(w,GCL_CBWNDEXTRA)>=(ULONG_PTR)native.cbWndExtra &&
+            !(style&(SBS_SIZEBOX|SBS_SIZEGRIP)) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
+            info.nMin<=info.nMax && info.nPos>=info.nMin && info.nPos<=info.nMax &&
             GetWindowThreadProcessId(GetParent(w),NULL)==GetCurrentThreadId();
     }else if(role==12){
         WNDCLASSEXW native={.cbSize=sizeof(native)};DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
@@ -333,6 +342,8 @@ ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_group_button(HWND
 {return owner?bind_protocol(w,owner,1):NULL;}
 ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_edit(HWND w,HMODULE owner)
 {return owner?bind_protocol(w,owner,11):NULL;}
+ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_scroll(HWND w,HMODULE owner)
+{return owner?bind_protocol(w,owner,14):NULL;}
 ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_tab(HWND w,HMODULE owner)
 {return owner?bind_protocol(w,owner,3):NULL;}
 ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_trackbar(HWND w,HMODULE owner)

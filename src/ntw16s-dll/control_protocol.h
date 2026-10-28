@@ -6,6 +6,7 @@ typedef struct ntw16s_control_protocol ntw16s_control_protocol;
 ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND);
 /* Internal: owner is accepted only after the actual EDIT forwarding witness. */
 ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_edit(HWND,HMODULE);
+ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_scroll(HWND,HMODULE);
 /* Internal: exact group button with a witnessed native BUTTON WM_PAINT. */
 ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_group_button(HWND,HMODULE);
 /* Internal: the owner must have forwarded WM_PAINT to native TRACKBAR. */
