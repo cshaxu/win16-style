@@ -698,3 +698,5 @@ S64 MediaPlayer范围负例：scratch仅在目标绘制scope和目标DC派生的
 S64 MediaPlayer同模块负例及主题来源：自有C模型中窗口类、绘制调用同属一个EXE，精确控件类名、scope、派生DC、34x40及BUTTON part/state都匹配，双宽过滤原型仍误改五个采样点；该模型不代表真实Delphi必有同路径应用绘制。真实双宽样本直接记录OpenThemeData(NULL,button)返回句柄与观测到的45次part-1绘制一致；共享引用及其他打开API寿命仍未覆盖。探针正常退出清理；无产品/二进制变更。[证据](../history/M0-T18-S64-delphi-mediaplayer-investigation.md)。T18/S64开放。
 
 S64 MediaPlayer公开可访问性调查：真实144 DPI Delphi样本经当前P93包双宽启动，MSAA AccessibleObjectFromWindow/get_accChildCount均S_OK但子数0；独立UIA客户端ElementFromHandle/FindAll(TreeScope_Children)/Length也均S_OK、子数0，故当前样本无法从这两套接口获取九按钮的公开边界和状态。自有目标/启动器均零退出且作业清空，临时观察IAT恢复；不外推其他版本，未改产品。[证据](../history/M0-T18-S64-delphi-mediaplayer-investigation.md)。T18/S64开放。
+
+S64准入Delphi TLinkLabel标准协议候选：当前P93双宽真实运行库样本144 DPI，TLinkLabel未附着，但自身WM_PAINT由类所有者转发注册SysLink过程，LM_GETITEM成功返回link及启用状态；系统SysLink现有路径只改变字体，保留markup、焦点、点击及通知。拟仅对准确新建类、本人同线程WM_PAINT的同所有者原生过程见证及初始化协议成立后复用该路径；先验证双宽状态/事件/字体/生命周期、错误调用者与未见证负例及旧包检出，再进行双宽干净包、回归、双发布和远端复核。TNotebook/TPage默认样本仅确认运行库窗口和未附着；MaskEdit/RichEdit/ScrollBox因包装不可用未取得样本。[证据](../history/M0-T18-S64-delphi-linklabel-investigation.md)。T18/S64开放。
