@@ -1333,5 +1333,12 @@
     "database_sha256_before_after": "97a08cf87debe5e7ae9bead3d32f1290cb1cf58c350fc1205301e709f1c305eb",
     "next": "Investigate whether existing Win3.1 arrow resources can be composed while preserving first/last markers and native enabled/pressed semantics; validate drawing order, clip, caller and state lifetime before product change. Do not infer from pixel shifts alone.",
     "limits": "One sample, one 96 DPI x86 runtime and DAO surrogate; no native DAO3.5, true record navigation, physical input, or normal sample shutdown. No product change; graphics remain native except P47 outer border."
+  },
+  "vb6_data_arrow_prototype_p49": {
+    "scope": "Research-only prototype in task scratch, x86 and 96 DPI with the same hidden Data control temporarily shown using the private DAO3.6 surrogate. It intercepts four exact runtime calls, composites existing Win3.1 scroll resources, and retains the native first/last indicator marks. No product or original graphic source modified.",
+    "sample_geometry": "At client 70x22 bitmap destinations 4,24,37,55; at client 140x22 destinations 4,24,107,125. Prototype maps last two from right edge. A 140x22 pixel comparison found 1409 changed button pixels and zero changes in the central 70x22 region, including native Data3 caption.",
+    "states": "Four separate button presses each captured the pointer and were cancelled; disabled prototype marks use gray. At 70x22 original and post-cancel prototype images have identical FNV-1a 17694242210860542887. Both widths were sample window sizes, not CPU architectures; actual runtime remains x86.",
+    "performance": "One 100-redraw observation: published package 172584 us, initial per-pixel GDI prototype 2436599 us, bulk DIB prototype 157594 us. Same private desktop and sample; these are single observations, not a stable benchmark or latency guarantee. Initial prototype rejected, optimized prototype not yet production.",
+    "limit": "No mouse-up/actual record navigation, lifecycle, clipping, reentrancy, high-contrast, other DPI, VB5, independent real target or x64 runtime evidence. No product update, release, or acceptance; next step implement scoped identity and bulk drawing with dual-width positive/negative regression and complete same-batch package."
   }
 }
