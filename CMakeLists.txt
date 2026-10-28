@@ -535,6 +535,15 @@ if(BUILD_TESTING)
   target_link_libraries(vcl-memo-module-fixture PRIVATE user32)
   target_link_options(vcl-memo-module-fixture PRIVATE -Wl,--kill-at)
 
+  add_library(vcl-spinedit-fixture SHARED tests/ntw16s-dll/vcl_spinedit_fixture.c)
+  set_target_properties(vcl-spinedit-fixture PROPERTIES PREFIX "")
+  target_link_libraries(vcl-spinedit-fixture PRIVATE user32)
+  target_link_options(vcl-spinedit-fixture PRIVATE -Wl,--kill-at)
+
+  add_executable(core-vcl-spinedit tests/ntw16s-dll/vcl_spinedit_module.c)
+  target_link_libraries(core-vcl-spinedit PRIVATE user32)
+  target_link_options(core-vcl-spinedit PRIVATE -municode)
+
   add_library(vcl-numberbox-fixture SHARED tests/ntw16s-dll/vcl_numberbox_fixture.c)
   set_target_properties(vcl-numberbox-fixture PROPERTIES PREFIX "")
   target_link_libraries(vcl-numberbox-fixture PRIVATE user32)

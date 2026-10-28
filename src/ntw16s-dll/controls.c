@@ -252,6 +252,16 @@ static BOOL is_static(HWND w)
 {return ntw16s_class_is(w,L"STATIC");}
 static BOOL is_edit(HWND w)
 {return ntw16s_class_is(w,L"EDIT");}
+/* A VCL spin edit reserves part of its format rectangle for its own child.
+ * Native WM_SETFONT can reset that reservation; never cover the button. */
+static HWND spinedit_button(HWND w)
+{
+    WCHAR name[64];HWND child;
+    if(!ntw16s_control_protocol_is(w,L"EDIT") || !GetClassNameW(w,name,ARRAYSIZE(name)) || lstrcmpW(name,L"TSpinEdit"))return NULL;
+    child=FindWindowExW(w,NULL,L"TSpinButton",NULL);
+    return child && GetParent(child)==w && GetWindowThreadProcessId(child,NULL)==GetCurrentThreadId() &&
+        GetClassLongPtrW(child,GCLP_HMODULE)==GetClassLongPtrW(w,GCLP_HMODULE)?child:NULL;
+}
 static BOOL is_list(HWND w)
 {WCHAR name[16];return ntw16s_class_is(w,L"LISTBOX") || (GetClassNameW(w,name,16) && !lstrcmpiW(name,L"ComboLBox"));}
 static BOOL is_combo(HWND w)
@@ -1311,6 +1321,10 @@ done: SetLastError(saved_error);
 static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
 {
     control_style *s=(control_style *)data;LRESULT result=0;HFONT previous=NULL,pinned=s->font,outbound=NULL;(void)id;++s->calls;
+    RECT spin_before={0};HWND spin_button=NULL;DWORD entry_error=GetLastError();
+    if(m==WM_SETFONT && (spin_button=spinedit_button(w))!=NULL)
+        SendMessageW(w,EM_GETRECT,0,(LPARAM)&spin_before);
+    SetLastError(entry_error);
     BOOL tab=is_tab(w),header=is_header(w),progress=ntw16s_class_is(w,PROGRESS_CLASSW) || ntw16s_control_protocol_is(w,PROGRESS_CLASSW),native_font=tab || header;
     BOOL combo_paint=ntw16s_vb_combo(w) && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT);if(combo_paint)++s->combo_paints;
     if(progress && win16_style_progress_changes(m))++s->progress_epoch;
@@ -1618,6 +1632,18 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
             RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
     }
 finished:
+    if(spin_button && !s->detached && IsWindow(w) && spinedit_button(w)==spin_button){
+        DWORD error=GetLastError();RECT button,after;
+        if(GetWindowRect(spin_button,&button)){
+            MapWindowPoints(NULL,w,(POINT*)&button,2);
+            SendMessageW(w,EM_GETRECT,0,(LPARAM)&after);
+            if(!s->detached && spin_before.right>spin_before.left && spin_before.right<=button.left &&
+               after.right>button.left && spin_before.right>after.left){
+                after.right=spin_before.right;SendMessageW(w,EM_SETRECTNP,0,(LPARAM)&after);
+            }
+        }
+        SetLastError(error);
+    }
     if(m==WM_SETFONT && s->detached && IsWindow(w)){
         /* A native setter can finish AFTER its callback removed this leaf,
          * overwriting the font restored during removal with our retired
