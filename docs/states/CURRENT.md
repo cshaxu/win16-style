@@ -744,3 +744,7 @@ S64 P111新版Delphi普通TButton有限交付：真实双宽144 DPI运行库拥�
 S64准入新版Delphi普通TCheckBox候选：P111真实DelphiVCL4Python 1.0.7双宽144 DPI样本主窗已附着但运行库拥有的精确TCheckBox未附着；自身WM_PAINT同owner转发系统BUTTON、公开理想尺寸与check/state协议有效，style为BS_3STATE。原版及P111双宽异步BM_CLICK均0→1并各一次OnClick，探针零退出且作业为空。拟仅同owner父子、自身原生绘制见证及公开协议成立时接纳该普通角色复用现有glyph/字体，保留状态与回调；先双宽真实样本和未见证/错owner/位图/角色变化负例，再干净包聚焦回归及规范双发布。M0/T18/S64开放。
 
 S64 P112新版Delphi普通TCheckBox有限交付：真实双宽144 DPI样本运行库拥有控件未附着，精确BS_3STATE、自身同owner转发原生BUTTON及公开协议经验证后复用现有字体/glyph；父背景先按系统父绘制API呈现，避免初版候选白块，重入后复核角色。实际包双宽0→1、OnClick各一次及作业清理正常；双宽自有模型验证假见证/错误来源/父owner/位图、三态/键盘、定制背景及背景绘制内换父；P111双宽附着断言失败。干净四文件包22项22.82秒零skip，双发布八摘要及两处双宽安装模型通过；其他DPI、真实三态、物理输入、复杂背景及全集未覆盖。[证据](../history/M0-T18-S64-P112-delphi-checkbox.md)。M0/T18/S64开放。
+
+S64准入Delphi单选框父背景修复：P112真实DelphiVCL4Python 1.0.7 144 DPI双宽普通TRadioButton已附着但经典图形周围被填白，裸版灰色父背景；原版自身WM_PAINT转发USER BUTTON且收到WM_CTLCOLORSTATIC空画刷，裸版及P112合成点击均0→1并各一次回调。拟将P112仅精确已见证复选框的系统父背景绘制扩展至同一见证路径的TRadioButton/TGroupButton，重入后复核身份；加双宽自定义背景、负例、重挂及现有复选框回归，并以真实样本、干净包和双发布验证。未知角色保留原路径，M0/T18/S64开放。
+
+S64 P113 Delphi单选框父背景：真实双宽144 DPI普通TRadioButton及TRadioGroup内TGroupButton已附着但背景白块，裸版请求透明父背景；P112系统父背景路径扩展到已见证的两种普通单选角色，绘制后复核身份。真实单选及组截图对应位置由RGB(255,255,255)变为父背景RGB(240,240,240)；单选合成点击0→1、回调各一次、零退出及作业清空。双宽真实组截图、关闭与目标等待完成；双宽模型保留自定义父背景、选择、键盘及退役，P112四个对应负例失败。干净四文件20项7.08秒零skip，双发布及两处双宽两角色模型通过；其他DPI、复杂父绘制和物理输入未覆盖。[证据](../history/M0-T18-S64-P113-radio-background.md)。M0/T18/S64开放。

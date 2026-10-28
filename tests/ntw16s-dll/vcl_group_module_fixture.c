@@ -24,8 +24,10 @@ __declspec(dllexport) void WINAPI FixtureForeign(foreign_fn fn){foreign_paint=fn
 #endif
 static LRESULT CALLBACK group_proc(HWND w,UINT m,WPARAM p,LPARAM l)
 {
-#ifdef T18_CHECK
+#if defined(T18_CHECK)
     if(m==WM_ERASEBKGND || m==WM_PRINTCLIENT){if(reparent_child){HWND child=reparent_child;reparent_child=NULL;SetParent(child,reparent_to);}RECT r;GetClientRect(w,&r);HBRUSH brush=CreateSolidBrush(RGB(42,123,56));if(brush){FillRect((HDC)p,&r,brush);DeleteObject(brush);}return 1;}
+#elif !defined(T18_PUSH)
+    if(m==WM_ERASEBKGND || m==WM_PRINTCLIENT){RECT r;GetClientRect(w,&r);HBRUSH brush=CreateSolidBrush(RGB(42,123,56));if(brush){FillRect((HDC)p,&r,brush);DeleteObject(brush);}return 1;}
 #endif
     if(m==WM_COMMAND && HIWORD(p)==BN_CLICKED && l){
 #if defined(T18_PUSH) || defined(T18_CHECK)

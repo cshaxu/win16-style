@@ -505,12 +505,12 @@ BOOL ntw16s_group_push_button(HWND w)
         a->group_button_parent==GetParent(w) && group_button_identity(w) &&
         GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TButton");
 }
-BOOL ntw16s_group_check_button(HWND w)
+BOOL ntw16s_group_choice_button(HWND w)
 {
     attachment *a=lookup(w);WCHAR name[64];
     return a && !a->detached && a->group_button_candidate && a->group_button_installed &&
         a->group_button_parent==GetParent(w) && group_button_identity(w) &&
-        GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TCheckBox");
+        GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TCheckBox") || !lstrcmpW(name,L"TRadioButton") || !lstrcmpW(name,L"TGroupButton"));
 }
 static BOOL vb_data_role(HWND w,HWND parent)
 {

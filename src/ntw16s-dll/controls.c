@@ -3,7 +3,7 @@
 /* Internal guard for a witnessed VCL group button. */
 BOOL ntw16s_group_button_valid(HWND);
 BOOL ntw16s_group_push_button(HWND);
-BOOL ntw16s_group_check_button(HWND);
+BOOL ntw16s_group_choice_button(HWND);
 BOOL ntw16s_grid_valid(HWND);
 BOOL ntw16s_vb_user_edge_valid(HWND);
 BOOL ntw16s_vb_data_valid(HWND);
@@ -642,9 +642,9 @@ static void draw(HWND w,control_style *s,HDC dc)
     /* A group box surrounds sibling controls, not an opaque child surface.
      * Repainting its interior erases those siblings during ordinary motion. */
     if(label_control || type!=BS_GROUPBOX){
-        BOOL check_parent=ntw16s_group_check_button(w);
+        BOOL check_parent=ntw16s_group_choice_button(w);
         BOOL parent_painted=check_parent && SUCCEEDED(DrawThemeParentBackground(w,dc,&r));
-        if(s->detached || !IsWindow(w) || (check_parent && !ntw16s_group_check_button(w))){RestoreDC(dc,saved);free(text);return;}
+        if(s->detached || !IsWindow(w) || (check_parent && !ntw16s_group_choice_button(w))){RestoreDC(dc,saved);free(text);return;}
         if(!parent_painted)FillRect(dc,&r,(HBRUSH)GetStockObject(DC_BRUSH));
     }
     if(label_control || type==BS_PUSHBUTTON || type==BS_DEFPUSHBUTTON || type==BS_GROUPBOX || (style&BS_PUSHLIKE)){
