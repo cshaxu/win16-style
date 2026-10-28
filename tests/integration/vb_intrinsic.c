@@ -6,6 +6,7 @@
 #include <tlhelp32.h>
 #include <commctrl.h>
 #include <stdio.h>
+#include <string.h>
 #include <wchar.h>
 #include <stdint.h>
 #include "../ntw16s-dll/isolated_process.h"
@@ -265,6 +266,21 @@ static BOOL CALLBACK sorted_children(HWND w,LPARAM ignored){(void)ignored;WCHAR 
 /* Optional real VB6 UserControl sample: validate the frame pixel produced by
  * the previously captured 32-bit top-down BMP, without using screen pixels. */
 static BOOL vb6_edge_black(const WCHAR *path){HANDLE f=CreateFileW(path,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,0,NULL);if(f==INVALID_HANDLE_VALUE)return FALSE;BITMAPFILEHEADER h;DWORD n=0;BYTE pixel[4];BOOL ok=ReadFile(f,&h,sizeof(h),&n,NULL) && n==sizeof(h) && h.bfType==0x4d42 && SetFilePointer(f,(LONG)h.bfOffBits,NULL,FILE_BEGIN)!=INVALID_SET_FILE_POINTER && ReadFile(f,pixel,sizeof(pixel),&n,NULL) && n==sizeof(pixel) && !pixel[0] && !pixel[1] && !pixel[2];CloseHandle(f);return ok;}
+/* The optional password comparison is byte exact, not a hash-only assertion. */
+static BOOL same_capture(const WCHAR *a,const WCHAR *b)
+{
+    HANDLE left=CreateFileW(a,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,0,NULL);
+    HANDLE right=CreateFileW(b,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,0,NULL);
+    BOOL same=left!=INVALID_HANDLE_VALUE && right!=INVALID_HANDLE_VALUE;
+    BYTE x[1024],y[1024];DWORD nx=0,ny=0;
+    while(same){
+        if(!ReadFile(left,x,sizeof(x),&nx,NULL) || !ReadFile(right,y,sizeof(y),&ny,NULL) || nx!=ny || memcmp(x,y,nx)){same=FALSE;break;}
+        if(!nx)break;
+    }
+    if(left!=INVALID_HANDLE_VALUE)CloseHandle(left);
+    if(right!=INVALID_HANDLE_VALUE)CloseHandle(right);
+    return same;
+}
 static int worker(int argc,WCHAR **argv){
     CHECK(argc==4 || argc==5);
     if(argc==5)queue_prepare();
@@ -348,9 +364,32 @@ static int worker(int argc,WCHAR **argv){
     BOOL real_vb6_sorted_combo=!wcscmp(argv[3],L"real-vb6-sorted-combo");
     BOOL usercontrol_verify=!wcscmp(argv[3],L"real-vb5-usercontrol");
     BOOL vb6_unedged=!wcscmp(argv[3],L"vb6-user-edge-late");
+    BOOL password_verify=!wcscmp(argv[3],L"vb6-password-sample");
     BOOL mdi_verify=!wcscmp(argv[3],L"real-vb-mdi");
-    BOOL inventory=vb6_unedged || usercontrol_verify || mdi_verify || real_vb6_sorted_combo || real_vb5_sorted || real_vb5_checklist || real_vb5_picture || graphical || about_print || containers || file_verify || real_graphical || real_checkbox || real_picture || real_vb5_check || real_vb5_custom || close_vb5_squash || real_disabled_picture || !wcscmp(argv[3],L"inventory");
+    BOOL inventory=password_verify || vb6_unedged || usercontrol_verify || mdi_verify || real_vb6_sorted_combo || real_vb5_sorted || real_vb5_checklist || real_vb5_picture || graphical || about_print || containers || file_verify || real_graphical || real_checkbox || real_picture || real_vb5_check || real_vb5_custom || close_vb5_squash || real_disabled_picture || !wcscmp(argv[3],L"inventory");
     CHECK(runtime && dll==styled && EnumChildWindows(form,collect,0) && (inventory?count>0:count>10));
+    if(password_verify){
+        HWND pw=NULL;unsigned matches=0;WCHAR cls[80],before[256],after[256],first[MAX_PATH],equal[MAX_PATH],shorter[MAX_PATH];
+        for(unsigned i=0;i<count;++i){GetClassNameW(checks[i],cls,ARRAYSIZE(cls));
+            if(!wcscmp(cls,L"ThunderRT6TextBox") && (HMODULE)GetClassLongPtrW(checks[i],GCLP_HMODULE)==runtime &&
+                (GetWindowLongPtrW(checks[i],GWL_STYLE)&ES_PASSWORD) && IsWindowVisible(checks[i])){pw=checks[i];++matches;}}
+        CHECK(matches==1 && pw && GetDpiForWindow(pw)==96);HWND parent=GetParent(pw),frame=GetParent(parent);CHECK(parent && frame);
+        CHECK(SetWindowPos(form,NULL,5,5,400,280,SWP_NOZORDER|SWP_NOACTIVATE));
+        CHECK(SetWindowPos(frame,NULL,5,5,185,105,SWP_NOZORDER|SWP_NOACTIVATE));
+        CHECK(SetWindowPos(parent,NULL,5,25,169,25,SWP_NOZORDER|SWP_NOACTIVATE));
+        RECT rect;CHECK(GetWindowRect(pw,&rect) && rect.left>=0 && rect.top>=0 && rect.right<=GetSystemMetrics(SM_CXSCREEN) && rect.bottom<=GetSystemMetrics(SM_CYSCREEN));
+        CHECK(vb_control_text(pw,before,ARRAYSIZE(before)));HFONT font=(HFONT)SendMessageW(pw,WM_GETFONT,0,0);
+        LRESULT mask=SendMessageW(pw,EM_GETPASSWORDCHAR,0,0);CHECK(mask==L'*');
+        CHECK(swprintf_s(first,MAX_PATH,L"%ls/password.bmp",scratch)>0 && swprintf_s(equal,MAX_PATH,L"%ls/password-equal.bmp",scratch)>0 && swprintf_s(shorter,MAX_PATH,L"%ls/password-shorter.bmp",scratch)>0);
+        CHECK(SendMessageW(pw,WM_SETTEXT,0,(LPARAM)L"VBTest42") && vb_control_text(pw,after,ARRAYSIZE(after)) && !wcscmp(after,L"VBTest42"));
+        RedrawWindow(pw,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);(void)capture(pw,first,FALSE);
+        CHECK(SendMessageW(pw,WM_SETTEXT,0,(LPARAM)L"Qwerty98"));RedrawWindow(pw,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);(void)capture(pw,equal,FALSE);
+        CHECK(SendMessageW(pw,WM_SETTEXT,0,(LPARAM)L"Qwerty9"));RedrawWindow(pw,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);(void)capture(pw,shorter,FALSE);
+        CHECK(same_capture(first,equal) && !same_capture(first,shorter));
+        CHECK(SendMessageW(pw,WM_SETTEXT,0,(LPARAM)before) && vb_control_text(pw,after,ARRAYSIZE(after)) && !wcscmp(before,after));
+        CHECK(SendMessageW(pw,EM_GETPASSWORDCHAR,0,0)==mask && (HFONT)SendMessageW(pw,WM_GETFONT,0,0)==font);
+        printf("VB6_REAL_PASSWORD_OK styled=%u equal_mask=1 length_sensitive=1 text_restored=1 font_preserved=1\n",styled);
+    }
     if(vb6_unedged){
         HWND uc=NULL,edit=NULL,check=NULL;for(unsigned i=0;i<count;++i){WCHAR cls[80],title[80];GetClassNameW(checks[i],cls,80);GetWindowTextW(checks[i],title,80);if(!wcscmp(cls,L"ThunderRT6UserControlDC") && (HMODULE)GetClassLongPtrW(checks[i],GCLP_HMODULE)==runtime)uc=checks[i];if(!wcscmp(cls,L"ThunderRT6TextBox") && GetParent(checks[i])==uc)edit=checks[i];if(!wcscmp(cls,L"ThunderRT6CheckBox") && !wcscmp(title,L"A&llow Browsing"))check=checks[i];}
         CHECK(uc && edit && check && GetDpiForWindow(uc)==96 && !(GetWindowLongPtrW(uc,GWL_EXSTYLE)&WS_EX_CLIENTEDGE));CHECK(SetWindowPos(form,NULL,8,8,400,280,SWP_NOZORDER|SWP_NOACTIVATE));CHECK(SetWindowPos(uc,NULL,5,5,220,180,SWP_NOZORDER|SWP_NOACTIVATE));RECT outer;CHECK(GetWindowRect(uc,&outer));printf("VB6_UNEDGED_FIT rect=%ld,%ld,%ld,%ld screen=%d,%d\n",outer.left,outer.top,outer.right,outer.bottom,GetSystemMetrics(SM_CXSCREEN),GetSystemMetrics(SM_CYSCREEN));CHECK(outer.left>=0 && outer.top>=0 && outer.right<=GetSystemMetrics(SM_CXSCREEN) && outer.bottom<=GetSystemMetrics(SM_CYSCREEN));RECT cr;CHECK(GetClientRect(uc,&cr));HFONT f=(HFONT)SendMessageW(uc,WM_GETFONT,0,0);WCHAR text_before[256],text_after[256];CHECK(vb_control_text(edit,text_before,256));
@@ -734,7 +773,8 @@ static int worker(int argc,WCHAR **argv){
     }
 
     if(queue_state){CHECK(UnhookWindowsHookEx(queue_get) && UnhookWindowsHookEx(queue_sent));queue_get=queue_sent=NULL;}
-    if(real_vb5_sorted){CHECK(TerminateJobObject(job,0));puts("VB5_SORTED_FORCED_JOB_CLEANUP to_avoid_registry_write=1");}
+    if(password_verify){CHECK(TerminateJobObject(job,0));puts("VB6_PASSWORD_OWN_JOB_CLEANUP");}
+    else if(real_vb5_sorted){CHECK(TerminateJobObject(job,0));puts("VB5_SORTED_FORCED_JOB_CLEANUP to_avoid_registry_write=1");}
     else if(real_vb6_sorted_combo)CHECK(PostMessageW(form,WM_CLOSE,0,0));
     else SendMessageW(form,WM_CLOSE,0,0);
     if((real_graphical || real_disabled_picture) && original_form!=form && IsWindow(original_form))SendMessageW(original_form,WM_CLOSE,0,0);

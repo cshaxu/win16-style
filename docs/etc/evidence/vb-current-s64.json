@@ -1213,5 +1213,25 @@
     },
     "published": "The tested same-batch four files deployed to assets root and O:/winnt/system32, each SHA verified.",
     "scope": "The standard matrix includes VB fixtures; this does not claim every real VB/OCX variant supported. The 151-second standard run remains slower than a focused run."
+  },
+  "vb6_password_sample_p43": {
+    "source": "EviControlsCollection source and private registration-free sample already fixed under vb_usercontrol_label_p41.actual_print_negative. Sample.frm EviTextBox3 PasswordChar=*; EviTextBox.ctl contains VB.TextBox. No external sample is copied into the project.",
+    "entry": "x86 vb-intrinsic-observe <bare|run16s.exe> <explicit-private-sample-exe> vb6-password-sample with a fresh WIN16STYLE_CAPTURE_DIR. Optional research test; absence or incompatible sample is not a pass.",
+    "result": "Actual MSVBVM60-owned visible ES_PASSWORD TextBox, x86 96 DPI, real 167x15 capture fully inside isolated desktop. Bare and styled: different equal-length test strings produced byte-identical screenshots, shorter string produced a different screenshot; original text, password character and font handle restored. Bare and styled image files differ; this is an image-level style witness, not precise font identity. The owned job was intentionally terminated because the sample has two top-level forms, not a normal close or GDI lifetime proof.",
+    "delivery": {
+      "build": "Clean GCC/Ninja/ccache x86 and x64, PE/ABI/source/resource/governance gates passed; no product source change.",
+      "package": "14 focused actual-package cases passed, zero skips, 13.39 seconds; clean-built x86 observer passed on actual package and bare sample.",
+      "sha256": {
+        "demo.exe": "d67e377fa0b201403ad19e42ce0071c968be82c8dd7dbeb777099fcde6707d98",
+        "ntw16s32.dll": "a2fa6deb4e2031bbfb88dd84cad5ddf4a21430eb05a368da6fc88509bacf9b0a",
+        "ntw16s64.dll": "da6bf78a2726e7529a97fb32e2a55351dcb95c37fb124f53b8f6b48fd3c163e7",
+        "run16s.exe": "fe5b7ca35912411c7b9ba508202fe527c6ca4c15f3379b315acfbb4ba00e6e47"
+      },
+      "published": "All four tested files match both assets root and O:/winnt/system32."
+    },
+    "limits": [
+      "Only one real VB6 x86 96-DPI sample; VB5 real password sample, physical input, IME, other DPI and accessibility remain untested.",
+      "A C x64 fixture is not an actual 64-bit VB6 runtime. No claim that all password controls or custom OCXs are supported."
+    ]
   }
 }
