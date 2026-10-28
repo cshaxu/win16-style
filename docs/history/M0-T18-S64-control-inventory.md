@@ -32,7 +32,7 @@ This is an interim reconciliation, not a final supported-versus-unimplemented au
 
 - limited-evidence: **37** â€” `TMainMenu`, `TMaskEdit`, `TForm`, `TPanel`, `TGroupBox`, `TScrollBox`, `TButton`, `TBitBtn`, `TCheckBox`, `TRadioButton`, `TRadioGroup`, `TEdit`, `TMemo`, `TRichEdit`, `TComboBox`, `TListBox`, `TCheckListBox`, `TColorBox`, `TStaticText`, `TPopupMenu`, `TToolBar`, `TStatusBar`, `TControlBar`, `TTreeView`, `TListView`, `THeaderControl`, `TTabControl`, `TPageControl`, `TProgressBar`, `TTrackBar`, `TUpDown`, `TDateTimePicker`, `TMonthCalendar`, `THotKey`, `TStringGrid`, `TDrawGrid`, `TValueListEditor`.
 
-- native-or-unverified: **29** â€” `TMDIForm`, `TFrame`, `TSplitter`, `TSpeedButton`, `TLabel`, `TShape`, `TBevel`, `TChart`, `TCoolBar`, `TAnimate`, `TDirectoryListBox`, `TDriveComboBox`, `TFileListBox`, `TDBComboBox`, `TDBListBox`, `TDBNavigator`, `TDBLookupComboBox`, `TDBLookupListBox`, `TWebBrowser`, `TMediaPlayer`, `TOleContainer`, `TButtonGroup`, `TCategoryButtons`, `TDockTabSet`, `TTabSet`, `TOutline`, `TTabbedNotebook`.
+- native-or-unverified: **29** â€” `TMDIForm`, `TFrame`, `TSplitter`, `TSpeedButton`, `TLabel`, `TShape`, `TBevel`, `TChart`, `TCoolBar`, `TAnimate`, `TDirectoryListBox`, `TDriveComboBox`, `TFileListBox`, `TDBListBox`, `TDBNavigator`, `TDBLookupComboBox`, `TDBLookupListBox`, `TWebBrowser`, `TMediaPlayer`, `TOleContainer`, `TButtonGroup`, `TCategoryButtons`, `TDockTabSet`, `TTabSet`, `TOutline`, `TTabbedNotebook`.
 
 - nonvisual-or-content-only: **6** â€” `TImage`, `TPaintBox`, `TImageList`, `TActionList`, `TTimer`, `TTrayIcon`.
 
@@ -49,3 +49,5 @@ Update after P138: TMaskEdit is supported only under P138â€™s witnessed sin
 Update after P148: `TDBGrid` has a limited application-owned Unicode scrollbar and frame path, with real x86 sample and dual-width model evidence in [P148](M0-T18-S64-P148-dbgrid.md). The current Delphi counts are 38 limited and 28 native/unverified; no-scroll variants, data writeback and other versions remain unverified.
 
 Update after P152: `TDBEdit` has a limited same-owner ANSI native-edit forwarding path, with a real x86 data-binding sample and dual-width model evidence in [P152](M0-T18-S64-P152-dbedit.md). Current Delphi counts are 39 limited and 27 native/unverified; other runtimes, languages and physical input remain unverified.
+
+Update after P153: `TDBComboBox` has a limited editable ANSI native-combo path, with real x86 data-binding and dual-width native model evidence in [P153](M0-T18-S64-P153-dbcombo.md). Current Delphi counts are 40 limited and 26 native/unverified; Unicode forwarding, other styles and real multilingual input remain unverified.

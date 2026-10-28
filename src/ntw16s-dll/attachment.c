@@ -302,7 +302,7 @@ void ntw16s_spin_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *
 static BOOL combo_identity(HWND w,HWND parent)
 {
     WCHAR name[64],real[64];DWORD pid=0,style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);HMODULE owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
-    return owner && parent && GetParent(w)==parent && GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() && GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() && (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==owner && (style&WS_CHILD) && ((style&3)==CBS_SIMPLE || (style&3)==CBS_DROPDOWN || (style&3)==CBS_DROPDOWNLIST) && !(style&(CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE)) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TComboBox") && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && (!lstrcmpW(name,real) || !lstrcmpiW(real,L"COMBOBOX"));
+    return owner && parent && GetParent(w)==parent && GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() && GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() && (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==owner && (style&WS_CHILD) && ((style&3)==CBS_SIMPLE || (style&3)==CBS_DROPDOWN || (style&3)==CBS_DROPDOWNLIST) && !(style&(CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE)) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) && GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TComboBox") || (!lstrcmpW(name,L"TDBComboBox") && (style&3)==CBS_DROPDOWN)) && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && (!lstrcmpW(name,real) || !lstrcmpiW(real,L"COMBOBOX"));
 }
 /* Same-runtime VCL buttons witness the registered BUTTON procedure in paint. */
 static BOOL group_button_identity(HWND w)
@@ -688,6 +688,18 @@ void ntw16s_dbedit_ansi_witness(WNDPROC proc,HWND w,UINT message,const void *add
     owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
     if(owner && caller==owner)static_paint->owner->edit_witness_owner=owner;
 }
+/* Data-aware ANSI combos must forward their own paint to the native class. */
+void ntw16s_dbcombo_ansi_witness(WNDPROC proc,HWND w,UINT message,const void *address)
+{
+    WNDCLASSEXA native={.cbSize=sizeof(native)};HMODULE caller=NULL,owner;WCHAR name[64];
+    if(message!=WM_PAINT || !static_paint || static_paint->window!=w || !static_paint->owner->combo_candidate ||
+        static_paint->owner->detached || static_paint->owner->edit_attempted || lookup(w)!=static_paint->owner ||
+        !GetClassNameW(w,name,ARRAYSIZE(name)) || lstrcmpW(name,L"TDBComboBox") ||
+        !GetClassInfoExA(NULL,"COMBOBOX",&native) || proc!=native.lpfnWndProc ||
+        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller))return;
+    owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+    if(owner && caller==owner)static_paint->owner->edit_witness_owner=owner;
+}
 BOOL ntw16s_static_call_begin(ntw16s_static_call *scope,WNDPROC proc,HWND w,UINT message,const void *address)
 {
     WNDCLASSEXW native={.cbSize=sizeof(native)};HMODULE caller=NULL,native_owner=NULL,owner;
@@ -750,7 +762,10 @@ BOOL ntw16s_static_call_begin(ntw16s_static_call *scope,WNDPROC proc,HWND w,UINT
        GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
            (LPCWSTR)address,&caller)){
         owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
-        if(owner && caller==owner)static_paint->owner->edit_witness_owner=owner;
+        if(owner && caller==owner){WCHAR name[64];
+            if(!static_paint->owner->combo_candidate || (GetClassNameW(w,name,ARRAYSIZE(name)) && lstrcmpW(name,L"TDBComboBox")))
+                static_paint->owner->edit_witness_owner=owner;
+        }
     }
     native.cbSize=sizeof(native);
     if(message==WM_PAINT && static_paint && static_paint->window==w &&
@@ -1548,8 +1563,8 @@ static BOOL install_created(HWND w,DWORD original_style)
             !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING));
         scroll_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TScrollBar") &&
             RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TScrollBar");
-        edit_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TEdit") || !lstrcmpW(name,L"TMemo") || !lstrcmpW(name,L"TMaskEdit") || !lstrcmpW(name,L"TDBEdit") || !lstrcmpW(name,L"TLabeledEdit") || !lstrcmpW(name,L"TNumberBox") || !lstrcmpW(name,L"TLinkLabel") || !lstrcmpW(name,L"TSpinEdit") || !lstrcmpW(name,L"TComboBox")) &&
-            RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(name,real) && (lstrcmpW(name,L"TComboBox") || combo_identity(w,GetParent(w)));
+        edit_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TEdit") || !lstrcmpW(name,L"TMemo") || !lstrcmpW(name,L"TMaskEdit") || !lstrcmpW(name,L"TDBEdit") || !lstrcmpW(name,L"TLabeledEdit") || !lstrcmpW(name,L"TNumberBox") || !lstrcmpW(name,L"TLinkLabel") || !lstrcmpW(name,L"TSpinEdit") || !lstrcmpW(name,L"TComboBox") || !lstrcmpW(name,L"TDBComboBox")) &&
+            RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(name,real) && ((lstrcmpW(name,L"TComboBox") && lstrcmpW(name,L"TDBComboBox")) || combo_identity(w,GetParent(w)));
         tab_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TTabControl") &&
             RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TTabControl") &&
             !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING));
@@ -1600,7 +1615,7 @@ static BOOL install_created(HWND w,DWORD original_style)
     a=calloc(1,sizeof(*a));
     if(!a){ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
     a->calls=1;a->controlbar_candidate=controlbar_candidate;a->controlbar_parent=GetParent(w);a->controlbar_owner=owner;a->rich_popup=rich_popup;a->rich_month=rich_month;a->rich_hotkey=rich_hotkey;a->box_candidate=box_candidate;a->box_owner=owner;a->box_parent=GetParent(w);a->rich_unicode=rich_unicode;a->rich_candidate=rich_candidate;a->rich_parent=rich_popup?GetDesktopWindow():GetParent(w);a->rich_owner=owner;a->group_frame_candidate=group_frame_candidate;a->panel_frame_candidate=panel_frame_candidate;a->vb_user_candidate=vb_user_edge;a->vb_data_candidate=vb_data_edge;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;a->status=status;a->spin=spin;a->modern_spin=spin&&modern_spin_shape(w);a->static_candidate=static_candidate;
-    a->scroll_candidate=scroll_candidate;a->scroll_parent=GetParent(w);a->edit_candidate=edit_candidate;a->link_candidate=edit_candidate && class_is(w,L"TLinkLabel");a->combo_candidate=edit_candidate && class_is(w,L"TComboBox");a->combo_parent=GetParent(w);a->combo_original_type=original_style&3;a->spinedit_candidate=edit_candidate && class_is(w,L"TSpinEdit");a->group_button_candidate=group_button_candidate;a->grid_candidate=grid_candidate;a->inplace_candidate=inplace_candidate;a->inplace_owner=owner;a->inplace_parent=GetParent(w);a->vcl_toolbar_candidate=vcl_toolbar_candidate;a->vcl_toolbar_owner=owner;a->vcl_toolbar_parent=GetParent(w);a->grid_owner=owner;a->grid_parent=GetParent(w);a->edit_original_style=original_style;a->track_candidate=track_candidate;a->tab_candidate=tab_candidate;a->tab_parent=GetParent(w);a->color_candidate=color_candidate;a->date_candidate=date_candidate;a->status_candidate=status_candidate;a->bit_candidate=bit_candidate;
+    a->scroll_candidate=scroll_candidate;a->scroll_parent=GetParent(w);a->edit_candidate=edit_candidate;a->link_candidate=edit_candidate && class_is(w,L"TLinkLabel");a->combo_candidate=edit_candidate && (class_is(w,L"TComboBox") || class_is(w,L"TDBComboBox"));a->combo_parent=GetParent(w);a->combo_original_type=original_style&3;a->spinedit_candidate=edit_candidate && class_is(w,L"TSpinEdit");a->group_button_candidate=group_button_candidate;a->grid_candidate=grid_candidate;a->inplace_candidate=inplace_candidate;a->inplace_owner=owner;a->inplace_parent=GetParent(w);a->vcl_toolbar_candidate=vcl_toolbar_candidate;a->vcl_toolbar_owner=owner;a->vcl_toolbar_parent=GetParent(w);a->grid_owner=owner;a->grid_parent=GetParent(w);a->edit_original_style=original_style;a->track_candidate=track_candidate;a->tab_candidate=tab_candidate;a->tab_parent=GetParent(w);a->color_candidate=color_candidate;a->date_candidate=date_candidate;a->status_candidate=status_candidate;a->bit_candidate=bit_candidate;
     if(report || tree || a->file_owner || a->button_owner || a->checklist || a->bit_candidate){a->report_window=w;a->tree=tree;
         a->report_module=(a->file_owner || a->button_owner || a->bit_candidate)?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}
     if(!SetWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc,(DWORD_PTR)a)){

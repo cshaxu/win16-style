@@ -984,3 +984,7 @@ S64 TDBEdit可写绑定补证：厂商演示源码由公开试用包使用开源
 S64 TDBEdit ANSI候选准入：真实x86样本以应用owner通过CallWindowProcA转发注册ANSI EDIT的WM_PAINT，临时精确见证原型获得样式；可写绑定经导航栏完成Roberto→RobertoX→Roberto，提交后Bruce→Roberto，基线与原型均正常退出。拟仅对精确TDBEdit的同窗绘制作用域校验注册ANSI EDIT过程及同类owner调用者，复用既有单行EDIT协议、字体和边框；不引入测试locale/第三方库。须双宽真实native fixture、伪绘制/错误owner负例、原实现检出、实际包与真实样本对照、双发布；其他运行库、复杂字符输入及物理输入未覆盖。M0/T18/S64开放。
 
 S64 P152 TDBEdit有限接入完成：同窗绘制作用域、精确类、ANSI EDIT原生过程及同owner调用者见证后复用单行EDIT renderer；真实x86数据样本使用只新增测试locale导入的私有副本，实际候选DLL完成Roberto→RobertoX→Roberto、Bruce→Roberto与正常退出，截图外缘432/客户区51像素差异。双宽模型通过正例、伪绘制、错误owner、输入和移除；旧版双宽及去owner限制的x86故障版均被检出。同批干净包24项22.33秒零skip、assets/system32八摘要及安装双宽模型通过。[证据](../history/M0-T18-S64-P152-dbedit.md)。其他版本/编码/DPI、持久写回、物理输入及完整集成未覆盖；提交及远端复核待完成。M0/T18/S64开放。
+
+S64 TDBComboBox有限候选准入：真实x86 ANSI CBS_DROPDOWN同owner样本以CallWindowProcA转发系统COMBOBOX；scratch原型出现经典框，下拉/取消保留选择，实际内存绑定完成250→111→记录往返111→输入恢复250并正常退出。窗口Unicode标志随附着改变；修正ANSI原生类模型后，ACP1252下Café经A/W消息读取一致，伪绘制、错误owner、换父及重入回退通过；真实数值字段不接受字母，不能称真实多语言输入通过。拟仅接入精确ANSI绘制见证和CBS_DROPDOWN，保留同owner/父窗和既有协议约束；须双宽模型、旧版负例、实际包/真实样本与双发布，其他样式、编码、DPI及物理输入未覆盖。M0/T18/S64开放。
+
+S64 P153 TDBComboBox有限接入完成：精确CBS_DROPDOWN、同父同owner、ANSI原生绘制见证后复用组合框renderer；真实x86数值绑定样本以实际候选包完成250→111→记录往返111→恢复250及正常退出，截图428处变化。双宽ANSI模型含伪绘制、错误owner、未准入类型、Unicode见证回退、换父/重入及ACP1252 A/W文本；旧版双宽和x86两种故障负例检出。同批干净包24项20.15秒零skip、双发布八摘要及两处双宽安装模型通过。[证据](../history/M0-T18-S64-P153-dbcombo.md)。真实多语言输入、其他类型/编码/DPI、物理输入及完整集成未覆盖；提交和远端复核待完成。M0/T18/S64开放。
