@@ -564,3 +564,5 @@ S64 P60真实VB5/VB6文件和目录列表144 DPI补证：固定作者样本私�
 S64 P61已发布包VB集中回归：34项vb命名模型加8项强制启动/ABI/demo基线，42项80.42秒全部通过、零skip；覆盖双宽复选、容器、MDI、文字与图形选择、VB6 Data模型。仅聚焦模型，不替代真实程序或完整集成；四文件与两个发布目录摘要一致，无产品变更。[证据](../history/M0-T18-S64-P61-vb-package-regression.md)。VB5 Data仍未验证，T18/S64开放。
 
 S64 P62 VB5 Data样本启动调查：原始VisData与私有清单版自有进程均只有调试器初始断点、随后Error窗口，出现窗口前未观察到OCX/VB5DB/DAO加载；未拦截COM或加载返回值，不能据此确定根因。微软历史免费CCE归档签名返回HashMismatch，静态提取的VB5DB与既有副本一致但不证明整包身份，未运行或安装。无产品改动，双发布四摘要一致；[证据](../history/M0-T18-S64-P62-vb5-data-startup.md)。真实VB5 Data仍未覆盖，T18/S64开放。
+
+S64 P63追踪VB5 VisData自有进程：清单版记录20次动态加载均成功，原版20次中19次返回成功、末次未观察完；跟踪COM创建/注册类型库入口未见调用，但LoadTypeLibEx对运行库两次REGKIND_REGISTER成功、对EXE的REGKIND_NONE成功。未留启动前注册表快照，无法证明前两次是否写注册表；更正P54无注册的宽泛表述，后续须隔离或审计。自编负例检出缺DLL及类型库/COM错误，未覆盖所有内部路径；根因未定、无产品变更。[证据](../history/M0-T18-S64-P63-vb5-loader-trace.md)。T18/S64开放。
