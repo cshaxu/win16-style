@@ -676,6 +676,18 @@ BOOL ntw16s_vcl_tab_valid(HWND w)
         (GetParent(w)==a->tab_parent && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TTabControl") &&
          !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)));
 }
+/* Observe only the exact data edit forwarding its own paint to ANSI EDIT. */
+void ntw16s_dbedit_ansi_witness(WNDPROC proc,HWND w,UINT message,const void *address)
+{
+    WNDCLASSEXA native={.cbSize=sizeof(native)};HMODULE caller=NULL,owner;WCHAR name[64];
+    if(message!=WM_PAINT || !static_paint || static_paint->window!=w || !static_paint->owner->edit_candidate ||
+        static_paint->owner->detached || static_paint->owner->edit_attempted || lookup(w)!=static_paint->owner ||
+        !GetClassNameW(w,name,ARRAYSIZE(name)) || lstrcmpW(name,L"TDBEdit") ||
+        !GetClassInfoExA(NULL,"EDIT",&native) || proc!=native.lpfnWndProc ||
+        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller))return;
+    owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+    if(owner && caller==owner)static_paint->owner->edit_witness_owner=owner;
+}
 BOOL ntw16s_static_call_begin(ntw16s_static_call *scope,WNDPROC proc,HWND w,UINT message,const void *address)
 {
     WNDCLASSEXW native={.cbSize=sizeof(native)};HMODULE caller=NULL,native_owner=NULL,owner;
@@ -1536,7 +1548,7 @@ static BOOL install_created(HWND w,DWORD original_style)
             !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING));
         scroll_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TScrollBar") &&
             RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TScrollBar");
-        edit_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TEdit") || !lstrcmpW(name,L"TMemo") || !lstrcmpW(name,L"TMaskEdit") || !lstrcmpW(name,L"TLabeledEdit") || !lstrcmpW(name,L"TNumberBox") || !lstrcmpW(name,L"TLinkLabel") || !lstrcmpW(name,L"TSpinEdit") || !lstrcmpW(name,L"TComboBox")) &&
+        edit_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TEdit") || !lstrcmpW(name,L"TMemo") || !lstrcmpW(name,L"TMaskEdit") || !lstrcmpW(name,L"TDBEdit") || !lstrcmpW(name,L"TLabeledEdit") || !lstrcmpW(name,L"TNumberBox") || !lstrcmpW(name,L"TLinkLabel") || !lstrcmpW(name,L"TSpinEdit") || !lstrcmpW(name,L"TComboBox")) &&
             RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(name,real) && (lstrcmpW(name,L"TComboBox") || combo_identity(w,GetParent(w)));
         tab_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TTabControl") &&
             RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TTabControl") &&

@@ -980,3 +980,7 @@ S64 TDBGrid隐藏滚动条证据及测试收口：真实单列单行样本无可
 S64真实TDBEdit调查：公开厂商原始x86演示配临时MIDAS及仅目标线程法语加拿大locale启动；第二页两个可见TDBEdit为只读，WM_PAINT由应用owner通过CallWindowProcA转发已注册ANSI EDIT，现有W见证未命中。仅scratch的精确ANSI见证原型记录owner并出现91×21截图483处RGB变化（外缘432、客户区51）；原型含临时locale和日志，绝不发布。输入因只读未改变，关闭均超时由自有job回收；可写绑定、清理、双宽负例尚未验证。[证据、第三方摘要与失败](../history/M0-T18-S64-data-aware-sample.md)。M0/T18/S64开放。
 
 S64 TDBEdit可写绑定补证：厂商演示源码由公开试用包使用开源解包器只读提取、未安装；自有样本经导航栏进入编辑后，基线与scratch ANSI见证原型均以同步跨进程WM_GETTEXT验证Roberto→RobertoX→Roberto，提交恢复值后下一条Bruce、返回Roberto，目标均正常退出。省略插入的测试负例被断言拒绝并由自有job回收。此前GetWindowText不能可靠证明动态文本，首次亦未进入编辑模式；仅消息级、单x86样本，文件持久化、双宽模型及物理输入未覆盖，scratch含临时locale和日志不得发布。[证据](../history/M0-T18-S64-data-aware-sample.md)。M0/T18/S64开放。
+
+S64 TDBEdit ANSI候选准入：真实x86样本以应用owner通过CallWindowProcA转发注册ANSI EDIT的WM_PAINT，临时精确见证原型获得样式；可写绑定经导航栏完成Roberto→RobertoX→Roberto，提交后Bruce→Roberto，基线与原型均正常退出。拟仅对精确TDBEdit的同窗绘制作用域校验注册ANSI EDIT过程及同类owner调用者，复用既有单行EDIT协议、字体和边框；不引入测试locale/第三方库。须双宽真实native fixture、伪绘制/错误owner负例、原实现检出、实际包与真实样本对照、双发布；其他运行库、复杂字符输入及物理输入未覆盖。M0/T18/S64开放。
+
+S64 P152 TDBEdit有限接入完成：同窗绘制作用域、精确类、ANSI EDIT原生过程及同owner调用者见证后复用单行EDIT renderer；真实x86数据样本使用只新增测试locale导入的私有副本，实际候选DLL完成Roberto→RobertoX→Roberto、Bruce→Roberto与正常退出，截图外缘432/客户区51像素差异。双宽模型通过正例、伪绘制、错误owner、输入和移除；旧版双宽及去owner限制的x86故障版均被检出。同批干净包24项22.33秒零skip、assets/system32八摘要及安装双宽模型通过。[证据](../history/M0-T18-S64-P152-dbedit.md)。其他版本/编码/DPI、持久写回、物理输入及完整集成未覆盖；提交及远端复核待完成。M0/T18/S64开放。
