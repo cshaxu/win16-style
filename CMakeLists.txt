@@ -535,6 +535,11 @@ if(BUILD_TESTING)
   target_link_libraries(vcl-memo-module-fixture PRIVATE user32)
   target_link_options(vcl-memo-module-fixture PRIVATE -Wl,--kill-at)
 
+  add_library(vcl-numberbox-fixture SHARED tests/ntw16s-dll/vcl_numberbox_fixture.c)
+  set_target_properties(vcl-numberbox-fixture PROPERTIES PREFIX "")
+  target_link_libraries(vcl-numberbox-fixture PRIVATE user32)
+  target_link_options(vcl-numberbox-fixture PRIVATE -Wl,--kill-at)
+
   add_library(vcl-labeled-edit-fixture SHARED tests/ntw16s-dll/vcl_labeled_edit_fixture.c)
   set_target_properties(vcl-labeled-edit-fixture PROPERTIES PREFIX "")
   target_link_libraries(vcl-labeled-edit-fixture PRIVATE user32)

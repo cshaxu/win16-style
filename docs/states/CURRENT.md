@@ -82,7 +82,7 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例限时回收 |
 | Verification | 双宽真实owner、原生过程、输入与文本；有实现时模型负例及实际包 |
 | Expected Markers | 经验证原生协议及调用所有权才能接入；未知路径回退 |
-| Asset Needs | 登记build/t18-s62-radio-memo、build/t18-s64-vb-*（含MDI真实样本、私有诊断）及build/t18-package/s64-group-frame-*及s64-radio-frame-*、s64-popup-*、s64-panel-*及s64-labeled-edit-*（同批包与回归），复用合法双宽运行库，结束前提炼证据并安全清理自有scratch |
+| Asset Needs | 登记build/t18-s62-radio-memo、build/t18-s64-vb-*（含MDI真实样本、私有诊断）及build/t18-package/s64-group-frame-*及s64-radio-frame-*、s64-popup-*、s64-panel-*、s64-labeled-edit-*及s64-numberbox-*（同批包与回归），复用合法双宽运行库，结束前提炼证据并安全清理自有scratch |
 | Reporting Requirements | 实际绘制、操作、负例、未覆盖、双发布及远端复核 |
 | Stop Conditions | 无真实所有权或安全内容契约时不按名称猜测 |
 | Exit Criteria | 有证据的有限实现或明确后续接收，实际包交付；T18保持开放 |
@@ -656,3 +656,9 @@ S64 P89已实现普通Delphi TLabeledEdit编辑区：精确新建候选经同所
 S64 P91 Delphi附属标签调查：真实双宽144 DPI样本的EditLabel和另一个应用指定Arial的普通TLabel均由父窗体DC经运行库DrawTextExW绘制；前者Segoe UI原度量84×25，临时选stock SYSTEM_FONT为86×20并恢复，直接替换可能裁切。窗体MSAA枚举仅返回编辑框HWND，未暴露这两个无窗口标签；首次用子ID查询返回E_INVALIDARG不计，修正AccessibleChildren后双宽一致。导入/字体均恢复，目标与启动器零退出、作业清空；父DC和坐标不能区分应用Canvas，尚无安全身份/布局契约，不改产品，不代表不可实现。[证据](../history/M0-T18-S64-P91-boundlabel-draw.md)。T18/S64开放。
 
 S64 P92复核P91：实际提交0c53df6已推送，远端main、两份记录及四产物逐字节与Git一致，双发布四文件摘要仍与P89相同；P91没有产品变更。标签身份与布局问题仍开放，T18/S64开放。
+
+S64准入普通Delphi TNumberBox候选：真实双宽144 DPI默认样本未附着、编辑区现代，裸/样式实例均观察同运行库调用系统EDIT处理自身WM_PAINT及EM_REPLACESEL，输入42→72；导入及文本恢复，进程零退出、自有作业清空。拟仅对精确新建单行类通过既有同线程owner绘制见证和EDIT协议接入；先验证数值、范围、事件、默认及可行变体，双宽身份/裁剪/重入和旧包负例，再干净同批包、双发布与远端复核。[调查](../history/M0-T18-S64-delphi-numberbox-investigation.md)。T18/S64开放。
+
+S64 NumberBox临时候选：双宽144 DPI真实默认及设定0..50范围样本，原版与候选输入42→72的OnChange文本和Value均为72；输入阶段未立即钳制，不能据此证明范围验证。候选编辑区已附着并显示经典外观，导入和文本恢复，目标及启动器零退出、作业清空。先验证数字边界、变体、旧包及模型负例，再打干净包；临时DLL未发布。T18/S64开放。
+
+S64 P93已实现Delphi TNumberBox有限编辑区：精确单行候选经owner原生EDIT绘制见证及协议接入；真实双宽144 DPI默认/设范围样本输入与OnChange一致，紧凑/内联旋钮布局的上键72→73及事件与旧版一致，目标和启动器零退出、作业清空。模拟鼠标两次路径未使旧版变化，不计点击验证；旋钮图形仍待适配，范围提交、其他数值模式及物理输入未覆盖。双宽模型含错误调用者/裁剪/重入，旧包双宽检出；干净四文件14项6.53秒零skip，双发布八摘要与安装双宽模型通过。[证据](../history/M0-T18-S64-P93-delphi-numberbox.md)。待提交推送远端复核；T18/S64开放。

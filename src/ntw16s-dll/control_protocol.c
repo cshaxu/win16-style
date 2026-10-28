@@ -144,7 +144,7 @@ static ntw16s_control_protocol *bind_protocol(HWND w,HMODULE verified_owner,unsi
         (!lstrcmpW(name,PROGRESS_CLASSW) || !lstrcmpW(name,L"TProgressBar"))?7:
         (!lstrcmpW(name,TRACKBAR_CLASSW) || !lstrcmpW(name,L"TTrackBar"))?8:
         (!lstrcmpW(name,UPDOWN_CLASSW) || !lstrcmpW(name,L"TUpDown"))?9:
-        (verified_owner && !lstrcmpW(name,L"TToolBar"))?10:(!lstrcmpW(name,L"TEdit") || (verified_owner && !lstrcmpW(name,L"TLabeledEdit") && !(GetWindowLongPtrW(w,GWL_STYLE)&ES_MULTILINE)) || (verified_owner && !lstrcmpW(name,L"TMemo") && (GetWindowLongPtrW(w,GWL_STYLE)&ES_MULTILINE)))?11:!lstrcmpW(name,L"TListBox")?12:(verified_owner && !lstrcmpW(name,L"TScrollBar"))?14:ocx_role?ocx_role:toolbar_role;
+        (verified_owner && !lstrcmpW(name,L"TToolBar"))?10:(!lstrcmpW(name,L"TEdit") || (verified_owner && (!lstrcmpW(name,L"TLabeledEdit") || !lstrcmpW(name,L"TNumberBox")) && !(GetWindowLongPtrW(w,GWL_STYLE)&ES_MULTILINE)) || (verified_owner && !lstrcmpW(name,L"TMemo") && (GetWindowLongPtrW(w,GWL_STYLE)&ES_MULTILINE)))?11:!lstrcmpW(name,L"TListBox")?12:(verified_owner && !lstrcmpW(name,L"TScrollBar"))?14:ocx_role?ocx_role:toolbar_role;
     if(!role)return NULL;
     if(verified_owner && (role!=verified_role || (role==8 && lstrcmpW(name,L"TTrackBar"))))return NULL;
     if(role>=3 && role<=9 && !ocx_role && !toolbar_role && !GetClassInfoExW(NULL,role==3?WC_TABCONTROLW:role==4?WC_HEADERW:role==5?WC_LISTVIEWW:role==6?WC_TREEVIEWW:role==7?PROGRESS_CLASSW:role==8?TRACKBAR_CLASSW:UPDOWN_CLASSW,&native_class))return NULL;
