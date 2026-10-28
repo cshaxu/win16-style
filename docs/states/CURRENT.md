@@ -82,7 +82,7 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例限时回收 |
 | Verification | 双宽真实owner、原生过程、输入与文本；有实现时模型负例及实际包 |
 | Expected Markers | 经验证原生协议及调用所有权才能接入；未知路径回退 |
-| Asset Needs | 登记build/t18-s62-radio-memo、build/t18-s64-vb-*（含MDI真实样本、私有诊断）、build/t18-s64-vcl-value-survey及build/t18-package/s64-group-frame-*及s64-radio-frame-*、s64-popup-*、s64-panel-*、s64-labeled-edit-*、s64-numberbox-*、s64-list-*及s64-short-*（同批包与回归），复用合法双宽运行库，结束前提炼证据并安全清理自有scratch |
+| Asset Needs | 登记build/t18-s62-radio-memo、build/t18-s64-vb-*（含MDI真实样本、私有诊断）、build/t18-s64-vcl-value-survey及build/t18-package/s64-group-frame-*及s64-radio-frame-*、s64-popup-*、s64-panel-*、s64-labeled-edit-*、s64-numberbox-*、s64-list-*、s64-short-*及s64-valuegrid-*（同批包与回归），复用合法双宽运行库，结束前提炼证据并安全清理自有scratch |
 | Reporting Requirements | 实际绘制、操作、负例、未覆盖、双发布及远端复核 |
 | Stop Conditions | 无真实所有权或安全内容契约时不按名称猜测 |
 | Exit Criteria | 有证据的有限实现或明确后续接收，实际包交付；T18保持开放 |
@@ -892,3 +892,7 @@ S64 列表候选已完成干净双宽构建、实际四文件包22项聚焦回�
 S64 列表短项候选：P131远端79e111a及源码、测试、清单和四个二进制blob已复核。真实Delphi XE x86列表从13项减至2项后系统自动移除WS_VSCROLL，P131不附着；scratch仅取消运行期必须有滚动条的条件后，同窗移除对照边框500、客户区0像素变化，字体和选择回填保持。拟保留创建时VSCROLL及全部owner/绘制见证，允许运行中滚动条按项目数出现或消失；验证双宽增减切换、像素/内容、P131负例、相邻回归、实际包与双发布，未完成则不交付。M0/T18/S64开放。
 
 S64 短列表候选完成双宽干净构建及实际包26项聚焦回归（21.17秒、零skip），真实样本长短往返、边框500/客户区0像素及选择正常，P131双宽负例检出；assets/system32两处四文件摘要一致，各通过双宽安装模型。[证据](../history/M0-T18-S64-P132-short-popup-list.md)。提交与远端复核待完成；真实高DPI、其他版本和完整集成未覆盖。M0/T18/S64开放。
+
+S64 网格外框候选：P132远端5e9bcfb及源码、测试、清单、四产物blob已复核。真实Delphi XE x86/96 DPI样本的应用自身TValueListEditor带WS_EX_CLIENTEDGE但无滚动条，既有TStringGrid/TDrawGrid准入不覆盖；scratch以精确owner、类名、父窗、边界及同窗WM_PAINT复用既有网格非客户区renderer，同窗移除外框846、客户区0像素，A-100可追加Z，进程正常退出。拟仅接入应用自身同角色窗口、不重绘单元格；需双宽模型及无clientedge/换父负例、旧包检出、相邻网格和编辑器回归、真实包复测与双发布。其他版本、数据绑定、物理输入和真实高DPI未覆盖。M0/T18/S64开放。
+
+S64 网格外框候选完成干净双宽构建、实际包24项聚焦回归（19.84秒、零skip）、真实样本846/0像素及编辑/下拉复测，P132双宽负例检出；assets/system32四文件摘要一致，各通过双宽安装模型。[证据](../history/M0-T18-S64-P133-value-grid.md)。提交与远端复核待完成；其他版本、绑定、物理输入、真实高DPI及完整集成未覆盖。M0/T18/S64开放。

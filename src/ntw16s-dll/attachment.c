@@ -327,8 +327,10 @@ static BOOL grid_identity(HWND w,HMODULE owner,HWND parent)
     WCHAR name[64],real[64];DWORD pid=0,style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
     return owner && parent && GetParent(w)==parent && GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
         GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() && (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==owner &&
-        (style&WS_CHILD) && (style&(WS_HSCROLL|WS_VSCROLL)) && (ex&WS_EX_CLIENTEDGE) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
-        GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TStringGrid") || !lstrcmpW(name,L"TDrawGrid")) &&
+        (style&WS_CHILD) && (ex&WS_EX_CLIENTEDGE) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
+        GetClassNameW(w,name,ARRAYSIZE(name)) &&
+        (((style&(WS_HSCROLL|WS_VSCROLL)) && (!lstrcmpW(name,L"TStringGrid") || !lstrcmpW(name,L"TDrawGrid"))) ||
+         (owner==GetModuleHandleW(NULL) && IsWindowUnicode(w) && !lstrcmpW(name,L"TValueListEditor"))) &&
         RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(name,real);
 }
 static BOOL vcl_toolbar_identity(HWND w,HMODULE owner,HWND parent)
@@ -1220,8 +1222,9 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
         DWORD saved=GetLastError();SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_ALL};DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
         a->grid_attempted=TRUE;
         if(grid_identity(w,a->grid_owner,a->grid_parent) &&
-            ntw16s_native_get_scroll_info(w,(style&WS_HSCROLL)?SB_HORZ:SB_VERT,&info) &&
-            info.nMin<=info.nMax && info.nPos>=info.nMin && info.nPos<=info.nMax && !a->detached){
+            ((class_is(w,L"TValueListEditor") && !(style&(WS_HSCROLL|WS_VSCROLL))) ||
+             (ntw16s_native_get_scroll_info(w,(style&WS_HSCROLL)?SB_HORZ:SB_VERT,&info) &&
+              info.nMin<=info.nMax && info.nPos>=info.nMin && info.nPos<=info.nMax)) && !a->detached){
             BOOL installed=win16_style_grid_install_created(w,NULL,a,&a->detached);
             if(installed && !a->detached){a->grid_installed=TRUE;RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);}
             else if(!a->detached)win16_style_control_remove_owned(w,a);
