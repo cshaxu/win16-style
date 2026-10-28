@@ -562,3 +562,5 @@ S64 P59实现VB5/VB6复选列表144 DPI文字和外框scope：真实VB5文字区
 S64 P60真实VB5/VB6文件和目录列表144 DPI补证：固定作者样本私有DPI感知副本原生/样式对照，两个版本均确认准确运行库角色、System文字、原字体/几何/选择保持及正常退出；VB6额外验证End/Home与父通知。VB5首次空文件列表失败后加两张自有图片才通过；未操作延期DriveListBox，旧观察器drive_escape汇总误报须忽略。VB5 Data样本下载地址失效，仍未验证；无产品改动，双发布四摘要与P59一致。[证据](../history/M0-T18-S64-P60-real-file-controls-144.md)。T18/S64开放。
 
 S64 P61已发布包VB集中回归：34项vb命名模型加8项强制启动/ABI/demo基线，42项80.42秒全部通过、零skip；覆盖双宽复选、容器、MDI、文字与图形选择、VB6 Data模型。仅聚焦模型，不替代真实程序或完整集成；四文件与两个发布目录摘要一致，无产品变更。[证据](../history/M0-T18-S64-P61-vb-package-regression.md)。VB5 Data仍未验证，T18/S64开放。
+
+S64 P62 VB5 Data样本启动调查：原始VisData与私有清单版自有进程均只有调试器初始断点、随后Error窗口，出现窗口前未观察到OCX/VB5DB/DAO加载；未拦截COM或加载返回值，不能据此确定根因。微软历史免费CCE归档签名返回HashMismatch，静态提取的VB5DB与既有副本一致但不证明整包身份，未运行或安装。无产品改动，双发布四摘要一致；[证据](../history/M0-T18-S64-P62-vb5-data-startup.md)。真实VB5 Data仍未覆盖，T18/S64开放。
