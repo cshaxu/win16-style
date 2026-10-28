@@ -82,7 +82,7 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例限时回收 |
 | Verification | 双宽真实owner、原生过程、输入与文本；有实现时模型负例及实际包 |
 | Expected Markers | 经验证原生协议及调用所有权才能接入；未知路径回退 |
-| Asset Needs | 登记build/t18-s62-radio-memo、build/t18-s64-vb-*（含MDI真实样本、私有诊断）及build/t18-package/s64-group-frame-*及s64-radio-frame-*、s64-popup-*、s64-panel-*、s64-labeled-edit-*及s64-numberbox-*（同批包与回归），复用合法双宽运行库，结束前提炼证据并安全清理自有scratch |
+| Asset Needs | 登记build/t18-s62-radio-memo、build/t18-s64-vb-*（含MDI真实样本、私有诊断）、build/t18-s64-vcl-value-survey及build/t18-package/s64-group-frame-*及s64-radio-frame-*、s64-popup-*、s64-panel-*、s64-labeled-edit-*、s64-numberbox-*、s64-list-*及s64-short-*（同批包与回归），复用合法双宽运行库，结束前提炼证据并安全清理自有scratch |
 | Reporting Requirements | 实际绘制、操作、负例、未覆盖、双发布及远端复核 |
 | Stop Conditions | 无真实所有权或安全内容契约时不按名称猜测 |
 | Exit Criteria | 有证据的有限实现或明确后续接收，实际包交付；T18保持开放 |
@@ -888,3 +888,7 @@ S64 下拉列表调查续作：真实x86样本的TPopupListbox先作为本进程
 S64 列表候选实施中：限定应用自身TValueListEditor/TInplaceEditList创建的Unicode TPopupListbox，换父到桌面后由同owner对USER32 LISTBOX的WM_PAINT转发见证，复用非客户区renderer，客户区、字体和数据保持原生；未匹配或owner-draw保留原生。双宽模型初步覆盖错误父窗、伪绘制、owner-draw、选择、滚动、像素、字体和换父；旧P130双宽不能通过正例。真实x86样本同窗移除非客户区2268、客户区0，选择回填正常。尚须干净同批包、相关回归、双发布和远端复核；其他Delphi版本、真实高DPI及物理输入未覆盖。M0/T18/S64开放。
 
 S64 列表候选已完成干净双宽构建、实际四文件包22项聚焦回归（8.69秒、零skip）、真实样本复测和assets/system32双发布，两处各通过双宽安装模型；同批摘要见[release](../etc/release.json)，[证据](../history/M0-T18-S64-P131-popup-list.md)。远端提交复核待完成；其他Delphi版本、真实高DPI、物理输入及全量集成仍未覆盖。M0/T18/S64开放。
+
+S64 列表短项候选：P131远端79e111a及源码、测试、清单和四个二进制blob已复核。真实Delphi XE x86列表从13项减至2项后系统自动移除WS_VSCROLL，P131不附着；scratch仅取消运行期必须有滚动条的条件后，同窗移除对照边框500、客户区0像素变化，字体和选择回填保持。拟保留创建时VSCROLL及全部owner/绘制见证，允许运行中滚动条按项目数出现或消失；验证双宽增减切换、像素/内容、P131负例、相邻回归、实际包与双发布，未完成则不交付。M0/T18/S64开放。
+
+S64 短列表候选完成双宽干净构建及实际包26项聚焦回归（21.17秒、零skip），真实样本长短往返、边框500/客户区0像素及选择正常，P131双宽负例检出；assets/system32两处四文件摘要一致，各通过双宽安装模型。[证据](../history/M0-T18-S64-P132-short-popup-list.md)。提交与远端复核待完成；真实高DPI、其他版本和完整集成未覆盖。M0/T18/S64开放。

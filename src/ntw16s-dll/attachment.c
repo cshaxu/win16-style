@@ -881,7 +881,7 @@ static BOOL rich_identity(HWND w,attachment *a)
     WCHAR name[64];HWND parent=GetParent(w);DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
     return a && !a->detached && IsWindow(w) && parent && parent==a->rich_parent &&
         GetWindowThreadProcessId(w,NULL)==GetCurrentThreadId() &&
-        (a->rich_popup?(parent==GetDesktopWindow() && a->rich_owner==GetModuleHandleW(NULL) && (style&WS_BORDER) && (style&WS_VSCROLL) && !(style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA))):(GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() && (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==a->rich_owner)) &&
+        (a->rich_popup?(parent==GetDesktopWindow() && a->rich_owner==GetModuleHandleW(NULL) && (style&WS_BORDER) && !(style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA))):(GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() && (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==a->rich_owner)) &&
         (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==a->rich_owner &&
         GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,a->rich_popup?L"TPopupListbox":a->rich_month?L"TMonthCalendar":a->rich_hotkey?L"THotKey":a->rich_unicode?L"TRichEdit":L"TRichEditURL") && (!a->rich_unicode || IsWindowUnicode(w)) && (!a->rich_month || !(style&MCS_MULTISELECT)) && (style&WS_CHILD) &&
         (a->rich_popup || a->rich_month || (ex&WS_EX_CLIENTEDGE)) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_LAYERED));

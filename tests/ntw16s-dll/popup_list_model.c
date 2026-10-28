@@ -46,8 +46,18 @@ static int worker(int argc,WCHAR **argv){
     CHECK(RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME|RDW_UPDATENOW)&&attached(w));CHECK(SendMessageW(w,LB_GETCOUNT,0,0)==20);CHECK(SendMessageW(w,LB_SETCURSEL,5,0)==5);CHECK(SendMessageW(w,LB_GETCURSEL,0,0)==5);
     CHECK(SendMessageW(w,LB_SETTOPINDEX,8,0)!=LB_ERR && SendMessageW(w,LB_GETTOPINDEX,0,0)==8);CHECK(SendMessageW(w,LB_SETTOPINDEX,0,0)!=LB_ERR);
     CHECK(compare(w,remove)==0);CHECK((HFONT)SendMessageW(w,WM_GETFONT,0,0)==font && SendMessageW(w,LB_GETCURSEL,0,0)==5 && SendMessageW(w,LB_GETCOUNT,0,0)==20);CHECK(DestroyWindow(w));
+    HWND shortlist=make_list(edit,0);CHECK(shortlist&&SetParent(shortlist,GetDesktopWindow()));
+    CHECK(SendMessageW(shortlist,LB_ADDSTRING,0,(LPARAM)L"First")!=LB_ERR);CHECK(SendMessageW(shortlist,LB_ADDSTRING,0,(LPARAM)L"Second")!=LB_ERR);
+    SendMessageW(shortlist,WM_SETFONT,(WPARAM)font,FALSE);ShowWindow(shortlist,SW_SHOWNA);
+    CHECK(RedrawWindow(shortlist,NULL,NULL,RDW_INVALIDATE|RDW_FRAME|RDW_UPDATENOW)&&attached(shortlist));CHECK(!(GetWindowLongPtrW(shortlist,GWL_STYLE)&WS_VSCROLL));
+    CHECK(SendMessageW(shortlist,LB_SETCURSEL,1,0)==1);
+    for(int i=0;i<18;++i)CHECK(SendMessageW(shortlist,LB_ADDSTRING,0,(LPARAM)L"Extra")!=LB_ERR);
+    CHECK(RedrawWindow(shortlist,NULL,NULL,RDW_INVALIDATE|RDW_FRAME|RDW_UPDATENOW)&&attached(shortlist));CHECK(GetWindowLongPtrW(shortlist,GWL_STYLE)&WS_VSCROLL);
+    while(SendMessageW(shortlist,LB_GETCOUNT,0,0)>2)CHECK(SendMessageW(shortlist,LB_DELETESTRING,2,0)!=LB_ERR);
+    CHECK(RedrawWindow(shortlist,NULL,NULL,RDW_INVALIDATE|RDW_FRAME|RDW_UPDATENOW)&&attached(shortlist));CHECK(!(GetWindowLongPtrW(shortlist,GWL_STYLE)&WS_VSCROLL));
+    CHECK(SendMessageW(shortlist,LB_GETCURSEL,0,0)==1);CHECK(compare(shortlist,remove)==0);CHECK((HFONT)SendMessageW(shortlist,WM_GETFONT,0,0)==font && SendMessageW(shortlist,LB_GETCOUNT,0,0)==2);CHECK(DestroyWindow(shortlist));
     HWND moved=make_list(edit,0);CHECK(moved&&SetParent(moved,GetDesktopWindow()));for(int i=0;i<20;++i)CHECK(SendMessageW(moved,LB_ADDSTRING,0,(LPARAM)L"Item")!=LB_ERR);ShowWindow(moved,SW_SHOWNA);CHECK(RedrawWindow(moved,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW)&&attached(moved));CHECK(SetParent(moved,root));CHECK(RedrawWindow(moved,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW)&&!attached(moved));CHECK(DestroyWindow(moved));
     CHECK(DestroyWindow(edit)&&DestroyWindow(grid)&&DestroyWindow(root));CHECK(UnregisterClassW(L"TPopupListbox",self)&&UnregisterClassW(L"TInplaceEditList",self)&&UnregisterClassW(L"TValueListEditor",self));
-    puts("POPUP_MODEL_OK owner=1 ownerdraw=1 witness=1 selection=1 scroll=1 pixels=1 font=1 reparent=1 cleanup=1");return 0;
+    puts("POPUP_MODEL_OK owner=1 ownerdraw=1 witness=1 selection=1 scroll=1 short=1 transition=1 pixels=1 font=1 reparent=1 cleanup=1");return 0;
 }
 int wmain(int argc,WCHAR **argv){return isolated_process(argc,argv,worker);}
