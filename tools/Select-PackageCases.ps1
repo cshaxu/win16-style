@@ -35,3 +35,13 @@ function Assert-PackageCoverage {
     foreach ($name in $omitted) { if ($name -cin $selected) { throw "Case both selected and omitted: $name" } }
     foreach ($name in @($Result.skipped)) { if ($name -cnotin $selected) { throw "Skipped case not selected: $name" } }
 }
+
+function Test-PackageCaseSkip {
+    param([string]$Name,[int]$ExitCode,[string]$Output)
+    if ($ExitCode -eq 2 -and $Output.Contains('PRIVATE_DESKTOP_CREATE_FAIL error=5')) { return $true }
+    if ($Name -cmatch '^vb(5|6)-checklist-dpi144-(32|64)$' -and $ExitCode -eq 77 -and
+        $Output -cmatch '(?m)^VB_CHECKLIST_144_SKIP dpi=([1-9][0-9]*)\r?$') {
+        return [uint64]$Matches[1] -ne 144
+    }
+    return $false
+}

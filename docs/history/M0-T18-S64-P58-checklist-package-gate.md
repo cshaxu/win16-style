@@ -1,0 +1,11 @@
+# M0 T18 S64 P58: include 144-DPI checklists in package regression
+
+The existing 144-DPI VB5 and VB6 checklist model was registered in CTest but not selected by the standard or focused actual-package runner. This left the P55/P57 paths outside that gate. The package plan now contains four independent cases, for both runtime fixture generations and x86/x64, each requiring both native and injected success markers. They exercise the existing four-state and invalid-geometry model against the actual package. Existing 96-DPI cases remain unchanged.
+
+A wrong-DPI model exit is reported as a skip only for these four case names, exit 77 and an exact positive non-144 DPI marker. This is not reported as a successful exercise of 144 DPI. The existing exact private-desktop denial handling remains. Tooling tests reject mismatched exit, name, malformed marker, zero DPI, and a 144 DPI skip; they preserve the existing denial tests. P57 independently demonstrated the old VB5 implementation fails the new 144-DPI model for both bitnesses. These checks do not replace testing on actual VB applications.
+
+The clean C17/MinGW GCC/Ninja/ccache x86/x64 build and ABI/source/original-resource identity checks passed. The new actual-package focused run covered the four added cases plus eight mandatory baseline cases: 12 passed, no skips, two jobs, 24.05 seconds. Each new case exited 0 with native and styled markers. No product source changed. Fresh builds changed all four file hashes; the tested batch was therefore published to both assets and O:/winnt/system32 and all eight destination hashes matched the tested batch.
+
+SHA-256: run16s.exe `c0e64e8bca09ba39f325f5ae0f3628ed90c5dd6119c747f4796f8e871b9a3f04`; ntw16s32.dll `edaaea92a72e8438f24041442a76a9b45e17b43e490725262ec31b29383a91ce`; ntw16s64.dll `eb52ba35df7f4d3a5c9298d36d30ec89a1acc11e3d1dd4ad41a5dd63719e3b51`; demo.exe `196c8306f8d6c5d2948a5fc305737c9c6d95b6fe7af5fa4a057d66d1bbad3921`.
+
+This is a focused regression, not the full matrix, physical input, other DPI values or universal VB support. Seven VB5 Data form sources in the already studied book ISO have no sibling executable; they are not evidence of a running Data control. VB5 Data remains unverified and no private implementation is guessed from source names. T18 and S64 remain open.

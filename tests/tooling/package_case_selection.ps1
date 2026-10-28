@@ -29,4 +29,17 @@ foreach ($mutate in @('missing','count','overlap','coverage','full','skips')) {
     $rejected=$false;try { Assert-PackageCoverage -Result $bad } catch { $rejected=$true }
     if (!$rejected) { throw "Invalid focused result accepted: $mutate" }
 }
+$skipCases=@(
+    @{name='vb5-checklist-dpi144-32';code=77;output="VB_CHECKLIST_144_SKIP dpi=96`n";expected=$true},
+    @{name='vb6-checklist-dpi144-64';code=77;output="VB_CHECKLIST_144_SKIP dpi=144`n";expected=$false},
+    @{name='vb6-checklist-dpi144-64';code=1;output="VB_CHECKLIST_144_SKIP dpi=96`n";expected=$false},
+    @{name='other';code=77;output="VB_CHECKLIST_144_SKIP dpi=96`n";expected=$false},
+    @{name='vb5-checklist-dpi144-32';code=77;output="VB_CHECKLIST_144_SKIP dpi=0`n";expected=$false},
+    @{name='vb5-checklist-dpi144-32';code=77;output="VB_CHECKLIST_144_SKIP dpi=96 extra`n";expected=$false},
+    @{name='other';code=2;output='PRIVATE_DESKTOP_CREATE_FAIL error=5';expected=$true},
+    @{name='other';code=2;output='PRIVATE_DESKTOP_CREATE_FAIL error=6';expected=$false}
+)
+foreach($case in $skipCases){
+    if ((Test-PackageCaseSkip -Name $case.name -ExitCode $case.code -Output $case.output) -ne $case.expected) {throw "Invalid skip decision: $($case.name) $($case.code) $($case.output)"}
+}
 Write-Output 'PACKAGE_PLAN PASS default focused unknown duplicate empty missing-required rejected'

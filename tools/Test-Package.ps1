@@ -85,6 +85,12 @@ try{
         (Case 'uac-unit-64' (Join-Path $x64 'uac-unit.exe') @() @('UAC UNIT PASS cases=8'))
     )
     $cases+=@(
+        (Case 'vb5-checklist-dpi144-32' (Join-Path $x86 'core-vb-checklist-dpi144.exe') @($run,(Join-Path $x86 'vb-checklist-fixture/MSVBVM50.dll')) @('VB_CHECKLIST_144_OK bits=32 vb5=1 styled=0 states=4 invalid_geometry=1','VB_CHECKLIST_144_OK bits=32 vb5=1 styled=1 states=4 invalid_geometry=1')),
+        (Case 'vb6-checklist-dpi144-32' (Join-Path $x86 'core-vb-checklist-dpi144.exe') @($run,(Join-Path $x86 'vb-checklist-fixture/MSVBVM60.dll')) @('VB_CHECKLIST_144_OK bits=32 vb5=0 styled=0 states=4 invalid_geometry=1','VB_CHECKLIST_144_OK bits=32 vb5=0 styled=1 states=4 invalid_geometry=1')),
+        (Case 'vb5-checklist-dpi144-64' (Join-Path $x64 'core-vb-checklist-dpi144.exe') @($run,(Join-Path $x64 'vb-checklist-fixture/MSVBVM50.dll')) @('VB_CHECKLIST_144_OK bits=64 vb5=1 styled=0 states=4 invalid_geometry=1','VB_CHECKLIST_144_OK bits=64 vb5=1 styled=1 states=4 invalid_geometry=1')),
+        (Case 'vb6-checklist-dpi144-64' (Join-Path $x64 'core-vb-checklist-dpi144.exe') @($run,(Join-Path $x64 'vb-checklist-fixture/MSVBVM60.dll')) @('VB_CHECKLIST_144_OK bits=64 vb5=0 styled=0 states=4 invalid_geometry=1','VB_CHECKLIST_144_OK bits=64 vb5=0 styled=1 states=4 invalid_geometry=1'))
+    )
+    $cases+=@(
         (Case 'vb-checklist-32' (Join-Path $x86 'core-vb-checklist.exe') @($run,(Join-Path $x86 'vb-checklist-fixture/MSVBVM60.dll')) @('VB_CHECKLIST_OK bits=32 styled=1 selected=1 restored=1 wrong_geometry=1 wrong_source=1 wrong_caller=1 disabled_states=1 mismatched_state_native=1 reentrant_disable_native=1 reentrant_style_native=1 reentrant_reparent_lifecycle=1 system_text=1 unicode_fallback=1 source_font_preserved=1 role_retirement=1 mixed_fallback=1')),
         (Case 'vb-user-edge-32' (Join-Path $x86 'core-vb-user-edge.exe') @($run,(Join-Path $x86 'vb-container-fixture/MSVBVM60.dll')) @('VB_USER_EDGE_OK bits=32 styled=1 edge=1 pixels=1 input=1 role_retire=1 wrong_owner=1 unsupported=1 version=6 restored=1 dormant_reparent=1 initial_unedged=1 reentrant_native=1','VB_USER_LABEL_OK bits=32 label_pixels=','native_preserved=1')),
         (Case 'vb-data-border-32' (Join-Path $x86 'core-vb-data-border.exe') @($run,(Join-Path $x86 'vb-data-fixture/MSVBVM60.dll')) @('VB_DATA_BORDER_OK bits=32 states=4 client_preserved=1 input=1 wrong_owner=1 unsupported=1 reparent=1')),
@@ -298,11 +304,10 @@ try{
                 # product assertion.  Some non-interactive execution hosts
                 # deny only CreateDesktop (5).  Preserve every other exit 2
                 # as a failure: the exact marker is the sole skip contract.
-                $privateDesktopDenied=$entry.process.ExitCode -eq 2 -and
-                    ($out+$err).Contains('PRIVATE_DESKTOP_CREATE_FAIL error=5')
-                $record=@{name=$entry.case.name;exit_code=$entry.process.ExitCode;skipped=[bool]$privateDesktopDenied;command=$entry.case.command;arguments=$entry.case.arguments;seconds=$entry.timer.Elapsed.TotalSeconds};$records.Add($record)
+                $caseSkipped=Test-PackageCaseSkip -Name $entry.case.name -ExitCode $entry.process.ExitCode -Output ($out+$err)
+                $record=@{name=$entry.case.name;exit_code=$entry.process.ExitCode;skipped=[bool]$caseSkipped;command=$entry.case.command;arguments=$entry.case.arguments;seconds=$entry.timer.Elapsed.TotalSeconds};$records.Add($record)
                 $records|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'cases.json')
-                if(!$privateDesktopDenied){
+                if(!$caseSkipped){
                     if($entry.process.ExitCode){throw "Package test failed: $($entry.case.name), exit $($entry.process.ExitCode)"}
                     foreach($marker in $entry.case.markers){if(!($out+$err).Contains($marker)){throw "Missing marker $marker in $($entry.case.name)"}}
                 }
