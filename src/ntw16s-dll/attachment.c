@@ -56,7 +56,7 @@ typedef struct attachment {
     ntw16s_control_protocol *protocol;
 } attachment;
 static _Thread_local ntw16s_creation_scope *current;
-typedef struct static_paint_scope {struct static_paint_scope *previous;attachment *owner;HWND window;BOOL completed;BOOL group_background;int group_state;RECT group_rect;BOOL panel_first;HWND panel_parent;HDC panel_dc;POINT panel_points[3];COLORREF panel_color;} static_paint_scope;
+typedef struct static_paint_scope {struct static_paint_scope *previous;attachment *owner;HWND window;BOOL completed;BOOL group_background;int group_state;RECT group_rect;BOOL panel_first,panel_enabled;HWND panel_parent;HDC panel_dc;POINT panel_points[3];COLORREF panel_color;} static_paint_scope;
 static _Thread_local static_paint_scope *static_paint;
 static _Thread_local ntw16s_static_call *static_call;
 static _Thread_local HHOOK creation_return_hook;
@@ -552,7 +552,7 @@ void ntw16s_panel_polyline(HDC dc,const POINT *points,int count,const void *call
 {
  static_paint_scope *scope=static_paint;attachment *a=scope?scope->owner:NULL;HWND w=scope?scope->window:NULL,parent=w?GetParent(w):NULL;
  HMODULE module=NULL;RECT client={0},clip={0};POINT org={0},view={0};LOGPEN pen={0};DWORD pid=0;
- if(!a||a->detached||!a->panel_frame_candidate||a->panel_frame_retired||lookup(w)!=a||!parent||!IsWindowEnabled(w)||
+ if(!a||a->detached||!a->panel_frame_candidate||a->panel_frame_retired||lookup(w)!=a||!parent||
     (a->panel_frame_parent&&a->panel_frame_parent!=parent)||GetWindowThreadProcessId(w,&pid)!=GetCurrentThreadId()||pid!=GetCurrentProcessId()||
     GetWindowThreadProcessId(parent,NULL)!=GetCurrentThreadId()||
     !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)caller,&module)||
@@ -564,10 +564,10 @@ void ntw16s_panel_polyline(HDC dc,const POINT *points,int count,const void *call
     GetObjectW(GetCurrentObject(dc,OBJ_PEN),sizeof(pen),&pen)!=sizeof(pen)||pen.lopnStyle!=PS_SOLID||pen.lopnWidth.x!=1){if(scope)scope->panel_first=FALSE;return;}
  COLORREF hi=GetSysColor(COLOR_BTNHIGHLIGHT),lo=GetSysColor(COLOR_BTNSHADOW);if(hi==lo){scope->panel_first=FALSE;return;}
  if(points[0].x==0&&points[0].y==client.bottom-1&&points[1].x==0&&points[1].y==0&&points[2].x==client.right-1&&points[2].y==0&&(pen.lopnColor==hi||pen.lopnColor==lo)){
-    scope->panel_first=TRUE;scope->panel_parent=parent;scope->panel_dc=dc;scope->panel_color=pen.lopnColor;memcpy(scope->panel_points,points,sizeof(scope->panel_points));return;}
- if(!scope->panel_first||scope->panel_parent!=parent||scope->panel_dc!=dc||points[0].x!=client.right-1||points[0].y!=0||points[1].x!=client.right-1||points[1].y!=client.bottom-1||points[2].x!=-1||points[2].y!=client.bottom-1||
+    scope->panel_first=TRUE;scope->panel_enabled=IsWindowEnabled(w);scope->panel_parent=parent;scope->panel_dc=dc;scope->panel_color=pen.lopnColor;memcpy(scope->panel_points,points,sizeof(scope->panel_points));return;}
+ if(!scope->panel_first||scope->panel_enabled!=IsWindowEnabled(w)||scope->panel_parent!=parent||scope->panel_dc!=dc||points[0].x!=client.right-1||points[0].y!=0||points[1].x!=client.right-1||points[1].y!=client.bottom-1||points[2].x!=-1||points[2].y!=client.bottom-1||
     !((scope->panel_color==hi&&pen.lopnColor==lo)||(scope->panel_color==lo&&pen.lopnColor==hi))){scope->panel_first=FALSE;return;}
- scope->panel_first=FALSE;int saved=SaveDC(dc);if(!saved)return;
+ scope->panel_first=FALSE;if(scope->panel_enabled!=IsWindowEnabled(w)||GetParent(w)!=parent)return;int saved=SaveDC(dc);if(!saved)return;
  if(SelectObject(dc,GetStockObject(BLACK_PEN))){const POINT *shadow=scope->panel_color==lo?scope->panel_points:points;
     if(draw(dc,shadow,3)&&!a->detached){a->panel_frame_parent=parent;a->panel_frame_verified=TRUE;}}
  RestoreDC(dc,saved);
