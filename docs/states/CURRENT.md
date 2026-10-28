@@ -1002,3 +1002,9 @@ S64 TDBLookupComboBox候选准入：真实x86样本创建时Unicode、随后ANSI
 S64 P156 TDBLookupComboBox按钮有限接入：精确类、同线程/父owner及clientedge、同窗COMBOBOX主题和按钮几何后复用原箭头；真实x86样本实际包按钮289像素变化，绑定键显示选择前后与旧包一致且各变化30像素、正常退出。双宽模型含错误owner、无边框、伪绘制、非组合主题、ACP1252 A/W及换父退役；旧包正例模型双宽失败。首次包因收据失败已废弃，修正后干净包24项16.17秒零skip，assets/system32八摘要及两处双宽模型通过；[证据](../history/M0-T18-S64-P156-dblookup.md)。真实其他编码、DPI、取消、回调、持久化及完整集成未覆盖；提交远端复核待完成，M0/T18/S64开放。
 
 S64 TPopupDataList调查：真实x86样本弹层由主窗拥有，发布包未附着；trace记录lookup的WM_LBUTTONDOWN内同线程创建。scratch在同调用链及root/owner匹配条件下复用网格非客户区，弹层移除前后外框502、滚动条2210、列表客户区0像素变化；附着时点选后绑定键显示与旧版一致并正常退出。滚动输入对照尚不可靠：首版误用WM_NCLBUTTONUP，原版同步按下超时、scratch后续点击失败；改用WM_LBUTTONUP后两版均退出，但原版弹层在释放时关闭而scratch仍打开，不能称行为等价。原型不具备异常安全scope，未改产品或发布；需异步输入、捕获/取消、创建负例及双宽模型。[调查](../history/M0-T18-S64-lookup-popup-investigation.md)。M0/T18/S64开放。
+
+S64 TPopupDataList虚拟滚动补证：GetScrollInfo位置虽保持2，WM_VSCROLL单步使真实列表客户区两版各改变3124像素；异步非客户区按下/客户端释放及线程屏障后又各变化2049像素，前后同阶段两版客户区零差异，释放捕获、后续选择关闭及进程退出正常。仅一次x86消息级比较，thumb、计时、取消、物理输入和其他DPI未覆盖；scratch scope仍不具备异常安全，未改产品或发布。[调查](../history/M0-T18-S64-lookup-popup-investigation.md)。M0/T18/S64开放。
+
+S64 TPopupDataList候选准入：真实x86同owner lookup的鼠标回调内创建主窗拥有弹层；虚拟滚动通知与异步箭头后两版客户区逐像素一致，选择及退出正常。拟仅在已附着的精确lookup回调作用域内识别同进程owner及根窗的TPopupDataList，复用现有非客户区renderer；用系统unwind恢复嵌套作用域，控件销毁、换父后退役，不改列表内容。scratch双宽模型已验证作用域内、外、错误属主及异常后的清理；正式实现需验证生命周期、重入、旧包及故障负例、真实样本、同批包与双发布。键盘创建、thumb、其他DPI及物理输入尚未准入；M0/T18/S64开放。
+
+S64 P158 TPopupDataList有限接入：同线程、owner和根窗、精确lookup鼠标回调创建的弹层复用网格非客户区；嵌套unwind恢复，精确持有源附件并在源销毁、换父或属主变化后退役。真实x86实际包同窗移除外框502/滚动条2210/列表0像素；通知及异步箭头使列表各变化3124/2049像素，旧包与候选同阶段客户区零差异、释放捕获/选择/退出正常。双宽模型覆盖归属、作用域外、属主变化、源销毁及异常；独立双宽嵌套、旧包正例及x86不恢复scope故障负例检出。干净包26项16.98秒零skip，assets/system32八摘要及安装双宽模型通过。[证据](../history/M0-T18-S64-P158-lookup-popup.md)。键盘创建、复用、thumb、计时、取消、真实高DPI及完整集成未覆盖；提交远端复核待完成，M0/T18/S64开放。
