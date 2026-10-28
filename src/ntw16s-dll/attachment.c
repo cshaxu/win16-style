@@ -83,7 +83,7 @@ static _Thread_local bit_draw_scope *bit_current;
 typedef struct status_draw_scope {
     struct status_draw_scope *previous;
     attachment *owner; HWND window; HDC dc; HMODULE native;
-    unsigned epoch,count; BOOL simple; int simple_length; WCHAR simple_text[513]; RECT panes[64]; BOOL pane_text_allowed[64];
+    unsigned epoch,count,text_count; BOOL simple; int simple_length; WCHAR simple_text[513]; RECT panes[64],text_panes[64];
 } status_draw_scope;
 static _Thread_local status_draw_scope *status_current;
 static _Thread_local ntw16s_status_theme_scope *status_theme_current;
@@ -403,7 +403,7 @@ BOOL ntw16s_status_theme_begin(ntw16s_status_theme_scope *t,HDC dc,int part,int 
        (GetLayout(dc)&LAYOUT_RTL) || !GetViewportOrgEx(dc,&origin) || origin.x || origin.y ||
        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) || caller!=s->native)return TRUE;
     from=WindowFromDC(dc);if(s->dc?dc!=s->dc:from!=s->window)return TRUE;
-    for(unsigned i=0;i<s->count;++i){RECT p=s->panes[i];if(s->pane_text_allowed[i] && rect->left>=p.left && rect->left<p.right && rect->right<=p.right && rect->right>rect->left && rect->top<p.bottom && rect->bottom>p.top){pane=TRUE;break;}}
+    for(unsigned i=0;i<s->text_count;++i){RECT p=s->text_panes[i];if(rect->left>=p.left && rect->left<p.right && rect->right<=p.right && rect->right>rect->left && rect->top<p.bottom && rect->bottom>p.top){pane=TRUE;break;}}
     if(!pane || count< -1)return TRUE;
     if(count==-1){count=0;while(count<513 && text[count])++count;}
     if(count<=0 || count>512)return TRUE;
@@ -1011,9 +1011,10 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
             if(count>0 && count<=64 && !a->detached && scope.epoch==a->status_epoch){
                 for(unsigned i=0;i<(unsigned)count;++i){RECT r={0};LRESULT type=SendMessageW(w,SB_GETTEXTLENGTHW,i,0);
                     if(a->detached || scope.epoch!=a->status_epoch)break;
-                    if((HIWORD(type)&~SBT_OWNERDRAW) || !SendMessageW(w,SB_GETRECT,i,(LPARAM)&r))continue;
+                    if((HIWORD(type)&~(SBT_OWNERDRAW|SBT_NOBORDERS)) || !SendMessageW(w,SB_GETRECT,i,(LPARAM)&r))continue;
                     if(a->detached || scope.epoch!=a->status_epoch)break;
-                    scope.pane_text_allowed[scope.count]=HIWORD(type)==0;scope.panes[scope.count++]=r;
+                    if(!(HIWORD(type)&SBT_OWNERDRAW))scope.text_panes[scope.text_count++]=r;
+                    if(!(HIWORD(type)&SBT_NOBORDERS))scope.panes[scope.count++]=r;
                 }
             }
         }

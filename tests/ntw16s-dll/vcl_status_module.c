@@ -144,6 +144,7 @@ static int worker(int argc,WCHAR **argv)
     const UINT native_modes[]={SBT_NOBORDERS,SBT_POPOUT};
     for(unsigned i=0;i<ARRAYSIZE(native_modes);++i){
         status_window=create_status(root);CHECK(status_window&&attached(status_window));
+        SendMessageW(status_window,WM_SETFONT,(WPARAM)GetStockObject(SYSTEM_FONT),TRUE);
         CHECK(SendMessageW(status_window,SB_SETTEXTW,native_modes[i],(LPARAM)L"native"));capture(status_window,dc,bits,styled_pixels);
         CHECK(remove_style(status_window)&&!attached(status_window));capture(status_window,dc,bits,native_pixels);
         CHECK(!memcmp(styled_pixels,native_pixels,sizeof(styled_pixels)));CHECK(DestroyWindow(status_window));status_window=NULL;
