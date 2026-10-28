@@ -720,3 +720,5 @@ S64 P109新版Delphi TSpinEdit编辑区已发布：真实同owner自身WM_PAINT�
 S64准入新版Delphi TSpinButton候选：P109真实双宽144 DPI样本自身绘制期间，目标窗口DC派生缓冲DC上出现OpenThemeData(NULL,button)所获句柄的两个part1背景，随后TEXTGLOW state0绘制；非旧版DrawFrameControl路径。临时观察scope原型双宽各改405像素、原32个暗像素不变；合成上下点击42→43→42及回调一致，按住原型上半区95像素变化，禁用样本另有对照。原型仅scratch，单TLS槽、句柄身份、裁剪、嵌套、退出/重入、同owner负例和原图形全部像素均未证；必须先建立严格范围及生命周期契约，保持输入/箭头和旧版回归，才能进入产品及双发布。[证据](../history/M0-T18-S64-modern-spin-button-investigation.md)。T18/S64开放。
 
 S64新版微调按钮scratch补证：主题四入口引用跟踪与真实按钮双宽正例仍生效、上下点击42→43→42；故意放宽调用模块以隔离主题条件时，BUTTON正例变化、TOOLBAR与基线一致，移除主题校验则双宽TOOLBAR误改。增加入口后静态计49项超过48事务容量，诊断启动失败；仅scratch扩至52后启动成功，尚无直接容量错误码。单DC槽遇嵌套丢外层，16槽修复该正例；跨两次绘制保留DC时又误识别，绑定每次scope代数后双宽旧DC恢复基线、嵌套正例仍有效。该模型不证明同owner应用绘制、失败关闭、scope退出回收/代数回绕/异常；观察器初次因临时动态依赖缺失未启动，静态链接后重测。未改产品。[证据](../history/M0-T18-S64-modern-spin-button-investigation.md)。T18/S64开放。
+
+S64新版微调按钮补证：不依赖观察器标记的scratch候选在真实双宽144 DPI按钮各改变405像素，合成上下点击42→43→42；自有双宽模型通过嵌套DC、跨绘制保留DC、彩色标记及移除，P109旧包双宽在附着断言失败。但同owner同绘制范围的另一张BUTTON主题图也被双宽候选误改，故仍不能安全合入；这是合成负例，不推断真实应用必然触发。异常展开、完整裁剪、主题句柄失败及其他DPI未证；无产品变更。[证据](../history/M0-T18-S64-modern-spin-button-investigation.md)。T18/S64开放。
