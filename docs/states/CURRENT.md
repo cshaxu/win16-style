@@ -960,3 +960,5 @@ S64 TBevel公开接口补查：VCL文档存在FindControl与ControlAtPos对象�
 S64 TSplitter调查：真实DelphiVCL4Python默认alLeft样本的x86裸版及双宽样式版均在父窗DC使用与父窗相同的画刷填充20像素宽区域，未观察到独立边框；探针恢复、自有进程退出。仅为默认单样本，未验证拖动、变体或像素对照，不能将家族列为已实现；[证据](../history/M0-T18-S64-splitter-investigation.md)。无产品改动，M0/T18/S64开放。
 
 S64 TSplitter交互补证：真实VCL双宽裸版及样式版消息级拖动35像素，面板150→185且松开后捕获释放；WM_CANCELMODE和此前Escape尝试均未阻止第二次拖动，不能称取消通过或推断回归。x86 Beveled变体在父窗共享DC调用两次FrameRect，尚不能仅凭几何识别控件。其他方向、物理输入与外观对照未覆盖；[证据](../history/M0-T18-S64-splitter-investigation.md)。无产品改动，M0/T18/S64开放。
+
+S64 Delphi数据控件样本：取得tDBF作者发布的1.3.6演示源码压缩包，simple样本含8个TDBEdit、TDBGrid和TDBNavigator与示例数据，但包内没有EXE，本机PATH及常见目录未发现Delphi编译器；不能当作真实运行证据。后续需合法可运行样本并对私有数据验证原生绘制及绑定；[来源与摘要](../history/M0-T18-S64-data-aware-sample.md)。无产品改动，M0/T18/S64开放。
