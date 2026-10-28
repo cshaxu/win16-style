@@ -56,6 +56,13 @@ int main(int argc, char **argv)
     CHECK(!ntw16s_theme_button_begin(glow).eligible);
     closed(glow,TRUE);CHECK(!ntw16s_theme_glow_end(glow,glow_draw));
 
+    HTHEME combo=(HTHEME)(UINT_PTR)0x2323;ntw16s_theme_ticket co=ntw16s_theme_open_begin();
+    ntw16s_theme_open_end(co,combo,NTW16S_THEME_COMBOBOX);ntw16s_theme_ticket cd=ntw16s_theme_combo_begin(combo);
+    CHECK(cd.eligible && ntw16s_theme_combo_end(combo,cd));CHECK(!ntw16s_theme_button_begin(combo).eligible);
+    closed(combo,TRUE);CHECK(!ntw16s_theme_combo_end(combo,cd));
+    co=ntw16s_theme_open_begin();ntw16s_theme_open_end(co,combo,NTW16S_THEME_COMBOBOX);opened(combo,TRUE);
+    CHECK(!ntw16s_theme_combo_begin(combo).eligible && !ntw16s_theme_button_begin(combo).eligible);closed(combo,TRUE);closed(combo,TRUE);
+
     HTHEME failed = (HTHEME)(UINT_PTR)0x3030;
     opened(failed, TRUE); CHECK(ntw16s_theme_button_begin(failed).eligible);
     closed(failed, FALSE); opened(failed, TRUE);
@@ -83,6 +90,6 @@ int main(int argc, char **argv)
     CHECK(ntw16s_theme_button_begin(safe).eligible);
     for (unsigned i = 0; i < 140; ++i) opened((HTHEME)(UINT_PTR)(0x100000 + i), TRUE);
     CHECK(!ntw16s_theme_button_begin(safe).eligible);
-    puts("THEME_TRACK_OK shared=1 alias=1 failed_close=1 nested=1 overlap=1 capacity=1");
+    puts("THEME_TRACK_OK shared=1 alias=1 combo=1 failed_close=1 nested=1 overlap=1 capacity=1");
     return 0;
 }

@@ -878,3 +878,7 @@ S64 TValueListEditor 调查：作者Delphi XE x86真实样本的 TValueListEdito
 S64 准入 P129 TValueListEditor 内嵌按钮：真实Delphi XE x86/96 DPI 的 TInplaceEditList 在其 WM_PAINT 中调用同owner BUTTON theme part1；只在精确同窗/同线程/同owner及原父窗、BUTTON主题、右缘按钮矩形和正常/按下状态复用现有按钮face，禁用和其他状态回退。真实同窗移除对照按钮254像素、外部0，原省略号黑色12像素保持；样本点击弹窗及输入/撤销均正常。双宽模型覆盖错误父窗/几何、伪绘制、异常、非paint调用、裁剪、按下、禁用和换父；P128及故意忽略禁用负例双宽检出。需干净同批包、真实样本、双发布与远端复核；其他DPI/运行库、物理输入和列表下拉未覆盖。M0/T18/S64开放。
 
 S64 P129 TValueListEditor 内嵌按钮有限适配已交付：真实Delphi XE x86/96 DPI正式包同窗按钮254、外部0像素变化，省略号保留；点击弹窗、输入Z及撤销、捕获释放正常。双宽模型覆盖父窗/几何、伪绘制、异常、外部调用、裁剪、正常/按下、禁用/悬停回退和换父，P128及故意忽略禁用负例均检出；干净同批包25项22.41秒零skip、双发布八摘要和两位置双宽安装模型通过。其他DPI/版本、下拉及物理输入未覆盖。[证据](../history/M0-T18-S64-P129-valuelist-button.md)。M0/T18/S64开放。
+
+S64 准入 P130 TValueListEditor 下拉箭头：真实x86 Delphi XE 96 DPI编辑行使用COMBOBOX主题part1，P129保留现代箭头；Alt+Down打开13项 TPopupListbox，选第2项并向焦点编辑器发送Enter后文字与条目一致、弹层关闭且捕获释放。scratch按主题句柄生命周期和同编辑器WM_PAINT验证复用既有按钮face及原7×9图形，同窗按钮内340、外部0像素变化，箭头63/63匹配原资源。双宽模型覆盖正常、裁剪、非paint调用、禁用/悬停/按下回退；P129及故意反转图形判断负例双宽检出，theme tracker检查句柄关闭及BUTTON别名冲突。拟纳入同S，需同批干净包、真实样本、双发布和远端复核；真实其他DPI、物理输入及弹出列表本身的样式未覆盖。M0/T18/S64开放。
+
+S64 P130 TValueListEditor 下拉箭头有限适配已交付：真实Delphi XE x86/96 DPI正式包同窗按钮340、外部0像素变化，原箭头63/63匹配；13项下拉选第2项、回填一致、弹层关闭和捕获释放正常。双宽模型覆盖剪裁、作用域、原图形及禁用/悬停/按下回退，P129和反转图形负例均检出；theme tracker双宽检查关闭和BUTTON别名。干净同批包27项27.06秒无skip，双发布八摘要及两位置双宽安装模型通过。弹出列表外观、真实其他DPI/版本及物理输入未覆盖。[证据](../history/M0-T18-S64-P130-valuelist-dropdown.md)。M0/T18/S64开放。

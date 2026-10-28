@@ -366,9 +366,16 @@ void ntw16s_bit_theme_frame(HDC dc,int part,const RECT *rect,const RECT *clip,co
             (LPCWSTR)address,&caller) || caller!=s->owner->report_module)return;
     if(win16_style_bitbtn_face(s->window,dc,rect,clip,s->state) && !s->owner->detached)s->owner->bit_verified=TRUE;
 }
-void ntw16s_inplace_button(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address)
+static void inplace_draw(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address,BOOL drop)
 {static_paint_scope *s=static_paint;HMODULE caller=NULL;RECT client;POINT origin;if(!s || !s->owner->inplace_candidate || s->owner->detached || !dc || !r || part!=1 || (state!=1 && state!=3) || !IsWindowEnabled(s->window) || !inplace_identity(s->window,s->owner->inplace_owner,s->owner->inplace_parent) || WindowFromDC(dc)!=s->window || !GetClientRect(s->window,&client) || r->right!=client.right || r->top!=client.top || r->bottom!=client.bottom || r->left<client.left || r->right<=r->left || r->right-r->left>client.bottom-client.top || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) || !GetViewportOrgEx(dc,&origin) || origin.x || origin.y || !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) || caller!=s->owner->inplace_owner)return;
- if(win16_style_bitbtn_face(s->window,dc,r,clip,state==3?ODS_SELECTED:0) && !s->owner->detached)s->owner->inplace_verified=TRUE;}
+ if(drop && state!=1)return;
+ int saved=SaveDC(dc);if(!saved)return;int u=max(1,MulDiv(1,(int)GetDpiForWindow(s->window),96));int left=(r->left+r->right-7*u)/2,top=(r->top+r->bottom-9*u)/2;
+ if(drop && (left<r->left+u || top<r->top+u || left+7*u>r->right-u || top+9*u>r->bottom-u)){RestoreDC(dc,saved);return;}
+ if(clip && IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom)==ERROR){RestoreDC(dc,saved);return;}
+ if(win16_style_bitbtn_face(s->window,dc,r,clip,state==3?ODS_SELECTED:0) && !s->owner->detached){if(drop){win16_style_palette palette;win16_style_default_palette(&palette);SetDCBrushColor(dc,palette.edge);for(int y=0;y<9;y++)for(int x=0;x<7;x++)if(combo_arrow[y][x]=='0'){RECT pixel={left+x*u,top+y*u,left+(x+1)*u,top+(y+1)*u};FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));}}s->owner->inplace_verified=TRUE;}RestoreDC(dc,saved);}
+BOOL ntw16s_inplace_paint(HDC dc){static_paint_scope *s=static_paint;return s && s->owner->inplace_candidate && !s->owner->detached && dc && WindowFromDC(dc)==s->window;}
+void ntw16s_inplace_button(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address){inplace_draw(dc,part,state,r,clip,address,FALSE);}
+void ntw16s_inplace_dropdown(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address){inplace_draw(dc,part,state,r,clip,address,TRUE);}
 static BOOL status_system_module(HMODULE image)
 {
     WCHAR path[MAX_PATH],system[MAX_PATH],winsxs[MAX_PATH];DWORD n;

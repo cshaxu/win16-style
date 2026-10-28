@@ -24,6 +24,8 @@ static void month_font_return(void *p){month_font_borrow *b=p;if(b->saved)Restor
 void ntw16s_status_frame(HDC,const RECT *,const RECT *,const void *);
 void ntw16s_bit_theme_frame(HDC,int,const RECT *,const RECT *,const void *);
 void ntw16s_inplace_button(HDC,int,int,const RECT *,const RECT *,const void *);
+void ntw16s_inplace_dropdown(HDC,int,int,const RECT *,const RECT *,const void *);
+BOOL ntw16s_inplace_paint(HDC);
 void ntw16s_status_text_frame(HDC,const RECT *,UINT,const void *);
 void ntw16s_status_icon_frame(HDC,int,int,int,int,HICON,const void *);
 void ntw16s_status_hooks_enable(void);
@@ -389,6 +391,7 @@ static int theme_kind(LPCWSTR name)
         return NTW16S_THEME_OTHER;
     if(safe[6]==0 && !lstrcmpiW(safe,L"BUTTON"))return NTW16S_THEME_BUTTON;
     if(!ReadProcessMemory(GetCurrentProcess(),name,safe,sizeof(safe),&got) || got!=sizeof(safe))return NTW16S_THEME_OTHER;
+    if(safe[8]==0 && !lstrcmpiW(safe,L"COMBOBOX"))return NTW16S_THEME_COMBOBOX;
     return safe[8]==0 && !lstrcmpiW(safe,L"TEXTGLOW")?NTW16S_THEME_TEXTGLOW:NTW16S_THEME_OTHER;
 }
 static NTW16S_UNWIND_FUNCTION HTHEME WINAPI hook_OpenThemeData(HWND w,LPCWSTR name)
@@ -497,6 +500,7 @@ static BOOL WINAPI hook_DrawEdge(HDC dc,LPRECT rect,UINT edge,UINT flags)
 static HRESULT WINAPI hook_DrawThemeBackground(HTHEME theme,HDC dc,int part,int state,const RECT *rect,const RECT *clip)
 {
     DWORD entry=GetLastError();ntw16s_theme_ticket ticket=ntw16s_theme_button_begin(theme);
+    ntw16s_theme_ticket combo={0};if(ntw16s_inplace_paint(dc))combo=ntw16s_theme_combo_begin(theme);
     ntw16s_theme_ticket glow=ntw16s_theme_glow_begin(theme);
     BOOL textglow=part==1 && state==0 && glow.eligible;
     if(!textglow)ntw16s_modern_spin_theme_begin(dc,rect);
@@ -507,6 +511,7 @@ static HRESULT WINAPI hook_DrawThemeBackground(HTHEME theme,HDC dc,int part,int 
     if(SUCCEEDED(result) && ntw16s_theme_button_end(theme,ticket)){
         ntw16s_inplace_button(dc,part,state,rect,clip,__builtin_return_address(0));
         ntw16s_modern_spin_theme(dc,part,state,rect,clip,__builtin_return_address(0));}
+    if(SUCCEEDED(result) && combo.eligible && ntw16s_theme_combo_end(theme,combo))ntw16s_inplace_dropdown(dc,part,state,rect,clip,__builtin_return_address(0));
     if(SUCCEEDED(result) && part==1 && state==0)ntw16s_status_frame(dc,rect,clip,__builtin_return_address(0));
     if(SUCCEEDED(result))ntw16s_bit_theme_frame(dc,part,rect,clip,__builtin_return_address(0));
     if(SUCCEEDED(result))ntw16s_month_arrow(theme,dc,part,state,rect,clip,__builtin_return_address(0));

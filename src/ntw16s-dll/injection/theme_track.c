@@ -119,5 +119,7 @@ static BOOL theme_end(HTHEME h,ntw16s_theme_ticket t,int kind)
 }
 ntw16s_theme_ticket ntw16s_theme_button_begin(HTHEME h){return theme_begin(h,NTW16S_THEME_BUTTON);}
 BOOL ntw16s_theme_button_end(HTHEME h,ntw16s_theme_ticket t){return theme_end(h,t,NTW16S_THEME_BUTTON);}
+ntw16s_theme_ticket ntw16s_theme_combo_begin(HTHEME h){return theme_begin(h,NTW16S_THEME_COMBOBOX);}
+BOOL ntw16s_theme_combo_end(HTHEME h,ntw16s_theme_ticket t){return theme_end(h,t,NTW16S_THEME_COMBOBOX);}
 ntw16s_theme_ticket ntw16s_theme_glow_begin(HTHEME h){return theme_begin(h,NTW16S_THEME_TEXTGLOW);}
 BOOL ntw16s_theme_glow_end(HTHEME h,ntw16s_theme_ticket t){return theme_end(h,t,NTW16S_THEME_TEXTGLOW);}
