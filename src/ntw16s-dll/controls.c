@@ -31,6 +31,7 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include "injection/unwind.h"
 #include <commctrl.h>
 #include <uxtheme.h>
+#include <vssym32.h>
 #include <oleacc.h>
 #include <stdlib.h>
 #include <limits.h>
@@ -831,6 +832,13 @@ static void scroll_arrow(HDC dc,RECT r,const char bits[17][18],const win16_style
             r.left+MulDiv(x+1,r.right-r.left,17),r.top+MulDiv(y+1,r.bottom-r.top,17));
         FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));
     }
+}
+
+void win16_style_month_arrow(HDC dc,const RECT *r,const RECT *clip,int part,int state)
+{if(!dc || !r || r->right<=r->left || r->bottom<=r->top || r->right-r->left>128 || r->bottom-r->top>128 || r->right-r->left!=r->bottom-r->top)return;
+ int saved=SaveDC(dc);if(!saved)return;if(clip && IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom)==ERROR){RestoreDC(dc,saved);return;}
+ win16_style_palette palette;win16_style_default_palette(&palette);const char (*bits)[18]=part==MC_NAVPREV?(state==MCNP_DISABLED?scroll_lfarrowi:state==MCNP_PRESSED?scroll_lfarrowd:scroll_lfarrow):(state==MCNN_DISABLED?scroll_rgarrowi:state==MCNN_PRESSED?scroll_rgarrowd:scroll_rgarrow);
+ scroll_arrow(dc,*r,bits,&palette);RestoreDC(dc,saved);
 }
 
 /* The runtime owns navigation and paints its native bitmap first. This

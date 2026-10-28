@@ -307,3 +307,5 @@ T18 S64 P114：经自身原生COMBOBOX绘制见证及公开协议验证的同运
 已见证的同线程、同所有者 Unicode Delphi `TScrollBox` 可复用经典外框及滚动条；应用负责客户区内容。范围和限制见 [TScrollBox 记录](../history/M0-T18-S64-P123-scrollbox.md)。
 
 已见证的同线程、同所有者 Unicode Delphi `THotKey` 复用经典外框；按键和快捷键状态由原控件负责。范围见 [THotKey 记录](../history/M0-T18-S64-P124-hotkey.md)。
+
+已见证的 Unicode Delphi `TMonthCalendar` 单选控件可在保持原生主题与布局时复用经典翻月箭头；其余日历内容由原控件绘制。范围见 [日历箭头记录](../history/M0-T18-S64-P125-month-arrows.md)。

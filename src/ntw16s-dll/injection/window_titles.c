@@ -20,6 +20,7 @@ void ntw16s_status_text_frame(HDC,const RECT *,UINT,const void *);
 void ntw16s_status_icon_frame(HDC,int,int,int,int,HICON,const void *);
 void ntw16s_status_hooks_enable(void);
 void ntw16s_spin_frame(HDC,const RECT *,UINT,UINT,const void *);
+void ntw16s_month_arrow(HTHEME,HDC,int,int,const RECT *,const RECT *,const void *);
 
 /* The original trampoline leaves are bound privately to this same DLL.
  * No renderer LoadLibrary/GetProcAddress, GUI allocation or binding in DllMain. */
@@ -488,6 +489,7 @@ static HRESULT WINAPI hook_DrawThemeBackground(HTHEME theme,HDC dc,int part,int 
         ntw16s_modern_spin_theme(dc,part,state,rect,clip,__builtin_return_address(0));
     if(SUCCEEDED(result) && part==1 && state==0)ntw16s_status_frame(dc,rect,clip,__builtin_return_address(0));
     if(SUCCEEDED(result))ntw16s_bit_theme_frame(dc,part,rect,clip,__builtin_return_address(0));
+    if(SUCCEEDED(result))ntw16s_month_arrow(theme,dc,part,state,rect,clip,__builtin_return_address(0));
     if(SUCCEEDED(result))ntw16s_group_frame(dc,part,state,rect,clip,NULL,0,0,__builtin_return_address(0),FALSE);
     SetLastError(error);return result;
 }

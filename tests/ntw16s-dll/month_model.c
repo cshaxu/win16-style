@@ -1,0 +1,39 @@
+#define _WIN32_WINNT 0x0A00
+#include <windows.h>
+#include <commctrl.h>
+#include <uxtheme.h>
+#include <commctrl.h>
+#include <uxtheme.h>
+#include <imm.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <setjmp.h>
+#include "ntw16s-dll/injection/unwind.h"
+#define NTW16S_TEST_PROCESS_TIMEOUT 15000
+#include "isolated_process.h"
+#define CHECK(x) do {if(!(x)){fprintf(stderr,"MONTH_MODEL_FAIL line=%d error=%lu %s\n",__LINE__,GetLastError(),#x);return 1;}} while(0)
+typedef BOOL (WINAPI *regfn)(void);typedef HWND (WINAPI *parentfn)(HWND);typedef HWND (WINAPI *createfn)(HWND,BOOL);typedef BOOL (__cdecl *windowfn)(HWND);
+static LRESULT WINAPI foreign_forward(WNDPROC proc,HWND w,UINT msg,WPARAM wp,LPARAM lp){return IsWindowUnicode(w)?CallWindowProcW(proc,w,msg,wp,lp):CallWindowProcA(proc,w,msg,wp,lp);}
+static BOOL exception_seen;
+#ifndef _WIN64
+typedef struct catcher {ntw16s_unwind_record record;jmp_buf saved;} catcher;
+static EXCEPTION_DISPOSITION NTAPI catch_exception(EXCEPTION_RECORD *e,void *frame,CONTEXT *c,void *dispatcher)
+{(void)c;(void)dispatcher;if(!(e->ExceptionFlags&(EXCEPTION_UNWINDING|EXCEPTION_EXIT_UNWIND)) && e->ExceptionCode==0xe0425342u){exception_seen=TRUE;RtlUnwind(frame,NULL,e,NULL);longjmp(((catcher*)frame)->saved,1);}return ExceptionContinueSearch;}
+#else
+static LONG __attribute__((used)) rich_filter(EXCEPTION_POINTERS *e,void *frame)
+{(void)frame;if(e->ExceptionRecord->ExceptionCode==0xe0425342u){exception_seen=TRUE;return EXCEPTION_EXECUTE_HANDLER;}return EXCEPTION_CONTINUE_SEARCH;}
+#endif
+static NTW16S_UNWIND_FUNCTION BOOL test_unwind(HWND w,HDC dc)
+{(void)dc;exception_seen=FALSE;
+#ifndef _WIN64
+ catcher c;c.record.handler=catch_exception;__asm__ __volatile__("movl %%fs:0,%0":"=r"(c.record.previous)::"memory");__asm__ __volatile__("movl %0,%%fs:0"::"r"(&c.record):"memory");if(!setjmp(c.saved))SendMessageW(w,WM_PAINT,0,0);__asm__ __volatile__("movl %0,%%fs:0"::"r"(c.record.previous):"memory");
+#else
+ __asm__ __volatile__(".Lrich_start:\n.seh_handler __C_specific_handler, @except\n.seh_handlerdata\n.long 1\n.rva .Lrich_start,.Lrich_end,rich_filter,.Lrich_end\n.text\n":::"memory");SendMessageW(w,WM_PAINT,0,0);__asm__ __volatile__("nop\n.Lrich_end: nop\n":::"memory");
+#endif
+ return exception_seen;}
+
+static BOOL redraw(HWND w){return RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);}
+static int compare_client(HWND w,windowfn remove){RECT c;CHECK(GetClientRect(w,&c));int width=c.right,height=c.bottom;CHECK(width>0&&height>0&&width<1024&&height<1024);MCGRIDINFO n={.cbSize=sizeof(n),.dwPart=MCGIP_NEXT,.dwFlags=MCGIF_RECT},p={.cbSize=sizeof(p),.dwPart=MCGIP_PREV,.dwFlags=MCGIF_RECT};CHECK(SendMessageW(w,MCM_GETCALENDARGRIDINFO,0,(LPARAM)&n)&&SendMessageW(w,MCM_GETCALENDARGRIDINFO,0,(LPARAM)&p));RECT min0={0},min1={0};CHECK(SendMessageW(w,MCM_GETMINREQRECT,0,(LPARAM)&min0));HDC win=GetDC(w),dc=CreateCompatibleDC(win);CHECK(win&&dc);BITMAPINFO bi={0};bi.bmiHeader.biSize=sizeof(bi.bmiHeader);bi.bmiHeader.biWidth=width;bi.bmiHeader.biHeight=-height;bi.bmiHeader.biPlanes=1;bi.bmiHeader.biBitCount=32;DWORD *bits=NULL;HBITMAP bm=CreateDIBSection(win,&bi,DIB_RGB_COLORS,(void**)&bits,NULL,0);CHECK(bm&&bits);HGDIOBJ old=SelectObject(dc,bm);DWORD *prior=malloc((size_t)width*height*4);CHECK(prior);CHECK(redraw(w)&&BitBlt(dc,0,0,width,height,win,0,0,SRCCOPY));GdiFlush();memcpy(prior,bits,(size_t)width*height*4);CHECK(remove(w));CHECK(redraw(w)&&BitBlt(dc,0,0,width,height,win,0,0,SRCCOPY));GdiFlush();unsigned inside=0,outside=0;for(int y=0;y<height;y++)for(int x=0;x<width;x++)if(prior[y*width+x]!=bits[y*width+x]){if((x>=n.rc.left&&x<n.rc.right&&y>=n.rc.top&&y<n.rc.bottom)||(x>=p.rc.left&&x<p.rc.right&&y>=p.rc.top&&y<p.rc.bottom))inside++;else outside++;}fprintf(stderr,"MONTH_PIXELS arrows=%u other=%u\n",inside,outside);CHECK(inside>0&&outside==0);CHECK(SendMessageW(w,MCM_GETMINREQRECT,0,(LPARAM)&min1)&&!memcmp(&min0,&min1,sizeof(min0)));free(prior);SelectObject(dc,old);CHECK(DeleteObject(bm)&&DeleteDC(dc)&&ReleaseDC(w,win));return 0;}
+static int worker(int argc,WCHAR **argv){ImmDisableIME(0);CHECK(argc==2);HMODULE f=LoadLibraryW(argv[1]),dll=GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");CHECK(f&&dll);regfn reg=(void*)GetProcAddress(f,"FixtureRegister"),unreg=(void*)GetProcAddress(f,"FixtureUnregister");parentfn parent=(void*)GetProcAddress(f,"FixtureParent");createfn create=(void*)GetProcAddress(f,"FixtureCreate");parentfn multi=(void*)GetProcAddress(f,"FixtureMulti");windowfn attached=(void*)GetProcAddress(dll,"Ntw16sWindowAttached"),remove=(void*)GetProcAddress(dll,"Ntw16sWindowRemove");void(WINAPI *raise_paint)(void)=(void*)GetProcAddress(f,"FixtureRaise");void(WINAPI *set_forward)(void*)=(void*)GetProcAddress(f,"FixtureForward");void(WINAPI *set_fake)(BOOL)=(void*)GetProcAddress(f,"FixtureFake");void(WINAPI *change_parent)(HWND)=(void*)GetProcAddress(f,"FixtureChangeParent");CHECK(reg&&unreg&&parent&&create&&multi&&attached&&remove&&raise_paint&&set_forward&&set_fake&&change_parent&&reg());HWND root=CreateWindowW(L"STATIC",L"month model",WS_OVERLAPPEDWINDOW,0,0,430,300,NULL,NULL,GetModuleHandleW(NULL),NULL);CHECK(root);ShowWindow(root,SW_SHOWNA);HWND p=parent(root);CHECK(p);HWND multiple=multi(p);CHECK(multiple&&redraw(multiple)&&!attached(multiple)&&DestroyWindow(multiple));HWND wrong=create(root,FALSE);CHECK(wrong&&redraw(wrong)&&!attached(wrong)&&DestroyWindow(wrong));HWND fake=create(p,TRUE);CHECK(fake&&redraw(fake)&&!attached(fake));set_fake(FALSE);raise_paint();CHECK(test_unwind(fake,NULL));CHECK(!attached(fake));CHECK(redraw(fake));CHECK(attached(fake));CHECK(DestroyWindow(fake));set_forward((void*)foreign_forward);HWND foreign=create(p,FALSE);CHECK(foreign&&redraw(foreign)&&!attached(foreign));set_forward(NULL);CHECK(redraw(foreign)&&attached(foreign)&&DestroyWindow(foreign));HWND alt=CreateWindowW(L"STATIC",L"alt",WS_CHILD|WS_VISIBLE,0,0,300,200,root,NULL,GetModuleHandleW(NULL),NULL);CHECK(alt);HWND stale=create(p,TRUE);CHECK(stale&&redraw(stale)&&!attached(stale));set_fake(FALSE);change_parent(alt);CHECK(redraw(stale)&&GetParent(stale)==alt&&!attached(stale));CHECK(DestroyWindow(stale)&&DestroyWindow(alt));HWND w=create(p,FALSE);CHECK(w&&redraw(w)&&attached(w));SYSTEMTIME a={0},b={0};CHECK(SendMessageW(w,MCM_GETCURSEL,0,(LPARAM)&a));HTHEME original_theme=GetWindowTheme(w);CHECK(original_theme);COLORREF colors[6];for(int i=0;i<6;i++)colors[i]=(COLORREF)SendMessageW(w,MCM_GETCOLOR,i,0);COLORREF changed=RGB(12,34,56);CHECK((COLORREF)SendMessageW(w,MCM_SETCOLOR,MCSC_TITLEBK,changed)==colors[MCSC_TITLEBK]);colors[MCSC_TITLEBK]=changed;CHECK(compare_client(w,remove)==0);CHECK(GetWindowTheme(w)==original_theme);for(int i=0;i<6;i++)CHECK((COLORREF)SendMessageW(w,MCM_GETCOLOR,i,0)==colors[i]);CHECK(SendMessageW(w,MCM_GETCURSEL,0,(LPARAM)&b)&&a.wYear==b.wYear&&a.wMonth==b.wMonth&&a.wDay==b.wDay);CHECK(DestroyWindow(w));CHECK(DestroyWindow(p)&&DestroyWindow(root)&&unreg()&&FreeLibrary(f));puts("MONTH_MODEL_OK multi=1 owner=1 fake=1 caller=1 witness=1 unwind=1 stale=1 date=1 layout=1 colors=1 theme=1 pixels=1 cleanup=1");return 0;}
+int wmain(int argc,WCHAR **argv){return isolated_process(argc,argv,worker);}
