@@ -40,7 +40,7 @@ typedef struct attachment {
     BOOL color_candidate,color_attempted,color_installed;
     BOOL date_candidate,date_attempted,date_installed;
     BOOL status_candidate,status_attempted,status_installed;
-    BOOL rich_candidate,rich_installed,rich_witness; HWND rich_parent; HMODULE rich_owner;
+    BOOL rich_candidate,rich_installed,rich_witness,rich_unicode; HWND rich_parent; HMODULE rich_owner;
     BOOL bit_candidate,bit_verified;
     BOOL group_frame_candidate,group_frame_verified,group_frame_retired; HWND group_frame_parent;
     BOOL panel_frame_candidate,panel_frame_verified,panel_frame_retired; HWND panel_frame_parent;
@@ -62,7 +62,7 @@ typedef struct attachment {
     ntw16s_control_protocol *protocol;
 } attachment;
 static _Thread_local ntw16s_creation_scope *current;
-typedef struct static_paint_scope {struct static_paint_scope *previous;attachment *owner;HWND window;BOOL completed;BOOL group_background;int group_state;RECT group_rect;BOOL panel_first,panel_enabled;HWND panel_parent;HDC panel_dc;POINT panel_points[3];COLORREF panel_color;} static_paint_scope;
+typedef struct static_paint_scope {struct static_paint_scope *previous;attachment *owner;HWND window;ntw16s_vb_paint *owned_paint;void *status_prior,*spin_prior;BOOL completed;BOOL group_background;int group_state;RECT group_rect;BOOL panel_first,panel_enabled;HWND panel_parent;HDC panel_dc;POINT panel_points[3];COLORREF panel_color;} static_paint_scope;
 static _Thread_local static_paint_scope *static_paint;
 static _Thread_local ntw16s_static_call *static_call;
 static _Thread_local HHOOK creation_return_hook;
@@ -843,17 +843,18 @@ static BOOL rich_identity(HWND w,attachment *a)
     return a && !a->detached && IsWindow(w) && parent && parent==a->rich_parent &&
         GetWindowThreadProcessId(w,NULL)==GetCurrentThreadId() && GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() &&
         (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==a->rich_owner && (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==a->rich_owner &&
-        GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TRichEditURL") && (style&WS_CHILD) &&
+        GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,a->rich_unicode?L"TRichEdit":L"TRichEditURL") && (!a->rich_unicode || IsWindowUnicode(w)) && (style&WS_CHILD) &&
         (ex&WS_EX_CLIENTEDGE) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_LAYERED));
 }
 BOOL ntw16s_rich_valid(HWND w)
 {attachment *a=lookup(w);return !a || a->detached || !a->rich_candidate || !a->rich_installed || rich_identity(w,a);}
-void ntw16s_rich_witness(WNDPROC proc,HWND w,UINT msg,const void *address)
+void ntw16s_rich_witness(WNDPROC proc,HWND w,UINT msg,const void *address,BOOL wide)
 {
-    WNDCLASSEXA c={.cbSize=sizeof(c)};HMODULE caller=NULL,rich;
+    WNDCLASSEXA c={.cbSize=sizeof(c)};WNDCLASSEXW cw={.cbSize=sizeof(cw)};HMODULE caller=NULL,rich;
     if(msg!=WM_PAINT || !static_paint || static_paint->window!=w || !static_paint->owner->rich_candidate)return;
     rich=GetModuleHandleW(L"riched20.dll");
-    if(!rich_identity(w,static_paint->owner) || !rich || !GetClassInfoExA(rich,"RichEdit20A",&c) || proc!=c.lpfnWndProc ||
+    if(!rich_identity(w,static_paint->owner) || wide!=static_paint->owner->rich_unicode || !rich ||
+       (wide?(!GetClassInfoExW(rich,L"RichEdit20W",&cw) || proc!=cw.lpfnWndProc):(!GetClassInfoExA(rich,"RichEdit20A",&c) || proc!=c.lpfnWndProc)) ||
        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) ||
        caller!=static_paint->owner->rich_owner)return;
     static_paint->owner->rich_witness=TRUE;
@@ -861,10 +862,10 @@ void ntw16s_rich_witness(WNDPROC proc,HWND w,UINT msg,const void *address)
 static void release(attachment *a)
 {if(!--a->calls && a->detached){win16_style_system_release(a->status_cached_font);ntw16s_vb_fonts_clear(&a->fonts);free(a);}}
 static void static_paint_end(void *data)
-{static_paint_scope *scope=data;static_paint=scope->previous;if(!scope->completed)release(scope->owner);}
-static NTW16S_UNWIND_FUNCTION LRESULT static_paint_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l)
+{static_paint_scope *scope=data;static_paint=scope->previous;if(!scope->completed){if(scope->owned_paint){ntw16s_vb_paint_end(scope->owned_paint);status_current=scope->status_prior;spin_current=scope->spin_prior;}release(scope->owner);}}
+static NTW16S_UNWIND_FUNCTION LRESULT static_paint_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,ntw16s_vb_paint *owned_paint,void *status_prior,void *spin_prior)
 {
-    static_paint_scope scope={.previous=static_paint,.owner=a,.window=w};ntw16s_unwind_scope unwind;LRESULT result;DWORD entry=GetLastError(),error;
+    static_paint_scope scope={.previous=static_paint,.owner=a,.window=w,.owned_paint=owned_paint,.status_prior=status_prior,.spin_prior=spin_prior};ntw16s_unwind_scope unwind;LRESULT result;DWORD entry=GetLastError(),error;
     static_paint=((a->static_candidate || a->scroll_candidate || a->edit_candidate || a->group_button_candidate || a->grid_candidate || a->vcl_toolbar_candidate || a->track_candidate || a->tab_candidate || a->color_candidate || a->date_candidate || a->status_candidate || a->rich_candidate || a->group_frame_candidate || a->panel_frame_candidate) && !a->detached && m==WM_PAINT)?&scope:NULL;
     NTW16S_UNWIND_BEGIN(unwind,static_paint_end,&scope);
     SetLastError(entry);result=DefSubclassProc(w,m,p,l);error=GetLastError();scope.completed=TRUE;
@@ -882,7 +883,7 @@ static NTW16S_UNWIND_FUNCTION LRESULT modern_spin_dispatch(attachment *a,HWND w,
 {
     modern_spin_unwind state={scope,prior,status_prior,paint,a,FALSE,static_paint!=NULL};ntw16s_unwind_scope unwind;
     DWORD entry=GetLastError(),error;LRESULT result;NTW16S_UNWIND_BEGIN(unwind,modern_spin_end,&state);
-    SetLastError(entry);result=state.nested?static_paint_dispatch(a,w,m,p,l):DefSubclassProc(w,m,p,l);
+    SetLastError(entry);result=state.nested?static_paint_dispatch(a,w,m,p,l,NULL,NULL,NULL):DefSubclassProc(w,m,p,l);
     error=GetLastError();state.completed=TRUE;NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
 }
 typedef struct color_print_scope {attachment *owner;HRGN clip;BOOL completed,nested;ntw16s_vb_paint *paint;status_draw_scope *status_prior;spin_draw_scope *spin_prior;} color_print_scope;
@@ -896,7 +897,7 @@ static NTW16S_UNWIND_FUNCTION LRESULT color_print_dispatch(attachment *a,HWND w,
     color_print_scope scope={a,clip,FALSE,static_paint!=NULL,paint,status_prior,spin_prior};ntw16s_unwind_scope unwind;
     DWORD entry=GetLastError(),error;LRESULT result;
     NTW16S_UNWIND_BEGIN(unwind,color_print_end,&scope);
-    SetLastError(entry);result=scope.nested?static_paint_dispatch(a,w,m,p,l):DefSubclassProc(w,m,p,l);
+    SetLastError(entry);result=scope.nested?static_paint_dispatch(a,w,m,p,l,NULL,NULL,NULL):DefSubclassProc(w,m,p,l);
     error=GetLastError();scope.completed=TRUE;NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
 }
 typedef struct status_print_unwind {attachment *owner;ntw16s_vb_paint *paint;status_draw_scope *prior;spin_draw_scope *spin_prior;BOOL completed,nested;} status_print_unwind;
@@ -904,7 +905,7 @@ static void status_print_end(void *data)
 {status_print_unwind *s=data;if(!s->completed){ntw16s_vb_paint_end(s->paint);status_current=s->prior;spin_current=s->spin_prior;if(!s->nested)release(s->owner);}}
 static NTW16S_UNWIND_FUNCTION LRESULT status_print_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,ntw16s_vb_paint *paint,status_draw_scope *prior,spin_draw_scope *spin_prior)
 {status_print_unwind state={a,paint,prior,spin_prior,FALSE,static_paint!=NULL};ntw16s_unwind_scope unwind;DWORD entry=GetLastError(),error;LRESULT result;
- NTW16S_UNWIND_BEGIN(unwind,status_print_end,&state);SetLastError(entry);result=state.nested?static_paint_dispatch(a,w,m,p,l):DefSubclassProc(w,m,p,l);error=GetLastError();state.completed=TRUE;NTW16S_UNWIND_END(unwind);SetLastError(error);return result;}
+ NTW16S_UNWIND_BEGIN(unwind,status_print_end,&state);SetLastError(entry);result=state.nested?static_paint_dispatch(a,w,m,p,l,NULL,NULL,NULL):DefSubclassProc(w,m,p,l);error=GetLastError();state.completed=TRUE;NTW16S_UNWIND_END(unwind);SetLastError(error);return result;}
 /* The application owns owner-drawn swatches and text. Only the documented
  * native button rectangle is eligible for post-paint chrome. */
 static BOOL color_identity(HWND w,attachment *a,COMBOBOXINFO *info)
@@ -1069,7 +1070,7 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     else if(print_clip)result=color_print_dispatch(a,w,m,p,l,print_clip,&paint,prior,spin_prior);
     else if(a->modern_spin && spin_message)result=modern_spin_dispatch(a,w,m,p,l,&spin_scope,spin_prior,prior,&paint);
     else if(static_paint || ((a->static_candidate || a->scroll_candidate || a->edit_candidate || a->group_button_candidate || a->grid_candidate || a->vcl_toolbar_candidate || a->track_candidate || a->tab_candidate || a->color_candidate || a->date_candidate || a->status_candidate || a->rich_candidate || a->group_frame_candidate || a->panel_frame_candidate) && !a->detached && m==WM_PAINT))
-        result=static_paint_dispatch(a,w,m,p,l);
+        result=static_paint_dispatch(a,w,m,p,l,&paint,prior,spin_prior);
     else result=DefSubclassProc(w,m,p,l);
     if(status || color)status_error=GetLastError();
     ntw16s_vb_paint_end(&paint);
@@ -1429,7 +1430,8 @@ static BOOL install_created(HWND w,DWORD original_style)
         date_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TDateTimePicker") &&
             RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TDateTimePicker");
     }
-    BOOL rich_candidate=ready && class_is(w,L"TRichEditURL") && owner && GetParent(w) &&
+    BOOL rich_unicode=class_is(w,L"TRichEdit");
+    BOOL rich_candidate=ready && (rich_unicode || class_is(w,L"TRichEditURL")) && owner && GetParent(w) &&
         (HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==owner && (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE);
     BOOL vb_user_edge=vb_user_edge_role(w,GetParent(w));
     BOOL vb_data_edge=vb_data_role(w,GetParent(w));
@@ -1453,7 +1455,7 @@ static BOOL install_created(HWND w,DWORD original_style)
     }
     a=calloc(1,sizeof(*a));
     if(!a){ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    a->calls=1;a->rich_candidate=rich_candidate;a->rich_parent=GetParent(w);a->rich_owner=owner;a->group_frame_candidate=group_frame_candidate;a->panel_frame_candidate=panel_frame_candidate;a->vb_user_candidate=vb_user_edge;a->vb_data_candidate=vb_data_edge;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;a->status=status;a->spin=spin;a->modern_spin=spin&&modern_spin_shape(w);a->static_candidate=static_candidate;
+    a->calls=1;a->rich_unicode=rich_unicode;a->rich_candidate=rich_candidate;a->rich_parent=GetParent(w);a->rich_owner=owner;a->group_frame_candidate=group_frame_candidate;a->panel_frame_candidate=panel_frame_candidate;a->vb_user_candidate=vb_user_edge;a->vb_data_candidate=vb_data_edge;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;a->status=status;a->spin=spin;a->modern_spin=spin&&modern_spin_shape(w);a->static_candidate=static_candidate;
     a->scroll_candidate=scroll_candidate;a->scroll_parent=GetParent(w);a->edit_candidate=edit_candidate;a->link_candidate=edit_candidate && class_is(w,L"TLinkLabel");a->combo_candidate=edit_candidate && class_is(w,L"TComboBox");a->combo_parent=GetParent(w);a->combo_original_type=original_style&3;a->spinedit_candidate=edit_candidate && class_is(w,L"TSpinEdit");a->group_button_candidate=group_button_candidate;a->grid_candidate=grid_candidate;a->vcl_toolbar_candidate=vcl_toolbar_candidate;a->vcl_toolbar_owner=owner;a->vcl_toolbar_parent=GetParent(w);a->grid_owner=owner;a->grid_parent=GetParent(w);a->edit_original_style=original_style;a->track_candidate=track_candidate;a->tab_candidate=tab_candidate;a->tab_parent=GetParent(w);a->color_candidate=color_candidate;a->date_candidate=date_candidate;a->status_candidate=status_candidate;a->bit_candidate=bit_candidate;
     if(report || tree || a->file_owner || a->button_owner || a->checklist || a->bit_candidate){a->report_window=w;a->tree=tree;
         a->report_module=(a->file_owner || a->button_owner || a->bit_candidate)?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}

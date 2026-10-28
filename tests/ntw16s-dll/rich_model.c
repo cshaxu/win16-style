@@ -12,7 +12,7 @@
 #include "isolated_process.h"
 #define CHECK(x) do {if(!(x)){fprintf(stderr,"RICH_MODEL_FAIL line=%d error=%lu %s\n",__LINE__,GetLastError(),#x);return 1;}} while(0)
 typedef BOOL (WINAPI *regfn)(void);typedef HWND (WINAPI *parentfn)(HWND);typedef HWND (WINAPI *createfn)(HWND,BOOL);typedef BOOL (__cdecl *windowfn)(HWND);
-static LRESULT WINAPI foreign_forward(WNDPROC proc,HWND w,UINT msg,WPARAM wp,LPARAM lp){return CallWindowProcA(proc,w,msg,wp,lp);}
+static LRESULT WINAPI foreign_forward(WNDPROC proc,HWND w,UINT msg,WPARAM wp,LPARAM lp){return IsWindowUnicode(w)?CallWindowProcW(proc,w,msg,wp,lp):CallWindowProcA(proc,w,msg,wp,lp);}
 static BOOL exception_seen;
 #ifndef _WIN64
 typedef struct catcher {ntw16s_unwind_record record;jmp_buf saved;} catcher;

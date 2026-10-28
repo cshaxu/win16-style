@@ -222,14 +222,15 @@ VB_TEXT_HOOK(TextOutW,BOOL,(HDC dc,int x,int y,LPCWSTR text,int count),(dc,x,y,t
 
 #undef VB_TEXT_HOOK
 
-void ntw16s_rich_witness(WNDPROC,HWND,UINT,const void *);
+void ntw16s_rich_witness(WNDPROC,HWND,UINT,const void *,BOOL);
 static __typeof__(&CallWindowProcA) real_CallWindowProcA;
 static LRESULT WINAPI hook_CallWindowProcA(WNDPROC proc,HWND w,UINT message,WPARAM wp,LPARAM lp)
-{DWORD entry=GetLastError();ntw16s_rich_witness(proc,w,message,__builtin_return_address(0));SetLastError(entry);return real_CallWindowProcA(proc,w,message,wp,lp);}
+{DWORD entry=GetLastError();ntw16s_rich_witness(proc,w,message,__builtin_return_address(0),FALSE);SetLastError(entry);return real_CallWindowProcA(proc,w,message,wp,lp);}
 static __typeof__(&CallWindowProcW) real_CallWindowProcW;
 static NTW16S_UNWIND_FUNCTION LRESULT WINAPI hook_CallWindowProcW(WNDPROC proc,HWND w,UINT message,WPARAM wp,LPARAM lp)
 {
     ntw16s_static_call call;ntw16s_unwind_scope unwind;LRESULT result;DWORD entry=GetLastError(),error;
+    ntw16s_rich_witness(proc,w,message,__builtin_return_address(0),TRUE);
     if(!ntw16s_static_call_begin(&call,proc,w,message,__builtin_return_address(0)) && !ntw16s_static_call_suspend(&call)){
         SetLastError(entry);return real_CallWindowProcW(proc,w,message,wp,lp);
     }

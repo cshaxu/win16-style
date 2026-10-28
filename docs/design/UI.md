@@ -302,4 +302,4 @@ T18 S64 P114：经自身原生COMBOBOX绘制见证及公开协议验证的同运
 
 普通已见证 Delphi TStatusBar 多分区的 ASCII 文字可复用 System 字体租约；普通无边框分区的 ASCII 文字也可复用该租约，但不绘制分区边框；未知、自绘和非 ASCII 角色保留原生文字。图标与应用字体句柄保持。[验证范围](../history/M0-T18-S64-P120-status-noborder.md)。
 
-已见证的同线程、同所有者 Delphi `TRichEditURL` 可复用经典外框与滚动条；富文本内容、格式和字体由原控件负责。范围及回退见 [Rich Edit 记录](../history/M0-T18-S64-P121-rich-edit.md)。
+已见证的同线程、同所有者 Delphi `TRichEditURL` 和 Unicode `TRichEdit` 可复用经典外框与滚动条；富文本内容、格式和字体由原控件负责。范围及回退见 [ANSI Rich Edit 记录](../history/M0-T18-S64-P121-rich-edit.md)和 [Unicode Rich Edit 记录](../history/M0-T18-S64-P122-rich-unicode.md)。

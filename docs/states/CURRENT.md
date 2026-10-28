@@ -822,3 +822,7 @@ S64 Rich Edit双宽前实验：x86自有DoubleKiller帮助页经同owner RichEdi
 S64 准入 P121 真实Delphi RichEditURL外框及滚动条：真实DoubleKiller x86/96 DPI控件自身WM_PAINT同owner经CallWindowProcA转发注册RichEdit20A；无插桩候选中外缘及滚动条变化、客户区像素不变，格式/选择/事件掩码/文本长度保留，下箭头0→16并释放捕获、行滚动0→3→0与原生一致。自有双宽模型通过错owner、错调用者、假绘制、每帧见证、格式选择、滚动、异常及换父/去边框退役；故意移除每帧见证重置的双宽负例均错误接入并被检出。拟加入受限ANSI见证、复用现有外框与滚动条，不接管富文本内容；须同批双宽干净包、实际包和真实样本、钩子容量/回滚及双发布。M0/T18/S64保持开放。
 
 S64 P121 Delphi RichEditURL外框及滚动条已交付：真实DoubleKiller x86/96 DPI同owner ANSI RichEdit20A绘制见证后接入；实际包客户区0像素变化、外缘1898及其他非客户区4573像素变化，格式/选择/滚动保持、下箭头0→16并释放捕获。双宽模型覆盖错误owner/调用者、假/过期见证、重入异常、换父/边框变化、链接通知原生对照、长文本拖动及客户像素；旧包及取消见证重置的双宽负例被检出。历史钩子容量测试修至既有56上限，双宽验证第57拒绝和回滚；干净同批包23项22.17秒零skip，双发布八摘要及两位置双宽安装测试通过。其他RichEdit类/版本/DPI、物理输入和完整IME/全集未覆盖。[证据](../history/M0-T18-S64-P121-rich-edit.md)。M0/T18/S64开放。
+
+S64 准入 P122 标准Unicode Delphi TRichEdit：作者Delphi XE示例x86/96 DPI真实TRichEdit经CallWindowProcW转发注册RichEdit20W，P121未附着；scratch候选复用现有外框/滚动条，真实样本客户区零像素差异、格式/选择保持，样式启用时字符插入及撤销恢复全文。首次错误使用创建期ANSI编码筛选导致已支持DoubleKiller漏接，已修正并由两种编码模型及真实样本复测。x64 Unicode异常模型暴露已有WM_PAINT异常时VB绘制TLS未归还；scratch在拥有该绘制作用域的异常清理中恢复，双宽ANSI/Unicode模型通过，故意移除清理x64负例访问冲突。拟将两项修复一起纳入当前S；须双宽干净同批包、异常/控件回归、真实样本、双发布及远端复核，当前未发布。M0/T18/S64开放。
+
+S64 P122 Unicode Delphi TRichEdit 外框及滚动条已交付：真实 x86 Delphi XE 样本的 Unicode 绘制见证后接入，对照外缘变化812像素、客户区0像素；附着时编辑/撤销、格式、选择和事件掩码保持。真实 DoubleKiller ANSI 行为复测通过。修复 x64 绘制异常后 VB TLS 作用域未恢复，定向负例重现访问冲突；双宽 ANSI/Unicode 模型及共享绘制回归通过。干净同批包25项14.30秒无skip，双发布八摘要一致、两个位置双宽安装模型通过；其他版本/DPI、物理输入、完整IME及全集未覆盖。[证据](../history/M0-T18-S64-P122-rich-unicode.md)。M0/T18/S64开放。
