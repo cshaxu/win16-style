@@ -18,18 +18,18 @@ int main(void)
     CHECK(!ntw16s_hooks_attach(&real_id,(void *)replacement));
     CHECK(real_id()!=0x42424242u && GetCurrentProcessId()==actual);
     ntw16s_hooks_abort();CHECK(real_id==initial && real_id()==actual);
-    /* A native patch transaction must reject slot49 and roll back all48
+    /* A native patch transaction must reject slot57 and roll back all56
      * owned trampolines without patching any generated target. */
     BYTE *code=VirtualAlloc(NULL,4096,MEM_COMMIT|MEM_RESERVE,PAGE_EXECUTE_READWRITE);CHECK(code);
-    process_id slots[49];for(unsigned i=0;i<49;++i){
+    process_id slots[57];for(unsigned i=0;i<57;++i){
         BYTE *at=code+i*32;for(unsigned j=0;j<32;++j)at[j]=0x90;at[8]=0xb8;
         DWORD value=0x1010u+i;memcpy(at+9,&value,4);at[13]=0xc3;slots[i]=(process_id)(at+8);
     }
     CHECK(FlushInstructionCache(GetCurrentProcess(),code,4096));CHECK(!ntw16s_hooks_begin());
-    for(unsigned i=0;i<48;++i){CHECK(!ntw16s_hooks_attach(&slots[i],(void *)replacement));CHECK(slots[i]()==0x1010u+i);}
-    CHECK(ntw16s_hooks_attach(&slots[48],(void *)replacement)==ERROR_INSUFFICIENT_BUFFER && slots[48]()==0x1040u);
-    ntw16s_hooks_abort();for(unsigned i=0;i<49;++i)CHECK(slots[i]==(process_id)(code+i*32+8) && slots[i]()==0x1010u+i);
-    CHECK(VirtualFree(code,0,MEM_RELEASE));puts("STARTUP_CAPACITY_OK slots=48 overflow49=1 abort_restored=49");
+    for(unsigned i=0;i<56;++i){CHECK(!ntw16s_hooks_attach(&slots[i],(void *)replacement));CHECK(slots[i]()==0x1010u+i);}
+    CHECK(ntw16s_hooks_attach(&slots[56],(void *)replacement)==ERROR_INSUFFICIENT_BUFFER && slots[56]()==0x1048u);
+    ntw16s_hooks_abort();for(unsigned i=0;i<57;++i)CHECK(slots[i]==(process_id)(code+i*32+8) && slots[i]()==0x1010u+i);
+    CHECK(VirtualFree(code,0,MEM_RELEASE));puts("STARTUP_CAPACITY_OK slots=56 overflow57=1 abort_restored=57");
     CHECK(!ntw16s_hooks_begin());
     CHECK(!ntw16s_hooks_attach(&real_id,(void *)replacement));
     CHECK(!ntw16s_hooks_commit());
