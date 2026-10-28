@@ -1354,5 +1354,21 @@
     },
     "limits": "No actual DAO3.5, record navigation, normal sample exit, VB5 Data, other DPI, high contrast or physical input. Private scratch prototype and surrogate are not packaged; original graphic resources and ABI unchanged.",
     "change_review": "Production sources +49/-1 (attachment, controls, header, interception); test and CMake changes separate. Search rg -n \"StretchBlt|vb_data|scroll_glyph\" src/ntw16s-dll: existing font uses retain original paths; the only new interception delegates to original first and preserves its result/error; exact Data role routes to existing original glyph assets."
+  },
+  "vb6_bound_data_p51": {
+    "sample": "John Connell Publishers VB6 example, original executable SHA256 1c978860e457d09888eac39953075374f526dfdd6513e347018f61cc22932323, source fixed at https://github.com/Apress/beg-VB-6-db-programming/tree/161cdafe6ae36971ce0456f5ea7a04601fc14c3e/BegDB/Chapter6 . Author license https://github.com/Apress/beg-VB-6-db-programming/blob/161cdafe6ae36971ce0456f5ea7a04601fc14c3e/LICENSE.txt permits personal use with notice and restricts commercial/educational reuse; no sample code or binary is distributed.",
+    "private_fixture": "Research copy changes exactly two UTF-16 occurrences of C:\\BegDB\\Biblio.mdb to equal-length .\\Data01\\Biblio.mdb and adds an activation manifest; resulting exe SHA256 3d46e6384cfd8d458031059f636160c17ff25eeedb4be6fddaf9bb3f85013f92. Its exact author notice accompanies each copy. Signed MSCOMCTL and private DAO3.6 compatibility bridge/DAO3.5 type library/VB5DB are research-only, not installed or redistributed.",
+    "database": "Private Biblio copy from https://github.com/joncampbell123/windows_sdk_collection/blob/d2552b4753e8bbd7d2b9193c555120543d8c248e/win/win9xnt.vs60/VB98/BIBLIO.MDB SHA256 dfb0194a5b9d7986d5a5ce2ca86567c245ebb97a3792dd1142b1327a077b599c before and after each owned process. Source archive is a mirror, not a claim of a signed download.",
+    "method": "Native probe tests/integration/vb_intrinsic.c vb6-bound-data, orchestrated by tools/Test-Vb6-BoundData.ps1. Script validates fixed source hashes, copies all inputs including notice into fresh owned build directory, runs isolated bare and styled processes with bounded timeout, verifies data hash after each, no global registration or user database. Missing fixture returns BOUND_DATA_SKIP exit 2; altered binary is rejected before a process is launched.",
+    "result": "Actual bare, prior release and P50/P51 styled x86 MSVBVM60 sample: bound ID first 1, next 2, last 727, previous 726, first restored 1; all exited normally with zero processes. Previous vs P50 real Data image: 1409 button pixels differ, middle 70x22 caption pixels unchanged. Styled loaded candidate DLL absolute path confirmed. Synthetic messages, not physical input.",
+    "negative": "Old observer failed before markers on unrelated cross-process WM_GETTEXT assertion, so this is only a test-harness negative, not evidence of a product navigation regression. Missing fixture skip and changed-binary rejection verified.",
+    "delivery": "Clean same-snapshot x86/x64 build and 12 focused actual-package cases passed, 7.39 seconds, zero skips; actual candidate passed private real sample; rebuilt product hashes changed, eight destination hashes match the tested package; installed assets and system32 each passed native/styled real-data pair.",
+    "sha256": {
+      "demo.exe": "9a790d6617944bf5dc81b93d56b4ee1a3c5648e03aea03114df7a383ebda41b7",
+      "ntw16s32.dll": "ba79ea5ebed77742ba0c06d61c6db0f5583886c6bf9565bec2830d4df21351f2",
+      "ntw16s64.dll": "dc49a1dd44432f0a9fb607baecae064974a15dbd0dfde105afa27fff0b844041",
+      "run16s.exe": "e0644cd9bea1e2ff74981d9bf27ba59905d605cb8e283b1dfe22109707b7ee71"
+    },
+    "limits": "Only one real VB6 x86 app, one 96-DPI layout, hidden control intentionally shown; uses DAO3.6 surrogate rather than real DAO3.5. VB5 Data, physical input, other DPI, full integration and commercial use of the sample are not proven."
   }
 }

@@ -366,8 +366,23 @@ static int worker(int argc,WCHAR **argv){
     BOOL vb6_unedged=!wcscmp(argv[3],L"vb6-user-edge-late");
     BOOL password_verify=!wcscmp(argv[3],L"vb6-password-sample");
     BOOL mdi_verify=!wcscmp(argv[3],L"real-vb-mdi");
-    BOOL inventory=password_verify || vb6_unedged || usercontrol_verify || mdi_verify || real_vb6_sorted_combo || real_vb5_sorted || real_vb5_checklist || real_vb5_picture || graphical || about_print || containers || file_verify || real_graphical || real_checkbox || real_picture || real_vb5_check || real_vb5_custom || close_vb5_squash || real_disabled_picture || !wcscmp(argv[3],L"inventory");
+    BOOL bound_verify=!wcscmp(argv[3],L"vb6-bound-data");
+    BOOL inventory=bound_verify || password_verify || vb6_unedged || usercontrol_verify || mdi_verify || real_vb6_sorted_combo || real_vb5_sorted || real_vb5_checklist || real_vb5_picture || graphical || about_print || containers || file_verify || real_graphical || real_checkbox || real_picture || real_vb5_check || real_vb5_custom || close_vb5_squash || real_disabled_picture || !wcscmp(argv[3],L"inventory");
     CHECK(runtime && dll==styled && EnumChildWindows(form,collect,0) && (inventory?count>0:count>10));
+    if(bound_verify){
+        HWND data=NULL,identity=NULL;unsigned matches=0;WCHAR cls[80],value[128],first[128],second[128],last[128],previous[128];
+        for(unsigned i=0;i<count;i++){CHECK(GetClassNameW(checks[i],cls,80));if(!wcscmp(cls,L"ThunderRT6Data")){data=checks[i];++matches;}
+            if(!wcscmp(cls,L"ThunderRT6TextBox") && !IsWindowEnabled(checks[i]) && vb_control_text(checks[i],value,128) && !wcscmp(value,L"1"))identity=checks[i];}
+        CHECK(matches==1 && data && identity && vb_control_text(identity,first,128));
+        CHECK(SetWindowPos(form,NULL,0,0,0,0,SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE));
+        CHECK(SetWindowPos(data,NULL,5,5,146,28,SWP_NOZORDER|SWP_NOACTIVATE));ShowWindow(data,SW_SHOWNOACTIVATE);
+        CHECK(RedrawWindow(data,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW));RECT client;CHECK(GetClientRect(data,&client) && client.right==140 && client.bottom==22);
+        int positions[4]={client.right-27,client.right-9,26,8};WCHAR *results[4]={second,last,previous,value};
+        for(int i=0;i<4;i++){DWORD_PTR r=0;CHECK(SendMessageTimeoutW(data,WM_LBUTTONDOWN,MK_LBUTTON,MAKELPARAM(positions[i],10),SMTO_ABORTIFHUNG|SMTO_BLOCK,2000,&r));CHECK(SendMessageTimeoutW(data,WM_LBUTTONUP,0,MAKELPARAM(positions[i],10),SMTO_ABORTIFHUNG|SMTO_BLOCK,2000,&r));CHECK(vb_control_text(identity,results[i],128));printf("BOUND_NAV step=%d bound_id=%ls\n",i,results[i]);}
+        CHECK(wcscmp(first,second) && wcscmp(second,last) && wcscmp(last,previous) && !wcscmp(first,value));
+        CHECK(swprintf_s(path,MAX_PATH,L"%ls/data-bound.bmp",scratch)>0);printf("BOUND_NAV_IMAGE hash=%llu\n",(unsigned long long)capture(data,path,FALSE));
+        printf("BOUND_NAV_OK first=%ls next=%ls last=%ls previous=%ls restored=%ls\n",first,second,last,previous,value);
+    }
     if(password_verify){
         HWND pw=NULL;unsigned matches=0;WCHAR cls[80],before[256],after[256],first[MAX_PATH],equal[MAX_PATH],shorter[MAX_PATH];
         for(unsigned i=0;i<count;++i){GetClassNameW(checks[i],cls,ARRAYSIZE(cls));
