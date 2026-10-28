@@ -696,3 +696,5 @@ S64范围补证：授权环境绕过沙箱私有桌面错误5；修正scratch x8
 S64 MediaPlayer范围负例：scratch仅在目标绘制scope和目标DC派生的缓冲DC生效时，双宽按钮截图各变化11465像素、范围外伪图五点不变；但同scope、同源DC的伪图五点双宽均被误改，证明范围和DC不足。追加调用模块与窗口类模块一致过滤后，真实按钮仍变化11465像素、不同模块伪图五点不变；该负例来自观察DLL，不证明应用和运行库同模块时安全。单TLS DC槽、主题身份、重入、裁剪及状态均未达产品门槛，未改产品或发布。[证据](../history/M0-T18-S64-delphi-mediaplayer-investigation.md)。T18/S64开放。
 
 S64 MediaPlayer同模块负例及主题来源：自有C模型中窗口类、绘制调用同属一个EXE，精确控件类名、scope、派生DC、34x40及BUTTON part/state都匹配，双宽过滤原型仍误改五个采样点；该模型不代表真实Delphi必有同路径应用绘制。真实双宽样本直接记录OpenThemeData(NULL,button)返回句柄与观测到的45次part-1绘制一致；共享引用及其他打开API寿命仍未覆盖。探针正常退出清理；无产品/二进制变更。[证据](../history/M0-T18-S64-delphi-mediaplayer-investigation.md)。T18/S64开放。
+
+S64 MediaPlayer公开可访问性调查：真实144 DPI Delphi样本经当前P93包双宽启动，MSAA AccessibleObjectFromWindow/get_accChildCount均S_OK但子数0；独立UIA客户端ElementFromHandle/FindAll(TreeScope_Children)/Length也均S_OK、子数0，故当前样本无法从这两套接口获取九按钮的公开边界和状态。自有目标/启动器均零退出且作业清空，临时观察IAT恢复；不外推其他版本，未改产品。[证据](../history/M0-T18-S64-delphi-mediaplayer-investigation.md)。T18/S64开放。
