@@ -12,6 +12,13 @@
 #include "ntw16s-dll/win16_style.h"
 #include <wchar.h>
 #include <uxtheme.h>
+#include <vssym32.h>
+#include "ntw16s-dll/font.h"
+#include "ntw16s-dll/month_text.h"
+HFONT ntw16s_month_text_borrow(HTHEME,HDC,int,int,DWORD,DWORD,const RECT *,const void *);
+BOOL ntw16s_month_text_room(HTHEME,HDC,int,int,DWORD,DWORD,const RECT *,int,const void *);
+typedef struct month_font_borrow {HDC dc;int saved;HFONT font;} month_font_borrow;
+static void month_font_return(void *p){month_font_borrow *b=p;if(b->saved)RestoreDC(b->dc,b->saved);win16_style_system_release(b->font);}
 
 /* Private, synchronous coordinator scope; not part of the public ABI. */
 void ntw16s_status_frame(HDC,const RECT *,const RECT *,const void *);
@@ -341,6 +348,12 @@ static NTW16S_UNWIND_FUNCTION HRESULT WINAPI hook_DrawThemeText(HTHEME theme,HDC
     ntw16s_month_selection_text(theme,dc,part,state,rect,flags,__builtin_return_address(0));
     ntw16s_status_text_frame(dc,rect,flags,__builtin_return_address(0));
     BOOL entered=ntw16s_status_theme_begin(&scope,dc,part,state,text,count,flags,rect,__builtin_return_address(0));
+    if(!entered && text){
+        int n=0;BOOL supported=ntw16s_month_text_length(text,count,&n);
+        HFONT font=supported?ntw16s_month_text_borrow(theme,dc,part,state,flags,flags2,rect,__builtin_return_address(0)):NULL;
+        if(font){month_font_borrow borrow={dc,SaveDC(dc),font};BOOL done=FALSE;ntw16s_unwind_scope cleanup;NTW16S_UNWIND_BEGIN(cleanup,month_font_return,&borrow);
+          if(borrow.saved){RECT bounds=*rect,measure=*rect;COLORREF color;HGDIOBJ previous=SelectObject(dc,font);if(SUCCEEDED(GetThemeColor(theme,part,state,TMT_TEXTCOLOR,&color)) && previous && previous!=HGDI_ERROR){SetTextColor(dc,color);SetBkMode(dc,TRANSPARENT);int h=real_DrawTextW(dc,text,n,&measure,flags|DT_CALCRECT);if(h>0 && measure.right-measure.left<=rect->right-rect->left && measure.bottom-measure.top<=rect->bottom-rect->top && ntw16s_month_text_room(theme,dc,part,state,flags,flags2,rect,measure.right-measure.left,__builtin_return_address(0)) && IntersectClipRect(dc,rect->left,rect->top,rect->right,rect->bottom)!=ERROR)done=real_DrawTextW(dc,text,n,&bounds,flags)!=0;}}
+          NTW16S_UNWIND_END(cleanup);if(done){SetLastError(saved);return S_OK;}}}
     if(!entered){SetLastError(saved);return real_DrawThemeText(theme,dc,part,state,text,count,flags,flags2,rect);}
     NTW16S_UNWIND_BEGIN(unwind,ntw16s_status_theme_end,&scope);
     SetLastError(saved);result=real_DrawThemeText(theme,dc,part,state,text,count,flags,flags2,rect);error=GetLastError();

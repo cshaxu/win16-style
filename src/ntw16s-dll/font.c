@@ -218,6 +218,11 @@ HFONT win16_style_menu_font_acquire(UINT dpi)
     return system_acquire(NULL,dpi,FALSE,FALSE);
 }
 
+/* 13/16 of the stock System bitmap, preserving the glyph aspect ratio.
+ * The calendar caller currently admits only its witnessed 96-DPI case. */
+HFONT win16_style_calendar_font_acquire(void)
+{return system_acquire(NULL,78,FALSE,FALSE);}
+
 void win16_style_system_release(HFONT font)
 {
     system_variant **p=&variants;

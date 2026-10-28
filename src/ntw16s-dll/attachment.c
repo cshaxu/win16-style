@@ -7,6 +7,7 @@
 #include "combo_glyph.h"
 #include "injection/unwind.h"
 #include "status_theme.h"
+#include "month_text.h"
 #include <commctrl.h>
 #include <uxtheme.h>
 #include <vssym32.h>
@@ -48,7 +49,7 @@ typedef struct attachment {
     BOOL group_frame_candidate,group_frame_verified,group_frame_retired; HWND group_frame_parent;
     BOOL panel_frame_candidate,panel_frame_verified,panel_frame_retired; HWND panel_frame_parent;
     HMODULE status_witness_owner; HWND status_parent;
-    HFONT status_cached_font,status_cached_source;LOGFONTW status_font_log;TEXTMETRICW status_font_metrics;
+    HFONT month_cached_font;HFONT status_cached_font,status_cached_source;LOGFONTW status_font_log;TEXTMETRICW status_font_metrics;
     int status_font_widths[96];unsigned status_font_borrows;BOOL status_font_invalid;
     DWORD edit_original_style,combo_original_type;
     HMODULE edit_witness_owner,group_button_witness_owner;
@@ -65,7 +66,7 @@ typedef struct attachment {
     ntw16s_control_protocol *protocol;
 } attachment;
 static _Thread_local ntw16s_creation_scope *current;
-typedef struct static_paint_scope {struct static_paint_scope *previous;attachment *owner;HWND window;ntw16s_vb_paint *owned_paint;void *status_prior,*spin_prior;BOOL completed;BOOL month_header_valid;RECT month_header;BOOL month_selected;HTHEME month_theme;HDC month_dc;RECT month_rect,month_clip;BOOL month_has_clip;BOOL group_background;int group_state;RECT group_rect;BOOL panel_first,panel_enabled;HWND panel_parent;HDC panel_dc;POINT panel_points[3];COLORREF panel_color;} static_paint_scope;
+typedef struct static_paint_scope {struct static_paint_scope *previous;attachment *owner;HWND window;ntw16s_vb_paint *owned_paint;void *status_prior,*spin_prior;BOOL completed;BOOL month_header_valid,month_header_known,month_nav_valid;RECT month_header,month_prev,month_next;BOOL month_selected;HTHEME month_theme;HDC month_dc;RECT month_rect,month_clip;BOOL month_has_clip;BOOL group_background;int group_state;RECT group_rect;BOOL panel_first,panel_enabled;HWND panel_parent;HDC panel_dc;POINT panel_points[3];COLORREF panel_color;} static_paint_scope;
 static _Thread_local static_paint_scope *static_paint;
 static _Thread_local ntw16s_static_call *static_call;
 static _Thread_local HHOOK creation_return_hook;
@@ -880,7 +881,9 @@ static NTW16S_UNWIND_FUNCTION void month_header_query(HWND w,static_paint_scope 
 {if(month_query_active)return;ntw16s_unwind_scope unwind;MCGRIDINFO grid={.cbSize=sizeof(grid),.dwPart=MCGIP_CALENDARHEADER,.dwFlags=MCGIF_RECT};
  scope->month_header_valid=FALSE;month_query_active=TRUE;NTW16S_UNWIND_BEGIN(unwind,month_query_end,NULL);
  LRESULT count=SendMessageW(w,MCM_GETCALENDARCOUNT,0,0);
- if(count==1 && static_paint==scope && !scope->owner->detached && rich_identity(w,scope->owner) && SendMessageW(w,MCM_GETCALENDARGRIDINFO,0,(LPARAM)&grid) && static_paint==scope && !scope->owner->detached && rich_identity(w,scope->owner) && grid.rc.right>grid.rc.left && grid.rc.bottom>grid.rc.top){scope->month_header=grid.rc;scope->month_header_valid=TRUE;}
+ if(count==1 && static_paint==scope && !scope->owner->detached && rich_identity(w,scope->owner) && SendMessageW(w,MCM_GETCALENDARGRIDINFO,0,(LPARAM)&grid) && static_paint==scope && !scope->owner->detached && rich_identity(w,scope->owner) && grid.rc.right>grid.rc.left && grid.rc.bottom>grid.rc.top){scope->month_header=grid.rc;scope->month_header_valid=TRUE;scope->month_header_known=TRUE;
+ MCGRIDINFO prev={.cbSize=sizeof(prev),.dwPart=MCGIP_PREV,.dwFlags=MCGIF_RECT},next={.cbSize=sizeof(next),.dwPart=MCGIP_NEXT,.dwFlags=MCGIF_RECT};
+ if(SendMessageW(w,MCM_GETCALENDARGRIDINFO,0,(LPARAM)&prev) && static_paint==scope && !scope->owner->detached && rich_identity(w,scope->owner) && SendMessageW(w,MCM_GETCALENDARGRIDINFO,0,(LPARAM)&next) && static_paint==scope && !scope->owner->detached && rich_identity(w,scope->owner) && prev.rc.right>prev.rc.left && next.rc.right>next.rc.left){scope->month_prev=prev.rc;scope->month_next=next.rc;scope->month_nav_valid=TRUE;}}
  NTW16S_UNWIND_END(unwind);
 }
 void ntw16s_rich_witness(WNDPROC proc,HWND w,UINT msg,const void *address,BOOL wide)
@@ -907,6 +910,14 @@ static BOOL month_draw_identity(static_paint_scope *s,HTHEME theme,HDC dc,const 
 {HMODULE caller=NULL,native=GetModuleHandleW(L"comctl32.dll");return s && s->owner->rich_month && s->owner->rich_witness && !s->owner->detached && dc && native &&
  rich_identity(s->window,s->owner) && GetWindowTheme(s->window)==theme &&
  GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) && caller==native;}
+static BOOL month_text_allowed(HTHEME theme,HDC dc,int part,int state,DWORD flags,DWORD flags2,const RECT *r,const void *address)
+{static_paint_scope *s=static_paint;return s && r && (part==MC_GRIDCELL || part==MC_GRIDCELLUPPER) && state>=0 && state<=7 && flags2==0 && (flags==0x925 || flags==0x926 || flags==0x924) && IsWindowEnabled(s->window) && month_draw_identity(s,theme,dc,address);}
+HFONT ntw16s_month_text_borrow(HTHEME theme,HDC dc,int part,int state,DWORD flags,DWORD flags2,const RECT *r,const void *address)
+{if(!month_text_allowed(theme,dc,part,state,flags,flags2,r,address))return NULL;static_paint_scope *s=static_paint;attachment *a=s->owner;if(GetDpiForWindow(s->window)!=96)return NULL;if(!a->month_cached_font)a->month_cached_font=win16_style_calendar_font_acquire();if(static_paint!=s || !month_text_allowed(theme,dc,part,state,flags,flags2,r,address) || !a->month_cached_font || !win16_style_system_try_retain(a->month_cached_font))return NULL;return a->month_cached_font;}
+BOOL ntw16s_month_text_room(HTHEME theme,HDC dc,int part,int state,DWORD flags,DWORD flags2,const RECT *r,int width,const void *address)
+{static_paint_scope *s=static_paint;if(!month_text_allowed(theme,dc,part,state,flags,flags2,r,address) || !s->month_header_known)return FALSE;
+ if(EqualRect(r,&s->month_header))return s->month_nav_valid && ntw16s_month_title_fits(r,&s->month_prev,&s->month_next,width);
+ return TRUE;}
 void ntw16s_month_header_text(HTHEME theme,HDC dc,int part,int state,const RECT *r,DWORD flags,const void *address)
 {static_paint_scope *s=static_paint;COLORREF text;if(!s || !s->month_header_valid || !IsWindowEnabled(s->window) || part!=MC_GRIDCELL || state!=0 || !r || (flags&DT_CALCRECT) || !EqualRect(r,&s->month_header) ||
  !month_draw_identity(s,theme,dc,address) || FAILED(GetThemeColor(theme,part,state,TMT_TEXTCOLOR,&text)) || text!=RGB(0,0,0))return;
@@ -923,7 +934,7 @@ void ntw16s_month_selection_text(HTHEME theme,HDC dc,int part,int state,const RE
  win16_style_palette palette;win16_style_default_palette(&palette);HBRUSH brush=(HBRUSH)GetStockObject(DC_BRUSH);SetDCBrushColor(dc,palette.active);FillRect(dc,cell,brush);RestoreDC(dc,saved);
 }
 static void release(attachment *a)
-{if(!--a->calls && a->detached){win16_style_system_release(a->status_cached_font);ntw16s_vb_fonts_clear(&a->fonts);free(a);}}
+{if(!--a->calls && a->detached){win16_style_system_release(a->month_cached_font);win16_style_system_release(a->status_cached_font);ntw16s_vb_fonts_clear(&a->fonts);free(a);}}
 static void static_paint_end(void *data)
 {static_paint_scope *scope=data;static_paint=scope->previous;if(!scope->completed){if(scope->owned_paint){ntw16s_vb_paint_end(scope->owned_paint);status_current=scope->status_prior;spin_current=scope->spin_prior;}release(scope->owner);}}
 static NTW16S_UNWIND_FUNCTION LRESULT static_paint_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,ntw16s_vb_paint *owned_paint,void *status_prior,void *spin_prior)
