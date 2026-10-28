@@ -82,7 +82,7 @@ S6为测试侧补证，15项14.12秒、双发布八SHA/安装4项、215远端/20
 | Applicable Rules | M0、C17、GCC、Ninja、ccache；自有隔离实例限时回收 |
 | Verification | 双宽真实owner、原生过程、输入与文本；有实现时模型负例及实际包 |
 | Expected Markers | 经验证原生协议及调用所有权才能接入；未知路径回退 |
-| Asset Needs | 登记build/t18-s62-radio-memo、build/t18-s64-vb-*（含MDI真实样本、私有诊断）、build/t18-s64-vcl-value-survey及build/t18-package/s64-group-frame-*及s64-radio-frame-*、s64-popup-*、s64-panel-*、s64-labeled-edit-*、s64-numberbox-*、s64-list-*、s64-short-*、s64-valuegrid-*及s64-smallgrid-*（同批包与回归），复用合法双宽运行库，结束前提炼证据并安全清理自有scratch |
+| Asset Needs | 登记build/t18-s62-radio-memo、build/t18-s64-vb-*（含MDI真实样本、私有诊断）、build/t18-s64-vcl-value-survey及build/t18-package/s64-group-frame-*及s64-radio-frame-*、s64-popup-*、s64-panel-*、s64-labeled-edit-*、s64-numberbox-*、s64-list-*、s64-short-*、s64-valuegrid-*、s64-smallgrid-*及s64-controlbar-*（同批包与回归），复用合法双宽运行库，结束前提炼证据并安全清理自有scratch |
 | Reporting Requirements | 实际绘制、操作、负例、未覆盖、双发布及远端复核 |
 | Stop Conditions | 无真实所有权或安全内容契约时不按名称猜测 |
 | Exit Criteria | 有证据的有限实现或明确后续接收，实际包交付；T18保持开放 |
@@ -900,3 +900,7 @@ S64 网格外框候选完成干净双宽构建、实际包24项聚焦回归（19
 S64 无滚动条网格候选：P133远端a321631源码、测试、清单及四产物blob已复核。真实DelphiVCL4Python 1.0.7双宽/144 DPI的TStringGrid和TDrawGrid在3×3内容可放下时无滚动条且P133不附着；x86 scratch移除类准入中的滚动条前提但保留公开GetScrollInfo校验，同窗同步重绘/移除后两类各外框1704、客户区0像素变化，字符串数据保持。首轮未对初次附着后的异步重画同步导致TDrawGrid零差异，已纠正并保留不计通过。拟保留精确类、线程、owner、父窗、clientedge及滚动信息校验，覆盖有无滚动条切换、负例和双宽真实样本，需干净包、回归与双发布。M0/T18/S64开放。
 
 S64 无滚动条网格候选已完成双宽干净构建、24项实际包聚焦回归（20.20秒、零skip）、双宽真实样本各类1704/0像素及数据复测，P133双宽负例检出；assets/system32八摘要一致、两处双宽安装模型通过。[证据](../history/M0-T18-S64-P134-small-grid.md)。提交与远端复核待完成；其他版本/DPI、真实输入及完整集成未覆盖。M0/T18/S64开放。
+
+S64 TControlBar候选：P134远端569e4a1及源码、测试、记录、四产物blob已复核。真实x86 DelphiVCL4Python 1.0.7/144 DPI样本中，容器自身WM_NCPAINT以自身窗口DC、完整窗口矩形，由同类owner调用DrawEdge(EDGE_ETCHED,BF_RECT|BF_ADJUST)；内部工具栏带区则使用独立内存DC和不同参数。禁用外凸边的变体使用不同edge。scratch仅在本窗精确作用域和owner见证后复用黑色外框，同窗移除非客户区736、客户区0像素；禁用外凸边变体0变化。拟保留原始DrawEdge及调整后的矩形、裁剪、工具栏内容和操作；先验证双宽真实样本、不同状态、错误owner/DC/调用者/裁剪、重入换父与资源释放，再跑干净包、相邻回归及双发布；未知路径回退。M0/T18/S64开放。
+
+S64 TControlBar候选完成双宽干净构建及28项实际包聚焦回归（19.29秒、零skip）；真实双宽样本默认736/0像素、无外凸边0变化，样式附着期间工具栏点击回调正常；P134双宽负例检出。assets/system32八摘要一致、两处双宽安装模型通过。[证据](../history/M0-T18-S64-P135-controlbar.md)。提交与远端复核待完成；异常展开、进程级GDI、其他版本/DPI、物理输入及完整集成未覆盖。M0/T18/S64开放。
