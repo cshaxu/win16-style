@@ -838,3 +838,5 @@ S64 P123 Delphi Unicode TScrollBox 有限外框及滚动条已交付：真实 x8
 S64 准入 P124 Delphi Unicode THotKey 有限外框：作者 Delphi XE5 真实示例未注册全局快捷键，控件经同owner CallWindowProcW 将 WM_PAINT 和 HKM_GETHOTKEY 转发注册 msctls_hotkey32，临时导入观察已恢复。scratch 复用既有逐帧绘制见证及外框，真实样本同窗客户区0、外框276像素变化；快捷键0441→0651→0441恢复，普通按键消息原生/候选均045a且焦点正确，隔离作业清空。双宽模型验证错误owner、伪绘制、错误调用者、异常恢复、旧见证、角色变化、按键和像素，P123旧包双宽未附着负例检出。须正式双宽构建、相关回归、真实样本、双发布及远端复核；字体策略、应用命令和全局快捷键不改；M0/T18/S64开放。
 
 S64 P124 Delphi Unicode THotKey 有限外框已交付：真实 x86 Delphi XE5 96 DPI 样本同窗客户区0、外框276像素变化；快捷键0441→0651→0441恢复、普通按键消息原生与候选045a一致。双宽模型通过错误owner/调用者、伪绘制、异常及失效见证、角色变化、输入和像素；P123旧包双宽未附着负例检出。干净同批包27项21.80秒无skip，双发布八摘要及两位置双宽安装模型通过；其他版本/DPI、物理输入、IME和完整集成未覆盖。[证据](../history/M0-T18-S64-P124-hotkey.md)。M0/T18/S64开放。
+
+S64 TMonthCalendar 调查：作者 Delphi XE x86/96 DPI 样本原生和 P124 日期2015-11-02→15→02恢复，控件未附着；因其正常关闭会写系统区域设置，仅观察后强制回收自有作业，不能称正常退出。临时观察确认 WM_PAINT/MCM_GETCURSEL 转发注册 SysMonthCal32，导入已恢复。临时窗口主题及六色变更/恢复保留日期，观察到更经典蓝标题，但 MCM_GETMINREQRECT 从225×160变为190×158，可能改变布局；应用自定义颜色、后续 SET/GET、主题恢复、多选和布局须有方案，不将临时配色纳入产品。[调查](../history/M0-T18-S64-monthcalendar-investigation.md)，scratch build/t18-s64-vb-month-survey。M0/T18/S64开放。
