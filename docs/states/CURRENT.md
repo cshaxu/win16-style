@@ -1000,3 +1000,5 @@ S64 查找列表选择补证：发布版及scratch候选在自有x86样本点击
 S64 TDBLookupComboBox候选准入：真实x86样本创建时Unicode、随后ANSI，精确类/同owner父窗及clientedge的scratch候选进入主题绘制，按钮区域289像素变化；选择前后绑定键TDBText区域发布版与候选逐像素一致且自身各有30像素变化，目标正常退出。双宽自有模型验证箭头、ACP文本与换父，旧包双宽缺失附着负例检出。拟独立身份准入，限定已见COMBOBOX主题和同窗作用域，保留其他角色及未知状态；需正式负例、干净双宽同批包、实际样本、相邻回归和双发布，未验证真实非ASCII、其他DPI、键盘取消和完整数据回调。M0/T18/S64开放。
 
 S64 P156 TDBLookupComboBox按钮有限接入：精确类、同线程/父owner及clientedge、同窗COMBOBOX主题和按钮几何后复用原箭头；真实x86样本实际包按钮289像素变化，绑定键显示选择前后与旧包一致且各变化30像素、正常退出。双宽模型含错误owner、无边框、伪绘制、非组合主题、ACP1252 A/W及换父退役；旧包正例模型双宽失败。首次包因收据失败已废弃，修正后干净包24项16.17秒零skip，assets/system32八摘要及两处双宽模型通过；[证据](../history/M0-T18-S64-P156-dblookup.md)。真实其他编码、DPI、取消、回调、持久化及完整集成未覆盖；提交远端复核待完成，M0/T18/S64开放。
+
+S64 TPopupDataList调查：真实x86样本弹层由主窗拥有，发布包未附着；trace记录lookup的WM_LBUTTONDOWN内同线程创建。scratch在同调用链及root/owner匹配条件下复用网格非客户区，弹层移除前后外框502、滚动条2210、列表客户区0像素变化；附着时点选后绑定键显示与旧版一致并正常退出。滚动输入对照尚不可靠：首版误用WM_NCLBUTTONUP，原版同步按下超时、scratch后续点击失败；改用WM_LBUTTONUP后两版均退出，但原版弹层在释放时关闭而scratch仍打开，不能称行为等价。原型不具备异常安全scope，未改产品或发布；需异步输入、捕获/取消、创建负例及双宽模型。[调查](../history/M0-T18-S64-lookup-popup-investigation.md)。M0/T18/S64开放。
