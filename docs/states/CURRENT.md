@@ -816,3 +816,5 @@ S64 P120 普通无边框状态栏文字已交付：双宽真实Delphi 144 DPI样
 S64 富文本控件调查：真实DoubleKiller x86/96 DPI帮助页TRichEditURL未附着、带WS_EX_CLIENTEDGE；公开格式、选择、文本长度和事件掩码在裸版及P120样式版一致。自有实例临时观察已解析CallWindowProcA导入，证实WM_PAINT与EM_GETSEL均转发系统RichEdit20A，导入已恢复，两次目标/启动器退出0、作业空；该EXE原导入无OriginalFirstThunk，按名称观察失败不能算负例。下一步评估新增ANSI绘制见证与仅外框适配，须先核实钩子容量、富文本/链接/滚动和边界；不能改格式或应用内容，未改产品。[调查](../history/M0-T18-S64-rich-edit-investigation.md)。M0/T18/S64开放。
 
 S64 富文本钩子容量静态核查：包含可选DPI入口时当前事务请求52个钩子、上限56；增加一个ANSI入口在静态数量内，但补丁别名、失败回滚与实际性能尚须验证，不以计数代替运行测试。仍无产品变更。
+
+S64 Rich Edit双宽前实验：x86自有DoubleKiller帮助页经同owner RichEdit20A ANSI WM_PAINT见证后，scratch候选显示经典外框及滚动条。统一重绘的移除前后窗口DC对照外缘2376、滚动条区4930像素变化，客户区0变化；格式、选择、长度、事件掩码及滚动状态保持。合成下箭头位置0→16且捕获释放；EM_LINESCROLL首行0→3→0与移除后原生一致，目标/启动器零退出且作业空。首次不对称重绘的标题360像素差异不作为通过证据；WM_VSCROLL单行首行未动、不能算通过。仅x86实验，换父/错误owner/异常/链接交互、双宽模型及正式包尚缺，未改产品或发布。[调查](../history/M0-T18-S64-rich-edit-investigation.md)。M0/T18/S64开放。
