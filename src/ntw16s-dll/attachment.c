@@ -41,7 +41,7 @@ typedef struct attachment {
     BOOL date_candidate,date_attempted,date_installed;
     BOOL status_candidate,status_attempted,status_installed;
     BOOL box_candidate,box_installed; HWND box_parent; HMODULE box_owner;
-    BOOL rich_candidate,rich_installed,rich_witness,rich_unicode; HWND rich_parent; HMODULE rich_owner;
+    BOOL rich_candidate,rich_installed,rich_witness,rich_unicode,rich_hotkey; HWND rich_parent; HMODULE rich_owner;
     BOOL bit_candidate,bit_verified;
     BOOL group_frame_candidate,group_frame_verified,group_frame_retired; HWND group_frame_parent;
     BOOL panel_frame_candidate,panel_frame_verified,panel_frame_retired; HWND panel_frame_parent;
@@ -867,7 +867,7 @@ static BOOL rich_identity(HWND w,attachment *a)
     return a && !a->detached && IsWindow(w) && parent && parent==a->rich_parent &&
         GetWindowThreadProcessId(w,NULL)==GetCurrentThreadId() && GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() &&
         (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==a->rich_owner && (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==a->rich_owner &&
-        GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,a->rich_unicode?L"TRichEdit":L"TRichEditURL") && (!a->rich_unicode || IsWindowUnicode(w)) && (style&WS_CHILD) &&
+        GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,a->rich_hotkey?L"THotKey":a->rich_unicode?L"TRichEdit":L"TRichEditURL") && (!a->rich_unicode || IsWindowUnicode(w)) && (style&WS_CHILD) &&
         (ex&WS_EX_CLIENTEDGE) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_LAYERED));
 }
 BOOL ntw16s_rich_valid(HWND w)
@@ -876,9 +876,9 @@ void ntw16s_rich_witness(WNDPROC proc,HWND w,UINT msg,const void *address,BOOL w
 {
     WNDCLASSEXA c={.cbSize=sizeof(c)};WNDCLASSEXW cw={.cbSize=sizeof(cw)};HMODULE caller=NULL,rich;
     if(msg!=WM_PAINT || !static_paint || static_paint->window!=w || !static_paint->owner->rich_candidate)return;
-    rich=GetModuleHandleW(L"riched20.dll");
+    rich=GetModuleHandleW(static_paint->owner->rich_hotkey?L"comctl32.dll":L"riched20.dll");
     if(!rich_identity(w,static_paint->owner) || wide!=static_paint->owner->rich_unicode || !rich ||
-       (wide?(!GetClassInfoExW(rich,L"RichEdit20W",&cw) || proc!=cw.lpfnWndProc):(!GetClassInfoExA(rich,"RichEdit20A",&c) || proc!=c.lpfnWndProc)) ||
+       (wide?(!GetClassInfoExW(rich,static_paint->owner->rich_hotkey?L"msctls_hotkey32":L"RichEdit20W",&cw) || proc!=cw.lpfnWndProc):(!GetClassInfoExA(rich,"RichEdit20A",&c) || proc!=c.lpfnWndProc)) ||
        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) ||
        caller!=static_paint->owner->rich_owner)return;
     static_paint->owner->rich_witness=TRUE;
@@ -1467,7 +1467,8 @@ static BOOL install_created(HWND w,DWORD original_style)
             RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TDateTimePicker");
     }
     BOOL box_candidate=ready && box_identity(w,owner,GetParent(w));
-    BOOL rich_unicode=class_is(w,L"TRichEdit");
+    BOOL rich_hotkey=class_is(w,L"THotKey");
+    BOOL rich_unicode=rich_hotkey || class_is(w,L"TRichEdit");
     BOOL rich_candidate=ready && (rich_unicode || class_is(w,L"TRichEditURL")) && owner && GetParent(w) &&
         (HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==owner && (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE);
     BOOL vb_user_edge=vb_user_edge_role(w,GetParent(w));
@@ -1492,7 +1493,7 @@ static BOOL install_created(HWND w,DWORD original_style)
     }
     a=calloc(1,sizeof(*a));
     if(!a){ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    a->calls=1;a->box_candidate=box_candidate;a->box_owner=owner;a->box_parent=GetParent(w);a->rich_unicode=rich_unicode;a->rich_candidate=rich_candidate;a->rich_parent=GetParent(w);a->rich_owner=owner;a->group_frame_candidate=group_frame_candidate;a->panel_frame_candidate=panel_frame_candidate;a->vb_user_candidate=vb_user_edge;a->vb_data_candidate=vb_data_edge;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;a->status=status;a->spin=spin;a->modern_spin=spin&&modern_spin_shape(w);a->static_candidate=static_candidate;
+    a->calls=1;a->rich_hotkey=rich_hotkey;a->box_candidate=box_candidate;a->box_owner=owner;a->box_parent=GetParent(w);a->rich_unicode=rich_unicode;a->rich_candidate=rich_candidate;a->rich_parent=GetParent(w);a->rich_owner=owner;a->group_frame_candidate=group_frame_candidate;a->panel_frame_candidate=panel_frame_candidate;a->vb_user_candidate=vb_user_edge;a->vb_data_candidate=vb_data_edge;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;a->status=status;a->spin=spin;a->modern_spin=spin&&modern_spin_shape(w);a->static_candidate=static_candidate;
     a->scroll_candidate=scroll_candidate;a->scroll_parent=GetParent(w);a->edit_candidate=edit_candidate;a->link_candidate=edit_candidate && class_is(w,L"TLinkLabel");a->combo_candidate=edit_candidate && class_is(w,L"TComboBox");a->combo_parent=GetParent(w);a->combo_original_type=original_style&3;a->spinedit_candidate=edit_candidate && class_is(w,L"TSpinEdit");a->group_button_candidate=group_button_candidate;a->grid_candidate=grid_candidate;a->vcl_toolbar_candidate=vcl_toolbar_candidate;a->vcl_toolbar_owner=owner;a->vcl_toolbar_parent=GetParent(w);a->grid_owner=owner;a->grid_parent=GetParent(w);a->edit_original_style=original_style;a->track_candidate=track_candidate;a->tab_candidate=tab_candidate;a->tab_parent=GetParent(w);a->color_candidate=color_candidate;a->date_candidate=date_candidate;a->status_candidate=status_candidate;a->bit_candidate=bit_candidate;
     if(report || tree || a->file_owner || a->button_owner || a->checklist || a->bit_candidate){a->report_window=w;a->tree=tree;
         a->report_module=(a->file_owner || a->button_owner || a->bit_candidate)?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}

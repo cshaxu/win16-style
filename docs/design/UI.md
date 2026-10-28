@@ -305,3 +305,5 @@ T18 S64 P114：经自身原生COMBOBOX绘制见证及公开协议验证的同运
 已见证的同线程、同所有者 Delphi `TRichEditURL` 和 Unicode `TRichEdit` 可复用经典外框与滚动条；富文本内容、格式和字体由原控件负责。范围及回退见 [ANSI Rich Edit 记录](../history/M0-T18-S64-P121-rich-edit.md)和 [Unicode Rich Edit 记录](../history/M0-T18-S64-P122-rich-unicode.md)。
 
 已见证的同线程、同所有者 Unicode Delphi `TScrollBox` 可复用经典外框及滚动条；应用负责客户区内容。范围和限制见 [TScrollBox 记录](../history/M0-T18-S64-P123-scrollbox.md)。
+
+已见证的同线程、同所有者 Unicode Delphi `THotKey` 复用经典外框；按键和快捷键状态由原控件负责。范围见 [THotKey 记录](../history/M0-T18-S64-P124-hotkey.md)。

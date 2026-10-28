@@ -1,16 +1,16 @@
 {
   "schema": 1,
-  "delivery": "M0 T18 S64 P123",
+  "delivery": "M0 T18 S64 P124",
   "stage": "development acceptance; M0/T18/S64 open; focused package tests passed",
   "version": "0.18.0.0",
   "version_contract": "M0 T18; sequential S does not increment T version",
   "package_directory": "assets",
-  "source_snapshot_sha256": "acc3f46123d55cf983a77e7b439e35563257afba0f69162fa8919d51c0c1d993",
+  "source_snapshot_sha256": "2ca220a10cb20e0e71f2af4413c89744a80c1893b79a5cea2dd6ab2d1fb353f6",
   "source_snapshot_format": "SHA256 of the clean build snapshot.json bytes",
   "source_inputs": [
     {
       "path": "CMakeLists.txt",
-      "sha256": "140b266bc11cbad153e014ee3405c544aed998b7ea52d9f823c67a7b0979d35e"
+      "sha256": "b60e138957dd71109d574177b46fcc5934e26231d24f335f9db4edfc54b958ab"
     },
     {
       "path": "LICENSE",
@@ -54,7 +54,7 @@
     },
     {
       "path": "src/ntw16s-dll/attachment.c",
-      "sha256": "06f3ca63ef4de1a1ab342e9e55c5d13291cab43d8e32d50c542408d1c3567d8b"
+      "sha256": "5ba8962894f1cebc23227f3e375c4a7e6c0e361b959e84b9425bbf112dab3fb9"
     },
     {
       "path": "src/ntw16s-dll/attachment.h",
@@ -453,7 +453,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T18",
-      "sha256": "feb46f0c532c8feb4a6fd44498666a1b7fd539f20958872a6c7d425716c11216",
+      "sha256": "b4445f1dd1892547fadee2676a82946cfea6943895034bfcb24777dbc27d718a",
       "imports": [
         "advapi32.dll",
         "kernel32.dll",
@@ -465,7 +465,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T18",
-      "sha256": "494ebefb535bd50ae94d8c3f84ced44f1d49eee0a7b3ae5b8e2572473c71c9da",
+      "sha256": "bef6ea12763d5c250af6785c4e88e917bbaee899650d86d10a968a3dd560a754",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -485,7 +485,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T18",
-      "sha256": "d3f45bc65eccc8bf2484e0db6bd62e2bb8467e9b50463486c9d229d03118ea31",
+      "sha256": "9b1b23ad567d0066dae1341b4e4541be6875e2f81c2fe1bcfbbb2c735bb138d0",
       "imports": [
         "COMCTL32.dll",
         "dwmapi.dll",
@@ -500,7 +500,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T18",
-      "sha256": "33a53dcab50fd1ffde08dc29a4949fe33528de92697130b76c3d8caf75196b47",
+      "sha256": "cff28e018822408b5b7f3dba5ba60173f75e5cd63f39b8be5d86a00f210d9731",
       "imports": [
         "comctl32.dll",
         "comdlg32.dll",
@@ -533,55 +533,57 @@
     ]
   },
   "architecture": "C17, MinGW GCC, Ninja and ccache; three components, four product files; existing ABI retained",
-  "binary_batch_delivery": "M0 T18 S64 P123",
+  "binary_batch_delivery": "M0 T18 S64 P124",
   "verification": {
     "clean_build": {
       "exit_code": 0,
-      "targets": "all",
       "profile": "Focused",
-      "tests": [
-        {
-          "tests": 1,
-          "architecture": "x86",
-          "build_seconds": 44.61688870002399,
-          "passed": 1,
-          "configure_seconds": 5.886723500007065,
-          "test_seconds": 0.5480481999984477,
-          "skipped": []
-        },
-        {
-          "tests": 1,
-          "architecture": "x64",
-          "build_seconds": 51.913129699998535,
-          "passed": 1,
-          "configure_seconds": 6.5124027999991085,
-          "test_seconds": 0.6364020000037272,
-          "skipped": []
-        }
-      ],
+      "status": "passed",
+      "selection": "^core/abi$",
+      "test_jobs": 4,
       "architectures": [
         "x86",
         "x64"
       ],
-      "test_jobs": 4,
-      "build_root": "O:\\repos.hobby\\win16style\\build\\t18-package\\s64-scrollbox-p123-candidate1\\clean-source\\build\\.ninja",
-      "status": "passed",
+      "targets": "all",
       "build_jobs": 8,
-      "selection": "^core/abi$"
+      "tests": [
+        {
+          "build_seconds": 33.42815520000295,
+          "test_seconds": 0.6118872999795713,
+          "passed": 1,
+          "skipped": [],
+          "configure_seconds": 5.145705600007204,
+          "architecture": "x86",
+          "tests": 1
+        },
+        {
+          "build_seconds": 43.71614699999918,
+          "test_seconds": 0.5136754999984987,
+          "passed": 1,
+          "skipped": [],
+          "configure_seconds": 5.207905599992955,
+          "architecture": "x64",
+          "tests": 1
+        }
+      ],
+      "build_root": "O:\\repos.hobby\\win16style\\build\\t18-package\\s64-hotkey-p124-candidate1\\clean-source\\build\\.ninja"
     },
     "actual_package": [
       {
         "status": "passed-focused",
         "cases": 27,
-        "seconds": 22.4289565,
+        "seconds": 21.7955922,
         "skipped": [],
         "sha256": {
-          "demo.exe": "33a53dcab50fd1ffde08dc29a4949fe33528de92697130b76c3d8caf75196b47",
-          "ntw16s32.dll": "494ebefb535bd50ae94d8c3f84ced44f1d49eee0a7b3ae5b8e2572473c71c9da",
-          "ntw16s64.dll": "d3f45bc65eccc8bf2484e0db6bd62e2bb8467e9b50463486c9d229d03118ea31",
-          "run16s.exe": "feb46f0c532c8feb4a6fd44498666a1b7fd539f20958872a6c7d425716c11216"
+          "demo.exe": "cff28e018822408b5b7f3dba5ba60173f75e5cd63f39b8be5d86a00f210d9731",
+          "ntw16s32.dll": "bef6ea12763d5c250af6785c4e88e917bbaee899650d86d10a968a3dd560a754",
+          "ntw16s64.dll": "9b1b23ad567d0066dae1341b4e4541be6875e2f81c2fe1bcfbbb2c735bb138d0",
+          "run16s.exe": "b4445f1dd1892547fadee2676a82946cfea6943895034bfcb24777dbc27d718a"
         },
         "requested_cases": [
+          "hotkey-model-32",
+          "hotkey-model-64",
           "box-model-32",
           "box-model-64",
           "rich-model-32",
@@ -596,8 +598,6 @@
           "vcl-modern-spin-64",
           "vcl-status-pane-font-32",
           "vcl-status-pane-font-64",
-          "vcl-scroll-module-32",
-          "vcl-scroll-module-64",
           "menu-cancel-x86",
           "menu-cancel-x64",
           "cmd-nested"
@@ -608,7 +608,7 @@
   },
   "validation": {
     "status": "focused automated native tests; physical input and full integration not tested",
-    "evidence": "docs/history/M0-T18-S64-P123-scrollbox.md"
+    "evidence": "docs/history/M0-T18-S64-P124-hotkey.md"
   },
   "closure": {
     "status": "M0/T18/S64 remain open; this is a bounded development delivery",
