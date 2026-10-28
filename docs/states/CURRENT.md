@@ -566,3 +566,5 @@ S64 P61已发布包VB集中回归：34项vb命名模型加8项强制启动/ABI/d
 S64 P62 VB5 Data样本启动调查：原始VisData与私有清单版自有进程均只有调试器初始断点、随后Error窗口，出现窗口前未观察到OCX/VB5DB/DAO加载；未拦截COM或加载返回值，不能据此确定根因。微软历史免费CCE归档签名返回HashMismatch，静态提取的VB5DB与既有副本一致但不证明整包身份，未运行或安装。无产品改动，双发布四摘要一致；[证据](../history/M0-T18-S64-P62-vb5-data-startup.md)。真实VB5 Data仍未覆盖，T18/S64开放。
 
 S64 P63追踪VB5 VisData自有进程：清单版记录20次动态加载均成功，原版20次中19次返回成功、末次未观察完；跟踪COM创建/注册类型库入口未见调用，但LoadTypeLibEx对运行库两次REGKIND_REGISTER成功、对EXE的REGKIND_NONE成功。未留启动前注册表快照，无法证明前两次是否写注册表；更正P54无注册的宽泛表述，后续须隔离或审计。自编负例检出缺DLL及类型库/COM错误，未覆盖所有内部路径；根因未定、无产品变更。[证据](../history/M0-T18-S64-P63-vb5-loader-trace.md)。T18/S64开放。
+
+S64 P64隔离VB5 VisData注册诊断：只对自有进程屏蔽8种受观察注册写入、类型库改REGKIND_NONE；负例确认拒绝及模拟成功均未创建指定测试键。拒绝写入时样本自身类型库RegisterTypeLib返回8002801c；模拟类型库/类注册成功并自动对专用提示选No后，真实ThunderRT5MDIForm可见，但这不是正常注册启动。私有数据库打开试验先后退出c000041d/c0000005，因探针改变行为不能归因，数据库摘要不变；未出现Data控件。仅检查指定键，不能证明全注册表无变化；无产品变更。[证据](../history/M0-T18-S64-P64-vb5-registration-isolation.md)。T18/S64开放。
