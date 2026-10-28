@@ -1200,5 +1200,18 @@
         "limits": "A focused model regression, not a real-VB x64 claim or full integration/physical-input pass."
       }
     }
+  },
+  "startup_hooks_capacity_regression_p42": {
+    "failure": "Standard package run s64-vb-standard-audit failed startup-hooks-32 at test line 30. The test expected overflow at slot 41 but P16 raised product transaction capacity from 40 to 48. The printed GetLastError 126 is not the return value of the capacity assertion and is not a root cause. The previous x86 and x64 test executables both reproduce exit 1.",
+    "fix": "Test 48 successful attaches, reject slot 49 with ERROR_INSUFFICIENT_BUFFER, and verify abort restores all 49 slots. Package markers and BUILD documentation match. No product source, ABI, original resources, or capacity change.",
+    "verification": "Clean x86/x64 build and source, governance, resource and PE gates passed. Direct clean-built x86/x64 tests passed including native export patch and rollback. Actual four-file package standard regression passed 171 cases, no skips, 151.47 seconds with 4 workers. Full integration stress cases and physical input were not included.",
+    "sha256": {
+      "demo.exe": "abc61f1faeb151ee01b6bae36bc85ebd9d18ee933adf4d7f14b7bb10f901ec53",
+      "ntw16s32.dll": "b049421d1023860cfc6631822029230e9dbf707f3039c4699fee0437d3bd8bb8",
+      "ntw16s64.dll": "9f593ab586559bf1be37a457cfaad0e74a5e137080b2c0aca52c581bc68ec3f0",
+      "run16s.exe": "72f1da34ff3dc43e315f0f86e85eb85ee089356621cf78ac18d2bd32c4552842"
+    },
+    "published": "The tested same-batch four files deployed to assets root and O:/winnt/system32, each SHA verified.",
+    "scope": "The standard matrix includes VB fixtures; this does not claim every real VB/OCX variant supported. The 151-second standard run remains slower than a focused run."
   }
 }

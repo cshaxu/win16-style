@@ -180,6 +180,6 @@ T15 S11微调入口：双宽`core-updown-v5.exe <absolute-run16s.exe>`和v6；�
 打印像素。覆盖UDN取消/改delta、buddy键盘、鼠标捕获/移出/取消后仍pressed、反向范围、
 base、字体/几何、卸载/销毁及共享HTHEME未附着控件像素不变。`core-updown-owner.exe`
 直接链接生产绘制模块，验证32弱DC容量/溢出/回收、嵌套屏障/调用者/线程拒绝、退役清除、
-引用归零及165个自有DC释放。`launch-startup-hooks.exe`核对40槽及第41槽失败/abort恢复。
+引用归零及165个自有DC释放。`launch-startup-hooks.exe`核对48槽及第49槽失败/abort恢复。
 实际包加8项至91；全局GDI/USER计数仅记录观察值，原生无DLL基线亦波动，不计作严格
 资源通过；精确所有权以独立生产模块夹具断言证明。HD Tune提权仍默认skip。

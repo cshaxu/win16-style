@@ -1013,7 +1013,7 @@
       "path": "tests/run16s-exe/startup_hooks.c",
       "source": null,
       "source_blob": null,
-      "sha256": "8a11ebb2340083992dfe337f31c0f1fce7e0fe981dcc6add91bef60d07131445",
+      "sha256": "fdfe81924b41cc84057063a137ff1983f72973bcacd4c590c0e31549af189db4",
       "disposition": "authored",
       "review": "T6 S1 startup-only interface/native export abort, trampoline and commit test; no late attach; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes",
       "notice": "Project-authored; project MIT LICENSE"
