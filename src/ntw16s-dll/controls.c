@@ -2,6 +2,8 @@
 #include "attachment.h"
 /* Internal guard for a witnessed VCL group button. */
 BOOL ntw16s_group_button_valid(HWND);
+BOOL ntw16s_vcl_combo_valid(HWND);
+BOOL ntw16s_vcl_combo_candidate(HWND);
 BOOL ntw16s_group_push_button(HWND);
 BOOL ntw16s_group_choice_button(HWND);
 BOOL ntw16s_grid_valid(HWND);
@@ -41,7 +43,7 @@ typedef struct control_style {
     HWND combo_list,combo_edit,combo_parent;
     HFONT combo_edit_font,combo_edit_source,combo_fonts[32];
     unsigned combo_font_count,combo_paints;
-    BOOL combo_bound;
+    BOOL combo_bound,combo_passthrough;
     struct control_style *owner;
     const void *creation_owner;
     ntw16s_control_protocol *protocol;
@@ -1377,7 +1379,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
     win16_style_system_retain(pinned);
     /* A verified VCL control belongs only to its original parent and role.
      * Let the native transition finish, then retire this exact attachment. */
-    if(m!=WM_NCDESTROY && (!ntw16s_group_button_valid(w) || !ntw16s_grid_valid(w) || !ntw16s_vb_data_valid(w) || !ntw16s_vb_user_edge_valid(w) || !ntw16s_vcl_toolbar_valid(w) || !ntw16s_vcl_tab_valid(w))){
+    if(m!=WM_NCDESTROY && (!ntw16s_vcl_combo_valid(w) || !ntw16s_group_button_valid(w) || !ntw16s_grid_valid(w) || !ntw16s_vb_data_valid(w) || !ntw16s_vb_user_edge_valid(w) || !ntw16s_vcl_toolbar_valid(w) || !ntw16s_vcl_tab_valid(w))){
         if(m==WM_SETFONT)s->original_font=win16_style_system_source((HFONT)a);
         result=DefSubclassProc(w,m,a,b);
         if(!s->detached && IsWindow(w) && !ntw16s_vb_user_edge_dormant(w) && Ntw16sWindowRemove(w) && IsWindow(w))InvalidateRect(w,NULL,TRUE);
@@ -1403,7 +1405,8 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         }
     }
     if(s->detached)goto finished;
-    if(m==WM_SETFONT && !s->frame_scrollbars){
+    if(m==WM_SETFONT && s->combo_passthrough){s->original_font=win16_style_system_source((HFONT)a);a=(WPARAM)s->original_font;}
+    if(m==WM_SETFONT && !s->frame_scrollbars && !s->combo_passthrough){
         HFONT original=win16_style_system_source((HFONT)a);
         BOOL vb=ntw16s_vb_frame(w) || ntw16s_vb_edit(w) || ntw16s_vb_button(w) || ntw16s_vb_combo(w) || ntw16s_vb_list(w);
         HFONT replacement=vb?win16_style_vb_font_acquire(original):win16_style_system_acquire(original);
@@ -1730,7 +1733,7 @@ static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL ori
         CopyMemory(s->tab_positions,tabs,(size_t)tab_count*sizeof(int));s->tab_count=tab_count;}
     s->edit_border=edit && original_border;
     s->frame_scrollbars=frame_bars;
-    s->file_owner=!frame_bars && ntw16s_vb_owner_file(w);
+    s->file_owner=!frame_bars && ntw16s_vb_owner_file(w);s->combo_passthrough=ntw16s_vcl_combo_candidate(w);
     if(!frame_bars){s->original_font=(HFONT)SendMessageW(w,WM_GETFONT,0,0);
         if(cancelled && *cancelled){dispose_control(s);SetLastError(ERROR_CANCELLED);return FALSE;}
         /* The font query may reenter installation. Do not replace that
@@ -1772,7 +1775,7 @@ static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL ori
             if(s->detached)goto installed;
         }
     }
-    if(!frame_bars){SendMessageW(w,WM_SETFONT,(WPARAM)s->original_font,FALSE);
+    if(!frame_bars){if(!s->combo_passthrough)SendMessageW(w,WM_SETFONT,(WPARAM)s->original_font,FALSE);
         if(!s->detached && is_separator(w))SetWindowPos(w,NULL,0,0,0,0,
             SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
         if(!s->detached)RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);}
