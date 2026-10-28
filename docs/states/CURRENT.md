@@ -996,3 +996,7 @@ S64 TDBLookupComboBox调查：真实x86 ANSI样本不呈现标准COMBOBOX协议�
 S64 TDBLookupComboBox补证：真实创建阶段IsWindowUnicode=1、ready=1，先前scratch要求ANSI导致候选0；稍后发布版控件为ANSI。仅scratch移除该前提后候选1、WM_PAINT和主题绘制作用域命中，实际按钮区域289像素变化，x86样本正常退出；附着后窗口Unicode标志变为1，WM_GETTEXT A/W均返回空，不能证明绑定值、非ASCII或选择语义安全。弹出列表LB_GETCOUNT为0，仍需明确原生交互及双宽负例；未改产品或发布。[证据](../history/M0-T18-S64-lookup-investigation.md)。M0/T18/S64开放。
 
 S64 查找列表选择补证：发布版及scratch候选在自有x86样本点击102×130弹层中部后均隐藏弹层、控件截图各变化1378像素并正常退出；选择前后两版截图差异各289像素且仅限按钮，文本区一致。首次误将选择后的新数据送入原记录专用断言，两版均失败，分离测试后通过；尚未读取数据键或验证持久化、回调、非ASCII、物理输入及取消。未改产品或发布。[调查](../history/M0-T18-S64-lookup-investigation.md)。M0/T18/S64开放。
+
+S64 TDBLookupComboBox候选准入：真实x86样本创建时Unicode、随后ANSI，精确类/同owner父窗及clientedge的scratch候选进入主题绘制，按钮区域289像素变化；选择前后绑定键TDBText区域发布版与候选逐像素一致且自身各有30像素变化，目标正常退出。双宽自有模型验证箭头、ACP文本与换父，旧包双宽缺失附着负例检出。拟独立身份准入，限定已见COMBOBOX主题和同窗作用域，保留其他角色及未知状态；需正式负例、干净双宽同批包、实际样本、相邻回归和双发布，未验证真实非ASCII、其他DPI、键盘取消和完整数据回调。M0/T18/S64开放。
+
+S64 P156 TDBLookupComboBox按钮有限接入：精确类、同线程/父owner及clientedge、同窗COMBOBOX主题和按钮几何后复用原箭头；真实x86样本实际包按钮289像素变化，绑定键显示选择前后与旧包一致且各变化30像素、正常退出。双宽模型含错误owner、无边框、伪绘制、非组合主题、ACP1252 A/W及换父退役；旧包正例模型双宽失败。首次包因收据失败已废弃，修正后干净包24项16.17秒零skip，assets/system32八摘要及两处双宽模型通过；[证据](../history/M0-T18-S64-P156-dblookup.md)。真实其他编码、DPI、取消、回调、持久化及完整集成未覆盖；提交远端复核待完成，M0/T18/S64开放。

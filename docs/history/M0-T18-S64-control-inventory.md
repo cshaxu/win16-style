@@ -30,9 +30,9 @@ This is an interim reconciliation, not a final supported-versus-unimplemented au
 
 ## Delphi VCL: 74 frozen families
 
-- limited-evidence: **40** — `TDBComboBox`, `TDBEdit`, `TDBGrid`, `TMainMenu`, `TMaskEdit`, `TForm`, `TPanel`, `TGroupBox`, `TScrollBox`, `TButton`, `TBitBtn`, `TCheckBox`, `TRadioButton`, `TRadioGroup`, `TEdit`, `TMemo`, `TRichEdit`, `TComboBox`, `TListBox`, `TCheckListBox`, `TColorBox`, `TStaticText`, `TPopupMenu`, `TToolBar`, `TStatusBar`, `TControlBar`, `TTreeView`, `TListView`, `THeaderControl`, `TTabControl`, `TPageControl`, `TProgressBar`, `TTrackBar`, `TUpDown`, `TDateTimePicker`, `TMonthCalendar`, `THotKey`, `TStringGrid`, `TDrawGrid`, `TValueListEditor`.
+- limited-evidence: **41** — `TDBLookupComboBox`, `TDBComboBox`, `TDBEdit`, `TDBGrid`, `TMainMenu`, `TMaskEdit`, `TForm`, `TPanel`, `TGroupBox`, `TScrollBox`, `TButton`, `TBitBtn`, `TCheckBox`, `TRadioButton`, `TRadioGroup`, `TEdit`, `TMemo`, `TRichEdit`, `TComboBox`, `TListBox`, `TCheckListBox`, `TColorBox`, `TStaticText`, `TPopupMenu`, `TToolBar`, `TStatusBar`, `TControlBar`, `TTreeView`, `TListView`, `THeaderControl`, `TTabControl`, `TPageControl`, `TProgressBar`, `TTrackBar`, `TUpDown`, `TDateTimePicker`, `TMonthCalendar`, `THotKey`, `TStringGrid`, `TDrawGrid`, `TValueListEditor`.
 
-- native-or-unverified: **26** — `TMDIForm`, `TFrame`, `TSplitter`, `TSpeedButton`, `TLabel`, `TShape`, `TBevel`, `TChart`, `TCoolBar`, `TAnimate`, `TDirectoryListBox`, `TDriveComboBox`, `TFileListBox`, `TDBListBox`, `TDBNavigator`, `TDBLookupComboBox`, `TDBLookupListBox`, `TWebBrowser`, `TMediaPlayer`, `TOleContainer`, `TButtonGroup`, `TCategoryButtons`, `TDockTabSet`, `TTabSet`, `TOutline`, `TTabbedNotebook`.
+- native-or-unverified: **25** — `TMDIForm`, `TFrame`, `TSplitter`, `TSpeedButton`, `TLabel`, `TShape`, `TBevel`, `TChart`, `TCoolBar`, `TAnimate`, `TDirectoryListBox`, `TDriveComboBox`, `TFileListBox`, `TDBListBox`, `TDBNavigator`, `TDBLookupListBox`, `TWebBrowser`, `TMediaPlayer`, `TOleContainer`, `TButtonGroup`, `TCategoryButtons`, `TDockTabSet`, `TTabSet`, `TOutline`, `TTabbedNotebook`.
 
 - nonvisual-or-content-only: **6** — `TImage`, `TPaintBox`, `TImageList`, `TActionList`, `TTimer`, `TTrayIcon`.
 
@@ -53,3 +53,5 @@ Update after P152: `TDBEdit` has a limited same-owner ANSI native-edit forwardin
 Update after P153: `TDBComboBox` has a limited editable ANSI native-combo path, with real x86 data-binding and dual-width native model evidence in [P153](M0-T18-S64-P153-dbcombo.md). Current Delphi counts are 40 limited and 26 native/unverified; Unicode forwarding, other styles and real multilingual input remain unverified.
 
 P154 correction: earlier P148/P152/P153 update notes stated the intended promotions, but the table headings and limited list were not updated while the three names were removed from the unverified list. The table now includes each of `TDBGrid`, `TDBEdit` and `TDBComboBox` exactly once. Counts are 40 limited, 26 native/unverified, 6 nonvisual/content and 2 separate dialog entries, totaling 74. Limited means bounded evidence, not complete support.
+
+Update after P156: `TDBLookupComboBox` has a limited same-owner COMBOBOX-theme dropdown-button path; [P156](M0-T18-S64-P156-dblookup.md) covers one real x86 sample and dual-width models. Delphi is now 41 limited, 25 native/unverified, 6 nonvisual/content and 2 separate dialogs, totaling 74. Other drawing states and interactions remain unverified.
