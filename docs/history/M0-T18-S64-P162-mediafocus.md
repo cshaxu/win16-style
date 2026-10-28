@@ -1,0 +1,15 @@
+# M0 T18 S64 P162: bounded TMediaPlayer focus and disabled faces
+
+P161 already styles normal and pressed themed TMediaPlayer button backgrounds under the existing same-window, same-owner, thread, theme, caller module and geometry witnesses. P162 additionally styles BUTTON state 4 only while the whole TMediaPlayer window is disabled and state 5 only while that window owns focus. Unmatched state 4/5 and other states continue to use the native path. The product does not draw or intercept the focus rectangle or media glyphs.
+
+## Evidence
+
+- DelphiVCL4Python 1.0.7 x86/x64 real samples, no media device: the disabled control theme state was 4. Against P161, each 343x35 capture changed 11,550 pixels while all 188 checked dark glyph pixels remained identical. Focus state 5 was followed by the framework's own DrawFocusRect in a diagnostic trace. The actual candidate retained 60 alternating changed focus-edge pixels, all within the 120 baseline changed positions, and all 22 checked glyph pixels. The isolated targets exited successfully. Captures and metrics are registered under `build/t18-s64-vb-mask-survey/media-p162-*` and `p162-metrics.py`.
+- First actual-package x64 probe did not start because PYTHONPATH named the wheel root rather than its `purelib`; after correcting it both architectures and both modes ran successfully. This failure is not counted as a pass.
+- Dual-width native fixture/model covers positive state 4 disabled and state 5 focused, negative state 4 enabled and state 5 unfocused, caller, module, clipping, glyph preservation, focus edge and cleanup. The old P161 installed package fails the positive disabled test on both widths. A fault removing the matching guards is rejected. A focus fixture with DrawFocusRect suppressed yields zero focus-edge pixels and fails the assertion; a first manually compiled fixture without the regular frame-pointer/no-tailcall flags failed an unrelated caller witness and was discarded.
+- `Build-Package.ps1 -Task 18 -RunName s64-mediafocus-p162` produced the clean dual-width candidate. `Test-Package.ps1` run `s64-mediafocus-p162-test` passed its focused suite in 15.77 seconds, including dual-width navigation, lookup, in-place and popup models, ANSI combo, VCL button, menu cancellation and VB option coverage. This is not the full integration matrix.
+- `Publish-Package.ps1` run `s64-mediafocus-p162-publish` copied the same tested four files to the project assets root and `O:\winnt\system32`; all eight recorded hashes matched. Installed dual-width models passed from both destinations.
+
+## Limits
+
+One VCL runtime was observed. Media opening/playback, actual hardware input, other VCL versions and DPI, full integration and cancellation semantics are not established. In the earlier P161 sample WM_CANCELMODE did not restore the original screenshot in either the old or candidate build; this is not a cancellation success claim. M0, T18 and S64 remain open. Preserve registered task scratch for subsequent evidence consolidation.

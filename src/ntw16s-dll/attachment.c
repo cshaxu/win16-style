@@ -390,7 +390,7 @@ void ntw16s_nav_theme(HDC dc,int part,int state,const RECT *r,const RECT *clip,c
 {static_paint_scope *s=static_paint;RECT client;POINT wo,vo;HMODULE caller=NULL;BOOL media;
  if(!s || !s->owner->nav_candidate || s->owner->detached || !dc || !r || part!=1 || !nav_identity(s->window,s->owner->nav_owner,s->owner->nav_parent) || WindowFromDC(dc)!=s->window || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) || !GetWindowOrgEx(dc,&wo) || !GetViewportOrgEx(dc,&vo) || wo.y || vo.x || vo.y || !GetClientRect(s->window,&client) || r->top || r->bottom!=client.bottom || !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) || caller!=s->owner->nav_owner)return;
  media=ntw16s_class_is(s->window,L"TMediaPlayer");
- if(media){if((state!=1 && state!=3) || wo.x || r->left<0 || r->left>client.right || r->right>client.right || r->right-r->left<=4)return;}
+ if(media){if((state!=1 && state!=3 && !(state==4 && !IsWindowEnabled(s->window)) && !(state==5 && GetFocus()==s->window)) || wo.x || r->left<0 || r->left>client.right || r->right>client.right || r->right-r->left<=4)return;}
  else if((state!=1 && state!=3 && state!=4) || wo.x>0 || wo.x< -client.right || r->left || r->right<=4 || r->right>client.right+wo.x)return;
  if(win16_style_bitbtn_face(s->window,dc,r,clip,state==3?ODS_SELECTED:0) && !s->owner->detached)s->owner->nav_verified=TRUE;}
 BOOL ntw16s_inplace_paint(HDC dc){static_paint_scope *s=static_paint;return s && s->owner->inplace_candidate && !s->owner->detached && dc && WindowFromDC(dc)==s->window;}
