@@ -330,7 +330,7 @@ static BOOL grid_identity(HWND w,HMODULE owner,HWND parent)
         (style&WS_CHILD) && (ex&WS_EX_CLIENTEDGE) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
         GetClassNameW(w,name,ARRAYSIZE(name)) &&
         ((!lstrcmpW(name,L"TStringGrid") || !lstrcmpW(name,L"TDrawGrid")) ||
-         (owner==GetModuleHandleW(NULL) && IsWindowUnicode(w) && !lstrcmpW(name,L"TValueListEditor"))) &&
+         (owner==GetModuleHandleW(NULL) && IsWindowUnicode(w) && (!lstrcmpW(name,L"TValueListEditor") || !lstrcmpW(name,L"TDBGrid")))) &&
         RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(name,real);
 }
 static BOOL vcl_toolbar_identity(HWND w,HMODULE owner,HWND parent)
