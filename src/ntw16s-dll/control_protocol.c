@@ -186,9 +186,10 @@ static ntw16s_control_protocol *bind_protocol(HWND w,HMODULE verified_owner,unsi
         }
     }else if(role==2){
         COMBOBOXINFO info={.cbSize=sizeof(info)};
-        if(GetComboBoxInfo(w,&info) && current(b) && info.hwndCombo==w && info.hwndItem && info.hwndList &&
-            (info.hwndItem==w || GetParent(info.hwndItem)==w) &&
-            GetWindowThreadProcessId(info.hwndItem,NULL)==GetCurrentThreadId() &&
+        BOOL no_item=verified_owner && ((DWORD)GetWindowLongPtrW(w,GWL_STYLE)&3)==CBS_DROPDOWNLIST;
+        if(GetComboBoxInfo(w,&info) && current(b) && info.hwndCombo==w && info.hwndList &&
+            ((!info.hwndItem && no_item) || (info.hwndItem &&
+             (info.hwndItem==w || GetParent(info.hwndItem)==w) && GetWindowThreadProcessId(info.hwndItem,NULL)==GetCurrentThreadId())) &&
             GetWindowThreadProcessId(info.hwndList,NULL)==GetCurrentThreadId()){
             LRESULT count=SendMessageW(w,CB_GETCOUNT,0,0);
             if(current(b) && count>=0){

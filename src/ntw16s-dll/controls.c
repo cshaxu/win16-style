@@ -1405,7 +1405,12 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         }
     }
     if(s->detached)goto finished;
-    if(m==WM_SETFONT && s->combo_passthrough){s->original_font=win16_style_system_source((HFONT)a);a=(WPARAM)s->original_font;}
+    if(m==WM_SETFONT && s->combo_passthrough){
+        s->original_font=win16_style_system_source((HFONT)a);a=(WPARAM)s->original_font;
+        if(((DWORD)GetWindowLongPtrW(w,GWL_STYLE)&3)==CBS_DROPDOWNLIST){
+            HFONT replacement=win16_style_system_acquire(s->original_font);previous=s->font;s->font=replacement?replacement:s->original_font;
+        }
+    }
     if(m==WM_SETFONT && !s->frame_scrollbars && !s->combo_passthrough){
         HFONT original=win16_style_system_source((HFONT)a);
         BOOL vb=ntw16s_vb_frame(w) || ntw16s_vb_edit(w) || ntw16s_vb_button(w) || ntw16s_vb_combo(w) || ntw16s_vb_list(w);
@@ -1775,7 +1780,8 @@ static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL ori
             if(s->detached)goto installed;
         }
     }
-    if(!frame_bars){if(!s->combo_passthrough)SendMessageW(w,WM_SETFONT,(WPARAM)s->original_font,FALSE);
+    if(!frame_bars){if(s->combo_passthrough && ((DWORD)GetWindowLongPtrW(w,GWL_STYLE)&3)==CBS_DROPDOWNLIST){HFONT replacement=win16_style_system_acquire(s->original_font);s->font=replacement?replacement:s->original_font;}
+        if(!s->combo_passthrough)SendMessageW(w,WM_SETFONT,(WPARAM)s->original_font,FALSE);
         if(!s->detached && is_separator(w))SetWindowPos(w,NULL,0,0,0,0,
             SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
         if(!s->detached)RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);}
@@ -1970,7 +1976,7 @@ BOOL win16_style_control_remove(HWND w)
     if(!RemoveWindowSubclass(w,control_proc,(UINT_PTR)control_proc)){
         s->removing=FALSE;--s->calls;return FALSE;}
     s->detached=TRUE;ntw16s_updown_retire(&s->updown);BOOL track=s->track_window!=NULL;trackbar_unbind(s);toolbar_unbind(s);combo_text_unbind(s,FALSE);detach_combo_list(s);
-    if(s->font && IsWindow(w))SendMessageW(w,WM_SETFONT,(WPARAM)s->original_font,FALSE);
+    if(s->font && IsWindow(w) && !s->combo_passthrough)SendMessageW(w,WM_SETFONT,(WPARAM)s->original_font,FALSE);
     if(IsWindow(w) && is_separator(w))SetWindowPos(w,NULL,0,0,0,0,
         SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
     scroll_caret_destroy(w,s);
