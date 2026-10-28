@@ -1,4 +1,4 @@
-/* The 144-DPI geometry is taken from a real VB6 list; VB5 is a negative. */
+/* The 144-DPI geometries are taken from real VB5 and VB6 lists. */
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
@@ -40,19 +40,19 @@ static int child(const WCHAR *runtime,BOOL styled)
     list=CreateWindowW(vb5?L"ThunderRT5ListBox":L"ThunderRT6ListBox",L"",
         WS_CHILD|WS_VISIBLE|LBS_OWNERDRAWFIXED|LBS_HASSTRINGS|LBS_MULTIPLESEL|LBS_NOTIFY|LBS_USETABSTOPS,
         10,10,150,70,root,NULL,dll,NULL);CHECK(list && GetDpiForWindow(list)==144);
-    CHECK(SendMessageW(list,LB_SETITEMHEIGHT,0,22)!=LB_ERR);
+    CHECK(SendMessageW(list,LB_SETITEMHEIGHT,0,vb5?23:22)!=LB_ERR);
     CHECK(SendMessageW(list,LB_ADDSTRING,0,(LPARAM)L"first")!=LB_ERR);
     ShowWindow(root,SW_SHOWNOACTIVATE);UpdateWindow(root);
-    expected=styled && !vb5;selected=FALSE;CHECK(repaint());
+    expected=styled;selected=FALSE;CHECK(repaint());
     CHECK(SendMessageW(list,LB_SETSEL,TRUE,0)!=LB_ERR);selected=TRUE;CHECK(repaint());
     shift=20;expected=FALSE;CHECK(repaint());shift=-1;CHECK(repaint());shift=0;
-    EnableWindow(list,FALSE);expected=styled && !vb5;CHECK(repaint());
+    EnableWindow(list,FALSE);expected=styled;CHECK(repaint());
     CHECK(SendMessageW(list,LB_SETSEL,FALSE,0)!=LB_ERR);selected=FALSE;CHECK(repaint());
-    EnableWindow(list,TRUE);expected=styled && !vb5;CHECK(repaint());
+    EnableWindow(list,TRUE);expected=styled;CHECK(repaint());
     CHECK(SendMessageW(list,LB_SETITEMHEIGHT,0,24)!=LB_ERR);expected=FALSE;CHECK(repaint());
     CHECK(DestroyWindow(root) && UnregisterClassW(c.lpszClassName,self) && release() && FreeLibrary(dll));
-    printf("VB_CHECKLIST_144_OK bits=%u vb5=%u styled=%u states=4 invalid_geometry=1 vb5_native=%u\n",
-        (unsigned)(8*sizeof(void *)),vb5,styled,vb5);
+    printf("VB_CHECKLIST_144_OK bits=%u vb5=%u styled=%u states=4 invalid_geometry=1\n",
+        (unsigned)(8*sizeof(void *)),vb5,styled);
     return 0;
 }
 static int worker(int argc,WCHAR **argv)

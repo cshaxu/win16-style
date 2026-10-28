@@ -368,7 +368,7 @@ BOOL win16_style_vb_checklist(HDC dc,int x,int y,int width,int height,HDC source
         bitmap.bmWidth!=44 || bitmap.bmHeight!=11 ||
         !(w=WindowFromDC(dc)) || GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() ||
         !ntw16s_vb_checklist_class(w) ||
-        ((dpi=GetDpiForWindow(w))!=96 && (dpi!=144 || !ntw16s_vb_class(w,L"ThunderRT6ListBox"))) ||
+        ((dpi=GetDpiForWindow(w))!=96 && dpi!=144) ||
         GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
         !GetViewportOrgEx(dc,&origin) || origin.x || origin.y ||
         !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
@@ -384,7 +384,9 @@ BOOL win16_style_vb_checklist(HDC dc,int x,int y,int width,int height,HDC source
         SendMessageW(w,LB_GETITEMRECT,(WPARAM)index,(LPARAM)&item)!=LB_ERR &&
         vb_checklist_unchanged(w,dc,parent,style,ex,enabled) &&
         x==item.left+(ntw16s_vb5_class(w,L"ThunderRT5ListBox")?0:2) &&
-        (dpi==144?(item.bottom-item.top==22 && y==item.top+5):y==item.top+2) &&
+        (dpi==144?(ntw16s_vb5_class(w,L"ThunderRT5ListBox")?
+            (item.bottom-item.top==23 && y==item.top+6):
+            (item.bottom-item.top==22 && y==item.top+5)):y==item.top+2) &&
         item.right-x>=width && item.bottom-y>=height){
         RECT glyph={x,y,x+width,y+height};
         result=checklist_glyph(dc,&glyph,(sx%22)==11?DFCS_CHECKED:0);
