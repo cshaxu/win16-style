@@ -888,12 +888,14 @@ static BOOL controlbar_identity(HWND w,attachment *a)
   IsWindowUnicode(w) && (GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_LAYERED)) &&
   GetClassInfoExW(a->controlbar_owner,name,&c) && c.lpfnWndProc && GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)c.lpfnWndProc,&proc_owner) && proc_owner==a->controlbar_owner;
 }
+BOOL ntw16s_controlbar_edge_allowed(UINT edge)
+{return edge==BDR_RAISEDOUTER || edge==BDR_SUNKENOUTER || edge==BDR_RAISEDINNER || edge==BDR_SUNKENINNER || edge==EDGE_RAISED || edge==EDGE_SUNKEN || edge==EDGE_ETCHED || edge==EDGE_BUMP;}
 BOOL ntw16s_controlbar_edge_active(void)
 {return box_current && box_current->owner->controlbar_candidate && !box_current->owner->detached;}
 void ntw16s_controlbar_edge(HDC dc,const RECT *rect,UINT edge,UINT flags,const void *address)
 {
  box_witness_scope *s=box_current;HMODULE caller=NULL;RECT bounds;POINT origin={0};
- if(!s || !s->owner->controlbar_candidate || !controlbar_identity(s->window,s->owner) || !dc || !rect || edge!=EDGE_ETCHED || flags!=(BF_RECT|BF_ADJUST) || WindowFromDC(dc)!=s->window || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) || !GetViewportOrgEx(dc,&origin) || origin.x || origin.y || !GetWindowOrgEx(dc,&origin) || origin.x || origin.y || !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) || caller!=s->owner->controlbar_owner || !GetWindowRect(s->window,&bounds))return;
+ if(!s || !s->owner->controlbar_candidate || !controlbar_identity(s->window,s->owner) || !dc || !rect || !ntw16s_controlbar_edge_allowed(edge) || flags!=(BF_RECT|BF_ADJUST) || WindowFromDC(dc)!=s->window || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) || !GetViewportOrgEx(dc,&origin) || origin.x || origin.y || !GetWindowOrgEx(dc,&origin) || origin.x || origin.y || !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) || caller!=s->owner->controlbar_owner || !GetWindowRect(s->window,&bounds))return;
  OffsetRect(&bounds,-bounds.left,-bounds.top);if(!EqualRect(rect,&bounds))return;
  int saved=SaveDC(dc);if(!saved)return;BOOL drew=FrameRect(dc,rect,(HBRUSH)GetStockObject(BLACK_BRUSH));RestoreDC(dc,saved);if(drew && controlbar_identity(s->window,s->owner))s->owner->controlbar_verified=TRUE;
 }

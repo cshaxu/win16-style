@@ -233,7 +233,7 @@ static int matrix(int argc,WCHAR **argv)
         CHECK(GetMenuItemInfoW(b,0,TRUE,&item) && !(item.fType&MFT_OWNERDRAW));
         MENUINFO restored_a={.cbSize=sizeof(restored_a),.fMask=MIM_STYLE},restored_b=restored_a;
         CHECK(GetMenuInfo(a,&restored_a) && GetMenuInfo(b,&restored_b) && restored_a.dwStyle==original_a.dwStyle && restored_b.dwStyle==original_b.dwStyle);
-        KillTimer(w,99);SetActiveWindow(anchor);CHECK(GetActiveWindow()==anchor);
+        KillTimer(w,99);SetActiveWindow(anchor);SetFocus(anchor);CHECK(GetActiveWindow()==anchor && GetFocus()==anchor);
         CHECK(remove_style(w) && DestroyWindow(w) && DestroyWindow(other));drain();
         printf("MENU CANCEL CASE PASS %u native loop/focus/capture/hover/item restoration\n",scenario);
     }

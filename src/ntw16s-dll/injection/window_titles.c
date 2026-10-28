@@ -23,6 +23,7 @@ static void month_font_return(void *p){month_font_borrow *b=p;if(b->saved)Restor
 /* Private, synchronous coordinator scope; not part of the public ABI. */
 void ntw16s_status_frame(HDC,const RECT *,const RECT *,const void *);
 BOOL ntw16s_controlbar_edge_active(void);
+BOOL ntw16s_controlbar_edge_allowed(UINT);
 void ntw16s_controlbar_edge(HDC,const RECT *,UINT,UINT,const void *);
 void ntw16s_bit_theme_frame(HDC,int,const RECT *,const RECT *,const void *);
 void ntw16s_inplace_button(HDC,int,int,const RECT *,const RECT *,const void *);
@@ -494,7 +495,7 @@ static BOOL WINAPI hook_DrawFrameControl(HDC dc,LPRECT rect,UINT type,UINT state
 static BOOL WINAPI hook_DrawEdge(HDC dc,LPRECT rect,UINT edge,UINT flags)
 {
     RECT original={0};BOOL eligible=rect && edge==BDR_SUNKENOUTER && flags==(BF_RECT|BF_ADJUST);
-    BOOL controlbar=rect && edge==EDGE_ETCHED && flags==(BF_RECT|BF_ADJUST) && ntw16s_controlbar_edge_active();
+    BOOL controlbar=rect && flags==(BF_RECT|BF_ADJUST) && ntw16s_controlbar_edge_allowed(edge) && ntw16s_controlbar_edge_active();
     if(eligible || controlbar)original=*rect;
     BOOL result=real_DrawEdge(dc,rect,edge,flags);DWORD error=GetLastError();
     if(result && eligible)ntw16s_status_frame(dc,&original,NULL,__builtin_return_address(0));

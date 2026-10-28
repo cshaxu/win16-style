@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <wchar.h>
 #include <commctrl.h>
+#include <imm.h>
 #include "isolated_process.h"
 #include "../../src/ntw16s-dll/control_glyphs.h"
 #include "../../src/ntw16s-dll/control_class.h"
@@ -247,6 +248,7 @@ static int worker(int argc,WCHAR **argv)
 }
 int wmain(int argc,WCHAR **argv)
 {
+    ImmDisableIME(0); /* This model uses synthetic ASCII input on an isolated desktop. */
     if(argc==4 && !wcscmp(argv[1],L"--child"))return child(argv[2],!wcsncmp(argv[3],L"styled",6),wcsstr(argv[3],L"aware")!=NULL);
     return isolated_process(argc,argv,worker);
 }
