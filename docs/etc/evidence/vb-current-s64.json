@@ -1270,5 +1270,16 @@
       "No row-by-row refresh beyond the two named UserControl changes was performed; do not infer a definitive number of remaining implementation changes."
     ],
     "check": "All 148 frozen IDs matched the historical ledger exactly once; no duplicates or missing IDs."
+  },
+  "vb6_data_partial_initialization_p45": {
+    "source": "Same original P34 x86 sample (SHA-256 16283b1cbba0b1919d726a45a1002df550d154eb68621b048cc49a94b919b47d) copied alone into task scratch; MSVBVM60.DLL SHA-256 898288bd3b21d0e7d5f406df2e0b69a5bbfa4f241baf29a2cdf8a3cf4d4619f2. The repo working directory had no DataBase.mdb. No COM registration, system changes, real database or navigation operation.",
+    "observation": "While the missing DAO dialog is open, EnumThreadWindows finds three existing hidden ThunderRT6Data children of ThunderRT6Frame, style 0x44810000, MSVBVM60 class owner. Both bare and styled isolated processes reproduced this. This supersedes an inference of no HWND, but these controls are not shown or database-initialized by the application.",
+    "synthetic_show": "Only in the owned isolated process, move and explicitly show one originally hidden Data child and ancestors while the DAO dialog remains open. At 96 DPI the 76x28 control is fully within the desktop; bare, released and same-source diagnostic capture SHA-256 all 05e034042c1126e9fdbd94234371ba049f7f5899feca0e71baaf5a704b1982c1 and display four navigation arrows. This is a forced partially initialized visual, not evidence of normal display, data or navigation. Hidden PrintWindow produced 2128 black pixels and is discarded as a visual oracle.",
+    "diagnostic": "Temporary x86 diagnostic DLL in task scratch only: four direct MSVBVM60 StretchBlt SRCCOPY calls target Data DC at (4,4,11,13), (24,4,8,13), (37,4,8,13), (55,4,11,13), from same-sized source bitmaps, source origin (0,0). Enabled source FNV64 hashes respectively 8619633540682850296, 4090588555967646507, 5744490539097851819, 9861900435608839576; the same source hashes occur while disabled, despite different disabled output screenshot (SHA-256 65c96480a2f62bf434a0197835f92b33d9715ba2f3fc30ebf2dcaf30d0138d99). Hence source identity alone does not determine visual state. The process-specific thread witness failed error 126 in both modes; diagnostic DLL evidence does not establish its cause.",
+    "limits": [
+      "Only one x86 VB6 sample, 96 DPI, originally hidden controls and incomplete initialization; no database binding, real navigation, pressed/focus state, valid application-created visible control, other runtime/DPI or VB5 proof.",
+      "No product change. A safe adaptation still needs a normally initialized, legitimately licensed real sample and a public way to identify each draw and state without replacing application data or resource ownership. No system-wide hooks or existing user process were touched."
+    ],
+    "scratch": "build/t18-s64-vb-data/p45-enumerate and p45-diag; all spawned processes were owned and their jobs terminated after capture."
   }
 }
