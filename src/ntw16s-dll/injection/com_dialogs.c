@@ -31,6 +31,7 @@ typedef struct file_proxy {
     HRESULT live_folder_error;
     IShellItemArray *results;
     WCHAR *title,*filter,*extension,*ok_label,*cancel_label,*file_label;
+    WCHAR *pending_folder;
     UINT filter_index;
     struct event_adapter *events;
 } file_proxy;
@@ -58,6 +59,7 @@ static ULONG proxy_release(file_proxy *p)
         if(p->ok_label)CoTaskMemFree(p->ok_label);
         if(p->cancel_label)CoTaskMemFree(p->cancel_label);
         if(p->file_label)CoTaskMemFree(p->file_label);
+        if(p->pending_folder)CoTaskMemFree(p->pending_folder);
         if(p->custom_native)IFileDialogCustomize_Release(p->custom_native);
         if(p->v2_native)IFileDialog2_Release(p->v2_native);
         if(p->ole_native)IOleWindow_Release(p->ole_native);
@@ -434,6 +436,49 @@ static HRESULT proxy_get_folder(file_proxy *p,IShellItem **item)
     if(!p->live_folder)return E_FAIL;
     *item=p->live_folder;IShellItem_AddRef(*item);return S_OK;
 }
+static const WCHAR folder_message_name[]=L"Win16Style.T20.ComSetFolder";
+static HRESULT proxy_set_folder(file_proxy *p,IShellItem *item)
+{
+    HWND w=p->active_window;
+    if(!w)return IFileDialog_SetFolder(p->native,item);
+    if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId())return RPC_E_WRONG_THREAD;
+    if(!item)return E_INVALIDARG;
+    PWSTR path=NULL;HRESULT hr=IShellItem_GetDisplayName(item,SIGDN_FILESYSPATH,&path);
+    if(FAILED(hr))return hr;
+    DWORD attrs=GetFileAttributesW(path);
+    if(attrs==INVALID_FILE_ATTRIBUTES || !(attrs&FILE_ATTRIBUTE_DIRECTORY)){
+        DWORD error=attrs==INVALID_FILE_ATTRIBUTES?GetLastError():ERROR_DIRECTORY;
+        CoTaskMemFree(path);return HRESULT_FROM_WIN32(error?error:ERROR_INVALID_DATA);
+    }
+    UINT message=RegisterWindowMessageW(folder_message_name);
+    if(!message){DWORD error=GetLastError();CoTaskMemFree(path);return HRESULT_FROM_WIN32(error?error:ERROR_INVALID_FUNCTION);}
+    hr=IFileDialog_SetFolder(p->native,item);
+    if(FAILED(hr)){CoTaskMemFree(path);return hr;}
+    if(p->active_window!=w || !IsWindow(w)){CoTaskMemFree(path);return E_UNEXPECTED;}
+    WCHAR *previous=p->pending_folder;p->pending_folder=path;
+    if(!PostMessageW(w,message,0,0)){
+        DWORD error=GetLastError();p->pending_folder=previous;CoTaskMemFree(path);
+        return HRESULT_FROM_WIN32(error?error:ERROR_INVALID_FUNCTION);
+    }
+    if(previous)CoTaskMemFree(previous);
+    return hr;
+}
+static void classic_navigate_folder(HWND w,file_proxy *p,PCWSTR key)
+{
+    WCHAR *folder=p->pending_folder;p->pending_folder=NULL;if(!folder)return;
+    HWND edit=GetDlgItem(w,edt1);int length=edit?GetWindowTextLengthW(edit):-1;
+    WCHAR *filename=length>=0 && length<32768?CoTaskMemAlloc(((size_t)length+1)*sizeof(WCHAR)):NULL;
+    if(filename){
+        GetWindowTextW(edit,filename,length+1);
+        DWORD attrs=GetFileAttributesW(folder);
+        if(attrs!=INVALID_FILE_ATTRIBUTES && (attrs&FILE_ATTRIBUTE_DIRECTORY) && SetWindowTextW(edit,folder)){
+            SendMessageW(w,WM_COMMAND,MAKEWPARAM(IDOK,BN_CLICKED),(LPARAM)GetDlgItem(w,IDOK));
+            if(IsWindow(w) && GetPropW(w,key)==p && IsWindow(edit))SetWindowTextW(edit,filename);
+        }
+        CoTaskMemFree(filename);
+    }
+    CoTaskMemFree(folder);
+}
 static UINT_PTR CALLBACK classic_hook(HWND w,UINT message,WPARAM wp,LPARAM lp)
 {
     (void)wp;
@@ -445,10 +490,13 @@ static UINT_PTR CALLBACK classic_hook(HWND w,UINT message,WPARAM wp,LPARAM lp)
         if(p && p->file_label)SetDlgItemTextW(w,stc3,p->file_label);
     }else if(message==WM_NCDESTROY){file_proxy *p=GetPropW(w,key);
         if(p){RemovePropW(w,key);if(p->active_window==w)p->active_window=NULL;
-            if(p->live_folder){IShellItem_Release(p->live_folder);p->live_folder=NULL;}}}
+            if(p->live_folder){IShellItem_Release(p->live_folder);p->live_folder=NULL;}
+            if(p->pending_folder){CoTaskMemFree(p->pending_folder);p->pending_folder=NULL;}}}
     else if(message>=0xc000 && message<=0xffff){UINT selection=RegisterWindowMessageW(LBSELCHSTRINGW);
         if(selection && message==selection && (wp==lst2 || wp==cmb2)){
-            file_proxy *p=GetPropW(w,key);if(p)classic_capture_folder(p);}}
+            file_proxy *p=GetPropW(w,key);if(p)classic_capture_folder(p);}
+        UINT navigate=RegisterWindowMessageW(folder_message_name);
+        if(navigate && message==navigate){file_proxy *p=GetPropW(w,key);if(p)classic_navigate_folder(w,p,key);return 1;}}
     return 0;
 }
 /* The legacy multi-select contract returns space-separated 8.3 names. The
@@ -694,7 +742,7 @@ static HRESULT STDMETHODCALLTYPE v2_SetDefaultFolder(IFileDialog2 *This, IShellI
 
 static HRESULT STDMETHODCALLTYPE v2_SetFolder(IFileDialog2 *This, IShellItem *psi)
 {
-    file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,v2));return IFileDialog2_SetFolder(p->v2_native ,psi);
+    file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,v2));return proxy_set_folder(p,psi);
 }
 
 static HRESULT STDMETHODCALLTYPE v2_GetFolder(IFileDialog2 *This, IShellItem **ppsi)
@@ -877,7 +925,7 @@ static HRESULT STDMETHODCALLTYPE open_SetDefaultFolder(IFileOpenDialog *This, IS
 
 static HRESULT STDMETHODCALLTYPE open_SetFolder(IFileOpenDialog *This, IShellItem *psi)
 {
-    file_proxy *p=(file_proxy *)This;return IFileOpenDialog_SetFolder((IFileOpenDialog *)p->variant ,psi);
+    file_proxy *p=(file_proxy *)This;return proxy_set_folder(p,psi);
 }
 
 static HRESULT STDMETHODCALLTYPE open_GetFolder(IFileOpenDialog *This, IShellItem **ppsi)
@@ -1054,7 +1102,7 @@ static HRESULT STDMETHODCALLTYPE save_SetDefaultFolder(IFileSaveDialog *This, IS
 
 static HRESULT STDMETHODCALLTYPE save_SetFolder(IFileSaveDialog *This, IShellItem *psi)
 {
-    file_proxy *p=(file_proxy *)This;return IFileSaveDialog_SetFolder((IFileSaveDialog *)p->variant ,psi);
+    file_proxy *p=(file_proxy *)This;return proxy_set_folder(p,psi);
 }
 
 static HRESULT STDMETHODCALLTYPE save_GetFolder(IFileSaveDialog *This, IShellItem **ppsi)

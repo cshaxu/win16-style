@@ -126,7 +126,10 @@ try{
         foreach($folderMode in @('native','styled')) {
             $folderLaunch=if($folderMode -eq 'native'){'--direct'}else{$run}
             $folderOld=if($folderMode -eq 'native'){'old=0'}else{'old=1'}
-            $cases+=Case "dialog-com-live-folder-$arch-$folderMode" $dialogDriver @($folderLaunch,$liveFolderTarget) @("LIVE_FOLDER_RESULT bits=$bits",$folderOld,'initial=1 final=1 stable=1 v2=1 parent=1 phase=3','worker=0','DIALOG_DRIVER exit=0') 30
+            $cases+=Case "dialog-com-live-folder-$arch-$folderMode" $dialogDriver @($folderLaunch,$liveFolderTarget) @("LIVE_FOLDER_RESULT bits=$bits",$folderOld,'initial=1 final=1 stable=1 v2=1 parent=1','phase=3','worker=0','DIALOG_DRIVER exit=0') 30
+            foreach($folderKind in @('open','save')) {
+                $cases+=Case "dialog-com-set-folder-$arch-$folderKind-$folderMode" $dialogDriver @($folderLaunch,$liveFolderTarget,'set',$folderKind) @("LIVE_FOLDER_RESULT bits=$bits",$folderOld,'initial=1 final=1 stable=1 v2=1 parent=1 name=1 filter=1 phase=3','worker=0','DIALOG_DRIVER exit=0') 30
+            }
         }
         foreach($liveKind in @('open','save')) {
             foreach($liveMode in @('native','styled')) {
