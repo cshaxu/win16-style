@@ -113,7 +113,7 @@ static HFONT system_acquire(HFONT source,UINT menu_dpi,BOOL preserve_strokes,BOO
 {
     HDC original=NULL,src=NULL,dst=NULL;HFONT base=NULL,font=NULL;
     HBITMAP a=NULL,b=NULL;HGDIOBJ oa=NULL,ob=NULL,of=NULL,oo=NULL;
-    BYTE *data=NULL;DWORD *pixels=NULL,*source_pixels=NULL;HANDLE resource=NULL;DWORD count=0;
+    BYTE *data=NULL;DWORD *pixels=NULL;HANDLE resource=NULL;DWORD count=0;
     TEXTMETRICW tm,system;char face[32],actual[32];BOOL ok=FALSE;
     unsigned cursor=118+225*4,sum=0,maxwidth=0;system_variant *v=NULL;
     source=win16_style_system_source(source);
@@ -129,16 +129,13 @@ static HFONT system_acquire(HFONT source,UINT menu_dpi,BOOL preserve_strokes,BOO
     if(!menu_dpi && (!strcmp(actual,"System") || !strncmp(actual,"Win16 System",12))){
         font=source;ok=TRUE;goto done;
     }
-    /* Tiny application cells cannot reliably contain these bold raster
-     * shapes. Keep the application's own font rather than merge strokes. */
-    if(!menu_dpi && tm.tmHeight>0 && tm.tmHeight<12){font=source;ok=TRUE;goto done;}
     if(tm.tmHeight<1 || tm.tmHeight>64)goto done;
     data=calloc(65536,1);v=calloc(1,sizeof(*v));if(!data || !v)goto done;
     wsprintfA(face,"Win16 System %08lX",(DWORD)InterlockedIncrement(&variant_serial));
     src=CreateCompatibleDC(NULL);dst=CreateCompatibleDC(NULL);
+    a=CreateBitmap(128,64,1,1,NULL);
     BITMAPINFO info={.bmiHeader={.biSize=sizeof(BITMAPINFOHEADER),.biWidth=128,
         .biHeight=-64,.biPlanes=1,.biBitCount=32,.biCompression=BI_RGB}};
-    a=CreateDIBSection(NULL,&info,DIB_RGB_COLORS,(void **)&source_pixels,NULL,0);
     b=CreateDIBSection(NULL,&info,DIB_RGB_COLORS,(void **)&pixels,NULL,0);
     base=CreateFontW(16,0,0,0,FW_BOLD,FALSE,FALSE,FALSE,ANSI_CHARSET,
         OUT_RASTER_PRECIS,CLIP_DEFAULT_PRECIS,NONANTIALIASED_QUALITY,DEFAULT_PITCH,L"System");
@@ -165,33 +162,8 @@ static HFONT system_acquire(HFONT source,UINT menu_dpi,BOOL preserve_strokes,BOO
         word(data,118+4*n,width);word(data,120+4*n,cursor);
         if(!FillRect(src,&clear,(HBRUSH)GetStockObject(WHITE_BRUSH)) || !TextOutW(src,0,0,&wc,1))goto done;
         if(!FillRect(dst,&clear,(HBRUSH)GetStockObject(WHITE_BRUSH)))goto done;
-        if(width && syssize.cx){
-            if(menu_dpi){
-                if(!StretchBlt(dst,0,0,(int)width,tm.tmHeight,src,0,0,syssize.cx,system.tmHeight,SRCCOPY))goto done;
-            }else{
-                /* The source advance includes blank side bearings. Shrinking
-                 * that whole cell independently also shrinks narrow letters
-                 * vertically. Measure ink instead, then use the same line
-                 * height for every character while preserving the advance. */
-                int left=syssize.cx,right=-1;
-                GdiFlush();
-                for(int y=0;y<system.tmHeight;++y)for(int x=0;x<syssize.cx;++x)
-                    if(!(source_pixels[y*128+x]&0xffffff)){if(x<left)left=x;if(x>right)right=x;}
-                if(right>=left){
-                    int ink=right-left+1,draw_width=max(1,MulDiv(ink,tm.tmHeight,system.tmHeight));
-                    draw_width=min((int)width,draw_width);
-                    int x=((int)width-draw_width)/2;
-                    if(!StretchBlt(dst,x,0,draw_width,tm.tmHeight,src,left,0,ink,system.tmHeight,SRCCOPY))goto done;
-                }
-            }
-        }
+        if(width && syssize.cx && !StretchBlt(dst,0,0,(int)width,tm.tmHeight,src,0,0,syssize.cx,system.tmHeight,SRCCOPY))goto done;
         GdiFlush(); /* Complete GDI writes before reading DIB memory. */
-        /* A bottom-row underscore can vanish during bitmap downsampling or
-         * later font clipping. Keep its full advance on a visible descent row. */
-        if(!menu_dpi && n+32=='_' && width){
-            int row=min(tm.tmHeight-1,tm.tmAscent+1);
-            for(unsigned x=0;x<width;++x)pixels[row*128+x]=0;
-        }
         for(unsigned x=0;x<width;++x)for(unsigned y=0;y<(unsigned)tm.tmHeight;++y)
             if(!(pixels[y*128+x]&0xffffff))data[cursor+(x/8)*(unsigned)tm.tmHeight+y]|=(BYTE)(0x80>>(x%8));
         cursor+=bytes;sum+=width;if(width>maxwidth)maxwidth=width;
