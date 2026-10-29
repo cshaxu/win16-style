@@ -338,6 +338,7 @@ static BOOL grid_identity(HWND w,HMODULE owner,HWND parent)
         GetClassNameW(w,name,ARRAYSIZE(name)) &&
         RealGetWindowClassW(w,real,ARRAYSIZE(real)) &&
         (((!lstrcmpW(name,L"TStringGrid") || !lstrcmpW(name,L"TDrawGrid") ||
+          (IsWindowUnicode(w) && !lstrcmpW(name,L"TCategoryButtons") && (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==owner) ||
           (owner==GetModuleHandleW(NULL) && IsWindowUnicode(w) && (!lstrcmpW(name,L"TValueListEditor") || !lstrcmpW(name,L"TDBGrid") ||
            ((!lstrcmpW(name,L"TDBLookupListBox") || !lstrcmpW(name,L"TOutline") || !lstrcmpW(name,L"TButtonGroup") || !lstrcmpW(name,L"TCategoryButtons")) && (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==owner)))) && !lstrcmpW(name,real)) ||
          (owner==GetModuleHandleW(NULL) && IsWindowUnicode(w) && (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==owner &&

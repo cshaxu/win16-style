@@ -1,0 +1,11 @@
+# M0 T18 S64 P180: package-owned VCL category frame
+
+The existing TCategoryButtons grid identity required a class owner equal to the main EXE. In the observed real WhiteStarUML sample, the control and its parent share the vcl190.bpl owner, so the published predicate could not select it. P180 additionally accepts an exact Unicode TCategoryButtons class with the same class owner as its same-thread parent, subject to existing child, client-edge, real-class and scrollbar protocol checks. It reuses only the existing nonclient frame and scrollbar renderer; category headers, buttons, colors, contents and callbacks remain application-owned and are not claimed styled.
+
+A project-authored DLL-owned native fixture checks positive attachment, wrong parent owner, missing client edge, reparent retirement and pixel comparison. The old published package failed the positive assertion on both x86 and x64. The candidate passed both widths: 2736 nonclient pixels changed, zero client pixels; target controls and fixture were explicitly destroyed, and the isolated process reclaimed the root window on exit. This is a model, not a replacement for real VCL evidence.
+
+The final candidate was run against the real WhiteStarUML 5.5.8 low-integrity task copy with a bundled model and disabled plugin descriptions. The 96 DPI visible control retained category content and acquired the classic scrollbar. Against the previous published styled capture of equal 157x376 dimensions, 8440 pixels changed outside the estimated 136x372 client rectangle and zero within it. This is an approximate coordinate comparison, not a full input, DPI, callback, custom drawing, natural shutdown or stability proof. The owned process was job-terminated after observation. The controls and icons themselves remain modern.
+
+Clean x86/x64 same-snapshot build passed; snapshot SHA256 c9666f4888835f4615fe060623624313a58d10e79ef732985e4adb98d8fc45cc. Eighteen focused package cases passed in 13.58 seconds with no skips; not the full matrix. Four files were published to the assets root and O:\winnt\system32 with matching hashes; installed external-owner model passed for both widths at both locations. Original graphics were not modified.
+
+M0, T18 and S64 remain open; do not infer complete category control support from this nonclient change.

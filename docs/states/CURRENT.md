@@ -1194,3 +1194,7 @@ S64真实TCategoryButtons首证：自有低完整性标签私有桌面修正后�
 S64真实分类控件证据纠正：先前裸/样式相同截图的客户区为空白，仅可比较空控件外观，不能证明分类按钮绘制。96 DPI实际控件为Unicode，父窗TPaletteNavBarFrameVclImpl与控件同属vcl190.bpl，SB_VERT读取成功range 0..10/page10/pos0；P178主EXE所有者门槛仍不匹配。自有探针对默认新建项目OK发一次BM_CLICK后窗口变157×376，客户区仍空白；任务副本禁用了add-in描述，影响未确定。无真实分类项绘制/输入结论，job强制回收。[记录](../history/M0-T18-S64-P178-vcl-button-groups.md)。M0/T18/S64开放。
 
 S64真实分类项复现：低完整性自有裸/样式实例直接打开随包Sample unicode names.uml后，真实TCategoryButtons显示Annotation及按钮；样式版确认assets 32位DLL加载，owner及父窗同为vcl190.bpl，96 DPI滚动range 0..21/page15。裸版尺寸157×380、样式157×376，重叠前248行RGB零差异，余下208像素不同，尚不能区分布局/时序影响，不能称全面相同或证明交互。P178主EXE owner条件仍不匹配；插件描述在任务副本禁用，进程job终止，未验自然关闭。[记录](../history/M0-T18-S64-P178-vcl-button-groups.md)。M0/T18/S64开放。
+
+S64真实TCategoryButtons外框候选：实际96 DPI分类项样本由vcl190.bpl注册且同模块父窗，Unicode、CLIENTEDGE及滚动信息有效，现有P178仅接受主EXE owner而错过。拟仅在同线程/进程、精确Unicode类及真实类、同owner父窗、CLIENTEDGE和既有滚动协议门槛下允许外部owner，复用既有非客户区外框与滚动条；不改变分类项、字体、颜色或应用回调。先验证自有跨模块错误owner/换父/像素及真实样本、回归、双宽干净包，分类内容绘制仍是未完成项；M0/T18/S64开放。
+
+S64 P180真实VCL外部owner分类控件有限外框：精确Unicode TCategoryButtons及同owner父窗经既有边框/滚动协议后复用非客户区renderer；双宽DLL-owner模型正例、错误父窗、无边框、换父及客户端0像素通过，旧版双宽正例失败。真实WhiteStar 96 DPI有分类项样本的最终候选显示经典滚动条，与旧版同尺寸截图估算客户区0/外区8440像素变化；分类按钮本身仍原生。干净同批包18项13.58秒零skip、双发布及两处双宽安装模型通过；插件禁用、自然关闭/输入/其他DPI未验。[证据](../history/M0-T18-S64-P180-category-package.md)。提交推送及远端复核待完成；M0/T18/S64开放。
