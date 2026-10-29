@@ -1198,3 +1198,5 @@ S64真实分类项复现：低完整性自有裸/样式实例直接打开随包S
 S64真实TCategoryButtons外框候选：实际96 DPI分类项样本由vcl190.bpl注册且同模块父窗，Unicode、CLIENTEDGE及滚动信息有效，现有P178仅接受主EXE owner而错过。拟仅在同线程/进程、精确Unicode类及真实类、同owner父窗、CLIENTEDGE和既有滚动协议门槛下允许外部owner，复用既有非客户区外框与滚动条；不改变分类项、字体、颜色或应用回调。先验证自有跨模块错误owner/换父/像素及真实样本、回归、双宽干净包，分类内容绘制仍是未完成项；M0/T18/S64开放。
 
 S64 P180真实VCL外部owner分类控件有限外框：精确Unicode TCategoryButtons及同owner父窗经既有边框/滚动协议后复用非客户区renderer；双宽DLL-owner模型正例、错误父窗、无边框、换父及客户端0像素通过，旧版双宽正例失败。真实WhiteStar 96 DPI有分类项样本的最终候选显示经典滚动条，与旧版同尺寸截图估算客户区0/外区8440像素变化；分类按钮本身仍原生。干净同批包18项13.58秒零skip、双发布及两处双宽安装模型通过；插件禁用、自然关闭/输入/其他DPI未验。[证据](../history/M0-T18-S64-P180-category-package.md)。提交推送及远端复核待完成；M0/T18/S64开放。
+
+S64常用应用集中复测：P180发布包对自有MadShow裸/样式检查19目标控件、DoubleKiller四页各33控件、MD5summer四目标及下拉选择、Actor两复选glyph/四轮点击均到达相应断言；但四个完整观察器均在截图后或关闭等待阶段失败，MD5/Actor明确WAIT_TIMEOUT，其他具体失败调用未识别，不能算整轮通过或归因产品。自有作业关闭且无测试映像残留，未覆盖物理输入和自然退出。[记录](../history/M0-T18-S64-user-app-regression.md)。无产品变更；M0/T18/S64开放。
