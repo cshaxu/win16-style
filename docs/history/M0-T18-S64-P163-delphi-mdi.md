@@ -1,0 +1,11 @@
+# M0 T18 S64 P163: Delphi MDI child frame
+
+Real self-owned DelphiVCL4Python 1.0.7 x86/x64 MDI samples showed a classic parent frame but a modern child frame in P162. The child and parent TForm classes belonged to the same external DelphiVCL module; the USER32 MDIClient sat between them. A controlled prototype changing the external-child guard alone produced classic child frames on both architectures, establishing the relevant path for these samples.
+
+The implementation admits only a captioned TForm MDI child with same-thread/process USER32 MDIClient and an already attached same-owner TForm host. It retains a reference to that precise host attachment, and retires the child if host identity, child role or parent no longer matches. It reuses existing frame rendering; no original graphics or exported ABI changed. Unknown external child classes and owners remain native.
+
+Native fixture models run in isolated desktops and cover the expected host, a different host, maximize/restore, reparent, removal of WS_EX_MDICHILD and host removal; all pass dual-width, and P162 fails the positive attachment test on both widths. The initial prototype failed the reparent assertion on both widths; that negative is retained. Actual candidate package DLLs loaded in both real VCL samples, showed classic child titles and passed message-level maximize/restore and process exit; captures `build/t18-s64-vb-mask-survey/mdi-p163-{32,64}.bmp`. Probe logs and failed attempts are described in [the investigation](M0-T18-S64-delphi-mdi-investigation.md).
+
+`Build-Package.ps1 -Task 18 -RunName s64-delphi-mdi-p163` passed clean dual-width build and ABI. `Test-Package.ps1` run `s64-delphi-mdi-p163-test` passed 20 focused actual-package cases in 14.73 seconds with zero skips, including both VCL MDI models, four VB5/VB6 MDI models, menus and adjacent controls. This is not the full integration matrix. `Publish-Package.ps1` run `s64-delphi-mdi-p163-publish` verified all eight hashes at assets root and `O:\winnt\system32`; models passed both widths from both destinations.
+
+Limitations: one VCL runtime, message-level input and ordinary state only. MDI menu merging at maximize, physical input, other VCL versions and DPI, exhaustive reentrant changes and full integration are not covered. M0, T18 and S64 stay open.
