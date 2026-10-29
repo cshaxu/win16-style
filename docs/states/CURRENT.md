@@ -1174,3 +1174,5 @@ S64 当前发布包真实TFrame嵌套复测：双宽GoVCL真实Frame内Button、
 S64真实TCategoryButtons样本候选：WhiteStarUML作者免安装ZIP已成功获取并在任务scratch静态解包，归档SHA256 c8a4fd77420e2c586e33e6c47e5c428c61ac3df6009a0e0f5b5fdcc809d3bdf6；EXE SHA256 f4ae9a7b968f2fdf15926dd4ba64af4c4ba7e1c80ad986da5db1e5d59f961235，TPF0窗体资源含TCategoryButtons PaletteNavBar和分类数据。未执行、未安装或注册，运行前需核对启动副作用与隔离；静态资源不证明实际创建或换肤。[记录](../history/M0-T18-S64-P178-vcl-button-groups.md)。M0/T18/S64开放。
 
 S64 WhiteStar样本运行边界：公开镜像Main.pas首次主窗显示会加载add-in，正常关闭会保存配置及注册表，MainFrm.pas含创建注册表键并写窗口状态；尚未证明源码与5.5.8二进制一致，不能推定具体副作用，需先隔离注册表及插件。样本尚未运行，M0/T18/S64开放。[记录](../history/M0-T18-S64-P178-vcl-button-groups.md)。
+
+S64 WhiteStar版本源码核对：作者5.5.8源码ZIP SHA256 b330c0d2dd2134fb7a609e83ffc4773626540f183c1e23be1a542ec3b17dfaf1；NavBarFrameVclImpl声明PaletteNavBar为TCategoryButtons并含分类/点击处理，Main及MainFrm确有加载插件、关闭写设置/注册表代码。版本一致不证明EXE由该源码逐字节构建；样本仍未运行，待隔离副作用。[记录](../history/M0-T18-S64-P178-vcl-button-groups.md)。M0/T18/S64开放。
