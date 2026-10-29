@@ -21,7 +21,7 @@ foreach($file in $files){
     if($file.PSIsContainer -or ($file.Attributes -band [IO.FileAttributes]::ReparsePoint)){throw 'Candidate must be regular files'}
     if((Hash $file.FullName) -ne $tested.sha256.($file.Name)){throw "Tested hash mismatch: $($file.Name)"}
 }
-$destinations=@((Join-Path $repo 'assets'),'O:\winnt\system32')
+$destinations=@((Join-Path $repo 'assets'),'O:\winnt')
 foreach($destination in $destinations){
     if(!(Test-Path -LiteralPath $destination -PathType Container)){throw "Destination absent: $destination"}
     for($ancestor=$destination;$ancestor;$ancestor=Split-Path $ancestor -Parent){
@@ -32,7 +32,7 @@ foreach($destination in $destinations){
         if((Test-Path -LiteralPath $target) -and ((Get-Item -LiteralPath $target -Force).Attributes -band ([IO.FileAttributes]::ReparsePoint -bor [IO.FileAttributes]::Directory))){throw 'Destination is not a regular file'}
     }
 }
-if($ValidateOnly){'PUBLISH VALIDATION PASS: tested hashes, exact four files, assets root and fixed system32';return}
+if($ValidateOnly){'PUBLISH VALIDATION PASS: tested hashes, exact four files, assets root and fixed O:\winnt';return}
 $scratch=Join-Path $repo "build/t$Task-package/$RunName"
 if(Test-Path -LiteralPath $scratch){throw 'Use a fresh publication run name; preserve prior backups'}
 New-Item -ItemType Directory -Path $scratch|Out-Null
@@ -56,7 +56,7 @@ try{
         if($record.after -ne $record.expected){throw "Published hash mismatch: $($record.path)"}
     }
     @{status='passed';test_status=$tested.status;skipped=@($tested.skipped);tested_package=$Package;test_result=(Resolve-Path -LiteralPath $TestResult).Path;files=@($records)}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
-    'PUBLISH PASS: four tested files identical at assets root and O:\winnt\system32'
+    'PUBLISH PASS: four tested files identical at assets root and O:\winnt'
 }catch{
     @{status='incomplete';error=$_.Exception.Message;files=@($records)}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
     throw

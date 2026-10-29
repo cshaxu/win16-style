@@ -1208,3 +1208,5 @@ S64裸Actor等待线程模块补证：自有进程WCT显示UI线程等待另一�
 S64常用应用截图复核：已有样式截图中MadShow按钮/编辑框、DoubleKiller选项页按钮/复选框、MD5summer按钮/下拉/滚动条及Actor复选glyph呈经典效果；仅是所捕获状态的视觉观察，不证明全集。Actor文字在先前裸截图与本次样式截图均有乱码，不凭截图断定原因或编码；共同退出失败仍未解决。[记录](../history/M0-T18-S64-user-app-regression.md)。无产品变更，M0/T18/S64开放。
 
 S64退出环境对照：同私有桌面与自有job中裸demo两次收到WM_CLOSE后5秒等待超时；第二次窗口仍存在，WCT显示UI线程等待另一线程、无循环，全程未使用run16s/DLL。说明测试环境/启动组合可在自有程序复现相似等待，尚不证明根因、所有程序同因或普通桌面受影响。job关闭。[记录](../history/M0-T18-S64-user-app-regression.md)。M0/T18/S64开放。
+
+用户后续发布路径更新：自本指令起，binary change的四文件发布至项目assets根目录及O:/winnt根目录，不再以O:/winnt/system32为目标；历史发布记录保留当时路径。本次治理变更不覆盖T18 S64活动包。[记录](../history/M0-Td-S15-publish-root.md)。
