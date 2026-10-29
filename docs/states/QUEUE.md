@@ -9,11 +9,10 @@ CURRENT 是唯一活动工作权威；本文件拥有顺序，各 proposal 拥�
 
 | 顺序 | T 候选 | 前置完成条件 | 核心交付/任务级退出条件 |
 | --- | --- | --- | --- |
-| 1 | [Delphi Win32控件完整审计与Win3.x风格适配](../proposals/delphi-win32-controls.md) | 用户要求首位排队；正式准入后先冻结版本/框架/控件/变体全集与真实样本，不覆盖当前T17 | 沿用VB5/VB6专项方式：全貌审计、demo对应展示、分S实施、独立全集收口；保留数据/事件/图像/资源所有权，原生证据、同批四文件交付及真实应用验收 |
-| 2 | [Win3.x 文件夹选择与公共对话框适配](../proposals/classic-folder-dialogs.md) | 用户仅要求排队；正式准入后先确认真实调用接口、经典资源/布局依据及回调/返回语义 | 在现有双宽DLL内有限适配经典目录选择布局与图标，保留路径/PIDL/对象、取消/回调及所有权；不分发旧系统DLL，原生证据、回退矩阵及四文件交付 |
-| 3 | [run16s 登录全局样式模式](../proposals/global-style-mode.md) | 用户另行准入；协调现有活动包，并先完成全局接入架构规则修订及双宽原型验证 | 复用run16s管理桌面双宽钩子，保持三组件四产物；登录启动/托盘/排除/退出语义及实际包验证，退出后保留已有样式与DLL传播 |
+| 1 | [Win3.x 文件夹选择与公共对话框适配](../proposals/classic-folder-dialogs.md) | 用户仅要求排队；正式准入后先确认真实调用接口、经典资源/布局依据及回调/返回语义 | 在现有双宽DLL内有限适配经典目录选择布局与图标，保留路径/PIDL/对象、取消/回调及所有权；不分发旧系统DLL，原生证据、回退矩阵及四文件交付 |
+| 2 | [run16s 登录全局样式模式](../proposals/global-style-mode.md) | 用户另行准入；协调现有活动包，并先完成全局接入架构规则修订及双宽原型验证 | 复用run16s管理桌面双宽钩子，保持三组件四产物；登录启动/托盘/排除/退出语义及实际包验证，退出后保留已有样式与DLL传播 |
 
-[VB6框架控件外观](../proposals/madshow-controls.md)已按用户请求准入产品实现，范围及自动续S授权由CURRENT管理。
+[VB6框架控件外观](../proposals/madshow-controls.md)及[Delphi控件适配](../proposals/delphi-win32-controls.md)已按用户确认的有限范围收口，未覆盖项见TODO。
 
 [启动器与首次自动附着](../proposals/launcher-injection.md)已关闭；
 [子孙传播与创建语义](../proposals/descendant-propagation.md)已关闭。
