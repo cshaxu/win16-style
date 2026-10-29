@@ -1192,3 +1192,5 @@ S64 WhiteStar低完整性试探：任务副本中仅重命名8个插件描述，
 S64真实TCategoryButtons首证：自有低完整性标签私有桌面修正后，自有demo正常显示；禁用8个任务副本插件描述的WhiteStar样本裸/样式均出现可见目标控件，窗口157×250、客户153×246、style 54010000/ex 200，类owner为vcl190.bpl而非主EXE；样式版实际模块枚举确认assets/ntw16s32.dll，裸/样式PrintWindow BMP逐字节一致。P178身份判断要求owner为主EXE，故不覆盖此实例；不能凭此直接放宽门槛或声称按钮绘制已处理。两组自有job强制回收，未验输入/正常关闭/其他DPI，低完整性不是完整沙箱；[证据](../history/M0-T18-S64-P178-vcl-button-groups.md)。M0/T18/S64开放。
 
 S64真实分类控件证据纠正：先前裸/样式相同截图的客户区为空白，仅可比较空控件外观，不能证明分类按钮绘制。96 DPI实际控件为Unicode，父窗TPaletteNavBarFrameVclImpl与控件同属vcl190.bpl，SB_VERT读取成功range 0..10/page10/pos0；P178主EXE所有者门槛仍不匹配。自有探针对默认新建项目OK发一次BM_CLICK后窗口变157×376，客户区仍空白；任务副本禁用了add-in描述，影响未确定。无真实分类项绘制/输入结论，job强制回收。[记录](../history/M0-T18-S64-P178-vcl-button-groups.md)。M0/T18/S64开放。
+
+S64真实分类项复现：低完整性自有裸/样式实例直接打开随包Sample unicode names.uml后，真实TCategoryButtons显示Annotation及按钮；样式版确认assets 32位DLL加载，owner及父窗同为vcl190.bpl，96 DPI滚动range 0..21/page15。裸版尺寸157×380、样式157×376，重叠前248行RGB零差异，余下208像素不同，尚不能区分布局/时序影响，不能称全面相同或证明交互。P178主EXE owner条件仍不匹配；插件描述在任务副本禁用，进程job终止，未验自然关闭。[记录](../history/M0-T18-S64-P178-vcl-button-groups.md)。M0/T18/S64开放。
