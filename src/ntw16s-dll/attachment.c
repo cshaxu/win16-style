@@ -1707,8 +1707,9 @@ static BOOL install_created(HWND w,DWORD original_style)
             !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING));
         track_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TTrackBar") &&
             RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TTrackBar");
-        color_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TColorBox") &&
-            RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TColorBox");
+        color_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) &&
+            (!lstrcmpW(name,L"TColorBox") || !lstrcmpW(name,L"TDriveComboBox")) &&
+            RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,name);
         bit_candidate=ready && bit_identity(w,owner);
         inplace_candidate=ready && inplace_or_lookup(w,owner,GetParent(w));
         nav_candidate=ready && (owner==GetModuleHandleW(NULL) || class_is(w,L"TMediaPlayer")) && nav_identity(w,owner,GetParent(w));

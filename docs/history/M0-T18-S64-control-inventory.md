@@ -30,9 +30,9 @@ This is an interim reconciliation, not a final supported-versus-unimplemented au
 
 ## Delphi VCL: 74 frozen families
 
-- limited-evidence: **49** — `TDirectoryListBox`, `TFileListBox`, `TCoolBar`, `TDBLookupListBox`, `TDBListBox`, `TMDIForm`, `TMediaPlayer`, `TDBNavigator`, `TDBLookupComboBox`, `TDBComboBox`, `TDBEdit`, `TDBGrid`, `TMainMenu`, `TMaskEdit`, `TForm`, `TPanel`, `TGroupBox`, `TScrollBox`, `TButton`, `TBitBtn`, `TCheckBox`, `TRadioButton`, `TRadioGroup`, `TEdit`, `TMemo`, `TRichEdit`, `TComboBox`, `TListBox`, `TCheckListBox`, `TColorBox`, `TStaticText`, `TPopupMenu`, `TToolBar`, `TStatusBar`, `TControlBar`, `TTreeView`, `TListView`, `THeaderControl`, `TTabControl`, `TPageControl`, `TProgressBar`, `TTrackBar`, `TUpDown`, `TDateTimePicker`, `TMonthCalendar`, `THotKey`, `TStringGrid`, `TDrawGrid`, `TValueListEditor`.
+- limited-evidence: **50** — `TDriveComboBox`, `TDirectoryListBox`, `TFileListBox`, `TCoolBar`, `TDBLookupListBox`, `TDBListBox`, `TMDIForm`, `TMediaPlayer`, `TDBNavigator`, `TDBLookupComboBox`, `TDBComboBox`, `TDBEdit`, `TDBGrid`, `TMainMenu`, `TMaskEdit`, `TForm`, `TPanel`, `TGroupBox`, `TScrollBox`, `TButton`, `TBitBtn`, `TCheckBox`, `TRadioButton`, `TRadioGroup`, `TEdit`, `TMemo`, `TRichEdit`, `TComboBox`, `TListBox`, `TCheckListBox`, `TColorBox`, `TStaticText`, `TPopupMenu`, `TToolBar`, `TStatusBar`, `TControlBar`, `TTreeView`, `TListView`, `THeaderControl`, `TTabControl`, `TPageControl`, `TProgressBar`, `TTrackBar`, `TUpDown`, `TDateTimePicker`, `TMonthCalendar`, `THotKey`, `TStringGrid`, `TDrawGrid`, `TValueListEditor`.
 
-- native-or-unverified: **16** — `TFrame`, `TSplitter`, `TSpeedButton`, `TLabel`, `TBevel`, `TChart`, `TAnimate`, `TDriveComboBox`, `TWebBrowser`, `TOleContainer`, `TButtonGroup`, `TCategoryButtons`, `TDockTabSet`, `TTabSet`, `TOutline`, `TTabbedNotebook`.
+- native-or-unverified: **15** — `TFrame`, `TSplitter`, `TSpeedButton`, `TLabel`, `TBevel`, `TChart`, `TAnimate`, `TWebBrowser`, `TOleContainer`, `TButtonGroup`, `TCategoryButtons`, `TDockTabSet`, `TTabSet`, `TOutline`, `TTabbedNotebook`.
 
 - nonvisual-or-content-only: **7** — `TShape`, `TImage`, `TPaintBox`, `TImageList`, `TActionList`, `TTimer`, `TTrayIcon`.
 
@@ -71,3 +71,5 @@ Update after P165: `TDBLookupListBox` has a Unicode, application-owned/same-owne
 Update after P167: `TCoolBar` has a bounded real Delphi grip path; [P167](M0-T18-S64-P167-coolbar.md) records scope and limitations. Delphi now has 47 limited, 18 native/unverified, 7 content/nonvisual and 2 separately queued dialogs. The VB lists also incorporate the previously omitted P36/P37 UserControl evidence: 22/16 for VB5 and 27/32 for VB6. These are evidence categories, not complete implementation or remaining development counts.
 
 Update after P174: `TDirectoryListBox` and `TFileListBox` have only a self-authored USER LISTBOX owner-draw superclass model for their nonclient frame/scrollbars; real VCL controls and filesystem behavior remain unverified. Delphi has 49 limited (including four model-only entries), 16 native/unverified, 7 content/nonvisual and 2 separate dialogs. These are evidence categories, not complete support.
+
+Update after P175: `TDriveComboBox` has a model-only witnessed native COMBOBOX draw-button path; real Delphi drive icons and directory linkage remain unverified. Delphi has 50 limited (including five model-only entries), 15 native/unverified, 7 content/nonvisual and 2 separate dialogs.

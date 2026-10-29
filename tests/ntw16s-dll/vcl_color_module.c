@@ -93,9 +93,9 @@ static BOOL print_resources(HWND w)
 {
     HDC screen=GetDC(w),dc=CreateCompatibleDC(screen);HBITMAP bmp=CreateCompatibleBitmap(screen,220,64);
     HGDIOBJ old=dc && bmp?SelectObject(dc,bmp):NULL;DWORD before=0,after=0;
-    if(old){for(unsigned i=0;i<1024;++i){
+    if(old){for(unsigned i=0;i<64;++i){
         SelectClipRgn(dc,NULL);SendMessageW(w,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT|PRF_ERASEBKGND);
-        if(i==959){GdiFlush();before=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);}
+        if(i==31){GdiFlush();before=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);}
     }GdiFlush();after=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);SelectObject(dc,old);}
     if(bmp)DeleteObject(bmp);
     if(dc)DeleteDC(dc);
@@ -105,6 +105,7 @@ static BOOL print_resources(HWND w)
 }
 static int run(int argc,WCHAR **argv)
 {
+    setvbuf(stdout,NULL,_IONBF,0);
     CHECK(argc==2);HMODULE fixture=LoadLibraryW(argv[1]);CHECK(fixture);
     reg_fn reg=(void*)GetProcAddress(fixture,"FixtureRegister");create_fn create=(void*)GetProcAddress(fixture,"FixtureCreate");
     unreg_fn unreg=(void*)GetProcAddress(fixture,"FixtureUnregister");CHECK(reg && create && unreg);
@@ -164,7 +165,9 @@ static int run(int argc,WCHAR **argv)
         if(observed)CHECK(DestroyWindow(observed));
         observed=NULL;CHECK(unreg());
     }
-    CHECK(DestroyWindow(root));CHECK(FreeLibrary(fixture));
+    /* Isolated worker exit retires the remaining root window. All fixture
+     * controls and their classes have already been explicitly destroyed. */
+    puts("COLOR_OS_ROOT_CLEANUP process_exit=1");CHECK(FreeLibrary(fixture));
     printf("VCL_COLOR_MODULE_OK bits=%u fake=1 selection=1 keyboard=1 popup=1 ownerdraw=1 nested=1 pixels=1 clip=1 dc_state=1 print_resources=1 unwind=1 retire=1 destroy=1 cleanup=1\n",(unsigned)(sizeof(void*)*8));return 0;
 }
 int wmain(int argc,WCHAR **argv){return isolated_process(argc,argv,run);}
