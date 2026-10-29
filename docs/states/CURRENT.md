@@ -1260,3 +1260,5 @@ S64 P181真实标签复核：自有样式MD5summer的Checksum标签DrawTextA仍�
 S64后续候选发布路径纠正：Delphi控件、文件夹对话框及全局模式三份仍使用的候选已同步当前执行规范的O:/winnt根目录；不修改历史完成记录、不改变活动包或新开T。M0/T18/S64开放。
 
 S64旧式VCL标签样本核对：本地DelphiVCL4Python x64工厂日志对TTabSet和TTabbedNotebook返回Invalid class（同轮TButton成功）；GoVCL x86导出表有PageControl_Create但无两者对应Create导出。仅说明这些绑定的样本构造入口，不推断Delphi类不能运行；TTabbedNotebook仍仅P176模型、TTabSet未验证。[记录](../history/M0-T18-S64-control-inventory.md)。M0/T18/S64开放。
+
+S64真实VCL组合框对照：同一TFrame样本裸/样式×双宽均以原生消息添加两项、选第二项、打开关闭下拉并保持选择，四组退出0。仅单运行库合成消息，不代表物理键鼠、回调、可编辑组合或全部DPI。[记录](../history/M0-T18-S64-frame-investigation.md)。M0/T18/S64开放。
