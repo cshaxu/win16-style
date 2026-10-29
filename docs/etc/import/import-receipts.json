@@ -2705,7 +2705,7 @@
       "path": "tests/ntw16s-dll/dialog_test_driver.c",
       "source": null,
       "source_blob": null,
-      "sha256": "505d13530ae882941cdc8a001709637383682f12c7e3997bd7361acb023b540b",
+      "sha256": "fc6ad9d58a0b6bbfc69e1aad7d769f6816e703edec2708389a3756db07289fab",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
@@ -2822,7 +2822,7 @@
       "path": "tests/ntw16s-dll/com_dialog_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "9c2d66ac23962f4285b66ccb947dd87bc58b2102c5dedcde09de54f24e5ee489",
+      "sha256": "4cb27ef49d3372fe75c399027c661102ad2903d7f8850da0e202d96a7f88213c",
       "disposition": "authored",
       "review": "T20 S1 COM dialog bridge and real native probe under development",
       "notice": "Project-authored; no imported code or resources"
@@ -2867,7 +2867,7 @@
       "path": "tests/ntw16s-dll/com_events_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e5ce5e29b7b191cb061c909b2d2998a2073e4712663e4344b763f0a637ba63ff",
+      "sha256": "5c0edd3b2349a6f2a9db683d386e3d3815ea91a6f7f386bdd92cad786312992f",
       "disposition": "authored",
       "review": "T20 S1 native old dialog and COM event identity and veto probes",
       "notice": "Project-authored test; no imported code or resources"

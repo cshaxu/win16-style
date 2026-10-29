@@ -448,6 +448,13 @@ try{
             (Case 'messages' (Join-Path $x64 'launch-automatic.exe') ($pair+@('messages')) @('LAUNCH MATRIX PASS') 520)
         )
     }
+    # Dialog tests that do not compare actual screen pixels run on a private
+    # desktop, so they cannot consume the user's physical keyboard input.
+    foreach($case in $cases){
+        if($case.command -eq $dialogDriver -and $case.name -notmatch '^scroll-' -and $case.name -notmatch '^dialog-folder-x(86|64)-controls$'){
+            $case.arguments=@('--private')+@($case.arguments)
+        }
+    }
     $plan=if($focusSpecified){Select-PackageCases -Cases $cases -Focus $Focus}else{Select-PackageCases -Cases $cases}
     if($FullIntegration){$plan.coverage='full-integration'}
     $cases=@($plan.cases)

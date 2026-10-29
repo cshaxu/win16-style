@@ -34,11 +34,13 @@ static HRESULT STDMETHODCALLTYPE ok(IFileDialogEvents *p,IFileDialog *dialog)
     if(self_unadvise){self_result=IFileDialog_Unadvise(dialog,event_cookie);return S_OK;}
     return count==1?S_FALSE:S_OK;
 }
-static HRESULT STDMETHODCALLTYPE folder_changing(IFileDialogEvents *p,IFileDialog *d,IShellItem *i){(void)p;(void)d;(void)i;return S_OK;}
-static HRESULT STDMETHODCALLTYPE changed(IFileDialogEvents *p,IFileDialog *d){(void)p;(void)d;return S_OK;}
+static HRESULT STDMETHODCALLTYPE folder_changing(IFileDialogEvents *p,IFileDialog *d,IShellItem *i){(void)p;(void)d;PWSTR path=NULL;HRESULT hr=i?IShellItem_GetDisplayName(i,SIGDN_FILESYSPATH,&path):E_INVALIDARG;printf("EVENT_FOLDER_CHANGING item=%08lx path=%ls\n",(unsigned long)hr,path?path:L"(none)");if(path)CoTaskMemFree(path);return S_OK;}
+static HRESULT STDMETHODCALLTYPE folder_changed(IFileDialogEvents *p,IFileDialog *d){(void)p;IShellItem *item=NULL;PWSTR path=NULL;HRESULT hr=IFileDialog_GetFolder(d,&item);if(SUCCEEDED(hr))hr=IShellItem_GetDisplayName(item,SIGDN_FILESYSPATH,&path);printf("EVENT_FOLDER_CHANGED item=%08lx path=%ls\n",(unsigned long)hr,path?path:L"(none)");if(path)CoTaskMemFree(path);if(item)IShellItem_Release(item);return S_OK;}
+static HRESULT STDMETHODCALLTYPE selection_changed(IFileDialogEvents *p,IFileDialog *d){(void)p;IShellItem *item=NULL;PWSTR path=NULL;HRESULT hr=IFileDialog_GetCurrentSelection(d,&item);if(SUCCEEDED(hr))hr=IShellItem_GetDisplayName(item,SIGDN_FILESYSPATH,&path);printf("EVENT_SELECTION item=%08lx path=%ls\n",(unsigned long)hr,path?path:L"(none)");if(path)CoTaskMemFree(path);if(item)IShellItem_Release(item);return S_OK;}
+static HRESULT STDMETHODCALLTYPE type_changed(IFileDialogEvents *p,IFileDialog *d){(void)p;UINT type=0;HRESULT hr=IFileDialog_GetFileTypeIndex(d,&type);printf("EVENT_TYPE hr=%08lx index=%u\n",(unsigned long)hr,type);return S_OK;}
 static HRESULT STDMETHODCALLTYPE share(IFileDialogEvents *p,IFileDialog *d,IShellItem *i,FDE_SHAREVIOLATION_RESPONSE *r){(void)p;(void)d;(void)i;*r=FDESVR_DEFAULT;return S_OK;}
 static HRESULT STDMETHODCALLTYPE overwrite(IFileDialogEvents *p,IFileDialog *d,IShellItem *i,FDE_OVERWRITE_RESPONSE *r){(void)p;(void)d;(void)i;*r=FDEOR_DEFAULT;return S_OK;}
-static IFileDialogEventsVtbl table={qi,add,release,ok,folder_changing,changed,changed,share,changed,overwrite};
+static IFileDialogEventsVtbl table={qi,add,release,ok,folder_changing,folder_changed,selection_changed,share,type_changed,overwrite};
 static BOOL CALLBACK scan(HWND w,LPARAM arg)
 {
     (void)arg;WCHAR title[100];GetWindowTextW(w,title,ARRAYSIZE(title));

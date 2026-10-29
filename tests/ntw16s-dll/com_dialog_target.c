@@ -28,6 +28,8 @@ static BOOL CALLBACK find_dialog(HWND w,LPARAM value)
     if(!lstrcmpW(ok,L"Choose it") && !lstrcmpW(label,L"Target name:"))InterlockedExchange(&label_seen,1);
     WCHAR cancel_text[80]=L"";GetDlgItemTextW(w,IDCANCEL,cancel_text,ARRAYSIZE(cancel_text));
     if(!lstrcmpW(cancel_text,L"Stop choosing"))InterlockedExchange(&cancel_label_seen,1);
+    WCHAR edit[32768]=L"";GetDlgItemTextW(w,1152,edit,ARRAYSIZE(edit));
+    printf("COM_DIALOG_EDIT initial=%ls\n",edit);fflush(stdout);
     dialog=w;InterlockedExchange(&seen,1);return FALSE;
 }
 static DWORD WINAPI observer(void *unused)
@@ -36,6 +38,7 @@ static DWORD WINAPI observer(void *unused)
     for(unsigned i=0;i<200;++i){
         if(!seen)EnumThreadWindows(owner,find_dialog,0);
         if(seen && IsWindow(dialog) && i>10 && i%10==0){HWND button=GetDlgItem(dialog,cancel?IDCANCEL:IDOK);
+            WCHAR edit[32768]=L"";GetDlgItemTextW(dialog,1152,edit,ARRAYSIZE(edit));printf("COM_DIALOG_EDIT submit=%ls\n",edit);fflush(stdout);
             PostMessageW(dialog,WM_COMMAND,MAKEWPARAM(cancel?IDCANCEL:IDOK,BN_CLICKED),(LPARAM)button);}
         if(seen && !IsWindow(dialog))return 0;
         Sleep(50);
