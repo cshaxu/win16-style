@@ -1154,3 +1154,5 @@ S64按钮容器外框候选准入：Embarcadero文档将TButtonGroup和TCategory
 S64 P178 按钮容器有限外框模型：两类精确名称双宽自有模型外框2736像素、客户区0像素，旧P177正例失败；实际VCL按钮、布局和交互未验证，现有GoVCL无对应工厂。同批干净包20项12.75秒零skip、双发布八摘要及两处双宽安装测试通过；首次沙箱x86构建超时未发布。[证据](../history/M0-T18-S64-P178-vcl-button-groups.md)。提交推送及远端复核待完成，M0/T18/S64开放。
 
 S64 P178复核及真实样本查找：提交89bbd10已推送，远端12文件逐字节一致；本机DelphiVCL4Python 1.0.7双宽绑定均不导出ButtonGroup、CategoryButtons、Outline、TabbedNotebook、DriveComboBox、DirectoryListBox和FileListBox工厂，仅说明此绑定不能创建这些测试样本，不代表真实控件不能测试或已支持。[记录](../history/M0-T18-S64-P178-vcl-button-groups.md)。M0/T18/S64保持开放。
+
+S64 P178适用范围纠正：Embarcadero官方VCLButtons示例明确将TButtonGroup的BorderStyle设为bsNone，故该配置不满足P178的CLIENTEDGE门槛，按钮项绘制亦不在非客户区适配内。这是源码文档证据，非真实运行；真实按钮绘制和交互仍需样本。[记录](../history/M0-T18-S64-P178-vcl-button-groups.md)。M0/T18/S64开放。

@@ -9,3 +9,5 @@ The first clean package run timed out in x86 CMake compiler detection under the 
 M0, T18 and S64 remain open.
 
 The locally available DelphiVCL4Python 1.0.7 Win32 and Win64 bindings were inspected with Python `hasattr`: neither exports `ButtonGroup`, `CategoryButtons`, `Outline`, `TabbedNotebook`, `DriveComboBox`, `DirectoryListBox` or `FileListBox`. This only limits these bindings as test factories; it is not evidence that genuine controls cannot be tested or that model-only support works in real applications.
+
+Embarcadero's [VCLButtons example](https://docwiki.embarcadero.com/CodeExamples/Sydney/en/VCLButtons(Delphi)) explicitly assigns `BorderStyle := bsNone` to TButtonGroup. This documented configuration cannot satisfy P178's CLIENTEDGE gate and its button items are outside P178's nonclient renderer. This is source-level evidence of a coverage gap, not a run of that example; actual button drawing and interactions need a genuine Delphi sample.
