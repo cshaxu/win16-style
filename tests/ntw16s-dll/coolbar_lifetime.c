@@ -1,0 +1,57 @@
+#define _WIN32_WINNT 0x0A00
+#include <windows.h>
+#include <commctrl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <setjmp.h>
+#include "ntw16s-dll/injection/unwind.h"
+#define NTW16S_TEST_PROCESS_TIMEOUT 15000
+#include "isolated_process.h"
+#define CHECK(x) do{if(!(x)){printf("LIFETIME_FAIL line=%d error=%lu\n",__LINE__,GetLastError());return 1;}}while(0)
+static WNDPROC native;static HWND replacement;static int action,hits,nested_enabled,nested_hits,trigger_throw;static BOOL removed;static BOOL (__cdecl *remove_style)(HWND);static LRESULT CALLBACK barproc(HWND w,UINT m,WPARAM p,LPARAM l){return CallWindowProcW(native,w,m,p,l);}
+static BOOL exception_seen;
+#ifndef _WIN64
+typedef struct catcher {ntw16s_unwind_record record;jmp_buf saved;} catcher;
+static EXCEPTION_DISPOSITION NTAPI catch_exception(EXCEPTION_RECORD *e,void *frame,CONTEXT *c,void *dispatcher){(void)c;(void)dispatcher;if(!(e->ExceptionFlags&(EXCEPTION_UNWINDING|EXCEPTION_EXIT_UNWIND)) && e->ExceptionCode==0xe0435342u){exception_seen=TRUE;RtlUnwind(frame,NULL,e,NULL);longjmp(((catcher*)frame)->saved,1);}return ExceptionContinueSearch;}
+#else
+static LONG __attribute__((used)) coolbar_filter(EXCEPTION_POINTERS *e,void *frame){(void)frame;if(e->ExceptionRecord->ExceptionCode==0xe0435342u){exception_seen=TRUE;return EXCEPTION_EXECUTE_HANDLER;}return EXCEPTION_CONTINUE_SEARCH;}
+#endif
+static NTW16S_UNWIND_FUNCTION BOOL test_exception(HWND w){exception_seen=FALSE;
+#ifndef _WIN64
+ catcher c;c.record.handler=catch_exception;__asm__ __volatile__("movl %%fs:0,%0":"=r"(c.record.previous)::"memory");__asm__ __volatile__("movl %0,%%fs:0"::"r"(&c.record):"memory");if(!setjmp(c.saved)){InvalidateRect(w,NULL,FALSE);SendMessageW(w,WM_PAINT,0,0);}__asm__ __volatile__("movl %0,%%fs:0"::"r"(c.record.previous):"memory");
+#else
+ __asm__ __volatile__(".Lcoolbar_start:\n.seh_handler __C_specific_handler, @except\n.seh_handlerdata\n.long 1\n.rva .Lcoolbar_start,.Lcoolbar_end,coolbar_filter,.Lcoolbar_end\n.text\n":::"memory");InvalidateRect(w,NULL,FALSE);SendMessageW(w,WM_PAINT,0,0);__asm__ __volatile__("nop\n.Lcoolbar_end: nop\n":::"memory");
+#endif
+ return exception_seen;}
+static LRESULT CALLBACK hostproc(HWND w,UINT m,WPARAM p,LPARAM l){if(m==WM_NOTIFY&&l&&(nested_enabled||trigger_throw)){NMCUSTOMDRAW*n=(NMCUSTOMDRAW*)l;if(n->hdr.code==NM_CUSTOMDRAW&&n->dwDrawStage==CDDS_PREPAINT){if(trigger_throw){trigger_throw=0;RaiseException(0xe0435342u,0,0,NULL);}nested_enabled=0;nested_hits++;InvalidateRect(n->hdr.hwndFrom,NULL,FALSE);SendMessageW(n->hdr.hwndFrom,WM_PAINT,0,0);}}return DefWindowProcW(w,m,p,l);}
+static LRESULT CALLBACK sabotage(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data){(void)id;(void)data;LRESULT r=DefSubclassProc(w,m,p,l);if(m==RB_GETRECT&&action){int a=action;action=0;hits++;if(a==1)removed=remove_style(w);else if(a==2)SetParent(w,replacement);}return r;}
+static HWND makebar(HWND host,HINSTANCE inst){HWND w=CreateWindowW(L"TCoolBar",L"",WS_CHILD|WS_VISIBLE|WS_CLIPSIBLINGS|WS_CLIPCHILDREN|RBS_VARHEIGHT,0,0,400,80,host,NULL,inst,NULL);if(!w)return NULL;HWND b=CreateWindowW(L"BUTTON",L"b",WS_CHILD|WS_VISIBLE,0,0,100,24,w,NULL,inst,NULL);if(!b)return NULL;REBARINFO r={.cbSize=sizeof(r)};if(!SendMessageW(w,RB_SETBARINFO,0,(LPARAM)&r))return NULL;REBARBANDINFOW bi={.cbSize=REBARBANDINFOW_V3_SIZE,.fMask=RBBIM_CHILD|RBBIM_CHILDSIZE|RBBIM_SIZE|RBBIM_ID|RBBIM_STYLE,.fStyle=RBBS_GRIPPERALWAYS,.hwndChild=b,.cxMinChild=80,.cyMinChild=24,.cx=200,.wID=101};if(!SendMessageW(w,RB_INSERTBANDW,(WPARAM)-1,(LPARAM)&bi))return NULL;return w;}
+static unsigned narrowed;
+static LRESULT CALLBACK narrow_text(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
+{
+    (void)id;if(m==WM_NOTIFY&&l){NMCUSTOMDRAW *n=(NMCUSTOMDRAW*)l;if(n->hdr.hwndFrom==(HWND)data&&n->hdr.code==NM_CUSTOMDRAW&&n->dwDrawStage==CDDS_ITEMPOSTPAINT){n->rc.right=n->rc.left+9;narrowed++;}}
+    return DefSubclassProc(w,m,p,l);
+}
+static BOOL fallback(HWND root,HINSTANCE inst,int kind,BOOL (__cdecl *attached)(HWND))
+{
+    ShowWindow(root,SW_HIDE);HWND bar=makebar(root,inst);if(!bar)return FALSE;
+    DWORD colors[64];for(int i=0;i<64;i++)colors[i]=(i&1)?0x2050d0:0xd080;
+    HBITMAP bitmap=NULL;HIMAGELIST list=NULL;WCHAR label[512]=L"Band caption";
+    if(kind==3){for(int i=0;i<300;i++)label[i]=L'A'+(i%26);label[300]=0;}
+    REBARBANDINFOW info={.cbSize=REBARBANDINFOW_V3_SIZE};
+    if(kind==0||kind==3){info.fMask=RBBIM_TEXT;info.lpText=label;}
+    else {bitmap=CreateBitmap(8,8,1,32,colors);if(!bitmap)return FALSE;if(kind==1){info.fMask=RBBIM_BACKGROUND;info.hbmBack=bitmap;}
+        else {list=ImageList_Create(8,8,ILC_COLOR32,1,1);if(!list||ImageList_Add(list,bitmap,NULL)<0)return FALSE;REBARINFO ri={.cbSize=sizeof(ri),.fMask=RBIM_IMAGELIST,.himl=list};if(!SendMessageW(bar,RB_SETBARINFO,0,(LPARAM)&ri))return FALSE;info.fMask=RBBIM_IMAGE;info.iImage=0;}}
+    if(!SendMessageW(bar,RB_SETBANDINFOW,0,(LPARAM)&info))return FALSE;
+    narrowed=0;if((kind==0||kind==3)&&!SetWindowSubclass(root,narrow_text,31,(DWORD_PTR)bar))return FALSE;
+    ShowWindow(root,SW_SHOWNOACTIVATE);if(!SetWindowPos(bar,NULL,0,0,400,80,SWP_NOZORDER|SWP_NOACTIVATE)||!RedrawWindow(bar,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW))return FALSE;
+    BOOL painted=attached(bar);WCHAR text[512]={0};REBARBANDINFOW check={.cbSize=REBARBANDINFOW_V3_SIZE,.fMask=RBBIM_TEXT|RBBIM_BACKGROUND|RBBIM_IMAGE,.lpText=text,.cch=512,.iImage=-1};
+    BOOL read=SendMessageW(bar,RB_GETBANDINFOW,0,(LPARAM)&check)!=0;
+    BOOL content=read&&(kind==0||kind==3?!lstrcmpW(text,label):kind==1?check.hbmBack==bitmap:check.iImage==0);
+    BOOL removed=remove_style(bar);BOOL narrowed_ok=(kind!=0&&kind!=3)||narrowed>0;printf("LIFETIME_FALLBACK kind=%d painted=%d content=%d removed=%d narrow=%d\n",kind,painted,content,removed,narrowed_ok);
+    if(kind==0||kind==3)RemoveWindowSubclass(root,narrow_text,31);
+    DestroyWindow(bar);if(list)ImageList_Destroy(list);if(bitmap)DeleteObject(bitmap);return !painted&&content&&removed&&narrowed_ok;
+}
+static int worker(int argc,WCHAR **argv){(void)argc;(void)argv;setvbuf(stdout,NULL,_IONBF,0);INITCOMMONCONTROLSEX ic={sizeof(ic),ICC_COOL_CLASSES};CHECK(InitCommonControlsEx(&ic));HINSTANCE h=GetModuleHandleW(NULL);WNDCLASSEXW nativeclass={.cbSize=sizeof(nativeclass)},hostclass={.cbSize=sizeof(hostclass),.lpfnWndProc=hostproc,.hInstance=h,.lpszClassName=L"CoolHost"};CHECK(GetClassInfoExW(NULL,REBARCLASSNAMEW,&nativeclass));native=nativeclass.lpfnWndProc;nativeclass.hInstance=h;nativeclass.lpfnWndProc=barproc;nativeclass.lpszClassName=L"TCoolBar";nativeclass.style&=~CS_GLOBALCLASS;CHECK(RegisterClassExW(&hostclass)&&RegisterClassExW(&nativeclass));HWND root=CreateWindowW(L"CoolHost",L"",WS_OVERLAPPEDWINDOW,0,0,500,250,NULL,NULL,h,NULL);replacement=CreateWindowW(L"CoolHost",L"",WS_OVERLAPPEDWINDOW,0,0,500,250,NULL,NULL,h,NULL);CHECK(root&&replacement);HMODULE d=GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");BOOL (__cdecl *attached)(HWND)=d?(void*)GetProcAddress(d,"Ntw16sWindowAttached"):NULL;remove_style=d?(void*)GetProcAddress(d,"Ntw16sWindowRemove"):NULL;CHECK(attached&&remove_style);HWND bar=makebar(root,h);CHECK(bar);ShowWindow(root,SW_SHOWNOACTIVATE);CHECK(SetWindowPos(bar,NULL,0,0,400,80,SWP_NOZORDER|SWP_NOACTIVATE));CHECK(RedrawWindow(root,NULL,NULL,RDW_INVALIDATE|RDW_ALLCHILDREN|RDW_UPDATENOW));WCHAR text[2]={0};REBARBANDINFOW info={.cbSize=REBARBANDINFOW_V3_SIZE,.fMask=RBBIM_BACKGROUND|RBBIM_STYLE|RBBIM_CHILD|RBBIM_TEXT|RBBIM_IMAGE,.lpText=text,.cch=2,.iImage=-1};BOOL ok=SendMessageW(bar,RB_GETBANDINFOW,0,(LPARAM)&info);RECT rbar,rroot;GetClientRect(bar,&rbar);GetClientRect(root,&rroot);printf("LIFETIME_SIZE bar=%ld,%ld root=%ld,%ld\n",rbar.right,rbar.bottom,rroot.right,rroot.bottom);printf("LIFETIME_INFO ok=%d flags=%x image=%d text=%u bitmap=%p\n",ok,info.fStyle,info.iImage,text[0],info.hbmBack);printf("LIFETIME_START attached=%d\n",attached(bar));CHECK(attached(bar));nested_enabled=1;nested_hits=0;CHECK(RedrawWindow(bar,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW));printf("LIFETIME_NESTED hits=%d attached=%d\n",nested_hits,attached(bar));CHECK(nested_hits==1&&attached(bar));trigger_throw=1;BOOL caught=test_exception(bar);CHECK(caught);CHECK(RedrawWindow(bar,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW));printf("LIFETIME_EXCEPTION caught=%d attached=%d\n",caught,attached(bar));CHECK(attached(bar));CHECK(SetWindowSubclass(bar,sabotage,27,0));action=1;hits=0;CHECK(RedrawWindow(bar,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW));printf("LIFETIME_BYPASS remove_hits=%d attached=%d\n",hits,attached(bar));CHECK(hits==0&&attached(bar));RECT query={0};CHECK(SendMessageW(bar,RB_GETRECT,0,(LPARAM)&query));printf("LIFETIME_REMOVE hits=%d removed=%d attached=%d alive=%d\n",hits,removed,attached(bar),IsWindow(bar));CHECK(hits==1&&removed&&!attached(bar)&&IsWindow(bar));CHECK(RemoveWindowSubclass(bar,sabotage,27));CHECK(DestroyWindow(bar));bar=makebar(root,h);CHECK(bar&&RedrawWindow(bar,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW)&&attached(bar));CHECK(SetWindowSubclass(bar,sabotage,27,0));action=2;hits=0;CHECK(RedrawWindow(bar,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW));printf("LIFETIME_BYPASS reparent_hits=%d attached=%d\n",hits,attached(bar));CHECK(hits==0&&attached(bar));CHECK(SendMessageW(bar,RB_GETRECT,0,(LPARAM)&query));SendMessageW(bar,WM_NULL,0,0);printf("LIFETIME_REPARENT hits=%d attached=%d parent=%d\n",hits,attached(bar),GetParent(bar)==replacement);CHECK(hits==1&&!attached(bar)&&GetParent(bar)==replacement);CHECK(RemoveWindowSubclass(bar,sabotage,27));CHECK(DestroyWindow(bar));for(int kind=0;kind<4;kind++)CHECK(fallback(root,h,kind,attached));HWND foreign=CreateWindowW(L"STATIC",L"foreign",WS_OVERLAPPEDWINDOW,0,0,500,250,NULL,NULL,h,NULL);CHECK(foreign);HWND wrong=makebar(foreign,h);CHECK(wrong);ShowWindow(foreign,SW_SHOWNOACTIVATE);CHECK(RedrawWindow(foreign,NULL,NULL,RDW_INVALIDATE|RDW_ALLCHILDREN|RDW_UPDATENOW));printf("LIFETIME_WRONG_OWNER attached=%d\n",attached(wrong));CHECK(!attached(wrong));CHECK(DestroyWindow(foreign));CHECK(DestroyWindow(root)&&DestroyWindow(replacement));puts("LIFETIME_STAGE destroyed_hosts");CHECK(UnregisterClassW(L"TCoolBar",h));puts("LIFETIME_STAGE unregistered");WNDCLASSEXW fake={.cbSize=sizeof(fake),.lpfnWndProc=DefWindowProcW,.hInstance=h,.lpszClassName=L"TCoolBar",.cbWndExtra=nativeclass.cbWndExtra};CHECK(RegisterClassExW(&fake));puts("LIFETIME_STAGE fake_registered");root=CreateWindowW(L"CoolHost",L"",WS_OVERLAPPEDWINDOW,0,0,400,200,NULL,NULL,h,NULL);CHECK(root);puts("LIFETIME_STAGE fake_root");HWND invalid=CreateWindowW(L"TCoolBar",L"",WS_CHILD|WS_VISIBLE,0,0,300,40,root,NULL,h,NULL);CHECK(invalid);puts("LIFETIME_STAGE fake_created");ShowWindow(root,SW_SHOWNOACTIVATE);CHECK(RedrawWindow(root,NULL,NULL,RDW_INVALIDATE|RDW_ALLCHILDREN|RDW_UPDATENOW));printf("LIFETIME_WRONG_PROC attached=%d\n",attached(invalid));CHECK(!attached(invalid));CHECK(DestroyWindow(root));CHECK(UnregisterClassW(L"TCoolBar",h)&&UnregisterClassW(L"CoolHost",h));puts("LIFETIME_OK");return 0;}
+int wmain(int argc,WCHAR **argv){return isolated_process(argc,argv,worker);}

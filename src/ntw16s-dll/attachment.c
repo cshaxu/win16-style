@@ -47,6 +47,7 @@ typedef struct attachment {
     BOOL rich_candidate,rich_installed,rich_witness,rich_unicode,rich_hotkey,rich_month,rich_popup; HWND rich_parent; HMODULE rich_owner;
     BOOL bit_candidate,bit_verified; BOOL inplace_candidate,inplace_verified; HWND inplace_parent; HMODULE inplace_owner;
     BOOL nav_candidate,nav_verified; HWND nav_parent; HMODULE nav_owner;
+    BOOL cool_candidate,cool_verified; HWND cool_parent; HMODULE cool_owner;
     BOOL mdi_candidate; HWND mdi_parent,mdi_host; HMODULE mdi_owner; struct attachment *mdi_host_attachment;
     BOOL lookup_popup_candidate; HWND lookup_popup_source,lookup_popup_source_parent; HMODULE lookup_popup_owner; struct attachment *lookup_popup_source_attachment;
     BOOL group_frame_candidate,group_frame_verified,group_frame_retired; HWND group_frame_parent;
@@ -70,6 +71,8 @@ typedef struct attachment {
 } attachment;
 static _Thread_local ntw16s_creation_scope *current;
 static _Thread_local HWND lookup_popup_creator;
+typedef struct cool_observation {struct cool_observation *previous;attachment *owner;HWND window;WNDPROC native;} cool_observation;
+static _Thread_local cool_observation *cool_observing;
 typedef struct static_paint_scope {struct static_paint_scope *previous;attachment *owner;HWND window;ntw16s_vb_paint *owned_paint;void *status_prior,*spin_prior;BOOL completed;BOOL month_header_valid,month_header_known,month_nav_valid;RECT month_header,month_prev,month_next;BOOL month_selected;HTHEME month_theme;HDC month_dc;RECT month_rect,month_clip;BOOL month_has_clip;BOOL group_background;int group_state;RECT group_rect;BOOL panel_first,panel_enabled;HWND panel_parent;HDC panel_dc;POINT panel_points[3];COLORREF panel_color;} static_paint_scope;
 static _Thread_local static_paint_scope *static_paint;
 static _Thread_local ntw16s_static_call *static_call;
@@ -738,6 +741,11 @@ BOOL ntw16s_static_call_begin(ntw16s_static_call *scope,WNDPROC proc,HWND w,UINT
 {
     WNDCLASSEXW native={.cbSize=sizeof(native)};HMODULE caller=NULL,native_owner=NULL,owner;
     ZeroMemory(scope,sizeof(*scope));
+    if(message==WM_PAINT && cool_observing && cool_observing->window==w && !cool_observing->owner->detached && lookup(w)==cool_observing->owner &&
+       GetClassInfoExW(NULL,REBARCLASSNAMEW,&native) && proc==native.lpfnWndProc &&
+       GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) &&
+       caller==cool_observing->owner->cool_owner)cool_observing->native=proc;
+    native.cbSize=sizeof(native);
     if(message==WM_PAINT && static_paint && static_paint->window==w &&
        static_paint->owner->status_candidate && !static_paint->owner->detached &&
        !static_paint->owner->status_attempted && lookup(w)==static_paint->owner &&
@@ -1032,6 +1040,76 @@ void ntw16s_month_selection_text(HTHEME theme,HDC dc,int part,int state,const RE
 }
 static void release(attachment *a)
 {if(!--a->calls && a->detached){attachment *source=a->lookup_popup_source_attachment,*host=a->mdi_host_attachment;win16_style_system_release(a->month_cached_font);win16_style_system_release(a->status_cached_font);ntw16s_vb_fonts_clear(&a->fonts);free(a);if(source)release(source);if(host)release(host);}}
+static NTW16S_UNWIND_FUNCTION LRESULT static_paint_dispatch(attachment *,HWND,UINT,WPARAM,LPARAM,ntw16s_vb_paint *,void *,void *);
+/* One paint scope per CoolBar invocation. It is never shared across threads. */
+typedef struct cool_scope {struct cool_scope *previous;attachment *owner;HWND window;BOOL ours,completed,nested;cool_observation observer;ntw16s_vb_paint *paint;void *status_prior,*spin_prior;} cool_scope;
+static _Thread_local cool_scope *cool_current;
+static BOOL cool_class_owner(HMODULE owner)
+{
+    WNDCLASSEXW c={.cbSize=sizeof(c)};HMODULE proc=NULL;
+    return owner && GetClassInfoExW(owner,L"TCoolBar",&c) && c.lpfnWndProc &&
+        GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)c.lpfnWndProc,&proc) && proc==owner;
+}
+static BOOL cool_identity(HWND w,attachment *a)
+{
+    DWORD pid=0,ppid=0;HWND parent=a->cool_parent;WNDCLASSEXW c={.cbSize=sizeof(c)};HMODULE proc=NULL;
+    return !a->detached && parent && IsWindow(w) && IsWindow(parent) && lookup(w)==a &&
+        GetParent(w)==parent && GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
+        GetWindowThreadProcessId(parent,&ppid)==GetCurrentThreadId() && ppid==pid &&
+        class_is(w,L"TCoolBar") && (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==a->cool_owner &&
+        (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==a->cool_owner &&
+        GetClassInfoExW(a->cool_owner,L"TCoolBar",&c) && c.lpfnWndProc &&
+        GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)c.lpfnWndProc,&proc) && proc==a->cool_owner;
+}
+static BOOL cool_grip(HWND w,attachment *a,const NMCUSTOMDRAW *n)
+{
+    RECT band={0},border={0},client={0},child={0},overlap;POINT wo={0},vo={0};WCHAR text[2]={0};
+    REBARBANDINFOW info={.cbSize=REBARBANDINFOW_V3_SIZE,.fMask=RBBIM_BACKGROUND|RBBIM_STYLE|RBBIM_CHILD|RBBIM_TEXT|RBBIM_IMAGE,.lpText=text,.cch=ARRAYSIZE(text),.iImage=-1};
+    WNDPROC native=cool_observing && cool_observing->owner==a && cool_observing->window==w?cool_observing->native:NULL;
+    if(!cool_identity(w,a) || !native || !n->hdc || WindowFromDC(n->hdc)!=w || GetMapMode(n->hdc)!=MM_TEXT || (GetLayout(n->hdc)&LAYOUT_RTL) ||
+       !GetWindowOrgEx(n->hdc,&wo) || !GetViewportOrgEx(n->hdc,&vo) || wo.x || wo.y || vo.x || vo.y ||
+       (GetWindowLongPtrW(w,GWL_STYLE)&CCS_VERT))return FALSE;
+    LRESULT i=CallWindowProcW(native,w,RB_IDTOINDEX,n->dwItemSpec,0);
+    if(i<0 || !cool_identity(w,a) || !CallWindowProcW(native,w,RB_GETRECT,(WPARAM)i,(LPARAM)&band) || !cool_identity(w,a) ||
+       !CallWindowProcW(native,w,RB_GETBANDINFOW,(WPARAM)i,(LPARAM)&info) || !cool_identity(w,a))return FALSE;
+    CallWindowProcW(native,w,RB_GETBANDBORDERS,(WPARAM)i,(LPARAM)&border);
+    if(!cool_identity(w,a) || info.hbmBack || text[0] || info.cch>ARRAYSIZE(text) || info.iImage!=-1 || !info.hwndChild || GetParent(info.hwndChild)!=w ||
+       (info.fStyle&~(RBBS_BREAK|RBBS_FIXEDBMP|RBBS_GRIPPERALWAYS)) || !GetClientRect(w,&client) || !GetWindowRect(info.hwndChild,&child))return FALSE;
+    MapWindowPoints(NULL,w,(POINT*)&child,2);UINT dpi=GetDpiForWindow(w);RECT r=n->rc;
+    return cool_identity(w,a) && dpi && !IsRectEmpty(&r) && r.left==band.left && r.top==band.top && r.bottom==band.bottom &&
+        border.left>0 && r.right<=band.left+border.left && r.right-r.left<=MulDiv(12,dpi,96) &&
+        r.left>=client.left && r.top>=client.top && r.right<=client.right && r.bottom<=client.bottom && !IntersectRect(&overlap,&r,&child);
+}
+static LRESULT CALLBACK cool_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
+{
+    (void)id;attachment *a=(attachment*)data;cool_scope *s=cool_current;
+    if(m!=WM_NOTIFY || !l || !s || s->owner!=a || s->window!=((NMHDR*)l)->hwndFrom || ((NMHDR*)l)->code!=NM_CUSTOMDRAW || !cool_identity(s->window,a))return DefSubclassProc(parent,m,p,l);
+    NMCUSTOMDRAW *n=(NMCUSTOMDRAW*)l;
+    if(n->dwDrawStage==CDDS_PREPAINT){LRESULT base=DefSubclassProc(parent,m,p,l);s->ours=base==CDRF_DODEFAULT && cool_identity(s->window,a);return s->ours?CDRF_NOTIFYITEMDRAW:base;}
+    if(!s->ours || !cool_identity(s->window,a))return DefSubclassProc(parent,m,p,l);
+    if(n->dwDrawStage==CDDS_ITEMPREPAINT)return CDRF_NOTIFYPOSTPAINT;
+    if(n->dwDrawStage==CDDS_ITEMPOSTPAINT){
+        if(cool_grip(s->window,a,n)){int saved=SaveDC(n->hdc);if(saved){RECT r=n->rc;if(IntersectClipRect(n->hdc,r.left,r.top,r.right,r.bottom)!=ERROR){FillRect(n->hdc,&r,GetSysColorBrush(COLOR_BTNFACE));DrawEdge(n->hdc,&r,BDR_RAISEDINNER,BF_RECT);a->cool_verified=TRUE;}RestoreDC(n->hdc,saved);}}
+        return CDRF_DODEFAULT;
+    }
+    return DefSubclassProc(parent,m,p,l);
+}
+static void cool_unbind(attachment *a)
+{
+    DWORD_PTR value;if(a->cool_parent && GetWindowSubclass(a->cool_parent,cool_notify,(UINT_PTR)a->report_window,&value) && value==(DWORD_PTR)a)RemoveWindowSubclass(a->cool_parent,cool_notify,(UINT_PTR)a->report_window);
+    a->cool_parent=NULL;
+}
+static void cool_end(void *data)
+{
+    cool_scope *s=data;cool_current=s->previous;cool_observing=s->observer.previous;if(!s->completed){ntw16s_vb_paint_end(s->paint);status_current=s->status_prior;spin_current=s->spin_prior;if(!s->nested)release(s->owner);}
+}
+static NTW16S_UNWIND_FUNCTION LRESULT cool_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,ntw16s_vb_paint *paint,void *status_prior,void *spin_prior)
+{
+    cool_scope scope={.previous=cool_current,.owner=a,.window=w,.paint=paint,.status_prior=status_prior,.spin_prior=spin_prior,.nested=static_paint!=NULL,.observer={.previous=cool_observing,.owner=a,.window=w}};ntw16s_unwind_scope unwind;DWORD entry=GetLastError(),error;LRESULT result;
+    cool_current=&scope;cool_observing=&scope.observer;NTW16S_UNWIND_BEGIN(unwind,cool_end,&scope);SetLastError(entry);
+    result=scope.nested?static_paint_dispatch(a,w,m,p,l,NULL,NULL,NULL):DefSubclassProc(w,m,p,l);
+    error=GetLastError();scope.completed=TRUE;NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
+}
 static void static_paint_end(void *data)
 {static_paint_scope *scope=data;static_paint=scope->previous;if(!scope->completed){if(scope->owned_paint){ntw16s_vb_paint_end(scope->owned_paint);status_current=scope->status_prior;spin_current=scope->spin_prior;}release(scope->owner);}}
 static NTW16S_UNWIND_FUNCTION LRESULT static_paint_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,ntw16s_vb_paint *owned_paint,void *status_prior,void *spin_prior)
@@ -1183,6 +1261,7 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
         if(print_clip)print_clip_kind=GetClipRgn((HDC)p,print_clip);
     }
     ++a->calls;
+    if(a->cool_candidate && !a->detached && m!=WM_DESTROY && m!=WM_NCDESTROY && !cool_identity(w,a))(void)Ntw16sWindowRemove(w);
     if(a->status && (m==WM_SETFONT || m==WM_FONTCHANGE || m==WM_SETTINGCHANGE || m==WM_THEMECHANGED || m==WM_DPICHANGED))a->status_font_invalid=TRUE;
     if(a->status && (m==WM_SETTEXT || m==SB_SETPARTS || m==SB_SETTEXTA || m==SB_SETTEXTW || m==SB_SIMPLE ||
         m==SB_SETICON || m==SB_SETMINHEIGHT || m==WM_SETFONT || m==WM_STYLECHANGED ||
@@ -1253,7 +1332,8 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     if(m==WM_NCPAINT && a->controlbar_candidate)a->controlbar_verified=FALSE;
     if(m==WM_PAINT && a->rich_candidate && (!a->rich_installed || a->rich_month))a->rich_witness=FALSE;
     if(status || color)SetLastError(status_error);
-    if(m==WM_PRINTCLIENT && status_current==&scope)result=status_print_dispatch(a,w,m,p,l,&paint,prior,spin_prior);
+    if(a->cool_candidate && !a->detached && m==WM_PAINT)result=cool_dispatch(a,w,m,p,l,&paint,prior,spin_prior);
+    else if(m==WM_PRINTCLIENT && status_current==&scope)result=status_print_dispatch(a,w,m,p,l,&paint,prior,spin_prior);
     else if(print_clip)result=color_print_dispatch(a,w,m,p,l,print_clip,&paint,prior,spin_prior);
     else if(a->modern_spin && spin_message)result=modern_spin_dispatch(a,w,m,p,l,&spin_scope,spin_prior,prior,&paint);
     else if(((a->box_candidate && !a->box_installed) || a->controlbar_candidate) && !a->detached && m==WM_NCPAINT)result=box_dispatch(a,w,m,p,l,&paint,prior,spin_prior,&box_witnessed);
@@ -1520,7 +1600,7 @@ BOOL __cdecl Ntw16sWindowAttached(HWND w)
     if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId()){
         SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
     }
-    attachment *a=lookup(w);return a && (!a->mdi_candidate || (lookup(a->mdi_host)==a->mdi_host_attachment && mdi_identity(w,a->mdi_parent,a->mdi_host,a->mdi_owner))) && (!a->controlbar_candidate || (a->controlbar_verified && controlbar_identity(w,a))) && (!a->box_candidate || (a->box_installed && box_identity(w,a->box_owner,a->box_parent))) && (!a->modern_spin || a->modern_spin_verified) && (!a->vb_data_candidate || a->vb_data_edge) && (!a->vb_user_candidate || ntw16s_vb_user_label_target(w)) && (!a->static_candidate || a->static_verified) && (!a->scroll_candidate || (a->scroll_installed && GetParent(w)==a->scroll_parent)) && (!a->edit_candidate || a->edit_installed) && (!a->group_button_candidate || a->group_button_installed) && (!a->grid_candidate || a->grid_installed) && (!a->vcl_toolbar_candidate || a->vcl_toolbar_installed) && (!a->track_candidate || a->track_installed) && (!a->tab_candidate || a->tab_installed) && (!a->color_candidate || a->color_installed) && (!a->date_candidate || a->date_installed) && (!a->status_candidate || a->status_installed) && (!a->rich_candidate || (a->rich_installed && rich_identity(w,a))) && (!a->bit_candidate || a->bit_verified) && (!a->inplace_candidate || (a->inplace_verified && inplace_or_lookup(w,a->inplace_owner,a->inplace_parent))) && (!a->nav_candidate || (a->nav_verified && nav_identity(w,a->nav_owner,a->nav_parent))) && (!a->lookup_popup_candidate || (lookup(a->lookup_popup_source)==a->lookup_popup_source_attachment && lookup_popup_identity(w,a->lookup_popup_source,a->lookup_popup_source_parent,a->lookup_popup_owner))) && (!a->group_frame_candidate || (a->group_frame_verified && !a->group_frame_retired && GetParent(w)==a->group_frame_parent)) && (!a->panel_frame_candidate || (a->panel_frame_verified && !a->panel_frame_retired && GetParent(w)==a->panel_frame_parent));
+    attachment *a=lookup(w);return a && (!a->cool_candidate || (a->cool_verified && cool_identity(w,a))) && (!a->mdi_candidate || (lookup(a->mdi_host)==a->mdi_host_attachment && mdi_identity(w,a->mdi_parent,a->mdi_host,a->mdi_owner))) && (!a->controlbar_candidate || (a->controlbar_verified && controlbar_identity(w,a))) && (!a->box_candidate || (a->box_installed && box_identity(w,a->box_owner,a->box_parent))) && (!a->modern_spin || a->modern_spin_verified) && (!a->vb_data_candidate || a->vb_data_edge) && (!a->vb_user_candidate || ntw16s_vb_user_label_target(w)) && (!a->static_candidate || a->static_verified) && (!a->scroll_candidate || (a->scroll_installed && GetParent(w)==a->scroll_parent)) && (!a->edit_candidate || a->edit_installed) && (!a->group_button_candidate || a->group_button_installed) && (!a->grid_candidate || a->grid_installed) && (!a->vcl_toolbar_candidate || a->vcl_toolbar_installed) && (!a->track_candidate || a->track_installed) && (!a->tab_candidate || a->tab_installed) && (!a->color_candidate || a->color_installed) && (!a->date_candidate || a->date_installed) && (!a->status_candidate || a->status_installed) && (!a->rich_candidate || (a->rich_installed && rich_identity(w,a))) && (!a->bit_candidate || a->bit_verified) && (!a->inplace_candidate || (a->inplace_verified && inplace_or_lookup(w,a->inplace_owner,a->inplace_parent))) && (!a->nav_candidate || (a->nav_verified && nav_identity(w,a->nav_owner,a->nav_parent))) && (!a->lookup_popup_candidate || (lookup(a->lookup_popup_source)==a->lookup_popup_source_attachment && lookup_popup_identity(w,a->lookup_popup_source,a->lookup_popup_source_parent,a->lookup_popup_owner))) && (!a->group_frame_candidate || (a->group_frame_verified && !a->group_frame_retired && GetParent(w)==a->group_frame_parent)) && (!a->panel_frame_candidate || (a->panel_frame_verified && !a->panel_frame_retired && GetParent(w)==a->panel_frame_parent));
 }
 void __cdecl Ntw16sScrollChanged(HWND w)
 {
@@ -1538,7 +1618,7 @@ BOOL __cdecl Ntw16sWindowRemove(HWND w)
     a=lookup(w);if(!a){SetLastError(ERROR_NOT_FOUND);return FALSE;}
     ++a->calls;
     RemoveWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc);
-    a->detached=TRUE;report_unbind(a);
+    a->detached=TRUE;report_unbind(a);cool_unbind(a);
     /* Existing owners handle reentrant destruction/removal independently. */
     win16_style_frame_remove_owned(w,a);
     win16_style_control_remove_owned(w,a);
@@ -1567,7 +1647,7 @@ BOOL __cdecl Ntw16sWindowTerminal(HWND w)
     if(a && a->themed && a->themed!=w &&
             !ntw16s_theme_terminal(a->themed,a) && !error)error=GetLastError();
     if(!ntw16s_theme_terminal(w,NULL) && !error)error=GetLastError();
-    if(a){report_unbind(a);ntw16s_control_protocol_release(a->protocol);a->protocol=NULL;release(a);}
+    if(a){report_unbind(a);cool_unbind(a);ntw16s_control_protocol_release(a->protocol);a->protocol=NULL;release(a);}
     SetLastError(error?error:saved);return !error;
 }
 
@@ -1631,6 +1711,7 @@ static BOOL install_created(HWND w,DWORD original_style)
     HWND popup_source=lookup_popup_creator,popup_source_parent=popup_source?GetParent(popup_source):NULL;
     attachment *popup_source_attachment=popup_source?lookup(popup_source):NULL;
     BOOL lookup_popup_candidate=ready && popup_source_attachment && lookup_popup_identity(w,popup_source,popup_source_parent,owner);
+    BOOL cool_candidate=ready && (original_style&WS_CHILD) && class_is(w,L"TCoolBar") && cool_class_owner(owner) && GetParent(w) && (HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==owner;
     BOOL box_candidate=ready && box_identity(w,owner,GetParent(w));
     BOOL controlbar_candidate=ready && class_is(w,L"TControlBar") && owner && GetParent(w) && (HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==owner;
     BOOL rich_month=class_is(w,L"TMonthCalendar");
@@ -1652,17 +1733,17 @@ static BOOL install_created(HWND w,DWORD original_style)
         (HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==GetModuleHandleW(L"user32.dll");
     BOOL vcl_mdi_probe=mdi_identity(w,GetParent(w),GetParent(GetParent(w)),owner);
     if(!control && !report && !tree && !picture && !checklist && !legacy_progress && !status && !spin && !static_candidate && !scroll_candidate && !edit_candidate && !group_button_candidate && !grid_candidate && !inplace_candidate && !nav_candidate && !vcl_toolbar_candidate && !track_candidate && !tab_candidate && !color_candidate && !date_candidate && !status_candidate && !bit_candidate && !group_frame_candidate && !panel_frame_candidate && (original_style&WS_CHILD) &&
-            owner && owner!=GetModuleHandleW(NULL) && !vb_mdi_child && !vcl_mdi_probe && !vb_user_edge && !vb_data_edge && !rich_candidate && !box_candidate && !controlbar_candidate){
+            owner && owner!=GetModuleHandleW(NULL) && !vb_mdi_child && !vcl_mdi_probe && !vb_user_edge && !vb_data_edge && !rich_candidate && !box_candidate && !controlbar_candidate && !cool_candidate){
         ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
     }
     /* A custom client-only child and MDICLIENT keep application painting.
      * MDI child frames have WS_CAPTION and take the ordinary frame route. */
-    if(!control && !report && !picture && !checklist && !legacy_progress && !status && !spin && !static_candidate && !scroll_candidate && !edit_candidate && !group_button_candidate && !grid_candidate && !inplace_candidate && !nav_candidate && !vcl_toolbar_candidate && !track_candidate && !tab_candidate && !color_candidate && !date_candidate && !status_candidate && !bit_candidate && !group_frame_candidate && !panel_frame_candidate && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME)) && !vb_user_edge && !vb_data_edge && !rich_candidate && !box_candidate && !controlbar_candidate){
+    if(!control && !report && !picture && !checklist && !legacy_progress && !status && !spin && !static_candidate && !scroll_candidate && !edit_candidate && !group_button_candidate && !grid_candidate && !inplace_candidate && !nav_candidate && !vcl_toolbar_candidate && !track_candidate && !tab_candidate && !color_candidate && !date_candidate && !status_candidate && !bit_candidate && !group_frame_candidate && !panel_frame_candidate && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME)) && !vb_user_edge && !vb_data_edge && !rich_candidate && !box_candidate && !controlbar_candidate && !cool_candidate){
         SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
     }
     a=calloc(1,sizeof(*a));
     if(!a){ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    a->calls=1;a->mdi_candidate=vcl_mdi_probe;a->mdi_parent=GetParent(w);a->mdi_host=GetParent(a->mdi_parent);a->mdi_owner=owner;a->mdi_host_attachment=vcl_mdi_probe?lookup(a->mdi_host):NULL;if(a->mdi_host_attachment)++a->mdi_host_attachment->calls;a->nav_candidate=nav_candidate;a->nav_parent=GetParent(w);a->nav_owner=owner;a->lookup_popup_candidate=lookup_popup_candidate;a->lookup_popup_source=popup_source;a->lookup_popup_source_parent=popup_source_parent;a->lookup_popup_owner=owner;a->lookup_popup_source_attachment=lookup_popup_candidate?popup_source_attachment:NULL;if(a->lookup_popup_source_attachment)++a->lookup_popup_source_attachment->calls;a->controlbar_candidate=controlbar_candidate;a->controlbar_parent=GetParent(w);a->controlbar_owner=owner;a->rich_popup=rich_popup;a->rich_month=rich_month;a->rich_hotkey=rich_hotkey;a->box_candidate=box_candidate;a->box_owner=owner;a->box_parent=GetParent(w);a->rich_unicode=rich_unicode;a->rich_candidate=rich_candidate;a->rich_parent=rich_popup?GetDesktopWindow():GetParent(w);a->rich_owner=owner;a->group_frame_candidate=group_frame_candidate;a->panel_frame_candidate=panel_frame_candidate;a->vb_user_candidate=vb_user_edge;a->vb_data_candidate=vb_data_edge;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;a->status=status;a->spin=spin;a->modern_spin=spin&&modern_spin_shape(w);a->static_candidate=static_candidate;
+    a->calls=1;a->cool_candidate=cool_candidate;a->cool_parent=GetParent(w);a->cool_owner=owner;if(cool_candidate)a->report_window=w;a->mdi_candidate=vcl_mdi_probe;a->mdi_parent=GetParent(w);a->mdi_host=GetParent(a->mdi_parent);a->mdi_owner=owner;a->mdi_host_attachment=vcl_mdi_probe?lookup(a->mdi_host):NULL;if(a->mdi_host_attachment)++a->mdi_host_attachment->calls;a->nav_candidate=nav_candidate;a->nav_parent=GetParent(w);a->nav_owner=owner;a->lookup_popup_candidate=lookup_popup_candidate;a->lookup_popup_source=popup_source;a->lookup_popup_source_parent=popup_source_parent;a->lookup_popup_owner=owner;a->lookup_popup_source_attachment=lookup_popup_candidate?popup_source_attachment:NULL;if(a->lookup_popup_source_attachment)++a->lookup_popup_source_attachment->calls;a->controlbar_candidate=controlbar_candidate;a->controlbar_parent=GetParent(w);a->controlbar_owner=owner;a->rich_popup=rich_popup;a->rich_month=rich_month;a->rich_hotkey=rich_hotkey;a->box_candidate=box_candidate;a->box_owner=owner;a->box_parent=GetParent(w);a->rich_unicode=rich_unicode;a->rich_candidate=rich_candidate;a->rich_parent=rich_popup?GetDesktopWindow():GetParent(w);a->rich_owner=owner;a->group_frame_candidate=group_frame_candidate;a->panel_frame_candidate=panel_frame_candidate;a->vb_user_candidate=vb_user_edge;a->vb_data_candidate=vb_data_edge;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;a->status=status;a->spin=spin;a->modern_spin=spin&&modern_spin_shape(w);a->static_candidate=static_candidate;
     a->scroll_candidate=scroll_candidate;a->scroll_parent=GetParent(w);a->edit_candidate=edit_candidate;a->link_candidate=edit_candidate && class_is(w,L"TLinkLabel");a->combo_candidate=edit_candidate && (class_is(w,L"TComboBox") || class_is(w,L"TDBComboBox"));a->combo_parent=GetParent(w);a->combo_original_type=original_style&3;a->spinedit_candidate=edit_candidate && class_is(w,L"TSpinEdit");a->group_button_candidate=group_button_candidate;a->grid_candidate=grid_candidate;a->inplace_candidate=inplace_candidate;a->inplace_owner=owner;a->inplace_parent=GetParent(w);a->vcl_toolbar_candidate=vcl_toolbar_candidate;a->vcl_toolbar_owner=owner;a->vcl_toolbar_parent=GetParent(w);a->grid_owner=owner;a->grid_parent=GetParent(w);a->edit_original_style=original_style;a->track_candidate=track_candidate;a->tab_candidate=tab_candidate;a->tab_parent=GetParent(w);a->color_candidate=color_candidate;a->date_candidate=date_candidate;a->status_candidate=status_candidate;a->bit_candidate=bit_candidate;
     if(report || tree || a->file_owner || a->button_owner || a->checklist || a->bit_candidate){a->report_window=w;a->tree=tree;
         a->report_module=(a->file_owner || a->button_owner || a->bit_candidate)?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}
@@ -1672,6 +1753,9 @@ static BOOL install_created(HWND w,DWORD original_style)
     if((report || tree || a->file_owner || a->button_owner || a->checklist || a->bit_candidate) && (!a->report_parent || !SetWindowSubclass(a->report_parent,report_notify,(UINT_PTR)w,(DWORD_PTR)a))){
         DWORD error=GetLastError();Ntw16sWindowRemove(w);release(a);SetLastError(error);return FALSE;
     }
+    if(cool_candidate && (!cool_identity(w,a) || !SetWindowSubclass(a->cool_parent,cool_notify,(UINT_PTR)w,(DWORD_PTR)a))){
+        DWORD failure=GetLastError();Ntw16sWindowRemove(w);release(a);SetLastError(failure?failure:ERROR_NOT_SUPPORTED);return FALSE;
+    }
     SetLastError(ERROR_SUCCESS);
     if(protocol && class_is(w,L"COMBOBOX")){
         COMBOBOXINFO info={.cbSize=sizeof(info)};
@@ -1679,7 +1763,7 @@ static BOOL install_created(HWND w,DWORD original_style)
             Ntw16sWindowRemove(info.hwndItem);
     }
     if(a->detached){release(a);SetLastError(ERROR_CANCELLED);return FALSE;}
-    if(a->box_candidate || a->controlbar_candidate || a->rich_candidate || a->vb_data_candidate || a->vb_user_candidate || a->checklist || a->status || a->spin || a->static_candidate || a->scroll_candidate || a->edit_candidate || a->group_button_candidate || a->grid_candidate || a->inplace_candidate || a->nav_candidate || a->vcl_toolbar_candidate || a->track_candidate || a->tab_candidate || a->color_candidate || a->date_candidate || a->status_candidate || a->bit_candidate || a->group_frame_candidate || a->panel_frame_candidate)installed=TRUE;
+    if(a->cool_candidate || a->box_candidate || a->controlbar_candidate || a->rich_candidate || a->vb_data_candidate || a->vb_user_candidate || a->checklist || a->status || a->spin || a->static_candidate || a->scroll_candidate || a->edit_candidate || a->group_button_candidate || a->grid_candidate || a->inplace_candidate || a->nav_candidate || a->vcl_toolbar_candidate || a->track_candidate || a->tab_candidate || a->color_candidate || a->date_candidate || a->status_candidate || a->bit_candidate || a->group_frame_candidate || a->panel_frame_candidate)installed=TRUE;
     else if(legacy_progress)installed=win16_style_legacy_progress_border_install_created(w,NULL,a,&a->detached);
     else if(protocol && ntw16s_control_protocol_toolbar(w))
         installed=win16_style_toolbar_install_created(w,NULL,a,&a->detached);
