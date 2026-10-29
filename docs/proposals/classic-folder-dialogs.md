@@ -4,9 +4,7 @@
 
 用户反馈：Select Folder窗口的标题、文字和按钮虽已换肤，目录树、彩色Shell图标、
 展开箭头及整体导航结构仍为现代外观；希望恢复Win3.x风格的目录选择体验。
-依据用户“加入到队列第2位作为一个单独proposal”，登记为M0未编号T候选。
-顺序由[QUEUE](../states/QUEUE.md)拥有；仅排队，不准入实施、不分配实现T/S/P，
-不重开已关闭的T15，不改变[CURRENT](../states/CURRENT.md)技术基线。
+用户现已准入M0 T20；活动S与技术基线由[CURRENT](../states/CURRENT.md)管理，不重开已关闭的T15。
 
 用户截图codex-clipboard-ca7c5e7c-1006-4e65-be58-a69d510a98d5.png为问题线索：
 包含Desktop/Gallery/云盘/This PC/Network等节点、现代图标及Make New Folder。
