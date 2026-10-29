@@ -64,7 +64,7 @@ static LRESULT CALLBACK window_proc(HWND window,UINT message,WPARAM a,LPARAM b)
         return populate(window,creation->hInstance)?0:-1;}
     if(message==DM_GETDEFID)return MAKELRESULT(APPLY,DC_HASDEFID);
     if(message==WM_COMMAND){int id=LOWORD(a),notification=HIWORD(a);WCHAR text[256],line[300];
-        if(id>=2000 && id<2008){demo_catalog_open(window,(unsigned)(id-2000));return 0;}
+        if(id>=2000 && id<2009){demo_catalog_open(window,(unsigned)(id-2000));return 0;}
         if(id==EXIT_APP){DestroyWindow(window);return 0;}
         if(id==RESET){reset(window);return 0;}
         if(id==ABOUT){MessageBoxW(window,L"A native Windows controls demonstration.",L"About Win16 Style Demo",MB_OK|MB_ICONINFORMATION);return 0;}

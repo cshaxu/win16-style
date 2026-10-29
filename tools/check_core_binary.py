@@ -72,13 +72,13 @@ def main():
     expected={e['symbol'] for e in plan['exports'] if e['decision']=='retain-public'}
     machine,names,imports,digest,ordinals,live=inspect(path)
     if machine!=(0x14c if args.arch=='x86' else 0x8664):raise SystemExit('PE machine mismatch')
-    if len(names)!=31 or set(names)!=expected:raise SystemExit('PE exports differ from standalone core plan: '+repr(names))
-    if ordinals!={name:index+2 for index,name in enumerate(sorted(expected))} or live!=set(range(1,33)):
+    if len(names)!=32 or set(names)!=expected | {'Ntw16sShowModernFileDialog'}:raise SystemExit('PE exports differ from standalone core plan: '+repr(names))
+    if ordinals!={**{name:index+2 for index,name in enumerate(sorted(expected))}, 'Ntw16sShowModernFileDialog':33} or live!=set(range(1,34)):
         raise SystemExit('PE ordinal map differs from core plan; helper ordinal 1 must be NONAME')
-    native={'kernel32.dll','user32.dll','gdi32.dll','comctl32.dll','dwmapi.dll','uxtheme.dll'}
+    native={'kernel32.dll','user32.dll','gdi32.dll','comctl32.dll','comdlg32.dll','shell32.dll','ole32.dll','dwmapi.dll','uxtheme.dll'}
     if any(name.lower() not in native and not system_crt(name) for name in imports):
         raise SystemExit('Forbidden external/compiler runtime import: '+repr(imports))
-    print(json.dumps(dict(status='PE PASS',architecture=args.arch,public_exports=len(names),ordinals='1 NONAME helper; 2..32 core',imports=imports,sha256=digest)))
+    print(json.dumps(dict(status='PE PASS',architecture=args.arch,public_exports=len(names),ordinals='1 NONAME helper; 2..32 core; 33 modern dialog',imports=imports,sha256=digest)))
 
 
 if __name__=='__main__':main()

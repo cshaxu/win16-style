@@ -8,6 +8,7 @@ static const char *const names[]={
     "Ntw16sCreationEnd",
     "Ntw16sGetAbiVersion",
     "Ntw16sScrollChanged",
+    "Ntw16sShowModernFileDialog",
     "Ntw16sSetWindowTheme",
     "Ntw16sWindowAttached",
     "Ntw16sWindowRemove",
@@ -51,6 +52,6 @@ int wmain(int argc,WCHAR **argv)
     version=(version_fn)(void *)GetProcAddress(module,"Ntw16sGetAbiVersion");
     CHECK(version && version()==3 && version()==NTW16S_ABI_VERSION);
     CHECK(FreeLibrary(module));
-    printf("ABI PASS width=%u version=3 public=31 private-bind-exports=0\n",(unsigned)(sizeof(void *)*8));
+    printf("ABI PASS width=%u version=3 public=32 private-bind-exports=0\n",(unsigned)(sizeof(void *)*8));
     return 0;
 }

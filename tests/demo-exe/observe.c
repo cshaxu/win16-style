@@ -94,10 +94,10 @@ static BOOL CALLBACK find_catalog(HWND w,LPARAM owner)
 }
 static void catalog_pages(HWND main,DWORD thread,HANDLE target,BOOL styled,const WCHAR *scratch)
 {
-    static const WCHAR *titles[]={L"Buttons and states",L"Editing and lists",L"Files and scrollbars",L"Containers and drawing",L"Lists and toolbars",L"Ranges and dates",L"Text and special objects",L"MDI windows"};
+    static const WCHAR *titles[]={L"Buttons and states",L"Editing and lists",L"Files and scrollbars",L"Containers and drawing",L"Lists and toolbars",L"Ranges and dates",L"Text and special objects",L"MDI windows",L"Common dialogs"};
     DWORD initial=GetGuiResources(target,GR_GDIOBJECTS);WCHAR file[MAX_PATH];
-    CHECK(GetMenuItemCount(GetSubMenu(GetMenu(main),1))==8);
-    for(unsigned i=0;i<8;++i){
+    CHECK(GetMenuItemCount(GetSubMenu(GetMenu(main),1))==9);
+    for(unsigned i=0;i<9;++i){
         catalog_window=NULL;SendMessageW(main,WM_COMMAND,2000+i,0);CHECK(EnumThreadWindows(thread,find_catalog,(LPARAM)main));HWND w=catalog_window;
         CHECK(w && IsWindowVisible(w));text(w,0,titles[i]);CHECK(WaitForInputIdle(target,3000)==0);
         if(i==0){CHECK(IsDlgButtonChecked(w,2112)==BST_INDETERMINATE);SendDlgItemMessageW(w,2110,BM_CLICK,0,0);CHECK(IsDlgButtonChecked(w,2110)==BST_CHECKED);SendDlgItemMessageW(w,2122,BM_CLICK,0,0);CHECK(IsDlgButtonChecked(w,2122)==BST_CHECKED && !IsDlgButtonChecked(w,2121) && IsDlgButtonChecked(w,2123)==BST_CHECKED);CHECK(!IsWindowEnabled(GetDlgItem(w,2113)));}
@@ -120,7 +120,7 @@ static void catalog_pages(HWND main,DWORD thread,HANDLE target,BOOL styled,const
      * asynchronously, so a decrease is not evidence of a leak. */
     DWORD settled=GetGuiResources(target,GR_GDIOBJECTS);catalog_window=NULL;SendMessageW(main,WM_COMMAND,2000,0);EnumThreadWindows(thread,find_catalog,(LPARAM)main);CHECK(catalog_window);SendMessageW(catalog_window,WM_CLOSE,0,0);
     DWORD final=GetGuiResources(target,GR_GDIOBJECTS);printf("DEMO CATALOG RESOURCE SAMPLE styled=%u warm=%lu settled=%lu final=%lu\n",(unsigned)styled,warm,settled,final);
-    CHECK(final<=settled);printf("DEMO CATALOG PASS styled=%u pages=8 reopen=2 resources_stable=1 initial=%lu final=%lu\n",(unsigned)styled,initial,final);
+    CHECK(final<=settled);printf("DEMO CATALOG PASS styled=%u pages=9 reopen=2 resources_stable=1 initial=%lu final=%lu\n",(unsigned)styled,initial,final);
 }
 static int matrix(int argc,WCHAR **argv)
 {

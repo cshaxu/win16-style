@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T20 S1准入：Win3.x文件夹选择与公共对话框调查，先确认真实接口、经典参考及语义边界。
+M0 T20 S1准入：Win3.x文件夹选择与公共对话框桥接：调查、实现与验证进行中。
 
 ## M0 T20 S1 Packet
 
@@ -10,18 +10,18 @@ M0 T20 S1准入：Win3.x文件夹选择与公共对话框调查，先确认真�
 | --- | --- |
 | Identifier Mode | New；用户准入队列首位，T20 S1 |
 | Admission And Approval | 用户要求T19收口并准入文件夹选择与公共对话框任务 |
-| Objective | 识别真实应用的文件夹选择入口、窗口与数据语义，研究可保持语义的经典兼容路线 |
+| Objective | 用户明确两维标准：系统存在旧式布局时桥接，所有对话框接管样式；覆盖公共对话框及相关对话框入口，逐项测试并继续实现COM等缺口；用户要求系统审计并修复水平和垂直滚动条滚动后样式变化 |
 | Non-goals | 不分发旧系统DLL，不更改原图形资源、共享Shell宿主、系统设置或用户现有进程 |
 | Reference Baseline | T19 S1 P208原始四文件，S2撤回，S3用户确认恢复 |
 | Candidate Proposal | [Win3.x文件夹选择与公共对话框适配](../proposals/classic-folder-dialogs.md) |
-| Files And ABI Surface | 纯C原生探针及必要的现有DLL模块，优先维持三组件四产物和公开ABI |
+| Files And ABI Surface | 纯C原生探针及必要的现有DLL模块，维持三组件四产物；按用户要求增加公开的强制新式文件对话框 API，供任意主动调用者使用 |
 | Applicable Rules | M0，MinGW GCC、Ninja、ccache；原资源与来源声明逐字节保留 |
 | Verification | 真实目标、自有有限实例、调用接口与参数、PIDL/路径/回调、原始经典参考及双宽对照 |
-| Expected Markers | 明确调用路径与最小可实现范围，不以外观推断接口或以替换图标宣称功能完成 |
+| Expected Markers | 双宽实际对话框、选择结果、取消、回调及不支持情况回退均有证据；不以外观或模块加载证明功能完成 |
 | Asset Needs | 登记build/t20-s1-dialog及build/t20-package scratch；成果提炼后清理 |
 | Reporting Requirements | 实际证据、支持和回退矩阵、许可、不可兼容条件及可行路线 |
 | Stop Conditions | 无法保证调用语义与资源许可时保留原对话框，不伪造结果 |
-| Exit Criteria | 真实入口及可实施方案有证据；产品变更依规范构建、测试、双发布、推送复核 |
+| Exit Criteria | 真实入口及实现范围有证据；产品变更依规范构建、测试、双发布、推送复核；T20后续继续COM等未完成范围 |
 | Original Owner Request | 准入队列首位，处理Win3.x文件夹选择与公共对话框外观 |
 | Similar-Issue Sweep | SHBrowseForFolder、GetOpenFileName、GetSaveFileName、IFileDialog及框架自绘 |
 
@@ -44,7 +44,7 @@ M0 T20 S1准入：Win3.x文件夹选择与公共对话框调查，先确认真�
 
 S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前原版真实点击正常；历史异常根因未查明，本S没有产品代码或二进制修改。
 
-T20 S1初步原生双宽Shell探针和Win3.1原始模板只读调查已完成；旧式Shell仍是树，不等同Win3.1文件打开框，真实截图来源与动态接口尚待确认。详见[初步证据](../history/M0-T20-S1-preliminary.md)。
+T20 S1主工作树已实现文件、文件夹、查找替换、字体颜色、打印、页面设置、属性页及任务对话框部分入口；实测与覆盖见阶段证据，仍在验证且未发布。现代COM文件对话框默认桥接、复杂回调及多选桥接等尚未完成；公开新式对话框 API 及 demo 调用已在开发中，未交付，T20保持开放。详见[阶段证据](../history/M0-T20-S1-preliminary.md)。
 
 ## Recent Closure
 
@@ -54,3 +54,5 @@ T20 S1初步原生双宽Shell探针和Win3.1原始模板只读调查已完成；
 
 - M0 T19 S1：Canon自绘按钮图像恢复，实际远端源码和四文件已复核；范围与限制见[交付记录](../history/M0-T19-S1-canon-ownerdraw.md)，[活动包归档](../history/M0-T19-S1-current-archive.md)。
 - M0 T18 S64 / T18：按用户确认的常用可见控件范围收口；非视觉、应用自绘不处理，安全契约不足及长尾留TODO。首次焦点回归失败、重入负例不足、物理输入和完整矩阵未覆盖均保留记录。
+
+2026-10-29 阶段包 P218 已构建、聚焦测试及双位置发布；完整矩阵和公共对话框桥接仍在进行，不代表 T20/S1 收口。失败、跳过与已知回退见阶段证据。

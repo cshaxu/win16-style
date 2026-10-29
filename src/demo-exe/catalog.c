@@ -6,10 +6,14 @@
 #include <stdio.h>
 #include <wchar.h>
 
-#define PAGE_COUNT 8
+#define PAGE_COUNT 9
 #define NOTE 2099
 #define ITEM_LIMIT 80
-static const WCHAR *titles[PAGE_COUNT]={L"Buttons and states",L"Editing and lists",L"Files and scrollbars",L"Containers and drawing",L"Lists and toolbars",L"Ranges and dates",L"Text and special objects",L"MDI windows"};
+BOOL demo_dialog_execute(HWND,unsigned);
+BOOL demo_dialog_notify(HWND,UINT,LPARAM);
+BOOL demo_dialog_message(MSG *);
+void demo_dialog_close(HWND);
+static const WCHAR *titles[PAGE_COUNT]={L"Buttons and states",L"Editing and lists",L"Files and scrollbars",L"Containers and drawing",L"Lists and toolbars",L"Ranges and dates",L"Text and special objects",L"MDI windows",L"Common dialogs"};
 static HWND pages[PAGE_COUNT];
 static HMODULE rich_library;
 typedef struct item {HWND window;int x,y,cx,cy;} item;
@@ -162,6 +166,34 @@ static void special(HWND w,page *s)
     label(w,s,L"Charts and image controls retain application-owned pictures and drawing.",16,420,668,2741);
     label(w,s,L"Communication, binding and other nonvisual objects have no substitute UI.",16,456,668,2742);
 }
+static void dialog_examples(HWND w,page *s)
+{
+    label(w,s,L"Open file: legacy / modern to classic / modern retained",16,12,668,2890);
+    button(w,s,L"Open: legacy",BS_PUSHBUTTON,16,40,212,2901);
+    button(w,s,L"Open: modern to classic",BS_PUSHBUTTON,244,40,212,2902);
+    button(w,s,L"Open: modern retained",BS_PUSHBUTTON,472,40,212,2903);
+    label(w,s,L"Save file: the dialog selects a path; the demo never saves a file",16,78,668,2891);
+    button(w,s,L"Save: legacy",BS_PUSHBUTTON,16,106,212,2904);
+    button(w,s,L"Save: modern to classic",BS_PUSHBUTTON,244,106,212,2905);
+    button(w,s,L"Save: modern retained",BS_PUSHBUTTON,472,106,212,2906);
+    label(w,s,L"Choose folder: legacy Shell / modern to classic / modern retained",16,144,668,2892);
+    button(w,s,L"Folder: legacy Shell",BS_PUSHBUTTON,16,172,212,2907);
+    button(w,s,L"Folder: modern to classic",BS_PUSHBUTTON,244,172,212,2908);
+    button(w,s,L"Folder: modern retained",BS_PUSHBUTTON,472,172,212,2909);
+    button(w,s,L"Folder: Shell bridge",BS_PUSHBUTTON,16,210,212,2920);
+    label(w,s,L"Other Windows dialogs",16,252,668,2893);
+    button(w,s,L"Find",BS_PUSHBUTTON,16,280,212,2910);
+    button(w,s,L"Replace",BS_PUSHBUTTON,244,280,212,2911);
+    button(w,s,L"Font",BS_PUSHBUTTON,472,280,212,2912);
+    button(w,s,L"Color",BS_PUSHBUTTON,16,318,212,2913);
+    button(w,s,L"Print",BS_PUSHBUTTON,244,318,212,2914);
+    button(w,s,L"Print: extended",BS_PUSHBUTTON,472,318,212,2915);
+    button(w,s,L"Page setup",BS_PUSHBUTTON,16,356,212,2916);
+    button(w,s,L"Message",BS_PUSHBUTTON,244,356,212,2917);
+    button(w,s,L"Task dialog",BS_PUSHBUTTON,472,356,212,2918);
+    button(w,s,L"Property pages",BS_PUSHBUTTON,16,394,212,2919);
+    label(w,s,L"Selections are displayed below; no files or print jobs are created.",16,450,668,2894);
+}
 static LRESULT CALLBACK mdi_child(HWND w,UINT m,WPARAM a,LPARAM b)
 {return DefMDIChildProcW(w,m,a,b);}
 static BOOL populate(HWND w,page *s)
@@ -170,7 +202,7 @@ static BOOL populate(HWND w,page *s)
     switch(s->index){case 0:buttons(w,s);break;case 1:edits(w,s);break;case 2:file_controls(w,s);break;case 3:containers(w,s);break;case 4:common_lists(w,s);break;case 5:ranges(w,s);break;case 6:special(w,s);break;case 7:{
         CLIENTCREATESTRUCT client={.idFirstChild=4000};s->mdi=CreateWindowExW(WS_EX_CLIENTEDGE,L"MDICLIENT",NULL,WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_VSCROLL|WS_HSCROLL,0,0,px(w,700),px(w,540),w,(HMENU)2800,GetModuleHandleW(NULL),&client);if(!s->mdi)return FALSE;
         for(int i=0;i<2;++i)if(!CreateMDIWindowW(L"Win16StyleDemoMDIChild",i?L"Second document":L"First document",WS_VISIBLE|WS_OVERLAPPEDWINDOW,px(w,20+i*140),px(w,20+i*110),px(w,360),px(w,220),s->mdi,GetModuleHandleW(NULL),0))return FALSE;
-        break;}}
+        break;}case 8:dialog_examples(w,s);break;}
     if(s->index!=7){label(w,s,L"Ready",16,s->index==4?494:510,668,NOTE);if(s->index==2)note(w,L"Directory listing only; double-click a directory to navigate.");}
     return !s->failed;
 }
@@ -179,8 +211,11 @@ static LRESULT CALLBACK page_proc(HWND w,UINT m,WPARAM a,LPARAM b)
     page *s=(page *)GetWindowLongPtrW(w,GWLP_USERDATA);
     if(m==WM_NCCREATE){CREATESTRUCTW *c=(CREATESTRUCTW *)b;s=HeapAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY,sizeof(*s));if(!s)return FALSE;s->index=(unsigned)(UINT_PTR)c->lpCreateParams;SetWindowLongPtrW(w,GWLP_USERDATA,(LONG_PTR)s);}
     if(!s)return DefWindowProcW(w,m,a,b);
+    if(s->index==8 && demo_dialog_notify(w,m,b))return 0;
     if(m==WM_CREATE)return populate(w,s)?0:-1;
     if(m==WM_COMMAND){unsigned id=LOWORD(a);WCHAR text[400];
+        if(s->index==8 && id==2919){properties(w,s);return 0;}
+        if(s->index==8 && demo_dialog_execute(w,id))return 0;
         if(s->index==2 && id==2301){WCHAR path[32768];GetDlgItemTextW(w,2300,path,32768);files(w,s,path);}
         if(s->index==2 && id==2310 && HIWORD(a)==CBN_SELCHANGE){WCHAR drive[8];LRESULT n=SendDlgItemMessageW(w,2310,CB_GETCURSEL,0,0);if(n!=CB_ERR && SendDlgItemMessageW(w,2310,CB_GETLBTEXTLEN,n,0)<8 && SendDlgItemMessageW(w,2310,CB_GETLBTEXT,n,(LPARAM)drive)!=CB_ERR)files(w,s,drive);}
         if(s->index==2 && id==2302 && HIWORD(a)==LBN_DBLCLK){WCHAR name[260],path[32768];LRESULT n=SendDlgItemMessageW(w,2302,LB_GETCURSEL,0,0);if(n!=LB_ERR && SendDlgItemMessageW(w,2302,LB_GETTEXTLEN,n,0)<260 && SendDlgItemMessageW(w,2302,LB_GETTEXT,n,(LPARAM)name)!=LB_ERR && swprintf_s(path,32768,L"%ls\\%ls",s->path,name)>0)files(w,s,path);}
@@ -197,7 +232,7 @@ static LRESULT CALLBACK page_proc(HWND w,UINT m,WPARAM a,LPARAM b)
     if(m==WM_DPICHANGED){RECT *rect=(RECT *)b;SetWindowPos(w,NULL,rect->left,rect->top,rect->right-rect->left,rect->bottom-rect->top,SWP_NOZORDER|SWP_NOACTIVATE);relayout(w,s);return 0;}
     if(m==WM_GETMINMAXINFO){RECT rect={0,0,px(w,700),px(w,548)};if(AdjustWindowRectExForDpi(&rect,(DWORD)GetWindowLongPtrW(w,GWL_STYLE),FALSE,(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE),GetDpiForWindow(w))){MINMAXINFO *limits=(MINMAXINFO *)b;limits->ptMinTrackSize.x=rect.right-rect.left;limits->ptMinTrackSize.y=rect.bottom-rect.top;}return 0;}
     if(m==WM_SIZE && s->mdi){RECT rect;GetClientRect(w,&rect);SetWindowPos(s->mdi,NULL,0,0,rect.right,rect.bottom,SWP_NOACTIVATE|SWP_NOZORDER);}
-    if(m==WM_DESTROY)KillTimer(w,1);
+    if(m==WM_DESTROY){KillTimer(w,1);if(s->index==8)demo_dialog_close(w);}
     if(m==WM_NCDESTROY){LRESULT result=s->mdi?DefFrameProcW(w,s->mdi,m,a,b):DefWindowProcW(w,m,a,b);if(pages[s->index]==w)pages[s->index]=NULL;SetWindowLongPtrW(w,GWLP_USERDATA,0);if(s->images)ImageList_Destroy(s->images);if(s->font)DeleteObject(s->font);HeapFree(GetProcessHeap(),0,s);return result;}
     return s->mdi?DefFrameProcW(w,s->mdi,m,a,b):DefWindowProcW(w,m,a,b);
 }
@@ -225,6 +260,7 @@ void demo_catalog_open(HWND owner,unsigned index)
 }
 BOOL demo_catalog_message(MSG *message)
 {
+    if(demo_dialog_message(message))return TRUE;
     for(unsigned i=0;i<PAGE_COUNT;++i)if(pages[i]){page *s=(page *)GetWindowLongPtrW(pages[i],GWLP_USERDATA);if(s && s->mdi && TranslateMDISysAccel(s->mdi,message))return TRUE;if(s && s->properties && IsWindow(s->properties) && GetWindow(s->properties,GW_OWNER)==pages[i]){if(!PropSheet_GetCurrentPageHwnd(s->properties)){DestroyWindow(s->properties);s->properties=NULL;}else if(PropSheet_IsDialogMessage(s->properties,message)){if(!PropSheet_GetCurrentPageHwnd(s->properties)){DestroyWindow(s->properties);s->properties=NULL;}return TRUE;}}if(IsDialogMessageW(pages[i],message))return TRUE;}
     return FALSE;
 }

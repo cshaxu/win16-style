@@ -16,6 +16,9 @@ BOOL ntw16s_bootstrap(void)
     if(status!=NO_ERROR){SetLastError(status);return FALSE;}
     status=ntw16s_attach_processes();
     if(!status)status=ntw16s_attach_titles();
+    if(!status)status=ntw16s_attach_file_dialogs();
+    if(!status)status=ntw16s_attach_com_dialogs();
+    if(!status)status=ntw16s_attach_folder_dialogs();
     if(status){ntw16s_hooks_abort();SetLastError(status);return FALSE;}
     status=(LONG)ntw16s_hooks_commit();SetLastError(status);return status==NO_ERROR;
 }

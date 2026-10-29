@@ -3,6 +3,7 @@
 #include "unwind.h"
 #include "theme_track.h"
 #include "ntw16s-dll/ntw16s.h"
+#include "ntw16s-dll/attachment.h"
 #include "ntw16s-dll/native_api.h"
 #include "ntw16s-dll/vb_text.h"
 #include "ntw16s-dll/updown_paint.h"
@@ -12,6 +13,8 @@
 #include "ntw16s-dll/win16_style.h"
 #include <wchar.h>
 #include <uxtheme.h>
+#include <commdlg.h>
+#include <commctrl.h>
 #include <vssym32.h>
 #include "ntw16s-dll/font.h"
 #include "ntw16s-dll/month_text.h"
@@ -78,6 +81,18 @@ static void end_titles(void *data)
     else scope->failure=result.failure;
 }
 
+/* Shell COM dialogs can create their window without passing the exported
+ * CreateWindow entry points. Keep attachment active during their modal Show. */
+HRESULT ntw16s_dialog_style_scope(HRESULT (*callback)(void *),void *context)
+{
+    ntw16s_unwind_scope unwind;title_scope scope;HRESULT result=E_FAIL;
+    if(!callback)return E_INVALIDARG;
+    if(!begin_titles(&scope,TRUE))return HRESULT_FROM_WIN32(GetLastError());
+    NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); {result=callback(context);}
+    NTW16S_UNWIND_END(unwind);
+    return scope.failure?HRESULT_FROM_WIN32(scope.failure):result;
+}
+
 #define WINDOW_HOOK(S,T) \
 static __typeof__(&CreateWindowEx##S) create_##S; \
 static NTW16S_UNWIND_FUNCTION HWND WINAPI window_##S(DWORD ex,T cls,T text,DWORD style,int x,int y,int cx,int cy,HWND parent,HMENU menu,HINSTANCE instance,void *param) \
@@ -107,6 +122,157 @@ DIALOG_HOOK(DialogBoxParamA,LPCSTR,INT_PTR,TRUE,-1)
 DIALOG_HOOK(DialogBoxParamW,LPCWSTR,INT_PTR,TRUE,-1)
 DIALOG_HOOK(DialogBoxIndirectParamA,LPCDLGTEMPLATEA,INT_PTR,TRUE,-1)
 DIALOG_HOOK(DialogBoxIndirectParamW,LPCDLGTEMPLATEW,INT_PTR,TRUE,-1)
+
+/* Find/Replace are modeless common dialogs.  Their internal dialog creation
+ * can bypass exported CreateDialog hooks, so keep the ordinary creation scope
+ * active around the public entry point and return the original HWND. */
+#define FIND_HOOK(NAME, TYPE) \
+static __typeof__(&NAME) real_##NAME; \
+static NTW16S_UNWIND_FUNCTION HWND WINAPI hook_##NAME(TYPE *parameters) \
+{ ntw16s_unwind_scope unwind;title_scope scope;HWND result=NULL;DWORD error=ERROR_SUCCESS; \
+  if(!begin_titles(&scope,FALSE))return NULL; \
+  NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
+  } NTW16S_UNWIND_END(unwind); \
+  if(scope.failure){if(result)DestroyWindow(result);result=NULL;error=scope.failure;} \
+  SetLastError(error);return result; }
+FIND_HOOK(FindTextA,FINDREPLACEA)
+FIND_HOOK(FindTextW,FINDREPLACEW)
+FIND_HOOK(ReplaceTextA,FINDREPLACEA)
+FIND_HOOK(ReplaceTextW,FINDREPLACEW)
+#undef FIND_HOOK
+
+/* Font selection uses owner-drawn system combos.  Observe only the current
+ * thread and only the standard font dialog's three required combo IDs; keep
+ * the application's hook and FIND/COMDLG argument addresses untouched. */
+static LRESULT CALLBACK font_dialog_return(int code,WPARAM wparam,LPARAM lparam)
+{
+    if(code>=0 && lparam){
+        const CWPRETSTRUCT *m=(const CWPRETSTRUCT *)lparam;
+        if(m->message==WM_INITDIALOG){
+            WCHAR cls[32];HWND first=GetDlgItem(m->hwnd,1136),second=GetDlgItem(m->hwnd,1137),third=GetDlgItem(m->hwnd,1138);
+            if(first && second && third && GetClassNameW(m->hwnd,cls,ARRAYSIZE(cls)) && !lstrcmpW(cls,L"#32770"))
+                ntw16s_font_dialog_chrome(m->hwnd);
+        }
+    }
+    return CallNextHookEx(NULL,code,wparam,lparam);
+}
+typedef struct font_dialog_scope {title_scope title;HHOOK hook;} font_dialog_scope;
+static void font_dialog_end(void *value)
+{
+    font_dialog_scope *scope=value;
+    if(scope->hook)UnhookWindowsHookEx(scope->hook);
+    end_titles(&scope->title);
+}
+#define FONT_DIALOG_HOOK(NAME, TYPE) \
+static __typeof__(&NAME) real_##NAME; \
+static NTW16S_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
+{ ntw16s_unwind_scope unwind;font_dialog_scope scope={0};BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
+  if(!begin_titles(&scope.title,TRUE))return FALSE; \
+  scope.hook=SetWindowsHookExW(WH_CALLWNDPROCRET,font_dialog_return,NULL,GetCurrentThreadId()); \
+  NTW16S_UNWIND_BEGIN(unwind,font_dialog_end,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
+  } NTW16S_UNWIND_END(unwind); \
+  if(scope.title.failure){result=FALSE;error=scope.title.failure;} SetLastError(error);return result; }
+FONT_DIALOG_HOOK(ChooseFontA,CHOOSEFONTA)
+FONT_DIALOG_HOOK(ChooseFontW,CHOOSEFONTW)
+#undef FONT_DIALOG_HOOK
+
+/* The system's colour picker subclasses several STATIC surfaces and owns
+ * their colour-grid painting.  Do not replace these clients with our generic
+ * STATIC frame painter; the surrounding standard controls remain styled. */
+static LRESULT CALLBACK color_dialog_return(int code,WPARAM wparam,LPARAM lparam)
+{
+    if(code>=0 && lparam){
+        const CWPRETSTRUCT *m=(const CWPRETSTRUCT *)lparam;
+        if(m->message==WM_INITDIALOG){
+            WCHAR cls[32];HWND basic=GetDlgItem(m->hwnd,720),custom=GetDlgItem(m->hwnd,721);
+            if(basic && custom && GetClassNameW(m->hwnd,cls,ARRAYSIZE(cls)) && !lstrcmpW(cls,L"#32770")){
+                const int ids[]={720,721,710,702,709};
+                for(unsigned i=0;i<sizeof(ids)/sizeof(ids[0]);++i){
+                    HWND surface=GetDlgItem(m->hwnd,ids[i]);
+                    if(surface && GetParent(surface)==m->hwnd && GetClassNameW(surface,cls,ARRAYSIZE(cls)) && !lstrcmpiW(cls,L"Static"))
+                        (void)Ntw16sWindowRemove(surface);
+                }
+            }
+        }
+    }
+    return CallNextHookEx(NULL,code,wparam,lparam);
+}
+#define COLOR_DIALOG_HOOK(NAME, TYPE) \
+static __typeof__(&NAME) real_##NAME; \
+static NTW16S_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
+{ ntw16s_unwind_scope unwind;font_dialog_scope scope={0};BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
+  if(!begin_titles(&scope.title,TRUE))return FALSE; \
+  scope.hook=SetWindowsHookExW(WH_CALLWNDPROCRET,color_dialog_return,NULL,GetCurrentThreadId()); \
+  NTW16S_UNWIND_BEGIN(unwind,font_dialog_end,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
+  } NTW16S_UNWIND_END(unwind); \
+  if(scope.title.failure){result=FALSE;error=scope.title.failure;} SetLastError(error);return result; }
+COLOR_DIALOG_HOOK(ChooseColorA,CHOOSECOLORA)
+COLOR_DIALOG_HOOK(ChooseColorW,CHOOSECOLORW)
+#undef COLOR_DIALOG_HOOK
+
+/* Synchronous common dialogs also create their own internal windows. */
+#define COMMON_HOOK(NAME, TYPE) \
+static __typeof__(&NAME) real_##NAME; \
+static NTW16S_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
+{ ntw16s_unwind_scope unwind;title_scope scope;BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
+  if(!begin_titles(&scope,TRUE))return FALSE; \
+  NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
+  } NTW16S_UNWIND_END(unwind); \
+  if(scope.failure){result=FALSE;error=scope.failure;} SetLastError(error);return result; }
+COMMON_HOOK(PrintDlgA,PRINTDLGA)
+COMMON_HOOK(PrintDlgW,PRINTDLGW)
+COMMON_HOOK(PageSetupDlgA,PAGESETUPDLGA)
+COMMON_HOOK(PageSetupDlgW,PAGESETUPDLGW)
+#undef COMMON_HOOK
+#define COMMON_EX_HOOK(NAME, TYPE) \
+static __typeof__(&NAME) real_##NAME; \
+static NTW16S_UNWIND_FUNCTION HRESULT WINAPI hook_##NAME(TYPE *parameters) \
+{ ntw16s_unwind_scope unwind;title_scope scope;HRESULT result=E_FAIL;DWORD error=ERROR_SUCCESS; \
+  if(!begin_titles(&scope,TRUE))return HRESULT_FROM_WIN32(GetLastError()); \
+  NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
+  } NTW16S_UNWIND_END(unwind); \
+  if(scope.failure){result=HRESULT_FROM_WIN32(scope.failure);error=scope.failure;} SetLastError(error);return result; }
+COMMON_EX_HOOK(PrintDlgExA,PRINTDLGEXA)
+COMMON_EX_HOOK(PrintDlgExW,PRINTDLGEXW)
+#undef COMMON_EX_HOOK
+
+/* Property sheets may create internal pages without public DialogBox calls. */
+#define SHEET_HOOK(NAME, TYPE) \
+static __typeof__(&NAME) real_##NAME; \
+static NTW16S_UNWIND_FUNCTION INT_PTR WINAPI hook_##NAME(const TYPE *parameters) \
+{ ntw16s_unwind_scope unwind;title_scope scope;INT_PTR result=-1;DWORD error=ERROR_SUCCESS; \
+  if(!begin_titles(&scope,TRUE))return -1; \
+  NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
+  } NTW16S_UNWIND_END(unwind); \
+  if(scope.failure){result=-1;error=scope.failure;} SetLastError(error);return result; }
+SHEET_HOOK(PropertySheetA,PROPSHEETHEADERA)
+SHEET_HOOK(PropertySheetW,PROPSHEETHEADERW)
+#undef SHEET_HOOK
+
+/* TaskDialog lives in ComCtl32 v6; bind only when that module exports it. */
+static __typeof__(&TaskDialog) real_TaskDialog;
+static __typeof__(&TaskDialogIndirect) real_TaskDialogIndirect;
+static NTW16S_UNWIND_FUNCTION HRESULT WINAPI hook_TaskDialog(HWND owner,HINSTANCE instance,
+    PCWSTR title,PCWSTR main_instruction,PCWSTR content,TASKDIALOG_COMMON_BUTTON_FLAGS buttons,
+    PCWSTR icon,int *button)
+{
+    ntw16s_unwind_scope unwind;title_scope scope;HRESULT result=E_FAIL;DWORD error=ERROR_SUCCESS;
+    if(!begin_titles(&scope,TRUE))return HRESULT_FROM_WIN32(GetLastError());
+    NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); {
+        result=real_TaskDialog(owner,instance,title,main_instruction,content,buttons,icon,button);error=GetLastError();
+    } NTW16S_UNWIND_END(unwind);
+    if(scope.failure){result=HRESULT_FROM_WIN32(scope.failure);error=scope.failure;}SetLastError(error);return result;
+}
+static NTW16S_UNWIND_FUNCTION HRESULT WINAPI hook_TaskDialogIndirect(const TASKDIALOGCONFIG *config,
+    int *button,int *radio,BOOL *verification)
+{
+    ntw16s_unwind_scope unwind;title_scope scope;HRESULT result=E_FAIL;DWORD error=ERROR_SUCCESS;
+    if(!begin_titles(&scope,TRUE))return HRESULT_FROM_WIN32(GetLastError());
+    NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); {
+        result=real_TaskDialogIndirect(config,button,radio,verification);error=GetLastError();
+    } NTW16S_UNWIND_END(unwind);
+    if(scope.failure){result=HRESULT_FROM_WIN32(scope.failure);error=scope.failure;}SetLastError(error);return result;
+}
 
 /* MessageBox creates its own dialog inside USER rather than necessarily
  * calling an exported DialogBox entry. Keep its API/return contract and use
@@ -141,8 +307,14 @@ static HRESULT WINAPI hook_set_theme(HWND w,LPCWSTR application,LPCWSTR ids)
 static BOOL eligible_scroll(HWND w)
 {
     DWORD saved=GetLastError();
-    BOOL eligible=InterlockedCompareExchange(&style_ready,0,0) && Ntw16sWindowAttached(w);
+    BOOL eligible=InterlockedCompareExchange(&style_ready,0,0) &&
+        (Ntw16sWindowAttached(w) || ntw16s_managed_scrollbars_active(w));
     SetLastError(saved);return eligible;
+}
+static void redraw_scroll(HWND w)
+{
+    if(ntw16s_managed_scrollbars_active(w))win16_style_scrollbars_paint(w,NULL,NULL);
+    else Ntw16sScrollChanged(w);
 }
 static BOOL WINAPI hook_get_scroll(HWND w,int bar,LPSCROLLINFO info)
 {
@@ -158,28 +330,28 @@ static int WINAPI hook_set_pos(HWND w,int bar,int position,BOOL redraw)
 {
     int result;DWORD error;
     if(!eligible_scroll(w))return real_set_pos(w,bar,position,redraw);
-    result=real_set_pos(w,bar,position,FALSE);error=GetLastError();if(redraw)Ntw16sScrollChanged(w);
+    result=real_set_pos(w,bar,position,FALSE);error=GetLastError();if(redraw)redraw_scroll(w);
     SetLastError(error);return result;
 }
 static BOOL WINAPI hook_set_range(HWND w,int bar,int first,int last,BOOL redraw)
 {
     BOOL result;DWORD error;
     if(!eligible_scroll(w))return real_set_range(w,bar,first,last,redraw);
-    result=real_set_range(w,bar,first,last,FALSE);error=GetLastError();if(result && redraw)Ntw16sScrollChanged(w);
+    result=real_set_range(w,bar,first,last,FALSE);error=GetLastError();if(result && redraw)redraw_scroll(w);
     SetLastError(error);return result;
 }
 static BOOL WINAPI hook_show_scroll(HWND w,int bar,BOOL show)
 {
     BOOL result;DWORD error;
     if(!eligible_scroll(w))return real_show_scroll(w,bar,show);
-    result=real_show_scroll(w,bar,show);error=GetLastError();if(result)Ntw16sScrollChanged(w);
+    result=real_show_scroll(w,bar,show);error=GetLastError();if(result)redraw_scroll(w);
     SetLastError(error);return result;
 }
 static BOOL WINAPI hook_enable_scroll(HWND w,UINT bar,UINT arrows)
 {
     BOOL result;DWORD error;
     if(!eligible_scroll(w))return real_enable_scroll(w,bar,arrows);
-    result=real_enable_scroll(w,bar,arrows);error=GetLastError();Ntw16sScrollChanged(w);
+    result=real_enable_scroll(w,bar,arrows);error=GetLastError();redraw_scroll(w);
     SetLastError(error);return result;
 }
 
@@ -584,6 +756,17 @@ LONG ntw16s_attach_titles(void)
     memcpy(&real_OpenThemeDataForDpi,&dpi_symbol,sizeof(dpi_symbol));
     if(real_OpenThemeDataForDpi && !error)error=(LONG)ntw16s_hooks_attach(&real_OpenThemeDataForDpi,(void *)hook_OpenThemeDataForDpi);
     ATTACH(TrackPopupMenu);
+    ATTACH(FindTextA);ATTACH(FindTextW);ATTACH(ReplaceTextA);ATTACH(ReplaceTextW);
+    ATTACH(ChooseColorA);ATTACH(ChooseColorW);ATTACH(ChooseFontA);ATTACH(ChooseFontW);
+    ATTACH(PrintDlgA);ATTACH(PrintDlgW);ATTACH(PageSetupDlgA);ATTACH(PageSetupDlgW);
+    ATTACH(PrintDlgExA);ATTACH(PrintDlgExW);
+    ATTACH(PropertySheetA);ATTACH(PropertySheetW);
+    FARPROC task_symbol=GetProcAddress(GetModuleHandleW(L"comctl32.dll"),"TaskDialog");
+    memcpy(&real_TaskDialog,&task_symbol,sizeof(task_symbol));
+    if(real_TaskDialog && !error)error=(LONG)ntw16s_hooks_attach(&real_TaskDialog,(void *)hook_TaskDialog);
+    task_symbol=GetProcAddress(GetModuleHandleW(L"comctl32.dll"),"TaskDialogIndirect");
+    memcpy(&real_TaskDialogIndirect,&task_symbol,sizeof(task_symbol));
+    if(real_TaskDialogIndirect && !error)error=(LONG)ntw16s_hooks_attach(&real_TaskDialogIndirect,(void *)hook_TaskDialogIndirect);
     ATTACH(CreateDialogParamA);ATTACH(CreateDialogParamW);
     ATTACH(CreateDialogIndirectParamA);ATTACH(CreateDialogIndirectParamW);
     ATTACH(DialogBoxParamA);ATTACH(DialogBoxParamW);

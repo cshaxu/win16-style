@@ -14,4 +14,6 @@
  * module reference until all windows/scopes/fonts are released and no calls
  * or callbacks remain active. DllMain performs no USER/GDI operations. */
 NTW16S_API DWORD __cdecl Ntw16sGetAbiVersion(void);
+/* kind: 1 open, 2 save, 3 folder. Returns HRESULT; path is caller-owned. */
+NTW16S_API HRESULT __cdecl Ntw16sShowModernFileDialog(HWND owner, UINT kind, PWSTR path, DWORD capacity);
 #endif

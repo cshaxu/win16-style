@@ -78,6 +78,93 @@ try{
         (Case 'long-path' $python @('-B',(Join-Path $SourceRoot 'tests/run16s-exe/long_path.py'),$run,$d32,$d64,(Join-Path $x86 'launch-failures.exe'),(Join-Path $x64 'launch-failures.exe')) @('LONG PATH PASS width=32','LONG PATH PASS width=64')),
         (Case 'cli-failures' $python (@('-B',(Join-Path $SourceRoot 'tests/run16s-exe/cli_failures.py'))+$pair) @('CLI ROLLBACK PASS width=32','CLI ROLLBACK PASS width=64','CLI IO/EXIT PASS width=32','CLI IO/EXIT PASS width=64'))
     )
+    # Each native dialog target is owned by a timeout job and observes its own
+    # UI thread. The driver runs the actual candidate launcher and both DLLs.
+    $dialogDriver=Join-Path $x64 'dialog-test-driver.exe'
+    foreach($arch in @('x86','x64')) {
+        $bits=if($arch -eq 'x86'){'32'}else{'64'}
+        $scrollTarget=Join-Path (Join-Path $BuildRoot $arch) 'scroll-frame-target.exe'
+        $eventsTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-events-target.exe'
+        $oldEventTarget=Join-Path (Join-Path $BuildRoot $arch) 'old-file-event-target.exe'
+        $multiTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-multi-target.exe'
+        $identityTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-identity-target.exe'
+        $comTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-dialog-target.exe'
+        $modernTarget=Join-Path (Join-Path $BuildRoot $arch) 'modern-dialog-target.exe'
+        $fileTarget=Join-Path (Join-Path $BuildRoot $arch) 'file-dialog-target.exe'
+        $folderTarget=Join-Path (Join-Path $BuildRoot $arch) 'folder-dialog-target.exe'
+        $findTarget=Join-Path (Join-Path $BuildRoot $arch) 'find-dialog-target.exe'
+        $commonTarget=Join-Path (Join-Path $BuildRoot $arch) 'common-dialog-target.exe'
+        $printTarget=Join-Path (Join-Path $BuildRoot $arch) 'print-dialog-target.exe'
+        $sheetTarget=Join-Path (Join-Path $BuildRoot $arch) 'sheet-dialog-target.exe'
+        $taskTarget=Join-Path (Join-Path $BuildRoot $arch) 'task-dialog-target.exe'
+        foreach($kind in @('open','save','folder')) {
+            foreach($action in @('accept','cancel')) {
+                $cases+=Case "dialog-com-$arch-$kind-$action" $dialogDriver @($run,$comTarget,$kind,$action) @("COM_BRIDGE bits=$bits",'old=1','DIALOG_DRIVER exit=0') 30
+            }
+        }
+        $cases+=Case "dialog-com-ex-$arch" $dialogDriver @($run,$comTarget,'folder','accept','ex') @('COM_EX identity=1 partial=00080012',"COM_BRIDGE bits=$bits",'folder=1','old=1','same=1','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-com-factory-$arch" $dialogDriver @($run,$comTarget,'open','accept','factory') @('COM_FACTORY identity=1 hr=00000000',"COM_BRIDGE bits=$bits",'old=1','same=1','DIALOG_DRIVER exit=0') 30
+        foreach($labelKind in @('open','save','folder')) {
+            $cases+=Case "dialog-com-label-$arch-$labelKind" $dialogDriver @($run,$comTarget,$labelKind,'accept','labels') @("COM_BRIDGE bits=$bits",'old=1','same=1','labels=1','DIALOG_DRIVER exit=0') 30
+        }
+        $cases+=Case "dialog-com-multi-$arch" $dialogDriver @($run,$multiTarget,'accept','spaces') @("COM_MULTI bits=$bits",'selected=2','count=2 paths=11','single=80004005','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-com-multi-single-$arch" $dialogDriver @($run,$multiTarget,'accept','spaces','single') @("COM_MULTI bits=$bits",'selected=1','count=1 paths=10','single=00000000','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-com-multi-cancel-$arch" $dialogDriver @($run,$multiTarget,'cancel','spaces') @("COM_MULTI bits=$bits",'selected=2','hr=800704c7','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-old-event-$arch" $dialogDriver @($run,$oldEventTarget) @("OLD_FILE_EVENT bits=$bits",'calls=2 valid=2 kept=1 result=1','DIALOG_DRIVER exit=0') 30
+        foreach($eventMode in @('normal','release','self','remove')) {
+            $cases+=Case "dialog-com-event-$arch-$eventMode" $dialogDriver @($run,$eventsTarget,$eventMode) @("COM_EVENTS bits=$bits",'unadvise=00000000 refs=1','DIALOG_DRIVER exit=0') 30
+        }
+        $cases+=Case "dialog-com-identity-$arch" $dialogDriver @($run,$identityTarget) @("COM_CUSTOM_IDENTITY bits=$bits hr=00000000 same=1","COM_V2_IDENTITY bits=$bits hr=00000000 same=1",'DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-com-v2-$arch" $dialogDriver @($run,$comTarget,'folder','accept','v2') @("COM_BRIDGE bits=$bits",'folder=1','old=1','array=1','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-com-custom-$arch" $dialogDriver @($run,$comTarget,'open','cancel','custom') @("COM_BRIDGE bits=$bits",'old=0','hr=800704c7','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "scroll-frame-$arch" $dialogDriver @($run,$scrollTarget) @("FRAME_HOST bits=$bits attached=0 installed=1",'FRAME_DRAG axis=0 captured=1 moved=1','FRAME_DRAG axis=1 captured=1 moved=1','FRAME_SCROLL_RESULT horizontal=0 vertical=0','DIALOG_DRIVER exit=0') 30
+        foreach($scrollKind in @('list','edit')) {
+            $cases+=Case "scroll-$scrollKind-$arch" $dialogDriver @($run,$scrollTarget,$scrollKind) @("FRAME_HOST bits=$bits attached=1 installed=1",'FRAME_DRAG axis=0 captured=1 moved=1','FRAME_DRAG axis=1 captured=1 moved=1','FRAME_SCROLL_RESULT horizontal=0 vertical=0','DIALOG_DRIVER exit=0') 30
+        }
+        foreach($kind in 1..3) {
+            $cases+=Case "dialog-modern-api-$arch-$kind" $dialogDriver @($run,$modernTarget,"$kind") @("MODERN_API bits=$bits kind=$kind seen=1 modern=1 frame=1 hr=800704c7 path_empty=1",'DIALOG_DRIVER exit=0') 30
+        }
+        $cases+=Case "dialog-task-$arch" $dialogDriver @($run,$taskTarget) @("TASK_DIALOG bits=$bits",'DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-print-ex-invalid-$arch" $dialogDriver @($run,$printTarget,'invalid','wide') @("PRINT_EX_INVALID bits=$bits",'DIALOG_DRIVER exit=0') 30
+        foreach($encoding in @('ansi','wide')) {
+            $cases+=Case "dialog-sheet-$arch-$encoding" $dialogDriver @($run,$sheetTarget,$encoding) @("SHEET_DIALOG bits=$bits",'DIALOG_DRIVER exit=0') 30
+            foreach($kind in @('find','replace')) {
+                $cases+=Case "dialog-$kind-$arch-$encoding" $dialogDriver @($run,$findTarget,$kind,$encoding) @("FIND_DIALOG bits=$bits",'DIALOG_DRIVER exit=0') 30
+            }
+            foreach($kind in @('font','color')) { foreach($action in @('ok','cancel')) {
+                $cases+=Case "dialog-$kind-$arch-$encoding-$action" $dialogDriver @($run,$commonTarget,$kind,$encoding,$action) @("COMMON_DIALOG bits=$bits",'DIALOG_DRIVER exit=0') 30
+            }}
+            $cases+=Case "dialog-color-$arch-$encoding-expand" $dialogDriver @($run,$commonTarget,'color',$encoding,'expand') @("COLOR_EXPANDED",'DIALOG_DRIVER exit=0') 30
+            foreach($kind in @('print','page')) {
+                $cases+=Case "dialog-$kind-$arch-$encoding" $dialogDriver @($run,$printTarget,$kind,$encoding) @("PRINT_DIALOG bits=$bits",'DIALOG_DRIVER exit=0') 30
+            }
+        }
+        $cases+=Case "dialog-file-negative-$arch" $dialogDriver @('--direct',$fileTarget,'open','wide','0','cancel') @("FILE_DIALOG bits=$bits",'DIALOG_DRIVER exit=0') 30
+        foreach($kind in @('open','save')) {
+            foreach($encoding in @('ansi','wide')) {
+                $cases+=Case "dialog-file-$arch-$kind-$encoding" $dialogDriver @($run,$fileTarget,$kind,$encoding,'1') @("FILE_DIALOG bits=$bits",'DIALOG_DRIVER exit=0') 30
+            }
+        }
+        foreach($encoding in @('ansi','wide')) {
+            foreach($mode in @('v400','default','oldhook')) {
+                $cases+=Case "dialog-file-$arch-$encoding-$mode" $dialogDriver @($run,$fileTarget,'open',$encoding,'1',$mode) @("FILE_DIALOG bits=$bits",'DIALOG_DRIVER exit=0') 30
+            }
+        }
+        foreach($mode in @('cancel','hook')) {
+            $layout=if($mode -eq 'hook'){'0'}else{'1'}
+            $cases+=Case "dialog-file-$arch-$mode" $dialogDriver @($run,$fileTarget,'open','wide',$layout,$mode) @("FILE_DIALOG bits=$bits",'DIALOG_DRIVER exit=0') 30
+        }
+        foreach($encoding in @('ansi','wide')) {
+            foreach($mode in @('select','cancel')) {
+                $dialogArgs=@($run,$folderTarget,$encoding)
+                if($mode -eq 'cancel'){$dialogArgs+=@('cancel')}
+                $cases+=Case "dialog-folder-$arch-$encoding-$mode" $dialogDriver $dialogArgs @("FOLDER_DIALOG bits=$bits",'DIALOG_DRIVER exit=0') 45
+            }
+        }
+        foreach($mode in @('same','newfolder','controls')) {
+            $cases+=Case "dialog-folder-$arch-$mode" $dialogDriver @($run,$folderTarget,'wide',$mode) @("FOLDER_DIALOG bits=$bits",'DIALOG_DRIVER exit=0') 45
+        }
+    }
     $cases+=@(
         (Case 'legacy-iat-32' (Join-Path $x86 'launch-staging.exe') @('--parent',$Package) @('LEGACY IAT PASS bits=32 zero_oft=0 initialized=1 metadata_restored=1','LEGACY IAT PASS bits=32 zero_oft=1 initialized=1 metadata_restored=1','LEGACY IAT REJECT PASS bits=32 mode=3 error=193')),
         (Case 'legacy-iat-64' (Join-Path $x64 'launch-staging.exe') @('--parent',$Package) @('LEGACY IAT PASS bits=64 zero_oft=0 initialized=1 metadata_restored=1','LEGACY IAT PASS bits=64 zero_oft=1 initialized=1 metadata_restored=1','LEGACY IAT REJECT PASS bits=64 mode=3 error=193')),
@@ -373,7 +460,7 @@ try{
             $used=0;foreach($entry in $running){$used+=$entry.cost}
             while($pending.Count){
                 $case=$pending[0]
-                $cost=if($case.name -match '^vcl-status-font-alias-'){$Jobs}elseif($case.name -match '^(font-layout|menu-cancel|dialogs|messages|tree-v[56]-)'){[Math]::Min(2,$Jobs)}else{1}
+                $cost=if($case.name -match '^(vcl-status-font-alias-|scroll-(frame|list|edit)-)' ){$Jobs}elseif($case.name -match '^(font-layout|menu-cancel|dialogs|messages|tree-v[56]-)'){[Math]::Min(2,$Jobs)}else{1}
                 if($used+$cost -gt $Jobs){break}
                 $pending.RemoveAt(0)
                 $directory=Join-Path $scratch $case.name;New-Item -ItemType Directory -Path $directory | Out-Null

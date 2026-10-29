@@ -32,3 +32,4 @@ EXPORTS
     win16_style_set_palette @30
     win16_style_set_scroll_info @31
     win16_style_tabbed_list_install @32
+    Ntw16sShowModernFileDialog @33

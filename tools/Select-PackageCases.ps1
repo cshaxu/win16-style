@@ -39,6 +39,7 @@ function Assert-PackageCoverage {
 function Test-PackageCaseSkip {
     param([string]$Name,[int]$ExitCode,[string]$Output)
     if ($ExitCode -eq 2 -and $Output.Contains('PRIVATE_DESKTOP_CREATE_FAIL error=5')) { return $true }
+    if ($Name -cmatch '^scroll-(frame|list|edit)-x(86|64)$' -and $ExitCode -eq 77 -and $Output -cmatch '(?m)^FRAME_VISUAL_SKIP axis=[01] reason=occluded\r?$') { return $true }
     if ($Name -cmatch '^vcl-status-font-alias-(32|64)$' -and $ExitCode -eq 2 -and $Output -cmatch '(?m)^ALIAS_SKIP no_handle_reuse attempts=1200\r?$') { return $true }
     if ($Name -cmatch '^vb(5|6)-checklist-dpi144-(32|64)$' -and $ExitCode -eq 77 -and
         $Output -cmatch '(?m)^VB_CHECKLIST_144_SKIP dpi=([1-9][0-9]*)\r?$') {

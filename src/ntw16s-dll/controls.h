@@ -48,6 +48,7 @@ BOOL win16_style_legacy_progress_border_install_created(HWND,const win16_style_p
 BOOL win16_style_tree_install_created(HWND,const win16_style_palette *,const void *,const BOOL *);
 BOOL win16_style_grid_install_created(HWND,const win16_style_palette *,const void *,const BOOL *);
 BOOL win16_style_picture_install_created(HWND,const win16_style_palette *,const void *,const BOOL *);
+BOOL win16_style_common_dialog_combo_install(HWND,const void *);
 BOOL win16_style_frame_scrollbars_install_owned(HWND,const win16_style_palette *,const void *,const BOOL *);
 void win16_style_frame_scrollbars_palette_owned(HWND,const win16_style_palette *,const void *);
 NTW16S_API void win16_style_frame_scrollbars_remove(HWND window);
@@ -64,6 +65,7 @@ NTW16S_API BOOL win16_style_edit_scrollbars_enable(HWND window);
 /* Shared nonclient presentation for frames and native controls. The supplied
  * DC, if any, is window-relative. Native USER owns ranges and bar rectangles;
  * opted-in controls and styled frames use our shared fixed-thumb geometry. */
+BOOL ntw16s_managed_scrollbars_active(HWND window);
 NTW16S_API void win16_style_scrollbars_paint(HWND window,HDC target,const win16_style_palette *palette);
 typedef struct win16_style_control_scope win16_style_control_scope;
 typedef struct win16_style_control_counts {unsigned installed,unsupported,failed;} win16_style_control_counts;

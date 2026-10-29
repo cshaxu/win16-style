@@ -1,0 +1,2 @@
+#include <windows.h>
+1 RT_MANIFEST "tests/ntw16s-dll/task_dialog.manifest"
