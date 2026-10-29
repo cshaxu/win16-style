@@ -45,4 +45,3 @@ int main(void)
     SelectObject(dc,oldbmp);DeleteObject(bitmap);DeleteDC(dc);
     printf("FONT_SIZE_MATRIX success=%u native=%u fallback=%u total=64 nonempty_ascii=%u\n",success,native,failed,painted);return 0;
 }
-

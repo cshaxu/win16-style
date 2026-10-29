@@ -32,14 +32,14 @@ M0 T19 S2继续：用户反馈等比例试用更差，并要求制作适用于�
 - Last allocated Td S: 15
 - Last allocated T18 S: 64
 - Last allocated T19 S: 2
-- Last delivery: M0 T19 S1 P208，产品实现提交8799eaee313ac3d830cff4f8d39b55836000ec9e，实际远端源码和四文件已核对。
+- Last delivery: M0 T19 S2 P212，产品实现提交79ebe63abf113f059ec5e3bb398603cb6a05e45f，实际远端源码和四文件已核对。
 - Open task: T19 S2 System位图等比例缩小试用。
 
 ## Technical Baseline
 
 三个组件、四产品文件；纯C、GCC、Ninja、ccache，原图形资源及来源保持。发布位置为项目assets根目录和O:/winnt根目录。当前有限控件契约见[界面设计](../design/UI.md)，启动/架构见[架构](../design/ARCHITECTURE.md)，具体覆盖及限制见[收口审计](../history/M0-T18-scoped-closure-audit.md)。T19 S1双宽干净包、两处部署摘要、18项聚焦回归和真实程序记录见[交付证据](../history/M0-T19-S1-canon-ownerdraw.md)。历史完整活动包保存在[归档](../history/M0-T18-S64-current-archive.md)，只作历史记录。
 
-用户已否决S2的P210试用。新的System派生字形试用包已完成同批构建、24项聚焦回归及双发布；等待提交和远端复核。12..64像素生成，1..11像素原字体回退，不代表逐字号人工字库完成。见[试用记录](../history/M0-T19-S2-system-glyph-trial.md)。S2和T19保持开放。
+用户已否决S2的P210试用。新的System派生字形试用包P212已完成同批构建、24项聚焦回归、双发布及实际远端复核。12..64像素生成，1..11像素原字体回退，不代表逐字号人工字库完成。见[试用记录](../history/M0-T19-S2-system-glyph-trial.md)。S2和T19保持开放。
 
 ## Recent Closure
 

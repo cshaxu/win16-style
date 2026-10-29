@@ -18,3 +18,5 @@ The self-owned isolated MadShow test used `PrintWindow` on the proper private de
 | demo.exe | x64 | `8ef1b63238e4ceec47695d50fc0eaf66a0872609d1a8171c89bf28ee1a3d3568` |
 
 This is a reviewed trial delivery within the active S, not completion of the owner's request for individually designed sizes. Keep S2 and T19 open for actual user feedback and further design where needed.
+
+Post-delivery diff checking found a trailing blank line in the new matrix source; it was removed without semantic changes, its source receipt was updated, and both x86/x64 matrices were recompiled and passed again. The tested product files were not changed.
