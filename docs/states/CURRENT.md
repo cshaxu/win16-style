@@ -2,7 +2,7 @@
 
 ## Current Work
 
-无活动任务包。M0 T19 S2两次字体试用按用户要求全部撤回；原始P208四文件已恢复。T19保持开放。
+无活动任务包。用户确认MadShow对话框已恢复，并要求收口S3和T19。
 
 ## Identifier State
 
@@ -10,9 +10,9 @@
 - Last allocated T: 19
 - Last allocated Td S: 15
 - Last allocated T18 S: 64
-- Last allocated T19 S: 2
+- Last allocated T19 S: 3
 - Last delivery: M0 T19 S2 P214，撤回提交940a8d42bfda18da413577319e72970102d52156，实际远端源码和P208原始四文件已核对。
-- Open task: T19开放；S2撤回完成，不自动准入下一S。
+- Open task: 无；T19 S3及T19按用户要求收口。
 
 ## Technical Baseline
 
@@ -20,7 +20,11 @@
 
 用户否决S2两次试用；S1 P208源码和原始四文件已恢复并经实际远端复核。见[撤回记录](../history/M0-T19-S2-rollback.md)。
 
+S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前原版真实点击正常；历史异常根因未查明，本S没有产品代码或二进制修改。
+
 ## Recent Closure
+
+- M0 T19 S3 / T19：用户确认当前对话框恢复正常并要求收口；历史异常原因不明，字体试验已撤回。
 
 - M0 T19 S2：按用户要求撤回全部字体试验并恢复P208原始四文件；[活动包归档](../history/M0-T19-S2-rollback-current-archive.md)。
 
