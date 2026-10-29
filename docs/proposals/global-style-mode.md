@@ -72,7 +72,7 @@ hook，[架构设计](../design/ARCHITECTURE.md)也不赋予启动器驻留职�
 已有目标继续创建样式后代、全局宿主资源退出及目标正常关闭；单应用模式不受影响。
 原图形资源及来源声明逐字节保留；无新renderer、第五个产品文件或外部必需后端。
 每个产品S按[执行规范](../rules/EXECUTION.md)完成干净双宽构建、同批四文件实际包
-测试；binary change后发布到assets根目录及O:/winnt/system32，核对摘要、提交推送
+测试；binary change后发布到assets根目录及O:/winnt，核对摘要、提交推送
 并取回实际远端复核。未验证的权限/桌面/框架覆盖不承诺通用支持。
 
 接口依据：[SetWindowsHookEx](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexw)、

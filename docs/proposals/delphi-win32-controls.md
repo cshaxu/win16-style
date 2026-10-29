@@ -95,6 +95,6 @@ MSVC、独立helper/产品DLL，或要求兄弟仓库作为构建/核心测试�
 少量代表操作，扩大重复次数须有明确故障定位目的，不放宽资源或语义断言。
 
 每个实施S按[执行规范](../rules/EXECUTION.md)完成双位宽干净构建、同批四文件
-实际包测试；有binary change时发布到assets根及O:/winnt/system32，核对八SHA、
+实际包测试；有binary change时发布到assets根及O:/winnt，核对八SHA、
 提交推送并实际取回远端复核。回归既有Win32、VB5/VB6及双宽注入传播，按完整
 矩阵另做任务级收口；不将一个版本或某个应用成功扩大成全部Delphi兼容。
