@@ -1202,3 +1202,5 @@ S64 P180真实VCL外部owner分类控件有限外框：精确Unicode TCategoryBu
 S64常用应用集中复测：P180发布包对自有MadShow裸/样式检查19目标控件、DoubleKiller四页各33控件、MD5summer四目标及下拉选择、Actor两复选glyph/四轮点击均到达相应断言；但四个完整观察器均在截图后或关闭等待阶段失败，MD5/Actor明确WAIT_TIMEOUT，其他具体失败调用未识别，不能算整轮通过或归因产品。自有作业关闭且无测试映像残留，未覆盖物理输入和自然退出。[记录](../history/M0-T18-S64-user-app-regression.md)。无产品变更；M0/T18/S64开放。
 
 S64常用应用退出等待补诊：自有裸版Actor两次WCT检查均显示UI线程等待同进程另一线程且无循环；第二次被等待线程也处于blocked，但WCT未识别进一步等待对象，原因仍未知。仅裸Actor证据，不能推广其他程序或归因样式DLL；job关闭。[记录](../history/M0-T18-S64-user-app-regression.md)。M0/T18/S64开放。
+
+S64裸Actor等待线程模块补证：自有进程WCT显示UI线程等待另一同进程线程，后者的Win32线程起始地址映射到SysWOW64/msctfmonitor.dll；无循环，WCT未指出后续对象。线程起始模块不是当前调用栈，不能据此确定根因或推广其他应用；不改系统输入服务，job关闭。[记录](../history/M0-T18-S64-user-app-regression.md)。M0/T18/S64开放。
