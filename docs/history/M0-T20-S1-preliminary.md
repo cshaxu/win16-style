@@ -121,3 +121,9 @@ P222 同批候选 j：双位宽干净构建、原始资源逐字节及 ABI 检�
 自有真实快捷方式探针在本机系统 IFileOpenDialog 证明：默认返回目标文件，FOS_NODEREFERENCELINKS 返回 .lnk；P222 默认桥接错误返回 .lnk，而该选项会回退现代布局。候选将该选项映射 OFN_NODEREFERENCELINKS，并对普通打开结果从 Shell 链接对象获取目标 PIDL；选项启用时保留链接。双宽自有单选的系统对照与候选、双宽候选两快捷方式多选的跟随及保留均通过。失败或不含目标 PIDL 的链接保留原选择；断链、网络、非文件系统目标、嵌套链接及保存/文件夹的完整行为未覆盖，保存和文件夹请求该选项仍回退现代布局；不能视作全部快捷方式兼容。基于微软定义 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-_fileopendialogoptions 和 https://learn.microsoft.com/en-us/windows/win32/dlgbox/open-and-save-as-dialog-boxes ，待实际包验证。
 
 P223 候选 k 双宽干净构建、原资源和 ABI 检查通过；实际包 24 项聚焦回归通过、无跳过，包括双宽系统和旧布局单快捷方式、候选双快捷方式多选、既有多选、实时文件名、demo、首次注入和传播。双宽多快捷方式仅有候选结果，尚无现代系统多选直接对照。两处发布与测试包一致：demo.exe dad82785cb51a299c0c003eb6b6e9b42bd5db4cc285f1245289ae2523a04daad；ntw16s32.dll bf7eb96e37bcd17169c33e928792f0fb6e033dfb93ba942479366d1480956d7c；ntw16s64.dll a4322df2908b31ea3e53fc8a65c2401c9e70fdf560ce9172faa9d37059a2a54d；run16s.exe 187eb65c626b9caaf2f50e6970953419cbe3d7cac190a4d11bb1ba948593a553。完整矩阵和前述断链等情况未覆盖，COM 事件旧布局仍未实现，T20 S1 保持开放。
+
+## COM 对话框打开期间目录状态
+
+本机原生对照与 P223 负例：在旧式文件打开列表由根进入 child 后，GetCurrentDirectoryW 已指向 child，IFileDialog::GetFolder 仍返回后台现代对象的根目录；系统对照返回 child。候选在旧对话框初始化及目录/驱动器切换通知时取得 Shell 目录对象并保存，打开期间 GetFolder、IFileDialog2、具体打开/保存接口均读取该对象。x64 真实窗口对照已验证进入子目录、返回上级、进程当前目录随后单独改变以及对象读取；x86、实际同批包待完成。目录捕获依赖旧模板发出的通知与进程当前目录，其他线程恰好在通知采样时并发更改工作目录、网络/虚拟目录、盘符切换、文件夹选择专用窗口仍未覆盖；事件订阅仍回退现代对话框。
+
+P224 双宽干净包与资源校验通过；实际包聚焦 24 项通过、无跳过，含 x86/x64 系统和桥接的子目录、上级、进程目录变化和 IFileDialog2 对照，以及文件名、链接、多选、事件回退、滚动和传播。发布至 assets 和 O:/winnt 的摘要与测试包一致：demo.exe 7bb8913a5b64139491db0462d651a67e595bc0372857565dba2cdcca086f4d20；ntw16s32.dll 79c7ac87e19a0329ba3c23999e10ec46cc1958ab73b127da898bb949d27bb5e0；ntw16s64.dll 5a44f7767c19fb7c3e9ff4d87ef7071ab2f6f7382cfdc5280fc0ed80b5b8a089；run16s.exe 0b6cccd636461062df8ecaaa73867737292c31705b81af2eec5c4114e888e287。完整回归及通知采样并发、驱动器、网络、文件夹专用窗口未覆盖，事件旧布局尚未实现，T20 S1 保持开放。

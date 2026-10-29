@@ -27,6 +27,8 @@ typedef struct file_proxy {
     IFileDialogCustomize custom;
     IFileDialogCustomize *custom_native;
     IShellItem *result;
+    IShellItem *live_folder;
+    HRESULT live_folder_error;
     IShellItemArray *results;
     WCHAR *title,*filter,*extension,*ok_label,*cancel_label,*file_label;
     UINT filter_index;
@@ -48,6 +50,7 @@ static ULONG proxy_release(file_proxy *p)
 {
     LONG refs=InterlockedDecrement(&p->refs);
     if(!refs){proxy_events_release(p);if(p->result)IShellItem_Release(p->result);
+        if(p->live_folder)IShellItem_Release(p->live_folder);
         if(p->results)IShellItemArray_Release(p->results);
         if(p->title)CoTaskMemFree(p->title);
         if(p->filter)CoTaskMemFree(p->filter);
@@ -405,17 +408,47 @@ static HRESULT save_item(PCWSTR path,IShellItem **item)
     if(ctx)IBindCtx_Release(ctx);
     IFileSystemBindData_Release(&data->iface);return hr;
 }
+/* Old common dialogs notify after changing their process current directory.
+ * Capture that transition immediately instead of consulting the unrelated
+ * dormant modern object's initial folder on later COM calls. */
+static void classic_capture_folder(file_proxy *p)
+{
+    DWORD needed=GetCurrentDirectoryW(0,NULL);IShellItem *item=NULL;
+    HRESULT hr=needed?S_OK:HRESULT_FROM_WIN32(GetLastError());
+    WCHAR *path=needed?CoTaskMemAlloc((size_t)needed*sizeof(WCHAR)):NULL;
+    if(needed && !path)hr=E_OUTOFMEMORY;
+    if(SUCCEEDED(hr)){
+        DWORD copied=GetCurrentDirectoryW(needed,path);
+        if(!copied || copied>=needed)hr=HRESULT_FROM_WIN32(copied?ERROR_INSUFFICIENT_BUFFER:GetLastError());
+        else hr=SHCreateItemFromParsingName(path,NULL,&IID_IShellItem,(void **)&item);
+    }
+    if(path)CoTaskMemFree(path);
+    if(p->live_folder)IShellItem_Release(p->live_folder);
+    p->live_folder=item;p->live_folder_error=hr;
+}
+static HRESULT proxy_get_folder(file_proxy *p,IShellItem **item)
+{
+    if(!p->active_window)return IFileDialog_GetFolder(p->native,item);
+    if(!item)return E_POINTER;
+    *item=NULL;if(FAILED(p->live_folder_error))return p->live_folder_error;
+    if(!p->live_folder)return E_FAIL;
+    *item=p->live_folder;IShellItem_AddRef(*item);return S_OK;
+}
 static UINT_PTR CALLBACK classic_hook(HWND w,UINT message,WPARAM wp,LPARAM lp)
 {
     (void)wp;
     static const WCHAR key[]=L"Win16Style.T20.ComDialog";
     if(message==WM_INITDIALOG && lp){OPENFILENAMEW *ofn=(OPENFILENAMEW *)lp;file_proxy *p=(file_proxy *)ofn->lCustData;
-        if(p && SetPropW(w,key,p))p->active_window=w;
+        if(p && SetPropW(w,key,p)){p->active_window=w;classic_capture_folder(p);}
         if(p && p->ok_label)SetDlgItemTextW(w,IDOK,p->ok_label);
         if(p && p->cancel_label)SetDlgItemTextW(w,IDCANCEL,p->cancel_label);
         if(p && p->file_label)SetDlgItemTextW(w,stc3,p->file_label);
     }else if(message==WM_NCDESTROY){file_proxy *p=GetPropW(w,key);
-        if(p){RemovePropW(w,key);if(p->active_window==w)p->active_window=NULL;}}
+        if(p){RemovePropW(w,key);if(p->active_window==w)p->active_window=NULL;
+            if(p->live_folder){IShellItem_Release(p->live_folder);p->live_folder=NULL;}}}
+    else if(message>=0xc000 && message<=0xffff){UINT selection=RegisterWindowMessageW(LBSELCHSTRINGW);
+        if(selection && message==selection && (wp==lst2 || wp==cmb2)){
+            file_proxy *p=GetPropW(w,key);if(p)classic_capture_folder(p);}}
     return 0;
 }
 /* The legacy multi-select contract returns space-separated 8.3 names. The
@@ -666,7 +699,7 @@ static HRESULT STDMETHODCALLTYPE v2_SetFolder(IFileDialog2 *This, IShellItem *ps
 
 static HRESULT STDMETHODCALLTYPE v2_GetFolder(IFileDialog2 *This, IShellItem **ppsi)
 {
-    file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,v2));return IFileDialog2_GetFolder(p->v2_native ,ppsi);
+    file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,v2));return proxy_get_folder(p,ppsi);
 }
 
 static HRESULT STDMETHODCALLTYPE v2_GetCurrentSelection(IFileDialog2 *This, IShellItem **ppsi)
@@ -849,7 +882,7 @@ static HRESULT STDMETHODCALLTYPE open_SetFolder(IFileOpenDialog *This, IShellIte
 
 static HRESULT STDMETHODCALLTYPE open_GetFolder(IFileOpenDialog *This, IShellItem **ppsi)
 {
-    file_proxy *p=(file_proxy *)This;return IFileOpenDialog_GetFolder((IFileOpenDialog *)p->variant ,ppsi);
+    file_proxy *p=(file_proxy *)This;return proxy_get_folder(p,ppsi);
 }
 
 static HRESULT STDMETHODCALLTYPE open_GetCurrentSelection(IFileOpenDialog *This, IShellItem **ppsi)
@@ -1026,7 +1059,7 @@ static HRESULT STDMETHODCALLTYPE save_SetFolder(IFileSaveDialog *This, IShellIte
 
 static HRESULT STDMETHODCALLTYPE save_GetFolder(IFileSaveDialog *This, IShellItem **ppsi)
 {
-    file_proxy *p=(file_proxy *)This;return IFileSaveDialog_GetFolder((IFileSaveDialog *)p->variant ,ppsi);
+    file_proxy *p=(file_proxy *)This;return proxy_get_folder(p,ppsi);
 }
 
 static HRESULT STDMETHODCALLTYPE save_GetCurrentSelection(IFileSaveDialog *This, IShellItem **ppsi)

@@ -87,6 +87,7 @@ try{
         $eventsTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-events-target.exe'
         $navTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-nav-target.exe'
         $liveTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-live-target.exe'
+        $liveFolderTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-folder-live-target.exe'
         $linkTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-link-target.exe'
         $oldEventTarget=Join-Path (Join-Path $BuildRoot $arch) 'old-file-event-target.exe'
         $multiTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-multi-target.exe'
@@ -122,6 +123,11 @@ try{
         }
         $cases+=Case "dialog-com-nav-native-$arch" $dialogDriver @('--direct',$navTarget) @("NAV_COM bits=$bits",'root=1 child=1 veto_root=1 set_ok=2','refs=1 wait=0 worker=0','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-nav-styled-$arch" $dialogDriver @($run,$navTarget) @("NAV_COM bits=$bits",'root=1 child=1 veto_root=1 set_ok=2','refs=1 wait=0 worker=0','DIALOG_DRIVER exit=0') 30
+        foreach($folderMode in @('native','styled')) {
+            $folderLaunch=if($folderMode -eq 'native'){'--direct'}else{$run}
+            $folderOld=if($folderMode -eq 'native'){'old=0'}else{'old=1'}
+            $cases+=Case "dialog-com-live-folder-$arch-$folderMode" $dialogDriver @($folderLaunch,$liveFolderTarget) @("LIVE_FOLDER_RESULT bits=$bits",$folderOld,'initial=1 final=1 stable=1 v2=1 parent=1 phase=3','worker=0','DIALOG_DRIVER exit=0') 30
+        }
         foreach($liveKind in @('open','save')) {
             foreach($liveMode in @('native','styled')) {
                 $liveLaunch=if($liveMode -eq 'native'){'--direct'}else{$run}
