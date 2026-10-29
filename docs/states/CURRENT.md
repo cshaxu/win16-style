@@ -1270,3 +1270,9 @@ S64标签UIA试探：自有样式MD5summer观察器CUIAutomation创建及获取�
 S64 P181真实进度条补证：自有样式DoubleKiller将实际v5 TProgressBar由0临时设42，移除样式前后WM_PRINTCLIENT客户区0差异、1404非零像素，位置保持42后恢复0；目标/启动器退出0及job清空，无扫描。仅证此合成状态客户绘制仍原生，未擦除的空白采样不能证明完整屏幕颜色；v5填充安全接入仍未建立。[记录](../history/M0-T18-S24-progress-colors.md)。M0/T18/S64开放。
 
 S64 P181真实VB5/VB6常用控件复测：原有作者x86样本裸/样式四组均退出0、job清空；每组4单选4复选2组合1列表2编辑2滚动条协议断言通过，样式组原glyph像素断言通过且实际加载assets 32位DLL。首轮命令误写观察器x64路径，未启动样本，修正后通过；仅96 DPI合成消息，物理输入/IME及所有变体未验。[记录](../history/M0-T18-S64-vb-real.md)。M0/T18/S64开放。
+
+S64 TPageControl候选准入：DelphiVCL4Python 1.0.7真实双宽TPageControl包含两个TabSheet，96 DPI重绘后当前assets均未附着，页面0→1→0及可见性保持；类/真实类均TPageControl。源码运行库标签候选仅TTabControl/TTabbedNotebook，协议现有TPageControl路径不证明运行库owner接入。拟仅将精确TPageControl加入现有同线程、父窗、实际原生Tab过程绘制见证与协议/owner-draw回退，不修改页面内容或布局；先用双宽真实样本验证附着/像素与页面切换、旧包负例，再补双宽伪绘制/重父/owner-draw测试及同批构建、发布；未证实则不交付。M0/T18/S64开放。
+
+S64 TPageControl候选初验：现源码仅扩展精确名称，沿用原生Tab过程绘制见证、父窗及owner-draw回退。真实DelphiVCL4Python双宽96 DPI样本旧包未附着、候选附着，两页0→1→0及移除后切换通过；同窗两次截图稳定、移除后各16948像素变化（非完整视觉证明）。双宽DLL-owned模型旧包正例失败，候选伪绘制/owner-draw回退、选择、重父和像素对照通过。初次Python样本ctypes加载语法错误，修正后通过；须干净同批包、聚焦回归、双发布及远端复核，其他版本/DPI、真实物理输入及事件未验。M0/T18/S64开放。
+
+S64 P192 TPageControl运行库owner有限适配：精确类复用既有原生Tab绘制见证、协议及父窗守卫；真实DelphiVCL4Python双宽附着、两页/子按钮切换及移除后保持通过，同窗稳定截图移除后16948像素变化；旧P181模型正例双宽失败，候选伪绘制/owner-draw/重父回退通过。干净同批包20项14.13秒零skip，assets/O:/winnt双发布八摘要及两处双宽安装模型通过；其他版本/DPI、物理输入与完整集成未验。[记录](../history/M0-T18-S64-P192-page-control.md)。提交远端复核待完成，M0/T18/S64开放。
