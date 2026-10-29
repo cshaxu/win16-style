@@ -58,3 +58,5 @@ P202 was published to assets root and O:/winnt root; all eight files matched the
 - demo.exe: 8c4109eafb89de71d0a4eb7adf3dc1f5736559be561e550da5a76fe3eb749de4
 
 Build, test and publish receipts are under build/t18-package/s64-p202-report-final, s64-p202-report-test and s64-p202-report-publish. Scratch evidence is under build/t18-s64-vb-mask-survey/real-*-p202*. M0/T18/S64 remain open; remote verification is pending.
+
+Post-push: GitHub main and local 8aec6a3a3b7f0fdb80f12cca43ce4482145bc898 were fetched and compared with no tree differences. The P202 release files at both destinations and the real assets runtime tests are recorded above. This verifies that implementation commit; M0/T18/S64 remain open for the rest of the task.
