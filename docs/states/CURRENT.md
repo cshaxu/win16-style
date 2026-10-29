@@ -1278,3 +1278,5 @@ S64 TPageControl候选初验：现源码仅扩展精确名称，沿用原生Tab�
 S64 P192 TPageControl运行库owner有限适配：精确类复用既有原生Tab绘制见证、协议及父窗守卫；真实DelphiVCL4Python双宽附着、两页/子按钮切换及移除后保持通过，同窗稳定截图移除后16948像素变化；旧P181模型正例双宽失败，候选伪绘制/owner-draw/重父回退通过。干净同批包20项14.13秒零skip，assets/O:/winnt双发布八摘要及两处双宽安装模型通过；其他版本/DPI、物理输入与完整集成未验。[记录](../history/M0-T18-S64-P192-page-control.md)。提交远端复核待完成，M0/T18/S64开放。
 
 S64 P192远端及实际安装补证：8d80572远端11文件blob和两处八摘要复核一致。assets实际x86真实VCL TPageControl同窗截图已保存（移除前后差16948像素），页内两个按钮标题及显示状态随切页保持；只移除page样式，其子按钮仍样式化，非整程序裸版对照。[记录](../history/M0-T18-S64-P192-page-control.md)。M0/T18/S64开放。
+
+S64 P192实际应用回归：发布版自有MadShow及DoubleKiller均退出0、job清空；前者19目标附着0失败，后者四页各33目标附着0失败，实际应用自身TPageControl仍附着且按钮像素移除见证通过；实际加载assets x86 DLL，无扫描。限单次消息级观察，不证明物理输入或完整外观。[记录](../history/M0-T18-S64-P192-page-control.md)。M0/T18/S64开放。
