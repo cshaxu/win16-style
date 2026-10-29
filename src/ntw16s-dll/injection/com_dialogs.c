@@ -548,6 +548,29 @@ static HRESULT proxy_extension(file_proxy *p,LPCWSTR value)
     if(p->extension)CoTaskMemFree(p->extension);
     p->extension=copy;return hr;
 }
+/* The native COM object is not showing when a classic file dialog is active.
+ * Keep its saved configuration in sync, and use the real classic edit control
+ * for live values changed by either the caller or the user. */
+static HRESULT proxy_set_filename(file_proxy *p,LPCWSTR name)
+{
+    HRESULT hr=IFileDialog_SetFileName(p->native,name);
+    if(FAILED(hr) || !p->active_window)return hr;
+    HWND edit=GetDlgItem(p->active_window,edt1);
+    if(!edit || !SetWindowTextW(edit,name))return HRESULT_FROM_WIN32(ERROR_INVALID_WINDOW_HANDLE);
+    return hr;
+}
+static HRESULT proxy_get_filename(file_proxy *p,LPWSTR *name)
+{
+    if(!p->active_window)return IFileDialog_GetFileName(p->native,name);
+    if(!name)return E_POINTER;
+    *name=NULL;HWND edit=GetDlgItem(p->active_window,edt1);
+    if(!edit)return HRESULT_FROM_WIN32(ERROR_INVALID_WINDOW_HANDLE);
+    int length=GetWindowTextLengthW(edit);
+    if(length<0 || length>=32768)return HRESULT_FROM_WIN32(ERROR_INSUFFICIENT_BUFFER);
+    WCHAR *value=CoTaskMemAlloc(((size_t)length+1)*sizeof(WCHAR));
+    if(!value)return E_OUTOFMEMORY;
+    GetWindowTextW(edit,value,length+1);*name=value;return S_OK;
+}
 static HRESULT STDMETHODCALLTYPE v2_QueryInterface(IFileDialog2 *This, REFIID riid, void **ppvObject)
 {
     file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,v2));return proxy_query(p,riid,ppvObject);
@@ -625,12 +648,12 @@ static HRESULT STDMETHODCALLTYPE v2_GetCurrentSelection(IFileDialog2 *This, IShe
 
 static HRESULT STDMETHODCALLTYPE v2_SetFileName(IFileDialog2 *This, LPCWSTR pszName)
 {
-    file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,v2));return IFileDialog2_SetFileName(p->v2_native ,pszName);
+    file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,v2));return proxy_set_filename(p,pszName);
 }
 
 static HRESULT STDMETHODCALLTYPE v2_GetFileName(IFileDialog2 *This, LPWSTR *pszName)
 {
-    file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,v2));return IFileDialog2_GetFileName(p->v2_native ,pszName);
+    file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,v2));return proxy_get_filename(p,pszName);
 }
 
 static HRESULT STDMETHODCALLTYPE v2_SetTitle(IFileDialog2 *This, LPCWSTR pszTitle)
@@ -808,12 +831,12 @@ static HRESULT STDMETHODCALLTYPE open_GetCurrentSelection(IFileOpenDialog *This,
 
 static HRESULT STDMETHODCALLTYPE open_SetFileName(IFileOpenDialog *This, LPCWSTR pszName)
 {
-    file_proxy *p=(file_proxy *)This;return IFileOpenDialog_SetFileName((IFileOpenDialog *)p->variant ,pszName);
+    file_proxy *p=(file_proxy *)This;return proxy_set_filename(p,pszName);
 }
 
 static HRESULT STDMETHODCALLTYPE open_GetFileName(IFileOpenDialog *This, LPWSTR *pszName)
 {
-    file_proxy *p=(file_proxy *)This;return IFileOpenDialog_GetFileName((IFileOpenDialog *)p->variant ,pszName);
+    file_proxy *p=(file_proxy *)This;return proxy_get_filename(p,pszName);
 }
 
 static HRESULT STDMETHODCALLTYPE open_SetTitle(IFileOpenDialog *This, LPCWSTR pszTitle)
@@ -985,12 +1008,12 @@ static HRESULT STDMETHODCALLTYPE save_GetCurrentSelection(IFileSaveDialog *This,
 
 static HRESULT STDMETHODCALLTYPE save_SetFileName(IFileSaveDialog *This, LPCWSTR pszName)
 {
-    file_proxy *p=(file_proxy *)This;return IFileSaveDialog_SetFileName((IFileSaveDialog *)p->variant ,pszName);
+    file_proxy *p=(file_proxy *)This;return proxy_set_filename(p,pszName);
 }
 
 static HRESULT STDMETHODCALLTYPE save_GetFileName(IFileSaveDialog *This, LPWSTR *pszName)
 {
-    file_proxy *p=(file_proxy *)This;return IFileSaveDialog_GetFileName((IFileSaveDialog *)p->variant ,pszName);
+    file_proxy *p=(file_proxy *)This;return proxy_get_filename(p,pszName);
 }
 
 static HRESULT STDMETHODCALLTYPE save_SetTitle(IFileSaveDialog *This, LPCWSTR pszTitle)

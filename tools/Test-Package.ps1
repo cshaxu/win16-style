@@ -86,6 +86,7 @@ try{
         $scrollTarget=Join-Path (Join-Path $BuildRoot $arch) 'scroll-frame-target.exe'
         $eventsTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-events-target.exe'
         $navTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-nav-target.exe'
+        $liveTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-live-target.exe'
         $oldEventTarget=Join-Path (Join-Path $BuildRoot $arch) 'old-file-event-target.exe'
         $multiTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-multi-target.exe'
         $identityTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-identity-target.exe'
@@ -120,6 +121,13 @@ try{
         }
         $cases+=Case "dialog-com-nav-native-$arch" $dialogDriver @('--direct',$navTarget) @("NAV_COM bits=$bits",'root=1 child=1 veto_root=1 set_ok=2','refs=1 wait=0 worker=0','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-nav-styled-$arch" $dialogDriver @($run,$navTarget) @("NAV_COM bits=$bits",'root=1 child=1 veto_root=1 set_ok=2','refs=1 wait=0 worker=0','DIALOG_DRIVER exit=0') 30
+        foreach($liveKind in @('open','save')) {
+            foreach($liveMode in @('native','styled')) {
+                $liveLaunch=if($liveMode -eq 'native'){'--direct'}else{$run}
+                $expectedOld=if($liveMode -eq 'native'){'old=0'}else{'old=1'}
+                $cases+=Case "dialog-com-live-$arch-$liveKind-$liveMode" $dialogDriver @($liveLaunch,$liveTarget,$liveKind,'accept') @('LIVE_NAME initial=1 updated=1 visible=1 user=1 v2=1',$expectedOld,"LIVE_RESULT bits=$bits",'result=1','DIALOG_DRIVER exit=0') 30
+            }
+        }
         $cases+=Case "dialog-com-identity-$arch" $dialogDriver @($run,$identityTarget) @("COM_CUSTOM_IDENTITY bits=$bits hr=00000000 same=1","COM_V2_IDENTITY bits=$bits hr=00000000 same=1",'DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-v2-$arch" $dialogDriver @($run,$comTarget,'folder','accept','v2') @("COM_BRIDGE bits=$bits",'folder=1','old=1','array=1','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-custom-$arch" $dialogDriver @($run,$comTarget,'open','cancel','custom') @("COM_BRIDGE bits=$bits",'old=0','hr=800704c7','DIALOG_DRIVER exit=0') 30

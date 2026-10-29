@@ -2831,7 +2831,7 @@
       "path": "src/ntw16s-dll/injection/com_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c6a5867d6511a4f171d394d3be44a54c31dab3c387bcbd66db2aa4eca359c177",
+      "sha256": "bdecb19c2d85ea126b72a62c8287f05ff5e72588c20741f16564909123f32aa9",
       "disposition": "authored",
       "review": "T20 S1 COM dialog bridge and real native probe under development",
       "notice": "Project-authored; no imported code or resources"
@@ -2906,6 +2906,15 @@
       "sha256": "2f7016b6a9c6d768b4542c34936e79973dc9232aa4699f75c5e8af25bab52c05",
       "disposition": "authored",
       "review": "T20 S1 native COM folder navigation and veto baseline",
+      "notice": "Project-authored test; no imported code or resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/com_live_target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "c0aa80ce9fe20246d1d388e331217dcad20073f9916eba7fe5558c2a4eeeb0a2",
+      "disposition": "authored",
+      "review": "T20 S1 real live COM filename control and result probe",
       "notice": "Project-authored test; no imported code or resources"
     }
   ]

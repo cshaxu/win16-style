@@ -109,3 +109,9 @@ P220 同批候选 h：仅修改原生探针、测试编排和证据，产品源�
 调查早期曾观察 Close(E_ABORT) 返回 S_OK，发现该观察无效：监测线程超时发 WM_QUIT 导致 Show 退出；修正为检查监测线程退出码后，独立 Close 实验在作业时限内未结束，不能得出其返回值或认定 Windows 与文档不一致。当前导航基线改为正常 WM_CLOSE 取消，不依赖超时退出。Close 的原因和正确测试仍未解决。微软文档对 Close 与 OnFolderChanging 的语义见 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-close 和 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialogevents-onfolderchanging 。
 
 P221 双宽干净包的 14 项聚焦回归通过、无跳过；四个导航用例覆盖 x86/x64 系统直接调用和注入后现代回退，另含双宽 COM 事件、demo 和注入传播。产品源码未变；重建文件摘要不同，已按规范整批发布并核对：demo.exe 58ba412bbe7186c5d02f8667517084497958f67a3b9aa53c00b7df1b9e844217；ntw16s32.dll 12d0e329ddca027ec29036a95ad1565e7f5e3a3b56ef548cdb743d28aabade58；ntw16s64.dll ea5b64aa1d8ebe2e4b3ad601bb335b3bdfadb8a590a82c509112db5ea99aef7f；run16s.exe 5a755765949e349928bd2ab6a5be2d50645ce53d2f142b8358910159f2d1fdbb。完整事件映射、Close 真正行为和完整回归未完成，T20 S1 保持开放。
+
+## 打开中的 COM 文件名同步
+
+真实系统对照与 P221 负例：应用在 Save 对话框显示后调用 SetFileName，系统输入框变为新值；P221 旧式桥接的后台 COM 对象返回成功且读回新值，但实际输入框仍是旧值，探针以 visible=0 失败。候选在后台对象接受配置后同步旧式 edt1，并在窗口存活期间从真实输入框读取文件名；IFileDialog、IFileOpenDialog、IFileSaveDialog、IFileDialog2 共用路径。双宽打开/保存、系统对照与候选共八组开发测试均覆盖设置、编辑框修改后读取、IFileDialog2 访问、实际接受结果；旧版本负例可检出。当前验证仅针对文件打开/保存，文件夹选择的窗口及其特殊含义、跨线程调用、异常超长和空值仍未覆盖。COM 事件订阅仍回退现代对话框，不能将此基础修复称作事件桥接完成。待同批包测试和发布。
+
+P222 同批候选 j：双位宽干净构建、原始资源逐字节及 ABI 检查通过；实际包 24 项聚焦通过、无跳过，包含双宽系统/桥接打开与保存的实时文件名、实际结果，以及导航、事件回退、滚动、demo、启动传播。发布至 assets 和 O:/winnt，逐文件与测试包一致：demo.exe c7763415742dd7504b4ce4267bbfac76be9336939f4251b720ab38c8634d2cdf；ntw16s32.dll fb19f1d9fad9207614e7fe97fe8f7190dadf57359fbe995c6c9a9e5f46dc767a；ntw16s64.dll 13df7eb0556cb1000ceae6037c212a030a54278d1c6ad99420c680900d08af0b；run16s.exe c0393840dca86d5e4f2280172125cbb3ad6ec3caedcaa242123bcffa9753b47c。完整矩阵、COM 事件旧布局及文件夹实时访问未完成，T20 S1 保持开放。
