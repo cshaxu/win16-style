@@ -30,9 +30,9 @@ This is an interim reconciliation, not a final supported-versus-unimplemented au
 
 ## Delphi VCL: 74 frozen families
 
-- limited-evidence: **52** — `TOutline`, `TTabbedNotebook`, `TDriveComboBox`, `TDirectoryListBox`, `TFileListBox`, `TCoolBar`, `TDBLookupListBox`, `TDBListBox`, `TMDIForm`, `TMediaPlayer`, `TDBNavigator`, `TDBLookupComboBox`, `TDBComboBox`, `TDBEdit`, `TDBGrid`, `TMainMenu`, `TMaskEdit`, `TForm`, `TPanel`, `TGroupBox`, `TScrollBox`, `TButton`, `TBitBtn`, `TCheckBox`, `TRadioButton`, `TRadioGroup`, `TEdit`, `TMemo`, `TRichEdit`, `TComboBox`, `TListBox`, `TCheckListBox`, `TColorBox`, `TStaticText`, `TPopupMenu`, `TToolBar`, `TStatusBar`, `TControlBar`, `TTreeView`, `TListView`, `THeaderControl`, `TTabControl`, `TPageControl`, `TProgressBar`, `TTrackBar`, `TUpDown`, `TDateTimePicker`, `TMonthCalendar`, `THotKey`, `TStringGrid`, `TDrawGrid`, `TValueListEditor`.
+- limited-evidence: **54** — `TButtonGroup`, `TCategoryButtons`, `TOutline`, `TTabbedNotebook`, `TDriveComboBox`, `TDirectoryListBox`, `TFileListBox`, `TCoolBar`, `TDBLookupListBox`, `TDBListBox`, `TMDIForm`, `TMediaPlayer`, `TDBNavigator`, `TDBLookupComboBox`, `TDBComboBox`, `TDBEdit`, `TDBGrid`, `TMainMenu`, `TMaskEdit`, `TForm`, `TPanel`, `TGroupBox`, `TScrollBox`, `TButton`, `TBitBtn`, `TCheckBox`, `TRadioButton`, `TRadioGroup`, `TEdit`, `TMemo`, `TRichEdit`, `TComboBox`, `TListBox`, `TCheckListBox`, `TColorBox`, `TStaticText`, `TPopupMenu`, `TToolBar`, `TStatusBar`, `TControlBar`, `TTreeView`, `TListView`, `THeaderControl`, `TTabControl`, `TPageControl`, `TProgressBar`, `TTrackBar`, `TUpDown`, `TDateTimePicker`, `TMonthCalendar`, `THotKey`, `TStringGrid`, `TDrawGrid`, `TValueListEditor`.
 
-- native-or-unverified: **13** — `TFrame`, `TSplitter`, `TSpeedButton`, `TLabel`, `TBevel`, `TChart`, `TAnimate`, `TWebBrowser`, `TOleContainer`, `TButtonGroup`, `TCategoryButtons`, `TDockTabSet`, `TTabSet`.
+- native-or-unverified: **11** — `TFrame`, `TSplitter`, `TSpeedButton`, `TLabel`, `TBevel`, `TChart`, `TAnimate`, `TWebBrowser`, `TOleContainer`, `TDockTabSet`, `TTabSet`.
 
 - nonvisual-or-content-only: **7** — `TShape`, `TImage`, `TPaintBox`, `TImageList`, `TActionList`, `TTimer`, `TTrayIcon`.
 
@@ -77,3 +77,5 @@ Update after P175: `TDriveComboBox` has a model-only witnessed native COMBOBOX d
 Update after P176: `TTabbedNotebook` has a model-only, witnessed native Tab-control path; real Delphi page contents and navigation remain unverified. Delphi has 51 limited (including six model-only entries), 14 native/unverified, 7 content/nonvisual and 2 separate dialogs.
 
 Update after P177: `TOutline` has a self-authored grid model for its nonclient frame and scrollbars only; real VCL nodes, icons and interaction remain unverified. Delphi has 52 limited (including seven model-only entries), 13 native/unverified, 7 content/nonvisual and 2 separate dialogs.
+
+Update after P178: `TButtonGroup` and `TCategoryButtons` have only self-authored nonclient frame/scrollbar models; their real VCL controls and button content remain unverified. Delphi has 54 limited (including nine model-only entries), 11 native/unverified, 7 content/nonvisual and 2 separate dialogs. Limited evidence is not complete support.

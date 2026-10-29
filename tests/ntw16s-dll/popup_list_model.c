@@ -1,6 +1,10 @@
 #define _WIN32_WINNT 0x0A00
 #ifdef NTW16S_TEST_OUTLINE
 #define TEST_LOOKUP_CLASS L"TOutline"
+#elif defined(NTW16S_TEST_BUTTON_GROUP)
+#define TEST_LOOKUP_CLASS L"TButtonGroup"
+#elif defined(NTW16S_TEST_CATEGORY_BUTTONS)
+#define TEST_LOOKUP_CLASS L"TCategoryButtons"
 #else
 #define TEST_LOOKUP_CLASS L"TDBLookupListBox"
 #endif

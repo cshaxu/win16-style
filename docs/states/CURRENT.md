@@ -1148,3 +1148,7 @@ S64 P176旧式TTabbedNotebook有限模型：精确类经同owner原生Tab绘制�
 S64 Delphi TOutline候选准入：Embarcadero文档确认TOutline经TCustomOutline继承TCustomGrid；双宽自有同owner Unicode自绘网格模型在P176下无法附着，不能视为真实VCL。按用户要求先完成可自包含实现，拟仅限精确TOutline、同进程主模块及同owner同线程父窗、CLIENTEDGE和可查询滚动信息，复用既有grid非客户区外框/滚动条；应用节点、图标、客户区绘制和交互保持原生。复用双宽现有grid模型，验证外框/客户区像素、状态、错误父窗、无边框/滚动及换父；真实节点展开与VCL集成留T收口。M0/T18/S64开放。
 
 S64 P177 TOutline有限非客户区模型：同主模块、同owner父窗、Unicode、clientedge且可查询滚动信息时复用grid外框；双宽自有模型外框2736/客户区0像素，状态保持及错误父窗、无边框/滚动和换父回退通过，P176双宽正例失败；真实VCL节点/图标/交互未验证。[证据](../history/M0-T18-S64-P177-vcl-outline.md)。同批干净包18项13.21秒零skip，双发布八摘要及两处双宽安装模型通过；提交推送远端复核待完成，M0/T18/S64开放。
+
+S64按钮容器外框候选准入：Embarcadero文档将TButtonGroup和TCategoryButtons定义为TCustomControl，按钮、分类可由框架或应用绘制；两类双宽自有同owner网格边框模型在P177均未附着，不能冒充真实VCL。按用户要求批量完成可做项，仅精确类、主模块和同owner同线程父窗、Unicode、CLIENTEDGE及可查询滚动协议时复用既有非客户区grid外框/滚动条，不接管内容、点击、图标、分类或拖拽；无边框/滚动、错误owner和换父回退。双类双宽模型、相邻grid回归及双发布后才能交付；真实VCL布局与交互留最终集成。M0/T18/S64开放。
+
+S64 P178 按钮容器有限外框模型：两类精确名称双宽自有模型外框2736像素、客户区0像素，旧P177正例失败；实际VCL按钮、布局和交互未验证，现有GoVCL无对应工厂。同批干净包20项12.75秒零skip、双发布八摘要及两处双宽安装测试通过；首次沙箱x86构建超时未发布。[证据](../history/M0-T18-S64-P178-vcl-button-groups.md)。提交推送及远端复核待完成，M0/T18/S64开放。
