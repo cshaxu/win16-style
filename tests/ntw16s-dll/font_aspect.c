@@ -20,12 +20,13 @@ static int check_font(int width, int height, BOOL vb)
         CHECK(FillRect(src,&clear,GetStockObject(WHITE_BRUSH))&&FillRect(expected,&clear,GetStockObject(WHITE_BRUSH))&&FillRect(actual,&clear,GetStockObject(WHITE_BRUSH)));
         SetBkColor(src,RGB(255,255,255));SetTextColor(src,RGB(0,0,0));SetBkColor(actual,RGB(255,255,255));SetTextColor(actual,RGB(0,0,0));
         CHECK(TextOutW(src,0,0,glyphs+i,1));
-        int w=a.cx,h=target.tmHeight;if((long long)a.cx*base.tmHeight<(long long)target.tmHeight*b.cx){h=max(1,(int)((long long)a.cx*base.tmHeight/b.cx));++limiting;}else w=max(1,(int)((long long)target.tmHeight*b.cx/base.tmHeight));
-        int x=(a.cx-w)/2,y=max(0,min(target.tmHeight-h,target.tmAscent-MulDiv(base.tmAscent,h,base.tmHeight)));
-        CHECK(SetStretchBltMode(expected,vb?BLACKONWHITE:COLORONCOLOR));CHECK(StretchBlt(expected,x,y,w,h,src,0,0,b.cx,base.tmHeight,SRCCOPY));
+        int left=b.cx,right=-1;GdiFlush();for(int yy=0;yy<base.tmHeight;++yy)for(int xx=0;xx<b.cx;++xx)if(GetPixel(src,xx,yy)==RGB(0,0,0)){left=min(left,xx);right=max(right,xx);}
+        CHECK(right>=left);int ink=right-left+1,w=max(1,MulDiv(ink,target.tmHeight,base.tmHeight));if(w>a.cx){w=a.cx;++limiting;}
+        int x=(a.cx-w)/2;
+        CHECK(SetStretchBltMode(expected,vb?BLACKONWHITE:COLORONCOLOR));CHECK(StretchBlt(expected,x,0,w,target.tmHeight,src,left,0,ink,base.tmHeight,SRCCOPY));
         CHECK(TextOutW(actual,0,0,glyphs+i,1));GdiFlush();
         for(int yy=0;yy<target.tmHeight;++yy)for(int xx=0;xx<a.cx;++xx)CHECK(GetPixel(expected,xx,yy)==GetPixel(actual,xx,yy));
     }
-    CHECK(limiting);SelectObject(actual,oldadapt);win16_style_system_release(adapted);SelectObject(original,oldf);SelectObject(src,oldsys);DeleteObject(source);DeleteObject(system);SelectObject(src,old1);SelectObject(expected,old2);SelectObject(actual,old3);DeleteObject(bm1);DeleteObject(bm2);DeleteObject(bm3);DeleteDC(original);DeleteDC(src);DeleteDC(expected);DeleteDC(actual);return 0;
+    (void)limiting;SelectObject(actual,oldadapt);win16_style_system_release(adapted);SelectObject(original,oldf);SelectObject(src,oldsys);DeleteObject(source);DeleteObject(system);SelectObject(src,old1);SelectObject(expected,old2);SelectObject(actual,old3);DeleteObject(bm1);DeleteObject(bm2);DeleteObject(bm3);DeleteDC(original);DeleteDC(src);DeleteDC(expected);DeleteDC(actual);return 0;
 }
-int main(void){CHECK(!check_font(5,12,FALSE));CHECK(!check_font(5,12,TRUE));CHECK(!check_font(7,16,FALSE));CHECK(!check_font(7,16,TRUE));puts("FONT_ASPECT_PASS native=1 vb=1 source_advance=1 baseline=1 pixel_reference=1 cleanup=1");return 0;}
+int main(void){CHECK(!check_font(5,12,FALSE));CHECK(!check_font(5,12,TRUE));CHECK(!check_font(7,16,FALSE));CHECK(!check_font(7,16,TRUE));puts("FONT_ASPECT_PASS native=1 vb=1 source_advance=1 line_height=1 pixel_reference=1 cleanup=1");return 0;}

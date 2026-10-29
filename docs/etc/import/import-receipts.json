@@ -2,12 +2,21 @@
   "schema": 1,
   "files": [
     {
+      "path": "tests/ntw16s-dll/font_size_matrix.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "cfce6cf038e47611d8fcbe3e4460784d4f5439b01a0942c196735a6d310d1fa7",
+      "disposition": "authored",
+      "review": "T19 S2 native 1..64 size requests and CP1252 sample painting and advance checks",
+      "notice": "Project-authored test; no imported code or resources"
+    },
+    {
       "path": "tests/ntw16s-dll/font_aspect.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e56cfbedaf223228e5a25cbb6628eb9ef168c5ef8b8c6240554c3dbad3e84417",
+      "sha256": "84a8b4b922c97e03cc19b35d76b1ee6a44545973b66420766a70612ca0adcc33",
       "disposition": "authored",
-      "review": "T19 S2 System glyph pixel reference, metrics, proportional fit and cleanup",
+      "review": "T19 S2 System glyph pixel reference, metrics, proportional fit and cleanup; T19 S2 ongoing ink-bounds and shared-line-height prototype",
       "notice": "Project-authored test; no imported code or resources"
     },
     {
@@ -455,9 +464,9 @@
       "path": "src/ntw16s-dll/font.c",
       "source": "src/ntw16s-dll/font.c",
       "source_blob": "3bce01032d506f05bb571f8be35392f12c4dcebb",
-      "sha256": "23fa0da454eb941a0bb751d6c74d4eb3667afb26b6bdb6a7409003c857f4565e",
+      "sha256": "d123adf8c13aea09e184edad079f86d7cc853f8b9d5a729a0e14bc14794f762a",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T18 S64 P117 isolated font lease and lifecycle verification; T18 S64 P118 prevent freeing an existing font variant on isolated stock-font fast path; T18 S64 P128 bounded calendar text; T19 S2 proportional glyph fit within original advance and ascent",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T18 S64 P117 isolated font lease and lifecycle verification; T18 S64 P118 prevent freeing an existing font variant on isolated stock-font fast path; T18 S64 P128 bounded calendar text; T19 S2 proportional glyph fit within original advance and ascent; T19 S2 ongoing ink-bounds and shared-line-height prototype",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -1490,9 +1499,9 @@
       "path": "tests/ntw16s-dll/font_layout.c",
       "source": null,
       "source_blob": null,
-      "sha256": "5bd75c8c28acc8cc0bf47ba98d4cf02f058ddeb6d1e602ff056f0804c0896532",
+      "sha256": "466ad1c01cfad274cf285203b0cd5f738a308673a8870ad20a696eb9296bef4b",
       "disposition": "authored",
-      "review": "T8 actual candidate native DS_SETFONT dialog and app font/rect/metrics updates across awareness contexts and nominal sizes; no physical-input claim; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved T18 S17 batches font selection while retaining each single-character extent assertion.; T18 S30 bounded GDI stability warmup and real leak witness, full font oracles retained; T19 S2 proportional control-pixel oracle",
+      "review": "T8 actual candidate native DS_SETFONT dialog and app font/rect/metrics updates across awareness contexts and nominal sizes; no physical-input claim; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved T18 S17 batches font selection while retaining each single-character extent assertion.; T18 S30 bounded GDI stability warmup and real leak witness, full font oracles retained; T19 S2 proportional control-pixel oracle; T19 S2 ongoing ink-bounds and shared-line-height prototype",
       "notice": "Project-authored C17 native probe, MIT"
     },
     {

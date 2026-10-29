@@ -25,6 +25,8 @@ CURRENT中的完成审计。待准入候选及顺序见上表。
 
 [字体与布局兼容](../proposals/font-layout.md)本轮修复交付及任务按用户明确指令收口，状态由CURRENT管理。
 
+[System多字号位图字形](../proposals/system-bitmap-strikes.md)是当前开放任务的后续工作，状态由CURRENT管理，不另分配T。
+
 [英文README与真实截图展示](../proposals/readme-showcase.md)为已交付收口的治理文档工作，
 不是新增产品候选；状态仍由CURRENT管理。
 
