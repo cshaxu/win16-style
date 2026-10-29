@@ -648,6 +648,15 @@ static HRESULT proxy_filter_index(file_proxy *p,UINT index)
 {
     HRESULT hr=IFileDialog_SetFileTypeIndex(p->native,index);if(SUCCEEDED(hr))p->filter_index=index;return hr;
 }
+static HRESULT proxy_get_filter_index(file_proxy *p,UINT *index)
+{
+    if(!p->active_window || !p->filter || !index)return IFileDialog_GetFileTypeIndex(p->native,index);
+    HWND combo=GetDlgItem(p->active_window,cmb1);
+    if(!combo)return HRESULT_FROM_WIN32(ERROR_INVALID_WINDOW_HANDLE);
+    LRESULT selected=SendMessageW(combo,CB_GETCURSEL,0,0);
+    if(selected==CB_ERR)return E_FAIL;
+    *index=(UINT)selected+1;return S_OK;
+}
 static HRESULT proxy_extension(file_proxy *p,LPCWSTR value)
 {
     HRESULT hr=IFileDialog_SetDefaultExtension(p->native,value);if(FAILED(hr))return hr;
@@ -712,7 +721,7 @@ static HRESULT STDMETHODCALLTYPE v2_SetFileTypeIndex(IFileDialog2 *This, UINT iF
 
 static HRESULT STDMETHODCALLTYPE v2_GetFileTypeIndex(IFileDialog2 *This, UINT *piFileType)
 {
-    file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,v2));return IFileDialog2_GetFileTypeIndex(p->v2_native ,piFileType);
+    file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,v2));return proxy_get_filter_index(p,piFileType);
 }
 
 static HRESULT STDMETHODCALLTYPE v2_Advise(IFileDialog2 *This, IFileDialogEvents *pfde, DWORD *pdwCookie)
@@ -895,7 +904,7 @@ static HRESULT STDMETHODCALLTYPE open_SetFileTypeIndex(IFileOpenDialog *This, UI
 
 static HRESULT STDMETHODCALLTYPE open_GetFileTypeIndex(IFileOpenDialog *This, UINT *piFileType)
 {
-    file_proxy *p=(file_proxy *)This;return IFileOpenDialog_GetFileTypeIndex((IFileOpenDialog *)p->variant ,piFileType);
+    file_proxy *p=(file_proxy *)This;return proxy_get_filter_index(p,piFileType);
 }
 
 static HRESULT STDMETHODCALLTYPE open_Advise(IFileOpenDialog *This, IFileDialogEvents *pfde, DWORD *pdwCookie)
@@ -1072,7 +1081,7 @@ static HRESULT STDMETHODCALLTYPE save_SetFileTypeIndex(IFileSaveDialog *This, UI
 
 static HRESULT STDMETHODCALLTYPE save_GetFileTypeIndex(IFileSaveDialog *This, UINT *piFileType)
 {
-    file_proxy *p=(file_proxy *)This;return IFileSaveDialog_GetFileTypeIndex((IFileSaveDialog *)p->variant ,piFileType);
+    file_proxy *p=(file_proxy *)This;return proxy_get_filter_index(p,piFileType);
 }
 
 static HRESULT STDMETHODCALLTYPE save_Advise(IFileSaveDialog *This, IFileDialogEvents *pfde, DWORD *pdwCookie)

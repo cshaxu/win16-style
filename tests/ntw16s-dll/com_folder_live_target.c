@@ -11,9 +11,22 @@ static IShellItem *child;
 static WCHAR root[MAX_PATH],sub[MAX_PATH],match_file[MAX_PATH],other_file[MAX_PATH];
 static DWORD ui;
 static HWND window;
-static volatile LONG seen,done,phase,initial_ok,final_ok,stable,v2_ok,parent_ok,name_ok,filter_ok;
-static BOOL old,programmatic;
+static volatile LONG seen,done,phase,initial_ok,final_ok,stable,v2_ok,parent_ok,name_ok,filter_ok,filter_live_ok;
+static BOOL old,programmatic,change_filter;
+static int filter_step;
+static HWND filter_control;
 static const WCHAR title[]=L"Win16S live folder";
+static BOOL CALLBACK find_filter(HWND w,LPARAM unused)
+{
+    (void)unused;WCHAR cls[32];
+    if(GetClassNameW(w,cls,ARRAYSIZE(cls)) && !lstrcmpiW(cls,L"ComboBox") && SendMessageW(w,CB_GETCOUNT,0,0)==2){
+        WCHAR first[256]=L"",second[256]=L"";
+        if(SendMessageW(w,CB_GETLBTEXTLEN,0,0)<255 && SendMessageW(w,CB_GETLBTEXTLEN,1,0)<255){
+            SendMessageW(w,CB_GETLBTEXT,0,(LPARAM)first);SendMessageW(w,CB_GETLBTEXT,1,(LPARAM)second);
+            if(wcsstr(first,L"Text")&&wcsstr(second,L"Log")){filter_control=w;return FALSE;}}
+    }
+    return TRUE;
+}
 static BOOL folder_is(PCWSTR expected)
 {
     IShellItem *item=NULL;PWSTR path=NULL;
@@ -37,6 +50,25 @@ static void CALLBACK tick(HWND w,UINT msg,UINT_PTR id,DWORD time)
         phase=1;return;
     }
     if(phase==1 && folder_is(sub)){final_ok=1;
+        if(change_filter && filter_step<3){filter_control=NULL;EnumChildWindows(w,find_filter,0);HWND combo=filter_control;UINT selected=0;
+            if(!combo){if(!filter_step){printf("FILTER_CONTROL_MISSING old=%d\n",old);filter_step=-1;}return;}
+            if(!filter_step){HWND parent=GetParent(combo);WCHAR cls[80]=L"";GetClassNameW(parent,cls,ARRAYSIZE(cls));
+                printf("FILTER_PARENT class=%ls id=%d root=%d count=%lld\n",cls,GetDlgCtrlID(parent),parent==w,(long long)SendMessageW(combo,CB_GETCOUNT,0,0));
+                UINT id=(UINT)GetDlgCtrlID(combo);SendMessageW(combo,CB_SETCURSEL,0,0);SendMessageW(parent,WM_COMMAND,MAKEWPARAM(id,CBN_SELCHANGE),(LPARAM)combo);
+                SendMessageW(parent,WM_COMMAND,MAKEWPARAM(id,CBN_SELENDOK),(LPARAM)combo);filter_step=1;return;}
+            HRESULT get=IFileDialog_GetFileTypeIndex(dialog,&selected);
+            if(filter_step==1){if(FAILED(get)||selected!=1)return;
+                IFileDialog2 *filter_v2=NULL;HRESULT set=IFileDialog_QueryInterface(dialog,&IID_IFileDialog2,(void **)&filter_v2);
+                if(SUCCEEDED(set))set=IFileDialog2_SetFileTypeIndex(filter_v2,2);
+                if(filter_v2)IFileDialog2_Release(filter_v2);
+                selected=0;get=IFileDialog_GetFileTypeIndex(dialog,&selected);
+                filter_live_ok=SUCCEEDED(set)&&SUCCEEDED(get)&&selected==1;
+                printf("LIVE_FILTER selected=1 set=%08lx remains=%u\n",(unsigned long)set,selected);
+                UINT id=(UINT)GetDlgCtrlID(combo);SendMessageW(combo,CB_SETCURSEL,1,0);SendMessageW(GetParent(combo),WM_COMMAND,MAKEWPARAM(id,CBN_SELCHANGE),(LPARAM)combo);
+                SendMessageW(GetParent(combo),WM_COMMAND,MAKEWPARAM(id,CBN_SELENDOK),(LPARAM)combo);filter_step=2;return;}
+            if(FAILED(get)||selected!=2)return;
+            filter_step=3;
+        }
         PWSTR name=NULL;HRESULT name_hr=IFileDialog_GetFileName(dialog,&name);
         name_ok=SUCCEEDED(name_hr)&&name&&!lstrcmpW(name,L"preserved.txt");
         if(name)CoTaskMemFree(name);
@@ -79,7 +111,8 @@ static DWORD WINAPI observe(void *p)
 }
 int wmain(int argc,WCHAR **argv)
 {
-    programmatic=argc>1&&!lstrcmpW(argv[1],L"set");
+    change_filter=argc>1&&!lstrcmpW(argv[1],L"filter");
+    programmatic=change_filter||(argc>1&&!lstrcmpW(argv[1],L"set"));
     BOOL save=argc>2&&!lstrcmpW(argv[2],L"save");
     WCHAR temp[MAX_PATH];if(!GetTempPathW(MAX_PATH,temp)||swprintf(root,MAX_PATH,L"%lsWin16SFolder-%lu-%lu",temp,GetCurrentProcessId(),GetTickCount())<0||!CreateDirectoryW(root,NULL))return 2;
     if(swprintf(sub,MAX_PATH,L"%ls\\child",root)<0||!CreateDirectoryW(sub,NULL))return 3;
@@ -96,6 +129,6 @@ int wmain(int argc,WCHAR **argv)
     hr=IFileDialog_Show(dialog,NULL);InterlockedExchange(&done,1);DWORD wait=WaitForSingleObject(thread,10000),code=99;
     if(wait==WAIT_OBJECT_0)GetExitCodeThread(thread,&code);
     CloseHandle(thread);IFileDialog_Release(dialog);IShellItem_Release(child);CoUninitialize();DeleteFileW(match_file);DeleteFileW(other_file);RemoveDirectoryW(sub);RemoveDirectoryW(root);
-    printf("LIVE_FOLDER_RESULT bits=%u old=%d initial=%ld final=%ld stable=%ld v2=%ld parent=%ld name=%ld filter=%ld phase=%ld hr=%08lx wait=%lu worker=%lu\n",(unsigned)(sizeof(void*)*8),old,initial_ok,final_ok,stable,v2_ok,parent_ok,name_ok,filter_ok,phase,(unsigned long)hr,wait,code);
-    return seen&&initial_ok&&final_ok&&stable&&v2_ok&&parent_ok&&(!programmatic||(name_ok&&filter_ok))&&phase==3&&hr==HRESULT_FROM_WIN32(ERROR_CANCELLED)&&wait==WAIT_OBJECT_0&&code==0?0:1;
+    printf("LIVE_FOLDER_RESULT bits=%u old=%d initial=%ld final=%ld stable=%ld v2=%ld parent=%ld name=%ld filter=%ld phase=%ld hr=%08lx wait=%lu worker=%lu livefilter=%ld\n",(unsigned)(sizeof(void*)*8),old,initial_ok,final_ok,stable,v2_ok,parent_ok,name_ok,filter_ok,phase,(unsigned long)hr,wait,code,filter_live_ok);
+    return seen&&initial_ok&&final_ok&&stable&&v2_ok&&parent_ok&&(!programmatic||((name_ok||change_filter)&&filter_ok))&&(!change_filter||filter_live_ok)&&phase==3&&hr==HRESULT_FROM_WIN32(ERROR_CANCELLED)&&wait==WAIT_OBJECT_0&&code==0?0:1;
 }

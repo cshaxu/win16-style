@@ -129,6 +129,7 @@ try{
             $cases+=Case "dialog-com-live-folder-$arch-$folderMode" $dialogDriver @($folderLaunch,$liveFolderTarget) @("LIVE_FOLDER_RESULT bits=$bits",$folderOld,'initial=1 final=1 stable=1 v2=1 parent=1','phase=3','worker=0','DIALOG_DRIVER exit=0') 30
             foreach($folderKind in @('open','save')) {
                 $cases+=Case "dialog-com-set-folder-$arch-$folderKind-$folderMode" $dialogDriver @($folderLaunch,$liveFolderTarget,'set',$folderKind) @("LIVE_FOLDER_RESULT bits=$bits",$folderOld,'initial=1 final=1 stable=1 v2=1 parent=1 name=1 filter=1 phase=3','worker=0','DIALOG_DRIVER exit=0') 30
+                $cases+=Case "dialog-com-live-filter-$arch-$folderKind-$folderMode" $dialogDriver @($folderLaunch,$liveFolderTarget,'filter',$folderKind) @('LIVE_FILTER selected=1 set=00000000 remains=1',"LIVE_FOLDER_RESULT bits=$bits",$folderOld,'filter=1 phase=3','worker=0 livefilter=1','DIALOG_DRIVER exit=0') 30
             }
         }
         foreach($liveKind in @('open','save')) {
