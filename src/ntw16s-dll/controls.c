@@ -255,6 +255,8 @@ static LRESULT CALLBACK toolbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT
  * native leaves share the already-open bracket, whose FALSE cleared that bit. */
 static BOOL can_suppress_redraw(HWND w,const control_style *s)
 {return !s->list_redraw_off && (s->list_suppression || (GetWindowLongPtrW(w,GWL_STYLE)&WS_VISIBLE));}
+static BOOL is_exact_native_button(HWND w)
+{WCHAR name[32];return GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpiW(name,L"BUTTON");}
 static BOOL is_static(HWND w)
 {return ntw16s_class_is(w,L"STATIC");}
 static BOOL is_edit(HWND w)
@@ -1392,6 +1394,17 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         if(m==WM_SETFONT)s->original_font=win16_style_system_source((HFONT)a);
         result=DefSubclassProc(w,m,a,b);
         if(!s->detached && IsWindow(w) && !ntw16s_vb_user_edge_dormant(w) && Ntw16sWindowRemove(w) && IsWindow(w))InvalidateRect(w,NULL,TRUE);
+        goto finished;
+    }
+    /* A native BUTTON can become owner-drawn after creation. Its parent must
+     * receive WM_DRAWITEM rather than the old ordinary-button painter. */
+    if(m!=WM_NCDESTROY && is_exact_native_button(w) &&
+       (((DWORD)GetWindowLongPtrW(w,GWL_STYLE)&BS_TYPEMASK)==BS_OWNERDRAW)){
+        result=DefSubclassProc(w,m,a,b);
+        if(!s->detached && IsWindow(w)){
+            if(!Ntw16sWindowRemove(w))win16_style_control_remove(w);
+            if(IsWindow(w))InvalidateRect(w,NULL,TRUE);
+        }
         goto finished;
     }
     /* Unverified graphical/owner-drawn VB variants stay native. A live
