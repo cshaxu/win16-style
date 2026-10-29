@@ -336,9 +336,13 @@ static BOOL grid_identity(HWND w,HMODULE owner,HWND parent)
         GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() && (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==owner &&
         (style&WS_CHILD) && (ex&WS_EX_CLIENTEDGE) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
         GetClassNameW(w,name,ARRAYSIZE(name)) &&
-        ((!lstrcmpW(name,L"TStringGrid") || !lstrcmpW(name,L"TDrawGrid")) ||
-         (owner==GetModuleHandleW(NULL) && IsWindowUnicode(w) && (!lstrcmpW(name,L"TValueListEditor") || !lstrcmpW(name,L"TDBGrid") || (!lstrcmpW(name,L"TDBLookupListBox") && (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==owner)))) &&
-        RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(name,real);
+        RealGetWindowClassW(w,real,ARRAYSIZE(real)) &&
+        (((!lstrcmpW(name,L"TStringGrid") || !lstrcmpW(name,L"TDrawGrid") ||
+          (owner==GetModuleHandleW(NULL) && IsWindowUnicode(w) && (!lstrcmpW(name,L"TValueListEditor") || !lstrcmpW(name,L"TDBGrid") ||
+           (!lstrcmpW(name,L"TDBLookupListBox") && (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==owner)))) && !lstrcmpW(name,real)) ||
+         (owner==GetModuleHandleW(NULL) && IsWindowUnicode(w) && (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==owner &&
+          (!lstrcmpW(name,L"TDirectoryListBox") || !lstrcmpW(name,L"TFileListBox")) && !lstrcmpiW(real,L"LISTBOX") &&
+          (style&(WS_HSCROLL|WS_VSCROLL)) && (style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE)) && (style&LBS_HASSTRINGS) && !(style&LBS_NODATA)));
 }
 static BOOL vcl_toolbar_identity(HWND w,HMODULE owner,HWND parent)
 {
@@ -1683,6 +1687,10 @@ static BOOL install_created(HWND w,DWORD original_style)
         edit=protocol && ntw16s_control_protocol_is(w,L"EDIT");
     }
     owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+    /* These owner-drawn VCL file lists expose LISTBOX as their native class;
+     * keep their client callbacks and route only the frame through grid. */
+    if(ready && control && !protocol && (class_is(w,L"TDirectoryListBox") || class_is(w,L"TFileListBox")) &&
+       grid_identity(w,owner,GetParent(w))){control=FALSE;edit=FALSE;}
     if(!control && !report && !tree && !picture && !checklist && !legacy_progress && !status && !spin &&
        (original_style&WS_CHILD) && owner){
         WCHAR name[64],real[64];DWORD type=original_style&SS_TYPEMASK;

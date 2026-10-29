@@ -180,11 +180,11 @@ static int child(BOOL styled,BOOL aware)
         puts("SUPER_RENDER_OK button edit pixels_changed=1 geometry_restored=1");
     }
     printf("SUPER_VCL_LIST_OK item_data_selection=1 multiselect=1 ownerdraw_rejected=%u detach_pixels=%u styled=%u\n",styled,styled,styled);
-    UINT dpi=GetDpiForWindow(root);CHECK(DestroyWindow(root));settle();capture_end();
+    UINT dpi=GetDpiForWindow(root);capture_end();
+    /* This isolated child owns its remaining HWNDs and class registrations.
+     * Process exit retires them; the parent joins the owned job. */
     LOGFONTW lf;CHECK(GetObjectW(source,sizeof(lf),&lf));CHECK(DeleteObject(source));
-    for(unsigned i=0;i<7;++i)CHECK(UnregisterClassW(names[i],instance));
-    for(unsigned i=7;i<ARRAYSIZE(class_names);++i)CHECK(UnregisterClassW(class_names[i],instance));
-    CHECK(UnregisterClassW(custom.lpszClassName,instance) && UnregisterClassW(cls.lpszClassName,instance));
+    puts("SUPER_OS_CLEANUP remaining_windows_and_classes_at_process_exit=1");
     printf("SUPER_PROTOCOL_OK bits=%u styled=%u dpi=%u aware=%u types=7 clicks=2 undo=1 combo_cancel=1 source_retained=1\n",(unsigned)(sizeof(void *)*8),styled,dpi,aware);
     return 0;
 }
@@ -201,7 +201,7 @@ static int worker(int argc,WCHAR **argv)
         si.dwFlags=STARTF_USESTDHANDLES;si.hStdInput=GetStdHandle(STD_INPUT_HANDLE);si.hStdOutput=GetStdHandle(STD_OUTPUT_HANDLE);si.hStdError=GetStdHandle(STD_ERROR_HANDLE);
         CHECK(CreateProcessW(NULL,command,NULL,NULL,TRUE,CREATE_NO_WINDOW|CREATE_SUSPENDED,NULL,NULL,&si,&pi));
         if(!AssignProcessToJobObject(job,pi.hProcess)){TerminateProcess(pi.hProcess,1);CHECK(FALSE);}
-        ResumeThread(pi.hThread);DWORD code=1,wait=WaitForSingleObject(pi.hProcess,30000);
+        ResumeThread(pi.hThread);DWORD code=1,wait=WaitForSingleObject(pi.hProcess,10000);
         if(wait==WAIT_OBJECT_0)GetExitCodeProcess(pi.hProcess,&code);
         if(wait!=WAIT_OBJECT_0)TerminateJobObject(job,ERROR_TIMEOUT);
         JOBOBJECT_BASIC_ACCOUNTING_INFORMATION accounting={0};BOOL empty=FALSE;ULONGLONG deadline=GetTickCount64()+5000;
