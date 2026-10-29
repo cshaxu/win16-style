@@ -1667,7 +1667,7 @@ static BOOL install_created(HWND w,DWORD original_style)
     if(report || tree || a->file_owner || a->button_owner || a->checklist || a->bit_candidate){a->report_window=w;a->tree=tree;
         a->report_module=(a->file_owner || a->button_owner || a->bit_candidate)?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}
     if(!SetWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc,(DWORD_PTR)a)){
-        ntw16s_control_protocol_release(protocol);if(a->lookup_popup_source_attachment)release(a->lookup_popup_source_attachment);free(a);return FALSE;
+        DWORD failure=GetLastError();ntw16s_control_protocol_release(protocol);if(a->lookup_popup_source_attachment)release(a->lookup_popup_source_attachment);if(a->mdi_host_attachment)release(a->mdi_host_attachment);free(a);SetLastError(failure);return FALSE;
     }
     if((report || tree || a->file_owner || a->button_owner || a->checklist || a->bit_candidate) && (!a->report_parent || !SetWindowSubclass(a->report_parent,report_notify,(UINT_PTR)w,(DWORD_PTR)a))){
         DWORD error=GetLastError();Ntw16sWindowRemove(w);release(a);SetLastError(error);return FALSE;
