@@ -30,15 +30,15 @@ This is an interim reconciliation, not a final supported-versus-unimplemented au
 
 ## Delphi VCL: 74 frozen families
 
-- limited-evidence: **45** — `TDBListBox`, `TMDIForm`, `TMediaPlayer`, `TDBNavigator`, `TDBLookupComboBox`, `TDBComboBox`, `TDBEdit`, `TDBGrid`, `TMainMenu`, `TMaskEdit`, `TForm`, `TPanel`, `TGroupBox`, `TScrollBox`, `TButton`, `TBitBtn`, `TCheckBox`, `TRadioButton`, `TRadioGroup`, `TEdit`, `TMemo`, `TRichEdit`, `TComboBox`, `TListBox`, `TCheckListBox`, `TColorBox`, `TStaticText`, `TPopupMenu`, `TToolBar`, `TStatusBar`, `TControlBar`, `TTreeView`, `TListView`, `THeaderControl`, `TTabControl`, `TPageControl`, `TProgressBar`, `TTrackBar`, `TUpDown`, `TDateTimePicker`, `TMonthCalendar`, `THotKey`, `TStringGrid`, `TDrawGrid`, `TValueListEditor`.
+- limited-evidence: **46** — `TDBLookupListBox`, `TDBListBox`, `TMDIForm`, `TMediaPlayer`, `TDBNavigator`, `TDBLookupComboBox`, `TDBComboBox`, `TDBEdit`, `TDBGrid`, `TMainMenu`, `TMaskEdit`, `TForm`, `TPanel`, `TGroupBox`, `TScrollBox`, `TButton`, `TBitBtn`, `TCheckBox`, `TRadioButton`, `TRadioGroup`, `TEdit`, `TMemo`, `TRichEdit`, `TComboBox`, `TListBox`, `TCheckListBox`, `TColorBox`, `TStaticText`, `TPopupMenu`, `TToolBar`, `TStatusBar`, `TControlBar`, `TTreeView`, `TListView`, `THeaderControl`, `TTabControl`, `TPageControl`, `TProgressBar`, `TTrackBar`, `TUpDown`, `TDateTimePicker`, `TMonthCalendar`, `THotKey`, `TStringGrid`, `TDrawGrid`, `TValueListEditor`.
 
-- native-or-unverified: **21** — `TFrame`, `TSplitter`, `TSpeedButton`, `TLabel`, `TShape`, `TBevel`, `TChart`, `TCoolBar`, `TAnimate`, `TDirectoryListBox`, `TDriveComboBox`, `TFileListBox`, `TDBLookupListBox`, `TWebBrowser`, `TOleContainer`, `TButtonGroup`, `TCategoryButtons`, `TDockTabSet`, `TTabSet`, `TOutline`, `TTabbedNotebook`.
+- native-or-unverified: **19** — `TFrame`, `TSplitter`, `TSpeedButton`, `TLabel`, `TBevel`, `TChart`, `TCoolBar`, `TAnimate`, `TDirectoryListBox`, `TDriveComboBox`, `TFileListBox`, `TWebBrowser`, `TOleContainer`, `TButtonGroup`, `TCategoryButtons`, `TDockTabSet`, `TTabSet`, `TOutline`, `TTabbedNotebook`.
 
-- nonvisual-or-content-only: **6** — `TImage`, `TPaintBox`, `TImageList`, `TActionList`, `TTimer`, `TTrayIcon`.
+- nonvisual-or-content-only: **7** — `TShape`, `TImage`, `TPaintBox`, `TImageList`, `TActionList`, `TTimer`, `TTrayIcon`.
 
 - separate-dialog-task: **2** — `TOpenDialog`, `TSaveDialog`.
 
-The nine families promoted since the S63 ledger are TPanel, TGroupBox, TScrollBox, TRichEdit, TPopupMenu, TControlBar, TMonthCalendar, THotKey and TValueListEditor; their S64 P71/P73/P75/P121–P135 histories provide limited evidence only. This table does not promote other post-S63 controls absent from the original 74 seeds. `TShape` and `TBevel` remain under review rather than being dismissed as application-drawn merely because they lack a normal child HWND.
+The nine families promoted since the S63 ledger are TPanel, TGroupBox, TScrollBox, TRichEdit, TPopupMenu, TControlBar, TMonthCalendar, THotKey and TValueListEditor; their S64 P71/P73/P75/P121–P135 histories provide limited evidence only. This table does not promote other post-S63 controls absent from the original 74 seeds. `TBevel` remains under review rather than being dismissed as application-drawn merely because it lacks a normal child HWND; `TShape` is classified as application-specified geometric content on the evidence below.
 
 VB additions after the frozen ledger: ordinary MDI child frame is limited for both editions (P30/P31); VB6 Data has a limited frame (P47). UserControl child controls can be styled without proving its outer shell; it remains unverified. The 23 frozen deferred rows include nonvisual VB6 Vbsql, counted once in nonvisual instead of deferred.
 
@@ -63,3 +63,7 @@ Update after P161: `TMediaPlayer` has limited same-owner normal/pressed BUTTON-t
 Update after P163: `TMDIForm` has a limited same-owner external VCL MDI child frame path with a real x86/x64 VCL sample and dual-width native identity and lifecycle models. Delphi now has 44 limited, 22 native/unverified, 6 nonvisual/content and 2 separate dialogs. This is bounded evidence, not complete support across all MDI variants.
 
 Update after P164: `TDBListBox` is counted as limited only for the self-authored native LISTBOX superclass model, which the existing P163 renderer already supports. No real data-bound TDBListBox has been run; actual VCL integration and binding remain unverified. Delphi counts: 45 limited (including this model-only path), 21 native/unverified, 6 nonvisual/content, 2 separate dialogs.
+
+Update after the shape investigation: DelphiVCL4Python x86/x64 default rectangle and ellipse with application-specified colors were unchanged pixel-for-pixel by P164, and the documented TShape purpose is configurable geometric content. TShape moves from unverified to content outside the user-defined style scope. TBevel remains in scope. Counts: 45 limited (including one TDBListBox model-only path), 20 unverified, 7 nonvisual/content, 2 separate dialogs.
+
+Update after P165: `TDBLookupListBox` has a Unicode, application-owned/same-owner-parent nonclient frame and scrollbar path verified only by a self-authored model. No real control or binding behavior has been observed; actual VCL integration remains pending. Current Delphi frozen ledger: 46 limited (including two model-only families), 19 unverified, 7 nonvisual/content and 2 separate dialogs.

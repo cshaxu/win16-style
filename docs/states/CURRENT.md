@@ -1044,3 +1044,9 @@ S64 TDBListBox普通列表候选准入：Embarcadero VCL文档确认其与TListB
 S64 TDBListBox纠正：新增模型在旧发布版双宽已通过，证明Windows原生LISTBOX超类经RealGetWindowClass及现有renderer接入，拟加的名称分支是多余的，已撤销。模型分别验证选择/item data保持、移除前后像素差及owner-draw回退，伪类公共协议检查失败；这是自有Windows超类模型，不证明真实TDBListBox数据绑定或任意VCL类转发。保留测试增强并进行双宽干净包与相关回归；真实样本仍待T18最终集成。M0/T18/S64开放。
 
 S64 P164 TDBListBox原生超类回归：P163已有Windows LISTBOX超类路径，旧版双宽通过新增正例，撤销多余生产分支；自有模型双宽验证选择/item data、移除绘制像素差、owner-draw回退及伪协议，非真实数据绑定。干净包20项14.94秒零skip；因重建四文件摘要变化，已发布assets/system32并核对八摘要，两处双宽安装模型通过。[证据](../history/M0-T18-S64-P164-dblist-model.md)。真实VCL数据绑定和完整集成待验；提交远端复核待完成，M0/T18/S64开放。
+
+S64 TShape范围核实：官方VCL将其定义为应用选择几何形状、画笔和填充的图形内容；自有DelphiVCL4Python双宽矩形/椭圆设红填充、绿轮廓，原版与P164以客户区坐标对齐后各8800像素完全相同，单像素篡改负例检出，目标均退出0。按用户排除应用内容的范围将TShape从待核实移至内容保留；TBevel仍待查。台账现Delphi 45有限（含1个仅模型）、20待核实、7内容/非视觉、2独立对话框。[证据](../history/M0-T18-S64-shape-scope.md)。未改产品或发布，M0/T18/S64开放。
+
+S64 TDBLookupListBox非客户区候选准入：官方VCL文档确认其为TDBLookupControl/TCustomControl，不假设为USER LISTBOX；按用户要求先完成可自包含实现，复用现有TDBGrid非客户区路径，仅限精确Unicode类、同线程同进程应用主模块及同模块父窗、WS_EX_CLIENTEDGE和可查询有效滚动信息。保留客户区绘制、选择和绑定；无边框/无可查询滚动信息、错误父owner、换父和未知变体回退。双宽自有模型验证外框像素变化、客户区0差异、负例及旧包检出，实际包和相邻回归通过后双发布。真实VCL样本、绑定和其他编码必须留待最终集成，不将模型当真实支持。M0/T18/S64开放。
+
+S64 P165 TDBLookupListBox模型限定非客户区接入：仅精确Unicode类、应用主模块/同owner父窗、同线程进程、clientedge及可查询有效滚动信息复用grid外框；自有双宽模型外框2736/客户区0像素变化，内容状态保持，错误父owner、无边框、无滚动信息及换父回退；P164双宽正例失败。干净实际包22项15.43秒零skip，两处发布八摘要及双宽安装模型通过。[证据](../history/M0-T18-S64-P165-lookup-list.md)。真实VCL样本、数据绑定/事件、ANSI及完整集成未验，台账明确仅模型；提交远端复核待完成，M0/T18/S64开放。

@@ -10,7 +10,13 @@
 typedef BOOL (__cdecl *windowfn)(HWND);
 static WNDPROC native_list;
 static BOOL fake;
-static LRESULT CALLBACK basic(HWND w,UINT m,WPARAM p,LPARAM l){return DefWindowProcW(w,m,p,l);}
+static LRESULT CALLBACK basic(HWND w,UINT m,WPARAM p,LPARAM l){
+    WCHAR name[64];BOOL lookup=GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TDBLookupListBox");
+    if(lookup && m==WM_APP+100){SetWindowLongPtrW(w,GWLP_USERDATA,(LONG_PTR)p);return 0;}
+    if(lookup && m==WM_APP+101)return GetWindowLongPtrW(w,GWLP_USERDATA);
+    if(lookup && m==WM_PAINT){PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);RECT r;GetClientRect(w,&r);SetDCBrushColor(dc,RGB(12,156,90));FillRect(dc,&r,GetStockObject(DC_BRUSH));SetTextColor(dc,RGB(245,240,80));SetBkMode(dc,TRANSPARENT);TextOutW(dc,10,12,L"Lookup content",14);EndPaint(w,&ps);return 0;}
+    return DefWindowProcW(w,m,p,l);
+}
 static LRESULT CALLBACK list(HWND w,UINT m,WPARAM p,LPARAM l){
     if(m==WM_PAINT && fake){PAINTSTRUCT ps;BeginPaint(w,&ps);EndPaint(w,&ps);return 0;}
     return CallWindowProcW(native_list,w,m,p,l);
@@ -34,7 +40,7 @@ static int worker(int argc,WCHAR **argv){
     (void)argc;(void)argv;HMODULE self=GetModuleHandleW(NULL),dll=GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");CHECK(dll);
     windowfn attached=(void*)GetProcAddress(dll,"Ntw16sWindowAttached"),remove=(void*)GetProcAddress(dll,"Ntw16sWindowRemove");CHECK(attached&&remove);
     WNDCLASSEXW n={.cbSize=sizeof(n)};CHECK(GetClassInfoExW(NULL,L"LISTBOX",&n));native_list=n.lpfnWndProc;
-    WNDCLASSEXW a={.cbSize=sizeof(a),.hInstance=self,.lpfnWndProc=basic,.lpszClassName=L"TValueListEditor"};CHECK(RegisterClassExW(&a));a.lpszClassName=L"TInplaceEditList";CHECK(RegisterClassExW(&a));a.lpszClassName=L"TDBGrid";CHECK(RegisterClassExW(&a));
+    WNDCLASSEXW a={.cbSize=sizeof(a),.hInstance=self,.lpfnWndProc=basic,.lpszClassName=L"TValueListEditor"};CHECK(RegisterClassExW(&a));a.lpszClassName=L"TInplaceEditList";CHECK(RegisterClassExW(&a));a.lpszClassName=L"TDBGrid";CHECK(RegisterClassExW(&a));a.lpszClassName=L"TDBLookupListBox";CHECK(RegisterClassExW(&a));a.lpszClassName=L"LookupListHost";CHECK(RegisterClassExW(&a));
     n.hInstance=self;n.lpfnWndProc=list;n.lpszClassName=L"TPopupListbox";CHECK(RegisterClassExW(&n));
     HWND root=CreateWindowW(L"STATIC",L"",WS_OVERLAPPEDWINDOW,0,0,320,240,NULL,NULL,self,NULL);CHECK(root);ShowWindow(root,SW_SHOWNA);
     HWND grid=CreateWindowW(L"TValueListEditor",L"",WS_CHILD|WS_VISIBLE,0,0,200,100,root,NULL,self,NULL);CHECK(grid);
@@ -67,7 +73,13 @@ static int worker(int argc,WCHAR **argv){
     HWND db_grid=CreateWindowExW(WS_EX_CLIENTEDGE,L"TDBGrid",L"",WS_CHILD|WS_VISIBLE|WS_VSCROLL,0,0,180,100,root,NULL,self,NULL);CHECK(db_grid);SetScrollInfo(db_grid,SB_VERT,&grid_scroll,TRUE);CHECK(RedrawWindow(db_grid,NULL,NULL,RDW_INVALIDATE|RDW_FRAME|RDW_UPDATENOW)&&attached(db_grid));CHECK(compare(db_grid,remove)==0);CHECK(DestroyWindow(db_grid));
     HWND db_hidden=CreateWindowExW(WS_EX_CLIENTEDGE,L"TDBGrid",L"",WS_CHILD|WS_VISIBLE|WS_VSCROLL,0,0,180,100,root,NULL,self,NULL);CHECK(db_hidden);SetScrollInfo(db_hidden,SB_VERT,&grid_scroll,TRUE);CHECK(ShowScrollBar(db_hidden,SB_VERT,FALSE));CHECK(!(GetWindowLongPtrW(db_hidden,GWL_STYLE)&WS_VSCROLL));SCROLLINFO hidden_info={.cbSize=sizeof(hidden_info),.fMask=SIF_ALL};CHECK(GetScrollInfo(db_hidden,SB_VERT,&hidden_info));CHECK(RedrawWindow(db_hidden,NULL,NULL,RDW_INVALIDATE|RDW_FRAME|RDW_UPDATENOW)&&attached(db_hidden));CHECK(ShowScrollBar(db_hidden,SB_VERT,TRUE));CHECK(RedrawWindow(db_hidden,NULL,NULL,RDW_INVALIDATE|RDW_FRAME|RDW_UPDATENOW)&&attached(db_hidden));CHECK(ShowScrollBar(db_hidden,SB_VERT,FALSE));CHECK(RedrawWindow(db_hidden,NULL,NULL,RDW_INVALIDATE|RDW_FRAME|RDW_UPDATENOW)&&attached(db_hidden));CHECK(compare(db_hidden,remove)==0);CHECK(DestroyWindow(db_hidden));
     HWND db_moved=CreateWindowExW(WS_EX_CLIENTEDGE,L"TDBGrid",L"",WS_CHILD|WS_VISIBLE|WS_VSCROLL,0,0,180,100,root,NULL,self,NULL);CHECK(db_moved);SetScrollInfo(db_moved,SB_VERT,&grid_scroll,TRUE);CHECK(RedrawWindow(db_moved,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW)&&attached(db_moved));CHECK(SetParent(db_moved,grid)==root);CHECK(RedrawWindow(db_moved,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW)&&!attached(db_moved));CHECK(DestroyWindow(db_moved));
-    CHECK(DestroyWindow(edit)&&DestroyWindow(grid)&&DestroyWindow(root));CHECK(UnregisterClassW(L"TDBGrid",self)&&UnregisterClassW(L"TPopupListbox",self)&&UnregisterClassW(L"TInplaceEditList",self)&&UnregisterClassW(L"TValueListEditor",self));
-    puts("POPUP_MODEL_OK owner=1 ownerdraw=1 witness=1 selection=1 scroll=1 short=1 transition=1 pixels=1 font=1 reparent=1 valuegrid=1 gridreparent=1 dbgrid=1 dbhidden=1 cleanup=1");return 0;
+    HWND lookup_host=CreateWindowW(L"LookupListHost",L"",WS_CHILD|WS_VISIBLE,0,0,200,120,root,NULL,self,NULL);CHECK(lookup_host);
+    HWND lookup_wrong=CreateWindowExW(WS_EX_CLIENTEDGE,L"TDBLookupListBox",L"",WS_CHILD|WS_VISIBLE|WS_VSCROLL,0,0,180,100,root,NULL,self,NULL);CHECK(lookup_wrong);SetScrollInfo(lookup_wrong,SB_VERT,&grid_scroll,TRUE);CHECK(RedrawWindow(lookup_wrong,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW)&&!attached(lookup_wrong));CHECK(DestroyWindow(lookup_wrong));
+    HWND lookup_no_edge=CreateWindowW(L"TDBLookupListBox",L"",WS_CHILD|WS_VISIBLE|WS_VSCROLL,0,0,180,100,lookup_host,NULL,self,NULL);CHECK(lookup_no_edge);SetScrollInfo(lookup_no_edge,SB_VERT,&grid_scroll,TRUE);CHECK(RedrawWindow(lookup_no_edge,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW)&&!attached(lookup_no_edge));CHECK(DestroyWindow(lookup_no_edge));
+    HWND lookup_no_scroll=CreateWindowExW(WS_EX_CLIENTEDGE,L"TDBLookupListBox",L"",WS_CHILD|WS_VISIBLE,0,0,180,100,lookup_host,NULL,self,NULL);CHECK(lookup_no_scroll&&RedrawWindow(lookup_no_scroll,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW)&&!attached(lookup_no_scroll));CHECK(DestroyWindow(lookup_no_scroll));
+    HWND lookup_list=CreateWindowExW(WS_EX_CLIENTEDGE,L"TDBLookupListBox",L"",WS_CHILD|WS_VISIBLE|WS_VSCROLL,0,0,180,100,lookup_host,NULL,self,NULL);CHECK(lookup_list);SetScrollInfo(lookup_list,SB_VERT,&grid_scroll,TRUE);CHECK(RedrawWindow(lookup_list,NULL,NULL,RDW_INVALIDATE|RDW_FRAME|RDW_UPDATENOW)&&attached(lookup_list));CHECK(SendMessageW(lookup_list,WM_APP+100,37,0)==0 && SendMessageW(lookup_list,WM_APP+101,0,0)==37);CHECK(compare(lookup_list,remove)==0);CHECK(SendMessageW(lookup_list,WM_APP+101,0,0)==37);CHECK(DestroyWindow(lookup_list));
+    HWND lookup_moved=CreateWindowExW(WS_EX_CLIENTEDGE,L"TDBLookupListBox",L"",WS_CHILD|WS_VISIBLE|WS_VSCROLL,0,0,180,100,lookup_host,NULL,self,NULL);CHECK(lookup_moved);SetScrollInfo(lookup_moved,SB_VERT,&grid_scroll,TRUE);CHECK(RedrawWindow(lookup_moved,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW)&&attached(lookup_moved));CHECK(SetParent(lookup_moved,root)==lookup_host);CHECK(RedrawWindow(lookup_moved,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW)&&!attached(lookup_moved));CHECK(DestroyWindow(lookup_moved)&&DestroyWindow(lookup_host));
+    CHECK(DestroyWindow(edit)&&DestroyWindow(grid)&&DestroyWindow(root));CHECK(UnregisterClassW(L"LookupListHost",self)&&UnregisterClassW(L"TDBLookupListBox",self)&&UnregisterClassW(L"TDBGrid",self)&&UnregisterClassW(L"TPopupListbox",self)&&UnregisterClassW(L"TInplaceEditList",self)&&UnregisterClassW(L"TValueListEditor",self));
+    puts("POPUP_MODEL_OK owner=1 ownerdraw=1 witness=1 selection=1 scroll=1 short=1 transition=1 pixels=1 font=1 reparent=1 valuegrid=1 gridreparent=1 dbgrid=1 dbhidden=1 lookup_list=1 lookup_content=1 cleanup=1");return 0;
 }
 int wmain(int argc,WCHAR **argv){return isolated_process(argc,argv,worker);}
