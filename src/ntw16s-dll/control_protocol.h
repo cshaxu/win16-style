@@ -15,6 +15,8 @@ ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_group_button(HWND
 /* Internal: the owner must have forwarded WM_PAINT to native TRACKBAR. */
 ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_trackbar(HWND,HMODULE);
 ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_tab(HWND,HMODULE);
+/* Internal: the owner forwarded this exact control paint to its native class. */
+ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_report(HWND,HMODULE,BOOL);
 BOOL ntw16s_control_protocol_runtime_trackbar(HWND);
 ntw16s_control_protocol *ntw16s_control_protocol_acquire(HWND);
 BOOL ntw16s_control_protocol_is(HWND,const WCHAR *);

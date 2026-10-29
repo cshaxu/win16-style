@@ -359,5 +359,7 @@ ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_scroll(HWND w,HMO
 {return owner?bind_protocol(w,owner,14):NULL;}
 ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_tab(HWND w,HMODULE owner)
 {return owner?bind_protocol(w,owner,3):NULL;}
+ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_report(HWND w,HMODULE owner,BOOL tree)
+{return owner?bind_protocol(w,owner,tree?6:5):NULL;}
 ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_trackbar(HWND w,HMODULE owner)
 {return owner?bind_protocol(w,owner,8):NULL;}
