@@ -1591,8 +1591,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "759eef2c55df598328ff8bc69ea1e503d5de67353d63500818793166a3886116",
-      "review": "T15 S2 native superclass protocol or read-only actual DoubleKiller observer; T18 S8 adds self-authored BUTTON superclass models with VCL-style registered names, native click/state and styled-to-native pixel checks; T18 S9 adds EDIT superclass models and multiline undo, readonly, scrolling and detach checks; T18 S10 checks native combo/list data, selection, ownerdraw fallback and detached pixels; no imported code"
+      "sha256": "ad15e314833ed9bece6a4b14dc35b4eb55f4531b57fcf3523ce3cde46e3dad1e",
+      "review": "T15 S2 native superclass protocol or read-only actual DoubleKiller observer; T18 S8 adds self-authored BUTTON superclass models with VCL-style registered names, native click/state and styled-to-native pixel checks; T18 S9 adds EDIT superclass models and multiline undo, readonly, scrolling and detach checks; T18 S10 checks native combo/list data, selection, ownerdraw fallback and detached pixels; no imported code; T18 S64: bounded TDBListBox native protocol and negative models"
     },
     {
       "path": "tests/integration/doublekiller_probe.c",
@@ -1690,8 +1690,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "review": "T15 S4 public initialized control protocols, borrowed native image/PushLike and client-edge support; no external code copied; T15 S5 verified initialized native/TPageControl tab protocol, native geometry and borrowed image/font painting, pending-install exact ownership and cancellation cleanup; no external code copied, original notices/resources retained",
-      "sha256": "675cde1cf11a6688f789a66b69942d711b5e46551e30ac6b2fb89fc8a8460b82"
+      "review": "T15 S4 public initialized control protocols, borrowed native image/PushLike and client-edge support; no external code copied; T15 S5 verified initialized native/TPageControl tab protocol, native geometry and borrowed image/font painting, pending-install exact ownership and cancellation cleanup; no external code copied, original notices/resources retained; T18 S64: bounded TDBListBox native protocol and negative models",
+      "sha256": "3f390bafdca287008bd9b500e45e5578ff07bfda1f63b8aabd93ec2206ee9962"
     },
     {
       "path": "tests/ntw16s-dll/control_extensions.rc",

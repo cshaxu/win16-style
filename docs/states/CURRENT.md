@@ -1034,3 +1034,13 @@ S64 Delphi MDI生命周期原型：自有外部模块TForm模型发现首版换�
 S64 Delphi MDI正式候选准入：真实双宽VCL样本及对照确认TForm MDI子窗被外部模块保护拒绝；拟只对同线程/进程、精确TForm、USER32 MDIClient、同模块且已附着TForm宿主和MDI标题位的子窗复用既有frame。保存并精确持有宿主附件，换父/角色/宿主失效时退役；不放宽其他外部子窗、OCX和应用绘制。正式双宽模型须覆盖错误宿主/换父/宿主移除/最大化恢复/旧包负例，真实双宽VCL及既有VB MDI回归、同批干净包和双发布；最大化合并菜单、物理输入、其他VCL/DPI不预称覆盖。M0/T18/S64开放。
 
 S64 P163 Delphi MDI有限接入：已附着且同owner TForm宿主、同线程/进程USER32 MDIClient和精确TForm MDI子窗复用既有frame；精确持有宿主附件，换父、角色变化及宿主移除时退役。真实双宽VCL实际包经典标题、最大化恢复及退出通过；旧包双宽正例失败，错误宿主/换父/角色变化/宿主移除模型双宽通过。同批干净包20项14.73秒零skip，assets/system32八摘要一致、两处双宽安装模型通过。[证据](../history/M0-T18-S64-P163-delphi-mdi.md)。其他VCL/DPI、菜单合并、物理输入和完整集成未覆盖；提交远端复核待完成，M0/T18/S64开放。
+
+S64 TAnimate调查：自有隔离DoubleKiller x86原版与P163样式版均有可见TAnimate，517×50客户区等于窗体大小且四边非客户区均为0；样式版目标线程核实assets 32位DLL及根窗已附着，目标和启动器均退出0、作业归零。ANSI类过程属于应用且与同编码SysAnimate32不同，不能推断内部动画实现；该样例没有独立外框，动画内容按用户范围保留，不据此宣称全部TAnimate变体已实现或不需适配。初次观察器超时及作业退出记账竞争失败保留，最终两组通过；[调查](../history/M0-T18-S64-animate-investigation.md)。P163 80ffaa6已推送、逐文件核对远端；未改产品或发布，M0/T18/S64开放。
+
+S64 数据列表真实样本补查：已提取的X-DBData表单源码没有实例化TDBListBox/TDBLookupListBox及目录文件列表，EXE内类名字串不能代替运行实例。自有DelphiVCL4Python x64隔离样本CreateComponent按名称可创建并销毁TButton/TForm，但TFrame、TDBListBox、TDBLookupListBox、TDirectoryListBox均返回Invalid class；仅限定当前绑定，不能推断Delphi本身。首次误将ClassName属性当方法，修正并正常退出；[记录](../history/M0-T18-S64-datalist-sample-search.md)。继续寻找合法真实样本，不改产品或发布，M0/T18/S64开放。
+
+S64 TDBListBox普通列表候选准入：Embarcadero VCL文档确认其与TListBox均继承TCustomListBox；依用户允许先实施自包含模型、最终统一实测，只对精确应用主模块拥有的TDBListBox按既有LISTBOX公开协议检查，拒绝owner-draw和虚拟列表，复用现有renderer，不改数据绑定、内容或应用绘制。双宽原生超类模型覆盖选择、item data、移除、错误过程及owner-draw，旧包应失败；真实Delphi数据绑定样本尚缺，不能宣称已集成验收。需双宽干净包、相邻列表回归及双发布。M0/T18/S64开放。
+
+S64 TDBListBox纠正：新增模型在旧发布版双宽已通过，证明Windows原生LISTBOX超类经RealGetWindowClass及现有renderer接入，拟加的名称分支是多余的，已撤销。模型分别验证选择/item data保持、移除前后像素差及owner-draw回退，伪类公共协议检查失败；这是自有Windows超类模型，不证明真实TDBListBox数据绑定或任意VCL类转发。保留测试增强并进行双宽干净包与相关回归；真实样本仍待T18最终集成。M0/T18/S64开放。
+
+S64 P164 TDBListBox原生超类回归：P163已有Windows LISTBOX超类路径，旧版双宽通过新增正例，撤销多余生产分支；自有模型双宽验证选择/item data、移除绘制像素差、owner-draw回退及伪协议，非真实数据绑定。干净包20项14.94秒零skip；因重建四文件摘要变化，已发布assets/system32并核对八摘要，两处双宽安装模型通过。[证据](../history/M0-T18-S64-P164-dblist-model.md)。真实VCL数据绑定和完整集成待验；提交远端复核待完成，M0/T18/S64开放。

@@ -40,8 +40,8 @@ static DWORD image(HWND w,DWORD *pixels,UINT count)
     return hash;
 }
 
-static WNDPROC native_procs[12];
-static const WCHAR *class_names[]={L"RenamedPush",L"RenamedCheck",L"TEdit",L"TComboBox",L"TListBox",L"RenamedStatic",L"RenamedScroll",L"TCheckBox",L"TRadioButton",L"TGroupBox",L"TMemo",L"TMaskEdit"};
+static WNDPROC native_procs[13];
+static const WCHAR *class_names[]={L"RenamedPush",L"RenamedCheck",L"TEdit",L"TComboBox",L"TListBox",L"RenamedStatic",L"RenamedScroll",L"TCheckBox",L"TRadioButton",L"TGroupBox",L"TMemo",L"TMaskEdit",L"TDBListBox"};
 /* Like a framework InitWndProc, registration itself is custom. The system
  * instance type is established by calling the saved native procedure. */
 static LRESULT CALLBACK framework_proc(HWND w,UINT m,WPARAM a,LPARAM b)
@@ -75,7 +75,8 @@ static int child(BOOL styled,BOOL aware)
     const WCHAR *names[]={L"RenamedPush",L"RenamedCheck",L"TEdit",L"TComboBox",L"TListBox",L"RenamedStatic",L"RenamedScroll"};
     for(unsigned i=0;i<ARRAYSIZE(bases);++i)CHECK(superclass(bases[i],names[i]));
     for(unsigned i=7;i<10;++i)CHECK(superclass(L"BUTTON",class_names[i]));
-    for(unsigned i=10;i<ARRAYSIZE(class_names);++i)CHECK(superclass(L"EDIT",class_names[i]));
+    for(unsigned i=10;i<12;++i)CHECK(superclass(L"EDIT",class_names[i]));
+    CHECK(superclass(L"LISTBOX",L"TDBListBox"));
     WNDCLASSW cls={0};cls.lpfnWndProc=parent_proc;cls.hInstance=instance;cls.lpszClassName=L"SuperclassParent";
     CHECK(RegisterClassW(&cls));
     HWND root=CreateWindowW(cls.lpszClassName,L"Superclass protocol",WS_OVERLAPPEDWINDOW,0,0,560,420,NULL,NULL,instance,NULL);CHECK(root);
@@ -142,6 +143,17 @@ static int child(BOOL styled,BOOL aware)
     const LPARAM item_data=(LPARAM)(UINT_PTR)0x1234abcd;
     CHECK(SendMessageW(windows[3],CB_SETITEMDATA,1,item_data)!=CB_ERR && SendMessageW(windows[3],CB_GETITEMDATA,1,0)==item_data);
     CHECK(SendMessageW(windows[4],LB_SETITEMDATA,1,item_data)!=LB_ERR && SendMessageW(windows[4],LB_GETITEMDATA,1,0)==item_data);
+    HWND dblist=CreateWindowW(L"TDBListBox",L"",WS_CHILD|WS_VISIBLE|LBS_NOTIFY,10,250,180,80,root,(HMENU)51,instance,NULL);CHECK(dblist);
+    if(styled)CHECK(attached(dblist));
+    CHECK(SendMessageW(dblist,LB_ADDSTRING,0,(LPARAM)L"first")!=LB_ERR && SendMessageW(dblist,LB_ADDSTRING,0,(LPARAM)L"second")!=LB_ERR);
+    CHECK(SendMessageW(dblist,LB_SETCURSEL,1,0)!=LB_ERR && SendMessageW(dblist,LB_SETITEMDATA,1,item_data)!=LB_ERR);
+    DWORD dblist_hash=image(dblist,NULL,0);
+    if(styled){CHECK(remove_control(dblist) && !attached(dblist));CHECK(image(dblist,NULL,0)!=dblist_hash);}
+    CHECK(SendMessageW(dblist,LB_GETCURSEL,0,0)==1 && SendMessageW(dblist,LB_GETITEMDATA,1,0)==item_data && DestroyWindow(dblist));
+    HWND dbowner=CreateWindowW(L"TDBListBox",L"",WS_CHILD|WS_VISIBLE|LBS_OWNERDRAWFIXED|LBS_HASSTRINGS,10,250,180,80,root,(HMENU)52,instance,NULL);CHECK(dbowner);
+    if(styled)CHECK(!attached(dbowner));
+    CHECK(DestroyWindow(dbowner));
+    printf("SUPER_DBLIST_OK selection=1 data=1 ownerdraw_native=1 detach_pixels=%u styled=%u\n",styled,styled);
     HWND multi=CreateWindowW(names[4],L"",WS_CHILD|WS_VISIBLE|LBS_EXTENDEDSEL|LBS_NOTIFY,250,250,180,80,root,(HMENU)50,instance,NULL);CHECK(multi);
     if(styled)CHECK(attached(multi));
     CHECK(SendMessageW(multi,LB_ADDSTRING,0,(LPARAM)L"one")!=LB_ERR && SendMessageW(multi,LB_ADDSTRING,0,(LPARAM)L"two")!=LB_ERR);

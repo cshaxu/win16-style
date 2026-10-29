@@ -30,9 +30,9 @@ This is an interim reconciliation, not a final supported-versus-unimplemented au
 
 ## Delphi VCL: 74 frozen families
 
-- limited-evidence: **44** — `TMDIForm`, `TMediaPlayer`, `TDBNavigator`, `TDBLookupComboBox`, `TDBComboBox`, `TDBEdit`, `TDBGrid`, `TMainMenu`, `TMaskEdit`, `TForm`, `TPanel`, `TGroupBox`, `TScrollBox`, `TButton`, `TBitBtn`, `TCheckBox`, `TRadioButton`, `TRadioGroup`, `TEdit`, `TMemo`, `TRichEdit`, `TComboBox`, `TListBox`, `TCheckListBox`, `TColorBox`, `TStaticText`, `TPopupMenu`, `TToolBar`, `TStatusBar`, `TControlBar`, `TTreeView`, `TListView`, `THeaderControl`, `TTabControl`, `TPageControl`, `TProgressBar`, `TTrackBar`, `TUpDown`, `TDateTimePicker`, `TMonthCalendar`, `THotKey`, `TStringGrid`, `TDrawGrid`, `TValueListEditor`.
+- limited-evidence: **45** — `TDBListBox`, `TMDIForm`, `TMediaPlayer`, `TDBNavigator`, `TDBLookupComboBox`, `TDBComboBox`, `TDBEdit`, `TDBGrid`, `TMainMenu`, `TMaskEdit`, `TForm`, `TPanel`, `TGroupBox`, `TScrollBox`, `TButton`, `TBitBtn`, `TCheckBox`, `TRadioButton`, `TRadioGroup`, `TEdit`, `TMemo`, `TRichEdit`, `TComboBox`, `TListBox`, `TCheckListBox`, `TColorBox`, `TStaticText`, `TPopupMenu`, `TToolBar`, `TStatusBar`, `TControlBar`, `TTreeView`, `TListView`, `THeaderControl`, `TTabControl`, `TPageControl`, `TProgressBar`, `TTrackBar`, `TUpDown`, `TDateTimePicker`, `TMonthCalendar`, `THotKey`, `TStringGrid`, `TDrawGrid`, `TValueListEditor`.
 
-- native-or-unverified: **22** — `TFrame`, `TSplitter`, `TSpeedButton`, `TLabel`, `TShape`, `TBevel`, `TChart`, `TCoolBar`, `TAnimate`, `TDirectoryListBox`, `TDriveComboBox`, `TFileListBox`, `TDBListBox`, `TDBLookupListBox`, `TWebBrowser`, `TOleContainer`, `TButtonGroup`, `TCategoryButtons`, `TDockTabSet`, `TTabSet`, `TOutline`, `TTabbedNotebook`.
+- native-or-unverified: **21** — `TFrame`, `TSplitter`, `TSpeedButton`, `TLabel`, `TShape`, `TBevel`, `TChart`, `TCoolBar`, `TAnimate`, `TDirectoryListBox`, `TDriveComboBox`, `TFileListBox`, `TDBLookupListBox`, `TWebBrowser`, `TOleContainer`, `TButtonGroup`, `TCategoryButtons`, `TDockTabSet`, `TTabSet`, `TOutline`, `TTabbedNotebook`.
 
 - nonvisual-or-content-only: **6** — `TImage`, `TPaintBox`, `TImageList`, `TActionList`, `TTimer`, `TTrayIcon`.
 
@@ -61,3 +61,5 @@ Update after P160: `TDBNavigator` has a limited same-owner BUTTON-theme backgrou
 Update after P161: `TMediaPlayer` has limited same-owner normal/pressed BUTTON-theme background coverage; [P161](M0-T18-S64-P161-mediaplayer.md) covers real x86/x64 VCL without a media device and dual-width models. Delphi is now 43 limited, 23 native/unverified, 6 nonvisual/content and 2 separate dialogs, totaling 74. Media playback, other states and versions remain unverified.
 
 Update after P163: `TMDIForm` has a limited same-owner external VCL MDI child frame path with a real x86/x64 VCL sample and dual-width native identity and lifecycle models. Delphi now has 44 limited, 22 native/unverified, 6 nonvisual/content and 2 separate dialogs. This is bounded evidence, not complete support across all MDI variants.
+
+Update after P164: `TDBListBox` is counted as limited only for the self-authored native LISTBOX superclass model, which the existing P163 renderer already supports. No real data-bound TDBListBox has been run; actual VCL integration and binding remain unverified. Delphi counts: 45 limited (including this model-only path), 21 native/unverified, 6 nonvisual/content, 2 separate dialogs.
