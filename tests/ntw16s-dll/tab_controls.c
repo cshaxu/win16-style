@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <wchar.h>
 #include <stddef.h>
+#define NTW16S_TEST_PROCESS_TIMEOUT 15000
 #include "isolated_process.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"TAB_CONTROL_FAIL line=%u error=%lu: %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
 static WNDPROC native;
@@ -134,7 +135,8 @@ static int worker(int argc,WCHAR **argv)
     scope=begin(TRUE);CHECK(scope);w=CreateWindowA("TTabControl","fake",WS_CHILD,0,0,100,30,parent,NULL,instance,NULL);
     CHECK(w && end(scope,&result) && !attached(w) && DestroyWindow(w));
     SelectObject(image.dc,image.old);CHECK(DeleteObject(image.bitmap) && DeleteDC(image.dc));
-    CHECK(DestroyWindow(parent) && DeleteObject(font) && ImageList_Destroy(icons) && FreeLibrary(dll));
+    /* The isolated worker owns its remaining root; process exit retires it. */
+    puts("TAB_OS_ROOT_CLEANUP process_exit=1");CHECK(DeleteObject(font) && ImageList_Destroy(icons) && FreeLibrary(dll));
     printf("TAB_CONTROL_OK bits=%u dpi=%u aware=%u styled=%u preserved=%u native_geometry=1 item_data64=1 cancel=1 keyboard=1 late_native_font=1 destroy_query=1 early_queries=0 impostor=1\n",(unsigned)(sizeof(void*)*8),dpi,aware,styled,preserved);return 0;
 }
 int wmain(int argc,WCHAR **argv){return isolated_process(argc,argv,worker);}
