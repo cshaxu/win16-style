@@ -77,8 +77,12 @@ static HFONT system_font(HWND w,HFONT original)
         SetTextColor(dc,RGB(0,0,0));SetBkColor(dc,RGB(255,255,255));SetTextColor(expected,RGB(0,0,0));SetBkColor(expected,RGB(255,255,255));
         CHECK(TextOutW(dc,0,0,ch,1) && TextOutW(expected,0,0,ch,1));
         HDC scaled=CreateCompatibleDC(NULL);HBITMAP bitmap=CreateBitmap(128,64,1,1,NULL);CHECK(scaled && bitmap);
-        HGDIOBJ old=SelectObject(scaled,bitmap);SetStretchBltMode(scaled,COLORONCOLOR);
-        CHECK(StretchBlt(scaled,0,0,width.cx,after.tmHeight,expected,0,0,sw.cx,sys.tmHeight,SRCCOPY));
+        HGDIOBJ old=SelectObject(scaled,bitmap);SetStretchBltMode(scaled,COLORONCOLOR);FillRect(scaled,&clear,GetStockObject(WHITE_BRUSH));
+        int dw=width.cx,dh=after.tmHeight;
+        if((long long)width.cx*sys.tmHeight<(long long)after.tmHeight*sw.cx)dh=max(1,(int)((long long)width.cx*sys.tmHeight/sw.cx));
+        else dw=max(1,(int)((long long)after.tmHeight*sw.cx/sys.tmHeight));
+        int x=(width.cx-dw)/2,y=max(0,min(after.tmHeight-dh,after.tmAscent-MulDiv(sys.tmAscent,dh,sys.tmHeight)));
+        CHECK(StretchBlt(scaled,x,y,dw,dh,expected,0,0,sw.cx,sys.tmHeight,SRCCOPY));
         for(int y=0;y<after.tmHeight;++y)for(int x=0;x<width.cx;++x)CHECK(GetPixel(dc,x,y)==GetPixel(scaled,x,y));
         SelectObject(scaled,old);DeleteObject(bitmap);DeleteDC(scaled);
     }

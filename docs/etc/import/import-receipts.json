@@ -2,6 +2,15 @@
   "schema": 1,
   "files": [
     {
+      "path": "tests/ntw16s-dll/font_aspect.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e56cfbedaf223228e5a25cbb6628eb9ef168c5ef8b8c6240554c3dbad3e84417",
+      "disposition": "authored",
+      "review": "T19 S2 System glyph pixel reference, metrics, proportional fit and cleanup",
+      "notice": "Project-authored test; no imported code or resources"
+    },
+    {
       "path": "tests/ntw16s-dll/owner_draw_transition.c",
       "source": null,
       "source_blob": null,
@@ -446,9 +455,9 @@
       "path": "src/ntw16s-dll/font.c",
       "source": "src/ntw16s-dll/font.c",
       "source_blob": "3bce01032d506f05bb571f8be35392f12c4dcebb",
-      "sha256": "9b6c86c186db3f393992c9ed2debcb387c76afb85a05a51d9d7e7270cf3d126e",
+      "sha256": "23fa0da454eb941a0bb751d6c74d4eb3667afb26b6bdb6a7409003c857f4565e",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T18 S64 P117 isolated font lease and lifecycle verification; T18 S64 P118 prevent freeing an existing font variant on isolated stock-font fast path; T18 S64 P128 bounded calendar text",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T18 S64 P117 isolated font lease and lifecycle verification; T18 S64 P118 prevent freeing an existing font variant on isolated stock-font fast path; T18 S64 P128 bounded calendar text; T19 S2 proportional glyph fit within original advance and ascent",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -1481,9 +1490,9 @@
       "path": "tests/ntw16s-dll/font_layout.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b1b697beda98b4b8ce826c426e858fb6b4c96c60d38b4c1a2d4c948be5d03eff",
+      "sha256": "5bd75c8c28acc8cc0bf47ba98d4cf02f058ddeb6d1e602ff056f0804c0896532",
       "disposition": "authored",
-      "review": "T8 actual candidate native DS_SETFONT dialog and app font/rect/metrics updates across awareness contexts and nominal sizes; no physical-input claim; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved T18 S17 batches font selection while retaining each single-character extent assertion.; T18 S30 bounded GDI stability warmup and real leak witness, full font oracles retained",
+      "review": "T8 actual candidate native DS_SETFONT dialog and app font/rect/metrics updates across awareness contexts and nominal sizes; no physical-input claim; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved T18 S17 batches font selection while retaining each single-character extent assertion.; T18 S30 bounded GDI stability warmup and real leak witness, full font oracles retained; T19 S2 proportional control-pixel oracle",
       "notice": "Project-authored C17 native probe, MIT"
     },
     {

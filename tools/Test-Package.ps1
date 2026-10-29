@@ -64,6 +64,8 @@ try{
         (Case 'demo-pair' (Join-Path $x64 'demo-observe.exe') @($run,$d64,$d32,$demo) @('DEMO OBSERVE PASS styled=0','DEMO OBSERVE PASS styled=1','DEMO PAIR PASS')),
         (Case 'wait-contract' $python @('-B',(Join-Path $SourceRoot 'tests/run16s-exe/wait.py'),$run,$d32,$d64,(Join-Path $x86 'wait-target.exe'),(Join-Path $x64 'wait-target.exe'),(Join-Path $x64 'wait-gui-target.exe')) @('WAIT CONTRACT PASS 6 cases') 190),
         (Case 'font-layout-x86' (Join-Path $x86 'core-font-layout.exe') @($d32) @('FONT WARMUP SELFTEST PASS transient=1 rising=1 real_gdi_leak=1 cleanup=1','FONT LAYOUT PASS 2 contexts 12 font variants') 180),
+        (Case 'font-aspect-x86' (Join-Path $x86 'core-font-aspect.exe') @() @('FONT_ASPECT_PASS')),
+        (Case 'font-aspect-x64' (Join-Path $x64 'core-font-aspect.exe') @() @('FONT_ASPECT_PASS')),
         (Case 'font-layout-x64' (Join-Path $x64 'core-font-layout.exe') @($d64) @('FONT WARMUP SELFTEST PASS transient=1 rising=1 real_gdi_leak=1 cleanup=1','FONT LAYOUT PASS 2 contexts 12 font variants') 180),
         (Case 'menu-cancel-x86' (Join-Path $x86 'core-menu-cancel.exe') @($d32) @('MENU CANCEL PASS 15 scenarios','MENU SHADOW SCOPE PASS aware=0','MENU SHADOW SCOPE PASS aware=1') 35),
         (Case 'menu-cancel-x64' (Join-Path $x64 'core-menu-cancel.exe') @($d64) @('MENU CANCEL PASS 15 scenarios','MENU SHADOW SCOPE PASS aware=0','MENU SHADOW SCOPE PASS aware=1') 35),

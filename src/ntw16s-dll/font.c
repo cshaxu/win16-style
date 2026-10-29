@@ -162,7 +162,22 @@ static HFONT system_acquire(HFONT source,UINT menu_dpi,BOOL preserve_strokes,BOO
         word(data,118+4*n,width);word(data,120+4*n,cursor);
         if(!FillRect(src,&clear,(HBRUSH)GetStockObject(WHITE_BRUSH)) || !TextOutW(src,0,0,&wc,1))goto done;
         if(!FillRect(dst,&clear,(HBRUSH)GetStockObject(WHITE_BRUSH)))goto done;
-        if(width && syssize.cx && !StretchBlt(dst,0,0,(int)width,tm.tmHeight,src,0,0,syssize.cx,system.tmHeight,SRCCOPY))goto done;
+        if(width && syssize.cx){
+            int draw_width=(int)width,draw_height=tm.tmHeight,x=0,y=0;
+            if(!menu_dpi){
+                /* Keep the original character advance and line metrics, but
+                 * fit the bitmap into that cell with one scale factor. */
+                if((unsigned long long)width*(unsigned)system.tmHeight <
+                        (unsigned long long)tm.tmHeight*(unsigned)syssize.cx)
+                    draw_height=max(1,(int)((unsigned long long)width*(unsigned)system.tmHeight/(unsigned)syssize.cx));
+                else
+                    draw_width=max(1,(int)((unsigned long long)tm.tmHeight*(unsigned)syssize.cx/(unsigned)system.tmHeight));
+                x=((int)width-draw_width)/2;
+                y=max(0,min(tm.tmHeight-draw_height,
+                    tm.tmAscent-MulDiv(system.tmAscent,draw_height,system.tmHeight)));
+            }
+            if(!StretchBlt(dst,x,y,draw_width,draw_height,src,0,0,syssize.cx,system.tmHeight,SRCCOPY))goto done;
+        }
         GdiFlush(); /* Complete GDI writes before reading DIB memory. */
         for(unsigned x=0;x<width;++x)for(unsigned y=0;y<(unsigned)tm.tmHeight;++y)
             if(!(pixels[y*128+x]&0xffffff))data[cursor+(x/8)*(unsigned)tm.tmHeight+y]|=(BYTE)(0x80>>(x%8));
