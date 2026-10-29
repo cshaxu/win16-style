@@ -7,3 +7,5 @@ The previous P177 package failed the positive attachment assertion in the self-a
 The first clean package run timed out in x86 CMake compiler detection under the sandbox and was not released. The retry completed clean x86/x64 builds and ABI checks. The actual same-snapshot package passed 20 focused cases in 12.75 seconds, no skips; this is not the full integration matrix and physical input was not tested. Four files were published to both assets root and O:\winnt\system32 with matching hashes. Both installed copies passed both model cases on x86 and x64. Original graphics, title and font rendering were not changed.
 
 M0, T18 and S64 remain open.
+
+The locally available DelphiVCL4Python 1.0.7 Win32 and Win64 bindings were inspected with Python `hasattr`: neither exports `ButtonGroup`, `CategoryButtons`, `Outline`, `TabbedNotebook`, `DriveComboBox`, `DirectoryListBox` or `FileListBox`. This only limits these bindings as test factories; it is not evidence that genuine controls cannot be tested or that model-only support works in real applications.

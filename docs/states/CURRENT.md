@@ -1152,3 +1152,5 @@ S64 P177 TOutline有限非客户区模型：同主模块、同owner父窗、Unic
 S64按钮容器外框候选准入：Embarcadero文档将TButtonGroup和TCategoryButtons定义为TCustomControl，按钮、分类可由框架或应用绘制；两类双宽自有同owner网格边框模型在P177均未附着，不能冒充真实VCL。按用户要求批量完成可做项，仅精确类、主模块和同owner同线程父窗、Unicode、CLIENTEDGE及可查询滚动协议时复用既有非客户区grid外框/滚动条，不接管内容、点击、图标、分类或拖拽；无边框/滚动、错误owner和换父回退。双类双宽模型、相邻grid回归及双发布后才能交付；真实VCL布局与交互留最终集成。M0/T18/S64开放。
 
 S64 P178 按钮容器有限外框模型：两类精确名称双宽自有模型外框2736像素、客户区0像素，旧P177正例失败；实际VCL按钮、布局和交互未验证，现有GoVCL无对应工厂。同批干净包20项12.75秒零skip、双发布八摘要及两处双宽安装测试通过；首次沙箱x86构建超时未发布。[证据](../history/M0-T18-S64-P178-vcl-button-groups.md)。提交推送及远端复核待完成，M0/T18/S64开放。
+
+S64 P178复核及真实样本查找：提交89bbd10已推送，远端12文件逐字节一致；本机DelphiVCL4Python 1.0.7双宽绑定均不导出ButtonGroup、CategoryButtons、Outline、TabbedNotebook、DriveComboBox、DirectoryListBox和FileListBox工厂，仅说明此绑定不能创建这些测试样本，不代表真实控件不能测试或已支持。[记录](../history/M0-T18-S64-P178-vcl-button-groups.md)。M0/T18/S64保持开放。
