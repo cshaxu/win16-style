@@ -1262,3 +1262,7 @@ S64后续候选发布路径纠正：Delphi控件、文件夹对话框及全局�
 S64旧式VCL标签样本核对：本地DelphiVCL4Python x64工厂日志对TTabSet和TTabbedNotebook返回Invalid class（同轮TButton成功）；GoVCL x86导出表有PageControl_Create但无两者对应Create导出。仅说明这些绑定的样本构造入口，不推断Delphi类不能运行；TTabbedNotebook仍仅P176模型、TTabSet未验证。[记录](../history/M0-T18-S64-control-inventory.md)。M0/T18/S64开放。
 
 S64真实VCL组合框对照：同一TFrame样本裸/样式×双宽均以原生消息添加两项、选第二项、打开关闭下拉并保持选择，四组退出0。仅单运行库合成消息，不代表物理键鼠、回调、可编辑组合或全部DPI。[记录](../history/M0-T18-S64-frame-investigation.md)。M0/T18/S64开放。
+
+S64 MD5summer标签对象接口补证：P181自有样式实例中，在UI线程对主窗及直接TPanel请求OBJID_NATIVEOM/IID_IDispatch，两个窗口均存在但各返回0x80004005且无对象；恢复前后相同，目标/启动器退出0、job清空且无扫描。只限制该样例的该公开入口，不推断其他VCL/辅助功能提供者；未取得安全标签身份。[记录](../history/M0-T18-S29-label.md)。M0/T18/S64开放。
+
+S64标签UIA试探：自有样式MD5summer观察器CUIAutomation创建及获取根元素返回0，但后代枚举未在90秒隔离worker上限内完成，驱动退出6，自有进程回收；没有标签查找结果，不能推断UIA是否暴露标签或原因。该慢路径不用于常规回归，无扫描/产品改动。[记录](../history/M0-T18-S29-label.md)。M0/T18/S64开放。
