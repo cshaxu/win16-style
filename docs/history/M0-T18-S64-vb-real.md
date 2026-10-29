@@ -25,3 +25,7 @@ remain unverified. No binary or source changed in P3. The existing P2 clean
 x86/x64 build, 14 focused package tests and eight installed hashes remain the
 product baseline; both actual samples loaded its assets 32-bit DLL. P2 commit
 6022aa2 and all ten remote files were verified. M0/T18/S64 remain open.
+
+## P181 current-package recheck
+
+The same retained original x86 VB5 and VB6 sample binaries and runtimes were rerun using the P181 clean-build observer and assets package, bare and styled. All four runs exited 0 with SAMPLE_PASS and zero active owned processes. Each recorded option=4 checkbox=4 combo=2 list=1 edit=2 scrollbar=2 and the existing synthetic protocol assertions; the styled verify mode also checked the original glyph pixel assertions and enumerated assets/ntw16s32.dll. This repeats bounded 96 DPI x86 sample evidence, not physical input, IME, all variants or 64-bit VB. The first command attempt supplied the x64 observer path, which did not exist; it failed before launching any sample. Corrected logs are under build/t18-s64-user-app-regression/p181-real-vb5-* and p181-real-vb6-*.
