@@ -109,3 +109,7 @@ from GitHub and matched to their committed blobs. S29 closes as an
 investigation with the label gap retained in TODO; the next T18 S addresses the
 observed test-time regression before windowed `TStaticText` investigation.
 T18 and M0 remain open.
+
+## P181 recheck
+
+A fresh owned styled MD5summer instance using the P181 assets x86 DLL was inspected with the earlier test-only label IAT observer, adapted to install its temporary UI-thread hooks from inside the owned process. The sample-specific checksum label DrawTextA call still selected MS Sans Serif height -11, text metrics 13 and extent 76x13; a temporary SYSTEM_FONT measurement was 103x16, and the private metric-matched variant measured 76x13. The observer restored the font and reported GDI count 102 before/after. This demonstrates the known label gap remains for this one application under P181, not general absence of all label styling or glyph-fidelity proof. It provides no new safe ownership witness; no product change is justified by text/geometry alone. The main window closed but the process wait timed out at 5 seconds (258); the full application test failed and its owned job reclaimed it. No scan was started. First scratch DLL build failed for missing library links and was rebuilt successfully before running. Scratch: md5-label-local-probe.c and p181-md5-label* logs.
