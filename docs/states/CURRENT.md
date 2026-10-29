@@ -1176,3 +1176,5 @@ S64真实TCategoryButtons样本候选：WhiteStarUML作者免安装ZIP已成功�
 S64 WhiteStar样本运行边界：公开镜像Main.pas首次主窗显示会加载add-in，正常关闭会保存配置及注册表，MainFrm.pas含创建注册表键并写窗口状态；尚未证明源码与5.5.8二进制一致，不能推定具体副作用，需先隔离注册表及插件。样本尚未运行，M0/T18/S64开放。[记录](../history/M0-T18-S64-P178-vcl-button-groups.md)。
 
 S64 WhiteStar版本源码核对：作者5.5.8源码ZIP SHA256 b330c0d2dd2134fb7a609e83ffc4773626540f183c1e23be1a542ec3b17dfaf1；NavBarFrameVclImpl声明PaletteNavBar为TCategoryButtons并含分类/点击处理，Main及MainFrm确有加载插件、关闭写设置/注册表代码。版本一致不证明EXE由该源码逐字节构建；样本仍未运行，待隔离副作用。[记录](../history/M0-T18-S64-P178-vcl-button-groups.md)。M0/T18/S64开放。
+
+S64样本隔离前探针：自有双宽子进程用RegOverridePredefKey将HKCU重定向到唯一易失临时键，子进程写值、父进程核对映射值及原位置不存在，退出0并删除临时键；首轮x86创建非易失子键返回12且已清理，改易失子键后通过。该探针不证明可在外部样本初始化前介入，也未覆盖子进程、所有注册表访问或插件；WhiteStar仍未运行。[记录](../history/M0-T18-S64-P178-vcl-button-groups.md)。M0/T18/S64开放。
