@@ -1182,3 +1182,5 @@ S64样本隔离前探针：自有双宽子进程用RegOverridePredefKey将HKCU�
 S64入口顺序探针：自有x86调试目标在EXE入口断点时应用标记未触发，恢复原字节、暂停目标线程、脱离调试后恢复，标记触发且退出0；证据仅限自制EXE，DLL加载期初始化早于此点，尚未验证外部样本、注册表重定向及插件。[记录](../history/M0-T18-S64-P178-vcl-button-groups.md)。M0/T18/S64开放。
 
 S64入口与注册表组合探针：自有x86目标入口断点暂停并脱离调试后，测试DLL的独立线程设置进程HKCU重定向；恢复后首个应用写入命中唯一临时键，原位置不存在、目标退出0、临时键删除。初次PowerShell编译参数解析及C局部变量重名失败均在运行前修正。仅限自有单进程，加载器期初始化早于断点、远程模块地址假设及失败回收待加固，插件和子进程未隔离，不代表WhiteStar可安全运行。[记录](../history/M0-T18-S64-P178-vcl-button-groups.md)。M0/T18/S64开放。
+
+S64 WhiteStar插件源纠正：5.5.8的AddInMgr旧注册表枚举代码在注释内，实际SetupAddIns递归扫描EXE目录下EXT_DIR，先前称插件读取注册表未被该源码证实。另OptionMgr.LoadOptions以OpenKey(...,True)打开键；EXE静态导入rtl190/vcl190 BPL，其初始化早于EXE入口，BPL导入注册表等API不证明实际调用。样本未执行。[记录](../history/M0-T18-S64-P178-vcl-button-groups.md)。M0/T18/S64开放。
