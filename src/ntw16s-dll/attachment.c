@@ -339,7 +339,7 @@ static BOOL grid_identity(HWND w,HMODULE owner,HWND parent)
         RealGetWindowClassW(w,real,ARRAYSIZE(real)) &&
         (((!lstrcmpW(name,L"TStringGrid") || !lstrcmpW(name,L"TDrawGrid") ||
           (owner==GetModuleHandleW(NULL) && IsWindowUnicode(w) && (!lstrcmpW(name,L"TValueListEditor") || !lstrcmpW(name,L"TDBGrid") ||
-           (!lstrcmpW(name,L"TDBLookupListBox") && (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==owner)))) && !lstrcmpW(name,real)) ||
+           ((!lstrcmpW(name,L"TDBLookupListBox") || !lstrcmpW(name,L"TOutline")) && (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==owner)))) && !lstrcmpW(name,real)) ||
          (owner==GetModuleHandleW(NULL) && IsWindowUnicode(w) && (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==owner &&
           (!lstrcmpW(name,L"TDirectoryListBox") || !lstrcmpW(name,L"TFileListBox")) && !lstrcmpiW(real,L"LISTBOX") &&
           (style&(WS_HSCROLL|WS_VSCROLL)) && (style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE)) && (style&LBS_HASSTRINGS) && !(style&LBS_NODATA)));
