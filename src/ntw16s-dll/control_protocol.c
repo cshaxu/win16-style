@@ -272,16 +272,26 @@ static ntw16s_control_protocol *bind_protocol(HWND w,HMODULE verified_owner,unsi
     }
     if(role==5){
         DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
+        HWND expected_parent=GetParent(w);
         LRESULT count=SendMessageW(w,LVM_GETITEMCOUNT,0,0);
         LRESULT selected=current(b)?SendMessageW(w,LVM_GETSELECTEDCOUNT,0,0):-1;
         HWND header=current(b)?(HWND)SendMessageW(w,LVM_GETHEADER,0,0):NULL;
         WCHAR header_name[64];
-        valid=current(b) && (style&LVS_TYPEMASK)==LVS_REPORT && !(style&(LVS_OWNERDRAWFIXED|LVS_OWNERDATA)) &&
-            count>=0 && count<=INT_MAX && selected>=0 && selected<=count && header &&
-            GetParent(header)==w && GetWindowThreadProcessId(header,NULL)==GetCurrentThreadId() &&
-            GetClassNameW(header,header_name,ARRAYSIZE(header_name)) &&
-            !lstrcmpW(header_name,WC_HEADERW) &&
-            (HMODULE)GetClassLongPtrW(header,GCLP_HMODULE)==native_owner;
+        BOOL common=current(b) && !(style&(LVS_OWNERDRAWFIXED|LVS_OWNERDATA)) &&
+            count>=0 && count<=INT_MAX && selected>=0 && selected<=count &&
+            expected_parent && GetParent(w)==expected_parent &&
+            GetWindowThreadProcessId(expected_parent,NULL)==GetCurrentThreadId();
+        if(common && (style&LVS_TYPEMASK)==LVS_REPORT){
+            valid=header && GetParent(header)==w && GetWindowThreadProcessId(header,NULL)==GetCurrentThreadId() &&
+                GetClassNameW(header,header_name,ARRAYSIZE(header_name)) && !lstrcmpW(header_name,WC_HEADERW) &&
+                (HMODULE)GetClassLongPtrW(header,GCLP_HMODULE)==native_owner;
+        }else if(common && verified_owner){
+            RECT bounds={.left=LVIR_BOUNDS};
+            LRESULT item=count?SendMessageW(w,LVM_GETITEMRECT,0,(LPARAM)&bounds):TRUE;
+            valid=current(b) && item && (!count || (bounds.right>bounds.left && bounds.bottom>bounds.top));
+        }
+        valid=valid && current(b) && GetParent(w)==expected_parent &&
+            (DWORD)GetWindowLongPtrW(w,GWL_STYLE)==style;
         if(valid)b->native_module=native_owner;
     }
     if(role==6){

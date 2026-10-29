@@ -88,3 +88,9 @@ S15包测试进度文件共享冲突已由[S17记录](../history/M0-T18-S17-test
 - [ ] TODO(Medium): VCL TMemo additional runtime versions, DPI, long text, IME, physical input and complex scrolling remain unverified. Owner: T18 final integration. Evidence: [S63](../history/M0-T18-S63-memo.md) covers ordinary multiline actual x86/x64 and native model selection, read-only and scrolling. Admission: verify each remaining version and semantic variant without changing application data ownership.
 
 - [ ] TODO(Medium): MD5summer主窗口内嵌TShellTreeView保留现代文件夹图标；Owner：后续经准入的应用内嵌Shell树图标研究。Evidence：[P181真实截图](../history/M0-T18-S64-P181-common-verify.md)、[S13树状态](../history/M0-T18-S13-md5-tree-current.md)。独立[文件夹对话框候选](../proposals/classic-folder-dialogs.md)明确不自动覆盖应用内嵌树。Admission：核实实际图像列表来源、共享所有权、图标资源版本和许可及选择/展开语义；禁止替换共享系统图像列表或未验证替换应用图像。
+
+- [ ] TODO(Medium): Delphi `TBevel` 与非默认 `TSplitter` 的无窗口共享画布外观未适配或未认证；Owner：未来有实际应用需求时准入。Evidence：[TBevel](../history/M0-T18-S64-bevel-investigation.md)、[TSplitter](../history/M0-T18-S64-splitter-investigation.md)。Admission：证明控件绘制身份、保留应用画布、布局和输入；不得根据坐标或颜色猜测。
+
+- [ ] TODO(Medium): Delphi 其他未验证的原生或框架控件及变体（包括 `TAnimate`、旧式 `TTabSet`、`TDockTabSet`、外部容器和模型-only路径）保留原生外观或未认证；Owner：未来出现具体普通可见应用需求时准入。Evidence：[T18台账](../history/M0-T18-S64-control-inventory.md)。Admission：准确运行库、所有权、绘制与交互证据；不把模型当真实运行库认证。
+
+- [ ] TODO(Medium): Delphi非报告列表视图协议在同步查询中改变父窗或样式的重入保护尚缺独立有效故障负例；Owner：后续控件生命周期测试。Evidence：[列表调查](../history/M0-T18-S64-runtime-lists.md)：移除末尾重检的故障版仍通过现有重入模型。Admission：建立能检出该故障且不影响应用语义的可重复原生测试；不称已证实完整重入安全。

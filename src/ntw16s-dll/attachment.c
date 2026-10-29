@@ -1348,8 +1348,9 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     if(paint.active && !a->detached && !a->protocol && !a->vcl_report_candidate)report_try_bind(w,a);
     if(paint.active && a->report_module && !a->file_owner && !a->detached){
         DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
-        if((a->tree || ((style&LVS_TYPEMASK)==LVS_REPORT && !(style&(LVS_OWNERDRAWFIXED|LVS_OWNERDATA)) &&
-            !SendMessageW(w,LVM_ISGROUPVIEWENABLED,0,0))) && !a->detached)
+        if((a->tree || (((style&LVS_TYPEMASK)==LVS_REPORT || a->vcl_report_candidate) &&
+            !(style&(LVS_OWNERDRAWFIXED|LVS_OWNERDATA)) && !SendMessageW(w,LVM_ISGROUPVIEWENABLED,0,0) &&
+            !a->detached && (DWORD)GetWindowLongPtrW(w,GWL_STYLE)==style)) && !a->detached)
             ntw16s_report_paint_enable(&paint,w,a->report_module,&a->detached);
     }
     BOOL box_witnessed=FALSE;
