@@ -1156,3 +1156,5 @@ S64 P178 按钮容器有限外框模型：两类精确名称双宽自有模型�
 S64 P178复核及真实样本查找：提交89bbd10已推送，远端12文件逐字节一致；本机DelphiVCL4Python 1.0.7双宽绑定均不导出ButtonGroup、CategoryButtons、Outline、TabbedNotebook、DriveComboBox、DirectoryListBox和FileListBox工厂，仅说明此绑定不能创建这些测试样本，不代表真实控件不能测试或已支持。[记录](../history/M0-T18-S64-P178-vcl-button-groups.md)。M0/T18/S64保持开放。
 
 S64 P178适用范围纠正：Embarcadero官方VCLButtons示例明确将TButtonGroup的BorderStyle设为bsNone，故该配置不满足P178的CLIENTEDGE门槛，按钮项绘制亦不在非客户区适配内。这是源码文档证据，非真实运行；真实按钮绘制和交互仍需样本。[记录](../history/M0-T18-S64-P178-vcl-button-groups.md)。M0/T18/S64开放。
+
+S64 P178发布包VB补充回归：首轮误将含README的assets根传给四文件包检查，未运行测试；重试同摘要候选包中8个VB测试先行退出0，vb5-owner-check-32裸进程阶段等待258超时退出1，测试器停止，64位对应项未执行。单线程独立重试同一裸进程阶段再次超时，不能视为通过或归因于产品；后续需诊断自有测试子进程等待并复测。记录build/t18-package/s64-p178-vb-regression-retry及s64-p178-vb-owner-retry；M0/T18/S64开放。
