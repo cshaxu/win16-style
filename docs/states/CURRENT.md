@@ -39,7 +39,7 @@ M0 T19 S2按用户请求准入：试用System位图控件字体等比例缩小�
 
 三个组件、四产品文件；纯C、GCC、Ninja、ccache，原图形资源及来源保持。发布位置为项目assets根目录和O:/winnt根目录。当前有限控件契约见[界面设计](../design/UI.md)，启动/架构见[架构](../design/ARCHITECTURE.md)，具体覆盖及限制见[收口审计](../history/M0-T18-scoped-closure-audit.md)。T19 S1双宽干净包、两处部署摘要、18项聚焦回归和真实程序记录见[交付证据](../history/M0-T19-S1-canon-ownerdraw.md)。历史完整活动包保存在[归档](../history/M0-T18-S64-current-archive.md)，只作历史记录。
 
-S2试用包已完成本地构建、聚焦测试及双位置发布；等待提交和远端复核，外观等待用户试用。见[交付记录](../history/M0-T19-S2-proportional-font.md)。
+S2试用包P210已双位置发布并提交b78604f3ff46387ac3175380668fe6e2f2eeffd1；实际远端源码及四文件摘要已复核一致。S2保持开放，等待用户试用评价。见[交付记录](../history/M0-T19-S2-proportional-font.md)。
 
 ## Recent Closure
 
