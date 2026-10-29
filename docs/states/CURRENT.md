@@ -1168,3 +1168,5 @@ S64 P179后真实Actor补测：首次裸版误用verify经典glyph断言而失�
 S64 Actor退出补诊：自有诊断对裸/样式实例在关闭后均记录target与launcher等待258；裸版补查IsWindow(form)=0，主窗已销毁但进程未在预算退出。EnumWindows返回0且错误0，不能推断隐藏窗是否存在；无权以此认定产品缺陷或正常退出。两组任务job退出回收，原样式glyph/点击证据仍有效但完整验收未通过。诊断位于build/t18-s64-vb-mask-survey/actor-close-probe.c；M0/T18/S64开放。
 
 S64 Actor线程补诊：裸版私有实例主窗关闭后，EnumThreadWindows针对原UI线程返回成功但未枚举到顶层窗；Toolhelp在该自有进程观察到9个仍存活线程，含UI线程，均WAIT_TIMEOUT/STILL_ACTIVE。全桌面枚举仍失败；线程数不说明等待根因。仅诊断、不判定已修复，作业结束回收自有实例，M0/T18/S64开放。
+
+S64 当前发布包真实TFrame嵌套复测：双宽GoVCL真实Frame内Button、CheckBox、RadioButton、Edit、Memo、ComboBox、ListBox七项均附着并成功移除、捕获有变化；复选、编辑及列表状态保持，两组退出0。图像差异不是完整视觉、物理输入或其他DPI验收，真实控件全集仍未完成。[记录](../history/M0-T18-S64-frame-investigation.md)。无产品变更，M0/T18/S64开放。
