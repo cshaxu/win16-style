@@ -18,7 +18,7 @@
 
 typedef struct folder_context {
     BFFCALLBACK callback;
-    PCWSTR ok_label,file_label;
+    PCWSTR ok_label,cancel_label,file_label;
     LPARAM original_data;
     WCHAR selected[MAX_PATH], desired[MAX_PATH], requested[MAX_PATH];
     UINT run_message, attempts;
@@ -65,6 +65,7 @@ static UINT_PTR CALLBACK old_folder_hook(HWND window,UINT message,WPARAM wparam,
         folder_context *ctx=(folder_context *)ofn->lCustData;
         SetPropW(window,L"Win16s.FolderBridge",ctx);
         if(ctx && ctx->ok_label)SetDlgItemTextW(window,IDOK,ctx->ok_label);
+        if(ctx && ctx->cancel_label)SetDlgItemTextW(window,IDCANCEL,ctx->cancel_label);
         PostMessageW(window,ctx->run_message,0,0);
         HWND cancel=GetDlgItem(window,IDCANCEL);
         HWND readonly=GetDlgItem(window,chx1);
@@ -90,11 +91,11 @@ static UINT_PTR CALLBACK old_folder_hook(HWND window,UINT message,WPARAM wparam,
 }
 /* COM folder requests need a Shell item, not a fabricated PIDL. Reuse the
  * classic system template and return its selected directory to the caller. */
-HRESULT ntw16s_classic_folder(HWND owner,PCWSTR title,PCWSTR initial,PCWSTR ok_label,PCWSTR file_label,PWSTR result,DWORD capacity)
+HRESULT ntw16s_classic_folder(HWND owner,PCWSTR title,PCWSTR initial,PCWSTR ok_label,PCWSTR cancel_label,PCWSTR file_label,PWSTR result,DWORD capacity)
 {
     if(!result || !capacity)return E_INVALIDARG;
     result[0]=0;if(active)return HRESULT_FROM_WIN32(ERROR_BUSY);
-    folder_context ctx={0};ctx.ok_label=ok_label;ctx.file_label=file_label;ctx.run_message=RegisterWindowMessageW(L"Win16Style.T20.FolderBridge");
+    folder_context ctx={0};ctx.ok_label=ok_label;ctx.cancel_label=cancel_label;ctx.file_label=file_label;ctx.run_message=RegisterWindowMessageW(L"Win16Style.T20.FolderBridge");
     if(!ctx.run_message)return HRESULT_FROM_WIN32(GetLastError());
     WCHAR file[MAX_PATH]=L"[Select current folder]";
     if(initial && *initial && swprintf(file,MAX_PATH,L"%ls%ls[Select current folder]",initial,

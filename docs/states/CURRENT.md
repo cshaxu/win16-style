@@ -33,7 +33,7 @@ M0 T20 S1准入：Win3.x文件夹选择与公共对话框桥接：调查、实�
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 1
-- Last delivery: M0 T19 S2 P214，撤回提交940a8d42bfda18da413577319e72970102d52156，实际远端源码和P208原始四文件已核对。
+- Last delivery: M0 T20 S1 P218，提交9041e6672b57cfa054f8b70ef2d8f92b49a2f4d7，实际远端源码和四文件已核对。
 - Open task: T20 S1 文件夹选择和公共对话框接口及经典参考调查。
 
 ## Technical Baseline
@@ -44,7 +44,7 @@ M0 T20 S1准入：Win3.x文件夹选择与公共对话框桥接：调查、实�
 
 S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前原版真实点击正常；历史异常根因未查明，本S没有产品代码或二进制修改。
 
-T20 S1主工作树已实现文件、文件夹、查找替换、字体颜色、打印、页面设置、属性页及任务对话框部分入口；实测与覆盖见阶段证据，仍在验证且未发布。现代COM文件对话框默认桥接、复杂回调及多选桥接等尚未完成；公开新式对话框 API 及 demo 调用已在开发中，未交付，T20保持开放。详见[阶段证据](../history/M0-T20-S1-preliminary.md)。
+T20 S1 的 P218 阶段包已发布部分公共对话框和 COM 桥接及滚动条修复；事件、部分定制、隐藏目录及完整对话框矩阵仍未完成，公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；T20 和 S1 保持开放。
 
 ## Recent Closure
 

@@ -7,7 +7,7 @@
 #include <shobjidl.h>
 #include <stdio.h>
 #include <wchar.h>
-static DWORD owner;static volatile LONG seen,old,filter_seen,label_seen,hidden_seen;static HWND dialog;static BOOL cancel;
+static DWORD owner;static volatile LONG seen,old,filter_seen,label_seen,cancel_label_seen,hidden_seen;static HWND dialog;static BOOL cancel;
 static WCHAR hidden_name[MAX_PATH],hidden_system_name[MAX_PATH],hidden_system_path[MAX_PATH];
 static volatile LONG hidden_system_seen;
 static const WCHAR title[]=L"Win16S COM bridge integration";
@@ -26,6 +26,8 @@ static BOOL CALLBACK find_dialog(HWND w,LPARAM value)
     HWND filter=GetDlgItem(w,1136);if(filter && SendMessageW(filter,CB_GETCOUNT,0,0)==2 && SendMessageW(filter,CB_GETCURSEL,0,0)==1)InterlockedExchange(&filter_seen,1);
     WCHAR ok[80]=L"",label[80]=L"";GetDlgItemTextW(w,IDOK,ok,ARRAYSIZE(ok));GetDlgItemTextW(w,1090,label,ARRAYSIZE(label));
     if(!lstrcmpW(ok,L"Choose it") && !lstrcmpW(label,L"Target name:"))InterlockedExchange(&label_seen,1);
+    WCHAR cancel_text[80]=L"";GetDlgItemTextW(w,IDCANCEL,cancel_text,ARRAYSIZE(cancel_text));
+    if(!lstrcmpW(cancel_text,L"Stop choosing"))InterlockedExchange(&cancel_label_seen,1);
     dialog=w;InterlockedExchange(&seen,1);return FALSE;
 }
 static DWORD WINAPI observer(void *unused)
@@ -49,6 +51,7 @@ int wmain(int argc,WCHAR **argv)
     BOOL use_ex=argc==4 && !lstrcmpW(argv[3],L"ex");
     BOOL factory_mode=argc==4 && !lstrcmpW(argv[3],L"factory");
     BOOL labels=argc==4 && !lstrcmpW(argv[3],L"labels");
+    BOOL cancel_label=argc==4 && !lstrcmpW(argv[3],L"cancel-label");
     BOOL hidden=argc==4 && !lstrcmpW(argv[3],L"hidden");
     BOOL folder=argv[1][0]==L'f';BOOL save=argv[1][0]==L's';cancel=argv[2][0]==L'c';
     WCHAR dir[MAX_PATH],path[MAX_PATH];if(!GetTempPathW(MAX_PATH,dir)||!GetTempFileNameW(dir,L"w16",0,path))return 3;
@@ -109,6 +112,7 @@ int wmain(int argc,WCHAR **argv)
     if(FAILED(IFileDialog_QueryInterface(d,&IID_IFileDialog2,(void **)&v2)) ||
        FAILED(IFileDialog2_QueryInterface(v2,&IID_IUnknown,(void **)&v2_id)) ||
        FAILED(IFileDialog_QueryInterface(d,&IID_IUnknown,(void **)&base_id)) || v2_id!=base_id)return 12;
+    if(cancel_label && (FAILED(IFileDialog2_SetCancelButtonLabel(v2,L"Original")) || FAILED(IFileDialog2_SetCancelButtonLabel(v2,L"Stop choosing"))))return 12;
     IUnknown_Release(base_id);IUnknown_Release(v2_id);
     IOleWindow *ole=NULL;IUnknown *ole_id=NULL,*base_ole_id=NULL;
     if(FAILED(IFileDialog_QueryInterface(d,&IID_IOleWindow,(void **)&ole)) ||
@@ -119,6 +123,7 @@ int wmain(int argc,WCHAR **argv)
     hr=use_v2?IFileDialog2_Show(v2,NULL):IFileDialog_Show(d,NULL);DWORD wait=WaitForSingleObject(worker,12000);CloseHandle(worker);
     BOOL same=FALSE;HRESULT result=E_FAIL;IShellItem *item=NULL;PWSTR name=NULL;
     if(SUCCEEDED(hr)){result=IFileDialog_GetResult(d,&item);if(SUCCEEDED(result))result=IShellItem_GetDisplayName(item,SIGDN_FILESYSPATH,&name);if(SUCCEEDED(result))same=!lstrcmpiW(path,name);}
+    if(SUCCEEDED(hr) && !same)printf("COM_PATH_MISMATCH expected=%ls actual=%ls\n",path,name?name:L"(null)");
     BOOL array_ok=TRUE;
     if(open && SUCCEEDED(hr)){
         IShellItemArray *array=NULL;DWORD count=0;IShellItem *first=NULL;PWSTR array_path=NULL;
@@ -138,5 +143,6 @@ int wmain(int argc,WCHAR **argv)
     if(item)IShellItem_Release(item);
     IFileDialog2_Release(v2);IFileDialog_Release(d);CoUninitialize();if(hidden_system_path[0]){SetFileAttributesW(hidden_system_path,FILE_ATTRIBUTE_NORMAL);DeleteFileW(hidden_system_path);}if(folder)RemoveDirectoryW(path);else DeleteFileW(path);
     printf("COM_BRIDGE bits=%u save=%d folder=%d cancel=%d seen=%ld old=%ld hr=%08lx result=%08lx same=%d wait=%lu filter=%ld array=%d labels=%ld hidden=%ld hidden_system=%ld\n",(unsigned)(sizeof(void*)*8),save,folder,cancel,seen,old,(unsigned long)hr,(unsigned long)result,same,wait,filter_seen,array_ok,label_seen,hidden_seen,hidden_system_seen);
-    return wait==WAIT_OBJECT_0 && seen && (customized?!old:old) && (!filtered || filter_seen) && (!labels || label_seen) && (!hidden || (hidden_seen && !hidden_system_seen)) && array_ok && (cancel?hr==HRESULT_FROM_WIN32(ERROR_CANCELLED):(SUCCEEDED(hr)&&SUCCEEDED(result)&&same))?0:1;
+    printf("COM_CANCEL_LABEL seen=%ld\n",cancel_label_seen);
+    return wait==WAIT_OBJECT_0 && seen && (customized?!old:old) && (!filtered || filter_seen) && (!labels || label_seen) && (!cancel_label || cancel_label_seen) && (!hidden || (hidden_seen && !hidden_system_seen)) && array_ok && (cancel?hr==HRESULT_FROM_WIN32(ERROR_CANCELLED):(SUCCEEDED(hr)&&SUCCEEDED(result)&&same))?0:1;
 }

@@ -106,6 +106,9 @@ try{
         $cases+=Case "dialog-com-factory-$arch" $dialogDriver @($run,$comTarget,'open','accept','factory') @('COM_FACTORY identity=1 hr=00000000',"COM_BRIDGE bits=$bits",'old=1','same=1','DIALOG_DRIVER exit=0') 30
         foreach($labelKind in @('open','save','folder')) {
             $cases+=Case "dialog-com-label-$arch-$labelKind" $dialogDriver @($run,$comTarget,$labelKind,'accept','labels') @("COM_BRIDGE bits=$bits",'old=1','same=1','labels=1','DIALOG_DRIVER exit=0') 30
+            foreach($action in @('accept','cancel')) {
+                $cases+=Case "dialog-com-cancel-label-$arch-$labelKind-$action" $dialogDriver @($run,$comTarget,$labelKind,$action,'cancel-label') @("COM_BRIDGE bits=$bits",'old=1','COM_CANCEL_LABEL seen=1','DIALOG_DRIVER exit=0') 30
+            }
         }
         $cases+=Case "dialog-com-multi-$arch" $dialogDriver @($run,$multiTarget,'accept','spaces') @("COM_MULTI bits=$bits",'selected=2','count=2 paths=11','single=80004005','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-multi-single-$arch" $dialogDriver @($run,$multiTarget,'accept','spaces','single') @("COM_MULTI bits=$bits",'selected=1','count=1 paths=10','single=00000000','DIALOG_DRIVER exit=0') 30

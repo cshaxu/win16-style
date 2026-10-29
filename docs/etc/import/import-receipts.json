@@ -950,7 +950,7 @@
       "path": "src/ntw16s-dll/injection/intercept.h",
       "source": "src/nthook32-dll/intercept.h",
       "source_blob": "b9b7ea48abb2548f2c980db63896321d079a80cd",
-      "sha256": "7c3b43efeeba9929deea583426a73514900ae6f62ddfc947e8d143a804f83621",
+      "sha256": "60c316b85918ed645b9b190131cf247da85c9442ba4272d659eca3501f3ef8c6",
       "disposition": "adapt",
       "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T20 S1 common-dialog bridge and version",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
@@ -2696,7 +2696,7 @@
       "path": "src/ntw16s-dll/injection/folder_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ee68beabc3bda45c511dfd14a4f66fda54fede9525ce5b229aa055d357333471",
+      "sha256": "0470edb1ea231b331a17e3e7241634e82469dea48daa69ed6f154245b76552b3",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
@@ -2822,7 +2822,7 @@
       "path": "tests/ntw16s-dll/com_dialog_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "51c1fefeb02c56d9c88aeea5e990dee67a761a25b784454e7c46323ff642a829",
+      "sha256": "9c2d66ac23962f4285b66ccb947dd87bc58b2102c5dedcde09de54f24e5ee489",
       "disposition": "authored",
       "review": "T20 S1 COM dialog bridge and real native probe under development",
       "notice": "Project-authored; no imported code or resources"
@@ -2831,7 +2831,7 @@
       "path": "src/ntw16s-dll/injection/com_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "aa63a0bb8cb350b0f63ba43fa7266b433377ec233e9675016ca3fda84f37cb00",
+      "sha256": "c6a5867d6511a4f171d394d3be44a54c31dab3c387bcbd66db2aa4eca359c177",
       "disposition": "authored",
       "review": "T20 S1 COM dialog bridge and real native probe under development",
       "notice": "Project-authored; no imported code or resources"

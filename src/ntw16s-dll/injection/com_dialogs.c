@@ -28,7 +28,7 @@ typedef struct file_proxy {
     IFileDialogCustomize *custom_native;
     IShellItem *result;
     IShellItemArray *results;
-    WCHAR *title,*filter,*extension,*ok_label,*file_label;
+    WCHAR *title,*filter,*extension,*ok_label,*cancel_label,*file_label;
     UINT filter_index;
     struct event_adapter *events;
 } file_proxy;
@@ -53,6 +53,7 @@ static ULONG proxy_release(file_proxy *p)
         if(p->filter)CoTaskMemFree(p->filter);
         if(p->extension)CoTaskMemFree(p->extension);
         if(p->ok_label)CoTaskMemFree(p->ok_label);
+        if(p->cancel_label)CoTaskMemFree(p->cancel_label);
         if(p->file_label)CoTaskMemFree(p->file_label);
         if(p->custom_native)IFileDialogCustomize_Release(p->custom_native);
         if(p->v2_native)IFileDialog2_Release(p->v2_native);
@@ -367,9 +368,9 @@ static HRESULT native_show(void *data)
 {native_call *call=data;return IFileDialog_Show(call->dialog,call->owner);}
 static HRESULT show_native(file_proxy *p,HWND owner)
 {native_call call={p->native,owner};return ntw16s_dialog_style_scope(native_show,&call);}
-typedef struct folder_call {HWND owner;PCWSTR title,initial,ok_label,file_label;PWSTR result;DWORD capacity;} folder_call;
+typedef struct folder_call {HWND owner;PCWSTR title,initial,ok_label,cancel_label,file_label;PWSTR result;DWORD capacity;} folder_call;
 static HRESULT classic_folder_show(void *data)
-{folder_call *call=data;return ntw16s_classic_folder(call->owner,call->title,call->initial,call->ok_label,call->file_label,call->result,call->capacity);}
+{folder_call *call=data;return ntw16s_classic_folder(call->owner,call->title,call->initial,call->ok_label,call->cancel_label,call->file_label,call->result,call->capacity);}
 typedef struct classic_call {OPENFILENAMEW *ofn;BOOL save;BOOL selected;DWORD error;} classic_call;
 static HRESULT classic_show(void *data)
 {
@@ -411,6 +412,7 @@ static UINT_PTR CALLBACK classic_hook(HWND w,UINT message,WPARAM wp,LPARAM lp)
     if(message==WM_INITDIALOG && lp){OPENFILENAMEW *ofn=(OPENFILENAMEW *)lp;file_proxy *p=(file_proxy *)ofn->lCustData;
         if(p && SetPropW(w,key,p))p->active_window=w;
         if(p && p->ok_label)SetDlgItemTextW(w,IDOK,p->ok_label);
+        if(p && p->cancel_label)SetDlgItemTextW(w,IDCANCEL,p->cancel_label);
         if(p && p->file_label)SetDlgItemTextW(w,stc3,p->file_label);
     }else if(message==WM_NCDESTROY){file_proxy *p=GetPropW(w,key);
         if(p){RemovePropW(w,key);if(p->active_window==w)p->active_window=NULL;}}
@@ -467,7 +469,7 @@ static HRESULT proxy_show(file_proxy *p,HWND owner)
     }
     if(flags&FOS_PICKFOLDERS){
         if(p->save){if(folder_path)CoTaskMemFree(folder_path);return show_native(p,owner);}
-        WCHAR selected[32768];folder_call call={owner,p->title,folder_path,p->ok_label,p->file_label,selected,ARRAYSIZE(selected)};
+        WCHAR selected[32768];folder_call call={owner,p->title,folder_path,p->ok_label,p->cancel_label,p->file_label,selected,ARRAYSIZE(selected)};
         hr=ntw16s_dialog_style_scope(classic_folder_show,&call);if(folder_path)CoTaskMemFree(folder_path);
         if(FAILED(hr))return hr;
         hr=SHCreateItemFromParsingName(selected,NULL,&IID_IShellItem,(void **)&p->result);
@@ -683,7 +685,13 @@ static HRESULT STDMETHODCALLTYPE v2_SetFilter(IFileDialog2 *This, IShellItemFilt
 
 static HRESULT STDMETHODCALLTYPE v2_SetCancelButtonLabel(IFileDialog2 *This, LPCWSTR pszLabel)
 {
-    file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,v2));p->unsupported=TRUE;return IFileDialog2_SetCancelButtonLabel(p->v2_native ,pszLabel);
+    file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,v2));
+    HRESULT hr=IFileDialog2_SetCancelButtonLabel(p->v2_native,pszLabel);if(FAILED(hr))return hr;
+    WCHAR *copy=NULL;
+    if(pszLabel){size_t n=wcslen(pszLabel)+1;copy=CoTaskMemAlloc(n*sizeof(WCHAR));
+        if(!copy){p->unsupported=TRUE;return hr;}memcpy(copy,pszLabel,n*sizeof(WCHAR));}
+    if(p->cancel_label)CoTaskMemFree(p->cancel_label);
+    p->cancel_label=copy;return hr;
 }
 
 static HRESULT STDMETHODCALLTYPE v2_SetNavigationRoot(IFileDialog2 *This, IShellItem *psi)
