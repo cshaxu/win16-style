@@ -1206,3 +1206,5 @@ S64常用应用退出等待补诊：自有裸版Actor两次WCT检查均显示UI�
 S64裸Actor等待线程模块补证：自有进程WCT显示UI线程等待另一同进程线程，后者的Win32线程起始地址映射到SysWOW64/msctfmonitor.dll；无循环，WCT未指出后续对象。线程起始模块不是当前调用栈，不能据此确定根因或推广其他应用；不改系统输入服务，job关闭。[记录](../history/M0-T18-S64-user-app-regression.md)。M0/T18/S64开放。
 
 S64常用应用截图复核：已有样式截图中MadShow按钮/编辑框、DoubleKiller选项页按钮/复选框、MD5summer按钮/下拉/滚动条及Actor复选glyph呈经典效果；仅是所捕获状态的视觉观察，不证明全集。Actor文字在先前裸截图与本次样式截图均有乱码，不凭截图断定原因或编码；共同退出失败仍未解决。[记录](../history/M0-T18-S64-user-app-regression.md)。无产品变更，M0/T18/S64开放。
+
+S64退出环境对照：同私有桌面与自有job中裸demo两次收到WM_CLOSE后5秒等待超时；第二次窗口仍存在，WCT显示UI线程等待另一线程、无循环，全程未使用run16s/DLL。说明测试环境/启动组合可在自有程序复现相似等待，尚不证明根因、所有程序同因或普通桌面受影响。job关闭。[记录](../history/M0-T18-S64-user-app-regression.md)。M0/T18/S64开放。
