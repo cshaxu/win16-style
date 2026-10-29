@@ -1063,7 +1063,7 @@ static BOOL cool_identity(HWND w,attachment *a)
 }
 static BOOL cool_grip(HWND w,attachment *a,const NMCUSTOMDRAW *n)
 {
-    RECT band={0},border={0},client={0},child={0},overlap;POINT wo={0},vo={0};WCHAR text[2]={0};
+    RECT band={0},border={0},client={0},child={0},overlap;POINT wo={0},vo={0};WCHAR text[2]={0xffff,0xffff};
     REBARBANDINFOW info={.cbSize=REBARBANDINFOW_V3_SIZE,.fMask=RBBIM_BACKGROUND|RBBIM_STYLE|RBBIM_CHILD|RBBIM_TEXT|RBBIM_IMAGE,.lpText=text,.cch=ARRAYSIZE(text),.iImage=-1};
     WNDPROC native=cool_observing && cool_observing->owner==a && cool_observing->window==w?cool_observing->native:NULL;
     if(!cool_identity(w,a) || !native || !n->hdc || WindowFromDC(n->hdc)!=w || GetMapMode(n->hdc)!=MM_TEXT || (GetLayout(n->hdc)&LAYOUT_RTL) ||
