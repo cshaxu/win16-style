@@ -1210,3 +1210,29 @@ S64常用应用截图复核：已有样式截图中MadShow按钮/编辑框、Dou
 S64退出环境对照：同私有桌面与自有job中裸demo两次收到WM_CLOSE后5秒等待超时；第二次窗口仍存在，WCT显示UI线程等待另一线程、无循环，全程未使用run16s/DLL。说明测试环境/启动组合可在自有程序复现相似等待，尚不证明根因、所有程序同因或普通桌面受影响。job关闭。[记录](../history/M0-T18-S64-user-app-regression.md)。M0/T18/S64开放。
 
 用户后续发布路径更新：自本指令起，binary change的四文件发布至项目assets根目录及O:/winnt根目录，不再以O:/winnt/system32为目标；历史发布记录保留当时路径。本次治理变更不覆盖T18 S64活动包。[记录](../history/M0-Td-S15-publish-root.md)。
+
+S64 demo退出对照补证：同一自有裸demo探针直接运行在worker当前会话桌面（未新建私有桌面），找到窗口并成功投递WM_CLOSE后5秒仍WAIT_TIMEOUT，job回收。未确认该桌面是可见输入桌面，未加载样式DLL；不能将等待仅归因于新建私有桌面，也未查明根因或推广至真实应用。[记录](../history/M0-T18-S64-user-app-regression.md)。M0/T18/S64开放。
+
+S64裸demo消息队列对照：当前会话桌面的自有裸demo在关闭前WM_NULL限时查询成功、再等1秒后投递WM_CLOSE，5秒仍WAIT_TIMEOUT并由job回收。该次消息队列曾响应，但不证明全部启动已完成或查明退出等待根因；不涉及样式DLL。[记录](../history/M0-T18-S64-user-app-regression.md)。M0/T18/S64开放。
+
+S64裸demo关闭方式对照：相同WM_NULL就绪后，限时同步WM_CLOSE在当前会话桌面3次及私有桌面1次均销窗且退出0；紧接着PostMessage版两种桌面均超时258。仅证明该demo测试的发送方式影响结果，不证明原因或其他程序可同法修复；Actor既有探针已同步发送且仍超时。[记录](../history/M0-T18-S64-user-app-regression.md)。M0/T18/S64开放。
+
+S64实际应用阶段诊断：x86测试副本记录裸/样式MadShow及样式DoubleKiller均在首次观察阶段失败、未到关闭；拆分检测时裸MadShow及样式DoubleKiller的消息发送成功但观察器就绪事件258超时，job回收。不能据此确定回调是否加载失败或归因产品，原error 0/5不能定位原因；同步关闭候选尚未在这些应用验证。[记录](../history/M0-T18-S64-user-app-regression.md)。M0/T18/S64开放。
+
+S64观察器加载补证：自有裸MadShow及样式DoubleKiller首次就绪超时后、hook仍安装时枚举目标模块，名称含probe的模块均为0；消息发送成功和安装返回handle不等于观察器执行。快照不能排除瞬时加载，未取得加载失败错误或确定根因；枚举留下的18不是hook错误。job回收。[记录](../history/M0-T18-S64-user-app-regression.md)。M0/T18/S64开放。
+
+S64观察器直接加载对照：仅对自有裸MadShow以限时远程LoadLibraryW成功加载同一x86测试DLL，原hook仍在时再次发送观察消息成功但就绪事件仍258；说明该进程可显式加载DLL，单纯预加载未恢复回调，不确定系统hook未执行原因。job回收，未改产品。[记录](../history/M0-T18-S64-user-app-regression.md)。M0/T18/S64开放。
+
+S64 MadShow测试侧恢复：仅对自有裸/样式实例加载诊断DLL，并由目标进程内限时线程为已识别UI线程安装临时hook、执行后卸载；观察回调及事件均成功、线程退出0。裸版4按钮13编辑2框附着0、样式版同19附着且失败0，模块枚举为assets/ntw16s32.dll。诊断保留原跨进程观察失败退出并以job回收，不称完整应用或自然退出通过；原hook失效原因仍未知。[记录](../history/M0-T18-S64-user-app-regression.md)。M0/T18/S64开放。
+
+S64 MadShow完整探针续验：自有裸/样式进程内临时观察hook完成并显式卸载，截图后限时同步WM_CLOSE均成功且主窗消失，但两进程3秒等待均258/STILL_ACTIVE，完整用例失败，job回收。裸版同样失败，不据此归因样式DLL；进程未退出原因及普通桌面行为未明。[记录](../history/M0-T18-S64-user-app-regression.md)。M0/T18/S64开放。
+
+S64 DoubleKiller进程内观察：自有样式实例四页各记录28按钮、3编辑、2组合、33附着及0失败，按钮移除对照1843像素变化；assets x86 DLL已枚举且临时hook卸载。同步WM_CLOSE返回成功但目标主窗仍在、进程3秒等待258，完整用例失败并由job回收；原因未知，未启动扫描。[记录](../history/M0-T18-S64-user-app-regression.md)。M0/T18/S64开放。
+
+S64 DoubleKiller关闭补证：自有样式实例主窗在同步关闭返回后立即仍存在，但3秒进程等待超时后已不存在；原UI线程窗口枚举成功且未见窗口。未证明不存在瞬时确认框或其他线程窗口，进程退出原因仍未知；完整测试失败并回收。[记录](../history/M0-T18-S64-user-app-regression.md)。M0/T18/S64开放。
+
+S64 DoubleKiller裸版对照：相同自有实例和测试流程下，同步关闭成功、主窗先存在但3秒后消失，原UI线程未枚举到窗口，进程仍258/STILL_ACTIVE。样式与裸版都复现，不能仅归因样式DLL；job回收，原因仍未知。[记录](../history/M0-T18-S64-user-app-regression.md)。M0/T18/S64开放。
+
+S64 P180常用VB模型短回归：既有同摘要P180干净快照候选包，8项必选加VB5/VB6复选列表及图形复选/单选双宽模型，共16项passed-focused、零skip，未测物理输入；这是模型而非真实应用完整退出验收，非新构建/发布。[记录](../history/M0-T18-S64-user-app-regression.md)。M0/T18/S64开放。
+
+S64 P181常用控件有界复核：MadShow/DoubleKiller的真实控件观察有证据，裸/样式进程自然退出未通过；首次沙箱x86构建600秒超时，独立重试双宽干净构建通过，同批包16项聚焦、零skip。重建四文件摘要变化，已发布assets及O:/winnt并核对八摘要；物理输入、完整应用及全矩阵未验。[记录](../history/M0-T18-S64-P181-common-verify.md)。提交远端复核待完成，M0/T18/S64开放。
