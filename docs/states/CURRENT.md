@@ -1166,3 +1166,5 @@ S64 P179 VB图形测试清理：自有诊断副本证明裸进程卡在DestroyWi
 S64 P179后真实Actor补测：首次裸版误用verify经典glyph断言而失败；修正为bare interact、styled verify后，裸/样式两个复选框四次BM_CLICK均恢复初始值，样式版两控件经典glyph像素断言通过，但两组WM_CLOSE后5秒内目标未退出，观察器均失败，不能算完整应用测试通过。失败进程的job按关闭回收，事后无actor.exe进程；退出阻塞原因未查明。仅新建私有实例，无产品变更；M0/T18/S64开放。
 
 S64 Actor退出补诊：自有诊断对裸/样式实例在关闭后均记录target与launcher等待258；裸版补查IsWindow(form)=0，主窗已销毁但进程未在预算退出。EnumWindows返回0且错误0，不能推断隐藏窗是否存在；无权以此认定产品缺陷或正常退出。两组任务job退出回收，原样式glyph/点击证据仍有效但完整验收未通过。诊断位于build/t18-s64-vb-mask-survey/actor-close-probe.c；M0/T18/S64开放。
+
+S64 Actor线程补诊：裸版私有实例主窗关闭后，EnumThreadWindows针对原UI线程返回成功但未枚举到顶层窗；Toolhelp在该自有进程观察到9个仍存活线程，含UI线程，均WAIT_TIMEOUT/STILL_ACTIVE。全桌面枚举仍失败；线程数不说明等待根因。仅诊断、不判定已修复，作业结束回收自有实例，M0/T18/S64开放。
