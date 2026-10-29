@@ -2831,7 +2831,7 @@
       "path": "src/ntw16s-dll/injection/com_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "bdecb19c2d85ea126b72a62c8287f05ff5e72588c20741f16564909123f32aa9",
+      "sha256": "9ef5f0d7759ac28482dbd40ab82109b7a3d44abeb272525c2ef9e32054b409ef",
       "disposition": "authored",
       "review": "T20 S1 COM dialog bridge and real native probe under development",
       "notice": "Project-authored; no imported code or resources"
@@ -2849,7 +2849,7 @@
       "path": "tests/ntw16s-dll/com_multi_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d394722f33c540fbe7c10a385f8f8f5707de496169c4c932bd59b5a117aaabaa",
+      "sha256": "394f8f8428953ed9ae8e02e5fb72801eaf090fd5495426e733d46f2871a6e01d",
       "disposition": "authored",
       "review": "T20 S1 native COM multi-select investigation; currently failing",
       "notice": "Project-authored test; no imported code or resources"
@@ -2915,6 +2915,15 @@
       "sha256": "c0aa80ce9fe20246d1d388e331217dcad20073f9916eba7fe5558c2a4eeeb0a2",
       "disposition": "authored",
       "review": "T20 S1 real live COM filename control and result probe",
+      "notice": "Project-authored test; no imported code or resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/com_link_target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "6dc81d748c94dbe070a89c1e91d1aceee29e474840705699b9ac2acb7db65ece",
+      "disposition": "authored",
+      "review": "T20 S1 owned COM shortcut resolution comparison",
       "notice": "Project-authored test; no imported code or resources"
     }
   ]

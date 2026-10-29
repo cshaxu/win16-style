@@ -420,11 +420,35 @@ static UINT_PTR CALLBACK classic_hook(HWND w,UINT message,WPARAM wp,LPARAM lp)
 }
 /* The legacy multi-select contract returns space-separated 8.3 names. The
  * file offset separates the directory from its first name even for one file. */
-static HRESULT proxy_multi_result(file_proxy *p,WCHAR *file,WORD offset)
+static HRESULT link_target_id(PCWSTR path,PIDLIST_ABSOLUTE *target)
+{
+    *target=NULL;const WCHAR *extension=wcsrchr(path,L'.');
+    if(!extension || lstrcmpiW(extension,L".lnk"))return S_FALSE;
+    IShellLinkW *link=NULL;IPersistFile *persist=NULL;
+    HRESULT hr=CoCreateInstance(&CLSID_ShellLink,NULL,CLSCTX_INPROC_SERVER,&IID_IShellLinkW,(void **)&link);
+    if(SUCCEEDED(hr))hr=IShellLinkW_QueryInterface(link,&IID_IPersistFile,(void **)&persist);
+    if(SUCCEEDED(hr))hr=IPersistFile_Load(persist,path,STGM_READ);
+    if(SUCCEEDED(hr))hr=IShellLinkW_GetIDList(link,target);
+    if(persist)IPersistFile_Release(persist);
+    if(link)IShellLinkW_Release(link);
+    if(FAILED(hr) && *target){CoTaskMemFree(*target);*target=NULL;}
+    if(SUCCEEDED(hr) && !*target)return E_FAIL;
+    return hr;
+}
+static HRESULT open_item(PCWSTR path,BOOL keep_link,IShellItem **item)
+{
+    PIDLIST_ABSOLUTE target=NULL;
+    if(!keep_link && link_target_id(path,&target)==S_OK){
+        HRESULT hr=SHCreateItemFromIDList(target,&IID_IShellItem,(void **)item);
+        CoTaskMemFree(target);return hr;
+    }
+    return SHCreateItemFromParsingName(path,NULL,&IID_IShellItem,(void **)item);
+}
+static HRESULT proxy_multi_result(file_proxy *p,WCHAR *file,WORD offset,BOOL keep_link)
 {
     size_t length=wcslen(file);
     if(offset==0 || offset>length || file[offset-1]!=L' '){
-        HRESULT hr=SHCreateItemFromParsingName(file,NULL,&IID_IShellItem,(void **)&p->result);
+        HRESULT hr=open_item(file,keep_link,&p->result);
         if(SUCCEEDED(hr))p->completed=TRUE;
         return hr;
     }
@@ -438,7 +462,9 @@ static HRESULT proxy_multi_result(file_proxy *p,WCHAR *file,WORD offset)
             dirlen && file[dirlen-1]==L'\\'?L"":L"\\",token);
         if(written<0 || (size_t)written>=ARRAYSIZE(path)){hr=HRESULT_FROM_WIN32(ERROR_INSUFFICIENT_BUFFER);break;}
         WCHAR normalized[32768];DWORD n=GetLongPathNameW(path,normalized,ARRAYSIZE(normalized));
-        hr=SHParseDisplayName(n && n<ARRAYSIZE(normalized)?normalized:path,NULL,&ids[count],0,NULL);
+        PCWSTR selected=n && n<ARRAYSIZE(normalized)?normalized:path;
+        hr=keep_link?S_FALSE:link_target_id(selected,&ids[count]);
+        if(hr!=S_OK)hr=SHParseDisplayName(selected,NULL,&ids[count],0,NULL);
         if(FAILED(hr))break;
         ++count;if(!end)break;token=end+1;
     }
@@ -455,9 +481,10 @@ static HRESULT proxy_show(file_proxy *p,HWND owner)
     if(p->results){IShellItemArray_Release(p->results);p->results=NULL;}p->completed=FALSE;
     HRESULT hr=IFileDialog_GetOptions(p->native,&flags);
     const DWORD supported=FOS_OVERWRITEPROMPT|FOS_NOCHANGEDIR|FOS_FORCEFILESYSTEM|
-        FOS_PATHMUSTEXIST|FOS_FILEMUSTEXIST|FOS_CREATEPROMPT|FOS_NOREADONLYRETURN|FOS_NOTESTFILECREATE|FOS_PICKFOLDERS|FOS_ALLOWMULTISELECT|FOS_FORCESHOWHIDDEN;
+        FOS_PATHMUSTEXIST|FOS_FILEMUSTEXIST|FOS_CREATEPROMPT|FOS_NOREADONLYRETURN|FOS_NOTESTFILECREATE|FOS_PICKFOLDERS|FOS_ALLOWMULTISELECT|FOS_FORCESHOWHIDDEN|FOS_NODEREFERENCELINKS;
     if(FAILED(hr)||p->unsupported || p->events || (flags & ~supported))return show_native(p,owner);
     if((flags&FOS_ALLOWMULTISELECT) && (p->save || (flags&FOS_PICKFOLDERS) || !(flags&FOS_FILEMUSTEXIST)))return show_native(p,owner);
+    if((flags&FOS_NODEREFERENCELINKS) && (p->save || (flags&FOS_PICKFOLDERS)))return show_native(p,owner);
     if(flags&FOS_FORCESHOWHIDDEN)return show_native(p,owner);
     WCHAR file[32768]=L"";PWSTR value=NULL;IShellItem *folder=NULL;PWSTR folder_path=NULL;
     if(SUCCEEDED(IFileDialog_GetFileName(p->native,&value)) && value){
@@ -488,13 +515,14 @@ static HRESULT proxy_show(file_proxy *p,HWND owner)
     if(flags&FOS_CREATEPROMPT)ofn.Flags|=OFN_CREATEPROMPT;
     if(flags&FOS_NOREADONLYRETURN)ofn.Flags|=OFN_NOREADONLYRETURN;
     if(flags&FOS_NOTESTFILECREATE)ofn.Flags|=OFN_NOTESTFILECREATE;
+    if(flags&FOS_NODEREFERENCELINKS)ofn.Flags|=OFN_NODEREFERENCELINKS;
     classic_call call={&ofn,p->save,FALSE,0};
     hr=ntw16s_dialog_style_scope(classic_show,&call);if(folder_path)CoTaskMemFree(folder_path);
     if(FAILED(hr))return hr;
     if(!call.selected)return call.error?HRESULT_FROM_WIN32(ERROR_INVALID_DATA):HRESULT_FROM_WIN32(ERROR_CANCELLED);
     if(p->filter && ofn.nFilterIndex){p->filter_index=ofn.nFilterIndex;(void)IFileDialog_SetFileTypeIndex(p->native,p->filter_index);}
-    if(flags&FOS_ALLOWMULTISELECT)return proxy_multi_result(p,file,ofn.nFileOffset);
-    hr=SHCreateItemFromParsingName(file,NULL,&IID_IShellItem,(void **)&p->result);
+    if(flags&FOS_ALLOWMULTISELECT)return proxy_multi_result(p,file,ofn.nFileOffset,(flags&FOS_NODEREFERENCELINKS)!=0);
+    hr=p->save?SHCreateItemFromParsingName(file,NULL,&IID_IShellItem,(void **)&p->result):open_item(file,(flags&FOS_NODEREFERENCELINKS)!=0,&p->result);
     if(p->save && hr==HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND))hr=save_item(file,&p->result);
     if(SUCCEEDED(hr))p->completed=TRUE;
     return hr;

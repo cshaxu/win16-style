@@ -87,6 +87,7 @@ try{
         $eventsTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-events-target.exe'
         $navTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-nav-target.exe'
         $liveTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-live-target.exe'
+        $linkTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-link-target.exe'
         $oldEventTarget=Join-Path (Join-Path $BuildRoot $arch) 'old-file-event-target.exe'
         $multiTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-multi-target.exe'
         $identityTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-identity-target.exe'
@@ -127,6 +128,16 @@ try{
                 $expectedOld=if($liveMode -eq 'native'){'old=0'}else{'old=1'}
                 $cases+=Case "dialog-com-live-$arch-$liveKind-$liveMode" $dialogDriver @($liveLaunch,$liveTarget,$liveKind,'accept') @('LIVE_NAME initial=1 updated=1 visible=1 user=1 v2=1',$expectedOld,"LIVE_RESULT bits=$bits",'result=1','DIALOG_DRIVER exit=0') 30
             }
+        }
+        foreach($linkMode in @('keep','follow')) {
+            foreach($linkBackend in @('native','styled')) {
+                $linkLaunch=if($linkBackend -eq 'native'){'--direct'}else{$run}
+                $linkOld=if($linkBackend -eq 'native'){'old=0'}else{'old=1'}
+                $linkExpected=if($linkMode -eq 'keep'){'link=1 target=0'}else{'link=0 target=1'}
+                $cases+=Case "dialog-com-link-$arch-$linkMode-$linkBackend" $dialogDriver @($linkLaunch,$linkTarget,$linkMode) @("LINK_RESULT bits=$bits",$linkOld,$linkExpected,'worker=0','DIALOG_DRIVER exit=0') 30
+            }
+            $multiMode=if($linkMode -eq 'keep'){'linkkeep'}else{'linkfollow'}
+            $cases+=Case "dialog-com-multi-link-$arch-$linkMode" $dialogDriver @($run,$multiTarget,'accept',$multiMode) @("COM_MULTI bits=$bits",'count=2 paths=11','DIALOG_DRIVER exit=0') 30
         }
         $cases+=Case "dialog-com-identity-$arch" $dialogDriver @($run,$identityTarget) @("COM_CUSTOM_IDENTITY bits=$bits hr=00000000 same=1","COM_V2_IDENTITY bits=$bits hr=00000000 same=1",'DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-v2-$arch" $dialogDriver @($run,$comTarget,'folder','accept','v2') @("COM_BRIDGE bits=$bits",'folder=1','old=1','array=1','DIALOG_DRIVER exit=0') 30

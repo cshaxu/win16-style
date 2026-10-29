@@ -10,6 +10,17 @@
 static DWORD tid;static volatile LONG seen,selected;static HWND dialog;static BOOL cancel,single_mode;
 static WCHAR name1[64]=L"first.txt",name2[64]=L"second.txt",short1[64],short2[64];
 static const WCHAR title[]=L"Win16S COM multi select";
+static BOOL create_link(PCWSTR path,PCWSTR target)
+{
+    IShellLinkW *link=NULL;IPersistFile *persist=NULL;
+    HRESULT hr=CoCreateInstance(&CLSID_ShellLink,NULL,CLSCTX_INPROC_SERVER,&IID_IShellLinkW,(void **)&link);
+    if(SUCCEEDED(hr))hr=IShellLinkW_SetPath(link,target);
+    if(SUCCEEDED(hr))hr=IShellLinkW_QueryInterface(link,&IID_IPersistFile,(void **)&persist);
+    if(SUCCEEDED(hr))hr=IPersistFile_Save(persist,path,TRUE);
+    if(persist)IPersistFile_Release(persist);
+    if(link)IShellLinkW_Release(link);
+    return SUCCEEDED(hr);
+}
 static BOOL CALLBACK find(HWND w,LPARAM arg)
 {
     (void)arg;WCHAR text[100];GetWindowTextW(w,text,100);
@@ -38,22 +49,27 @@ int wmain(int argc,WCHAR **argv)
 {
     cancel=argc>1 && !lstrcmpW(argv[1],L"cancel");
     BOOL spaces=argc>2 && !lstrcmpW(argv[2],L"spaces");
+    BOOL links=argc>2 && (!lstrcmpW(argv[2],L"linkfollow")||!lstrcmpW(argv[2],L"linkkeep"));
+    BOOL keep=links&&!lstrcmpW(argv[2],L"linkkeep");
     single_mode=argc>3 && !lstrcmpW(argv[3],L"single");
     if(spaces){lstrcpyW(name1,L"alpha long.txt");lstrcpyW(name2,L"beta long.txt");}
-    WCHAR temp[MAX_PATH],dir[MAX_PATH],first[MAX_PATH],second[MAX_PATH];
+    if(links){lstrcpyW(name1,L"alpha.lnk");lstrcpyW(name2,L"beta.lnk");}
+    WCHAR temp[MAX_PATH],dir[MAX_PATH],first[MAX_PATH],second[MAX_PATH],actual1[MAX_PATH],actual2[MAX_PATH];
     if(!GetTempPathW(MAX_PATH,temp)||!GetTempFileNameW(temp,L"w16",0,dir)||!DeleteFileW(dir)||!CreateDirectoryW(dir,NULL))return 2;
     if(swprintf(first,MAX_PATH,L"%ls\\%ls",dir,name1)<0||swprintf(second,MAX_PATH,L"%ls\\%ls",dir,name2)<0)return 3;
-    HANDLE f=CreateFileW(first,GENERIC_WRITE,0,NULL,CREATE_NEW,0,NULL);if(f==INVALID_HANDLE_VALUE)return 4;CloseHandle(f);
-    f=CreateFileW(second,GENERIC_WRITE,0,NULL,CREATE_NEW,0,NULL);if(f==INVALID_HANDLE_VALUE)return 4;CloseHandle(f);
+    if(swprintf(actual1,MAX_PATH,L"%ls\\real-one.txt",dir)<0||swprintf(actual2,MAX_PATH,L"%ls\\real-two.txt",dir)<0)return 3;
+    HRESULT init=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);if(FAILED(init))return 5;
+    HANDLE f=CreateFileW(links?actual1:first,GENERIC_WRITE,0,NULL,CREATE_NEW,0,NULL);if(f==INVALID_HANDLE_VALUE)return 4;CloseHandle(f);
+    f=CreateFileW(links?actual2:second,GENERIC_WRITE,0,NULL,CREATE_NEW,0,NULL);if(f==INVALID_HANDLE_VALUE)return 4;CloseHandle(f);
+    if(links&&(!create_link(first,actual1)||!create_link(second,actual2)))return 4;
     WCHAR short_path[MAX_PATH];DWORD n=GetShortPathNameW(first,short_path,MAX_PATH);WCHAR *leaf=n && n<MAX_PATH?wcsrchr(short_path,L'\\'):NULL;
     lstrcpynW(short1,leaf?leaf+1:name1,ARRAYSIZE(short1));n=GetShortPathNameW(second,short_path,MAX_PATH);leaf=n && n<MAX_PATH?wcsrchr(short_path,L'\\'):NULL;
     lstrcpynW(short2,leaf?leaf+1:name2,ARRAYSIZE(short2));
     printf("MULTI_NAMES spaces=%d first=%ls second=%ls\n",spaces,short1,short2);
-    HRESULT init=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);if(FAILED(init))return 5;
     IFileOpenDialog *d=NULL;HRESULT hr=CoCreateInstance(&CLSID_FileOpenDialog,NULL,CLSCTX_INPROC_SERVER,&IID_IFileOpenDialog,(void **)&d);
     IShellItem *folder=NULL;FILEOPENDIALOGOPTIONS options=0;
     if(FAILED(hr)||FAILED(IFileOpenDialog_SetTitle(d,title))||FAILED(IFileOpenDialog_GetOptions(d,&options))||
-       FAILED(IFileOpenDialog_SetOptions(d,options|FOS_ALLOWMULTISELECT|FOS_FORCEFILESYSTEM))||
+       FAILED(IFileOpenDialog_SetOptions(d,options|FOS_ALLOWMULTISELECT|FOS_FORCEFILESYSTEM|(keep?FOS_NODEREFERENCELINKS:0)))||
        FAILED(SHCreateItemFromParsingName(dir,NULL,&IID_IShellItem,(void **)&folder))||FAILED(IFileOpenDialog_SetFolder(d,folder)))return 6;
     IShellItem_Release(folder);tid=GetCurrentThreadId();HANDLE worker=CreateThread(NULL,0,observe,NULL,0,NULL);if(!worker)return 7;
     hr=IFileOpenDialog_Show(d,NULL);DWORD wait=WaitForSingleObject(worker,12000);CloseHandle(worker);
@@ -63,9 +79,9 @@ int wmain(int argc,WCHAR **argv)
     if(SUCCEEDED(hr)){ar=IFileOpenDialog_GetResults(d,&array);if(SUCCEEDED(ar))ar=IShellItemArray_GetCount(array,&count);
         for(DWORD i=0;SUCCEEDED(ar)&&i<count;++i){IShellItem *item=NULL;PWSTR name=NULL;
             ar=IShellItemArray_GetItemAt(array,i,&item);if(SUCCEEDED(ar))ar=IShellItem_GetDisplayName(item,SIGDN_FILESYSPATH,&name);
-            if(name){if(!_wcsicmp(name,first))found1=TRUE;if(!_wcsicmp(name,second))found2=TRUE;CoTaskMemFree(name);}if(item)IShellItem_Release(item);}}
+            if(name){if(!_wcsicmp(name,links&&!keep?actual1:first))found1=TRUE;if(!_wcsicmp(name,links&&!keep?actual2:second))found2=TRUE;CoTaskMemFree(name);}if(item)IShellItem_Release(item);}}
     if(array)IShellItemArray_Release(array);
-    IFileOpenDialog_Release(d);CoUninitialize();DeleteFileW(first);DeleteFileW(second);RemoveDirectoryW(dir);
+    IFileOpenDialog_Release(d);CoUninitialize();DeleteFileW(first);DeleteFileW(second);if(links){DeleteFileW(actual1);DeleteFileW(actual2);}RemoveDirectoryW(dir);
     printf("COM_MULTI bits=%u seen=%ld selected=%ld cancel=%d hr=%08lx array=%08lx count=%lu paths=%d%d wait=%lu single=%08lx\n",(unsigned)(sizeof(void*)*8),seen,selected,cancel,(unsigned long)hr,(unsigned long)ar,count,found1,found2,wait,(unsigned long)single_hr);
     return seen&&selected==(single_mode?1:2)&&wait==WAIT_OBJECT_0&&(cancel?hr==HRESULT_FROM_WIN32(ERROR_CANCELLED):(SUCCEEDED(hr)&&SUCCEEDED(ar)&&count==(single_mode?1u:2u)&&found1&&(single_mode?!found2:found2)&&(single_mode?SUCCEEDED(single_hr):FAILED(single_hr))))?0:1;
 }

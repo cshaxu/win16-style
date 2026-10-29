@@ -115,3 +115,9 @@ P221 双宽干净包的 14 项聚焦回归通过、无跳过；四个导航用�
 真实系统对照与 P221 负例：应用在 Save 对话框显示后调用 SetFileName，系统输入框变为新值；P221 旧式桥接的后台 COM 对象返回成功且读回新值，但实际输入框仍是旧值，探针以 visible=0 失败。候选在后台对象接受配置后同步旧式 edt1，并在窗口存活期间从真实输入框读取文件名；IFileDialog、IFileOpenDialog、IFileSaveDialog、IFileDialog2 共用路径。双宽打开/保存、系统对照与候选共八组开发测试均覆盖设置、编辑框修改后读取、IFileDialog2 访问、实际接受结果；旧版本负例可检出。当前验证仅针对文件打开/保存，文件夹选择的窗口及其特殊含义、跨线程调用、异常超长和空值仍未覆盖。COM 事件订阅仍回退现代对话框，不能将此基础修复称作事件桥接完成。待同批包测试和发布。
 
 P222 同批候选 j：双位宽干净构建、原始资源逐字节及 ABI 检查通过；实际包 24 项聚焦通过、无跳过，包含双宽系统/桥接打开与保存的实时文件名、实际结果，以及导航、事件回退、滚动、demo、启动传播。发布至 assets 和 O:/winnt，逐文件与测试包一致：demo.exe c7763415742dd7504b4ce4267bbfac76be9336939f4251b720ab38c8634d2cdf；ntw16s32.dll fb19f1d9fad9207614e7fe97fe8f7190dadf57359fbe995c6c9a9e5f46dc767a；ntw16s64.dll 13df7eb0556cb1000ceae6037c212a030a54278d1c6ad99420c680900d08af0b；run16s.exe c0393840dca86d5e4f2280172125cbb3ad6ec3caedcaa242123bcffa9753b47c。完整矩阵、COM 事件旧布局及文件夹实时访问未完成，T20 S1 保持开放。
+
+## COM 打开快捷方式语义
+
+自有真实快捷方式探针在本机系统 IFileOpenDialog 证明：默认返回目标文件，FOS_NODEREFERENCELINKS 返回 .lnk；P222 默认桥接错误返回 .lnk，而该选项会回退现代布局。候选将该选项映射 OFN_NODEREFERENCELINKS，并对普通打开结果从 Shell 链接对象获取目标 PIDL；选项启用时保留链接。双宽自有单选的系统对照与候选、双宽候选两快捷方式多选的跟随及保留均通过。失败或不含目标 PIDL 的链接保留原选择；断链、网络、非文件系统目标、嵌套链接及保存/文件夹的完整行为未覆盖，保存和文件夹请求该选项仍回退现代布局；不能视作全部快捷方式兼容。基于微软定义 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-_fileopendialogoptions 和 https://learn.microsoft.com/en-us/windows/win32/dlgbox/open-and-save-as-dialog-boxes ，待实际包验证。
+
+P223 候选 k 双宽干净构建、原资源和 ABI 检查通过；实际包 24 项聚焦回归通过、无跳过，包括双宽系统和旧布局单快捷方式、候选双快捷方式多选、既有多选、实时文件名、demo、首次注入和传播。双宽多快捷方式仅有候选结果，尚无现代系统多选直接对照。两处发布与测试包一致：demo.exe dad82785cb51a299c0c003eb6b6e9b42bd5db4cc285f1245289ae2523a04daad；ntw16s32.dll bf7eb96e37bcd17169c33e928792f0fb6e033dfb93ba942479366d1480956d7c；ntw16s64.dll a4322df2908b31ea3e53fc8a65c2401c9e70fdf560ce9172faa9d37059a2a54d；run16s.exe 187eb65c626b9caaf2f50e6970953419cbe3d7cac190a4d11bb1ba948593a553。完整矩阵和前述断链等情况未覆盖，COM 事件旧布局仍未实现，T20 S1 保持开放。
