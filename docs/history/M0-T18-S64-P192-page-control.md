@@ -14,3 +14,5 @@ Clean x86/x64 GCC 16.1.0, Ninja and ccache 4.13.6 build passed; snapshot manifes
 - demo.exe: 1e76781fc61df714520a57fe578a9e81a4f5e5d2a2daa39d5be4fcdd3b68befa
 
 Build `tools/Build-Package.ps1 -Task 18 -RunName s64-p192-vcl-page-final`; test receipt `build/t18-package/s64-p192-vcl-page-test/result.json`; publish receipt `build/t18-package/s64-p192-vcl-page-publish/result.json`. M0, T18 and S64 remain open.
+
+Post-push: commit 8d80572 was fetched remotely and all eleven changed Git blobs matched; eight deployed SHA-256 values still matched the tested package. A fresh installed assets x86 real DelphiVCL4Python sample captured the same TPageControl before and after removing its style. Repeated styled captures were stable, 16948 pixels differed after removal, and both pages' child-button captions/visibility remained correct after switching. The images uild/t18-s64-vb-mask-survey/p192-page-styled.bmp and p192-page-native.bmp are native captures of the same sample; the other child control remains styled in both because only the page attachment was removed. This is not an entire bare application comparison or physical-input proof.

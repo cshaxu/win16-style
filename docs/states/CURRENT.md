@@ -1276,3 +1276,5 @@ S64 TPageControl候选准入：DelphiVCL4Python 1.0.7真实双宽TPageControl包
 S64 TPageControl候选初验：现源码仅扩展精确名称，沿用原生Tab过程绘制见证、父窗及owner-draw回退。真实DelphiVCL4Python双宽96 DPI样本旧包未附着、候选附着，两页0→1→0及移除后切换通过；同窗两次截图稳定、移除后各16948像素变化（非完整视觉证明）。双宽DLL-owned模型旧包正例失败，候选伪绘制/owner-draw回退、选择、重父和像素对照通过。初次Python样本ctypes加载语法错误，修正后通过；须干净同批包、聚焦回归、双发布及远端复核，其他版本/DPI、真实物理输入及事件未验。M0/T18/S64开放。
 
 S64 P192 TPageControl运行库owner有限适配：精确类复用既有原生Tab绘制见证、协议及父窗守卫；真实DelphiVCL4Python双宽附着、两页/子按钮切换及移除后保持通过，同窗稳定截图移除后16948像素变化；旧P181模型正例双宽失败，候选伪绘制/owner-draw/重父回退通过。干净同批包20项14.13秒零skip，assets/O:/winnt双发布八摘要及两处双宽安装模型通过；其他版本/DPI、物理输入与完整集成未验。[记录](../history/M0-T18-S64-P192-page-control.md)。提交远端复核待完成，M0/T18/S64开放。
+
+S64 P192远端及实际安装补证：8d80572远端11文件blob和两处八摘要复核一致。assets实际x86真实VCL TPageControl同窗截图已保存（移除前后差16948像素），页内两个按钮标题及显示状态随切页保持；只移除page样式，其子按钮仍样式化，非整程序裸版对照。[记录](../history/M0-T18-S64-P192-page-control.md)。M0/T18/S64开放。
