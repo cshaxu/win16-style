@@ -2084,7 +2084,7 @@
       "path": "tests/ntw16s-dll/vb_graphical.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6c14c3cd5cbfb6a65abe00031e3fafb75aa5865bf8fa05788a12d65137394851",
+      "sha256": "ba030d58a6b235d2c07e8d875c0fb5924985ef085d411e9f3e68e3cd3e009573",
       "disposition": "authored",
       "review": "T17 S10 project-authored C native graphical owner-draw protocol model, not authenticVB; no copied source/graphics",
       "notice": "Project-authored test; no external implementation or resources"

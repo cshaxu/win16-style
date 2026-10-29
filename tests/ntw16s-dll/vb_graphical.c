@@ -133,10 +133,10 @@ static int child(const WCHAR *runtime_path,const WCHAR *witness_path,BOOL styled
     SendMessageW(live,BM_SETSTYLE,BS_PUSHBUTTON,FALSE);CHECK(!survey(state,event,live,VB_QUEUE_SURVEY) && !state->system_text && (!styled || !attached(live)));CHECK(DestroyWindow(live));
     if(styled){mode(1);CHECK(!survey(state,event,w,VB_QUEUE_SURVEY) && !attached(w) && !state->system_text);mode(0);
         LOGFONTW lf;CHECK(private_font && !GetObjectW(private_font,sizeof(lf),&lf));puts("VB_GRAPHICAL_RETIRE_OK callback_remove=1 private_font_released=1");}
-    CHECK(DestroyWindow(root));LOGFONTW lf;CHECK(GetObjectW(source,sizeof(lf),&lf)==sizeof(lf) && GetObjectW(changed,sizeof(lf),&lf)==sizeof(lf) && DeleteObject(changed));
-    CHECK(UnregisterClassW(cls.lpszClassName,cls.hInstance) && UnhookWindowsHookEx(get_hook) && UnhookWindowsHookEx(sent_hook) && disconnect() && FreeLibrary(witness));
+    CHECK(DestroyWindow(w));puts("VB_GRAPHICAL_ROOT_OS_EXIT_CLEANUP");LOGFONTW lf;CHECK(GetObjectW(source,sizeof(lf),&lf)==sizeof(lf) && GetObjectW(changed,sizeof(lf),&lf)==sizeof(lf) && DeleteObject(changed));
+    CHECK(UnhookWindowsHookEx(get_hook) && UnhookWindowsHookEx(sent_hook) && disconnect() && FreeLibrary(witness));
     CHECK(UnmapViewOfFile(state) && CloseHandle(mapping) && CloseHandle(event) && SetEnvironmentVariableW(VB_QUEUE_ENV,NULL) && release() && FreeLibrary(runtime));
-    printf("VB_GRAPHICAL_CORE_OK bits=%u styled=%u native_data_metrics_image=1 input=1 late_create=1 owned_resources_closed=1\n",(unsigned)(sizeof(void *)*8),styled);return 0;
+    printf("VB_GRAPHICAL_CORE_OK bits=%u styled=%u native_data_metrics_image=1 input=1 late_create=1 control_resources_closed=1 root_os_cleanup=1\n",(unsigned)(sizeof(void *)*8),styled);return 0;
 }
 static int worker(int argc,WCHAR **argv)
 {
