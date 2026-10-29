@@ -101,3 +101,11 @@ P219 曾出现 x64 保存路径不符；进一步重现时旧式输入框初始�
 事件映射的系统 COM 探针在实际现代对话框中观察到初始 OnFolderChanging -> OnFolderChange，回调分别可读取真实目的 Shell 项及当前目录；OnSelectionChange 可读取真实当前文件项；OnFileOk 拒绝一次后接受及代理身份仍通过。双宽旧式探针已证明列表双击切换前拒绝及之后通知可用，但盘符、键盘、输入路径、选择变化、回调重入、共享/覆盖通知及多个监听者仍需逐一映射，不能据此启用不完整的事件桥接。纯测试与证据修改，不改变产品 DLL；仍须同批实际包核验。
 
 P220 同批候选 h：仅修改原生探针、测试编排和证据，产品源码未改；重新干净双宽构建后的四文件摘要与 P219 不同，因此没有混用，按规范部署整批。实际包聚焦 26 项通过、零跳过，包含双宽 COM 事件及自取消订阅、保存和文件夹标签、颜色对话框、现代对话框入口、列表滚动、首次注入和传播。事件回调用例在各自私有桌面并行，视觉用例在可见桌面执行；并行失败历史保留。发布 SHA-256：demo.exe 5693ca1620d63a6914bed73b8354163a13761c85545941f136a75a3737cf2db0；ntw16s32.dll 1bb87e70eaf500e51b683343a0641419cc9d178543b5f0ec63d58a2c09e5b737；ntw16s64.dll 12d62f2142dc85d5f10b578f113e3aa68be1082e1cea126713f8381c10313b1e；run16s.exe b31068eb2c561ebcc9d44469f11306fce45fffd6334c878babc5c9849da844ea。两处部署摘要匹配实际包。完整矩阵、真实物理输入及事件桥接仍未完成，T20 S1 保持开放。
+
+## 系统 COM 导航与否决的隔离对照
+
+新增自有私有桌面探针，以真实 IShellItem 发起异步 SetFolder：初始根目录通知一次，第一次目标目录在 OnFolderChanging 被拒绝后 GetFolder 仍为根；第二次允许后才收到目标目录通知，取消返回 ERROR_CANCELLED，监听器引用恢复，观察线程正常退出。该探针分别对系统对象和 P220 注入后的现代回退运行，双宽需实际包确认；它是事件桥接基线，不是旧布局事件桥接已实现。
+
+调查早期曾观察 Close(E_ABORT) 返回 S_OK，发现该观察无效：监测线程超时发 WM_QUIT 导致 Show 退出；修正为检查监测线程退出码后，独立 Close 实验在作业时限内未结束，不能得出其返回值或认定 Windows 与文档不一致。当前导航基线改为正常 WM_CLOSE 取消，不依赖超时退出。Close 的原因和正确测试仍未解决。微软文档对 Close 与 OnFolderChanging 的语义见 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-close 和 https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialogevents-onfolderchanging 。
+
+P221 双宽干净包的 14 项聚焦回归通过、无跳过；四个导航用例覆盖 x86/x64 系统直接调用和注入后现代回退，另含双宽 COM 事件、demo 和注入传播。产品源码未变；重建文件摘要不同，已按规范整批发布并核对：demo.exe 58ba412bbe7186c5d02f8667517084497958f67a3b9aa53c00b7df1b9e844217；ntw16s32.dll 12d0e329ddca027ec29036a95ad1565e7f5e3a3b56ef548cdb743d28aabade58；ntw16s64.dll ea5b64aa1d8ebe2e4b3ad601bb335b3bdfadb8a590a82c509112db5ea99aef7f；run16s.exe 5a755765949e349928bd2ab6a5be2d50645ce53d2f142b8358910159f2d1fdbb。完整事件映射、Close 真正行为和完整回归未完成，T20 S1 保持开放。

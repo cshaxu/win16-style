@@ -2898,6 +2898,15 @@
       "disposition": "authored",
       "review": "T20 S1 native dialog investigation probe",
       "notice": "Project-authored test; no imported code or resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/com_nav_target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "2f7016b6a9c6d768b4542c34936e79973dc9232aa4699f75c5e8af25bab52c05",
+      "disposition": "authored",
+      "review": "T20 S1 native COM folder navigation and veto baseline",
+      "notice": "Project-authored test; no imported code or resources"
     }
   ]
 }
