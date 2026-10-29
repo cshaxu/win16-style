@@ -1112,3 +1112,5 @@ S64 P169 TCoolBar文字缓冲哨兵加固：原发布版对合成成功但不写
 S64真实TFrame补查：GoVCL测试库公开接口可创建双宽真实TFrame及嵌套VCL按钮；裸版和P169默认框架均240×130客户区等于窗口、无独立非客户边框，样式版根窗及按钮附着、框架本身未附着。默认及应用显式背景颜色的单点回读两版一致，窗体销毁与退出0；此样例的标准子按钮走既有renderer，不推断整个家族完成或所有背景像素不变。[证据](../history/M0-T18-S64-frame-investigation.md)。首轮名称冲突、缺gdi32链接失败已修正；无产品改动，M0/T18/S64开放。P169 cf5145b已推送、远端9文件内容复核通过。
 
 S64无窗口控件身份研究：GoVCL测试库公开Form_ControlAtPos包装，双宽真实TForm/TSpeedButton/TBevel对指定坐标分别返回正确对象、空区NULL；两个可见按钮完全重叠时同点只返回后者，不能证明某次绘制属于哪个对象。首轮重叠控件默认可见导致正例失败，显式隐藏后复测通过，目标退出0。[记录](../history/M0-T18-S64-delphi-speedbutton-investigation.md)。该实验由驱动持有TForm对象并使用特定stdcall包装，普通静态VCL应用不一定导出或提供从HWND取得对象的公共ABI；不得扩称通用支持。无产品修改，M0/T18/S64开放。
+
+S64真实TFrame嵌套标准控件补证：双宽GoVCL真实样本含Button、CheckBox、RadioButton、Edit、Memo、ComboBox和ListBox，七项可见且作为框架子窗全部附着，逐项移除前后PrintWindow图像各有差异；复选、编辑文字和列表计数在移除后保持，进程退出0。像素差异不是精确风格验收，未证明重复帧稳定、真实键鼠或其他DPI。[记录](../history/M0-T18-S64-frame-investigation.md)。无产品修改或发布，M0/T18/S64开放。
