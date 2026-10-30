@@ -33,7 +33,7 @@ M0 T20 S1准入：Win3.x文件夹选择与公共对话框桥接：调查、实�
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 1
-- Last delivery: M0 T20 S1 P241 文件夹树形候选阶段包已完成双宽构建、16项聚焦包测试和双位置发布；回调、COM定制及新式特有功能尚未统一，打印控件外观仍未通过用户验收。
+- Last delivery: M0 T20 S1 P242 文件夹带回调的受限树形阶段包已完成双宽构建、14项聚焦包测试和双位置发布；COM定制及新式特有功能尚未统一，打印控件外观仍未通过用户验收。
 - Open task: T20 S1 文件夹选择和公共对话框接口及经典参考调查。
 
 ## Technical Baseline

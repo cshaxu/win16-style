@@ -1,4 +1,4 @@
-/* Select the older Shell tree for a limited, callback-free browse request.
+/* Select the older Shell tree for a limited filesystem browse request.
  * Shell owns the dialog and returned PIDL. Other contracts remain native. */
 #include "intercept.h"
 #include "startup_hooks.h"
@@ -260,8 +260,9 @@ HRESULT ntw16s_classic_folder(HWND owner,PCWSTR title,PCWSTR initial,PCWSTR ok_l
 }
 #define BROWSE_WRAPPER(name,type,native) \
 static PIDLIST_ABSOLUTE WINAPI name(type *info) { \
-    if(!info || active || info->lpfn || info->ulFlags!=BRIDGE_FLAGS) return native(info); \
-    type copy=*info;copy.ulFlags=BIF_RETURNONLYFSDIRS;return native(&copy); \
+    if(!info || active || info->ulFlags!=BRIDGE_FLAGS) return native(info); \
+    type copy=*info;copy.ulFlags=info->lpfn?(info->ulFlags & ~BIF_NEWDIALOGSTYLE):BIF_RETURNONLYFSDIRS; \
+    return native(&copy); \
 }
 BROWSE_WRAPPER(browse_a,BROWSEINFOA,native_browse_a)
 BROWSE_WRAPPER(browse_w,BROWSEINFOW,native_browse_w)
