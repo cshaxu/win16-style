@@ -94,6 +94,38 @@ int wmain(int argc,WCHAR **argv)
         if(x.hDevNames)GlobalFree(x.hDevNames);
         UnhookWindowsHookEx(observer);DestroyWindow(owner);CoUninitialize();return initialized==1 && valid?0:1;
     }
+    if(!lstrcmpW(argv[1],L"ex-ansi-cancel") || !lstrcmpW(argv[1],L"ex-ansi-fallback")){
+        BOOL fallback=!lstrcmpW(argv[1],L"ex-ansi-fallback");extended_case=3;
+        HRESULT com=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);if(FAILED(com))return 9;
+        HWND owner=CreateWindowExW(0,L"STATIC",L"Owner",WS_OVERLAPPEDWINDOW,0,0,200,100,NULL,NULL,GetModuleHandleW(NULL),NULL);if(!owner)return 7;
+        ShowWindow(owner,SW_SHOW);HHOOK observer=SetWindowsHookExW(WH_CALLWNDPROC,observe,NULL,GetCurrentThreadId());if(!observer)return 6;
+        PRINTPAGERANGE ranges[10]={{77,88}};PRINTDLGEXA x={0};x.lStructSize=sizeof(x);x.hwndOwner=owner;x.Flags=PD_RETURNDC|(fallback?PD_CURRENTPAGE:0);x.nStartPage=START_PAGE_GENERAL;x.nMaxPageRanges=10;x.lpPageRanges=ranges;x.nMinPage=1;x.nMaxPage=1000;x.nCopies=1;
+        HRESULT hr=PrintDlgExA(&x);BOOL valid=hr==S_OK && x.dwResultAction==PD_RESULT_CANCEL && x.Flags==(PD_RETURNDC|(fallback?PD_CURRENTPAGE:0)) && !x.hDC && !x.hDevMode && !x.hDevNames && ranges[0].nFromPage==77 && ranges[0].nToPage==88 && extended_old!=fallback;
+        printf("EX_ANSI_CANCEL bits=%u fallback=%d old=%d hr=%08lx action=%lu untouched=%d frame=%d\n",(unsigned)(sizeof(void*)*8),fallback,extended_old,(DWORD)hr,x.dwResultAction,valid,frame);
+        if(x.hDC)DeleteDC(x.hDC);
+        if(x.hDevMode)GlobalFree(x.hDevMode);
+        if(x.hDevNames)GlobalFree(x.hDevNames);
+        UnhookWindowsHookEx(observer);DestroyWindow(owner);CoUninitialize();return initialized==1 && frame && valid?0:1;
+    }
+    if(!lstrcmpW(argv[1],L"ex-ansi-ranges") || !lstrcmpW(argv[1],L"ex-ansi-apply")){
+        extended_case=!lstrcmpW(argv[1],L"ex-ansi-apply")?2:1;
+        HRESULT com=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);if(FAILED(com))return 9;
+        HWND owner=CreateWindowExW(0,L"STATIC",L"Owner",WS_OVERLAPPEDWINDOW,0,0,200,100,NULL,NULL,GetModuleHandleW(NULL),NULL);if(!owner)return 7;
+        ShowWindow(owner,SW_SHOW);HHOOK observer=SetWindowsHookExW(WH_CALLWNDPROC,observe,NULL,GetCurrentThreadId());if(!observer)return 6;
+        PRINTPAGERANGE ranges[10]={0};PRINTDLGEXA x={0};x.lStructSize=sizeof(x);x.hwndOwner=owner;x.Flags=PD_RETURNDC;
+        x.nStartPage=START_PAGE_GENERAL;x.nMaxPageRanges=10;x.lpPageRanges=ranges;x.nMinPage=1;x.nMaxPage=1000;x.nCopies=1;
+        HRESULT hr=PrintDlgExA(&x);DEVNAMES *names=x.hDevNames?GlobalLock(x.hDevNames):NULL;DEVMODEA *mode=x.hDevMode?GlobalLock(x.hDevMode):NULL;
+        BOOL layout=names && mode && GlobalSize(x.hDevMode)>=sizeof(DEVMODEA) && mode->dmSize==sizeof(DEVMODEA) && names->wDeviceOffset>=sizeof(DEVNAMES) &&
+            names->wDeviceOffset<GlobalSize(x.hDevNames) && !lstrcmpA((char*)names+names->wDeviceOffset,(char*)mode->dmDeviceName);
+        BOOL valid=hr==S_OK && x.dwResultAction==(extended_case==2?PD_RESULT_APPLY:PD_RESULT_PRINT) && x.nPageRanges==2 && ranges[0].nFromPage==2 && ranges[0].nToPage==2 && ranges[1].nFromPage==4 && ranges[1].nToPage==5 && x.hDC && x.nCopies==3 && layout && extended_old && frame;
+        printf("EX_ANSI bits=%u mode=%d hr=%08lx action=%lu ranges=%lu copies=%lu ansi_layout=%d old=%d frame=%d valid=%d\n",(unsigned)(sizeof(void*)*8),extended_case,(DWORD)hr,x.dwResultAction,x.nPageRanges,x.nCopies,layout,extended_old,frame,valid);
+        if(names)GlobalUnlock(x.hDevNames);
+        if(mode)GlobalUnlock(x.hDevMode);
+        if(x.hDC)DeleteDC(x.hDC);
+        if(x.hDevMode)GlobalFree(x.hDevMode);
+        if(x.hDevNames)GlobalFree(x.hDevNames);
+        UnhookWindowsHookEx(observer);DestroyWindow(owner);CoUninitialize();return initialized==1 && valid?0:1;
+    }
     if(!lstrcmpW(argv[1],L"ex-ranges") || !lstrcmpW(argv[1],L"ex-apply")){
         if(ansi)return 2;
         extended_case=!lstrcmpW(argv[1],L"ex-apply")?2:1;

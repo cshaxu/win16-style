@@ -252,28 +252,18 @@ static NTW16S_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
 COMMON_HOOK(PageSetupDlgA,PAGESETUPDLGA)
 COMMON_HOOK(PageSetupDlgW,PAGESETUPDLGW)
 #undef COMMON_HOOK
-#define COMMON_EX_HOOK(NAME, TYPE) \
+#define PRINT_EXTENDED_HOOK(NAME,TYPE,BRIDGE,PRINT) \
 static __typeof__(&NAME) real_##NAME; \
 static NTW16S_UNWIND_FUNCTION HRESULT WINAPI hook_##NAME(TYPE *parameters) \
 { ntw16s_unwind_scope unwind;title_scope scope;HRESULT result=E_FAIL;DWORD error=ERROR_SUCCESS; \
   if(!begin_titles(&scope,TRUE))return HRESULT_FROM_WIN32(GetLastError()); \
-  NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
+  NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); { \
+    if(!BRIDGE(parameters,PRINT,&result)){result=real_##NAME(parameters);}error=GetLastError(); \
   } NTW16S_UNWIND_END(unwind); \
-  if(scope.failure){result=HRESULT_FROM_WIN32(scope.failure);error=scope.failure;} SetLastError(error);return result; }
-COMMON_EX_HOOK(PrintDlgExA,PRINTDLGEXA)
-#undef COMMON_EX_HOOK
-static __typeof__(&PrintDlgExW) real_PrintDlgExW;
-static NTW16S_UNWIND_FUNCTION HRESULT WINAPI hook_PrintDlgExW(PRINTDLGEXW *parameters)
-{
-    ntw16s_unwind_scope unwind;title_scope scope;HRESULT result=E_FAIL;DWORD error=ERROR_SUCCESS;
-    if(!begin_titles(&scope,TRUE))return HRESULT_FROM_WIN32(GetLastError());
-    NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); {
-        if(!ntw16s_print_extended_w(parameters,real_PrintDlgW,&result))result=real_PrintDlgExW(parameters);
-        error=GetLastError();
-    } NTW16S_UNWIND_END(unwind);
-    if(scope.failure){result=HRESULT_FROM_WIN32(scope.failure);error=scope.failure;}
-    SetLastError(error);return result;
-}
+  if(scope.failure){result=HRESULT_FROM_WIN32(scope.failure);error=scope.failure;}SetLastError(error);return result; }
+PRINT_EXTENDED_HOOK(PrintDlgExA,PRINTDLGEXA,ntw16s_print_extended_a,real_PrintDlgA)
+PRINT_EXTENDED_HOOK(PrintDlgExW,PRINTDLGEXW,ntw16s_print_extended_w,real_PrintDlgW)
+#undef PRINT_EXTENDED_HOOK
 
 /* Property sheets may create internal pages without public DialogBox calls. */
 #define SHEET_HOOK(NAME, TYPE) \
