@@ -108,6 +108,16 @@ static void catalog_pages(HWND main,DWORD thread,HANDLE target,BOOL styled,const
         if(i==5){CHECK(SendDlgItemMessageW(w,2601,PBM_GETPOS,0,0)==45);SendMessageW(w,WM_COMMAND,2602,0);CHECK(SendDlgItemMessageW(w,2601,PBM_GETPOS,0,0)==50 && SendDlgItemMessageW(w,2603,TBM_GETPOS,0,0)==40 && SendDlgItemMessageW(w,2605,UDM_GETPOS,0,0)==25);}
         if(i==6){WCHAR cls[80];CHECK(GetClassNameW(GetDlgItem(w,2701),cls,80) && !_wcsicmp(cls,L"RICHEDIT50W"));SendMessageW(w,WM_COMMAND,2721,0);text(w,2722,L"Record 2: Beta");SendMessageW(w,WM_COMMAND,2712,0);text(w,2712,L"&Stop timer");SendMessageW(w,WM_COMMAND,2712,0);text(w,2712,L"&Start timer");property_window=NULL;SendMessageW(w,WM_COMMAND,2731,0);EnumThreadWindows(thread,find_property,(LPARAM)w);CHECK(property_window);HWND tab=(HWND)SendMessageW(property_window,PSM_GETTABCONTROL,0,0);CHECK(tab && SendMessageW(tab,TCM_GETITEMCOUNT,0,0)==2);CHECK(SendMessageW(property_window,PSM_SETCURSEL,1,0));CHECK(ResetEvent(property_closed));CHECK(PostMessageW(property_window,WM_CLOSE,0,0) && PostMessageW(w,WM_NULL,0,0));DWORD closed=pump_wait(property_closed,3000);printf("DEMO PROPERTY CLOSE styled=%u wait=%lu exists=%d current=%p visible=%d\n",(unsigned)styled,closed,IsWindow(property_window),(void *)SendMessageW(property_window,PSM_GETCURRENTPAGEHWND,0,0),IsWindowVisible(property_window));fflush(stdout);CHECK(closed==WAIT_OBJECT_0 && !IsWindow(property_window));}
         if(i==7){HWND client=GetDlgItem(w,2800);CHECK(client && GetWindow(client,GW_CHILD) && GetWindow(GetWindow(client,GW_CHILD),GW_HWNDNEXT));}
+        if(i==8){
+            static const WCHAR *dialog_buttons[]={L"Open: legacy",L"Open: modern to classic",L"Open: modern retained",
+                L"Save: legacy",L"Save: modern to classic",L"Save: modern retained",
+                L"Folder: legacy Shell",L"Folder: modern to classic",L"Folder: modern retained"};
+            for(unsigned j=0;j<ARRAYSIZE(dialog_buttons);++j){
+                HWND button=GetDlgItem(w,2901+(int)j);CHECK(button && IsWindowVisible(button));
+                text(w,2901+(int)j,dialog_buttons[j]);
+            }
+            puts("DEMO DIALOG ENTRIES PASS open=3 save=3 folder=3");
+        }
         CHECK(swprintf_s(file,MAX_PATH,L"%ls\\catalog-%u-%u.bmp",scratch,(unsigned)styled,i)>0);SendMessageW(w,WM_NCACTIVATE,TRUE,0);UpdateWindow(w);pixels screenshot=capture(w,file);CHECK(screenshot.hash);
         SendMessageW(w,WM_CLOSE,0,0);CHECK(!IsWindow(w));printf("DEMO CATALOG PAGE PASS styled=%u page=%u gdi=%lu\n",(unsigned)styled,i,GetGuiResources(target,GR_GDIOBJECTS));
     }
