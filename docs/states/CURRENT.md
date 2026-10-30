@@ -33,7 +33,7 @@ M0 T20 S1准入：Win3.x文件夹选择与公共对话框桥接：调查、实�
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 1
-- Last delivery: M0 T20 S1 P276 为 PrintDlgEx 旧框补当前页选项及返回；双宽干净构建、实际包测试及双位置发布。文件夹筛选回调缺口仍未解决。
+- Last delivery: M0 T20 S1 P290 将 PrintDlgEx 初始逐份打印与驱动管理份数组合纳入受限旧框转接；双宽干净构建、实际包测试及双位置发布。文件夹筛选回调缺口仍未解决。
 - Open task: T20 S1 文件夹选择和公共对话框接口及经典参考调查。
 - 打印当前页已纳入受限 PrintDlgEx 转接；跨 DPI、实际打印和本地化仍待覆盖。
 - 并发缺口：同进程两个 COM 文件对话框的系统原生双宽对照通过，已发布旧框转接双宽失败；目录串用及超时的具体根因仍待定位。

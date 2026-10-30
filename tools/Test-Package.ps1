@@ -136,6 +136,9 @@ try{
         foreach($encoding in @('ansi','wide')){foreach($action in @('print','apply','cancel')){
             $cases+=Case "dialog-print-ex-driver-$arch-$encoding-$action" $dialogDriver @($run,$printTarget,"ex-driver-$action",$encoding) @("EX_DRIVER bits=$bits",'old=1','valid=1','DIALOG_DRIVER exit=0') 30
         }}
+        foreach($encoding in @('ansi','wide')){
+            $cases+=Case "dialog-print-ex-driver-initial-collate-$arch-$encoding" $dialogDriver @($run,$printTarget,'ex-driver-initial-collate',$encoding) @("EX_DRIVER_INITIAL_COLLATE bits=$bits",'initial=1','old=1','valid=1','DIALOG_DRIVER exit=0') 30
+        }
         $cases+=Case "dialog-print-host-policy-$arch" (Join-Path (Join-Path $BuildRoot $arch) 'print-host-policy-unit.exe') @() @('PRINT HOST POLICY PASS exact quoted ansi spoof') 15
         $cases+=Case "dialog-print-ranges-$arch" (Join-Path (Join-Path $BuildRoot $arch) 'print-ranges-unit.exe') @() @('PRINT RANGES PASS order duplicates overlap bounds overflow atomic') 15
         $sheetTarget=Join-Path (Join-Path $BuildRoot $arch) 'sheet-dialog-target.exe'

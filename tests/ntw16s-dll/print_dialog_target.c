@@ -33,6 +33,7 @@ static BOOL current_layout_valid(HWND window,HWND current)
 }
 static void CALLBACK close_dialog(HWND window,UINT message,UINT_PTR timer,DWORD time)
 {(void)message;(void)time;
+ if(extended_case==42){HWND check=GetDlgItem(window,1041);extended_old=GetDlgItem(window,1139)!=NULL;initial_range_state=check && SendMessageW(check,BM_GETCHECK,0,0)==BST_CHECKED;KillTimer(window,timer);frame=attached&&attached(window);PostMessageW(window,WM_COMMAND,IDCANCEL,0);return;}
  if(extended_case>=34){HWND cur=GetDlgItem(window,9003);current_layout=current_layout_valid(window,cur);extended_old=GetDlgItem(window,1139)!=NULL;
     if(extended_case==39 && !extended_step){HWND select=GetDlgItem(window,1057);SendMessageW(select,BM_CLICK,0,0);SetFocus(select);PostMessageW(select,WM_KEYDOWN,VK_RIGHT,0);extended_step=1;return;}
     if(extended_case==39){current_seen=cur && GetFocus()==cur;current_checked=cur && SendMessageW(cur,BM_GETCHECK,0,0)==BST_CHECKED;others_clear=SendDlgItemMessageW(window,1057,BM_GETCHECK,0,0)==BST_UNCHECKED;}
@@ -132,6 +133,21 @@ int wmain(int argc,WCHAR **argv)
       if(mode)GlobalFree(mode);
       if(names)GlobalFree(names);
       UnhookWindowsHookEx(observer);DestroyWindow(owner);CoUninitialize();return ok?0:1;}
+    if(!lstrcmpW(argv[1],L"ex-driver-initial-collate")){
+        extended_case=42;if(FAILED(CoInitializeEx(NULL,COINIT_APARTMENTTHREADED)))return 9;
+        HWND owner=CreateWindowExW(0,L"STATIC",L"Owner",WS_OVERLAPPEDWINDOW,0,0,200,100,NULL,NULL,GetModuleHandleW(NULL),NULL);if(!owner)return 7;
+        ShowWindow(owner,SW_SHOW);HHOOK observer=SetWindowsHookExW(WH_CALLWNDPROC,observe,NULL,GetCurrentThreadId());if(!observer)return 6;
+        const DWORD expected=PD_RETURNDC|PD_NOPAGENUMS|PD_USEDEVMODECOPIESANDCOLLATE|PD_COLLATE;DWORD flags,action;HRESULT hr;HDC dc;HGLOBAL mode,names;
+#define RUN_INITIAL_COLLATE(TYPE,FUNC) do {TYPE x={0};x.lStructSize=sizeof(x);x.hwndOwner=owner;x.Flags=expected;x.nCopies=1;x.nStartPage=START_PAGE_GENERAL;hr=FUNC(&x);flags=x.Flags;action=x.dwResultAction;dc=x.hDC;mode=x.hDevMode;names=x.hDevNames;} while(0)
+        if(ansi){RUN_INITIAL_COLLATE(PRINTDLGEXA,PrintDlgExA);}else{RUN_INITIAL_COLLATE(PRINTDLGEXW,PrintDlgExW);}
+#undef RUN_INITIAL_COLLATE
+        BOOL valid=initialized==1 && hr==S_OK && action==PD_RESULT_CANCEL && flags==expected && !dc && !mode && !names && initial_range_state && extended_old && frame;
+        printf("EX_DRIVER_INITIAL_COLLATE bits=%u ansi=%d initial=%d old=%d frame=%d action=%lu flags=%08lx valid=%d\n",(unsigned)(sizeof(void*)*8),ansi,initial_range_state,extended_old,frame,action,flags,valid);
+        if(dc)DeleteDC(dc);
+        if(mode)GlobalFree(mode);
+        if(names)GlobalFree(names);
+        UnhookWindowsHookEx(observer);DestroyWindow(owner);CoUninitialize();return valid?0:1;
+    }
     if(!lstrcmpW(argv[1],L"invalid")){
         PRINTDLGEXW x={0};x.lStructSize=sizeof(x);HRESULT hr=PrintDlgExW(&x);
         printf("PRINT_EX_INVALID bits=%u hr=%08lx\n",(unsigned)(sizeof(void*)*8),(DWORD)hr);
