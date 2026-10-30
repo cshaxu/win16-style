@@ -26,9 +26,9 @@ static BOOL read_ranges(HWND window,state *s)
     WCHAR text[512];if(!GetWindowTextW(s->edit,text,512))return FALSE;
     return ntw16s_parse_print_ranges(text,s->out->nMinPage,s->out->nMaxPage,s->ranges,s->out->nMaxPageRanges,&s->count);
 }
-static DWORD input_flags(HWND window)
+static DWORD input_flags(HWND window,const state *s)
 {
-    DWORD flags=PD_RETURNDC;
+    DWORD flags=s->out->Flags;
     if(SendDlgItemMessageW(window,1058,BM_GETCHECK,0,0)==BST_CHECKED)flags|=PD_PAGENUMS;
     else if(SendDlgItemMessageW(window,1057,BM_GETCHECK,0,0)==BST_CHECKED)flags|=PD_SELECTION;
     if(SendDlgItemMessageW(window,1041,BM_GETCHECK,0,0)==BST_CHECKED)flags|=PD_COLLATE;
@@ -41,7 +41,7 @@ static BOOL save_snapshot(HWND window,state *s)
     HGLOBAL mode=clone_global(s->live->hDevMode),names=clone_global(s->live->hDevNames),dc_mode=clone_global(s->live->hDevMode);
     if(!mode || !names || !dc_mode){if(mode)GlobalFree(mode);if(names)GlobalFree(names);if(dc_mode)GlobalFree(dc_mode);return FALSE;}
     DEVMODEW *dm=GlobalLock(mode),*dc_dm=GlobalLock(dc_mode);DEVNAMES *dn=GlobalLock(names);HDC dc=NULL;
-    DWORD flags=input_flags(window);
+    DWORD flags=input_flags(window,s);
     if(dm && dc_dm && dn){dm->dmCopies=1;dm->dmCollate=DMCOLLATE_FALSE;dc_dm->dmCopies=(short)copies;dc_dm->dmCollate=(flags&PD_COLLATE)?DMCOLLATE_TRUE:DMCOLLATE_FALSE;
         dc=CreateDCW((WCHAR*)dn+dn->wDriverOffset,(WCHAR*)dn+dn->wDeviceOffset,(WCHAR*)dn+dn->wOutputOffset,dc_dm);}
     if(dm)GlobalUnlock(mode);
@@ -67,6 +67,7 @@ static UINT_PTR CALLBACK print_hook(HWND window,UINT message,WPARAM wparam,LPARA
         s->edit=CreateWindowExW(WS_EX_CLIENTEDGE,L"EDIT",initial,WS_CHILD|WS_VISIBLE|WS_TABSTOP|ES_AUTOHSCROLL,first.left-inset,first.top,last.right-first.left+inset,first.bottom-first.top,window,(HMENU)(INT_PTR)RANGE_CONTROL,GetModuleHandleW(NULL),NULL);
         HWND apply=CreateWindowW(L"BUTTON",L"Apply",WS_CHILD|WS_VISIBLE|WS_TABSTOP|BS_PUSHBUTTON,ok.left-(ok.right-ok.left)-gap,ok.top,ok.right-ok.left,ok.bottom-ok.top,window,(HMENU)(INT_PTR)APPLY_CONTROL,GetModuleHandleW(NULL),NULL);
         if(!s->edit || !apply){s->failed=TRUE;PostMessageW(window,WM_COMMAND,IDCANCEL,0);return 0;}
+        if(s->out->Flags & PD_NOPAGENUMS)EnableWindow(s->edit,FALSE);
         if(s->edit)SendMessageW(s->edit,WM_SETFONT,(WPARAM)font,TRUE);
         if(apply)SendMessageW(apply,WM_SETFONT,(WPARAM)font,TRUE);
     }
@@ -78,16 +79,16 @@ static UINT_PTR CALLBACK print_hook(HWND window,UINT message,WPARAM wparam,LPARA
 }
 BOOL ntw16s_print_extended_w(PRINTDLGEXW *p,ntw16s_print_dialog_w print,HRESULT *result)
 {
-    if(!p || p->lStructSize!=sizeof(*p) || !p->hwndOwner || !IsWindow(p->hwndOwner) || p->Flags!=PD_RETURNDC || p->Flags2 || p->ExclusionFlags || p->hDevMode || p->hDevNames || p->hDC || p->nPageRanges || !p->lpPageRanges || !p->nMaxPageRanges || p->nMaxPageRanges>MAX_RANGES || !p->nMinPage || p->nMaxPage>65535 || p->nMinPage>p->nMaxPage || !p->nCopies || p->nCopies>32767 || p->lpCallback || p->nPropertyPages || p->lphPropertyPages || p->nStartPage!=START_PAGE_GENERAL)return FALSE;
-    state s={0};s.out=p;PRINTDLGW d={0};d.lStructSize=sizeof(d);d.hwndOwner=p->hwndOwner;d.Flags=PD_RETURNDC|PD_ENABLEPRINTHOOK;d.lpfnPrintHook=print_hook;d.lCustData=(LPARAM)&s;d.nMinPage=(WORD)p->nMinPage;d.nMaxPage=(WORD)p->nMaxPage;d.nFromPage=d.nMinPage;d.nToPage=d.nMinPage;d.nCopies=(WORD)p->nCopies;
+    if(!p || p->lStructSize!=sizeof(*p) || !p->hwndOwner || !IsWindow(p->hwndOwner) || (p->Flags & ~PD_NOPAGENUMS)!=PD_RETURNDC || p->Flags2 || p->ExclusionFlags || p->hDevMode || p->hDevNames || p->hDC || p->nPageRanges || (!(p->Flags & PD_NOPAGENUMS) && (!p->lpPageRanges || !p->nMaxPageRanges || p->nMaxPageRanges>MAX_RANGES || !p->nMinPage || p->nMaxPage>65535 || p->nMinPage>p->nMaxPage)) || !p->nCopies || p->nCopies>32767 || p->lpCallback || p->nPropertyPages || p->lphPropertyPages || p->nStartPage!=START_PAGE_GENERAL)return FALSE;
+    state s={0};s.out=p;PRINTDLGW d={0};d.lStructSize=sizeof(d);d.hwndOwner=p->hwndOwner;d.Flags=p->Flags|PD_ENABLEPRINTHOOK;d.lpfnPrintHook=print_hook;d.lCustData=(LPARAM)&s;d.nMinPage=(WORD)(p->Flags & PD_NOPAGENUMS?1:p->nMinPage);d.nMaxPage=(WORD)(p->Flags & PD_NOPAGENUMS?1:p->nMaxPage);d.nFromPage=d.nMinPage;d.nToPage=d.nMinPage;d.nCopies=(WORD)p->nCopies;
     BOOL ok=print(&d);DWORD error=ok?0:CommDlgExtendedError();
-    if(ok){p->hDevMode=d.hDevMode;p->hDevNames=d.hDevNames;p->hDC=d.hDC;p->Flags=d.Flags & ~PD_ENABLEPRINTHOOK;p->nCopies=d.nCopies;p->nPageRanges=s.count;CopyMemory(p->lpPageRanges,s.ranges,s.count*sizeof(PRINTPAGERANGE));p->dwResultAction=PD_RESULT_PRINT;free_snapshot(&s);*result=S_OK;return TRUE;}
+    if(ok){p->hDevMode=d.hDevMode;p->hDevNames=d.hDevNames;p->hDC=d.hDC;p->Flags=d.Flags & ~PD_ENABLEPRINTHOOK;p->nCopies=d.nCopies;p->nPageRanges=s.count;if(s.count)CopyMemory(p->lpPageRanges,s.ranges,s.count*sizeof(PRINTPAGERANGE));p->dwResultAction=PD_RESULT_PRINT;free_snapshot(&s);*result=S_OK;return TRUE;}
     if(d.hDC)DeleteDC(d.hDC);
     if(d.hDevMode)GlobalFree(d.hDevMode);
     if(d.hDevNames)GlobalFree(d.hDevNames);
     if(s.failed){free_snapshot(&s);return FALSE;}
     if(error){free_snapshot(&s);*result=E_FAIL;return TRUE;}
-    if(s.applied){p->hDevMode=s.applied_mode;p->hDevNames=s.applied_names;p->hDC=s.applied_dc;p->Flags=s.flags;p->nCopies=s.copies;p->nPageRanges=s.applied_count;CopyMemory(p->lpPageRanges,s.applied_ranges,s.applied_count*sizeof(PRINTPAGERANGE));p->dwResultAction=PD_RESULT_APPLY;}
+    if(s.applied){p->hDevMode=s.applied_mode;p->hDevNames=s.applied_names;p->hDC=s.applied_dc;p->Flags=s.flags;p->nCopies=s.copies;p->nPageRanges=s.applied_count;if(s.applied_count)CopyMemory(p->lpPageRanges,s.applied_ranges,s.applied_count*sizeof(PRINTPAGERANGE));p->dwResultAction=PD_RESULT_APPLY;}
     else p->dwResultAction=PD_RESULT_CANCEL;
     *result=S_OK;return TRUE;
 }
