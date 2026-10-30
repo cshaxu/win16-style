@@ -258,10 +258,19 @@ HRESULT ntw16s_classic_folder(HWND owner,PCWSTR title,PCWSTR initial,PCWSTR ok_l
     if(wcslen(file)>=capacity)return HRESULT_FROM_WIN32(ERROR_INSUFFICIENT_BUFFER);
     wcscpy(result,file);return S_OK;
 }
+typedef struct folder_selection_context { PIDLIST_ABSOLUTE selected; BOOL invalid; } folder_selection_context;
+static int CALLBACK folder_selection_callback(HWND window,UINT message,LPARAM value,LPARAM data)
+{
+    (void)window;folder_selection_context *ctx=(folder_selection_context *)data;
+    if(message==BFFM_SELCHANGED){PIDLIST_ABSOLUTE copy=value?ILCloneFull((PCIDLIST_ABSOLUTE)value):NULL;if(ctx->selected)CoTaskMemFree(ctx->selected);ctx->selected=copy;}
+    if(message==BFFM_VALIDATEFAILEDA || message==BFFM_VALIDATEFAILEDW)ctx->invalid=TRUE;
+    return 0;
+}
 #define BROWSE_WRAPPER(name,type,native) \
 static PIDLIST_ABSOLUTE WINAPI name(type *info) { \
     if(!info || active) return native(info); \
     if(!info->lpfn && (info->ulFlags==(BIF_RETURNONLYFSDIRS|BIF_NEWDIALOGSTYLE) || info->ulFlags==(BIF_RETURNONLYFSDIRS|BIF_NEWDIALOGSTYLE|BIF_NONEWFOLDERBUTTON))){type copy=*info;copy.ulFlags=BIF_RETURNONLYFSDIRS;return native(&copy);} \
+    if(!info->lpfn && info->ulFlags==(BRIDGE_FLAGS|BIF_NONEWFOLDERBUTTON)){folder_selection_context ctx={0};type copy=*info;copy.ulFlags=info->ulFlags & ~(BIF_NEWDIALOGSTYLE|BIF_NONEWFOLDERBUTTON);copy.lpfn=folder_selection_callback;copy.lParam=(LPARAM)&ctx;PIDLIST_ABSOLUTE result=native(&copy);if(!result && ctx.invalid && ctx.selected){result=ctx.selected;ctx.selected=NULL;}if(ctx.selected)CoTaskMemFree(ctx.selected);return result;} \
     if(info->ulFlags!=BRIDGE_FLAGS && info->ulFlags!=(BRIDGE_FLAGS & ~BIF_VALIDATE)) return native(info); \
     type copy=*info;copy.ulFlags=info->lpfn?(info->ulFlags & ~BIF_NEWDIALOGSTYLE):BIF_RETURNONLYFSDIRS; \
     return native(&copy); \

@@ -2696,7 +2696,7 @@
       "path": "src/ntw16s-dll/injection/folder_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "0a60eb092ca84342b6882821da2ac43fdbcd962e76097d113da83a6c635b1021",
+      "sha256": "7f1380b72c6a18c555ebdad8fe3b817d7e4ade346960947b218bbc1ef9e08b1b",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
@@ -3131,6 +3131,15 @@
       "sha256": "554aedd9fa7fee47feb9822ee092695f417ca34d89e89945c2380dd024648c2f",
       "disposition": "authored",
       "review": "T20 S1 native Shell folder filter compatibility probe",
+      "notice": "Project-authored test; no imported resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/folder_edit_target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "07f9d5015dbca0683eeb76890acb9376afc8a673a0ee958d6501dc64d20d2fab",
+      "disposition": "authored",
+      "review": "T20 S1 native Shell folder edit and PIDL probe",
       "notice": "Project-authored test; no imported resources"
     }
   ]

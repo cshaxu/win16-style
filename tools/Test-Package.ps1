@@ -109,6 +109,10 @@ try{
         }
         $folderTarget=Join-Path (Join-Path $BuildRoot $arch) 'folder-dialog-target.exe'
         $treeFolderTarget=Join-Path (Join-Path $BuildRoot $arch) 'tree-folder-target.exe'
+        $folderEditTarget=Join-Path (Join-Path $BuildRoot $arch) 'folder-edit-target.exe'
+        foreach($encoding in @('ansi','wide')){foreach($action in @('valid','invalid','cancel')){
+            $cases+=Case "dialog-folder-edit-$arch-$encoding-$action" $dialogDriver @($run,$folderEditTarget,$encoding,$action,'old') @("FOLDER_EDIT bits=$bits",'old=1','edit=1','new=0','matched=1','worker=0','valid=1','DIALOG_DRIVER exit=0') 30
+        }}
         foreach($kind in @('shell','com')){foreach($action in @('accept','cancel')){
             $cases+=Case "dialog-tree-$arch-$kind-$action" $dialogDriver @($run,$treeFolderTarget,$kind,$action) @("TREE_FOLDER bits=$bits",'tree=1','windows=1','result=1','worker=0','DIALOG_DRIVER exit=0') 30
         }}
