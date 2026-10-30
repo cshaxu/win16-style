@@ -409,6 +409,35 @@ static void paint(HWND w,style_window *s,HDC target)
     RestoreDC(dc,saved);if(!target)ReleaseDC(w,dc);
 }
 
+/* USER can request the entire frame when a popup changes. Compose the
+ * requested non-client pixels off-screen so the background and text do not
+ * become visible as separate drawing operations. */
+static void paint_nonclient_buffered(HWND w,style_window *s,HDC dc)
+{
+    win16_style_layout l;RECT bounds;int saved=SaveDC(dc);BOOL ready=FALSE;
+    HDC memory=NULL;HBITMAP bitmap=NULL,old=NULL;
+    if(!saved){paint(w,s,dc);return;}
+    if(layout(w,s,&l) && !s->detached &&
+        ExcludeClipRect(dc,l.client.left,l.client.top,l.client.right,l.client.bottom)!=ERROR &&
+        GetClipBox(dc,&bounds)!=ERROR && bounds.right>bounds.left && bounds.bottom>bounds.top){
+        memory=CreateCompatibleDC(dc);
+        if(memory)bitmap=CreateCompatibleBitmap(dc,bounds.right-bounds.left,bounds.bottom-bounds.top);
+        if(bitmap)old=(HBITMAP)SelectObject(memory,bitmap);
+        if(old && old!=(HBITMAP)HGDI_ERROR &&
+            BitBlt(memory,0,0,bounds.right-bounds.left,bounds.bottom-bounds.top,dc,bounds.left,bounds.top,SRCCOPY) &&
+            SetWindowOrgEx(memory,bounds.left,bounds.top,NULL)){
+            paint(w,s,memory);
+            if(!s->detached)ready=BitBlt(dc,bounds.left,bounds.top,bounds.right-bounds.left,
+                bounds.bottom-bounds.top,memory,bounds.left,bounds.top,SRCCOPY);
+        }
+    }
+    if(old && old!=(HBITMAP)HGDI_ERROR)SelectObject(memory,old);
+    if(bitmap)DeleteObject(bitmap);
+    if(memory)DeleteDC(memory);
+    if(!ready && !s->detached)paint(w,s,dc);
+    RestoreDC(dc,saved);
+}
+
 /* Called only from the pinned subclass invocation. Application menu-init and
  * native tracking can reenter/remove/destroy the frame; never paint afterwards
  * unless its attachment remains live. */
@@ -905,11 +934,11 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
             HRGN region=CreateRectRgn(0,0,0,0);HDC dc=NULL;
             if(region && CombineRgn(region,(HRGN)wp,NULL,RGN_COPY)!=ERROR){
                 dc=GetDCEx(w,region,DCX_WINDOW|DCX_INTERSECTRGN|DCX_CACHE);
-                if(dc){paint(w,s,dc);ReleaseDC(w,dc);region=NULL;}
+                if(dc){paint_nonclient_buffered(w,s,dc);ReleaseDC(w,dc);region=NULL;}
             }
             if(region)DeleteObject(region);
             if(!dc)paint(w,s,NULL);
-        }else paint(w,s,NULL);
+        }else {HDC dc=GetWindowDC(w);if(dc){paint_nonclient_buffered(w,s,dc);ReleaseDC(w,dc);}}
         break;
     case WM_SETCURSOR:
         /* Default NC cursor handling can also repaint native caption buttons.
