@@ -103,6 +103,9 @@ try{
         $comTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-dialog-target.exe'
         $modernTarget=Join-Path (Join-Path $BuildRoot $arch) 'modern-dialog-target.exe'
         $fileTarget=Join-Path (Join-Path $BuildRoot $arch) 'file-dialog-target.exe'
+        foreach($encoding in @('a','w')) {
+            $cases+=Case "dialog-file-custom-filter-$arch-$encoding" $dialogDriver @($run,$fileTarget,'open',$encoding,'1','customfilter') @('CUSTOM_FILTER changed=1 index_ok=1',"FILE_DIALOG bits=$bits",'old=1','ok=1','same=1','DIALOG_DRIVER exit=0') 45
+        }
         $folderTarget=Join-Path (Join-Path $BuildRoot $arch) 'folder-dialog-target.exe'
         $findTarget=Join-Path (Join-Path $BuildRoot $arch) 'find-dialog-target.exe'
         $commonTarget=Join-Path (Join-Path $BuildRoot $arch) 'common-dialog-target.exe'

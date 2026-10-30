@@ -68,7 +68,7 @@ static NTW16S_UNWIND_FUNCTION BOOL WINAPI name(structure *value) \
     BOOL full=value && value->lStructSize==sizeof(*value); \
     BOOL legacy=value && value->lStructSize==(legacy_size); \
     BOOL eligible=(full || legacy) && !(value->Flags & ~COMPATIBLE_FLAGS) && \
-        (!full || !value->FlagsEx) && !value->lpstrCustomFilter; \
+        (!full || !value->FlagsEx); \
     structure local;structure *passed=value; \
     if(eligible){ZeroMemory(&local,sizeof(local));memcpy(&local,value,value->lStructSize); \
         local.lStructSize=sizeof(local);local.Flags=(local.Flags & ~OFN_EXPLORER) | OFN_LONGNAMES | OFN_ENABLEHOOK; \

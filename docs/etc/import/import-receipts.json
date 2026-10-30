@@ -662,7 +662,7 @@
       "path": "src/ntw16s-dll/win16_style.c",
       "source": "src/ntw16s-dll/win16_style.c",
       "source_blob": "4235f085cb00c0d17145deec2d04a57c97b98d47",
-      "sha256": "bf6810cbfd2c98f1a124a0ca2b9f06ae7a9ccd21f507395959f00984c025574e",
+      "sha256": "3f9767cb36b1c2ebfb9bacebbc6f41696362feb124f33981d348c1b6752c3bba",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T15 S8 verified initialized native tree protocol and bounded existing System paint scope, native item/font/image/geometry/notifications preserved; exact pending frame ownership and cancellation; ASCII test-thread IME isolation after native no-DLL MSCTF teardown evidence; no external code or original graphics modified; T18 S64 scoped observed Delphi TPopupMenu owner, native callbacks and item restoration; private cleanup, no external code or graphics changed",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -2687,7 +2687,7 @@
       "path": "src/ntw16s-dll/injection/file_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d52ced72a5b1d90262d5881453a678ecbba0f0d6c854666a30d68e85522c9aa3",
+      "sha256": "ef49c3db9b502494265afe74a3f6a70dca0de464f89770d70768a76d16f7710d",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
@@ -2714,7 +2714,7 @@
       "path": "tests/ntw16s-dll/file_dialog_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "314f0167ccdd37e6c090d39592d4376161f2d27e6570a9bea416ba65996ae261",
+      "sha256": "52f707e48ad38305a13691385b2e928a5a5de6431dfb9cd57c889ecd16b88e43",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"

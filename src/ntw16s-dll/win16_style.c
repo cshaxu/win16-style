@@ -416,13 +416,30 @@ static void paint(HWND w,style_window *s,HDC target)
  * Reuse the frame painter with a bounded clip instead of clearing the frame. */
 static void paint_menu_state(HWND w,style_window *s)
 {
-    win16_style_layout l;HDC dc;HRGN clip,system;int saved;
+    win16_style_layout l;HDC dc,memory=NULL;HRGN clip,system;int saved;
+    RECT bounds;HBITMAP bitmap=NULL,old=NULL;BOOL ready=FALSE;
     if(!layout(w,s,&l))return;
     dc=GetWindowDC(w);if(!dc)return;saved=SaveDC(dc);
     if(!saved){ReleaseDC(w,dc);return;}
     clip=CreateRectRgnIndirect(&l.menu);system=CreateRectRgnIndirect(&l.system);
     if(clip && system && CombineRgn(clip,clip,system,RGN_OR)!=ERROR &&
-        ExtSelectClipRgn(dc,clip,RGN_AND)!=ERROR)paint(w,s,dc);
+        ExtSelectClipRgn(dc,clip,RGN_AND)!=ERROR && GetRgnBox(clip,&bounds)!=ERROR &&
+        bounds.right>bounds.left && bounds.bottom>bounds.top){
+        memory=CreateCompatibleDC(dc);
+        if(memory)bitmap=CreateCompatibleBitmap(dc,bounds.right-bounds.left,bounds.bottom-bounds.top);
+        if(bitmap)old=(HBITMAP)SelectObject(memory,bitmap);
+        if(old && old!=(HBITMAP)HGDI_ERROR &&
+            BitBlt(memory,0,0,bounds.right-bounds.left,bounds.bottom-bounds.top,dc,bounds.left,bounds.top,SRCCOPY) &&
+            SetWindowOrgEx(memory,bounds.left,bounds.top,NULL)){
+            paint(w,s,memory);
+            if(!s->detached)ready=BitBlt(dc,bounds.left,bounds.top,bounds.right-bounds.left,
+                bounds.bottom-bounds.top,memory,bounds.left,bounds.top,SRCCOPY);
+        }
+        if(old && old!=(HBITMAP)HGDI_ERROR)SelectObject(memory,old);
+        if(bitmap)DeleteObject(bitmap);
+        if(memory)DeleteDC(memory);
+        if(!ready && !s->detached)paint(w,s,dc);
+    }
     if(system)DeleteObject(system);
     if(clip)DeleteObject(clip);
     RestoreDC(dc,saved);ReleaseDC(w,dc);

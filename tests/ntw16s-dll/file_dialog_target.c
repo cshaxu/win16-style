@@ -8,7 +8,8 @@
 
 static DWORD main_thread;
 static volatile LONG seen, old_layout, hook_seen;
-static BOOL cancel_mode, custom_hook, legacy_size, default_flags, dynamic_mode;
+static BOOL cancel_mode, custom_hook, legacy_size, default_flags, dynamic_mode, custom_filter;
+static volatile LONG filter_changed;
 static volatile LONG dynamic_set;
 static WCHAR dynamic_path[MAX_PATH];
 static HWND found_dialog;
@@ -36,6 +37,10 @@ static DWORD WINAPI observer(void *unused)
     for (unsigned i=0;i<160;++i) {
         if (!seen) EnumThreadWindows(main_thread,inspect,0);
         if (seen && found_dialog && IsWindow(found_dialog)) {
+            if(custom_filter && !filter_changed){HWND combo=GetDlgItem(found_dialog,1136);
+                if(combo && SendMessageW(combo,CB_SETCURSEL,1,0)!=CB_ERR){
+                    SendMessageW(found_dialog,WM_COMMAND,MAKEWPARAM(1136,CBN_SELCHANGE),(LPARAM)combo);
+                    InterlockedExchange(&filter_changed,1);}}
             if(dynamic_mode && !dynamic_set){WCHAR value[MAX_PATH]=L"";
                 BOOL set=SetDlgItemTextW(found_dialog,1152,dynamic_path);
                 GetDlgItemTextW(found_dialog,1152,value,ARRAYSIZE(value));
@@ -71,6 +76,7 @@ static void *guard_copy(const void *value,SIZE_T length,void **base)
 int wmain(int argc, WCHAR **argv)
 {
     if (argc<4 || argc>5) return 2;
+    custom_filter=argc==5 && !lstrcmpW(argv[4],L"customfilter");
     dynamic_mode=argc==5 && !lstrcmpW(argv[4],L"oldhookdynamic");
     BOOL oldhook_accept=dynamic_mode || (argc==5 && !lstrcmpW(argv[4],L"oldhookaccept"));
     custom_hook=oldhook_accept || (argc==5 && (!lstrcmpW(argv[4],L"hook") || !lstrcmpW(argv[4],L"oldhook")));
@@ -95,9 +101,12 @@ int wmain(int argc, WCHAR **argv)
     printf("START pid=%lu tid=%lu\n",GetCurrentProcessId(),main_thread); fflush(stdout);
     HANDLE thread=CreateThread(NULL,0,observer,NULL,0,NULL);
     if (!thread) return 6;
-    BOOL result; WORD offset=0;
+    BOOL result, filter_ok=TRUE; WORD offset=0;
     if (ansi) {
+        char custom[256]="Custom\0*.txt\0";
+        char initial[sizeof(custom)];memcpy(initial,custom,sizeof(custom));
         OPENFILENAMEA o={0};o.lStructSize=sizeof(o);o.lpstrFile=file_a;o.nMaxFile=MAX_PATH;
+        if(custom_filter){o.lpstrCustomFilter=custom;o.nMaxCustFilter=sizeof(custom);o.nFilterIndex=0;}
         o.lpstrInitialDir=directory_a;o.lpstrTitle="Win16S T20 file dialog integration";
         o.lpstrFilter="All files\0*.*\0\0";o.Flags=OFN_EXPLORER|OFN_NOCHANGEDIR|OFN_PATHMUSTEXIST|(save?0:OFN_FILEMUSTEXIST);
         if(custom_hook){o.Flags|=OFN_ENABLEHOOK;o.lpfnHook=app_hook;}
@@ -108,9 +117,13 @@ int wmain(int argc, WCHAR **argv)
         result=save?GetSaveFileNameA(passed):GetOpenFileNameA(passed);
         if(base){memcpy(&o,passed,OPENFILENAME_SIZE_VERSION_400A);VirtualFree(base,0,MEM_RELEASE);}
         offset=o.nFileOffset;
+        if(custom_filter){printf("FILTER_OUTPUT index=%lu first=%u second=%u changed=%d\n",(unsigned long)o.nFilterIndex,(unsigned)custom[0],(unsigned)custom[7],memcmp(custom,initial,sizeof(custom))!=0);filter_ok=filter_changed && o.nFilterIndex==1;}
         MultiByteToWideChar(CP_ACP,0,file_a,-1,file_w,MAX_PATH);
     } else {
+        WCHAR custom[256]=L"Custom\0*.txt\0";
+        WCHAR initial[ARRAYSIZE(custom)];memcpy(initial,custom,sizeof(custom));
         OPENFILENAMEW o={0};o.lStructSize=sizeof(o);o.lpstrFile=file_w;o.nMaxFile=MAX_PATH;
+        if(custom_filter){o.lpstrCustomFilter=custom;o.nMaxCustFilter=ARRAYSIZE(custom);o.nFilterIndex=0;}
         o.lpstrInitialDir=directory;o.lpstrTitle=title;o.lpstrFilter=L"All files\0*.*\0\0";
         o.Flags=OFN_EXPLORER|OFN_NOCHANGEDIR|OFN_PATHMUSTEXIST|(save?0:OFN_FILEMUSTEXIST);
         if(custom_hook){o.Flags|=OFN_ENABLEHOOK;o.lpfnHook=app_hook;}
@@ -121,14 +134,16 @@ int wmain(int argc, WCHAR **argv)
         result=save?GetSaveFileNameW(passed):GetOpenFileNameW(passed);
         if(base){memcpy(&o,passed,OPENFILENAME_SIZE_VERSION_400W);VirtualFree(base,0,MEM_RELEASE);}
         offset=o.nFileOffset;
+        if(custom_filter){printf("FILTER_OUTPUT index=%lu first=%u second=%u changed=%d\n",(unsigned long)o.nFilterIndex,(unsigned)custom[0],(unsigned)custom[7],memcmp(custom,initial,sizeof(custom))!=0);filter_ok=filter_changed && o.nFilterIndex==1;}
     }
     DWORD extended=CommDlgExtendedError();
     WaitForSingleObject(thread,6000);CloseHandle(thread);
     BOOL same=!lstrcmpiW(path_w,file_w);
     DeleteFileW(path_w);
+    if(custom_filter)printf("CUSTOM_FILTER changed=%ld index_ok=%d\n",filter_changed,filter_ok);
     if(dynamic_mode)printf("FILE_DYNAMIC bits=%u set=%ld same=%d\n",(unsigned)(sizeof(void*)*8),dynamic_set,same);
     printf("FILE_DIALOG bits=%u save=%d ansi=%d observed=%ld old=%ld expected=%d ok=%d ext=%lu same=%d offset=%u cancel=%d custom_hook=%d hook_seen=%ld\n",
         (unsigned)(sizeof(void*)*8),save,ansi,seen,old_layout,expected_old,result,extended,same,offset,cancel_mode,custom_hook,hook_seen);
-    return seen && old_layout==expected_old && !extended && (!custom_hook || hook_seen) && (!dynamic_mode || dynamic_set) &&
+    return filter_ok && seen && old_layout==expected_old && !extended && (!custom_hook || hook_seen) && (!dynamic_mode || dynamic_set) &&
         (cancel_mode ? !result : (result && same && offset)) ? 0:1;
 }
