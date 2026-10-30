@@ -3024,6 +3024,33 @@
       "disposition": "authored",
       "review": "T20 S1 tree folder candidate native probe",
       "notice": "Project-authored test; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/print_ranges.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "0bce0b837853aa5a5ba69374c659bddb5afb06069c5fc5ded681099e57a516b6",
+      "disposition": "authored",
+      "review": "T20 S1 experimental print page range parser and bounded regression",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/print_ranges.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "c8ca224db619dbc4caf70ba8bbbdd8822854cbe0d0cdfff346adffc50b737ba3",
+      "disposition": "authored",
+      "review": "T20 S1 experimental print page range parser and bounded regression",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/print_ranges.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "1b16f5a1fe3d291200b628fab87c2e47b07952540ddf335d635fc70bef728f53",
+      "disposition": "authored",
+      "review": "T20 S1 experimental print page range parser and bounded regression",
+      "notice": "Project-authored code; no imported resources"
     }
   ]
 }
