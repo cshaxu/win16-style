@@ -1,0 +1,50 @@
+#define COBJMACROS
+#define UNICODE
+#define _UNICODE
+#include <windows.h>
+#include <commctrl.h>
+#include <shlobj.h>
+#include <shobjidl.h>
+#include <shlwapi.h>
+#include <stdio.h>
+#include <wchar.h>
+static WCHAR root[MAX_PATH],hidden[MAX_PATH],visible[MAX_PATH];static DWORD ui;static volatile LONG init,unknown,filter_ok,visits,denied;static HWND dialog,tree;static LONG refs=1;static int visible_count,blocked_count;
+static HRESULT STDMETHODCALLTYPE qi(IFolderFilter *p,REFIID iid,void **v){if(!v)return E_POINTER;*v=NULL;if(IsEqualIID(iid,&IID_IUnknown)||IsEqualIID(iid,&IID_IFolderFilter)){*v=p;InterlockedIncrement(&refs);return S_OK;}return E_NOINTERFACE;}
+static ULONG STDMETHODCALLTYPE add(IFolderFilter*p){(void)p;return InterlockedIncrement(&refs);}static ULONG STDMETHODCALLTYPE rel(IFolderFilter*p){(void)p;return InterlockedDecrement(&refs);}
+static HRESULT STDMETHODCALLTYPE show(IFolderFilter*p,IShellFolder*f,PCIDLIST_ABSOLUTE parent,PCUITEMID_CHILD item){(void)p;(void)parent;STRRET r={0};WCHAR name[MAX_PATH]=L"";InterlockedIncrement(&visits);if(SUCCEEDED(IShellFolder_GetDisplayNameOf(f,item,SHGDN_NORMAL,&r))&&SUCCEEDED(StrRetToBufW(&r,item,name,MAX_PATH))&&!lstrcmpiW(name,L"blocked")){InterlockedIncrement(&denied);return S_FALSE;}return S_OK;}
+static HRESULT STDMETHODCALLTYPE flags(IFolderFilter*p,IShellFolder*f,PCIDLIST_ABSOLUTE parent,HWND*w,DWORD*flags){(void)p;(void)f;(void)parent;(void)w;(void)flags;return S_OK;}
+static IFolderFilterVtbl table={qi,add,rel,show,flags};static IFolderFilter filter={&table};
+static int CALLBACK cb(HWND w,UINT m,LPARAM p,LPARAM d){(void)w;if(d!=0x456789)return 0;if(m==BFFM_INITIALIZED)InterlockedIncrement(&init);if(m==BFFM_IUNKNOWN && p){InterlockedIncrement(&unknown);IFolderFilterSite *site=NULL;HRESULT hr=IUnknown_QueryInterface((IUnknown*)p,&IID_IFolderFilterSite,(void**)&site);if(SUCCEEDED(hr)&&site){hr=IFolderFilterSite_SetFilter(site,(IUnknown*)&filter);if(SUCCEEDED(hr))InterlockedIncrement(&filter_ok);IFolderFilterSite_Release(site);}}return 0;}
+static BOOL CALLBACK child(HWND w,LPARAM v){(void)v;WCHAR c[60];if(GetClassNameW(w,c,60)&&!lstrcmpiW(c,L"SysTreeView32"))tree=w;return TRUE;}
+static BOOL CALLBACK scan(HWND w,LPARAM v){(void)v;WCHAR c[60];if(IsWindowVisible(w)&&GetClassNameW(w,c,60)&&!lstrcmpW(c,L"#32770")){dialog=w;EnumChildWindows(w,child,0);}return TRUE;}
+static void walk(HWND t,HTREEITEM item,int *yes,int *no){for(HTREEITEM i=item;i;i=TreeView_GetNextSibling(t,i)){WCHAR s[160]=L"";TVITEMW a={0};a.mask=TVIF_TEXT;a.hItem=i;a.pszText=s;a.cchTextMax=160;if(TreeView_GetItem(t,&a)){if(!lstrcmpiW(s,L"blocked"))++*no;if(!lstrcmpiW(s,L"visible"))++*yes;}HTREEITEM child=TreeView_GetChild(t,i);if(child)walk(t,child,yes,no);}}
+static DWORD WINAPI observe(void *v){(void)v;for(int i=0;i<120;i++){if(!dialog){EnumThreadWindows(ui,scan,0);if(dialog && !tree)dialog=NULL;}if(dialog&&tree){HTREEITEM top=TreeView_GetRoot(tree);if(top)TreeView_Expand(tree,top,TVE_EXPAND);if(i>30){int yes=0,no=0;walk(tree,TreeView_GetRoot(tree),&yes,&no);visible_count=yes;blocked_count=no;printf("TREE visible=%d blocked=%d visits=%ld denied=%ld\n",yes,no,visits,denied);PostMessageW(dialog,WM_COMMAND,IDCANCEL,0);return 0;}}Sleep(50);}if(dialog)PostMessageW(dialog,WM_COMMAND,IDCANCEL,0);return 1;}
+int wmain(int argc,WCHAR **argv)
+{
+    setvbuf(stdout,NULL,_IONBF,0);
+    if(argc!=2)return 2;
+    WCHAR parent[MAX_PATH];DWORD n=GetFullPathNameW(argv[1],MAX_PATH,parent,NULL);
+    DWORD attributes=GetFileAttributesW(parent);
+    if(!n || n>=MAX_PATH || attributes==INVALID_FILE_ATTRIBUTES || !(attributes&FILE_ATTRIBUTE_DIRECTORY))return 2;
+    int a=swprintf(root,MAX_PATH,L"%ls\\Win16S-filter-%lu-%lu",parent,GetCurrentProcessId(),GetTickCount());
+    int b=swprintf(hidden,MAX_PATH,L"%ls\\blocked",root),c=swprintf(visible,MAX_PATH,L"%ls\\visible",root);
+    if(a<0 || b<0 || c<0 || a>=MAX_PATH || b>=MAX_PATH || c>=MAX_PATH)return 2;
+    if(!CreateDirectoryW(root,NULL))return 3;
+    if(!CreateDirectoryW(hidden,NULL)){RemoveDirectoryW(root);return 3;}
+    if(!CreateDirectoryW(visible,NULL)){RemoveDirectoryW(hidden);RemoveDirectoryW(root);return 3;}
+    HRESULT init_hr=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);
+    if(FAILED(init_hr)){RemoveDirectoryW(hidden);RemoveDirectoryW(visible);RemoveDirectoryW(root);return 4;}
+    PIDLIST_ABSOLUTE r=NULL;
+    if(FAILED(SHParseDisplayName(root,NULL,&r,0,NULL))){CoUninitialize();RemoveDirectoryW(hidden);RemoveDirectoryW(visible);RemoveDirectoryW(root);return 5;}
+    ui=GetCurrentThreadId();HANDLE thread=CreateThread(NULL,0,observe,NULL,0,NULL);
+    if(!thread){CoTaskMemFree(r);CoUninitialize();RemoveDirectoryW(hidden);RemoveDirectoryW(visible);RemoveDirectoryW(root);return 6;}
+    BROWSEINFOW info={0};info.pidlRoot=r;info.ulFlags=BIF_RETURNONLYFSDIRS|BIF_USENEWUI;info.lpfn=cb;info.lParam=0x456789;
+    PIDLIST_ABSOLUTE result=SHBrowseForFolderW(&info);if(result)CoTaskMemFree(result);
+    DWORD wait=WaitForSingleObject(thread,8000),code=99;if(wait==WAIT_OBJECT_0)GetExitCodeThread(thread,&code);
+    CloseHandle(thread);CoTaskMemFree(r);CoUninitialize();
+    BOOL a_removed=RemoveDirectoryW(hidden),b_removed=RemoveDirectoryW(visible),c_removed=RemoveDirectoryW(root);
+    BOOL cleaned=a_removed && b_removed && c_removed;
+    BOOL valid=unknown==1 && filter_ok==1 && denied>0 && visible_count>0 && blocked_count==0 && refs==1 && wait==WAIT_OBJECT_0 && code==0 && cleaned;
+    printf("FOLDER_FILTER bits=%u unknown=%ld installed=%ld calls=%ld denied=%ld visible=%d blocked=%d refs=%ld worker=%lu cleanup=%d valid=%d\n",(unsigned)(sizeof(void*)*8),unknown,filter_ok,visits,denied,visible_count,blocked_count,refs,code,cleaned,valid);
+    return valid?0:1;
+}

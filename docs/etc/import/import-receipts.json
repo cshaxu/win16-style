@@ -3114,6 +3114,15 @@
       "disposition": "authored",
       "review": "T20 S1 Windows print-host propagation boundary",
       "notice": "Project-authored C code; no imported resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/folder_filter_target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "f5adf3423600a6147d443d0faa6461f420793c441ccd68cf46a4110e0bef35ac",
+      "disposition": "authored",
+      "review": "T20 S1 native Shell folder filter compatibility probe",
+      "notice": "Project-authored test; no imported resources"
     }
   ]
 }
