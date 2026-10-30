@@ -129,6 +129,7 @@ python tests/ntw16s-dll/virtual_print.py --driver build/.ninja/x64/dialog-test-d
 它不是旧式 Shell 转接的通过证据。
 追加 `error` 可验证筛选器返回错误时目标目录仍被隐藏。
 追加 `clear` 可验证 `SetFilter(NULL)` 后重新展开会恢复显示，同时检查筛选器引用释放。
+追加 `reenter` 可验证筛选器中主动选择目录时，应用仍收到通知且最终选中目标。
 
 `--native` 运行未注入系统对照；未覆盖实体打印机、所有驱动或 Windows 共享打印服务的冷启动。
 此用例可选，不纳入默认包测试，也不把虚拟打印机或 pdfinfo 变为产品依赖。
