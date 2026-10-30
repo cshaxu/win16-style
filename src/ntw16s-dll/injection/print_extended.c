@@ -39,6 +39,23 @@ static HDC create_print_dc(HGLOBAL mode,HGLOBAL names,BOOL ansi,DWORD copies,DWO
     if(dn)GlobalUnlock(names);
     GlobalFree(dc_mode);return dc;
 }
+/* Old PrintDlg may return application-managed copies even when the driver
+ * flag was requested, especially for collated copies. Convert that result
+ * before passing the device mode back through the PrintDlgEx interface. */
+static BOOL normalize_driver_copies(HGLOBAL mode,BOOL ansi,WORD *copies,DWORD *flags)
+{
+    if(!mode || !copies || !*copies || *copies>32767 || !flags)return FALSE;
+    if(*copies>1 || (*flags&PD_COLLATE)){
+        SIZE_T needed=ansi?offsetof(DEVMODEA,dmCollate)+sizeof(((DEVMODEA *)0)->dmCollate):
+            offsetof(DEVMODEW,dmCollate)+sizeof(((DEVMODEW *)0)->dmCollate);
+        if(GlobalSize(mode)<needed)return FALSE;
+        void *data=GlobalLock(mode);if(!data)return FALSE;
+        if(ansi){DEVMODEA *dm=data;dm->dmCopies=(short)*copies;dm->dmCollate=(*flags&PD_COLLATE)?DMCOLLATE_TRUE:DMCOLLATE_FALSE;}
+        else{DEVMODEW *dm=data;dm->dmCopies=(short)*copies;dm->dmCollate=(*flags&PD_COLLATE)?DMCOLLATE_TRUE:DMCOLLATE_FALSE;}
+        GlobalUnlock(mode);
+    }
+    *copies=1;*flags &= ~(DWORD)PD_COLLATE;return TRUE;
+}
 static BOOL read_ranges(HWND window,state *s)
 {
     s->count=0;
@@ -63,10 +80,10 @@ static BOOL save_snapshot(HWND window,state *s)
     void *mode_data=GlobalLock(mode),*dc_data=GlobalLock(dc_mode);DEVNAMES *dn=GlobalLock(names);HDC dc=NULL;
     DWORD flags=input_flags(window,s);BOOL ready=mode_data && dc_data && dn;
     if(ready){
-        if(s->ansi){DEVMODEA *dm=mode_data,*dc_dm=dc_data;dm->dmCopies=1;dm->dmCollate=DMCOLLATE_FALSE;dc_dm->dmCopies=(short)copies;dc_dm->dmCollate=(flags&PD_COLLATE)?DMCOLLATE_TRUE:DMCOLLATE_FALSE;
+        if(s->ansi){DEVMODEA *dm=mode_data,*dc_dm=dc_data;dm->dmCopies=(flags&PD_USEDEVMODECOPIESANDCOLLATE)?(short)copies:1;dm->dmCollate=(flags&PD_USEDEVMODECOPIESANDCOLLATE)&&(flags&PD_COLLATE)?DMCOLLATE_TRUE:DMCOLLATE_FALSE;dc_dm->dmCopies=(short)copies;dc_dm->dmCollate=(flags&PD_COLLATE)?DMCOLLATE_TRUE:DMCOLLATE_FALSE;
             if(flags & PD_RETURNDC)dc=CreateDCA((char*)dn+dn->wDriverOffset,(char*)dn+dn->wDeviceOffset,(char*)dn+dn->wOutputOffset,dc_dm);
             else if(flags & PD_RETURNIC)dc=CreateICA((char*)dn+dn->wDriverOffset,(char*)dn+dn->wDeviceOffset,(char*)dn+dn->wOutputOffset,dc_dm);}
-        else {DEVMODEW *dm=mode_data,*dc_dm=dc_data;dm->dmCopies=1;dm->dmCollate=DMCOLLATE_FALSE;dc_dm->dmCopies=(short)copies;dc_dm->dmCollate=(flags&PD_COLLATE)?DMCOLLATE_TRUE:DMCOLLATE_FALSE;
+        else {DEVMODEW *dm=mode_data,*dc_dm=dc_data;dm->dmCopies=(flags&PD_USEDEVMODECOPIESANDCOLLATE)?(short)copies:1;dm->dmCollate=(flags&PD_USEDEVMODECOPIESANDCOLLATE)&&(flags&PD_COLLATE)?DMCOLLATE_TRUE:DMCOLLATE_FALSE;dc_dm->dmCopies=(short)copies;dc_dm->dmCollate=(flags&PD_COLLATE)?DMCOLLATE_TRUE:DMCOLLATE_FALSE;
             if(flags & PD_RETURNDC)dc=CreateDCW((WCHAR*)dn+dn->wDriverOffset,(WCHAR*)dn+dn->wDeviceOffset,(WCHAR*)dn+dn->wOutputOffset,dc_dm);
             else if(flags & PD_RETURNIC)dc=CreateICW((WCHAR*)dn+dn->wDriverOffset,(WCHAR*)dn+dn->wDeviceOffset,(WCHAR*)dn+dn->wOutputOffset,dc_dm);}}
     if(mode_data)GlobalUnlock(mode);
@@ -74,7 +91,7 @@ static BOOL save_snapshot(HWND window,state *s)
     if(dn)GlobalUnlock(names);
     GlobalFree(dc_mode);
     if(!ready || ((flags & (PD_RETURNDC|PD_RETURNIC)) && !dc)){GlobalFree(mode);GlobalFree(names);return FALSE;}
-    free_snapshot(s);s->applied=TRUE;s->applied_mode=mode;s->applied_names=names;s->applied_dc=dc;s->copies=copies;s->flags=flags;
+    free_snapshot(s);s->applied=TRUE;s->applied_mode=mode;s->applied_names=names;s->applied_dc=dc;s->copies=(flags&PD_USEDEVMODECOPIESANDCOLLATE)?1:copies;s->flags=(flags&PD_USEDEVMODECOPIESANDCOLLATE)?flags&~(DWORD)PD_COLLATE:flags;
     s->applied_count=s->count;CopyMemory(s->applied_ranges,s->ranges,s->count*sizeof(PRINTPAGERANGE));return TRUE;
 }
 static UINT_PTR print_hook_common(HWND window,UINT message,WPARAM wparam,state *initial)
@@ -113,7 +130,7 @@ static UINT_PTR CALLBACK print_hook_w(HWND w,UINT m,WPARAM wp,LPARAM lp)
 #define PRINT_EXTENDED(NAME,EX_TYPE,TYPE,PRINT_TYPE,HOOK,IS_ANSI) \
 BOOL NAME(EX_TYPE *p,PRINT_TYPE print,HRESULT *result) \
 { \
-    if(!p || p->lStructSize!=sizeof(*p) || !p->hwndOwner || !IsWindow(p->hwndOwner) || (p->Flags & ~(PD_NOPAGENUMS|PD_NOSELECTION|PD_HIDEPRINTTOFILE|PD_PAGENUMS|PD_RETURNDC|PD_RETURNIC))!=0 || p->Flags2 || p->ExclusionFlags || p->hDC || (!!p->hDevMode != !!p->hDevNames) || (p->hDevMode && p->hDevMode==p->hDevNames) || !global_available(p->hDevMode) || !global_available(p->hDevNames) || ((p->Flags & PD_PAGENUMS) ? (!p->nPageRanges || p->nPageRanges>p->nMaxPageRanges || (p->Flags & PD_NOPAGENUMS)) : p->nPageRanges!=0) || (!(p->Flags & PD_NOPAGENUMS) && (!p->lpPageRanges || !p->nMaxPageRanges || p->nMaxPageRanges>MAX_RANGES || !p->nMinPage || p->nMaxPage>65535 || p->nMinPage>p->nMaxPage)) || !p->nCopies || p->nCopies>32767 || p->lpCallback || p->nPropertyPages || p->lphPropertyPages || p->nStartPage!=START_PAGE_GENERAL)return FALSE; \
+    if(!p || p->lStructSize!=sizeof(*p) || !p->hwndOwner || !IsWindow(p->hwndOwner) || (p->Flags & ~(PD_NOPAGENUMS|PD_NOSELECTION|PD_HIDEPRINTTOFILE|PD_PAGENUMS|PD_RETURNDC|PD_RETURNIC|PD_USEDEVMODECOPIESANDCOLLATE))!=0 || p->Flags2 || p->ExclusionFlags || p->hDC || (!!p->hDevMode != !!p->hDevNames) || (p->hDevMode && p->hDevMode==p->hDevNames) || !global_available(p->hDevMode) || !global_available(p->hDevNames) || ((p->Flags & PD_PAGENUMS) ? (!p->nPageRanges || p->nPageRanges>p->nMaxPageRanges || (p->Flags & PD_NOPAGENUMS)) : p->nPageRanges!=0) || (!(p->Flags & PD_NOPAGENUMS) && (!p->lpPageRanges || !p->nMaxPageRanges || p->nMaxPageRanges>MAX_RANGES || !p->nMinPage || p->nMaxPage>65535 || p->nMinPage>p->nMaxPage)) || !p->nCopies || p->nCopies>32767 || p->lpCallback || p->nPropertyPages || p->lphPropertyPages || p->nStartPage!=START_PAGE_GENERAL)return FALSE; \
     state s={0};s.input_flags=p->Flags;s.minimum=p->nMinPage;s.maximum=p->nMaxPage;s.capacity=p->nMaxPageRanges;s.ansi=IS_ANSI; \
     if(p->nPageRanges){if(!ntw16s_format_print_ranges(p->lpPageRanges,p->nPageRanges,p->nMinPage,p->nMaxPage,s.initial,512))return FALSE;}else wsprintfW(s.initial,L"%lu",p->nMinPage);TYPE d={0};d.lStructSize=sizeof(d);d.hwndOwner=p->hwndOwner;d.Flags=(p->Flags & ((p->Flags & PD_RETURNDC)?~(DWORD)PD_RETURNIC:~(DWORD)0))|PD_ENABLEPRINTHOOK;d.lpfnPrintHook=HOOK;d.lCustData=(LPARAM)&s;d.nMinPage=(WORD)(p->Flags & PD_NOPAGENUMS?1:p->nMinPage);d.nMaxPage=(WORD)(p->Flags & PD_NOPAGENUMS?1:p->nMaxPage);d.nFromPage=p->nPageRanges?(WORD)p->lpPageRanges[0].nFromPage:d.nMinPage;d.nToPage=p->nPageRanges?(WORD)p->lpPageRanges[0].nToPage:d.nMinPage;d.nCopies=(WORD)p->nCopies; \
     if(p->hDevMode){d.hDevMode=clone_global(p->hDevMode);if(!d.hDevMode)return FALSE;} \
@@ -122,6 +139,7 @@ BOOL NAME(EX_TYPE *p,PRINT_TYPE print,HRESULT *result) \
     if(ok && (p->Flags & (PD_RETURNDC|PD_RETURNIC)) && (!d.hDC || ((p->Flags & PD_RETURNDC) && d.nCopies>1))){HDC replacement=create_print_dc(d.hDevMode,d.hDevNames,IS_ANSI,d.nCopies,d.Flags|p->Flags); \
         if(!replacement){if(d.hDC)DeleteDC(d.hDC);if(d.hDevMode)GlobalFree(d.hDevMode);if(d.hDevNames)GlobalFree(d.hDevNames);free_snapshot(&s);*result=E_FAIL;return TRUE;} \
         if(d.hDC){DeleteDC(d.hDC);}d.hDC=replacement;} \
+    if(ok && (p->Flags & PD_USEDEVMODECOPIESANDCOLLATE) && !normalize_driver_copies(d.hDevMode,IS_ANSI,&d.nCopies,&d.Flags)){if(d.hDC)DeleteDC(d.hDC);if(d.hDevMode)GlobalFree(d.hDevMode);if(d.hDevNames)GlobalFree(d.hDevNames);free_snapshot(&s);*result=E_FAIL;return TRUE;} \
     if(ok && (!global_available(p->hDevMode) || !global_available(p->hDevNames))){if(d.hDC)DeleteDC(d.hDC);if(d.hDevMode)GlobalFree(d.hDevMode);if(d.hDevNames)GlobalFree(d.hDevNames);free_snapshot(&s);*result=E_FAIL;return TRUE;} \
     if(ok){if(p->hDevMode)GlobalFree(p->hDevMode);if(p->hDevNames)GlobalFree(p->hDevNames);p->hDevMode=d.hDevMode;p->hDevNames=d.hDevNames;p->hDC=d.hDC;p->Flags=(d.Flags & ~(PD_ENABLEPRINTHOOK|PD_RETURNDC|PD_RETURNIC))|(p->Flags & (PD_RETURNDC|PD_RETURNIC));p->nCopies=d.nCopies;p->nPageRanges=s.count;if(s.count)CopyMemory(p->lpPageRanges,s.ranges,s.count*sizeof(PRINTPAGERANGE));p->dwResultAction=PD_RESULT_PRINT;free_snapshot(&s);*result=S_OK;return TRUE;} \
     if(d.hDC)DeleteDC(d.hDC); \
