@@ -120,7 +120,7 @@ int wmain(int argc,WCHAR **argv)
     multi_sink sink={0};sink.iface.lpVtbl=&event_vtable;sink.refs=1;DWORD cookie=0;
     if(event_mode && FAILED(IFileOpenDialog_Advise(d,&sink.iface,&cookie)))return 7;
     IShellItem_Release(folder);tid=GetCurrentThreadId();HANDLE worker=CreateThread(NULL,0,observe,NULL,0,NULL);if(!worker)return 7;
-    hr=IFileOpenDialog_Show(d,NULL);DWORD wait=WaitForSingleObject(worker,12000);CloseHandle(worker);
+    hr=IFileOpenDialog_Show(d,NULL);DWORD wait=WaitForSingleObject(worker,12000),worker_exit=99;if(wait==WAIT_OBJECT_0)GetExitCodeThread(worker,&worker_exit);CloseHandle(worker);
     DWORD count=0;BOOL found1=FALSE,found2=FALSE;IShellItemArray *array=NULL;HRESULT ar=E_FAIL;
     IShellItem *single=NULL;HRESULT single_hr=E_FAIL;
     if(SUCCEEDED(hr)||veto_cancel){single_hr=IFileOpenDialog_GetResult(d,&single);if(single)IShellItem_Release(single);}
@@ -136,10 +136,10 @@ int wmain(int argc,WCHAR **argv)
     BOOL removed_dir=RemoveDirectoryW(dir),cleanup=cwd_reset&&removed1&&removed2&&real1&&real2&&removed_dir;
     printf("MULTI_CLEANUP cwd=%d first=%d second=%d targets=%d,%d dir=%d\n",cwd_reset,removed1,removed2,real1,real2,removed_dir);
     if(event_mode)printf("MULTI_EVENTS calls=%ld counts=%ld paths=%ld refs=%ld selections=%ld valid=%ld\n",sink.calls,sink.counts,sink.paths,sink.refs,sink.selection_calls,sink.selection_valid);
-    printf("COM_MULTI bits=%u seen=%ld selected=%ld cancel=%d hr=%08lx array=%08lx count=%lu paths=%d%d wait=%lu single=%08lx\n",(unsigned)(sizeof(void*)*8),seen,selected,cancel,(unsigned long)hr,(unsigned long)ar,count,found1,found2,wait,(unsigned long)single_hr);
+    printf("COM_MULTI bits=%u seen=%ld selected=%ld cancel=%d hr=%08lx array=%08lx count=%lu paths=%d%d wait=%lu worker=%lu single=%08lx\n",(unsigned)(sizeof(void*)*8),seen,selected,cancel,(unsigned long)hr,(unsigned long)ar,count,found1,found2,wait,worker_exit,(unsigned long)single_hr);
     BOOL sink_ok=!event_mode||(sink.refs==1&&sink.selection_calls>0&&sink.selection_calls==sink.selection_valid&&
         (cancel?sink.calls==0:veto_cancel?(sink.calls==1&&sink.counts==1&&sink.paths==1):(sink.calls==2&&sink.counts==2&&sink.paths==2)));
     BOOL result_ok=(cancel||veto_cancel)?(hr==HRESULT_FROM_WIN32(ERROR_CANCELLED)&&(!veto_cancel||(FAILED(ar)&&FAILED(single_hr)))):
         (SUCCEEDED(hr)&&SUCCEEDED(ar)&&count==(single_mode?1u:2u)&&found1&&(single_mode?!found2:found2)&&(single_mode?SUCCEEDED(single_hr):single_hr==E_UNEXPECTED));
-    return cleanup&&seen&&selected==(single_mode?1:2)&&wait==WAIT_OBJECT_0&&sink_ok&&result_ok?0:1;
+    return cleanup&&seen&&selected==(single_mode?1:2)&&wait==WAIT_OBJECT_0&&worker_exit==0&&sink_ok&&result_ok?0:1;
 }

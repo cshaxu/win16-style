@@ -2849,7 +2849,7 @@
       "path": "tests/ntw16s-dll/com_multi_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7ca7be40d4a3acbffca00d9554168e9630f9534f3d301b7ee90a3aa939b1ca0d",
+      "sha256": "c807fd5cb8e1ca184910c45aecf9f0aa811234e55a2a3e94c4803a2d813881cc",
       "disposition": "authored",
       "review": "T20 S1 native COM multi-select investigation; currently failing",
       "notice": "Project-authored test; no imported code or resources"
