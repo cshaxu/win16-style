@@ -735,3 +735,5 @@ PrintDlgEx Apply 不关闭窗口的候选探针：传统 PrintDlg 的实时结�
 PrintDlgEx Apply 另一原型：x64 自有私有桌面进程在进程内钩住 user32!EndDialog，先用直接调用确认钩子确实命中，再在传统 PrintDlg 中输入 copies=3，发送 IDOK 并临时抑制该对话框的 EndDialog。日志显示系统写回 copies=3 并创建 HDC，窗口句柄仍存在；但接着发送 IDCANCEL 不能结束对话框，两次实验均被35秒作业超时回收。第一次测试挂钩误指向程序导入 thunk，直接调用未命中，已修正为 GetProcAddress 且不作为结论。此结果仅证明该实验无法正常取消，并未确定内部原因；不采用拦截 EndDialog 作为产品方案，不发起打印，也未影响其他进程。
 
 PrintDlgEx 页码范围基础：新增内部纯C解析代码和双宽单元测试，数字/逗号/连字符的严格子集保留顺序、重复和重叠；检查输入范围、DWORD溢出、容量与失败不修改输出。它目前仅编入测试目标，尚未链接产品 DLL 或接管 PrintDlgEx；空格、本地化语法及系统全部错误提示未覆盖，不将其视为系统完整语法。单独 x86/x64 测试通过。print-ranges-foundation 双宽干净构建、原资源及 ABI 通过，print-ranges-focus 同批包10项聚焦测试通过、无跳过；该重建四文件与已发布 P244 摘要不同，没有用重建产物替换已发布文件。未变更产品行为，下一步仍需真实桥接及 Apply、返回值和回退验证。
+
+PrintDlgEx 组合原型：复用已入库范围解析器，在自有传统 PrintDlg 内增加 Apply 与多范围输入；x86/x64 的 Print、Apply 后更改份数再取消、直接取消六例退出0，分别得到动作1/2/0，前两例保留3份及 4–5、2–2 两段。x64 私有桌面 PrintWindow 布局对照发现初版新增输入框与原单范围控件并存会造成 All 状态矛盾；调整为隐藏原 from/to、在 Pages 行显示多范围输入，并将 Apply 排在 OK/Cancel 旁，截图为 build/t20-s1-dialog/print-ex-prototype-layout.bmp。以上为自有实验，不是调用真实 PrintDlgEx 的转接；未验证复制结果到 PRINTDLGEX、DPI、无障碍、初始化、其他 flag、驱动属性、错误、多个 Apply 或句柄/设备上下文契约，尚未入产品。实验截图只记录私有桌面 PrintWindow，不代表物理输入验收。
