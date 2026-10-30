@@ -2750,7 +2750,7 @@
       "path": "tests/ntw16s-dll/print_dialog_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "21876824a278fccd8d44fe9f501bb63573183a8ba179411a0feea9747dcbec10",
+      "sha256": "4b98bca79b3c1c0306f237918f80c42dc62d1415099a109c8eb758dc77dfa083",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture",
       "notice": "Project-authored fixture; manifest based on project demo manifest; no external resources copied"
