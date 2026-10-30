@@ -304,6 +304,9 @@ try{
         foreach($mode in @('ex-ansi-ranges','ex-ansi-apply')) {
             $cases+=Case "dialog-print-$mode-$arch" $dialogDriver @($run,$printTarget,$mode,'ansi') @("EX_ANSI bits=$bits",'ranges=2','copies=3','ansi_layout=1','old=1','frame=1','valid=1','DIALOG_DRIVER exit=0') 30
         }
+        foreach($mode in @('current-print','current-apply','current-initial','current-switch','current-keyboard')) {
+            $cases+=Case "dialog-print-$mode-$arch" $dialogDriver @($run,$printTarget,$mode,'wide') @("CURRENT_TEST bits=$bits",'seen=1','checked=1','exclusive=1','layout=1','old=1','frame=1','valid=1','DIALOG_DRIVER exit=0') 30
+        }
         foreach($mode in @('ex-nopages-print','ex-nopages-apply','ex-nopages-cancel','ex-options-print','ex-options-apply','ex-options-cancel','ex-nowarning-print','ex-nowarning-apply','ex-nowarning-cancel','ex-nocurrent-print','ex-nocurrent-apply','ex-nocurrent-cancel')) {
             $cases+=Case "dialog-print-$mode-$arch" $dialogDriver @($run,$printTarget,$mode,'wide') @("EX_NOPAGES bits=$bits",'old=1','frame=1','valid=1','DIALOG_DRIVER exit=0') 30
         }
