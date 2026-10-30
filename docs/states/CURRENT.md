@@ -33,7 +33,7 @@ M0 T20 S1准入：Win3.x文件夹选择与公共对话框桥接：调查、实�
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 1
-- Last delivery: M0 T20 S1 P226，提交2c16b36，实际远端源码和四文件已核对；P227 阶段包已本地构建、聚焦测试和双位置部署，提交推送及远端复核待完成。
+- Last delivery: M0 T20 S1 P227，提交5cf4a2c2607be316d2554b212e6a19c9a0e212b9；实际远端源码及四文件摘要与本地一致。
 - Open task: T20 S1 文件夹选择和公共对话框接口及经典参考调查。
 
 ## Technical Baseline
