@@ -2723,7 +2723,7 @@
       "path": "tests/ntw16s-dll/folder_dialog_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "11a8a7f5543fcddb439a2df77faa4530a8ca28972965856cfed10a09ade65b1e",
+      "sha256": "83edaf79ff00c75e3fe6d0422269849f2c8119006603190976c810741d26bc1f",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
@@ -2831,7 +2831,7 @@
       "path": "src/ntw16s-dll/injection/com_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b5148b48d4b8cd5886d8b1cd439978239a2f0b2cd37d1a98f8129222f1bdc633",
+      "sha256": "daf3bbd78c0f1826a368ef4dcef77d74c6d573ea3578901e4fc6f1fceeccea03",
       "disposition": "authored",
       "review": "T20 S1 COM dialog bridge and real native probe under development",
       "notice": "Project-authored; no imported code or resources"
@@ -2849,7 +2849,7 @@
       "path": "tests/ntw16s-dll/com_multi_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "394f8f8428953ed9ae8e02e5fb72801eaf090fd5495426e733d46f2871a6e01d",
+      "sha256": "c10cf82a163beced075ab8b749171c00584d6063d20cd939ad4e6f0578d53e6b",
       "disposition": "authored",
       "review": "T20 S1 native COM multi-select investigation; currently failing",
       "notice": "Project-authored test; no imported code or resources"
@@ -2867,7 +2867,7 @@
       "path": "tests/ntw16s-dll/com_events_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "5c0edd3b2349a6f2a9db683d386e3d3815ea91a6f7f386bdd92cad786312992f",
+      "sha256": "402807877fc4958d5323a5f89aa23698772eb43f83d813029263e284805d3f34",
       "disposition": "authored",
       "review": "T20 S1 native old dialog and COM event identity and veto probes",
       "notice": "Project-authored test; no imported code or resources"
@@ -2903,7 +2903,7 @@
       "path": "tests/ntw16s-dll/com_nav_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2f7016b6a9c6d768b4542c34936e79973dc9232aa4699f75c5e8af25bab52c05",
+      "sha256": "df406c42be0c1c4a5543ea11f627ea48bcc9fb7fa096edf63a5179dc92c161b4",
       "disposition": "authored",
       "review": "T20 S1 native COM folder navigation and veto baseline",
       "notice": "Project-authored test; no imported code or resources"
@@ -2933,6 +2933,33 @@
       "sha256": "a43064d83ed1985a3b97a09b8fa02990e8e1363197d2120b34c00b1deb791976",
       "disposition": "authored",
       "review": "T20 S1 live COM folder navigation and state probe",
+      "notice": "Project-authored test; no imported code or resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/com_redirect_target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "bb1e80f53b80856e0bc2dbe0904b717b692386db2b13bc7835dd6c78ab720045",
+      "disposition": "authored",
+      "review": "T20 S1 native COM dialog callback and navigation regression",
+      "notice": "Project-authored test; no imported code or resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/com_initial_redirect_target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "29f2e18eaf8b9b533005489e503cc3cccb26e13dcc91ac79908c3abd8436f708",
+      "disposition": "authored",
+      "review": "T20 S1 native COM dialog callback and navigation regression",
+      "notice": "Project-authored test; no imported code or resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/com_initial_veto_target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "dfc0c74c3d89a954b95ae7b335e79faa978dd43fb05baad4bfc25667655ab4a7",
+      "disposition": "authored",
+      "review": "T20 S1 native COM dialog callback and navigation regression",
       "notice": "Project-authored test; no imported code or resources"
     }
   ]

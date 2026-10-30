@@ -28,6 +28,17 @@ typedef struct file_proxy {
     IFileDialogCustomize *custom_native;
     IShellItem *result;
     IShellItem *live_folder;
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+    IShellItem *live_selection;
+    IShellItem *initial_default;
+    BOOL classic_navigating;
+    BOOL classic_initializing;
+    LRESULT classic_drive_index;
+    BOOL classic_close_pending;
+    HRESULT classic_close_result;
+    OPENFILENAMEW *classic_ofn;
+    BOOL classic_overwrite_suppressed;
+#endif
     HRESULT live_folder_error;
     IShellItemArray *results;
     WCHAR *title,*filter,*extension,*ok_label,*cancel_label,*file_label;
@@ -52,6 +63,10 @@ static ULONG proxy_release(file_proxy *p)
     LONG refs=InterlockedDecrement(&p->refs);
     if(!refs){proxy_events_release(p);if(p->result)IShellItem_Release(p->result);
         if(p->live_folder)IShellItem_Release(p->live_folder);
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+        if(p->live_selection)IShellItem_Release(p->live_selection);
+        if(p->initial_default)IShellItem_Release(p->initial_default);
+#endif
         if(p->results)IShellItemArray_Release(p->results);
         if(p->title)CoTaskMemFree(p->title);
         if(p->filter)CoTaskMemFree(p->filter);
@@ -361,11 +376,116 @@ static void proxy_events_release(file_proxy *p)
         (void)IFileDialog_Unadvise(p->native,e->cookie);event_release(&e->iface);}
 }
 
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+/* Research build only: copy references before calling application code because
+ * a listener may unsubscribe itself or another listener in the callback. */
+typedef struct classic_event_snapshot {
+    event_adapter **items;size_t count;
+} classic_event_snapshot;
+static BOOL classic_event_snapshot_init(file_proxy *p,classic_event_snapshot *snapshot)
+{
+    size_t count=0;for(event_adapter *e=p->events;e;e=e->next)++count;
+    snapshot->items=NULL;snapshot->count=0;if(!count)return TRUE;
+    if(count>SIZE_MAX/sizeof(*snapshot->items))return FALSE;
+    snapshot->items=HeapAlloc(GetProcessHeap(),0,count*sizeof(*snapshot->items));
+    if(!snapshot->items)return FALSE;
+    snapshot->count=count;
+    for(event_adapter *e=p->events;e;e=e->next){event_add(&e->iface);snapshot->items[--count]=e;}
+    return TRUE;
+}
+static void classic_event_snapshot_free(classic_event_snapshot *snapshot)
+{
+    for(size_t i=0;i<snapshot->count;++i)event_release(&snapshot->items[i]->iface);
+    HeapFree(GetProcessHeap(),0,snapshot->items);snapshot->items=NULL;snapshot->count=0;
+}
+typedef struct classic_event_call {file_proxy *proxy;classic_event_snapshot snapshot;} classic_event_call;
+static void classic_event_cleanup(void *data)
+{
+    classic_event_call *call=data;classic_event_snapshot_free(&call->snapshot);proxy_release(call->proxy);
+}
+enum classic_event_kind { CLASSIC_OK,CLASSIC_FOLDER_CHANGING,CLASSIC_FOLDER_CHANGED,CLASSIC_SELECTION_CHANGED,CLASSIC_TYPE_CHANGED };
+static NTW16S_UNWIND_FUNCTION HRESULT classic_event_dispatch(file_proxy *p,enum classic_event_kind kind,IShellItem *item)
+{
+    classic_event_call call={.proxy=p};
+    if(!classic_event_snapshot_init(p,&call.snapshot))return E_OUTOFMEMORY;
+    proxy_add(p);ntw16s_unwind_scope unwind;HRESULT result=S_OK;
+    NTW16S_UNWIND_BEGIN(unwind,classic_event_cleanup,&call);
+    for(size_t i=0;i<call.snapshot.count;++i){event_adapter *e=call.snapshot.items[i];if(e->owner!=p)continue;
+        HRESULT hr=kind==CLASSIC_OK?IFileDialogEvents_OnFileOk(e->target,(IFileDialog *)p):
+            kind==CLASSIC_FOLDER_CHANGING?IFileDialogEvents_OnFolderChanging(e->target,(IFileDialog *)p,item):
+            kind==CLASSIC_FOLDER_CHANGED?IFileDialogEvents_OnFolderChange(e->target,(IFileDialog *)p):
+            kind==CLASSIC_SELECTION_CHANGED?IFileDialogEvents_OnSelectionChange(e->target,(IFileDialog *)p):
+            IFileDialogEvents_OnTypeChange(e->target,(IFileDialog *)p);
+        if(kind==CLASSIC_OK && hr==S_FALSE){result=hr;break;}
+        if(kind==CLASSIC_FOLDER_CHANGING && hr!=S_OK && hr!=E_NOTIMPL){result=hr;break;}
+    }
+    NTW16S_UNWIND_END(unwind);return result;
+}
+static NTW16S_UNWIND_FUNCTION FDE_OVERWRITE_RESPONSE classic_overwrite_dispatch(file_proxy *p,IShellItem *item)
+{
+    classic_event_call call={.proxy=p};FDE_OVERWRITE_RESPONSE result=FDEOR_DEFAULT;
+    if(!classic_event_snapshot_init(p,&call.snapshot))return result;
+    proxy_add(p);ntw16s_unwind_scope unwind;
+    NTW16S_UNWIND_BEGIN(unwind,classic_event_cleanup,&call);
+    for(size_t i=0;i<call.snapshot.count;++i){event_adapter *e=call.snapshot.items[i];
+        if(e->owner!=p)continue;
+        FDE_OVERWRITE_RESPONSE response=FDEOR_DEFAULT;
+        HRESULT hr=IFileDialogEvents_OnOverwrite(e->target,(IFileDialog *)p,item,&response);
+        if(SUCCEEDED(hr)){result=response;break;}
+    }
+    NTW16S_UNWIND_END(unwind);return result;
+}
+static NTW16S_UNWIND_FUNCTION FDE_SHAREVIOLATION_RESPONSE classic_share_dispatch(file_proxy *p,IShellItem *item)
+{
+    classic_event_call call={.proxy=p};FDE_SHAREVIOLATION_RESPONSE result=FDESVR_DEFAULT;
+    if(!classic_event_snapshot_init(p,&call.snapshot))return result;
+    proxy_add(p);ntw16s_unwind_scope unwind;
+    NTW16S_UNWIND_BEGIN(unwind,classic_event_cleanup,&call);
+    for(size_t i=0;i<call.snapshot.count;++i){event_adapter *e=call.snapshot.items[i];
+        if(e->owner!=p)continue;
+        FDE_SHAREVIOLATION_RESPONSE response=FDESVR_DEFAULT;
+        HRESULT hr=IFileDialogEvents_OnShareViolation(e->target,(IFileDialog *)p,item,&response);
+        if(SUCCEEDED(hr)){result=response;break;}
+    }
+    NTW16S_UNWIND_END(unwind);return result;
+}
+typedef struct classic_owned_event {IShellItem *item;WCHAR *path;} classic_owned_event;
+static void classic_owned_event_cleanup(void *data)
+{
+    classic_owned_event *owned=data;if(owned->item)IShellItem_Release(owned->item);
+    if(owned->path)CoTaskMemFree(owned->path);
+}
+/* Takes the Shell-item reference. A path, if supplied, stays owned by the
+ * caller on normal return and is reclaimed here during exceptional unwind. */
+static NTW16S_UNWIND_FUNCTION HRESULT classic_dispatch_owned(file_proxy *p,enum classic_event_kind kind,IShellItem *item,WCHAR *path)
+{
+    classic_owned_event owned={item,path};ntw16s_unwind_scope unwind;HRESULT hr;
+    NTW16S_UNWIND_BEGIN(unwind,classic_owned_event_cleanup,&owned);
+    hr=classic_event_dispatch(p,kind,item);owned.path=NULL;
+    NTW16S_UNWIND_END(unwind);return hr;
+}
+static NTW16S_UNWIND_FUNCTION FDE_OVERWRITE_RESPONSE classic_overwrite_owned(file_proxy *p,IShellItem *item)
+{
+    classic_owned_event owned={item,NULL};ntw16s_unwind_scope unwind;FDE_OVERWRITE_RESPONSE result;
+    NTW16S_UNWIND_BEGIN(unwind,classic_owned_event_cleanup,&owned);
+    result=classic_overwrite_dispatch(p,item);
+    NTW16S_UNWIND_END(unwind);return result;
+}
+static NTW16S_UNWIND_FUNCTION FDE_SHAREVIOLATION_RESPONSE classic_share_owned(file_proxy *p,IShellItem *item)
+{
+    classic_owned_event owned={item,NULL};ntw16s_unwind_scope unwind;FDE_SHAREVIOLATION_RESPONSE result;
+    NTW16S_UNWIND_BEGIN(unwind,classic_owned_event_cleanup,&owned);
+    result=classic_share_dispatch(p,item);
+    NTW16S_UNWIND_END(unwind);return result;
+}
+static UINT_PTR classic_event_file_ok(file_proxy *p,OPENFILENAMEW *ofn);
+#endif
+
 static HRESULT proxy_result(file_proxy *p,IShellItem **item)
 {
     if(!item)return E_POINTER;
     if(!p->completed)return IFileDialog_GetResult(p->native,item);
-    if(p->results){*item=NULL;return E_FAIL;}
+    if(p->results){*item=NULL;return E_UNEXPECTED;}
     *item=p->result;if(!*item)return E_FAIL;IShellItem_AddRef(*item);return S_OK;
 }
 typedef struct native_call {IFileDialog *dialog;HWND owner;} native_call;
@@ -427,6 +547,9 @@ static void classic_capture_folder(file_proxy *p)
     if(path)CoTaskMemFree(path);
     if(p->live_folder)IShellItem_Release(p->live_folder);
     p->live_folder=item;p->live_folder_error=hr;
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+    if(p->live_selection){IShellItem_Release(p->live_selection);p->live_selection=NULL;}
+#endif
 }
 static HRESULT proxy_get_folder(file_proxy *p,IShellItem **item)
 {
@@ -437,6 +560,120 @@ static HRESULT proxy_get_folder(file_proxy *p,IShellItem **item)
     *item=p->live_folder;IShellItem_AddRef(*item);return S_OK;
 }
 static const WCHAR folder_message_name[]=L"Win16Style.T20.ComSetFolder";
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+static void classic_capture_selection(HWND w,file_proxy *p)
+{
+    HWND list=GetDlgItem(w,lst1);IShellItem *item=NULL;PWSTR folder=NULL;
+    LRESULT selected=list?SendMessageW(list,LB_GETCURSEL,0,0):LB_ERR;
+    LRESULT length=selected==LB_ERR?LB_ERR:SendMessageW(list,LB_GETTEXTLEN,(WPARAM)selected,0);
+    if(length>=0 && length<MAX_PATH && p->live_folder &&
+       SUCCEEDED(IShellItem_GetDisplayName(p->live_folder,SIGDN_FILESYSPATH,&folder))){
+        WCHAR name[MAX_PATH],path[32768];
+        if(SendMessageW(list,LB_GETTEXT,(WPARAM)selected,(LPARAM)name)!=LB_ERR){
+            size_t n=wcslen(folder);int written=swprintf(path,ARRAYSIZE(path),L"%ls%ls%ls",folder,n && folder[n-1]==L'\\'?L"":L"\\",name);
+            if(written>=0 && (size_t)written<ARRAYSIZE(path))(void)SHCreateItemFromParsingName(path,NULL,&IID_IShellItem,(void **)&item);
+        }
+    }
+    if(folder)CoTaskMemFree(folder);
+    if(p->live_selection)IShellItem_Release(p->live_selection);
+    p->live_selection=item;
+}
+static HRESULT proxy_get_selection(file_proxy *p,IShellItem **item)
+{
+    if(!p->active_window)return IFileDialog_GetCurrentSelection(p->native,item);
+    if(!item)return E_POINTER;
+    *item=p->live_selection;if(!*item)return E_FAIL;IShellItem_AddRef(*item);return S_OK;
+}
+static HRESULT proxy_close(file_proxy *p,HRESULT result)
+{
+    HWND w=p->active_window;if(!w)return IFileDialog_Close(p->native,result);
+    if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId())return RPC_E_WRONG_THREAD;
+    if(!PostMessageW(w,WM_CLOSE,0,0)){DWORD error=GetLastError();return HRESULT_FROM_WIN32(error?error:ERROR_INVALID_FUNCTION);}
+    p->classic_close_pending=TRUE;p->classic_close_result=result;return S_OK;
+}
+static BOOL classic_list_changing(HWND w,file_proxy *p)
+{
+    HWND list=GetDlgItem(w,lst2);if(!list || !p->live_folder)return TRUE;
+    LRESULT selected=SendMessageW(list,LB_GETCURSEL,0,0);
+    LRESULT length=selected==LB_ERR?LB_ERR:SendMessageW(list,LB_GETTEXTLEN,(WPARAM)selected,0);
+    if(length<0 || length>=MAX_PATH)return TRUE;
+    WCHAR name[MAX_PATH],path[32768];PWSTR base=NULL;
+    if(SendMessageW(list,LB_GETTEXT,(WPARAM)selected,(LPARAM)name)==LB_ERR ||
+       FAILED(IShellItem_GetDisplayName(p->live_folder,SIGDN_FILESYSPATH,&base)))return TRUE;
+    size_t base_length=wcslen(base),depth=0;
+    if(base_length<3 || base[1]!=L':' || base[2]!=L'\\'){CoTaskMemFree(base);return TRUE;}
+    for(size_t i=3;i<base_length;){while(i<base_length && base[i]==L'\\')++i;if(i>=base_length)break;
+        ++depth;while(i<base_length && base[i]!=L'\\')++i;}
+    int n;
+    if((size_t)selected<=depth){
+        size_t end=3,component=0;
+        while(component<(size_t)selected && end<base_length){while(end<base_length && base[end]==L'\\')++end;
+            size_t begin=end;while(end<base_length && base[end]!=L'\\')++end;++component;
+            if(component==(size_t)selected && ((size_t)length!=end-begin || _wcsnicmp(base+begin,name,end-begin))){CoTaskMemFree(base);return TRUE;}}
+        if(!selected && (length!=3 || _wcsnicmp(base,name,3))){CoTaskMemFree(base);return TRUE;}
+        if(end>=ARRAYSIZE(path)){CoTaskMemFree(base);return TRUE;}
+        memcpy(path,base,end*sizeof(WCHAR));path[end]=0;n=(int)end;
+    }else n=swprintf(path,ARRAYSIZE(path),L"%ls%ls%ls",base,base[base_length-1]==L'\\'?L"":L"\\",name);
+    CoTaskMemFree(base);
+    if(n<0 || (size_t)n>=ARRAYSIZE(path))return TRUE;
+    IShellItem *target=NULL;if(FAILED(SHCreateItemFromParsingName(path,NULL,&IID_IShellItem,(void **)&target)))return TRUE;
+    HRESULT hr=classic_dispatch_owned(p,CLASSIC_FOLDER_CHANGING,target,NULL);
+    return hr==S_OK && !p->pending_folder;
+}
+static BOOL classic_typed_changing(HWND w,file_proxy *p)
+{
+    HWND edit=GetDlgItem(w,edt1);int length=edit?GetWindowTextLengthW(edit):-1;
+    if(length<=0 || length>=32768)return TRUE;
+    WCHAR *path=CoTaskMemAlloc(((size_t)length+1)*sizeof(WCHAR));if(!path)return FALSE;
+    GetWindowTextW(edit,path,length+1);DWORD attrs=GetFileAttributesW(path);
+    if(attrs==INVALID_FILE_ATTRIBUTES || !(attrs&FILE_ATTRIBUTE_DIRECTORY)){CoTaskMemFree(path);return TRUE;}
+    IShellItem *target=NULL;HRESULT hr=SHCreateItemFromParsingName(path,NULL,&IID_IShellItem,(void **)&target);CoTaskMemFree(path);
+    if(FAILED(hr))return TRUE;
+    hr=classic_dispatch_owned(p,CLASSIC_FOLDER_CHANGING,target,NULL);
+    return hr==S_OK && !p->pending_folder;
+}
+static BOOL classic_drive_changing(HWND w,file_proxy *p)
+{
+    HWND combo=GetDlgItem(w,cmb2);LRESULT index=combo?SendMessageW(combo,CB_GETCURSEL,0,0):CB_ERR;
+    LRESULT length=index==CB_ERR?CB_ERR:SendMessageW(combo,CB_GETLBTEXTLEN,(WPARAM)index,0);
+    if(length<2 || length>=MAX_PATH)return TRUE;
+    WCHAR label[MAX_PATH],relative[4],path[32768];
+    if(SendMessageW(combo,CB_GETLBTEXT,(WPARAM)index,(LPARAM)label)==CB_ERR || label[1]!=L':' ||
+       !((label[0]>=L'A'&&label[0]<=L'Z')||(label[0]>=L'a'&&label[0]<=L'z')))return TRUE;
+    relative[0]=label[0];relative[1]=L':';relative[2]=L'.';relative[3]=0;
+    DWORD written=GetFullPathNameW(relative,ARRAYSIZE(path),path,NULL);
+    if(!written || written>=ARRAYSIZE(path))return TRUE;
+    IShellItem *target=NULL;if(FAILED(SHCreateItemFromParsingName(path,NULL,&IID_IShellItem,(void **)&target)))return TRUE;
+    HRESULT hr=classic_dispatch_owned(p,CLASSIC_FOLDER_CHANGING,target,NULL);
+    if(hr!=S_OK || p->pending_folder){if(p->classic_drive_index!=CB_ERR)SendMessageW(combo,CB_SETCURSEL,(WPARAM)p->classic_drive_index,0);return FALSE;}
+    p->classic_drive_index=index;return TRUE;
+}
+static BOOL classic_overwrite_check(HWND w,file_proxy *p)
+{
+    OPENFILENAMEW *ofn=p->classic_ofn;if(!ofn)return TRUE;
+    if(p->classic_overwrite_suppressed){ofn->Flags|=OFN_OVERWRITEPROMPT;p->classic_overwrite_suppressed=FALSE;}
+    if(!p->save || !(ofn->Flags&OFN_OVERWRITEPROMPT))return TRUE;
+    WCHAR entered[32768],path[32768];HWND edit=GetDlgItem(w,edt1);
+    int length=edit?GetWindowTextW(edit,entered,ARRAYSIZE(entered)):0;
+    if(length<=0 || length>=(int)ARRAYSIZE(entered)-1)return TRUE;
+    DWORD written=GetFullPathNameW(entered,ARRAYSIZE(path),path,NULL);
+    if(!written || written>=ARRAYSIZE(path))return TRUE;
+    if(p->extension && *p->extension){
+        WCHAR *name=wcsrchr(path,L'\\');name=name?name+1:path;
+        if(*name && !wcschr(name,L'.')){size_t base=wcslen(path),ext=wcslen(p->extension);
+            if(base+1+ext>=ARRAYSIZE(path))return TRUE;
+            path[base]=L'.';memcpy(path+base+1,p->extension,(ext+1)*sizeof(WCHAR));}
+    }
+    DWORD attrs=GetFileAttributesW(path);
+    if(attrs==INVALID_FILE_ATTRIBUTES || (attrs&FILE_ATTRIBUTE_DIRECTORY))return TRUE;
+    IShellItem *item=NULL;if(FAILED(SHCreateItemFromParsingName(path,NULL,&IID_IShellItem,(void **)&item)))return TRUE;
+    FDE_OVERWRITE_RESPONSE response=classic_overwrite_owned(p,item);
+    if(!IsWindow(w) || p->active_window!=w || p->classic_ofn!=ofn)return FALSE;
+    if(response==FDEOR_REFUSE)return FALSE;
+    if(response==FDEOR_ACCEPT){ofn->Flags&=~OFN_OVERWRITEPROMPT;p->classic_overwrite_suppressed=TRUE;}
+    return TRUE;
+}
+#endif
 static HRESULT proxy_set_folder(file_proxy *p,IShellItem *item)
 {
     HWND w=p->active_window;
@@ -463,40 +700,154 @@ static HRESULT proxy_set_folder(file_proxy *p,IShellItem *item)
     if(previous)CoTaskMemFree(previous);
     return hr;
 }
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+typedef struct classic_navigation_scope {file_proxy *proxy;WCHAR *folder,*filename;} classic_navigation_scope;
+static void classic_navigation_cleanup(void *data)
+{
+    classic_navigation_scope *scope=data;scope->proxy->classic_navigating=FALSE;
+    if(scope->folder)CoTaskMemFree(scope->folder);
+    if(scope->filename)CoTaskMemFree(scope->filename);
+}
+static NTW16S_UNWIND_FUNCTION void classic_navigate_folder(HWND w,file_proxy *p,PCWSTR key)
+#else
 static void classic_navigate_folder(HWND w,file_proxy *p,PCWSTR key)
+#endif
 {
     WCHAR *folder=p->pending_folder;p->pending_folder=NULL;if(!folder)return;
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+    classic_navigation_scope navigation={p,folder,NULL};ntw16s_unwind_scope unwind;
+    NTW16S_UNWIND_BEGIN(unwind,classic_navigation_cleanup,&navigation);
+    if(p->events){IShellItem *destination=NULL;HRESULT hr=SHCreateItemFromParsingName(folder,NULL,&IID_IShellItem,(void **)&destination);
+        if(SUCCEEDED(hr))hr=classic_dispatch_owned(p,CLASSIC_FOLDER_CHANGING,destination,NULL);
+        if(hr!=S_OK || p->pending_folder || !IsWindow(w) || GetPropW(w,key)!=p)goto done;}
+#endif
     HWND edit=GetDlgItem(w,edt1);int length=edit?GetWindowTextLengthW(edit):-1;
     WCHAR *filename=length>=0 && length<32768?CoTaskMemAlloc(((size_t)length+1)*sizeof(WCHAR)):NULL;
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+    navigation.filename=filename;
+#endif
     if(filename){
         GetWindowTextW(edit,filename,length+1);
         DWORD attrs=GetFileAttributesW(folder);
         if(attrs!=INVALID_FILE_ATTRIBUTES && (attrs&FILE_ATTRIBUTE_DIRECTORY) && SetWindowTextW(edit,folder)){
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+            p->classic_navigating=TRUE;
+#endif
             SendMessageW(w,WM_COMMAND,MAKEWPARAM(IDOK,BN_CLICKED),(LPARAM)GetDlgItem(w,IDOK));
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+            if(IsWindow(w) && GetPropW(w,key)==p)p->classic_navigating=FALSE;
+#endif
             if(IsWindow(w) && GetPropW(w,key)==p && IsWindow(edit))SetWindowTextW(edit,filename);
         }
+#ifndef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
         CoTaskMemFree(filename);
+#endif
     }
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+done:
+    NTW16S_UNWIND_END(unwind);
+#else
     CoTaskMemFree(folder);
+#endif
 }
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+typedef struct classic_initial_scope {
+    file_proxy *proxy;IShellItem *item;PWSTR path;
+    BOOL initializing;
+} classic_initial_scope;
+static void classic_initial_cleanup(void *data)
+{
+    classic_initial_scope *scope=data;
+    scope->proxy->classic_initializing=scope->initializing;
+    if(scope->path)CoTaskMemFree(scope->path);
+    if(scope->item)IShellItem_Release(scope->item);
+}
+static NTW16S_UNWIND_FUNCTION void classic_initial_events(HWND w,file_proxy *p,PCWSTR key)
+{
+    classic_initial_scope state={p,p->live_folder,NULL,p->classic_initializing};
+    ntw16s_unwind_scope unwind;IShellItem_AddRef(state.item);
+    NTW16S_UNWIND_BEGIN(unwind,classic_initial_cleanup,&state);
+    (void)IShellItem_GetDisplayName(state.item,SIGDN_FILESYSPATH,&state.path);
+    IShellItem_AddRef(state.item);p->classic_initializing=TRUE;
+    HRESULT changing=classic_dispatch_owned(p,CLASSIC_FOLDER_CHANGING,state.item,NULL);
+    p->classic_initializing=state.initializing;
+    if(changing!=S_OK && !p->pending_folder && p->initial_default && IsWindow(w) && GetPropW(w,key)==p){
+        PWSTR fallback=NULL;
+        if(SUCCEEDED(IShellItem_GetDisplayName(p->initial_default,SIGDN_FILESYSPATH,&fallback)))
+            p->pending_folder=fallback;
+    }
+    if(IsWindow(w) && GetPropW(w,key)==p && p->pending_folder)
+        classic_navigate_folder(w,p,key);
+    if(IsWindow(w) && GetPropW(w,key)==p && state.path && p->live_folder!=state.item){
+        if(p->pending_folder)CoTaskMemFree(p->pending_folder);
+        p->pending_folder=state.path;state.path=NULL;
+        classic_navigate_folder(w,p,key);
+    }else if(IsWindow(w) && GetPropW(w,key)==p && p->events)
+        (void)classic_event_dispatch(p,CLASSIC_FOLDER_CHANGED,NULL);
+    if(IsWindow(w) && GetPropW(w,key)==p && p->events && p->filter)
+        (void)classic_event_dispatch(p,CLASSIC_TYPE_CHANGED,NULL);
+    NTW16S_UNWIND_END(unwind);
+}
+#endif
 static UINT_PTR CALLBACK classic_hook(HWND w,UINT message,WPARAM wp,LPARAM lp)
 {
     (void)wp;
     static const WCHAR key[]=L"Win16Style.T20.ComDialog";
     if(message==WM_INITDIALOG && lp){OPENFILENAMEW *ofn=(OPENFILENAMEW *)lp;file_proxy *p=(file_proxy *)ofn->lCustData;
-        if(p && SetPropW(w,key,p)){p->active_window=w;classic_capture_folder(p);}
+        if(p && SetPropW(w,key,p)){p->active_window=w;classic_capture_folder(p);
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+            p->classic_ofn=ofn;HWND drives=GetDlgItem(w,cmb2);p->classic_drive_index=drives?SendMessageW(drives,CB_GETCURSEL,0,0):CB_ERR;
+            if(p->events && p->live_folder)classic_initial_events(w,p,key);
+#endif
+        }
         if(p && p->ok_label)SetDlgItemTextW(w,IDOK,p->ok_label);
         if(p && p->cancel_label)SetDlgItemTextW(w,IDCANCEL,p->cancel_label);
         if(p && p->file_label)SetDlgItemTextW(w,stc3,p->file_label);
-    }else if(message==WM_NCDESTROY){file_proxy *p=GetPropW(w,key);
+    }
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+    else if(message==WM_COMMAND && LOWORD(wp)==lst2 && HIWORD(wp)==LBN_DBLCLK){file_proxy *p=GetPropW(w,key);
+        if(p && p->events && !classic_list_changing(w,p))return 1;}
+    else if(message==WM_COMMAND && LOWORD(wp)==IDOK){file_proxy *p=GetPropW(w,key);
+        if(p && p->events && !p->classic_navigating && (!classic_typed_changing(w,p)||!classic_overwrite_check(w,p)))return 1;}
+    else if(message==WM_COMMAND && LOWORD(wp)==cmb2 && HIWORD(wp)==CBN_SELCHANGE){file_proxy *p=GetPropW(w,key);
+        if(p && p->events && !classic_drive_changing(w,p))return 1;}
+#endif
+    else if(message==WM_NCDESTROY){file_proxy *p=GetPropW(w,key);
         if(p){RemovePropW(w,key);if(p->active_window==w)p->active_window=NULL;
             if(p->live_folder){IShellItem_Release(p->live_folder);p->live_folder=NULL;}
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+            if(p->live_selection){IShellItem_Release(p->live_selection);p->live_selection=NULL;}
+            p->classic_ofn=NULL;p->classic_overwrite_suppressed=FALSE;
+#endif
             if(p->pending_folder){CoTaskMemFree(p->pending_folder);p->pending_folder=NULL;}}}
     else if(message>=0xc000 && message<=0xffff){UINT selection=RegisterWindowMessageW(LBSELCHSTRINGW);
         if(selection && message==selection && (wp==lst2 || wp==cmb2)){
-            file_proxy *p=GetPropW(w,key);if(p)classic_capture_folder(p);}
+            file_proxy *p=GetPropW(w,key);if(p){classic_capture_folder(p);
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+                if(wp==cmb2){HWND drives=GetDlgItem(w,cmb2);p->classic_drive_index=drives?SendMessageW(drives,CB_GETCURSEL,0,0):CB_ERR;}
+                if(p->events)(void)classic_event_dispatch(p,CLASSIC_FOLDER_CHANGED,NULL);
+#endif
+            }}
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+        if(selection && message==selection && wp==lst1){file_proxy *p=GetPropW(w,key);if(p){classic_capture_selection(w,p);
+            if(p->events)(void)classic_event_dispatch(p,CLASSIC_SELECTION_CHANGED,NULL);}}
+        if(selection && message==selection && wp==cmb1){file_proxy *p=GetPropW(w,key);
+            if(p && p->events)(void)classic_event_dispatch(p,CLASSIC_TYPE_CHANGED,NULL);}
+#endif
         UINT navigate=RegisterWindowMessageW(folder_message_name);
-        if(navigate && message==navigate){file_proxy *p=GetPropW(w,key);if(p)classic_navigate_folder(w,p,key);return 1;}}
+        if(navigate && message==navigate){file_proxy *p=GetPropW(w,key);if(p)classic_navigate_folder(w,p,key);return 1;}
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+        UINT fileok=RegisterWindowMessageW(FILEOKSTRINGW);
+        if(fileok && message==fileok){file_proxy *p=GetPropW(w,key);if(p && p->events)return classic_event_file_ok(p,(OPENFILENAMEW *)lp);}
+        UINT share=RegisterWindowMessageW(SHAREVISTRINGW);
+        if(share && message==share){file_proxy *p=GetPropW(w,key);FILEOPENDIALOGOPTIONS options=0;IShellItem *item=NULL;
+            if(p && p->events && lp && SUCCEEDED(IFileDialog_GetOptions(p->native,&options)) && (options&FOS_SHAREAWARE) &&
+                SUCCEEDED(SHCreateItemFromParsingName((PCWSTR)lp,NULL,&IID_IShellItem,(void **)&item))){
+                FDE_SHAREVIOLATION_RESPONSE response=classic_share_owned(p,item);
+                if(response==FDESVR_ACCEPT)return OFN_SHAREFALLTHROUGH;
+                if(response==FDESVR_REFUSE)return OFN_SHARENOWARN;}}
+#endif
+    }
     return 0;
 }
 /* The legacy multi-select contract returns space-separated 8.3 names. The
@@ -525,6 +876,42 @@ static HRESULT open_item(PCWSTR path,BOOL keep_link,IShellItem **item)
     }
     return SHCreateItemFromParsingName(path,NULL,&IID_IShellItem,(void **)item);
 }
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+static HRESULT proxy_multi_result(file_proxy *p,WCHAR *file,WORD offset,BOOL keep_link);
+typedef struct classic_result_scope {file_proxy *proxy;IShellItem *item;IShellItemArray *items;BOOL revoke;} classic_result_scope;
+static void classic_result_cleanup(void *data)
+{
+    classic_result_scope *scope=data;
+    if(scope->revoke && scope->item && scope->proxy->result==scope->item){IShellItem_Release(scope->item);
+        scope->proxy->result=NULL;scope->proxy->completed=FALSE;}
+    if(scope->revoke && scope->items && scope->proxy->results==scope->items){IShellItemArray_Release(scope->items);
+        scope->proxy->results=NULL;scope->proxy->completed=FALSE;}
+}
+static NTW16S_UNWIND_FUNCTION UINT_PTR classic_event_file_ok(file_proxy *p,OPENFILENAMEW *ofn)
+{
+    if(!ofn || !ofn->lpstrFile)return 1;
+    if(p->result){IShellItem_Release(p->result);p->result=NULL;}
+    if(p->results){IShellItemArray_Release(p->results);p->results=NULL;}
+    p->completed=FALSE;
+    IShellItem *item=NULL;HRESULT hr;
+    if(ofn->Flags&OFN_ALLOWMULTISELECT){size_t length=wcsnlen(ofn->lpstrFile,ofn->nMaxFile);
+        if(length==ofn->nMaxFile)return 1;
+        WCHAR *copy=CoTaskMemAlloc((length+1)*sizeof(WCHAR));if(!copy)return 1;
+        memcpy(copy,ofn->lpstrFile,(length+1)*sizeof(WCHAR));
+        hr=proxy_multi_result(p,copy,ofn->nFileOffset,(ofn->Flags&OFN_NODEREFERENCELINKS)!=0);CoTaskMemFree(copy);
+        item=p->result;
+    }else hr=p->save?SHCreateItemFromParsingName(ofn->lpstrFile,NULL,&IID_IShellItem,(void **)&item):
+        open_item(ofn->lpstrFile,(ofn->Flags&OFN_NODEREFERENCELINKS)!=0,&item);
+    if(p->save && hr==HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND))hr=save_item(ofn->lpstrFile,&item);
+    if(FAILED(hr))return 1;
+    p->result=item;p->completed=TRUE;
+    classic_result_scope result={p,item,p->results,TRUE};ntw16s_unwind_scope unwind;
+    NTW16S_UNWIND_BEGIN(unwind,classic_result_cleanup,&result);
+    hr=classic_event_dispatch(p,CLASSIC_OK,NULL);
+    result.revoke=hr==S_FALSE || FAILED(hr);
+    NTW16S_UNWIND_END(unwind);return result.revoke?1:0;
+}
+#endif
 static HRESULT proxy_multi_result(file_proxy *p,WCHAR *file,WORD offset,BOOL keep_link)
 {
     size_t length=wcslen(file);
@@ -555,15 +942,26 @@ static HRESULT proxy_multi_result(file_proxy *p,WCHAR *file,WORD offset,BOOL kee
     if(SUCCEEDED(hr))p->completed=TRUE;
     return hr;
 }
-static HRESULT proxy_show(file_proxy *p,HWND owner)
+static HRESULT proxy_show_impl(file_proxy *p,HWND owner)
 {
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+    p->classic_close_pending=FALSE;
+#endif
     FILEOPENDIALOGOPTIONS flags=0;
     if(p->result){IShellItem_Release(p->result);p->result=NULL;}
     if(p->results){IShellItemArray_Release(p->results);p->results=NULL;}p->completed=FALSE;
     HRESULT hr=IFileDialog_GetOptions(p->native,&flags);
     const DWORD supported=FOS_OVERWRITEPROMPT|FOS_NOCHANGEDIR|FOS_FORCEFILESYSTEM|
-        FOS_PATHMUSTEXIST|FOS_FILEMUSTEXIST|FOS_CREATEPROMPT|FOS_NOREADONLYRETURN|FOS_NOTESTFILECREATE|FOS_PICKFOLDERS|FOS_ALLOWMULTISELECT|FOS_FORCESHOWHIDDEN|FOS_NODEREFERENCELINKS;
+        FOS_PATHMUSTEXIST|FOS_FILEMUSTEXIST|FOS_CREATEPROMPT|FOS_NOREADONLYRETURN|FOS_NOTESTFILECREATE|FOS_PICKFOLDERS|FOS_ALLOWMULTISELECT|FOS_FORCESHOWHIDDEN|FOS_NODEREFERENCELINKS
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+        |FOS_SHAREAWARE
+#endif
+        ;
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+    if(FAILED(hr)||p->unsupported || ((flags&FOS_SHAREAWARE) && !p->events) || (p->events && (flags&FOS_PICKFOLDERS)) || (flags & ~supported))return show_native(p,owner);
+#else
     if(FAILED(hr)||p->unsupported || p->events || (flags & ~supported))return show_native(p,owner);
+#endif
     if((flags&FOS_ALLOWMULTISELECT) && (p->save || (flags&FOS_PICKFOLDERS) || !(flags&FOS_FILEMUSTEXIST)))return show_native(p,owner);
     if((flags&FOS_NODEREFERENCELINKS) && (p->save || (flags&FOS_PICKFOLDERS)))return show_native(p,owner);
     if(flags&FOS_FORCESHOWHIDDEN)return show_native(p,owner);
@@ -600,14 +998,39 @@ static HRESULT proxy_show(file_proxy *p,HWND owner)
     classic_call call={&ofn,p->save,FALSE,0};
     hr=ntw16s_dialog_style_scope(classic_show,&call);if(folder_path)CoTaskMemFree(folder_path);
     if(FAILED(hr))return hr;
-    if(!call.selected)return call.error?HRESULT_FROM_WIN32(ERROR_INVALID_DATA):HRESULT_FROM_WIN32(ERROR_CANCELLED);
+    if(!call.selected){
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+        if(p->classic_close_pending)return p->classic_close_result;
+#endif
+        return call.error?HRESULT_FROM_WIN32(ERROR_INVALID_DATA):HRESULT_FROM_WIN32(ERROR_CANCELLED);}
     if(p->filter && ofn.nFilterIndex){p->filter_index=ofn.nFilterIndex;(void)IFileDialog_SetFileTypeIndex(p->native,p->filter_index);}
-    if(flags&FOS_ALLOWMULTISELECT)return proxy_multi_result(p,file,ofn.nFileOffset,(flags&FOS_NODEREFERENCELINKS)!=0);
+    if(flags&FOS_ALLOWMULTISELECT){
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+        if(p->result){IShellItem_Release(p->result);p->result=NULL;}
+        if(p->results){IShellItemArray_Release(p->results);p->results=NULL;}
+        p->completed=FALSE;
+#endif
+        return proxy_multi_result(p,file,ofn.nFileOffset,(flags&FOS_NODEREFERENCELINKS)!=0);}
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+    if(p->result){IShellItem_Release(p->result);p->result=NULL;p->completed=FALSE;}
+#endif
     hr=p->save?SHCreateItemFromParsingName(file,NULL,&IID_IShellItem,(void **)&p->result):open_item(file,(flags&FOS_NODEREFERENCELINKS)!=0,&p->result);
     if(p->save && hr==HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND))hr=save_item(file,&p->result);
     if(SUCCEEDED(hr))p->completed=TRUE;
     return hr;
 }
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+static void classic_proxy_release(void *data){proxy_release(data);}
+static NTW16S_UNWIND_FUNCTION HRESULT proxy_show(file_proxy *p,HWND owner)
+{
+    proxy_add(p);ntw16s_unwind_scope unwind;HRESULT hr;
+    NTW16S_UNWIND_BEGIN(unwind,classic_proxy_release,p);
+    hr=proxy_show_impl(p,owner);
+    NTW16S_UNWIND_END(unwind);return hr;
+}
+#else
+static HRESULT proxy_show(file_proxy *p,HWND owner){return proxy_show_impl(p,owner);}
+#endif
 static HRESULT proxy_title(file_proxy *p,LPCWSTR text)
 {
     HRESULT hr=IFileDialog_SetTitle(p->native,text);if(FAILED(hr))return hr;
@@ -761,7 +1184,11 @@ static HRESULT STDMETHODCALLTYPE v2_GetFolder(IFileDialog2 *This, IShellItem **p
 
 static HRESULT STDMETHODCALLTYPE v2_GetCurrentSelection(IFileDialog2 *This, IShellItem **ppsi)
 {
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+    file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,v2));return proxy_get_selection(p,ppsi);
+#else
     file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,v2));return IFileDialog2_GetCurrentSelection(p->v2_native ,ppsi);
+#endif
 }
 
 static HRESULT STDMETHODCALLTYPE v2_SetFileName(IFileDialog2 *This, LPCWSTR pszName)
@@ -806,7 +1233,11 @@ static HRESULT STDMETHODCALLTYPE v2_SetDefaultExtension(IFileDialog2 *This, LPCW
 
 static HRESULT STDMETHODCALLTYPE v2_Close(IFileDialog2 *This, HRESULT hr)
 {
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+    file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,v2));return proxy_close(p,hr);
+#else
     file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,v2));p->unsupported=TRUE;return IFileDialog2_Close(p->v2_native ,hr);
+#endif
 }
 
 static HRESULT STDMETHODCALLTYPE v2_SetClientGuid(IFileDialog2 *This, REFGUID guid)
@@ -944,7 +1375,11 @@ static HRESULT STDMETHODCALLTYPE open_GetFolder(IFileOpenDialog *This, IShellIte
 
 static HRESULT STDMETHODCALLTYPE open_GetCurrentSelection(IFileOpenDialog *This, IShellItem **ppsi)
 {
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+    file_proxy *p=(file_proxy *)This;return proxy_get_selection(p,ppsi);
+#else
     file_proxy *p=(file_proxy *)This;return IFileOpenDialog_GetCurrentSelection((IFileOpenDialog *)p->variant ,ppsi);
+#endif
 }
 
 static HRESULT STDMETHODCALLTYPE open_SetFileName(IFileOpenDialog *This, LPCWSTR pszName)
@@ -989,7 +1424,11 @@ static HRESULT STDMETHODCALLTYPE open_SetDefaultExtension(IFileOpenDialog *This,
 
 static HRESULT STDMETHODCALLTYPE open_Close(IFileOpenDialog *This, HRESULT hr)
 {
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+    file_proxy *p=(file_proxy *)This;return proxy_close(p,hr);
+#else
     file_proxy *p=(file_proxy *)This;p->unsupported=TRUE;return IFileOpenDialog_Close((IFileOpenDialog *)p->variant ,hr);
+#endif
 }
 
 static HRESULT STDMETHODCALLTYPE open_SetClientGuid(IFileOpenDialog *This, REFGUID guid)
@@ -1121,7 +1560,11 @@ static HRESULT STDMETHODCALLTYPE save_GetFolder(IFileSaveDialog *This, IShellIte
 
 static HRESULT STDMETHODCALLTYPE save_GetCurrentSelection(IFileSaveDialog *This, IShellItem **ppsi)
 {
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+    file_proxy *p=(file_proxy *)This;return proxy_get_selection(p,ppsi);
+#else
     file_proxy *p=(file_proxy *)This;return IFileSaveDialog_GetCurrentSelection((IFileSaveDialog *)p->variant ,ppsi);
+#endif
 }
 
 static HRESULT STDMETHODCALLTYPE save_SetFileName(IFileSaveDialog *This, LPCWSTR pszName)
@@ -1166,7 +1609,11 @@ static HRESULT STDMETHODCALLTYPE save_SetDefaultExtension(IFileSaveDialog *This,
 
 static HRESULT STDMETHODCALLTYPE save_Close(IFileSaveDialog *This, HRESULT hr)
 {
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+    file_proxy *p=(file_proxy *)This;return proxy_close(p,hr);
+#else
     file_proxy *p=(file_proxy *)This;p->unsupported=TRUE;return IFileSaveDialog_Close((IFileSaveDialog *)p->variant ,hr);
+#endif
 }
 
 static HRESULT STDMETHODCALLTYPE save_SetClientGuid(IFileSaveDialog *This, REFGUID guid)
@@ -1260,7 +1707,11 @@ static file_proxy *proxy_new(IUnknown *original,BOOL save)
     file_proxy *p=HeapAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY,sizeof(*p));
     if(!p){IUnknown_Release(variant);IFileDialog_Release(native);return NULL;}
     p->vtable=save?(const void *)&save_vtable:(const void *)&open_vtable;
-    p->save=save;p->refs=1;p->native=native;p->variant=variant;return p;
+    p->save=save;p->refs=1;p->native=native;p->variant=variant;
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+    (void)IFileDialog_GetFolder(native,&p->initial_default);
+#endif
+    return p;
 }
 static void creation_end(void *unused){(void)unused;--native_creation_depth;}
 static NTW16S_UNWIND_FUNCTION HRESULT WINAPI bridge_create(REFCLSID clsid,LPUNKNOWN outer,DWORD context,REFIID iid,LPVOID *out)

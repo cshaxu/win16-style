@@ -61,8 +61,12 @@ static void CALLBACK test_controls(HWND window,UINT message,UINT_PTR timer,DWORD
     same_pixels=same_pixels && initial_own;
     if(same_pixels)same_pixels=screen_pixels(left,top,width,height,pixels);
     SendMessageW(folders,WM_VSCROLL,SB_LINEDOWN,0);LRESULT folder_after=SendMessageW(folders,LB_GETTOPINDEX,0,0);
+    BOOL folder_capture=FALSE;
     if(folder_bar_ok){int x=(folder_bar.rcScrollBar.left+folder_bar.rcScrollBar.right)/2,y=folder_bar.rcScrollBar.bottom-folder_bar.dxyLineButton/2;
-        LPARAM point=MAKELPARAM(x,y);SendMessageW(folders,WM_NCLBUTTONDOWN,HTVSCROLL,point);POINT up={x,y};ScreenToClient(folders,&up);SendMessageW(folders,WM_LBUTTONUP,0,MAKELPARAM(up.x,up.y));}
+        LPARAM point=MAKELPARAM(x,y);SendMessageW(folders,WM_NCLBUTTONDOWN,HTVSCROLL,point);
+        folder_capture=GetCapture()==folders;
+        POINT up={x,y};ScreenToClient(folders,&up);SendMessageW(folders,WM_LBUTTONUP,0,MAKELPARAM(up.x,up.y));}
+    printf("FOLDER_SCROLL_TRACK capture_on_press=%d\n",folder_capture);
     LRESULT folder_click=SendMessageW(folders,LB_GETTOPINDEX,0,0);
     SCROLLINFO setpos={.cbSize=sizeof(setpos),.fMask=SIF_POS,.nPos=3};SetScrollInfo(folders,SB_VERT,&setpos,TRUE);
     GdiFlush();DwmFlush();if(same_pixels)same_pixels=screen_pixels(left,top,width,height,after_pixels);

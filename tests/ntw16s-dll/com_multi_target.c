@@ -7,7 +7,42 @@
 #include <shobjidl.h>
 #include <stdio.h>
 #include <wchar.h>
-static DWORD tid;static volatile LONG seen,selected;static HWND dialog;static BOOL cancel,single_mode;
+static DWORD tid;static volatile LONG seen,selected;static HWND dialog;static BOOL cancel,single_mode,modern_mode;
+typedef struct multi_sink {IFileDialogEvents iface;LONG refs,calls,counts,paths,selection_calls,selection_valid;} multi_sink;
+static WCHAR event_first[MAX_PATH],event_second[MAX_PATH],selection_first[MAX_PATH],selection_second[MAX_PATH];
+static HRESULT STDMETHODCALLTYPE event_query(IFileDialogEvents *self,REFIID iid,void **out)
+{if(!out)return E_POINTER;*out=NULL;if(!IsEqualIID(iid,&IID_IUnknown)&&!IsEqualIID(iid,&IID_IFileDialogEvents))return E_NOINTERFACE;*out=self;InterlockedIncrement(&((multi_sink *)self)->refs);return S_OK;}
+static ULONG STDMETHODCALLTYPE event_add(IFileDialogEvents *self){return (ULONG)InterlockedIncrement(&((multi_sink *)self)->refs);}
+static ULONG STDMETHODCALLTYPE event_release(IFileDialogEvents *self){return (ULONG)InterlockedDecrement(&((multi_sink *)self)->refs);}
+static HRESULT STDMETHODCALLTYPE event_ok(IFileDialogEvents *self,IFileDialog *dialog)
+{multi_sink *sink=(multi_sink *)self;IFileOpenDialog *open=NULL;IShellItemArray *items=NULL;DWORD count=0;
+ HRESULT hr=IFileDialog_QueryInterface(dialog,&IID_IFileOpenDialog,(void **)&open);
+ if(SUCCEEDED(hr))hr=IFileOpenDialog_GetResults(open,&items);
+ if(SUCCEEDED(hr))hr=IShellItemArray_GetCount(items,&count);
+ if(SUCCEEDED(hr)&&count==(single_mode?1u:2u)){BOOL first=FALSE,second=FALSE;++sink->counts;
+    for(DWORD n=0;n<count;++n){IShellItem *item=NULL;PWSTR path=NULL;
+        if(SUCCEEDED(IShellItemArray_GetItemAt(items,n,&item)) && SUCCEEDED(IShellItem_GetDisplayName(item,SIGDN_FILESYSPATH,&path))){
+            if(!_wcsicmp(path,event_first))first=TRUE;
+            if(!_wcsicmp(path,event_second))second=TRUE;}
+        if(path)CoTaskMemFree(path);
+        if(item)IShellItem_Release(item);}
+    if(first&&(single_mode?!second:second))++sink->paths;}
+ if(items)IShellItemArray_Release(items);
+ if(open)IFileOpenDialog_Release(open);
+ printf("MULTI_EVENT_OK hr=%08lx count=%lu\n",(unsigned long)hr,count);return ++sink->calls==1?S_FALSE:S_OK;}
+static HRESULT STDMETHODCALLTYPE event_changing(IFileDialogEvents *s,IFileDialog *d,IShellItem *i){(void)s;(void)d;(void)i;return S_OK;}
+static HRESULT STDMETHODCALLTYPE event_simple(IFileDialogEvents *s,IFileDialog *d){(void)s;(void)d;return S_OK;}
+static HRESULT STDMETHODCALLTYPE event_selection(IFileDialogEvents *s,IFileDialog *d)
+{multi_sink *sink=(multi_sink *)s;IShellItem *item=NULL;PWSTR path=NULL;HRESULT hr=IFileDialog_GetCurrentSelection(d,&item);
+ if(SUCCEEDED(hr))hr=IShellItem_GetDisplayName(item,SIGDN_FILESYSPATH,&path);
+ ++sink->selection_calls;if(SUCCEEDED(hr)&&path&&(!_wcsicmp(path,selection_first)||!_wcsicmp(path,selection_second)))++sink->selection_valid;
+ printf("MULTI_SELECTION hr=%08lx path=%ls\n",(unsigned long)hr,path?path:L"(none)");
+ if(path)CoTaskMemFree(path);
+ if(item)IShellItem_Release(item);
+ return S_OK;}
+static HRESULT STDMETHODCALLTYPE event_share(IFileDialogEvents *s,IFileDialog *d,IShellItem *i,FDE_SHAREVIOLATION_RESPONSE *r){(void)s;(void)d;(void)i;*r=FDESVR_DEFAULT;return S_OK;}
+static HRESULT STDMETHODCALLTYPE event_overwrite(IFileDialogEvents *s,IFileDialog *d,IShellItem *i,FDE_OVERWRITE_RESPONSE *r){(void)s;(void)d;(void)i;*r=FDEOR_DEFAULT;return S_OK;}
+static IFileDialogEventsVtbl event_vtable={event_query,event_add,event_release,event_ok,event_changing,event_simple,event_selection,event_share,event_simple,event_overwrite};
 static WCHAR name1[64]=L"first.txt",name2[64]=L"second.txt",short1[64],short2[64];
 static const WCHAR title[]=L"Win16S COM multi select";
 static BOOL create_link(PCWSTR path,PCWSTR target)
@@ -25,7 +60,8 @@ static BOOL CALLBACK find(HWND w,LPARAM arg)
 {
     (void)arg;WCHAR text[100];GetWindowTextW(w,text,100);
     if(!IsWindowVisible(w)||lstrcmpW(text,title))return TRUE;
-    HWND list=GetDlgItem(w,1120),folders=GetDlgItem(w,1121);if(!list||!folders)return TRUE;
+    HWND list=GetDlgItem(w,1120),folders=GetDlgItem(w,1121);
+    if(!list||!folders){if(modern_mode){dialog=w;InterlockedExchange(&selected,single_mode?1:2);InterlockedExchange(&seen,1);return FALSE;}return TRUE;}
     static BOOL reported;LRESULT count=SendMessageW(list,LB_GETCOUNT,0,0);int matched=0;
     if(!reported){WCHAR folder[512]=L"",file[512]=L"";GetDlgItemTextW(w,1088,folder,512);GetDlgItemTextW(w,1152,file,512);
         printf("MULTI_INITIAL count=%lld folder=%ls file=%ls style=%08lx\n",(long long)count,folder,file,(unsigned long)GetWindowLongPtrW(list,GWL_STYLE));reported=TRUE;}
@@ -52,12 +88,17 @@ int wmain(int argc,WCHAR **argv)
     BOOL links=argc>2 && (!lstrcmpW(argv[2],L"linkfollow")||!lstrcmpW(argv[2],L"linkkeep"));
     BOOL keep=links&&!lstrcmpW(argv[2],L"linkkeep");
     single_mode=argc>3 && !lstrcmpW(argv[3],L"single");
+    BOOL event_mode=argc>4 && !lstrcmpW(argv[4],L"events");
+    modern_mode=argc>5 && !lstrcmpW(argv[5],L"modern");
     if(spaces){lstrcpyW(name1,L"alpha long.txt");lstrcpyW(name2,L"beta long.txt");}
     if(links){lstrcpyW(name1,L"alpha.lnk");lstrcpyW(name2,L"beta.lnk");}
     WCHAR temp[MAX_PATH],dir[MAX_PATH],first[MAX_PATH],second[MAX_PATH],actual1[MAX_PATH],actual2[MAX_PATH];
     if(!GetTempPathW(MAX_PATH,temp)||!GetTempFileNameW(temp,L"w16",0,dir)||!DeleteFileW(dir)||!CreateDirectoryW(dir,NULL))return 2;
     if(swprintf(first,MAX_PATH,L"%ls\\%ls",dir,name1)<0||swprintf(second,MAX_PATH,L"%ls\\%ls",dir,name2)<0)return 3;
+    lstrcpynW(event_first,first,MAX_PATH);lstrcpynW(event_second,second,MAX_PATH);
+    lstrcpynW(selection_first,first,MAX_PATH);lstrcpynW(selection_second,second,MAX_PATH);
     if(swprintf(actual1,MAX_PATH,L"%ls\\real-one.txt",dir)<0||swprintf(actual2,MAX_PATH,L"%ls\\real-two.txt",dir)<0)return 3;
+    if(links&&!keep){lstrcpynW(event_first,actual1,MAX_PATH);lstrcpynW(event_second,actual2,MAX_PATH);}
     HRESULT init=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);if(FAILED(init))return 5;
     HANDLE f=CreateFileW(links?actual1:first,GENERIC_WRITE,0,NULL,CREATE_NEW,0,NULL);if(f==INVALID_HANDLE_VALUE)return 4;CloseHandle(f);
     f=CreateFileW(links?actual2:second,GENERIC_WRITE,0,NULL,CREATE_NEW,0,NULL);if(f==INVALID_HANDLE_VALUE)return 4;CloseHandle(f);
@@ -71,6 +112,10 @@ int wmain(int argc,WCHAR **argv)
     if(FAILED(hr)||FAILED(IFileOpenDialog_SetTitle(d,title))||FAILED(IFileOpenDialog_GetOptions(d,&options))||
        FAILED(IFileOpenDialog_SetOptions(d,options|FOS_ALLOWMULTISELECT|FOS_FORCEFILESYSTEM|(keep?FOS_NODEREFERENCELINKS:0)))||
        FAILED(SHCreateItemFromParsingName(dir,NULL,&IID_IShellItem,(void **)&folder))||FAILED(IFileOpenDialog_SetFolder(d,folder)))return 6;
+    if(modern_mode){WCHAR input[MAX_PATH*2+8];
+        if(swprintf(input,ARRAYSIZE(input),L"\"%ls\" \"%ls\"",first,second)<0 || FAILED(IFileOpenDialog_SetFileName(d,input)))return 6;}
+    multi_sink sink={0};sink.iface.lpVtbl=&event_vtable;sink.refs=1;DWORD cookie=0;
+    if(event_mode && FAILED(IFileOpenDialog_Advise(d,&sink.iface,&cookie)))return 7;
     IShellItem_Release(folder);tid=GetCurrentThreadId();HANDLE worker=CreateThread(NULL,0,observe,NULL,0,NULL);if(!worker)return 7;
     hr=IFileOpenDialog_Show(d,NULL);DWORD wait=WaitForSingleObject(worker,12000);CloseHandle(worker);
     DWORD count=0;BOOL found1=FALSE,found2=FALSE;IShellItemArray *array=NULL;HRESULT ar=E_FAIL;
@@ -81,7 +126,9 @@ int wmain(int argc,WCHAR **argv)
             ar=IShellItemArray_GetItemAt(array,i,&item);if(SUCCEEDED(ar))ar=IShellItem_GetDisplayName(item,SIGDN_FILESYSPATH,&name);
             if(name){if(!_wcsicmp(name,links&&!keep?actual1:first))found1=TRUE;if(!_wcsicmp(name,links&&!keep?actual2:second))found2=TRUE;CoTaskMemFree(name);}if(item)IShellItem_Release(item);}}
     if(array)IShellItemArray_Release(array);
+    if(event_mode)IFileOpenDialog_Unadvise(d,cookie);
     IFileOpenDialog_Release(d);CoUninitialize();DeleteFileW(first);DeleteFileW(second);if(links){DeleteFileW(actual1);DeleteFileW(actual2);}RemoveDirectoryW(dir);
+    if(event_mode)printf("MULTI_EVENTS calls=%ld counts=%ld paths=%ld refs=%ld selections=%ld valid=%ld\n",sink.calls,sink.counts,sink.paths,sink.refs,sink.selection_calls,sink.selection_valid);
     printf("COM_MULTI bits=%u seen=%ld selected=%ld cancel=%d hr=%08lx array=%08lx count=%lu paths=%d%d wait=%lu single=%08lx\n",(unsigned)(sizeof(void*)*8),seen,selected,cancel,(unsigned long)hr,(unsigned long)ar,count,found1,found2,wait,(unsigned long)single_hr);
-    return seen&&selected==(single_mode?1:2)&&wait==WAIT_OBJECT_0&&(cancel?hr==HRESULT_FROM_WIN32(ERROR_CANCELLED):(SUCCEEDED(hr)&&SUCCEEDED(ar)&&count==(single_mode?1u:2u)&&found1&&(single_mode?!found2:found2)&&(single_mode?SUCCEEDED(single_hr):FAILED(single_hr))))?0:1;
+    return seen&&selected==(single_mode?1:2)&&wait==WAIT_OBJECT_0&&(!event_mode||(sink.refs==1&&sink.selection_calls>0&&sink.selection_calls==sink.selection_valid&&(cancel?sink.calls==0:(sink.calls==2&&sink.counts==2&&sink.paths==2))))&&(cancel?hr==HRESULT_FROM_WIN32(ERROR_CANCELLED):(SUCCEEDED(hr)&&SUCCEEDED(ar)&&count==(single_mode?1u:2u)&&found1&&(single_mode?!found2:found2)&&(single_mode?SUCCEEDED(single_hr):single_hr==E_UNEXPECTED)))?0:1;
 }
