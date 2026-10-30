@@ -617,3 +617,5 @@ P235 真实记事本选择补证：先真实点击文件名编辑框，发送 En
 纠正上面的真实记事本选择失败解释：临时同线程编辑控件 subclass 记录没有收到跨进程 SetWindowTextW 的 WM_SETTEXT；外部 GetWindowTextW 显示路径，但跨进程 SendMessageTimeout(WM_GETTEXT) 对同一 HWND 实际返回 *.txt，因此此前输入并未进入控件，先前失败不能视为产品故障。改用跨进程 SendMessageTimeout(WM_SETTEXT)，再用 WM_GETTEXT 验证实际内容，发送 BM_CLICK 后，使用 O:/winnt/P235 的自有真实记事本旧式 Open 对话框关闭、标题包含 notepad-selected.txt，编辑控件 WM_GETTEXT 包含临时文件独有内容，驱动退出 0。该成功为消息驱动、单一真实应用和单文件场景，不扩张为物理键盘全矩阵。相关 probe 临时源码和 DLL 均在 scratch，产品源码无此诊断代码。
 
 demo 旧式文件框观察器修正：先前跨进程 SetDlgItemTextW / GetDlgItemTextW 使用缓存导致未实际输入；临时探针改为 WM_SETTEXT / WM_GETTEXT 并确认文本后 BM_CLICK。自有未注入 demo 与 O:/winnt P235 启动 demo 各一次均打开 2901 旧式布局，选择相同任务临时文件，返回页面显示完整匹配路径；两种模式独立退出正常。修正旧探针虚假 opened=9 与 bridge=1 标记，以上仅覆盖 2901 旧式单文件，不代表其他八入口选择或物理输入。该此前 TODO 的具体验证缺口已解决，未修改产品二进制。
+
+demo 实际选择已纳入 tests/demo-exe/observe.c 与包测试必需标记：自有临时文件对 2901 旧式和 2902 现代转旧式分别使用跨进程 WM_SETTEXT/WM_GETTEXT、确认并核对页面返回路径，成功后清理；加载 O:/winnt P235 的完整 demo 双模式观察退出 0，包含九入口取消和两入口选择。负例临时改回 SetWindowTextW 后在控件 WM_GETTEXT 对比处失败并退出 1，证明能检出此前探针错误。覆盖不含其余选择入口及物理输入；第一次构建因 -Werror 缩进失败，已修正再构建成功。此次仅测试与文档变更，无新产品二进制。

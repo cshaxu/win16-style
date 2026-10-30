@@ -110,7 +110,7 @@ static BOOL CALLBACK demo_dialog_scan(HWND w,LPARAM owner)
     }
     return TRUE;
 }
-static void demo_dialog_paths(HWND page,DWORD thread)
+static void demo_dialog_paths(HWND page,DWORD thread,const WCHAR *scratch)
 {
     for(int id=2901;id<=2909;++id){
         demo_test_dialog=NULL;CHECK(SetDlgItemTextW(page,2099,L""));CHECK(PostMessageW(page,WM_COMMAND,(WPARAM)id,0));
@@ -135,6 +135,32 @@ static void demo_dialog_paths(HWND page,DWORD thread)
         CHECK(!wcsncmp(result,L"Cancelled",9));
     }
     puts("DEMO DIALOG PATHS PASS opened=9 cancelled=9");
+    WCHAR selected[MAX_PATH];
+    CHECK(swprintf_s(selected,ARRAYSIZE(selected),L"%ls\\dialog-selection.txt",scratch)>0);
+    HANDLE fixture=CreateFileW(selected,GENERIC_WRITE,0,NULL,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,NULL);
+    CHECK(fixture!=INVALID_HANDLE_VALUE && CloseHandle(fixture));
+    for(int id=2901;id<=2902;++id){
+        demo_test_dialog=NULL;CHECK(PostMessageW(page,WM_COMMAND,(WPARAM)id,0));
+        for(unsigned i=0;i<100 && !demo_test_dialog;++i){
+            EnumThreadWindows(thread,demo_dialog_scan,(LPARAM)page);if(!demo_test_dialog)Sleep(50);
+        }
+        CHECK(demo_test_dialog && !demo_modern);
+        HWND edit=GetDlgItem(demo_test_dialog,1152),ok=GetDlgItem(demo_test_dialog,IDOK);
+        DWORD_PTR result=0;WCHAR value[MAX_PATH]=L"";
+        CHECK(edit && ok && SendMessageTimeoutW(edit,WM_SETTEXT,0,(LPARAM)selected,SMTO_ABORTIFHUNG,2000,&result) && result);
+        CHECK(SendMessageTimeoutW(edit,WM_GETTEXT,ARRAYSIZE(value),(LPARAM)value,SMTO_ABORTIFHUNG,2000,&result) && !_wcsicmp(value,selected));
+        CHECK(SendMessageTimeoutW(ok,BM_CLICK,0,0,SMTO_ABORTIFHUNG,2000,&result));
+        for(unsigned i=0;i<100 && IsWindow(demo_test_dialog);++i)Sleep(50);
+        CHECK(!IsWindow(demo_test_dialog));
+        for(unsigned i=0;i<100;++i){
+            value[0]=0;CHECK(SendMessageTimeoutW(GetDlgItem(page,2099),WM_GETTEXT,ARRAYSIZE(value),(LPARAM)value,SMTO_ABORTIFHUNG,2000,&result));
+            if(!_wcsicmp(value,selected))break;
+            Sleep(50);
+        }
+        CHECK(!_wcsicmp(value,selected));
+    }
+    CHECK(DeleteFileW(selected));
+    puts("DEMO DIALOG SELECT PASS legacy=1 bridge=1 cleanup=1");
 }
 static void catalog_pages(HWND main,DWORD thread,HANDLE target,BOOL styled,const WCHAR *scratch)
 {
@@ -161,7 +187,7 @@ static void catalog_pages(HWND main,DWORD thread,HANDLE target,BOOL styled,const
                 text(w,2901+(int)j,dialog_buttons[j]);
             }
             puts("DEMO DIALOG ENTRIES PASS open=3 save=3 folder=3");
-            if(styled)demo_dialog_paths(w,thread);
+            if(styled)demo_dialog_paths(w,thread,scratch);
         }
         CHECK(swprintf_s(file,MAX_PATH,L"%ls\\catalog-%u-%u.bmp",scratch,(unsigned)styled,i)>0);SendMessageW(w,WM_NCACTIVATE,TRUE,0);UpdateWindow(w);pixels screenshot=capture(w,file);CHECK(screenshot.hash);
         SendMessageW(w,WM_CLOSE,0,0);CHECK(!IsWindow(w));printf("DEMO CATALOG PAGE PASS styled=%u page=%u gdi=%lu\n",(unsigned)styled,i,GetGuiResources(target,GR_GDIOBJECTS));
