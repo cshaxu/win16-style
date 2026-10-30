@@ -8,7 +8,9 @@
 
 static DWORD main_thread;
 static volatile LONG seen, old_layout, hook_seen;
-static BOOL cancel_mode, custom_hook, legacy_size, default_flags;
+static BOOL cancel_mode, custom_hook, legacy_size, default_flags, dynamic_mode;
+static volatile LONG dynamic_set;
+static WCHAR dynamic_path[MAX_PATH];
 static HWND found_dialog;
 static const WCHAR title[]=L"Win16S T20 file dialog integration";
 static BOOL CALLBACK inspect(HWND window, LPARAM ignored)
@@ -34,6 +36,10 @@ static DWORD WINAPI observer(void *unused)
     for (unsigned i=0;i<160;++i) {
         if (!seen) EnumThreadWindows(main_thread,inspect,0);
         if (seen && found_dialog && IsWindow(found_dialog)) {
+            if(dynamic_mode && !dynamic_set){WCHAR value[MAX_PATH]=L"";
+                BOOL set=SetDlgItemTextW(found_dialog,1152,dynamic_path);
+                GetDlgItemTextW(found_dialog,1152,value,ARRAYSIZE(value));
+                InterlockedExchange(&dynamic_set,set && !lstrcmpiW(value,dynamic_path));}
             HWND ok=GetDlgItem(found_dialog,IDOK);
             if (i>20 && i<100 && i%10==0 && ok) PostMessageW(found_dialog,WM_COMMAND,MAKEWPARAM(cancel_mode?IDCANCEL:IDOK,BN_CLICKED),(LPARAM)(cancel_mode?GetDlgItem(found_dialog,IDCANCEL):ok));
             if (i==110) PostMessageW(found_dialog,WM_CLOSE,0,0);
@@ -65,7 +71,8 @@ static void *guard_copy(const void *value,SIZE_T length,void **base)
 int wmain(int argc, WCHAR **argv)
 {
     if (argc<4 || argc>5) return 2;
-    BOOL oldhook_accept=argc==5 && !lstrcmpW(argv[4],L"oldhookaccept");
+    dynamic_mode=argc==5 && !lstrcmpW(argv[4],L"oldhookdynamic");
+    BOOL oldhook_accept=dynamic_mode || (argc==5 && !lstrcmpW(argv[4],L"oldhookaccept"));
     custom_hook=oldhook_accept || (argc==5 && (!lstrcmpW(argv[4],L"hook") || !lstrcmpW(argv[4],L"oldhook")));
     cancel_mode=(custom_hook && !oldhook_accept) || (argc==5 && !lstrcmpW(argv[4],L"cancel"));
     legacy_size=argc==5 && !lstrcmpW(argv[4],L"v400");
@@ -76,6 +83,7 @@ int wmain(int argc, WCHAR **argv)
     if (!GetTempPathW(MAX_PATH,directory) || !GetTempFileNameW(directory,L"w16",0,path_w)) return 3;
     if (save && !DeleteFileW(path_w)) return 4;
     lstrcpynW(file_w,path_w,MAX_PATH);
+    if(dynamic_mode){lstrcpynW(dynamic_path,path_w,MAX_PATH);file_w[0]=0;}
     if (!WideCharToMultiByte(CP_ACP,0,directory,-1,directory_a,MAX_PATH,NULL,NULL) ||
         !WideCharToMultiByte(CP_ACP,0,path_w,-1,file_a,MAX_PATH,NULL,NULL)) return 5;
     HMODULE bridge=GetModuleHandleW(sizeof(void*)==4?L"ntw16s32.dll":L"ntw16s64.dll");
@@ -118,8 +126,9 @@ int wmain(int argc, WCHAR **argv)
     WaitForSingleObject(thread,6000);CloseHandle(thread);
     BOOL same=!lstrcmpiW(path_w,file_w);
     DeleteFileW(path_w);
+    if(dynamic_mode)printf("FILE_DYNAMIC bits=%u set=%ld same=%d\n",(unsigned)(sizeof(void*)*8),dynamic_set,same);
     printf("FILE_DIALOG bits=%u save=%d ansi=%d observed=%ld old=%ld expected=%d ok=%d ext=%lu same=%d offset=%u cancel=%d custom_hook=%d hook_seen=%ld\n",
         (unsigned)(sizeof(void*)*8),save,ansi,seen,old_layout,expected_old,result,extended,same,offset,cancel_mode,custom_hook,hook_seen);
-    return seen && old_layout==expected_old && !extended && (!custom_hook || hook_seen) &&
+    return seen && old_layout==expected_old && !extended && (!custom_hook || hook_seen) && (!dynamic_mode || dynamic_set) &&
         (cancel_mode ? !result : (result && same && offset)) ? 0:1;
 }
