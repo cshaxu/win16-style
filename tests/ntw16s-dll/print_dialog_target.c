@@ -10,13 +10,16 @@ static DWORD main_thread;
 static BOOL classic_test,classic_found,classic_accept;
 static int extended_case,extended_step;
 static BOOL extended_old,extended_option_state,initial_range_state,initial_device_state;
-static HGLOBAL device_to_lock;static void *device_lock;
+static HGLOBAL device_to_lock;static void *device_lock;static BOOL apply_initial,apply_changed,apply_done,apply_again,apply_done_again;
 static uint64_t global_digest(HGLOBAL h){SIZE_T n=GlobalSize(h);BYTE *p=GlobalLock(h);uint64_t hash=14695981039346656037ull;if(!p)return 0;for(SIZE_T i=0;i<n;++i)hash=(hash^p[i])*1099511628211ull;GlobalUnlock(h);return hash;}
 static HWND range_radio,range_edit;
 static BOOL CALLBACK locate_range(HWND w,LPARAM data)
 {(void)data;if(GetDlgCtrlID(w)==1059 || GetDlgCtrlID(w)==1058)range_radio=w;if(GetDlgCtrlID(w)==1152 && !range_edit)range_edit=w;if(GetDlgCtrlID(w)==9002)range_edit=w;return TRUE;}
 static void CALLBACK close_dialog(HWND window,UINT message,UINT_PTR timer,DWORD time)
 {(void)message;(void)time;
+ if(extended_case==18){HWND button=GetDlgItem(window,9001);extended_old=GetDlgItem(window,1139)!=NULL;
+    if(!extended_step){apply_initial=button && !IsWindowEnabled(button);SetDlgItemTextW(window,1154,L"3");apply_changed=button && IsWindowEnabled(button);if(button)SendMessageW(button,BM_CLICK,0,0);apply_done=button && !IsWindowEnabled(button);SetDlgItemTextW(window,1154,L"4");apply_again=button && IsWindowEnabled(button);if(button)SendMessageW(button,BM_CLICK,0,0);apply_done_again=button && !IsWindowEnabled(button);SetDlgItemTextW(window,1154,L"5");extended_step=1;return;}
+    KillTimer(window,timer);frame=attached&&attached(window);PostMessageW(window,WM_COMMAND,IDCANCEL,0);return;}
  if(extended_case>=14){extended_old=GetDlgItem(window,1139)!=NULL;
     if(!extended_step){WCHAR text[16]=L"";GetDlgItemTextW(window,1154,text,16);initial_device_state=!lstrcmpW(text,L"3");
         if(extended_case==17)device_lock=GlobalLock(device_to_lock);
@@ -106,6 +109,20 @@ int wmain(int argc,WCHAR **argv)
         if(x.hDC)DeleteDC(x.hDC);
         if(x.hDevMode)GlobalFree(x.hDevMode);
         if(x.hDevNames)GlobalFree(x.hDevNames);
+        UnhookWindowsHookEx(observer);DestroyWindow(owner);CoUninitialize();return initialized==1 && valid?0:1;
+    }
+    if(!lstrcmpW(argv[1],L"ex-apply-state")){
+        extended_case=18;HRESULT com=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);if(FAILED(com))return 9;
+        HWND owner=CreateWindowExW(0,L"STATIC",L"Owner",WS_OVERLAPPEDWINDOW,0,0,200,100,NULL,NULL,GetModuleHandleW(NULL),NULL);if(!owner)return 7;
+        ShowWindow(owner,SW_SHOW);HHOOK observer=SetWindowsHookExW(WH_CALLWNDPROC,observe,NULL,GetCurrentThreadId());if(!observer)return 6;
+        HGLOBAL mode=NULL,names=NULL;HDC dc=NULL;HRESULT hr;DWORD action,copies;
+        if(ansi){PRINTDLGEXA x={0};x.lStructSize=sizeof(x);x.hwndOwner=owner;x.Flags=PD_RETURNDC|PD_NOPAGENUMS;x.nCopies=1;x.nStartPage=START_PAGE_GENERAL;hr=PrintDlgExA(&x);mode=x.hDevMode;names=x.hDevNames;dc=x.hDC;action=x.dwResultAction;copies=x.nCopies;}
+        else{PRINTDLGEXW x={0};x.lStructSize=sizeof(x);x.hwndOwner=owner;x.Flags=PD_RETURNDC|PD_NOPAGENUMS;x.nCopies=1;x.nStartPage=START_PAGE_GENERAL;hr=PrintDlgExW(&x);mode=x.hDevMode;names=x.hDevNames;dc=x.hDC;action=x.dwResultAction;copies=x.nCopies;}
+        BOOL valid=hr==S_OK && action==PD_RESULT_APPLY && copies==4 && mode && names && dc && extended_old && frame && apply_initial && apply_changed && apply_done && apply_again && apply_done_again;
+        printf("EX_APPLY_STATE bits=%u ansi=%d initial=%d changed=%d applied=%d again=%d applied_again=%d copies=%lu old=%d valid=%d\n",(unsigned)(sizeof(void*)*8),ansi,apply_initial,apply_changed,apply_done,apply_again,apply_done_again,copies,extended_old,valid);
+        if(dc)DeleteDC(dc);
+        if(mode)GlobalFree(mode);
+        if(names)GlobalFree(names);
         UnhookWindowsHookEx(observer);DestroyWindow(owner);CoUninitialize();return initialized==1 && valid?0:1;
     }
     if(!lstrcmpW(argv[1],L"ex-device-print") || !lstrcmpW(argv[1],L"ex-device-apply") || !lstrcmpW(argv[1],L"ex-device-cancel") || !lstrcmpW(argv[1],L"ex-device-locked")){

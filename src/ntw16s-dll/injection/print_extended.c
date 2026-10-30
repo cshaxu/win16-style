@@ -6,7 +6,7 @@
 #define MAX_RANGES 32
 #define CONTEXT_PROPERTY L"ntw16s.print.extended"
 typedef struct state {
-    HGLOBAL *live_mode,*live_names;HWND edit;DWORD input_flags,minimum,maximum,capacity;BOOL ansi;WCHAR initial[512];
+    HGLOBAL *live_mode,*live_names;HWND edit,apply;DWORD input_flags,minimum,maximum,capacity;BOOL ansi,initializing;WCHAR initial[512];
     PRINTPAGERANGE ranges[MAX_RANGES],applied_ranges[MAX_RANGES];DWORD count,applied_count,copies,flags;
     HGLOBAL applied_mode,applied_names;HDC applied_dc;BOOL applied,failed;
 } state;
@@ -60,7 +60,7 @@ static BOOL save_snapshot(HWND window,state *s)
 static UINT_PTR print_hook_common(HWND window,UINT message,WPARAM wparam,state *initial)
 {
     state *s=message==WM_INITDIALOG?initial:(state *)GetPropW(window,CONTEXT_PROPERTY);
-    if(message==WM_INITDIALOG){if(!SetPropW(window,CONTEXT_PROPERTY,s)){s->failed=TRUE;PostMessageW(window,WM_COMMAND,IDCANCEL,0);return 0;}
+    if(message==WM_INITDIALOG){s->initializing=TRUE;if(!SetPropW(window,CONTEXT_PROPERTY,s)){s->failed=TRUE;PostMessageW(window,WM_COMMAND,IDCANCEL,0);return 0;}
         RECT first,last,ok;HWND a=GetDlgItem(window,1152),b=GetDlgItem(window,1153),button=GetDlgItem(window,IDOK);
         if(!a || !b || !button){s->failed=TRUE;PostMessageW(window,WM_COMMAND,IDCANCEL,0);return 0;}
         GetWindowRect(a,&first);GetWindowRect(b,&last);GetWindowRect(button,&ok);
@@ -70,15 +70,19 @@ static UINT_PTR print_hook_common(HWND window,UINT message,WPARAM wparam,state *
         HDC dc=GetDC(window);int dpi=dc?GetDeviceCaps(dc,LOGPIXELSX):96;if(dc)ReleaseDC(window,dc);
         int inset=MulDiv(25,dpi,96),gap=MulDiv(8,dpi,96);
         s->edit=CreateWindowExW(WS_EX_CLIENTEDGE,L"EDIT",s->initial,WS_CHILD|WS_VISIBLE|WS_TABSTOP|ES_AUTOHSCROLL,first.left-inset,first.top,last.right-first.left+inset,first.bottom-first.top,window,(HMENU)(INT_PTR)RANGE_CONTROL,GetModuleHandleW(NULL),NULL);
-        HWND apply=CreateWindowW(L"BUTTON",L"Apply",WS_CHILD|WS_VISIBLE|WS_TABSTOP|BS_PUSHBUTTON,ok.left-(ok.right-ok.left)-gap,ok.top,ok.right-ok.left,ok.bottom-ok.top,window,(HMENU)(INT_PTR)APPLY_CONTROL,GetModuleHandleW(NULL),NULL);
-        if(!s->edit || !apply){s->failed=TRUE;PostMessageW(window,WM_COMMAND,IDCANCEL,0);return 0;}
+        s->apply=CreateWindowW(L"BUTTON",L"Apply",WS_CHILD|WS_VISIBLE|WS_TABSTOP|WS_DISABLED|BS_PUSHBUTTON,ok.left-(ok.right-ok.left)-gap,ok.top,ok.right-ok.left,ok.bottom-ok.top,window,(HMENU)(INT_PTR)APPLY_CONTROL,GetModuleHandleW(NULL),NULL);
+        if(!s->edit || !s->apply){s->failed=TRUE;PostMessageW(window,WM_COMMAND,IDCANCEL,0);return 0;}
         if(s->input_flags & PD_NOPAGENUMS)EnableWindow(s->edit,FALSE);
         if(s->edit)SendMessageW(s->edit,WM_SETFONT,(WPARAM)font,TRUE);
-        if(apply)SendMessageW(apply,WM_SETFONT,(WPARAM)font,TRUE);
+        if(s->apply)SendMessageW(s->apply,WM_SETFONT,(WPARAM)font,TRUE);
+        s->initializing=FALSE;
     }
-    if(s && message==WM_COMMAND){if(LOWORD(wparam)==RANGE_CONTROL && HIWORD(wparam)==EN_SETFOCUS)SendDlgItemMessageW(window,1058,BM_CLICK,0,0);
-        if(LOWORD(wparam)==APPLY_CONTROL){if(!save_snapshot(window,s))MessageBeep(MB_ICONEXCLAMATION);return 1;}
-        if(LOWORD(wparam)==IDOK && !read_ranges(window,s)){MessageBeep(MB_ICONEXCLAMATION);return 1;}}
+    if(s && message==WM_COMMAND){UINT id=LOWORD(wparam),notice=HIWORD(wparam);
+        if(id==RANGE_CONTROL && notice==EN_SETFOCUS)SendDlgItemMessageW(window,1058,BM_CLICK,0,0);
+        if(id==APPLY_CONTROL){if(save_snapshot(window,s))EnableWindow(s->apply,FALSE);else MessageBeep(MB_ICONEXCLAMATION);return 1;}
+        if(!s->initializing && s->apply && ((notice==EN_CHANGE && (id==RANGE_CONTROL || id==1154)) ||
+            (notice==CBN_SELCHANGE && id==1139) || (notice==BN_CLICKED && (id==1056 || id==1057 || id==1058 || id==1040 || id==1041 || id==1025))))EnableWindow(s->apply,TRUE);
+        if(id==IDOK && !read_ranges(window,s)){MessageBeep(MB_ICONEXCLAMATION);return 1;}}
     if(message==WM_DESTROY)RemovePropW(window,CONTEXT_PROPERTY);
     return 0;
 }

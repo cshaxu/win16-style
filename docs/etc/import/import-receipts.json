@@ -2750,7 +2750,7 @@
       "path": "tests/ntw16s-dll/print_dialog_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "70b74cf23ccaaa82d9a58371ddcd4a5b2c1883e24bd4818fe658022bdf6b51c6",
+      "sha256": "df6230c34c5e5396241af2501d3010076df0f8660aed90297713c1855bfec469",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture",
       "notice": "Project-authored fixture; manifest based on project demo manifest; no external resources copied"
@@ -3056,7 +3056,7 @@
       "path": "src/ntw16s-dll/injection/print_extended.c",
       "source": null,
       "source_blob": null,
-      "sha256": "da7605bf13a78da64e8e764632bf451cdddb8b8de120f2bdc4d3f5eb7226ebd3",
+      "sha256": "37cebc07e58b4577d011a4c6414f7a05d4f1e750429ef0ae50b7038da5b07e0c",
       "disposition": "authored",
       "review": "T20 S1 bounded extended print dialog bridge",
       "notice": "Project-authored C code; no imported resources"
