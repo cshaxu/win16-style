@@ -33,7 +33,7 @@ M0 T20 S1准入：Win3.x文件夹选择与公共对话框桥接：调查、实�
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 1
-- Last delivery: M0 T20 S1 P249 增加 PrintDlgExA/W 预设多页范围的传统打印框转接，双宽干净构建、聚焦包测试及双位置发布；初始设备句柄、定制回调及实际打印等仍待验证，用户验收待反馈。
+- Last delivery: M0 T20 S1 P250 增加 PrintDlgExA/W 成对初始设备句柄的传统打印框转接，双宽干净构建、聚焦包测试及双位置发布；定制回调及实际打印等仍待验证，用户验收待反馈。
 - Open task: T20 S1 文件夹选择和公共对话框接口及经典参考调查。
 
 ## Technical Baseline

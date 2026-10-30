@@ -4,16 +4,24 @@
 #include <commdlg.h>
 #include <cderr.h>
 #include <stdio.h>
+#include <stdint.h>
 static BOOL (__cdecl *attached)(HWND);static int initialized;static BOOL frame;
 static DWORD main_thread;
 static BOOL classic_test,classic_found,classic_accept;
 static int extended_case,extended_step;
-static BOOL extended_old,extended_option_state,initial_range_state;
+static BOOL extended_old,extended_option_state,initial_range_state,initial_device_state;
+static HGLOBAL device_to_lock;static void *device_lock;
+static uint64_t global_digest(HGLOBAL h){SIZE_T n=GlobalSize(h);BYTE *p=GlobalLock(h);uint64_t hash=14695981039346656037ull;if(!p)return 0;for(SIZE_T i=0;i<n;++i)hash=(hash^p[i])*1099511628211ull;GlobalUnlock(h);return hash;}
 static HWND range_radio,range_edit;
 static BOOL CALLBACK locate_range(HWND w,LPARAM data)
 {(void)data;if(GetDlgCtrlID(w)==1059 || GetDlgCtrlID(w)==1058)range_radio=w;if(GetDlgCtrlID(w)==1152 && !range_edit)range_edit=w;if(GetDlgCtrlID(w)==9002)range_edit=w;return TRUE;}
 static void CALLBACK close_dialog(HWND window,UINT message,UINT_PTR timer,DWORD time)
 {(void)message;(void)time;
+ if(extended_case>=14){extended_old=GetDlgItem(window,1139)!=NULL;
+    if(!extended_step){WCHAR text[16]=L"";GetDlgItemTextW(window,1154,text,16);initial_device_state=!lstrcmpW(text,L"3");
+        if(extended_case==17)device_lock=GlobalLock(device_to_lock);
+        if(extended_case==15){SetDlgItemTextW(window,1154,L"4");HWND apply=GetDlgItem(window,9001);if(apply)SendMessageW(apply,BM_CLICK,0,0);SetDlgItemTextW(window,1154,L"5");extended_step=1;return;}}
+    KillTimer(window,timer);frame=attached&&attached(window);PostMessageW(window,WM_COMMAND,(extended_case==14 || extended_case==17)?IDOK:IDCANCEL,0);return;}
  if(extended_case>=10){extended_old=GetDlgItem(window,1139)!=NULL;
     if(!extended_step){WCHAR text[80]=L"";HWND edit=GetDlgItem(window,9002);if(edit)GetWindowTextW(edit,text,80);initial_range_state=edit && !lstrcmpW(text,L"4-5,2") && SendDlgItemMessageW(window,1058,BM_GETCHECK,0,0)==BST_CHECKED;
       if(extended_case!=12)SetDlgItemTextW(window,1154,L"3");
@@ -98,6 +106,34 @@ int wmain(int argc,WCHAR **argv)
         if(x.hDC)DeleteDC(x.hDC);
         if(x.hDevMode)GlobalFree(x.hDevMode);
         if(x.hDevNames)GlobalFree(x.hDevNames);
+        UnhookWindowsHookEx(observer);DestroyWindow(owner);CoUninitialize();return initialized==1 && valid?0:1;
+    }
+    if(!lstrcmpW(argv[1],L"ex-device-print") || !lstrcmpW(argv[1],L"ex-device-apply") || !lstrcmpW(argv[1],L"ex-device-cancel") || !lstrcmpW(argv[1],L"ex-device-locked")){
+        extended_case=!lstrcmpW(argv[1],L"ex-device-print")?14:!lstrcmpW(argv[1],L"ex-device-apply")?15:!lstrcmpW(argv[1],L"ex-device-locked")?17:16;
+        HRESULT com=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);if(FAILED(com))return 9;
+        HWND owner=CreateWindowExW(0,L"STATIC",L"Owner",WS_OVERLAPPEDWINDOW,0,0,200,100,NULL,NULL,GetModuleHandleW(NULL),NULL);if(!owner)return 7;
+        ShowWindow(owner,SW_SHOW);HHOOK observer=SetWindowsHookExW(WH_CALLWNDPROC,observe,NULL,GetCurrentThreadId());if(!observer)return 6;
+        HGLOBAL mode=NULL,names=NULL;BOOL default_ok;
+        if(ansi){PRINTDLGA x={0};x.lStructSize=sizeof(x);x.Flags=PD_RETURNDEFAULT;default_ok=PrintDlgA(&x);mode=x.hDevMode;names=x.hDevNames;}
+        else{PRINTDLGW x={0};x.lStructSize=sizeof(x);x.Flags=PD_RETURNDEFAULT;default_ok=PrintDlgW(&x);mode=x.hDevMode;names=x.hDevNames;}
+        if(!default_ok || !mode || !names)return 8;
+        if(ansi){DEVMODEA *d=GlobalLock(mode);if(!d)return 8;d->dmFields|=DM_COPIES;d->dmCopies=3;GlobalUnlock(mode);}
+        else{DEVMODEW *d=GlobalLock(mode);if(!d)return 8;d->dmFields|=DM_COPIES;d->dmCopies=3;GlobalUnlock(mode);}
+        HGLOBAL oldmode=mode,oldnames=names;device_to_lock=mode;uint64_t mode_before=global_digest(mode),names_before=global_digest(names);HDC dc=NULL;HRESULT hr;DWORD action=0,copies=0;
+        if(ansi){PRINTDLGEXA x={0};x.lStructSize=sizeof(x);x.hwndOwner=owner;x.Flags=PD_RETURNDC|PD_NOPAGENUMS;x.hDevMode=mode;x.hDevNames=names;x.nCopies=1;x.nStartPage=START_PAGE_GENERAL;hr=PrintDlgExA(&x);mode=x.hDevMode;names=x.hDevNames;dc=x.hDC;action=x.dwResultAction;copies=x.nCopies;}
+        else{PRINTDLGEXW x={0};x.lStructSize=sizeof(x);x.hwndOwner=owner;x.Flags=PD_RETURNDC|PD_NOPAGENUMS;x.hDevMode=mode;x.hDevNames=names;x.nCopies=1;x.nStartPage=START_PAGE_GENERAL;hr=PrintDlgExW(&x);mode=x.hDevMode;names=x.hDevNames;dc=x.hDC;action=x.dwResultAction;copies=x.nCopies;}
+        if(device_lock)GlobalUnlock(oldmode);
+        BOOL oldmode_live=GlobalFlags(oldmode)!=GMEM_INVALID_HANDLE,oldnames_live=GlobalFlags(oldnames)!=GMEM_INVALID_HANDLE;
+        DWORD expected=extended_case==14?PD_RESULT_PRINT:extended_case==15?PD_RESULT_APPLY:PD_RESULT_CANCEL;
+        BOOL preserved=mode==oldmode && names==oldnames && oldmode_live && oldnames_live && global_digest(mode)==mode_before && global_digest(names)==names_before;
+        BOOL replaced=mode && names && dc && mode!=oldmode && names!=oldnames && !oldmode_live && !oldnames_live;
+        BOOL valid=extended_old && frame && initial_device_state && (extended_case==17?(hr==E_FAIL && device_lock && preserved && !dc):(hr==S_OK && action==expected && (extended_case==16?preserved:(replaced && copies==(extended_case==15?4:3)))));
+        printf("EX_DEVICE bits=%u ansi=%d mode=%d hr=%08lx action=%lu initial=%d preserved=%d replaced=%d copies=%lu old=%d valid=%d\n",(unsigned)(sizeof(void*)*8),ansi,extended_case,(DWORD)hr,action,initial_device_state,preserved,replaced,copies,extended_old,valid);
+        if(dc)DeleteDC(dc);
+        if(mode)GlobalFree(mode);
+        if(names)GlobalFree(names);
+        if(oldmode!=mode && oldmode_live)GlobalFree(oldmode);
+        if(oldnames!=names && oldnames_live)GlobalFree(oldnames);
         UnhookWindowsHookEx(observer);DestroyWindow(owner);CoUninitialize();return initialized==1 && valid?0:1;
     }
     if(!lstrcmpW(argv[1],L"ex-initial-print") || !lstrcmpW(argv[1],L"ex-initial-apply") || !lstrcmpW(argv[1],L"ex-initial-cancel") || !lstrcmpW(argv[1],L"ex-initial-all")){
