@@ -897,7 +897,20 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
             break;
         }
         goto forward;
-    case WM_NCPAINT: paint(w,s,NULL);break;
+    case WM_NCPAINT:
+        if(wp!=1 && wp){
+            /* USER owns the message region. GetDCEx takes ownership of its
+             * argument, so pass a copy and restrict painting to the actual
+             * update rather than repainting the whole caption on popups. */
+            HRGN region=CreateRectRgn(0,0,0,0);HDC dc=NULL;
+            if(region && CombineRgn(region,(HRGN)wp,NULL,RGN_COPY)!=ERROR){
+                dc=GetDCEx(w,region,DCX_WINDOW|DCX_INTERSECTRGN|DCX_CACHE);
+                if(dc){paint(w,s,dc);ReleaseDC(w,dc);region=NULL;}
+            }
+            if(region)DeleteObject(region);
+            if(!dc)paint(w,s,NULL);
+        }else paint(w,s,NULL);
+        break;
     case WM_SETCURSOR:
         /* Default NC cursor handling can also repaint native caption buttons.
          * Only our frame belongs to us; preserve the application's client

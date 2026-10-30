@@ -207,6 +207,15 @@ static int matrix(int argc,WCHAR **argv)
         second.x=origin.x+MulDiv(scenario==0?70:100,(int)dpi,96);second.y=first.y;
         RECT client_bounds;CHECK(GetClientRect(w,&client_bounds));
         outside.x=origin.x+client_bounds.right-20;outside.y=origin.y+client_bounds.bottom-20;
+        int witness_x=MulDiv(140,(int)dpi,96),witness_y=MulDiv(10,(int)dpi,96);
+        if(scenario==0){HDC dc=GetWindowDC(w);CHECK(dc);
+            CHECK(SetPixel(dc,witness_x,witness_y,RGB(37,83,119))!=CLR_INVALID);CHECK(ReleaseDC(w,dc));
+            RECT outer;CHECK(GetWindowRect(w,&outer));
+            HRGN dirty=CreateRectRgn(outer.left,outer.top,outer.left+MulDiv(20,(int)dpi,96),outer.top+MulDiv(20,(int)dpi,96));CHECK(dirty);
+            SendMessageW(w,WM_NCPAINT,(WPARAM)dirty,0);CHECK(DeleteObject(dirty));
+            dc=GetWindowDC(w);CHECK(dc);COLORREF pixel=GetPixel(dc,witness_x,witness_y);CHECK(ReleaseDC(w,dc));
+            printf("MENU FRAME CLIP WITNESS dpi=%u pixel=%06lx\n",dpi,pixel);
+            CHECK(pixel==RGB(37,83,119));}
         phase=entries=exits=commands=0;timed_out=FALSE;CHECK(SetTimer(w,99,2500,NULL));
         if(scenario==13 || scenario==14){
             SendMessageW(w,WM_SYSCOMMAND,SC_KEYMENU,0);CHECK(GetFocus()==w);
