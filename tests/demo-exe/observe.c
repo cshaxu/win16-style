@@ -92,6 +92,50 @@ static BOOL CALLBACK find_catalog(HWND w,LPARAM owner)
     WCHAR name[80];if(GetWindow(w,GW_OWNER)==(HWND)owner && GetClassNameW(w,name,80) && !wcscmp(name,L"Win16StyleDemoCatalog"))catalog_window=w;
     return TRUE;
 }
+static HWND demo_test_dialog;
+static BOOL demo_modern;
+static BOOL CALLBACK demo_child_scan(HWND w,LPARAM unused)
+{
+    WCHAR name[80];(void)unused;
+    if(GetClassNameW(w,name,ARRAYSIZE(name)) &&
+        (!lstrcmpiW(name,L"DirectUIHWND") || !lstrcmpiW(name,L"DUIViewWndClassName")))demo_modern=TRUE;
+    return TRUE;
+}
+static BOOL CALLBACK demo_dialog_scan(HWND w,LPARAM owner)
+{
+    WCHAR cls[40];
+    if(IsWindowVisible(w) && GetWindow(w,GW_OWNER)==(HWND)owner &&
+        GetClassNameW(w,cls,ARRAYSIZE(cls)) && !lstrcmpW(cls,L"#32770")){
+        demo_modern=FALSE;EnumChildWindows(w,demo_child_scan,0);demo_test_dialog=w;return FALSE;
+    }
+    return TRUE;
+}
+static void demo_dialog_paths(HWND page,DWORD thread)
+{
+    for(int id=2901;id<=2909;++id){
+        demo_test_dialog=NULL;CHECK(SetDlgItemTextW(page,2099,L""));CHECK(PostMessageW(page,WM_COMMAND,(WPARAM)id,0));
+        for(unsigned i=0;i<100 && !demo_test_dialog;++i){
+            EnumThreadWindows(thread,demo_dialog_scan,(LPARAM)page);if(!demo_test_dialog)Sleep(50);
+        }
+        CHECK(demo_test_dialog);
+        BOOL legacy=GetDlgItem(demo_test_dialog,1120)!=NULL || GetDlgItem(demo_test_dialog,1121)!=NULL;
+        printf("DEMO DIALOG PATH id=%d modern=%d legacy_list=%d\n",id,demo_modern,legacy);fflush(stdout);
+        /* The legacy Shell browser is a separate layout, without the old
+         * file template's lists. Its window and cancellation are checked. */
+        CHECK(((id-2901)%3)==2?demo_modern:(id==2907?TRUE:(legacy && !demo_modern)));
+        CHECK(PostMessageW(demo_test_dialog,WM_CLOSE,0,0));
+        for(unsigned i=0;i<100 && IsWindow(demo_test_dialog);++i)Sleep(50);
+        CHECK(!IsWindow(demo_test_dialog));
+        WCHAR result[160]=L"";
+        for(unsigned i=0;i<100;++i){
+            GetDlgItemTextW(page,2099,result,ARRAYSIZE(result));
+            if(!wcsncmp(result,L"Cancelled",9))break;
+            Sleep(50);
+        }
+        CHECK(!wcsncmp(result,L"Cancelled",9));
+    }
+    puts("DEMO DIALOG PATHS PASS opened=9 cancelled=9");
+}
 static void catalog_pages(HWND main,DWORD thread,HANDLE target,BOOL styled,const WCHAR *scratch)
 {
     static const WCHAR *titles[]={L"Buttons and states",L"Editing and lists",L"Files and scrollbars",L"Containers and drawing",L"Lists and toolbars",L"Ranges and dates",L"Text and special objects",L"MDI windows",L"Common dialogs"};
@@ -117,6 +161,7 @@ static void catalog_pages(HWND main,DWORD thread,HANDLE target,BOOL styled,const
                 text(w,2901+(int)j,dialog_buttons[j]);
             }
             puts("DEMO DIALOG ENTRIES PASS open=3 save=3 folder=3");
+            if(styled)demo_dialog_paths(w,thread);
         }
         CHECK(swprintf_s(file,MAX_PATH,L"%ls\\catalog-%u-%u.bmp",scratch,(unsigned)styled,i)>0);SendMessageW(w,WM_NCACTIVATE,TRUE,0);UpdateWindow(w);pixels screenshot=capture(w,file);CHECK(screenshot.hash);
         SendMessageW(w,WM_CLOSE,0,0);CHECK(!IsWindow(w));printf("DEMO CATALOG PAGE PASS styled=%u page=%u gdi=%lu\n",(unsigned)styled,i,GetGuiResources(target,GR_GDIOBJECTS));
