@@ -112,6 +112,9 @@ try{
         foreach($kind in @('shell','com')){foreach($action in @('accept','cancel')){
             $cases+=Case "dialog-tree-$arch-$kind-$action" $dialogDriver @($run,$treeFolderTarget,$kind,$action) @("TREE_FOLDER bits=$bits",'tree=1','windows=1','result=1','worker=0','DIALOG_DRIVER exit=0') 30
         }}
+        foreach($kind in @('shell-simple','shell-simple-callback')){foreach($action in @('accept','cancel')){
+            $cases+=Case "dialog-tree-$arch-$kind-$action" $dialogDriver @($run,$treeFolderTarget,$kind,$action) @("TREE_FOLDER bits=$bits",'tree=1','windows=1','result=1','direct=1','worker=0','DIALOG_DRIVER exit=0') 30
+        }}
         $cases+=Case "dialog-tree-$arch-shell-validate" $dialogDriver @($run,$treeFolderTarget,'shell','validate') @("TREE_FOLDER bits=$bits",'result=1','validated=1','direct=1','worker=0','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-tree-$arch-shell-recover" $dialogDriver @($run,$treeFolderTarget,'shell','recover') @("TREE_FOLDER bits=$bits",'result=1','validated=1','direct=1','worker=0','DIALOG_DRIVER exit=0') 30
         $findTarget=Join-Path (Join-Path $BuildRoot $arch) 'find-dialog-target.exe'

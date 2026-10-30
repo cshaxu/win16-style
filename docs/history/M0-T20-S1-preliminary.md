@@ -721,3 +721,7 @@ P243 打印阶段包：针对 `PrintDlgA/W` 的完整大小结构及常用打印
 PrintDlgEx 多范围与 Apply 契约验证：自有私有桌面下对已发布 P243 和另行干净构建的同批包分别测试 x86/x64 Unicode。探针在真实属性页选择 pages 并输入 `2,4-5`，Print 返回 S_OK、action=PD_RESULT_PRINT、两个区间 2–2 和 4–5；另一例点 Apply 再 Cancel，返回 S_OK、action=PD_RESULT_APPLY 并保留同样两个区间。四例均检查标题附着和 HDC，关闭后释放返回资源；没有执行打印。结果确证旧 PrintDlg 单个页码区间及普通确定/取消无法完整表达此调用，不能静默强转。现将两个用例加入包回归，未覆盖 ANSI、应用自定义页面/回调、真实物理输入或实际打印。
 
 仅测试与记录变化，无产品源码或发布变化。p244-print-ex-tests 双宽干净构建和来源、原资源、ABI检查通过；p244-print-ex-focus 对该同批包的 12 项聚焦测试通过、无跳过。新构建四文件摘要与已发布 P243 不同，不将新构建称为字节相同，也未更换已发布版本；四个新回归另对 O:/winnt 实际部署 P243 双宽直接通过。T20 S1 继续开放。
+
+P244：`SHBrowseForFolderA/W` 对 `BIF_RETURNONLYFSDIRS|BIF_USENEWUI` 增加与原带 VALIDATE 精确组合相同的旧树处理；带 callback 清除 NEWDIALOGSTYLE 且保留 EDITBOX 和应用回调，无 callback 使用仅文件系统旧树，其他参数原路径。搜索 `BRIDGE_FLAGS|BROWSE_WRAPPER`，两位宽共用唯一包装。旧包 x64 新用例选择成功但 direct=0、退出1，为布局负例。新包 x86/x64 Unicode 选取/取消、回调初始化和带校验恢复等20项聚焦测试通过、无跳过；ANSI 新参数、真实键鼠、所有回调及新建等新式特性尚未覆盖或保留。代码统计：新增13行、删除10行、净增3行（不含清单、文档、二进制）。
+
+p244-folder-simple 双宽干净构建、资源和ABI检查通过。首次发布在 assets 已替换后因 O:/winnt/demo.exe 占用中断，随后的 Restart Manager 和进程检查未发现占用者；p244-folder-publish-retry 重试成功，两处四文件与实测包相同：demo 6d1dd4fa652c56d07d55a7b05c5314417c2a55edd2009631dfd797d443edbf7d，32 41972b6c46dbc225a06cf0e55e7a644f979fe4dd0b7b1fcbd7693bd97185ff5f，64 ecc53f8029f71161a5385fd3f3fc32aba5b464faa72ed5d0452cedcb54973a21，run16s e5ff82a94e6821a4cae8a5fe9a2fc5a5eff9065ab804f257d5ef9589538b601a。PrintDlgEx 根据用户明确要求继续研究转接，T20 S1 开放。

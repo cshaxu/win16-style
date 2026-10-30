@@ -9,7 +9,7 @@ static WCHAR wanted[MAX_PATH];
 static volatile LONG seen,trees,windows,direct_tree;
 static HWND dialog;
 static BOOL cancel_mode,validate_mode,recover_mode;
-static volatile LONG validated;
+static volatile LONG validated,callback_initialized;
 static HWND edit_window;
 static BOOL CALLBACK child(HWND w,LPARAM data)
 {
@@ -47,12 +47,12 @@ static DWORD WINAPI observe(void *unused)
     return 1;
 }
 static int CALLBACK callback(HWND w,UINT message,LPARAM parameter,LPARAM data)
-{(void)w;(void)parameter;if(data==0x12345678 && message==BFFM_VALIDATEFAILEDW){InterlockedIncrement(&validated);return 1;}return 0;}
+{(void)w;(void)parameter;if(data==0x12345678 && message==BFFM_INITIALIZED)InterlockedIncrement(&callback_initialized);if(data==0x12345678 && message==BFFM_VALIDATEFAILEDW){InterlockedIncrement(&validated);return 1;}return 0;}
 int wmain(int argc,WCHAR **argv)
 {
     if(argc!=3)return 2;
-    BOOL com=!wcscmp(argv[1],L"com");cancel_mode=!wcscmp(argv[2],L"cancel");recover_mode=!wcscmp(argv[2],L"recover");validate_mode=recover_mode || !wcscmp(argv[2],L"validate");
-    if((!com && wcscmp(argv[1],L"shell")) || (!cancel_mode && !validate_mode && wcscmp(argv[2],L"accept")) || (com && validate_mode))return 2;
+    BOOL com=!wcscmp(argv[1],L"com"),simple=!wcscmp(argv[1],L"shell-simple") || !wcscmp(argv[1],L"shell-simple-callback"),simple_callback=!wcscmp(argv[1],L"shell-simple-callback");cancel_mode=!wcscmp(argv[2],L"cancel");recover_mode=!wcscmp(argv[2],L"recover");validate_mode=recover_mode || !wcscmp(argv[2],L"validate");
+    if((!com && !simple && wcscmp(argv[1],L"shell")) || (!cancel_mode && !validate_mode && wcscmp(argv[2],L"accept")) || (com && validate_mode))return 2;
     UINT length=GetWindowsDirectoryW(wanted,ARRAYSIZE(wanted));if(!length || length>=ARRAYSIZE(wanted))return 3;
     HRESULT init=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);if(FAILED(init))return 4;
     owner_thread=GetCurrentThreadId();HANDLE thread=CreateThread(NULL,0,observe,NULL,0,NULL);if(!thread)return 5;
@@ -69,13 +69,13 @@ int wmain(int argc,WCHAR **argv)
             if(path)CoTaskMemFree(path);
             if(item)IShellItem_Release(item);}
         if(d)IFileDialog_Release(d);
-    }else{BROWSEINFOW b={0};b.ulFlags=BIF_RETURNONLYFSDIRS|BIF_USENEWUI|BIF_VALIDATE;
-        if(validate_mode){b.lpfn=callback;b.lParam=0x12345678;}
+    }else{BROWSEINFOW b={0};b.ulFlags=BIF_RETURNONLYFSDIRS|BIF_USENEWUI|(simple?0:BIF_VALIDATE);
+        if(validate_mode || simple_callback){b.lpfn=callback;b.lParam=0x12345678;}
         PIDLIST_ABSOLUTE item=SHBrowseForFolderW(&b);WCHAR path[MAX_PATH]=L"";
         correct=(cancel_mode || (validate_mode && !recover_mode))?!item:(item && SHGetPathFromIDListW(item,path) && !lstrcmpiW(path,wanted));
         if(item)CoTaskMemFree(item);}
     DWORD wait=WaitForSingleObject(thread,8000),code=1;if(wait==WAIT_OBJECT_0)GetExitCodeThread(thread,&code);CloseHandle(thread);CoUninitialize();
-    printf("TREE_FOLDER bits=%u com=%d cancel=%d tree=%ld windows=%ld result=%d hr=%08lx wait=%lu worker=%lu validated=%ld direct=%ld\n",
-        (unsigned)(sizeof(void*)*8),com,cancel_mode,trees,windows,correct,(DWORD)hr,wait,code,validated,direct_tree);
-    return seen && trees && windows==1 && correct && wait==WAIT_OBJECT_0 && !code && (!validate_mode || (validated==1 && direct_tree))?0:1;
+    printf("TREE_FOLDER bits=%u com=%d cancel=%d tree=%ld windows=%ld result=%d hr=%08lx wait=%lu worker=%lu validated=%ld direct=%ld callback=%ld\n",
+        (unsigned)(sizeof(void*)*8),com,cancel_mode,trees,windows,correct,(DWORD)hr,wait,code,validated,direct_tree,callback_initialized);
+    return seen && trees && windows==1 && correct && wait==WAIT_OBJECT_0 && !code && (!validate_mode || (validated==1 && direct_tree)) && (!simple || direct_tree) && (!simple_callback || callback_initialized==1)?0:1;
 }
