@@ -11,7 +11,7 @@ typedef struct listener {IFileDialogEvents iface;LONG refs;int tag;} listener;
 static volatile LONG called,correct,identity,seen,old_layout,kept,ole_window,ole_identity;static DWORD owner;static HWND window;
 static volatile LONG selected_correct,filter_changed;static BOOL select_mode,filter_mode;
 static BOOL save_mode,folder_mode,folder_new,folder_invalid,folder_cwd,folder_noevents,folder_unicode,folder_veto_new,folder_exists,folder_select;static volatile LONG folder_prompt,folder_rejected,folder_vetoes,folder_child_changed,folder_veto_root;
-static PCWSTR overwrite_other_drive;static BOOL overwrite_drive_relative,overwrite_rooted,overwrite_relative,overwrite_mode,overwrite_extension,overwrite_default,overwrite_multi,overwrite_multi_default,overwrite_notimpl,overwrite_denied;static LONG overwrite_called,overwrite_correct,overwrite_other,prompt_seen,prompt_order;
+static PCWSTR overwrite_other_drive;static WCHAR overwrite_cross_root[MAX_PATH];static BOOL overwrite_cross,overwrite_drive_relative,overwrite_rooted,overwrite_relative,overwrite_mode,overwrite_extension,overwrite_default,overwrite_multi,overwrite_multi_default,overwrite_notimpl,overwrite_denied;static LONG overwrite_called,overwrite_correct,overwrite_other,prompt_seen,prompt_order;
 static BOOL share_mode,share_refuse;static LONG share_called,share_correct;
 static WCHAR test_nested[MAX_PATH];static WCHAR expected[MAX_PATH];static IUnknown *expected_identity;static BOOL self_unadvise;static DWORD event_cookie;static HRESULT self_result=E_FAIL;
 static BOOL mutation_mode,multi_veto,multi_error,multi_notimpl,close_mode,close_veto,fileok_error,fileok_notimpl,fileok_success2;static DWORD other_cookie;static HRESULT other_result=E_FAIL,close_result=E_FAIL;static LONG other_called,done;
@@ -161,7 +161,7 @@ static DWORD WINAPI observe(void *unused)
             SendMessageW(window,WM_COMMAND,MAKEWPARAM(1136,CBN_SELCHANGE),(LPARAM)combo);filtered=TRUE;}}
         if(select_mode && seen && old_layout && !selected && (!filter_mode || filter_changed)){HWND list=GetDlgItem(window,1120);LRESULT index=SendMessageW(list,LB_FINDSTRINGEXACT,(WPARAM)-1,(LPARAM)L"selected.txt");
             if(index!=LB_ERR){SendMessageW(list,LB_SETCURSEL,(WPARAM)index,0);SendMessageW(window,WM_COMMAND,MAKEWPARAM(1120,LBN_SELCHANGE),(LPARAM)list);selected=TRUE;}}
-        if(seen && IsWindow(window) && i>10 && !first && (!select_mode||selected_correct)){if(overwrite_relative){WCHAR tmp[MAX_PATH];WCHAR drive_name[]={expected[0],L':',L's',L'e',L'l',L'e',L'c',L't',L'e',L'd',L'.',L't',L'x',L't',0};if(!GetTempPathW(MAX_PATH,tmp)||!SetCurrentDirectoryW(overwrite_rooted?overwrite_other_drive:tmp)||!SetDlgItemTextW(window,1152,overwrite_drive_relative?drive_name:overwrite_rooted?expected+2:L"selected.txt"))return 2;}if(folder_cwd && !SetCurrentDirectoryW(test_nested))return 2;
+        if(seen && IsWindow(window) && i>10 && !first && (!select_mode||selected_correct)){if(overwrite_relative){WCHAR tmp[MAX_PATH];WCHAR drive_name[MAX_PATH];if(overwrite_cross)swprintf(drive_name,MAX_PATH,L"%lc:%ls",expected[0],expected+3);else swprintf(drive_name,MAX_PATH,L"%lc:selected.txt",expected[0]);if(!GetTempPathW(MAX_PATH,tmp)||!SetCurrentDirectoryW(overwrite_rooted?overwrite_other_drive:tmp)||!SetDlgItemTextW(window,1152,overwrite_drive_relative?drive_name:overwrite_rooted?expected+2:L"selected.txt"))return 2;}if(folder_cwd && !SetCurrentDirectoryW(test_nested))return 2;
             if(folder_select){HWND list=GetDlgItem(window,1121);LRESULT previous=SendMessageW(list,LB_GETCURSEL,0,0);
                 LRESULT child=SendMessageW(list,LB_FINDSTRINGEXACT,(WPARAM)-1,(LPARAM)L"nested");
                 if(child==LB_ERR || child==previous)return 2;
@@ -191,15 +191,18 @@ int wmain(int argc,WCHAR **argv)
     overwrite_extension=argc>1&&(!lstrcmpW(argv[1],L"overwrite-ext")||!lstrcmpW(argv[1],L"overwrite-ext-old"));
     overwrite_rooted=argc>1&&!lstrcmpW(argv[1],L"overwrite-rooted-old");
     overwrite_other_drive=overwrite_rooted&&argc>2?argv[2]:NULL;if(overwrite_rooted&&!overwrite_other_drive)return 2;
-    overwrite_drive_relative=argc>1&&!lstrcmpW(argv[1],L"overwrite-drive-relative-old");
+    overwrite_cross=argc>1&&!lstrcmpW(argv[1],L"overwrite-cross-old");
+    overwrite_drive_relative=overwrite_cross||(argc>1&&!lstrcmpW(argv[1],L"overwrite-drive-relative-old"));
     overwrite_relative=overwrite_drive_relative||overwrite_rooted||(argc>1&&!lstrcmpW(argv[1],L"overwrite-relative-old"));
     overwrite_mode=overwrite_relative||overwrite_default||overwrite_multi||overwrite_extension||(argc>1&&(!lstrcmpW(argv[1],L"overwrite")||!lstrcmpW(argv[1],L"overwrite-old")));
     save_mode=overwrite_mode||(argc>1&&(!lstrcmpW(argv[1],L"save")||!lstrcmpW(argv[1],L"save-native")));
-    BOOL require_old=removed || select_mode || (argc>1&&(!lstrcmpW(argv[1],L"fileok-error-old")||!lstrcmpW(argv[1],L"fileok-notimpl-old")||!lstrcmpW(argv[1],L"multi-error-old")||!lstrcmpW(argv[1],L"multi-notimpl-old")||!lstrcmpW(argv[1],L"fileok-success2-old"))) || (argc>1&&!lstrcmpW(argv[1],L"folder-old")) || (argc>1&&(!lstrcmpW(argv[1],L"old")||!lstrcmpW(argv[1],L"save")||!lstrcmpW(argv[1],L"overwrite-old")||!lstrcmpW(argv[1],L"overwrite-relative-old")||!lstrcmpW(argv[1],L"overwrite-drive-relative-old")||!lstrcmpW(argv[1],L"overwrite-rooted-old")||!lstrcmpW(argv[1],L"overwrite-ext-old")||!lstrcmpW(argv[1],L"overwrite-default-old")||!lstrcmpW(argv[1],L"overwrite-multi-old")||!lstrcmpW(argv[1],L"overwrite-multi-default-old")||!lstrcmpW(argv[1],L"overwrite-multi-notimpl-old")||!lstrcmpW(argv[1],L"overwrite-multi-denied-old")||!lstrcmpW(argv[1],L"share-old")||!lstrcmpW(argv[1],L"share-refuse-old"))),release_only=argc>1&&!lstrcmpW(argv[1],L"release");WCHAR temp[MAX_PATH],root[MAX_PATH];
+    BOOL require_old=removed || select_mode || (argc>1&&(!lstrcmpW(argv[1],L"fileok-error-old")||!lstrcmpW(argv[1],L"fileok-notimpl-old")||!lstrcmpW(argv[1],L"multi-error-old")||!lstrcmpW(argv[1],L"multi-notimpl-old")||!lstrcmpW(argv[1],L"fileok-success2-old"))) || (argc>1&&!lstrcmpW(argv[1],L"folder-old")) || (argc>1&&(!lstrcmpW(argv[1],L"old")||!lstrcmpW(argv[1],L"save")||!lstrcmpW(argv[1],L"overwrite-old")||!lstrcmpW(argv[1],L"overwrite-relative-old")||!lstrcmpW(argv[1],L"overwrite-drive-relative-old")||!lstrcmpW(argv[1],L"overwrite-cross-old")||!lstrcmpW(argv[1],L"overwrite-rooted-old")||!lstrcmpW(argv[1],L"overwrite-ext-old")||!lstrcmpW(argv[1],L"overwrite-default-old")||!lstrcmpW(argv[1],L"overwrite-multi-old")||!lstrcmpW(argv[1],L"overwrite-multi-default-old")||!lstrcmpW(argv[1],L"overwrite-multi-notimpl-old")||!lstrcmpW(argv[1],L"overwrite-multi-denied-old")||!lstrcmpW(argv[1],L"share-old")||!lstrcmpW(argv[1],L"share-refuse-old"))),release_only=argc>1&&!lstrcmpW(argv[1],L"release");WCHAR temp[MAX_PATH],root[MAX_PATH];
     if(!GetTempPathW(MAX_PATH,temp))return 2;
+    if(overwrite_cross && (argc<3||wcslen(argv[2])<3||argv[2][1]!=L':'||!_wcsnicmp(temp,argv[2],1)))return 2;
     if(overwrite_rooted && (wcslen(overwrite_other_drive)<3 || overwrite_other_drive[1]!=L':' || overwrite_other_drive[2]!=L'\\' || temp[1]!=L':' || !_wcsnicmp(temp,overwrite_other_drive,1)))return 2;
     if(swprintf(root,MAX_PATH,folder_unicode?L"%lsWin16S Folder \u6d4b\u8bd5-%lu-%lu":L"%lsWin16SEvent-%lu-%lu",temp,GetCurrentProcessId(),GetTickCount())<0||!CreateDirectoryW(root,NULL)||
        swprintf(expected,MAX_PATH,L"%ls\\selected.txt",root)<0)return 2;
+    if(overwrite_cross){if(!GetTempFileNameW(argv[2],L"w16",0,overwrite_cross_root)||!DeleteFileW(overwrite_cross_root)||!CreateDirectoryW(overwrite_cross_root,NULL)||swprintf(expected,MAX_PATH,L"%ls\\selected.txt",overwrite_cross_root)<0)return 2;}
     if(!save_mode||overwrite_mode){HANDLE file=CreateFileW(expected,GENERIC_WRITE,0,NULL,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,NULL);if(file==INVALID_HANDLE_VALUE)return 2;CloseHandle(file);}
     if(folder_mode){if(!DeleteFileW(expected))return 2;lstrcpynW(expected,root,MAX_PATH);}
     WCHAR marker[MAX_PATH]=L"";
@@ -262,7 +265,7 @@ int wmain(int argc,WCHAR **argv)
     BOOL marker_kept=!folder_exists || GetFileAttributesW(marker)!=INVALID_FILE_ATTRIBUTES;
     BOOL marker_removed=!folder_exists || DeleteFileW(marker);
     BOOL child_removed=marker_removed && (!folder_new || folder_invalid || !made || RemoveDirectoryW(expected));
-    BOOL nested_removed=!(folder_invalid||folder_cwd) || RemoveDirectoryW(nested);BOOL root_removed=RemoveDirectoryW(root);
+    BOOL nested_removed=!(folder_invalid||folder_cwd) || RemoveDirectoryW(nested);BOOL cross_removed=!overwrite_cross||RemoveDirectoryW(overwrite_cross_root);BOOL root_removed=RemoveDirectoryW(root);
     printf("COM_EVENTS bits=%u seen=%ld old=%ld calls=%ld correct=%ld identity=%ld kept=%ld hr=%08lx unadvise=%08lx refs=%ld wait=%lu ole=%ld ole_identity=%ld\n",
         (unsigned)(sizeof(void*)*8),seen,old_layout,called,correct,identity,kept,(unsigned long)hr,(unsigned long)unadvise,events.refs,wait,ole_window,ole_identity);
     printf("COM_EVENT_SELECTION selected_correct=%ld filter_changed=%ld\n",selected_correct,filter_changed);
@@ -280,13 +283,13 @@ int wmain(int argc,WCHAR **argv)
             (!(fileok_error||fileok_success2)||kept)&&SUCCEEDED(hr)&&SUCCEEDED(unadvise)&&events.refs==1&&wait==WAIT_OBJECT_0&&worker_code==0?0:1;}
     if(share_mode){printf("COM_EVENT_SHARE count=%ld correct=%ld ok=%ld refs=%ld worker=%lu\n",share_called,share_correct,called,events.refs,worker_code);
         return seen&&(!require_old||old_layout)&&share_called==(share_refuse?2:1)&&share_correct==share_called&&(!share_refuse||kept)&&called==1&&correct==1&&identity==1&&events.refs==1&&SUCCEEDED(hr)&&SUCCEEDED(unadvise)&&wait==WAIT_OBJECT_0&&worker_code==0?0:1;}
-    if(overwrite_mode){printf("COM_OVERWRITE_CLEANUP file=%d root=%d\n",file_removed,root_removed);printf("COM_EVENT_OVERWRITE count=%ld correct=%ld ok=%ld kept=%ld refs=%ld worker=%lu\n",overwrite_called,overwrite_correct,called,kept,events.refs,worker_code);
+    if(overwrite_mode){printf("COM_OVERWRITE_CLEANUP file=%d root=%d cross=%d\n",file_removed,root_removed,cross_removed);printf("COM_EVENT_OVERWRITE count=%ld correct=%ld ok=%ld kept=%ld refs=%ld worker=%lu\n",overwrite_called,overwrite_correct,called,kept,events.refs,worker_code);
         if(!file_removed || !root_removed)return 1;
         if(overwrite_multi){printf("COM_EVENT_OVERWRITE_MULTI other=%ld ok=%ld refs=%ld,%ld\n",overwrite_other,called,events.refs,other.refs);
             return seen&&(!require_old||old_layout)&&overwrite_called==(overwrite_notimpl?2:overwrite_multi_default?1:2)&&overwrite_correct==overwrite_called&&overwrite_other==(overwrite_notimpl?1:0)&&called==2&&correct==2&&identity==2&&(overwrite_notimpl||(overwrite_multi_default?(prompt_seen&&prompt_order):kept))&&events.refs==1&&other.refs==1&&SUCCEEDED(hr)&&SUCCEEDED(unadvise)&&wait==WAIT_OBJECT_0&&worker_code==0?0:1;}
         if(overwrite_default){printf("COM_EVENT_OVERWRITE_DEFAULT prompt=%ld order=%ld count=%ld ok=%ld\n",prompt_seen,prompt_order,overwrite_called,called);
             return seen&&(!require_old||old_layout)&&prompt_seen&&prompt_order&&overwrite_called==1&&overwrite_correct==1&&called==1&&correct==1&&identity==1&&events.refs==1&&SUCCEEDED(hr)&&SUCCEEDED(unadvise)&&wait==WAIT_OBJECT_0&&worker_code==0?0:1;}
-        return file_removed&&root_removed&&seen&&(!require_old||old_layout)&&overwrite_called==2&&overwrite_correct==2&&called==1&&correct==1&&identity==1&&kept&&events.refs==1&&SUCCEEDED(hr)&&SUCCEEDED(unadvise)&&wait==WAIT_OBJECT_0&&worker_code==0?0:1;}
+        return file_removed&&root_removed&&cross_removed&&seen&&(!require_old||old_layout)&&overwrite_called==2&&overwrite_correct==2&&called==1&&correct==1&&identity==1&&kept&&events.refs==1&&SUCCEEDED(hr)&&SUCCEEDED(unadvise)&&wait==WAIT_OBJECT_0&&worker_code==0?0:1;}
     if(close_mode){printf("COM_EVENT_CLOSE calls=%ld close=%08lx show=%08lx result=%08lx refs=%ld worker=%lu\n",called,(unsigned long)close_result,(unsigned long)hr,(unsigned long)close_item_hr,events.refs,worker_code);
         return seen&&called==1&&SUCCEEDED(close_result)&&events.refs==1&&wait==WAIT_OBJECT_0&&worker_code==0&&
             (close_veto?(hr==E_ABORT&&FAILED(close_item_hr)):(hr==S_OK&&SUCCEEDED(close_item_hr)))?0:1;}

@@ -191,7 +191,10 @@ static HRESULT STDMETHODCALLTYPE custom_SetControlLabel(IFileDialogCustomize *Th
 
 static HRESULT STDMETHODCALLTYPE custom_GetControlState(IFileDialogCustomize *This, DWORD dwIDCtl, CDCONTROLSTATEF *pdwState)
 {
-    file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,custom));p->unsupported=TRUE;return IFileDialogCustomize_GetControlState(p->custom_native ,dwIDCtl,pdwState);
+    file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,custom));
+    HRESULT hr=IFileDialogCustomize_GetControlState(p->custom_native ,dwIDCtl,pdwState);
+    if(SUCCEEDED(hr))p->unsupported=TRUE;
+    return hr;
 }
 
 static HRESULT STDMETHODCALLTYPE custom_SetControlState(IFileDialogCustomize *This, DWORD dwIDCtl, CDCONTROLSTATEF dwState)
@@ -201,7 +204,10 @@ static HRESULT STDMETHODCALLTYPE custom_SetControlState(IFileDialogCustomize *Th
 
 static HRESULT STDMETHODCALLTYPE custom_GetEditBoxText(IFileDialogCustomize *This, DWORD dwIDCtl, WCHAR **ppszText)
 {
-    file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,custom));p->unsupported=TRUE;return IFileDialogCustomize_GetEditBoxText(p->custom_native ,dwIDCtl,ppszText);
+    file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,custom));
+    HRESULT hr=IFileDialogCustomize_GetEditBoxText(p->custom_native ,dwIDCtl,ppszText);
+    if(SUCCEEDED(hr))p->unsupported=TRUE;
+    return hr;
 }
 
 static HRESULT STDMETHODCALLTYPE custom_SetEditBoxText(IFileDialogCustomize *This, DWORD dwIDCtl, LPCWSTR pszText)
@@ -211,7 +217,10 @@ static HRESULT STDMETHODCALLTYPE custom_SetEditBoxText(IFileDialogCustomize *Thi
 
 static HRESULT STDMETHODCALLTYPE custom_GetCheckButtonState(IFileDialogCustomize *This, DWORD dwIDCtl, WINBOOL *pbChecked)
 {
-    file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,custom));p->unsupported=TRUE;return IFileDialogCustomize_GetCheckButtonState(p->custom_native ,dwIDCtl,pbChecked);
+    file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,custom));
+    HRESULT hr=IFileDialogCustomize_GetCheckButtonState(p->custom_native ,dwIDCtl,pbChecked);
+    if(SUCCEEDED(hr))p->unsupported=TRUE;
+    return hr;
 }
 
 static HRESULT STDMETHODCALLTYPE custom_SetCheckButtonState(IFileDialogCustomize *This, DWORD dwIDCtl, WINBOOL bChecked)
@@ -236,7 +245,10 @@ static HRESULT STDMETHODCALLTYPE custom_RemoveAllControlItems(IFileDialogCustomi
 
 static HRESULT STDMETHODCALLTYPE custom_GetControlItemState(IFileDialogCustomize *This, DWORD dwIDCtl, DWORD dwIDItem, CDCONTROLSTATEF *pdwState)
 {
-    file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,custom));p->unsupported=TRUE;return IFileDialogCustomize_GetControlItemState(p->custom_native ,dwIDCtl,dwIDItem,pdwState);
+    file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,custom));
+    HRESULT hr=IFileDialogCustomize_GetControlItemState(p->custom_native ,dwIDCtl,dwIDItem,pdwState);
+    if(SUCCEEDED(hr))p->unsupported=TRUE;
+    return hr;
 }
 
 static HRESULT STDMETHODCALLTYPE custom_SetControlItemState(IFileDialogCustomize *This, DWORD dwIDCtl, DWORD dwIDItem, CDCONTROLSTATEF dwState)
@@ -246,7 +258,10 @@ static HRESULT STDMETHODCALLTYPE custom_SetControlItemState(IFileDialogCustomize
 
 static HRESULT STDMETHODCALLTYPE custom_GetSelectedControlItem(IFileDialogCustomize *This, DWORD dwIDCtl, DWORD *pdwIDItem)
 {
-    file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,custom));p->unsupported=TRUE;return IFileDialogCustomize_GetSelectedControlItem(p->custom_native ,dwIDCtl,pdwIDItem);
+    file_proxy *p=(file_proxy *)((BYTE *)This - offsetof(file_proxy,custom));
+    HRESULT hr=IFileDialogCustomize_GetSelectedControlItem(p->custom_native ,dwIDCtl,pdwIDItem);
+    if(SUCCEEDED(hr))p->unsupported=TRUE;
+    return hr;
 }
 
 static HRESULT STDMETHODCALLTYPE custom_SetSelectedControlItem(IFileDialogCustomize *This, DWORD dwIDCtl, DWORD dwIDItem)

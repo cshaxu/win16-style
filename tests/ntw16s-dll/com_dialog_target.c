@@ -51,6 +51,7 @@ int wmain(int argc,WCHAR **argv)
     if(argc!=3 && argc!=4)return 2;
     BOOL foreign_query=argc==4 && !lstrcmpW(argv[3],L"foreign");
     BOOL missing_query=argc==4 && !lstrcmpW(argv[3],L"missing");
+    BOOL missing_control=argc==4 && !lstrcmpW(argv[3],L"missing-control");
     BOOL filtered=argc==4 && !lstrcmpW(argv[3],L"filter");
     BOOL customized=argc==4 && !lstrcmpW(argv[3],L"custom");
     BOOL use_v2=argc==4 && !lstrcmpW(argv[3],L"v2");
@@ -121,6 +122,15 @@ int wmain(int argc,WCHAR **argv)
        FAILED(IFileDialogCustomize_QueryInterface(custom,&IID_IUnknown,(void **)&custom_identity)) ||
        FAILED(IFileDialog_QueryInterface(d,&IID_IUnknown,(void **)&base_identity)) || custom_identity!=base_identity ||
        FAILED(IFileDialogCustomize_QueryInterface(custom,&IID_IFileDialog,(void **)&custom_base)) || custom_base!=d)return 10;
+    if(missing_control){CDCONTROLSTATEF state=0;WCHAR *text=NULL;BOOL checked=FALSE;DWORD selected=0;
+        HRESULT queries[]={IFileDialogCustomize_GetControlState(custom,0x76543210,&state),
+            IFileDialogCustomize_GetEditBoxText(custom,0x76543210,&text),
+            IFileDialogCustomize_GetCheckButtonState(custom,0x76543210,&checked),
+            IFileDialogCustomize_GetControlItemState(custom,0x76543210,1,&state),
+            IFileDialogCustomize_GetSelectedControlItem(custom,0x76543210,&selected)};
+        if(text)CoTaskMemFree(text);
+        for(unsigned i=0;i<ARRAYSIZE(queries);++i){printf("COM_MISSING_CONTROL index=%u hr=%08lx\n",i,(unsigned long)queries[i]);
+            if(SUCCEEDED(queries[i]))return 20;}}
     if(customized && FAILED(IFileDialogCustomize_AddPushButton(custom,43101,L"Probe")))return 11;
     IFileDialog_Release(custom_base);IUnknown_Release(base_identity);IUnknown_Release(custom_identity);IFileDialogCustomize_Release(custom);
     IFileDialog2 *v2=NULL;IUnknown *v2_id=NULL,*base_id=NULL;

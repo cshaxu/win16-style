@@ -118,6 +118,9 @@ try{
         foreach($kind in @('open','save','folder')){
             $cases+=Case "dialog-com-missing-interface-$arch-$kind" $dialogDriver @($run,$comTarget,$kind,'cancel','missing') @('COM_MISSING_QUERY hr=80004002 null=1',"COM_BRIDGE bits=$bits",'old=1','hr=800704c7','DIALOG_DRIVER exit=0') 30
         }
+        foreach($kind in @('open','save','folder')){
+            $cases+=Case "dialog-com-missing-control-$arch-$kind" $dialogDriver @($run,$comTarget,$kind,'cancel','missing-control') @('COM_MISSING_CONTROL index=0 hr=80070057','COM_MISSING_CONTROL index=1 hr=80070057','COM_MISSING_CONTROL index=2 hr=80070057','COM_MISSING_CONTROL index=3 hr=80070057','COM_MISSING_CONTROL index=4 hr=80070057',"COM_BRIDGE bits=$bits",'old=1','hr=800704c7','DIALOG_DRIVER exit=0') 30
+        }
         $cases+=Case "dialog-com-foreign-interface-$arch" $dialogDriver @($run,$comTarget,'open','cancel','foreign') @('COM_FOREIGN_QUERY hr=00000000 present=1',"COM_BRIDGE bits=$bits",'old=0','hr=800704c7','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-factory-$arch" $dialogDriver @($run,$comTarget,'open','accept','factory') @('COM_FACTORY identity=1 hr=00000000',"COM_BRIDGE bits=$bits",'old=1','same=1','DIALOG_DRIVER exit=0') 30
         foreach($labelKind in @('open','save','folder')) {
