@@ -234,8 +234,11 @@ try{
             $cases+=Case "dialog-file-$arch-$mode" $dialogDriver @($run,$fileTarget,'open','wide',$layout,$mode) @("FILE_DIALOG bits=$bits",'DIALOG_DRIVER exit=0') 30
         }
         $cases+=Case "dialog-com-folder-create-$arch" $dialogDriver @($run,$eventsTarget,'folder-noevents') @("COM_EVENTS bits=$bits seen=1 old=1 calls=0",'FOLDER_EVENT_FINAL correct=1','COM_FOLDER_CREATE invalid=0 prompt=1 rejected=0 made=1 cleaned=1 wrong_directory=0','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-com-folder-create-selected-$arch" $dialogDriver @($run,$eventsTarget,'folder-select-noevents') @("COM_EVENTS bits=$bits seen=1 old=1 calls=0",'COM_FOLDER_SELECT enabled=1','FOLDER_EVENT_FINAL correct=1','COM_FOLDER_CREATE invalid=0 prompt=1 rejected=0 made=1 cleaned=1 wrong_directory=0','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-folder-create-cwd-$arch" $dialogDriver @($run,$eventsTarget,'folder-cwd-noevents') @("COM_EVENTS bits=$bits seen=1 old=1 calls=0",'FOLDER_EVENT_FINAL correct=1','COM_FOLDER_CREATE invalid=0 prompt=1 rejected=0 made=1 cleaned=1 wrong_directory=0','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-com-folder-create-existing-$arch" $dialogDriver @($run,$eventsTarget,'folder-existing-noevents') @("COM_EVENTS bits=$bits seen=1 old=1 calls=0",'COM_FOLDER_EXISTING exists=1 rejected=1 marker=1','COM_FOLDER_CREATE invalid=0 prompt=1 rejected=1 made=1 cleaned=1 wrong_directory=0','hr=800704c7','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-folder-create-invalid-$arch" $dialogDriver @($run,$eventsTarget,'folder-invalid-noevents') @("COM_EVENTS bits=$bits seen=1 old=1 calls=0",'COM_FOLDER_CREATE invalid=1 prompt=1 rejected=1 made=0 cleaned=1 wrong_directory=0','hr=800704c7','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-folder-create-enter-$arch" $dialogDriver @($run,$folderTarget,'wide','newclassicenter') @("FOLDER_DIALOG bits=$bits",'FOLDER_CLASSIC_ENTER navigated=1','FOLDER_CLASSIC_NEW cancel=0 prompt=1 callback=1 cleaned=1 wait=0 worker=0','DIALOG_DRIVER exit=0') 30
         foreach($encoding in @('ansi','wide')) {
             foreach($mode in @('newclassic','newclassiccancel')) {
                 $cancelFlag=if($mode -eq 'newclassiccancel'){'1'}else{'0'}

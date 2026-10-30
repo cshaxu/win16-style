@@ -2696,7 +2696,7 @@
       "path": "src/ntw16s-dll/injection/folder_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "bd400ccb669327439ad0a6d0b12a0c7bb42ba0306247b715e27508b6d1ed82d8",
+      "sha256": "9ecc88aa1a4e986a5d2a92439515e1a2617a464af408f0636b97366c65dd2e5d",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
@@ -2723,7 +2723,7 @@
       "path": "tests/ntw16s-dll/folder_dialog_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "9e1065a212ab7b334ac9790c1189a7ba288b272f67a69e5b73e74ed336b64382",
+      "sha256": "9cd008756b8d9604114ee19c80a795d57a986baf06bd0713cae00b5d99b68bea",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
@@ -2867,7 +2867,7 @@
       "path": "tests/ntw16s-dll/com_events_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f92e62b53147297fba1a08708b63e27de2d1457008fca4271e7076b4ad798972",
+      "sha256": "fa5139dae2db7afe2be8ae8f0af8285a368c4e053aea0f4845fc49c1628fe39c",
       "disposition": "authored",
       "review": "T20 S1 native old dialog and COM event identity and veto probes",
       "notice": "Project-authored test; no imported code or resources"

@@ -10,7 +10,7 @@
 typedef struct listener {IFileDialogEvents iface;LONG refs;int tag;} listener;
 static volatile LONG called,correct,identity,seen,old_layout,kept,ole_window,ole_identity;static DWORD owner;static HWND window;
 static volatile LONG selected_correct,filter_changed;static BOOL select_mode,filter_mode;
-static BOOL save_mode,folder_mode,folder_new,folder_invalid,folder_cwd,folder_noevents,folder_unicode,folder_veto_new;static volatile LONG folder_prompt,folder_rejected,folder_vetoes,folder_child_changed,folder_veto_root;
+static BOOL save_mode,folder_mode,folder_new,folder_invalid,folder_cwd,folder_noevents,folder_unicode,folder_veto_new,folder_exists,folder_select;static volatile LONG folder_prompt,folder_rejected,folder_vetoes,folder_child_changed,folder_veto_root;
 static BOOL overwrite_mode,overwrite_extension,overwrite_default,overwrite_multi,overwrite_multi_default,overwrite_notimpl,overwrite_denied;static LONG overwrite_called,overwrite_correct,overwrite_other,prompt_seen,prompt_order;
 static BOOL share_mode,share_refuse;static LONG share_called,share_correct;
 static WCHAR test_nested[MAX_PATH];static WCHAR expected[MAX_PATH];static IUnknown *expected_identity;static BOOL self_unadvise;static DWORD event_cookie;static HRESULT self_result=E_FAIL;
@@ -120,7 +120,10 @@ static BOOL CALLBACK confirm_scan(HWND w,LPARAM arg)
 static BOOL CALLBACK folder_error_text(HWND child,LPARAM data)
 {
     WCHAR text[256];GetWindowTextW(child,text,ARRAYSIZE(text));
-    if(!lstrcmpW(text,L"Enter a valid folder name.")){*(BOOL *)data=TRUE;return FALSE;}
+    WCHAR expected_error[512]=L"";
+    if(folder_exists)FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_IGNORE_INSERTS,NULL,ERROR_ALREADY_EXISTS,0,expected_error,ARRAYSIZE(expected_error),NULL);
+    else lstrcpynW(expected_error,L"Enter a valid folder name.",ARRAYSIZE(expected_error));
+    if(expected_error[0] && !lstrcmpW(text,expected_error)){*(BOOL *)data=TRUE;return FALSE;}
     return TRUE;
 }
 static BOOL CALLBACK folder_prompt_scan(HWND w,LPARAM ignored)
@@ -133,12 +136,12 @@ static BOOL CALLBACK folder_prompt_scan(HWND w,LPARAM ignored)
         SetWindowTextW(edit,folder_invalid?L"nested\\escape":L"created");InterlockedExchange(&folder_prompt,1);
         PostMessageW(w,WM_COMMAND,MAKEWPARAM(IDOK,BN_CLICKED),(LPARAM)GetDlgItem(w,IDOK));return FALSE;
     }
-    if(folder_invalid && !edit && folder_prompt && !folder_rejected){
+    if((folder_invalid||folder_exists) && !edit && folder_prompt && !folder_rejected){
         BOOL matched=FALSE;EnumChildWindows(w,folder_error_text,(LPARAM)&matched);if(!matched)return TRUE;
         HWND button=GetDlgItem(w,IDOK);if(!button)button=GetDlgItem(w,IDCANCEL);
         if(button){InterlockedExchange(&folder_rejected,1);PostMessageW(button,BM_CLICK,0,0);}return FALSE;
     }
-    if(folder_invalid && edit && folder_rejected && IsWindowEnabled(w)){
+    if((folder_invalid||folder_exists) && edit && folder_rejected && IsWindowEnabled(w)){
         PostMessageW(w,WM_COMMAND,MAKEWPARAM(IDCANCEL,BN_CLICKED),(LPARAM)GetDlgItem(w,IDCANCEL));return FALSE;
     }
     return TRUE;
@@ -147,15 +150,22 @@ static DWORD WINAPI observe(void *unused)
 {
     (void)unused;BOOL first=FALSE,second=FALSE,selected=FALSE,filtered=FALSE,submit_new=FALSE;
     for(int i=0;i<160;++i){if(!seen)EnumThreadWindows(owner,scan,0);
-        if(folder_new && first && (!folder_prompt || (folder_invalid && !IsWindowEnabled(window))))EnumThreadWindows(owner,folder_prompt_scan,0);
+        if(folder_new && first && (!folder_prompt || ((folder_invalid||folder_exists) && !IsWindowEnabled(window))))EnumThreadWindows(owner,folder_prompt_scan,0);
         if(folder_new && folder_prompt && !submit_new && (!folder_veto_new || folder_veto_root) && IsWindow(window) && IsWindowEnabled(window)){
-            int id=(folder_invalid||folder_veto_new)?IDCANCEL:IDOK;PostMessageW(window,WM_COMMAND,MAKEWPARAM(id,BN_CLICKED),(LPARAM)GetDlgItem(window,id));submit_new=TRUE;}
+            int id=(folder_invalid||folder_exists||folder_veto_new)?IDCANCEL:IDOK;PostMessageW(window,WM_COMMAND,MAKEWPARAM(id,BN_CLICKED),(LPARAM)GetDlgItem(window,id));submit_new=TRUE;}
         if((overwrite_default||overwrite_multi_default) && seen && !prompt_seen)EnumThreadWindows(owner,confirm_scan,0);
         if(filter_mode && seen && old_layout && !filtered){HWND combo=GetDlgItem(window,1136);if(combo && SendMessageW(combo,CB_SETCURSEL,1,0)!=CB_ERR){
             SendMessageW(window,WM_COMMAND,MAKEWPARAM(1136,CBN_SELCHANGE),(LPARAM)combo);filtered=TRUE;}}
         if(select_mode && seen && old_layout && !selected && (!filter_mode || filter_changed)){HWND list=GetDlgItem(window,1120);LRESULT index=SendMessageW(list,LB_FINDSTRINGEXACT,(WPARAM)-1,(LPARAM)L"selected.txt");
             if(index!=LB_ERR){SendMessageW(list,LB_SETCURSEL,(WPARAM)index,0);SendMessageW(window,WM_COMMAND,MAKEWPARAM(1120,LBN_SELCHANGE),(LPARAM)list);selected=TRUE;}}
-        if(seen && IsWindow(window) && i>10 && !first && (!select_mode||selected_correct)){if(folder_cwd && !SetCurrentDirectoryW(test_nested))return 2;int id=folder_new?0x5717:IDOK;HWND b=GetDlgItem(window,id);PostMessageW(window,WM_COMMAND,MAKEWPARAM(id,BN_CLICKED),(LPARAM)b);first=TRUE;}
+        if(seen && IsWindow(window) && i>10 && !first && (!select_mode||selected_correct)){if(folder_cwd && !SetCurrentDirectoryW(test_nested))return 2;
+            if(folder_select){HWND list=GetDlgItem(window,1121);LRESULT previous=SendMessageW(list,LB_GETCURSEL,0,0);
+                LRESULT child=SendMessageW(list,LB_FINDSTRINGEXACT,(WPARAM)-1,(LPARAM)L"nested");
+                if(child==LB_ERR || child==previous)return 2;
+                SendMessageW(list,LB_SETCURSEL,(WPARAM)child,0);
+                SendMessageW(window,WM_COMMAND,MAKEWPARAM(1121,LBN_SELCHANGE),(LPARAM)list);
+                if(SendMessageW(list,LB_GETCURSEL,0,0)!=child)return 2;}
+            int id=folder_new?0x5717:IDOK;HWND b=GetDlgItem(window,id);PostMessageW(window,WM_COMMAND,MAKEWPARAM(id,BN_CLICKED),(LPARAM)b);first=TRUE;}
         if(first && !second && !overwrite_default && !overwrite_multi_default && (share_refuse?share_called>=1:overwrite_mode?overwrite_called>=1:called>=1) && IsWindow(window) && !close_mode){InterlockedExchange(&kept,1);HWND b=GetDlgItem(window,IDOK);PostMessageW(window,WM_COMMAND,MAKEWPARAM(IDOK,BN_CLICKED),(LPARAM)b);second=TRUE;}
         if(done || (first&&!IsWindow(window)&&(!folder_new||folder_prompt)))return 0;
         Sleep(50);}
@@ -163,7 +173,7 @@ static DWORD WINAPI observe(void *unused)
 }
 int wmain(int argc,WCHAR **argv)
 {
-    folder_veto_new=argc>1&&!lstrcmpW(argv[1],L"folder-veto-new");folder_unicode=argc>1&&!lstrcmpW(argv[1],L"folder-unicode");folder_noevents=argc>1&&(!lstrcmpW(argv[1],L"folder-noevents")||!lstrcmpW(argv[1],L"folder-invalid-noevents")||!lstrcmpW(argv[1],L"folder-cwd-noevents"));folder_invalid=argc>1&&(!lstrcmpW(argv[1],L"folder-invalid")||!lstrcmpW(argv[1],L"folder-invalid-noevents"));folder_cwd=argc>1&&(!lstrcmpW(argv[1],L"folder-cwd")||!lstrcmpW(argv[1],L"folder-cwd-noevents"));folder_new=folder_veto_new||folder_unicode||folder_noevents||folder_invalid||folder_cwd||(argc>1&&!lstrcmpW(argv[1],L"folder-new"));folder_mode=folder_new||(argc>1&&(!lstrcmpW(argv[1],L"folder")||!lstrcmpW(argv[1],L"folder-old")));BOOL removed=argc>1&&!lstrcmpW(argv[1],L"remove");mutation_mode=argc>1&&!lstrcmpW(argv[1],L"mutation");multi_veto=argc>1&&!lstrcmpW(argv[1],L"multi-veto");close_veto=argc>1&&!lstrcmpW(argv[1],L"close-veto");close_mode=close_veto||(argc>1&&!lstrcmpW(argv[1],L"close"));filter_mode=argc>1&&!lstrcmpW(argv[1],L"filter");select_mode=filter_mode||(argc>1&&!lstrcmpW(argv[1],L"select"));
+    folder_select=argc>1&&!lstrcmpW(argv[1],L"folder-select-noevents");folder_exists=argc>1&&!lstrcmpW(argv[1],L"folder-existing-noevents");folder_veto_new=argc>1&&!lstrcmpW(argv[1],L"folder-veto-new");folder_unicode=argc>1&&!lstrcmpW(argv[1],L"folder-unicode");folder_noevents=folder_select||folder_exists||(argc>1&&(!lstrcmpW(argv[1],L"folder-noevents")||!lstrcmpW(argv[1],L"folder-invalid-noevents")||!lstrcmpW(argv[1],L"folder-cwd-noevents")));folder_invalid=argc>1&&(!lstrcmpW(argv[1],L"folder-invalid")||!lstrcmpW(argv[1],L"folder-invalid-noevents"));folder_cwd=folder_select||(argc>1&&(!lstrcmpW(argv[1],L"folder-cwd")||!lstrcmpW(argv[1],L"folder-cwd-noevents")));folder_new=folder_veto_new||folder_unicode||folder_noevents||folder_invalid||folder_cwd||(argc>1&&!lstrcmpW(argv[1],L"folder-new"));folder_mode=folder_new||(argc>1&&(!lstrcmpW(argv[1],L"folder")||!lstrcmpW(argv[1],L"folder-old")));BOOL removed=argc>1&&!lstrcmpW(argv[1],L"remove");mutation_mode=argc>1&&!lstrcmpW(argv[1],L"mutation");multi_veto=argc>1&&!lstrcmpW(argv[1],L"multi-veto");close_veto=argc>1&&!lstrcmpW(argv[1],L"close-veto");close_mode=close_veto||(argc>1&&!lstrcmpW(argv[1],L"close"));filter_mode=argc>1&&!lstrcmpW(argv[1],L"filter");select_mode=filter_mode||(argc>1&&!lstrcmpW(argv[1],L"select"));
     self_unadvise=argc>1&&!lstrcmpW(argv[1],L"self");
     overwrite_default=argc>1&&(!lstrcmpW(argv[1],L"overwrite-default")||!lstrcmpW(argv[1],L"overwrite-default-old"));
     overwrite_denied=argc>1&&(!lstrcmpW(argv[1],L"overwrite-multi-denied")||!lstrcmpW(argv[1],L"overwrite-multi-denied-old"));
@@ -180,6 +190,12 @@ int wmain(int argc,WCHAR **argv)
        swprintf(expected,MAX_PATH,L"%ls\\selected.txt",root)<0)return 2;
     if(!save_mode||overwrite_mode){HANDLE file=CreateFileW(expected,GENERIC_WRITE,0,NULL,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,NULL);if(file==INVALID_HANDLE_VALUE)return 2;CloseHandle(file);}
     if(folder_mode){if(!DeleteFileW(expected))return 2;lstrcpynW(expected,root,MAX_PATH);}
+    WCHAR marker[MAX_PATH]=L"";
+    if(folder_exists){WCHAR existing[MAX_PATH];if(swprintf(existing,MAX_PATH,L"%ls\\created",root)<0 || !CreateDirectoryW(existing,NULL) ||
+        swprintf(marker,MAX_PATH,L"%ls\\marker.txt",existing)<0)return 2;
+        HANDLE keep=CreateFileW(marker,GENERIC_WRITE,0,NULL,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,NULL);
+        if(keep==INVALID_HANDLE_VALUE)return 2;
+        CloseHandle(keep);}
     WCHAR nested[MAX_PATH]=L"",escaped[MAX_PATH]=L"";
     if((folder_invalid||folder_cwd) && (swprintf(nested,MAX_PATH,L"%ls\\nested",root)<0 ||
         swprintf(escaped,MAX_PATH,L"%ls\\nested\\escape",root)<0 || !CreateDirectoryW(nested,NULL)))return 2;
@@ -231,15 +247,18 @@ int wmain(int argc,WCHAR **argv)
         if(wrong)RemoveDirectoryW(unexpected);
         SetCurrentDirectoryW(temp);}
     if(folder_mode)SetCurrentDirectoryW(temp);
-    BOOL child_removed=!folder_new || folder_invalid || !made || RemoveDirectoryW(expected);
+    BOOL marker_kept=!folder_exists || GetFileAttributesW(marker)!=INVALID_FILE_ATTRIBUTES;
+    BOOL marker_removed=!folder_exists || DeleteFileW(marker);
+    BOOL child_removed=marker_removed && (!folder_new || folder_invalid || !made || RemoveDirectoryW(expected));
     BOOL nested_removed=!(folder_invalid||folder_cwd) || RemoveDirectoryW(nested);BOOL root_removed=RemoveDirectoryW(root);
     printf("COM_EVENTS bits=%u seen=%ld old=%ld calls=%ld correct=%ld identity=%ld kept=%ld hr=%08lx unadvise=%08lx refs=%ld wait=%lu ole=%ld ole_identity=%ld\n",
         (unsigned)(sizeof(void*)*8),seen,old_layout,called,correct,identity,kept,(unsigned long)hr,(unsigned long)unadvise,events.refs,wait,ole_window,ole_identity);
     printf("COM_EVENT_SELECTION selected_correct=%ld filter_changed=%ld\n",selected_correct,filter_changed);
-    if(folder_new){printf("COM_FOLDER_CREATE_VETO veto=%ld child_changed=%ld root=%ld\n",folder_vetoes,folder_child_changed,folder_veto_root);printf("COM_FOLDER_CREATE invalid=%d prompt=%ld rejected=%ld made=%d cleaned=%d wrong_directory=%d calls=%ld hr=%08lx refs=%ld worker=%lu\n",
+    if(folder_new){printf("COM_FOLDER_SELECT enabled=%d\n",folder_select);printf("COM_FOLDER_EXISTING exists=%d rejected=%ld marker=%d\n",folder_exists,folder_rejected,marker_kept);printf("COM_FOLDER_CREATE_VETO veto=%ld child_changed=%ld root=%ld\n",folder_vetoes,folder_child_changed,folder_veto_root);printf("COM_FOLDER_CREATE invalid=%d prompt=%ld rejected=%ld made=%d cleaned=%d wrong_directory=%d calls=%ld hr=%08lx refs=%ld worker=%lu\n",
         folder_invalid,folder_prompt,folder_rejected,made,child_removed&&nested_removed&&root_removed,wrong,called,(unsigned long)hr,events.refs,worker_code);
         return seen&&old_layout&&folder_prompt&&!wrong&&child_removed&&nested_removed&&root_removed&&events.refs==1&&wait==WAIT_OBJECT_0&&worker_code==0&&
             (folder_veto_new?(folder_vetoes==1 && !folder_child_changed && folder_veto_root && made && called==0 && hr==HRESULT_FROM_WIN32(ERROR_CANCELLED)):
+             folder_exists?(folder_rejected&&made&&marker_kept&&called==0&&hr==HRESULT_FROM_WIN32(ERROR_CANCELLED)):
              folder_invalid?(folder_rejected&&!made&&called==0&&hr==HRESULT_FROM_WIN32(ERROR_CANCELLED)):
              (made&&folder_result_ok&&SUCCEEDED(hr)&&(folder_noevents?called==0:(called==2&&correct==2&&identity==2&&kept))))?0:1;}
 

@@ -307,3 +307,17 @@ SHBrowse 原生探针已整理入 folder-dialog-target 的 newclassic/newclassic
 构建 `pwsh -NoProfile -File tools/Build-Package.ps1 -Task 20 -RunName p229-folder-final -Worker`；快照清单 SHA-256 `22d10c6875c94a62116be02da5e4077fe93b098eee8df2bc66a2228555fb2ee1`，双宽干净 GCC 16.1.0、Ninja、ccache 4.13.6；来源清单、原始五组图形资源与来源逐字节、治理、双宽 ABI 通过，四产物版本 M0 T20。候选四文件实际包 `p229-folder-final-test` 共 28 项通过，无跳过，约 24 秒：包括 demo、首次注入、双宽传播，COM 无事件新建/非法名称/工作目录变更、SHBrowse A/W 新建及取消、根目录对照及有事件的正式回退。仅消息驱动、有限本机条件；物理输入、UNC、长路径、全量矩阵和实际滚动时屏幕外观未覆盖，不代表完整验收。
 
 发布器核对测试包并备份后发布至 `assets/` 和 `O:/winnt/`，逐文件 SHA-256 相同：demo.exe `080edfe0f7e523498aca2a6fd8b31a6d3e85767a26dc076c137e1d7e54698ed3`；ntw16s32.dll `51764508e3a680c754b466e01f128d388777c2a020e001158b5e6d6b13b356fa`；ntw16s64.dll `d8d53369aa360b52d35a4209cb8a895b414fb5b9677e1b5242aee185ac95479b`；run16s.exe `5de3645909c5d7dfb32fda265f2e896e3cc8369e8e70e5e335b57b5aca856cff`。提交和远端复核以实际后续结果为准。
+
+P229 实际远端复核：`git ls-remote` 读取 main 为 `db60431296aebdefae3f07b50d07bf801b0a840e`；按该提交从 GitHub 实际读取四个 assets 文件和 folder_dialogs.c，SHA-256 均与本地一致。提交统计 27 文件、文本新增 836 行、删除 109 行，净增 727 行；既有文件夹生命周期由各自窗口和线程上下文持有，原现代新建回退路径已移除，未删除实验中其他任务工作。
+
+P229 后重名目录测试：在自有临时目录预建 created 及内部 marker 文件，双宽已发布包探针确认系统 ERROR_ALREADY_EXISTS 对应提示实际出现，旧框继续存在，取消返回 0x800704c7，marker 仍存在，随后清理目录成功；正常新建及非法名称双宽回归通过。该测试已加入实际包测试计划，当前运行的是已发布包和新构建的测试目标，不是新同批包。输入桌面仍为 Screen-saver，屏幕采样不可用，滚动条视觉问题继续未解决。
+
+P229 严重目录定位回归：双宽原生负例单击选中 nested 但不进入，再点击新建；已发布包错误在 nested\\created 创建（wrong_directory=1，退出 1），自有路径已清理。根因为新建时读取列表选中项，而单击选择不等于导航。候选在旧对话框初始化及目录切换通知时保存实际目录，单击选中项不更改此状态，解析失败时拒绝猜测；双宽同一负例在父目录正确创建并返回，未在 nested 创建，退出 0。双宽 SHBrowse 先进入 nested 再创建，返回 nested\\created 且清理成功，已加入正式包测试。消息驱动不等于物理鼠标；跨卷、UNC、快速重入及屏幕外观仍需验证。
+
+## P230 文件夹当前目录修复阶段包
+
+修正 P229 将目录列表的单击选中项误当成当前目录的问题。默认旧式文件夹桥接在初始化和实际导航通知后保存当前目录，新建时使用该目录；选中但未进入子目录不会改变新建位置。目录表示不可识别时仍报告错误，未改原资源。新测试在双宽 P229 上实际检出错误创建（wrong_directory=1），在候选上通过；另外双宽验证进入子目录后创建、重名错误、取消、回调及清理。事件桥接仍默认关闭，COM 定制/隐藏目录、滚动条视觉回退及完整矩阵仍未解决，S1 和 T20 开放。
+
+以 `pwsh -NoProfile -File tools/Build-Package.ps1 -Task 20 -RunName p230-folder-final -Worker` 构建双宽干净快照；清单 SHA-256 `f401cc876fd3aad4cca860033809fa160b11e4691bbad647681b7415c488d2da`。GCC 16.1.0、Ninja、ccache 4.13.6；来源、原资源逐字节、治理、ABI 和导入/导出检查通过。实际同批四文件包 `p230-folder-final-test` 34 项聚焦通过、无跳过，约 29 秒；包含双宽首次注入、传播及 P229 文件夹矩阵。测试用消息驱动；真实屏幕、UNC、跨卷、长路径、重入和完整矩阵未覆盖。
+
+四文件已发布 `assets/` 和 `O:/winnt/` 并与测试包 SHA-256 一致：demo.exe `e4e0367df7f50bdeb12d7d14a8cd946a93e82428f69316ed2e7ecfacec5bd0c8`；ntw16s32.dll `c8120601ee2fa255f026d8cc9fb0a9ac343fe79fb8c4d6e48a9c03b10d015a48`；ntw16s64.dll `34e98847306811e58b9c83f1e7c41c4ae7e50e7627c9b5aca9d57b56a6c5a997`；run16s.exe `46312b0d740dba54ef1dfe6945dc7cbddfaecf4272228804498552317bb209a8`。提交与远端复核以实际结果为准。

@@ -21,7 +21,7 @@ typedef struct folder_context {
     BFFCALLBACK callback;
     PCWSTR ok_label,cancel_label,file_label;
     LPARAM original_data;
-    WCHAR selected[MAX_PATH], desired[MAX_PATH], requested[MAX_PATH];
+    WCHAR selected[MAX_PATH], desired[MAX_PATH], requested[MAX_PATH], classic_current[MAX_PATH];
     UINT run_message, attempts;
     DWORD init_tick, changed_tick;
     BOOL showing;
@@ -131,12 +131,13 @@ static INT_PTR CALLBACK folder_create_proc(HWND w,UINT message,WPARAM wp,LPARAM 
     }
     return FALSE;
 }
-static void classic_create_folder(HWND owner)
+static void classic_create_folder(HWND owner,folder_context *ctx)
 {
     folder_create_request request={0};
-    if(!ntw16s_old_dialog_folder(owner,request.parent,ARRAYSIZE(request.parent))){
+    if(!ctx || !ctx->classic_current[0]){
         MessageBoxW(owner,L"The current folder could not be determined.",L"New Folder",MB_OK|MB_ICONERROR);return;
     }
+    lstrcpynW(request.parent,ctx->classic_current,ARRAYSIZE(request.parent));
     struct {DLGTEMPLATE dialog;WORD menu,window_class,title;} template={0};
     template.dialog.style=WS_POPUP|WS_CAPTION|WS_SYSMENU|DS_MODALFRAME;
     template.dialog.cx=206;template.dialog.cy=69;
@@ -155,6 +156,7 @@ static UINT_PTR CALLBACK old_folder_hook(HWND window,UINT message,WPARAM wparam,
         OPENFILENAMEW *ofn=(OPENFILENAMEW *)lparam;
         folder_context *ctx=(folder_context *)ofn->lCustData;
         SetPropW(window,L"Win16s.FolderBridge",ctx);
+        if(ctx)(void)ntw16s_old_dialog_folder(window,ctx->classic_current,ARRAYSIZE(ctx->classic_current));
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
         if(ctx)ctx->classic_window=window;
 #endif
@@ -178,8 +180,17 @@ static UINT_PTR CALLBACK old_folder_hook(HWND window,UINT message,WPARAM wparam,
         return 1;
     }else if(message==WM_COMMAND && LOWORD(wparam)==NEW_FOLDER_BUTTON){
         folder_context *ctx=GetPropW(window,L"Win16s.FolderBridge");
-        if(ctx)classic_create_folder(window);
+        if(ctx)classic_create_folder(window,ctx);
         return 1;
+    }
+    if(message>=0xc000 && message<=0xffff){
+        UINT selection=RegisterWindowMessageW(LBSELCHSTRINGW);
+        if(selection && message==selection && (wparam==lst2 || wparam==cmb2)){
+            folder_context *ctx=GetPropW(window,L"Win16s.FolderBridge");
+            if(ctx){WCHAR folder[MAX_PATH];
+                if(ntw16s_old_dialog_folder(window,folder,ARRAYSIZE(folder)))lstrcpynW(ctx->classic_current,folder,ARRAYSIZE(ctx->classic_current));
+                else ctx->classic_current[0]=0;}
+        }
     }
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
     folder_context *observer_ctx=message==WM_INITDIALOG && lparam?
