@@ -8,13 +8,15 @@ static BOOL (__cdecl *attached)(HWND);static int initialized;static BOOL frame;
 static DWORD main_thread;
 static BOOL classic_test,classic_found,classic_accept;
 static int extended_case,extended_step;
+static BOOL extended_old;
 static HWND range_radio,range_edit;
 static BOOL CALLBACK locate_range(HWND w,LPARAM data)
-{(void)data;if(GetDlgCtrlID(w)==1059)range_radio=w;if(GetDlgCtrlID(w)==1152)range_edit=w;return TRUE;}
+{(void)data;if(GetDlgCtrlID(w)==1059 || GetDlgCtrlID(w)==1058)range_radio=w;if(GetDlgCtrlID(w)==1152 && !range_edit)range_edit=w;if(GetDlgCtrlID(w)==9002)range_edit=w;return TRUE;}
 static void CALLBACK close_dialog(HWND window,UINT message,UINT_PTR timer,DWORD time)
 {(void)message;(void)time;
- if(extended_case && extended_step==0){EnumChildWindows(window,locate_range,0);if(range_radio && range_edit){SendMessageW(range_radio,BM_CLICK,0,0);SetWindowTextW(range_edit,L"2,4-5");}extended_step=1;return;}
- if(extended_case==2 && extended_step==1){HWND apply=GetDlgItem(window,12321);if(apply && IsWindowEnabled(apply))SendMessageW(apply,BM_CLICK,0,0);extended_step=2;return;}
+ if(extended_case==3){extended_old=GetDlgItem(window,1139)!=NULL;KillTimer(window,timer);frame=attached&&attached(window);PostMessageW(window,WM_COMMAND,IDCANCEL,0);return;}
+ if(extended_case && extended_step==0){extended_old=GetDlgItem(window,1139)!=NULL;EnumChildWindows(window,locate_range,0);if(range_radio && range_edit){SendMessageW(range_radio,BM_CLICK,0,0);SetWindowTextW(range_edit,L"2,4-5");SetDlgItemTextW(window,1154,L"3");}extended_step=1;return;}
+ if(extended_case==2 && extended_step==1){HWND apply=GetDlgItem(window,9001);if(!apply)apply=GetDlgItem(window,12321);if(apply && IsWindowEnabled(apply))SendMessageW(apply,BM_CLICK,0,0);if(extended_old){SetDlgItemTextW(window,1154,L"5");SetWindowTextW(range_edit,L"8");}extended_step=2;return;}
  KillTimer(window,timer);frame=attached&&attached(window);if(classic_test)classic_found=GetDlgItem(window,1139)!=NULL;
  PostMessageW(window,WM_COMMAND,(classic_accept || extended_case==1)?IDOK:IDCANCEL,0);}
 static LRESULT CALLBACK observe(int code,WPARAM wparam,LPARAM parameter)
@@ -58,6 +60,19 @@ int wmain(int argc,WCHAR **argv)
         printf("PRINT_EX_INVALID bits=%u hr=%08lx\n",(unsigned)(sizeof(void*)*8),(DWORD)hr);
         return hr==HRESULT_FROM_WIN32(ERROR_INVALID_HANDLE)?0:1;
     }
+    if(!lstrcmpW(argv[1],L"ex-cancel") || !lstrcmpW(argv[1],L"ex-fallback")){
+        BOOL fallback=!lstrcmpW(argv[1],L"ex-fallback");extended_case=3;
+        HRESULT com=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);if(FAILED(com))return 9;
+        HWND owner=CreateWindowExW(0,L"STATIC",L"Owner",WS_OVERLAPPEDWINDOW,0,0,200,100,NULL,NULL,GetModuleHandleW(NULL),NULL);if(!owner)return 7;
+        ShowWindow(owner,SW_SHOW);HHOOK observer=SetWindowsHookExW(WH_CALLWNDPROC,observe,NULL,GetCurrentThreadId());if(!observer)return 6;
+        PRINTPAGERANGE ranges[10]={{77,88}};PRINTDLGEXW x={0};x.lStructSize=sizeof(x);x.hwndOwner=owner;x.Flags=PD_RETURNDC|(fallback?PD_NOPAGENUMS:0);x.nStartPage=START_PAGE_GENERAL;x.nMaxPageRanges=10;x.lpPageRanges=ranges;x.nMinPage=1;x.nMaxPage=1000;x.nCopies=1;
+        HRESULT hr=PrintDlgExW(&x);BOOL valid=hr==S_OK && x.dwResultAction==PD_RESULT_CANCEL && x.Flags==(PD_RETURNDC|(fallback?PD_NOPAGENUMS:0)) && !x.hDC && !x.hDevMode && !x.hDevNames && ranges[0].nFromPage==77 && ranges[0].nToPage==88 && extended_old!=fallback;
+        printf("EX_CANCEL bits=%u fallback=%d old=%d hr=%08lx action=%lu untouched=%d frame=%d\n",(unsigned)(sizeof(void*)*8),fallback,extended_old,(DWORD)hr,x.dwResultAction,valid,frame);
+        if(x.hDC)DeleteDC(x.hDC);
+        if(x.hDevMode)GlobalFree(x.hDevMode);
+        if(x.hDevNames)GlobalFree(x.hDevNames);
+        UnhookWindowsHookEx(observer);DestroyWindow(owner);CoUninitialize();return initialized==1 && frame && valid?0:1;
+    }
     if(!lstrcmpW(argv[1],L"ex-ranges") || !lstrcmpW(argv[1],L"ex-apply")){
         if(ansi)return 2;
         extended_case=!lstrcmpW(argv[1],L"ex-apply")?2:1;
@@ -68,8 +83,8 @@ int wmain(int argc,WCHAR **argv)
         PRINTPAGERANGE ranges[10]={0};PRINTDLGEXW x={0};x.lStructSize=sizeof(x);x.hwndOwner=owner;x.Flags=PD_RETURNDC;
         x.nStartPage=START_PAGE_GENERAL;x.nMaxPageRanges=10;x.lpPageRanges=ranges;x.nMinPage=1;x.nMaxPage=1000;x.nCopies=1;
         HRESULT hr=PrintDlgExW(&x);BOOL valid=hr==S_OK && x.dwResultAction==(extended_case==2?PD_RESULT_APPLY:PD_RESULT_PRINT) &&
-            x.nPageRanges==2 && ranges[0].nFromPage==2 && ranges[0].nToPage==2 && ranges[1].nFromPage==4 && ranges[1].nToPage==5 && x.hDC;
-        printf("PRINT_EX_RANGE bits=%u mode=%d hr=%08lx action=%lu ranges=%lu first=%lu-%lu second=%lu-%lu frame=%d valid=%d\n",(unsigned)(sizeof(void*)*8),extended_case,(DWORD)hr,x.dwResultAction,x.nPageRanges,ranges[0].nFromPage,ranges[0].nToPage,ranges[1].nFromPage,ranges[1].nToPage,frame,valid);
+            x.nPageRanges==2 && ranges[0].nFromPage==2 && ranges[0].nToPage==2 && ranges[1].nFromPage==4 && ranges[1].nToPage==5 && x.hDC && (!extended_old || x.nCopies==3);
+        printf("PRINT_EX_RANGE bits=%u mode=%d hr=%08lx action=%lu ranges=%lu first=%lu-%lu second=%lu-%lu frame=%d valid=%d old=%d\n",(unsigned)(sizeof(void*)*8),extended_case,(DWORD)hr,x.dwResultAction,x.nPageRanges,ranges[0].nFromPage,ranges[0].nToPage,ranges[1].nFromPage,ranges[1].nToPage,frame,valid,extended_old);
         if(x.hDC)DeleteDC(x.hDC);
         if(x.hDevMode)GlobalFree(x.hDevMode);
         if(x.hDevNames)GlobalFree(x.hDevNames);

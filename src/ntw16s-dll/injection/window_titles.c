@@ -2,6 +2,7 @@
 #include "startup_hooks.h"
 #include "unwind.h"
 #include "theme_track.h"
+#include "print_extended.h"
 #include "ntw16s-dll/ntw16s.h"
 #include "ntw16s-dll/attachment.h"
 #include "ntw16s-dll/native_api.h"
@@ -260,8 +261,19 @@ static NTW16S_UNWIND_FUNCTION HRESULT WINAPI hook_##NAME(TYPE *parameters) \
   } NTW16S_UNWIND_END(unwind); \
   if(scope.failure){result=HRESULT_FROM_WIN32(scope.failure);error=scope.failure;} SetLastError(error);return result; }
 COMMON_EX_HOOK(PrintDlgExA,PRINTDLGEXA)
-COMMON_EX_HOOK(PrintDlgExW,PRINTDLGEXW)
 #undef COMMON_EX_HOOK
+static __typeof__(&PrintDlgExW) real_PrintDlgExW;
+static NTW16S_UNWIND_FUNCTION HRESULT WINAPI hook_PrintDlgExW(PRINTDLGEXW *parameters)
+{
+    ntw16s_unwind_scope unwind;title_scope scope;HRESULT result=E_FAIL;DWORD error=ERROR_SUCCESS;
+    if(!begin_titles(&scope,TRUE))return HRESULT_FROM_WIN32(GetLastError());
+    NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); {
+        if(!ntw16s_print_extended_w(parameters,real_PrintDlgW,&result))result=real_PrintDlgExW(parameters);
+        error=GetLastError();
+    } NTW16S_UNWIND_END(unwind);
+    if(scope.failure){result=HRESULT_FROM_WIN32(scope.failure);error=scope.failure;}
+    SetLastError(error);return result;
+}
 
 /* Property sheets may create internal pages without public DialogBox calls. */
 #define SHEET_HOOK(NAME, TYPE) \

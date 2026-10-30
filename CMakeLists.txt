@@ -60,7 +60,7 @@ else()
   set(hde_source ${minhook_root}/hde/hde64.c)
 endif()
 target_sources(ntw16s PRIVATE ${injection_root}/entry.c ${injection_root}/window_titles.c ${injection_root}/file_dialogs.c ${injection_root}/folder_dialogs.c ${injection_root}/modern_dialogs.c ${injection_root}/com_dialogs.c
-  ${injection_root}/create_process.c ${injection_root}/unwind.c ${injection_root}/startup_hooks.c ${injection_root}/theme_track.c
+  ${injection_root}/print_extended.c ${injection_root}/print_ranges.c ${injection_root}/create_process.c ${injection_root}/unwind.c ${injection_root}/startup_hooks.c ${injection_root}/theme_track.c
   ${minhook_root}/buffer.c ${minhook_root}/trampoline.c ${hde_source})
 target_link_libraries(ntw16s PRIVATE ntw16s-installer)
 set(explicit_manifest_options)
