@@ -1472,7 +1472,7 @@
       "path": "tests/ntw16s-dll/win16_style_menu_cancel.c",
       "source": null,
       "source_blob": null,
-      "sha256": "53d95439821ef349012ccaa2f0b543e1532b58d799b1acc3cdeccf17894c3f66",
+      "sha256": "33df67e2cfdd69669c8ec226b3affa387d8962850dbdd31d95a90f11794bf3e4",
       "disposition": "authored",
       "review": "T7 native private-desktop actual DLL menu-loop cancellation, focus/capture/hover/item-state regression; no physical input claim; T8 S3 scoped USER SysShadow suppression and actual popup border/shadow regression; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T18 S64 private-desktop owned focus cleanup; T18 S64: retain private focus anchors until worker exit to avoid USER teardown hang; preserve all scenario assertions",
       "notice": "Project-authored C17 fixture, MIT"

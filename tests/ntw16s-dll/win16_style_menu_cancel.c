@@ -212,7 +212,9 @@ static int matrix(int argc,WCHAR **argv)
             CHECK(SetPixel(dc,witness_x,witness_y,RGB(37,83,119))!=CLR_INVALID);CHECK(ReleaseDC(w,dc));
             RECT outer;CHECK(GetWindowRect(w,&outer));
             HRGN dirty=CreateRectRgn(outer.left,outer.top,outer.left+MulDiv(20,(int)dpi,96),outer.top+MulDiv(20,(int)dpi,96));CHECK(dirty);
-            SendMessageW(w,WM_NCPAINT,(WPARAM)dirty,0);CHECK(DeleteObject(dirty));
+            SendMessageW(w,WM_NCPAINT,(WPARAM)dirty,0);
+            RECT region_bounds;
+            CHECK(GetRgnBox(dirty,&region_bounds)!=ERROR && DeleteObject(dirty));
             dc=GetWindowDC(w);CHECK(dc);COLORREF pixel=GetPixel(dc,witness_x,witness_y);CHECK(ReleaseDC(w,dc));
             printf("MENU FRAME CLIP WITNESS dpi=%u pixel=%06lx\n",dpi,pixel);
             CHECK(pixel==RGB(37,83,119));}
