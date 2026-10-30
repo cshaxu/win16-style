@@ -17,6 +17,10 @@ static BOOL CALLBACK locate_range(HWND w,LPARAM data)
 {(void)data;if(GetDlgCtrlID(w)==1059 || GetDlgCtrlID(w)==1058)range_radio=w;if(GetDlgCtrlID(w)==1152 && !range_edit)range_edit=w;if(GetDlgCtrlID(w)==9002)range_edit=w;return TRUE;}
 static void CALLBACK close_dialog(HWND window,UINT message,UINT_PTR timer,DWORD time)
 {(void)message;(void)time;
+ if(extended_case>=25){extended_old=GetDlgItem(window,1139)!=NULL;HWND select=GetDlgItem(window,1057);
+    if(!extended_step){initial_range_state=select && IsWindowEnabled(select) && SendMessageW(select,BM_GETCHECK,0,0)==BST_CHECKED;
+        if(extended_case==27){SetDlgItemTextW(window,1154,L"1");HWND apply=GetDlgItem(window,9001);if(apply)SendMessageW(apply,BM_CLICK,0,0);extended_step=1;return;}}
+    KillTimer(window,timer);frame=attached&&attached(window);PostMessageW(window,WM_COMMAND,extended_case==26?IDOK:IDCANCEL,0);return;}
  if(extended_case>=22){extended_old=GetDlgItem(window,1139)!=NULL;
     if(!extended_step && extended_case==23){SetDlgItemTextW(window,1154,L"1");HWND apply=GetDlgItem(window,9001);if(apply)SendMessageW(apply,BM_CLICK,0,0);extended_step=1;return;}
     KillTimer(window,timer);frame=attached&&attached(window);PostMessageW(window,WM_COMMAND,extended_case==22?IDOK:IDCANCEL,0);return;}
@@ -115,6 +119,18 @@ int wmain(int argc,WCHAR **argv)
         if(x.hDC)DeleteDC(x.hDC);
         if(x.hDevMode)GlobalFree(x.hDevMode);
         if(x.hDevNames)GlobalFree(x.hDevNames);
+        UnhookWindowsHookEx(observer);DestroyWindow(owner);CoUninitialize();return initialized==1 && valid?0:1;
+    }
+    if(!lstrcmpW(argv[1],L"ex-initial-selection") || !lstrcmpW(argv[1],L"ex-selection-print") || !lstrcmpW(argv[1],L"ex-selection-apply")){
+        extended_case=!lstrcmpW(argv[1],L"ex-selection-print")?26:!lstrcmpW(argv[1],L"ex-selection-apply")?27:25;if(FAILED(CoInitializeEx(NULL,COINIT_APARTMENTTHREADED)))return 9;
+        HWND owner=CreateWindowExW(0,L"STATIC",L"Owner",WS_OVERLAPPEDWINDOW,0,0,200,100,NULL,NULL,GetModuleHandleW(NULL),NULL);if(!owner)return 7;
+        ShowWindow(owner,SW_SHOW);HHOOK observer=SetWindowsHookExW(WH_CALLWNDPROC,observe,NULL,GetCurrentThreadId());if(!observer)return 6;
+        DWORD expected=PD_RETURNDC|PD_NOPAGENUMS|PD_SELECTION,flags,action;HRESULT hr;
+        if(ansi){PRINTDLGEXA x={0};x.lStructSize=sizeof(x);x.hwndOwner=owner;x.Flags=expected;x.nCopies=1;x.nStartPage=START_PAGE_GENERAL;hr=PrintDlgExA(&x);flags=x.Flags;action=x.dwResultAction;if(x.hDC)DeleteDC(x.hDC);if(x.hDevMode)GlobalFree(x.hDevMode);if(x.hDevNames)GlobalFree(x.hDevNames);}
+        else{PRINTDLGEXW x={0};x.lStructSize=sizeof(x);x.hwndOwner=owner;x.Flags=expected;x.nCopies=1;x.nStartPage=START_PAGE_GENERAL;hr=PrintDlgExW(&x);flags=x.Flags;action=x.dwResultAction;if(x.hDC)DeleteDC(x.hDC);if(x.hDevMode)GlobalFree(x.hDevMode);if(x.hDevNames)GlobalFree(x.hDevNames);}
+        DWORD wanted=extended_case==26?PD_RESULT_PRINT:extended_case==27?PD_RESULT_APPLY:PD_RESULT_CANCEL;
+        BOOL valid=hr==S_OK && action==wanted && (flags&PD_SELECTION) && initial_range_state && extended_old && frame;
+        printf("EX_INITIAL_SELECTION bits=%u ansi=%d action=%lu selected=%d old=%d valid=%d\n",(unsigned)(sizeof(void*)*8),ansi,action,initial_range_state,extended_old,valid);
         UnhookWindowsHookEx(observer);DestroyWindow(owner);CoUninitialize();return initialized==1 && valid?0:1;
     }
     if(!lstrcmpW(argv[1],L"ex-driver-print") || !lstrcmpW(argv[1],L"ex-driver-apply") || !lstrcmpW(argv[1],L"ex-driver-cancel")){

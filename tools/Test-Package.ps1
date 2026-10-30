@@ -120,6 +120,11 @@ try{
         $findTarget=Join-Path (Join-Path $BuildRoot $arch) 'find-dialog-target.exe'
         $commonTarget=Join-Path (Join-Path $BuildRoot $arch) 'common-dialog-target.exe'
         $printTarget=Join-Path (Join-Path $BuildRoot $arch) 'print-dialog-target.exe'
+        foreach($encoding in @('ansi','wide')){
+            foreach($mode in @('ex-initial-selection','ex-selection-print','ex-selection-apply')){
+                $cases+=Case "dialog-print-$mode-$arch-$encoding" $dialogDriver @($run,$printTarget,$mode,$encoding) @("EX_INITIAL_SELECTION bits=$bits",'selected=1','old=1','valid=1','DIALOG_DRIVER exit=0') 30
+            }
+        }
         foreach($encoding in @('ansi','wide')){foreach($action in @('print','apply','cancel')){
             $cases+=Case "dialog-print-ex-driver-$arch-$encoding-$action" $dialogDriver @($run,$printTarget,"ex-driver-$action",$encoding) @("EX_DRIVER bits=$bits",'old=1','valid=1','DIALOG_DRIVER exit=0') 30
         }}
