@@ -667,3 +667,5 @@ P238 已发布包字体和颜色选择补充：私有桌面 x86 ANSI、x64 Unico
 带空格文件名单选回归已加入 file-dialog-target 与包测试：自有临时文件改名后，断言旧式文件列表包含该文件、选择结果路径一致、扩展错误为 0 且文件清理成功。以 O:/winnt 已发布 P238 四文件及新构建的探针，在私有桌面执行 x86/x64 与 ANSI/Unicode 四组合，均通过；包测试选择器自测通过。四组合运行使用系统临时目录，不等同于前述 O: 无短名称卷的完整矩阵；本次仅测试和文档修改，无产品二进制变化。
 
 菜单物理探针跳过原因纠正：scratch 探针原来把 GetLastInputInfo、GetCursorPos 和窗口矩形任一失败都打印为 recent_input。增加单项诊断后，本次受限及受限外运行均显示 GetLastInputInfo 成功、idle 约 4,233 秒，但 GetCursorPos 返回 FALSE/ERROR_ACCESS_DENIED(5)；另以 OpenInputDesktop/GetUserObjectInformation 读取到输入桌面名称 Screen-saver。因此本次跳过是桌面不可访问，而非近期输入。过去只记录了统一提示、未记录各项结果的跳过不能据此回溯判定原因。未切换桌面或操作鼠标；菜单动态闪烁仍未验证。
+
+查找与替换交叉位宽补证：对 O:/winnt P238 四文件，在私有桌面分别执行 x86 Unicode、x64 ANSI 的 FindText 和 ReplaceText 四例；窗口与编辑框 attached=1，查找通知各一次，替换用例通知两次，关闭通知各一次且窗口销毁，驱动全部退出 0。与此前 x86 ANSI、x64 Unicode 的四例合起来覆盖四个位宽/编码组合的有限消息驱动路径；不证明屏幕外观、物理输入、用户自定义 hook 或全部对话框控件。本次无产品源码或二进制变化。
