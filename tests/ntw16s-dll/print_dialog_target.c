@@ -17,6 +17,9 @@ static BOOL CALLBACK locate_range(HWND w,LPARAM data)
 {(void)data;if(GetDlgCtrlID(w)==1059 || GetDlgCtrlID(w)==1058)range_radio=w;if(GetDlgCtrlID(w)==1152 && !range_edit)range_edit=w;if(GetDlgCtrlID(w)==9002)range_edit=w;return TRUE;}
 static void CALLBACK close_dialog(HWND window,UINT message,UINT_PTR timer,DWORD time)
 {(void)message;(void)time;
+ if(extended_case>=19){extended_old=GetDlgItem(window,1139)!=NULL;
+    if(!extended_step && extended_case!=21){SetDlgItemTextW(window,1154,L"3");if(extended_case==20){HWND apply=GetDlgItem(window,9001);if(apply)SendMessageW(apply,BM_CLICK,0,0);SetDlgItemTextW(window,1154,L"5");extended_step=1;return;}}
+    KillTimer(window,timer);frame=attached&&attached(window);PostMessageW(window,WM_COMMAND,extended_case==19?IDOK:IDCANCEL,0);return;}
  if(extended_case==18){HWND button=GetDlgItem(window,9001);extended_old=GetDlgItem(window,1139)!=NULL;
     if(!extended_step){apply_initial=button && !IsWindowEnabled(button);SetDlgItemTextW(window,1154,L"3");apply_changed=button && IsWindowEnabled(button);if(button)SendMessageW(button,BM_CLICK,0,0);apply_done=button && !IsWindowEnabled(button);SetDlgItemTextW(window,1154,L"4");apply_again=button && IsWindowEnabled(button);if(button)SendMessageW(button,BM_CLICK,0,0);apply_done_again=button && !IsWindowEnabled(button);SetDlgItemTextW(window,1154,L"5");extended_step=1;return;}
     KillTimer(window,timer);frame=attached&&attached(window);PostMessageW(window,WM_COMMAND,IDCANCEL,0);return;}
@@ -109,6 +112,25 @@ int wmain(int argc,WCHAR **argv)
         if(x.hDC)DeleteDC(x.hDC);
         if(x.hDevMode)GlobalFree(x.hDevMode);
         if(x.hDevNames)GlobalFree(x.hDevNames);
+        UnhookWindowsHookEx(observer);DestroyWindow(owner);CoUninitialize();return initialized==1 && valid?0:1;
+    }
+    if(!lstrcmpW(argv[1],L"ex-context-print") || !lstrcmpW(argv[1],L"ex-context-apply") || !lstrcmpW(argv[1],L"ex-context-cancel")){
+        if(argc!=4)return 2;
+        extended_case=!lstrcmpW(argv[1],L"ex-context-print")?19:!lstrcmpW(argv[1],L"ex-context-apply")?20:21;
+        DWORD requested=!lstrcmpW(argv[3],L"ic")?PD_RETURNIC:!lstrcmpW(argv[3],L"both")?(PD_RETURNIC|PD_RETURNDC):0;
+        HRESULT com=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);if(FAILED(com))return 9;
+        HWND owner=CreateWindowExW(0,L"STATIC",L"Owner",WS_OVERLAPPEDWINDOW,0,0,200,100,NULL,NULL,GetModuleHandleW(NULL),NULL);if(!owner)return 7;
+        ShowWindow(owner,SW_SHOW);HHOOK observer=SetWindowsHookExW(WH_CALLWNDPROC,observe,NULL,GetCurrentThreadId());if(!observer)return 6;
+        HGLOBAL mode=NULL,names=NULL;HDC dc=NULL;HRESULT hr;DWORD action,copies,flags;
+        if(ansi){PRINTDLGEXA x={0};x.lStructSize=sizeof(x);x.hwndOwner=owner;x.Flags=requested|PD_NOPAGENUMS;x.nCopies=1;x.nStartPage=START_PAGE_GENERAL;hr=PrintDlgExA(&x);mode=x.hDevMode;names=x.hDevNames;dc=x.hDC;action=x.dwResultAction;copies=x.nCopies;flags=x.Flags;}
+        else{PRINTDLGEXW x={0};x.lStructSize=sizeof(x);x.hwndOwner=owner;x.Flags=requested|PD_NOPAGENUMS;x.nCopies=1;x.nStartPage=START_PAGE_GENERAL;hr=PrintDlgExW(&x);mode=x.hDevMode;names=x.hDevNames;dc=x.hDC;action=x.dwResultAction;copies=x.nCopies;flags=x.Flags;}
+        DWORD expected=extended_case==19?PD_RESULT_PRINT:extended_case==20?PD_RESULT_APPLY:PD_RESULT_CANCEL;
+        BOOL valid=hr==S_OK && action==expected && (flags & (PD_RETURNDC|PD_RETURNIC))==requested && extended_old && frame &&
+            (extended_case==21?(!mode && !names && !dc):(mode && names && copies==3 && (!requested || dc)));
+        printf("EX_CONTEXT bits=%u ansi=%d mode=%d requested=%lu hr=%08lx action=%lu flags=%lu copies=%lu dc=%d mode_handle=%d names=%d old=%d frame=%d valid=%d\n",(unsigned)(sizeof(void*)*8),ansi,extended_case,requested,(DWORD)hr,action,flags,copies,dc!=NULL,mode!=NULL,names!=NULL,extended_old,frame,valid);
+        if(dc)DeleteDC(dc);
+        if(mode)GlobalFree(mode);
+        if(names)GlobalFree(names);
         UnhookWindowsHookEx(observer);DestroyWindow(owner);CoUninitialize();return initialized==1 && valid?0:1;
     }
     if(!lstrcmpW(argv[1],L"ex-apply-state")){

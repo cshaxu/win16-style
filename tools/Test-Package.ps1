@@ -266,6 +266,9 @@ try{
             $cases+=Case "dialog-modern-api-$arch-$kind" $dialogDriver @($run,$modernTarget,"$kind") @("MODERN_API bits=$bits kind=$kind seen=1 modern=1 frame=1 hr=800704c7 path_empty=1",'DIALOG_DRIVER exit=0') 30
         }
         $cases+=Case "dialog-task-$arch" $dialogDriver @($run,$taskTarget) @("TASK_DIALOG bits=$bits",'DIALOG_DRIVER exit=0') 30
+        foreach($kind in @('ic','none','both')) {foreach($mode in @('ex-context-print','ex-context-apply','ex-context-cancel')) {foreach($encoding in @('ansi','wide')) {
+            $cases+=Case "dialog-print-$mode-$kind-$arch-$encoding" $dialogDriver @($run,$printTarget,$mode,$encoding,$kind) @("EX_CONTEXT bits=$bits",'old=1','valid=1','DIALOG_DRIVER exit=0') 30
+        }}}
         foreach($encoding in @('ansi','wide')) {
             $cases+=Case "dialog-print-ex-apply-state-$arch-$encoding" $dialogDriver @($run,$printTarget,'ex-apply-state',$encoding) @("EX_APPLY_STATE bits=$bits",'initial=1','changed=1','applied=1','again=1','applied_again=1','copies=4','old=1','valid=1','DIALOG_DRIVER exit=0') 30
         }
