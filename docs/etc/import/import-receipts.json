@@ -2750,7 +2750,7 @@
       "path": "tests/ntw16s-dll/print_dialog_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "90881b72a79420ba7909f2f288a521ddbe2ab1f3717454cabdbe1ca92ad251f4",
+      "sha256": "ecb364d78d7d7fe6524d374ac182ed39431c303070996b84c51a0dd44c6068e3",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture",
       "notice": "Project-authored fixture; manifest based on project demo manifest; no external resources copied"
@@ -3029,7 +3029,7 @@
       "path": "src/ntw16s-dll/injection/print_ranges.c",
       "source": null,
       "source_blob": null,
-      "sha256": "0bce0b837853aa5a5ba69374c659bddb5afb06069c5fc5ded681099e57a516b6",
+      "sha256": "40162659540b4b3583863c93cea2f65b4e680bcd962c75c4368bcabdd12b35d6",
       "disposition": "authored",
       "review": "T20 S1 experimental print page range parser and bounded regression",
       "notice": "Project-authored code; no imported resources"
@@ -3038,7 +3038,7 @@
       "path": "src/ntw16s-dll/injection/print_ranges.h",
       "source": null,
       "source_blob": null,
-      "sha256": "c8ca224db619dbc4caf70ba8bbbdd8822854cbe0d0cdfff346adffc50b737ba3",
+      "sha256": "2ca83be061944276cc10707fda5c3eb730ce62cfe394d40f9324a428142e5cd0",
       "disposition": "authored",
       "review": "T20 S1 experimental print page range parser and bounded regression",
       "notice": "Project-authored code; no imported resources"
@@ -3047,7 +3047,7 @@
       "path": "tests/ntw16s-dll/print_ranges.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1b16f5a1fe3d291200b628fab87c2e47b07952540ddf335d635fc70bef728f53",
+      "sha256": "2adb95805b67e16c7ba8cb56fac637378c94e2d055eadb69cef11901174e0898",
       "disposition": "authored",
       "review": "T20 S1 experimental print page range parser and bounded regression",
       "notice": "Project-authored code; no imported resources"
@@ -3056,7 +3056,7 @@
       "path": "src/ntw16s-dll/injection/print_extended.c",
       "source": null,
       "source_blob": null,
-      "sha256": "a8bac1d218ad58222d885728ba20f1c1afd2bb9baedeb60d365ba506a0bb5fb3",
+      "sha256": "3faef89b3abd0791515dae12702e7f871f61839ba4f1007d280f846d88969e9a",
       "disposition": "authored",
       "review": "T20 S1 bounded extended print dialog bridge",
       "notice": "Project-authored C code; no imported resources"

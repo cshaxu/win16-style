@@ -6,4 +6,6 @@
  * to the destination; callers must not silently reinterpret unsupported input. */
 BOOL ntw16s_parse_print_ranges(const WCHAR *text,DWORD minimum,DWORD maximum,
                                PRINTPAGERANGE *output,DWORD capacity,DWORD *count);
+BOOL ntw16s_format_print_ranges(const PRINTPAGERANGE *ranges,DWORD count,DWORD minimum,DWORD maximum,
+                                WCHAR *output,DWORD capacity);
 #endif

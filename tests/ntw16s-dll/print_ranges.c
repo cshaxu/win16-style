@@ -8,6 +8,11 @@ int main(void)
     CHECK(ntw16s_parse_print_ranges(L"4-5,2,2,4-7",1,1000,ranges,4,&count));
     CHECK(count==4 && ranges[0].nFromPage==4 && ranges[0].nToPage==5 &&
           ranges[1].nFromPage==2 && ranges[2].nFromPage==2 && ranges[3].nToPage==7);
+    WCHAR formatted[32]=L"untouched";
+    CHECK(ntw16s_format_print_ranges(ranges,count,1,1000,formatted,32));
+    CHECK(!lstrcmpW(formatted,L"4-5,2,2,4-7"));
+    formatted[0]=L'X';CHECK(!ntw16s_format_print_ranges(ranges,count,1,1000,formatted,3));CHECK(formatted[0]==L'X');
+    PRINTPAGERANGE invalid={5,4};CHECK(!ntw16s_format_print_ranges(&invalid,1,1,1000,formatted,32));CHECK(formatted[0]==L'X');
     const WCHAR *bad[]={L"",L"1,",L",1",L"3-2",L"0",L"1001",L"1-",L"1,,2",L"4294967296",L"1 2",L"1,2,3,4,5"};
     for(unsigned i=0;i<sizeof(bad)/sizeof(bad[0]);++i){ranges[0].nFromPage=77;count=88;
         CHECK(!ntw16s_parse_print_ranges(bad[i],1,1000,ranges,4,&count));

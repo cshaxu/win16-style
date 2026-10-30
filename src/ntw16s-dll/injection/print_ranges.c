@@ -1,5 +1,6 @@
 #include "print_ranges.h"
 #include <stdint.h>
+#include <wchar.h>
 static BOOL read_number(const WCHAR **cursor,DWORD *result)
 {
     const WCHAR *p=*cursor;DWORD value=0;
@@ -28,4 +29,24 @@ BOOL ntw16s_parse_print_ranges(const WCHAR *text,DWORD minimum,DWORD maximum,
     DWORD length=0;if(!text || !output || !count || !capacity || minimum>maximum)return FALSE;
     if(!parse_pass(text,minimum,maximum,NULL,capacity,&length))return FALSE;
     return parse_pass(text,minimum,maximum,output,capacity,count);
+}
+
+BOOL ntw16s_format_print_ranges(const PRINTPAGERANGE *ranges,DWORD count,DWORD minimum,DWORD maximum,
+                                WCHAR *output,DWORD capacity)
+{
+    if(!ranges || !count || !output || !capacity || minimum>maximum)return FALSE;
+    DWORD needed=0;
+    for(DWORD i=0;i<count;++i){WCHAR item[32];DWORD first=ranges[i].nFromPage,last=ranges[i].nToPage;
+        if(first<minimum || last<first || last>maximum)return FALSE;
+        int length=first==last?swprintf(item,32,L"%lu",first):swprintf(item,32,L"%lu-%lu",first,last);
+        if(length<0 || needed>capacity-1 || (DWORD)length>capacity-1-needed)return FALSE;
+        needed+=(DWORD)length;
+        if(i+1<count){if(needed==capacity-1)return FALSE;++needed;}}
+    DWORD pos=0;
+    for(DWORD i=0;i<count;++i){int n=ranges[i].nFromPage==ranges[i].nToPage?
+            swprintf(output+pos,capacity-pos,L"%lu",ranges[i].nFromPage):
+            swprintf(output+pos,capacity-pos,L"%lu-%lu",ranges[i].nFromPage,ranges[i].nToPage);
+        if(n<0)return FALSE;
+        pos+=(DWORD)n;if(i+1<count)output[pos++]=L',';}
+    output[pos]=0;return TRUE;
 }

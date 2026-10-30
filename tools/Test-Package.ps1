@@ -266,6 +266,12 @@ try{
             $cases+=Case "dialog-modern-api-$arch-$kind" $dialogDriver @($run,$modernTarget,"$kind") @("MODERN_API bits=$bits kind=$kind seen=1 modern=1 frame=1 hr=800704c7 path_empty=1",'DIALOG_DRIVER exit=0') 30
         }
         $cases+=Case "dialog-task-$arch" $dialogDriver @($run,$taskTarget) @("TASK_DIALOG bits=$bits",'DIALOG_DRIVER exit=0') 30
+        foreach($encoding in @('ansi','wide')) {
+            $cases+=Case "dialog-print-ex-initial-all-$arch-$encoding" $dialogDriver @($run,$printTarget,'ex-initial-all',$encoding) @("EX_INITIAL bits=$bits",'initial=1','ranges=0','old=1','valid=1','DIALOG_DRIVER exit=0') 30
+        }
+        foreach($mode in @('ex-initial-print','ex-initial-apply','ex-initial-cancel')) {foreach($encoding in @('ansi','wide')) {
+            $cases+=Case "dialog-print-$mode-$arch-$encoding" $dialogDriver @($run,$printTarget,$mode,$encoding) @("EX_INITIAL bits=$bits",'initial=1','ranges=2','old=1','valid=1','DIALOG_DRIVER exit=0') 30
+        }}
         foreach($mode in @('ex-ansi-cancel','ex-ansi-fallback')) {
             $cases+=Case "dialog-print-$mode-$arch" $dialogDriver @($run,$printTarget,$mode,'ansi') @("EX_ANSI_CANCEL bits=$bits",'untouched=1','frame=1','DIALOG_DRIVER exit=0') 30
         }

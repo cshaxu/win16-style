@@ -6,7 +6,7 @@
 #define MAX_RANGES 32
 #define CONTEXT_PROPERTY L"ntw16s.print.extended"
 typedef struct state {
-    HGLOBAL *live_mode,*live_names;HWND edit;DWORD input_flags,minimum,maximum,capacity;BOOL ansi;
+    HGLOBAL *live_mode,*live_names;HWND edit;DWORD input_flags,minimum,maximum,capacity;BOOL ansi;WCHAR initial[512];
     PRINTPAGERANGE ranges[MAX_RANGES],applied_ranges[MAX_RANGES];DWORD count,applied_count,copies,flags;
     HGLOBAL applied_mode,applied_names;HDC applied_dc;BOOL applied,failed;
 } state;
@@ -28,7 +28,7 @@ static BOOL read_ranges(HWND window,state *s)
 }
 static DWORD input_flags(HWND window,const state *s)
 {
-    DWORD flags=s->input_flags;
+    DWORD flags=s->input_flags & ~(PD_PAGENUMS|PD_SELECTION|PD_COLLATE|PD_PRINTTOFILE);
     if(SendDlgItemMessageW(window,1058,BM_GETCHECK,0,0)==BST_CHECKED)flags|=PD_PAGENUMS;
     else if(SendDlgItemMessageW(window,1057,BM_GETCHECK,0,0)==BST_CHECKED)flags|=PD_SELECTION;
     if(SendDlgItemMessageW(window,1041,BM_GETCHECK,0,0)==BST_CHECKED)flags|=PD_COLLATE;
@@ -64,10 +64,10 @@ static UINT_PTR print_hook_common(HWND window,UINT message,WPARAM wparam,state *
         GetWindowRect(a,&first);GetWindowRect(b,&last);GetWindowRect(button,&ok);
         MapWindowPoints(NULL,window,(POINT*)&first,2);MapWindowPoints(NULL,window,(POINT*)&last,2);MapWindowPoints(NULL,window,(POINT*)&ok,2);
         ShowWindow(GetDlgItem(window,1089),SW_HIDE);ShowWindow(GetDlgItem(window,1090),SW_HIDE);ShowWindow(a,SW_HIDE);ShowWindow(b,SW_HIDE);
-        HFONT font=(HFONT)SendMessageW(button,WM_GETFONT,0,0);WCHAR initial[16];wsprintfW(initial,L"%lu",s->minimum);
+        HFONT font=(HFONT)SendMessageW(button,WM_GETFONT,0,0);
         HDC dc=GetDC(window);int dpi=dc?GetDeviceCaps(dc,LOGPIXELSX):96;if(dc)ReleaseDC(window,dc);
         int inset=MulDiv(25,dpi,96),gap=MulDiv(8,dpi,96);
-        s->edit=CreateWindowExW(WS_EX_CLIENTEDGE,L"EDIT",initial,WS_CHILD|WS_VISIBLE|WS_TABSTOP|ES_AUTOHSCROLL,first.left-inset,first.top,last.right-first.left+inset,first.bottom-first.top,window,(HMENU)(INT_PTR)RANGE_CONTROL,GetModuleHandleW(NULL),NULL);
+        s->edit=CreateWindowExW(WS_EX_CLIENTEDGE,L"EDIT",s->initial,WS_CHILD|WS_VISIBLE|WS_TABSTOP|ES_AUTOHSCROLL,first.left-inset,first.top,last.right-first.left+inset,first.bottom-first.top,window,(HMENU)(INT_PTR)RANGE_CONTROL,GetModuleHandleW(NULL),NULL);
         HWND apply=CreateWindowW(L"BUTTON",L"Apply",WS_CHILD|WS_VISIBLE|WS_TABSTOP|BS_PUSHBUTTON,ok.left-(ok.right-ok.left)-gap,ok.top,ok.right-ok.left,ok.bottom-ok.top,window,(HMENU)(INT_PTR)APPLY_CONTROL,GetModuleHandleW(NULL),NULL);
         if(!s->edit || !apply){s->failed=TRUE;PostMessageW(window,WM_COMMAND,IDCANCEL,0);return 0;}
         if(s->input_flags & PD_NOPAGENUMS)EnableWindow(s->edit,FALSE);
@@ -87,8 +87,9 @@ static UINT_PTR CALLBACK print_hook_w(HWND w,UINT m,WPARAM wp,LPARAM lp)
 #define PRINT_EXTENDED(NAME,EX_TYPE,TYPE,PRINT_TYPE,HOOK,IS_ANSI) \
 BOOL NAME(EX_TYPE *p,PRINT_TYPE print,HRESULT *result) \
 { \
-    if(!p || p->lStructSize!=sizeof(*p) || !p->hwndOwner || !IsWindow(p->hwndOwner) || (p->Flags & ~(PD_NOPAGENUMS|PD_NOSELECTION|PD_HIDEPRINTTOFILE))!=PD_RETURNDC || p->Flags2 || p->ExclusionFlags || p->hDevMode || p->hDevNames || p->hDC || p->nPageRanges || (!(p->Flags & PD_NOPAGENUMS) && (!p->lpPageRanges || !p->nMaxPageRanges || p->nMaxPageRanges>MAX_RANGES || !p->nMinPage || p->nMaxPage>65535 || p->nMinPage>p->nMaxPage)) || !p->nCopies || p->nCopies>32767 || p->lpCallback || p->nPropertyPages || p->lphPropertyPages || p->nStartPage!=START_PAGE_GENERAL)return FALSE; \
-    state s={0};s.input_flags=p->Flags;s.minimum=p->nMinPage;s.maximum=p->nMaxPage;s.capacity=p->nMaxPageRanges;s.ansi=IS_ANSI;TYPE d={0};d.lStructSize=sizeof(d);d.hwndOwner=p->hwndOwner;d.Flags=p->Flags|PD_ENABLEPRINTHOOK;d.lpfnPrintHook=HOOK;d.lCustData=(LPARAM)&s;d.nMinPage=(WORD)(p->Flags & PD_NOPAGENUMS?1:p->nMinPage);d.nMaxPage=(WORD)(p->Flags & PD_NOPAGENUMS?1:p->nMaxPage);d.nFromPage=d.nMinPage;d.nToPage=d.nMinPage;d.nCopies=(WORD)p->nCopies; \
+    if(!p || p->lStructSize!=sizeof(*p) || !p->hwndOwner || !IsWindow(p->hwndOwner) || (p->Flags & ~(PD_NOPAGENUMS|PD_NOSELECTION|PD_HIDEPRINTTOFILE|PD_PAGENUMS))!=PD_RETURNDC || p->Flags2 || p->ExclusionFlags || p->hDevMode || p->hDevNames || p->hDC || ((p->Flags & PD_PAGENUMS) ? (!p->nPageRanges || p->nPageRanges>p->nMaxPageRanges || (p->Flags & PD_NOPAGENUMS)) : p->nPageRanges!=0) || (!(p->Flags & PD_NOPAGENUMS) && (!p->lpPageRanges || !p->nMaxPageRanges || p->nMaxPageRanges>MAX_RANGES || !p->nMinPage || p->nMaxPage>65535 || p->nMinPage>p->nMaxPage)) || !p->nCopies || p->nCopies>32767 || p->lpCallback || p->nPropertyPages || p->lphPropertyPages || p->nStartPage!=START_PAGE_GENERAL)return FALSE; \
+    state s={0};s.input_flags=p->Flags;s.minimum=p->nMinPage;s.maximum=p->nMaxPage;s.capacity=p->nMaxPageRanges;s.ansi=IS_ANSI; \
+    if(p->nPageRanges){if(!ntw16s_format_print_ranges(p->lpPageRanges,p->nPageRanges,p->nMinPage,p->nMaxPage,s.initial,512))return FALSE;}else wsprintfW(s.initial,L"%lu",p->nMinPage);TYPE d={0};d.lStructSize=sizeof(d);d.hwndOwner=p->hwndOwner;d.Flags=p->Flags|PD_ENABLEPRINTHOOK;d.lpfnPrintHook=HOOK;d.lCustData=(LPARAM)&s;d.nMinPage=(WORD)(p->Flags & PD_NOPAGENUMS?1:p->nMinPage);d.nMaxPage=(WORD)(p->Flags & PD_NOPAGENUMS?1:p->nMaxPage);d.nFromPage=p->nPageRanges?(WORD)p->lpPageRanges[0].nFromPage:d.nMinPage;d.nToPage=p->nPageRanges?(WORD)p->lpPageRanges[0].nToPage:d.nMinPage;d.nCopies=(WORD)p->nCopies; \
     BOOL ok=print(&d);DWORD error=ok?0:CommDlgExtendedError(); \
     if(ok){p->hDevMode=d.hDevMode;p->hDevNames=d.hDevNames;p->hDC=d.hDC;p->Flags=d.Flags & ~PD_ENABLEPRINTHOOK;p->nCopies=d.nCopies;p->nPageRanges=s.count;if(s.count)CopyMemory(p->lpPageRanges,s.ranges,s.count*sizeof(PRINTPAGERANGE));p->dwResultAction=PD_RESULT_PRINT;free_snapshot(&s);*result=S_OK;return TRUE;} \
     if(d.hDC)DeleteDC(d.hDC); \
