@@ -217,7 +217,11 @@ static int matrix(int argc,WCHAR **argv)
             CHECK(GetRgnBox(dirty,&region_bounds)!=ERROR && DeleteObject(dirty));
             dc=GetWindowDC(w);CHECK(dc);COLORREF pixel=GetPixel(dc,witness_x,witness_y);CHECK(ReleaseDC(w,dc));
             printf("MENU FRAME CLIP WITNESS dpi=%u pixel=%06lx\n",dpi,pixel);
-            CHECK(pixel==RGB(37,83,119));}
+            CHECK(pixel==RGB(37,83,119));
+            SendMessageW(w,WM_NCPAINT,1,0);
+            dc=GetWindowDC(w);CHECK(dc);pixel=GetPixel(dc,witness_x,witness_y);CHECK(ReleaseDC(w,dc));
+            printf("MENU FRAME FULL PAINT dpi=%u pixel=%06lx\n",dpi,pixel);
+            CHECK(pixel==RGB(164,200,240));}
         phase=entries=exits=commands=0;timed_out=FALSE;CHECK(SetTimer(w,99,2500,NULL));
         if(scenario==13 || scenario==14){
             SendMessageW(w,WM_SYSCOMMAND,SC_KEYMENU,0);CHECK(GetFocus()==w);
