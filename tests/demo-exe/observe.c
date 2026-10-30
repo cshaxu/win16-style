@@ -139,7 +139,12 @@ static void demo_dialog_paths(HWND page,DWORD thread,const WCHAR *scratch)
     CHECK(swprintf_s(selected,ARRAYSIZE(selected),L"%ls\\dialog-selection.txt",scratch)>0);
     HANDLE fixture=CreateFileW(selected,GENERIC_WRITE,0,NULL,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,NULL);
     CHECK(fixture!=INVALID_HANDLE_VALUE && CloseHandle(fixture));
-    for(int id=2901;id<=2902;++id){
+    WCHAR save_path[MAX_PATH];
+    CHECK(swprintf_s(save_path,ARRAYSIZE(save_path),L"%ls\\dialog-save-selection.txt",scratch)>0);
+    CHECK(GetFileAttributesW(save_path)==INVALID_FILE_ATTRIBUTES && GetLastError()==ERROR_FILE_NOT_FOUND);
+    const int ids[]={2901,2902,2904,2905};
+    for(unsigned index=0;index<ARRAYSIZE(ids);++index){
+        int id=ids[index];const WCHAR *expected=index<2?selected:save_path;
         demo_test_dialog=NULL;CHECK(PostMessageW(page,WM_COMMAND,(WPARAM)id,0));
         for(unsigned i=0;i<100 && !demo_test_dialog;++i){
             EnumThreadWindows(thread,demo_dialog_scan,(LPARAM)page);if(!demo_test_dialog)Sleep(50);
@@ -147,20 +152,21 @@ static void demo_dialog_paths(HWND page,DWORD thread,const WCHAR *scratch)
         CHECK(demo_test_dialog && !demo_modern);
         HWND edit=GetDlgItem(demo_test_dialog,1152),ok=GetDlgItem(demo_test_dialog,IDOK);
         DWORD_PTR result=0;WCHAR value[MAX_PATH]=L"";
-        CHECK(edit && ok && SendMessageTimeoutW(edit,WM_SETTEXT,0,(LPARAM)selected,SMTO_ABORTIFHUNG,2000,&result) && result);
-        CHECK(SendMessageTimeoutW(edit,WM_GETTEXT,ARRAYSIZE(value),(LPARAM)value,SMTO_ABORTIFHUNG,2000,&result) && !_wcsicmp(value,selected));
+        CHECK(edit && ok && SendMessageTimeoutW(edit,WM_SETTEXT,0,(LPARAM)expected,SMTO_ABORTIFHUNG,2000,&result) && result);
+        CHECK(SendMessageTimeoutW(edit,WM_GETTEXT,ARRAYSIZE(value),(LPARAM)value,SMTO_ABORTIFHUNG,2000,&result) && !_wcsicmp(value,expected));
         CHECK(SendMessageTimeoutW(ok,BM_CLICK,0,0,SMTO_ABORTIFHUNG,2000,&result));
         for(unsigned i=0;i<100 && IsWindow(demo_test_dialog);++i)Sleep(50);
         CHECK(!IsWindow(demo_test_dialog));
         for(unsigned i=0;i<100;++i){
             value[0]=0;CHECK(SendMessageTimeoutW(GetDlgItem(page,2099),WM_GETTEXT,ARRAYSIZE(value),(LPARAM)value,SMTO_ABORTIFHUNG,2000,&result));
-            if(!_wcsicmp(value,selected))break;
+            if(!_wcsicmp(value,expected))break;
             Sleep(50);
         }
-        CHECK(!_wcsicmp(value,selected));
+        CHECK(!_wcsicmp(value,expected));
     }
     CHECK(DeleteFileW(selected));
-    puts("DEMO DIALOG SELECT PASS legacy=1 bridge=1 cleanup=1");
+    CHECK(GetFileAttributesW(save_path)==INVALID_FILE_ATTRIBUTES && GetLastError()==ERROR_FILE_NOT_FOUND);
+    puts("DEMO DIALOG SELECT PASS legacy=1 bridge=1 save=1 cleanup=1");
 }
 static void catalog_pages(HWND main,DWORD thread,HANDLE target,BOOL styled,const WCHAR *scratch)
 {
