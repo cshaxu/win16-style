@@ -112,6 +112,16 @@ static BOOL CALLBACK demo_dialog_scan(HWND w,LPARAM owner)
 }
 static void demo_dialog_paths(HWND page,DWORD thread,const WCHAR *scratch)
 {
+    const int extra[]={2921,2922,2924,2925,2926,2927};
+    for(unsigned j=0;j<ARRAYSIZE(extra);++j){
+        demo_test_dialog=NULL;CHECK(PostMessageW(page,WM_COMMAND,(WPARAM)extra[j],0));
+        for(unsigned i=0;i<120 && !demo_test_dialog;++i){EnumThreadWindows(thread,demo_dialog_scan,(LPARAM)page);if(!demo_test_dialog)Sleep(50);}
+        CHECK(demo_test_dialog);printf("DEMO EXTRA DIALOG id=%d modern=%d\n",extra[j],demo_modern);fflush(stdout);
+        CHECK(PostMessageW(demo_test_dialog,WM_CLOSE,0,0));
+        for(unsigned i=0;i<100 && IsWindow(demo_test_dialog);++i)Sleep(50);
+        CHECK(!IsWindow(demo_test_dialog));
+    }
+    puts("DEMO EXTRA DIALOG PASS opened=6 cancelled=6");
     for(int id=2901;id<=2909;++id){
         demo_test_dialog=NULL;CHECK(SetDlgItemTextW(page,2099,L""));CHECK(PostMessageW(page,WM_COMMAND,(WPARAM)id,0));
         for(unsigned i=0;i<100 && !demo_test_dialog;++i){
@@ -221,6 +231,8 @@ static void catalog_pages(HWND main,DWORD thread,HANDLE target,BOOL styled,const
                 text(w,2901+(int)j,dialog_buttons[j]);
             }
             puts("DEMO DIALOG ENTRIES PASS open=3 save=3 folder=3");
+            for(int id=2921;id<=2927;++id)CHECK(GetDlgItem(w,id) && IsWindowVisible(GetDlgItem(w,id)));
+            puts("DEMO EXTRA ENTRIES PASS 7");
             if(styled)demo_dialog_paths(w,thread,scratch);
         }
         CHECK(swprintf_s(file,MAX_PATH,L"%ls\\catalog-%u-%u.bmp",scratch,(unsigned)styled,i)>0);SendMessageW(w,WM_NCACTIVATE,TRUE,0);UpdateWindow(w);pixels screenshot=capture(w,file);CHECK(screenshot.hash);

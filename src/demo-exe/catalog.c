@@ -192,7 +192,13 @@ static void dialog_examples(HWND w,page *s)
     button(w,s,L"Message",BS_PUSHBUTTON,244,356,212,2917);
     button(w,s,L"Task dialog",BS_PUSHBUTTON,472,356,212,2918);
     button(w,s,L"Property pages",BS_PUSHBUTTON,16,394,212,2919);
-    label(w,s,L"Selections are displayed below; no files or print jobs are created.",16,450,668,2894);
+    button(w,s,L"Multi-open: legacy",BS_PUSHBUTTON,244,394,212,2921);
+    button(w,s,L"Multi-open: Explorer",BS_PUSHBUTTON,472,394,212,2922);
+    button(w,s,L"Print setup: legacy",BS_PUSHBUTTON,16,432,212,2923);
+    button(w,s,L"Open: Explorer API",BS_PUSHBUTTON,244,432,212,2924);
+    button(w,s,L"Save: Explorer API",BS_PUSHBUTTON,472,432,212,2925);
+    button(w,s,L"Multi-open: COM",BS_PUSHBUTTON,16,470,212,2926);
+    button(w,s,L"Launch 16-bit target",BS_PUSHBUTTON,244,470,212,2927);
 }
 static LRESULT CALLBACK mdi_child(HWND w,UINT m,WPARAM a,LPARAM b)
 {return DefMDIChildProcW(w,m,a,b);}
