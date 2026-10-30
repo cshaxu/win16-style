@@ -17,6 +17,10 @@ static BOOL CALLBACK locate_range(HWND w,LPARAM data)
 {(void)data;if(GetDlgCtrlID(w)==1059 || GetDlgCtrlID(w)==1058)range_radio=w;if(GetDlgCtrlID(w)==1152 && !range_edit)range_edit=w;if(GetDlgCtrlID(w)==9002)range_edit=w;return TRUE;}
 static void CALLBACK close_dialog(HWND window,UINT message,UINT_PTR timer,DWORD time)
 {(void)message;(void)time;
+ if(extended_case>=28){extended_old=GetDlgItem(window,1139)!=NULL;int option=(extended_case-28)%3;HWND check=GetDlgItem(window,option==0?1041:1040);
+    if(!extended_step){initial_range_state=check && (option==2?!IsWindowEnabled(check):IsWindowEnabled(check) && SendMessageW(check,BM_GETCHECK,0,0)==BST_CHECKED);
+        if(extended_case>=31){SetDlgItemTextW(window,1154,option==0?L"3":L"1");HWND apply=GetDlgItem(window,9001);if(apply)SendMessageW(apply,BM_CLICK,0,0);extended_step=1;return;}}
+    KillTimer(window,timer);frame=attached&&attached(window);PostMessageW(window,WM_COMMAND,IDCANCEL,0);return;}
  if(extended_case>=25){extended_old=GetDlgItem(window,1139)!=NULL;HWND select=GetDlgItem(window,1057);
     if(!extended_step){initial_range_state=select && IsWindowEnabled(select) && SendMessageW(select,BM_GETCHECK,0,0)==BST_CHECKED;
         if(extended_case==27){SetDlgItemTextW(window,1154,L"1");HWND apply=GetDlgItem(window,9001);if(apply)SendMessageW(apply,BM_CLICK,0,0);extended_step=1;return;}}
@@ -119,6 +123,19 @@ int wmain(int argc,WCHAR **argv)
         if(x.hDC)DeleteDC(x.hDC);
         if(x.hDevMode)GlobalFree(x.hDevMode);
         if(x.hDevNames)GlobalFree(x.hDevNames);
+        UnhookWindowsHookEx(observer);DestroyWindow(owner);CoUninitialize();return initialized==1 && valid?0:1;
+    }
+    if(!lstrcmpW(argv[1],L"ex-initial-option") || !lstrcmpW(argv[1],L"ex-option-apply")){
+        if(argc!=4)return 2;
+        DWORD opt=!lstrcmpW(argv[3],L"collate")?PD_COLLATE:!lstrcmpW(argv[3],L"file")?PD_PRINTTOFILE:!lstrcmpW(argv[3],L"disable")?PD_DISABLEPRINTTOFILE:0;if(!opt)return 2;
+        extended_case=(opt==PD_COLLATE?28:opt==PD_PRINTTOFILE?29:30)+(!lstrcmpW(argv[1],L"ex-option-apply")?3:0);if(FAILED(CoInitializeEx(NULL,COINIT_APARTMENTTHREADED)))return 9;
+        HWND owner=CreateWindowExW(0,L"STATIC",L"Owner",WS_OVERLAPPEDWINDOW,0,0,200,100,NULL,NULL,GetModuleHandleW(NULL),NULL);if(!owner)return 7;
+        ShowWindow(owner,SW_SHOW);HHOOK observer=SetWindowsHookExW(WH_CALLWNDPROC,observe,NULL,GetCurrentThreadId());if(!observer)return 6;
+        DWORD expected=PD_RETURNDC|PD_NOPAGENUMS|opt,flags,action;HRESULT hr;BOOL port_ok=TRUE;
+        if(ansi){PRINTDLGEXA x={0};x.lStructSize=sizeof(x);x.hwndOwner=owner;x.Flags=expected;x.nCopies=opt==PD_COLLATE?3:1;x.nStartPage=START_PAGE_GENERAL;hr=PrintDlgExA(&x);flags=x.Flags;action=x.dwResultAction;if(opt==PD_PRINTTOFILE && extended_case>=31){DEVNAMES *n=x.hDevNames?GlobalLock(x.hDevNames):NULL;port_ok=n && !lstrcmpA((char *)n+n->wOutputOffset,"FILE:");if(n)GlobalUnlock(x.hDevNames);}if(x.hDC)DeleteDC(x.hDC);if(x.hDevMode)GlobalFree(x.hDevMode);if(x.hDevNames)GlobalFree(x.hDevNames);}
+        else{PRINTDLGEXW x={0};x.lStructSize=sizeof(x);x.hwndOwner=owner;x.Flags=expected;x.nCopies=opt==PD_COLLATE?3:1;x.nStartPage=START_PAGE_GENERAL;hr=PrintDlgExW(&x);flags=x.Flags;action=x.dwResultAction;if(opt==PD_PRINTTOFILE && extended_case>=31){DEVNAMES *n=x.hDevNames?GlobalLock(x.hDevNames):NULL;port_ok=n && !lstrcmpW((WCHAR *)n+n->wOutputOffset,L"FILE:");if(n)GlobalUnlock(x.hDevNames);}if(x.hDC)DeleteDC(x.hDC);if(x.hDevMode)GlobalFree(x.hDevMode);if(x.hDevNames)GlobalFree(x.hDevNames);}
+        BOOL valid=hr==S_OK && action==(extended_case>=31?PD_RESULT_APPLY:PD_RESULT_CANCEL) && (flags&opt) && port_ok && initial_range_state && extended_old && frame;
+        printf("EX_INITIAL_OPTION bits=%u ansi=%d opt=%lu action=%lu initial=%d port=%d old=%d valid=%d\n",(unsigned)(sizeof(void*)*8),ansi,opt,action,initial_range_state,port_ok,extended_old,valid);
         UnhookWindowsHookEx(observer);DestroyWindow(owner);CoUninitialize();return initialized==1 && valid?0:1;
     }
     if(!lstrcmpW(argv[1],L"ex-initial-selection") || !lstrcmpW(argv[1],L"ex-selection-print") || !lstrcmpW(argv[1],L"ex-selection-apply")){
