@@ -128,6 +128,7 @@ python tests/ntw16s-dll/virtual_print.py --driver build/.ninja/x64/dialog-test-d
 向探针的 scratch 路径后追加 `reduced`，可对照系统新式 Shell 隐藏编辑框和新建按钮时的筛选；
 它不是旧式 Shell 转接的通过证据。
 追加 `error` 可验证筛选器返回错误时目标目录仍被隐藏。
+追加 `ansi` 使用 `SHBrowseForFolderA` 执行相同筛选对照；路径和筛选显示名的本地化编码覆盖仍有限。
 追加 `clear` 可验证 `SetFilter(NULL)` 后重新展开会恢复显示，同时检查筛选器引用释放。
 追加 `reenter` 可验证筛选器中主动选择目录时，应用仍收到通知且最终选中目标。
 
