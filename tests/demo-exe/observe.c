@@ -220,12 +220,13 @@ static void catalog_pages(HWND main,DWORD thread,HANDLE target,BOOL styled,const
         if(i==8){
             static const WCHAR *dialog_buttons[]={L"Open: legacy",L"Open: modern to classic",L"Open: modern retained",
                 L"Save: legacy",L"Save: modern to classic",L"Save: modern retained",
-                L"Folder: legacy Shell",L"Folder: modern to classic",L"Folder: modern retained"};
+                L"Folder: Shell (old request)",L"Folder: COM to Shell tree",L"Folder: modern retained"};
             for(unsigned j=0;j<ARRAYSIZE(dialog_buttons);++j){
                 HWND button=GetDlgItem(w,2901+(int)j);CHECK(button && IsWindowVisible(button));
                 text(w,2901+(int)j,dialog_buttons[j]);
             }
-            puts("DEMO DIALOG ENTRIES PASS open=3 save=3 folder=3");
+            text(w,2920,L"Folder: Shell (new request)");
+            puts("DEMO DIALOG ENTRIES PASS open=3 save=3 folder=4");
             for(int id=2921;id<=2927;++id)CHECK(GetDlgItem(w,id) && IsWindowVisible(GetDlgItem(w,id)));
             puts("DEMO EXTRA ENTRIES PASS 7");
             {const int ids[]={2901,2924,2902,2903,2921,2922,2926,2904,2925,2905,2906,2907,2920,2908,2909,2910,2911,2912,2913,2914,2923,2915,2916,2917,2918,2919,2927};

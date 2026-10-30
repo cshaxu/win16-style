@@ -184,9 +184,9 @@ static void dialog_examples(HWND w,page *s)
     button(w,s,L"Save: modern to classic",BS_PUSHBUTTON,472,138,212,2905);
     button(w,s,L"Save: modern retained",BS_PUSHBUTTON,16,168,212,2906);
     dialog_heading(w,s,L"Choose folder",198,2892);
-    button(w,s,L"Folder: legacy Shell",BS_PUSHBUTTON,16,220,212,2907);
-    button(w,s,L"Folder: Shell bridge",BS_PUSHBUTTON,244,220,212,2920);
-    button(w,s,L"Folder: modern to classic",BS_PUSHBUTTON,472,220,212,2908);
+    button(w,s,L"Folder: Shell (old request)",BS_PUSHBUTTON,16,220,212,2907);
+    button(w,s,L"Folder: Shell (new request)",BS_PUSHBUTTON,244,220,212,2920);
+    button(w,s,L"Folder: COM to Shell tree",BS_PUSHBUTTON,472,220,212,2908);
     button(w,s,L"Folder: modern retained",BS_PUSHBUTTON,16,250,212,2909);
     dialog_heading(w,s,L"Find, replace, font and color",280,2893);
     button(w,s,L"Find",BS_PUSHBUTTON,16,302,212,2910);
