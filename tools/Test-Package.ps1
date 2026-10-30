@@ -105,6 +105,7 @@ try{
         $fileTarget=Join-Path (Join-Path $BuildRoot $arch) 'file-dialog-target.exe'
         foreach($encoding in @('a','w')) {
             $cases+=Case "dialog-file-custom-filter-$arch-$encoding" $dialogDriver @($run,$fileTarget,'open',$encoding,'1','customfilter') @('CUSTOM_FILTER changed=1 index_ok=1',"FILE_DIALOG bits=$bits",'old=1','ok=1','same=1','DIALOG_DRIVER exit=0') 45
+            $cases+=Case "dialog-file-spaced-$arch-$encoding" $dialogDriver @($run,$fileTarget,'open',$encoding,'1','spaced') @('SPACED_FILE listed=1 same=1 cleanup=1',"FILE_DIALOG bits=$bits",'old=1','ok=1','DIALOG_DRIVER exit=0') 30
         }
         $folderTarget=Join-Path (Join-Path $BuildRoot $arch) 'folder-dialog-target.exe'
         $findTarget=Join-Path (Join-Path $BuildRoot $arch) 'find-dialog-target.exe'

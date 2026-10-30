@@ -8,7 +8,9 @@
 
 static DWORD main_thread;
 static volatile LONG seen, old_layout, hook_seen;
-static BOOL cancel_mode, custom_hook, legacy_size, default_flags, dynamic_mode, custom_filter;
+static BOOL cancel_mode, custom_hook, legacy_size, default_flags, dynamic_mode, custom_filter, spaced_file;
+static volatile LONG spaced_listed;
+static WCHAR spaced_name[MAX_PATH];
 static volatile LONG filter_changed;
 static volatile LONG dynamic_set;
 static WCHAR dynamic_path[MAX_PATH];
@@ -26,6 +28,9 @@ static BOOL CALLBACK inspect(HWND window, LPARAM ignored)
     if(folders)GetClassNameW(folders,cf,64);
     if(drives)GetClassNameW(drives,cd,64);
     printf("CONTROLS folders=%ls drives=%ls\n",cf,cd);
+    if(spaced_file){HWND files=GetDlgItem(window,1120);
+        if(files && SendMessageW(files,LB_FINDSTRINGEXACT,(WPARAM)-1,(LPARAM)spaced_name)!=LB_ERR)
+            InterlockedExchange(&spaced_listed,1);}
     InterlockedExchange(&old_layout,folders!=NULL && drives!=NULL && !lstrcmpiW(cf,L"ListBox") && !lstrcmpiW(cd,L"ComboBox"));
     InterlockedExchange(&seen,1);
     found_dialog=window;
@@ -77,6 +82,7 @@ int wmain(int argc, WCHAR **argv)
 {
     if (argc<4 || argc>5) return 2;
     custom_filter=argc==5 && !lstrcmpW(argv[4],L"customfilter");
+    spaced_file=argc==5 && !lstrcmpW(argv[4],L"spaced");
     dynamic_mode=argc==5 && !lstrcmpW(argv[4],L"oldhookdynamic");
     BOOL oldhook_accept=dynamic_mode || (argc==5 && !lstrcmpW(argv[4],L"oldhookaccept"));
     custom_hook=oldhook_accept || (argc==5 && (!lstrcmpW(argv[4],L"hook") || !lstrcmpW(argv[4],L"oldhook")));
@@ -87,6 +93,11 @@ int wmain(int argc, WCHAR **argv)
     WCHAR directory[MAX_PATH], file_w[MAX_PATH], path_w[MAX_PATH];
     char directory_a[MAX_PATH],file_a[MAX_PATH];
     if (!GetTempPathW(MAX_PATH,directory) || !GetTempFileNameW(directory,L"w16",0,path_w)) return 3;
+    if(spaced_file){WCHAR renamed[MAX_PATH];
+        if(swprintf(renamed,MAX_PATH,L"%ls spaced.txt",path_w)<0 || !MoveFileW(path_w,renamed)){
+            DeleteFileW(path_w);return 3;}
+        lstrcpynW(path_w,renamed,MAX_PATH);
+        WCHAR *leaf=wcsrchr(path_w,L'\\');lstrcpynW(spaced_name,leaf?leaf+1:path_w,MAX_PATH);}
     if (save && !DeleteFileW(path_w)) return 4;
     lstrcpynW(file_w,path_w,MAX_PATH);
     if(dynamic_mode){lstrcpynW(dynamic_path,path_w,MAX_PATH);file_w[0]=0;}
@@ -139,11 +150,12 @@ int wmain(int argc, WCHAR **argv)
     DWORD extended=CommDlgExtendedError();
     WaitForSingleObject(thread,6000);CloseHandle(thread);
     BOOL same=!lstrcmpiW(path_w,file_w);
-    DeleteFileW(path_w);
+    BOOL cleaned=DeleteFileW(path_w);
     if(custom_filter)printf("CUSTOM_FILTER changed=%ld index_ok=%d\n",filter_changed,filter_ok);
+    if(spaced_file)printf("SPACED_FILE listed=%ld same=%d cleanup=%d\n",spaced_listed,same,cleaned);
     if(dynamic_mode)printf("FILE_DYNAMIC bits=%u set=%ld same=%d\n",(unsigned)(sizeof(void*)*8),dynamic_set,same);
     printf("FILE_DIALOG bits=%u save=%d ansi=%d observed=%ld old=%ld expected=%d ok=%d ext=%lu same=%d offset=%u cancel=%d custom_hook=%d hook_seen=%ld\n",
         (unsigned)(sizeof(void*)*8),save,ansi,seen,old_layout,expected_old,result,extended,same,offset,cancel_mode,custom_hook,hook_seen);
-    return filter_ok && seen && old_layout==expected_old && !extended && (!custom_hook || hook_seen) && (!dynamic_mode || dynamic_set) &&
+    return filter_ok && seen && old_layout==expected_old && !extended && (!custom_hook || hook_seen) && (!dynamic_mode || dynamic_set) && (!spaced_file || (spaced_listed && cleaned)) &&
         (cancel_mode ? !result : (result && same && offset)) ? 0:1;
 }

@@ -663,3 +663,5 @@ P238 已发布包字体和颜色选择补充：私有桌面 x86 ANSI、x64 Unico
 同盘 Explorer 控制组：在 O:/repos.hobby/win16style/build/t20-s1-dialog 的自有目录创建 `alpha long.txt` 和 `beta long.txt`，x64 Unicode 原生 Explorer 对话框通过输入框选择两个文件，成功返回目录及 NUL 分隔的两个原始长文件名，extended error 0、驱动退出 0、文件和目录清理成功。与同盘旧式列表未显示这两文件的结果形成有限对照，说明文件本身可由新式界面选择；不能凭此确定旧式内部未列出的原因。
 
 普通单文件桥接对照：在 O: 盘自有临时目录创建 `alpha long.txt`，以 O:/winnt 的 P238 run16s 注入 x64 Unicode 探针，请求无应用 hook 的 Explorer 单文件 GetOpenFileNameW。实际显示旧式布局，文件列表读取到 `alpha long.txt`，预填该文件的确认返回相同完整路径、extended error 0、驱动退出 0，自有文件及目录清理成功。该例证明之前多选列表为空不能推广到此单文件场景；它未覆盖从列表点击选择、ANSI、x86 或其他文件系统。
+
+带空格文件名单选回归已加入 file-dialog-target 与包测试：自有临时文件改名后，断言旧式文件列表包含该文件、选择结果路径一致、扩展错误为 0 且文件清理成功。以 O:/winnt 已发布 P238 四文件及新构建的探针，在私有桌面执行 x86/x64 与 ANSI/Unicode 四组合，均通过；包测试选择器自测通过。四组合运行使用系统临时目录，不等同于前述 O: 无短名称卷的完整矩阵；本次仅测试和文档修改，无产品二进制变化。
