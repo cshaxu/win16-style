@@ -114,5 +114,9 @@ python tests/ntw16s-dll/virtual_print.py --driver build/.ninja/x64/dialog-test-d
   --scratch build/t20-s1-dialog
 ```
 
+追加 `--unfile` 可测试初始端口为 `FILE:` 时取消“打印到文件”并 Apply：断言标志清除、
+返回端口恢复为 `PORTPROMPT:`，再检查实际 PDF 输出。`--arch 32` 或 `--arch 64` 只运行
+对应位宽；未运行的位宽不能记为通过。`--native` 对照系统原生对话框。
+
 `--native` 运行未注入系统对照；未覆盖实体打印机、所有驱动或 Windows 共享打印服务的冷启动。
 此用例可选，不纳入默认包测试，也不把虚拟打印机或 pdfinfo 变为产品依赖。

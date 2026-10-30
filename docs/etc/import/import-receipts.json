@@ -3074,7 +3074,7 @@
       "path": "tests/ntw16s-dll/virtual_print.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2b14e413dab32a8eceefa5919e9ac549e5cc01a6f43e662ce704aca735a50bd7",
+      "sha256": "11e085025a94113adf003ec6e8569497d8e8143164353474404ee641ae512033",
       "disposition": "authored",
       "review": "T20 S1 optional virtual printer copy-count regression",
       "notice": "Project-authored test; no imported resources"
@@ -3083,7 +3083,7 @@
       "path": "tests/ntw16s-dll/virtual_print.py",
       "source": null,
       "source_blob": null,
-      "sha256": "130c3a7e38a257e58253a00e33a882bd40718938d89d5c11c8110abb6f60b964",
+      "sha256": "2aa7a9e658343836c90c2d17d75220ad4e7de4f21cd0c23c95e917c345c9759e",
       "disposition": "authored",
       "review": "T20 S1 optional virtual printer copy-count regression",
       "notice": "Project-authored test; no imported resources"

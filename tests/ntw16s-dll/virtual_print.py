@@ -15,6 +15,8 @@ parser.add_argument('--target64', required=True, type=Path)
 parser.add_argument('--pdfinfo', required=True, type=Path)
 parser.add_argument('--scratch', required=True, type=Path)
 parser.add_argument('--native', action='store_true')
+parser.add_argument('--unfile', action='store_true', help='test deselecting print-to-file before Apply')
+parser.add_argument('--arch', choices=('32', '64', 'all'), default='all')
 args = parser.parse_args()
 repo = Path(__file__).resolve().parents[2]
 build = (repo / 'build').resolve()
@@ -30,8 +32,10 @@ for path in (args.driver, args.launcher, args.target32, args.target64):
 
 with tempfile.TemporaryDirectory(prefix='virtual-print-', dir=scratch) as tmp:
     for bits, target in (('32', args.target32), ('64', args.target64)):
+        if args.arch != 'all' and args.arch != bits:
+            continue
         for encoding in ('ansi', 'wide'):
-            for action in ('print', 'apply'):
+            for action in (('unfile',) if args.unfile else ('print', 'apply')):
                 output = Path(tmp) / f'{bits}-{encoding}-{action}.pdf'
                 command = [str(args.driver), '--private', '--direct' if args.native else str(args.launcher),
                            str(target), action, str(output), encoding]
@@ -50,6 +54,10 @@ with tempfile.TemporaryDirectory(prefix='virtual-print-', dir=scratch) as tmp:
                     sys.exit(1)
                 if result.returncode or 'VIRTUAL_END page=1 text=1 endpage=1 enddoc=1' not in result.stdout:
                     print(f'VIRTUAL_PRINT_FAIL {bits} {encoding} {action} exit={result.returncode}')
+                    print(result.stdout, result.stderr)
+                    sys.exit(1)
+                if args.unfile and 'VIRTUAL_UNFILE port_match=1 flag_cleared=1' not in result.stdout:
+                    print(f'VIRTUAL_PRINT_FAIL {bits} {encoding} {action} port_or_flag')
                     print(result.stdout, result.stderr)
                     sys.exit(1)
                 deadline = time.monotonic() + 10
