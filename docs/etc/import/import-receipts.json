@@ -2723,7 +2723,7 @@
       "path": "tests/ntw16s-dll/folder_dialog_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "768a0ca716224b77ed29c0267a4da135b2a7527a57aed9b49aabac61373c8256",
+      "sha256": "8f42bd8b6a4f0729f4b1de32a939168fc697fc3ce09ab50c5543f5d545b97561",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
@@ -2822,7 +2822,7 @@
       "path": "tests/ntw16s-dll/com_dialog_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4cb27ef49d3372fe75c399027c661102ad2903d7f8850da0e202d96a7f88213c",
+      "sha256": "88e9c4cc99494511b43c3d730e321c8cb28b88a29bb168573464b85cfc146aa1",
       "disposition": "authored",
       "review": "T20 S1 COM dialog bridge and real native probe under development",
       "notice": "Project-authored; no imported code or resources"
@@ -2831,7 +2831,7 @@
       "path": "src/ntw16s-dll/injection/com_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d66d37d3d224b05ed055d484db8ede1e162f842ad0673bdde8550c3879353f79",
+      "sha256": "0687be8dfd33bc32425285bd6d5a5fcc86d4b38fd03950b56951b848456ca484",
       "disposition": "authored",
       "review": "T20 S1 COM dialog bridge and real native probe under development",
       "notice": "Project-authored; no imported code or resources"
@@ -2849,7 +2849,7 @@
       "path": "tests/ntw16s-dll/com_multi_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "8fad90c7a412272fe7426b2108780c3ec59cd4c346ef977715ca06501595562e",
+      "sha256": "7ca7be40d4a3acbffca00d9554168e9630f9534f3d301b7ee90a3aa939b1ca0d",
       "disposition": "authored",
       "review": "T20 S1 native COM multi-select investigation; currently failing",
       "notice": "Project-authored test; no imported code or resources"
@@ -2858,7 +2858,7 @@
       "path": "tests/ntw16s-dll/scroll_frame_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "374174c242d5b9ebf6ddf5a2ba879e9672f464b1d981ec3ec41c268d4db8d063",
+      "sha256": "7e5e3ce71c39968a942a58d652d330da498615d666caed9b52f997667b60f6d4",
       "disposition": "authored",
       "review": "T20 S1 owned scrollbar frame list and edit runtime pixel and tracking probe",
       "notice": "Project-authored test; no imported code or resources"
@@ -2867,7 +2867,7 @@
       "path": "tests/ntw16s-dll/com_events_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "fa5139dae2db7afe2be8ae8f0af8285a368c4e053aea0f4845fc49c1628fe39c",
+      "sha256": "4526668f9c5e91a421be85808837eed6bb2837310cdf24370eb1f0c74ef1d7e2",
       "disposition": "authored",
       "review": "T20 S1 native old dialog and COM event identity and veto probes",
       "notice": "Project-authored test; no imported code or resources"
@@ -2894,7 +2894,7 @@
       "path": "tests/ntw16s-dll/com_hidden_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e2281a3b23f49c5840e74c8d879b53cc4e1402e47b98b3f0b8bd98a04699d295",
+      "sha256": "5d3a94a49fed1a5199de9d9e613971db8a5afd706b2b09a5c4daa620c706d8e0",
       "disposition": "authored",
       "review": "T20 S1 native dialog investigation probe",
       "notice": "Project-authored test; no imported code or resources"
@@ -2903,7 +2903,7 @@
       "path": "tests/ntw16s-dll/com_nav_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ffb324e68421e09016f1f68eeb12e28f8b83ae45e2e46f32977a8a59e1a2ed54",
+      "sha256": "17fc576e15988c4bda3f003f1ba148c831b18f30ff3fece4948ceb043e2bf0d3",
       "disposition": "authored",
       "review": "T20 S1 native COM folder navigation and veto baseline",
       "notice": "Project-authored test; no imported code or resources"
@@ -2948,7 +2948,7 @@
       "path": "tests/ntw16s-dll/com_initial_redirect_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "0902260f37bbe1885d9e58378ee3b13b086c3dcf3ce867b1ce5a4abb3b4c2959",
+      "sha256": "4e7f7f22f5a3f3a200969623b8c815eba9c6b8acc2d2b5f74e6c11c9d2508a14",
       "disposition": "authored",
       "review": "T20 S1 native COM dialog callback and navigation regression",
       "notice": "Project-authored test; no imported code or resources"
@@ -3006,6 +3006,15 @@
       "disposition": "authored",
       "review": "T20 S1 native system-volume root folder COM comparison",
       "notice": "Project-authored C test; no imported code or resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/com_hidden_native_target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "7aef787234a1b0418cf6e096793fd0252230f571dd6e7a81b5fcafe713cd0564",
+      "disposition": "authored",
+      "review": "T20 S1 native Shell hidden item view and cleanup baseline",
+      "notice": "Project-authored test; no imported code or resources"
     }
   ]
 }

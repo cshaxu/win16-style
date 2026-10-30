@@ -5,6 +5,7 @@
 #include <windows.h>
 #include <shlobj.h>
 #include <shobjidl.h>
+#include <servprov.h>
 #include <stdio.h>
 #include <wchar.h>
 static DWORD owner;static volatile LONG seen,old,filter_seen,label_seen,cancel_label_seen,hidden_seen;static HWND dialog;static BOOL cancel;
@@ -48,6 +49,8 @@ static DWORD WINAPI observer(void *unused)
 int wmain(int argc,WCHAR **argv)
 {
     if(argc!=3 && argc!=4)return 2;
+    BOOL foreign_query=argc==4 && !lstrcmpW(argv[3],L"foreign");
+    BOOL missing_query=argc==4 && !lstrcmpW(argv[3],L"missing");
     BOOL filtered=argc==4 && !lstrcmpW(argv[3],L"filter");
     BOOL customized=argc==4 && !lstrcmpW(argv[3],L"custom");
     BOOL use_v2=argc==4 && !lstrcmpW(argv[3],L"v2");
@@ -88,6 +91,15 @@ int wmain(int argc,WCHAR **argv)
         printf("COM_FACTORY identity=1 hr=%08lx\n",(unsigned long)hr);
     }else hr=CoCreateInstance(save?&CLSID_FileSaveDialog:&CLSID_FileOpenDialog,NULL,CLSCTX_INPROC_SERVER,&IID_IFileDialog,(void **)&d);
     if(FAILED(hr)||FAILED(IFileDialog_SetTitle(d,title)))return 6;
+    if(foreign_query){IServiceProvider *foreign=NULL;HRESULT query=IFileDialog_QueryInterface(d,&IID_IServiceProvider,(void **)&foreign);
+        printf("COM_FOREIGN_QUERY hr=%08lx present=%d\n",(unsigned long)query,foreign!=NULL);
+        if(FAILED(query) || !foreign)return 19;
+        IServiceProvider_Release(foreign);}
+    if(missing_query){const IID missing={0x2468ace0,0x4321,0x8765,{0xa1,0xb2,0xc3,0xd4,0xe5,0xf6,0x17,0x28}};
+        void *unknown=(void *)1;HRESULT query=IFileDialog_QueryInterface(d,&missing,&unknown);
+        printf("COM_MISSING_QUERY hr=%08lx null=%d\n",(unsigned long)query,unknown==NULL);
+        if(query!=E_NOINTERFACE || unknown)return 18;}
+
     if(folder){FILEOPENDIALOGOPTIONS options=0;IShellItem *initial=NULL;
         if(FAILED(IFileDialog_GetOptions(d,&options)) || FAILED(IFileDialog_SetOptions(d,options|FOS_PICKFOLDERS|FOS_FORCEFILESYSTEM)) ||
            FAILED(SHCreateItemFromParsingName(path,NULL,&IID_IShellItem,(void **)&initial)))return 6;
@@ -147,5 +159,5 @@ int wmain(int argc,WCHAR **argv)
     IFileDialog2_Release(v2);IFileDialog_Release(d);CoUninitialize();if(hidden_system_path[0]){SetFileAttributesW(hidden_system_path,FILE_ATTRIBUTE_NORMAL);DeleteFileW(hidden_system_path);}if(folder)RemoveDirectoryW(path);else DeleteFileW(path);
     printf("COM_BRIDGE bits=%u save=%d folder=%d cancel=%d seen=%ld old=%ld hr=%08lx result=%08lx same=%d wait=%lu filter=%ld array=%d labels=%ld hidden=%ld hidden_system=%ld\n",(unsigned)(sizeof(void*)*8),save,folder,cancel,seen,old,(unsigned long)hr,(unsigned long)result,same,wait,filter_seen,array_ok,label_seen,hidden_seen,hidden_system_seen);
     printf("COM_CANCEL_LABEL seen=%ld\n",cancel_label_seen);
-    return wait==WAIT_OBJECT_0 && seen && (customized?!old:old) && (!filtered || filter_seen) && (!labels || label_seen) && (!cancel_label || cancel_label_seen) && (!hidden || (hidden_seen && !hidden_system_seen)) && array_ok && (cancel?hr==HRESULT_FROM_WIN32(ERROR_CANCELLED):(SUCCEEDED(hr)&&SUCCEEDED(result)&&same))?0:1;
+    return wait==WAIT_OBJECT_0 && seen && ((customized||foreign_query)?!old:old) && (!filtered || filter_seen) && (!labels || label_seen) && (!cancel_label || cancel_label_seen) && (!hidden || (hidden_seen && !hidden_system_seen)) && array_ok && (cancel?hr==HRESULT_FROM_WIN32(ERROR_CANCELLED):(SUCCEEDED(hr)&&SUCCEEDED(result)&&same))?0:1;
 }

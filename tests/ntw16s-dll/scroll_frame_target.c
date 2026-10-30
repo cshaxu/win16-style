@@ -38,7 +38,7 @@ static int check_axis(HWND root,HWND child,int bar,paint_fn paint)
     DWORD before[32768],after[32768];SCROLLINFO change={.cbSize=sizeof(change),.fMask=SIF_POS,.nPos=45};
     POINT end=hitpt;ScreenToClient(child,&end);unsigned failures=0;
     POINT thumb={0},move={0};LONG track_start=0;BOOL drag_started=FALSE,drag_changed=FALSE;
-    const char *labels[]={"setinfo","setpos","setrange","press","release","wheel","thumb-down","thumb-move","thumb-up"};
+    const char *labels[]={"setinfo","setpos","setrange","press","release","wheel","thumb-down","thumb-move","thumb-up","hover","leave"};
     for(unsigned step=0;step<ARRAYSIZE(labels);++step){
         switch(step){
         case 0:SetScrollInfo(child,bar,&change,TRUE);break;
@@ -63,7 +63,9 @@ static int check_axis(HWND root,HWND child,int bar,paint_fn paint)
             SCROLLINFO tracking={.cbSize=sizeof(tracking),.fMask=SIF_TRACKPOS};drag_started=GetCapture()==child && GetScrollInfo(child,bar,&tracking);track_start=tracking.nTrackPos;break;}
         case 7:{SendMessageW(child,WM_MOUSEMOVE,MK_LBUTTON,MAKELPARAM(move.x,move.y));
             SCROLLINFO tracking={.cbSize=sizeof(tracking),.fMask=SIF_TRACKPOS};drag_changed=GetCapture()==child && GetScrollInfo(child,bar,&tracking) && tracking.nTrackPos!=track_start;break;}
-        default:SendMessageW(child,WM_LBUTTONUP,0,MAKELPARAM(move.x,move.y));break;
+        case 8:SendMessageW(child,WM_LBUTTONUP,0,MAKELPARAM(move.x,move.y));break;
+        case 9:SendMessageW(child,WM_NCMOUSEMOVE,bar==SB_VERT?HTVSCROLL:HTHSCROLL,MAKELPARAM(hitpt.x,hitpt.y));break;
+        default:SendMessageW(child,WM_NCMOUSELEAVE,0,0);break;
         }
         DwmFlush();if(!snap(pa.x,pa.y,width,height,before))return 5;
         paint(child,NULL,NULL);DwmFlush();if(!snap(pa.x,pa.y,width,height,after))return 6;

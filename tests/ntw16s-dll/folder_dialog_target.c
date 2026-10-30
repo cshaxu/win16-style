@@ -77,19 +77,22 @@ static void CALLBACK test_controls(HWND window,UINT message,UINT_PTR timer,DWORD
     if(same_pixels)same_pixels=screen_pixels(left,top,width,height,pixels);
     SendMessageW(folders,WM_VSCROLL,SB_LINEDOWN,0);LRESULT folder_after=SendMessageW(folders,LB_GETTOPINDEX,0,0);
     COLORREF pressed[4096],repainted[4096];int pw=0,ph=0,rw=0,rh=0;BOOL press_read=FALSE,repaint_read=FALSE;
-    BOOL folder_capture=FALSE;
+    BOOL folder_capture=FALSE,screen_press_ok=FALSE,screen_repaint_ok=FALSE;DWORD screen_press[4096],screen_repaint[4096];int screen_press_diff=0;
     if(folder_bar_ok){int x=(folder_bar.rcScrollBar.left+folder_bar.rcScrollBar.right)/2,y=folder_bar.rcScrollBar.bottom-folder_bar.dxyLineButton/2;
         LPARAM point=MAKELPARAM(x,y);SendMessageW(folders,WM_NCLBUTTONDOWN,HTVSCROLL,point);
         folder_capture=GetCapture()==folders;
+        DwmFlush();if(initial_own && physical_ok && width>0 && height>0 && width<=64 && height<=64)screen_press_ok=screen_pixels(left,top,width,height,screen_press);
         press_read=window_arrow_pixels(folders,&rect,&folder_bar,pressed,&pw,&ph);
         HMODULE style=GetModuleHandleW(sizeof(void*)==4?L"ntw16s32.dll":L"ntw16s64.dll");
         FARPROC raw=style?GetProcAddress(style,"win16_style_scrollbars_paint"):NULL;
         typedef void (__cdecl *paint_fn)(HWND,HDC,const void *);paint_fn paint=NULL;memcpy(&paint,&raw,sizeof(paint));
-        if(paint){paint(folders,NULL,NULL);repaint_read=window_arrow_pixels(folders,&rect,&folder_bar,repainted,&rw,&rh);}
+        if(paint){paint(folders,NULL,NULL);repaint_read=window_arrow_pixels(folders,&rect,&folder_bar,repainted,&rw,&rh);DwmFlush();if(screen_press_ok)screen_repaint_ok=screen_pixels(left,top,width,height,screen_repaint);}
+        if(screen_press_ok && screen_repaint_ok)for(int i=0;i<width*height;++i)if((screen_press[i]&0xffffff)!=(screen_repaint[i]&0xffffff))++screen_press_diff;
         POINT up={x,y};ScreenToClient(folders,&up);SendMessageW(folders,WM_LBUTTONUP,0,MAKELPARAM(up.x,up.y));}
     int press_diff=0;if(press_read&&repaint_read&&pw==rw&&ph==rh)
         for(int i=0;i<pw*ph;++i)if(pressed[i]!=repainted[i])++press_diff;
     printf("FOLDER_WINDOW_PRESS read=%d repaint=%d size=%dx%d diff=%d\n",press_read,repaint_read,pw,ph,press_diff);
+    printf("FOLDER_SCREEN_PRESS read=%d repaint=%d diff=%d\n",screen_press_ok,screen_repaint_ok,screen_press_diff);
     printf("FOLDER_SCROLL_TRACK capture_on_press=%d\n",folder_capture);
     LRESULT folder_click=SendMessageW(folders,LB_GETTOPINDEX,0,0);
     SCROLLINFO setpos={.cbSize=sizeof(setpos),.fMask=SIF_POS,.nPos=3};SetScrollInfo(folders,SB_VERT,&setpos,TRUE);
@@ -110,7 +113,7 @@ static void CALLBACK test_controls(HWND window,UINT message,UINT_PTR timer,DWORD
     if(!own_hit)printf("FOLDER_RIGHT_VISUAL_SKIP reason=occluded\n");
     else if(same_pixels)printf("FOLDER_RIGHT_VISUAL_PASS settled_equals_repaint=1\n");
     controls_ok=count>=15 && before>=0 && after>before && bar_ok && clicked>after && opened && selected==final &&
-        folder_count>=15 && folder_after>folder_before && folder_click>folder_after && (!own_hit || same_pixels);
+        folder_count>=15 && folder_after>folder_before && folder_click>folder_after && (!own_hit || (same_pixels && screen_press_ok && screen_repaint_ok && screen_press_diff==0));
     printf("FOLDER_CONTROLS count=%lld top=%lld->%lld click=%lld drop=%lld preserved=%d\n",(long long)count,(long long)before,(long long)after,(long long)clicked,(long long)opened,selected==final);
 }
 static BOOL CALLBACK inspect(HWND window,LPARAM ignored)

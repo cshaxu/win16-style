@@ -102,8 +102,11 @@ static HRESULT proxy_query(file_proxy *p,REFIID id,void **out)
         if(!p->custom_native){HRESULT hr=IFileDialog_QueryInterface(p->native,id,(void **)&p->custom_native);if(FAILED(hr))return hr;}
         p->custom.lpVtbl=&custom_vtable;*out=&p->custom;proxy_add(p);return S_OK;
     }
-    p->unsupported=TRUE;
-    return IFileDialog_QueryInterface(p->native,id,out);
+    HRESULT hr=IFileDialog_QueryInterface(p->native,id,out);
+    /* A failed capability probe exposes no native interface and must not
+     * disable bridging. Successful unknown interfaces can bypass the proxy. */
+    if(SUCCEEDED(hr))p->unsupported=TRUE;
+    return hr;
 }
 static HRESULT STDMETHODCALLTYPE ole_query(IOleWindow *self,REFIID id,void **out)
 {file_proxy *p=(file_proxy *)((BYTE *)self - offsetof(file_proxy,ole));return proxy_query(p,id,out);}
@@ -417,7 +420,7 @@ static NTW16S_UNWIND_FUNCTION HRESULT classic_event_dispatch(file_proxy *p,enum 
             kind==CLASSIC_FOLDER_CHANGED?IFileDialogEvents_OnFolderChange(e->target,(IFileDialog *)p):
             kind==CLASSIC_SELECTION_CHANGED?IFileDialogEvents_OnSelectionChange(e->target,(IFileDialog *)p):
             IFileDialogEvents_OnTypeChange(e->target,(IFileDialog *)p);
-        if(kind==CLASSIC_OK && hr==S_FALSE){result=hr;break;}
+        if(kind==CLASSIC_OK && hr!=S_OK && hr!=E_NOTIMPL){result=FAILED(hr)?hr:S_FALSE;break;}
         if(kind==CLASSIC_FOLDER_CHANGING && hr!=S_OK && hr!=E_NOTIMPL){result=hr;break;}
     }
     NTW16S_UNWIND_END(unwind);return result;
@@ -629,9 +632,48 @@ static BOOL classic_typed_changing(HWND w,file_proxy *p)
     HWND edit=GetDlgItem(w,edt1);int length=edit?GetWindowTextLengthW(edit):-1;
     if(length<=0 || length>=32768)return TRUE;
     WCHAR *path=CoTaskMemAlloc(((size_t)length+1)*sizeof(WCHAR));if(!path)return FALSE;
-    GetWindowTextW(edit,path,length+1);DWORD attrs=GetFileAttributesW(path);
-    if(attrs==INVALID_FILE_ATTRIBUTES || !(attrs&FILE_ATTRIBUTE_DIRECTORY)){CoTaskMemFree(path);return TRUE;}
-    IShellItem *target=NULL;HRESULT hr=SHCreateItemFromParsingName(path,NULL,&IID_IShellItem,(void **)&target);CoTaskMemFree(path);
+    GetWindowTextW(edit,path,length+1);
+    /* A single leading separator uses the dialog folder's drive, not the
+     * process's potentially unrelated current drive. UNC stays untouched. */
+    if((path[0]==L'\\' || path[0]==L'/') && path[1]!=L'\\' && path[1]!=L'/' && p->live_folder){
+        PWSTR base=NULL;if(SUCCEEDED(IShellItem_GetDisplayName(p->live_folder,SIGDN_FILESYSPATH,&base))){
+            if(base[0] && base[1]==L':'){WCHAR *rooted=CoTaskMemAlloc(((size_t)length+3)*sizeof(WCHAR));
+                if(!rooted){CoTaskMemFree(base);CoTaskMemFree(path);return FALSE;}
+                rooted[0]=base[0];rooted[1]=L':';memcpy(rooted+2,path,((size_t)length+1)*sizeof(WCHAR));
+                CoTaskMemFree(path);path=rooted;}
+            CoTaskMemFree(base);}
+    }
+    /* The legacy dialog resolves a drive-relative name on its displayed
+     * drive against the displayed folder, even if the process current
+     * directory on that drive differs. Normalize only that same-drive case;
+     * another drive retains its native per-drive current-directory rules. */
+    if(length>2 && path[1]==L':' && path[2]!=L'\\' && path[2]!=L'/' && p->live_folder){
+        PWSTR base=NULL;
+        if(SUCCEEDED(IShellItem_GetDisplayName(p->live_folder,SIGDN_FILESYSPATH,&base))){
+            if(base[0] && base[1]==L':' && _wcsnicmp(path,base,1)==0){
+                memmove(path,path+2,((size_t)length-1)*sizeof(WCHAR));length-=2;
+            }
+            CoTaskMemFree(base);
+        }
+    }
+    /* Relative input belongs to the dialog's displayed folder, which can
+     * differ from the process-wide current directory. */
+    if(path[0]!=L'\\' && path[0]!=L'/' && !(length>=2 && path[1]==L':') && p->live_folder){
+        PWSTR base=NULL;
+        if(SUCCEEDED(IShellItem_GetDisplayName(p->live_folder,SIGDN_FILESYSPATH,&base))){
+            size_t n=wcslen(base),total=n+(n && base[n-1]!=L'\\'?1:0)+(size_t)length+1;
+            if(total<=32768){WCHAR *combined=CoTaskMemAlloc(total*sizeof(WCHAR));
+                if(!combined){CoTaskMemFree(base);CoTaskMemFree(path);return FALSE;}
+                swprintf(combined,total,L"%ls%ls%ls",base,n && base[n-1]!=L'\\'?L"\\":L"",path);
+                CoTaskMemFree(path);path=combined;}
+            CoTaskMemFree(base);
+        }
+    }
+    WCHAR normalized[32768];DWORD written=GetFullPathNameW(path,ARRAYSIZE(normalized),normalized,NULL);
+    if(!written || written>=ARRAYSIZE(normalized)){CoTaskMemFree(path);return TRUE;}
+    CoTaskMemFree(path);DWORD attrs=GetFileAttributesW(normalized);
+    if(attrs==INVALID_FILE_ATTRIBUTES || !(attrs&FILE_ATTRIBUTE_DIRECTORY))return TRUE;
+    IShellItem *target=NULL;HRESULT hr=SHCreateItemFromParsingName(normalized,NULL,&IID_IShellItem,(void **)&target);
     if(FAILED(hr))return TRUE;
     hr=classic_dispatch_owned(p,CLASSIC_FOLDER_CHANGING,target,NULL);
     return hr==S_OK && !p->pending_folder;
@@ -660,7 +702,28 @@ static BOOL classic_overwrite_check(HWND w,file_proxy *p)
     WCHAR entered[32768],path[32768];HWND edit=GetDlgItem(w,edt1);
     int length=edit?GetWindowTextW(edit,entered,ARRAYSIZE(entered)):0;
     if(length<=0 || length>=(int)ARRAYSIZE(entered)-1)return TRUE;
-    DWORD written=GetFullPathNameW(entered,ARRAYSIZE(path),path,NULL);
+    PCWSTR source=entered;WCHAR combined[32768];PWSTR base=NULL;
+    if((entered[0]==L'\\' || entered[0]==L'/') && entered[1]!=L'\\' && entered[1]!=L'/' && p->live_folder &&
+       SUCCEEDED(IShellItem_GetDisplayName(p->live_folder,SIGDN_FILESYSPATH,&base))){
+        if(base[0] && base[1]==L':' && (size_t)length+3<=ARRAYSIZE(combined)){
+            combined[0]=base[0];combined[1]=L':';memcpy(combined+2,entered,((size_t)length+1)*sizeof(WCHAR));source=combined;}
+        CoTaskMemFree(base);base=NULL;
+    }
+    PCWSTR relative=entered;
+    if(length>2 && entered[1]==L':' && entered[2]!=L'\\' && entered[2]!=L'/' && p->live_folder &&
+       SUCCEEDED(IShellItem_GetDisplayName(p->live_folder,SIGDN_FILESYSPATH,&base))){
+        if(base[0] && base[1]==L':' && _wcsnicmp(entered,base,1)==0)relative=entered+2;
+        CoTaskMemFree(base);base=NULL;
+    }
+    if(relative[0]!=L'\\' && relative[0]!=L'/' && !(relative[0] && relative[1]==L':') && p->live_folder &&
+       SUCCEEDED(IShellItem_GetDisplayName(p->live_folder,SIGDN_FILESYSPATH,&base))){
+        size_t n=wcslen(base);int written=swprintf(combined,ARRAYSIZE(combined),L"%ls%ls%ls",base,
+            n && base[n-1]!=L'\\'?L"\\":L"",relative);
+        CoTaskMemFree(base);
+        if(written<0 || (size_t)written>=ARRAYSIZE(combined))return TRUE;
+        source=combined;
+    }
+    DWORD written=GetFullPathNameW(source,ARRAYSIZE(path),path,NULL);
     if(!written || written>=ARRAYSIZE(path))return TRUE;
     if(p->extension && *p->extension){
         WCHAR *name=wcsrchr(path,L'\\');name=name?name+1:path;
@@ -1011,6 +1074,9 @@ static HRESULT proxy_show_impl(file_proxy *p,HWND owner)
 #endif
         };
         hr=ntw16s_dialog_style_scope(classic_folder_show,&call);if(folder_path)CoTaskMemFree(folder_path);
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+        if(FAILED(hr) && p->classic_close_pending)return p->classic_close_result;
+#endif
         if(FAILED(hr))return hr;
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
         if(p->events && p->completed && p->result)return S_OK;

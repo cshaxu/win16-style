@@ -130,12 +130,16 @@ int wmain(int argc,WCHAR **argv)
             if(name){if(!_wcsicmp(name,links&&!keep?actual1:first))found1=TRUE;if(!_wcsicmp(name,links&&!keep?actual2:second))found2=TRUE;CoTaskMemFree(name);}if(item)IShellItem_Release(item);}}
     if(array)IShellItemArray_Release(array);
     if(event_mode)IFileOpenDialog_Unadvise(d,cookie);
-    IFileOpenDialog_Release(d);CoUninitialize();DeleteFileW(first);DeleteFileW(second);if(links){DeleteFileW(actual1);DeleteFileW(actual2);}RemoveDirectoryW(dir);
+    IFileOpenDialog_Release(d);CoUninitialize();BOOL cwd_reset=SetCurrentDirectoryW(temp);
+    BOOL removed1=DeleteFileW(first),removed2=DeleteFileW(second),real1=TRUE,real2=TRUE;
+    if(links){real1=DeleteFileW(actual1);real2=DeleteFileW(actual2);}
+    BOOL removed_dir=RemoveDirectoryW(dir),cleanup=cwd_reset&&removed1&&removed2&&real1&&real2&&removed_dir;
+    printf("MULTI_CLEANUP cwd=%d first=%d second=%d targets=%d,%d dir=%d\n",cwd_reset,removed1,removed2,real1,real2,removed_dir);
     if(event_mode)printf("MULTI_EVENTS calls=%ld counts=%ld paths=%ld refs=%ld selections=%ld valid=%ld\n",sink.calls,sink.counts,sink.paths,sink.refs,sink.selection_calls,sink.selection_valid);
     printf("COM_MULTI bits=%u seen=%ld selected=%ld cancel=%d hr=%08lx array=%08lx count=%lu paths=%d%d wait=%lu single=%08lx\n",(unsigned)(sizeof(void*)*8),seen,selected,cancel,(unsigned long)hr,(unsigned long)ar,count,found1,found2,wait,(unsigned long)single_hr);
     BOOL sink_ok=!event_mode||(sink.refs==1&&sink.selection_calls>0&&sink.selection_calls==sink.selection_valid&&
         (cancel?sink.calls==0:veto_cancel?(sink.calls==1&&sink.counts==1&&sink.paths==1):(sink.calls==2&&sink.counts==2&&sink.paths==2)));
     BOOL result_ok=(cancel||veto_cancel)?(hr==HRESULT_FROM_WIN32(ERROR_CANCELLED)&&(!veto_cancel||(FAILED(ar)&&FAILED(single_hr)))):
         (SUCCEEDED(hr)&&SUCCEEDED(ar)&&count==(single_mode?1u:2u)&&found1&&(single_mode?!found2:found2)&&(single_mode?SUCCEEDED(single_hr):single_hr==E_UNEXPECTED));
-    return seen&&selected==(single_mode?1:2)&&wait==WAIT_OBJECT_0&&sink_ok&&result_ok?0:1;
+    return cleanup&&seen&&selected==(single_mode?1:2)&&wait==WAIT_OBJECT_0&&sink_ok&&result_ok?0:1;
 }
