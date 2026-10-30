@@ -717,3 +717,7 @@ P243 打印阶段包：针对 `PrintDlgA/W` 的完整大小结构及常用打印
 首次 p243-print-classic 干净构建因新测试 `-Werror=misleading-indentation` 失败，修正后 p243-print-classic2 使用 GCC 16.1.0、Ninja、ccache 完成 x86/x64 干净构建、ABI及五份原图形资源逐字节检查。同批四文件的 p243-print-focus2 16 项通过、无跳过，包括 A/W 双宽确认和取消，确认路径检查 HDC/设备句柄及 hook 字段恢复；未发起打印作业。P242 旧包搭配新测试 x64 Unicode 取消得到 old=0、退出 1，是负例。p243-print-existing 18 项通过、无跳过，覆盖已有应用打印 hook、页面设置和 PrintDlgEx 无效参数。首次焦点测试使用正则而非明确名称被选择器拒绝，修正后通过。未覆盖实际打印、设备配置内容、无打印机、所有标志、物理输入及完整矩阵，PrintDlgEx、模板和定制语义不声称修复。
 
 经过 p243-print-publish 将测试包四文件发布到 assets 与 O:/winnt，摘要分别为 demo d0a6e8814b785238e7c81dfb679985cbc884c211e272859b164e3ed3a243c6ac、ntw16s32 bad4e036e7ba3c66a079f7ad13f940e489a4c8508c8530b613481f3145f2dd83、ntw16s64 a6c13ec3d0e0738a611377f8fcdc1c2f4564d2e17663aa7ca04d42330d4a91e1、run16s b673f8bde50b05beaf0f7c4e470f9bd84eeb87dc9d48605f5fbc481b50bb58c5。T20 S1 保持开放。
+
+PrintDlgEx 多范围与 Apply 契约验证：自有私有桌面下对已发布 P243 和另行干净构建的同批包分别测试 x86/x64 Unicode。探针在真实属性页选择 pages 并输入 `2,4-5`，Print 返回 S_OK、action=PD_RESULT_PRINT、两个区间 2–2 和 4–5；另一例点 Apply 再 Cancel，返回 S_OK、action=PD_RESULT_APPLY 并保留同样两个区间。四例均检查标题附着和 HDC，关闭后释放返回资源；没有执行打印。结果确证旧 PrintDlg 单个页码区间及普通确定/取消无法完整表达此调用，不能静默强转。现将两个用例加入包回归，未覆盖 ANSI、应用自定义页面/回调、真实物理输入或实际打印。
+
+仅测试与记录变化，无产品源码或发布变化。p244-print-ex-tests 双宽干净构建和来源、原资源、ABI检查通过；p244-print-ex-focus 对该同批包的 12 项聚焦测试通过、无跳过。新构建四文件摘要与已发布 P243 不同，不将新构建称为字节相同，也未更换已发布版本；四个新回归另对 O:/winnt 实际部署 P243 双宽直接通过。T20 S1 继续开放。
