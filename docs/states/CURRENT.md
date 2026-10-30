@@ -10,7 +10,7 @@ M0 T20 S1准入：Win3.x文件夹选择与公共对话框桥接：调查、实�
 | --- | --- |
 | Identifier Mode | New；用户准入队列首位，T20 S1 |
 | Admission And Approval | 用户要求T19收口并准入文件夹选择与公共对话框任务 |
-| Objective | 用户要求按二八定律优先处理实际出现的滚动条交互回退；保持已发布公共对话框能力，COM布局桥接及其他低收益长尾暂缓，详见TODO |
+| Objective | 优先调查并修复用户报告的记事本菜单切换闪烁及系统菜单外观回归；继续处理常用旧 Win32 对话框，COM布局桥接及其他低收益长尾暂缓，详见TODO |
 | Non-goals | 不分发旧系统DLL，不更改原图形资源、共享Shell宿主、系统设置或用户现有进程 |
 | Reference Baseline | T19 S1 P208原始四文件，S2撤回，S3用户确认恢复 |
 | Candidate Proposal | [Win3.x文件夹选择与公共对话框适配](../proposals/classic-folder-dialogs.md) |
@@ -21,7 +21,7 @@ M0 T20 S1准入：Win3.x文件夹选择与公共对话框桥接：调查、实�
 | Asset Needs | 登记build/t20-s1-dialog及build/t20-package scratch；成果提炼后清理 |
 | Reporting Requirements | 实际证据、支持和回退矩阵、许可、不可兼容条件及可行路线 |
 | Stop Conditions | 无法保证调用语义与资源许可时保留原对话框，不伪造结果 |
-| Exit Criteria | 滚动条实际交互有可复现证据及针对性修复验证；产品变更依规范构建、测试、双发布、推送复核；长尾明确记录后按用户决定处置，不冒称完整覆盖 |
+| Exit Criteria | 记事本菜单切换和系统菜单有实际证据及针对性修复验证；常用对话框问题按证据处理；产品变更依规范构建、测试、双发布、推送复核；长尾明确记录后按用户决定处置，不冒称完整覆盖 |
 | Original Owner Request | 准入队列首位，处理Win3.x文件夹选择与公共对话框外观 |
 | Similar-Issue Sweep | SHBrowseForFolder、GetOpenFileName、GetSaveFileName、IFileDialog及框架自绘 |
 
