@@ -10,7 +10,7 @@ M0 T20 S1准入：Win3.x文件夹选择与公共对话框桥接：调查、实�
 | --- | --- |
 | Identifier Mode | New；用户准入队列首位，T20 S1 |
 | Admission And Approval | 用户要求T19收口并准入文件夹选择与公共对话框任务 |
-| Objective | 用户明确两维标准：系统存在旧式布局时桥接，所有对话框接管样式；覆盖公共对话框及相关对话框入口，逐项测试并继续实现COM等缺口；用户要求系统审计并修复水平和垂直滚动条滚动后样式变化 |
+| Objective | 用户要求按二八定律优先处理实际出现的滚动条交互回退；保持已发布公共对话框能力，COM布局桥接及其他低收益长尾暂缓，详见TODO |
 | Non-goals | 不分发旧系统DLL，不更改原图形资源、共享Shell宿主、系统设置或用户现有进程 |
 | Reference Baseline | T19 S1 P208原始四文件，S2撤回，S3用户确认恢复 |
 | Candidate Proposal | [Win3.x文件夹选择与公共对话框适配](../proposals/classic-folder-dialogs.md) |
@@ -21,7 +21,7 @@ M0 T20 S1准入：Win3.x文件夹选择与公共对话框桥接：调查、实�
 | Asset Needs | 登记build/t20-s1-dialog及build/t20-package scratch；成果提炼后清理 |
 | Reporting Requirements | 实际证据、支持和回退矩阵、许可、不可兼容条件及可行路线 |
 | Stop Conditions | 无法保证调用语义与资源许可时保留原对话框，不伪造结果 |
-| Exit Criteria | 真实入口及实现范围有证据；产品变更依规范构建、测试、双发布、推送复核；T20后续继续COM等未完成范围 |
+| Exit Criteria | 滚动条实际交互有可复现证据及针对性修复验证；产品变更依规范构建、测试、双发布、推送复核；长尾明确记录后按用户决定处置，不冒称完整覆盖 |
 | Original Owner Request | 准入队列首位，处理Win3.x文件夹选择与公共对话框外观 |
 | Similar-Issue Sweep | SHBrowseForFolder、GetOpenFileName、GetSaveFileName、IFileDialog及框架自绘 |
 
@@ -33,7 +33,7 @@ M0 T20 S1准入：Win3.x文件夹选择与公共对话框桥接：调查、实�
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 1
-- Last delivery: M0 T20 S1 P233 阶段包已完成双宽构建、聚焦包测试及双位置发布；提交和远端复核以实际结果为准。
+- Last delivery: M0 T20 S1 P234 滚动条主题租约阶段包已完成双宽构建、聚焦包测试及双位置发布；提交和远端复核以实际结果为准。
 - Open task: T20 S1 文件夹选择和公共对话框接口及经典参考调查。
 
 ## Technical Baseline
@@ -44,7 +44,7 @@ M0 T20 S1准入：Win3.x文件夹选择与公共对话框桥接：调查、实�
 
 S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前原版真实点击正常；历史异常根因未查明，本S没有产品代码或二进制修改。
 
-T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；用户反馈滚动条交互回退仍未解决，事件桥接实验默认关闭，部分定制、隐藏目录及完整对话框矩阵仍未完成，公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；T20 和 S1 保持开放。
+T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试通过，干净包真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；T20 和 S1 保持开放。
 
 ## Recent Closure
 

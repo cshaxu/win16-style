@@ -2,6 +2,8 @@
 
 # Deferred Debt
 
+- [ ] TODO(Low): COM 文件对话框布局桥接长尾，包括事件回调、自定义控件和隐藏目录等尚不完整的场景；Owner：未来经用户明确准入的后续工作；Evidence：[T20 S1 阶段记录](../history/M0-T20-S1-preliminary.md)，正式包存在现代布局回退，隐藏文件和事件代码仅实验；Admission：用户后续明确要求恢复。按用户 2026-10-29 二八优先级指示，本轮停止扩展 COM 布局，不将实验视为已支持。
+
 - [ ] TODO(Medium): 展开TColorBox时偶发屏幕采样与应用绘图DC不一致；Owner：T18
   后续真实应用验收。Evidence：[S40调查](../history/M0-T18-S40-color-screen.md)：
   双宽旧/新包均复现，应用前后DRAWITEM DC相同而重画前屏幕不同，具体呈现或

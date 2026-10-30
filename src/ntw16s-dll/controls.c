@@ -21,6 +21,7 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include "scroll_track.h"
 #include "font.h"
 #include "native_api.h"
+#include "theme.h"
 #include "tab_paint.h"
 #include "header_paint.h"
 #include "progress_paint.h"
@@ -63,7 +64,7 @@ typedef struct control_style {
     int header_pressed;
     BOOL scroll_reporting,scroll_key;
     LONG scroll_report;
-    BOOL list_scrollbar,edit_scrollbars,frame_scrollbars,native_border,list_redraw_off,legacy_progress_border;
+    BOOL list_scrollbar,edit_scrollbars,frame_scrollbars,native_border,list_redraw_off,legacy_progress_border,list_theme_owned;
     unsigned list_suppression;
     HWND list_capture_before;
     LONG embedded_object;
@@ -1962,12 +1963,22 @@ BOOL win16_style_tree_install_created(HWND w,const win16_style_palette *palette,
 }
 BOOL win16_style_grid_install_created(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled)
 {
-    DWORD_PTR data;
+    DWORD_PTR data;control_style *s;BOOL result=TRUE;
     if(!win16_style_frame_scrollbars_install_owned(w,palette,owner,cancelled))return FALSE;
     if(!GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&data) ||
         ((control_style *)data)->creation_owner!=owner){SetLastError(ERROR_CANCELLED);return FALSE;}
-    ((control_style *)data)->native_border=TRUE;
-    return TRUE;
+    s=(control_style *)data;++s->calls;s->native_border=TRUE;
+    /* Owner-drawn lists use the shared frame scrollbar painter but may not
+     * have the ordinary control attachment's theme lease. Common-controls
+     * theme animations can otherwise repaint over that scrollbar later. */
+    if(is_list(w) && !ntw16s_theme_retained(w)){
+        if(!ntw16s_theme_capture(w))result=FALSE;
+        else {s->list_theme_owned=TRUE;if(!ntw16s_theme_enable(w,s))result=FALSE;}
+    }
+    if(s->detached || (cancelled && *cancelled)){result=FALSE;SetLastError(ERROR_CANCELLED);}
+    if(!result && !s->detached)win16_style_control_remove_owned(w,owner);
+    if(!--s->calls && s->detached)dispose_control(s);
+    return result;
 }
 BOOL win16_style_picture_install_created(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled)
 {
@@ -2065,6 +2076,7 @@ BOOL win16_style_control_remove(HWND w)
     if(!RemoveWindowSubclass(w,control_proc,(UINT_PTR)control_proc)){
         s->removing=FALSE;--s->calls;return FALSE;}
     s->detached=TRUE;ntw16s_updown_retire(&s->updown);BOOL track=s->track_window!=NULL;trackbar_unbind(s);toolbar_unbind(s);combo_text_unbind(s,FALSE);detach_combo_list(s);
+    if(s->list_theme_owned){s->list_theme_owned=FALSE;ntw16s_theme_remove(w,s);}
     if(s->font && IsWindow(w) && !s->combo_passthrough)SendMessageW(w,WM_SETFONT,(WPARAM)s->original_font,FALSE);
     if(IsWindow(w) && is_separator(w))SetWindowPos(w,NULL,0,0,0,0,
         SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
@@ -2096,6 +2108,7 @@ BOOL win16_style_control_terminal(HWND w)
         SetLastError(ERROR_INVALID_STATE);return FALSE;
     }
     ++s->calls;s->detached=TRUE;ntw16s_updown_retire(&s->updown);trackbar_unbind(s);toolbar_unbind(s);
+    if(s->list_theme_owned){s->list_theme_owned=FALSE;(void)ntw16s_theme_terminal(w,s);}
     scroll_caret_destroy(w,s);
     scroll_stop_timer(w,s);
     combo_text_unbind(s,TRUE);result=terminal_combo_list(s);

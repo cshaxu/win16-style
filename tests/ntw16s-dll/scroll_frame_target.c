@@ -35,7 +35,7 @@ static int check_axis(HWND root,HWND child,int bar,paint_fn paint)
     if(pid!=GetCurrentProcessId() || GetAncestor(hit,GA_ROOT)!=root){printf("FRAME_VISUAL_SKIP axis=%d reason=occluded\n",bar);return 77;}
     if(!LogicalToPhysicalPointForPerMonitorDPI(child,&pa)||!LogicalToPhysicalPointForPerMonitorDPI(child,&pb))return 3;
     int width=pb.x-pa.x,height=pb.y-pa.y;if(width<=0||height<=0||width>2048||height>2048||width*height>32768)return 4;
-    DWORD before[32768],after[32768];SCROLLINFO change={.cbSize=sizeof(change),.fMask=SIF_POS,.nPos=45};
+    DWORD immediate[32768],before[32768],after[32768];SCROLLINFO change={.cbSize=sizeof(change),.fMask=SIF_POS,.nPos=45};
     POINT end=hitpt;ScreenToClient(child,&end);unsigned failures=0;
     POINT thumb={0},move={0};LONG track_start=0;BOOL drag_started=FALSE,drag_changed=FALSE;
     const char *labels[]={"setinfo","setpos","setrange","press","release","wheel","thumb-down","thumb-move","thumb-up","hover","leave"};
@@ -67,7 +67,10 @@ static int check_axis(HWND root,HWND child,int bar,paint_fn paint)
         case 9:SendMessageW(child,WM_NCMOUSEMOVE,bar==SB_VERT?HTVSCROLL:HTHSCROLL,MAKELPARAM(hitpt.x,hitpt.y));break;
         default:SendMessageW(child,WM_NCMOUSELEAVE,0,0);break;
         }
+        if(!snap(pa.x,pa.y,width,height,immediate))return 5;
         DwmFlush();if(!snap(pa.x,pa.y,width,height,before))return 5;
+        unsigned transient=0;for(int i=0;i<width*height;++i)if((immediate[i]&0xffffff)!=(before[i]&0xffffff))++transient;
+        printf("FRAME_TRANSIENT axis=%d action=%s diff=%u pixels=%d\n",bar,labels[step],transient,width*height);
         paint(child,NULL,NULL);DwmFlush();if(!snap(pa.x,pa.y,width,height,after))return 6;
         HWND now=WindowFromPoint(hitpt);DWORD now_pid=0;if(now)GetWindowThreadProcessId(now,&now_pid);
         if(now_pid!=GetCurrentProcessId() || GetAncestor(now,GA_ROOT)!=root){printf("FRAME_VISUAL_SKIP axis=%d reason=occluded\n",bar);return 77;}
