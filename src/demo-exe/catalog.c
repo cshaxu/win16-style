@@ -30,6 +30,8 @@ static HWND add(HWND w,page *s,const WCHAR *cls,const WCHAR *text,DWORD style,DW
 }
 static void label(HWND w,page *s,const WCHAR *text,int x,int y,int cx,int id)
 {add(w,s,L"STATIC",text,SS_LEFT,0,x,y,cx,24,id);}
+static void dialog_heading(HWND w,page *s,const WCHAR *text,int y,int id)
+{add(w,s,L"STATIC",text,SS_LEFT,0,16,y,668,20,id);}
 static void button(HWND w,page *s,const WCHAR *text,DWORD style,int x,int y,int cx,int id)
 {add(w,s,L"BUTTON",text,style|WS_TABSTOP,0,x,y,cx,28,id);}
 static void populate_list(HWND child,BOOL combo)
@@ -168,37 +170,39 @@ static void special(HWND w,page *s)
 }
 static void dialog_examples(HWND w,page *s)
 {
-    label(w,s,L"Open file: legacy / modern to classic / modern retained",16,12,668,2890);
-    button(w,s,L"Open: legacy",BS_PUSHBUTTON,16,40,212,2901);
-    button(w,s,L"Open: modern to classic",BS_PUSHBUTTON,244,40,212,2902);
-    button(w,s,L"Open: modern retained",BS_PUSHBUTTON,472,40,212,2903);
-    label(w,s,L"Save file: the dialog selects a path; the demo never saves a file",16,78,668,2891);
-    button(w,s,L"Save: legacy",BS_PUSHBUTTON,16,106,212,2904);
-    button(w,s,L"Save: modern to classic",BS_PUSHBUTTON,244,106,212,2905);
-    button(w,s,L"Save: modern retained",BS_PUSHBUTTON,472,106,212,2906);
-    label(w,s,L"Choose folder: legacy Shell / modern to classic / modern retained",16,144,668,2892);
-    button(w,s,L"Folder: legacy Shell",BS_PUSHBUTTON,16,172,212,2907);
-    button(w,s,L"Folder: modern to classic",BS_PUSHBUTTON,244,172,212,2908);
-    button(w,s,L"Folder: modern retained",BS_PUSHBUTTON,472,172,212,2909);
-    button(w,s,L"Folder: Shell bridge",BS_PUSHBUTTON,16,210,212,2920);
-    label(w,s,L"Other Windows dialogs",16,252,668,2893);
-    button(w,s,L"Find",BS_PUSHBUTTON,16,280,212,2910);
-    button(w,s,L"Replace",BS_PUSHBUTTON,244,280,212,2911);
-    button(w,s,L"Font",BS_PUSHBUTTON,472,280,212,2912);
-    button(w,s,L"Color",BS_PUSHBUTTON,16,318,212,2913);
-    button(w,s,L"Print",BS_PUSHBUTTON,244,318,212,2914);
-    button(w,s,L"Print: extended",BS_PUSHBUTTON,472,318,212,2915);
-    button(w,s,L"Page setup",BS_PUSHBUTTON,16,356,212,2916);
-    button(w,s,L"Message",BS_PUSHBUTTON,244,356,212,2917);
-    button(w,s,L"Task dialog",BS_PUSHBUTTON,472,356,212,2918);
-    button(w,s,L"Property pages",BS_PUSHBUTTON,16,394,212,2919);
-    button(w,s,L"Multi-open: legacy",BS_PUSHBUTTON,244,394,212,2921);
-    button(w,s,L"Multi-open: Explorer",BS_PUSHBUTTON,472,394,212,2922);
-    button(w,s,L"Print setup: legacy",BS_PUSHBUTTON,16,432,212,2923);
-    button(w,s,L"Open: Explorer API",BS_PUSHBUTTON,244,432,212,2924);
-    button(w,s,L"Save: Explorer API",BS_PUSHBUTTON,472,432,212,2925);
-    button(w,s,L"Multi-open: COM",BS_PUSHBUTTON,16,470,212,2926);
-    button(w,s,L"Launch 16-bit target",BS_PUSHBUTTON,244,470,212,2927);
+    dialog_heading(w,s,L"Open file",4,2890);
+    button(w,s,L"Open: legacy",BS_PUSHBUTTON,16,26,212,2901);
+    button(w,s,L"Open: Explorer API",BS_PUSHBUTTON,244,26,212,2924);
+    button(w,s,L"Open: modern to classic",BS_PUSHBUTTON,472,26,212,2902);
+    button(w,s,L"Open: modern retained",BS_PUSHBUTTON,16,56,212,2903);
+    button(w,s,L"Multi-open: legacy",BS_PUSHBUTTON,244,56,212,2921);
+    button(w,s,L"Multi-open: Explorer",BS_PUSHBUTTON,472,56,212,2922);
+    button(w,s,L"Multi-open: COM",BS_PUSHBUTTON,16,86,212,2926);
+    dialog_heading(w,s,L"Save file",116,2891);
+    button(w,s,L"Save: legacy",BS_PUSHBUTTON,16,138,212,2904);
+    button(w,s,L"Save: Explorer API",BS_PUSHBUTTON,244,138,212,2925);
+    button(w,s,L"Save: modern to classic",BS_PUSHBUTTON,472,138,212,2905);
+    button(w,s,L"Save: modern retained",BS_PUSHBUTTON,16,168,212,2906);
+    dialog_heading(w,s,L"Choose folder",198,2892);
+    button(w,s,L"Folder: legacy Shell",BS_PUSHBUTTON,16,220,212,2907);
+    button(w,s,L"Folder: Shell bridge",BS_PUSHBUTTON,244,220,212,2920);
+    button(w,s,L"Folder: modern to classic",BS_PUSHBUTTON,472,220,212,2908);
+    button(w,s,L"Folder: modern retained",BS_PUSHBUTTON,16,250,212,2909);
+    dialog_heading(w,s,L"Find, replace, font and color",280,2893);
+    button(w,s,L"Find",BS_PUSHBUTTON,16,302,212,2910);
+    button(w,s,L"Replace",BS_PUSHBUTTON,244,302,212,2911);
+    button(w,s,L"Font",BS_PUSHBUTTON,472,302,212,2912);
+    button(w,s,L"Color",BS_PUSHBUTTON,16,332,212,2913);
+    dialog_heading(w,s,L"Print and page setup",362,2894);
+    button(w,s,L"Print",BS_PUSHBUTTON,16,384,212,2914);
+    button(w,s,L"Print setup: legacy",BS_PUSHBUTTON,244,384,212,2923);
+    button(w,s,L"Print: extended",BS_PUSHBUTTON,472,384,212,2915);
+    button(w,s,L"Page setup",BS_PUSHBUTTON,16,414,212,2916);
+    dialog_heading(w,s,L"Messages and other dialogs",444,2895);
+    button(w,s,L"Message",BS_PUSHBUTTON,16,466,160,2917);
+    button(w,s,L"Task dialog",BS_PUSHBUTTON,184,466,160,2918);
+    button(w,s,L"Property pages",BS_PUSHBUTTON,352,466,160,2919);
+    button(w,s,L"Launch 16-bit target",BS_PUSHBUTTON,520,466,164,2927);
 }
 static LRESULT CALLBACK mdi_child(HWND w,UINT m,WPARAM a,LPARAM b)
 {return DefMDIChildProcW(w,m,a,b);}

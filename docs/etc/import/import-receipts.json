@@ -1130,7 +1130,7 @@
       "path": "tests/demo-exe/observe.c",
       "source": null,
       "source_blob": null,
-      "sha256": "78124408abd62b3ed3e8766aaa4db5ebf97225e22a4a02b45907d4a37eb44e1b",
+      "sha256": "e7188311a7bf9b59dadaef2a164b9c4f22af9f6a22a661ef929b327fae528438",
       "disposition": "authored",
       "review": "T5 S2 external owned demo observer; docs/history/M0-T5-S2-pair.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T17 S8 exact observed VB6 FileListBox/DirListBox roles, dual-version file protocol models and authentic private-activation witness; native image/font/data ownership and original notices preserved; T18 S6 corrects the observer's one-time native cache timing: a second identical reopen/close must equal the post-warm count, preserving recurring-leak detection without calling an OS lazy cache a product leak",
       "notice": "Project-authored fixture, repository MIT; T18 S7 allows a measured decrease after reopening while still rejecting growth above the settled baseline"
@@ -2024,7 +2024,7 @@
       "disposition": "authored",
       "notice": "Project-authored C17/native resource; project MIT license",
       "review": "T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed",
-      "sha256": "8dd4f25576193474188d9647fa1b3769538a578f63fc6b7dde345831cd2722f8"
+      "sha256": "54be6a383321e615e5ea8435aba90c643820cefaad4882c25619423254e20c23"
     },
     {
       "path": "src/demo-exe/catalog.rc",

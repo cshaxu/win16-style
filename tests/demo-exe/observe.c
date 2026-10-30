@@ -233,6 +233,12 @@ static void catalog_pages(HWND main,DWORD thread,HANDLE target,BOOL styled,const
             puts("DEMO DIALOG ENTRIES PASS open=3 save=3 folder=3");
             for(int id=2921;id<=2927;++id)CHECK(GetDlgItem(w,id) && IsWindowVisible(GetDlgItem(w,id)));
             puts("DEMO EXTRA ENTRIES PASS 7");
+            {const int ids[]={2901,2924,2902,2903,2921,2922,2926,2904,2925,2905,2906,2907,2920,2908,2909,2910,2911,2912,2913,2914,2923,2915,2916,2917,2918,2919,2927};
+             RECT client;CHECK(GetClientRect(w,&client));
+             for(unsigned a=0;a<ARRAYSIZE(ids);++a){RECT ra;HWND button=GetDlgItem(w,ids[a]);CHECK(button && GetWindowRect(button,&ra));MapWindowPoints(NULL,w,(POINT *)&ra,2);
+                CHECK(ra.left>=0 && ra.top>=0 && ra.right<=client.right && ra.bottom<=client.bottom);
+                for(unsigned b=a+1;b<ARRAYSIZE(ids);++b){RECT rb,intersection;CHECK(GetWindowRect(GetDlgItem(w,ids[b]),&rb));MapWindowPoints(NULL,w,(POINT *)&rb,2);CHECK(!IntersectRect(&intersection,&ra,&rb));}}
+             puts("DEMO DIALOG LAYOUT PASS 27 visible nonoverlapping buttons");}
             if(styled)demo_dialog_paths(w,thread,scratch);
         }
         CHECK(swprintf_s(file,MAX_PATH,L"%ls\\catalog-%u-%u.bmp",scratch,(unsigned)styled,i)>0);SendMessageW(w,WM_NCACTIVATE,TRUE,0);UpdateWindow(w);pixels screenshot=capture(w,file);CHECK(screenshot.hash);
