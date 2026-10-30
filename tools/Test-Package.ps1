@@ -115,6 +115,9 @@ try{
         foreach($kind in @('shell-simple','shell-simple-callback','shell-new','shell-new-ansi','shell-new-root','shell-new-ansi-root')){foreach($action in @('accept','cancel')){
             $cases+=Case "dialog-tree-$arch-$kind-$action" $dialogDriver @($run,$treeFolderTarget,$kind,$action) @("TREE_FOLDER bits=$bits",'tree=1','windows=1','result=1','direct=1','worker=0','DIALOG_DRIVER exit=0') 30
         }}
+        foreach($kind in @('shell-new-nonew','shell-new-ansi-nonew')){foreach($action in @('accept','cancel')){
+            $cases+=Case "dialog-tree-$arch-$kind-$action" $dialogDriver @($run,$treeFolderTarget,$kind,$action) @("TREE_FOLDER bits=$bits",'tree=1','windows=1','result=1','direct=1','worker=0','TREE_NONEW requested=1 visible=0','DIALOG_DRIVER exit=0') 30
+        }}
         foreach($action in @('accept','cancel')){
             $cases+=Case "dialog-tree-$arch-shell-new-callback-$action" $dialogDriver @($run,$treeFolderTarget,'shell-new-callback',$action) @("TREE_FOLDER bits=$bits",'tree=1','result=1','direct=0','callback=1','unknown=1','worker=0','DIALOG_DRIVER exit=0') 30
         }

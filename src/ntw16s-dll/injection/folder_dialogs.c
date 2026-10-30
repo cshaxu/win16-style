@@ -261,7 +261,7 @@ HRESULT ntw16s_classic_folder(HWND owner,PCWSTR title,PCWSTR initial,PCWSTR ok_l
 #define BROWSE_WRAPPER(name,type,native) \
 static PIDLIST_ABSOLUTE WINAPI name(type *info) { \
     if(!info || active) return native(info); \
-    if(info->ulFlags==(BIF_RETURNONLYFSDIRS|BIF_NEWDIALOGSTYLE) && !info->lpfn){type copy=*info;copy.ulFlags=BIF_RETURNONLYFSDIRS;return native(&copy);} \
+    if(!info->lpfn && (info->ulFlags==(BIF_RETURNONLYFSDIRS|BIF_NEWDIALOGSTYLE) || info->ulFlags==(BIF_RETURNONLYFSDIRS|BIF_NEWDIALOGSTYLE|BIF_NONEWFOLDERBUTTON))){type copy=*info;copy.ulFlags=BIF_RETURNONLYFSDIRS;return native(&copy);} \
     if(info->ulFlags!=BRIDGE_FLAGS && info->ulFlags!=(BRIDGE_FLAGS & ~BIF_VALIDATE)) return native(info); \
     type copy=*info;copy.ulFlags=info->lpfn?(info->ulFlags & ~BIF_NEWDIALOGSTYLE):BIF_RETURNONLYFSDIRS; \
     return native(&copy); \
