@@ -179,6 +179,14 @@ static UINT_PTR CALLBACK old_folder_hook(HWND window,UINT message,WPARAM wparam,
         SetDlgItemTextW(window,1152,L"[Select current folder]");
         SetDlgItemTextW(window,1090,active->file_label?active->file_label:L"Folder selection:");
         return 1;
+    }else if(message==WM_COMMAND && LOWORD(wparam)==IDOK){
+        /* The old file template replaces the name with its default wildcard
+         * after navigating to a typed directory. In a folder picker, OK on
+         * that default (or an empty name) selects the current directory. */
+        WCHAR filename[MAX_PATH]=L"";
+        GetDlgItemTextW(window,1152,filename,ARRAYSIZE(filename));
+        if(!filename[0] || !lstrcmpW(filename,L"*.*"))
+            SetDlgItemTextW(window,1152,L"[Select current folder]");
     }else if(message==WM_COMMAND && LOWORD(wparam)==NEW_FOLDER_BUTTON){
         folder_context *ctx=GetPropW(window,L"Win16s.FolderBridge");
         if(ctx)classic_create_folder(window,ctx);
