@@ -2,7 +2,7 @@
 
 # Deferred Debt
 
-- [ ] TODO(Low): demo 跨进程文件选择观察器动态输入后确认未完成；Owner：后续原生测试驱动改进。Evidence：[T20 S1 阶段记录](../history/M0-T20-S1-preliminary.md)：未注入和 P234 demo 均未关闭，同进程带 hook 的动态文件选择双宽原生及 P234 均通过，不能定性为产品故障；Admission：有明确的跨进程确认机制或可复现证据时再调查，不把失败探针记为通过。
+demo 旧式文件选择的跨进程观察器已用 WM_SETTEXT/WM_GETTEXT 修正，原生及 P235 单文件选择通过；覆盖边界见 [T20 S1 阶段记录](../history/M0-T20-S1-preliminary.md)。
 
 - [ ] TODO(Low): COM 文件对话框布局桥接长尾，包括事件回调、自定义控件和隐藏目录等尚不完整的场景；Owner：未来经用户明确准入的后续工作；Evidence：[T20 S1 阶段记录](../history/M0-T20-S1-preliminary.md)，正式包存在现代布局回退，隐藏文件和事件代码仅实验；Admission：用户后续明确要求恢复。按用户 2026-10-29 二八优先级指示，本轮停止扩展 COM 布局，不将实验视为已支持。
 
