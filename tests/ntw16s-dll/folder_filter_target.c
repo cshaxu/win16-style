@@ -22,7 +22,8 @@ static DWORD WINAPI observe(void *v){(void)v;for(int i=0;i<120;i++){if(!dialog){
 int wmain(int argc,WCHAR **argv)
 {
     setvbuf(stdout,NULL,_IONBF,0);
-    if(argc!=2)return 2;
+    if(argc!=2 && argc!=3)return 2;
+    BOOL reduced=argc==3 && !lstrcmpW(argv[2],L"reduced");if(argc==3 && !reduced)return 2;
     WCHAR parent[MAX_PATH];DWORD n=GetFullPathNameW(argv[1],MAX_PATH,parent,NULL);
     DWORD attributes=GetFileAttributesW(parent);
     if(!n || n>=MAX_PATH || attributes==INVALID_FILE_ATTRIBUTES || !(attributes&FILE_ATTRIBUTE_DIRECTORY))return 2;
@@ -38,13 +39,13 @@ int wmain(int argc,WCHAR **argv)
     if(FAILED(SHParseDisplayName(root,NULL,&r,0,NULL))){CoUninitialize();RemoveDirectoryW(hidden);RemoveDirectoryW(visible);RemoveDirectoryW(root);return 5;}
     ui=GetCurrentThreadId();HANDLE thread=CreateThread(NULL,0,observe,NULL,0,NULL);
     if(!thread){CoTaskMemFree(r);CoUninitialize();RemoveDirectoryW(hidden);RemoveDirectoryW(visible);RemoveDirectoryW(root);return 6;}
-    BROWSEINFOW info={0};info.pidlRoot=r;info.ulFlags=BIF_RETURNONLYFSDIRS|BIF_USENEWUI;info.lpfn=cb;info.lParam=0x456789;
+    BROWSEINFOW info={0};info.pidlRoot=r;info.ulFlags=BIF_RETURNONLYFSDIRS|(reduced?(BIF_NEWDIALOGSTYLE|BIF_NONEWFOLDERBUTTON):BIF_USENEWUI);info.lpfn=cb;info.lParam=0x456789;
     PIDLIST_ABSOLUTE result=SHBrowseForFolderW(&info);if(result)CoTaskMemFree(result);
     DWORD wait=WaitForSingleObject(thread,8000),code=99;if(wait==WAIT_OBJECT_0)GetExitCodeThread(thread,&code);
     CloseHandle(thread);CoTaskMemFree(r);CoUninitialize();
     BOOL a_removed=RemoveDirectoryW(hidden),b_removed=RemoveDirectoryW(visible),c_removed=RemoveDirectoryW(root);
     BOOL cleaned=a_removed && b_removed && c_removed;
     BOOL valid=unknown==1 && filter_ok==1 && denied>0 && visible_count>0 && blocked_count==0 && refs==1 && wait==WAIT_OBJECT_0 && code==0 && cleaned;
-    printf("FOLDER_FILTER bits=%u unknown=%ld installed=%ld calls=%ld denied=%ld visible=%d blocked=%d refs=%ld worker=%lu cleanup=%d valid=%d\n",(unsigned)(sizeof(void*)*8),unknown,filter_ok,visits,denied,visible_count,blocked_count,refs,code,cleaned,valid);
+    printf("FOLDER_FILTER bits=%u reduced=%d unknown=%ld installed=%ld calls=%ld denied=%ld visible=%d blocked=%d refs=%ld worker=%lu cleanup=%d valid=%d\n",(unsigned)(sizeof(void*)*8),reduced,unknown,filter_ok,visits,denied,visible_count,blocked_count,refs,code,cleaned,valid);
     return valid?0:1;
 }
