@@ -10,7 +10,7 @@ M0 T20 S1准入：Win3.x文件夹选择与公共对话框桥接：调查、实�
 | --- | --- |
 | Identifier Mode | New；用户准入队列首位，T20 S1 |
 | Admission And Approval | 用户要求T19收口并准入文件夹选择与公共对话框任务 |
-| Objective | 优先调查并修复用户报告的记事本菜单切换闪烁及系统菜单外观回归；继续处理常用旧 Win32 对话框，COM布局桥接及其他低收益长尾暂缓，详见TODO |
+| Objective | 按用户最新指示，文件夹选择统一采用系统旧式 Shell 树形布局：旧式、新式 SHBrowseForFolder 及 COM 目录选择均调查接入，移除隐藏 Shell 窗口叠加自制文件框的方案；保留调用结果及交互语义，其他公共对话框继续按优先级处理 |
 | Non-goals | 不分发旧系统DLL，不更改原图形资源、共享Shell宿主、系统设置或用户现有进程 |
 | Reference Baseline | T19 S1 P208原始四文件，S2撤回，S3用户确认恢复 |
 | Candidate Proposal | [Win3.x文件夹选择与公共对话框适配](../proposals/classic-folder-dialogs.md) |
@@ -21,7 +21,7 @@ M0 T20 S1准入：Win3.x文件夹选择与公共对话框桥接：调查、实�
 | Asset Needs | 登记build/t20-s1-dialog及build/t20-package scratch；成果提炼后清理 |
 | Reporting Requirements | 实际证据、支持和回退矩阵、许可、不可兼容条件及可行路线 |
 | Stop Conditions | 无法保证调用语义与资源许可时保留原对话框，不伪造结果 |
-| Exit Criteria | 记事本菜单切换和系统菜单有实际证据及针对性修复验证；常用对话框问题按证据处理；产品变更依规范构建、测试、双发布、推送复核；长尾明确记录后按用户决定处置，不冒称完整覆盖 |
+| Exit Criteria | 对文件夹各入口核实真实树形布局、选择结果、取消及回调；无法忠实转换的变体明确记录；用户确认菜单切换不闪烁，打印控件外观仍待处理；产品变更依规范构建、测试、双发布、推送复核 |
 | Original Owner Request | 准入队列首位，处理Win3.x文件夹选择与公共对话框外观 |
 | Similar-Issue Sweep | SHBrowseForFolder、GetOpenFileName、GetSaveFileName、IFileDialog及框架自绘 |
 
@@ -33,7 +33,7 @@ M0 T20 S1准入：Win3.x文件夹选择与公共对话框桥接：调查、实�
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 1
-- Last delivery: M0 T20 S1 P240 demo对话框页分类排序阶段包已完成双宽构建、9项聚焦包测试和双位置发布；用户确认P238菜单切换不闪烁，打印控件外观仍未通过用户验收。
+- Last delivery: M0 T20 S1 P241 文件夹树形候选阶段包已完成双宽构建、16项聚焦包测试和双位置发布；回调、COM定制及新式特有功能尚未统一，打印控件外观仍未通过用户验收。
 - Open task: T20 S1 文件夹选择和公共对话框接口及经典参考调查。
 
 ## Technical Baseline

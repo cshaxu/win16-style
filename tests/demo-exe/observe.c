@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <tlhelp32.h>
 #include <commctrl.h>
+#include <shlobj.h>
 #include <stdio.h>
 #include <wchar.h>
 #include <stdint.h>
@@ -93,12 +94,13 @@ static BOOL CALLBACK find_catalog(HWND w,LPARAM owner)
     return TRUE;
 }
 static HWND demo_test_dialog;
-static BOOL demo_modern;
+static BOOL demo_modern,demo_tree;
 static BOOL CALLBACK demo_child_scan(HWND w,LPARAM unused)
 {
-    WCHAR name[80];(void)unused;
+    WCHAR name[80]=L"";(void)unused;
     if(GetClassNameW(w,name,ARRAYSIZE(name)) &&
         (!lstrcmpiW(name,L"DirectUIHWND") || !lstrcmpiW(name,L"DUIViewWndClassName")))demo_modern=TRUE;
+    if(!lstrcmpiW(name,L"SysTreeView32"))demo_tree=TRUE;
     return TRUE;
 }
 static BOOL CALLBACK demo_dialog_scan(HWND w,LPARAM owner)
@@ -106,22 +108,23 @@ static BOOL CALLBACK demo_dialog_scan(HWND w,LPARAM owner)
     WCHAR cls[40];
     if(IsWindowVisible(w) && GetWindow(w,GW_OWNER)==(HWND)owner &&
         GetClassNameW(w,cls,ARRAYSIZE(cls)) && !lstrcmpW(cls,L"#32770")){
-        demo_modern=FALSE;EnumChildWindows(w,demo_child_scan,0);demo_test_dialog=w;return FALSE;
+        demo_modern=demo_tree=FALSE;EnumChildWindows(w,demo_child_scan,0);demo_test_dialog=w;return FALSE;
     }
     return TRUE;
 }
 static void demo_dialog_paths(HWND page,DWORD thread,const WCHAR *scratch)
 {
-    const int extra[]={2921,2922,2924,2925,2926,2927};
+    const int extra[]={2920,2921,2922,2924,2925,2926,2927};
     for(unsigned j=0;j<ARRAYSIZE(extra);++j){
         demo_test_dialog=NULL;CHECK(PostMessageW(page,WM_COMMAND,(WPARAM)extra[j],0));
         for(unsigned i=0;i<120 && !demo_test_dialog;++i){EnumThreadWindows(thread,demo_dialog_scan,(LPARAM)page);if(!demo_test_dialog)Sleep(50);}
-        CHECK(demo_test_dialog);printf("DEMO EXTRA DIALOG id=%d modern=%d\n",extra[j],demo_modern);fflush(stdout);
+        CHECK(demo_test_dialog);if(extra[j]==2920)CHECK(demo_tree && !demo_modern);
+        printf("DEMO EXTRA DIALOG id=%d modern=%d tree=%d\n",extra[j],demo_modern,demo_tree);fflush(stdout);
         CHECK(PostMessageW(demo_test_dialog,WM_CLOSE,0,0));
         for(unsigned i=0;i<100 && IsWindow(demo_test_dialog);++i)Sleep(50);
         CHECK(!IsWindow(demo_test_dialog));
     }
-    puts("DEMO EXTRA DIALOG PASS opened=6 cancelled=6");
+    puts("DEMO EXTRA DIALOG PASS opened=7 cancelled=7 shell_tree=1");
     for(int id=2901;id<=2909;++id){
         demo_test_dialog=NULL;CHECK(SetDlgItemTextW(page,2099,L""));CHECK(PostMessageW(page,WM_COMMAND,(WPARAM)id,0));
         for(unsigned i=0;i<100 && !demo_test_dialog;++i){
@@ -132,7 +135,7 @@ static void demo_dialog_paths(HWND page,DWORD thread,const WCHAR *scratch)
         printf("DEMO DIALOG PATH id=%d modern=%d legacy_list=%d\n",id,demo_modern,legacy);fflush(stdout);
         /* The legacy Shell browser is a separate layout, without the old
          * file template's lists. Its window and cancellation are checked. */
-        CHECK(((id-2901)%3)==2?demo_modern:(id==2907?TRUE:(legacy && !demo_modern)));
+        CHECK(((id-2901)%3)==2?demo_modern:((id==2907 || id==2908)?(demo_tree && !demo_modern):(legacy && !demo_modern)));
         CHECK(PostMessageW(demo_test_dialog,WM_CLOSE,0,0));
         for(unsigned i=0;i<100 && IsWindow(demo_test_dialog);++i)Sleep(50);
         CHECK(!IsWindow(demo_test_dialog));
@@ -177,34 +180,26 @@ static void demo_dialog_paths(HWND page,DWORD thread,const WCHAR *scratch)
     CHECK(DeleteFileW(selected));
     CHECK(GetFileAttributesW(save_path)==INVALID_FILE_ATTRIBUTES && GetLastError()==ERROR_FILE_NOT_FOUND);
     puts("DEMO DIALOG SELECT PASS legacy=1 bridge=1 save=1 cleanup=1");
-    for(unsigned variant=0;variant<2;++variant){
+    /* BFFM_SETSELECTIONW is a private message: allocate its string in the
+     * owned demo process rather than passing a pointer from the observer. */
     demo_test_dialog=NULL;CHECK(PostMessageW(page,WM_COMMAND,2908,0));
-    for(unsigned i=0;i<100 && !demo_test_dialog;++i){
-        EnumThreadWindows(thread,demo_dialog_scan,(LPARAM)page);if(!demo_test_dialog)Sleep(50);
-    }
-    CHECK(demo_test_dialog && !demo_modern);
-    HWND edit=GetDlgItem(demo_test_dialog,1152),ok=GetDlgItem(demo_test_dialog,IDOK);
-    DWORD_PTR response=0;WCHAR input[MAX_PATH]=L"";
-    CHECK(edit && ok && SendMessageTimeoutW(edit,WM_SETTEXT,0,(LPARAM)scratch,SMTO_ABORTIFHUNG,2000,&response) && response);
-    CHECK(SendMessageTimeoutW(ok,BM_CLICK,0,0,SMTO_ABORTIFHUNG,2000,&response));
-    for(unsigned i=0;i<100 && IsWindow(demo_test_dialog);++i){
-        input[0]=0;CHECK(SendMessageTimeoutW(edit,WM_GETTEXT,ARRAYSIZE(input),(LPARAM)input,SMTO_ABORTIFHUNG,2000,&response));
-        if(!lstrcmpW(input,L"*.*") || !input[0])break;
-        Sleep(50);
-    }
-    CHECK(IsWindow(demo_test_dialog) && (!lstrcmpW(input,L"*.*") || !input[0]));
-    if(variant)CHECK(SendMessageTimeoutW(edit,WM_SETTEXT,0,(LPARAM)L"",SMTO_ABORTIFHUNG,2000,&response) && response);
-    CHECK(SendMessageTimeoutW(ok,BM_CLICK,0,0,SMTO_ABORTIFHUNG,2000,&response));
+    for(unsigned i=0;i<100 && !demo_test_dialog;++i){EnumThreadWindows(thread,demo_dialog_scan,(LPARAM)page);if(!demo_test_dialog)Sleep(50);}
+    CHECK(demo_test_dialog && demo_tree && !demo_modern);
+    WCHAR expected[MAX_PATH],actual[MAX_PATH]=L"";UINT n=GetWindowsDirectoryW(expected,ARRAYSIZE(expected));CHECK(n && n<ARRAYSIZE(expected));
+    DWORD pid=0;GetWindowThreadProcessId(demo_test_dialog,&pid);
+    HANDLE process=OpenProcess(PROCESS_VM_OPERATION|PROCESS_VM_WRITE|PROCESS_QUERY_LIMITED_INFORMATION,FALSE,pid);CHECK(process);
+    SIZE_T bytes=((SIZE_T)n+1)*sizeof(WCHAR),written=0;void *remote=VirtualAllocEx(process,NULL,bytes,MEM_COMMIT|MEM_RESERVE,PAGE_READWRITE);CHECK(remote);
+    CHECK(WriteProcessMemory(process,remote,expected,bytes,&written) && written==bytes);
+    DWORD_PTR response=0;CHECK(SendMessageTimeoutW(demo_test_dialog,BFFM_SETSELECTIONW,TRUE,(LPARAM)remote,SMTO_ABORTIFHUNG,5000,&response));
+    CHECK(VirtualFreeEx(process,remote,0,MEM_RELEASE));CloseHandle(process);
+    HWND ok=GetDlgItem(demo_test_dialog,IDOK);CHECK(ok);
+    for(unsigned i=0;i<100 && !IsWindowEnabled(ok);++i)Sleep(50);
+    CHECK(IsWindowEnabled(ok));CHECK(PostMessageW(demo_test_dialog,WM_COMMAND,MAKEWPARAM(IDOK,BN_CLICKED),(LPARAM)ok));
     for(unsigned i=0;i<100 && IsWindow(demo_test_dialog);++i)Sleep(50);
     CHECK(!IsWindow(demo_test_dialog));
-    for(unsigned i=0;i<100;++i){
-        input[0]=0;CHECK(SendMessageTimeoutW(GetDlgItem(page,2099),WM_GETTEXT,ARRAYSIZE(input),(LPARAM)input,SMTO_ABORTIFHUNG,2000,&response));
-        if(!_wcsicmp(input,scratch))break;
-        Sleep(50);
-    }
-    CHECK(!_wcsicmp(input,scratch));
-    }
-    puts("DEMO FOLDER SELECT PASS typed_navigation=1 confirm=1 empty=1");
+    for(unsigned i=0;i<100;++i){actual[0]=0;CHECK(SendMessageTimeoutW(GetDlgItem(page,2099),WM_GETTEXT,ARRAYSIZE(actual),(LPARAM)actual,SMTO_ABORTIFHUNG,2000,&response));if(!_wcsicmp(actual,expected))break;Sleep(50);}
+    CHECK(!_wcsicmp(actual,expected));
+    puts("DEMO FOLDER TREE SELECT PASS filesystem=1");
 }
 static void catalog_pages(HWND main,DWORD thread,HANDLE target,BOOL styled,const WCHAR *scratch)
 {

@@ -1130,7 +1130,7 @@
       "path": "tests/demo-exe/observe.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e7188311a7bf9b59dadaef2a164b9c4f22af9f6a22a661ef929b327fae528438",
+      "sha256": "c5403a681cc30537a216de6987f8dd84a9755f26c5fb72eaa4759fc93e2c58a7",
       "disposition": "authored",
       "review": "T5 S2 external owned demo observer; docs/history/M0-T5-S2-pair.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T17 S8 exact observed VB6 FileListBox/DirListBox roles, dual-version file protocol models and authentic private-activation witness; native image/font/data ownership and original notices preserved; T18 S6 corrects the observer's one-time native cache timing: a second identical reopen/close must equal the post-warm count, preserving recurring-leak detection without calling an OS lazy cache a product leak",
       "notice": "Project-authored fixture, repository MIT; T18 S7 allows a measured decrease after reopening while still rejecting growth above the settled baseline"
@@ -2696,7 +2696,7 @@
       "path": "src/ntw16s-dll/injection/folder_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "047401dac5016944710103f00ea8c8b22039fd59e88f9e9af3613ea3a71ae6f2",
+      "sha256": "14f25ec9b2975088ad4959628d6e16530228581977514107571abeeecf6871bb",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
@@ -2831,7 +2831,7 @@
       "path": "src/ntw16s-dll/injection/com_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6c9b40e58864f3d0fc5d79b71f966e71b654fe67d78b46415557c36eeaa1edb2",
+      "sha256": "939a6cfe112c903e977ed9a8ef65d5116644d44fcb9287f4036946b8bfb898f6",
       "disposition": "authored",
       "review": "T20 S1 COM dialog bridge and real native probe under development",
       "notice": "Project-authored; no imported code or resources"
@@ -3014,6 +3014,15 @@
       "sha256": "7aef787234a1b0418cf6e096793fd0252230f571dd6e7a81b5fcafe713cd0564",
       "disposition": "authored",
       "review": "T20 S1 native Shell hidden item view and cleanup baseline",
+      "notice": "Project-authored test; no imported code or resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/tree_folder_target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "c68c3a581bb1acdeafa061962bdecfd67c549913d57f49dc3539b90a95fd83ef",
+      "disposition": "authored",
+      "review": "T20 S1 tree folder candidate native probe",
       "notice": "Project-authored test; no imported code or resources"
     }
   ]

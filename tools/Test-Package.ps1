@@ -61,7 +61,7 @@ try{
         (Case 'abi-x86' (Join-Path $x86 'core-abi.exe') @($d32) @('ABI PASS width=32')),
         (Case 'abi-x64' (Join-Path $x64 'core-abi.exe') @($d64) @('ABI PASS width=64')),
         (Case 'demo-boundary' $python @('-B',(Join-Path $SourceRoot 'tests/demo-exe/boundary.py'),$demo) @('DEMO BOUNDARY PASS')),
-        (Case 'demo-pair' (Join-Path $x64 'demo-observe.exe') @($run,$d64,$d32,$demo) @('DEMO OBSERVE PASS styled=0','DEMO OBSERVE PASS styled=1','DEMO DIALOG ENTRIES PASS open=3 save=3 folder=3','DEMO EXTRA ENTRIES PASS 7','DEMO DIALOG LAYOUT PASS 27 visible nonoverlapping buttons','DEMO EXTRA DIALOG PASS opened=6 cancelled=6','DEMO DIALOG PATHS PASS opened=9 cancelled=9','DEMO DIALOG SELECT PASS legacy=1 bridge=1 save=1 cleanup=1','DEMO FOLDER SELECT PASS typed_navigation=1 confirm=1 empty=1','DEMO PAIR PASS')),
+        (Case 'demo-pair' (Join-Path $x64 'demo-observe.exe') @($run,$d64,$d32,$demo) @('DEMO OBSERVE PASS styled=0','DEMO OBSERVE PASS styled=1','DEMO DIALOG ENTRIES PASS open=3 save=3 folder=3','DEMO EXTRA ENTRIES PASS 7','DEMO DIALOG LAYOUT PASS 27 visible nonoverlapping buttons','DEMO EXTRA DIALOG PASS opened=7 cancelled=7 shell_tree=1','DEMO DIALOG PATHS PASS opened=9 cancelled=9','DEMO DIALOG SELECT PASS legacy=1 bridge=1 save=1 cleanup=1','DEMO FOLDER TREE SELECT PASS filesystem=1','DEMO PAIR PASS')),
         (Case 'wait-contract' $python @('-B',(Join-Path $SourceRoot 'tests/run16s-exe/wait.py'),$run,$d32,$d64,(Join-Path $x86 'wait-target.exe'),(Join-Path $x64 'wait-target.exe'),(Join-Path $x64 'wait-gui-target.exe')) @('WAIT CONTRACT PASS 6 cases') 190),
         (Case 'font-layout-x86' (Join-Path $x86 'core-font-layout.exe') @($d32) @('FONT WARMUP SELFTEST PASS transient=1 rising=1 real_gdi_leak=1 cleanup=1','FONT LAYOUT PASS 2 contexts 12 font variants') 180),
         (Case 'font-layout-x64' (Join-Path $x64 'core-font-layout.exe') @($d64) @('FONT WARMUP SELFTEST PASS transient=1 rising=1 real_gdi_leak=1 cleanup=1','FONT LAYOUT PASS 2 contexts 12 font variants') 180),
@@ -108,6 +108,10 @@ try{
             $cases+=Case "dialog-file-spaced-$arch-$encoding" $dialogDriver @($run,$fileTarget,'open',$encoding,'1','spaced') @('SPACED_FILE listed=1 same=1 cleanup=1',"FILE_DIALOG bits=$bits",'old=1','ok=1','DIALOG_DRIVER exit=0') 30
         }
         $folderTarget=Join-Path (Join-Path $BuildRoot $arch) 'folder-dialog-target.exe'
+        $treeFolderTarget=Join-Path (Join-Path $BuildRoot $arch) 'tree-folder-target.exe'
+        foreach($kind in @('shell','com')){foreach($action in @('accept','cancel')){
+            $cases+=Case "dialog-tree-$arch-$kind-$action" $dialogDriver @($run,$treeFolderTarget,$kind,$action) @("TREE_FOLDER bits=$bits",'tree=1','windows=1','result=1','worker=0','DIALOG_DRIVER exit=0') 30
+        }}
         $findTarget=Join-Path (Join-Path $BuildRoot $arch) 'find-dialog-target.exe'
         $commonTarget=Join-Path (Join-Path $BuildRoot $arch) 'common-dialog-target.exe'
         $printTarget=Join-Path (Join-Path $BuildRoot $arch) 'print-dialog-target.exe'

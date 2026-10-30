@@ -1,6 +1,5 @@
-/* Bridge a limited filesystem Shell browse request to the system's old file
- * dialog. Shell still owns the real callback, selection and returned PIDL.
- * Unsupported browse contracts always go directly to Shell. */
+/* Select the older Shell tree for a limited, callback-free browse request.
+ * Shell owns the dialog and returned PIDL. Other contracts remain native. */
 #include "intercept.h"
 #include "startup_hooks.h"
 #include "unwind.h"
@@ -259,111 +258,10 @@ HRESULT ntw16s_classic_folder(HWND owner,PCWSTR title,PCWSTR initial,PCWSTR ok_l
     if(wcslen(file)>=capacity)return HRESULT_FROM_WIN32(ERROR_INSUFFICIENT_BUFFER);
     wcscpy(result,file);return S_OK;
 }
-static LRESULT CALLBACK shell_subclass(HWND window,UINT message,WPARAM wparam,LPARAM lparam,
-    UINT_PTR identity,DWORD_PTR reference)
-{
-    folder_context *ctx=(folder_context *)reference;
-    if(message==ctx->run_message){
-        if(ctx->showing)return 0;
-        ctx->showing=TRUE;
-        WCHAR file[MAX_PATH]=L"[Select current folder]";
-        const WCHAR *initial=ctx->requested[0]?ctx->requested:ctx->selected;
-        if(initial[0] && swprintf(file,MAX_PATH,L"%ls%ls[Select current folder]",initial,
-            initial[wcslen(initial)-1]==L'\\'?L"":L"\\")<0){
-            ShowWindow(window,SW_SHOW);return 0;
-        }
-        OPENFILENAMEW ofn={0};ofn.lStructSize=sizeof(ofn);ofn.hwndOwner=window;
-        ofn.lpstrTitle=L"Select Folder";ofn.lpstrFile=file;ofn.nMaxFile=MAX_PATH;
-        ofn.lpstrFilter=L"All files\0*.*\0\0";
-        ofn.lpstrInitialDir=initial[0]?initial:NULL;
-        ofn.Flags=OFN_ENABLEHOOK|OFN_NOCHANGEDIR|OFN_PATHMUSTEXIST|OFN_LONGNAMES;
-        ofn.lpfnHook=old_folder_hook;ofn.lCustData=(LPARAM)ctx;
-        BOOL accepted=GetOpenFileNameW(&ofn);
-        if(!accepted){
-            if(CommDlgExtendedError()){ShowWindow(window,SW_SHOW);SetForegroundWindow(window);}
-            else PostMessageW(window,WM_COMMAND,IDCANCEL,0);
-            return 0;
-        }
-        WCHAR *separator=wcsrchr(file,L'\\');
-        if(!separator){ShowWindow(window,SW_SHOW);return 0;}
-        if(separator==file+2)separator[1]=0;else *separator=0;
-        lstrcpynW(ctx->desired,file,MAX_PATH);
-        if(lstrcmpiW(ctx->selected,ctx->desired))
-            SendMessageW(window,BFFM_SETSELECTIONW,TRUE,(LPARAM)ctx->desired);
-        if(!SetTimer(window,BRIDGE_TIMER,100,NULL))ShowWindow(window,SW_SHOW);
-        return 0;
-    }
-    if(message==WM_TIMER && wparam==BRIDGE_INIT_TIMER){
-        DWORD now=GetTickCount();
-        if(ctx->selected[0] && now-ctx->changed_tick>=200){
-            KillTimer(window,BRIDGE_INIT_TIMER);
-            if(!PostMessageW(window,ctx->run_message,0,0))ShowWindow(window,SW_SHOW);
-        }else if(now-ctx->init_tick>=2000){
-            KillTimer(window,BRIDGE_INIT_TIMER);
-            ShowWindow(window,SW_SHOW);SetForegroundWindow(window);
-        }
-        return 0;
-    }
-    if(message==WM_TIMER && wparam==BRIDGE_TIMER){
-        HWND accept=GetDlgItem(window,IDOK);
-        if(!lstrcmpiW(ctx->selected,ctx->desired) && accept && IsWindowEnabled(accept)){
-            KillTimer(window,BRIDGE_TIMER);
-            PostMessageW(window,WM_COMMAND,MAKEWPARAM(IDOK,BN_CLICKED),(LPARAM)accept);
-        }else if(++ctx->attempts>=80){
-            KillTimer(window,BRIDGE_TIMER);
-            ShowWindow(window,SW_SHOW);SetForegroundWindow(window);
-        }
-        return 0;
-    }
-    if(message==WM_NCDESTROY){KillTimer(window,BRIDGE_INIT_TIMER);KillTimer(window,BRIDGE_TIMER);RemoveWindowSubclass(window,shell_subclass,identity);}
-    return DefSubclassProc(window,message,wparam,lparam);
-}
-static LRESULT CALLBACK capture_selection(int code,WPARAM wparam,LPARAM data)
-{
-    folder_context *ctx=active;
-    if(ctx && code>=0 && data && ((const CWPSTRUCT *)data)->hwnd==ctx->callback_window){
-        const CWPSTRUCT *sent=(const CWPSTRUCT *)data;
-        UINT message=sent->message;WPARAM wparam=sent->wParam;LPARAM lparam=sent->lParam;
-        if(message==BFFM_SETSELECTIONW || message==BFFM_SETSELECTIONA){
-        WCHAR requested[MAX_PATH]=L"";
-        if(!wparam && lparam)SHGetPathFromIDListW((PCIDLIST_ABSOLUTE)lparam,requested);
-        else if(wparam && lparam && message==BFFM_SETSELECTIONW)lstrcpynW(requested,(LPCWSTR)lparam,MAX_PATH);
-        else if(wparam && lparam)MultiByteToWideChar(CP_ACP,0,(LPCSTR)lparam,-1,requested,MAX_PATH);
-        DWORD attrs=GetFileAttributesW(requested);
-        if(attrs!=INVALID_FILE_ATTRIBUTES && (attrs&FILE_ATTRIBUTE_DIRECTORY))
-            lstrcpynW(ctx->requested,requested,MAX_PATH);
-        }
-    }
-    return CallNextHookEx(NULL,code,wparam,data);
-}
-static int CALLBACK browse_callback(HWND window,UINT message,LPARAM parameter,LPARAM data)
-{
-    folder_context *ctx=(folder_context *)data;
-    if(message==BFFM_SELCHANGED){ctx->changed_tick=GetTickCount();ctx->selected[0]=0;if(parameter)SHGetPathFromIDListW((PCIDLIST_ABSOLUTE)parameter,ctx->selected);}
-    HHOOK capture=NULL;
-    if(message==BFFM_INITIALIZED){
-        ctx->callback_window=window;
-        capture=SetWindowsHookExW(WH_CALLWNDPROC,capture_selection,NULL,GetCurrentThreadId());
-    }
-    int answer=ctx->callback?ctx->callback(window,message,parameter,ctx->original_data):0;
-    if(capture)UnhookWindowsHookEx(capture);
-    if(message==BFFM_INITIALIZED)ctx->callback_window=NULL;
-    if(message==BFFM_INITIALIZED && capture && IsWindow(window) &&
-        SetWindowSubclass(window,shell_subclass,(UINT_PTR)ctx,(DWORD_PTR)ctx)){
-        ctx->init_tick=ctx->changed_tick=GetTickCount();
-        ShowWindow(window,SW_HIDE);
-        if(!SetTimer(window,BRIDGE_INIT_TIMER,100,NULL))ShowWindow(window,SW_SHOW);
-    }
-    return answer;
-}
 #define BROWSE_WRAPPER(name,type,native) \
 static PIDLIST_ABSOLUTE WINAPI name(type *info) { \
-    if(!info || active || info->pidlRoot || info->ulFlags!=BRIDGE_FLAGS) return native(info); \
-    folder_context ctx={0};ctx.callback=info->lpfn;ctx.original_data=info->lParam; \
-    ctx.run_message=RegisterWindowMessageW(L"Win16Style.T20.FolderBridge"); \
-    if(!ctx.run_message)return native(info); \
-    type copy=*info;copy.lpfn=browse_callback;copy.lParam=(LPARAM)&ctx;active=&ctx; \
-    PIDLIST_ABSOLUTE result=native(&copy);active=NULL;return result; \
+    if(!info || active || info->lpfn || info->ulFlags!=BRIDGE_FLAGS) return native(info); \
+    type copy=*info;copy.ulFlags=BIF_RETURNONLYFSDIRS;return native(&copy); \
 }
 BROWSE_WRAPPER(browse_a,BROWSEINFOA,native_browse_a)
 BROWSE_WRAPPER(browse_w,BROWSEINFOW,native_browse_w)

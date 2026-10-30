@@ -523,12 +523,25 @@ typedef struct folder_call {HWND owner;PCWSTR title,initial,ok_label,cancel_labe
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
 static UINT_PTR classic_folder_observe(HWND,UINT,WPARAM,LPARAM,void *);
 #endif
-static HRESULT classic_folder_show(void *data)
-{folder_call *call=data;return ntw16s_classic_folder(call->owner,call->title,call->initial,call->ok_label,call->cancel_label,call->file_label,call->result,call->capacity
-#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-    ,call->proxy?classic_folder_observe:NULL,call->proxy
-#endif
-    );}
+static int CALLBACK shell_folder_initial(HWND window,UINT message,LPARAM parameter,LPARAM data)
+{folder_call *call=(folder_call *)data;(void)parameter;
+ if(message==BFFM_INITIALIZED && call){
+    if(call->title)SetWindowTextW(window,call->title);
+    if(call->initial && *call->initial)SendMessageW(window,BFFM_SETSELECTIONW,TRUE,(LPARAM)call->initial);
+ }
+ return 0;}
+static HRESULT shell_folder_show(void *data)
+{
+    folder_call *call=data;BROWSEINFOW info={0};WCHAR path[MAX_PATH];
+    info.hwndOwner=call->owner;info.lpszTitle=call->title;info.ulFlags=BIF_RETURNONLYFSDIRS;
+    info.lpfn=shell_folder_initial;info.lParam=(LPARAM)call;
+    PIDLIST_ABSOLUTE selected=SHBrowseForFolderW(&info);
+    if(!selected)return HRESULT_FROM_WIN32(ERROR_CANCELLED);
+    BOOL ok=SHGetPathFromIDListW(selected,path);CoTaskMemFree(selected);
+    if(!ok)return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
+    if(wcslen(path)>=call->capacity)return HRESULT_FROM_WIN32(ERROR_INSUFFICIENT_BUFFER);
+    wcscpy(call->result,path);return S_OK;
+}
 typedef struct classic_call {OPENFILENAMEW *ofn;BOOL save;BOOL selected;DWORD error;} classic_call;
 static HRESULT classic_show(void *data)
 {
@@ -1140,12 +1153,15 @@ static HRESULT proxy_show_impl(file_proxy *p,HWND owner)
     }
     if(flags&FOS_PICKFOLDERS){
         if(p->save){if(folder_path)CoTaskMemFree(folder_path);return show_native(p,owner);}
+        /* A path-only result cannot represent virtual Shell items. */
+        if(!(flags&FOS_FORCEFILESYSTEM)){if(folder_path)CoTaskMemFree(folder_path);return show_native(p,owner);}
+        if(p->ok_label || p->cancel_label || p->file_label || p->events){if(folder_path)CoTaskMemFree(folder_path);return show_native(p,owner);}
         WCHAR selected[32768];folder_call call={.owner=owner,.title=p->title,.initial=folder_path,.ok_label=p->ok_label,.cancel_label=p->cancel_label,.file_label=p->file_label,.result=selected,.capacity=ARRAYSIZE(selected)
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
             ,.proxy=p->events?p:NULL
 #endif
         };
-        hr=ntw16s_dialog_style_scope(classic_folder_show,&call);if(folder_path)CoTaskMemFree(folder_path);
+        hr=ntw16s_dialog_style_scope(shell_folder_show,&call);if(folder_path)CoTaskMemFree(folder_path);
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
         if(FAILED(hr) && p->classic_close_pending)return p->classic_close_result;
 #endif
