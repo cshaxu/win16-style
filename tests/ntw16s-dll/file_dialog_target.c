@@ -65,10 +65,11 @@ static void *guard_copy(const void *value,SIZE_T length,void **base)
 int wmain(int argc, WCHAR **argv)
 {
     if (argc<4 || argc>5) return 2;
-    custom_hook=argc==5 && (!lstrcmpW(argv[4],L"hook") || !lstrcmpW(argv[4],L"oldhook"));
-    cancel_mode=custom_hook || (argc==5 && !lstrcmpW(argv[4],L"cancel"));
+    BOOL oldhook_accept=argc==5 && !lstrcmpW(argv[4],L"oldhookaccept");
+    custom_hook=oldhook_accept || (argc==5 && (!lstrcmpW(argv[4],L"hook") || !lstrcmpW(argv[4],L"oldhook")));
+    cancel_mode=(custom_hook && !oldhook_accept) || (argc==5 && !lstrcmpW(argv[4],L"cancel"));
     legacy_size=argc==5 && !lstrcmpW(argv[4],L"v400");
-    default_flags=argc==5 && (!lstrcmpW(argv[4],L"default") || !lstrcmpW(argv[4],L"oldhook"));
+    default_flags=oldhook_accept || (argc==5 && (!lstrcmpW(argv[4],L"default") || !lstrcmpW(argv[4],L"oldhook")));
     BOOL save=argv[1][0]==L's', ansi=argv[2][0]==L'a', expected_old=argv[3][0]==L'1';
     WCHAR directory[MAX_PATH], file_w[MAX_PATH], path_w[MAX_PATH];
     char directory_a[MAX_PATH],file_a[MAX_PATH];

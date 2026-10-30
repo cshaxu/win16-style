@@ -267,6 +267,8 @@ try{
             }
         }
         $cases+=Case "dialog-file-negative-$arch" $dialogDriver @('--direct',$fileTarget,'open','wide','0','cancel') @("FILE_DIALOG bits=$bits",'DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-file-oldhook-accept-native-$arch" $dialogDriver @('--direct',$fileTarget,'open','wide','1','oldhookaccept') @("FILE_DIALOG bits=$bits",'old=1','ok=1','same=1','custom_hook=1 hook_seen=1','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-file-oldhook-accept-styled-$arch" $dialogDriver @($run,$fileTarget,'open','wide','1','oldhookaccept') @("FILE_DIALOG bits=$bits",'old=1','ok=1','same=1','custom_hook=1 hook_seen=1','DIALOG_DRIVER exit=0') 30
         foreach($kind in @('open','save')) {
             foreach($encoding in @('ansi','wide')) {
                 $cases+=Case "dialog-file-$arch-$kind-$encoding" $dialogDriver @($run,$fileTarget,$kind,$encoding,'1') @("FILE_DIALOG bits=$bits",'DIALOG_DRIVER exit=0') 30
