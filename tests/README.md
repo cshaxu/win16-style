@@ -99,3 +99,20 @@ CREATE_NEW_CONSOLE正常显示独占launcher、真实cmd /c持有的共享控制
 launch/legacy-rejection原有4条CREATE_NO_WINDOW重定向路径保持，通过cmd的也是
 真实原生cmd；显式隐藏/无窗口控制台时仍保留stderr。launch/startup-error-unit双宽检验
 8种文件分类、原始参数/标志、5次Shell返回及句柄配对。无后端或computer-use依赖。
+
+## 可选虚拟打印输出回归
+
+`tests/ntw16s-dll/virtual_print.py` 使用本机 Microsoft Print to PDF，限定核对设备名、驱动和端口，
+将八个双位宽 A/W Print/Apply 用例的三份输出写入本项目 build 下的临时目录，并用 `pdfinfo`
+核对各 PDF 实际为三页；临时目录由测试自行清理。缺少指定 pdfinfo 或虚拟打印机不符合条件时
+返回77/SKIP，不计通过。例（路径按本机工具位置填写）：
+
+```powershell
+python tests/ntw16s-dll/virtual_print.py --driver build/.ninja/x64/dialog-test-driver.exe `
+  --launcher assets/run16s.exe --target32 build/.ninja/x86/virtual-print-target.exe `
+  --target64 build/.ninja/x64/virtual-print-target.exe --pdfinfo C:/tools/poppler/pdfinfo.exe `
+  --scratch build/t20-s1-dialog
+```
+
+`--native` 运行未注入系统对照；未覆盖实体打印机、所有驱动或 Windows 共享打印服务的冷启动。
+此用例可选，不纳入默认包测试，也不把虚拟打印机或 pdfinfo 变为产品依赖。

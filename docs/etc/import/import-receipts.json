@@ -1022,7 +1022,7 @@
       "path": "src/ntw16s-dll/injection/create_process.c",
       "source": "src/nthook32-dll/create_process.cpp",
       "source_blob": "2369ce7a7c46e79fc23f73367db9d42e0c40c9da",
-      "sha256": "40cbdcd65e01c312b5611f9db853a1ddf4086f7769c30eb7f3fca8e863cd396e",
+      "sha256": "315ad6a211d753396cdb8317f1acc35074cb11048ecead0f2c05b67d0067b02b",
       "disposition": "adapt",
       "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending",
       "notice": "Project-authored source adaptation or new native fixture, repository MIT"
@@ -3056,7 +3056,7 @@
       "path": "src/ntw16s-dll/injection/print_extended.c",
       "source": null,
       "source_blob": null,
-      "sha256": "aaa11a45f97105089b6a978932bbb5f4b822f561d052ed76b4c1261c27fb6639",
+      "sha256": "079113c5fd9d85e0dfddb580cc443d9272e2c342dd751c8aff1ae4adaec8f827",
       "disposition": "authored",
       "review": "T20 S1 bounded extended print dialog bridge",
       "notice": "Project-authored C code; no imported resources"
@@ -3068,6 +3068,51 @@
       "sha256": "d47e2abf43fc25acd4983e7e8a160be4b914240e8497d6a6b2d554885e65f5b2",
       "disposition": "authored",
       "review": "T20 S1 bounded extended print dialog bridge",
+      "notice": "Project-authored C code; no imported resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/virtual_print.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "2b14e413dab32a8eceefa5919e9ac549e5cc01a6f43e662ce704aca735a50bd7",
+      "disposition": "authored",
+      "review": "T20 S1 optional virtual printer copy-count regression",
+      "notice": "Project-authored test; no imported resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/virtual_print.py",
+      "source": null,
+      "source_blob": null,
+      "sha256": "130c3a7e38a257e58253a00e33a882bd40718938d89d5c11c8110abb6f60b964",
+      "disposition": "authored",
+      "review": "T20 S1 optional virtual printer copy-count regression",
+      "notice": "Project-authored test; no imported resources"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/system_process.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "d2332549ca45b6e5eb7da4e6d71f58e10db92bb17f25aa460115acd2b2f53daf",
+      "disposition": "authored",
+      "review": "T20 S1 Windows print-host propagation boundary",
+      "notice": "Project-authored C code; no imported resources"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/system_process.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "355936be0443766c68fc2fce232f0e648559cca507b70a15f11374a180370dd0",
+      "disposition": "authored",
+      "review": "T20 S1 Windows print-host propagation boundary",
+      "notice": "Project-authored C code; no imported resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/print_host_policy.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "dc894baadafa5d1d1a2b94dcf4260446c3888a72d197d07df2ea0dca7f965403",
+      "disposition": "authored",
+      "review": "T20 S1 Windows print-host propagation boundary",
       "notice": "Project-authored C code; no imported resources"
     }
   ]

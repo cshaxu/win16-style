@@ -21,6 +21,24 @@ static HGLOBAL clone_global(HGLOBAL original)
     if(!dst){if(src)GlobalUnlock(original);if(copy)GlobalFree(copy);return NULL;}
     CopyMemory(dst,src,size);GlobalUnlock(copy);GlobalUnlock(original);return copy;
 }
+/* PrintDlgEx embeds the requested copy count in the returned printer DC.
+ * The legacy PrintDlg DC can omit it even when nCopies is returned correctly. */
+static HDC create_print_dc(HGLOBAL mode,HGLOBAL names,BOOL ansi,DWORD copies,DWORD flags)
+{
+    if(!copies || copies>32767)return NULL;
+    HGLOBAL dc_mode=clone_global(mode);if(!dc_mode)return NULL;
+    void *data=GlobalLock(dc_mode);DEVNAMES *dn=names?GlobalLock(names):NULL;HDC dc=NULL;
+    if(data && dn){
+        if(ansi){DEVMODEA *dm=data;dm->dmCopies=(short)copies;dm->dmCollate=(flags&PD_COLLATE)?DMCOLLATE_TRUE:DMCOLLATE_FALSE;
+            if(flags & PD_RETURNDC)dc=CreateDCA((char*)dn+dn->wDriverOffset,(char*)dn+dn->wDeviceOffset,(char*)dn+dn->wOutputOffset,dm);
+            else if(flags & PD_RETURNIC)dc=CreateICA((char*)dn+dn->wDriverOffset,(char*)dn+dn->wDeviceOffset,(char*)dn+dn->wOutputOffset,dm);}
+        else{DEVMODEW *dm=data;dm->dmCopies=(short)copies;dm->dmCollate=(flags&PD_COLLATE)?DMCOLLATE_TRUE:DMCOLLATE_FALSE;
+            if(flags & PD_RETURNDC)dc=CreateDCW((WCHAR*)dn+dn->wDriverOffset,(WCHAR*)dn+dn->wDeviceOffset,(WCHAR*)dn+dn->wOutputOffset,dm);
+            else if(flags & PD_RETURNIC)dc=CreateICW((WCHAR*)dn+dn->wDriverOffset,(WCHAR*)dn+dn->wDeviceOffset,(WCHAR*)dn+dn->wOutputOffset,dm);}}
+    if(data)GlobalUnlock(dc_mode);
+    if(dn)GlobalUnlock(names);
+    GlobalFree(dc_mode);return dc;
+}
 static BOOL read_ranges(HWND window,state *s)
 {
     s->count=0;
@@ -101,6 +119,9 @@ BOOL NAME(EX_TYPE *p,PRINT_TYPE print,HRESULT *result) \
     if(p->hDevMode){d.hDevMode=clone_global(p->hDevMode);if(!d.hDevMode)return FALSE;} \
     if(p->hDevNames){d.hDevNames=clone_global(p->hDevNames);if(!d.hDevNames){if(d.hDevMode)GlobalFree(d.hDevMode);return FALSE;}} \
     BOOL ok=print(&d);DWORD error=ok?0:CommDlgExtendedError(); \
+    if(ok && (p->Flags & (PD_RETURNDC|PD_RETURNIC)) && (!d.hDC || ((p->Flags & PD_RETURNDC) && d.nCopies>1))){HDC replacement=create_print_dc(d.hDevMode,d.hDevNames,IS_ANSI,d.nCopies,d.Flags|p->Flags); \
+        if(!replacement){if(d.hDC)DeleteDC(d.hDC);if(d.hDevMode)GlobalFree(d.hDevMode);if(d.hDevNames)GlobalFree(d.hDevNames);free_snapshot(&s);*result=E_FAIL;return TRUE;} \
+        if(d.hDC){DeleteDC(d.hDC);}d.hDC=replacement;} \
     if(ok && (!global_available(p->hDevMode) || !global_available(p->hDevNames))){if(d.hDC)DeleteDC(d.hDC);if(d.hDevMode)GlobalFree(d.hDevMode);if(d.hDevNames)GlobalFree(d.hDevNames);free_snapshot(&s);*result=E_FAIL;return TRUE;} \
     if(ok){if(p->hDevMode)GlobalFree(p->hDevMode);if(p->hDevNames)GlobalFree(p->hDevNames);p->hDevMode=d.hDevMode;p->hDevNames=d.hDevNames;p->hDC=d.hDC;p->Flags=(d.Flags & ~(PD_ENABLEPRINTHOOK|PD_RETURNDC|PD_RETURNIC))|(p->Flags & (PD_RETURNDC|PD_RETURNIC));p->nCopies=d.nCopies;p->nPageRanges=s.count;if(s.count)CopyMemory(p->lpPageRanges,s.ranges,s.count*sizeof(PRINTPAGERANGE));p->dwResultAction=PD_RESULT_PRINT;free_snapshot(&s);*result=S_OK;return TRUE;} \
     if(d.hDC)DeleteDC(d.hDC); \

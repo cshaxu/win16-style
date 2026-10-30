@@ -120,6 +120,7 @@ try{
         $findTarget=Join-Path (Join-Path $BuildRoot $arch) 'find-dialog-target.exe'
         $commonTarget=Join-Path (Join-Path $BuildRoot $arch) 'common-dialog-target.exe'
         $printTarget=Join-Path (Join-Path $BuildRoot $arch) 'print-dialog-target.exe'
+        $cases+=Case "dialog-print-host-policy-$arch" (Join-Path (Join-Path $BuildRoot $arch) 'print-host-policy-unit.exe') @() @('PRINT HOST POLICY PASS exact quoted ansi spoof') 15
         $cases+=Case "dialog-print-ranges-$arch" (Join-Path (Join-Path $BuildRoot $arch) 'print-ranges-unit.exe') @() @('PRINT RANGES PASS order duplicates overlap bounds overflow atomic') 15
         $sheetTarget=Join-Path (Join-Path $BuildRoot $arch) 'sheet-dialog-target.exe'
         $taskTarget=Join-Path (Join-Path $BuildRoot $arch) 'task-dialog-target.exe'
