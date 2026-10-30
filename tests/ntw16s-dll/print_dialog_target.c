@@ -8,16 +8,17 @@ static BOOL (__cdecl *attached)(HWND);static int initialized;static BOOL frame;
 static DWORD main_thread;
 static BOOL classic_test,classic_found,classic_accept;
 static int extended_case,extended_step;
-static BOOL extended_old;
+static BOOL extended_old,extended_option_state;
 static HWND range_radio,range_edit;
 static BOOL CALLBACK locate_range(HWND w,LPARAM data)
 {(void)data;if(GetDlgCtrlID(w)==1059 || GetDlgCtrlID(w)==1058)range_radio=w;if(GetDlgCtrlID(w)==1152 && !range_edit)range_edit=w;if(GetDlgCtrlID(w)==9002)range_edit=w;return TRUE;}
 static void CALLBACK close_dialog(HWND window,UINT message,UINT_PTR timer,DWORD time)
 {(void)message;(void)time;
  if(extended_case>=4){extended_old=GetDlgItem(window,1139)!=NULL;
-    if(extended_case==6){KillTimer(window,timer);frame=attached&&attached(window);PostMessageW(window,WM_COMMAND,IDCANCEL,0);return;}
-    if(!extended_step){SetDlgItemTextW(window,1154,L"3");if(extended_case==5){HWND apply=GetDlgItem(window,9001);if(apply)SendMessageW(apply,BM_CLICK,0,0);SetDlgItemTextW(window,1154,L"5");extended_step=1;return;}}
-    KillTimer(window,timer);frame=attached&&attached(window);PostMessageW(window,WM_COMMAND,extended_case==4?IDOK:IDCANCEL,0);return;}
+    if(extended_case>=7){HWND select=GetDlgItem(window,1057),file=GetDlgItem(window,1040);extended_option_state=select && !IsWindowEnabled(select) && file && !IsWindowVisible(file);}
+    if(extended_case==6 || extended_case==9){KillTimer(window,timer);frame=attached&&attached(window);PostMessageW(window,WM_COMMAND,IDCANCEL,0);return;}
+    if(!extended_step){SetDlgItemTextW(window,1154,L"3");if(extended_case==5 || extended_case==8){HWND apply=GetDlgItem(window,9001);if(apply)SendMessageW(apply,BM_CLICK,0,0);SetDlgItemTextW(window,1154,L"5");extended_step=1;return;}}
+    KillTimer(window,timer);frame=attached&&attached(window);PostMessageW(window,WM_COMMAND,(extended_case==4 || extended_case==7)?IDOK:IDCANCEL,0);return;}
  if(extended_case==3){extended_old=GetDlgItem(window,1139)!=NULL;KillTimer(window,timer);frame=attached&&attached(window);PostMessageW(window,WM_COMMAND,IDCANCEL,0);return;}
  if(extended_case && extended_step==0){extended_old=GetDlgItem(window,1139)!=NULL;EnumChildWindows(window,locate_range,0);if(range_radio && range_edit){SendMessageW(range_radio,BM_CLICK,0,0);SetWindowTextW(range_edit,L"2,4-5");SetDlgItemTextW(window,1154,L"3");}extended_step=1;return;}
  if(extended_case==2 && extended_step==1){HWND apply=GetDlgItem(window,9001);if(!apply)apply=GetDlgItem(window,12321);if(apply && IsWindowEnabled(apply))SendMessageW(apply,BM_CLICK,0,0);if(extended_old){SetDlgItemTextW(window,1154,L"5");SetWindowTextW(range_edit,L"8");}extended_step=2;return;}
@@ -77,15 +78,16 @@ int wmain(int argc,WCHAR **argv)
         if(x.hDevNames)GlobalFree(x.hDevNames);
         UnhookWindowsHookEx(observer);DestroyWindow(owner);CoUninitialize();return initialized==1 && frame && valid?0:1;
     }
-    if(!lstrcmpW(argv[1],L"ex-nopages-print") || !lstrcmpW(argv[1],L"ex-nopages-apply") || !lstrcmpW(argv[1],L"ex-nopages-cancel")){
-        extended_case=!lstrcmpW(argv[1],L"ex-nopages-print")?4:!lstrcmpW(argv[1],L"ex-nopages-apply")?5:6;
+    if(!lstrcmpW(argv[1],L"ex-nopages-print") || !lstrcmpW(argv[1],L"ex-nopages-apply") || !lstrcmpW(argv[1],L"ex-nopages-cancel") || !lstrcmpW(argv[1],L"ex-options-print") || !lstrcmpW(argv[1],L"ex-options-apply") || !lstrcmpW(argv[1],L"ex-options-cancel")){
+        BOOL options=!wcsncmp(argv[1],L"ex-options-",11);const WCHAR *action=argv[1]+(options?11:11);
+        extended_case=!wcscmp(action,L"print")?(options?7:4):!wcscmp(action,L"apply")?(options?8:5):(options?9:6);
         HRESULT com=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);if(FAILED(com))return 9;
         HWND owner=CreateWindowExW(0,L"STATIC",L"Owner",WS_OVERLAPPEDWINDOW,0,0,200,100,NULL,NULL,GetModuleHandleW(NULL),NULL);if(!owner)return 7;
         ShowWindow(owner,SW_SHOW);HHOOK observer=SetWindowsHookExW(WH_CALLWNDPROC,observe,NULL,GetCurrentThreadId());if(!observer)return 6;
-        PRINTDLGEXW x={0};x.lStructSize=sizeof(x);x.hwndOwner=owner;x.Flags=PD_RETURNDC|PD_NOPAGENUMS;x.nStartPage=START_PAGE_GENERAL;x.nCopies=1;
-        HRESULT hr=PrintDlgExW(&x);DWORD expected=extended_case==4?PD_RESULT_PRINT:extended_case==5?PD_RESULT_APPLY:PD_RESULT_CANCEL;
-        BOOL valid=hr==S_OK && x.dwResultAction==expected && (x.Flags & PD_NOPAGENUMS) && x.nPageRanges==0 && !x.lpPageRanges && extended_old && frame &&
-            (extended_case==6?(!x.hDC && !x.hDevMode && !x.hDevNames):(x.hDC && x.hDevMode && x.hDevNames && x.nCopies==3));
+        PRINTDLGEXW x={0};x.lStructSize=sizeof(x);x.hwndOwner=owner;x.Flags=PD_RETURNDC|PD_NOPAGENUMS|(options?(PD_NOSELECTION|PD_HIDEPRINTTOFILE):0);x.nStartPage=START_PAGE_GENERAL;x.nCopies=1;
+        HRESULT hr=PrintDlgExW(&x);DWORD expected=(extended_case==4 || extended_case==7)?PD_RESULT_PRINT:(extended_case==5 || extended_case==8)?PD_RESULT_APPLY:PD_RESULT_CANCEL;
+        BOOL valid=hr==S_OK && x.dwResultAction==expected && (x.Flags & PD_NOPAGENUMS) && (!options || ((x.Flags & (PD_NOSELECTION|PD_HIDEPRINTTOFILE))==(PD_NOSELECTION|PD_HIDEPRINTTOFILE) && extended_option_state)) && x.nPageRanges==0 && !x.lpPageRanges && extended_old && frame &&
+            ((extended_case==6 || extended_case==9)?(!x.hDC && !x.hDevMode && !x.hDevNames):(x.hDC && x.hDevMode && x.hDevNames && x.nCopies==3));
         printf("EX_NOPAGES bits=%u mode=%d hr=%08lx action=%lu old=%d frame=%d valid=%d\n",(unsigned)(sizeof(void*)*8),extended_case,(DWORD)hr,x.dwResultAction,extended_old,frame,valid);
         if(x.hDC)DeleteDC(x.hDC);
         if(x.hDevMode)GlobalFree(x.hDevMode);
