@@ -11,7 +11,21 @@ static DWORD owner_thread;
 static volatile LONG seen, changed, initialized;
 static HWND dialog;
 static BOOL cancel_mode, new_folder_mode, same_mode, controls_mode,classic_new_mode,classic_cancel_mode,classic_enter_mode,classic_typed_mode;
-static BOOL controls_ok;
+static BOOL controls_ok,theme_mode;
+static unsigned theme_timers;
+static LRESULT CALLBACK theme_timer_hook(int code,WPARAM wp,LPARAM lp)
+{
+    if(code>=0 && lp && dialog){const MSG *m=(const MSG *)lp;
+        if(m->message==WM_TIMER && m->lParam && m->hwnd==GetDlgItem(dialog,1121)){
+            HMODULE module=NULL;WCHAR path[MAX_PATH];
+            if(GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                (LPCWSTR)(ULONG_PTR)m->lParam,&module) && GetModuleFileNameW(module,path,MAX_PATH)){
+                WCHAR *name=wcsrchr(path,L'\\');if(name && !lstrcmpiW(name+1,L"comctl32.dll"))++theme_timers;
+            }
+        }
+    }
+    return CallNextHookEx(NULL,code,wp,lp);
+}
 static volatile LONG shell_seen,navigated;
 static WCHAR wanted[MAX_PATH], initial[MAX_PATH], current[MAX_PATH];
 static BOOL screen_pixels(int x,int y,int width,int height,DWORD *pixels)
@@ -42,6 +56,8 @@ static BOOL window_arrow_pixels(HWND w,const RECT *outer,const SCROLLBARINFO *ba
 static void CALLBACK test_controls(HWND window,UINT message,UINT_PTR timer,DWORD time)
 {
     (void)message;(void)time;KillTimer(window,timer);
+    if(theme_mode){controls_ok=theme_timers==0;
+        printf("FOLDER_THEME_TIMERS bits=%u count=%u\n",(unsigned)(sizeof(void*)*8),theme_timers);return;}
     HWND files=GetDlgItem(window,1120),drives=GetDlgItem(window,1137);
     LRESULT count=SendMessageW(files,LB_GETCOUNT,0,0),before=SendMessageW(files,LB_GETTOPINDEX,0,0);
     SendMessageW(files,WM_VSCROLL,SB_LINEDOWN,0);
@@ -139,7 +155,7 @@ static BOOL CALLBACK inspect(HWND window,LPARAM ignored)
     WCHAR olddir[MAX_PATH]=L"",oldfile[MAX_PATH]=L"";GetDlgItemTextW(window,1088,olddir,MAX_PATH);GetDlgItemTextW(window,1152,oldfile,MAX_PATH);
     printf("OLD_DIALOG directory=%ls file=%ls current=%ls\n",olddir,oldfile,current);fflush(stdout);
     if(!same_mode)SetDlgItemTextW(window,1152,file);
-    if(controls_mode)SetTimer(window,922,100,test_controls);
+    if(controls_mode)SetTimer(window,922,theme_mode?250:100,test_controls);
     dialog=window;InterlockedExchange(&seen,1);
     return FALSE;
 }
@@ -192,8 +208,12 @@ int wmain(int argc,WCHAR **argv)
     classic_cancel_mode=argc==3 && (!lstrcmpW(argv[2],L"newclassiccancel") || !lstrcmpW(argv[2],L"newfolder"));
     classic_new_mode=classic_enter_mode || classic_cancel_mode || (argc==3 && !lstrcmpW(argv[2],L"newclassic"));
     new_folder_mode=classic_new_mode || (argc==3 && !lstrcmpW(argv[2],L"newfolder"));
-    controls_mode=argc==3 && !lstrcmpW(argv[2],L"controls");
+    theme_mode=argc==3 && !lstrcmpW(argv[2],L"theme");
+    controls_mode=theme_mode || (argc==3 && !lstrcmpW(argv[2],L"controls"));
     same_mode=classic_new_mode || controls_mode || (argc==3 && !lstrcmpW(argv[2],L"same"));
+    owner_thread=GetCurrentThreadId();
+    HHOOK timer_hook=theme_mode?SetWindowsHookExW(WH_GETMESSAGE,theme_timer_hook,NULL,owner_thread):NULL;
+    if(theme_mode && !timer_hook)return 6;
     if(!GetTempPathW(MAX_PATH,initial))return 3;
     if(swprintf(wanted,MAX_PATH,L"%lswin16s-%lu-%lu",initial,GetCurrentProcessId(),GetTickCount())<0)return 3;
     if(!CreateDirectoryW(wanted,NULL))return 4;
@@ -206,7 +226,6 @@ int wmain(int argc,WCHAR **argv)
         if(swprintf(file,MAX_PATH,L"%ls\\Folder%02d",wanted,i)<0 || !CreateDirectoryW(file,NULL))return 4;
     }
     HRESULT hr=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);if(FAILED(hr))return 5;
-    owner_thread=GetCurrentThreadId();
     HANDLE thread=CreateThread(NULL,0,observer,NULL,0,NULL);if(!thread)return 6;
     PIDLIST_ABSOLUTE result;
     if(argv[1][0]==L'a'){
@@ -216,6 +235,7 @@ int wmain(int argc,WCHAR **argv)
         BROWSEINFOW info={0};info.ulFlags=BIF_RETURNONLYFSDIRS|BIF_USENEWUI|BIF_VALIDATE;
         info.lpfn=callback;info.lParam=0x12345678;result=SHBrowseForFolderW(&info);
     }
+    if(timer_hook)UnhookWindowsHookEx(timer_hook);
     WCHAR returned[MAX_PATH]=L"";
     BOOL ok=result && SHGetPathFromIDListW(result,returned);
     if(result)CoTaskMemFree(result);

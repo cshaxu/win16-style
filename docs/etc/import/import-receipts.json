@@ -2723,7 +2723,7 @@
       "path": "tests/ntw16s-dll/folder_dialog_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "8f42bd8b6a4f0729f4b1de32a939168fc697fc3ce09ab50c5543f5d545b97561",
+      "sha256": "9ca8787191dca262dee277586ea97b6fe44e4dc60a5d83989bbd04e305cc93c5",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"

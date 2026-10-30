@@ -309,6 +309,7 @@ try{
             if($mode -eq 'controls'){$markers+=@('FOLDER_RIGHT_VISUAL_PASS settled_equals_repaint=1','FOLDER_SCREEN_PRESS read=1 repaint=1 diff=0')}
             $cases+=Case "dialog-folder-$arch-$mode" $dialogDriver @($run,$folderTarget,'wide',$mode) $markers 45
         }
+        $cases+=Case "dialog-folder-$arch-theme" $dialogDriver @($run,$folderTarget,'wide','theme') @("FOLDER_THEME_TIMERS bits=$bits count=0",'DIALOG_DRIVER exit=0') 45
     }
     $cases+=@(
         (Case 'legacy-iat-32' (Join-Path $x86 'launch-staging.exe') @('--parent',$Package) @('LEGACY IAT PASS bits=32 zero_oft=0 initialized=1 metadata_restored=1','LEGACY IAT PASS bits=32 zero_oft=1 initialized=1 metadata_restored=1','LEGACY IAT REJECT PASS bits=32 mode=3 error=193')),
