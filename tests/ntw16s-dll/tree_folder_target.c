@@ -9,7 +9,7 @@ static WCHAR wanted[MAX_PATH];
 static volatile LONG seen,trees,windows,direct_tree;
 static HWND dialog;
 static BOOL cancel_mode,validate_mode,recover_mode;
-static volatile LONG validated,callback_initialized;
+static volatile LONG validated,callback_initialized,callback_unknown;
 static HWND edit_window;
 static BOOL CALLBACK child(HWND w,LPARAM data)
 {
@@ -47,7 +47,7 @@ static DWORD WINAPI observe(void *unused)
     return 1;
 }
 static int CALLBACK callback(HWND w,UINT message,LPARAM parameter,LPARAM data)
-{(void)w;(void)parameter;if(data==0x12345678 && message==BFFM_INITIALIZED)InterlockedIncrement(&callback_initialized);if(data==0x12345678 && message==BFFM_VALIDATEFAILEDW){InterlockedIncrement(&validated);return 1;}return 0;}
+{(void)w;if(data==0x12345678 && message==BFFM_INITIALIZED)InterlockedIncrement(&callback_initialized);if(data==0x12345678 && message==BFFM_IUNKNOWN && parameter)InterlockedIncrement(&callback_unknown);if(data==0x12345678 && message==BFFM_VALIDATEFAILEDW){InterlockedIncrement(&validated);return 1;}return 0;}
 int wmain(int argc,WCHAR **argv)
 {
     if(argc!=3)return 2;
@@ -79,7 +79,7 @@ int wmain(int argc,WCHAR **argv)
         correct=(cancel_mode || (validate_mode && !recover_mode))?!item:(item && SHGetPathFromIDListW(item,path) && !lstrcmpiW(path,wanted));
         if(item)CoTaskMemFree(item);}
     DWORD wait=WaitForSingleObject(thread,8000),code=1;if(wait==WAIT_OBJECT_0)GetExitCodeThread(thread,&code);CloseHandle(thread);CoUninitialize();
-    printf("TREE_FOLDER bits=%u com=%d cancel=%d tree=%ld windows=%ld result=%d hr=%08lx wait=%lu worker=%lu validated=%ld direct=%ld callback=%ld\n",
-        (unsigned)(sizeof(void*)*8),com,cancel_mode,trees,windows,correct,(DWORD)hr,wait,code,validated,direct_tree,callback_initialized);
+    printf("TREE_FOLDER bits=%u com=%d cancel=%d tree=%ld windows=%ld result=%d hr=%08lx wait=%lu worker=%lu validated=%ld direct=%ld callback=%ld unknown=%ld\n",
+        (unsigned)(sizeof(void*)*8),com,cancel_mode,trees,windows,correct,(DWORD)hr,wait,code,validated,direct_tree,callback_initialized,callback_unknown);
     return seen && trees && windows==1 && correct && wait==WAIT_OBJECT_0 && !code && (!validate_mode || (validated==1 && direct_tree)) && (!(simple || (new_shell && !new_callback)) || direct_tree) && (!new_callback || !direct_tree) && (!(simple_callback || new_callback) || callback_initialized==1)?0:1;
 }
