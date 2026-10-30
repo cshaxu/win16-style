@@ -215,6 +215,30 @@ COLOR_DIALOG_HOOK(ChooseColorA,CHOOSECOLORA)
 COLOR_DIALOG_HOOK(ChooseColorW,CHOOSECOLORW)
 #undef COLOR_DIALOG_HOOK
 
+/* A no-op print hook selects the system's traditional PrintDlg layout.
+ * Preserve caller-owned customization and less common flag contracts unchanged. */
+static UINT_PTR CALLBACK classic_print_hook(HWND window,UINT message,WPARAM wparam,LPARAM lparam)
+{ (void)window;(void)message;(void)wparam;(void)lparam;return 0; }
+#define CLASSIC_PRINT_FLAGS (PD_ALLPAGES|PD_SELECTION|PD_PAGENUMS|PD_NOSELECTION|PD_NOPAGENUMS|PD_COLLATE|PD_PRINTTOFILE|PD_RETURNDC|PD_RETURNIC|PD_NOWARNING|PD_USEDEVMODECOPIESANDCOLLATE|PD_DISABLEPRINTTOFILE|PD_HIDEPRINTTOFILE|PD_NONETWORKBUTTON)
+#define PRINT_HOOK(NAME,TYPE) \
+static __typeof__(&NAME) real_##NAME; \
+static NTW16S_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
+{ ntw16s_unwind_scope unwind;title_scope scope;BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
+  if(!begin_titles(&scope,TRUE))return FALSE; \
+  NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); { \
+    if(parameters && parameters->lStructSize==sizeof(TYPE) && !(parameters->Flags & ~CLASSIC_PRINT_FLAGS)) { \
+      TYPE copy=*parameters;copy.Flags|=PD_ENABLEPRINTHOOK;copy.lpfnPrintHook=classic_print_hook; \
+      result=real_##NAME(&copy);error=GetLastError(); \
+      copy.Flags=(copy.Flags & ~PD_ENABLEPRINTHOOK)|(parameters->Flags & PD_ENABLEPRINTHOOK); \
+      copy.lpfnPrintHook=parameters->lpfnPrintHook;*parameters=copy; \
+    } else { result=real_##NAME(parameters);error=GetLastError(); } \
+  } NTW16S_UNWIND_END(unwind); \
+  if(scope.failure){result=FALSE;error=scope.failure;}SetLastError(error);return result; }
+PRINT_HOOK(PrintDlgA,PRINTDLGA)
+PRINT_HOOK(PrintDlgW,PRINTDLGW)
+#undef PRINT_HOOK
+#undef CLASSIC_PRINT_FLAGS
+
 /* Synchronous common dialogs also create their own internal windows. */
 #define COMMON_HOOK(NAME, TYPE) \
 static __typeof__(&NAME) real_##NAME; \
@@ -224,8 +248,6 @@ static NTW16S_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
   NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
   } NTW16S_UNWIND_END(unwind); \
   if(scope.failure){result=FALSE;error=scope.failure;} SetLastError(error);return result; }
-COMMON_HOOK(PrintDlgA,PRINTDLGA)
-COMMON_HOOK(PrintDlgW,PRINTDLGW)
 COMMON_HOOK(PageSetupDlgA,PAGESETUPDLGA)
 COMMON_HOOK(PageSetupDlgW,PAGESETUPDLGW)
 #undef COMMON_HOOK

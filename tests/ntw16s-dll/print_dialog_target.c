@@ -6,8 +6,9 @@
 #include <stdio.h>
 static BOOL (__cdecl *attached)(HWND);static int initialized;static BOOL frame;
 static DWORD main_thread;
+static BOOL classic_test,classic_found,classic_accept;
 static void CALLBACK close_dialog(HWND window,UINT message,UINT_PTR timer,DWORD time)
-{(void)message;(void)time;KillTimer(window,timer);frame=attached&&attached(window);PostMessageW(window,WM_COMMAND,IDCANCEL,0);}
+{(void)message;(void)time;KillTimer(window,timer);frame=attached&&attached(window);if(classic_test)classic_found=GetDlgItem(window,1139)!=NULL;PostMessageW(window,WM_COMMAND,classic_accept?IDOK:IDCANCEL,0);}
 static LRESULT CALLBACK observe(int code,WPARAM wparam,LPARAM parameter)
 {
     if(code>=0 && !initialized){const CWPSTRUCT *m=(const CWPSTRUCT *)parameter;
@@ -39,7 +40,7 @@ static UINT_PTR CALLBACK hook(HWND window,UINT message,WPARAM wparam,LPARAM lpar
 {(void)lparam;if(message==WM_INITDIALOG){++initialized;SetTimer(window,916,100,NULL);}if(message==WM_TIMER && wparam==916){KillTimer(window,916);frame=attached&&attached(window);PostMessageW(window,WM_COMMAND,IDCANCEL,0);}return 0;}
 int wmain(int argc,WCHAR **argv)
 {
-    if(argc!=3)return 2;
+    if(argc!=3 && argc!=4)return 2;
     BOOL page=argv[1][0]==L'p' && argv[1][1]==L'a',extended=!lstrcmpW(argv[1],L"printex"),ansi=argv[2][0]==L'a';
     HMODULE m=GetModuleHandleW(sizeof(void*)==4?L"ntw16s32.dll":L"ntw16s64.dll");
     attached=m?(BOOL (__cdecl *)(HWND))(void *)GetProcAddress(m,"Ntw16sWindowAttached"):NULL;
@@ -48,6 +49,26 @@ int wmain(int argc,WCHAR **argv)
         PRINTDLGEXW x={0};x.lStructSize=sizeof(x);HRESULT hr=PrintDlgExW(&x);
         printf("PRINT_EX_INVALID bits=%u hr=%08lx\n",(unsigned)(sizeof(void*)*8),(DWORD)hr);
         return hr==HRESULT_FROM_WIN32(ERROR_INVALID_HANDLE)?0:1;
+    }
+    if(!lstrcmpW(argv[1],L"classic")){
+        if(argc!=4)return 2;
+        classic_test=TRUE;classic_accept=!lstrcmpW(argv[3],L"accept");
+        HWND owner=CreateWindowExW(0,L"STATIC",L"Print test owner",WS_OVERLAPPEDWINDOW,0,0,200,100,NULL,NULL,GetModuleHandleW(NULL),NULL);
+        if(!owner)return 7;
+        ShowWindow(owner,SW_SHOW);
+        HHOOK observer=SetWindowsHookExW(WH_CALLWNDPROC,observe,NULL,GetCurrentThreadId());if(!observer)return 6;
+        BOOL clean=FALSE,returned=FALSE;DWORD error;
+        if(ansi){PRINTDLGA x={0};x.lStructSize=sizeof(x);x.hwndOwner=owner;x.Flags=PD_RETURNDC;x.nCopies=1;x.nMinPage=1;x.nMaxPage=1000;
+            result=PrintDlgA(&x);error=CommDlgExtendedError();clean=!(x.Flags & PD_ENABLEPRINTHOOK) && !x.lpfnPrintHook;
+            returned=x.hDC && x.hDevMode && x.hDevNames && x.nCopies==1;if(x.hDC)DeleteDC(x.hDC);devmode=x.hDevMode;devnames=x.hDevNames;}
+        else{PRINTDLGW x={0};x.lStructSize=sizeof(x);x.hwndOwner=owner;x.Flags=PD_RETURNDC;x.nCopies=1;x.nMinPage=1;x.nMaxPage=1000;
+            result=PrintDlgW(&x);error=CommDlgExtendedError();clean=!(x.Flags & PD_ENABLEPRINTHOOK) && !x.lpfnPrintHook;
+            returned=x.hDC && x.hDevMode && x.hDevNames && x.nCopies==1;if(x.hDC)DeleteDC(x.hDC);devmode=x.hDevMode;devnames=x.hDevNames;}
+        if(devmode)GlobalFree(devmode);
+        if(devnames)GlobalFree(devnames);
+        UnhookWindowsHookEx(observer);DestroyWindow(owner);
+        printf("PRINT_CLASSIC bits=%u ansi=%d accept=%d old=%d frame=%d clean=%d result=%d returned=%d error=%lu\n",(unsigned)(sizeof(void*)*8),ansi,classic_accept,classic_found,frame,clean,result,returned,error);
+        return initialized==1 && classic_found && frame && clean && !error && (classic_accept?(result&&returned):!result)?0:1;
     }
     if(extended){
         HRESULT com=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);

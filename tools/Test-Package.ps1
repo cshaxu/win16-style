@@ -264,6 +264,9 @@ try{
         $cases+=Case "dialog-task-$arch" $dialogDriver @($run,$taskTarget) @("TASK_DIALOG bits=$bits",'DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-print-ex-invalid-$arch" $dialogDriver @($run,$printTarget,'invalid','wide') @("PRINT_EX_INVALID bits=$bits",'DIALOG_DRIVER exit=0') 30
         foreach($encoding in @('ansi','wide')) {
+            foreach($action in @('accept','cancel')) {
+                $cases+=Case "dialog-print-classic-$arch-$encoding-$action" $dialogDriver @($run,$printTarget,'classic',$encoding,$action) @("PRINT_CLASSIC bits=$bits",'old=1','frame=1','clean=1','error=0','DIALOG_DRIVER exit=0') 30
+            }
             $cases+=Case "dialog-sheet-$arch-$encoding" $dialogDriver @($run,$sheetTarget,$encoding) @("SHEET_DIALOG bits=$bits",'DIALOG_DRIVER exit=0') 30
             foreach($kind in @('find','replace')) {
                 $cases+=Case "dialog-$kind-$arch-$encoding" $dialogDriver @($run,$findTarget,$kind,$encoding) @("FIND_DIALOG bits=$bits",'DIALOG_DRIVER exit=0') 30
