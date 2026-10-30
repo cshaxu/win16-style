@@ -705,3 +705,5 @@ P242 阶段包：针对精确匹配 BIF_RETURNONLYFSDIRS|BIF_USENEWUI|BIF_VALIDA
 P242 回调输入恢复补证：对 O:/winnt 已发布包，在自有私有桌面对话框输入不存在路径并由应用回调拒绝，再输入 C:/Windows 并确认。x86/x64 与 ANSI/Unicode 四个 scratch 探针均收到一次校验回调并返回真实 C:/Windows 路径，退出 0；Unicode 双宽已纳入 tree-folder-target 的 recover 模式及包测试。未覆盖 IME、真实键鼠或其他回调。本次仅测试/记录变化，无新二进制。
 
 P242 打印控件探针（x64、Unicode、私有桌面、仅打开并取消）：PrintDlg 的可见 Button、Static、ComboBox、Edit 与 up-down 在 Ntw16sWindowAttached 上返回 1；PrintDlgEx 的可见标准按钮、编辑框和 SysTabControl32 返回 1，但内部 #32770 子页、SHELLDLL_DefView 和 SysListView32 返回 0，默认打印机为 Adobe PDF；两次顶层 frame=1，返回正常，未发送打印任务。这只记录 attachment 标志而非实际绘制或控件子类完整状态，不能反驳用户看到的现代样式；PrintDlg 测试包含应用 hook，与 demo 参数不同，PrintDlgEx 树上内部宿主和列表的实际绘制路径需进一步分析。
+
+P242 打印窗口原生截图：私有桌面自有 x64 Unicode PrintDlg（启用应用 hook）和 PrintDlgEx 探针，PrintWindow 分别返回 444x335 和 470x424 截图，顶层样式及多数标准控件显示经典边框；PrintDlgEx 的打印机列表区域在 PrintWindow 输出为空，不能据此判断屏幕真实列表是否缺失。两例取消退出 0，无打印任务。PrintDlgEx 与 PrintDlg 并非简单同构：微软文档列出 PrintDlgEx 的应用/驱动属性页、回调、多个页码范围及独立结果 action；demo 使用 nMaxPageRanges=10。不能静默转成只支持单范围的 PrintDlg 并声称保持契约，需先设计明确转换或回退边界；实际 demo 自身的打印外观和用户反馈仍待定位。
