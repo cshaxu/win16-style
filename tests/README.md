@@ -121,7 +121,7 @@ python tests/ntw16s-dll/virtual_print.py --driver build/.ninja/x64/dialog-test-d
 ## 文件夹筛选已知负例
 
 `folder-filter-target` 是独立原生探针：在指定的现有 scratch 目录内创建并清理两个临时文件夹，
-通过 `IFolderFilter` 隐藏其中一个，并验证可见树和 COM 引用。使用 `dialog-test-driver --private`
+通过 `IFolderFilter` 隐藏其中一个，并验证 `GetEnumFlags`、可见树和 COM 引用。使用 `dialog-test-driver --private`
 分别以 `--direct` 和项目启动器运行；直接系统对照应通过。当前旧树桥接尚未传递
 `BFFM_IUNKNOWN`，项目启动路径会报告 `blocked=1 valid=0` 并返回非零，这是真实未修复负例，
 不纳入必通过包计划，也不能记作跳过或通过。该探针不依赖第三方打印机或用户手工输入。

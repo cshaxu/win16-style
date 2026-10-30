@@ -8,11 +8,11 @@
 #include <shlwapi.h>
 #include <stdio.h>
 #include <wchar.h>
-static WCHAR root[MAX_PATH],hidden[MAX_PATH],visible[MAX_PATH];static DWORD ui;static volatile LONG init,unknown,filter_ok,visits,denied;static HWND dialog,tree;static LONG refs=1;static int visible_count,blocked_count;
+static WCHAR root[MAX_PATH],hidden[MAX_PATH],visible[MAX_PATH];static DWORD ui;static volatile LONG init,unknown,filter_ok,visits,denied,enum_calls;static HWND dialog,tree;static LONG refs=1;static int visible_count,blocked_count;
 static HRESULT STDMETHODCALLTYPE qi(IFolderFilter *p,REFIID iid,void **v){if(!v)return E_POINTER;*v=NULL;if(IsEqualIID(iid,&IID_IUnknown)||IsEqualIID(iid,&IID_IFolderFilter)){*v=p;InterlockedIncrement(&refs);return S_OK;}return E_NOINTERFACE;}
 static ULONG STDMETHODCALLTYPE add(IFolderFilter*p){(void)p;return InterlockedIncrement(&refs);}static ULONG STDMETHODCALLTYPE rel(IFolderFilter*p){(void)p;return InterlockedDecrement(&refs);}
 static HRESULT STDMETHODCALLTYPE show(IFolderFilter*p,IShellFolder*f,PCIDLIST_ABSOLUTE parent,PCUITEMID_CHILD item){(void)p;(void)parent;STRRET r={0};WCHAR name[MAX_PATH]=L"";InterlockedIncrement(&visits);if(SUCCEEDED(IShellFolder_GetDisplayNameOf(f,item,SHGDN_NORMAL,&r))&&SUCCEEDED(StrRetToBufW(&r,item,name,MAX_PATH))&&!lstrcmpiW(name,L"blocked")){InterlockedIncrement(&denied);return S_FALSE;}return S_OK;}
-static HRESULT STDMETHODCALLTYPE flags(IFolderFilter*p,IShellFolder*f,PCIDLIST_ABSOLUTE parent,HWND*w,DWORD*flags){(void)p;(void)f;(void)parent;(void)w;(void)flags;return S_OK;}
+static HRESULT STDMETHODCALLTYPE flags(IFolderFilter*p,IShellFolder*f,PCIDLIST_ABSOLUTE parent,HWND*w,DWORD*flags){(void)p;(void)f;(void)parent;(void)w;(void)flags;InterlockedIncrement(&enum_calls);return S_OK;}
 static IFolderFilterVtbl table={qi,add,rel,show,flags};static IFolderFilter filter={&table};
 static int CALLBACK cb(HWND w,UINT m,LPARAM p,LPARAM d){(void)w;if(d!=0x456789)return 0;if(m==BFFM_INITIALIZED)InterlockedIncrement(&init);if(m==BFFM_IUNKNOWN && p){InterlockedIncrement(&unknown);IFolderFilterSite *site=NULL;HRESULT hr=IUnknown_QueryInterface((IUnknown*)p,&IID_IFolderFilterSite,(void**)&site);if(SUCCEEDED(hr)&&site){hr=IFolderFilterSite_SetFilter(site,(IUnknown*)&filter);if(SUCCEEDED(hr))InterlockedIncrement(&filter_ok);IFolderFilterSite_Release(site);}}return 0;}
 static BOOL CALLBACK child(HWND w,LPARAM v){(void)v;WCHAR c[60];if(GetClassNameW(w,c,60)&&!lstrcmpiW(c,L"SysTreeView32"))tree=w;return TRUE;}
@@ -45,7 +45,7 @@ int wmain(int argc,WCHAR **argv)
     CloseHandle(thread);CoTaskMemFree(r);CoUninitialize();
     BOOL a_removed=RemoveDirectoryW(hidden),b_removed=RemoveDirectoryW(visible),c_removed=RemoveDirectoryW(root);
     BOOL cleaned=a_removed && b_removed && c_removed;
-    BOOL valid=unknown==1 && filter_ok==1 && denied>0 && visible_count>0 && blocked_count==0 && refs==1 && wait==WAIT_OBJECT_0 && code==0 && cleaned;
-    printf("FOLDER_FILTER bits=%u reduced=%d unknown=%ld installed=%ld calls=%ld denied=%ld visible=%d blocked=%d refs=%ld worker=%lu cleanup=%d valid=%d\n",(unsigned)(sizeof(void*)*8),reduced,unknown,filter_ok,visits,denied,visible_count,blocked_count,refs,code,cleaned,valid);
+    BOOL valid=unknown==1 && filter_ok==1 && enum_calls>0 && denied>0 && visible_count>0 && blocked_count==0 && refs==1 && wait==WAIT_OBJECT_0 && code==0 && cleaned;
+    printf("FOLDER_FILTER bits=%u reduced=%d unknown=%ld installed=%ld enum_calls=%ld calls=%ld denied=%ld visible=%d blocked=%d refs=%ld worker=%lu cleanup=%d valid=%d\n",(unsigned)(sizeof(void*)*8),reduced,unknown,filter_ok,enum_calls,visits,denied,visible_count,blocked_count,refs,code,cleaned,valid);
     return valid?0:1;
 }
