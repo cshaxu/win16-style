@@ -669,3 +669,5 @@ P238 已发布包字体和颜色选择补充：私有桌面 x86 ANSI、x64 Unico
 菜单物理探针跳过原因纠正：scratch 探针原来把 GetLastInputInfo、GetCursorPos 和窗口矩形任一失败都打印为 recent_input。增加单项诊断后，本次受限及受限外运行均显示 GetLastInputInfo 成功、idle 约 4,233 秒，但 GetCursorPos 返回 FALSE/ERROR_ACCESS_DENIED(5)；另以 OpenInputDesktop/GetUserObjectInformation 读取到输入桌面名称 Screen-saver。因此本次跳过是桌面不可访问，而非近期输入。过去只记录了统一提示、未记录各项结果的跳过不能据此回溯判定原因。未切换桌面或操作鼠标；菜单动态闪烁仍未验证。
 
 查找与替换交叉位宽补证：对 O:/winnt P238 四文件，在私有桌面分别执行 x86 Unicode、x64 ANSI 的 FindText 和 ReplaceText 四例；窗口与编辑框 attached=1，查找通知各一次，替换用例通知两次，关闭通知各一次且窗口销毁，驱动全部退出 0。与此前 x86 ANSI、x64 Unicode 的四例合起来覆盖四个位宽/编码组合的有限消息驱动路径；不证明屏幕外观、物理输入、用户自定义 hook 或全部对话框控件。本次无产品源码或二进制变化。
+
+字体与颜色选择交叉位宽补证：O:/winnt P238 的 x86 Unicode、x64 ANSI 四个私有桌面用例均通过；ChooseFont 的样式选择恢复、下拉状态和字体列表滚动符合探针预期，ChooseColor 返回实际选择的颜色，窗口附着且扩展错误为 0。结合既有 x86 ANSI、x64 Unicode 结果，四种位宽/编码组合的该有限消息驱动路径均有证据；不代表其他配置、物理输入或视觉效果全面通过。
