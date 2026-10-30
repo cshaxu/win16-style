@@ -69,9 +69,14 @@ static void mark_menu_owner(HWND w,const void *caller)
 typedef struct title_scope { ntw16s_creation_scope *creation;DWORD failure; } title_scope;
 static BOOL begin_titles(title_scope *scope,BOOL modal)
 {
-    (void)modal;ZeroMemory(scope,sizeof(*scope));
+    ZeroMemory(scope,sizeof(*scope));
     if(!InitOnceExecuteOnce(&title_once,bind_titles,NULL,NULL))return FALSE;
-    scope->creation=Ntw16sCreationBegin(TRUE);return scope->creation!=NULL;
+#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
+    scope->creation=modal?ntw16s_creation_begin_dialog(TRUE):Ntw16sCreationBegin(TRUE);
+#else
+    (void)modal;scope->creation=Ntw16sCreationBegin(TRUE);
+#endif
+    return scope->creation!=NULL;
 }
 static void end_titles(void *data)
 {
@@ -109,7 +114,7 @@ WINDOW_HOOK(W,LPCWSTR)
 static __typeof__(&NAME) real_##NAME; \
 static NTW16S_UNWIND_FUNCTION RET WINAPI hook_##NAME(HINSTANCE instance,TYPE name,HWND parent,DLGPROC proc,LPARAM param) \
 { ntw16s_unwind_scope unwind;title_scope scope;RET result=FAIL;DWORD error=ERROR_SUCCESS; \
-  if(!begin_titles(&scope,MODAL))return FAIL; \
+  if(!begin_titles(&scope,TRUE))return FAIL; \
   NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); { result=real_##NAME(instance,name,parent,proc,param);error=GetLastError(); \
   } NTW16S_UNWIND_END(unwind); \
   if(scope.failure){if(!(MODAL)){if(result)DestroyWindow((HWND)result);}result=FAIL;error=scope.failure;} \
@@ -130,7 +135,7 @@ DIALOG_HOOK(DialogBoxIndirectParamW,LPCDLGTEMPLATEW,INT_PTR,TRUE,-1)
 static __typeof__(&NAME) real_##NAME; \
 static NTW16S_UNWIND_FUNCTION HWND WINAPI hook_##NAME(TYPE *parameters) \
 { ntw16s_unwind_scope unwind;title_scope scope;HWND result=NULL;DWORD error=ERROR_SUCCESS; \
-  if(!begin_titles(&scope,FALSE))return NULL; \
+  if(!begin_titles(&scope,TRUE))return NULL; \
   NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
   } NTW16S_UNWIND_END(unwind); \
   if(scope.failure){if(result)DestroyWindow(result);result=NULL;error=scope.failure;} \

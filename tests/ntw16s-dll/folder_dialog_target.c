@@ -10,7 +10,7 @@
 static DWORD owner_thread;
 static volatile LONG seen, changed, initialized;
 static HWND dialog;
-static BOOL cancel_mode, new_folder_mode, same_mode, controls_mode;
+static BOOL cancel_mode, new_folder_mode, same_mode, controls_mode,classic_new_mode,classic_cancel_mode;
 static BOOL controls_ok;
 static volatile LONG shell_seen;
 static WCHAR wanted[MAX_PATH], initial[MAX_PATH], current[MAX_PATH];
@@ -27,6 +27,17 @@ static BOOL screen_pixels(int x,int y,int width,int height,DWORD *pixels)
     if(bitmap)DeleteObject(bitmap);
     if(memory)DeleteDC(memory);
     ReleaseDC(NULL,screen);return ok;
+}
+static BOOL window_arrow_pixels(HWND w,const RECT *outer,const SCROLLBARINFO *bar,COLORREF *pixels,int *width,int *height)
+{
+    int left=bar->rcScrollBar.left-outer->left,top=bar->rcScrollBar.bottom-outer->top-bar->dxyLineButton;
+    *width=bar->rcScrollBar.right-bar->rcScrollBar.left;*height=bar->dxyLineButton;
+    if(*width<=0||*height<=0||*width>64||*height>64)return FALSE;
+    HDC dc=GetWindowDC(w);if(!dc)return FALSE;BOOL ok=TRUE;
+    for(int y=0;y<*height;++y)for(int x=0;x<*width;++x){COLORREF c=GetPixel(dc,left+x,top+y);
+        if(c==CLR_INVALID)ok=FALSE;
+        pixels[y*(*width)+x]=c;}
+    ReleaseDC(w,dc);return ok;
 }
 static void CALLBACK test_controls(HWND window,UINT message,UINT_PTR timer,DWORD time)
 {
@@ -47,6 +58,10 @@ static void CALLBACK test_controls(HWND window,UINT message,UINT_PTR timer,DWORD
     DwmFlush();LRESULT folder_count=SendMessageW(folders,LB_GETCOUNT,0,0);
     LRESULT folder_before=SendMessageW(folders,LB_GETTOPINDEX,0,0);
     SCROLLBARINFO folder_bar={.cbSize=sizeof(folder_bar)};RECT rect;BOOL folder_bar_ok=GetScrollBarInfo(folders,OBJID_VSCROLL,&folder_bar) && GetWindowRect(folders,&rect);
+    HDC window_dc=folder_bar_ok?GetWindowDC(folders):NULL;
+    COLORREF local_pixel=window_dc?GetPixel(window_dc,folder_bar.rcScrollBar.left-rect.left+1,folder_bar.rcScrollBar.bottom-rect.top-2):CLR_INVALID;
+    printf("FOLDER_WINDOW_DC pixel=%08lx valid=%d\n",(unsigned long)local_pixel,local_pixel!=CLR_INVALID);
+    if(window_dc)ReleaseDC(folders,window_dc);
     DWORD pixels[4096],after_pixels[4096],repaint_pixels[4096];
     POINT logical_start={folder_bar.rcScrollBar.left,folder_bar.rcScrollBar.bottom-folder_bar.dxyLineButton};
     POINT logical_end={folder_bar.rcScrollBar.right,folder_bar.rcScrollBar.bottom};
@@ -61,11 +76,20 @@ static void CALLBACK test_controls(HWND window,UINT message,UINT_PTR timer,DWORD
     same_pixels=same_pixels && initial_own;
     if(same_pixels)same_pixels=screen_pixels(left,top,width,height,pixels);
     SendMessageW(folders,WM_VSCROLL,SB_LINEDOWN,0);LRESULT folder_after=SendMessageW(folders,LB_GETTOPINDEX,0,0);
+    COLORREF pressed[4096],repainted[4096];int pw=0,ph=0,rw=0,rh=0;BOOL press_read=FALSE,repaint_read=FALSE;
     BOOL folder_capture=FALSE;
     if(folder_bar_ok){int x=(folder_bar.rcScrollBar.left+folder_bar.rcScrollBar.right)/2,y=folder_bar.rcScrollBar.bottom-folder_bar.dxyLineButton/2;
         LPARAM point=MAKELPARAM(x,y);SendMessageW(folders,WM_NCLBUTTONDOWN,HTVSCROLL,point);
         folder_capture=GetCapture()==folders;
+        press_read=window_arrow_pixels(folders,&rect,&folder_bar,pressed,&pw,&ph);
+        HMODULE style=GetModuleHandleW(sizeof(void*)==4?L"ntw16s32.dll":L"ntw16s64.dll");
+        FARPROC raw=style?GetProcAddress(style,"win16_style_scrollbars_paint"):NULL;
+        typedef void (__cdecl *paint_fn)(HWND,HDC,const void *);paint_fn paint=NULL;memcpy(&paint,&raw,sizeof(paint));
+        if(paint){paint(folders,NULL,NULL);repaint_read=window_arrow_pixels(folders,&rect,&folder_bar,repainted,&rw,&rh);}
         POINT up={x,y};ScreenToClient(folders,&up);SendMessageW(folders,WM_LBUTTONUP,0,MAKELPARAM(up.x,up.y));}
+    int press_diff=0;if(press_read&&repaint_read&&pw==rw&&ph==rh)
+        for(int i=0;i<pw*ph;++i)if(pressed[i]!=repainted[i])++press_diff;
+    printf("FOLDER_WINDOW_PRESS read=%d repaint=%d size=%dx%d diff=%d\n",press_read,repaint_read,pw,ph,press_diff);
     printf("FOLDER_SCROLL_TRACK capture_on_press=%d\n",folder_capture);
     LRESULT folder_click=SendMessageW(folders,LB_GETTOPINDEX,0,0);
     SCROLLINFO setpos={.cbSize=sizeof(setpos),.fMask=SIF_POS,.nPos=3};SetScrollInfo(folders,SB_VERT,&setpos,TRUE);
@@ -94,12 +118,19 @@ static BOOL CALLBACK inspect(HWND window,LPARAM ignored)
     (void)ignored;
     WCHAR text[128];GetWindowTextW(window,text,128);
     if(!IsWindowVisible(window))return TRUE;
-    if(new_folder_mode && seen && window!=dialog && GetDlgItem(window,IDOK)){
+    if(classic_new_mode && seen && window!=dialog && !lstrcmpW(text,L"New Folder") &&
+        GetDlgItem(window,102) && GetWindow(window,GW_OWNER)==dialog){
+        if(!classic_cancel_mode)SetDlgItemTextW(window,102,L"created");
+        InterlockedExchange(&shell_seen,1);
+        PostMessageW(window,WM_COMMAND,classic_cancel_mode?IDCANCEL:IDOK,0);
+        return FALSE;
+    }
+    if(new_folder_mode && !classic_new_mode && seen && window!=dialog && GetDlgItem(window,IDOK)){
         InterlockedExchange(&shell_seen,1);
         PostMessageW(window,WM_COMMAND,IDCANCEL,0);
         return FALSE;
     }
-    if(lstrcmpW(text,L"Select Folder") || !GetDlgItem(window,1121))return TRUE;
+    if((classic_new_mode && seen) || lstrcmpW(text,L"Select Folder") || !GetDlgItem(window,1121))return TRUE;
     WCHAR file[MAX_PATH];
     if(swprintf(file,MAX_PATH,L"%ls\\__win16s_folder__",wanted)<0)return FALSE;
     WCHAR olddir[MAX_PATH]=L"",oldfile[MAX_PATH]=L"";GetDlgItemTextW(window,1088,olddir,MAX_PATH);GetDlgItemTextW(window,1152,oldfile,MAX_PATH);
@@ -114,7 +145,11 @@ static DWORD WINAPI observer(void *ignored)
     (void)ignored;
     for(unsigned i=0;i<400;++i){
         if(!seen || (new_folder_mode && !shell_seen))EnumThreadWindows(owner_thread,inspect,0);
-        if(seen && IsWindow(dialog) && (!controls_mode || i>20) && i%10==0)PostMessageW(dialog,WM_COMMAND,new_folder_mode?0x5717:(cancel_mode?IDCANCEL:IDOK),0);
+        if(seen && IsWindow(dialog) && (!controls_mode || i>20) && i%10==0){
+            UINT action=new_folder_mode?0x5717:(cancel_mode?IDCANCEL:IDOK);
+            if(classic_new_mode && shell_seen)action=classic_cancel_mode?IDCANCEL:IDOK;
+            if(!classic_new_mode || !shell_seen || IsWindowEnabled(dialog))PostMessageW(dialog,WM_COMMAND,action,0);
+        }
         if(seen && !IsWindow(dialog) && (!new_folder_mode || shell_seen))break;
         Sleep(50);
     }
@@ -126,7 +161,7 @@ static int CALLBACK callback(HWND window,UINT message,LPARAM data,LPARAM context
     if(context!=0x12345678)return 1;
     if(message==BFFM_INITIALIZED){
         InterlockedIncrement(&initialized);
-        SendMessageW(window,BFFM_SETSELECTIONW,TRUE,(LPARAM)(controls_mode?wanted:initial));
+        SendMessageW(window,BFFM_SETSELECTIONW,TRUE,(LPARAM)((controls_mode||classic_new_mode)?wanted:initial));
     }else if(message==BFFM_SELCHANGED){
         InterlockedIncrement(&changed);current[0]=0;
         if(data)SHGetPathFromIDListW((PCIDLIST_ABSOLUTE)data,current);
@@ -139,9 +174,11 @@ int wmain(int argc,WCHAR **argv)
 {
     if(argc<2 || argc>3)return 2;
     cancel_mode=argc==3 && !lstrcmpW(argv[2],L"cancel");
-    new_folder_mode=argc==3 && !lstrcmpW(argv[2],L"newfolder");
+    classic_cancel_mode=argc==3 && (!lstrcmpW(argv[2],L"newclassiccancel") || !lstrcmpW(argv[2],L"newfolder"));
+    classic_new_mode=classic_cancel_mode || (argc==3 && !lstrcmpW(argv[2],L"newclassic"));
+    new_folder_mode=classic_new_mode || (argc==3 && !lstrcmpW(argv[2],L"newfolder"));
     controls_mode=argc==3 && !lstrcmpW(argv[2],L"controls");
-    same_mode=controls_mode || (argc==3 && !lstrcmpW(argv[2],L"same"));
+    same_mode=classic_new_mode || controls_mode || (argc==3 && !lstrcmpW(argv[2],L"same"));
     if(!GetTempPathW(MAX_PATH,initial))return 3;
     if(swprintf(wanted,MAX_PATH,L"%lswin16s-%lu-%lu",initial,GetCurrentProcessId(),GetTickCount())<0)return 3;
     if(!CreateDirectoryW(wanted,NULL))return 4;
@@ -166,15 +203,25 @@ int wmain(int argc,WCHAR **argv)
     WCHAR returned[MAX_PATH]=L"";
     BOOL ok=result && SHGetPathFromIDListW(result,returned);
     if(result)CoTaskMemFree(result);
-    WaitForSingleObject(thread,12000);CloseHandle(thread);
-    WCHAR expected[MAX_PATH];lstrcpynW(expected,(same_mode&&!controls_mode)?initial:wanted,MAX_PATH);
+    DWORD wait=WaitForSingleObject(thread,12000),worker=99;if(wait==WAIT_OBJECT_0)GetExitCodeThread(thread,&worker);CloseHandle(thread);
+    WCHAR expected[MAX_PATH];lstrcpynW(expected,(same_mode&&!controls_mode&&!classic_new_mode)?initial:wanted,MAX_PATH);
     size_t len=wcslen(expected);if(len>3 && expected[len-1]==L'\\')expected[len-1]=0;
+    if(classic_new_mode && !classic_cancel_mode && wcslen(expected)+8<MAX_PATH)wcscat(expected,L"\\created");
     BOOL same=ok&&!lstrcmpiW(expected,returned);
+    BOOL callback_matches=!classic_new_mode || !lstrcmpiW(expected,current);
     printf("FOLDER_DIALOG bits=%u ansi=%d seen=%ld init=%ld changed=%ld ok=%d same=%d cancel=%d new=%d shell=%ld wanted=%ls returned=%ls last=%ls\n",
         (unsigned)(sizeof(void*)*8),argv[1][0]==L'a',seen,initialized,changed,ok,same,cancel_mode,new_folder_mode,shell_seen,wanted,returned,current);
     CoUninitialize();
     if(controls_mode)for(int i=0;i<15;++i){WCHAR file[MAX_PATH];if(swprintf(file,MAX_PATH,L"%ls\\File%02d.txt",wanted,i)>=0)DeleteFileW(file);
         if(swprintf(file,MAX_PATH,L"%ls\\Folder%02d",wanted,i)>=0)RemoveDirectoryW(file);}
-    RemoveDirectoryW(wanted);
+    BOOL child_removed=TRUE;
+    if(classic_new_mode && !classic_cancel_mode){WCHAR created[MAX_PATH];
+        if(swprintf(created,MAX_PATH,L"%ls\\created",wanted)<0)child_removed=FALSE;
+        else child_removed=RemoveDirectoryW(created);}
+    BOOL root_removed=RemoveDirectoryW(wanted);
+    if(classic_new_mode)printf("FOLDER_CLASSIC_NEW cancel=%d prompt=%ld callback=%d cleaned=%d wait=%lu worker=%lu\n",
+        classic_cancel_mode,shell_seen,callback_matches,child_removed&&root_removed,wait,worker);
+    if(classic_new_mode)return seen&&initialized==1&&changed&&shell_seen&&callback_matches&&child_removed&&root_removed&&
+        wait==WAIT_OBJECT_0&&worker==0&&(classic_cancel_mode?!result:same)?0:1;
     return seen && initialized==1 && changed && (!controls_mode || controls_ok) && ((cancel_mode || new_folder_mode)?(!result && (!new_folder_mode || shell_seen)):same)?0:1;
 }

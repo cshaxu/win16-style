@@ -86,6 +86,7 @@ try{
         $scrollTarget=Join-Path (Join-Path $BuildRoot $arch) 'scroll-frame-target.exe'
         $eventsTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-events-target.exe'
         $navTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-nav-target.exe'
+        $rootFolderTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-root-folder-target.exe'
         $redirectTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-redirect-target.exe'
         $initialRedirectTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-initial-redirect-target.exe'
         $initialVetoTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-initial-veto-target.exe'
@@ -93,6 +94,9 @@ try{
         $liveFolderTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-folder-live-target.exe'
         $linkTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-link-target.exe'
         $oldEventTarget=Join-Path (Join-Path $BuildRoot $arch) 'old-file-event-target.exe'
+        $oldNestedTarget=Join-Path (Join-Path $BuildRoot $arch) 'old-dialog-nested-target.exe'
+        $creationWndprocTarget=Join-Path (Join-Path $BuildRoot $arch) 'creation-wndproc-target.exe'
+        $creationDll=if($arch -eq 'x86'){$d32}else{$d64}
         $multiTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-multi-target.exe'
         $identityTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-identity-target.exe'
         $comTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-dialog-target.exe'
@@ -120,10 +124,16 @@ try{
         $cases+=Case "dialog-com-multi-$arch" $dialogDriver @($run,$multiTarget,'accept','spaces') @("COM_MULTI bits=$bits",'selected=2','count=2 paths=11','single=8000ffff','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-multi-single-$arch" $dialogDriver @($run,$multiTarget,'accept','spaces','single') @("COM_MULTI bits=$bits",'selected=1','count=1 paths=10','single=00000000','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-multi-cancel-$arch" $dialogDriver @($run,$multiTarget,'cancel','spaces') @("COM_MULTI bits=$bits",'selected=2','hr=800704c7','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-com-multi-vetocancel-native-$arch" $dialogDriver @('--direct',$multiTarget,'vetocancel','spaces','both','events','modern') @('MULTI_EVENTS calls=1 counts=1 paths=1 refs=1',"COM_MULTI bits=$bits",'hr=800704c7 array=80004005','single=8000ffff','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-com-multi-vetocancel-styled-$arch" $dialogDriver @($run,$multiTarget,'vetocancel','spaces','both','events','modern') @('MULTI_EVENTS calls=1 counts=1 paths=1 refs=1',"COM_MULTI bits=$bits",'hr=800704c7 array=80004005','single=8000ffff','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-old-event-$arch" $dialogDriver @($run,$oldEventTarget) @("OLD_FILE_EVENT bits=$bits",'calls=2 valid=2 kept=1 result=1','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-old-nested-$arch" $dialogDriver @($run,$oldNestedTarget) @("NESTED_OLD bits=$bits",'opens=3 checks=3 attached=3 failures=0 cancelled=111','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "creation-wndproc-$arch" $dialogDriver @('--direct',$creationWndprocTarget,$creationDll) @("NC_REPLACE bits=$bits",'attached_before=1 attached_after=1 ended=1 installed=1','failure=0','DIALOG_DRIVER exit=0') 30
         foreach($eventMode in @('normal','release','self','remove')) {
             $cases+=Case "dialog-com-event-$arch-$eventMode" $dialogDriver @($run,$eventsTarget,$eventMode) @("COM_EVENTS bits=$bits",'unadvise=00000000 refs=1','DIALOG_DRIVER exit=0') 30
         }
+        $cases+=Case "dialog-com-folder-event-native-$arch" $dialogDriver @('--direct',$eventsTarget,'folder') @("COM_EVENTS bits=$bits seen=1 old=0 calls=2 correct=2 identity=2",'FOLDER_EVENT_FINAL correct=1 hr=00000000','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-com-folder-event-styled-$arch" $dialogDriver @($run,$eventsTarget,'folder') @("COM_EVENTS bits=$bits seen=1 old=0 calls=2 correct=2 identity=2",'FOLDER_EVENT_FINAL correct=1 hr=00000000','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-overwrite-native-$arch" $dialogDriver @('--direct',$eventsTarget,'overwrite') @("COM_EVENTS bits=$bits",'old=0','COM_EVENT_OVERWRITE count=2 correct=2 ok=1 kept=1 refs=1 worker=0','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-overwrite-styled-$arch" $dialogDriver @($run,$eventsTarget,'overwrite') @("COM_EVENTS bits=$bits",'old=0','COM_EVENT_OVERWRITE count=2 correct=2 ok=1 kept=1 refs=1 worker=0','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-overwrite-multi-native-$arch" $dialogDriver @('--direct',$eventsTarget,'overwrite-multi') @("COM_EVENTS bits=$bits",'old=0','COM_EVENT_OVERWRITE_MULTI other=0 ok=2 refs=1,1','DIALOG_DRIVER exit=0') 30
@@ -138,17 +148,25 @@ try{
         $cases+=Case "dialog-com-share-styled-$arch" $dialogDriver @($run,$eventsTarget,'share') @("COM_EVENTS bits=$bits",'old=0','COM_EVENT_SHARE count=1 correct=1 ok=1 refs=1 worker=0','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-share-refuse-native-$arch" $dialogDriver @('--direct',$eventsTarget,'share-refuse') @("COM_EVENTS bits=$bits",'old=0','COM_EVENT_SHARE count=2 correct=2 ok=1 refs=1 worker=0','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-share-refuse-styled-$arch" $dialogDriver @($run,$eventsTarget,'share-refuse') @("COM_EVENTS bits=$bits",'old=0','COM_EVENT_SHARE count=2 correct=2 ok=1 refs=1 worker=0','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-com-root-native-$arch" $dialogDriver @('--direct',$rootFolderTarget) @("ROOT_FOLDER bits=$bits old=0 hr=00000000",'match=1','ROOT_RESULT hr=800704c7 wait=0 worker=0','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-com-root-styled-$arch" $dialogDriver @($run,$rootFolderTarget,'old') @("ROOT_FOLDER bits=$bits old=1 hr=00000000",'match=1','ROOT_RESULT hr=800704c7 wait=0 worker=0','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-nav-native-$arch" $dialogDriver @('--direct',$navTarget) @("NAV_COM bits=$bits",'root=1 child=1 veto_root=1 set_ok=2','refs=1 wait=0 worker=0','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-nav-styled-$arch" $dialogDriver @($run,$navTarget) @("NAV_COM bits=$bits",'root=1 child=1 veto_root=1 set_ok=2','refs=1 wait=0 worker=0','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-com-folder-nav-native-$arch" $dialogDriver @('--direct',$navTarget,'folder') @('FOLDER_NAV_TYPE count=0',"NAV_COM bits=$bits",'root=1 child=1 veto_root=1 set_ok=2','refs=1 wait=0 worker=0','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-com-folder-nav-styled-$arch" $dialogDriver @($run,$navTarget,'folder') @('FOLDER_NAV_TYPE count=0',"NAV_COM bits=$bits",'root=1 child=1 veto_root=1 set_ok=2','refs=1 wait=0 worker=0','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-redirect-native-$arch" $dialogDriver @('--direct',$redirectTarget) @("REDIRECT_RESULT bits=$bits",'old=0','requested=1 arrived=1 child=0','refs=1 worker=0','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-redirect-styled-$arch" $dialogDriver @($run,$redirectTarget) @("REDIRECT_RESULT bits=$bits",'old=0','requested=1 arrived=1 child=0','refs=1 worker=0','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-initial-redirect-native-$arch" $dialogDriver @('--direct',$initialRedirectTarget) @("REDIRECT_INITIAL bits=$bits old=0 sequence=6 errors=0",'DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-initial-redirect-styled-$arch" $dialogDriver @($run,$initialRedirectTarget) @("REDIRECT_INITIAL bits=$bits old=0 sequence=6 errors=0",'DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-com-folder-redirect-native-$arch" $dialogDriver @('--direct',$initialRedirectTarget,'folder') @("REDIRECT_INITIAL bits=$bits old=0 sequence=6 errors=0",'DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-com-folder-redirect-styled-$arch" $dialogDriver @($run,$initialRedirectTarget,'folder') @("REDIRECT_INITIAL bits=$bits old=0 sequence=6 errors=0",'DIALOG_DRIVER exit=0') 30
         foreach($vetoMode in @('once','twice')) {
             $vetoArg=if($vetoMode -eq 'twice'){@('twice')}else{@()}
             $cases+=Case "dialog-com-initial-veto-native-$arch-$vetoMode" $dialogDriver (@('--direct',$initialVetoTarget)+$vetoArg) @("VETO_ASSERT bits=$bits old=0 fallback=1 final_ok=1 refs=1 worker=0",'DIALOG_DRIVER exit=0') 30
             $cases+=Case "dialog-com-initial-veto-styled-$arch-$vetoMode" $dialogDriver (@($run,$initialVetoTarget)+$vetoArg) @("VETO_ASSERT bits=$bits old=0 fallback=1 final_ok=1 refs=1 worker=0",'DIALOG_DRIVER exit=0') 30
         }
+        $cases+=Case "dialog-com-folder-veto-native-$arch" $dialogDriver @('--direct',$initialVetoTarget,'folder') @("VETO_ASSERT bits=$bits old=0 fallback=1 final_ok=1 refs=1 worker=0",'DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-com-folder-veto-styled-$arch" $dialogDriver @($run,$initialVetoTarget,'folder') @("VETO_ASSERT bits=$bits old=0 fallback=1 final_ok=1 refs=1 worker=0",'DIALOG_DRIVER exit=0') 30
         foreach($folderMode in @('native','styled')) {
             $folderLaunch=if($folderMode -eq 'native'){'--direct'}else{$run}
             $folderOld=if($folderMode -eq 'native'){'old=0'}else{'old=1'}
@@ -215,6 +233,15 @@ try{
             $layout=if($mode -eq 'hook'){'0'}else{'1'}
             $cases+=Case "dialog-file-$arch-$mode" $dialogDriver @($run,$fileTarget,'open','wide',$layout,$mode) @("FILE_DIALOG bits=$bits",'DIALOG_DRIVER exit=0') 30
         }
+        $cases+=Case "dialog-com-folder-create-$arch" $dialogDriver @($run,$eventsTarget,'folder-noevents') @("COM_EVENTS bits=$bits seen=1 old=1 calls=0",'FOLDER_EVENT_FINAL correct=1','COM_FOLDER_CREATE invalid=0 prompt=1 rejected=0 made=1 cleaned=1 wrong_directory=0','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-com-folder-create-cwd-$arch" $dialogDriver @($run,$eventsTarget,'folder-cwd-noevents') @("COM_EVENTS bits=$bits seen=1 old=1 calls=0",'FOLDER_EVENT_FINAL correct=1','COM_FOLDER_CREATE invalid=0 prompt=1 rejected=0 made=1 cleaned=1 wrong_directory=0','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-com-folder-create-invalid-$arch" $dialogDriver @($run,$eventsTarget,'folder-invalid-noevents') @("COM_EVENTS bits=$bits seen=1 old=1 calls=0",'COM_FOLDER_CREATE invalid=1 prompt=1 rejected=1 made=0 cleaned=1 wrong_directory=0','hr=800704c7','DIALOG_DRIVER exit=0') 30
+        foreach($encoding in @('ansi','wide')) {
+            foreach($mode in @('newclassic','newclassiccancel')) {
+                $cancelFlag=if($mode -eq 'newclassiccancel'){'1'}else{'0'}
+                $cases+=Case "dialog-folder-create-$arch-$encoding-$mode" $dialogDriver @($run,$folderTarget,$encoding,$mode) @("FOLDER_DIALOG bits=$bits","FOLDER_CLASSIC_NEW cancel=$cancelFlag prompt=1 callback=1 cleaned=1 wait=0 worker=0",'DIALOG_DRIVER exit=0') 30
+            }
+        }
         foreach($encoding in @('ansi','wide')) {
             foreach($mode in @('select','cancel')) {
                 $dialogArgs=@($run,$folderTarget,$encoding)
@@ -223,7 +250,9 @@ try{
             }
         }
         foreach($mode in @('same','newfolder','controls')) {
-            $cases+=Case "dialog-folder-$arch-$mode" $dialogDriver @($run,$folderTarget,'wide',$mode) @("FOLDER_DIALOG bits=$bits",'DIALOG_DRIVER exit=0') 45
+            $markers=@("FOLDER_DIALOG bits=$bits",'DIALOG_DRIVER exit=0')
+            if($mode -eq 'controls'){$markers+=@('FOLDER_RIGHT_VISUAL_PASS settled_equals_repaint=1')}
+            $cases+=Case "dialog-folder-$arch-$mode" $dialogDriver @($run,$folderTarget,'wide',$mode) $markers 45
         }
     }
     $cases+=@(

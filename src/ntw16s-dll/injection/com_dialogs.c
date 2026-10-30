@@ -35,6 +35,7 @@ typedef struct file_proxy {
     BOOL classic_initializing;
     LRESULT classic_drive_index;
     BOOL classic_close_pending;
+    BOOL classic_show_aborted;
     HRESULT classic_close_result;
     OPENFILENAMEW *classic_ofn;
     BOOL classic_overwrite_suppressed;
@@ -493,9 +494,20 @@ static HRESULT native_show(void *data)
 {native_call *call=data;return IFileDialog_Show(call->dialog,call->owner);}
 static HRESULT show_native(file_proxy *p,HWND owner)
 {native_call call={p->native,owner};return ntw16s_dialog_style_scope(native_show,&call);}
-typedef struct folder_call {HWND owner;PCWSTR title,initial,ok_label,cancel_label,file_label;PWSTR result;DWORD capacity;} folder_call;
+typedef struct folder_call {HWND owner;PCWSTR title,initial,ok_label,cancel_label,file_label;PWSTR result;DWORD capacity;
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+    file_proxy *proxy;
+#endif
+} folder_call;
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+static UINT_PTR classic_folder_observe(HWND,UINT,WPARAM,LPARAM,void *);
+#endif
 static HRESULT classic_folder_show(void *data)
-{folder_call *call=data;return ntw16s_classic_folder(call->owner,call->title,call->initial,call->ok_label,call->cancel_label,call->file_label,call->result,call->capacity);}
+{folder_call *call=data;return ntw16s_classic_folder(call->owner,call->title,call->initial,call->ok_label,call->cancel_label,call->file_label,call->result,call->capacity
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+    ,call->proxy?classic_folder_observe:NULL,call->proxy
+#endif
+    );}
 typedef struct classic_call {OPENFILENAMEW *ofn;BOOL save;BOOL selected;DWORD error;} classic_call;
 static HRESULT classic_show(void *data)
 {
@@ -530,21 +542,13 @@ static HRESULT save_item(PCWSTR path,IShellItem **item)
     if(ctx)IBindCtx_Release(ctx);
     IFileSystemBindData_Release(&data->iface);return hr;
 }
-/* Old common dialogs notify after changing their process current directory.
- * Capture that transition immediately instead of consulting the unrelated
- * dormant modern object's initial folder on later COM calls. */
+/* Read the template's selected ancestor path rather than the mutable
+ * process current directory when reporting the dialog's current folder. */
 static void classic_capture_folder(file_proxy *p)
 {
-    DWORD needed=GetCurrentDirectoryW(0,NULL);IShellItem *item=NULL;
-    HRESULT hr=needed?S_OK:HRESULT_FROM_WIN32(GetLastError());
-    WCHAR *path=needed?CoTaskMemAlloc((size_t)needed*sizeof(WCHAR)):NULL;
-    if(needed && !path)hr=E_OUTOFMEMORY;
-    if(SUCCEEDED(hr)){
-        DWORD copied=GetCurrentDirectoryW(needed,path);
-        if(!copied || copied>=needed)hr=HRESULT_FROM_WIN32(copied?ERROR_INSUFFICIENT_BUFFER:GetLastError());
-        else hr=SHCreateItemFromParsingName(path,NULL,&IID_IShellItem,(void **)&item);
-    }
-    if(path)CoTaskMemFree(path);
+    WCHAR path[MAX_PATH];IShellItem *item=NULL;
+    HRESULT hr=ntw16s_old_dialog_folder(p->active_window,path,ARRAYSIZE(path))?
+        SHCreateItemFromParsingName(path,NULL,&IID_IShellItem,(void **)&item):E_FAIL;
     if(p->live_folder)IShellItem_Release(p->live_folder);
     p->live_folder=item;p->live_folder_error=hr;
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
@@ -832,7 +836,9 @@ static UINT_PTR CALLBACK classic_hook(HWND w,UINT message,WPARAM wp,LPARAM lp)
         if(selection && message==selection && wp==lst1){file_proxy *p=GetPropW(w,key);if(p){classic_capture_selection(w,p);
             if(p->events)(void)classic_event_dispatch(p,CLASSIC_SELECTION_CHANGED,NULL);}}
         if(selection && message==selection && wp==cmb1){file_proxy *p=GetPropW(w,key);
-            if(p && p->events)(void)classic_event_dispatch(p,CLASSIC_TYPE_CHANGED,NULL);}
+            FILEOPENDIALOGOPTIONS options=0;
+            if(p && p->events && (p->filter || FAILED(IFileDialog_GetOptions(p->native,&options)) || !(options&FOS_PICKFOLDERS)))
+                (void)classic_event_dispatch(p,CLASSIC_TYPE_CHANGED,NULL);}
 #endif
         UINT navigate=RegisterWindowMessageW(folder_message_name);
         if(navigate && message==navigate){file_proxy *p=GetPropW(w,key);if(p)classic_navigate_folder(w,p,key);return 1;}
@@ -850,6 +856,30 @@ static UINT_PTR CALLBACK classic_hook(HWND w,UINT message,WPARAM wp,LPARAM lp)
     }
     return 0;
 }
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+typedef struct folder_init_scope {OPENFILENAMEW *ofn;LPARAM saved;} folder_init_scope;
+static void folder_init_cleanup(void *value)
+{folder_init_scope *scope=value;scope->ofn->lCustData=scope->saved;}
+static NTW16S_UNWIND_FUNCTION UINT_PTR classic_folder_observe(HWND w,UINT message,WPARAM wp,LPARAM lp,void *context)
+{
+    file_proxy *p=context;
+    if(message==WM_INITDIALOG && lp){
+        OPENFILENAMEW *ofn=(OPENFILENAMEW *)lp;folder_init_scope scope={ofn,ofn->lCustData};ntw16s_unwind_scope unwind;
+        ofn->lCustData=(LPARAM)p;NTW16S_UNWIND_BEGIN(unwind,folder_init_cleanup,&scope);
+        UINT_PTR result=classic_hook(w,message,wp,lp);
+        NTW16S_UNWIND_END(unwind);return result;
+    }
+    if(message>=0xc000 && message<=0xffff && message==RegisterWindowMessageW(FILEOKSTRINGW) && lp){
+        OPENFILENAMEW *original=(OPENFILENAMEW *)lp;WCHAR folder[MAX_PATH];
+        if(!original->lpstrFile || wcslen(original->lpstrFile)>=ARRAYSIZE(folder))return 1;
+        wcscpy(folder,original->lpstrFile);WCHAR *slash=wcsrchr(folder,L'\\');if(!slash)return 1;
+        if(slash==folder+2)slash[1]=0;else *slash=0;
+        OPENFILENAMEW adjusted=*original;adjusted.lpstrFile=folder;adjusted.nMaxFile=ARRAYSIZE(folder);
+        return classic_event_file_ok(p,&adjusted);
+    }
+    return classic_hook(w,message,wp,lp);
+}
+#endif
 /* The legacy multi-select contract returns space-separated 8.3 names. The
  * file offset separates the directory from its first name even for one file. */
 static HRESULT link_target_id(PCWSTR path,PIDLIST_ABSOLUTE *target)
@@ -958,7 +988,7 @@ static HRESULT proxy_show_impl(file_proxy *p,HWND owner)
 #endif
         ;
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-    if(FAILED(hr)||p->unsupported || ((flags&FOS_SHAREAWARE) && !p->events) || (p->events && (flags&FOS_PICKFOLDERS)) || (flags & ~supported))return show_native(p,owner);
+    if(FAILED(hr)||p->unsupported || ((flags&FOS_SHAREAWARE) && !p->events) || (flags & ~supported))return show_native(p,owner);
 #else
     if(FAILED(hr)||p->unsupported || p->events || (flags & ~supported))return show_native(p,owner);
 #endif
@@ -975,9 +1005,16 @@ static HRESULT proxy_show_impl(file_proxy *p,HWND owner)
     }
     if(flags&FOS_PICKFOLDERS){
         if(p->save){if(folder_path)CoTaskMemFree(folder_path);return show_native(p,owner);}
-        WCHAR selected[32768];folder_call call={owner,p->title,folder_path,p->ok_label,p->cancel_label,p->file_label,selected,ARRAYSIZE(selected)};
+        WCHAR selected[32768];folder_call call={.owner=owner,.title=p->title,.initial=folder_path,.ok_label=p->ok_label,.cancel_label=p->cancel_label,.file_label=p->file_label,.result=selected,.capacity=ARRAYSIZE(selected)
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+            ,.proxy=p->events?p:NULL
+#endif
+        };
         hr=ntw16s_dialog_style_scope(classic_folder_show,&call);if(folder_path)CoTaskMemFree(folder_path);
         if(FAILED(hr))return hr;
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+        if(p->events && p->completed && p->result)return S_OK;
+#endif
         hr=SHCreateItemFromParsingName(selected,NULL,&IID_IShellItem,(void **)&p->result);
         if(SUCCEEDED(hr))p->completed=TRUE;
         return hr;
@@ -1020,12 +1057,19 @@ static HRESULT proxy_show_impl(file_proxy *p,HWND owner)
     return hr;
 }
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-static void classic_proxy_release(void *data){proxy_release(data);}
+typedef struct classic_show_scope {file_proxy *proxy;BOOL completed;} classic_show_scope;
+static void classic_proxy_release(void *data)
+{
+    classic_show_scope *scope=data;
+    if(!scope->completed)scope->proxy->classic_show_aborted=TRUE;
+    proxy_release(scope->proxy);
+}
 static NTW16S_UNWIND_FUNCTION HRESULT proxy_show(file_proxy *p,HWND owner)
 {
-    proxy_add(p);ntw16s_unwind_scope unwind;HRESULT hr;
-    NTW16S_UNWIND_BEGIN(unwind,classic_proxy_release,p);
-    hr=proxy_show_impl(p,owner);
+    if(p->classic_show_aborted)return E_UNEXPECTED;
+    proxy_add(p);ntw16s_unwind_scope unwind;HRESULT hr;classic_show_scope scope={p,FALSE};
+    NTW16S_UNWIND_BEGIN(unwind,classic_proxy_release,&scope);
+    hr=proxy_show_impl(p,owner);scope.completed=TRUE;
     NTW16S_UNWIND_END(unwind);return hr;
 }
 #else

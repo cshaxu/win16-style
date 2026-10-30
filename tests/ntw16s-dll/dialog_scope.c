@@ -9,11 +9,23 @@ static void *scope_calloc(size_t n,size_t s)
 {if(fail_next){fail_next=FALSE;return NULL;}void *p=calloc(n,s);if(p){if(live==256)abort();records[live++]=p;}return p;}
 static void scope_free(void *p)
 {if(p){for(unsigned i=0;i<live;++i)if(records[i]==p){records[i]=records[--live];free(p);return;}abort();}}
+#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
+static BOOL fail_return_hook;
+static HHOOK WINAPI scope_set_hook(int type,HOOKPROC callback,HINSTANCE module,DWORD thread)
+{
+    if(type==WH_CALLWNDPROCRET && fail_return_hook){fail_return_hook=FALSE;SetLastError(ERROR_NOT_ENOUGH_MEMORY);return NULL;}
+    return SetWindowsHookExW(type,callback,module,thread);
+}
+#define SetWindowsHookExW scope_set_hook
+#endif
 #define calloc scope_calloc
 #define free scope_free
 #include "../../src/ntw16s-dll/attachment.c"
 #undef calloc
 #undef free
+#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
+#undef SetWindowsHookExW
+#endif
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"DIALOG_SCOPE_FAIL line=%u error=%lu %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
 static BOOL nested,detach,unsupported;static unsigned failures,observed;static HWND anchor;
 static void finish(HWND w)
@@ -95,6 +107,18 @@ static int owner_reentry(void)
 static int worker(int argc,WCHAR **argv)
 {
     (void)argc;(void)argv;CHECK(!owner_reentry());fail_next=TRUE;CHECK(!Ntw16sCreationBegin(TRUE) && !live);
+#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
+    {
+        ntw16s_creation_scope *outer=Ntw16sCreationBegin(TRUE);CHECK(outer && creation_return_hook);
+        ntw16s_creation_scope *inner=ntw16s_creation_begin_dialog(TRUE);CHECK(inner && !creation_return_hook);
+        ntw16s_creation_result ir={0},or={0};fail_return_hook=TRUE;
+        CHECK(Ntw16sCreationEnd(inner,&ir) && ir.failure==ERROR_NOT_ENOUGH_MEMORY && !creation_return_hook);
+        CHECK(Ntw16sCreationEnd(outer,&or) && or.failure==ERROR_NOT_ENOUGH_MEMORY && !live && !current && !creation_before_hook);
+        outer=Ntw16sCreationBegin(TRUE);CHECK(outer && creation_return_hook);
+        CHECK(Ntw16sCreationEnd(outer,NULL) && !live && !current && !creation_return_hook && !creation_before_hook);
+        puts("DIALOG_SCOPE_RESTORE_FAILURE propagated=1 recovered=1 allocations=0");
+    }
+#endif
     anchor=CreateWindowW(L"STATIC",L"Dialog scope anchor",WS_OVERLAPPEDWINDOW,0,0,120,80,NULL,NULL,GetModuleHandleW(NULL),NULL);
     CHECK(anchor);ShowWindow(anchor,SW_SHOW);
     struct {DLGTEMPLATE d;WORD menu,cls,title;} t={.d={.style=WS_POPUP|WS_CAPTION|WS_SYSMENU,.cx=180,.cy=100}};

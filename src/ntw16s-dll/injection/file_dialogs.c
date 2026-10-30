@@ -17,21 +17,32 @@ static BOOL (WINAPI *native_save_w)(LPOPENFILENAMEW);
  * a caller's callback speaks a different protocol and must never be translated. */
 /* The OS may also create an old-style template for callers with their own
  * hooks. Observe its initialized controls without replacing the caller hook. */
+static void old_dialog_initialized(HWND window)
+{
+    WCHAR dialog_class[32],list_class[32];HWND list=GetDlgItem(window,lst2);
+    if(list && GetParent(list)==window && GetClassNameW(window,dialog_class,ARRAYSIZE(dialog_class)) &&
+        !lstrcmpW(dialog_class,L"#32770") && GetClassNameW(list,list_class,ARRAYSIZE(list_class)) &&
+        !lstrcmpiW(list_class,L"ListBox"))ntw16s_old_dialog_chrome(window);
+}
+#ifndef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
 static LRESULT CALLBACK old_dialog_return(int code,WPARAM wparam,LPARAM lparam)
 {
-    if(code>=0 && lparam){
-        const CWPRETSTRUCT *m=(const CWPRETSTRUCT *)lparam;
-        if(m->message==WM_INITDIALOG){
-            WCHAR dialog_class[32],list_class[32];HWND list=GetDlgItem(m->hwnd,lst2);
-            if(list && GetParent(list)==m->hwnd && GetClassNameW(m->hwnd,dialog_class,ARRAYSIZE(dialog_class)) &&
-                !lstrcmpW(dialog_class,L"#32770") && GetClassNameW(list,list_class,ARRAYSIZE(list_class)) &&
-                !lstrcmpiW(list_class,L"ListBox"))ntw16s_old_dialog_chrome(m->hwnd);
-        }
-    }
+    if(code>=0 && lparam){const CWPRETSTRUCT *m=(const CWPRETSTRUCT *)lparam;
+        if(m->message==WM_INITDIALOG)old_dialog_initialized(m->hwnd);}
     return CallNextHookEx(NULL,code,wparam,lparam);
 }
+#endif
+typedef struct old_dialog_scope {HHOOK hook;
+#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
+    void (*previous)(HWND);
+#endif
+} old_dialog_scope;
 static void old_dialog_end(void *value)
-{HHOOK hook=*(HHOOK *)value;if(hook)UnhookWindowsHookEx(hook);}
+{old_dialog_scope *scope=value;if(scope->hook)UnhookWindowsHookEx(scope->hook);
+#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
+    ntw16s_creation_dialog_observer(scope->previous);
+#endif
+}
 static UINT_PTR CALLBACK old_dialog_hook(HWND window, UINT message, WPARAM wparam, LPARAM lparam)
 {
     (void)wparam; (void)lparam;
@@ -43,6 +54,11 @@ static UINT_PTR CALLBACK old_dialog_hook(HWND window, UINT message, WPARAM wpara
     OFN_NOCHANGEDIR | OFN_SHOWHELP | OFN_NOVALIDATE | OFN_PATHMUSTEXIST | \
     OFN_FILEMUSTEXIST | OFN_CREATEPROMPT | OFN_NOREADONLYRETURN | OFN_NOTESTFILECREATE | \
     OFN_NONETWORKBUTTON | OFN_EXPLORER | OFN_LONGNAMES | OFN_EXTENSIONDIFFERENT)
+#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
+#define NTW16S_OLD_DIALOG_OBSERVER(scope) ((scope).previous=ntw16s_creation_dialog_observer(old_dialog_initialized))
+#else
+#define NTW16S_OLD_DIALOG_OBSERVER(scope) ((scope).hook=SetWindowsHookExW(WH_CALLWNDPROCRET,old_dialog_return,NULL,GetCurrentThreadId()))
+#endif
 #define BRIDGE(name, structure, legacy_size, original) \
     typedef struct name##_call {structure *value;BOOL result;DWORD incoming,error;} name##_call; \
     static HRESULT name##_invoke(void *value) {name##_call *call=value;SetLastError(call->incoming); \
@@ -58,10 +74,10 @@ static NTW16S_UNWIND_FUNCTION BOOL WINAPI name(structure *value) \
         local.lStructSize=sizeof(local);local.Flags=(local.Flags & ~OFN_EXPLORER) | OFN_LONGNAMES | OFN_ENABLEHOOK; \
         local.lpfnHook=old_dialog_hook;passed=&local;} \
     DWORD incoming=GetLastError(); \
-    HHOOK hook=SetWindowsHookExW(WH_CALLWNDPROCRET,old_dialog_return,NULL,GetCurrentThreadId()); \
+    old_dialog_scope observer={0};NTW16S_OLD_DIALOG_OBSERVER(observer); \
     ntw16s_unwind_scope unwind;name##_call call={passed,FALSE,incoming,ERROR_SUCCESS}; \
     HRESULT status; \
-    NTW16S_UNWIND_BEGIN(unwind,old_dialog_end,&hook); {status=ntw16s_dialog_style_scope(name##_invoke,&call); \
+    NTW16S_UNWIND_BEGIN(unwind,old_dialog_end,&observer); {status=ntw16s_dialog_style_scope(name##_invoke,&call); \
     } NTW16S_UNWIND_END(unwind); \
     BOOL result=call.result;DWORD error=call.error; \
     if(FAILED(status)){result=FALSE;error=HRESULT_CODE(status);} \

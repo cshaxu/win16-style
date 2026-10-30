@@ -25,6 +25,9 @@ struct ntw16s_creation_scope {
     struct ntw16s_creation_scope *previous;
     DWORD thread;
     BOOL enabled;
+#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
+    BOOL owns_return_hook,suspended_return_hook;
+#endif
     pending_window *pending;
     ntw16s_creation_result result;
 };
@@ -80,6 +83,33 @@ static _Thread_local static_paint_scope *static_paint;
 static _Thread_local ntw16s_static_call *static_call;
 static _Thread_local HHOOK creation_return_hook;
 static _Thread_local HHOOK creation_before_hook;
+#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
+static LRESULT CALLBACK creation_return(int,WPARAM,LPARAM);
+static LRESULT creation_observe(int,WPARAM,LPARAM,BOOL);
+static _Thread_local void (*creation_dialog_observer)(HWND);
+void (*ntw16s_creation_dialog_observer(void (*observer)(HWND)))(HWND)
+{
+    void (*previous)(HWND)=creation_dialog_observer;
+    creation_dialog_observer=observer;return previous;
+}
+static LRESULT CALLBACK creation_subclass(HWND w,UINT message,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
+{
+    (void)id;(void)data;
+    LRESULT result=DefSubclassProc(w,message,a,b);
+    if(message==WM_CREATE || message==WM_INITDIALOG || message==WM_SHOWWINDOW ||
+        message==WM_WINDOWPOSCHANGED || message==WM_NCDESTROY){
+        CWPRETSTRUCT returned={.lResult=result,.lParam=b,.wParam=a,.message=message,.hwnd=w};
+        creation_observe(0,0,(LPARAM)&returned,TRUE);
+    }
+    if(message==WM_INITDIALOG && IsWindow(w) && creation_dialog_observer){
+        DWORD error=GetLastError();creation_dialog_observer(w);SetLastError(error);
+    }
+    if(message==WM_NCDESTROY || message==WM_INITDIALOG ||
+        (message==WM_CREATE && !ntw16s_class_is(w,L"#32770")))
+        RemoveWindowSubclass(w,creation_subclass,(UINT_PTR)creation_subclass);
+    return result;
+}
+#endif
 typedef struct checklist_draw_scope {
     struct checklist_draw_scope *previous;
     attachment *owner;
@@ -1871,6 +1901,11 @@ static LRESULT CALLBACK creation_before(int code,WPARAM p,LPARAM l)
         if(!pending){scope->result.failure=ERROR_NOT_ENOUGH_MEMORY;return 1;}
         pending->window=(HWND)p;pending->style=(DWORD)create->lpcs->style;
         pending->next=scope->pending;scope->pending=pending;
+#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
+        if(!creation_return_hook && !SetWindowSubclass((HWND)p,creation_subclass,(UINT_PTR)creation_subclass,0)){
+            scope->result.failure=GetLastError()?GetLastError():ERROR_GEN_FAILURE;return 1;
+        }
+#endif
         if(class_is((HWND)p,L"LISTBOX") || class_is((HWND)p,L"ComboLBox") ||
            (class_is((HWND)p,L"EDIT") && (pending->style&ES_MULTILINE))){
             if(!ntw16s_theme_capture((HWND)p)){
@@ -1888,9 +1923,15 @@ static pending_window *take_pending(ntw16s_creation_scope *scope,HWND w)
     while(*link && (*link)->window!=w)link=&(*link)->next;
     found=*link;if(found)*link=found->next;return found;
 }
+#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
+static LRESULT creation_observe(int code,WPARAM p,LPARAM l,BOOL synthetic)
+{
+    LRESULT result=synthetic?0:CallNextHookEx(NULL,code,p,l);DWORD saved=GetLastError();
+#else
 static LRESULT CALLBACK creation_return(int code,WPARAM p,LPARAM l)
 {
     LRESULT result=CallNextHookEx(NULL,code,p,l);DWORD saved=GetLastError();
+#endif
     ntw16s_creation_scope *scope=current;
     if(code>=0 && scope && scope->enabled){
         const CWPRETSTRUCT *m=(const CWPRETSTRUCT *)l;
@@ -1965,26 +2006,72 @@ static LRESULT CALLBACK creation_return(int code,WPARAM p,LPARAM l)
     }
     SetLastError(saved);return result;
 }
+#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
+static LRESULT CALLBACK creation_return(int code,WPARAM p,LPARAM l)
+{
+    LRESULT result=creation_observe(code,p,l,FALSE);
+    if(code>=0 && l && ((const CWPRETSTRUCT *)l)->message==WM_INITDIALOG && creation_dialog_observer){
+        HWND w=((const CWPRETSTRUCT *)l)->hwnd;DWORD error=GetLastError();
+        if(IsWindow(w))creation_dialog_observer(w);
+        SetLastError(error);
+    }
+    return result;
+}
+static ntw16s_creation_scope *creation_begin(BOOL enabled,BOOL dialog)
+#else
 ntw16s_creation_scope *__cdecl Ntw16sCreationBegin(BOOL enabled)
+#endif
 {
     ntw16s_creation_scope *scope=calloc(1,sizeof(*scope));
     if(!scope){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return NULL;}
     if(!current){
         creation_before_hook=SetWindowsHookExW(WH_CBT,creation_before,NULL,GetCurrentThreadId());
         if(!creation_before_hook){free(scope);return NULL;}
+#ifndef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
         creation_return_hook=SetWindowsHookExW(WH_CALLWNDPROCRET,creation_return,NULL,GetCurrentThreadId());
         if(!creation_return_hook){DWORD error=GetLastError();UnhookWindowsHookEx(creation_before_hook);creation_before_hook=NULL;free(scope);SetLastError(error);return NULL;}
+#endif
     }
+#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
+    if(dialog && creation_return_hook){
+        if(!UnhookWindowsHookEx(creation_return_hook)){DWORD error=GetLastError();free(scope);SetLastError(error);return NULL;}
+        creation_return_hook=NULL;scope->suspended_return_hook=TRUE;
+    }
+    if(!dialog && !creation_return_hook){
+        creation_return_hook=SetWindowsHookExW(WH_CALLWNDPROCRET,creation_return,NULL,GetCurrentThreadId());
+        if(!creation_return_hook){DWORD error=GetLastError();if(!current){UnhookWindowsHookEx(creation_before_hook);creation_before_hook=NULL;}free(scope);SetLastError(error);return NULL;}
+        scope->owns_return_hook=TRUE;
+    }
+#endif
     scope->thread=GetCurrentThreadId();scope->enabled=enabled;
     scope->previous=current;current=scope;return scope;
 }
+#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
+ntw16s_creation_scope *__cdecl Ntw16sCreationBegin(BOOL enabled)
+{return creation_begin(enabled,FALSE);}
+ntw16s_creation_scope *ntw16s_creation_begin_dialog(BOOL enabled)
+{return creation_begin(enabled,TRUE);}
+#endif
 BOOL __cdecl Ntw16sCreationEnd(ntw16s_creation_scope *scope,ntw16s_creation_result *result)
 {
     if(!scope || scope!=current){SetLastError(ERROR_INVALID_STATE);return FALSE;}
     if(scope->thread!=GetCurrentThreadId()){SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;}
     current=scope->previous;if(result)*result=scope->result;
-    while(scope->pending){pending_window *pending=scope->pending;scope->pending=pending->next;ntw16s_theme_cancel_stage(pending->window);free(pending);}
-    if(!current){UnhookWindowsHookEx(creation_return_hook);creation_return_hook=NULL;
+    while(scope->pending){pending_window *pending=scope->pending;scope->pending=pending->next;
+#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
+        if(IsWindow(pending->window))RemoveWindowSubclass(pending->window,creation_subclass,(UINT_PTR)creation_subclass);
+#endif
+        ntw16s_theme_cancel_stage(pending->window);free(pending);}
+#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
+    if(scope->owns_return_hook){UnhookWindowsHookEx(creation_return_hook);creation_return_hook=NULL;}
+    if(scope->suspended_return_hook){
+        creation_return_hook=SetWindowsHookExW(WH_CALLWNDPROCRET,creation_return,NULL,GetCurrentThreadId());
+        if(!creation_return_hook){DWORD error=GetLastError()?GetLastError():ERROR_GEN_FAILURE;
+            if(result && !result->failure)result->failure=error;
+            if(current && !current->result.failure)current->result.failure=error;}
+    }
+#endif
+    if(!current){if(creation_return_hook)UnhookWindowsHookEx(creation_return_hook);creation_return_hook=NULL;
         UnhookWindowsHookEx(creation_before_hook);creation_before_hook=NULL;}
     free(scope);return TRUE;
 }
