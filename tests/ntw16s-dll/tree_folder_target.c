@@ -51,8 +51,8 @@ static int CALLBACK callback(HWND w,UINT message,LPARAM parameter,LPARAM data)
 int wmain(int argc,WCHAR **argv)
 {
     if(argc!=3)return 2;
-    BOOL com=!wcscmp(argv[1],L"com"),simple=!wcscmp(argv[1],L"shell-simple") || !wcscmp(argv[1],L"shell-simple-callback"),simple_callback=!wcscmp(argv[1],L"shell-simple-callback");cancel_mode=!wcscmp(argv[2],L"cancel");recover_mode=!wcscmp(argv[2],L"recover");validate_mode=recover_mode || !wcscmp(argv[2],L"validate");
-    if((!com && !simple && wcscmp(argv[1],L"shell")) || (!cancel_mode && !validate_mode && wcscmp(argv[2],L"accept")) || (com && validate_mode))return 2;
+    BOOL com=!wcscmp(argv[1],L"com"),new_callback=!wcscmp(argv[1],L"shell-new-callback"),root_mode=!wcscmp(argv[1],L"shell-new-root") || !wcscmp(argv[1],L"shell-new-ansi-root"),new_ansi=!wcscmp(argv[1],L"shell-new-ansi") || !wcscmp(argv[1],L"shell-new-ansi-root"),new_shell=new_callback || root_mode || new_ansi || !wcscmp(argv[1],L"shell-new"),simple=!wcscmp(argv[1],L"shell-simple") || !wcscmp(argv[1],L"shell-simple-callback"),simple_callback=!wcscmp(argv[1],L"shell-simple-callback");cancel_mode=!wcscmp(argv[2],L"cancel");recover_mode=!wcscmp(argv[2],L"recover");validate_mode=recover_mode || !wcscmp(argv[2],L"validate");
+    if((!com && !simple && !new_shell && wcscmp(argv[1],L"shell")) || (!cancel_mode && !validate_mode && wcscmp(argv[2],L"accept")) || ((com || new_shell) && validate_mode))return 2;
     UINT length=GetWindowsDirectoryW(wanted,ARRAYSIZE(wanted));if(!length || length>=ARRAYSIZE(wanted))return 3;
     HRESULT init=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);if(FAILED(init))return 4;
     owner_thread=GetCurrentThreadId();HANDLE thread=CreateThread(NULL,0,observe,NULL,0,NULL);if(!thread)return 5;
@@ -69,13 +69,17 @@ int wmain(int argc,WCHAR **argv)
             if(path)CoTaskMemFree(path);
             if(item)IShellItem_Release(item);}
         if(d)IFileDialog_Release(d);
-    }else{BROWSEINFOW b={0};b.ulFlags=BIF_RETURNONLYFSDIRS|BIF_USENEWUI|(simple?0:BIF_VALIDATE);
-        if(validate_mode || simple_callback){b.lpfn=callback;b.lParam=0x12345678;}
-        PIDLIST_ABSOLUTE item=SHBrowseForFolderW(&b);WCHAR path[MAX_PATH]=L"";
+    }else{PIDLIST_ABSOLUTE item,root=NULL;
+        if(root_mode && FAILED(SHParseDisplayName(wanted,NULL,&root,0,NULL)))return 6;
+        if(new_ansi){BROWSEINFOA b={0};b.ulFlags=BIF_RETURNONLYFSDIRS|BIF_NEWDIALOGSTYLE;b.pidlRoot=root;item=SHBrowseForFolderA(&b);}
+        else{BROWSEINFOW b={0};b.ulFlags=BIF_RETURNONLYFSDIRS|(new_shell?BIF_NEWDIALOGSTYLE:BIF_USENEWUI|(simple?0:BIF_VALIDATE));b.pidlRoot=root;
+            if(validate_mode || simple_callback || new_callback){b.lpfn=callback;b.lParam=0x12345678;}item=SHBrowseForFolderW(&b);}
+        if(root)CoTaskMemFree(root);
+        WCHAR path[MAX_PATH]=L"";
         correct=(cancel_mode || (validate_mode && !recover_mode))?!item:(item && SHGetPathFromIDListW(item,path) && !lstrcmpiW(path,wanted));
         if(item)CoTaskMemFree(item);}
     DWORD wait=WaitForSingleObject(thread,8000),code=1;if(wait==WAIT_OBJECT_0)GetExitCodeThread(thread,&code);CloseHandle(thread);CoUninitialize();
     printf("TREE_FOLDER bits=%u com=%d cancel=%d tree=%ld windows=%ld result=%d hr=%08lx wait=%lu worker=%lu validated=%ld direct=%ld callback=%ld\n",
         (unsigned)(sizeof(void*)*8),com,cancel_mode,trees,windows,correct,(DWORD)hr,wait,code,validated,direct_tree,callback_initialized);
-    return seen && trees && windows==1 && correct && wait==WAIT_OBJECT_0 && !code && (!validate_mode || (validated==1 && direct_tree)) && (!simple || direct_tree) && (!simple_callback || callback_initialized==1)?0:1;
+    return seen && trees && windows==1 && correct && wait==WAIT_OBJECT_0 && !code && (!validate_mode || (validated==1 && direct_tree)) && (!(simple || (new_shell && !new_callback)) || direct_tree) && (!new_callback || !direct_tree) && (!(simple_callback || new_callback) || callback_initialized==1)?0:1;
 }
