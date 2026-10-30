@@ -2846,6 +2846,15 @@
       "notice": "Project-authored test; no imported code or resources"
     },
     {
+      "path": "tests/ntw16s-dll/com_concurrent_target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "198f7223aa977be7c5641fd09f08cfdbe80d23b8885fcd0f4af6d3862e9ff3a0",
+      "disposition": "authored",
+      "review": "T20 S1 owned concurrent COM dialog investigation; known failure not in standard package plan",
+      "notice": "Project-authored test; no imported code or resources"
+    },
+    {
       "path": "tests/ntw16s-dll/com_multi_target.c",
       "source": null,
       "source_blob": null,

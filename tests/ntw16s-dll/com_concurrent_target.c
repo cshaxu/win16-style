@@ -1,0 +1,28 @@
+#define COBJMACROS
+#define UNICODE
+#define _UNICODE
+#include <windows.h>
+#include <shlobj.h>
+#include <shobjidl.h>
+#include <stdio.h>
+#include <wchar.h>
+typedef struct {WCHAR dir[MAX_PATH],a[MAX_PATH],b[MAX_PATH],title[64];LONG selected,closed;HRESULT hr;DWORD count;BOOL paths;} task;
+static _Thread_local task *local;static volatile LONG ready;static BOOL shared;static task *base_task;
+static void CALLBACK tick(HWND w,UINT msg,UINT_PTR id,DWORD time){(void)msg;(void)id;(void)time;task *t=local;if(!t)return;HWND list=GetDlgItem(w,1120);if(!list)return;
+    if(!t->selected){LRESULT n=SendMessageW(list,LB_GETCOUNT,0,0);int hits=0;for(LRESULT i=0;i<n;++i){WCHAR name[MAX_PATH]=L"";LRESULT len=SendMessageW(list,LB_GETTEXTLEN,i,0);if(len<1 || len>=MAX_PATH)continue;SendMessageW(list,LB_GETTEXT,i,(LPARAM)name);if(!lstrcmpiW(name,L"first.txt")||!lstrcmpiW(name,L"second.txt")){if(SendMessageW(list,LB_SETSEL,TRUE,i)!=LB_ERR)++hits;}}
+       if(hits==2){SendMessageW(w,WM_COMMAND,MAKEWPARAM(1120,LBN_SELCHANGE),(LPARAM)list);t->selected=1;InterlockedIncrement(&ready);}}
+    if(t->selected && InterlockedCompareExchange(&ready,0,0)==2){PostMessageW(w,WM_COMMAND,MAKEWPARAM(IDOK,BN_CLICKED),(LPARAM)GetDlgItem(w,IDOK));}}
+static LRESULT CALLBACK watch(int code,WPARAM wp,LPARAM lp){if(code>=0 && local){const CWPSTRUCT *p=(const CWPSTRUCT*)lp;if(p->message==WM_SHOWWINDOW && p->wParam){WCHAR title[80];GetWindowTextW(p->hwnd,title,80);if(!lstrcmpW(title,local->title))SetTimer(p->hwnd,0x7791,60,tick);}}return CallNextHookEx(NULL,code,wp,lp);}
+static DWORD WINAPI execute(void *arg){task *t=arg;local=t;PCWSTR expected_dir=shared?base_task->dir:t->dir,expected_a=shared?base_task->a:t->a,expected_b=shared?base_task->b:t->b;HRESULT hr=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);if(FAILED(hr))return 2;IFileOpenDialog *dialog=NULL;IShellItem *folder=NULL;FILEOPENDIALOGOPTIONS flags=0;HHOOK hook=NULL;
+    hr=CoCreateInstance(&CLSID_FileOpenDialog,NULL,CLSCTX_INPROC_SERVER,&IID_IFileOpenDialog,(void**)&dialog);if(SUCCEEDED(hr))hr=IFileOpenDialog_SetTitle(dialog,t->title);if(SUCCEEDED(hr))hr=IFileOpenDialog_GetOptions(dialog,&flags);if(SUCCEEDED(hr))hr=IFileOpenDialog_SetOptions(dialog,flags|FOS_ALLOWMULTISELECT|FOS_FORCEFILESYSTEM);if(SUCCEEDED(hr))hr=SHCreateItemFromParsingName(expected_dir,NULL,&IID_IShellItem,(void**)&folder);if(SUCCEEDED(hr))hr=IFileOpenDialog_SetFolder(dialog,folder);if(folder)IShellItem_Release(folder);
+    if(SUCCEEDED(hr)){hook=SetWindowsHookExW(WH_CALLWNDPROC,watch,NULL,GetCurrentThreadId());if(!hook)hr=E_FAIL;}
+    if(SUCCEEDED(hr))hr=IFileOpenDialog_Show(dialog,NULL);
+    t->hr=hr;IShellItemArray *array=NULL;BOOL found_a=FALSE,found_b=FALSE;
+    if(SUCCEEDED(hr))hr=IFileOpenDialog_GetResults(dialog,&array);
+    if(SUCCEEDED(hr))hr=IShellItemArray_GetCount(array,&t->count);
+    for(DWORD i=0;SUCCEEDED(hr)&&i<t->count;++i){IShellItem *item=NULL;PWSTR path=NULL;hr=IShellItemArray_GetItemAt(array,i,&item);if(SUCCEEDED(hr))hr=IShellItem_GetDisplayName(item,SIGDN_FILESYSPATH,&path);if(path){if(!lstrcmpiW(path,expected_a))found_a=TRUE;if(!lstrcmpiW(path,expected_b))found_b=TRUE;CoTaskMemFree(path);}if(item)IShellItem_Release(item);}
+    t->paths=found_a && found_b;if(array)IShellItemArray_Release(array);if(hook)UnhookWindowsHookEx(hook);if(dialog)IFileOpenDialog_Release(dialog);CoUninitialize();return SUCCEEDED(hr)&&t->count==2&&t->paths?0:1;}
+int wmain(int argc,WCHAR **argv){task t[2]={0};WCHAR root[MAX_PATH];shared=argc==2 && !lstrcmpW(argv[1],L"shared");base_task=&t[0];if(!GetTempPathW(MAX_PATH,root))return 2;for(int i=0;i<2;++i){if(!GetTempFileNameW(root,L"v16",0,t[i].dir)||!DeleteFileW(t[i].dir)||!CreateDirectoryW(t[i].dir,NULL))return 3;swprintf(t[i].a,MAX_PATH,L"%ls\\first.txt",t[i].dir);swprintf(t[i].b,MAX_PATH,L"%ls\\second.txt",t[i].dir);swprintf(t[i].title,64,L"Concurrent %d",i);HANDLE f=CreateFileW(t[i].a,GENERIC_WRITE,0,NULL,CREATE_NEW,0,NULL);if(f==INVALID_HANDLE_VALUE)return 4;CloseHandle(f);f=CreateFileW(t[i].b,GENERIC_WRITE,0,NULL,CREATE_NEW,0,NULL);if(f==INVALID_HANDLE_VALUE)return 4;CloseHandle(f);}
+    printf("P285_EXPECT first=[%ls] second=[%ls] distinct=%d\n",t[0].dir,t[1].dir,lstrcmpiW(t[0].dir,t[1].dir)!=0);
+    DWORD tids[2]={0};HANDLE th[2]={CreateThread(NULL,0,execute,&t[0],0,&tids[0]),CreateThread(NULL,0,execute,&t[1],0,&tids[1])};if(!th[0] || !th[1])return 5;DWORD wait=WaitForMultipleObjects(2,th,TRUE,7000),code[2]={99,99};DWORD stopped=wait;if(wait!=WAIT_OBJECT_0){PostThreadMessageW(tids[0],WM_QUIT,0,0);PostThreadMessageW(tids[1],WM_QUIT,0,0);stopped=WaitForMultipleObjects(2,th,TRUE,5000);}if(stopped==WAIT_OBJECT_0){GetExitCodeThread(th[0],&code[0]);GetExitCodeThread(th[1],&code[1]);}CloseHandle(th[0]);CloseHandle(th[1]);BOOL clean=stopped==WAIT_OBJECT_0;if(stopped==WAIT_OBJECT_0)for(int i=0;i<2;++i){if(!DeleteFileW(t[i].a)||!DeleteFileW(t[i].b)||!RemoveDirectoryW(t[i].dir))clean=FALSE;}
+    printf("CONCURRENT bits=%u wait=%lu ready=%ld codes=%lu,%lu counts=%lu,%lu paths=%d,%d cleanup=%d stopped=%lu\n",(unsigned)(sizeof(void*)*8),wait,ready,code[0],code[1],t[0].count,t[1].count,t[0].paths,t[1].paths,clean,stopped);return wait==WAIT_OBJECT_0 && !code[0] && !code[1] && clean?0:1;}
