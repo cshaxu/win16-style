@@ -33,7 +33,7 @@ M0 T20 S1准入：Win3.x文件夹选择与公共对话框桥接：调查、实�
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 1
-- Last delivery: M0 T20 S1 P273 将 PrintDlgEx 的 PD_NOWARNING 转接至旧式打印框；双宽干净构建、实际包测试及双位置发布。文件夹筛选回调缺口仍未解决。
+- Last delivery: M0 T20 S1 P274 将 PrintDlgEx 的 PD_NOCURRENTPAGE 转接至旧式打印框；双宽干净构建、实际包测试及双位置发布。文件夹筛选回调缺口仍未解决。
 - Open task: T20 S1 文件夹选择和公共对话框接口及经典参考调查。
 - 已知回调缺口：现有 BIF_USENEWUI 带回调桥接未发送系统原有 BFFM_IUNKNOWN，可能影响目录自定义筛选；新式无编辑框带回调路径暂回退系统，旧树转接及筛选语义仍待解决。详见阶段证据。
 - P253 已发布：干净包 58 项通过；系统打印宿主自然更替后，已发布包及无注入对照的双宽 A/W Print/Apply 实际虚拟打印各八项通过。此前 32 位 EndPage 失败的原因未明；详见阶段证据。
