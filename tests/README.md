@@ -127,6 +127,8 @@ python tests/ntw16s-dll/virtual_print.py --driver build/.ninja/x64/dialog-test-d
 不纳入必通过包计划，也不能记作跳过或通过。该探针不依赖第三方打印机或用户手工输入。
 向探针的 scratch 路径后追加 `reduced`，可对照系统新式 Shell 隐藏编辑框和新建按钮时的筛选；
 它不是旧式 Shell 转接的通过证据。
+追加 `error` 可验证筛选器返回错误时目标目录仍被隐藏。
+追加 `clear` 可验证 `SetFilter(NULL)` 后重新展开会恢复显示，同时检查筛选器引用释放。
 
 `--native` 运行未注入系统对照；未覆盖实体打印机、所有驱动或 Windows 共享打印服务的冷启动。
 此用例可选，不纳入默认包测试，也不把虚拟打印机或 pdfinfo 变为产品依赖。
