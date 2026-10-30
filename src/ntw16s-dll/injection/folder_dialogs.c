@@ -145,7 +145,8 @@ static void classic_create_folder(HWND owner,folder_context *ctx)
         HWND edit=GetDlgItem(owner,edt1);WCHAR previous[MAX_PATH]=L"";
         if(edit){GetWindowTextW(edit,previous,ARRAYSIZE(previous));SetWindowTextW(edit,request.path);
             SendMessageW(owner,WM_COMMAND,MAKEWPARAM(IDOK,BN_CLICKED),(LPARAM)GetDlgItem(owner,IDOK));
-            if(IsWindow(owner) && IsWindow(edit))SetWindowTextW(edit,previous);}
+            if(IsWindow(owner) && IsWindow(edit))SetWindowTextW(edit,
+                !lstrcmpiW(ctx->classic_current,request.path)?L"[Select current folder]":previous);}
     }
 }
 

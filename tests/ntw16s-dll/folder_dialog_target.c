@@ -10,7 +10,7 @@
 static DWORD owner_thread;
 static volatile LONG seen, changed, initialized;
 static HWND dialog;
-static BOOL cancel_mode, new_folder_mode, same_mode, controls_mode,classic_new_mode,classic_cancel_mode,classic_enter_mode;
+static BOOL cancel_mode, new_folder_mode, same_mode, controls_mode,classic_new_mode,classic_cancel_mode,classic_enter_mode,classic_typed_mode;
 static BOOL controls_ok;
 static volatile LONG shell_seen,navigated;
 static WCHAR wanted[MAX_PATH], initial[MAX_PATH], current[MAX_PATH];
@@ -146,9 +146,15 @@ static DWORD WINAPI observer(void *ignored)
     for(unsigned i=0;i<400;++i){
         if(!seen || (new_folder_mode && !shell_seen))EnumThreadWindows(owner_thread,inspect,0);
         if(classic_enter_mode && seen && IsWindow(dialog) && !navigated){HWND list=GetDlgItem(dialog,1121);
-            LRESULT index=SendMessageW(list,LB_FINDSTRINGEXACT,(WPARAM)-1,(LPARAM)L"nested");
-            if(index!=LB_ERR){SendMessageW(list,LB_SETCURSEL,(WPARAM)index,0);
-                SendMessageW(dialog,WM_COMMAND,MAKEWPARAM(1121,LBN_DBLCLK),(LPARAM)list);InterlockedExchange(&navigated,1);}}
+            if(classic_typed_mode){WCHAR path[MAX_PATH];
+                if(swprintf(path,MAX_PATH,L"%ls\\nested",wanted)>=0){SetDlgItemTextW(dialog,1152,path);
+                    SendMessageW(dialog,WM_COMMAND,MAKEWPARAM(IDOK,BN_CLICKED),(LPARAM)GetDlgItem(dialog,IDOK));}}
+            else{LRESULT index=SendMessageW(list,LB_FINDSTRINGEXACT,(WPARAM)-1,(LPARAM)L"nested");
+                if(index!=LB_ERR){SendMessageW(list,LB_SETCURSEL,(WPARAM)index,0);
+                    SendMessageW(dialog,WM_COMMAND,MAKEWPARAM(1121,LBN_DBLCLK),(LPARAM)list);}}
+            LRESULT index=SendMessageW(list,LB_GETCURSEL,0,0),length=index>=0?SendMessageW(list,LB_GETTEXTLEN,(WPARAM)index,0):LB_ERR;
+            WCHAR selected[MAX_PATH]=L"";if(length>0 && length<MAX_PATH)SendMessageW(list,LB_GETTEXT,(WPARAM)index,(LPARAM)selected);
+            if(!lstrcmpiW(selected,L"nested"))InterlockedExchange(&navigated,1);}
         if(seen && (!classic_enter_mode || navigated) && IsWindow(dialog) && (!controls_mode || i>20) && i%10==0){
             UINT action=new_folder_mode?0x5717:(cancel_mode?IDCANCEL:IDOK);
             if(classic_new_mode && shell_seen)action=classic_cancel_mode?IDCANCEL:IDOK;
@@ -178,7 +184,8 @@ int wmain(int argc,WCHAR **argv)
 {
     if(argc<2 || argc>3)return 2;
     cancel_mode=argc==3 && !lstrcmpW(argv[2],L"cancel");
-    classic_enter_mode=argc==3 && !lstrcmpW(argv[2],L"newclassicenter");
+    classic_typed_mode=argc==3 && !lstrcmpW(argv[2],L"newclassictyped");
+    classic_enter_mode=classic_typed_mode || (argc==3 && !lstrcmpW(argv[2],L"newclassicenter"));
     classic_cancel_mode=argc==3 && (!lstrcmpW(argv[2],L"newclassiccancel") || !lstrcmpW(argv[2],L"newfolder"));
     classic_new_mode=classic_enter_mode || classic_cancel_mode || (argc==3 && !lstrcmpW(argv[2],L"newclassic"));
     new_folder_mode=classic_new_mode || (argc==3 && !lstrcmpW(argv[2],L"newfolder"));
@@ -221,13 +228,14 @@ int wmain(int argc,WCHAR **argv)
     CoUninitialize();
     if(controls_mode)for(int i=0;i<15;++i){WCHAR file[MAX_PATH];if(swprintf(file,MAX_PATH,L"%ls\\File%02d.txt",wanted,i)>=0)DeleteFileW(file);
         if(swprintf(file,MAX_PATH,L"%ls\\Folder%02d",wanted,i)>=0)RemoveDirectoryW(file);}
+    if(classic_new_mode)SetCurrentDirectoryW(initial);
     BOOL child_removed=TRUE;
     if(classic_new_mode && !classic_cancel_mode){WCHAR created[MAX_PATH];
         if(swprintf(created,MAX_PATH,L"%ls\\created",classic_enter_mode?nested:wanted)<0)child_removed=FALSE;
         else child_removed=RemoveDirectoryW(created);}
     BOOL nested_removed=!classic_enter_mode || RemoveDirectoryW(nested);
     BOOL root_removed=RemoveDirectoryW(wanted)&&nested_removed;
-    if(classic_enter_mode)printf("FOLDER_CLASSIC_ENTER navigated=%ld\n",navigated);
+    if(classic_enter_mode)printf("FOLDER_CLASSIC_ENTER navigated=%ld typed=%d\n",navigated,classic_typed_mode);
     if(classic_new_mode)printf("FOLDER_CLASSIC_NEW cancel=%d prompt=%ld callback=%d cleaned=%d wait=%lu worker=%lu\n",
         classic_cancel_mode,shell_seen,callback_matches,child_removed&&root_removed,wait,worker);
     if(classic_new_mode)return (!classic_enter_mode||navigated)&&seen&&initialized==1&&changed&&shell_seen&&callback_matches&&child_removed&&root_removed&&

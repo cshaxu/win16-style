@@ -11,7 +11,7 @@ static IShellItem *child;
 static WCHAR root[MAX_PATH],sub[MAX_PATH],match_file[MAX_PATH],other_file[MAX_PATH];
 static DWORD ui;
 static HWND window;
-static volatile LONG seen,done,phase,initial_ok,final_ok,stable,v2_ok,parent_ok,name_ok,filter_ok,filter_live_ok;
+static volatile LONG seen,done,phase,initial_ok,final_ok,stable,v2_ok,parent_ok,name_ok,filter_ok,filter_live_ok,selection_stable;
 static BOOL old,programmatic,change_filter;
 static int filter_step;
 static HWND filter_control;
@@ -44,9 +44,13 @@ static void CALLBACK tick(HWND w,UINT msg,UINT_PTR id,DWORD time)
     if(!phase){initial_ok=folder_is(root);HWND list=GetDlgItem(w,1121);old=list!=NULL;
         if(programmatic){HRESULT set=IFileDialog_SetFolder(dialog,child);printf("LIVE_FOLDER_SET hr=%08lx\n",(unsigned long)set);}
         else if(old){LRESULT index=SendMessageW(list,LB_FINDSTRINGEXACT,(WPARAM)-1,(LPARAM)L"child");
-            if(index!=LB_ERR){SendMessageW(list,LB_SETCURSEL,(WPARAM)index,0);SendMessageW(w,WM_COMMAND,MAKEWPARAM(1121,LBN_DBLCLK),(LPARAM)list);}
+            if(index!=LB_ERR){SendMessageW(list,LB_SETCURSEL,(WPARAM)index,0);
+                SendMessageW(w,WM_COMMAND,MAKEWPARAM(1121,LBN_SELCHANGE),(LPARAM)list);
+                selection_stable=folder_is(root);printf("LIVE_FOLDER_SELECT before_enter=%ld\n",selection_stable);
+                SendMessageW(w,WM_COMMAND,MAKEWPARAM(1121,LBN_DBLCLK),(LPARAM)list);}
             WCHAR cwd[MAX_PATH]=L"";GetCurrentDirectoryW(ARRAYSIZE(cwd),cwd);printf("LIVE_FOLDER_NAV index=%lld cwd=%ls\n",(long long)index,cwd);}
         else (void)IFileDialog_SetFolder(dialog,child);
+        if(!old || programmatic)selection_stable=1;
         phase=1;return;
     }
     if(phase==1 && folder_is(sub)){final_ok=1;
@@ -93,7 +97,10 @@ static void CALLBACK tick(HWND w,UINT msg,UINT_PTR id,DWORD time)
             IFileDialog2 *v2=NULL;if(SUCCEEDED(IFileDialog_QueryInterface(dialog,&IID_IFileDialog2,(void **)&v2))){(void)IFileDialog2_SetFolder(v2,parent);IFileDialog2_Release(v2);}IShellItem_Release(parent);}}
         else if(old){HWND list=GetDlgItem(w,1121);const WCHAR *leaf=wcsrchr(root,L'\\');
             LRESULT index=SendMessageW(list,LB_FINDSTRINGEXACT,(WPARAM)-1,(LPARAM)(leaf?leaf+1:root));
-            if(index!=LB_ERR){SendMessageW(list,LB_SETCURSEL,(WPARAM)index,0);SendMessageW(w,WM_COMMAND,MAKEWPARAM(1121,LBN_DBLCLK),(LPARAM)list);}}
+            if(index!=LB_ERR){SendMessageW(list,LB_SETCURSEL,(WPARAM)index,0);
+                SendMessageW(w,WM_COMMAND,MAKEWPARAM(1121,LBN_SELCHANGE),(LPARAM)list);
+                selection_stable=selection_stable && folder_is(sub);printf("LIVE_FOLDER_SELECT before_parent=%ld\n",selection_stable);
+                SendMessageW(w,WM_COMMAND,MAKEWPARAM(1121,LBN_DBLCLK),(LPARAM)list);}}
         else {IShellItem *parent=NULL;if(SUCCEEDED(SHCreateItemFromParsingName(root,NULL,&IID_IShellItem,(void **)&parent))){
             (void)IFileDialog_SetFolder(dialog,parent);IShellItem_Release(parent);}}
         phase=2;return;}
@@ -130,5 +137,5 @@ int wmain(int argc,WCHAR **argv)
     if(wait==WAIT_OBJECT_0)GetExitCodeThread(thread,&code);
     CloseHandle(thread);IFileDialog_Release(dialog);IShellItem_Release(child);CoUninitialize();DeleteFileW(match_file);DeleteFileW(other_file);RemoveDirectoryW(sub);RemoveDirectoryW(root);
     printf("LIVE_FOLDER_RESULT bits=%u old=%d initial=%ld final=%ld stable=%ld v2=%ld parent=%ld name=%ld filter=%ld phase=%ld hr=%08lx wait=%lu worker=%lu livefilter=%ld\n",(unsigned)(sizeof(void*)*8),old,initial_ok,final_ok,stable,v2_ok,parent_ok,name_ok,filter_ok,phase,(unsigned long)hr,wait,code,filter_live_ok);
-    return seen&&initial_ok&&final_ok&&stable&&v2_ok&&parent_ok&&(!programmatic||((name_ok||change_filter)&&filter_ok))&&(!change_filter||filter_live_ok)&&phase==3&&hr==HRESULT_FROM_WIN32(ERROR_CANCELLED)&&wait==WAIT_OBJECT_0&&code==0?0:1;
+    return seen&&initial_ok&&final_ok&&stable&&selection_stable&&v2_ok&&parent_ok&&(!programmatic||((name_ok||change_filter)&&filter_ok))&&(!change_filter||filter_live_ok)&&phase==3&&hr==HRESULT_FROM_WIN32(ERROR_CANCELLED)&&wait==WAIT_OBJECT_0&&code==0?0:1;
 }
