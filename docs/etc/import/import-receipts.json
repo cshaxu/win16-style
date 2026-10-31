@@ -905,18 +905,18 @@
       "path": "src/ntw16s-dll/ntw16s32.def",
       "source": null,
       "source_blob": null,
-      "sha256": "049e7bb08dd814f87dcc750d02c205275dd5a587b0711c676c91ee22a48c134b",
+      "sha256": "e00f3d4f527a8c079360cbf1cd00e3be3d91ce4fd12fcf7d0afbb609629d945c",
       "disposition": "authored",
-      "review": "T3 S2 payload bootstrap/real helper ABI, version or bounded test process budget; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier",
+      "review": "T3 S2 payload bootstrap/real helper ABI, version or bounded test process budget; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier; T21 S13 additive target-local worker entry ABI audit",
       "notice": "Project-authored, repository MIT"
     },
     {
       "path": "src/ntw16s-dll/ntw16s64.def",
       "source": null,
       "source_blob": null,
-      "sha256": "95fe772075a4a11529fe9a1bf1dc27f97e824a8b01232f305b84447a5f1a9484",
+      "sha256": "50b5e6c7422d7fec9075df858f2bd6f4ee35fe0ec0a2a273ae4fc40ff90ad60d",
       "disposition": "authored",
-      "review": "T3 S2 payload bootstrap/real helper ABI, version or bounded test process budget; docs/proposals/launcher-injection.md; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier",
+      "review": "T3 S2 payload bootstrap/real helper ABI, version or bounded test process budget; docs/proposals/launcher-injection.md; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier; T21 S13 additive target-local worker entry ABI audit",
       "notice": "Project-authored, repository MIT"
     },
     {
@@ -941,9 +941,9 @@
       "path": "tests/ntw16s-dll/abi.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d78d69321d6d67e1c4fbadf29ffbf0a23db9e0aa5b2198364717ffcd666b1ab6",
+      "sha256": "c969c468b867877efa913d46edeea2fdd811a09d1e1e9d2dcec3b7d8d54d6a88",
       "disposition": "authored",
-      "review": "T2 S1 real DLL ABI fixture; docs/history/M0-T2-S1-import.md; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier",
+      "review": "T2 S1 real DLL ABI fixture; docs/history/M0-T2-S1-import.md; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier; T21 S13 additive target-local worker entry ABI audit",
       "notice": "Project-authored, MIT"
     },
     {

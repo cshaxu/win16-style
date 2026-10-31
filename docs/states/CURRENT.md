@@ -14,7 +14,7 @@ M0 T21 S13：真实 VB6 全局模式对照及钩子注册错误 126 调查。
 | Non-goals | 不依赖该应用构建或测试，不操作现有用户进程，不处理 UWP/XAML |
 | Reference Baseline | S4 已验证 demo 和可选记事本；VB6 全局对照缺少证据 |
 | Candidate Proposal | [手动全局样式模式](../proposals/global-style-mode.md) |
-| Files And ABI Surface | 自有原生私有桌面探针及必要的最小修复；不增加组件或导出 |
+| Files And ABI Surface | 自有原生私有桌面探针及必要修复；不增加组件，新增双宽内部控制入口须核对 ABI |
 | Applicable Rules | M0、C17、GCC、Ninja、ccache，原图形资源不变 |
 | Verification | 自有隔离实例比较原版、普通启动、全局启动及停止后窗口与控件 |
 | Expected Markers | 区分附着、实际绘制、控件交互和恢复，记录路径及失败 |
@@ -36,7 +36,7 @@ M0 T21 S13：真实 VB6 全局模式对照及钩子注册错误 126 调查。
 - Last allocated T21 S: 13
 - Last delivery: M0 T21 S12 双宽动态控件回归；[记录](../history/M0-T21-S12-late-controls.md)。
 - Open task: T21 S13；Explorer.exe 仍被排除。
-- S13 正在实现目标内线程钩子备用路径：内部工作单元和自有双宽测试已加入源码，尚未导出、接入控制器或发布；当前部署路径 126 未解决。
+- S13 正在实现目标内线程钩子备用路径：内部工作单元、双宽测试及 ABI 控制入口已加入源码，尚未接入控制器或发布；当前部署路径 126 未解决。
 - S13 阶段包已发布至 assets 和 O:/winnt；干净包 23 项聚焦通过，但本会话部署路径全局钩子注册仍报 126，未通过部署验收；[阶段证据](../history/M0-T21-S13-vb-global-investigation.md)。
 - 打印当前页已纳入受限 PrintDlgEx 转接；跨 DPI、实际打印和本地化仍待覆盖。
 - COM并发：已观察的双多选并发由系统原生路径止损；旧框目录串用根因、非多选并发仍未查明，详见[S3证据](../history/M0-T20-S3-com-safety.md)。

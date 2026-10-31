@@ -9,6 +9,7 @@ static const char *const names[]={
     "Ntw16sGetAbiVersion",
     "Ntw16sGlobalHook",
     "Ntw16sGlobalHost",
+    "Ntw16sGlobalThread",
     "Ntw16sScrollChanged",
     "Ntw16sShowModernFileDialog",
     "Ntw16sSetWindowTheme",
@@ -54,7 +55,9 @@ int wmain(int argc,WCHAR **argv)
     CHECK(!GetProcAddress(module,"ntw16s_bind_native_api"));
     version=(version_fn)(void *)GetProcAddress(module,"Ntw16sGetAbiVersion");
     CHECK(version && version()==3 && version()==NTW16S_ABI_VERSION);
+    DWORD (WINAPI *thread_worker)(void *)=(void *)GetProcAddress(module,"Ntw16sGlobalThread");
+    CHECK(thread_worker && thread_worker(NULL)==ERROR_INVALID_PARAMETER);
     CHECK(FreeLibrary(module));
-    printf("ABI PASS width=%u version=3 public=35 private-bind-exports=0\n",(unsigned)(sizeof(void *)*8));
+    printf("ABI PASS width=%u version=3 public=36 private-bind-exports=0\n",(unsigned)(sizeof(void *)*8));
     return 0;
 }

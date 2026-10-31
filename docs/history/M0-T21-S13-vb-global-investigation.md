@@ -149,3 +149,6 @@ An owned private-desktop prototype used a 64-bit controller and its real-format 
 
 
 The internal worker test now also uses an independently created owned owner process. After a target-thread callback, the test lets that owner exit without signaling the worker stop event; both x86 and x64 workers notice the owner process handle, unhook, return, and a subsequent message produces no callback. Normal-stop and owner-loss CTest cases both passed in each architecture, two cases per architecture in about one second. The test covers process-handle signaling after a normal owner exit, not every crash, PID reuse or remote injection race. No product controller integration or binary delivery is implied.
+
+
+The worker is now exposed for future target-local control as additive named export `Ntw16sGlobalThread`, ordinal 37, stdcall on x86 and native x64 calling convention. The existing ABI version remains 3 and all earlier exports and ordinals remain unchanged; the exact export/ordinal package gates and ABI test were updated. Both incremental DLL builds and actual `core-abi` runs passed with 36 named exports; calling the new entry with NULL returned `ERROR_INVALID_PARAMETER`. This is not yet called by the controller, not a clean-package validation, and not a binary release or 126 fix.
