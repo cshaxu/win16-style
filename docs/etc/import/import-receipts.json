@@ -2,6 +2,15 @@
   "schema": 1,
   "files": [
     {
+      "path": "tests/integration/global_cross_origin.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "a9331ca9727dd9ffc50856e403b35f55fbc61b5a2247017178a3ffd1ae4c1343",
+      "disposition": "authored",
+      "review": "T21 S13 cross-desktop uninstrumented parent window discovery regression",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
       "path": "tests/integration/global_startup_break.c",
       "source": null,
       "source_blob": null,
