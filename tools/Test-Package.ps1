@@ -106,6 +106,7 @@ try{
         $fileTarget=Join-Path (Join-Path $BuildRoot $arch) 'file-dialog-target.exe'
         $win32MultiTarget=Join-Path (Join-Path $BuildRoot $arch) 'win32-multi-target.exe'
         $win32MultiNavTarget=Join-Path (Join-Path $BuildRoot $arch) 'win32-multi-navigation.exe'
+        $commdlgErrorTarget=Join-Path (Join-Path $BuildRoot $arch) 'commdlg-error-target.exe'
         foreach($encoding in @('a','w')) {
             $cases+=Case "dialog-file-custom-filter-$arch-$encoding" $dialogDriver @($run,$fileTarget,'open',$encoding,'1','customfilter') @('CUSTOM_FILTER changed=1 index_ok=1',"FILE_DIALOG bits=$bits",'old=1','ok=1','same=1','DIALOG_DRIVER exit=0') 45
             $cases+=Case "dialog-file-spaced-$arch-$encoding" $dialogDriver @($run,$fileTarget,'open',$encoding,'1','spaced') @('SPACED_FILE listed=1 same=1 cleanup=1',"FILE_DIALOG bits=$bits",'old=1','ok=1','DIALOG_DRIVER exit=0') 30
@@ -170,6 +171,8 @@ try{
             $wideFlag=if($encoding -eq 'wide'){1}else{0}
             foreach($backend in @('native','styled')) {
                 $launch=if($backend -eq 'native'){'--direct'}else{$run}
+                $cases+=Case "dialog-extended-error-$arch-$encoding-$backend" $dialogDriver @($launch,$commdlgErrorTarget,$encoding) @("ERROR_CONTRACT bits=$bits wide=$wideFlag",'first=1 repeat=1 third=1','hook_error=11 color=0 color_error=1','before=1 during=1 worker_first=11 worker_second=11','ERROR_CANCEL seen=1 result=0 error=0 repeat=0 wait=0 worker=0 nested_seen=0 nested_error=0','DIALOG_DRIVER exit=0') 30
+                $cases+=Case "dialog-extended-error-$arch-$encoding-$backend-nested" $dialogDriver @($launch,$commdlgErrorTarget,$encoding,'nested') @("ERROR_CONTRACT bits=$bits wide=$wideFlag",'first=1 repeat=1 third=1','hook_error=11 color=0 color_error=1','before=1 during=1 worker_first=11 worker_second=11','ERROR_CANCEL seen=1 result=0 error=','wait=0 worker=0 nested_seen=1 nested_error=1','DIALOG_DRIVER exit=0') 30
                 $cases+=Case "dialog-win32-navigation-$arch-$encoding-$backend" $dialogDriver @($launch,$win32MultiNavTarget,$encoding,$scratch) @("MULTI_NAV bits=$bits wide=$wideFlag noadd=0 seen=1 phase=5 dir=1",'result=0 error=0 wait=0 worker=0 cleanup=111111111','DIALOG_DRIVER exit=0') 30
                 foreach($variant in @('single','multi','small')) {
                     $selection=if($variant -eq 'single'){1}elseif($variant -eq 'multi'){2}else{3}
