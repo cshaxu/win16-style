@@ -2,6 +2,24 @@
   "schema": 1,
   "files": [
     {
+      "path": "tests/ntw16s-dll/demo_system_menu.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "6a7c78b9777fe7b758d4503fbd0ec41a20e903c494234c13643aa4b789f15d69",
+      "disposition": "authored",
+      "review": "T20 S19 native system menu regression witness",
+      "notice": "Project-authored test; no imported code or resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/system_menu_visual.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "42b22eb6cce4ae9ba5c9a05107f8bc492fbb641b8bfb51f4eb4e0f64e38fcb1c",
+      "disposition": "authored",
+      "review": "T20 S19 native system menu regression witness",
+      "notice": "Project-authored test; no imported code or resources"
+    },
+    {
       "path": "tests/ntw16s-dll/owner_draw_transition.c",
       "source": null,
       "source_blob": null,
@@ -563,7 +581,7 @@
       "path": "src/ntw16s-dll/menu_scope.c",
       "source": "src/ntw16s-dll/menu_scope.c",
       "source_blob": "b27da79667d1dce3f17336721ef7c6be06fc18f7",
-      "sha256": "21144a3223b75b502d9b5509dee8f0f3fe642ee2dfe9b04f24f104f60279f28c",
+      "sha256": "a65291126d5bc85e37ec78d26112c3f01820c2e33d58f437bed8d98feb5c1fdf",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T8 S3 scoped USER SysShadow suppression and actual popup border/shadow regression",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -662,7 +680,7 @@
       "path": "src/ntw16s-dll/win16_style.c",
       "source": "src/ntw16s-dll/win16_style.c",
       "source_blob": "4235f085cb00c0d17145deec2d04a57c97b98d47",
-      "sha256": "f311b21944d31a804f2ecb0117ef34ab98a9c2b5a282871681a445f17fde6323",
+      "sha256": "2b3933a4e756c6d8eaad0f25b228c34704a7461946958bc1c4e3a048acb63bd1",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T15 S8 verified initialized native tree protocol and bounded existing System paint scope, native item/font/image/geometry/notifications preserved; exact pending frame ownership and cancellation; ASCII test-thread IME isolation after native no-DLL MSCTF teardown evidence; no external code or original graphics modified; T18 S64 scoped observed Delphi TPopupMenu owner, native callbacks and item restoration; private cleanup, no external code or graphics changed",
       "notice": "Project-authored source per fixed component README; original file notices preserved"

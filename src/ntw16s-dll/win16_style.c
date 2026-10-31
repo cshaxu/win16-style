@@ -16,6 +16,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+void win16_style_menu_system(win16_style_menu_scope *scope,HMENU menu,HFONT font,UINT dpi);
+
 typedef struct menu_loop {
     win16_style_menu_scope *scope;
     unsigned depth;
@@ -1005,6 +1007,7 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
         if(!s->detached && !win16_style_menu_prepare((HMENU)wp,&s->menu_items,s->menu_depth))
             win16_style_menu_restore_popup((HMENU)wp,&s->menu_items);
         if(!s->detached && HIWORD(lp)){
+            if(s->menus)win16_style_menu_system(s->menus->scope,(HMENU)wp,s->menu_font,s->dpi);
             s->system_menu=TRUE;paint_button_state(w,s,HTSYSMENU);
         }
         break;

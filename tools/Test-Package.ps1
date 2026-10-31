@@ -56,6 +56,7 @@ try{
     $pair=@($run,$d32,$d64,(Join-Path $x86 'launch-target.exe'),(Join-Path $x64 'launch-target.exe'))
     $tree=@($run,$d32,$d64,(Join-Path $x86 'propagate-target.exe'),(Join-Path $x64 'propagate-target.exe'))
     $cases=@(
+        (Case 'demo-system-menu' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'demo-system-menu.exe'),$run,$demo) @('DEMO_SYSTEM blue_pixels=','NOTEPAD_TEST main=1 find=1','DIALOG_DRIVER exit=0') 30),
         (Case 'progress-sharing' (Join-Path $PSHOME 'pwsh.exe') @('-NoProfile','-File',(Join-Path $SourceRoot 'tests/tooling/package_progress_lock.ps1')) @('PACKAGE_PROGRESS_LOCK PASS old-fails locked-skip recovered nonsharing-fails')),
         (Case 'plan-selection' (Join-Path $PSHOME 'pwsh.exe') @('-NoProfile','-File',(Join-Path $SourceRoot 'tests/tooling/package_case_selection.ps1')) @('PACKAGE_PLAN PASS default focused unknown duplicate empty missing-required rejected')),
         (Case 'abi-x86' (Join-Path $x86 'core-abi.exe') @($d32) @('ABI PASS width=32')),
@@ -160,6 +161,9 @@ try{
         $commonTarget=Join-Path (Join-Path $BuildRoot $arch) 'common-dialog-target.exe'
         $colorEdgeProbe=Join-Path (Join-Path $BuildRoot $arch) 'color-edge-probe.exe'
         $cases+=Case "dialog-color-edge-native-$arch" $dialogDriver @('--direct',$colorEdgeProbe) @("EDGE_RESULT bits=$bits",'result=0 error=0','DIALOG_DRIVER exit=0') 30
+        $systemMenuVisual=Join-Path (Join-Path $BuildRoot $arch) 'system-menu-visual.exe'
+        $cases+=Case "system-menu-visual-$arch" $dialogDriver @($run,$systemMenuVisual,'normal') @("SYSTEM_MENU bits=$bits",'custom=0 seen=1 unchanged=1 checked=0 selected=1 blue=1','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "system-menu-custom-$arch" $dialogDriver @($run,$systemMenuVisual,'custom') @("SYSTEM_MENU bits=$bits",'custom=1 seen=1 unchanged=1 checked=0 selected=1 blue=1','DIALOG_DRIVER exit=0') 30
         $printTarget=Join-Path (Join-Path $BuildRoot $arch) 'print-dialog-target.exe'
         foreach($encoding in @('ansi','wide')){
             foreach($option in @('collate','file','disable')){
@@ -824,3 +828,4 @@ try{
     @{status='failed-or-inconclusive';error=$_.Exception.Message}|ConvertTo-Json|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
     exit 1
 }
+

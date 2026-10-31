@@ -1,4 +1,5 @@
 #include "menu_scope.h"
+#include "menu_paint.h"
 #include <commctrl.h>
 #include <stdlib.h>
 #include <wchar.h>
@@ -9,12 +10,14 @@ struct win16_style_menu_scope {
     struct win16_style_menu_scope *previous;
     DWORD thread;
     popup *windows;
+    HMENU system;HFONT font;UINT dpi;
 };
 struct popup {
     HWND window;popup *next;win16_style_menu_scope *scope;
     win16_style_palette palette;
     unsigned calls;
     BOOL detached;
+    BOOL painting;
     HWND shadow;
     BOOL shadow_visible;
 };
@@ -98,6 +101,42 @@ static void suppress_shadow(HWND w,UINT message,LPARAM parameter)
         }
 }
 
+void win16_style_menu_system(win16_style_menu_scope *scope,HMENU menu,HFONT font,UINT dpi)
+{if(scope && scope->thread==GetCurrentThreadId()){scope->system=menu;scope->font=font;scope->dpi=dpi;}}
+
+/* System-owned menu items cannot be converted after USER begins tracking.
+ * Read their public presentation state and paint over the system popup;
+ * the HMENU, command routing and application-visible item data remain native. */
+static void paint_system(HWND w,popup *p,HDC target,BOOL window_coordinates)
+{
+    MENUBARINFO info={.cbSize=sizeof(info)};win16_style_menu_scope *s=p->scope;
+    if(p->painting||!s||!s->system||!s->font)return;
+    HMENU menu=s->system;HFONT font=s->font;UINT dpi=s->dpi;p->painting=TRUE;
+    if(!GetMenuBarInfo(w,OBJID_CLIENT,0,&info)||p->detached||info.hMenu!=menu){p->painting=FALSE;return;}
+    int count=GetMenuItemCount(menu);if(p->detached||count<1||count>64){p->painting=FALSE;return;}
+    typedef struct system_row {WCHAR text[512];RECT rect;UINT type,state;BOOL submenu;} system_row;
+    system_row *rows=(system_row *)calloc((size_t)count,sizeof(*rows));if(!rows){p->painting=FALSE;return;}
+    HDC dc=target?target:GetDC(w);if(!dc){free(rows);p->painting=FALSE;return;}
+    int saved=SaveDC(dc);win16_style_menu_columns columns={0};BOOL valid=saved!=0;
+    POINT delta={0,0};if(valid&&window_coordinates){RECT wr;if(!GetWindowRect(w,&wr)||!ClientToScreen(w,&delta))valid=FALSE;else{delta.x-=wr.left;delta.y-=wr.top;}}
+    for(int i=0;valid&&i<count;++i){MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_FTYPE|MIIM_STRING|MIIM_BITMAP|MIIM_SUBMENU|MIIM_STATE,.dwTypeData=rows[i].text,.cch=ARRAYSIZE(rows[i].text)-1};
+        if(!GetMenuItemInfoW(menu,(UINT)i,TRUE,&item)||p->detached||(item.fType&MFT_OWNERDRAW)||item.cch>=ARRAYSIZE(rows[i].text)-1 ||
+           (item.hbmpItem && item.hbmpItem!=HBMMENU_POPUP_CLOSE && item.hbmpItem!=HBMMENU_POPUP_RESTORE && item.hbmpItem!=HBMMENU_POPUP_MINIMIZE && item.hbmpItem!=HBMMENU_POPUP_MAXIMIZE))valid=FALSE;
+        else if(!GetMenuItemRect(NULL,menu,(UINT)i,&rows[i].rect)||p->detached)valid=FALSE;
+        else if(!(item.fType&MFT_SEPARATOR)&&!win16_style_menu_columns_read(dc,font,dpi,rows[i].text,&columns))valid=FALSE;
+        else{rows[i].type=item.fType;rows[i].state=item.fState;rows[i].submenu=item.hSubMenu!=NULL;}
+    }
+    for(int i=0;valid&&i<count&&!p->detached;++i){RECT r=rows[i].rect;
+        MapWindowPoints(NULL,w,(POINT *)&r,2);OffsetRect(&r,delta.x,delta.y);
+        UINT state=0;if(rows[i].state&MFS_HILITE)state|=ODS_SELECTED;if(rows[i].state&MFS_DISABLED)state|=ODS_DISABLED;if(rows[i].state&MFS_CHECKED)state|=ODS_CHECKED;
+        (void)win16_style_menu_text_columns(dc,&r,font,dpi,&p->palette,rows[i].text,state,(rows[i].type&MFT_SEPARATOR)?WIN16_STYLE_MENU_SEPARATOR:WIN16_STYLE_MENU_ROW,rows[i].submenu,&columns);
+    }
+    if(saved)RestoreDC(dc,saved);
+    if(!target)ReleaseDC(w,dc);
+    free(rows);
+    p->painting=FALSE;
+}
+
 static LRESULT CALLBACK popup_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
 {
     popup *p=(popup *)data;LRESULT result=0;(void)id;
@@ -105,12 +144,14 @@ static LRESULT CALLBACK popup_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,D
     if(m==WM_NCDESTROY){detach(p,TRUE);result=DefSubclassProc(w,m,a,b);}
     else if(m==WM_NCPAINT)paint_border(w,p,NULL);
     else if(m==WM_PAINT){result=DefSubclassProc(w,m,a,b);
-        if(!p->detached)paint_border(w,p,NULL);}
+        if(!p->detached){paint_border(w,p,NULL);paint_system(w,p,NULL,FALSE);}}
     else if(m==WM_PRINT){result=DefSubclassProc(w,m,a,b);
         /* Native printing may reenter the owner, end the scope or destroy
          * this HWND. Keep the node alive but never paint after detachment. */
         if(!p->detached && (b&PRF_NONCLIENT))paint_border(w,p,(HDC)a);
-    }else result=DefSubclassProc(w,m,a,b);
+        if(!p->detached && (b&PRF_CLIENT))paint_system(w,p,(HDC)a,TRUE);
+    }else {result=DefSubclassProc(w,m,a,b);
+        if(!p->detached && (m==WM_WINDOWPOSCHANGED||m==0x92||m==WM_MOUSEMOVE||m==WM_NCMOUSEMOVE))paint_system(w,p,NULL,FALSE);}
     if(!--p->calls && p->detached)free(p);
     return result;
 }

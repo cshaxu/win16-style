@@ -2,7 +2,30 @@
 
 ## Current Work
 
-当前无活动任务包。M0 T20 S18 颜色格修复已收口；其他未覆盖和安全回退见 TODO。
+M0 T20 S19：调查并修复左上系统菜单回退现代外观，保留菜单切换无闪烁修复。
+
+## M0 T20 S19 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Corrective；用户新报告系统菜单回归，续用下一 S，不新开 T |
+| Admission And Approval | 用户明确要求修复 demo 左上窗体菜单外观 |
+| Objective | 恢复系统菜单 Win16 外观并保留用户已确认的无闪烁效果 |
+| Non-goals | 不修改原图形资源、系统全局设置或无关进程，不使用 computer-use |
+| Reference Baseline | S18 发布包及 T20 S1 菜单调查、P235 闪烁修复和用户截图 |
+| Candidate Proposal | [菜单取消修复](../proposals/menu-cancellation.md) |
+| Files And ABI Surface | 菜单 renderer、生命周期及原生探针；无新增产品文件或公开 ABI |
+| Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；原资源逐字节保留 |
+| Verification | 双宽实际菜单截图、键鼠消息、取消及命令、菜单数据和重绘对照、实际包测试 |
+| Expected Markers | 左上系统菜单经典外观，正常取消与命令，菜单切换不引入标题闪烁 |
+| Asset Needs | build/t20-s19 和 build/t20-package 下自有 scratch |
+| Reporting Requirements | 先定位实际路径及根因，区分既往用户确认与可复现证据 |
+| Stop Conditions | 不能保持应用菜单数据与交互时不发布猜测修复 |
+| Exit Criteria | 双宽干净构建与同批四文件测试、双位置发布、提交推送和远端复核 |
+| Original Owner Request | demo 左上窗体菜单目前不是 Win16 样式，修复回归 |
+| Similar-Issue Sweep | 鼠标系统菜单、Alt+Space、普通菜单切换、嵌套取消及应用自定义菜单 |
+
+S19 阶段包已发布，15 项聚焦包测试通过；真实左键及菜单动态闪烁仍未验证，S19 保持开放。详见 [阶段证据](../history/M0-T20-S19-system-menu.md)。
 
 ## Identifier State
 
@@ -11,9 +34,9 @@
 - Last allocated Td S: 15
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
-- Last allocated T20 S: 18
+- Last allocated T20 S: 19
 - Last delivery: M0 T20 S18 P1 ccdedbb 已完成 30 项包回归、双位置发布和远端复核；COM多选和 Shell 筛选仍保留系统回退。
-- Open task: 无；T20 S18 已收口。
+- Open task: T20 S19 系统菜单回归。
 - 打印当前页已纳入受限 PrintDlgEx 转接；跨 DPI、实际打印和本地化仍待覆盖。
 - COM并发：已观察的双多选并发由系统原生路径止损；旧框目录串用根因、非多选并发仍未查明，详见[S3证据](../history/M0-T20-S3-com-safety.md)。
 - COM多选：默认回退系统新框，O: 长名、单项、取消、链接及双宽并发经有限验证；旧框实现及其他参数仍未全面解决。
