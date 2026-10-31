@@ -54,3 +54,6 @@ S10 的受控IDABORT返回FALSE且本机扩展错误65535；探针自行生成�
 ntw16s32 `37c52804e55cc0417a8d932c5d1e3afb271b879b163d8793a5e7867f032fd99d`；
 ntw16s64 `d775bc2eea74ff33f272f5ba6aeccf5dd59b1338f017f1c391fbb6b0df8094e3`；
 demo `de430d6f28b3a7ccaf2e9ff82783d5660ba03641e7cfb78baca9678d4a0a6b0d`。
+
+S11 P1 `90f9736` 已推送，GitHub 实际测试、记录及四文件对象复核一致；
+测试和构建描述+89/-0（探针83、CMake3、包测试3）。S11 收口，自动准入S12。
