@@ -22,7 +22,12 @@ static BOOL CALLBACK sweep_window(HWND w,LPARAM parameter)
     if(GetTickCount64()>=s->deadline)return FALSE;
     if(!GetWindowThreadProcessId(w,&process) || process==GetCurrentProcessId() || process==s->host)return TRUE;
     ++s->attempted;
-    if(!SendMessageTimeoutW(w,s->message,s->cookie,s->action,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,50,&result))++s->failed;
+    if(!SendMessageTimeoutW(w,s->message,s->cookie,s->action,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,50,&result)){
+        DWORD error=GetLastError();ULONGLONG now=GetTickCount64();
+        DWORD retry=now<s->deadline?(DWORD)min(200,s->deadline-now):0;
+        if(error!=ERROR_TIMEOUT || !retry ||
+           !SendMessageTimeoutW(w,s->message,s->cookie,s->action,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,retry,&result))++s->failed;
+    }
     return TRUE;
 }
 static BOOL CALLBACK sweep_top(HWND w,LPARAM parameter)

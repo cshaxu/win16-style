@@ -2,7 +2,28 @@
 
 ## Current Work
 
-当前无活动任务包；M0 T21 保持开放。S10 已完成自有双宽 Shell 文件夹视图的隔离调查并远端复核；Explorer.exe 仍被排除，DirectUI 列表内部仍是系统外观。
+M0 T21 开放；S11 已收口。全局控制器异常退出后的重启与残留窗口接管已验证，已发布有界超时重试修复。
+
+## M0 T21 S11 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Continuation；T21 开放，异常退出后新会话能否恢复未核实 |
+| Admission And Approval | 用户授权手动全局模式、自行验证，并接受异常退出可能留下残影 |
+| Objective | 验证自有全局控制器意外结束后，新的全局会话能否启动、接管已有窗口并安全停止 |
+| Non-goals | 不增加进程分类或服务，不接管 Explorer/UWP，不操作现有用户进程或桌面 |
+| Reference Baseline | S4 已验证控制器意外退出及其 x86 宿主退出；后续重新启动尚未覆盖 |
+| Candidate Proposal | [手动全局样式模式](../proposals/global-style-mode.md) |
+| Files And ABI Surface | 纯 C 原生生命周期测试及必要的最小修复；不增加产品或预设导出 |
+| Applicable Rules | M0、C17、GCC、Ninja、ccache、原图形资源不变 |
+| Verification | 自有隔离桌面、双位宽已存在窗口、崩溃、新会话和正常停止；实际包回归 |
+| Expected Markers | 自有宿主退出；新会话可创建且旧/新窗口状态可观测；失败有明确诊断 |
+| Asset Needs | build/t21-s11、build/t21-package 自有 scratch |
+| Reporting Requirements | 记录进程所有权、会话、附着及移除状态、退出码和未覆盖边界 |
+| Stop Conditions | 无法确保私有桌面和自有实例时不安装全局钩子或终止进程 |
+| Exit Criteria | 有界证据与必要修复完成；双宽干净构建、实际包测试、必要发布、提交推送和远端复核 |
+| Original Owner Request | 手动全局模式，停止不破坏程序，接受残影，保持简单统一 |
+| Similar-Issue Sweep | 控制器与宿主崩溃、共享对象残留、重复启动、在途回调和旧窗口所有权 |
 
 ## Identifier State
 
@@ -12,9 +33,9 @@
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
-- Last allocated T21 S: 10
-- Last delivery: M0 T21 S10 自有双宽 Shell 视图隔离调查、13 项包测试、双位置发布及远端复核；[记录](../history/M0-T21-S10-shell-view.md)。
-- Open task: T21 保持开放；Explorer.exe 仍被排除，Shell 视图的 DirectUI 内容仍为系统外观。
+- Last allocated T21 S: 11
+- Last delivery: M0 T21 S11 双宽崩溃重启与通知超时修复；[记录](../history/M0-T21-S11-restart-timeout.md)。
+- Open task: T21；Explorer.exe 仍被排除。
 - 打印当前页已纳入受限 PrintDlgEx 转接；跨 DPI、实际打印和本地化仍待覆盖。
 - COM并发：已观察的双多选并发由系统原生路径止损；旧框目录串用根因、非多选并发仍未查明，详见[S3证据](../history/M0-T20-S3-com-safety.md)。
 - COM多选：默认回退系统新框，O: 长名、单项、取消、链接及双宽并发经有限验证；旧框实现及其他参数仍未全面解决。
@@ -32,6 +53,8 @@ S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1已收口；T20此后按用户要求有限范围收口。
 
 ## Recent Closure
+
+- M0 T21 S11：双宽干净构建、18 项实际包回归及双位置发布；[记录](../history/M0-T21-S11-restart-timeout.md)。
 
 - M0 T21 S10：双宽自有 Shell 视图的外框及滚动条附着/解除已验证；DirectUI 内部未样式化，远端 6760373 已复核。[记录](../history/M0-T21-S10-shell-view.md)。
 

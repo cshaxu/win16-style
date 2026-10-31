@@ -50,9 +50,9 @@
       "path": "tests/integration/global_lifecycle.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1de69cc5816ca5b845e8d04c86790a1a2385d4987097cdb1f96bbeb44e649c67",
+      "sha256": "3f753d7085db1e5751001045af1edbeca44d7fabec1804f39ab285985fa77511",
       "disposition": "authored",
-      "review": "T21 S4 native isolated desktop real application and lifecycle probe; T21 S4 host failure detection and regression",
+      "review": "T21 S4 native isolated desktop real application and lifecycle probe; T21 S4 host failure detection and regression; T21 S11 bounded timeout retry and restart probe",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -95,9 +95,9 @@
       "path": "src/run16s-exe/global.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ae2431ce478e8a5ac3e9cfe30dacd27abcd5cfa8ce033dc9ecc0751405e69b1f",
+      "sha256": "b8e7955ed93a6f6f232a56c7fa45e5c03d31010139a482192f81caab1e642e00",
       "disposition": "authored",
-      "review": "T21 S3 global controller and private-desktop integration; T21 S4 host failure detection and regression",
+      "review": "T21 S3 global controller and private-desktop integration; T21 S4 host failure detection and regression; T21 S11 bounded timeout retry and restart probe",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
