@@ -3474,6 +3474,42 @@
       "disposition": "authored",
       "review": "T21 S13 bounded same-bitness system loader address resolution and owned target test; target-local exported worker resolution",
       "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/global_load.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "02f473812a71915516c609f99a7e7fcd1ee6b6c3b1b93dc6bf14cdc07cd36e51",
+      "disposition": "authored",
+      "review": "T21 S13 target-local fallback loader lifetime and isolated timeout fixture",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/global_load.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "49b9591c8fb7b90ba6502f39610f810fef288fd1b240f09c17473b743027e4dd",
+      "disposition": "authored",
+      "review": "T21 S13 target-local fallback loader lifetime and isolated timeout fixture",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/global_load.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "eead9906f255cc6356fa85f655510587598d6e7187f99030e0689195ed5535b1",
+      "disposition": "authored",
+      "review": "T21 S13 target-local fallback loader lifetime and isolated timeout fixture",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/global_load_fixture.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "17d1790d325d7b53104da89689b648aad942518ce1f447d5ebaf71df8af5b684",
+      "disposition": "authored",
+      "review": "T21 S13 target-local fallback loader lifetime and isolated timeout fixture",
+      "notice": "Project-authored source; no imported code or resources"
     }
   ]
 }

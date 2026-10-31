@@ -18,7 +18,7 @@ add_link_options(-static -static-libgcc -fno-lto)
 include(tools/build_cache.cmake)
 set(WIN16STYLE_X86_BUILD "${CMAKE_SOURCE_DIR}/build/.ninja/x86" CACHE PATH "Matching x86 fixture build")
 set(core_sources
-  attachment.c control_scope.c control_protocol.c controls.c dllmain.c global_window.c global_session.c global_hook.c global_thread.c global_remote.c global_vb_text.c font.c header_paint.c progress_paint.c toolbar_paint.c trackbar_paint.c updown_paint.c layout.c vb_text.c import_scan.c import_patch.c
+  attachment.c control_scope.c control_protocol.c controls.c dllmain.c global_window.c global_session.c global_hook.c global_thread.c global_remote.c global_load.c global_vb_text.c font.c header_paint.c progress_paint.c toolbar_paint.c trackbar_paint.c updown_paint.c layout.c vb_text.c import_scan.c import_patch.c
   menu_bar.c menu_bar_paint.c menu_items.c menu_layout.c menu_paint.c
   menu_scope.c native_api.c scroll_layout.c scroll_track.c tab_paint.c theme.c win16_style.c)
 list(TRANSFORM core_sources PREPEND "src/ntw16s-dll/")
@@ -85,7 +85,7 @@ if(WIN16STYLE_ARCH STREQUAL "x64")
   target_link_libraries(demo PRIVATE user32 gdi32 comctl32 comdlg32 shell32 ole32 uuid)
   target_include_directories(demo PRIVATE src ${CMAKE_SOURCE_DIR})
   target_link_options(demo PRIVATE ${explicit_manifest_options})
-  add_executable(run16s src/run16s-exe/main.c src/run16s-exe/global.c src/ntw16s-dll/global_session.c src/ntw16s-dll/global_remote.c src/run16s-exe/elevation.c src/run16s-exe/startup_error.c src/run16s-exe/version.rc)
+  add_executable(run16s src/run16s-exe/main.c src/run16s-exe/global.c src/ntw16s-dll/global_session.c src/ntw16s-dll/global_remote.c src/ntw16s-dll/global_load.c src/run16s-exe/elevation.c src/run16s-exe/startup_error.c src/run16s-exe/version.rc)
   target_compile_definitions(run16s PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 
   target_link_libraries(run16s PRIVATE ntw16s-installer shell32 ole32 advapi32 user32)
@@ -1178,6 +1178,19 @@ if(BUILD_TESTING)
   add_dependencies(core-global-remote dialog-test-driver ntw16s)
   add_test(NAME core/global-remote COMMAND ${test_driver} --name core/global-remote -- $<TARGET_FILE:dialog-test-driver> --private --direct $<TARGET_FILE:core-global-remote> $<TARGET_FILE:ntw16s>)
   set_tests_properties(core/global-remote PROPERTIES TIMEOUT 15)
+
+  add_library(global-load-fixture SHARED tests/ntw16s-dll/global_load_fixture.c)
+  target_compile_definitions(global-load-fixture PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_options(global-load-fixture PRIVATE -Wl,--kill-at)
+  set_target_properties(global-load-fixture PROPERTIES PREFIX "" OUTPUT_NAME "${dll_name}" ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/global-load-fixture" LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/global-load-fixture" RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/global-load-fixture")
+  add_executable(core-global-load tests/ntw16s-dll/global_load.c src/ntw16s-dll/global_load.c src/ntw16s-dll/global_remote.c)
+  target_include_directories(core-global-load PRIVATE src)
+  target_compile_definitions(core-global-load PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_options(core-global-load PRIVATE -municode)
+  target_link_libraries(core-global-load PRIVATE user32)
+  add_dependencies(core-global-load dialog-test-driver global-load-fixture)
+  add_test(NAME core/global-load COMMAND ${test_driver} --name core/global-load -- $<TARGET_FILE:dialog-test-driver> --private --direct $<TARGET_FILE:core-global-load> $<TARGET_FILE:global-load-fixture>)
+  set_tests_properties(core/global-load PROPERTIES TIMEOUT 15)
 
   add_library(vb-global-runtime SHARED tests/ntw16s-dll/vb_global_runtime.c)
   target_compile_definitions(vb-global-runtime PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
