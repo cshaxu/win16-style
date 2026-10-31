@@ -2,28 +2,7 @@
 
 ## Current Work
 
-M0 T21 S8：96 DPI 虚拟化及 144 DPI 对照、双宽构建、18 项包回归和两处发布完成；待提交推送与远端复核。
-
-## M0 T21 S8 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Continuation；T21 开放，S7 实际 144 DPI 外的兼容路径尚未核实 |
-| Admission And Approval | 用户已授权全局模式验证及自动执行 S；保持窗口所有权简化规则 |
-| Objective | 在当前显示环境通过自有 DPI 未感知进程验证 96 DPI 虚拟化下双宽附着、输入、退出和普通模式所有权 |
-| Non-goals | 不更改系统 DPI 或主题，不宣称真实 96 DPI 显示器或跨显示器矩阵；不使用 computer-use |
-| Reference Baseline | S7 远端 782d2c3；144 DPI 及双宽受控输入已验证 |
-| Candidate Proposal | [手动全局样式模式](../proposals/global-style-mode.md) |
-| Files And ABI Surface | 自有原生测试与必要修复；不增加导出或产品 |
-| Applicable Rules | M0、C17、GCC、Ninja、ccache、原图形资源不变 |
-| Verification | 私有桌面 DPI 未感知 96 与感知模式 144 双宽实际包对照，普通启动及传播回归 |
-| Expected Markers | 两宽窗口报告各自有效 DPI；内容、消息、附着及退出契约通过；不修改系统设置 |
-| Asset Needs | build/t21-s8、build/t21-package 自有 scratch |
-| Reporting Requirements | 分别报告真实与虚拟化 DPI、输入方式、负例、失败和未覆盖面 |
-| Stop Conditions | 无法隔离或安全管理测试进程时不在用户桌面运行全局钩子 |
-| Exit Criteria | 双宽干净构建、18 项实际包测试及必要发布完成；待推送与远端复核 |
-| Original Owner Request | 保持全局与普通模式共享附着；普通拥有的窗口不因全局退出解除，未拥有窗口可被全局接管 |
-| Similar-Issue Sweep | 双位宽、DPI 意识模式、首次和已有窗口、输入、回调及退出 |
+当前无活动任务包；M0 T21 保持开放。S8 已完成 DPI 未感知路径验证并远端复核；真实其他缩放比例、物理输入、权限及特殊窗口仍未全面验证，不能宣称所有程序均已覆盖。
 
 ## Identifier State
 
@@ -34,8 +13,8 @@ M0 T21 S8：96 DPI 虚拟化及 144 DPI 对照、双宽构建、18 项包回归�
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
 - Last allocated T21 S: 8
-- Last delivery: M0 T21 S7 实际 144 DPI 双宽受控输入、18 项聚焦包测试、双位置发布及远端复核；[记录](../history/M0-T21-S7-input-dpi.md)。
-- Open task: T21 S8 DPI 未感知 96 虚拟化验证；实际物理输入、受保护/高权限和特殊窗口仍未覆盖。
+- Last delivery: M0 T21 S8 双宽 96 DPI 虚拟化和 144 DPI 对照、18 项包回归、双位置发布及远端复核；[记录](../history/M0-T21-S8-dpi-unaware.md)。
+- Open task: T21 保持开放；实际物理输入、真实其他缩放比例、受保护/高权限和特殊窗口仍未全面覆盖。
 - 打印当前页已纳入受限 PrintDlgEx 转接；跨 DPI、实际打印和本地化仍待覆盖。
 - COM并发：已观察的双多选并发由系统原生路径止损；旧框目录串用根因、非多选并发仍未查明，详见[S3证据](../history/M0-T20-S3-com-safety.md)。
 - COM多选：默认回退系统新框，O: 长名、单项、取消、链接及双宽并发经有限验证；旧框实现及其他参数仍未全面解决。
@@ -53,6 +32,8 @@ S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1已收口；T20此后按用户要求有限范围收口。
 
 ## Recent Closure
+
+- M0 T21 S8：双宽 96 DPI 虚拟化及 144 DPI 对照通过，远端 be2e5c4 与两处四文件摘要一致；[记录](../history/M0-T21-S8-dpi-unaware.md)。
 
 - M0 T21 S7：简单窗口所有权语义保留，144 DPI 双宽受控输入与 18 项聚焦包测试通过；远端 782d2c3 与两处四文件摘要一致。[记录](../history/M0-T21-S7-input-dpi.md)。
 
