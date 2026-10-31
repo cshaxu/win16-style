@@ -8,7 +8,7 @@ M0 T21 保持开放；S1 全局钩子隔离可行性验证已按用户要求完�
 
 - Milestone: M0 (fixed)
 - Last allocated T: 21
-- Last allocated Td S: 17
+- Last allocated Td S: 18
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
