@@ -9,6 +9,7 @@
 #define RESET_CLICKS (WM_APP+76)
 #define QUERY_CLICKS (WM_APP+77)
 #define QUERY_DPI (WM_APP+78)
+#define CREATE_HIDDEN (WM_APP+79)
 #define TARGET_COUNT 9
 static const WCHAR cls[]=L"Win16GlobalE2ETarget";
 typedef struct target {PROCESS_INFORMATION process;HWND window;} target;
@@ -97,6 +98,13 @@ int wmain(int argc,WCHAR **argv)
     for(unsigned item=0;item<ARRAYSIZE(normal);++item)if(!wait_global(targets[normal[item]].window,session->cookie)){
         printf("GLOBAL_E2E normal_not_adopted index=%u\n",normal[item]);goto done;
     }
+    HWND hidden[ARRAYSIZE(normal)]={0};
+    for(unsigned item=0;item<ARRAYSIZE(normal);++item){DWORD pid=0;DWORD_PTR created=0;WCHAR title[80];
+        GetWindowThreadProcessId(targets[normal[item]].window,&pid);
+        if(!SendMessageTimeoutW(targets[normal[item]].window,CREATE_HIDDEN,0,0,SMTO_ABORTIFHUNG,2000,&created) || !created)goto done;
+        swprintf(title,ARRAYSIZE(title),L"Win16GlobalHidden-%lu",pid);hidden[item]=FindWindowW(cls,title);
+        if(!hidden[item] || IsWindowVisible(hidden[item]) || query(hidden[item])!=1){printf("GLOBAL_E2E hidden_setup_failed index=%u\n",normal[item]);goto done;}
+    }
     for(unsigned i=0;i<8;++i)if(!check_input(targets[i].window)){printf("GLOBAL_E2E active_input_failed index=%u\n",i);goto done;}
     DWORD_PTR dpi32=0,dpi64=0;
     if(!SendMessageTimeoutW(targets[0].window,QUERY_DPI,0,0,SMTO_ABORTIFHUNG,1000,&dpi32) || !dpi32 ||
@@ -105,6 +113,9 @@ int wmain(int argc,WCHAR **argv)
     event=OpenEventW(EVENT_MODIFY_STATE,FALSE,request);if(!event || !SetEvent(event))goto done;
     if(WaitForSingleObject(manager.hProcess,12000)!=WAIT_OBJECT_0 || !GetExitCodeProcess(manager.hProcess,&exitcode) || exitcode)goto done;
     for(unsigned i=0;i<8;++i){int expected=0;if(!wait_style(targets[i].window,expected)){printf("GLOBAL_E2E restore_failed index=%u state=%d expected=%d\n",i,query(targets[i].window),expected);goto done;}}
+    for(unsigned item=0;item<ARRAYSIZE(normal);++item)if(!wait_style(hidden[item],0)){
+        printf("GLOBAL_E2E hidden_restore_failed index=%u state=%d\n",normal[item],query(hidden[item]));goto done;
+    }
     for(unsigned i=0;i<8;++i)if(!check_input(targets[i].window)){printf("GLOBAL_E2E stopped_input_failed index=%u\n",i);goto done;}
     for(unsigned item=0;item<ARRAYSIZE(normal);++item){unsigned i=normal[item];DWORD process=0;DWORD_PTR created=0;WCHAR title[80];
         GetWindowThreadProcessId(targets[i].window,&process);
@@ -120,6 +131,7 @@ int wmain(int argc,WCHAR **argv)
     }
     if(!launch(&targets[8],argv[3],NULL,titles[8]) || !wait_style(targets[8].window,0))goto done;
     printf("GLOBAL E2E PASS old=4 new=4 restore=8 post_stop_windows=4 post_stop_children=4 stopped=1 host=%lu\n",session->host_pid);
+    printf("GLOBAL HIDDEN RESTORE PASS normal=4\n");
     printf("GLOBAL INPUT PASS native=2 active=8 stopped=8 dpi32=%llu dpi64=%llu\n",(unsigned long long)dpi32,(unsigned long long)dpi64);passed=TRUE;
     if(unaware)printf("GLOBAL DPI MODE PASS mode=unaware dpi32=96 dpi64=96\n");
 done:

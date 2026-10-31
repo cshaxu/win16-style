@@ -69,7 +69,12 @@ BOOL ntw16s_global_window_remove(HWND w)
 {
     global_window *s;BOOL removed=FALSE;DWORD error;
     if(!local(w))return FALSE;
-    s=lookup(w);if(!s || s->detached){SetLastError(ERROR_NOT_FOUND);return FALSE;}
+    s=lookup(w);
+    /* A normally launched process may have created this window while it was
+     * hidden. The global observer only marks shown windows, but shutdown
+     * enumerates hidden ones too and must remove their existing attachment. */
+    if(!s){if(Ntw16sWindowAttached(w))return Ntw16sWindowRemove(w);SetLastError(ERROR_NOT_FOUND);return FALSE;}
+    if(s->detached){SetLastError(ERROR_NOT_FOUND);return FALSE;}
     if(s->removing || s->kind==GLOBAL_PENDING){SetLastError(ERROR_BUSY);return FALSE;}
     ++s->calls;s->removing=TRUE;
     if(s->kind==GLOBAL_ATTACHMENT)removed=Ntw16sWindowRemove(w);

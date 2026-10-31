@@ -55,6 +55,11 @@ static int worker(int argc,WCHAR **argv)
     CHECK(Ntw16sCreationEnd(scope,&creation));CHECK(Ntw16sWindowAttached(prior));
     CHECK(ntw16s_global_window_apply(prior));CHECK(ntw16s_global_window_attached(prior));
     CHECK(ntw16s_global_window_remove(prior));CHECK(!Ntw16sWindowAttached(prior));CHECK(DestroyWindow(prior));
+    scope=Ntw16sCreationBegin(TRUE);CHECK(scope);
+    HWND hidden=CreateWindowW(cls.lpszClassName,L"Hidden ordinary",WS_OVERLAPPEDWINDOW,20,20,380,240,NULL,NULL,instance,NULL);CHECK(hidden);
+    CHECK(Ntw16sCreationEnd(scope,&creation));CHECK(Ntw16sWindowAttached(hidden));
+    CHECK(!ntw16s_global_window_attached(hidden));CHECK(ntw16s_global_window_remove(hidden));
+    CHECK(!Ntw16sWindowAttached(hidden));CHECK(DestroyWindow(hidden));
     CHECK(UnregisterClassW(cls.lpszClassName,instance));
     printf("GLOBAL WINDOW PASS bits=%u direct=1 control=1 edit=1 idempotent=1 wrong_thread=1 destroy=1 reentrant=1 existing=1\n",(unsigned)(sizeof(void*)*8));return 0;
 }

@@ -7,6 +7,7 @@
 #define RESET_CLICKS (WM_APP+76)
 #define QUERY_CLICKS (WM_APP+77)
 #define QUERY_DPI (WM_APP+78)
+#define CREATE_HIDDEN (WM_APP+79)
 static HINSTANCE instance;
 static unsigned clicks;
 static const WCHAR cls[]=L"Win16GlobalE2ETarget";
@@ -24,6 +25,10 @@ static LRESULT CALLBACK window_proc(HWND w,UINT message,WPARAM a,LPARAM b)
         HWND child=CreateWindowW(cls,title,WS_OVERLAPPEDWINDOW,90,90,300,180,NULL,NULL,instance,NULL);
         if(child)ShowWindow(child,SW_SHOW);
         return child!=NULL;
+    }
+    if(message==CREATE_HIDDEN){
+        WCHAR title[80];swprintf(title,ARRAYSIZE(title),L"Win16GlobalHidden-%lu",GetCurrentProcessId());
+        return CreateWindowW(cls,title,WS_OVERLAPPEDWINDOW,90,90,300,180,NULL,NULL,instance,NULL)!=NULL;
     }
     if(message==CREATE_PROCESS){
         WCHAR image[32768],command[33000];DWORD n=GetModuleFileNameW(NULL,image,ARRAYSIZE(image));

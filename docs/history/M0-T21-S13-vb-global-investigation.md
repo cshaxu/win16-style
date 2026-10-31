@@ -591,3 +591,31 @@ The registered actual-package focused run passed 10 cases with zero skips in
 25.2 seconds. It reused the P70 clean product package and temporarily replaced
 only the two test probes, restoring them afterward. No product bytes changed.
 
+# P74: remove unmarked hidden ordinary windows at global stop
+
+An owned private-desktop mixed-mode probe created a hidden styled window in
+each of four ordinary x86/x64 targets after global activation. On P70, the
+stop sweep notified 52 windows without timeout, but the first hidden window
+remained attached (`hidden_restore_failed index=2 state=1`). The cause was
+that shutdown removal required a global window marker; a hidden window can
+have the ordinary attachment without ever receiving that marker. The common
+same-thread removal now removes an existing project attachment even without a
+global marker. The control-message session and process checks are unchanged.
+Only targets reached by the stop sweep and their hook can be restored.
+
+The updated x86/x64 clean GCC/Ninja/ccache package passed 17 focused actual
+package tests with zero skips in 35.42 seconds, including both DPI modes,
+direct same-thread removal, mixed ordinary/global launch, hidden window
+restoration, ordinary restart and propagation. The actual deployed O:/winnt
+package also passed the mixed private-desktop test at 144 DPI with all four
+hidden windows restored. The session's x64 system hook returned 126 and used
+the target-thread fallback. The original resource and source gates passed.
+The complete matrix, physical input and inaccessible or hung windows were
+not covered. DLLs and trampolines may remain pinned after stop.
+
+Published SHA-256: demo `8b5c7cad7c89cb517a3c1c24a53c35028fb8f92bff75f967fcb14f33c257151b`;
+ntw16s32 `2ecb2062bd1d89eca78ed668f19303c4e86c75bd3d65c8d4a61232a0a6aaeb71`;
+ntw16s64 `638b42135a9b82b5e3411e17342b9ed5e299aa7b1e4ea58dfa2b5d110eab54f0`;
+run16s `dbc175525b0babdfc0b8ad1d013f26e091d6d100dc9db4540629559335bf608d`.
+The publication tool checked all four files in both assets and O:/winnt.
+
