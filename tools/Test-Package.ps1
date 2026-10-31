@@ -116,17 +116,25 @@ try{
         foreach($kind in @('shell','com')){foreach($action in @('accept','cancel')){
             $cases+=Case "dialog-tree-$arch-$kind-$action" $dialogDriver @($run,$treeFolderTarget,$kind,$action) @("TREE_FOLDER bits=$bits",'tree=1','windows=1','result=1','worker=0','DIALOG_DRIVER exit=0') 30
         }}
-        foreach($kind in @('shell-simple','shell-simple-callback','shell-new','shell-new-ansi','shell-new-root','shell-new-ansi-root')){foreach($action in @('accept','cancel')){
+        foreach($kind in @('shell-simple','shell-new','shell-new-ansi','shell-new-root','shell-new-ansi-root')){foreach($action in @('accept','cancel')){
             $cases+=Case "dialog-tree-$arch-$kind-$action" $dialogDriver @($run,$treeFolderTarget,$kind,$action) @("TREE_FOLDER bits=$bits",'tree=1','windows=1','result=1','direct=1','worker=0','DIALOG_DRIVER exit=0') 30
         }}
+        foreach($action in @('accept','cancel')){
+            $cases+=Case "dialog-tree-$arch-shell-simple-callback-$action" $dialogDriver @($run,$treeFolderTarget,'shell-simple-callback',$action) @("TREE_FOLDER bits=$bits",'result=1','direct=0','callback=1','unknown=1','worker=0','DIALOG_DRIVER exit=0') 30
+        }
         foreach($kind in @('shell-new-nonew','shell-new-ansi-nonew')){foreach($action in @('accept','cancel')){
             $cases+=Case "dialog-tree-$arch-$kind-$action" $dialogDriver @($run,$treeFolderTarget,$kind,$action) @("TREE_FOLDER bits=$bits",'tree=1','windows=1','result=1','direct=1','worker=0','TREE_NONEW requested=1 visible=0','DIALOG_DRIVER exit=0') 30
         }}
         foreach($action in @('accept','cancel')){
             $cases+=Case "dialog-tree-$arch-shell-new-callback-$action" $dialogDriver @($run,$treeFolderTarget,'shell-new-callback',$action) @("TREE_FOLDER bits=$bits",'tree=1','result=1','direct=0','callback=1','unknown=1','worker=0','DIALOG_DRIVER exit=0') 30
         }
-        $cases+=Case "dialog-tree-$arch-shell-validate" $dialogDriver @($run,$treeFolderTarget,'shell','validate') @("TREE_FOLDER bits=$bits",'result=1','validated=1','direct=1','worker=0','DIALOG_DRIVER exit=0') 30
-        $cases+=Case "dialog-tree-$arch-shell-recover" $dialogDriver @($run,$treeFolderTarget,'shell','recover') @("TREE_FOLDER bits=$bits",'result=1','validated=1','direct=1','worker=0','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-tree-$arch-shell-validate" $dialogDriver @($run,$treeFolderTarget,'shell','validate') @("TREE_FOLDER bits=$bits",'result=1','validated=1','direct=0','unknown=1','worker=0','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-tree-$arch-shell-recover" $dialogDriver @($run,$treeFolderTarget,'shell','recover') @("TREE_FOLDER bits=$bits",'result=1','validated=1','direct=0','unknown=1','worker=0','DIALOG_DRIVER exit=0') 30
+        $folderFilterTarget=Join-Path (Join-Path $BuildRoot $arch) 'folder-filter-target.exe'
+        foreach($encoding in @('wide','ansi')){
+            $filterArgs=@($run,$folderFilterTarget,$scratch);if($encoding -eq 'ansi'){$filterArgs+='ansi'}
+            $cases+=Case "dialog-folder-filter-$arch-$encoding" $dialogDriver $filterArgs @("FOLDER_FILTER bits=$bits",'unknown=1','installed=1','blocked=0','refs=1','cleanup=1','valid=1','DIALOG_DRIVER exit=0') 30
+        }
         $findTarget=Join-Path (Join-Path $BuildRoot $arch) 'find-dialog-target.exe'
         $commonTarget=Join-Path (Join-Path $BuildRoot $arch) 'common-dialog-target.exe'
         $printTarget=Join-Path (Join-Path $BuildRoot $arch) 'print-dialog-target.exe'

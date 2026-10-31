@@ -2696,7 +2696,7 @@
       "path": "src/ntw16s-dll/injection/folder_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7f1380b72c6a18c555ebdad8fe3b817d7e4ade346960947b218bbc1ef9e08b1b",
+      "sha256": "f6f9875a1b0c2e5e59119fd0d247e5f7504fd4c00c4e69a99007fd2da2c3ebf1",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
@@ -3029,7 +3029,7 @@
       "path": "tests/ntw16s-dll/tree_folder_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "66cc2dc5f997a29d3da0476ed0c0d342a74916acf23704cd383e128b810395be",
+      "sha256": "53bde0fa19850bb3a2d03f899d037e5ca8fd28a3c2d5e4de21b9e1724b1585ed",
       "disposition": "authored",
       "review": "T20 S1 tree folder candidate native probe",
       "notice": "Project-authored test; no imported code or resources"

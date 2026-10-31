@@ -83,5 +83,5 @@ int wmain(int argc,WCHAR **argv)
     printf("TREE_FOLDER bits=%u com=%d cancel=%d tree=%ld windows=%ld result=%d hr=%08lx wait=%lu worker=%lu validated=%ld direct=%ld callback=%ld unknown=%ld\n",
         (unsigned)(sizeof(void*)*8),com,cancel_mode,trees,windows,correct,(DWORD)hr,wait,code,validated,direct_tree,callback_initialized,callback_unknown);
     printf("TREE_NONEW requested=%d visible=%ld\n",nonew,new_button_visible);
-    return (!nonew || !new_button_visible) && seen && trees && windows==1 && correct && wait==WAIT_OBJECT_0 && !code && (!validate_mode || (validated==1 && direct_tree)) && (!(simple || (new_shell && !new_callback)) || direct_tree) && (!new_callback || !direct_tree) && (!(simple_callback || new_callback) || callback_initialized==1)?0:1;
+    return (!nonew || !new_button_visible) && seen && trees && windows==1 && correct && wait==WAIT_OBJECT_0 && !code && (!validate_mode || (validated==1 && !direct_tree && callback_unknown==1)) && (!((simple && !simple_callback) || (new_shell && !new_callback)) || direct_tree) && (!(new_callback || simple_callback) || (!direct_tree && callback_unknown==1)) && (!(simple_callback || new_callback) || callback_initialized==1)?0:1;
 }
