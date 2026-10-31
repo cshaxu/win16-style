@@ -7,12 +7,14 @@ static BOOL launch(const WCHAR *image,const WCHAR *argument,PROCESS_INFORMATION 
 {WCHAR command[32768];STARTUPINFOW si={.cb=sizeof(si)};return swprintf(command,ARRAYSIZE(command),L"\"%ls\" %ls",image,argument)>=0 && CreateProcessW(image,command,NULL,NULL,TRUE,0,NULL,NULL,&si,p);}
 static int query(HWND window,UINT message,DWORD timeout)
 {DWORD_PTR result=0;return SendMessageTimeoutW(window,message,0,0,SMTO_ABORTIFHUNG,timeout,&result)?(int)result:-1;}
-static int run(const WCHAR *launcher,const WCHAR *target,const WCHAR *request)
+static int run(const WCHAR *launcher,const WCHAR *target,const WCHAR *request,BOOL ordinary)
 {
  PROCESS_INFORMATION app={0},manager={0};HANDLE event=NULL;HWND window=NULL;int result=1;
- if(!launch(target,L"managed",&app))goto done;
+ WCHAR argument[32768];
+ if(ordinary){if(swprintf(argument,ARRAYSIZE(argument),L"--wait \"%ls\" managed",target)<0 || !launch(launcher,argument,&app))goto done;}
+ else if(!launch(target,L"managed",&app))goto done;
  for(unsigned i=0;i<100&&!window;++i){window=FindWindowW(L"GlobalPropagationProbe",L"Owned propagation root");if(!window)Sleep(30);}
- if(!window || query(window,WM_APP+110,1000)!=0)goto done;
+ if(!window || query(window,WM_APP+110,1000)!=(ordinary?1:0))goto done;
  for(unsigned cycle=0;cycle<2;++cycle){
   if(!launch(launcher,L"--global",&manager))goto done;
   int attached=0;for(unsigned i=0;i<200&&!attached;++i){attached=query(window,WM_APP+110,1000)==1;if(!attached)Sleep(30);}
@@ -38,11 +40,12 @@ static int run(const WCHAR *launcher,const WCHAR *target,const WCHAR *request)
 }
 int wmain(int argc,WCHAR **argv)
 {
- if(argc!=4)return 2;
+ if(argc!=4 && argc!=5)return 2;
+ BOOL ordinary=argc==5 && !lstrcmpW(argv[4],L"ordinary");if(argc==5 && !ordinary)return 2;
  WCHAR desktop[128],name[NTW16S_GLOBAL_NAME_CAP],request[NTW16S_GLOBAL_NAME_CAP+16];DWORD needed=0;
  if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desktop,sizeof(desktop),&needed)||wcsncmp(desktop,L"Win16S-Dialog-",14))return 3;
  if(!ntw16s_global_name(name,ARRAYSIZE(name))||swprintf(request,ARRAYSIZE(request),L"%ls.request",name)<0)return 4;
- int x86=run(argv[1],argv[2],request),x64=run(argv[1],argv[3],request);
- if(!x86&&!x64){puts("GLOBAL PROPAGATION LIFECYCLE PASS widths=2 cycles=2 active=4 stopped=4 removed=4");return 0;}
+ int x86=run(argv[1],argv[2],request,ordinary),x64=run(argv[1],argv[3],request,ordinary);
+ if(!x86&&!x64){printf("GLOBAL PROPAGATION LIFECYCLE PASS widths=2 cycles=2 active=4 stopped=4 removed=4 mode=%s\n",ordinary?"ordinary":"native");return 0;}
  printf("GLOBAL PROPAGATION LIFECYCLE FAIL x86=%d x64=%d error=%lu\n",x86,x64,GetLastError());return 1;
 }

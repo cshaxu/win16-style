@@ -561,3 +561,18 @@ full test matrix and physical input are not covered. Initial clean build was
 rejected by a scratch screenshot link and fixed; the next build was stopped
 after the in-flight payload consistency issue was identified, then rebuilt.
 
+# P72: ordinary process repeated global sessions
+
+Extended the existing lifecycle probe with an ordinary `run16s --wait`
+target. Each of x86 and x64 starts styled, is adopted by two consecutive
+global sessions, creates a styled window and injected child during each
+session, and after each stop has its original window restored and creates an
+unstyled window and child without the DLL. Both widths and cycles passed
+against the deployed O:/winnt P70 package on a private desktop. The registered
+actual-package focused run passed 10 cases without skips in 28.34 seconds;
+it reused the P70 clean build and package with only the newly built probe
+temporarily substituted, then restored the prior probe. No product source or
+binary changed and no new binary publication was needed. The x64 hook again
+returned 126 and used the target-thread fallback. No general claim is made
+about excluded processes, failed attachments or termination races.
+

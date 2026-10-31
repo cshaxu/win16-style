@@ -41,9 +41,9 @@
       "path": "tests/integration/global_propagation_lifecycle.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1562e8f01c48fcf8045b59fb74d09db89f36ea6217a11d58ad924d7199601092",
+      "sha256": "b2b2c81aaf4fec3923a7a510fd12d0321c958ba5fb7413c37e00dfa582d0fc80",
       "disposition": "authored",
-      "review": "T21 S13 experimental global process propagation integration and owned regression; T21 S13 unified late style hooks and stop semantics",
+      "review": "T21 S13 experimental global process propagation integration and owned regression; T21 S13 unified late style hooks and stop semantics; T21 S13 ordinary-mode repeated global lifecycle regression",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
