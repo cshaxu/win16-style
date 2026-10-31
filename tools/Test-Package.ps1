@@ -170,8 +170,15 @@ try{
             $wideFlag=if($encoding -eq 'wide'){1}else{0}
             foreach($backend in @('native','styled')) {
                 $launch=if($backend -eq 'native'){'--direct'}else{$run}
-                $cases+=Case "dialog-win32-navigation-$arch-$encoding-$backend" $dialogDriver @($launch,$win32MultiNavTarget,$encoding,$scratch) @("MULTI_NAV bits=$bits wide=$wideFlag noadd=0 seen=1 phase=5 dir=1",'result=0 error=0 wait=0 worker=0 cleanup=11111111','DIALOG_DRIVER exit=0') 30
+                $cases+=Case "dialog-win32-navigation-$arch-$encoding-$backend" $dialogDriver @($launch,$win32MultiNavTarget,$encoding,$scratch) @("MULTI_NAV bits=$bits wide=$wideFlag noadd=0 seen=1 phase=5 dir=1",'result=0 error=0 wait=0 worker=0 cleanup=111111111','DIALOG_DRIVER exit=0') 30
+                foreach($variant in @('single','multi','small')) {
+                    $selection=if($variant -eq 'single'){1}elseif($variant -eq 'multi'){2}else{3}
+                    $captured=if($variant -eq 'single'){1}else{2}
+                    $expected=if($variant -eq 'small'){'result=0 error=12291'}else{'result=1 error=0'}
+                    $cases+=Case "dialog-win32-selection-$arch-$encoding-$variant-$backend" $dialogDriver @($launch,$win32MultiNavTarget,$encoding,$scratch,$variant) @("MULTI_NAV bits=$bits wide=$wideFlag noadd=0 seen=1 phase=6 dir=1",$expected,'wait=0 worker=0 cleanup=111111111',"NAV_SELECTION mode=$selection captured=$captured native=0 native_error=",'filter=1','valid=1','DIALOG_DRIVER exit=0') 30
+                }
             }
+            $cases+=Case "dialog-win32-single-reference-$arch-$encoding" $dialogDriver @('--direct',$win32MultiTarget,'explorer',$encoding,'long',$scratch,'single') @("WIN32_MULTI bits=$bits",'old=0','result=1 error=0','WIN32_SINGLE','valid=1','DIALOG_DRIVER exit=0') 30
             $cases+=Case "dialog-win32-multi-$arch-$encoding-old-short" $dialogDriver @('--direct',$win32MultiTarget,'old',$encoding,'short',$scratch) @("WIN32_MULTI bits=$bits",'old=1 listed=2 posted=1 result=1 error=0','cleanup=111','WIN32_MULTI_CONTRACT small=0 required=0 valid=1','DIALOG_DRIVER exit=0') 30
             $cases+=Case "dialog-win32-multi-$arch-$encoding-native-long" $dialogDriver @('--direct',$win32MultiTarget,'explorer',$encoding,'long',$scratch) @("WIN32_MULTI bits=$bits",'old=0','result=1 error=0','cleanup=111','WIN32_MULTI_CONTRACT small=0 required=0 valid=1','DIALOG_DRIVER exit=0') 30
             $cases+=Case "dialog-win32-multi-$arch-$encoding-styled-long" $dialogDriver @($run,$win32MultiTarget,'explorer',$encoding,'long',$scratch) @("WIN32_MULTI bits=$bits",'old=0','result=1 error=0','cleanup=111','WIN32_MULTI_CONTRACT small=0 required=0 valid=1','DIALOG_DRIVER exit=0') 30
@@ -179,7 +186,7 @@ try{
             foreach($backend in @('native','styled')) { foreach($variant in @('supplement','supplement-small','supplement-cancel')) {
                 $launch=if($backend -eq 'native'){'--direct'}else{$run}
                 $expected=if($variant -eq 'supplement'){'result=1 error=0'}elseif($variant -eq 'supplement-cancel'){'result=0 error=0'}else{'result=0 error=12291'}
-                $capture=if($variant -eq 'supplement-cancel'){'MULTI_SUPPLEMENT_RESULT inserted=2 captured=0 system_result=0'}else{'MULTI_SUPPLEMENT_RESULT inserted=2 captured=2 system_result=1'}
+                $capture=if($variant -eq 'supplement-cancel'){'MULTI_SUPPLEMENT_RESULT inserted=2 captured=0 system_result=0'}else{'MULTI_SUPPLEMENT_RESULT inserted=2 captured=2 system_result=0'}
                 $cases+=Case "dialog-win32-prototype-$arch-$encoding-$variant-$backend" $dialogDriver @($launch,$win32MultiTarget,'old',$encoding,'long',$scratch,$variant) @("WIN32_MULTI bits=$bits",'old=1 listed=2 posted=1',$expected,'cleanup=111','valid=1',$capture,'DIALOG_DRIVER exit=0') 30
             }}
         }
