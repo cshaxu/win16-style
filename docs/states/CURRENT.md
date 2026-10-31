@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T20 S4准入：常用对话框、内部控件与演示验证。
+M0 T20 S4：常用对话框、内部控件与演示验证已完成，等待提交推送及复核。
 
 ## M0 T20 S4 Packet
 
@@ -34,7 +34,7 @@ M0 T20 S4准入：常用对话框、内部控件与演示验证。
 - Last allocated T19 S: 3
 - Last allocated T20 S: 4
 - Last delivery: M0 T20 S3 P2：COM多选安全回退系统新框，双宽构建、实际包测试及双位置发布；Shell筛选P1同样采用安全回退。
-- Open task: T20 S4 常用对话框和控件验收；[S2矩阵](../history/M0-T20-S2-dialog-audit.md)。
+- Open task: T20 S4 常用对话框和控件验收；[S2矩阵](../history/M0-T20-S2-dialog-audit.md)、[S4范围](../history/M0-T20-S4-common.md)。
 - 打印当前页已纳入受限 PrintDlgEx 转接；跨 DPI、实际打印和本地化仍待覆盖。
 - COM并发：已观察的双多选并发由系统原生路径止损；旧框目录串用根因、非多选并发仍未查明，详见[S3证据](../history/M0-T20-S3-com-safety.md)。
 - COM多选：默认回退系统新框，O: 长名、单项、取消、链接及双宽并发经有限验证；旧框实现及其他参数仍未全面解决。
