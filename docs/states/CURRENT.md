@@ -2,28 +2,28 @@
 
 ## Current Work
 
-M0 T20 S4：常用对话框、内部控件与演示验证已完成，等待提交推送及复核。
+M0 T20 S5准入：最终交接、真实部署包验证及收口准备；T20保持开放。
 
-## M0 T20 S4 Packet
+## M0 T20 S5 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | New；S3安全止损已发布并远端复核 |
-| Admission And Approval | 用户授权按ROI自动准入后续S，直至T20收口前 |
-| Objective | 验证常用文件/文件夹、查找替换、字体颜色及打印页面的旧布局、控件和常见交互，修复已证实高ROI问题 |
-| Non-goals | 不穷举参数/设备组合，不扩展COM布局长尾，不使用computer-use，不改兄弟仓库 |
-| Reference Baseline | S3 P2发布提交b0a78c4；S2审计及S3证据 |
+| Identifier Mode | New；S4已提交推送并远端复核 |
+| Admission And Approval | 用户授权后续S自动执行并在T20收口前停止 |
+| Objective | 整理最终入口与回退、测试和未解决项，验证同批包与实际部署，形成T20可审查的收口交接 |
+| Non-goals | 不关闭T20，不扩展COM布局长尾，不穷举所有参数，不使用computer-use |
+| Reference Baseline | S4交付4298cdb；S3 P2发布b0a78c4 |
 | Candidate Proposal | [公共对话框适配及后续S序列](../proposals/classic-folder-dialogs.md) |
-| Files And ABI Surface | 纯C自有探针及必要DLL/demo；三组件四产物，不预期新增公开ABI |
-| Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；原图形资源及来源逐字节保持 |
-| Verification | 双宽包、真实入口/返回、常用控件与滚动状态、demo及已有样式/注入传播回归 |
-| Expected Markers | 逐类报告实际布局、交互和结果；已确认的旧框动态滚动不冒称全部控制覆盖 |
-| Asset Needs | 登记build/t20-s4-common及build/t20-package scratch |
-| Reporting Requirements | 分类结果、已修复缺陷、失败/跳过/未覆盖与用户可验收入口 |
-| Stop Conditions | 自绘或不明状态不可猜测；无法安全处理按ROI记录并交S5，不破坏应用语义 |
-| Exit Criteria | 常用路径和demo有相应证据，旧探针超时原因或限制明确，规定构建、实际包测试、必要发布、推送及远端复核完成 |
-| Original Owner Request | 按ROI自动执行后续S，停止于T20收口前 |
-| Similar-Issue Sweep | File/Save、Shell/COM文件夹、Find/Replace、Font/Color、Print/PrintEx/PageSetup与滚动交互 |
+| Files And ABI Surface | 审计、TODO与必要自有测试；维持三组件四产物及现有ABI |
+| Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；原资源及来源逐字节保持 |
+| Verification | 双宽干净构建、同批包实际测试、部署包摘要和实际部署代表探针、远端复核 |
+| Expected Markers | 明确哪些已支持、哪些安全回退、哪些未覆盖；保留S4旧探针超时与COM并发边界 |
+| Asset Needs | 登记build/t20-s5-handoff及build/t20-package scratch |
+| Reporting Requirements | 提供最终证据、demo路径、限制与明确待用户验收状态；禁止将T20标为关闭 |
+| Stop Conditions | 测试不通过如实记录及处理；不更改系统设置、共享资源或兄弟仓库 |
+| Exit Criteria | 交接矩阵、TODO、构建/实包/部署对照及远端复核完成；关闭S5后停在T20收口前 |
+| Original Owner Request | 自动执行各S并在T任务收口前停止 |
+| Similar-Issue Sweep | 审计S2矩阵、S3安全回退、S4常用窗口/滚动及最终四文件部署 |
 
 ## Identifier State
 
@@ -32,9 +32,9 @@ M0 T20 S4：常用对话框、内部控件与演示验证已完成，等待提�
 - Last allocated Td S: 15
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
-- Last allocated T20 S: 4
+- Last allocated T20 S: 5
 - Last delivery: M0 T20 S3 P2：COM多选安全回退系统新框，双宽构建、实际包测试及双位置发布；Shell筛选P1同样采用安全回退。
-- Open task: T20 S4 常用对话框和控件验收；[S2矩阵](../history/M0-T20-S2-dialog-audit.md)、[S4范围](../history/M0-T20-S4-common.md)。
+- Open task: T20 S5 最终验证与交接；[S2矩阵](../history/M0-T20-S2-dialog-audit.md)、[S4结果](../history/M0-T20-S4-common.md)。
 - 打印当前页已纳入受限 PrintDlgEx 转接；跨 DPI、实际打印和本地化仍待覆盖。
 - COM并发：已观察的双多选并发由系统原生路径止损；旧框目录串用根因、非多选并发仍未查明，详见[S3证据](../history/M0-T20-S3-com-safety.md)。
 - COM多选：默认回退系统新框，O: 长名、单项、取消、链接及双宽并发经有限验证；旧框实现及其他参数仍未全面解决。
@@ -52,6 +52,8 @@ S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1收口，T20保持开放。
 
 ## Recent Closure
+
+- M0 T20 S4：双宽干净构建、实际重建包40项通过；部署包字节未改，旧探针超时保留。[记录](../history/M0-T20-S4-common.md)。
 
 - M0 T20 S3：Shell筛选与COM多选已安全回退，双宽构建、实际包测试及远端复核；[Shell](../history/M0-T20-S3-shell-filter.md)、[COM](../history/M0-T20-S3-com-safety.md)。
 
