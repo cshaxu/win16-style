@@ -653,3 +653,22 @@ inventory. The remaining desktop reference and its cause were not identified;
 do not treat this x86 run as a clean resource-lifetime pass. The x64 driver's
 cleanup check passed. No unrelated process was terminated.
 
+# P78: identify the retained private desktop handle
+
+The P77 desktop remained openable; the sibling broker desktop was absent.
+The existing desktop-driver self-test confirmed that an extra handle keeps a
+desktop open and that closing that handle permits its removal. A read-only
+Toolhelp thread probe checked 790 queryable current-session thread desktops
+and found none bound to the P77 desktop. A separate native handle inventory
+identified the desktop object type from its own handle, then temporarily
+duplicated and closed only accessible desktop handles in the same session.
+Of 145 candidate handles, 139 could be duplicated; one matching handle belonged
+to PID 30064, `C:/Windows/System32/InputMethod/CHS/ChsIME.exe`. Its reported
+creation was 16:40:03, shortly after probe compilation at 16:39:51. A module
+query did not find `ntw16s32.dll` or `ntw16s64.dll` in that process. The input
+method process was not terminated or modified. The timing alone does not prove
+what started it or that the six inaccessible handles were unrelated. The
+desktop could not be safely removed without controlling its other owner.
+The two read-only probe sources remain in `build/t21-s13/flap-investigation/`.
+No product code or binaries changed.
+
