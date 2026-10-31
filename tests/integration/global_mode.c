@@ -6,6 +6,9 @@
 #define QUERY_STYLE (WM_APP+71)
 #define CREATE_EXTRA (WM_APP+72)
 #define CREATE_PROCESS (WM_APP+73)
+#define RESET_CLICKS (WM_APP+76)
+#define QUERY_CLICKS (WM_APP+77)
+#define QUERY_DPI (WM_APP+78)
 #define TARGET_COUNT 9
 static const WCHAR cls[]=L"Win16GlobalE2ETarget";
 typedef struct target {PROCESS_INFORMATION process;HWND window;} target;
@@ -29,6 +32,22 @@ static BOOL wait_style(HWND w,int expected)
 {
     for(unsigned i=0;i<160;++i){if(query(w)==expected)return TRUE;Sleep(30);}return FALSE;
 }
+static BOOL check_input(HWND w)
+{
+    HWND edit=GetDlgItem(w,2),button=GetDlgItem(w,1);WCHAR text[64];DWORD_PTR value=0;
+    if(!edit || !button || !SendMessageTimeoutW(w,RESET_CLICKS,0,0,SMTO_ABORTIFHUNG,1000,&value))return FALSE;
+    if(!SendMessageTimeoutW(edit,WM_SETTEXT,0,(LPARAM)L"global input",SMTO_ABORTIFHUNG,1000,&value) || !value){printf("GLOBAL INPUT set_failed result=%llu error=%lu\n",(unsigned long long)value,GetLastError());return FALSE;}
+    SendMessageW(edit,EM_SETSEL,12,12);SendMessageW(edit,WM_CHAR,L'!',1);
+    SendMessageW(button,BM_CLICK,0,0);
+    ZeroMemory(text,sizeof(text));
+    BOOL got=SendMessageTimeoutW(edit,WM_GETTEXT,ARRAYSIZE(text),(LPARAM)text,SMTO_ABORTIFHUNG,1000,&value)!=0;
+    int length=got?(int)value:0;
+    BOOL counted=SendMessageTimeoutW(w,QUERY_CLICKS,0,0,SMTO_ABORTIFHUNG,1000,&value)!=0;
+    if(!length || lstrcmpW(text,L"global input!") || !counted || value!=1){
+        printf("GLOBAL INPUT mismatch length=%d text=%ls clicks=%llu counted=%d\n",length,text,(unsigned long long)value,counted);return FALSE;
+    }
+    return TRUE;
+}
 static void cleanup(target *t)
 {
     if(t->window && IsWindow(t->window))PostMessageW(t->window,WM_CLOSE,0,0);
@@ -46,6 +65,7 @@ int wmain(int argc,WCHAR **argv)
     if(!launch(&targets[0],argv[2],NULL,titles[0]) || !launch(&targets[1],argv[3],NULL,titles[1]) ||
        !launch(&targets[2],argv[3],argv[1],titles[2]) || !launch(&targets[3],argv[2],argv[1],titles[3]))goto done;
     if(!wait_style(targets[0].window,0)||!wait_style(targets[1].window,0)||!wait_style(targets[2].window,1)||!wait_style(targets[3].window,1))goto done;
+    if(!check_input(targets[0].window)||!check_input(targets[1].window))goto done;
     if(swprintf(command,ARRAYSIZE(command),L"\"%ls\" --global",argv[1])<0)goto done;
     STARTUPINFOW startup={.cb=sizeof(startup)};
     if(!CreateProcessW(argv[1],command,NULL,NULL,TRUE,0,NULL,NULL,&startup,&manager))goto done;
@@ -60,9 +80,14 @@ int wmain(int argc,WCHAR **argv)
     if(!launch(&targets[4],argv[2],NULL,titles[4]) || !launch(&targets[5],argv[3],NULL,titles[5]) ||
        !launch(&targets[6],argv[3],argv[1],titles[6]) || !launch(&targets[7],argv[2],argv[1],titles[7]))goto done;
     for(unsigned i=4;i<8;++i)if(!wait_style(targets[i].window,1)){printf("GLOBAL_E2E new_failed index=%u state=%d\n",i,query(targets[i].window));goto done;}
+    for(unsigned i=0;i<8;++i)if(!check_input(targets[i].window)){printf("GLOBAL_E2E active_input_failed index=%u\n",i);goto done;}
+    DWORD_PTR dpi32=0,dpi64=0;
+    if(!SendMessageTimeoutW(targets[0].window,QUERY_DPI,0,0,SMTO_ABORTIFHUNG,1000,&dpi32) || !dpi32 ||
+       !SendMessageTimeoutW(targets[1].window,QUERY_DPI,0,0,SMTO_ABORTIFHUNG,1000,&dpi64) || !dpi64)goto done;
     event=OpenEventW(EVENT_MODIFY_STATE,FALSE,request);if(!event || !SetEvent(event))goto done;
     if(WaitForSingleObject(manager.hProcess,12000)!=WAIT_OBJECT_0 || !GetExitCodeProcess(manager.hProcess,&exitcode) || exitcode)goto done;
     for(unsigned i=0;i<8;++i){int expected=(i==2 || i==3 || i==6 || i==7)?1:0;if(!wait_style(targets[i].window,expected)){printf("GLOBAL_E2E restore_failed index=%u state=%d expected=%d\n",i,query(targets[i].window),expected);goto done;}}
+    for(unsigned i=0;i<8;++i)if(!check_input(targets[i].window)){printf("GLOBAL_E2E stopped_input_failed index=%u\n",i);goto done;}
     const unsigned normal[]={2,3,6,7};
     for(unsigned item=0;item<ARRAYSIZE(normal);++item){unsigned i=normal[item];DWORD process=0;DWORD_PTR created=0;WCHAR title[80];
         GetWindowThreadProcessId(targets[i].window,&process);
@@ -77,7 +102,8 @@ int wmain(int argc,WCHAR **argv)
         PostMessageW(child,WM_CLOSE,0,0);
     }
     if(!launch(&targets[8],argv[3],NULL,titles[8]) || !wait_style(targets[8].window,0))goto done;
-    printf("GLOBAL E2E PASS old=4 new=4 restore=4 normal_retained=4 post_stop_windows=4 post_stop_children=4 stopped=1 host=%lu\n",session->host_pid);passed=TRUE;
+    printf("GLOBAL E2E PASS old=4 new=4 restore=4 normal_retained=4 post_stop_windows=4 post_stop_children=4 stopped=1 host=%lu\n",session->host_pid);
+    printf("GLOBAL INPUT PASS native=2 active=8 stopped=8 dpi32=%llu dpi64=%llu\n",(unsigned long long)dpi32,(unsigned long long)dpi64);passed=TRUE;
 done:
     if(!passed)printf("GLOBAL E2E FAIL active=%d exit=%lu error=%lu\n",active,exitcode,GetLastError());
     if(manager.hProcess && WaitForSingleObject(manager.hProcess,0)!=WAIT_OBJECT_0){if(!event)event=OpenEventW(EVENT_MODIFY_STATE,FALSE,request);if(event)SetEvent(event);

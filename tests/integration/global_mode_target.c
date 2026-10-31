@@ -4,7 +4,11 @@
 #define QUERY_STYLE (WM_APP+71)
 #define CREATE_EXTRA (WM_APP+72)
 #define CREATE_PROCESS (WM_APP+73)
+#define RESET_CLICKS (WM_APP+76)
+#define QUERY_CLICKS (WM_APP+77)
+#define QUERY_DPI (WM_APP+78)
 static HINSTANCE instance;
+static unsigned clicks;
 static const WCHAR cls[]=L"Win16GlobalE2ETarget";
 typedef BOOL (__cdecl *hit_fn)(HWND,LPARAM,LRESULT *);
 static LRESULT CALLBACK window_proc(HWND w,UINT message,WPARAM a,LPARAM b)
@@ -28,6 +32,10 @@ static LRESULT CALLBACK window_proc(HWND w,UINT message,WPARAM a,LPARAM b)
         if(!CreateProcessW(image,command,NULL,NULL,FALSE,0,NULL,NULL,&startup,&child))return 0;
         CloseHandle(child.hThread);CloseHandle(child.hProcess);return 1;
     }
+    if(message==RESET_CLICKS){clicks=0;return 1;}
+    if(message==QUERY_CLICKS)return clicks;
+    if(message==QUERY_DPI)return GetDpiForWindow(w);
+    if(message==WM_COMMAND && LOWORD(a)==1 && HIWORD(a)==BN_CLICKED){++clicks;return 0;}
     if(message==WM_CLOSE){DestroyWindow(w);return 0;}
     if(message==WM_DESTROY){PostQuitMessage(0);return 0;}
     return DefWindowProcW(w,message,a,b);
@@ -35,6 +43,7 @@ static LRESULT CALLBACK window_proc(HWND w,UINT message,WPARAM a,LPARAM b)
 int wmain(int argc,WCHAR **argv)
 {
     if(argc!=2)return 2;
+    if(!SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2))return 7;
     instance=GetModuleHandleW(NULL);WNDCLASSW c={0};
     c.hInstance=instance;c.lpfnWndProc=window_proc;c.lpszClassName=cls;
     if(!RegisterClassW(&c))return 3;

@@ -31,3 +31,5 @@ The tested batch was published to assets root and O:/winnt root:
 - ntw16s64.dll x64: `18b928b00b2b7eba21368e0d7e2e778fb25a8ac7f8220cc625bb888a14dc9c68`
 - demo.exe x64: `d8c7c25d6fa5a72f94354d864b9764d3a249aaf7d80d3754701f7ed3190f32cf`
 The staged delivery before this accounting line covered 26 files, 264 insertions and 50 deletions. Review searched `install_created`, `Ntw16sWindowAttach`, `Ntw16sWindowAttached`, `Ntw16sWindowRemove` and `ntw16s_global_window_apply`: both entry paths use the same installation classifier; the global wrapper records only attachments it owns, retains existing ordinary owners, and removes its own through the existing lifecycle owner. The former direct renderer-specific global control/frame selection was removed.
+
+Subsequent evidence: [S6](M0-T21-S6-threads-resources.md) adds double-width multithread and three-cycle resource checks; [S7](M0-T21-S7-input-dpi.md) adds controlled edit/button messages at 144 DPI. Their stated limitations continue to apply.

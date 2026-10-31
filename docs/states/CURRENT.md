@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T21 S7：实际 DPI 与受控输入语义验证和任务级收口审计。
+M0 T21 S7：实际 DPI 与受控输入语义、双宽构建、18 项包回归和两处发布完成；待提交推送与远端复核。
 
 ## M0 T21 S7 Packet
 
@@ -10,18 +10,18 @@ M0 T21 S7：实际 DPI 与受控输入语义验证和任务级收口审计。
 | --- | --- |
 | Identifier Mode | Continuation；S6 后补齐任务验收中的 DPI 和输入证据 |
 | Admission And Approval | 用户已授权手动全局模式及自动执行所需 S；自有探针不依赖手工输入 |
-| Objective | 在实际可用 DPI 下验证双宽全局窗体和标准控件的输入语义及退出后可用性 |
+| Objective | 按用户最新要求保持简化的窗口所有权，验证 DPI、输入与退出后可用性 |
 | Non-goals | 不更改系统 DPI、安全或主题；不使用 computer-use；仅操作私有桌面自有进程 |
 | Reference Baseline | S6 远端 4a88f58；18 项聚焦包测试及两处发布已核对 |
 | Candidate Proposal | [手动全局样式模式](../proposals/global-style-mode.md) |
-| Files And ABI Surface | 纯 C 原生探针及必要修复；原则上不增加导出或产品 |
+| Files And ABI Surface | 纯 C 原生探针及必要修复；不增加导出或产品 |
 | Applicable Rules | M0、C17、GCC、Ninja、ccache、原图形资源不变 |
 | Verification | 私有桌面双宽输入、窗口实际 DPI、全局接入及退出、普通模式及同批包回归 |
-| Expected Markers | 编辑、点击和状态保持；报告实际 DPI，不将单一 DPI 扩展为全矩阵 |
+| Expected Markers | 普通窗口原有附着保留；编辑、点击和状态保持；报告实际 DPI |
 | Asset Needs | build/t21-s7、build/t21-package 自有 scratch |
 | Reporting Requirements | 记录真实消息、结果、实际 DPI、所有权、失败与未覆盖项 |
 | Stop Conditions | 不能隔离或安全管理目标时，不对用户桌面注入或发送输入 |
-| Exit Criteria | 证据与必要修复完成；双宽干净构建、同批包测试、必要发布、推送与远端复核 |
+| Exit Criteria | 双宽干净构建、18 项同批包测试及两处发布完成；待提交推送与远端复核 |
 | Original Owner Request | 通过全局模式接管传统 Win32 窗口；保持普通与全局共享附着实现 |
 | Similar-Issue Sweep | 按钮与编辑框输入、附着和解除前后、双宽、DPI、目标窗口可用性 |
 
