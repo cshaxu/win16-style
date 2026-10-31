@@ -56,7 +56,10 @@ static void cleanup(target *t)
 }
 int wmain(int argc,WCHAR **argv)
 {
-    if(argc!=4)return 2;
+    if(argc!=4 && argc!=5)return 2;
+    BOOL unaware=argc==5 && !lstrcmpW(argv[4],L"--dpi-unaware");
+    if(argc==5 && !unaware)return 2;
+    if(!SetEnvironmentVariableW(L"WIN16S_TEST_DPI_UNAWARE",unaware?L"1":NULL))return 2;
     WCHAR desk[128],name[NTW16S_GLOBAL_NAME_CAP],request[NTW16S_GLOBAL_NAME_CAP+16],command[4096];DWORD needed=0;
     if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desk,sizeof(desk),&needed) || wcsncmp(desk,L"Win16S-Dialog-",14))return 3;
     if(!ntw16s_global_name(name,ARRAYSIZE(name)) || swprintf(request,ARRAYSIZE(request),L"%ls.request",name)<0)return 4;
@@ -84,6 +87,7 @@ int wmain(int argc,WCHAR **argv)
     DWORD_PTR dpi32=0,dpi64=0;
     if(!SendMessageTimeoutW(targets[0].window,QUERY_DPI,0,0,SMTO_ABORTIFHUNG,1000,&dpi32) || !dpi32 ||
        !SendMessageTimeoutW(targets[1].window,QUERY_DPI,0,0,SMTO_ABORTIFHUNG,1000,&dpi64) || !dpi64)goto done;
+    if(unaware && (dpi32!=96 || dpi64!=96)){printf("GLOBAL DPI MODE FAIL dpi32=%llu dpi64=%llu\n",(unsigned long long)dpi32,(unsigned long long)dpi64);goto done;}
     event=OpenEventW(EVENT_MODIFY_STATE,FALSE,request);if(!event || !SetEvent(event))goto done;
     if(WaitForSingleObject(manager.hProcess,12000)!=WAIT_OBJECT_0 || !GetExitCodeProcess(manager.hProcess,&exitcode) || exitcode)goto done;
     for(unsigned i=0;i<8;++i){int expected=(i==2 || i==3 || i==6 || i==7)?1:0;if(!wait_style(targets[i].window,expected)){printf("GLOBAL_E2E restore_failed index=%u state=%d expected=%d\n",i,query(targets[i].window),expected);goto done;}}
@@ -104,6 +108,7 @@ int wmain(int argc,WCHAR **argv)
     if(!launch(&targets[8],argv[3],NULL,titles[8]) || !wait_style(targets[8].window,0))goto done;
     printf("GLOBAL E2E PASS old=4 new=4 restore=4 normal_retained=4 post_stop_windows=4 post_stop_children=4 stopped=1 host=%lu\n",session->host_pid);
     printf("GLOBAL INPUT PASS native=2 active=8 stopped=8 dpi32=%llu dpi64=%llu\n",(unsigned long long)dpi32,(unsigned long long)dpi64);passed=TRUE;
+    if(unaware)printf("GLOBAL DPI MODE PASS mode=unaware dpi32=96 dpi64=96\n");
 done:
     if(!passed)printf("GLOBAL E2E FAIL active=%d exit=%lu error=%lu\n",active,exitcode,GetLastError());
     if(manager.hProcess && WaitForSingleObject(manager.hProcess,0)!=WAIT_OBJECT_0){if(!event)event=OpenEventW(EVENT_MODIFY_STATE,FALSE,request);if(event)SetEvent(event);

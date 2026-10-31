@@ -43,7 +43,8 @@ static LRESULT CALLBACK window_proc(HWND w,UINT message,WPARAM a,LPARAM b)
 int wmain(int argc,WCHAR **argv)
 {
     if(argc!=2)return 2;
-    if(!SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2))return 7;
+    WCHAR option[4];BOOL unaware=GetEnvironmentVariableW(L"WIN16S_TEST_DPI_UNAWARE",option,ARRAYSIZE(option))==1 && option[0]==L'1';
+    if(!SetProcessDpiAwarenessContext(unaware?DPI_AWARENESS_CONTEXT_UNAWARE:DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2))return 7;
     instance=GetModuleHandleW(NULL);WNDCLASSW c={0};
     c.hInstance=instance;c.lpfnWndProc=window_proc;c.lpszClassName=cls;
     if(!RegisterClassW(&c))return 3;

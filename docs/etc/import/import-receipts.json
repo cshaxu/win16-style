@@ -68,18 +68,18 @@
       "path": "tests/integration/global_mode_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "a1624de3006f37847c93142df5a21eb5a8b08430dc23884a9b95d8262435a5db",
+      "sha256": "db3dd89398c6fc9259ecf68dd12b595edca59e7bca08620c3ccfde777b803499",
       "disposition": "authored",
-      "review": "T21 S3 global controller and private-desktop integration; T21 S7 per-monitor DPI and controlled input",
+      "review": "T21 S3 global controller and private-desktop integration; T21 S7 per-monitor DPI and controlled input; T21 S8 DPI-unaware 96 virtualization fixture",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/integration/global_mode.c",
       "source": null,
       "source_blob": null,
-      "sha256": "beaecf976fca532170a8274ffac6b7f467d0a224583a02d954b51ef84361c3ec",
+      "sha256": "dfae2cd6a4d5087f69cf6c3e7b32c479c37ba5cc27aa3210d6aa5850f82c44c8",
       "disposition": "authored",
-      "review": "T21 S3 global controller and private-desktop integration; T21 S4 dual-width and lifecycle validation; T21 S7 per-monitor DPI and controlled input",
+      "review": "T21 S3 global controller and private-desktop integration; T21 S4 dual-width and lifecycle validation; T21 S7 per-monitor DPI and controlled input; T21 S8 DPI-unaware 96 virtualization fixture",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
