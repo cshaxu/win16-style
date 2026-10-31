@@ -2,6 +2,51 @@
   "schema": 1,
   "files": [
     {
+      "path": "tests/integration/global_late_dialog.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "0dea94f01df897f4474098bcb635d8396b8496bfb314cafd0d7208b6a219df0a",
+      "disposition": "authored",
+      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "tests/integration/global_propagation_probe.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "9927c4d3c0aa1cdeee70fbf84069a8e9a7c546233758405bf3490f617f440c60",
+      "disposition": "authored",
+      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/late_guard.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "35f32f0902fafab3bf38203e05316d14f4e9ff4458dc591bec5148e4e691b9a2",
+      "disposition": "authored",
+      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/late_guard.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "f10eae1e0e6ab5c29758ad030d86b3770913657dfd7440a3fc33f98b40eff722",
+      "disposition": "authored",
+      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/late_guard.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "684e5219d5a29baaf9fa64302c48e15d4ab196fd8aa5dd6185acc0b5568f6152",
+      "disposition": "authored",
+      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
       "path": "tests/ntw16s-dll/global_manager.c",
       "source": null,
       "source_blob": null,
@@ -32,18 +77,18 @@
       "path": "tests/integration/global_threads_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "808c292a3c39c2880903f210907ef0e244e2e6f08033240f1dc0fcb68e284178",
+      "sha256": "44413e163cb463417408f2738c41339c054f665ae741461cec1e042f69c0f1d4",
       "disposition": "authored",
-      "review": "T21 S6 dual-width multithread and bounded lifecycle probe",
+      "review": "T21 S6 dual-width multithread and bounded lifecycle probe; T21 S13 later regression coverage",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/integration/global_threads.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4accc919d09f4a071d5039d3127b6303c6c97f9e86bf909b115963f870dd97ee",
+      "sha256": "fea3e7bae1a6359bb8c9d7d50d994cdf726b74d4367b4cde6808ece547a017e7",
       "disposition": "authored",
-      "review": "T21 S6 dual-width multithread and bounded lifecycle probe",
+      "review": "T21 S6 dual-width multithread and bounded lifecycle probe; T21 S13 later regression coverage",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -185,9 +230,9 @@
       "path": "tests/ntw16s-dll/menu_initial.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f7b9e073c41a124bcf898b053ea948648f8755deccbb0d4c15476e6b548f8ce8",
+      "sha256": "f3b43c5e3e3600bf29a32d0e77d4ad5c5deb63084805b0797593cae77e0fb3e3",
       "disposition": "authored",
-      "review": "T20 S19 popup first paint before idle and negative old-package witness; T21 S13 truthful global readiness and pre-subclass menu drawing witness",
+      "review": "T20 S19 popup first paint before idle and negative old-package witness; T21 S13 truthful global readiness and pre-subclass menu drawing witness; T21 S13 later regression coverage",
       "notice": "Project-authored test; no imported code or resources"
     },
     {
