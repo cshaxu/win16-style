@@ -2,6 +2,42 @@
   "schema": 1,
   "files": [
     {
+      "path": "tests/integration/global_propagation_lifecycle.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "fe748fc118a0348b1535ca3aad94e73ae92565ecb4dc5c4ff5285c31337bef21",
+      "disposition": "authored",
+      "review": "T21 S13 experimental global process propagation integration and owned regression",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "tests/integration/global_hook_owner.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "acc5485a53a7e731785814f1fd5178f6822db8e1cdd3d775dfd3128154e16c67",
+      "disposition": "authored",
+      "review": "T21 S13 experimental global process propagation integration and owned regression",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/global_late.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ebf3f5a6bdf90c291d84c64fa7c1681b0b5e2be54c8b3e67da6f1bc0ba0ea11e",
+      "disposition": "authored",
+      "review": "T21 S13 experimental global process propagation integration and owned regression",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/global_late.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ebd966d8165b7a85166a8508cc8b440d73b814a9e5b8daf7afb01898e6c2a13b",
+      "disposition": "authored",
+      "review": "T21 S13 experimental global process propagation integration and owned regression",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
       "path": "src/ntw16s-dll/injection/late_process.h",
       "source": null,
       "source_blob": null,
@@ -14,18 +50,18 @@
       "path": "src/ntw16s-dll/injection/late_process.c",
       "source": null,
       "source_blob": null,
-      "sha256": "5c234367fd8c1f50910da9b60a83817fe8d6a4af9baf1399484182a2df7f406a",
+      "sha256": "b0f82415c5f95c3894cec5f7ac3940c7a5e990c1a7652081618dd6ec178e2786",
       "disposition": "authored",
-      "review": "T21 S13 experimental synchronized late process initializer; not linked into product; T21 S13 global session propagation policy",
+      "review": "T21 S13 experimental synchronized late process initializer; not linked into product; T21 S13 global session propagation policy; T21 S13 global late process propagation integration",
       "notice": "Project-authored source; uses existing project hook and installer code"
     },
     {
       "path": "tests/integration/late_process_prototype.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b70d01c16202e143761a361cff461ef0e22e62e2783204823cae3b7ac250f64f",
+      "sha256": "90dd6592daaeb1259141f446325a0bb842ecce6e7dc54cac81d751abe7ee7ba4",
       "disposition": "authored",
-      "review": "T21 S13 experimental late process-hook adapter exercising production propagation implementation; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy; T21 S13 session-bound propagation tests; T21 S13 session-bound propagation tests",
+      "review": "T21 S13 experimental late process-hook adapter exercising production propagation implementation; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy; T21 S13 session-bound propagation tests; T21 S13 session-bound propagation tests; T21 S13 global late process propagation integration",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -77,9 +113,9 @@
       "path": "tests/integration/global_propagation_probe.c",
       "source": null,
       "source_blob": null,
-      "sha256": "8e72974fd56c7452ee15c7eb0229f8184a3160205f2c6a7db9034d55c4f4a520",
+      "sha256": "ee122dba2e10f41feacc9146f4d7cdc0c50993d346121dc97c248e43c837d57b",
       "disposition": "authored",
-      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product; T21 S13 session-bound propagation tests",
+      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product; T21 S13 session-bound propagation tests; T21 S13 global late process propagation integration",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -239,27 +275,27 @@
       "path": "src/ntw16s-dll/global_session.h",
       "source": null,
       "source_blob": null,
-      "sha256": "eb362d1c7126f584372b6e3ef28ee70c5f615c979177c531acda8e0075b18c99",
+      "sha256": "8d901a9ab2a855f812d5863f6a40456bb71ac7551bd1a2d535d871c7693ecdc0",
       "disposition": "authored",
-      "review": "T21 S3 global controller and private-desktop integration; T21 S13 truthful global readiness and pre-subclass menu drawing witness; T21 S13 global session propagation policy",
+      "review": "T21 S3 global controller and private-desktop integration; T21 S13 truthful global readiness and pre-subclass menu drawing witness; T21 S13 global session propagation policy; T21 S13 global late process propagation integration",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "src/ntw16s-dll/global_session.c",
       "source": null,
       "source_blob": null,
-      "sha256": "aa62ad8336d8595ae030f8b7547e4160334f92a6ca1d49a5659da98497374b9f",
+      "sha256": "8643469450917885ab4b6fa93ee655d27633429014eef9548f78ca290b718400",
       "disposition": "authored",
-      "review": "T21 S3 global controller and private-desktop integration; T21 S13 global session propagation policy",
+      "review": "T21 S3 global controller and private-desktop integration; T21 S13 global session propagation policy; T21 S13 global late process propagation integration",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "src/ntw16s-dll/global_hook.c",
       "source": null,
       "source_blob": null,
-      "sha256": "8a30659a4a8aeced9ea7567447be1ecb1991b862445427c9c3eee8800b6188ee",
+      "sha256": "bfae40c964d0472f62728b4e6b4739d48756e7a22a6d8552278385af97c84176",
       "disposition": "authored",
-      "review": "T21 S3 global controller and private-desktop integration; T21 S5 shared creation and late-attachment classifier; T21 S13 scoped VB6 text activation; T21 S13 shared image exclusion predicate; T21 S13 bounded target-thread fallback integration",
+      "review": "T21 S3 global controller and private-desktop integration; T21 S5 shared creation and late-attachment classifier; T21 S13 scoped VB6 text activation; T21 S13 shared image exclusion predicate; T21 S13 bounded target-thread fallback integration; T21 S13 global late process propagation integration",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -1193,9 +1229,9 @@
       "path": "src/ntw16s-dll/injection/installer.c",
       "source": "src/nthook32-dll/installer.cpp",
       "source_blob": "84e78935b3079089569b9167eaed994df3220ebd",
-      "sha256": "04cde9ffd12be185c01356cfea2ecbdde96ed7e783a79c0fe0ac4f2be0d20201",
+      "sha256": "b6f73270e7b0df31213921f01b82d17c83d7c3925fdc8e270db686bf5cb9a930",
       "disposition": "adapt",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T21 S13 global session propagation policy",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T21 S13 global session propagation policy; T21 S13 global late process propagation integration",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -1337,9 +1373,9 @@
       "path": "src/ntw16s-dll/injection/create_process.c",
       "source": "src/nthook32-dll/create_process.cpp",
       "source_blob": "2369ce7a7c46e79fc23f73367db9d42e0c40c9da",
-      "sha256": "1431f16c8853f62f8803325a93709e55794abba894c9dd33e9e6a6bf16aae00e",
+      "sha256": "ff63d714b8cb3b962a39dc6ba232ec76ba0cf215fbb196a939fdbee9407cc809",
       "disposition": "adapt",
-      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy",
+      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy; T21 S13 global late process propagation integration",
       "notice": "Project-authored source adaptation or new native fixture, repository MIT"
     },
     {
@@ -3560,9 +3596,9 @@
       "path": "src/ntw16s-dll/global_thread.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6acb23b2ed8490195299eeb27ff4faac3567abd2f4bcca23f3ba9c3abb313afa",
+      "sha256": "f9bdaccc10d7e910cc926ecd977d25c3d93823b57ef97f610d3bc41bb6e5d8d0",
       "disposition": "authored",
-      "review": "T21 S13 target-local thread worker and owned private-desktop probe",
+      "review": "T21 S13 target-local thread worker and owned private-desktop probe; T21 S13 global late process propagation integration",
       "notice": "Project-authored source; no imported code or resources"
     },
     {

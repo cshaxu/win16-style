@@ -76,9 +76,14 @@ int wmain(int argc,WCHAR **argv)
             stopped_created=CreateProcessA(image,command,NULL,NULL,TRUE,0,NULL,NULL,&si,&after);
     }
     DWORD stopped_code=99;if(stopped_created){if(WaitForSingleObject(after.hProcess,5000)==WAIT_OBJECT_0)GetExitCodeProcess(after.hProcess,&stopped_code);else{TerminateProcess(after.hProcess,ERROR_TIMEOUT);WaitForSingleObject(after.hProcess,1000);}CloseHandle(after.hThread);CloseHandle(after.hProcess);}
+    session->cookie^=0x100u;session->phase=NTW16S_GLOBAL_ACTIVE;
+    DWORD reinit=ntw16s_late_process_init(directory,session->cookie);PROCESS_INFORMATION again={0};STARTUPINFOW again_si={.cb=sizeof(again_si)};WCHAR again_command[32768];BOOL restarted=FALSE;
+    if(!reinit && swprintf(again_command,ARRAYSIZE(again_command),L"\"%ls\" child",argv[1])>=0)
+        restarted=CreateProcessW(argv[1],again_command,NULL,NULL,TRUE,0,NULL,NULL,&again_si,&again);
+    DWORD again_code=99;if(restarted){if(WaitForSingleObject(again.hProcess,5000)==WAIT_OBJECT_0)GetExitCodeProcess(again.hProcess,&again_code);else{TerminateProcess(again.hProcess,ERROR_TIMEOUT);WaitForSingleObject(again.hProcess,1000);}CloseHandle(again.hThread);CloseHandle(again.hProcess);}
     InterlockedExchange(&running,0);DWORD joined=WaitForSingleObject(thread,2000);CloseHandle(thread);
-    printf("LATE PROCESS bits=%u api=%ls init=1 repeat=1 created=%d exit=%lu stopped=%d stopped_exit=%lu descendant=%d joined=%d\n",(unsigned)(sizeof(void*)*8),argv[3],made,code,stopped_created,stopped_code,waiting_ready&&waiting_code==0,joined==WAIT_OBJECT_0);
+    printf("LATE PROCESS bits=%u api=%ls init=1 repeat=1 created=%d exit=%lu stopped=%d stopped_exit=%lu descendant=%d restarted=%d joined=%d\n",(unsigned)(sizeof(void*)*8),argv[3],made,code,stopped_created,stopped_code,waiting_ready&&waiting_code==0,restarted&&again_code==0,joined==WAIT_OBJECT_0);
     UnmapViewOfFile(session);CloseHandle(mapping);
     /* Test process exits with detours and trampoline storage still live. */
-    return made && code==0 && stopped_created && stopped_code==41 && waiting_ready && waiting_code==0 && joined==WAIT_OBJECT_0?0:1;
+    return made && code==0 && stopped_created && stopped_code==41 && waiting_ready && waiting_code==0 && restarted && again_code==0 && joined==WAIT_OBJECT_0?0:1;
 }

@@ -1,6 +1,7 @@
 #include "global_session.h"
 #include <stdint.h>
 #include <wchar.h>
+#include <stdlib.h>
 
 BOOL ntw16s_global_name(WCHAR *name,DWORD capacity)
 {
@@ -42,4 +43,19 @@ BOOL ntw16s_global_policy_active(DWORD cookie)
         if(mapping)CloseHandle(mapping);
     }
     SetLastError(saved);return active;
+}
+BOOL ntw16s_global_owner_matches(const ntw16s_global_session *s,HMODULE module)
+{
+    BOOL ok=FALSE;DWORD size=32752;WCHAR *owner=(WCHAR *)calloc(size,sizeof(WCHAR));
+    WCHAR *dll=(WCHAR *)calloc(size,sizeof(WCHAR));HANDLE process=NULL;
+    if(!s || !module || !owner || !dll)goto done;
+    process=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION,FALSE,s->owner_pid);
+    if(!process || !QueryFullProcessImageNameW(process,0,owner,&size))goto done;
+    DWORD length=GetModuleFileNameW(module,dll,32752);
+    if(!length || length>=32752)goto done;
+    WCHAR *slash=wcsrchr(dll,L'\\');if(!slash || (size_t)(slash-dll)+11>=32752)goto done;
+    wcscpy(slash+1,L"run16s.exe");ok=!lstrcmpiW(owner,dll);
+done:
+    if(process)CloseHandle(process);
+    free(owner);free(dll);return ok;
 }

@@ -60,6 +60,11 @@ try{
         (Case 'global-e2e-unaware' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-e2e.exe'),$run,(Join-Path $x86 'global-e2e-target.exe'),(Join-Path $x64 'global-e2e-target.exe'),'--dpi-unaware') @('GLOBAL E2E PASS old=4 new=4 restore=4 normal_retained=4','GLOBAL INPUT PASS native=2 active=8 stopped=8 dpi32=96 dpi64=96','GLOBAL DPI MODE PASS mode=unaware dpi32=96 dpi64=96','DIALOG_DRIVER exit=0') 35),
         (Case 'global-common' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-common.exe'),$run,(Join-Path $x86 'global-common-target.exe'),(Join-Path $x64 'global-common-target.exe')) @('GLOBAL COMMON PASS widths=2 existing=2 new=2 controls=5 restored=4 content=4','GLOBAL LATE PASS widths=2 targets=4 modes=2 clicked=8 restored=8','DIALOG_DRIVER exit=0') 35),
         (Case 'global-vb-e2e' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-common.exe'),$run,(Join-Path $x86 'global-common-target.exe'),(Join-Path $x64 'global-common-target.exe'),(Join-Path $x86 'vb-global-fixture/MSVBVM60.dll'),(Join-Path $x64 'vb-global-fixture/MSVBVM60.dll')) @('GLOBAL VB E2E PASS widths=2 existing=2 new=2 restored=4 pixels=4','DIALOG_DRIVER exit=0') 35),
+        (Case 'global-propagation-lifecycle' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-propagation-lifecycle.exe'),$run,(Join-Path $x86 'global-propagation-probe.exe'),(Join-Path $x64 'global-propagation-probe.exe')) @('GLOBAL PROPAGATION LIFECYCLE PASS widths=2 cycles=2 active=4 stopped=4 removed=4','DIALOG_DRIVER exit=0') 40),
+        (Case 'global-propagation-new-x86' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-relay.exe'),$run,(Join-Path $x86 'global-propagation-probe.exe'),'normal') @('PROPAGATION ENTRY bits=32 role=child dll=1','PROPAGATION ENTRY bits=32 role=grandchild dll=1','GLOBAL RELAY PASS target_exit=0','DIALOG_DRIVER exit=0') 25),
+        (Case 'global-propagation-new-x64' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-relay.exe'),$run,(Join-Path $x64 'global-propagation-probe.exe'),'normal') @('PROPAGATION ENTRY bits=64 role=child dll=1','PROPAGATION ENTRY bits=64 role=grandchild dll=1','GLOBAL RELAY PASS target_exit=0','DIALOG_DRIVER exit=0') 25),
+        (Case 'global-hook-local-x86' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $scratch 'local-hook-x86/run16s.exe'),(Join-Path $x86 'global-propagation-probe.exe'),(Join-Path $scratch 'local-hook-x86/ntw16s32.dll')) @('PROPAGATION ENTRY bits=32 role=child dll=1','PROPAGATION ENTRY bits=32 role=grandchild dll=1','LOCAL GLOBAL HOOK target_exit=0','DIALOG_DRIVER exit=0') 25),
+        (Case 'global-hook-local-x64' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $scratch 'local-hook-x64/run16s.exe'),(Join-Path $x64 'global-propagation-probe.exe'),(Join-Path $scratch 'local-hook-x64/ntw16s64.dll')) @('PROPAGATION ENTRY bits=64 role=child dll=1','PROPAGATION ENTRY bits=64 role=grandchild dll=1','LOCAL GLOBAL HOOK target_exit=0','DIALOG_DRIVER exit=0') 25),
         (Case 'desktop-cleanup' (Join-Path $x64 'dialog-test-driver.exe') @('--self-test') @('PRIVATE_DESKTOP_TEST PASS retained=1 released=1') 10),
         (Case 'import-scan-x86' (Join-Path $x86 'core-import-scan.exe') @() @('IMPORT_SCAN PASS bits=32 synthetic=13 live=1') 10),
         (Case 'import-scan-x64' (Join-Path $x64 'core-import-scan.exe') @() @('IMPORT_SCAN PASS bits=64 synthetic=13 live=1') 10),
@@ -131,7 +136,7 @@ try{
     foreach($parent in @('x86','x64')){foreach($child in @('x86','x64')){foreach($encoding in @('a','w')){
         $parentBits=if($parent -eq 'x86'){'32'}else{'64'}
         $childBits=if($child -eq 'x86'){'32'}else{'64'}
-        $cases+=Case "late-process-$parent-$child-$encoding" (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path (Join-Path $BuildRoot $parent) 'late-process-prototype.exe'),(Join-Path (Join-Path $BuildRoot $child) 'global-propagation-probe.exe'),$Package,$encoding.ToUpperInvariant()) @("PROPAGATION ENTRY bits=$childBits role=child dll=1","PROPAGATION ENTRY bits=$childBits role=grandchild dll=1",'PROPAGATION DESCENDANT stopped=1 create=1 exit=41',"LATE PROCESS bits=$parentBits api=$($encoding.ToUpperInvariant()) init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 joined=1",'DIALOG_DRIVER exit=0') 25
+        $cases+=Case "late-process-$parent-$child-$encoding" (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path (Join-Path $BuildRoot $parent) 'late-process-prototype.exe'),(Join-Path (Join-Path $BuildRoot $child) 'global-propagation-probe.exe'),$Package,$encoding.ToUpperInvariant()) @("PROPAGATION ENTRY bits=$childBits role=child dll=1","PROPAGATION ENTRY bits=$childBits role=grandchild dll=1",'PROPAGATION DESCENDANT stopped=1 create=1 exit=41',"LATE PROCESS bits=$parentBits api=$($encoding.ToUpperInvariant()) init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1",'DIALOG_DRIVER exit=0') 25
     }}}
     # Each native dialog target is owned by a timeout job and observes its own
     # UI thread. The driver runs the actual candidate launcher and both DLLs.
@@ -813,6 +818,14 @@ try{
     $plan=if($focusSpecified){Select-PackageCases -Cases $cases -Focus $Focus}else{Select-PackageCases -Cases $cases}
     if($FullIntegration){$plan.coverage='full-integration'}
     $cases=@($plan.cases)
+    foreach($arch in @('x86','x64')){
+        if(@($cases|Where-Object name -eq "global-hook-local-$arch").Count){
+            $fixture=Join-Path $scratch "local-hook-$arch";New-Item -ItemType Directory -Path $fixture | Out-Null
+            Copy-Item -LiteralPath (Join-Path $x64 'global-hook-owner.exe') -Destination (Join-Path $fixture 'run16s.exe')
+            Copy-Item -LiteralPath $d32,$d64 -Destination $fixture
+            foreach($name in @('ntw16s32.dll','ntw16s64.dll')){if((Get-FileHash (Join-Path $fixture $name) -Algorithm SHA256).Hash -ne (Get-FileHash (Join-Path $Package $name) -Algorithm SHA256).Hash){throw "Local hook fixture DLL differs: $name"}}
+        }
+    }
     foreach($pair in @(@('global-attach-x86',(Join-Path $x86 'global-attach-fixture/ntw16s32.dll'),$d32),@('global-attach-x64',(Join-Path $x64 'global-attach-fixture/ntw16s64.dll'),$d64),@('global-manager-x86',(Join-Path $x86 'global-manager-fixture/ntw16s32.dll'),$d32),@('global-manager-x64',(Join-Path $x64 'global-manager-fixture/ntw16s64.dll'),$d64))){
         if(@($cases|Where-Object name -eq $pair[0]).Count -and (Get-FileHash -LiteralPath $pair[1] -Algorithm SHA256).Hash -ne (Get-FileHash -LiteralPath $pair[2] -Algorithm SHA256).Hash){throw "Attach fixture DLL differs from package: $($pair[0])"}
     }

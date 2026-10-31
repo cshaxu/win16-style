@@ -1,6 +1,12 @@
 #include "global_thread.h"
 #include "global_session.h"
 #include <wchar.h>
+#ifdef NTW16S_BUILD
+#include "injection/late_process.h"
+#include "injection/injection.h"
+#include "global_late.h"
+#include <stdlib.h>
+#endif
 
 LRESULT CALLBACK Ntw16sGlobalHook(int,WPARAM,LPARAM);
 
@@ -37,6 +43,23 @@ DWORD WINAPI ntw16s_global_thread_worker(void *parameter)
     DWORD low=0,high=0;
     if(!ntw16s_global_birth(owner,&low,&high) || low!=session->owner_birth_low ||
        high!=session->owner_birth_high || WaitForSingleObject(owner,0)!=WAIT_TIMEOUT){error=ERROR_INVALID_STATE;goto done;}
+#ifdef NTW16S_BUILD
+    /* Global fallback already runs this worker in the target outside DllMain.
+     * Retain the module permanently while any installed trampoline can run. */
+    HMODULE module=NULL;
+    if(!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+            (LPCWSTR)(void *)&ntw16s_global_thread_worker,&module)){error=GetLastError();goto done;}
+    if(!ntw16s_global_owner_matches(session,module)){error=ERROR_ACCESS_DENIED;goto done;}
+    HMODULE pinned=NULL;
+    if(!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_PIN,
+            (LPCWSTR)(void *)&ntw16s_global_thread_worker,&pinned)){error=GetLastError();goto done;}
+    ntw16s_context *paths=(ntw16s_context *)calloc(1,sizeof(*paths));
+    if(!paths){error=ERROR_NOT_ENOUGH_MEMORY;goto done;}
+    error=ntw16s_context_paths(paths,module);
+    if(!error)error=ntw16s_late_process_init(paths->directory,packet.cookie);
+    free(paths);if(error)goto done;
+    ntw16s_global_late_mark_ready(packet.cookie);
+#endif
     ready=OpenEventW(EVENT_MODIFY_STATE,FALSE,ready_name);
     if(!ready){error=GetLastError();goto done;}
     stop=OpenEventW(SYNCHRONIZE,FALSE,stop_name);

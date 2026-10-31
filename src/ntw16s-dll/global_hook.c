@@ -3,6 +3,7 @@
 #include "global_vb_text.h"
 #include "global_policy.h"
 #include "global_manager.h"
+#include "global_late.h"
 #include "attachment.h"
 #include <commctrl.h>
 #include <stdlib.h>
@@ -26,21 +27,6 @@ static BOOL CALLBACK check_process(PINIT_ONCE once,void *parameter,void **contex
     free(image);return TRUE;
 }
 
-static BOOL owner_matches(const ntw16s_global_session *s,HMODULE module)
-{
-    BOOL ok=FALSE;DWORD size=32752;WCHAR *owner=(WCHAR *)calloc(size,sizeof(WCHAR));
-    WCHAR *dll=(WCHAR *)calloc(size,sizeof(WCHAR));HANDLE process=NULL;
-    if(!owner || !dll)goto done;
-    process=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION,FALSE,s->owner_pid);
-    if(!process || !QueryFullProcessImageNameW(process,0,owner,&size))goto done;
-    DWORD length=GetModuleFileNameW(module,dll,32752);
-    if(!length || length>=32752)goto done;
-    WCHAR *slash=wcsrchr(dll,L'\\');if(!slash || (size_t)(slash-dll)+11>=32752)goto done;
-    wcscpy(slash+1,L"run16s.exe");ok=!lstrcmpiW(owner,dll);
-done:
-    if(process)CloseHandle(process);
-    free(owner);free(dll);return ok;
-}
 static BOOL eligible(HWND w)
 {
     WCHAR name[64];DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
@@ -74,9 +60,9 @@ LRESULT CALLBACK Ntw16sGlobalHook(int code,WPARAM a,LPARAM b)
                 HMODULE module=NULL;
                 if(s && s->owner_pid!=process && s->host_pid!=process && ntw16s_global_owner_alive(s) &&
                    GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-                       (LPCWSTR)(void *)&Ntw16sGlobalHook,&module) && owner_matches(s,module)){
+                       (LPCWSTR)(void *)&Ntw16sGlobalHook,&module) && ntw16s_global_owner_matches(s,module)){
                     LONG phase=s->phase;BOOL control_ok=message->message==control && (DWORD)message->wParam==s->cookie;
-                    if(phase==NTW16S_GLOBAL_ACTIVE && (visible || (control_ok && message->lParam==NTW16S_GLOBAL_APPLY))){
+                    if(phase==NTW16S_GLOBAL_ACTIVE && (visible || (control_ok && message->lParam==NTW16S_GLOBAL_APPLY)) && ntw16s_global_late_schedule(s->cookie)){
                         HMODULE pinned=NULL;
                         if(eligible(message->hwnd) && GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_PIN,
                                 (LPCWSTR)(void *)&Ntw16sGlobalHook,&pinned)){

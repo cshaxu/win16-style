@@ -18,7 +18,7 @@ add_link_options(-static -static-libgcc -fno-lto)
 include(tools/build_cache.cmake)
 set(WIN16STYLE_X86_BUILD "${CMAKE_SOURCE_DIR}/build/.ninja/x86" CACHE PATH "Matching x86 fixture build")
 set(core_sources
-  attachment.c control_scope.c control_protocol.c controls.c dllmain.c global_window.c global_session.c global_hook.c global_thread.c global_remote.c global_load.c global_start.c global_discover.c global_policy.c global_attach.c global_manager.c global_vb_text.c font.c header_paint.c progress_paint.c toolbar_paint.c trackbar_paint.c updown_paint.c layout.c vb_text.c import_scan.c import_patch.c
+  attachment.c control_scope.c control_protocol.c controls.c dllmain.c global_window.c global_session.c global_hook.c global_thread.c global_late.c global_remote.c global_load.c global_start.c global_discover.c global_policy.c global_attach.c global_manager.c global_vb_text.c font.c header_paint.c progress_paint.c toolbar_paint.c trackbar_paint.c updown_paint.c layout.c vb_text.c import_scan.c import_patch.c
   menu_bar.c menu_bar_paint.c menu_items.c menu_layout.c menu_paint.c
   menu_scope.c native_api.c scroll_layout.c scroll_track.c tab_paint.c theme.c win16_style.c)
 list(TRANSFORM core_sources PREPEND "src/ntw16s-dll/")
@@ -60,7 +60,7 @@ else()
   set(hde_source ${minhook_root}/hde/hde64.c)
 endif()
 target_sources(ntw16s PRIVATE ${injection_root}/entry.c ${injection_root}/window_titles.c ${injection_root}/file_dialogs.c ${injection_root}/folder_dialogs.c ${injection_root}/modern_dialogs.c ${injection_root}/com_dialogs.c
-  ${injection_root}/print_extended.c ${injection_root}/print_ranges.c ${injection_root}/system_process.c ${injection_root}/create_process.c ${injection_root}/unwind.c ${injection_root}/startup_hooks.c ${injection_root}/theme_track.c
+  ${injection_root}/print_extended.c ${injection_root}/print_ranges.c ${injection_root}/system_process.c ${injection_root}/create_process.c ${injection_root}/unwind.c ${injection_root}/startup_hooks.c ${injection_root}/theme_track.c ${injection_root}/late_process.c ${injection_root}/late_patch.c ${injection_root}/late_guard.c
   ${minhook_root}/buffer.c ${minhook_root}/trampoline.c ${hde_source})
 target_link_libraries(ntw16s PRIVATE ntw16s-installer)
 set(explicit_manifest_options)
@@ -252,6 +252,16 @@ if(BUILD_TESTING)
     target_compile_definitions(global-relay PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
     target_link_options(global-relay PRIVATE -municode)
     target_link_libraries(global-relay PRIVATE user32)
+    add_executable(global-propagation-lifecycle tests/integration/global_propagation_lifecycle.c src/ntw16s-dll/global_session.c)
+    target_include_directories(global-propagation-lifecycle PRIVATE src)
+    target_compile_definitions(global-propagation-lifecycle PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+    target_link_options(global-propagation-lifecycle PRIVATE -municode)
+    target_link_libraries(global-propagation-lifecycle PRIVATE user32)
+    add_executable(global-hook-owner tests/integration/global_hook_owner.c src/ntw16s-dll/global_session.c)
+    target_include_directories(global-hook-owner PRIVATE src)
+    target_compile_definitions(global-hook-owner PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+    target_link_options(global-hook-owner PRIVATE -municode)
+    target_link_libraries(global-hook-owner PRIVATE user32)
   endif()
   add_executable(folder-dialog-target tests/ntw16s-dll/folder_dialog_target.c)
   add_executable(tree-folder-target tests/ntw16s-dll/tree_folder_target.c)

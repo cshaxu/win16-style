@@ -4,6 +4,7 @@
 #include <wchar.h>
 typedef BOOL (__cdecl *attached_fn)(HWND);
 static int result=1;
+static BOOL managed;
 static ULONGLONG deadline;
 static BOOL create_owned(const WCHAR *argument,DWORD *code)
 {
@@ -20,6 +21,9 @@ static HMODULE module(void)
 {return GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");}
 static LRESULT CALLBACK proc(HWND w,UINT message,WPARAM a,LPARAM b)
 {
+    if(message==WM_APP+110){HMODULE dll=module();attached_fn attached=dll?(attached_fn)(void*)GetProcAddress(dll,"Ntw16sWindowAttached"):NULL;return attached&&attached(w);}
+    if(message==WM_APP+111){DWORD code=99;return create_owned(L"grandchild",&code)?(LRESULT)code:-1;}
+    if(message==WM_CLOSE){DestroyWindow(w);return 0;}
     if(message==WM_TIMER){
         HMODULE dll=module();attached_fn attached=dll?(attached_fn)(void*)GetProcAddress(dll,"Ntw16sWindowAttached"):NULL;
         if(attached && attached(w)){
@@ -34,6 +38,12 @@ static LRESULT CALLBACK proc(HWND w,UINT message,WPARAM a,LPARAM b)
 }
 int wmain(int argc,WCHAR **argv)
 {
+    HMODULE local_module=NULL;HHOOK local_hook=NULL;
+    if(argc==3 && !wcscmp(argv[1],L"localhook")){
+        local_module=LoadLibraryW(argv[2]);if(!local_module)return 45;
+        HOOKPROC callback=(HOOKPROC)(void *)GetProcAddress(local_module,"Ntw16sGlobalHook");
+        if(!callback || !(local_hook=SetWindowsHookExW(WH_CALLWNDPROC,callback,NULL,GetCurrentThreadId())))return 46;
+    }
     if(argc==4 && !wcscmp(argv[1],L"wait")){
         if(!module())return 41;
         HANDLE ready=OpenEventW(EVENT_MODIFY_STATE,FALSE,argv[2]),go=OpenEventW(SYNCHRONIZE,FALSE,argv[3]);
@@ -49,10 +59,14 @@ int wmain(int argc,WCHAR **argv)
         if(!wcscmp(argv[1],L"child")){DWORD code=99;BOOL ok=create_owned(L"grandchild",&code);printf("PROPAGATION CHILD create=%d exit=%lu\n",ok,code);return ok&&code==0?0:42;}
         return 0;
     }
+    managed=argc==2 && !wcscmp(argv[1],L"managed");
     WNDCLASSW c={.hInstance=GetModuleHandleW(NULL),.lpfnWndProc=proc,.lpszClassName=L"GlobalPropagationProbe"};
     if(!RegisterClassW(&c))return 2;
     HWND w=CreateWindowW(c.lpszClassName,L"Owned propagation root",WS_OVERLAPPEDWINDOW|WS_VISIBLE,50,50,300,180,NULL,NULL,c.hInstance,NULL);
     if(!w)return 3;
-    deadline=GetTickCount64()+5000;if(!SetTimer(w,1,50,NULL)){DestroyWindow(w);return 4;}
-    MSG m;while(GetMessageW(&m,NULL,0,0)>0){TranslateMessage(&m);DispatchMessageW(&m);}return result;
+    deadline=GetTickCount64()+5000;if(!managed && !SetTimer(w,1,50,NULL)){DestroyWindow(w);return 4;}
+    MSG m;while(GetMessageW(&m,NULL,0,0)>0){TranslateMessage(&m);DispatchMessageW(&m);}
+    if(local_hook)UnhookWindowsHookEx(local_hook);
+    if(local_module)FreeLibrary(local_module);
+    return managed?0:result;
 }

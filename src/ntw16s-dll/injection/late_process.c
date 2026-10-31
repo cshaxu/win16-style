@@ -26,7 +26,11 @@ DWORD ntw16s_late_process_init(PCWSTR directory,DWORD session_cookie)
     AcquireSRWLockExclusive(&init_lock);
     DWORD error=ERROR_SUCCESS;
     if(sticky_error){error=sticky_error;goto done;}
-    if(installed || ntw16s_process_context.flags)goto done;
+    if((ntw16s_process_context.flags&NTW16S_POLICY_GLOBAL_SESSION) && session_cookie){
+        InterlockedExchange((volatile LONG *)&ntw16s_process_context.session_cookie,(LONG)session_cookie);goto done;
+    }
+    if(installed)goto done;
+    if(ntw16s_process_context.flags)goto done;
     memcpy(ntw16s_process_context.directory,directory,(n+1)*sizeof(WCHAR));
     ntw16s_process_context.flags=NTW16S_POLICY_STYLE|NTW16S_POLICY_PROPAGATE;
     if(session_cookie){ntw16s_process_context.flags|=NTW16S_POLICY_GLOBAL_SESSION;ntw16s_process_context.session_cookie=session_cookie;}
