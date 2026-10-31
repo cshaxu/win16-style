@@ -2,28 +2,7 @@
 
 ## Current Work
 
-M0 T21 S10：自有 Shell 视图双宽探针、干净构建、13 项包回归与两处发布完成；待提交推送及远端复核。
-
-## M0 T21 S10 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Continuation；S9 未能创建自有 Explorer.exe 窗口 |
-| Admission And Approval | 用户要求全局模式尽可能覆盖传统程序，同时保持实现简单 |
-| Objective | 在自有原生进程中托管系统文件夹视图，验证真实 HWND 归属和全局接入、退出效果 |
-| Non-goals | 不操作用户 Explorer，不声称代表 Explorer.exe 主窗，不修改全局设置或 UWP/XAML |
-| Reference Baseline | S9 远端 3947c81；私有桌面未取得自有 Explorer 窗口 |
-| Candidate Proposal | [手动全局样式模式](../proposals/global-style-mode.md) |
-| Files And ABI Surface | 纯 C 原生隔离探针及必要测试，不预设新导出或产品 |
-| Applicable Rules | M0、C17、GCC、Ninja、ccache、原图形资源不变 |
-| Verification | 自有进程、实际视图 HWND 和线程归属、附着与清理；普通模式和实际包回归 |
-| Expected Markers | 区分系统视图真实效果与 Explorer.exe 宿主边界，不以模块加载冒称成功 |
-| Asset Needs | build/t21-s10、build/t21-package 自有 scratch |
-| Reporting Requirements | 记录调用结果、窗口类别、进程、截图或绘制、退出及未覆盖事项 |
-| Stop Conditions | 若视图不能归自有实例或无法隔离，不操作它所属的共享进程 |
-| Exit Criteria | 隔离证据、双宽干净构建、13 项包测试及两处发布完成；待推送与远端复核 |
-| Original Owner Request | 全局模式尽可能接管传统程序，已运行程序尽力覆盖，保持机制简单 |
-| Similar-Issue Sweep | 视图子窗口跨线程和跨进程、普通模式复用、已有与新建及资源释放 |
+当前无活动任务包；M0 T21 保持开放。S10 已完成自有双宽 Shell 文件夹视图的隔离调查并远端复核；Explorer.exe 仍被排除，DirectUI 列表内部仍是系统外观。
 
 ## Identifier State
 
@@ -34,8 +13,8 @@ M0 T21 S10：自有 Shell 视图双宽探针、干净构建、13 项包回归与
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
 - Last allocated T21 S: 10
-- Last delivery: M0 T21 S9 Explorer 隔离调查、13 项聚焦包测试、双位置发布及远端复核；[记录](../history/M0-T21-S9-explorer-isolation.md)。
-- Open task: T21 S10 自有 Shell 文件夹视图隔离验证；Explorer.exe 仍被排除。
+- Last delivery: M0 T21 S10 自有双宽 Shell 视图隔离调查、13 项包测试、双位置发布及远端复核；[记录](../history/M0-T21-S10-shell-view.md)。
+- Open task: T21 保持开放；Explorer.exe 仍被排除，Shell 视图的 DirectUI 内容仍为系统外观。
 - 打印当前页已纳入受限 PrintDlgEx 转接；跨 DPI、实际打印和本地化仍待覆盖。
 - COM并发：已观察的双多选并发由系统原生路径止损；旧框目录串用根因、非多选并发仍未查明，详见[S3证据](../history/M0-T20-S3-com-safety.md)。
 - COM多选：默认回退系统新框，O: 长名、单项、取消、链接及双宽并发经有限验证；旧框实现及其他参数仍未全面解决。
@@ -53,6 +32,8 @@ S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1已收口；T20此后按用户要求有限范围收口。
 
 ## Recent Closure
+
+- M0 T21 S10：双宽自有 Shell 视图的外框及滚动条附着/解除已验证；DirectUI 内部未样式化，远端 6760373 已复核。[记录](../history/M0-T21-S10-shell-view.md)。
 
 - M0 T21 S9：Explorer 三种私有桌面启动均未产生自有窗口，不修改排除规则；远端 3947c81 与两处四文件摘要一致。[记录](../history/M0-T21-S9-explorer-isolation.md)。
 
