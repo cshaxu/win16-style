@@ -672,3 +672,17 @@ desktop could not be safely removed without controlling its other owner.
 The two read-only probe sources remain in `build/t21-s13/flap-investigation/`.
 No product code or binaries changed.
 
+# P79: bounded loader-lock race experiment
+
+An own x64 process on a private desktop deliberately loaded a scratch DLL
+whose test-only DllMain held the loader lock for 1500 ms. It attempted to show
+and replace a window during that period while the deployed global controller
+used its 126 target-thread fallback. In two runs the second window attached;
+the measured run showed `ShowWindow` returned after 1547 ms, the first window
+was destroyed after 1813 ms, and the second was created after 1860 ms with the
+loader thread already exited. Thus the experiment did not establish the
+intended concurrent window replacement and does not rule out the manager's
+in-flight event/retry race. Both drivers reported clean private-desktop exit.
+The test-only source is in `build/t21-s13/loader-race/`; no product code or
+binary was changed, and no test-only loader-lock behavior is shipped.
+
