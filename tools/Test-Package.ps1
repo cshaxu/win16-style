@@ -105,6 +105,7 @@ try{
         $modernTarget=Join-Path (Join-Path $BuildRoot $arch) 'modern-dialog-target.exe'
         $fileTarget=Join-Path (Join-Path $BuildRoot $arch) 'file-dialog-target.exe'
         $win32MultiTarget=Join-Path (Join-Path $BuildRoot $arch) 'win32-multi-target.exe'
+        $win32MultiNavTarget=Join-Path (Join-Path $BuildRoot $arch) 'win32-multi-navigation.exe'
         foreach($encoding in @('a','w')) {
             $cases+=Case "dialog-file-custom-filter-$arch-$encoding" $dialogDriver @($run,$fileTarget,'open',$encoding,'1','customfilter') @('CUSTOM_FILTER changed=1 index_ok=1',"FILE_DIALOG bits=$bits",'old=1','ok=1','same=1','DIALOG_DRIVER exit=0') 45
             $cases+=Case "dialog-file-spaced-$arch-$encoding" $dialogDriver @($run,$fileTarget,'open',$encoding,'1','spaced') @('SPACED_FILE listed=1 same=1 cleanup=1',"FILE_DIALOG bits=$bits",'old=1','ok=1','DIALOG_DRIVER exit=0') 30
@@ -166,6 +167,11 @@ try{
             }
         }
         foreach($encoding in @('ansi','wide')) {
+            $wideFlag=if($encoding -eq 'wide'){1}else{0}
+            foreach($backend in @('native','styled')) {
+                $launch=if($backend -eq 'native'){'--direct'}else{$run}
+                $cases+=Case "dialog-win32-navigation-$arch-$encoding-$backend" $dialogDriver @($launch,$win32MultiNavTarget,$encoding,$scratch) @("MULTI_NAV bits=$bits wide=$wideFlag noadd=0 seen=1 phase=5 dir=1",'result=0 error=0 wait=0 worker=0 cleanup=11111111','DIALOG_DRIVER exit=0') 30
+            }
             $cases+=Case "dialog-win32-multi-$arch-$encoding-old-short" $dialogDriver @('--direct',$win32MultiTarget,'old',$encoding,'short',$scratch) @("WIN32_MULTI bits=$bits",'old=1 listed=2 posted=1 result=1 error=0','cleanup=111','WIN32_MULTI_CONTRACT small=0 required=0 valid=1','DIALOG_DRIVER exit=0') 30
             $cases+=Case "dialog-win32-multi-$arch-$encoding-native-long" $dialogDriver @('--direct',$win32MultiTarget,'explorer',$encoding,'long',$scratch) @("WIN32_MULTI bits=$bits",'old=0','result=1 error=0','cleanup=111','WIN32_MULTI_CONTRACT small=0 required=0 valid=1','DIALOG_DRIVER exit=0') 30
             $cases+=Case "dialog-win32-multi-$arch-$encoding-styled-long" $dialogDriver @($run,$win32MultiTarget,'explorer',$encoding,'long',$scratch) @("WIN32_MULTI bits=$bits",'old=0','result=1 error=0','cleanup=111','WIN32_MULTI_CONTRACT small=0 required=0 valid=1','DIALOG_DRIVER exit=0') 30

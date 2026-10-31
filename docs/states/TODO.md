@@ -6,7 +6,7 @@ demo 旧式文件选择的跨进程观察器已用 WM_SETTEXT/WM_GETTEXT 修正�
 
 - [ ] TODO(Medium): Shell 文件夹带应用筛选回调的旧树适配；Owner：未来经准入的公共对话框工作。Evidence：[S3 Shell](../history/M0-T20-S3-shell-filter.md)：为保留真实筛选接口，当前回退系统新树。Admission：能可靠保留真实 Shell 接口、筛选、PIDL、回调和生命周期的旧树方案；不得移除筛选或伪造结果。
 
-- [ ] TODO(Medium): 普通 Win32 Explorer 多选旧布局兼容；Owner：后续公共对话框工作。Evidence：[S7](../history/M0-T20-S7-win32-multi.md)及[S8原型](../history/M0-T20-S8-win32-multi-prototype.md)：O: 无短名长文件在系统旧列表不可见；固定两项原型可补入并构造返回值，但导航、筛选及系统确认契约未验证，目前保留 Explorer。Admission：可靠枚举长名并保持多选、返回缓冲与跨目录语义的方案，不改系统短名设置。
+- [ ] TODO(Medium): 普通 Win32 Explorer 多选旧布局兼容；Owner：后续公共对话框工作。Evidence：[S7](../history/M0-T20-S7-win32-multi.md)、[S8原型](../history/M0-T20-S8-win32-multi-prototype.md)和[S9](../history/M0-T20-S9-file-navigation.md)：O: 无短名长文件在系统旧列表不可见；固定两项结果与导航筛选分别有原型，尚未结合成实际应用闭环，确认契约未验证，目前保留 Explorer。Admission：可靠枚举长名并保持多选、返回缓冲与跨目录语义的方案，不改系统短名设置。
 
 - [ ] TODO(Medium): COM 多选旧布局及非多选并发兼容；Owner：未来经准入的公共对话框工作。Evidence：[S3 COM](../history/M0-T20-S3-com-safety.md)：多选回退系统新框，已测双多选并发恢复；旧框串目录根因及非多选并发未确认。Admission：原生对照、真实长名与独立目录、返回对象及资源生命周期均可验证的实现。
 
