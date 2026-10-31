@@ -65,6 +65,8 @@ try{
         (Case 'import-scan-x64' (Join-Path $x64 'core-import-scan.exe') @() @('IMPORT_SCAN PASS bits=64 synthetic=13 live=1') 10),
         (Case 'import-patch-x86' (Join-Path $x86 'core-import-patch.exe') @() @('IMPORT_PATCH PASS bits=32 guarded=1 foreign=1 rollback=3 concurrent=2 protection=1 execution=1') 10),
         (Case 'import-patch-x64' (Join-Path $x64 'core-import-patch.exe') @() @('IMPORT_PATCH PASS bits=64 guarded=1 foreign=1 rollback=3 concurrent=2 protection=1 execution=1') 10),
+        (Case 'global-thread-x86' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x86 'core-global-thread.exe')) @('GLOBAL THREAD WORKER PASS bits=32 callback=1 stop=1 bad_cookie=1','DIALOG_DRIVER exit=0') 15),
+        (Case 'global-thread-x64' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'core-global-thread.exe')) @('GLOBAL THREAD WORKER PASS bits=64 callback=1 stop=1 bad_cookie=1','DIALOG_DRIVER exit=0') 15),
         (Case 'global-vb-text-x86' (Join-Path $x86 'core-global-vb-text.exe') @((Join-Path $x86 'vb-global-fixture/MSVBVM60.dll')) @('GLOBAL_VB_TEXT PASS bits=32 hooks=4 foreign=1 scoped=4 native=4 reload=1') 15),
         (Case 'global-vb-text-x64' (Join-Path $x64 'core-global-vb-text.exe') @((Join-Path $x64 'vb-global-fixture/MSVBVM60.dll')) @('GLOBAL_VB_TEXT PASS bits=64 hooks=4 foreign=1 scoped=4 native=4 reload=1') 15),
         (Case 'global-threads' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-threads.exe'),$run,(Join-Path $x86 'global-threads-target.exe'),(Join-Path $x64 'global-threads-target.exe')) @('GLOBAL THREADS PASS widths=2 threads=4 old=4 new=4 cycles=3','DIALOG_DRIVER exit=0') 35),

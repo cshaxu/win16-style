@@ -18,7 +18,7 @@ add_link_options(-static -static-libgcc -fno-lto)
 include(tools/build_cache.cmake)
 set(WIN16STYLE_X86_BUILD "${CMAKE_SOURCE_DIR}/build/.ninja/x86" CACHE PATH "Matching x86 fixture build")
 set(core_sources
-  attachment.c control_scope.c control_protocol.c controls.c dllmain.c global_window.c global_session.c global_hook.c global_vb_text.c font.c header_paint.c progress_paint.c toolbar_paint.c trackbar_paint.c updown_paint.c layout.c vb_text.c import_scan.c import_patch.c
+  attachment.c control_scope.c control_protocol.c controls.c dllmain.c global_window.c global_session.c global_hook.c global_thread.c global_vb_text.c font.c header_paint.c progress_paint.c toolbar_paint.c trackbar_paint.c updown_paint.c layout.c vb_text.c import_scan.c import_patch.c
   menu_bar.c menu_bar_paint.c menu_items.c menu_layout.c menu_paint.c
   menu_scope.c native_api.c scroll_layout.c scroll_track.c tab_paint.c theme.c win16_style.c)
 list(TRANSFORM core_sources PREPEND "src/ntw16s-dll/")
@@ -1158,6 +1158,15 @@ if(BUILD_TESTING)
   target_link_options(core-import-patch PRIVATE -municode)
   add_test(NAME core/import-patch COMMAND ${test_driver} --name core/import-patch -- $<TARGET_FILE:core-import-patch>)
   set_tests_properties(core/import-patch PROPERTIES TIMEOUT 10)
+
+  add_executable(core-global-thread tests/ntw16s-dll/global_thread.c src/ntw16s-dll/global_thread.c src/ntw16s-dll/global_session.c)
+  target_include_directories(core-global-thread PRIVATE src)
+  target_compile_definitions(core-global-thread PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_options(core-global-thread PRIVATE -municode)
+  target_link_libraries(core-global-thread PRIVATE user32)
+  add_dependencies(core-global-thread dialog-test-driver)
+  add_test(NAME core/global-thread COMMAND ${test_driver} --name core/global-thread -- $<TARGET_FILE:dialog-test-driver> --private --direct $<TARGET_FILE:core-global-thread>)
+  set_tests_properties(core/global-thread PROPERTIES TIMEOUT 15)
 
   add_library(vb-global-runtime SHARED tests/ntw16s-dll/vb_global_runtime.c)
   target_compile_definitions(vb-global-runtime PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)

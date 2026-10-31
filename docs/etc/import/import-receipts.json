@@ -3420,6 +3420,33 @@
       "disposition": "authored",
       "review": "T21 S13 controlled VB6 global text attachment and native fixture",
       "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/global_thread.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "6acb23b2ed8490195299eeb27ff4faac3567abd2f4bcca23f3ba9c3abb313afa",
+      "disposition": "authored",
+      "review": "T21 S13 target-local thread worker and owned private-desktop probe",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/global_thread.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "f83259f6ca42ad24d497e71459fa17e95267199a75c97a8a3a9cfdcd245400f9",
+      "disposition": "authored",
+      "review": "T21 S13 target-local thread worker and owned private-desktop probe",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/global_thread.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e2f9cf0fe19dc2ab4ec3fcbb7df10683d756cb60c828dcbbff9bc79ca67d36d3",
+      "disposition": "authored",
+      "review": "T21 S13 target-local thread worker and owned private-desktop probe",
+      "notice": "Project-authored source; no imported code or resources"
     }
   ]
 }
