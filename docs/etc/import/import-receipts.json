@@ -2831,7 +2831,7 @@
       "path": "src/ntw16s-dll/injection/com_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "939a6cfe112c903e977ed9a8ef65d5116644d44fcb9287f4036946b8bfb898f6",
+      "sha256": "6c552535fa1d667b347c79afb0acd84dbfff72213f813468dc03d932e18398b2",
       "disposition": "authored",
       "review": "T20 S1 COM dialog bridge and real native probe under development",
       "notice": "Project-authored; no imported code or resources"
@@ -2849,7 +2849,7 @@
       "path": "tests/ntw16s-dll/com_concurrent_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "055189919eda12c4f4b3507ec9ee47604dfe295daaaa46d7a773d170a50d25d1",
+      "sha256": "fe0c011a348b5e307dd0cfc792f1682c1c52429d75d8963f8fd04c244baecf39",
       "disposition": "authored",
       "review": "T20 S1 owned concurrent COM dialog investigation; known failure not in standard package plan",
       "notice": "Project-authored test; no imported code or resources"
@@ -2858,7 +2858,7 @@
       "path": "tests/ntw16s-dll/com_multi_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c807fd5cb8e1ca184910c45aecf9f0aa811234e55a2a3e94c4803a2d813881cc",
+      "sha256": "6d58b5329a929130cf59490db43479eb1756b6b77e706afa1d112f180ac47556",
       "disposition": "authored",
       "review": "T20 S1 native COM multi-select investigation; currently failing",
       "notice": "Project-authored test; no imported code or resources"

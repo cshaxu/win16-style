@@ -99,6 +99,7 @@ try{
         $creationWndprocTarget=Join-Path (Join-Path $BuildRoot $arch) 'creation-wndproc-target.exe'
         $creationDll=if($arch -eq 'x86'){$d32}else{$d64}
         $multiTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-multi-target.exe'
+        $concurrentTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-concurrent-target.exe'
         $identityTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-identity-target.exe'
         $comTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-dialog-target.exe'
         $modernTarget=Join-Path (Join-Path $BuildRoot $arch) 'modern-dialog-target.exe'
@@ -178,9 +179,10 @@ try{
                 $cases+=Case "dialog-com-cancel-label-$arch-$labelKind-$action" $dialogDriver @($run,$comTarget,$labelKind,$action,'cancel-label') @("COM_BRIDGE bits=$bits",'old=1','COM_CANCEL_LABEL seen=1','DIALOG_DRIVER exit=0') 30
             }
         }
-        $cases+=Case "dialog-com-multi-$arch" $dialogDriver @($run,$multiTarget,'accept','spaces') @("COM_MULTI bits=$bits",'selected=2','count=2 paths=11','single=8000ffff','DIALOG_DRIVER exit=0') 30
-        $cases+=Case "dialog-com-multi-single-$arch" $dialogDriver @($run,$multiTarget,'accept','spaces','single') @("COM_MULTI bits=$bits",'selected=1','count=1 paths=10','single=00000000','DIALOG_DRIVER exit=0') 30
-        $cases+=Case "dialog-com-multi-cancel-$arch" $dialogDriver @($run,$multiTarget,'cancel','spaces') @("COM_MULTI bits=$bits",'selected=2','hr=800704c7','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-com-multi-$arch" $dialogDriver @($run,$multiTarget,'accept','spaces','both','noevents','modern',$scratch) @("COM_MULTI bits=$bits",'selected=2','count=2 paths=11','single=8000ffff','COM_MULTI_LAYOUT modern=1','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-com-multi-single-$arch" $dialogDriver @($run,$multiTarget,'accept','spaces','single','noevents','modern',$scratch) @("COM_MULTI bits=$bits",'selected=1','count=1 paths=10','single=00000000','COM_MULTI_LAYOUT modern=1','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-com-multi-cancel-$arch" $dialogDriver @($run,$multiTarget,'cancel','spaces','both','noevents','modern',$scratch) @("COM_MULTI bits=$bits",'selected=2','hr=800704c7','COM_MULTI_LAYOUT modern=1','DIALOG_DRIVER exit=0') 30
+        $cases+=Case "dialog-com-multi-concurrent-$arch" $dialogDriver @($run,$concurrentTarget,'native',$scratch) @("CONCURRENT bits=$bits",'codes=0,0','paths=1,1','cleanup=1','cwd_ok=1','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-multi-vetocancel-native-$arch" $dialogDriver @('--direct',$multiTarget,'vetocancel','spaces','both','events','modern') @('MULTI_EVENTS calls=1 counts=1 paths=1 refs=1',"COM_MULTI bits=$bits",'hr=800704c7 array=80004005','single=8000ffff','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-multi-vetocancel-styled-$arch" $dialogDriver @($run,$multiTarget,'vetocancel','spaces','both','events','modern') @('MULTI_EVENTS calls=1 counts=1 paths=1 refs=1',"COM_MULTI bits=$bits",'hr=800704c7 array=80004005','single=8000ffff','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-old-event-$arch" $dialogDriver @($run,$oldEventTarget) @("OLD_FILE_EVENT bits=$bits",'calls=2 valid=2 kept=1 result=1','DIALOG_DRIVER exit=0') 30
@@ -288,7 +290,7 @@ try{
                 $cases+=Case "dialog-com-link-$arch-$linkMode-$linkBackend" $dialogDriver @($linkLaunch,$linkTarget,$linkMode) @("LINK_RESULT bits=$bits",$linkOld,$linkExpected,'worker=0','DIALOG_DRIVER exit=0') 30
             }
             $multiMode=if($linkMode -eq 'keep'){'linkkeep'}else{'linkfollow'}
-            $cases+=Case "dialog-com-multi-link-$arch-$linkMode" $dialogDriver @($run,$multiTarget,'accept',$multiMode) @("COM_MULTI bits=$bits",'count=2 paths=11','DIALOG_DRIVER exit=0') 30
+            $cases+=Case "dialog-com-multi-link-$arch-$linkMode" $dialogDriver @($run,$multiTarget,'accept',$multiMode,'both','noevents','modern',$scratch) @("COM_MULTI bits=$bits",'count=2 paths=11','COM_MULTI_LAYOUT modern=1','DIALOG_DRIVER exit=0') 30
         }
         $cases+=Case "dialog-com-identity-$arch" $dialogDriver @($run,$identityTarget) @("COM_CUSTOM_IDENTITY bits=$bits hr=00000000 same=1","COM_V2_IDENTITY bits=$bits hr=00000000 same=1",'DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-v2-$arch" $dialogDriver @($run,$comTarget,'folder','accept','v2') @("COM_BRIDGE bits=$bits",'folder=1','old=1','array=1','DIALOG_DRIVER exit=0') 30

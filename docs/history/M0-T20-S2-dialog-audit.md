@@ -72,3 +72,5 @@ demo=44b6cd4a4693b741ddc2d43b5b4d3eed184c15e4b1e821a25daeaaad74ffcf36。
 审计仅覆盖表列公开入口及明确未知类；凭据、网络、驱动私有页等未证实覆盖。
 
 S2 矩阵交付提交 `27c32be` 已推送，实际 GitHub 矩阵、CURRENT 与 P295 四文件对象均复核一致；S2 按用户授权收口并由 S3 接续。
+
+后续状态：S3 已对 Shell 筛选回调采用[系统新树安全回退](M0-T20-S3-shell-filter.md)，对 COM 多选采用[系统新框安全回退](M0-T20-S3-com-safety.md)；本表历史 P295 基线不应误读为当前实现。

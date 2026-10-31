@@ -1124,6 +1124,9 @@ static HRESULT proxy_show_impl(file_proxy *p,HWND owner)
     if(p->result){IShellItem_Release(p->result);p->result=NULL;}
     if(p->results){IShellItemArray_Release(p->results);p->results=NULL;}p->completed=FALSE;
     HRESULT hr=IFileDialog_GetOptions(p->native,&flags);
+    /* Old-style multi-select can mis-enumerate long names or mix directories
+     * between concurrent dialogs. Preserve the system's selection contract. */
+    if(SUCCEEDED(hr) && (flags&FOS_ALLOWMULTISELECT))return show_native(p,owner);
     const DWORD supported=FOS_OVERWRITEPROMPT|FOS_NOCHANGEDIR|FOS_FORCEFILESYSTEM|
         FOS_PATHMUSTEXIST|FOS_FILEMUSTEXIST|FOS_CREATEPROMPT|FOS_NOREADONLYRETURN|FOS_NOTESTFILECREATE|FOS_PICKFOLDERS|FOS_ALLOWMULTISELECT|FOS_FORCESHOWHIDDEN|FOS_NODEREFERENCELINKS
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS

@@ -7,7 +7,7 @@
 #include <shobjidl.h>
 #include <stdio.h>
 #include <wchar.h>
-static DWORD tid;static volatile LONG seen,selected,event_veto_seen;static HWND dialog;static BOOL cancel,single_mode,modern_mode,veto_cancel;
+static DWORD tid;static volatile LONG seen,selected,event_veto_seen;static HWND dialog;static BOOL cancel,single_mode,modern_mode,veto_cancel,saw_modern;
 typedef struct multi_sink {IFileDialogEvents iface;LONG refs,calls,counts,paths,selection_calls,selection_valid;} multi_sink;
 static WCHAR event_first[MAX_PATH],event_second[MAX_PATH],selection_first[MAX_PATH],selection_second[MAX_PATH];
 static HRESULT STDMETHODCALLTYPE event_query(IFileDialogEvents *self,REFIID iid,void **out)
@@ -62,7 +62,7 @@ static BOOL CALLBACK find(HWND w,LPARAM arg)
     (void)arg;WCHAR text[100];GetWindowTextW(w,text,100);
     if(!IsWindowVisible(w)||lstrcmpW(text,title))return TRUE;
     HWND list=GetDlgItem(w,1120),folders=GetDlgItem(w,1121);
-    if(!list||!folders){if(modern_mode){dialog=w;InterlockedExchange(&selected,single_mode?1:2);InterlockedExchange(&seen,1);return FALSE;}return TRUE;}
+    if(!list||!folders){if(modern_mode){saw_modern=TRUE;dialog=w;InterlockedExchange(&selected,single_mode?1:2);InterlockedExchange(&seen,1);return FALSE;}return TRUE;}
     static BOOL reported;LRESULT count=SendMessageW(list,LB_GETCOUNT,0,0);int matched=0;
     if(!reported){WCHAR folder[512]=L"",file[512]=L"";GetDlgItemTextW(w,1088,folder,512);GetDlgItemTextW(w,1152,file,512);
         printf("MULTI_INITIAL count=%lld folder=%ls file=%ls style=%08lx\n",(long long)count,folder,file,(unsigned long)GetWindowLongPtrW(list,GWL_STYLE));reported=TRUE;}
@@ -85,6 +85,7 @@ static DWORD WINAPI observe(void *unused)
 }
 int wmain(int argc,WCHAR **argv)
 {
+    if(argc>7 || (argc==7 && (!SetEnvironmentVariableW(L"TEMP",argv[6]) || !SetEnvironmentVariableW(L"TMP",argv[6]))))return 2;
     cancel=argc>1 && !lstrcmpW(argv[1],L"cancel");
     veto_cancel=argc>1 && !lstrcmpW(argv[1],L"vetocancel");
     BOOL spaces=argc>2 && !lstrcmpW(argv[2],L"spaces");
@@ -116,7 +117,8 @@ int wmain(int argc,WCHAR **argv)
        FAILED(IFileOpenDialog_SetOptions(d,options|FOS_ALLOWMULTISELECT|FOS_FORCEFILESYSTEM|(keep?FOS_NODEREFERENCELINKS:0)))||
        FAILED(SHCreateItemFromParsingName(dir,NULL,&IID_IShellItem,(void **)&folder))||FAILED(IFileOpenDialog_SetFolder(d,folder)))return 6;
     if(modern_mode){WCHAR input[MAX_PATH*2+8];
-        if(swprintf(input,ARRAYSIZE(input),L"\"%ls\" \"%ls\"",first,second)<0 || FAILED(IFileOpenDialog_SetFileName(d,input)))return 6;}
+        int written=single_mode?swprintf(input,ARRAYSIZE(input),L"\"%ls\"",first):swprintf(input,ARRAYSIZE(input),L"\"%ls\" \"%ls\"",first,second);
+        if(written<0 || (size_t)written>=ARRAYSIZE(input) || FAILED(IFileOpenDialog_SetFileName(d,input)))return 6;}
     multi_sink sink={0};sink.iface.lpVtbl=&event_vtable;sink.refs=1;DWORD cookie=0;
     if(event_mode && FAILED(IFileOpenDialog_Advise(d,&sink.iface,&cookie)))return 7;
     IShellItem_Release(folder);tid=GetCurrentThreadId();HANDLE worker=CreateThread(NULL,0,observe,NULL,0,NULL);if(!worker)return 7;
@@ -137,9 +139,10 @@ int wmain(int argc,WCHAR **argv)
     printf("MULTI_CLEANUP cwd=%d first=%d second=%d targets=%d,%d dir=%d\n",cwd_reset,removed1,removed2,real1,real2,removed_dir);
     if(event_mode)printf("MULTI_EVENTS calls=%ld counts=%ld paths=%ld refs=%ld selections=%ld valid=%ld\n",sink.calls,sink.counts,sink.paths,sink.refs,sink.selection_calls,sink.selection_valid);
     printf("COM_MULTI bits=%u seen=%ld selected=%ld cancel=%d hr=%08lx array=%08lx count=%lu paths=%d%d wait=%lu worker=%lu single=%08lx\n",(unsigned)(sizeof(void*)*8),seen,selected,cancel,(unsigned long)hr,(unsigned long)ar,count,found1,found2,wait,worker_exit,(unsigned long)single_hr);
+    printf("COM_MULTI_LAYOUT modern=%d\n",saw_modern);
     BOOL sink_ok=!event_mode||(sink.refs==1&&sink.selection_calls>0&&sink.selection_calls==sink.selection_valid&&
         (cancel?sink.calls==0:veto_cancel?(sink.calls==1&&sink.counts==1&&sink.paths==1):(sink.calls==2&&sink.counts==2&&sink.paths==2)));
     BOOL result_ok=(cancel||veto_cancel)?(hr==HRESULT_FROM_WIN32(ERROR_CANCELLED)&&(!veto_cancel||(FAILED(ar)&&FAILED(single_hr)))):
         (SUCCEEDED(hr)&&SUCCEEDED(ar)&&count==(single_mode?1u:2u)&&found1&&(single_mode?!found2:found2)&&(single_mode?SUCCEEDED(single_hr):single_hr==E_UNEXPECTED));
-    return cleanup&&seen&&selected==(single_mode?1:2)&&wait==WAIT_OBJECT_0&&worker_exit==0&&sink_ok&&result_ok?0:1;
+    return cleanup&&seen&&(!modern_mode || saw_modern)&&selected==(single_mode?1:2)&&wait==WAIT_OBJECT_0&&worker_exit==0&&sink_ok&&result_ok?0:1;
 }
