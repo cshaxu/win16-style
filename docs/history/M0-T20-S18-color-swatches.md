@@ -46,3 +46,6 @@ ntw16s64 `30eac28f3c9bce4472c18d9a014906319b64b987841850dfe60a84596fd7ddd1`；
 demo `ef030d5a5acc332ebea7fac20b50a5c9d2cad7a9aceecac791daa608633082cc`。
 实际探针使用 96 DPI 和合成消息；其他 DPI、RTL、自定义模板与长期资源压力
 测试未覆盖。无法识别为目标色块的绘制继续使用系统原路径。
+
+S18 P1 `ccdedbb` 已推送，实际 GitHub 源码、测试、记录及四个资产对象，
+以及 assets 与 O:/winnt 四文件摘要均复核一致；S18 收口。

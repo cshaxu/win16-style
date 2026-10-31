@@ -2,28 +2,7 @@
 
 ## Current Work
 
-M0 T20 S18：颜色格平面边框已双宽验证并发布，等待提交推送与远端复核。
-
-## M0 T20 S18 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Corrective；T20 曾收口，用户新发现颜色框外观问题，续用下一 S，不新开 T |
-| Admission And Approval | 用户要求参照原版 GDI/USER 调查颜色格并恢复 Win3.1 扁平外观 |
-| Objective | 确认原始颜色格绘制及当前绘制入口，安全修复基本色和自定义色格边框 |
-| Non-goals | 不替换图形资源，不改颜色选择、焦点、键鼠、自定义颜色或系统设置 |
-| Reference Baseline | S17 发布包；本机 O:/W31/SYSTEM 原始 USER、GDI、COMMDLG 只读研究 |
-| Candidate Proposal | [公共对话框适配](../proposals/classic-folder-dialogs.md) |
-| Files And ABI Surface | DLL 内部绘制适配和原生测试；不新增产品文件或公共 ABI |
-| Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；原资源逐字节不变 |
-| Verification | 双宽 A/W 实际绘制、颜色选择、键盘、焦点、展开、取消、生命周期及未受影响对照 |
-| Expected Markers | 原生颜色值和选择一致、色块边框平面化、其他应用绘制不变 |
-| Asset Needs | build/t20-s18 及 build/t20-package 内自有 scratch |
-| Reporting Requirements | 区分原始资料、推断、实际绘制与未覆盖项；截图供用户验收 |
-| Stop Conditions | 不能可靠识别颜色格绘制范围或无法保留交互时不扩大通用绘制钩子 |
-| Exit Criteria | 双宽干净包和实际包测试、必要发布、摘要、提交推送及远端复核 |
-| Original Owner Request | 颜色对话框的每个色块仍为 Win95 风格，参照原版恢复 Win3.1 扁平样式 |
-| Similar-Issue Sweep | 基本色与自定义色、展开后的颜色选择、焦点和重绘 |
+当前无活动任务包。M0 T20 S18 颜色格修复已收口；其他未覆盖和安全回退见 TODO。
 
 ## Identifier State
 
@@ -33,8 +12,8 @@ M0 T20 S18：颜色格平面边框已双宽验证并发布，等待提交推送�
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 18
-- Last delivery: M0 T20 S18 候选已完成 30 项包回归及双位置发布，等待提交和远端复核；COM多选和 Shell 筛选仍保留系统回退。
-- Open task: T20 S18 颜色对话框色块外观。
+- Last delivery: M0 T20 S18 P1 ccdedbb 已完成 30 项包回归、双位置发布和远端复核；COM多选和 Shell 筛选仍保留系统回退。
+- Open task: 无；T20 S18 已收口。
 - 打印当前页已纳入受限 PrintDlgEx 转接；跨 DPI、实际打印和本地化仍待覆盖。
 - COM并发：已观察的双多选并发由系统原生路径止损；旧框目录串用根因、非多选并发仍未查明，详见[S3证据](../history/M0-T20-S3-com-safety.md)。
 - COM多选：默认回退系统新框，O: 长名、单项、取消、链接及双宽并发经有限验证；旧框实现及其他参数仍未全面解决。
@@ -52,6 +31,8 @@ S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1收口，T20保持开放。
 
 ## Recent Closure
+
+- M0 T20 S18：颜色框基本色及自定义色块恢复细黑框平面外观，双宽包验证和发布；[记录](../history/M0-T20-S18-color-swatches.md)。
 
 - M0 T20 S17 / T20：最终双宽干净构建及 18 项精简包回归通过；当前发布包和剩余边界见[交接](../history/M0-T20-S17-final-handoff.md)。
 
