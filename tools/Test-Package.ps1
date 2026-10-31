@@ -158,6 +158,8 @@ try{
         }
         $findTarget=Join-Path (Join-Path $BuildRoot $arch) 'find-dialog-target.exe'
         $commonTarget=Join-Path (Join-Path $BuildRoot $arch) 'common-dialog-target.exe'
+        $colorEdgeProbe=Join-Path (Join-Path $BuildRoot $arch) 'color-edge-probe.exe'
+        $cases+=Case "dialog-color-edge-native-$arch" $dialogDriver @('--direct',$colorEdgeProbe) @("EDGE_RESULT bits=$bits",'result=0 error=0','DIALOG_DRIVER exit=0') 30
         $printTarget=Join-Path (Join-Path $BuildRoot $arch) 'print-dialog-target.exe'
         foreach($encoding in @('ansi','wide')){
             foreach($option in @('collate','file','disable')){
@@ -405,6 +407,7 @@ try{
                 $cases+=Case "dialog-$kind-$arch-$encoding-$action" $dialogDriver @($run,$commonTarget,$kind,$encoding,$action) @("COMMON_DIALOG bits=$bits",'DIALOG_DRIVER exit=0') 30
             }}
             $cases+=Case "dialog-color-$arch-$encoding-expand" $dialogDriver @($run,$commonTarget,'color',$encoding,'expand') @("COLOR_EXPANDED",'DIALOG_DRIVER exit=0') 30
+            $cases+=Case "dialog-color-$arch-$encoding-keyboard" $dialogDriver @($run,$commonTarget,'color',$encoding,'keyboard') @('COLOR_KEYBOARD focus=1','COLOR_CUSTOM_EDGE','flat=1',"COMMON_DIALOG bits=$bits",'DIALOG_DRIVER exit=0') 30
             foreach($kind in @('print','page')) {
                 $cases+=Case "dialog-$kind-$arch-$encoding" $dialogDriver @($run,$printTarget,$kind,$encoding) @("PRINT_DIALOG bits=$bits",'DIALOG_DRIVER exit=0') 30
             }

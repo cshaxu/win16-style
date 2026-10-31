@@ -185,6 +185,12 @@ FONT_DIALOG_HOOK(ChooseFontW,CHOOSEFONTW)
 /* The system's colour picker subclasses several STATIC surfaces and owns
  * their colour-grid painting.  Do not replace these clients with our generic
  * STATIC frame painter; the surrounding standard controls remain styled. */
+typedef struct color_dialog_scope {font_dialog_scope base;HWND dialog;struct color_dialog_scope *previous;} color_dialog_scope;
+static _Thread_local color_dialog_scope *active_color_dialog;
+static void color_dialog_end(void *value)
+{
+    color_dialog_scope *scope=value;active_color_dialog=scope->previous;font_dialog_end(&scope->base);
+}
 static LRESULT CALLBACK color_dialog_return(int code,WPARAM wparam,LPARAM lparam)
 {
     if(code>=0 && lparam){
@@ -192,6 +198,7 @@ static LRESULT CALLBACK color_dialog_return(int code,WPARAM wparam,LPARAM lparam
         if(m->message==WM_INITDIALOG){
             WCHAR cls[32];HWND basic=GetDlgItem(m->hwnd,720),custom=GetDlgItem(m->hwnd,721);
             if(basic && custom && GetClassNameW(m->hwnd,cls,ARRAYSIZE(cls)) && !lstrcmpW(cls,L"#32770")){
+                if(active_color_dialog)active_color_dialog->dialog=m->hwnd;
                 const int ids[]={720,721,710,702,709};
                 for(unsigned i=0;i<sizeof(ids)/sizeof(ids[0]);++i){
                     HWND surface=GetDlgItem(m->hwnd,ids[i]);
@@ -206,12 +213,13 @@ static LRESULT CALLBACK color_dialog_return(int code,WPARAM wparam,LPARAM lparam
 #define COLOR_DIALOG_HOOK(NAME, TYPE) \
 static __typeof__(&NAME) real_##NAME; \
 static NTW16S_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
-{ ntw16s_unwind_scope unwind;font_dialog_scope scope={0};BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
-  if(!begin_titles(&scope.title,TRUE))return FALSE; \
-  scope.hook=SetWindowsHookExW(WH_CALLWNDPROCRET,color_dialog_return,NULL,GetCurrentThreadId()); \
-  NTW16S_UNWIND_BEGIN(unwind,font_dialog_end,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
+{ ntw16s_unwind_scope unwind;color_dialog_scope scope={0};BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
+  if(!begin_titles(&scope.base.title,TRUE))return FALSE; \
+  scope.previous=active_color_dialog;active_color_dialog=&scope; \
+  scope.base.hook=SetWindowsHookExW(WH_CALLWNDPROCRET,color_dialog_return,NULL,GetCurrentThreadId()); \
+  NTW16S_UNWIND_BEGIN(unwind,color_dialog_end,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
   } NTW16S_UNWIND_END(unwind); \
-  if(scope.title.failure){result=FALSE;error=scope.title.failure;} SetLastError(error);return result; }
+  if(scope.base.title.failure){result=FALSE;error=scope.base.title.failure;} SetLastError(error);return result; }
 COLOR_DIALOG_HOOK(ChooseColorA,CHOOSECOLORA)
 COLOR_DIALOG_HOOK(ChooseColorW,CHOOSECOLORW)
 #undef COLOR_DIALOG_HOOK
@@ -698,10 +706,22 @@ static BOOL WINAPI hook_DrawFrameControl(HDC dc,LPRECT rect,UINT type,UINT state
 }
 static BOOL WINAPI hook_DrawEdge(HDC dc,LPRECT rect,UINT edge,UINT flags)
 {
+    DWORD incoming=GetLastError();
     RECT original={0};BOOL eligible=rect && edge==BDR_SUNKENOUTER && flags==(BF_RECT|BF_ADJUST);
     BOOL controlbar=rect && flags==(BF_RECT|BF_ADJUST) && ntw16s_controlbar_edge_allowed(edge) && ntw16s_controlbar_edge_active();
-    if(eligible || controlbar)original=*rect;
-    BOOL result=real_DrawEdge(dc,rect,edge,flags);DWORD error=GetLastError();
+    BOOL color=FALSE;HWND dialog=active_color_dialog?active_color_dialog->dialog:NULL;HMODULE origin=NULL;
+    if(rect&&dialog&&edge==EDGE_SUNKEN&&flags==(BF_RECT|BF_ADJUST)&&WindowFromDC(dc)==dialog&&
+       GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)__builtin_return_address(0),&origin)&&origin==GetModuleHandleW(L"comdlg32.dll")){
+        for(int id=720;id<=721;++id){HWND grid=GetDlgItem(dialog,id);RECT bounds;
+            if(grid&&GetParent(grid)==dialog&&IsWindowVisible(grid)&&GetWindowRect(grid,&bounds)){
+                MapWindowPoints(NULL,dialog,(POINT *)&bounds,2);
+                if(rect->left>=bounds.left&&rect->top>=bounds.top&&rect->right<=bounds.right&&rect->bottom<=bounds.bottom&&
+                   rect->right>rect->left+2&&rect->bottom>rect->top+2){color=TRUE;break;}
+            }}
+    }
+    if(eligible || controlbar || color)original=*rect;
+    SetLastError(incoming);BOOL result=real_DrawEdge(dc,rect,edge,flags);DWORD error=GetLastError();
+    if(result&&color&&FrameRect(dc,&original,(HBRUSH)GetStockObject(BLACK_BRUSH))){*rect=original;InflateRect(rect,-1,-1);}
     if(result && eligible)ntw16s_status_frame(dc,&original,NULL,__builtin_return_address(0));
     if(result && controlbar)ntw16s_controlbar_edge(dc,&original,edge,flags,__builtin_return_address(0));
     SetLastError(error);return result;

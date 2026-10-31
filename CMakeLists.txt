@@ -219,6 +219,11 @@ if(BUILD_TESTING)
   target_link_libraries(commdlg-error-target PRIVATE user32 comdlg32)
   add_executable(commdlg-shadow-target tests/ntw16s-dll/commdlg_shadow_target.c
     ${injection_root}/startup_hooks.c ${minhook_root}/buffer.c ${minhook_root}/trampoline.c ${hde_source})
+  add_executable(color-edge-probe tests/ntw16s-dll/color_edge_probe.c
+    ${injection_root}/startup_hooks.c ${minhook_root}/buffer.c ${minhook_root}/trampoline.c ${hde_source})
+  target_include_directories(color-edge-probe PRIVATE src)
+  target_link_options(color-edge-probe PRIVATE -municode)
+  target_link_libraries(color-edge-probe PRIVATE user32 comdlg32)
   target_include_directories(commdlg-shadow-target PRIVATE src)
   target_link_options(commdlg-shadow-target PRIVATE -municode)
   target_link_libraries(commdlg-shadow-target PRIVATE user32 comdlg32)
