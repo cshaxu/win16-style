@@ -2,18 +2,19 @@
 
 ## Current Work
 
-当前无活动任务包；显式全局模式架构边界已协调，等待产品任务准入。
+M0 T21 保持开放；S1 全局钩子隔离可行性验证已按用户要求完成，S2 尚未准入，当前无活动任务包。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
-- Last allocated T: 20
+- Last allocated T: 21
 - Last allocated Td S: 16
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
+- Last allocated T21 S: 1
 - Last delivery: M0 T20 S19 P2 3b18ac7 已完成双位宽干净构建、16 项聚焦包回归、双位置发布和远端复核；任务级范围见[收口审计](../history/M0-T20-closure-audit.md)。
-- Open task: 无。
+- Open task: T21 开放，等待准入 S2。
 - 打印当前页已纳入受限 PrintDlgEx 转接；跨 DPI、实际打印和本地化仍待覆盖。
 - COM并发：已观察的双多选并发由系统原生路径止损；旧框目录串用根因、非多选并发仍未查明，详见[S3证据](../history/M0-T20-S3-com-safety.md)。
 - COM多选：默认回退系统新框，O: 长名、单项、取消、链接及双宽并发经有限验证；旧框实现及其他参数仍未全面解决。
@@ -31,6 +32,8 @@ S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1已收口；T20此后按用户要求有限范围收口。
 
 ## Recent Closure
+
+- M0 T21 S1：双位宽全局钩子隔离可行性和恢复限制已验证，用户接受残影；未实现产品全局入口。[证据](../history/M0-T21-S1-global-prototype.md)。
 
 - M0 T20 S19 / T20：按用户指令有限范围收口；系统菜单与首次绘制交付，真实桌面边界留TODO。[收口审计](../history/M0-T20-closure-audit.md)。
 

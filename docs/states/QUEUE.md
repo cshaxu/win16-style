@@ -9,7 +9,8 @@ CURRENT 是唯一活动工作权威；本文件拥有顺序，各 proposal 拥�
 
 | 顺序 | T 候选 | 前置完成条件 | 核心交付/任务级退出条件 |
 | --- | --- | --- | --- |
-| 1 | [run16s 登录全局样式模式](../proposals/global-style-mode.md) | 用户另行准入；协调现有活动包，并先完成全局接入架构规则修订及双宽原型验证 | 复用run16s管理桌面双宽钩子，保持三组件四产物；登录启动/托盘/排除/退出语义及实际包验证，退出后保留已有样式与DLL传播 |
+
+[run16s 手动全局样式模式](../proposals/global-style-mode.md)已按用户要求准入，活动状态由CURRENT管理。
 
 [VB6框架控件外观](../proposals/madshow-controls.md)及[Delphi控件适配](../proposals/delphi-win32-controls.md)已按用户确认的有限范围收口，未覆盖项见TODO。
 
