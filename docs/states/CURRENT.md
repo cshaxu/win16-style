@@ -2,28 +2,28 @@
 
 ## Current Work
 
-M0 T21 S6：多 GUI 线程及重复启停探针、双宽构建、18 项包回归和两处发布完成；待提交推送及远端复核。
+M0 T21 S7：实际 DPI 与受控输入语义验证和任务级收口审计。
 
-## M0 T21 S6 Packet
+## M0 T21 S7 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S5 审计发现核心生命周期证据不足，T21 保持开放 |
-| Admission And Approval | 用户要求手动全局样式并统一窗口附着，已授权自动细分 S 至完成 |
-| Objective | 验证同进程多个 GUI 线程的既有及新窗口接入、退出、重复启停与有界资源生命周期 |
-| Non-goals | 不登录自启、不扩权；不接管 UWP/XAML 或共享系统宿主；只操作自有隔离实例 |
-| Reference Baseline | S5 远端 35bcfaa；19 项聚焦包测试及两处发布已核对 |
+| Identifier Mode | Continuation；S6 后补齐任务验收中的 DPI 和输入证据 |
+| Admission And Approval | 用户已授权手动全局模式及自动执行所需 S；自有探针不依赖手工输入 |
+| Objective | 在实际可用 DPI 下验证双宽全局窗体和标准控件的输入语义及退出后可用性 |
+| Non-goals | 不更改系统 DPI、安全或主题；不使用 computer-use；仅操作私有桌面自有进程 |
+| Reference Baseline | S6 远端 4a88f58；18 项聚焦包测试及两处发布已核对 |
 | Candidate Proposal | [手动全局样式模式](../proposals/global-style-mode.md) |
-| Files And ABI Surface | 原生测试及必要的现有控制器、DLL 生命周期修复；不预设新增导出或产品 |
+| Files And ABI Surface | 纯 C 原生探针及必要修复；原则上不增加导出或产品 |
 | Applicable Rules | M0、C17、GCC、Ninja、ccache、原图形资源不变 |
-| Verification | 自有私有桌面双宽多线程与重复启停测试、普通模式及实际包回归 |
-| Expected Markers | 各目标 GUI 线程独立附着并尽力退出；重复启停无句柄或对象持续增长 |
-| Asset Needs | build/t21-s6、build/t21-package 自有 scratch |
-| Reporting Requirements | 记录线程、窗口、接入、恢复、资源测量、失败与未覆盖边界 |
-| Stop Conditions | 如果不能限制测试桌面或安全管理目标生命周期，不在用户桌面安装全局钩子 |
-| Exit Criteria | 双宽干净构建、18 项同批包测试及必要发布完成；待推送与远端复核 |
-| Original Owner Request | 全局模式接管已有及新传统 Win32 程序，普通与全局共享窗口附着 |
-| Similar-Issue Sweep | 异 GUI 线程、重复会话、在途回调、目标退出、句柄和 GDI 对象所有权 |
+| Verification | 私有桌面双宽输入、窗口实际 DPI、全局接入及退出、普通模式及同批包回归 |
+| Expected Markers | 编辑、点击和状态保持；报告实际 DPI，不将单一 DPI 扩展为全矩阵 |
+| Asset Needs | build/t21-s7、build/t21-package 自有 scratch |
+| Reporting Requirements | 记录真实消息、结果、实际 DPI、所有权、失败与未覆盖项 |
+| Stop Conditions | 不能隔离或安全管理目标时，不对用户桌面注入或发送输入 |
+| Exit Criteria | 证据与必要修复完成；双宽干净构建、同批包测试、必要发布、推送与远端复核 |
+| Original Owner Request | 通过全局模式接管传统 Win32 窗口；保持普通与全局共享附着实现 |
+| Similar-Issue Sweep | 按钮与编辑框输入、附着和解除前后、双宽、DPI、目标窗口可用性 |
 
 ## Identifier State
 
@@ -33,9 +33,9 @@ M0 T21 S6：多 GUI 线程及重复启停探针、双宽构建、18 项包回归
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
-- Last allocated T21 S: 6
-- Last delivery: M0 T21 S5 已统一窗口附着，19 项聚焦包测试、双位置发布及远端复核；[记录](../history/M0-T21-S5-coverage-audit.md)。
-- Open task: T21 S6 多 GUI 线程及资源生命周期验证。
+- Last allocated T21 S: 7
+- Last delivery: M0 T21 S6 多 GUI 线程和三轮资源探针通过，18 项聚焦包测试、双位置发布及远端复核；[记录](../history/M0-T21-S6-threads-resources.md)。
+- Open task: T21 S7 实际 DPI 和受控输入语义验证。
 - 打印当前页已纳入受限 PrintDlgEx 转接；跨 DPI、实际打印和本地化仍待覆盖。
 - COM并发：已观察的双多选并发由系统原生路径止损；旧框目录串用根因、非多选并发仍未查明，详见[S3证据](../history/M0-T20-S3-com-safety.md)。
 - COM多选：默认回退系统新框，O: 长名、单项、取消、链接及双宽并发经有限验证；旧框实现及其他参数仍未全面解决。
@@ -53,6 +53,8 @@ S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1已收口；T20此后按用户要求有限范围收口。
 
 ## Recent Closure
+
+- M0 T21 S6：双宽四线程、八窗口和三次启停通过，远端 4a88f58 及两处四文件摘要一致；[记录](../history/M0-T21-S6-threads-resources.md)。
 
 - M0 T21 S5：普通与全局共用窗口附着实现，远端 35bcfaa 及两处四文件摘要一致；[审计](../history/M0-T21-S5-coverage-audit.md)。
 
