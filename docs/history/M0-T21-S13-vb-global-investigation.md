@@ -700,3 +700,27 @@ existing fallback. The single screenshot is at
 the client text, and it does not establish all control visuals, input or
 pixel-perfect restoration. No product code or binary changed.
 
+# P81: cross-directory ordinary/global instance conflict
+
+An owned private-desktop variant of the mixed-mode probe launched ordinary
+targets via `assets/run16s.exe` and the global controller via the published
+`O:/winnt/run16s.exe`. The target executables and probe were owned, and both
+package copies had equal SHA-256 for each DLL. During the session, each x86
+and x64 ordinary target reported two loaded modules: the assets DLL and the
+O:/winnt DLL; each module's `Ntw16sWindowAttached` reported 1 for the same
+window. After the global controller stopped, the first ordinary target still
+reported styled (`restore_failed index=2 state=1`), although the sweep itself
+reported no send failures. All owned processes and the private desktop were
+cleaned up by the driver. The same failure occurred in both the basic and
+instrumented probe runs; the test stopped at the first failed restore, so it
+does not independently report post-stop state for all four ordinary targets.
+
+The current manager loads its own directory's DLL, while session owner
+validation also ties a module to its neighboring run16s path. Consequently a
+second DLL instance has separate attachment and process-policy state, and
+removing its attachment does not remove the earlier instance's. A repair must
+coordinate or reuse compatible already-loaded instances, validate identity,
+retain per-thread safety and handle different versions or inaccessible files;
+blindly unloading or suppressing a DLL is not justified. Scratch probe sources
+and binaries are in `build/t21-s13/cross-install/`. No product change was made.
+
