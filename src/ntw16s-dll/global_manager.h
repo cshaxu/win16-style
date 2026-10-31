@@ -11,6 +11,9 @@ typedef struct ntw16s_global_manager_stats {LONG queued,active,failed,overflow;}
  * and returns a non-NULL result, the caller must retry stop on that object. */
 DWORD ntw16s_global_manager_start(const WCHAR *dll_path,WORD machine,ntw16s_global_manager **result);
 DWORD ntw16s_global_manager_refresh(ntw16s_global_manager *manager);
+/* Pump the owner thread while startup work drains; ERROR_TIMEOUT is a
+ * bounded partial-start result, not a claim that all targets were attached. */
+DWORD ntw16s_global_manager_wait_idle(ntw16s_global_manager *manager,DWORD timeout);
 HANDLE ntw16s_global_manager_changed(ntw16s_global_manager *manager);
 void ntw16s_global_manager_stats_read(ntw16s_global_manager *manager,ntw16s_global_manager_stats *stats);
 BOOL ntw16s_global_manager_tracks(ntw16s_global_manager *manager,DWORD pid,DWORD thread_id);

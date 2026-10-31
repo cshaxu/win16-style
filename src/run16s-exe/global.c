@@ -106,6 +106,9 @@ int run16s_global(void)
     /* A target may have appeared while the startup sweep was sending
      * messages. Revisit it before announcing that discovery is ready. */
     error=ntw16s_global_manager_refresh(manager);if(error)goto done;
+    error=ntw16s_global_manager_wait_idle(manager,2000);
+    if(error==ERROR_TIMEOUT){fwprintf(stderr,L"run16s: global startup attachment still pending\n");error=0;}
+    if(error)goto done;
     InterlockedExchange(&s->ready,1);
     fwprintf(stderr,L"run16s: global active; press Ctrl+C to stop\n");
     HANDLE active_waits[2]={stop_signal,host.hProcess};

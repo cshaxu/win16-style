@@ -23,7 +23,7 @@ struct ntw16s_global_manager {
     worker_context contexts[MANAGER_WORKERS];DWORD worker_errors[MANAGER_WORKERS];
     HDESK desktop;WCHAR *dll_path;WORD machine;DWORD owner_thread;SRWLOCK lock;
     manager_entry *buckets[MANAGER_BUCKETS],*queue_head,*queue_tail;unsigned count,reap_bucket;
-    volatile LONG queued,active,failed,overflow;
+    volatile LONG queued,working,active,failed,overflow;
     SRWLOCK process_locks[64];
 };
 
@@ -176,7 +176,7 @@ static DWORD WINAPI worker(void *parameter)
         if(result!=WAIT_OBJECT_0+2)break;
         for(;;){
             AcquireSRWLockExclusive(&m->lock);manager_entry *entry=m->queue_head;
-            if(entry){m->queue_head=entry->queue_next;if(!m->queue_head)m->queue_tail=NULL;entry->state=ENTRY_WORKING;InterlockedDecrement(&m->queued);}
+            if(entry){m->queue_head=entry->queue_next;if(!m->queue_head)m->queue_tail=NULL;entry->state=ENTRY_WORKING;InterlockedDecrement(&m->queued);InterlockedIncrement(&m->working);}
             ReleaseSRWLockExclusive(&m->lock);if(!entry)break;
             /* Late patching snapshots all threads in a target process. Do not
              * create competing remote workers for two of its GUI threads. */
@@ -188,6 +188,7 @@ static DWORD WINAPI worker(void *parameter)
                 entry->attach.start.thread && WaitForSingleObject(entry->attach.start.thread,0)==WAIT_TIMEOUT;
             if(error && !installed)(void)ntw16s_global_attach_close(&entry->attach);
             AcquireSRWLockExclusive(&m->lock);++entry->attempts;
+            InterlockedDecrement(&m->working);
             if(!error || installed){entry->state=ENTRY_ACTIVE;InterlockedIncrement(&m->active);if(error)InterlockedIncrement(&m->failed);}
             else{
                 entry->state=ENTRY_FAILED;InterlockedIncrement(&m->failed);
@@ -203,6 +204,22 @@ DWORD ntw16s_global_manager_refresh(ntw16s_global_manager *m)
 {
     if(!m || m->owner_thread!=GetCurrentThreadId())return ERROR_INVALID_PARAMETER;
     return ntw16s_global_discover_refresh(&m->discover);
+}
+DWORD ntw16s_global_manager_wait_idle(ntw16s_global_manager *m,DWORD timeout)
+{
+    if(!m || m->owner_thread!=GetCurrentThreadId())return ERROR_INVALID_PARAMETER;
+    ULONGLONG deadline=GetTickCount64()+timeout;HANDLE waits[]={m->stop,m->quit,m->changed};
+    for(;;){
+        AcquireSRWLockShared(&m->lock);BOOL idle=m->queued==0 && m->working==0;ReleaseSRWLockShared(&m->lock);
+        if(idle)return ERROR_SUCCESS;
+        ULONGLONG now=GetTickCount64();if(now>=deadline)return ERROR_TIMEOUT;
+        DWORD result=MsgWaitForMultipleObjects(ARRAYSIZE(waits),waits,FALSE,(DWORD)(deadline-now),QS_ALLINPUT);
+        if(result==WAIT_OBJECT_0 || result==WAIT_OBJECT_0+1)return ERROR_CANCELLED;
+        if(result==WAIT_TIMEOUT)return ERROR_TIMEOUT;
+        if(result==WAIT_FAILED)return GetLastError();
+        if(result==WAIT_OBJECT_0+ARRAYSIZE(waits)){MSG message;while(PeekMessageW(&message,NULL,0,0,PM_REMOVE)){TranslateMessage(&message);DispatchMessageW(&message);}}
+        else if(result!=WAIT_OBJECT_0+2)return ERROR_INVALID_STATE;
+    }
 }
 BOOL ntw16s_global_manager_tracks(ntw16s_global_manager *m,DWORD pid,DWORD thread_id)
 {

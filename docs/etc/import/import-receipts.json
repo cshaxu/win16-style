@@ -176,27 +176,27 @@
       "path": "tests/ntw16s-dll/global_manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f56fb82018e82cf78d79ef6a310b04c7e227227a31b858e538f2a99ac7332e8a",
+      "sha256": "54a1cff69ae290a35689b0383937006386276d25934aa4af42cd66bad004d544",
       "disposition": "authored",
-      "review": "T21 S13 bounded global target-thread fallback manager and isolated regression; T21 S13 bounded control-message retry and busy-target regression; T21 S13 confirm busy target until existing deadline; T21 S13 bounded retirement of exited target records",
+      "review": "T21 S13 manager startup wait timeout and completion test",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "src/ntw16s-dll/global_manager.h",
       "source": null,
       "source_blob": null,
-      "sha256": "a7a4bd97776ec79d4171aff6aacfdaaf23fc6605a14fbcbd99b2e55e744e9c09",
+      "sha256": "b6c3088f936dca5dd6930308860ec97992a4f26386dc819e04909794fecd4dbf",
       "disposition": "authored",
-      "review": "T21 S13 startup rediscovery and bounded late attachment retry",
+      "review": "T21 S13 bounded startup attachment completion",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "src/ntw16s-dll/global_manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "95ae8beaf8f3c5902f319af314ef354fa890c186b0ee3dec1cf3f75b10110c11",
+      "sha256": "ee3fc1596e0ce3c14e38335ebf42419f83d80119173991f0658fe65dc4472eef",
       "disposition": "authored",
-      "review": "T21 S13 startup rediscovery and serialized same-process attachment",
+      "review": "T21 S13 bounded startup attachment completion",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -293,9 +293,9 @@
       "path": "src/run16s-exe/global.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e11ab10968ae14cb1a325ac0742a6bcc1864af01840468fb060ea4ae058c68d0",
+      "sha256": "028680087fc258a7fc8ffb4b90e6abd6b36116e53fae5b162482d1e15dd19097",
       "disposition": "authored",
-      "review": "T21 S13 startup rediscovery and bounded late attachment retry",
+      "review": "T21 S13 bounded startup attachment completion",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -320,9 +320,9 @@
       "path": "src/ntw16s-dll/global_hook.c",
       "source": null,
       "source_blob": null,
-      "sha256": "bc21bfa513a4ea11c128eddba6b52e336441a32b4af3ed9d52b623c59d451f37",
+      "sha256": "1b39d88b200a54d1703374de79e20abd4789a48aa5a1c696f91cf987a20aee05",
       "disposition": "authored",
-      "review": "T21 S13 startup process discovery candidate",
+      "review": "T21 S13 bounded startup attachment completion",
       "notice": "Project-authored source; no imported code or resources"
     },
     {

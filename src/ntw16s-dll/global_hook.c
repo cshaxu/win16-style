@@ -108,6 +108,9 @@ void CALLBACK Ntw16sGlobalHost(HWND window,HINSTANCE instance,LPSTR command,int 
     WCHAR path[32768];DWORD n=GetModuleFileNameW(module,path,ARRAYSIZE(path));
     WORD machine=sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386;
     if(!n || n>=ARRAYSIZE(path) || ntw16s_global_manager_start(path,machine,&manager))goto done;
+    DWORD idle=ntw16s_global_manager_wait_idle(manager,2000);
+    if(idle==ERROR_TIMEOUT)OutputDebugStringW(L"run16s: global 32-bit startup attachment still pending\n");
+    else if(idle)goto done;
     SetEvent(ready);
     HANDLE waits[2]={stop,owner};
     for(;;){DWORD status=MsgWaitForMultipleObjects(2,waits,FALSE,INFINITE,QS_ALLINPUT);

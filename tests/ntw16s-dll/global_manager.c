@@ -7,10 +7,11 @@
 static HWND button;
 static unsigned clicks;
 static BOOL delayed;
+static HANDLE delay_started;
 static LRESULT CALLBACK window_proc(HWND w,UINT m,WPARAM a,LPARAM b)
 {
     if(m==RegisterWindowMessageW(NTW16S_GLOBAL_CONTROL) && b==NTW16S_GLOBAL_APPLY && !delayed){
-        delayed=TRUE;Sleep(650);
+        delayed=TRUE;if(delay_started)SetEvent(delay_started);Sleep(650);
     }
     if(m==WM_APP+52){
         HMODULE dll=GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");
@@ -30,6 +31,7 @@ static int target(void)
     if(!GetEnvironmentVariableW(L"WIN16_MANAGER_READY",name,ARRAYSIZE(name)) ||
        !GetEnvironmentVariableW(L"WIN16_MANAGER_TITLE",title,ARRAYSIZE(title)))return 2;
     HANDLE ready=OpenEventW(EVENT_MODIFY_STATE,FALSE,name);if(!ready)return 3;
+    if(GetEnvironmentVariableW(L"WIN16_MANAGER_DELAY_STARTED",name,ARRAYSIZE(name)))delay_started=OpenEventW(EVENT_MODIFY_STATE,FALSE,name);
     WNDCLASSW c={.hInstance=GetModuleHandleW(NULL),.lpfnWndProc=window_proc,.lpszClassName=L"Win16OwnedManagerTest"};
     if(!RegisterClassW(&c))return 4;
     HWND w=CreateWindowW(c.lpszClassName,title,WS_OVERLAPPEDWINDOW,0,0,180,120,NULL,NULL,c.hInstance,NULL);
@@ -37,7 +39,9 @@ static int target(void)
     button=CreateWindowW(L"BUTTON",L"Click",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,10,10,80,30,w,(HMENU)(UINT_PTR)101,c.hInstance,NULL);
     if(!button)return 6;
     ShowWindow(w,SW_SHOW);SetEvent(ready);CloseHandle(ready);
-    MSG msg;while(GetMessageW(&msg,NULL,0,0)>0){TranslateMessage(&msg);DispatchMessageW(&msg);}return 0;
+    MSG msg;while(GetMessageW(&msg,NULL,0,0)>0){TranslateMessage(&msg);DispatchMessageW(&msg);}
+    if(delay_started)CloseHandle(delay_started);
+    return 0;
 }
 static int query(HWND w,UINT message)
 {DWORD_PTR value=0;return SendMessageTimeoutW(w,message,0,0,SMTO_ABORTIFHUNG,500,&value)?(int)value:-1;}
@@ -109,8 +113,13 @@ int wmain(int argc,WCHAR **argv)
     GetModuleFileNameW(NULL,self,ARRAYSIZE(self));wcscpy(dll,self);WCHAR *slash=wcsrchr(dll,L'\\');if(!slash)return 13;
     wcscpy(slash+1,sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");
     PROCESS_INFORMATION pi[2]={{0}};HWND windows[2]={0};ntw16s_global_manager *manager=NULL;
+    WCHAR delay_name[128];swprintf(delay_name,ARRAYSIZE(delay_name),L"Local\\Win16ManagerDelay-%lu",GetCurrentProcessId());
+    HANDLE delay_event=CreateEventW(NULL,TRUE,FALSE,delay_name);SetEnvironmentVariableW(L"WIN16_MANAGER_DELAY_STARTED",delay_name);
     BOOL before=spawn(self,0,&pi[0],&windows[0]);
     DWORD start=before?ntw16s_global_manager_start(dll,sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,&manager):ERROR_INVALID_STATE;
+    BOOL delayed_started=delay_event && WaitForSingleObject(delay_event,3000)==WAIT_OBJECT_0;
+    DWORD idle_timeout=manager && delayed_started?ntw16s_global_manager_wait_idle(manager,20):ERROR_INVALID_STATE;
+    DWORD idle_done=manager?ntw16s_global_manager_wait_idle(manager,3000):ERROR_INVALID_STATE;
     BOOL first=!start && wait_attached(manager,windows[0]);
     BOOL created=first && spawn(self,1,&pi[1],&windows[1]);
     BOOL second_attached=created && wait_attached(manager,windows[1]);
@@ -143,9 +152,11 @@ int wmain(int argc,WCHAR **argv)
         if(WaitForSingleObject(pi[i].hProcess,3000)!=WAIT_OBJECT_0){TerminateProcess(pi[i].hProcess,ERROR_TIMEOUT);cleaned=FALSE;}
         CloseHandle(pi[i].hThread);CloseHandle(pi[i].hProcess);
     }
+    if(delay_event)CloseHandle(delay_event);
     CloseHandle(stop);UnmapViewOfFile(session);CloseHandle(map);
-    if(!before || start || !first || !created || !second || !tracked || !exited || !retired || !replacement || replacement_clicks!=1 || survivor!=3 || survivor_clicks!=2 || clicked[0]!=1 || clicked[1]!=1 || removed[0] || removed[1] || stopped || !cleaned){
-        printf("MANAGER FAIL before=%d start=%lu first=%d created=%d second=%d attached=%d active=%d exited=%d retired=%d replacement=%d replacement_clicks=%d survivor=%d survivor_clicks=%d stats=%ld,%ld,%ld,%ld clicks=%d,%d removed=%d,%d stop=%lu cleanup=%d\n",before,start,first,created,second,second_attached,second_active,exited,retired,replacement,replacement_clicks,survivor,survivor_clicks,stats.queued,stats.active,stats.failed,stats.overflow,clicked[0],clicked[1],removed[0],removed[1],stopped,cleaned);return 14;
+    if(!before || start || !delayed_started || idle_timeout!=ERROR_TIMEOUT || idle_done || !first || !created || !second || !tracked || !exited || !retired || !replacement || replacement_clicks!=1 || survivor!=3 || survivor_clicks!=2 || clicked[0]!=1 || clicked[1]!=1 || removed[0] || removed[1] || stopped || !cleaned){
+        printf("MANAGER FAIL before=%d start=%lu delay=%d idle_timeout=%lu idle_done=%lu first=%d created=%d second=%d attached=%d active=%d exited=%d retired=%d replacement=%d replacement_clicks=%d survivor=%d survivor_clicks=%d stats=%ld,%ld,%ld,%ld clicks=%d,%d removed=%d,%d stop=%lu cleanup=%d\n",before,start,delayed_started,idle_timeout,idle_done,first,created,second,second_attached,second_active,exited,retired,replacement,replacement_clicks,survivor,survivor_clicks,stats.queued,stats.active,stats.failed,stats.overflow,clicked[0],clicked[1],removed[0],removed[1],stopped,cleaned);return 14;
     }
+    printf("MANAGER IDLE bits=%u timeout=%lu completed=%lu\n",(unsigned)(sizeof(void*)*8),idle_timeout,idle_done);
     printf("MANAGER PASS bits=%u existing=1 new=1 clicks=2 removed=2 cleanup=1 retired=1 survivor=1 replacement=1\n",(unsigned)(sizeof(void*)*8));return 0;
 }
