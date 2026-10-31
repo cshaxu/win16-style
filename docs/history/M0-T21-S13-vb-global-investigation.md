@@ -630,3 +630,26 @@ three test executables were temporarily replaced and then restored; the four
 product files were unchanged. This checks window attachment after actual show,
 not physical input or a pixel-perfect comparison.
 
+# P77: short-lived first window investigation
+
+Inspection of `discovered` found that events for the same thread while an
+entry is working are not separately queued, and a failed entry receives at
+most two attempts. Whether that creates a real missed-window condition depends
+on the timing of the existing apply and thread-window scan; it is not an
+established defect. An owned scratch C probe launched by an uninstrumented
+broker after global readiness showed one top-level window for 20 ms, destroyed
+it, and immediately created a second visible window on the same thread. One
+x86 and one x64 run of the deployed P74 observed the second window attached.
+This limited sample does not resolve the theoretical race, and no product
+change or binary release was made. Probe source and executables are in
+`build/t21-s13/flap-investigation/`.
+
+The x86 probe itself and broker returned success, but the private-desktop
+driver returned 8 because `Win16S-Dialog-17968-219947781` was still open after
+its cleanup check. Later read-only checks still opened that desktop, found no
+top-level windows there, and found no running `probe32`, `probe64`,
+`global-cross-origin`, `run16s`, or `rundll32` processes in the process
+inventory. The remaining desktop reference and its cause were not identified;
+do not treat this x86 run as a clean resource-lifetime pass. The x64 driver's
+cleanup check passed. No unrelated process was terminated.
+
