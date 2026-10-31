@@ -12,5 +12,6 @@ typedef struct ntw16s_global_manager_stats {LONG queued,active,failed,overflow;}
 DWORD ntw16s_global_manager_start(const WCHAR *dll_path,WORD machine,ntw16s_global_manager **result);
 HANDLE ntw16s_global_manager_changed(ntw16s_global_manager *manager);
 void ntw16s_global_manager_stats_read(ntw16s_global_manager *manager,ntw16s_global_manager_stats *stats);
+BOOL ntw16s_global_manager_tracks(ntw16s_global_manager *manager,DWORD pid,DWORD thread_id);
 DWORD ntw16s_global_manager_stop(ntw16s_global_manager *manager,DWORD timeout);
 #endif

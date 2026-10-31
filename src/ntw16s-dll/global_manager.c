@@ -21,12 +21,40 @@ struct ntw16s_global_manager {
     HANDLE mapping,stop,quit,work,changed,workers[MANAGER_WORKERS],ready[MANAGER_WORKERS];
     worker_context contexts[MANAGER_WORKERS];DWORD worker_errors[MANAGER_WORKERS];
     HDESK desktop;WCHAR *dll_path;WORD machine;DWORD owner_thread;SRWLOCK lock;
-    manager_entry *buckets[MANAGER_BUCKETS],*queue_head,*queue_tail;unsigned count;
+    manager_entry *buckets[MANAGER_BUCKETS],*queue_head,*queue_tail;unsigned count,reap_bucket;
     volatile LONG queued,active,failed,overflow;
 };
 
 static void notify_change(ntw16s_global_manager *m){SetEvent(m->changed);}
 static unsigned bucket(DWORD pid,DWORD tid){return (unsigned)((pid^(tid*33u))%MANAGER_BUCKETS);}
+/* Called under the manager lock. Bound normal event work to a few buckets;
+ * at capacity scan the rest before refusing a newly discovered target. */
+static void reap(ntw16s_global_manager *m,unsigned budget)
+{
+    BOOL changed=FALSE;
+    while(budget--){
+        manager_entry **link=&m->buckets[m->reap_bucket];
+        m->reap_bucket=(m->reap_bucket+1)%MANAGER_BUCKETS;
+        while(*link){
+            manager_entry *e=*link;BOOL dead=FALSE;
+            if(e->state==ENTRY_ACTIVE && e->attach.start.thread &&
+               WaitForSingleObject(e->attach.start.thread,0)==WAIT_OBJECT_0)dead=TRUE;
+            else if(e->state==ENTRY_FAILED){
+                if(e->attach.process)dead=WaitForSingleObject(e->attach.process,0)==WAIT_OBJECT_0;
+                else{
+                    HANDLE process=OpenProcess(SYNCHRONIZE,FALSE,e->pid);
+                    if(process){dead=WaitForSingleObject(process,0)==WAIT_OBJECT_0;CloseHandle(process);}
+                    else dead=GetLastError()==ERROR_INVALID_PARAMETER;
+                }
+            }
+            if(dead && !ntw16s_global_attach_close(&e->attach)){
+                *link=e->hash_next;if(e->state==ENTRY_ACTIVE)InterlockedDecrement(&m->active);
+                --m->count;free(e);changed=TRUE;
+            }else link=&e->hash_next;
+        }
+    }
+    if(changed)notify_change(m);
+}
 static void enqueue(ntw16s_global_manager *m,manager_entry *entry)
 {
     entry->state=ENTRY_QUEUED;entry->queue_next=NULL;
@@ -38,6 +66,7 @@ static void discovered(HWND window,DWORD pid,DWORD thread_id,void *context)
     ntw16s_global_manager *m=(ntw16s_global_manager *)context;
     if(m->session->phase!=NTW16S_GLOBAL_ACTIVE || pid==m->session->owner_pid || pid==m->session->host_pid)return;
     AcquireSRWLockExclusive(&m->lock);
+    reap(m,m->count>=MANAGER_LIMIT?MANAGER_BUCKETS:8u);
     unsigned index=bucket(pid,thread_id);manager_entry *entry=m->buckets[index];
     while(entry && (entry->pid!=pid || entry->thread_id!=thread_id))entry=entry->hash_next;
     if(entry){
@@ -137,6 +166,13 @@ static DWORD WINAPI worker(void *parameter)
     return 0;
 }
 HANDLE ntw16s_global_manager_changed(ntw16s_global_manager *m){return m?m->changed:NULL;}
+BOOL ntw16s_global_manager_tracks(ntw16s_global_manager *m,DWORD pid,DWORD thread_id)
+{
+    if(!m || !pid || !thread_id)return FALSE;
+    AcquireSRWLockShared(&m->lock);manager_entry *e=m->buckets[bucket(pid,thread_id)];
+    while(e && (e->pid!=pid || e->thread_id!=thread_id))e=e->hash_next;
+    BOOL found=e!=NULL;ReleaseSRWLockShared(&m->lock);return found;
+}
 void ntw16s_global_manager_stats_read(ntw16s_global_manager *m,ntw16s_global_manager_stats *s)
 {
     if(!s)return;

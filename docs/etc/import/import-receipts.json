@@ -5,27 +5,27 @@
       "path": "tests/ntw16s-dll/global_manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7458c2eb5c16667ed5ae71d83b8633891cb4e2d7183e2022ee0fb0e2c647bd7e",
+      "sha256": "f56fb82018e82cf78d79ef6a310b04c7e227227a31b858e538f2a99ac7332e8a",
       "disposition": "authored",
-      "review": "T21 S13 bounded global target-thread fallback manager and isolated regression; T21 S13 bounded control-message retry and busy-target regression; T21 S13 confirm busy target until existing deadline",
+      "review": "T21 S13 bounded global target-thread fallback manager and isolated regression; T21 S13 bounded control-message retry and busy-target regression; T21 S13 confirm busy target until existing deadline; T21 S13 bounded retirement of exited target records",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "src/ntw16s-dll/global_manager.h",
       "source": null,
       "source_blob": null,
-      "sha256": "38d9e86eddb17f2f12f0b6c3243b2468ba17b1f557d1a77d14d01870c36a911a",
+      "sha256": "bbded7c3f4f92f9d35814d2c737a1232c26145c8bce913157419cc4a1d2809f0",
       "disposition": "authored",
-      "review": "T21 S13 bounded global target-thread fallback manager and isolated regression",
+      "review": "T21 S13 bounded global target-thread fallback manager and isolated regression; T21 S13 bounded retirement of exited target records",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "src/ntw16s-dll/global_manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4d3797240ddb1b52f26b49c602cbeb9ce5bb23a54f7dd47240fc5745f4a54e3f",
+      "sha256": "a07e98536e2ba52860368f305a8b3d404a275f61c807e5847e9d30af821f584a",
       "disposition": "authored",
-      "review": "T21 S13 bounded global target-thread fallback manager and isolated regression; T21 S13 bounded control-message retry and busy-target regression; T21 S13 confirm busy target until existing deadline",
+      "review": "T21 S13 bounded global target-thread fallback manager and isolated regression; T21 S13 bounded control-message retry and busy-target regression; T21 S13 confirm busy target until existing deadline; T21 S13 bounded retirement of exited target records",
       "notice": "Project-authored source; no imported code or resources"
     },
     {

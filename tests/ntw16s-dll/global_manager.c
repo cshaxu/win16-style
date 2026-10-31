@@ -18,6 +18,7 @@ static LRESULT CALLBACK window_proc(HWND w,UINT m,WPARAM a,LPARAM b)
         return attached?(attached(w)?1:0)|(attached(button)?2:0):0;
     }
     if(m==WM_APP+53)return clicks;
+    if(m==WM_APP+54){ShowWindow(button,SW_HIDE);ShowWindow(button,SW_SHOW);return 1;}
     if(m==WM_COMMAND && HIWORD(a)==BN_CLICKED){++clicks;return 0;}
     if(m==WM_CLOSE){DestroyWindow(w);return 0;}
     if(m==WM_DESTROY){PostQuitMessage(0);return 0;}
@@ -65,6 +66,18 @@ static BOOL wait_active(ntw16s_global_manager *manager,LONG count)
     }
     return FALSE;
 }
+static BOOL wait_retired(ntw16s_global_manager *manager,DWORD pid,DWORD tid)
+{
+    ULONGLONG deadline=GetTickCount64()+3000;HANDLE changed=ntw16s_global_manager_changed(manager);
+    while(GetTickCount64()<deadline){
+        MSG msg;while(PeekMessageW(&msg,NULL,0,0,PM_REMOVE)){TranslateMessage(&msg);DispatchMessageW(&msg);}
+        if(!ntw16s_global_manager_tracks(manager,pid,tid))return TRUE;
+        ULONGLONG now=GetTickCount64();DWORD left=now<deadline?(DWORD)(deadline-now):0;
+        DWORD result=MsgWaitForMultipleObjects(1,&changed,FALSE,left,QS_ALLINPUT);
+        if(result==WAIT_TIMEOUT || result==WAIT_FAILED)return FALSE;
+    }
+    return FALSE;
+}
 static BOOL spawn(const WCHAR *self,unsigned index,PROCESS_INFORMATION *pi,HWND *window)
 {
     WCHAR ready_name[128],title[128],cmd[MAX_PATH+32];
@@ -106,9 +119,23 @@ int wmain(int argc,WCHAR **argv)
     ntw16s_global_manager_stats stats={0};if(manager)ntw16s_global_manager_stats_read(manager,&stats);
     int clicked[2]={-1,-1};
     for(unsigned i=0;i<2;++i)if(windows[i]){HWND child=GetDlgItem(windows[i],101);if(child)SendMessageW(child,BM_CLICK,0,0);clicked[i]=query(windows[i],WM_APP+53);}
+    DWORD old_pid=pi[0].dwProcessId,old_tid=pi[0].dwThreadId;
+    BOOL tracked=manager && ntw16s_global_manager_tracks(manager,old_pid,old_tid),exited=FALSE,retired=FALSE;
+    if(second && windows[0] && pi[0].hProcess){
+        PostMessageW(windows[0],WM_CLOSE,0,0);exited=WaitForSingleObject(pi[0].hProcess,3000)==WAIT_OBJECT_0;
+        if(exited){CloseHandle(pi[0].hThread);CloseHandle(pi[0].hProcess);ZeroMemory(&pi[0],sizeof(pi[0]));windows[0]=NULL;
+            for(unsigned i=0;i<40;++i)query(windows[1],WM_APP+54);
+            retired=wait_retired(manager,old_pid,old_tid);}
+    }
+    int survivor=windows[1]?query(windows[1],WM_APP+52):-1;
+    if(windows[1]){HWND child=GetDlgItem(windows[1],101);if(child)SendMessageW(child,BM_CLICK,0,0);}
+    int survivor_clicks=windows[1]?query(windows[1],WM_APP+53):-1;
+    BOOL replacement=retired && spawn(self,2,&pi[0],&windows[0]) && wait_attached(manager,windows[0]);
+    if(replacement){HWND child=GetDlgItem(windows[0],101);if(child)SendMessageW(child,BM_CLICK,0,0);}
+    int replacement_clicks=replacement?query(windows[0],WM_APP+53):-1;
     session->phase=NTW16S_GLOBAL_STOPPING;UINT control=RegisterWindowMessageW(NTW16S_GLOBAL_CONTROL);
     for(unsigned i=0;i<2;++i)if(windows[i]){DWORD_PTR ignored;SendMessageTimeoutW(windows[i],control,session->cookie,NTW16S_GLOBAL_REMOVE,SMTO_ABORTIFHUNG,500,&ignored);}
-    int removed[2]={windows[0]?query(windows[0],WM_APP+52):-1,windows[1]?query(windows[1],WM_APP+52):-1};
+    int removed[2]={windows[0]?query(windows[0],WM_APP+52):0,windows[1]?query(windows[1],WM_APP+52):-1};
     SetEvent(stop);DWORD stopped=manager?ntw16s_global_manager_stop(manager,5000):ERROR_INVALID_STATE;
     BOOL cleaned=TRUE;
     for(unsigned i=0;i<2;++i)if(pi[i].hProcess){
@@ -117,8 +144,8 @@ int wmain(int argc,WCHAR **argv)
         CloseHandle(pi[i].hThread);CloseHandle(pi[i].hProcess);
     }
     CloseHandle(stop);UnmapViewOfFile(session);CloseHandle(map);
-    if(!before || start || !first || !created || !second || clicked[0]!=1 || clicked[1]!=1 || removed[0] || removed[1] || stopped || !cleaned){
-        printf("MANAGER FAIL before=%d start=%lu first=%d created=%d second=%d attached=%d active=%d stats=%ld,%ld,%ld,%ld clicks=%d,%d removed=%d,%d stop=%lu cleanup=%d\n",before,start,first,created,second,second_attached,second_active,stats.queued,stats.active,stats.failed,stats.overflow,clicked[0],clicked[1],removed[0],removed[1],stopped,cleaned);return 14;
+    if(!before || start || !first || !created || !second || !tracked || !exited || !retired || !replacement || replacement_clicks!=1 || survivor!=3 || survivor_clicks!=2 || clicked[0]!=1 || clicked[1]!=1 || removed[0] || removed[1] || stopped || !cleaned){
+        printf("MANAGER FAIL before=%d start=%lu first=%d created=%d second=%d attached=%d active=%d exited=%d retired=%d replacement=%d replacement_clicks=%d survivor=%d survivor_clicks=%d stats=%ld,%ld,%ld,%ld clicks=%d,%d removed=%d,%d stop=%lu cleanup=%d\n",before,start,first,created,second,second_attached,second_active,exited,retired,replacement,replacement_clicks,survivor,survivor_clicks,stats.queued,stats.active,stats.failed,stats.overflow,clicked[0],clicked[1],removed[0],removed[1],stopped,cleaned);return 14;
     }
-    printf("MANAGER PASS bits=%u existing=1 new=1 clicks=2 removed=2 cleanup=1\n",(unsigned)(sizeof(void*)*8));return 0;
+    printf("MANAGER PASS bits=%u existing=1 new=1 clicks=2 removed=2 cleanup=1 retired=1 survivor=1 replacement=1\n",(unsigned)(sizeof(void*)*8));return 0;
 }
