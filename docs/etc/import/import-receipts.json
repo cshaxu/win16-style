@@ -3510,6 +3510,33 @@
       "disposition": "authored",
       "review": "T21 S13 target-local fallback loader lifetime and isolated timeout fixture",
       "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/global_start.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "52383177233b28df6430cd7bc7b36d90c9044917e3eb172f17e0630a1cef935d",
+      "disposition": "authored",
+      "review": "T21 S13 target-local worker startup ticket and owned actual DLL tests",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/global_start.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "866622b47d9b9bd88ebb48df1f0da9a1c6f0e6f9f79e99288b8f0a9e12c58490",
+      "disposition": "authored",
+      "review": "T21 S13 target-local worker startup ticket and owned actual DLL tests",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/global_start.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "41aa7bbafebb837753ccec7dd4440938f97e478dd33ea44ef4369af3650a2c76",
+      "disposition": "authored",
+      "review": "T21 S13 target-local worker startup ticket and owned actual DLL tests",
+      "notice": "Project-authored source; no imported code or resources"
     }
   ]
 }
