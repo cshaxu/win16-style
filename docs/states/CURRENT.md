@@ -2,28 +2,28 @@
 
 ## Current Work
 
-M0 T21 S4：实际应用、跨位宽及异常生命周期验证与宿主失败修复已本地验证及发布；待提交推送、远端复核。
+M0 T21 S5：全局模式任务级验收、覆盖与限制审计及收口。
 
-## M0 T21 S4 Packet
+## M0 T21 S5 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S3 交付后按 T21 规划继续 |
-| Admission And Approval | 用户要求实现简化架构的手动全局模式并持续推进 |
-| Objective | 验证真实传统 Win32 应用的已有及新窗口、双宽普通模式混合顺序和控制器异常生命周期 |
-| Non-goals | 不登录自启、不扩权；UWP/XAML 与共享系统宿主不处理；仅操作自有隔离实例 |
-| Reference Baseline | S3 远端 a9c178c；双位宽四文件已发布并核对摘要 |
+| Identifier Mode | Continuation；S4 交付后按 T21 规划继续 |
+| Admission And Approval | 用户要求实现简化架构的手动全局模式并推进至交付 |
+| Objective | 审计用户目标、普通模式独立性、双位宽已有及新窗口、异常和可恢复性，并完成任务级交付 |
+| Non-goals | 不登录自启、不扩权；不接管 UWP/XAML 或共享系统宿主；仅使用自有隔离实例 |
+| Reference Baseline | S4 远端 8f21d36，14 项聚焦包测试及两处发布已核对 |
 | Candidate Proposal | [手动全局样式模式](../proposals/global-style-mode.md) |
-| Files And ABI Surface | 原生测试及必要的现有控制器、DLL 源码；原则上不增加导出或第五产物 |
+| Files And ABI Surface | 任务审计、必要测试及已授权范围内修复；不增加第五产物 |
 | Applicable Rules | M0、C17、GCC、Ninja、ccache、原图形资源不变 |
-| Verification | 自有私有桌面真实应用、双宽混合顺序、重复启动及异常退出；普通启动回归 |
-| Expected Markers | 全局退出仅移除自身附着，普通 run16s 持续；不可恢复状态如实记录 |
-| Asset Needs | build/t21-s4、build/t21-package 自有 scratch |
-| Reporting Requirements | 记录实际接入、绘制、输入、退出、传播、权限和未覆盖边界 |
-| Stop Conditions | 无法隔离桌面或不能安全控制目标生命周期时不得在用户桌面安装钩子 |
-| Exit Criteria | 双宽干净构建、14 项同批四文件包测试与两处发布完成；待提交推送与远端复核 |
-| Original Owner Request | 手动启动接管已有及新传统 Win32 程序；退出保留普通 run16s 效果；简化架构 |
-| Similar-Issue Sweep | 真正绘制、子控件、全局会话重复启动、管理器/宿主异常、模块及资源生命周期 |
+| Verification | 产品实际包、已有及新真实应用、双宽与退出证据；准确标注权限、控件和桌面限制 |
+| Expected Markers | 明确已支持、未支持、失败与跳过；普通 run16s 独立，全局停后尽力恢复其自有接管 |
+| Asset Needs | build/t21-s5、build/t21-package 自有 scratch |
+| Reporting Requirements | 汇总架构、入口、可观测绘制、状态、退出、负例、资源、风险及后续接收者 |
+| Stop Conditions | 如发现无安全方案或不满足用户核心目标，不得虚构任务完成 |
+| Exit Criteria | 完成任务级审计及产品 S 规定的双宽构建、同批包测试、必要发布、提交推送与远端复核 |
+| Original Owner Request | 手动全局接管已有及新传统 Win32 程序；停止保留普通 run16s 效果；简化架构 |
+| Similar-Issue Sweep | 高价值控件、权限、会话与宿主边界、首窗时机、异常终止、旧版效果回归 |
 
 ## Identifier State
 
@@ -33,9 +33,9 @@ M0 T21 S4：实际应用、跨位宽及异常生命周期验证与宿主失败�
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
-- Last allocated T21 S: 4
-- Last delivery: M0 T21 S3 全局模式已双宽构建、11 项聚焦包测试、双位置发布及远端复核；[记录](../history/M0-T21-S3-global-controller.md)。
-- Open task: T21 S4 实际应用和异常生命周期验证。
+- Last allocated T21 S: 5
+- Last delivery: M0 T21 S4 已修复宿主异常遗漏，14 项聚焦包测试、双位置发布及远端复核；[记录](../history/M0-T21-S4-real-lifecycle.md)。
+- Open task: T21 S5 全局模式任务级验收审计。
 - 打印当前页已纳入受限 PrintDlgEx 转接；跨 DPI、实际打印和本地化仍待覆盖。
 - COM并发：已观察的双多选并发由系统原生路径止损；旧框目录串用根因、非多选并发仍未查明，详见[S3证据](../history/M0-T20-S3-com-safety.md)。
 - COM多选：默认回退系统新框，O: 长名、单项、取消、链接及双宽并发经有限验证；旧框实现及其他参数仍未全面解决。
@@ -53,6 +53,8 @@ S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1已收口；T20此后按用户要求有限范围收口。
 
 ## Recent Closure
+
+- M0 T21 S4：实际应用和双宽混合顺序已验证，宿主故障检测已修复并在远端 8f21d36 复核；[记录](../history/M0-T21-S4-real-lifecycle.md)。
 
 - M0 T21 S3：手动全局模式已交付，远端 a9c178c 与两处四文件摘要一致；正常 run16s 效果独立保留。[记录](../history/M0-T21-S3-global-controller.md)。
 
