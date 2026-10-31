@@ -101,7 +101,7 @@ static DWORD process_entry(ntw16s_global_manager *m,manager_entry *entry)
     }
     /* The target worker is already installed when a control send times out.
      * Retry that message without reloading or installing another worker. */
-    for(unsigned retry=0;error==ERROR_TIMEOUT && entry->attach.control_error==ERROR_TIMEOUT && retry<3;++retry){
+    while(error==ERROR_TIMEOUT && entry->attach.control_error==ERROR_TIMEOUT && GetTickCount64()<deadline){
         if(WaitForSingleObject(m->quit,0)==WAIT_OBJECT_0 || WaitForSingleObject(m->stop,0)==WAIT_OBJECT_0 ||
            m->session->phase!=NTW16S_GLOBAL_ACTIVE)return ERROR_CANCELLED;
         error=ntw16s_global_attach_apply(&entry->attach);

@@ -5,9 +5,9 @@
       "path": "tests/ntw16s-dll/global_manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2e1e6fe0a589705af6c7af660c0c28b2771c249af19c228d4c2f96050a3ad3ff",
+      "sha256": "7458c2eb5c16667ed5ae71d83b8633891cb4e2d7183e2022ee0fb0e2c647bd7e",
       "disposition": "authored",
-      "review": "T21 S13 bounded global target-thread fallback manager and isolated regression; T21 S13 bounded control-message retry and busy-target regression",
+      "review": "T21 S13 bounded global target-thread fallback manager and isolated regression; T21 S13 bounded control-message retry and busy-target regression; T21 S13 confirm busy target until existing deadline",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -23,9 +23,9 @@
       "path": "src/ntw16s-dll/global_manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f9a9d6876844c0bbe827c1f778467291905767d3171bad94856edf9256676d48",
+      "sha256": "4d3797240ddb1b52f26b49c602cbeb9ce5bb23a54f7dd47240fc5745f4a54e3f",
       "disposition": "authored",
-      "review": "T21 S13 bounded global target-thread fallback manager and isolated regression; T21 S13 bounded control-message retry and busy-target regression",
+      "review": "T21 S13 bounded global target-thread fallback manager and isolated regression; T21 S13 bounded control-message retry and busy-target regression; T21 S13 confirm busy target until existing deadline",
       "notice": "Project-authored source; no imported code or resources"
     },
     {

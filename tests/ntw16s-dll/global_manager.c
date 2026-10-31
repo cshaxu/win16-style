@@ -10,7 +10,7 @@ static BOOL delayed;
 static LRESULT CALLBACK window_proc(HWND w,UINT m,WPARAM a,LPARAM b)
 {
     if(m==RegisterWindowMessageW(NTW16S_GLOBAL_CONTROL) && b==NTW16S_GLOBAL_APPLY && !delayed){
-        delayed=TRUE;Sleep(250);
+        delayed=TRUE;Sleep(650);
     }
     if(m==WM_APP+52){
         HMODULE dll=GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");
@@ -100,7 +100,10 @@ int wmain(int argc,WCHAR **argv)
     DWORD start=before?ntw16s_global_manager_start(dll,sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,&manager):ERROR_INVALID_STATE;
     BOOL first=!start && wait_attached(manager,windows[0]);
     BOOL created=first && spawn(self,1,&pi[1],&windows[1]);
-    BOOL second=created && wait_attached(manager,windows[1]) && wait_active(manager,2);
+    BOOL second_attached=created && wait_attached(manager,windows[1]);
+    BOOL second_active=second_attached && wait_active(manager,2);
+    BOOL second=second_attached && second_active;
+    ntw16s_global_manager_stats stats={0};if(manager)ntw16s_global_manager_stats_read(manager,&stats);
     int clicked[2]={-1,-1};
     for(unsigned i=0;i<2;++i)if(windows[i]){HWND child=GetDlgItem(windows[i],101);if(child)SendMessageW(child,BM_CLICK,0,0);clicked[i]=query(windows[i],WM_APP+53);}
     session->phase=NTW16S_GLOBAL_STOPPING;UINT control=RegisterWindowMessageW(NTW16S_GLOBAL_CONTROL);
@@ -115,7 +118,7 @@ int wmain(int argc,WCHAR **argv)
     }
     CloseHandle(stop);UnmapViewOfFile(session);CloseHandle(map);
     if(!before || start || !first || !created || !second || clicked[0]!=1 || clicked[1]!=1 || removed[0] || removed[1] || stopped || !cleaned){
-        printf("MANAGER FAIL before=%d start=%lu first=%d created=%d second=%d clicks=%d,%d removed=%d,%d stop=%lu cleanup=%d\n",before,start,first,created,second,clicked[0],clicked[1],removed[0],removed[1],stopped,cleaned);return 14;
+        printf("MANAGER FAIL before=%d start=%lu first=%d created=%d second=%d attached=%d active=%d stats=%ld,%ld,%ld,%ld clicks=%d,%d removed=%d,%d stop=%lu cleanup=%d\n",before,start,first,created,second,second_attached,second_active,stats.queued,stats.active,stats.failed,stats.overflow,clicked[0],clicked[1],removed[0],removed[1],stopped,cleaned);return 14;
     }
     printf("MANAGER PASS bits=%u existing=1 new=1 clicks=2 removed=2 cleanup=1\n",(unsigned)(sizeof(void*)*8));return 0;
 }
