@@ -18,7 +18,7 @@ add_link_options(-static -static-libgcc -fno-lto)
 include(tools/build_cache.cmake)
 set(WIN16STYLE_X86_BUILD "${CMAKE_SOURCE_DIR}/build/.ninja/x86" CACHE PATH "Matching x86 fixture build")
 set(core_sources
-  attachment.c control_scope.c control_protocol.c controls.c dllmain.c font.c header_paint.c progress_paint.c toolbar_paint.c trackbar_paint.c updown_paint.c layout.c vb_text.c
+  attachment.c control_scope.c control_protocol.c controls.c dllmain.c global_window.c font.c header_paint.c progress_paint.c toolbar_paint.c trackbar_paint.c updown_paint.c layout.c vb_text.c
   menu_bar.c menu_bar_paint.c menu_items.c menu_layout.c menu_paint.c
   menu_scope.c native_api.c scroll_layout.c scroll_track.c tab_paint.c theme.c win16_style.c)
 list(TRANSFORM core_sources PREPEND "src/ntw16s-dll/")
@@ -391,6 +391,12 @@ if(BUILD_TESTING)
   add_executable(print-ranges-unit tests/ntw16s-dll/print_ranges.c ${injection_root}/print_ranges.c)
   target_include_directories(print-ranges-unit PRIVATE src)
   add_test(NAME dialog/print-ranges COMMAND ${test_driver} --name dialog/print-ranges -- $<TARGET_FILE:print-ranges-unit>)
+  add_executable(core-global-window tests/ntw16s-dll/global_window.c src/ntw16s-dll/global_window.c)
+  target_include_directories(core-global-window PRIVATE src tests/ntw16s-dll)
+  target_compile_definitions(core-global-window PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_options(core-global-window PRIVATE -municode)
+  target_link_libraries(core-global-window PRIVATE ntw16s "${subclass_import}" user32 gdi32 comctl32)
+  add_test(NAME core/global-window COMMAND ${test_driver} --name core/global-window -- $<TARGET_FILE:core-global-window>)
   add_executable(core-abi tests/ntw16s-dll/abi.c)
   target_include_directories(core-abi PRIVATE src)
   target_compile_definitions(core-abi PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)

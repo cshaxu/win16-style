@@ -2,6 +2,33 @@
   "schema": 1,
   "files": [
     {
+      "path": "tests/ntw16s-dll/global_window.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "f16accbb8d1042ac15a886b64cd2ec887a76129ac54a0c7a34078dfedef2b775",
+      "disposition": "authored",
+      "review": "T21 S2 same-thread global window lifecycle foundation",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/global_window.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "9b155523849e9894cecf917a62f27cf311d599858a9b63f19aafe71fe81f8b84",
+      "disposition": "authored",
+      "review": "T21 S2 same-thread global window lifecycle foundation",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/global_window.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e056c9e5c2cf61aa520095dee2ea82af458106c749fdb08519ebf24f15ce6d9b",
+      "disposition": "authored",
+      "review": "T21 S2 same-thread global window lifecycle foundation",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
       "path": "tests/ntw16s-dll/menu_initial.c",
       "source": null,
       "source_blob": null,
@@ -779,7 +806,7 @@
       "path": "src/ntw16s-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "9102c86309020e24a553a328d3c43790d21f46a36fa90aae77fee22904dd4357",
+      "sha256": "4e643899b86a1cbfec14716f0e8d7773448fdaa64d975a08a50604681aca43df",
       "disposition": "authored",
       "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL TEdit/TListBox wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version",
       "notice": "Project-authored, repository MIT"
@@ -923,7 +950,7 @@
       "path": "src/run16s-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "4c1c9105826b84d0e6bb869e78c9c3893a0772280cc54779ff59acf9b6caf12c",
+      "sha256": "a7b31c28945a22c8dc68438ba14831f7a5d40307b6c41a4b5102763fb8242aef",
       "disposition": "authored",
       "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
@@ -1139,7 +1166,7 @@
       "path": "src/demo-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "ccb842612e0462c3769c775fba28b96239ca37e5a6c07d01d26a9fb1c1ddfb95",
+      "sha256": "854c878fb9aeab53fce43d3dde16d1ca18cbf90fd74b38c9420045c9a94e73b1",
       "disposition": "authored",
       "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version",
       "notice": "Project-authored source per frozen W16Style README; no third-party artwork"

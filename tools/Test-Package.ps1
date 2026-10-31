@@ -163,6 +163,8 @@ try{
         $cases+=Case "dialog-color-edge-native-$arch" $dialogDriver @('--direct',$colorEdgeProbe) @("EDGE_RESULT bits=$bits",'result=0 error=0','DIALOG_DRIVER exit=0') 30
         $menuInitial=Join-Path (Join-Path $BuildRoot $arch) 'menu-initial.exe'
         $cases+=Case "menu-initial-$arch" $dialogDriver @($run,$menuInitial) @("MENU_INITIAL bits=$bits draws=3 idle=1",'DIALOG_DRIVER exit=0') 30
+        $globalWindow=Join-Path (Join-Path $BuildRoot $arch) 'core-global-window.exe'
+        $cases+=Case "global-window-$arch" $globalWindow @() @("GLOBAL WINDOW PASS bits=$bits direct=1 control=1 edit=1 idempotent=1 wrong_thread=1 destroy=1 reentrant=1 existing=1") 30
         $systemMenuVisual=Join-Path (Join-Path $BuildRoot $arch) 'system-menu-visual.exe'
         $cases+=Case "system-menu-visual-$arch" $dialogDriver @($run,$systemMenuVisual,'normal') @("SYSTEM_MENU bits=$bits",'custom=0 seen=1 unchanged=1 checked=0 selected=1 blue=1','DIALOG_DRIVER exit=0') 30
         $cases+=Case "system-menu-custom-$arch" $dialogDriver @($run,$systemMenuVisual,'custom') @("SYSTEM_MENU bits=$bits",'custom=1 seen=1 unchanged=1 checked=0 selected=1 blue=1','DIALOG_DRIVER exit=0') 30
