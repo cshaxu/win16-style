@@ -2,13 +2,13 @@
 
 ## Current Work
 
-当前无活动任务包；M0 T20 已按用户指令以有限范围收口。
+当前无活动任务包；显式全局模式架构边界已协调，等待产品任务准入。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 20
-- Last allocated Td S: 15
+- Last allocated Td S: 16
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
