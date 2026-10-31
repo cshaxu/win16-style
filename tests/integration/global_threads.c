@@ -18,12 +18,12 @@ static BOOL resources(HANDLE p,DWORD *handles,DWORD *gdi)
 {*gdi=GetGuiResources(p,GR_GDIOBJECTS);return *gdi!=0 && GetProcessHandleCount(p,handles)!=FALSE && *handles!=0;}
 int wmain(int argc,WCHAR **argv)
 {
- if(argc!=4)return 2;
+ if(argc!=4 && !(argc==5 && !wcscmp(argv[4],L"visible")))return 2;
  WCHAR desk[128],name[NTW16S_GLOBAL_NAME_CAP],request[NTW16S_GLOBAL_NAME_CAP+16];DWORD n=0;
  if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desk,sizeof(desk),&n)||wcsncmp(desk,L"Win16S-Dialog-",14))return 3;
  if(!ntw16s_global_name(name,ARRAYSIZE(name))||swprintf(request,ARRAYSIZE(request),L"%ls.request",name)<0)return 4;
  PROCESS_INFORMATION targets[2]={0},manager={0};HWND windows[8]={0};HANDLE mapping=NULL,event=NULL;ntw16s_global_session *session=NULL;BOOL pass=FALSE;DWORD handles[2][2]={0},gdi[2][2]={0};
- if(!launch(argv[2],L"Threads32",&targets[0])||!launch(argv[3],L"Threads64",&targets[1]))goto done;
+ if(!launch(argv[2],argc==5?L"Threads32 visible":L"Threads32",&targets[0])||!launch(argv[3],argc==5?L"Threads64 visible":L"Threads64",&targets[1]))goto done;
  for(unsigned p=0;p<2;++p)for(unsigned i=0;i<2;++i){WCHAR title[100];swprintf(title,ARRAYSIZE(title),L"Threads%u-%u",p?64:32,i);windows[p*4+i]=find(title);if(!windows[p*4+i]||!wait_mask(windows[p*4+i],0))goto done;}
  for(unsigned cycle=0;cycle<3;++cycle){
   if(!launch(argv[1],L"--global",&manager))goto done;
@@ -40,6 +40,7 @@ int wmain(int argc,WCHAR **argv)
  }
  for(unsigned p=0;p<2;++p)if(handles[1][p]>handles[0][p]+2||gdi[1][p]>gdi[0][p]+2){printf("GLOBAL THREADS resource_growth p=%u handles=%lu,%lu gdi=%lu,%lu\n",p,handles[0][p],handles[1][p],gdi[0][p],gdi[1][p]);goto done;}
  printf("GLOBAL THREADS PASS widths=2 threads=4 old=4 new=4 cycles=3 handles=%lu,%lu/%lu,%lu gdi=%lu,%lu/%lu,%lu\n",handles[0][0],handles[1][0],handles[0][1],handles[1][1],gdi[0][0],gdi[1][0],gdi[0][1],gdi[1][1]);pass=TRUE;
+ if(pass&&argc==5)printf("GLOBAL VISIBLE CREATE PASS widths=2 new=4 restored=4\n");
  done:if(!pass)printf("GLOBAL THREADS FAIL error=%lu\n",GetLastError());
  if(manager.hProcess&&WaitForSingleObject(manager.hProcess,0)!=WAIT_OBJECT_0){if(!event)event=OpenEventW(EVENT_MODIFY_STATE,FALSE,request);if(event)SetEvent(event);if(WaitForSingleObject(manager.hProcess,5000)!=WAIT_OBJECT_0){TerminateProcess(manager.hProcess,ERROR_TIMEOUT);WaitForSingleObject(manager.hProcess,1000);}}
  if(event)CloseHandle(event);
