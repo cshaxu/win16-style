@@ -59,10 +59,10 @@ DWORD ntw16s_late_patch_install_batch(ntw16s_late_guard *guard,ntw16s_late_patch
 {
     ntw16s_late_region regions[NTW16S_LATE_PATCH_LIMIT];DWORD protection[NTW16S_LATE_PATCH_LIMIT];
     SYSTEM_INFO info;DWORD error=ERROR_SUCCESS,protected_count=0,ignored=0;GetSystemInfo(&info);
-    if(!guard || guard->threads || guard->count || guard->suspended || !items || !count || count>NTW16S_LATE_PATCH_LIMIT)return ERROR_INVALID_PARAMETER;
+    if(!guard || guard->threads || guard->count || guard->suspended || guard->snapshots || !items || !count || count>NTW16S_LATE_PATCH_LIMIT)return ERROR_INVALID_PARAMETER;
     for(DWORD i=0;i<count;++i){
         ntw16s_late_patch *p=items[i];
-        if(!p || !p->target || !p->trampoline || !p->slot || p->installed || p->guard.threads)return ERROR_INVALID_STATE;
+        if(!p || !p->target || !p->trampoline || !p->slot || p->installed || p->guard.threads || p->guard.snapshots)return ERROR_INVALID_STATE;
         BYTE *start=(BYTE *)p->target-(p->above?sizeof(JMP_REL):0);
         SIZE_T length=sizeof(JMP_REL)+(p->above?sizeof(JMP_REL_SHORT):0);
         uintptr_t low=(uintptr_t)start;
@@ -104,7 +104,7 @@ DWORD ntw16s_late_patch_install(ntw16s_late_patch *p)
 }
 DWORD ntw16s_late_patch_discard(ntw16s_late_patch *p)
 {
-    if(!p || p->installed || p->guard.threads)return ERROR_INVALID_STATE;
+    if(!p || p->installed || p->guard.threads || p->guard.snapshots)return ERROR_INVALID_STATE;
     if(p->trampoline)FreeBuffer(p->trampoline);
     ZeroMemory(p,sizeof(*p));return ERROR_SUCCESS;
 }

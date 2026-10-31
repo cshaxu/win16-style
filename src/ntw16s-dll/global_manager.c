@@ -135,9 +135,9 @@ static DWORD process_entry(ntw16s_global_manager *m,manager_entry *entry)
            m->session->phase!=NTW16S_GLOBAL_ACTIVE)return ERROR_CANCELLED;
         error=ntw16s_global_attach_apply(&entry->attach);
     }
-    if(error)return error;
+    if(error && error!=ERROR_NOT_READY)return error;
     scan_state scan={m,entry,GetTickCount64()+1000};EnumThreadWindows(entry->thread_id,notify_top,(LPARAM)&scan);
-    return ERROR_SUCCESS;
+    return error;
 }
 static DWORD WINAPI worker(void *parameter)
 {
@@ -153,9 +153,11 @@ static DWORD WINAPI worker(void *parameter)
             if(entry){m->queue_head=entry->queue_next;if(!m->queue_head)m->queue_tail=NULL;entry->state=ENTRY_WORKING;InterlockedDecrement(&m->queued);}
             ReleaseSRWLockExclusive(&m->lock);if(!entry)break;
             DWORD error=process_entry(m,entry);
-            if(error)(void)ntw16s_global_attach_close(&entry->attach);
+            BOOL installed=error==ERROR_NOT_READY && entry->attach.control_error==ERROR_NOT_READY &&
+                entry->attach.start.thread && WaitForSingleObject(entry->attach.start.thread,0)==WAIT_TIMEOUT;
+            if(error && !installed)(void)ntw16s_global_attach_close(&entry->attach);
             AcquireSRWLockExclusive(&m->lock);++entry->attempts;
-            if(!error){entry->state=ENTRY_ACTIVE;InterlockedIncrement(&m->active);}
+            if(!error || installed){entry->state=ENTRY_ACTIVE;InterlockedIncrement(&m->active);if(error)InterlockedIncrement(&m->failed);}
             else{
                 entry->state=ENTRY_FAILED;InterlockedIncrement(&m->failed);
             }

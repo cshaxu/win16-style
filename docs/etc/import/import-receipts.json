@@ -2,12 +2,21 @@
   "schema": 1,
   "files": [
     {
+      "path": "tests/ntw16s-dll/global_manager_unsupported.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "fafa8718f79808eccd43c7ff3bdd2e347363af1d1900bdd479937ed854f72520",
+      "disposition": "authored",
+      "review": "T21 S13 unsupported and later window acknowledgement tests",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
       "path": "tests/integration/global_propagation_lifecycle.c",
       "source": null,
       "source_blob": null,
-      "sha256": "fe748fc118a0348b1535ca3aad94e73ae92565ecb4dc5c4ff5285c31337bef21",
+      "sha256": "1562e8f01c48fcf8045b59fb74d09db89f36ea6217a11d58ad924d7199601092",
       "disposition": "authored",
-      "review": "T21 S13 experimental global process propagation integration and owned regression",
+      "review": "T21 S13 experimental global process propagation integration and owned regression; T21 S13 unified late style hooks and stop semantics",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -50,27 +59,27 @@
       "path": "src/ntw16s-dll/injection/late_process.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b0f82415c5f95c3894cec5f7ac3940c7a5e990c1a7652081618dd6ec178e2786",
+      "sha256": "bac40577fca5bc19f4317f33c6ece83ef1b31a1417060b820066f8463b2f8fb5",
       "disposition": "authored",
-      "review": "T21 S13 experimental synchronized late process initializer; not linked into product; T21 S13 global session propagation policy; T21 S13 global late process propagation integration",
+      "review": "T21 S13 experimental synchronized late process initializer; not linked into product; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S13 PSS guard ownership candidate",
       "notice": "Project-authored source; uses existing project hook and installer code"
     },
     {
       "path": "tests/integration/late_process_prototype.c",
       "source": null,
       "source_blob": null,
-      "sha256": "90dd6592daaeb1259141f446325a0bb842ecce6e7dc54cac81d751abe7ee7ba4",
+      "sha256": "b861dd96cfe193676390a8f71839d5578fa8f35b0b43858ab8072f1434e88727",
       "disposition": "authored",
-      "review": "T21 S13 experimental late process-hook adapter exercising production propagation implementation; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy; T21 S13 session-bound propagation tests; T21 S13 session-bound propagation tests; T21 S13 global late process propagation integration",
+      "review": "T21 S13 experimental late process-hook adapter exercising production propagation implementation; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy; T21 S13 session-bound propagation tests; T21 S13 session-bound propagation tests; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/ntw16s-dll/late_patch_batch.c",
       "source": null,
       "source_blob": null,
-      "sha256": "eded2c6b3246818baec0b1722003fd2b0a028548f8f6d8013de8e92a9515ec47",
+      "sha256": "64b3d3f7510444183cceb5d75924cb7b650a32f89cc5a806f06e0e0424535f50",
       "disposition": "authored",
-      "review": "T21 S13 dual-width experimental late batch preflight and failure regression",
+      "review": "T21 S13 dual-width experimental late batch preflight and failure regression; T21 S13 PSS guard ownership candidate",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -95,9 +104,9 @@
       "path": "src/ntw16s-dll/injection/late_patch.c",
       "source": null,
       "source_blob": null,
-      "sha256": "5ff47451f07a0f891bb455b6af598aae6709a12d39c2f017fc73b8e633a5eb17",
+      "sha256": "e96cb8a63344f0cdd4cdb524b7889619efbeecb29f8143f62303d7732a201330",
       "disposition": "authored",
-      "review": "T21 S13 experimental late-patch primitive using existing MinHook trampoline backend; not linked to product; T21 S13 experimental batch preflight",
+      "review": "T21 S13 experimental late-patch primitive using existing MinHook trampoline backend; not linked to product; T21 S13 experimental batch preflight; T21 S13 PSS guard ownership candidate",
       "notice": "Project-authored source; existing MinHook license retained where applicable"
     },
     {
@@ -113,36 +122,36 @@
       "path": "tests/integration/global_propagation_probe.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ee122dba2e10f41feacc9146f4d7cdc0c50993d346121dc97c248e43c837d57b",
+      "sha256": "2a6587259043b2041dc99745fadfe1f77772ce31d4540dd585a51ace5d4b4003",
       "disposition": "authored",
-      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product; T21 S13 session-bound propagation tests; T21 S13 global late process propagation integration",
+      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product; T21 S13 session-bound propagation tests; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/ntw16s-dll/late_guard.c",
       "source": null,
       "source_blob": null,
-      "sha256": "616df541dacabf688c934e753b23c49b8fa08e77f140e3e3b23265257f7809e4",
+      "sha256": "9d4e8d7f2544f8b226afc8441ba5c073182717c5eaa96e48855c94eb5d4d111f",
       "disposition": "authored",
-      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product; T21 S13 detect thread-set changes during guard",
+      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product; T21 S13 detect thread-set changes during guard; T21 S13 PSS guard ownership candidate",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "src/ntw16s-dll/injection/late_guard.h",
       "source": null,
       "source_blob": null,
-      "sha256": "e322644f4e04be045022ef8668461401cd61d4be509dbc4ba97debfabf854031",
+      "sha256": "bc11f0d5fbfcaec485b644788c932a03d3788486568be95b23bf7fcfd8afe29d",
       "disposition": "authored",
-      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product; T21 S13 detect thread-set changes during guard",
+      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product; T21 S13 detect thread-set changes during guard; T21 S13 PSS guard ownership candidate",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "src/ntw16s-dll/injection/late_guard.c",
       "source": null,
       "source_blob": null,
-      "sha256": "5718cf6e71fad64cf2c7ef189f4410da9960582e30c45faf49ab96b361dc6f1d",
+      "sha256": "84ea8103f5385414ef0cbf27276bfce6b201dbc3ddc8eb8fca2c353a784ad2cf",
       "disposition": "authored",
-      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product; T21 S13 detect thread-set changes during guard",
+      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product; T21 S13 detect thread-set changes during guard; T21 S13 PSS guard ownership candidate",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -167,9 +176,9 @@
       "path": "src/ntw16s-dll/global_manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "a07e98536e2ba52860368f305a8b3d404a275f61c807e5847e9d30af821f584a",
+      "sha256": "1ee26b07f075785df659b8eaffb2f1d61f8cdc2b3a6bdb0e9c1f22944af1868a",
       "disposition": "authored",
-      "review": "T21 S13 bounded global target-thread fallback manager and isolated regression; T21 S13 bounded control-message retry and busy-target regression; T21 S13 confirm busy target until existing deadline; T21 S13 bounded retirement of exited target records",
+      "review": "T21 S13 bounded global target-thread fallback manager and isolated regression; T21 S13 bounded control-message retry and busy-target regression; T21 S13 confirm busy target until existing deadline; T21 S13 bounded retirement of exited target records; T21 S13 attached-window acknowledgement candidate",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -248,9 +257,9 @@
       "path": "tests/integration/global_mode.c",
       "source": null,
       "source_blob": null,
-      "sha256": "dfae2cd6a4d5087f69cf6c3e7b32c479c37ba5cc27aa3210d6aa5850f82c44c8",
+      "sha256": "8bed0f35c0a708591cf427fd73e63c3e254f5eea77670d26bf8fd556a73a34a6",
       "disposition": "authored",
-      "review": "T21 S3 global controller and private-desktop integration; T21 S4 dual-width and lifecycle validation; T21 S7 per-monitor DPI and controlled input; T21 S8 DPI-unaware 96 virtualization fixture",
+      "review": "T21 S3 global controller and private-desktop integration; T21 S4 dual-width and lifecycle validation; T21 S7 per-monitor DPI and controlled input; T21 S8 DPI-unaware 96 virtualization fixture; T21 S13 unified late style hooks and stop semantics",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -275,9 +284,9 @@
       "path": "src/ntw16s-dll/global_session.h",
       "source": null,
       "source_blob": null,
-      "sha256": "8d901a9ab2a855f812d5863f6a40456bb71ac7551bd1a2d535d871c7693ecdc0",
+      "sha256": "f3d3e96a16ddebb5c5a1e3f9f6f518e94f406ff5ab248433a97ec4b275efd635",
       "disposition": "authored",
-      "review": "T21 S3 global controller and private-desktop integration; T21 S13 truthful global readiness and pre-subclass menu drawing witness; T21 S13 global session propagation policy; T21 S13 global late process propagation integration",
+      "review": "T21 S3 global controller and private-desktop integration; T21 S13 truthful global readiness and pre-subclass menu drawing witness; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 attached-window acknowledgement candidate",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -302,9 +311,9 @@
       "path": "tests/ntw16s-dll/global_window.c",
       "source": null,
       "source_blob": null,
-      "sha256": "80080e696cdbdf459ac0f07e14566b9d504a1753ee730e0616c45d71aa065da1",
+      "sha256": "6c10a2bb6e1d0b4d166c9739a7dd43afd700c4136d4c1110db6b4891f9917190",
       "disposition": "authored",
-      "review": "T21 S2 same-thread global window lifecycle foundation; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier",
+      "review": "T21 S2 same-thread global window lifecycle foundation; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier; T21 S13 unified late style hooks and stop semantics",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -320,9 +329,9 @@
       "path": "src/ntw16s-dll/global_window.c",
       "source": null,
       "source_blob": null,
-      "sha256": "07245bb27561bfdecacb41e25252de689c856143f09fa50595c04b3e7411422f",
+      "sha256": "d64d02ebefca078a215fa7accdfeb5df9958f2db48dc328bb7c4fcb002f382e2",
       "disposition": "authored",
-      "review": "T21 S2 same-thread global window lifecycle foundation; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier",
+      "review": "T21 S2 same-thread global window lifecycle foundation; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier; T21 S13 unified late style hooks and stop semantics; T21 S13 attached-window acknowledgement candidate",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -1301,18 +1310,18 @@
       "path": "src/ntw16s-dll/injection/intercept.h",
       "source": "src/nthook32-dll/intercept.h",
       "source_blob": "b9b7ea48abb2548f2c980db63896321d079a80cd",
-      "sha256": "c2cc7531f694c09e01253ebd18a2e5fcdd887e8d305affa209be46dbb1cfa1d3",
+      "sha256": "54f07c087f98efc87c46081c9dd3f319b74b96af84487bc8195f2c9b52714cdb",
       "disposition": "adapt",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T20 S1 common-dialog bridge and version; T21 S13 reusable late initializer and process-detour adapter",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T20 S1 common-dialog bridge and version; T21 S13 reusable late initializer and process-detour adapter; T21 S13 unified late style hooks and stop semantics",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
     },
     {
       "path": "src/ntw16s-dll/injection/window_titles.c",
       "source": "src/nthook32-dll/window_titles.cpp",
       "source_blob": "0a3d1cd942345edb25e879b9377311929551a0ec",
-      "sha256": "e4ab49d0484a2afc9019d790337a493df9f113019592b7e696b687b1234e3284",
+      "sha256": "f6b0b24ade048c27c62b72a69ad1905657636a84819416f03d7e2a203e72801f",
       "disposition": "adapt",
-      "review": "T3 S2 same-DLL delayed binding and read-only native-target diagnostics; docs/proposals/launcher-injection.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S7 bounded initialized public report-list text scope, exact native custom-draw DC and unchanged app callbacks, independent host System bitmap and ownership/late-view tests; no external code copied or original resources modified; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T18 S21 scoped observed checklist owner-draw frame, public state and original graphic, no external code or resource changes; T18 S27 exact observed TSpinButton frame scope, native primitive semantics retained, no external code or original graphics changed; T18 S31 verified native STATIC drawing scope, source font and application printing preserved; T18 S64 VB6 checklist scoped 96 DPI bitmap rendering and additional BitBlt hook; native fallbacks retained; T18 S64 P50 bounded VB6 Data navigation graphics; T18 S64: scoped ordinary Delphi group paint witness and native theme text entry, original notices retained; T18 S64 scoped observed Delphi TPopupMenu owner, native callbacks and item restoration; private cleanup, no external code or graphics changed; T18 S64 observed paired Delphi TPanel outer bevel paint scope, caller/parent/clip and native pen preserved; project-authored native tests; no external code or resources copied; T18 S64 P110 modern SpinButton bounded theme, bitmap and paint handling; T18 S64 P117 verified simple Delphi status scoped typography; T18 S64 P117 isolated font lease and lifecycle verification; T18 S64 P119 bounded multi-pane status font; T18 S64 P121 ANSI RichEdit witness and native chrome; T18 S64 P122 Unicode witness and abnormal paint cleanup; T18 S64 P123 scroll box witness; T18 S64 P125 native month calendar arrows; T18 S64 P126 selected-date color; T18 S64 P127 bounded native calendar title and query guards; T18 S64 P128 bounded calendar text; T18 S64 P129 witnessed TValueListEditor in-place button; T18 S64 P130 witnessed combo theme and dropdown arrow; T18 S64 witnessed VCL control bar frame; T18 S64 control bar observed bevel variants; T18 S64 app-owned ANSI DBEdit forwarding witness and negative model; T18 S64 bounded ANSI data combo forwarding witness; T18 S64 P160: bounded same-owner TDBNavigator button backgrounds; T20 S1 common find/replace creation scope",
+      "review": "T3 S2 same-DLL delayed binding and read-only native-target diagnostics; docs/proposals/launcher-injection.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S7 bounded initialized public report-list text scope, exact native custom-draw DC and unchanged app callbacks, independent host System bitmap and ownership/late-view tests; no external code copied or original resources modified; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T18 S21 scoped observed checklist owner-draw frame, public state and original graphic, no external code or resource changes; T18 S27 exact observed TSpinButton frame scope, native primitive semantics retained, no external code or original graphics changed; T18 S31 verified native STATIC drawing scope, source font and application printing preserved; T18 S64 VB6 checklist scoped 96 DPI bitmap rendering and additional BitBlt hook; native fallbacks retained; T18 S64 P50 bounded VB6 Data navigation graphics; T18 S64: scoped ordinary Delphi group paint witness and native theme text entry, original notices retained; T18 S64 scoped observed Delphi TPopupMenu owner, native callbacks and item restoration; private cleanup, no external code or graphics changed; T18 S64 observed paired Delphi TPanel outer bevel paint scope, caller/parent/clip and native pen preserved; project-authored native tests; no external code or resources copied; T18 S64 P110 modern SpinButton bounded theme, bitmap and paint handling; T18 S64 P117 verified simple Delphi status scoped typography; T18 S64 P117 isolated font lease and lifecycle verification; T18 S64 P119 bounded multi-pane status font; T18 S64 P121 ANSI RichEdit witness and native chrome; T18 S64 P122 Unicode witness and abnormal paint cleanup; T18 S64 P123 scroll box witness; T18 S64 P125 native month calendar arrows; T18 S64 P126 selected-date color; T18 S64 P127 bounded native calendar title and query guards; T18 S64 P128 bounded calendar text; T18 S64 P129 witnessed TValueListEditor in-place button; T18 S64 P130 witnessed combo theme and dropdown arrow; T18 S64 witnessed VCL control bar frame; T18 S64 control bar observed bevel variants; T18 S64 app-owned ANSI DBEdit forwarding witness and negative model; T18 S64 bounded ANSI data combo forwarding witness; T18 S64 P160: bounded same-owner TDBNavigator button backgrounds; T20 S1 common find/replace creation scope; T21 S13 unified late style hooks and stop semantics",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
     },
     {
@@ -1373,9 +1382,9 @@
       "path": "src/ntw16s-dll/injection/create_process.c",
       "source": "src/nthook32-dll/create_process.cpp",
       "source_blob": "2369ce7a7c46e79fc23f73367db9d42e0c40c9da",
-      "sha256": "ff63d714b8cb3b962a39dc6ba232ec76ba0cf215fbb196a939fdbee9407cc809",
+      "sha256": "721f6ac66c470e97102bfbd4f0ab92a2d099e707ee70f434e0c2e9e468a94dca",
       "disposition": "adapt",
-      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy; T21 S13 global late process propagation integration",
+      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics",
       "notice": "Project-authored source adaptation or new native fixture, repository MIT"
     },
     {
@@ -3038,18 +3047,18 @@
       "path": "src/ntw16s-dll/injection/file_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f392e2869c7b68dc4713abcffab1a8b1bf3821cbff82d81fd4899ced7590b23e",
+      "sha256": "1b32a84ebc8dd00b0ee901977b2df8b1cd30dd1a7361a9c1c6b79eea3648bfaf",
       "disposition": "authored",
-      "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture",
+      "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture; T21 S13 unified late style hooks and stop semantics",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
     },
     {
       "path": "src/ntw16s-dll/injection/folder_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f6f9875a1b0c2e5e59119fd0d247e5f7504fd4c00c4e69a99007fd2da2c3ebf1",
+      "sha256": "e8baa62bcc833da0ed03bc1c24df748881bea3bfcd73401411a4d6320c9c8907",
       "disposition": "authored",
-      "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture",
+      "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture; T21 S13 unified late style hooks and stop semantics",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
     },
     {
@@ -3200,9 +3209,9 @@
       "path": "src/ntw16s-dll/injection/com_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6c552535fa1d667b347c79afb0acd84dbfff72213f813468dc03d932e18398b2",
+      "sha256": "b85accc48b54eec2510c831e3f36afb04262219d34cd6ed25d0746e69b203f2f",
       "disposition": "authored",
-      "review": "T20 S1 COM dialog bridge and real native probe under development",
+      "review": "T20 S1 COM dialog bridge and real native probe under development; T21 S13 unified late style hooks and stop semantics",
       "notice": "Project-authored; no imported code or resources"
     },
     {
@@ -3767,9 +3776,9 @@
       "path": "src/ntw16s-dll/global_attach.c",
       "source": null,
       "source_blob": null,
-      "sha256": "5f84eb7bf2e81922de6fcae81d613e2d1bf380fb10ff2f1d6a4eb0ae3c81b665",
+      "sha256": "f4bafe6eb9164c23eaab3c4c84775e8e1744d7bb5004f313e4759537cbd5f1e4",
       "disposition": "authored",
-      "review": "T21 S13 same-bitness target attachment coordinator and actual DLL integration test; T21 S13 bounded control-message retry and busy-target regression",
+      "review": "T21 S13 same-bitness target attachment coordinator and actual DLL integration test; T21 S13 bounded control-message retry and busy-target regression; T21 S13 attached-window acknowledgement candidate",
       "notice": "Project-authored source; no imported code or resources"
     },
     {

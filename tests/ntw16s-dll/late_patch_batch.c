@@ -19,6 +19,12 @@ int main(void)
  HANDLE thread=CreateThread(NULL,0,worker,NULL,0,NULL);if(!thread)return 2;while(!InterlockedCompareExchange(&calls,0,0))Sleep(1);
  ntw16s_late_patch a={0},b={0};ntw16s_late_patch *items[]={&a,&b};ntw16s_late_guard guard={0};
  if(ntw16s_late_patch_prepare(&a,&original_a,(void *)detour_a)||ntw16s_late_patch_prepare(&b,&original_b,(void *)detour_b))return 3;
+ ntw16s_late_guard_test_fail_free(2);DWORD cleanup_fault=ntw16s_late_patch_install_batch(&guard,items,2);
+ BOOL retained=guard.snapshots!=NULL && !guard.threads;DWORD refused=ntw16s_late_patch_install_batch(&guard,items,2);
+ DWORD cleanup=ntw16s_late_guard_end(&guard);BOOL clear=!guard.snapshots && !guard.threads;
+ a.guard.snapshots=(void *)1;DWORD discard_refused=ntw16s_late_patch_discard(&a);a.guard.snapshots=NULL;
+ if(cleanup_fault!=ERROR_ACCESS_DENIED || !retained || refused!=ERROR_INVALID_PARAMETER || cleanup || !clear || discard_refused!=ERROR_INVALID_STATE)return 10;
+ printf("PSS BATCH CLEANUP PASS bits=%u retained=1 refused=1 retry=1\n",(unsigned)(sizeof(void*)*8));
  MEMORY_BASIC_INFORMATION before={0},after={0};if(!VirtualQuery((void *)sample_a,&before,sizeof(before)))return 8;
  b.backup[0]^=1;DWORD conflict=attempt(&guard,items);b.backup[0]^=1;
  if(conflict!=ERROR_REVISION_MISMATCH||a.installed||b.installed||original_a!=sample_a||original_b!=sample_b||call_a(5)!=12||call_b(5)!=14)return 4;

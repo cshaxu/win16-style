@@ -7,6 +7,8 @@
 #define NTW16S_GLOBAL_STOPPING 2
 #define NTW16S_GLOBAL_APPLY 1
 #define NTW16S_GLOBAL_REMOVE 2
+#define NTW16S_GLOBAL_QUERY 3
+#define NTW16S_GLOBAL_ATTACHED 0x1631a55au
 #define NTW16S_GLOBAL_NAME_CAP 160
 #define NTW16S_GLOBAL_CONTROL L"Win16Style.Global.Control.1"
 typedef struct ntw16s_global_session {

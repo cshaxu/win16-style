@@ -56,8 +56,8 @@ try{
     $pair=@($run,$d32,$d64,(Join-Path $x86 'launch-target.exe'),(Join-Path $x64 'launch-target.exe'))
     $tree=@($run,$d32,$d64,(Join-Path $x86 'propagate-target.exe'),(Join-Path $x64 'propagate-target.exe'))
     $cases=@(
-        (Case 'global-e2e' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-e2e.exe'),$run,(Join-Path $x86 'global-e2e-target.exe'),(Join-Path $x64 'global-e2e-target.exe')) @('GLOBAL E2E PASS old=4 new=4 restore=4 normal_retained=4 post_stop_windows=4 post_stop_children=4 stopped=1','GLOBAL INPUT PASS native=2 active=8 stopped=8 dpi32=','dpi64=','DIALOG_DRIVER exit=0') 35),
-        (Case 'global-e2e-unaware' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-e2e.exe'),$run,(Join-Path $x86 'global-e2e-target.exe'),(Join-Path $x64 'global-e2e-target.exe'),'--dpi-unaware') @('GLOBAL E2E PASS old=4 new=4 restore=4 normal_retained=4','GLOBAL INPUT PASS native=2 active=8 stopped=8 dpi32=96 dpi64=96','GLOBAL DPI MODE PASS mode=unaware dpi32=96 dpi64=96','DIALOG_DRIVER exit=0') 35),
+        (Case 'global-e2e' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-e2e.exe'),$run,(Join-Path $x86 'global-e2e-target.exe'),(Join-Path $x64 'global-e2e-target.exe')) @('GLOBAL E2E PASS old=4 new=4 restore=8 post_stop_windows=4 post_stop_children=4 stopped=1','GLOBAL INPUT PASS native=2 active=8 stopped=8 dpi32=','dpi64=','DIALOG_DRIVER exit=0') 35),
+        (Case 'global-e2e-unaware' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-e2e.exe'),$run,(Join-Path $x86 'global-e2e-target.exe'),(Join-Path $x64 'global-e2e-target.exe'),'--dpi-unaware') @('GLOBAL E2E PASS old=4 new=4 restore=8','GLOBAL INPUT PASS native=2 active=8 stopped=8 dpi32=96 dpi64=96','GLOBAL DPI MODE PASS mode=unaware dpi32=96 dpi64=96','DIALOG_DRIVER exit=0') 35),
         (Case 'global-common' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-common.exe'),$run,(Join-Path $x86 'global-common-target.exe'),(Join-Path $x64 'global-common-target.exe')) @('GLOBAL COMMON PASS widths=2 existing=2 new=2 controls=5 restored=4 content=4','GLOBAL LATE PASS widths=2 targets=4 modes=2 clicked=8 restored=8','DIALOG_DRIVER exit=0') 35),
         (Case 'global-vb-e2e' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-common.exe'),$run,(Join-Path $x86 'global-common-target.exe'),(Join-Path $x64 'global-common-target.exe'),(Join-Path $x86 'vb-global-fixture/MSVBVM60.dll'),(Join-Path $x64 'vb-global-fixture/MSVBVM60.dll')) @('GLOBAL VB E2E PASS widths=2 existing=2 new=2 restored=4 pixels=4','DIALOG_DRIVER exit=0') 35),
         (Case 'global-propagation-lifecycle' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-propagation-lifecycle.exe'),$run,(Join-Path $x86 'global-propagation-probe.exe'),(Join-Path $x64 'global-propagation-probe.exe')) @('GLOBAL PROPAGATION LIFECYCLE PASS widths=2 cycles=2 active=4 stopped=4 removed=4','DIALOG_DRIVER exit=0') 40),
@@ -78,16 +78,20 @@ try{
         (Case 'global-remote-x64' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'core-global-remote.exe'),$d64) @('REMOTE RESOLVE PASS bits=64 loader=1 worker=1 bad_pid=1 bad_name=1 missing=1 corrupt=1 cleanup=1','DIALOG_DRIVER exit=0') 15),
         (Case 'global-load-x86' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x86 'core-global-load.exe'),(Join-Path $x86 'global-load-fixture/ntw16s32.dll')) @('GLOBAL LOAD PASS bits=32 bad_pid=1 bad_name=1 duplicate=1 timeout=1 retained=1 completed=1 dead_target=1 cleanup=1','DIALOG_DRIVER exit=0') 15),
         (Case 'global-load-x64' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'core-global-load.exe'),(Join-Path $x64 'global-load-fixture/ntw16s64.dll')) @('GLOBAL LOAD PASS bits=64 bad_pid=1 bad_name=1 duplicate=1 timeout=1 retained=1 completed=1 dead_target=1 cleanup=1','DIALOG_DRIVER exit=0') 15),
-        (Case 'global-start-x86' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x86 'core-global-start.exe'),$d32) @('GLOBAL START PASS bits=32 real_dll=1 ready=1 packet_freed=1 busy=1 stop=1 bad_pid=1 bad_thread=1 bad_cookie=1 collision=1 cleanup=1','DIALOG_DRIVER exit=0') 15),
-        (Case 'global-start-x64' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'core-global-start.exe'),$d64) @('GLOBAL START PASS bits=64 real_dll=1 ready=1 packet_freed=1 busy=1 stop=1 bad_pid=1 bad_thread=1 bad_cookie=1 collision=1 cleanup=1','DIALOG_DRIVER exit=0') 15),
-        (Case 'global-start-remote-x86' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x86 'core-global-start.exe'),$d32,'remote-load') @('GLOBAL START PASS bits=32 real_dll=1 ready=1 packet_freed=1 busy=1 stop=1 bad_pid=1 bad_thread=1 bad_cookie=1 collision=1 cleanup=1 remote_load=1','DIALOG_DRIVER exit=0') 15),
-        (Case 'global-start-remote-x64' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'core-global-start.exe'),$d64,'remote-load') @('GLOBAL START PASS bits=64 real_dll=1 ready=1 packet_freed=1 busy=1 stop=1 bad_pid=1 bad_thread=1 bad_cookie=1 collision=1 cleanup=1 remote_load=1','DIALOG_DRIVER exit=0') 15),
+        (Case 'global-start-x86' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $scratch 'start-x86/run16s.exe'),(Join-Path $scratch 'start-x86/ntw16s32.dll')) @('GLOBAL START PASS bits=32 real_dll=1 ready=1 packet_freed=1 busy=1 stop=1 bad_pid=1 bad_thread=1 bad_cookie=1 collision=1 cleanup=1','DIALOG_DRIVER exit=0') 15),
+        (Case 'global-start-x64' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $scratch 'start-x64/run16s.exe'),(Join-Path $scratch 'start-x64/ntw16s64.dll')) @('GLOBAL START PASS bits=64 real_dll=1 ready=1 packet_freed=1 busy=1 stop=1 bad_pid=1 bad_thread=1 bad_cookie=1 collision=1 cleanup=1','DIALOG_DRIVER exit=0') 15),
+        (Case 'global-start-remote-x86' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $scratch 'start-x86/run16s.exe'),(Join-Path $scratch 'start-x86/ntw16s32.dll'),'remote-load') @('GLOBAL START PASS bits=32 real_dll=1 ready=1 packet_freed=1 busy=1 stop=1 bad_pid=1 bad_thread=1 bad_cookie=1 collision=1 cleanup=1 remote_load=1','DIALOG_DRIVER exit=0') 15),
+        (Case 'global-start-remote-x64' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $scratch 'start-x64/run16s.exe'),(Join-Path $scratch 'start-x64/ntw16s64.dll'),'remote-load') @('GLOBAL START PASS bits=64 real_dll=1 ready=1 packet_freed=1 busy=1 stop=1 bad_pid=1 bad_thread=1 bad_cookie=1 collision=1 cleanup=1 remote_load=1','DIALOG_DRIVER exit=0') 15),
         (Case 'global-discover-x86' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x86 'core-global-discover.exe')) @('DISCOVER PASS bits=32 existing=1 new=1 late=1 stop=1 nested=1 wrong_thread=1','DIALOG_DRIVER exit=0') 15),
         (Case 'global-discover-x64' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'core-global-discover.exe')) @('DISCOVER PASS bits=64 existing=1 new=1 late=1 stop=1 nested=1 wrong_thread=1','DIALOG_DRIVER exit=0') 15),
         (Case 'global-policy-x86' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x86 'core-global-policy.exe')) @('POLICY PASS bits=32 owned=1 birth=1 wrong_pid=1 wrong_thread=1 wrong_arch=1 wrong_sid=1 revalidate=1 stale=1 shared=1 cleanup=1','DIALOG_DRIVER exit=0') 15),
         (Case 'global-policy-x64' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'core-global-policy.exe')) @('POLICY PASS bits=64 owned=1 birth=1 wrong_pid=1 wrong_thread=1 wrong_arch=1 wrong_sid=1 revalidate=1 stale=1 shared=1 cleanup=1','DIALOG_DRIVER exit=0') 15),
         (Case 'global-attach-x86' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x86 'global-attach-fixture/run16s.exe')) @('ATTACH PASS bits=32 unloaded=1 loaded=1 parent=1 child=1 click=1 removed=1 cleanup=1','DIALOG_DRIVER exit=0') 15),
         (Case 'global-attach-x64' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-attach-fixture/run16s.exe')) @('ATTACH PASS bits=64 unloaded=1 loaded=1 parent=1 child=1 click=1 removed=1 cleanup=1','DIALOG_DRIVER exit=0') 15),
+        (Case 'global-unsupported-later-x86' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x86 'global-manager-unsupported-fixture/run16s.exe')) @('MANAGER_UNSUPPORTED bits=32 mode=later','later=1 sent=1 after=0 stopped=0','DIALOG_DRIVER exit=0') 15),
+        (Case 'global-unsupported-later-x64' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-manager-unsupported-fixture/run16s.exe')) @('MANAGER_UNSUPPORTED bits=64 mode=later','later=1 sent=1 after=0 stopped=0','DIALOG_DRIVER exit=0') 15),
+        (Case 'global-unsupported-existing-x86' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x86 'global-manager-unsupported-fixture/run16s.exe'),'preexisting') @('MANAGER_UNSUPPORTED bits=32 mode=preexisting','later=1 sent=1 after=0 stopped=0','DIALOG_DRIVER exit=0') 15),
+        (Case 'global-unsupported-existing-x64' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-manager-unsupported-fixture/run16s.exe'),'preexisting') @('MANAGER_UNSUPPORTED bits=64 mode=preexisting','later=1 sent=1 after=0 stopped=0','DIALOG_DRIVER exit=0') 15),
         (Case 'global-manager-x86' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x86 'global-manager-fixture/run16s.exe')) @('MANAGER PASS bits=32 existing=1 new=1 clicks=2 removed=2 cleanup=1 retired=1 survivor=1 replacement=1','DIALOG_DRIVER exit=0') 25),
         (Case 'global-manager-x64' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-manager-fixture/run16s.exe')) @('MANAGER PASS bits=64 existing=1 new=1 clicks=2 removed=2 cleanup=1 retired=1 survivor=1 replacement=1','DIALOG_DRIVER exit=0') 25),
         (Case 'global-vb-text-x86' (Join-Path $x86 'core-global-vb-text.exe') @((Join-Path $x86 'vb-global-fixture/MSVBVM60.dll')) @('GLOBAL_VB_TEXT PASS bits=32 hooks=4 foreign=1 scoped=4 native=4 reload=1') 15),
@@ -819,6 +823,11 @@ try{
     if($FullIntegration){$plan.coverage='full-integration'}
     $cases=@($plan.cases)
     foreach($arch in @('x86','x64')){
+        if(@($cases|Where-Object { $_.name -in @("global-start-$arch","global-start-remote-$arch") }).Count){
+            $fixture=Join-Path $scratch "start-$arch";New-Item -ItemType Directory -Path $fixture | Out-Null
+            Copy-Item -LiteralPath (Join-Path (Join-Path $BuildRoot $arch) 'global-start-fixture/run16s.exe') -Destination (Join-Path $fixture 'run16s.exe')
+            Copy-Item -LiteralPath $d32,$d64 -Destination $fixture
+        }
         if(@($cases|Where-Object name -eq "global-hook-local-$arch").Count){
             $fixture=Join-Path $scratch "local-hook-$arch";New-Item -ItemType Directory -Path $fixture | Out-Null
             Copy-Item -LiteralPath (Join-Path $x64 'global-hook-owner.exe') -Destination (Join-Path $fixture 'run16s.exe')
@@ -828,6 +837,14 @@ try{
     }
     foreach($pair in @(@('global-attach-x86',(Join-Path $x86 'global-attach-fixture/ntw16s32.dll'),$d32),@('global-attach-x64',(Join-Path $x64 'global-attach-fixture/ntw16s64.dll'),$d64),@('global-manager-x86',(Join-Path $x86 'global-manager-fixture/ntw16s32.dll'),$d32),@('global-manager-x64',(Join-Path $x64 'global-manager-fixture/ntw16s64.dll'),$d64))){
         if(@($cases|Where-Object name -eq $pair[0]).Count -and (Get-FileHash -LiteralPath $pair[1] -Algorithm SHA256).Hash -ne (Get-FileHash -LiteralPath $pair[2] -Algorithm SHA256).Hash){throw "Attach fixture DLL differs from package: $($pair[0])"}
+    }
+    foreach($arch in @('x86','x64')){
+        if(@($cases|Where-Object { $_.name -in @("global-unsupported-later-$arch","global-unsupported-existing-$arch") }).Count){
+            $bits=if($arch -eq 'x86'){'32'}else{'64'}
+            $fixture=Join-Path (Join-Path $BuildRoot $arch) "global-manager-unsupported-fixture/ntw16s$bits.dll"
+            $expected=if($arch -eq 'x86'){$d32}else{$d64}
+            if((Get-FileHash -LiteralPath $fixture -Algorithm SHA256).Hash -ne (Get-FileHash -LiteralPath $expected -Algorithm SHA256).Hash){throw "Unsupported-window fixture DLL differs: $arch"}
+        }
     }
     $records=[System.Collections.Generic.List[object]]::new()
     $progressConflicts=0

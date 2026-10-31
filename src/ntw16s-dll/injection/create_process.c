@@ -7,7 +7,7 @@
 static __typeof__(&CreateProcessW) create_w;
 static __typeof__(&CreateProcessA) create_a;
 static _Thread_local unsigned entering;
-static BOOL propagation_enabled(void)
+BOOL ntw16s_process_session_active(void)
 {return !(ntw16s_process_context.flags&NTW16S_POLICY_GLOBAL_SESSION) || ntw16s_global_policy_active(__atomic_load_n(&ntw16s_process_context.session_cookie,__ATOMIC_ACQUIRE));}
 static void leave_process(void *unused){(void)unused;--entering;}
 static BOOL finish(BOOL created,DWORD flags,PROCESS_INFORMATION *child,DWORD original_error)
@@ -33,7 +33,7 @@ static NTW16S_UNWIND_FUNCTION BOOL WINAPI hook_w(LPCWSTR application,LPWSTR comm
     LPSECURITY_ATTRIBUTES ta,BOOL inherit,DWORD flags,LPVOID environment,LPCWSTR directory,
     LPSTARTUPINFOW startup,LPPROCESS_INFORMATION child)
 {
-    if(entering || !startup || !child || !propagation_enabled() || ntw16s_system_print_host_w(application,command))return create_w(application,command,pa,ta,inherit,flags,environment,directory,startup,child);
+    if(entering || !startup || !child || !ntw16s_process_session_active() || ntw16s_system_print_host_w(application,command))return create_w(application,command,pa,ta,inherit,flags,environment,directory,startup,child);
     BOOL result=FALSE;DWORD error=ERROR_SUCCESS;ntw16s_unwind_scope scope;++entering;
     NTW16S_UNWIND_BEGIN(scope,leave_process,NULL);
     {
@@ -47,7 +47,7 @@ static NTW16S_UNWIND_FUNCTION BOOL WINAPI hook_a(LPCSTR application,LPSTR comman
     LPSECURITY_ATTRIBUTES ta,BOOL inherit,DWORD flags,LPVOID environment,LPCSTR directory,
     LPSTARTUPINFOA startup,LPPROCESS_INFORMATION child)
 {
-    if(entering || !startup || !child || !propagation_enabled() || ntw16s_system_print_host_a(application,command))return create_a(application,command,pa,ta,inherit,flags,environment,directory,startup,child);
+    if(entering || !startup || !child || !ntw16s_process_session_active() || ntw16s_system_print_host_a(application,command))return create_a(application,command,pa,ta,inherit,flags,environment,directory,startup,child);
     BOOL result=FALSE;DWORD error=ERROR_SUCCESS;ntw16s_unwind_scope scope;++entering;
     NTW16S_UNWIND_BEGIN(scope,leave_process,NULL);
     {

@@ -268,6 +268,7 @@ static int CALLBACK folder_selection_callback(HWND window,UINT message,LPARAM va
 }
 #define BROWSE_WRAPPER(name,type,native) \
 static PIDLIST_ABSOLUTE WINAPI name(type *info) { \
+    if(!ntw16s_process_session_active())return native(info); \
     if(!info || active) return native(info); \
     if(info->lpfn && (info->ulFlags==BRIDGE_FLAGS || info->ulFlags==(BRIDGE_FLAGS & ~BIF_VALIDATE)))return native(info); \
     if(!info->lpfn && (info->ulFlags==(BIF_RETURNONLYFSDIRS|BIF_NEWDIALOGSTYLE) || info->ulFlags==(BIF_RETURNONLYFSDIRS|BIF_NEWDIALOGSTYLE|BIF_NONEWFOLDERBUTTON))){type copy=*info;copy.ulFlags=BIF_RETURNONLYFSDIRS;return native(&copy);} \
@@ -278,11 +279,14 @@ static PIDLIST_ABSOLUTE WINAPI name(type *info) { \
 }
 BROWSE_WRAPPER(browse_a,BROWSEINFOA,native_browse_a)
 BROWSE_WRAPPER(browse_w,BROWSEINFOW,native_browse_w)
-LONG ntw16s_attach_folder_dialogs(void)
+LONG ntw16s_attach_folder_dialogs_using(DWORD (*attach)(void *,void *))
 {
+    if(!attach)return ERROR_INVALID_PARAMETER;
     if(!(ntw16s_process_context.flags & NTW16S_POLICY_STYLE))return NO_ERROR;
     native_browse_a=SHBrowseForFolderA;native_browse_w=SHBrowseForFolderW;
-    LONG error=(LONG)ntw16s_hooks_attach(&native_browse_a,(void *)browse_a);
-    if(!error)error=(LONG)ntw16s_hooks_attach(&native_browse_w,(void *)browse_w);
+    LONG error=(LONG)attach(&native_browse_a,(void *)browse_a);
+    if(!error)error=(LONG)attach(&native_browse_w,(void *)browse_w);
     return error;
 }
+
+LONG ntw16s_attach_folder_dialogs(void){return ntw16s_attach_folder_dialogs_using(ntw16s_hooks_attach);}

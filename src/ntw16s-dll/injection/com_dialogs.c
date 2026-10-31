@@ -1123,6 +1123,7 @@ static HRESULT proxy_show_impl(file_proxy *p,HWND owner)
     FILEOPENDIALOGOPTIONS flags=0;
     if(p->result){IShellItem_Release(p->result);p->result=NULL;}
     if(p->results){IShellItemArray_Release(p->results);p->results=NULL;}p->completed=FALSE;
+    if(!ntw16s_process_session_active())return show_native(p,owner);
     HRESULT hr=IFileDialog_GetOptions(p->native,&flags);
     /* Old-style multi-select can mis-enumerate long names or mix directories
      * between concurrent dialogs. Preserve the system's selection contract. */
@@ -1917,6 +1918,7 @@ static file_proxy *proxy_new(IUnknown *original,BOOL save)
 static void creation_end(void *unused){(void)unused;--native_creation_depth;}
 static NTW16S_UNWIND_FUNCTION HRESULT WINAPI bridge_create(REFCLSID clsid,LPUNKNOWN outer,DWORD context,REFIID iid,LPVOID *out)
 {
+    if(!ntw16s_process_session_active())return native_create(clsid,outer,context,iid,out);
     BOOL nested=native_creation_depth!=0;ntw16s_unwind_scope unwind;HRESULT original_hr;
     ++native_creation_depth;
     NTW16S_UNWIND_BEGIN(unwind,creation_end,NULL); {original_hr=native_create(clsid,outer,context,iid,out);}
@@ -1932,6 +1934,7 @@ static NTW16S_UNWIND_FUNCTION HRESULT WINAPI bridge_create(REFCLSID clsid,LPUNKN
 static NTW16S_UNWIND_FUNCTION HRESULT WINAPI bridge_create_ex(REFCLSID clsid,IUnknown *outer,DWORD context,
     COSERVERINFO *server,DWORD count,MULTI_QI *results)
 {
+    if(!ntw16s_process_session_active())return native_create_ex(clsid,outer,context,server,count,results);
     BOOL nested=native_creation_depth!=0;ntw16s_unwind_scope unwind;HRESULT original_hr;
     ++native_creation_depth;
     NTW16S_UNWIND_BEGIN(unwind,creation_end,NULL); {original_hr=native_create_ex(clsid,outer,context,server,count,results);}
@@ -1975,6 +1978,7 @@ static ULONG STDMETHODCALLTYPE factory_release(IClassFactory *self)
 static NTW16S_UNWIND_FUNCTION HRESULT STDMETHODCALLTYPE factory_create(IClassFactory *self,IUnknown *outer,REFIID iid,void **out)
 {
     factory_proxy *factory=(factory_proxy *)self;ntw16s_unwind_scope unwind;HRESULT original_hr;
+    if(!ntw16s_process_session_active())return IClassFactory_CreateInstance(factory->native,outer,iid,out);
     ++native_creation_depth;
     NTW16S_UNWIND_BEGIN(unwind,creation_end,NULL); {original_hr=IClassFactory_CreateInstance(factory->native,outer,iid,out);}
     NTW16S_UNWIND_END(unwind);
@@ -1989,6 +1993,7 @@ static HRESULT STDMETHODCALLTYPE factory_lock(IClassFactory *self,BOOL lock)
 static IClassFactoryVtbl factory_vtable={factory_query,factory_add,factory_release,factory_create,factory_lock};
 static HRESULT WINAPI bridge_class_object(REFCLSID clsid,DWORD context,LPVOID server,REFIID iid,LPVOID *out)
 {
+    if(!ntw16s_process_session_active())return native_class_object(clsid,context,server,iid,out);
     HRESULT original_hr=native_class_object(clsid,context,server,iid,out);
     if(FAILED(original_hr)||!out||!*out||server||native_creation_depth||ntw16s_modern_dialog_active()||
        !(context&CLSCTX_INPROC_SERVER)||!(IsEqualIID(iid,&IID_IUnknown)||IsEqualIID(iid,&IID_IClassFactory)))return original_hr;
@@ -2001,12 +2006,15 @@ static HRESULT WINAPI bridge_class_object(REFCLSID clsid,DWORD context,LPVOID se
     factory->iface.lpVtbl=&factory_vtable;factory->refs=1;factory->native=native;factory->save=save;
     IUnknown_Release(original);*out=&factory->iface;return original_hr;
 }
-LONG ntw16s_attach_com_dialogs(void)
+LONG ntw16s_attach_com_dialogs_using(DWORD (*attach)(void *,void *))
 {
+    if(!attach)return ERROR_INVALID_PARAMETER;
     if(!(ntw16s_process_context.flags & NTW16S_POLICY_STYLE))return NO_ERROR;
     native_create=CoCreateInstance;native_create_ex=CoCreateInstanceEx;native_class_object=CoGetClassObject;
-    LONG error=(LONG)ntw16s_hooks_attach(&native_create,(void *)bridge_create);
-    if(!error)error=(LONG)ntw16s_hooks_attach(&native_create_ex,(void *)bridge_create_ex);
-    if(!error)error=(LONG)ntw16s_hooks_attach(&native_class_object,(void *)bridge_class_object);
+    LONG error=(LONG)attach(&native_create,(void *)bridge_create);
+    if(!error)error=(LONG)attach(&native_create_ex,(void *)bridge_create_ex);
+    if(!error)error=(LONG)attach(&native_class_object,(void *)bridge_class_object);
     return error;
 }
+
+LONG ntw16s_attach_com_dialogs(void){return ntw16s_attach_com_dialogs_using(ntw16s_hooks_attach);}

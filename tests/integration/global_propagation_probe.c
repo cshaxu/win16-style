@@ -5,6 +5,7 @@
 typedef BOOL (__cdecl *attached_fn)(HWND);
 static int result=1;
 static BOOL managed;
+static HWND root_window;
 static ULONGLONG deadline;
 static BOOL create_owned(const WCHAR *argument,DWORD *code)
 {
@@ -23,6 +24,13 @@ static LRESULT CALLBACK proc(HWND w,UINT message,WPARAM a,LPARAM b)
 {
     if(message==WM_APP+110){HMODULE dll=module();attached_fn attached=dll?(attached_fn)(void*)GetProcAddress(dll,"Ntw16sWindowAttached"):NULL;return attached&&attached(w);}
     if(message==WM_APP+111){DWORD code=99;return create_owned(L"grandchild",&code)?(LRESULT)code:-1;}
+    if(message==WM_APP+112){
+        HWND created=CreateWindowW(L"GlobalPropagationProbe",L"Owned late window",WS_OVERLAPPEDWINDOW,70,70,200,120,NULL,NULL,GetModuleHandleW(NULL),NULL);
+        if(!created)return -1;
+        ShowWindow(created,SW_SHOW);
+        HMODULE dll=module();attached_fn attached=dll?(attached_fn)(void*)GetProcAddress(dll,"Ntw16sWindowAttached"):NULL;
+        int styled=attached&&attached(created);DestroyWindow(created);return styled;
+    }
     if(message==WM_CLOSE){DestroyWindow(w);return 0;}
     if(message==WM_TIMER){
         HMODULE dll=module();attached_fn attached=dll?(attached_fn)(void*)GetProcAddress(dll,"Ntw16sWindowAttached"):NULL;
@@ -33,7 +41,7 @@ static LRESULT CALLBACK proc(HWND w,UINT message,WPARAM a,LPARAM b)
         }
         if(GetTickCount64()>deadline){printf("GLOBAL PROPAGATION root_timeout\n");DestroyWindow(w);}return 0;
     }
-    if(message==WM_DESTROY){PostQuitMessage(0);return 0;}
+    if(message==WM_DESTROY && w==root_window){PostQuitMessage(0);return 0;}
     return DefWindowProcW(w,message,a,b);
 }
 int wmain(int argc,WCHAR **argv)
@@ -64,6 +72,7 @@ int wmain(int argc,WCHAR **argv)
     if(!RegisterClassW(&c))return 2;
     HWND w=CreateWindowW(c.lpszClassName,L"Owned propagation root",WS_OVERLAPPEDWINDOW|WS_VISIBLE,50,50,300,180,NULL,NULL,c.hInstance,NULL);
     if(!w)return 3;
+    root_window=w;
     deadline=GetTickCount64()+5000;if(!managed && !SetTimer(w,1,50,NULL)){DestroyWindow(w);return 4;}
     MSG m;while(GetMessageW(&m,NULL,0,0)>0){TranslateMessage(&m);DispatchMessageW(&m);}
     if(local_hook)UnhookWindowsHookEx(local_hook);

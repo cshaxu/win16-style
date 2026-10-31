@@ -2,6 +2,7 @@
  * This layer does not install desktop hooks or patch process entry points. */
 #include "global_window.h"
 #include "attachment.h"
+#include "global_session.h"
 #include <commctrl.h>
 #include <stdlib.h>
 
@@ -34,6 +35,11 @@ static LRESULT CALLBACK global_proc(HWND w,UINT message,WPARAM a,LPARAM b,UINT_P
 {
     global_window *s=(global_window *)data;LRESULT result;(void)id;
     ++s->calls;
+    if(message==RegisterWindowMessageW(NTW16S_GLOBAL_CONTROL) && b==NTW16S_GLOBAL_QUERY &&
+       !s->detached && s->kind==GLOBAL_ATTACHMENT && ntw16s_global_policy_active((DWORD)a) &&
+       Ntw16sWindowAttached(w)){
+        release(s);return (LRESULT)NTW16S_GLOBAL_ATTACHED;
+    }
     if(message==WM_NCDESTROY)detach(w,s);
     result=DefSubclassProc(w,message,a,b);
     release(s);return result;
@@ -48,11 +54,11 @@ BOOL ntw16s_global_window_apply(HWND w)
     global_window *s;BOOL installed=FALSE;DWORD error;
     if(!local(w))return FALSE;
     if((s=lookup(w))!=NULL){if(!s->detached && s->kind!=GLOBAL_PENDING)return TRUE;SetLastError(ERROR_BUSY);return FALSE;}
-    if(Ntw16sWindowAttached(w))return TRUE;
+    BOOL already=Ntw16sWindowAttached(w);
     s=(global_window *)calloc(1,sizeof(*s));if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
     s->calls=1;
     if(!SetWindowSubclass(w,global_proc,(UINT_PTR)global_proc,(DWORD_PTR)s)){error=GetLastError();free(s);SetLastError(error);return FALSE;}
-    installed=Ntw16sWindowAttach(w);
+    installed=already || Ntw16sWindowAttach(w);
     if(installed)s->kind=GLOBAL_ATTACHMENT;
     error=installed?ERROR_SUCCESS:GetLastError();
     if(s->detached){installed=FALSE;error=ERROR_INVALID_WINDOW_HANDLE;}

@@ -119,6 +119,7 @@ static UINT_PTR CALLBACK old_dialog_hook(HWND window, UINT message, WPARAM wpara
         call->result=original(call->value);call->error=GetLastError();return S_OK;} \
 static NTW16S_UNWIND_FUNCTION BOOL WINAPI name(structure *value) \
 { \
+    if(!ntw16s_process_session_active())return original(value); \
     BOOL full=value && value->lStructSize==sizeof(*value); \
     BOOL legacy=value && value->lStructSize==(legacy_size); \
     BOOL eligible=(full || legacy) && !(value->Flags & ~(COMPATIBLE_FLAGS | (extra_flags))) && \
@@ -148,14 +149,17 @@ BRIDGE(bridge_open_w, OPENFILENAMEW, OPENFILENAME_SIZE_VERSION_400W, native_open
 BRIDGE(bridge_save_a, OPENFILENAMEA, OPENFILENAME_SIZE_VERSION_400A, native_save_a, 0)
 BRIDGE(bridge_save_w, OPENFILENAMEW, OPENFILENAME_SIZE_VERSION_400W, native_save_w, 0)
 
-LONG ntw16s_attach_file_dialogs(void)
+LONG ntw16s_attach_file_dialogs_using(DWORD (*attach)(void *,void *))
 {
+    if(!attach)return ERROR_INVALID_PARAMETER;
     if (!(ntw16s_process_context.flags & NTW16S_POLICY_STYLE)) return NO_ERROR;
     native_open_a=GetOpenFileNameA; native_open_w=GetOpenFileNameW;
     native_save_a=GetSaveFileNameA; native_save_w=GetSaveFileNameW;
-    LONG error=(LONG)ntw16s_hooks_attach(&native_open_a,(void *)bridge_open_a);
-    if (!error) error=(LONG)ntw16s_hooks_attach(&native_open_w,(void *)bridge_open_w);
-    if (!error) error=(LONG)ntw16s_hooks_attach(&native_save_a,(void *)bridge_save_a);
-    if (!error) error=(LONG)ntw16s_hooks_attach(&native_save_w,(void *)bridge_save_w);
+    LONG error=(LONG)attach(&native_open_a,(void *)bridge_open_a);
+    if (!error) error=(LONG)attach(&native_open_w,(void *)bridge_open_w);
+    if (!error) error=(LONG)attach(&native_save_a,(void *)bridge_save_a);
+    if (!error) error=(LONG)attach(&native_save_w,(void *)bridge_save_w);
     return error;
 }
+
+LONG ntw16s_attach_file_dialogs(void){return ntw16s_attach_file_dialogs_using(ntw16s_hooks_attach);}

@@ -67,11 +67,13 @@ static void mark_menu_owner(HWND w,const void *caller)
     RealGetWindowClassW(w,real,64) && !lstrcmpW(real,cls) &&
     GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)caller,&origin) && origin==(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE))SetPropW(w,menu_owner_property,(HANDLE)&menu_owner_marker);
 }
-typedef struct title_scope { ntw16s_creation_scope *creation;DWORD failure; } title_scope;
+typedef struct title_scope { ntw16s_creation_scope *creation;DWORD failure;BOOL enabled; } title_scope;
 static BOOL begin_titles(title_scope *scope,BOOL modal)
 {
     ZeroMemory(scope,sizeof(*scope));
+    if(!ntw16s_process_session_active())return TRUE;
     if(!InitOnceExecuteOnce(&title_once,bind_titles,NULL,NULL))return FALSE;
+    scope->enabled=TRUE;
 #ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
     scope->creation=modal?ntw16s_creation_begin_dialog(TRUE):Ntw16sCreationBegin(TRUE);
 #else
@@ -83,6 +85,7 @@ static void end_titles(void *data)
 {
     title_scope *scope=data;
     ntw16s_creation_result result={0};
+    if(!scope->creation)return;
     if(!Ntw16sCreationEnd(scope->creation,&result))scope->failure=GetLastError();
     else scope->failure=result.failure;
 }
@@ -107,7 +110,7 @@ static NTW16S_UNWIND_FUNCTION HWND WINAPI window_##S(DWORD ex,T cls,T text,DWORD
   NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); { result=create_##S(ex,cls,text,style,x,y,cx,cy,parent,menu,instance,param);error=GetLastError(); \
   } NTW16S_UNWIND_END(unwind); \
   if(scope.failure){if(result)DestroyWindow(result);result=NULL;error=scope.failure;} \
-  if(result){mark_menu_owner(result,__builtin_return_address(0));} SetLastError(error);return result; }
+  if(result && scope.enabled){mark_menu_owner(result,__builtin_return_address(0));} SetLastError(error);return result; }
 WINDOW_HOOK(A,LPCSTR)
 WINDOW_HOOK(W,LPCWSTR)
 
@@ -174,7 +177,7 @@ static __typeof__(&NAME) real_##NAME; \
 static NTW16S_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
 { ntw16s_unwind_scope unwind;font_dialog_scope scope={0};BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
   if(!begin_titles(&scope.title,TRUE))return FALSE; \
-  scope.hook=SetWindowsHookExW(WH_CALLWNDPROCRET,font_dialog_return,NULL,GetCurrentThreadId()); \
+  if(scope.title.enabled)scope.hook=SetWindowsHookExW(WH_CALLWNDPROCRET,font_dialog_return,NULL,GetCurrentThreadId()); \
   NTW16S_UNWIND_BEGIN(unwind,font_dialog_end,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
   } NTW16S_UNWIND_END(unwind); \
   if(scope.title.failure){result=FALSE;error=scope.title.failure;} SetLastError(error);return result; }
@@ -216,7 +219,7 @@ static NTW16S_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
 { ntw16s_unwind_scope unwind;color_dialog_scope scope={0};BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
   if(!begin_titles(&scope.base.title,TRUE))return FALSE; \
   scope.previous=active_color_dialog;active_color_dialog=&scope; \
-  scope.base.hook=SetWindowsHookExW(WH_CALLWNDPROCRET,color_dialog_return,NULL,GetCurrentThreadId()); \
+  if(scope.base.title.enabled)scope.base.hook=SetWindowsHookExW(WH_CALLWNDPROCRET,color_dialog_return,NULL,GetCurrentThreadId()); \
   NTW16S_UNWIND_BEGIN(unwind,color_dialog_end,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
   } NTW16S_UNWIND_END(unwind); \
   if(scope.base.title.failure){result=FALSE;error=scope.base.title.failure;} SetLastError(error);return result; }
@@ -235,7 +238,7 @@ static NTW16S_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
 { ntw16s_unwind_scope unwind;title_scope scope;BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
   if(!begin_titles(&scope,TRUE))return FALSE; \
   NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); { \
-    if(parameters && parameters->lStructSize==sizeof(TYPE) && !(parameters->Flags & ~CLASSIC_PRINT_FLAGS)) { \
+    if(scope.enabled && parameters && parameters->lStructSize==sizeof(TYPE) && !(parameters->Flags & ~CLASSIC_PRINT_FLAGS)) { \
       TYPE copy=*parameters;copy.Flags|=PD_ENABLEPRINTHOOK;copy.lpfnPrintHook=classic_print_hook; \
       result=real_##NAME(&copy);error=GetLastError(); \
       copy.Flags=(copy.Flags & ~PD_ENABLEPRINTHOOK)|(parameters->Flags & PD_ENABLEPRINTHOOK); \
@@ -266,7 +269,7 @@ static NTW16S_UNWIND_FUNCTION HRESULT WINAPI hook_##NAME(TYPE *parameters) \
 { ntw16s_unwind_scope unwind;title_scope scope;HRESULT result=E_FAIL;DWORD error=ERROR_SUCCESS; \
   if(!begin_titles(&scope,TRUE))return HRESULT_FROM_WIN32(GetLastError()); \
   NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); { \
-    if(!BRIDGE(parameters,PRINT,&result)){result=real_##NAME(parameters);}error=GetLastError(); \
+    if(!scope.enabled || !BRIDGE(parameters,PRINT,&result)){result=real_##NAME(parameters);}error=GetLastError(); \
   } NTW16S_UNWIND_END(unwind); \
   if(scope.failure){result=HRESULT_FROM_WIN32(scope.failure);error=scope.failure;}SetLastError(error);return result; }
 PRINT_EXTENDED_HOOK(PrintDlgExA,PRINTDLGEXA,ntw16s_print_extended_a,real_PrintDlgA)
@@ -782,28 +785,29 @@ static NTW16S_UNWIND_FUNCTION BOOL WINAPI hook_TrackPopupMenu(HMENU m,UINT flags
  NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
 }
 
-LONG ntw16s_attach_titles(void)
+LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *))
 {
+    if(!attach)return ERROR_INVALID_PARAMETER;
     LONG error=NO_ERROR;
     if(!(ntw16s_process_context.flags&NTW16S_POLICY_STYLE))return error;
     create_A=CreateWindowExA;create_W=CreateWindowExW;
     real_get_scroll=GetScrollInfo;real_set_scroll=SetScrollInfo;real_set_theme=SetWindowTheme;
     real_set_pos=SetScrollPos;real_set_range=SetScrollRange;
     real_show_scroll=ShowScrollBar;real_enable_scroll=EnableScrollBar;
-    error=(LONG)ntw16s_hooks_attach(&create_A,(void *)window_A);
-    if(!error)error=(LONG)ntw16s_hooks_attach(&create_W,(void *)window_W);
-    if(!error)error=(LONG)ntw16s_hooks_attach(&real_get_scroll,(void *)hook_get_scroll);
-    if(!error)error=(LONG)ntw16s_hooks_attach(&real_set_scroll,(void *)hook_set_scroll);
-    if(!error)error=(LONG)ntw16s_hooks_attach(&real_set_pos,(void *)hook_set_pos);
-    if(!error)error=(LONG)ntw16s_hooks_attach(&real_set_range,(void *)hook_set_range);
-    if(!error)error=(LONG)ntw16s_hooks_attach(&real_show_scroll,(void *)hook_show_scroll);
-    if(!error)error=(LONG)ntw16s_hooks_attach(&real_enable_scroll,(void *)hook_enable_scroll);
-    if(!error)error=(LONG)ntw16s_hooks_attach(&real_set_theme,(void *)hook_set_theme);
-#define ATTACH(NAME) do { real_##NAME=NAME; if(!error)error=(LONG)ntw16s_hooks_attach(&real_##NAME,(void *)hook_##NAME); } while(0)
+    error=(LONG)attach(&create_A,(void *)window_A);
+    if(!error)error=(LONG)attach(&create_W,(void *)window_W);
+    if(!error)error=(LONG)attach(&real_get_scroll,(void *)hook_get_scroll);
+    if(!error)error=(LONG)attach(&real_set_scroll,(void *)hook_set_scroll);
+    if(!error)error=(LONG)attach(&real_set_pos,(void *)hook_set_pos);
+    if(!error)error=(LONG)attach(&real_set_range,(void *)hook_set_range);
+    if(!error)error=(LONG)attach(&real_show_scroll,(void *)hook_show_scroll);
+    if(!error)error=(LONG)attach(&real_enable_scroll,(void *)hook_enable_scroll);
+    if(!error)error=(LONG)attach(&real_set_theme,(void *)hook_set_theme);
+#define ATTACH(NAME) do { real_##NAME=NAME; if(!error)error=(LONG)attach(&real_##NAME,(void *)hook_##NAME); } while(0)
     ATTACH(OpenThemeData);ATTACH(OpenThemeDataEx);ATTACH(CloseThemeData);
     FARPROC dpi_symbol=GetProcAddress(GetModuleHandleW(L"uxtheme.dll"),"OpenThemeDataForDpi");
     memcpy(&real_OpenThemeDataForDpi,&dpi_symbol,sizeof(dpi_symbol));
-    if(real_OpenThemeDataForDpi && !error)error=(LONG)ntw16s_hooks_attach(&real_OpenThemeDataForDpi,(void *)hook_OpenThemeDataForDpi);
+    if(real_OpenThemeDataForDpi && !error)error=(LONG)attach(&real_OpenThemeDataForDpi,(void *)hook_OpenThemeDataForDpi);
     ATTACH(TrackPopupMenu);
     ATTACH(FindTextA);ATTACH(FindTextW);ATTACH(ReplaceTextA);ATTACH(ReplaceTextW);
     ATTACH(ChooseColorA);ATTACH(ChooseColorW);ATTACH(ChooseFontA);ATTACH(ChooseFontW);
@@ -812,10 +816,10 @@ LONG ntw16s_attach_titles(void)
     ATTACH(PropertySheetA);ATTACH(PropertySheetW);
     FARPROC task_symbol=GetProcAddress(GetModuleHandleW(L"comctl32.dll"),"TaskDialog");
     memcpy(&real_TaskDialog,&task_symbol,sizeof(task_symbol));
-    if(real_TaskDialog && !error)error=(LONG)ntw16s_hooks_attach(&real_TaskDialog,(void *)hook_TaskDialog);
+    if(real_TaskDialog && !error)error=(LONG)attach(&real_TaskDialog,(void *)hook_TaskDialog);
     task_symbol=GetProcAddress(GetModuleHandleW(L"comctl32.dll"),"TaskDialogIndirect");
     memcpy(&real_TaskDialogIndirect,&task_symbol,sizeof(task_symbol));
-    if(real_TaskDialogIndirect && !error)error=(LONG)ntw16s_hooks_attach(&real_TaskDialogIndirect,(void *)hook_TaskDialogIndirect);
+    if(real_TaskDialogIndirect && !error)error=(LONG)attach(&real_TaskDialogIndirect,(void *)hook_TaskDialogIndirect);
     ATTACH(CreateDialogParamA);ATTACH(CreateDialogParamW);
     ATTACH(CreateDialogIndirectParamA);ATTACH(CreateDialogIndirectParamW);
     ATTACH(DialogBoxParamA);ATTACH(DialogBoxParamW);
@@ -830,3 +834,5 @@ LONG ntw16s_attach_titles(void)
 #undef ATTACH
     return error;
 }
+
+LONG ntw16s_attach_titles(void){return ntw16s_attach_titles_using(ntw16s_hooks_attach);}

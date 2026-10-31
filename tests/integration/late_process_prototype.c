@@ -11,6 +11,12 @@ static volatile LONG running=1,ticks;
 /* The ordinary-startup backend is not linked into this isolated fixture. */
 DWORD ntw16s_hooks_attach(void *slot,void *replacement)
 {(void)slot;(void)replacement;return ERROR_NOT_SUPPORTED;}
+/* This fixture isolates process propagation. Real style registrations are
+ * exercised by the actual DLL integration tests. */
+LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *)){return attach?NO_ERROR:ERROR_INVALID_PARAMETER;}
+LONG ntw16s_attach_file_dialogs_using(DWORD (*attach)(void *,void *)){return attach?NO_ERROR:ERROR_INVALID_PARAMETER;}
+LONG ntw16s_attach_com_dialogs_using(DWORD (*attach)(void *,void *)){return attach?NO_ERROR:ERROR_INVALID_PARAMETER;}
+LONG ntw16s_attach_folder_dialogs_using(DWORD (*attach)(void *,void *)){return attach?NO_ERROR:ERROR_INVALID_PARAMETER;}
 static DWORD WINAPI background(void *p)
 {(void)p;while(InterlockedCompareExchange(&running,0,0)){InterlockedIncrement(&ticks);Sleep(1);}return 0;}
 int wmain(int argc,WCHAR **argv)

@@ -5,8 +5,8 @@
 #include <string.h>
 #include <wchar.h>
 static SRWLOCK init_lock=SRWLOCK_INIT;
-static ntw16s_late_patch hooks[2];
-static ntw16s_late_patch *items[2];
+static ntw16s_late_patch hooks[88];
+static ntw16s_late_patch *items[88];
 static ntw16s_late_guard guard;
 static DWORD count,sticky_error;
 static BOOL installed;
@@ -35,7 +35,11 @@ DWORD ntw16s_late_process_init(PCWSTR directory,DWORD session_cookie)
     ntw16s_process_context.flags=NTW16S_POLICY_STYLE|NTW16S_POLICY_PROPAGATE;
     if(session_cookie){ntw16s_process_context.flags|=NTW16S_POLICY_GLOBAL_SESSION;ntw16s_process_context.session_cookie=session_cookie;}
     InitializeBuffer();error=(DWORD)ntw16s_attach_processes_using(prepare);
-    if(!error && count!=ARRAYSIZE(hooks))error=ERROR_INVALID_STATE;
+    if(!error)error=(DWORD)ntw16s_attach_titles_using(prepare);
+    if(!error)error=(DWORD)ntw16s_attach_file_dialogs_using(prepare);
+    if(!error)error=(DWORD)ntw16s_attach_com_dialogs_using(prepare);
+    if(!error)error=(DWORD)ntw16s_attach_folder_dialogs_using(prepare);
+    if(!error && count<2)error=ERROR_INVALID_STATE;
     if(!error){
         error=ERROR_BUSY;
         for(unsigned i=0;i<100 && (error==ERROR_BUSY || error==ERROR_RETRY);++i){
@@ -44,7 +48,8 @@ DWORD ntw16s_late_process_init(PCWSTR directory,DWORD session_cookie)
         }
     }
     if(!error){installed=TRUE;goto done;}
-    if(guard.threads || hooks[0].installed || hooks[1].installed){sticky_error=error;goto done;}
+    BOOL any_installed=FALSE;for(DWORD i=0;i<count;++i)if(hooks[i].installed)any_installed=TRUE;
+    if(guard.threads || guard.snapshots || any_installed){sticky_error=error;goto done;}
     for(DWORD i=0;i<count;++i)(void)ntw16s_late_patch_discard(&hooks[i]);
     count=0;ZeroMemory(&ntw16s_process_context,sizeof(ntw16s_process_context));
  done:

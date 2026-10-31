@@ -18,11 +18,12 @@ static int run(const WCHAR *launcher,const WCHAR *target,const WCHAR *request)
   int attached=0;for(unsigned i=0;i<200&&!attached;++i){attached=query(window,WM_APP+110,1000)==1;if(!attached)Sleep(30);}
   if(!attached)goto done;
   int active_child=query(window,WM_APP+111,8000);
+  int active_window=query(window,WM_APP+112,3000);
   event=OpenEventW(EVENT_MODIFY_STATE,FALSE,request);if(!event||!SetEvent(event)||WaitForSingleObject(manager.hProcess,10000)!=WAIT_OBJECT_0)goto done;
   DWORD exitcode=99;if(!GetExitCodeProcess(manager.hProcess,&exitcode)||exitcode)goto done;
-  int removed=query(window,WM_APP+110,1000),stopped_child=query(window,WM_APP+111,8000);
-  printf("GLOBAL PROPAGATION LIFECYCLE cycle=%u attached=%d active_child=%d removed=%d stopped_child=%d\n",cycle,attached,active_child,removed,stopped_child);
-  if(active_child!=0 || removed!=0 || stopped_child!=41)goto done;
+  int removed=query(window,WM_APP+110,1000),stopped_child=query(window,WM_APP+111,8000),stopped_window=query(window,WM_APP+112,3000);
+  printf("GLOBAL PROPAGATION LIFECYCLE cycle=%u attached=%d active_child=%d active_window=%d removed=%d stopped_child=%d stopped_window=%d\n",cycle,attached,active_child,active_window,removed,stopped_child,stopped_window);
+  if(active_child!=0 || active_window!=1 || removed!=0 || stopped_child!=41 || stopped_window!=0)goto done;
   CloseHandle(event);event=NULL;CloseHandle(manager.hThread);CloseHandle(manager.hProcess);ZeroMemory(&manager,sizeof(manager));
  }
  result=0;
