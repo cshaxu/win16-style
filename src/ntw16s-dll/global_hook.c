@@ -1,6 +1,7 @@
 #include "global_session.h"
 #include "global_window.h"
 #include "global_vb_text.h"
+#include "global_policy.h"
 #include "attachment.h"
 #include <commctrl.h>
 #include <stdlib.h>
@@ -20,14 +21,7 @@ static BOOL CALLBACK check_process(PINIT_ONCE once,void *parameter,void **contex
     UINT wn=GetWindowsDirectoryW(windows,ARRAYSIZE(windows));
     (void)once;(void)parameter;(void)context;
     if(!n || n>=32768 || !wn || wn>=ARRAYSIZE(windows)){free(image);return TRUE;}
-    process_allowed=TRUE;
-    if(!_wcsnicmp(image,windows,wn) && image[wn]==L'\\'){
-        const WCHAR *base=wcsrchr(image,L'\\');base=base?base+1:image;
-        static const WCHAR *const shared[]={L"explorer.exe",L"ApplicationFrameHost.exe",L"ShellExperienceHost.exe",
-            L"StartMenuExperienceHost.exe",L"SearchHost.exe",L"SearchApp.exe",L"sihost.exe",L"taskhostw.exe",
-            L"RuntimeBroker.exe",L"dllhost.exe"};
-        for(unsigned i=0;i<ARRAYSIZE(shared);++i)if(!lstrcmpiW(base,shared[i])){process_allowed=FALSE;break;}
-    }
+    process_allowed=ntw16s_global_image_allowed(image,windows);
     free(image);return TRUE;
 }
 

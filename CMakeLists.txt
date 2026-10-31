@@ -18,7 +18,7 @@ add_link_options(-static -static-libgcc -fno-lto)
 include(tools/build_cache.cmake)
 set(WIN16STYLE_X86_BUILD "${CMAKE_SOURCE_DIR}/build/.ninja/x86" CACHE PATH "Matching x86 fixture build")
 set(core_sources
-  attachment.c control_scope.c control_protocol.c controls.c dllmain.c global_window.c global_session.c global_hook.c global_thread.c global_remote.c global_load.c global_start.c global_discover.c global_vb_text.c font.c header_paint.c progress_paint.c toolbar_paint.c trackbar_paint.c updown_paint.c layout.c vb_text.c import_scan.c import_patch.c
+  attachment.c control_scope.c control_protocol.c controls.c dllmain.c global_window.c global_session.c global_hook.c global_thread.c global_remote.c global_load.c global_start.c global_discover.c global_policy.c global_vb_text.c font.c header_paint.c progress_paint.c toolbar_paint.c trackbar_paint.c updown_paint.c layout.c vb_text.c import_scan.c import_patch.c
   menu_bar.c menu_bar_paint.c menu_items.c menu_layout.c menu_paint.c
   menu_scope.c native_api.c scroll_layout.c scroll_track.c tab_paint.c theme.c win16_style.c)
 list(TRANSFORM core_sources PREPEND "src/ntw16s-dll/")
@@ -47,7 +47,7 @@ add_custom_command(OUTPUT "${subclass_import}"
   DEPENDS "${subclass_def}" VERBATIM)
 add_custom_target(ntw16s-subclass DEPENDS "${subclass_import}")
 add_dependencies(ntw16s ntw16s-subclass)
-target_link_libraries(ntw16s PRIVATE "${subclass_import}" user32 gdi32 comctl32 comdlg32 shell32 ole32 uuid dwmapi uxtheme)
+target_link_libraries(ntw16s PRIVATE "${subclass_import}" user32 gdi32 comctl32 comdlg32 shell32 ole32 uuid dwmapi uxtheme advapi32)
 set(injection_root src/ntw16s-dll/injection)
 add_library(ntw16s-installer STATIC ${injection_root}/context.c ${injection_root}/installer.c
   ${injection_root}/staging.c ${injection_root}/helper.c)
@@ -85,7 +85,7 @@ if(WIN16STYLE_ARCH STREQUAL "x64")
   target_link_libraries(demo PRIVATE user32 gdi32 comctl32 comdlg32 shell32 ole32 uuid)
   target_include_directories(demo PRIVATE src ${CMAKE_SOURCE_DIR})
   target_link_options(demo PRIVATE ${explicit_manifest_options})
-  add_executable(run16s src/run16s-exe/main.c src/run16s-exe/global.c src/ntw16s-dll/global_session.c src/ntw16s-dll/global_remote.c src/ntw16s-dll/global_load.c src/ntw16s-dll/global_start.c src/ntw16s-dll/global_discover.c src/run16s-exe/elevation.c src/run16s-exe/startup_error.c src/run16s-exe/version.rc)
+  add_executable(run16s src/run16s-exe/main.c src/run16s-exe/global.c src/ntw16s-dll/global_session.c src/ntw16s-dll/global_remote.c src/ntw16s-dll/global_load.c src/ntw16s-dll/global_start.c src/ntw16s-dll/global_discover.c src/ntw16s-dll/global_policy.c src/run16s-exe/elevation.c src/run16s-exe/startup_error.c src/run16s-exe/version.rc)
   target_compile_definitions(run16s PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 
   target_link_libraries(run16s PRIVATE ntw16s-installer shell32 ole32 advapi32 user32)
@@ -1211,6 +1211,15 @@ if(BUILD_TESTING)
   add_dependencies(core-global-discover dialog-test-driver)
   add_test(NAME core/global-discover COMMAND ${test_driver} --name core/global-discover -- $<TARGET_FILE:dialog-test-driver> --private --direct $<TARGET_FILE:core-global-discover>)
   set_tests_properties(core/global-discover PROPERTIES TIMEOUT 15)
+
+  add_executable(core-global-policy tests/ntw16s-dll/global_policy.c src/ntw16s-dll/global_policy.c)
+  target_include_directories(core-global-policy PRIVATE src)
+  target_compile_definitions(core-global-policy PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_options(core-global-policy PRIVATE -municode)
+  target_link_libraries(core-global-policy PRIVATE user32 advapi32)
+  add_dependencies(core-global-policy dialog-test-driver)
+  add_test(NAME core/global-policy COMMAND ${test_driver} --name core/global-policy -- $<TARGET_FILE:dialog-test-driver> --private --direct $<TARGET_FILE:core-global-policy>)
+  set_tests_properties(core/global-policy PROPERTIES TIMEOUT 15)
 
   add_library(vb-global-runtime SHARED tests/ntw16s-dll/vb_global_runtime.c)
   target_compile_definitions(vb-global-runtime PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)

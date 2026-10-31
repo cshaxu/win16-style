@@ -122,9 +122,9 @@
       "path": "src/ntw16s-dll/global_hook.c",
       "source": null,
       "source_blob": null,
-      "sha256": "19dc7467656fb89bb29d265201d8ebd177083776caa0f0490ce9fc47065bab72",
+      "sha256": "10595d15195291f9ca83e16379d28e5a53a7ec866f8a8735d38e1e1bc2a7bf59",
       "disposition": "authored",
-      "review": "T21 S3 global controller and private-desktop integration; T21 S5 shared creation and late-attachment classifier; T21 S13 scoped VB6 text activation",
+      "review": "T21 S3 global controller and private-desktop integration; T21 S5 shared creation and late-attachment classifier; T21 S13 scoped VB6 text activation; T21 S13 shared image exclusion predicate",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -3563,6 +3563,33 @@
       "sha256": "d9b66abdaa5c061e970f63c1e2aaa8c0a7bd23b7ae63b6b125a2c004a27f2266",
       "disposition": "authored",
       "review": "T21 S13 target window discovery for existing and future windows",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/global_policy.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "3afb9c9966695a354005282b7e6acd08594f34c734001e44e2aeb4d654a4b1ab",
+      "disposition": "authored",
+      "review": "T21 S13 fallback target identity and shared-host policy",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/global_policy.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "33d1f20db0f0af8ca0eab55dfc4263889f014d6f32ded50adc42a839fa070ce3",
+      "disposition": "authored",
+      "review": "T21 S13 fallback target identity and shared-host policy",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/global_policy.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "1a08b1e4fef5ab61edbefd234d41d1d1e65e264d4b3fb45c682729ae25421e28",
+      "disposition": "authored",
+      "review": "T21 S13 fallback target identity and shared-host policy",
       "notice": "Project-authored source; no imported code or resources"
     }
   ]
