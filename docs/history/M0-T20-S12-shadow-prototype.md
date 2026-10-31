@@ -45,3 +45,7 @@
 ntw16s32 `cd8b29af6eb0b7b35b028c14b336dd95d2d1cfa8c3f0919dcc108b0441dd4c81`；
 ntw16s64 `572dfd920ff998d48056af42d5a7eb4d773cd2e37e8e609459dadec2db8629d7`；
 demo `aa20292de99c043c0a54d2cecf157bc685e9fd3e70bf75e9d0c0c780854201c4`。
+
+S12 P1 `094d2af` 已推送，GitHub实际测试、记录及四个发布文件对象已复核。
+测试和构建描述+123/-0（探针114、CMake5、包测试4）。S12 收口；按照用户
+授权自动准入S13，继续处理已证明的未覆盖入口和嵌套问题。
