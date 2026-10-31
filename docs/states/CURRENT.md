@@ -2,28 +2,7 @@
 
 ## Current Work
 
-M0 T21 S12：全局模式动态创建控件的接入和恢复验证。
-
-## M0 T21 S12 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Continuation；T21 S12 新准入 |
-| Admission And Approval | 用户授权全局模式覆盖既有和新启动程序，自动推进 S |
-| Objective | 验证运行期间已有窗口动态创建的可见标准控件是否附着，必要时最小修复 |
-| Non-goals | 不引入进程排除、额外组件，不处理 UWP/XAML，不操作用户现有进程 |
-| Reference Baseline | S11 双宽启停及重试通过；现有 common 测试的控件均在顶层窗口显示前创建 |
-| Candidate Proposal | [手动全局样式模式](../proposals/global-style-mode.md) |
-| Files And ABI Surface | C 原生隔离探针、必要时现有全局钩子；不新增导出或产品 |
-| Applicable Rules | M0、C17、GCC、Ninja、ccache，原图形资源不变 |
-| Verification | 自有私有桌面 x86/x64、先有及新建进程动态创建标准控件，检查附着、交互与退出恢复 |
-| Expected Markers | 动态控件附着、点击生效、停止后解除；失败有负例和诊断 |
-| Asset Needs | build/t21-package、任务私有 scratch |
-| Reporting Requirements | 区分模块加载与控件附着，记录未覆盖的控件及创建方式 |
-| Stop Conditions | 无法隔离自有进程或验证安全生命周期时不扩展产品行为 |
-| Exit Criteria | 有界验证与必要修复、双宽干净构建、实际包测试、必要发布、提交推送和远端复核 |
-| Original Owner Request | 全局覆盖已有和新启动程序，统一入口，不新增进程排除复杂度 |
-| Similar-Issue Sweep | 控件在父窗显示前后创建、显式显示与初始可见，双宽及停止恢复 |
+M0 T21 开放；S12 已收口，目前无活动任务包。
 
 ## Identifier State
 
@@ -34,8 +13,8 @@ M0 T21 S12：全局模式动态创建控件的接入和恢复验证。
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
 - Last allocated T21 S: 12
-- Last delivery: M0 T21 S11 双宽崩溃重启与通知超时修复；[记录](../history/M0-T21-S11-restart-timeout.md)。
-- Open task: T21 S12；Explorer.exe 仍被排除。
+- Last delivery: M0 T21 S12 双宽动态控件回归；[记录](../history/M0-T21-S12-late-controls.md)。
+- Open task: T21；Explorer.exe 仍被排除。
 - 打印当前页已纳入受限 PrintDlgEx 转接；跨 DPI、实际打印和本地化仍待覆盖。
 - COM并发：已观察的双多选并发由系统原生路径止损；旧框目录串用根因、非多选并发仍未查明，详见[S3证据](../history/M0-T20-S3-com-safety.md)。
 - COM多选：默认回退系统新框，O: 长名、单项、取消、链接及双宽并发经有限验证；旧框实现及其他参数仍未全面解决。
@@ -53,6 +32,8 @@ S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1已收口；T20此后按用户要求有限范围收口。
 
 ## Recent Closure
+
+- M0 T21 S12：动态标准按钮双宽附着、点击和退出恢复；13 项实际包回归，远端 P1 7cf6481 及四文件摘要已复核。[记录](../history/M0-T21-S12-late-controls.md)。
 
 - M0 T21 S11：双宽干净构建、18 项实际包回归及双位置发布；[记录](../history/M0-T21-S11-restart-timeout.md)。
 
