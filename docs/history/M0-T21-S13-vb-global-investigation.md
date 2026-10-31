@@ -686,3 +686,17 @@ in-flight event/retry race. Both drivers reported clean private-desktop exit.
 The test-only source is in `build/t21-s13/loader-race/`; no product code or
 binary was changed, and no test-only loader-lock behavior is shipped.
 
+# P80: deployed P74 real Minesweeper check
+
+On a private desktop, the owned `D:/programs/misc/winmine.exe` instance was
+started before the actual deployed `O:/winnt/run16s.exe --global`. The native
+probe invoked the application's Help → About command (593). `PrintWindow`
+captured the visible dialog, whose title uses the classic style. After the
+dialog and global controller were closed, the target process and its main
+window were still alive; the owned target was then closed and the private
+desktop driver exited zero. The x64 desktop hook returned 126 and used the
+existing fallback. The single screenshot is at
+`build/t21-s13/winmine-about-p80-recheck.bmp`; its capture clips portions of
+the client text, and it does not establish all control visuals, input or
+pixel-perfect restoration. No product code or binary changed.
+
