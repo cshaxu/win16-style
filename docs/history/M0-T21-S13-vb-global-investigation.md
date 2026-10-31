@@ -133,3 +133,6 @@ The real-attacher prototype was extended to hash the top 36 pixels of `PrintWind
 
 
 The x86 scratch prototype was instrumented to print the remote loader exit value and given a bounded retry for `ERROR_BAD_LENGTH` from module snapshot creation. Four subsequent isolated runs all loaded the module, attached, observed changed print hashes, removed and shut down successfully; the scratch controller was restored and hash-checked. The instrument did not record whether any snapshot retry was needed, so these passes do not prove the cause of the prior one-off exit 13 or establish production reliability.
+
+
+The x64 owned target was then captured with native `PrintWindow` to three BMPs in task scratch. Visual inspection shows a native title, the Win16 title after attachment, and the native title after remove. The before/after images are both 150 x 100; an RGB pixel comparison found 812 changed pixels bounded by x=8..141, y=31..91, so the top 31 rows are identical and residual differences remain in the lower client area. The attached image is 142 x 90 and therefore cannot be directly compared pixel-for-pixel at the same coordinates. This is one x64 owned-window sample using the S12 attacher, not a complete visual or production-package regression. All owned processes exited and the scratch controller was restored and hash-checked.
