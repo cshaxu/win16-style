@@ -2,6 +2,24 @@
   "schema": 1,
   "files": [
     {
+      "path": "tests/integration/global_threads_target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "808c292a3c39c2880903f210907ef0e244e2e6f08033240f1dc0fcb68e284178",
+      "disposition": "authored",
+      "review": "T21 S6 dual-width multithread and bounded lifecycle probe",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "tests/integration/global_threads.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "4accc919d09f4a071d5039d3127b6303c6c97f9e86bf909b115963f870dd97ee",
+      "disposition": "authored",
+      "review": "T21 S6 dual-width multithread and bounded lifecycle probe",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
       "path": "tests/integration/global_common_target.c",
       "source": null,
       "source_blob": null,

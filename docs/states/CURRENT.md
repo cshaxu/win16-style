@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T21 S6：多 GUI 线程及重复启停资源生命周期验证，修复已证实缺陷。
+M0 T21 S6：多 GUI 线程及重复启停探针、双宽构建、18 项包回归和两处发布完成；待提交推送及远端复核。
 
 ## M0 T21 S6 Packet
 
@@ -21,7 +21,7 @@ M0 T21 S6：多 GUI 线程及重复启停资源生命周期验证，修复已证
 | Asset Needs | build/t21-s6、build/t21-package 自有 scratch |
 | Reporting Requirements | 记录线程、窗口、接入、恢复、资源测量、失败与未覆盖边界 |
 | Stop Conditions | 如果不能限制测试桌面或安全管理目标生命周期，不在用户桌面安装全局钩子 |
-| Exit Criteria | 证据与必要修复完成；双宽干净构建、同批包测试、必要发布、推送与远端复核 |
+| Exit Criteria | 双宽干净构建、18 项同批包测试及必要发布完成；待推送与远端复核 |
 | Original Owner Request | 全局模式接管已有及新传统 Win32 程序，普通与全局共享窗口附着 |
 | Similar-Issue Sweep | 异 GUI 线程、重复会话、在途回调、目标退出、句柄和 GDI 对象所有权 |
 
