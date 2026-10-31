@@ -152,3 +152,8 @@ The internal worker test now also uses an independently created owned owner proc
 
 
 The worker is now exposed for future target-local control as additive named export `Ntw16sGlobalThread`, ordinal 37, stdcall on x86 and native x64 calling convention. The existing ABI version remains 3 and all earlier exports and ordinals remain unchanged; the exact export/ordinal package gates and ABI test were updated. Both incremental DLL builds and actual `core-abi` runs passed with 36 named exports; calling the new entry with NULL returned `ERROR_INVALID_PARAMETER`. This is not yet called by the controller, not a clean-package validation, and not a binary release or 126 fix.
+
+
+## Read-only same-bitness loader resolution
+
+The in-progress fallback now includes an internal resolver compiled into the launcher and DLL. It finds the actual module containing the local `LoadLibraryW` export, restricts it to the system kernel32/kernelbase directory, snapshots same-bitness target modules with bounded `ERROR_BAD_LENGTH` retries, and checks path, PE machine, image size/timestamp, executable image mapping and the first 16 entry bytes before returning the target-relative address. It only reads target memory and has no export or controller call yet. These checks are not a cryptographic image identity proof and do not remove target exit, module replacement, loader or synchronization races; callers must retain a validated target handle and account for failure. Owned private-desktop x86 and x64 tests verify resolution against a running own child, reject a mismatched PID and clean up; the three worker/owner-loss/resolver CTest cases pass per width in about 1.4 seconds. No injection or user process modification was performed, and this is not a deployed fix.
