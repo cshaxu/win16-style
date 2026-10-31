@@ -59,7 +59,7 @@ static UINT_PTR CALLBACK old_dialog_hook(HWND window, UINT message, WPARAM wpara
 #else
 #define NTW16S_OLD_DIALOG_OBSERVER(scope) ((scope).hook=SetWindowsHookExW(WH_CALLWNDPROCRET,old_dialog_return,NULL,GetCurrentThreadId()))
 #endif
-#define BRIDGE(name, structure, legacy_size, original) \
+#define BRIDGE(name, structure, legacy_size, original, extra_flags) \
     typedef struct name##_call {structure *value;BOOL result;DWORD incoming,error;} name##_call; \
     static HRESULT name##_invoke(void *value) {name##_call *call=value;SetLastError(call->incoming); \
         call->result=original(call->value);call->error=GetLastError();return S_OK;} \
@@ -67,7 +67,7 @@ static NTW16S_UNWIND_FUNCTION BOOL WINAPI name(structure *value) \
 { \
     BOOL full=value && value->lStructSize==sizeof(*value); \
     BOOL legacy=value && value->lStructSize==(legacy_size); \
-    BOOL eligible=(full || legacy) && !(value->Flags & ~COMPATIBLE_FLAGS) && \
+    BOOL eligible=(full || legacy) && !(value->Flags & ~(COMPATIBLE_FLAGS | (extra_flags))) && \
         (!full || !value->FlagsEx); \
     structure local;structure *passed=value; \
     if(eligible){ZeroMemory(&local,sizeof(local));memcpy(&local,value,value->lStructSize); \
@@ -87,10 +87,10 @@ static NTW16S_UNWIND_FUNCTION BOOL WINAPI name(structure *value) \
         value->nFileExtension=local.nFileExtension;} \
     SetLastError(error);return result; \
 }
-BRIDGE(bridge_open_a, OPENFILENAMEA, OPENFILENAME_SIZE_VERSION_400A, native_open_a)
-BRIDGE(bridge_open_w, OPENFILENAMEW, OPENFILENAME_SIZE_VERSION_400W, native_open_w)
-BRIDGE(bridge_save_a, OPENFILENAMEA, OPENFILENAME_SIZE_VERSION_400A, native_save_a)
-BRIDGE(bridge_save_w, OPENFILENAMEW, OPENFILENAME_SIZE_VERSION_400W, native_save_w)
+BRIDGE(bridge_open_a, OPENFILENAMEA, OPENFILENAME_SIZE_VERSION_400A, native_open_a, OFN_NODEREFERENCELINKS)
+BRIDGE(bridge_open_w, OPENFILENAMEW, OPENFILENAME_SIZE_VERSION_400W, native_open_w, OFN_NODEREFERENCELINKS)
+BRIDGE(bridge_save_a, OPENFILENAMEA, OPENFILENAME_SIZE_VERSION_400A, native_save_a, 0)
+BRIDGE(bridge_save_w, OPENFILENAMEW, OPENFILENAME_SIZE_VERSION_400W, native_save_w, 0)
 
 LONG ntw16s_attach_file_dialogs(void)
 {

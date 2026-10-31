@@ -104,6 +104,7 @@ try{
         $comTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-dialog-target.exe'
         $modernTarget=Join-Path (Join-Path $BuildRoot $arch) 'modern-dialog-target.exe'
         $fileTarget=Join-Path (Join-Path $BuildRoot $arch) 'file-dialog-target.exe'
+        $linkFlagTarget=Join-Path (Join-Path $BuildRoot $arch) 'win32-link-flag.exe'
         $win32MultiTarget=Join-Path (Join-Path $BuildRoot $arch) 'win32-multi-target.exe'
         $win32MultiNavTarget=Join-Path (Join-Path $BuildRoot $arch) 'win32-multi-navigation.exe'
         $commdlgErrorTarget=Join-Path (Join-Path $BuildRoot $arch) 'commdlg-error-target.exe'
@@ -111,6 +112,17 @@ try{
         foreach($encoding in @('a','w')) {
             $cases+=Case "dialog-file-custom-filter-$arch-$encoding" $dialogDriver @($run,$fileTarget,'open',$encoding,'1','customfilter') @('CUSTOM_FILTER changed=1 index_ok=1',"FILE_DIALOG bits=$bits",'old=1','ok=1','same=1','DIALOG_DRIVER exit=0') 45
             $cases+=Case "dialog-file-spaced-$arch-$encoding" $dialogDriver @($run,$fileTarget,'open',$encoding,'1','spaced') @('SPACED_FILE listed=1 same=1 cleanup=1',"FILE_DIALOG bits=$bits",'old=1','ok=1','DIALOG_DRIVER exit=0') 30
+        }
+        foreach($encoding in @('ansi','wide')) {
+            foreach($layout in @('old','modern')) {
+                foreach($option in @('keep','resolve')) {
+                    $oldFlag=if($layout -eq 'old'){'1'}else{'0'}
+                    $linkFlag=if($layout -eq 'old' -or $option -eq 'keep'){'1'}else{'0'}
+                    $cases+=Case "dialog-link-flag-native-$arch-$encoding-$layout-$option" $dialogDriver @('--direct',$linkFlagTarget,$encoding,$layout,$option,$scratch) @("LINK_FLAG bits=$bits", "old=$oldFlag ok=1 error=0 link=$linkFlag",'cleanup=111','DIALOG_DRIVER exit=0') 30
+                }
+            }
+            $cases+=Case "dialog-link-flag-styled-$arch-$encoding" $dialogDriver @($run,$linkFlagTarget,$encoding,'modern','keep',$scratch) @("LINK_FLAG bits=$bits",'old=1 ok=1 error=0 link=1','cleanup=111','DIALOG_DRIVER exit=0') 30
+            $cases+=Case "dialog-link-flag-cancel-$arch-$encoding" $dialogDriver @($run,$linkFlagTarget,$encoding,'modern','keep',$scratch,'cancel') @('LINK_CANCEL requested=1',"LINK_FLAG bits=$bits",'old=1 ok=0 error=0','cleanup=111','DIALOG_DRIVER exit=0') 30
         }
         $folderTarget=Join-Path (Join-Path $BuildRoot $arch) 'folder-dialog-target.exe'
         $treeFolderTarget=Join-Path (Join-Path $BuildRoot $arch) 'tree-folder-target.exe'

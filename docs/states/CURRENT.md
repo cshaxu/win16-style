@@ -2,7 +2,28 @@
 
 ## Current Work
 
-当前无活动任务包。M0 T20 已按用户确认的高 ROI 范围收口；未覆盖与安全回退见 TODO 和任务级审计。新的 T 仍需用户准入。
+M0 T20 S15：显式保留快捷方式的打开框已转接并双位置发布，32 项聚焦包回归通过；等待提交推送复核。
+
+## M0 T20 S15 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Corrective；T20 已按原有限范围收口，目标仍要求现代 API 转接旧布局，续用下一 S |
+| Admission And Approval | 用户授权 T20 自动续 S；不新开 T，COM 长尾与多选研究继续降级 |
+| Objective | 验证并在语义等价时扩大单文件 Open/Save 普通常用标志的旧布局转接 |
+| Non-goals | 不改变多选、应用 hook/模板、COM 长尾、系统设置或原图形资源 |
+| Reference Baseline | T20 S14 收口审计及当前 file_dialogs.c 白名单 |
+| Candidate Proposal | [公共对话框适配](../proposals/classic-folder-dialogs.md) |
+| Files And ABI Surface | 文件对话框桥接、原生探针及必要测试；不新增产品文件或 ABI |
+| Applicable Rules | M0、纯 C17、MinGW GCC、Ninja、ccache；原资源逐字节保留 |
+| Verification | 无注入原生新旧框对照，双宽 A/W、成功取消和真实语义，负例及实际包测试 |
+| Expected Markers | 原生旧框实际保留标志契约、返回内容及清理；不满足者保持回退 |
+| Asset Needs | build/t20-s15 与 build/t20-package 下自有 scratch |
+| Reporting Requirements | 根据信息和测试报告支持、回退、失败与限制，不把加载视为效果 |
+| Stop Conditions | 缺少语义等价证据时不得改变生产路径；不修改其他进程和系统全局状态 |
+| Exit Criteria | 可验证的实现或不适用证据、双宽干净构建和包测试、必要发布、推送复核 |
+| Original Owner Request | 将现代 Win32 API 对话框转为系统旧布局，并按 ROI 自动续 S |
+| Similar-Issue Sweep | Open 与 Save 各 A/W 白名单，链接解析、共享冲突和最近使用记录 |
 
 ## Identifier State
 
@@ -11,9 +32,9 @@
 - Last allocated Td S: 15
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
-- Last allocated T20 S: 14
-- Last delivery: M0 T20 S3 P2：COM多选安全回退系统新框，双宽构建、实际包测试及双位置发布；Shell筛选P1同样采用安全回退。
-- Open task: 无；T20 已收口。
+- Last allocated T20 S: 15
+- Last delivery: M0 T20 S15 候选已完成双宽包测试和双位置发布，等待提交与远端复核；COM多选和 Shell 筛选仍保留系统回退。
+- Open task: T20 S15 常用文件框标志原生对照与转接。
 - 打印当前页已纳入受限 PrintDlgEx 转接；跨 DPI、实际打印和本地化仍待覆盖。
 - COM并发：已观察的双多选并发由系统原生路径止损；旧框目录串用根因、非多选并发仍未查明，详见[S3证据](../history/M0-T20-S3-com-safety.md)。
 - COM多选：默认回退系统新框，O: 长名、单项、取消、链接及双宽并发经有限验证；旧框实现及其他参数仍未全面解决。
