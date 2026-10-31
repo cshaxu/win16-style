@@ -2,11 +2,28 @@
 
 ## Current Work
 
-M0 T20 保持开放；S1阶段收口，准备准入S2入口与回退审计。
+M0 T20 S2：公共对话框入口、转接及回退审计已验证，等待提交推送及复核。
 
-## Task Transition
+## M0 T20 S2 Packet
 
-T20 S1 已按用户指令完成阶段收口；T20 保持开放，S2 待准入。当前无活动任务包。
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | New；T20 S1按用户指令阶段收口 |
+| Admission And Approval | 用户授权自动准入后续S，直至T20收口前 |
+| Objective | 冻结常见公共对话框入口与覆盖单位，逐项审计新旧布局、转接、接管、回退、已知缺陷及证据，按ROI交付后续S输入 |
+| Non-goals | 不穷举参数组合，不扩展COM布局长尾，不宣称全部Windows窗口均已接管 |
+| Reference Baseline | P295同批四文件及S1阶段证据；S1收口提交6e4c63b |
+| Candidate Proposal | [公共对话框适配及后续S序列](../proposals/classic-folder-dialogs.md) |
+| Files And ABI Surface | 审计文档与必要的自包含验证；不计划新增产品ABI |
+| Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；原资源及来源逐字节保持 |
+| Verification | 源码门控、现有测试与已发布包证据对照；双宽干净构建、同批四文件实际包测试、远端复核 |
+| Expected Markers | 每类入口都有明确支持、回退、缺陷或未知；历史与最新包证据不混淆 |
+| Asset Needs | 登记build/t20-s2-audit及build/t20-package scratch |
+| Reporting Requirements | 按ROI输出剩余项目、实际证据和后续承接；未验证明确记录 |
+| Stop Conditions | 不伪造覆盖，不越过已有活动包或修改兄弟仓库；不可安全测试的项目记录限制 |
+| Exit Criteria | 审计范围、逐项矩阵、缺陷与后续S承接完成；规定的包测试、提交推送及远端复核完成 |
+| Original Owner Request | S1收口并自动执行后续S，停止于T20收口前 |
+| Similar-Issue Sweep | 文件打开保存、Shell与COM文件夹、Find/Replace、Font/Color、Print/PrintEx/PageSetup、Message/TaskDialog/PropertySheet及跨进程系统错误框 |
 
 ## Identifier State
 
@@ -15,9 +32,9 @@ T20 S1 已按用户指令完成阶段收口；T20 保持开放，S2 待准入。
 - Last allocated Td S: 15
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
-- Last allocated T20 S: 1
+- Last allocated T20 S: 2
 - Last delivery: M0 T20 S1 P295 将无回调、带路径输入校验且禁止新建的 Shell 目录选择转接至系统旧树；双宽干净构建、实际包测试及双位置发布。文件夹筛选回调缺口仍未解决。
-- Open task: T20；S1阶段收口，S2待准入。
+- Open task: T20 S2 公共对话框入口与回退审计；[矩阵与验证](../history/M0-T20-S2-dialog-audit.md)。
 - 打印当前页已纳入受限 PrintDlgEx 转接；跨 DPI、实际打印和本地化仍待覆盖。
 - 并发缺口：同进程两个 COM 文件对话框的系统原生双宽对照通过，已发布旧框转接双宽失败；目录串用及超时的具体根因仍待定位。
 - 已知多选缺口：O: 自有目录中，COM 多选旧框不列出部分带空格的长文件名；不能仅增加列表项，结果转换也需处理。
