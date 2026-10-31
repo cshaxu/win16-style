@@ -2,28 +2,8 @@
 
 ## Current Work
 
-M0 T20 S14：任务级审计及双宽重建包 23 项聚焦回归完成，首次超时已记录；等待提交推送与远端复核。
+当前无活动任务包。M0 T20 已按用户确认的高 ROI 范围收口；未覆盖与安全回退见 TODO 和任务级审计。新的 T 仍需用户准入。
 
-## M0 T20 S14 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | New；S13 P1 86269ea 已推送并核对远端源码及四个资产对象 |
-| Admission And Approval | 用户要求不等待验收，逐 S 自动推进；以既有 T20 范围和二八原则收尾 |
-| Objective | 审计 T20 交付、实际包和常用对话框证据，准确记录回退及未覆盖，准备任务收口 |
-| Non-goals | 不继续扩展 COM 布局长尾或未闭环多选原型；不新开 T，不修改兄弟仓库或系统全局状态 |
-| Reference Baseline | S1 至 S13 记录；当前发布四文件为 T20 S3 P2，S13 32 项聚焦包回归 |
-| Candidate Proposal | [公共对话框适配](../proposals/classic-folder-dialogs.md) |
-| Files And ABI Surface | 任务审计与状态记录；无产品 ABI 变更 |
-| Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；原图形资源字节不变 |
-| Verification | 复查双宽同批干净包、关键常用对话框聚焦回归、发布目录摘要与远端内容 |
-| Expected Markers | 区分已实现、已安全回退和未覆盖，不把登记测试总数视作完成数 |
-| Asset Needs | build/t20-package 中本任务专用 scratch |
-| Reporting Requirements | 向用户说明交付、尚未解决的问题及实际发布版本 |
-| Stop Conditions | 无法核实任务级事实或发布不一致时不声称收口 |
-| Exit Criteria | 任务级审计、双宽干净包与实际包测试、推送和远端复核 |
-| Original Owner Request | 自动续 S，按 ROI 完成公共对话框工作，不等待用户验收 |
-| Similar-Issue Sweep | 文件、文件夹、查找替换、字体颜色、打印页面及系统代建窗口 |
 ## Identifier State
 
 - Milestone: M0 (fixed)
@@ -33,7 +13,7 @@ M0 T20 S14：任务级审计及双宽重建包 23 项聚焦回归完成，首次
 - Last allocated T19 S: 3
 - Last allocated T20 S: 14
 - Last delivery: M0 T20 S3 P2：COM多选安全回退系统新框，双宽构建、实际包测试及双位置发布；Shell筛选P1同样采用安全回退。
-- Open task: T20 S14 任务级交付与收尾审计；T20 保持开放。
+- Open task: 无；T20 已收口。
 - 打印当前页已纳入受限 PrintDlgEx 转接；跨 DPI、实际打印和本地化仍待覆盖。
 - COM并发：已观察的双多选并发由系统原生路径止损；旧框目录串用根因、非多选并发仍未查明，详见[S3证据](../history/M0-T20-S3-com-safety.md)。
 - COM多选：默认回退系统新框，O: 长名、单项、取消、链接及双宽并发经有限验证；旧框实现及其他参数仍未全面解决。
@@ -51,6 +31,8 @@ S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1收口，T20保持开放。
 
 ## Recent Closure
+
+- M0 T20 S14 / T20：常用对话框有限范围审计、双宽干净包 23 项聚焦回归；首次超时及回退如实记录。[任务级审计](../history/M0-T20-S14-completion-audit.md)。
 
 - M0 T20 S13：32 项干净包聚焦回归及远端复核，错误交接原型不进入产品；[记录](../history/M0-T20-S13-shadow-coverage.md)。
 
