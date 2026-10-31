@@ -6,7 +6,7 @@
 #define QUERY_STYLE (WM_APP+71)
 #define CREATE_EXTRA (WM_APP+72)
 #define CREATE_PROCESS (WM_APP+73)
-#define TARGET_COUNT 7
+#define TARGET_COUNT 9
 static const WCHAR cls[]=L"Win16GlobalE2ETarget";
 typedef struct target {PROCESS_INFORMATION process;HWND window;} target;
 static BOOL launch(target *t,const WCHAR *image,const WCHAR *launcher,const WCHAR *title)
@@ -42,10 +42,10 @@ int wmain(int argc,WCHAR **argv)
     if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desk,sizeof(desk),&needed) || wcsncmp(desk,L"Win16S-Dialog-",14))return 3;
     if(!ntw16s_global_name(name,ARRAYSIZE(name)) || swprintf(request,ARRAYSIZE(request),L"%ls.request",name)<0)return 4;
     target targets[TARGET_COUNT]={0};PROCESS_INFORMATION manager={0};HANDLE mapping=NULL,event=NULL;ntw16s_global_session *session=NULL;BOOL passed=FALSE,active=FALSE;DWORD exitcode=99;
-    const WCHAR *titles[]={L"T21PlainOld32",L"T21PlainOld64",L"T21RunOld",L"T21PlainNew32",L"T21PlainNew64",L"T21RunNew",L"T21AfterStop"};
+    const WCHAR *titles[]={L"T21PlainOld32",L"T21PlainOld64",L"T21RunOld64",L"T21RunOld32",L"T21PlainNew32",L"T21PlainNew64",L"T21RunNew64",L"T21RunNew32",L"T21AfterStop"};
     if(!launch(&targets[0],argv[2],NULL,titles[0]) || !launch(&targets[1],argv[3],NULL,titles[1]) ||
-       !launch(&targets[2],argv[3],argv[1],titles[2]))goto done;
-    if(!wait_style(targets[0].window,0)||!wait_style(targets[1].window,0)||!wait_style(targets[2].window,1))goto done;
+       !launch(&targets[2],argv[3],argv[1],titles[2]) || !launch(&targets[3],argv[2],argv[1],titles[3]))goto done;
+    if(!wait_style(targets[0].window,0)||!wait_style(targets[1].window,0)||!wait_style(targets[2].window,1)||!wait_style(targets[3].window,1))goto done;
     if(swprintf(command,ARRAYSIZE(command),L"\"%ls\" --global",argv[1])<0)goto done;
     STARTUPINFOW startup={.cb=sizeof(startup)};
     if(!CreateProcessW(argv[1],command,NULL,NULL,TRUE,0,NULL,NULL,&startup,&manager))goto done;
@@ -56,14 +56,15 @@ int wmain(int argc,WCHAR **argv)
         if(WaitForSingleObject(manager.hProcess,0)==WAIT_OBJECT_0)break;
         Sleep(50);}
     if(!active){printf("GLOBAL_E2E manager_not_active error=%lu\n",GetLastError());goto done;}
-    for(unsigned i=0;i<3;++i)if(!wait_style(targets[i].window,1)){printf("GLOBAL_E2E existing_failed index=%u state=%d\n",i,query(targets[i].window));goto done;}
-    if(!launch(&targets[3],argv[2],NULL,titles[3]) || !launch(&targets[4],argv[3],NULL,titles[4]) ||
-       !launch(&targets[5],argv[3],argv[1],titles[5]))goto done;
-    for(unsigned i=3;i<6;++i)if(!wait_style(targets[i].window,1)){printf("GLOBAL_E2E new_failed index=%u state=%d\n",i,query(targets[i].window));goto done;}
+    for(unsigned i=0;i<4;++i)if(!wait_style(targets[i].window,1)){printf("GLOBAL_E2E existing_failed index=%u state=%d\n",i,query(targets[i].window));goto done;}
+    if(!launch(&targets[4],argv[2],NULL,titles[4]) || !launch(&targets[5],argv[3],NULL,titles[5]) ||
+       !launch(&targets[6],argv[3],argv[1],titles[6]) || !launch(&targets[7],argv[2],argv[1],titles[7]))goto done;
+    for(unsigned i=4;i<8;++i)if(!wait_style(targets[i].window,1)){printf("GLOBAL_E2E new_failed index=%u state=%d\n",i,query(targets[i].window));goto done;}
     event=OpenEventW(EVENT_MODIFY_STATE,FALSE,request);if(!event || !SetEvent(event))goto done;
     if(WaitForSingleObject(manager.hProcess,12000)!=WAIT_OBJECT_0 || !GetExitCodeProcess(manager.hProcess,&exitcode) || exitcode)goto done;
-    for(unsigned i=0;i<6;++i){int expected=(i==2 || i==5)?1:0;if(!wait_style(targets[i].window,expected)){printf("GLOBAL_E2E restore_failed index=%u state=%d expected=%d\n",i,query(targets[i].window),expected);goto done;}}
-    for(unsigned i=2;i<=5;i+=3){DWORD process=0;DWORD_PTR created=0;WCHAR title[80];
+    for(unsigned i=0;i<8;++i){int expected=(i==2 || i==3 || i==6 || i==7)?1:0;if(!wait_style(targets[i].window,expected)){printf("GLOBAL_E2E restore_failed index=%u state=%d expected=%d\n",i,query(targets[i].window),expected);goto done;}}
+    const unsigned normal[]={2,3,6,7};
+    for(unsigned item=0;item<ARRAYSIZE(normal);++item){unsigned i=normal[item];DWORD process=0;DWORD_PTR created=0;WCHAR title[80];
         GetWindowThreadProcessId(targets[i].window,&process);
         if(!SendMessageTimeoutW(targets[i].window,CREATE_EXTRA,0,0,SMTO_ABORTIFHUNG,2000,&created) || !created)goto done;
         swprintf(title,ARRAYSIZE(title),L"Win16GlobalExtra-%lu",process);
@@ -75,8 +76,8 @@ int wmain(int argc,WCHAR **argv)
         if(!child || !wait_style(child,1)){printf("GLOBAL_E2E post_stop_child_failed index=%u state=%d\n",i,child?query(child):-1);goto done;}
         PostMessageW(child,WM_CLOSE,0,0);
     }
-    if(!launch(&targets[6],argv[3],NULL,titles[6]) || !wait_style(targets[6].window,0))goto done;
-    printf("GLOBAL E2E PASS old=3 new=3 restore=4 normal_retained=2 post_stop_windows=2 post_stop_children=2 stopped=1 host=%lu\n",session->host_pid);passed=TRUE;
+    if(!launch(&targets[8],argv[3],NULL,titles[8]) || !wait_style(targets[8].window,0))goto done;
+    printf("GLOBAL E2E PASS old=4 new=4 restore=4 normal_retained=4 post_stop_windows=4 post_stop_children=4 stopped=1 host=%lu\n",session->host_pid);passed=TRUE;
 done:
     if(!passed)printf("GLOBAL E2E FAIL active=%d exit=%lu error=%lu\n",active,exitcode,GetLastError());
     if(manager.hProcess && WaitForSingleObject(manager.hProcess,0)!=WAIT_OBJECT_0){if(!event)event=OpenEventW(EVENT_MODIFY_STATE,FALSE,request);if(event)SetEvent(event);

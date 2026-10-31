@@ -91,9 +91,11 @@ int run16s_global(void)
     InterlockedExchange(&s->phase,NTW16S_GLOBAL_ACTIVE);
     sweep(message,s->cookie,s->host_pid,NTW16S_GLOBAL_APPLY);
     fwprintf(stderr,L"run16s: global active; press Ctrl+C to stop\n");
-    for(;;){DWORD status=MsgWaitForMultipleObjects(1,&stop_signal,FALSE,INFINITE,QS_ALLINPUT);
+    HANDLE active_waits[2]={stop_signal,host.hProcess};
+    for(;;){DWORD status=MsgWaitForMultipleObjects(2,active_waits,FALSE,INFINITE,QS_ALLINPUT);
         if(status==WAIT_OBJECT_0)break;
-        if(status!=WAIT_OBJECT_0+1){error=GetLastError();goto done;}
+        if(status==WAIT_OBJECT_0+1){error=ERROR_DLL_INIT_FAILED;goto done;}
+        if(status!=WAIT_OBJECT_0+2){error=GetLastError();goto done;}
         MSG m;while(PeekMessageW(&m,NULL,0,0,PM_REMOVE)){TranslateMessage(&m);DispatchMessageW(&m);}
     }
     result=0;

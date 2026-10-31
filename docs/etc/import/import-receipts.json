@@ -2,6 +2,24 @@
   "schema": 1,
   "files": [
     {
+      "path": "tests/integration/global_lifecycle.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "1de69cc5816ca5b845e8d04c86790a1a2385d4987097cdb1f96bbeb44e649c67",
+      "disposition": "authored",
+      "review": "T21 S4 native isolated desktop real application and lifecycle probe; T21 S4 host failure detection and regression",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "tests/integration/global_real.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "3e18884380730261920899f617ecb2b0d6048882e87c265ee342de3cc87c5e2c",
+      "disposition": "authored",
+      "review": "T21 S4 native isolated desktop real application and lifecycle probe",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
       "path": "tests/integration/global_mode_target.c",
       "source": null,
       "source_blob": null,
@@ -14,9 +32,9 @@
       "path": "tests/integration/global_mode.c",
       "source": null,
       "source_blob": null,
-      "sha256": "17e926a79cb556c6a2eee515e939e89e5f48845074afcfb884f79ce4120a3cd7",
+      "sha256": "51c8dcab7c72ea50be7d776b65af525f0fc77fa72c6ec779aefe8750f9be5e1c",
       "disposition": "authored",
-      "review": "T21 S3 global controller and private-desktop integration",
+      "review": "T21 S3 global controller and private-desktop integration; T21 S4 dual-width and lifecycle validation",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -32,9 +50,9 @@
       "path": "src/run16s-exe/global.c",
       "source": null,
       "source_blob": null,
-      "sha256": "8f856f28d334586816dc39f7a0b636d9770eb5084586ee82206a60ad4e195466",
+      "sha256": "ae2431ce478e8a5ac3e9cfe30dacd27abcd5cfa8ce033dc9ecc0751405e69b1f",
       "disposition": "authored",
-      "review": "T21 S3 global controller and private-desktop integration",
+      "review": "T21 S3 global controller and private-desktop integration; T21 S4 host failure detection and regression",
       "notice": "Project-authored source; no imported code or resources"
     },
     {

@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T21 S4：实际应用、跨位宽及异常生命周期验证，修复已证实的问题。
+M0 T21 S4：实际应用、跨位宽及异常生命周期验证与宿主失败修复已本地验证及发布；待提交推送、远端复核。
 
 ## M0 T21 S4 Packet
 
@@ -21,7 +21,7 @@ M0 T21 S4：实际应用、跨位宽及异常生命周期验证，修复已证�
 | Asset Needs | build/t21-s4、build/t21-package 自有 scratch |
 | Reporting Requirements | 记录实际接入、绘制、输入、退出、传播、权限和未覆盖边界 |
 | Stop Conditions | 无法隔离桌面或不能安全控制目标生命周期时不得在用户桌面安装钩子 |
-| Exit Criteria | 按产品 S 规范双宽干净构建、同批四文件包测试、必要发布、推送与远端复核 |
+| Exit Criteria | 双宽干净构建、14 项同批四文件包测试与两处发布完成；待提交推送与远端复核 |
 | Original Owner Request | 手动启动接管已有及新传统 Win32 程序；退出保留普通 run16s 效果；简化架构 |
 | Similar-Issue Sweep | 真正绘制、子控件、全局会话重复启动、管理器/宿主异常、模块及资源生命周期 |
 
