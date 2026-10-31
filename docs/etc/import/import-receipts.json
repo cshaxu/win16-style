@@ -3537,6 +3537,33 @@
       "disposition": "authored",
       "review": "T21 S13 target-local worker startup ticket and owned actual DLL tests",
       "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/global_discover.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "45f683090600577cbaf6c3e4786e32f8074493b033cdef1689673c8e53e181e2",
+      "disposition": "authored",
+      "review": "T21 S13 target window discovery for existing and future windows",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/global_discover.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "2bc60b6019bb67ce1df045f5a6ee42ecb0bb090fca7e7dc437544171bb64d6ca",
+      "disposition": "authored",
+      "review": "T21 S13 target window discovery for existing and future windows",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/global_discover.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "d9b66abdaa5c061e970f63c1e2aaa8c0a7bd23b7ae63b6b125a2c004a27f2266",
+      "disposition": "authored",
+      "review": "T21 S13 target window discovery for existing and future windows",
+      "notice": "Project-authored source; no imported code or resources"
     }
   ]
 }
