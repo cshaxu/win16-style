@@ -1167,6 +1167,8 @@ if(BUILD_TESTING)
   add_dependencies(core-global-thread dialog-test-driver)
   add_test(NAME core/global-thread COMMAND ${test_driver} --name core/global-thread -- $<TARGET_FILE:dialog-test-driver> --private --direct $<TARGET_FILE:core-global-thread>)
   set_tests_properties(core/global-thread PROPERTIES TIMEOUT 15)
+  add_test(NAME core/global-thread-owner-loss COMMAND ${test_driver} --name core/global-thread-owner-loss -- $<TARGET_FILE:dialog-test-driver> --private --direct $<TARGET_FILE:core-global-thread> owner-loss)
+  set_tests_properties(core/global-thread-owner-loss PROPERTIES TIMEOUT 15)
 
   add_library(vb-global-runtime SHARED tests/ntw16s-dll/vb_global_runtime.c)
   target_compile_definitions(vb-global-runtime PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)

@@ -49,6 +49,14 @@ static int target(void)
 int wmain(int argc,WCHAR **argv)
 {
     if(argc==2 && !lstrcmpW(argv[1],L"target"))return target();
+    if(argc==2 && !lstrcmpW(argv[1],L"owner")){
+        WCHAR event_name[128];
+        if(!GetEnvironmentVariableW(L"WIN16_THREAD_TEST_OWNER_STOP",event_name,ARRAYSIZE(event_name)))return 18;
+        HANDLE event=OpenEventW(SYNCHRONIZE,FALSE,event_name);if(!event)return 19;
+        DWORD result=WaitForSingleObject(event,5000);CloseHandle(event);return result==WAIT_OBJECT_0?0:20;
+    }
+    BOOL owner_loss=argc==2 && !lstrcmpW(argv[1],L"owner-loss");
+    if(argc!=1 && !owner_loss)return 21;
     WCHAR desktop[128],name[NTW16S_GLOBAL_NAME_CAP],stop_name[NTW16S_GLOBAL_NAME_CAP+16],
           ready_name[NTW16S_GLOBAL_NAME_CAP+64],hit_name[128],self[MAX_PATH],cmd[MAX_PATH+32];DWORD needed=0;
     if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desktop,sizeof(desktop),&needed) ||
@@ -59,7 +67,18 @@ int wmain(int argc,WCHAR **argv)
     ntw16s_global_session *s=(ntw16s_global_session *)MapViewOfFile(map,FILE_MAP_ALL_ACCESS,0,0,sizeof(*s));if(!s)return 13;
     ZeroMemory(s,sizeof(*s));s->magic=NTW16S_GLOBAL_MAGIC;s->version=NTW16S_GLOBAL_VERSION;
     s->owner_pid=GetCurrentProcessId();s->cookie=0x12345;s->phase=NTW16S_GLOBAL_ACTIVE;
-    if(!ntw16s_global_birth(GetCurrentProcess(),&s->owner_birth_low,&s->owner_birth_high))return 14;
+    PROCESS_INFORMATION owner={0};HANDLE owner_stop=NULL;
+    if(owner_loss){
+        WCHAR owner_name[128],owner_cmd[MAX_PATH+32];
+        swprintf(owner_name,ARRAYSIZE(owner_name),L"Local\\Win16ThreadOwner-%lu",GetCurrentProcessId());
+        SetEnvironmentVariableW(L"WIN16_THREAD_TEST_OWNER_STOP",owner_name);
+        owner_stop=CreateEventW(NULL,TRUE,FALSE,owner_name);
+        GetModuleFileNameW(NULL,self,ARRAYSIZE(self));swprintf(owner_cmd,ARRAYSIZE(owner_cmd),L"\"%ls\" owner",self);
+        STARTUPINFOW owner_si={.cb=sizeof(owner_si)};
+        if(!owner_stop || !CreateProcessW(self,owner_cmd,NULL,NULL,FALSE,0,NULL,NULL,&owner_si,&owner))return 22;
+        s->owner_pid=owner.dwProcessId;
+    }
+    if(!ntw16s_global_birth(owner_loss?owner.hProcess:GetCurrentProcess(),&s->owner_birth_low,&s->owner_birth_high))return 14;
     swprintf(hit_name,ARRAYSIZE(hit_name),L"Local\\Win16ThreadTest-%lu",GetCurrentProcessId());
     SetEnvironmentVariableW(L"WIN16_THREAD_TEST_HIT",hit_name);
     HANDLE stop=CreateEventW(NULL,TRUE,FALSE,stop_name),hit=CreateEventW(NULL,TRUE,FALSE,hit_name);
@@ -69,11 +88,14 @@ int wmain(int argc,WCHAR **argv)
     swprintf(ready_name,ARRAYSIZE(ready_name),L"%ls.thread.%lu.%lu.%lu",name,pi.dwProcessId,pi.dwThreadId,s->cookie);
     HANDLE ready=CreateEventW(NULL,TRUE,FALSE,ready_name);if(!ready)return 16;
     ResumeThread(pi.hThread);
-    BOOL observed=WaitForSingleObject(hit,5000)==WAIT_OBJECT_0;SetEvent(stop);
+    BOOL observed=WaitForSingleObject(hit,5000)==WAIT_OBJECT_0;
+    if(owner_loss)SetEvent(owner_stop);else SetEvent(stop);
     DWORD wait=WaitForSingleObject(pi.hProcess,5000),code=99;if(wait==WAIT_OBJECT_0)GetExitCodeProcess(pi.hProcess,&code);
     else TerminateProcess(pi.hProcess,ERROR_TIMEOUT);
     CloseHandle(pi.hThread);CloseHandle(pi.hProcess);CloseHandle(ready);CloseHandle(hit);CloseHandle(stop);
+    if(owner_loss){if(WaitForSingleObject(owner.hProcess,3000)!=WAIT_OBJECT_0)TerminateProcess(owner.hProcess,ERROR_TIMEOUT);
+        CloseHandle(owner.hThread);CloseHandle(owner.hProcess);CloseHandle(owner_stop);}
     UnmapViewOfFile(s);CloseHandle(map);
     if(!observed || wait!=WAIT_OBJECT_0 || code)return 17;
-    printf("GLOBAL THREAD WORKER PASS bits=%u callback=1 stop=1 bad_cookie=1\n",(unsigned)(sizeof(void*)*8));return 0;
+    printf("GLOBAL THREAD WORKER PASS bits=%u callback=1 stop=1 bad_cookie=1 mode=%s\n",(unsigned)(sizeof(void*)*8),owner_loss?"owner-loss":"stop");return 0;
 }
