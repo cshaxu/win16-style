@@ -104,6 +104,7 @@ try{
         $comTarget=Join-Path (Join-Path $BuildRoot $arch) 'com-dialog-target.exe'
         $modernTarget=Join-Path (Join-Path $BuildRoot $arch) 'modern-dialog-target.exe'
         $fileTarget=Join-Path (Join-Path $BuildRoot $arch) 'file-dialog-target.exe'
+        $win32MultiTarget=Join-Path (Join-Path $BuildRoot $arch) 'win32-multi-target.exe'
         foreach($encoding in @('a','w')) {
             $cases+=Case "dialog-file-custom-filter-$arch-$encoding" $dialogDriver @($run,$fileTarget,'open',$encoding,'1','customfilter') @('CUSTOM_FILTER changed=1 index_ok=1',"FILE_DIALOG bits=$bits",'old=1','ok=1','same=1','DIALOG_DRIVER exit=0') 45
             $cases+=Case "dialog-file-spaced-$arch-$encoding" $dialogDriver @($run,$fileTarget,'open',$encoding,'1','spaced') @('SPACED_FILE listed=1 same=1 cleanup=1',"FILE_DIALOG bits=$bits",'old=1','ok=1','DIALOG_DRIVER exit=0') 30
@@ -163,6 +164,12 @@ try{
             foreach($action in @('accept','cancel')) {
                 $cases+=Case "dialog-com-$arch-$kind-$action" $dialogDriver @($run,$comTarget,$kind,$action) @("COM_BRIDGE bits=$bits",'old=1','DIALOG_DRIVER exit=0') 30
             }
+        }
+        foreach($encoding in @('ansi','wide')) {
+            $cases+=Case "dialog-win32-multi-$arch-$encoding-old-short" $dialogDriver @('--direct',$win32MultiTarget,'old',$encoding,'short',$scratch) @("WIN32_MULTI bits=$bits",'old=1 listed=2 posted=1 result=1 error=0','cleanup=111','WIN32_MULTI_CONTRACT small=0 required=0 valid=1','DIALOG_DRIVER exit=0') 30
+            $cases+=Case "dialog-win32-multi-$arch-$encoding-native-long" $dialogDriver @('--direct',$win32MultiTarget,'explorer',$encoding,'long',$scratch) @("WIN32_MULTI bits=$bits",'old=0','result=1 error=0','cleanup=111','WIN32_MULTI_CONTRACT small=0 required=0 valid=1','DIALOG_DRIVER exit=0') 30
+            $cases+=Case "dialog-win32-multi-$arch-$encoding-styled-long" $dialogDriver @($run,$win32MultiTarget,'explorer',$encoding,'long',$scratch) @("WIN32_MULTI bits=$bits",'old=0','result=1 error=0','cleanup=111','WIN32_MULTI_CONTRACT small=0 required=0 valid=1','DIALOG_DRIVER exit=0') 30
+            $cases+=Case "dialog-win32-multi-$arch-$encoding-small" $dialogDriver @($run,$win32MultiTarget,'explorer',$encoding,'long',$scratch,'small') @("WIN32_MULTI bits=$bits",'old=0','result=0 error=12291','cleanup=111','valid=1','DIALOG_DRIVER exit=0') 30
         }
         $cases+=Case "dialog-com-$arch-folder-native-negative" $dialogDriver @('--direct',$comTarget,'folder','cancel','native') @("COM_BRIDGE bits=$bits",'folder=1','old=0','hr=800704c7','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-ex-$arch" $dialogDriver @($run,$comTarget,'folder','accept','ex') @('COM_EX identity=1 partial=00080012',"COM_BRIDGE bits=$bits",'folder=1','old=1','same=1','DIALOG_DRIVER exit=0') 30
