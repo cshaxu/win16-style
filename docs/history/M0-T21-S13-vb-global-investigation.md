@@ -576,3 +576,18 @@ binary changed and no new binary publication was needed. The x64 hook again
 returned 126 and used the target-thread fallback. No general claim is made
 about excluded processes, failed attachments or termination races.
 
+# P73: GUI discovery after an uninstrumented headless intermediary
+
+On two private desktops an uninstrumented broker created a headless process
+after the global controller reported ready. The headless process verified its
+own DLL was absent, created a GUI process on the global desktop, and waited.
+The GUI process observed a styled root window, then created a child and
+grandchild with the appropriate DLL loaded. Both x86 and x64 passed against
+the deployed P70 `O:/winnt` package; the deployed x64 system hook returned
+126 and the target-thread fallback performed discovery. This proves the
+tested GUI chain can recover after an uninstrumented headless intermediary;
+it does not mean that intermediary or other headless processes are injected.
+The registered actual-package focused run passed 10 cases with zero skips in
+25.2 seconds. It reused the P70 clean product package and temporarily replaced
+only the two test probes, restoring them afterward. No product bytes changed.
+

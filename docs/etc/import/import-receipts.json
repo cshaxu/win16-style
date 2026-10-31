@@ -149,9 +149,9 @@
       "path": "tests/integration/global_propagation_probe.c",
       "source": null,
       "source_blob": null,
-      "sha256": "66cd81f5772ad2d611c73d99542401ca11571fdb55466fe4049d79beb5a580d7",
+      "sha256": "62d4139d7080310c2b52cfc7f7738a0777f3e2472a5f90c16cb6ec2b63ab0831",
       "disposition": "authored",
-      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product; T21 S13 session-bound propagation tests; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S13 headless propagation regression",
+      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product; T21 S13 session-bound propagation tests; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S13 headless propagation regression; T21 S13 uninstrumented headless parent to GUI discovery regression",
       "notice": "Project-authored source; no imported code or resources"
     },
     {

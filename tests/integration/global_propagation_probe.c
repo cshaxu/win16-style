@@ -74,6 +74,13 @@ int wmain(int argc,WCHAR **argv)
         printf("HEADLESS ROOT bits=%u dll=%d child=%d child_exit=%lu\n",(unsigned)(sizeof(void*)*8),loaded,made,code);
         return loaded && made && code==0?0:1;
     }
+    if(argc==2 && !wcscmp(argv[1],L"headless-to-gui")){
+        BOOL loaded=module()!=NULL;DWORD code=99;
+        BOOL made=create_owned(L"normal",&code);
+        printf("HEADLESS TO GUI bits=%u initial_dll=%d create=%d gui_exit=%lu\n",
+            (unsigned)(sizeof(void*)*8),loaded,made,code);
+        return !loaded && made && code==0?0:1;
+    }
     if(argc==2 && (!wcscmp(argv[1],L"child") || !wcscmp(argv[1],L"grandchild"))){
         BOOL loaded=module()!=NULL;printf("PROPAGATION ENTRY bits=%u role=%ls dll=%d\n",(unsigned)(sizeof(void*)*8),argv[1],loaded);
         if(!loaded)return 41;
