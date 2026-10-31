@@ -2,6 +2,8 @@
 
 # Deferred Debt
 
+- [ ] TODO(Medium): T20 S19 系统菜单及普通菜单首次显示的真实桌面效果与切换闪烁尚未复核；Owner：未来经用户准入的菜单验证工作。Evidence：[S19](../history/M0-T20-S19-system-menu.md)：双宽原生消息测试及记事本首帧绘制消息通过，但隔离桌面截图可能混入其他桌面合成像素，不能证明实际显示；此前用户确认的旧版无闪烁不能替代 S19 发布包复测。Admission：用户要求时使用自有实例，遵守当前桌面/输入偏好，对首帧、系统菜单左键及菜单切换做可区分合成与遮挡的验证；不得把截图打印或模块加载当成显示证明。
+
 demo 旧式文件选择的跨进程观察器已用 WM_SETTEXT/WM_GETTEXT 修正，原生及 P235 单文件选择通过；覆盖边界见 [T20 S1 阶段记录](../history/M0-T20-S1-preliminary.md)。
 
 - [ ] TODO(Medium): Shell 文件夹带应用筛选回调的旧树适配；Owner：未来经准入的公共对话框工作。Evidence：[S3 Shell](../history/M0-T20-S3-shell-filter.md)：为保留真实筛选接口，当前回退系统新树。Admission：能可靠保留真实 Shell 接口、筛选、PIDL、回调和生命周期的旧树方案；不得移除筛选或伪造结果。

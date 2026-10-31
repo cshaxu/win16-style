@@ -54,4 +54,4 @@ CURRENT中的完成审计。待准入候选及顺序见上表。
 
 [VB5/VB6完整盘点与适配](../proposals/vb5-vb6-controls.md)已由用户准入T17，S顺序由CURRENT管理，不再占候选队列。
 
-[Win3.x 文件夹选择与公共对话框适配](../proposals/classic-folder-dialogs.md)已按用户要求准入，状态由CURRENT管理。
+[Win3.x 文件夹选择与公共对话框适配](../proposals/classic-folder-dialogs.md)已按用户要求以有限范围收口；未解决边界见TODO，收口审计从CURRENT进入。

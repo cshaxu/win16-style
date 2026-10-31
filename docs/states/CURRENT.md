@@ -2,30 +2,7 @@
 
 ## Current Work
 
-M0 T20 S19：调查并修复左上系统菜单回退现代外观，保留菜单切换无闪烁修复。
-
-## M0 T20 S19 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Corrective；用户新报告系统菜单回归，续用下一 S，不新开 T |
-| Admission And Approval | 用户明确要求修复 demo 左上窗体菜单外观 |
-| Objective | 恢复系统菜单 Win16 外观并保留用户已确认的无闪烁效果 |
-| Non-goals | 不修改原图形资源、系统全局设置或无关进程，不使用 computer-use |
-| Reference Baseline | S18 发布包及 T20 S1 菜单调查、P235 闪烁修复和用户截图 |
-| Candidate Proposal | [菜单取消修复](../proposals/menu-cancellation.md) |
-| Files And ABI Surface | 菜单 renderer、生命周期及原生探针；无新增产品文件或公开 ABI |
-| Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；原资源逐字节保留 |
-| Verification | 双宽实际菜单截图、键鼠消息、取消及命令、菜单数据和重绘对照、实际包测试 |
-| Expected Markers | 左上系统菜单经典外观，正常取消与命令，菜单切换不引入标题闪烁 |
-| Asset Needs | build/t20-s19、build/t20-s19-notepad 和 build/t20-package 下自有 scratch |
-| Reporting Requirements | 先定位实际路径及根因，区分既往用户确认与可复现证据 |
-| Stop Conditions | 不能保持应用菜单数据与交互时不发布猜测修复 |
-| Exit Criteria | 双宽干净构建与同批四文件测试、双位置发布、提交推送和远端复核 |
-| Original Owner Request | demo 左上窗体菜单目前不是 Win16 样式，修复回归 |
-| Similar-Issue Sweep | 鼠标系统菜单、Alt+Space、普通菜单切换、嵌套取消及应用自定义菜单 |
-
-S19 P2 已发布，记事本菜单首次绘制时序已修复；16 项聚焦包测试通过、无跳过。隔离记事本的九项绘制发生在首次空闲前；真实桌面显示、左键及菜单动态闪烁仍未验证，S19 保持开放。详见 [阶段证据](../history/M0-T20-S19-system-menu.md)。
+当前无活动任务包；M0 T20 已按用户指令以有限范围收口。
 
 ## Identifier State
 
@@ -35,8 +12,8 @@ S19 P2 已发布，记事本菜单首次绘制时序已修复；16 项聚焦包�
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
-- Last delivery: M0 T20 S18 P1 ccdedbb 已完成 30 项包回归、双位置发布和远端复核；COM多选和 Shell 筛选仍保留系统回退。
-- Open task: T20 S19 系统菜单回归。
+- Last delivery: M0 T20 S19 P2 3b18ac7 已完成双位宽干净构建、16 项聚焦包回归、双位置发布和远端复核；任务级范围见[收口审计](../history/M0-T20-closure-audit.md)。
+- Open task: 无。
 - 打印当前页已纳入受限 PrintDlgEx 转接；跨 DPI、实际打印和本地化仍待覆盖。
 - COM并发：已观察的双多选并发由系统原生路径止损；旧框目录串用根因、非多选并发仍未查明，详见[S3证据](../history/M0-T20-S3-com-safety.md)。
 - COM多选：默认回退系统新框，O: 长名、单项、取消、链接及双宽并发经有限验证；旧框实现及其他参数仍未全面解决。
@@ -51,9 +28,11 @@ S19 P2 已发布，记事本菜单首次绘制时序已修复；16 项聚焦包�
 
 S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前原版真实点击正常；历史异常根因未查明，本S没有产品代码或二进制修改。
 
-T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1收口，T20保持开放。
+T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1已收口；T20此后按用户要求有限范围收口。
 
 ## Recent Closure
+
+- M0 T20 S19 / T20：按用户指令有限范围收口；系统菜单与首次绘制交付，真实桌面边界留TODO。[收口审计](../history/M0-T20-closure-audit.md)。
 
 - M0 T20 S18：颜色框基本色及自定义色块恢复细黑框平面外观，双宽包验证和发布；[记录](../history/M0-T20-S18-color-swatches.md)。
 
