@@ -76,3 +76,8 @@ An elevated, read-only PowerShell `Get-Process` module enumeration visited 362 p
 
 
 The same isolated own-thread/global registration probe was compiled for x86: deployed `O:\winnt\ntw16s32.dll` returned 126 for both scopes, while the previously registered x86 S12 scratch DLL succeeded for both. Each owned test exited and unhooked normally. This confirms the current symptom affects both product bitnesses, without establishing whether their underlying capacity is shared.
+
+
+## Owned-process module lifetime observation
+
+An isolated probe extended the existing S12 `global-common` targets with a `GetModuleHandleW` query. The manager started and stopped successfully with zero sweep failures; all four existing/new x86/x64 windows and controls passed the pre-existing restore checks, while each target reported its matching style DLL still loaded after global stop. All four owned targets were then closed by the existing driver and the private desktop was released. This matches the explicit `GET_MODULE_HANDLE_EX_FLAG_PIN` in `global_hook.c`, which pins the module for the life of each process. The first scratch fixture omitted the common-controls v6 manifest and failed before global activation; it was rebuilt with the existing manifest resources before the successful run. This demonstrates retained modules in affected processes, not that they caused the present 126 or that any unrelated live process contains them. Removing the pin without a proven safe replacement could leave callbacks or VB import wrappers pointing into an unloaded DLL; it is not treated as an approved fix.
