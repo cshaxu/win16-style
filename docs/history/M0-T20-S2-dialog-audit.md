@@ -70,3 +70,5 @@ ntw16s32=b7618396de8d9d1507d339e76c12e3d04cd63d3bd69354dffc9202ba25753d3a，
 ntw16s64=8126d6a603f0c49f52e8fd53a7fa213cfda37075c66d3b6f6f0872ab6a574639，
 demo=44b6cd4a4693b741ddc2d43b5b4d3eed184c15e4b1e821a25daeaaad74ffcf36。
 审计仅覆盖表列公开入口及明确未知类；凭据、网络、驱动私有页等未证实覆盖。
+
+S2 矩阵交付提交 `27c32be` 已推送，实际 GitHub 矩阵、CURRENT 与 P295 四文件对象均复核一致；S2 按用户授权收口并由 S3 接续。
