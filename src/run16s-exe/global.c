@@ -61,7 +61,7 @@ int run16s_global(void)
     WCHAR wow[MAX_PATH],host_image[MAX_PATH],dll64[NTW16S_PATH_CAP],dll32[NTW16S_PATH_CAP],command[NTW16S_PATH_CAP+MAX_PATH+64];
     ntw16s_context *context=NULL;PSECURITY_DESCRIPTOR security=NULL;SECURITY_ATTRIBUTES attributes={sizeof(attributes),NULL,FALSE};
     HANDLE mapping=NULL,ready=NULL,host_stop=NULL;ntw16s_global_session *s=NULL;HMODULE dll=NULL;HHOOK hook=NULL;
-    PROCESS_INFORMATION host={0};DWORD error=0;UINT message=0;int result=10;BOOL handler=FALSE,fallback=FALSE;
+    PROCESS_INFORMATION host={0};DWORD error=0;UINT message=0;int result=10;BOOL handler=FALSE;
     ntw16s_global_manager *manager=NULL;
     if(!ntw16s_global_name(name,ARRAYSIZE(name)))return fail(GetLastError(),L"desktop identity");
     if(swprintf(ready_name,ARRAYSIZE(ready_name),L"%ls.ready",name)<0 || swprintf(host_stop_name,ARRAYSIZE(host_stop_name),L"%ls.stop",name)<0 ||
@@ -77,6 +77,9 @@ int run16s_global(void)
     host_stop=CreateEventW(&attributes,TRUE,FALSE,host_stop_name);if(!host_stop){error=GetLastError();goto done;}if(GetLastError()==ERROR_ALREADY_EXISTS){error=ERROR_ALREADY_EXISTS;goto done;}
     stop_signal=CreateEventW(&attributes,TRUE,FALSE,request_name);if(!stop_signal){error=GetLastError();goto done;}
     if(GetLastError()==ERROR_ALREADY_EXISTS){error=ERROR_ALREADY_EXISTS;goto done;}
+    /* Startup may include a process snapshot. Honour Ctrl+C during that work
+     * and reach the same orderly cleanup path as an active session. */
+    if(!SetConsoleCtrlHandler(stop_handler,TRUE)){error=GetLastError();goto done;}handler=TRUE;
     context=(ntw16s_context *)calloc(1,sizeof(*context));if(!context){error=ERROR_NOT_ENOUGH_MEMORY;goto done;}
     error=ntw16s_context_paths(context,NULL);if(error)goto done;
     if(swprintf(dll64,ARRAYSIZE(dll64),L"%lsntw16s64.dll",context->directory)<0 || swprintf(dll32,ARRAYSIZE(dll32),L"%lsntw16s32.dll",context->directory)<0){error=ERROR_INSUFFICIENT_BUFFER;goto done;}
@@ -86,7 +89,7 @@ int run16s_global(void)
     HOOKPROC callback=(HOOKPROC)(void *)GetProcAddress(dll,"Ntw16sGlobalHook");if(!callback){error=GetLastError();goto done;}
     message=RegisterWindowMessageW(NTW16S_GLOBAL_CONTROL);if(!message){error=GetLastError();goto done;}
     hook=SetWindowsHookExW(WH_CALLWNDPROC,callback,dll,0);
-    if(!hook){error=GetLastError();if(error!=ERROR_MOD_NOT_FOUND)goto done;fallback=TRUE;error=0;
+    if(!hook){error=GetLastError();if(error!=ERROR_MOD_NOT_FOUND)goto done;error=0;
         fwprintf(stderr,L"run16s: global x64 hook unavailable (126); using target-thread fallback\n");}
     /* The fallback host needs an active session before it begins discovery. */
     InterlockedExchange(&s->phase,NTW16S_GLOBAL_ACTIVE);
@@ -98,10 +101,12 @@ int run16s_global(void)
     if(ResumeThread(host.hThread)==(DWORD)-1){error=GetLastError();goto done;}
     HANDLE startup_waits[2]={ready,host.hProcess};DWORD startup_status=WaitForMultipleObjects(2,startup_waits,FALSE,10000);
     if(startup_status!=WAIT_OBJECT_0){error=startup_status==WAIT_TIMEOUT?ERROR_TIMEOUT:ERROR_DLL_INIT_FAILED;goto done;}
-    if(fallback){error=ntw16s_global_manager_start(dll64,IMAGE_FILE_MACHINE_AMD64,&manager);if(error)goto done;}
-    if(!SetConsoleCtrlHandler(stop_handler,TRUE)){error=GetLastError();goto done;}handler=TRUE;
-    InterlockedExchange(&s->ready,1);
+    error=ntw16s_global_manager_start(dll64,IMAGE_FILE_MACHINE_AMD64,&manager);if(error)goto done;
     sweep(message,s->cookie,s->host_pid,NTW16S_GLOBAL_APPLY);
+    /* A target may have appeared while the startup sweep was sending
+     * messages. Revisit it before announcing that discovery is ready. */
+    error=ntw16s_global_manager_refresh(manager);if(error)goto done;
+    InterlockedExchange(&s->ready,1);
     fwprintf(stderr,L"run16s: global active; press Ctrl+C to stop\n");
     HANDLE active_waits[2]={stop_signal,host.hProcess};
     for(;;){DWORD status=MsgWaitForMultipleObjects(2,active_waits,FALSE,INFINITE,QS_ALLINPUT);

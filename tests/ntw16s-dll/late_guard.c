@@ -16,9 +16,17 @@ static __attribute__((noinline)) DWORD WINAPI busy(void *p)
 {(void)p;entered=1;while(!gate){}return 17;}
 static DWORD WINAPI counter(void *p)
 {(void)p;while(InterlockedCompareExchange(&running,0,0)){InterlockedIncrement(&ticks);Sleep(1);}return 0;}
+static DWORD WINAPI already_exited(void *p){(void)p;return 0;}
 static void spawn_late(void){late_thread=CreateThread(NULL,0,counter,NULL,0,NULL);}
 int main(void)
 {
+    HANDLE exited_thread=CreateThread(NULL,0,already_exited,NULL,0,NULL);
+    if(!exited_thread || WaitForSingleObject(exited_thread,2000)!=WAIT_OBJECT_0)return 17;
+    ntw16s_late_guard exited_guard={0};DWORD exited_begin=ntw16s_late_guard_begin(&exited_guard,NULL,0);
+    DWORD exited_end=exited_begin?exited_begin:ntw16s_late_guard_end(&exited_guard);
+    CloseHandle(exited_thread);
+    printf("PSS EXITED HANDLE bits=%u begin=%lu end=%lu\n",(unsigned)(sizeof(void*)*8),exited_begin,exited_end);
+    if(exited_begin || exited_end)return 18;
     HANDLE busy_thread=CreateThread(NULL,0,busy,NULL,0,NULL),counter_thread=CreateThread(NULL,0,counter,NULL,0,NULL);
     if(!busy_thread || !counter_thread)return 2;
     ULONGLONG deadline=GetTickCount64()+2000;while(!entered && GetTickCount64()<deadline)Sleep(1);

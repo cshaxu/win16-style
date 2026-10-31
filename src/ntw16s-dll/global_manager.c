@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <wchar.h>
+#include <tlhelp32.h>
 
 #define MANAGER_WORKERS 4u
 #define MANAGER_BUCKETS 257u
@@ -23,6 +24,7 @@ struct ntw16s_global_manager {
     HDESK desktop;WCHAR *dll_path;WORD machine;DWORD owner_thread;SRWLOCK lock;
     manager_entry *buckets[MANAGER_BUCKETS],*queue_head,*queue_tail;unsigned count,reap_bucket;
     volatile LONG queued,active,failed,overflow;
+    SRWLOCK process_locks[64];
 };
 
 static void notify_change(ntw16s_global_manager *m){SetEvent(m->changed);}
@@ -85,6 +87,28 @@ static void discovered(HWND window,DWORD pid,DWORD thread_id,void *context)
     entry->hash_next=m->buckets[index];m->buckets[index]=entry;++m->count;enqueue(m,entry);
     ReleaseSRWLockExclusive(&m->lock);
 }
+/* Startup-only snapshot. Runtime discovery remains event driven. Prefer the
+ * existing window entry for a process and add one eligible thread only when
+ * no window entry is already queued. Identity is checked again by the worker. */
+static void discover_existing_processes(ntw16s_global_manager *m)
+{
+    HANDLE snapshot=CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD,0);
+    if(snapshot==INVALID_HANDLE_VALUE)return;
+    THREADENTRY32 e={.dwSize=sizeof(e)};
+    if(Thread32First(snapshot,&e))do{
+        DWORD pid=e.th32OwnerProcessID,tid=e.th32ThreadID;BOOL found=FALSE;
+        if(!pid || !tid || pid==GetCurrentProcessId() || pid==m->session->owner_pid || pid==m->session->host_pid)continue;
+        AcquireSRWLockShared(&m->lock);
+        for(unsigned i=0;i<MANAGER_BUCKETS && !found;++i)
+            for(manager_entry *entry=m->buckets[i];entry;entry=entry->hash_next)
+                if(entry->pid==pid && entry->state!=ENTRY_FAILED){found=TRUE;break;}
+        ReleaseSRWLockShared(&m->lock);
+        if(found)continue;
+        ntw16s_global_identity identity;
+        if(!ntw16s_global_policy_inspect_thread(&m->policy,pid,tid,m->machine,&identity))discovered(NULL,pid,tid,m);
+    }while(Thread32Next(snapshot,&e));
+    CloseHandle(snapshot);
+}
 typedef struct scan_state {ntw16s_global_manager *manager;manager_entry *entry;ULONGLONG deadline;} scan_state;
 static BOOL CALLBACK notify_window(HWND window,LPARAM parameter)
 {
@@ -109,8 +133,10 @@ static DWORD process_entry(ntw16s_global_manager *m,manager_entry *entry)
     if(WaitForSingleObject(m->quit,0)==WAIT_OBJECT_0 || WaitForSingleObject(m->stop,0)==WAIT_OBJECT_0 ||
        m->session->phase!=NTW16S_GLOBAL_ACTIVE)return ERROR_CANCELLED;
     if(entry->attach.process){DWORD closed=ntw16s_global_attach_close(&entry->attach);if(closed)return closed;}
-    DWORD error=ntw16s_global_attach_begin(&m->policy,entry->window,entry->pid,entry->thread_id,m->machine,
-                                            m->session->cookie,m->dll_path,&entry->attach);
+    DWORD error=entry->window?ntw16s_global_attach_begin(&m->policy,entry->window,entry->pid,entry->thread_id,m->machine,
+                                            m->session->cookie,m->dll_path,&entry->attach):
+        ntw16s_global_attach_begin_thread(&m->policy,entry->pid,entry->thread_id,m->machine,
+                                         m->session->cookie,m->dll_path,&entry->attach);
     if(error)return error;
     for(;;){
         if(WaitForSingleObject(m->quit,0)==WAIT_OBJECT_0 || WaitForSingleObject(m->stop,0)==WAIT_OBJECT_0 ||
@@ -152,7 +178,12 @@ static DWORD WINAPI worker(void *parameter)
             AcquireSRWLockExclusive(&m->lock);manager_entry *entry=m->queue_head;
             if(entry){m->queue_head=entry->queue_next;if(!m->queue_head)m->queue_tail=NULL;entry->state=ENTRY_WORKING;InterlockedDecrement(&m->queued);}
             ReleaseSRWLockExclusive(&m->lock);if(!entry)break;
+            /* Late patching snapshots all threads in a target process. Do not
+             * create competing remote workers for two of its GUI threads. */
+            SRWLOCK *process_lock=&m->process_locks[entry->pid%ARRAYSIZE(m->process_locks)];
+            AcquireSRWLockExclusive(process_lock);
             DWORD error=process_entry(m,entry);
+            ReleaseSRWLockExclusive(process_lock);
             BOOL installed=error==ERROR_NOT_READY && entry->attach.control_error==ERROR_NOT_READY &&
                 entry->attach.start.thread && WaitForSingleObject(entry->attach.start.thread,0)==WAIT_TIMEOUT;
             if(error && !installed)(void)ntw16s_global_attach_close(&entry->attach);
@@ -168,6 +199,11 @@ static DWORD WINAPI worker(void *parameter)
     return 0;
 }
 HANDLE ntw16s_global_manager_changed(ntw16s_global_manager *m){return m?m->changed:NULL;}
+DWORD ntw16s_global_manager_refresh(ntw16s_global_manager *m)
+{
+    if(!m || m->owner_thread!=GetCurrentThreadId())return ERROR_INVALID_PARAMETER;
+    return ntw16s_global_discover_refresh(&m->discover);
+}
 BOOL ntw16s_global_manager_tracks(ntw16s_global_manager *m,DWORD pid,DWORD thread_id)
 {
     if(!m || !pid || !thread_id)return FALSE;
@@ -235,6 +271,10 @@ DWORD ntw16s_global_manager_start(const WCHAR *dll_path,WORD machine,ntw16s_glob
     if(WaitForMultipleObjects(MANAGER_WORKERS,m->ready,TRUE,3000)!=WAIT_OBJECT_0){error=ERROR_TIMEOUT;goto fail;}
     for(unsigned i=0;i<MANAGER_WORKERS;++i)if(m->worker_errors[i]){error=m->worker_errors[i];goto fail;}
     error=ntw16s_global_discover_start(&m->discover,discovered,m);if(error)goto fail;
+    discover_existing_processes(m);
+    /* Targets can appear while the initial snapshot is inspected and before
+     * this owner thread begins dispatching queued accessibility events. */
+    error=ntw16s_global_discover_refresh(&m->discover);if(error)goto fail;
     *result=m;return ERROR_SUCCESS;
 fail:
     {DWORD cleanup=ntw16s_global_manager_stop(m,3000);if(cleanup)*result=m;return cleanup?cleanup:error;}

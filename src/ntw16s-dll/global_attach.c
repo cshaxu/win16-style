@@ -18,17 +18,22 @@ DWORD ntw16s_global_attach_close(ntw16s_global_attach *ticket)
     free(ticket->dll_path);ZeroMemory(ticket,sizeof(*ticket));return ERROR_SUCCESS;
 }
 
-DWORD ntw16s_global_attach_begin(const ntw16s_global_policy *policy,HWND window,DWORD pid,DWORD thread_id,
+static DWORD revalidate(ntw16s_global_attach *ticket)
+{return ticket->window?ntw16s_global_policy_revalidate(ticket->process,ticket->window,&ticket->identity):
+                       ntw16s_global_policy_revalidate_thread(ticket->process,&ticket->identity);}
+
+static DWORD begin(const ntw16s_global_policy *policy,HWND window,DWORD pid,DWORD thread_id,
                                 WORD machine,DWORD cookie,const WCHAR *dll_path,ntw16s_global_attach *ticket)
 {
     DWORD error;size_t length;
-    if(!policy || !window || !pid || !thread_id || !cookie || !dll_path || !*dll_path || !ticket)return ERROR_INVALID_PARAMETER;
+    if(!policy || !pid || !thread_id || !cookie || !dll_path || !*dll_path || !ticket)return ERROR_INVALID_PARAMETER;
     if(ticket->process || ticket->dll_path || ticket->phase)return ERROR_BUSY;
-    error=ntw16s_global_policy_inspect(policy,window,pid,thread_id,machine,&ticket->identity);if(error)return error;
+    error=window?ntw16s_global_policy_inspect(policy,window,pid,thread_id,machine,&ticket->identity):
+                 ntw16s_global_policy_inspect_thread(policy,pid,thread_id,machine,&ticket->identity);if(error)return error;
     ticket->process=OpenProcess(PROCESS_CREATE_THREAD|PROCESS_QUERY_INFORMATION|PROCESS_VM_OPERATION|
                                 PROCESS_VM_WRITE|PROCESS_VM_READ|SYNCHRONIZE,FALSE,pid);
     if(!ticket->process){error=GetLastError();goto fail;}
-    error=ntw16s_global_policy_revalidate(ticket->process,window,&ticket->identity);if(error)goto fail;
+    ticket->window=window;error=revalidate(ticket);if(error)goto fail;
     length=wcslen(dll_path);if(length>=32752){error=ERROR_FILENAME_EXCED_RANGE;goto fail;}
     ticket->dll_path=(WCHAR *)calloc(length+1,sizeof(WCHAR));if(!ticket->dll_path){error=ERROR_NOT_ENOUGH_MEMORY;goto fail;}
     memcpy(ticket->dll_path,dll_path,(length+1)*sizeof(WCHAR));ticket->window=window;ticket->cookie=cookie;
@@ -37,6 +42,13 @@ DWORD ntw16s_global_attach_begin(const ntw16s_global_policy *policy,HWND window,
 fail:
     {DWORD release=ntw16s_global_attach_close(ticket);return release?release:error;}
 }
+
+DWORD ntw16s_global_attach_begin(const ntw16s_global_policy *policy,HWND window,DWORD pid,DWORD thread_id,
+                                WORD machine,DWORD cookie,const WCHAR *dll_path,ntw16s_global_attach *ticket)
+{return window?begin(policy,window,pid,thread_id,machine,cookie,dll_path,ticket):ERROR_INVALID_PARAMETER;}
+DWORD ntw16s_global_attach_begin_thread(const ntw16s_global_policy *policy,DWORD pid,DWORD thread_id,
+                                       WORD machine,DWORD cookie,const WCHAR *dll_path,ntw16s_global_attach *ticket)
+{return begin(policy,NULL,pid,thread_id,machine,cookie,dll_path,ticket);}
 
 static DWORD control(ntw16s_global_attach *ticket,LPARAM action)
 {
@@ -65,7 +77,7 @@ DWORD ntw16s_global_attach_advance(ntw16s_global_attach *ticket,SECURITY_ATTRIBU
         error=ntw16s_global_load_finish(&ticket->load,0,&worker);
         if(error==ERROR_TIMEOUT)return ERROR_IO_PENDING;
         if(error)return error;
-        error=ntw16s_global_policy_revalidate(ticket->process,ticket->window,&ticket->identity);if(error)return error;
+        error=revalidate(ticket);if(error)return error;
         error=ntw16s_global_start_begin(ticket->process,ticket->identity.pid,ticket->identity.thread_id,ticket->cookie,
                                         ticket->dll_path,security,&ticket->start);
         if(error)return error;
@@ -76,6 +88,7 @@ DWORD ntw16s_global_attach_advance(ntw16s_global_attach *ticket,SECURITY_ATTRIBU
         if(error==ERROR_TIMEOUT)return ERROR_IO_PENDING;
         if(error)return error;
         ticket->phase=ATTACH_ACTIVE;
+        if(!ticket->window)return ERROR_SUCCESS;
         ticket->control_error=control(ticket,NTW16S_GLOBAL_APPLY);
         return ticket->control_error;
     }

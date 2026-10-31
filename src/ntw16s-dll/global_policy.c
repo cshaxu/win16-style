@@ -44,18 +44,29 @@ DWORD ntw16s_global_policy_init(ntw16s_global_policy *policy)
     free(user);if(error)ZeroMemory(policy,sizeof(*policy));return error;
 }
 
-DWORD ntw16s_global_policy_inspect(const ntw16s_global_policy *policy,HWND window,DWORD pid,DWORD thread_id,
+static BOOL same_desktop(DWORD thread_id)
+{
+    HDESK a=GetThreadDesktop(GetCurrentThreadId()),b=GetThreadDesktop(thread_id);
+    typedef BOOL (WINAPI *compare_fn)(HANDLE,HANDLE);
+    HMODULE kernel=GetModuleHandleW(L"kernelbase.dll");
+    compare_fn compare=kernel?(compare_fn)(void *)GetProcAddress(kernel,"CompareObjectHandles"):NULL;
+    /* Names alone do not distinguish desktops in separate window stations. */
+    return a && b && compare && compare(a,b);
+}
+
+static DWORD inspect(const ntw16s_global_policy *policy,HWND window,DWORD pid,DWORD thread_id,
                                    WORD expected_machine,ntw16s_global_identity *identity)
 {
     HANDLE process=NULL,thread=NULL,token=NULL;TOKEN_USER *user=NULL;DWORD error=ERROR_SUCCESS,actual=0,session=0;
     FILETIME created,exited,kernel,user_time;USHORT machine=0,native=0;DWORD appcontainer=0,bytes=0;
     WCHAR *image=NULL,windows[MAX_PATH];DWORD length=32752;UINT windows_length;
     if(identity)ZeroMemory(identity,sizeof(*identity));
-    if(!policy || !policy->sid_bytes || !identity || !window || !pid || !thread_id || pid==GetCurrentProcessId() ||
+    if(!policy || !policy->sid_bytes || !identity || !pid || !thread_id || pid==GetCurrentProcessId() ||
        (expected_machine!=IMAGE_FILE_MACHINE_I386 && expected_machine!=IMAGE_FILE_MACHINE_AMD64))return ERROR_INVALID_PARAMETER;
     if(policy->sid_bytes>sizeof(policy->sid) || !IsValidSid((PSID)policy->sid) ||
        GetLengthSid((PSID)policy->sid)!=policy->sid_bytes)return ERROR_INVALID_SID;
-    if(GetWindowThreadProcessId(window,&actual)!=thread_id || actual!=pid || !IsWindowVisible(window))return ERROR_INVALID_WINDOW_HANDLE;
+    if(window && (GetWindowThreadProcessId(window,&actual)!=thread_id || actual!=pid || !IsWindowVisible(window)))return ERROR_INVALID_WINDOW_HANDLE;
+    if(!window && !same_desktop(thread_id))return ERROR_ACCESS_DENIED;
     if(!ProcessIdToSessionId(pid,&session))return GetLastError();
     if(session!=policy->session)return ERROR_ACCESS_DENIED;
     process=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION|SYNCHRONIZE,FALSE,pid);
@@ -83,7 +94,8 @@ DWORD ntw16s_global_policy_inspect(const ntw16s_global_policy *policy,HWND windo
     if(GetProcessIdOfThread(thread)!=pid || WaitForSingleObject(thread,0)!=WAIT_TIMEOUT){error=ERROR_INVALID_THREAD_ID;goto done;}
     if(!GetThreadTimes(thread,&created,&exited,&kernel,&user_time)){error=GetLastError();goto done;}
     identity->thread_birth_low=created.dwLowDateTime;identity->thread_birth_high=created.dwHighDateTime;
-    if(GetWindowThreadProcessId(window,&actual)!=thread_id || actual!=pid || !IsWindowVisible(window) ||
+    if((window && (GetWindowThreadProcessId(window,&actual)!=thread_id || actual!=pid || !IsWindowVisible(window))) ||
+       (!window && !same_desktop(thread_id)) ||
        WaitForSingleObject(process,0)!=WAIT_TIMEOUT || WaitForSingleObject(thread,0)!=WAIT_TIMEOUT){
         error=ERROR_INVALID_WINDOW_HANDLE;goto done;
     }
@@ -94,10 +106,10 @@ done:
     return error;
 }
 
-DWORD ntw16s_global_policy_revalidate(HANDLE process,HWND window,const ntw16s_global_identity *identity)
+static DWORD revalidate(HANDLE process,HWND window,const ntw16s_global_identity *identity)
 {
     HANDLE thread=NULL;FILETIME created,exited,kernel,user_time;DWORD actual=0,error=ERROR_SUCCESS;
-    if(!process || !window || !identity || !identity->pid || !identity->thread_id ||
+    if(!process || !identity || !identity->pid || !identity->thread_id ||
        GetProcessId(process)!=identity->pid)return ERROR_INVALID_PARAMETER;
     if(WaitForSingleObject(process,0)!=WAIT_TIMEOUT)return ERROR_PROCESS_ABORTED;
     if(!GetProcessTimes(process,&created,&exited,&kernel,&user_time))return GetLastError();
@@ -108,10 +120,22 @@ DWORD ntw16s_global_policy_revalidate(HANDLE process,HWND window,const ntw16s_gl
     if(GetProcessIdOfThread(thread)!=identity->pid || WaitForSingleObject(thread,0)!=WAIT_TIMEOUT){error=ERROR_INVALID_THREAD_ID;goto done;}
     if(!GetThreadTimes(thread,&created,&exited,&kernel,&user_time)){error=GetLastError();goto done;}
     if(created.dwLowDateTime!=identity->thread_birth_low || created.dwHighDateTime!=identity->thread_birth_high){error=ERROR_INVALID_STATE;goto done;}
-    if(GetWindowThreadProcessId(window,&actual)!=identity->thread_id || actual!=identity->pid || !IsWindowVisible(window)){
+    if((window && (GetWindowThreadProcessId(window,&actual)!=identity->thread_id || actual!=identity->pid || !IsWindowVisible(window))) ||
+       (!window && !same_desktop(identity->thread_id))){
         error=ERROR_INVALID_WINDOW_HANDLE;goto done;
     }
     if(WaitForSingleObject(process,0)!=WAIT_TIMEOUT || WaitForSingleObject(thread,0)!=WAIT_TIMEOUT)error=ERROR_INVALID_STATE;
 done:
     CloseHandle(thread);return error;
 }
+
+DWORD ntw16s_global_policy_inspect(const ntw16s_global_policy *policy,HWND window,DWORD pid,DWORD thread_id,
+                                   WORD machine,ntw16s_global_identity *identity)
+{return window?inspect(policy,window,pid,thread_id,machine,identity):ERROR_INVALID_PARAMETER;}
+DWORD ntw16s_global_policy_inspect_thread(const ntw16s_global_policy *policy,DWORD pid,DWORD thread_id,
+                                          WORD machine,ntw16s_global_identity *identity)
+{return inspect(policy,NULL,pid,thread_id,machine,identity);}
+DWORD ntw16s_global_policy_revalidate(HANDLE process,HWND window,const ntw16s_global_identity *identity)
+{return window?revalidate(process,window,identity):ERROR_INVALID_PARAMETER;}
+DWORD ntw16s_global_policy_revalidate_thread(HANDLE process,const ntw16s_global_identity *identity)
+{return revalidate(process,NULL,identity);}

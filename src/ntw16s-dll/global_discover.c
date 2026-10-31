@@ -39,6 +39,13 @@ DWORD ntw16s_global_discover_start(ntw16s_global_discover *watcher,ntw16s_global
     }
     return ERROR_SUCCESS;
 }
+DWORD ntw16s_global_discover_refresh(ntw16s_global_discover *watcher)
+{
+    if(!watcher || !watcher->hook || current!=watcher || watcher->owner_thread!=GetCurrentThreadId())return ERROR_INVALID_PARAMETER;
+    SetLastError(ERROR_SUCCESS);
+    if(!EnumWindows(scan_top,(LPARAM)watcher)){DWORD error=GetLastError();return error?error:ERROR_GEN_FAILURE;}
+    return ERROR_SUCCESS;
+}
 DWORD ntw16s_global_discover_stop(ntw16s_global_discover *watcher)
 {
     if(!watcher || !watcher->hook || current!=watcher || watcher->owner_thread!=GetCurrentThreadId())return ERROR_INVALID_PARAMETER;

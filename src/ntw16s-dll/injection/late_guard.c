@@ -53,7 +53,7 @@ static DWORD verify(const ntw16s_late_guard *g,DWORD pid,DWORD self) {
     if(e)return e;
     PSS_THREAD_ENTRY t;
     while(!(e=next(verify_snap,&t))){
-        if(t.ProcessId==pid && t.ThreadId!=self){
+        if(t.ProcessId==pid && t.ThreadId!=self && !(t.Flags&PSS_THREAD_FLAGS_TERMINATED)){
             DWORD i=0;while(i<g->count && GetThreadId(g->threads[i])!=t.ThreadId)++i;
             if(i==g->count)return ERROR_RETRY;
             if(thread_identity(g->threads[i],pid,t.ThreadId,t.CreateTime))return ERROR_RETRY;
@@ -86,12 +86,14 @@ DWORD ntw16s_late_guard_begin(ntw16s_late_guard *g,const ntw16s_late_region *reg
     g->snapshots=owner;snap *first=&owner->first,*verify_snap=&owner->verify;
     DWORD e=begin_snap(first),capacity=0,pid=GetCurrentProcessId(),self=GetCurrentThreadId();PSS_THREAD_ENTRY t;
     if(e)goto done;
-    while(!(e=next(first,&t)))if(t.ProcessId==pid && t.ThreadId!=self)++capacity;
+    /* PSS can retain terminated threads while another handle references them.
+     * They cannot execute patched code and must not poison every retry. */
+    while(!(e=next(first,&t)))if(t.ProcessId==pid && t.ThreadId!=self && !(t.Flags&PSS_THREAD_FLAGS_TERMINATED))++capacity;
     if(e!=ERROR_NO_MORE_ITEMS)goto done;
     e=ERROR_SUCCESS;
     if(capacity){g->threads=HeapAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY,(SIZE_T)capacity*sizeof(HANDLE));if(!g->threads){e=ERROR_NOT_ENOUGH_MEMORY;goto done;}}
     e=PssWalkMarkerSeekToBeginning(first->marker);if(e)goto done;
-    while(!(e=next(first,&t)))if(t.ProcessId==pid && t.ThreadId!=self){
+    while(!(e=next(first,&t)))if(t.ProcessId==pid && t.ThreadId!=self && !(t.Flags&PSS_THREAD_FLAGS_TERMINATED)){
         if(g->count==capacity){e=ERROR_MORE_DATA;goto done;}
         HANDLE h=OpenThread(THREAD_SUSPEND_RESUME|THREAD_GET_CONTEXT|THREAD_QUERY_LIMITED_INFORMATION|SYNCHRONIZE,FALSE,t.ThreadId);
         if(!h){e=GetLastError();goto done;}

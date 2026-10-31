@@ -61,6 +61,19 @@ int wmain(int argc,WCHAR **argv)
         printf("PROPAGATION DESCENDANT stopped=%d create=%d exit=%lu\n",signaled,made,code);
         CloseHandle(ready);CloseHandle(go);return made&&code==41?0:44;
     }
+    if(argc==2 && !wcscmp(argv[1],L"headless-child")){
+        BOOL loaded=module()!=NULL;
+        printf("HEADLESS CHILD bits=%u dll=%d\n",(unsigned)(sizeof(void*)*8),loaded);
+        return loaded?0:41;
+    }
+    if(argc==2 && !wcscmp(argv[1],L"headless")){
+        ULONGLONG until=GetTickCount64()+1000;
+        while(!module() && GetTickCount64()<until)Sleep(20);
+        BOOL loaded=module()!=NULL;DWORD code=99;
+        BOOL made=create_owned(L"headless-child",&code);
+        printf("HEADLESS ROOT bits=%u dll=%d child=%d child_exit=%lu\n",(unsigned)(sizeof(void*)*8),loaded,made,code);
+        return loaded && made && code==0?0:1;
+    }
     if(argc==2 && (!wcscmp(argv[1],L"child") || !wcscmp(argv[1],L"grandchild"))){
         BOOL loaded=module()!=NULL;printf("PROPAGATION ENTRY bits=%u role=%ls dll=%d\n",(unsigned)(sizeof(void*)*8),argv[1],loaded);
         if(!loaded)return 41;

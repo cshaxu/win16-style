@@ -14,5 +14,6 @@ typedef struct ntw16s_global_discover {
 /* Start, callbacks, and stop must run on one message-pumping thread. Window
  * identity can change immediately after the callback; consumers revalidate. */
 DWORD ntw16s_global_discover_start(ntw16s_global_discover *watcher,ntw16s_global_discovered callback,void *context);
+DWORD ntw16s_global_discover_refresh(ntw16s_global_discover *watcher);
 DWORD ntw16s_global_discover_stop(ntw16s_global_discover *watcher);
 #endif

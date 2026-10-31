@@ -104,12 +104,10 @@ void CALLBACK Ntw16sGlobalHost(HWND window,HINSTANCE instance,LPSTR command,int 
     HMODULE module=NULL;if(!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
         (LPCWSTR)(void *)&Ntw16sGlobalHook,&module))goto done;
     hook=SetWindowsHookExW(WH_CALLWNDPROC,Ntw16sGlobalHook,module,0);
-    if(!hook){
-        if(GetLastError()!=ERROR_MOD_NOT_FOUND)goto done;
-        WCHAR path[32768];DWORD n=GetModuleFileNameW(module,path,ARRAYSIZE(path));
-        WORD machine=sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386;
-        if(!n || n>=ARRAYSIZE(path) || ntw16s_global_manager_start(path,machine,&manager))goto done;
-    }
+    if(!hook && GetLastError()!=ERROR_MOD_NOT_FOUND)goto done;
+    WCHAR path[32768];DWORD n=GetModuleFileNameW(module,path,ARRAYSIZE(path));
+    WORD machine=sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386;
+    if(!n || n>=ARRAYSIZE(path) || ntw16s_global_manager_start(path,machine,&manager))goto done;
     SetEvent(ready);
     HANDLE waits[2]={stop,owner};
     for(;;){DWORD status=MsgWaitForMultipleObjects(2,waits,FALSE,INFINITE,QS_ALLINPUT);
