@@ -2,6 +2,15 @@
   "schema": 1,
   "files": [
     {
+      "path": "tests/ntw16s-dll/menu_initial.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "6e0e9c02fe7f468c6a05a5f08effd02342826e5d91de44ee7a152e11c55a988f",
+      "disposition": "authored",
+      "review": "T20 S19 popup first paint before idle and negative old-package witness",
+      "notice": "Project-authored test; no imported code or resources"
+    },
+    {
       "path": "tests/ntw16s-dll/demo_system_menu.c",
       "source": null,
       "source_blob": null,
@@ -581,7 +590,7 @@
       "path": "src/ntw16s-dll/menu_scope.c",
       "source": "src/ntw16s-dll/menu_scope.c",
       "source_blob": "b27da79667d1dce3f17336721ef7c6be06fc18f7",
-      "sha256": "a65291126d5bc85e37ec78d26112c3f01820c2e33d58f437bed8d98feb5c1fdf",
+      "sha256": "2f0b7b0d0a9860029c4d45ea9d0cc32ec8c73110fd374b2c5fa6063e210302a3",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T8 S3 scoped USER SysShadow suppression and actual popup border/shadow regression",
       "notice": "Project-authored source per fixed component README; original file notices preserved"

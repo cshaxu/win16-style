@@ -151,6 +151,9 @@ static LRESULT CALLBACK popup_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,D
         if(!p->detached && (b&PRF_NONCLIENT))paint_border(w,p,(HDC)a);
         if(!p->detached && (b&PRF_CLIENT))paint_system(w,p,(HDC)a,TRUE);
     }else {result=DefSubclassProc(w,m,a,b);
+        if(!p->detached && m==WM_WINDOWPOSCHANGED && b &&
+            (((WINDOWPOS *)b)->flags&SWP_SHOWWINDOW))
+            RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
         if(!p->detached && (m==WM_WINDOWPOSCHANGED||m==0x92||m==WM_MOUSEMOVE||m==WM_NCMOUSEMOVE))paint_system(w,p,NULL,FALSE);}
     if(!--p->calls && p->detached)free(p);
     return result;

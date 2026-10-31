@@ -18,14 +18,14 @@ M0 T20 S19：调查并修复左上系统菜单回退现代外观，保留菜单�
 | Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；原资源逐字节保留 |
 | Verification | 双宽实际菜单截图、键鼠消息、取消及命令、菜单数据和重绘对照、实际包测试 |
 | Expected Markers | 左上系统菜单经典外观，正常取消与命令，菜单切换不引入标题闪烁 |
-| Asset Needs | build/t20-s19 和 build/t20-package 下自有 scratch |
+| Asset Needs | build/t20-s19、build/t20-s19-notepad 和 build/t20-package 下自有 scratch |
 | Reporting Requirements | 先定位实际路径及根因，区分既往用户确认与可复现证据 |
 | Stop Conditions | 不能保持应用菜单数据与交互时不发布猜测修复 |
 | Exit Criteria | 双宽干净构建与同批四文件测试、双位置发布、提交推送和远端复核 |
 | Original Owner Request | demo 左上窗体菜单目前不是 Win16 样式，修复回归 |
 | Similar-Issue Sweep | 鼠标系统菜单、Alt+Space、普通菜单切换、嵌套取消及应用自定义菜单 |
 
-S19 阶段包已发布，15 项聚焦包测试通过；真实左键及菜单动态闪烁仍未验证，S19 保持开放。详见 [阶段证据](../history/M0-T20-S19-system-menu.md)。
+S19 P2 已发布，记事本菜单首次绘制时序已修复；16 项聚焦包测试通过、无跳过。隔离记事本的九项绘制发生在首次空闲前；真实桌面显示、左键及菜单动态闪烁仍未验证，S19 保持开放。详见 [阶段证据](../history/M0-T20-S19-system-menu.md)。
 
 ## Identifier State
 
