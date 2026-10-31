@@ -46,3 +46,5 @@ S4 对重建包的40项及六个滚动原生探针通过；截图是私有桌面
   - ntw16s32.dll: `612b3068b64473bea654503b99a217f4d20c0384977dfb61b99716942f205e9d`
   - ntw16s64.dll: `decfe56a50e8cce42246fb9c9a481c47a5e9fc0a7fcb057627421ab853eafe08`
   - demo.exe: `2a795943cb8ff61ebb8b2f9c6416e5872d79a50c8909d753854f28bd4d292310`
+
+S5 交接记录及 TODO 已以 `87216a1` 提交推送，GitHub 实际文档及四个 assets 对象已与本地逐一复核。S5 收口，T20 保持开放，等待用户验收。
