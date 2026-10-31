@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T21 S13 活动；T21 和 S13 均保持开放。P74 已通过同批包测试并发布到 assets 根目录和 O:/winnt，远端复核进行中；此前远端产品包为 P70 `a3e7fa3`。
+M0 T21 S13 活动；T21 和 S13 均保持开放。当前远端产品包为 P74 `a2a4250`；已读取远端四文件并核对与 assets 根目录及 O:/winnt 的 SHA-256 一致。
 
 P74 修复普通启动进程在全局运行期间创建的隐藏窗口：即使尚无全局窗口标记，退出时也尝试在窗口所属线程移除已存在的项目附着。旧包负例保留样式；新包的四个 x86/x64 隐藏窗口及常规窗口退出恢复通过。无法接入或无法及时响应的窗口仍不保证恢复。
 
@@ -50,7 +50,7 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
 - Last allocated T21 S: 13
-- Last verified remote delivery: M0 T21 S13 P70，`a3e7fa3`。
+- Last verified remote delivery: M0 T21 S13 P74，`a2a4250`。
 - Open task: T21 S13；Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
