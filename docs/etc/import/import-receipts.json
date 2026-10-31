@@ -23,18 +23,18 @@
       "path": "tests/integration/global_common_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "bad85432a3a4984ebe422bcc91179524380412743aa1f2483600303b7aca1e28",
+      "sha256": "df8999ae902cf17cb1efff6fe76aa18cda401541a52c64d4263bb700cce6d3bd",
       "disposition": "authored",
-      "review": "T21 S5 dual-width common control attachment regression",
+      "review": "T21 S5 dual-width common control attachment regression; T21 S12 dynamic child controls regression",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/integration/global_common.c",
       "source": null,
       "source_blob": null,
-      "sha256": "edea33eb6186b7fb6ec8b42cbda9a006c439719c69288595c1a5b1af080b10d2",
+      "sha256": "1d2241ec681a9705d751ff9f964140e544099c44a63a866bd325ac71c3e8aafd",
       "disposition": "authored",
-      "review": "T21 S5 dual-width common control attachment regression",
+      "review": "T21 S5 dual-width common control attachment regression; T21 S12 dynamic child controls regression",
       "notice": "Project-authored source; no imported code or resources"
     },
     {

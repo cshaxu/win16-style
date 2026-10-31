@@ -5,6 +5,9 @@
 #include "ntw16s-dll/global_session.h"
 #define QUERY (WM_APP+81)
 #define CONTENT (WM_APP+82)
+#define CREATE_LATE (WM_APP+83)
+#define LATE_QUERY (WM_APP+84)
+#define LATE_CLICKED (WM_APP+85)
 static const WCHAR cls[]=L"Win16GlobalCommon";
 typedef struct target {PROCESS_INFORMATION process;HWND window;} target;
 static BOOL launch(target *t,const WCHAR *image,const WCHAR *title)
@@ -30,10 +33,12 @@ int wmain(int argc,WCHAR **argv)
  for(unsigned i=0;i<2;++i)if(!wait_mask(t[i].window,31)){printf("GLOBAL COMMON existing=%u mask=%d\n",i,query(t[i].window,QUERY));goto done;}
  if(!launch(&t[2],argv[2],L"New32")||!launch(&t[3],argv[3],L"New64"))goto done;
  for(unsigned i=2;i<4;++i)if(!wait_mask(t[i].window,31)){printf("GLOBAL COMMON new=%u mask=%d\n",i,query(t[i].window,QUERY));goto done;}
+ for(unsigned i=0;i<4;++i){if(query(t[i].window,CREATE_LATE)!=1)goto done;int mask=query(t[i].window,LATE_QUERY);if(mask!=3){printf("GLOBAL LATE attach=%u mask=%d\n",i,mask);goto done;}
+  HWND a=GetDlgItem(t[i].window,100),b=GetDlgItem(t[i].window,101);if(!a||!b)goto done;SendMessageW(a,BM_CLICK,0,0);SendMessageW(b,BM_CLICK,0,0);if(query(t[i].window,LATE_CLICKED)!=2)goto done;}
  event=OpenEventW(EVENT_MODIFY_STATE,FALSE,request);if(!event||!SetEvent(event)||WaitForSingleObject(manager.hProcess,12000)!=WAIT_OBJECT_0)goto done;
  DWORD code=99;if(!GetExitCodeProcess(manager.hProcess,&code)||code)goto done;
- for(unsigned i=0;i<4;++i)if(!wait_mask(t[i].window,0)||query(t[i].window,CONTENT)!=1){printf("GLOBAL COMMON restore=%u mask=%d content=%d\n",i,query(t[i].window,QUERY),query(t[i].window,CONTENT));goto done;}
- printf("GLOBAL COMMON PASS widths=2 existing=2 new=2 controls=5 restored=4 content=4\n");pass=TRUE;
+ for(unsigned i=0;i<4;++i)if(!wait_mask(t[i].window,0)||query(t[i].window,CONTENT)!=1||query(t[i].window,LATE_QUERY)!=0){printf("GLOBAL COMMON restore=%u mask=%d late=%d content=%d\n",i,query(t[i].window,QUERY),query(t[i].window,LATE_QUERY),query(t[i].window,CONTENT));goto done;}
+ printf("GLOBAL COMMON PASS widths=2 existing=2 new=2 controls=5 restored=4 content=4\nGLOBAL LATE PASS widths=2 targets=4 modes=2 clicked=8 restored=8\n");pass=TRUE;
  done:if(!pass)printf("GLOBAL COMMON FAIL error=%lu\n",GetLastError());
  if(manager.hProcess&&WaitForSingleObject(manager.hProcess,0)!=WAIT_OBJECT_0){if(!event)event=OpenEventW(EVENT_MODIFY_STATE,FALSE,request);if(event)SetEvent(event);if(WaitForSingleObject(manager.hProcess,5000)!=WAIT_OBJECT_0){TerminateProcess(manager.hProcess,ERROR_TIMEOUT);WaitForSingleObject(manager.hProcess,1000);}}
  if(event)CloseHandle(event);

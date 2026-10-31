@@ -4,11 +4,20 @@
 #include <wchar.h>
 #define QUERY (WM_APP+81)
 #define CONTENT (WM_APP+82)
+#define CREATE_LATE (WM_APP+83)
+#define LATE_QUERY (WM_APP+84)
+#define LATE_CLICKED (WM_APP+85)
 static HWND controls[5];
+static HWND late[2];
+static unsigned clicks;
 typedef BOOL (__cdecl *attached_fn)(HWND);
 static LRESULT CALLBACK proc(HWND w,UINT m,WPARAM a,LPARAM b)
 {
  if(m==QUERY){HMODULE lib=GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");attached_fn attached=lib?(attached_fn)(void *)GetProcAddress(lib,"Ntw16sWindowAttached"):NULL;unsigned mask=0;for(unsigned i=0;i<5;++i)if(attached && attached(controls[i]))mask|=1u<<i;return mask;}
+ if(m==CREATE_LATE){for(unsigned i=0;i<2;++i){late[i]=CreateWindowW(L"BUTTON",L"Late",WS_CHILD|(i?0:WS_VISIBLE),315,10+40*(int)i,80,30,w,(HMENU)(UINT_PTR)(100+i),GetModuleHandleW(NULL),NULL);if(!late[i])return FALSE;if(i)ShowWindow(late[i],SW_SHOW);}return TRUE;}
+ if(m==LATE_QUERY){HMODULE lib=GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");attached_fn attached=lib?(attached_fn)(void *)GetProcAddress(lib,"Ntw16sWindowAttached"):NULL;unsigned mask=0;for(unsigned i=0;i<2;++i)if(late[i]&&attached&&attached(late[i]))mask|=1u<<i;return mask;}
+ if(m==LATE_CLICKED)return clicks;
+ if(m==WM_COMMAND && (LOWORD(a)==100||LOWORD(a)==101) && HIWORD(a)==BN_CLICKED){++clicks;return 0;}
  if(m==CONTENT){WCHAR text[32];return SendMessageW(controls[1],TCM_GETITEMCOUNT,0,0)==1 && SendMessageW(controls[2],HDM_GETITEMCOUNT,0,0)==1 && SendMessageW(controls[3],PBM_GETPOS,0,0)==42 && GetWindowTextW(controls[4],text,ARRAYSIZE(text)) && !lstrcmpW(text,L"Action");}
  if(m==WM_CLOSE){DestroyWindow(w);return 0;}if(m==WM_DESTROY){PostQuitMessage(0);return 0;}return DefWindowProcW(w,m,a,b);
 }
