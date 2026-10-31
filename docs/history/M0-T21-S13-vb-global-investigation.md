@@ -89,3 +89,8 @@ The earlier PowerShell module count did not distinguish empty/inaccessible modul
 
 
 The administrator-approved native snapshot then completed with High Mandatory Level: 363 process IDs, 333 successful module snapshots, 20 access-denied and 10 other failures, zero matching named project modules in successful snapshots. This improves coverage but does not inspect the 30 failures, other sessions, differently named modules or kernel registration state, and cannot establish the cause of 126. No process was modified.
+
+
+## Registered path-name probe
+
+A private-desktop diagnostic repeated the previously documented unsupported native hook call with the **same loaded deployed x64 DLL and callback** for every attempt. The deployed x64 path, `user32.dll`, a nonexistent path and the system USER32 path returned 126; substituting the already exercised S12 **x86 DLL path as a name** produced a hook handle which was immediately unhooked. No target window was messaged while this diagnostic hook existed. This is evidence that, at this particular registration stage, the supplied registered name changes the outcome independently of the already loaded callback image and even when that name refers to the other bitness. It does not establish why the names are retained, a capacity, or safe module loading in a target process. The unsupported call and mismatched name are diagnostic only and are not a product workaround.
