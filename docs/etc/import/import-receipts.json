@@ -23,18 +23,18 @@
       "path": "tests/integration/global_common_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "df8999ae902cf17cb1efff6fe76aa18cda401541a52c64d4263bb700cce6d3bd",
+      "sha256": "3e957e9c1fcb5fda999a222314ec301a955c3a503a8340e43876114e67ae1085",
       "disposition": "authored",
-      "review": "T21 S5 dual-width common control attachment regression; T21 S12 dynamic child controls regression",
+      "review": "T21 S5 dual-width common control attachment regression; T21 S12 dynamic child controls regression; T21 S13 scoped VB6 text and end-to-end verification",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/integration/global_common.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1d2241ec681a9705d751ff9f964140e544099c44a63a866bd325ac71c3e8aafd",
+      "sha256": "d633dd3479495d6b9b384a1e6d4d73cefbb68dddb1851a4b02c7e44881dc50ae",
       "disposition": "authored",
-      "review": "T21 S5 dual-width common control attachment regression; T21 S12 dynamic child controls regression",
+      "review": "T21 S5 dual-width common control attachment regression; T21 S12 dynamic child controls regression; T21 S13 scoped VB6 text and end-to-end verification",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -122,9 +122,9 @@
       "path": "src/ntw16s-dll/global_hook.c",
       "source": null,
       "source_blob": null,
-      "sha256": "60ff0e21f72ec2497ca96607b42e8a31dfe567de97b0b2dc84002776b597267b",
+      "sha256": "19dc7467656fb89bb29d265201d8ebd177083776caa0f0490ce9fc47065bab72",
       "disposition": "authored",
-      "review": "T21 S3 global controller and private-desktop integration; T21 S5 shared creation and late-attachment classifier",
+      "review": "T21 S3 global controller and private-desktop integration; T21 S5 shared creation and late-attachment classifier; T21 S13 scoped VB6 text activation",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -2885,9 +2885,9 @@
       "path": "tests/ntw16s-dll/dialog_test_driver.c",
       "source": null,
       "source_blob": null,
-      "sha256": "fc6ad9d58a0b6bbfc69e1aad7d769f6816e703edec2708389a3756db07289fab",
+      "sha256": "508b2d9880112042b30c7d99e8564d7b7ebf4d6dad48c943bed12e07de42168a",
       "disposition": "authored",
-      "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture",
+      "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture; T21 S13 detect retained private desktop",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
     },
     {
@@ -3339,6 +3339,87 @@
       "disposition": "authored",
       "review": "T20 S1 native Shell folder edit and PIDL probe",
       "notice": "Project-authored test; no imported resources"
+    },
+    {
+      "path": "src/ntw16s-dll/import_scan.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "1278f0721c0c6703942b07161164d8755d61f89f3d3369fe98d539b4e6a5333f",
+      "disposition": "authored",
+      "review": "T21 S13 bounded read-only local PE import scanning and native dual-width tests",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/import_scan.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "72cc1c8430afedbfe9878c824cddb7563a06ee96a1c3614ef15487ccd9e6da7a",
+      "disposition": "authored",
+      "review": "T21 S13 bounded read-only local PE import scanning and native dual-width tests",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/import_scan.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "8d2b18d710ef258b359b944811d46bfc5e3bca485049acc28916f4c3fb0d7ad7",
+      "disposition": "authored",
+      "review": "T21 S13 bounded read-only local PE import scanning and native dual-width tests",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/import_patch.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "dfeb9e55515c5748fdbc03039c4e7d7a815fd2c66f90ba3b3f7e2c1ce298f85b",
+      "disposition": "authored",
+      "review": "T21 S13 guarded atomic import updates and native fault tests",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/import_patch.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "d082663f3d3d48e39854141809bf31ea6086206a17a673e8d676f1e71ce55a15",
+      "disposition": "authored",
+      "review": "T21 S13 guarded atomic import updates and native fault tests",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/global_vb_text.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "365c2218eab75ee153859319b8bc08399df8bc49e0db79e160e13649617a0ae8",
+      "disposition": "authored",
+      "review": "T21 S13 controlled VB6 global text attachment and native fixture",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/global_vb_text.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "2cb836aaa78e9cd97f1e5ca17fbcb61303b40b2ab9adab2d8b70ee3b1da3678f",
+      "disposition": "authored",
+      "review": "T21 S13 controlled VB6 global text attachment and native fixture",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/vb_global_runtime.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "692573d1e89570eefc08255c5fb2c4e60452805830a53650a011cdd8a6e89fa9",
+      "disposition": "authored",
+      "review": "T21 S13 controlled VB6 global text attachment and native fixture",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/global_vb_text.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "37491c59784a9a3237c511f51b6c236772a43d5734ec73745d357b0862c55117",
+      "disposition": "authored",
+      "review": "T21 S13 controlled VB6 global text attachment and native fixture",
+      "notice": "Project-authored source; no imported code or resources"
     }
   ]
 }

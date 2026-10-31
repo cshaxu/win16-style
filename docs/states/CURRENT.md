@@ -2,7 +2,28 @@
 
 ## Current Work
 
-M0 T21 开放；S12 已收口，目前无活动任务包。
+M0 T21 S13：真实 VB6 全局模式对照及钩子注册错误 126 调查。
+
+## M0 T21 S13 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Continuation；T21 S13 新准入 |
+| Admission And Approval | 用户授权全局模式适配真实传统程序，自动推进 S |
+| Objective | 以 MadShow 对照全局效果，并调查实际部署位置的系统钩子注册错误 126 |
+| Non-goals | 不依赖该应用构建或测试，不操作现有用户进程，不处理 UWP/XAML |
+| Reference Baseline | S4 已验证 demo 和可选记事本；VB6 全局对照缺少证据 |
+| Candidate Proposal | [手动全局样式模式](../proposals/global-style-mode.md) |
+| Files And ABI Surface | 自有原生私有桌面探针及必要的最小修复；不增加组件或导出 |
+| Applicable Rules | M0、C17、GCC、Ninja、ccache，原图形资源不变 |
+| Verification | 自有隔离实例比较原版、普通启动、全局启动及停止后窗口与控件 |
+| Expected Markers | 区分附着、实际绘制、控件交互和恢复，记录路径及失败 |
+| Asset Needs | build/t21-s13、build/t21-package 自有 scratch |
+| Reporting Requirements | 真实样本有界结论、差异和未覆盖条件 |
+| Stop Conditions | 不能确认独立目标实例和私有桌面时不操作 |
+| Exit Criteria | 完成调查及必要修复、双宽干净构建、实际包测试、必要发布、提交推送和复核 |
+| Original Owner Request | 全局样式覆盖已有和新启动程序并统一附着逻辑 |
+| Similar-Issue Sweep | 运行时控件、启动钩子差异、系统钩子 DLL 共享表及实际部署路径 |
 
 ## Identifier State
 
@@ -12,9 +33,10 @@ M0 T21 开放；S12 已收口，目前无活动任务包。
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
-- Last allocated T21 S: 12
+- Last allocated T21 S: 13
 - Last delivery: M0 T21 S12 双宽动态控件回归；[记录](../history/M0-T21-S12-late-controls.md)。
-- Open task: T21；Explorer.exe 仍被排除。
+- Open task: T21 S13；Explorer.exe 仍被排除。
+- S13 阶段包已发布至 assets 和 O:/winnt；干净包 23 项聚焦通过，但本会话部署路径全局钩子注册仍报 126，未通过部署验收；[阶段证据](../history/M0-T21-S13-vb-global-investigation.md)。
 - 打印当前页已纳入受限 PrintDlgEx 转接；跨 DPI、实际打印和本地化仍待覆盖。
 - COM并发：已观察的双多选并发由系统原生路径止损；旧框目录串用根因、非多选并发仍未查明，详见[S3证据](../history/M0-T20-S3-com-safety.md)。
 - COM多选：默认回退系统新框，O: 长名、单项、取消、链接及双宽并发经有限验证；旧框实现及其他参数仍未全面解决。

@@ -19,3 +19,5 @@ Final clean build, actual-package checks, deployment and remote verification are
 
 No product source changed. The new clean-build binary hashes differed from S8, so both deployment locations were updated per the delivery rule. Remote verification follows the delivery commit.
 The staged diff before this accounting line covered six files, 44 insertions and three deletions, including four rebuilt binaries. There are no production source or test-suite changes; the short-lived observer was task scratch and its owned-process observations are recorded above.
+
+Later S13 read-only inspection found three `Win16S-Dialog-*` desktops still holding Explorer COM-server windows, with creation times and titles consistent with the S9 experiments. The S9 observer stopped as soon as the directly launched Explorer process exited, so its `other_windows=0` observation did not cover delayed COM activation and did not prove those desktops were fully reclaimed. Exact causation and ownership of the system server processes remain unproven; they were not manipulated. See the [S13 investigation](M0-T21-S13-vb-global-investigation.md).

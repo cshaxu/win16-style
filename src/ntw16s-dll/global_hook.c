@@ -1,5 +1,6 @@
 #include "global_session.h"
 #include "global_window.h"
+#include "global_vb_text.h"
 #include "attachment.h"
 #include <commctrl.h>
 #include <stdlib.h>
@@ -84,7 +85,9 @@ LRESULT CALLBACK Ntw16sGlobalHook(int code,WPARAM a,LPARAM b)
                         HMODULE pinned=NULL;
                         if(eligible(message->hwnd) && GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_PIN,
                                 (LPCWSTR)(void *)&Ntw16sGlobalHook,&pinned)){
-                            (void)ntw16s_global_window_apply(message->hwnd);
+                            BOOL attached=ntw16s_global_window_apply(message->hwnd),text_changed=FALSE;
+                            if(attached && !ntw16s_global_vb_text(message->hwnd,&text_changed) && text_changed)
+                                RedrawWindow(message->hwnd,NULL,NULL,RDW_INVALIDATE|RDW_ALLCHILDREN);
                             EnumChildWindows(message->hwnd,children,NTW16S_GLOBAL_APPLY);
                             if(s->phase!=NTW16S_GLOBAL_ACTIVE){
                                 EnumChildWindows(message->hwnd,children,NTW16S_GLOBAL_REMOVE);
