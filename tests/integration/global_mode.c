@@ -10,6 +10,7 @@
 #define QUERY_CLICKS (WM_APP+77)
 #define QUERY_DPI (WM_APP+78)
 #define CREATE_HIDDEN (WM_APP+79)
+#define SHOW_HIDDEN (WM_APP+80)
 #define TARGET_COUNT 9
 static const WCHAR cls[]=L"Win16GlobalE2ETarget";
 typedef struct target {PROCESS_INFORMATION process;HWND window;} target;
@@ -116,6 +117,11 @@ int wmain(int argc,WCHAR **argv)
     for(unsigned item=0;item<ARRAYSIZE(normal);++item)if(!wait_style(hidden[item],0)){
         printf("GLOBAL_E2E hidden_restore_failed index=%u state=%d\n",normal[item],query(hidden[item]));goto done;
     }
+    for(unsigned item=0;item<ARRAYSIZE(normal);++item){DWORD_PTR shown=0;
+        if(!SendMessageTimeoutW(hidden[item],SHOW_HIDDEN,0,0,SMTO_ABORTIFHUNG,2000,&shown) || !shown || !wait_style(hidden[item],0)){
+            printf("GLOBAL_E2E hidden_show_failed index=%u state=%d\n",normal[item],query(hidden[item]));goto done;
+        }
+    }
     for(unsigned i=0;i<8;++i)if(!check_input(targets[i].window)){printf("GLOBAL_E2E stopped_input_failed index=%u\n",i);goto done;}
     for(unsigned item=0;item<ARRAYSIZE(normal);++item){unsigned i=normal[item];DWORD process=0;DWORD_PTR created=0;WCHAR title[80];
         GetWindowThreadProcessId(targets[i].window,&process);
@@ -131,7 +137,7 @@ int wmain(int argc,WCHAR **argv)
     }
     if(!launch(&targets[8],argv[3],NULL,titles[8]) || !wait_style(targets[8].window,0))goto done;
     printf("GLOBAL E2E PASS old=4 new=4 restore=8 post_stop_windows=4 post_stop_children=4 stopped=1 host=%lu\n",session->host_pid);
-    printf("GLOBAL HIDDEN RESTORE PASS normal=4\n");
+    printf("GLOBAL HIDDEN RESTORE PASS normal=4 shown=4\n");
     printf("GLOBAL INPUT PASS native=2 active=8 stopped=8 dpi32=%llu dpi64=%llu\n",(unsigned long long)dpi32,(unsigned long long)dpi64);passed=TRUE;
     if(unaware)printf("GLOBAL DPI MODE PASS mode=unaware dpi32=96 dpi64=96\n");
 done:

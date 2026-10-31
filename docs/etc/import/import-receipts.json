@@ -275,18 +275,18 @@
       "path": "tests/integration/global_mode_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "54f843dafd8fa6609f2e4cb9ae90d6c48f049950110715c37870523637797584",
+      "sha256": "4af24c93504e57bbeed64a911d8c5b7785dca2a1b2df9c7c01ef6734f81f6a51",
       "disposition": "authored",
-      "review": "T21 S3 global controller and private-desktop integration; T21 S7 per-monitor DPI and controlled input; T21 S8 DPI-unaware 96 virtualization fixture; T21 S13 hidden ordinary-window global stop regression",
+      "review": "T21 S3 global controller and private-desktop integration; T21 S7 per-monitor DPI and controlled input; T21 S8 DPI-unaware 96 virtualization fixture; T21 S13 hidden ordinary-window global stop regression; T21 S13 verify hidden windows shown after stop",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/integration/global_mode.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f254e8caad66080a756deb8e1b3ab74551debdf5c53d4b103811f8ee63983506",
+      "sha256": "716aec0e5fac5909a03c93efb1377704c421c6ad6765e6a5acca052644dec073",
       "disposition": "authored",
-      "review": "T21 S3 global controller and private-desktop integration; T21 S4 dual-width and lifecycle validation; T21 S7 per-monitor DPI and controlled input; T21 S8 DPI-unaware 96 virtualization fixture; T21 S13 unified late style hooks and stop semantics; T21 S13 unified session stop semantics; T21 S13 hidden ordinary-window global stop regression",
+      "review": "T21 S3 global controller and private-desktop integration; T21 S4 dual-width and lifecycle validation; T21 S7 per-monitor DPI and controlled input; T21 S8 DPI-unaware 96 virtualization fixture; T21 S13 unified late style hooks and stop semantics; T21 S13 unified session stop semantics; T21 S13 hidden ordinary-window global stop regression; T21 S13 verify hidden windows shown after stop",
       "notice": "Project-authored source; no imported code or resources"
     },
     {

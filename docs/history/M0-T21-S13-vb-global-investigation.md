@@ -619,3 +619,14 @@ ntw16s64 `638b42135a9b82b5e3411e17342b9ed5e299aa7b1e4ea58dfa2b5d110eab54f0`;
 run16s `dbc175525b0babdfc0b8ad1d013f26e091d6d100dc9db4540629559335bf608d`.
 The publication tool checked all four files in both assets and O:/winnt.
 
+# P76: show restored hidden windows after stop
+
+Extended the P74 mixed-mode test to show all four previously hidden ordinary
+windows after global shutdown, update them, and verify they remain unstyled.
+The published O:/winnt package passed the private-desktop x86/x64 probe at
+144 DPI. The P74 clean package passed 10 focused cases without skips in 28.35
+seconds, including the ordinary 96-DPI-unaware variant. For that run only the
+three test executables were temporarily replaced and then restored; the four
+product files were unchanged. This checks window attachment after actual show,
+not physical input or a pixel-perfect comparison.
+
