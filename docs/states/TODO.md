@@ -6,11 +6,13 @@ demo 旧式文件选择的跨进程观察器已用 WM_SETTEXT/WM_GETTEXT 修正�
 
 - [ ] TODO(Medium): Shell 文件夹带应用筛选回调的旧树适配；Owner：未来经准入的公共对话框工作。Evidence：[S3 Shell](../history/M0-T20-S3-shell-filter.md)：为保留真实筛选接口，当前回退系统新树。Admission：能可靠保留真实 Shell 接口、筛选、PIDL、回调和生命周期的旧树方案；不得移除筛选或伪造结果。
 
-- [ ] TODO(Medium): 普通 Win32 Explorer 多选旧布局兼容；Owner：后续公共对话框工作。Evidence：[S7](../history/M0-T20-S7-win32-multi.md)、[S8原型](../history/M0-T20-S8-win32-multi-prototype.md)和[S9](../history/M0-T20-S9-file-navigation.md)：O: 无短名长文件在系统旧列表不可见；[S10](../history/M0-T20-S10-file-selection.md)合并了自有导航选择原型，但真实应用确认及错误契约未闭环，目前保留 Explorer。Admission：可靠枚举长名并保持多选、返回缓冲与跨目录语义的方案，不改系统短名设置。
+- [ ] TODO(Medium): 普通 Win32 Explorer 多选旧布局兼容；Owner：后续公共对话框工作。Evidence：[S7](../history/M0-T20-S7-win32-multi.md)、[S8原型](../history/M0-T20-S8-win32-multi-prototype.md)和[S9](../history/M0-T20-S9-file-navigation.md)：O: 无短名长文件在系统旧列表不可见；[S10](../history/M0-T20-S10-file-selection.md)合并了自有导航选择原型，[S13](../history/M0-T20-S13-shadow-coverage.md)确认错误交接及 ANSI/Unicode 差异仍未闭环，目前保留 Explorer。Admission：可靠枚举长名并保持多选、返回缓冲与跨目录语义的方案，不改系统短名设置。
 
 - [ ] TODO(Medium): COM 多选旧布局及非多选并发兼容；Owner：未来经准入的公共对话框工作。Evidence：[S3 COM](../history/M0-T20-S3-com-safety.md)：多选回退系统新框，已测双多选并发恢复；旧框串目录根因及非多选并发未确认。Admission：原生对照、真实长名与独立目录、返回对象及资源生命周期均可验证的实现。
 
 - [ ] TODO(Medium): Shell 旧树初始化选择系统临时目录超时；Owner：后续公共对话框测试和性能调查。Evidence：[S6](../history/M0-T20-S6-folder-probe.md)：旧Shell无注入及注入均超时，现代COM无注入可取消；改用Windows目录的正负例不能证明原问题解决。Admission：可控目录、双宽同入口对照及准确阻塞证据，不扩大超时或掩盖失败。
+
+- [ ] TODO(Low): 公共对话框聚焦回归中的间歇超时；Owner：未来复现时的原生探针调查。Evidence：[S14](../history/M0-T20-S14-completion-audit.md)首次观察发布批次 x86 COM 多选并发及新包 x86 ANSI 文件打开超时，各自独立复测通过，根因均未确定；Admission：保留失败现场并获取可复现阻塞证据，不把重试通过当修复。
 
 - [ ] TODO(Low): Explorer 文件框自定义筛选取消后的 nFilterIndex 差异；Owner：未来有真实应用需求时。Evidence：[S1 阶段](../history/M0-T20-S1-preliminary.md)：有限系统新旧布局取消对照数值不一致，明确取消契约与普遍性未建立。Admission：真实应用影响及系统正负对照；不能凭少量样本强改返回值。
 
