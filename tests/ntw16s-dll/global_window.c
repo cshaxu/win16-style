@@ -6,6 +6,12 @@
 #define CHECK(x) do { if(!(x)){fprintf(stderr,"GLOBAL WINDOW FAIL line=%d error=%lu: %s\n",__LINE__,GetLastError(),#x);return 1;} } while(0)
 static HWND wrong_window;
 static BOOL destroy_on_position;
+static LRESULT CALLBACK destroy_on_font(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
+{
+    (void)id;(void)data;
+    if(m==WM_GETFONT){DestroyWindow(w);return 0;}
+    return DefSubclassProc(w,m,a,b);
+}
 static DWORD WINAPI wrong_thread(void *arg)
 {
     (void)arg;
@@ -40,8 +46,10 @@ static int worker(int argc,WCHAR **argv)
     CHECK(ntw16s_global_window_remove(root));CHECK(!ntw16s_global_window_attached(root));
     CHECK(!ntw16s_global_window_remove(root)&&GetLastError()==ERROR_NOT_FOUND);
     CHECK(ntw16s_global_window_apply(root));CHECK(DestroyWindow(root));
-    HWND reentrant=CreateWindowW(cls.lpszClassName,L"Reentrant",WS_OVERLAPPEDWINDOW,20,20,380,240,NULL,NULL,instance,NULL);CHECK(reentrant);
-    destroy_on_position=TRUE;CHECK(!ntw16s_global_window_apply(reentrant));CHECK(!IsWindow(reentrant));
+    HWND reentrant_parent=CreateWindowW(cls.lpszClassName,L"Reentrant",WS_OVERLAPPEDWINDOW,20,20,380,240,NULL,NULL,instance,NULL);CHECK(reentrant_parent);
+    HWND reentrant=CreateWindowW(L"BUTTON",L"Reentrant",WS_CHILD|WS_VISIBLE,20,20,100,28,reentrant_parent,(HMENU)3,instance,NULL);CHECK(reentrant);
+    CHECK(SetWindowSubclass(reentrant,destroy_on_font,1,0));
+    CHECK(!ntw16s_global_window_apply(reentrant));CHECK(!IsWindow(reentrant));CHECK(DestroyWindow(reentrant_parent));
     ntw16s_creation_result creation={0};ntw16s_creation_scope *scope=Ntw16sCreationBegin(TRUE);CHECK(scope);
     HWND prior=CreateWindowW(cls.lpszClassName,L"Already styled",WS_OVERLAPPEDWINDOW,20,20,380,240,NULL,NULL,instance,NULL);CHECK(prior);
     CHECK(Ntw16sCreationEnd(scope,&creation));CHECK(Ntw16sWindowAttached(prior));

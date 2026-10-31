@@ -107,7 +107,7 @@ def main():
             pe = struct.unpack_from('<I', raw, 60)[0]
             assert struct.unpack_from('<H', raw, pe+22)[0] & 0x2000, 'DLL flag missing'
             assert machine == (0x14c if arch == 'x86' else 0x8664)
-            assert public == sorted(names + ['Ntw16sShowModernFileDialog','Ntw16sGlobalHook','Ntw16sGlobalHost']) and ordinals == {**{n: i+2 for i, n in enumerate(names)}, 'Ntw16sShowModernFileDialog': 33, 'Ntw16sGlobalHook': 34, 'Ntw16sGlobalHost': 35} and live == set(range(1, 36))
+            assert public == sorted(names + ['Ntw16sShowModernFileDialog','Ntw16sGlobalHook','Ntw16sGlobalHost','Ntw16sWindowAttach']) and ordinals == {**{n: i+2 for i, n in enumerate(names)}, 'Ntw16sShowModernFileDialog': 33, 'Ntw16sGlobalHook': 34, 'Ntw16sGlobalHost': 35, 'Ntw16sWindowAttach': 36} and live == set(range(1, 37))
             assert {n.lower() for n in imports if not core.system_crt(n)} == {'kernel32.dll', 'user32.dll', 'gdi32.dll', 'comctl32.dll', 'comdlg32.dll', 'shell32.dll', 'ole32.dll', 'dwmapi.dll', 'uxtheme.dll'}
         else:
             subsystem, imports = application(path)

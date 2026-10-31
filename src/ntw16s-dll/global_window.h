@@ -1,6 +1,9 @@
 #ifndef NTW16S_GLOBAL_WINDOW_H
 #define NTW16S_GLOBAL_WINDOW_H
 #include <windows.h>
+/* Existing-window attachment shares the automatic classifier, runs on the
+ * window thread, and refuses an existing owner or an unsupported window. */
+BOOL __cdecl Ntw16sWindowAttach(HWND window);
 /* GUI-thread only. Idempotent within a live attachment; unsupported windows
  * remain native. Existing run16s attachments remain independently owned.
  * No process-wide startup hooks are modified. */

@@ -35,3 +35,4 @@ EXPORTS
     Ntw16sShowModernFileDialog @33
     Ntw16sGlobalHook=Ntw16sGlobalHook@12 @34
     Ntw16sGlobalHost=Ntw16sGlobalHost@16 @35
+    Ntw16sWindowAttach @36

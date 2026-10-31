@@ -1,7 +1,8 @@
 #ifndef NTW16S_CONTROL_PROTOCOL_H
 #define NTW16S_CONTROL_PROTOCOL_H
 #include <windows.h>
-/* A verified role belongs to one newly created HWND on its GUI thread. */
+/* A verified role belongs to one HWND on its GUI thread; initialized native
+ * controls may be checked at creation or during late global attachment. */
 typedef struct ntw16s_control_protocol ntw16s_control_protocol;
 ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND);
 /* Internal: owner is accepted only after the actual EDIT forwarding witness. */

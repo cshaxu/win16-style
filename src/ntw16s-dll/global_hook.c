@@ -49,11 +49,7 @@ static BOOL eligible(HWND w)
 {
     WCHAR name[64];DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
     if(!GetClassNameW(w,name,ARRAYSIZE(name)))return FALSE;
-    if(style&WS_CHILD){
-        static const WCHAR *const controls[]={L"Button",L"Edit",L"Static",L"ListBox",L"ComboBox",L"ScrollBar"};
-        for(unsigned i=0;i<ARRAYSIZE(controls);++i)if(!lstrcmpiW(name,controls[i]))return TRUE;
-        return FALSE;
-    }
+    if(style&WS_CHILD)return TRUE;
     return (style&WS_CAPTION)==WS_CAPTION && !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_TOOLWINDOW|WS_EX_LAYERED));
 }
 static BOOL CALLBACK children(HWND w,LPARAM value)

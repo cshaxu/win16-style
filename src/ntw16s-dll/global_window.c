@@ -2,12 +2,10 @@
  * This layer does not install desktop hooks or patch process entry points. */
 #include "global_window.h"
 #include "attachment.h"
-#include "controls.h"
-#include "win16_style.h"
 #include <commctrl.h>
 #include <stdlib.h>
 
-typedef enum global_kind { GLOBAL_PENDING, GLOBAL_FRAME, GLOBAL_CONTROL } global_kind;
+typedef enum global_kind { GLOBAL_PENDING, GLOBAL_ATTACHMENT } global_kind;
 typedef struct global_window { unsigned calls; BOOL detached, removing; global_kind kind; } global_window;
 static LRESULT CALLBACK global_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 
@@ -54,13 +52,8 @@ BOOL ntw16s_global_window_apply(HWND w)
     s=(global_window *)calloc(1,sizeof(*s));if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
     s->calls=1;
     if(!SetWindowSubclass(w,global_proc,(UINT_PTR)global_proc,(DWORD_PTR)s)){error=GetLastError();free(s);SetLastError(error);return FALSE;}
-    if(GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD){
-        WCHAR name[32]={0};LONG_PTR style=GetWindowLongPtrW(w,GWL_STYLE);
-        if(GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpiW(name,L"EDIT"))
-            installed=win16_style_edit_install(w,(style&WS_BORDER)!=0,NULL);
-        else installed=win16_style_control_install(w,NULL);
-        if(installed)s->kind=GLOBAL_CONTROL;
-    }else {installed=win16_style_install(w,NULL);if(installed)s->kind=GLOBAL_FRAME;}
+    installed=Ntw16sWindowAttach(w);
+    if(installed)s->kind=GLOBAL_ATTACHMENT;
     error=installed?ERROR_SUCCESS:GetLastError();
     if(s->detached){installed=FALSE;error=ERROR_INVALID_WINDOW_HANDLE;}
     if(!installed && !s->detached)detach(w,s);
@@ -73,8 +66,7 @@ BOOL ntw16s_global_window_remove(HWND w)
     s=lookup(w);if(!s || s->detached){SetLastError(ERROR_NOT_FOUND);return FALSE;}
     if(s->removing || s->kind==GLOBAL_PENDING){SetLastError(ERROR_BUSY);return FALSE;}
     ++s->calls;s->removing=TRUE;
-    if(s->kind==GLOBAL_CONTROL)removed=win16_style_control_remove(w);
-    else if(s->kind==GLOBAL_FRAME)removed=win16_style_remove(w);
+    if(s->kind==GLOBAL_ATTACHMENT)removed=Ntw16sWindowRemove(w);
     error=removed?ERROR_SUCCESS:GetLastError();
     if(removed && !s->detached)detach(w,s);
     if(!s->detached)s->removing=FALSE;

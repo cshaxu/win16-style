@@ -1892,6 +1892,17 @@ static BOOL install_created(HWND w,DWORD original_style)
     if(!installed)SetLastError(error?error:ERROR_GEN_FAILURE);
     return installed;
 }
+BOOL __cdecl Ntw16sWindowAttach(HWND w)
+{
+    DWORD process=0;
+    if(!w || GetWindowThreadProcessId(w,&process)!=GetCurrentThreadId() || process!=GetCurrentProcessId()){
+        SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
+    }
+    if(lookup(w)){SetLastError(ERROR_ALREADY_EXISTS);return FALSE;}
+    if(!install_created(w,(DWORD)GetWindowLongPtrW(w,GWL_STYLE)))return FALSE;
+    if(!lookup(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    return TRUE;
+}
 static LRESULT CALLBACK creation_before(int code,WPARAM p,LPARAM l)
 {
     ntw16s_creation_scope *scope=current;DWORD saved=GetLastError();
