@@ -107,6 +107,7 @@ try{
         $win32MultiTarget=Join-Path (Join-Path $BuildRoot $arch) 'win32-multi-target.exe'
         $win32MultiNavTarget=Join-Path (Join-Path $BuildRoot $arch) 'win32-multi-navigation.exe'
         $commdlgErrorTarget=Join-Path (Join-Path $BuildRoot $arch) 'commdlg-error-target.exe'
+        $commdlgShadowTarget=Join-Path (Join-Path $BuildRoot $arch) 'commdlg-shadow-target.exe'
         foreach($encoding in @('a','w')) {
             $cases+=Case "dialog-file-custom-filter-$arch-$encoding" $dialogDriver @($run,$fileTarget,'open',$encoding,'1','customfilter') @('CUSTOM_FILTER changed=1 index_ok=1',"FILE_DIALOG bits=$bits",'old=1','ok=1','same=1','DIALOG_DRIVER exit=0') 45
             $cases+=Case "dialog-file-spaced-$arch-$encoding" $dialogDriver @($run,$fileTarget,'open',$encoding,'1','spaced') @('SPACED_FILE listed=1 same=1 cleanup=1',"FILE_DIALOG bits=$bits",'old=1','ok=1','DIALOG_DRIVER exit=0') 30
@@ -169,6 +170,9 @@ try{
         }
         foreach($encoding in @('ansi','wide')) {
             $wideFlag=if($encoding -eq 'wide'){1}else{0}
+            $cases+=Case "dialog-shadow-$arch-$encoding" $dialogDriver @('--direct',$commdlgShadowTarget,$encoding) @("SHADOW_CONTRACT bits=$bits wide=$wideFlag naive=0",'first=12291 repeat=12291 during=12291 worker=1,1','changed=1 bad=0 cancel=0 cancel_error=0','nested_error=1','nested_seen=1','DIALOG_DRIVER exit=0') 30
+            $cases+=Case "dialog-shadow-gap-$arch-$encoding" $dialogDriver @('--direct',$commdlgShadowTarget,$encoding,'gap') @("SHADOW_GAP bits=$bits wide=$wideFlag font=0 reported=12291 native=1",'DIALOG_DRIVER exit=0') 30
+            $cases+=Case "dialog-shadow-naive-$arch-$encoding" $dialogDriver @('--direct',$commdlgShadowTarget,$encoding,'naive') @('SHADOW_NAIVE_REJECTED 1','DIALOG_DRIVER exit=0') 30
             foreach($backend in @('native','styled')) {
                 $launch=if($backend -eq 'native'){'--direct'}else{$run}
                 $cases+=Case "dialog-extended-error-$arch-$encoding-$backend" $dialogDriver @($launch,$commdlgErrorTarget,$encoding) @("ERROR_CONTRACT bits=$bits wide=$wideFlag",'first=1 repeat=1 third=1','hook_error=11 color=0 color_error=1','before=1 during=1 worker_first=11 worker_second=11','ERROR_CANCEL seen=1 result=0 error=0 repeat=0 wait=0 worker=0 nested_seen=0 nested_error=0','DIALOG_DRIVER exit=0') 30
