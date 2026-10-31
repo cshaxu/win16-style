@@ -62,3 +62,17 @@ The current probe process was checked with `whoami /groups`: it has Medium Manda
 ## Elevated comparison
 
 A user-approved elevated probe ran on a private desktop and reported High Mandatory Level with the Administrators group enabled. In the same process, loading the deployed `O:\winnt\ntw16s64.dll` succeeded but `SetWindowsHookExW` still returned 126; the previously registered S12 scratch candidate path successfully installed and uninstalled a hook. The private desktop driver exited zero. This establishes that simply running the probe as administrator does not resolve the current session failure. The two DLLs differ in this particular run; the previously recorded same-byte comparison remains the evidence separating path/session effects from binary contents. No existing user process or global setting was changed. The cause and a working deployed-path fix remain unproven.
+
+
+## Elevated separate-window-station comparison
+
+A second short, user-approved High Mandatory Level probe successfully created its own noninteractive window station and desktop, ran one owned child there, waited for its exit, and closed both objects. In this separate station the deployed `O:\winnt\ntw16s64.dll` again loaded successfully but hook registration returned 126; the previously registered S12 candidate path succeeded in the same child, which exited zero. The earlier medium-token station creation failed with error 5; this elevated run shows that failure did not rule out the test. The result excludes an explanation limited to the original desktop and is consistent with a broader session-level registration constraint, but does not establish its precise cause or capacity. Read-only `tasklist /m` found no matching project DLL among visible modules, which is not proof that every protected process or kernel registration is clear. No existing process was closed or injected.
+
+
+A separate self-owned private-desktop native probe loaded the deployed x64 DLL and attempted `WH_CALLWNDPROC` first for its own thread, then globally: both returned 126. The same probe using the previously registered S12 candidate path succeeded in both modes and unhooked immediately. These are separate owned process runs with different DLL builds, not a substitute for the earlier same-byte path comparison. The observation excludes simply switching to per-thread hooks as a remedy in this session; it does not identify the underlying resource or establish results for other hook types.
+
+
+An elevated, read-only PowerShell `Get-Process` module enumeration visited 362 process objects and reported no `ntw16s32.dll` or `ntw16s64.dll` matches and no thrown access exceptions. Empty or incomplete module lists, protected processes, transient exits and alternate module names are not ruled out; this is not proof that all processes or kernel hook-registration slots are clear. It did not modify, inject, or terminate any process.
+
+
+The same isolated own-thread/global registration probe was compiled for x86: deployed `O:\winnt\ntw16s32.dll` returned 126 for both scopes, while the previously registered x86 S12 scratch DLL succeeded for both. Each owned test exited and unhooked normally. This confirms the current symptom affects both product bitnesses, without establishing whether their underlying capacity is shared.
