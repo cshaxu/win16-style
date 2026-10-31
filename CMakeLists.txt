@@ -203,6 +203,13 @@ if(BUILD_TESTING)
   target_compile_definitions(global-propagation-probe PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_options(global-propagation-probe PRIVATE -municode)
   target_link_libraries(global-propagation-probe PRIVATE user32)
+  add_executable(late-process-prototype tests/integration/late_process_prototype.c
+    ${injection_root}/create_process.c ${injection_root}/system_process.c ${injection_root}/unwind.c
+    ${injection_root}/late_patch.c ${injection_root}/late_guard.c ${minhook_root}/buffer.c ${minhook_root}/trampoline.c ${hde_source})
+  target_include_directories(late-process-prototype PRIVATE src)
+  target_compile_definitions(late-process-prototype PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_options(late-process-prototype PRIVATE -municode)
+  target_link_libraries(late-process-prototype PRIVATE ntw16s-installer user32 advapi32)
   add_executable(global-late-dialog tests/integration/global_late_dialog.c)
   target_compile_definitions(global-late-dialog PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_options(global-late-dialog PRIVATE -municode)

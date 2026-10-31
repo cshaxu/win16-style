@@ -2,6 +2,15 @@
   "schema": 1,
   "files": [
     {
+      "path": "tests/integration/late_process_prototype.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "c4f8b2541020a47158c891d7479be1773ed6d14171d0123130edd2e111cac8fd",
+      "disposition": "authored",
+      "review": "T21 S13 experimental late process-hook adapter exercising production propagation implementation",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
       "path": "tests/ntw16s-dll/late_patch_batch.c",
       "source": null,
       "source_blob": null,

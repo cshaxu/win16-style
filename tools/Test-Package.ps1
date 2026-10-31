@@ -128,6 +128,11 @@ try{
         (Case 'long-path' $python @('-B',(Join-Path $SourceRoot 'tests/run16s-exe/long_path.py'),$run,$d32,$d64,(Join-Path $x86 'launch-failures.exe'),(Join-Path $x64 'launch-failures.exe')) @('LONG PATH PASS width=32','LONG PATH PASS width=64')),
         (Case 'cli-failures' $python (@('-B',(Join-Path $SourceRoot 'tests/run16s-exe/cli_failures.py'))+$pair) @('CLI ROLLBACK PASS width=32','CLI ROLLBACK PASS width=64','CLI IO/EXIT PASS width=32','CLI IO/EXIT PASS width=64'))
     )
+    foreach($parent in @('x86','x64')){foreach($child in @('x86','x64')){foreach($encoding in @('a','w')){
+        $parentBits=if($parent -eq 'x86'){'32'}else{'64'}
+        $childBits=if($child -eq 'x86'){'32'}else{'64'}
+        $cases+=Case "late-process-$parent-$child-$encoding" (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path (Join-Path $BuildRoot $parent) 'late-process-prototype.exe'),(Join-Path (Join-Path $BuildRoot $child) 'global-propagation-probe.exe'),$Package,$encoding.ToUpperInvariant()) @("PROPAGATION ENTRY bits=$childBits role=child dll=1","PROPAGATION ENTRY bits=$childBits role=grandchild dll=1","LATE PROCESS bits=$parentBits api=$($encoding.ToUpperInvariant()) hooks=2 created=1 exit=0 joined=1",'DIALOG_DRIVER exit=0') 25
+    }}}
     # Each native dialog target is owned by a timeout job and observes its own
     # UI thread. The driver runs the actual candidate launcher and both DLLs.
     $dialogDriver=Join-Path $x64 'dialog-test-driver.exe'
