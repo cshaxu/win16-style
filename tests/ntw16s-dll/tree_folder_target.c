@@ -9,6 +9,7 @@ static WCHAR wanted[MAX_PATH];
 static volatile LONG seen,trees,windows,direct_tree,new_button_visible;
 static HWND dialog;
 static BOOL cancel_mode,validate_mode,recover_mode;
+static BOOL temp_mode;
 static volatile LONG validated,callback_initialized,callback_unknown;
 static HWND edit_window;
 static BOOL CALLBACK child(HWND w,LPARAM data)
@@ -48,13 +49,15 @@ static DWORD WINAPI observe(void *unused)
     return 1;
 }
 static int CALLBACK callback(HWND w,UINT message,LPARAM parameter,LPARAM data)
-{(void)w;if(data==0x12345678 && message==BFFM_INITIALIZED)InterlockedIncrement(&callback_initialized);if(data==0x12345678 && message==BFFM_IUNKNOWN && parameter)InterlockedIncrement(&callback_unknown);if(data==0x12345678 && message==BFFM_VALIDATEFAILEDW){InterlockedIncrement(&validated);return 1;}return 0;}
+{if(data==0x12345678 && message==BFFM_INITIALIZED){InterlockedIncrement(&callback_initialized);if(temp_mode)SendMessageW(w,BFFM_SETSELECTIONW,TRUE,(LPARAM)wanted);}if(data==0x12345678 && message==BFFM_IUNKNOWN && parameter)InterlockedIncrement(&callback_unknown);if(data==0x12345678 && message==BFFM_VALIDATEFAILEDW){InterlockedIncrement(&validated);return 1;}return 0;}
 int wmain(int argc,WCHAR **argv)
 {
     if(argc!=3)return 2;
     BOOL nonew=!wcscmp(argv[1],L"shell-new-nonew") || !wcscmp(argv[1],L"shell-new-ansi-nonew"); BOOL com=!wcscmp(argv[1],L"com"),new_callback=!wcscmp(argv[1],L"shell-new-callback"),root_mode=!wcscmp(argv[1],L"shell-new-root") || !wcscmp(argv[1],L"shell-new-ansi-root"),new_ansi=!wcscmp(argv[1],L"shell-new-ansi-nonew") || !wcscmp(argv[1],L"shell-new-ansi") || !wcscmp(argv[1],L"shell-new-ansi-root"),new_shell=nonew || new_callback || root_mode || new_ansi || !wcscmp(argv[1],L"shell-new"),simple=!wcscmp(argv[1],L"shell-simple") || !wcscmp(argv[1],L"shell-simple-callback"),simple_callback=!wcscmp(argv[1],L"shell-simple-callback");cancel_mode=!wcscmp(argv[2],L"cancel");recover_mode=!wcscmp(argv[2],L"recover");validate_mode=recover_mode || !wcscmp(argv[2],L"validate");
-    if((!com && !simple && !new_shell && wcscmp(argv[1],L"shell")) || (!cancel_mode && !validate_mode && wcscmp(argv[2],L"accept")) || ((com || new_shell) && validate_mode))return 2;
+    temp_mode=!wcscmp(argv[1],L"shell-temp");
+    if((!com && !simple && !new_shell && !temp_mode && wcscmp(argv[1],L"shell")) || (!cancel_mode && !validate_mode && wcscmp(argv[2],L"accept")) || ((com || new_shell) && validate_mode))return 2;
     UINT length=GetWindowsDirectoryW(wanted,ARRAYSIZE(wanted));if(!length || length>=ARRAYSIZE(wanted))return 3;
+    if(temp_mode){WCHAR temp[MAX_PATH];if(!GetTempPathW(ARRAYSIZE(temp),temp)||!GetTempFileNameW(temp,L"w16",0,wanted)||!DeleteFileW(wanted)||!CreateDirectoryW(wanted,NULL))return 3;printf("TREE_TEMP_PATH %ls\n",wanted);fflush(stdout);}
     HRESULT init=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);if(FAILED(init))return 4;
     owner_thread=GetCurrentThreadId();HANDLE thread=CreateThread(NULL,0,observe,NULL,0,NULL);if(!thread)return 5;
     BOOL correct=FALSE;HRESULT hr=E_FAIL;
@@ -73,13 +76,13 @@ int wmain(int argc,WCHAR **argv)
     }else{PIDLIST_ABSOLUTE item,root=NULL;
         if(root_mode && FAILED(SHParseDisplayName(wanted,NULL,&root,0,NULL)))return 6;
         if(new_ansi){BROWSEINFOA b={0};b.ulFlags=BIF_RETURNONLYFSDIRS|BIF_NEWDIALOGSTYLE|(nonew?BIF_NONEWFOLDERBUTTON:0);b.pidlRoot=root;item=SHBrowseForFolderA(&b);}
-        else{BROWSEINFOW b={0};b.ulFlags=BIF_RETURNONLYFSDIRS|(nonew?BIF_NONEWFOLDERBUTTON:0)|(new_shell?BIF_NEWDIALOGSTYLE:BIF_USENEWUI|(simple?0:BIF_VALIDATE));b.pidlRoot=root;
-            if(validate_mode || simple_callback || new_callback){b.lpfn=callback;b.lParam=0x12345678;}item=SHBrowseForFolderW(&b);}
+        else{BROWSEINFOW b={0};b.ulFlags=temp_mode?BIF_RETURNONLYFSDIRS:BIF_RETURNONLYFSDIRS|(nonew?BIF_NONEWFOLDERBUTTON:0)|(new_shell?BIF_NEWDIALOGSTYLE:BIF_USENEWUI|(simple?0:BIF_VALIDATE));b.pidlRoot=root;
+            if(validate_mode || simple_callback || new_callback || temp_mode){b.lpfn=callback;b.lParam=0x12345678;}item=SHBrowseForFolderW(&b);}
         if(root)CoTaskMemFree(root);
         WCHAR path[MAX_PATH]=L"";
         correct=(cancel_mode || (validate_mode && !recover_mode))?!item:(item && SHGetPathFromIDListW(item,path) && !lstrcmpiW(path,wanted));
         if(item)CoTaskMemFree(item);}
-    DWORD wait=WaitForSingleObject(thread,8000),code=1;if(wait==WAIT_OBJECT_0)GetExitCodeThread(thread,&code);CloseHandle(thread);CoUninitialize();
+    DWORD wait=WaitForSingleObject(thread,8000),code=1;if(wait==WAIT_OBJECT_0)GetExitCodeThread(thread,&code);CloseHandle(thread);CoUninitialize();if(temp_mode)printf("TREE_TEMP_CLEANUP %d\n",RemoveDirectoryW(wanted));
     printf("TREE_FOLDER bits=%u com=%d cancel=%d tree=%ld windows=%ld result=%d hr=%08lx wait=%lu worker=%lu validated=%ld direct=%ld callback=%ld unknown=%ld\n",
         (unsigned)(sizeof(void*)*8),com,cancel_mode,trees,windows,correct,(DWORD)hr,wait,code,validated,direct_tree,callback_initialized,callback_unknown);
     printf("TREE_NONEW requested=%d visible=%ld\n",nonew,new_button_visible);

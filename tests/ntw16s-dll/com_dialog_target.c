@@ -9,15 +9,24 @@
 #include <stdio.h>
 #include <wchar.h>
 static DWORD owner;static volatile LONG seen,old,filter_seen,label_seen,cancel_label_seen,hidden_seen;static HWND dialog;static BOOL cancel;
+static BOOL folder_mode;static WCHAR folder_path[MAX_PATH];
 static WCHAR hidden_name[MAX_PATH],hidden_system_name[MAX_PATH],hidden_system_path[MAX_PATH];
 static volatile LONG hidden_system_seen;
 static const WCHAR title[]=L"Win16S COM bridge integration";
 static BOOL CALLBACK find_dialog(HWND w,LPARAM value)
 {
-    (void)value;WCHAR text[128];GetWindowTextW(w,text,ARRAYSIZE(text));
-    if(!IsWindowVisible(w)||lstrcmpW(text,title))return TRUE;
+    (void)value;WCHAR text[128]=L"",cls[64]=L"";
+    if(!IsWindowVisible(w) || !GetClassNameW(w,cls,ARRAYSIZE(cls)) || lstrcmpW(cls,L"#32770"))return TRUE;
+    DWORD_PTR copied=0;
+    if(!SendMessageTimeoutW(w,WM_GETTEXT,ARRAYSIZE(text),(LPARAM)text,SMTO_ABORTIFHUNG|SMTO_BLOCK,300,&copied)){
+        printf("COM_FOLDER_WINDOW text_timeout=%lu\n",GetLastError());return TRUE;
+    }
+    if(lstrcmpW(text,title))return TRUE;
     HWND folders=GetDlgItem(w,1121),drives=GetDlgItem(w,1137);
-    InterlockedExchange(&old,folders && drives);
+    HWND direct_tree=folder_mode?GetDlgItem(w,14145):NULL;WCHAR tree_class[64]=L"";
+    BOOL tree=direct_tree && GetParent(direct_tree)==w && GetClassNameW(direct_tree,tree_class,ARRAYSIZE(tree_class)) && !lstrcmpiW(tree_class,L"SysTreeView32");
+    if(folder_mode)printf("COM_FOLDER_LAYOUT tree=%d ok=%d enabled=%d\n",tree,GetDlgItem(w,IDOK)!=NULL,IsWindowEnabled(GetDlgItem(w,IDOK)));
+    InterlockedExchange(&old,folder_mode?tree:(folders && drives));
     HWND files=GetDlgItem(w,1120);if(hidden_name[0] && files){LRESULT count=SendMessageW(files,LB_GETCOUNT,0,0);
         printf("HIDDEN_LIST expected=%ls count=%lld\n",hidden_name,(long long)count);
         for(LRESULT i=0;i<count && i<20;++i){WCHAR item[512]=L"";LRESULT len=SendMessageW(files,LB_GETTEXTLEN,(WPARAM)i,0);
@@ -35,19 +44,24 @@ static BOOL CALLBACK find_dialog(HWND w,LPARAM value)
 }
 static DWORD WINAPI observer(void *unused)
 {
-    (void)unused;
+    (void)unused;BOOL selected=FALSE;
     for(unsigned i=0;i<200;++i){
         if(!seen)EnumThreadWindows(owner,find_dialog,0);
+        if(seen && IsWindow(dialog) && folder_mode && !cancel && !selected){
+            PostMessageW(dialog,BFFM_SETSELECTIONW,TRUE,(LPARAM)folder_path);selected=TRUE;
+        }
         if(seen && IsWindow(dialog) && i>10 && i%10==0){HWND button=GetDlgItem(dialog,cancel?IDCANCEL:IDOK);
             WCHAR edit[32768]=L"";GetDlgItemTextW(dialog,1152,edit,ARRAYSIZE(edit));printf("COM_DIALOG_EDIT submit=%ls\n",edit);fflush(stdout);
-            PostMessageW(dialog,WM_COMMAND,MAKEWPARAM(cancel?IDCANCEL:IDOK,BN_CLICKED),(LPARAM)button);}
+            PostMessageW(dialog,WM_COMMAND,MAKEWPARAM(cancel?IDCANCEL:IDOK,BN_CLICKED),folder_mode?0:(LPARAM)button);}
         if(seen && !IsWindow(dialog))return 0;
         Sleep(50);
     }
+    if(dialog && IsWindow(dialog))PostMessageW(dialog,WM_CLOSE,0,0);
     PostThreadMessageW(owner,WM_QUIT,0,0);return 1;
 }
 int wmain(int argc,WCHAR **argv)
 {
+    setvbuf(stdout,NULL,_IONBF,0);
     if(argc!=3 && argc!=4)return 2;
     BOOL foreign_query=argc==4 && !lstrcmpW(argv[3],L"foreign");
     BOOL missing_query=argc==4 && !lstrcmpW(argv[3],L"missing");
@@ -60,10 +74,16 @@ int wmain(int argc,WCHAR **argv)
     BOOL labels=argc==4 && !lstrcmpW(argv[3],L"labels");
     BOOL cancel_label=argc==4 && !lstrcmpW(argv[3],L"cancel-label");
     BOOL hidden=argc==4 && !lstrcmpW(argv[3],L"hidden");
+    BOOL noinitial=argc==4 && !lstrcmpW(argv[3],L"noinitial");
+    BOOL tempinitial=argc==4 && !lstrcmpW(argv[3],L"tempinitial");
+    BOOL native=argc==4 && !lstrcmpW(argv[3],L"native");
     BOOL folder=argv[1][0]==L'f';BOOL save=argv[1][0]==L's';cancel=argv[2][0]==L'c';
     WCHAR dir[MAX_PATH],path[MAX_PATH];if(!GetTempPathW(MAX_PATH,dir)||!GetTempFileNameW(dir,L"w16",0,path))return 3;
     if((save || folder) && !DeleteFileW(path))return 4;
-    if(folder && !CreateDirectoryW(path,NULL))return 4;
+    if(folder && tempinitial && !CreateDirectoryW(path,NULL))return 4;
+    if(folder && !tempinitial && !GetWindowsDirectoryW(path,ARRAYSIZE(path)))return 4;
+    if(folder)printf("COM_FOLDER_PATH path=%ls owned=%d\n",path,tempinitial);
+    folder_mode=folder;if(folder)lstrcpynW(folder_path,path,ARRAYSIZE(folder_path));
     if(hidden){if(save || folder || !SetFileAttributesW(path,FILE_ATTRIBUTE_HIDDEN))return 4;
         WCHAR *leaf=wcsrchr(path,L'\\');lstrcpynW(hidden_name,leaf?leaf+1:path,ARRAYSIZE(hidden_name));
         if(!GetTempFileNameW(dir,L"sys",0,hidden_system_path)||!SetFileAttributesW(hidden_system_path,FILE_ATTRIBUTE_HIDDEN|FILE_ATTRIBUTE_SYSTEM))return 4;
@@ -102,9 +122,10 @@ int wmain(int argc,WCHAR **argv)
         if(query!=E_NOINTERFACE || unknown)return 18;}
 
     if(folder){FILEOPENDIALOGOPTIONS options=0;IShellItem *initial=NULL;
+        printf("COM_FOLDER_STAGE configure\n");
         if(FAILED(IFileDialog_GetOptions(d,&options)) || FAILED(IFileDialog_SetOptions(d,options|FOS_PICKFOLDERS|FOS_FORCEFILESYSTEM)) ||
            FAILED(SHCreateItemFromParsingName(path,NULL,&IID_IShellItem,(void **)&initial)))return 6;
-        HRESULT set=IFileDialog_SetFolder(d,initial);IShellItem_Release(initial);if(FAILED(set))return 6;
+        HRESULT set=noinitial?S_OK:IFileDialog_SetFolder(d,initial);IShellItem_Release(initial);if(FAILED(set))return 6;
     }else if(FAILED(IFileDialog_SetFileName(d,path)))return 6;
     if(hidden){FILEOPENDIALOGOPTIONS options=0;IShellItem *initial=NULL;
         if(FAILED(IFileDialog_GetOptions(d,&options)) || FAILED(IFileDialog_SetOptions(d,options|FOS_FORCESHOWHIDDEN)) ||
@@ -145,6 +166,7 @@ int wmain(int argc,WCHAR **argv)
        FAILED(IFileDialog_QueryInterface(d,&IID_IUnknown,(void **)&base_ole_id)) || ole_id!=base_ole_id)return 13;
     IUnknown_Release(base_ole_id);IUnknown_Release(ole_id);IOleWindow_Release(ole);
     owner=GetCurrentThreadId();HANDLE worker=CreateThread(NULL,0,observer,NULL,0,NULL);if(!worker)return 7;
+    printf("COM_FOLDER_STAGE show folder=%d\n",folder);
     hr=use_v2?IFileDialog2_Show(v2,NULL):IFileDialog_Show(d,NULL);DWORD wait=WaitForSingleObject(worker,12000);CloseHandle(worker);
     BOOL same=FALSE;HRESULT result=E_FAIL;IShellItem *item=NULL;PWSTR name=NULL;
     if(SUCCEEDED(hr)){result=IFileDialog_GetResult(d,&item);if(SUCCEEDED(result))result=IShellItem_GetDisplayName(item,SIGDN_FILESYSPATH,&name);if(SUCCEEDED(result))same=!lstrcmpiW(path,name);}
@@ -166,8 +188,8 @@ int wmain(int argc,WCHAR **argv)
     if(open)IFileOpenDialog_Release(open);
     if(name)CoTaskMemFree(name);
     if(item)IShellItem_Release(item);
-    IFileDialog2_Release(v2);IFileDialog_Release(d);CoUninitialize();if(hidden_system_path[0]){SetFileAttributesW(hidden_system_path,FILE_ATTRIBUTE_NORMAL);DeleteFileW(hidden_system_path);}if(folder)RemoveDirectoryW(path);else DeleteFileW(path);
+    IFileDialog2_Release(v2);IFileDialog_Release(d);CoUninitialize();if(hidden_system_path[0]){SetFileAttributesW(hidden_system_path,FILE_ATTRIBUTE_NORMAL);DeleteFileW(hidden_system_path);}if(folder && tempinitial)RemoveDirectoryW(path);else if(!folder)DeleteFileW(path);
     printf("COM_BRIDGE bits=%u save=%d folder=%d cancel=%d seen=%ld old=%ld hr=%08lx result=%08lx same=%d wait=%lu filter=%ld array=%d labels=%ld hidden=%ld hidden_system=%ld\n",(unsigned)(sizeof(void*)*8),save,folder,cancel,seen,old,(unsigned long)hr,(unsigned long)result,same,wait,filter_seen,array_ok,label_seen,hidden_seen,hidden_system_seen);
     printf("COM_CANCEL_LABEL seen=%ld\n",cancel_label_seen);
-    return wait==WAIT_OBJECT_0 && seen && ((customized||foreign_query)?!old:old) && (!filtered || filter_seen) && (!labels || label_seen) && (!cancel_label || cancel_label_seen) && (!hidden || (hidden_seen && !hidden_system_seen)) && array_ok && (cancel?hr==HRESULT_FROM_WIN32(ERROR_CANCELLED):(SUCCEEDED(hr)&&SUCCEEDED(result)&&same))?0:1;
+    return wait==WAIT_OBJECT_0 && seen && ((customized||foreign_query||native)?!old:old) && (!filtered || filter_seen) && (!labels || label_seen) && (!cancel_label || cancel_label_seen) && (!hidden || (hidden_seen && !hidden_system_seen)) && array_ok && (cancel?hr==HRESULT_FROM_WIN32(ERROR_CANCELLED):(SUCCEEDED(hr)&&SUCCEEDED(result)&&same))?0:1;
 }

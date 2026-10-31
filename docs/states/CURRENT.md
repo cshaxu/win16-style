@@ -2,10 +2,28 @@
 
 ## Current Work
 
-M0 T20 S5 已完成；T20 保持开放，等待用户验收及后续收口指示。
+M0 T20 S6：探针修订与有限回归已验证，临时目录超时保留待查；待提交推送及远端复核。
 
-无活动任务包。S5 交付及远端复核见[交接记录](../history/M0-T20-S5-handoff.md)，活动包见[归档](../history/M0-T20-S5-current-archive.md)。
+## M0 T20 S6 Packet
 
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | New；S5已收口并远端复核 |
+| Admission And Approval | 用户授权自动准入后续S，停止验收等待；沿用T20范围 |
+| Objective | 定位既有COM文件夹探针超时，修订以验证现行Shell树布局、确认取消与实际返回对象 |
+| Non-goals | 不扩展用户降级的COM布局长尾，不改变产品行为或图形资源，不使用computer-use |
+| Reference Baseline | S5交接d8d5b37、S3 P2发布包b0a78c4；S4旧探针超时 |
+| Candidate Proposal | [公共对话框适配](../proposals/classic-folder-dialogs.md) |
+| Files And ABI Surface | 自有测试、包测试和交接文档；无ABI变更 |
+| Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache、原资源逐字节保留 |
+| Verification | 原生旧包对照，双宽正负例、干净双宽构建及实际同批四文件包测试，部署摘要及远端复核 |
+| Expected Markers | 解释可复现的阻塞节点；按实际布局确认目录结果、取消和资源清理，不掩盖失败 |
+| Asset Needs | 登记build/t20-s6及build/t20-package内自有scratch |
+| Reporting Requirements | 区分真实根因与推断、记录失败和未覆盖，S完成后继续下一必要S |
+| Stop Conditions | 不修改共享宿主、系统设置或兄弟仓库，失败留证据 |
+| Exit Criteria | 探针修复或明确证据，相关包测试、提交推送及远端复核 |
+| Original Owner Request | 自动准入执行后续S，不等待手工验收 |
+| Similar-Issue Sweep | 检查同一探针全部COM文件及文件夹调用和包内期望，保护文件路径测试 |
 ## Identifier State
 
 - Milestone: M0 (fixed)
@@ -13,9 +31,9 @@ M0 T20 S5 已完成；T20 保持开放，等待用户验收及后续收口指示
 - Last allocated Td S: 15
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
-- Last allocated T20 S: 5
+- Last allocated T20 S: 6
 - Last delivery: M0 T20 S3 P2：COM多选安全回退系统新框，双宽构建、实际包测试及双位置发布；Shell筛选P1同样采用安全回退。
-- Open task: T20 保持开放，等待用户验收；当前无活动任务包。
+- Open task: T20 S6 探针调查和修复；T20 保持开放。
 - 打印当前页已纳入受限 PrintDlgEx 转接；跨 DPI、实际打印和本地化仍待覆盖。
 - COM并发：已观察的双多选并发由系统原生路径止损；旧框目录串用根因、非多选并发仍未查明，详见[S3证据](../history/M0-T20-S3-com-safety.md)。
 - COM多选：默认回退系统新框，O: 长名、单项、取消、链接及双宽并发经有限验证；旧框实现及其他参数仍未全面解决。

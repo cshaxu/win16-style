@@ -2822,7 +2822,7 @@
       "path": "tests/ntw16s-dll/com_dialog_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f0c8a3643d211aaf0ccda0e9f7d65dce87a53bef34c42489d9e50bc1f6484f21",
+      "sha256": "2e79a0c59a1f5f0146114ad00463be3e83be55affd5e7d156dffdbae34740ed1",
       "disposition": "authored",
       "review": "T20 S1 COM dialog bridge and real native probe under development",
       "notice": "Project-authored; no imported code or resources"
@@ -3029,7 +3029,7 @@
       "path": "tests/ntw16s-dll/tree_folder_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "53bde0fa19850bb3a2d03f899d037e5ca8fd28a3c2d5e4de21b9e1724b1585ed",
+      "sha256": "a40da029cb898c04f42a3423e6f140fa95ec32b2c26403e9554b2ef0263255d2",
       "disposition": "authored",
       "review": "T20 S1 tree folder candidate native probe",
       "notice": "Project-authored test; no imported code or resources"

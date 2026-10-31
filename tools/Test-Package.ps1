@@ -164,6 +164,7 @@ try{
                 $cases+=Case "dialog-com-$arch-$kind-$action" $dialogDriver @($run,$comTarget,$kind,$action) @("COM_BRIDGE bits=$bits",'old=1','DIALOG_DRIVER exit=0') 30
             }
         }
+        $cases+=Case "dialog-com-$arch-folder-native-negative" $dialogDriver @('--direct',$comTarget,'folder','cancel','native') @("COM_BRIDGE bits=$bits",'folder=1','old=0','hr=800704c7','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-ex-$arch" $dialogDriver @($run,$comTarget,'folder','accept','ex') @('COM_EX identity=1 partial=00080012',"COM_BRIDGE bits=$bits",'folder=1','old=1','same=1','DIALOG_DRIVER exit=0') 30
         foreach($kind in @('open','save','folder')){
             $cases+=Case "dialog-com-missing-interface-$arch-$kind" $dialogDriver @($run,$comTarget,$kind,'cancel','missing') @('COM_MISSING_QUERY hr=80004002 null=1',"COM_BRIDGE bits=$bits",'old=1','hr=800704c7','DIALOG_DRIVER exit=0') 30
