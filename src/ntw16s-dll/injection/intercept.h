@@ -4,6 +4,7 @@
 extern ntw16s_context ntw16s_process_context;
 LONG ntw16s_attach_titles(void); /* joins the current early Detours transaction */
 LONG ntw16s_attach_processes(void);
+LONG ntw16s_attach_processes_using(DWORD (*attach)(void *,void *));
 LONG ntw16s_attach_file_dialogs(void);
 LONG ntw16s_attach_com_dialogs(void);
 LONG ntw16s_attach_folder_dialogs(void);

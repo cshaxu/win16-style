@@ -54,11 +54,13 @@ static NTW16S_UNWIND_FUNCTION BOOL WINAPI hook_a(LPCSTR application,LPSTR comman
     NTW16S_UNWIND_END(scope);
     SetLastError(error);return result;
 }
-LONG ntw16s_attach_processes(void)
+LONG ntw16s_attach_processes_using(DWORD (*attach)(void *,void *))
 {
+    if(!attach)return ERROR_INVALID_PARAMETER;
     if(!(ntw16s_process_context.flags&NTW16S_POLICY_PROPAGATE))return NO_ERROR;
     create_w=CreateProcessW;create_a=CreateProcessA;
-    LONG error=(LONG)ntw16s_hooks_attach(&create_w,(void *)hook_w);
-    if(!error)error=(LONG)ntw16s_hooks_attach(&create_a,(void *)hook_a);
+    LONG error=(LONG)attach(&create_w,(void *)hook_w);
+    if(!error)error=(LONG)attach(&create_a,(void *)hook_a);
     return error;
 }
+LONG ntw16s_attach_processes(void){return ntw16s_attach_processes_using(ntw16s_hooks_attach);}
