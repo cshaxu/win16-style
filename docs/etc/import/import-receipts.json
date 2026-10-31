@@ -23,27 +23,27 @@
       "path": "tests/ntw16s-dll/late_guard.c",
       "source": null,
       "source_blob": null,
-      "sha256": "35f32f0902fafab3bf38203e05316d14f4e9ff4458dc591bec5148e4e691b9a2",
+      "sha256": "616df541dacabf688c934e753b23c49b8fa08e77f140e3e3b23265257f7809e4",
       "disposition": "authored",
-      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product",
+      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product; T21 S13 detect thread-set changes during guard",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "src/ntw16s-dll/injection/late_guard.h",
       "source": null,
       "source_blob": null,
-      "sha256": "f10eae1e0e6ab5c29758ad030d86b3770913657dfd7440a3fc33f98b40eff722",
+      "sha256": "e322644f4e04be045022ef8668461401cd61d4be509dbc4ba97debfabf854031",
       "disposition": "authored",
-      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product",
+      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product; T21 S13 detect thread-set changes during guard",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "src/ntw16s-dll/injection/late_guard.c",
       "source": null,
       "source_blob": null,
-      "sha256": "684e5219d5a29baaf9fa64302c48e15d4ab196fd8aa5dd6185acc0b5568f6152",
+      "sha256": "5718cf6e71fad64cf2c7ef189f4410da9960582e30c45faf49ab96b361dc6f1d",
       "disposition": "authored",
-      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product",
+      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product; T21 S13 detect thread-set changes during guard",
       "notice": "Project-authored source; no imported code or resources"
     },
     {

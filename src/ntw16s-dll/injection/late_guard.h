@@ -12,5 +12,6 @@ DWORD ntw16s_late_guard_begin(ntw16s_late_guard *,const ntw16s_late_region *,DWO
 DWORD ntw16s_late_guard_end(ntw16s_late_guard *);
 #ifdef NTW16S_LATE_GUARD_TEST
 void ntw16s_late_guard_test_fail_after(DWORD);
+void ntw16s_late_guard_test_after_suspend(void (*)(void));
 #endif
 #endif
