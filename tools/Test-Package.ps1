@@ -123,6 +123,10 @@ try{
             }
             $cases+=Case "dialog-link-flag-styled-$arch-$encoding" $dialogDriver @($run,$linkFlagTarget,$encoding,'modern','keep',$scratch) @("LINK_FLAG bits=$bits",'old=1 ok=1 error=0 link=1','cleanup=111','DIALOG_DRIVER exit=0') 30
             $cases+=Case "dialog-link-flag-cancel-$arch-$encoding" $dialogDriver @($run,$linkFlagTarget,$encoding,'modern','keep',$scratch,'cancel') @('LINK_CANCEL requested=1',"LINK_FLAG bits=$bits",'old=1 ok=0 error=0','cleanup=111','DIALOG_DRIVER exit=0') 30
+            $cases+=Case "dialog-link-default-$arch-$encoding" $dialogDriver @($run,$linkFlagTarget,$encoding,'modern','resolve',$scratch) @("LINK_FLAG bits=$bits",'old=1 ok=1 error=0 link=0 target=1','cleanup=111','DIALOG_DRIVER exit=0') 30
+            $cases+=Case "dialog-link-default-small-$arch-$encoding" $dialogDriver @($run,$linkFlagTarget,$encoding,'modern','resolve',$scratch,'small') @('LINK_SMALL entered=1',"LINK_FLAG bits=$bits",'old=1 ok=0 error=12291','cleanup=111','DIALOG_DRIVER exit=0') 30
+            $cases+=Case "dialog-link-default-cancel-$arch-$encoding" $dialogDriver @($run,$linkFlagTarget,$encoding,'modern','resolve',$scratch,'cancel') @('LINK_CANCEL requested=1',"LINK_FLAG bits=$bits",'old=1 ok=0 error=0','cleanup=111','DIALOG_DRIVER exit=0') 30
+            $cases+=Case "dialog-link-default-list-$arch-$encoding" $dialogDriver @($run,$linkFlagTarget,$encoding,'modern','resolve',$scratch,'list') @('LINK_LIST entered=1','LINK_OFFSETS','valid=1',"LINK_FLAG bits=$bits",'old=1 ok=1 error=0 link=0 target=1','cleanup=111','DIALOG_DRIVER exit=0') 30
         }
         $folderTarget=Join-Path (Join-Path $BuildRoot $arch) 'folder-dialog-target.exe'
         $treeFolderTarget=Join-Path (Join-Path $BuildRoot $arch) 'tree-folder-target.exe'

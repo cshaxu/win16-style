@@ -2687,7 +2687,7 @@
       "path": "src/ntw16s-dll/injection/file_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c26181b8c663fccb0ddf412b41b6960a9a28d190cd9f11aab4a658c0dabc2215",
+      "sha256": "f392e2869c7b68dc4713abcffab1a8b1bf3821cbff82d81fd4899ced7590b23e",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
@@ -2714,7 +2714,7 @@
       "path": "tests/ntw16s-dll/win32_link_flag.c",
       "source": null,
       "source_blob": null,
-      "sha256": "313b73ef21811b6f426fbbb0ae9af1ede307f16b1c375fc8e970f928cb613306",
+      "sha256": "71ad587625a3d7a33fb69316a41f0396db088b74c18306aa08b72a4dc80e1bc5",
       "disposition": "authored",
       "review": "M0 T20 S15 native file dialog link flag probe",
       "notice": "Project-authored C; Windows SDK interfaces; no external resources copied"

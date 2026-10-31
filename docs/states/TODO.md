@@ -14,7 +14,7 @@ demo 旧式文件选择的跨进程观察器已用 WM_SETTEXT/WM_GETTEXT 修正�
 
 - [ ] TODO(Low): 公共对话框聚焦回归中的间歇超时；Owner：未来复现时的原生探针调查。Evidence：[S14](../history/M0-T20-S14-completion-audit.md)首次观察发布批次 x86 COM 多选并发及新包 x86 ANSI 文件打开超时，各自独立复测通过，根因均未确定；Admission：保留失败现场并获取可复现阻塞证据，不把重试通过当修复。
 
-- [ ] TODO(High): 普通 Win32 文件打开默认快捷方式解析不一致；Owner：T20 后续 S。Evidence：S15 自有真实快捷方式对照中，现代框返回目标路径，旧框及当前发布桥接返回 .lnk；Admission：保留缓冲区、编码、路径、错误码及取消契约，含文件和目录快捷方式原生对照后修复。
+- [ ] TODO(High): 普通 Win32 文件打开默认快捷方式解析的其余边界；Owner：未来经准入的公共对话框工作。Evidence：[S16](../history/M0-T20-S16-file-link-resolve.md)仅处理带筛选、绝对盘符路径或单一文件名、现存普通文件的快捷方式；目录、带子目录的相对路径、UNC、断链、虚拟对象和长路径仍未解决。Admission：原生新旧框对照及缓冲区、路径、错误码、导航和取消契约。
 
 - [ ] TODO(Low): Explorer 文件框自定义筛选取消后的 nFilterIndex 差异；Owner：未来有真实应用需求时。Evidence：[S1 阶段](../history/M0-T20-S1-preliminary.md)：有限系统新旧布局取消对照数值不一致，明确取消契约与普遍性未建立。Admission：真实应用影响及系统正负对照；不能凭少量样本强改返回值。
 

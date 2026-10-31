@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T20 S16：调查并修复普通文件打开默认快捷方式解析与系统新框不一致。
+M0 T20 S16：有限默认文件快捷方式解析已双宽验证并发布，等待提交推送与远端复核。
 
 ## M0 T20 S16 Packet
 
@@ -10,13 +10,13 @@ M0 T20 S16：调查并修复普通文件打开默认快捷方式解析与系统�
 | --- | --- |
 | Identifier Mode | Corrective；S15 P1 17408f0 已推送并复核远端及部署 |
 | Admission And Approval | 用户授权自动续 S；修复 S15 新发现的既有普通文件打开错误 |
-| Objective | 让旧布局的普通打开请求保留系统新框默认快捷方式解析结果 |
+| Objective | 修复普通打开请求中绝对盘符路径或列表单一文件名、现存普通文件快捷方式的默认解析 |
 | Non-goals | 不扩展多选或 COM 长尾、不改系统设置、不更换图形资源 |
 | Reference Baseline | S15 原生双宽 A/W 对照，正式包默认返回 .lnk 而系统新框返回目标 |
 | Candidate Proposal | [公共对话框适配](../proposals/classic-folder-dialogs.md) |
 | Files And ABI Surface | 文件对话框桥接及原生探针；无新增产品文件或公共 ABI |
 | Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；原资源字节不变 |
-| Verification | 新旧系统对照，双宽 A/W、文件与目录链接、容量、错误和取消；实际包回归 |
+| Verification | 新旧系统对照，双宽 A/W 文件链接、容量、错误和取消；目录及特殊路径如实列为未覆盖；实际包回归 |
 | Expected Markers | 路径、偏移、缓冲、错误与系统一致，明确不安全路径的处置 |
 | Asset Needs | build/t20-s16 和 build/t20-package 内自有 scratch |
 | Reporting Requirements | 先报告已证实差异与最小方案，未验证语义不宣称完成 |
