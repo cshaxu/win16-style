@@ -170,6 +170,12 @@ try{
             $cases+=Case "dialog-win32-multi-$arch-$encoding-native-long" $dialogDriver @('--direct',$win32MultiTarget,'explorer',$encoding,'long',$scratch) @("WIN32_MULTI bits=$bits",'old=0','result=1 error=0','cleanup=111','WIN32_MULTI_CONTRACT small=0 required=0 valid=1','DIALOG_DRIVER exit=0') 30
             $cases+=Case "dialog-win32-multi-$arch-$encoding-styled-long" $dialogDriver @($run,$win32MultiTarget,'explorer',$encoding,'long',$scratch) @("WIN32_MULTI bits=$bits",'old=0','result=1 error=0','cleanup=111','WIN32_MULTI_CONTRACT small=0 required=0 valid=1','DIALOG_DRIVER exit=0') 30
             $cases+=Case "dialog-win32-multi-$arch-$encoding-small" $dialogDriver @($run,$win32MultiTarget,'explorer',$encoding,'long',$scratch,'small') @("WIN32_MULTI bits=$bits",'old=0','result=0 error=12291','cleanup=111','valid=1','DIALOG_DRIVER exit=0') 30
+            foreach($backend in @('native','styled')) { foreach($variant in @('supplement','supplement-small','supplement-cancel')) {
+                $launch=if($backend -eq 'native'){'--direct'}else{$run}
+                $expected=if($variant -eq 'supplement'){'result=1 error=0'}elseif($variant -eq 'supplement-cancel'){'result=0 error=0'}else{'result=0 error=12291'}
+                $capture=if($variant -eq 'supplement-cancel'){'MULTI_SUPPLEMENT_RESULT inserted=2 captured=0 system_result=0'}else{'MULTI_SUPPLEMENT_RESULT inserted=2 captured=2 system_result=1'}
+                $cases+=Case "dialog-win32-prototype-$arch-$encoding-$variant-$backend" $dialogDriver @($launch,$win32MultiTarget,'old',$encoding,'long',$scratch,$variant) @("WIN32_MULTI bits=$bits",'old=1 listed=2 posted=1',$expected,'cleanup=111','valid=1',$capture,'DIALOG_DRIVER exit=0') 30
+            }}
         }
         $cases+=Case "dialog-com-$arch-folder-native-negative" $dialogDriver @('--direct',$comTarget,'folder','cancel','native') @("COM_BRIDGE bits=$bits",'folder=1','old=0','hr=800704c7','DIALOG_DRIVER exit=0') 30
         $cases+=Case "dialog-com-ex-$arch" $dialogDriver @($run,$comTarget,'folder','accept','ex') @('COM_EX identity=1 partial=00080012',"COM_BRIDGE bits=$bits",'folder=1','old=1','same=1','DIALOG_DRIVER exit=0') 30
