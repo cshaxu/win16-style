@@ -2,28 +2,28 @@
 
 ## Current Work
 
-M0 T20 S15：显式保留快捷方式的打开框已转接并双位置发布，32 项聚焦包回归通过；等待提交推送复核。
+M0 T20 S16：调查并修复普通文件打开默认快捷方式解析与系统新框不一致。
 
-## M0 T20 S15 Packet
+## M0 T20 S16 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Corrective；T20 已按原有限范围收口，目标仍要求现代 API 转接旧布局，续用下一 S |
-| Admission And Approval | 用户授权 T20 自动续 S；不新开 T，COM 长尾与多选研究继续降级 |
-| Objective | 验证并在语义等价时扩大单文件 Open/Save 普通常用标志的旧布局转接 |
-| Non-goals | 不改变多选、应用 hook/模板、COM 长尾、系统设置或原图形资源 |
-| Reference Baseline | T20 S14 收口审计及当前 file_dialogs.c 白名单 |
+| Identifier Mode | Corrective；S15 P1 17408f0 已推送并复核远端及部署 |
+| Admission And Approval | 用户授权自动续 S；修复 S15 新发现的既有普通文件打开错误 |
+| Objective | 让旧布局的普通打开请求保留系统新框默认快捷方式解析结果 |
+| Non-goals | 不扩展多选或 COM 长尾、不改系统设置、不更换图形资源 |
+| Reference Baseline | S15 原生双宽 A/W 对照，正式包默认返回 .lnk 而系统新框返回目标 |
 | Candidate Proposal | [公共对话框适配](../proposals/classic-folder-dialogs.md) |
-| Files And ABI Surface | 文件对话框桥接、原生探针及必要测试；不新增产品文件或 ABI |
-| Applicable Rules | M0、纯 C17、MinGW GCC、Ninja、ccache；原资源逐字节保留 |
-| Verification | 无注入原生新旧框对照，双宽 A/W、成功取消和真实语义，负例及实际包测试 |
-| Expected Markers | 原生旧框实际保留标志契约、返回内容及清理；不满足者保持回退 |
-| Asset Needs | build/t20-s15 与 build/t20-package 下自有 scratch |
-| Reporting Requirements | 根据信息和测试报告支持、回退、失败与限制，不把加载视为效果 |
-| Stop Conditions | 缺少语义等价证据时不得改变生产路径；不修改其他进程和系统全局状态 |
-| Exit Criteria | 可验证的实现或不适用证据、双宽干净构建和包测试、必要发布、推送复核 |
-| Original Owner Request | 将现代 Win32 API 对话框转为系统旧布局，并按 ROI 自动续 S |
-| Similar-Issue Sweep | Open 与 Save 各 A/W 白名单，链接解析、共享冲突和最近使用记录 |
+| Files And ABI Surface | 文件对话框桥接及原生探针；无新增产品文件或公共 ABI |
+| Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；原资源字节不变 |
+| Verification | 新旧系统对照，双宽 A/W、文件与目录链接、容量、错误和取消；实际包回归 |
+| Expected Markers | 路径、偏移、缓冲、错误与系统一致，明确不安全路径的处置 |
+| Asset Needs | build/t20-s16 和 build/t20-package 内自有 scratch |
+| Reporting Requirements | 先报告已证实差异与最小方案，未验证语义不宣称完成 |
+| Stop Conditions | 无法安全保留结果契约时不合入猜测实现；不修改其他进程 |
+| Exit Criteria | 证明结果契约、双宽干净构建、实际包测试、必要发布、推送复核 |
+| Original Owner Request | 将现代 Win32 对话框转为旧布局，同时正确保留调用语义 |
+| Similar-Issue Sweep | Open/Save A/W、目录及断链、相对路径和不同标志 |
 
 ## Identifier State
 
@@ -32,9 +32,9 @@ M0 T20 S15：显式保留快捷方式的打开框已转接并双位置发布，3
 - Last allocated Td S: 15
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
-- Last allocated T20 S: 15
-- Last delivery: M0 T20 S15 候选已完成双宽包测试和双位置发布，等待提交与远端复核；COM多选和 Shell 筛选仍保留系统回退。
-- Open task: T20 S15 常用文件框标志原生对照与转接。
+- Last allocated T20 S: 16
+- Last delivery: M0 T20 S15 P1 17408f0 已发布、推送并复核；COM多选和 Shell 筛选仍保留系统回退。
+- Open task: T20 S16 默认快捷方式解析修复。
 - 打印当前页已纳入受限 PrintDlgEx 转接；跨 DPI、实际打印和本地化仍待覆盖。
 - COM并发：已观察的双多选并发由系统原生路径止损；旧框目录串用根因、非多选并发仍未查明，详见[S3证据](../history/M0-T20-S3-com-safety.md)。
 - COM多选：默认回退系统新框，O: 长名、单项、取消、链接及双宽并发经有限验证；旧框实现及其他参数仍未全面解决。
@@ -52,6 +52,8 @@ S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1收口，T20保持开放。
 
 ## Recent Closure
+
+- M0 T20 S15：显式保留快捷方式的打开请求转接旧框，32 项实际包聚焦回归及双位置发布通过；[记录](../history/M0-T20-S15-file-link-flag.md)。
 
 - M0 T20 S14 / T20：常用对话框有限范围审计、双宽干净包 23 项聚焦回归；首次超时及回退如实记录。[任务级审计](../history/M0-T20-S14-completion-audit.md)。
 
