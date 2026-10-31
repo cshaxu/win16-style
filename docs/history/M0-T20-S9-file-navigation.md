@@ -36,3 +36,7 @@ A/W直接/样式导航筛选、4项S8结果原型、4项当前Explorer长名回�
 ntw16s32 `5ff5a6ef521d7308b3124ab1361408a6e6d9359f5c02d58d43455c987f077ddb`；
 ntw16s64 `bc57dea7efae783ab1b8a10f656fdd7235f7b27c488b79e9a7f3f37dc8ad710c`；
 demo `bff680f9a8ce96f1c79db1c5bbb190e05349b1d22c07654a6931d619ef36511f`。
+
+S9 P1 `c8ea805` 已推送，GitHub 实际测试、记录与四个产品文件对象已复核。
+测试和构建描述+151/-0行（探针142、CMake3、包测试6）。S9 收口，按用户授权
+自动准入 S10；本S原型未改变产品。

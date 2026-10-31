@@ -2,28 +2,28 @@
 
 ## Current Work
 
-M0 T20 S9：导航筛选原型与双宽包回归已验证，待提交推送和远端复核；未进入产品。
+M0 T20 S10：合并旧框真实导航与长名选择返回的端到端原型；T20 保持开放。
 
-## M0 T20 S9 Packet
+## M0 T20 S10 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | New；S8 P1已提交推送并读取实际远端复核 |
-| Admission And Approval | 用户授权后续S自动准入；常用Win32文件多选仍属T20范围 |
-| Objective | 在S8自有原型中以实际目录和筛选规则枚举文件，验证进入子目录及筛选变化后不遗漏、不残留 |
-| Non-goals | 不扩展COM布局长尾、不改系统设置或图形资源、不使用computer-use，不把测试原型当产品实现 |
-| Reference Baseline | S8 P1 d1e4cf1；S7系统多选对照 |
+| Identifier Mode | New；S9 P1已提交推送并读取远端复核 |
+| Admission And Approval | 用户授权后续S自动准入；普通Win32文件多选属T20范围 |
+| Objective | 合并S8与S9，在实际进入子目录及筛选后选择长名并验证文件身份、单多选返回和缓冲契约 |
+| Non-goals | 不扩展COM布局长尾、不修改系统设置或资源，不使用computer-use；未验证前不改生产路径 |
+| Reference Baseline | S9 P1 c8ea805；S8 P1 d1e4cf1；S7原生对照 |
 | Candidate Proposal | [公共对话框适配](../proposals/classic-folder-dialogs.md) |
-| Files And ABI Surface | 自有原生测试及必要测试计划；无新增产品文件或ABI |
-| Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache，原图形资源逐字节保持 |
-| Verification | 双宽A/W旧框目录与筛选刷新、负例、取消、清理，干净双宽四文件包及回归 |
-| Expected Markers | 当前目录文件身份正确，切换后无旧项，筛选不显示不匹配项，资源和目录清理 |
-| Asset Needs | build/t20-s9及build/t20-package内自有scratch |
-| Reporting Requirements | 区分测试原型与产品，记录导航、筛选、失败和未覆盖；先说明后续最小方案 |
-| Stop Conditions | 不以进程全局当前目录冒充对话框目录，不修改系统设置或兄弟仓库 |
-| Exit Criteria | 可重复原生正负证据、必要包回归及远端复核；无法保持语义则保留回退 |
-| Original Owner Request | 自动续S，安全实现常见对话框旧布局 |
-| Similar-Issue Sweep | 对照现有旧框目录查询和实验筛选实现，不将COM实验路径视为产品支持 |
+| Files And ABI Surface | 自有原生探针及测试计划；无新增产品文件或公共ABI |
+| Applicable Rules | M0、C17、MinGW GCC、Ninja、ccache；原图形字节不变 |
+| Verification | 双宽A/W旧框导航后单/多选、取消和小缓冲，结果与系统Explorer对照，干净同批包与注入回归 |
+| Expected Markers | 真实枚举项、子目录身份、NUL布局、offset、错误、取消及清理可验证 |
+| Asset Needs | build/t20-s10及build/t20-package内自有scratch |
+| Reporting Requirements | 明确测试原型和产品差异、错误和未覆盖，先报告方案再动产品 |
+| Stop Conditions | 禁止以全局当前目录代替对话框目录，禁止牺牲应用契约或改系统全局设置 |
+| Exit Criteria | 端到端原型正负证据、双宽干净包及实际远端复核；未覆盖契约继续研究 |
+| Original Owner Request | 自动续S，安全实现常用Win32对话框的旧布局 |
+| Similar-Issue Sweep | 对照系统Explorer A/W、S8固定结果和S9导航，不把测试用自构结果当作系统原生行为 |
 ## Identifier State
 
 - Milestone: M0 (fixed)
@@ -31,9 +31,9 @@ M0 T20 S9：导航筛选原型与双宽包回归已验证，待提交推送和�
 - Last allocated Td S: 15
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
-- Last allocated T20 S: 9
+- Last allocated T20 S: 10
 - Last delivery: M0 T20 S3 P2：COM多选安全回退系统新框，双宽构建、实际包测试及双位置发布；Shell筛选P1同样采用安全回退。
-- Open task: T20 S9 旧框目录与筛选原型；T20 保持开放。
+- Open task: T20 S10 旧框导航后文件选择原型；T20 保持开放。
 - 打印当前页已纳入受限 PrintDlgEx 转接；跨 DPI、实际打印和本地化仍待覆盖。
 - COM并发：已观察的双多选并发由系统原生路径止损；旧框目录串用根因、非多选并发仍未查明，详见[S3证据](../history/M0-T20-S3-com-safety.md)。
 - COM多选：默认回退系统新框，O: 长名、单项、取消、链接及双宽并发经有限验证；旧框实现及其他参数仍未全面解决。
@@ -51,6 +51,8 @@ S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1收口，T20保持开放。
 
 ## Recent Closure
+
+- M0 T20 S9：双宽目录/筛选原型及24项干净包回归；尚未结合文件确认。[记录](../history/M0-T20-S9-file-navigation.md)。
 
 - M0 T20 S8：固定两项原型和40项干净包回归；未进入产品，导航与筛选未验证。[记录](../history/M0-T20-S8-win32-multi-prototype.md)。
 
