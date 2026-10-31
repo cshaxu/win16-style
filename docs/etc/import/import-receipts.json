@@ -3452,27 +3452,27 @@
       "path": "src/ntw16s-dll/global_remote.c",
       "source": null,
       "source_blob": null,
-      "sha256": "fecc463e8d56a93ba286a7d1123ab86d8d54ec7596b4fe0919ce1b4161b0260f",
+      "sha256": "7979ee59e7c92062c4aac6f8e8ce9a267b457e54ef68309bf120cfd5d5b1e999",
       "disposition": "authored",
-      "review": "T21 S13 bounded same-bitness system loader address resolution and owned target test",
+      "review": "T21 S13 bounded same-bitness system loader address resolution and owned target test; target-local exported worker resolution",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "src/ntw16s-dll/global_remote.h",
       "source": null,
       "source_blob": null,
-      "sha256": "a5e8ed74c367f9763e6a8c5dba2a81069503a2bdde4d4cc2bf970c2463e4fc0f",
+      "sha256": "54808bdeefc5bc7aa802bb66c484617c29542e5950266be2ca28cdac63f9a188",
       "disposition": "authored",
-      "review": "T21 S13 bounded same-bitness system loader address resolution and owned target test",
+      "review": "T21 S13 bounded same-bitness system loader address resolution and owned target test; target-local exported worker resolution",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/ntw16s-dll/global_remote.c",
       "source": null,
       "source_blob": null,
-      "sha256": "00d122c312db14da8d29833cbb9ab9c305d04c5a75b2f52be053be5b0d4815ed",
+      "sha256": "4aeec3ee47cbfa9ddd39576991157625210a5f113a937881ba6f28e9a3a74808",
       "disposition": "authored",
-      "review": "T21 S13 bounded same-bitness system loader address resolution and owned target test",
+      "review": "T21 S13 bounded same-bitness system loader address resolution and owned target test; target-local exported worker resolution",
       "notice": "Project-authored source; no imported code or resources"
     }
   ]
