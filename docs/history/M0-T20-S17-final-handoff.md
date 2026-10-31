@@ -24,3 +24,6 @@ ANSI 和 x64 Unicode 的链接解析、列表、缓冲、保留标志、查找�
 ntw16s32 `bbec58117f4dcd8587dd8d742d35a7735c6474ee9190f69f0c059586a3bf920c`；
 ntw16s64 `8f175666028726218968f69c54ceabcf7fd79d023b53aaa00c52fb08218ad9fb`；
 demo `24a287885a27588b8836a30f9e567ffd87764ccb50c5119ce83cda518cef8281`。
+
+S17 P1 `100ec23` 已推送，GitHub 交接记录与四个 assets 对象已复核一致；
+按用户要求收口 S17 和 T20，未覆盖项继续保留 TODO。
