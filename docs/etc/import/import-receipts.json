@@ -68,9 +68,9 @@
       "path": "tests/integration/global_relay.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f3261989d0b65b5f9471cef65a13b343b510d5d4a9ebd3674d2d6e469dc2c699",
+      "sha256": "9712307c1562ae442f6246d417b19d34cf0613299aa25311e5668cff3b8162ff",
       "disposition": "authored",
-      "review": "T21 S5 private-desktop global menu relay probe",
+      "review": "T21 S5 private-desktop global menu relay probe; T21 S13 truthful global readiness and pre-subclass menu drawing witness",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -122,18 +122,18 @@
       "path": "src/run16s-exe/global.c",
       "source": null,
       "source_blob": null,
-      "sha256": "0b838d172218c88ecd52991f99325770de65aa8309e25e066435eddeee6cc862",
+      "sha256": "f7539c6ac44669869e111eed6921a98c33c5508154fec3486d361142985c5915",
       "disposition": "authored",
-      "review": "T21 S3 global controller and private-desktop integration; T21 S4 host failure detection and regression; T21 S11 bounded timeout retry and restart probe; T21 S13 bounded target-thread fallback integration",
+      "review": "T21 S3 global controller and private-desktop integration; T21 S4 host failure detection and regression; T21 S11 bounded timeout retry and restart probe; T21 S13 bounded target-thread fallback integration; T21 S13 truthful global readiness and pre-subclass menu drawing witness",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "src/ntw16s-dll/global_session.h",
       "source": null,
       "source_blob": null,
-      "sha256": "daa411faa7e483e11222df9fdf431448972b6b69aaed6353ce206174743c99a6",
+      "sha256": "0b1f5b58ed807ec5037a5c6048081ea9cb04d87e612b5f04bc3510fd3b20f28f",
       "disposition": "authored",
-      "review": "T21 S3 global controller and private-desktop integration",
+      "review": "T21 S3 global controller and private-desktop integration; T21 S13 truthful global readiness and pre-subclass menu drawing witness",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -185,9 +185,9 @@
       "path": "tests/ntw16s-dll/menu_initial.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6e0e9c02fe7f468c6a05a5f08effd02342826e5d91de44ee7a152e11c55a988f",
+      "sha256": "f7b9e073c41a124bcf898b053ea948648f8755deccbb0d4c15476e6b548f8ce8",
       "disposition": "authored",
-      "review": "T20 S19 popup first paint before idle and negative old-package witness",
+      "review": "T20 S19 popup first paint before idle and negative old-package witness; T21 S13 truthful global readiness and pre-subclass menu drawing witness",
       "notice": "Project-authored test; no imported code or resources"
     },
     {

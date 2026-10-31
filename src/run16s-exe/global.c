@@ -100,6 +100,7 @@ int run16s_global(void)
     if(startup_status!=WAIT_OBJECT_0){error=startup_status==WAIT_TIMEOUT?ERROR_TIMEOUT:ERROR_DLL_INIT_FAILED;goto done;}
     if(fallback){error=ntw16s_global_manager_start(dll64,IMAGE_FILE_MACHINE_AMD64,&manager);if(error)goto done;}
     if(!SetConsoleCtrlHandler(stop_handler,TRUE)){error=GetLastError();goto done;}handler=TRUE;
+    InterlockedExchange(&s->ready,1);
     sweep(message,s->cookie,s->host_pid,NTW16S_GLOBAL_APPLY);
     fwprintf(stderr,L"run16s: global active; press Ctrl+C to stop\n");
     HANDLE active_waits[2]={stop_signal,host.hProcess};
@@ -111,7 +112,7 @@ int run16s_global(void)
     }
     result=0;
 done:
-    if(s && message){InterlockedExchange(&s->phase,NTW16S_GLOBAL_STOPPING);sweep(message,s->cookie,s->host_pid,NTW16S_GLOBAL_REMOVE);}
+    if(s && message){InterlockedExchange(&s->ready,0);InterlockedExchange(&s->phase,NTW16S_GLOBAL_STOPPING);sweep(message,s->cookie,s->host_pid,NTW16S_GLOBAL_REMOVE);}
     if(hook)UnhookWindowsHookEx(hook);
     if(host_stop)SetEvent(host_stop);
     if(manager){DWORD stopped=ntw16s_global_manager_stop(manager,5000);if(stopped && !error)error=stopped;}

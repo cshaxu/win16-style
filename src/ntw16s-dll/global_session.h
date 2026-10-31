@@ -13,8 +13,10 @@ typedef struct ntw16s_global_session {
     DWORD magic,version,owner_pid,owner_birth_low,owner_birth_high,cookie;
     volatile LONG phase;
     DWORD host_pid;
+    /* Both width-specific observers are installed; attachment may continue. */
+    volatile LONG ready;
 } ntw16s_global_session;
-C_ASSERT(sizeof(ntw16s_global_session)==32);
+C_ASSERT(sizeof(ntw16s_global_session)==36);
 BOOL ntw16s_global_name(WCHAR *name,DWORD capacity);
 BOOL ntw16s_global_owner_alive(const ntw16s_global_session *session);
 BOOL ntw16s_global_birth(HANDLE process,DWORD *low,DWORD *high);

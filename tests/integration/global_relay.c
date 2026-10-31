@@ -9,8 +9,8 @@ int wmain(int argc,WCHAR **argv)
  if(!ntw16s_global_name(name,ARRAYSIZE(name))||swprintf(request,ARRAYSIZE(request),L"%ls.request",name)<0)return 4;
  STARTUPINFOW si={.cb=sizeof(si)};PROCESS_INFORMATION manager={0},target={0};HANDLE map=NULL,event=NULL;ntw16s_global_session *s=NULL;BOOL pass=FALSE;DWORD code=99;
  swprintf(cmd,ARRAYSIZE(cmd),L"\"%ls\" --global",argv[1]);if(!CreateProcessW(argv[1],cmd,NULL,NULL,TRUE,0,NULL,NULL,&si,&manager))goto done;
- for(unsigned i=0;i<200;++i){map=OpenFileMappingW(FILE_MAP_READ,FALSE,name);if(map){s=MapViewOfFile(map,FILE_MAP_READ,0,0,sizeof(*s));if(s&&s->owner_pid==manager.dwProcessId&&s->phase==NTW16S_GLOBAL_ACTIVE)break;if(s)UnmapViewOfFile(s);s=NULL;CloseHandle(map);map=NULL;}if(WaitForSingleObject(manager.hProcess,0)==WAIT_OBJECT_0)break;Sleep(50);}
- if(!s||s->phase!=NTW16S_GLOBAL_ACTIVE)goto done;
+ for(unsigned i=0;i<200;++i){map=OpenFileMappingW(FILE_MAP_READ,FALSE,name);if(map){s=MapViewOfFile(map,FILE_MAP_READ,0,0,sizeof(*s));if(s&&s->owner_pid==manager.dwProcessId&&s->phase==NTW16S_GLOBAL_ACTIVE&&s->ready)break;if(s)UnmapViewOfFile(s);s=NULL;CloseHandle(map);map=NULL;}if(WaitForSingleObject(manager.hProcess,0)==WAIT_OBJECT_0)break;Sleep(50);}
+ if(!s||s->phase!=NTW16S_GLOBAL_ACTIVE||!s->ready)goto done;
  swprintf(cmd,ARRAYSIZE(cmd),L"\"%ls\" %ls",argv[2],argv[3]);if(!CreateProcessW(argv[2],cmd,NULL,NULL,TRUE,0,NULL,NULL,&si,&target))goto done;
  if(WaitForSingleObject(target.hProcess,12000)!=WAIT_OBJECT_0||!GetExitCodeProcess(target.hProcess,&code)||code)goto done;
  printf("GLOBAL RELAY PASS target_exit=0\n");pass=TRUE;
