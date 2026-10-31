@@ -2,13 +2,13 @@
 
 ## Current Work
 
-M0 T21 保持开放；S1 全局钩子隔离可行性验证已按用户要求完成，S2 尚未准入，当前无活动任务包。
+M0 T21 保持开放；S1 全局钩子隔离可行性验证已按用户要求完成，S2 尚未准入，当前无活动任务包。用户已明确全局退出时不按单程序/全局启动来源区分恢复行为，详见[方案](../proposals/global-style-mode.md)。
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
 - Last allocated T: 21
-- Last allocated Td S: 16
+- Last allocated Td S: 17
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
