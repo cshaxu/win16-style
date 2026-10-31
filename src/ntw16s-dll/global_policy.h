@@ -15,4 +15,7 @@ BOOL ntw16s_global_image_allowed(const WCHAR *image,const WCHAR *windows);
 DWORD ntw16s_global_policy_init(ntw16s_global_policy *policy);
 DWORD ntw16s_global_policy_inspect(const ntw16s_global_policy *policy,HWND window,DWORD pid,DWORD thread_id,
                                    WORD expected_machine,ntw16s_global_identity *identity);
+/* Revalidate the retained process object, thread birth and HWND immediately
+ * before any target mutation; the caller owns the process handle. */
+DWORD ntw16s_global_policy_revalidate(HANDLE process,HWND window,const ntw16s_global_identity *identity);
 #endif

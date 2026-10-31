@@ -3569,7 +3569,7 @@
       "path": "src/ntw16s-dll/global_policy.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3afb9c9966695a354005282b7e6acd08594f34c734001e44e2aeb4d654a4b1ab",
+      "sha256": "6d65ad96240d1c9aabd4a55226eff67e92d2f525202f02d2fbc37e8747e1adef",
       "disposition": "authored",
       "review": "T21 S13 fallback target identity and shared-host policy",
       "notice": "Project-authored source; no imported code or resources"
@@ -3578,7 +3578,7 @@
       "path": "src/ntw16s-dll/global_policy.h",
       "source": null,
       "source_blob": null,
-      "sha256": "33d1f20db0f0af8ca0eab55dfc4263889f014d6f32ded50adc42a839fa070ce3",
+      "sha256": "621e413d90037494c9d564ebe626999167fbac4a5ca2268f1c03963396ca2e2f",
       "disposition": "authored",
       "review": "T21 S13 fallback target identity and shared-host policy",
       "notice": "Project-authored source; no imported code or resources"
@@ -3587,9 +3587,36 @@
       "path": "tests/ntw16s-dll/global_policy.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1a08b1e4fef5ab61edbefd234d41d1d1e65e264d4b3fb45c682729ae25421e28",
+      "sha256": "68c65df58200c5710eec15d28ee284b657c6045c5ee11cc601815f8252e5b031",
       "disposition": "authored",
       "review": "T21 S13 fallback target identity and shared-host policy",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/global_attach.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "94b8eb2a13d6a44c7b3843be2efee7102ce7d945ec169882514c64c1cc4c3b08",
+      "disposition": "authored",
+      "review": "T21 S13 same-bitness target attachment coordinator and actual DLL integration test",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/global_attach.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "3e317e27c29b3b66f0f69ca7169d5f5d8f91f5de7181f72b7ddd4c49818f0a79",
+      "disposition": "authored",
+      "review": "T21 S13 same-bitness target attachment coordinator and actual DLL integration test",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "tests/ntw16s-dll/global_attach.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "abaaf89c3396333fdb330dd07adc26b58107b284618ecded36c99321080e995a",
+      "disposition": "authored",
+      "review": "T21 S13 same-bitness target attachment coordinator and actual DLL integration test",
       "notice": "Project-authored source; no imported code or resources"
     }
   ]

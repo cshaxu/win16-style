@@ -93,3 +93,25 @@ done:
     if(error)ZeroMemory(identity,sizeof(*identity));
     return error;
 }
+
+DWORD ntw16s_global_policy_revalidate(HANDLE process,HWND window,const ntw16s_global_identity *identity)
+{
+    HANDLE thread=NULL;FILETIME created,exited,kernel,user_time;DWORD actual=0,error=ERROR_SUCCESS;
+    if(!process || !window || !identity || !identity->pid || !identity->thread_id ||
+       GetProcessId(process)!=identity->pid)return ERROR_INVALID_PARAMETER;
+    if(WaitForSingleObject(process,0)!=WAIT_TIMEOUT)return ERROR_PROCESS_ABORTED;
+    if(!GetProcessTimes(process,&created,&exited,&kernel,&user_time))return GetLastError();
+    if(created.dwLowDateTime!=identity->process_birth_low || created.dwHighDateTime!=identity->process_birth_high)
+        return ERROR_INVALID_STATE;
+    thread=OpenThread(THREAD_QUERY_LIMITED_INFORMATION|SYNCHRONIZE,FALSE,identity->thread_id);
+    if(!thread)return GetLastError();
+    if(GetProcessIdOfThread(thread)!=identity->pid || WaitForSingleObject(thread,0)!=WAIT_TIMEOUT){error=ERROR_INVALID_THREAD_ID;goto done;}
+    if(!GetThreadTimes(thread,&created,&exited,&kernel,&user_time)){error=GetLastError();goto done;}
+    if(created.dwLowDateTime!=identity->thread_birth_low || created.dwHighDateTime!=identity->thread_birth_high){error=ERROR_INVALID_STATE;goto done;}
+    if(GetWindowThreadProcessId(window,&actual)!=identity->thread_id || actual!=identity->pid || !IsWindowVisible(window)){
+        error=ERROR_INVALID_WINDOW_HANDLE;goto done;
+    }
+    if(WaitForSingleObject(process,0)!=WAIT_TIMEOUT || WaitForSingleObject(thread,0)!=WAIT_TIMEOUT)error=ERROR_INVALID_STATE;
+done:
+    CloseHandle(thread);return error;
+}

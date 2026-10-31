@@ -48,13 +48,19 @@ int wmain(int argc,WCHAR **argv)
         machine==IMAGE_FILE_MACHINE_I386?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,&invalid);
     ntw16s_global_policy bad_policy=policy;bad_policy.sid_bytes=sizeof(bad_policy.sid)+1;
     DWORD wrong_sid=ntw16s_global_policy_inspect(&bad_policy,window,pi.dwProcessId,pi.dwThreadId,machine,&invalid);
+    DWORD revalidate=ntw16s_global_policy_revalidate(pi.hProcess,window,&identity);
+    ntw16s_global_identity stale=identity;stale.process_birth_low^=1;
+    DWORD stale_process=ntw16s_global_policy_revalidate(pi.hProcess,window,&stale);
+    stale=identity;stale.thread_birth_low^=1;
+    DWORD stale_thread=ntw16s_global_policy_revalidate(pi.hProcess,window,&stale);
     if(window)PostMessageW(window,WM_CLOSE,0,0);
     DWORD wait=WaitForSingleObject(pi.hProcess,3000),code=99;if(wait==WAIT_OBJECT_0)GetExitCodeProcess(pi.hProcess,&code);else TerminateProcess(pi.hProcess,ERROR_TIMEOUT);
     CloseHandle(pi.hThread);CloseHandle(pi.hProcess);CloseHandle(ready);
     if(!started || result || identity.pid!=pi.dwProcessId || identity.thread_id!=pi.dwThreadId || identity.machine!=machine ||
        (!identity.process_birth_low && !identity.process_birth_high) || (!identity.thread_birth_low && !identity.thread_birth_high) ||
-       wrong_pid!=ERROR_INVALID_WINDOW_HANDLE || wrong_thread!=ERROR_INVALID_WINDOW_HANDLE || wrong_arch!=ERROR_BAD_EXE_FORMAT || wrong_sid!=ERROR_INVALID_SID || !cleared || wait!=WAIT_OBJECT_0 || code){
-        printf("POLICY FAIL result=%lu pid=%lu thread=%lu arch=%lu sid=%lu cleared=%d wait=%lu code=%lu\n",result,wrong_pid,wrong_thread,wrong_arch,wrong_sid,cleared,wait,code);return 10;
+       wrong_pid!=ERROR_INVALID_WINDOW_HANDLE || wrong_thread!=ERROR_INVALID_WINDOW_HANDLE || wrong_arch!=ERROR_BAD_EXE_FORMAT || wrong_sid!=ERROR_INVALID_SID ||
+       revalidate || stale_process!=ERROR_INVALID_STATE || stale_thread!=ERROR_INVALID_STATE || !cleared || wait!=WAIT_OBJECT_0 || code){
+        printf("POLICY FAIL result=%lu pid=%lu thread=%lu arch=%lu sid=%lu revalidate=%lu stale_process=%lu stale_thread=%lu cleared=%d wait=%lu code=%lu\n",result,wrong_pid,wrong_thread,wrong_arch,wrong_sid,revalidate,stale_process,stale_thread,cleared,wait,code);return 10;
     }
-    printf("POLICY PASS bits=%u owned=1 birth=1 wrong_pid=1 wrong_thread=1 wrong_arch=1 wrong_sid=1 shared=1 cleanup=1\n",(unsigned)(sizeof(void*)*8));return 0;
+    printf("POLICY PASS bits=%u owned=1 birth=1 wrong_pid=1 wrong_thread=1 wrong_arch=1 wrong_sid=1 revalidate=1 stale=1 shared=1 cleanup=1\n",(unsigned)(sizeof(void*)*8));return 0;
 }
