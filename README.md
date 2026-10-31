@@ -63,6 +63,19 @@ Styling is enabled by default. Supported descendants created with
 `CreateProcessA/W` receive the appropriate x86 or x64 DLL too; a 32-bit child can
 follow a 64-bit parent, or vice versa. There is no extra `--win16-style-all` flag.
 
+### Manual global mode
+
+Run `run16s.exe --global` in a console to try the style on existing and newly
+shown traditional Win32 windows on the current desktop. Press Ctrl+C to stop.
+The controller uses both DLLs and the Windows x86 host; no additional project
+file or login startup is needed. Access restrictions, unsupported controls and
+unresponsive windows can prevent styling. Shared Windows shell hosts (including
+Explorer) are excluded, and some visual remnants may remain
+after stopping. Applications launched separately with `run16s.exe <program>`
+retain their own styling and child-process propagation after global mode stops.
+For safety, a DLL used by an attached process can remain loaded until that
+process exits. UWP/XAML applications are outside the supported scope.
+
 ## Screenshots
 
 These are captures of **real application windows** using the checked-in

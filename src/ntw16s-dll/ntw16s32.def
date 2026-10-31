@@ -33,3 +33,5 @@ EXPORTS
     win16_style_set_scroll_info @31
     win16_style_tabbed_list_install @32
     Ntw16sShowModernFileDialog @33
+    Ntw16sGlobalHook=Ntw16sGlobalHook@12 @34
+    Ntw16sGlobalHost=Ntw16sGlobalHost@16 @35

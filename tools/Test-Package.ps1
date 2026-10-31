@@ -56,6 +56,7 @@ try{
     $pair=@($run,$d32,$d64,(Join-Path $x86 'launch-target.exe'),(Join-Path $x64 'launch-target.exe'))
     $tree=@($run,$d32,$d64,(Join-Path $x86 'propagate-target.exe'),(Join-Path $x64 'propagate-target.exe'))
     $cases=@(
+        (Case 'global-e2e' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-e2e.exe'),$run,(Join-Path $x86 'global-e2e-target.exe'),(Join-Path $x64 'global-e2e-target.exe')) @('GLOBAL E2E PASS old=3 new=3 restore=4 normal_retained=2 post_stop_windows=2 post_stop_children=2 stopped=1','DIALOG_DRIVER exit=0') 35),
         (Case 'demo-system-menu' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'demo-system-menu.exe'),$run,$demo) @('DEMO_SYSTEM blue_pixels=','NOTEPAD_TEST main=1 find=1','DIALOG_DRIVER exit=0') 30),
         (Case 'progress-sharing' (Join-Path $PSHOME 'pwsh.exe') @('-NoProfile','-File',(Join-Path $SourceRoot 'tests/tooling/package_progress_lock.ps1')) @('PACKAGE_PROGRESS_LOCK PASS old-fails locked-skip recovered nonsharing-fails')),
         (Case 'plan-selection' (Join-Path $PSHOME 'pwsh.exe') @('-NoProfile','-File',(Join-Path $SourceRoot 'tests/tooling/package_case_selection.ps1')) @('PACKAGE_PLAN PASS default focused unknown duplicate empty missing-required rejected')),

@@ -7,7 +7,7 @@
 #include <commctrl.h>
 #include <stdlib.h>
 
-typedef enum global_kind { GLOBAL_PENDING, GLOBAL_FRAME, GLOBAL_CONTROL, GLOBAL_EXISTING } global_kind;
+typedef enum global_kind { GLOBAL_PENDING, GLOBAL_FRAME, GLOBAL_CONTROL } global_kind;
 typedef struct global_window { unsigned calls; BOOL detached, removing; global_kind kind; } global_window;
 static LRESULT CALLBACK global_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 
@@ -50,11 +50,11 @@ BOOL ntw16s_global_window_apply(HWND w)
     global_window *s;BOOL installed=FALSE;DWORD error;
     if(!local(w))return FALSE;
     if((s=lookup(w))!=NULL){if(!s->detached && s->kind!=GLOBAL_PENDING)return TRUE;SetLastError(ERROR_BUSY);return FALSE;}
+    if(Ntw16sWindowAttached(w))return TRUE;
     s=(global_window *)calloc(1,sizeof(*s));if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
     s->calls=1;
     if(!SetWindowSubclass(w,global_proc,(UINT_PTR)global_proc,(DWORD_PTR)s)){error=GetLastError();free(s);SetLastError(error);return FALSE;}
-    if(Ntw16sWindowAttached(w)){s->kind=GLOBAL_EXISTING;installed=TRUE;}
-    else if(GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD){
+    if(GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD){
         WCHAR name[32]={0};LONG_PTR style=GetWindowLongPtrW(w,GWL_STYLE);
         if(GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpiW(name,L"EDIT"))
             installed=win16_style_edit_install(w,(style&WS_BORDER)!=0,NULL);
@@ -73,8 +73,7 @@ BOOL ntw16s_global_window_remove(HWND w)
     s=lookup(w);if(!s || s->detached){SetLastError(ERROR_NOT_FOUND);return FALSE;}
     if(s->removing || s->kind==GLOBAL_PENDING){SetLastError(ERROR_BUSY);return FALSE;}
     ++s->calls;s->removing=TRUE;
-    if(s->kind==GLOBAL_EXISTING)removed=Ntw16sWindowRemove(w);
-    else if(s->kind==GLOBAL_CONTROL)removed=win16_style_control_remove(w);
+    if(s->kind==GLOBAL_CONTROL)removed=win16_style_control_remove(w);
     else if(s->kind==GLOBAL_FRAME)removed=win16_style_remove(w);
     error=removed?ERROR_SUCCESS:GetLastError();
     if(removed && !s->detached)detach(w,s);

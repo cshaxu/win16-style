@@ -2,7 +2,28 @@
 
 ## Current Work
 
-M0 T21 保持开放；S2 窗口接入基础已交付，全局控制器和 `--global` 尚未实现。当前无活动任务包，继续准入后续 S。
+M0 T21 S3：全局控制器及普通启动独立所有权已完成本地验证与两处发布；待提交推送及远端复核。
+
+## M0 T21 S3 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Continuation；用户要求继续实现完整全局模式 |
+| Admission And Approval | 手动 run16s --global 接管已有及新程序；用户确认全局退出保留普通 run16s 的独立效果，简化架构 |
+| Objective | 接通正式 DLL 双宽全局钩子、现有窗口接入、宿主、命令及退出 |
+| Non-goals | 不登录自启、不扩权；测试限定自有私有桌面，UWP/XAML 不处理 |
+| Reference Baseline | S1 隔离原型、S2 同线程窗口接入基础、用户接受残影 |
+| Candidate Proposal | [手动全局样式模式](../proposals/global-style-mode.md) |
+| Files And ABI Surface | run16s、双宽 ntw16s、宿主入口、ABI 清单和原生测试；无第五产物 |
+| Applicable Rules | M0、C17、GCC、Ninja、ccache、原图形资源不变 |
+| Verification | 自有私有桌面双宽已有/新目标、混合顺序、退出、生命周期、普通启动回归及实际包 |
+| Expected Markers | 显式 global 才装全局钩子；已有/新窗口接入；退出尽力恢复且不损害程序 |
+| Asset Needs | build/t21-s1、build/t21-s3、build/t21-package 自有 scratch |
+| Reporting Requirements | 分别记录接入、绘制、退出、传播及未恢复边界 |
+| Stop Conditions | 无法限制桌面或无法安全控制生命周期时不得在用户桌面启用 |
+| Exit Criteria | 双宽干净构建、同批四文件包测试、双发布已完成；提交推送与远端复核待完成 |
+| Original Owner Request | 手动启动接管已有及新程序；全局退出仅移除自身接管，普通 run16s 保持；允许残影 |
+| Similar-Issue Sweep | 两位宽钩子、正常启动注入、已有窗口、进程传播、进程退出和异常 |
 
 ## Identifier State
 
@@ -12,9 +33,9 @@ M0 T21 保持开放；S2 窗口接入基础已交付，全局控制器和 `--glo
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
-- Last allocated T21 S: 2
+- Last allocated T21 S: 3
 - Last delivery: M0 T21 S2 已完成双位宽干净构建、10 项聚焦包回归及双位置发布；全局入口尚未实现。[记录](../history/M0-T21-S2-global-window.md)。
-- Open task: T21 开放，准备后续全局控制器与钩子接入。
+- Open task: T21 S3 全局控制器、钩子及退出。
 - 打印当前页已纳入受限 PrintDlgEx 转接；跨 DPI、实际打印和本地化仍待覆盖。
 - COM并发：已观察的双多选并发由系统原生路径止损；旧框目录串用根因、非多选并发仍未查明，详见[S3证据](../history/M0-T20-S3-com-safety.md)。
 - COM多选：默认回退系统新框，O: 长名、单项、取消、链接及双宽并发经有限验证；旧框实现及其他参数仍未全面解决。

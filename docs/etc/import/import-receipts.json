@@ -2,30 +2,93 @@
   "schema": 1,
   "files": [
     {
+      "path": "tests/integration/global_mode_target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "844c14a612459b196b1183d5b7071f9838cc04c3347ea7e1ee9377892eb80736",
+      "disposition": "authored",
+      "review": "T21 S3 global controller and private-desktop integration",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "tests/integration/global_mode.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "17e926a79cb556c6a2eee515e939e89e5f48845074afcfb884f79ce4120a3cd7",
+      "disposition": "authored",
+      "review": "T21 S3 global controller and private-desktop integration",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/run16s-exe/global.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "6031e927c8efe529b52456b412a3cedbef836d0d4a7ce5b4fdcb2fd47c652315",
+      "disposition": "authored",
+      "review": "T21 S3 global controller and private-desktop integration",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/run16s-exe/global.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "8f856f28d334586816dc39f7a0b636d9770eb5084586ee82206a60ad4e195466",
+      "disposition": "authored",
+      "review": "T21 S3 global controller and private-desktop integration",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/global_session.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "daa411faa7e483e11222df9fdf431448972b6b69aaed6353ce206174743c99a6",
+      "disposition": "authored",
+      "review": "T21 S3 global controller and private-desktop integration",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/global_session.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "2e0c1fa5ce7fb5657951a17e22a9337074f14d1c30f0a5316763f57567be85b5",
+      "disposition": "authored",
+      "review": "T21 S3 global controller and private-desktop integration",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/global_hook.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e22ec3358a9b14f817e738a4265b92be3fc42d3649e79f53a426e16037347642",
+      "disposition": "authored",
+      "review": "T21 S3 global controller and private-desktop integration",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
       "path": "tests/ntw16s-dll/global_window.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f16accbb8d1042ac15a886b64cd2ec887a76129ac54a0c7a34078dfedef2b775",
+      "sha256": "15f7ae2d52d61cab460a57814361d069483802740598f18a5cab464bfc3c27d4",
       "disposition": "authored",
-      "review": "T21 S2 same-thread global window lifecycle foundation",
+      "review": "T21 S2 same-thread global window lifecycle foundation; T21 S3 global controller and independent ordinary-mode ownership",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "src/ntw16s-dll/global_window.h",
       "source": null,
       "source_blob": null,
-      "sha256": "9b155523849e9894cecf917a62f27cf311d599858a9b63f19aafe71fe81f8b84",
+      "sha256": "fca074ae0da675b65c208390e7f232082b1d6538ab9618e78f13605a7d3a81b1",
       "disposition": "authored",
-      "review": "T21 S2 same-thread global window lifecycle foundation",
+      "review": "T21 S2 same-thread global window lifecycle foundation; T21 S3 global controller and independent ordinary-mode ownership",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "src/ntw16s-dll/global_window.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e056c9e5c2cf61aa520095dee2ea82af458106c749fdb08519ebf24f15ce6d9b",
+      "sha256": "1451706008a07c75c0d1e867867a8c0f89eb847d0596cf6bedff2c3f21022470",
       "disposition": "authored",
-      "review": "T21 S2 same-thread global window lifecycle foundation",
+      "review": "T21 S2 same-thread global window lifecycle foundation; T21 S3 global controller and independent ordinary-mode ownership",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -779,18 +842,18 @@
       "path": "src/ntw16s-dll/ntw16s32.def",
       "source": null,
       "source_blob": null,
-      "sha256": "e355fd3a0482080eb4140ce599f82c18b4b58dff2cbece6913d063b14bd50551",
+      "sha256": "a482cb49ff109156135e1161879b0b6c88ca0b33a71df538a995c62d25142a5b",
       "disposition": "authored",
-      "review": "T3 S2 payload bootstrap/real helper ABI, version or bounded test process budget; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "review": "T3 S2 payload bootstrap/real helper ABI, version or bounded test process budget; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T21 S3 global controller and independent ordinary-mode ownership",
       "notice": "Project-authored, repository MIT"
     },
     {
       "path": "src/ntw16s-dll/ntw16s64.def",
       "source": null,
       "source_blob": null,
-      "sha256": "581bd75310e3517e6f2d6d8f57f5dd68e12c8e5b0ae961000c4fbb3e42a81f96",
+      "sha256": "fdbb647a6132971082251caffbf6104a7f5125f3ffca87f2a1dcb6f63a93436e",
       "disposition": "authored",
-      "review": "T3 S2 payload bootstrap/real helper ABI, version or bounded test process budget; docs/proposals/launcher-injection.md",
+      "review": "T3 S2 payload bootstrap/real helper ABI, version or bounded test process budget; docs/proposals/launcher-injection.md; T21 S3 global controller and independent ordinary-mode ownership",
       "notice": "Project-authored, repository MIT"
     },
     {
@@ -815,9 +878,9 @@
       "path": "tests/ntw16s-dll/abi.c",
       "source": null,
       "source_blob": null,
-      "sha256": "cf4b0439e88762d85dacb0a71d16285c1ccfad96a451f36f5a442c838e4ab49c",
+      "sha256": "6a99346c5671664246d9a1841683e6e4affb9b23de267c7fdd3259fffcbf337e",
       "disposition": "authored",
-      "review": "T2 S1 real DLL ABI fixture; docs/history/M0-T2-S1-import.md",
+      "review": "T2 S1 real DLL ABI fixture; docs/history/M0-T2-S1-import.md; T21 S3 global controller and independent ordinary-mode ownership",
       "notice": "Project-authored, MIT"
     },
     {
@@ -941,9 +1004,9 @@
       "path": "src/run16s-exe/main.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7b7480998de3a392c82f789fc3fa8d450ea38e25d81bc8163fbd0b8b57ec9c48",
+      "sha256": "bb43a9ced868e780db59372228c46b803419700e1f2e9a860e039a14a5280b74",
       "disposition": "authored",
-      "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes",
+      "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes; T21 S3 global controller and independent ordinary-mode ownership",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {

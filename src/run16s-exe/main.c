@@ -1,6 +1,7 @@
 #include "ntw16s-dll/injection/injection.h"
 #include "elevation.h"
 #include "startup_error.h"
+#include "global.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <wchar.h>
@@ -30,6 +31,10 @@ static int diagnostic(int code,DWORD error,PCWSTR phase)
 }
 int wmain(int argc,WCHAR **argv)
 {
+    if(argc>=2 && !wcscmp(argv[1],L"--global")){
+        if(argc!=2){fwprintf(stderr,L"Usage: run16s.exe --global\n");return 2;}
+        return run16s_global();
+    }
     BOOL private_console=run16s_private_console();
     int first=1;BOOL wait=FALSE,reentered=FALSE;DWORD error,exit_code=0;WORD subsystem=0;
     WCHAR image[NTW16S_PATH_CAP];ntw16s_context context;
@@ -41,7 +46,7 @@ int wmain(int argc,WCHAR **argv)
     }
     if(argc>first && !wcscmp(argv[first],L"--wait")){wait=TRUE;++first;raw=next_argument(raw);}
     if(argc<=first || !wcscmp(argv[first],L"--help")){
-        fwprintf(argc<=first?stderr:stdout,L"Usage: run16s.exe [--wait] <application> [arguments]\nConsole targets wait by default; --wait also waits for GUI targets.\n");
+        fwprintf(argc<=first?stderr:stdout,L"Usage: run16s.exe [--wait] <application> [arguments]\n       run16s.exe --global\nConsole targets wait by default; --wait also waits for GUI targets.\n");
         return argc<=first?2:0;
     }
     DWORD length=SearchPathW(NULL,argv[first],L".exe",NTW16S_PATH_CAP,image,NULL);
