@@ -80,3 +80,10 @@ DWORD ntw16s_global_attach_remove(ntw16s_global_attach *ticket)
     if(!ticket || ticket->phase!=ATTACH_ACTIVE)return ERROR_INVALID_STATE;
     return control(ticket,NTW16S_GLOBAL_REMOVE);
 }
+
+DWORD ntw16s_global_attach_apply(ntw16s_global_attach *ticket)
+{
+    if(!ticket || ticket->phase!=ATTACH_ACTIVE)return ERROR_INVALID_STATE;
+    ticket->control_error=control(ticket,NTW16S_GLOBAL_APPLY);
+    return ticket->control_error;
+}

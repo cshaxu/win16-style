@@ -2,6 +2,7 @@
 #include "global_window.h"
 #include "global_vb_text.h"
 #include "global_policy.h"
+#include "global_manager.h"
 #include "attachment.h"
 #include <commctrl.h>
 #include <stdlib.h>
@@ -109,13 +110,20 @@ void CALLBACK Ntw16sGlobalHost(HWND window,HINSTANCE instance,LPSTR command,int 
     if(!ntw16s_global_name(name,ARRAYSIZE(name)))return;
     if(swprintf(ready_name,ARRAYSIZE(ready_name),L"%ls.ready",name)<0 || swprintf(stop_name,ARRAYSIZE(stop_name),L"%ls.stop",name)<0)return;
     HANDLE mapping=OpenFileMappingW(FILE_MAP_READ,FALSE,name),ready=NULL,stop=NULL,owner=NULL;HHOOK hook=NULL;
+    ntw16s_global_manager *manager=NULL;
     ntw16s_global_session *s=mapping?(ntw16s_global_session *)MapViewOfFile(mapping,FILE_MAP_READ,0,0,sizeof(*s)):NULL;
     if(!s || !ntw16s_global_owner_alive(s))goto done;
     owner=OpenProcess(SYNCHRONIZE,FALSE,s->owner_pid);ready=OpenEventW(EVENT_MODIFY_STATE,FALSE,ready_name);
     stop=OpenEventW(SYNCHRONIZE,FALSE,stop_name);if(!owner || !ready || !stop)goto done;
     HMODULE module=NULL;if(!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
         (LPCWSTR)(void *)&Ntw16sGlobalHook,&module))goto done;
-    hook=SetWindowsHookExW(WH_CALLWNDPROC,Ntw16sGlobalHook,module,0);if(!hook)goto done;
+    hook=SetWindowsHookExW(WH_CALLWNDPROC,Ntw16sGlobalHook,module,0);
+    if(!hook){
+        if(GetLastError()!=ERROR_MOD_NOT_FOUND)goto done;
+        WCHAR path[32768];DWORD n=GetModuleFileNameW(module,path,ARRAYSIZE(path));
+        WORD machine=sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386;
+        if(!n || n>=ARRAYSIZE(path) || ntw16s_global_manager_start(path,machine,&manager))goto done;
+    }
     SetEvent(ready);
     HANDLE waits[2]={stop,owner};
     for(;;){DWORD status=MsgWaitForMultipleObjects(2,waits,FALSE,INFINITE,QS_ALLINPUT);
@@ -125,6 +133,7 @@ void CALLBACK Ntw16sGlobalHost(HWND window,HINSTANCE instance,LPSTR command,int 
     }
 done:
     if(hook)UnhookWindowsHookEx(hook);
+    if(manager)(void)ntw16s_global_manager_stop(manager,5000);
     if(owner)CloseHandle(owner);
     if(stop)CloseHandle(stop);
     if(ready)CloseHandle(ready);

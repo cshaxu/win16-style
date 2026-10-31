@@ -83,6 +83,8 @@ try{
         (Case 'global-policy-x64' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'core-global-policy.exe')) @('POLICY PASS bits=64 owned=1 birth=1 wrong_pid=1 wrong_thread=1 wrong_arch=1 wrong_sid=1 revalidate=1 stale=1 shared=1 cleanup=1','DIALOG_DRIVER exit=0') 15),
         (Case 'global-attach-x86' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x86 'global-attach-fixture/run16s.exe')) @('ATTACH PASS bits=32 unloaded=1 loaded=1 parent=1 child=1 click=1 removed=1 cleanup=1','DIALOG_DRIVER exit=0') 15),
         (Case 'global-attach-x64' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-attach-fixture/run16s.exe')) @('ATTACH PASS bits=64 unloaded=1 loaded=1 parent=1 child=1 click=1 removed=1 cleanup=1','DIALOG_DRIVER exit=0') 15),
+        (Case 'global-manager-x86' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x86 'global-manager-fixture/run16s.exe')) @('MANAGER PASS bits=32 existing=1 new=1 clicks=2 removed=2 cleanup=1','DIALOG_DRIVER exit=0') 25),
+        (Case 'global-manager-x64' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-manager-fixture/run16s.exe')) @('MANAGER PASS bits=64 existing=1 new=1 clicks=2 removed=2 cleanup=1','DIALOG_DRIVER exit=0') 25),
         (Case 'global-vb-text-x86' (Join-Path $x86 'core-global-vb-text.exe') @((Join-Path $x86 'vb-global-fixture/MSVBVM60.dll')) @('GLOBAL_VB_TEXT PASS bits=32 hooks=4 foreign=1 scoped=4 native=4 reload=1') 15),
         (Case 'global-vb-text-x64' (Join-Path $x64 'core-global-vb-text.exe') @((Join-Path $x64 'vb-global-fixture/MSVBVM60.dll')) @('GLOBAL_VB_TEXT PASS bits=64 hooks=4 foreign=1 scoped=4 native=4 reload=1') 15),
         (Case 'global-threads' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-threads.exe'),$run,(Join-Path $x86 'global-threads-target.exe'),(Join-Path $x64 'global-threads-target.exe')) @('GLOBAL THREADS PASS widths=2 threads=4 old=4 new=4 cycles=3','DIALOG_DRIVER exit=0') 35),
@@ -797,7 +799,7 @@ try{
     $plan=if($focusSpecified){Select-PackageCases -Cases $cases -Focus $Focus}else{Select-PackageCases -Cases $cases}
     if($FullIntegration){$plan.coverage='full-integration'}
     $cases=@($plan.cases)
-    foreach($pair in @(@('global-attach-x86',(Join-Path $x86 'global-attach-fixture/ntw16s32.dll'),$d32),@('global-attach-x64',(Join-Path $x64 'global-attach-fixture/ntw16s64.dll'),$d64))){
+    foreach($pair in @(@('global-attach-x86',(Join-Path $x86 'global-attach-fixture/ntw16s32.dll'),$d32),@('global-attach-x64',(Join-Path $x64 'global-attach-fixture/ntw16s64.dll'),$d64),@('global-manager-x86',(Join-Path $x86 'global-manager-fixture/ntw16s32.dll'),$d32),@('global-manager-x64',(Join-Path $x64 'global-manager-fixture/ntw16s64.dll'),$d64))){
         if(@($cases|Where-Object name -eq $pair[0]).Count -and (Get-FileHash -LiteralPath $pair[1] -Algorithm SHA256).Hash -ne (Get-FileHash -LiteralPath $pair[2] -Algorithm SHA256).Hash){throw "Attach fixture DLL differs from package: $($pair[0])"}
     }
     $records=[System.Collections.Generic.List[object]]::new()

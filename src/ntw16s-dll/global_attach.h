@@ -21,6 +21,7 @@ typedef struct ntw16s_global_attach {
 DWORD ntw16s_global_attach_begin(const ntw16s_global_policy *policy,HWND window,DWORD pid,DWORD thread_id,
                                 WORD machine,DWORD cookie,const WCHAR *dll_path,ntw16s_global_attach *ticket);
 DWORD ntw16s_global_attach_advance(ntw16s_global_attach *ticket,SECURITY_ATTRIBUTES *security);
+DWORD ntw16s_global_attach_apply(ntw16s_global_attach *ticket);
 DWORD ntw16s_global_attach_remove(ntw16s_global_attach *ticket);
 DWORD ntw16s_global_attach_close(ntw16s_global_attach *ticket);
 #endif

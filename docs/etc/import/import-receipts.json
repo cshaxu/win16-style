@@ -2,6 +2,33 @@
   "schema": 1,
   "files": [
     {
+      "path": "tests/ntw16s-dll/global_manager.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "2e1e6fe0a589705af6c7af660c0c28b2771c249af19c228d4c2f96050a3ad3ff",
+      "disposition": "authored",
+      "review": "T21 S13 bounded global target-thread fallback manager and isolated regression; T21 S13 bounded control-message retry and busy-target regression",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/global_manager.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "38d9e86eddb17f2f12f0b6c3243b2468ba17b1f557d1a77d14d01870c36a911a",
+      "disposition": "authored",
+      "review": "T21 S13 bounded global target-thread fallback manager and isolated regression",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/global_manager.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "f9a9d6876844c0bbe827c1f778467291905767d3171bad94856edf9256676d48",
+      "disposition": "authored",
+      "review": "T21 S13 bounded global target-thread fallback manager and isolated regression; T21 S13 bounded control-message retry and busy-target regression",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
       "path": "tests/integration/global_threads_target.c",
       "source": null,
       "source_blob": null,
@@ -95,9 +122,9 @@
       "path": "src/run16s-exe/global.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b8e7955ed93a6f6f232a56c7fa45e5c03d31010139a482192f81caab1e642e00",
+      "sha256": "0b838d172218c88ecd52991f99325770de65aa8309e25e066435eddeee6cc862",
       "disposition": "authored",
-      "review": "T21 S3 global controller and private-desktop integration; T21 S4 host failure detection and regression; T21 S11 bounded timeout retry and restart probe",
+      "review": "T21 S3 global controller and private-desktop integration; T21 S4 host failure detection and regression; T21 S11 bounded timeout retry and restart probe; T21 S13 bounded target-thread fallback integration",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -122,9 +149,9 @@
       "path": "src/ntw16s-dll/global_hook.c",
       "source": null,
       "source_blob": null,
-      "sha256": "10595d15195291f9ca83e16379d28e5a53a7ec866f8a8735d38e1e1bc2a7bf59",
+      "sha256": "8a30659a4a8aeced9ea7567447be1ecb1991b862445427c9c3eee8800b6188ee",
       "disposition": "authored",
-      "review": "T21 S3 global controller and private-desktop integration; T21 S5 shared creation and late-attachment classifier; T21 S13 scoped VB6 text activation; T21 S13 shared image exclusion predicate",
+      "review": "T21 S3 global controller and private-desktop integration; T21 S5 shared creation and late-attachment classifier; T21 S13 scoped VB6 text activation; T21 S13 shared image exclusion predicate; T21 S13 bounded target-thread fallback integration",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -3596,18 +3623,18 @@
       "path": "src/ntw16s-dll/global_attach.c",
       "source": null,
       "source_blob": null,
-      "sha256": "94b8eb2a13d6a44c7b3843be2efee7102ce7d945ec169882514c64c1cc4c3b08",
+      "sha256": "5f84eb7bf2e81922de6fcae81d613e2d1bf380fb10ff2f1d6a4eb0ae3c81b665",
       "disposition": "authored",
-      "review": "T21 S13 same-bitness target attachment coordinator and actual DLL integration test",
+      "review": "T21 S13 same-bitness target attachment coordinator and actual DLL integration test; T21 S13 bounded control-message retry and busy-target regression",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "src/ntw16s-dll/global_attach.h",
       "source": null,
       "source_blob": null,
-      "sha256": "3e317e27c29b3b66f0f69ca7169d5f5d8f91f5de7181f72b7ddd4c49818f0a79",
+      "sha256": "82b75bd4af19a93883543f717cb7b1f4d829ac3ca1e1edc55a8e76507992a4d8",
       "disposition": "authored",
-      "review": "T21 S13 same-bitness target attachment coordinator and actual DLL integration test",
+      "review": "T21 S13 same-bitness target attachment coordinator and actual DLL integration test; T21 S13 bounded control-message retry and busy-target regression",
       "notice": "Project-authored source; no imported code or resources"
     },
     {

@@ -1,5 +1,6 @@
 #include "global.h"
 #include "ntw16s-dll/global_session.h"
+#include "ntw16s-dll/global_manager.h"
 #include "ntw16s-dll/injection/injection.h"
 #include <windows.h>
 #include <sddl.h>
@@ -60,7 +61,8 @@ int run16s_global(void)
     WCHAR wow[MAX_PATH],host_image[MAX_PATH],dll64[NTW16S_PATH_CAP],dll32[NTW16S_PATH_CAP],command[NTW16S_PATH_CAP+MAX_PATH+64];
     ntw16s_context *context=NULL;PSECURITY_DESCRIPTOR security=NULL;SECURITY_ATTRIBUTES attributes={sizeof(attributes),NULL,FALSE};
     HANDLE mapping=NULL,ready=NULL,host_stop=NULL;ntw16s_global_session *s=NULL;HMODULE dll=NULL;HHOOK hook=NULL;
-    PROCESS_INFORMATION host={0};DWORD error=0;UINT message=0;int result=10;BOOL handler=FALSE;
+    PROCESS_INFORMATION host={0};DWORD error=0;UINT message=0;int result=10;BOOL handler=FALSE,fallback=FALSE;
+    ntw16s_global_manager *manager=NULL;
     if(!ntw16s_global_name(name,ARRAYSIZE(name)))return fail(GetLastError(),L"desktop identity");
     if(swprintf(ready_name,ARRAYSIZE(ready_name),L"%ls.ready",name)<0 || swprintf(host_stop_name,ARRAYSIZE(host_stop_name),L"%ls.stop",name)<0 ||
        swprintf(request_name,ARRAYSIZE(request_name),L"%ls.request",name)<0)return fail(ERROR_INSUFFICIENT_BUFFER,L"object name");
@@ -83,7 +85,11 @@ int run16s_global(void)
     dll=LoadLibraryW(dll64);if(!dll){error=GetLastError();goto done;}
     HOOKPROC callback=(HOOKPROC)(void *)GetProcAddress(dll,"Ntw16sGlobalHook");if(!callback){error=GetLastError();goto done;}
     message=RegisterWindowMessageW(NTW16S_GLOBAL_CONTROL);if(!message){error=GetLastError();goto done;}
-    hook=SetWindowsHookExW(WH_CALLWNDPROC,callback,dll,0);if(!hook){error=GetLastError();goto done;}
+    hook=SetWindowsHookExW(WH_CALLWNDPROC,callback,dll,0);
+    if(!hook){error=GetLastError();if(error!=ERROR_MOD_NOT_FOUND)goto done;fallback=TRUE;error=0;
+        fwprintf(stderr,L"run16s: global x64 hook unavailable (126); using target-thread fallback\n");}
+    /* The fallback host needs an active session before it begins discovery. */
+    InterlockedExchange(&s->phase,NTW16S_GLOBAL_ACTIVE);
     if(!GetSystemWow64DirectoryW(wow,ARRAYSIZE(wow)) || swprintf(host_image,ARRAYSIZE(host_image),L"%ls\\rundll32.exe",wow)<0 ||
        swprintf(command,ARRAYSIZE(command),L"\"%ls\" \"%ls\",Ntw16sGlobalHost",host_image,dll32)<0){error=GetLastError();if(!error)error=ERROR_INSUFFICIENT_BUFFER;goto done;}
     STARTUPINFOW startup={.cb=sizeof(startup)};
@@ -92,8 +98,8 @@ int run16s_global(void)
     if(ResumeThread(host.hThread)==(DWORD)-1){error=GetLastError();goto done;}
     HANDLE startup_waits[2]={ready,host.hProcess};DWORD startup_status=WaitForMultipleObjects(2,startup_waits,FALSE,10000);
     if(startup_status!=WAIT_OBJECT_0){error=startup_status==WAIT_TIMEOUT?ERROR_TIMEOUT:ERROR_DLL_INIT_FAILED;goto done;}
+    if(fallback){error=ntw16s_global_manager_start(dll64,IMAGE_FILE_MACHINE_AMD64,&manager);if(error)goto done;}
     if(!SetConsoleCtrlHandler(stop_handler,TRUE)){error=GetLastError();goto done;}handler=TRUE;
-    InterlockedExchange(&s->phase,NTW16S_GLOBAL_ACTIVE);
     sweep(message,s->cookie,s->host_pid,NTW16S_GLOBAL_APPLY);
     fwprintf(stderr,L"run16s: global active; press Ctrl+C to stop\n");
     HANDLE active_waits[2]={stop_signal,host.hProcess};
@@ -105,9 +111,10 @@ int run16s_global(void)
     }
     result=0;
 done:
-    if(s && message){InterlockedExchange(&s->phase,NTW16S_GLOBAL_STOPPING);if(hook)sweep(message,s->cookie,s->host_pid,NTW16S_GLOBAL_REMOVE);}
+    if(s && message){InterlockedExchange(&s->phase,NTW16S_GLOBAL_STOPPING);sweep(message,s->cookie,s->host_pid,NTW16S_GLOBAL_REMOVE);}
     if(hook)UnhookWindowsHookEx(hook);
     if(host_stop)SetEvent(host_stop);
+    if(manager){DWORD stopped=ntw16s_global_manager_stop(manager,5000);if(stopped && !error)error=stopped;}
     if(host.hProcess){if(WaitForSingleObject(host.hProcess,5000)!=WAIT_OBJECT_0){TerminateProcess(host.hProcess,ERROR_TIMEOUT);WaitForSingleObject(host.hProcess,1000);if(!error)error=ERROR_TIMEOUT;}CloseHandle(host.hProcess);}
     if(host.hThread)CloseHandle(host.hThread);
     if(handler)SetConsoleCtrlHandler(stop_handler,FALSE);
