@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <commctrl.h>
 #include <stdio.h>
+#include <wchar.h>
 static unsigned draws,idles;
 /* Observe before subclass dispatch: a later-installed renderer subclass may
  * consume WM_DRAWITEM without forwarding it to the test's subclass. */
@@ -22,7 +23,9 @@ static LRESULT CALLBACK owner(HWND w,UINT m,WPARAM a,LPARAM b){
  if(m==WM_TIMER){KillTimer(w,1);EndMenu();PostQuitMessage(0);return 0;}
  return DefWindowProcW(w,m,a,b);
 }
-int wmain(void){
+int wmain(int argc,WCHAR **argv){
+ BOOL keyboard=argc==2 && (!wcscmp(argv[1],L"keyboard") || !wcscmp(argv[1],L"keyboard-native"));
+ BOOL native=argc==2 && !wcscmp(argv[1],L"keyboard-native");
  HINSTANCE module=GetModuleHandleW(NULL);WNDCLASSW cls={.hInstance=module,.lpfnWndProc=owner,.lpszClassName=L"MenuFirstPaintWitness"};
  if(!RegisterClassW(&cls))return 2;
  HMENU bar=CreateMenu(),popup=CreatePopupMenu();if(!bar||!popup)return 3;
@@ -31,8 +34,10 @@ int wmain(void){
  HHOOK hook=SetWindowsHookExW(WH_CALLWNDPROC,watch,NULL,GetCurrentThreadId());if(!hook)return 9;
  ShowWindow(w,SW_SHOW);UpdateWindow(w);if(!SetWindowSubclass(w,observe,1,0))return 6;
  RECT r;if(!GetMenuItemRect(w,bar,0,&r)||!SetTimer(w,1,3000,NULL))return 7;
- if(!PostMessageW(w,WM_NCLBUTTONDOWN,HTMENU,MAKELPARAM((r.left+r.right)/2,(r.top+r.bottom)/2)))return 8;
+ if(keyboard){if(!PostMessageW(w,WM_SYSCOMMAND,SC_KEYMENU,(LPARAM)L'f'))return 8;}
+ else if(!PostMessageW(w,WM_NCLBUTTONDOWN,HTMENU,MAKELPARAM((r.left+r.right)/2,(r.top+r.bottom)/2)))return 8;
  MSG msg;while(GetMessageW(&msg,NULL,0,0)>0){TranslateMessage(&msg);DispatchMessageW(&msg);}
  KillTimer(w,1);printf("MENU_INITIAL bits=%u draws=%u idle=%u\n",(unsigned)(sizeof(void*)*8),draws,idles);
- UnhookWindowsHookEx(hook);DestroyWindow(w);return idles&&draws>=3?0:1;
+ if(keyboard)printf("MENU_INPUT mode=%s\n",native?"keyboard-native":"keyboard");
+ UnhookWindowsHookEx(hook);DestroyWindow(w);return idles&&(native?draws==0:draws>=3)?0:1;
 }
