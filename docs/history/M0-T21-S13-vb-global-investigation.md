@@ -525,3 +525,4 @@ P59 was pushed as `72ff492e116dca466c83c7163bc873bb407ee05e`. A subsequent `git 
 - 新增的双宽有窗口用例和必选基础检查以 P63 原干净包执行 10 项，`build/t21-package/cross-origin-test-retry/result.json` 为 `passed-focused`、零跳过。首次误传增量构建目录，被包/构建身份门禁以 `mixed build` 拒绝；重试使用原干净产品构建目录，并仅将从当前测试源码编译的新测试驱动复制到该目录，产品文件未变。assets 与 O:/winnt 四文件摘要仍一致；本次测试/文档改动没有重新发布二进制，尚未提交。
 - P65 `5aede8dbe7dc04930f9706e647b390b255151379` 已推送并重新 fetch；读取实际远端新增测试源码并核对本地 SHA-256 一致，远端四个资产与 O:/winnt 四文件摘要一致。该交付仅测试和文档，没有更改产品二进制；T21/S13 保持开放。
 - P63 实际部署路径使用双私有桌面的未接入 broker 对照，双宽目标首次普通菜单 `draws=3 idle=1`、系统菜单 `selected=1 blue=1` 均通过，broker 明确 `loaded=0`；x64 使用 126 后备路径。这避免把先被注入的测试父进程传播误认为未接入来源覆盖。四个新用例加入包测试，与既有两项跨桌面窗口用例和必选基础检查合计 14 项串行实际包回归 `build/t21-package/cross-origin-menus/result.json` 为 `passed-focused`、零跳过。它们不证明所有窗口的首帧或所有交互均无竞态；仅测试和文档变更，二进制未更改，提交及远端复核待完成。
+- P67 `f8e118040a264f86e69a98fe4df9e8bba2047b0a` 已推送并重新 fetch；实际远端测试脚本摘要与本地一致，远端四文件与 O:/winnt 摘要一致。此后 T21/S13 继续开放。
