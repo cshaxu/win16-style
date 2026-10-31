@@ -25,7 +25,8 @@ DWORD ntw16s_packet_parse(const void *data,DWORD bytes,DWORD machine,ntw16s_cont
     memcpy(&h,data,sizeof(h));
     if(h.bytes!=bytes || h.version!=1 || h.machine!=machine ||
         (machine!=IMAGE_FILE_MACHINE_I386 && machine!=IMAGE_FILE_MACHINE_AMD64) ||
-        !(h.flags&NTW16S_POLICY_STYLE) || (h.flags&~3u) || h.reserved0 || h.reserved1 ||
+        !(h.flags&NTW16S_POLICY_STYLE) || (h.flags&~7u) || h.reserved1 ||
+        (!!(h.flags&NTW16S_POLICY_GLOBAL_SESSION)!=!!h.reserved0) ||
         h.directory_offset!=sizeof(h) || h.directory_bytes!=bytes-sizeof(h) ||
         h.directory_bytes<8 || h.directory_bytes%2)return ERROR_INVALID_DATA;
     /* Do not assume the external payload pointer's alignment. */
@@ -35,7 +36,7 @@ DWORD ntw16s_packet_parse(const void *data,DWORD bytes,DWORD machine,ntw16s_cont
     if(directory[count-1] || wcsnlen_s(directory,count)!=count-1 || !absolute(directory,count-1)){
         ZeroMemory(context,sizeof(*context));return ERROR_INVALID_DATA;
     }
-    context->flags=h.flags;return ERROR_SUCCESS;
+    context->flags=h.flags;context->session_cookie=h.reserved0;return ERROR_SUCCESS;
 }
 DWORD ntw16s_context_read(ntw16s_context *context,BOOL *found)
 {

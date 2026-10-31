@@ -5,6 +5,7 @@
 #define NTW16S_PATH_CAP 32752
 #define NTW16S_POLICY_STYLE 1u
 #define NTW16S_POLICY_PROPAGATE 2u
+#define NTW16S_POLICY_GLOBAL_SESSION 4u
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -12,7 +13,7 @@ typedef struct ntw16s_packet {
     uint32_t bytes,version,machine,flags,directory_offset,directory_bytes,reserved0,reserved1;
 } ntw16s_packet;
 C_ASSERT(sizeof(ntw16s_packet)==32);
-typedef struct ntw16s_context {DWORD flags;WCHAR directory[NTW16S_PATH_CAP];} ntw16s_context;
+typedef struct ntw16s_context {DWORD flags,session_cookie;WCHAR directory[NTW16S_PATH_CAP];} ntw16s_context;
 typedef BOOL (WINAPI *ntw16s_create_w)(LPCWSTR,LPWSTR,LPSECURITY_ATTRIBUTES,
     LPSECURITY_ATTRIBUTES,BOOL,DWORD,LPVOID,LPCWSTR,LPSTARTUPINFOW,LPPROCESS_INFORMATION);
 extern const GUID ntw16s_payload_guid;

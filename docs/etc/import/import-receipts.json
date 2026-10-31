@@ -5,27 +5,27 @@
       "path": "src/ntw16s-dll/injection/late_process.h",
       "source": null,
       "source_blob": null,
-      "sha256": "e5b87dda9fb384c429dcf1b7d3a4ca099846360382457c4af4768792f639b46c",
+      "sha256": "9ef3c1736b2ae325521e05b8e1f67787c7aea038971c27e5a6a328d0cb512ab3",
       "disposition": "authored",
-      "review": "T21 S13 experimental synchronized late process initializer; not linked into product",
+      "review": "T21 S13 experimental synchronized late process initializer; not linked into product; T21 S13 global session propagation policy",
       "notice": "Project-authored source; uses existing project hook and installer code"
     },
     {
       "path": "src/ntw16s-dll/injection/late_process.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f123846bdbce2222adaec2d192cba3bdd13217dbe30aaed3411d712d35528106",
+      "sha256": "5c234367fd8c1f50910da9b60a83817fe8d6a4af9baf1399484182a2df7f406a",
       "disposition": "authored",
-      "review": "T21 S13 experimental synchronized late process initializer; not linked into product",
+      "review": "T21 S13 experimental synchronized late process initializer; not linked into product; T21 S13 global session propagation policy",
       "notice": "Project-authored source; uses existing project hook and installer code"
     },
     {
       "path": "tests/integration/late_process_prototype.c",
       "source": null,
       "source_blob": null,
-      "sha256": "01bc6b35f76bdce475fbedbda87acf187c23651ed7cd162673f304853cfb2426",
+      "sha256": "b70d01c16202e143761a361cff461ef0e22e62e2783204823cae3b7ac250f64f",
       "disposition": "authored",
-      "review": "T21 S13 experimental late process-hook adapter exercising production propagation implementation; T21 S13 reusable late initializer and process-detour adapter",
+      "review": "T21 S13 experimental late process-hook adapter exercising production propagation implementation; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy; T21 S13 session-bound propagation tests; T21 S13 session-bound propagation tests",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -77,9 +77,9 @@
       "path": "tests/integration/global_propagation_probe.c",
       "source": null,
       "source_blob": null,
-      "sha256": "9927c4d3c0aa1cdeee70fbf84069a8e9a7c546233758405bf3490f617f440c60",
+      "sha256": "8e72974fd56c7452ee15c7eb0229f8184a3160205f2c6a7db9034d55c4f4a520",
       "disposition": "authored",
-      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product",
+      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product; T21 S13 session-bound propagation tests",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -239,18 +239,18 @@
       "path": "src/ntw16s-dll/global_session.h",
       "source": null,
       "source_blob": null,
-      "sha256": "0b1f5b58ed807ec5037a5c6048081ea9cb04d87e612b5f04bc3510fd3b20f28f",
+      "sha256": "eb362d1c7126f584372b6e3ef28ee70c5f615c979177c531acda8e0075b18c99",
       "disposition": "authored",
-      "review": "T21 S3 global controller and private-desktop integration; T21 S13 truthful global readiness and pre-subclass menu drawing witness",
+      "review": "T21 S3 global controller and private-desktop integration; T21 S13 truthful global readiness and pre-subclass menu drawing witness; T21 S13 global session propagation policy",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "src/ntw16s-dll/global_session.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2e0c1fa5ce7fb5657951a17e22a9337074f14d1c30f0a5316763f57567be85b5",
+      "sha256": "aa62ad8336d8595ae030f8b7547e4160334f92a6ca1d49a5659da98497374b9f",
       "disposition": "authored",
-      "review": "T21 S3 global controller and private-desktop integration",
+      "review": "T21 S3 global controller and private-desktop integration; T21 S13 global session propagation policy",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -1175,27 +1175,27 @@
       "path": "src/ntw16s-dll/injection/injection.h",
       "source": "src/nthook32-dll/hook.h",
       "source_blob": "ed368c6a8b71cda0a1a84e57a542ddf8452de1ad",
-      "sha256": "d81b9945cd65c435e37dde6285303c571fea81fed7332054845d5c9b36e3e3e1",
+      "sha256": "6d38d280ae9fe22cb0de8bc0c8b952f0cf417a4db858e3e0460338d1d325c43e",
       "disposition": "adapt",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T21 S13 global session propagation policy",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
       "path": "src/ntw16s-dll/injection/context.c",
       "source": "src/nthook32-dll/context.cpp",
       "source_blob": "f435db72a3475ef34d921a57d1632d6990d407af",
-      "sha256": "1240bbf321b7c6fc569f14121f4a99fed899061d1eb545479e2ac7ab8708620e",
+      "sha256": "cc6426bc6f000ab0ac19ba34c6303722e2958ba4d6132573c4e09a2155e17961",
       "disposition": "adapt",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T21 S13 global session propagation policy",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
       "path": "src/ntw16s-dll/injection/installer.c",
       "source": "src/nthook32-dll/installer.cpp",
       "source_blob": "84e78935b3079089569b9167eaed994df3220ebd",
-      "sha256": "9203c3d9f16a5766b0e17e471bceac78eace0488a36f885ba6014308f21a2c78",
+      "sha256": "04cde9ffd12be185c01356cfea2ecbdde96ed7e783a79c0fe0ac4f2be0d20201",
       "disposition": "adapt",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T21 S13 global session propagation policy",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -1229,9 +1229,9 @@
       "path": "tests/run16s-exe/payload.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e093caf2734a714d21a70ec978daec18fb7adeaa0d13608a684c0381d01afbcc",
+      "sha256": "947f2f6e5109dddd6033e8d8f4c6a2e84c16d08821eb54702d7dfad07dfe2647",
       "disposition": "authored",
-      "review": "T3 S3 final path/CLI contract audit; UNC namespace case and actual exit/I-O cases; docs/proposals/launcher-injection.md",
+      "review": "T3 S3 final path/CLI contract audit; UNC namespace case and actual exit/I-O cases; docs/proposals/launcher-injection.md; T21 S13 global session propagation policy",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -1337,9 +1337,9 @@
       "path": "src/ntw16s-dll/injection/create_process.c",
       "source": "src/nthook32-dll/create_process.cpp",
       "source_blob": "2369ce7a7c46e79fc23f73367db9d42e0c40c9da",
-      "sha256": "dbbd9913d3010a24d1e58f78e42aa8ad66c6a5df88efd5300d695bc281cfe1ee",
+      "sha256": "1431f16c8853f62f8803325a93709e55794abba894c9dd33e9e6a6bf16aae00e",
       "disposition": "adapt",
-      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T21 S13 reusable late initializer and process-detour adapter",
+      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy",
       "notice": "Project-authored source adaptation or new native fixture, repository MIT"
     },
     {

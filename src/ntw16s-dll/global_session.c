@@ -31,3 +31,15 @@ BOOL ntw16s_global_owner_alive(const ntw16s_global_session *s)
        low==s->owner_birth_low && high==s->owner_birth_high)result=TRUE;
     CloseHandle(process);return result;
 }
+BOOL ntw16s_global_policy_active(DWORD cookie)
+{
+    DWORD saved=GetLastError();BOOL active=FALSE;WCHAR name[NTW16S_GLOBAL_NAME_CAP];
+    if(cookie && ntw16s_global_name(name,ARRAYSIZE(name))){
+        HANDLE mapping=OpenFileMappingW(FILE_MAP_READ,FALSE,name);
+        ntw16s_global_session *s=mapping?(ntw16s_global_session *)MapViewOfFile(mapping,FILE_MAP_READ,0,0,sizeof(*s)):NULL;
+        if(s && s->cookie==cookie && s->phase==NTW16S_GLOBAL_ACTIVE && ntw16s_global_owner_alive(s))active=TRUE;
+        if(s)UnmapViewOfFile(s);
+        if(mapping)CloseHandle(mapping);
+    }
+    SetLastError(saved);return active;
+}

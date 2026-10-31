@@ -34,6 +34,15 @@ static LRESULT CALLBACK proc(HWND w,UINT message,WPARAM a,LPARAM b)
 }
 int wmain(int argc,WCHAR **argv)
 {
+    if(argc==4 && !wcscmp(argv[1],L"wait")){
+        if(!module())return 41;
+        HANDLE ready=OpenEventW(EVENT_MODIFY_STATE,FALSE,argv[2]),go=OpenEventW(SYNCHRONIZE,FALSE,argv[3]);
+        if(!ready || !go)return 43;
+        BOOL signaled=SetEvent(ready) && WaitForSingleObject(go,5000)==WAIT_OBJECT_0;DWORD code=99;
+        BOOL made=signaled && create_owned(L"grandchild",&code);
+        printf("PROPAGATION DESCENDANT stopped=%d create=%d exit=%lu\n",signaled,made,code);
+        CloseHandle(ready);CloseHandle(go);return made&&code==41?0:44;
+    }
     if(argc==2 && (!wcscmp(argv[1],L"child") || !wcscmp(argv[1],L"grandchild"))){
         BOOL loaded=module()!=NULL;printf("PROPAGATION ENTRY bits=%u role=%ls dll=%d\n",(unsigned)(sizeof(void*)*8),argv[1],loaded);
         if(!loaded)return 41;

@@ -16,7 +16,7 @@ static DWORD prepare(void *slot,void *replacement)
     DWORD error=ntw16s_late_patch_prepare(&hooks[count],slot,replacement);
     if(!error){items[count]=&hooks[count];++count;}return error;
 }
-DWORD ntw16s_late_process_init(PCWSTR directory)
+DWORD ntw16s_late_process_init(PCWSTR directory,DWORD session_cookie)
 {
     if(!directory)return ERROR_INVALID_PARAMETER;
     size_t n=wcsnlen_s(directory,NTW16S_PATH_CAP);
@@ -29,6 +29,7 @@ DWORD ntw16s_late_process_init(PCWSTR directory)
     if(installed || ntw16s_process_context.flags)goto done;
     memcpy(ntw16s_process_context.directory,directory,(n+1)*sizeof(WCHAR));
     ntw16s_process_context.flags=NTW16S_POLICY_STYLE|NTW16S_POLICY_PROPAGATE;
+    if(session_cookie){ntw16s_process_context.flags|=NTW16S_POLICY_GLOBAL_SESSION;ntw16s_process_context.session_cookie=session_cookie;}
     InitializeBuffer();error=(DWORD)ntw16s_attach_processes_using(prepare);
     if(!error && count!=ARRAYSIZE(hooks))error=ERROR_INVALID_STATE;
     if(!error){

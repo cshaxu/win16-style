@@ -17,6 +17,12 @@ int main(void)
         memcpy(copy,raw,h.bytes);((DWORD *)copy)[i]^=0x80000000u;
         CHECK(ntw16s_packet_parse(copy,h.bytes,machine,&context)==ERROR_INVALID_DATA);
     }
+    memcpy(copy,raw,h.bytes);((ntw16s_packet *)copy)->flags=NTW16S_POLICY_STYLE|NTW16S_POLICY_PROPAGATE|NTW16S_POLICY_GLOBAL_SESSION;
+    CHECK(ntw16s_packet_parse(copy,h.bytes,machine,&context)==ERROR_INVALID_DATA);
+    ((ntw16s_packet *)copy)->reserved0=0x12345678;
+    CHECK(!ntw16s_packet_parse(copy,h.bytes,machine,&context));CHECK(context.session_cookie==0x12345678);
+    ((ntw16s_packet *)copy)->flags&=~NTW16S_POLICY_GLOBAL_SESSION;
+    CHECK(ntw16s_packet_parse(copy,h.bytes,machine,&context)==ERROR_INVALID_DATA);
     memcpy(copy,raw,h.bytes);copy[h.bytes-2]=1;
     CHECK(ntw16s_packet_parse(copy,h.bytes,machine,&context)==ERROR_INVALID_DATA);
     memcpy(copy,raw,h.bytes);copy[sizeof(h)]=0;

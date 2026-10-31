@@ -19,5 +19,6 @@ typedef struct ntw16s_global_session {
 C_ASSERT(sizeof(ntw16s_global_session)==36);
 BOOL ntw16s_global_name(WCHAR *name,DWORD capacity);
 BOOL ntw16s_global_owner_alive(const ntw16s_global_session *session);
+BOOL ntw16s_global_policy_active(DWORD cookie);
 BOOL ntw16s_global_birth(HANDLE process,DWORD *low,DWORD *high);
 #endif
