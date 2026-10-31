@@ -2,6 +2,15 @@
   "schema": 1,
   "files": [
     {
+      "path": "tests/ntw16s-dll/late_patch_batch.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "eded2c6b3246818baec0b1722003fd2b0a028548f8f6d8013de8e92a9515ec47",
+      "disposition": "authored",
+      "review": "T21 S13 dual-width experimental late batch preflight and failure regression",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
       "path": "tests/ntw16s-dll/late_patch.c",
       "source": null,
       "source_blob": null,
@@ -14,18 +23,18 @@
       "path": "src/ntw16s-dll/injection/late_patch.h",
       "source": null,
       "source_blob": null,
-      "sha256": "8059bc92331463c2496a094f923cbb360862f74f06c6f3c2e80cbe662b088369",
+      "sha256": "1bbf0adabcf4e539d912d9705d9a8555a7b3d92c1b6ad87a87492041ded6b738",
       "disposition": "authored",
-      "review": "T21 S13 experimental late-patch primitive using existing MinHook trampoline backend; not linked to product",
+      "review": "T21 S13 experimental late-patch primitive using existing MinHook trampoline backend; not linked to product; T21 S13 experimental batch preflight",
       "notice": "Project-authored source; existing MinHook license retained where applicable"
     },
     {
       "path": "src/ntw16s-dll/injection/late_patch.c",
       "source": null,
       "source_blob": null,
-      "sha256": "346e1cde6110e44939c6581d3a84c47e2f3404922f18da59d1a8a8b7fa59579e",
+      "sha256": "5ff47451f07a0f891bb455b6af598aae6709a12d39c2f017fc73b8e633a5eb17",
       "disposition": "authored",
-      "review": "T21 S13 experimental late-patch primitive using existing MinHook trampoline backend; not linked to product",
+      "review": "T21 S13 experimental late-patch primitive using existing MinHook trampoline backend; not linked to product; T21 S13 experimental batch preflight",
       "notice": "Project-authored source; existing MinHook license retained where applicable"
     },
     {

@@ -50,26 +50,57 @@ DWORD ntw16s_late_patch_prepare(ntw16s_late_patch *p,void *slot,void *replacemen
     memcpy(p->backup,start,sizeof(JMP_REL)+(p->above?sizeof(JMP_REL_SHORT):0));
     return ERROR_SUCCESS;
 }
+#ifdef NTW16S_LATE_GUARD_TEST
+static DWORD fail_protect_after=MAXDWORD;
+void ntw16s_late_patch_test_fail_protect_after(DWORD n){fail_protect_after=n;}
+#endif
+#define NTW16S_LATE_PATCH_LIMIT 88u
+DWORD ntw16s_late_patch_install_batch(ntw16s_late_guard *guard,ntw16s_late_patch **items,DWORD count)
+{
+    ntw16s_late_region regions[NTW16S_LATE_PATCH_LIMIT];DWORD protection[NTW16S_LATE_PATCH_LIMIT];
+    SYSTEM_INFO info;DWORD error=ERROR_SUCCESS,protected_count=0,ignored=0;GetSystemInfo(&info);
+    if(!guard || guard->threads || guard->count || guard->suspended || !items || !count || count>NTW16S_LATE_PATCH_LIMIT)return ERROR_INVALID_PARAMETER;
+    for(DWORD i=0;i<count;++i){
+        ntw16s_late_patch *p=items[i];
+        if(!p || !p->target || !p->trampoline || !p->slot || p->installed || p->guard.threads)return ERROR_INVALID_STATE;
+        BYTE *start=(BYTE *)p->target-(p->above?sizeof(JMP_REL):0);
+        SIZE_T length=sizeof(JMP_REL)+(p->above?sizeof(JMP_REL_SHORT):0);
+        uintptr_t low=(uintptr_t)start;
+        if(!info.dwPageSize || low>UINTPTR_MAX-(length-1) || low/info.dwPageSize!=(low+length-1)/info.dwPageSize)return ERROR_NOT_SUPPORTED;
+        regions[i].address=start;regions[i].bytes=length;
+        for(DWORD j=0;j<i;++j){uintptr_t prev=(uintptr_t)regions[j].address;
+            if(items[j]==p || items[j]->slot==p->slot || (low<prev+regions[j].bytes && prev<low+length))return ERROR_INVALID_PARAMETER;
+        }
+    }
+    error=ntw16s_late_guard_begin(guard,regions,count);if(error)return error;
+    for(DWORD i=0;i<count;++i)if(memcmp(regions[i].address,items[i]->backup,regions[i].bytes)){error=ERROR_REVISION_MISMATCH;goto done;}
+    for(DWORD i=0;i<count;++i){
+#ifdef NTW16S_LATE_GUARD_TEST
+        if(i==fail_protect_after){error=ERROR_ACCESS_DENIED;goto restore;}
+#endif
+        if(!VirtualProtect((void *)regions[i].address,regions[i].bytes,PAGE_EXECUTE_READWRITE,&protection[i])){error=GetLastError();goto restore;}
+        ++protected_count;
+    }
+    /* Publish every original-call slot before the first target changes. */
+    for(DWORD i=0;i<count;++i)memcpy(items[i]->slot,&items[i]->trampoline,sizeof(items[i]->trampoline));
+    for(DWORD i=0;i<count;++i){
+        ntw16s_late_patch *p=items[i];BYTE *start=(BYTE *)regions[i].address;
+        JMP_REL jump={.opcode=0xe9,.operand=(UINT32)((uintptr_t)p->replacement-(uintptr_t)(start+sizeof(JMP_REL)))};
+        memcpy(start,&jump,sizeof(jump));
+        if(p->above){JMP_REL_SHORT short_jump={.opcode=0xeb,.operand=(UINT8)(0-sizeof(JMP_REL)-sizeof(JMP_REL_SHORT))};memcpy(p->target,&short_jump,sizeof(short_jump));}
+        p->installed=TRUE;
+    }
+ restore:
+    while(protected_count){--protected_count;if(!VirtualProtect((void *)regions[protected_count].address,regions[protected_count].bytes,protection[protected_count],&ignored) && !error)error=GetLastError();}
+    for(DWORD i=0;i<count;++i)if(items[i]->installed && !FlushInstructionCache(GetCurrentProcess(),regions[i].address,regions[i].bytes) && !error)error=GetLastError();
+ done:
+    {DWORD release=ntw16s_late_guard_end(guard);if(release && !error)error=release;}
+    return error;
+}
 DWORD ntw16s_late_patch_install(ntw16s_late_patch *p)
 {
-    if(!p || !p->target || !p->trampoline || !p->slot || p->installed || p->guard.threads)return ERROR_INVALID_STATE;
-    BYTE *start=(BYTE *)p->target-(p->above?sizeof(JMP_REL):0);
-    SIZE_T length=sizeof(JMP_REL)+(p->above?sizeof(JMP_REL_SHORT):0);
-    ntw16s_late_region region={start,length};DWORD error=ntw16s_late_guard_begin(&p->guard,&region,1);
-    if(error)return error;
-    if(memcmp(start,p->backup,length)){error=ERROR_REVISION_MISMATCH;goto done;}
-    DWORD protection=0,ignored=0;
-    if(!VirtualProtect(start,length,PAGE_EXECUTE_READWRITE,&protection)){error=GetLastError();goto done;}
-    memcpy(p->slot,&p->trampoline,sizeof(p->trampoline));
-    JMP_REL jump={.opcode=0xe9,.operand=(UINT32)((uintptr_t)p->replacement-(uintptr_t)(start+sizeof(JMP_REL)))};
-    memcpy(start,&jump,sizeof(jump));
-    if(p->above){JMP_REL_SHORT short_jump={.opcode=0xeb,.operand=(UINT8)(0-sizeof(JMP_REL)-sizeof(JMP_REL_SHORT))};memcpy(p->target,&short_jump,sizeof(short_jump));}
-    p->installed=TRUE;
-    if(!VirtualProtect(start,length,protection,&ignored))error=GetLastError();
-    if(!FlushInstructionCache(GetCurrentProcess(),start,length) && !error)error=GetLastError();
- done:
-    {DWORD release=ntw16s_late_guard_end(&p->guard);if(release && !error)error=release;}
-    return error;
+    if(!p)return ERROR_INVALID_PARAMETER;
+    return ntw16s_late_patch_install_batch(&p->guard,&p,1);
 }
 DWORD ntw16s_late_patch_discard(ntw16s_late_patch *p)
 {
