@@ -13,9 +13,11 @@ static WCHAR root[MAX_PATH],child[MAX_PATH];
 static DWORD gui_thread;
 static HWND dialog;
 static volatile LONG seen,phase,refreshes,dir_ok;
-static BOOL noadd;
+static BOOL noadd,wide;
 static int selection_mode;
 static volatile LONG captured;
+static void *native_ofn;
+static BOOL native_error_issued;
 static volatile LONG selected_filter;
 static WCHAR selected_folder[MAX_PATH],selected_names[2][MAX_PATH];
 static WCHAR actual_folder[MAX_PATH];
@@ -57,7 +59,7 @@ static void refresh(HWND w)
 static UINT_PTR CALLBACK hook(HWND w,UINT msg,WPARAM wp,LPARAM lp)
 {
     (void)lp;
-    if(msg==WM_INITDIALOG)PostMessageW(w,WM_APP+51,0,0);
+    if(msg==WM_INITDIALOG){native_ofn=(void *)lp;PostMessageW(w,WM_APP+51,0,0);}
     if(msg==WM_APP+51){refresh(w);return 1;}
     if(msg==WM_COMMAND && ((LOWORD(wp)==lst2 && HIWORD(wp)==LBN_DBLCLK)||
         (LOWORD(wp)==cmb1 && HIWORD(wp)==CBN_SELCHANGE)))PostMessageW(w,WM_APP+51,0,0);
@@ -69,6 +71,10 @@ static UINT_PTR CALLBACK hook(HWND w,UINT msg,WPARAM wp,LPARAM lp)
             for(int i=0;i<wanted;++i){LRESULT n=SendMessageW(list,LB_GETTEXTLEN,(WPARAM)indices[i],0);
                 if(n<0||n>=MAX_PATH||SendMessageW(list,LB_GETTEXT,(WPARAM)indices[i],(LPARAM)selected_names[i])==LB_ERR)ok=FALSE;}
             if(ok){LRESULT filter=SendMessageW(GetDlgItem(w,cmb1),CB_GETCURSEL,0,0);InterlockedExchange(&selected_filter,filter+1);InterlockedExchange(&captured,wanted);
+                if(selection_mode==4 && native_ofn){LRESULT short_index=SendMessageW(list,LB_FINDSTRINGEXACT,(WPARAM)-1,(LPARAM)L"beta long.txt");
+                    if(short_index!=LB_ERR && SendMessageW(list,LB_SETSEL,FALSE,(LPARAM)-1)!=LB_ERR && SendMessageW(list,LB_SETSEL,TRUE,short_index)!=LB_ERR){
+                        if(wide)((OPENFILENAMEW *)native_ofn)->nMaxFile=2;else ((OPENFILENAMEA *)native_ofn)->nMaxFile=2;
+                        SendMessageW(w,WM_COMMAND,MAKEWPARAM(lst1,LBN_SELCHANGE),(LPARAM)list);native_error_issued=TRUE;return 0;}}
                 if(PostMessageW(w,WM_COMMAND,IDABORT,0))return 1;
                 InterlockedExchange(&captured,0);}}
     }
@@ -142,8 +148,9 @@ int wmain(int argc,WCHAR **argv)
     if(argc==4 && !wcscmp(argv[3],L"single"))selection_mode=1;
     if(argc==4 && !wcscmp(argv[3],L"multi"))selection_mode=2;
     if(argc==4 && !wcscmp(argv[3],L"small"))selection_mode=3;
+    if(argc==4 && !wcscmp(argv[3],L"nativeerror"))selection_mode=4;
     if(argc==4 && !noadd && !selection_mode)return 2;
-    BOOL wide=!wcscmp(argv[1],L"wide");if(!wide&&wcscmp(argv[1],L"ansi"))return 2;
+    wide=!wcscmp(argv[1],L"wide");if(!wide&&wcscmp(argv[1],L"ansi"))return 2;
     WCHAR base[MAX_PATH],cwd[MAX_PATH],a[MAX_PATH]=L"",b[MAX_PATH]=L"",c[MAX_PATH]=L"",d[MAX_PATH]=L"",secret[MAX_PATH]=L"";
     DWORD n=GetFullPathNameW(argv[2],ARRAYSIZE(base),base,NULL),cn=GetCurrentDirectoryW(ARRAYSIZE(cwd),cwd);
     if(!n||n>=ARRAYSIZE(base)||!cn||cn>=ARRAYSIZE(cwd)||!GetTempFileNameW(base,L"n9",0,root)||!DeleteFileW(root)||!CreateDirectoryW(root,NULL))return 3;
@@ -183,7 +190,9 @@ int wmain(int argc,WCHAR **argv)
         else if(wide){WCHAR *first=file_w+wcslen(file_w)+1,*second=first+wcslen(first)+1;valid=result&&!_wcsicmp(file_w,child)&&!_wcsicmp(first,L"beta long.txt")&&!_wcsicmp(second,L"delta long.txt")&&!second[wcslen(second)+1]&&offset==first-file_w;}
         else{char *first=file_a+strlen(file_a)+1,*second=first+strlen(first)+1;WCHAR converted[MAX_PATH];valid=result&&MultiByteToWideChar(CP_ACP,0,file_a,-1,converted,MAX_PATH)&&!_wcsicmp(converted,child)&&!_stricmp(first,"beta long.txt")&&!_stricmp(second,"delta long.txt")&&!second[strlen(second)+1]&&offset==first-file_a;}
     }
-    if(selection_mode)valid=valid && selected_filter==1 && (native_error==0||native_error==CDERR_DIALOGFAILURE);
+    if(selection_mode==4){valid=native_error_issued&&!native_result&&native_error==FNERR_BUFFERTOOSMALL&&captured==2;
+        printf("NAV_NATIVE_ERROR issued=%d actual=%lu captured=%ld valid=%d\n",native_error_issued,native_error,captured,valid);}
+    else if(selection_mode)valid=valid && selected_filter==1 && (native_error==0||native_error==CDERR_DIALOGFAILURE);
     BOOL restored=SetCurrentDirectoryW(cwd),ca=DeleteFileW(a),cb=DeleteFileW(b),cc=DeleteFileW(c),ce=DeleteFileW(d),normal=SetFileAttributesW(secret,FILE_ATTRIBUTE_NORMAL),cs=DeleteFileW(secret),cd=RemoveDirectoryW(child),cr=RemoveDirectoryW(root);
     printf("MULTI_NAV bits=%u wide=%d noadd=%d seen=%ld phase=%ld dir=%ld refresh=%ld result=%d error=%lu wait=%lu worker=%lu cleanup=%d%d%d%d%d%d%d%d%d\n",(unsigned)(sizeof(void*)*8),wide,noadd,seen,phase,dir_ok,refreshes,result,error,wait,code,restored,ca,cb,cc,ce,normal,cs,cd,cr);
     printf("NAV_SELECTION mode=%d captured=%ld native=%d native_error=%lu filter=%ld offset=%u extension=%u required=%u valid=%d\n",selection_mode,captured,native_result,native_error,selected_filter,offset,extension,required,valid);
