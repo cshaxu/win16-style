@@ -26,8 +26,13 @@ DWORD ntw16s_late_process_init(PCWSTR directory,DWORD session_cookie)
     AcquireSRWLockExclusive(&init_lock);
     DWORD error=ERROR_SUCCESS;
     if(sticky_error){error=sticky_error;goto done;}
-    if((ntw16s_process_context.flags&NTW16S_POLICY_GLOBAL_SESSION) && session_cookie){
-        InterlockedExchange((volatile LONG *)&ntw16s_process_context.session_cookie,(LONG)session_cookie);goto done;
+    if(__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE) && session_cookie){
+        /* Adopt an already initialized ordinary process into this session.
+         * Publish the cookie first so a concurrent hook cannot observe the
+         * session policy before its identity has been installed. */
+        __atomic_store_n(&ntw16s_process_context.session_cookie,session_cookie,__ATOMIC_RELEASE);
+        __atomic_fetch_or(&ntw16s_process_context.flags,NTW16S_POLICY_GLOBAL_SESSION,__ATOMIC_RELEASE);
+        goto done;
     }
     if(installed)goto done;
     if(ntw16s_process_context.flags)goto done;

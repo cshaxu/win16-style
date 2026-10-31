@@ -64,8 +64,9 @@ DWORD ntw16s_install(HANDLE child,const ntw16s_context *context,ntw16s_create_w 
     error=ntw16s_process_machine(child,&machine);if(error)return error;
     work=HeapAlloc(GetProcessHeap(),0,sizeof(*work));if(!work)return ERROR_NOT_ENOUGH_MEMORY;
     header.bytes=(DWORD)(sizeof(header)+(length+1)*sizeof(WCHAR));header.version=1;
-    header.machine=machine;header.flags=context->flags;header.directory_offset=sizeof(header);
-    header.reserved0=__atomic_load_n(&context->session_cookie,__ATOMIC_ACQUIRE);
+    header.machine=machine;header.flags=__atomic_load_n(&context->flags,__ATOMIC_ACQUIRE);header.directory_offset=sizeof(header);
+    header.reserved0=(header.flags&NTW16S_POLICY_GLOBAL_SESSION)?
+        __atomic_load_n(&context->session_cookie,__ATOMIC_ACQUIRE):0;
     header.directory_bytes=header.bytes-sizeof(header);
     memcpy(work->data,&header,sizeof(header));memcpy(work->data+sizeof(header),context->directory,header.directory_bytes);
     error=ntw16s_packet_parse(work->data,header.bytes,machine,&work->parsed);if(error)goto done;

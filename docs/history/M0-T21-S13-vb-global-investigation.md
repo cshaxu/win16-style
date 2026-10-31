@@ -527,3 +527,37 @@ P59 was pushed as `72ff492e116dca466c83c7163bc873bb407ee05e`. A subsequent `git 
 - P63 实际部署路径使用双私有桌面的未接入 broker 对照，双宽目标首次普通菜单 `draws=3 idle=1`、系统菜单 `selected=1 blue=1` 均通过，broker 明确 `loaded=0`；x64 使用 126 后备路径。这避免把先被注入的测试父进程传播误认为未接入来源覆盖。四个新用例加入包测试，与既有两项跨桌面窗口用例和必选基础检查合计 14 项串行实际包回归 `build/t21-package/cross-origin-menus/result.json` 为 `passed-focused`、零跳过。它们不证明所有窗口的首帧或所有交互均无竞态；仅测试和文档变更，二进制未更改，提交及远端复核待完成。
 - P67 `f8e118040a264f86e69a98fe4df9e8bba2047b0a` 已推送并重新 fetch；实际远端测试脚本摘要与本地一致，远端四文件与 O:/winnt 摘要一致。此后 T21/S13 继续开放。
 - P63 实际 `O:/winnt/run16s.exe --global` 使用自有私有桌面复测用户指定的 `D:/programs/misc/winmine.exe`：目标先启动，探针读取菜单并向自有窗口发送 Help → About 命令（593），`PrintWindow` 成功捕获 470×414 的 #32770 对话框，截图中可见项目经典标题；关闭对话框及全局模式后目标进程和窗口仍存活，再由探针关闭。日志 `WINMINE ABOUT FOUND` 和 `WINMINE AFTER STOP alive=1 window=1`，x64 系统钩子 126 时使用后备。截图 `build/t21-s13/winmine-about-p63-recheck.bmp`；该单次验证未证明像素完美恢复、所有控件或其他应用。
+# P70: unified stop for adopted ordinary processes
+
+User changed the contract: ordinary `run16s` targets that global mode adopts
+also stop styling after the global controller exits. Ordinary targets not
+adopted by global mode retain their existing behavior. Late initialization
+publishes the session cookie before atomically enabling the shared session
+policy; the installer emits a cookie only when the captured policy requires
+one, so an in-flight adoption cannot form an invalid payload. Existing hooks
+remain in place and are gated by the session; physical DLL or trampoline
+unloading is not claimed. A concurrent launch at the adoption or stop boundary
+and targets that cannot be reached remain limitations.
+
+The revised private-desktop test waits until each ordinary target has actually
+been adopted. Against deployed P63 it failed on the first post-stop window
+(`index=2 state=1`); the updated incremental candidate passed. The test covers
+ordinary x86 and x64 targets started before and after global, their existing
+windows, four post-stop windows and four post-stop child processes. On the
+clean candidate the 16 selected package cases passed with zero skips in 33.8 s,
+including DPI-unaware, lifecycle, common controls and propagation. The
+published `O:/winnt` version separately passed the same private-desktop mixed
+sequence at 144 DPI. The x64 desktop hook still returned 126 in that session;
+the target-thread fallback was used.
+
+Same-snapshot GCC/Ninja/ccache x86/x64 clean build, ABI, import and byte-exact
+resource checks passed. Candidate SHA-256: demo
+`3c5c0c6e54d641acc66487676ffd2029c6372698fd5a7843ceb55ee576f15709`;
+ntw16s32 `60c854ae1e56dd2ef3b9db1d516f6ba66d6f48660aed7bda6696e72dbf7af36a`;
+ntw16s64 `dc051b3ced8814cb48e87b8f0471de39ca878426ff51d21d74e1ce214a5ff889`;
+run16s `85563bb3529f7c0eadc98f61fb308f2acc477f34ecacb1361812086c8971642b`.
+The publication tool verified identical bytes in assets and O:/winnt. The
+full test matrix and physical input are not covered. Initial clean build was
+rejected by a scratch screenshot link and fixed; the next build was stopped
+after the in-flight payload consistency issue was identified, then rebuilt.
+

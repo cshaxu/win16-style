@@ -32,6 +32,16 @@ static BOOL wait_style(HWND w,int expected)
 {
     for(unsigned i=0;i<160;++i){if(query(w)==expected)return TRUE;Sleep(30);}return FALSE;
 }
+static BOOL wait_global(HWND w,DWORD cookie)
+{
+    UINT message=RegisterWindowMessageW(NTW16S_GLOBAL_CONTROL);
+    for(unsigned i=0;message && i<160;++i){DWORD_PTR answer=0;
+        if(SendMessageTimeoutW(w,message,cookie,NTW16S_GLOBAL_QUERY,SMTO_ABORTIFHUNG,500,&answer) &&
+           answer==NTW16S_GLOBAL_ATTACHED)return TRUE;
+        Sleep(30);
+    }
+    return FALSE;
+}
 static BOOL check_input(HWND w)
 {
     HWND edit=GetDlgItem(w,2),button=GetDlgItem(w,1);WCHAR text[64];DWORD_PTR value=0;
@@ -83,6 +93,10 @@ int wmain(int argc,WCHAR **argv)
     if(!launch(&targets[4],argv[2],NULL,titles[4]) || !launch(&targets[5],argv[3],NULL,titles[5]) ||
        !launch(&targets[6],argv[3],argv[1],titles[6]) || !launch(&targets[7],argv[2],argv[1],titles[7]))goto done;
     for(unsigned i=4;i<8;++i)if(!wait_style(targets[i].window,1)){printf("GLOBAL_E2E new_failed index=%u state=%d\n",i,query(targets[i].window));goto done;}
+    const unsigned normal[]={2,3,6,7};
+    for(unsigned item=0;item<ARRAYSIZE(normal);++item)if(!wait_global(targets[normal[item]].window,session->cookie)){
+        printf("GLOBAL_E2E normal_not_adopted index=%u\n",normal[item]);goto done;
+    }
     for(unsigned i=0;i<8;++i)if(!check_input(targets[i].window)){printf("GLOBAL_E2E active_input_failed index=%u\n",i);goto done;}
     DWORD_PTR dpi32=0,dpi64=0;
     if(!SendMessageTimeoutW(targets[0].window,QUERY_DPI,0,0,SMTO_ABORTIFHUNG,1000,&dpi32) || !dpi32 ||
@@ -92,17 +106,16 @@ int wmain(int argc,WCHAR **argv)
     if(WaitForSingleObject(manager.hProcess,12000)!=WAIT_OBJECT_0 || !GetExitCodeProcess(manager.hProcess,&exitcode) || exitcode)goto done;
     for(unsigned i=0;i<8;++i){int expected=0;if(!wait_style(targets[i].window,expected)){printf("GLOBAL_E2E restore_failed index=%u state=%d expected=%d\n",i,query(targets[i].window),expected);goto done;}}
     for(unsigned i=0;i<8;++i)if(!check_input(targets[i].window)){printf("GLOBAL_E2E stopped_input_failed index=%u\n",i);goto done;}
-    const unsigned normal[]={2,3,6,7};
     for(unsigned item=0;item<ARRAYSIZE(normal);++item){unsigned i=normal[item];DWORD process=0;DWORD_PTR created=0;WCHAR title[80];
         GetWindowThreadProcessId(targets[i].window,&process);
         if(!SendMessageTimeoutW(targets[i].window,CREATE_EXTRA,0,0,SMTO_ABORTIFHUNG,2000,&created) || !created)goto done;
         swprintf(title,ARRAYSIZE(title),L"Win16GlobalExtra-%lu",process);
-        HWND extra=FindWindowW(cls,title);if(!extra || !wait_style(extra,1)){
+        HWND extra=FindWindowW(cls,title);if(!extra || !wait_style(extra,0)){
             printf("GLOBAL_E2E post_stop_window_failed index=%u state=%d\n",i,extra?query(extra):-1);goto done;}
         if(!SendMessageTimeoutW(targets[i].window,CREATE_PROCESS,0,0,SMTO_ABORTIFHUNG,5000,&created) || !created)goto done;
         swprintf(title,ARRAYSIZE(title),L"Win16GlobalChild-%lu",process);
         HWND child=NULL;for(unsigned retry=0;retry<160;++retry){child=FindWindowW(cls,title);if(child && IsWindowVisible(child))break;Sleep(30);}
-        if(!child || !wait_style(child,1)){printf("GLOBAL_E2E post_stop_child_failed index=%u state=%d\n",i,child?query(child):-1);goto done;}
+        if(!child || !wait_style(child,0)){printf("GLOBAL_E2E post_stop_child_failed index=%u state=%d\n",i,child?query(child):-1);goto done;}
         PostMessageW(child,WM_CLOSE,0,0);
     }
     if(!launch(&targets[8],argv[3],NULL,titles[8]) || !wait_style(targets[8].window,0))goto done;
