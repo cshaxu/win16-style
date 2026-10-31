@@ -86,3 +86,6 @@ An isolated probe extended the existing S12 `global-common` targets with a `GetM
 ## Native module-enumeration coverage correction
 
 The earlier PowerShell module count did not distinguish empty/inaccessible module lists, so its `inaccessible=0` is not reliable. A native x64 `CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32)` probe with a medium-integrity token examined 360 process IDs: 201 module snapshots succeeded, 159 failed with access denied, and no `ntw16s32.dll` or `ntw16s64.dll` match was found in the successful snapshots. Process exits and protected or differently named modules remain outside this evidence. An elevated read-only version was requested separately; its outcome must not be inferred while UAC is pending.
+
+
+The administrator-approved native snapshot then completed with High Mandatory Level: 363 process IDs, 333 successful module snapshots, 20 access-denied and 10 other failures, zero matching named project modules in successful snapshots. This improves coverage but does not inspect the 30 failures, other sessions, differently named modules or kernel registration state, and cannot establish the cause of 126. No process was modified.
