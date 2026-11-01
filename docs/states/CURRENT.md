@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T21 S13 活动；T21 和 S13 均保持开放。P97 同批干净包已通过 30 项聚焦回归并发布到 assets 根目录及 O:/winnt，产品提交 `33b4638` 已推送；实际读取远端四文件，与测试包及两处发布文件 SHA-256 均一致。该包随后完成双位宽管理员跨权限实测，记录已推送并读取远端复核（`a299eec`）。
+M0 T21 保持开放，S13 已完成其调查与交付并收口；当前无活动任务包。P97 同批干净包已通过 30 项聚焦回归并发布到 assets 根目录及 O:/winnt，产品提交 `33b4638` 已推送；实际读取远端四文件，与测试包及两处发布文件 SHA-256 均一致。该包随后完成双位宽管理员跨权限实测，记录已推送并读取远端复核（`a299eec`）。S13 与 T21 覆盖边界见 [S13 收口审计](../history/M0-T21-S13-vb-global-investigation.md)。
 
 P97 管理员实包验证通过：双位宽普通权限目标实际初始化、子进程传播、窗口接入，以及控制器/宿主崩溃、孤儿会话恢复与清理均通过；独立阶段文件不可用，依据标准输出和退出码判断。管理员 ETW 事件为异步处理，桌面尚未绑定的目标最多等待一秒，短命或无法及时绑定桌面的后台进程不保证接入。普通权限运行不自动提权；x64 系统钩子在本机会话仍返回 126，使用异步目标线程后备路径。P95 单独覆盖了停止期间桌面绑定的竞态，但不证明全部停止竞态均已消除，详细证据见 S13 历史记录。
 
@@ -94,27 +94,6 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 
 已发现并修复快照误将已退出线程视作活线程导致的 1237；既有跨快照新线程竞态、启动及退出时目标竞态仍有未覆盖面。历史 x64 GDI 总数波动及部分早期首次菜单失败尚无完整根因，不用重试通过抹除；全局停止后部分 DLL/钩子可留在进程内，用户已接受可能残影。详细证据和边界见 [S13 记录](../history/M0-T21-S13-vb-global-investigation.md)。
 
-## M0 T21 S13 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Continuation；T21 S13 新准入 |
-| Admission And Approval | 用户授权全局模式适配真实传统程序，自动推进 S |
-| Objective | 以 MadShow 对照全局效果，并调查实际部署位置的系统钩子注册错误 126 |
-| Non-goals | 不依赖该应用构建或测试，不操作现有用户进程，不处理 UWP/XAML |
-| Reference Baseline | S4 已验证 demo 和可选记事本；VB6 全局对照缺少证据 |
-| Candidate Proposal | [手动全局样式模式](../proposals/global-style-mode.md) |
-| Files And ABI Surface | 自有原生私有桌面探针及必要修复；不增加组件，新增双宽内部控制入口须核对 ABI |
-| Applicable Rules | M0、C17、GCC、Ninja、ccache，原图形资源不变 |
-| Verification | 自有隔离实例比较原版、普通启动、全局启动及停止后窗口与控件 |
-| Expected Markers | 区分附着、实际绘制、控件交互和恢复，记录路径及失败 |
-| Asset Needs | build/t21-s13、build/t21-package 自有 scratch |
-| Reporting Requirements | 真实样本有界结论、差异和未覆盖条件 |
-| Stop Conditions | 不能确认独立目标实例和私有桌面时不操作 |
-| Exit Criteria | 完成调查及必要修复、双宽干净构建、实际包测试、必要发布、提交推送和复核 |
-| Original Owner Request | 全局样式覆盖已有和新启动程序并统一附着逻辑 |
-| Similar-Issue Sweep | 运行时控件、启动钩子差异、系统钩子 DLL 共享表及实际部署路径 |
-
 ## Identifier State
 
 - Milestone: M0 (fixed)
@@ -124,8 +103,8 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
 - Last allocated T21 S: 13
-- Last verified remote delivery: M0 T21 S13 P101，`5611019`（产品包 P97，`33b4638`）。
-- Open task: T21 S13；Explorer.exe 仍被排除。
+- Last verified remote delivery: M0 T21 S13 P102，`214b4cf`（产品包 P97，`33b4638`）。
+- Open task: T21；S13 已收口，当前无活动 S；Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。
