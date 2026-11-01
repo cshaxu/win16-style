@@ -818,3 +818,23 @@ from an uninstrumented source, not complete control styling, first-frame
 timing, physical input, or coverage of every application. No product file was
 changed.
 
+# P87: existing process-event channels
+
+Read-only checks of the current machine found the
+`Microsoft-Windows-Kernel-Process/Analytic` channel present but disabled.
+Reading Security event 4688 returned access denied; querying the Process
+Creation audit policy returned 0x522 (required privilege not held). An initial
+sandboxed channel query also returned access denied; the non-sandboxed
+ordinary-token check produced the channel configuration above. No channel,
+audit policy, security group or system setting was changed. This supplements
+the earlier denied ordinary-token WMI and ETW session probes; it does not prove
+that every possible event source is unavailable or that a privileged design
+would satisfy the timing and lifecycle requirements.
+
+Microsoft documents that controlling ETW sessions and consuming real-time ETW
+events require suitable privileges or group membership: [session control](https://learn.microsoft.com/en-us/windows/win32/etw/controlling-event-tracing-sessions)
+and [real-time consumption](https://learn.microsoft.com/windows/win32/api/evntrace/nf-evntrace-opentracefromrealtimelogger).
+The current product was not changed. In particular, newly created headless
+processes from a parent without hooks remain outside the demonstrated coverage;
+P86 separately demonstrates later GUI discovery for the tested chain.
+
