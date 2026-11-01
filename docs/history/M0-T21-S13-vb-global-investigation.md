@@ -801,3 +801,20 @@ implement the same internal global worker/session contract. Any further repair
 must preserve demonstrably compatible old instances while rejecting genuinely
 incompatible ones; the compatibility boundary is not yet established.
 
+# P86: real Minesweeper started after global readiness
+
+The deployed P82 controller ran on a private desktop. An owned broker on a
+second private desktop, which reported no project DLL loaded, launched a
+headless probe on the global desktop after readiness. That probe also reported
+no project DLL, then launched an owned `D:/programs/misc/winmine.exe`, waited
+for its visible main window and invoked Help → About (command 593). The
+captured dialog title visibly used the classic style. The owned target, broker,
+controller and private-desktop driver exited normally. The x64 system hook
+returned 126 and the target-thread fallback was used.
+
+The screenshot `build/t21-s13/winmine-new-p86.bmp` clips part of the client
+area. This one sample establishes the observed title for a new application
+from an uninstrumented source, not complete control styling, first-frame
+timing, physical input, or coverage of every application. No product file was
+changed.
+
