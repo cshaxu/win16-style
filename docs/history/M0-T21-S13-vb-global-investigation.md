@@ -764,3 +764,16 @@ ntw16s32 `368da50a1cb0cf93961ab7c384a1f1f4939cf2df42f7ff5c3997f8ce3cbd9c2d`;
 ntw16s64 `f5bdcbacf1dc9c99b85c2cb637e130f4eb76b83f97203290b1988793fa0edf97`;
 run16s `736e245e1e0ee9ad32d81722caff925e7f9c6f6a568c4c77e8edcf8bdc5f44b1`.
 
+# P84: deployed P82 Minesweeper regression
+
+An owned `D:/programs/misc/winmine.exe` instance was started on a private
+desktop before the actual P82 `O:/winnt/run16s.exe --global`. The native probe
+opened Help → About (command 593); the captured dialog title was visibly in
+the classic style. After closing the dialog and global controller, the target
+process and main window remained alive. The owned target and private desktop
+then closed successfully. The x64 system hook returned 126 and the existing
+target-thread fallback was used. The screenshot at
+`build/t21-s13/winmine-about-p84-recheck.bmp` clips part of the client area;
+it does not prove all control visuals, physical input or pixel-perfect
+restoration. No product file changed.
+
