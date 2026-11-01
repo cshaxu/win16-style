@@ -777,3 +777,27 @@ target-thread fallback was used. The screenshot at
 it does not prove all control visuals, physical input or pixel-perfect
 restoration. No product file changed.
 
+# P85: same-path upgrade compatibility investigation
+
+An owned private-desktop probe started x86/x64 ordinary targets using the P74
+package, moved their mapped DLL files and launcher aside, placed P82 files at
+the same original paths, and started the P82 global controller from that path.
+The probe completed mixed ordinary/global attachment, hidden and visible
+window restoration, and post-stop child checks. This shows that this P74/P82
+combination worked in the observed sample even though the mapped image and the
+new on-disk image have different PE timestamps and checksums; it does not prove
+all historical combinations are compatible.
+
+A provisional change rejected every same-path mapped image whose PE header
+differed from the current file. A test that modified the timestamp on a copied
+fixture detected that change on both widths (old implementation returned 0;
+candidate returned 1306). However, the criterion would also reject the working
+P74/P82 case. It was therefore removed from the worktree along with its test
+and package registration, and the clean build was stopped before completion.
+Scratch sources remain under `build/t21-s13/stale-overrestrict/` and
+`build/t21-s13/cross-install/`. No product binary was changed or published.
+The public ABI is version 3, but that alone is not evidence that all versions
+implement the same internal global worker/session contract. Any further repair
+must preserve demonstrably compatible old instances while rejecting genuinely
+incompatible ones; the compatibility boundary is not yet established.
+
