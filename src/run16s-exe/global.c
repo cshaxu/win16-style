@@ -75,7 +75,7 @@ done:
     if(token)CloseHandle(token);
     free(sddl);free(user);return error;
 }
-int run16s_global(void)
+int run16s_global_with_parent(HANDLE parent)
 {
     WCHAR name[NTW16S_GLOBAL_NAME_CAP],ready_name[NTW16S_GLOBAL_NAME_CAP+16],host_stop_name[NTW16S_GLOBAL_NAME_CAP+16],request_name[NTW16S_GLOBAL_NAME_CAP+16];
     WCHAR wow[MAX_PATH],host_image[MAX_PATH],dll64[NTW16S_PATH_CAP],dll32[NTW16S_PATH_CAP],command[NTW16S_PATH_CAP+MAX_PATH+64];
@@ -83,6 +83,8 @@ int run16s_global(void)
     HANDLE mapping=NULL,ready=NULL,host_stop=NULL;ntw16s_global_session *s=NULL;HMODULE dll=NULL;HHOOK hook=NULL;
     PROCESS_INFORMATION host={0};DWORD error=0;UINT message=0;int result=10;BOOL handler=FALSE;
     ntw16s_global_manager *manager=NULL;
+    if(parent){DWORD state=WaitForSingleObject(parent,0);if(state==WAIT_OBJECT_0)return 0;
+        if(state!=WAIT_TIMEOUT)return fail(state==WAIT_FAILED?GetLastError():ERROR_INVALID_HANDLE,L"parent wait");}
     DWORD elevation_error=0;
     if(!run16s_is_elevated(&elevation_error)){
         if(elevation_error)fwprintf(stderr,L"run16s: unable to check administrator token (%lu)\n",elevation_error);
@@ -124,7 +126,8 @@ int run16s_global(void)
     if(!CreateProcessW(host_image,command,NULL,NULL,FALSE,CREATE_SUSPENDED|CREATE_NO_WINDOW,NULL,NULL,&startup,&host)){error=GetLastError();goto done;}
     s->host_pid=host.dwProcessId;
     if(ResumeThread(host.hThread)==(DWORD)-1){error=GetLastError();goto done;}
-    HANDLE startup_waits[2]={ready,host.hProcess};DWORD startup_status=WaitForMultipleObjects(2,startup_waits,FALSE,10000);
+    HANDLE startup_waits[3]={ready,host.hProcess,parent};DWORD startup_status=WaitForMultipleObjects(parent?3:2,startup_waits,FALSE,10000);
+    if(parent && startup_status==WAIT_OBJECT_0+2){result=0;goto done;}
     if(startup_status!=WAIT_OBJECT_0){error=startup_status==WAIT_TIMEOUT?ERROR_TIMEOUT:ERROR_DLL_INIT_FAILED;goto done;}
     error=ntw16s_global_manager_start(dll64,IMAGE_FILE_MACHINE_AMD64,&manager);if(error)goto done;
     sweep(message,s->cookie,s->host_pid,NTW16S_GLOBAL_APPLY);
@@ -134,13 +137,15 @@ int run16s_global(void)
     error=ntw16s_global_manager_wait_idle(manager,2000);
     if(error==ERROR_TIMEOUT){fwprintf(stderr,L"run16s: global startup attachment still pending\n");error=0;}
     if(error)goto done;
+    if(parent && WaitForSingleObject(parent,0)==WAIT_OBJECT_0){result=0;goto done;}
     InterlockedExchange(&s->ready,1);
     fwprintf(stderr,L"run16s: global active; press Ctrl+C to stop\n");
-    HANDLE active_waits[2]={stop_signal,host.hProcess};
-    for(;;){DWORD status=MsgWaitForMultipleObjects(2,active_waits,FALSE,INFINITE,QS_ALLINPUT);
+    HANDLE active_waits[3]={stop_signal,host.hProcess,parent};DWORD active_count=parent?3:2;
+    for(;;){DWORD status=MsgWaitForMultipleObjects(active_count,active_waits,FALSE,INFINITE,QS_ALLINPUT);
         if(status==WAIT_OBJECT_0)break;
         if(status==WAIT_OBJECT_0+1){error=ERROR_DLL_INIT_FAILED;goto done;}
-        if(status!=WAIT_OBJECT_0+2){error=GetLastError();goto done;}
+        if(parent && status==WAIT_OBJECT_0+2)break;
+        if(status!=WAIT_OBJECT_0+active_count){error=GetLastError();goto done;}
         MSG m;while(PeekMessageW(&m,NULL,0,0,PM_REMOVE)){TranslateMessage(&m);DispatchMessageW(&m);}
     }
     result=0;
@@ -168,3 +173,5 @@ done:
     if(error)return fail(error,L"startup or shutdown");
     return result;
 }
+int run16s_global(void)
+{return run16s_global_with_parent(NULL);}

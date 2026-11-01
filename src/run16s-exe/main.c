@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <wchar.h>
+#include <errno.h>
 /* MinGW CRT must preserve native arguments. Globbing otherwise interprets the
  * '?' in explicit extended paths (\\?\) before target resolution. */
 int _dowildcard=0;
@@ -31,8 +32,28 @@ static int diagnostic(int code,DWORD error,PCWSTR phase)
 }
 int wmain(int argc,WCHAR **argv)
 {
+    if(argc>=2 && !wcscmp(argv[1],L"--global-elevated")){
+        WCHAR *end=NULL;DWORD error=0;errno=0;
+        unsigned long parent=argc==3?wcstoul(argv[2],&end,10):0;
+        if(argc!=3 || argv[2][0]<L'0' || argv[2][0]>L'9' || !parent || errno || !end || *end)
+            return diagnostic(9,ERROR_INVALID_PARAMETER,L"global elevation");
+        if(!run16s_is_elevated(&error))return diagnostic(9,error?error:ERROR_ACCESS_DENIED,L"global elevation");
+        HANDLE owner=OpenProcess(SYNCHRONIZE,FALSE,(DWORD)parent);
+        if(!owner)return diagnostic(9,GetLastError(),L"global parent");
+        if(!FreeConsole() && GetLastError()!=ERROR_INVALID_HANDLE){error=GetLastError();CloseHandle(owner);return diagnostic(9,error,L"global console detach");}
+        if(!AttachConsole((DWORD)parent)){error=GetLastError();CloseHandle(owner);return diagnostic(9,error,L"global console attach");}
+        if(!SetConsoleCtrlHandler(NULL,FALSE)){error=GetLastError();CloseHandle(owner);return diagnostic(9,error,L"global console handler");}
+        int result=run16s_global_with_parent(owner);CloseHandle(owner);return result;
+    }
     if(argc>=2 && !wcscmp(argv[1],L"--global")){
         if(argc!=2){fwprintf(stderr,L"Usage: run16s.exe --global\n");return 2;}
+        DWORD error=0,code=0;
+        BOOL elevated=run16s_is_elevated(&error);
+        if(error)return diagnostic(9,error,L"global token");
+        if(!elevated && run16s_global_interactive_console()){
+            error=run16s_elevate_global(GetCurrentProcessId(),ShellExecuteExW,&code);
+            return error?diagnostic(9,error,L"global elevation"):(int)code;
+        }
         return run16s_global();
     }
     BOOL private_console=run16s_private_console();

@@ -57,6 +57,7 @@ try{
     $tree=@($run,$d32,$d64,(Join-Path $x86 'propagate-target.exe'),(Join-Path $x64 'propagate-target.exe'))
     $cases=@(
         (Case 'global-e2e' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-e2e.exe'),$run,(Join-Path $x86 'global-e2e-target.exe'),(Join-Path $x64 'global-e2e-target.exe')) @('GLOBAL E2E PASS old=4 new=4 restore=8 post_stop_windows=4 post_stop_children=4 stopped=1','GLOBAL HIDDEN RESTORE PASS normal=4 shown=4','GLOBAL INPUT PASS native=2 active=8 stopped=8 dpi32=','dpi64=','DIALOG_DRIVER exit=0') 35),
+        (Case 'global-parent-owned' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $scratch 'parent-owned/run16s.exe')) @('GLOBAL PARENT OWNER result=0 witness=0 gone=1','DIALOG_DRIVER exit=0') 20),
         (Case 'global-cross-directory' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-e2e.exe'),$run,(Join-Path $x86 'global-e2e-target.exe'),(Join-Path $x64 'global-e2e-target.exe'),'--ordinary-launcher',(Join-Path $scratch 'cross-directory/run16s.exe')) @('GLOBAL CROSS DIRECTORY PASS normal=4 widths=2','GLOBAL HIDDEN RESTORE PASS normal=4 shown=4','DIALOG_DRIVER exit=0') 35),
         (Case 'global-e2e-unaware' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-e2e.exe'),$run,(Join-Path $x86 'global-e2e-target.exe'),(Join-Path $x64 'global-e2e-target.exe'),'--dpi-unaware') @('GLOBAL E2E PASS old=4 new=4 restore=8','GLOBAL INPUT PASS native=2 active=8 stopped=8 dpi32=96 dpi64=96','GLOBAL DPI MODE PASS mode=unaware dpi32=96 dpi64=96','DIALOG_DRIVER exit=0') 35),
         (Case 'global-common' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-common.exe'),$run,(Join-Path $x86 'global-common-target.exe'),(Join-Path $x64 'global-common-target.exe')) @('GLOBAL COMMON PASS widths=2 existing=2 new=2 controls=5 restored=4 content=4','GLOBAL LATE PASS widths=2 targets=4 modes=2 clicked=8 restored=8','DIALOG_DRIVER exit=0') 35),
@@ -560,8 +561,8 @@ try{
         (Case 'theme-track-64' (Join-Path $x64 'core-theme-track.exe') @() @('THEME_TRACK_OK shared=1 alias=1 combo=1 failed_close=1 nested=1 overlap=1 capacity=1')),
         (Case 'theme-track-cancel-32' (Join-Path $x86 'core-theme-track.exe') @('cancel') @('THEME_TRACK_CANCEL_OK')),
         (Case 'theme-track-cancel-64' (Join-Path $x64 'core-theme-track.exe') @('cancel') @('THEME_TRACK_CANCEL_OK')),
-        (Case 'uac-unit-32' (Join-Path $x86 'uac-unit.exe') @() @('UAC UNIT PASS cases=8')),
-        (Case 'uac-unit-64' (Join-Path $x64 'uac-unit.exe') @() @('UAC UNIT PASS cases=8'))
+        (Case 'uac-unit-32' (Join-Path $x86 'uac-unit.exe') @() @('UAC UNIT PASS cases=8','GLOBAL UAC UNIT PASS success=73 cancel=1223 missing_handle=6 invalid=87')),
+        (Case 'uac-unit-64' (Join-Path $x64 'uac-unit.exe') @() @('UAC UNIT PASS cases=8','GLOBAL UAC UNIT PASS success=73 cancel=1223 missing_handle=6 invalid=87'))
     )
     $cases+=@(
         (Case 'vb5-checklist-dpi144-32' (Join-Path $x86 'core-vb-checklist-dpi144.exe') @($run,(Join-Path $x86 'vb-checklist-fixture/MSVBVM50.dll')) @('VB_CHECKLIST_144_OK bits=32 vb5=1 styled=0 states=4 invalid_geometry=1 text_scope=0','VB_CHECKLIST_144_OK bits=32 vb5=1 styled=1 states=4 invalid_geometry=1 text_scope=1')),
@@ -843,6 +844,12 @@ try{
     $plan=if($focusSpecified){Select-PackageCases -Cases $cases -Focus $Focus}else{Select-PackageCases -Cases $cases}
     if($FullIntegration){$plan.coverage='full-integration'}
     $cases=@($plan.cases)
+    if(@($cases|Where-Object name -eq 'global-parent-owned').Count){
+        $fixture=Join-Path $scratch 'parent-owned';New-Item -ItemType Directory -Path $fixture | Out-Null
+        Copy-Item -LiteralPath (Join-Path $x64 'global-parent-owned.exe') -Destination (Join-Path $fixture 'run16s.exe')
+        Copy-Item -LiteralPath $d32,$d64 -Destination $fixture
+        foreach($name in @('ntw16s32.dll','ntw16s64.dll')){if((Get-FileHash (Join-Path $fixture $name) -Algorithm SHA256).Hash -ne (Get-FileHash (Join-Path $Package $name) -Algorithm SHA256).Hash){throw "Parent fixture DLL differs: $name"}}
+    }
     if(@($cases|Where-Object name -eq 'global-cross-directory').Count){
         $fixture=Join-Path $scratch 'cross-directory';New-Item -ItemType Directory -Path $fixture | Out-Null
         foreach($name in @('run16s.exe','ntw16s32.dll','ntw16s64.dll','demo.exe')){

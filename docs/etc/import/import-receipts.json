@@ -2,6 +2,15 @@
   "schema": 1,
   "files": [
     {
+      "path": "tests/integration/global_parent_owned.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "41383ade8c48e0706d2c9008ee2129f23e4143a66f9b8aebbc8cf98ff4dc8134",
+      "disposition": "authored",
+      "review": "T21 S15 elevated controller parent lifetime regression",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
       "path": "tests/integration/global_cross_origin.c",
       "source": null,
       "source_blob": null,
@@ -293,7 +302,7 @@
       "path": "src/run16s-exe/global.h",
       "source": null,
       "source_blob": null,
-      "sha256": "6031e927c8efe529b52456b412a3cedbef836d0d4a7ce5b4fdcb2fd47c652315",
+      "sha256": "ab4970cc1b2003edfe8b97f6c3e91a438f5ad74f24c9fd6c34c776820756b713",
       "disposition": "authored",
       "review": "T21 S3 global controller and private-desktop integration",
       "notice": "Project-authored source; no imported code or resources"
@@ -302,7 +311,7 @@
       "path": "src/run16s-exe/global.c",
       "source": null,
       "source_blob": null,
-      "sha256": "0795ea426189d6eda53e17b8c91ba43398df39ed967a57929326bab3b7aede66",
+      "sha256": "fbe05c26e3c0556ce2053ec6d8d6dd37a108932dd72f7649751b0e2fba33f445",
       "disposition": "authored",
       "review": "T21 S13 bounded startup attachment completion",
       "notice": "Project-authored source; no imported code or resources"
@@ -1274,7 +1283,7 @@
       "path": "src/run16s-exe/main.c",
       "source": null,
       "source_blob": null,
-      "sha256": "bb43a9ced868e780db59372228c46b803419700e1f2e9a860e039a14a5280b74",
+      "sha256": "689fa719a7c0a91b11485064f01bce92274b66df1b153c4e7940f2cee6118aab",
       "disposition": "authored",
       "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes; T21 S3 global controller and independent ordinary-mode ownership",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
@@ -1895,7 +1904,7 @@
       "path": "src/run16s-exe/elevation.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d46cc63b89f7a2b461636f38cd3152acfdc1c827facdfd51090712f98adcc37a",
+      "sha256": "f3c58d6c2d71136d81c7d6c5c93117e37cf49398fb1840dc730c3e639367e4eb",
       "disposition": "authored",
       "review": "T11 S1: project-authored C17 on-demand runas coordinator/private interface/asInvoker manifest; no third-party code copied",
       "notice": "Project-authored source; project MIT license"
@@ -1904,7 +1913,7 @@
       "path": "src/run16s-exe/elevation.h",
       "source": null,
       "source_blob": null,
-      "sha256": "bbd2a7fe8ac746c16c8670842af694b7aa09d0d3c8212b732b1caf133c43e07a",
+      "sha256": "6d4d3927377f524127c036dc929b8cd98979ed2569c671943b0fb8e3469b43b3",
       "disposition": "authored",
       "review": "T11 S1: project-authored C17 on-demand runas coordinator/private interface/asInvoker manifest; no third-party code copied",
       "notice": "Project-authored source; project MIT license"

@@ -253,6 +253,13 @@ if(BUILD_TESTING)
     target_compile_definitions(global-e2e PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
     target_link_options(global-e2e PRIVATE -municode)
     target_link_libraries(global-e2e PRIVATE user32)
+    add_executable(global-parent-owned tests/integration/global_parent_owned.c src/run16s-exe/global.c src/run16s-exe/elevation.c
+      src/ntw16s-dll/global_session.c src/ntw16s-dll/global_remote.c src/ntw16s-dll/global_load.c src/ntw16s-dll/global_start.c
+      src/ntw16s-dll/global_discover.c src/ntw16s-dll/global_process.c src/ntw16s-dll/global_policy.c src/ntw16s-dll/global_attach.c src/ntw16s-dll/global_manager.c)
+    target_include_directories(global-parent-owned PRIVATE src ${CMAKE_SOURCE_DIR})
+    target_compile_definitions(global-parent-owned PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+    target_link_options(global-parent-owned PRIVATE -municode)
+    target_link_libraries(global-parent-owned PRIVATE ntw16s-installer shell32 ole32 advapi32 user32)
     add_executable(global-common tests/integration/global_common.c src/ntw16s-dll/global_session.c)
     target_include_directories(global-common PRIVATE src)
     target_compile_definitions(global-common PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)

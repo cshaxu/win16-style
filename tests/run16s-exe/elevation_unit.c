@@ -22,6 +22,20 @@ static BOOL WINAPI shell_probe(SHELLEXECUTEINFOW *info)
     if(!CreateProcessW(NULL,command,NULL,NULL,FALSE,CREATE_NO_WINDOW,NULL,NULL,&si,&p))return FALSE;
     info->hProcess=p.hProcess;CloseHandle(p.hThread);return TRUE;
 }
+static BOOL WINAPI global_shell_probe(SHELLEXECUTEINFOW *info)
+{
+    ++calls;
+    request_valid=info->cbSize==sizeof(*info) && !wcscmp(info->lpVerb,L"runas") &&
+        info->lpFile && wcsstr(info->lpFile,L"uac-unit") && !wcscmp(info->lpParameters,L"--global-elevated 12345") &&
+        (info->fMask&SEE_MASK_NOCLOSEPROCESS) && (info->fMask&SEE_MASK_NOASYNC) && (info->fMask&SEE_MASK_NO_CONSOLE);
+    if(mode==1){SetLastError(ERROR_CANCELLED);return FALSE;}
+    if(mode==3)return TRUE;
+    WCHAR system[MAX_PATH],command[MAX_PATH+64];GetSystemDirectoryW(system,MAX_PATH);
+    swprintf(command,MAX_PATH+64,L"\"%ls\\cmd.exe\" /d /c exit /b 73",system);
+    PROCESS_INFORMATION p={0};STARTUPINFOW si={.cb=sizeof(si)};
+    if(!CreateProcessW(NULL,command,NULL,NULL,FALSE,CREATE_NO_WINDOW,NULL,NULL,&si,&p))return FALSE;
+    info->hProcess=p.hProcess;CloseHandle(p.hThread);return TRUE;
+}
 int wmain(void)
 {
     DWORD error,exit_code=999,before=0,after=0;
@@ -40,5 +54,11 @@ int wmain(void)
     CHECK(GetProcessHandleCount(GetCurrentProcess(),&after));CHECK(before==after&&calls==7);
     WCHAR long_arguments[32768];wmemset(long_arguments,L'x',32767);long_arguments[32767]=0;
     CHECK(run16s_elevate(L"C:\\target.exe",long_arguments,FALSE,shell_probe,&exit_code)==ERROR_FILENAME_EXCED_RANGE);
-    CHECK(calls==7);puts("UAC UNIT PASS cases=8 cancel=1223 denied=5 missing_handle=6 exit=73 handles=stable");return 0;
+    CHECK(calls==7);
+    mode=0;CHECK(!run16s_elevate_global(12345,global_shell_probe,&exit_code) && request_valid && exit_code==73);
+    mode=1;CHECK(run16s_elevate_global(12345,global_shell_probe,&exit_code)==ERROR_CANCELLED && request_valid);
+    mode=3;CHECK(run16s_elevate_global(12345,global_shell_probe,&exit_code)==ERROR_INVALID_HANDLE && request_valid);
+    CHECK(run16s_elevate_global(0,global_shell_probe,&exit_code)==ERROR_INVALID_PARAMETER);
+    puts("UAC UNIT PASS cases=8 cancel=1223 denied=5 missing_handle=6 exit=73 handles=stable");
+    puts("GLOBAL UAC UNIT PASS success=73 cancel=1223 missing_handle=6 invalid=87");return 0;
 }

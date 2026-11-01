@@ -14,6 +14,34 @@ BOOL run16s_is_elevated(DWORD *error)
     if(!ok)*error=GetLastError();
     CloseHandle(token);return ok && elevation.TokenIsElevated;
 }
+BOOL run16s_global_interactive_console(void)
+{
+    DWORD mode=0,pids[1];HANDLE error=GetStdHandle(STD_ERROR_HANDLE);
+    return error && error!=INVALID_HANDLE_VALUE && GetFileType(error)==FILE_TYPE_CHAR &&
+        GetConsoleMode(error,&mode) && GetConsoleProcessList(pids,1)>0;
+}
+DWORD run16s_elevate_global(DWORD parent_pid,run16s_shell_execute execute,DWORD *exit_code)
+{
+    WCHAR self[32768],directory[32768],parameters[80];DWORD n,error=ERROR_SUCCESS;
+    if(!parent_pid || !execute || !exit_code)return ERROR_INVALID_PARAMETER;
+    n=GetModuleFileNameW(NULL,self,ARRAYSIZE(self));if(!n || n>=ARRAYSIZE(self))return n?ERROR_FILENAME_EXCED_RANGE:GetLastError();
+    n=GetCurrentDirectoryW(ARRAYSIZE(directory),directory);if(!n || n>=ARRAYSIZE(directory))return n?ERROR_FILENAME_EXCED_RANGE:GetLastError();
+    if(swprintf(parameters,ARRAYSIZE(parameters),L"--global-elevated %lu",parent_pid)<0)return ERROR_INSUFFICIENT_BUFFER;
+    SHELLEXECUTEINFOW info={.cbSize=sizeof(info),.fMask=SEE_MASK_NOCLOSEPROCESS|SEE_MASK_NOASYNC|SEE_MASK_NO_CONSOLE,
+        .lpVerb=L"runas",.lpFile=self,.lpParameters=parameters,.lpDirectory=directory,.nShow=SW_HIDE};
+    HRESULT apartment=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);
+    if(FAILED(apartment)&&apartment!=RPC_E_CHANGED_MODE)error=(DWORD)apartment;
+    else if(!SetConsoleCtrlHandler(NULL,TRUE))error=GetLastError();
+    else{
+        if(!execute(&info)){error=GetLastError();if(!error)error=ERROR_GEN_FAILURE;}
+        else if(!info.hProcess)error=ERROR_INVALID_HANDLE;
+        else if(WaitForSingleObject(info.hProcess,INFINITE)!=WAIT_OBJECT_0 || !GetExitCodeProcess(info.hProcess,exit_code))error=GetLastError();
+        SetConsoleCtrlHandler(NULL,FALSE);
+    }
+    if(info.hProcess)CloseHandle(info.hProcess);
+    if(SUCCEEDED(apartment))CoUninitialize();
+    return error;
+}
 DWORD run16s_elevate(PCWSTR image,PCWSTR arguments,BOOL wait,
     run16s_shell_execute execute,DWORD *exit_code)
 {
