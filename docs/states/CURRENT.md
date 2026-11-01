@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T21 S17 活动；S16、S15、S14 和 S13 已收口。P97 同批干净包已通过 30 项聚焦回归并发布到 assets 根目录及 O:/winnt，产品提交 `33b4638` 已推送；实际读取远端四文件，与测试包及两处发布文件 SHA-256 均一致。该包随后完成双位宽管理员跨权限实测，记录已推送并读取远端复核（`a299eec`）。S13 与 T21 覆盖边界见 [S13 收口审计](../history/M0-T21-S13-vb-global-investigation.md)。
+M0 T21 保持开放，当前无活动 S；S17、S16、S15 已收口。P97 同批干净包已通过 30 项聚焦回归并发布到 assets 根目录及 O:/winnt，产品提交 `33b4638` 已推送；实际读取远端四文件，与测试包及两处发布文件 SHA-256 均一致。该包随后完成双位宽管理员跨权限实测，记录已推送并读取远端复核（`a299eec`）。S13 与 T21 覆盖边界见 [S13 收口审计](../history/M0-T21-S13-vb-global-investigation.md)。
 
 S17 私有桌面独立 UAC 对照未运行全局样式；父进程确认绑定自有桌面，在 `ShellExecuteExW` 处等待，35 秒后驱动返回 99/258 并清理自有进程，未记录子进程桌面。用户反馈未看到提示。该次不能判定系统不支持或产品失败；在当前验证条件下仍不能以原始包安全完成隔离的真实 UAC 组合。此前分项证据仍有效但不能冒充组合通过。
 
@@ -158,26 +158,7 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 
 已发现并修复快照误将已退出线程视作活线程导致的 1237；既有跨快照新线程竞态、启动及退出时目标竞态仍有未覆盖面。历史 x64 GDI 总数波动及部分早期首次菜单失败尚无完整根因，不用重试通过抹除；全局停止后部分 DLL/钩子可留在进程内，用户已接受可能残影。详细证据和边界见 [S13 记录](../history/M0-T21-S13-vb-global-investigation.md)。
 
-## M0 T21 S17 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Continuation；T21 S17 新准入 |
-| Admission And Approval | 用户要求全局模式和本机管理员验证，先使用自有隔离目标 |
-| Objective | 以实际证据验证普通启动器跨 UAC 启动全局会话、双宽目标及停止清理 |
-| Non-goals | 不改系统安全设置、不引入产品组件、不把 UWP 纳入本任务 |
-| Reference Baseline | S16 已发布并分别验证 UAC 冲突、管理员全局接入及提权后入口，完整组合未直接验证 |
-| Candidate Proposal | [手动全局样式模式](../proposals/global-style-mode.md) |
-| Files And ABI Surface | 优先自有原生探针和证据；发现产品缺陷时在授权范围内修复 |
-| Applicable Rules | M0、C17、GCC、Ninja、ccache、原资源及四文件 |
-| Verification | 区分真实 UAC 与模拟；核对包摘要、窗口附着、双宽传播、退出、目标存活与清理 |
-| Expected Markers | 提权令牌、会话就绪、双宽附着传播、Ctrl+C 及会话结束 |
-| Asset Needs | build/t21-s17 scratch 和同快照干净包 |
-| Reporting Requirements | 明确通过、失败、跳过及真实桌面与私有桌面差异 |
-| Stop Conditions | 私有桌面无法完成时保留证据，不将分项对照冒充完整组合 |
-| Exit Criteria | 有界实际验证、双宽干净构建及实包测试、必要发布并远端复核 |
-| Original Owner Request | 全局模式接管已运行及新程序，退出时尽力恢复，允许管理员权限 |
-| Similar-Issue Sweep | 两种位宽、已有与新目标、普通启动混用、控制台 UAC 与清理 |
+当前无活动任务包。
 
 ## Identifier State
 
@@ -189,7 +170,7 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T20 S: 19
 - Last allocated T21 S: 17
 - Last verified remote delivery: M0 T21 S14 P1，`2491d25`（产品包 S13 P97，`33b4638`）。
-- Open task: T21 S17；S16、S15、S14、S13 已收口；Explorer.exe 仍被排除。
+- Open task: T21；S17、S16、S15、S14、S13 已收口；Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。
@@ -239,6 +220,8 @@ S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1已收口；T20此后按用户要求有限范围收口。
 
 ## Recent Closure
+
+- M0 T21 S17：私有桌面真实 UAC 对照等待超时，用户未看到提示；双宽干净包及 22 项聚焦回归通过，完整组合未验证。见 [记录](../history/M0-T21-S17-uac-isolation.md)，T21 保持开放。
 
 - M0 T21 S16：提权控制台输出修复已发布并远端复核；管理员双宽回归通过。私有桌面仍有未明引用、真实自动 UAC 与完整会话组合未覆盖，详见 [记录](../history/M0-T21-S16-console-output.md)；T21 保持开放。
 
