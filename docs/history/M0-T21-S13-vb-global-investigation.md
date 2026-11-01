@@ -1035,6 +1035,8 @@ been changed or published for this experiment.
 
 # P92 最终实包验证与发布
 
+P94 对实际发布位置执行私有桌面原生端到端测试，以 `O:/winnt/run16s.exe --global` 和 `assets/run16s.exe` 普通启动混合，原生驱动返回 0；记录 `GLOBAL E2E PASS old=4 new=4 restore=8 post_stop_windows=4 post_stop_children=4`、`GLOBAL HIDDEN RESTORE PASS normal=4 shown=4`、`GLOBAL CROSS DIRECTORY PASS normal=4 widths=2`、`GLOBAL INPUT PASS native=2 active=8 stopped=8 dpi32=144 dpi64=144`。本次普通权限路径记录 x64 全局钩子 126，目标线程后备接入；它不覆盖管理员进程事件源，不证明所有应用或物理输入。
+
 `build/t21-package/p92-clean7/candidate` 完成 x86/x64 干净构建，来源及原图形资源门禁通过；对同批实际包的 26 项聚焦回归全部通过、无跳过。管理员实包测试 `build/t21-s13/admin-etw/p92-clean7-elevated.log` 记录 `GLOBAL ELEVATED PASS widths=2 medium=2 crash=4 orphan=2 traces_clean=1`，并记录双宽普通权限窗口和子孙传播通过。后台目标区分 DLL 加载与线程 ready，再验证子进程传播；独立阶段文件未能取得，以上结论依赖标准输出及退出码，不外推到任意进程。
 
 真实缺口有两处：管理员会话对象权限使普通权限目标打开映射失败 5；新进程事件到达时线程尚未绑定桌面，原策略丢弃事件。现在只对同用户及 SYSTEM 授权所需对象，并对符合身份策略但尚未绑定桌面的目标有限重试；真实桌面匹配仍是注入前提。ETW 异步、桌面绑定超过一秒和短命进程仍可能遗漏；普通权限控制器无法开启管理员事件源时仍使用窗口发现。停止与重试同时发生的专门端到端测试未覆盖。系统 x64 hook 在本机会话仍返回 126，目标线程后备路径异步；UWP/XAML 和共享系统宿主不在范围。
