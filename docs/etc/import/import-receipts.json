@@ -1283,7 +1283,7 @@
       "path": "src/run16s-exe/main.c",
       "source": null,
       "source_blob": null,
-      "sha256": "689fa719a7c0a91b11485064f01bce92274b66df1b153c4e7940f2cee6118aab",
+      "sha256": "7fd492cf9ea786bef8b0d280d5245c6e4c396721d552bb1e5819d5e95f28144e",
       "disposition": "authored",
       "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes; T21 S3 global controller and independent ordinary-mode ownership",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
