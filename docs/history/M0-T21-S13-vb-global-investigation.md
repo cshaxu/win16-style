@@ -1035,6 +1035,8 @@ been changed or published for this experiment.
 
 # P92 最终实包验证与发布
 
+P101 用实际部署的 P97 `O:/winnt/run16s.exe` 对用户指定的 `D:/programs/misc/winmine.exe` 做自有私有桌面复测：扫雷先启动，全局模式后启动，发送其 Help → About 对应菜单命令 593。`build/t21-s13/winmine-about-p97-deployed.bmp` 捕获到 About 窗口，显示经典标题；控制器启动和停止各通知 11 个窗口、无超时，停止后扫雷进程及主窗口仍存在，探针随后关闭自有实例并返回 0。截图右侧及下部裁切，仅证明可见标题，不代表整个对话框控件视觉或物理鼠标输入均通过；本次为普通权限，不代替 P99 管理员测试。无新二进制。
+
 空桌面缺陷复核：纯 C 自有私有桌面探针记录 `EnumWindows` 为空时返回 0、last error 0，挂钩前后均无窗口。P95 发现器按此返回 31，新增双宽回归对旧代码均返回 6；修改后两宽空桌面 start/refresh/stop 均为 0，已有、新窗口及后续子控件发现仍通过。只把扫描回调恒返回 TRUE 且错误码为 0 的情况视为空；有错误码时仍报告错误。搜索 `rg -n 'EnumWindows\(' src/ntw16s-dll src/run16s-exe`，其他两个生产调用不将 FALSE 转成启动失败，无需相同修改。实际 P95 `O:/winnt/run16s.exe --global` 在同样空私有桌面仍能启动和退出，不能以发现器单测错误声称该实际入口必现失败。
 
 P97 双宽干净构建、原资源门禁及 30 项实际包聚焦回归通过、无跳过；实际 P97 启动器在空私有桌面启动和停止通过。管理员跨权限未对本包重跑，P92 结果只属于早前包。四文件已发布 assets 根与 O:/winnt，`build/t21-package/p97-publish/result.json` 核对两处一致。SHA-256：demo.exe `bd0bf40e685c5b22c9dd4af25f5299e8d45cae15d3d77f0435d493d3f7c5fcf9`；ntw16s32.dll `0c6bd0a61e20a8c2fa52ef51f6f6a10d14eec06449c5f682f6815da8fc64876e`；ntw16s64.dll `6de461abb91c159d3559b3c3d8347b1aa17dbeafaa28d002fe719a24687bb32f`；run16s.exe `391ea01d97d1da93a9f2a5001c146276b65b9a9732175b2cb3ec84a6a3790e7f`。真实扫描 API 无法区分所有可能的不设错误码失败，当前判断依赖扫描回调始终继续枚举。
