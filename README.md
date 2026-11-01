@@ -71,6 +71,13 @@ to stop. The controller uses both DLLs and the Windows x86 host; no additional
 project file or login startup is needed. Attached processes also attempt to
 propagate the hook to their children.
 
+For best-effort discovery of newly started background processes, run the
+command from an administrator console. Global mode does not elevate itself.
+Without administrator privileges the process-event source may be unavailable;
+eligible visible-window discovery remains active. Event delivery and hook
+initialization are asynchronous, so a short-lived process or an immediate
+child can exit before it is attached.
+
 On stop, the controller attempts to restore attached windows and disables
 further styling and propagation in processes that joined the global session.
 This includes applications originally launched with `run16s.exe <program>`;

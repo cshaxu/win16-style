@@ -74,6 +74,22 @@ int wmain(int argc,WCHAR **argv)
     DWORD thread_stale=ntw16s_global_policy_revalidate_thread(pi.hProcess,&stale);
     DWORD thread_wrong_arch=ntw16s_global_policy_inspect_thread(&policy,pi.dwProcessId,pi.dwThreadId,
         machine==IMAGE_FILE_MACHINE_I386?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,&invalid);
+    /* A suspended new process may not have attached its first thread to USER
+     * yet. Its identity and architecture must still be checked before the
+     * policy reports a retryable missing desktop. */
+    ResetEvent(ready);swprintf(cmd,ARRAYSIZE(cmd),L"\"%ls\" target",self);
+    PROCESS_INFORMATION fresh={0};BOOL fresh_created=CreateProcessW(self,cmd,NULL,NULL,FALSE,CREATE_SUSPENDED,NULL,NULL,&si,&fresh);
+    DWORD fresh_before=ERROR_INVALID_STATE,fresh_wrong_arch=ERROR_INVALID_STATE,fresh_after=ERROR_INVALID_STATE;
+    BOOL fresh_started=FALSE;HDESK fresh_desktop=NULL;DWORD fresh_desktop_error=0;
+    if(fresh_created){
+        SetLastError(ERROR_SUCCESS);fresh_desktop=GetThreadDesktop(fresh.dwThreadId);fresh_desktop_error=GetLastError();
+        fresh_before=ntw16s_global_policy_inspect_thread(&policy,fresh.dwProcessId,fresh.dwThreadId,machine,&invalid);
+        fresh_wrong_arch=ntw16s_global_policy_inspect_thread(&policy,fresh.dwProcessId,fresh.dwThreadId,
+            machine==IMAGE_FILE_MACHINE_I386?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,&invalid);
+        if(ResumeThread(fresh.hThread)!=(DWORD)-1)fresh_started=WaitForSingleObject(ready,3000)==WAIT_OBJECT_0;
+        if(fresh_started)fresh_after=ntw16s_global_policy_inspect_thread(&policy,fresh.dwProcessId,fresh.dwThreadId,machine,&invalid);
+        TerminateProcess(fresh.hProcess,0);WaitForSingleObject(fresh.hProcess,3000);CloseHandle(fresh.hThread);CloseHandle(fresh.hProcess);
+    }
     WCHAR other_name[128];swprintf(other_name,ARRAYSIZE(other_name),L"Win16S-Policy-Other-%lu",GetCurrentProcessId());
     HDESK other=CreateDesktopW(other_name,NULL,NULL,0,GENERIC_ALL,NULL);PROCESS_INFORMATION other_pi={0};
     STARTUPINFOW other_si={.cb=sizeof(other_si),.lpDesktop=other_name};
@@ -94,11 +110,14 @@ int wmain(int argc,WCHAR **argv)
     if(window)PostMessageW(window,WM_CLOSE,0,0);
     DWORD wait=WaitForSingleObject(pi.hProcess,3000),code=99;if(wait==WAIT_OBJECT_0)GetExitCodeProcess(pi.hProcess,&code);else TerminateProcess(pi.hProcess,ERROR_TIMEOUT);
     CloseHandle(pi.hThread);CloseHandle(pi.hProcess);CloseHandle(ready);
+    printf("POLICY FRESH bits=%u created=%d desktop=%d desktop_error=%lu before=%lu wrong_arch=%lu started=%d after=%lu\n",(unsigned)(sizeof(void*)*8),fresh_created,fresh_desktop!=NULL,fresh_desktop_error,fresh_before,fresh_wrong_arch,fresh_started,fresh_after);
     if(!started || result || identity.pid!=pi.dwProcessId || identity.thread_id!=pi.dwThreadId || identity.machine!=machine ||
        (!identity.process_birth_low && !identity.process_birth_high) || (!identity.thread_birth_low && !identity.thread_birth_high) ||
        wrong_pid!=ERROR_INVALID_WINDOW_HANDLE || wrong_thread!=ERROR_INVALID_WINDOW_HANDLE || wrong_arch!=ERROR_BAD_EXE_FORMAT || wrong_sid!=ERROR_INVALID_SID ||
        revalidate || stale_process!=ERROR_INVALID_STATE || stale_thread!=ERROR_INVALID_STATE || thread_result || thread_valid ||
-       thread_stale!=ERROR_INVALID_STATE || thread_wrong_arch!=ERROR_BAD_EXE_FORMAT || other_result!=ERROR_ACCESS_DENIED ||
+       thread_stale!=ERROR_INVALID_STATE || thread_wrong_arch!=ERROR_BAD_EXE_FORMAT || !fresh_created || !fresh_started || fresh_after ||
+       fresh_wrong_arch!=ERROR_BAD_EXE_FORMAT || (!fresh_desktop && !fresh_desktop_error && fresh_before!=ERROR_NOT_READY) ||
+       (fresh_desktop && fresh_before!=ERROR_SUCCESS) || other_result!=ERROR_ACCESS_DENIED ||
        (station_started && station_result!=ERROR_ACCESS_DENIED) || !cleared || wait!=WAIT_OBJECT_0 || code){
         printf("POLICY FAIL result=%lu pid=%lu thread=%lu arch=%lu sid=%lu revalidate=%lu stale_process=%lu stale_thread=%lu headless=%lu headless_valid=%lu headless_stale=%lu headless_arch=%lu other_desktop=%lu other_station=%lu cleared=%d wait=%lu code=%lu\n",result,wrong_pid,wrong_thread,wrong_arch,wrong_sid,revalidate,stale_process,stale_thread,thread_result,thread_valid,thread_stale,thread_wrong_arch,other_result,station_result,cleared,wait,code);return 10;
     }

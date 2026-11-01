@@ -1,6 +1,8 @@
 #include "global.h"
+#include "elevation.h"
 #include "ntw16s-dll/global_session.h"
 #include "ntw16s-dll/global_manager.h"
+#include "ntw16s-dll/global_process.h"
 #include "ntw16s-dll/injection/injection.h"
 #include <windows.h>
 #include <sddl.h>
@@ -55,6 +57,24 @@ static BOOL random_cookie(DWORD *value)
 }
 static int fail(DWORD error,PCWSTR what)
 {fwprintf(stderr,L"run16s: global %ls failed (%lu)\n",what,error);return 10;}
+/* An elevated token may choose the Administrators group as object owner.
+ * The filtered token for the same user must still read the session objects. */
+static DWORD session_security(PSECURITY_DESCRIPTOR *descriptor)
+{
+    HANDLE token=NULL;TOKEN_USER *user=NULL;LPWSTR sid=NULL;WCHAR *sddl=NULL;DWORD bytes=0,error=ERROR_SUCCESS;
+    *descriptor=NULL;
+    if(!OpenProcessToken(GetCurrentProcess(),TOKEN_QUERY,&token)){error=GetLastError();goto done;}
+    if(GetTokenInformation(token,TokenUser,NULL,0,&bytes) || GetLastError()!=ERROR_INSUFFICIENT_BUFFER || !bytes){error=ERROR_INVALID_DATA;goto done;}
+    user=(TOKEN_USER *)malloc(bytes);if(!user){error=ERROR_NOT_ENOUGH_MEMORY;goto done;}
+    if(!GetTokenInformation(token,TokenUser,user,bytes,&bytes) || !ConvertSidToStringSidW(user->User.Sid,&sid)){error=GetLastError();goto done;}
+    size_t length=wcslen(sid)+48;sddl=(WCHAR *)calloc(length,sizeof(*sddl));if(!sddl){error=ERROR_NOT_ENOUGH_MEMORY;goto done;}
+    if(swprintf(sddl,length,L"D:P(A;;GA;;;SY)(A;;GA;;;%ls)",sid)<0){error=ERROR_INVALID_NAME;goto done;}
+    if(!ConvertStringSecurityDescriptorToSecurityDescriptorW(sddl,SDDL_REVISION_1,descriptor,NULL))error=GetLastError();
+done:
+    if(sid)LocalFree(sid);
+    if(token)CloseHandle(token);
+    free(sddl);free(user);return error;
+}
 int run16s_global(void)
 {
     WCHAR name[NTW16S_GLOBAL_NAME_CAP],ready_name[NTW16S_GLOBAL_NAME_CAP+16],host_stop_name[NTW16S_GLOBAL_NAME_CAP+16],request_name[NTW16S_GLOBAL_NAME_CAP+16];
@@ -63,10 +83,15 @@ int run16s_global(void)
     HANDLE mapping=NULL,ready=NULL,host_stop=NULL;ntw16s_global_session *s=NULL;HMODULE dll=NULL;HHOOK hook=NULL;
     PROCESS_INFORMATION host={0};DWORD error=0;UINT message=0;int result=10;BOOL handler=FALSE;
     ntw16s_global_manager *manager=NULL;
+    DWORD elevation_error=0;
+    if(!run16s_is_elevated(&elevation_error)){
+        if(elevation_error)fwprintf(stderr,L"run16s: unable to check administrator token (%lu)\n",elevation_error);
+        else fwprintf(stderr,L"run16s: global background process events require administrator privileges; window discovery remains active\n");
+    }
     if(!ntw16s_global_name(name,ARRAYSIZE(name)))return fail(GetLastError(),L"desktop identity");
     if(swprintf(ready_name,ARRAYSIZE(ready_name),L"%ls.ready",name)<0 || swprintf(host_stop_name,ARRAYSIZE(host_stop_name),L"%ls.stop",name)<0 ||
        swprintf(request_name,ARRAYSIZE(request_name),L"%ls.request",name)<0)return fail(ERROR_INSUFFICIENT_BUFFER,L"object name");
-    if(!ConvertStringSecurityDescriptorToSecurityDescriptorW(L"D:P(A;;GA;;;SY)(A;;GA;;;OW)",SDDL_REVISION_1,&security,NULL))return fail(GetLastError(),L"object security");
+    error=session_security(&security);if(error)return fail(error,L"object security");
     attributes.lpSecurityDescriptor=security;
     mapping=CreateFileMappingW(INVALID_HANDLE_VALUE,&attributes,PAGE_READWRITE,0,sizeof(*s),name);
     if(!mapping){error=GetLastError();goto done;}if(GetLastError()==ERROR_ALREADY_EXISTS){error=ERROR_ALREADY_EXISTS;goto done;}
@@ -124,7 +149,12 @@ done:
     if(hook)UnhookWindowsHookEx(hook);
     if(host_stop)SetEvent(host_stop);
     if(manager){DWORD stopped=ntw16s_global_manager_stop(manager,5000);if(stopped && !error)error=stopped;}
-    if(host.hProcess){if(WaitForSingleObject(host.hProcess,5000)!=WAIT_OBJECT_0){TerminateProcess(host.hProcess,ERROR_TIMEOUT);WaitForSingleObject(host.hProcess,1000);if(!error)error=ERROR_TIMEOUT;}CloseHandle(host.hProcess);}
+    if(host.hProcess){if(WaitForSingleObject(host.hProcess,5000)!=WAIT_OBJECT_0){TerminateProcess(host.hProcess,ERROR_TIMEOUT);WaitForSingleObject(host.hProcess,1000);if(!error)error=ERROR_TIMEOUT;}
+        if(WaitForSingleObject(host.hProcess,0)==WAIT_OBJECT_0){
+            DWORD cleanup=ntw16s_global_process_stop_peer(host.hProcess,host.dwProcessId);
+            if(cleanup && cleanup!=ERROR_ACCESS_DENIED)fwprintf(stderr,L"run16s: global peer trace cleanup failed (%lu)\n",cleanup);
+        }
+        CloseHandle(host.hProcess);}
     if(host.hThread)CloseHandle(host.hThread);
     if(handler)SetConsoleCtrlHandler(stop_handler,FALSE);
     if(stop_signal){CloseHandle(stop_signal);stop_signal=NULL;}

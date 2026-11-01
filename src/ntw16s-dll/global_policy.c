@@ -44,14 +44,18 @@ DWORD ntw16s_global_policy_init(ntw16s_global_policy *policy)
     free(user);if(error)ZeroMemory(policy,sizeof(*policy));return error;
 }
 
-static BOOL same_desktop(DWORD thread_id)
+static DWORD desktop_status(DWORD thread_id)
 {
-    HDESK a=GetThreadDesktop(GetCurrentThreadId()),b=GetThreadDesktop(thread_id);
+    HDESK a=GetThreadDesktop(GetCurrentThreadId());SetLastError(ERROR_SUCCESS);HDESK b=GetThreadDesktop(thread_id);DWORD target_error=GetLastError();
     typedef BOOL (WINAPI *compare_fn)(HANDLE,HANDLE);
     HMODULE kernel=GetModuleHandleW(L"kernelbase.dll");
     compare_fn compare=kernel?(compare_fn)(void *)GetProcAddress(kernel,"CompareObjectHandles"):NULL;
     /* Names alone do not distinguish desktops in separate window stations. */
-    return a && b && compare && compare(a,b);
+    if(!a || !compare)return ERROR_ACCESS_DENIED;
+    /* A freshly created thread may not yet be connected to a USER desktop.
+     * A null handle without an error is not evidence of a different desktop. */
+    if(!b)return target_error?target_error:ERROR_NOT_READY;
+    return compare(a,b)?ERROR_SUCCESS:ERROR_ACCESS_DENIED;
 }
 
 static DWORD inspect(const ntw16s_global_policy *policy,HWND window,DWORD pid,DWORD thread_id,
@@ -66,7 +70,7 @@ static DWORD inspect(const ntw16s_global_policy *policy,HWND window,DWORD pid,DW
     if(policy->sid_bytes>sizeof(policy->sid) || !IsValidSid((PSID)policy->sid) ||
        GetLengthSid((PSID)policy->sid)!=policy->sid_bytes)return ERROR_INVALID_SID;
     if(window && (GetWindowThreadProcessId(window,&actual)!=thread_id || actual!=pid || !IsWindowVisible(window)))return ERROR_INVALID_WINDOW_HANDLE;
-    if(!window && !same_desktop(thread_id))return ERROR_ACCESS_DENIED;
+    if(!window){error=desktop_status(thread_id);if(error && error!=ERROR_NOT_READY)return error;}
     if(!ProcessIdToSessionId(pid,&session))return GetLastError();
     if(session!=policy->session)return ERROR_ACCESS_DENIED;
     process=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION|SYNCHRONIZE,FALSE,pid);
@@ -94,8 +98,8 @@ static DWORD inspect(const ntw16s_global_policy *policy,HWND window,DWORD pid,DW
     if(GetProcessIdOfThread(thread)!=pid || WaitForSingleObject(thread,0)!=WAIT_TIMEOUT){error=ERROR_INVALID_THREAD_ID;goto done;}
     if(!GetThreadTimes(thread,&created,&exited,&kernel,&user_time)){error=GetLastError();goto done;}
     identity->thread_birth_low=created.dwLowDateTime;identity->thread_birth_high=created.dwHighDateTime;
+    if(!window){error=desktop_status(thread_id);if(error)goto done;}
     if((window && (GetWindowThreadProcessId(window,&actual)!=thread_id || actual!=pid || !IsWindowVisible(window))) ||
-       (!window && !same_desktop(thread_id)) ||
        WaitForSingleObject(process,0)!=WAIT_TIMEOUT || WaitForSingleObject(thread,0)!=WAIT_TIMEOUT){
         error=ERROR_INVALID_WINDOW_HANDLE;goto done;
     }
@@ -121,7 +125,7 @@ static DWORD revalidate(HANDLE process,HWND window,const ntw16s_global_identity 
     if(!GetThreadTimes(thread,&created,&exited,&kernel,&user_time)){error=GetLastError();goto done;}
     if(created.dwLowDateTime!=identity->thread_birth_low || created.dwHighDateTime!=identity->thread_birth_high){error=ERROR_INVALID_STATE;goto done;}
     if((window && (GetWindowThreadProcessId(window,&actual)!=identity->thread_id || actual!=identity->pid || !IsWindowVisible(window))) ||
-       (!window && !same_desktop(identity->thread_id))){
+       (!window && desktop_status(identity->thread_id)!=ERROR_SUCCESS)){
         error=ERROR_INVALID_WINDOW_HANDLE;goto done;
     }
     if(WaitForSingleObject(process,0)!=WAIT_TIMEOUT || WaitForSingleObject(thread,0)!=WAIT_TIMEOUT)error=ERROR_INVALID_STATE;

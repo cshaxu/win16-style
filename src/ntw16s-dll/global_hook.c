@@ -3,6 +3,7 @@
 #include "global_vb_text.h"
 #include "global_policy.h"
 #include "global_manager.h"
+#include "global_process.h"
 #include "global_late.h"
 #include "attachment.h"
 #include <commctrl.h>
@@ -101,7 +102,7 @@ void CALLBACK Ntw16sGlobalHost(HWND window,HINSTANCE instance,LPSTR command,int 
     ntw16s_global_manager *manager=NULL;
     ntw16s_global_session *s=mapping?(ntw16s_global_session *)MapViewOfFile(mapping,FILE_MAP_READ,0,0,sizeof(*s)):NULL;
     if(!s || !ntw16s_global_owner_alive(s))goto done;
-    owner=OpenProcess(SYNCHRONIZE,FALSE,s->owner_pid);ready=OpenEventW(EVENT_MODIFY_STATE,FALSE,ready_name);
+    owner=OpenProcess(SYNCHRONIZE|PROCESS_QUERY_LIMITED_INFORMATION,FALSE,s->owner_pid);ready=OpenEventW(EVENT_MODIFY_STATE,FALSE,ready_name);
     stop=OpenEventW(SYNCHRONIZE,FALSE,stop_name);if(!owner || !ready || !stop)goto done;
     HMODULE module=NULL;if(!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
         (LPCWSTR)(void *)&Ntw16sGlobalHook,&module))goto done;
@@ -123,6 +124,8 @@ void CALLBACK Ntw16sGlobalHost(HWND window,HINSTANCE instance,LPSTR command,int 
 done:
     if(hook)UnhookWindowsHookEx(hook);
     if(manager)(void)ntw16s_global_manager_stop(manager,5000);
+    if(owner && WaitForSingleObject(owner,0)==WAIT_OBJECT_0 && ntw16s_global_process_stop_peer(owner,s->owner_pid))
+        OutputDebugStringW(L"run16s: global owner trace cleanup failed\n");
     if(owner)CloseHandle(owner);
     if(stop)CloseHandle(stop);
     if(ready)CloseHandle(ready);

@@ -113,12 +113,12 @@ static DWORD control(ntw16s_global_attach *ticket,LPARAM action)
     if(error)return error;
     UINT message=RegisterWindowMessageW(NTW16S_GLOBAL_CONTROL);if(!message)return GetLastError();
     DWORD_PTR ignored=0;
-    if(!SendMessageTimeoutW(ticket->window,message,ticket->cookie,action,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,100,&ignored)){
+    if(!SendMessageTimeoutW(ticket->window,message,ticket->cookie,action,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,500,&ignored)){
         error=GetLastError();return error?error:ERROR_TIMEOUT;
     }
     if(action==NTW16S_GLOBAL_APPLY){
         DWORD_PTR ack=0;
-        if(!SendMessageTimeoutW(ticket->window,message,ticket->cookie,NTW16S_GLOBAL_QUERY,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,100,&ack)){
+        if(!SendMessageTimeoutW(ticket->window,message,ticket->cookie,NTW16S_GLOBAL_QUERY,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,500,&ack)){
             error=GetLastError();return error?error:ERROR_TIMEOUT;
         }
         if(ack!=NTW16S_GLOBAL_ATTACHED)return ERROR_NOT_READY;

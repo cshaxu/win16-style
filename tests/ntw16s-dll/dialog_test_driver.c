@@ -3,6 +3,22 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
+#include <sddl.h>
+#include <stdlib.h>
+static PSECURITY_DESCRIPTOR low_desktop_security(void)
+{
+    HANDLE token=NULL;TOKEN_USER *user=NULL;LPWSTR sid=NULL;PSECURITY_DESCRIPTOR descriptor=NULL;WCHAR *sddl=NULL;DWORD bytes=0;
+    if(!OpenProcessToken(GetCurrentProcess(),TOKEN_QUERY,&token))goto done;
+    (void)GetTokenInformation(token,TokenUser,NULL,0,&bytes);if(!bytes)goto done;
+    user=(TOKEN_USER *)malloc(bytes);if(!user || !GetTokenInformation(token,TokenUser,user,bytes,&bytes) || !ConvertSidToStringSidW(user->User.Sid,&sid))goto done;
+    size_t length=wcslen(sid)+64;sddl=(WCHAR *)calloc(length,sizeof(*sddl));if(!sddl)goto done;
+    if(swprintf(sddl,length,L"D:(A;;GA;;;SY)(A;;GA;;;%ls)S:(ML;;NW;;;LW)",sid)<0)goto done;
+    (void)ConvertStringSecurityDescriptorToSecurityDescriptorW(sddl,SDDL_REVISION_1,&descriptor,NULL);
+done:
+    if(sid)LocalFree(sid);
+    if(token)CloseHandle(token);
+    free(sddl);free(user);return descriptor;
+}
 static BOOL desktop_released(HDESK desktop,const WCHAR *name)
 {
     if(!CloseDesktop(desktop)){printf("PRIVATE_DESKTOP_CLOSE_FAIL error=%lu\n",GetLastError());return FALSE;}
@@ -32,7 +48,8 @@ int wmain(int argc,WCHAR **argv)
 {
     if(argc==2 && !lstrcmpW(argv[1],L"--self-test"))return desktop_self_test();
     if(argc<3)return 2;
-    BOOL isolated=!lstrcmpW(argv[1],L"--private");int offset=isolated?1:0;
+    BOOL low=!lstrcmpW(argv[1],L"--low-private");
+    BOOL isolated=low || !lstrcmpW(argv[1],L"--private");int offset=isolated?1:0;
     if(argc<3+offset)return 2;
     BOOL direct=!lstrcmpW(argv[1+offset],L"--direct");
     WCHAR command[8192];int used=direct?swprintf(command,8192,L"\"%ls\"",argv[2+offset]):swprintf(command,8192,L"\"%ls\" --wait \"%ls\"",argv[1+offset],argv[2+offset]);
@@ -44,7 +61,14 @@ int wmain(int argc,WCHAR **argv)
     STARTUPINFOW startup={0};startup.cb=sizeof(startup);PROCESS_INFORMATION process={0};
     HDESK desktop=NULL;WCHAR desktop_name[80];
     if(isolated){swprintf(desktop_name,ARRAYSIZE(desktop_name),L"Win16S-Dialog-%lu-%lu",GetCurrentProcessId(),GetTickCount());
-        desktop=CreateDesktopW(desktop_name,NULL,NULL,0,GENERIC_ALL,NULL);if(!desktop){printf("PRIVATE_DESKTOP_CREATE_FAIL error=%lu\n",GetLastError());CloseHandle(job);return 2;}startup.lpDesktop=desktop_name;}
+        PSECURITY_DESCRIPTOR descriptor=NULL;SECURITY_ATTRIBUTES security={sizeof(security),NULL,FALSE};
+        if(low){
+            descriptor=low_desktop_security();if(!descriptor){CloseHandle(job);return 2;}
+            security.lpSecurityDescriptor=descriptor;
+        }
+        desktop=CreateDesktopW(desktop_name,NULL,NULL,0,GENERIC_ALL,low?&security:NULL);
+        if(descriptor)LocalFree(descriptor);
+        if(!desktop){printf("PRIVATE_DESKTOP_CREATE_FAIL error=%lu\n",GetLastError());CloseHandle(job);return 2;}startup.lpDesktop=desktop_name;}
     if(!CreateProcessW(direct?argv[2+offset]:argv[1+offset],command,NULL,NULL,TRUE,CREATE_SUSPENDED,NULL,NULL,&startup,&process)){if(desktop)CloseDesktop(desktop);CloseHandle(job);return 6;}
     if(!AssignProcessToJobObject(job,process.hProcess)){TerminateProcess(process.hProcess,7);CloseHandle(process.hThread);CloseHandle(process.hProcess);if(desktop)CloseDesktop(desktop);CloseHandle(job);return 7;}
     ResumeThread(process.hThread);CloseHandle(process.hThread);

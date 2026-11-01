@@ -1,5 +1,154 @@
 # M0 T21 S13: VB6 global-mode investigation (in progress)
 
+## P92 candidate: process discovery and lower-integrity readiness (not delivered)
+
+The user authorised administrator privileges for global discovery. Two
+width-specific managers now have a candidate real-time system process trace;
+events are inspected under the existing session, user SID, desktop, process
+birth and machine policy before the existing late-attachment worker is used.
+The logger is optional when unavailable, in which case existing window-event
+discovery remains. The stream is asynchronous and cannot guarantee that
+short-lived targets are reached before they exit. Its 100-ms buffer flush is
+not periodic process enumeration. No fifth product or imported assets were
+added.
+
+In an elevated, owned private-desktop experiment, an unhooked broker on a
+different desktop created headless targets on the controlled desktop. Both
+x86 and x64 targets loaded their matching DLL and created a child which was
+already initialised when it began executing. The broker stayed unhooked. After
+normal shutdown no `Win16S-ETW-` logger was found. A matching ordinary-token
+negative test left both target and child unhooked. These were preliminary
+candidate binaries, not the clean4 package.
+
+A separate owned low-integrity GUI target exposed error 5 opening its named
+ready event: the DLL was loaded, but the target worker could not signal ready.
+The candidate's per-target event grants access to SYSTEM and the verified same
+user SID, with a low mandatory label; no system setting or desktop security
+is changed by the product. The new private-desktop test passes for x86 and
+x64 including attached window and child/grandchild propagation. The released
+P82 x64 package failed the same test. Low-integrity desktop permissions are
+limited to the owned test desktop. This does not establish the elevated to
+normal-integrity combination.
+
+An unrelated observed `core/global-attach` timeout occurred with both the
+candidate and the released DLL with HEAD's original `global_start.c`. An
+instrumented x86 comparison measured 140 ms for a successful first control
+message, exceeding its former 100-ms deadline. The candidate uses 500 ms;
+dual-width targeted tests now pass. An owned, event-blocked target verifies
+that a hung window times out within a bound and continues after release.
+The original 1460 failures and the preliminary comparison remain evidence.
+
+The source, original-resource and ABI checks and clean dual-width build
+passed for `build/t21-package/p92-clean4/candidate`. Its 20 focused actual
+package cases passed with no skips in 30.18 seconds. The selected cases cover
+low-integrity x86/x64, global normal lifecycle, common controls, existing
+headless x86/x64, cross-desktop GUI x86/x64, crash lifecycle, startup break,
+and the package's mandatory ordinary-mode checks. The initial package test
+failed because the runner added `--private` before `--low-private`; the
+runner was corrected and the package rebuilt before the clean4 pass.
+
+The four clean4 SHA-256 values are: `run16s.exe`
+`e99d2228a7920f775b4c5179cbaa5ec2829f3181a32c8ba00b696ca15390e13e`;
+`ntw16s32.dll` `408c58d9ad7d4045935a904ef9ae31c6bd4be255ba65da2baa4a115375da2a7b`;
+`ntw16s64.dll` `0a8a44df7c1f9310cf012a1dc1530fdfe759265c677f621a78907c2c53cef6e2`;
+`demo.exe` `e1bad4df3f6dda916d209bd8930c494fa1c1e3c3a2dc8d1127f9db411ff65933`.
+This is not a published package; assets and O:/winnt still match P82.
+
+An owned `D:/programs/misc/winmine.exe` instance was started before clean4
+global mode; Help -> About was opened and PrintWindow showed the classic
+caption. The screenshot's client area was clipped, so it does not establish
+complete visual fidelity. The target and its main window remained alive after
+normal global stop. No user-owned process was operated on.
+
+`tools/Test-GlobalElevated.ps1` now consolidates the outstanding dual-width
+headless, linked-token medium-integrity, controller/host failure, logger
+orphan and cleanup tests. Its non-elevated invocation skips with code 77; the
+medium-token negative attempt failed with 1314. Neither is a pass. An earlier
+owned elevated lifecycle request remains live in session 3, where `query
+user` reports a disconnected session; the UAC consent process remains live.
+It must not be restarted merely because the result is delayed. Elevated to
+normal-integrity attachment, crash/orphan cleanup and the final actual-package
+elevated test remained unverified at that point. After reconnection and UAC,
+the owned lifecycle probe passed x86/x64 controller crash and host crash; both
+widths of the orphan recovery test reported before=0, after=4201 and stop=0,
+and no project logger was listed afterwards. The linked-token medium fixture
+failed before launch with error 1346. A subsequent test used the actual token
+of its owned ordinary launcher; creation succeeded, but the x86 target did not
+exit within eight seconds. Its wait ended in timeout and the owned target was
+terminated. Neither run establishes successful elevated-to-medium propagation.
+The fixture now includes a native baseline and timeout diagnostics; the UAC
+request for that full rerun returned cancellation, so the test did not run.
+Those test-source changes were subsequently incorporated into the clean5
+snapshot. Both widths built cleanly and 20 focused actual-package cases
+passed with no skips in 28.89 seconds. Its hashes are `run16s.exe`
+`35b0eccec939eeda6fa6f8809b6c41755ac1d635829ddcb65b36e794273b75d4`,
+`ntw16s32.dll` `4c7aaafbb35bb094405713e5be333da8d931a9135113d257f76d92716349d46c`,
+`ntw16s64.dll` `7fdf553e626dc262668ab0a4305d2e0e6cddf3278da4b46b6510cf7c627b3ac2`,
+and `demo.exe` `34e3cca1507594542de843c42d9d4c2c307025e33e48d82333eba0c7cdf1f784`.
+The owned lower-integrity headless negative entered main and created its child,
+then exited without propagation as expected without the administrator event
+source. Explicit entry and pre-child markers are now present for the pending
+elevated-to-medium diagnostic. If the remaining investigation changes source,
+rebuild and retest the final package before delivery.
+
+The later elevated rerun recorded controller/host crash and logger recovery
+success again, but both x86/x64 medium native-control processes timed out with
+one thread and no project DLL; the corresponding styled test also failed, so
+these results do not establish a product injection failure. The private test
+desktop previously granted the desktop owner access; it now explicitly grants
+the current user's SID and SYSTEM, retaining its low label. The updated fixture
+still passes the low-integrity x86/x64 GUI and descendant checks. A new
+`headless-event` mode observes the target's real per-thread initialization
+event before creating a child: owned x86/x64 targets started before global
+activation both reached ready and propagated, and an unattached target returned
+ready=0. An earlier x86 elevated test observed the DLL before this event and
+created an unstyled child; the asynchronous pre-ready interval remains a real
+coverage limit and is not counted as successful propagation. The updated medium
+fixture still requires elevated execution and post-clean5 source changes require
+a new clean package after any resulting fix.
+
+After UAC, the corrected owned medium native controls completed in both
+widths, with no project DLL as expected. The initially styled medium targets
+failed: their mapping opens returned error 5. Granting the same user SID and
+SYSTEM access to the session objects fixed those opens, but the targets still
+did not load the DLL. Targeted temporary diagnostics showed that the process
+event arrived while `GetThreadDesktop` for the new thread returned NULL with
+last error zero; the old policy rejected the process before enqueueing it.
+The candidate now checks session, user, image, architecture and thread identity,
+then treats only that unbound state as retryable for up to one second per
+target. It continues to require the actual matching desktop before loading.
+The temporary instrumentation was removed.
+
+After that change, an elevated owned test passed both medium x86/x64 native
+controls and both medium headless targets: each observed its actual per-thread
+ready event, loaded the matching DLL and propagated to its child. No new ETW
+logger was left after normal stop. The optional independent file trace could
+not be created; stdout and exit codes were available. Separate normal-token
+x86/x64 suspended-process tests observed initial ERROR_NOT_READY (21), rejected
+the wrong architecture with 193, and succeeded after desktop binding. Both
+widths passed five identity/attachment/manager cases. An earlier concurrent
+manager timing assertion failed once when its deliberate delay finished before
+the idle check; the later run passed, and that failure is not erased.
+
+Review then found that a stop during the retry interval could otherwise begin
+one more load; the candidate now checks the session phase before each attempt.
+The explicit stop-during-retry race is not separately covered end-to-end.
+The first clean build snapshot preceded that final change and its owned worker
+was deliberately stopped as obsolete; it is not a successful build. A new
+clean snapshot is required before final actual-package verification.
+
+The subsequent clean7 snapshot includes the stop-phase check. Its x86/x64
+clean build, ABI, provenance and original-resource gates passed; 26 focused
+actual-package cases passed with no skips in 35.52 seconds. The publish script's
+read-only validation confirmed exactly four files and matching tested hashes
+for both configured destination roots; it did not publish. The clean7 hashes
+are `run16s.exe` `c7dc7ac5c143c633fe7cce25441c55e3640a151cfb1c23482d57be7658e49a38`,
+`ntw16s32.dll` `cd1cf84e0a17423e98b2cc15110137fe46fd573d8f4f3d6aee290ba1c92499a1`,
+`ntw16s64.dll` `4cbe2bee9bb915e724988576ea46f4121af944015c0656c049b51ac031fc0ad9`,
+and `demo.exe` `9bed66b9218b5404f95b5ba788567b21c5282c96d1ae6a44d6edd21cf934e090`.
+The required elevated run against this exact package remains pending; the
+administrator results above describe the incremental candidate only.
+
 ## P91: administrator ETW flush retry
 
 After the cancelled P90 elevation, the user requested continuation. The same
@@ -883,4 +1032,12 @@ delivered. Its system UAC request returned cancellation and the probe did not
 run; no outcome is claimed. Scratch sources,
 executables and logs are under `build/t21-s13/admin-etw/`. No product file has
 been changed or published for this experiment.
+
+# P92 最终实包验证与发布
+
+`build/t21-package/p92-clean7/candidate` 完成 x86/x64 干净构建，来源及原图形资源门禁通过；对同批实际包的 26 项聚焦回归全部通过、无跳过。管理员实包测试 `build/t21-s13/admin-etw/p92-clean7-elevated.log` 记录 `GLOBAL ELEVATED PASS widths=2 medium=2 crash=4 orphan=2 traces_clean=1`，并记录双宽普通权限窗口和子孙传播通过。后台目标区分 DLL 加载与线程 ready，再验证子进程传播；独立阶段文件未能取得，以上结论依赖标准输出及退出码，不外推到任意进程。
+
+真实缺口有两处：管理员会话对象权限使普通权限目标打开映射失败 5；新进程事件到达时线程尚未绑定桌面，原策略丢弃事件。现在只对同用户及 SYSTEM 授权所需对象，并对符合身份策略但尚未绑定桌面的目标有限重试；真实桌面匹配仍是注入前提。ETW 异步、桌面绑定超过一秒和短命进程仍可能遗漏；普通权限控制器无法开启管理员事件源时仍使用窗口发现。停止与重试同时发生的专门端到端测试未覆盖。系统 x64 hook 在本机会话仍返回 126，目标线程后备路径异步；UWP/XAML 和共享系统宿主不在范围。
+
+同批包发布至 assets 根目录与 O:/winnt，发布结果 `build/t21-package/p92-publish/result.json` 对八个文件核对通过：run16s.exe `c7dc7ac5c143c633fe7cce25441c55e3640a151cfb1c23482d57be7658e49a38`；ntw16s32.dll `cd1cf84e0a17423e98b2cc15110137fe46fd573d8f4f3d6aee290ba1c92499a1`；ntw16s64.dll `4cbe2bee9bb915e724988576ea46f4121af944015c0656c049b51ac031fc0ad9`；demo.exe `9bed66b9218b5404f95b5ba788567b21c5282c96d1ae6a44d6edd21cf934e090`。提交推送与远端复核另行完成。
 

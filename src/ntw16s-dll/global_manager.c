@@ -2,6 +2,7 @@
 #include "global_attach.h"
 #include "global_discover.h"
 #include "global_session.h"
+#include "global_process.h"
 #include <stdlib.h>
 #include <string.h>
 #include <wchar.h>
@@ -25,6 +26,7 @@ struct ntw16s_global_manager {
     manager_entry *buckets[MANAGER_BUCKETS],*queue_head,*queue_tail;unsigned count,reap_bucket;
     volatile LONG queued,working,active,failed,overflow;
     SRWLOCK process_locks[64];
+    ntw16s_global_process *process_monitor;
 };
 
 static void notify_change(ntw16s_global_manager *m){SetEvent(m->changed);}
@@ -98,6 +100,9 @@ static void discover_existing_processes(ntw16s_global_manager *m)
     if(Thread32First(snapshot,&e))do{
         DWORD pid=e.th32OwnerProcessID,tid=e.th32ThreadID;BOOL found=FALSE;
         if(!pid || !tid || pid==GetCurrentProcessId() || pid==m->session->owner_pid || pid==m->session->host_pid)continue;
+        /* Startup does not need to retry unbound threads; the process-event
+         * path handles the brief unbound state for newly created targets. */
+        if(!GetThreadDesktop(tid))continue;
         AcquireSRWLockShared(&m->lock);
         for(unsigned i=0;i<MANAGER_BUCKETS && !found;++i)
             for(manager_entry *entry=m->buckets[i];entry;entry=entry->hash_next)
@@ -108,6 +113,28 @@ static void discover_existing_processes(ntw16s_global_manager *m)
         if(!ntw16s_global_policy_inspect_thread(&m->policy,pid,tid,m->machine,&identity))discovered(NULL,pid,tid,m);
     }while(Thread32Next(snapshot,&e));
     CloseHandle(snapshot);
+}
+/* Only inspect threads belonging to the reported PID. The worker repeats all
+ * identity and desktop checks before modifying the target. */
+static void discovered_process(DWORD pid,void *context)
+{
+    ntw16s_global_manager *m=(ntw16s_global_manager *)context;DWORD session=0;
+    if(!pid || pid==GetCurrentProcessId() || pid==m->session->owner_pid || pid==m->session->host_pid ||
+       !ProcessIdToSessionId(pid,&session) || session!=m->policy.session)return;
+    HANDLE snapshot=CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD,0);
+    if(snapshot==INVALID_HANDLE_VALUE)return;
+    THREADENTRY32 e={.dwSize=sizeof(e)};DWORD pending=0;BOOL queued=FALSE;
+    if(Thread32First(snapshot,&e))do{
+        if(e.th32OwnerProcessID!=pid)continue;
+        ntw16s_global_identity identity;
+        DWORD check=ntw16s_global_policy_inspect_thread(&m->policy,pid,e.th32ThreadID,m->machine,&identity);
+        if(!check){
+            discovered(NULL,pid,e.th32ThreadID,m);queued=TRUE;break;
+        }
+        if(check==ERROR_NOT_READY && !pending)pending=e.th32ThreadID;
+    }while(Thread32Next(snapshot,&e));
+    CloseHandle(snapshot);
+    if(!queued && pending)discovered(NULL,pid,pending,m);
 }
 typedef struct scan_state {ntw16s_global_manager *manager;manager_entry *entry;ULONGLONG deadline;} scan_state;
 static BOOL CALLBACK notify_window(HWND window,LPARAM parameter)
@@ -133,10 +160,17 @@ static DWORD process_entry(ntw16s_global_manager *m,manager_entry *entry)
     if(WaitForSingleObject(m->quit,0)==WAIT_OBJECT_0 || WaitForSingleObject(m->stop,0)==WAIT_OBJECT_0 ||
        m->session->phase!=NTW16S_GLOBAL_ACTIVE)return ERROR_CANCELLED;
     if(entry->attach.process){DWORD closed=ntw16s_global_attach_close(&entry->attach);if(closed)return closed;}
-    DWORD error=entry->window?ntw16s_global_attach_begin(&m->policy,entry->window,entry->pid,entry->thread_id,m->machine,
-                                            m->session->cookie,m->dll_path,&entry->attach):
-        ntw16s_global_attach_begin_thread(&m->policy,entry->pid,entry->thread_id,m->machine,
-                                         m->session->cookie,m->dll_path,&entry->attach);
+    DWORD error;ULONGLONG desktop_deadline=GetTickCount64()+1000;
+    for(;;){
+        if(m->session->phase!=NTW16S_GLOBAL_ACTIVE){error=ERROR_CANCELLED;break;}
+        error=entry->window?ntw16s_global_attach_begin(&m->policy,entry->window,entry->pid,entry->thread_id,m->machine,
+                                                m->session->cookie,m->dll_path,&entry->attach):
+            ntw16s_global_attach_begin_thread(&m->policy,entry->pid,entry->thread_id,m->machine,
+                                             m->session->cookie,m->dll_path,&entry->attach);
+        if(error!=ERROR_NOT_READY || entry->window || GetTickCount64()>=desktop_deadline)break;
+        HANDLE waits[]={m->quit,m->stop};DWORD wait=WaitForMultipleObjects(ARRAYSIZE(waits),waits,FALSE,20);
+        if(wait!=WAIT_TIMEOUT){error=wait==WAIT_FAILED?GetLastError():ERROR_CANCELLED;break;}
+    }
     if(error)return error;
     for(;;){
         if(WaitForSingleObject(m->quit,0)==WAIT_OBJECT_0 || WaitForSingleObject(m->stop,0)==WAIT_OBJECT_0 ||
@@ -239,6 +273,7 @@ void ntw16s_global_manager_stats_read(ntw16s_global_manager *m,ntw16s_global_man
 DWORD ntw16s_global_manager_stop(ntw16s_global_manager *m,DWORD timeout)
 {
     if(!m || m->owner_thread!=GetCurrentThreadId())return ERROR_INVALID_PARAMETER;
+    if(m->process_monitor){DWORD error=ntw16s_global_process_stop(m->process_monitor);if(error)return error;m->process_monitor=NULL;}
     if(m->discover.hook){DWORD error=ntw16s_global_discover_stop(&m->discover);if(error)return error;}
     SetEvent(m->quit);ULONGLONG deadline=GetTickCount64()+timeout;
     for(unsigned i=0;i<MANAGER_WORKERS;++i)if(m->workers[i]){
@@ -288,6 +323,11 @@ DWORD ntw16s_global_manager_start(const WCHAR *dll_path,WORD machine,ntw16s_glob
     if(WaitForMultipleObjects(MANAGER_WORKERS,m->ready,TRUE,3000)!=WAIT_OBJECT_0){error=ERROR_TIMEOUT;goto fail;}
     for(unsigned i=0;i<MANAGER_WORKERS;++i)if(m->worker_errors[i]){error=m->worker_errors[i];goto fail;}
     error=ntw16s_global_discover_start(&m->discover,discovered,m);if(error)goto fail;
+    /* The optional system process trace requires elevation. Retain normal
+     * window-event discovery when that permission is not available. */
+    error=ntw16s_global_process_start(discovered_process,m,&m->process_monitor);
+    if(error && m->process_monitor)goto fail;
+    if(error)OutputDebugStringW(L"run16s: global process events unavailable; using window discovery\n");
     discover_existing_processes(m);
     /* Targets can appear while the initial snapshot is inspected and before
      * this owner thread begins dispatching queued accessibility events. */
