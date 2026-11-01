@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T21 S13 活动；T21 和 S13 均保持开放。P82 已通过干净包测试并发布到 assets 根目录和 O:/winnt，远端复核进行中；此前远端产品包为 P74 `a2a4250`。
+M0 T21 S13 活动；T21 和 S13 均保持开放。当前远端产品包为 P82 `f948d0c`；已读取远端四文件并核对与 assets 根目录及 O:/winnt 的 SHA-256 一致。
 
 P82 修复同版跨目录双实例冲突：优先复用目标已有同名模块，检查两处文件逐字节一致及目标映像头和工作入口；系统钩子回调只由首个同名模块处理。实际 assets 普通启动与 O:/winnt 全局启动的双宽、两种先后顺序及退出恢复已通过。映像头与入口检查不是完整内存逐字节证明；不同或不可验证版本保留原行为，不保证全局接管。
 
@@ -64,7 +64,7 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
 - Last allocated T21 S: 13
-- Last verified remote delivery: M0 T21 S13 P74，`a2a4250`。
+- Last verified remote delivery: M0 T21 S13 P82，`f948d0c`。
 - Open task: T21 S13；Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
