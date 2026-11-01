@@ -1039,5 +1039,5 @@ been changed or published for this experiment.
 
 真实缺口有两处：管理员会话对象权限使普通权限目标打开映射失败 5；新进程事件到达时线程尚未绑定桌面，原策略丢弃事件。现在只对同用户及 SYSTEM 授权所需对象，并对符合身份策略但尚未绑定桌面的目标有限重试；真实桌面匹配仍是注入前提。ETW 异步、桌面绑定超过一秒和短命进程仍可能遗漏；普通权限控制器无法开启管理员事件源时仍使用窗口发现。停止与重试同时发生的专门端到端测试未覆盖。系统 x64 hook 在本机会话仍返回 126，目标线程后备路径异步；UWP/XAML 和共享系统宿主不在范围。
 
-同批包发布至 assets 根目录与 O:/winnt，发布结果 `build/t21-package/p92-publish/result.json` 对八个文件核对通过：run16s.exe `c7dc7ac5c143c633fe7cce25441c55e3640a151cfb1c23482d57be7658e49a38`；ntw16s32.dll `cd1cf84e0a17423e98b2cc15110137fe46fd573d8f4f3d6aee290ba1c92499a1`；ntw16s64.dll `4cbe2bee9bb915e724988576ea46f4121af944015c0656c049b51ac031fc0ad9`；demo.exe `9bed66b9218b5404f95b5ba788567b21c5282c96d1ae6a44d6edd21cf934e090`。提交推送与远端复核另行完成。
+同批包发布至 assets 根目录与 O:/winnt，发布结果 `build/t21-package/p92-publish/result.json` 对八个文件核对通过：run16s.exe `c7dc7ac5c143c633fe7cce25441c55e3640a151cfb1c23482d57be7658e49a38`；ntw16s32.dll `cd1cf84e0a17423e98b2cc15110137fe46fd573d8f4f3d6aee290ba1c92499a1`；ntw16s64.dll `4cbe2bee9bb915e724988576ea46f4121af944015c0656c049b51ac031fc0ad9`；demo.exe `9bed66b9218b5404f95b5ba788567b21c5282c96d1ae6a44d6edd21cf934e090`。产品提交 `5b389f5` 已推送；fetch 后逐字节读取远端四个资产并计算 SHA-256，均与测试包及两处发布文件一致。
 
