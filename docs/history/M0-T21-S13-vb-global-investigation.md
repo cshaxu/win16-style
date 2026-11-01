@@ -1035,6 +1035,10 @@ been changed or published for this experiment.
 
 # P92 最终实包验证与发布
 
+空桌面缺陷复核：纯 C 自有私有桌面探针记录 `EnumWindows` 为空时返回 0、last error 0，挂钩前后均无窗口。P95 发现器按此返回 31，新增双宽回归对旧代码均返回 6；修改后两宽空桌面 start/refresh/stop 均为 0，已有、新窗口及后续子控件发现仍通过。只把扫描回调恒返回 TRUE 且错误码为 0 的情况视为空；有错误码时仍报告错误。搜索 `rg -n 'EnumWindows\(' src/ntw16s-dll src/run16s-exe`，其他两个生产调用不将 FALSE 转成启动失败，无需相同修改。实际 P95 `O:/winnt/run16s.exe --global` 在同样空私有桌面仍能启动和退出，不能以发现器单测错误声称该实际入口必现失败。
+
+P97 双宽干净构建、原资源门禁及 30 项实际包聚焦回归通过、无跳过；实际 P97 启动器在空私有桌面启动和停止通过。管理员跨权限未对本包重跑，P92 结果只属于早前包。四文件已发布 assets 根与 O:/winnt，`build/t21-package/p97-publish/result.json` 核对两处一致。SHA-256：demo.exe `bd0bf40e685c5b22c9dd4af25f5299e8d45cae15d3d77f0435d493d3f7c5fcf9`；ntw16s32.dll `0c6bd0a61e20a8c2fa52ef51f6f6a10d14eec06449c5f682f6815da8fc64876e`；ntw16s64.dll `6de461abb91c159d3559b3c3d8347b1aa17dbeafaa28d002fe719a24687bb32f`；run16s.exe `391ea01d97d1da93a9f2a5001c146276b65b9a9732175b2cb3ec84a6a3790e7f`。真实扫描 API 无法区分所有可能的不设错误码失败，当前判断依赖扫描回调始终继续枚举。
+
 停止期间桌面绑定竞态的双宽增量探针：私有桌面中的自有新目标以挂起状态创建，政策检查返回 `ERROR_NOT_READY` 21，测试入口调用正式进程发现路径，跟踪与繁忙等待超时 1460 证明目标已排入重试。会话置为 STOPPING 后恢复目标，目标创建消息队列、存活 600ms 并检查模块；x86/x64 均返回 0、未加载样式 DLL，管理器正常停止。临时只从测试夹具移除循环中的阶段检查时，x86/x64 目标均检测到 DLL 并返回 41，驱动以 15 报错；修复检查已恢复。该测试有界且无需管理员，模拟进程事件回调，不证明真实 ETW 事件时序，也不证明其他停止竞态全部消除。首次探针在空私有桌面启动管理器返回 31，增加本进程的隐藏测试窗口后正常运行；它不是对任意空桌面启动行为的修复或通过证明。
 
 P95 干净包 `build/t21-package/p95-clean/candidate` 双宽构建及原图形资源校验通过；`p95-test` 的 28 项实际包聚焦回归全部通过、无跳过，包含双宽上述竞态及全局生命周期。管理员跨权限本轮未重跑，P92 的管理员结果属于之前包，不能冒充 P95 实测。P95 四文件已发布 assets 根目录与 O:/winnt，发布结果 `build/t21-package/p95-publish/result.json` 校验八文件一致。SHA-256：demo.exe `77eb95dceb51a14d60a344dd9215f7d00d0bfae517fdd45897c725c0e1433305`；ntw16s32.dll `29ff207c3b407cacd6886a8a16579b8ea85911049da20c26db8684ee4659d14c`；ntw16s64.dll `f2f5a802275053dcb08d09d0c564f5b3f12d33717c5728cf2b6512bc8512ff74`；run16s.exe `a551a0d01fea027e441ceaac63aad876922b1d1bff64f9888e5e5089c35abc45`。本次产品构建输入仅增加条件编译的测试入口，不改变正式路径；四文件摘要与 P92 不同，不以此推断逐字节相同。

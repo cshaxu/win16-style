@@ -34,8 +34,10 @@ DWORD ntw16s_global_discover_start(ntw16s_global_discover *watcher,ntw16s_global
     if(!watcher->hook){DWORD error=GetLastError();current=NULL;ZeroMemory(watcher,sizeof(*watcher));return error?error:ERROR_GEN_FAILURE;}
     SetLastError(ERROR_SUCCESS);
     if(!EnumWindows(scan_top,(LPARAM)watcher)){
-        DWORD error=GetLastError();UnhookWinEvent(watcher->hook);current=NULL;ZeroMemory(watcher,sizeof(*watcher));
-        return error?error:ERROR_GEN_FAILURE;
+        DWORD error=GetLastError();
+        /* scan_top never stops enumeration; no windows also returns FALSE
+         * without setting an error on an empty desktop. */
+        if(error){UnhookWinEvent(watcher->hook);current=NULL;ZeroMemory(watcher,sizeof(*watcher));return error;}
     }
     return ERROR_SUCCESS;
 }
@@ -43,7 +45,7 @@ DWORD ntw16s_global_discover_refresh(ntw16s_global_discover *watcher)
 {
     if(!watcher || !watcher->hook || current!=watcher || watcher->owner_thread!=GetCurrentThreadId())return ERROR_INVALID_PARAMETER;
     SetLastError(ERROR_SUCCESS);
-    if(!EnumWindows(scan_top,(LPARAM)watcher)){DWORD error=GetLastError();return error?error:ERROR_GEN_FAILURE;}
+    if(!EnumWindows(scan_top,(LPARAM)watcher)){DWORD error=GetLastError();if(error)return error;}
     return ERROR_SUCCESS;
 }
 DWORD ntw16s_global_discover_stop(ntw16s_global_discover *watcher)

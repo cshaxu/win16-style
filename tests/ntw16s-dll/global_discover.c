@@ -71,6 +71,11 @@ int wmain(int argc,WCHAR **argv)
     if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desktop,sizeof(desktop),&needed) ||
        wcsncmp(desktop,L"Win16S-Dialog-",14))return 5;
     owned_target targets[3]={0};ntw16s_global_discover watcher={0},duplicate={0};observations s={.watcher=&watcher};BOOL pass=FALSE;
+    DWORD empty_start=ntw16s_global_discover_start(&watcher,discovered,&s);
+    DWORD empty_refresh=empty_start?ERROR_INVALID_STATE:ntw16s_global_discover_refresh(&watcher);
+    DWORD empty_stop=empty_refresh?ERROR_INVALID_STATE:ntw16s_global_discover_stop(&watcher);
+    printf("DISCOVER EMPTY bits=%u start=%lu refresh=%lu stop=%lu\n",(unsigned)(sizeof(void*)*8),empty_start,empty_refresh,empty_stop);
+    if(empty_start || empty_refresh || empty_stop)goto done;
     if(!launch(&targets[0],1))goto done;
     s.first=targets[0].process.dwProcessId;
     if(ntw16s_global_discover_start(&watcher,discovered,&s) || !s.existing || s.nested_stop!=ERROR_BUSY)goto done;

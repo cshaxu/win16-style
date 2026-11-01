@@ -3749,7 +3749,7 @@
       "path": "src/ntw16s-dll/global_discover.c",
       "source": null,
       "source_blob": null,
-      "sha256": "bfcea02d55a2188f692f227a1f258abbe8b479cd1b4641039c0de09d432c315f",
+      "sha256": "23d442cacffd48d3f1c1aa45e500a6174a55758a8f982b562fd87cb6c96304a5",
       "disposition": "authored",
       "review": "T21 S13 startup window rediscovery and process enumeration",
       "notice": "Project-authored source; no imported code or resources"
@@ -3767,7 +3767,7 @@
       "path": "tests/ntw16s-dll/global_discover.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d9b66abdaa5c061e970f63c1e2aaa8c0a7bd23b7ae63b6b125a2c004a27f2266",
+      "sha256": "b12bfa30dc0ce88438c3f391b461f28e16fc08444d60d286a24e6a71c31b8f98",
       "disposition": "authored",
       "review": "T21 S13 target window discovery for existing and future windows",
       "notice": "Project-authored source; no imported code or resources"
