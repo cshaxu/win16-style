@@ -9,5 +9,7 @@ BOOL run16s_is_elevated(DWORD *error);
 DWORD run16s_elevate(PCWSTR image,PCWSTR arguments,BOOL wait,
     run16s_shell_execute execute,DWORD *exit_code);
 BOOL run16s_global_interactive_console(void);
+/* Best effort: a missing writable console must not abort the tray process. */
+void run16s_rebind_console_stderr(void);
 DWORD run16s_elevate_global(DWORD parent_pid,run16s_shell_execute execute,DWORD *exit_code);
 #endif

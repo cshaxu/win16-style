@@ -43,9 +43,7 @@ int wmain(int argc,WCHAR **argv)
         if(!owner)return diagnostic(9,GetLastError(),L"global parent");
         if(!FreeConsole() && GetLastError()!=ERROR_INVALID_HANDLE){error=GetLastError();CloseHandle(owner);return diagnostic(9,error,L"global console detach");}
         if(!AttachConsole((DWORD)parent)){error=GetLastError();CloseHandle(owner);return diagnostic(9,error,L"global console attach");}
-        /* The UAC-created process can have a stale CRT stream even though
-         * AttachConsole supplies a working Win32 standard handle. */
-        if(!freopen("CONOUT$","w",stderr)){CloseHandle(owner);return 9;}
+        run16s_rebind_console_stderr();
         if(!SetConsoleCtrlHandler(NULL,FALSE)){error=GetLastError();CloseHandle(owner);return diagnostic(9,error,L"global console handler");}
         int result=run16s_tray_global(owner);CloseHandle(owner);return result;
     }

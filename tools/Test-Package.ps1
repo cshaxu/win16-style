@@ -151,6 +151,8 @@ try{
         (Case 'startup-errors' (Join-Path $x64 'startup-errors.exe') @($run) @('STARTUP ERRORS PASS 2 formats Windows-Shell/private-console/shared-cmd/hidden-console one_error_channel exit4 jobs_empty') 100),
         (Case 'startup-error-unit-32' (Join-Path $x86 'startup-error-unit.exe') @() @('SHELL UNIT PASS classification=8 delegation=5')),
         (Case 'startup-error-unit-64' (Join-Path $x64 'startup-error-unit.exe') @() @('SHELL UNIT PASS classification=8 delegation=5')),
+        (Case 'console-rebind-32' (Join-Path $x86 'console-rebind-unit.exe') @() @('CONSOLE REBIND PASS restored=1 no_console=1')),
+        (Case 'console-rebind-64' (Join-Path $x64 'console-rebind-unit.exe') @() @('CONSOLE REBIND PASS restored=1 no_console=1')),
         (Case 'legacy-rejection' (Join-Path $x64 'legacy-rejection.exe') @($run) @('LEGACY REJECTION PASS 4 cases stderr193 exit4 no_retry_ui exact_owned_processes') 100),
         (Case 'cli'  $python @('-B',(Join-Path $SourceRoot 'tests/run16s-exe/cli.py'),$run) @('CLI PASS')),
         (Case 'automatic' (Join-Path $x64 'launch-automatic.exe') $pair @('LAUNCH MATRIX PASS')),

@@ -2,6 +2,15 @@
   "schema": 1,
   "files": [
     {
+      "path": "tests/run16s-exe/console_rebind.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "1b8bb467cf130cf451a150a06cd5aac920d424474253c5df7a4fbf0d249ffd5f",
+      "disposition": "authored",
+      "review": "T21 S19 console rebind regression using an owned console",
+      "notice": "Project-authored native C test"
+    },
+    {
       "path": "tests/integration/tray_global.c",
       "source": null,
       "source_blob": null,
@@ -1337,7 +1346,7 @@
       "path": "src/run16s-exe/main.c",
       "source": null,
       "source_blob": null,
-      "sha256": "248516d5ae792e42b6da0f1849c7289d1e20124f0f0314d9d5b52ec498953c62",
+      "sha256": "cfab75450df014993975bb387b2b3188620f2051facc78dc701ec5ad5dcf9e44",
       "disposition": "authored",
       "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes; T21 S3 global controller and independent ordinary-mode ownership",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
@@ -1958,7 +1967,7 @@
       "path": "src/run16s-exe/elevation.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f3c58d6c2d71136d81c7d6c5c93117e37cf49398fb1840dc730c3e639367e4eb",
+      "sha256": "836978439f6ff5debaa485650a4084e65bcc6eb54082526f141eea4c4da8fffe",
       "disposition": "authored",
       "review": "T11 S1: project-authored C17 on-demand runas coordinator/private interface/asInvoker manifest; no third-party code copied",
       "notice": "Project-authored source; project MIT license"
@@ -1967,7 +1976,7 @@
       "path": "src/run16s-exe/elevation.h",
       "source": null,
       "source_blob": null,
-      "sha256": "6d4d3927377f524127c036dc929b8cd98979ed2569c671943b0fb8e3469b43b3",
+      "sha256": "970f7d96566c7c59790682b65bc772ee6e72c3b2c7d9bcecd332ccdf52a5b0cd",
       "disposition": "authored",
       "review": "T11 S1: project-authored C17 on-demand runas coordinator/private interface/asInvoker manifest; no third-party code copied",
       "notice": "Project-authored source; project MIT license"
