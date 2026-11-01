@@ -1,5 +1,18 @@
 # M0 T21 S13: VB6 global-mode investigation (in progress)
 
+## P91: administrator ETW flush retry
+
+After the cancelled P90 elevation, the user requested continuation. The same
+owned elevated flush probe started its uniquely named system logger, launched
+its own four-second child, and received the matching PID after 328 ms. At that
+point the child was alive and `OpenProcess` granted the requested thread and
+VM access; 37 100-ms flush calls reported no error. The child exited normally
+and the probe stopped its own session with status 0. This is one timing sample,
+not a bound or a successful DLL injection, and does not establish cross-bitness,
+propagation, target integrity compatibility, or coverage of short-lived targets.
+The event source is asynchronous and requires administrator privileges; no
+product code or binaries were changed.
+
 Using the S12 candidate and an owned private-desktop run, the x86 `O:\winnt\madshow.exe` main window was observed before global activation, after the initial sweep and after stop. The global controller reported no failed notifications; matching `ntw16s32.dll` was observed in both a pre-existing instance (PID 12188) and a new instance (PID 7892). The ordinary-mode comparison used a separately owned instance. These are local optional observations, not a build dependency.
 
 The first global screenshot was captured as soon as the title changed, before the sweep finished, and showed native-looking result-field borders. A second capture 500 ms after that point showed classic borders in both old and new instances. Thus that early screenshot is not evidence of a persistent border defect. Stable global captures still show different windowless label typography from ordinary mode. The existing ordinary path wraps text APIs in `injection/window_titles.c` under a verified VB paint scope; global mode does not install the ordinary startup hook transaction. This is a plausible mechanism, not yet a demonstrated complete causal chain or an approved unsafe retrofit of startup hooks into a running process.
