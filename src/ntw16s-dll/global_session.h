@@ -23,5 +23,7 @@ BOOL ntw16s_global_name(WCHAR *name,DWORD capacity);
 BOOL ntw16s_global_owner_alive(const ntw16s_global_session *session);
 BOOL ntw16s_global_policy_active(DWORD cookie);
 BOOL ntw16s_global_owner_matches(const ntw16s_global_session *,HMODULE);
+/* Compare locked, regular files byte-for-byte; FALSE includes read failures. */
+BOOL ntw16s_global_files_equal(const WCHAR *,const WCHAR *);
 BOOL ntw16s_global_birth(HANDLE process,DWORD *low,DWORD *high);
 #endif

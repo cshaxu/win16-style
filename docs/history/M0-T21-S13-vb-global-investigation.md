@@ -724,3 +724,43 @@ retain per-thread safety and handle different versions or inaccessible files;
 blindly unloading or suppressing a DLL is not justified. Scratch probe sources
 and binaries are in `build/t21-s13/cross-install/`. No product change was made.
 
+# P82: reuse compatible cross-directory modules
+
+The global attacher now selects an already loaded same-named module before
+loading another copy. For a different path it compares the two regular files
+byte-for-byte, checks the mapped image's machine, timestamp, image size and PE
+checksum against the controller's loaded module, and compares the first 16
+bytes of the internal worker entry. The target-side owner check retains the
+run16s basename and session-owner checks, accepting a different directory only
+when the DLL files match. The system-hook callback defers to the first loaded
+same-named module. The byte comparison is exact for the files; the mapped-image
+checks are bounded checks, not a cryptographic comparison of the entire mapped
+image. Incompatible or inaccessible instances are not deliberately reused or
+patched a second time; their ordinary behavior can remain after global stop.
+
+The new formal cross-directory regression failed on the deployed P74 package
+at `restore_failed index=2 state=1`. The candidate passed on both the x64
+system-hook path at a registered scratch path and the deployed-path 126
+fallback, covering x86/x64 ordinary targets started before and after global,
+existing/hidden/new windows and child processes. The final deployed assets and
+O:/winnt paths passed the same probe. A module inventory in the fallback run
+showed one assets DLL per ordinary target rather than two. A separate owned
+negative used P74 mapped DLLs whose disk paths were replaced by identical new
+candidate files: the targets were not adopted (`normal_not_adopted index=2`);
+the test intentionally returns failure when adoption does not happen and did
+not independently complete all target checks. The differing-version probe also
+showed only the original modules on the fallback path. This is not exhaustive
+coverage of malicious images, concurrent module load/unload or every Windows
+loader ordering.
+
+Clean GCC/Ninja/ccache x86/x64 build, ABI, original-resource and source gates
+passed. Actual package focused serial regression: 24 cases, no skips, 67.57 s.
+The first two-job run failed `global-attach-x64` with 1460 despite observing an
+attached window; the same case passed in the serial batch. The cause of that
+timeout is not established and the failed run remains recorded. No physical
+input or full matrix is claimed. Four tested files were published and verified
+at assets root and O:/winnt: demo `28f548346e758bded774c7178281ee4dd9ef7a3e9b68f16984d1b86fd689947c`;
+ntw16s32 `368da50a1cb0cf93961ab7c384a1f1f4939cf2df42f7ff5c3997f8ce3cbd9c2d`;
+ntw16s64 `f5bdcbacf1dc9c99b85c2cb637e130f4eb76b83f97203290b1988793fa0edf97`;
+run16s `736e245e1e0ee9ad32d81722caff925e7f9c6f6a568c4c77e8edcf8bdc5f44b1`.
+

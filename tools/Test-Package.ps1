@@ -57,6 +57,7 @@ try{
     $tree=@($run,$d32,$d64,(Join-Path $x86 'propagate-target.exe'),(Join-Path $x64 'propagate-target.exe'))
     $cases=@(
         (Case 'global-e2e' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-e2e.exe'),$run,(Join-Path $x86 'global-e2e-target.exe'),(Join-Path $x64 'global-e2e-target.exe')) @('GLOBAL E2E PASS old=4 new=4 restore=8 post_stop_windows=4 post_stop_children=4 stopped=1','GLOBAL HIDDEN RESTORE PASS normal=4 shown=4','GLOBAL INPUT PASS native=2 active=8 stopped=8 dpi32=','dpi64=','DIALOG_DRIVER exit=0') 35),
+        (Case 'global-cross-directory' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-e2e.exe'),$run,(Join-Path $x86 'global-e2e-target.exe'),(Join-Path $x64 'global-e2e-target.exe'),'--ordinary-launcher',(Join-Path $scratch 'cross-directory/run16s.exe')) @('GLOBAL CROSS DIRECTORY PASS normal=4 widths=2','GLOBAL HIDDEN RESTORE PASS normal=4 shown=4','DIALOG_DRIVER exit=0') 35),
         (Case 'global-e2e-unaware' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-e2e.exe'),$run,(Join-Path $x86 'global-e2e-target.exe'),(Join-Path $x64 'global-e2e-target.exe'),'--dpi-unaware') @('GLOBAL E2E PASS old=4 new=4 restore=8','GLOBAL INPUT PASS native=2 active=8 stopped=8 dpi32=96 dpi64=96','GLOBAL DPI MODE PASS mode=unaware dpi32=96 dpi64=96','DIALOG_DRIVER exit=0') 35),
         (Case 'global-common' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-common.exe'),$run,(Join-Path $x86 'global-common-target.exe'),(Join-Path $x64 'global-common-target.exe')) @('GLOBAL COMMON PASS widths=2 existing=2 new=2 controls=5 restored=4 content=4','GLOBAL LATE PASS widths=2 targets=4 modes=2 clicked=8 restored=8','DIALOG_DRIVER exit=0') 35),
         (Case 'global-vb-e2e' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-common.exe'),$run,(Join-Path $x86 'global-common-target.exe'),(Join-Path $x64 'global-common-target.exe'),(Join-Path $x86 'vb-global-fixture/MSVBVM60.dll'),(Join-Path $x64 'vb-global-fixture/MSVBVM60.dll')) @('GLOBAL VB E2E PASS widths=2 existing=2 new=2 restored=4 pixels=4','DIALOG_DRIVER exit=0') 35),
@@ -838,6 +839,13 @@ try{
     $plan=if($focusSpecified){Select-PackageCases -Cases $cases -Focus $Focus}else{Select-PackageCases -Cases $cases}
     if($FullIntegration){$plan.coverage='full-integration'}
     $cases=@($plan.cases)
+    if(@($cases|Where-Object name -eq 'global-cross-directory').Count){
+        $fixture=Join-Path $scratch 'cross-directory';New-Item -ItemType Directory -Path $fixture | Out-Null
+        foreach($name in @('run16s.exe','ntw16s32.dll','ntw16s64.dll','demo.exe')){
+            Copy-Item -LiteralPath (Join-Path $Package $name) -Destination (Join-Path $fixture $name)
+            if((Get-FileHash (Join-Path $fixture $name) -Algorithm SHA256).Hash -ne (Get-FileHash (Join-Path $Package $name) -Algorithm SHA256).Hash){throw "Cross-directory fixture differs: $name"}
+        }
+    }
     foreach($arch in @('x86','x64')){
         if(@($cases|Where-Object { $_.name -in @("global-start-$arch","global-start-remote-$arch") }).Count){
             $fixture=Join-Path $scratch "start-$arch";New-Item -ItemType Directory -Path $fixture | Out-Null

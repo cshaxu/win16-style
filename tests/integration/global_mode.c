@@ -68,9 +68,13 @@ static void cleanup(target *t)
 }
 int wmain(int argc,WCHAR **argv)
 {
-    if(argc!=4 && argc!=5)return 2;
-    BOOL unaware=argc==5 && !lstrcmpW(argv[4],L"--dpi-unaware");
-    if(argc==5 && !unaware)return 2;
+    if(argc<4 || argc>7)return 2;
+    BOOL unaware=FALSE;const WCHAR *ordinary_launcher=argv[1];
+    for(int i=4;i<argc;++i){
+        if(!lstrcmpW(argv[i],L"--dpi-unaware") && !unaware)unaware=TRUE;
+        else if(!lstrcmpW(argv[i],L"--ordinary-launcher") && ordinary_launcher==argv[1] && i+1<argc)ordinary_launcher=argv[++i];
+        else return 2;
+    }
     if(!SetEnvironmentVariableW(L"WIN16S_TEST_DPI_UNAWARE",unaware?L"1":NULL))return 2;
     WCHAR desk[128],name[NTW16S_GLOBAL_NAME_CAP],request[NTW16S_GLOBAL_NAME_CAP+16],command[4096];DWORD needed=0;
     if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desk,sizeof(desk),&needed) || wcsncmp(desk,L"Win16S-Dialog-",14))return 3;
@@ -78,7 +82,7 @@ int wmain(int argc,WCHAR **argv)
     target targets[TARGET_COUNT]={0};PROCESS_INFORMATION manager={0};HANDLE mapping=NULL,event=NULL;ntw16s_global_session *session=NULL;BOOL passed=FALSE,active=FALSE;DWORD exitcode=99;
     const WCHAR *titles[]={L"T21PlainOld32",L"T21PlainOld64",L"T21RunOld64",L"T21RunOld32",L"T21PlainNew32",L"T21PlainNew64",L"T21RunNew64",L"T21RunNew32",L"T21AfterStop"};
     if(!launch(&targets[0],argv[2],NULL,titles[0]) || !launch(&targets[1],argv[3],NULL,titles[1]) ||
-       !launch(&targets[2],argv[3],argv[1],titles[2]) || !launch(&targets[3],argv[2],argv[1],titles[3]))goto done;
+       !launch(&targets[2],argv[3],ordinary_launcher,titles[2]) || !launch(&targets[3],argv[2],ordinary_launcher,titles[3]))goto done;
     if(!wait_style(targets[0].window,0)||!wait_style(targets[1].window,0)||!wait_style(targets[2].window,1)||!wait_style(targets[3].window,1))goto done;
     if(!check_input(targets[0].window)||!check_input(targets[1].window))goto done;
     if(swprintf(command,ARRAYSIZE(command),L"\"%ls\" --global",argv[1])<0)goto done;
@@ -93,7 +97,7 @@ int wmain(int argc,WCHAR **argv)
     if(!active){printf("GLOBAL_E2E manager_not_active error=%lu\n",GetLastError());goto done;}
     for(unsigned i=0;i<4;++i)if(!wait_style(targets[i].window,1)){printf("GLOBAL_E2E existing_failed index=%u state=%d\n",i,query(targets[i].window));goto done;}
     if(!launch(&targets[4],argv[2],NULL,titles[4]) || !launch(&targets[5],argv[3],NULL,titles[5]) ||
-       !launch(&targets[6],argv[3],argv[1],titles[6]) || !launch(&targets[7],argv[2],argv[1],titles[7]))goto done;
+       !launch(&targets[6],argv[3],ordinary_launcher,titles[6]) || !launch(&targets[7],argv[2],ordinary_launcher,titles[7]))goto done;
     for(unsigned i=4;i<8;++i)if(!wait_style(targets[i].window,1)){printf("GLOBAL_E2E new_failed index=%u state=%d\n",i,query(targets[i].window));goto done;}
     const unsigned normal[]={2,3,6,7};
     for(unsigned item=0;item<ARRAYSIZE(normal);++item)if(!wait_global(targets[normal[item]].window,session->cookie)){
@@ -138,6 +142,7 @@ int wmain(int argc,WCHAR **argv)
     if(!launch(&targets[8],argv[3],NULL,titles[8]) || !wait_style(targets[8].window,0))goto done;
     printf("GLOBAL E2E PASS old=4 new=4 restore=8 post_stop_windows=4 post_stop_children=4 stopped=1 host=%lu\n",session->host_pid);
     printf("GLOBAL HIDDEN RESTORE PASS normal=4 shown=4\n");
+    if(ordinary_launcher!=argv[1])printf("GLOBAL CROSS DIRECTORY PASS normal=4 widths=2\n");
     printf("GLOBAL INPUT PASS native=2 active=8 stopped=8 dpi32=%llu dpi64=%llu\n",(unsigned long long)dpi32,(unsigned long long)dpi64);passed=TRUE;
     if(unaware)printf("GLOBAL DPI MODE PASS mode=unaware dpi32=96 dpi64=96\n");
 done:

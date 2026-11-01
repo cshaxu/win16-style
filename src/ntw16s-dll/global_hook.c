@@ -60,7 +60,9 @@ LRESULT CALLBACK Ntw16sGlobalHook(int code,WPARAM a,LPARAM b)
                 HMODULE module=NULL;
                 if(s && s->owner_pid!=process && s->host_pid!=process && ntw16s_global_owner_alive(s) &&
                    GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-                       (LPCWSTR)(void *)&Ntw16sGlobalHook,&module) && ntw16s_global_owner_matches(s,module)){
+                       (LPCWSTR)(void *)&Ntw16sGlobalHook,&module) &&
+                   GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll")==module &&
+                   ntw16s_global_owner_matches(s,module)){
                     LONG phase=s->phase;BOOL control_ok=message->message==control && (DWORD)message->wParam==s->cookie;
                     if(phase==NTW16S_GLOBAL_ACTIVE && (visible || (control_ok && message->lParam==NTW16S_GLOBAL_APPLY)) && ntw16s_global_late_schedule(s->cookie)){
                         HMODULE pinned=NULL;

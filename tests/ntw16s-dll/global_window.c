@@ -1,5 +1,6 @@
 #include "ntw16s-dll/global_window.h"
 #include "ntw16s-dll/ntw16s.h"
+#include "ntw16s-dll/global_session.h"
 #include "isolated_process.h"
 #include <commctrl.h>
 #include <stdio.h>
@@ -29,6 +30,10 @@ static int worker(int argc,WCHAR **argv)
 {
     (void)argc;(void)argv;
     HINSTANCE instance=GetModuleHandleW(NULL);WNDCLASSW cls={0};
+    WCHAR self[MAX_PATH],library[MAX_PATH];HMODULE style=GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");
+    CHECK(style && GetModuleFileNameW(NULL,self,ARRAYSIZE(self)) && GetModuleFileNameW(style,library,ARRAYSIZE(library)));
+    CHECK(ntw16s_global_files_equal(self,self));CHECK(!ntw16s_global_files_equal(self,library));
+    CHECK(!ntw16s_global_files_equal(self,L""));
     cls.hInstance=instance;cls.lpfnWndProc=owner;cls.lpszClassName=L"Win16GlobalWindowFixture";
     CHECK(RegisterClassW(&cls));
     HWND root=CreateWindowW(cls.lpszClassName,L"Original",WS_OVERLAPPEDWINDOW,20,20,380,240,NULL,NULL,instance,NULL);
