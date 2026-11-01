@@ -851,3 +851,23 @@ launcher component README now makes clear that its no-global-hook statement
 describes ordinary launch. This documentation change has no product binary
 change; it does not expand tested coverage.
 
+# P90: administrator process-event feasibility
+
+After the user allowed administrator privileges, an owned C probe started a
+uniquely named real-time system ETW session with only the process event flag,
+started its own suspended child, resumed it, and consumed the matching process
+start event by payload parent and child PID. Ordinary-token `StartTraceW`
+returned 5. With the user's UAC consent, the system session started (0), the
+correct child PID was observed, and `ControlTraceW` stopped the owned session
+successfully (0). The reported delay was 2016 ms from creation; the child slept
+only 700 ms and had already exited by the time it was checked. Thus this
+proves privileged event notification, not timely injection or universal process
+coverage. No other session or global setting was altered.
+
+A second owned probe adds a 100 ms flush of its own session and checks whether
+its longer-lived target remains alive with injection access when the event is
+delivered. Its system UAC request returned cancellation and the probe did not
+run; no outcome is claimed. Scratch sources,
+executables and logs are under `build/t21-s13/admin-etw/`. No product file has
+been changed or published for this experiment.
+
