@@ -136,6 +136,10 @@ static void discovered_process(DWORD pid,void *context)
     CloseHandle(snapshot);
     if(!queued && pending)discovered(NULL,pid,pending,m);
 }
+#ifdef NTW16S_GLOBAL_MANAGER_TEST
+void ntw16s_global_manager_test_process(ntw16s_global_manager *manager,DWORD pid)
+{discovered_process(pid,manager);}
+#endif
 typedef struct scan_state {ntw16s_global_manager *manager;manager_entry *entry;ULONGLONG deadline;} scan_state;
 static BOOL CALLBACK notify_window(HWND window,LPARAM parameter)
 {

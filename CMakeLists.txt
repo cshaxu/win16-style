@@ -1320,12 +1320,14 @@ if(BUILD_TESTING)
   add_executable(core-global-manager tests/ntw16s-dll/global_manager.c src/ntw16s-dll/global_manager.c src/ntw16s-dll/global_discover.c src/ntw16s-dll/global_process.c src/ntw16s-dll/global_attach.c src/ntw16s-dll/global_policy.c src/ntw16s-dll/global_start.c src/ntw16s-dll/global_load.c src/ntw16s-dll/global_remote.c src/ntw16s-dll/global_session.c)
   set_target_properties(core-global-manager PROPERTIES OUTPUT_NAME "run16s" RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/global-manager-fixture")
   target_include_directories(core-global-manager PRIVATE src)
-  target_compile_definitions(core-global-manager PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_compile_definitions(core-global-manager PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00 NTW16S_GLOBAL_MANAGER_TEST)
   target_link_options(core-global-manager PRIVATE -municode)
   target_link_libraries(core-global-manager PRIVATE user32 advapi32)
   add_dependencies(core-global-manager dialog-test-driver global-manager-fixture-copy)
   add_test(NAME core/global-manager COMMAND ${test_driver} --name core/global-manager -- $<TARGET_FILE:dialog-test-driver> --private --direct $<TARGET_FILE:core-global-manager>)
   set_tests_properties(core/global-manager PROPERTIES TIMEOUT 25)
+  add_test(NAME core/global-manager-stop-race COMMAND ${test_driver} --name core/global-manager-stop-race -- $<TARGET_FILE:dialog-test-driver> --private --direct $<TARGET_FILE:core-global-manager> stop-race)
+  set_tests_properties(core/global-manager-stop-race PROPERTIES TIMEOUT 15)
 
   add_custom_target(global-manager-unsupported-fixture-copy
     COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/global-manager-unsupported-fixture"

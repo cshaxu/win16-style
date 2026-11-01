@@ -185,7 +185,7 @@
       "path": "tests/ntw16s-dll/global_manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "54a1cff69ae290a35689b0383937006386276d25934aa4af42cd66bad004d544",
+      "sha256": "074a7bbc4eeece855a5d223c4cd810105cc78f22e98e9db44fb864ac8f643499",
       "disposition": "authored",
       "review": "T21 S13 manager startup wait timeout and completion test",
       "notice": "Project-authored source; no imported code or resources"
@@ -194,7 +194,7 @@
       "path": "src/ntw16s-dll/global_manager.h",
       "source": null,
       "source_blob": null,
-      "sha256": "b6c3088f936dca5dd6930308860ec97992a4f26386dc819e04909794fecd4dbf",
+      "sha256": "8b51e974682b4162f095c26f12fb853d19f56d258262c6afd7abc365399c4a82",
       "disposition": "authored",
       "review": "T21 S13 bounded startup attachment completion",
       "notice": "Project-authored source; no imported code or resources"
@@ -203,7 +203,7 @@
       "path": "src/ntw16s-dll/global_manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "854bab3b273a00516700fb82a054a6b9e7cdd62e2b514eb71bed85e21d887cf7",
+      "sha256": "c575d96327815f8b4ed9442f28bccb775703073becc9c68a920f93a5dd31dc01",
       "disposition": "authored",
       "review": "T21 S13 bounded startup attachment completion",
       "notice": "Project-authored source; no imported code or resources"

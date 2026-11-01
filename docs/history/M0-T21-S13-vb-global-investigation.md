@@ -1035,6 +1035,10 @@ been changed or published for this experiment.
 
 # P92 最终实包验证与发布
 
+停止期间桌面绑定竞态的双宽增量探针：私有桌面中的自有新目标以挂起状态创建，政策检查返回 `ERROR_NOT_READY` 21，测试入口调用正式进程发现路径，跟踪与繁忙等待超时 1460 证明目标已排入重试。会话置为 STOPPING 后恢复目标，目标创建消息队列、存活 600ms 并检查模块；x86/x64 均返回 0、未加载样式 DLL，管理器正常停止。临时只从测试夹具移除循环中的阶段检查时，x86/x64 目标均检测到 DLL 并返回 41，驱动以 15 报错；修复检查已恢复。该测试有界且无需管理员，模拟进程事件回调，不证明真实 ETW 事件时序，也不证明其他停止竞态全部消除。首次探针在空私有桌面启动管理器返回 31，增加本进程的隐藏测试窗口后正常运行；它不是对任意空桌面启动行为的修复或通过证明。
+
+P95 干净包 `build/t21-package/p95-clean/candidate` 双宽构建及原图形资源校验通过；`p95-test` 的 28 项实际包聚焦回归全部通过、无跳过，包含双宽上述竞态及全局生命周期。管理员跨权限本轮未重跑，P92 的管理员结果属于之前包，不能冒充 P95 实测。P95 四文件已发布 assets 根目录与 O:/winnt，发布结果 `build/t21-package/p95-publish/result.json` 校验八文件一致。SHA-256：demo.exe `77eb95dceb51a14d60a344dd9215f7d00d0bfae517fdd45897c725c0e1433305`；ntw16s32.dll `29ff207c3b407cacd6886a8a16579b8ea85911049da20c26db8684ee4659d14c`；ntw16s64.dll `f2f5a802275053dcb08d09d0c564f5b3f12d33717c5728cf2b6512bc8512ff74`；run16s.exe `a551a0d01fea027e441ceaac63aad876922b1d1bff64f9888e5e5089c35abc45`。本次产品构建输入仅增加条件编译的测试入口，不改变正式路径；四文件摘要与 P92 不同，不以此推断逐字节相同。
+
 P94 对实际发布位置执行私有桌面原生端到端测试，以 `O:/winnt/run16s.exe --global` 和 `assets/run16s.exe` 普通启动混合，原生驱动返回 0；记录 `GLOBAL E2E PASS old=4 new=4 restore=8 post_stop_windows=4 post_stop_children=4`、`GLOBAL HIDDEN RESTORE PASS normal=4 shown=4`、`GLOBAL CROSS DIRECTORY PASS normal=4 widths=2`、`GLOBAL INPUT PASS native=2 active=8 stopped=8 dpi32=144 dpi64=144`。本次普通权限路径记录 x64 全局钩子 126，目标线程后备接入；它不覆盖管理员进程事件源，不证明所有应用或物理输入。
 
 `build/t21-package/p92-clean7/candidate` 完成 x86/x64 干净构建，来源及原图形资源门禁通过；对同批实际包的 26 项聚焦回归全部通过、无跳过。管理员实包测试 `build/t21-s13/admin-etw/p92-clean7-elevated.log` 记录 `GLOBAL ELEVATED PASS widths=2 medium=2 crash=4 orphan=2 traces_clean=1`，并记录双宽普通权限窗口和子孙传播通过。后台目标区分 DLL 加载与线程 ready，再验证子进程传播；独立阶段文件未能取得，以上结论依赖标准输出及退出码，不外推到任意进程。
