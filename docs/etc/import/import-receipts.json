@@ -2,6 +2,60 @@
   "schema": 1,
   "files": [
     {
+      "path": "tests/integration/tray_global.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "92fd70337a61c8bec00621ca10cc6533f3a3bea9f21dbc8c381f874b1ad038e5",
+      "disposition": "authored",
+      "review": "T21 S19 private-desktop tray switch integration test",
+      "notice": "Project-authored native test; uses only isolated test instances"
+    },
+    {
+      "path": "src/run16s-exe/winlogo-source.md",
+      "source": null,
+      "source_blob": null,
+      "sha256": "d08e9916496cc02af5b04d24f145679b4131625b89a97170115607a4df3a46e8",
+      "disposition": "authored",
+      "review": "T21 S19 Windows shell icon provenance",
+      "notice": "Project-authored provenance; makes no artwork license claim"
+    },
+    {
+      "path": "src/run16s-exe/winlogo.ico",
+      "source": null,
+      "source_blob": null,
+      "sha256": "07c5557a7c2f7f853b34287bb75304ecc01c51e8919138bc8e9ae6896bfa876e",
+      "disposition": "authored",
+      "review": "T21 S19 reconstructed ICO container from Windows shell32 group 40",
+      "notice": "ICO container reconstructed locally; original image bytes are Microsoft Windows artwork, not project-authored; see winlogo-source.md"
+    },
+    {
+      "path": "src/run16s-exe/tray_controller.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "7b25ca29c4f6708fe5a09746f97d70ba91ce0c9c293a24a35bc10ebab2b46644",
+      "disposition": "authored",
+      "review": "T21 S19 tray control using existing global session",
+      "notice": "Project-authored C orchestration; no imported hook implementation"
+    },
+    {
+      "path": "src/run16s-exe/tray.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "85f6b856ec6408a28b963f6fdb9a26bfc348b67fa4b9ccd57f0b0489b4237521",
+      "disposition": "authored",
+      "review": "T21 S19 internal tray interface",
+      "notice": "Project-authored C interface"
+    },
+    {
+      "path": "src/run16s-exe/tray.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "07273fdfe5bc662ed7f49359be0584495e1c20192851cb537d30adcf70cb0511",
+      "disposition": "authored",
+      "review": "T21 S19 native notification icon and menu",
+      "notice": "Project-authored C UI; no hook implementation"
+    },
+    {
       "path": "tests/integration/global_parent_owned.c",
       "source": null,
       "source_blob": null,
@@ -1283,7 +1337,7 @@
       "path": "src/run16s-exe/main.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7fd492cf9ea786bef8b0d280d5245c6e4c396721d552bb1e5819d5e95f28144e",
+      "sha256": "248516d5ae792e42b6da0f1849c7289d1e20124f0f0314d9d5b52ec498953c62",
       "disposition": "authored",
       "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes; T21 S3 global controller and independent ordinary-mode ownership",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
@@ -1292,7 +1346,7 @@
       "path": "src/run16s-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "a7b31c28945a22c8dc68438ba14831f7a5d40307b6c41a4b5102763fb8242aef",
+      "sha256": "dcf771d78fe639ef99b11961aba1aa245abe58c99ef91d3607d3509de67169f5",
       "disposition": "authored",
       "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"

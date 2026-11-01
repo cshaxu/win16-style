@@ -2,6 +2,7 @@
 #include "elevation.h"
 #include "startup_error.h"
 #include "global.h"
+#include "tray.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <wchar.h>
@@ -46,18 +47,25 @@ int wmain(int argc,WCHAR **argv)
          * AttachConsole supplies a working Win32 standard handle. */
         if(!freopen("CONOUT$","w",stderr)){CloseHandle(owner);return 9;}
         if(!SetConsoleCtrlHandler(NULL,FALSE)){error=GetLastError();CloseHandle(owner);return diagnostic(9,error,L"global console handler");}
-        int result=run16s_global_with_parent(owner);CloseHandle(owner);return result;
+        int result=run16s_tray_global(owner);CloseHandle(owner);return result;
     }
     if(argc>=2 && !wcscmp(argv[1],L"--global")){
         if(argc!=2){fwprintf(stderr,L"Usage: run16s.exe --global\n");return 2;}
         DWORD error=0,code=0;
         BOOL elevated=run16s_is_elevated(&error);
         if(error)return diagnostic(9,error,L"global token");
+        /* Only hide a console belonging exclusively to this launcher. An
+         * existing cmd/terminal console must remain visible and untouched. */
+        HWND private_window=run16s_private_console()?GetConsoleWindow():NULL;
+        if(private_window)ShowWindow(private_window,SW_HIDE);
         if(!elevated && run16s_global_interactive_console()){
             error=run16s_elevate_global(GetCurrentProcessId(),ShellExecuteExW,&code);
+            if(private_window && (error || code))ShowWindow(private_window,SW_SHOW);
             return error?diagnostic(9,error,L"global elevation"):(int)code;
         }
-        return run16s_global();
+        int result=run16s_tray_global(NULL);
+        if(private_window && result)ShowWindow(private_window,SW_SHOW);
+        return result;
     }
     BOOL private_console=run16s_private_console();
     int first=1;BOOL wait=FALSE,reentered=FALSE;DWORD error,exit_code=0;WORD subsystem=0;

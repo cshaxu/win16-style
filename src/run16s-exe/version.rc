@@ -1,4 +1,5 @@
 #include <windows.h>
+101 ICON "run16s-exe/winlogo.ico"
 1 RT_MANIFEST "run16s-exe/run16s.manifest"
 1 VERSIONINFO
 FILEVERSION 0,21,0,0
