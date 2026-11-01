@@ -85,6 +85,11 @@ ordinary launches that never joined the session keep their own styling.
 Some windows may not restore, and a DLL or inactive hook may remain loaded
 until its process exits.
 
+After updating Win16 Style, an application that was already running may still
+hold an older DLL even though its path now points to the new file. Its windows
+can appear styled while newer propagation behavior is unavailable. Restart the
+affected application when convenient to load the updated DLL.
+
 Access restrictions, incompatible loaded DLL versions, unsupported controls
 and unresponsive windows can prevent attachment. Shared Windows shell hosts
 (including Explorer) and UWP/XAML applications are excluded. A new headless
