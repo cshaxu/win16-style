@@ -838,3 +838,16 @@ The current product was not changed. In particular, newly created headless
 processes from a parent without hooks remain outside the demonstrated coverage;
 P86 separately demonstrates later GUI discovery for the tested chain.
 
+# P88: correct the published global-mode contract
+
+The root README and current architecture still claimed that ordinary run16s
+targets retain styling and propagation after a global session stops. That was
+superseded by the user's unified-stop request and contradicted the P70/P74
+behavior. Both now state that an ordinary target adopted by the global session
+is stopped with it; ordinary targets that never joined remain independent.
+The README also records the unsupported headless-parent chain, asynchronous
+fallback first frame, incompatible module and existing shell exclusions. The
+launcher component README now makes clear that its no-global-hook statement
+describes ordinary launch. This documentation change has no product binary
+change; it does not expand tested coverage.
+

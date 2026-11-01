@@ -18,7 +18,8 @@ The package DLLs are located beside the launcher, by absolute path. Their import
 paths must round-trip through the active Windows ANSI code page, or have a usable
 short path; otherwise installation fails explicitly. Target Unicode paths and
 argument text are preserved. OS rundll32 is only a bounded cross-width installer;
-it is not an additional shipped product. No global hook or existing target is used.
+it is not an additional shipped product. This ordinary launch path does not use
+a global hook or attach to an existing target.
 Native descendants created through CreateProcessA/W inherit the same package
 and style policy. --wait waits for the initial target; the application controls
 its own waits for descendants.

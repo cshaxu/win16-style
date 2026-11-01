@@ -65,16 +65,26 @@ follow a 64-bit parent, or vice versa. There is no extra `--win16-style-all` fla
 
 ### Manual global mode
 
-Run `run16s.exe --global` in a console to try the style on existing and newly
-shown traditional Win32 windows on the current desktop. Press Ctrl+C to stop.
-The controller uses both DLLs and the Windows x86 host; no additional project
-file or login startup is needed. Access restrictions, unsupported controls and
-unresponsive windows can prevent styling. Shared Windows shell hosts (including
-Explorer) are excluded, and some visual remnants may remain
-after stopping. Applications launched separately with `run16s.exe <program>`
-retain their own styling and child-process propagation after global mode stops.
-For safety, a DLL used by an attached process can remain loaded until that
-process exits. UWP/XAML applications are outside the supported scope.
+Run `run16s.exe --global` in a console to apply the style to eligible existing
+and newly shown traditional Win32 windows on the current desktop. Press Ctrl+C
+to stop. The controller uses both DLLs and the Windows x86 host; no additional
+project file or login startup is needed. Attached processes also attempt to
+propagate the hook to their children.
+
+On stop, the controller attempts to restore attached windows and disables
+further styling and propagation in processes that joined the global session.
+This includes applications originally launched with `run16s.exe <program>`;
+ordinary launches that never joined the session keep their own styling.
+Some windows may not restore, and a DLL or inactive hook may remain loaded
+until its process exits.
+
+Access restrictions, incompatible loaded DLL versions, unsupported controls
+and unresponsive windows can prevent attachment. Shared Windows shell hosts
+(including Explorer) and UWP/XAML applications are excluded. A new headless
+process created by a parent without the hook is not guaranteed to receive it;
+a later visible window can still be discovered. If a system-wide hook cannot
+be registered, the target-thread fallback is asynchronous, so the first frame
+is not guaranteed to be styled.
 
 ## Screenshots
 

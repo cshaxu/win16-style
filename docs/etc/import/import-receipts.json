@@ -1292,9 +1292,9 @@
       "path": "src/run16s-exe/README.md",
       "source": null,
       "source_blob": null,
-      "sha256": "ea47647f69ecf418c03a2bb9d29f9ef18b0d557ee44d3532ff8c988e52839db1",
+      "sha256": "270d8213d9f0afd8d307a07b48a72ac9a7d374788addcbc12b6ee68e8d486cb8",
       "disposition": "authored",
-      "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes",
+      "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes; T21 S13 clarify ordinary and global launch boundary",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
