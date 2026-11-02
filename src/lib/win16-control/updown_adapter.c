@@ -1,4 +1,4 @@
-#include "updown_paint.h"
+#include "updown_adapter.h"
 #include "vb_text.h"
 #include <commctrl.h>
 #include <vssym32.h>

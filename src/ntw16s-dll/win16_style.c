@@ -144,6 +144,12 @@ static void paint_menu_state(HWND w,style_window *s)
 {const win16_control_frame_view view=paint_view(s);win16_control_frame_menu_state(w,&view);}
 static void paint_button_state(HWND w,style_window *s,int hit)
 {const win16_control_frame_view view=paint_view(s);win16_control_frame_button_state(w,&view,hit);}
+static void button_paint_callback(HWND w,void *context,int hit){paint_button_state(w,(style_window *)context,hit);}
+static win16_control_frame_button_view button_view(style_window *s)
+{
+    const win16_control_frame_button_view view={s,&s->pressed,&s->hot,&s->detached,paint_layout,button_paint_callback};
+    return view;
+}
 
 static void bar_paint_callback(HWND w,void *context){paint_menu_state(w,(style_window *)context);}
 static win16_control_bar_state_view bar_view(style_window *s)
@@ -637,16 +643,8 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
         break;
     case WM_NCLBUTTONDBLCLK:
         if(wp==HTMENU && layout(w,s,&l)){
-            win16_style_bar bar;POINT origin={l.menu.left,l.menu.top};int item;BOOL close=FALSE;
-            GetWindowRect(w,&r);point.x=GET_X_LPARAM(lp)-r.left;point.y=GET_Y_LPARAM(lp)-r.top;
-            if(win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar)){
-                item=win16_style_menu_hit(bar.rects,bar.count,point);
-                if(item>=0 && bar.items[item].control==HBMMENU_SYSTEM && bar.items[item].popup){
-                    UINT state=GetMenuState(bar.items[item].popup,SC_CLOSE,MF_BYCOMMAND);
-                    close=state!=(UINT)-1 && !(state&(MF_DISABLED|MF_GRAYED));
-                }
-                win16_style_bar_free(&bar);
-            }
+            BOOL close=FALSE;
+            (void)win16_control_menu_bar_item_screen(w,&l,s->menu_font,s->dpi,lp,&close);
             /* DefFrameProc routes this command to the maximized MDI child.
              * Sending SC_CLOSE to the frame itself would close the parent. */
             if(close)PostMessageW(w,WM_COMMAND,SC_CLOSE,0);
@@ -656,15 +654,8 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
     case WM_NCLBUTTONDOWN:
         if(s->bar_keyboard && !tracking_menu)leave_bar(w,s,TRUE);
         if(wp==HTMENU && layout(w,s,&l)){
-            win16_style_bar bar;POINT origin={l.menu.left,l.menu.top};int item;
-            GetWindowRect(w,&r);point.x=GET_X_LPARAM(lp)-r.left;point.y=GET_Y_LPARAM(lp)-r.top;
-            if(win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar)){
-                item=win16_style_menu_hit(bar.rects,bar.count,point);
-                win16_style_bar_free(&bar);
-                if(item>=0){
-                    if(!s->detached)open_bar(w,s,item);
-                }
-            }
+            int item=win16_control_menu_bar_item_screen(w,&l,s->menu_font,s->dpi,lp,NULL);
+            if(item>=0 && !s->detached)open_bar(w,s,item);
             break;
         }
         if(wp==HTSYSMENU){
@@ -675,14 +666,16 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
             if(GetMenuBarInfo(w,OBJID_SYSMENU,0,&menu) && IsRectEmpty(&menu.rcBar)){
                 /* Do not enter a keyboard menu with the mouse still down:
                  * its subsequent release would immediately dismiss it. */
-                s->pressed=HTSYSMENU;s->hot=TRUE;SetCapture(w);paint_button_state(w,s,HTSYSMENU);break;
+                const win16_control_frame_button_view view=button_view(s);
+                win16_control_frame_button_press(w,&view,HTSYSMENU);break;
             }
         }
         /* Native system-menu tracking owns the second click, cancellation
          * and disabled SC_CLOSE semantics. TrackPopupMenu is not equivalent
          * to the non-client menu loop. Double clicks also go to the owner. */
         if(wp==HTMINBUTTON || wp==HTMAXBUTTON){
-            s->pressed=(int)wp;s->hot=TRUE;SetCapture(w);paint_button_state(w,s,(int)wp);break;
+            const win16_control_frame_button_view view=button_view(s);
+            win16_control_frame_button_press(w,&view,(int)wp);break;
         }
         goto forward;
     case WM_LBUTTONDOWN:
@@ -690,29 +683,15 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
         goto forward;
     case WM_MOUSEMOVE:
     case WM_LBUTTONUP:
-        if(s->pressed && layout(w,s,&l)){
-            int pressed=s->pressed;BOOL was_hot=s->hot;
-            point.x=GET_X_LPARAM(lp);point.y=GET_Y_LPARAM(lp);ClientToScreen(w,&point);
-            GetWindowRect(w,&r);point.x-=r.left;point.y-=r.top;
-            s->hot=win16_style_hit(&l,point)==pressed;
-            if(msg==WM_LBUTTONUP){
-                BOOL invoke=s->hot;s->pressed=0;ReleaseCapture();
-                if(invoke)PostMessageW(w,WM_SYSCOMMAND,pressed==HTSYSMENU?SC_KEYMENU:
-                    pressed==HTMINBUTTON?SC_MINIMIZE:(IsZoomed(w)?SC_RESTORE:SC_MAXIMIZE),
-                    pressed==HTSYSMENU?L' ':0);
-            }
-            if(!s->detached && (msg==WM_LBUTTONUP || was_hot!=s->hot))paint_button_state(w,s,pressed);
-            break;
-        }
+        {const win16_control_frame_button_view view=button_view(s);
+         if(win16_control_frame_button_motion(w,&view,msg,lp))break;}
         goto forward;
     case WM_CANCELMODE:
     case WM_CAPTURECHANGED:
         if(msg==WM_CANCELMODE && tracking_menu && tracking_menu->window==w)EndMenu();
         if(msg==WM_CANCELMODE && s->bar_keyboard)leave_bar(w,s,TRUE);
-        if(!s->pressed)goto forward;
-        {int pressed=s->pressed;s->pressed=0;s->hot=FALSE;
-        if(msg==WM_CANCELMODE && GetCapture()==w)ReleaseCapture();
-        if(!s->detached)paint_button_state(w,s,pressed);}goto forward;
+        {const win16_control_frame_button_view view=button_view(s);
+         (void)win16_control_frame_button_cancel(w,&view,msg);}goto forward;
     case WM_PRINT:
         if((lp&PRF_CHECKVISIBLE) && !IsWindowVisible(w))break;
         if(lp&PRF_NONCLIENT)paint(w,s,(HDC)wp);

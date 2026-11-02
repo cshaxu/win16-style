@@ -7,6 +7,7 @@
 #include "lib/win16-control/frame_layout.h"
 #include "lib/win16-control/frame_view.h"
 #include "lib/win16-control/list_paint.h"
+#include "lib/win16-control/theme_state.h"
 #include <stdlib.h>
 
 static int bar_paints;
@@ -19,8 +20,17 @@ static void test_frame_paint(HWND w,void *context,HDC dc)
 static int forwarded_tabs;
 static LRESULT test_forward_tabs(HWND w,WPARAM count,LPARAM values)
 {(void)w;(void)count;(void)values;++forwarded_tabs;return TRUE;}
+static int theme_calls;
+static HRESULT test_native_theme(HWND w,LPCWSTR app,LPCWSTR ids)
+{if(!w && app && ids && !lstrcmpW(app,L"Test") && !lstrcmpW(ids,L"Demo"))++theme_calls;return S_FALSE;}
+static int button_paints;
+static BOOL test_button_layout(HWND w,void *context,win16_style_layout *layout)
+{(void)w;(void)context;ZeroMemory(layout,sizeof(*layout));SetRect(&layout->outer,0,0,200,200);layout->minimize=layout->outer;return TRUE;}
+static void test_button_paint(HWND w,void *context,int hit)
+{(void)w;(void)context;if(hit==HTMINBUTTON)++button_paints;}
 int main(void)
 {
+    if(win16_control_theme_set(NULL,L"Test",L"Demo",test_native_theme)!=S_FALSE || theme_calls!=1)return 23;
     win16_style_palette palette;
     win16_style_default_palette(&palette);
     if(palette.face!=RGB(192,192,192) || palette.edge!=RGB(0,0,0))return 1;
@@ -75,6 +85,10 @@ int main(void)
     DeleteObject(title);win16_style_system_release(menu);
     HWND window=CreateWindowExW(0,L"STATIC",L"",WS_OVERLAPPED,20,20,100,100,NULL,NULL,GetModuleHandleW(NULL),NULL);
     if(!window)return 10;
+    int pressed=HTMINBUTTON;BOOL hot=FALSE,button_detached=FALSE;
+    const win16_control_frame_button_view button_view={NULL,&pressed,&hot,&button_detached,test_button_layout,test_button_paint};
+    if(!win16_control_frame_button_motion(window,&button_view,WM_MOUSEMOVE,MAKELPARAM(0,0)) || !hot || button_paints!=1 ||
+       !win16_control_frame_button_cancel(window,&button_view,WM_CAPTURECHANGED) || pressed || hot || button_paints!=2){DestroyWindow(window);return 24;}
     BOOL tabs_detached=FALSE;HFONT tabs_font=(HFONT)GetStockObject(SYSTEM_FONT);int tabs_count=0,*tabs_positions=NULL;
     const win16_control_tabstops_view tabs_view={&tabs_detached,&tabs_font,&tabs_count,&tabs_positions,test_forward_tabs};
     int stops[]={4,8};
@@ -100,6 +114,8 @@ int main(void)
     BOOL got_rect=GetWindowRect(window,&outer);
     SetRect(&layout.menu,0,0,20,20);
     BOOL got_hit=got_rect && win16_control_frame_hit_test(window,&layout,MAKELPARAM(outer.left+5,outer.top+5),&hit);
+    BOOL close=TRUE;
+    if(win16_control_menu_bar_item_screen(window,&layout,bar_font,bar_dpi,MAKELPARAM(outer.left+5,outer.top+5),&close)!=-1 || close){DestroyWindow(window);return 25;}
     RECT old_client,new_client;win16_control_client_screen(window,&old_client);
     SetWindowPos(window,NULL,0,0,140,120,SWP_NOMOVE|SWP_NOZORDER|SWP_NOACTIVATE);
     win16_control_restore_client(window,&old_client);win16_control_client_screen(window,&new_client);

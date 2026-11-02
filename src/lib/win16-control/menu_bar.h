@@ -35,6 +35,8 @@ void win16_style_merged_control(HDC dc,RECT bounds,BOOL system,BOOL selected,int
 BOOL win16_control_menu_bar_arrow(HWND window,HMENU root,HMENU active,UINT key);
 int win16_control_menu_bar_hit_screen(HWND window,const win16_style_layout *layout,
     HFONT font,UINT dpi,POINT point);
+int win16_control_menu_bar_item_screen(HWND window,const win16_style_layout *layout,
+    HFONT font,UINT dpi,LPARAM point,BOOL *system_close);
 int win16_control_menu_bar_next(int selected,int direction,int count,BOOL system);
 typedef struct win16_control_bar_state_view {
     void *context;

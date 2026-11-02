@@ -8,7 +8,7 @@
 static unsigned checks;
 static int fake_max=100;static int fake_min=0;static UINT fake_page=1;
 static BOOL fake_info(HWND w,int bar,LPSCROLLINFO info)
-{(void)w;if(bar!=SB_HORZ)return FALSE;info->nMin=fake_min;info->nMax=fake_max;info->nPage=fake_page;return TRUE;}
+{(void)w;if(bar!=SB_HORZ && bar!=SB_CTL)return FALSE;info->nMin=fake_min;info->nMax=fake_max;info->nPage=fake_page;return TRUE;}
 static unsigned *observed_epoch;static int received_notices;static UINT last_notice;
 static LRESULT CALLBACK action_parent(HWND w,UINT m,WPARAM a,LPARAM b)
 {if(m==WM_HSCROLL || m==WM_VSCROLL){++received_notices;last_notice=LOWORD(a);++*observed_epoch;return 0;}return DefWindowProcW(w,m,a,b);}
@@ -23,7 +23,7 @@ static BOOL no_embedded_layout(HWND w,LONG object,win16_scroll_layout *layout,PO
 static void tracking_tests(void)
 {
     const win16_scroll_metrics metrics={17,17,1};RECT bar={0,0,17,200},limit={-4,-1,21,201};
-    win16_scroll_layout l;win16_scroll_track t={0};win16_scroll_actions a;
+    win16_scroll_layout l,from_native;win16_scroll_track t={0};win16_scroll_actions a;
     BOOL detached=TRUE,created=FALSE,shown=TRUE;SIZE caret_size={0};
     const win16_scroll_caret_view caret={&detached,&created,&shown,&caret_size,&t,NULL,NULL};
     win16_scroll_caret_sync(NULL,&caret);CHECK(!created && shown);
@@ -42,6 +42,8 @@ static void tracking_tests(void)
     HWND parent=CreateWindowExW(0,cls.lpszClassName,L"",WS_OVERLAPPED,0,0,100,100,NULL,NULL,cls.hInstance,NULL);
     HWND child=parent?CreateWindowExW(0,L"SCROLLBAR",L"",WS_CHILD|SBS_VERT,0,0,20,60,parent,NULL,cls.hInstance,NULL):NULL;
     CHECK(parent && child);
+    CHECK(win16_scroll_control_layout(child,fake_info,&from_native));
+    CHECK(from_native.vertical && from_native.first.bottom-from_native.first.top==20);
     BOOL action_detached=FALSE,reporting=FALSE,frame=FALSE,edit=FALSE,list=FALSE;
     unsigned epoch=5;LONG report=77,object=OBJID_CLIENT;UINT_PTR timer=0;win16_scroll_track action_track={0};
     const win16_scroll_actions_view view={NULL,&action_detached,&reporting,&frame,&edit,&list,&epoch,&report,&object,
@@ -68,7 +70,6 @@ static void tracking_tests(void)
     DestroyWindow(child);DestroyWindow(parent);CHECK(UnregisterClassW(cls.lpszClassName,cls.hInstance));
     POINT point={8,100};
     SCROLLINFO native={.cbSize=sizeof(native),.nMin=0,.nMax=109,.nPage=10,.nPos=50};
-    win16_scroll_layout from_native;
     CHECK(win16_scroll_measure_native(&bar,TRUE,96,&native,&from_native));
     CHECK(from_native.maximum==100 && from_native.position==50 && from_native.first.bottom==17);
     native.nPage=200;CHECK(win16_scroll_measure_native(&bar,TRUE,96,&native,&from_native) && from_native.maximum==0);

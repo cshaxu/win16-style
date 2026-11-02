@@ -1,6 +1,37 @@
 #include "frame_view.h"
 #include "frame_paint.h"
 #include "menu_bar.h"
+#include <windowsx.h>
+
+void win16_control_frame_button_press(HWND w,const win16_control_frame_button_view *s,int hit)
+{
+    *s->pressed=hit;*s->hot=TRUE;SetCapture(w);s->paint(w,s->context,hit);
+}
+BOOL win16_control_frame_button_motion(HWND w,const win16_control_frame_button_view *s,UINT msg,LPARAM lp)
+{
+    win16_style_layout l;RECT r;POINT point;
+    if(!*s->pressed || !s->layout(w,s->context,&l))return FALSE;
+    int pressed=*s->pressed;BOOL was_hot=*s->hot;
+    point.x=GET_X_LPARAM(lp);point.y=GET_Y_LPARAM(lp);ClientToScreen(w,&point);
+    GetWindowRect(w,&r);point.x-=r.left;point.y-=r.top;
+    *s->hot=win16_style_hit(&l,point)==pressed;
+    if(msg==WM_LBUTTONUP){
+        BOOL invoke=*s->hot;*s->pressed=0;ReleaseCapture();
+        if(invoke)PostMessageW(w,WM_SYSCOMMAND,pressed==HTSYSMENU?SC_KEYMENU:
+            pressed==HTMINBUTTON?SC_MINIMIZE:(IsZoomed(w)?SC_RESTORE:SC_MAXIMIZE),
+            pressed==HTSYSMENU?L' ':0);
+    }
+    if(!*s->detached && (msg==WM_LBUTTONUP || was_hot!=*s->hot))s->paint(w,s->context,pressed);
+    return TRUE;
+}
+BOOL win16_control_frame_button_cancel(HWND w,const win16_control_frame_button_view *s,UINT msg)
+{
+    if(!*s->pressed)return FALSE;
+    int pressed=*s->pressed;*s->pressed=0;*s->hot=FALSE;
+    if(msg==WM_CANCELMODE && GetCapture()==w)ReleaseCapture();
+    if(!*s->detached)s->paint(w,s->context,pressed);
+    return TRUE;
+}
 
 void win16_control_frame_ncpaint(HWND w,WPARAM wp,void *context,
     void (*paint)(HWND,void *,HDC),void (*buffered)(HWND,void *,HDC))

@@ -465,26 +465,9 @@ void win16_style_vb_data_arrow(HDC dc,int x,int y,int width,int height,HDC sourc
 }
 
 static BOOL scroll_layout(HWND w,win16_scroll_layout *layout)
-{
-    RECT r;SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS};
-    UINT dpi=GetDpiForWindow(w);
-    if(!GetClientRect(w,&r) || !ntw16s_native_get_scroll_info(w,SB_CTL,&info))return FALSE;
-    /* An application can choose a nonstandard control thickness. Preserve
-     * the original square glyph aspect in both paint and hit-test geometry. */
-    return win16_scroll_measure_native(&r,(GetWindowLongPtrW(w,GWL_STYLE)&SBS_VERT)!=0,
-        dpi,&info,layout);
-}
+{return win16_scroll_control_layout(w,ntw16s_native_get_scroll_info,layout);}
 static BOOL embedded_scroll_layout(HWND w,LONG object,win16_scroll_layout *layout,POINT *screen_origin)
-{
-    BOOL vertical=object==OBJID_VSCROLL;
-    SCROLLBARINFO bar={.cbSize=sizeof(bar)};SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS};
-    RECT r;UINT dpi=GetDpiForWindow(w);
-    if(!GetScrollBarInfo(w,vertical?OBJID_VSCROLL:OBJID_HSCROLL,&bar) || (bar.rgstate[0]&STATE_SYSTEM_INVISIBLE) ||
-        !ntw16s_native_get_scroll_info(w,vertical?SB_VERT:SB_HORZ,&info))return FALSE;
-    SetRect(&r,0,0,bar.rcScrollBar.right-bar.rcScrollBar.left,bar.rcScrollBar.bottom-bar.rcScrollBar.top);
-    screen_origin->x=bar.rcScrollBar.left;screen_origin->y=bar.rcScrollBar.top;
-    return win16_scroll_measure_native(&r,vertical,dpi,&info,layout);
-}
+{return win16_scroll_embedded_layout(w,object,ntw16s_native_get_scroll_info,layout,screen_origin);}
 
 static BOOL list_axis_owned(HWND w,LONG object)
 {return win16_scroll_list_axis_owned(w,object,ntw16s_native_get_scroll_info);}

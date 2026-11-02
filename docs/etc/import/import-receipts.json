@@ -923,7 +923,7 @@
       "path": "src/ntw16s-dll/controls.c",
       "source": "src/ntw16s-dll/controls.c",
       "source_blob": "9bc3331d0f9fc3e3104059ab792670ab1579d65c",
-      "sha256": "4fae4be5a7a2848f024953ad107779e1cd86f69d36b2898bb9e482210c349990",
+      "sha256": "1e30a5d2ba8bee66e04bfd5eed8094337417b4a4f9991ad501c6056186476bb9",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained; T15 S3: only begin transient native redraw brackets on WS_VISIBLE controls, preserving hidden state; font/render algorithms unchanged; T15 S4 verified initialized public control roles and native image/PushLike/client-edge support; original notices and resources preserved; BCM_GETIMAGELIST borrowed images, state pixels, explicit COMCTL6 and native disabled notification comparison; T15 S5 verified initialized native/TPageControl tab protocol, native geometry and borrowed image/font painting, pending-install exact ownership and cancellation cleanup; no external code copied, original notices/resources retained; T15 S6 finite verified native header public protocol and string-only painter; native geometry/font/notifications retained; fixed item formats use original painter; callback/lifetime/OOM tests; no external code copied or original resource changes; T15 S8 verified initialized native tree protocol and bounded existing System paint scope, native item/font/image/geometry/notifications preserved; exact pending frame ownership and cancellation; ASCII test-thread IME isolation after native no-DLL MSCTF teardown evidence; no external code or original graphics modified; T15 S9 bounded initialized native-v6 progress painter with unchanged public range/position/step/colors/font; old-v5/emulated-state and special-style native fallback; epoch/cancellation guard and existing passive-font ownership; controlled test-thread keyboard state and native positive/negative proofs; no copied external code or original resource changes; T15 S10 initialized trackbar public protocol, exact native custom-draw rectangles/states with original application-requested stages preserved; private extra default-only part stages and per-window native cache invalidation; no font/data/input changes, no external code or original resources changed; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T17 S3 exact runtime-owned plain VB6 CheckBox; reuse existing glyph/font painter, preserve native Value/events; unsupported graphical variants and live transition retire to native; independent C non-superclass regression and optional actual Actor observer; no external code or original resources changed; S3 self-review: forward native message before retirement, pinned callback can destroy HWND without late forwarding; native destruction fixture; T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S5 exact runtime50/60 Combo/List/Scroll aliases, public combo native EDIT identity and bounded private-font binding with reentrant retirement, original application font restoration; no external implementation or original resource changes; T17 S7 exact VB5 file-list roles and bounded owner-draw DC ownership; self-contained dual-width text/image/input/resource tests and optional authentic sample witness; no external implementation or original resources changed; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T18 S21 scoped observed checklist owner-draw frame, public state and original graphic, no external code or resource changes; T18 S23 bounded v5 TProgressBar static edge, native client and colors retained; dual-width public-protocol and fallback model; T18 S54 scoped runtime grid nonclient border/scrollbars with actual public scroll check, guarded retirement and self-owned dual-width model; original resources retained; T18 S57 witnessed VCL toolbar print forwarding, unique zero-command text-only painting and native fallback, dual-width self-owned tests; original graphics retained; T18 S60 witnessed runtime TTabControl native WM_PAINT forwarding, existing public tab protocol and parent lifetime guard; resources preserved; T18 S64 VB6 checklist scoped 96 DPI bitmap rendering and additional BitBlt hook; native fallbacks retained; T18 S64 disabled checkbox list state and matching source offsets; T18 S64 reentrant window state and parent revalidation, disable/style negative and reparent lifecycle model; T18 S64 P19 scoped VB6 checkbox list text and retirement witness; T18 S64 P23 real VB5 checkbox list; T18 S64 P36 bounded VB6 UserControl client-edge renderer, pending paint and role retirement, no external code or graphic changes; T18 S64 P47 limited VB6 Data border; T18 S64 P50 bounded VB6 Data navigation graphics; T18 S64 P52 observed VB6 Data 144 DPI; T18 S64 P55 observed VB6 checklist 144 DPI; T18 S64 P57 observed VB5 checklist 144 DPI; T18 S64: witnessed Delphi scrollbar role and disabled direct-key native semantics; disabled direct mouse forwarding follows real VCL native baseline; T18 S64 witnessed Delphi SysLink protocol and native typography; no graphics or external code changed; T18 S64 preserve witnessed SpinEdit text reservation on font change; T18 S64 P111 scoped runtime-owned Delphi push button; T18 S64 P112 runtime-owned Delphi checkbox and parent-background regression; T18 S64 P113 Delphi radio parent-background preservation; T18 S64 P114 witnessed runtime-owned editable Delphi combo; T18 S64 P115 verified Delphi dropdown-list combo ownership, role and font lifecycle; T18 S64 P121 ANSI RichEdit witness and native chrome; T18 S64 P125 native month calendar arrows; T18 S64 multiline nonclient frame; T19 S1 retire native ordinary BUTTON on live owner-draw transition, preserving parent painting; T21 S22 basic presentation extracted; T21 S22 button and static presentation extracted with same-thread callbacks; T21 S22 list and edit presentation extracted with live state references; T21 S22 combo presentation extracted with live state and native-info callbacks; T21 S22 buffered scrollbar presentation extracted with live state and native layout callbacks; T21 S22 standard button and static presentation view extraction; T21 S22 sizebox, progress border and calendar arrow presentation extraction; T21 S22 VB data arrow pixel presentation extracted; T21 S22 buffered control presentation extraction; T21 S22 graphical and bitmap-button face presentation extraction",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -986,7 +986,7 @@
       "path": "src/lib/win16-control/menu_bar.c",
       "source": "src/ntw16s-dll/menu_bar.c",
       "source_blob": "8dea689873ff121dce171c1e89d4b8ac93375ffd",
-      "sha256": "813d25342a3cb40ca35d92b980748f205d324fad83c5da5003aace6b4c606e1b",
+      "sha256": "9c1930a791b6d2f6346891f09b187c391ccb8f2b3c28afc07023c2010a3c382e",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T21 S22 library migration",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -995,7 +995,7 @@
       "path": "src/lib/win16-control/menu_bar.h",
       "source": "src/ntw16s-dll/menu_bar.h",
       "source_blob": "dbf916ef7759d4c3a249a56712c10ec946ec70de",
-      "sha256": "8756831251db7e60fdf5ab62d3db5dbbf4fce35b3a9039d5b770e8c50f168527",
+      "sha256": "aa21ede93da3da31e4297db6d24ac75e04e3c38fcb7491dcd1c86b0665598d06",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T21 S22 library migration",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -1148,7 +1148,7 @@
       "path": "src/ntw16s-dll/theme.c",
       "source": "src/ntw16s-dll/theme.c",
       "source_blob": "1c81eaa41fda9d96dfc07e8fb7707d2f2dcbafbc",
-      "sha256": "ba9db953cb6a0116ce70a51c192d6b535e9ed276030dfafa4eacd9e78bb45a4a",
+      "sha256": "82ecd3afd311cde989739f03e7b7c802e0fc94afb37c380b63dc400ebb214832",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T15 S2: deferred theme recording/commit and native superclass adaptation; original notices retained",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -1166,7 +1166,7 @@
       "path": "src/ntw16s-dll/win16_style.c",
       "source": "src/ntw16s-dll/win16_style.c",
       "source_blob": "4235f085cb00c0d17145deec2d04a57c97b98d47",
-      "sha256": "b5361531f68a57731becc6e460a3f190eb922be67efe0a858358aec529bbc79f",
+      "sha256": "f4d6455ecf57f233c813758734cd1d4d5164249b46203b51f6f16f3072338312",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T15 S8 verified initialized native tree protocol and bounded existing System paint scope, native item/font/image/geometry/notifications preserved; exact pending frame ownership and cancellation; ASCII test-thread IME isolation after native no-DLL MSCTF teardown evidence; no external code or original graphics modified; T18 S64 scoped observed Delphi TPopupMenu owner, native callbacks and item restoration; private cleanup, no external code or graphics changed; T21 S22 frame painter extracted; T21 S22 caption and sizing-band presentation extracted with live state references; T21 S22 frame presentation extraction, preserving fault instrumentation; T21 S22 buffered frame/menu/button presentation extraction; T21 S22 frame layout and high-contrast palette extraction",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -1319,7 +1319,7 @@
       "path": "tests/ntw16s-dll/win16_style_scroll_geometry.c",
       "source": "tests/app/win16_style_scroll_geometry.c",
       "source_blob": "a152cfe652660138fbbf8147ef24cb23552ee64d",
-      "sha256": "76cf2b693dba4383f0a13e249df9d150d951ed80f2fc2936a1ed8f31034bfe57",
+      "sha256": "287091e7c83bd1f47fd0b6145241fb4d4d9466a24960c56a4c720098185606b1",
       "disposition": "adapt",
       "review": "T2 S2 local real-DLL focused regression registration/isolation; docs/history/M0-T2-S2-runtime.md; T21 S22 header path update",
       "notice": "Project-authored source fixture, original notices preserved"
@@ -2203,7 +2203,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "09f3cd4ab101a9b3f2d4c945bdd4fc21f958d5bc3c38ebb13470ee14d4c1a9f7",
+      "sha256": "f91cd98dcc5db2f8ab4877d8a881fa83c0dc484364bfa774ff47255bbcb95cc4",
       "review": "T15 S2 private theme ownership or native superclass regression; no external code copied"
     },
     {
@@ -2486,22 +2486,22 @@
       "sha256": "a53c7de4a4930873b610340a93e785580d17fa6b06b43880071af61180e91fbd"
     },
     {
-      "path": "src/ntw16s-dll/updown_paint.c",
+      "path": "src/lib/win16-control/updown_adapter.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "review": "T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T21 S22 pure painter extracted, window and DC ownership remain with caller",
-      "sha256": "ac2a9fc42ac9badfd9de31c2dcd8eb98dddd598f82129c3b788794271b334983"
+      "review": "T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T21 S22 pure painter extracted, window and DC ownership remain with caller; T21 S24 moved local updown adaptation to control library",
+      "sha256": "01dd0012baeb819e1cf4f843136f579e05ea81d9325430fce2ca5b47a233fd21"
     },
     {
-      "path": "src/ntw16s-dll/updown_paint.h",
+      "path": "src/lib/win16-control/updown_adapter.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "review": "T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T21 S22 pure painter extracted, window and DC ownership remain with caller",
-      "sha256": "302e9c053ca2a76e4cdd535dbc3a5e2e7674312751213460815f81ab7c94880b"
+      "review": "T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T21 S22 pure painter extracted, window and DC ownership remain with caller; T21 S24 moved local updown adaptation to control library",
+      "sha256": "0259ba7b2a6a25a89cd943ba1cccf7dd3443185e17f186fddd47f851fcc6005e"
     },
     {
       "path": "tests/ntw16s-dll/updown_controls.c",
@@ -4201,7 +4201,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "8c6fc87aa8e844dd7090d71026cea82b411c0d58bd07c0d86ceebb45a75d50bc",
+      "sha256": "d6c4efc10e4f2c0658fbcac01756230ced15c9a421148164d0d1166541b503ca",
       "review": "T21 S22 extraction of existing frame presentation with caller-owned state; T21 S22 buffered frame/menu/button presentation extraction"
     },
     {
@@ -4210,7 +4210,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "d9b4524f57a637c9b88c91530030a9e7fd42a4a4873be1975db5d56d4f350a72",
+      "sha256": "0babfbf63b56ab020151a8c45dba7bf1cf9eacae1cbcf1ddf3fd3bd9973d14b9",
       "review": "T21 S22 extraction of existing frame presentation with caller-owned state; T21 S22 buffered frame/menu/button presentation extraction"
     },
     {
@@ -4264,7 +4264,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "7413ce1c6019422e79690ca74d189384649f1c4ac883a8ff4987be6420f88b18",
+      "sha256": "de08fdb4de9d5f096dbbe9ce791e231dd68e5c6c8b3a157911e34ff73a1ab95a",
       "review": "T21 S22 standalone whole-archive linkage and original glyph smoke test"
     },
     {
@@ -4757,7 +4757,7 @@
       "path": "src/lib/win16-control/scroll_native.c",
       "source": null,
       "source_blob": null,
-      "sha256": "82785849c8eaf258d057f6612f8d639e386ae536a4ada39b9ee381255366d45a",
+      "sha256": "480851ed4b3690057fd0b22c4917a3cf1d662fcb251a02295da6cc45b53b65fb",
       "disposition": "authored",
       "review": "T21 S24 extract existing native scroll metrics and range adaptation",
       "notice": "Project-authored C implementation; no imported artwork"
@@ -4766,7 +4766,7 @@
       "path": "src/lib/win16-control/scroll_native.h",
       "source": null,
       "source_blob": null,
-      "sha256": "86f06922ecf7de2a6ccb125afd1a871232fb3c2f13ce4896d14adca57273eebe",
+      "sha256": "612aba6991591131fbdda40d685bde01289375d9bf15e4cf6534f5a32b8cd21a",
       "disposition": "authored",
       "review": "T21 S24 extract existing native scroll metrics and range adaptation",
       "notice": "Project-authored C implementation; no imported artwork"
@@ -4779,6 +4779,33 @@
       "disposition": "authored",
       "review": "T21 S24 extract frame font policy and preserve independent font fixture compiler contract",
       "notice": "Project-authored C implementation; no imported artwork"
+    },
+    {
+      "path": "src/lib/win16-control/theme_state.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ba8eef41a9af674084d146cd2d1bcb6dcdd4945e2de504c7c70e8a80112ee4bd",
+      "disposition": "authored",
+      "review": "T21 S24 move project-authored theme ownership and expose native-theme callback",
+      "notice": "Project-authored C implementation; original notices preserved"
+    },
+    {
+      "path": "src/lib/win16-control/theme_state.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "2d258a64077d1c40808ed8ec1eb0e6ffc40a6409165729753a68f71fb4b002a3",
+      "disposition": "authored",
+      "review": "T21 S24 move project-authored theme ownership and expose native-theme callback",
+      "notice": "Project-authored C implementation; original notices preserved"
+    },
+    {
+      "path": "src/ntw16s-dll/updown_paint.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "46e4c551ae97cf8abbde2c5ddf72978e39b9c8410ffb6a8c955ff23c6c7c2c70",
+      "disposition": "authored",
+      "review": "T21 S24 compatibility forwarding header",
+      "notice": "Project-authored C interface; no imported artwork"
     }
   ]
 }

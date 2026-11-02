@@ -3,6 +3,21 @@
 #include <string.h>
 #include <windowsx.h>
 
+int win16_control_menu_bar_item_screen(HWND w,const win16_style_layout *l,HFONT font,UINT dpi,LPARAM lp,BOOL *close)
+{
+    win16_style_bar bar;POINT origin={l->menu.left,l->menu.top},point;RECT r;int item=-1;
+    if(close)*close=FALSE;
+    GetWindowRect(w,&r);point.x=GET_X_LPARAM(lp)-r.left;point.y=GET_Y_LPARAM(lp)-r.top;
+    if(win16_style_bar_read_for_window(w,GetMenu(w),font,dpi,origin,l->menu.right-l->menu.left,&bar)){
+        item=win16_style_menu_hit(bar.rects,bar.count,point);
+        if(close && item>=0 && bar.items[item].control==HBMMENU_SYSTEM && bar.items[item].popup){
+            UINT state=GetMenuState(bar.items[item].popup,SC_CLOSE,MF_BYCOMMAND);
+            *close=state!=(UINT)-1 && !(state&(MF_DISABLED|MF_GRAYED));
+        }
+        win16_style_bar_free(&bar);
+    }
+    return item;
+}
 int win16_control_menu_bar_mnemonic(const win16_style_bar *bar,WCHAR key)
 {
     int index=-1;CharUpperBuffW(&key,1);

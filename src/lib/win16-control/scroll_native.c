@@ -1,4 +1,23 @@
 #include "scroll_native.h"
+BOOL win16_scroll_control_layout(HWND w,win16_scroll_info_fn get_info,win16_scroll_layout *layout)
+{
+    RECT r;SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS};
+    UINT dpi=GetDpiForWindow(w);
+    if(!GetClientRect(w,&r) || !get_info(w,SB_CTL,&info))return FALSE;
+    return win16_scroll_measure_native(&r,(GetWindowLongPtrW(w,GWL_STYLE)&SBS_VERT)!=0,dpi,&info,layout);
+}
+BOOL win16_scroll_embedded_layout(HWND w,LONG object,win16_scroll_info_fn get_info,
+    win16_scroll_layout *layout,POINT *screen_origin)
+{
+    BOOL vertical=object==OBJID_VSCROLL;
+    SCROLLBARINFO bar={.cbSize=sizeof(bar)};SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS};
+    RECT r;UINT dpi=GetDpiForWindow(w);
+    if(!GetScrollBarInfo(w,vertical?OBJID_VSCROLL:OBJID_HSCROLL,&bar) || (bar.rgstate[0]&STATE_SYSTEM_INVISIBLE) ||
+        !get_info(w,vertical?SB_VERT:SB_HORZ,&info))return FALSE;
+    SetRect(&r,0,0,bar.rcScrollBar.right-bar.rcScrollBar.left,bar.rcScrollBar.bottom-bar.rcScrollBar.top);
+    screen_origin->x=bar.rcScrollBar.left;screen_origin->y=bar.rcScrollBar.top;
+    return win16_scroll_measure_native(&r,vertical,dpi,&info,layout);
+}
 BOOL win16_scroll_embedded_input(HWND w,const win16_scroll_embedded_view *v,UINT m,WPARAM a,LPARAM b)
 {
     const win16_scroll_actions_view *s=&v->actions;
