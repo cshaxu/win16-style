@@ -1,6 +1,7 @@
 #ifndef WIN16_STYLE_H
 #define WIN16_STYLE_H
 #include "api.h"
+#include "../lib/win16-control/palette.h"
 
 /* Local, same-GUI-thread API. No process/task policy or cross-process ABI.
  * Eligible: top-level and child frames without custom client edges. Frames
@@ -12,11 +13,6 @@
  * Install/remove preserve the current client origin and dimensions when normal.
  * Caller must remove before unloading this library. Destruction removes itself.
  */
-typedef struct win16_style_palette {
-    COLORREF active, inactive, active_text, inactive_text;
-    COLORREF face, light, shadow, edge;
-} win16_style_palette;
-
 NTW16S_API void win16_style_default_palette(win16_style_palette *palette);
 NTW16S_API BOOL win16_style_install(HWND window, const win16_style_palette *palette);
 /* DLL-private automatic-creation entry. Hidden normal frames must not force

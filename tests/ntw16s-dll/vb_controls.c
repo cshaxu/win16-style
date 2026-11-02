@@ -4,7 +4,7 @@
 #include <commctrl.h>
 #include <imm.h>
 #include "isolated_process.h"
-#include "../../src/ntw16s-dll/control_glyphs.h"
+#include "../../src/lib/win16-control/control_glyphs.h"
 #include "../../src/ntw16s-dll/control_class.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"VB FAIL line=%u error=%lu: %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
 static unsigned clicks;

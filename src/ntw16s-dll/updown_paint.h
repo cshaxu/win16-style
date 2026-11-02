@@ -1,8 +1,8 @@
 #ifndef NTW16S_UPDOWN_PAINT_H
 #define NTW16S_UPDOWN_PAINT_H
 #include "win16_style.h"
+#include "../lib/win16-control/updown_paint.h"
 #include <uxtheme.h>
-typedef const char ntw16s_updown_glyph[17][18];
 typedef struct ntw16s_updown_paint {
     struct ntw16s_updown_paint *next;
     HWND window;

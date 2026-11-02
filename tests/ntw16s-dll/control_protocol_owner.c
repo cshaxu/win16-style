@@ -9,7 +9,7 @@ static void *tracked_calloc(size_t n,size_t size)
 static void tracked_free(void *p){if(p){if(!allocations)abort();--allocations;free(p);}}
 #define calloc tracked_calloc
 #define free tracked_free
-#include "../../src/ntw16s-dll/control_protocol.c"
+#include "../../src/lib/win16-control/control_protocol.c"
 #undef calloc
 #undef free
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"PROTOCOL_OWNER_FAIL line=%u error=%lu: %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)

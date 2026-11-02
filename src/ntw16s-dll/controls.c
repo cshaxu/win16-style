@@ -15,9 +15,17 @@ BOOL ntw16s_vb_user_edge_dormant(HWND);
 BOOL ntw16s_vcl_toolbar_valid(HWND);
 BOOL ntw16s_vcl_tab_valid(HWND);
 #include "controls.h"
-#include "control_glyphs.h"
-#include "combo_glyph.h"
-#include "scroll_glyphs.h"
+#include "../lib/win16-control/basic_paint.h"
+#include "../lib/win16-control/other_paint.h"
+#include "../lib/win16-control/list_paint.h"
+#include "../lib/win16-control/combo_paint.h"
+#include "../lib/win16-control/scroll_paint.h"
+#include "../lib/win16-control/special_paint.h"
+#include "../lib/win16-control/present.h"
+#include "../lib/win16-control/choice_paint.h"
+#include "../lib/win16-control/choice_view.h"
+
+#include "../lib/win16-control/scroll_assets.h"
 #include "scroll_track.h"
 #include "font.h"
 #include "native_api.h"
@@ -105,10 +113,6 @@ static BOOL updown_acquire(void *owner)
 }
 static void updown_release(void *owner)
 {control_style *s=owner;if(!--s->calls && s->detached)dispose_control(s);}
-static ntw16s_updown_glyph *const updown_glyphs[]={
-    &scroll_uparrow,&scroll_dnarrow,&scroll_lfarrow,&scroll_rgarrow,
-    &scroll_uparrowd,&scroll_dnarrowd,&scroll_lfarrowd,&scroll_rgarrowd,
-    &scroll_uparrowi,&scroll_dnarrowi,&scroll_lfarrowi,&scroll_rgarrowi};
 
 /* Keep native-painter borrowed font returns alive through reentrant setters.
  * Finite cache follows the existing 32-lease VB text scope limit. */
@@ -323,60 +327,12 @@ static BOOL supported(HWND w)
         type==BS_AUTORADIOBUTTON || type==BS_3STATE || type==BS_AUTO3STATE;
 }
 
-static void frame(HDC dc,RECT r,COLORREF color,int width)
-{
-    HBRUSH brush=CreateSolidBrush(color);int i;
-    if(!brush)return;
-    for(i=0;i<width && r.right>r.left && r.bottom>r.top;++i){FrameRect(dc,&r,brush);
-    InflateRect(&r,-1,-1);
-    }
-    DeleteObject(brush);
-}
-
-static RECT button_border(HDC dc,RECT r,const win16_style_palette *palette,int u,int border,BOOL pushed)
-{
-    RECT bounds=r,corner;
-    frame(dc,bounds,palette->edge,border);
-    SetDCBrushColor(dc,palette->light);
-    SetRect(&corner,r.left,r.top,r.left+u,r.top+u);FillRect(dc,&corner,(HBRUSH)GetStockObject(DC_BRUSH));
-    OffsetRect(&corner,r.right-r.left-u,0);FillRect(dc,&corner,(HBRUSH)GetStockObject(DC_BRUSH));
-    OffsetRect(&corner,0,r.bottom-r.top-u);FillRect(dc,&corner,(HBRUSH)GetStockObject(DC_BRUSH));
-    OffsetRect(&corner,-(r.right-r.left-u),0);FillRect(dc,&corner,(HBRUSH)GetStockObject(DC_BRUSH));
-    InflateRect(&bounds,-border,-border);
-    RECT strip=bounds;int band=pushed?u:2*u;
-    SetDCBrushColor(dc,pushed?palette->shadow:palette->light);
-    strip.bottom=strip.top+band;FillRect(dc,&strip,(HBRUSH)GetStockObject(DC_BRUSH));
-    strip=bounds;strip.right=strip.left+band;FillRect(dc,&strip,(HBRUSH)GetStockObject(DC_BRUSH));
-    if(!pushed){SetDCBrushColor(dc,palette->shadow);
-        for(int i=0;i<2;++i){strip=bounds;InflateRect(&strip,-i*u,-i*u);
-            strip.top=strip.bottom-u;FillRect(dc,&strip,(HBRUSH)GetStockObject(DC_BRUSH));
-            strip=bounds;InflateRect(&strip,-i*u,-i*u);
-            strip.left=strip.right-u;FillRect(dc,&strip,(HBRUSH)GetStockObject(DC_BRUSH));}}
-    return bounds;
-}
-static BOOL checklist_glyph(HDC dc,const RECT *rect,UINT flags)
-{
-    int width=rect->right-rect->left,height=rect->bottom-rect->top;
-    if(width<=0 || height<=0 || width>256 || height>256)return FALSE;
-    DWORD *pixels=calloc((size_t)width*(size_t)height,sizeof(*pixels));if(!pixels)return FALSE;
-    int column=((flags&DFCS_CHECKED)?1:0)+((flags&DFCS_PUSHED)?2:0);
-    for(int y=0;y<13;y++)for(int x=0;x<14;x++){
-        int left=MulDiv(x,width,14),right=MulDiv(x+1,width,14);
-        int top=MulDiv(y,height,13),bottom=MulDiv(y+1,height,13);
-        DWORD color=control_checks[y][column*14+x]=='0'?0:0x00ffffff;
-        for(int py=top;py<bottom;py++)for(int px=left;px<right;px++)pixels[py*width+px]=color;
-    }
-    BITMAPINFO info={0};info.bmiHeader.biSize=sizeof(info.bmiHeader);
-    info.bmiHeader.biWidth=width;info.bmiHeader.biHeight=-height;info.bmiHeader.biPlanes=1;info.bmiHeader.biBitCount=32;
-    int drawn=SetDIBitsToDevice(dc,rect->left,rect->top,(DWORD)width,(DWORD)height,0,0,0,(UINT)height,pixels,&info,DIB_RGB_COLORS);
-    free(pixels);return drawn!=0;
-}
 BOOL win16_style_checklist_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address)
 {
     const UINT allowed=DFCS_CHECKED|DFCS_PUSHED;
     if(type!=DFC_BUTTON || (flags&15u)!=DFCS_BUTTONCHECK || (flags&~allowed) ||
         !ntw16s_checklist_draw_target(dc,rect,address))return FALSE;
-    return checklist_glyph(dc,rect,flags);
+    return win16_control_checklist_glyph(dc,rect,flags);
 }
 /* VB5 and VB6 draw the checkbox as an 11x11 runtime-owned bitmap, directly onto
  * the list's DC. Restrict this to the witnessed identity, geometry and
@@ -419,7 +375,7 @@ BOOL win16_style_vb_checklist(HDC dc,int x,int y,int width,int height,HDC source
             (item.bottom-item.top==22 && y==item.top+5)):y==item.top+2) &&
         item.right-x>=width && item.bottom-y>=height){
         RECT glyph={x,y,x+width,y+height};
-        result=checklist_glyph(dc,&glyph,(sx%22)==11?DFCS_CHECKED:0);
+        result=win16_control_checklist_glyph(dc,&glyph,(sx%22)==11?DFCS_CHECKED:0);
     }
     active=FALSE;return result;
 }
@@ -437,15 +393,6 @@ static control_style *graphical_target(HDC dc,UINT type,UINT flags,const void *a
             !GetWindowSubclass(*w,control_proc,(UINT_PTR)control_proc,&value))return NULL;
     control_style *s=(void *)value;return !s->detached && s->frame_scrollbars?s:NULL;
 }
-BOOL win16_style_bitbtn_face(HWND w,HDC dc,const RECT *rect,const RECT *clip,UINT state)
-{
-    if(!w || !dc || !rect || rect->right-rect->left<4 || rect->bottom-rect->top<4)return FALSE;
-    int saved=SaveDC(dc);if(!saved)return FALSE;
-    if(clip && IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom)==ERROR){RestoreDC(dc,saved);return FALSE;}
-    win16_style_palette palette;win16_style_default_palette(&palette);int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
-    SetDCBrushColor(dc,palette.face);FillRect(dc,rect,(HBRUSH)GetStockObject(DC_BRUSH));
-    (void)button_border(dc,*rect,&palette,u,u,(state&ODS_SELECTED)!=0);RestoreDC(dc,saved);return TRUE;
-}
 BOOL win16_style_graphical_frame_prepare(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,RECT *copy)
 {
     HWND w;
@@ -459,366 +406,31 @@ BOOL win16_style_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,co
     HWND w;RECT client;POINT origin;control_style *s=graphical_target(dc,type,flags,address,&w);
     if(!s || !rect || !GetClientRect(w,&client) || !EqualRect(rect,&client) ||
             GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) || !GetViewportOrgEx(dc,&origin) || origin.x || origin.y)return FALSE;
-    int saved=SaveDC(dc);if(!saved)return FALSE;
-    int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
-    /* This native primitive owns its face before VB draws the caption/image.
-     * The native call has already preserved its return/rect/error semantics. */
-    SetDCBrushColor(dc,s->palette.face);FillRect(dc,rect,(HBRUSH)GetStockObject(DC_BRUSH));
-    (void)button_border(dc,*rect,&s->palette,u,u,(flags&(DFCS_PUSHED|DFCS_CHECKED))!=0);
-    RestoreDC(dc,saved);return TRUE;
+    return win16_control_graphical_face(w,dc,rect,flags,&s->palette);
 }
 /* Keep the bitmap glyph's proportions when a VCL button is shorter than its
  * source font plus the classic border. The application retains its font and
  * layout; only the text image is fitted inside the button's existing face. */
-static BOOL fit_push_text(HDC target,HFONT font,const WCHAR *text,const RECT *bounds,COLORREF face,COLORREF ink,SIZE *drawn)
-{
-    RECT measure={0,0,0,0};
-    if(!DrawTextW(target,text,-1,&measure,DT_CALCRECT|DT_SINGLELINE))return FALSE;
-    int width=measure.right,height=measure.bottom,available_width=bounds->right-bounds->left,available_height=bounds->bottom-bounds->top;
-    if(width<=0 || height<=0 || width>4096 || height>256 || available_width<=0 || available_height<=0 ||
-       (width<=available_width && height<=available_height))return FALSE;
-    int out_width=width,out_height=height;
-    if(out_width>available_width){out_height=MulDiv(out_height,available_width,out_width);out_width=available_width;}
-    if(out_height>available_height){out_width=MulDiv(out_width,available_height,out_height);out_height=available_height;}
-    if(out_width<=0 || out_height<=0)return FALSE;
-    HDC memory=CreateCompatibleDC(target);if(!memory)return FALSE;
-    HBITMAP bitmap=CreateCompatibleBitmap(target,width,height);if(!bitmap){DeleteDC(memory);return FALSE;}
-    HGDIOBJ old=SelectObject(memory,bitmap),old_font=SelectObject(memory,font);BOOL ok=FALSE;
-    if(old && old!=HGDI_ERROR && old_font && old_font!=HGDI_ERROR){
-        RECT r={0,0,width,height};SetDCBrushColor(memory,face);FillRect(memory,&r,(HBRUSH)GetStockObject(DC_BRUSH));
-        SetBkMode(memory,TRANSPARENT);SetTextColor(memory,ink);
-        if(DrawTextW(memory,text,-1,&r,DT_SINGLELINE)){
-            int saved=SaveDC(target);
-            if(saved){SetStretchBltMode(target,COLORONCOLOR);
-                int x=bounds->left+(available_width-out_width)/2,y=bounds->top+(available_height-out_height)/2;
-                ok=StretchBlt(target,x,y,out_width,out_height,memory,0,0,width,height,SRCCOPY);
-                RestoreDC(target,saved);
-            }
-        }
-    }
-    if(old_font && old_font!=HGDI_ERROR)SelectObject(memory,old_font);
-    if(old && old!=HGDI_ERROR)SelectObject(memory,old);
-    DeleteObject(bitmap);DeleteDC(memory);
-    if(ok){drawn->cx=out_width;drawn->cy=out_height;}return ok;
-}
-static void other_control(HWND w,control_style *s,HDC dc,RECT r,HFONT font,const WCHAR *text,BOOL label)
-{
-    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);UINT type=(label?(style&SS_TYPEMASK):ntw16s_button_type(w,style));
-    int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));RECT bounds=r;TEXTMETRICW tm;
-    LRESULT button_state=label?0:SendMessageW(w,BM_GETSTATE,0,0);
-    UINT flags=DT_LEFT;BOOL pushed=(button_state&BST_PUSHED)!=0,fit=!label && ntw16s_group_push_button(w);SIZE fitted={0};
-    if(!label && (style&BS_PUSHLIKE))pushed=pushed || SendMessageW(w,BM_GETCHECK,0,0)!=BST_UNCHECKED;
-    if(s->detached)return;
-    SelectObject(dc,font);GetTextMetricsW(dc,&tm);SetBkMode(dc,TRANSPARENT);SetTextColor(dc,s->palette.edge);
-    if(label && type>=SS_ETCHEDHORZ && type<=SS_ETCHEDFRAME){
-        /* A later STATIC separator has no Win3.x etched relief. Keep its
-         * geometry and express it using the same flat border as SS_*FRAME. */
-        if(type==SS_ETCHEDHORZ)r.bottom=min(r.bottom,r.top+u);
-        if(type==SS_ETCHEDVERT)r.right=min(r.right,r.left+u);
-        frame(dc,r,s->palette.edge,u);return;
-    }
-    if(label && type>=SS_BLACKRECT && type<=SS_WHITEFRAME){
-        COLORREF color=(type==SS_BLACKRECT || type==SS_BLACKFRAME)?s->palette.edge:
-            (type==SS_GRAYRECT || type==SS_GRAYFRAME)?s->palette.shadow:s->palette.light;
-        if(type>=SS_BLACKFRAME)frame(dc,r,color,u);
-        else {SetDCBrushColor(dc,color);FillRect(dc,&r,(HBRUSH)GetStockObject(DC_BRUSH));}return;
-    }
-    if(!label && type==BS_GROUPBOX){
-        RECT title=r;title.left+=8*u;DrawTextW(dc,text,-1,&title,DT_CALCRECT|DT_SINGLELINE);
-        bounds.top+=tm.tmHeight/2;frame(dc,bounds,s->palette.shadow,u);
-        InflateRect(&title,u,0);SetDCBrushColor(dc,s->palette.light);FillRect(dc,&title,(HBRUSH)GetStockObject(DC_BRUSH));
-        title.left+=u;DrawTextW(dc,text,-1,&title,DT_SINGLELINE);return;
-    }
-    if(!label){
-        /* Retail USER 1:8E0C draws one continuous frame: two border units
-         * for an enabled default, one otherwise. It does not add a spaced
-         * second rectangle. USER 25:18BC suppresses default emphasis when
-         * disabled. Native BUTTON/dialog code still owns all these states. */
-        int border=(type==BS_DEFPUSHBUTTON && IsWindowEnabled(w)?2:1)*u;
-        SetDCBrushColor(dc,s->palette.face);FillRect(dc,&bounds,(HBRUSH)GetStockObject(DC_BRUSH));
-        bounds=button_border(dc,r,&s->palette,u,border,pushed);
-        InflateRect(&bounds,-3*u,fit?-u:-3*u);if(pushed)OffsetRect(&bounds,u,u);
-        flags=DT_CENTER|DT_VCENTER|DT_SINGLELINE;
-    }else {flags=type==SS_CENTER?DT_CENTER:type==SS_RIGHT?DT_RIGHT:DT_LEFT;
-        /* StaticCallback expands tabs and preserves explicit line breaks.
-         * LEFTNOWORDWRAP removes word wrapping, not multiline text. SIMPLE
-         * is the distinct single-line, always-enabled original fast path. */
-        flags|=type==SS_SIMPLE?DT_SINGLELINE:DT_EXPANDTABS|(type==SS_LEFTNOWORDWRAP?0:DT_WORDBREAK);
-        if(style&SS_NOPREFIX)flags|=DT_NOPREFIX;}
-    if(!IsWindowEnabled(w) && !(label && type==SS_SIMPLE))SetTextColor(dc,s->palette.shadow);
-    if(!label && (style&(BS_ICON|BS_BITMAP))){
-        UINT image_type=(style&BS_ICON)?IMAGE_ICON:IMAGE_BITMAP;
-        HANDLE image=(HANDLE)SendMessageW(w,BM_GETIMAGE,image_type,0);
-        BUTTON_IMAGELIST images={0};BOOL listed=FALSE;
-        int cx=0,cy=0;BITMAP bits;
-        if(s->detached || !IsWindow(w))return;
-        if(!image){
-            listed=(BOOL)SendMessageW(w,BCM_GETIMAGELIST,0,(LPARAM)&images);
-            if(s->detached || !IsWindow(w))return;
-            listed=listed && images.himl && images.himl!=BCCL_NOGLYPH &&
-                ImageList_GetIconSize(images.himl,&cx,&cy);
-        }
-        if(image && image_type==IMAGE_ICON){
-            ICONINFO info;
-            if(GetIconInfo((HICON)image,&info)){
-                if(GetObjectW(info.hbmColor?info.hbmColor:info.hbmMask,sizeof(bits),&bits)){
-                    cx=bits.bmWidth;cy=info.hbmColor?bits.bmHeight:bits.bmHeight/2;}
-                if(info.hbmColor)DeleteObject(info.hbmColor);
-                if(info.hbmMask)DeleteObject(info.hbmMask);
-            }
-        }else if(image && GetObjectW(image,sizeof(bits),&bits)){cx=bits.bmWidth;cy=bits.bmHeight;}
-        if((image || listed) && cx>0 && cy>0){
-            int x=bounds.left+(bounds.right-bounds.left-cx)/2,y=bounds.top+(bounds.bottom-bounds.top-cy)/2;
-            if(listed){
-                bounds.left+=images.margin.left;bounds.top+=images.margin.top;
-                bounds.right-=images.margin.right;bounds.bottom-=images.margin.bottom;
-                x=bounds.left+(bounds.right-bounds.left-cx)/2;y=bounds.top+(bounds.bottom-bounds.top-cy)/2;
-                if(images.uAlign==BUTTON_IMAGELIST_ALIGN_LEFT)x=bounds.left;
-                else if(images.uAlign==BUTTON_IMAGELIST_ALIGN_RIGHT)x=bounds.right-cx;
-                else if(images.uAlign==BUTTON_IMAGELIST_ALIGN_TOP)y=bounds.top;
-                else if(images.uAlign==BUTTON_IMAGELIST_ALIGN_BOTTOM)y=bounds.bottom-cy;
-            }else {
-                if((style&BS_CENTER)==BS_LEFT)x=bounds.left;
-                else if((style&BS_CENTER)==BS_RIGHT)x=bounds.right-cx;
-                if((style&BS_VCENTER)==BS_TOP)y=bounds.top;
-                else if((style&BS_VCENTER)==BS_BOTTOM)y=bounds.bottom-cy;
-            }
-            int saved=SaveDC(dc);
-            if(saved){IntersectClipRect(dc,bounds.left,bounds.top,bounds.right,bounds.bottom);
-                if(listed){
-                    int count=ImageList_GetImageCount(images.himl),index=0;
-                    if(count>1)index=!IsWindowEnabled(w)?3:pushed?2:(button_state&BST_HOT)?1:type==BS_DEFPUSHBUTTON?4:0;
-                    if(!s->detached && index<count)ImageList_DrawEx(images.himl,index,dc,x,y,cx,cy,CLR_NONE,
-                        s->palette.shadow,count==1 && !IsWindowEnabled(w)?ILD_BLEND50:ILD_NORMAL);
-                }else DrawStateW(dc,NULL,NULL,(LPARAM)image,0,x,y,cx,cy,
-                        (image_type==IMAGE_ICON?DST_ICON:DST_BITMAP)|(IsWindowEnabled(w)?DSS_NORMAL:DSS_DISABLED));
-                RestoreDC(dc,saved);}
-        }
-        if(GetFocus()==w){RECT focus=bounds;InflateRect(&focus,-u,-u);DrawFocusRect(dc,&focus);}
-        return;
-    }
-    BOOL fitted_text=fit && fit_push_text(dc,font,text,&bounds,s->palette.face,IsWindowEnabled(w)?s->palette.edge:s->palette.shadow,&fitted);
-    if(!fitted_text)DrawTextW(dc,text,-1,&bounds,flags);
-    if(!label && GetFocus()==w){
-        /* USER 25:15DE..1694 bounds focus around the measured label, not
-         * around the whole button face. Default status is independent. */
-        RECT focus=bounds,measure={0,0,0,0};int width,height;
-        DrawTextW(dc,text,-1,&measure,DT_CALCRECT|DT_SINGLELINE);
-        if(fitted_text){measure.right=fitted.cx;measure.bottom=fitted.cy;}
-        width=min(bounds.right-bounds.left,measure.right+4*u);
-        height=min(bounds.bottom-bounds.top,measure.bottom+3*u);
-        focus.left+=(bounds.right-bounds.left-width)/2;focus.right=focus.left+width;
-        focus.top=max(bounds.top,bounds.top+(bounds.bottom-bounds.top-measure.bottom)/2-u);
-        focus.bottom=min(bounds.bottom,focus.top+height);
-        DrawFocusRect(dc,&focus);
-    }
-}
-
 static void draw(HWND w,control_style *s,HDC dc)
 {
-    RECT r,glyph,label,focus,pixel;int saved,x,y,row,column,height,length;
-    UINT dpi=GetDpiForWindow(w);DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
-    UINT type=ntw16s_button_type(w,style);LRESULT state,check;WCHAR *text;HFONT font;TEXTMETRICW tm;
-    BOOL radio=type==BS_RADIOBUTTON || type==BS_AUTORADIOBUTTON;
-    BOOL label_control=is_static(w);
-    if(label_control && (style&SS_TYPEMASK)==SS_ICON){
-        /* statctl.c retains image ownership/sizing in native STATIC. The
-         * painter borrows its current handle, never reads image data as text.
-         * CENTERIMAGE is a host extension; its natural-size image is clipped. */
-        HICON icon=(HICON)SendMessageW(w,STM_GETICON,0,0);int cx,cy;
-        if(s->detached || !IsWindow(w))return;
-        saved=SaveDC(dc);if(!saved)return;
-        GetClientRect(w,&r);cx=r.right;cy=r.bottom;x=y=0;
-        IntersectClipRect(dc,r.left,r.top,r.right,r.bottom);
-        SetDCBrushColor(dc,s->palette.light);FillRect(dc,&r,(HBRUSH)GetStockObject(DC_BRUSH));
-        if(icon && (style&SS_CENTERIMAGE)){
-            ICONINFO info;BITMAP bits;
-            if(GetIconInfo(icon,&info)){
-                if(GetObjectW(info.hbmColor?info.hbmColor:info.hbmMask,sizeof(bits),&bits)){
-                    cx=bits.bmWidth;cy=info.hbmColor?bits.bmHeight:bits.bmHeight/2;
-                    x=(r.right-cx)/2;y=(r.bottom-cy)/2;
-                }
-                if(info.hbmColor)DeleteObject(info.hbmColor);
-                if(info.hbmMask)DeleteObject(info.hbmMask);
-            }
-        }
-        if(icon)DrawIconEx(dc,x,y,icon,cx,cy,0,NULL,DI_NORMAL);
-        RestoreDC(dc,saved);return;
-    }
-    state=label_control?0:SendMessageW(w,BM_GETSTATE,0,0);check=label_control?0:SendMessageW(w,BM_GETCHECK,0,0);
-    length=GetWindowTextLengthW(w);text=calloc((size_t)length+1,sizeof(WCHAR));
-    if(!text)return;
-    GetWindowTextW(w,text,length+1);
-    font=s->font && (ntw16s_vb_frame(w) || ntw16s_vb_button(w) ||
-        ntw16s_control_protocol_is(w,L"BUTTON"))?
-        s->font:(HFONT)SendMessageW(w,WM_GETFONT,0,0);
-    if(s->detached || !IsWindow(w)){free(text);return;}
-    if(!font)font=(HFONT)GetStockObject(SYSTEM_FONT);
-    saved=SaveDC(dc);if(!saved){free(text);return;}
-    GetClientRect(w,&r);SetDCBrushColor(dc,s->palette.light);
-    /* A group box surrounds sibling controls, not an opaque child surface.
-     * Repainting its interior erases those siblings during ordinary motion. */
-    if(label_control || type!=BS_GROUPBOX){
-        BOOL check_parent=ntw16s_group_choice_button(w);
-        BOOL parent_painted=check_parent && SUCCEEDED(DrawThemeParentBackground(w,dc,&r));
-        if(s->detached || !IsWindow(w) || (check_parent && !ntw16s_group_choice_button(w))){RestoreDC(dc,saved);free(text);return;}
-        if(!parent_painted)FillRect(dc,&r,(HBRUSH)GetStockObject(DC_BRUSH));
-    }
-    if(label_control || type==BS_PUSHBUTTON || type==BS_DEFPUSHBUTTON || type==BS_GROUPBOX || (style&BS_PUSHLIKE)){
-        other_control(w,s,dc,r,font,text,label_control);RestoreDC(dc,saved);free(text);return;}
-    height=MulDiv(13,(int)dpi,96);glyph=r;glyph.top+=(r.bottom-height)/2;
-    glyph.bottom=glyph.top+height;glyph.right=glyph.left+MulDiv(14,(int)dpi,96);
-    if(style&BS_LEFTTEXT)OffsetRect(&glyph,r.right-glyph.right,0);
-    row=radio?1:check==BST_INDETERMINATE?2:0;
-    column=(check!=BST_UNCHECKED?1:0)+((state&BST_PUSHED)?2:0);
-    for(y=0;y<13;++y)for(x=0;x<14;++x){
-        SetDCBrushColor(dc,control_checks[row*13+y][column*14+x]=='0'?s->palette.edge:s->palette.light);
-        SetRect(&pixel,glyph.left+MulDiv(x,(int)dpi,96),glyph.top+MulDiv(y,(int)dpi,96),
-            glyph.left+MulDiv(x+1,(int)dpi,96),glyph.top+MulDiv(y+1,(int)dpi,96));
-        FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));
-    }
-    label=r;if(style&BS_LEFTTEXT)label.right=glyph.left-MulDiv(4,(int)dpi,96);
-    else label.left=glyph.right+MulDiv(4,(int)dpi,96);
-    SelectObject(dc,font);GetTextMetricsW(dc,&tm);SetBkMode(dc,TRANSPARENT);SetTextColor(dc,s->palette.edge);
-    label.top+=(r.bottom-tm.tmHeight)/2;label.bottom=label.top+tm.tmHeight;
-    if(IsWindowEnabled(w))DrawTextW(dc,text,-1,&label,DT_LEFT|DT_SINGLELINE);
-    else {HBRUSH brush=CreateSolidBrush(s->palette.edge);
-        if(brush){DrawStateW(dc,brush,NULL,(LPARAM)text,0,label.left,label.top,
-            max(0,label.right-label.left),tm.tmHeight,DST_PREFIXTEXT|DSS_UNION|DSS_MONO);DeleteObject(brush);}}
-    if(state&BST_FOCUS){focus=label;DrawTextW(dc,text,-1,&focus,DT_CALCRECT|DT_SINGLELINE);
-        focus.right=min(focus.right,label.right);InflateRect(&focus,1,1);DrawFocusRect(dc,&focus);}
-    RestoreDC(dc,saved);free(text);
+    const win16_control_choice_view view={&s->detached,&s->palette,&s->font,
+        ntw16s_button_type,is_static,ntw16s_vb_frame,ntw16s_vb_button,
+        ntw16s_group_choice_button,ntw16s_group_push_button};
+    win16_control_draw_choice(w,&view,dc);
 }
 
 /* The native list owns strings, sorting, selection and scrolling. Query only
  * visible rows; never replace item data or convert application owner-draw. */
 static void draw_list(HWND w,control_style *s,HDC dc)
-{
-    RECT client,row;int saved,index,count,caret;DWORD style;HFONT font;
-    if(!dc)return;
-    style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
-    index=(int)SendMessageW(w,LB_GETTOPINDEX,0,0);
-    count=(int)SendMessageW(w,LB_GETCOUNT,0,0);
-    caret=(int)SendMessageW(w,LB_GETCARETINDEX,0,0);
-    font=s->font && ntw16s_vb_list(w)?s->font:(HFONT)SendMessageW(w,WM_GETFONT,0,0);
-    if(s->detached)return;
-    saved=SaveDC(dc);if(!saved)return;
-    GetClientRect(w,&client);IntersectClipRect(dc,0,0,client.right,client.bottom);
-    SetDCBrushColor(dc,s->palette.light);FillRect(dc,&client,(HBRUSH)GetStockObject(DC_BRUSH));
-    SelectObject(dc,font?font:GetStockObject(SYSTEM_FONT));SetBkMode(dc,TRANSPARENT);
-    for(;index>=0 && index<count;++index){
-        LRESULT length,selected;WCHAR *text;RECT label,visible;int row_saved;
-        if(SendMessageW(w,LB_GETITEMRECT,index,(LPARAM)&row)==LB_ERR)break;
-        /* Multicolumn indices advance down a column, then to its right.
-         * Keep native item geometry/scroll origin; a below-client item does
-         * not imply that the following column is invisible. */
-        if(style&LBS_MULTICOLUMN){if(row.left>=client.right)break;}
-        else if(row.top>=client.bottom)break;
-        /* USER's single-column item rect extends its right edge by xOrigin;
-         * native drawing separately offsets the DC by that origin. Preserve
-         * the same content coordinates, not the public scrollbar's position
-         * (SetScrollInfo alone does not change the list's content origin). */
-        if(!(style&LBS_MULTICOLUMN))OffsetRect(&row,client.right-row.right,0);
-        if(!IntersectRect(&visible,&row,&client))continue;
-        length=SendMessageW(w,LB_GETTEXTLEN,index,0);
-        if(s->detached || length==LB_ERR)break;
-        text=calloc((size_t)length+1,sizeof(WCHAR));if(!text)break;
-        if(SendMessageW(w,LB_GETTEXT,index,(LPARAM)text)==LB_ERR){free(text);break;}
-        selected=(style&(LBS_MULTIPLESEL|LBS_EXTENDEDSEL))?SendMessageW(w,LB_GETSEL,index,0):
-            SendMessageW(w,LB_GETCURSEL,0,0)==index;
-        if(s->detached){free(text);break;}
-        row_saved=SaveDC(dc);if(!row_saved){free(text);break;}
-        IntersectClipRect(dc,visible.left,visible.top,visible.right,visible.bottom);
-        SetDCBrushColor(dc,selected>0?s->palette.active:s->palette.light);
-        FillRect(dc,&row,(HBRUSH)GetStockObject(DC_BRUSH));
-        SetTextColor(dc,!IsWindowEnabled(w)?s->palette.shadow:selected>0?s->palette.active_text:s->palette.edge);
-        /* Original LBPrintCallback starts multi-column text at0, ordinary
-         * single-column text at2, relative to the native item rectangle. */
-        label=row;if(!(style&LBS_MULTICOLUMN))label.left+=2;
-        if(style&LBS_USETABSTOPS)
-            TabbedTextOutW(dc,label.left,label.top,text,(int)length,s->tab_count,s->tab_positions,row.left);
-        else DrawTextW(dc,text,-1,&label,DT_LEFT|DT_SINGLELINE|DT_NOPREFIX);
-        if(GetFocus()==w && caret==index)DrawFocusRect(dc,&row);
-        RestoreDC(dc,row_saved);
-        free(text);
-    }
-    RestoreDC(dc,saved);
-}
-
+{win16_control_draw_list(w,&s->detached,&s->palette,&s->font,&s->tab_count,&s->tab_positions,dc,ntw16s_vb_list);}
 static void edit_border(HWND w,control_style *s,HDC target)
-{
-    HDC dc;RECT bounds;int saved;
-    if(!s->edit_border)return;
-    dc=target?target:GetDC(w);if(!dc)return;
-    saved=SaveDC(dc);if(saved){
-        GetClientRect(w,&bounds);frame(dc,bounds,s->palette.edge,max(1,MulDiv(1,(int)GetDpiForWindow(w),96)));
-        RestoreDC(dc,saved);
-    }
-    if(!target)ReleaseDC(w,dc);
-}
-
+{win16_control_edit_border(w,s->edit_border,&s->palette,target);}
 static void list_border(HWND w,control_style *s,HDC target)
-{
-    RECT bounds,inside;HDC dc;int saved;BOOL edge=(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE)!=0;
-    if(!(GetWindowLongPtrW(w,GWL_STYLE)&WS_BORDER) && !edge)return;
-    if(!GetWindowRect(w,&bounds))return;
-    OffsetRect(&bounds,-bounds.left,-bounds.top);
-    dc=target?target:GetWindowDC(w);if(!dc)return;
-    saved=SaveDC(dc);
-    if(saved){
-        if(edge){inside=bounds;InflateRect(&inside,-1,-1);frame(dc,inside,s->palette.light,1);}
-        frame(dc,bounds,s->palette.edge,1);RestoreDC(dc,saved);}
-    if(!target)ReleaseDC(w,dc);
-}
+{win16_control_list_border(w,&s->palette,target);}
 
 static void draw_combo(HWND w,control_style *s,HDC dc)
-{
-    COMBOBOXINFO info={.cbSize=sizeof(info)};RECT client,button,text,pixel;HFONT font;
-    WCHAR *label;int length,saved,x,y,left,top,u;BOOL selected,pressed,editable,simple;
-    if(!dc || !ntw16s_native_get_combo_info(w,&info))return;
-    length=GetWindowTextLengthW(w);label=calloc((size_t)length+1,sizeof(WCHAR));if(!label)return;
-    GetWindowTextW(w,label,length+1);font=s->font && (ntw16s_vb_combo(w) || ntw16s_control_protocol_is(w,L"COMBOBOX"))?
-        s->font:(HFONT)SendMessageW(w,WM_GETFONT,0,0);
-    pressed=SendMessageW(w,CB_GETDROPPEDSTATE,0,0)!=0;
-    simple=(GetWindowLongPtrW(w,GWL_STYLE)&3)==CBS_SIMPLE;
-    editable=(GetWindowLongPtrW(w,GWL_STYLE)&3)!=CBS_DROPDOWNLIST;
-    if(s->detached){free(label);return;}
-    saved=SaveDC(dc);if(!saved){free(label);return;}
-    u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));GetClientRect(w,&client);
-    /* Native child EDIT owns its caret, text, selection and IME. Do not paint
-     * over that child while drawing the combo's surrounding chrome. */
-    if(editable || ntw16s_vb_drive(w) || s->common_dialog_combo)ExcludeClipRect(dc,info.rcItem.left,info.rcItem.top,info.rcItem.right,info.rcItem.bottom);
-    if(simple){RECT list;
-        if(GetWindowRect(info.hwndList,&list)){
-            MapWindowPoints(NULL,w,(POINT *)&list,2);ExcludeClipRect(dc,list.left,list.top,list.right,list.bottom);}
-        SetDCBrushColor(dc,s->palette.light);FillRect(dc,&client,(HBRUSH)GetStockObject(DC_BRUSH));
-        text=info.rcItem;InflateRect(&text,u,u);frame(dc,text,s->palette.edge,u);
-        RestoreDC(dc,saved);free(label);return;
-    }
-    SetDCBrushColor(dc,s->palette.light);FillRect(dc,&client,(HBRUSH)GetStockObject(DC_BRUSH));
-    frame(dc,client,s->palette.edge,u);
-    button=info.rcButton;SetDCBrushColor(dc,s->palette.face);FillRect(dc,&button,(HBRUSH)GetStockObject(DC_BRUSH));
-    frame(dc,button,s->palette.edge,u);InflateRect(&button,-u,-u);
-    pixel=button;pixel.bottom=pixel.top+u;SetDCBrushColor(dc,pressed?s->palette.shadow:s->palette.light);
-    FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));pixel=button;pixel.right=pixel.left+u;
-    FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));
-    SetDCBrushColor(dc,pressed?s->palette.light:s->palette.shadow);pixel=button;pixel.top=pixel.bottom-u;
-    FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));pixel=button;pixel.left=pixel.right-u;
-    FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));
-    left=(button.left+button.right-7*u)/2;top=(button.top+button.bottom-9*u)/2;
-    if(pressed){left+=u;top+=u;}
-    SetDCBrushColor(dc,IsWindowEnabled(w)?s->palette.edge:s->palette.shadow);
-    for(y=0;y<9;++y)for(x=0;x<7;++x)if(combo_arrow[y][x]=='0'){
-        SetRect(&pixel,left+x*u,top+y*u,left+(x+1)*u,top+(y+1)*u);FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));}
-    if(editable || ntw16s_vb_drive(w) || s->common_dialog_combo){RestoreDC(dc,saved);free(label);return;}
-    text=info.rcItem;selected=GetFocus()==w && !pressed;
-    SetDCBrushColor(dc,selected?s->palette.active:s->palette.light);FillRect(dc,&text,(HBRUSH)GetStockObject(DC_BRUSH));
-    SelectObject(dc,font?font:GetStockObject(SYSTEM_FONT));SetBkMode(dc,TRANSPARENT);
-    SetTextColor(dc,!IsWindowEnabled(w)?s->palette.shadow:selected?s->palette.active_text:s->palette.edge);
-    text.left+=2;DrawTextW(dc,label,-1,&text,DT_SINGLELINE|DT_VCENTER|DT_NOPREFIX);
-    if(selected)DrawFocusRect(dc,&info.rcItem);
-    RestoreDC(dc,saved);free(label);
-}
+{win16_control_draw_combo(w,&s->detached,&s->common_dialog_combo,&s->palette,&s->font,dc,
+    ntw16s_native_get_combo_info,ntw16s_vb_combo,ntw16s_vb_drive);}
 
 static void detach_combo_list(control_style *s)
 {
@@ -836,24 +448,6 @@ static BOOL terminal_combo_list(control_style *s)
     return TRUE;
 }
 
-static void scroll_arrow(HDC dc,RECT r,const char bits[17][18],const win16_style_palette *p)
-{
-    int x,y;COLORREF colors[4]={p->edge,p->light,p->shadow,p->face};RECT pixel;
-    for(y=0;y<17;++y)for(x=0;x<17;++x){
-        SetDCBrushColor(dc,colors[bits[y][x]-'0']);
-        SetRect(&pixel,r.left+MulDiv(x,r.right-r.left,17),r.top+MulDiv(y,r.bottom-r.top,17),
-            r.left+MulDiv(x+1,r.right-r.left,17),r.top+MulDiv(y+1,r.bottom-r.top,17));
-        FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));
-    }
-}
-
-void win16_style_month_arrow(HDC dc,const RECT *r,const RECT *clip,int part,int state)
-{if(!dc || !r || r->right<=r->left || r->bottom<=r->top || r->right-r->left>128 || r->bottom-r->top>128 || r->right-r->left!=r->bottom-r->top)return;
- int saved=SaveDC(dc);if(!saved)return;if(clip && IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom)==ERROR){RestoreDC(dc,saved);return;}
- win16_style_palette palette;win16_style_default_palette(&palette);const char (*bits)[18]=part==MC_NAVPREV?(state==MCNP_DISABLED?scroll_lfarrowi:state==MCNP_PRESSED?scroll_lfarrowd:scroll_lfarrow):(state==MCNN_DISABLED?scroll_rgarrowi:state==MCNN_PRESSED?scroll_rgarrowd:scroll_rgarrow);
- scroll_arrow(dc,*r,bits,&palette);RestoreDC(dc,saved);
-}
-
 /* The runtime owns navigation and paints its native bitmap first. This
  * bounded overlay accepts only observed 96/144-DPI public-DC geometry. */
 void win16_style_vb_data_arrow(HDC dc,int x,int y,int width,int height,HDC source,int sx,int sy,int sw,int sh,DWORD rop,const void *caller)
@@ -866,28 +460,7 @@ void win16_style_vb_data_arrow(HDC dc,int x,int y,int width,int height,HDC sourc
        GetMapMode(dc)!=MM_TEXT || GetLayout(dc)!=0 || !GetWindowOrgEx(dc,&origin) || origin.x || origin.y ||
        !GetViewportOrgEx(dc,&viewport) || viewport.x || viewport.y ||
        !GetObjectW(GetCurrentObject(source,OBJ_BITMAP),sizeof(bitmap),&bitmap) || bitmap.bmWidth!=sw || bitmap.bmHeight!=sh)return;
-    int n=-1;const int xs[4]={4,24,client.right-33,client.right-15};
-    const int starts[4]={0,18,client.right-35,client.right-18},widths[4]={18,17,17,18};
-    int base_y=(client.bottom-13)/2;
-    for(int i=0;i<4;++i)if(x==xs[i]+(y-base_y) && width==(i==0 || i==3?11:8)){n=i;break;}
-    if(n<0)return;
-    BOOL disabled=!IsWindowEnabled(w),pressed=(y==base_y+1);const char (*bits)[18]=n<2?
-        (disabled?scroll_lfarrowi:pressed?scroll_lfarrowd:scroll_lfarrow):
-        (disabled?scroll_rgarrowi:pressed?scroll_rgarrowd:scroll_rgarrow);
-    win16_style_palette palette;win16_style_default_palette(&palette);
-    COLORREF colors[4]={palette.edge,palette.light,palette.shadow,palette.face};DWORD pixels[18*29];
-    int extra=client.bottom-17,mid=extra/2;
-    for(int j=0;j<client.bottom;++j){int by=j<2?j:j>=client.bottom-2?j-extra:j<2+mid?2:j<15+mid?j-mid:14;
-        for(int i=0;i<widths[n];++i){int bx=i<2?i:i>=widths[n]-2?i-(widths[n]-17):i;if(bx>14)bx=14;
-            COLORREF c=colors[bits[by][bx]-'0'];pixels[j*widths[n]+i]=((DWORD)GetRValue(c)<<16)|((DWORD)GetGValue(c)<<8)|GetBValue(c);}}
-    if(n==0 || n==3){int column=n==0?1:8;unsigned mark=0;
-        for(int j=0;j<13;++j)for(int i=0;i<2;++i)if(GetPixel(source,column+i,j)==RGB(0,0,0)){
-            int px=x+column+i-starts[n],py=y+j;if(px>=0 && px<widths[n] && py>=0 && py<client.bottom){COLORREF c=disabled?palette.shadow:palette.edge;
-                pixels[py*widths[n]+px]=((DWORD)GetRValue(c)<<16)|((DWORD)GetGValue(c)<<8)|GetBValue(c);++mark;}}
-        if(mark!=22)return;
-    }
-    BITMAPINFO info={0};info.bmiHeader=(BITMAPINFOHEADER){.biSize=sizeof(BITMAPINFOHEADER),.biWidth=widths[n],.biHeight=-client.bottom,.biPlanes=1,.biBitCount=32,.biCompression=BI_RGB};
-    (void)SetDIBitsToDevice(dc,starts[n],0,widths[n],client.bottom,0,0,0,client.bottom,pixels,&info,DIB_RGB_COLORS);
+    win16_control_vb_data_arrow(w,dc,x,y,width,source,&client);
 }
 
 static BOOL scroll_layout(HWND w,win16_scroll_layout *layout)
@@ -940,86 +513,12 @@ static BOOL edit_thumb_messages(HWND w,LONG object)
     return TRUE;
 }
 
-static BOOL draw_scroll_pixels(HWND w,control_style *s,HDC dc,LONG object,BOOL vertical)
-{
-    SCROLLBARINFO info={.cbSize=sizeof(info)};RECT r,first,last,thumb,pixel;int saved;
-    if(!dc || !GetScrollBarInfo(w,object,&info) || (info.rgstate[0]&STATE_SYSTEM_INVISIBLE))return FALSE;
-    saved=SaveDC(dc);if(!saved)return FALSE;
-    if(object==OBJID_CLIENT)GetClientRect(w,&r);
-    else {RECT outer;GetWindowRect(w,&outer);
-        OffsetViewportOrgEx(dc,info.rcScrollBar.left-outer.left,info.rcScrollBar.top-outer.top,NULL);
-        SetRect(&r,0,0,info.rcScrollBar.right-info.rcScrollBar.left,info.rcScrollBar.bottom-info.rcScrollBar.top);}
-    IntersectClipRect(dc,r.left,r.top,r.right,r.bottom);
-    /* Native state remains authoritative; opted-in bars replace geometry
-     * below with the same fixed-thumb layout used for hit testing. */
-    {static const WORD checks[8]={0x55,0xaa,0x55,0xaa,0x55,0xaa,0x55,0xaa};
-        HBITMAP bitmap=CreateBitmap(8,8,1,1,checks);HBRUSH brush=bitmap?CreatePatternBrush(bitmap):NULL;
-        SetTextColor(dc,s->palette.face);SetBkColor(dc,s->palette.light);
-        if(brush){FillRect(dc,&r,brush);DeleteObject(brush);}
-        if(bitmap)DeleteObject(bitmap);
-        if(!brush){RestoreDC(dc,saved);return FALSE;}}
-    first=last=thumb=r;
-    if(vertical){first.bottom=first.top+info.dxyLineButton;last.top=last.bottom-info.dxyLineButton;
-        thumb.top=info.xyThumbTop;thumb.bottom=info.xyThumbBottom;}
-    else {first.right=first.left+info.dxyLineButton;last.left=last.right-info.dxyLineButton;
-        thumb.left=info.xyThumbTop;thumb.right=info.xyThumbBottom;}
-    if(object==OBJID_CLIENT || s->frame_scrollbars || (s->edit_scrollbars && edit_thumb_messages(w,object)) || (s->list_scrollbar &&
-        list_axis_owned(w,object))){win16_scroll_layout layout;POINT origin;
-        if(object==OBJID_CLIENT?scroll_layout(w,&layout):embedded_scroll_layout(w,object,&layout,&origin)){
-            first=layout.first;last=layout.last;thumb=layout.thumb;
-            if(s->scroll.active && (object==OBJID_CLIENT || object==s->embedded_object) && s->scroll.part==WIN16_SCROLL_THUMB){
-                if(vertical)OffsetRect(&thumb,0,s->scroll.pixel-thumb.top);
-                else OffsetRect(&thumb,s->scroll.pixel-thumb.left,0);}
-            info.xyThumbBottom=layout.thumb_fits?1:0;info.xyThumbTop=0;
-            info.rgstate[1]&=~STATE_SYSTEM_PRESSED;info.rgstate[5]&=~STATE_SYSTEM_PRESSED;
-            if(s->scroll.active && (object==OBJID_CLIENT || object==s->embedded_object) && s->scroll.inside){
-                if(s->scroll.part==WIN16_SCROLL_LINE_BEFORE)info.rgstate[1]|=STATE_SYSTEM_PRESSED;
-                if(s->scroll.part==WIN16_SCROLL_LINE_AFTER)info.rgstate[5]|=STATE_SYSTEM_PRESSED;}
-        }
-    }
-    frame(dc,r,s->palette.edge,1);
-    scroll_arrow(dc,first,(info.rgstate[1]&STATE_SYSTEM_UNAVAILABLE)?(vertical?scroll_uparrowi:scroll_lfarrowi):
-        vertical?(info.rgstate[1]&STATE_SYSTEM_PRESSED?scroll_uparrowd:scroll_uparrow):
-        (info.rgstate[1]&STATE_SYSTEM_PRESSED?scroll_lfarrowd:scroll_lfarrow),&s->palette);
-    scroll_arrow(dc,last,(info.rgstate[5]&STATE_SYSTEM_UNAVAILABLE)?(vertical?scroll_dnarrowi:scroll_rgarrowi):
-        vertical?(info.rgstate[5]&STATE_SYSTEM_PRESSED?scroll_dnarrowd:scroll_dnarrow):
-        (info.rgstate[5]&STATE_SYSTEM_PRESSED?scroll_rgarrowd:scroll_rgarrow),&s->palette);
-    if(info.xyThumbBottom>info.xyThumbTop){
-        SetDCBrushColor(dc,s->palette.face);FillRect(dc,&thumb,(HBRUSH)GetStockObject(DC_BRUSH));
-        frame(dc,thumb,s->palette.edge,1);InflateRect(&thumb,-1,-1);
-        SetDCBrushColor(dc,s->palette.light);pixel=thumb;pixel.bottom=pixel.top+1;FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));
-        pixel=thumb;pixel.right=pixel.left+1;FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));
-        SetDCBrushColor(dc,s->palette.shadow);pixel=thumb;pixel.top=pixel.bottom-1;FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));
-        pixel=thumb;pixel.left=pixel.right-1;FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));
-    }
-    RestoreDC(dc,saved);return TRUE;
-}
-
 static void draw_scroll(HWND w,control_style *s,HDC dc,LONG object,BOOL vertical)
 {
-    RECT r;SCROLLBARINFO bar={.cbSize=sizeof(bar)};HDC memory;HBITMAP bitmap,old;POINT brush,device;BOOL painted;
-    if(!dc || !GetScrollBarInfo(w,object,&bar) || (bar.rgstate[0]&STATE_SYSTEM_INVISIBLE))return;
-    if(object==OBJID_CLIENT)GetClientRect(w,&r);
-    else {RECT window;GetWindowRect(w,&window);r=bar.rcScrollBar;OffsetRect(&r,-window.left,-window.top);}
-    if(IsRectEmpty(&r))return;
-    memory=CreateCompatibleDC(dc);bitmap=CreateCompatibleBitmap(dc,r.right-r.left,r.bottom-r.top);
-    if(!memory || !bitmap){if(memory)DeleteDC(memory);if(bitmap)DeleteObject(bitmap);
-        draw_scroll_pixels(w,s,dc,object,vertical);return;}
-    old=(HBITMAP)SelectObject(memory,bitmap);
-    if(!old || (HGDIOBJ)old==HGDI_ERROR){DeleteObject(bitmap);DeleteDC(memory);
-        draw_scroll_pixels(w,s,dc,object,vertical);return;}
-    /* Preserve the checker phase while composing only this bar. One BitBlt
-     * prevents the background erase and subsequent thumb draw being visible
-     * as separate states. No persistent buffer or redraw timer is needed. */
-    device.x=r.left;device.y=r.top;LPtoDP(dc,&device,1);GetBrushOrgEx(dc,&brush);
-    SetBrushOrgEx(memory,brush.x-device.x,brush.y-device.y,NULL);
-    SetViewportOrgEx(memory,-r.left,-r.top,NULL);
-    painted=draw_scroll_pixels(w,s,memory,object,vertical);
-    SetViewportOrgEx(memory,0,0,NULL);
-    /* A failed painter has no complete image to publish. Keep the previous
-     * target pixels rather than copying an uninitialized temporary bitmap. */
-    if(painted)BitBlt(dc,r.left,r.top,r.right-r.left,r.bottom-r.top,memory,0,0,SRCCOPY);
-    SelectObject(memory,old);DeleteObject(bitmap);DeleteDC(memory);
+    const win16_control_scroll_view view={&s->palette,&s->scroll,&s->frame_scrollbars,
+        &s->edit_scrollbars,&s->list_scrollbar,&s->embedded_object,scroll_layout,
+        embedded_scroll_layout,edit_thumb_messages,list_axis_owned};
+    win16_control_draw_scroll(w,&view,dc,object,vertical);
 }
 
 static void nonclient_scrollbars(HWND w,control_style *s,HDC target)
@@ -1264,46 +763,14 @@ static BOOL embedded_scroll_input(HWND w,control_style *s,UINT m,WPARAM a,LPARAM
 /* Only screen WM_PAINT uses this transient surface. Keep WM_PRINTCLIENT on
  * its borrowed DC. Seed the dirty rectangle so group interiors and native
  * combo EDIT/list children excluded by the painter remain unchanged. */
-static void present_control(HWND w,control_style *s,HDC target,
-    void (*painter)(HWND,control_style *,HDC))
+typedef struct present_context {control_style *style;void (*painter)(HWND,control_style *,HDC);} present_context;
+static void present_painter(HWND w,void *context,HDC dc)
+{present_context *p=context;p->painter(w,p->style,dc);}
+static void present_control(HWND w,control_style *s,HDC target,void (*painter)(HWND,control_style *,HDC))
 {
-    RECT dirty,client;HDC memory=NULL;HBITMAP bitmap=NULL,old=NULL;BOOL ready=FALSE;
-    BOOL group;int target_saved=0;
-    if(!target || GetClipBox(target,&dirty)==ERROR || !GetClientRect(w,&client) ||
-        !IntersectRect(&dirty,&dirty,&client))return;
-    group=ntw16s_class_is(w,L"BUTTON") &&
-        (GetWindowLongPtrW(w,GWL_STYLE)&BS_TYPEMASK)==BS_GROUPBOX;
-    if(group){HWND sibling;RECT r;
-        target_saved=SaveDC(target);if(!target_saved)return;
-        /* Group interiors belong to the parent background. Never overwrite
-         * the sibling controls visually enclosed by this transparent group. */
-        for(sibling=GetWindow(GetParent(w),GW_CHILD);sibling;sibling=GetWindow(sibling,GW_HWNDNEXT))
-            if(sibling!=w && IsWindowVisible(sibling) && GetWindowRect(sibling,&r)){
-                MapWindowPoints(NULL,w,(POINT *)&r,2);
-                ExcludeClipRect(target,r.left,r.top,r.right,r.bottom);}
-    }
-    memory=CreateCompatibleDC(target);
-    if(memory)bitmap=CreateCompatibleBitmap(target,dirty.right-dirty.left,dirty.bottom-dirty.top);
-    if(bitmap)old=(HBITMAP)SelectObject(memory,bitmap);
-    if(old && old!=(HBITMAP)HGDI_ERROR &&
-        BitBlt(memory,0,0,dirty.right-dirty.left,dirty.bottom-dirty.top,target,dirty.left,dirty.top,SRCCOPY) &&
-        SetWindowOrgEx(memory,dirty.left,dirty.top,NULL)){
-        if(group){HWND parent=GetParent(w);POINT origin={0,0};int saved=SaveDC(memory);
-            SetDCBrushColor(memory,s->palette.light);FillRect(memory,&client,(HBRUSH)GetStockObject(DC_BRUSH));
-            if(saved && parent){MapWindowPoints(w,parent,&origin,1);
-                OffsetViewportOrgEx(memory,-origin.x,-origin.y,NULL);
-                SendMessageW(parent,WM_PRINTCLIENT,(WPARAM)memory,PRF_CLIENT);}
-            if(saved)RestoreDC(memory,saved);
-        }
-        if(!s->detached)painter(w,s,memory);
-        if(!s->detached)ready=BitBlt(target,dirty.left,dirty.top,dirty.right-dirty.left,
-            dirty.bottom-dirty.top,memory,dirty.left,dirty.top,SRCCOPY);
-    }
-    if(old && old!=(HBITMAP)HGDI_ERROR)SelectObject(memory,old);
-    if(bitmap)DeleteObject(bitmap);
-    if(memory)DeleteDC(memory);
-    if(!ready && !s->detached)painter(w,s,target);
-    if(target_saved)RestoreDC(target,target_saved);
+    present_context context={s,painter};
+    const win16_control_present_view view={&s->detached,&s->palette,&context,present_painter};
+    win16_control_present(w,&view,target);
 }
 
 /* Original LBSetTabStops stores set-time pixels. GdiGetCharDimensions uses
@@ -1333,22 +800,8 @@ static LRESULT set_list_tabs(HWND w,control_style *s,WPARAM count,LPARAM values)
     else free(pixels);
     return result;
 }
-/* USER18:0208..027F: scrollbar-class size box shares the inner border
- * and fills with the system scrollbar brush, not a later sizing-grip image.
- * Native creation/alignment and parent size/maximize commands stay native. */
 static void draw_sizebox(HWND w,control_style *s,HDC dc)
-{
-    RECT outer,client,r;UINT dpi=GetDpiForWindow(w);int saved,cx,cy,bx,by;
-    (void)s;
-    if(!dc || !GetWindowRect(w,&outer) || !GetClientRect(w,&client))return;
-    saved=SaveDC(dc);if(!saved)return;
-    cx=GetSystemMetricsForDpi(SM_CXVSCROLL,dpi);cy=GetSystemMetricsForDpi(SM_CYHSCROLL,dpi);
-    bx=GetSystemMetricsForDpi(SM_CXBORDER,dpi);by=GetSystemMetricsForDpi(SM_CYBORDER,dpi);
-    SetRect(&r,outer.right-outer.left-cx+bx,outer.bottom-outer.top-cy+by,
-        outer.right-outer.left,outer.bottom-outer.top);
-    IntersectClipRect(dc,client.left,client.top,client.right,client.bottom);
-    FillRect(dc,&r,GetSysColorBrush(COLOR_SCROLLBAR));RestoreDC(dc,saved);
-}
+{(void)s;win16_control_draw_sizebox(w,dc);}
 static void draw_tab(HWND w,control_style *s,HDC dc)
 {
     HFONT font=s->font;win16_style_system_retain(font);
@@ -1370,22 +823,6 @@ static void draw_progress(HWND w,control_style *s,HDC dc)
 }
 /* The v5 progress color and state getters are unavailable. Only paint the
  * verified static edge, after the native procedure; leave the client intact. */
-static void legacy_progress_border(HWND w,control_style *s,HDC target)
-{
-    RECT outer,client;POINT origin={0,0};DWORD saved_error=GetLastError();
-    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
-    if(!ntw16s_control_protocol_legacy_progress(w) ||
-        !(ex&WS_EX_STATICEDGE) || (ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_CLIENTEDGE)) ||
-        (style&(PBS_MARQUEE|WS_HSCROLL|WS_VSCROLL)) ||
-        !GetWindowRect(w,&outer) || !GetClientRect(w,&client) || !ClientToScreen(w,&origin))goto done;
-    int width=outer.right-outer.left,height=outer.bottom-outer.top;
-    int left=origin.x-outer.left,top=origin.y-outer.top;
-    if(width<3 || height<3 || left<1 || top<1 || left+client.right>=width || top+client.bottom>=height)goto done;
-    RECT bounds={0,0,width,height};HDC dc=target?target:GetWindowDC(w);if(!dc)goto done;
-    int saved=SaveDC(dc);if(saved){frame(dc,bounds,s->palette.edge,1);RestoreDC(dc,saved);}
-    if(!target)ReleaseDC(w,dc);
-done: SetLastError(saved_error);
-}
 static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
 {
     control_style *s=(control_style *)data;LRESULT result=0;HFONT previous=NULL,pinned=s->font,outbound=NULL;(void)id;++s->calls;
@@ -1517,7 +954,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
             list_border(w,s,m==WM_PRINT?(HDC)a:NULL);nonclient_scrollbars(w,s,m==WM_PRINT?(HDC)a:NULL);
         }
         if(!s->detached && s->legacy_progress_border && (m==WM_NCPAINT || (m==WM_PRINT && (b&PRF_NONCLIENT))))
-            legacy_progress_border(w,s,m==WM_PRINT?(HDC)a:NULL);
+            win16_control_legacy_progress_border(w,&s->palette,m==WM_PRINT?(HDC)a:NULL);
         /* Native controls can repaint their own non-client bars while handling
          * input or position changes without issuing WM_NCPAINT. Restore both
          * axes after the native handler, including programmatic list scrolling. */
@@ -1528,7 +965,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
     }
     else if(is_scroll(w) && (GetWindowLongPtrW(w,GWL_STYLE)&SBS_SIZEBOX)){
         if(m==WM_PAINT){PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);present_control(w,s,dc,draw_sizebox);EndPaint(w,&ps);}
-        else if(m==WM_PRINTCLIENT)draw_sizebox(w,s,(HDC)a);
+        else if(m==WM_PRINTCLIENT)win16_control_draw_sizebox(w,(HDC)a);
         else if(m==WM_ERASEBKGND)result=1;
         else result=DefSubclassProc(w,m,a,b);
     }
@@ -1899,7 +1336,7 @@ BOOL win16_style_updown_install_created(HWND w,const win16_style_palette *palett
     if(!GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&value) ||
         ((control_style *)value)->creation_owner!=owner){SetLastError(ERROR_CANCELLED);return FALSE;}
     control_style *s=(control_style *)value;
-    ntw16s_updown_register(&s->updown,w,native,&s->palette,updown_glyphs,s,updown_acquire,updown_release);
+    ntw16s_updown_register(&s->updown,w,native,&s->palette,win16_control_scroll_glyphs(),s,updown_acquire,updown_release);
     return TRUE;
 }
 BOOL win16_style_trackbar_install_created(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled)

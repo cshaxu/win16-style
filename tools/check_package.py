@@ -81,8 +81,15 @@ def main():
     # Independently read the retained C atlas rows and require those exact
     # compiled tables, plus provenance, in both DLLs. No visual substitute.
     glyph_tables = {}
-    for header in ('frame_buttons.h', 'control_glyphs.h', 'combo_glyph.h', 'menu_glyphs.h', 'scroll_glyphs.h'):
-        text = (root/'src/ntw16s-dll'/header).read_text(encoding='utf-8')
+    glyph_paths = {
+        'frame_buttons.h': 'src/lib/win16-control/frame_buttons.h',
+        'control_glyphs.h': 'src/lib/win16-control/control_glyphs.h',
+        'combo_glyph.h': 'src/lib/win16-control/combo_glyph.h',
+        'menu_glyphs.h': 'src/lib/win16-control/menu_glyphs.h',
+        'scroll_glyphs.h': 'src/lib/win16-control/scroll_glyphs.h',
+    }
+    for header, source in glyph_paths.items():
+        text = (root/source).read_text(encoding='utf-8')
         arrays = re.findall(r'static const char\s+(\w+)[^=]*=\s*\{(.*?)\n\};', text, re.S)
         assert arrays, 'missing resource tables: '+header
         for symbol, body in arrays:

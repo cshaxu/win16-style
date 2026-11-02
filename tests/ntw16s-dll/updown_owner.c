@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "ntw16s-dll/updown_paint.h"
-#include "ntw16s-dll/scroll_glyphs.h"
+#include "lib/win16-control/scroll_glyphs.h"
 #include "isolated_process.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"UPDOWN_OWNER_FAIL line=%u error=%lu %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
 static _Thread_local HWND scope_window;static _Thread_local HDC scope_dc;

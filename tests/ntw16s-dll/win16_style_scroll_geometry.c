@@ -1,5 +1,5 @@
-#include "ntw16s-dll/scroll_layout.h"
-#include "ntw16s-dll/scroll_track.h"
+#include "lib/win16-control/scroll_layout.h"
+#include "lib/win16-control/scroll_track.h"
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>

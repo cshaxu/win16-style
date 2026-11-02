@@ -3,7 +3,9 @@
  */
 #include "win16_style.h"
 #include "layout.h"
-#include "frame_buttons.h"
+#include "../lib/win16-control/frame_paint.h"
+#include "../lib/win16-control/frame_view.h"
+#include "../lib/win16-control/frame_layout.h"
 #include "menu_bar.h"
 #include "menu_items.h"
 #include "menu_scope.h"
@@ -173,16 +175,6 @@ static LRESULT CALLBACK menu_filter(int code,WPARAM wp,LPARAM lp)
 #define STYLE_UAHDRAWMENU     0x0091
 #define STYLE_UAHDRAWMENUITEM 0x0092
 
-void win16_style_default_palette(win16_style_palette *p)
-{
-    if(!p)return;
-    /* Owner reference preset, not a claim about universal Win3.1 defaults. */
-    p->active=RGB(164,200,240);p->inactive=RGB(255,255,255);
-    p->active_text=p->inactive_text=RGB(0,0,0);
-    p->face=RGB(192,192,192);p->light=RGB(255,255,255);
-    p->shadow=RGB(128,128,128);p->edge=RGB(0,0,0);
-}
-
 static style_window *state(HWND w)
 {
     DWORD_PTR data=0;
@@ -199,48 +191,7 @@ static BOOL local_window(HWND w)
 }
 
 static BOOL measure_window(HWND w,style_window *s,const RECT *outer,win16_style_layout *l)
-{
-    RECT visible=*outer;BOOL zoom=IsZoomed(w);int dx,dy;
-    if(zoom){
-        MONITORINFO monitor={.cbSize=sizeof(monitor)};RECT intersection;
-        if(GetMonitorInfoW(MonitorFromWindow(w,MONITOR_DEFAULTTONEAREST),&monitor) &&
-            IntersectRect(&intersection,outer,&monitor.rcWork))visible=intersection;
-    }
-    if(!win16_style_measure(visible.right-visible.left,visible.bottom-visible.top,
-        s->dpi,(DWORD)GetWindowLongPtr(w,GWL_STYLE),
-        (DWORD)GetWindowLongPtr(w,GWL_EXSTYLE),zoom,l))return FALSE;
-    /* Native maximized resize borders can lie outside the work area. Keep
-     * Windows' geometry, but place every custom non-client element and the
-     * actual client inside its visible part using one layout calculation. */
-    dx=visible.left-outer->left;dy=visible.top-outer->top;
-    OffsetRect(&l->outer,dx,dy);OffsetRect(&l->client,dx,dy);
-    OffsetRect(&l->caption,dx,dy);OffsetRect(&l->title,dx,dy);
-    OffsetRect(&l->system,dx,dy);OffsetRect(&l->minimize,dx,dy);OffsetRect(&l->maximize,dx,dy);
-    if(!(GetWindowLongPtr(w,GWL_STYLE)&WS_CHILD) && GetMenu(w)){
-        win16_style_bar bar;POINT origin={l->client.left,l->client.top};
-        if(!win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font?s->menu_font:(HFONT)GetStockObject(SYSTEM_FONT),
-            s->dpi,origin,l->client.right-l->client.left,&bar))return FALSE;
-        if(s->detached){win16_style_bar_free(&bar);return FALSE;}
-        if(bar.height){l->menu=l->client;l->menu.bottom=min(l->client.bottom,l->client.top+bar.height+l->unit);
-            l->client.top=l->menu.bottom;}
-        win16_style_bar_free(&bar);
-    }
-    {DWORD flags=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
-        /* USER18:0F5F uses the inner sizing band N=F-B for the bars' outer
-         * edges: the bar shares the frame's inner border. Native bar geometry
-         * starts at rcClient, so reserve thickness minus that shared unit.
-         * Fixed/dialog and host-only left-bar profiles remain separate. */
-        int shared=l->sizeable && !l->dialog_frame &&
-            !(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_LEFTSCROLLBAR)?l->unit:0;
-        if(flags&WS_VSCROLL){int cx=GetSystemMetricsForDpi(SM_CXVSCROLL,s->dpi)-shared;
-            if(l->client.right-l->client.left>=cx){
-                if(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_LEFTSCROLLBAR)l->client.left+=cx;
-                else l->client.right-=cx;}}
-        if(flags&WS_HSCROLL){int cy=GetSystemMetricsForDpi(SM_CYHSCROLL,s->dpi)-shared;
-            if(l->client.bottom-l->client.top>cy)l->client.bottom-=cy;}
-    }
-    return TRUE;
-}
+{return win16_control_measure_window(w,&s->dpi,&s->menu_font,&s->detached,outer,l);}
 
 static BOOL layout(HWND w,style_window *s,win16_style_layout *l)
 {
@@ -269,239 +220,28 @@ BOOL win16_style_hit_test(HWND w,LPARAM lp,LRESULT *result)
 }
 
 static void colors(style_window *s,win16_style_palette *p)
-{
-    HIGHCONTRASTW hc={.cbSize=sizeof(hc)};
-    *p=s->palette;
-    if(SystemParametersInfoW(SPI_GETHIGHCONTRAST,sizeof(hc),&hc,0) &&
-        (hc.dwFlags&HCF_HIGHCONTRASTON)){
-        p->active=GetSysColor(COLOR_ACTIVECAPTION);
-        p->inactive=GetSysColor(COLOR_INACTIVECAPTION);
-        p->active_text=GetSysColor(COLOR_CAPTIONTEXT);
-        p->inactive_text=GetSysColor(COLOR_INACTIVECAPTIONTEXT);
-        p->face=GetSysColor(COLOR_BTNFACE);p->light=GetSysColor(COLOR_BTNHIGHLIGHT);
-        p->shadow=GetSysColor(COLOR_BTNSHADOW);p->edge=GetSysColor(COLOR_WINDOWTEXT);
-    }
-}
+{win16_control_resolve_palette(&s->palette,p);}
 
-static void fill(HDC dc,RECT r,COLORREF c)
+static BOOL paint_layout(HWND w,void *context,win16_style_layout *result)
+{return layout(w,(style_window *)context,result);}
+static void paint_colors(void *context,win16_style_palette *palette)
+{colors((style_window *)context,palette);}
+static win16_control_frame_view paint_view(style_window *s)
 {
-    SetDCBrushColor(dc,c);FillRect(dc,&r,(HBRUSH)GetStockObject(DC_BRUSH));
+    const win16_control_frame_view view={s,&s->detached,&s->active,&s->menu_font,&s->title_font,
+        &s->dpi,&s->bar_selected,&s->system_menu,&s->bar_keyboard,&s->pressed,&s->hot,
+        paint_layout,paint_colors,win16_style_scrollbars_paint};
+    return view;
 }
-
-static void outline(HDC dc,RECT r,int u,COLORREF c)
-{
-    RECT q=r;q.bottom=q.top+u;fill(dc,q,c);
-    q=r;q.top=q.bottom-u;fill(dc,q,c);
-    q=r;q.right=q.left+u;fill(dc,q,c);
-    q=r;q.left=q.right-u;fill(dc,q,c);
-}
-
-static void button(HDC dc,RECT r,int kind,BOOL down,BOOL zoom,BOOL child,int u,
-    const win16_style_palette *p)
-{
-    BITMAPINFO bi={0};DWORD pixels[19*18];int x,y,width,stride;
-    const char *bits;
-    COLORREF palette[4]={p->edge,p->light,p->shadow,p->face};
-    if(IsRectEmpty(&r))return;
-    fill(dc,r,kind==HTSYSMENU&&down?p->shadow:p->face);outline(dc,r,u,p->edge);
-    if(kind==HTSYSMENU){
-        /* Original CLOSE atlas: top-level left half, WS_CHILD right half. */
-        bits=&system_menu_bitmap[0][child?18:0];width=18;stride=37;
-        /* VGA selection inverts palette roles, not RGB bytes: light grey
-         * becomes dark grey, black becomes white. No second CLOSE bitmap. */
-        if(down){palette[0]=p->light;palette[1]=p->edge;
-            palette[2]=p->face;palette[3]=p->shadow;}
-    }else{
-        int index=(kind==HTMINBUTTON?0:zoom?2:1)+(down?3:0);
-        bits=&frame_buttons[index][0][0];width=19;stride=20;
-    }
-    for(y=0;y<18;++y)for(x=0;x<width;++x){
-        COLORREF c=palette[bits[y*stride+x]-'0'];
-        pixels[y*width+x]=((DWORD)GetRValue(c)<<16)|((DWORD)GetGValue(c)<<8)|GetBValue(c);
-    }
-    bi.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
-    bi.bmiHeader.biWidth=width;bi.bmiHeader.biHeight=-18;
-    bi.bmiHeader.biPlanes=1;bi.bmiHeader.biBitCount=32;
-    /* Original arrow artwork includes its left separator; CLOSE does not.
-     * The caption supplies the other separators. Scale the raster once. */
-    SetStretchBltMode(dc,COLORONCOLOR);
-    StretchDIBits(dc,r.left,r.top,r.right-r.left-(kind==HTSYSMENU?u:0),r.bottom-r.top,
-        0,0,width,18,pixels,&bi,DIB_RGB_COLORS,SRCCOPY);
-}
-
-void win16_style_merged_control(HDC dc,RECT bounds,BOOL system,BOOL selected,int unit,const win16_style_palette *palette)
-{
-    button(dc,bounds,system?HTSYSMENU:HTMAXBUTTON,selected,!system,system,unit,palette);
-}
-
 static void paint(HWND w,style_window *s,HDC target)
-{
-    win16_style_layout l;
-    win16_style_palette p;
-    HDC dc=target?target:GetWindowDC(w);
-    RECT r;int saved,len;
-    WCHAR *title;
-    if(!dc)return;
-    if(!layout(w,s,&l) || s->detached){if(!target)ReleaseDC(w,dc);return;}
-    if(!l.border && IsRectEmpty(&l.caption)){if(!target)ReleaseDC(w,dc);return;}
-    colors(s,&p);saved=SaveDC(dc);
-    /* A borrowed WM_PRINT DC must remain untouched if its state cannot be
-     * saved. This is failure containment, not a menu-animation workaround. */
-    if(!saved){if(!target)ReleaseDC(w,dc);return;}
-    ExcludeClipRect(dc,l.client.left,l.client.top,l.client.right,l.client.bottom);
-    fill(dc,l.outer,l.dialog_frame?(s->active?p.active:p.inactive):p.face);
-    outline(dc,l.outer,l.unit,p.edge);
-    /* The reference frame has a grey band between two dark outlines, not
-     * the white upper/left bevel used by later Windows non-client frames. */
-    r=l.outer;InflateRect(&r,-l.border+l.unit,-l.border+l.unit);
-    outline(dc,r,l.unit,l.dialog_frame?p.light:p.edge);
-    if(!IsRectEmpty(&l.menu)){
-        win16_style_bar bar;POINT origin={l.menu.left,l.menu.top};
-        fill(dc,l.menu,p.light);
-        if(win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar)){
-            if(s->bar_selected>=0 && (UINT)s->bar_selected<bar.count)
-                bar.items[s->bar_selected].state|=MFS_HILITE;
-            win16_style_bar_paint(&bar,dc,s->menu_font,s->dpi,&p);win16_style_bar_free(&bar);
-            if(s->detached){RestoreDC(dc,saved);if(!target)ReleaseDC(w,dc);return;}
-        }
-        r=l.menu;r.top=r.bottom-l.unit;fill(dc,r,p.edge);
-    }
-    if(l.sizeable && !l.dialog_frame){
-        /* Original USER 1:A06B..A1DE divides the flat sizing band into
-         * corner and edge regions. These are strokes, not a bevel. */
-        int corner=l.corner.cx-l.unit,vertical=l.corner.cy-l.unit,i;
-        for(i=0;i<2;++i){
-            int x=i?l.outer.right-corner-l.unit:l.outer.left+corner;
-            int y=i?l.outer.bottom-vertical-l.unit:l.outer.top+vertical;
-            if(l.outer.right-l.outer.left>2*corner+l.unit){
-                SetRect(&r,x,l.outer.top+l.unit,x+l.unit,l.outer.top+l.border-l.unit);fill(dc,r,p.edge);
-                OffsetRect(&r,0,l.outer.bottom-l.outer.top-l.border);fill(dc,r,p.edge);
-            }
-            if(l.outer.bottom-l.outer.top>2*vertical+l.unit){
-                SetRect(&r,l.outer.left+l.unit,y,l.outer.left+l.border-l.unit,y+l.unit);fill(dc,r,p.edge);
-                OffsetRect(&r,l.outer.right-l.outer.left-l.border,0);fill(dc,r,p.edge);
-            }
-        }
-    }
-    win16_style_scrollbars_paint(w,dc,&p);
-    if(IsRectEmpty(&l.caption)){
-        RestoreDC(dc,saved);if(!target)ReleaseDC(w,dc);return;
-    }
-    fill(dc,l.caption,s->active?p.active:p.inactive);
-    r=l.caption;r.top=r.bottom;r.bottom+=l.unit;fill(dc,r,p.edge);
-    button(dc,l.system,HTSYSMENU,s->system_menu||(s->bar_keyboard&&s->bar_selected==-2)||(s->pressed==HTSYSMENU&&s->hot),FALSE,
-        (GetWindowLongPtr(w,GWL_STYLE)&WS_CHILD)!=0,l.unit,&p);
-    button(dc,l.minimize,HTMINBUTTON,s->pressed==HTMINBUTTON&&s->hot,FALSE,FALSE,l.unit,&p);
-    button(dc,l.maximize,HTMAXBUTTON,s->pressed==HTMAXBUTTON&&s->hot,IsZoomed(w),FALSE,l.unit,&p);
-    len=GetWindowTextLengthW(w);
-    title=(WCHAR *)calloc((size_t)len+1,sizeof(WCHAR));
-    if(title){
-        SIZE extent;
-        GetWindowTextW(w,title,len+1);
-        r=l.title;
-        SelectObject(dc,s->title_font);SetBkMode(dc,TRANSPARENT);
-        SetTextColor(dc,s->active?p.active_text:p.inactive_text);
-        /* The role font is realized at this window DPI. Do not scale it a
-         * second time; retain centered-or-clipped, no-ellipsis text. */
-        if(GetTextExtentPoint32W(dc,title,len,&extent))
-            ExtTextOutW(dc,r.left+max(1,(r.right-r.left-extent.cx)/2),
-                r.top+max(0,(r.bottom-r.top-extent.cy)/2),ETO_CLIPPED,&r,title,(UINT)len,NULL);
-        free(title);
-    }
-    RestoreDC(dc,saved);if(!target)ReleaseDC(w,dc);
-}
+{const win16_control_frame_view view=paint_view(s);win16_control_paint_frame(w,&view,target);}
 
-/* USER can request the entire frame when a popup changes. Compose the
- * requested non-client pixels off-screen so the background and text do not
- * become visible as separate drawing operations. */
 static void paint_nonclient_buffered(HWND w,style_window *s,HDC dc)
-{
-    win16_style_layout l;RECT bounds;int saved=SaveDC(dc);BOOL ready=FALSE;
-    HDC memory=NULL;HBITMAP bitmap=NULL,old=NULL;
-    if(!saved){paint(w,s,dc);return;}
-    if(layout(w,s,&l) && !s->detached &&
-        ExcludeClipRect(dc,l.client.left,l.client.top,l.client.right,l.client.bottom)!=ERROR &&
-        GetClipBox(dc,&bounds)!=ERROR && bounds.right>bounds.left && bounds.bottom>bounds.top){
-        memory=CreateCompatibleDC(dc);
-        if(memory)bitmap=CreateCompatibleBitmap(dc,bounds.right-bounds.left,bounds.bottom-bounds.top);
-        if(bitmap)old=(HBITMAP)SelectObject(memory,bitmap);
-        if(old && old!=(HBITMAP)HGDI_ERROR &&
-            BitBlt(memory,0,0,bounds.right-bounds.left,bounds.bottom-bounds.top,dc,bounds.left,bounds.top,SRCCOPY) &&
-            SetWindowOrgEx(memory,bounds.left,bounds.top,NULL)){
-            paint(w,s,memory);
-            if(!s->detached)ready=BitBlt(dc,bounds.left,bounds.top,bounds.right-bounds.left,
-                bounds.bottom-bounds.top,memory,bounds.left,bounds.top,SRCCOPY);
-        }
-    }
-    if(old && old!=(HBITMAP)HGDI_ERROR)SelectObject(memory,old);
-    if(bitmap)DeleteObject(bitmap);
-    if(memory)DeleteDC(memory);
-    if(!ready && !s->detached)paint(w,s,dc);
-    RestoreDC(dc,saved);
-}
-
-/* Called only from the pinned subclass invocation. Application menu-init and
- * native tracking can reenter/remove/destroy the frame; never paint afterwards
- * unless its attachment remains live. */
-/* Menu selection changes no caption, sizing band or scrollbar pixels.
- * Reuse the frame painter with a bounded clip instead of clearing the frame. */
+{const win16_control_frame_view view=paint_view(s);win16_control_frame_buffered(w,&view,dc);}
 static void paint_menu_state(HWND w,style_window *s)
-{
-    win16_style_layout l;HDC dc,memory=NULL;HRGN clip,system;int saved;
-    RECT bounds;HBITMAP bitmap=NULL,old=NULL;BOOL ready=FALSE;
-    if(!layout(w,s,&l))return;
-    dc=GetWindowDC(w);if(!dc)return;saved=SaveDC(dc);
-    if(!saved){ReleaseDC(w,dc);return;}
-    clip=CreateRectRgnIndirect(&l.menu);system=CreateRectRgnIndirect(&l.system);
-    if(clip && system && CombineRgn(clip,clip,system,RGN_OR)!=ERROR &&
-        ExtSelectClipRgn(dc,clip,RGN_AND)!=ERROR && GetRgnBox(clip,&bounds)!=ERROR &&
-        bounds.right>bounds.left && bounds.bottom>bounds.top){
-        memory=CreateCompatibleDC(dc);
-        if(memory)bitmap=CreateCompatibleBitmap(dc,bounds.right-bounds.left,bounds.bottom-bounds.top);
-        if(bitmap)old=(HBITMAP)SelectObject(memory,bitmap);
-        if(old && old!=(HBITMAP)HGDI_ERROR &&
-            BitBlt(memory,0,0,bounds.right-bounds.left,bounds.bottom-bounds.top,dc,bounds.left,bounds.top,SRCCOPY) &&
-            SetWindowOrgEx(memory,bounds.left,bounds.top,NULL)){
-            paint(w,s,memory);
-            if(!s->detached)ready=BitBlt(dc,bounds.left,bounds.top,bounds.right-bounds.left,
-                bounds.bottom-bounds.top,memory,bounds.left,bounds.top,SRCCOPY);
-        }
-        if(old && old!=(HBITMAP)HGDI_ERROR)SelectObject(memory,old);
-        if(bitmap)DeleteObject(bitmap);
-        if(memory)DeleteDC(memory);
-        if(!ready && !s->detached)paint(w,s,dc);
-    }
-    if(system)DeleteObject(system);
-    if(clip)DeleteObject(clip);
-    RestoreDC(dc,saved);ReleaseDC(w,dc);
-}
-
-/* Press tracking changes one button, not the sizing band or other controls. */
+{const win16_control_frame_view view=paint_view(s);win16_control_frame_menu_state(w,&view);}
 static void paint_button_state(HWND w,style_window *s,int hit)
-{
-    win16_style_layout l;RECT r;HDC dc,memory;HBITMAP bitmap=NULL,old=NULL;int saved;BOOL ready=FALSE;
-    if(!layout(w,s,&l))return;
-    r=hit==HTSYSMENU?l.system:hit==HTMINBUTTON?l.minimize:l.maximize;
-    if(IsRectEmpty(&r))return;
-    dc=GetWindowDC(w);if(!dc)return;saved=SaveDC(dc);
-    if(saved){if(IntersectClipRect(dc,r.left,r.top,r.right,r.bottom)!=ERROR){
-        memory=CreateCompatibleDC(dc);
-        if(memory)bitmap=CreateCompatibleBitmap(dc,r.right-r.left,r.bottom-r.top);
-        if(bitmap)old=(HBITMAP)SelectObject(memory,bitmap);
-        if(old && old!=(HBITMAP)HGDI_ERROR &&
-            BitBlt(memory,0,0,r.right-r.left,r.bottom-r.top,dc,r.left,r.top,SRCCOPY) &&
-            SetWindowOrgEx(memory,r.left,r.top,NULL)){
-            paint(w,s,memory);
-            if(!s->detached)ready=BitBlt(dc,r.left,r.top,r.right-r.left,r.bottom-r.top,memory,r.left,r.top,SRCCOPY);
-        }
-        if(old && old!=(HBITMAP)HGDI_ERROR)SelectObject(memory,old);
-        if(bitmap)DeleteObject(bitmap);
-        if(memory)DeleteDC(memory);
-        if(!ready && !s->detached)paint(w,s,dc);
-        }
-        RestoreDC(dc,saved);}
-    ReleaseDC(w,dc);
-}
+{const win16_control_frame_view view=paint_view(s);win16_control_frame_button_state(w,&view,hit);}
 
 static void leave_bar(HWND w,style_window *s,BOOL restore_focus)
 {

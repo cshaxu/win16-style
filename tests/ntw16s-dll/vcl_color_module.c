@@ -93,7 +93,16 @@ static BOOL print_resources(HWND w)
 {
     HDC screen=GetDC(w),dc=CreateCompatibleDC(screen);HBITMAP bmp=CreateCompatibleBitmap(screen,220,64);
     HGDIOBJ old=dc && bmp?SelectObject(dc,bmp):NULL;DWORD before=0,after=0;
-    if(old){for(unsigned i=0;i<64;++i){
+    if(old){
+        /* GUI startup can change this process-wide count even without prints.
+         * Record that interval separately before testing repeated printing. */
+        GdiFlush();DWORD startup=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS),settled=startup;
+        unsigned stable=0,samples=0;
+        for(;samples<30 && stable<8;++samples){Sleep(50);GdiFlush();DWORD now=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);
+            stable=now==settled?stable+1:0;settled=now;}
+        printf("COLOR_GDI startup_before=%lu settled=%lu stable=%u samples=%u\n",startup,settled,stable,samples);
+        if(stable<8){SelectObject(dc,old);DeleteObject(bmp);DeleteDC(dc);ReleaseDC(w,screen);return FALSE;}
+        for(unsigned i=0;i<64;++i){
         SelectClipRgn(dc,NULL);SendMessageW(w,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT|PRF_ERASEBKGND);
         if(i==31){GdiFlush();before=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);}
     }GdiFlush();after=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);SelectObject(dc,old);}

@@ -6,7 +6,7 @@ import argparse
 import hashlib
 from pathlib import Path
 
-EXPECTED = {'src/ntw16s-dll/combo_glyph.h': '75b05a50bf02bbc8fcbd6c6f84948fcdbf82fa7f0fbbfc590a6e4eb94c3ffe34', 'src/ntw16s-dll/control_glyphs.h': '75031b93af2382f8ce1f47d971f32efdfe00cb7000e0db09ef878a1b50adff83', 'src/ntw16s-dll/frame_buttons.h': 'e7a472d76858c3d01fb1501a34d958ccd8337c8d8ccc36893c17ef9222bac0c5', 'src/ntw16s-dll/menu_glyphs.h': '03922a10b6a7b46e1792852b93f1e1590d45546a57a63cead41fb7b0f0eefa4e', 'src/ntw16s-dll/resources.md': '211d1d1d85e65bef001990fb229bd5959e272e1992b95d9086acc7c67716b6a7', 'src/ntw16s-dll/scroll_glyphs.h': 'a748e7d89d52abf6225403244971da442c5b391ab877d1f248ddf2ca96001d40'}
+EXPECTED = {'src/lib/win16-control/combo_glyph.h': '75b05a50bf02bbc8fcbd6c6f84948fcdbf82fa7f0fbbfc590a6e4eb94c3ffe34', 'src/lib/win16-control/control_glyphs.h': '75031b93af2382f8ce1f47d971f32efdfe00cb7000e0db09ef878a1b50adff83', 'src/lib/win16-control/frame_buttons.h': 'e7a472d76858c3d01fb1501a34d958ccd8337c8d8ccc36893c17ef9222bac0c5', 'src/lib/win16-control/menu_glyphs.h': '03922a10b6a7b46e1792852b93f1e1590d45546a57a63cead41fb7b0f0eefa4e', 'src/ntw16s-dll/resources.md': '211d1d1d85e65bef001990fb229bd5959e272e1992b95d9086acc7c67716b6a7', 'src/lib/win16-control/scroll_glyphs.h': 'a748e7d89d52abf6225403244971da442c5b391ab877d1f248ddf2ca96001d40'}
 
 def verify(files):
     for path, expected in EXPECTED.items():

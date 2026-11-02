@@ -6,7 +6,7 @@
 #include <wchar.h>
 #include <stdint.h>
 #include "../ntw16s-dll/isolated_process.h"
-#include "../../src/ntw16s-dll/control_glyphs.h"
+#include "../../src/lib/win16-control/control_glyphs.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"ACTOR_FAIL line=%d error=%lu %s\n",__LINE__,GetLastError(),#x);ExitProcess(1);}}while(0)
 static void file_path(const WCHAR *path){
     HANDLE f=CreateFileW(path,GENERIC_READ,FILE_SHARE_READ|FILE_SHARE_WRITE|FILE_SHARE_DELETE,NULL,OPEN_EXISTING,0,NULL);

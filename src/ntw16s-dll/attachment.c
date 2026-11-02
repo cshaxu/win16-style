@@ -4,7 +4,9 @@
 #include "native_api.h"
 #include "theme.h"
 #include "static_text.h"
-#include "combo_glyph.h"
+#include "../lib/win16-control/basic_paint.h"
+#include "../lib/win16-control/combo_paint.h"
+#include "../lib/win16-control/special_paint.h"
 #include "injection/unwind.h"
 #include "status_theme.h"
 #include "month_text.h"
@@ -227,23 +229,6 @@ void ntw16s_modern_spin_object_deleted(HGDIOBJ object)
     for(spin_draw_scope *s=spin_stack;s;s=s->previous_stack)
         if(s->snapshot_bitmap==object)spin_snapshot_invalidate(s);
 }
-typedef struct spin_dib {HDC dc;HBITMAP bitmap;HGDIOBJ old;DWORD *pixels;} spin_dib;
-static void spin_dib_close(spin_dib *d)
-{ SelectObject(d->dc,d->old);DeleteObject(d->bitmap);DeleteDC(d->dc); }
-static BOOL spin_dib_open(HDC source,int width,int height,spin_dib *d)
-{
-    BITMAPINFO info={0};info.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);info.bmiHeader.biWidth=width;
-    info.bmiHeader.biHeight=-height;info.bmiHeader.biPlanes=1;info.bmiHeader.biBitCount=32;info.bmiHeader.biCompression=BI_RGB;
-    d->dc=CreateCompatibleDC(source);if(!d->dc)return FALSE;
-    d->bitmap=CreateDIBSection(source,&info,DIB_RGB_COLORS,(void**)&d->pixels,NULL,0);
-    if(!d->bitmap){DeleteDC(d->dc);return FALSE;}
-    d->old=SelectObject(d->dc,d->bitmap);
-    if(!d->old || d->old==HGDI_ERROR){DeleteObject(d->bitmap);DeleteDC(d->dc);return FALSE;}
-    int saved=SaveDC(source);BOOL ok=FALSE;
-    if(saved){SetViewportOrgEx(source,0,0,NULL);SetWindowOrgEx(source,0,0,NULL);SelectClipRgn(source,NULL);
-        ok=BitBlt(d->dc,0,0,width,height,source,0,0,SRCCOPY);GdiFlush();RestoreDC(source,saved);}
-    if(!ok){spin_dib_close(d);return FALSE;}return TRUE;
-}
 static BOOL spin_full_clip(HDC dc,const POINT pt[2])
 {
     int saved=SaveDC(dc);if(!saved)return FALSE;
@@ -287,11 +272,8 @@ void ntw16s_modern_spin_theme(HDC dc,int part,int state,const RECT *rect,const R
     }
     int half=pt[0].y==0?0:1;s->states[half]=0;
     for(int y=pt[0].y;y<pt[1].y;y++)for(int x=0;x<client.right;x++)s->buffers->valid[y*64+x]=0;
-    spin_dib d={0};if(!spin_dib_open(dc,client.right,client.bottom,&d))return;
-    for(int y=pt[0].y;y<pt[1].y;y++)for(int x=0;x<client.right;x++){
-        int at=y*64+x;s->buffers->background[at]=d.pixels[y*client.right+x]&0x00ffffff;s->buffers->valid[at]=1;
-    }
-    spin_dib_close(&d);s->halves[half]=(RECT){pt[0].x,pt[0].y,pt[1].x,pt[1].y};s->states[half]=state;
+    if(!win16_control_spin_snapshot(dc,client.right,client.bottom,pt,s->buffers->background,s->buffers->valid))return;
+    s->halves[half]=(RECT){pt[0].x,pt[0].y,pt[1].x,pt[1].y};s->states[half]=state;
 }
 void ntw16s_modern_spin_blit(HDC dest,int x,int y,int width,int height,HDC source,int sx,int sy,DWORD rop)
 {
@@ -303,13 +285,8 @@ void ntw16s_modern_spin_blit(HDC dest,int x,int y,int width,int height,HDC sourc
        width<=0 || height<=0 || x>r.right-width || y>r.bottom-height || r.right>64 || r.bottom>64 ||
        rop!=SRCCOPY || !s->states[0] || !s->states[1])return;
     for(int j=y;j<y+height;j++)for(int i=x;i<x+width;i++)if(!s->buffers->valid[j*64+i])return;
-    spin_dib d={0};if(!spin_dib_open(source,r.right,r.bottom,&d))return;
-    for(int j=y;j<y+height;j++)for(int i=x;i<x+width;i++)s->buffers->original[j*64+i]=d.pixels[j*r.right+i];
-    for(int half=0;half<2;half++)if(!win16_style_bitbtn_face(s->window,d.dc,&s->halves[half],NULL,s->states[half]==3?ODS_SELECTED:0)){spin_dib_close(&d);return;}
-    GdiFlush();for(int j=y;j<y+height;j++)for(int i=x;i<x+width;i++){
-        int at=j*64+i;if((s->buffers->original[at]&0x00ffffff)!=s->buffers->background[at])d.pixels[j*r.right+i]=s->buffers->original[at];
-    }
-    BOOL copied=BitBlt(dest,x,y,width,height,d.dc,x,y,SRCCOPY);spin_dib_close(&d);
+    BOOL copied=win16_control_spin_compose(s->window,dest,x,y,width,height,source,r.right,r.bottom,
+        s->halves,s->states,s->buffers->background,s->buffers->original);
     if(copied && !s->owner->detached)s->owner->modern_spin_verified=TRUE;
 }
 
@@ -333,8 +310,7 @@ void ntw16s_spin_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *
     if(!LPtoDP(dc,points,2) || points[0].x!=0 || points[1].x!=client.right ||
        points[0].y<0 || points[1].y>client.bottom || points[1].y<=points[0].y ||
        (points[0].y!=0 && points[1].y!=client.bottom) || s->owner->detached)return;
-    int saved=SaveDC(dc);if(!saved)return;
-    FrameRect(dc,rect,(HBRUSH)GetStockObject(BLACK_BRUSH));RestoreDC(dc,saved);
+    win16_control_black_frame(dc,rect,NULL);
 }
 
 /* Editable VCL combos are bound only to the original same-runtime parent. */
@@ -426,7 +402,7 @@ static void inplace_draw(HDC dc,int part,int state,const RECT *r,const RECT *cli
  int saved=SaveDC(dc);if(!saved)return;int u=max(1,MulDiv(1,(int)GetDpiForWindow(s->window),96));int left=(r->left+r->right-7*u)/2,top=(r->top+r->bottom-9*u)/2;
  if(drop && (left<r->left+u || top<r->top+u || left+7*u>r->right-u || top+9*u>r->bottom-u)){RestoreDC(dc,saved);return;}
  if(clip && IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom)==ERROR){RestoreDC(dc,saved);return;}
- if(win16_style_bitbtn_face(s->window,dc,r,clip,state==3?ODS_SELECTED:0) && !s->owner->detached){if(drop){win16_style_palette palette;win16_style_default_palette(&palette);SetDCBrushColor(dc,palette.edge);for(int y=0;y<9;y++)for(int x=0;x<7;x++)if(combo_arrow[y][x]=='0'){RECT pixel={left+x*u,top+y*u,left+(x+1)*u,top+(y+1)*u};FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));}}s->owner->inplace_verified=TRUE;}RestoreDC(dc,saved);}
+ if(win16_style_bitbtn_face(s->window,dc,r,clip,state==3?ODS_SELECTED:0) && !s->owner->detached){if(drop){win16_style_palette palette;win16_style_default_palette(&palette);SetDCBrushColor(dc,palette.edge);win16_control_combo_arrow(dc,left,top,96*u);}s->owner->inplace_verified=TRUE;}RestoreDC(dc,saved);}
 void ntw16s_nav_theme(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address)
 {static_paint_scope *s=static_paint;RECT client;POINT wo,vo;HMODULE caller=NULL;BOOL media;
  if(!s || !s->owner->nav_candidate || s->owner->detached || !dc || !r || part!=1 || !nav_identity(s->window,s->owner->nav_owner,s->owner->nav_parent) || WindowFromDC(dc)!=s->window || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) || !GetWindowOrgEx(dc,&wo) || !GetViewportOrgEx(dc,&vo) || wo.y || vo.x || vo.y || !GetClientRect(s->window,&client) || r->top || r->bottom!=client.bottom || !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) || caller!=s->owner->nav_owner)return;
@@ -558,7 +534,7 @@ void ntw16s_status_text_frame(HDC dc,const RECT *text,UINT flags,const void *add
     if(s->owner->detached || s->epoch!=s->owner->status_epoch || HIWORD(type)!=0)return;
     icon=SendMessageW(s->window,SB_GETICON,s->count-1,0);
     if(s->owner->detached || s->epoch!=s->owner->status_epoch || icon)return;
-    int saved=SaveDC(dc);if(saved){FrameRect(dc,&pane,(HBRUSH)GetStockObject(BLACK_BRUSH));RestoreDC(dc,saved);}
+    win16_control_black_frame(dc,&pane,NULL);
 }
 
 /* For a size-grip pane, native comctl draws its icon before its text.
@@ -582,7 +558,7 @@ void ntw16s_status_icon_frame(HDC dc,int x,int y,int cx,int cy,HICON icon,const 
     if(s->owner->detached || s->epoch!=s->owner->status_epoch || HIWORD(type)!=0)return;
     current=SendMessageW(s->window,SB_GETICON,s->count-1,0);
     if(s->owner->detached || s->epoch!=s->owner->status_epoch || (HICON)current!=icon)return;
-    int saved=SaveDC(dc);if(saved){FrameRect(dc,&pane,(HBRUSH)GetStockObject(BLACK_BRUSH));RestoreDC(dc,saved);}
+    win16_control_black_frame(dc,&pane,NULL);
 }
 
 /* Called only after the original native drawing call has completed. */
@@ -598,10 +574,7 @@ void ntw16s_status_frame(HDC dc,const RECT *rect,const RECT *clip,const void *ca
     w=WindowFromDC(dc);if(s->dc?dc!=s->dc:w!=s->window)return;
     for(unsigned i=0;i<s->count;++i)if(EqualRect(rect,&s->panes[i])){matches=TRUE;break;}
     if(!matches || s->owner->detached || s->epoch!=s->owner->status_epoch)return;
-    int saved=SaveDC(dc);if(!saved)return;
-    if(!clip || IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom)!=ERROR)
-        FrameRect(dc,rect,(HBRUSH)GetStockObject(BLACK_BRUSH));
-    RestoreDC(dc,saved);
+    win16_control_black_frame(dc,rect,clip);
 }
 
 /* This precise superclass was observed in a real VCL application. It still
@@ -921,6 +894,11 @@ HFONT ntw16s_static_text_font(HDC dc,LPCWSTR text,int count,UINT flags,const voi
     source=(HFONT)GetCurrentObject(dc,OBJ_FONT);return source?win16_style_system_acquire(source):NULL;
 }
 #define class_is ntw16s_class_is
+typedef struct group_frame_result {attachment *owner;HWND parent;} group_frame_result;
+static void group_frame_drawn(void *context)
+{group_frame_result *r=context;if(!r->owner->detached){r->owner->group_frame_parent=r->parent;r->owner->group_frame_verified=TRUE;}}
+static void panel_frame_drawn(void *context)
+{group_frame_result *r=context;if(!r->owner->detached){r->owner->panel_frame_parent=r->parent;r->owner->panel_frame_verified=TRUE;}}
 /* Only the newly created group's own verified paint may draw this frame. */
 void ntw16s_group_frame(HDC dc,int part,int state,const RECT *rect,const RECT *clip,LPCWSTR text,int count,DWORD flags,const void *caller,BOOL is_text)
 {
@@ -942,9 +920,7 @@ void ntw16s_group_frame(HDC dc,int part,int state,const RECT *rect,const RECT *c
     if(GetWindowTextLengthW(w)!=0||rect->top!=0)return;
     frame=*rect;}
  if(a->detached||a->group_frame_retired||static_paint!=scope||lookup(w)!=a||GetParent(w)!=parent||IsWindowEnabled(w)!=(state==1))return;
- int saved=SaveDC(dc);if(!saved)return;if(clip)IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom);
- if(is_text)ExcludeClipRect(dc,rect->left,rect->top,rect->right,rect->bottom);
- if(FrameRect(dc,&frame,(HBRUSH)GetStockObject(BLACK_BRUSH))&&!a->detached){a->group_frame_parent=parent;a->group_frame_verified=TRUE;}RestoreDC(dc,saved);
+ group_frame_result result={a,parent};win16_control_group_frame(dc,&frame,clip,is_text?rect:NULL,group_frame_drawn,&result);
 }
 /* Accept only paired outer bevel strokes from the panel owner in its paint. */
 void ntw16s_panel_polyline(HDC dc,const POINT *points,int count,const void *caller,BOOL (WINAPI *draw)(HDC,const POINT*,int))
@@ -966,10 +942,9 @@ void ntw16s_panel_polyline(HDC dc,const POINT *points,int count,const void *call
     scope->panel_first=TRUE;scope->panel_enabled=IsWindowEnabled(w);scope->panel_parent=parent;scope->panel_dc=dc;scope->panel_color=pen.lopnColor;memcpy(scope->panel_points,points,sizeof(scope->panel_points));return;}
  if(!scope->panel_first||scope->panel_enabled!=IsWindowEnabled(w)||scope->panel_parent!=parent||scope->panel_dc!=dc||points[0].x!=client.right-1||points[0].y!=0||points[1].x!=client.right-1||points[1].y!=client.bottom-1||points[2].x!=-1||points[2].y!=client.bottom-1||
     !((scope->panel_color==hi&&pen.lopnColor==lo)||(scope->panel_color==lo&&pen.lopnColor==hi))){scope->panel_first=FALSE;return;}
- scope->panel_first=FALSE;if(scope->panel_enabled!=IsWindowEnabled(w)||GetParent(w)!=parent)return;int saved=SaveDC(dc);if(!saved)return;
- if(SelectObject(dc,GetStockObject(BLACK_PEN))){const POINT *shadow=scope->panel_color==lo?scope->panel_points:points;
-    if(draw(dc,shadow,3)&&!a->detached){a->panel_frame_parent=parent;a->panel_frame_verified=TRUE;}}
- RestoreDC(dc,saved);
+ scope->panel_first=FALSE;if(scope->panel_enabled!=IsWindowEnabled(w)||GetParent(w)!=parent)return;
+ const POINT *shadow=scope->panel_color==lo?scope->panel_points:points;group_frame_result result={a,parent};
+ win16_control_panel_shadow(dc,shadow,draw,panel_frame_drawn,&result);
 }
 static BOOL box_identity(HWND w,HMODULE owner,HWND parent)
 {
@@ -1013,7 +988,7 @@ void ntw16s_controlbar_edge(HDC dc,const RECT *rect,UINT edge,UINT flags,const v
  box_witness_scope *s=box_current;HMODULE caller=NULL;RECT bounds;POINT origin={0};
  if(!s || !s->owner->controlbar_candidate || !controlbar_identity(s->window,s->owner) || !dc || !rect || !ntw16s_controlbar_edge_allowed(edge) || flags!=(BF_RECT|BF_ADJUST) || WindowFromDC(dc)!=s->window || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) || !GetViewportOrgEx(dc,&origin) || origin.x || origin.y || !GetWindowOrgEx(dc,&origin) || origin.x || origin.y || !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) || caller!=s->owner->controlbar_owner || !GetWindowRect(s->window,&bounds))return;
  OffsetRect(&bounds,-bounds.left,-bounds.top);if(!EqualRect(rect,&bounds))return;
- int saved=SaveDC(dc);if(!saved)return;BOOL drew=FrameRect(dc,rect,(HBRUSH)GetStockObject(BLACK_BRUSH));RestoreDC(dc,saved);if(drew && controlbar_identity(s->window,s->owner))s->owner->controlbar_verified=TRUE;
+ BOOL drew=win16_control_black_frame(dc,rect,NULL);if(drew && controlbar_identity(s->window,s->owner))s->owner->controlbar_verified=TRUE;
 }
 static BOOL rich_identity(HWND w,attachment *a)
 {
@@ -1073,7 +1048,7 @@ BOOL ntw16s_month_text_room(HTHEME theme,HDC dc,int part,int state,DWORD flags,D
 void ntw16s_month_header_text(HTHEME theme,HDC dc,int part,int state,const RECT *r,DWORD flags,const void *address)
 {static_paint_scope *s=static_paint;COLORREF text;if(!s || !s->month_header_valid || !IsWindowEnabled(s->window) || part!=MC_GRIDCELL || state!=0 || !r || (flags&DT_CALCRECT) || !EqualRect(r,&s->month_header) ||
  !month_draw_identity(s,theme,dc,address) || FAILED(GetThemeColor(theme,part,state,TMT_TEXTCOLOR,&text)) || text!=RGB(0,0,0))return;
- s->month_header_valid=FALSE;int saved=SaveDC(dc);if(!saved)return;win16_style_palette palette;win16_style_default_palette(&palette);HBRUSH brush=(HBRUSH)GetStockObject(DC_BRUSH);SetDCBrushColor(dc,palette.active);FillRect(dc,r,brush);RestoreDC(dc,saved);}
+ s->month_header_valid=FALSE;win16_control_month_fill(dc,r,NULL);}
 void ntw16s_month_selection_background(HTHEME theme,HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address)
 {static_paint_scope *s=static_paint;if(!s)return;s->month_selected=FALSE;if(part!=MC_GRIDCELLBACKGROUND || (state!=MCGCB_SELECTED && state!=MCGCB_SELECTEDNOTFOCUSED) || !r || r->right<=r->left || r->bottom<=r->top || !month_draw_identity(s,theme,dc,address))return;
  s->month_selected=TRUE;s->month_theme=theme;s->month_dc=dc;s->month_rect=*r;s->month_has_clip=clip!=NULL;if(clip)s->month_clip=*clip;}
@@ -1082,8 +1057,7 @@ void ntw16s_month_selection_text(HTHEME theme,HDC dc,int part,int state,const RE
  if(part!=MC_GRIDCELL || state!=6 || !r || !IsWindowEnabled(s->window) || (flags&DT_CALCRECT) || theme!=s->month_theme || dc!=s->month_dc ||
     r->left!=cell->left || r->top!=cell->top || r->right>cell->right || r->bottom!=cell->bottom ||
     !month_draw_identity(s,theme,dc,address) || FAILED(GetThemeColor(theme,part,state,TMT_TEXTCOLOR,&foreground)) || foreground!=RGB(0,0,0))return;
- int saved=SaveDC(dc);if(!saved)return;if(s->month_has_clip && IntersectClipRect(dc,s->month_clip.left,s->month_clip.top,s->month_clip.right,s->month_clip.bottom)==ERROR){RestoreDC(dc,saved);return;}
- win16_style_palette palette;win16_style_default_palette(&palette);HBRUSH brush=(HBRUSH)GetStockObject(DC_BRUSH);SetDCBrushColor(dc,palette.active);FillRect(dc,cell,brush);RestoreDC(dc,saved);
+ win16_control_month_fill(dc,cell,s->month_has_clip?&s->month_clip:NULL);
 }
 static void release(attachment *a)
 {if(!--a->calls && a->detached){attachment *source=a->lookup_popup_source_attachment,*host=a->mdi_host_attachment;win16_style_system_release(a->month_cached_font);win16_style_system_release(a->status_cached_font);ntw16s_vb_fonts_clear(&a->fonts);free(a);if(source)release(source);if(host)release(host);}}
@@ -1142,7 +1116,7 @@ static LRESULT CALLBACK cool_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_PT
     if(!s->ours || !cool_identity(s->window,a))return DefSubclassProc(parent,m,p,l);
     if(n->dwDrawStage==CDDS_ITEMPREPAINT)return CDRF_NOTIFYPOSTPAINT;
     if(n->dwDrawStage==CDDS_ITEMPOSTPAINT){
-        if(cool_grip(s->window,a,n)){int saved=SaveDC(n->hdc);if(saved){RECT r=n->rc;if(IntersectClipRect(n->hdc,r.left,r.top,r.right,r.bottom)!=ERROR){FillRect(n->hdc,&r,GetSysColorBrush(COLOR_BTNFACE));DrawEdge(n->hdc,&r,BDR_RAISEDINNER,BF_RECT);a->cool_verified=TRUE;}RestoreDC(n->hdc,saved);}}
+        if(cool_grip(s->window,a,n) && win16_control_cool_grip(n->hdc,&n->rc))a->cool_verified=TRUE;
         return CDRF_DODEFAULT;
     }
     return DefSubclassProc(parent,m,p,l);
@@ -1240,42 +1214,13 @@ static BOOL color_identity(HWND w,attachment *a,COMBOBOXINFO *info)
     LRESULT selected=SendMessageW(w,CB_GETCURSEL,0,0);
     return !a->detached && IsWindow(w) && (selected==CB_ERR || (selected>=0 && selected<count));
 }
-static void native_button(HWND w,attachment *a,HDC dc,const RECT *dirty,RECT r,BOOL pressed)
-{
-    RECT q;POINT origin;win16_style_palette palette;
-    if(!dc || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
-       !GetWindowOrgEx(dc,&origin) || origin.x || origin.y ||
-       !GetViewportOrgEx(dc,&origin) || origin.x || origin.y)return;
-    int dpi=(int)GetDpiForWindow(w);if(dpi<=0 || dpi>768)return;
-    int u=max(1,MulDiv(1,dpi,96)),gw=MulDiv(7,dpi,96),gh=MulDiv(9,dpi,96);
-    if(r.right-r.left<gw+2*u || r.bottom-r.top<gh+2*u || a->detached || !IsWindow(w))return;
-    int saved=SaveDC(dc);if(!saved)return;
-    if(IntersectClipRect(dc,r.left,r.top,r.right,r.bottom)==ERROR ||
-       (dirty && IntersectClipRect(dc,dirty->left,dirty->top,dirty->right,dirty->bottom)==ERROR)){
-        RestoreDC(dc,saved);return;
-    }
-    win16_style_default_palette(&palette);HBRUSH brush=(HBRUSH)GetStockObject(DC_BRUSH);
-    SetDCBrushColor(dc,palette.face);FillRect(dc,&r,brush);SetDCBrushColor(dc,palette.edge);
-    for(int i=0;i<u;++i){FrameRect(dc,&r,brush);InflateRect(&r,-1,-1);}
-    q=r;SetDCBrushColor(dc,pressed?palette.shadow:palette.light);q.bottom=q.top+u;FillRect(dc,&q,brush);
-    q=r;q.right=q.left+u;FillRect(dc,&q,brush);
-    q=r;SetDCBrushColor(dc,pressed?palette.light:palette.shadow);q.top=q.bottom-u;FillRect(dc,&q,brush);
-    q=r;q.left=q.right-u;FillRect(dc,&q,brush);
-    int left=(r.left+r.right-gw)/2+(pressed?u:0),top=(r.top+r.bottom-gh)/2+(pressed?u:0);
-    SetDCBrushColor(dc,IsWindowEnabled(w)?palette.edge:palette.shadow);
-    for(int y=0;y<9;++y)for(int x=0;x<7;++x)if(combo_arrow[y][x]=='0'){
-        SetRect(&q,left+MulDiv(x,dpi,96),top+MulDiv(y,dpi,96),
-            left+MulDiv(x+1,dpi,96),top+MulDiv(y+1,dpi,96));FillRect(dc,&q,brush);
-    }
-    RestoreDC(dc,saved);
-}
 static void color_button(HWND w,attachment *a,HDC dc,const RECT *dirty)
 {
     COMBOBOXINFO info={.cbSize=sizeof(info)};
     if(!color_identity(w,a,&info))return;
     BOOL pressed=SendMessageW(w,CB_GETDROPPEDSTATE,0,0)!=0;
     if(!a->detached && IsWindow(w) && GetParent(w)==a->color_parent)
-        native_button(w,a,dc,dirty,info.rcButton,pressed);
+        win16_control_native_combo_button(w,&a->detached,dc,dirty,info.rcButton,pressed);
 }
 static BOOL date_identity(HWND w,attachment *a,DATETIMEPICKERINFO *info)
 {
@@ -1299,7 +1244,7 @@ static void date_button(HWND w,attachment *a,HDC dc,const RECT *dirty)
 {
     DATETIMEPICKERINFO info={.cbSize=sizeof(info)};
     if(date_identity(w,a,&info) && !a->detached && GetParent(w)==a->date_parent)
-        native_button(w,a,dc,dirty,info.rcButton,(info.stateButton&STATE_SYSTEM_PRESSED)!=0);
+        win16_control_native_combo_button(w,&a->detached,dc,dirty,info.rcButton,(info.stateButton&STATE_SYSTEM_PRESSED)!=0);
 }
 static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {

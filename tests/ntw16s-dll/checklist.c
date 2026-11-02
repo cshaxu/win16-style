@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <wchar.h>
 #include "isolated_process.h"
-#include "../../src/ntw16s-dll/control_glyphs.h"
+#include "../../src/lib/win16-control/control_glyphs.h"
 #define CHECK(x) do { if(!(x)){fprintf(stderr,"CHECKLIST_FAIL line=%u error=%lu: %s\n",__LINE__,GetLastError(),#x);return 1;} } while(0)
 static WNDPROC list_proc;
 static HWND target;

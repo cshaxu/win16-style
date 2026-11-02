@@ -10,9 +10,9 @@
 #include <wchar.h>
 #include <stdint.h>
 #include "../ntw16s-dll/isolated_process.h"
-#include "../../src/ntw16s-dll/control_glyphs.h"
-#include "../../src/ntw16s-dll/combo_glyph.h"
-#include "../../src/ntw16s-dll/scroll_glyphs.h"
+#include "../../src/lib/win16-control/control_glyphs.h"
+#include "../../src/lib/win16-control/combo_glyph.h"
+#include "../../src/lib/win16-control/scroll_glyphs.h"
 #include "vb_queue.h"
 #include "vb_control_text.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"VB_SAMPLE_FAIL line=%d error=%lu %s\n",__LINE__,GetLastError(),#x);ExitProcess(1);}}while(0)
