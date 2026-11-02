@@ -22,3 +22,5 @@
 后续补充原生菜单对照：私有桌面的 x86 探针未观察到首个菜单，结果为 `POPUP FAIL index=0`，原因未确定，不能算通过或产品回归。当前桌面使用自有进程、程序发送四种消息并自动关闭弹出菜单，x86/x64 均记录 `LIBTRAY REAL POPUP PASS four_events=4`。第一组替代通知图标注册；第二组编译未修改的 LibTray 源码并实际注册、移除托盘图标，同样双宽通过。两组都不是 Explorer 真鼠标点击，探针位于 `build/t21-package/s20-popup-probe`。
 
 菜单选择自动探针通过向菜单窗口投递按键消息尝试选择第二项，x86/x64 均显示菜单但得到 `selection=0 seen=1 phase=2`，未能证明命令返回；不能凭此认定产品故障。随后用户对发布版本回复“验收通过”，未逐项描述操作。依据用户验收及上述有限自动证据收口 S20；T21 保持开放，真实全局接入和恢复未由 S20 自动验证。
+
+收口推送后复核时发现 Windows Defender 检测 `Trojan:Win32/Bearfoos.A!ml`（ThreatID 2147731250），检测记录包含 O:/winnt/run16s.exe、assets/run16s.exe 和远端下载复核副本，处理成功。O:/winnt/run16s.exe 此时已缺失，assets/run16s.exe 被阻止读取；原发布和用户验收为历史事实，当前部署不完整。是否误报尚未确认，未关闭防护、添加排除或恢复被隔离文件；后续安全核查已列 TODO。

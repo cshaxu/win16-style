@@ -2,6 +2,8 @@
 
 ## Current Work
 
+2026-11-01 发布状态变化：Windows Defender 将 S20 的 `run16s.exe` 检测为 `Trojan:Win32/Bearfoos.A!ml`（ThreatID 2147731250）；只读检测记录显示处理成功，`O:/winnt/run16s.exe` 当前缺失，`assets/run16s.exe` 当前被阻止读取。其他三份 O:/winnt 产品文件仍存在。是否误报尚未确认，不恢复被隔离文件、不关闭防护或添加排除项；后续由用户或维护者向 Microsoft 提交样本核查。S20 的用户验收和曾经的发布摘要保留为历史事实，不代表当前部署完整。
+
 S20 经用户确认验收通过并收口。双位宽干净构建、10 项聚焦实包回归和 LibTray 双位宽消息测试通过；四文件发布至 assets 根目录与 O:/winnt 并核对摘要，产品提交 `8f25892` 已推送并读取远端复核。用户未逐项描述验收操作；自动探针、真实全局接入恢复及失败限制见 [S20 记录](../history/M0-T21-S20-tray-library.md)。旧 ntw16s64 映像仍被系统和当前会话进程映射，保留在 `build/t21-package/s20-release-backup/held-ntw16s64.dll`。
 
 M0 固定；T21 保持开放，当前无活动任务包，S20、S19、S18、S17、S16 已收口。P97 同批干净包已通过 30 项聚焦回归并发布到 assets 根目录及 O:/winnt，产品提交 `33b4638` 已推送；实际读取远端四文件，与测试包及两处发布文件 SHA-256 均一致。该包随后完成双位宽管理员跨权限实测，记录已推送并读取远端复核（`a299eec`）。S13 与 T21 覆盖边界见 [S13 收口审计](../history/M0-T21-S13-vb-global-investigation.md)。
