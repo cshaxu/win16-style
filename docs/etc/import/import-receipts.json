@@ -1463,7 +1463,7 @@
       "path": "src/ntw16s-dll/injection/window_titles.c",
       "source": "src/nthook32-dll/window_titles.cpp",
       "source_blob": "0a3d1cd942345edb25e879b9377311929551a0ec",
-      "sha256": "eee6d24b061be7e175b27743c21b44b94c5f69ed7beb248a36e66b960d54687d",
+      "sha256": "0b105c2f4f5c70ade686bc344853fcd85cca9d6abff4b81d7611de0c476d28da",
       "disposition": "adapt",
       "review": "T3 S2 same-DLL delayed binding and read-only native-target diagnostics; docs/proposals/launcher-injection.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S7 bounded initialized public report-list text scope, exact native custom-draw DC and unchanged app callbacks, independent host System bitmap and ownership/late-view tests; no external code copied or original resources modified; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T18 S21 scoped observed checklist owner-draw frame, public state and original graphic, no external code or resource changes; T18 S27 exact observed TSpinButton frame scope, native primitive semantics retained, no external code or original graphics changed; T18 S31 verified native STATIC drawing scope, source font and application printing preserved; T18 S64 VB6 checklist scoped 96 DPI bitmap rendering and additional BitBlt hook; native fallbacks retained; T18 S64 P50 bounded VB6 Data navigation graphics; T18 S64: scoped ordinary Delphi group paint witness and native theme text entry, original notices retained; T18 S64 scoped observed Delphi TPopupMenu owner, native callbacks and item restoration; private cleanup, no external code or graphics changed; T18 S64 observed paired Delphi TPanel outer bevel paint scope, caller/parent/clip and native pen preserved; project-authored native tests; no external code or resources copied; T18 S64 P110 modern SpinButton bounded theme, bitmap and paint handling; T18 S64 P117 verified simple Delphi status scoped typography; T18 S64 P117 isolated font lease and lifecycle verification; T18 S64 P119 bounded multi-pane status font; T18 S64 P121 ANSI RichEdit witness and native chrome; T18 S64 P122 Unicode witness and abnormal paint cleanup; T18 S64 P123 scroll box witness; T18 S64 P125 native month calendar arrows; T18 S64 P126 selected-date color; T18 S64 P127 bounded native calendar title and query guards; T18 S64 P128 bounded calendar text; T18 S64 P129 witnessed TValueListEditor in-place button; T18 S64 P130 witnessed combo theme and dropdown arrow; T18 S64 witnessed VCL control bar frame; T18 S64 control bar observed bevel variants; T18 S64 app-owned ANSI DBEdit forwarding witness and negative model; T18 S64 bounded ANSI data combo forwarding witness; T18 S64 P160: bounded same-owner TDBNavigator button backgrounds; T20 S1 common find/replace creation scope; T21 S13 unified late style hooks and stop semantics",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
@@ -3191,7 +3191,7 @@
       "path": "src/ntw16s-dll/injection/file_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1b32a84ebc8dd00b0ee901977b2df8b1cd30dd1a7361a9c1c6b79eea3648bfaf",
+      "sha256": "64b70387f09ef64bd5f18f744404cd03af1ece69f6d0a132cfe40a667b920c6c",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture; T21 S13 unified late style hooks and stop semantics",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
@@ -3200,7 +3200,7 @@
       "path": "src/ntw16s-dll/injection/folder_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e8baa62bcc833da0ed03bc1c24df748881bea3bfcd73401411a4d6320c9c8907",
+      "sha256": "e6ad13229aa730dc2bb3fffcbf9463c1ddd329372f1408629ce91c42b9236a72",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture; T21 S13 unified late style hooks and stop semantics",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
@@ -3317,7 +3317,7 @@
       "path": "src/ntw16s-dll/injection/modern_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3ad5832d68f999356b5f2d757bddddfc194a5d0bcefbf7fa162733bcd0a22f50",
+      "sha256": "92977a5c42a67671751b8e21bc31e89e30d46baf7f632b9e009142f7254ae045",
       "disposition": "authored",
       "review": "T20 S1 public modern dialog API and demo comparison under development",
       "notice": "Project-authored; no imported code or resources"
@@ -3353,7 +3353,7 @@
       "path": "src/ntw16s-dll/injection/com_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b85accc48b54eec2510c831e3f36afb04262219d34cd6ed25d0746e69b203f2f",
+      "sha256": "4291e9cbf2fccaf287df14daec39b1db391b18d2295eb6c38bb2e43ac864292a",
       "disposition": "authored",
       "review": "T20 S1 COM dialog bridge and real native probe under development; T21 S13 unified late style hooks and stop semantics",
       "notice": "Project-authored; no imported code or resources"
@@ -3557,21 +3557,21 @@
       "notice": "Project-authored test; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/injection/print_ranges.c",
+      "path": "src/lib/win16-dialog/print_ranges.c",
       "source": null,
       "source_blob": null,
       "sha256": "40162659540b4b3583863c93cea2f65b4e680bcd962c75c4368bcabdd12b35d6",
       "disposition": "authored",
-      "review": "T20 S1 experimental print page range parser and bounded regression",
+      "review": "T20 S1 experimental print page range parser and bounded regression; T21 S23 shared dialog library extraction",
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/ntw16s-dll/injection/print_ranges.h",
+      "path": "src/lib/win16-dialog/print_ranges.h",
       "source": null,
       "source_blob": null,
       "sha256": "2ca83be061944276cc10707fda5c3eb730ce62cfe394d40f9324a428142e5cd0",
       "disposition": "authored",
-      "review": "T20 S1 experimental print page range parser and bounded regression",
+      "review": "T20 S1 experimental print page range parser and bounded regression; T21 S23 shared dialog library extraction",
       "notice": "Project-authored code; no imported resources"
     },
     {
@@ -3584,21 +3584,21 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/ntw16s-dll/injection/print_extended.c",
+      "path": "src/lib/win16-dialog/print_extended.c",
       "source": null,
       "source_blob": null,
-      "sha256": "cdcd927907a79b62fbfc2e880405432982c59163e3cc3b575de615981c515579",
+      "sha256": "163b6dbd96f29610045f13e2a3ae4b509ee574213f8fd11b0ada34edc4e53b89",
       "disposition": "authored",
-      "review": "T20 S1 bounded extended print dialog bridge",
+      "review": "T20 S1 bounded extended print dialog bridge; T21 S23 shared dialog library extraction",
       "notice": "Project-authored C code; no imported resources"
     },
     {
-      "path": "src/ntw16s-dll/injection/print_extended.h",
+      "path": "src/lib/win16-dialog/print_extended.h",
       "source": null,
       "source_blob": null,
       "sha256": "d47e2abf43fc25acd4983e7e8a160be4b914240e8497d6a6b2d554885e65f5b2",
       "disposition": "authored",
-      "review": "T20 S1 bounded extended print dialog bridge",
+      "review": "T20 S1 bounded extended print dialog bridge; T21 S23 shared dialog library extraction",
       "notice": "Project-authored C code; no imported resources"
     },
     {
@@ -4347,6 +4347,411 @@
       "notice": "Project-authored C17; project MIT license",
       "sha256": "4f7614c02bfc9494428adaa2c6813504ccb820bd58b86acabf1d6ae74069f49f",
       "review": "T21 S22 library window print ordering and detach verification"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/print_ranges.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "a34a71b7f2da77bc35f6a45c5c293f25f7128c5b847d257535026c20a047ed59",
+      "disposition": "authored",
+      "review": "T21 S23 compatibility forwarding to shared dialog library",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/print_extended.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "6b7decaedf814f71dd8169ae4ef223cf2b166f3966ab9f680e5f5435859fe8e2",
+      "disposition": "authored",
+      "review": "T21 S23 compatibility forwarding to shared dialog library",
+      "notice": "Project-authored source; no imported code or resources"
+    },
+    {
+      "path": "tests/lib/win16_dialog_link.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "c92dc8566ae9e277bcb79c8b2051c5adaa750c04cba60e14fc7ff9dda7a7dd85",
+      "disposition": "authored",
+      "review": "T21 S23 independent whole-library link and page range test",
+      "notice": "Project-authored C17; project MIT license"
+    },
+    {
+      "path": "src/lib/win16-dialog/file_helpers.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "966dd7bdb9d187d61a98708f2179748195a932c2692ab572f0cc5d27a644a8e1",
+      "disposition": "authored",
+      "review": "T21 S23 extraction of existing old file dialog helpers",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/file_helpers.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "6d83aacec651fe707014da920be4b3fe17800cd5d59b3b73c6b64ca07406d4d4",
+      "disposition": "authored",
+      "review": "T21 S23 extraction of existing old file dialog helpers",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/file_contract.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ec653564e27ad823a77d8d371c05389be755ae3ab0d1973749037830cbab53da",
+      "disposition": "authored",
+      "review": "T21 S23 extraction of existing file-dialog contract",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/file_contract.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ee33329ee5a8110e71addb1128de9aec9cbc16fc6132c595d5a4bae53dbd0410",
+      "disposition": "authored",
+      "review": "T21 S23 extraction of existing file-dialog contract",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/modern.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ce2826a08ef13bf84a8c401be82a8fbda60895cacde13f4d345108d1bae43afb",
+      "disposition": "authored",
+      "review": "T21 S23 extraction of explicit modern dialog behavior; DLL retains depth and public ABI",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/modern.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "df8c5f47bf2759486234db2123ceb5cd618e372eecbd63d6e2a5dc26da68e3b5",
+      "disposition": "authored",
+      "review": "T21 S23 extraction of explicit modern dialog behavior; DLL retains depth and public ABI",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/folder_create.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "0985e6f5099196a786b37db24c07e64abcbabfa605a8dfd546ba8aaa60f1633b",
+      "disposition": "authored",
+      "review": "T21 S23 extraction of existing folder creation dialog",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/folder_create.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "81a2a98aa3ad93260a8ba30d9cb9c156a52d8cc220a9da178de2a6d18955c27c",
+      "disposition": "authored",
+      "review": "T21 S23 extraction of existing folder creation dialog",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "tests/lib/win16_dialog_folder_create.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "7ba4fbc65ce03141d51212157ff4c11db30ec1182e565f22c5ae7ef7cb38588f",
+      "disposition": "authored",
+      "review": "T21 S23 self-owned folder dialog library regression",
+      "notice": "Project-authored test; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/shell_folder.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "5e187a51bf8e8f6cc12221a2ed497932ff236a028d9a0c03b5dc9403139c2b57",
+      "disposition": "authored",
+      "review": "T21 S23 extraction of existing Shell folder selection adapter",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/shell_folder.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e6b4330f9fa80419a7f7680d66f04cea748c437db74b53cb0b6d715aee8654b6",
+      "disposition": "authored",
+      "review": "T21 S23 extraction of existing Shell folder selection adapter",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/shell_item.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "573fcf0a684acd88c3b2529eea01b25069684989627c5a3e7d4a6ac2d05bf02d",
+      "disposition": "authored",
+      "review": "T21 S23 extraction of selected Shell item conversion",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/shell_item.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "146b13f16def796ea441fdb4345f885aae3b1bdc707f9951858662dd7c1c4b2d",
+      "disposition": "authored",
+      "review": "T21 S23 extraction of selected Shell item conversion",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/chrome.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "769b65e110fd10e8ed9ee98e7484bedde2bd2fce0c9a220f597399a1aef1952d",
+      "disposition": "authored",
+      "review": "T21 S23 extraction of classic dialog control adaptation",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/chrome.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "d8537ddd9f7fdcfda71ecefde2035fd87066f144f349d544d36989a47124d714",
+      "disposition": "authored",
+      "review": "T21 S23 extraction of classic dialog control adaptation",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "tests/lib/win16_dialog_chrome.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "cd267d1bdc40577d42553148cfd769f1dd7fda3716ee0572900dc6a9fa50a3ca",
+      "disposition": "authored",
+      "review": "T21 S23 classic dialog control presentation adapter regression",
+      "notice": "Project-authored test; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/customize.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "bdbc689e8b40c3df1c5c89e501085ef93ed88063c3003f1279165201ddd8c7b7",
+      "disposition": "authored",
+      "review": "T21 S23 extract COM customization facade with owner callbacks",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/customize.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "542eeb17ebbaa136ea47f2027f5a6ad0b29dc9be409206ec743fe69aab41246f",
+      "disposition": "authored",
+      "review": "T21 S23 extract COM customization facade with owner callbacks",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/events.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "6210dfd16078153eea35fa18fef0d55a59a59d0c3e734cca43e68174c35a181b",
+      "disposition": "authored",
+      "review": "T21 S23 extraction of COM event facade with weak owner callbacks",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/events.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e8bf33b9a3efad040429a389c99251f1196916abc5b3d7c3ddf58653ba09d398",
+      "disposition": "authored",
+      "review": "T21 S23 extraction of COM event facade with weak owner callbacks",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/ole_window.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "d1524968eee6d9f810a223aacdc2ad63a11026e93b480ec59efbb2bfd76b2701",
+      "disposition": "authored",
+      "review": "T21 S23 extract IOleWindow facade with owner callbacks",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/ole_window.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "4edd8c213441044b99002b7522053a7a7faaa1af794e899598f333607bb349a3",
+      "disposition": "authored",
+      "review": "T21 S23 extract IOleWindow facade with owner callbacks",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/v2.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "9668e176053cf87130c016c21c99d2b35f35c80689159a6aeffb540cd16ece94",
+      "disposition": "authored",
+      "review": "T21 S23 extract IFileDialog2 facade with owner operations",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/v2.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "b72bcb9470b7d62763f97326b085067f9abbcd4e4bc4644e2cab93185146b53b",
+      "disposition": "authored",
+      "review": "T21 S23 extract IFileDialog2 facade with owner operations",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/primary.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "b34b1dd5e943e5c5b8dccd1008891af7b0c5bb6f15ecd961f91fcedf43e2e6fb",
+      "disposition": "authored",
+      "review": "T21 S23 extract open/save COM interface facades with owner operations",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/primary.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "dfb14f2bf8a64ecffccfefe15cfaf53024bfc3a0a33849b55ee8b37721524e70",
+      "disposition": "authored",
+      "review": "T21 S23 extract open/save COM interface facades with owner operations",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/com_show.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ec06ae31c5e3df3dd554822265e1b274dbd230500adc158529ae0a307071b725",
+      "disposition": "authored",
+      "review": "T21 S23 move COM dialog display orchestration into dialog library",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/com_show.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "f01129e9446202b0577282374de421c31c6f67c22c8fc83a69b2e7e7ae6cc65a",
+      "disposition": "authored",
+      "review": "T21 S23 move COM dialog display orchestration into dialog library",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/browse.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "a383a9cca7427e557cd6a066239f6552fa43bf968c86f0c5885b8256237c35ad",
+      "disposition": "authored",
+      "review": "T21 S23 extract Shell browse layout planning and selection callback",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/browse.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "86f20c31a090476bf56304427c0041aeb3e6ad00468f6e4ff15fdc40adc1deb0",
+      "disposition": "authored",
+      "review": "T21 S23 extract Shell browse layout planning and selection callback",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/classic_folder.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "c6d1e895ef13f6c14fd0298444412e4ecd13b2e8abdef6fd69c28d88ee891b11",
+      "disposition": "authored",
+      "review": "T21 S23 extract classic folder message handling with caller-owned state",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/classic_folder.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "0adb05e91705e036d06bef8591f38433ec928941965436d545acbe59d182a4e7",
+      "disposition": "authored",
+      "review": "T21 S23 extract classic folder message handling with caller-owned state",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/file_hook.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "9d385add8407cc0df599c366ff319e924c72af92b420a9e57e4d87179e51371e",
+      "disposition": "authored",
+      "review": "T21 S23 extract file dialog message handling",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/file_hook.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "c99b71ff6f1a3d0f26384ef15d6ec8d1c6cb2126629ca0ea1db3e646a4c9b192",
+      "disposition": "authored",
+      "review": "T21 S23 extract file dialog message handling",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/file_live.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "5f599969d1956769b538ee481f249b849471cffab31f1005883ce754d22254a0",
+      "disposition": "authored",
+      "review": "T21 S23 extract live classic filename and filter synchronization",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/file_live.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ef397277f3419bc2c7270310a5c096cff45bc935ac47a617bec14036efccda7a",
+      "disposition": "authored",
+      "review": "T21 S23 extract live classic filename and filter synchronization",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/com_hook.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "c62b84fc602f0c9eac5706bbe092fcbba53fec8e4cfa85ad571c584a93c57a76",
+      "disposition": "authored",
+      "review": "T21 S23 separate classic COM dialog message dispatch from owner state",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/com_hook.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "b386ddd54aa6683bf1af73dfe35d8f8fffeb9dd816dd1a2ae026044fb2fd6855",
+      "disposition": "authored",
+      "review": "T21 S23 separate classic COM dialog message dispatch from owner state",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/proxy.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "025567d37c08991788433e22de8c3ece5a2bb63f5a484f715bb981e406874beb",
+      "disposition": "authored",
+      "review": "T21 S23 move COM proxy identity and lifetime to dialog library",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/proxy.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "dede97e6ce88ecf54541ac6bd02b622b119e73455f5f2deb85af53a14e87b9f0",
+      "disposition": "authored",
+      "review": "T21 S23 move COM proxy identity and lifetime to dialog library",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/print_classic.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "9ed6bfe38dd7cddc22b69939c1343629eab24e837d8282f0d5e7749ba6909061",
+      "disposition": "authored",
+      "review": "T21 S23 extract classic print structure adaptation",
+      "notice": "Project-authored code; no imported resources"
+    },
+    {
+      "path": "src/lib/win16-dialog/print_classic.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "6d8e0cb667bf49f0936679ae4afbd9e666226ff14d1c0cc4d33395b378020bcd",
+      "disposition": "authored",
+      "review": "T21 S23 extract classic print structure adaptation",
+      "notice": "Project-authored code; no imported resources"
     }
   ]
 }

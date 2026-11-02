@@ -1,5 +1,5 @@
 #include "print_extended.h"
-#include "ntw16s-dll/injection/print_ranges.h"
+#include "print_ranges.h"
 #include <wchar.h>
 #define RANGE_CONTROL 9002
 #define APPLY_CONTROL 9001

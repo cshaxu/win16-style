@@ -1,3 +1,5 @@
+#include "../../lib/win16-dialog/print_classic.h"
+#include "../../lib/win16-dialog/chrome.h"
 #include "intercept.h"
 #include "startup_hooks.h"
 #include "unwind.h"
@@ -162,8 +164,7 @@ static LRESULT CALLBACK font_dialog_return(int code,WPARAM wparam,LPARAM lparam)
     if(code>=0 && lparam){
         const CWPRETSTRUCT *m=(const CWPRETSTRUCT *)lparam;
         if(m->message==WM_INITDIALOG){
-            WCHAR cls[32];HWND first=GetDlgItem(m->hwnd,1136),second=GetDlgItem(m->hwnd,1137),third=GetDlgItem(m->hwnd,1138);
-            if(first && second && third && GetClassNameW(m->hwnd,cls,ARRAYSIZE(cls)) && !lstrcmpW(cls,L"#32770"))
+            if(win16_dialog_is_font_template(m->hwnd))
                 ntw16s_font_dialog_chrome(m->hwnd);
         }
     }
@@ -194,6 +195,8 @@ FONT_DIALOG_HOOK(ChooseFontW,CHOOSEFONTW)
  * STATIC frame painter; the surrounding standard controls remain styled. */
 typedef struct color_dialog_scope {font_dialog_scope base;HWND dialog;struct color_dialog_scope *previous;} color_dialog_scope;
 static _Thread_local color_dialog_scope *active_color_dialog;
+static void color_dialog_found(HWND window){if(active_color_dialog)active_color_dialog->dialog=window;}
+static void color_dialog_remove_surface(HWND window){(void)Ntw16sWindowRemove(window);}
 static void color_dialog_end(void *value)
 {
     color_dialog_scope *scope=value;active_color_dialog=scope->previous;font_dialog_end(&scope->base);
@@ -203,16 +206,7 @@ static LRESULT CALLBACK color_dialog_return(int code,WPARAM wparam,LPARAM lparam
     if(code>=0 && lparam){
         const CWPRETSTRUCT *m=(const CWPRETSTRUCT *)lparam;
         if(m->message==WM_INITDIALOG){
-            WCHAR cls[32];HWND basic=GetDlgItem(m->hwnd,720),custom=GetDlgItem(m->hwnd,721);
-            if(basic && custom && GetClassNameW(m->hwnd,cls,ARRAYSIZE(cls)) && !lstrcmpW(cls,L"#32770")){
-                if(active_color_dialog)active_color_dialog->dialog=m->hwnd;
-                const int ids[]={720,721,710,702,709};
-                for(unsigned i=0;i<sizeof(ids)/sizeof(ids[0]);++i){
-                    HWND surface=GetDlgItem(m->hwnd,ids[i]);
-                    if(surface && GetParent(surface)==m->hwnd && GetClassNameW(surface,cls,ARRAYSIZE(cls)) && !lstrcmpiW(cls,L"Static"))
-                        (void)Ntw16sWindowRemove(surface);
-                }
-            }
+            win16_dialog_color_initialized(m->hwnd,color_dialog_found,color_dialog_remove_surface);
         }
     }
     return CallNextHookEx(NULL,code,wparam,lparam);
@@ -233,27 +227,22 @@ COLOR_DIALOG_HOOK(ChooseColorW,CHOOSECOLORW)
 
 /* A no-op print hook selects the system's traditional PrintDlg layout.
  * Preserve caller-owned customization and less common flag contracts unchanged. */
-static UINT_PTR CALLBACK classic_print_hook(HWND window,UINT message,WPARAM wparam,LPARAM lparam)
-{ (void)window;(void)message;(void)wparam;(void)lparam;return 0; }
-#define CLASSIC_PRINT_FLAGS (PD_ALLPAGES|PD_SELECTION|PD_PAGENUMS|PD_NOSELECTION|PD_NOPAGENUMS|PD_COLLATE|PD_PRINTTOFILE|PD_RETURNDC|PD_RETURNIC|PD_NOWARNING|PD_USEDEVMODECOPIESANDCOLLATE|PD_DISABLEPRINTTOFILE|PD_HIDEPRINTTOFILE|PD_NONETWORKBUTTON)
-#define PRINT_HOOK(NAME,TYPE) \
+#define PRINT_HOOK(NAME,TYPE,SUFFIX) \
 static __typeof__(&NAME) real_##NAME; \
 static NTW16S_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
 { ntw16s_unwind_scope unwind;title_scope scope;BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
   if(!begin_titles(&scope,TRUE))return FALSE; \
   NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); { \
-    if(scope.enabled && parameters && parameters->lStructSize==sizeof(TYPE) && !(parameters->Flags & ~CLASSIC_PRINT_FLAGS)) { \
-      TYPE copy=*parameters;copy.Flags|=PD_ENABLEPRINTHOOK;copy.lpfnPrintHook=classic_print_hook; \
+    TYPE copy; \
+    if(scope.enabled && win16_dialog_print_prepare_##SUFFIX(parameters,&copy)) { \
       result=real_##NAME(&copy);error=GetLastError(); \
-      copy.Flags=(copy.Flags & ~PD_ENABLEPRINTHOOK)|(parameters->Flags & PD_ENABLEPRINTHOOK); \
-      copy.lpfnPrintHook=parameters->lpfnPrintHook;*parameters=copy; \
+      win16_dialog_print_result_##SUFFIX(parameters,&copy); \
     } else { result=real_##NAME(parameters);error=GetLastError(); } \
   } NTW16S_UNWIND_END(unwind); \
   if(scope.failure){result=FALSE;error=scope.failure;}SetLastError(error);return result; }
-PRINT_HOOK(PrintDlgA,PRINTDLGA)
-PRINT_HOOK(PrintDlgW,PRINTDLGW)
+PRINT_HOOK(PrintDlgA,PRINTDLGA,a)
+PRINT_HOOK(PrintDlgW,PRINTDLGW,w)
 #undef PRINT_HOOK
-#undef CLASSIC_PRINT_FLAGS
 
 /* Synchronous common dialogs also create their own internal windows. */
 #define COMMON_HOOK(NAME, TYPE) \
