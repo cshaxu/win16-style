@@ -113,7 +113,11 @@ P8 干净包 `s24-p8-clean-1` 双宽构建及来源、资源和治理门禁通�
 
 P8 后将组合框重绘及标签页、表头、进度条消息中的 Win16 绘制协调迁入 win16-control，消息入口和共享状态仍按原次序调用；双宽增量构建及此前组合框绘制/生命周期各 3/3 通过，其中绘制用例分别约 38 秒和 30 秒，不在无相关修改时重复。当前候选的双宽组合框、标签页、v5/v6 表头及进度条聚焦 24/24、无跳过；上述为增量候选证据。scratch：`s24-combo-message-unit-x86`、`s24-combo-message-unit-x64`、`s24-combo-message-candidate`、`s24-combo-message-focused`、`s24-standard-message-candidate`、`s24-standard-message-focused`。
 
-P9 干净包 `s24-p9-clean-1` 双宽构建、来源、资源及治理门禁通过；实际包 `s24-p9-focused-1` 聚焦 24/24、无跳过，覆盖双宽组合框、标签页、v5/v6 表头和进度条；干净树双宽控件库及生命周期各 2/2 通过。同名工作目录已有运行中的构建，重复启动被拒绝并曾写失败结果；确认原进程和关键源码快照后等待其完成，最终结果为通过，未重复构建。同批四文件已发布 assets 根目录及 O:/winnt 并核对摘要（`s24-p9-deploy-1`），提交和远端复核待完成。实验事件链及此前屏幕采样仍未覆盖，S24 保持开放。
+P9 干净包 `s24-p9-clean-1` 双宽构建、来源、资源及治理门禁通过；实际包 `s24-p9-focused-1` 聚焦 24/24、无跳过，覆盖双宽组合框、标签页、v5/v6 表头和进度条；干净树双宽控件库及生命周期各 2/2 通过。同名工作目录已有运行中的构建，重复启动被拒绝并曾写失败结果；确认原进程和关键源码快照后等待其完成，最终结果为通过，未重复构建。同批四文件已发布 assets 根目录及 O:/winnt 并核对摘要（`s24-p9-deploy-1`）；提交 `9716c1bd5b4ad833e9f1cc3c31996f82a377127c` 已推送，远端四文件和控件库源码读取核对一致。实验事件链及此前屏幕采样仍未覆盖，S24 保持开放。
+
+P9 后将列表框、编辑框、标准按钮/静态控件及 VB Frame 的进程内样式消息协调迁入 win16-control，调用层保留消息入口和借用回调；原生数据、输入和应用图片仍由原控件处理。双宽增量构建及最新标准控件绘制、制表位、独立库与生命周期各 4/4 通过；最新候选的双宽列表/编辑滚动、VCL 文本及 VB 复选控件聚焦 20/20、无跳过。独立剪贴板测试因私有窗口站创建被拒绝（错误 5）双宽跳过，未使用共享剪贴板，不计通过；上述为增量候选证据。scratch：`s24-list-message-unit-x86`、`s24-list-message-unit-x64`、`s24-list-message-candidate`、`s24-list-message-focused`、`s24-edit-message-unit-x86`、`s24-edit-message-unit-x64`、`s24-list-edit-candidate`、`s24-list-edit-focused`、`s24-basic-message-unit-x86`、`s24-basic-message-unit-x64`、`s24-basic-message-candidate`、`s24-basic-message-focused`。
+
+P10 干净包 `s24-p10-clean-1` 双宽构建、来源、资源及治理门禁通过；实际包 `s24-p10-focused-1` 聚焦 20/20、无跳过，覆盖双宽列表/编辑滚动、VCL 文本和 VB 复选控件；干净树双宽控件库、制表位及生命周期各 3/3 通过。同批四文件已发布 assets 根目录和 O:/winnt 并核对摘要（`s24-p10-deploy-1`），提交和远端复核待完成。独立私有剪贴板测试仍为跳过；实验事件链及此前屏幕采样仍未覆盖，S24 保持开放。
 
 首次干净构建在 x86 因 DC 故障夹具仍引用旧 `frame_changed` 而失败；随后全目标增量构建又发现独立字体夹具缺少 `GetDpiForWindow` 声明。已更新夹具调用并将框架字体策略移至独立 `frame_font.c`，保持原字体夹具编译条件；双宽全目标增量构建及 ABI、几何、独立链接、DC 故障、列表制表位各 5/5 通过。首次干净构建不计通过，准备使用 `s24-stage-clean-2` 重建。scratch：`s24-all-fix-x86`、`s24-all-fix-x64`。
 

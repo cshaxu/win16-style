@@ -28,6 +28,9 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include "../lib/win16-control/custom_draw.h"
 #include "../lib/win16-control/spin_identity.h"
 #include "../lib/win16-control/control_state.h"
+#include "../lib/win16-control/list_message.h"
+#include "../lib/win16-control/edit_message.h"
+#include "../lib/win16-control/basic_message.h"
 
 #include "../lib/win16-control/scroll_assets.h"
 #include "scroll_track.h"
@@ -380,17 +383,6 @@ static void nonclient_scrollbars(HWND w,control_style *s,HDC target)
     if(!target)ReleaseDC(w,dc);
 }
 
-typedef struct list_view_state {
-    LRESULT top,selection,caret;
-} list_view_state;
-static list_view_state list_view(HWND w)
-{
-    list_view_state v;
-    v.top=SendMessageW(w,LB_GETTOPINDEX,0,0);
-    v.selection=SendMessageW(w,LB_GETCURSEL,0,0);
-    v.caret=SendMessageW(w,LB_GETCARETINDEX,0,0);return v;
-}
-
 void win16_style_scrollbars_paint(HWND w,HDC target,const win16_style_palette *palette)
 {
     control_style s={0};DWORD_PTR attached;
@@ -624,155 +616,14 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
     }
     else if(is_combo(w))result=win16_control_combo_message(w,s,m,a,b,present_control,draw_combo);
     else if(is_list(w)){
-        if(embedded_scroll_input(w,s,m,a,b))result=0;
-        else if(m==LB_SETTABSTOPS && (GetWindowLongPtrW(w,GWL_STYLE)&LBS_USETABSTOPS))result=set_list_tabs(w,s,a,b);
-        else if(m==WM_SETREDRAW){s->list_redraw_off=!a;result=DefSubclassProc(w,m,a,b);}
-        else if(m==WM_PAINT){PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);present_control(w,s,dc,draw_list);EndPaint(w,&ps);}
-        else if(m==WM_PRINTCLIENT)draw_list(w,s,(HDC)a);
-        else if(m==WM_NCPAINT || m==WM_PRINT){
-            /* This subclass owns the complete list nonclient surface. Native
-             * painting first exposes a second scrollbar skin before ours. */
-            if(m==WM_PRINT && (b&PRF_CLIENT)){
-                HDC dc=(HDC)a;int saved=SaveDC(dc);RECT wr;POINT origin={0,0};
-                if(saved){GetWindowRect(w,&wr);ClientToScreen(w,&origin);
-                    OffsetViewportOrgEx(dc,origin.x-wr.left,origin.y-wr.top,NULL);
-                    draw_list(w,s,dc);RestoreDC(dc,saved);}
-            }
-            if(!s->detached && (m==WM_NCPAINT || (b&PRF_NONCLIENT))){
-                list_border(w,s,m==WM_PRINT?(HDC)a:NULL);
-                nonclient_scrollbars(w,s,m==WM_PRINT?(HDC)a:NULL);}
-        }
-        else if(m==WM_NCMOUSEMOVE || m==WM_NCMOUSELEAVE){
-            /* Win3.x has no scrollbar hover skin. Do not start the host's
-             * themed hover/leave repaint; clicks still use native tracking. */
-            result=0;
-        }
-        else if(m==WM_ERASEBKGND)result=1;
-        else {
-            BOOL moving=m==WM_MOUSEMOVE,changed=FALSE;list_view_state before={0},after;
-            BOOL suppress=win16_control_state_can_suppress_redraw(w,s) &&
-                (m==WM_MOUSEWHEEL || m==WM_VSCROLL || m==WM_HSCROLL || m==WM_KEYDOWN || m==WM_KEYUP ||
-                m==WM_SETFOCUS || m==WM_KILLFOCUS || m==WM_ENABLE || m==WM_SETFONT ||
-                m==WM_MOUSEMOVE || m==WM_LBUTTONDOWN || m==WM_LBUTTONUP ||
-                m==LB_ADDSTRING || m==LB_INSERTSTRING || m==LB_DELETESTRING || m==LB_RESETCONTENT ||
-                m==LB_SETCURSEL || m==LB_SETSEL || m==LB_SELITEMRANGE || m==LB_SELITEMRANGEEX ||
-                m==LB_SETCARETINDEX || m==LB_SETTOPINDEX);
-            if(moving)before=list_view(w);
-            if(suppress && s->list_suppression++==0)DefSubclassProc(w,WM_SETREDRAW,FALSE,0);
-            result=DefSubclassProc(w,m,a,b);
-            if(suppress && --s->list_suppression==0 && !s->detached && !s->list_redraw_off)
-                DefSubclassProc(w,WM_SETREDRAW,TRUE,0);
-            if(!s->detached && moving){after=list_view(w);
-                changed=before.top!=after.top || before.selection!=after.selection || before.caret!=after.caret;}
-            if(!s->detached && !s->list_suppression && !s->list_redraw_off && (m==LB_SETCURSEL || m==LB_SETSEL || m==LB_SELITEMRANGE || m==LB_SELITEMRANGEEX ||
-                m==LB_SETCARETINDEX || m==LB_SETTOPINDEX || m==LB_ADDSTRING || m==LB_INSERTSTRING ||
-                m==LB_DELETESTRING || m==LB_RESETCONTENT || m==LB_SETCOLUMNWIDTH || m==LB_SETHORIZONTALEXTENT || m==WM_SETFONT || m==WM_ENABLE ||
-                m==WM_SETFOCUS || m==WM_KILLFOCUS || m==WM_LBUTTONDOWN || m==WM_LBUTTONUP ||
-                changed || m==WM_KEYDOWN || m==WM_KEYUP || m==WM_VSCROLL || m==WM_HSCROLL || m==WM_MOUSEWHEEL)){
-                RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
-                if(!s->detached)nonclient_scrollbars(w,s,NULL);}
-        }
+        const win16_control_list_services services={embedded_scroll_input,set_list_tabs,present_control,draw_list,list_border,nonclient_scrollbars};
+        result=win16_control_list_message(w,s,m,a,b,&services);
     }
     else if(is_edit(w)){
-        /* EDIT retains its native buffer, selection, caret, undo and IME.
-         * Original flat EDIT borders are painted inside the client area. */
-        if(embedded_scroll_input(w,s,m,a,b))goto finished;
-        if(s->edit_scrollbars && (m==WM_NCMOUSEMOVE || m==WM_NCMOUSELEAVE))goto finished;
-        if(s->edit_scrollbars && m==WM_NCPAINT){
-            nonclient_scrollbars(w,s,NULL);
-            if(!s->detached && (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE)){
-                if(a==1)list_border(w,s,NULL);
-                else if(a){
-                    HRGN region=CreateRectRgn(0,0,0,0);
-                    if(region){
-                        if(CombineRgn(region,(HRGN)a,NULL,RGN_COPY)!=ERROR){
-                            HDC dc=GetDCEx(w,region,DCX_WINDOW|DCX_CACHE|DCX_INTERSECTRGN);
-                            if(dc){list_border(w,s,dc);ReleaseDC(w,dc);region=NULL;}
-                        }
-                        if(region)DeleteObject(region);
-                    }
-                }
-            }
-            goto finished;
-        }
-        if(s->edit_scrollbars && m==WM_SETREDRAW)s->list_redraw_off=!a;
-        {BOOL suppress=s->edit_scrollbars && win16_control_state_can_suppress_redraw(w,s) &&
-            (m==WM_VSCROLL || m==WM_HSCROLL || m==WM_MOUSEWHEEL || m==EM_LINESCROLL || m==WM_SETTEXT ||
-            m==EM_REPLACESEL || m==EM_UNDO || m==WM_UNDO || m==WM_KEYDOWN || m==WM_CHAR ||
-            (m==WM_MOUSEMOVE && GetCapture()==w && (a&MK_LBUTTON)) || m==WM_LBUTTONDOWN || m==WM_LBUTTONUP);
-        if(suppress && s->list_suppression++==0)DefSubclassProc(w,WM_SETREDRAW,FALSE,0);
-        int native_dc=(m==WM_PRINT || m==WM_PRINTCLIENT)?SaveDC((HDC)a):0;
-        result=DefSubclassProc(w,m,a,b);
-        if(native_dc)RestoreDC((HDC)a,native_dc);
-        if(suppress && --s->list_suppression==0 && !s->detached && !s->list_redraw_off)
-            DefSubclassProc(w,WM_SETREDRAW,TRUE,0);
-        if(suppress && !s->detached)RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME|RDW_UPDATENOW);
-        }
-        if(!s->detached && (m==WM_PRINTCLIENT || (m==WM_PRINT && (b&PRF_CLIENT)) || m==WM_PAINT || m==WM_ENABLE))
-            edit_border(w,s,(m==WM_PRINT || m==WM_PRINTCLIENT)?(HDC)a:NULL);
-        if(!s->detached && (m==WM_NCPAINT || (m==WM_PRINT && (b&PRF_NONCLIENT))))
-            {nonclient_scrollbars(w,s,m==WM_PRINT?(HDC)a:NULL);
-             if(ntw16s_vb_edit(w) || ntw16s_native_superclass(w,L"EDIT") ||
-                (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE))list_border(w,s,m==WM_PRINT?(HDC)a:NULL);}
-        else if(!s->detached && (m==WM_VSCROLL || m==WM_HSCROLL || m==WM_MOUSEWHEEL ||
-            m==EM_LINESCROLL || m==WM_SETTEXT || m==WM_KEYDOWN || m==WM_CHAR))
-            nonclient_scrollbars(w,s,NULL);
+        const win16_control_edit_services services={embedded_scroll_input,nonclient_scrollbars,list_border,edit_border};
+        result=win16_control_edit_message(w,s,m,a,b,&services);
     }
-    /* Bitmap statics have no themed chrome or text. Keep the native image
-     * painter and image ownership, rather than inventing a second blitter. */
-    else if(is_static(w) && (GetWindowLongPtrW(w,GWL_STYLE)&SS_TYPEMASK)==SS_BITMAP){
-        if(m==WM_PRINTCLIENT){
-            HDC dc=(HDC)a;int saved=SaveDC(dc);RECT r;
-            /* The centered native painter excludes its image rectangle while
-             * filling the border. Do not leak that clip into the caller DC. */
-            if(saved){GetClientRect(w,&r);IntersectClipRect(dc,r.left,r.top,r.right,r.bottom);
-                result=DefSubclassProc(w,m,a,b);RestoreDC(dc,saved);}
-        }else result=DefSubclassProc(w,m,a,b);
-    }
-    /* Native etched STATIC adds WS_EX_STATICEDGE and can leave zero client
-     * height. Own its complete line rectangle without changing the stored
-     * style or its outer geometry; detach reinstates native NC calculation. */
-    else if(is_separator(w) && (m==WM_NCCALCSIZE || m==WM_NCPAINT))result=0;
-    else if(ntw16s_vb_frame(w)){
-        /* Unlike native GROUPBOX, a VB Frame owns children and paints its
-         * windowless labels. Always run the original painter first. */
-        result=DefSubclassProc(w,m,a,b);
-        if(!s->detached && (m==WM_PAINT || m==WM_PRINTCLIENT ||
-                (m==WM_PRINT && (b&PRF_CLIENT)))){
-            HDC dc=(m==WM_PAINT)?GetDC(w):(HDC)a;
-            if(dc){draw(w,s,dc);if(m==WM_PAINT)ReleaseDC(w,dc);}
-        }
-    }
-    else if(m==WM_SETREDRAW){s->list_redraw_off=!a;result=DefSubclassProc(w,m,a,b);}
-    else if(m==WM_PAINT){PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);present_control(w,s,dc,draw);EndPaint(w,&ps);}
-    else if(m==WM_PRINT && is_separator(w)){
-        /* STATIC prints etched shapes internally rather than forwarding
-         * WM_PRINTCLIENT. Keep printed and on-screen separators identical. */
-        if((b&PRF_CLIENT) && (!(b&PRF_CHECKVISIBLE) || IsWindowVisible(w)))draw(w,s,(HDC)a);
-    }
-    else if(m==WM_PRINTCLIENT)draw(w,s,(HDC)a);
-    else if(m==WM_ERASEBKGND)result=1;
-    else {
-        BOOL moving=m==WM_MOUSEMOVE && !is_static(w),changed=FALSE;
-        LRESULT previous=moving?SendMessageW(w,BM_GETSTATE,0,0):0;
-        /* Only bracket native drawing leaves, not BM_CLICK or mouse/key
-         * dispatch: automatic radio-group traversal must see the original
-         * visibility throughout the outer input operation. */
-        BOOL suppress=!is_static(w) && win16_control_state_can_suppress_redraw(w,s) &&
-            (m==BM_SETCHECK || m==BM_SETSTATE || m==BM_SETSTYLE || m==WM_ENABLE ||
-             m==WM_SETFOCUS || m==WM_KILLFOCUS || m==WM_SETTEXT || m==WM_SETFONT ||
-             m==WM_MOUSEMOVE);
-        if(suppress && s->list_suppression++==0)DefSubclassProc(w,WM_SETREDRAW,FALSE,0);
-        result=DefSubclassProc(w,m,a,b);
-        if(suppress && --s->list_suppression==0 && !s->detached && !s->list_redraw_off)
-            DefSubclassProc(w,WM_SETREDRAW,TRUE,0);
-        if(!s->detached && moving)changed=previous!=SendMessageW(w,BM_GETSTATE,0,0);
-        if(!s->detached && s->calls==1 && !s->list_suppression && !s->list_redraw_off && (m==BM_SETCHECK || m==BM_SETSTATE || m==BM_SETSTYLE || m==BM_CLICK || m==WM_ENABLE ||
-            m==WM_SETFOCUS || m==WM_KILLFOCUS || m==WM_SETTEXT || m==WM_SETFONT ||
-            m==BM_SETIMAGE || m==BCM_SETIMAGELIST || (is_static(w) && (m==STM_SETICON || m==STM_SETIMAGE)) ||
-            m==WM_LBUTTONDOWN || m==WM_LBUTTONUP || changed || m==WM_KEYDOWN || m==WM_KEYUP))
-            RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
-    }
+    else result=win16_control_basic_message(w,s,m,a,b,present_control,draw);
 finished:
     if(spin_button && !s->detached && IsWindow(w) && win16_control_spinedit_button(w)==spin_button){
         DWORD error=GetLastError();RECT button,after;
