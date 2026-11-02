@@ -7,3 +7,6 @@ Its ICO directory was reconstructed to package the two original images. This
 is a Microsoft Windows graphical resource, not project-authored artwork; the
 project's MIT license does not make a separate claim about the image. The
 original DLL is not required for building or running the project.
+
+The tray loads the group's 32x32 flag image, matching the original tray
+prototype. The different 16x16 image in the same group includes a gray base.

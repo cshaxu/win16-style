@@ -46,8 +46,10 @@ int run16s_tray_global(HANDLE parent)
        swprintf(state.request_name,ARRAYSIZE(state.request_name),L"%ls.request",state.session_name)<0){
         fwprintf(stderr,L"run16s: cannot prepare the tray session\n");return 10;
     }
+    /* Group 40's 16x16 artwork has a gray base; its 32x32 artwork is the
+     * standalone Windows flag used by the original tray prototype. */
     HICON icon=(HICON)LoadImageW(GetModuleHandleW(NULL),MAKEINTRESOURCEW(101),IMAGE_ICON,
-        GetSystemMetrics(SM_CXSMICON),GetSystemMetrics(SM_CYSMICON),LR_DEFAULTCOLOR);
+        32,32,LR_DEFAULTCOLOR);
     if(!icon){fwprintf(stderr,L"run16s: cannot load tray icon\n");return 10;}
     DWORD error=run16s_tray_create(icon,action,&state,&state.tray);
     if(error){fwprintf(stderr,L"run16s: cannot create tray icon (%lu)\n",error);DestroyIcon(icon);return 10;}

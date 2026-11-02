@@ -61,7 +61,7 @@ int wmain(int argc,WCHAR **argv)
         tray=NULL;
         if(WaitForSingleObject(manager.hProcess,0)==WAIT_OBJECT_0)break;
         Sleep(30);}
-    if(!tray || !wait_value(tray,TEST_COMMAND,3,0) || query(tray,TEST_COMMAND,4)!=1 || !wait_value(targets[0].window,QUERY_STYLE,0,0) ||
+    if(!tray || !wait_value(tray,TEST_COMMAND,3,0) || query(tray,TEST_COMMAND,4)!=1 || query(tray,TEST_COMMAND,5)!=1 || !wait_value(targets[0].window,QUERY_STYLE,0,0) ||
        !wait_value(targets[1].window,QUERY_STYLE,0,0)){printf("TRAY TEST default off failed\n");goto done;}
     if(query(tray,TEST_COMMAND,1)<0 || !wait_value(tray,TEST_COMMAND,3,1) || query(tray,TEST_COMMAND,4)!=1 || !wait_value(targets[0].window,QUERY_STYLE,0,1) ||
        !wait_value(targets[1].window,QUERY_STYLE,0,1)){printf("TRAY TEST initial failed\n");goto done;}

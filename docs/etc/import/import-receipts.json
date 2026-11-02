@@ -14,7 +14,7 @@
       "path": "tests/integration/tray_global.c",
       "source": null,
       "source_blob": null,
-      "sha256": "92fd70337a61c8bec00621ca10cc6533f3a3bea9f21dbc8c381f874b1ad038e5",
+      "sha256": "52a511da275e00b227f512a0a74bb3447e8f0edd782976e20d4a4e189abff294",
       "disposition": "authored",
       "review": "T21 S19 private-desktop tray switch integration test",
       "notice": "Project-authored native test; uses only isolated test instances"
@@ -23,7 +23,7 @@
       "path": "src/run16s-exe/winlogo-source.md",
       "source": null,
       "source_blob": null,
-      "sha256": "d08e9916496cc02af5b04d24f145679b4131625b89a97170115607a4df3a46e8",
+      "sha256": "d00d4e812b5c6ef6f135c7016da358c26d7dbf2e769f17b465efde3d02599323",
       "disposition": "authored",
       "review": "T21 S19 Windows shell icon provenance",
       "notice": "Project-authored provenance; makes no artwork license claim"
@@ -41,7 +41,7 @@
       "path": "src/run16s-exe/tray_controller.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7b25ca29c4f6708fe5a09746f97d70ba91ce0c9c293a24a35bc10ebab2b46644",
+      "sha256": "df741f867de8e308d29de48df1e2e8cd7ed1b9dbac765fd94b0cc12fb91bf2ad",
       "disposition": "authored",
       "review": "T21 S19 tray control using existing global session",
       "notice": "Project-authored C orchestration; no imported hook implementation"
@@ -59,7 +59,7 @@
       "path": "src/run16s-exe/tray.c",
       "source": null,
       "source_blob": null,
-      "sha256": "07273fdfe5bc662ed7f49359be0584495e1c20192851cb537d30adcf70cb0511",
+      "sha256": "ee2063fbaf22593351ed3059d4125c3368a4987cbc02eaba3ddc61a13adfb4f5",
       "disposition": "authored",
       "review": "T21 S19 native notification icon and menu",
       "notice": "Project-authored C UI; no hook implementation"

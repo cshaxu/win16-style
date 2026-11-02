@@ -54,6 +54,12 @@ static LRESULT CALLBACK window_proc(HWND window,UINT message,WPARAM a,LPARAM b)
                 GetMenuStringW(menu,1,second,ARRAYSIZE(second),MF_BYPOSITION) && !lstrcmpW(first,L"Enable Win16 Style") &&
                 !lstrcmpW(second,L"Exit") && !!(GetMenuState(menu,MENU_ENABLE,MF_BYCOMMAND)&MF_CHECKED)==!!tray->enabled;
             DestroyMenu(menu);return valid;}
+        else if(a==5){ICONINFO info={0};BITMAP bitmap={0};if(!GetIconInfo(tray->icon,&info))return 0;
+            BOOL valid=info.hbmColor && GetObjectW(info.hbmColor,sizeof(bitmap),&bitmap)==sizeof(bitmap) &&
+                bitmap.bmWidth==32 && bitmap.bmHeight==32;
+            if(info.hbmColor)DeleteObject(info.hbmColor);
+            if(info.hbmMask)DeleteObject(info.hbmMask);
+            return valid;}
         return 0;}
 #endif
     if(message==WM_CLOSE)return 0;
