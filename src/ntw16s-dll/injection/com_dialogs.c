@@ -48,22 +48,13 @@ static void classic_event_cleanup(void *data)
 {
     classic_event_call *call=data;win16_dialog_event_snapshot_free(&call->snapshot);proxy_release(call->proxy);
 }
-enum classic_event_kind { CLASSIC_OK,CLASSIC_FOLDER_CHANGING,CLASSIC_FOLDER_CHANGED,CLASSIC_SELECTION_CHANGED,CLASSIC_TYPE_CHANGED };
 static NTW16S_UNWIND_FUNCTION HRESULT classic_event_dispatch(file_proxy *p,enum classic_event_kind kind,IShellItem *item)
 {
     classic_event_call call={.proxy=p};
     if(!win16_dialog_event_snapshot_init(p->events,&call.snapshot))return E_OUTOFMEMORY;
     proxy_add(p);ntw16s_unwind_scope unwind;HRESULT result=S_OK;
     NTW16S_UNWIND_BEGIN(unwind,classic_event_cleanup,&call);
-    for(size_t i=0;i<call.snapshot.count;++i){event_adapter *e=call.snapshot.items[i];if(e->owner!=p)continue;
-        HRESULT hr=kind==CLASSIC_OK?IFileDialogEvents_OnFileOk(e->target,(IFileDialog *)p):
-            kind==CLASSIC_FOLDER_CHANGING?IFileDialogEvents_OnFolderChanging(e->target,(IFileDialog *)p,item):
-            kind==CLASSIC_FOLDER_CHANGED?IFileDialogEvents_OnFolderChange(e->target,(IFileDialog *)p):
-            kind==CLASSIC_SELECTION_CHANGED?IFileDialogEvents_OnSelectionChange(e->target,(IFileDialog *)p):
-            IFileDialogEvents_OnTypeChange(e->target,(IFileDialog *)p);
-        if(kind==CLASSIC_OK && hr!=S_OK && hr!=E_NOTIMPL){result=FAILED(hr)?hr:S_FALSE;break;}
-        if(kind==CLASSIC_FOLDER_CHANGING && hr!=S_OK && hr!=E_NOTIMPL){result=hr;break;}
-    }
+    result=win16_dialog_event_dispatch(&call.snapshot,p,kind,item);
     NTW16S_UNWIND_END(unwind);return result;
 }
 static NTW16S_UNWIND_FUNCTION FDE_OVERWRITE_RESPONSE classic_overwrite_dispatch(file_proxy *p,IShellItem *item)
@@ -72,12 +63,7 @@ static NTW16S_UNWIND_FUNCTION FDE_OVERWRITE_RESPONSE classic_overwrite_dispatch(
     if(!win16_dialog_event_snapshot_init(p->events,&call.snapshot))return result;
     proxy_add(p);ntw16s_unwind_scope unwind;
     NTW16S_UNWIND_BEGIN(unwind,classic_event_cleanup,&call);
-    for(size_t i=0;i<call.snapshot.count;++i){event_adapter *e=call.snapshot.items[i];
-        if(e->owner!=p)continue;
-        FDE_OVERWRITE_RESPONSE response=FDEOR_DEFAULT;
-        HRESULT hr=IFileDialogEvents_OnOverwrite(e->target,(IFileDialog *)p,item,&response);
-        if(SUCCEEDED(hr)){result=response;break;}
-    }
+    result=win16_dialog_event_overwrite(&call.snapshot,p,item);
     NTW16S_UNWIND_END(unwind);return result;
 }
 static NTW16S_UNWIND_FUNCTION FDE_SHAREVIOLATION_RESPONSE classic_share_dispatch(file_proxy *p,IShellItem *item)
@@ -86,12 +72,7 @@ static NTW16S_UNWIND_FUNCTION FDE_SHAREVIOLATION_RESPONSE classic_share_dispatch
     if(!win16_dialog_event_snapshot_init(p->events,&call.snapshot))return result;
     proxy_add(p);ntw16s_unwind_scope unwind;
     NTW16S_UNWIND_BEGIN(unwind,classic_event_cleanup,&call);
-    for(size_t i=0;i<call.snapshot.count;++i){event_adapter *e=call.snapshot.items[i];
-        if(e->owner!=p)continue;
-        FDE_SHAREVIOLATION_RESPONSE response=FDESVR_DEFAULT;
-        HRESULT hr=IFileDialogEvents_OnShareViolation(e->target,(IFileDialog *)p,item,&response);
-        if(SUCCEEDED(hr)){result=response;break;}
-    }
+    result=win16_dialog_event_share(&call.snapshot,p,item);
     NTW16S_UNWIND_END(unwind);return result;
 }
 typedef struct classic_owned_event {IShellItem *item;WCHAR *path;} classic_owned_event;

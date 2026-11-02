@@ -8,6 +8,7 @@
 #include "../lib/win16-control/combo_paint.h"
 #include "../lib/win16-control/choice_paint.h"
 #include "../lib/win16-control/special_paint.h"
+#include "../lib/win16-control/spin_identity.h"
 #include "injection/unwind.h"
 #include "status_theme.h"
 #include "month_text.h"
@@ -149,41 +150,6 @@ static void spin_buffers_clear(spin_draw_scope *s)
 { if(s->buffers){HeapFree(GetProcessHeap(),0,s->buffers);s->buffers=NULL;} }
 static _Thread_local spin_draw_scope *spin_current;
 
-static BOOL spin_identity(HWND w)
-{
-    HWND parent=GetParent(w);DWORD pid=0;WCHAR name[64],real[64],parent_name[64],parent_real[64];
-    WNDCLASSEXW wide={.cbSize=sizeof(wide)};WNDCLASSEXA ansi={.cbSize=sizeof(ansi)};
-    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
-    if(!GetClassInfoExW(GetModuleHandleW(NULL),L"TSpinButton",&wide) ||
-       !GetClassInfoExA(GetModuleHandleW(NULL),"TSpinButton",&ansi))return FALSE;
-    return parent && GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
-        GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() && (style&WS_CHILD) &&
-        !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) && GetClassLongPtrW(w,GCL_CBWNDEXTRA)==0 &&
-        (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==GetModuleHandleW(NULL) &&
-        (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==GetModuleHandleW(NULL) &&
-        GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TSpinButton") &&
-        wide.lpfnWndProc && ansi.lpfnWndProc &&
-        wide.lpfnWndProc!=DefWindowProcW && wide.lpfnWndProc!=DefWindowProcA &&
-        ansi.lpfnWndProc!=DefWindowProcW && ansi.lpfnWndProc!=DefWindowProcA &&
-        RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TSpinButton") &&
-        GetClassNameW(parent,parent_name,ARRAYSIZE(parent_name)) && !lstrcmpW(parent_name,L"TSpinEdit") &&
-        RealGetWindowClassW(parent,parent_real,ARRAYSIZE(parent_real)) && !lstrcmpiW(parent_real,L"EDIT");
-}
-
-/* Newer VCL paints a buffered themed TSpinButton under a witnessed EDIT.
- * Only a buffer derived in this exact paint and copied to this exact window
- * can be composed; unrelated or uncertain images keep their native pixels. */
-static BOOL modern_spin_shape(HWND w)
-{
-    HWND p=GetParent(w);WCHAR c[64],r[64],pc[64],pr[64];DWORD pid=0;
-    HMODULE owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
-    return p && owner && owner==(HMODULE)GetClassLongPtrW(p,GCLP_HMODULE) &&
-        GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
-        GetWindowThreadProcessId(p,NULL)==GetCurrentThreadId() && (GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD) &&
-        GetClassLongPtrW(w,GCL_CBWNDEXTRA)==0 && !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
-        GetClassNameW(w,c,64) && !lstrcmpW(c,L"TSpinButton") && RealGetWindowClassW(w,r,64) && !lstrcmpW(r,c) &&
-        GetClassNameW(p,pc,64) && !lstrcmpW(pc,L"TSpinEdit") && RealGetWindowClassW(p,pr,64) && !lstrcmpW(pr,pc);
-}
 void ntw16s_modern_spin_dc_created(HDC source,HDC result)
 {
     spin_draw_scope *s=spin_current;
@@ -230,31 +196,11 @@ void ntw16s_modern_spin_object_deleted(HGDIOBJ object)
     for(spin_draw_scope *s=spin_stack;s;s=s->previous_stack)
         if(s->snapshot_bitmap==object)spin_snapshot_invalidate(s);
 }
-static BOOL spin_full_clip(HDC dc,const POINT pt[2])
-{
-    int saved=SaveDC(dc);if(!saved)return FALSE;
-    SetViewportOrgEx(dc,0,0,NULL);SetWindowOrgEx(dc,0,0,NULL);
-    RECT bounds;int kind=GetClipBox(dc,&bounds);BOOL covered=FALSE;
-    if(kind!=ERROR && kind!=NULLREGION && bounds.left<=pt[0].x && bounds.top<=pt[0].y &&
-       bounds.right>=pt[1].x && bounds.bottom>=pt[1].y){
-        HRGN clip=CreateRectRgn(0,0,0,0);
-        if(clip){
-            int have=GetClipRgn(dc,clip);
-            if(have==0)covered=TRUE;
-            else if(have==1){
-                HRGN missing=CreateRectRgn(pt[0].x,pt[0].y,pt[1].x,pt[1].y);
-                if(missing){covered=CombineRgn(missing,missing,clip,RGN_DIFF)==NULLREGION;DeleteObject(missing);}
-            }
-            DeleteObject(clip);
-        }
-    }
-    RestoreDC(dc,saved);return covered;
-}
 void ntw16s_modern_spin_theme(HDC dc,int part,int state,const RECT *rect,const RECT *clip,const void *caller)
 {
     spin_draw_scope *s=spin_current;HMODULE module=NULL;BOOL owned=FALSE;RECT client;POINT pt[2];
     if(!s || !s->owner->modern_spin || s->owner->detached || !rect || clip || part!=1 || state<1 || state>4 ||
-       !modern_spin_shape(s->window) || GetParent(s->window)!=s->parent || !ntw16s_control_protocol_is(s->parent,L"EDIT") ||
+       !win16_control_modern_spin_shape(s->window) || GetParent(s->window)!=s->parent || !ntw16s_control_protocol_is(s->parent,L"EDIT") ||
        GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)caller,&module) ||
        module!=(HMODULE)GetClassLongPtrW(s->window,GCLP_HMODULE) || !GetClientRect(s->window,&client))return;
@@ -265,7 +211,7 @@ void ntw16s_modern_spin_theme(HDC dc,int part,int state,const RECT *rect,const R
     pt[0]=(POINT){rect->left,rect->top};pt[1]=(POINT){rect->right,rect->bottom};
     if(!LPtoDP(dc,pt,2) || pt[0].x!=0 || pt[1].x!=client.right || pt[0].y<0 || pt[1].y>client.bottom ||
        pt[1].y<=pt[0].y || !((pt[0].y==0 && pt[1].y<client.bottom) || (pt[0].y>0 && pt[1].y==client.bottom)))return;
-    if(!spin_full_clip(dc,pt))return;
+    if(!win16_control_spin_full_clip(dc,pt))return;
     if(!s->buffers){s->buffers=HeapAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY,sizeof(*s->buffers));if(!s->buffers)return;}
     if(s->snapshot_dc!=dc || s->snapshot_bitmap!=GetCurrentObject(dc,OBJ_BITMAP)){
         s->snapshot_dc=dc;s->snapshot_bitmap=GetCurrentObject(dc,OBJ_BITMAP);
@@ -279,7 +225,7 @@ void ntw16s_modern_spin_theme(HDC dc,int part,int state,const RECT *rect,const R
 void ntw16s_modern_spin_blit(HDC dest,int x,int y,int width,int height,HDC source,int sx,int sy,DWORD rop)
 {
     spin_draw_scope *s=spin_current;RECT r;
-    if(!s || !s->buffers || !s->owner->modern_spin || s->owner->detached || !modern_spin_shape(s->window) ||
+    if(!s || !s->buffers || !s->owner->modern_spin || s->owner->detached || !win16_control_modern_spin_shape(s->window) ||
        GetParent(s->window)!=s->parent || !ntw16s_control_protocol_is(s->parent,L"EDIT") || !GetClientRect(s->window,&r) ||
        (WindowFromDC(dest)!=s->window && (!s->dc || dest!=s->dc)) || source!=s->snapshot_dc ||
        GetCurrentObject(source,OBJ_BITMAP)!=s->snapshot_bitmap || x<0 || y<0 || sx!=x || sy!=y ||
@@ -299,7 +245,7 @@ void ntw16s_spin_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *
     const UINT allowed=DFCS_BUTTONPUSH|DFCS_PUSHED|DFCS_ADJUSTRECT;
     if(!s || !s->owner || s->owner->detached || !dc || !rect || type!=DFC_BUTTON ||
        (flags&~allowed) || (flags&(DFCS_BUTTONPUSH|DFCS_ADJUSTRECT))!=(DFCS_BUTTONPUSH|DFCS_ADJUSTRECT) ||
-       !spin_identity(s->window) || GetParent(s->window)!=s->parent || WindowFromDC(dc)!=s->window ||
+       !win16_control_spin_identity(s->window) || GetParent(s->window)!=s->parent || WindowFromDC(dc)!=s->window ||
        (s->dc && s->dc!=dc) || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
             (LPCWSTR)caller,&module) || module!=GetModuleHandleW(NULL) || !GetClientRect(s->window,&client) ||
@@ -1669,7 +1615,7 @@ BOOL __cdecl Ntw16sWindowTerminal(HWND w)
 static BOOL install_created(HWND w,DWORD original_style)
 {
     BOOL ready=InterlockedCompareExchange(&status_hooks_ready,0,0)!=0;
-    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=checklist_identity(w),status=ready && status_identity(w,NULL,NULL),spin=ready && (spin_identity(w)||modern_spin_shape(w)),status_candidate=FALSE,bit_candidate=FALSE,inplace_candidate=FALSE,nav_candidate=FALSE,group_frame_candidate=FALSE,panel_frame_candidate=FALSE,static_candidate=FALSE,scroll_candidate=FALSE,edit_candidate=FALSE,group_button_candidate=FALSE,grid_candidate=FALSE,vcl_toolbar_candidate=FALSE,track_candidate=FALSE,tab_candidate=FALSE,vcl_report_candidate=FALSE,color_candidate=FALSE,date_candidate=FALSE;HWND parent;HMODULE owner;attachment *a;DWORD error;
+    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=checklist_identity(w),status=ready && status_identity(w,NULL,NULL),spin=ready && (win16_control_spin_identity(w)||win16_control_modern_spin_shape(w)),status_candidate=FALSE,bit_candidate=FALSE,inplace_candidate=FALSE,nav_candidate=FALSE,group_frame_candidate=FALSE,panel_frame_candidate=FALSE,static_candidate=FALSE,scroll_candidate=FALSE,edit_candidate=FALSE,group_button_candidate=FALSE,grid_candidate=FALSE,vcl_toolbar_candidate=FALSE,track_candidate=FALSE,tab_candidate=FALSE,vcl_report_candidate=FALSE,color_candidate=FALSE,date_candidate=FALSE;HWND parent;HMODULE owner;attachment *a;DWORD error;
     ntw16s_control_protocol *protocol=NULL;
     if(lookup(w))return TRUE;
     /* COMBOBOX installs its own internal list when construction finishes.
@@ -1768,7 +1714,7 @@ static BOOL install_created(HWND w,DWORD original_style)
     }
     a=calloc(1,sizeof(*a));
     if(!a){ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    a->calls=1;a->cool_candidate=cool_candidate;a->cool_parent=GetParent(w);a->cool_owner=owner;if(cool_candidate)a->report_window=w;a->mdi_candidate=vcl_mdi_probe;a->mdi_parent=GetParent(w);a->mdi_host=GetParent(a->mdi_parent);a->mdi_owner=owner;a->mdi_host_attachment=vcl_mdi_probe?lookup(a->mdi_host):NULL;if(a->mdi_host_attachment)++a->mdi_host_attachment->calls;a->nav_candidate=nav_candidate;a->nav_parent=GetParent(w);a->nav_owner=owner;a->lookup_popup_candidate=lookup_popup_candidate;a->lookup_popup_source=popup_source;a->lookup_popup_source_parent=popup_source_parent;a->lookup_popup_owner=owner;a->lookup_popup_source_attachment=lookup_popup_candidate?popup_source_attachment:NULL;if(a->lookup_popup_source_attachment)++a->lookup_popup_source_attachment->calls;a->controlbar_candidate=controlbar_candidate;a->controlbar_parent=GetParent(w);a->controlbar_owner=owner;a->rich_popup=rich_popup;a->rich_month=rich_month;a->rich_hotkey=rich_hotkey;a->box_candidate=box_candidate;a->box_owner=owner;a->box_parent=GetParent(w);a->rich_unicode=rich_unicode;a->rich_candidate=rich_candidate;a->rich_parent=rich_popup?GetDesktopWindow():GetParent(w);a->rich_owner=owner;a->group_frame_candidate=group_frame_candidate;a->panel_frame_candidate=panel_frame_candidate;a->vb_user_candidate=vb_user_edge;a->vb_data_candidate=vb_data_edge;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;a->status=status;a->spin=spin;a->modern_spin=spin&&modern_spin_shape(w);a->static_candidate=static_candidate;
+    a->calls=1;a->cool_candidate=cool_candidate;a->cool_parent=GetParent(w);a->cool_owner=owner;if(cool_candidate)a->report_window=w;a->mdi_candidate=vcl_mdi_probe;a->mdi_parent=GetParent(w);a->mdi_host=GetParent(a->mdi_parent);a->mdi_owner=owner;a->mdi_host_attachment=vcl_mdi_probe?lookup(a->mdi_host):NULL;if(a->mdi_host_attachment)++a->mdi_host_attachment->calls;a->nav_candidate=nav_candidate;a->nav_parent=GetParent(w);a->nav_owner=owner;a->lookup_popup_candidate=lookup_popup_candidate;a->lookup_popup_source=popup_source;a->lookup_popup_source_parent=popup_source_parent;a->lookup_popup_owner=owner;a->lookup_popup_source_attachment=lookup_popup_candidate?popup_source_attachment:NULL;if(a->lookup_popup_source_attachment)++a->lookup_popup_source_attachment->calls;a->controlbar_candidate=controlbar_candidate;a->controlbar_parent=GetParent(w);a->controlbar_owner=owner;a->rich_popup=rich_popup;a->rich_month=rich_month;a->rich_hotkey=rich_hotkey;a->box_candidate=box_candidate;a->box_owner=owner;a->box_parent=GetParent(w);a->rich_unicode=rich_unicode;a->rich_candidate=rich_candidate;a->rich_parent=rich_popup?GetDesktopWindow():GetParent(w);a->rich_owner=owner;a->group_frame_candidate=group_frame_candidate;a->panel_frame_candidate=panel_frame_candidate;a->vb_user_candidate=vb_user_edge;a->vb_data_candidate=vb_data_edge;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;a->status=status;a->spin=spin;a->modern_spin=spin&&win16_control_modern_spin_shape(w);a->static_candidate=static_candidate;
     a->scroll_candidate=scroll_candidate;a->scroll_parent=GetParent(w);a->edit_candidate=edit_candidate;a->link_candidate=edit_candidate && class_is(w,L"TLinkLabel");a->combo_candidate=edit_candidate && (class_is(w,L"TComboBox") || class_is(w,L"TDBComboBox"));a->combo_parent=GetParent(w);a->combo_original_type=original_style&3;a->spinedit_candidate=edit_candidate && class_is(w,L"TSpinEdit");a->group_button_candidate=group_button_candidate;a->grid_candidate=grid_candidate;a->inplace_candidate=inplace_candidate;a->inplace_owner=owner;a->inplace_parent=GetParent(w);a->vcl_toolbar_candidate=vcl_toolbar_candidate;a->vcl_toolbar_owner=owner;a->vcl_toolbar_parent=GetParent(w);a->grid_owner=owner;a->grid_parent=GetParent(w);a->edit_original_style=original_style;a->track_candidate=track_candidate;a->tab_candidate=tab_candidate;a->tab_parent=GetParent(w);a->vcl_report_candidate=vcl_report_candidate;a->vcl_report_parent=GetParent(w);a->vcl_report_owner=owner;a->vcl_report_tree=vcl_report_candidate && class_is(w,L"TTreeView");a->color_candidate=color_candidate;a->date_candidate=date_candidate;a->status_candidate=status_candidate;a->bit_candidate=bit_candidate;
     if(report || tree || a->file_owner || a->button_owner || a->checklist || a->bit_candidate){a->report_window=w;a->tree=tree;
         a->report_module=(a->file_owner || a->button_owner || a->bit_candidate)?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}

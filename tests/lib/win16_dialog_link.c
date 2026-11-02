@@ -26,6 +26,31 @@ static HRESULT fake_v2_query(void *owner,REFIID iid,void **out)
 {(void)iid;*out=owner;return S_OK;}
 static ULONG fake_v2_ref(void *owner){return owner?7:0;}
 static BOOL no_session(void){return FALSE;}
+static HRESULT fake_event_result;static unsigned fake_event_calls;static IFileDialog *fake_event_owner;
+static HRESULT STDMETHODCALLTYPE fake_event_ok(IFileDialogEvents *self,IFileDialog *dialog)
+{(void)self;if(dialog!=fake_event_owner)return E_FAIL;++fake_event_calls;return fake_event_result;}
+static HRESULT STDMETHODCALLTYPE fake_event_changing(IFileDialogEvents *self,IFileDialog *dialog,IShellItem *item)
+{(void)item;return fake_event_ok(self,dialog);}
+static HRESULT STDMETHODCALLTYPE fake_event_overwrite(IFileDialogEvents *self,IFileDialog *dialog,IShellItem *item,FDE_OVERWRITE_RESPONSE *response)
+{(void)item;*response=FDEOR_ACCEPT;return fake_event_ok(self,dialog);}
+static HRESULT STDMETHODCALLTYPE fake_event_share(IFileDialogEvents *self,IFileDialog *dialog,IShellItem *item,FDE_SHAREVIOLATION_RESPONSE *response)
+{(void)item;*response=FDESVR_REFUSE;return fake_event_ok(self,dialog);}
+static BOOL test_event_dispatch(void)
+{
+    IFileDialogEventsVtbl vtable={0};vtable.OnFileOk=fake_event_ok;vtable.OnFolderChanging=fake_event_changing;
+    vtable.OnOverwrite=fake_event_overwrite;vtable.OnShareViolation=fake_event_share;
+    IFileDialogEvents target={.lpVtbl=&vtable};event_adapter first={.owner=(void *)1,.target=&target},other={.owner=(void *)2,.target=&target};
+    event_adapter *entries[]={&other,&first};win16_dialog_event_snapshot snapshot={entries,2};
+    fake_event_owner=(IFileDialog *)(UINT_PTR)1;fake_event_calls=0;fake_event_result=S_FALSE;
+    if(win16_dialog_event_dispatch(&snapshot,(void *)1,CLASSIC_OK,NULL)!=S_FALSE || fake_event_calls!=1)return FALSE;
+    fake_event_result=E_NOTIMPL;
+    if(win16_dialog_event_dispatch(&snapshot,(void *)1,CLASSIC_FOLDER_CHANGING,NULL)!=S_OK || fake_event_calls!=2)return FALSE;
+    fake_event_result=E_FAIL;
+    if(win16_dialog_event_dispatch(&snapshot,(void *)1,CLASSIC_FOLDER_CHANGING,NULL)!=E_FAIL || fake_event_calls!=3)return FALSE;
+    fake_event_result=S_OK;
+    return win16_dialog_event_overwrite(&snapshot,(void *)1,NULL)==FDEOR_ACCEPT &&
+        win16_dialog_event_share(&snapshot,(void *)1,NULL)==FDESVR_REFUSE && fake_event_calls==5;
+}
 static BOOL test_event_snapshot(void)
 {
     event_adapter first={0},second={0};win16_dialog_event_snapshot snapshot={0};
@@ -209,6 +234,7 @@ int main(void)
     WCHAR temp[MAX_PATH],unused[MAX_PATH];IShellItem *item=NULL;PWSTR selected=NULL;
     if(FAILED(CoInitializeEx(NULL,COINIT_APARTMENTTHREADED)))return 19;
     if(!test_event_snapshot()){CoUninitialize();return 40;}
+    if(!test_event_dispatch()){CoUninitialize();return 41;}
     if(!test_classic_list_target()){CoUninitialize();return 38;}
     if(!test_classic_entry_targets()){CoUninitialize();return 39;}
     if(!test_capture_selection()){CoUninitialize();return 37;}
