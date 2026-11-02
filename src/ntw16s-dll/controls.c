@@ -25,6 +25,7 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include "../lib/win16-control/present.h"
 #include "../lib/win16-control/choice_paint.h"
 #include "../lib/win16-control/choice_view.h"
+#include "../lib/win16-control/custom_draw.h"
 
 #include "../lib/win16-control/scroll_assets.h"
 #include "scroll_track.h"
@@ -221,14 +222,8 @@ static LRESULT CALLBACK trackbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UIN
     if(m==WM_NCDESTROY){RemoveWindowSubclass(parent,trackbar_notify,id);s->track_parent=NULL;s->track_internal=FALSE;}
     SetLastError(entry);
     result=internal?CDRF_DODEFAULT:DefSubclassProc(parent,m,p,l);DWORD error=GetLastError();
-    if(draw && !s->detached){
-        if(draw->dwDrawStage==CDDS_PREPAINT){
-            s->track_internal=result==CDRF_DODEFAULT && win16_style_trackbar_supported(s->track_window);
-            if(s->track_internal)result=CDRF_NOTIFYITEMDRAW|CDRF_NOTIFYPOSTPAINT;
-        }else if(internal && draw->dwDrawStage==CDDS_ITEMPREPAINT &&
-            win16_style_trackbar_part(s->track_window,draw,&s->palette))result=CDRF_SKIPDEFAULT;
-        else if(internal && draw->dwDrawStage==CDDS_POSTPAINT)s->track_internal=FALSE;
-    }
+    if(draw && !s->detached)result=win16_control_custom_draw_after(s->track_window,draw,&s->track_internal,internal,result,
+        &s->palette,win16_style_trackbar_supported,win16_style_trackbar_part);
     if(!--s->calls && s->detached)dispose_control(s);
     SetLastError(error);return result;
 }
@@ -245,14 +240,8 @@ static LRESULT CALLBACK toolbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT
     if(draw && draw->dwDrawStage!=CDDS_PREPAINT && s->toolbar_internal)internal=TRUE;
     if(m==WM_NCDESTROY){RemoveWindowSubclass(parent,toolbar_notify,id);s->toolbar_parent=NULL;s->toolbar_internal=FALSE;}
     SetLastError(entry);result=internal?CDRF_DODEFAULT:DefSubclassProc(parent,m,p,l);DWORD error=GetLastError();
-    if(draw && !s->detached){
-        if(draw->dwDrawStage==CDDS_PREPAINT){
-            s->toolbar_internal=result==CDRF_DODEFAULT && win16_style_toolbar_supported(s->toolbar_window);
-            if(s->toolbar_internal)result=CDRF_NOTIFYITEMDRAW|CDRF_NOTIFYPOSTPAINT;
-        }else if(internal && draw->dwDrawStage==CDDS_ITEMPREPAINT &&
-            win16_style_toolbar_part(s->toolbar_window,draw,&s->palette))result=CDRF_SKIPDEFAULT;
-        else if(internal && draw->dwDrawStage==CDDS_POSTPAINT)s->toolbar_internal=FALSE;
-    }
+    if(draw && !s->detached)result=win16_control_custom_draw_after(s->toolbar_window,draw,&s->toolbar_internal,internal,result,
+        &s->palette,win16_style_toolbar_supported,win16_style_toolbar_part);
     if(!--s->calls && s->detached)dispose_control(s);
     SetLastError(error);return result;
 }

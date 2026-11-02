@@ -83,3 +83,33 @@ BOOL ntw16s_old_dialog_folder(HWND window,PWSTR path,size_t capacity)
     return attrs!=INVALID_FILE_ATTRIBUTES && (attrs&FILE_ATTRIBUTE_DIRECTORY)!=0;
 }
 
+
+/* Return an owned item for a valid old-dialog folder-list selection. */
+IShellItem *win16_dialog_classic_list_target(HWND w,IShellItem *folder)
+{
+    HWND list=GetDlgItem(w,lst2);if(!list || !folder)return NULL;
+    LRESULT selected=SendMessageW(list,LB_GETCURSEL,0,0);
+    LRESULT length=selected==LB_ERR?LB_ERR:SendMessageW(list,LB_GETTEXTLEN,(WPARAM)selected,0);
+    if(length<0 || length>=MAX_PATH)return NULL;
+    WCHAR name[MAX_PATH],path[32768];PWSTR base=NULL;
+    if(SendMessageW(list,LB_GETTEXT,(WPARAM)selected,(LPARAM)name)==LB_ERR ||
+       FAILED(IShellItem_GetDisplayName(folder,SIGDN_FILESYSPATH,&base)))return NULL;
+    size_t base_length=wcslen(base),depth=0;
+    if(base_length<3 || base[1]!=L':' || base[2]!=L'\\'){CoTaskMemFree(base);return NULL;}
+    for(size_t i=3;i<base_length;){while(i<base_length && base[i]==L'\\')++i;if(i>=base_length)break;
+        ++depth;while(i<base_length && base[i]!=L'\\')++i;}
+    int n;
+    if((size_t)selected<=depth){
+        size_t end=3,component=0;
+        while(component<(size_t)selected && end<base_length){while(end<base_length && base[end]==L'\\')++end;
+            size_t begin=end;while(end<base_length && base[end]!=L'\\')++end;++component;
+            if(component==(size_t)selected && ((size_t)length!=end-begin || _wcsnicmp(base+begin,name,end-begin))){CoTaskMemFree(base);return NULL;}}
+        if(!selected && (length!=3 || _wcsnicmp(base,name,3))){CoTaskMemFree(base);return NULL;}
+        if(end>=ARRAYSIZE(path)){CoTaskMemFree(base);return NULL;}
+        memcpy(path,base,end*sizeof(WCHAR));path[end]=0;n=(int)end;
+    }else n=swprintf(path,ARRAYSIZE(path),L"%ls%ls%ls",base,base[base_length-1]==L'\\'?L"":L"\\",name);
+    CoTaskMemFree(base);
+    if(n<0 || (size_t)n>=ARRAYSIZE(path))return NULL;
+    IShellItem *target=NULL;if(FAILED(SHCreateItemFromParsingName(path,NULL,&IID_IShellItem,(void **)&target)))return NULL;
+    return target;
+}

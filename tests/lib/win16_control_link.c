@@ -8,6 +8,7 @@
 #include "lib/win16-control/frame_view.h"
 #include "lib/win16-control/list_paint.h"
 #include "lib/win16-control/theme_state.h"
+#include "lib/win16-control/custom_draw.h"
 #include <stdlib.h>
 
 static int bar_paints;
@@ -21,6 +22,10 @@ static int forwarded_tabs;
 static LRESULT test_forward_tabs(HWND w,WPARAM count,LPARAM values)
 {(void)w;(void)count;(void)values;++forwarded_tabs;return TRUE;}
 static int theme_calls;
+static int draw_parts;
+static BOOL custom_supported(HWND w){(void)w;return TRUE;}
+static BOOL custom_part(HWND w,const NMCUSTOMDRAW *draw,const win16_style_palette *p)
+{(void)w;(void)draw;(void)p;++draw_parts;return TRUE;}
 static HRESULT test_native_theme(HWND w,LPCWSTR app,LPCWSTR ids)
 {if(!w && app && ids && !lstrcmpW(app,L"Test") && !lstrcmpW(ids,L"Demo"))++theme_calls;return S_FALSE;}
 static int button_paints;
@@ -33,6 +38,15 @@ int main(void)
     if(win16_control_theme_set(NULL,L"Test",L"Demo",test_native_theme)!=S_FALSE || theme_calls!=1)return 23;
     win16_style_palette palette;
     win16_style_default_palette(&palette);
+    NMCUSTOMDRAW custom={0};BOOL custom_active=FALSE;
+    custom.dwDrawStage=CDDS_PREPAINT;
+    if(win16_control_custom_draw_after(NULL,&custom,&custom_active,FALSE,CDRF_SKIPDEFAULT,&palette,custom_supported,custom_part)!=CDRF_SKIPDEFAULT || custom_active)return 26;
+    if(win16_control_custom_draw_after(NULL,&custom,&custom_active,FALSE,CDRF_DODEFAULT,&palette,custom_supported,custom_part)!=(CDRF_NOTIFYITEMDRAW|CDRF_NOTIFYPOSTPAINT) || !custom_active)return 27;
+    custom.dwDrawStage=CDDS_ITEMPREPAINT;
+    if(win16_control_custom_draw_after(NULL,&custom,&custom_active,FALSE,CDRF_DODEFAULT,&palette,custom_supported,custom_part)!=CDRF_DODEFAULT || draw_parts)return 28;
+    if(win16_control_custom_draw_after(NULL,&custom,&custom_active,TRUE,CDRF_DODEFAULT,&palette,custom_supported,custom_part)!=CDRF_SKIPDEFAULT || draw_parts!=1)return 29;
+    custom.dwDrawStage=CDDS_POSTPAINT;
+    if(win16_control_custom_draw_after(NULL,&custom,&custom_active,TRUE,CDRF_DODEFAULT,&palette,custom_supported,custom_part)!=CDRF_DODEFAULT || custom_active)return 30;
     if(palette.face!=RGB(192,192,192) || palette.edge!=RGB(0,0,0))return 1;
     for(int i=WIN16_SCROLL_UP;i<=WIN16_SCROLL_RIGHT_DISABLED;++i)
         if(!win16_control_scroll_glyph((enum win16_control_scroll_asset)i))return 2;

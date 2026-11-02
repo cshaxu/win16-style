@@ -7,6 +7,7 @@
 #include "../../lib/win16-dialog/shell_folder.h"
 #include "../../lib/win16-dialog/shell_item.h"
 #include "../../lib/win16-dialog/file_contract.h"
+#include "../../lib/win16-dialog/file_helpers.h"
 #include "../../lib/win16-dialog/customize.h"
 #include "../../lib/win16-dialog/events.h"
 #include "../../lib/win16-dialog/ole_window.h"
@@ -168,30 +169,8 @@ static const WCHAR folder_message_name[]=L"Win16Style.T20.ComSetFolder";
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
 static BOOL classic_list_changing(HWND w,file_proxy *p)
 {
-    HWND list=GetDlgItem(w,lst2);if(!list || !p->live_folder)return TRUE;
-    LRESULT selected=SendMessageW(list,LB_GETCURSEL,0,0);
-    LRESULT length=selected==LB_ERR?LB_ERR:SendMessageW(list,LB_GETTEXTLEN,(WPARAM)selected,0);
-    if(length<0 || length>=MAX_PATH)return TRUE;
-    WCHAR name[MAX_PATH],path[32768];PWSTR base=NULL;
-    if(SendMessageW(list,LB_GETTEXT,(WPARAM)selected,(LPARAM)name)==LB_ERR ||
-       FAILED(IShellItem_GetDisplayName(p->live_folder,SIGDN_FILESYSPATH,&base)))return TRUE;
-    size_t base_length=wcslen(base),depth=0;
-    if(base_length<3 || base[1]!=L':' || base[2]!=L'\\'){CoTaskMemFree(base);return TRUE;}
-    for(size_t i=3;i<base_length;){while(i<base_length && base[i]==L'\\')++i;if(i>=base_length)break;
-        ++depth;while(i<base_length && base[i]!=L'\\')++i;}
-    int n;
-    if((size_t)selected<=depth){
-        size_t end=3,component=0;
-        while(component<(size_t)selected && end<base_length){while(end<base_length && base[end]==L'\\')++end;
-            size_t begin=end;while(end<base_length && base[end]!=L'\\')++end;++component;
-            if(component==(size_t)selected && ((size_t)length!=end-begin || _wcsnicmp(base+begin,name,end-begin))){CoTaskMemFree(base);return TRUE;}}
-        if(!selected && (length!=3 || _wcsnicmp(base,name,3))){CoTaskMemFree(base);return TRUE;}
-        if(end>=ARRAYSIZE(path)){CoTaskMemFree(base);return TRUE;}
-        memcpy(path,base,end*sizeof(WCHAR));path[end]=0;n=(int)end;
-    }else n=swprintf(path,ARRAYSIZE(path),L"%ls%ls%ls",base,base[base_length-1]==L'\\'?L"":L"\\",name);
-    CoTaskMemFree(base);
-    if(n<0 || (size_t)n>=ARRAYSIZE(path))return TRUE;
-    IShellItem *target=NULL;if(FAILED(SHCreateItemFromParsingName(path,NULL,&IID_IShellItem,(void **)&target)))return TRUE;
+    IShellItem *target=win16_dialog_classic_list_target(w,p->live_folder);
+    if(!target)return TRUE;
     HRESULT hr=classic_dispatch_owned(p,CLASSIC_FOLDER_CHANGING,target,NULL);
     return hr==S_OK && !p->pending_folder;
 }

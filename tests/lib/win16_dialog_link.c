@@ -7,6 +7,7 @@
 #include "lib/win16-dialog/print_ranges.h"
 #include "lib/win16-dialog/print_classic.h"
 #include "lib/win16-dialog/file_contract.h"
+#include "lib/win16-dialog/file_helpers.h"
 #include "lib/win16-dialog/modern.h"
 #include "lib/win16-dialog/shell_item.h"
 #include "lib/win16-dialog/v2.h"
@@ -24,6 +25,30 @@ static HRESULT fake_v2_query(void *owner,REFIID iid,void **out)
 {(void)iid;*out=owner;return S_OK;}
 static ULONG fake_v2_ref(void *owner){return owner?7:0;}
 static BOOL no_session(void){return FALSE;}
+static BOOL test_classic_list_target(void)
+{
+    WCHAR dir[MAX_PATH],root[4],wrong[]=L"Z:\\";IShellItem *folder=NULL,*selected=NULL;PWSTR path=NULL;
+    HWND parent=NULL,list=NULL;BOOL ok=FALSE;
+    if(!GetTempPathW(MAX_PATH,dir) || dir[1]!=L':' || dir[2]!=L'\\')return FALSE;
+    root[0]=dir[0];root[1]=L':';root[2]=L'\\';root[3]=0;
+    parent=CreateWindowExW(0,L"STATIC",L"",WS_OVERLAPPED,0,0,80,80,NULL,NULL,GetModuleHandleW(NULL),NULL);
+    if(parent)list=CreateWindowExW(0,L"LISTBOX",L"",WS_CHILD,0,0,40,40,parent,(HMENU)(INT_PTR)lst2,GetModuleHandleW(NULL),NULL);
+    if(!list || FAILED(SHCreateItemFromParsingName(dir,NULL,&IID_IShellItem,(void **)&folder)))goto done;
+    selected=win16_dialog_classic_list_target(parent,folder);if(selected)goto done;
+    if(SendMessageW(list,LB_ADDSTRING,0,(LPARAM)root)==LB_ERR)goto done;
+    SendMessageW(list,LB_SETCURSEL,0,0);selected=win16_dialog_classic_list_target(parent,folder);
+    if(!selected || FAILED(IShellItem_GetDisplayName(selected,SIGDN_FILESYSPATH,&path)) || lstrcmpiW(path,root))goto done;
+    IShellItem_Release(selected);selected=NULL;
+    if(root[0]==L'Z' || root[0]==L'z')wrong[0]=L'Y';
+    SendMessageW(list,LB_RESETCONTENT,0,0);SendMessageW(list,LB_ADDSTRING,0,(LPARAM)wrong);SendMessageW(list,LB_SETCURSEL,0,0);
+    selected=win16_dialog_classic_list_target(parent,folder);ok=selected==NULL;
+done:
+    if(path)CoTaskMemFree(path);
+    if(selected)IShellItem_Release(selected);
+    if(folder)IShellItem_Release(folder);
+    if(parent)DestroyWindow(parent);
+    return ok;
+}
 static HRESULT fallback_show(void *owner,HWND window){observed_owner=owner;observed_a=(ULONG_PTR)window;return E_ABORT;}
 static BOOL test_capture_selection(void)
 {
@@ -135,6 +160,7 @@ int main(void)
     CoTaskMemFree(copy);
     WCHAR temp[MAX_PATH],unused[MAX_PATH];IShellItem *item=NULL;PWSTR selected=NULL;
     if(FAILED(CoInitializeEx(NULL,COINIT_APARTMENTTHREADED)))return 19;
+    if(!test_classic_list_target()){CoUninitialize();return 38;}
     if(!test_capture_selection()){CoUninitialize();return 37;}
     if(!GetTempPathW(MAX_PATH,temp) || !GetTempFileNameW(temp,L"w16",0,unused) || !DeleteFileW(unused))return 20;
     HRESULT item_hr=win16_dialog_save_item(unused,&item);
