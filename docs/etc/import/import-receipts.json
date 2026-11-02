@@ -2,6 +2,33 @@
   "schema": 1,
   "files": [
     {
+      "path": "tests/lib/tray.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "d0735dcce9c6d565f0043bb611a636211101bb30dd4e2d9d6725fed9024108aa",
+      "disposition": "authored",
+      "review": "T21 S20 reusable tray library and test",
+      "notice": "Project-authored native C; no imported artwork"
+    },
+    {
+      "path": "src/lib/tray/tray.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "1c8803c1938c601b19fb2a0e83bbcf7717eeebd4eb2dd342b5d23652ce1cfb76",
+      "disposition": "authored",
+      "review": "T21 S20 reusable tray library and test",
+      "notice": "Project-authored native C; no imported artwork"
+    },
+    {
+      "path": "src/lib/tray/tray.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "53a8e4262b4c78a7d656639dfc5660e3c70a32f4df06d3e7d577855217e642ed",
+      "disposition": "authored",
+      "review": "T21 S20 reusable tray library and test",
+      "notice": "Project-authored native C; no imported artwork"
+    },
+    {
       "path": "tests/run16s-exe/console_rebind.c",
       "source": null,
       "source_blob": null,
@@ -14,9 +41,9 @@
       "path": "tests/integration/tray_global.c",
       "source": null,
       "source_blob": null,
-      "sha256": "52a511da275e00b227f512a0a74bb3447e8f0edd782976e20d4a4e189abff294",
+      "sha256": "738fa98dae2aafabc5cff703437b5955f371de585a632d74c98648e485eb8970",
       "disposition": "authored",
-      "review": "T21 S19 private-desktop tray switch integration test",
+      "review": "T21 S19 private-desktop tray switch integration test; T21 S20 tray library split",
       "notice": "Project-authored native test; uses only isolated test instances"
     },
     {
@@ -41,28 +68,19 @@
       "path": "src/run16s-exe/tray_controller.c",
       "source": null,
       "source_blob": null,
-      "sha256": "df741f867de8e308d29de48df1e2e8cd7ed1b9dbac765fd94b0cc12fb91bf2ad",
+      "sha256": "749da435e715492f72fda78c29175adaeab6d1e91bbf5ba619cd6f5211649562",
       "disposition": "authored",
-      "review": "T21 S19 tray control using existing global session",
+      "review": "T21 S19 tray control using existing global session; T21 S20 tray library split",
       "notice": "Project-authored C orchestration; no imported hook implementation"
     },
     {
       "path": "src/run16s-exe/tray.h",
       "source": null,
       "source_blob": null,
-      "sha256": "85f6b856ec6408a28b963f6fdb9a26bfc348b67fa4b9ccd57f0b0489b4237521",
+      "sha256": "8b198469b5337fc60aae4d7e5c724568e347474f4be18adee104b78ba514ad13",
       "disposition": "authored",
-      "review": "T21 S19 internal tray interface",
+      "review": "T21 S19 internal tray interface; T21 S20 tray library split",
       "notice": "Project-authored C interface"
-    },
-    {
-      "path": "src/run16s-exe/tray.c",
-      "source": null,
-      "source_blob": null,
-      "sha256": "ee2063fbaf22593351ed3059d4125c3368a4987cbc02eaba3ddc61a13adfb4f5",
-      "disposition": "authored",
-      "review": "T21 S19 native notification icon and menu",
-      "notice": "Project-authored C UI; no hook implementation"
     },
     {
       "path": "tests/integration/global_parent_owned.c",

@@ -55,7 +55,7 @@ int wmain(int argc,WCHAR **argv)
     if(swprintf(command,ARRAYSIZE(command),L"\"%ls\" --global",argv[1])<0)goto done;
     STARTUPINFOW startup={.cb=sizeof(startup)};
     if(!CreateProcessW(argv[1],command,NULL,NULL,TRUE,0,NULL,NULL,&startup,&manager))goto done;
-    for(unsigned i=0;i<200;++i){DWORD pid=0;tray=FindWindowW(L"Run16sTrayWindow",L"Win16 Style");
+    for(unsigned i=0;i<200;++i){DWORD pid=0;tray=FindWindowW(L"LibTrayWindow",L"Win16 Style");
         if(tray)GetWindowThreadProcessId(tray,&pid);
         if(pid==manager.dwProcessId)break;
         tray=NULL;

@@ -2,9 +2,32 @@
 
 ## Current Work
 
-M0 固定；T21 保持开放，S19、S18、S17、S16 已收口，当前无活动任务包。P97 同批干净包已通过 30 项聚焦回归并发布到 assets 根目录及 O:/winnt，产品提交 `33b4638` 已推送；实际读取远端四文件，与测试包及两处发布文件 SHA-256 均一致。该包随后完成双位宽管理员跨权限实测，记录已推送并读取远端复核（`a299eec`）。S13 与 T21 覆盖边界见 [S13 收口审计](../history/M0-T21-S13-vb-global-investigation.md)。
+## M0 T21 S20 Packet
 
-S19 已按用户验收通过而收口；T21 保持开放，当前无活动 S。最终 39 号徽标包 `82eee1b` 已发布至 assets 根目录与 O:/winnt，且与远端逐项核对一致。用户未逐项列出验收操作，真实 UAC 自动回归、所有窗口恢复和进程内 trampoline 的物理移除不据此宣称通过；详细过程见 [S19 记录](../history/M0-T21-S19-tray.md)。
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Continuation; active |
+| Admission And Approval | 用户要求从启动器抽取通用托盘库并维持原功能。 |
+| Objective | 将托盘机制移入 src/lib/tray；菜单和回调由调用者注入，左右键单击与双击打开菜单。 |
+| Non-goals | 不修改全局进程管理、挂钩实现或图形资源；不新增产品文件。 |
+| Reference Baseline | M0 T21 S19 P4，当前主工作树。 |
+| Candidate Proposal | 复用现有全局模式任务；用户直接准入。 |
+| Files And ABI Surface | 托盘源码、调用方、构建和测试；仅内部 C 接口，无新增产品 ABI。 |
+| Applicable Rules | M0、三组件四产物、C17、GCC、Ninja、ccache；用户明确要求内部公共库。 |
+| Verification | 原生托盘消息测试、调用方回归、双宽干净构建、同批四文件包测试及发布。 |
+| Expected Markers | 四种鼠标事件打开菜单，回调及状态正确，依赖边界清晰。 |
+| Asset Needs | 现有图标原样保留；初始独立测试暂存置 build/t21-package/s20-tray。 |
+| Reporting Requirements | 报告依赖、测试、发布摘要和未覆盖项。 |
+| Stop Conditions | 构建或测试失败、权限不足、与既有工作冲突时停止交付并记录。 |
+| Exit Criteria | 构建测试、两处发布、提交推送及远端复核完成；用户验收。 |
+| Original Owner Request | 通用托盘库，菜单和回调由项目注入，接入现有产品并清理旧路径。 |
+| Similar-Issue Sweep | 搜索 tray.c、托盘调用、测试夹具及构建源文件引用。 |
+
+S20 已通过双位宽干净构建、10 项聚焦实包回归和 LibTray 双位宽消息测试，四文件已发布至 assets 根目录与 O:/winnt 并核对摘要；尚待推送及用户验收。真实 Explorer 点击及全局接入恢复未由本次证明。旧 ntw16s64 映像仍被系统和当前会话进程映射，保留在 `build/t21-package/s20-release-backup/held-ntw16s64.dll`；证据、摘要、首次失败和未覆盖面见 [S20 记录](../history/M0-T21-S20-tray-library.md)。
+
+M0 固定；T21 保持开放，S20 为当前活动任务，S19、S18、S17、S16 已收口。P97 同批干净包已通过 30 项聚焦回归并发布到 assets 根目录及 O:/winnt，产品提交 `33b4638` 已推送；实际读取远端四文件，与测试包及两处发布文件 SHA-256 均一致。该包随后完成双位宽管理员跨权限实测，记录已推送并读取远端复核（`a299eec`）。S13 与 T21 覆盖边界见 [S13 收口审计](../history/M0-T21-S13-vb-global-investigation.md)。
+
+S19 已按用户验收通过而收口；T21 保持开放。最终 39 号徽标包 `82eee1b` 已发布至 assets 根目录与 O:/winnt，且与远端逐项核对一致。用户未逐项列出验收操作，真实 UAC 自动回归、所有窗口恢复和进程内 trampoline 的物理移除不据此宣称通过；详细过程见 [S19 记录](../history/M0-T21-S19-tray.md)。
 
 S18 经用户确认时机，在当前桌面运行已发布 `O:/winnt/run16s.exe --global`：真实 UAC 后驱动记录 `ready=1 elevated=1 sent=1 parent_wait=0 parent_exit=0 session_gone=1`。系统 x64 钩子报告 126 并使用线程后备；启动和停止各向 362 个窗口发通知，各有 7 个超时或失败，具体窗口未记录，不能宣称这些窗口成功接入或恢复。首轮驱动返回 9 且未捕获错误，未计通过；修正驱动标准句柄后第二轮取得上述结果。此轮未设置自有双宽目标，不单凭会话就绪宣称目标样式或传播通过。
 
@@ -178,9 +201,9 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
-- Last allocated T21 S: 19
+- Last allocated T21 S: 20
 - Last verified remote delivery: M0 T21 S19 P3，`82eee1b`；四产品已复核一致。
-- Open task: T21；S19、S18、S17、S16、S15 已收口，当前无活动 S；Explorer.exe 仍被排除。
+- Open task: T21；S20 活动中，S19、S18、S17、S16、S15 已收口；Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。
