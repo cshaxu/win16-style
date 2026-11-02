@@ -211,11 +211,6 @@ static LRESULT CALLBACK toolbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT
     SetLastError(error);return result;
 }
 
-/* DefWindowProc implements WM_SETREDRAW(TRUE) by setting WS_VISIBLE.
- * Never start an internal bracket on an application-hidden control. Nested
- * native leaves share the already-open bracket, whose FALSE cleared that bit. */
-static BOOL can_suppress_redraw(HWND w,const control_style *s)
-{return !s->list_redraw_off && (s->list_suppression || (GetWindowLongPtrW(w,GWL_STYLE)&WS_VISIBLE));}
 static BOOL is_exact_native_button(HWND w)
 {WCHAR name[32];return GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpiW(name,L"BUTTON");}
 static BOOL is_static(HWND w)
@@ -542,40 +537,9 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
     if(!win16_control_state_prepare_font(w,s,m,&a,native_font,&previous,&outbound))goto finished;
     if(m==WM_NCDESTROY){(void)win16_style_control_terminal(w);
         result=DefSubclassProc(w,m,a,b);}
-    else if(tab){
-        if(m==WM_PAINT && win16_style_tab_supported(w)){
-            PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);present_control(w,s,dc,draw_tab);EndPaint(w,&ps);
-        }else if(m==WM_PRINTCLIENT && win16_style_tab_supported(w))draw_tab(w,s,(HDC)a);
-        else result=DefSubclassProc(w,m,a,b);
-        if(!s->detached && win16_style_tab_changes(m))
-            RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|(s->calls==1?RDW_UPDATENOW:0));
-    }
-    else if(header){
-        if(m==WM_LBUTTONDOWN){
-            HDHITTESTINFO hit={.pt={(short)LOWORD(b),(short)HIWORD(b)}};
-            LRESULT item=SendMessageW(w,HDM_HITTEST,0,(LPARAM)&hit);
-            if(s->detached)goto finished;
-            s->header_pressed=(item>=0 && (hit.flags&HHT_ONHEADER))?(int)item:-1;
-        }
-        if(m==WM_LBUTTONUP || m==WM_CANCELMODE || m==WM_CAPTURECHANGED)s->header_pressed=-1;
-        if(m==WM_PAINT && win16_style_header_supported(w)){
-            PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);present_control(w,s,dc,draw_header);EndPaint(w,&ps);
-        }else if(m==WM_PRINTCLIENT && win16_style_header_supported(w))draw_header(w,s,(HDC)a);
-        else result=DefSubclassProc(w,m,a,b);
-        if(!s->detached && win16_style_header_changes(m))
-            RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|(s->calls==1?RDW_UPDATENOW:0));
-    }
-    else if(progress){
-        BOOL classic=win16_style_progress_supported(w);
-        if(m==WM_PAINT && classic){PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);present_control(w,s,dc,draw_progress);EndPaint(w,&ps);}
-        else if(m==WM_PRINTCLIENT && classic)draw_progress(w,s,(HDC)a);
-        else if(m==WM_PRINT && classic && (b&PRF_CLIENT)){
-            int saved=SaveDC((HDC)a);if(saved){result=DefSubclassProc(w,m,a,b&~PRF_CLIENT);RestoreDC((HDC)a,saved);}
-            if(!s->detached)draw_progress(w,s,(HDC)a);
-        }else result=DefSubclassProc(w,m,a,b);
-        if(!s->detached && win16_style_progress_changes(m))
-            RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|(s->calls==1?RDW_UPDATENOW:0));
-    }
+    else if(tab)result=win16_control_tab_message(w,s,m,a,b,present_control,draw_tab);
+    else if(header)result=win16_control_header_message(w,s,m,a,b,present_control,draw_header);
+    else if(progress)result=win16_control_progress_message(w,s,m,a,b,present_control,draw_progress);
     else if(ntw16s_class_is(w,UPDOWN_CLASSW)){result=DefSubclassProc(w,m,a,b);}
     else if(ntw16s_class_is(w,TRACKBAR_CLASSW) || ntw16s_control_protocol_is(w,TRACKBAR_CLASSW)){
         if(ntw16s_control_protocol_runtime_trackbar(w) && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT))
@@ -658,23 +622,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
             }
         }
     }
-    else if(is_combo(w)){
-        if(m==WM_SETREDRAW){s->list_redraw_off=!a;result=DefSubclassProc(w,m,a,b);}
-        else if(m==WM_PAINT){PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);present_control(w,s,dc,draw_combo);EndPaint(w,&ps);}
-        else if(m==WM_PRINTCLIENT)draw_combo(w,s,(HDC)a);
-        else if(m==WM_ERASEBKGND)result=1;
-        else {BOOL suppress=can_suppress_redraw(w,s) &&
-                (m==CB_SETCURSEL || m==CB_SHOWDROPDOWN || m==WM_COMMAND || m==WM_ENABLE ||
-                 m==WM_SETFONT || m==WM_SETFOCUS || m==WM_KILLFOCUS || m==WM_KEYDOWN ||
-                 m==WM_LBUTTONDOWN || m==WM_LBUTTONUP);
-            if(suppress && s->list_suppression++==0)DefSubclassProc(w,WM_SETREDRAW,FALSE,0);
-            result=DefSubclassProc(w,m,a,b);
-            if(suppress && --s->list_suppression==0 && !s->detached && !s->list_redraw_off)
-                DefSubclassProc(w,WM_SETREDRAW,TRUE,0);
-            if(!s->detached && !s->list_suppression && !s->list_redraw_off && (m==CB_SETCURSEL || m==CB_SHOWDROPDOWN || m==WM_COMMAND || m==WM_ENABLE ||
-                m==WM_SETFONT || m==WM_SETFOCUS || m==WM_KILLFOCUS || m==WM_KEYDOWN ||
-                m==WM_LBUTTONDOWN || m==WM_LBUTTONUP))RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);}
-    }
+    else if(is_combo(w))result=win16_control_combo_message(w,s,m,a,b,present_control,draw_combo);
     else if(is_list(w)){
         if(embedded_scroll_input(w,s,m,a,b))result=0;
         else if(m==LB_SETTABSTOPS && (GetWindowLongPtrW(w,GWL_STYLE)&LBS_USETABSTOPS))result=set_list_tabs(w,s,a,b);
@@ -702,7 +650,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         else if(m==WM_ERASEBKGND)result=1;
         else {
             BOOL moving=m==WM_MOUSEMOVE,changed=FALSE;list_view_state before={0},after;
-            BOOL suppress=can_suppress_redraw(w,s) &&
+            BOOL suppress=win16_control_state_can_suppress_redraw(w,s) &&
                 (m==WM_MOUSEWHEEL || m==WM_VSCROLL || m==WM_HSCROLL || m==WM_KEYDOWN || m==WM_KEYUP ||
                 m==WM_SETFOCUS || m==WM_KILLFOCUS || m==WM_ENABLE || m==WM_SETFONT ||
                 m==WM_MOUSEMOVE || m==WM_LBUTTONDOWN || m==WM_LBUTTONUP ||
@@ -748,7 +696,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
             goto finished;
         }
         if(s->edit_scrollbars && m==WM_SETREDRAW)s->list_redraw_off=!a;
-        {BOOL suppress=s->edit_scrollbars && can_suppress_redraw(w,s) &&
+        {BOOL suppress=s->edit_scrollbars && win16_control_state_can_suppress_redraw(w,s) &&
             (m==WM_VSCROLL || m==WM_HSCROLL || m==WM_MOUSEWHEEL || m==EM_LINESCROLL || m==WM_SETTEXT ||
             m==EM_REPLACESEL || m==EM_UNDO || m==WM_UNDO || m==WM_KEYDOWN || m==WM_CHAR ||
             (m==WM_MOUSEMOVE && GetCapture()==w && (a&MK_LBUTTON)) || m==WM_LBUTTONDOWN || m==WM_LBUTTONUP);
@@ -810,7 +758,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         /* Only bracket native drawing leaves, not BM_CLICK or mouse/key
          * dispatch: automatic radio-group traversal must see the original
          * visibility throughout the outer input operation. */
-        BOOL suppress=!is_static(w) && can_suppress_redraw(w,s) &&
+        BOOL suppress=!is_static(w) && win16_control_state_can_suppress_redraw(w,s) &&
             (m==BM_SETCHECK || m==BM_SETSTATE || m==BM_SETSTYLE || m==WM_ENABLE ||
              m==WM_SETFOCUS || m==WM_KILLFOCUS || m==WM_SETTEXT || m==WM_SETFONT ||
              m==WM_MOUSEMOVE);
