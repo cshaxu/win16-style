@@ -3353,7 +3353,7 @@
       "path": "src/ntw16s-dll/injection/com_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4962d84ed886617a106131295ea5dda880b205f880a328269fff862ce61abebf",
+      "sha256": "3c88c12fb33cdc31a2d151fd0cfca288e964cd956ee37992bc499eab01511d7c",
       "disposition": "authored",
       "review": "T20 S1 COM dialog bridge and real native probe under development; T21 S13 unified late style hooks and stop semantics",
       "notice": "Project-authored; no imported code or resources"
@@ -4370,7 +4370,7 @@
       "path": "tests/lib/win16_dialog_link.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e6d23e15344b58c70655529069714f99700e73d0a77f06bf15729818daf16f41",
+      "sha256": "2798de4499ed0f28adb39014ad0e1422ba2a971512731a48d6c7e4b99756488a",
       "disposition": "authored",
       "review": "T21 S23 independent whole-library link and page range test",
       "notice": "Project-authored C17; project MIT license"
@@ -4379,7 +4379,7 @@
       "path": "src/lib/win16-dialog/file_helpers.c",
       "source": null,
       "source_blob": null,
-      "sha256": "50ca3c3bdbf1d6ada41c8d422d0f98225e1557ce11cc57dbdfb2582c4050d5e1",
+      "sha256": "0d7747f1f04efe6cbc1284d9ed610ba734c968e2844a15bd3b9ee70805e7b0e7",
       "disposition": "authored",
       "review": "T21 S23 extraction of existing old file dialog helpers",
       "notice": "Project-authored code; no imported resources"
@@ -4388,7 +4388,7 @@
       "path": "src/lib/win16-dialog/file_helpers.h",
       "source": null,
       "source_blob": null,
-      "sha256": "5e26426815f20799f01e938e0ef4ddbc963668ebf62d7d4db00f4446970b1a04",
+      "sha256": "2987ea9ced74628b6ccce4274cac917f9c9c3797d4fd5da9a2547ffba2486f81",
       "disposition": "authored",
       "review": "T21 S23 extraction of existing old file dialog helpers",
       "notice": "Project-authored code; no imported resources"
@@ -4541,7 +4541,7 @@
       "path": "src/lib/win16-dialog/events.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6210dfd16078153eea35fa18fef0d55a59a59d0c3e734cca43e68174c35a181b",
+      "sha256": "a198d346a4d860ab2a4cd5e36abf335b746dea8eb1e936b893b078aae75c11bd",
       "disposition": "authored",
       "review": "T21 S23 extraction of COM event facade with weak owner callbacks",
       "notice": "Project-authored code; no imported resources"
@@ -4550,7 +4550,7 @@
       "path": "src/lib/win16-dialog/events.h",
       "source": null,
       "source_blob": null,
-      "sha256": "e8bf33b9a3efad040429a389c99251f1196916abc5b3d7c3ddf58653ba09d398",
+      "sha256": "43c1017e9ec1fd0ae03a92667b04ce3f66fe033c4530fef53902cd5fe4cf805c",
       "disposition": "authored",
       "review": "T21 S23 extraction of COM event facade with weak owner callbacks",
       "notice": "Project-authored code; no imported resources"

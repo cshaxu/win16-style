@@ -43,37 +43,16 @@ static HRESULT proxy_unadvise(file_proxy *p,DWORD cookie)
 {return win16_dialog_events_unadvise(p->native,&p->events,cookie);}
 
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-/* Research build only: copy references before calling application code because
- * a listener may unsubscribe itself or another listener in the callback. */
-typedef struct classic_event_snapshot {
-    event_adapter **items;size_t count;
-} classic_event_snapshot;
-static BOOL classic_event_snapshot_init(file_proxy *p,classic_event_snapshot *snapshot)
-{
-    size_t count=0;for(event_adapter *e=p->events;e;e=e->next)++count;
-    snapshot->items=NULL;snapshot->count=0;if(!count)return TRUE;
-    if(count>SIZE_MAX/sizeof(*snapshot->items))return FALSE;
-    snapshot->items=HeapAlloc(GetProcessHeap(),0,count*sizeof(*snapshot->items));
-    if(!snapshot->items)return FALSE;
-    snapshot->count=count;
-    for(event_adapter *e=p->events;e;e=e->next){win16_dialog_event_add(&e->iface);snapshot->items[--count]=e;}
-    return TRUE;
-}
-static void classic_event_snapshot_free(classic_event_snapshot *snapshot)
-{
-    for(size_t i=0;i<snapshot->count;++i)win16_dialog_event_release(&snapshot->items[i]->iface);
-    HeapFree(GetProcessHeap(),0,snapshot->items);snapshot->items=NULL;snapshot->count=0;
-}
-typedef struct classic_event_call {file_proxy *proxy;classic_event_snapshot snapshot;} classic_event_call;
+typedef struct classic_event_call {file_proxy *proxy;win16_dialog_event_snapshot snapshot;} classic_event_call;
 static void classic_event_cleanup(void *data)
 {
-    classic_event_call *call=data;classic_event_snapshot_free(&call->snapshot);proxy_release(call->proxy);
+    classic_event_call *call=data;win16_dialog_event_snapshot_free(&call->snapshot);proxy_release(call->proxy);
 }
 enum classic_event_kind { CLASSIC_OK,CLASSIC_FOLDER_CHANGING,CLASSIC_FOLDER_CHANGED,CLASSIC_SELECTION_CHANGED,CLASSIC_TYPE_CHANGED };
 static NTW16S_UNWIND_FUNCTION HRESULT classic_event_dispatch(file_proxy *p,enum classic_event_kind kind,IShellItem *item)
 {
     classic_event_call call={.proxy=p};
-    if(!classic_event_snapshot_init(p,&call.snapshot))return E_OUTOFMEMORY;
+    if(!win16_dialog_event_snapshot_init(p->events,&call.snapshot))return E_OUTOFMEMORY;
     proxy_add(p);ntw16s_unwind_scope unwind;HRESULT result=S_OK;
     NTW16S_UNWIND_BEGIN(unwind,classic_event_cleanup,&call);
     for(size_t i=0;i<call.snapshot.count;++i){event_adapter *e=call.snapshot.items[i];if(e->owner!=p)continue;
@@ -90,7 +69,7 @@ static NTW16S_UNWIND_FUNCTION HRESULT classic_event_dispatch(file_proxy *p,enum 
 static NTW16S_UNWIND_FUNCTION FDE_OVERWRITE_RESPONSE classic_overwrite_dispatch(file_proxy *p,IShellItem *item)
 {
     classic_event_call call={.proxy=p};FDE_OVERWRITE_RESPONSE result=FDEOR_DEFAULT;
-    if(!classic_event_snapshot_init(p,&call.snapshot))return result;
+    if(!win16_dialog_event_snapshot_init(p->events,&call.snapshot))return result;
     proxy_add(p);ntw16s_unwind_scope unwind;
     NTW16S_UNWIND_BEGIN(unwind,classic_event_cleanup,&call);
     for(size_t i=0;i<call.snapshot.count;++i){event_adapter *e=call.snapshot.items[i];
@@ -104,7 +83,7 @@ static NTW16S_UNWIND_FUNCTION FDE_OVERWRITE_RESPONSE classic_overwrite_dispatch(
 static NTW16S_UNWIND_FUNCTION FDE_SHAREVIOLATION_RESPONSE classic_share_dispatch(file_proxy *p,IShellItem *item)
 {
     classic_event_call call={.proxy=p};FDE_SHAREVIOLATION_RESPONSE result=FDESVR_DEFAULT;
-    if(!classic_event_snapshot_init(p,&call.snapshot))return result;
+    if(!win16_dialog_event_snapshot_init(p->events,&call.snapshot))return result;
     proxy_add(p);ntw16s_unwind_scope unwind;
     NTW16S_UNWIND_BEGIN(unwind,classic_event_cleanup,&call);
     for(size_t i=0;i<call.snapshot.count;++i){event_adapter *e=call.snapshot.items[i];
@@ -176,67 +155,16 @@ static BOOL classic_list_changing(HWND w,file_proxy *p)
 }
 static BOOL classic_typed_changing(HWND w,file_proxy *p)
 {
-    HWND edit=GetDlgItem(w,edt1);int length=edit?GetWindowTextLengthW(edit):-1;
-    if(length<=0 || length>=32768)return TRUE;
-    WCHAR *path=CoTaskMemAlloc(((size_t)length+1)*sizeof(WCHAR));if(!path)return FALSE;
-    GetWindowTextW(edit,path,length+1);
-    /* A single leading separator uses the dialog folder's drive, not the
-     * process's potentially unrelated current drive. UNC stays untouched. */
-    if((path[0]==L'\\' || path[0]==L'/') && path[1]!=L'\\' && path[1]!=L'/' && p->live_folder){
-        PWSTR base=NULL;if(SUCCEEDED(IShellItem_GetDisplayName(p->live_folder,SIGDN_FILESYSPATH,&base))){
-            if(base[0] && base[1]==L':'){WCHAR *rooted=CoTaskMemAlloc(((size_t)length+3)*sizeof(WCHAR));
-                if(!rooted){CoTaskMemFree(base);CoTaskMemFree(path);return FALSE;}
-                rooted[0]=base[0];rooted[1]=L':';memcpy(rooted+2,path,((size_t)length+1)*sizeof(WCHAR));
-                CoTaskMemFree(path);path=rooted;}
-            CoTaskMemFree(base);}
-    }
-    /* The legacy dialog resolves a drive-relative name on its displayed
-     * drive against the displayed folder, even if the process current
-     * directory on that drive differs. Normalize only that same-drive case;
-     * another drive retains its native per-drive current-directory rules. */
-    if(length>2 && path[1]==L':' && path[2]!=L'\\' && path[2]!=L'/' && p->live_folder){
-        PWSTR base=NULL;
-        if(SUCCEEDED(IShellItem_GetDisplayName(p->live_folder,SIGDN_FILESYSPATH,&base))){
-            if(base[0] && base[1]==L':' && _wcsnicmp(path,base,1)==0){
-                memmove(path,path+2,((size_t)length-1)*sizeof(WCHAR));length-=2;
-            }
-            CoTaskMemFree(base);
-        }
-    }
-    /* Relative input belongs to the dialog's displayed folder, which can
-     * differ from the process-wide current directory. */
-    if(path[0]!=L'\\' && path[0]!=L'/' && !(length>=2 && path[1]==L':') && p->live_folder){
-        PWSTR base=NULL;
-        if(SUCCEEDED(IShellItem_GetDisplayName(p->live_folder,SIGDN_FILESYSPATH,&base))){
-            size_t n=wcslen(base),total=n+(n && base[n-1]!=L'\\'?1:0)+(size_t)length+1;
-            if(total<=32768){WCHAR *combined=CoTaskMemAlloc(total*sizeof(WCHAR));
-                if(!combined){CoTaskMemFree(base);CoTaskMemFree(path);return FALSE;}
-                swprintf(combined,total,L"%ls%ls%ls",base,n && base[n-1]!=L'\\'?L"\\":L"",path);
-                CoTaskMemFree(path);path=combined;}
-            CoTaskMemFree(base);
-        }
-    }
-    WCHAR normalized[32768];DWORD written=GetFullPathNameW(path,ARRAYSIZE(normalized),normalized,NULL);
-    if(!written || written>=ARRAYSIZE(normalized)){CoTaskMemFree(path);return TRUE;}
-    CoTaskMemFree(path);DWORD attrs=GetFileAttributesW(normalized);
-    if(attrs==INVALID_FILE_ATTRIBUTES || !(attrs&FILE_ATTRIBUTE_DIRECTORY))return TRUE;
-    IShellItem *target=NULL;HRESULT hr=SHCreateItemFromParsingName(normalized,NULL,&IID_IShellItem,(void **)&target);
-    if(FAILED(hr))return TRUE;
-    hr=classic_dispatch_owned(p,CLASSIC_FOLDER_CHANGING,target,NULL);
+    IShellItem *target=NULL;
+    if(!win16_dialog_classic_typed_target(w,p->live_folder,&target))return FALSE;
+    if(!target)return TRUE;
+    HRESULT hr=classic_dispatch_owned(p,CLASSIC_FOLDER_CHANGING,target,NULL);
     return hr==S_OK && !p->pending_folder;
 }
 static BOOL classic_drive_changing(HWND w,file_proxy *p)
 {
-    HWND combo=GetDlgItem(w,cmb2);LRESULT index=combo?SendMessageW(combo,CB_GETCURSEL,0,0):CB_ERR;
-    LRESULT length=index==CB_ERR?CB_ERR:SendMessageW(combo,CB_GETLBTEXTLEN,(WPARAM)index,0);
-    if(length<2 || length>=MAX_PATH)return TRUE;
-    WCHAR label[MAX_PATH],relative[4],path[32768];
-    if(SendMessageW(combo,CB_GETLBTEXT,(WPARAM)index,(LPARAM)label)==CB_ERR || label[1]!=L':' ||
-       !((label[0]>=L'A'&&label[0]<=L'Z')||(label[0]>=L'a'&&label[0]<=L'z')))return TRUE;
-    relative[0]=label[0];relative[1]=L':';relative[2]=L'.';relative[3]=0;
-    DWORD written=GetFullPathNameW(relative,ARRAYSIZE(path),path,NULL);
-    if(!written || written>=ARRAYSIZE(path))return TRUE;
-    IShellItem *target=NULL;if(FAILED(SHCreateItemFromParsingName(path,NULL,&IID_IShellItem,(void **)&target)))return TRUE;
+    LRESULT index;HWND combo;IShellItem *target=win16_dialog_classic_drive_target(w,&index,&combo);
+    if(!target)return TRUE;
     HRESULT hr=classic_dispatch_owned(p,CLASSIC_FOLDER_CHANGING,target,NULL);
     if(hr!=S_OK || p->pending_folder){if(p->classic_drive_index!=CB_ERR)SendMessageW(combo,CB_SETCURSEL,(WPARAM)p->classic_drive_index,0);return FALSE;}
     p->classic_drive_index=index;return TRUE;
@@ -246,41 +174,8 @@ static BOOL classic_overwrite_check(HWND w,file_proxy *p)
     OPENFILENAMEW *ofn=p->classic_ofn;if(!ofn)return TRUE;
     if(p->classic_overwrite_suppressed){ofn->Flags|=OFN_OVERWRITEPROMPT;p->classic_overwrite_suppressed=FALSE;}
     if(!p->save || !(ofn->Flags&OFN_OVERWRITEPROMPT))return TRUE;
-    WCHAR entered[32768],path[32768];HWND edit=GetDlgItem(w,edt1);
-    int length=edit?GetWindowTextW(edit,entered,ARRAYSIZE(entered)):0;
-    if(length<=0 || length>=(int)ARRAYSIZE(entered)-1)return TRUE;
-    PCWSTR source=entered;WCHAR combined[32768];PWSTR base=NULL;
-    if((entered[0]==L'\\' || entered[0]==L'/') && entered[1]!=L'\\' && entered[1]!=L'/' && p->live_folder &&
-       SUCCEEDED(IShellItem_GetDisplayName(p->live_folder,SIGDN_FILESYSPATH,&base))){
-        if(base[0] && base[1]==L':' && (size_t)length+3<=ARRAYSIZE(combined)){
-            combined[0]=base[0];combined[1]=L':';memcpy(combined+2,entered,((size_t)length+1)*sizeof(WCHAR));source=combined;}
-        CoTaskMemFree(base);base=NULL;
-    }
-    PCWSTR relative=entered;
-    if(length>2 && entered[1]==L':' && entered[2]!=L'\\' && entered[2]!=L'/' && p->live_folder &&
-       SUCCEEDED(IShellItem_GetDisplayName(p->live_folder,SIGDN_FILESYSPATH,&base))){
-        if(base[0] && base[1]==L':' && _wcsnicmp(entered,base,1)==0)relative=entered+2;
-        CoTaskMemFree(base);base=NULL;
-    }
-    if(relative[0]!=L'\\' && relative[0]!=L'/' && !(relative[0] && relative[1]==L':') && p->live_folder &&
-       SUCCEEDED(IShellItem_GetDisplayName(p->live_folder,SIGDN_FILESYSPATH,&base))){
-        size_t n=wcslen(base);int written=swprintf(combined,ARRAYSIZE(combined),L"%ls%ls%ls",base,
-            n && base[n-1]!=L'\\'?L"\\":L"",relative);
-        CoTaskMemFree(base);
-        if(written<0 || (size_t)written>=ARRAYSIZE(combined))return TRUE;
-        source=combined;
-    }
-    DWORD written=GetFullPathNameW(source,ARRAYSIZE(path),path,NULL);
-    if(!written || written>=ARRAYSIZE(path))return TRUE;
-    if(p->extension && *p->extension){
-        WCHAR *name=wcsrchr(path,L'\\');name=name?name+1:path;
-        if(*name && !wcschr(name,L'.')){size_t base=wcslen(path),ext=wcslen(p->extension);
-            if(base+1+ext>=ARRAYSIZE(path))return TRUE;
-            path[base]=L'.';memcpy(path+base+1,p->extension,(ext+1)*sizeof(WCHAR));}
-    }
-    DWORD attrs=GetFileAttributesW(path);
-    if(attrs==INVALID_FILE_ATTRIBUTES || (attrs&FILE_ATTRIBUTE_DIRECTORY))return TRUE;
-    IShellItem *item=NULL;if(FAILED(SHCreateItemFromParsingName(path,NULL,&IID_IShellItem,(void **)&item)))return TRUE;
+    IShellItem *item=win16_dialog_classic_overwrite_target(w,p->live_folder,p->extension);
+    if(!item)return TRUE;
     FDE_OVERWRITE_RESPONSE response=classic_overwrite_owned(p,item);
     if(!IsWindow(w) || p->active_window!=w || p->classic_ofn!=ofn)return FALSE;
     if(response==FDEOR_REFUSE)return FALSE;

@@ -1,6 +1,7 @@
 /* Forward native file-dialog events while preserving the owning COM identity. */
 #define COBJMACROS
 #include "events.h"
+#include <stdint.h>
 
 static HRESULT STDMETHODCALLTYPE event_query(IFileDialogEvents *self,REFIID iid,void **out)
 {
@@ -75,4 +76,22 @@ void win16_dialog_events_release(IFileDialog *native,event_adapter **events)
 {
     while(*events){event_adapter *e=*events;*events=e->next;e->owner=NULL;
         (void)IFileDialog_Unadvise(native,e->cookie);win16_dialog_event_release(&e->iface);}
+}
+
+/* Hold each listener independently while an application callback may mutate the list. */
+BOOL win16_dialog_event_snapshot_init(event_adapter *events,win16_dialog_event_snapshot *snapshot)
+{
+    size_t count=0;for(event_adapter *e=events;e;e=e->next)++count;
+    snapshot->items=NULL;snapshot->count=0;if(!count)return TRUE;
+    if(count>SIZE_MAX/sizeof(*snapshot->items))return FALSE;
+    snapshot->items=HeapAlloc(GetProcessHeap(),0,count*sizeof(*snapshot->items));
+    if(!snapshot->items)return FALSE;
+    snapshot->count=count;
+    for(event_adapter *e=events;e;e=e->next){win16_dialog_event_add(&e->iface);snapshot->items[--count]=e;}
+    return TRUE;
+}
+void win16_dialog_event_snapshot_free(win16_dialog_event_snapshot *snapshot)
+{
+    for(size_t i=0;i<snapshot->count;++i)win16_dialog_event_release(&snapshot->items[i]->iface);
+    HeapFree(GetProcessHeap(),0,snapshot->items);snapshot->items=NULL;snapshot->count=0;
 }

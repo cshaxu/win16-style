@@ -113,3 +113,111 @@ IShellItem *win16_dialog_classic_list_target(HWND w,IShellItem *folder)
     IShellItem *target=NULL;if(FAILED(SHCreateItemFromParsingName(path,NULL,&IID_IShellItem,(void **)&target)))return NULL;
     return target;
 }
+
+BOOL win16_dialog_classic_typed_target(HWND w,IShellItem *folder,IShellItem **out)
+{
+    *out=NULL;
+    HWND edit=GetDlgItem(w,edt1);int length=edit?GetWindowTextLengthW(edit):-1;
+    if(length<=0 || length>=32768)return TRUE;
+    WCHAR *path=CoTaskMemAlloc(((size_t)length+1)*sizeof(WCHAR));if(!path)return FALSE;
+    GetWindowTextW(edit,path,length+1);
+    /* A single leading separator uses the dialog folder's drive, not the
+     * process's potentially unrelated current drive. UNC stays untouched. */
+    if((path[0]==L'\\' || path[0]==L'/') && path[1]!=L'\\' && path[1]!=L'/' && folder){
+        PWSTR base=NULL;if(SUCCEEDED(IShellItem_GetDisplayName(folder,SIGDN_FILESYSPATH,&base))){
+            if(base[0] && base[1]==L':'){WCHAR *rooted=CoTaskMemAlloc(((size_t)length+3)*sizeof(WCHAR));
+                if(!rooted){CoTaskMemFree(base);CoTaskMemFree(path);return FALSE;}
+                rooted[0]=base[0];rooted[1]=L':';memcpy(rooted+2,path,((size_t)length+1)*sizeof(WCHAR));
+                CoTaskMemFree(path);path=rooted;}
+            CoTaskMemFree(base);}
+    }
+    /* The legacy dialog resolves a drive-relative name on its displayed
+     * drive against the displayed folder, even if the process current
+     * directory on that drive differs. Normalize only that same-drive case;
+     * another drive retains its native per-drive current-directory rules. */
+    if(length>2 && path[1]==L':' && path[2]!=L'\\' && path[2]!=L'/' && folder){
+        PWSTR base=NULL;
+        if(SUCCEEDED(IShellItem_GetDisplayName(folder,SIGDN_FILESYSPATH,&base))){
+            if(base[0] && base[1]==L':' && _wcsnicmp(path,base,1)==0){
+                memmove(path,path+2,((size_t)length-1)*sizeof(WCHAR));length-=2;
+            }
+            CoTaskMemFree(base);
+        }
+    }
+    /* Relative input belongs to the dialog's displayed folder, which can
+     * differ from the process-wide current directory. */
+    if(path[0]!=L'\\' && path[0]!=L'/' && !(length>=2 && path[1]==L':') && folder){
+        PWSTR base=NULL;
+        if(SUCCEEDED(IShellItem_GetDisplayName(folder,SIGDN_FILESYSPATH,&base))){
+            size_t n=wcslen(base),total=n+(n && base[n-1]!=L'\\'?1:0)+(size_t)length+1;
+            if(total<=32768){WCHAR *combined=CoTaskMemAlloc(total*sizeof(WCHAR));
+                if(!combined){CoTaskMemFree(base);CoTaskMemFree(path);return FALSE;}
+                swprintf(combined,total,L"%ls%ls%ls",base,n && base[n-1]!=L'\\'?L"\\":L"",path);
+                CoTaskMemFree(path);path=combined;}
+            CoTaskMemFree(base);
+        }
+    }
+    WCHAR normalized[32768];DWORD written=GetFullPathNameW(path,ARRAYSIZE(normalized),normalized,NULL);
+    if(!written || written>=ARRAYSIZE(normalized)){CoTaskMemFree(path);return TRUE;}
+    CoTaskMemFree(path);DWORD attrs=GetFileAttributesW(normalized);
+    if(attrs==INVALID_FILE_ATTRIBUTES || !(attrs&FILE_ATTRIBUTE_DIRECTORY))return TRUE;
+    IShellItem *target=NULL;
+    if(FAILED(SHCreateItemFromParsingName(normalized,NULL,&IID_IShellItem,(void **)&target)))return TRUE;
+    *out=target;
+    return TRUE;
+}
+
+IShellItem *win16_dialog_classic_drive_target(HWND w,LRESULT *selected,HWND *combo_out)
+{
+    HWND combo=GetDlgItem(w,cmb2);LRESULT index=combo?SendMessageW(combo,CB_GETCURSEL,0,0):CB_ERR;
+    LRESULT length=index==CB_ERR?CB_ERR:SendMessageW(combo,CB_GETLBTEXTLEN,(WPARAM)index,0);
+    if(length<2 || length>=MAX_PATH)return NULL;
+    WCHAR label[MAX_PATH],relative[4],path[32768];
+    if(SendMessageW(combo,CB_GETLBTEXT,(WPARAM)index,(LPARAM)label)==CB_ERR || label[1]!=L':' ||
+       !((label[0]>=L'A'&&label[0]<=L'Z')||(label[0]>=L'a'&&label[0]<=L'z')))return NULL;
+    relative[0]=label[0];relative[1]=L':';relative[2]=L'.';relative[3]=0;
+    DWORD written=GetFullPathNameW(relative,ARRAYSIZE(path),path,NULL);
+    if(!written || written>=ARRAYSIZE(path))return NULL;
+    IShellItem *target=NULL;if(FAILED(SHCreateItemFromParsingName(path,NULL,&IID_IShellItem,(void **)&target)))return NULL;
+    *selected=index;*combo_out=combo;return target;
+}
+
+IShellItem *win16_dialog_classic_overwrite_target(HWND w,IShellItem *folder,PCWSTR extension)
+{
+    WCHAR entered[32768],path[32768];HWND edit=GetDlgItem(w,edt1);
+    int length=edit?GetWindowTextW(edit,entered,ARRAYSIZE(entered)):0;
+    if(length<=0 || length>=(int)ARRAYSIZE(entered)-1)return NULL;
+    PCWSTR source=entered;WCHAR combined[32768];PWSTR base=NULL;
+    if((entered[0]==L'\\' || entered[0]==L'/') && entered[1]!=L'\\' && entered[1]!=L'/' && folder &&
+       SUCCEEDED(IShellItem_GetDisplayName(folder,SIGDN_FILESYSPATH,&base))){
+        if(base[0] && base[1]==L':' && (size_t)length+3<=ARRAYSIZE(combined)){
+            combined[0]=base[0];combined[1]=L':';memcpy(combined+2,entered,((size_t)length+1)*sizeof(WCHAR));source=combined;}
+        CoTaskMemFree(base);base=NULL;
+    }
+    PCWSTR relative=entered;
+    if(length>2 && entered[1]==L':' && entered[2]!=L'\\' && entered[2]!=L'/' && folder &&
+       SUCCEEDED(IShellItem_GetDisplayName(folder,SIGDN_FILESYSPATH,&base))){
+        if(base[0] && base[1]==L':' && _wcsnicmp(entered,base,1)==0)relative=entered+2;
+        CoTaskMemFree(base);base=NULL;
+    }
+    if(relative[0]!=L'\\' && relative[0]!=L'/' && !(relative[0] && relative[1]==L':') && folder &&
+       SUCCEEDED(IShellItem_GetDisplayName(folder,SIGDN_FILESYSPATH,&base))){
+        size_t n=wcslen(base);int written=swprintf(combined,ARRAYSIZE(combined),L"%ls%ls%ls",base,
+            n && base[n-1]!=L'\\'?L"\\":L"",relative);
+        CoTaskMemFree(base);
+        if(written<0 || (size_t)written>=ARRAYSIZE(combined))return NULL;
+        source=combined;
+    }
+    DWORD written=GetFullPathNameW(source,ARRAYSIZE(path),path,NULL);
+    if(!written || written>=ARRAYSIZE(path))return NULL;
+    if(extension && *extension){
+        WCHAR *name=wcsrchr(path,L'\\');name=name?name+1:path;
+        if(*name && !wcschr(name,L'.')){size_t base=wcslen(path),ext=wcslen(extension);
+            if(base+1+ext>=ARRAYSIZE(path))return NULL;
+            path[base]=L'.';memcpy(path+base+1,extension,(ext+1)*sizeof(WCHAR));}
+    }
+    DWORD attrs=GetFileAttributesW(path);
+    if(attrs==INVALID_FILE_ATTRIBUTES || (attrs&FILE_ATTRIBUTE_DIRECTORY))return NULL;
+    IShellItem *item=NULL;if(FAILED(SHCreateItemFromParsingName(path,NULL,&IID_IShellItem,(void **)&item)))return NULL;
+    return item;
+}

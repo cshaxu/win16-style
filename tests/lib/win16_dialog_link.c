@@ -15,6 +15,7 @@
 #include "lib/win16-dialog/com_show.h"
 #include "lib/win16-dialog/proxy.h"
 #include "lib/win16-dialog/browse.h"
+#include "lib/win16-dialog/events.h"
 
 static UINT_PTR CALLBACK fake_print_hook(HWND w,UINT message,WPARAM wp,LPARAM lp)
 {(void)w;(void)message;(void)wp;(void)lp;return 0;}
@@ -25,6 +26,16 @@ static HRESULT fake_v2_query(void *owner,REFIID iid,void **out)
 {(void)iid;*out=owner;return S_OK;}
 static ULONG fake_v2_ref(void *owner){return owner?7:0;}
 static BOOL no_session(void){return FALSE;}
+static BOOL test_event_snapshot(void)
+{
+    event_adapter first={0},second={0};win16_dialog_event_snapshot snapshot={0};
+    first.refs=second.refs=1;first.next=&second;
+    if(!win16_dialog_event_snapshot_init(&first,&snapshot))return FALSE;
+    BOOL ok=snapshot.count==2 && snapshot.items[0]==&second && snapshot.items[1]==&first && first.refs==2 && second.refs==2;
+    first.next=NULL;second.owner=NULL;
+    win16_dialog_event_snapshot_free(&snapshot);
+    return ok && first.refs==1 && second.refs==1 && !snapshot.items && !snapshot.count;
+}
 static BOOL test_classic_list_target(void)
 {
     WCHAR dir[MAX_PATH],root[4],wrong[]=L"Z:\\";IShellItem *folder=NULL,*selected=NULL;PWSTR path=NULL;
@@ -47,6 +58,43 @@ done:
     if(selected)IShellItem_Release(selected);
     if(folder)IShellItem_Release(folder);
     if(parent)DestroyWindow(parent);
+    return ok;
+}
+static BOOL test_classic_entry_targets(void)
+{
+    WCHAR dir[MAX_PATH],path[MAX_PATH],drive[3],basename[MAX_PATH];IShellItem *folder=NULL,*item=NULL;PWSTR actual=NULL;
+    HWND parent=NULL,edit=NULL,combo=NULL,selected_combo=NULL;LRESULT index=-1;BOOL ok=FALSE;
+    if(!GetTempPathW(MAX_PATH,dir) || !GetTempFileNameW(dir,L"w16",0,path))return FALSE;
+    parent=CreateWindowExW(0,L"STATIC",L"",WS_OVERLAPPED,0,0,80,80,NULL,NULL,GetModuleHandleW(NULL),NULL);
+    if(parent)edit=CreateWindowExW(0,L"EDIT",L".",WS_CHILD,0,0,40,20,parent,(HMENU)(INT_PTR)edt1,GetModuleHandleW(NULL),NULL);
+    if(parent)combo=CreateWindowExW(0,L"COMBOBOX",L"",WS_CHILD|CBS_DROPDOWNLIST,0,20,40,40,parent,(HMENU)(INT_PTR)cmb2,GetModuleHandleW(NULL),NULL);
+    if(!edit || !combo || FAILED(SHCreateItemFromParsingName(dir,NULL,&IID_IShellItem,(void **)&folder)))goto done;
+    if(!win16_dialog_classic_typed_target(parent,folder,&item) || !item)goto done;
+    int order=1;if(FAILED(IShellItem_Compare(item,folder,SICHINT_CANONICAL,&order)) || order)goto done;
+    IShellItem_Release(item);item=NULL;
+    SetWindowTextW(edit,L"this-folder-does-not-exist-4ff47fc7");
+    if(!win16_dialog_classic_typed_target(parent,folder,&item) || item)goto done;
+    if(win16_dialog_classic_drive_target(parent,&index,&selected_combo))goto done;
+    drive[0]=dir[0];drive[1]=L':';drive[2]=0;
+    if(SendMessageW(combo,CB_ADDSTRING,0,(LPARAM)drive)==CB_ERR)goto done;
+    SendMessageW(combo,CB_SETCURSEL,0,0);item=win16_dialog_classic_drive_target(parent,&index,&selected_combo);
+    if(!item || index!=0 || selected_combo!=combo)goto done;
+    IShellItem_Release(item);item=NULL;
+    SetWindowTextW(edit,path);item=win16_dialog_classic_overwrite_target(parent,folder,NULL);
+    if(!item || FAILED(IShellItem_GetDisplayName(item,SIGDN_FILESYSPATH,&actual)) || lstrcmpiW(actual,path))goto done;
+    CoTaskMemFree(actual);actual=NULL;IShellItem_Release(item);item=NULL;
+    PCWSTR name=wcsrchr(path,L'\\');name=name?name+1:path;
+    if(wcslen(name)>=ARRAYSIZE(basename))goto done;
+    wcscpy(basename,name);WCHAR *dot=wcsrchr(basename,L'.');if(!dot || _wcsicmp(dot,L".tmp"))goto done;
+    *dot=0;SetWindowTextW(edit,basename);item=win16_dialog_classic_overwrite_target(parent,folder,L"tmp");
+    if(!item || FAILED(IShellItem_GetDisplayName(item,SIGDN_FILESYSPATH,&actual)) || lstrcmpiW(actual,path))goto done;
+    ok=TRUE;
+done:
+    if(actual)CoTaskMemFree(actual);
+    if(item)IShellItem_Release(item);
+    if(folder)IShellItem_Release(folder);
+    if(parent)DestroyWindow(parent);
+    if(!DeleteFileW(path))ok=FALSE;
     return ok;
 }
 static HRESULT fallback_show(void *owner,HWND window){observed_owner=owner;observed_a=(ULONG_PTR)window;return E_ABORT;}
@@ -160,7 +208,9 @@ int main(void)
     CoTaskMemFree(copy);
     WCHAR temp[MAX_PATH],unused[MAX_PATH];IShellItem *item=NULL;PWSTR selected=NULL;
     if(FAILED(CoInitializeEx(NULL,COINIT_APARTMENTTHREADED)))return 19;
+    if(!test_event_snapshot()){CoUninitialize();return 40;}
     if(!test_classic_list_target()){CoUninitialize();return 38;}
+    if(!test_classic_entry_targets()){CoUninitialize();return 39;}
     if(!test_capture_selection()){CoUninitialize();return 37;}
     if(!GetTempPathW(MAX_PATH,temp) || !GetTempFileNameW(temp,L"w16",0,unused) || !DeleteFileW(unused))return 20;
     HRESULT item_hr=win16_dialog_save_item(unused,&item);
