@@ -2,7 +2,11 @@
 
 # Deferred Debt
 
-- [ ] TODO(High): S20 启动器被 Windows Defender 检测和处置，用户恢复后 `assets/run16s.exe` 已可读取且摘要一致，`O:/winnt/run16s.exe` 仍缺失；Owner：后续安全审查。Evidence：2026-11-01 只读 `Get-MpThreatDetection` / `Get-MpThreat`，ThreatID 2147731250，名称 `Trojan:Win32/Bearfoos.A!ml`，处理成功；验收包 SHA-256 `1c2e0edcf1fcf975afc6abdeb70a1976725ce6ffadeddb35d47df9347178075f`。是否误报未知。Admission：由维护者向 Microsoft 提交样本并审查分析结果，在不关闭防护或绕过隔离的前提下决定后续处置。
+- [ ] TODO(Medium): 月历模型屏幕 DC 在样式激活时偶现左缘 39 像素差异；Owner：后续月历测试/呈现调查。Evidence：[S22 审计](../history/M0-T21-S22-control-library.md)：迁移前后均可复现，同样式重复采样亦可出现；原因未确定。Admission：识别实际绘制源或可验证的采样条件，保留原始失败及像素断言。
+
+- [ ] TODO(Medium): 颜色控件测试启动期进程级 GDI 对象波动的具体来源；Owner：后续资源生命周期调查。Evidence：[S22 审计](../history/M0-T21-S22-control-library.md)：空闲对照也增长，稳定后重复打印与持续泄漏负例均已检查，不能排除启动期或慢泄漏。Admission：识别对象类型和归属并核实释放，不以等待或重试证明无泄漏。
+
+- [ ] TODO(High): S20 启动器被 Windows Defender 检测和处置，用户恢复后旧 `assets/run16s.exe` 已可读取；S22 后续已以新测试包重建并发布两处，旧检测结论仍待审查；Owner：后续安全审查。Evidence：2026-11-01 只读 `Get-MpThreatDetection` / `Get-MpThreat`，ThreatID 2147731250，名称 `Trojan:Win32/Bearfoos.A!ml`，处理成功；验收包 SHA-256 `1c2e0edcf1fcf975afc6abdeb70a1976725ce6ffadeddb35d47df9347178075f`。是否误报未知。Admission：由维护者向 Microsoft 提交样本并审查分析结果，在不关闭防护或绕过隔离的前提下决定后续处置。
 
 - [ ] TODO(Low): 托盘正式包的自动真实 UAC 和当前桌面点击对照；Owner：后续用户明确要求时的托盘验证。Evidence：[S19 收口记录](../history/M0-T21-S19-tray.md)：用户确认验收通过；P3 隔离夹具覆盖菜单和切换，但自动真实 UAC、真实 Explorer 点击未逐项覆盖。Admission：在用户方便时以自有实例和有限等待验证，不把用户验收扩张为完整自动测试或全部窗口恢复。
 
