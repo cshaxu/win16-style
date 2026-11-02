@@ -2,11 +2,32 @@
 
 ## Current Work
 
+## M0 T21 S21 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Continuation; active |
+| Admission And Approval | 用户指定准入 S21，设计两个内部库并核实安全限制。 |
+| Objective | 设计 src/lib/win16-control 与 src/lib/win16-dialog 的职责、依赖边界和实施验证路线。 |
+| Non-goals | 本 S 不实施产品重构，不改图形资源、公开 ABI、全局或跨进程接入。 |
+| Reference Baseline | S20 验收后的主工作树；安全检测和部署状态见本页。 |
+| Candidate Proposal | [内部库设计候选](../proposals/win16-libraries.md)。 |
+| Files And ABI Surface | 活动状态及设计文档；不修改产品代码或导出。 |
+| Applicable Rules | 固定 M0、三组件四产物、纯 C17、原资源与来源声明不变。 |
+| Verification | 阅读现有源码与构建依赖、核对设计与调用边界、治理检查。 |
+| Expected Markers | 两库职责、混合依赖、行为边界、安全限制与实施顺序可审阅。 |
+| Asset Needs | 无新增运行时文件或图形资源。 |
+| Reporting Requirements | 区分设计与已实现功能，说明未覆盖面和限制。 |
+| Stop Conditions | 跨进程接入重构或公开 ABI 改动超出本设计范围；检测问题不通过修改防护掩盖。 |
+| Exit Criteria | 设计及依赖边界完成审阅，治理验证并交付；后续实现另行按规范准入。 |
+| Original Owner Request | 设计 win16-control 与 win16-dialog，说明能否协助及安全限制。 |
+| Similar-Issue Sweep | 搜索 controls、attachment、paint、menu、dialog 和构建源文件引用。 |
+
 2026-11-01 发布状态变化：Windows Defender 将 S20 的 `run16s.exe` 检测为 `Trojan:Win32/Bearfoos.A!ml`（ThreatID 2147731250）；只读检测记录显示处理成功。用户报告已恢复文件后复核：`assets/run16s.exe` 已可读取且 SHA-256 与验收版本一致，`O:/winnt/run16s.exe` 仍缺失；其他三份 O:/winnt 产品文件仍存在。是否误报尚未确认，不关闭防护或添加排除项；后续由用户或维护者向 Microsoft 提交样本核查。S20 的用户验收和曾经的发布摘要保留为历史事实，不代表当前部署完整。
 
 S20 经用户确认验收通过并收口。双位宽干净构建、10 项聚焦实包回归和 LibTray 双位宽消息测试通过；四文件发布至 assets 根目录与 O:/winnt 并核对摘要，产品提交 `8f25892` 已推送并读取远端复核。用户未逐项描述验收操作；自动探针、真实全局接入恢复及失败限制见 [S20 记录](../history/M0-T21-S20-tray-library.md)。旧 ntw16s64 映像仍被系统和当前会话进程映射，保留在 `build/t21-package/s20-release-backup/held-ntw16s64.dll`。
 
-M0 固定；T21 保持开放，当前无活动任务包，S20、S19、S18、S17、S16 已收口。P97 同批干净包已通过 30 项聚焦回归并发布到 assets 根目录及 O:/winnt，产品提交 `33b4638` 已推送；实际读取远端四文件，与测试包及两处发布文件 SHA-256 均一致。该包随后完成双位宽管理员跨权限实测，记录已推送并读取远端复核（`a299eec`）。S13 与 T21 覆盖边界见 [S13 收口审计](../history/M0-T21-S13-vb-global-investigation.md)。
+M0 固定；T21 保持开放，S21 为当前活动任务，S20、S19、S18、S17、S16 已收口。P97 同批干净包已通过 30 项聚焦回归并发布到 assets 根目录及 O:/winnt，产品提交 `33b4638` 已推送；实际读取远端四文件，与测试包及两处发布文件 SHA-256 均一致。该包随后完成双位宽管理员跨权限实测，记录已推送并读取远端复核（`a299eec`）。S13 与 T21 覆盖边界见 [S13 收口审计](../history/M0-T21-S13-vb-global-investigation.md)。
 
 S19 已按用户验收通过而收口；T21 保持开放。最终 39 号徽标包 `82eee1b` 已发布至 assets 根目录与 O:/winnt，且与远端逐项核对一致。用户未逐项列出验收操作，真实 UAC 自动回归、所有窗口恢复和进程内 trampoline 的物理移除不据此宣称通过；详细过程见 [S19 记录](../history/M0-T21-S19-tray.md)。
 
@@ -182,9 +203,9 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
-- Last allocated T21 S: 20
+- Last allocated T21 S: 21
 - Last verified remote delivery: M0 T21 S20 P1，`8f25892`；四产品已复核一致。
-- Open task: T21；当前无活动 S，S20、S19、S18、S17、S16、S15 已收口；Explorer.exe 仍被排除。
+- Open task: T21；S21 活动中，S20、S19、S18、S17、S16、S15 已收口；Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。
