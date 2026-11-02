@@ -7,6 +7,7 @@
 #include "lib/win16-control/frame_layout.h"
 #include "lib/win16-control/frame_view.h"
 #include "lib/win16-control/frame_state.h"
+#include "lib/win16-control/control_state.h"
 #include "lib/win16-control/list_paint.h"
 #include "lib/win16-control/theme_state.h"
 #include "lib/win16-control/custom_draw.h"
@@ -40,6 +41,13 @@ static void test_button_paint(HWND w,void *context,int hit)
 {(void)w;(void)context;if(hit==HTMINBUTTON)++button_paints;}
 int main(void)
 {
+    control_style *control=win16_control_state_create();
+    if(!control || control->font || control->protocol || control->tab_positions || control->calls)return 38;
+    control->tab_positions=malloc(2*sizeof(*control->tab_positions));
+    control->font=win16_style_menu_font_acquire(96);
+    control->combo_fonts[0]=win16_style_menu_font_acquire(96);control->combo_font_count=1;
+    if(!control->tab_positions || !control->font || !control->combo_fonts[0]){win16_control_state_dispose(control);return 39;}
+    win16_control_state_dispose(control);
     style_window *owned=win16_control_frame_state_create();
     if(!owned || owned->menus || owned->title_font || owned->menu_font || owned->calls)return 34;
     menu_loop outer_loop={.depth=1};owned->menus=&outer_loop;owned->menu_depth=2;
@@ -115,6 +123,17 @@ int main(void)
     DeleteObject(title);win16_style_system_release(menu);
     HWND window=CreateWindowExW(0,L"STATIC",L"",WS_OVERLAPPED,20,20,100,100,NULL,NULL,GetModuleHandleW(NULL),NULL);
     if(!window)return 10;
+    control_style *font_state=win16_control_state_create();HFONT old_font=NULL,outbound_font=NULL;
+    HFONT application_font=(HFONT)GetStockObject(SYSTEM_FONT);WPARAM font_parameter=(WPARAM)application_font;
+    if(!font_state || !win16_control_state_prepare_font(window,font_state,WM_SETFONT,&font_parameter,TRUE,&old_font,&outbound_font) ||
+       font_state->original_font!=application_font || font_parameter!=(WPARAM)application_font || !outbound_font){
+        if(font_state)win16_control_state_dispose(font_state);
+        DestroyWindow(window);return 40;}
+    win16_style_system_release(outbound_font);win16_style_system_release(old_font);
+    font_state->detached=TRUE;font_parameter=(WPARAM)application_font;
+    if(win16_control_state_prepare_font(window,font_state,WM_SETFONT,&font_parameter,FALSE,&old_font,&outbound_font)){
+        win16_control_state_dispose(font_state);DestroyWindow(window);return 41;}
+    win16_control_state_dispose(font_state);
     int pressed=HTMINBUTTON;BOOL hot=FALSE,button_detached=FALSE;
     const win16_control_frame_button_view button_view={NULL,&pressed,&hot,&button_detached,test_button_layout,test_button_paint};
     if(!win16_control_frame_button_motion(window,&button_view,WM_MOUSEMOVE,MAKELPARAM(0,0)) || !hot || button_paints!=1 ||

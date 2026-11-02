@@ -105,7 +105,11 @@ P6 干净包 `s24-p6-clean-1` 双宽构建与来源、资源和治理门禁通�
 
 P6 后将窗口框架状态结构、字体与菜单资源释放、嵌套菜单进入/退出以及框架属性启用/恢复迁入 win16-control；调用层持有同一状态并提供原系统属性函数。双宽增量构建和框架/独立库测试各 2/2 通过，包含字体句柄释放、内层菜单入口失败时保留外层及属性恢复测试。最新实际候选包的双宽菜单取消、隐藏窗口及 VB6 MDI 恢复聚焦 14/14、无跳过。中途测试源曾因局部变量重名无法编译，修正后通过；此前候选同类聚焦也 14/14 通过。上述为增量候选证据。scratch：`s24-frame-policy-unit-x86`、`s24-frame-policy-unit-x64`、`s24-frame-policy-candidate`、`s24-frame-policy-focused`、`s24-frame-state-unit-x86`、`s24-frame-state-unit-x64`、`s24-frame-menu-unit-x86`、`s24-frame-menu-unit-x64`、`s24-frame-menu-candidate`、`s24-frame-menu-focused`。
 
-P7 干净包 `s24-p7-clean-1` 双宽构建、来源、资源和治理检查通过；实际包 `s24-p7-focused-1` 聚焦 14/14、无跳过，覆盖双宽菜单取消、隐藏窗口和 VB6 MDI 恢复；干净树双宽框架及控件库测试各 2/2 通过。同批四文件已发布 assets 根目录及 O:/winnt 并核对摘要（`s24-p7-deploy-1`），提交及远端复核待完成。实验事件链和此前屏幕采样仍未覆盖，S24 保持开放。
+P7 干净包 `s24-p7-clean-1` 双宽构建、来源、资源和治理检查通过；实际包 `s24-p7-focused-1` 聚焦 14/14、无跳过，覆盖双宽菜单取消、隐藏窗口和 VB6 MDI 恢复；干净树双宽框架及控件库测试各 2/2 通过。同批四文件已发布 assets 根目录及 O:/winnt 并核对摘要（`s24-p7-deploy-1`）；提交 `7abcb8c48dbb985224ac30af2164a59bb345e2cc` 已推送，远端四文件和两个库代表源码读取核对一致。实验事件链和此前屏幕采样仍未覆盖，S24 保持开放。
+
+P7 后将控件状态结构、字体/协议/制表位资源所有权和绘制或字体消息时的字体租约准备迁入 win16-control；窗口入口仍持有唯一状态并处理原有消息顺序。双宽增量构建及控件库、绘图故障、生命周期各 3/3 通过；最终增量候选双宽应用字体、VB 复选列表和 VCL 输入框聚焦回归 14/14、无跳过。此前仅迁移状态时，列表滚动、上下微调及 VB Data 候选聚焦 14/14 通过。上述为不同增量快照，不能相加当作完整覆盖。scratch：`s24-control-state-unit-x86`、`s24-control-state-unit-x64`、`s24-control-state-candidate`、`s24-control-state-focused`、`s24-control-font-unit-x86`、`s24-control-font-unit-x64`、`s24-control-font-candidate`、`s24-control-font-focused`。
+
+P8 干净包 `s24-p8-clean-1` 双宽构建及来源、资源和治理门禁通过；实际包 `s24-p8-focused-1` 聚焦 18/18、无跳过，包含双宽 12 字体变体布局、列表滚动、VB 复选列表及 VCL 输入框；干净树双宽字体、绘图故障、生命周期与控件库各 4/4 通过。同批四文件已发布 assets 根目录与 O:/winnt 并核对摘要（`s24-p8-deploy-1`），提交和远端复核待完成。实验事件链及此前屏幕采样仍未覆盖，S24 保持开放。
 
 首次干净构建在 x86 因 DC 故障夹具仍引用旧 `frame_changed` 而失败；随后全目标增量构建又发现独立字体夹具缺少 `GetDpiForWindow` 声明。已更新夹具调用并将框架字体策略移至独立 `frame_font.c`，保持原字体夹具编译条件；双宽全目标增量构建及 ABI、几何、独立链接、DC 故障、列表制表位各 5/5 通过。首次干净构建不计通过，准备使用 `s24-stage-clean-2` 重建。scratch：`s24-all-fix-x86`、`s24-all-fix-x64`。
 

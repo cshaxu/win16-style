@@ -27,6 +27,7 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include "../lib/win16-control/choice_view.h"
 #include "../lib/win16-control/custom_draw.h"
 #include "../lib/win16-control/spin_identity.h"
+#include "../lib/win16-control/control_state.h"
 
 #include "../lib/win16-control/scroll_assets.h"
 #include "scroll_track.h"
@@ -48,41 +49,6 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include <stdlib.h>
 #include <limits.h>
 
-typedef struct control_style {
-    win16_style_palette palette;
-    unsigned calls;
-    BOOL detached,removing,file_owner;
-    HFONT font,original_font;
-    BOOL edit_border;
-    HWND combo_list,combo_edit,combo_parent;
-    HFONT combo_edit_font,combo_edit_source,combo_fonts[32];
-    unsigned combo_font_count,combo_paints;
-    BOOL combo_bound,combo_passthrough,common_dialog_combo;
-    HWND common_dialog_parent;
-    struct control_style *owner;
-    const void *creation_owner;
-    ntw16s_control_protocol *protocol;
-    win16_scroll_track scroll;
-    UINT_PTR scroll_timer;
-    unsigned scroll_epoch;
-    unsigned tab_epoch;
-    unsigned header_epoch,progress_epoch;
-    HWND track_parent,track_window;
-    BOOL track_internal;
-    HWND toolbar_parent,toolbar_window;
-    BOOL toolbar_internal;
-    ntw16s_updown_paint updown;
-    int header_pressed;
-    BOOL scroll_reporting,scroll_key;
-    LONG scroll_report;
-    BOOL list_scrollbar,edit_scrollbars,frame_scrollbars,native_border,list_redraw_off,legacy_progress_border,list_theme_owned;
-    unsigned list_suppression;
-    HWND list_capture_before;
-    LONG embedded_object;
-    BOOL scroll_caret,scroll_caret_shown;
-    SIZE scroll_caret_size;
-    int tab_count,*tab_positions;
-} control_style;
 typedef struct track_paint_scope {
     struct track_paint_scope *previous;
     control_style *owner;
@@ -103,8 +69,6 @@ static NTW16S_UNWIND_FUNCTION LRESULT track_paint_dispatch(control_style *s,HWND
     SetLastError(entry);result=DefSubclassProc(w,m,a,b);error=GetLastError();
     NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
 }
-static void dispose_control(control_style *s)
-{for(unsigned i=0;i<s->combo_font_count;++i)win16_style_system_release(s->combo_fonts[i]);win16_style_system_release(s->font);ntw16s_control_protocol_release(s->protocol);free(s->tab_positions);free(s);}
 static LRESULT CALLBACK control_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static LRESULT CALLBACK trackbar_notify(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static LRESULT CALLBACK toolbar_notify(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
@@ -115,7 +79,7 @@ static BOOL updown_acquire(void *owner)
     ++s->calls;return TRUE;
 }
 static void updown_release(void *owner)
-{control_style *s=owner;if(!--s->calls && s->detached)dispose_control(s);}
+{control_style *s=owner;if(!--s->calls && s->detached)win16_control_state_dispose(s);}
 
 /* Keep native-painter borrowed font returns alive through reentrant setters.
  * Finite cache follows the existing 32-lease VB text scope limit. */
@@ -153,7 +117,7 @@ static LRESULT CALLBACK combo_text_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR
     }
     if(painting)--s->combo_paints;
     win16_style_system_release(outbound);win16_style_system_release(pinned);
-    if(!--s->calls && s->detached)dispose_control(s);
+    if(!--s->calls && s->detached)win16_control_state_dispose(s);
     return result;
 }
 static void combo_text_unbind(control_style *s,BOOL terminal)
@@ -213,10 +177,10 @@ static LRESULT CALLBACK trackbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UIN
                     scope->item=draw->dwItemSpec;scope->rect=draw->rc;scope->pending=TRUE;result=CDRF_NOTIFYPOSTPAINT;
                 }
             }
-            if(!--s->calls && s->detached)dispose_control(s);
+            if(!--s->calls && s->detached)win16_control_state_dispose(s);
             SetLastError(error);return result;
         }
-        if(!--s->calls && s->detached)dispose_control(s);
+        if(!--s->calls && s->detached)win16_control_state_dispose(s);
         SetLastError(entry);return result;
     }
     if(draw && draw->dwDrawStage!=CDDS_PREPAINT && s->track_internal)internal=TRUE;
@@ -225,7 +189,7 @@ static LRESULT CALLBACK trackbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UIN
     result=internal?CDRF_DODEFAULT:DefSubclassProc(parent,m,p,l);DWORD error=GetLastError();
     if(draw && !s->detached)result=win16_control_custom_draw_after(s->track_window,draw,&s->track_internal,internal,result,
         &s->palette,win16_style_trackbar_supported,win16_style_trackbar_part);
-    if(!--s->calls && s->detached)dispose_control(s);
+    if(!--s->calls && s->detached)win16_control_state_dispose(s);
     SetLastError(error);return result;
 }
 /* The OCX wrapper retains command routing and its return values.  Item drawing
@@ -243,7 +207,7 @@ static LRESULT CALLBACK toolbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT
     SetLastError(entry);result=internal?CDRF_DODEFAULT:DefSubclassProc(parent,m,p,l);DWORD error=GetLastError();
     if(draw && !s->detached)result=win16_control_custom_draw_after(s->toolbar_window,draw,&s->toolbar_internal,internal,result,
         &s->palette,win16_style_toolbar_supported,win16_style_toolbar_part);
-    if(!--s->calls && s->detached)dispose_control(s);
+    if(!--s->calls && s->detached)win16_control_state_dispose(s);
     SetLastError(error);return result;
 }
 
@@ -575,34 +539,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         if(!s->detached)win16_style_control_remove(w);
         goto finished;
     }
-    /* VB owns an IFont and can change it without WM_SETFONT. Query at the
-     * paint boundary; never overwrite that application's font property. */
-    if(!s->frame_scrollbars && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT) &&
-            (native_font || ntw16s_vb_frame(w) || ntw16s_vb_edit(w) || ntw16s_vb_button(w) || ntw16s_vb_combo(w) || ntw16s_vb_list(w))){
-        HFONT source=(HFONT)SendMessageW(w,WM_GETFONT,0,0);
-        if(!s->detached && source!=s->original_font){
-            HFONT replacement=native_font?win16_style_system_acquire(source):win16_style_vb_font_acquire(source);
-            previous=s->font;s->original_font=source;s->font=replacement?replacement:source;
-        }
-    }
-    if(s->detached)goto finished;
-    if(m==WM_SETFONT && s->combo_passthrough){
-        s->original_font=win16_style_system_source((HFONT)a);a=(WPARAM)s->original_font;
-        if(((DWORD)GetWindowLongPtrW(w,GWL_STYLE)&3)==CBS_DROPDOWNLIST){
-            HFONT replacement=win16_style_system_acquire(s->original_font);previous=s->font;s->font=replacement?replacement:s->original_font;
-        }
-    }
-    if(m==WM_SETFONT && !s->frame_scrollbars && !s->combo_passthrough){
-        HFONT original=win16_style_system_source((HFONT)a);
-        BOOL vb=ntw16s_vb_frame(w) || ntw16s_vb_edit(w) || ntw16s_vb_button(w) || ntw16s_vb_combo(w) || ntw16s_vb_list(w);
-        HFONT replacement=vb?win16_style_vb_font_acquire(original):win16_style_system_acquire(original);
-        previous=s->font;s->original_font=original;
-        s->font=replacement?replacement:original;
-        outbound=s->font;win16_style_system_retain(outbound);
-        /* Native tab geometry/hit testing belongs to the application's font.
-         * Only our painter borrows the existing System glyph lease. */
-        a=(WPARAM)((native_font || ntw16s_vb_checklist_owner(w))?original:s->font);
-    }
+    if(!win16_control_state_prepare_font(w,s,m,&a,native_font,&previous,&outbound))goto finished;
     if(m==WM_NCDESTROY){(void)win16_style_control_terminal(w);
         result=DefSubclassProc(w,m,a,b);}
     else if(tab){
@@ -916,7 +853,7 @@ finished:
      * with the previous lease. Never delete the application's borrowed font. */
     win16_style_system_release(previous);
     win16_style_system_release(outbound);win16_style_system_release(pinned);
-    if(!--s->calls && s->detached)dispose_control(s);
+    if(!--s->calls && s->detached)win16_control_state_dispose(s);
     return result;
 }
 
@@ -932,14 +869,14 @@ static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL ori
         if((tab_count && !tabs) || (size_t)tab_count>((size_t)-1)/sizeof(int)){
             SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
     }else if(!frame_bars && (!supported(w) || is_edit(w)!=edit)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
-    s=calloc(1,sizeof(*s));if(!s)return FALSE;
+    s=win16_control_state_create();if(!s)return FALSE;
     s->creation_owner=creation_owner;
     s->header_pressed=-1;
     SetLastError(ERROR_SUCCESS);
     s->protocol=ntw16s_control_protocol_acquire(w);
-    if(!s->protocol && GetLastError()==ERROR_ARITHMETIC_OVERFLOW){dispose_control(s);SetLastError(ERROR_ARITHMETIC_OVERFLOW);return FALSE;}
+    if(!s->protocol && GetLastError()==ERROR_ARITHMETIC_OVERFLOW){win16_control_state_dispose(s);SetLastError(ERROR_ARITHMETIC_OVERFLOW);return FALSE;}
     if(tabbed && tab_count){s->tab_positions=malloc((size_t)tab_count*sizeof(int));
-        if(!s->tab_positions){dispose_control(s);return FALSE;}
+        if(!s->tab_positions){win16_control_state_dispose(s);return FALSE;}
         CopyMemory(s->tab_positions,tabs,(size_t)tab_count*sizeof(int));s->tab_count=tab_count;}
     s->edit_border=edit && original_border;
     s->frame_scrollbars=frame_bars;
@@ -947,14 +884,14 @@ static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL ori
     s->common_dialog_parent=s->common_dialog_combo?GetParent(w):NULL;
     s->file_owner=!frame_bars && (ntw16s_vb_owner_file(w) || s->common_dialog_combo);s->combo_passthrough=ntw16s_vcl_combo_candidate(w);
     if(!frame_bars){s->original_font=(HFONT)SendMessageW(w,WM_GETFONT,0,0);
-        if(cancelled && *cancelled){dispose_control(s);SetLastError(ERROR_CANCELLED);return FALSE;}
+        if(cancelled && *cancelled){win16_control_state_dispose(s);SetLastError(ERROR_CANCELLED);return FALSE;}
         /* The font query may reenter installation. Do not replace that
          * successful attachment's subclass data with this outer attempt. */
         if(GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&existing)){
-            dispose_control(s);SetLastError(ERROR_ALREADY_EXISTS);return FALSE;}
+            win16_control_state_dispose(s);SetLastError(ERROR_ALREADY_EXISTS);return FALSE;}
         s->original_font=win16_style_system_source(s->original_font);}
     if(palette)s->palette=*palette;else win16_style_default_palette(&s->palette);
-    if(!SetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,(DWORD_PTR)s)){dispose_control(s);return FALSE;}
+    if(!SetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,(DWORD_PTR)s)){win16_control_state_dispose(s);return FALSE;}
     /* Child attachment and WM_SETFONT can synchronously remove/destroy us.
      * Retain this attempt until its result is known, just like a callback. */
     ++s->calls;
@@ -994,7 +931,7 @@ static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL ori
         if(!s->detached)RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);}
 installed:
     if(s->detached){result=FALSE;SetLastError(ERROR_CANCELLED);}
-    if(!--s->calls && s->detached)dispose_control(s);
+    if(!--s->calls && s->detached)win16_control_state_dispose(s);
     return result;
 }
 /* Called only for the known owner-drawn drive combo in a system old-style
@@ -1064,7 +1001,7 @@ BOOL win16_style_trackbar_install_created(HWND w,const win16_style_palette *pale
     if(okay)SendMessageW(w,WM_SYSCOLORCHANGE,0,0);
     if(s->detached)okay=FALSE;
     if(!okay && !s->detached)win16_style_control_remove_owned(w,owner);
-    if(!--s->calls && s->detached)dispose_control(s);
+    if(!--s->calls && s->detached)win16_control_state_dispose(s);
     return okay;
 }
 BOOL win16_style_toolbar_install_created(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled)
@@ -1078,7 +1015,7 @@ BOOL win16_style_toolbar_install_created(HWND w,const win16_style_palette *palet
     BOOL okay=s->toolbar_parent && SetWindowSubclass(s->toolbar_parent,toolbar_notify,(UINT_PTR)w,(DWORD_PTR)s);
     if(s->detached)okay=FALSE;
     if(!okay && !s->detached)win16_style_control_remove_owned(w,owner);
-    if(!--s->calls && s->detached)dispose_control(s);
+    if(!--s->calls && s->detached)win16_control_state_dispose(s);
     return okay;
 }
 BOOL win16_style_progress_install_created(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled)
@@ -1125,7 +1062,7 @@ BOOL win16_style_grid_install_created(HWND w,const win16_style_palette *palette,
     }
     if(s->detached || (cancelled && *cancelled)){result=FALSE;SetLastError(ERROR_CANCELLED);}
     if(!result && !s->detached)win16_style_control_remove_owned(w,owner);
-    if(!--s->calls && s->detached)dispose_control(s);
+    if(!--s->calls && s->detached)win16_control_state_dispose(s);
     return result;
 }
 BOOL win16_style_picture_install_created(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled)
@@ -1220,7 +1157,7 @@ BOOL win16_style_control_remove(HWND w)
     /* End the live gesture while queries still see its full-width report.
      * The application may remove again or destroy the HWND in this notice. */
     scroll_finish(w,s,TRUE);
-    if(s->detached){if(!--s->calls)dispose_control(s);return TRUE;}
+    if(s->detached){if(!--s->calls)win16_control_state_dispose(s);return TRUE;}
     if(!RemoveWindowSubclass(w,control_proc,(UINT_PTR)control_proc)){
         s->removing=FALSE;--s->calls;return FALSE;}
     s->detached=TRUE;ntw16s_updown_retire(&s->updown);BOOL track=s->track_window!=NULL;trackbar_unbind(s);toolbar_unbind(s);combo_text_unbind(s,FALSE);detach_combo_list(s);
@@ -1232,7 +1169,7 @@ BOOL win16_style_control_remove(HWND w)
     if(s->list_suppression && !s->list_redraw_off)SendMessageW(w,WM_SETREDRAW,TRUE,0);
     scroll_stop_timer(w,s);
     if(s->scroll.active){s->scroll.active=FALSE;scroll_release_capture(w,s);}
-    if(!--s->calls)dispose_control(s);
+    if(!--s->calls)win16_control_state_dispose(s);
     if(track && IsWindow(w))SendMessageW(w,WM_SYSCOLORCHANGE,0,0);
     RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);
     if(is_scroll(w) && GetFocus()==w)SendMessageW(w,WM_SETFOCUS,0,0);
@@ -1260,6 +1197,6 @@ BOOL win16_style_control_terminal(HWND w)
     scroll_caret_destroy(w,s);
     scroll_stop_timer(w,s);
     combo_text_unbind(s,TRUE);result=terminal_combo_list(s);
-    if(!--s->calls)dispose_control(s);
+    if(!--s->calls)win16_control_state_dispose(s);
     return result;
 }
