@@ -23,7 +23,7 @@
 | Original Owner Request | 通用托盘库，菜单和回调由项目注入，接入现有产品并清理旧路径。 |
 | Similar-Issue Sweep | 搜索 tray.c、托盘调用、测试夹具及构建源文件引用。 |
 
-S20 已通过双位宽干净构建、10 项聚焦实包回归和 LibTray 双位宽消息测试，四文件已发布至 assets 根目录与 O:/winnt 并核对摘要；尚待推送及用户验收。真实 Explorer 点击及全局接入恢复未由本次证明。旧 ntw16s64 映像仍被系统和当前会话进程映射，保留在 `build/t21-package/s20-release-backup/held-ntw16s64.dll`；证据、摘要、首次失败和未覆盖面见 [S20 记录](../history/M0-T21-S20-tray-library.md)。
+S20 已通过双位宽干净构建、10 项聚焦实包回归和 LibTray 双位宽消息测试，四文件已发布至 assets 根目录与 O:/winnt 并核对摘要；产品提交 `8f25892` 已推送，实际读取远端四文件及 LibTray 源码逐项核对一致，尚待用户验收。真实 Explorer 点击及全局接入恢复未由本次证明。旧 ntw16s64 映像仍被系统和当前会话进程映射，保留在 `build/t21-package/s20-release-backup/held-ntw16s64.dll`；证据、摘要、首次失败和未覆盖面见 [S20 记录](../history/M0-T21-S20-tray-library.md)。
 
 M0 固定；T21 保持开放，S20 为当前活动任务，S19、S18、S17、S16 已收口。P97 同批干净包已通过 30 项聚焦回归并发布到 assets 根目录及 O:/winnt，产品提交 `33b4638` 已推送；实际读取远端四文件，与测试包及两处发布文件 SHA-256 均一致。该包随后完成双位宽管理员跨权限实测，记录已推送并读取远端复核（`a299eec`）。S13 与 T21 覆盖边界见 [S13 收口审计](../history/M0-T21-S13-vb-global-investigation.md)。
 
