@@ -5,6 +5,7 @@
 #include "layout.h"
 #include "../lib/win16-control/frame_paint.h"
 #include "../lib/win16-control/frame_view.h"
+#include "../lib/win16-control/frame_state.h"
 #include "../lib/win16-control/frame_layout.h"
 #include "../lib/win16-control/present.h"
 #include "menu_bar.h"
@@ -16,35 +17,12 @@
 #include <commctrl.h>
 #include <dwmapi.h>
 #include <windowsx.h>
-#include <stdlib.h>
 #include <string.h>
 
 void win16_style_menu_system(win16_style_menu_scope *scope,HMENU menu,HFONT font,UINT dpi);
 
-typedef struct menu_loop {
-    win16_style_menu_scope *scope;
-    unsigned depth;
-    struct menu_loop *previous;
-} menu_loop;
-typedef struct style_window {
-    win16_style_palette palette;
-    HFONT title_font,menu_font; /* Title unchanged; menu owns a System variant. */
-    UINT dpi, calls;
-    BOOL active, detached, hot, system_menu, dialog, menu_only;
-    int pressed,bar_selected,bar_direction,bar_hover;
-    BOOL bar_keyboard;
-    HWND bar_focus;
-    win16_style_menu_item *menu_items;
-    menu_loop *menus;
-    unsigned menu_depth;
-    DWORD old_policy;
-    BOOL policy_saved, pending_frame;
-    const void *creation_owner;
-} style_window;
-
 static LRESULT CALLBACK style_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static LRESULT CALLBACK style_proc_body(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
-static void dispose(style_window *);
 
 typedef struct menu_frame {
     HWND window;
@@ -252,7 +230,7 @@ static void open_bar(HWND w,style_window *s,int index)
                 }else break;
                 ++target->calls;
                 leave_bar(w,s,FALSE);
-                if(!--s->calls && s->detached)dispose(s);
+                if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);
                 w=next.hwndNext;s=target;index=next_index;
                 if(s->detached)break;
                 SetFocus(w);
@@ -278,35 +256,14 @@ static void open_bar(HWND w,style_window *s,int index)
     /* Switching a mouse-opened popup uses the keyboard iterator internally,
      * but must not leave Alt/F10 mode armed after cancellation. */
     if(mouse_origin && !s->detached)leave_bar(w,s,TRUE);
-    if(!--s->calls && s->detached)dispose(s);
+    if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);
 }
 
 static BOOL refresh_font(HWND w,style_window *s)
 {return win16_control_refresh_frame_fonts(w,&s->dpi,&s->title_font,&s->menu_font);}
 
-static void end_menu_scope(style_window *s)
-{
-    menu_loop *loop=s->menus;
-    if(loop){s->menus=loop->previous;win16_style_menu_end(loop->scope);free(loop);}
-}
-
-static void dispose(style_window *s)
-{
-    while(s->menus)end_menu_scope(s);
-    win16_style_menu_restore(&s->menu_items);
-    if(s->title_font)DeleteObject(s->title_font);
-    win16_style_system_release(s->menu_font);
-    free(s);
-}
-
 static void activate_frame(HWND w,style_window *s,const RECT *client,BOOL normal)
-{
-    DWORD policy=DWMNCRP_DISABLED;
-    if(!(GetWindowLongPtr(w,GWL_STYLE)&WS_CHILD))
-        DwmSetWindowAttribute(w,DWMWA_NCRENDERING_POLICY,&policy,sizeof(policy));
-    if(!s->detached)win16_control_frame_changed(w);
-    if(!s->detached && normal)win16_control_restore_client(w,client);
-}
+{win16_control_frame_activate(w,&s->detached,client,normal,DwmSetWindowAttribute);}
 
 static BOOL install_frame(HWND w,const win16_style_palette *p,BOOL creating,const void *owner,const BOOL *cancelled)
 {
@@ -321,7 +278,7 @@ static BOOL install_frame(HWND w,const win16_style_palette *p,BOOL creating,cons
         SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
     }
     normal=!IsIconic(w)&&!IsZoomed(w);
-    s=(style_window *)calloc(1,sizeof(*s));
+    s=win16_control_frame_state_create();
     if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
     s->bar_selected=-1;s->creation_owner=owner;s->calls=1;
     s->pending_frame=creating && normal && !(style&WS_VISIBLE);
@@ -329,20 +286,20 @@ static BOOL install_frame(HWND w,const win16_style_palette *p,BOOL creating,cons
     if(p)s->palette=*p;else win16_style_default_palette(&s->palette);
     s->active=(ex&WS_EX_MDICHILD)?
         (HWND)SendMessageW(GetParent(w),WM_MDIGETACTIVE,0,0)==w:GetActiveWindow()==w;
-    if(!refresh_font(w,s)){dispose(s);SetLastError(ERROR_INVALID_DATA);return FALSE;}
+    if(!refresh_font(w,s)){win16_control_frame_state_dispose(s);SetLastError(ERROR_INVALID_DATA);return FALSE;}
     {win16_style_layout checked;
-        if(!layout(w,s,&checked)){dispose(s);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}}
+        if(!layout(w,s,&checked)){win16_control_frame_state_dispose(s);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}}
     win16_control_client_screen(w,&client);
     s->policy_saved=!(style&WS_CHILD) && SUCCEEDED(DwmGetWindowAttribute(w,DWMWA_NCRENDERING_POLICY,
         &s->old_policy,sizeof(s->old_policy)));
-    if(cancelled && *cancelled){dispose(s);SetLastError(ERROR_CANCELLED);return FALSE;}
-    if(!SetWindowSubclass(w,style_proc,STYLE_ID,(DWORD_PTR)s)){dispose(s);return FALSE;}
+    if(cancelled && *cancelled){win16_control_frame_state_dispose(s);SetLastError(ERROR_CANCELLED);return FALSE;}
+    if(!SetWindowSubclass(w,style_proc,STYLE_ID,(DWORD_PTR)s)){win16_control_frame_state_dispose(s);return FALSE;}
     /* Bars may be added by range/visibility changes after attachment. Keep
      * one frame tracker ready instead of conditionally installing it later. */
     if(!win16_style_frame_scrollbars_install_owned(w,&s->palette,s,&s->detached)){
         DWORD error=GetLastError();
         if(state(w)==s)win16_style_remove(w);
-        if(!--s->calls && s->detached)dispose(s);
+        if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);
         SetLastError(error);return FALSE;
     }
     /* Initial minimized/maximized creation is valid too. Native USER owns
@@ -350,7 +307,7 @@ static BOOL install_frame(HWND w,const win16_style_palette *p,BOOL creating,cons
      * transient icon/maximized client rectangle. Restore uses normal layout. */
     if(!s->pending_frame)activate_frame(w,s,&client,normal);
     --s->calls;
-    if(s->detached){dispose(s);SetLastError(cancelled && *cancelled?ERROR_CANCELLED:ERROR_INVALID_WINDOW_HANDLE);return FALSE;}
+    if(s->detached){win16_control_frame_state_dispose(s);SetLastError(cancelled && *cancelled?ERROR_CANCELLED:ERROR_INVALID_WINDOW_HANDLE);return FALSE;}
     return TRUE;
 }
 
@@ -358,11 +315,11 @@ static BOOL install_frame(HWND w,const win16_style_palette *p,BOOL creating,cons
 BOOL win16_style_menu_owner_install_created(HWND w,const void *owner,const BOOL *cancelled)
 {
  if(!local_window(w)||state(w)){SetLastError(ERROR_INVALID_STATE);return FALSE;}
- style_window *s=calloc(1,sizeof(*s));if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
+ style_window *s=win16_control_frame_state_create();if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
  s->creation_owner=owner;s->menu_only=TRUE;s->dpi=GetDpiForWindow(w);if(!s->dpi)s->dpi=96;
  win16_style_default_palette(&s->palette);s->menu_font=win16_style_menu_font_acquire(s->dpi);
- if(!s->menu_font || (cancelled&&*cancelled)){dispose(s);SetLastError(ERROR_CANCELLED);return FALSE;}
- if(!SetWindowSubclass(w,style_proc,STYLE_ID,(DWORD_PTR)s)){DWORD error=GetLastError();dispose(s);SetLastError(error);return FALSE;}
+ if(!s->menu_font || (cancelled&&*cancelled)){win16_control_frame_state_dispose(s);SetLastError(ERROR_CANCELLED);return FALSE;}
+ if(!SetWindowSubclass(w,style_proc,STYLE_ID,(DWORD_PTR)s)){DWORD error=GetLastError();win16_control_frame_state_dispose(s);SetLastError(error);return FALSE;}
  return TRUE;
 }
 
@@ -384,20 +341,18 @@ BOOL win16_style_remove(HWND w)
     style_window *s;RECT client;BOOL normal;
     if(!local_window(w))return FALSE;
     s=state(w);if(!s){SetLastError(ERROR_NOT_FOUND);return FALSE;}
-    if(s->menu_only){if(!RemoveWindowSubclass(w,style_proc,STYLE_ID))return FALSE;++s->calls;s->detached=TRUE;while(s->menus)end_menu_scope(s);win16_style_menu_restore(&s->menu_items);if(!--s->calls)dispose(s);return TRUE;}
+    if(s->menu_only){if(!RemoveWindowSubclass(w,style_proc,STYLE_ID))return FALSE;++s->calls;s->detached=TRUE;while(s->menus)win16_control_frame_state_end_menu(s);win16_style_menu_restore(&s->menu_items);if(!--s->calls)win16_control_frame_state_dispose(s);return TRUE;}
     normal=!IsIconic(w)&&!IsZoomed(w);win16_control_client_screen(w,&client);
     if(!RemoveWindowSubclass(w,style_proc,STYLE_ID))return FALSE;
     ++s->calls;
     s->detached=TRUE;
     win16_style_control_remove_owned(w,s);
-    while(s->menus)end_menu_scope(s);
+    while(s->menus)win16_control_frame_state_end_menu(s);
     win16_style_menu_restore(&s->menu_items);
     if(s->bar_keyboard)leave_bar(w,s,TRUE);
     if(s->pressed && GetCapture()==w)ReleaseCapture();
-    if(IsWindow(w) && !s->pending_frame && s->policy_saved)DwmSetWindowAttribute(w,DWMWA_NCRENDERING_POLICY,
-        &s->old_policy,sizeof(s->old_policy));
-    if(IsWindow(w) && !s->pending_frame){win16_control_frame_changed(w);if(normal && IsWindow(w))win16_control_restore_client(w,&client);}
-    if(!--s->calls)dispose(s);
+    win16_control_frame_restore(w,&s->pending_frame,&s->policy_saved,&s->old_policy,&client,normal,DwmSetWindowAttribute);
+    if(!--s->calls)win16_control_frame_state_dispose(s);
     return TRUE;
 }
 
@@ -408,7 +363,7 @@ BOOL win16_style_set_palette(HWND w,const win16_style_palette *p)
     if(!local_window(w))return FALSE;
     s=state(w);if(!s){SetLastError(ERROR_NOT_FOUND);return FALSE;}
     ++s->calls;s->palette=*p;win16_style_frame_scrollbars_palette_owned(w,p,s);paint(w,s,NULL);
-    if(!--s->calls && s->detached)dispose(s);
+    if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);
     return TRUE;
 }
 BOOL win16_style_frame_terminal(HWND w)
@@ -419,8 +374,8 @@ BOOL win16_style_frame_terminal(HWND w)
         SetLastError(ERROR_INVALID_STATE);return FALSE;
     }
     ++s->calls;s->detached=TRUE;
-    while(s->menus)end_menu_scope(s);
-    if(!--s->calls && s->detached)dispose(s);
+    while(s->menus)win16_control_frame_state_end_menu(s);
+    if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);
     return TRUE;
 }
 
@@ -428,7 +383,7 @@ typedef struct menu_dispatch_scope { style_window *state;BOOL returned; } menu_d
 static void menu_dispatch_end(void *data)
 {
     menu_dispatch_scope *scope=data;style_window *s=scope->state;
-    if(!scope->returned && !--s->calls && s->detached)dispose(s);
+    if(!scope->returned && !--s->calls && s->detached)win16_control_frame_state_dispose(s);
 }
 static NTW16S_UNWIND_FUNCTION LRESULT CALLBACK style_proc(HWND w,UINT msg,WPARAM wp,LPARAM lp,
     UINT_PTR id,DWORD_PTR data)
@@ -626,18 +581,10 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
             tracking_menu->active=(HMENU)lp;
         goto forward;
     case WM_ENTERMENULOOP:
-        ++s->menu_depth;
-        {menu_loop *loop=calloc(1,sizeof(*loop));
-            if(loop){loop->scope=win16_style_menu_begin(&s->palette);
-                if(loop->scope){loop->depth=s->menu_depth;loop->previous=s->menus;s->menus=loop;}
-                else free(loop);}}
+        win16_control_frame_state_enter_menu(s);
         goto forward;
     case WM_EXITMENULOOP:
-        win16_style_menu_restore_depth(s->menu_depth,&s->menu_items);
-        /* An allocation/hook failure at an inner entry must not pop an
-         * outer successful scope when that unstyled inner loop exits. */
-        if(s->menus && s->menus->depth==s->menu_depth)end_menu_scope(s);
-        if(s->menu_depth)--s->menu_depth;
+        win16_control_frame_state_exit_menu(s);
         result=DefSubclassProc(w,msg,wp,lp);
         if(!s->detached && s->system_menu){s->system_menu=FALSE;paint_button_state(w,s,HTSYSMENU);}
         break;
@@ -725,6 +672,6 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
 forward:
         result=DefSubclassProc(w,msg,wp,lp);break;
     }
-    if(!--s->calls && s->detached)dispose(s);
+    if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);
     return result;
 }

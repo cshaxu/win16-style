@@ -1166,7 +1166,7 @@
       "path": "src/ntw16s-dll/win16_style.c",
       "source": "src/ntw16s-dll/win16_style.c",
       "source_blob": "4235f085cb00c0d17145deec2d04a57c97b98d47",
-      "sha256": "f4d6455ecf57f233c813758734cd1d4d5164249b46203b51f6f16f3072338312",
+      "sha256": "1e4d72b0dd66262e49010f17b507c813fa008c0edbbb117f4a5dac3f2c59adbe",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T15 S8 verified initialized native tree protocol and bounded existing System paint scope, native item/font/image/geometry/notifications preserved; exact pending frame ownership and cancellation; ASCII test-thread IME isolation after native no-DLL MSCTF teardown evidence; no external code or original graphics modified; T18 S64 scoped observed Delphi TPopupMenu owner, native callbacks and item restoration; private cleanup, no external code or graphics changed; T21 S22 frame painter extracted; T21 S22 caption and sizing-band presentation extracted with live state references; T21 S22 frame presentation extraction, preserving fault instrumentation; T21 S22 buffered frame/menu/button presentation extraction; T21 S22 frame layout and high-contrast palette extraction",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -4264,7 +4264,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "5163595ec13db69fbdba20959547db9b67df3286124b9fe18b1fd168dcffe6a4",
+      "sha256": "df6bf3289ea190ea34f7baa385ebe54f06d31cfd462a0ddc88af1a0360901d9f",
       "review": "T21 S22 standalone whole-archive linkage and original glyph smoke test"
     },
     {
@@ -4291,7 +4291,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "ccd5db580aa0090fcf59ce133d9c8817a76ecde32f290fefa38f7b0c77a557e7",
+      "sha256": "f1aafa1b1b9d9a71fe582b73f568202df8c7d3f38b566b9519f74746524bcec2",
       "review": "T21 S22 extraction of window frame geometry with caller-owned state"
     },
     {
@@ -4300,7 +4300,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "e8916efee1e0f70b386f7ae1bb11d6d02f956144927f9a787b209836b826aff9",
+      "sha256": "675bc2eb801f897c6cfea3469294caca90ab5251eb396c423bfb3c50093792a2",
       "review": "T21 S22 extraction of window frame geometry with caller-owned state"
     },
     {
@@ -4841,6 +4841,24 @@
       "sha256": "c3785d6d6e1ba7976829b74b6a8d433648cbc7098a92b2bf9550652d4a3e4a05",
       "disposition": "authored",
       "review": "T21 S24 extract in-process VCL spin style eligibility and clip validation",
+      "notice": "Project-authored C implementation; original notices preserved"
+    },
+    {
+      "path": "src/lib/win16-control/frame_state.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "7aafa4ee3587ac04678eaa9195d83e8e4e5fedfcd91e2136f21aa7b706e8344d",
+      "disposition": "authored",
+      "review": "T21 S24 extract frame presentation state and resource lifetime",
+      "notice": "Project-authored C implementation; original notices preserved"
+    },
+    {
+      "path": "src/lib/win16-control/frame_state.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "dcaa04b150c61c6156e9a0084e8160f24ed94ccfce3d5f6f80ae6fad4ffdbfe2",
+      "disposition": "authored",
+      "review": "T21 S24 extract frame presentation state and resource lifetime",
       "notice": "Project-authored C implementation; original notices preserved"
     }
   ]

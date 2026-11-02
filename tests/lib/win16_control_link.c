@@ -6,9 +6,11 @@
 #include "lib/win16-control/font.h"
 #include "lib/win16-control/frame_layout.h"
 #include "lib/win16-control/frame_view.h"
+#include "lib/win16-control/frame_state.h"
 #include "lib/win16-control/list_paint.h"
 #include "lib/win16-control/theme_state.h"
 #include "lib/win16-control/custom_draw.h"
+#include <dwmapi.h>
 #include <stdlib.h>
 
 static int bar_paints;
@@ -22,6 +24,9 @@ static int forwarded_tabs;
 static LRESULT test_forward_tabs(HWND w,WPARAM count,LPARAM values)
 {(void)w;(void)count;(void)values;++forwarded_tabs;return TRUE;}
 static int theme_calls;
+static int frame_policy_calls;static DWORD frame_policy_value;
+static HRESULT WINAPI test_frame_policy(HWND w,DWORD attr,LPCVOID value,DWORD size)
+{(void)w;if(attr!=DWMWA_NCRENDERING_POLICY || size!=sizeof(DWORD))return E_INVALIDARG;frame_policy_value=*(const DWORD *)value;++frame_policy_calls;return S_OK;}
 static int draw_parts;
 static BOOL custom_supported(HWND w){(void)w;return TRUE;}
 static BOOL custom_part(HWND w,const NMCUSTOMDRAW *draw,const win16_style_palette *p)
@@ -35,6 +40,17 @@ static void test_button_paint(HWND w,void *context,int hit)
 {(void)w;(void)context;if(hit==HTMINBUTTON)++button_paints;}
 int main(void)
 {
+    style_window *owned=win16_control_frame_state_create();
+    if(!owned || owned->menus || owned->title_font || owned->menu_font || owned->calls)return 34;
+    menu_loop outer_loop={.depth=1};owned->menus=&outer_loop;owned->menu_depth=2;
+    win16_control_frame_state_exit_menu(owned);
+    if(owned->menus!=&outer_loop || owned->menu_depth!=1){owned->menus=NULL;win16_control_frame_state_dispose(owned);return 37;}
+    owned->menus=NULL;owned->menu_depth=0;
+    owned->title_font=CreateFontW(-12,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Arial");
+    owned->menu_font=win16_style_menu_font_acquire(96);
+    if(!owned->title_font || !owned->menu_font){win16_control_frame_state_dispose(owned);return 35;}
+    HFONT former_title=owned->title_font;win16_control_frame_state_dispose(owned);
+    LOGFONTW disposed;if(GetObjectW(former_title,sizeof(disposed),&disposed))return 36;
     if(win16_control_theme_set(NULL,L"Test",L"Demo",test_native_theme)!=S_FALSE || theme_calls!=1)return 23;
     win16_style_palette palette;
     win16_style_default_palette(&palette);
@@ -119,6 +135,13 @@ int main(void)
        win16_control_frame_set_cursor(window,0,MAKELPARAM(HTLEFT,0)) ||
        !win16_control_frame_set_cursor(window,(WPARAM)window,MAKELPARAM(HTLEFT,0))){DestroyWindow(window);return 17;}
     BOOL detached=FALSE,keyboard=TRUE;HWND focus=NULL;int selected=1;UINT bar_dpi=96;HFONT bar_font=(HFONT)GetStockObject(SYSTEM_FONT);
+    BOOL frame_detached=TRUE,pending=TRUE,saved=TRUE;DWORD prior_policy=DWMNCRP_ENABLED;
+    win16_control_frame_activate(window,&frame_detached,NULL,FALSE,test_frame_policy);
+    if(frame_policy_calls!=1 || frame_policy_value!=DWMNCRP_DISABLED){DestroyWindow(window);return 31;}
+    win16_control_frame_restore(window,&pending,&saved,&prior_policy,NULL,FALSE,test_frame_policy);
+    if(frame_policy_calls!=1){DestroyWindow(window);return 32;}
+    pending=FALSE;win16_control_frame_restore(window,&pending,&saved,&prior_policy,NULL,FALSE,test_frame_policy);
+    if(frame_policy_calls!=2 || frame_policy_value!=prior_policy){DestroyWindow(window);return 33;}
     const win16_control_bar_state_view state={NULL,&detached,&keyboard,&focus,&selected,&bar_font,&bar_dpi,test_layout,test_bar_paint};
     win16_control_menu_bar_leave(window,&state,FALSE);
     if(keyboard || selected!=-1 || bar_paints!=1){DestroyWindow(window);return 12;}

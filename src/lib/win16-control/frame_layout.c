@@ -1,4 +1,5 @@
 #include "frame_layout.h"
+#include <dwmapi.h>
 #include "menu_bar.h"
 #include <windowsx.h>
 
@@ -21,6 +22,19 @@ void win16_control_frame_changed(HWND w)
     SetWindowPos(w,NULL,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|
         SWP_NOACTIVATE|SWP_FRAMECHANGED);
     RedrawWindow(w,NULL,NULL,RDW_FRAME|RDW_INVALIDATE|RDW_UPDATENOW);
+}
+void win16_control_frame_activate(HWND w,const BOOL *detached,const RECT *client,BOOL normal,win16_control_set_window_attribute set_attribute)
+{
+    DWORD policy=DWMNCRP_DISABLED;
+    if(!(GetWindowLongPtr(w,GWL_STYLE)&WS_CHILD))
+        set_attribute(w,DWMWA_NCRENDERING_POLICY,&policy,sizeof(policy));
+    if(!*detached)win16_control_frame_changed(w);
+    if(!*detached && normal)win16_control_restore_client(w,client);
+}
+void win16_control_frame_restore(HWND w,const BOOL *pending,const BOOL *policy_saved,const DWORD *old_policy,const RECT *client,BOOL normal,win16_control_set_window_attribute set_attribute)
+{
+    if(IsWindow(w) && !*pending && *policy_saved)set_attribute(w,DWMWA_NCRENDERING_POLICY,old_policy,sizeof(*old_policy));
+    if(IsWindow(w) && !*pending){win16_control_frame_changed(w);if(normal && IsWindow(w))win16_control_restore_client(w,client);}
 }
 void win16_control_client_screen(HWND w,RECT *r)
 {
