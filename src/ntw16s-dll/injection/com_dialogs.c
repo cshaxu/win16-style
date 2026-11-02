@@ -166,23 +166,6 @@ static void classic_capture_folder(file_proxy *p)
 }
 static const WCHAR folder_message_name[]=L"Win16Style.T20.ComSetFolder";
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-static void classic_capture_selection(HWND w,file_proxy *p)
-{
-    HWND list=GetDlgItem(w,lst1);IShellItem *item=NULL;PWSTR folder=NULL;
-    LRESULT selected=list?SendMessageW(list,LB_GETCURSEL,0,0):LB_ERR;
-    LRESULT length=selected==LB_ERR?LB_ERR:SendMessageW(list,LB_GETTEXTLEN,(WPARAM)selected,0);
-    if(length>=0 && length<MAX_PATH && p->live_folder &&
-       SUCCEEDED(IShellItem_GetDisplayName(p->live_folder,SIGDN_FILESYSPATH,&folder))){
-        WCHAR name[MAX_PATH],path[32768];
-        if(SendMessageW(list,LB_GETTEXT,(WPARAM)selected,(LPARAM)name)!=LB_ERR){
-            size_t n=wcslen(folder);int written=swprintf(path,ARRAYSIZE(path),L"%ls%ls%ls",folder,n && folder[n-1]==L'\\'?L"":L"\\",name);
-            if(written>=0 && (size_t)written<ARRAYSIZE(path))(void)SHCreateItemFromParsingName(path,NULL,&IID_IShellItem,(void **)&item);
-        }
-    }
-    if(folder)CoTaskMemFree(folder);
-    if(p->live_selection)IShellItem_Release(p->live_selection);
-    p->live_selection=item;
-}
 static BOOL classic_list_changing(HWND w,file_proxy *p)
 {
     HWND list=GetDlgItem(w,lst2);if(!list || !p->live_folder)return TRUE;
@@ -496,7 +479,7 @@ static void com_hook_selection(void *owner,HWND w,WPARAM wp)
 #endif
     }
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-    else if(wp==lst1){classic_capture_selection(w,p);if(p->events)(void)classic_event_dispatch(p,CLASSIC_SELECTION_CHANGED,NULL);}
+    else if(wp==lst1){win16_dialog_proxy_capture_selection(w,p);if(p->events)(void)classic_event_dispatch(p,CLASSIC_SELECTION_CHANGED,NULL);}
     else if(wp==cmb1){FILEOPENDIALOGOPTIONS options=0;
         if(p->events && (p->filter || FAILED(IFileDialog_GetOptions(p->native,&options)) || !(options&FOS_PICKFOLDERS)))
             (void)classic_event_dispatch(p,CLASSIC_TYPE_CHANGED,NULL);}

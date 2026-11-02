@@ -449,6 +449,9 @@ try{
         foreach($scrollKind in @('list','edit')) {
             $cases+=Case "scroll-$scrollKind-$arch" $dialogDriver @($run,$scrollTarget,$scrollKind) @("FRAME_HOST bits=$bits attached=1 installed=1",'FRAME_AXIS axis=0 action=hover diff=0','FRAME_AXIS axis=0 action=leave diff=0','FRAME_AXIS axis=1 action=hover diff=0','FRAME_AXIS axis=1 action=leave diff=0','FRAME_DRAG axis=0 captured=1 moved=1','FRAME_DRAG axis=1 captured=1 moved=1','FRAME_SCROLL_RESULT horizontal=0 vertical=0','DIALOG_DRIVER exit=0') 30
         }
+        foreach($scrollKind in @('frame','list','edit')) {
+            $cases+=Case "scroll-behavior-$scrollKind-$arch" $dialogDriver @($run,$scrollTarget,$scrollKind,'behavior') @("FRAME_HOST bits=$bits",'installed=1','FRAME_BEHAVIOR axis=0 captured=1 moved=1 released=1','FRAME_BEHAVIOR axis=1 captured=1 moved=1 released=1','FRAME_SCROLL_RESULT horizontal=0 vertical=0','DIALOG_DRIVER exit=0') 20
+        }
         foreach($kind in 1..3) {
             $cases+=Case "dialog-modern-api-$arch-$kind" $dialogDriver @($run,$modernTarget,"$kind") @("MODERN_API bits=$bits kind=$kind seen=1 modern=1 frame=1 hr=800704c7 path_empty=1",'DIALOG_DRIVER exit=0') 30
         }

@@ -1,6 +1,33 @@
 #include "list_paint.h"
 #include "basic_paint.h"
 #include <stdlib.h>
+#include <limits.h>
+
+/* LBSetTabStops stores set-time pixels using the alphabet average. */
+LRESULT win16_control_set_list_tabs(HWND w,const win16_control_tabstops_view *s,WPARAM count,LPARAM values)
+{
+    int *pixels=NULL,average,i;LRESULT result;
+    if(count>INT_MAX || (count && !values) || count>((size_t)-1)/sizeof(int))return FALSE;
+    if(count){HDC dc;HFONT old;TEXTMETRICW tm;SIZE size;
+        pixels=malloc((size_t)count*sizeof(int));if(!pixels)return FALSE;
+        dc=GetDC(w);if(!dc){free(pixels);return FALSE;}
+        old=SelectObject(dc,*s->font);
+        if(!GetTextMetricsW(dc,&tm)){SelectObject(dc,old);ReleaseDC(w,dc);free(pixels);return FALSE;}
+        average=tm.tmAveCharWidth;
+        if(tm.tmPitchAndFamily&TMPF_FIXED_PITCH){
+            if(!GetTextExtentPoint32W(dc,L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",52,&size)){
+                SelectObject(dc,old);ReleaseDC(w,dc);free(pixels);return FALSE;}
+            average=((size.cx/26)+1)/2;
+        }
+        SelectObject(dc,old);ReleaseDC(w,dc);
+        for(i=0;i<(int)count;++i){LONGLONG value=((LONGLONG)((const int *)values)[i]*average+2)/4;
+            if(value<INT_MIN || value>INT_MAX){free(pixels);return FALSE;}pixels[i]=(int)value;}
+    }
+    result=s->forward(w,count,values);
+    if(result && !*s->detached){free(*s->positions);*s->positions=pixels;*s->count=(int)count;}
+    else free(pixels);
+    return result;
+}
 
 void win16_control_draw_list(HWND w,const BOOL *detached,const win16_style_palette *palette,HFONT *font_slot,const int *tab_count,int *const *tab_positions,HDC dc,BOOL (*is_vb_list)(HWND))
 {

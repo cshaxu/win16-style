@@ -1,16 +1,79 @@
 #include "lib/win16-control/scroll_layout.h"
+#include "lib/win16-control/scroll_native.h"
 #include "lib/win16-control/scroll_track.h"
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 static unsigned checks;
+static int fake_max=100;static int fake_min=0;static UINT fake_page=1;
+static BOOL fake_info(HWND w,int bar,LPSCROLLINFO info)
+{(void)w;if(bar!=SB_HORZ)return FALSE;info->nMin=fake_min;info->nMax=fake_max;info->nPage=fake_page;return TRUE;}
+static unsigned *observed_epoch;static int received_notices;static UINT last_notice;
+static LRESULT CALLBACK action_parent(HWND w,UINT m,WPARAM a,LPARAM b)
+{if(m==WM_HSCROLL || m==WM_VSCROLL){++received_notices;last_notice=LOWORD(a);++*observed_epoch;return 0;}return DefWindowProcW(w,m,a,b);}
+static void action_draw(HWND w,void *p,HDC dc,LONG object,BOOL vertical)
+{(void)w;(void)p;(void)dc;(void)object;(void)vertical;}
+static void action_nonclient(HWND w,void *p,HDC dc){(void)w;(void)p;(void)dc;}
+static void action_caret(HWND w,void *p){(void)w;(void)p;}
+static BOOL no_owner(void *context){(void)context;return FALSE;}
+static BOOL no_embedded_layout(HWND w,LONG object,win16_scroll_layout *layout,POINT *origin)
+{(void)w;(void)object;(void)layout;(void)origin;return FALSE;}
 #define CHECK(x) do { ++checks; if(!(x)){fprintf(stderr,"SCROLL GEOMETRY FAIL %d: %s\n",__LINE__,#x);exit(1);} } while(0)
 static void tracking_tests(void)
 {
     const win16_scroll_metrics metrics={17,17,1};RECT bar={0,0,17,200},limit={-4,-1,21,201};
     win16_scroll_layout l;win16_scroll_track t={0};win16_scroll_actions a;
+    BOOL detached=TRUE,created=FALSE,shown=TRUE;SIZE caret_size={0};
+    const win16_scroll_caret_view caret={&detached,&created,&shown,&caret_size,&t,NULL,NULL};
+    win16_scroll_caret_sync(NULL,&caret);CHECK(!created && shown);
+    win16_scroll_caret_destroy(NULL,&caret);CHECK(!created && !shown);
+    CHECK(win16_scroll_horizontal_thumb_messages(NULL,fake_info));
+    fake_max=65536;CHECK(!win16_scroll_horizontal_thumb_messages(NULL,fake_info));
+    fake_page=2;CHECK(win16_scroll_horizontal_thumb_messages(NULL,fake_info));
+    fake_min=-1;CHECK(!win16_scroll_horizontal_thumb_messages(NULL,fake_info));
+    fake_min=0;fake_max=100;fake_page=1;
+    CHECK(win16_scroll_list_axis_owned(NULL,OBJID_VSCROLL,fake_info));
+    CHECK(win16_scroll_list_axis_owned(NULL,OBJID_HSCROLL,fake_info));
+    CHECK(!win16_scroll_edit_thumb_messages(NULL,OBJID_VSCROLL,fake_info));
+    CHECK(win16_scroll_disabled(NULL,OBJID_CLIENT)==ESB_DISABLE_BOTH);
+    WNDCLASSW cls={.lpfnWndProc=action_parent,.hInstance=GetModuleHandleW(NULL),.lpszClassName=L"S24ScrollActionTest"};
+    CHECK(RegisterClassW(&cls)!=0);
+    HWND parent=CreateWindowExW(0,cls.lpszClassName,L"",WS_OVERLAPPED,0,0,100,100,NULL,NULL,cls.hInstance,NULL);
+    HWND child=parent?CreateWindowExW(0,L"SCROLLBAR",L"",WS_CHILD|SBS_VERT,0,0,20,60,parent,NULL,cls.hInstance,NULL):NULL;
+    CHECK(parent && child);
+    BOOL action_detached=FALSE,reporting=FALSE,frame=FALSE,edit=FALSE,list=FALSE;
+    unsigned epoch=5;LONG report=77,object=OBJID_CLIENT;UINT_PTR timer=0;win16_scroll_track action_track={0};
+    const win16_scroll_actions_view view={NULL,&action_detached,&reporting,&frame,&edit,&list,&epoch,&report,&object,
+        &timer,&action_track,action_draw,action_nonclient,action_caret};
+    HWND prior_capture=parent;win16_scroll_finish(child,&view,&prior_capture,FALSE);
+    CHECK(prior_capture==parent && epoch==5);
+    win16_scroll_actions notices={.count=2,.timer_ms=WIN16_SCROLL_KEEP_TIMER};
+    notices.notices[0].command=SB_LINEUP;notices.notices[1].command=SB_ENDSCROLL;observed_epoch=&epoch;
+    win16_scroll_apply_actions(child,&view,&notices,5);
+    CHECK(received_notices==1 && epoch==6 && !reporting && report==77);
+    BOOL key=FALSE;win16_scroll_input_view input={view,&prior_capture,&key,NULL};
+    received_notices=0;epoch=5;
+    CHECK(win16_scroll_control_input(child,&input,WM_KEYDOWN,VK_DOWN,0));
+    CHECK(key && received_notices==1 && last_notice==SB_LINEDOWN);
+    CHECK(win16_scroll_control_input(child,&input,WM_KEYUP,VK_DOWN,0));
+    CHECK(!key && received_notices==2 && last_notice==SB_ENDSCROLL);
+    CHECK(!win16_scroll_control_input(child,&input,WM_KEYDOWN,VK_F2,0));
+    const win16_scroll_embedded_view embedded={view,&prior_capture,no_owner,no_embedded_layout,fake_info};
+    CHECK(!win16_scroll_embedded_input(child,&embedded,WM_KEYDOWN,VK_DOWN,0));
+    frame=TRUE;
+    CHECK(!win16_scroll_embedded_input(child,&embedded,WM_KEYDOWN,VK_DOWN,0));
+    CHECK(win16_scroll_embedded_input(child,&embedded,WM_NCLBUTTONDOWN,HTVSCROLL,0));
+    frame=FALSE;
+    DestroyWindow(child);DestroyWindow(parent);CHECK(UnregisterClassW(cls.lpszClassName,cls.hInstance));
     POINT point={8,100};
+    SCROLLINFO native={.cbSize=sizeof(native),.nMin=0,.nMax=109,.nPage=10,.nPos=50};
+    win16_scroll_layout from_native;
+    CHECK(win16_scroll_measure_native(&bar,TRUE,96,&native,&from_native));
+    CHECK(from_native.maximum==100 && from_native.position==50 && from_native.first.bottom==17);
+    native.nPage=200;CHECK(win16_scroll_measure_native(&bar,TRUE,96,&native,&from_native) && from_native.maximum==0);
+    CHECK(!win16_scroll_measure_native(NULL,TRUE,96,&native,&from_native));
+    CHECK(!win16_scroll_measure_native(&bar,TRUE,96,NULL,&from_native));
     CHECK(win16_scroll_measure(&bar,TRUE,&metrics,0,100,50,&l));
     CHECK(win16_scroll_begin(&t,&l,0,point,&limit,&a));
     CHECK(t.active && t.part==WIN16_SCROLL_THUMB && t.grab_offset==8 && t.pixel==92);

@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <wchar.h>
+#include <dlgs.h>
 #include "lib/win16-dialog/print_ranges.h"
 #include "lib/win16-dialog/print_classic.h"
 #include "lib/win16-dialog/file_contract.h"
@@ -24,6 +25,29 @@ static HRESULT fake_v2_query(void *owner,REFIID iid,void **out)
 static ULONG fake_v2_ref(void *owner){return owner?7:0;}
 static BOOL no_session(void){return FALSE;}
 static HRESULT fallback_show(void *owner,HWND window){observed_owner=owner;observed_a=(ULONG_PTR)window;return E_ABORT;}
+static BOOL test_capture_selection(void)
+{
+    WCHAR dir[MAX_PATH],path[MAX_PATH];IShellItem *folder=NULL;PWSTR actual=NULL;BOOL ok=FALSE;
+    HWND parent=NULL,list=NULL;win16_dialog_proxy proxy={0};
+    if(!GetTempPathW(MAX_PATH,dir) || !GetTempFileNameW(dir,L"w16",0,path))return FALSE;
+    parent=CreateWindowExW(0,L"STATIC",L"",WS_OVERLAPPED,0,0,80,80,NULL,NULL,GetModuleHandleW(NULL),NULL);
+    if(parent)list=CreateWindowExW(0,L"LISTBOX",L"",WS_CHILD,0,0,40,40,parent,(HMENU)(INT_PTR)lst1,GetModuleHandleW(NULL),NULL);
+    if(!list || FAILED(SHCreateItemFromParsingName(dir,NULL,&IID_IShellItem,(void **)&folder)))goto done;
+    proxy.live_folder=folder;
+    const WCHAR *name=wcsrchr(path,L'\\');name=name?name+1:path;
+    if(SendMessageW(list,LB_ADDSTRING,0,(LPARAM)name)==LB_ERR)goto done;
+    SendMessageW(list,LB_SETCURSEL,0,0);win16_dialog_proxy_capture_selection(parent,&proxy);
+    if(!proxy.live_selection || FAILED(IShellItem_GetDisplayName(proxy.live_selection,SIGDN_FILESYSPATH,&actual)) || lstrcmpiW(actual,path))goto done;
+    SendMessageW(list,LB_SETCURSEL,(WPARAM)-1,0);win16_dialog_proxy_capture_selection(parent,&proxy);
+    ok=proxy.live_selection==NULL;
+done:
+    if(actual)CoTaskMemFree(actual);
+    if(proxy.live_selection)IShellItem_Release(proxy.live_selection);
+    if(folder)IShellItem_Release(folder);
+    if(parent)DestroyWindow(parent);
+    if(!DeleteFileW(path))ok=FALSE;
+    return ok;
+}
 static BOOL test_proxy_lifetime(void)
 {
     IUnknown *native=NULL,*identity=NULL;IFileDialog2 *v2=NULL;win16_dialog_proxy *proxy=NULL;BOOL ok=FALSE;
@@ -111,6 +135,7 @@ int main(void)
     CoTaskMemFree(copy);
     WCHAR temp[MAX_PATH],unused[MAX_PATH];IShellItem *item=NULL;PWSTR selected=NULL;
     if(FAILED(CoInitializeEx(NULL,COINIT_APARTMENTTHREADED)))return 19;
+    if(!test_capture_selection()){CoUninitialize();return 37;}
     if(!GetTempPathW(MAX_PATH,temp) || !GetTempFileNameW(temp,L"w16",0,unused) || !DeleteFileW(unused))return 20;
     HRESULT item_hr=win16_dialog_save_item(unused,&item);
     if(SUCCEEDED(item_hr))item_hr=IShellItem_GetDisplayName(item,SIGDN_FILESYSPATH,&selected);

@@ -113,6 +113,9 @@ int main(void)
     struct {DLGTEMPLATE dialog;WORD menu,window_class,title;} template={0};template.dialog.style=WS_POPUP;
     HWND dialog=CreateDialogIndirectParamW(GetModuleHandleW(NULL),&template.dialog,NULL,fake_dialog_proc,0);
     if(!dialog)return 21;
+    RECT invalid_edge={0,0,10,10};
+    if(win16_dialog_color_swatch_edge(dialog,NULL,&invalid_edge) ||
+       win16_dialog_color_swatch_edge(NULL,NULL,NULL)){DestroyWindow(dialog);return 31;}
     HWND folder_list=CreateWindowExW(0,L"LISTBOX",L"",WS_CHILD,0,0,20,20,dialog,(HMENU)(INT_PTR)lst2,GetModuleHandleW(NULL),NULL);
     if(!folder_list){DestroyWindow(dialog);return 22;}
     if(win16_dialog_is_font_template(dialog)){DestroyWindow(dialog);return 25;}

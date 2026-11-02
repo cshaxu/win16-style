@@ -5,6 +5,26 @@
 #include "file_live.h"
 #include "file_helpers.h"
 #include <dlgs.h>
+#include <stdio.h>
+#include <wchar.h>
+
+void win16_dialog_proxy_capture_selection(HWND w,win16_dialog_proxy *p)
+{
+    HWND list=GetDlgItem(w,lst1);IShellItem *item=NULL;PWSTR folder=NULL;
+    LRESULT selected=list?SendMessageW(list,LB_GETCURSEL,0,0):LB_ERR;
+    LRESULT length=selected==LB_ERR?LB_ERR:SendMessageW(list,LB_GETTEXTLEN,(WPARAM)selected,0);
+    if(length>=0 && length<MAX_PATH && p->live_folder &&
+       SUCCEEDED(IShellItem_GetDisplayName(p->live_folder,SIGDN_FILESYSPATH,&folder))){
+        WCHAR name[MAX_PATH],path[32768];
+        if(SendMessageW(list,LB_GETTEXT,(WPARAM)selected,(LPARAM)name)!=LB_ERR){
+            size_t n=wcslen(folder);int written=swprintf(path,ARRAYSIZE(path),L"%ls%ls%ls",folder,n && folder[n-1]==L'\\'?L"":L"\\",name);
+            if(written>=0 && (size_t)written<ARRAYSIZE(path))(void)SHCreateItemFromParsingName(path,NULL,&IID_IShellItem,(void **)&item);
+        }
+    }
+    if(folder)CoTaskMemFree(folder);
+    if(p->live_selection)IShellItem_Release(p->live_selection);
+    p->live_selection=item;
+}
 
 ULONG win16_dialog_proxy_add(win16_dialog_proxy *p){return (ULONG)InterlockedIncrement(&p->refs);}
 ULONG win16_dialog_proxy_release(win16_dialog_proxy *p)

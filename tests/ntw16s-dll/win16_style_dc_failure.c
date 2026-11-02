@@ -164,7 +164,7 @@ int wmain(int argc,WCHAR **argv)
         CHECK(win16_style_install(w,NULL));installed=state(w);CHECK(installed);
         {HMENU bar=CreateMenu();win16_style_layout frame;RECT window;
             CHECK(bar && AppendMenuW(bar,MF_STRING,42,L"&Action") && SetMenu(w,bar));
-            frame_changed(w);CHECK(layout(w,installed,&frame) && GetWindowRect(w,&window));
+            win16_control_frame_changed(w);CHECK(layout(w,installed,&frame) && GetWindowRect(w,&window));
             installed->bar_keyboard=TRUE;installed->bar_selected=-1;
             SendMessageW(w,STYLE_NCUAHDRAWCAPTION,0,
                 MAKELPARAM(window.left+frame.menu.left+2,window.top+frame.menu.top+2));
@@ -173,7 +173,7 @@ int wmain(int argc,WCHAR **argv)
                 MAKELPARAM(window.left+frame.menu.left+2,window.top+frame.menu.top+2));
             CHECK(installed->bar_selected==-1);
             installed->bar_keyboard=FALSE;
-            CHECK(SetMenu(w,NULL) && DestroyMenu(bar));frame_changed(w);
+            CHECK(SetMenu(w,NULL) && DestroyMenu(bar));win16_control_frame_changed(w);
             printf("PASS caption drawing messages cannot change keyboard menu selection\n");}
         SendMessageW(w,WM_ENTERMENULOOP,TRUE,0);CHECK(installed->menus && installed->menu_depth==1);
         SendMessageW(w,WM_INITMENUPOPUP,(WPARAM)outer,0);

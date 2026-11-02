@@ -1,6 +1,18 @@
 /* Apply presentation services to controls of system classic templates. */
 #include "chrome.h"
 #include <dlgs.h>
+BOOL win16_dialog_color_swatch_edge(HWND dialog,HDC dc,const RECT *rect)
+{
+    if(!dialog || !dc || !rect || WindowFromDC(dc)!=dialog)return FALSE;
+    for(int id=720;id<=721;++id){HWND grid=GetDlgItem(dialog,id);RECT bounds;
+        if(grid && GetParent(grid)==dialog && IsWindowVisible(grid) && GetWindowRect(grid,&bounds)){
+            MapWindowPoints(NULL,dialog,(POINT *)&bounds,2);
+            if(rect->left>=bounds.left && rect->top>=bounds.top && rect->right<=bounds.right && rect->bottom<=bounds.bottom &&
+               rect->right>rect->left+2 && rect->bottom>rect->top+2)return TRUE;
+        }
+    }
+    return FALSE;
+}
 BOOL win16_dialog_is_font_template(HWND window)
 {
     WCHAR cls[32];HWND first=GetDlgItem(window,1136),second=GetDlgItem(window,1137),third=GetDlgItem(window,1138);

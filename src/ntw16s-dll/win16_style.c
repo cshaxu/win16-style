@@ -61,64 +61,16 @@ static int bar_at_screen(HWND,style_window *,POINT);
 /* Bound only while this thread runs a dialog's native system-menu loop.
  * A stack binding preserves reentrant menus without a global mouse hook. */
 static _Thread_local menu_frame *tracking_menu;
-static BOOL bar_arrow(menu_frame *frame,UINT key)
-{
-    int i,count,selected=-1;MENUITEMINFOW info={.cbSize=sizeof(info)};RECT chosen,other;
-    HMENU menu=frame->active;
-    if(!frame->root || !menu || (key!=VK_LEFT && key!=VK_RIGHT))return FALSE;
-    if(key==VK_LEFT && menu!=frame->root)return FALSE; /* native closes hierarchy */
-    count=GetMenuItemCount(menu);
-    for(i=0;i<count;++i){info.fMask=MIIM_STATE|MIIM_SUBMENU;
-        if(GetMenuItemInfoW(menu,i,TRUE,&info) && (info.fState&MFS_HILITE)){selected=i;break;}}
-    if(selected>=0){
-        if(key==VK_RIGHT && info.hSubMenu && !(info.fState&MFS_DISABLED))return FALSE;
-        /* Native tracking keeps ownership of navigation between columns. */
-        if(!GetMenuItemRect(frame->window,menu,selected,&chosen))return FALSE;
-        for(i=0;i<count;++i)if(GetMenuItemRect(frame->window,menu,i,&other) &&
-            ((key==VK_LEFT && other.right<=chosen.left) ||
-             (key==VK_RIGHT && other.left>=chosen.right)))return FALSE;
-    }
-    return TRUE;
-}
+static int bar_input_hit(void *context,POINT point)
+{menu_frame *frame=context;return bar_at_screen(frame->window,frame->style,point);}
 static LRESULT CALLBACK menu_filter(int code,WPARAM wp,LPARAM lp)
 {
     menu_frame *frame=tracking_menu;
     if(code==HC_ACTION && (wp&PM_REMOVE) && frame){
-        MSG *m=(MSG *)lp;
-        if((m->message==WM_KEYDOWN || m->message==WM_SYSKEYDOWN) &&
-           m->wParam==VK_ESCAPE && frame->active==frame->root)frame->escape=TRUE;
-        if(frame->style && (m->message==WM_LBUTTONDOWN || m->message==WM_NCLBUTTONDOWN)){
-            POINT p={GET_X_LPARAM(m->lParam),GET_Y_LPARAM(m->lParam)};
-            int hit=bar_at_screen(frame->window,frame->style,p);
-            if(hit!=-3){
-                /* A second click on the current bar item dismisses it;
-                 * another item switches without leaving a queued click. */
-                frame->target=hit==frame->selected?-3:hit;
-                m->message=WM_NULL;m->wParam=0;m->lParam=0;EndMenu();
-            }
-        }
-        if(frame->style && (m->message==WM_MOUSEMOVE || m->message==WM_NCMOUSEMOVE)){
-            POINT p={GET_X_LPARAM(m->lParam),GET_Y_LPARAM(m->lParam)};
-            int hit=bar_at_screen(frame->window,frame->style,p);
-            if(hit!=-3 && hit!=frame->selected){
-                frame->target=hit;m->message=WM_NULL;m->wParam=0;m->lParam=0;EndMenu();
-            }
-        }
-        if((m->message==WM_KEYDOWN || m->message==WM_SYSKEYDOWN) && bar_arrow(frame,(UINT)m->wParam)){
-            frame->direction=m->wParam==VK_LEFT?-1:1;
-            m->message=WM_NULL;m->wParam=0;m->lParam=0;EndMenu();
-        }
-        if(m->hwnd==frame->window &&
-           (m->message==WM_NCLBUTTONDBLCLK || m->message==WM_LBUTTONDBLCLK)){
-            POINT p={GET_X_LPARAM(m->lParam),GET_Y_LPARAM(m->lParam)};
-            /* Menu capture carries screen coordinates even for WM_LBUTTON*.
-             * USER may consume this double click as native-caption input
-             * before calling WH_MSGFILTER, so observe queue removal instead. */
-            if(PtInRect(&frame->button,p)){
-                frame->double_click=TRUE;frame->point=MAKELPARAM(p.x,p.y);
-                m->message=WM_NULL;m->wParam=0;m->lParam=0;EndMenu();
-            }
-        }
+        const win16_control_menu_input_view view={&frame->window,&frame->root,&frame->active,&frame->button,
+            frame,frame->style?bar_input_hit:NULL,&frame->selected,&frame->target,&frame->direction,
+            &frame->escape,&frame->double_click,&frame->point};
+        win16_control_menu_input((MSG *)lp,&view);
     }
     return CallNextHookEx(NULL,code,wp,lp);
 }
@@ -160,22 +112,11 @@ static BOOL layout(HWND w,style_window *s,win16_style_layout *l)
 
 BOOL win16_style_hit_test(HWND w,LPARAM lp,LRESULT *result)
 {
-    style_window *s;win16_style_layout l;RECT r;POINT point;
-    SCROLLBARINFO scroll={.cbSize=sizeof(scroll)};
-    POINT screen={GET_X_LPARAM(lp),GET_Y_LPARAM(lp)};
-    DWORD flags;
+    style_window *s;win16_style_layout l;
     if(!result || !local_window(w))return FALSE;
     s=state(w);
     if(!s || !layout(w,s,&l))return FALSE;
-    flags=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
-    if((flags&WS_HSCROLL) && GetScrollBarInfo(w,OBJID_HSCROLL,&scroll) && PtInRect(&scroll.rcScrollBar,screen)){
-        *result=HTHSCROLL;return TRUE;}
-    if((flags&WS_VSCROLL) && GetScrollBarInfo(w,OBJID_VSCROLL,&scroll) && PtInRect(&scroll.rcScrollBar,screen)){
-        *result=HTVSCROLL;return TRUE;}
-    if(!GetWindowRect(w,&r))return FALSE;
-    point.x=screen.x-r.left;point.y=screen.y-r.top;
-    *result=PtInRect(&l.menu,point)?HTBORDER:win16_style_hit(&l,point);
-    return TRUE;
+    return win16_control_frame_hit_test(w,&l,lp,result);
 }
 
 static void colors(style_window *s,win16_style_palette *p)
@@ -197,50 +138,30 @@ static void paint(HWND w,style_window *s,HDC target)
 
 static void paint_nonclient_buffered(HWND w,style_window *s,HDC dc)
 {const win16_control_frame_view view=paint_view(s);win16_control_frame_buffered(w,&view,dc);}
+static void paint_callback(HWND w,void *context,HDC dc){paint(w,(style_window *)context,dc);}
+static void paint_buffered_callback(HWND w,void *context,HDC dc){paint_nonclient_buffered(w,(style_window *)context,dc);}
 static void paint_menu_state(HWND w,style_window *s)
 {const win16_control_frame_view view=paint_view(s);win16_control_frame_menu_state(w,&view);}
 static void paint_button_state(HWND w,style_window *s,int hit)
 {const win16_control_frame_view view=paint_view(s);win16_control_frame_button_state(w,&view,hit);}
 
+static void bar_paint_callback(HWND w,void *context){paint_menu_state(w,(style_window *)context);}
+static win16_control_bar_state_view bar_view(style_window *s)
+{
+    const win16_control_bar_state_view view={s,&s->detached,&s->bar_keyboard,&s->bar_focus,
+        &s->bar_selected,&s->menu_font,&s->dpi,paint_layout,bar_paint_callback};
+    return view;
+}
 static void leave_bar(HWND w,style_window *s,BOOL restore_focus)
-{
-    HWND prior=s->bar_focus;
-    s->bar_keyboard=FALSE;s->bar_focus=NULL;s->bar_selected=-1;
-    if(restore_focus && prior && IsWindow(prior) && GetFocus()==w)SetFocus(prior);
-    if(!s->detached)paint_menu_state(w,s);
-}
-
+{const win16_control_bar_state_view view=bar_view(s);win16_control_menu_bar_leave(w,&view,restore_focus);}
 static void select_bar(HWND w,style_window *s,int direction)
-{
-    int count;win16_style_layout l;win16_style_bar bar;POINT origin;
-    if(!layout(w,s,&l))return;
-    origin.x=l.menu.left;
-    origin.y=l.menu.top;
-    if(!win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar))return;
-    count=(int)bar.count;win16_style_bar_free(&bar);
-    if(count<=0)return;
-    if(!s->bar_keyboard){s->bar_focus=GetFocus();s->bar_keyboard=TRUE;
-        s->bar_selected=0;SetFocus(w);}
-    else if(direction){
-        BOOL system=(GetWindowLongPtrW(w,GWL_STYLE)&WS_SYSMENU)!=0;
-        if(s->bar_selected==-2)s->bar_selected=direction>0?0:count-1;
-        else {int next=s->bar_selected+direction;
-            s->bar_selected=(next<0 || next>=count)?(system?-2:(next+count)%count):next;}
-    }
-    if(!s->detached)paint_menu_state(w,s);
-}
+{const win16_control_bar_state_view view=bar_view(s);win16_control_menu_bar_select(w,&view,direction);}
 
 static int bar_at_screen(HWND w,style_window *s,POINT point)
 {
-    win16_style_layout l;win16_style_bar bar;RECT outer;POINT origin;int hit;
-    if(s->detached || !layout(w,s,&l) || !GetWindowRect(w,&outer))return -3;
-    point.x-=outer.left;point.y-=outer.top;
-    if(PtInRect(&l.system,point))return -2;
-    if(!PtInRect(&l.menu,point))return -3;
-    origin.x=l.menu.left;origin.y=l.menu.top;
-    if(!win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar))return -3;
-    hit=win16_style_menu_hit(bar.rects,bar.count,point);win16_style_bar_free(&bar);
-    return hit<0?-3:hit;
+    win16_style_layout l;
+    if(s->detached || !layout(w,s,&l))return -3;
+    return win16_control_menu_bar_hit_screen(w,&l,s->menu_font,s->dpi,point);
 }
 
 static int open_bar_once(HWND w,style_window *s,int index,int *hover)
@@ -355,43 +276,7 @@ static void open_bar(HWND w,style_window *s,int index)
 }
 
 static BOOL refresh_font(HWND w,style_window *s)
-{
-    HFONT title,menu;
-    UINT dpi=GetDpiForWindow(w);if(!dpi)dpi=96;
-    /* Point heights are converted once in the window's DPI context. USER
-     * virtualizes legacy/unaware windows separately; do not scale them again. */
-    title=CreateFontW(-MulDiv(10,(int)dpi,72),0,0,0,FW_BOLD,FALSE,FALSE,FALSE,
-        DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,NONANTIALIASED_QUALITY,
-        DEFAULT_PITCH,L"MS Sans Serif");
-    menu=win16_style_menu_font_acquire(dpi);
-    if(!title || !menu){if(title)DeleteObject(title);win16_style_system_release(menu);return FALSE;}
-    if(s->title_font)DeleteObject(s->title_font);
-    win16_style_system_release(s->menu_font);
-    s->dpi=dpi;s->title_font=title;s->menu_font=menu;return TRUE;
-}
-
-static void frame_changed(HWND w)
-{
-    SetWindowPos(w,NULL,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|
-        SWP_NOACTIVATE|SWP_FRAMECHANGED);
-    RedrawWindow(w,NULL,NULL,RDW_FRAME|RDW_INVALIDATE|RDW_UPDATENOW);
-}
-
-static void client_screen(HWND w,RECT *r)
-{
-    POINT p={0,0};GetClientRect(w,r);ClientToScreen(w,&p);OffsetRect(r,p.x,p.y);
-}
-
-static void restore_client(HWND w,const RECT *wanted)
-{
-    RECT r,outer;POINT origin;client_screen(w,&r);GetWindowRect(w,&outer);
-    origin.x=outer.left+wanted->left-r.left;origin.y=outer.top+wanted->top-r.top;
-    if(GetWindowLongPtr(w,GWL_STYLE)&WS_CHILD)ScreenToClient(GetParent(w),&origin);
-    SetWindowPos(w,NULL,origin.x,origin.y,
-        outer.right-outer.left+(wanted->right-wanted->left)-(r.right-r.left),
-        outer.bottom-outer.top+(wanted->bottom-wanted->top)-(r.bottom-r.top),
-        SWP_NOZORDER|SWP_NOACTIVATE);
-}
+{return win16_control_refresh_frame_fonts(w,&s->dpi,&s->title_font,&s->menu_font);}
 
 static void end_menu_scope(style_window *s)
 {
@@ -413,8 +298,8 @@ static void activate_frame(HWND w,style_window *s,const RECT *client,BOOL normal
     DWORD policy=DWMNCRP_DISABLED;
     if(!(GetWindowLongPtr(w,GWL_STYLE)&WS_CHILD))
         DwmSetWindowAttribute(w,DWMWA_NCRENDERING_POLICY,&policy,sizeof(policy));
-    if(!s->detached)frame_changed(w);
-    if(!s->detached && normal)restore_client(w,client);
+    if(!s->detached)win16_control_frame_changed(w);
+    if(!s->detached && normal)win16_control_restore_client(w,client);
 }
 
 static BOOL install_frame(HWND w,const win16_style_palette *p,BOOL creating,const void *owner,const BOOL *cancelled)
@@ -441,7 +326,7 @@ static BOOL install_frame(HWND w,const win16_style_palette *p,BOOL creating,cons
     if(!refresh_font(w,s)){dispose(s);SetLastError(ERROR_INVALID_DATA);return FALSE;}
     {win16_style_layout checked;
         if(!layout(w,s,&checked)){dispose(s);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}}
-    client_screen(w,&client);
+    win16_control_client_screen(w,&client);
     s->policy_saved=!(style&WS_CHILD) && SUCCEEDED(DwmGetWindowAttribute(w,DWMWA_NCRENDERING_POLICY,
         &s->old_policy,sizeof(s->old_policy)));
     if(cancelled && *cancelled){dispose(s);SetLastError(ERROR_CANCELLED);return FALSE;}
@@ -494,7 +379,7 @@ BOOL win16_style_remove(HWND w)
     if(!local_window(w))return FALSE;
     s=state(w);if(!s){SetLastError(ERROR_NOT_FOUND);return FALSE;}
     if(s->menu_only){if(!RemoveWindowSubclass(w,style_proc,STYLE_ID))return FALSE;++s->calls;s->detached=TRUE;while(s->menus)end_menu_scope(s);win16_style_menu_restore(&s->menu_items);if(!--s->calls)dispose(s);return TRUE;}
-    normal=!IsIconic(w)&&!IsZoomed(w);client_screen(w,&client);
+    normal=!IsIconic(w)&&!IsZoomed(w);win16_control_client_screen(w,&client);
     if(!RemoveWindowSubclass(w,style_proc,STYLE_ID))return FALSE;
     ++s->calls;
     s->detached=TRUE;
@@ -505,7 +390,7 @@ BOOL win16_style_remove(HWND w)
     if(s->pressed && GetCapture()==w)ReleaseCapture();
     if(IsWindow(w) && !s->pending_frame && s->policy_saved)DwmSetWindowAttribute(w,DWMWA_NCRENDERING_POLICY,
         &s->old_policy,sizeof(s->old_policy));
-    if(IsWindow(w) && !s->pending_frame){frame_changed(w);if(normal && IsWindow(w))restore_client(w,&client);}
+    if(IsWindow(w) && !s->pending_frame){win16_control_frame_changed(w);if(normal && IsWindow(w))win16_control_restore_client(w,&client);}
     if(!--s->calls)dispose(s);
     return TRUE;
 }
@@ -573,7 +458,7 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
     case WM_SHOWWINDOW:
         if(wp && s->pending_frame){
             RECT client;BOOL normal=!IsIconic(w)&&!IsZoomed(w);
-            client_screen(w,&client);s->pending_frame=FALSE;
+            win16_control_client_screen(w,&client);s->pending_frame=FALSE;
             activate_frame(w,s,&client,normal);
             if(s->detached)break;
         }
@@ -584,11 +469,7 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
             /* Native dialogs still own their contents and notifications.
              * Supply a coherent client palette, including native SysLink;
              * ordinary application windows retain their painting contract. */
-            HDC dc=(HDC)wp;
-            SetBkColor(dc,s->palette.light);
-            SetTextColor(dc,s->palette.edge);
-            SetDCBrushColor(dc,s->palette.light);
-            result=(LRESULT)GetStockObject(DC_BRUSH);break;
+            result=win16_control_dialog_colors((HDC)wp,&s->palette);break;
         }
         goto forward;
     case WM_MEASUREITEM:
@@ -628,33 +509,13 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
         }
         goto forward;
     case WM_NCPAINT:
-        if(wp!=1 && wp){
-            /* USER owns the message region. GetDCEx takes ownership of its
-             * argument, so pass a copy and restrict painting to the actual
-             * update rather than repainting the whole caption on popups. */
-            HRGN region=CreateRectRgn(0,0,0,0);HDC dc=NULL;
-            if(region && CombineRgn(region,(HRGN)wp,NULL,RGN_COPY)!=ERROR){
-                dc=GetDCEx(w,region,DCX_WINDOW|DCX_INTERSECTRGN|DCX_CACHE);
-                if(dc){paint_nonclient_buffered(w,s,dc);ReleaseDC(w,dc);region=NULL;}
-            }
-            if(region)DeleteObject(region);
-            if(!dc)paint(w,s,NULL);
-        }else {HDC dc=GetWindowDC(w);if(dc){paint_nonclient_buffered(w,s,dc);ReleaseDC(w,dc);}}
+        win16_control_frame_ncpaint(w,wp,s,paint_callback,paint_buffered_callback);
         break;
     case WM_SETCURSOR:
         /* Default NC cursor handling can also repaint native caption buttons.
          * Only our frame belongs to us; preserve the application's client
          * cursor and error handling. No hover artwork exists in Win3.1. */
-        if(!IsIconic(w) && (HWND)wp==w && (short)LOWORD(lp)>HTCLIENT){
-            LPCWSTR cursor=IDC_ARROW;
-            switch((short)LOWORD(lp)){
-            case HTLEFT: case HTRIGHT: cursor=IDC_SIZEWE;break;
-            case HTTOP: case HTBOTTOM: cursor=IDC_SIZENS;break;
-            case HTSIZE: case HTTOPLEFT: case HTBOTTOMRIGHT: cursor=IDC_SIZENWSE;break;
-            case HTTOPRIGHT: case HTBOTTOMLEFT: cursor=IDC_SIZENESW;break;
-            }
-            SetCursor(LoadCursorW(NULL,cursor));result=TRUE;break;
-        }
+        if(win16_control_frame_set_cursor(w,wp,lp)){result=TRUE;break;}
         goto forward;
     case STYLE_NCUAHDRAWCAPTION:
     case STYLE_NCUAHDRAWFRAME:
@@ -718,13 +579,7 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
         if((wp&0xfff0)==SC_KEYMENU && lp && lp!=L' ' && GetMenu(w) && layout(w,s,&l)){
             win16_style_bar bar;POINT origin={l.menu.left,l.menu.top};int index=-1;
             if(win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar)){
-                UINT i;WCHAR key=(WCHAR)lp;CharUpperBuffW(&key,1);
-                for(i=0;i<bar.count && index<0;++i){const WCHAR *text=bar.items[i].text;
-                    if(bar.items[i].state&MFS_DISABLED)continue;
-                    for(;*text && *text!=L'\t';++text)if(*text==L'&' && text[1]){
-                        WCHAR letter=*++text;if(letter==L'&')continue;CharUpperBuffW(&letter,1);
-                        if(letter==key){index=(int)i;break;}}
-                }
+                index=win16_control_menu_bar_mnemonic(&bar,(WCHAR)lp);
                 win16_style_bar_free(&bar);
             }
             if(index>=0){
@@ -877,7 +732,7 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
         break;
     case WM_DPICHANGED:
         result=DefSubclassProc(w,msg,wp,lp);
-        if(!s->detached){refresh_font(w,s);frame_changed(w);}break;
+        if(!s->detached){refresh_font(w,s);win16_control_frame_changed(w);}break;
     case WM_SETTINGCHANGE:
     case WM_SYSCOLORCHANGE:
     case WM_THEMECHANGED:

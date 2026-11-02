@@ -11,4 +11,5 @@ void win16_dialog_old_chrome(HWND window,const win16_dialog_chrome_services *ser
 void win16_dialog_font_chrome(HWND window,const win16_dialog_chrome_services *services);
 BOOL win16_dialog_is_font_template(HWND window);
 void win16_dialog_color_initialized(HWND window,void (*found)(HWND),void (*remove_surface)(HWND));
+BOOL win16_dialog_color_swatch_edge(HWND dialog,HDC dc,const RECT *rect);
 #endif

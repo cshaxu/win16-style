@@ -23,6 +23,32 @@ static BOOL snap(int x,int y,int width,int height,DWORD *out)
     if(dc)ReleaseDC(NULL,dc);
     return ok;
 }
+/* Message/state probe that does not require access to the visible screen DC. */
+static int check_axis_behavior(HWND child,int bar)
+{
+    LONG object=bar==SB_VERT?OBJID_VSCROLL:OBJID_HSCROLL;
+    SCROLLBARINFO current={.cbSize=sizeof(current)};
+    SCROLLINFO range={.cbSize=sizeof(range),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS};
+    if(!GetScrollBarInfo(child,object,&current) || !GetScrollInfo(child,bar,&range))return 8;
+    int length=bar==SB_VERT?current.rcScrollBar.bottom-current.rcScrollBar.top:current.rcScrollBar.right-current.rcScrollBar.left;
+    int cross=bar==SB_VERT?current.rcScrollBar.right-current.rcScrollBar.left:current.rcScrollBar.bottom-current.rcScrollBar.top;
+    int border=MulDiv(1,(int)GetDpiForWindow(child),96);if(border<1)border=1;
+    int origin=cross-border,travel=length-cross-origin+border-cross;
+    LONG maximum=range.nMax-(range.nPage?range.nPage-1:0);if(maximum<range.nMin)maximum=range.nMin;
+    LONG position=range.nPos;if(position<range.nMin)position=range.nMin;if(position>maximum)position=maximum;
+    int offset=origin+cross/2;if(maximum>range.nMin && travel>0)offset+=(int)(((LONGLONG)(position-range.nMin)*travel+(maximum-range.nMin)/2)/(maximum-range.nMin));
+    POINT thumb={bar==SB_VERT?(current.rcScrollBar.left+current.rcScrollBar.right)/2:current.rcScrollBar.left+offset,
+        bar==SB_VERT?current.rcScrollBar.top+offset:(current.rcScrollBar.top+current.rcScrollBar.bottom)/2};
+    POINT move=thumb;if(bar==SB_VERT)move.y+=15;else move.x+=15;ScreenToClient(child,&move);
+    SendMessageW(child,WM_NCLBUTTONDOWN,bar==SB_VERT?HTVSCROLL:HTHSCROLL,MAKELPARAM(thumb.x,thumb.y));
+    SCROLLINFO tracking={.cbSize=sizeof(tracking),.fMask=SIF_TRACKPOS};
+    BOOL captured=GetCapture()==child && GetScrollInfo(child,bar,&tracking);int start=tracking.nTrackPos;
+    SendMessageW(child,WM_MOUSEMOVE,MK_LBUTTON,MAKELPARAM(move.x,move.y));
+    BOOL moved=GetCapture()==child && GetScrollInfo(child,bar,&tracking) && tracking.nTrackPos!=start;
+    SendMessageW(child,WM_LBUTTONUP,0,MAKELPARAM(move.x,move.y));BOOL released=GetCapture()!=child;
+    printf("FRAME_BEHAVIOR axis=%d captured=%d moved=%d released=%d\n",bar,captured,moved,released);
+    return captured && moved && released?0:1;
+}
 static int check_axis(HWND root,HWND child,int bar,paint_fn paint)
 {
     LONG object=bar==SB_VERT?OBJID_VSCROLL:OBJID_HSCROLL;SCROLLBARINFO info={.cbSize=sizeof(info)};
@@ -84,6 +110,7 @@ static int check_axis(HWND root,HWND child,int bar,paint_fn paint)
 int wmain(int argc,WCHAR **argv)
 {
     BOOL list=argc>1 && !lstrcmpW(argv[1],L"list"),edit=argc>1 && !lstrcmpW(argv[1],L"edit");
+    BOOL behavior=argc>2 && !lstrcmpW(argv[2],L"behavior");
     HMODULE dll=GetModuleHandleW(sizeof(void*)==4?L"ntw16s32.dll":L"ntw16s64.dll");if(!dll)return 2;
     FARPROC address=GetProcAddress(dll,"win16_style_frame_scrollbars_install");install_fn install=NULL;memcpy(&install,&address,sizeof(install));
     address=GetProcAddress(dll,"win16_style_scrollbars_paint");paint_fn paint=NULL;memcpy(&paint,&address,sizeof(paint));
@@ -106,7 +133,8 @@ int wmain(int argc,WCHAR **argv)
     printf("FRAME_HOST bits=%u attached=%d installed=%d error=%lu kind=%ls\n",(unsigned)(sizeof(void*)*8),before,installed,error,list?L"list":edit?L"edit":L"frame");
     if(!installed)return 6;
     SetWindowPos(root,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE);RedrawWindow(root,NULL,NULL,RDW_INVALIDATE|RDW_ALLCHILDREN|RDW_UPDATENOW);paint(child,NULL,NULL);DwmFlush();Sleep(300);DwmFlush();
-    int horizontal=check_axis(root,child,SB_HORZ,paint),vertical=check_axis(root,child,SB_VERT,paint);
+    int horizontal=behavior?check_axis_behavior(child,SB_HORZ):check_axis(root,child,SB_HORZ,paint);
+    int vertical=behavior?check_axis_behavior(child,SB_VERT):check_axis(root,child,SB_VERT,paint);
     DestroyWindow(root);UnregisterClassW(cls.lpszClassName,cls.hInstance);
     printf("FRAME_SCROLL_RESULT horizontal=%d vertical=%d\n",horizontal,vertical);
     if(horizontal==1 || vertical==1)return 1;

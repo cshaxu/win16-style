@@ -59,6 +59,7 @@ HRESULT win16_dialog_proxy_extension(win16_dialog_proxy *,LPCWSTR);
 HRESULT win16_dialog_proxy_set_filename(win16_dialog_proxy *,LPCWSTR);
 HRESULT win16_dialog_proxy_get_filename(win16_dialog_proxy *,LPWSTR *);
 void win16_dialog_proxy_capture_folder(win16_dialog_proxy *,BOOL);
+void win16_dialog_proxy_capture_selection(HWND,win16_dialog_proxy *);
 HRESULT win16_dialog_proxy_set_folder(win16_dialog_proxy *,IShellItem *,PCWSTR);
 void win16_dialog_proxy_navigate_contents(HWND,win16_dialog_proxy *,PCWSTR,PCWSTR,WCHAR **,BOOL);
 #endif

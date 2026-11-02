@@ -1,6 +1,107 @@
 #include "menu_bar.h"
 #include <stdlib.h>
 #include <string.h>
+#include <windowsx.h>
+
+int win16_control_menu_bar_mnemonic(const win16_style_bar *bar,WCHAR key)
+{
+    int index=-1;CharUpperBuffW(&key,1);
+    for(UINT i=0;i<bar->count && index<0;++i){const WCHAR *text=bar->items[i].text;
+        if(bar->items[i].state&MFS_DISABLED)continue;
+        for(;*text && *text!=L'\t';++text)if(*text==L'&' && text[1]){
+            WCHAR letter=*++text;if(letter==L'&')continue;CharUpperBuffW(&letter,1);
+            if(letter==key){index=(int)i;break;}}
+    }
+    return index;
+}
+void win16_control_menu_input(MSG *m,const win16_control_menu_input_view *v)
+{
+    if((m->message==WM_KEYDOWN || m->message==WM_SYSKEYDOWN) &&
+       m->wParam==VK_ESCAPE && *v->active==*v->root)*v->escape=TRUE;
+    if(v->hit && (m->message==WM_LBUTTONDOWN || m->message==WM_NCLBUTTONDOWN)){
+        POINT p={GET_X_LPARAM(m->lParam),GET_Y_LPARAM(m->lParam)};
+        int hit=v->hit(v->hit_context,p);
+        if(hit!=-3){*v->target=hit==*v->selected?-3:hit;
+            m->message=WM_NULL;m->wParam=0;m->lParam=0;EndMenu();}
+    }
+    if(v->hit && (m->message==WM_MOUSEMOVE || m->message==WM_NCMOUSEMOVE)){
+        POINT p={GET_X_LPARAM(m->lParam),GET_Y_LPARAM(m->lParam)};
+        int hit=v->hit(v->hit_context,p);
+        if(hit!=-3 && hit!=*v->selected){*v->target=hit;
+            m->message=WM_NULL;m->wParam=0;m->lParam=0;EndMenu();}
+    }
+    if((m->message==WM_KEYDOWN || m->message==WM_SYSKEYDOWN) &&
+       win16_control_menu_bar_arrow(*v->window,*v->root,*v->active,(UINT)m->wParam)){
+        *v->direction=m->wParam==VK_LEFT?-1:1;
+        m->message=WM_NULL;m->wParam=0;m->lParam=0;EndMenu();
+    }
+    if(m->hwnd==*v->window && (m->message==WM_NCLBUTTONDBLCLK || m->message==WM_LBUTTONDBLCLK)){
+        POINT p={GET_X_LPARAM(m->lParam),GET_Y_LPARAM(m->lParam)};
+        if(PtInRect(v->button,p)){
+            *v->double_click=TRUE;*v->point=MAKELPARAM(p.x,p.y);
+            m->message=WM_NULL;m->wParam=0;m->lParam=0;EndMenu();
+        }
+    }
+}
+void win16_control_menu_bar_leave(HWND w,const win16_control_bar_state_view *s,BOOL restore_focus)
+{
+    HWND prior=*s->focus;
+    *s->keyboard=FALSE;*s->focus=NULL;*s->selected=-1;
+    if(restore_focus && prior && IsWindow(prior) && GetFocus()==w)SetFocus(prior);
+    if(!*s->detached)s->paint(w,s->context);
+}
+void win16_control_menu_bar_select(HWND w,const win16_control_bar_state_view *s,int direction)
+{
+    int count;win16_style_layout l;win16_style_bar bar;POINT origin;
+    if(!s->layout(w,s->context,&l))return;
+    origin.x=l.menu.left;origin.y=l.menu.top;
+    if(!win16_style_bar_read_for_window(w,GetMenu(w),*s->font,*s->dpi,origin,l.menu.right-l.menu.left,&bar))return;
+    count=(int)bar.count;win16_style_bar_free(&bar);
+    if(count<=0)return;
+    if(!*s->keyboard){*s->focus=GetFocus();*s->keyboard=TRUE;*s->selected=0;SetFocus(w);}
+    else if(direction){
+        BOOL system=(GetWindowLongPtrW(w,GWL_STYLE)&WS_SYSMENU)!=0;
+        *s->selected=win16_control_menu_bar_next(*s->selected,direction,count,system);
+    }
+    if(!*s->detached)s->paint(w,s->context);
+}
+int win16_control_menu_bar_next(int selected,int direction,int count,BOOL system)
+{
+    if(count<=0 || !direction)return selected;
+    if(selected==-2)return direction>0?0:count-1;
+    int next=selected+direction;
+    return (next<0 || next>=count)?(system?-2:(next+count)%count):next;
+}
+int win16_control_menu_bar_hit_screen(HWND w,const win16_style_layout *layout,
+    HFONT font,UINT dpi,POINT point)
+{
+    win16_style_bar bar;RECT outer;POINT origin;int hit;
+    if(!layout || !GetWindowRect(w,&outer))return -3;
+    point.x-=outer.left;point.y-=outer.top;
+    if(PtInRect(&layout->system,point))return -2;
+    if(!PtInRect(&layout->menu,point))return -3;
+    origin.x=layout->menu.left;origin.y=layout->menu.top;
+    if(!win16_style_bar_read_for_window(w,GetMenu(w),font,dpi,origin,layout->menu.right-layout->menu.left,&bar))return -3;
+    hit=win16_style_menu_hit(bar.rects,bar.count,point);win16_style_bar_free(&bar);
+    return hit<0?-3:hit;
+}
+BOOL win16_control_menu_bar_arrow(HWND window,HMENU root,HMENU active,UINT key)
+{
+    int i,count,selected=-1;MENUITEMINFOW info={.cbSize=sizeof(info)};RECT chosen,other;
+    if(!root || !active || (key!=VK_LEFT && key!=VK_RIGHT))return FALSE;
+    if(key==VK_LEFT && active!=root)return FALSE;
+    count=GetMenuItemCount(active);
+    for(i=0;i<count;++i){info.fMask=MIIM_STATE|MIIM_SUBMENU;
+        if(GetMenuItemInfoW(active,i,TRUE,&info) && (info.fState&MFS_HILITE)){selected=i;break;}}
+    if(selected>=0){
+        if(key==VK_RIGHT && info.hSubMenu && !(info.fState&MFS_DISABLED))return FALSE;
+        if(!GetMenuItemRect(window,active,selected,&chosen))return FALSE;
+        for(i=0;i<count;++i)if(GetMenuItemRect(window,active,i,&other) &&
+            ((key==VK_LEFT && other.right<=chosen.left) ||
+             (key==VK_RIGHT && other.left>=chosen.right)))return FALSE;
+    }
+    return TRUE;
+}
 
 void win16_style_bar_free(win16_style_bar *bar)
 {

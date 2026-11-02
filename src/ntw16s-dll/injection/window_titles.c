@@ -708,12 +708,7 @@ static BOOL WINAPI hook_DrawEdge(HDC dc,LPRECT rect,UINT edge,UINT flags)
     BOOL color=FALSE;HWND dialog=active_color_dialog?active_color_dialog->dialog:NULL;HMODULE origin=NULL;
     if(rect&&dialog&&edge==EDGE_SUNKEN&&flags==(BF_RECT|BF_ADJUST)&&WindowFromDC(dc)==dialog&&
        GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)__builtin_return_address(0),&origin)&&origin==GetModuleHandleW(L"comdlg32.dll")){
-        for(int id=720;id<=721;++id){HWND grid=GetDlgItem(dialog,id);RECT bounds;
-            if(grid&&GetParent(grid)==dialog&&IsWindowVisible(grid)&&GetWindowRect(grid,&bounds)){
-                MapWindowPoints(NULL,dialog,(POINT *)&bounds,2);
-                if(rect->left>=bounds.left&&rect->top>=bounds.top&&rect->right<=bounds.right&&rect->bottom<=bounds.bottom&&
-                   rect->right>rect->left+2&&rect->bottom>rect->top+2){color=TRUE;break;}
-            }}
+        color=win16_dialog_color_swatch_edge(dialog,dc,rect);
     }
     if(eligible || controlbar || color)original=*rect;
     SetLastError(incoming);BOOL result=real_DrawEdge(dc,rect,edge,flags);DWORD error=GetLastError();

@@ -1,5 +1,12 @@
 #include "palette.h"
 
+LRESULT win16_control_dialog_colors(HDC dc,const win16_style_palette *p)
+{
+    SetBkColor(dc,p->light);
+    SetTextColor(dc,p->edge);
+    SetDCBrushColor(dc,p->light);
+    return (LRESULT)GetStockObject(DC_BRUSH);
+}
 void win16_style_default_palette(win16_style_palette *p)
 {
     if(!p)return;

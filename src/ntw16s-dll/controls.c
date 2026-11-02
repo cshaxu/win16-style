@@ -1,4 +1,5 @@
 #include "control_class.h"
+#include "lib/win16-control/scroll_native.h"
 #include "attachment.h"
 /* Internal guard for a witnessed VCL group button. */
 BOOL ntw16s_group_button_valid(HWND);
@@ -466,52 +467,29 @@ void win16_style_vb_data_arrow(HDC dc,int x,int y,int width,int height,HDC sourc
 static BOOL scroll_layout(HWND w,win16_scroll_layout *layout)
 {
     RECT r;SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS};
-    int dpi=(int)GetDpiForWindow(w);
-    win16_scroll_metrics metrics={MulDiv(17,dpi,96),MulDiv(17,dpi,96),max(1,MulDiv(1,dpi,96))};LONGLONG maximum;
+    UINT dpi=GetDpiForWindow(w);
     if(!GetClientRect(w,&r) || !ntw16s_native_get_scroll_info(w,SB_CTL,&info))return FALSE;
     /* An application can choose a nonstandard control thickness. Preserve
      * the original square glyph aspect in both paint and hit-test geometry. */
-    metrics.arrow=metrics.thumb=(GetWindowLongPtrW(w,GWL_STYLE)&SBS_VERT)?r.right-r.left:r.bottom-r.top;
-    maximum=(LONGLONG)info.nMax-(info.nPage?info.nPage-1:0);
-    if(maximum<info.nMin)maximum=info.nMin;
-    return win16_scroll_measure(&r,(GetWindowLongPtrW(w,GWL_STYLE)&SBS_VERT)!=0,
-        &metrics,info.nMin,(LONG)maximum,info.nPos,layout);
+    return win16_scroll_measure_native(&r,(GetWindowLongPtrW(w,GWL_STYLE)&SBS_VERT)!=0,
+        dpi,&info,layout);
 }
 static BOOL embedded_scroll_layout(HWND w,LONG object,win16_scroll_layout *layout,POINT *screen_origin)
 {
     BOOL vertical=object==OBJID_VSCROLL;
     SCROLLBARINFO bar={.cbSize=sizeof(bar)};SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS};
-    RECT r;int dpi=(int)GetDpiForWindow(w);LONGLONG maximum;
-    win16_scroll_metrics metrics={MulDiv(17,dpi,96),MulDiv(17,dpi,96),max(1,MulDiv(1,dpi,96))};
+    RECT r;UINT dpi=GetDpiForWindow(w);
     if(!GetScrollBarInfo(w,vertical?OBJID_VSCROLL:OBJID_HSCROLL,&bar) || (bar.rgstate[0]&STATE_SYSTEM_INVISIBLE) ||
         !ntw16s_native_get_scroll_info(w,vertical?SB_VERT:SB_HORZ,&info))return FALSE;
     SetRect(&r,0,0,bar.rcScrollBar.right-bar.rcScrollBar.left,bar.rcScrollBar.bottom-bar.rcScrollBar.top);
-    metrics.arrow=metrics.thumb=vertical?r.right:r.bottom;
     screen_origin->x=bar.rcScrollBar.left;screen_origin->y=bar.rcScrollBar.top;
-    maximum=(LONGLONG)info.nMax-(info.nPage?info.nPage-1:0);if(maximum<info.nMin)maximum=info.nMin;
-    return win16_scroll_measure(&r,vertical,&metrics,info.nMin,(LONG)maximum,info.nPos,layout);
+    return win16_scroll_measure_native(&r,vertical,dpi,&info,layout);
 }
 
-static BOOL horizontal_thumb_messages(HWND w)
-{
-    SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_RANGE|SIF_PAGE};
-    return ntw16s_native_get_scroll_info(w,SB_HORZ,&info) && info.nMin>=0 &&
-        (LONGLONG)info.nMax-(info.nPage?info.nPage-1:0)<=0xffff;
-}
 static BOOL list_axis_owned(HWND w,LONG object)
-{
-    if(GetWindowLongPtrW(w,GWL_STYLE)&LBS_MULTICOLUMN)return object==OBJID_HSCROLL;
-    return object==OBJID_VSCROLL || (object==OBJID_HSCROLL && horizontal_thumb_messages(w));
-}
+{return win16_scroll_list_axis_owned(w,object,ntw16s_native_get_scroll_info);}
 static BOOL edit_thumb_messages(HWND w,LONG object)
-{
-    /* Above this native EDIT boundary, thumb messages ignore HIWORD and read
-     * USER-owned nTrackPos, which this public-API adapter cannot assign. */
-    LRESULT lines=SendMessageW(w,EM_GETLINECOUNT,0,0);
-    if(lines<=0 || lines>=0xffff)return FALSE;
-    if(object==OBJID_HSCROLL && !horizontal_thumb_messages(w))return FALSE;
-    return TRUE;
-}
+{return win16_scroll_edit_thumb_messages(w,object,ntw16s_native_get_scroll_info);}
 
 static void draw_scroll(HWND w,control_style *s,HDC dc,LONG object,BOOL vertical)
 {
@@ -556,208 +534,46 @@ void win16_style_scrollbars_paint(HWND w,HDC target,const win16_style_palette *p
     nonclient_scrollbars(w,&s,target);
 }
 
-static UINT scroll_disabled(HWND w,LONG object)
+static win16_scroll_caret_view scroll_caret_view(control_style *s)
 {
-    SCROLLBARINFO info={.cbSize=sizeof(info)};UINT disabled=0;
-    if(!IsWindowEnabled(w) || !GetScrollBarInfo(w,object,&info))return ESB_DISABLE_BOTH;
-    if(info.rgstate[1]&STATE_SYSTEM_UNAVAILABLE)disabled|=ESB_DISABLE_LTUP;
-    if(info.rgstate[5]&STATE_SYSTEM_UNAVAILABLE)disabled|=ESB_DISABLE_RTDN;
-    return disabled;
+    const win16_scroll_caret_view view={&s->detached,&s->scroll_caret,&s->scroll_caret_shown,
+        &s->scroll_caret_size,&s->scroll,is_scroll,scroll_layout};return view;
 }
 static void scroll_caret_destroy(HWND w,control_style *s)
-{
-    GUITHREADINFO info={.cbSize=sizeof(info)};
-    if(s->scroll_caret && GetGUIThreadInfo(GetCurrentThreadId(),&info) && info.hwndCaret==w)DestroyCaret();
-    s->scroll_caret=s->scroll_caret_shown=FALSE;
-}
+{const win16_scroll_caret_view view=scroll_caret_view(s);win16_scroll_caret_destroy(w,&view);}
 static void scroll_caret_sync(HWND w,control_style *s)
-{
-    win16_scroll_layout layout;RECT r;int inset=max(1,MulDiv(2,(int)GetDpiForWindow(w),96));
-    if(s->detached || !is_scroll(w))return;
-    if(GetFocus()!=w || !IsWindowEnabled(w) || !scroll_layout(w,&layout) || !layout.thumb_fits){
-        scroll_caret_destroy(w,s);return;}
-    r=layout.thumb;
-    if(s->scroll.active && s->scroll.part==WIN16_SCROLL_THUMB){
-        if(layout.vertical)OffsetRect(&r,0,s->scroll.pixel-r.top);
-        else OffsetRect(&r,s->scroll.pixel-r.left,0);}
-    InflateRect(&r,-inset,-inset);
-    if(IsRectEmpty(&r)){scroll_caret_destroy(w,s);return;}
-    if(s->scroll_caret && (s->scroll_caret_size.cx!=r.right-r.left || s->scroll_caret_size.cy!=r.bottom-r.top))
-        scroll_caret_destroy(w,s);
-    if(!s->scroll_caret){
-        if(!CreateCaret(w,(HBITMAP)1,r.right-r.left,r.bottom-r.top))return;
-        s->scroll_caret=TRUE;s->scroll_caret_size.cx=r.right-r.left;s->scroll_caret_size.cy=r.bottom-r.top;}
-    SetCaretPos(r.left,r.top);
-    if(s->scroll.active && s->scroll_caret_shown){HideCaret(w);s->scroll_caret_shown=FALSE;}
-    else if(!s->scroll.active && !s->scroll_caret_shown){ShowCaret(w);s->scroll_caret_shown=TRUE;}
-}
+{const win16_scroll_caret_view view=scroll_caret_view(s);win16_scroll_caret_sync(w,&view);}
 static void scroll_stop_timer(HWND w,control_style *s)
-{if(s->scroll_timer){KillTimer(w,s->scroll_timer);s->scroll_timer=0;}}
-static void scroll_actions(HWND w,control_style *s,const win16_scroll_actions *actions,unsigned epoch)
+{win16_scroll_stop_timer(w,&s->scroll_timer);}
+static void scroll_draw_callback(HWND w,void *context,HDC dc,LONG object,BOOL vertical)
+{draw_scroll(w,(control_style *)context,dc,object,vertical);}
+static void scroll_nonclient_callback(HWND w,void *context,HDC dc)
+{nonclient_scrollbars(w,(control_style *)context,dc);}
+static void scroll_caret_callback(HWND w,void *context)
+{scroll_caret_sync(w,(control_style *)context);}
+static win16_scroll_actions_view scroll_action_view(control_style *s)
 {
-    UINT i;BOOL reporting=s->scroll_reporting;LONG previous=s->scroll_report;
-    if(s->detached || s->scroll_epoch!=epoch)return;
-    if(actions->timer_ms!=WIN16_SCROLL_KEEP_TIMER){
-        scroll_stop_timer(w,s);
-        if(actions->timer_ms && s->scroll.active)
-            s->scroll_timer=SetTimer(w,(UINT_PTR)&s->scroll,actions->timer_ms,NULL);
-    }
-    for(i=0;i<actions->count;++i){
-        HWND parent=GetParent(w);UINT message=(GetWindowLongPtrW(w,GWL_STYLE)&SBS_VERT)?WM_VSCROLL:WM_HSCROLL;
-        s->scroll_reporting=TRUE;s->scroll_report=actions->notices[i].position;
-        if(s->frame_scrollbars){
-            SendMessageW(w,s->embedded_object==OBJID_HSCROLL?WM_HSCROLL:WM_VSCROLL,
-                MAKEWPARAM(actions->notices[i].command,(WORD)s->scroll_report),0);
-        }else if(s->edit_scrollbars){UINT command=actions->notices[i].command;
-            SendMessageW(w,s->embedded_object==OBJID_HSCROLL?WM_HSCROLL:WM_VSCROLL,MAKEWPARAM(command,(WORD)s->scroll_report),0);
-        }else if(s->list_scrollbar){UINT command=actions->notices[i].command;
-            BOOL multi=(GetWindowLongPtrW(w,GWL_STYLE)&LBS_MULTICOLUMN)!=0;
-            if(!multi && s->embedded_object==OBJID_HSCROLL)
-                SendMessageW(w,WM_HSCROLL,MAKEWPARAM(command,(WORD)s->scroll_report),0);
-            else if(command==SB_THUMBTRACK || command==SB_THUMBPOSITION){
-                LONGLONG index=s->scroll_report;
-                if(multi){RECT client;LRESULT height=SendMessageW(w,LB_GETITEMHEIGHT,0,0);
-                    if(s->detached || s->scroll_epoch!=epoch)return;
-                    if(height<=0 || !GetClientRect(w,&client))return;
-                    index*=max(1,client.bottom/(LONG)height);
-                }
-                if(index>=0 && index<=MAXLONG)SendMessageW(w,LB_SETTOPINDEX,(WPARAM)index,0);
-            }else SendMessageW(w,multi?WM_HSCROLL:WM_VSCROLL,MAKEWPARAM(command,0),0);
-        }else if(parent)SendMessageW(parent,message,MAKEWPARAM(actions->notices[i].command,(WORD)s->scroll_report),(LPARAM)w);
-        s->scroll_reporting=reporting;s->scroll_report=previous;
-        /* Calls may destroy/remove the attachment, or start another gesture. */
-        if(s->detached || s->scroll_epoch!=epoch)return;
-    }
-    if(actions->repaint && s->frame_scrollbars){HDC dc=GetWindowDC(w);
-        if(dc){draw_scroll(w,s,dc,s->embedded_object,s->embedded_object==OBJID_VSCROLL);ReleaseDC(w,dc);}}
-    else if(actions->repaint){RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
-        if(!s->detached && (s->list_scrollbar || s->edit_scrollbars))nonclient_scrollbars(w,s,NULL);}
-    scroll_caret_sync(w,s);
+    const win16_scroll_actions_view view={s,&s->detached,&s->scroll_reporting,&s->frame_scrollbars,
+        &s->edit_scrollbars,&s->list_scrollbar,&s->scroll_epoch,&s->scroll_report,&s->embedded_object,
+        &s->scroll_timer,&s->scroll,scroll_draw_callback,scroll_nonclient_callback,scroll_caret_callback};
+    return view;
 }
 static void scroll_release_capture(HWND w,control_style *s)
-{
-    HWND previous=s->list_capture_before;s->list_capture_before=NULL;
-    /* Do not release capture borrowed from the combo's own popup tracking,
-     * and never take capture back from a window that already acquired it. */
-    if(GetCapture()==w){
-        if((s->list_scrollbar || s->edit_scrollbars || s->frame_scrollbars) && previous && IsWindow(previous) &&
-            GetWindowThreadProcessId(previous,NULL)==GetCurrentThreadId()){
-            if(previous!=w)SetCapture(previous);
-        }else ReleaseCapture();
-    }
-}
+{win16_scroll_release_capture(w,&s->list_capture_before,s->list_scrollbar,s->edit_scrollbars,s->frame_scrollbars);}
 static void scroll_finish(HWND w,control_style *s,BOOL cancel)
-{
-    win16_scroll_actions actions;unsigned epoch=s->scroll_epoch;
-    if(!s->scroll.active)return;
-    win16_scroll_end(&s->scroll,cancel,&actions);scroll_stop_timer(w,s);
-    scroll_release_capture(w,s);
-    scroll_actions(w,s,&actions,epoch);
-}
+{const win16_scroll_actions_view view=scroll_action_view(s);win16_scroll_finish(w,&view,&s->list_capture_before,cancel);}
 static BOOL scroll_input(HWND w,control_style *s,UINT m,WPARAM a,LPARAM b)
 {
-    win16_scroll_layout layout;win16_scroll_actions actions;POINT point;
-    point.x=(short)LOWORD(b);point.y=(short)HIWORD(b);
-    if(m==WM_LBUTTONDOWN || m==WM_LBUTTONDBLCLK){
-        RECT limit;unsigned epoch;
-        if(!IsWindowEnabled(w) || s->scroll.active || !scroll_layout(w,&layout))return TRUE;
-        /* USER18:17AE inflates the original bar by 4*CXBORDER, CYBORDER.
-         * Do not substitute the much wider later-NT drag tolerance. */
-        limit=layout.bar;{int unit=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));InflateRect(&limit,4*unit,unit);}
-        if(!win16_scroll_begin(&s->scroll,&layout,scroll_disabled(w,OBJID_CLIENT),point,&limit,&actions))return TRUE;
-        epoch=++s->scroll_epoch;SetFocus(w);
-        if(s->detached || epoch!=s->scroll_epoch || !s->scroll.active)return TRUE;
-        SetCapture(w);
-        if(s->detached || epoch!=s->scroll_epoch)return TRUE;
-        if(GetCapture()!=w){scroll_finish(w,s,TRUE);return TRUE;}
-        scroll_actions(w,s,&actions,epoch);return TRUE;
-    }
-    if(m==WM_MOUSEMOVE || (m==WM_TIMER && s->scroll_timer && a==s->scroll_timer)){
-        if(s->scroll.active && scroll_layout(w,&layout)){
-            if(m==WM_TIMER){if(!GetCursorPos(&point) || !ScreenToClient(w,&point))return TRUE;}
-            win16_scroll_motion(&s->scroll,&layout,scroll_disabled(w,OBJID_CLIENT),point,m==WM_TIMER,&actions);
-            scroll_actions(w,s,&actions,s->scroll_epoch);
-        }return TRUE;
-    }
-    if(m==WM_LBUTTONUP || m==WM_CANCELMODE || m==WM_CAPTURECHANGED){
-        scroll_finish(w,s,m!=WM_LBUTTONUP);return TRUE;
-    }
-    if(m==WM_MOUSELEAVE)return TRUE;
-    if(m==WM_KEYDOWN){UINT command;
-        if(!IsWindowEnabled(w))return TRUE;
-        switch(a){case VK_LEFT:case VK_UP:command=SB_LINEUP;break;
-        case VK_RIGHT:case VK_DOWN:command=SB_LINEDOWN;break;
-        case VK_PRIOR:command=SB_PAGEUP;break;case VK_NEXT:command=SB_PAGEDOWN;break;
-        case VK_HOME:command=SB_TOP;break;case VK_END:command=SB_BOTTOM;break;
-        default:return FALSE;}
-        ZeroMemory(&actions,sizeof(actions));actions.timer_ms=WIN16_SCROLL_KEEP_TIMER;
-        actions.count=1;actions.notices[0].command=command;actions.repaint=TRUE;s->scroll_key=TRUE;
-        scroll_actions(w,s,&actions,s->scroll_epoch);return TRUE;
-    }
-    if(m==WM_KEYUP && s->scroll_key){
-        s->scroll_key=FALSE;ZeroMemory(&actions,sizeof(actions));actions.timer_ms=WIN16_SCROLL_KEEP_TIMER;
-        actions.count=1;actions.notices[0].command=SB_ENDSCROLL;
-        scroll_actions(w,s,&actions,s->scroll_epoch);return TRUE;
-    }
-    return FALSE;
+    const win16_scroll_input_view view={scroll_action_view(s),&s->list_capture_before,&s->scroll_key,scroll_layout};
+    return win16_scroll_control_input(w,&view,m,a,b);
 }
 
+static BOOL scroll_has_owner(void *context){return ((control_style *)context)->owner!=NULL;}
 static BOOL embedded_scroll_input(HWND w,control_style *s,UINT m,WPARAM a,LPARAM b)
 {
-    win16_scroll_layout layout;win16_scroll_actions actions;POINT point,origin;
-    BOOL multi=s->list_scrollbar && (GetWindowLongPtrW(w,GWL_STYLE)&LBS_MULTICOLUMN)!=0;
-    LONG object=multi?OBJID_HSCROLL:OBJID_VSCROLL;
-    BOOL down=m==WM_NCLBUTTONDOWN || m==WM_NCLBUTTONDBLCLK;
-    if(!s->list_scrollbar && !s->edit_scrollbars && !s->frame_scrollbars)return FALSE;
-    /* A dropped combo already owns capture: its bar receives CLIENT clicks.
-     * Native LISTBOX normally releases capture, calls the synchronous NC
-     * tracker, then takes capture back. Our tracker returns between messages;
-     * entering it through that native wrapper loses the borrowed ownership.
-     * Normalize bar hits here, leaving item/outside clicks with native USER. */
-    if(s->owner && s->list_scrollbar && !s->scroll.active && GetCapture()==w &&
-        (m==WM_LBUTTONDOWN || m==WM_LBUTTONDBLCLK)){
-        LRESULT hit;
-        point.x=(short)LOWORD(b);point.y=(short)HIWORD(b);ClientToScreen(w,&point);
-        hit=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(point.x,point.y));
-        if(s->detached)return TRUE;
-        if(hit==HTVSCROLL || hit==HTHSCROLL){
-            down=TRUE;a=(WPARAM)hit;b=MAKELPARAM(point.x,point.y);
-        }
-    }
-    if(s->scroll.active)object=s->embedded_object;
-    else if(down)object=a==HTHSCROLL?OBJID_HSCROLL:OBJID_VSCROLL;
-    /* Querying EDIT's line count dispatches back through this subclass.
-     * Only input/tracking messages may enter the eligibility query. */
-    if(!down && m!=WM_MOUSEMOVE && m!=WM_LBUTTONUP && m!=WM_CANCELMODE &&
-        m!=WM_CAPTURECHANGED && !(m==WM_TIMER && s->scroll_timer && a==s->scroll_timer))return FALSE;
-    if((s->edit_scrollbars && !edit_thumb_messages(w,object)) ||
-        (s->list_scrollbar && !list_axis_owned(w,object))){
-        if(s->scroll.active)scroll_finish(w,s,TRUE);
-        return FALSE; /* Keep native wide-text input, not truncated positioning. */
-    }
-    if(down && a==(WPARAM)(object==OBJID_HSCROLL?HTHSCROLL:HTVSCROLL)){RECT limit;unsigned epoch;
-        if(s->scroll.active || !IsWindowEnabled(w) || !embedded_scroll_layout(w,object,&layout,&origin))return TRUE;
-        point.x=(short)LOWORD(b)-origin.x;point.y=(short)HIWORD(b)-origin.y;
-        limit=layout.bar;{int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));InflateRect(&limit,4*u,u);}
-        if(!win16_scroll_begin(&s->scroll,&layout,scroll_disabled(w,object),point,&limit,&actions))return TRUE;
-        epoch=++s->scroll_epoch;s->embedded_object=object;s->list_capture_before=GetCapture();
-        if(s->list_capture_before!=w)SetCapture(w);
-        if(s->detached || s->scroll_epoch!=epoch)return TRUE;
-        if(GetCapture()!=w){scroll_finish(w,s,TRUE);return TRUE;}
-        scroll_actions(w,s,&actions,epoch);return TRUE;
-    }
-    if(!s->scroll.active)return FALSE;
-    if(m==WM_MOUSEMOVE || (m==WM_TIMER && a==s->scroll_timer)){
-        if(!embedded_scroll_layout(w,object,&layout,&origin)){scroll_finish(w,s,TRUE);return TRUE;}
-        if(m==WM_TIMER){if(!GetCursorPos(&point))return TRUE;}
-        else{point.x=(short)LOWORD(b);point.y=(short)HIWORD(b);ClientToScreen(w,&point);}
-        point.x-=origin.x;point.y-=origin.y;
-        win16_scroll_motion(&s->scroll,&layout,scroll_disabled(w,object),point,m==WM_TIMER,&actions);
-        scroll_actions(w,s,&actions,s->scroll_epoch);return TRUE;
-    }
-    if(m==WM_LBUTTONUP || m==WM_CANCELMODE || m==WM_CAPTURECHANGED){
-        scroll_finish(w,s,m!=WM_LBUTTONUP);return TRUE;}
-    return FALSE;
+    const win16_scroll_embedded_view view={scroll_action_view(s),&s->list_capture_before,
+        scroll_has_owner,embedded_scroll_layout,ntw16s_native_get_scroll_info};
+    return win16_scroll_embedded_input(w,&view,m,a,b);
 }
 
 /* Only screen WM_PAINT uses this transient surface. Keep WM_PRINTCLIENT on
@@ -776,29 +592,12 @@ static void present_control(HWND w,control_style *s,HDC target,void (*painter)(H
 /* Original LBSetTabStops stores set-time pixels. GdiGetCharDimensions uses
  * the alphabet average for proportional fonts, not tmAveCharWidth. Keep
  * that public-API arithmetic here; private PLBIV/CFONT are not imported. */
+static LRESULT forward_list_tabs(HWND w,WPARAM count,LPARAM values)
+{return DefSubclassProc(w,LB_SETTABSTOPS,count,values);}
 static LRESULT set_list_tabs(HWND w,control_style *s,WPARAM count,LPARAM values)
 {
-    int *pixels=NULL,average,i;LRESULT result;
-    if(count>INT_MAX || (count && !values) || count>((size_t)-1)/sizeof(int))return FALSE;
-    if(count){HDC dc;HFONT old;TEXTMETRICW tm;SIZE size;
-        pixels=malloc((size_t)count*sizeof(int));if(!pixels)return FALSE;
-        dc=GetDC(w);if(!dc){free(pixels);return FALSE;}
-        old=SelectObject(dc,s->font);
-        if(!GetTextMetricsW(dc,&tm)){SelectObject(dc,old);ReleaseDC(w,dc);free(pixels);return FALSE;}
-        average=tm.tmAveCharWidth;
-        if(tm.tmPitchAndFamily&TMPF_FIXED_PITCH){
-            if(!GetTextExtentPoint32W(dc,L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",52,&size)){
-                SelectObject(dc,old);ReleaseDC(w,dc);free(pixels);return FALSE;}
-            average=((size.cx/26)+1)/2;
-        }
-        SelectObject(dc,old);ReleaseDC(w,dc);
-        for(i=0;i<(int)count;++i){LONGLONG value=((LONGLONG)((const int *)values)[i]*average+2)/4;
-            if(value<INT_MIN || value>INT_MAX){free(pixels);return FALSE;}pixels[i]=(int)value;}
-    }
-    result=DefSubclassProc(w,LB_SETTABSTOPS,count,values);
-    if(result && !s->detached){free(s->tab_positions);s->tab_positions=pixels;s->tab_count=(int)count;}
-    else free(pixels);
-    return result;
+    const win16_control_tabstops_view view={&s->detached,&s->font,&s->tab_count,&s->tab_positions,forward_list_tabs};
+    return win16_control_set_list_tabs(w,&view,count,values);
 }
 static void draw_sizebox(HWND w,control_style *s,HDC dc)
 {(void)s;win16_control_draw_sizebox(w,dc);}

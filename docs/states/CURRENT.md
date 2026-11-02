@@ -2,7 +2,74 @@
 
 ## Current Work
 
-当前无活动任务包（无活动 S）；M0 T21 保持开放。S23 已收口，产品提交 `4eb5c7c` 及远端四文件已复核，详情见 [交付记录](../history/M0-T21-S23-dialog-library.md)。
+## M0 T21 S24 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | New; active |
+| Admission And Approval | 用户要求将剩余 Win16 样式和对话框逻辑全部抽到两个公共库；沿用 T21，不新建 T。 |
+| Objective | 逐项盘点并迁移 DLL 中剩余的窗口、控件与对话框样式业务至 win16-control 和 win16-dialog；调用入口及明确的接入边界保留 DLL。 |
+| Non-goals | 不修改 global_*、跨进程接入、传播、公开 ABI、原图形及来源声明；不增加产物。 |
+| Reference Baseline | S22/S23 已完成第一阶段库抽离，S23 产品提交 4eb5c7c；其中仍有样式业务留在 DLL。 |
+| Candidate Proposal | [库设计与依赖审计](../proposals/win16-libraries.md)。 |
+| Files And ABI Surface | 两个内部库、现有进程内样式及对话框适配、构建、测试；保持对外 ABI。 |
+| Applicable Rules | 固定 M0；C17、MinGW GCC、Ninja、ccache；同批四文件构建、测试和双位置发布。 |
+| Verification | 双宽独立库链接、受影响控件及对话框原生探针、ABI、资源身份、同批四文件干净包回归及摘要。 |
+| Expected Markers | 样式及对话框业务拥有单一库实现；DLL 剩余部分为明确的入口、状态协调及接入桥接，无法迁移项逐项说明。 |
+| Asset Needs | 保留三组件四产物和原资源，不新增运行产物。 |
+| Reporting Requirements | 按文件与职责记录迁移和留存、验证范围、失败及未覆盖项、部署和远端复核。 |
+| Stop Conditions | 必须更改跨进程接入、公开 ABI、原资源或增加产物时先记录和说明。 |
+| Exit Criteria | 全部范围逐项核验；同批构建、测试、发布、提交推送及远端复核完成。 |
+| Original Owner Request | 将 win16-dialog 和 win16-control 所有样式逻辑拆分到公共 lib。 |
+| Similar-Issue Sweep | 审计 controls.c、win16_style.c、attachment.c、theme.c、updown_paint.c 及 file/folder/com/window_titles 对话框路径。 |
+
+S24 已准入；S23 产品提交 `4eb5c7c` 及远端四文件已复核，详情见 [交付记录](../history/M0-T21-S23-dialog-library.md)。用户进一步要求为后续 Win2000 样式库准备接口；候选边界见库设计，不能将尚未验证的草案宣称为已实现的多主题框架。本 S 当前尚未完成全部迁移或发布。
+
+S24 增量进展：菜单左右键边界判断迁入 win16-control，颜色对话框色块边界识别迁入 win16-dialog；DLL 保留菜单消息入口和颜色绘制调用入口。双位宽增量构建、ABI、两库独立链接/模板测试各 3/3 通过；增量候选四文件结构检查及双位宽私有桌面菜单键盘、颜色选择和焦点探针通过。上述是局部证据，不证明所有样式逻辑已迁出，也不是干净构建或正式发布。剩余至少包括窗口/控件消息和状态、菜单循环、颜色对话框识别上下文以及 COM 对话框实验分支；需逐项继续审计。候选包 `build/t21-package/s24-menu-color-candidate` 及测试目录 `s24-unit-x86`、`s24-unit-x64` 均为本 S scratch。
+
+滚动条原生参数到 Win16 几何的重复转换已迁入 win16-control，双宽增量构建及几何、链接和 ABI 各 4/4 通过，当前增量包结构检查通过。私有桌面滚动框架探针中当前 x86 候选返回横/纵 5；同环境 S23 基线双宽也返回横/纵 5。探针代码显示 5 对应屏幕像素采样失败，未记录系统错误码；不能断定根因，亦不能算实窗滚动通过。当前 x64 候选实窗未测。相关 scratch：`s24-scroll-candidate`、`s24-geometry-x86`、`s24-geometry-x64`。
+
+来源校验发现 `scroll_layout` 为须逐字节保留的来源文件，已恢复原文件并将新增转换独立放入 `scroll_native.c/.h`；来源清单通过。该调整后的双宽增量构建、几何、链接和 ABI 各 4/4 通过；普通沙箱下菜单分派和原生滚动测试创建私有桌面错误 5，在允许私有桌面的执行环境双宽各 2/2 通过；其中 core/scroll-native 是系统 API 对照，不加载项目 DLL。此后者不验证产品滚动消息或此前屏幕像素采样失败；尚未完成干净包测试或发布。额外 scratch：`s24-scroll-native-x86`、`s24-scroll-native-x64`、`s24-native-priv-x86`、`s24-native-priv-x64`。
+
+标题和菜单字体创建/替换策略、菜单栏屏幕命中及键盘选择运算迁入 win16-control，字体句柄与窗口状态仍由原窗口所有者持有。双宽增量构建、ABI、独立库字体参数/菜单选择和几何测试各 3/3 通过；当前增量包结构检查及私有桌面双宽菜单键盘探针通过。此前候选另有双宽字体框探针通过，不能当作当前快照的单独结果。新增 scratch：`s24-frame-font-x86`、`s24-frame-font-x64`、`s24-font-candidate`、`s24-menu-hit-x86`、`s24-menu-hit-x64`、`s24-menu-hit-candidate`。
+
+窗口非客户区命中判断迁入 win16-control，DLL 保留同线程检查、窗口状态和布局获取；双宽增量构建及 ABI、几何和独立窗口命中测试各 3/3 通过。当前增量包双宽私有桌面菜单键盘和字体对话框探针通过；此为局部验证，后续仍须真实非客户区交互回归及同批干净包验证。scratch：`s24-frame-hit-x86`、`s24-frame-hit-x64`、`s24-frame-hit-candidate`。
+
+窗口框架刷新及客户区屏幕坐标保存/恢复迁入 win16-control，调用时机和生命周期仍归窗口所有者。双宽增量构建、ABI、几何及独立自有窗口缩放后客户区恢复测试各 3/3 通过；尚需现行安装/移除路径回归。scratch：`s24-client-restore-x86`、`s24-client-restore-x64`。
+
+随后以当前增量 DLL 运行自有私有桌面 core/runtime 与 core/frames，双位宽各 2/2 通过，覆盖现行附着、解除和框架路径；并非干净包验证。runtime 各约 53 秒，超出预期，后续无相关修改不重复；原命令行 timeout 35 没有覆盖测试自身较长的超时属性。scratch：`s24-frame-runtime-x86`、`s24-frame-runtime-x64`。
+
+菜单栏选中和退出逻辑进一步迁入 win16-control，以借用视图操作原窗口所有者的状态并通过回调调用布局/绘制；DLL 仍负责菜单跟踪与状态生命周期。双宽增量构建、ABI、几何及独立菜单状态测试各 3/3、私有桌面菜单分派各 1/1 通过；当前增量包结构检查及双宽菜单键盘探针通过，尚未完成全菜单矩阵或干净包。scratch：`s24-bar-state-x86`、`s24-bar-state-x64`、`s24-bar-dispatch-x86`、`s24-bar-dispatch-x64`、`s24-bar-state-candidate`。
+
+菜单鼠标切换、Esc 和方向键消息决策迁入 win16-control；系统消息过滤入口与菜单生命周期仍在 DLL，库借用原活动状态以保留重入顺序。双宽增量构建、ABI 和独立消息测试各 2/2，私有桌面菜单取消及分派各 2/2 通过；测试为当前增量 DLL，尚非正式包。scratch：`s24-menu-input-x86`、`s24-menu-input-x64`、`s24-menu-input-priv-x86`、`s24-menu-input-priv-x64`。
+
+菜单助记键匹配进一步迁入库，包含禁用项、转义 `&&` 和制表符后快捷键文本的既有规则；双宽增量构建、ABI 及独立匹配测试各 2/2 通过。此次新源码尚未完成实窗菜单回归。scratch：`s24-mnemonic-x86`、`s24-mnemonic-x64`。
+
+窗口非客户区光标选择迁入 win16-control；双宽增量构建、ABI 和独立控件客户区/错误目标/边框命中测试各 2/2 通过。尚未做当前源码的真实光标外观检查或干净包回归。scratch：`s24-frame-cursor-x86`、`s24-frame-cursor-x64`。
+
+非客户区更新区域复制、裁剪及缓冲绘制协调迁入 win16-control；窗口消息入口和画笔状态仍由 DLL 持有。双宽增量构建、ABI 和独立绘制回调测试各 2/2 通过；本快照双宽私有桌面菜单取消（包含框架裁剪探针）和消息分派各 2/2 通过。不是完整视觉或干净包验证。scratch：`s24-ncpaint-x86`、`s24-ncpaint-x64`、`s24-ncpaint-priv-x86`、`s24-ncpaint-priv-x64`。
+
+实验性 COM 旧式文件对话框的选择项捕获与释放已迁入 win16-dialog；双宽增量构建、ABI 和使用自有临时文件的选择/清空独立测试各 3/3 通过，事件和隐藏文件实验宏双宽语法检查通过。当前增量包结构检查、双宽 COM 文件框和菜单键盘探针通过；该独立测试不证明实验功能的完整对话框运行时，也非干净包。scratch：`s24-dialog-selection-x86`、`s24-dialog-selection-x64`、`s24-selection-candidate`。
+
+普通系统对话框背景、文字和画刷颜色设置迁入 win16-control；双宽增量构建及独立 DC 颜色状态、ABI 各 2/2 通过；该快照候选的双宽私有桌面颜色键盘、选择及色块探针通过。尚未完成干净包。scratch：`s24-dialog-colors-x86`、`s24-dialog-colors-x64`、`s24-colors-candidate`。
+
+独立滚动条焦点标记的创建、同步与销毁迁入 win16-control，库通过借用视图使用原控件的状态及布局回调。双宽增量构建、ABI 与几何测试各 2/2，私有桌面系统滚动 API 对照各 1/1 通过，但该对照不加载项目 DLL；不覆盖产品消息行为或屏幕像素采样，尚未进行当前快照的干净包测试。scratch：`s24-scroll-caret-x86`、`s24-scroll-caret-x64`、`s24-scroll-caret-priv-x86`、`s24-scroll-caret-priv-x64`。
+
+滚动条箭头禁用状态、列表方向归属与 EDIT 横向范围可表达性判断迁入 win16-control，原生状态读取由调用方回调提供；双宽增量构建、ABI 和范围边界测试各 2/2、私有桌面系统滚动 API 对照各 1/1 通过，但该对照不加载项目 DLL；未覆盖产品消息、之前屏幕像素采样失败或全部控件组合。scratch：`s24-scroll-policy-x86`、`s24-scroll-policy-x64`、`s24-scroll-policy-priv-x86`、`s24-scroll-policy-priv-x64`。
+
+滚动通知分派、计时器停止、捕获归还和手势结束协调迁入 win16-control，通过借用视图保留唯一状态及同步通知后的重入检查。双宽增量构建、ABI/几何各 2/2，通过自有父窗口重入测试验证首条通知改变 epoch 后不再发送后续通知；双宽私有桌面系统滚动 API 对照各 1/1 通过，但该对照不加载项目 DLL，不能证明产品滚动通知、此前屏幕像素采样或捕获组合通过。scratch：`s24-scroll-actions-x86`、`s24-scroll-actions-x64`、`s24-scroll-actions-priv-x86`、`s24-scroll-actions-priv-x64`、`s24-scroll-finish-x86`、`s24-scroll-finish-x64`、`s24-scroll-finish-priv-x86`、`s24-scroll-finish-priv-x64`。
+
+随后用 `s24-scroll-finish-candidate` 实际包在自有私有桌面运行双宽 VCL 滚动 fixture，均报告水平/垂直通知、鼠标、禁用、重入移除及清理通过（96 DPI）；不是全部控件或屏幕采样覆盖。首次驱动调用重复传入 `--wait`，启动器将其当成目标并返回错误 2，目标测试未运行；修正后双宽通过。
+
+独立及嵌入式滚动条的鼠标/键盘输入状态机已迁入 win16-control，DLL 仅以借用视图提供状态、原生查询及绘制回调。增加无屏幕采样的实际 DLL 探针并注册正式包用例；当前增量候选的双宽窗口、列表及编辑框水平/垂直拖动均记录捕获、跟踪位置改变及释放，正式聚焦回归 14/14、无跳过。首次增量候选仍非干净包，不以消息状态测试取代旧屏幕采样失败。scratch：`s24-scroll-input-x86`、`s24-scroll-input-x64`、`s24-scroll-input-candidate`、`s24-embedded-input-x86`、`s24-embedded-input-x64`、`s24-embedded-final-x86`、`s24-embedded-final-x64`、`s24-embedded-candidate`、`s24-embedded-focused`。
+
+列表制表位的字符度量、像素换算及状态替换迁入 win16-control，DLL 保留原始消息转发和状态所有权。双宽增量构建、ABI/独立参数和状态测试各 2/2 通过；实际 DLL 的双宽列表制表位原生测试各 1/1 通过。尚未进行当前快照的干净包测试。scratch：`s24-list-tabs-x86`、`s24-list-tabs-x64`、`s24-list-tabs-priv-x86`、`s24-list-tabs-priv-x64`。
+
+准备 S24 P1 阶段交付：使用 `build/t21-package/s24-stage-clean-1` 干净构建当前已迁移批次，再以 `s24-stage-focused-1` 聚焦验证菜单、对话框、滚动和列表；成功后发布同批四文件并复核。该阶段交付不改变 S24 的完整目标，也不表示迁移结束。
+
+S24 P1 阶段包 `s24-stage-clean-2` 双宽干净构建通过，实际包聚焦 20/20 无跳过，干净树独立库/几何/列表/DC 故障各 5/5 通过；同批四文件已发布 assets 根和 O:/winnt 并核对 SHA，提交推送及远端复核进行中。未解决的屏幕采样、实验分支与剩余迁移见 [阶段记录](../history/M0-T21-S24-stage.md)。S24 持续开放。
+
+首次干净构建在 x86 因 DC 故障夹具仍引用旧 `frame_changed` 而失败；随后全目标增量构建又发现独立字体夹具缺少 `GetDpiForWindow` 声明。已更新夹具调用并将框架字体策略移至独立 `frame_font.c`，保持原字体夹具编译条件；双宽全目标增量构建及 ABI、几何、独立链接、DC 故障、列表制表位各 5/5 通过。首次干净构建不计通过，准备使用 `s24-stage-clean-2` 重建。scratch：`s24-all-fix-x86`、`s24-all-fix-x64`。
 
 2026-11-01 发布状态变化：Windows Defender 将 S20 的 `run16s.exe` 检测为 `Trojan:Win32/Bearfoos.A!ml`（ThreatID 2147731250）；只读检测记录显示处理成功。用户报告已恢复文件后复核：`assets/run16s.exe` 已可读取且 SHA-256 与验收版本一致，`O:/winnt/run16s.exe` 仍缺失。用户随后要求删除被映射的 `O:/winnt/ntw16s64.dll`；原路径已移除，旧映像保留在 `build/t21-package/user-retired-ntw16s64.dll`，仍被进程映射。是否误报尚未确认，不关闭防护或添加排除项；后续由用户或维护者向 Microsoft 提交样本核查。S20 的用户验收和曾经的发布摘要保留为历史事实，不代表当前部署完整。
 
@@ -184,7 +251,7 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
-- Last allocated T21 S: 23
+- Last allocated T21 S: 24
 - Last verified remote delivery: M0 T21 S20 P1，`8f25892`；四产品已复核一致。
 - Open task: T21；S23 活动中，S22 已收口，S21 产品包验证转交 S22，S20、S19、S18、S17、S16、S15 已收口；Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
