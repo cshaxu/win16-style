@@ -2,7 +2,7 @@
 
 # Deferred Debt
 
-- [ ] TODO(High): S20 启动器被 Windows Defender 检测和处置，`O:/winnt/run16s.exe` 缺失且 `assets/run16s.exe` 读取被阻止；Owner：后续安全审查。Evidence：2026-11-01 只读 `Get-MpThreatDetection` / `Get-MpThreat`，ThreatID 2147731250，名称 `Trojan:Win32/Bearfoos.A!ml`，处理成功；原测试包 SHA-256 `1c2e0edcf1fcf975afc6abdeb70a1976725ce6ffadeddb35d47df9347178075f`。是否误报未知。Admission：由维护者向 Microsoft 提交样本并审查分析结果，在不关闭防护或绕过隔离的前提下决定后续处置。
+- [ ] TODO(High): S20 启动器被 Windows Defender 检测和处置，用户恢复后 `assets/run16s.exe` 已可读取且摘要一致，`O:/winnt/run16s.exe` 仍缺失；Owner：后续安全审查。Evidence：2026-11-01 只读 `Get-MpThreatDetection` / `Get-MpThreat`，ThreatID 2147731250，名称 `Trojan:Win32/Bearfoos.A!ml`，处理成功；验收包 SHA-256 `1c2e0edcf1fcf975afc6abdeb70a1976725ce6ffadeddb35d47df9347178075f`。是否误报未知。Admission：由维护者向 Microsoft 提交样本并审查分析结果，在不关闭防护或绕过隔离的前提下决定后续处置。
 
 - [ ] TODO(Low): 托盘正式包的自动真实 UAC 和当前桌面点击对照；Owner：后续用户明确要求时的托盘验证。Evidence：[S19 收口记录](../history/M0-T21-S19-tray.md)：用户确认验收通过；P3 隔离夹具覆盖菜单和切换，但自动真实 UAC、真实 Explorer 点击未逐项覆盖。Admission：在用户方便时以自有实例和有限等待验证，不把用户验收扩张为完整自动测试或全部窗口恢复。
 
