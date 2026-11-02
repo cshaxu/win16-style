@@ -23,7 +23,7 @@
 | Original Owner Request | 设计 win16-control 与 win16-dialog，说明能否协助及安全限制。 |
 | Similar-Issue Sweep | 搜索 controls、attachment、paint、menu、dialog 和构建源文件引用。 |
 
-2026-11-01 发布状态变化：Windows Defender 将 S20 的 `run16s.exe` 检测为 `Trojan:Win32/Bearfoos.A!ml`（ThreatID 2147731250）；只读检测记录显示处理成功。用户报告已恢复文件后复核：`assets/run16s.exe` 已可读取且 SHA-256 与验收版本一致，`O:/winnt/run16s.exe` 仍缺失；其他三份 O:/winnt 产品文件仍存在。是否误报尚未确认，不关闭防护或添加排除项；后续由用户或维护者向 Microsoft 提交样本核查。S20 的用户验收和曾经的发布摘要保留为历史事实，不代表当前部署完整。
+2026-11-01 发布状态变化：Windows Defender 将 S20 的 `run16s.exe` 检测为 `Trojan:Win32/Bearfoos.A!ml`（ThreatID 2147731250）；只读检测记录显示处理成功。用户报告已恢复文件后复核：`assets/run16s.exe` 已可读取且 SHA-256 与验收版本一致，`O:/winnt/run16s.exe` 仍缺失。用户随后要求删除被映射的 `O:/winnt/ntw16s64.dll`；原路径已移除，旧映像保留在 `build/t21-package/user-retired-ntw16s64.dll`，仍被进程映射。是否误报尚未确认，不关闭防护或添加排除项；后续由用户或维护者向 Microsoft 提交样本核查。S20 的用户验收和曾经的发布摘要保留为历史事实，不代表当前部署完整。
 
 S20 经用户确认验收通过并收口。双位宽干净构建、10 项聚焦实包回归和 LibTray 双位宽消息测试通过；四文件发布至 assets 根目录与 O:/winnt 并核对摘要，产品提交 `8f25892` 已推送并读取远端复核。用户未逐项描述验收操作；自动探针、真实全局接入恢复及失败限制见 [S20 记录](../history/M0-T21-S20-tray-library.md)。旧 ntw16s64 映像仍被系统和当前会话进程映射，保留在 `build/t21-package/s20-release-backup/held-ntw16s64.dll`。
 
