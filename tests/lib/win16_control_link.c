@@ -8,6 +8,7 @@
 #include "lib/win16-control/frame_view.h"
 #include "lib/win16-control/frame_state.h"
 #include "lib/win16-control/control_state.h"
+#include "lib/win16-control/fileowner_message.h"
 #include "lib/win16-control/list_paint.h"
 #include "lib/win16-control/theme_state.h"
 #include "lib/win16-control/custom_draw.h"
@@ -123,6 +124,14 @@ int main(void)
     DeleteObject(title);win16_style_system_release(menu);
     HWND window=CreateWindowExW(0,L"STATIC",L"",WS_OVERLAPPED,20,20,100,100,NULL,NULL,GetModuleHandleW(NULL),NULL);
     if(!window)return 10;
+    HWND classic_combo=CreateWindowExW(0,L"COMBOBOX",L"",WS_CHILD|CBS_DROPDOWNLIST|CBS_OWNERDRAWFIXED|CBS_HASSTRINGS,
+        0,0,80,80,window,(HMENU)(INT_PTR)1136,GetModuleHandleW(NULL),NULL);
+    if(!classic_combo || !win16_control_common_dialog_combo_valid(classic_combo,window) ||
+       win16_control_common_dialog_combo_valid(classic_combo,NULL)){
+        DestroyWindow(window);return 42;}
+    SetWindowLongPtrW(classic_combo,GWLP_ID,1135);
+    if(win16_control_common_dialog_combo_valid(classic_combo,window)){DestroyWindow(window);return 43;}
+    DestroyWindow(classic_combo);
     control_style *font_state=win16_control_state_create();HFONT old_font=NULL,outbound_font=NULL;
     HFONT application_font=(HFONT)GetStockObject(SYSTEM_FONT);WPARAM font_parameter=(WPARAM)application_font;
     if(!font_state || !win16_control_state_prepare_font(window,font_state,WM_SETFONT,&font_parameter,TRUE,&old_font,&outbound_font) ||

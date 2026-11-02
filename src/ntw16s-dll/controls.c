@@ -31,6 +31,8 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include "../lib/win16-control/list_message.h"
 #include "../lib/win16-control/edit_message.h"
 #include "../lib/win16-control/basic_message.h"
+#include "../lib/win16-control/scroll_message.h"
+#include "../lib/win16-control/fileowner_message.h"
 
 #include "../lib/win16-control/scroll_assets.h"
 #include "scroll_track.h"
@@ -237,18 +239,10 @@ static BOOL is_separator(HWND w)
  return is_static(w) && type>=SS_ETCHEDHORZ && type<=SS_ETCHEDFRAME;}
 
 static _Thread_local HWND common_dialog_combo_pending;
-static BOOL common_dialog_combo_valid(HWND w,HWND parent)
-{
-    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
-    int id=GetDlgCtrlID(w);
-    return w && parent && GetParent(w)==parent && GetWindowThreadProcessId(w,NULL)==GetCurrentThreadId() &&
-        is_combo(w) && id>=1136 && id<=1140 && (style&CBS_OWNERDRAWFIXED) &&
-        (style&CBS_HASSTRINGS) && !(style&CBS_OWNERDRAWVARIABLE);
-}
 static BOOL supported(HWND w)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),type=ntw16s_button_type(w,style);
-    if(ntw16s_vb_owner_file(w) || (w==common_dialog_combo_pending && common_dialog_combo_valid(w,GetParent(w))))return TRUE;
+    if(ntw16s_vb_owner_file(w) || (w==common_dialog_combo_pending && win16_control_common_dialog_combo_valid(w,GetParent(w))))return TRUE;
     if((ntw16s_vb_checkbox(w) || ntw16s_vb_option(w)) &&
         !ntw16s_vb_plain_choice(w) && !ntw16s_vb_graphical_choice(w))return FALSE;
     if(is_scroll(w))return !(style&SBS_SIZEGRIP);
@@ -548,71 +542,17 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         result=DefSubclassProc(w,m,a,b);
     }
     else if(s->frame_scrollbars){
-        if(embedded_scroll_input(w,s,m,a,b))result=0;
-        else if(m==WM_NCMOUSEMOVE && (a==HTHSCROLL || a==HTVSCROLL))result=0;
-        else {if(m==WM_ENABLE && !a)scroll_finish(w,s,TRUE);
-            int saved=(s->native_border && m==WM_PRINT)?SaveDC((HDC)a):0;
-            if(!s->detached)result=DefSubclassProc(w,m,a,b);
-            if(saved)RestoreDC((HDC)a,saved);}
-        if(!s->detached && s->native_border && (m==WM_NCPAINT || (m==WM_PRINT && (b&PRF_NONCLIENT)))){
-            list_border(w,s,m==WM_PRINT?(HDC)a:NULL);nonclient_scrollbars(w,s,m==WM_PRINT?(HDC)a:NULL);
-        }
-        if(!s->detached && s->legacy_progress_border && (m==WM_NCPAINT || (m==WM_PRINT && (b&PRF_NONCLIENT))))
-            win16_control_legacy_progress_border(w,&s->palette,m==WM_PRINT?(HDC)a:NULL);
-        /* Native controls can repaint their own non-client bars while handling
-         * input or position changes without issuing WM_NCPAINT. Restore both
-         * axes after the native handler, including programmatic list scrolling. */
-        if(!s->detached && (m==WM_VSCROLL || m==WM_HSCROLL || m==WM_MOUSEWHEEL || m==WM_MOUSEHWHEEL ||
-            m==WM_KEYDOWN || m==WM_KEYUP || m==WM_LBUTTONUP || m==WM_ENABLE || m==WM_SIZE ||
-            m==LB_SETTOPINDEX || m==LB_SETCURSEL || m==LB_SETSEL || m==EM_LINESCROLL))
-            nonclient_scrollbars(w,s,NULL);
-    }
-    else if(is_scroll(w) && (GetWindowLongPtrW(w,GWL_STYLE)&SBS_SIZEBOX)){
-        if(m==WM_PAINT){PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);present_control(w,s,dc,draw_sizebox);EndPaint(w,&ps);}
-        else if(m==WM_PRINTCLIENT)win16_control_draw_sizebox(w,(HDC)a);
-        else if(m==WM_ERASEBKGND)result=1;
-        else result=DefSubclassProc(w,m,a,b);
+        const win16_control_scroll_services services={embedded_scroll_input,scroll_input,scroll_finish,scroll_caret_sync,scroll_caret_destroy,draw_scroll,list_border,nonclient_scrollbars,present_control,draw_sizebox};
+        result=win16_control_frame_scroll_message(w,s,m,a,b,&services);
     }
     else if(is_scroll(w)){
-        if(ntw16s_control_protocol_is(w,L"SCROLLBAR") && !IsWindowEnabled(w) && (m==WM_KEYDOWN || m==WM_KEYUP || m==WM_LBUTTONDOWN || m==WM_LBUTTONDBLCLK || m==WM_LBUTTONUP))result=DefSubclassProc(w,m,a,b);
-        else if(scroll_input(w,s,m,a,b))result=0;
-        else if(m==WM_SETFOCUS || m==WM_SIZE)scroll_caret_sync(w,s);
-        else if(m==WM_KILLFOCUS)scroll_caret_destroy(w,s);
-        else if(m==SBM_GETSCROLLINFO){SCROLLINFO *info=(SCROLLINFO *)b;
-            result=DefSubclassProc(w,m,a,b);
-            if(result && info && info->cbSize==sizeof(*info) && (info->fMask&SIF_TRACKPOS)){
-                if(s->scroll_reporting)info->nTrackPos=s->scroll_report;
-                else if(s->scroll.active)info->nTrackPos=s->scroll.position;}}
-        else if(m==WM_PAINT){PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);draw_scroll(w,s,dc,OBJID_CLIENT,(GetWindowLongPtrW(w,GWL_STYLE)&SBS_VERT)!=0);EndPaint(w,&ps);scroll_caret_sync(w,s);}
-        else if(m==WM_PRINTCLIENT)draw_scroll(w,s,(HDC)a,OBJID_CLIENT,(GetWindowLongPtrW(w,GWL_STYLE)&SBS_VERT)!=0);
-        else if(m==WM_ERASEBKGND)result=1;
-        else {BOOL redraw=m==SBM_SETPOS?b!=0:m==SBM_SETSCROLLINFO?a!=0:m!=SBM_SETRANGE;
-            if(m==WM_ENABLE && !a)scroll_finish(w,s,TRUE);
-            if(s->detached)goto finished;
-            if(m==SBM_SETPOS)b=FALSE;
-            if(m==SBM_SETSCROLLINFO)a=FALSE;
-            if(m==SBM_SETRANGEREDRAW)m=SBM_SETRANGE;
-            result=DefSubclassProc(w,m,a,b);
-            if(redraw && !s->detached && (m==SBM_SETPOS || m==SBM_SETSCROLLINFO || m==SBM_SETRANGE || m==SBM_SETRANGEREDRAW ||
-                m==SBM_ENABLE_ARROWS || m==WM_ENABLE || m==WM_SETFOCUS || m==WM_KILLFOCUS ||
-                m==WM_LBUTTONDOWN || m==WM_LBUTTONUP || m==WM_KEYDOWN))RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
-            if(redraw)scroll_caret_sync(w,s);}
+        const win16_control_scroll_services services={embedded_scroll_input,scroll_input,scroll_finish,scroll_caret_sync,scroll_caret_destroy,draw_scroll,list_border,nonclient_scrollbars,present_control,draw_sizebox};
+        if(GetWindowLongPtrW(w,GWL_STYLE)&SBS_SIZEBOX)result=win16_control_sizebox_message(w,s,m,a,b,&services);
+        else result=win16_control_scroll_message(w,s,&m,&a,&b,&services);
     }
     else if(s->file_owner){
-        /* Runtime owner-draw remains authoritative. Overlay chrome only after
-         * its native paint; never clear or recreate the image/text item. */
-        if(ntw16s_vb_owner_file(w) && ntw16s_vb_directory(w) && embedded_scroll_input(w,s,m,a,b))result=0;
-        else result=DefSubclassProc(w,m,a,b);
-        if(!s->detached && (ntw16s_vb_owner_file(w) ||
-                (s->common_dialog_combo && common_dialog_combo_valid(w,s->common_dialog_parent)))){
-            if(m==WM_PAINT){
-                if(ntw16s_vb_drive(w) || s->common_dialog_combo){HDC dc=GetDC(w);if(dc){draw_combo(w,s,dc);ReleaseDC(w,dc);}}
-                else {list_border(w,s,NULL);nonclient_scrollbars(w,s,NULL);}
-            }else if(m==WM_PRINTCLIENT && (ntw16s_vb_drive(w) || s->common_dialog_combo))draw_combo(w,s,(HDC)a);
-            else if(m==WM_NCPAINT || (m==WM_PRINT && (b&PRF_NONCLIENT))){
-                if(ntw16s_vb_directory(w)){list_border(w,s,m==WM_PRINT?(HDC)a:NULL);nonclient_scrollbars(w,s,m==WM_PRINT?(HDC)a:NULL);}
-            }
-        }
+        const win16_control_fileowner_services services={embedded_scroll_input,draw_combo,list_border,nonclient_scrollbars};
+        result=win16_control_fileowner_message(w,s,m,a,b,&services);
     }
     else if(is_combo(w))result=win16_control_combo_message(w,s,m,a,b,present_control,draw_combo);
     else if(is_list(w)){
@@ -679,7 +619,7 @@ static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL ori
         CopyMemory(s->tab_positions,tabs,(size_t)tab_count*sizeof(int));s->tab_count=tab_count;}
     s->edit_border=edit && original_border;
     s->frame_scrollbars=frame_bars;
-    s->common_dialog_combo=!frame_bars && w==common_dialog_combo_pending && common_dialog_combo_valid(w,GetParent(w));
+    s->common_dialog_combo=!frame_bars && w==common_dialog_combo_pending && win16_control_common_dialog_combo_valid(w,GetParent(w));
     s->common_dialog_parent=s->common_dialog_combo?GetParent(w):NULL;
     s->file_owner=!frame_bars && (ntw16s_vb_owner_file(w) || s->common_dialog_combo);s->combo_passthrough=ntw16s_vcl_combo_candidate(w);
     if(!frame_bars){s->original_font=(HFONT)SendMessageW(w,WM_GETFONT,0,0);
@@ -738,7 +678,7 @@ installed:
 BOOL win16_style_common_dialog_combo_install(HWND w,const void *owner)
 {
     HWND previous=common_dialog_combo_pending;
-    if(!common_dialog_combo_valid(w,GetParent(w))){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    if(!win16_control_common_dialog_combo_valid(w,GetParent(w))){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     common_dialog_combo_pending=w;
     BOOL result=install(w,NULL,FALSE,FALSE,FALSE,-1,NULL,owner,NULL);
     common_dialog_combo_pending=previous;
