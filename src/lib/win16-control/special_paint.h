@@ -1,6 +1,7 @@
 #ifndef WIN16_CONTROL_SPECIAL_PAINT_H
 #define WIN16_CONTROL_SPECIAL_PAINT_H
 #include "palette.h"
+#include <uxtheme.h>
 void win16_style_month_arrow(HDC dc,const RECT *bounds,const RECT *clip,int part,int state);
 void win16_control_draw_sizebox(HWND window,HDC dc);
 void win16_control_legacy_progress_border(HWND window,const win16_style_palette *palette,HDC dc);
@@ -9,7 +10,10 @@ BOOL win16_style_bitbtn_face(HWND window,HDC dc,const RECT *bounds,const RECT *c
 BOOL win16_control_graphical_face(HWND window,HDC dc,const RECT *bounds,UINT flags,const win16_style_palette *palette);
 BOOL win16_control_cool_grip(HDC dc,const RECT *bounds);
 BOOL win16_control_black_frame(HDC dc,const RECT *bounds,const RECT *clip);
+BOOL win16_control_color_swatch_frame(HDC dc,RECT *bounds,const RECT *original);
 void win16_control_month_fill(HDC dc,const RECT *bounds,const RECT *clip);
+BOOL win16_control_month_text(HTHEME theme,HDC dc,int part,int state,HFONT font,LPCWSTR text,int count,DWORD flags,const RECT *bounds,
+    int (WINAPI *draw)(HDC,LPCWSTR,int,LPRECT,UINT),BOOL (*room)(void *,int),void *context);
 void win16_control_group_frame(HDC dc,const RECT *bounds,const RECT *clip,const RECT *exclude,void (*drawn)(void *),void *context);
 void win16_control_panel_shadow(HDC dc,const POINT points[3],BOOL (WINAPI *draw)(HDC,const POINT *,int),void (*drawn)(void *),void *context);
 BOOL win16_control_spin_snapshot(HDC dc,int width,int height,const POINT pt[2],DWORD *background,BYTE *valid);

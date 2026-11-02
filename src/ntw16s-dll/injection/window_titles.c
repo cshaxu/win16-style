@@ -19,8 +19,12 @@
 #include <vssym32.h>
 #include "ntw16s-dll/font.h"
 #include "ntw16s-dll/month_text.h"
+#include "lib/win16-control/special_paint.h"
 HFONT ntw16s_month_text_borrow(HTHEME,HDC,int,int,DWORD,DWORD,const RECT *,const void *);
 BOOL ntw16s_month_text_room(HTHEME,HDC,int,int,DWORD,DWORD,const RECT *,int,const void *);
+typedef struct month_text_room_context {HTHEME theme;HDC dc;int part,state;DWORD flags,flags2;const RECT *rect;const void *caller;} month_text_room_context;
+static BOOL month_text_room(void *value,int width)
+{month_text_room_context *c=value;return ntw16s_month_text_room(c->theme,c->dc,c->part,c->state,c->flags,c->flags2,c->rect,width,c->caller);}
 typedef struct month_font_borrow {HDC dc;int saved;HFONT font;} month_font_borrow;
 static void month_font_return(void *p){month_font_borrow *b=p;if(b->saved)RestoreDC(b->dc,b->saved);win16_style_system_release(b->font);}
 
@@ -573,7 +577,7 @@ static NTW16S_UNWIND_FUNCTION HRESULT WINAPI hook_DrawThemeText(HTHEME theme,HDC
         int n=0;BOOL supported=ntw16s_month_text_length(text,count,&n);
         HFONT font=supported?ntw16s_month_text_borrow(theme,dc,part,state,flags,flags2,rect,__builtin_return_address(0)):NULL;
         if(font){month_font_borrow borrow={dc,SaveDC(dc),font};BOOL done=FALSE;ntw16s_unwind_scope cleanup;NTW16S_UNWIND_BEGIN(cleanup,month_font_return,&borrow);
-          if(borrow.saved){RECT bounds=*rect,measure=*rect;COLORREF color;HGDIOBJ previous=SelectObject(dc,font);if(SUCCEEDED(GetThemeColor(theme,part,state,TMT_TEXTCOLOR,&color)) && previous && previous!=HGDI_ERROR){SetTextColor(dc,color);SetBkMode(dc,TRANSPARENT);int h=real_DrawTextW(dc,text,n,&measure,flags|DT_CALCRECT);if(h>0 && measure.right-measure.left<=rect->right-rect->left && measure.bottom-measure.top<=rect->bottom-rect->top && ntw16s_month_text_room(theme,dc,part,state,flags,flags2,rect,measure.right-measure.left,__builtin_return_address(0)) && IntersectClipRect(dc,rect->left,rect->top,rect->right,rect->bottom)!=ERROR)done=real_DrawTextW(dc,text,n,&bounds,flags)!=0;}}
+          if(borrow.saved){month_text_room_context room={theme,dc,part,state,flags,flags2,rect,__builtin_return_address(0)};done=win16_control_month_text(theme,dc,part,state,font,text,n,flags,rect,real_DrawTextW,month_text_room,&room);}
           NTW16S_UNWIND_END(cleanup);if(done){SetLastError(saved);return S_OK;}}}
     if(!entered){SetLastError(saved);return real_DrawThemeText(theme,dc,part,state,text,count,flags,flags2,rect);}
     NTW16S_UNWIND_BEGIN(unwind,ntw16s_status_theme_end,&scope);
@@ -724,7 +728,7 @@ static BOOL WINAPI hook_DrawEdge(HDC dc,LPRECT rect,UINT edge,UINT flags)
     }
     if(eligible || controlbar || color)original=*rect;
     SetLastError(incoming);BOOL result=real_DrawEdge(dc,rect,edge,flags);DWORD error=GetLastError();
-    if(result&&color&&FrameRect(dc,&original,(HBRUSH)GetStockObject(BLACK_BRUSH))){*rect=original;InflateRect(rect,-1,-1);}
+    if(result&&color)win16_control_color_swatch_frame(dc,rect,&original);
     if(result && eligible)ntw16s_status_frame(dc,&original,NULL,__builtin_return_address(0));
     if(result && controlbar)ntw16s_controlbar_edge(dc,&original,edge,flags,__builtin_return_address(0));
     SetLastError(error);return result;

@@ -51,6 +51,12 @@ BOOL win16_control_black_frame(HDC dc,const RECT *bounds,const RECT *clip)
     RestoreDC(dc,saved);return drew;
 }
 
+BOOL win16_control_color_swatch_frame(HDC dc,RECT *bounds,const RECT *original)
+{
+    if(!FrameRect(dc,original,(HBRUSH)GetStockObject(BLACK_BRUSH)))return FALSE;
+    *bounds=*original;InflateRect(bounds,-1,-1);return TRUE;
+}
+
 void win16_control_group_frame(HDC dc,const RECT *bounds,const RECT *clip,const RECT *exclude,void (*drawn)(void *),void *context)
 {
     int saved=SaveDC(dc);if(!saved)return;
@@ -74,6 +80,21 @@ void win16_control_month_fill(HDC dc,const RECT *bounds,const RECT *clip)
     win16_style_palette palette;win16_style_default_palette(&palette);
     HBRUSH brush=(HBRUSH)GetStockObject(DC_BRUSH);SetDCBrushColor(dc,palette.active);
     FillRect(dc,bounds,brush);RestoreDC(dc,saved);
+}
+
+BOOL win16_control_month_text(HTHEME theme,HDC dc,int part,int state,HFONT font,LPCWSTR text,int count,DWORD flags,const RECT *bounds,
+    int (WINAPI *draw)(HDC,LPCWSTR,int,LPRECT,UINT),BOOL (*room)(void *,int),void *context)
+{
+    RECT output=*bounds,measure=*bounds;COLORREF color;HGDIOBJ previous=SelectObject(dc,font);
+    if(SUCCEEDED(GetThemeColor(theme,part,state,TMT_TEXTCOLOR,&color)) && previous && previous!=HGDI_ERROR){
+        SetTextColor(dc,color);SetBkMode(dc,TRANSPARENT);
+        int height=draw(dc,text,count,&measure,flags|DT_CALCRECT);
+        if(height>0 && measure.right-measure.left<=bounds->right-bounds->left &&
+           measure.bottom-measure.top<=bounds->bottom-bounds->top && room(context,measure.right-measure.left) &&
+           IntersectClipRect(dc,bounds->left,bounds->top,bounds->right,bounds->bottom)!=ERROR)
+            return draw(dc,text,count,&output,flags)!=0;
+    }
+    return FALSE;
 }
 
 BOOL win16_control_cool_grip(HDC dc,const RECT *bounds)
