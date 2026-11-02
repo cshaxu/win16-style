@@ -6,6 +6,7 @@ void win16_style_month_arrow(HDC dc,const RECT *bounds,const RECT *clip,int part
 void win16_control_draw_sizebox(HWND window,HDC dc);
 void win16_control_legacy_progress_border(HWND window,const win16_style_palette *palette,HDC dc);
 void win16_control_vb_data_arrow(HWND window,HDC dc,int x,int y,int width,HDC source,const RECT *client_bounds);
+void win16_control_vb_data_arrow_candidate(HDC dc,int x,int y,int width,int height,HDC source,int sx,int sy,int sw,int sh,DWORD rop,const void *caller,BOOL (*attached)(HWND));
 BOOL win16_style_bitbtn_face(HWND window,HDC dc,const RECT *bounds,const RECT *clip,UINT state);
 BOOL win16_control_graphical_face(HWND window,HDC dc,const RECT *bounds,UINT flags,const win16_style_palette *palette);
 BOOL win16_control_cool_grip(HDC dc,const RECT *bounds);

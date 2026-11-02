@@ -6,6 +6,7 @@
 #include "static_text.h"
 #include "../lib/win16-control/basic_paint.h"
 #include "../lib/win16-control/combo_paint.h"
+#include "../lib/win16-control/choice_paint.h"
 #include "../lib/win16-control/special_paint.h"
 #include "injection/unwind.h"
 #include "status_theme.h"
@@ -594,19 +595,9 @@ static BOOL checklist_identity(HWND w)
 }
 BOOL ntw16s_checklist_draw_target(HDC dc,const RECT *r,const void *address)
 {
-    checklist_draw_scope *s=checklist_current;HMODULE module=NULL;POINT origin;
-    if(!s || !s->owner || s->owner->detached || !r || dc!=s->dc ||
-        !checklist_identity(s->owner->report_window) || GetParent(s->owner->report_window)!=s->owner->report_parent ||
-        WindowFromDC(dc)!=s->owner->report_window || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
-        !GetViewportOrgEx(dc,&origin) || origin.x || origin.y ||
-        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-            (const WCHAR *)address,&module) || module!=(HMODULE)GetClassLongPtrW(s->owner->report_window,GCLP_HMODULE))return FALSE;
-    int dpi=(int)GetDpiForWindow(s->owner->report_window);
-    int max_side=MulDiv(16,dpi,96);
-    return dpi>0 && r->left>=s->item.left && r->top>=s->item.top &&
-        r->right<=s->item.right && r->bottom<=s->item.bottom &&
-        r->left-s->item.left<=max_side && r->right-r->left>0 && r->bottom-r->top>0 &&
-        r->right-r->left<=max_side && r->bottom-r->top<=max_side;
+    checklist_draw_scope *s=checklist_current;
+    return s && s->owner && !s->owner->detached &&
+        win16_control_checklist_target(dc,s->dc,s->owner->report_window,s->owner->report_parent,&s->item,r,address,checklist_identity);
 }
 static LRESULT CALLBACK attachment_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static void report_try_bind(HWND,attachment *);

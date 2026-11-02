@@ -335,51 +335,8 @@ BOOL win16_style_checklist_frame(HDC dc,const RECT *rect,UINT type,UINT flags,co
         !ntw16s_checklist_draw_target(dc,rect,address))return FALSE;
     return win16_control_checklist_glyph(dc,rect,flags);
 }
-/* VB5 and VB6 draw the checkbox as an 11x11 runtime-owned bitmap, directly onto
- * the list's DC. Restrict this to the witnessed identity, geometry and
- * public list state; other bitmaps and unsupported layouts remain native. */
-static BOOL vb_checklist_unchanged(HWND w,HDC dc,HWND parent,DWORD style,DWORD ex,BOOL enabled)
-{
-    return IsWindow(w) && WindowFromDC(dc)==w && GetParent(w)==parent &&
-        (DWORD)GetWindowLongPtrW(w,GWL_STYLE)==style && (DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE)==ex &&
-        IsWindowEnabled(w)==enabled && ntw16s_vb_checklist_class(w);
-}
 BOOL win16_style_vb_checklist(HDC dc,int x,int y,int width,int height,HDC source,int sx,int sy,DWORD rop,const void *address)
-{
-    static _Thread_local BOOL active;
-    HMODULE caller=NULL;HWND w,parent;POINT origin;RECT item;LRESULT hit,index;BITMAP bitmap;
-    DWORD style,ex;BOOL result=FALSE,enabled;UINT dpi;
-    if(active || !dc || !source || width!=11 || height!=11 || rop!=SRCCOPY ||
-        (sx!=0 && sx!=11 && sx!=22 && sx!=33) || sy!=0 || GetObjectType(source)!=OBJ_MEMDC ||
-        GetObjectW(GetCurrentObject(source,OBJ_BITMAP),sizeof(bitmap),&bitmap)!=sizeof(bitmap) ||
-        bitmap.bmWidth!=44 || bitmap.bmHeight!=11 ||
-        !(w=WindowFromDC(dc)) || GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() ||
-        !ntw16s_vb_checklist_class(w) ||
-        ((dpi=GetDpiForWindow(w))!=96 && dpi!=144) ||
-        GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
-        !GetViewportOrgEx(dc,&origin) || origin.x || origin.y ||
-        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-            (const WCHAR *)address,&caller) || caller!=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE))return FALSE;
-    style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
-    enabled=IsWindowEnabled(w);parent=GetParent(w);
-    if((enabled?sx>=22:sx<22) || !parent || (ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) ||
-        (style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_HASSTRINGS|LBS_MULTIPLESEL|LBS_EXTENDEDSEL|LBS_NODATA))!=
-            (LBS_OWNERDRAWFIXED|LBS_HASSTRINGS|LBS_MULTIPLESEL))return FALSE;
-    active=TRUE;
-    hit=SendMessageW(w,LB_ITEMFROMPOINT,0,MAKELPARAM(x,y));index=LOWORD(hit);
-    if(HIWORD(hit)==0 && vb_checklist_unchanged(w,dc,parent,style,ex,enabled) &&
-        SendMessageW(w,LB_GETITEMRECT,(WPARAM)index,(LPARAM)&item)!=LB_ERR &&
-        vb_checklist_unchanged(w,dc,parent,style,ex,enabled) &&
-        x==item.left+(ntw16s_vb5_class(w,L"ThunderRT5ListBox")?0:2) &&
-        (dpi==144?(ntw16s_vb5_class(w,L"ThunderRT5ListBox")?
-            (item.bottom-item.top==23 && y==item.top+6):
-            (item.bottom-item.top==22 && y==item.top+5)):y==item.top+2) &&
-        item.right-x>=width && item.bottom-y>=height){
-        RECT glyph={x,y,x+width,y+height};
-        result=win16_control_checklist_glyph(dc,&glyph,(sx%22)==11?DFCS_CHECKED:0);
-    }
-    active=FALSE;return result;
-}
+{return win16_control_vb_checklist(dc,x,y,width,height,source,sx,sy,rop,address);}
 static control_style *graphical_target(HDC dc,UINT type,UINT flags,const void *address,HWND *w)
 {
     DWORD_PTR value;HMODULE caller=NULL;
@@ -453,15 +410,7 @@ static BOOL terminal_combo_list(control_style *s)
  * bounded overlay accepts only observed 96/144-DPI public-DC geometry. */
 void win16_style_vb_data_arrow(HDC dc,int x,int y,int width,int height,HDC source,int sx,int sy,int sw,int sh,DWORD rop,const void *caller)
 {
-    HWND w=WindowFromDC(dc);RECT client;POINT origin,viewport;BITMAP bitmap={0};HMODULE owner=NULL;
-    if(!w || GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() || !ntw16s_vb_data_attached(w) ||
-       !ntw16s_vb_class(w,L"ThunderRT6Data") || !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(const WCHAR *)caller,&owner) ||
-       owner!=GetModuleHandleW(L"MSVBVM60.DLL") ||
-       !GetClientRect(w,&client) || client.right<70 || !((GetDpiForWindow(w)==96 && client.bottom==22) || (GetDpiForWindow(w)==144 && client.bottom==29)) || rop!=SRCCOPY || sx || sy || height!=13 || sh!=13 || width!=sw || (y!=(client.bottom-13)/2 && y!=(client.bottom-13)/2+1) ||
-       GetMapMode(dc)!=MM_TEXT || GetLayout(dc)!=0 || !GetWindowOrgEx(dc,&origin) || origin.x || origin.y ||
-       !GetViewportOrgEx(dc,&viewport) || viewport.x || viewport.y ||
-       !GetObjectW(GetCurrentObject(source,OBJ_BITMAP),sizeof(bitmap),&bitmap) || bitmap.bmWidth!=sw || bitmap.bmHeight!=sh)return;
-    win16_control_vb_data_arrow(w,dc,x,y,width,source,&client);
+    win16_control_vb_data_arrow_candidate(dc,x,y,width,height,source,sx,sy,sw,sh,rop,caller,ntw16s_vb_data_attached);
 }
 
 static BOOL scroll_layout(HWND w,win16_scroll_layout *layout)

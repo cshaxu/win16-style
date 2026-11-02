@@ -2,6 +2,7 @@
 #include "basic_paint.h"
 #include "scroll_assets.h"
 #include "control_protocol.h"
+#include "control_class.h"
 #include <commctrl.h>
 #include <vssym32.h>
 
@@ -145,6 +146,19 @@ void win16_control_legacy_progress_border(HWND w,const win16_style_palette *pale
     int saved=SaveDC(dc);if(saved){win16_control_control_frame(dc,bounds,palette->edge,1);RestoreDC(dc,saved);}
     if(!target)ReleaseDC(w,dc);
 done: SetLastError(saved_error);
+}
+
+void win16_control_vb_data_arrow_candidate(HDC dc,int x,int y,int width,int height,HDC source,int sx,int sy,int sw,int sh,DWORD rop,const void *caller,BOOL (*attached)(HWND))
+{
+    HWND w=WindowFromDC(dc);RECT client;POINT origin,viewport;BITMAP bitmap={0};HMODULE owner=NULL;
+    if(!w || GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() || !attached(w) ||
+       !ntw16s_vb_class(w,L"ThunderRT6Data") || !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(const WCHAR *)caller,&owner) ||
+       owner!=GetModuleHandleW(L"MSVBVM60.DLL") ||
+       !GetClientRect(w,&client) || client.right<70 || !((GetDpiForWindow(w)==96 && client.bottom==22) || (GetDpiForWindow(w)==144 && client.bottom==29)) || rop!=SRCCOPY || sx || sy || height!=13 || sh!=13 || width!=sw || (y!=(client.bottom-13)/2 && y!=(client.bottom-13)/2+1) ||
+       GetMapMode(dc)!=MM_TEXT || GetLayout(dc)!=0 || !GetWindowOrgEx(dc,&origin) || origin.x || origin.y ||
+       !GetViewportOrgEx(dc,&viewport) || viewport.x || viewport.y ||
+       !GetObjectW(GetCurrentObject(source,OBJ_BITMAP),sizeof(bitmap),&bitmap) || bitmap.bmWidth!=sw || bitmap.bmHeight!=sh)return;
+    win16_control_vb_data_arrow(w,dc,x,y,width,source,&client);
 }
 
 void win16_control_vb_data_arrow(HWND w,HDC dc,int x,int y,int width,HDC source,const RECT *client_bounds)
