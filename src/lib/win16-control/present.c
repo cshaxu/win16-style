@@ -41,3 +41,46 @@ void win16_control_present(HWND w,const win16_control_present_view *view,HDC tar
     if(!ready && !*view->detached)view->paint(w,view->context,target);
     if(target_saved)RestoreDC(target,target_saved);
 }
+
+typedef struct print_children {
+    HWND parent;
+    HDC dc;
+    POINT origin;
+    LPARAM flags;
+    BOOL owned;
+} print_children;
+
+static BOOL CALLBACK print_child(HWND child,LPARAM data)
+{
+    print_children *p=(print_children *)data;RECT r;int saved;
+    if(!IsWindow(p->parent))return FALSE;
+    if((p->owned?GetWindow(child,GW_OWNER):GetParent(child))!=p->parent || !IsWindowVisible(child))return TRUE;
+    if(!GetWindowRect(child,&r) || !(saved=SaveDC(p->dc)))return TRUE;
+    OffsetViewportOrgEx(p->dc,r.left-p->origin.x,r.top-p->origin.y,NULL);
+    IntersectClipRect(p->dc,0,0,r.right-r.left,r.bottom-r.top);
+    SendMessageW(child,WM_PRINT,(WPARAM)p->dc,p->flags|PRF_NONCLIENT|PRF_CLIENT|PRF_ERASEBKGND);
+    RestoreDC(p->dc,saved);return TRUE;
+}
+
+/* Custom nonclient geometry cannot delegate native frame printing. Preserve
+ * DWP's frame/client/child ordering using the public HWND/DC boundaries.
+ * See the S4 print audit for the original xxxDWPPrint reference. */
+void win16_control_print_client_and_children(HWND w,const BOOL *detached,HDC dc,LPARAM flags)
+{
+    RECT wr,client;POINT origin={0,0};int saved;print_children children;
+    if(!GetWindowRect(w,&wr) || !GetClientRect(w,&client) || !ClientToScreen(w,&origin))return;
+    children.parent=w;children.dc=dc;children.origin=origin;children.flags=flags;children.owned=FALSE;
+    if(flags&PRF_NONCLIENT){children.origin.x=wr.left;children.origin.y=wr.top;}
+    if(flags&PRF_CLIENT){
+        saved=SaveDC(dc);if(!saved)return;
+        OffsetViewportOrgEx(dc,origin.x-children.origin.x,origin.y-children.origin.y,NULL);
+        IntersectClipRect(dc,0,0,client.right,client.bottom);
+        if(flags&PRF_ERASEBKGND)SendMessageW(w,WM_ERASEBKGND,(WPARAM)dc,0);
+        if(!*detached)SendMessageW(w,WM_PRINTCLIENT,(WPARAM)dc,flags);
+        RestoreDC(dc,saved);
+    }
+    if(!*detached && (flags&PRF_CHILDREN))EnumChildWindows(w,print_child,(LPARAM)&children);
+    if(!*detached && (flags&PRF_OWNED)){
+        children.owned=TRUE;EnumThreadWindows(GetCurrentThreadId(),print_child,(LPARAM)&children);
+    }
+}

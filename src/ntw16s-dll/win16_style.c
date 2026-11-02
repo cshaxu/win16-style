@@ -6,6 +6,7 @@
 #include "../lib/win16-control/frame_paint.h"
 #include "../lib/win16-control/frame_view.h"
 #include "../lib/win16-control/frame_layout.h"
+#include "../lib/win16-control/present.h"
 #include "menu_bar.h"
 #include "menu_items.h"
 #include "menu_scope.h"
@@ -45,48 +46,6 @@ static LRESULT CALLBACK style_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static LRESULT CALLBACK style_proc_body(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static void dispose(style_window *);
 
-typedef struct print_children {
-    HWND parent;
-    HDC dc;
-    POINT origin;
-    LPARAM flags;
-    BOOL owned;
-} print_children;
-
-static BOOL CALLBACK print_child(HWND child,LPARAM data)
-{
-    print_children *p=(print_children *)data;RECT r;int saved;
-    if(!IsWindow(p->parent))return FALSE;
-    if((p->owned?GetWindow(child,GW_OWNER):GetParent(child))!=p->parent || !IsWindowVisible(child))return TRUE;
-    if(!GetWindowRect(child,&r) || !(saved=SaveDC(p->dc)))return TRUE;
-    OffsetViewportOrgEx(p->dc,r.left-p->origin.x,r.top-p->origin.y,NULL);
-    IntersectClipRect(p->dc,0,0,r.right-r.left,r.bottom-r.top);
-    SendMessageW(child,WM_PRINT,(WPARAM)p->dc,p->flags|PRF_NONCLIENT|PRF_CLIENT|PRF_ERASEBKGND);
-    RestoreDC(p->dc,saved);return TRUE;
-}
-
-/* Custom nonclient geometry cannot delegate native frame printing. Preserve
- * DWP's frame/client/child ordering using the public HWND/DC boundaries.
- * See the S4 print audit for the original xxxDWPPrint reference. */
-static void print_client_and_children(HWND w,style_window *s,HDC dc,LPARAM flags)
-{
-    RECT wr,client;POINT origin={0,0};int saved;print_children children;
-    if(!GetWindowRect(w,&wr) || !GetClientRect(w,&client) || !ClientToScreen(w,&origin))return;
-    children.parent=w;children.dc=dc;children.origin=origin;children.flags=flags;children.owned=FALSE;
-    if(flags&PRF_NONCLIENT){children.origin.x=wr.left;children.origin.y=wr.top;}
-    if(flags&PRF_CLIENT){
-        saved=SaveDC(dc);if(!saved)return;
-        OffsetViewportOrgEx(dc,origin.x-children.origin.x,origin.y-children.origin.y,NULL);
-        IntersectClipRect(dc,0,0,client.right,client.bottom);
-        if(flags&PRF_ERASEBKGND)SendMessageW(w,WM_ERASEBKGND,(WPARAM)dc,0);
-        if(!s->detached)SendMessageW(w,WM_PRINTCLIENT,(WPARAM)dc,flags);
-        RestoreDC(dc,saved);
-    }
-    if(!s->detached && (flags&PRF_CHILDREN))EnumChildWindows(w,print_child,(LPARAM)&children);
-    if(!s->detached && (flags&PRF_OWNED)){
-        children.owned=TRUE;EnumThreadWindows(GetCurrentThreadId(),print_child,(LPARAM)&children);
-    }
-}
 typedef struct menu_frame {
     HWND window;
     RECT button;
@@ -902,7 +861,7 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
     case WM_PRINT:
         if((lp&PRF_CHECKVISIBLE) && !IsWindowVisible(w))break;
         if(lp&PRF_NONCLIENT)paint(w,s,(HDC)wp);
-        if(!s->detached)print_client_and_children(w,s,(HDC)wp,lp);
+        if(!s->detached)win16_control_print_client_and_children(w,&s->detached,(HDC)wp,lp);
         break;
     case WM_SETTEXT:
         result=DefSubclassProc(w,msg,wp,lp);

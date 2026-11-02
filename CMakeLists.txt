@@ -1642,6 +1642,12 @@ if(BUILD_TESTING)
   target_link_libraries(core-win16-control-link PRIVATE "-Wl,--whole-archive" win16-control "-Wl,--no-whole-archive" "${subclass_import}")
   add_test(NAME core/win16-control-link COMMAND ${test_driver} --name core/win16-control-link -- $<TARGET_FILE:core-win16-control-link>)
 
+  add_executable(core-win16-control-print tests/lib/win16_control_print.c)
+  target_include_directories(core-win16-control-print PRIVATE src)
+  target_compile_definitions(core-win16-control-print PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_libraries(core-win16-control-print PRIVATE win16-control)
+  add_test(NAME core/win16-control-print COMMAND ${test_driver} --name core/win16-control-print -- $<TARGET_FILE:core-win16-control-print>)
+
   add_test(NAME core/runtime COMMAND ${test_driver} --name core/runtime -- $<TARGET_FILE:core-runtime>)
   add_test(NAME core/runtime-native COMMAND ${test_driver} --name core/runtime-native -- $<TARGET_FILE:core-runtime> --native)
   add_test(NAME core/frames COMMAND ${test_driver} --name core/frames -- $<TARGET_FILE:core-frames>)

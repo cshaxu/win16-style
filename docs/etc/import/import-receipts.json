@@ -1166,7 +1166,7 @@
       "path": "src/ntw16s-dll/win16_style.c",
       "source": "src/ntw16s-dll/win16_style.c",
       "source_blob": "4235f085cb00c0d17145deec2d04a57c97b98d47",
-      "sha256": "5e4c061893a3b733931d278c6a567b2e593c6282457c71a1bf2c67b812feb67e",
+      "sha256": "fcce62ebd7d61e467e329160a47c57cad89016be3b989cde7ad5630b04b251af",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T15 S8 verified initialized native tree protocol and bounded existing System paint scope, native item/font/image/geometry/notifications preserved; exact pending frame ownership and cancellation; ASCII test-thread IME isolation after native no-DLL MSCTF teardown evidence; no external code or original graphics modified; T18 S64 scoped observed Delphi TPopupMenu owner, native callbacks and item restoration; private cleanup, no external code or graphics changed; T21 S22 frame painter extracted; T21 S22 caption and sizing-band presentation extracted with live state references; T21 S22 frame presentation extraction, preserving fault instrumentation; T21 S22 buffered frame/menu/button presentation extraction; T21 S22 frame layout and high-contrast palette extraction",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -4309,7 +4309,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "07a87d67619a96d00098a1d3ded967c163afe8a0216e3c4d902bf10411896587",
+      "sha256": "cd1b52b39a742188a22fcc30437d683bc07c953f44f3c6f9e5f635f15bc42a5e",
       "review": "T21 S22 extraction of existing buffered control presentation"
     },
     {
@@ -4318,7 +4318,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "65ff7557cb556c35591d7b4e00e0f2e913f354af41ac80a0a0f2a5c0f986db6c",
+      "sha256": "cdbcfdbe7ede85d02e954e8c0fb8178ea573ca83ed95027e517326b35dd62a46",
       "review": "T21 S22 extraction of existing buffered control presentation"
     },
     {
@@ -4338,6 +4338,15 @@
       "notice": "Project-authored source; no imported code or resources",
       "sha256": "13a533325ee251c26bb2077130bb5e37be6cee9458dbb3c7d3fa53c8f6a1c84a",
       "review": "T21 S22 extraction of existing calendar text validation and layout"
+    },
+    {
+      "path": "tests/lib/win16_control_print.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "notice": "Project-authored C17; project MIT license",
+      "sha256": "4f7614c02bfc9494428adaa2c6813504ccb820bd58b86acabf1d6ae74069f49f",
+      "review": "T21 S22 library window print ordering and detach verification"
     }
   ]
 }
