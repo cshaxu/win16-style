@@ -18,3 +18,5 @@
 候选、包测试与探针暂存分别为 `build/t21-package/s20-clean2`、`build/t21-package/s20-package-retry`、`build/t21-package/s20-tray-integration`。取消的 `s20-clean1`、被环境回收的 `s20-tray-package` 和首次包测试的跳过不能计为通过。保持 S20 开放，等待用户验收。
 
 产品提交 `8f258925d237a25e7143d20c3afebd28eb35e48b` 已推送；独立读取远端 main 及该提交的四个资产文件和两份 LibTray 源码，SHA-256 与本地逐项一致。P1 文本变更增加 370 行、删除 123 行、净增加 247 行（不含四个二进制文件）；旧托盘机制文件删除，公共库负责托盘对象生命周期，启动器仍负责菜单和业务控制器状态。
+
+后续补充原生菜单对照：私有桌面的 x86 探针未观察到首个菜单，结果为 `POPUP FAIL index=0`，原因未确定，不能算通过或产品回归。当前桌面使用自有进程、程序发送四种消息并自动关闭弹出菜单，x86/x64 均记录 `LIBTRAY REAL POPUP PASS four_events=4`。第一组替代通知图标注册；第二组编译未修改的 LibTray 源码并实际注册、移除托盘图标，同样双宽通过。两组都不是 Explorer 真鼠标点击，探针位于 `build/t21-package/s20-popup-probe`。
