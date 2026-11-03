@@ -16,4 +16,13 @@ BOOL win16_control_vb_data_role(HWND w,HWND parent);
 BOOL win16_control_vb_user_edge_role(HWND w,HWND parent);
 BOOL win16_control_vb_user_edge_identity(HWND w,HWND parent);
 BOOL win16_control_box_identity(HWND w,HMODULE owner,HWND parent);
+typedef struct win16_control_controlbar_view {
+    const BOOL *detached,*retired;const HWND *parent;const HMODULE *owner;
+} win16_control_controlbar_view;
+BOOL win16_control_controlbar_identity(HWND,const win16_control_controlbar_view *);
+BOOL win16_control_cool_class_owner(HMODULE);
+typedef struct win16_control_rich_view {
+    const BOOL *detached,*popup,*hotkey,*month,*unicode;const HWND *parent;const HMODULE *owner;
+} win16_control_rich_view;
+BOOL win16_control_rich_identity(HWND,const win16_control_rich_view *);
 #endif

@@ -20,6 +20,7 @@
 #include "../lib/win16-control/status_text.h"
 #include "../lib/win16-control/status_identity.h"
 #include "../lib/win16-control/vcl_identity.h"
+#include "../lib/win16-control/vcl_extra_frame.h"
 #include "injection/unwind.h"
 #include "status_theme.h"
 #include "month_text.h"
@@ -166,14 +167,9 @@ void ntw16s_spin_frame(HDC dc,const RECT *r,UINT type,UINT flags,const void *cal
 
 void ntw16s_bit_theme_frame(HDC dc,int part,const RECT *rect,const RECT *clip,const void *address)
 {
-    bit_draw_scope *s=bit_current;HMODULE caller=NULL;RECT client;POINT origin;
-    if(!s || !s->owner || s->owner->detached || !dc || dc!=s->dc || part!=1 || !rect ||
-        !win16_control_bit_identity(s->window,s->owner->report_module) || GetParent(s->window)!=s->owner->report_parent ||
-        !GetClientRect(s->window,&client) || !EqualRect(rect,&client) || !EqualRect(&s->item,&client) ||
-        GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) || !GetViewportOrgEx(dc,&origin) || origin.x || origin.y ||
-        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-            (LPCWSTR)address,&caller) || caller!=s->owner->report_module)return;
-    if(win16_style_bitbtn_face(s->window,dc,rect,clip,s->state) && !s->owner->detached)s->owner->bit_verified=TRUE;
+    bit_draw_scope *s=bit_current;if(!s || !s->owner)return;attachment *a=s->owner;
+    const win16_control_bit_frame_view v={a,s->window,s->dc,s->item,s->state,&a->detached,&a->bit_verified,&a->report_parent,&a->report_module};
+    win16_control_bit_theme_frame(&v,dc,part,rect,clip,address);
 }
 static void inplace_draw(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address,BOOL drop)
 {
@@ -271,6 +267,19 @@ static BOOL mdi_identity(HWND w,HWND parent,HWND host,HMODULE owner)
         (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_MDICHILD) &&
         (GetWindowLongPtrW(w,GWL_STYLE)&WS_CAPTION)==WS_CAPTION;
 }
+static BOOL controlbar_identity(HWND w,attachment *a)
+{
+    if(!a)return FALSE;
+    const win16_control_controlbar_view v={&a->detached,&a->controlbar_retired,&a->controlbar_parent,&a->controlbar_owner};
+    return win16_control_controlbar_identity(w,&v);
+}
+static BOOL rich_identity(HWND w,attachment *a)
+{
+    if(!a)return FALSE;
+    const win16_control_rich_view v={&a->detached,&a->rich_popup,&a->rich_hotkey,&a->rich_month,&a->rich_unicode,&a->rich_parent,&a->rich_owner};
+    return win16_control_rich_identity(w,&v);
+}
+
 static BOOL combo_same_role(HWND w,attachment *a)
 {return win16_control_combo_identity(w,a->combo_parent) && ((DWORD)GetWindowLongPtrW(w,GWL_STYLE)&3)==a->combo_original_type;}
 BOOL ntw16s_vcl_combo_candidate(HWND w)
@@ -540,36 +549,18 @@ void ntw16s_box_witness(HWND w,UINT msg,const void *address)
        (caller!=s->owner->box_owner && caller!=GetModuleHandleW(L"user32.dll")))return;
     s->witnessed=TRUE;
 }
-static BOOL controlbar_identity(HWND w,attachment *a)
-{
- WCHAR name[64],real[64];DWORD pid=0;WNDCLASSEXW c={.cbSize=sizeof(c)};HMODULE proc_owner=NULL;HWND parent=GetParent(w);DWORD ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
- return a && !a->detached && !a->controlbar_retired && IsWindow(w) && parent && parent==a->controlbar_parent &&
-  GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() && GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() &&
-  (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==a->controlbar_owner && (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==a->controlbar_owner &&
-  GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TControlBar") && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(name,real) &&
-  IsWindowUnicode(w) && (GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_LAYERED)) &&
-  GetClassInfoExW(a->controlbar_owner,name,&c) && c.lpfnWndProc && GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)c.lpfnWndProc,&proc_owner) && proc_owner==a->controlbar_owner;
-}
+
 BOOL ntw16s_controlbar_edge_allowed(UINT edge)
-{return edge==BDR_RAISEDOUTER || edge==BDR_SUNKENOUTER || edge==BDR_RAISEDINNER || edge==BDR_SUNKENINNER || edge==EDGE_RAISED || edge==EDGE_SUNKEN || edge==EDGE_ETCHED || edge==EDGE_BUMP;}
+{return win16_control_controlbar_edge_allowed(edge);}
 BOOL ntw16s_controlbar_edge_active(void)
 {return box_current && box_current->owner->controlbar_candidate && !box_current->owner->detached;}
+static BOOL controlbar_frame_identity(HWND w,void *owner)
+{return controlbar_identity(w,(attachment *)owner);}
 void ntw16s_controlbar_edge(HDC dc,const RECT *rect,UINT edge,UINT flags,const void *address)
 {
- box_witness_scope *s=box_current;HMODULE caller=NULL;RECT bounds;POINT origin={0};
- if(!s || !s->owner->controlbar_candidate || !controlbar_identity(s->window,s->owner) || !dc || !rect || !ntw16s_controlbar_edge_allowed(edge) || flags!=(BF_RECT|BF_ADJUST) || WindowFromDC(dc)!=s->window || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) || !GetViewportOrgEx(dc,&origin) || origin.x || origin.y || !GetWindowOrgEx(dc,&origin) || origin.x || origin.y || !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) || caller!=s->owner->controlbar_owner || !GetWindowRect(s->window,&bounds))return;
- OffsetRect(&bounds,-bounds.left,-bounds.top);if(!EqualRect(rect,&bounds))return;
- BOOL drew=win16_control_black_frame(dc,rect,NULL);if(drew && controlbar_identity(s->window,s->owner))s->owner->controlbar_verified=TRUE;
-}
-static BOOL rich_identity(HWND w,attachment *a)
-{
-    WCHAR name[64];HWND parent=GetParent(w);DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
-    return a && !a->detached && IsWindow(w) && parent && parent==a->rich_parent &&
-        GetWindowThreadProcessId(w,NULL)==GetCurrentThreadId() &&
-        (a->rich_popup?(parent==GetDesktopWindow() && a->rich_owner==GetModuleHandleW(NULL) && (style&WS_BORDER) && !(style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA))):(GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() && (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==a->rich_owner)) &&
-        (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==a->rich_owner &&
-        GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,a->rich_popup?L"TPopupListbox":a->rich_month?L"TMonthCalendar":a->rich_hotkey?L"THotKey":a->rich_unicode?L"TRichEdit":L"TRichEditURL") && (!a->rich_unicode || IsWindowUnicode(w)) && (!a->rich_month || !(style&MCS_MULTISELECT)) && (style&WS_CHILD) &&
-        (a->rich_popup || a->rich_month || (ex&WS_EX_CLIENTEDGE)) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_LAYERED));
+    box_witness_scope *s=box_current;if(!s || !s->owner)return;attachment *a=s->owner;
+    const win16_control_controlbar_paint_view v={a,s->window,&a->controlbar_candidate,&a->controlbar_verified,&a->controlbar_owner,controlbar_frame_identity};
+    win16_control_controlbar_edge(&v,dc,rect,edge,flags,address);
 }
 BOOL ntw16s_rich_valid(HWND w)
 {attachment *a=lookup(w);return !a || a->detached || ((!a->rich_candidate || !a->rich_installed || rich_identity(w,a)) && (!a->box_candidate || !a->box_installed || win16_control_box_identity(w,a->box_owner,a->box_parent)));}
@@ -636,12 +627,7 @@ static NTW16S_UNWIND_FUNCTION LRESULT static_paint_dispatch(attachment *,HWND,UI
 /* One paint scope per CoolBar invocation. It is never shared across threads. */
 typedef struct cool_scope {struct cool_scope *previous;attachment *owner;HWND window;BOOL ours,completed,nested;cool_observation observer;ntw16s_vb_paint *paint;void *status_prior,*spin_prior;} cool_scope;
 static _Thread_local cool_scope *cool_current;
-static BOOL cool_class_owner(HMODULE owner)
-{
-    WNDCLASSEXW c={.cbSize=sizeof(c)};HMODULE proc=NULL;
-    return owner && GetClassInfoExW(owner,L"TCoolBar",&c) && c.lpfnWndProc &&
-        GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)c.lpfnWndProc,&proc) && proc==owner;
-}
+
 static BOOL cool_identity(HWND w,attachment *a)
 {
     DWORD pid=0,ppid=0;HWND parent=a->cool_parent;WNDCLASSEXW c={.cbSize=sizeof(c)};HMODULE proc=NULL;
@@ -1245,7 +1231,7 @@ static BOOL install_created(HWND w,DWORD original_style)
     HWND popup_source=lookup_popup_creator,popup_source_parent=popup_source?GetParent(popup_source):NULL;
     attachment *popup_source_attachment=popup_source?lookup(popup_source):NULL;
     BOOL lookup_popup_candidate=ready && popup_source_attachment && win16_control_lookup_popup_identity(w,popup_source,popup_source_parent,owner);
-    BOOL cool_candidate=ready && (original_style&WS_CHILD) && class_is(w,L"TCoolBar") && cool_class_owner(owner) && GetParent(w) && (HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==owner;
+    BOOL cool_candidate=ready && (original_style&WS_CHILD) && class_is(w,L"TCoolBar") && win16_control_cool_class_owner(owner) && GetParent(w) && (HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==owner;
     BOOL box_candidate=ready && win16_control_box_identity(w,owner,GetParent(w));
     BOOL controlbar_candidate=ready && class_is(w,L"TControlBar") && owner && GetParent(w) && (HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==owner;
     BOOL rich_month=class_is(w,L"TMonthCalendar");

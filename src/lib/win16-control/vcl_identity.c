@@ -132,3 +132,33 @@ BOOL win16_control_box_identity(HWND w,HMODULE owner,HWND parent)
         GetClassInfoExW(owner,name,&c) && c.lpfnWndProc &&
         GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)c.lpfnWndProc,&proc_owner) && proc_owner==owner;
 }
+
+BOOL win16_control_controlbar_identity(HWND w,const win16_control_controlbar_view *a)
+{
+ WCHAR name[64],real[64];DWORD pid=0;WNDCLASSEXW c={.cbSize=sizeof(c)};HMODULE proc_owner=NULL;HWND parent=GetParent(w);DWORD ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
+ return a && !*a->detached && !*a->retired && IsWindow(w) && parent && parent==*a->parent &&
+  GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() && GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() &&
+  (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==*a->owner && (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==*a->owner &&
+  GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TControlBar") && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(name,real) &&
+  IsWindowUnicode(w) && (GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_LAYERED)) &&
+  GetClassInfoExW(*a->owner,name,&c) && c.lpfnWndProc && GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)c.lpfnWndProc,&proc_owner) && proc_owner==*a->owner;
+}
+
+
+BOOL win16_control_cool_class_owner(HMODULE owner)
+{
+    WNDCLASSEXW c={.cbSize=sizeof(c)};HMODULE proc=NULL;
+    return owner && GetClassInfoExW(owner,L"TCoolBar",&c) && c.lpfnWndProc &&
+        GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)c.lpfnWndProc,&proc) && proc==owner;
+}
+
+BOOL win16_control_rich_identity(HWND w,const win16_control_rich_view *a)
+{
+    WCHAR name[64];HWND parent=GetParent(w);DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
+    return a && !*a->detached && IsWindow(w) && parent && parent==*a->parent &&
+        GetWindowThreadProcessId(w,NULL)==GetCurrentThreadId() &&
+        (*a->popup?(parent==GetDesktopWindow() && *a->owner==GetModuleHandleW(NULL) && (style&WS_BORDER) && !(style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA))):(GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() && (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==*a->owner)) &&
+        (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==*a->owner &&
+        GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,*a->popup?L"TPopupListbox":*a->month?L"TMonthCalendar":*a->hotkey?L"THotKey":*a->unicode?L"TRichEdit":L"TRichEditURL") && (!*a->unicode || IsWindowUnicode(w)) && (!*a->month || !(style&MCS_MULTISELECT)) && (style&WS_CHILD) &&
+        (*a->popup || *a->month || (ex&WS_EX_CLIENTEDGE)) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_LAYERED));
+}
