@@ -7,6 +7,7 @@
 #include "../lib/win16-control/frame_view.h"
 #include "../lib/win16-control/frame_state.h"
 #include "../lib/win16-control/menu_iteration.h"
+#include "../lib/win16-control/menu_message.h"
 #include "../lib/win16-control/frame_layout.h"
 #include "../lib/win16-control/present.h"
 #include "menu_bar.h"
@@ -19,8 +20,6 @@
 #include <dwmapi.h>
 #include <windowsx.h>
 #include <string.h>
-
-void win16_style_menu_system(win16_style_menu_scope *scope,HMENU menu,HFONT font,UINT dpi);
 
 static LRESULT CALLBACK style_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static LRESULT CALLBACK style_proc_body(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
@@ -327,18 +326,12 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
         }
         goto forward;
     case WM_MEASUREITEM:
-        if(win16_style_menu_size(s->menu_items,(MEASUREITEMSTRUCT *)lp,s->menu_font,s->dpi)){result=TRUE;break;}
-        goto forward;
     case WM_DRAWITEM:
-        {win16_style_palette palette;colors(s,&palette);
-        if(win16_style_menu_draw(s->menu_items,(DRAWITEMSTRUCT *)lp,s->menu_font,s->dpi,&palette)){result=TRUE;break;}}
-        goto forward;
     case WM_MENUCHAR:
-        /* Application-owned items retain their existing mnemonic handler. */
-        result=DefSubclassProc(w,msg,wp,lp);
-        if(!s->detached && HIWORD(result)==MNC_IGNORE)
-            win16_style_menu_char(s->menu_items,(HMENU)lp,(WCHAR)LOWORD(wp),&result);
-        break;
+    case WM_INITMENUPOPUP:
+    case WM_EXITMENULOOP:
+        if(win16_control_menu_message(w,s,msg,wp,lp,paint_button_state,&result))break;
+        goto forward;
     case WM_KEYDOWN:
         if(s->bar_keyboard){
             if(wp==VK_LEFT || wp==VK_RIGHT){select_bar(w,s,wp==VK_LEFT?-1:1);break;}
@@ -413,18 +406,6 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
     case WM_NCHITTEST:
         if(win16_style_hit_test(w,lp,&result))break;
         goto forward;
-    case WM_INITMENUPOPUP:
-        /* The owner must see its original item data when it refreshes a
-         * submenu that has already been opened during this menu loop. */
-        win16_style_menu_restore_popup((HMENU)wp,&s->menu_items);
-        result=DefSubclassProc(w,msg,wp,lp);
-        if(!s->detached && !win16_style_menu_prepare((HMENU)wp,&s->menu_items,s->menu_depth))
-            win16_style_menu_restore_popup((HMENU)wp,&s->menu_items);
-        if(!s->detached && HIWORD(lp)){
-            if(s->menus)win16_style_menu_system(s->menus->scope,(HMENU)wp,s->menu_font,s->dpi);
-            s->system_menu=TRUE;paint_button_state(w,s,HTSYSMENU);
-        }
-        break;
     case WM_SYSCOMMAND:
         if((wp&0xfff0)==SC_KEYMENU && !lp && GetMenu(w)){
             if(s->bar_keyboard)leave_bar(w,s,TRUE);else select_bar(w,s,0);
@@ -476,11 +457,6 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
     case WM_ENTERMENULOOP:
         win16_control_frame_state_enter_menu(s);
         goto forward;
-    case WM_EXITMENULOOP:
-        win16_control_frame_state_exit_menu(s);
-        result=DefSubclassProc(w,msg,wp,lp);
-        if(!s->detached && s->system_menu){s->system_menu=FALSE;paint_button_state(w,s,HTSYSMENU);}
-        break;
     case WM_NCLBUTTONDBLCLK:
         if(wp==HTMENU && layout(w,s,&l)){
             BOOL close=FALSE;
