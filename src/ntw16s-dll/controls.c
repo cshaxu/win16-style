@@ -126,30 +126,6 @@ static BOOL is_separator(HWND w)
  return is_static(w) && type>=SS_ETCHEDHORZ && type<=SS_ETCHEDFRAME;}
 
 static _Thread_local HWND common_dialog_combo_pending;
-static BOOL supported(HWND w)
-{
-    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),type=ntw16s_button_type(w,style);
-    if(ntw16s_vb_owner_file(w) || (w==common_dialog_combo_pending && win16_control_common_dialog_combo_valid(w,GetParent(w))))return TRUE;
-    if((ntw16s_vb_checkbox(w) || ntw16s_vb_option(w)) &&
-        !ntw16s_vb_plain_choice(w) && !ntw16s_vb_graphical_choice(w))return FALSE;
-    if(is_scroll(w))return !(style&SBS_SIZEGRIP);
-    if(is_link(w))return TRUE;
-    if(is_tab(w))return win16_style_tab_supported(w);
-    if(is_header(w))return win16_style_header_supported(w);
-    if(ntw16s_class_is(w,PROGRESS_CLASSW) || ntw16s_control_protocol_is(w,PROGRESS_CLASSW))return win16_style_progress_supported(w);
-    if(is_combo(w))return ((style&3)==CBS_DROPDOWNLIST || (style&3)==CBS_DROPDOWN || (style&3)==CBS_SIMPLE) &&
-        !(style&(CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE));
-    if(is_list(w))return !(style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA|LBS_USETABSTOPS));
-    if(is_edit(w))return TRUE;
-    if(is_static(w)){type=style&SS_TYPEMASK;return type==SS_LEFT || type==SS_CENTER || type==SS_RIGHT ||
-        type==SS_ICON || type==SS_BITMAP || type==SS_SIMPLE || type==SS_LEFTNOWORDWRAP ||
-        (type>=SS_BLACKRECT && type<=SS_WHITEFRAME) || (type>=SS_ETCHEDHORZ && type<=SS_ETCHEDFRAME);}
-    if(!ntw16s_class_is(w,L"BUTTON"))return FALSE;
-    if((style&(BS_ICON|BS_BITMAP)) && type!=BS_PUSHBUTTON && type!=BS_DEFPUSHBUTTON && !(style&BS_PUSHLIKE))return FALSE;
-    if(type==BS_PUSHBUTTON || type==BS_DEFPUSHBUTTON || type==BS_GROUPBOX)return TRUE;
-    return type==BS_CHECKBOX || type==BS_AUTOCHECKBOX || type==BS_RADIOBUTTON ||
-        type==BS_AUTORADIOBUTTON || type==BS_3STATE || type==BS_AUTO3STATE;
-}
 
 BOOL win16_style_checklist_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address)
 {
@@ -391,7 +367,7 @@ static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL ori
             SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
         if((tab_count && !tabs) || (size_t)tab_count>((size_t)-1)/sizeof(int)){
             SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
-    }else if(!frame_bars && (!supported(w) || is_edit(w)!=edit)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    }else if(!frame_bars && (!win16_control_supported(w,common_dialog_combo_pending) || is_edit(w)!=edit)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     s=win16_control_state_create();if(!s)return FALSE;
     s->creation_owner=creation_owner;
     s->header_pressed=-1;

@@ -7,5 +7,6 @@ typedef struct win16_control_guard_services {
     BOOL (*is_exact_native_button)(HWND),(*ntw16s_vb_checkbox)(HWND),(*ntw16s_vb_option)(HWND),(*ntw16s_vb_plain_choice)(HWND),(*ntw16s_vb_graphical_choice)(HWND),(*ntw16s_vb_graphical_button)(HWND);
     BOOL (*remove_window)(HWND),(*remove_control)(HWND);
 } win16_control_guard_services;
+BOOL win16_control_supported(HWND,HWND);
 BOOL win16_control_guard_message(HWND,control_style *,UINT,WPARAM,LPARAM,const win16_control_guard_services *,LRESULT *);
 #endif
