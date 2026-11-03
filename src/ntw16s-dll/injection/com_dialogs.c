@@ -1,6 +1,7 @@
 /* Per-object adapter for the common file dialog.  The system COM object still
  * validates configuration; simple filesystem requests use the classic dialog. */
 #define COBJMACROS
+#include "../../lib/win16-dialog/hidden_files.h"
 #include "intercept.h"
 #include "startup_hooks.h"
 #include "unwind.h"
@@ -241,41 +242,11 @@ static NTW16S_UNWIND_FUNCTION void classic_initial_events(HWND w,file_proxy *p,P
 }
 #endif
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_HIDDEN
-/* Experimental: refresh only the file list, never the process directory.
- * Folder navigation and full Shell filtering are not yet implemented. */
 static void classic_hidden_files(HWND w,file_proxy *p)
-{
-    HWND files=GetDlgItem(w,lst1),filters=GetDlgItem(w,cmb1);WCHAR folder[MAX_PATH];
-    if(!files || !filters || !ntw16s_old_dialog_folder(w,folder,ARRAYSIZE(folder)))return;
-    LRESULT chosen=SendMessageW(filters,CB_GETCURSEL,0,0);if(chosen<0)return;
-    PCWSTR spec=L"*.*";
-    if(p->filter){PCWSTR at=p->filter;
-        for(LRESULT i=0;i<chosen && *at;++i){at+=wcslen(at)+1;if(!*at)return;at+=wcslen(at)+1;}
-        if(!*at)return;
-        at+=wcslen(at)+1;
-        if(!*at)return;
-        spec=at;}
-    while(*spec){PCWSTR end=wcschr(spec,L';');size_t n=end?(size_t)(end-spec):wcslen(spec);
-        WCHAR pattern[32768];size_t dir=wcslen(folder);
-        if(n && dir+1+n+1<=ARRAYSIZE(pattern)){memcpy(pattern,folder,dir*sizeof(WCHAR));
-            if(dir && pattern[dir-1]!=L'\\')pattern[dir++]=L'\\';
-            memcpy(pattern+dir,spec,n*sizeof(WCHAR));pattern[dir+n]=0;
-            WIN32_FIND_DATAW data;HANDLE search=FindFirstFileW(pattern,&data);
-            if(search!=INVALID_HANDLE_VALUE){do{
-                if((data.dwFileAttributes&(FILE_ATTRIBUTE_HIDDEN|FILE_ATTRIBUTE_SYSTEM)) &&
-                   !(data.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY) &&
-                   SendMessageW(files,LB_FINDSTRINGEXACT,(WPARAM)-1,(LPARAM)data.cFileName)==LB_ERR)
-                    (void)SendMessageW(files,LB_ADDSTRING,0,(LPARAM)data.cFileName);
-            }while(FindNextFileW(search,&data));FindClose(search);}}
-        if(!end)break;
-        spec=end+1;
-    }
-}
+{win16_dialog_hidden_files(w,&p->filter,ntw16s_old_dialog_folder);}
 static void classic_hidden_schedule(HWND w,file_proxy *p)
-{
-    if(p && p->classic_hidden){UINT refresh=RegisterWindowMessageW(L"Win16Style.T20.HiddenFilesRefresh");
-        if(refresh)PostMessageW(w,refresh,0,0);}
-}
+{win16_dialog_hidden_schedule(w,p && p->classic_hidden);}
+
 #endif
 static void com_hook_attach(void *owner,HWND w,OPENFILENAMEW *ofn)
 {

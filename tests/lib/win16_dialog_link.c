@@ -15,6 +15,7 @@
 #include "lib/win16-dialog/com_show.h"
 #include "lib/win16-dialog/proxy.h"
 #include "lib/win16-dialog/browse.h"
+#include "lib/win16-dialog/hidden_files.h"
 #include "lib/win16-dialog/events.h"
 
 static void *browse_argument;static UINT browse_flags;static BOOL browse_validate;
@@ -29,6 +30,39 @@ static PIDLIST_ABSOLUTE WINAPI fake_browse_w(LPBROWSEINFOW info)
         info->lpfn(NULL,BFFM_VALIDATEFAILEDW,0,info->lParam);CoTaskMemFree(id);return NULL;
     }
     return (PIDLIST_ABSOLUTE)(UINT_PTR)1;
+}
+static WCHAR hidden_test_dir[MAX_PATH];
+static BOOL hidden_folder(HWND w,PWSTR out,size_t size)
+{(void)w;if(wcslen(hidden_test_dir)+1>size)return FALSE;lstrcpyW(out,hidden_test_dir);return TRUE;}
+static BOOL hidden_test_file(PCWSTR name,DWORD attributes)
+{
+    WCHAR path[MAX_PATH];if(swprintf(path,MAX_PATH,L"%ls\\%ls",hidden_test_dir,name)<0)return FALSE;
+    HANDLE file=CreateFileW(path,GENERIC_WRITE,0,NULL,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,NULL);
+    if(file==INVALID_HANDLE_VALUE)return FALSE;
+    CloseHandle(file);return SetFileAttributesW(path,attributes);
+}
+static BOOL test_hidden_dialog_files(void)
+{
+    WCHAR base[MAX_PATH],temp[MAX_PATH],path[MAX_PATH];HWND parent=NULL,list=NULL,combo=NULL;BOOL ok=FALSE;
+    if(!GetEnvironmentVariableW(L"WIN16STYLE_CAPTURE_DIR",base,MAX_PATH) || !GetTempFileNameW(base,L"hdf",0,temp))return FALSE;
+    if(!DeleteFileW(temp) || !CreateDirectoryW(temp,NULL))return FALSE;
+    lstrcpyW(hidden_test_dir,temp);
+    if(!hidden_test_file(L"hidden.txt",FILE_ATTRIBUTE_HIDDEN) || !hidden_test_file(L"visible.txt",FILE_ATTRIBUTE_NORMAL) ||
+       !hidden_test_file(L"hidden.bin",FILE_ATTRIBUTE_HIDDEN))goto done;
+    parent=CreateWindowW(L"STATIC",L"",WS_POPUP,0,0,100,100,NULL,NULL,GetModuleHandleW(NULL),NULL);
+    if(!parent)goto done;
+    list=CreateWindowW(L"LISTBOX",L"",WS_CHILD,0,0,40,40,parent,(HMENU)(INT_PTR)lst1,GetModuleHandleW(NULL),NULL);
+    combo=CreateWindowW(L"COMBOBOX",L"",WS_CHILD|CBS_DROPDOWNLIST,0,0,40,40,parent,(HMENU)(INT_PTR)cmb1,GetModuleHandleW(NULL),NULL);
+    if(!list || !combo || SendMessageW(combo,CB_ADDSTRING,0,(LPARAM)L"Text")!=0 || SendMessageW(combo,CB_SETCURSEL,0,0)==CB_ERR)goto done;
+    WCHAR filters[]=L"Text\0*.txt\0\0";WCHAR *filter=filters;
+    win16_dialog_hidden_files(parent,&filter,hidden_folder);win16_dialog_hidden_files(parent,&filter,hidden_folder);
+    ok=SendMessageW(list,LB_GETCOUNT,0,0)==1 && SendMessageW(list,LB_FINDSTRINGEXACT,(WPARAM)-1,(LPARAM)L"hidden.txt")!=LB_ERR && filter==filters;
+done:
+    if(parent)DestroyWindow(parent);
+    const WCHAR *names[]={L"hidden.txt",L"visible.txt",L"hidden.bin"};
+    for(unsigned i=0;i<ARRAYSIZE(names);++i){if(swprintf(path,MAX_PATH,L"%ls\\%ls",hidden_test_dir,names[i])>=0){SetFileAttributesW(path,FILE_ATTRIBUTE_NORMAL);DeleteFileW(path);}}
+    if(!RemoveDirectoryW(hidden_test_dir))ok=FALSE;
+    hidden_test_dir[0]=0;return ok;
 }
 static UINT_PTR CALLBACK fake_print_hook(HWND w,UINT message,WPARAM wp,LPARAM lp)
 {(void)w;(void)message;(void)wp;(void)lp;return 0;}
@@ -177,6 +211,7 @@ done:
 }
 int main(void)
 {
+    if(!test_hidden_dialog_files())return 41;
     PRINTPAGERANGE ranges[2];DWORD count=0;WCHAR formatted[32];
     if(!ntw16s_parse_print_ranges(L"1-3,5",1,9,ranges,2,&count) || count!=2)return 1;
     if(!ntw16s_format_print_ranges(ranges,count,1,9,formatted,32) || lstrcmpW(formatted,L"1-3,5"))return 2;

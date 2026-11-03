@@ -3353,7 +3353,7 @@
       "path": "src/ntw16s-dll/injection/com_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "eeb5a7f36c6a03c57c50591ce97b432acad624ebd115ec191ff09c30c45bbbe2",
+      "sha256": "50d63cae6a6ff7f07444adf76e5e51a97b8016995f6d0c16db4dd7c2e131b380",
       "disposition": "authored",
       "review": "T20 S1 COM dialog bridge and real native probe under development; T21 S13 unified late style hooks and stop semantics",
       "notice": "Project-authored; no imported code or resources"
@@ -4370,7 +4370,7 @@
       "path": "tests/lib/win16_dialog_link.c",
       "source": null,
       "source_blob": null,
-      "sha256": "0efbab9bdf5011c6d5c818e3c17da9605025f9adb389c5cbc9791eb541e2d10f",
+      "sha256": "b2faeed52861728e3c004b502d23830e72ba4e2fc5132c0c3d4b9648bb5914a7",
       "disposition": "authored",
       "review": "T21 S23 independent whole-library link and page range test",
       "notice": "Project-authored C17; project MIT license"
@@ -5201,6 +5201,24 @@
       "sha256": "f3abc4a76f5e02da02b0ffa9578615ba1b7746a5a4d43390c8035084c37aeb9e",
       "disposition": "authored",
       "review": "T21 S24 extract VCL group and panel frame policies",
+      "notice": "Project-authored C implementation; original notices preserved"
+    },
+    {
+      "path": "src/lib/win16-dialog/hidden_files.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "6d4b626e29316884be4a5a30886a9c42c299db7da4a7bb12c5e7663086db919a",
+      "disposition": "authored",
+      "review": "T21 S24 extract experimental classic dialog hidden file adaptation",
+      "notice": "Project-authored C implementation; original notices preserved"
+    },
+    {
+      "path": "src/lib/win16-dialog/hidden_files.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "c20bf1ab974b0e306d2e3fd928f7eafaa16372af965207dac89f4b7c659d103a",
+      "disposition": "authored",
+      "review": "T21 S24 extract experimental classic dialog hidden file adaptation",
       "notice": "Project-authored C implementation; original notices preserved"
     }
   ]
