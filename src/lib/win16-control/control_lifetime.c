@@ -41,3 +41,40 @@ void win16_control_finish_message(HWND w,control_style *s,UINT m,LPARAM b,HWND s
     win16_style_system_release(outbound);win16_style_system_release(pinned);
     if(!--s->calls && s->detached)win16_control_state_dispose(s);
 }
+
+BOOL win16_control_updown_acquire(void *owner,SUBCLASSPROC proc)
+{
+    control_style *s=owner;DWORD_PTR value;
+    if(s->detached || !GetWindowSubclass(s->updown.window,proc,(UINT_PTR)proc,&value) || value!=(DWORD_PTR)s)return FALSE;
+    ++s->calls;return TRUE;
+}
+void win16_control_updown_release(void *owner)
+{control_style *s=owner;if(!--s->calls && s->detached)win16_control_state_dispose(s);}
+void win16_control_trackbar_unbind(control_style *s,SUBCLASSPROC proc)
+{
+    DWORD_PTR value;
+    if(s->track_parent && GetWindowSubclass(s->track_parent,proc,(UINT_PTR)s->track_window,&value) &&
+        value==(DWORD_PTR)s)RemoveWindowSubclass(s->track_parent,proc,(UINT_PTR)s->track_window);
+    s->track_parent=NULL;s->track_internal=FALSE;
+}
+void win16_control_toolbar_unbind(control_style *s,SUBCLASSPROC proc)
+{
+    DWORD_PTR value;
+    if(s->toolbar_parent && GetWindowSubclass(s->toolbar_parent,proc,(UINT_PTR)s->toolbar_window,&value) &&
+        value==(DWORD_PTR)s)RemoveWindowSubclass(s->toolbar_parent,proc,(UINT_PTR)s->toolbar_window);
+    s->toolbar_parent=NULL;s->toolbar_internal=FALSE;
+}
+void win16_control_scrollbars_paint(HWND w,HDC target,const win16_style_palette *palette,SUBCLASSPROC proc,
+    void (*paint)(HWND,control_style *,HDC))
+{
+    control_style s={0};DWORD_PTR attached;
+    if(palette)s.palette=*palette;else win16_style_default_palette(&s.palette);
+    if(GetWindowSubclass(w,proc,(UINT_PTR)proc,&attached)){
+        control_style *owner=(control_style *)attached;
+        if(!palette)s.palette=owner->palette;
+        s.list_scrollbar=owner->list_scrollbar;s.edit_scrollbars=owner->edit_scrollbars;s.scroll=owner->scroll;
+        s.frame_scrollbars=owner->frame_scrollbars;
+        s.embedded_object=owner->embedded_object;
+    }
+    paint(w,&s,target);
+}

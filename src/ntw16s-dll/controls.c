@@ -76,32 +76,18 @@ static LRESULT CALLBACK control_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR)
 static LRESULT CALLBACK trackbar_notify(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static LRESULT CALLBACK toolbar_notify(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static BOOL updown_acquire(void *owner)
-{
-    control_style *s=owner;DWORD_PTR value;
-    if(s->detached || !GetWindowSubclass(s->updown.window,control_proc,(UINT_PTR)control_proc,&value) || value!=(DWORD_PTR)s)return FALSE;
-    ++s->calls;return TRUE;
-}
+{return win16_control_updown_acquire(owner,control_proc);}
 static void updown_release(void *owner)
-{control_style *s=owner;if(!--s->calls && s->detached)win16_control_state_dispose(s);}
+{win16_control_updown_release(owner);}
 
 static LRESULT CALLBACK combo_text_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
 {return win16_control_combo_text_message(w,m,a,b,id,(control_style *)data,combo_text_proc,control_proc);}
 static void combo_text_unbind(control_style *s,BOOL terminal)
 {win16_control_combo_text_unbind(s,terminal,combo_text_proc);}
 static void trackbar_unbind(control_style *s)
-{
-    DWORD_PTR value;
-    if(s->track_parent && GetWindowSubclass(s->track_parent,trackbar_notify,(UINT_PTR)s->track_window,&value) &&
-        value==(DWORD_PTR)s)RemoveWindowSubclass(s->track_parent,trackbar_notify,(UINT_PTR)s->track_window);
-    s->track_parent=NULL;s->track_internal=FALSE;
-}
+{win16_control_trackbar_unbind(s,trackbar_notify);}
 static void toolbar_unbind(control_style *s)
-{
-    DWORD_PTR value;
-    if(s->toolbar_parent && GetWindowSubclass(s->toolbar_parent,toolbar_notify,(UINT_PTR)s->toolbar_window,&value) &&
-        value==(DWORD_PTR)s)RemoveWindowSubclass(s->toolbar_parent,toolbar_notify,(UINT_PTR)s->toolbar_window);
-    s->toolbar_parent=NULL;s->toolbar_internal=FALSE;
-}
+{win16_control_toolbar_unbind(s,toolbar_notify);}
 static LRESULT CALLBACK trackbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {return win16_control_trackbar_notify(parent,m,p,l,id,(control_style *)data,trackbar_notify,&track_paint);}
 static LRESULT CALLBACK toolbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
@@ -193,18 +179,7 @@ static void nonclient_scrollbars(HWND w,control_style *s,HDC target)
 {win16_control_nonclient_scrollbars(w,s,target,draw_scroll);}
 
 void win16_style_scrollbars_paint(HWND w,HDC target,const win16_style_palette *palette)
-{
-    control_style s={0};DWORD_PTR attached;
-    if(palette)s.palette=*palette;else win16_style_default_palette(&s.palette);
-    if(GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&attached)){
-        control_style *owner=(control_style *)attached;
-        if(!palette)s.palette=owner->palette;
-        s.list_scrollbar=owner->list_scrollbar;s.edit_scrollbars=owner->edit_scrollbars;s.scroll=owner->scroll;
-        s.frame_scrollbars=owner->frame_scrollbars;
-        s.embedded_object=owner->embedded_object;
-    }
-    nonclient_scrollbars(w,&s,target);
-}
+{win16_control_scrollbars_paint(w,target,palette,control_proc,nonclient_scrollbars);}
 
 static win16_scroll_caret_view scroll_caret_view(control_style *s)
 {
