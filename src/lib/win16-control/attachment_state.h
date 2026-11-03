@@ -86,4 +86,15 @@ typedef struct win16_attachment_native_services {
 } win16_attachment_native_services;
 void win16_attachment_native_prepare(HWND,UINT,WPARAM,attachment *,BOOL,RECT *,BOOL *,HRGN *,int *);
 void win16_attachment_post_native(HWND,UINT,WPARAM,attachment *,HRGN,int,BOOL,const RECT *,const win16_attachment_native_services *);
+typedef BOOL (*win16_attachment_special_install)(HWND,const win16_style_palette *,const void *,const BOOL *);
+typedef struct win16_attachment_install_services {
+    win16_attachment_special_install legacy_progress,toolbar,updown,trackbar,progress,tree,picture,grid,frame_scrollbars;
+    BOOL (*control)(HWND,BOOL,BOOL,BOOL,const win16_style_palette *,const void *,const BOOL *);
+    win16_attachment_special_install frame;
+    BOOL (*get_combo_info)(HWND,PCOMBOBOXINFO);
+    BOOL (*theme_enable)(HWND,const void *),(*list_scrollbar_enable)(HWND),(*edit_scrollbar_enable)(HWND);
+    void (*theme_remove)(HWND,const void *);
+    BOOL (*remove)(HWND);
+} win16_attachment_install_services;
+BOOL win16_attachment_install_style(HWND,attachment *,ntw16s_control_protocol *,DWORD,BOOL,BOOL,BOOL,BOOL,BOOL,BOOL,DWORD *,const win16_attachment_install_services *);
 #endif

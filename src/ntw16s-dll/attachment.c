@@ -1024,42 +1024,13 @@ static BOOL install_created(HWND w,DWORD original_style)
             Ntw16sWindowRemove(info.hwndItem);
     }
     if(a->detached){release(a);SetLastError(ERROR_CANCELLED);return FALSE;}
-    if(a->cool_candidate || a->box_candidate || a->controlbar_candidate || a->rich_candidate || a->vb_data_candidate || a->vb_user_candidate || a->checklist || a->status || a->spin || a->static_candidate || a->scroll_candidate || a->edit_candidate || a->group_button_candidate || a->grid_candidate || a->inplace_candidate || a->nav_candidate || a->vcl_toolbar_candidate || a->track_candidate || a->tab_candidate || a->vcl_report_candidate || a->color_candidate || a->date_candidate || a->status_candidate || a->bit_candidate || a->group_frame_candidate || a->panel_frame_candidate)installed=TRUE;
-    else if(legacy_progress)installed=win16_style_legacy_progress_border_install_created(w,NULL,a,&a->detached);
-    else if(protocol && ntw16s_control_protocol_toolbar(w))
-        installed=win16_style_toolbar_install_created(w,NULL,a,&a->detached);
-    else if(protocol && ntw16s_control_protocol_is(w,UPDOWN_CLASSW))installed=win16_style_updown_install_created(w,NULL,a,&a->detached);
-    else if(protocol && ntw16s_control_protocol_is(w,TRACKBAR_CLASSW))installed=win16_style_trackbar_install_created(w,NULL,a,&a->detached);
-    else if(protocol && ntw16s_control_protocol_is(w,PROGRESS_CLASSW))installed=win16_style_progress_install_created(w,NULL,a,&a->detached);
-    else if(tree)installed=win16_style_tree_install_created(w,NULL,a,&a->detached);
-    else if(picture)installed=win16_style_picture_install_created(w,NULL,a,&a->detached);
-    else if(a->lookup_popup_candidate)installed=win16_style_grid_install_created(w,NULL,a,&a->detached);
-    else if(a->button_owner)installed=win16_style_frame_scrollbars_install_owned(w,NULL,a,&a->detached);
-    else if(control)installed=win16_style_control_install_created(w,edit,(original_style&WS_BORDER)!=0,
-        class_is(w,L"LISTBOX") && (original_style&LBS_USETABSTOPS) && !a->file_owner,NULL,a,&a->detached);
-    else if(report && !(original_style&(WS_BORDER|WS_THICKFRAME|WS_CAPTION)))installed=TRUE;
-    else installed=win16_style_install_created(w,NULL,a,&a->detached);
-    error=GetLastError();
-    if(installed && !a->detached){
-        if(control){
-            HWND themed=NULL;BOOL list=FALSE;
-            if(!a->file_owner && class_is(w,L"COMBOBOX")){
-                COMBOBOXINFO info={.cbSize=sizeof(info)};
-                if(ntw16s_native_get_combo_info(w,&info)){themed=info.hwndList;list=TRUE;}
-            }else if(class_is(w,L"LISTBOX")){themed=w;list=TRUE;}
-            else if(edit && (original_style&ES_MULTILINE))themed=w;
-            if(themed){
-                a->themed=themed;
-                if(!ntw16s_theme_enable(themed,a))installed=FALSE;
-                else {
-                    installed=list?win16_style_list_scrollbar_enable(themed):win16_style_edit_scrollbars_enable(themed);}
-                error=GetLastError();
-            }
-        }
-    }
-    if(installed && !a->detached && !a->vb_data_candidate && !a->scroll_candidate && !a->edit_candidate && !a->group_button_candidate && !a->grid_candidate && !a->vcl_toolbar_candidate && !a->track_candidate && !a->tab_candidate && !a->vcl_report_candidate && !a->color_candidate && !a->date_candidate && !a->status_candidate && !a->bit_candidate && a->themed!=w)ntw16s_theme_remove(w,NULL);
-    if(a->detached){installed=FALSE;error=ERROR_CANCELLED;}
-    if(!installed && !a->detached)Ntw16sWindowRemove(w);
+    const win16_attachment_install_services install_services={win16_style_legacy_progress_border_install_created,
+        win16_style_toolbar_install_created,win16_style_updown_install_created,win16_style_trackbar_install_created,
+        win16_style_progress_install_created,win16_style_tree_install_created,win16_style_picture_install_created,
+        win16_style_grid_install_created,win16_style_frame_scrollbars_install_owned,win16_style_control_install_created,
+        win16_style_install_created,ntw16s_native_get_combo_info,ntw16s_theme_enable,win16_style_list_scrollbar_enable,
+        win16_style_edit_scrollbars_enable,ntw16s_theme_remove,Ntw16sWindowRemove};
+    installed=win16_attachment_install_style(w,a,protocol,original_style,legacy_progress,tree,picture,control,edit,report,&error,&install_services);
     release(a);
     if(!installed)SetLastError(error?error:ERROR_GEN_FAILURE);
     return installed;

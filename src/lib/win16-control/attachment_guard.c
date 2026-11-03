@@ -208,3 +208,45 @@ void win16_attachment_native_prepare(HWND w,UINT m,WPARAM p,attachment *a,BOOL c
         if(*clip)*clip_kind=GetClipRgn((HDC)p,*clip);
     }
 }
+
+BOOL win16_attachment_install_style(HWND w,attachment *a,ntw16s_control_protocol *protocol,DWORD original_style,BOOL legacy_progress,BOOL tree,BOOL picture,BOOL control,BOOL edit,BOOL report,DWORD *out_error,const win16_attachment_install_services *v)
+{
+    BOOL installed;DWORD error;
+    if(a->cool_candidate || a->box_candidate || a->controlbar_candidate || a->rich_candidate || a->vb_data_candidate || a->vb_user_candidate || a->checklist || a->status || a->spin || a->static_candidate || a->scroll_candidate || a->edit_candidate || a->group_button_candidate || a->grid_candidate || a->inplace_candidate || a->nav_candidate || a->vcl_toolbar_candidate || a->track_candidate || a->tab_candidate || a->vcl_report_candidate || a->color_candidate || a->date_candidate || a->status_candidate || a->bit_candidate || a->group_frame_candidate || a->panel_frame_candidate)installed=TRUE;
+    else if(legacy_progress)installed=v->legacy_progress(w,NULL,a,&a->detached);
+    else if(protocol && ntw16s_control_protocol_toolbar(w))
+        installed=v->toolbar(w,NULL,a,&a->detached);
+    else if(protocol && ntw16s_control_protocol_is(w,UPDOWN_CLASSW))installed=v->updown(w,NULL,a,&a->detached);
+    else if(protocol && ntw16s_control_protocol_is(w,TRACKBAR_CLASSW))installed=v->trackbar(w,NULL,a,&a->detached);
+    else if(protocol && ntw16s_control_protocol_is(w,PROGRESS_CLASSW))installed=v->progress(w,NULL,a,&a->detached);
+    else if(tree)installed=v->tree(w,NULL,a,&a->detached);
+    else if(picture)installed=v->picture(w,NULL,a,&a->detached);
+    else if(a->lookup_popup_candidate)installed=v->grid(w,NULL,a,&a->detached);
+    else if(a->button_owner)installed=v->frame_scrollbars(w,NULL,a,&a->detached);
+    else if(control)installed=v->control(w,edit,(original_style&WS_BORDER)!=0,
+        ntw16s_class_is(w,L"LISTBOX") && (original_style&LBS_USETABSTOPS) && !a->file_owner,NULL,a,&a->detached);
+    else if(report && !(original_style&(WS_BORDER|WS_THICKFRAME|WS_CAPTION)))installed=TRUE;
+    else installed=v->frame(w,NULL,a,&a->detached);
+    error=GetLastError();
+    if(installed && !a->detached){
+        if(control){
+            HWND themed=NULL;BOOL list=FALSE;
+            if(!a->file_owner && ntw16s_class_is(w,L"COMBOBOX")){
+                COMBOBOXINFO info={.cbSize=sizeof(info)};
+                if(v->get_combo_info(w,&info)){themed=info.hwndList;list=TRUE;}
+            }else if(ntw16s_class_is(w,L"LISTBOX")){themed=w;list=TRUE;}
+            else if(edit && (original_style&ES_MULTILINE))themed=w;
+            if(themed){
+                a->themed=themed;
+                if(!v->theme_enable(themed,a))installed=FALSE;
+                else {
+                    installed=list?v->list_scrollbar_enable(themed):v->edit_scrollbar_enable(themed);}
+                error=GetLastError();
+            }
+        }
+    }
+    if(installed && !a->detached && !a->vb_data_candidate && !a->scroll_candidate && !a->edit_candidate && !a->group_button_candidate && !a->grid_candidate && !a->vcl_toolbar_candidate && !a->track_candidate && !a->tab_candidate && !a->vcl_report_candidate && !a->color_candidate && !a->date_candidate && !a->status_candidate && !a->bit_candidate && a->themed!=w)v->theme_remove(w,NULL);
+    if(a->detached){installed=FALSE;error=ERROR_CANCELLED;}
+    if(!installed && !a->detached)v->remove(w);
+    *out_error=error;return installed;
+}
