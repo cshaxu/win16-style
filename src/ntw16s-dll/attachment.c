@@ -15,6 +15,8 @@
 #include "../lib/win16-control/special_paint.h"
 #include "../lib/win16-control/spin_identity.h"
 #include "../lib/win16-control/spin_scope.h"
+#include "../lib/win16-control/status_frame.h"
+#include "../lib/win16-control/status_font.h"
 #include "injection/unwind.h"
 #include "status_theme.h"
 #include "month_text.h"
@@ -68,8 +70,7 @@ typedef struct attachment {
     BOOL group_frame_candidate,group_frame_verified,group_frame_retired; HWND group_frame_parent;
     BOOL panel_frame_candidate,panel_frame_verified,panel_frame_retired; HWND panel_frame_parent;
     HMODULE status_witness_owner; HWND status_parent;
-    HFONT month_cached_font;HFONT status_cached_font,status_cached_source;LOGFONTW status_font_log;TEXTMETRICW status_font_metrics;
-    int status_font_widths[96];unsigned status_font_borrows;BOOL status_font_invalid;
+    HFONT month_cached_font;win16_control_status_font_cache status_font;
     DWORD edit_original_style,combo_original_type;
     HMODULE edit_witness_owner,group_button_witness_owner;
     HWND combo_parent,group_button_parent,grid_parent,vcl_toolbar_parent; HMODULE grid_owner,vcl_toolbar_owner,vcl_toolbar_witness;
@@ -315,7 +316,7 @@ void ntw16s_status_theme_end(void *data)
 /* Borrow a private font only for verified native simple-status text. */
 HFONT ntw16s_status_simple_font(HDC dc,LPCWSTR text,int count,UINT flags,const void *address,void **token)
 {
-    status_draw_scope *s=status_current;HMODULE caller=NULL;POINT origin;HWND from;HFONT source;LOGFONTW log={0};TEXTMETRICW tm={0};int widths[96]={0};
+    status_draw_scope *s=status_current;HMODULE caller=NULL;POINT origin;HWND from;
     if(token)*token=NULL;
     if(!token || !s || !s->owner || !s->owner->status_candidate || s->owner->detached || s->epoch!=s->owner->status_epoch ||
        !dc || !text || (flags&(DT_RTLREADING|DT_MODIFYSTRING)) || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
@@ -329,98 +330,26 @@ HFONT ntw16s_status_simple_font(HDC dc,LPCWSTR text,int count,UINT flags,const v
     if(s->simple){if(s->simple_length!=count || memcmp(s->simple_text,text,(size_t)count*sizeof(WCHAR)))return NULL;}
     else {ntw16s_status_theme_scope *t=status_theme_current;if(!t || !t->valid || t->paint!=s || t->dc!=dc || t->length!=count || memcmp(t->text,text,(size_t)count*sizeof(WCHAR)))return NULL;}
     if(!status_identity(s->window,s->owner,NULL) || s->owner->detached || s->epoch!=s->owner->status_epoch)return NULL;
-    source=(HFONT)GetCurrentObject(dc,OBJ_FONT);
-    if(!source || GetObjectW(source,sizeof(log),&log)!=sizeof(log) || !GetTextMetricsW(dc,&tm))return NULL;
-    for(unsigned i=0;i<96;++i){WCHAR character=(WCHAR)(32+i);SIZE extent;
-        if(!GetTextExtentPoint32W(dc,&character,1,&extent))return NULL;
-        widths[i]=extent.cx;
-    }
-    attachment *a=s->owner;
-    BOOL changed=a->status_font_invalid || a->status_cached_source!=source || memcmp(&a->status_font_log,&log,sizeof(log)) || memcmp(&a->status_font_metrics,&tm,sizeof(tm)) || memcmp(a->status_font_widths,widths,sizeof(widths));
-    if(changed){
-        if(a->status_font_borrows)return NULL;
-        win16_style_system_release(a->status_cached_font);a->status_cached_font=NULL;a->status_cached_source=NULL;
-        a->status_font_invalid=FALSE;HFONT replacement=win16_style_system_acquire_isolated(source);if(!replacement)return NULL;
-        a->status_cached_source=source;a->status_cached_font=replacement;a->status_font_log=log;a->status_font_metrics=tm;memcpy(a->status_font_widths,widths,sizeof(widths));
-    }
-    if(!a->status_cached_font || a->status_font_borrows==UINT_MAX)return NULL;
-    if(a->status_cached_font!=source && !win16_style_system_try_retain(a->status_cached_font))return NULL;
-    ++a->status_font_borrows;*token=a;return a->status_cached_font;
+    return win16_control_status_font_borrow(&s->owner->status_font,dc,s->owner,token);
 }
 void ntw16s_status_simple_return(void *token,HFONT font)
-{
-    attachment *a=token;if(!a || !a->status_font_borrows)return;
-    win16_style_system_release(font);--a->status_font_borrows;
-    if(!a->status_font_borrows && a->status_font_invalid){win16_style_system_release(a->status_cached_font);a->status_cached_font=NULL;a->status_cached_source=NULL;}
-}
+{attachment *a=token;if(a)win16_control_status_font_return(&a->status_font,font);}
 
-/* The themed native status control omits the final pane background when it
- * owns a sizing grip. Only a native text call for an icon-free,
- * ordinary final pane supplies a verified pre-content drawing boundary. */
+
+static BOOL status_frame_identity(HWND w,void *owner,HMODULE *native)
+{return status_identity(w,(attachment *)owner,native);}
+static win16_control_status_frame_view status_frame_view(status_draw_scope *s)
+{
+    const win16_control_status_frame_view view={s->owner,s->window,s->dc,s->native,s->epoch,s->count,
+        s->owner?&s->owner->status_epoch:NULL,s->owner?&s->owner->detached:NULL,s->panes,status_frame_identity};
+    return view;
+}
 void ntw16s_status_text_frame(HDC dc,const RECT *text,UINT flags,const void *address)
-{
-    status_draw_scope *s=status_current;HMODULE module=NULL;POINT origin;RECT pane;HWND window;
-    LRESULT parts,icon,type;
-    if(!s || !s->owner || s->owner->detached || s->epoch!=s->owner->status_epoch ||
-        s->count<2 || !text || (flags&(DT_CALCRECT|DT_RTLREADING)) ||
-        !(GetWindowLongPtrW(s->window,GWL_STYLE)&SBARS_SIZEGRIP) ||
-        !status_identity(s->window,s->owner,NULL) ||
-        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-            (LPCWSTR)address,&module) || module!=s->native || !dc ||
-        GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
-        !GetViewportOrgEx(dc,&origin) || origin.x || origin.y)return;
-    window=WindowFromDC(dc);if(s->dc?dc!=s->dc:window!=s->window)return;
-    pane=s->panes[s->count-1];
-    if(text->left<=pane.left || text->left>=pane.right || text->right>pane.right ||
-        text->right<=text->left || text->top>=pane.bottom || text->bottom<=pane.top)return;
-    parts=SendMessageW(s->window,SB_GETPARTS,0,0);
-    if(s->owner->detached || s->epoch!=s->owner->status_epoch || parts!=(LRESULT)s->count)return;
-    type=SendMessageW(s->window,SB_GETTEXTLENGTHW,s->count-1,0);
-    if(s->owner->detached || s->epoch!=s->owner->status_epoch || HIWORD(type)!=0)return;
-    icon=SendMessageW(s->window,SB_GETICON,s->count-1,0);
-    if(s->owner->detached || s->epoch!=s->owner->status_epoch || icon)return;
-    win16_control_black_frame(dc,&pane,NULL);
-}
-
-/* For a size-grip pane, native comctl draws its icon before its text.
- * Frame only the verified native pane before the same icon is painted. */
+{status_draw_scope *s=status_current;if(s){const win16_control_status_frame_view v=status_frame_view(s);win16_control_status_text_frame(&v,dc,text,flags,address);}}
 void ntw16s_status_icon_frame(HDC dc,int x,int y,int cx,int cy,HICON icon,const void *address)
-{
-    status_draw_scope *s=status_current;HMODULE module=NULL;POINT origin;RECT pane;HWND window;
-    LRESULT parts,type,current;
-    if(!s || !s->owner || s->owner->detached || s->epoch!=s->owner->status_epoch || s->count<2 ||
-        !(GetWindowLongPtrW(s->window,GWL_STYLE)&SBARS_SIZEGRIP) || !status_identity(s->window,s->owner,NULL) ||
-        !dc || !icon || cx<=0 || cy<=0 ||
-        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-            (LPCWSTR)address,&module) || module!=s->native || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
-        !GetViewportOrgEx(dc,&origin) || origin.x || origin.y)return;
-    window=WindowFromDC(dc);if(s->dc?dc!=s->dc:window!=s->window)return;
-    pane=s->panes[s->count-1];
-    if(x<pane.left || x>=pane.right || (LONGLONG)y+cy<=pane.top || y>=pane.bottom)return;
-    parts=SendMessageW(s->window,SB_GETPARTS,0,0);
-    if(s->owner->detached || s->epoch!=s->owner->status_epoch || parts!=(LRESULT)s->count)return;
-    type=SendMessageW(s->window,SB_GETTEXTLENGTHW,s->count-1,0);
-    if(s->owner->detached || s->epoch!=s->owner->status_epoch || HIWORD(type)!=0)return;
-    current=SendMessageW(s->window,SB_GETICON,s->count-1,0);
-    if(s->owner->detached || s->epoch!=s->owner->status_epoch || (HICON)current!=icon)return;
-    win16_control_black_frame(dc,&pane,NULL);
-}
-
-/* Called only after the original native drawing call has completed. */
+{status_draw_scope *s=status_current;if(s){const win16_control_status_frame_view v=status_frame_view(s);win16_control_status_icon_frame(&v,dc,x,y,cx,cy,icon,address);}}
 void ntw16s_status_frame(HDC dc,const RECT *rect,const RECT *clip,const void *caller)
-{
-    status_draw_scope *s=status_current;HMODULE module=NULL;HWND w,scoped=NULL;BOOL matches=FALSE;POINT origin;
-    if(!s || !s->owner || s->owner->detached || s->epoch!=s->owner->status_epoch || !dc || !rect ||
-        !status_identity(s->window,s->owner,NULL) || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
-        !GetViewportOrgEx(dc,&origin) || origin.x || origin.y ||
-        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-            (LPCWSTR)caller,&module) || module!=s->native)return;
-    if(ntw16s_native_paint_target(dc,&scoped) && scoped!=s->window)return;
-    w=WindowFromDC(dc);if(s->dc?dc!=s->dc:w!=s->window)return;
-    for(unsigned i=0;i<s->count;++i)if(EqualRect(rect,&s->panes[i])){matches=TRUE;break;}
-    if(!matches || s->owner->detached || s->epoch!=s->owner->status_epoch)return;
-    win16_control_black_frame(dc,rect,clip);
-}
+{status_draw_scope *s=status_current;if(s){const win16_control_status_frame_view v=status_frame_view(s);win16_control_status_frame(&v,dc,rect,clip,caller);}}
 
 /* This precise superclass was observed in a real VCL application. It still
  * owns every item and callback; this identity never aliases generic lists. */
@@ -853,7 +782,7 @@ void ntw16s_month_selection_text(HTHEME theme,HDC dc,int part,int state,const RE
  win16_control_month_fill(dc,cell,s->month_has_clip?&s->month_clip:NULL);
 }
 static void release(attachment *a)
-{if(!--a->calls && a->detached){attachment *source=a->lookup_popup_source_attachment,*host=a->mdi_host_attachment;win16_style_system_release(a->month_cached_font);win16_style_system_release(a->status_cached_font);ntw16s_vb_fonts_clear(&a->fonts);free(a);if(source)release(source);if(host)release(host);}}
+{if(!--a->calls && a->detached){attachment *source=a->lookup_popup_source_attachment,*host=a->mdi_host_attachment;win16_style_system_release(a->month_cached_font);win16_style_system_release(a->status_font.font);ntw16s_vb_fonts_clear(&a->fonts);free(a);if(source)release(source);if(host)release(host);}}
 static NTW16S_UNWIND_FUNCTION LRESULT static_paint_dispatch(attachment *,HWND,UINT,WPARAM,LPARAM,ntw16s_vb_paint *,void *,void *);
 /* One paint scope per CoolBar invocation. It is never shared across threads. */
 typedef struct cool_scope {struct cool_scope *previous;attachment *owner;HWND window;BOOL ours,completed,nested;cool_observation observer;ntw16s_vb_paint *paint;void *status_prior,*spin_prior;} cool_scope;
@@ -982,7 +911,7 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     }
     ++a->calls;
     if(a->cool_candidate && !a->detached && m!=WM_DESTROY && m!=WM_NCDESTROY && !cool_identity(w,a))(void)Ntw16sWindowRemove(w);
-    if(a->status && (m==WM_SETFONT || m==WM_FONTCHANGE || m==WM_SETTINGCHANGE || m==WM_THEMECHANGED || m==WM_DPICHANGED))a->status_font_invalid=TRUE;
+    if(a->status && (m==WM_SETFONT || m==WM_FONTCHANGE || m==WM_SETTINGCHANGE || m==WM_THEMECHANGED || m==WM_DPICHANGED))a->status_font.invalid=TRUE;
     if(a->status && (m==WM_SETTEXT || m==SB_SETPARTS || m==SB_SETTEXTA || m==SB_SETTEXTW || m==SB_SIMPLE ||
         m==SB_SETICON || m==SB_SETMINHEIGHT || m==WM_SETFONT || m==WM_STYLECHANGED ||
         m==WM_SIZE || m==WM_ENABLE || m==WM_SETTINGCHANGE || m==WM_DESTROY || m==WM_NCDESTROY))++a->status_epoch;
