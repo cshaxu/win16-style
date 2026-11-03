@@ -36,6 +36,7 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include "../lib/win16-control/combo_text.h"
 #include "../lib/win16-control/native_presentation.h"
 #include "../lib/win16-control/control_dispatch.h"
+#include "../lib/win16-control/control_lifetime.h"
 
 #include "../lib/win16-control/scroll_assets.h"
 #include "scroll_track.h"
@@ -347,10 +348,7 @@ static void draw_progress(HWND w,control_style *s,HDC dc)
 static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
 {
     control_style *s=(control_style *)data;LRESULT result=0;HFONT previous=NULL,pinned=s->font,outbound=NULL;(void)id;++s->calls;
-    RECT spin_before={0};HWND spin_button=NULL;DWORD entry_error=GetLastError();
-    if(m==WM_SETFONT && (spin_button=win16_control_spinedit_button(w))!=NULL)
-        SendMessageW(w,EM_GETRECT,0,(LPARAM)&spin_before);
-    SetLastError(entry_error);
+    RECT spin_before={0};HWND spin_button=win16_control_spin_before(w,m,&spin_before);
     BOOL tab=is_tab(w),header=is_header(w),progress=ntw16s_class_is(w,PROGRESS_CLASSW) || ntw16s_control_protocol_is(w,PROGRESS_CLASSW),native_font=tab || header;
     BOOL combo_paint=ntw16s_vb_combo(w) && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT);if(combo_paint)++s->combo_paints;
     if(progress && win16_style_progress_changes(m))++s->progress_epoch;
@@ -398,34 +396,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
     }
 
 finished:
-    if(spin_button && !s->detached && IsWindow(w) && win16_control_spinedit_button(w)==spin_button){
-        DWORD error=GetLastError();RECT button,after;
-        if(GetWindowRect(spin_button,&button)){
-            MapWindowPoints(NULL,w,(POINT*)&button,2);
-            SendMessageW(w,EM_GETRECT,0,(LPARAM)&after);
-            if(!s->detached && spin_before.right>spin_before.left && spin_before.right<=button.left &&
-               after.right>button.left && spin_before.right>after.left){
-                after.right=spin_before.right;SendMessageW(w,EM_SETRECTNP,0,(LPARAM)&after);
-            }
-        }
-        SetLastError(error);
-    }
-    if(m==WM_SETFONT && s->detached && IsWindow(w)){
-        /* A native setter can finish AFTER its callback removed this leaf,
-         * overwriting the font restored during removal with our retired
-         * variant. Settle only after that native call has returned. A new
-         * independent owner, if installed reentrantly, keeps its own source. */
-        DWORD_PTR successor;HFONT source=s->original_font;
-        if(GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&successor))
-            source=((control_style *)successor)->original_font;
-        SendMessageW(w,WM_SETFONT,(WPARAM)source,b);
-    }
-    if(combo_paint)--s->combo_paints;
-    /* Native processing (including nested paint/remove/setfont) has finished
-     * with the previous lease. Never delete the application's borrowed font. */
-    win16_style_system_release(previous);
-    win16_style_system_release(outbound);win16_style_system_release(pinned);
-    if(!--s->calls && s->detached)win16_control_state_dispose(s);
+    win16_control_finish_message(w,s,m,b,spin_button,&spin_before,combo_paint,previous,outbound,pinned,control_proc);
     return result;
 }
 
