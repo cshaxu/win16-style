@@ -10,6 +10,7 @@
 #include "../lib/win16-control/menu_iteration.h"
 #include "../lib/win16-control/menu_message.h"
 #include "../lib/win16-control/frame_message.h"
+#include "../lib/win16-control/frame_dispatch.h"
 #include "../lib/win16-control/frame_input.h"
 #include "../lib/win16-control/frame_layout.h"
 #include "../lib/win16-control/present.h"
@@ -46,16 +47,6 @@ static LRESULT CALLBACK menu_filter(int code,WPARAM wp,LPARAM lp)
     return CallNextHookEx(NULL,code,wp,lp);
 }
 #define STYLE_ID ((UINT_PTR)style_proc)
-/* UxTheme's non-client draw requests are not in the public SDK. They are
- * observed compatibility messages, not structures we interpret or APIs we
- * invoke. An attached custom frame must not delegate their drawing to USER.
- * See resources.md for the boundary and provenance. */
-#define STYLE_NCUAHDRAWCAPTION 0x00ae
-#define STYLE_NCUAHDRAWFRAME   0x00af
-/* Host UAH menu drawing bypasses WM_NCPAINT and precedes NC mouse dispatch.
- * No private payload is interpreted: our menu-bar painter owns these pixels. */
-#define STYLE_UAHDRAWMENU     0x0091
-#define STYLE_UAHDRAWMENUITEM 0x0092
 
 static style_window *state(HWND w)
 {
@@ -197,89 +188,9 @@ static NTW16S_UNWIND_FUNCTION LRESULT CALLBACK style_proc(HWND w,UINT msg,WPARAM
 static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
     UINT_PTR id,DWORD_PTR data)
 {
-    style_window *s=(style_window *)data;
-    LRESULT result=0;win16_style_layout l;POINT point;RECT r;
-    (void)id;++s->calls;
-    if(s->menu_only && msg!=WM_ENTERMENULOOP && msg!=WM_EXITMENULOOP && msg!=WM_INITMENUPOPUP && msg!=WM_MENUCHAR && msg!=WM_MEASUREITEM && msg!=WM_DRAWITEM && msg!=WM_NCDESTROY)goto forward;
-    /* Maximized MDI children merge their controls into the frame menu.
-     * Preserve DefMDIChildProc's native geometry/dispatch for that state;
-     * merged-control retro painting is a separate S4 menu surface. */
-    if((GetWindowLongPtr(w,GWL_EXSTYLE)&WS_EX_MDICHILD) && IsZoomed(w) &&
-       msg!=WM_NCDESTROY)goto forward;
-    /* Our menu bar is custom nonclient chrome. USER hot-tracks HTMENU before
-     * NC mouse dispatch (classic/WOW has no UAH draw callback to intercept).
-     * Expose neutral nonclient hit-test ownership and route clicks by our
-     * measured menu rectangle; never alter the application's HMENU. */
-    if((msg==WM_NCLBUTTONDOWN || msg==WM_NCLBUTTONDBLCLK) && wp==HTBORDER && layout(w,s,&l)){
-        GetWindowRect(w,&r);point.x=GET_X_LPARAM(lp)-r.left;point.y=GET_Y_LPARAM(lp)-r.top;
-        if(PtInRect(&l.menu,point))wp=HTMENU;
-    }
-    switch(msg){
-    case WM_SHOWWINDOW:
-    case WM_CTLCOLORDLG:
-    case WM_CTLCOLORSTATIC:
-    case WM_NCCALCSIZE:
-    case WM_NCPAINT:
-    case WM_SETCURSOR:
-    case STYLE_NCUAHDRAWCAPTION:
-    case STYLE_NCUAHDRAWFRAME:
-    case STYLE_UAHDRAWMENU:
-    case STYLE_UAHDRAWMENUITEM:
-    case WM_NCACTIVATE:
-    case WM_NCHITTEST:
-    case WM_PRINT:
-    case WM_SETTEXT:
-    case WM_HSCROLL:
-    case WM_VSCROLL:
-    case WM_DPICHANGED:
-    case WM_SETTINGCHANGE:
-    case WM_SYSCOLORCHANGE:
-    case WM_THEMECHANGED: {
-        const win16_control_frame_message_services services={measure_window,activate_frame,paint,paint_callback,paint_buffered_callback,win16_style_hit_test,refresh_font};
-        if(win16_control_frame_message(w,s,msg,wp,lp,&services,&result))break;
-        goto forward;
-    }
-    case WM_MEASUREITEM:
-    case WM_DRAWITEM:
-    case WM_MENUCHAR:
-    case WM_INITMENUPOPUP:
-    case WM_EXITMENULOOP:
-        if(win16_control_menu_message(w,s,msg,wp,lp,paint_button_state,&result))break;
-        goto forward;
-    case WM_KEYDOWN:
-    case WM_KILLFOCUS:
-    case WM_NCMOUSEMOVE:
-    case WM_NCMOUSEHOVER:
-    case WM_NCMOUSELEAVE:
-    case WM_NCLBUTTONDBLCLK:
-    case WM_NCLBUTTONDOWN:
-    case WM_LBUTTONDOWN:
-    case WM_MOUSEMOVE:
-    case WM_LBUTTONUP:
-    case WM_CANCELMODE:
-    case WM_CAPTURECHANGED: {
-        const win16_control_frame_input_services services={menu_current,menu_begin,menu_end,layout,bar_at_screen,paint_menu_state,select_bar,leave_bar,open_bar,button_view};
-        if(win16_control_frame_input(w,s,msg,wp,lp,&services,&result))break;
-        goto forward;
-    }
-    case WM_SYSCOMMAND:
-        {const win16_control_frame_input_services services={menu_current,menu_begin,menu_end,layout,bar_at_screen,paint_menu_state,select_bar,leave_bar,open_bar,button_view};
-         if(win16_control_frame_input(w,s,msg,wp,lp,&services,&result))break;}
-        goto forward;
-    case WM_MENUSELECT:
-        if(tracking_menu && tracking_menu->window==w && lp)
-            tracking_menu->active=(HMENU)lp;
-        goto forward;
-    case WM_ENTERMENULOOP:
-        win16_control_frame_state_enter_menu(s);
-        goto forward;
-    case WM_NCDESTROY:
-        (void)win16_style_frame_terminal(w);
-        result=DefSubclassProc(w,msg,wp,lp);break;
-    default:
-forward:
-        result=DefSubclassProc(w,msg,wp,lp);break;
-    }
-    if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);
-    return result;
+    (void)id;
+    const win16_control_frame_message_services message={measure_window,activate_frame,paint,paint_callback,paint_buffered_callback,win16_style_hit_test,refresh_font};
+    const win16_control_frame_input_services input={menu_current,menu_begin,menu_end,layout,bar_at_screen,paint_menu_state,select_bar,leave_bar,open_bar,button_view};
+    const win16_control_frame_dispatch_services services={&message,&input,paint_button_state,&tracking_menu,win16_style_frame_terminal};
+    return win16_control_frame_dispatch(w,(style_window *)data,msg,wp,lp,&services);
 }
