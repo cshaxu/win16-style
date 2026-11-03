@@ -38,6 +38,8 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include "../lib/win16-control/control_dispatch.h"
 #include "../lib/win16-control/control_lifetime.h"
 #include "../lib/win16-control/control_guard.h"
+#include "../lib/win16-control/control_install.h"
+#include "../lib/win16-control/control_remove.h"
 
 #include "../lib/win16-control/scroll_assets.h"
 #include "scroll_track.h"
@@ -121,9 +123,6 @@ static BOOL is_tab(HWND w)
 {return ntw16s_class_is(w,WC_TABCONTROLW) || ntw16s_control_protocol_is(w,WC_TABCONTROLW);}
 static BOOL is_header(HWND w)
 {return ntw16s_class_is(w,WC_HEADERW);}
-static BOOL is_separator(HWND w)
-{DWORD type=(DWORD)GetWindowLongPtrW(w,GWL_STYLE)&SS_TYPEMASK;
- return is_static(w) && type>=SS_ETCHEDHORZ && type<=SS_ETCHEDFRAME;}
 
 static _Thread_local HWND common_dialog_combo_pending;
 
@@ -359,79 +358,10 @@ finished:
 static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL original_border,BOOL frame_bars,
     int tab_count,const int *tabs,const void *creation_owner,const BOOL *cancelled)
 {
-    DWORD_PTR existing;control_style *s;BOOL result=TRUE,tabbed=tab_count>=0;LONG_PTR style=GetWindowLongPtrW(w,GWL_STYLE);
-    if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId()){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
-    if(GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&existing)){SetLastError(ERROR_ALREADY_EXISTS);return FALSE;}
-    if(tabbed){
-        if(!is_list(w) || !(style&LBS_USETABSTOPS) || (style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA))){
-            SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
-        if((tab_count && !tabs) || (size_t)tab_count>((size_t)-1)/sizeof(int)){
-            SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
-    }else if(!frame_bars && (!win16_control_supported(w,common_dialog_combo_pending) || is_edit(w)!=edit)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
-    s=win16_control_state_create();if(!s)return FALSE;
-    s->creation_owner=creation_owner;
-    s->header_pressed=-1;
-    SetLastError(ERROR_SUCCESS);
-    s->protocol=ntw16s_control_protocol_acquire(w);
-    if(!s->protocol && GetLastError()==ERROR_ARITHMETIC_OVERFLOW){win16_control_state_dispose(s);SetLastError(ERROR_ARITHMETIC_OVERFLOW);return FALSE;}
-    if(tabbed && tab_count){s->tab_positions=malloc((size_t)tab_count*sizeof(int));
-        if(!s->tab_positions){win16_control_state_dispose(s);return FALSE;}
-        CopyMemory(s->tab_positions,tabs,(size_t)tab_count*sizeof(int));s->tab_count=tab_count;}
-    s->edit_border=edit && original_border;
-    s->frame_scrollbars=frame_bars;
-    s->common_dialog_combo=!frame_bars && w==common_dialog_combo_pending && win16_control_common_dialog_combo_valid(w,GetParent(w));
-    s->common_dialog_parent=s->common_dialog_combo?GetParent(w):NULL;
-    s->file_owner=!frame_bars && (ntw16s_vb_owner_file(w) || s->common_dialog_combo);s->combo_passthrough=ntw16s_vcl_combo_candidate(w);
-    if(!frame_bars){s->original_font=(HFONT)SendMessageW(w,WM_GETFONT,0,0);
-        if(cancelled && *cancelled){win16_control_state_dispose(s);SetLastError(ERROR_CANCELLED);return FALSE;}
-        /* The font query may reenter installation. Do not replace that
-         * successful attachment's subclass data with this outer attempt. */
-        if(GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&existing)){
-            win16_control_state_dispose(s);SetLastError(ERROR_ALREADY_EXISTS);return FALSE;}
-        s->original_font=win16_style_system_source(s->original_font);}
-    if(palette)s->palette=*palette;else win16_style_default_palette(&s->palette);
-    if(!SetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,(DWORD_PTR)s)){win16_control_state_dispose(s);return FALSE;}
-    /* Child attachment and WM_SETFONT can synchronously remove/destroy us.
-     * Retain this attempt until its result is known, just like a callback. */
-    ++s->calls;
-    if(!frame_bars && is_combo(w) && !s->file_owner){
-        COMBOBOXINFO info={.cbSize=sizeof(info)};
-        if(!ntw16s_native_get_combo_info(w,&info) || !win16_style_control_install(info.hwndList,palette)){
-            if(!s->detached)win16_style_control_remove(w);
-            result=FALSE;
-            goto installed;
-            }
-        if(s->detached){win16_style_control_remove(info.hwndList);goto installed;}
-        s->combo_list=info.hwndList;
-        if(GetWindowSubclass(info.hwndList,control_proc,(UINT_PTR)control_proc,&existing))
-            ((control_style *)existing)->owner=s;
-        BOOL native_edit=ntw16s_vb_combo(w) && info.hwndItem!=w && ntw16s_vb_combo_edit(info.hwndItem);
-        if(s->detached)goto installed;
-        if(native_edit){
-            HFONT source=(HFONT)SendMessageW(info.hwndItem,WM_GETFONT,0,0);
-            if(s->detached)goto installed;
-            s->combo_parent=w;s->combo_edit_source=win16_style_system_source(source);
-            DWORD_PTR child_owner;
-            if(GetWindowSubclass(info.hwndItem,combo_text_proc,(UINT_PTR)combo_text_proc,&child_owner)){
-                win16_style_control_remove(w);SetLastError(ERROR_ALREADY_EXISTS);result=FALSE;goto installed;
-            }
-            if(!SetWindowSubclass(info.hwndItem,combo_text_proc,(UINT_PTR)combo_text_proc,(DWORD_PTR)s)){
-                DWORD error=GetLastError();win16_style_control_remove(w);SetLastError(error);result=FALSE;goto installed;
-            }
-            s->combo_edit=info.hwndItem;s->combo_bound=TRUE;++s->calls;
-            SendMessageW(info.hwndItem,WM_SETFONT,(WPARAM)s->combo_edit_source,FALSE);
-            if(s->detached)goto installed;
-        }
-    }
-    if(!frame_bars){if(s->combo_passthrough && ((DWORD)GetWindowLongPtrW(w,GWL_STYLE)&3)==CBS_DROPDOWNLIST){HFONT replacement=win16_style_system_acquire(s->original_font);s->font=replacement?replacement:s->original_font;}
-        if(!s->combo_passthrough)SendMessageW(w,WM_SETFONT,(WPARAM)s->original_font,FALSE);
-        if(!s->detached && is_separator(w))SetWindowPos(w,NULL,0,0,0,0,
-            SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
-        if(!s->detached)RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);}
-installed:
-    if(s->detached){result=FALSE;SetLastError(ERROR_CANCELLED);}
-    if(!--s->calls && s->detached)win16_control_state_dispose(s);
-    return result;
+    const win16_control_install_services services={control_proc,combo_text_proc,ntw16s_vcl_combo_candidate,
+        ntw16s_native_get_combo_info,win16_style_control_install,win16_style_control_remove};
+    return win16_control_install(w,palette,edit,original_border,frame_bars,tab_count,tabs,creation_owner,cancelled,
+        common_dialog_combo_pending,&services);
 }
 /* Called only for the known owner-drawn drive combo in a system old-style
  * file dialog. Native item painting and item data stay with COMDLG32. */
@@ -645,35 +575,11 @@ BOOL win16_style_edit_scrollbars_enable(HWND w)
     ((control_style *)data)->edit_scrollbars=TRUE;
     RedrawWindow(w,NULL,NULL,RDW_FRAME|RDW_INVALIDATE);return TRUE;
 }
+static const win16_control_remove_services control_remove_services={control_proc,scroll_finish,trackbar_unbind,toolbar_unbind,
+    combo_text_unbind,detach_combo_list,ntw16s_theme_remove,ntw16s_theme_terminal,scroll_caret_destroy,
+    scroll_stop_timer,scroll_release_capture,terminal_combo_list};
 BOOL win16_style_control_remove(HWND w)
-{
-    DWORD_PTR data;control_style *s;
-    if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() ||
-        !GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&data))return FALSE;
-    s=(control_style *)data;
-    if(s->removing)return TRUE;
-    ++s->calls;s->removing=TRUE;
-    /* End the live gesture while queries still see its full-width report.
-     * The application may remove again or destroy the HWND in this notice. */
-    scroll_finish(w,s,TRUE);
-    if(s->detached){if(!--s->calls)win16_control_state_dispose(s);return TRUE;}
-    if(!RemoveWindowSubclass(w,control_proc,(UINT_PTR)control_proc)){
-        s->removing=FALSE;--s->calls;return FALSE;}
-    s->detached=TRUE;ntw16s_updown_retire(&s->updown);BOOL track=s->track_window!=NULL;trackbar_unbind(s);toolbar_unbind(s);combo_text_unbind(s,FALSE);detach_combo_list(s);
-    if(s->list_theme_owned){s->list_theme_owned=FALSE;ntw16s_theme_remove(w,s);}
-    if(s->font && IsWindow(w) && !s->combo_passthrough)SendMessageW(w,WM_SETFONT,(WPARAM)s->original_font,FALSE);
-    if(IsWindow(w) && is_separator(w))SetWindowPos(w,NULL,0,0,0,0,
-        SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
-    scroll_caret_destroy(w,s);
-    if(s->list_suppression && !s->list_redraw_off)SendMessageW(w,WM_SETREDRAW,TRUE,0);
-    scroll_stop_timer(w,s);
-    if(s->scroll.active){s->scroll.active=FALSE;scroll_release_capture(w,s);}
-    if(!--s->calls)win16_control_state_dispose(s);
-    if(track && IsWindow(w))SendMessageW(w,WM_SYSCOLORCHANGE,0,0);
-    RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);
-    if(is_scroll(w) && GetFocus()==w)SendMessageW(w,WM_SETFOCUS,0,0);
-    return TRUE;
-}
+{return win16_control_remove(w,&control_remove_services);}
 BOOL win16_style_control_remove_owned(HWND w,const void *owner)
 {
     DWORD_PTR data;
@@ -683,19 +589,4 @@ BOOL win16_style_control_remove_owned(HWND w,const void *owner)
     return win16_style_control_remove(w);
 }
 BOOL win16_style_control_terminal(HWND w)
-{
-    DWORD_PTR data;control_style *s;
-    BOOL result;
-    if(!GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&data))return TRUE;
-    s=(control_style *)data;
-    if(!RemoveWindowSubclass(w,control_proc,(UINT_PTR)control_proc)){
-        SetLastError(ERROR_INVALID_STATE);return FALSE;
-    }
-    ++s->calls;s->detached=TRUE;ntw16s_updown_retire(&s->updown);trackbar_unbind(s);toolbar_unbind(s);
-    if(s->list_theme_owned){s->list_theme_owned=FALSE;(void)ntw16s_theme_terminal(w,s);}
-    scroll_caret_destroy(w,s);
-    scroll_stop_timer(w,s);
-    combo_text_unbind(s,TRUE);result=terminal_combo_list(s);
-    if(!--s->calls)win16_control_state_dispose(s);
-    return result;
-}
+{return win16_control_terminal(w,&control_remove_services);}
