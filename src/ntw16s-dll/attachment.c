@@ -20,6 +20,7 @@
 #include "../lib/win16-control/status_text.h"
 #include "../lib/win16-control/status_identity.h"
 #include "../lib/win16-control/vcl_identity.h"
+#include "../lib/win16-control/attachment_state.h"
 #include "../lib/win16-control/vcl_extra_frame.h"
 #include "../lib/win16-control/month_paint.h"
 #include "injection/unwind.h"
@@ -48,48 +49,7 @@ struct ntw16s_creation_scope {
     pending_window *pending;
     ntw16s_creation_result result;
 };
-typedef struct attachment {
-    unsigned calls;
-    BOOL detached,tree,file_owner,picture,button_owner,checklist,status,spin,static_candidate,static_verified;
-    BOOL edit_candidate,edit_attempted,edit_installed,link_candidate,spinedit_candidate,combo_candidate,modern_spin,modern_spin_verified;
-    BOOL scroll_candidate,scroll_attempted,scroll_installed; HWND scroll_parent; HMODULE scroll_witness;
-    BOOL group_button_candidate,group_button_attempted,group_button_installed;
-    BOOL grid_candidate,grid_attempted,grid_installed;
-    BOOL vb_user_candidate,vb_user_attempted,vb_user_edge; HWND vb_user_parent;
-    BOOL vb_data_candidate,vb_data_attempted,vb_data_edge; HWND vb_data_parent;
-    BOOL vcl_toolbar_candidate,vcl_toolbar_attempted,vcl_toolbar_installed;
-    BOOL track_candidate,track_attempted,track_installed;
-    BOOL tab_candidate,tab_attempted,tab_installed;
-    BOOL vcl_report_candidate,vcl_report_attempted,vcl_report_installed,vcl_report_tree;
-    HWND vcl_report_parent; HMODULE vcl_report_owner,vcl_report_witness;
-    BOOL color_candidate,color_attempted,color_installed;
-    BOOL date_candidate,date_attempted,date_installed;
-    BOOL status_candidate,status_attempted,status_installed;
-    BOOL box_candidate,box_installed,controlbar_candidate,controlbar_verified,controlbar_retired; HWND box_parent,controlbar_parent; HMODULE box_owner,controlbar_owner;
-    BOOL rich_candidate,rich_installed,rich_witness,rich_unicode,rich_hotkey,rich_month,rich_popup; HWND rich_parent; HMODULE rich_owner;
-    BOOL bit_candidate,bit_verified; BOOL inplace_candidate,inplace_verified; HWND inplace_parent; HMODULE inplace_owner;
-    BOOL nav_candidate,nav_verified; HWND nav_parent; HMODULE nav_owner;
-    BOOL cool_candidate,cool_verified; HWND cool_parent; HMODULE cool_owner;
-    BOOL mdi_candidate; HWND mdi_parent,mdi_host; HMODULE mdi_owner; struct attachment *mdi_host_attachment;
-    BOOL lookup_popup_candidate; HWND lookup_popup_source,lookup_popup_source_parent; HMODULE lookup_popup_owner; struct attachment *lookup_popup_source_attachment;
-    BOOL group_frame_candidate,group_frame_verified,group_frame_retired; HWND group_frame_parent;
-    BOOL panel_frame_candidate,panel_frame_verified,panel_frame_retired; HWND panel_frame_parent;
-    HMODULE status_witness_owner; HWND status_parent;
-    HFONT month_cached_font;win16_control_status_font_cache status_font;
-    DWORD edit_original_style,combo_original_type;
-    HMODULE edit_witness_owner,group_button_witness_owner;
-    HWND combo_parent,group_button_parent,grid_parent,vcl_toolbar_parent; HMODULE grid_owner,vcl_toolbar_owner,vcl_toolbar_witness;
-    HMODULE track_witness_owner,tab_witness_owner; HWND tab_parent;
-    HMODULE color_witness_owner;
-    HWND color_parent;
-    HMODULE date_witness_owner;
-    HWND date_parent;
-    unsigned status_epoch;
-    HWND themed,report_window,report_parent;
-    HMODULE report_module;
-    ntw16s_vb_fonts fonts;
-    ntw16s_control_protocol *protocol;
-} attachment;
+
 static _Thread_local ntw16s_creation_scope *current;
 static _Thread_local HWND lookup_popup_creator;
 typedef struct cool_observation {struct cool_observation *previous;attachment *owner;HWND window;WNDPROC native;} cool_observation;
@@ -718,9 +678,7 @@ static void date_button(HWND w,attachment *a,HDC dc,const RECT *dirty)
 static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
     attachment *a=(attachment *)data;LRESULT result;DWORD status_error=GetLastError();BOOL status=a->status||a->spin,color=a->color_candidate||a->date_candidate;(void)id;
-    if(a->controlbar_candidate && a->controlbar_parent && GetParent(w)!=a->controlbar_parent){a->controlbar_retired=TRUE;a->controlbar_verified=FALSE;}
-    if(a->panel_frame_candidate && a->panel_frame_parent && GetParent(w)!=a->panel_frame_parent){a->panel_frame_retired=TRUE;a->panel_frame_verified=FALSE;}
-    if(a->group_frame_candidate && a->group_frame_parent && GetParent(w)!=a->group_frame_parent){a->group_frame_retired=TRUE;a->group_frame_verified=FALSE;}
+    win16_attachment_retire_frames(w,a);
     RECT color_dirty;BOOL color_update=color && m==WM_PAINT && GetUpdateRect(w,&color_dirty,FALSE);
     HRGN print_clip=NULL;int print_clip_kind=-1;
     if((a->color_installed || a->date_installed) && !a->detached && m==WM_PRINTCLIENT && p){
@@ -728,7 +686,8 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
         if(print_clip)print_clip_kind=GetClipRgn((HDC)p,print_clip);
     }
     ++a->calls;
-    if(a->cool_candidate && !a->detached && m!=WM_DESTROY && m!=WM_NCDESTROY && !cool_identity(w,a))(void)Ntw16sWindowRemove(w);
+    const win16_attachment_guard_services guards={lookup,mdi_identity,cool_identity,Ntw16sWindowRemove};
+    win16_attachment_guard_cool(w,m,a,&guards);
     if(a->status)win16_control_status_invalidate(m,&a->status_font.invalid,&a->status_epoch);
     status_draw_scope scope={0},*prior=status_current;
     spin_draw_scope spin_scope={0},*spin_prior=spin_current;
@@ -749,21 +708,7 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
         win16_control_status_snapshot(w,&snapshot);
         status_current=&scope;
     }
-    if(a->picture && !a->detached && m!=WM_DESTROY && m!=WM_NCDESTROY && !ntw16s_vb_picture(w))
-        (void)Ntw16sWindowRemove(w);
-    if(a->button_owner && !a->detached && m!=WM_DESTROY && m!=WM_NCDESTROY && !ntw16s_vb_graphical_button(w))
-        (void)Ntw16sWindowRemove(w);
-    if(a->file_owner && !a->detached && m!=WM_DESTROY && m!=WM_NCDESTROY &&
-        ntw16s_vb_checklist_class(w) && !ntw16s_vb_checklist_owner(w))
-        (void)Ntw16sWindowRemove(w);
-    if((a->file_owner || a->button_owner || a->checklist) && !a->detached && a->report_parent && m!=WM_DESTROY && m!=WM_NCDESTROY && GetParent(w)!=a->report_parent)
-        (void)Ntw16sWindowRemove(w);
-    if(a->inplace_candidate && !a->detached && m!=WM_DESTROY && m!=WM_NCDESTROY && !win16_control_inplace_or_lookup(w,a->inplace_owner,a->inplace_parent))(void)Ntw16sWindowRemove(w);
-    if(a->lookup_popup_candidate && !a->detached && m!=WM_DESTROY && m!=WM_NCDESTROY && (lookup(a->lookup_popup_source)!=a->lookup_popup_source_attachment || !win16_control_lookup_popup_identity(w,a->lookup_popup_source,a->lookup_popup_source_parent,a->lookup_popup_owner)))(void)Ntw16sWindowRemove(w);
-    if(a->mdi_candidate && !a->detached && m!=WM_DESTROY && m!=WM_NCDESTROY && (lookup(a->mdi_host)!=a->mdi_host_attachment || !mdi_identity(w,a->mdi_parent,a->mdi_host,a->mdi_owner)))(void)Ntw16sWindowRemove(w);
-    if(a->nav_candidate && !a->detached && m!=WM_DESTROY && m!=WM_NCDESTROY && !win16_control_nav_identity(w,a->nav_owner,a->nav_parent))(void)Ntw16sWindowRemove(w);
-    if(a->scroll_candidate && !a->detached && GetParent(w)!=a->scroll_parent)(void)Ntw16sWindowRemove(w);
-    if(a->vcl_report_candidate && !a->detached && GetParent(w)!=a->vcl_report_parent)(void)Ntw16sWindowRemove(w);
+    win16_attachment_guard_roles(w,m,a,&guards);
     if(m==WM_NCDESTROY)(void)Ntw16sWindowTerminal(w);
     ntw16s_vb_paint paint;ntw16s_vb_paint_begin(&paint,w,m,&a->fonts);
     if(a->file_owner || a->picture || a->button_owner || a->vb_user_candidate)paint.cancelled=&a->detached;
