@@ -1176,40 +1176,25 @@ static BOOL install_created(HWND w,DWORD original_style)
        win16_control_grid_identity(w,owner,GetParent(w))){control=FALSE;edit=FALSE;}
     if(!control && !report && !tree && !picture && !checklist && !legacy_progress && !status && !spin &&
        (original_style&WS_CHILD) && owner){
-        WCHAR name[64],real[64];DWORD type=original_style&SS_TYPEMASK;
-        static_candidate=GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TStaticText") &&
-            RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TStaticText") &&
-            (type==SS_LEFT || type==SS_CENTER || type==SS_RIGHT || type==SS_SIMPLE || type==SS_LEFTNOWORDWRAP) &&
-            !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING));
-        scroll_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TScrollBar") &&
-            RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TScrollBar");
-        edit_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TEdit") || !lstrcmpW(name,L"TMemo") || !lstrcmpW(name,L"TMaskEdit") || !lstrcmpW(name,L"TDBEdit") || !lstrcmpW(name,L"TLabeledEdit") || !lstrcmpW(name,L"TNumberBox") || !lstrcmpW(name,L"TLinkLabel") || !lstrcmpW(name,L"TSpinEdit") || !lstrcmpW(name,L"TComboBox") || !lstrcmpW(name,L"TDBComboBox")) &&
-            RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(name,real) && ((lstrcmpW(name,L"TComboBox") && lstrcmpW(name,L"TDBComboBox")) || win16_control_combo_identity(w,GetParent(w)));
-        tab_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TTabControl") || !lstrcmpW(name,L"TTabbedNotebook") || !lstrcmpW(name,L"TPageControl")) &&
-            RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,name) &&
-            !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING));
-        vcl_report_candidate=ready && owner!=GetModuleHandleW(NULL) && GetClassNameW(w,name,ARRAYSIZE(name)) &&
-            (!lstrcmpW(name,L"TTreeView") || !lstrcmpW(name,L"TListView")) &&
-            RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,name) &&
-            GetParent(w) && GetWindowThreadProcessId(GetParent(w),NULL)==GetCurrentThreadId() &&
-            !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING));
-        track_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TTrackBar") &&
-            RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TTrackBar");
-        color_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) &&
-            (!lstrcmpW(name,L"TColorBox") || !lstrcmpW(name,L"TDriveComboBox")) &&
-            RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,name);
-        bit_candidate=ready && win16_control_bit_identity(w,owner);
-        inplace_candidate=ready && win16_control_inplace_or_lookup(w,owner,GetParent(w));
-        nav_candidate=ready && (owner==GetModuleHandleW(NULL) || class_is(w,L"TMediaPlayer")) && win16_control_nav_identity(w,owner,GetParent(w));
-        group_frame_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TGroupBox") || !lstrcmpW(name,L"TRadioGroup")) && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,name);
-        panel_frame_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TPanel") && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,name);
-        group_button_candidate=ready && win16_control_group_button_identity(w);
-        grid_candidate=ready && win16_control_grid_identity(w,owner,GetParent(w));
-        vcl_toolbar_candidate=ready && win16_control_vcl_toolbar_identity(w,owner,GetParent(w));
-        status_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TStatusBar") &&
-            RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TStatusBar");
-        date_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TDateTimePicker") &&
-            RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TDateTimePicker");
+        win16_control_vcl_candidates candidates;
+        win16_control_vcl_classify(w,original_style,ready,owner,&candidates);
+        static_candidate=candidates.static_candidate;
+        scroll_candidate=candidates.scroll_candidate;
+        edit_candidate=candidates.edit_candidate;
+        tab_candidate=candidates.tab_candidate;
+        vcl_report_candidate=candidates.vcl_report_candidate;
+        track_candidate=candidates.track_candidate;
+        color_candidate=candidates.color_candidate;
+        bit_candidate=candidates.bit_candidate;
+        inplace_candidate=candidates.inplace_candidate;
+        nav_candidate=candidates.nav_candidate;
+        group_frame_candidate=candidates.group_frame_candidate;
+        panel_frame_candidate=candidates.panel_frame_candidate;
+        group_button_candidate=candidates.group_button_candidate;
+        grid_candidate=candidates.grid_candidate;
+        vcl_toolbar_candidate=candidates.vcl_toolbar_candidate;
+        status_candidate=candidates.status_candidate;
+        date_candidate=candidates.date_candidate;
     }
     HWND popup_source=lookup_popup_creator,popup_source_parent=popup_source?GetParent(popup_source):NULL;
     attachment *popup_source_attachment=popup_source?lookup(popup_source):NULL;

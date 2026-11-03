@@ -25,4 +25,11 @@ typedef struct win16_control_rich_view {
     const BOOL *detached,*popup,*hotkey,*month,*unicode;const HWND *parent;const HMODULE *owner;
 } win16_control_rich_view;
 BOOL win16_control_rich_identity(HWND,const win16_control_rich_view *);
+typedef struct win16_control_vcl_candidates {
+    BOOL static_candidate,scroll_candidate,edit_candidate,tab_candidate,vcl_report_candidate;
+    BOOL track_candidate,color_candidate,bit_candidate,inplace_candidate,nav_candidate;
+    BOOL group_frame_candidate,panel_frame_candidate,group_button_candidate,grid_candidate;
+    BOOL vcl_toolbar_candidate,status_candidate,date_candidate;
+} win16_control_vcl_candidates;
+void win16_control_vcl_classify(HWND,DWORD,BOOL,HMODULE,win16_control_vcl_candidates *);
 #endif
