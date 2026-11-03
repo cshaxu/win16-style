@@ -148,6 +148,7 @@ typedef struct checklist_draw_scope {
     HDC dc;
     RECT item;
 } checklist_draw_scope;
+BOOL win16_attachment_cool_identity(HWND,attachment *,attachment *(*)(HWND));
 BOOL win16_attachment_inplace_paint(attachment *,HWND,HDC);
 BOOL win16_attachment_checklist_draw_target(checklist_draw_scope *,HDC,const RECT *,const void *);
 void win16_attachment_box_witness(HWND,UINT,const void *,attachment *,HWND,BOOL *);

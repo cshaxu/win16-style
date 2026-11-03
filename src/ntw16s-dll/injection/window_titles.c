@@ -501,16 +501,7 @@ static BOOL WINAPI hook_ExtTextOutW(HDC dc,int x,int y,UINT options,const RECT *
     if(!vb_text_busy++ && ntw16s_vb_direct_text_allowed() && ntw16s_vb_paint_active() && vb_text_caller(__builtin_return_address(0))){
         font=ntw16s_vb_paint_font(dc);
         if(font && (options&ETO_GLYPH_INDEX)){
-            BOOL valid=count<=4096 && !(options&ETO_RTLREADING) && !(GetTextAlign(dc)&TA_RTLREADING);
-            if(valid && count)decoded=HeapAlloc(GetProcessHeap(),0,count*sizeof(WCHAR));
-            if(count && !decoded)valid=FALSE;
-            if(valid)valid=ntw16s_vb_decode_glyphs(dc,text,count,decoded);
-            if(valid && count){
-                BOOL used_default=FALSE;encoded=HeapAlloc(GetProcessHeap(),0,count);
-                if(!encoded || WideCharToMultiByte(1252,WC_NO_BEST_FIT_CHARS,decoded,(int)count,encoded,(int)count,NULL,&used_default)!=(int)count || used_default)valid=FALSE;
-            }
-            if(valid){text=decoded;options&=~ETO_GLYPH_INDEX;}
-            else font=NULL;
+            if(!win16_control_vb_glyph_prepare(dc,&text,&options,count,&decoded,&encoded,ntw16s_vb_decode_glyphs))font=NULL;
         }
         if(font && !(options&ETO_GLYPH_INDEX) &&
             (!report_wide_text(dc,text,(int)count) || (ntw16s_report_paint_active() && (options&ETO_RTLREADING))))font=NULL;

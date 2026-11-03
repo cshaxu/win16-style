@@ -798,3 +798,15 @@ BOOL win16_attachment_rich_witness(WNDPROC proc,HWND w,UINT msg,const void *addr
     owner->rich_witness=TRUE;
     return TRUE;
 }
+
+BOOL win16_attachment_cool_identity(HWND w,attachment *a,attachment *(*lookup)(HWND))
+{
+    DWORD pid=0,ppid=0;HWND parent=a->cool_parent;WNDCLASSEXW c={.cbSize=sizeof(c)};HMODULE proc=NULL;
+    return !a->detached && parent && IsWindow(w) && IsWindow(parent) && lookup(w)==a &&
+        GetParent(w)==parent && GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
+        GetWindowThreadProcessId(parent,&ppid)==GetCurrentThreadId() && ppid==pid &&
+        ntw16s_class_is(w,L"TCoolBar") && (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==a->cool_owner &&
+        (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==a->cool_owner &&
+        GetClassInfoExW(a->cool_owner,L"TCoolBar",&c) && c.lpfnWndProc &&
+        GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)c.lpfnWndProc,&proc) && proc==a->cool_owner;
+}

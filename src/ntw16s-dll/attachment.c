@@ -363,16 +363,7 @@ typedef struct cool_scope {struct cool_scope *previous;attachment *owner;HWND wi
 static _Thread_local cool_scope *cool_current;
 
 static BOOL cool_identity(HWND w,attachment *a)
-{
-    DWORD pid=0,ppid=0;HWND parent=a->cool_parent;WNDCLASSEXW c={.cbSize=sizeof(c)};HMODULE proc=NULL;
-    return !a->detached && parent && IsWindow(w) && IsWindow(parent) && lookup(w)==a &&
-        GetParent(w)==parent && GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
-        GetWindowThreadProcessId(parent,&ppid)==GetCurrentThreadId() && ppid==pid &&
-        class_is(w,L"TCoolBar") && (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==a->cool_owner &&
-        (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==a->cool_owner &&
-        GetClassInfoExW(a->cool_owner,L"TCoolBar",&c) && c.lpfnWndProc &&
-        GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)c.lpfnWndProc,&proc) && proc==a->cool_owner;
-}
+{return win16_attachment_cool_identity(w,a,lookup);}
 static BOOL cool_identity_callback(HWND w,void *owner)
 {return cool_identity(w,(attachment *)owner);}
 static BOOL cool_grip(HWND w,attachment *a,const NMCUSTOMDRAW *n)

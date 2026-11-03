@@ -42,6 +42,8 @@ static BOOL test_button_layout(HWND w,void *context,win16_style_layout *layout)
 {(void)w;(void)context;ZeroMemory(layout,sizeof(*layout));SetRect(&layout->outer,0,0,200,200);layout->minimize=layout->outer;return TRUE;}
 static void test_button_paint(HWND w,void *context,int hit)
 {(void)w;(void)context;if(hit==HTMINBUTTON)++button_paints;}
+static BOOL test_decode(HDC dc,const WCHAR *input,UINT count,WCHAR *output)
+{(void)dc;for(UINT i=0;i<count;++i)output[i]=input[i];return TRUE;}
 int main(void)
 {
     win16_attachment_initial_classification initial={0};
@@ -82,6 +84,17 @@ int main(void)
        !win16_control_report_ansi_text(policy_dc,"abc",-1,TRUE) ||
        win16_control_report_ansi_text(policy_dc,NULL,0,TRUE) ||
        !win16_control_report_ansi_text(policy_dc,NULL,0,FALSE))return 82;
+    LPCWSTR run=L"AB";UINT flags=ETO_GLYPH_INDEX;WCHAR *decoded=NULL;char *encoded=NULL;
+    if(!win16_control_vb_glyph_prepare(policy_dc,&run,&flags,2,&decoded,&encoded,test_decode) ||
+       flags || !decoded || !encoded || encoded[0]!='A' || encoded[1]!='B' || run!=decoded)return 101;
+    HeapFree(GetProcessHeap(),0,decoded);HeapFree(GetProcessHeap(),0,encoded);
+    run=L"\x4e2d";flags=ETO_GLYPH_INDEX;decoded=NULL;encoded=NULL;
+    if(win16_control_vb_glyph_prepare(policy_dc,&run,&flags,1,&decoded,&encoded,test_decode) ||
+       flags!=ETO_GLYPH_INDEX)return 102;
+    if(decoded)HeapFree(GetProcessHeap(),0,decoded);
+    if(encoded)HeapFree(GetProcessHeap(),0,encoded);
+    run=L"A";flags=ETO_GLYPH_INDEX|ETO_RTLREADING;decoded=NULL;encoded=NULL;
+    if(win16_control_vb_glyph_prepare(policy_dc,&run,&flags,1,&decoded,&encoded,test_decode) || decoded || encoded)return 103;
     SetTextAlign(policy_dc,TA_RTLREADING);
     if(win16_control_report_wide_text(policy_dc,L"a",1,TRUE) || win16_control_report_ansi_text(policy_dc,"a",1,TRUE))return 83;
     if(win16_control_static_text_font(policy_dc,L"a",1,DT_CALCRECT,(const void *)main,NULL,GetModuleHandleW(NULL)))return 84;
