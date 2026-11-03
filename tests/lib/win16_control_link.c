@@ -12,6 +12,7 @@
 #include "lib/win16-control/list_paint.h"
 #include "lib/win16-control/theme_state.h"
 #include "lib/win16-control/custom_draw.h"
+#include "lib/win16-control/text_policy.h"
 #include <dwmapi.h>
 #include <stdlib.h>
 
@@ -42,6 +43,19 @@ static void test_button_paint(HWND w,void *context,int hit)
 {(void)w;(void)context;if(hit==HTMINBUTTON)++button_paints;}
 int main(void)
 {
+    HDC policy_dc=CreateCompatibleDC(NULL);if(!policy_dc)return 81;
+    if(!win16_control_report_wide_text(policy_dc,L"abc",3,TRUE) ||
+       win16_control_report_wide_text(policy_dc,L"\x4e2d",1,TRUE) ||
+       !win16_control_report_wide_text(policy_dc,NULL,1,FALSE) ||
+       win16_control_report_wide_text(policy_dc,L"a",4097,TRUE) ||
+       !win16_control_report_ansi_text(policy_dc,"abc",-1,TRUE) ||
+       win16_control_report_ansi_text(policy_dc,NULL,0,TRUE) ||
+       !win16_control_report_ansi_text(policy_dc,NULL,0,FALSE))return 82;
+    SetTextAlign(policy_dc,TA_RTLREADING);
+    if(win16_control_report_wide_text(policy_dc,L"a",1,TRUE) || win16_control_report_ansi_text(policy_dc,"a",1,TRUE))return 83;
+    if(win16_control_static_text_font(policy_dc,L"a",1,DT_CALCRECT,(const void *)main,NULL,GetModuleHandleW(NULL)))return 84;
+    DeleteDC(policy_dc);
+
     control_style *control=win16_control_state_create();
     if(!control || control->font || control->protocol || control->tab_positions || control->calls)return 38;
     control->tab_positions=malloc(2*sizeof(*control->tab_positions));

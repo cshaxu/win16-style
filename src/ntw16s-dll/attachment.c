@@ -9,6 +9,7 @@
 #include "../lib/win16-control/native_combo_identity.h"
 #include "../lib/win16-control/cool_grip_identity.h"
 #include "../lib/win16-control/vcl_native_paint.h"
+#include "../lib/win16-control/text_policy.h"
 #include "../lib/win16-control/choice_paint.h"
 #include "../lib/win16-control/special_paint.h"
 #include "../lib/win16-control/spin_identity.h"
@@ -819,17 +820,9 @@ void ntw16s_static_call_end(void *data)
 }
 HFONT ntw16s_static_text_font(HDC dc,LPCWSTR text,int count,UINT flags,const void *address)
 {
-    ntw16s_static_call *s=static_call;HMODULE caller=NULL;HWND from;HFONT source;
-    if(!s || !s->active || !s->cancelled || *s->cancelled || !static_paint ||
-       static_paint->window!=s->window || !dc || !text || (flags&(DT_CALCRECT|DT_RTLREADING|DT_MODIFYSTRING)) ||
-       (GetLayout(dc)&LAYOUT_RTL) || !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|
-       GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) || caller!=s->native_module)return NULL;
-    from=WindowFromDC(dc);if(from && from!=s->window)return NULL;
-    if(count< -1)return NULL;
-    if(count==-1){count=0;while(count<4096 && text[count])++count;if(count==4096)return NULL;}
-    if(count>4096)return NULL;
-    for(int i=0;i<count;++i)if(text[i]>0x7f)return NULL;
-    source=(HFONT)GetCurrentObject(dc,OBJ_FONT);return source?win16_style_system_acquire(source):NULL;
+    ntw16s_static_call *s=static_call;
+    if(!s || !s->active || !s->cancelled || *s->cancelled || !static_paint || static_paint->window!=s->window)return NULL;
+    return win16_control_static_text_font(dc,text,count,flags,address,s->window,s->native_module);
 }
 #define class_is ntw16s_class_is
 typedef struct group_frame_result {attachment *owner;HWND parent;} group_frame_result;

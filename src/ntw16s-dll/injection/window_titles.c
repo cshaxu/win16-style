@@ -1,3 +1,4 @@
+#include "../../lib/win16-control/text_policy.h"
 #include "../../lib/win16-dialog/print_classic.h"
 #include "../../lib/win16-dialog/chrome.h"
 #include "intercept.h"
@@ -411,22 +412,9 @@ static BOOL vb_label_caller(const void *address)
 /* The report adapter promises only whole, reversible CP1252 runs. Keep
  * measurements and unsupported language/RTL runs on the native font. */
 static BOOL report_wide_text(HDC dc,const WCHAR *text,int count)
-{
-    if(!ntw16s_report_paint_active())return TRUE;
-    if(count<0 || count>4096 || (GetTextAlign(dc)&TA_RTLREADING))return FALSE;
-    if(!count)return TRUE;
-    BOOL used=FALSE;char buffer[4096];
-    return text && WideCharToMultiByte(1252,WC_NO_BEST_FIT_CHARS,text,count,buffer,sizeof(buffer),NULL,&used)==count && !used;
-}
+{return win16_control_report_wide_text(dc,text,count,ntw16s_report_paint_active());}
 static BOOL report_ansi_text(HDC dc,const char *text,int count)
-{
-    if(!ntw16s_report_paint_active())return TRUE;
-    if(!text || (GetTextAlign(dc)&TA_RTLREADING))return FALSE;
-    if(count==-1){count=0;while(count<=4096 && text[count])++count;}
-    if(count<0 || count>4096)return FALSE;
-    if(GetACP()!=1252)for(int i=0;i<count;++i)if((unsigned char)text[i]>=128)return FALSE;
-    return TRUE;
-}
+{return win16_control_report_ansi_text(dc,text,count,ntw16s_report_paint_active());}
 #define VB_TEXT_HOOK(NAME,TYPE,PARAMS,ARGS,ALLOW) \
 static __typeof__(&NAME) real_##NAME; \
 static TYPE WINAPI hook_##NAME PARAMS \
