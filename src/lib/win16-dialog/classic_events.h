@@ -22,6 +22,20 @@ BOOL win16_dialog_classic_command(win16_dialog_proxy *,HWND,WPARAM,UINT_PTR *,co
 BOOL win16_dialog_classic_before(win16_dialog_proxy *,HWND,UINT,WPARAM,UINT_PTR *,const win16_dialog_classic_message_services *);
 void win16_dialog_classic_selection(win16_dialog_proxy *,HWND,WPARAM,const win16_dialog_classic_message_services *);
 BOOL win16_dialog_classic_after(win16_dialog_proxy *,HWND,UINT,LPARAM,UINT_PTR *,const win16_dialog_classic_message_services *);
+typedef HRESULT (*win16_dialog_owned_event_fn)(win16_dialog_proxy *,enum classic_event_kind,IShellItem *,WCHAR *);
+typedef HRESULT (*win16_dialog_event_fn)(win16_dialog_proxy *,enum classic_event_kind,IShellItem *);
+typedef void (*win16_dialog_navigate_fn)(HWND,win16_dialog_proxy *,PCWSTR);
+typedef struct win16_dialog_navigation_scope {
+    win16_dialog_proxy *proxy;WCHAR *folder,*filename;BOOL experimental;
+} win16_dialog_navigation_scope;
+BOOL win16_dialog_navigation_begin(win16_dialog_proxy *,BOOL,win16_dialog_navigation_scope *);
+void win16_dialog_navigation_run(HWND,PCWSTR,win16_dialog_navigation_scope *,win16_dialog_owned_event_fn);
+void win16_dialog_navigation_cleanup(void *);
+typedef struct win16_dialog_initial_scope {
+    win16_dialog_proxy *proxy;IShellItem *item;PWSTR path;BOOL initializing;
+} win16_dialog_initial_scope;
+void win16_dialog_initial_run(HWND,PCWSTR,win16_dialog_initial_scope *,win16_dialog_owned_event_fn,win16_dialog_navigate_fn,win16_dialog_event_fn);
+void win16_dialog_initial_cleanup(void *);
 typedef struct win16_dialog_classic_result_scope {
     win16_dialog_proxy *proxy;IShellItem *item;IShellItemArray *items;BOOL revoke;
 } win16_dialog_classic_result_scope;

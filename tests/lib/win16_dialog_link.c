@@ -308,6 +308,36 @@ static BOOL test_classic_messages(void)
     if(!refresh || !win16_dialog_classic_before(&p,NULL,refresh,0,&result,&v) || result!=1 || classic_hidden_calls!=2)return FALSE;
     puts("CLASSIC_MESSAGE_OK reject=1 navigating=1 fileok=1 hidden=1");return TRUE;
 }
+static int classic_owned_calls,classic_changed_calls,classic_type_calls,classic_navigate_calls;
+static HRESULT classic_owned_test(win16_dialog_proxy *p,enum classic_event_kind kind,IShellItem *item,WCHAR *path)
+{(void)p;(void)path;if(kind!=CLASSIC_FOLDER_CHANGING || !item)return E_FAIL;++classic_owned_calls;IShellItem_Release(item);return S_OK;}
+static HRESULT classic_dispatch_test(win16_dialog_proxy *p,enum classic_event_kind kind,IShellItem *item)
+{(void)p;(void)item;if(kind==CLASSIC_FOLDER_CHANGED)++classic_changed_calls;else if(kind==CLASSIC_TYPE_CHANGED)++classic_type_calls;return S_OK;}
+static void classic_navigate_test(HWND w,win16_dialog_proxy *p,PCWSTR key)
+{(void)w;(void)p;(void)key;++classic_navigate_calls;}
+static BOOL test_classic_navigation(void)
+{
+    static const WCHAR key[]=L"w16.test.classic";
+    win16_dialog_proxy p={0};win16_dialog_navigation_scope navigation;
+    if(win16_dialog_navigation_begin(&p,FALSE,&navigation))return FALSE;
+    p.pending_folder=CoTaskMemAlloc(4*sizeof(WCHAR));if(!p.pending_folder)return FALSE;
+    lstrcpyW(p.pending_folder,L"C:\\");p.classic_navigating=TRUE;
+    if(!win16_dialog_navigation_begin(&p,FALSE,&navigation) || p.pending_folder)return FALSE;
+    win16_dialog_navigation_run(NULL,key,&navigation,NULL);win16_dialog_navigation_cleanup(&navigation);
+    if(!p.classic_navigating)return FALSE;
+    p.classic_navigating=FALSE;
+    IShellItem *item=NULL;if(FAILED(SHCreateItemFromParsingName(L"C:\\",NULL,&IID_IShellItem,(void **)&item)))return FALSE;
+    HWND window=CreateWindowW(L"STATIC",L"",WS_POPUP,0,0,10,10,NULL,NULL,GetModuleHandleW(NULL),NULL);
+    if(!window){IShellItem_Release(item);return FALSE;}
+    if(!SetPropW(window,key,&p)){DestroyWindow(window);IShellItem_Release(item);return FALSE;}
+    p.live_folder=item;p.events=(event_adapter *)(UINT_PTR)1;p.filter=L"filter";
+    win16_dialog_initial_scope initial={&p,item,NULL,FALSE};IShellItem_AddRef(item);
+    win16_dialog_initial_run(window,key,&initial,classic_owned_test,classic_navigate_test,classic_dispatch_test);
+    BOOL ok=classic_owned_calls==1 && classic_changed_calls==1 && classic_type_calls==1 && !classic_navigate_calls && !p.classic_initializing;
+    win16_dialog_initial_cleanup(&initial);RemovePropW(window,key);DestroyWindow(window);IShellItem_Release(item);
+    if(!ok)return FALSE;
+    puts("CLASSIC_NAVIGATION_OK scope=1 events=1 cleanup=1");return TRUE;
+}
 int main(void)
 {
     if(!test_hidden_dialog_files())return 41;
@@ -382,6 +412,7 @@ int main(void)
     if(FAILED(CoInitializeEx(NULL,COINIT_APARTMENTTHREADED)))return 19;
     if(!test_classic_results()){CoUninitialize();return 44;}
     if(!test_classic_messages()){CoUninitialize();return 45;}
+    if(!test_classic_navigation()){CoUninitialize();return 46;}
     if(!test_hook_state()){CoUninitialize();return 42;}
     if(!test_classic_event_policy()){CoUninitialize();return 43;}
     if(!test_event_snapshot()){CoUninitialize();return 40;}

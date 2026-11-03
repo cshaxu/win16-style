@@ -136,76 +136,31 @@ static BOOL classic_overwrite_check(HWND w,file_proxy *p)
 static HRESULT proxy_set_folder(file_proxy *p,IShellItem *item)
 {return win16_dialog_proxy_set_folder(p,item,folder_message_name);}
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-typedef struct classic_navigation_scope {file_proxy *proxy;WCHAR *folder,*filename;} classic_navigation_scope;
-static void classic_navigation_cleanup(void *data)
-{
-    classic_navigation_scope *scope=data;scope->proxy->classic_navigating=FALSE;
-    if(scope->folder)CoTaskMemFree(scope->folder);
-    if(scope->filename)CoTaskMemFree(scope->filename);
-}
 static NTW16S_UNWIND_FUNCTION void classic_navigate_folder(HWND w,file_proxy *p,PCWSTR key)
 #else
 static void classic_navigate_folder(HWND w,file_proxy *p,PCWSTR key)
 #endif
 {
-    WCHAR *folder=p->pending_folder;p->pending_folder=NULL;if(!folder)return;
+    win16_dialog_navigation_scope navigation;
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-    classic_navigation_scope navigation={p,folder,NULL};ntw16s_unwind_scope unwind;
-    NTW16S_UNWIND_BEGIN(unwind,classic_navigation_cleanup,&navigation);
-    if(p->events){IShellItem *destination=NULL;HRESULT hr=SHCreateItemFromParsingName(folder,NULL,&IID_IShellItem,(void **)&destination);
-        if(SUCCEEDED(hr))hr=classic_dispatch_owned(p,CLASSIC_FOLDER_CHANGING,destination,NULL);
-        if(hr!=S_OK || p->pending_folder || !IsWindow(w) || GetPropW(w,key)!=p)goto done;}
-#endif
-#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-    win16_dialog_proxy_navigate_contents(w,p,key,folder,&navigation.filename,TRUE);
-#else
-    WCHAR *filename=NULL;
-    win16_dialog_proxy_navigate_contents(w,p,key,folder,&filename,FALSE);
-    if(filename)CoTaskMemFree(filename);
-#endif
-#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-done:
+    if(!win16_dialog_navigation_begin(p,TRUE,&navigation))return;
+    ntw16s_unwind_scope unwind;
+    NTW16S_UNWIND_BEGIN(unwind,win16_dialog_navigation_cleanup,&navigation);
+    win16_dialog_navigation_run(w,key,&navigation,classic_dispatch_owned);
     NTW16S_UNWIND_END(unwind);
 #else
-    CoTaskMemFree(folder);
+    if(!win16_dialog_navigation_begin(p,FALSE,&navigation))return;
+    win16_dialog_navigation_run(w,key,&navigation,NULL);
+    win16_dialog_navigation_cleanup(&navigation);
 #endif
 }
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-typedef struct classic_initial_scope {
-    file_proxy *proxy;IShellItem *item;PWSTR path;
-    BOOL initializing;
-} classic_initial_scope;
-static void classic_initial_cleanup(void *data)
-{
-    classic_initial_scope *scope=data;
-    scope->proxy->classic_initializing=scope->initializing;
-    if(scope->path)CoTaskMemFree(scope->path);
-    if(scope->item)IShellItem_Release(scope->item);
-}
 static NTW16S_UNWIND_FUNCTION void classic_initial_events(HWND w,file_proxy *p,PCWSTR key)
 {
-    classic_initial_scope state={p,p->live_folder,NULL,p->classic_initializing};
+    win16_dialog_initial_scope state={p,p->live_folder,NULL,p->classic_initializing};
     ntw16s_unwind_scope unwind;IShellItem_AddRef(state.item);
-    NTW16S_UNWIND_BEGIN(unwind,classic_initial_cleanup,&state);
-    (void)IShellItem_GetDisplayName(state.item,SIGDN_FILESYSPATH,&state.path);
-    IShellItem_AddRef(state.item);p->classic_initializing=TRUE;
-    HRESULT changing=classic_dispatch_owned(p,CLASSIC_FOLDER_CHANGING,state.item,NULL);
-    p->classic_initializing=state.initializing;
-    if(changing!=S_OK && !p->pending_folder && p->initial_default && IsWindow(w) && GetPropW(w,key)==p){
-        PWSTR fallback=NULL;
-        if(SUCCEEDED(IShellItem_GetDisplayName(p->initial_default,SIGDN_FILESYSPATH,&fallback)))
-            p->pending_folder=fallback;
-    }
-    if(IsWindow(w) && GetPropW(w,key)==p && p->pending_folder)
-        classic_navigate_folder(w,p,key);
-    if(IsWindow(w) && GetPropW(w,key)==p && state.path && p->live_folder!=state.item){
-        if(p->pending_folder)CoTaskMemFree(p->pending_folder);
-        p->pending_folder=state.path;state.path=NULL;
-        classic_navigate_folder(w,p,key);
-    }else if(IsWindow(w) && GetPropW(w,key)==p && p->events)
-        (void)classic_event_dispatch(p,CLASSIC_FOLDER_CHANGED,NULL);
-    if(IsWindow(w) && GetPropW(w,key)==p && p->events && p->filter)
-        (void)classic_event_dispatch(p,CLASSIC_TYPE_CHANGED,NULL);
+    NTW16S_UNWIND_BEGIN(unwind,win16_dialog_initial_cleanup,&state);
+    win16_dialog_initial_run(w,key,&state,classic_dispatch_owned,classic_navigate_folder,classic_event_dispatch);
     NTW16S_UNWIND_END(unwind);
 }
 #endif

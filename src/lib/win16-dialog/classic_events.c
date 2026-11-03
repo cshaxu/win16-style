@@ -129,3 +129,58 @@ BOOL win16_dialog_classic_after(win16_dialog_proxy *p,HWND w,UINT message,LPARAM
             if(response==FDESVR_REFUSE){*result=OFN_SHARENOWARN;return TRUE;}}}
     return FALSE;
 }
+
+BOOL win16_dialog_navigation_begin(win16_dialog_proxy *p,BOOL experimental,win16_dialog_navigation_scope *scope)
+{
+    WCHAR *folder=p->pending_folder;p->pending_folder=NULL;
+    if(!folder)return FALSE;
+    *scope=(win16_dialog_navigation_scope){p,folder,NULL,experimental};return TRUE;
+}
+void win16_dialog_navigation_run(HWND w,PCWSTR key,win16_dialog_navigation_scope *scope,win16_dialog_owned_event_fn changing)
+{
+    win16_dialog_proxy *p=scope->proxy;
+    if(scope->experimental && p->events){IShellItem *destination=NULL;
+        HRESULT hr=SHCreateItemFromParsingName(scope->folder,NULL,&IID_IShellItem,(void **)&destination);
+        if(SUCCEEDED(hr))hr=changing(p,CLASSIC_FOLDER_CHANGING,destination,NULL);
+        if(hr!=S_OK || p->pending_folder || !IsWindow(w) || GetPropW(w,key)!=p)return;
+    }
+    win16_dialog_proxy_navigate_contents(w,p,key,scope->folder,&scope->filename,scope->experimental);
+}
+void win16_dialog_navigation_cleanup(void *data)
+{
+    win16_dialog_navigation_scope *scope=data;
+    if(scope->experimental){scope->proxy->classic_navigating=FALSE;
+        if(scope->folder)CoTaskMemFree(scope->folder);
+        if(scope->filename)CoTaskMemFree(scope->filename);
+    }else{
+        if(scope->filename)CoTaskMemFree(scope->filename);
+        if(scope->folder)CoTaskMemFree(scope->folder);
+    }
+}
+void win16_dialog_initial_run(HWND w,PCWSTR key,win16_dialog_initial_scope *scope,
+    win16_dialog_owned_event_fn changing_owned,win16_dialog_navigate_fn navigate,win16_dialog_event_fn dispatch)
+{
+    win16_dialog_proxy *p=scope->proxy;
+    (void)IShellItem_GetDisplayName(scope->item,SIGDN_FILESYSPATH,&scope->path);
+    IShellItem_AddRef(scope->item);p->classic_initializing=TRUE;
+    HRESULT changing=changing_owned(p,CLASSIC_FOLDER_CHANGING,scope->item,NULL);
+    p->classic_initializing=scope->initializing;
+    if(changing!=S_OK && !p->pending_folder && p->initial_default && IsWindow(w) && GetPropW(w,key)==p){
+        PWSTR fallback=NULL;
+        if(SUCCEEDED(IShellItem_GetDisplayName(p->initial_default,SIGDN_FILESYSPATH,&fallback)))p->pending_folder=fallback;
+    }
+    if(IsWindow(w) && GetPropW(w,key)==p && p->pending_folder)navigate(w,p,key);
+    if(IsWindow(w) && GetPropW(w,key)==p && scope->path && p->live_folder!=scope->item){
+        if(p->pending_folder)CoTaskMemFree(p->pending_folder);
+        p->pending_folder=scope->path;scope->path=NULL;navigate(w,p,key);
+    }else if(IsWindow(w) && GetPropW(w,key)==p && p->events)
+        (void)dispatch(p,CLASSIC_FOLDER_CHANGED,NULL);
+    if(IsWindow(w) && GetPropW(w,key)==p && p->events && p->filter)
+        (void)dispatch(p,CLASSIC_TYPE_CHANGED,NULL);
+}
+void win16_dialog_initial_cleanup(void *data)
+{
+    win16_dialog_initial_scope *scope=data;scope->proxy->classic_initializing=scope->initializing;
+    if(scope->path)CoTaskMemFree(scope->path);
+    if(scope->item)IShellItem_Release(scope->item);
+}
