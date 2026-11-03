@@ -679,12 +679,8 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
 {
     attachment *a=(attachment *)data;LRESULT result;DWORD status_error=GetLastError();BOOL status=a->status||a->spin,color=a->color_candidate||a->date_candidate;(void)id;
     win16_attachment_retire_frames(w,a);
-    RECT color_dirty;BOOL color_update=color && m==WM_PAINT && GetUpdateRect(w,&color_dirty,FALSE);
-    HRGN print_clip=NULL;int print_clip_kind=-1;
-    if((a->color_installed || a->date_installed) && !a->detached && m==WM_PRINTCLIENT && p){
-        print_clip=CreateRectRgn(0,0,0,0);
-        if(print_clip)print_clip_kind=GetClipRgn((HDC)p,print_clip);
-    }
+    RECT color_dirty;BOOL color_update;HRGN print_clip;int print_clip_kind;
+    win16_attachment_native_prepare(w,m,p,a,color,&color_dirty,&color_update,&print_clip,&print_clip_kind);
     ++a->calls;
     const win16_attachment_guard_services guards={lookup,mdi_identity,cool_identity,Ntw16sWindowRemove};
     win16_attachment_guard_cool(w,m,a,&guards);
@@ -747,34 +743,8 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     win16_attachment_post_toolbar(w,m,a,&verified);
     win16_attachment_post_controls(w,m,a,&post);
     win16_attachment_post_verified(w,m,a,&verified);
-    if(m==WM_PAINT && a->color_candidate && !a->color_attempted && !a->detached && a->color_witness_owner){
-        DWORD saved=GetLastError();COMBOBOXINFO info={.cbSize=sizeof(info)};a->color_attempted=TRUE;
-        if(color_identity(w,a,&info)){a->color_parent=GetParent(w);a->color_installed=TRUE;}
-        SetLastError(saved);
-    }
-    if(m==WM_PAINT && a->status_candidate && !a->status_attempted && !a->detached && a->status_witness_owner){
-        DWORD saved=GetLastError();a->status_attempted=TRUE;
-        if(status_identity(w,a,NULL)){a->status_parent=GetParent(w);a->status_installed=TRUE;a->status=TRUE;InvalidateRect(w,NULL,TRUE);}
-        SetLastError(saved);
-    }
-    if(m==WM_PAINT && a->date_candidate && !a->date_attempted && !a->detached && a->date_witness_owner){
-        DWORD saved=GetLastError();DATETIMEPICKERINFO info={.cbSize=sizeof(info)};a->date_attempted=TRUE;
-        if(date_identity(w,a,&info)){a->date_parent=GetParent(w);a->date_installed=TRUE;}
-        SetLastError(saved);
-    }
-    if((a->color_installed || a->date_installed) && !a->detached && ((m==WM_PRINTCLIENT && print_clip_kind>=0) || (m==WM_PAINT && color_update))){
-        DWORD saved=GetLastError();HDC dc=m==WM_PRINTCLIENT?(HDC)p:GetDC(w);
-        if(dc){
-            if(m==WM_PRINTCLIENT){int state=SaveDC(dc);if(state){
-                if(SelectClipRgn(dc,print_clip_kind?print_clip:NULL)!=ERROR){
-                    if(a->color_installed)color_button(w,a,dc,NULL);else date_button(w,a,dc,NULL);
-                }
-                RestoreDC(dc,state);
-            }}else {if(a->color_installed)color_button(w,a,dc,&color_dirty);else date_button(w,a,dc,&color_dirty);ReleaseDC(w,dc);}
-        }
-        SetLastError(saved);
-    }
-    if(print_clip){DWORD saved=GetLastError();DeleteObject(print_clip);SetLastError(saved);}
+    const win16_attachment_native_services native={color_identity,status_identity,date_identity,color_button,date_button};
+    win16_attachment_post_native(w,m,p,a,print_clip,print_clip_kind,color_update,&color_dirty,&native);
     release(a);if(status || color)SetLastError(status_error);return result;
 }
 static void bit_draw_end(void *data)

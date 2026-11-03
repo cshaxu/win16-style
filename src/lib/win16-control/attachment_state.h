@@ -1,6 +1,7 @@
 #ifndef WIN16_CONTROL_ATTACHMENT_STATE_H
 #define WIN16_CONTROL_ATTACHMENT_STATE_H
 #include "palette.h"
+#include <commctrl.h>
 #include "status_font.h"
 #include "control_protocol.h"
 #include "vb_text.h"
@@ -76,4 +77,13 @@ typedef struct win16_attachment_verified_services {
 } win16_attachment_verified_services;
 void win16_attachment_post_toolbar(HWND,UINT,attachment *,const win16_attachment_verified_services *);
 void win16_attachment_post_verified(HWND,UINT,attachment *,const win16_attachment_verified_services *);
+typedef struct win16_attachment_native_services {
+    BOOL (*color_identity)(HWND,attachment *,COMBOBOXINFO *);
+    BOOL (*status_identity)(HWND,attachment *,HMODULE *);
+    BOOL (*date_identity)(HWND,attachment *,DATETIMEPICKERINFO *);
+    void (*color_button)(HWND,attachment *,HDC,const RECT *);
+    void (*date_button)(HWND,attachment *,HDC,const RECT *);
+} win16_attachment_native_services;
+void win16_attachment_native_prepare(HWND,UINT,WPARAM,attachment *,BOOL,RECT *,BOOL *,HRGN *,int *);
+void win16_attachment_post_native(HWND,UINT,WPARAM,attachment *,HRGN,int,BOOL,const RECT *,const win16_attachment_native_services *);
 #endif

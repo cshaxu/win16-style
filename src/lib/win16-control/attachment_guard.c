@@ -166,3 +166,45 @@ void win16_attachment_post_verified(HWND w,UINT m,attachment *a,const win16_atta
         SetLastError(saved);
     }
 }
+
+void win16_attachment_post_native(HWND w,UINT m,WPARAM p,attachment *a,HRGN print_clip,int print_clip_kind,BOOL color_update,const RECT *dirty,const win16_attachment_native_services *v)
+{
+    if(m==WM_PAINT && a->color_candidate && !a->color_attempted && !a->detached && a->color_witness_owner){
+        DWORD saved=GetLastError();COMBOBOXINFO info={.cbSize=sizeof(info)};a->color_attempted=TRUE;
+        if(v->color_identity(w,a,&info)){a->color_parent=GetParent(w);a->color_installed=TRUE;}
+        SetLastError(saved);
+    }
+    if(m==WM_PAINT && a->status_candidate && !a->status_attempted && !a->detached && a->status_witness_owner){
+        DWORD saved=GetLastError();a->status_attempted=TRUE;
+        if(v->status_identity(w,a,NULL)){a->status_parent=GetParent(w);a->status_installed=TRUE;a->status=TRUE;InvalidateRect(w,NULL,TRUE);}
+        SetLastError(saved);
+    }
+    if(m==WM_PAINT && a->date_candidate && !a->date_attempted && !a->detached && a->date_witness_owner){
+        DWORD saved=GetLastError();DATETIMEPICKERINFO info={.cbSize=sizeof(info)};a->date_attempted=TRUE;
+        if(v->date_identity(w,a,&info)){a->date_parent=GetParent(w);a->date_installed=TRUE;}
+        SetLastError(saved);
+    }
+    if((a->color_installed || a->date_installed) && !a->detached && ((m==WM_PRINTCLIENT && print_clip_kind>=0) || (m==WM_PAINT && color_update))){
+        DWORD saved=GetLastError();HDC dc=m==WM_PRINTCLIENT?(HDC)p:GetDC(w);
+        if(dc){
+            if(m==WM_PRINTCLIENT){int state=SaveDC(dc);if(state){
+                if(SelectClipRgn(dc,print_clip_kind?print_clip:NULL)!=ERROR){
+                    if(a->color_installed)v->color_button(w,a,dc,NULL);else v->date_button(w,a,dc,NULL);
+                }
+                RestoreDC(dc,state);
+            }}else {if(a->color_installed)v->color_button(w,a,dc,dirty);else v->date_button(w,a,dc,dirty);ReleaseDC(w,dc);}
+        }
+        SetLastError(saved);
+    }
+    if(print_clip){DWORD saved=GetLastError();DeleteObject(print_clip);SetLastError(saved);}
+}
+
+void win16_attachment_native_prepare(HWND w,UINT m,WPARAM p,attachment *a,BOOL color,RECT *dirty,BOOL *update,HRGN *clip,int *clip_kind)
+{
+    *update=color && m==WM_PAINT && GetUpdateRect(w,dirty,FALSE);
+    *clip=NULL;*clip_kind=-1;
+    if((a->color_installed || a->date_installed) && !a->detached && m==WM_PRINTCLIENT && p){
+        *clip=CreateRectRgn(0,0,0,0);
+        if(*clip)*clip_kind=GetClipRgn((HDC)p,*clip);
+    }
+}
