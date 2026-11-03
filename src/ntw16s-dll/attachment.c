@@ -17,6 +17,8 @@
 #include "../lib/win16-control/spin_scope.h"
 #include "../lib/win16-control/status_frame.h"
 #include "../lib/win16-control/status_font.h"
+#include "../lib/win16-control/status_text.h"
+#include "../lib/win16-control/status_identity.h"
 #include "injection/unwind.h"
 #include "status_theme.h"
 #include "month_text.h"
@@ -259,85 +261,44 @@ void ntw16s_nav_theme(HDC dc,int part,int state,const RECT *r,const RECT *clip,c
 BOOL ntw16s_inplace_paint(HDC dc){static_paint_scope *s=static_paint;return s && s->owner->inplace_candidate && !s->owner->detached && dc && WindowFromDC(dc)==s->window;}
 void ntw16s_inplace_button(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address){inplace_draw(dc,part,state,r,clip,address,FALSE);}
 void ntw16s_inplace_dropdown(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address){inplace_draw(dc,part,state,r,clip,address,TRUE);}
-static BOOL status_system_module(HMODULE image)
-{
-    WCHAR path[MAX_PATH],system[MAX_PATH],winsxs[MAX_PATH];DWORD n;
-    n=GetModuleFileNameW(image,path,ARRAYSIZE(path));if(!n || n>=ARRAYSIZE(path))return FALSE;
-    WCHAR *base=wcsrchr(path,L'\\');if(!base || lstrcmpiW(base+1,L"comctl32.dll"))return FALSE;
-    *base=L'\0';n=GetSystemDirectoryW(system,ARRAYSIZE(system));
-    if(n && n<ARRAYSIZE(system) && !lstrcmpiW(path,system))return TRUE;
-    n=GetWindowsDirectoryW(winsxs,ARRAYSIZE(winsxs));if(!n || n+8>=ARRAYSIZE(winsxs))return FALSE;
-    lstrcatW(winsxs,L"\\WinSxS\\");size_t length=wcslen(winsxs);
-    return wcslen(path)>length && CompareStringOrdinal(path,(int)length,winsxs,(int)length,TRUE)==CSTR_EQUAL;
-}
-
 static BOOL status_identity(HWND w,attachment *a,HMODULE *native)
 {
-    WCHAR name[64];DWORD pid=0;WNDCLASSEXW cls={.cbSize=sizeof(cls)};HMODULE image=NULL;
-    if(GetWindowThreadProcessId(w,&pid)!=GetCurrentThreadId() || pid!=GetCurrentProcessId() ||
-        !(GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD) ||
-        (GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) ||
-        !GetClassNameW(w,name,ARRAYSIZE(name)) || !GetClassInfoExW(NULL,STATUSCLASSNAMEW,&cls) ||
-        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-            (LPCWSTR)(UINT_PTR)cls.lpfnWndProc,&image) || !status_system_module(image) ||
-        GetClassLongPtrW(w,GCL_CBWNDEXTRA)<(ULONG_PTR)cls.cbWndExtra)return FALSE;
-    if(lstrcmpiW(name,STATUSCLASSNAMEW)){
-        if(!a || !a->status_candidate || !a->status_witness_owner || a->detached ||
-            lstrcmpW(name,L"TStatusBar") || (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)!=a->status_witness_owner ||
-            GetWindowThreadProcessId(GetParent(w),NULL)!=GetCurrentThreadId() ||
-            (a->status_parent && GetParent(w)!=a->status_parent))return FALSE;
-    }else if((HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)!=image ||
-        GetClassLongPtrW(w,GCLP_WNDPROC)!=(ULONG_PTR)cls.lpfnWndProc)return FALSE;
-    if(native)*native=image;
-    return TRUE;
+    if(!a)return win16_control_status_identity(w,NULL,native);
+    const win16_control_status_identity_view view={&a->status_candidate,&a->detached,&a->status_witness_owner,&a->status_parent};
+    return win16_control_status_identity(w,&view,native);
 }
 
+static BOOL status_frame_identity(HWND w,void *owner,HMODULE *native)
+{return status_identity(w,(attachment *)owner,native);}
+static win16_control_status_text_view status_text_view(status_draw_scope *s)
+{
+    const win16_control_status_text_view v={s->owner,s,s->window,s->dc,s->native,s->epoch,s->text_count,s->simple,
+        s->simple_length,s->simple_text,s->text_panes,s->owner?&s->owner->status_candidate:NULL,
+        s->owner?&s->owner->detached:NULL,s->owner?&s->owner->status_epoch:NULL,
+        s->owner?&s->owner->status_font:NULL,status_frame_identity};
+    return v;
+}
 BOOL ntw16s_status_theme_begin(ntw16s_status_theme_scope *t,HDC dc,int part,int state,LPCWSTR text,int count,DWORD flags,const RECT *rect,const void *address)
 {
-    status_draw_scope *s=status_current;HMODULE caller=NULL;POINT origin;HWND from;BOOL pane=FALSE;
+    status_draw_scope *s=status_current;
     if(!t || (!s && !status_theme_current))return FALSE;
     memset(t,0,sizeof(*t));t->previous=status_theme_current;status_theme_current=t;
-    if(!s || !s->owner || !s->owner->status_candidate || s->simple || s->owner->detached || s->epoch!=s->owner->status_epoch ||
-       !dc || !text || !rect || part || state || (flags&(DT_RTLREADING|DT_MODIFYSTRING|DT_CALCRECT)) ||
-       !IsWindowEnabled(s->window) || !status_identity(s->window,s->owner,NULL) || GetMapMode(dc)!=MM_TEXT ||
-       (GetLayout(dc)&LAYOUT_RTL) || !GetViewportOrgEx(dc,&origin) || origin.x || origin.y ||
-       !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) || caller!=s->native)return TRUE;
-    from=WindowFromDC(dc);if(s->dc?dc!=s->dc:from!=s->window)return TRUE;
-    for(unsigned i=0;i<s->text_count;++i){RECT p=s->text_panes[i];if(rect->left>=p.left && rect->left<p.right && rect->right<=p.right && rect->right>rect->left && rect->top<p.bottom && rect->bottom>p.top){pane=TRUE;break;}}
-    if(!pane || count< -1)return TRUE;
-    if(count==-1){count=0;while(count<513 && text[count])++count;}
-    if(count<=0 || count>512)return TRUE;
-    for(int i=0;i<count;++i)if(text[i]>0x7f)return TRUE;
-    memcpy(t->text,text,(size_t)count*sizeof(WCHAR));t->length=count;t->dc=dc;t->paint=s;t->valid=TRUE;return TRUE;
+    if(!s)return TRUE;
+    const win16_control_status_text_view v=status_text_view(s);
+    return win16_control_status_theme_prepare(t,&v,dc,part,state,text,count,flags,rect,address);
 }
 void ntw16s_status_theme_end(void *data)
 {ntw16s_status_theme_scope *t=data;if(status_theme_current==t)status_theme_current=t->previous;}
-
-/* Borrow a private font only for verified native simple-status text. */
 HFONT ntw16s_status_simple_font(HDC dc,LPCWSTR text,int count,UINT flags,const void *address,void **token)
 {
-    status_draw_scope *s=status_current;HMODULE caller=NULL;POINT origin;HWND from;
-    if(token)*token=NULL;
-    if(!token || !s || !s->owner || !s->owner->status_candidate || s->owner->detached || s->epoch!=s->owner->status_epoch ||
-       !dc || !text || (flags&(DT_RTLREADING|DT_MODIFYSTRING)) || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
-       !GetViewportOrgEx(dc,&origin) || origin.x || origin.y || !status_identity(s->window,s->owner,NULL) || !IsWindowEnabled(s->window) ||
-       !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) || caller!=GetModuleHandleW(L"uxtheme.dll"))return NULL;
-    from=WindowFromDC(dc);if(s->dc?dc!=s->dc:from!=s->window)return NULL;
-    if(count< -1)return NULL;
-    if(count==-1){count=0;while(count<4096 && text[count])++count;if(count==4096)return NULL;}
-    if(count<=0 || count>4096)return NULL;
-    for(int i=0;i<count;++i)if(text[i]>0x7f)return NULL;
-    if(s->simple){if(s->simple_length!=count || memcmp(s->simple_text,text,(size_t)count*sizeof(WCHAR)))return NULL;}
-    else {ntw16s_status_theme_scope *t=status_theme_current;if(!t || !t->valid || t->paint!=s || t->dc!=dc || t->length!=count || memcmp(t->text,text,(size_t)count*sizeof(WCHAR)))return NULL;}
-    if(!status_identity(s->window,s->owner,NULL) || s->owner->detached || s->epoch!=s->owner->status_epoch)return NULL;
-    return win16_control_status_font_borrow(&s->owner->status_font,dc,s->owner,token);
+    status_draw_scope *s=status_current;if(!s){if(token)*token=NULL;return NULL;}
+    const win16_control_status_text_view v=status_text_view(s);
+    return win16_control_status_text_font(&v,status_theme_current,dc,text,count,flags,address,token);
 }
 void ntw16s_status_simple_return(void *token,HFONT font)
 {attachment *a=token;if(a)win16_control_status_font_return(&a->status_font,font);}
 
 
-static BOOL status_frame_identity(HWND w,void *owner,HMODULE *native)
-{return status_identity(w,(attachment *)owner,native);}
 static win16_control_status_frame_view status_frame_view(status_draw_scope *s)
 {
     const win16_control_status_frame_view view={s->owner,s->window,s->dc,s->native,s->epoch,s->count,
