@@ -7,6 +7,7 @@
 #include "../lib/win16-control/basic_paint.h"
 #include "../lib/win16-control/combo_paint.h"
 #include "../lib/win16-control/native_combo_identity.h"
+#include "../lib/win16-control/cool_grip_identity.h"
 #include "../lib/win16-control/choice_paint.h"
 #include "../lib/win16-control/special_paint.h"
 #include "../lib/win16-control/spin_identity.h"
@@ -1020,44 +1021,20 @@ static BOOL cool_identity(HWND w,attachment *a)
         GetClassInfoExW(a->cool_owner,L"TCoolBar",&c) && c.lpfnWndProc &&
         GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)c.lpfnWndProc,&proc) && proc==a->cool_owner;
 }
+static BOOL cool_identity_callback(HWND w,void *owner)
+{return cool_identity(w,(attachment *)owner);}
 static BOOL cool_grip(HWND w,attachment *a,const NMCUSTOMDRAW *n)
 {
-    RECT band={0},border={0},client={0},child={0},overlap;POINT wo={0},vo={0};WCHAR text[2]={0xffff,0xffff};
-    REBARBANDINFOW info={.cbSize=REBARBANDINFOW_V3_SIZE,.fMask=RBBIM_BACKGROUND|RBBIM_STYLE|RBBIM_CHILD|RBBIM_TEXT|RBBIM_IMAGE|RBBIM_COLORS,.lpText=text,.cch=ARRAYSIZE(text),.iImage=-1};
     WNDPROC native=cool_observing && cool_observing->owner==a && cool_observing->window==w?cool_observing->native:NULL;
-    if(!cool_identity(w,a) || !native || !n->hdc || WindowFromDC(n->hdc)!=w || GetMapMode(n->hdc)!=MM_TEXT || (GetLayout(n->hdc)&LAYOUT_RTL) ||
-       !GetWindowOrgEx(n->hdc,&wo) || !GetViewportOrgEx(n->hdc,&vo) || wo.x || wo.y || vo.x || vo.y ||
-       (GetWindowLongPtrW(w,GWL_STYLE)&CCS_VERT))return FALSE;
-    LRESULT i=CallWindowProcW(native,w,RB_IDTOINDEX,n->dwItemSpec,0);
-    if(i<0 || !cool_identity(w,a) || !CallWindowProcW(native,w,RB_GETRECT,(WPARAM)i,(LPARAM)&band) || !cool_identity(w,a) ||
-       !CallWindowProcW(native,w,RB_GETBANDINFOW,(WPARAM)i,(LPARAM)&info) || !cool_identity(w,a))return FALSE;
-    CallWindowProcW(native,w,RB_GETBANDBORDERS,(WPARAM)i,(LPARAM)&border);
-    if(!cool_identity(w,a))return FALSE;
-    COLORREF barback=(COLORREF)CallWindowProcW(native,w,RB_GETBKCOLOR,0,0);
-    if(!cool_identity(w,a))return FALSE;
-    COLORREF barfore=(COLORREF)CallWindowProcW(native,w,RB_GETTEXTCOLOR,0,0);
-    if(!cool_identity(w,a) || (barback!=CLR_NONE && barback!=GetSysColor(COLOR_BTNFACE)) ||
-       (barfore!=CLR_NONE && barfore!=GetSysColor(COLOR_BTNTEXT)) ||
-       info.clrBack!=GetSysColor(COLOR_BTNFACE) || info.clrFore!=GetSysColor(COLOR_BTNTEXT) || info.hbmBack || text[0] || info.cch>ARRAYSIZE(text) || info.iImage!=-1 || !info.hwndChild || GetParent(info.hwndChild)!=w ||
-       (info.fStyle&~(RBBS_BREAK|RBBS_FIXEDBMP|RBBS_GRIPPERALWAYS)) || !GetClientRect(w,&client) || !GetWindowRect(info.hwndChild,&child))return FALSE;
-    MapWindowPoints(NULL,w,(POINT*)&child,2);UINT dpi=GetDpiForWindow(w);RECT r=n->rc;
-    return cool_identity(w,a) && dpi && !IsRectEmpty(&r) && r.left==band.left && r.top==band.top && r.bottom==band.bottom &&
-        border.left>0 && r.right<=band.left+border.left && r.right-r.left<=MulDiv(12,dpi,96) &&
-        r.left>=client.left && r.top>=client.top && r.right<=client.right && r.bottom<=client.bottom && !IntersectRect(&overlap,&r,&child);
+    return win16_control_cool_grip_identity(w,a,n,native,cool_identity_callback);
 }
+static BOOL cool_grip_callback(HWND w,void *owner,const NMCUSTOMDRAW *draw)
+{return cool_grip(w,(attachment *)owner,draw);}
 static LRESULT CALLBACK cool_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
-    (void)id;attachment *a=(attachment*)data;cool_scope *s=cool_current;
-    if(m!=WM_NOTIFY || !l || !s || s->owner!=a || s->window!=((NMHDR*)l)->hwndFrom || ((NMHDR*)l)->code!=NM_CUSTOMDRAW || !cool_identity(s->window,a))return DefSubclassProc(parent,m,p,l);
-    NMCUSTOMDRAW *n=(NMCUSTOMDRAW*)l;
-    if(n->dwDrawStage==CDDS_PREPAINT){LRESULT base=DefSubclassProc(parent,m,p,l);s->ours=base==CDRF_DODEFAULT && cool_identity(s->window,a);return s->ours?CDRF_NOTIFYITEMDRAW:base;}
-    if(!s->ours || !cool_identity(s->window,a))return DefSubclassProc(parent,m,p,l);
-    if(n->dwDrawStage==CDDS_ITEMPREPAINT)return CDRF_NOTIFYPOSTPAINT;
-    if(n->dwDrawStage==CDDS_ITEMPOSTPAINT){
-        if(cool_grip(s->window,a,n) && win16_control_cool_grip(n->hdc,&n->rc))a->cool_verified=TRUE;
-        return CDRF_DODEFAULT;
-    }
-    return DefSubclassProc(parent,m,p,l);
+    (void)id;attachment *a=(attachment *)data;cool_scope *s=cool_current;
+    return win16_control_cool_notify(parent,m,p,l,a,s && s->owner==a?s->window:NULL,
+        s && s->owner==a?&s->ours:NULL,&a->cool_verified,cool_identity_callback,cool_grip_callback);
 }
 static void cool_unbind(attachment *a)
 {
