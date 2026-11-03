@@ -567,13 +567,13 @@ BOOL ntw16s_rich_valid(HWND w)
 {attachment *a=lookup(w);return !a || a->detached || ((!a->rich_candidate || !a->rich_installed || rich_identity(w,a)) && (!a->box_candidate || !a->box_installed || win16_control_box_identity(w,a->box_owner,a->box_parent)));}
 static _Thread_local BOOL month_query_active;
 static void month_query_end(void *unused){(void)unused;month_query_active=FALSE;}
+static win16_control_month_view month_view(static_paint_scope *s);
 static NTW16S_UNWIND_FUNCTION void month_header_query(HWND w,static_paint_scope *scope)
-{if(month_query_active)return;ntw16s_unwind_scope unwind;MCGRIDINFO grid={.cbSize=sizeof(grid),.dwPart=MCGIP_CALENDARHEADER,.dwFlags=MCGIF_RECT};
+{
+ ntw16s_unwind_scope unwind;
+ if(month_query_active)return;
  scope->month.header_valid=FALSE;month_query_active=TRUE;NTW16S_UNWIND_BEGIN(unwind,month_query_end,NULL);
- LRESULT count=SendMessageW(w,MCM_GETCALENDARCOUNT,0,0);
- if(count==1 && static_paint==scope && !scope->owner->detached && rich_identity(w,scope->owner) && SendMessageW(w,MCM_GETCALENDARGRIDINFO,0,(LPARAM)&grid) && static_paint==scope && !scope->owner->detached && rich_identity(w,scope->owner) && grid.rc.right>grid.rc.left && grid.rc.bottom>grid.rc.top){scope->month.header=grid.rc;scope->month.header_valid=TRUE;scope->month.header_known=TRUE;
- MCGRIDINFO prev={.cbSize=sizeof(prev),.dwPart=MCGIP_PREV,.dwFlags=MCGIF_RECT},next={.cbSize=sizeof(next),.dwPart=MCGIP_NEXT,.dwFlags=MCGIF_RECT};
- if(SendMessageW(w,MCM_GETCALENDARGRIDINFO,0,(LPARAM)&prev) && static_paint==scope && !scope->owner->detached && rich_identity(w,scope->owner) && SendMessageW(w,MCM_GETCALENDARGRIDINFO,0,(LPARAM)&next) && static_paint==scope && !scope->owner->detached && rich_identity(w,scope->owner) && prev.rc.right>prev.rc.left && next.rc.right>next.rc.left){scope->month.prev=prev.rc;scope->month.next=next.rc;scope->month.nav_valid=TRUE;}}
+ const win16_control_month_view view=month_view(scope);win16_control_month_query(w,&view);
  NTW16S_UNWIND_END(unwind);
 }
 void ntw16s_rich_witness(WNDPROC proc,HWND w,UINT msg,const void *address,BOOL wide)

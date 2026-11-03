@@ -3,6 +3,7 @@
 #include "special_paint.h"
 #include "font.h"
 #include <vssym32.h>
+#include <commctrl.h>
 
 void win16_control_month_arrow(const win16_control_month_view *v,HTHEME theme,HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address)
 {const win16_control_month_view *s=v;HMODULE caller=NULL,native=GetModuleHandleW(L"comctl32.dll");
@@ -36,4 +37,13 @@ void win16_control_month_selection_text(const win16_control_month_view *v,HTHEME
     r->left!=cell->left || r->top!=cell->top || r->right>cell->right || r->bottom!=cell->bottom ||
     !month_draw_identity(s,theme,dc,address) || FAILED(GetThemeColor(theme,part,state,TMT_TEXTCOLOR,&foreground)) || foreground!=RGB(0,0,0))return;
  win16_control_month_fill(dc,cell,s->state->has_clip?&s->state->clip:NULL);
+}
+
+void win16_control_month_query(HWND w,const win16_control_month_view *v)
+{
+ MCGRIDINFO grid={.cbSize=sizeof(grid),.dwPart=MCGIP_CALENDARHEADER,.dwFlags=MCGIF_RECT};
+ LRESULT count=SendMessageW(w,MCM_GETCALENDARCOUNT,0,0);
+ if(count==1 && v->current(v->scope) && !*v->detached && v->identity(w,v->owner) && SendMessageW(w,MCM_GETCALENDARGRIDINFO,0,(LPARAM)&grid) && v->current(v->scope) && !*v->detached && v->identity(w,v->owner) && grid.rc.right>grid.rc.left && grid.rc.bottom>grid.rc.top){v->state->header=grid.rc;v->state->header_valid=TRUE;v->state->header_known=TRUE;
+ MCGRIDINFO prev={.cbSize=sizeof(prev),.dwPart=MCGIP_PREV,.dwFlags=MCGIF_RECT},next={.cbSize=sizeof(next),.dwPart=MCGIP_NEXT,.dwFlags=MCGIF_RECT};
+ if(SendMessageW(w,MCM_GETCALENDARGRIDINFO,0,(LPARAM)&prev) && v->current(v->scope) && !*v->detached && v->identity(w,v->owner) && SendMessageW(w,MCM_GETCALENDARGRIDINFO,0,(LPARAM)&next) && v->current(v->scope) && !*v->detached && v->identity(w,v->owner) && prev.rc.right>prev.rc.left && next.rc.right>next.rc.left){v->state->prev=prev.rc;v->state->next=next.rc;v->state->nav_valid=TRUE;}}
 }
