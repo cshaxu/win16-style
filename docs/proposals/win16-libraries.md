@@ -94,3 +94,33 @@ S22 已完成控件样式库交付；本节的对话框候选已准入 S23，仍
 | `global_*`、进程注入和传播 | 用户明确要求留在 DLL；不把这些文件迁出，不更改其接入流程。 |
 
 验收仍需逐项证明业务实现没有留在调用层或重复存在、库独立链接且两种启动路径使用同一实现；仅凭以上清单或聚焦回归不能证明全部完成。日历、滚动条视觉和 144 DPI 微调控件既有差异按 CURRENT 记录，不能记为通过。Win2000 的公共主题接口仍是后续设计，不能以现有 Win16 私有接口宣称已实现。
+
+## S24 final responsibility audit
+
+The completed split is by responsibility, not by an unsafe physical move of
+whole mixed DLL files. `win16-control` owns all Win16 layout, palette, font,
+glyph, hit-test, paint, message-policy, control-state, and attachment-policy
+algorithms. `win16-dialog` owns all dialog eligibility, parameter/result
+conversion, classic-layout coordination, dialog chrome, COM-proxy policy and
+dialog state helpers. Neither library includes a `ntw16s-dll` header or links
+to the product DLL; both are independently whole-archive linked by the native
+library tests.
+
+The remaining code in the DLL is deliberately limited to the process-local
+adapter boundary:
+
+| DLL area | Retained responsibility | Why it is not library style logic |
+| --- | --- | --- |
+| `attachment.c` | HWND subclass installation, per-thread scopes, native callback entry and exact unwind order | It supplies handles and callbacks to library views; it has no direct Win16 drawing call. |
+| `controls.c` | `SUBCLASSPROC` entry, native control callbacks and TLS/unwind ownership | It assembles service tables; control drawing, state transitions and policy are library implementations. |
+| `win16_style.c` | frame subclass entry, per-thread menu hook and DWM/USER callback binding | Frame geometry, painting, input policy and lifecycle are delegated to `win16-control`. |
+| `window_titles.c` | imported API trampolines, creation scopes and original-error preservation | Hook leaves only call the renderer/adapters; they must remain beside the original trampolines. |
+| `file_dialogs.c`, `folder_dialogs.c`, `com_dialogs.c` | original Win32/COM hook leaves, TLS/session scope, COM reference and unwind ownership | Dialog conversion, result/state logic and classic chrome live in `win16-dialog`; the remaining code binds it to original APIs. |
+
+The final static sweep found zero direct Win16 drawing calls in those seven DLL
+adapter files. API names such as `DrawThemeBackground`, `BitBlt`, and
+`DrawText` remain only as intercepted original trampoline declarations and
+calls. Moving those leaves into either library would make the library depend
+backwards on DLL-local original pointers, loader scope, TLS and unwind code,
+breaking the intended one-way dependency. `global_*` remains untouched in the
+DLL as required.

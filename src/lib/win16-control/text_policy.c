@@ -1,6 +1,22 @@
 #include "text_policy.h"
 #include "font.h"
 
+BOOL win16_control_vb_text_caller(const void *address,BOOL (*report_caller)(HMODULE))
+{
+    HMODULE caller=NULL;
+    if(!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+            (const WCHAR *)address,&caller))return FALSE;
+    return report_caller(caller) || caller==GetModuleHandleW(L"MSVBVM60.DLL") || caller==GetModuleHandleW(L"MSVBVM50.DLL") || caller==GetModuleHandleW(L"USER32.DLL") ||
+        caller==GetModuleHandleW(L"LPK.DLL") || caller==GetModuleHandleW(L"USP10.DLL") || caller==GetModuleHandleW(L"GDI32FULL.DLL");
+}
+BOOL win16_control_vb_label_caller(const void *address,BOOL direct)
+{
+    if(direct)return TRUE;
+    HMODULE caller=NULL;
+    return GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+        (const WCHAR *)address,&caller) && (caller==GetModuleHandleW(L"MSVBVM50.DLL") || caller==GetModuleHandleW(L"MSVBVM60.DLL"));
+}
+
 BOOL win16_control_report_wide_text(HDC dc,const WCHAR *text,int count,BOOL active)
 {
     if(!active)return TRUE;

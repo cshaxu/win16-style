@@ -389,21 +389,10 @@ static BOOL WINAPI hook_enable_scroll(HWND w,UINT bar,UINT arrows)
  * lease can be released; no application HFONT/property/layout is modified. */
 static _Thread_local unsigned vb_text_busy;
 static BOOL vb_text_caller(const void *address)
-{
-    HMODULE caller=NULL;
-    if(!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-            (const WCHAR *)address,&caller))return FALSE;
-    return ntw16s_report_paint_caller(caller) || (caller==GetModuleHandleW(L"MSVBVM60.DLL") || caller==GetModuleHandleW(L"MSVBVM50.DLL")) || caller==GetModuleHandleW(L"USER32.DLL") ||
-        caller==GetModuleHandleW(L"LPK.DLL") || caller==GetModuleHandleW(L"USP10.DLL") ||
-        caller==GetModuleHandleW(L"GDI32FULL.DLL");
-}
+{return win16_control_vb_text_caller(address,ntw16s_report_paint_caller);}
 static BOOL vb_label_caller(const void *address)
-{
-    if(ntw16s_vb_direct_text_allowed())return TRUE;
-    HMODULE caller=NULL;
-    return GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-        (const WCHAR *)address,&caller) && (caller==GetModuleHandleW(L"MSVBVM50.DLL") || caller==GetModuleHandleW(L"MSVBVM60.DLL"));
-}
+{return win16_control_vb_label_caller(address,ntw16s_vb_direct_text_allowed());}
+
 /* The report adapter promises only whole, reversible CP1252 runs. Keep
  * measurements and unsupported language/RTL runs on the native font. */
 static BOOL report_wide_text(HDC dc,const WCHAR *text,int count)

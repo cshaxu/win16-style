@@ -44,6 +44,8 @@ static void test_button_paint(HWND w,void *context,int hit)
 {(void)w;(void)context;if(hit==HTMINBUTTON)++button_paints;}
 static BOOL test_decode(HDC dc,const WCHAR *input,UINT count,WCHAR *output)
 {(void)dc;for(UINT i=0;i<count;++i)output[i]=input[i];return TRUE;}
+static BOOL test_report_caller(HMODULE module)
+{return module==GetModuleHandleW(NULL);}
 int main(void)
 {
     if(win16_control_theme_kind(L"BUTTON")!=WIN16_CONTROL_THEME_BUTTON ||
@@ -52,6 +54,10 @@ int main(void)
        win16_control_theme_kind(NULL)!=WIN16_CONTROL_THEME_OTHER ||
        win16_control_theme_kind((LPCWSTR)(UINT_PTR)1)!=WIN16_CONTROL_THEME_OTHER ||
        win16_control_theme_kind(L"SCROLLBAR")!=WIN16_CONTROL_THEME_OTHER)return 104;
+    if(!win16_control_vb_text_caller((const void *)test_report_caller,test_report_caller) ||
+       win16_control_vb_text_caller((const void *)(UINT_PTR)1,test_report_caller) ||
+       !win16_control_vb_label_caller((const void *)(UINT_PTR)1,TRUE) ||
+       win16_control_vb_label_caller((const void *)(UINT_PTR)1,FALSE))return 106;
     win16_attachment_initial_classification initial={0};
     win16_control_vcl_candidates vcl={0};win16_control_vcl_extra_candidates extra={0};
     initial.owner=(HMODULE)(UINT_PTR)1;
