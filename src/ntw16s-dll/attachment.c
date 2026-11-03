@@ -208,20 +208,7 @@ static attachment *lookup(HWND w)
     return GetWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc,&value)?(attachment *)value:NULL;
 }
 static BOOL mdi_identity(HWND w,HWND parent,HWND host,HMODULE owner)
-{
-    DWORD pid=0,host_pid=0,client_pid=0;
-    return owner && parent && host && IsWindow(w) && IsWindow(parent) && IsWindow(host) &&
-        GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
-        GetWindowThreadProcessId(parent,&client_pid)==GetCurrentThreadId() && client_pid==pid &&
-        GetWindowThreadProcessId(host,&host_pid)==GetCurrentThreadId() && host_pid==pid &&
-        GetParent(w)==parent && GetParent(parent)==host && ntw16s_class_is(w,L"TForm") &&
-        ntw16s_class_is(parent,L"MDIClient") && ntw16s_class_is(host,L"TForm") &&
-        (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==GetModuleHandleW(L"user32.dll") &&
-        (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==owner &&
-        (HMODULE)GetClassLongPtrW(host,GCLP_HMODULE)==owner && lookup(host) &&
-        (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_MDICHILD) &&
-        (GetWindowLongPtrW(w,GWL_STYLE)&WS_CAPTION)==WS_CAPTION;
-}
+{return win16_attachment_mdi_identity(w,parent,host,owner,lookup);}
 static BOOL controlbar_identity(HWND w,attachment *a)
 {
     if(!a)return FALSE;
@@ -236,106 +223,42 @@ static BOOL rich_identity(HWND w,attachment *a)
 }
 
 static BOOL combo_same_role(HWND w,attachment *a)
-{return win16_control_combo_identity(w,a->combo_parent) && ((DWORD)GetWindowLongPtrW(w,GWL_STYLE)&3)==a->combo_original_type;}
+{return win16_attachment_combo_same_role(w,a);}
 BOOL ntw16s_vcl_combo_candidate(HWND w)
-{attachment *a=lookup(w);return a && !a->detached && a->combo_candidate;}
+{return win16_attachment_vcl_combo_candidate(w,lookup(w));}
 BOOL ntw16s_vcl_combo_valid(HWND w)
-{
-    attachment *a=lookup(w);return !a || a->detached || !a->combo_candidate || !a->edit_installed || combo_same_role(w,a);
-}
+{return win16_attachment_vcl_combo_valid(w,lookup(w));}
 BOOL ntw16s_group_button_valid(HWND w)
-{
-    attachment *a=lookup(w);
-    return !a || a->detached || !a->group_button_candidate || !a->group_button_installed ||
-        (a->group_button_parent==GetParent(w) && win16_control_group_button_identity(w));
-}
+{return win16_attachment_group_button_valid(w,lookup(w));}
 BOOL ntw16s_group_push_button(HWND w)
-{
-    attachment *a=lookup(w);WCHAR name[64];
-    return a && !a->detached && a->group_button_candidate && a->group_button_installed &&
-        a->group_button_parent==GetParent(w) && win16_control_group_button_identity(w) &&
-        GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TButton");
-}
+{return win16_attachment_group_push_button(w,lookup(w));}
 BOOL ntw16s_group_choice_button(HWND w)
-{
-    attachment *a=lookup(w);WCHAR name[64];
-    return a && !a->detached && a->group_button_candidate && a->group_button_installed &&
-        a->group_button_parent==GetParent(w) && win16_control_group_button_identity(w) &&
-        GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TCheckBox") || !lstrcmpW(name,L"TRadioButton") || !lstrcmpW(name,L"TGroupButton"));
-}
+{return win16_attachment_group_choice_button(w,lookup(w));}
 
 BOOL ntw16s_vb_data_valid(HWND w)
-{
-    attachment *a=lookup(w);
-    return !a || a->detached || !a->vb_data_edge || win16_control_vb_data_role(w,a->vb_data_parent);
-}
+{return win16_attachment_vb_data_valid(w,lookup(w));}
 BOOL ntw16s_vb_data_attached(HWND w)
-{
-    attachment *a=lookup(w);
-    return a && !a->detached && a->vb_data_edge && win16_control_vb_data_role(w,a->vb_data_parent);
-}
+{return win16_attachment_vb_data_attached(w,lookup(w));}
 
 
 BOOL ntw16s_vb_user_label_target(HWND w)
-{
-    attachment *a=lookup(w);
-    if(!a || a->detached || !a->vb_user_candidate)return FALSE;
-    HWND parent=GetParent(w);
-    return win16_control_vb_user_edge_role(w,parent) && (!a->vb_user_parent || a->vb_user_parent==parent);
-}
+{return win16_attachment_vb_user_label_target(w,lookup(w));}
 BOOL ntw16s_vb_user_edge_dormant(HWND w)
-{
-    attachment *a=lookup(w);
-    return a && !a->detached && a->vb_user_edge && win16_control_vb_user_edge_role(w,a->vb_user_parent) &&
-        !(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE);
-}
+{return win16_attachment_vb_user_edge_dormant(w,lookup(w));}
 BOOL ntw16s_vb_user_edge_valid(HWND w)
-{
-    attachment *a=lookup(w);
-    return !a || a->detached || !a->vb_user_edge || win16_control_vb_user_edge_identity(w,a->vb_user_parent);
-}
+{return win16_attachment_vb_user_edge_valid(w,lookup(w));}
 BOOL ntw16s_grid_valid(HWND w)
-{
-    attachment *a=lookup(w);
-    return !a || a->detached || !a->grid_candidate || !a->grid_installed || win16_control_grid_identity(w,a->grid_owner,a->grid_parent);
-}
+{return win16_attachment_grid_valid(w,lookup(w));}
 BOOL ntw16s_vcl_toolbar_valid(HWND w)
-{
-    attachment *a=lookup(w);
-    return !a || a->detached || !a->vcl_toolbar_candidate || !a->vcl_toolbar_installed ||
-        win16_control_vcl_toolbar_identity(w,a->vcl_toolbar_owner,a->vcl_toolbar_parent);
-}
+{return win16_attachment_vcl_toolbar_valid(w,lookup(w));}
 BOOL ntw16s_vcl_tab_valid(HWND w)
-{
-    attachment *a=lookup(w);WCHAR name[64];
-    return !a || a->detached || !a->tab_candidate || !a->tab_installed ||
-        (GetParent(w)==a->tab_parent && GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TTabControl") || !lstrcmpW(name,L"TTabbedNotebook") || !lstrcmpW(name,L"TPageControl")) &&
-         !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)));
-}
+{return win16_attachment_vcl_tab_valid(w,lookup(w));}
 /* Observe only the exact data edit forwarding its own paint to ANSI EDIT. */
 void ntw16s_dbedit_ansi_witness(WNDPROC proc,HWND w,UINT message,const void *address)
-{
-    WNDCLASSEXA native={.cbSize=sizeof(native)};HMODULE caller=NULL,owner;WCHAR name[64];
-    if(message!=WM_PAINT || !static_paint || static_paint->window!=w || !static_paint->owner->edit_candidate ||
-        static_paint->owner->detached || static_paint->owner->edit_attempted || lookup(w)!=static_paint->owner ||
-        !GetClassNameW(w,name,ARRAYSIZE(name)) || lstrcmpW(name,L"TDBEdit") ||
-        !GetClassInfoExA(NULL,"EDIT",&native) || proc!=native.lpfnWndProc ||
-        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller))return;
-    owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
-    if(owner && caller==owner)static_paint->owner->edit_witness_owner=owner;
-}
+{win16_attachment_dbedit_ansi_witness(proc,w,message,address,static_paint?static_paint->owner:NULL,static_paint?static_paint->window:NULL,lookup);}
 /* Data-aware ANSI combos must forward their own paint to the native class. */
 void ntw16s_dbcombo_ansi_witness(WNDPROC proc,HWND w,UINT message,const void *address)
-{
-    WNDCLASSEXA native={.cbSize=sizeof(native)};HMODULE caller=NULL,owner;WCHAR name[64];
-    if(message!=WM_PAINT || !static_paint || static_paint->window!=w || !static_paint->owner->combo_candidate ||
-        static_paint->owner->detached || static_paint->owner->edit_attempted || lookup(w)!=static_paint->owner ||
-        !GetClassNameW(w,name,ARRAYSIZE(name)) || lstrcmpW(name,L"TDBComboBox") ||
-        !GetClassInfoExA(NULL,"COMBOBOX",&native) || proc!=native.lpfnWndProc ||
-        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller))return;
-    owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
-    if(owner && caller==owner)static_paint->owner->edit_witness_owner=owner;
-}
+{win16_attachment_dbcombo_ansi_witness(proc,w,message,address,static_paint?static_paint->owner:NULL,static_paint?static_paint->window:NULL,lookup);}
 BOOL ntw16s_static_call_begin(ntw16s_static_call *scope,WNDPROC proc,HWND w,UINT message,const void *address)
 {
     ZeroMemory(scope,sizeof(*scope));

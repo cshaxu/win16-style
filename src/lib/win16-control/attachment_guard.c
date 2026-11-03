@@ -634,3 +634,131 @@ win16_attachment_dispatch win16_attachment_dispatch_kind(HWND w,attachment *a,UI
     if(nested_static || win16_attachment_static_paint(a,m))return WIN16_ATTACHMENT_DISPATCH_STATIC;
     return WIN16_ATTACHMENT_DISPATCH_NATIVE;
 }
+
+BOOL win16_attachment_mdi_identity(HWND w,HWND parent,HWND host,HMODULE owner,attachment *(*lookup)(HWND))
+{
+    DWORD pid=0,host_pid=0,client_pid=0;
+    return owner && parent && host && IsWindow(w) && IsWindow(parent) && IsWindow(host) &&
+        GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
+        GetWindowThreadProcessId(parent,&client_pid)==GetCurrentThreadId() && client_pid==pid &&
+        GetWindowThreadProcessId(host,&host_pid)==GetCurrentThreadId() && host_pid==pid &&
+        GetParent(w)==parent && GetParent(parent)==host && ntw16s_class_is(w,L"TForm") &&
+        ntw16s_class_is(parent,L"MDIClient") && ntw16s_class_is(host,L"TForm") &&
+        (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==GetModuleHandleW(L"user32.dll") &&
+        (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==owner &&
+        (HMODULE)GetClassLongPtrW(host,GCLP_HMODULE)==owner && lookup(host) &&
+        (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_MDICHILD) &&
+        (GetWindowLongPtrW(w,GWL_STYLE)&WS_CAPTION)==WS_CAPTION;
+}
+
+BOOL win16_attachment_combo_same_role(HWND w,attachment *a)
+{return win16_control_combo_identity(w,a->combo_parent) && ((DWORD)GetWindowLongPtrW(w,GWL_STYLE)&3)==a->combo_original_type;}
+
+BOOL win16_attachment_vcl_combo_candidate(HWND w,attachment *a)
+{(void)w;return a && !a->detached && a->combo_candidate;}
+
+BOOL win16_attachment_vcl_combo_valid(HWND w,attachment *a)
+{
+    return !a || a->detached || !a->combo_candidate || !a->edit_installed || win16_attachment_combo_same_role(w,a);
+}
+
+BOOL win16_attachment_group_button_valid(HWND w,attachment *a)
+{
+
+    return !a || a->detached || !a->group_button_candidate || !a->group_button_installed ||
+        (a->group_button_parent==GetParent(w) && win16_control_group_button_identity(w));
+}
+
+BOOL win16_attachment_group_push_button(HWND w,attachment *a)
+{
+    WCHAR name[64];
+    return a && !a->detached && a->group_button_candidate && a->group_button_installed &&
+        a->group_button_parent==GetParent(w) && win16_control_group_button_identity(w) &&
+        GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TButton");
+}
+
+BOOL win16_attachment_group_choice_button(HWND w,attachment *a)
+{
+    WCHAR name[64];
+    return a && !a->detached && a->group_button_candidate && a->group_button_installed &&
+        a->group_button_parent==GetParent(w) && win16_control_group_button_identity(w) &&
+        GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TCheckBox") || !lstrcmpW(name,L"TRadioButton") || !lstrcmpW(name,L"TGroupButton"));
+}
+
+BOOL win16_attachment_vb_data_valid(HWND w,attachment *a)
+{
+
+    return !a || a->detached || !a->vb_data_edge || win16_control_vb_data_role(w,a->vb_data_parent);
+}
+
+BOOL win16_attachment_vb_data_attached(HWND w,attachment *a)
+{
+
+    return a && !a->detached && a->vb_data_edge && win16_control_vb_data_role(w,a->vb_data_parent);
+}
+
+BOOL win16_attachment_vb_user_label_target(HWND w,attachment *a)
+{
+
+    if(!a || a->detached || !a->vb_user_candidate)return FALSE;
+    HWND parent=GetParent(w);
+    return win16_control_vb_user_edge_role(w,parent) && (!a->vb_user_parent || a->vb_user_parent==parent);
+}
+
+BOOL win16_attachment_vb_user_edge_dormant(HWND w,attachment *a)
+{
+
+    return a && !a->detached && a->vb_user_edge && win16_control_vb_user_edge_role(w,a->vb_user_parent) &&
+        !(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE);
+}
+
+BOOL win16_attachment_vb_user_edge_valid(HWND w,attachment *a)
+{
+
+    return !a || a->detached || !a->vb_user_edge || win16_control_vb_user_edge_identity(w,a->vb_user_parent);
+}
+
+BOOL win16_attachment_grid_valid(HWND w,attachment *a)
+{
+
+    return !a || a->detached || !a->grid_candidate || !a->grid_installed || win16_control_grid_identity(w,a->grid_owner,a->grid_parent);
+}
+
+BOOL win16_attachment_vcl_toolbar_valid(HWND w,attachment *a)
+{
+
+    return !a || a->detached || !a->vcl_toolbar_candidate || !a->vcl_toolbar_installed ||
+        win16_control_vcl_toolbar_identity(w,a->vcl_toolbar_owner,a->vcl_toolbar_parent);
+}
+
+BOOL win16_attachment_vcl_tab_valid(HWND w,attachment *a)
+{
+    WCHAR name[64];
+    return !a || a->detached || !a->tab_candidate || !a->tab_installed ||
+        (GetParent(w)==a->tab_parent && GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TTabControl") || !lstrcmpW(name,L"TTabbedNotebook") || !lstrcmpW(name,L"TPageControl")) &&
+         !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)));
+}
+
+void win16_attachment_dbedit_ansi_witness(WNDPROC proc,HWND w,UINT message,const void *address,attachment *a,HWND observed,attachment *(*lookup)(HWND))
+{
+    WNDCLASSEXA native={.cbSize=sizeof(native)};HMODULE caller=NULL,owner;WCHAR name[64];
+    if(message!=WM_PAINT || !a || observed!=w || !a->edit_candidate ||
+        a->detached || a->edit_attempted || lookup(w)!=a ||
+        !GetClassNameW(w,name,ARRAYSIZE(name)) || lstrcmpW(name,L"TDBEdit") ||
+        !GetClassInfoExA(NULL,"EDIT",&native) || proc!=native.lpfnWndProc ||
+        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller))return;
+    owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+    if(owner && caller==owner)a->edit_witness_owner=owner;
+}
+
+void win16_attachment_dbcombo_ansi_witness(WNDPROC proc,HWND w,UINT message,const void *address,attachment *a,HWND observed,attachment *(*lookup)(HWND))
+{
+    WNDCLASSEXA native={.cbSize=sizeof(native)};HMODULE caller=NULL,owner;WCHAR name[64];
+    if(message!=WM_PAINT || !a || observed!=w || !a->combo_candidate ||
+        a->detached || a->edit_attempted || lookup(w)!=a ||
+        !GetClassNameW(w,name,ARRAYSIZE(name)) || lstrcmpW(name,L"TDBComboBox") ||
+        !GetClassInfoExA(NULL,"COMBOBOX",&native) || proc!=native.lpfnWndProc ||
+        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller))return;
+    owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+    if(owner && caller==owner)a->edit_witness_owner=owner;
+}

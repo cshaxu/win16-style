@@ -56,6 +56,23 @@ typedef struct win16_attachment_guard_services {
 } win16_attachment_guard_services;
 HMODULE win16_attachment_observe_native(HWND,UINT,WNDPROC,const void *,attachment *,HWND,
     attachment *,HWND,WNDPROC *,attachment *(*)(HWND));
+BOOL win16_attachment_mdi_identity(HWND,HWND,HWND,HMODULE,attachment *(*)(HWND));
+BOOL win16_attachment_combo_same_role(HWND,attachment *);
+BOOL win16_attachment_vcl_combo_candidate(HWND,attachment *);
+BOOL win16_attachment_vcl_combo_valid(HWND,attachment *);
+BOOL win16_attachment_group_button_valid(HWND,attachment *);
+BOOL win16_attachment_group_push_button(HWND,attachment *);
+BOOL win16_attachment_group_choice_button(HWND,attachment *);
+BOOL win16_attachment_vb_data_valid(HWND,attachment *);
+BOOL win16_attachment_vb_data_attached(HWND,attachment *);
+BOOL win16_attachment_vb_user_label_target(HWND,attachment *);
+BOOL win16_attachment_vb_user_edge_dormant(HWND,attachment *);
+BOOL win16_attachment_vb_user_edge_valid(HWND,attachment *);
+BOOL win16_attachment_grid_valid(HWND,attachment *);
+BOOL win16_attachment_vcl_toolbar_valid(HWND,attachment *);
+BOOL win16_attachment_vcl_tab_valid(HWND,attachment *);
+void win16_attachment_dbedit_ansi_witness(WNDPROC,HWND,UINT,const void *,attachment *,HWND,attachment *(*)(HWND));
+void win16_attachment_dbcombo_ansi_witness(WNDPROC,HWND,UINT,const void *,attachment *,HWND,attachment *(*)(HWND));
 void win16_attachment_retire_frames(HWND,attachment *);
 void win16_attachment_guard_cool(HWND,UINT,attachment *,const win16_attachment_guard_services *);
 void win16_attachment_guard_roles(HWND,UINT,attachment *,const win16_attachment_guard_services *);
