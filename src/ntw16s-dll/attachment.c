@@ -6,6 +6,7 @@
 #include "static_text.h"
 #include "../lib/win16-control/basic_paint.h"
 #include "../lib/win16-control/combo_paint.h"
+#include "../lib/win16-control/native_combo_identity.h"
 #include "../lib/win16-control/choice_paint.h"
 #include "../lib/win16-control/special_paint.h"
 #include "../lib/win16-control/spin_identity.h"
@@ -1128,61 +1129,14 @@ static void status_print_end(void *data)
 static NTW16S_UNWIND_FUNCTION LRESULT status_print_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,ntw16s_vb_paint *paint,status_draw_scope *prior,spin_draw_scope *spin_prior)
 {status_print_unwind state={a,paint,prior,spin_prior,FALSE,static_paint!=NULL};ntw16s_unwind_scope unwind;DWORD entry=GetLastError(),error;LRESULT result;
  NTW16S_UNWIND_BEGIN(unwind,status_print_end,&state);SetLastError(entry);result=state.nested?static_paint_dispatch(a,w,m,p,l,NULL,NULL,NULL):DefSubclassProc(w,m,p,l);error=GetLastError();state.completed=TRUE;NTW16S_UNWIND_END(unwind);SetLastError(error);return result;}
-/* The application owns owner-drawn swatches and text. Only the documented
- * native button rectangle is eligible for post-paint chrome. */
 static BOOL color_identity(HWND w,attachment *a,COMBOBOXINFO *info)
-{
-    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
-    WNDCLASSEXW native={.cbSize=sizeof(native)};RECT client,overlap;
-    if(a->detached || !IsWindow(w) || !a->color_witness_owner ||
-       (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)!=a->color_witness_owner ||
-       (style&3)!=CBS_DROPDOWNLIST || !(style&CBS_OWNERDRAWFIXED) || !(style&CBS_HASSTRINGS) ||
-       (style&CBS_OWNERDRAWVARIABLE) || (ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) ||
-       !GetParent(w) || (a->color_parent && GetParent(w)!=a->color_parent) ||
-       GetWindowThreadProcessId(GetParent(w),NULL)!=GetCurrentThreadId() ||
-       !GetClassInfoExW(NULL,L"COMBOBOX",&native) ||
-       GetClassLongPtrW(w,GCL_CBWNDEXTRA)<(ULONG_PTR)native.cbWndExtra ||
-       !GetComboBoxInfo(w,info) || a->detached || info->hwndCombo!=w || info->hwndItem!=w ||
-       !info->hwndList || GetWindowThreadProcessId(info->hwndList,NULL)!=GetCurrentThreadId() ||
-       !GetClientRect(w,&client) || info->rcButton.left<client.left || info->rcButton.top<client.top ||
-       info->rcButton.right>client.right || info->rcButton.bottom>client.bottom || IsRectEmpty(&info->rcButton) ||
-       IntersectRect(&overlap,&info->rcButton,&info->rcItem))return FALSE;
-    LRESULT count=SendMessageW(w,CB_GETCOUNT,0,0);if(a->detached || count<0)return FALSE;
-    LRESULT selected=SendMessageW(w,CB_GETCURSEL,0,0);
-    return !a->detached && IsWindow(w) && (selected==CB_ERR || (selected>=0 && selected<count));
-}
+{const win16_control_native_combo_view v={&a->detached,&a->color_parent,&a->color_witness_owner};return win16_control_color_identity(w,&v,info);}
 static void color_button(HWND w,attachment *a,HDC dc,const RECT *dirty)
-{
-    COMBOBOXINFO info={.cbSize=sizeof(info)};
-    if(!color_identity(w,a,&info))return;
-    BOOL pressed=SendMessageW(w,CB_GETDROPPEDSTATE,0,0)!=0;
-    if(!a->detached && IsWindow(w) && GetParent(w)==a->color_parent)
-        win16_control_native_combo_button(w,&a->detached,dc,dirty,info.rcButton,pressed);
-}
+{const win16_control_native_combo_view v={&a->detached,&a->color_parent,&a->color_witness_owner};win16_control_color_button(w,&v,dc,dirty);}
 static BOOL date_identity(HWND w,attachment *a,DATETIMEPICKERINFO *info)
-{
-    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
-    WNDCLASSEXW native={.cbSize=sizeof(native)};RECT client;SYSTEMTIME value={0};
-    if(a->detached || !IsWindow(w) || !a->date_witness_owner ||
-       (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)!=a->date_witness_owner ||
-       (style&(DTS_UPDOWN|DTS_SHOWNONE|DTS_APPCANPARSE)) || (ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) ||
-       !GetParent(w) || (a->date_parent && GetParent(w)!=a->date_parent) ||
-       GetWindowThreadProcessId(GetParent(w),NULL)!=GetCurrentThreadId() ||
-       !GetClassInfoExW(NULL,DATETIMEPICK_CLASSW,&native) ||
-       GetClassLongPtrW(w,GCL_CBWNDEXTRA)<(ULONG_PTR)native.cbWndExtra ||
-       !SendMessageW(w,DTM_GETDATETIMEPICKERINFO,0,(LPARAM)info) || a->detached ||
-       info->hwndEdit || info->hwndUD || !IsRectEmpty(&info->rcCheck) ||
-       !GetClientRect(w,&client) || info->rcButton.left<client.left || info->rcButton.top<client.top ||
-       info->rcButton.right>client.right || info->rcButton.bottom>client.bottom || IsRectEmpty(&info->rcButton))return FALSE;
-    LRESULT status=SendMessageW(w,DTM_GETSYSTEMTIME,0,(LPARAM)&value);
-    return !a->detached && IsWindow(w) && status==GDT_VALID;
-}
+{const win16_control_native_combo_view v={&a->detached,&a->date_parent,&a->date_witness_owner};return win16_control_date_identity(w,&v,info);}
 static void date_button(HWND w,attachment *a,HDC dc,const RECT *dirty)
-{
-    DATETIMEPICKERINFO info={.cbSize=sizeof(info)};
-    if(date_identity(w,a,&info) && !a->detached && GetParent(w)==a->date_parent)
-        win16_control_native_combo_button(w,&a->detached,dc,dirty,info.rcButton,(info.stateButton&STATE_SYSTEM_PRESSED)!=0);
-}
+{const win16_control_native_combo_view v={&a->detached,&a->date_parent,&a->date_witness_owner};win16_control_date_button(w,&v,dc,dirty);}
 static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
     attachment *a=(attachment *)data;LRESULT result;DWORD status_error=GetLastError();BOOL status=a->status||a->spin,color=a->color_candidate||a->date_candidate;(void)id;
