@@ -2,6 +2,8 @@
 #define WIN16_CONTROL_SCROLL_NATIVE_H
 #include "scroll_layout.h"
 #include "scroll_track.h"
+#include "control_state.h"
+#include <commctrl.h>
 BOOL win16_scroll_measure_native(const RECT *bar,BOOL vertical,UINT dpi,
     const SCROLLINFO *info,win16_scroll_layout *layout);
 typedef struct win16_scroll_caret_view {
@@ -54,4 +56,20 @@ typedef struct win16_scroll_embedded_view {
 } win16_scroll_embedded_view;
 BOOL win16_scroll_embedded_input(HWND window,const win16_scroll_embedded_view *view,
     UINT message,WPARAM wparam,LPARAM lparam);
+typedef struct win16_control_managed_services {
+    SUBCLASSPROC proc;
+    BOOL (*remove)(HWND);
+    BOOL (*get_info)(HWND,int,LPSCROLLINFO);
+    int (*set_info)(HWND,int,LPCSCROLLINFO,BOOL);
+    void (*draw)(HWND,control_style *,HDC,LONG,BOOL);
+    BOOL (*is_list)(HWND),(*is_edit)(HWND);
+} win16_control_managed_services;
+void win16_control_managed_frame_scrollbars_palette_owned(HWND,const win16_style_palette *,const void *,const win16_control_managed_services *);
+void win16_control_managed_frame_scrollbars_remove(HWND,const win16_control_managed_services *);
+void win16_control_managed_frame_scrollbars_palette(HWND,const win16_style_palette *,const win16_control_managed_services *);
+BOOL win16_control_managed_active(HWND,const win16_control_managed_services *);
+BOOL win16_control_managed_get_scroll_info(HWND,int,LPSCROLLINFO,const win16_control_managed_services *);
+int win16_control_managed_set_scroll_info(HWND,int,LPCSCROLLINFO,BOOL,const win16_control_managed_services *);
+BOOL win16_control_managed_list_scrollbar_enable(HWND,const win16_control_managed_services *);
+BOOL win16_control_managed_edit_scrollbars_enable(HWND,const win16_control_managed_services *);
 #endif

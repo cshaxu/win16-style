@@ -242,3 +242,82 @@ BOOL win16_scroll_measure_native(const RECT *bar,BOOL vertical,UINT dpi,
     if(maximum<info->nMin)maximum=info->nMin;
     return win16_scroll_measure(bar,vertical,&metrics,info->nMin,(LONG)maximum,info->nPos,layout);
 }
+
+void win16_control_managed_frame_scrollbars_palette_owned(HWND w,const win16_style_palette *palette,const void *owner,const win16_control_managed_services *v)
+{
+    DWORD_PTR data;
+    if(GetWindowSubclass(w,v->proc,(UINT_PTR)v->proc,&data) &&
+        ((control_style *)data)->frame_scrollbars && ((control_style *)data)->creation_owner==owner)
+        ((control_style *)data)->palette=*palette;
+}
+
+void win16_control_managed_frame_scrollbars_remove(HWND w,const win16_control_managed_services *v)
+{
+    DWORD_PTR data;
+    if(GetWindowSubclass(w,v->proc,(UINT_PTR)v->proc,&data) && ((control_style *)data)->frame_scrollbars)
+        v->remove(w);
+}
+void win16_control_managed_frame_scrollbars_palette(HWND w,const win16_style_palette *palette,const win16_control_managed_services *v)
+{
+    DWORD_PTR data;
+    if(GetWindowSubclass(w,v->proc,(UINT_PTR)v->proc,&data) && ((control_style *)data)->frame_scrollbars)
+        ((control_style *)data)->palette=*palette;
+}
+BOOL win16_control_managed_active(HWND w,const win16_control_managed_services *v)
+{
+    DWORD_PTR data;
+    return w && GetWindowThreadProcessId(w,NULL)==GetCurrentThreadId() &&
+        GetWindowSubclass(w,v->proc,(UINT_PTR)v->proc,&data) &&
+        !((control_style *)data)->detached &&
+        (((control_style *)data)->frame_scrollbars || ((control_style *)data)->list_scrollbar || ((control_style *)data)->edit_scrollbars);
+}
+BOOL win16_control_managed_get_scroll_info(HWND w,int bar,LPSCROLLINFO info,const win16_control_managed_services *v)
+{
+    DWORD_PTR data;BOOL result=v->get_info(w,bar,info);DWORD error=GetLastError();
+    if(result && (bar==SB_HORZ || bar==SB_VERT) && info && info->cbSize==sizeof(*info) &&
+        (info->fMask&SIF_TRACKPOS) && GetWindowSubclass(w,v->proc,(UINT_PTR)v->proc,&data)){
+        control_style *s=(control_style *)data;
+        if((s->frame_scrollbars || s->list_scrollbar || s->edit_scrollbars) &&
+            s->embedded_object==(bar==SB_HORZ?OBJID_HSCROLL:OBJID_VSCROLL)){
+            if(s->scroll_reporting)info->nTrackPos=s->scroll_report;
+            else if(s->scroll.active)info->nTrackPos=s->scroll.position;
+        }
+    }
+    SetLastError(error);return result;
+}
+int win16_control_managed_set_scroll_info(HWND w,int bar,LPCSCROLLINFO info,BOOL redraw,const win16_control_managed_services *v)
+{
+    DWORD_PTR data;int result;DWORD error;
+    BOOL styled=(bar==SB_HORZ || bar==SB_VERT) &&
+        GetWindowSubclass(w,v->proc,(UINT_PTR)v->proc,&data) &&
+        (((control_style *)data)->frame_scrollbars || ((control_style *)data)->list_scrollbar || ((control_style *)data)->edit_scrollbars);
+    result=v->set_info(w,bar,info,styled?FALSE:redraw);
+    error=GetLastError();
+    if(styled && redraw){
+        if(GetWindowSubclass(w,v->proc,(UINT_PTR)v->proc,&data)){
+            HDC dc=GetWindowDC(w);
+            if(dc){v->draw(w,(control_style *)data,dc,bar==SB_HORZ?OBJID_HSCROLL:OBJID_VSCROLL,bar==SB_VERT);ReleaseDC(w,dc);}
+        }else RedrawWindow(w,NULL,NULL,RDW_FRAME|RDW_INVALIDATE);
+    }
+    SetLastError(error);return result;
+}
+BOOL win16_control_managed_list_scrollbar_enable(HWND w,const win16_control_managed_services *v)
+{
+    DWORD_PTR data;
+    if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() || !v->is_list(w) ||
+        !GetWindowSubclass(w,v->proc,(UINT_PTR)v->proc,&data)){
+        SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    ((control_style *)data)->list_scrollbar=TRUE;
+    RedrawWindow(w,NULL,NULL,RDW_FRAME|RDW_INVALIDATE);return TRUE;
+}
+
+BOOL win16_control_managed_edit_scrollbars_enable(HWND w,const win16_control_managed_services *v)
+{
+    DWORD_PTR data;LONG_PTR style=GetWindowLongPtrW(w,GWL_STYLE);
+    if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() || !v->is_edit(w) ||
+        !(style&ES_MULTILINE) ||
+        !GetWindowSubclass(w,v->proc,(UINT_PTR)v->proc,&data)){
+        SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    ((control_style *)data)->edit_scrollbars=TRUE;
+    RedrawWindow(w,NULL,NULL,RDW_FRAME|RDW_INVALIDATE);return TRUE;
+}

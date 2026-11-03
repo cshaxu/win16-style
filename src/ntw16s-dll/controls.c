@@ -369,13 +369,10 @@ BOOL win16_style_frame_scrollbars_install_owned(HWND w,const win16_style_palette
     if(cancelled && *cancelled){SetLastError(ERROR_CANCELLED);return FALSE;}
     return install(w,palette,FALSE,FALSE,TRUE,-1,NULL,owner,cancelled);
 }
+static const win16_control_managed_services managed_services={control_proc,win16_style_control_remove,
+    ntw16s_native_get_scroll_info,ntw16s_native_set_scroll_info,draw_scroll,is_list,is_edit};
 void win16_style_frame_scrollbars_palette_owned(HWND w,const win16_style_palette *palette,const void *owner)
-{
-    DWORD_PTR data;
-    if(GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&data) &&
-        ((control_style *)data)->frame_scrollbars && ((control_style *)data)->creation_owner==owner)
-        ((control_style *)data)->palette=*palette;
-}
+{win16_control_managed_frame_scrollbars_palette_owned(w,palette,owner,&managed_services);}
 static const win16_control_special_services special_services={control_proc,trackbar_notify,toolbar_notify,updown_acquire,updown_release,
     win16_style_frame_scrollbars_install_owned,win16_style_control_remove_owned,ntw16s_theme_retained,ntw16s_theme_capture,ntw16s_theme_enable};
 BOOL win16_style_updown_install_created(HWND w,const win16_style_palette *p,const void *owner,const BOOL *cancelled)
@@ -396,76 +393,21 @@ BOOL win16_style_picture_install_created(HWND w,const win16_style_palette *p,con
 {return win16_control_special_picture_install(w,p,owner,cancelled,&special_services);}
 
 void win16_style_frame_scrollbars_remove(HWND w)
-{
-    DWORD_PTR data;
-    if(GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&data) && ((control_style *)data)->frame_scrollbars)
-        win16_style_control_remove(w);
-}
+{win16_control_managed_frame_scrollbars_remove(w,&managed_services);}
 void win16_style_frame_scrollbars_palette(HWND w,const win16_style_palette *palette)
-{
-    DWORD_PTR data;
-    if(GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&data) && ((control_style *)data)->frame_scrollbars)
-        ((control_style *)data)->palette=*palette;
-}
+{win16_control_managed_frame_scrollbars_palette(w,palette,&managed_services);}
 BOOL ntw16s_managed_scrollbars_active(HWND w)
-{
-    DWORD_PTR data;
-    return w && GetWindowThreadProcessId(w,NULL)==GetCurrentThreadId() &&
-        GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&data) &&
-        !((control_style *)data)->detached &&
-        (((control_style *)data)->frame_scrollbars || ((control_style *)data)->list_scrollbar || ((control_style *)data)->edit_scrollbars);
-}
+{return win16_control_managed_active(w,&managed_services);}
 BOOL win16_style_get_scroll_info(HWND w,int bar,LPSCROLLINFO info)
-{
-    DWORD_PTR data;BOOL result=ntw16s_native_get_scroll_info(w,bar,info);DWORD error=GetLastError();
-    if(result && (bar==SB_HORZ || bar==SB_VERT) && info && info->cbSize==sizeof(*info) &&
-        (info->fMask&SIF_TRACKPOS) && GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&data)){
-        control_style *s=(control_style *)data;
-        if((s->frame_scrollbars || s->list_scrollbar || s->edit_scrollbars) &&
-            s->embedded_object==(bar==SB_HORZ?OBJID_HSCROLL:OBJID_VSCROLL)){
-            if(s->scroll_reporting)info->nTrackPos=s->scroll_report;
-            else if(s->scroll.active)info->nTrackPos=s->scroll.position;
-        }
-    }
-    SetLastError(error);return result;
-}
+{return win16_control_managed_get_scroll_info(w,bar,info,&managed_services);}
 int win16_style_set_scroll_info(HWND w,int bar,LPCSCROLLINFO info,BOOL redraw)
-{
-    DWORD_PTR data;int result;DWORD error;
-    BOOL styled=(bar==SB_HORZ || bar==SB_VERT) &&
-        GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&data) &&
-        (((control_style *)data)->frame_scrollbars || ((control_style *)data)->list_scrollbar || ((control_style *)data)->edit_scrollbars);
-    result=ntw16s_native_set_scroll_info(w,bar,info,styled?FALSE:redraw);
-    error=GetLastError();
-    if(styled && redraw){
-        if(GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&data)){
-            HDC dc=GetWindowDC(w);
-            if(dc){draw_scroll(w,(control_style *)data,dc,bar==SB_HORZ?OBJID_HSCROLL:OBJID_VSCROLL,bar==SB_VERT);ReleaseDC(w,dc);}
-        }else RedrawWindow(w,NULL,NULL,RDW_FRAME|RDW_INVALIDATE);
-    }
-    SetLastError(error);return result;
-}
+{return win16_control_managed_set_scroll_info(w,bar,info,redraw,&managed_services);}
 BOOL win16_style_list_scrollbar_enable(HWND w)
-{
-    DWORD_PTR data;
-    if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() || !is_list(w) ||
-        !GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&data)){
-        SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
-    ((control_style *)data)->list_scrollbar=TRUE;
-    RedrawWindow(w,NULL,NULL,RDW_FRAME|RDW_INVALIDATE);return TRUE;
-}
+{return win16_control_managed_list_scrollbar_enable(w,&managed_services);}
 BOOL win16_style_edit_install(HWND w,BOOL original_border,const win16_style_palette *palette)
 {return install(w,palette,TRUE,original_border,FALSE,-1,NULL,NULL,NULL);}
 BOOL win16_style_edit_scrollbars_enable(HWND w)
-{
-    DWORD_PTR data;LONG_PTR style=GetWindowLongPtrW(w,GWL_STYLE);
-    if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() || !is_edit(w) ||
-        !(style&ES_MULTILINE) ||
-        !GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&data)){
-        SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
-    ((control_style *)data)->edit_scrollbars=TRUE;
-    RedrawWindow(w,NULL,NULL,RDW_FRAME|RDW_INVALIDATE);return TRUE;
-}
+{return win16_control_managed_edit_scrollbars_enable(w,&managed_services);}
 static const win16_control_remove_services control_remove_services={control_proc,scroll_finish,trackbar_unbind,toolbar_unbind,
     combo_text_unbind,detach_combo_list,ntw16s_theme_remove,ntw16s_theme_terminal,scroll_caret_destroy,
     scroll_stop_timer,scroll_release_capture,terminal_combo_list};
