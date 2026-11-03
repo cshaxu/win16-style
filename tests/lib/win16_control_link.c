@@ -59,6 +59,21 @@ int main(void)
     extra.vb_user_edge=FALSE;
     if(win16_attachment_eligibility(WS_CAPTION,FALSE,FALSE,FALSE,FALSE,FALSE,&initial,&vcl,&extra)!=0)return 90;
     puts("ATTACH_ELIGIBILITY_OK distinct_release=1 tree=1 vcl=1 edge=1 frame=1");
+    attachment dispatch={0};
+    if(win16_attachment_dispatch_kind(NULL,&dispatch,WM_PAINT,0,0,FALSE,FALSE,FALSE,FALSE)!=WIN16_ATTACHMENT_DISPATCH_NATIVE)return 91;
+    dispatch.static_candidate=TRUE;
+    if(win16_attachment_dispatch_kind(NULL,&dispatch,WM_PAINT,0,0,FALSE,FALSE,FALSE,FALSE)!=WIN16_ATTACHMENT_DISPATCH_STATIC)return 92;
+    dispatch.detached=TRUE;
+    if(win16_attachment_dispatch_kind(NULL,&dispatch,WM_PAINT,0,0,FALSE,FALSE,FALSE,FALSE)!=WIN16_ATTACHMENT_DISPATCH_NATIVE)return 93;
+    dispatch.detached=FALSE;dispatch.modern_spin=TRUE;
+    if(win16_attachment_dispatch_kind(NULL,&dispatch,WM_PRINTCLIENT,0,0,TRUE,TRUE,TRUE,FALSE)!=WIN16_ATTACHMENT_DISPATCH_STATUS)return 94;
+    if(win16_attachment_dispatch_kind(NULL,&dispatch,WM_PRINTCLIENT,0,0,FALSE,TRUE,TRUE,FALSE)!=WIN16_ATTACHMENT_DISPATCH_COLOR)return 95;
+    dispatch.cool_candidate=TRUE;
+    if(win16_attachment_dispatch_kind(NULL,&dispatch,WM_PAINT,0,0,TRUE,TRUE,TRUE,FALSE)!=WIN16_ATTACHMENT_DISPATCH_COOL)return 96;
+    dispatch.cool_candidate=FALSE;dispatch.spin=TRUE;
+    if(!win16_attachment_spin_message(&dispatch,WM_LBUTTONDOWN) || win16_attachment_spin_message(&dispatch,WM_USER))return 97;
+    if(win16_attachment_dispatch_kind(NULL,&dispatch,WM_USER,0,0,FALSE,FALSE,FALSE,TRUE)!=WIN16_ATTACHMENT_DISPATCH_STATIC)return 98;
+    puts("ATTACH_DISPATCH_OK priority=1 detached=1 nested=1 spin=1");
     HDC policy_dc=CreateCompatibleDC(NULL);if(!policy_dc)return 81;
     if(!win16_control_report_wide_text(policy_dc,L"abc",3,TRUE) ||
        win16_control_report_wide_text(policy_dc,L"\x4e2d",1,TRUE) ||

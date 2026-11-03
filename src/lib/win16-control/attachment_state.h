@@ -157,4 +157,14 @@ typedef struct win16_attachment_seed {
     attachment *(*lookup)(HWND);
 } win16_attachment_seed;
 void win16_attachment_initialize(HWND,DWORD,attachment *,const win16_attachment_seed *);
+typedef enum win16_attachment_dispatch {
+    WIN16_ATTACHMENT_DISPATCH_NATIVE,WIN16_ATTACHMENT_DISPATCH_COOL,WIN16_ATTACHMENT_DISPATCH_STATUS,
+    WIN16_ATTACHMENT_DISPATCH_COLOR,WIN16_ATTACHMENT_DISPATCH_SPIN,WIN16_ATTACHMENT_DISPATCH_BOX,
+    WIN16_ATTACHMENT_DISPATCH_LOOKUP,WIN16_ATTACHMENT_DISPATCH_STATIC
+} win16_attachment_dispatch;
+BOOL win16_attachment_static_paint(const attachment *,UINT);
+BOOL win16_attachment_spin_message(const attachment *,UINT);
+void win16_attachment_prepare_report(HWND,UINT,WPARAM,attachment *,ntw16s_vb_paint *,void (*)(HWND,attachment *));
+void win16_attachment_reset_witness(attachment *,UINT);
+win16_attachment_dispatch win16_attachment_dispatch_kind(HWND,attachment *,UINT,WPARAM,LPARAM,BOOL,BOOL,BOOL,BOOL);
 #endif

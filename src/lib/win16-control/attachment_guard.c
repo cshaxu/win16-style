@@ -592,3 +592,45 @@ void win16_attachment_initialize(HWND w,DWORD original_style,attachment *a,const
     if(i->report || i->tree || a->file_owner || a->button_owner || a->checklist || a->bit_candidate){a->report_window=w;a->tree=i->tree;
         a->report_module=(a->file_owner || a->button_owner || a->bit_candidate)?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):i->tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}
 }
+
+BOOL win16_attachment_static_paint(const attachment *a,UINT m)
+{
+    return ((a->static_candidate || a->scroll_candidate || a->edit_candidate || a->group_button_candidate || a->grid_candidate || a->inplace_candidate || a->nav_candidate || a->vcl_toolbar_candidate || a->track_candidate || a->tab_candidate || a->vcl_report_candidate || a->color_candidate || a->date_candidate || a->status_candidate || a->rich_candidate || a->group_frame_candidate || a->panel_frame_candidate) && !a->detached && m==WM_PAINT);
+}
+BOOL win16_attachment_spin_message(const attachment *a,UINT m)
+{
+    return a->spin && !a->detached && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT ||
+        m==WM_LBUTTONDOWN || m==WM_LBUTTONUP || m==WM_MOUSEMOVE || m==WM_ENABLE || m==WM_CANCELMODE ||
+        m==WM_SETFOCUS || m==WM_KILLFOCUS);
+}
+void win16_attachment_prepare_report(HWND w,UINT m,WPARAM p,attachment *a,ntw16s_vb_paint *paint,void (*bind)(HWND,attachment *))
+{
+    (void)m;
+    if(a->file_owner || a->picture || a->button_owner || a->vb_user_candidate)paint->cancelled=&a->detached;
+    if(paint->native_active)paint->native_dc=(HDC)p;
+    if(paint->active && !a->detached && !a->protocol && !a->vcl_report_candidate)bind(w,a);
+    if(paint->active && a->report_module && !a->file_owner && !a->detached){
+        DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
+        if((a->tree || (((style&LVS_TYPEMASK)==LVS_REPORT || a->vcl_report_candidate) &&
+            !(style&(LVS_OWNERDRAWFIXED|LVS_OWNERDATA)) && !SendMessageW(w,LVM_ISGROUPVIEWENABLED,0,0) &&
+            !a->detached && (DWORD)GetWindowLongPtrW(w,GWL_STYLE)==style)) && !a->detached)
+            ntw16s_report_paint_enable(paint,w,a->report_module,&a->detached);
+    }
+}
+void win16_attachment_reset_witness(attachment *a,UINT m)
+{
+    if(m==WM_NCPAINT && a->controlbar_candidate)a->controlbar_verified=FALSE;
+    if(m==WM_PAINT && a->rich_candidate && (!a->rich_installed || a->rich_month))a->rich_witness=FALSE;
+}
+win16_attachment_dispatch win16_attachment_dispatch_kind(HWND w,attachment *a,UINT m,WPARAM p,LPARAM l,
+    BOOL status_scope,BOOL print_clip,BOOL spin_message,BOOL nested_static)
+{
+    if(a->cool_candidate && !a->detached && m==WM_PAINT)return WIN16_ATTACHMENT_DISPATCH_COOL;
+    if(m==WM_PRINTCLIENT && status_scope)return WIN16_ATTACHMENT_DISPATCH_STATUS;
+    if(print_clip)return WIN16_ATTACHMENT_DISPATCH_COLOR;
+    if(a->modern_spin && spin_message)return WIN16_ATTACHMENT_DISPATCH_SPIN;
+    if(((a->box_candidate && !a->box_installed) || a->controlbar_candidate) && !a->detached && m==WM_NCPAINT)return WIN16_ATTACHMENT_DISPATCH_BOX;
+    if(a->inplace_candidate && !a->detached && (m==WM_LBUTTONDOWN || (m==WM_SYSKEYDOWN && p==VK_DOWN && ((ULONG_PTR)l&((ULONG_PTR)1<<29)))) && win16_control_lookup_identity(w,a->inplace_owner,a->inplace_parent))return WIN16_ATTACHMENT_DISPATCH_LOOKUP;
+    if(nested_static || win16_attachment_static_paint(a,m))return WIN16_ATTACHMENT_DISPATCH_STATIC;
+    return WIN16_ATTACHMENT_DISPATCH_NATIVE;
+}

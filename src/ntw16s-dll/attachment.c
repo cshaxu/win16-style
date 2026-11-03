@@ -502,7 +502,7 @@ static void static_paint_end(void *data)
 static NTW16S_UNWIND_FUNCTION LRESULT static_paint_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,ntw16s_vb_paint *owned_paint,void *status_prior,void *spin_prior)
 {
     static_paint_scope scope={.previous=static_paint,.owner=a,.window=w,.owned_paint=owned_paint,.status_prior=status_prior,.spin_prior=spin_prior};ntw16s_unwind_scope unwind;LRESULT result;DWORD entry=GetLastError(),error;
-    static_paint=((a->static_candidate || a->scroll_candidate || a->edit_candidate || a->group_button_candidate || a->grid_candidate || a->inplace_candidate || a->nav_candidate || a->vcl_toolbar_candidate || a->track_candidate || a->tab_candidate || a->vcl_report_candidate || a->color_candidate || a->date_candidate || a->status_candidate || a->rich_candidate || a->group_frame_candidate || a->panel_frame_candidate) && !a->detached && m==WM_PAINT)?&scope:NULL;
+    static_paint=win16_attachment_static_paint(a,m)?&scope:NULL;
     NTW16S_UNWIND_BEGIN(unwind,static_paint_end,&scope);
     SetLastError(entry);result=DefSubclassProc(w,m,p,l);error=GetLastError();scope.completed=TRUE;
     NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
@@ -571,9 +571,7 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     if(a->status)win16_control_status_invalidate(m,&a->status_font.invalid,&a->status_epoch);
     status_draw_scope scope={0},*prior=status_current;
     spin_draw_scope spin_scope={0},*spin_prior=spin_current;
-    BOOL spin_message=a->spin && !a->detached && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT ||
-        m==WM_LBUTTONDOWN || m==WM_LBUTTONUP || m==WM_MOUSEMOVE || m==WM_ENABLE || m==WM_CANCELMODE ||
-        m==WM_SETFOCUS || m==WM_KILLFOCUS);
+    BOOL spin_message=win16_attachment_spin_message(a,m);
     if(spin_prior)spin_current=NULL;
     if(spin_message){spin_scope.modern_spin=&a->modern_spin;spin_scope.detached=&a->detached;spin_scope.verified=&a->modern_spin_verified;spin_scope.window=w;spin_scope.parent=GetParent(w);
         spin_scope.dc=(m==WM_PRINT || m==WM_PRINTCLIENT)?(HDC)p:NULL;spin_current=&spin_scope;
@@ -591,29 +589,20 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     win16_attachment_guard_roles(w,m,a,&guards);
     if(m==WM_NCDESTROY)(void)Ntw16sWindowTerminal(w);
     ntw16s_vb_paint paint;ntw16s_vb_paint_begin(&paint,w,m,&a->fonts);
-    if(a->file_owner || a->picture || a->button_owner || a->vb_user_candidate)paint.cancelled=&a->detached;
-    if(paint.native_active)paint.native_dc=(HDC)p;
-    if(paint.active && !a->detached && !a->protocol && !a->vcl_report_candidate)report_try_bind(w,a);
-    if(paint.active && a->report_module && !a->file_owner && !a->detached){
-        DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
-        if((a->tree || (((style&LVS_TYPEMASK)==LVS_REPORT || a->vcl_report_candidate) &&
-            !(style&(LVS_OWNERDRAWFIXED|LVS_OWNERDATA)) && !SendMessageW(w,LVM_ISGROUPVIEWENABLED,0,0) &&
-            !a->detached && (DWORD)GetWindowLongPtrW(w,GWL_STYLE)==style)) && !a->detached)
-            ntw16s_report_paint_enable(&paint,w,a->report_module,&a->detached);
-    }
+    win16_attachment_prepare_report(w,m,p,a,&paint,report_try_bind);
     BOOL box_witnessed=FALSE;
-    if(m==WM_NCPAINT && a->controlbar_candidate)a->controlbar_verified=FALSE;
-    if(m==WM_PAINT && a->rich_candidate && (!a->rich_installed || a->rich_month))a->rich_witness=FALSE;
+    win16_attachment_reset_witness(a,m);
     if(status || color)SetLastError(status_error);
-    if(a->cool_candidate && !a->detached && m==WM_PAINT)result=cool_dispatch(a,w,m,p,l,&paint,prior,spin_prior);
-    else if(m==WM_PRINTCLIENT && status_current==&scope)result=status_print_dispatch(a,w,m,p,l,&paint,prior,spin_prior);
-    else if(print_clip)result=color_print_dispatch(a,w,m,p,l,print_clip,&paint,prior,spin_prior);
-    else if(a->modern_spin && spin_message)result=modern_spin_dispatch(a,w,m,p,l,&spin_scope,spin_prior,prior,&paint);
-    else if(((a->box_candidate && !a->box_installed) || a->controlbar_candidate) && !a->detached && m==WM_NCPAINT)result=box_dispatch(a,w,m,p,l,&paint,prior,spin_prior,&box_witnessed);
-    else if(a->inplace_candidate && !a->detached && (m==WM_LBUTTONDOWN || (m==WM_SYSKEYDOWN && p==VK_DOWN && ((ULONG_PTR)l&((ULONG_PTR)1<<29)))) && win16_control_lookup_identity(w,a->inplace_owner,a->inplace_parent))result=lookup_popup_dispatch(a,w,m,p,l,&paint,prior,spin_prior);
-    else if(static_paint || ((a->static_candidate || a->scroll_candidate || a->edit_candidate || a->group_button_candidate || a->grid_candidate || a->inplace_candidate || a->nav_candidate || a->vcl_toolbar_candidate || a->track_candidate || a->tab_candidate || a->vcl_report_candidate || a->color_candidate || a->date_candidate || a->status_candidate || a->rich_candidate || a->group_frame_candidate || a->panel_frame_candidate) && !a->detached && m==WM_PAINT))
-        result=static_paint_dispatch(a,w,m,p,l,&paint,prior,spin_prior);
-    else result=DefSubclassProc(w,m,p,l);
+    switch(win16_attachment_dispatch_kind(w,a,m,p,l,status_current==&scope,print_clip!=NULL,spin_message,static_paint!=NULL)){
+    case WIN16_ATTACHMENT_DISPATCH_COOL:result=cool_dispatch(a,w,m,p,l,&paint,prior,spin_prior);break;
+    case WIN16_ATTACHMENT_DISPATCH_STATUS:result=status_print_dispatch(a,w,m,p,l,&paint,prior,spin_prior);break;
+    case WIN16_ATTACHMENT_DISPATCH_COLOR:result=color_print_dispatch(a,w,m,p,l,print_clip,&paint,prior,spin_prior);break;
+    case WIN16_ATTACHMENT_DISPATCH_SPIN:result=modern_spin_dispatch(a,w,m,p,l,&spin_scope,spin_prior,prior,&paint);break;
+    case WIN16_ATTACHMENT_DISPATCH_BOX:result=box_dispatch(a,w,m,p,l,&paint,prior,spin_prior,&box_witnessed);break;
+    case WIN16_ATTACHMENT_DISPATCH_LOOKUP:result=lookup_popup_dispatch(a,w,m,p,l,&paint,prior,spin_prior);break;
+    case WIN16_ATTACHMENT_DISPATCH_STATIC:result=static_paint_dispatch(a,w,m,p,l,&paint,prior,spin_prior);break;
+    default:result=DefSubclassProc(w,m,p,l);break;
+    }
     if(status || color)status_error=GetLastError();
     ntw16s_vb_paint_end(&paint);
     status_current=prior;
