@@ -3353,7 +3353,7 @@
       "path": "src/ntw16s-dll/injection/com_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "50d63cae6a6ff7f07444adf76e5e51a97b8016995f6d0c16db4dd7c2e131b380",
+      "sha256": "5dcd0050a24544fe132de3783aa355efdb74b7392ffadab45b4c70df310dd29d",
       "disposition": "authored",
       "review": "T20 S1 COM dialog bridge and real native probe under development; T21 S13 unified late style hooks and stop semantics",
       "notice": "Project-authored; no imported code or resources"
@@ -4370,7 +4370,7 @@
       "path": "tests/lib/win16_dialog_link.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b2faeed52861728e3c004b502d23830e72ba4e2fc5132c0c3d4b9648bb5914a7",
+      "sha256": "d291fbf6ad691834f2c4094b568665b2b96afb9647782050116b4934bc8b11fa",
       "disposition": "authored",
       "review": "T21 S23 independent whole-library link and page range test",
       "notice": "Project-authored C17; project MIT license"
@@ -5219,6 +5219,24 @@
       "sha256": "c20bf1ab974b0e306d2e3fd928f7eafaa16372af965207dac89f4b7c659d103a",
       "disposition": "authored",
       "review": "T21 S24 extract experimental classic dialog hidden file adaptation",
+      "notice": "Project-authored C implementation; original notices preserved"
+    },
+    {
+      "path": "src/lib/win16-dialog/hook_state.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "4c8afe5333b79639ade32f0c67e81cf8d9fe113a8b72f357a914f09c1f71f326",
+      "disposition": "authored",
+      "review": "T21 S24 extract classic COM dialog state lifecycle",
+      "notice": "Project-authored C implementation; original notices preserved"
+    },
+    {
+      "path": "src/lib/win16-dialog/hook_state.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "df0f3009e9a51c45c61da8eefabccd0dfbbeb89a18f7980dd52838927aaa6e2d",
+      "disposition": "authored",
+      "review": "T21 S24 extract classic COM dialog state lifecycle",
       "notice": "Project-authored C implementation; original notices preserved"
     }
   ]

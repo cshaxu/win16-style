@@ -2,6 +2,7 @@
  * validates configuration; simple filesystem requests use the classic dialog. */
 #define COBJMACROS
 #include "../../lib/win16-dialog/hidden_files.h"
+#include "../../lib/win16-dialog/hook_state.h"
 #include "intercept.h"
 #include "startup_hooks.h"
 #include "unwind.h"
@@ -250,7 +251,12 @@ static void classic_hidden_schedule(HWND w,file_proxy *p)
 #endif
 static void com_hook_attach(void *owner,HWND w,OPENFILENAMEW *ofn)
 {
-    file_proxy *p=owner;(void)ofn;p->active_window=w;classic_capture_folder(p);
+    file_proxy *p=owner;(void)ofn;
+#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+    win16_dialog_hook_attach_base(p,w,TRUE);
+#else
+    win16_dialog_hook_attach_base(p,w,FALSE);
+#endif
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_HIDDEN
     classic_hidden_schedule(w,p);
 #endif
@@ -260,16 +266,14 @@ static void com_hook_attach(void *owner,HWND w,OPENFILENAMEW *ofn)
 #endif
 }
 static PCWSTR com_hook_label(void *owner,int which)
-{file_proxy *p=owner;return which==0?p->ok_label:which==1?p->cancel_label:p->file_label;}
+{return win16_dialog_hook_label(owner,which);}
 static void com_hook_detach(void *owner,HWND w)
 {
-    file_proxy *p=owner;if(p->active_window==w)p->active_window=NULL;
-    if(p->live_folder){IShellItem_Release(p->live_folder);p->live_folder=NULL;}
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-    if(p->live_selection){IShellItem_Release(p->live_selection);p->live_selection=NULL;}
-    p->classic_ofn=NULL;p->classic_overwrite_suppressed=FALSE;
+    win16_dialog_hook_detach(owner,w,TRUE);
+#else
+    win16_dialog_hook_detach(owner,w,FALSE);
 #endif
-    if(p->pending_folder){CoTaskMemFree(p->pending_folder);p->pending_folder=NULL;}
 }
 static BOOL com_hook_command(void *owner,HWND w,WPARAM wp,UINT_PTR *result)
 {

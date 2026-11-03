@@ -16,6 +16,7 @@
 #include "lib/win16-dialog/proxy.h"
 #include "lib/win16-dialog/browse.h"
 #include "lib/win16-dialog/hidden_files.h"
+#include "lib/win16-dialog/hook_state.h"
 #include "lib/win16-dialog/events.h"
 
 static void *browse_argument;static UINT browse_flags;static BOOL browse_validate;
@@ -193,6 +194,30 @@ done:
     if(!DeleteFileW(path))ok=FALSE;
     return ok;
 }
+static BOOL test_hook_state(void)
+{
+    IShellItem *item=NULL;win16_dialog_proxy p={0};OPENFILENAMEW ofn={0};BOOL ok=FALSE;PWSTR path=NULL;
+    if(FAILED(SHCreateItemFromParsingName(L"C:\\",NULL,&IID_IShellItem,(void **)&item)))return FALSE;
+    p.active_window=(HWND)(UINT_PTR)1;p.live_folder=item;IShellItem_AddRef(item);
+    p.live_selection=item;IShellItem_AddRef(item);p.classic_ofn=&ofn;p.classic_overwrite_suppressed=TRUE;
+    p.pending_folder=CoTaskMemAlloc(4*sizeof(WCHAR));if(!p.pending_folder)goto done;
+    p.ok_label=L"ok";p.cancel_label=L"cancel";p.file_label=L"file";
+    if(lstrcmpW(win16_dialog_hook_label(&p,0),L"ok") || lstrcmpW(win16_dialog_hook_label(&p,1),L"cancel") ||
+       lstrcmpW(win16_dialog_hook_label(&p,2),L"file"))goto done;
+    win16_dialog_hook_detach(&p,(HWND)(UINT_PTR)2,FALSE);
+    if(p.active_window!=(HWND)(UINT_PTR)1 || p.live_folder || p.live_selection!=item || p.classic_ofn!=&ofn ||
+       !p.classic_overwrite_suppressed || p.pending_folder)goto done;
+    win16_dialog_hook_detach(&p,(HWND)(UINT_PTR)1,TRUE);
+    if(p.active_window || p.live_selection || p.classic_ofn || p.classic_overwrite_suppressed ||
+       FAILED(IShellItem_GetDisplayName(item,SIGDN_FILESYSPATH,&path)))goto done;
+    ok=TRUE;
+done:
+    if(path)CoTaskMemFree(path);
+    if(p.live_folder)IShellItem_Release(p.live_folder);
+    if(p.live_selection)IShellItem_Release(p.live_selection);
+    if(p.pending_folder)CoTaskMemFree(p.pending_folder);
+    IShellItem_Release(item);return ok;
+}
 static BOOL test_proxy_lifetime(void)
 {
     IUnknown *native=NULL,*identity=NULL;IFileDialog2 *v2=NULL;win16_dialog_proxy *proxy=NULL;BOOL ok=FALSE;
@@ -281,6 +306,7 @@ int main(void)
     CoTaskMemFree(copy);
     WCHAR temp[MAX_PATH],unused[MAX_PATH];IShellItem *item=NULL;PWSTR selected=NULL;
     if(FAILED(CoInitializeEx(NULL,COINIT_APARTMENTTHREADED)))return 19;
+    if(!test_hook_state()){CoUninitialize();return 42;}
     if(!test_event_snapshot()){CoUninitialize();return 40;}
     if(!test_event_dispatch()){CoUninitialize();return 41;}
     if(!test_classic_list_target()){CoUninitialize();return 38;}
