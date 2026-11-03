@@ -3,6 +3,7 @@
 #define COBJMACROS
 #include "../../lib/win16-dialog/hidden_files.h"
 #include "../../lib/win16-dialog/hook_state.h"
+#include "../../lib/win16-dialog/classic_events.h"
 #include "intercept.h"
 #include "startup_hooks.h"
 #include "unwind.h"
@@ -129,42 +130,17 @@ static void classic_capture_folder(file_proxy *p)
 }
 static const WCHAR folder_message_name[]=L"Win16Style.T20.ComSetFolder";
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
+static HRESULT classic_changing_owned(file_proxy *p,IShellItem *item)
+{return classic_dispatch_owned(p,CLASSIC_FOLDER_CHANGING,item,NULL);}
 static BOOL classic_list_changing(HWND w,file_proxy *p)
-{
-    IShellItem *target=win16_dialog_classic_list_target(w,p->live_folder);
-    if(!target)return TRUE;
-    HRESULT hr=classic_dispatch_owned(p,CLASSIC_FOLDER_CHANGING,target,NULL);
-    return hr==S_OK && !p->pending_folder;
-}
+{return win16_dialog_list_changing(w,p,classic_changing_owned);}
 static BOOL classic_typed_changing(HWND w,file_proxy *p)
-{
-    IShellItem *target=NULL;
-    if(!win16_dialog_classic_typed_target(w,p->live_folder,&target))return FALSE;
-    if(!target)return TRUE;
-    HRESULT hr=classic_dispatch_owned(p,CLASSIC_FOLDER_CHANGING,target,NULL);
-    return hr==S_OK && !p->pending_folder;
-}
+{return win16_dialog_typed_changing(w,p,classic_changing_owned);}
 static BOOL classic_drive_changing(HWND w,file_proxy *p)
-{
-    LRESULT index;HWND combo;IShellItem *target=win16_dialog_classic_drive_target(w,&index,&combo);
-    if(!target)return TRUE;
-    HRESULT hr=classic_dispatch_owned(p,CLASSIC_FOLDER_CHANGING,target,NULL);
-    if(hr!=S_OK || p->pending_folder){if(p->classic_drive_index!=CB_ERR)SendMessageW(combo,CB_SETCURSEL,(WPARAM)p->classic_drive_index,0);return FALSE;}
-    p->classic_drive_index=index;return TRUE;
-}
+{return win16_dialog_drive_changing(w,p,classic_changing_owned);}
 static BOOL classic_overwrite_check(HWND w,file_proxy *p)
-{
-    OPENFILENAMEW *ofn=p->classic_ofn;if(!ofn)return TRUE;
-    if(p->classic_overwrite_suppressed){ofn->Flags|=OFN_OVERWRITEPROMPT;p->classic_overwrite_suppressed=FALSE;}
-    if(!p->save || !(ofn->Flags&OFN_OVERWRITEPROMPT))return TRUE;
-    IShellItem *item=win16_dialog_classic_overwrite_target(w,p->live_folder,p->extension);
-    if(!item)return TRUE;
-    FDE_OVERWRITE_RESPONSE response=classic_overwrite_owned(p,item);
-    if(!IsWindow(w) || p->active_window!=w || p->classic_ofn!=ofn)return FALSE;
-    if(response==FDEOR_REFUSE)return FALSE;
-    if(response==FDEOR_ACCEPT){ofn->Flags&=~OFN_OVERWRITEPROMPT;p->classic_overwrite_suppressed=TRUE;}
-    return TRUE;
-}
+{return win16_dialog_overwrite_check(w,p,classic_overwrite_owned);}
+
 #endif
 static HRESULT proxy_set_folder(file_proxy *p,IShellItem *item)
 {return win16_dialog_proxy_set_folder(p,item,folder_message_name);}

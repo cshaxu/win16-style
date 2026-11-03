@@ -17,6 +17,7 @@
 #include "lib/win16-dialog/browse.h"
 #include "lib/win16-dialog/hidden_files.h"
 #include "lib/win16-dialog/hook_state.h"
+#include "lib/win16-dialog/classic_events.h"
 #include "lib/win16-dialog/events.h"
 
 static void *browse_argument;static UINT browse_flags;static BOOL browse_validate;
@@ -194,6 +195,32 @@ done:
     if(!DeleteFileW(path))ok=FALSE;
     return ok;
 }
+static HRESULT changing_result;static unsigned changing_calls;static BOOL changing_pending;
+static HRESULT test_changing(win16_dialog_proxy *p,IShellItem *item)
+{++changing_calls;if(changing_pending)p->pending_folder=(WCHAR *)(UINT_PTR)1;IShellItem_Release(item);return changing_result;}
+static FDE_OVERWRITE_RESPONSE test_overwrite(win16_dialog_proxy *p,IShellItem *item)
+{(void)p;IShellItem_Release(item);return FDEOR_DEFAULT;}
+static BOOL test_classic_event_policy(void)
+{
+    win16_dialog_proxy p={0};OPENFILENAMEW ofn={0};IShellItem *folder=NULL;HWND parent=NULL,list=NULL;BOOL ok=FALSE;
+    if(FAILED(SHCreateItemFromParsingName(L"C:\\",NULL,&IID_IShellItem,(void **)&folder)))return FALSE;
+    parent=CreateWindowW(L"STATIC",L"",WS_POPUP,0,0,100,100,NULL,NULL,GetModuleHandleW(NULL),NULL);
+    if(!parent)goto done;
+    list=CreateWindowW(L"LISTBOX",L"",WS_CHILD|LBS_HASSTRINGS,0,0,50,50,parent,(HMENU)(INT_PTR)lst2,GetModuleHandleW(NULL),NULL);
+    if(!list || SendMessageW(list,LB_ADDSTRING,0,(LPARAM)L"C:\\")!=0 || SendMessageW(list,LB_SETCURSEL,0,0)==LB_ERR)goto done;
+    p.live_folder=folder;changing_calls=0;changing_result=S_OK;changing_pending=FALSE;
+    if(!win16_dialog_list_changing(parent,&p,test_changing) || changing_calls!=1)goto done;
+    changing_result=S_FALSE;if(win16_dialog_list_changing(parent,&p,test_changing) || changing_calls!=2)goto done;
+    changing_result=S_OK;changing_pending=TRUE;if(win16_dialog_list_changing(parent,&p,test_changing) || changing_calls!=3)goto done;
+    p.pending_folder=NULL;changing_pending=FALSE;
+    if(!win16_dialog_typed_changing(parent,&p,test_changing) || !win16_dialog_drive_changing(parent,&p,test_changing))goto done;
+    p.classic_ofn=&ofn;p.classic_overwrite_suppressed=TRUE;p.save=FALSE;
+    if(!win16_dialog_overwrite_check(parent,&p,test_overwrite) || !(ofn.Flags&OFN_OVERWRITEPROMPT) || p.classic_overwrite_suppressed)goto done;
+    ok=TRUE;
+done:
+    if(parent)DestroyWindow(parent);
+    IShellItem_Release(folder);return ok;
+}
 static BOOL test_hook_state(void)
 {
     IShellItem *item=NULL;win16_dialog_proxy p={0};OPENFILENAMEW ofn={0};BOOL ok=FALSE;PWSTR path=NULL;
@@ -307,6 +334,7 @@ int main(void)
     WCHAR temp[MAX_PATH],unused[MAX_PATH];IShellItem *item=NULL;PWSTR selected=NULL;
     if(FAILED(CoInitializeEx(NULL,COINIT_APARTMENTTHREADED)))return 19;
     if(!test_hook_state()){CoUninitialize();return 42;}
+    if(!test_classic_event_policy()){CoUninitialize();return 43;}
     if(!test_event_snapshot()){CoUninitialize();return 40;}
     if(!test_event_dispatch()){CoUninitialize();return 41;}
     if(!test_classic_list_target()){CoUninitialize();return 38;}
