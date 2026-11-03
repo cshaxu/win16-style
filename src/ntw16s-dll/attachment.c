@@ -8,6 +8,7 @@
 #include "../lib/win16-control/combo_paint.h"
 #include "../lib/win16-control/native_combo_identity.h"
 #include "../lib/win16-control/cool_grip_identity.h"
+#include "../lib/win16-control/vcl_native_paint.h"
 #include "../lib/win16-control/choice_paint.h"
 #include "../lib/win16-control/special_paint.h"
 #include "../lib/win16-control/spin_identity.h"
@@ -346,19 +347,17 @@ void ntw16s_bit_theme_frame(HDC dc,int part,const RECT *rect,const RECT *clip,co
     if(win16_style_bitbtn_face(s->window,dc,rect,clip,s->state) && !s->owner->detached)s->owner->bit_verified=TRUE;
 }
 static void inplace_draw(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address,BOOL drop)
-{static_paint_scope *s=static_paint;HMODULE caller=NULL;RECT client;POINT origin;if(!s || !s->owner->inplace_candidate || s->owner->detached || !dc || !r || part!=1 || (state!=1 && state!=3) || !IsWindowEnabled(s->window) || !inplace_or_lookup(s->window,s->owner->inplace_owner,s->owner->inplace_parent) || (!drop && lookup_identity(s->window,s->owner->inplace_owner,s->owner->inplace_parent)) || WindowFromDC(dc)!=s->window || !GetClientRect(s->window,&client) || r->right!=client.right || r->top!=client.top || r->bottom!=client.bottom || r->left<client.left || r->right<=r->left || r->right-r->left>client.bottom-client.top || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) || !GetViewportOrgEx(dc,&origin) || origin.x || origin.y || !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) || caller!=s->owner->inplace_owner)return;
- if(drop && state!=1)return;
- int saved=SaveDC(dc);if(!saved)return;int u=max(1,MulDiv(1,(int)GetDpiForWindow(s->window),96));int left=(r->left+r->right-7*u)/2,top=(r->top+r->bottom-9*u)/2;
- if(drop && (left<r->left+u || top<r->top+u || left+7*u>r->right-u || top+9*u>r->bottom-u)){RestoreDC(dc,saved);return;}
- if(clip && IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom)==ERROR){RestoreDC(dc,saved);return;}
- if(win16_style_bitbtn_face(s->window,dc,r,clip,state==3?ODS_SELECTED:0) && !s->owner->detached){if(drop){win16_style_palette palette;win16_style_default_palette(&palette);SetDCBrushColor(dc,palette.edge);win16_control_combo_arrow(dc,left,top,96*u);}s->owner->inplace_verified=TRUE;}RestoreDC(dc,saved);}
+{
+    static_paint_scope *s=static_paint;if(!s)return;
+    const win16_control_vcl_paint_view v={s->window,&s->owner->inplace_candidate,&s->owner->detached,&s->owner->inplace_verified,&s->owner->inplace_owner,&s->owner->inplace_parent,inplace_or_lookup,lookup_identity,ntw16s_class_is};
+    win16_control_vcl_inplace_draw(&v,dc,part,state,r,clip,address,drop);
+}
 void ntw16s_nav_theme(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address)
-{static_paint_scope *s=static_paint;RECT client;POINT wo,vo;HMODULE caller=NULL;BOOL media;
- if(!s || !s->owner->nav_candidate || s->owner->detached || !dc || !r || part!=1 || !nav_identity(s->window,s->owner->nav_owner,s->owner->nav_parent) || WindowFromDC(dc)!=s->window || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) || !GetWindowOrgEx(dc,&wo) || !GetViewportOrgEx(dc,&vo) || wo.y || vo.x || vo.y || !GetClientRect(s->window,&client) || r->top || r->bottom!=client.bottom || !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) || caller!=s->owner->nav_owner)return;
- media=ntw16s_class_is(s->window,L"TMediaPlayer");
- if(media){if((state!=1 && state!=3 && !(state==4 && !IsWindowEnabled(s->window)) && !(state==5 && GetFocus()==s->window)) || wo.x || r->left<0 || r->left>client.right || r->right>client.right || r->right-r->left<=4)return;}
- else if((state!=1 && state!=3 && state!=4) || wo.x>0 || wo.x< -client.right || r->left || r->right<=4 || r->right>client.right+wo.x)return;
- if(win16_style_bitbtn_face(s->window,dc,r,clip,state==3?ODS_SELECTED:0) && !s->owner->detached)s->owner->nav_verified=TRUE;}
+{
+    static_paint_scope *s=static_paint;if(!s)return;
+    const win16_control_vcl_paint_view v={s->window,&s->owner->nav_candidate,&s->owner->detached,&s->owner->nav_verified,&s->owner->nav_owner,&s->owner->nav_parent,nav_identity,NULL,ntw16s_class_is};
+    win16_control_vcl_nav_draw(&v,dc,part,state,r,clip,address);
+}
 BOOL ntw16s_inplace_paint(HDC dc){static_paint_scope *s=static_paint;return s && s->owner->inplace_candidate && !s->owner->detached && dc && WindowFromDC(dc)==s->window;}
 void ntw16s_inplace_button(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address){inplace_draw(dc,part,state,r,clip,address,FALSE);}
 void ntw16s_inplace_dropdown(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address){inplace_draw(dc,part,state,r,clip,address,TRUE);}
