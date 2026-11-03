@@ -1199,26 +1199,19 @@ static BOOL install_created(HWND w,DWORD original_style)
     HWND popup_source=lookup_popup_creator,popup_source_parent=popup_source?GetParent(popup_source):NULL;
     attachment *popup_source_attachment=popup_source?lookup(popup_source):NULL;
     BOOL lookup_popup_candidate=ready && popup_source_attachment && win16_control_lookup_popup_identity(w,popup_source,popup_source_parent,owner);
-    BOOL cool_candidate=ready && (original_style&WS_CHILD) && class_is(w,L"TCoolBar") && win16_control_cool_class_owner(owner) && GetParent(w) && (HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==owner;
-    BOOL box_candidate=ready && win16_control_box_identity(w,owner,GetParent(w));
-    BOOL controlbar_candidate=ready && class_is(w,L"TControlBar") && owner && GetParent(w) && (HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==owner;
-    BOOL rich_month=class_is(w,L"TMonthCalendar");
-    BOOL rich_hotkey=class_is(w,L"THotKey");
-    BOOL rich_popup=class_is(w,L"TPopupListbox");
-    BOOL rich_unicode=rich_popup || rich_month || rich_hotkey || class_is(w,L"TRichEdit");
-    BOOL rich_candidate=ready && (rich_unicode || class_is(w,L"TRichEditURL")) && owner && GetParent(w) &&
-        (rich_popup?(owner==GetModuleHandleW(NULL) && win16_control_inplace_identity(GetParent(w),owner,GetParent(GetParent(w))) && (original_style&WS_BORDER) && (original_style&WS_VSCROLL) && !(original_style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA))):((HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==owner && (rich_month || (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE))));
-    BOOL vb_user_edge=win16_control_vb_user_edge_role(w,GetParent(w));
-    BOOL vb_data_edge=win16_control_vb_data_role(w,GetParent(w));
-    /* An external OCX can create itself with frame bits during construction
-     * and then become a custom client surface.  Without an explicitly
-     * verified public protocol it must stay native; only an application-owned
-     * generic child frame may use the ordinary frame path. */
-    BOOL vb_mdi_child=(original_style&WS_CAPTION)==WS_CAPTION &&
-        (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_MDICHILD) &&
-        (ntw16s_vb5_class(w,L"ThunderRT5Form") || ntw16s_vb_class(w,L"ThunderRT6FormDC")) &&
-        class_is(GetParent(w),L"MDIClient") &&
-        (HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==GetModuleHandleW(L"user32.dll");
+    win16_control_vcl_extra_candidates extra;
+    win16_control_vcl_classify_extra(w,original_style,ready,owner,&extra);
+    BOOL cool_candidate=extra.cool_candidate;
+    BOOL box_candidate=extra.box_candidate;
+    BOOL controlbar_candidate=extra.controlbar_candidate;
+    BOOL rich_month=extra.rich_month;
+    BOOL rich_hotkey=extra.rich_hotkey;
+    BOOL rich_popup=extra.rich_popup;
+    BOOL rich_unicode=extra.rich_unicode;
+    BOOL rich_candidate=extra.rich_candidate;
+    BOOL vb_user_edge=extra.vb_user_edge;
+    BOOL vb_data_edge=extra.vb_data_edge;
+    BOOL vb_mdi_child=extra.vb_mdi_child;
     BOOL vcl_mdi_probe=mdi_identity(w,GetParent(w),GetParent(GetParent(w)),owner);
     if(!control && !report && !tree && !picture && !checklist && !legacy_progress && !status && !spin && !static_candidate && !scroll_candidate && !edit_candidate && !group_button_candidate && !grid_candidate && !inplace_candidate && !nav_candidate && !vcl_toolbar_candidate && !track_candidate && !tab_candidate && !vcl_report_candidate && !color_candidate && !date_candidate && !status_candidate && !bit_candidate && !group_frame_candidate && !panel_frame_candidate && (original_style&WS_CHILD) &&
             owner && owner!=GetModuleHandleW(NULL) && !vb_mdi_child && !vcl_mdi_probe && !vb_user_edge && !vb_data_edge && !rich_candidate && !box_candidate && !controlbar_candidate && !cool_candidate){

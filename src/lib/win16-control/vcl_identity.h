@@ -32,4 +32,10 @@ typedef struct win16_control_vcl_candidates {
     BOOL vcl_toolbar_candidate,status_candidate,date_candidate;
 } win16_control_vcl_candidates;
 void win16_control_vcl_classify(HWND,DWORD,BOOL,HMODULE,win16_control_vcl_candidates *);
+typedef struct win16_control_vcl_extra_candidates {
+    BOOL cool_candidate,box_candidate,controlbar_candidate;
+    BOOL rich_month,rich_hotkey,rich_popup,rich_unicode,rich_candidate;
+    BOOL vb_user_edge,vb_data_edge,vb_mdi_child;
+} win16_control_vcl_extra_candidates;
+void win16_control_vcl_classify_extra(HWND,DWORD,BOOL,HMODULE,win16_control_vcl_extra_candidates *);
 #endif

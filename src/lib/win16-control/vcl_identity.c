@@ -200,3 +200,27 @@ void win16_control_vcl_classify(HWND w,DWORD original_style,BOOL ready,HMODULE o
     v->date_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TDateTimePicker") &&
         RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TDateTimePicker");
 }
+
+void win16_control_vcl_classify_extra(HWND w,DWORD original_style,BOOL ready,HMODULE owner,win16_control_vcl_extra_candidates *v)
+{
+    v->cool_candidate=ready && (original_style&WS_CHILD) && ntw16s_class_is(w,L"TCoolBar") && win16_control_cool_class_owner(owner) && GetParent(w) && (HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==owner;
+    v->box_candidate=ready && win16_control_box_identity(w,owner,GetParent(w));
+    v->controlbar_candidate=ready && ntw16s_class_is(w,L"TControlBar") && owner && GetParent(w) && (HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==owner;
+    v->rich_month=ntw16s_class_is(w,L"TMonthCalendar");
+    v->rich_hotkey=ntw16s_class_is(w,L"THotKey");
+    v->rich_popup=ntw16s_class_is(w,L"TPopupListbox");
+    v->rich_unicode=v->rich_popup || v->rich_month || v->rich_hotkey || ntw16s_class_is(w,L"TRichEdit");
+    v->rich_candidate=ready && (v->rich_unicode || ntw16s_class_is(w,L"TRichEditURL")) && owner && GetParent(w) &&
+        (v->rich_popup?(owner==GetModuleHandleW(NULL) && win16_control_inplace_identity(GetParent(w),owner,GetParent(GetParent(w))) && (original_style&WS_BORDER) && (original_style&WS_VSCROLL) && !(original_style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA))):((HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==owner && (v->rich_month || (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE))));
+    v->vb_user_edge=win16_control_vb_user_edge_role(w,GetParent(w));
+    v->vb_data_edge=win16_control_vb_data_role(w,GetParent(w));
+    /* An external OCX can create itself with frame bits during construction
+     * and then become a custom client surface.  Without an explicitly
+     * verified public protocol it must stay native; only an application-owned
+     * generic child frame may use the ordinary frame path. */
+    v->vb_mdi_child=(original_style&WS_CAPTION)==WS_CAPTION &&
+        (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_MDICHILD) &&
+        (ntw16s_vb5_class(w,L"ThunderRT5Form") || ntw16s_vb_class(w,L"ThunderRT6FormDC")) &&
+        ntw16s_class_is(GetParent(w),L"MDIClient") &&
+        (HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==GetModuleHandleW(L"user32.dll");
+}
