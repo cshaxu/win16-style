@@ -53,6 +53,8 @@ typedef struct win16_attachment_guard_services {
     BOOL (*cool_identity)(HWND,attachment *);
     BOOL (*remove)(HWND);
 } win16_attachment_guard_services;
+HMODULE win16_attachment_observe_native(HWND,UINT,WNDPROC,const void *,attachment *,HWND,
+    attachment *,HWND,WNDPROC *,attachment *(*)(HWND));
 void win16_attachment_retire_frames(HWND,attachment *);
 void win16_attachment_guard_cool(HWND,UINT,attachment *,const win16_attachment_guard_services *);
 void win16_attachment_guard_roles(HWND,UINT,attachment *,const win16_attachment_guard_services *);

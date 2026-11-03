@@ -436,3 +436,125 @@ BOOL win16_attachment_classify_initial(HWND w,DWORD original_style,BOOL ready,BO
        win16_control_grid_identity(w,v->owner,GetParent(w))){v->control=FALSE;v->edit=FALSE;}
     return TRUE;
 }
+
+HMODULE win16_attachment_observe_native(HWND w,UINT message,WNDPROC proc,const void *address,
+    attachment *a,HWND paint_window,attachment *cool_owner,HWND cool_window,
+    WNDPROC *cool_native,attachment *(*lookup)(HWND))
+{
+    WNDCLASSEXW native={.cbSize=sizeof(native)};HMODULE caller=NULL,native_owner=NULL,owner;
+    if(message==WM_PAINT && cool_owner && cool_window==w && !cool_owner->detached && lookup(w)==cool_owner &&
+       GetClassInfoExW(NULL,REBARCLASSNAMEW,&native) && proc==native.lpfnWndProc &&
+       GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) &&
+       caller==cool_owner->cool_owner)*cool_native=proc;
+    native.cbSize=sizeof(native);
+    if(message==WM_PAINT && a && paint_window==w &&
+       a->status_candidate && !a->detached &&
+       !a->status_attempted && lookup(w)==a &&
+       GetClassInfoExW(NULL,STATUSCLASSNAMEW,&native) && proc==native.lpfnWndProc &&
+       GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+           (LPCWSTR)address,&caller)){
+        owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+        if(owner && caller==owner)a->status_witness_owner=owner;
+    }
+    native.cbSize=sizeof(native);
+    if(message==WM_PAINT && a && paint_window==w &&
+       a->date_candidate && !a->detached &&
+       !a->date_attempted && lookup(w)==a &&
+       GetClassInfoExW(NULL,DATETIMEPICK_CLASSW,&native) && proc==native.lpfnWndProc &&
+       GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+           (LPCWSTR)address,&caller)){
+        owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+        if(owner && caller==owner)a->date_witness_owner=owner;
+    }
+    native.cbSize=sizeof(native);
+    if(message==WM_PAINT && a && paint_window==w &&
+       a->color_candidate && !a->detached &&
+       !a->color_attempted && lookup(w)==a &&
+       GetClassInfoExW(NULL,L"COMBOBOX",&native) && proc==native.lpfnWndProc &&
+       GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+           (LPCWSTR)address,&caller)){
+        owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+        if(owner && caller==owner)a->color_witness_owner=owner;
+    }
+    native.cbSize=sizeof(native);
+    if(message==WM_PAINT && a && paint_window==w &&
+       a->track_candidate && !a->detached &&
+       !a->track_attempted && lookup(w)==a &&
+       GetClassInfoExW(NULL,TRACKBAR_CLASSW,&native) && proc==native.lpfnWndProc &&
+       GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+           (LPCWSTR)address,&caller)){
+        owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+        if(owner && caller==owner)a->track_witness_owner=owner;
+    }
+    native.cbSize=sizeof(native);
+    if(message==WM_PAINT && a && paint_window==w &&
+       a->scroll_candidate && !a->detached &&
+       !a->scroll_attempted && lookup(w)==a &&
+       GetParent(w)==a->scroll_parent &&
+       GetClassInfoExW(NULL,L"SCROLLBAR",&native) && proc==native.lpfnWndProc &&
+       GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+           (LPCWSTR)address,&caller)){
+        owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+        if(owner && caller==owner)a->scroll_witness=owner;
+    }
+    native.cbSize=sizeof(native);
+    if(message==WM_PAINT && a && paint_window==w &&
+       a->edit_candidate && !a->detached &&
+       !a->edit_attempted && lookup(w)==a &&
+       GetClassInfoExW(NULL,a->link_candidate?WC_LINK:a->combo_candidate?L"COMBOBOX":L"EDIT",&native) && proc==native.lpfnWndProc &&
+       GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+           (LPCWSTR)address,&caller)){
+        owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+        if(owner && caller==owner){WCHAR name[64];
+            if(!a->combo_candidate || (GetClassNameW(w,name,ARRAYSIZE(name)) && lstrcmpW(name,L"TDBComboBox")))
+                a->edit_witness_owner=owner;
+        }
+    }
+    native.cbSize=sizeof(native);
+    if(message==WM_PAINT && a && paint_window==w &&
+       a->group_button_candidate && !a->detached &&
+       !a->group_button_attempted && lookup(w)==a &&
+       win16_control_group_button_identity(w) && GetClassInfoExW(NULL,L"BUTTON",&native) && proc==native.lpfnWndProc &&
+       GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+           (LPCWSTR)address,&caller)){
+        owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+        if(owner && caller==owner)a->group_button_witness_owner=owner;
+    }
+    native.cbSize=sizeof(native);
+    if(message==WM_PRINTCLIENT && a && paint_window==w &&
+       a->vcl_toolbar_candidate && !a->detached &&
+       !a->vcl_toolbar_attempted && lookup(w)==a &&
+       win16_control_vcl_toolbar_identity(w,a->vcl_toolbar_owner,a->vcl_toolbar_parent) &&
+       GetClassInfoExW(NULL,TOOLBARCLASSNAMEW,&native) && proc==native.lpfnWndProc &&
+       GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) &&
+       caller==a->vcl_toolbar_owner)a->vcl_toolbar_witness=caller;
+    native.cbSize=sizeof(native);
+    if(message==WM_PAINT && a && paint_window==w &&
+       a->tab_candidate && !a->detached &&
+       !a->tab_attempted && lookup(w)==a &&
+       GetParent(w)==a->tab_parent && GetClassInfoExW(NULL,WC_TABCONTROLW,&native) && proc==native.lpfnWndProc &&
+       GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller)){
+        owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+        if(owner && caller==owner)a->tab_witness_owner=owner;
+    }
+    native.cbSize=sizeof(native);
+    if(message==WM_PAINT && a && paint_window==w &&
+       a->vcl_report_candidate && !a->detached &&
+       !a->vcl_report_attempted && lookup(w)==a &&
+       GetParent(w)==a->vcl_report_parent &&
+       GetClassInfoExW(NULL,a->vcl_report_tree?WC_TREEVIEWW:WC_LISTVIEWW,&native) && proc==native.lpfnWndProc &&
+       GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) &&
+       caller==a->vcl_report_owner &&
+       (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==caller)a->vcl_report_witness=caller;
+    native.cbSize=sizeof(native);
+    if(message!=WM_PAINT || !a || paint_window!=w ||
+       a->detached || lookup(w)!=a ||
+       !GetClassInfoExW(NULL,L"STATIC",&native) || proc!=native.lpfnWndProc ||
+       !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+            (LPCWSTR)address,&caller) ||
+       !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+            (LPCWSTR)(UINT_PTR)proc,&native_owner))return NULL;
+    owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+    if(!owner || caller!=owner || !native_owner)return NULL;
+    return native_owner;
+}
