@@ -2,7 +2,6 @@
 #include "lib/win16-common/font.h"
 #include "lib/win16-common/layout.h"
 #include "lib/win16-common/menu_layout.h"
-#include "lib/win16-window/menu_paint.h"
 #include "lib/win16-common/palette.h"
 
 int main(void)
@@ -19,6 +18,6 @@ int main(void)
         DeleteObject(font);return 12;
     }
     DeleteObject(font);
-    puts("WIN16_WINDOW_LINK_OK palette=1 font=1 menu_layout=1");
+    puts("WIN16_COMMON_LINK_OK palette=1 font=1 menu_layout=1");
     return 0;
 }

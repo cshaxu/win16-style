@@ -1687,7 +1687,12 @@ if(BUILD_TESTING)
   target_compile_definitions(core-geometry PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   # Force every object into an independent consumer: no private ntw16s DLL
   # symbols may be needed to link the presentation library.
-  add_executable(core-win16-window-link tests/lib/win16-common/common_link.c)
+  add_executable(core-win16-common-link tests/lib/win16-common/common_link.c)
+  target_include_directories(core-win16-common-link PRIVATE src)
+  target_compile_definitions(core-win16-common-link PRIVATE NTW16S_STATIC UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_libraries(core-win16-common-link PRIVATE "-Wl,--whole-archive" win16-common "-Wl,--no-whole-archive")
+  add_test(NAME core/win16-common-link COMMAND ${test_driver} --name core/win16-common-link -- $<TARGET_FILE:core-win16-common-link>)
+  add_executable(core-win16-window-link tests/lib/win16-window/window_link.c)
   add_dependencies(core-win16-window-link ntw16s-subclass)
   target_include_directories(core-win16-window-link PRIVATE src)
   target_compile_definitions(core-win16-window-link PRIVATE NTW16S_STATIC UNICODE _UNICODE _WIN32_WINNT=0x0A00)
