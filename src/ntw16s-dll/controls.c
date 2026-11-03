@@ -128,43 +128,13 @@ static BOOL is_header(HWND w)
 static _Thread_local HWND common_dialog_combo_pending;
 
 BOOL win16_style_checklist_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address)
-{
-    const UINT allowed=DFCS_CHECKED|DFCS_PUSHED;
-    if(type!=DFC_BUTTON || (flags&15u)!=DFCS_BUTTONCHECK || (flags&~allowed) ||
-        !ntw16s_checklist_draw_target(dc,rect,address))return FALSE;
-    return win16_control_checklist_glyph(dc,rect,flags);
-}
+{return win16_control_checklist_frame(dc,rect,type,flags,address,ntw16s_checklist_draw_target);}
 BOOL win16_style_vb_checklist(HDC dc,int x,int y,int width,int height,HDC source,int sx,int sy,DWORD rop,const void *address)
 {return win16_control_vb_checklist(dc,x,y,width,height,source,sx,sy,rop,address);}
-static control_style *graphical_target(HDC dc,UINT type,UINT flags,const void *address,HWND *w)
-{
-    DWORD_PTR value;HMODULE caller=NULL;
-    const UINT allowed=DFCS_BUTTONPUSH|DFCS_PUSHED|DFCS_INACTIVE|DFCS_ADJUSTRECT|DFCS_CHECKED;
-    if(type!=DFC_BUTTON || !(flags&DFCS_BUTTONPUSH) || (flags&~allowed) ||
-            !ntw16s_report_paint_target(dc,w) || !ntw16s_vb_graphical_button(*w) ||
-            ((flags&DFCS_CHECKED) && !ntw16s_vb_class(*w,L"ThunderRT6OptionButton") &&
-             !ntw16s_vb_class(*w,L"ThunderRT6CheckBox") && !ntw16s_vb5_class(*w,L"ThunderRT5CheckBox") &&
-             !ntw16s_vb5_class(*w,L"ThunderRT5OptionButton")) ||
-            !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(const WCHAR *)address,&caller) ||
-            caller!=(HMODULE)GetClassLongPtrW(*w,GCLP_HMODULE) ||
-            !GetWindowSubclass(*w,control_proc,(UINT_PTR)control_proc,&value))return NULL;
-    control_style *s=(void *)value;return !s->detached && s->frame_scrollbars?s:NULL;
-}
 BOOL win16_style_graphical_frame_prepare(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,RECT *copy)
-{
-    HWND w;
-    /* Ordinary API calls remain untouched, including parameter validation.
-     * Copy only a trusted owned-runtime primitive inside its exact scope. */
-    if(!rect || !copy || !graphical_target(dc,type,flags,address,&w))return FALSE;
-    *copy=*rect;return TRUE;
-}
+{return win16_control_graphical_frame_prepare(dc,rect,type,flags,address,copy,control_proc);}
 BOOL win16_style_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address)
-{
-    HWND w;RECT client;POINT origin;control_style *s=graphical_target(dc,type,flags,address,&w);
-    if(!s || !rect || !GetClientRect(w,&client) || !EqualRect(rect,&client) ||
-            GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) || !GetViewportOrgEx(dc,&origin) || origin.x || origin.y)return FALSE;
-    return win16_control_graphical_face(w,dc,rect,flags,&s->palette);
-}
+{return win16_control_graphical_frame(dc,rect,type,flags,address,control_proc);}
 /* Keep the bitmap glyph's proportions when a VCL button is shorter than its
  * source font plus the classic border. The application retains its font and
  * layout; only the text image is fitted inside the button's existing face. */

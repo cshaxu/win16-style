@@ -3,6 +3,9 @@
 #include "scroll_assets.h"
 #include "control_protocol.h"
 #include "control_class.h"
+#include "control_state.h"
+#include "choice_paint.h"
+#include "vb_text.h"
 #include <commctrl.h>
 #include <vssym32.h>
 
@@ -207,4 +210,41 @@ BOOL win16_control_graphical_face(HWND w,HDC dc,const RECT *rect,UINT flags,cons
     SetDCBrushColor(dc,palette->face);FillRect(dc,rect,(HBRUSH)GetStockObject(DC_BRUSH));
     (void)win16_control_button_border(dc,*rect,palette,u,u,(flags&(DFCS_PUSHED|DFCS_CHECKED))!=0);
     RestoreDC(dc,saved);return TRUE;
+}
+
+BOOL win16_control_checklist_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,BOOL (*target)(HDC,const RECT *,const void *))
+{
+    const UINT allowed=DFCS_CHECKED|DFCS_PUSHED;
+    if(type!=DFC_BUTTON || (flags&15u)!=DFCS_BUTTONCHECK || (flags&~allowed) ||
+        !target(dc,rect,address))return FALSE;
+    return win16_control_checklist_glyph(dc,rect,flags);
+}
+static control_style *graphical_target(HDC dc,UINT type,UINT flags,const void *address,HWND *w,SUBCLASSPROC proc)
+{
+    DWORD_PTR value;HMODULE caller=NULL;
+    const UINT allowed=DFCS_BUTTONPUSH|DFCS_PUSHED|DFCS_INACTIVE|DFCS_ADJUSTRECT|DFCS_CHECKED;
+    if(type!=DFC_BUTTON || !(flags&DFCS_BUTTONPUSH) || (flags&~allowed) ||
+            !ntw16s_report_paint_target(dc,w) || !ntw16s_vb_graphical_button(*w) ||
+            ((flags&DFCS_CHECKED) && !ntw16s_vb_class(*w,L"ThunderRT6OptionButton") &&
+             !ntw16s_vb_class(*w,L"ThunderRT6CheckBox") && !ntw16s_vb5_class(*w,L"ThunderRT5CheckBox") &&
+             !ntw16s_vb5_class(*w,L"ThunderRT5OptionButton")) ||
+            !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(const WCHAR *)address,&caller) ||
+            caller!=(HMODULE)GetClassLongPtrW(*w,GCLP_HMODULE) ||
+            !GetWindowSubclass(*w,proc,(UINT_PTR)proc,&value))return NULL;
+    control_style *s=(void *)value;return !s->detached && s->frame_scrollbars?s:NULL;
+}
+BOOL win16_control_graphical_frame_prepare(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,RECT *copy,SUBCLASSPROC proc)
+{
+    HWND w;
+    /* Ordinary API calls remain untouched, including parameter validation.
+     * Copy only a trusted owned-runtime primitive inside its exact scope. */
+    if(!rect || !copy || !graphical_target(dc,type,flags,address,&w,proc))return FALSE;
+    *copy=*rect;return TRUE;
+}
+BOOL win16_control_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,SUBCLASSPROC proc)
+{
+    HWND w;RECT client;POINT origin;control_style *s=graphical_target(dc,type,flags,address,&w,proc);
+    if(!s || !rect || !GetClientRect(w,&client) || !EqualRect(rect,&client) ||
+            GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) || !GetViewportOrgEx(dc,&origin) || origin.x || origin.y)return FALSE;
+    return win16_control_graphical_face(w,dc,rect,flags,&s->palette);
 }
