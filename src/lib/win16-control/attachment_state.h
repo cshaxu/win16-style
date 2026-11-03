@@ -105,4 +105,21 @@ typedef struct win16_attachment_report_services {
 void win16_attachment_report_bind(HWND,attachment *,const win16_attachment_report_services *);
 void win16_attachment_vcl_report_bind(HWND,attachment *,const win16_attachment_report_services *);
 void win16_attachment_report_unbind(attachment *,const win16_attachment_report_services *);
+typedef struct win16_attachment_lifecycle_services {
+    attachment *(*lookup)(HWND);
+    BOOL (*cool_identity)(HWND,attachment *),(*mdi_identity)(HWND,HWND,HWND,HMODULE);
+    BOOL (*controlbar_identity)(HWND,attachment *),(*rich_identity)(HWND,attachment *);
+    BOOL (*vb_user_label_target)(HWND);
+    SUBCLASSPROC proc;
+    void (*report_unbind)(attachment *),(*cool_unbind)(attachment *);
+    BOOL (*frame_remove_owned)(HWND,const void *),(*control_remove_owned)(HWND,const void *);
+    void (*theme_remove)(HWND,const void *);
+    BOOL (*frame_terminal)(HWND),(*control_terminal)(HWND),(*theme_terminal)(HWND,const void *);
+    void (*release)(attachment *);
+    void (*scrollbars_paint)(HWND,HDC,const win16_style_palette *);
+} win16_attachment_lifecycle_services;
+BOOL win16_attachment_attached(HWND,const win16_attachment_lifecycle_services *);
+void win16_attachment_scroll_changed(HWND,const win16_attachment_lifecycle_services *);
+BOOL win16_attachment_remove(HWND,const win16_attachment_lifecycle_services *);
+BOOL win16_attachment_terminal(HWND,const win16_attachment_lifecycle_services *);
 #endif

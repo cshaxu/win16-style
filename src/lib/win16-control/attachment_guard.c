@@ -298,3 +298,59 @@ void win16_attachment_report_unbind(attachment *a,const win16_attachment_report_
         value==(DWORD_PTR)a)RemoveWindowSubclass(a->report_parent,v->notify,(UINT_PTR)a->report_window);
     a->report_parent=NULL;
 }
+
+BOOL win16_attachment_attached(HWND w,const win16_attachment_lifecycle_services *v)
+{
+    if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId()){
+        SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
+    }
+    attachment *a=v->lookup(w);return a && (!a->vcl_report_candidate || (a->vcl_report_installed && GetParent(w)==a->vcl_report_parent)) && (!a->cool_candidate || (a->cool_verified && v->cool_identity(w,a))) && (!a->mdi_candidate || (v->lookup(a->mdi_host)==a->mdi_host_attachment && v->mdi_identity(w,a->mdi_parent,a->mdi_host,a->mdi_owner))) && (!a->controlbar_candidate || (a->controlbar_verified && v->controlbar_identity(w,a))) && (!a->box_candidate || (a->box_installed && win16_control_box_identity(w,a->box_owner,a->box_parent))) && (!a->modern_spin || a->modern_spin_verified) && (!a->vb_data_candidate || a->vb_data_edge) && (!a->vb_user_candidate || v->vb_user_label_target(w)) && (!a->static_candidate || a->static_verified) && (!a->scroll_candidate || (a->scroll_installed && GetParent(w)==a->scroll_parent)) && (!a->edit_candidate || a->edit_installed) && (!a->group_button_candidate || a->group_button_installed) && (!a->grid_candidate || a->grid_installed) && (!a->vcl_toolbar_candidate || a->vcl_toolbar_installed) && (!a->track_candidate || a->track_installed) && (!a->tab_candidate || a->tab_installed) && (!a->color_candidate || a->color_installed) && (!a->date_candidate || a->date_installed) && (!a->status_candidate || a->status_installed) && (!a->rich_candidate || (a->rich_installed && v->rich_identity(w,a))) && (!a->bit_candidate || a->bit_verified) && (!a->inplace_candidate || (a->inplace_verified && win16_control_inplace_or_lookup(w,a->inplace_owner,a->inplace_parent))) && (!a->nav_candidate || (a->nav_verified && win16_control_nav_identity(w,a->nav_owner,a->nav_parent))) && (!a->lookup_popup_candidate || (v->lookup(a->lookup_popup_source)==a->lookup_popup_source_attachment && win16_control_lookup_popup_identity(w,a->lookup_popup_source,a->lookup_popup_source_parent,a->lookup_popup_owner))) && (!a->group_frame_candidate || (a->group_frame_verified && !a->group_frame_retired && GetParent(w)==a->group_frame_parent)) && (!a->panel_frame_candidate || (a->panel_frame_verified && !a->panel_frame_retired && GetParent(w)==a->panel_frame_parent));
+}
+void win16_attachment_scroll_changed(HWND w,const win16_attachment_lifecycle_services *v)
+{
+    if(GetWindowThreadProcessId(w,NULL)==GetCurrentThreadId() && v->lookup(w)){
+        if(ntw16s_class_is(w,L"SCROLLBAR"))RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
+        else v->scrollbars_paint(w,NULL,NULL);
+    }
+}
+BOOL win16_attachment_remove(HWND w,const win16_attachment_lifecycle_services *v)
+{
+    attachment *a;
+    if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId()){
+        SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
+    }
+    a=v->lookup(w);if(!a){SetLastError(ERROR_NOT_FOUND);return FALSE;}
+    ++a->calls;
+    RemoveWindowSubclass(w,v->proc,(UINT_PTR)v->proc);
+    a->detached=TRUE;v->report_unbind(a);v->cool_unbind(a);
+    /* Existing owners handle reentrant destruction/removal independently. */
+    v->frame_remove_owned(w,a);
+    v->control_remove_owned(w,a);
+    if(a->themed)v->theme_remove(a->themed,a);
+    v->theme_remove(w,NULL);
+    ntw16s_control_protocol_release(a->protocol);a->protocol=NULL;
+    v->release(a);return TRUE;
+}
+BOOL win16_attachment_terminal(HWND w,const win16_attachment_lifecycle_services *v)
+{
+    attachment *a;
+    DWORD saved=GetLastError(),error=ERROR_SUCCESS;
+    if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId()){
+        SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
+    }
+    a=v->lookup(w);
+    if(a){
+        ++a->calls;
+        if(RemoveWindowSubclass(w,v->proc,(UINT_PTR)v->proc))a->detached=TRUE;
+        else error=ERROR_INVALID_STATE;
+    }
+    /* These leaves only retire our exact nodes. They do not restore native
+     * appearance, send application messages, or call a saved procedure. */
+    if(!v->frame_terminal(w) && !error)error=GetLastError();
+    if(!v->control_terminal(w) && !error)error=GetLastError();
+    if(a && a->themed && a->themed!=w &&
+            !v->theme_terminal(a->themed,a) && !error)error=GetLastError();
+    if(!v->theme_terminal(w,NULL) && !error)error=GetLastError();
+    if(a){v->report_unbind(a);v->cool_unbind(a);ntw16s_control_protocol_release(a->protocol);a->protocol=NULL;v->release(a);}
+    SetLastError(error?error:saved);return !error;
+}
