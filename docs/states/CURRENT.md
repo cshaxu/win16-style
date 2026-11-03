@@ -6,7 +6,7 @@
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | New; verified locally; awaiting push/remote review |
+| Identifier Mode | New; closed |
 | Admission And Approval | 用户要求将剩余 Win16 样式和对话框逻辑全部抽到两个公共库；沿用 T21，不新建 T。 |
 | Objective | 逐项盘点并迁移 DLL 中剩余的窗口、控件与对话框样式业务至 win16-control 和 win16-dialog；调用入口及明确的接入边界保留 DLL。 |
 | Non-goals | 不修改 global_*、跨进程接入、传播、公开 ABI、原图形及来源声明；不增加产物。 |
@@ -23,9 +23,11 @@
 | Original Owner Request | 将 win16-dialog 和 win16-control 所有样式逻辑拆分到公共 lib。 |
 | Similar-Issue Sweep | 审计 controls.c、win16_style.c、attachment.c、theme.c、updown_paint.c 及 file/folder/com/window_titles 对话框路径。 |
 
-S24 已准入；S23 产品提交 `4eb5c7c` 及远端四文件已复核，详情见 [交付记录](../history/M0-T21-S23-dialog-library.md)。用户进一步要求为后续 Win2000 样式库准备接口；候选边界见库设计，不能将尚未验证的草案宣称为已实现的多主题框架。S24 的库职责盘点、迁移、构建、实际包测试和双位置发布已完成；尚待提交、推送和远端复核。
+S24 已准入；S23 产品提交 `4eb5c7c` 及远端四文件已复核，详情见 [交付记录](../history/M0-T21-S23-dialog-library.md)。用户进一步要求为后续 Win2000 样式库准备接口；候选边界见库设计，不能将尚未验证的草案宣称为已实现的多主题框架。S24 的库职责盘点、迁移、构建、实际包测试、双位置发布、提交、推送和远端复核均已完成。
 
-P72：完成 S24 的最终职责收束。VB 文本与标签调用者资格迁入 `win16-control/text_policy`；DLL 仅提供报告绘制调用者和启动期直接文本状态。稳定化独立文件夹新建探针：成功投递后立即终止其自有枚举线程，保留真实旧式对话框、创建、返回路径与清理验证。最终审计写入[库设计与依赖审计](../proposals/win16-libraries.md)：`attachment.c`、`controls.c`、`win16_style.c` 及四个对话框/标题接入文件仅剩 HWND/COM/API trampoline、TLS、回调绑定和异常清理，零直接 Win16 绘制调用；两个库无反向 DLL 包含。双宽独立 control/dialog 库运行通过；干净包 `s24-final-library-clean-1` 双宽构建、ABI 和四文件身份通过；实际包 `s24-final-library-focused-2` 的双宽 dialog/control 六项均通过，固定预检中的 demo-pair/automatic/propagation 因当前桌面环境跳过。四文件已发布 assets 根及 `O:/winnt`，摘要由 `s24-final-library-deploy-1` 逐项核对。尚待提交、推送和远端复核；不修改 global_*、跨进程接入、ABI 或原资源。
+P72：完成 S24 的最终职责收束。VB 文本与标签调用者资格迁入 `win16-control/text_policy`；DLL 仅提供报告绘制调用者和启动期直接文本状态。稳定化独立文件夹新建探针：成功投递后立即终止其自有枚举线程，保留真实旧式对话框、创建、返回路径与清理验证。最终审计写入[库设计与依赖审计](../proposals/win16-libraries.md)：`attachment.c`、`controls.c`、`win16_style.c` 及四个对话框/标题接入文件仅剩 HWND/COM/API trampoline、TLS、回调绑定和异常清理，零直接 Win16 绘制调用；两个库无反向 DLL 包含。双宽独立 control/dialog 库运行通过；干净包 `s24-final-library-clean-1` 双宽构建、ABI 和四文件身份通过；实际包 `s24-final-library-focused-2` 的双宽 dialog/control 六项均通过，固定预检中的 demo-pair/automatic/propagation 因当前桌面环境跳过。四文件已发布 assets 根及 `O:/winnt`，摘要由 `s24-final-library-deploy-1` 逐项核对；产品提交 `279bd25` 已推送，远端分支及四个二进制 Git 对象均逐项读取复核。不修改 global_*、跨进程接入、ABI 或原资源。
+
+P73：独立复核 P72：读取远端 `origin/main`，提交树与 `279bd25` 一致，四个 assets 对象逐项与本地已验证提交相等；工作区无未提交改动。S24 关闭；T21 仍保持开放，后续主题接口必须另行准入。
 
 P71：VCL 弹出菜单宿主的身份标记和作用资格判断迁入 win16-control；DLL 保留属性值、线程范围、接入入口和异常清理。首次尝试修改受 retain 约束的原头文件被来源门禁拒绝；已恢复原字节并使用项目自有头文件，来源门禁通过。双宽增量构建通过，候选包 `s24-p71-candidate-test` 聚焦 16/16、无跳过，覆盖双宽普通与 DPI 感知菜单、嵌套、错误宿主、应用自绘及恢复；干净包 `s24-p71-clean-1` 双宽构建及 ABI、独立控件库测试通过；实际包 `s24-p71-focused-1` 聚焦 16/16、无跳过。同批四文件已发布 assets 根及 O:/winnt 并核对摘要（`s24-p71-deploy-1`）；不代表完整菜单矩阵，S24 继续开放。
 
