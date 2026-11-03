@@ -1,6 +1,7 @@
 #ifndef WIN16_STYLE_CONTROLS_H
 #define WIN16_STYLE_CONTROLS_H
 #include "win16_style.h"
+#include "../lib/win16-control/control_scope.h"
 /* Same-thread presentation attachment. Standard push/check/radio/group BUTTON
  * and text/box STATIC forms, ordinary string LISTBOX client rows;
  * plain EDIT border presentation retains native
@@ -67,8 +68,6 @@ NTW16S_API BOOL win16_style_edit_scrollbars_enable(HWND window);
  * opted-in controls and styled frames use our shared fixed-thumb geometry. */
 BOOL ntw16s_managed_scrollbars_active(HWND window);
 NTW16S_API void win16_style_scrollbars_paint(HWND window,HDC target,const win16_style_palette *palette);
-typedef struct win16_style_control_scope win16_style_control_scope;
-typedef struct win16_style_control_counts {unsigned installed,unsupported,failed;} win16_style_control_counts;
 /* Same-thread creation scope for future descendants of root. Newest matching
  * scope wins. End stops observation, leaving independent HWND attachments
  * intact; destroy/remove them normally. Root destruction disables matching.

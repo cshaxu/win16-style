@@ -914,7 +914,7 @@
       "path": "src/ntw16s-dll/control_scope.c",
       "source": "src/ntw16s-dll/control_scope.c",
       "source_blob": "e7d2e565af452f8b618badb8e1df0d2ee644a77a",
-      "sha256": "d192fdad564a121e7a0c7e8b792ac2e5393c288e23cb7caf8884c1a96f4f22f5",
+      "sha256": "f3932064d2bc02933eaebb08345d3a23a976f5f3c4ddbcca475db93cc02c498f",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -932,7 +932,7 @@
       "path": "src/ntw16s-dll/controls.h",
       "source": "src/ntw16s-dll/controls.h",
       "source_blob": "8c6380513ec16c21ff3b1e34b9ef14222cc4d837",
-      "sha256": "b2f9b43d7820f75c9c7fd6112470812f14cd42641b6a0b57d01e05f4d4c296e2",
+      "sha256": "afe78a3e88137faf9b3df468fd76f25c4ce61a4404045f7669617936e122bac0",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T15 S5 verified initialized native/TPageControl tab protocol, native geometry and borrowed image/font painting, pending-install exact ownership and cancellation cleanup; no external code copied, original notices/resources retained; T15 S8 verified initialized native tree protocol and bounded existing System paint scope, native item/font/image/geometry/notifications preserved; exact pending frame ownership and cancellation; ASCII test-thread IME isolation after native no-DLL MSCTF teardown evidence; no external code or original graphics modified; T15 S9 bounded initialized native-v6 progress painter with unchanged public range/position/step/colors/font; old-v5/emulated-state and special-style native fallback; epoch/cancellation guard and existing passive-font ownership; controlled test-thread keyboard state and native positive/negative proofs; no copied external code or original resource changes; T15 S10 initialized trackbar public protocol, exact native custom-draw rectangles/states with original application-requested stages preserved; private extra default-only part stages and per-window native cache invalidation; no font/data/input changes, no external code or original resources changed; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T18 S21 scoped observed checklist owner-draw frame, public state and original graphic, no external code or resource changes; T18 S23 bounded v5 TProgressBar static edge, native client and colors retained; dual-width public-protocol and fallback model; T18 S54 scoped runtime grid nonclient border/scrollbars with actual public scroll check, guarded retirement and self-owned dual-width model; original resources retained; T18 S64 VB6 checklist scoped 96 DPI bitmap rendering and additional BitBlt hook; native fallbacks retained; T18 S64 P50 bounded VB6 Data navigation graphics",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -5544,6 +5544,24 @@
       "disposition": "authored",
       "review": "T21 S24 extract Win16 attachment state and role guards",
       "notice": "Project-authored C implementation; original notices preserved"
+    },
+    {
+      "path": "src/lib/win16-control/control_scope.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "09d9c95a7252dc23f52fa3e306287591772b5fcf8467df1d93090315ea35f460",
+      "disposition": "authored",
+      "review": "T21 S24 extracted from project-authored src/ntw16s-dll/control_scope.c; original project source retained in history",
+      "notice": "Project-authored source per fixed component README; original notices preserved"
+    },
+    {
+      "path": "src/lib/win16-control/control_scope.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "cdadbb20986c243e8a718cf7245b0e5fd7f76e974f5e8fc9b568a8d1fc913aca",
+      "disposition": "authored",
+      "review": "T21 S24 extracted from project-authored src/ntw16s-dll/control_scope.c; original project source retained in history",
+      "notice": "Project-authored source per fixed component README; original notices preserved"
     }
   ]
 }
