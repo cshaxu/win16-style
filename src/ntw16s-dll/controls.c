@@ -37,6 +37,7 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include "../lib/win16-control/native_presentation.h"
 #include "../lib/win16-control/control_dispatch.h"
 #include "../lib/win16-control/control_lifetime.h"
+#include "../lib/win16-control/control_guard.h"
 
 #include "../lib/win16-control/scroll_assets.h"
 #include "scroll_track.h"
@@ -355,33 +356,12 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
     if(tab && win16_style_tab_changes(m))++s->tab_epoch;
     if(header && win16_style_header_changes(m))++s->header_epoch;
     win16_style_system_retain(pinned);
-    /* A verified VCL control belongs only to its original parent and role.
-     * Let the native transition finish, then retire this exact attachment. */
-    if(m!=WM_NCDESTROY && (!ntw16s_rich_valid(w) || !ntw16s_vcl_combo_valid(w) || !ntw16s_group_button_valid(w) || !ntw16s_grid_valid(w) || !ntw16s_vb_data_valid(w) || !ntw16s_vb_user_edge_valid(w) || !ntw16s_vcl_toolbar_valid(w) || !ntw16s_vcl_tab_valid(w))){
-        if(m==WM_SETFONT)s->original_font=win16_style_system_source((HFONT)a);
-        result=DefSubclassProc(w,m,a,b);
-        if(!s->detached && IsWindow(w) && !ntw16s_vb_user_edge_dormant(w) && Ntw16sWindowRemove(w) && IsWindow(w))InvalidateRect(w,NULL,TRUE);
-        goto finished;
-    }
-    /* A native BUTTON can become owner-drawn after creation. Its parent must
-     * receive WM_DRAWITEM rather than the old ordinary-button painter. */
-    if(m!=WM_NCDESTROY && is_exact_native_button(w) &&
-       (((DWORD)GetWindowLongPtrW(w,GWL_STYLE)&BS_TYPEMASK)==BS_OWNERDRAW)){
-        result=DefSubclassProc(w,m,a,b);
-        if(!s->detached && IsWindow(w)){
-            if(!Ntw16sWindowRemove(w))win16_style_control_remove(w);
-            if(IsWindow(w))InvalidateRect(w,NULL,TRUE);
-        }
-        goto finished;
-    }
-    /* Unverified graphical/owner-drawn VB variants stay native. A live
-     * transition retires only this painter; do not keep drawing a plain box. */
-    if(m!=WM_NCDESTROY && (ntw16s_vb_checkbox(w) || ntw16s_vb_option(w)) &&
-            !ntw16s_vb_plain_choice(w) && !ntw16s_vb_graphical_choice(w) && !ntw16s_vb_graphical_button(w)){
-        if(m==WM_SETFONT)s->original_font=win16_style_system_source((HFONT)a);
-        result=DefSubclassProc(w,m,a,b);
-        if(!s->detached)win16_style_control_remove(w);
-        goto finished;
+    {
+        const win16_control_guard_services guard={ntw16s_rich_valid,ntw16s_vcl_combo_valid,ntw16s_group_button_valid,ntw16s_grid_valid,
+            ntw16s_vb_data_valid,ntw16s_vb_user_edge_valid,ntw16s_vcl_toolbar_valid,ntw16s_vcl_tab_valid,ntw16s_vb_user_edge_dormant,
+            is_exact_native_button,ntw16s_vb_checkbox,ntw16s_vb_option,ntw16s_vb_plain_choice,ntw16s_vb_graphical_choice,
+            ntw16s_vb_graphical_button,Ntw16sWindowRemove,win16_style_control_remove};
+        if(win16_control_guard_message(w,s,m,a,b,&guard,&result))goto finished;
     }
     if(!win16_control_state_prepare_font(w,s,m,&a,native_font,&previous,&outbound))goto finished;
     {
