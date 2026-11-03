@@ -46,6 +46,12 @@ static BOOL test_decode(HDC dc,const WCHAR *input,UINT count,WCHAR *output)
 {(void)dc;for(UINT i=0;i<count;++i)output[i]=input[i];return TRUE;}
 int main(void)
 {
+    if(win16_control_theme_kind(L"BUTTON")!=WIN16_CONTROL_THEME_BUTTON ||
+       win16_control_theme_kind(L"combobox")!=WIN16_CONTROL_THEME_COMBOBOX ||
+       win16_control_theme_kind(L"TEXTGLOW")!=WIN16_CONTROL_THEME_TEXTGLOW ||
+       win16_control_theme_kind(NULL)!=WIN16_CONTROL_THEME_OTHER ||
+       win16_control_theme_kind((LPCWSTR)(UINT_PTR)1)!=WIN16_CONTROL_THEME_OTHER ||
+       win16_control_theme_kind(L"SCROLLBAR")!=WIN16_CONTROL_THEME_OTHER)return 104;
     win16_attachment_initial_classification initial={0};
     win16_control_vcl_candidates vcl={0};win16_control_vcl_extra_candidates extra={0};
     initial.owner=(HMODULE)(UINT_PTR)1;

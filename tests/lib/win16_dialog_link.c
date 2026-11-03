@@ -354,6 +354,12 @@ int main(void)
     print_w.lStructSize=sizeof(print_w);print_w.Flags=PD_RETURNDC;
     if(!win16_dialog_print_prepare_w(&print_w,&copy_w))return 41;
     win16_dialog_print_result_w(&print_w,&copy_w);if(print_w.Flags&PD_ENABLEPRINTHOOK)return 42;
+    if(!win16_dialog_file_resolve_links(TRUE,OFN_NODEREFERENCELINKS,TRUE,0) ||
+       win16_dialog_file_resolve_links(FALSE,OFN_NODEREFERENCELINKS,TRUE,0) ||
+       win16_dialog_file_resolve_links(TRUE,0,TRUE,0) ||
+       win16_dialog_file_resolve_links(TRUE,OFN_NODEREFERENCELINKS,FALSE,0) ||
+       win16_dialog_file_resolve_links(TRUE,OFN_NODEREFERENCELINKS,TRUE,OFN_NOVALIDATE) ||
+       win16_dialog_file_resolve_links(TRUE,OFN_NODEREFERENCELINKS,TRUE,OFN_NODEREFERENCELINKS))return 105;
     OPENFILENAMEA a={0},al={0};OPENFILENAMEW w={0},wl={0};
     if(win16_dialog_file_prepare_a(NULL,&al,0,NULL))return 3;
     a.lStructSize=sizeof(a);a.Flags=OFN_EXPLORER|OFN_READONLY;SetLastError(0x1234);

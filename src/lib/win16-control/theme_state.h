@@ -1,6 +1,8 @@
 #ifndef WIN16_CONTROL_THEME_STATE_H
 #define WIN16_CONTROL_THEME_STATE_H
 #include <windows.h>
+enum win16_control_theme_kind {WIN16_CONTROL_THEME_OTHER,WIN16_CONTROL_THEME_BUTTON,WIN16_CONTROL_THEME_TEXTGLOW,WIN16_CONTROL_THEME_COMBOBOX};
+int win16_control_theme_kind(LPCWSTR);
 typedef HRESULT (*win16_control_native_theme_fn)(HWND,LPCWSTR,LPCWSTR);
 BOOL win16_control_theme_capture(HWND window);
 BOOL win16_control_theme_stage(HWND window);

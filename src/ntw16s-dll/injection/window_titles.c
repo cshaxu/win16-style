@@ -574,23 +574,14 @@ static void theme_end(void *data)
     else ntw16s_theme_open_cancel();
     scope->active=FALSE;
 }
-static int theme_kind(LPCWSTR name)
-{
-    WCHAR safe[9];SIZE_T got=0;
-    if(!name || !ReadProcessMemory(GetCurrentProcess(),name,safe,7*sizeof(WCHAR),&got) || got!=7*sizeof(WCHAR))
-        return NTW16S_THEME_OTHER;
-    if(safe[6]==0 && !lstrcmpiW(safe,L"BUTTON"))return NTW16S_THEME_BUTTON;
-    if(!ReadProcessMemory(GetCurrentProcess(),name,safe,sizeof(safe),&got) || got!=sizeof(safe))return NTW16S_THEME_OTHER;
-    if(safe[8]==0 && !lstrcmpiW(safe,L"COMBOBOX"))return NTW16S_THEME_COMBOBOX;
-    return safe[8]==0 && !lstrcmpiW(safe,L"TEXTGLOW")?NTW16S_THEME_TEXTGLOW:NTW16S_THEME_OTHER;
-}
+
 static NTW16S_UNWIND_FUNCTION HTHEME WINAPI hook_OpenThemeData(HWND w,LPCWSTR name)
 {
     DWORD entry=GetLastError(),error;HTHEME h;ntw16s_unwind_scope unwind;
     theme_unwind scope={TRUE,FALSE,NULL};ntw16s_theme_ticket ticket=ntw16s_theme_open_begin();
     NTW16S_UNWIND_BEGIN(unwind,theme_end,&scope);
     SetLastError(entry);h=real_OpenThemeData(w,name);error=GetLastError();
-    ntw16s_theme_open_end(ticket,h,h?theme_kind(name):NTW16S_THEME_OTHER);scope.active=FALSE;
+    ntw16s_theme_open_end(ticket,h,h?win16_control_theme_kind(name):NTW16S_THEME_OTHER);scope.active=FALSE;
     NTW16S_UNWIND_END(unwind);SetLastError(error);return h;
 }
 static NTW16S_UNWIND_FUNCTION HTHEME WINAPI hook_OpenThemeDataEx(HWND w,LPCWSTR name,DWORD flags)
@@ -599,7 +590,7 @@ static NTW16S_UNWIND_FUNCTION HTHEME WINAPI hook_OpenThemeDataEx(HWND w,LPCWSTR 
     theme_unwind scope={TRUE,FALSE,NULL};ntw16s_theme_ticket ticket=ntw16s_theme_open_begin();
     NTW16S_UNWIND_BEGIN(unwind,theme_end,&scope);
     SetLastError(entry);h=real_OpenThemeDataEx(w,name,flags);error=GetLastError();
-    ntw16s_theme_open_end(ticket,h,h?theme_kind(name):NTW16S_THEME_OTHER);scope.active=FALSE;
+    ntw16s_theme_open_end(ticket,h,h?win16_control_theme_kind(name):NTW16S_THEME_OTHER);scope.active=FALSE;
     NTW16S_UNWIND_END(unwind);SetLastError(error);return h;
 }
 static NTW16S_UNWIND_FUNCTION HTHEME WINAPI hook_OpenThemeDataForDpi(HWND w,LPCWSTR name,UINT dpi)
@@ -608,7 +599,7 @@ static NTW16S_UNWIND_FUNCTION HTHEME WINAPI hook_OpenThemeDataForDpi(HWND w,LPCW
     theme_unwind scope={TRUE,FALSE,NULL};ntw16s_theme_ticket ticket=ntw16s_theme_open_begin();
     NTW16S_UNWIND_BEGIN(unwind,theme_end,&scope);
     SetLastError(entry);h=real_OpenThemeDataForDpi(w,name,dpi);error=GetLastError();
-    ntw16s_theme_open_end(ticket,h,h?theme_kind(name):NTW16S_THEME_OTHER);scope.active=FALSE;
+    ntw16s_theme_open_end(ticket,h,h?win16_control_theme_kind(name):NTW16S_THEME_OTHER);scope.active=FALSE;
     NTW16S_UNWIND_END(unwind);SetLastError(error);return h;
 }
 static NTW16S_UNWIND_FUNCTION HRESULT WINAPI hook_CloseThemeData(HTHEME h)

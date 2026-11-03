@@ -66,8 +66,7 @@ static NTW16S_UNWIND_FUNCTION BOOL WINAPI name(structure *value) \
     BOOL eligible=win16_dialog_file_prepare_##suffix(value,&local,extra_flags,old_dialog_hook); \
     if(eligible)passed=&local; \
     DWORD incoming=GetLastError(); \
-    old_dialog_scope observer={0};observer.resolve_links=eligible && (extra_flags) && value->lpstrFilter && \
-        !(value->Flags & (OFN_NODEREFERENCELINKS | OFN_NOVALIDATE)); \
+    old_dialog_scope observer={0};observer.resolve_links=win16_dialog_file_resolve_links(eligible,(extra_flags),eligible && value->lpstrFilter,eligible?value->Flags:0); \
     observer.previous_active=active_file_dialog;active_file_dialog=&observer;NTW16S_OLD_DIALOG_OBSERVER(observer); \
     ntw16s_unwind_scope unwind;name##_call call={passed,FALSE,incoming,ERROR_SUCCESS}; \
     HRESULT status; \

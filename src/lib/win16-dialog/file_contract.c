@@ -28,6 +28,9 @@ void win16_dialog_file_result_##suffix(type *value,const type *local) \
 CONTRACT(a,OPENFILENAMEA,OPENFILENAME_SIZE_VERSION_400A)
 CONTRACT(w,OPENFILENAMEW,OPENFILENAME_SIZE_VERSION_400W)
 
+BOOL win16_dialog_file_resolve_links(BOOL eligible,DWORD extra,BOOL has_filter,DWORD flags)
+{return eligible && extra && has_filter && !(flags & (OFN_NODEREFERENCELINKS | OFN_NOVALIDATE));}
+
 DWORD win16_dialog_com_file_flags(FILEOPENDIALOGOPTIONS flags)
 {
     DWORD result=OFN_HIDEREADONLY|OFN_LONGNAMES|OFN_ENABLEHOOK;
