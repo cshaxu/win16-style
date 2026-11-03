@@ -9,6 +9,7 @@
 #include "../lib/win16-control/menu_iteration.h"
 #include "../lib/win16-control/menu_message.h"
 #include "../lib/win16-control/frame_message.h"
+#include "../lib/win16-control/frame_input.h"
 #include "../lib/win16-control/frame_layout.h"
 #include "../lib/win16-control/present.h"
 #include "menu_bar.h"
@@ -341,82 +342,24 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
         if(win16_control_menu_message(w,s,msg,wp,lp,paint_button_state,&result))break;
         goto forward;
     case WM_KEYDOWN:
-        if(s->bar_keyboard){
-            if(wp==VK_LEFT || wp==VK_RIGHT){select_bar(w,s,wp==VK_LEFT?-1:1);break;}
-            if(wp==VK_ESCAPE || wp==VK_F10){leave_bar(w,s,TRUE);break;}
-            if(wp==VK_DOWN || wp==VK_RETURN){open_bar(w,s,s->bar_selected);break;}
-        }
-        goto forward;
     case WM_KILLFOCUS:
-        if(s->bar_keyboard)leave_bar(w,s,FALSE);
-        goto forward;
     case WM_NCMOUSEMOVE:
-        if(s->bar_keyboard && !tracking_menu){
-            POINT cursor={GET_X_LPARAM(lp),GET_Y_LPARAM(lp)};int hit=bar_at_screen(w,s,cursor);
-            if(hit!=-3 && hit!=s->bar_selected){
-                win16_style_bar bar;POINT origin;BOOL popup=hit==-2;
-                s->bar_selected=hit;paint_menu_state(w,s);
-                if(hit>=0 && layout(w,s,&l)){origin.x=l.menu.left;origin.y=l.menu.top;
-                    if(win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar)){
-                        popup=(UINT)hit<bar.count && bar.items[hit].popup!=NULL;
-                        win16_style_bar_free(&bar);}}
-                if(popup)open_bar(w,s,hit);
-            }
-        }
-        if(IsIconic(w))goto forward;
-        break;
     case WM_NCMOUSEHOVER:
     case WM_NCMOUSELEAVE:
-        if(IsIconic(w))goto forward; /* S3 retains native minimized presentation. */
-        /* DWMNCRP_DISABLED does not disable USER/UxTheme painting. In
-         * particular default NC hover paints native caption buttons without
-         * asking our WM_NCPAINT owner, potentially into our client area.
-         * Win3.1 buttons have no hover drawing. Press tracking remains in
-         * WM_MOUSEMOVE below; menu/drag/size commands still go to USER. */
-        break;
+    case WM_NCLBUTTONDBLCLK:
+    case WM_NCLBUTTONDOWN:
+    case WM_LBUTTONDOWN:
+    case WM_MOUSEMOVE:
+    case WM_LBUTTONUP:
+    case WM_CANCELMODE:
+    case WM_CAPTURECHANGED: {
+        const win16_control_frame_input_services services={menu_current,menu_begin,menu_end,layout,bar_at_screen,paint_menu_state,select_bar,leave_bar,open_bar,button_view};
+        if(win16_control_frame_input(w,s,msg,wp,lp,&services,&result))break;
+        goto forward;
+    }
     case WM_SYSCOMMAND:
-        if((wp&0xfff0)==SC_KEYMENU && !lp && GetMenu(w)){
-            if(s->bar_keyboard)leave_bar(w,s,TRUE);else select_bar(w,s,0);
-            break;
-        }
-        if((wp&0xfff0)==SC_KEYMENU && lp && lp!=L' ' && GetMenu(w) && layout(w,s,&l)){
-            win16_style_bar bar;POINT origin={l.menu.left,l.menu.top};int index=-1;
-            if(win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar)){
-                index=win16_control_menu_bar_mnemonic(&bar,(WCHAR)lp);
-                win16_style_bar_free(&bar);
-            }
-            if(index>=0){
-                if(!s->bar_keyboard)select_bar(w,s,0);
-                if(!s->detached)open_bar(w,s,index);
-            }
-            break;
-        }
-        if((wp&0xfff0)==SC_KEYMENU && lp==L' ' && layout(w,s,&l)){
-            MENUBARINFO menu={.cbSize=sizeof(menu)};
-            if((s->bar_keyboard && s->bar_selected==-2) ||
-                (GetMenuBarInfo(w,OBJID_SYSMENU,0,&menu) && IsRectEmpty(&menu.rcBar))){
-                menu_frame frame={0},*previous=tracking_menu;HHOOK hook;
-                GetWindowRect(w,&r);frame.window=w;frame.button=l.system;
-                if(s->bar_keyboard && s->bar_selected==-2)
-                    {frame.root=frame.active=GetSystemMenu(w,FALSE);
-                     frame.style=s;frame.selected=-2;frame.target=-3;}
-                OffsetRect(&frame.button,r.left,r.top);tracking_menu=&frame;
-                hook=SetWindowsHookExW(WH_GETMESSAGE,menu_filter,NULL,GetCurrentThreadId());
-                result=DefSubclassProc(w,msg,wp,lp);
-                if(hook)UnhookWindowsHookEx(hook);
-                tracking_menu=previous;
-                if(frame.root){
-                    s->bar_direction=frame.direction;s->bar_hover=frame.target;
-                    if(!s->detached && !frame.direction && frame.target==-3 && !frame.escape)
-                        leave_bar(w,s,TRUE);
-                }
-                /* Outside the menu loop USER handles SC_CLOSE availability
-                 * and the application still receives its normal NC message. */
-                if(frame.double_click && !s->detached)
-                    PostMessageW(w,WM_NCLBUTTONDBLCLK,HTSYSMENU,frame.point);
-                break;
-            }
-        }
+        {const win16_control_frame_input_services services={menu_current,menu_begin,menu_end,layout,bar_at_screen,paint_menu_state,select_bar,leave_bar,open_bar,button_view};
+         if(win16_control_frame_input(w,s,msg,wp,lp,&services,&result))break;}
         goto forward;
     case WM_MENUSELECT:
         if(tracking_menu && tracking_menu->window==w && lp)
@@ -425,57 +368,6 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
     case WM_ENTERMENULOOP:
         win16_control_frame_state_enter_menu(s);
         goto forward;
-    case WM_NCLBUTTONDBLCLK:
-        if(wp==HTMENU && layout(w,s,&l)){
-            BOOL close=FALSE;
-            (void)win16_control_menu_bar_item_screen(w,&l,s->menu_font,s->dpi,lp,&close);
-            /* DefFrameProc routes this command to the maximized MDI child.
-             * Sending SC_CLOSE to the frame itself would close the parent. */
-            if(close)PostMessageW(w,WM_COMMAND,SC_CLOSE,0);
-            break;
-        }
-        goto forward;
-    case WM_NCLBUTTONDOWN:
-        if(s->bar_keyboard && !tracking_menu)leave_bar(w,s,TRUE);
-        if(wp==HTMENU && layout(w,s,&l)){
-            int item=win16_control_menu_bar_item_screen(w,&l,s->menu_font,s->dpi,lp,NULL);
-            if(item>=0 && !s->detached)open_bar(w,s,item);
-            break;
-        }
-        if(wp==HTSYSMENU){
-            MENUBARINFO menu={.cbSize=sizeof(menu)};
-            /* Modern dialog frames can have a system menu but no native
-             * icon rectangle. Their native mouse-menu entry has no button
-             * to track; use the same system-menu entry as Alt+Space. */
-            if(GetMenuBarInfo(w,OBJID_SYSMENU,0,&menu) && IsRectEmpty(&menu.rcBar)){
-                /* Do not enter a keyboard menu with the mouse still down:
-                 * its subsequent release would immediately dismiss it. */
-                const win16_control_frame_button_view view=button_view(s);
-                win16_control_frame_button_press(w,&view,HTSYSMENU);break;
-            }
-        }
-        /* Native system-menu tracking owns the second click, cancellation
-         * and disabled SC_CLOSE semantics. TrackPopupMenu is not equivalent
-         * to the non-client menu loop. Double clicks also go to the owner. */
-        if(wp==HTMINBUTTON || wp==HTMAXBUTTON){
-            const win16_control_frame_button_view view=button_view(s);
-            win16_control_frame_button_press(w,&view,(int)wp);break;
-        }
-        goto forward;
-    case WM_LBUTTONDOWN:
-        if(s->bar_keyboard && !tracking_menu)leave_bar(w,s,TRUE);
-        goto forward;
-    case WM_MOUSEMOVE:
-    case WM_LBUTTONUP:
-        {const win16_control_frame_button_view view=button_view(s);
-         if(win16_control_frame_button_motion(w,&view,msg,lp))break;}
-        goto forward;
-    case WM_CANCELMODE:
-    case WM_CAPTURECHANGED:
-        if(msg==WM_CANCELMODE && tracking_menu && tracking_menu->window==w)EndMenu();
-        if(msg==WM_CANCELMODE && s->bar_keyboard)leave_bar(w,s,TRUE);
-        {const win16_control_frame_button_view view=button_view(s);
-         (void)win16_control_frame_button_cancel(w,&view,msg);}goto forward;
     case WM_NCDESTROY:
         (void)win16_style_frame_terminal(w);
         result=DefSubclassProc(w,msg,wp,lp);break;

@@ -1166,7 +1166,7 @@
       "path": "src/ntw16s-dll/win16_style.c",
       "source": "src/ntw16s-dll/win16_style.c",
       "source_blob": "4235f085cb00c0d17145deec2d04a57c97b98d47",
-      "sha256": "a44f6e8e297c1af6667c7b5fa20d2e3904fb4f0942f948209056ebc2a10355ec",
+      "sha256": "6a7214dbb8b547af6824949e6861074f1db7b8ad3a8ebb09acfc1b5f19724f03",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T15 S8 verified initialized native tree protocol and bounded existing System paint scope, native item/font/image/geometry/notifications preserved; exact pending frame ownership and cancellation; ASCII test-thread IME isolation after native no-DLL MSCTF teardown evidence; no external code or original graphics modified; T18 S64 scoped observed Delphi TPopupMenu owner, native callbacks and item restoration; private cleanup, no external code or graphics changed; T21 S22 frame painter extracted; T21 S22 caption and sizing-band presentation extracted with live state references; T21 S22 frame presentation extraction, preserving fault instrumentation; T21 S22 buffered frame/menu/button presentation extraction; T21 S22 frame layout and high-contrast palette extraction",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -5093,6 +5093,24 @@
       "sha256": "29e849d16d34c865ad6133854b436a8ec36228c705c2c368ef3dcb6cc6162a88",
       "disposition": "authored",
       "review": "T21 S24 extract nonclient frame presentation message handling",
+      "notice": "Project-authored C implementation; original notices preserved"
+    },
+    {
+      "path": "src/lib/win16-control/frame_input.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "11cc7af916129e10e9f222865d52fef3b75c4920f9701ff672d3ab24f3a14fdd",
+      "disposition": "authored",
+      "review": "T21 S24 extract in-process frame and menu input styling",
+      "notice": "Project-authored C implementation; original notices preserved"
+    },
+    {
+      "path": "src/lib/win16-control/frame_input.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "2725920d1159d39153d0bfac2e7e94d86aa79c8e725fdd1bcb12f0ae8fd45233",
+      "disposition": "authored",
+      "review": "T21 S24 extract in-process frame and menu input styling",
       "notice": "Project-authored C implementation; original notices preserved"
     }
   ]
