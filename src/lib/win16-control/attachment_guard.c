@@ -250,3 +250,51 @@ BOOL win16_attachment_install_style(HWND w,attachment *a,ntw16s_control_protocol
     if(!installed && !a->detached)v->remove(w);
     *out_error=error;return installed;
 }
+
+void win16_attachment_report_bind(HWND w,attachment *a,const win16_attachment_report_services *v)
+{
+    WCHAR name[64];
+    if(!GetClassNameW(w,name,ARRAYSIZE(name)) ||
+        (lstrcmpW(name,WC_LISTVIEWW) && lstrcmpW(name,L"TListView") &&
+         lstrcmpW(name,WC_TREEVIEWW) && lstrcmpW(name,L"TTreeView") && lstrcmpW(name,L"TShellTreeView") &&
+         lstrcmpW(name,L"TreeView20WndClass")))return;
+    ntw16s_control_protocol *protocol=ntw16s_control_protocol_bind(w);
+    if(!protocol)return;
+    HMODULE module=ntw16s_control_protocol_list_module(w);
+    BOOL tree=ntw16s_control_protocol_tree_module(w)!=NULL;if(tree)module=ntw16s_control_protocol_tree_module(w);
+    HWND parent=GetParent(w);
+    if(!a->detached && module && parent &&
+        SetWindowSubclass(parent,v->notify,(UINT_PTR)w,(DWORD_PTR)a)){
+        a->protocol=protocol;a->report_window=w;a->report_parent=parent;a->report_module=module;a->tree=tree;
+    }else ntw16s_control_protocol_release(protocol);
+}
+/* The runtime-owner path is accepted only after this exact HWND forwards its
+ * own paint to the registered native class. Keep the public protocol checks. */
+void win16_attachment_vcl_report_bind(HWND w,attachment *a,const win16_attachment_report_services *v)
+{
+    DWORD saved=GetLastError();a->vcl_report_attempted=TRUE;
+    BOOL tree=a->vcl_report_tree;
+    ntw16s_control_protocol *protocol=GetParent(w)==a->vcl_report_parent?
+        ntw16s_control_protocol_bind_verified_report(w,a->vcl_report_witness,tree):NULL;
+    if(protocol && !a->detached){
+        HMODULE module=tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);
+        HWND parent=GetParent(w);
+        if(module && parent==a->vcl_report_parent && SetWindowSubclass(parent,v->notify,(UINT_PTR)w,(DWORD_PTR)a)){
+            a->protocol=protocol;a->report_window=w;a->report_parent=parent;a->report_module=module;a->tree=tree;
+            DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
+            BOOL installed=tree?v->tree_install(w,NULL,a,&a->detached):
+                !(style&(WS_BORDER|WS_THICKFRAME|WS_CAPTION))?TRUE:v->frame_install(w,NULL,a,&a->detached);
+            if(installed && !a->detached){a->vcl_report_installed=TRUE;InvalidateRect(w,NULL,TRUE);}
+            else if(!a->detached){(void)v->remove(w);}
+        }else ntw16s_control_protocol_release(protocol);
+    }else if(protocol)ntw16s_control_protocol_release(protocol);
+    if(!a->detached && !a->vcl_report_installed){a->vcl_report_attempted=FALSE;a->vcl_report_witness=NULL;}
+    SetLastError(saved);
+}
+void win16_attachment_report_unbind(attachment *a,const win16_attachment_report_services *v)
+{
+    DWORD_PTR value;
+    if(a->report_parent && GetWindowSubclass(a->report_parent,v->notify,(UINT_PTR)a->report_window,&value) &&
+        value==(DWORD_PTR)a)RemoveWindowSubclass(a->report_parent,v->notify,(UINT_PTR)a->report_window);
+    a->report_parent=NULL;
+}

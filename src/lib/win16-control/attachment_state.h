@@ -97,4 +97,12 @@ typedef struct win16_attachment_install_services {
     BOOL (*remove)(HWND);
 } win16_attachment_install_services;
 BOOL win16_attachment_install_style(HWND,attachment *,ntw16s_control_protocol *,DWORD,BOOL,BOOL,BOOL,BOOL,BOOL,BOOL,DWORD *,const win16_attachment_install_services *);
+typedef struct win16_attachment_report_services {
+    SUBCLASSPROC notify;
+    win16_attachment_special_install tree_install,frame_install;
+    BOOL (*remove)(HWND);
+} win16_attachment_report_services;
+void win16_attachment_report_bind(HWND,attachment *,const win16_attachment_report_services *);
+void win16_attachment_vcl_report_bind(HWND,attachment *,const win16_attachment_report_services *);
+void win16_attachment_report_unbind(attachment *,const win16_attachment_report_services *);
 #endif
