@@ -138,7 +138,8 @@ void ntw16s_nav_theme(HDC dc,int part,int state,const RECT *r,const RECT *clip,c
     const win16_control_vcl_paint_view v={s->window,&s->owner->nav_candidate,&s->owner->detached,&s->owner->nav_verified,&s->owner->nav_owner,&s->owner->nav_parent,win16_control_nav_identity,NULL,ntw16s_class_is};
     win16_control_vcl_nav_draw(&v,dc,part,state,r,clip,address);
 }
-BOOL ntw16s_inplace_paint(HDC dc){static_paint_scope *s=static_paint;return s && s->owner->inplace_candidate && !s->owner->detached && dc && WindowFromDC(dc)==s->window;}
+BOOL ntw16s_inplace_paint(HDC dc)
+{static_paint_scope *s=static_paint;return win16_attachment_inplace_paint(s?s->owner:NULL,s?s->window:NULL,dc);}
 void ntw16s_inplace_button(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address){inplace_draw(dc,part,state,r,clip,address,FALSE);}
 void ntw16s_inplace_dropdown(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address){inplace_draw(dc,part,state,r,clip,address,TRUE);}
 static BOOL status_identity(HWND w,attachment *a,HMODULE *native)
@@ -193,11 +194,7 @@ void ntw16s_status_frame(HDC dc,const RECT *rect,const RECT *clip,const void *ca
 {status_draw_scope *s=status_current;if(s){const win16_control_status_frame_view v=status_frame_view(s);win16_control_status_frame(&v,dc,rect,clip,caller);}}
 
 BOOL ntw16s_checklist_draw_target(HDC dc,const RECT *r,const void *address)
-{
-    checklist_draw_scope *s=checklist_current;
-    return s && s->owner && !s->owner->detached &&
-        win16_control_checklist_target(dc,s->dc,s->owner->report_window,s->owner->report_parent,&s->item,r,address,win16_control_checklist_identity);
-}
+{return win16_attachment_checklist_draw_target(checklist_current,dc,r,address);}
 static LRESULT CALLBACK attachment_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static void report_try_bind(HWND,attachment *);
 static void vcl_report_try_bind(HWND,attachment *);
@@ -309,14 +306,7 @@ void ntw16s_panel_polyline(HDC dc,const POINT *points,int count,const void *call
 typedef struct box_witness_scope {struct box_witness_scope *previous;attachment *owner;HWND window;BOOL witnessed,completed,nested;ntw16s_vb_paint *paint;void *status_prior,*spin_prior;} box_witness_scope;
 static _Thread_local box_witness_scope *box_current;
 void ntw16s_box_witness(HWND w,UINT msg,const void *address)
-{
-    box_witness_scope *s=box_current;HMODULE caller=NULL;
-    if(!s || s->window!=w || msg!=WM_NCPAINT || s->owner->detached ||
-       !win16_control_box_identity(w,s->owner->box_owner,s->owner->box_parent) ||
-       !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) ||
-       (caller!=s->owner->box_owner && caller!=GetModuleHandleW(L"user32.dll")))return;
-    s->witnessed=TRUE;
-}
+{box_witness_scope *s=box_current;if(s)win16_attachment_box_witness(w,msg,address,s->owner,s->window,&s->witnessed);}
 
 BOOL ntw16s_controlbar_edge_allowed(UINT edge)
 {return win16_control_controlbar_edge_allowed(edge);}
@@ -331,7 +321,7 @@ void ntw16s_controlbar_edge(HDC dc,const RECT *rect,UINT edge,UINT flags,const v
     win16_control_controlbar_edge(&v,dc,rect,edge,flags,address);
 }
 BOOL ntw16s_rich_valid(HWND w)
-{attachment *a=lookup(w);return !a || a->detached || ((!a->rich_candidate || !a->rich_installed || rich_identity(w,a)) && (!a->box_candidate || !a->box_installed || win16_control_box_identity(w,a->box_owner,a->box_parent)));}
+{return win16_attachment_rich_valid(w,lookup(w),rich_identity);}
 static _Thread_local BOOL month_query_active;
 static void month_query_end(void *unused){(void)unused;month_query_active=FALSE;}
 static win16_control_month_view month_view(static_paint_scope *s);
@@ -345,15 +335,9 @@ static NTW16S_UNWIND_FUNCTION void month_header_query(HWND w,static_paint_scope 
 }
 void ntw16s_rich_witness(WNDPROC proc,HWND w,UINT msg,const void *address,BOOL wide)
 {
-    WNDCLASSEXA c={.cbSize=sizeof(c)};WNDCLASSEXW cw={.cbSize=sizeof(cw)};HMODULE caller=NULL,rich;
-    if(msg!=WM_PAINT || !static_paint || static_paint->window!=w || !static_paint->owner->rich_candidate)return;
-    rich=GetModuleHandleW(static_paint->owner->rich_popup?L"user32.dll":(static_paint->owner->rich_hotkey || static_paint->owner->rich_month)?L"comctl32.dll":L"riched20.dll");
-    if(!rich_identity(w,static_paint->owner) || wide!=static_paint->owner->rich_unicode || !rich ||
-       (wide?(!GetClassInfoExW(static_paint->owner->rich_popup?NULL:rich,static_paint->owner->rich_popup?L"LISTBOX":static_paint->owner->rich_month?L"SysMonthCal32":static_paint->owner->rich_hotkey?L"msctls_hotkey32":L"RichEdit20W",&cw) || proc!=cw.lpfnWndProc):(!GetClassInfoExA(rich,"RichEdit20A",&c) || proc!=c.lpfnWndProc)) ||
-       !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) ||
-       caller!=static_paint->owner->rich_owner)return;
-    static_paint->owner->rich_witness=TRUE;
-    if(static_paint->owner->rich_month)month_header_query(w,static_paint);
+    static_paint_scope *scope=static_paint;
+    if(scope && win16_attachment_rich_witness(proc,w,msg,address,wide,scope->owner,scope->window,rich_identity) && scope->owner->rich_month)
+        month_header_query(w,scope);
 }
 static BOOL month_view_identity(HWND w,void *owner){return rich_identity(w,(attachment *)owner);}
 static BOOL month_view_current(void *scope){return static_paint==scope;}

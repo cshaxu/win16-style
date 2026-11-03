@@ -2,6 +2,7 @@
 #include "control_class.h"
 #include "vcl_identity.h"
 #include "spin_identity.h"
+#include "choice_paint.h"
 
 void win16_attachment_retire_frames(HWND w,attachment *a)
 {
@@ -761,4 +762,39 @@ void win16_attachment_dbcombo_ansi_witness(WNDPROC proc,HWND w,UINT message,cons
         !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller))return;
     owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
     if(owner && caller==owner)a->edit_witness_owner=owner;
+}
+
+BOOL win16_attachment_inplace_paint(attachment *owner,HWND observed,HDC dc)
+{return owner && owner->inplace_candidate && !owner->detached && dc && WindowFromDC(dc)==observed;}
+
+BOOL win16_attachment_checklist_draw_target(checklist_draw_scope *s,HDC dc,const RECT *r,const void *address)
+{
+    return s && s->owner && !s->owner->detached &&
+        win16_control_checklist_target(dc,s->dc,s->owner->report_window,s->owner->report_parent,&s->item,r,address,win16_control_checklist_identity);
+}
+
+void win16_attachment_box_witness(HWND w,UINT msg,const void *address,attachment *owner,HWND observed,BOOL *witnessed)
+{
+    HMODULE caller=NULL;
+    if(!owner || observed!=w || msg!=WM_NCPAINT || owner->detached ||
+       !win16_control_box_identity(w,owner->box_owner,owner->box_parent) ||
+       !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) ||
+       (caller!=owner->box_owner && caller!=GetModuleHandleW(L"user32.dll")))return;
+    *witnessed=TRUE;
+}
+
+BOOL win16_attachment_rich_valid(HWND w,attachment *a,BOOL (*identity)(HWND,attachment *))
+{return !a || a->detached || ((!a->rich_candidate || !a->rich_installed || identity(w,a)) && (!a->box_candidate || !a->box_installed || win16_control_box_identity(w,a->box_owner,a->box_parent)));}
+
+BOOL win16_attachment_rich_witness(WNDPROC proc,HWND w,UINT msg,const void *address,BOOL wide,attachment *owner,HWND observed,BOOL (*identity)(HWND,attachment *))
+{
+    WNDCLASSEXA c={.cbSize=sizeof(c)};WNDCLASSEXW cw={.cbSize=sizeof(cw)};HMODULE caller=NULL,rich;
+    if(msg!=WM_PAINT || !owner || observed!=w || !owner->rich_candidate)return FALSE;
+    rich=GetModuleHandleW(owner->rich_popup?L"user32.dll":(owner->rich_hotkey || owner->rich_month)?L"comctl32.dll":L"riched20.dll");
+    if(!identity(w,owner) || wide!=owner->rich_unicode || !rich ||
+       (wide?(!GetClassInfoExW(owner->rich_popup?NULL:rich,owner->rich_popup?L"LISTBOX":owner->rich_month?L"SysMonthCal32":owner->rich_hotkey?L"msctls_hotkey32":L"RichEdit20W",&cw) || proc!=cw.lpfnWndProc):(!GetClassInfoExA(rich,"RichEdit20A",&c) || proc!=c.lpfnWndProc)) ||
+       !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) ||
+       caller!=owner->rich_owner)return FALSE;
+    owner->rich_witness=TRUE;
+    return TRUE;
 }

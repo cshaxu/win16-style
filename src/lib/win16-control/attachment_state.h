@@ -148,6 +148,11 @@ typedef struct checklist_draw_scope {
     HDC dc;
     RECT item;
 } checklist_draw_scope;
+BOOL win16_attachment_inplace_paint(attachment *,HWND,HDC);
+BOOL win16_attachment_checklist_draw_target(checklist_draw_scope *,HDC,const RECT *,const void *);
+void win16_attachment_box_witness(HWND,UINT,const void *,attachment *,HWND,BOOL *);
+BOOL win16_attachment_rich_valid(HWND,attachment *,BOOL (*)(HWND,attachment *));
+BOOL win16_attachment_rich_witness(WNDPROC,HWND,UINT,const void *,BOOL,attachment *,HWND,BOOL (*)(HWND,attachment *));
 typedef struct win16_attachment_notify_services {
     SUBCLASSPROC notify;
     LRESULT (*bit_draw_dispatch)(attachment *,HWND,UINT,WPARAM,LPARAM,const DRAWITEMSTRUCT *);
