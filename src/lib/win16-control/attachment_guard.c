@@ -411,3 +411,28 @@ LRESULT win16_attachment_report_notify(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR 
         ntw16s_report_paint_bind(list,dc);
     v->release(a);SetLastError(error);return result;
 }
+
+BOOL win16_attachment_classify_initial(HWND w,DWORD original_style,BOOL ready,BOOL checklist,BOOL status,BOOL spin,win16_attachment_initial_classification *v)
+{
+    *v=(win16_attachment_initial_classification){0};
+    v->edit=(original_style&WS_CHILD) && ntw16s_class_is(w,L"EDIT");
+    v->control=(original_style&WS_CHILD) && (v->edit || ntw16s_class_is(w,L"BUTTON") || ntw16s_class_is(w,L"STATIC") ||
+        ntw16s_class_is(w,L"LISTBOX") || ntw16s_class_is(w,L"COMBOBOX") || ntw16s_class_is(w,L"SCROLLBAR") || ntw16s_class_is(w,L"SysLink"));
+    if(checklist)v->control=FALSE;
+    if(!v->control && !checklist && !status && !spin && (original_style&WS_CHILD)){
+        SetLastError(ERROR_SUCCESS);
+        v->protocol=ntw16s_control_protocol_bind(w);
+        if(!v->protocol && GetLastError()==ERROR_NOT_ENOUGH_MEMORY)return FALSE;
+        v->report=v->protocol && ntw16s_control_protocol_list_module(w);
+        v->tree=v->protocol && ntw16s_control_protocol_tree_module(w);
+        v->legacy_progress=v->protocol && ntw16s_control_protocol_legacy_progress(w);
+        v->control=v->protocol && !v->report && !v->legacy_progress;
+        v->edit=v->protocol && ntw16s_control_protocol_is(w,L"EDIT");
+    }
+    v->owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+    /* These owner-drawn VCL file lists expose LISTBOX as their native class;
+     * keep their client callbacks and route only the frame through grid. */
+    if(ready && v->control && !v->protocol && (ntw16s_class_is(w,L"TDirectoryListBox") || ntw16s_class_is(w,L"TFileListBox")) &&
+       win16_control_grid_identity(w,v->owner,GetParent(w))){v->control=FALSE;v->edit=FALSE;}
+    return TRUE;
+}

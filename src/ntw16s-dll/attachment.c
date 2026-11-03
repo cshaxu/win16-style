@@ -796,25 +796,10 @@ static BOOL install_created(HWND w,DWORD original_style)
     for(parent=GetParent(w);parent;parent=GetParent(parent))
         if(class_is(parent,L"COMBOBOX"))return TRUE;
     if(class_is(w,L"ComboLBox") || class_is(w,L"#32768"))return TRUE;
-    edit=(original_style&WS_CHILD) && class_is(w,L"EDIT");
-    control=(original_style&WS_CHILD) && (edit || class_is(w,L"BUTTON") || class_is(w,L"STATIC") ||
-        class_is(w,L"LISTBOX") || class_is(w,L"COMBOBOX") || class_is(w,L"SCROLLBAR") || class_is(w,L"SysLink"));
-    if(checklist)control=FALSE;
-    if(!control && !checklist && !status && !spin && (original_style&WS_CHILD)){
-        SetLastError(ERROR_SUCCESS);
-        protocol=ntw16s_control_protocol_bind(w);
-        if(!protocol && GetLastError()==ERROR_NOT_ENOUGH_MEMORY)return FALSE;
-        report=protocol && ntw16s_control_protocol_list_module(w);
-        tree=protocol && ntw16s_control_protocol_tree_module(w);
-        legacy_progress=protocol && ntw16s_control_protocol_legacy_progress(w);
-        control=protocol && !report && !legacy_progress;
-        edit=protocol && ntw16s_control_protocol_is(w,L"EDIT");
-    }
-    owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
-    /* These owner-drawn VCL file lists expose LISTBOX as their native class;
-     * keep their client callbacks and route only the frame through grid. */
-    if(ready && control && !protocol && (class_is(w,L"TDirectoryListBox") || class_is(w,L"TFileListBox")) &&
-       win16_control_grid_identity(w,owner,GetParent(w))){control=FALSE;edit=FALSE;}
+    win16_attachment_initial_classification initial;
+    if(!win16_attachment_classify_initial(w,original_style,ready,checklist,status,spin,&initial))return FALSE;
+    edit=initial.edit;control=initial.control;report=initial.report;tree=initial.tree;
+    legacy_progress=initial.legacy_progress;protocol=initial.protocol;owner=initial.owner;
     if(!control && !report && !tree && !picture && !checklist && !legacy_progress && !status && !spin &&
        (original_style&WS_CHILD) && owner){
         win16_control_vcl_candidates candidates;

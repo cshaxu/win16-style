@@ -136,4 +136,10 @@ typedef struct win16_attachment_notify_services {
     checklist_draw_scope **checklist_current;
 } win16_attachment_notify_services;
 LRESULT win16_attachment_report_notify(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR,const win16_attachment_notify_services *);
+typedef struct win16_attachment_initial_classification {
+    BOOL edit,control,report,tree,legacy_progress;
+    ntw16s_control_protocol *protocol;
+    HMODULE owner;
+} win16_attachment_initial_classification;
+BOOL win16_attachment_classify_initial(HWND,DWORD,BOOL,BOOL,BOOL,BOOL,win16_attachment_initial_classification *);
 #endif
