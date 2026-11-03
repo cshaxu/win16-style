@@ -86,12 +86,6 @@ static LRESULT CALLBACK creation_subclass(HWND w,UINT message,WPARAM a,LPARAM b,
     return result;
 }
 #endif
-typedef struct checklist_draw_scope {
-    struct checklist_draw_scope *previous;
-    attachment *owner;
-    HDC dc;
-    RECT item;
-} checklist_draw_scope;
 static _Thread_local checklist_draw_scope *checklist_current;
 typedef struct bit_draw_scope {struct bit_draw_scope *previous;attachment *owner;HWND window;HDC dc;RECT item;UINT state;BOOL completed;} bit_draw_scope;
 static _Thread_local bit_draw_scope *bit_current;
@@ -764,59 +758,8 @@ static NTW16S_UNWIND_FUNCTION LRESULT bit_draw_dispatch(attachment *a,HWND w,UIN
  * rewrite the application's result, select its font, or inspect item lParam. */
 static LRESULT CALLBACK report_notify(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
-    DWORD entry=GetLastError();attachment *a=(attachment *)data;BOOL draw=FALSE;HWND list=a->report_window;HDC dc=NULL;DWORD stage=0;
-    ntw16s_vb_paint file_paint;BOOL file_active=FALSE;
-    checklist_draw_scope checklist_scope;BOOL checklist_active=FALSE;
-    ++a->calls;
-    if(a->bit_candidate && !a->detached && m==WM_DRAWITEM && l && GetParent(list)==w && win16_control_bit_identity(list,a->report_module)){
-        const DRAWITEMSTRUCT *item=(const DRAWITEMSTRUCT *)l;
-        if(item->CtlType==ODT_BUTTON && item->itemAction==ODA_DRAWENTIRE && item->hwndItem==list && item->hDC){
-            HWND target=WindowFromDC(item->hDC);
-            if(!target || target==list){SetLastError(entry);LRESULT result=bit_draw_dispatch(a,w,m,p,l,item);DWORD error=GetLastError();release(a);SetLastError(error);return result;}
-        }
-    }
-    if(a->checklist && !a->detached && m==WM_DRAWITEM && l && GetParent(list)==w && win16_control_checklist_identity(list)){
-        const DRAWITEMSTRUCT *item=(const DRAWITEMSTRUCT *)l;
-        if(item->CtlType==ODT_LISTBOX && item->hwndItem==list && item->hDC && item->itemID!=(UINT)-1 &&
-            WindowFromDC(item->hDC)==list){
-            checklist_scope=(checklist_draw_scope){checklist_current,a,item->hDC,item->rcItem};
-            checklist_current=&checklist_scope;checklist_active=TRUE;
-        }
-    }
-    if((a->file_owner || a->button_owner) && !a->detached && m==WM_DRAWITEM && l && GetParent(list)==w &&
-            (a->button_owner?ntw16s_vb_graphical_button(list):ntw16s_vb_owner_file(list))){
-        DRAWITEMSTRUCT *item=(DRAWITEMSTRUCT *)l;
-        if(item->hwndItem==list && item->hDC && item->CtlType==(a->button_owner?ODT_BUTTON:ntw16s_vb_drive(list)?ODT_COMBOBOX:ODT_LISTBOX)){
-            HWND target=WindowFromDC(item->hDC);BOOL valid=!target || target==list;
-            if(!valid && ntw16s_vb_drive(list)){
-                COMBOBOXINFO combo={.cbSize=sizeof(combo)};
-                valid=GetComboBoxInfo(list,&combo) && combo.hwndCombo==list && target==combo.hwndList &&
-                    GetWindowThreadProcessId(target,NULL)==GetCurrentThreadId();
-            }
-            if(valid && !a->detached){
-                ntw16s_vb_paint_begin(&file_paint,list,WM_PRINTCLIENT,&a->fonts);file_active=file_paint.active;
-                if(file_active){HWND painted=target?target:list;
-                    ntw16s_report_paint_enable(&file_paint,painted,a->report_module,&a->detached);
-                    ntw16s_report_paint_bind(painted,item->hDC);
-                }
-            }
-        }
-    }
-    if(!a->file_owner && !a->button_owner && !a->checklist && !a->bit_candidate && m==WM_NOTIFY && l){
-        NMHDR *header=(NMHDR *)l;
-        if(header->hwndFrom==list && header->code==NM_CUSTOMDRAW){
-            NMCUSTOMDRAW *cd=(NMCUSTOMDRAW *)l;dc=cd->hdc;stage=cd->dwDrawStage;draw=TRUE;
-            ntw16s_report_paint_bind(list,NULL);
-        }
-    }
-    if(m==WM_NCDESTROY){RemoveWindowSubclass(w,report_notify,id);a->report_parent=NULL;}
-    SetLastError(entry);LRESULT result=DefSubclassProc(w,m,p,l);DWORD error=GetLastError();
-    if(checklist_active)checklist_current=checklist_scope.previous;
-    if(file_active)ntw16s_vb_paint_end(&file_paint);
-    if(draw && !a->detached && !(result&CDRF_SKIPDEFAULT) &&
-        (stage==CDDS_PREPAINT || stage==CDDS_ITEMPREPAINT || stage==(CDDS_ITEMPREPAINT|CDDS_SUBITEM)))
-        ntw16s_report_paint_bind(list,dc);
-    release(a);SetLastError(error);return result;
+    const win16_attachment_notify_services services={report_notify,bit_draw_dispatch,release,ntw16s_vb_paint_begin,&checklist_current};
+    return win16_attachment_report_notify(w,m,p,l,id,data,&services);
 }
 /* Some frameworks set the report view after native WM_CREATE. This is still
  * our exact newly created attachment, on its GUI thread, after initialization.

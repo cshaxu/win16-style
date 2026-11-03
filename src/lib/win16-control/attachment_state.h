@@ -122,4 +122,18 @@ BOOL win16_attachment_attached(HWND,const win16_attachment_lifecycle_services *)
 void win16_attachment_scroll_changed(HWND,const win16_attachment_lifecycle_services *);
 BOOL win16_attachment_remove(HWND,const win16_attachment_lifecycle_services *);
 BOOL win16_attachment_terminal(HWND,const win16_attachment_lifecycle_services *);
+typedef struct checklist_draw_scope {
+    struct checklist_draw_scope *previous;
+    attachment *owner;
+    HDC dc;
+    RECT item;
+} checklist_draw_scope;
+typedef struct win16_attachment_notify_services {
+    SUBCLASSPROC notify;
+    LRESULT (*bit_draw_dispatch)(attachment *,HWND,UINT,WPARAM,LPARAM,const DRAWITEMSTRUCT *);
+    void (*release)(attachment *);
+    void (*paint_begin)(ntw16s_vb_paint *,HWND,UINT,ntw16s_vb_fonts *);
+    checklist_draw_scope **checklist_current;
+} win16_attachment_notify_services;
+LRESULT win16_attachment_report_notify(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR,const win16_attachment_notify_services *);
 #endif

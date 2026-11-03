@@ -354,3 +354,60 @@ BOOL win16_attachment_terminal(HWND w,const win16_attachment_lifecycle_services 
     if(a){v->report_unbind(a);v->cool_unbind(a);ntw16s_control_protocol_release(a->protocol);a->protocol=NULL;v->release(a);}
     SetLastError(error?error:saved);return !error;
 }
+
+LRESULT win16_attachment_report_notify(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data,const win16_attachment_notify_services *v)
+{
+    DWORD entry=GetLastError();attachment *a=(attachment *)data;BOOL draw=FALSE;HWND list=a->report_window;HDC dc=NULL;DWORD stage=0;
+    ntw16s_vb_paint file_paint;BOOL file_active=FALSE;
+    checklist_draw_scope checklist_scope;BOOL checklist_active=FALSE;
+    ++a->calls;
+    if(a->bit_candidate && !a->detached && m==WM_DRAWITEM && l && GetParent(list)==w && win16_control_bit_identity(list,a->report_module)){
+        const DRAWITEMSTRUCT *item=(const DRAWITEMSTRUCT *)l;
+        if(item->CtlType==ODT_BUTTON && item->itemAction==ODA_DRAWENTIRE && item->hwndItem==list && item->hDC){
+            HWND target=WindowFromDC(item->hDC);
+            if(!target || target==list){SetLastError(entry);LRESULT result=v->bit_draw_dispatch(a,w,m,p,l,item);DWORD error=GetLastError();v->release(a);SetLastError(error);return result;}
+        }
+    }
+    if(a->checklist && !a->detached && m==WM_DRAWITEM && l && GetParent(list)==w && win16_control_checklist_identity(list)){
+        const DRAWITEMSTRUCT *item=(const DRAWITEMSTRUCT *)l;
+        if(item->CtlType==ODT_LISTBOX && item->hwndItem==list && item->hDC && item->itemID!=(UINT)-1 &&
+            WindowFromDC(item->hDC)==list){
+            checklist_scope=(checklist_draw_scope){(*v->checklist_current),a,item->hDC,item->rcItem};
+            (*v->checklist_current)=&checklist_scope;checklist_active=TRUE;
+        }
+    }
+    if((a->file_owner || a->button_owner) && !a->detached && m==WM_DRAWITEM && l && GetParent(list)==w &&
+            (a->button_owner?ntw16s_vb_graphical_button(list):ntw16s_vb_owner_file(list))){
+        DRAWITEMSTRUCT *item=(DRAWITEMSTRUCT *)l;
+        if(item->hwndItem==list && item->hDC && item->CtlType==(a->button_owner?ODT_BUTTON:ntw16s_vb_drive(list)?ODT_COMBOBOX:ODT_LISTBOX)){
+            HWND target=WindowFromDC(item->hDC);BOOL valid=!target || target==list;
+            if(!valid && ntw16s_vb_drive(list)){
+                COMBOBOXINFO combo={.cbSize=sizeof(combo)};
+                valid=GetComboBoxInfo(list,&combo) && combo.hwndCombo==list && target==combo.hwndList &&
+                    GetWindowThreadProcessId(target,NULL)==GetCurrentThreadId();
+            }
+            if(valid && !a->detached){
+                v->paint_begin(&file_paint,list,WM_PRINTCLIENT,&a->fonts);file_active=file_paint.active;
+                if(file_active){HWND painted=target?target:list;
+                    ntw16s_report_paint_enable(&file_paint,painted,a->report_module,&a->detached);
+                    ntw16s_report_paint_bind(painted,item->hDC);
+                }
+            }
+        }
+    }
+    if(!a->file_owner && !a->button_owner && !a->checklist && !a->bit_candidate && m==WM_NOTIFY && l){
+        NMHDR *header=(NMHDR *)l;
+        if(header->hwndFrom==list && header->code==NM_CUSTOMDRAW){
+            NMCUSTOMDRAW *cd=(NMCUSTOMDRAW *)l;dc=cd->hdc;stage=cd->dwDrawStage;draw=TRUE;
+            ntw16s_report_paint_bind(list,NULL);
+        }
+    }
+    if(m==WM_NCDESTROY){RemoveWindowSubclass(w,v->notify,id);a->report_parent=NULL;}
+    SetLastError(entry);LRESULT result=DefSubclassProc(w,m,p,l);DWORD error=GetLastError();
+    if(checklist_active)(*v->checklist_current)=checklist_scope.previous;
+    if(file_active)ntw16s_vb_paint_end(&file_paint);
+    if(draw && !a->detached && !(result&CDRF_SKIPDEFAULT) &&
+        (stage==CDDS_PREPAINT || stage==CDDS_ITEMPREPAINT || stage==(CDDS_ITEMPREPAINT|CDDS_SUBITEM)))
+        ntw16s_report_paint_bind(list,dc);
+    v->release(a);SetLastError(error);return result;
+}
