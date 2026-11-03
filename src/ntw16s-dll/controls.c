@@ -160,20 +160,9 @@ static void draw_combo(HWND w,control_style *s,HDC dc)
     ntw16s_native_get_combo_info,ntw16s_vb_combo,ntw16s_vb_drive);}
 
 static void detach_combo_list(control_style *s)
-{
-    DWORD_PTR data;HWND list=s->combo_list;s->combo_list=NULL;
-    /* An independently removed/reinstalled child is no longer ours. */
-    if(list && GetWindowSubclass(list,control_proc,(UINT_PTR)control_proc,&data) &&
-        ((control_style *)data)->owner==s)win16_style_control_remove(list);
-}
+{(void)win16_control_combo_list_retire(s,control_proc,win16_style_control_remove);}
 static BOOL terminal_combo_list(control_style *s)
-{
-    DWORD_PTR data;HWND list=s->combo_list;s->combo_list=NULL;
-    /* An independently removed/reinstalled child is no longer ours. */
-    if(list && GetWindowSubclass(list,control_proc,(UINT_PTR)control_proc,&data) &&
-        ((control_style *)data)->owner==s)return win16_style_control_terminal(list);
-    return TRUE;
-}
+{return win16_control_combo_list_retire(s,control_proc,win16_style_control_terminal);}
 
 /* The runtime owns navigation and paints its native bitmap first. This
  * bounded overlay accepts only observed 96/144-DPI public-DC geometry. */
@@ -338,22 +327,9 @@ static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL ori
  * file dialog. Native item painting and item data stay with COMDLG32. */
 BOOL win16_style_common_dialog_combo_install(HWND w,const void *owner)
 {
-    HWND previous=common_dialog_combo_pending;
-    if(!win16_control_common_dialog_combo_valid(w,GetParent(w))){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
-    common_dialog_combo_pending=w;
-    BOOL result=install(w,NULL,FALSE,FALSE,FALSE,-1,NULL,owner,NULL);
-    common_dialog_combo_pending=previous;
-    if(result && IsWindow(w)){
-        COMBOBOXINFO info={.cbSize=sizeof(info)};
-        if(ntw16s_native_get_combo_info(w,&info)){
-            if(info.hwndList && win16_style_grid_install_created(info.hwndList,NULL,owner,NULL))
-                (void)win16_style_list_scrollbar_enable(info.hwndList);
-            if(info.hwndItem && info.hwndItem!=w && is_edit(info.hwndItem))
-                (void)win16_style_control_install_created(info.hwndItem,TRUE,
-                    (GetWindowLongPtrW(info.hwndItem,GWL_STYLE)&WS_BORDER)!=0,FALSE,NULL,owner,NULL);
-        }
-    }
-    return result;
+    const win16_control_dialog_combo_services services={install,ntw16s_native_get_combo_info,
+        win16_style_grid_install_created,win16_style_list_scrollbar_enable,is_edit,win16_style_control_install_created};
+    return win16_control_dialog_combo_install(w,owner,&common_dialog_combo_pending,&services);
 }
 BOOL win16_style_control_install(HWND w,const win16_style_palette *palette)
 {return install(w,palette,FALSE,FALSE,FALSE,-1,NULL,NULL,NULL);}

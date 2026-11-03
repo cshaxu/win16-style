@@ -11,4 +11,12 @@ typedef struct win16_control_install_services {
 } win16_control_install_services;
 BOOL win16_control_install(HWND,const win16_style_palette *,BOOL,BOOL,BOOL,int,const int *,const void *,const BOOL *,HWND,
     const win16_control_install_services *);
+typedef struct win16_control_dialog_combo_services {
+    BOOL (*install)(HWND,const win16_style_palette *,BOOL,BOOL,BOOL,int,const int *,const void *,const BOOL *);
+    BOOL (*get_combo_info)(HWND,PCOMBOBOXINFO);
+    BOOL (*grid_install)(HWND,const win16_style_palette *,const void *,const BOOL *);
+    BOOL (*list_enable)(HWND),(*is_edit)(HWND);
+    BOOL (*control_install)(HWND,BOOL,BOOL,BOOL,const win16_style_palette *,const void *,const BOOL *);
+} win16_control_dialog_combo_services;
+BOOL win16_control_dialog_combo_install(HWND,const void *,HWND *,const win16_control_dialog_combo_services *);
 #endif

@@ -14,4 +14,5 @@ typedef struct win16_control_remove_services {
 } win16_control_remove_services;
 BOOL win16_control_remove(HWND,const win16_control_remove_services *);
 BOOL win16_control_terminal(HWND,const win16_control_remove_services *);
+BOOL win16_control_combo_list_retire(control_style *,SUBCLASSPROC,BOOL (*retire)(HWND));
 #endif

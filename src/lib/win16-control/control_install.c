@@ -89,3 +89,23 @@ installed:
     if(!--s->calls && s->detached)win16_control_state_dispose(s);
     return result;
 }
+
+BOOL win16_control_dialog_combo_install(HWND w,const void *owner,HWND *pending,const win16_control_dialog_combo_services *v)
+{
+    HWND previous=*pending;
+    if(!win16_control_common_dialog_combo_valid(w,GetParent(w))){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    *pending=w;
+    BOOL result=v->install(w,NULL,FALSE,FALSE,FALSE,-1,NULL,owner,NULL);
+    *pending=previous;
+    if(result && IsWindow(w)){
+        COMBOBOXINFO info={.cbSize=sizeof(info)};
+        if(v->get_combo_info(w,&info)){
+            if(info.hwndList && v->grid_install(info.hwndList,NULL,owner,NULL))
+                (void)v->list_enable(info.hwndList);
+            if(info.hwndItem && info.hwndItem!=w && v->is_edit(info.hwndItem))
+                (void)v->control_install(info.hwndItem,TRUE,
+                    (GetWindowLongPtrW(info.hwndItem,GWL_STYLE)&WS_BORDER)!=0,FALSE,NULL,owner,NULL);
+        }
+    }
+    return result;
+}

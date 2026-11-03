@@ -51,3 +51,12 @@ BOOL win16_control_terminal(HWND w,const win16_control_remove_services *v)
     if(!--s->calls)win16_control_state_dispose(s);
     return result;
 }
+
+BOOL win16_control_combo_list_retire(control_style *s,SUBCLASSPROC proc,BOOL (*retire)(HWND))
+{
+    DWORD_PTR data;HWND list=s->combo_list;s->combo_list=NULL;
+    /* An independently removed/reinstalled child is no longer ours. */
+    if(list && GetWindowSubclass(list,proc,(UINT_PTR)proc,&data) &&
+        ((control_style *)data)->owner==s)return retire(list);
+    return TRUE;
+}
