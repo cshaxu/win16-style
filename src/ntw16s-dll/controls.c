@@ -35,6 +35,7 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include "../lib/win16-control/notify_message.h"
 #include "../lib/win16-control/combo_text.h"
 #include "../lib/win16-control/native_presentation.h"
+#include "../lib/win16-control/control_dispatch.h"
 
 #include "../lib/win16-control/scroll_assets.h"
 #include "scroll_track.h"
@@ -385,49 +386,17 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         goto finished;
     }
     if(!win16_control_state_prepare_font(w,s,m,&a,native_font,&previous,&outbound))goto finished;
-    if(m==WM_NCDESTROY){(void)win16_style_control_terminal(w);
-        result=DefSubclassProc(w,m,a,b);}
-    else if(tab)result=win16_control_tab_message(w,s,m,a,b,present_control,draw_tab);
-    else if(header)result=win16_control_header_message(w,s,m,a,b,present_control,draw_header);
-    else if(progress)result=win16_control_progress_message(w,s,m,a,b,present_control,draw_progress);
-    else if(ntw16s_class_is(w,UPDOWN_CLASSW)){result=DefSubclassProc(w,m,a,b);}
-    else if(ntw16s_class_is(w,TRACKBAR_CLASSW) || ntw16s_control_protocol_is(w,TRACKBAR_CLASSW)){
-        if(ntw16s_control_protocol_runtime_trackbar(w) && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT))
-            result=track_paint_dispatch(s,w,m,a,b);
-        else result=DefSubclassProc(w,m,a,b);
-        if(!s->detached && m==WM_STYLECHANGED)SendMessageW(w,WM_SYSCOLORCHANGE,0,0);
-        if(!s->detached && s->track_parent && GetParent(w)!=s->track_parent){
-            trackbar_unbind(s);SendMessageW(w,WM_SYSCOLORCHANGE,0,0);
-        }
+    {
+        const win16_control_scroll_services scroll={embedded_scroll_input,scroll_input,scroll_finish,scroll_caret_sync,scroll_caret_destroy,draw_scroll,list_border,nonclient_scrollbars,present_control,draw_sizebox};
+        const win16_control_fileowner_services fileowner={embedded_scroll_input,draw_combo,list_border,nonclient_scrollbars};
+        const win16_control_list_services list={embedded_scroll_input,set_list_tabs,present_control,draw_list,list_border,nonclient_scrollbars};
+        const win16_control_edit_services edit={embedded_scroll_input,nonclient_scrollbars,list_border,edit_border};
+        const win16_control_dispatch_services services={win16_style_control_terminal,ntw16s_class_is,track_paint_dispatch,trackbar_unbind,
+            is_link,is_scroll,is_combo,is_list,is_edit,present_control,draw_tab,draw_header,draw_progress,draw_combo,draw,
+            &scroll,&fileowner,&list,&edit};
+        result=win16_control_dispatch_message(w,s,&m,&a,&b,tab,header,progress,&services);
     }
-    else if(is_link(w)){
-        /* Preserve native markup, hit testing, focus and NM_CLICK/NM_RETURN.
-         * Only the shared WM_SETFONT path above changes link typography. */
-        result=DefSubclassProc(w,m,a,b);
-    }
-    else if(s->frame_scrollbars){
-        const win16_control_scroll_services services={embedded_scroll_input,scroll_input,scroll_finish,scroll_caret_sync,scroll_caret_destroy,draw_scroll,list_border,nonclient_scrollbars,present_control,draw_sizebox};
-        result=win16_control_frame_scroll_message(w,s,m,a,b,&services);
-    }
-    else if(is_scroll(w)){
-        const win16_control_scroll_services services={embedded_scroll_input,scroll_input,scroll_finish,scroll_caret_sync,scroll_caret_destroy,draw_scroll,list_border,nonclient_scrollbars,present_control,draw_sizebox};
-        if(GetWindowLongPtrW(w,GWL_STYLE)&SBS_SIZEBOX)result=win16_control_sizebox_message(w,s,m,a,b,&services);
-        else result=win16_control_scroll_message(w,s,&m,&a,&b,&services);
-    }
-    else if(s->file_owner){
-        const win16_control_fileowner_services services={embedded_scroll_input,draw_combo,list_border,nonclient_scrollbars};
-        result=win16_control_fileowner_message(w,s,m,a,b,&services);
-    }
-    else if(is_combo(w))result=win16_control_combo_message(w,s,m,a,b,present_control,draw_combo);
-    else if(is_list(w)){
-        const win16_control_list_services services={embedded_scroll_input,set_list_tabs,present_control,draw_list,list_border,nonclient_scrollbars};
-        result=win16_control_list_message(w,s,m,a,b,&services);
-    }
-    else if(is_edit(w)){
-        const win16_control_edit_services services={embedded_scroll_input,nonclient_scrollbars,list_border,edit_border};
-        result=win16_control_edit_message(w,s,m,a,b,&services);
-    }
-    else result=win16_control_basic_message(w,s,m,a,b,present_control,draw);
+
 finished:
     if(spin_button && !s->detached && IsWindow(w) && win16_control_spinedit_button(w)==spin_button){
         DWORD error=GetLastError();RECT button,after;
