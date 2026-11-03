@@ -1,6 +1,6 @@
 #include "frame_lifecycle.h"
 #include "frame_layout.h"
-#include "font.h"
+#include "../win16-common/font.h"
 #include <dwmapi.h>
 
 BOOL win16_control_frame_install(HWND w,const win16_style_palette *p,BOOL creating,const void *owner,const BOOL *cancelled,const win16_control_frame_lifecycle_services *v)

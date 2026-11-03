@@ -1,5 +1,5 @@
 #include "combo_text.h"
-#include "font.h"
+#include "../win16-common/font.h"
 
 /* Keep native-painter borrowed font returns alive through reentrant setters.
  * Finite cache follows the existing 32-lease VB text scope limit. */

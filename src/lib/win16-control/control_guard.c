@@ -1,5 +1,5 @@
 #include "control_guard.h"
-#include "font.h"
+#include "../win16-common/font.h"
 #include "control_class.h"
 #include "control_protocol.h"
 #include "fileowner_message.h"

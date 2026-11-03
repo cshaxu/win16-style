@@ -1,6 +1,6 @@
 #ifndef NTW16S_UPDOWN_PAINT_H
 #define NTW16S_UPDOWN_PAINT_H
-#include "palette.h"
+#include "../win16-common/palette.h"
 #include "updown_paint.h"
 #include <uxtheme.h>
 typedef struct ntw16s_updown_paint {

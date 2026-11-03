@@ -1,5 +1,5 @@
 #include "native_presentation.h"
-#include "font.h"
+#include "../win16-common/font.h"
 #include "tab_paint.h"
 #include "header_paint.h"
 #include "progress_paint.h"

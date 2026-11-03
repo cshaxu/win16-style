@@ -1,6 +1,6 @@
 #ifndef WIN16_CONTROL_CUSTOM_DRAW_H
 #define WIN16_CONTROL_CUSTOM_DRAW_H
-#include "palette.h"
+#include "../win16-common/palette.h"
 #include <commctrl.h>
 /* The application keeps its custom-draw result; request private stages only
  * after it selects the default route. State belongs to the calling window. */

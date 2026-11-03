@@ -1,5 +1,5 @@
 #include "../../lib/win16-control/text_policy.h"
-#include "../../lib/win16-control/menu_iteration.h"
+#include "../../lib/win16-window/menu_iteration.h"
 #include "../../lib/win16-dialog/print_classic.h"
 #include "../../lib/win16-dialog/chrome.h"
 #include "intercept.h"

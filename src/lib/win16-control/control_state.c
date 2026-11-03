@@ -1,5 +1,5 @@
 #include "control_state.h"
-#include "font.h"
+#include "../win16-common/font.h"
 #include "control_class.h"
 #include "tab_paint.h"
 #include "header_paint.h"

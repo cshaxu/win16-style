@@ -1,7 +1,7 @@
 #ifndef WIN16_CONTROL_FRAME_MESSAGE_H
 #define WIN16_CONTROL_FRAME_MESSAGE_H
 #include "frame_state.h"
-#include "layout.h"
+#include "../win16-common/layout.h"
 typedef struct win16_control_frame_message_services {
     BOOL (*measure)(HWND,style_window *,const RECT *,win16_style_layout *);
     void (*activate)(HWND,style_window *,const RECT *,BOOL);

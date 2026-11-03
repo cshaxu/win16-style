@@ -1,5 +1,4 @@
 #include "present.h"
-#include "control_class.h"
 
 void win16_control_present(HWND w,const win16_control_present_view *view,HDC target)
 {
@@ -7,8 +6,7 @@ void win16_control_present(HWND w,const win16_control_present_view *view,HDC tar
     BOOL group;int target_saved=0;
     if(!target || GetClipBox(target,&dirty)==ERROR || !GetClientRect(w,&client) ||
         !IntersectRect(&dirty,&dirty,&client))return;
-    group=ntw16s_class_is(w,L"BUTTON") &&
-        (GetWindowLongPtrW(w,GWL_STYLE)&BS_TYPEMASK)==BS_GROUPBOX;
+    group=view->is_group && view->is_group(w,view->classification);
     if(group){HWND sibling;RECT r;
         target_saved=SaveDC(target);if(!target_saved)return;
         /* Group interiors belong to the parent background. Never overwrite

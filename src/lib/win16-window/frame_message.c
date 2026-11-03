@@ -1,7 +1,7 @@
 #include "frame_message.h"
 #include "frame_layout.h"
 #include "frame_view.h"
-#include "present.h"
+#include "../win16-common/present.h"
 #include <commctrl.h>
 
 /* Observed host non-client draw messages; payloads remain uninterpreted. */

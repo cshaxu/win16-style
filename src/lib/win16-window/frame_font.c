@@ -1,4 +1,4 @@
-#include "font.h"
+#include "../win16-common/font.h"
 BOOL win16_control_refresh_frame_fonts(HWND w,UINT *current_dpi,HFONT *current_title,HFONT *current_menu)
 {
     HFONT title,menu;

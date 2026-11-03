@@ -1,6 +1,6 @@
 #include "toolbar_paint.h"
 #include "control_protocol.h"
-#include "font.h"
+#include "../win16-common/font.h"
 #include <stdlib.h>
 
 /* A deliberately small Toolbar contract: text-only, regular/check buttons.

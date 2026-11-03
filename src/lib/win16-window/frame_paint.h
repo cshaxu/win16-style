@@ -1,7 +1,7 @@
 #ifndef WIN16_CONTROL_FRAME_PAINT_H
 #define WIN16_CONTROL_FRAME_PAINT_H
-#include "palette.h"
-#include "layout.h"
+#include "../win16-common/palette.h"
+#include "../win16-common/layout.h"
 void win16_control_fill(HDC dc,RECT r,COLORREF color);
 void win16_control_outline(HDC dc,RECT r,int unit,COLORREF color);
 void win16_control_frame_button(HDC dc,RECT r,int kind,BOOL down,BOOL zoom,BOOL child,int unit,

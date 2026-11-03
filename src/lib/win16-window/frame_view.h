@@ -1,7 +1,7 @@
 #ifndef WIN16_CONTROL_FRAME_VIEW_H
 #define WIN16_CONTROL_FRAME_VIEW_H
-#include "palette.h"
-#include "layout.h"
+#include "../win16-common/palette.h"
+#include "../win16-common/layout.h"
 typedef struct win16_control_frame_view {
     void *context;
     const BOOL *detached,*active;

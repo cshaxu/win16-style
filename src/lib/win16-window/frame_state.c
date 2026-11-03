@@ -1,5 +1,5 @@
 #include "frame_state.h"
-#include "font.h"
+#include "../win16-common/font.h"
 #include <stdlib.h>
 style_window *win16_control_frame_state_create(void)
 {return (style_window *)calloc(1,sizeof(style_window));}

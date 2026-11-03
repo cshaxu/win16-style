@@ -1,5 +1,5 @@
 #include "status_font.h"
-#include "font.h"
+#include "../win16-common/font.h"
 #include <limits.h>
 #include <string.h>
 

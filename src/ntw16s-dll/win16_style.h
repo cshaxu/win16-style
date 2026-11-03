@@ -1,7 +1,7 @@
 #ifndef WIN16_STYLE_H
 #define WIN16_STYLE_H
 #include "api.h"
-#include "../lib/win16-control/palette.h"
+#include "../lib/win16-common/palette.h"
 
 /* Local, same-GUI-thread API. No process/task policy or cross-process ABI.
  * Eligible: top-level and child frames without custom client edges. Frames

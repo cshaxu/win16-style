@@ -1,6 +1,6 @@
 #ifndef WIN16_CONTROL_ATTACHMENT_STATE_H
 #define WIN16_CONTROL_ATTACHMENT_STATE_H
-#include "palette.h"
+#include "../win16-common/palette.h"
 #include <commctrl.h>
 #include "status_font.h"
 #include "control_protocol.h"

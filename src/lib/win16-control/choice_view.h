@@ -1,6 +1,6 @@
 #ifndef WIN16_CONTROL_CHOICE_VIEW_H
 #define WIN16_CONTROL_CHOICE_VIEW_H
-#include "palette.h"
+#include "../win16-common/palette.h"
 typedef struct win16_control_choice_view {
     const BOOL *detached;
     const win16_style_palette *palette;

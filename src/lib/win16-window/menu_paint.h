@@ -1,7 +1,7 @@
 #ifndef WIN16_STYLE_MENU_PAINT_H
 #define WIN16_STYLE_MENU_PAINT_H
-#include "control_api.h"
-#include "palette.h"
+#include "../win16-common/control_api.h"
+#include "../win16-common/palette.h"
 typedef enum win16_style_menu_kind {
     WIN16_STYLE_MENU_ROW,
     WIN16_STYLE_MENU_SEPARATOR,

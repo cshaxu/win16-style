@@ -1,6 +1,6 @@
 #ifndef WIN16_CONTROL_SCROLL_PAINT_H
 #define WIN16_CONTROL_SCROLL_PAINT_H
-#include "palette.h"
+#include "../win16-common/palette.h"
 #include "scroll_track.h"
 typedef struct win16_control_scroll_view {
     const win16_style_palette *palette;

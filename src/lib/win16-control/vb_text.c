@@ -1,6 +1,6 @@
 #include "vb_text.h"
 #include "control_class.h"
-#include "font.h"
+#include "../win16-common/font.h"
 #include <stdlib.h>
 typedef struct ntw16s_vb_glyphmap {WCHAR chars[224];WORD glyphs[224];BOOL valid;} ntw16s_vb_glyphmap;
 static _Thread_local ntw16s_vb_paint *current,*native_current;

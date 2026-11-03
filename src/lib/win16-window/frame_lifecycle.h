@@ -1,7 +1,7 @@
 #ifndef WIN16_CONTROL_FRAME_LIFECYCLE_H
 #define WIN16_CONTROL_FRAME_LIFECYCLE_H
 #include "frame_state.h"
-#include "layout.h"
+#include "../win16-common/layout.h"
 #include <commctrl.h>
 typedef struct win16_control_frame_lifecycle_services {
     SUBCLASSPROC style_proc;

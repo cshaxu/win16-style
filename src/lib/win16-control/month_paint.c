@@ -1,7 +1,7 @@
 #include "month_paint.h"
 #include "month_text.h"
 #include "special_paint.h"
-#include "font.h"
+#include "../win16-common/font.h"
 #include <vssym32.h>
 #include <commctrl.h>
 

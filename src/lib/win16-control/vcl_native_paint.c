@@ -1,7 +1,7 @@
 #include "vcl_native_paint.h"
 #include "basic_paint.h"
 #include "special_paint.h"
-#include "palette.h"
+#include "../win16-common/palette.h"
 #include <commctrl.h>
 
 void win16_control_vcl_inplace_draw(const win16_control_vcl_paint_view *v,HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address,BOOL drop)

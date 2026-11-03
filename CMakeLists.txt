@@ -20,13 +20,59 @@ add_library(lib-tray STATIC src/lib/tray/tray.c)
 target_compile_definitions(lib-tray PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_include_directories(lib-tray PUBLIC src/lib/tray)
 target_link_libraries(lib-tray PUBLIC user32 shell32)
-add_library(win16-control STATIC src/lib/win16-control/layout.c src/lib/win16-control/menu_layout.c src/lib/win16-control/scroll_layout.c src/lib/win16-control/scroll_track.c src/lib/win16-control/font.c src/lib/win16-control/control_protocol.c src/lib/win16-control/header_paint.c src/lib/win16-control/tab_paint.c src/lib/win16-control/progress_paint.c src/lib/win16-control/trackbar_paint.c src/lib/win16-control/toolbar_paint.c src/lib/win16-control/menu_paint.c src/lib/win16-control/menu_bar.c src/lib/win16-control/menu_bar_paint.c src/lib/win16-control/frame_paint.c)
-target_sources(win16-control PRIVATE src/lib/win16-control/control_scope.c src/lib/win16-control/frame_dispatch.c)
-target_sources(win16-control PRIVATE src/lib/win16-control/basic_paint.c src/lib/win16-control/updown_paint.c src/lib/win16-control/choice_paint.c src/lib/win16-control/scroll_assets.c src/lib/win16-control/other_paint.c src/lib/win16-control/list_paint.c src/lib/win16-control/combo_paint.c src/lib/win16-control/scroll_paint.c src/lib/win16-control/menu_items.c src/lib/win16-control/menu_scope.c src/lib/win16-control/palette.c src/lib/win16-control/frame_view.c src/lib/win16-control/choice_view.c src/lib/win16-control/vb_text.c src/lib/win16-control/special_paint.c src/lib/win16-control/frame_layout.c src/lib/win16-control/present.c)
-target_sources(win16-control PRIVATE src/lib/win16-control/month_text.c src/lib/win16-control/scroll_native.c src/lib/win16-control/frame_font.c src/lib/win16-control/theme_state.c src/lib/win16-control/updown_adapter.c src/lib/win16-control/custom_draw.c src/lib/win16-control/spin_identity.c src/lib/win16-control/frame_state.c src/lib/win16-control/control_state.c src/lib/win16-control/list_message.c src/lib/win16-control/edit_message.c src/lib/win16-control/basic_message.c src/lib/win16-control/scroll_message.c src/lib/win16-control/fileowner_message.c src/lib/win16-control/notify_message.c src/lib/win16-control/combo_text.c src/lib/win16-control/native_presentation.c src/lib/win16-control/menu_iteration.c src/lib/win16-control/control_dispatch.c src/lib/win16-control/menu_message.c src/lib/win16-control/frame_message.c src/lib/win16-control/frame_input.c src/lib/win16-control/native_combo_identity.c src/lib/win16-control/cool_grip_identity.c src/lib/win16-control/vcl_native_paint.c src/lib/win16-control/text_policy.c src/lib/win16-control/vcl_frame_policy.c src/lib/win16-control/control_lifetime.c src/lib/win16-control/control_guard.c src/lib/win16-control/spin_scope.c src/lib/win16-control/control_install.c src/lib/win16-control/control_remove.c src/lib/win16-control/frame_lifecycle.c src/lib/win16-control/status_frame.c src/lib/win16-control/status_font.c src/lib/win16-control/status_text.c src/lib/win16-control/status_identity.c src/lib/win16-control/vcl_identity.c src/lib/win16-control/vcl_extra_frame.c src/lib/win16-control/month_paint.c src/lib/win16-control/special_install.c src/lib/win16-control/attachment_guard.c)
+add_library(win16-common STATIC
+  src/lib/win16-common/layout.c src/lib/win16-common/menu_layout.c
+  src/lib/win16-common/font.c src/lib/win16-common/palette.c
+  src/lib/win16-common/present.c)
+target_include_directories(win16-common PUBLIC src/lib/win16-common)
+target_compile_definitions(win16-common PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+target_link_libraries(win16-common PUBLIC user32 gdi32 comctl32 uxtheme)
+add_library(win16-window STATIC
+  src/lib/win16-window/menu_paint.c
+  src/lib/win16-window/menu_bar.c src/lib/win16-window/menu_bar_paint.c
+  src/lib/win16-window/menu_items.c src/lib/win16-window/menu_scope.c
+  src/lib/win16-window/menu_iteration.c src/lib/win16-window/menu_message.c
+  src/lib/win16-window/frame_paint.c src/lib/win16-window/frame_view.c
+  src/lib/win16-window/frame_layout.c src/lib/win16-window/frame_dispatch.c
+  src/lib/win16-window/frame_input.c src/lib/win16-window/frame_lifecycle.c
+  src/lib/win16-window/frame_message.c src/lib/win16-window/frame_font.c
+  src/lib/win16-window/frame_state.c)
+target_include_directories(win16-window PUBLIC src/lib/win16-window)
+target_compile_definitions(win16-window PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+target_link_libraries(win16-window PUBLIC win16-common user32 gdi32 comctl32 uxtheme)
+add_library(win16-control STATIC
+  src/lib/win16-control/scroll_layout.c src/lib/win16-control/scroll_track.c
+  src/lib/win16-control/control_protocol.c src/lib/win16-control/tab_paint.c
+  src/lib/win16-control/header_paint.c
+  src/lib/win16-control/progress_paint.c src/lib/win16-control/trackbar_paint.c
+  src/lib/win16-control/toolbar_paint.c src/lib/win16-control/control_scope.c
+  src/lib/win16-control/basic_paint.c src/lib/win16-control/updown_paint.c
+  src/lib/win16-control/choice_paint.c src/lib/win16-control/scroll_assets.c
+  src/lib/win16-control/other_paint.c src/lib/win16-control/list_paint.c
+  src/lib/win16-control/combo_paint.c src/lib/win16-control/scroll_paint.c
+  src/lib/win16-control/choice_view.c src/lib/win16-control/vb_text.c
+  src/lib/win16-control/special_paint.c
+  src/lib/win16-control/month_text.c src/lib/win16-control/scroll_native.c
+  src/lib/win16-control/theme_state.c src/lib/win16-control/updown_adapter.c
+  src/lib/win16-control/custom_draw.c src/lib/win16-control/spin_identity.c
+  src/lib/win16-control/control_state.c src/lib/win16-control/list_message.c
+  src/lib/win16-control/edit_message.c src/lib/win16-control/basic_message.c
+  src/lib/win16-control/scroll_message.c src/lib/win16-control/fileowner_message.c
+  src/lib/win16-control/notify_message.c src/lib/win16-control/combo_text.c
+  src/lib/win16-control/native_presentation.c src/lib/win16-control/control_dispatch.c
+  src/lib/win16-control/native_combo_identity.c src/lib/win16-control/cool_grip_identity.c
+  src/lib/win16-control/vcl_native_paint.c src/lib/win16-control/text_policy.c
+  src/lib/win16-control/vcl_frame_policy.c src/lib/win16-control/control_lifetime.c
+  src/lib/win16-control/control_guard.c src/lib/win16-control/spin_scope.c
+  src/lib/win16-control/control_install.c src/lib/win16-control/control_remove.c
+  src/lib/win16-control/status_frame.c src/lib/win16-control/status_font.c
+  src/lib/win16-control/status_text.c src/lib/win16-control/status_identity.c
+  src/lib/win16-control/vcl_identity.c src/lib/win16-control/vcl_extra_frame.c
+  src/lib/win16-control/month_paint.c src/lib/win16-control/special_install.c
+  src/lib/win16-control/attachment_guard.c)
 target_include_directories(win16-control PUBLIC src/lib/win16-control)
 target_compile_definitions(win16-control PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-target_link_libraries(win16-control PUBLIC user32 gdi32 comctl32 uxtheme)
+target_link_libraries(win16-control PUBLIC win16-common user32 gdi32 comctl32 uxtheme)
 add_library(win16-dialog STATIC src/lib/win16-dialog/print_ranges.c src/lib/win16-dialog/print_extended.c src/lib/win16-dialog/file_helpers.c src/lib/win16-dialog/file_contract.c src/lib/win16-dialog/modern.c src/lib/win16-dialog/folder_create.c src/lib/win16-dialog/shell_folder.c src/lib/win16-dialog/shell_item.c src/lib/win16-dialog/chrome.c src/lib/win16-dialog/customize.c src/lib/win16-dialog/events.c src/lib/win16-dialog/ole_window.c src/lib/win16-dialog/v2.c src/lib/win16-dialog/primary.c src/lib/win16-dialog/com_show.c src/lib/win16-dialog/browse.c src/lib/win16-dialog/classic_folder.c src/lib/win16-dialog/file_hook.c src/lib/win16-dialog/file_live.c src/lib/win16-dialog/com_hook.c src/lib/win16-dialog/proxy.c src/lib/win16-dialog/proxy_dispatch.c src/lib/win16-dialog/print_classic.c src/lib/win16-dialog/hidden_files.c src/lib/win16-dialog/hook_state.c src/lib/win16-dialog/classic_events.c)
 target_include_directories(win16-dialog PUBLIC src/lib/win16-dialog)
 target_compile_definitions(win16-dialog PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
@@ -61,7 +107,7 @@ add_custom_command(OUTPUT "${subclass_import}"
   DEPENDS "${subclass_def}" VERBATIM)
 add_custom_target(ntw16s-subclass DEPENDS "${subclass_import}")
 add_dependencies(ntw16s ntw16s-subclass)
-target_link_libraries(ntw16s PRIVATE win16-control win16-dialog "${subclass_import}" user32 gdi32 comctl32 comdlg32 shell32 ole32 uuid dwmapi uxtheme advapi32)
+target_link_libraries(ntw16s PRIVATE win16-window win16-control win16-dialog "${subclass_import}" user32 gdi32 comctl32 comdlg32 shell32 ole32 uuid dwmapi uxtheme advapi32)
 set(injection_root src/ntw16s-dll/injection)
 add_library(ntw16s-installer STATIC ${injection_root}/context.c ${injection_root}/installer.c
   ${injection_root}/staging.c ${injection_root}/helper.c)
@@ -588,7 +634,7 @@ if(BUILD_TESTING)
   set(test_common_sources ${core_sources})
   list(REMOVE_ITEM test_common_sources src/ntw16s-dll/dllmain.c src/ntw16s-dll/controls.c src/ntw16s-dll/win16_style.c)
   add_library(test-painter-common STATIC ${test_common_sources} ${injection_root}/unwind.c)
-  target_link_libraries(test-painter-common PUBLIC win16-control)
+  target_link_libraries(test-painter-common PUBLIC win16-window win16-control)
   target_include_directories(test-painter-common PRIVATE src)
   target_compile_definitions(test-painter-common PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 
@@ -1048,7 +1094,7 @@ if(BUILD_TESTING)
   target_compile_definitions(core-vcl-status-font-alias PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_libraries(core-vcl-status-font-alias PRIVATE user32 gdi32 comctl32)
   target_link_options(core-vcl-status-font-alias PRIVATE -municode ${explicit_manifest_options})
-  add_executable(core-status-font-isolation tests/ntw16s-dll/status_font_isolation.c src/lib/win16-control/font.c)
+  add_executable(core-status-font-isolation tests/ntw16s-dll/status_font_isolation.c src/lib/win16-common/font.c)
   target_compile_definitions(core-status-font-isolation PRIVATE NTW16S_BUILD _WIN32_WINNT=0x0A00)
   target_link_libraries(core-status-font-isolation PRIVATE user32 gdi32)
   add_executable(core-status-font-stock tests/ntw16s-dll/status_font_stock.c)
@@ -1184,7 +1230,7 @@ if(BUILD_TESTING)
   add_executable(core-vcl-combo-simple-module tests/ntw16s-dll/vcl_combo_simple_module.c)
   target_link_libraries(core-vcl-combo-simple-module PRIVATE user32 gdi32)
   target_link_options(core-vcl-combo-simple-module PRIVATE -municode)
-  add_executable(core-vcl-combo-list-module tests/ntw16s-dll/vcl_combo_list_module.c src/lib/win16-control/font.c)
+  add_executable(core-vcl-combo-list-module tests/ntw16s-dll/vcl_combo_list_module.c src/lib/win16-common/font.c)
   target_compile_definitions(core-vcl-combo-list-module PRIVATE NTW16S_BUILD)
   target_link_libraries(core-vcl-combo-list-module PRIVATE user32 gdi32)
   target_link_options(core-vcl-combo-list-module PRIVATE -municode)
@@ -1395,7 +1441,7 @@ if(BUILD_TESTING)
   target_link_options(vb-global-runtime PRIVATE -Wl,--kill-at)
   set_target_properties(vb-global-runtime PROPERTIES PREFIX "" OUTPUT_NAME "MSVBVM60" ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/vb-global-fixture" LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/vb-global-fixture" RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/vb-global-fixture")
   add_dependencies(global-common-target vb-global-runtime)
-  add_executable(core-global-vb-text tests/ntw16s-dll/global_vb_text.c src/ntw16s-dll/global_vb_text.c src/ntw16s-dll/import_scan.c src/ntw16s-dll/import_patch.c src/ntw16s-dll/vb_text.c src/lib/win16-control/vb_text.c src/lib/win16-control/font.c)
+  add_executable(core-global-vb-text tests/ntw16s-dll/global_vb_text.c src/ntw16s-dll/global_vb_text.c src/ntw16s-dll/import_scan.c src/ntw16s-dll/import_patch.c src/ntw16s-dll/vb_text.c src/lib/win16-control/vb_text.c src/lib/win16-common/font.c)
   target_include_directories(core-global-vb-text PRIVATE src)
   target_compile_definitions(core-global-vb-text PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_libraries(core-global-vb-text PRIVATE user32 gdi32)
@@ -1404,7 +1450,7 @@ if(BUILD_TESTING)
   add_test(NAME core/global-vb-text COMMAND ${test_driver} --name core/global-vb-text -- $<TARGET_FILE:core-global-vb-text> $<TARGET_FILE:vb-global-runtime>)
   set_tests_properties(core/global-vb-text PROPERTIES TIMEOUT 15)
 
-  add_executable(core-vb-font tests/ntw16s-dll/vb_font.c src/lib/win16-control/font.c src/ntw16s-dll/vb_text.c src/lib/win16-control/vb_text.c)
+  add_executable(core-vb-font tests/ntw16s-dll/vb_font.c src/lib/win16-common/font.c src/ntw16s-dll/vb_text.c src/lib/win16-control/vb_text.c)
   target_include_directories(core-vb-font PRIVATE src)
   target_compile_definitions(core-vb-font PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_libraries(core-vb-font PRIVATE user32 gdi32)
@@ -1641,37 +1687,43 @@ if(BUILD_TESTING)
   target_compile_definitions(core-geometry PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   # Force every object into an independent consumer: no private ntw16s DLL
   # symbols may be needed to link the presentation library.
-  add_executable(core-win16-control-scope tests/lib/win16_control_scope.c)
+  add_executable(core-win16-window-link tests/lib/win16-common/common_link.c)
+  add_dependencies(core-win16-window-link ntw16s-subclass)
+  target_include_directories(core-win16-window-link PRIVATE src)
+  target_compile_definitions(core-win16-window-link PRIVATE NTW16S_STATIC UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_libraries(core-win16-window-link PRIVATE "-Wl,--whole-archive" win16-window "-Wl,--no-whole-archive" "${subclass_import}")
+  add_test(NAME core/win16-window-link COMMAND ${test_driver} --name core/win16-window-link -- $<TARGET_FILE:core-win16-window-link>)
+  add_executable(core-win16-control-scope tests/lib/win16-control/control_scope.c)
   target_include_directories(core-win16-control-scope PRIVATE src)
   target_compile_definitions(core-win16-control-scope PRIVATE NTW16S_STATIC UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_libraries(core-win16-control-scope PRIVATE win16-control)
   add_test(NAME core/win16-control-scope COMMAND ${test_driver} --name core/win16-control-scope -- $<TARGET_FILE:core-win16-control-scope>)
-  add_executable(core-win16-control-link tests/lib/win16_control_link.c)
+  add_executable(core-win16-control-link tests/lib/win16-control/control_link.c)
   add_dependencies(core-win16-control-link ntw16s-subclass)
   target_include_directories(core-win16-control-link PRIVATE src)
   target_compile_definitions(core-win16-control-link PRIVATE NTW16S_STATIC UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-  target_link_libraries(core-win16-control-link PRIVATE "-Wl,--whole-archive" win16-control "-Wl,--no-whole-archive" "${subclass_import}")
+  target_link_libraries(core-win16-control-link PRIVATE "-Wl,--whole-archive" win16-control win16-window "-Wl,--no-whole-archive" "${subclass_import}")
   add_test(NAME core/win16-control-link COMMAND ${test_driver} --name core/win16-control-link -- $<TARGET_FILE:core-win16-control-link>)
 
-  add_executable(core-win16-dialog-chrome tests/lib/win16_dialog_chrome.c)
+  add_executable(core-win16-dialog-chrome tests/lib/win16-dialog/dialog_chrome.c)
   target_include_directories(core-win16-dialog-chrome PRIVATE src)
   target_compile_definitions(core-win16-dialog-chrome PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_libraries(core-win16-dialog-chrome PRIVATE win16-dialog)
   add_test(NAME core/win16-dialog-chrome COMMAND ${test_driver} --name core/win16-dialog-chrome -- $<TARGET_FILE:core-win16-dialog-chrome>)
 
-  add_executable(core-win16-dialog-folder-create tests/lib/win16_dialog_folder_create.c)
+  add_executable(core-win16-dialog-folder-create tests/lib/win16-dialog/dialog_folder_create.c)
   target_include_directories(core-win16-dialog-folder-create PRIVATE src)
   target_compile_definitions(core-win16-dialog-folder-create PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_libraries(core-win16-dialog-folder-create PRIVATE win16-dialog)
   add_test(NAME core/win16-dialog-folder-create COMMAND ${test_driver} --name core/win16-dialog-folder-create -- $<TARGET_FILE:core-win16-dialog-folder-create>)
 
-  add_executable(core-win16-dialog-link tests/lib/win16_dialog_link.c)
+  add_executable(core-win16-dialog-link tests/lib/win16-dialog/dialog_link.c)
   target_include_directories(core-win16-dialog-link PRIVATE src)
   target_compile_definitions(core-win16-dialog-link PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_libraries(core-win16-dialog-link PRIVATE "-Wl,--whole-archive" win16-dialog "-Wl,--no-whole-archive")
   add_test(NAME core/win16-dialog-link COMMAND ${test_driver} --name core/win16-dialog-link -- $<TARGET_FILE:core-win16-dialog-link>)
 
-  add_executable(core-win16-control-print tests/lib/win16_control_print.c)
+  add_executable(core-win16-control-print tests/lib/win16-control/control_print.c)
   target_include_directories(core-win16-control-print PRIVATE src)
   target_compile_definitions(core-win16-control-print PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_libraries(core-win16-control-print PRIVATE win16-control)

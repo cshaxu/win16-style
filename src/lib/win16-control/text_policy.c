@@ -1,5 +1,5 @@
 #include "text_policy.h"
-#include "font.h"
+#include "../win16-common/font.h"
 
 BOOL win16_control_vb_text_caller(const void *address,BOOL (*report_caller)(HMODULE))
 {

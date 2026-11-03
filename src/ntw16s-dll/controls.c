@@ -22,7 +22,7 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include "../lib/win16-control/combo_paint.h"
 #include "../lib/win16-control/scroll_paint.h"
 #include "../lib/win16-control/special_paint.h"
-#include "../lib/win16-control/present.h"
+#include "../lib/win16-common/present.h"
 #include "../lib/win16-control/choice_paint.h"
 #include "../lib/win16-control/choice_view.h"
 #include "../lib/win16-control/spin_identity.h"
@@ -229,10 +229,13 @@ static BOOL embedded_scroll_input(HWND w,control_style *s,UINT m,WPARAM a,LPARAM
 typedef struct present_context {control_style *style;void (*painter)(HWND,control_style *,HDC);} present_context;
 static void present_painter(HWND w,void *context,HDC dc)
 {present_context *p=context;p->painter(w,p->style,dc);}
+static BOOL present_group(HWND w,void *context)
+{(void)context;return ntw16s_class_is(w,L"BUTTON") &&
+    (GetWindowLongPtrW(w,GWL_STYLE)&BS_TYPEMASK)==BS_GROUPBOX;}
 static void present_control(HWND w,control_style *s,HDC target,void (*painter)(HWND,control_style *,HDC))
 {
     present_context context={s,painter};
-    const win16_control_present_view view={&s->detached,&s->palette,&context,present_painter};
+    const win16_control_present_view view={&s->detached,&s->palette,&context,present_painter,NULL,present_group};
     win16_control_present(w,&view,target);
 }
 

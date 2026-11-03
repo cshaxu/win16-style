@@ -1,6 +1,6 @@
 #ifndef WIN16_CONTROL_STATE_H
 #define WIN16_CONTROL_STATE_H
-#include "palette.h"
+#include "../win16-common/palette.h"
 #include "control_protocol.h"
 #include "scroll_track.h"
 #include "updown_adapter.h"

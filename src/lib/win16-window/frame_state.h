@@ -1,6 +1,6 @@
 #ifndef WIN16_CONTROL_FRAME_STATE_H
 #define WIN16_CONTROL_FRAME_STATE_H
-#include "palette.h"
+#include "../win16-common/palette.h"
 #include "menu_scope.h"
 #include "menu_items.h"
 typedef struct menu_loop {

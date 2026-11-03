@@ -2,7 +2,7 @@
 #include "control_guard.h"
 #include "control_class.h"
 #include "fileowner_message.h"
-#include "font.h"
+#include "../win16-common/font.h"
 #include <stdlib.h>
 
 static BOOL is_edit(HWND w){return ntw16s_class_is(w,L"EDIT");}

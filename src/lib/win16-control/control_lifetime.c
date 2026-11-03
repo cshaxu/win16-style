@@ -1,6 +1,6 @@
 #include "control_lifetime.h"
 #include "spin_identity.h"
-#include "font.h"
+#include "../win16-common/font.h"
 #include <commctrl.h>
 
 HWND win16_control_spin_before(HWND w,UINT m,RECT *before)

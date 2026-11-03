@@ -124,3 +124,52 @@ calls. Moving those leaves into either library would make the library depend
 backwards on DLL-local original pointers, loader scope, TLS and unwind code,
 breaking the intended one-way dependency. `global_*` remains untouched in the
 DLL as required.
+
+## S25 three-library boundary and test map
+
+`win16-control` was deliberately not retained as a catch-all name.  The
+internal dependency is now strictly one-way:
+
+```
+win16-window  <-  win16-control       win16-dialog
+       ^                ^                   ^
+       \---------------- ntw16s adapters --/
+```
+
+| Library | Owns | Does not own |
+| --- | --- | --- |
+| `win16-window` | palette and font leases, geometry, frame/non-client lifecycle, title buttons, menu-bar/popup drawing and input, common buffered presentation | standard/VB/VCL control identity or public-dialog routing |
+| `win16-control` | standard, VB and VCL control classification, paint/message policy, control state, install/remove/lifetime and control-specific presentation qualification | frame/menu ownership, dialog conversion or hook installation |
+| `win16-dialog` | classic/COM/Shell dialog contracts, state, chrome and result conversion | frame/control renderer state and API hook leaves |
+
+The small group-box classification callback in `win16-window/present` is an
+intentional dependency inversion: the common buffered presenter owns no
+control identity.  `win16-control`/the DLL supplies that one predicate, so the
+window foundation never depends backwards on control protocol or VB runtime
+classification.
+
+Tests now mirror each library at `tests/lib/win16-window`,
+`tests/lib/win16-control` and `tests/lib/win16-dialog`.  Their `TEST_MAP.md`
+records the exact source-family-to-native-adapter correspondence.  Every
+library has an independent whole-archive link consumer; the window consumer
+is new in S25.  Focused behavioural probes remain beside the DLL test that
+owns their native HWND setup rather than duplicating that setup in a library.
+## S25 common-foundation scope refinement
+
+S25 was not published. Its initial source layout is refined in the same S to
+change the internal graph to a shared foundation:
+
+```text
+                  win16-common
+                 /            \
+          win16-window     win16-control       win16-dialog
+                 \            /                  /
+                    ntw16s adapters
+```
+
+`win16-common` will own only the neutral internal API contract, palette, font
+lease, geometry/menu-layout primitives and generic buffered presentation. It
+will have no frame/menu policy, class recognition, VB/VCL knowledge or dialog
+state. `win16-window` retains frame/menu/non-client policy; `win16-control`
+retains control classification and supplies the group-box predicate to common
+as a callback. No hook, global-process or product ABI behavior is in scope.

@@ -1,6 +1,6 @@
 #ifndef WIN16_CONTROL_SPECIAL_PAINT_H
 #define WIN16_CONTROL_SPECIAL_PAINT_H
-#include "palette.h"
+#include "../win16-common/palette.h"
 #include <uxtheme.h>
 #include <commctrl.h>
 void win16_style_month_arrow(HDC dc,const RECT *bounds,const RECT *clip,int part,int state);

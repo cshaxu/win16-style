@@ -82,10 +82,10 @@ def main():
     # compiled tables, plus provenance, in both DLLs. No visual substitute.
     glyph_tables = {}
     glyph_paths = {
-        'frame_buttons.h': 'src/lib/win16-control/frame_buttons.h',
+        'frame_buttons.h': 'src/lib/win16-window/frame_buttons.h',
         'control_glyphs.h': 'src/lib/win16-control/control_glyphs.h',
         'combo_glyph.h': 'src/lib/win16-control/combo_glyph.h',
-        'menu_glyphs.h': 'src/lib/win16-control/menu_glyphs.h',
+        'menu_glyphs.h': 'src/lib/win16-window/menu_glyphs.h',
         'scroll_glyphs.h': 'src/lib/win16-control/scroll_glyphs.h',
     }
     for header, source in glyph_paths.items():
