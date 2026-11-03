@@ -729,10 +729,7 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     }
     ++a->calls;
     if(a->cool_candidate && !a->detached && m!=WM_DESTROY && m!=WM_NCDESTROY && !cool_identity(w,a))(void)Ntw16sWindowRemove(w);
-    if(a->status && (m==WM_SETFONT || m==WM_FONTCHANGE || m==WM_SETTINGCHANGE || m==WM_THEMECHANGED || m==WM_DPICHANGED))a->status_font.invalid=TRUE;
-    if(a->status && (m==WM_SETTEXT || m==SB_SETPARTS || m==SB_SETTEXTA || m==SB_SETTEXTW || m==SB_SIMPLE ||
-        m==SB_SETICON || m==SB_SETMINHEIGHT || m==WM_SETFONT || m==WM_STYLECHANGED ||
-        m==WM_SIZE || m==WM_ENABLE || m==WM_SETTINGCHANGE || m==WM_DESTROY || m==WM_NCDESTROY))++a->status_epoch;
+    if(a->status)win16_control_status_invalidate(m,&a->status_font.invalid,&a->status_epoch);
     status_draw_scope scope={0},*prior=status_current;
     spin_draw_scope spin_scope={0},*spin_prior=spin_current;
     BOOL spin_message=a->spin && !a->detached && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT ||
@@ -746,28 +743,10 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     if(prior && prior->window!=w)status_current=NULL;
     if(painting){
         scope.previous=status_current;scope.owner=a;scope.window=w;scope.dc=m==WM_PAINT?NULL:(HDC)p;scope.epoch=a->status_epoch;
-        scope.simple=status_identity(w,a,&scope.native) && SendMessageW(w,SB_ISSIMPLE,0,0) && !a->detached && scope.epoch==a->status_epoch;
-        if(scope.simple){
-            LRESULT length=SendMessageW(w,SB_GETTEXTLENGTHW,0,0);
-            if(a->detached || scope.epoch!=a->status_epoch || HIWORD(length)!=0 || LOWORD(length)==0 || LOWORD(length)>512)scope.simple=FALSE;
-            else {
-                int copied=GetWindowTextW(w,scope.simple_text,(int)LOWORD(length)+1);
-                if(a->detached || scope.epoch!=a->status_epoch || copied!=(int)LOWORD(length) || !status_identity(w,a,NULL))scope.simple=FALSE;
-                else scope.simple_length=copied;
-            }
-        }
-        if(!scope.simple && status_identity(w,a,&scope.native) && !SendMessageW(w,SB_ISSIMPLE,0,0) && !a->detached && scope.epoch==a->status_epoch){
-            LRESULT count=SendMessageW(w,SB_GETPARTS,0,0);
-            if(count>0 && count<=64 && !a->detached && scope.epoch==a->status_epoch){
-                for(unsigned i=0;i<(unsigned)count;++i){RECT r={0};LRESULT type=SendMessageW(w,SB_GETTEXTLENGTHW,i,0);
-                    if(a->detached || scope.epoch!=a->status_epoch)break;
-                    if((HIWORD(type)&~(SBT_OWNERDRAW|SBT_NOBORDERS)) || !SendMessageW(w,SB_GETRECT,i,(LPARAM)&r))continue;
-                    if(a->detached || scope.epoch!=a->status_epoch)break;
-                    if(!(HIWORD(type)&SBT_OWNERDRAW))scope.text_panes[scope.text_count++]=r;
-                    if(!(HIWORD(type)&SBT_NOBORDERS))scope.panes[scope.count++]=r;
-                }
-            }
-        }
+        const win16_control_status_snapshot_view snapshot={a,&a->detached,&a->status_epoch,scope.epoch,
+            &scope.native,&scope.simple,&scope.simple_length,scope.simple_text,&scope.text_count,scope.text_panes,
+            &scope.count,scope.panes,status_frame_identity};
+        win16_control_status_snapshot(w,&snapshot);
         status_current=&scope;
     }
     if(a->picture && !a->detached && m!=WM_DESTROY && m!=WM_NCDESTROY && !ntw16s_vb_picture(w))

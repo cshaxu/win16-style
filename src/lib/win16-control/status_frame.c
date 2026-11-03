@@ -70,3 +70,36 @@ void win16_control_status_frame(const win16_control_status_frame_view *s,HDC dc,
     if(!matches || *s->detached || s->epoch!=*s->owner_epoch)return;
     win16_control_black_frame(dc,rect,clip);
 }
+
+void win16_control_status_invalidate(UINT m,BOOL *font_invalid,unsigned *epoch)
+{
+    if(m==WM_SETFONT || m==WM_FONTCHANGE || m==WM_SETTINGCHANGE || m==WM_THEMECHANGED || m==WM_DPICHANGED)*font_invalid=TRUE;
+    if(m==WM_SETTEXT || m==SB_SETPARTS || m==SB_SETTEXTA || m==SB_SETTEXTW || m==SB_SIMPLE ||
+        m==SB_SETICON || m==SB_SETMINHEIGHT || m==WM_SETFONT || m==WM_STYLECHANGED ||
+        m==WM_SIZE || m==WM_ENABLE || m==WM_SETTINGCHANGE || m==WM_DESTROY || m==WM_NCDESTROY)++*epoch;
+}
+void win16_control_status_snapshot(HWND w,const win16_control_status_snapshot_view *s)
+{
+    *s->simple=s->identity(w,s->owner,s->native) && SendMessageW(w,SB_ISSIMPLE,0,0) && !*s->detached && s->epoch==*s->owner_epoch;
+    if(*s->simple){
+        LRESULT length=SendMessageW(w,SB_GETTEXTLENGTHW,0,0);
+        if(*s->detached || s->epoch!=*s->owner_epoch || HIWORD(length)!=0 || LOWORD(length)==0 || LOWORD(length)>512)*s->simple=FALSE;
+        else {
+            int copied=GetWindowTextW(w,s->simple_text,(int)LOWORD(length)+1);
+            if(*s->detached || s->epoch!=*s->owner_epoch || copied!=(int)LOWORD(length) || !s->identity(w,s->owner,NULL))*s->simple=FALSE;
+            else *s->simple_length=copied;
+        }
+    }
+    if(!*s->simple && s->identity(w,s->owner,s->native) && !SendMessageW(w,SB_ISSIMPLE,0,0) && !*s->detached && s->epoch==*s->owner_epoch){
+        LRESULT count=SendMessageW(w,SB_GETPARTS,0,0);
+        if(count>0 && count<=64 && !*s->detached && s->epoch==*s->owner_epoch){
+            for(unsigned i=0;i<(unsigned)count;++i){RECT r={0};LRESULT type=SendMessageW(w,SB_GETTEXTLENGTHW,i,0);
+                if(*s->detached || s->epoch!=*s->owner_epoch)break;
+                if((HIWORD(type)&~(SBT_OWNERDRAW|SBT_NOBORDERS)) || !SendMessageW(w,SB_GETRECT,i,(LPARAM)&r))continue;
+                if(*s->detached || s->epoch!=*s->owner_epoch)break;
+                if(!(HIWORD(type)&SBT_OWNERDRAW))s->text_panes[(*s->text_count)++]=r;
+                if(!(HIWORD(type)&SBT_NOBORDERS))s->panes[(*s->count)++]=r;
+            }
+        }
+    }
+}
