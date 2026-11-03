@@ -1,6 +1,9 @@
 #define COBJMACROS
 #include "classic_events.h"
 #include "file_helpers.h"
+#include "shell_item.h"
+#include <wchar.h>
+#include <string.h>
 #include <dlgs.h>
 
 BOOL win16_dialog_list_changing(HWND w,win16_dialog_proxy *p,win16_dialog_changing_fn changing)
@@ -38,4 +41,38 @@ BOOL win16_dialog_overwrite_check(HWND w,win16_dialog_proxy *p,win16_dialog_over
     if(response==FDEOR_REFUSE)return FALSE;
     if(response==FDEOR_ACCEPT){ofn->Flags&=~OFN_OVERWRITEPROMPT;p->classic_overwrite_suppressed=TRUE;}
     return TRUE;
+}
+
+BOOL win16_dialog_classic_folder_adjust(const OPENFILENAMEW *original,WCHAR *folder,size_t capacity,OPENFILENAMEW *adjusted)
+{
+    if(!original->lpstrFile || wcslen(original->lpstrFile)>=capacity)return FALSE;
+    wcscpy(folder,original->lpstrFile);WCHAR *slash=wcsrchr(folder,L'\\');if(!slash)return FALSE;
+    if(slash==folder+2)slash[1]=0;else *slash=0;
+    *adjusted=*original;adjusted->lpstrFile=folder;adjusted->nMaxFile=(DWORD)capacity;return TRUE;
+}
+BOOL win16_dialog_classic_prepare_result(win16_dialog_proxy *p,OPENFILENAMEW *ofn)
+{
+    if(!ofn || !ofn->lpstrFile)return FALSE;
+    if(p->result){IShellItem_Release(p->result);p->result=NULL;}
+    if(p->results){IShellItemArray_Release(p->results);p->results=NULL;}
+    p->completed=FALSE;IShellItem *item=NULL;HRESULT hr;
+    if(ofn->Flags&OFN_ALLOWMULTISELECT){size_t length=wcsnlen(ofn->lpstrFile,ofn->nMaxFile);
+        if(length==ofn->nMaxFile)return FALSE;
+        WCHAR *copy=CoTaskMemAlloc((length+1)*sizeof(WCHAR));if(!copy)return FALSE;
+        memcpy(copy,ofn->lpstrFile,(length+1)*sizeof(WCHAR));
+        hr=win16_dialog_multi_result(copy,ofn->nFileOffset,(ofn->Flags&OFN_NODEREFERENCELINKS)!=0,&p->result,&p->results,&p->completed);CoTaskMemFree(copy);
+        item=p->result;
+    }else hr=p->save?SHCreateItemFromParsingName(ofn->lpstrFile,NULL,&IID_IShellItem,(void **)&item):
+        win16_dialog_open_item(ofn->lpstrFile,(ofn->Flags&OFN_NODEREFERENCELINKS)!=0,&item);
+    if(p->save && hr==HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND))hr=win16_dialog_save_item(ofn->lpstrFile,&item);
+    if(FAILED(hr))return FALSE;
+    p->result=item;p->completed=TRUE;return TRUE;
+}
+void win16_dialog_classic_result_cleanup(void *data)
+{
+    win16_dialog_classic_result_scope *scope=data;
+    if(scope->revoke && scope->item && scope->proxy->result==scope->item){IShellItem_Release(scope->item);
+        scope->proxy->result=NULL;scope->proxy->completed=FALSE;}
+    if(scope->revoke && scope->items && scope->proxy->results==scope->items){IShellItemArray_Release(scope->items);
+        scope->proxy->results=NULL;scope->proxy->completed=FALSE;}
 }

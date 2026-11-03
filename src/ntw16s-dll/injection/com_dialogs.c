@@ -329,11 +329,8 @@ static NTW16S_UNWIND_FUNCTION UINT_PTR classic_folder_observe(HWND w,UINT messag
         NTW16S_UNWIND_END(unwind);return result;
     }
     if(message>=0xc000 && message<=0xffff && message==RegisterWindowMessageW(FILEOKSTRINGW) && lp){
-        OPENFILENAMEW *original=(OPENFILENAMEW *)lp;WCHAR folder[MAX_PATH];
-        if(!original->lpstrFile || wcslen(original->lpstrFile)>=ARRAYSIZE(folder))return 1;
-        wcscpy(folder,original->lpstrFile);WCHAR *slash=wcsrchr(folder,L'\\');if(!slash)return 1;
-        if(slash==folder+2)slash[1]=0;else *slash=0;
-        OPENFILENAMEW adjusted=*original;adjusted.lpstrFile=folder;adjusted.nMaxFile=ARRAYSIZE(folder);
+        WCHAR folder[MAX_PATH];OPENFILENAMEW adjusted;
+        if(!win16_dialog_classic_folder_adjust((OPENFILENAMEW *)lp,folder,ARRAYSIZE(folder),&adjusted))return 1;
         return classic_event_file_ok(p,&adjusted);
     }
     return classic_hook(w,message,wp,lp);
@@ -342,44 +339,16 @@ static NTW16S_UNWIND_FUNCTION UINT_PTR classic_folder_observe(HWND w,UINT messag
 /* The legacy multi-select contract returns space-separated 8.3 names. The
  * file offset separates the directory from its first name even for one file. */
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-static HRESULT proxy_multi_result(file_proxy *p,WCHAR *file,WORD offset,BOOL keep_link);
-typedef struct classic_result_scope {file_proxy *proxy;IShellItem *item;IShellItemArray *items;BOOL revoke;} classic_result_scope;
-static void classic_result_cleanup(void *data)
-{
-    classic_result_scope *scope=data;
-    if(scope->revoke && scope->item && scope->proxy->result==scope->item){IShellItem_Release(scope->item);
-        scope->proxy->result=NULL;scope->proxy->completed=FALSE;}
-    if(scope->revoke && scope->items && scope->proxy->results==scope->items){IShellItemArray_Release(scope->items);
-        scope->proxy->results=NULL;scope->proxy->completed=FALSE;}
-}
 static NTW16S_UNWIND_FUNCTION UINT_PTR classic_event_file_ok(file_proxy *p,OPENFILENAMEW *ofn)
 {
-    if(!ofn || !ofn->lpstrFile)return 1;
-    if(p->result){IShellItem_Release(p->result);p->result=NULL;}
-    if(p->results){IShellItemArray_Release(p->results);p->results=NULL;}
-    p->completed=FALSE;
-    IShellItem *item=NULL;HRESULT hr;
-    if(ofn->Flags&OFN_ALLOWMULTISELECT){size_t length=wcsnlen(ofn->lpstrFile,ofn->nMaxFile);
-        if(length==ofn->nMaxFile)return 1;
-        WCHAR *copy=CoTaskMemAlloc((length+1)*sizeof(WCHAR));if(!copy)return 1;
-        memcpy(copy,ofn->lpstrFile,(length+1)*sizeof(WCHAR));
-        hr=proxy_multi_result(p,copy,ofn->nFileOffset,(ofn->Flags&OFN_NODEREFERENCELINKS)!=0);CoTaskMemFree(copy);
-        item=p->result;
-    }else hr=p->save?SHCreateItemFromParsingName(ofn->lpstrFile,NULL,&IID_IShellItem,(void **)&item):
-        win16_dialog_open_item(ofn->lpstrFile,(ofn->Flags&OFN_NODEREFERENCELINKS)!=0,&item);
-    if(p->save && hr==HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND))hr=win16_dialog_save_item(ofn->lpstrFile,&item);
-    if(FAILED(hr))return 1;
-    p->result=item;p->completed=TRUE;
-    classic_result_scope result={p,item,p->results,TRUE};ntw16s_unwind_scope unwind;
-    NTW16S_UNWIND_BEGIN(unwind,classic_result_cleanup,&result);
+    if(!win16_dialog_classic_prepare_result(p,ofn))return 1;
+    IShellItem *item=p->result;HRESULT hr;
+    win16_dialog_classic_result_scope result={p,item,p->results,TRUE};ntw16s_unwind_scope unwind;
+    NTW16S_UNWIND_BEGIN(unwind,win16_dialog_classic_result_cleanup,&result);
     hr=classic_event_dispatch(p,CLASSIC_OK,NULL);
     result.revoke=hr==S_FALSE || FAILED(hr);
     NTW16S_UNWIND_END(unwind);return result.revoke?1:0;
 }
-#endif
-#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-static HRESULT proxy_multi_result(file_proxy *p,WCHAR *file,WORD offset,BOOL keep_link)
-{return win16_dialog_multi_result(file,offset,keep_link,&p->result,&p->results,&p->completed);}
 #endif
 static BOOL proxy_has_events(void *owner){return ((file_proxy *)owner)->events!=NULL;}
 static HRESULT proxy_show_native(void *owner,HWND window){return show_native(owner,window);}

@@ -261,6 +261,27 @@ done:
     if(native)IUnknown_Release(native);
     return ok;
 }
+static BOOL test_classic_results(void)
+{
+    WCHAR folder[MAX_PATH],path[MAX_PATH];OPENFILENAMEW input={0},adjusted={0};win16_dialog_proxy proxy={0};
+    input.lpstrFile=L"C:\\alpha\\file.txt";
+    if(!win16_dialog_classic_folder_adjust(&input,folder,MAX_PATH,&adjusted) || lstrcmpW(folder,L"C:\\alpha") || adjusted.lpstrFile!=folder)return FALSE;
+    input.lpstrFile=L"C:\\file.txt";
+    if(!win16_dialog_classic_folder_adjust(&input,folder,MAX_PATH,&adjusted) || lstrcmpW(folder,L"C:\\"))return FALSE;
+    input.lpstrFile=L"relative";if(win16_dialog_classic_folder_adjust(&input,folder,MAX_PATH,&adjusted))return FALSE;
+    if(!GetModuleFileNameW(NULL,path,MAX_PATH))return FALSE;
+    input.lpstrFile=path;input.nMaxFile=MAX_PATH;input.Flags=0;
+    if(!win16_dialog_classic_prepare_result(&proxy,&input) || !proxy.result || !proxy.completed)return FALSE;
+    win16_dialog_classic_result_scope scope={&proxy,proxy.result,proxy.results,TRUE};
+    win16_dialog_classic_result_cleanup(&scope);if(proxy.result || proxy.results || proxy.completed)return FALSE;
+    if(!win16_dialog_classic_prepare_result(&proxy,&input) || !proxy.result || !proxy.completed)return FALSE;
+    scope=(win16_dialog_classic_result_scope){&proxy,proxy.result,proxy.results,FALSE};
+    win16_dialog_classic_result_cleanup(&scope);if(!proxy.result || !proxy.completed)return FALSE;
+    IShellItem_Release(proxy.result);proxy.result=NULL;proxy.completed=FALSE;
+    input.Flags=OFN_ALLOWMULTISELECT;input.nMaxFile=1;
+    if(win16_dialog_classic_prepare_result(&proxy,&input) || proxy.result || proxy.results || proxy.completed)return FALSE;
+    puts("CLASSIC_RESULT_OK folder=1 commit=1 revoke=1 invalid_multi=1");return TRUE;
+}
 int main(void)
 {
     if(!test_hidden_dialog_files())return 41;
@@ -333,6 +354,7 @@ int main(void)
     CoTaskMemFree(copy);
     WCHAR temp[MAX_PATH],unused[MAX_PATH];IShellItem *item=NULL;PWSTR selected=NULL;
     if(FAILED(CoInitializeEx(NULL,COINIT_APARTMENTTHREADED)))return 19;
+    if(!test_classic_results()){CoUninitialize();return 44;}
     if(!test_hook_state()){CoUninitialize();return 42;}
     if(!test_classic_event_policy()){CoUninitialize();return 43;}
     if(!test_event_snapshot()){CoUninitialize();return 40;}
