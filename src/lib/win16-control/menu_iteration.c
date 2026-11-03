@@ -111,3 +111,22 @@ void win16_control_open_menu_bar(HWND w,style_window *s,int index,const win16_co
     if(mouse_origin && !s->detached)services->leave(w,s,TRUE);
     if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);
 }
+
+BOOL win16_control_menu_owner_mark(HWND w,const void *caller,LPCWSTR property,HANDLE marker)
+{
+    WCHAR cls[64],real[64];DWORD pid=0;HMODULE origin=NULL;
+    return w && GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
+        !(GetWindowLongPtrW(w,GWL_STYLE)&(WS_VISIBLE|WS_CHILD)) &&
+        (GetWindowLongPtrW(w,GWL_STYLE)&WS_POPUP) && (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_TOOLWINDOW) &&
+        GetClassNameW(w,cls,64) && !lstrcmpW(cls,L"TPUtilWindow") &&
+        RealGetWindowClassW(w,real,64) && !lstrcmpW(real,cls) &&
+        GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)caller,&origin) && origin==(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE) &&
+        SetPropW(w,property,marker);
+}
+BOOL win16_control_menu_owner_eligible(HWND w,LPCWSTR property,HANDLE marker)
+{
+    DWORD pid=0;
+    return GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
+        GetPropW(w,property)==marker && !(GetWindowLongPtrW(w,GWL_STYLE)&(WS_VISIBLE|WS_CHILD)) &&
+        (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_TOOLWINDOW);
+}

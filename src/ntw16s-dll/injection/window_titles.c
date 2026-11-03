@@ -1,4 +1,5 @@
 #include "../../lib/win16-control/text_policy.h"
+#include "../../lib/win16-control/menu_iteration.h"
 #include "../../lib/win16-dialog/print_classic.h"
 #include "../../lib/win16-dialog/chrome.h"
 #include "intercept.h"
@@ -66,14 +67,8 @@ static BOOL CALLBACK bind_titles(PINIT_ONCE once,void *parameter,void **context)
 static const WCHAR menu_owner_property[]=L"Win16Style.T18.MenuOwner";
 static int menu_owner_marker;
 static void mark_menu_owner(HWND w,const void *caller)
-{ WCHAR cls[64],real[64];DWORD pid=0;HMODULE origin=NULL;
- if(w && GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
-    !(GetWindowLongPtrW(w,GWL_STYLE)&(WS_VISIBLE|WS_CHILD)) &&
-    (GetWindowLongPtrW(w,GWL_STYLE)&WS_POPUP) && (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_TOOLWINDOW) &&
-    GetClassNameW(w,cls,64) && !lstrcmpW(cls,L"TPUtilWindow") &&
-    RealGetWindowClassW(w,real,64) && !lstrcmpW(real,cls) &&
-    GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)caller,&origin) && origin==(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE))SetPropW(w,menu_owner_property,(HANDLE)&menu_owner_marker);
-}
+{(void)win16_control_menu_owner_mark(w,caller,menu_owner_property,(HANDLE)&menu_owner_marker);}
+
 typedef struct title_scope { ntw16s_creation_scope *creation;DWORD failure;BOOL enabled; } title_scope;
 static BOOL begin_titles(title_scope *scope,BOOL modal)
 {
@@ -732,11 +727,8 @@ static void popup_owner_end(void *data)
 }
 static NTW16S_UNWIND_FUNCTION BOOL WINAPI hook_TrackPopupMenu(HMENU m,UINT flags,int x,int y,int reserved,HWND w,const RECT *r)
 {
- ntw16s_unwind_scope unwind;popup_owner_scope scope={w,FALSE};DWORD incoming=GetLastError(),pid=0,error;BOOL result;
- if(GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
-    GetPropW(w,menu_owner_property)==(HANDLE)&menu_owner_marker &&
-    !(GetWindowLongPtrW(w,GWL_STYLE)&(WS_VISIBLE|WS_CHILD)) &&
-    (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_TOOLWINDOW))
+ ntw16s_unwind_scope unwind;popup_owner_scope scope={w,FALSE};DWORD incoming=GetLastError(),error;BOOL result;
+ if(win16_control_menu_owner_eligible(w,menu_owner_property,(HANDLE)&menu_owner_marker))
      scope.installed=win16_style_menu_owner_install_created(w,&scope,NULL);
  NTW16S_UNWIND_BEGIN(unwind,popup_owner_end,&scope);
  SetLastError(incoming);result=real_TrackPopupMenu(m,flags,x,y,reserved,w,r);error=GetLastError();
