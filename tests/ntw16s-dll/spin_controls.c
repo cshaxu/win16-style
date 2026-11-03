@@ -93,7 +93,7 @@ static int worker(int argc,WCHAR **argv)
     edit.hInstance=instance;edit.lpszClassName=L"TSpinEdit";CHECK(RegisterClassW(&edit));
     WNDCLASSW spin={.hInstance=instance,.lpfnWndProc=spin_proc,.lpszClassName=L"TSpinButton"};CHECK(RegisterClassW(&spin));
     HWND root=CreateWindowW(L"STATIC",L"",WS_OVERLAPPEDWINDOW,0,0,300,150,NULL,NULL,instance,NULL);CHECK(root);
-    HWND parent=CreateWindowW(L"TSpinEdit",L"0",WS_CHILD|WS_VISIBLE|WS_BORDER,10,10,80,30,root,NULL,instance,NULL);CHECK(parent);
+    HWND parent=CreateWindowW(L"TSpinEdit",L"0",WS_CHILD|WS_VISIBLE|WS_BORDER,10,10,80,64,root,NULL,instance,NULL);CHECK(parent);
     UINT dpi=GetDpiForWindow(root);unsigned width=MulDiv(15,dpi,96),height=MulDiv(19,dpi,96);CHECK(width<=64 && height<=64);
     HWND w=CreateWindowW(L"TSpinButton",L"",WS_CHILD|WS_VISIBLE,3,3,width,height,parent,NULL,instance,NULL);CHECK(w);
     if(!attached(w)){fprintf(stderr,"SPIN_CONTROL_UNATTACHED bits=%u\n",(unsigned)sizeof(void*)*8);return 1;}
@@ -113,6 +113,8 @@ static int worker(int argc,WCHAR **argv)
     HWND clipped=CreateWindowW(L"TSpinButton",L"",WS_CHILD|WS_VISIBLE,width+5,3,width,height,parent,NULL,instance,NULL);CHECK(clipped&&attached(clipped));
     RECT full={0,0,(LONG)width,(LONG)height},partial={0,0,(LONG)((width+1)/2),(LONG)((height+1)/2)};
     HDC dc1=GetDC(w),dc2=GetDC(clipped);CHECK(dc1 && dc2);
+    RECT visible1={0},visible2={0};CHECK(GetClipBox(dc1,&visible1)==SIMPLEREGION && EqualRect(&visible1,&full));
+    CHECK(GetClipBox(dc2,&visible2)==SIMPLEREGION && EqualRect(&visible2,&full));
     CHECK(FillRect(dc1,&full,(HBRUSH)GetStockObject(WHITE_BRUSH)) && FillRect(dc2,&full,(HBRUSH)GetStockObject(WHITE_BRUSH)));
     ReleaseDC(w,dc1);ReleaseDC(clipped,dc2);
     CHECK(ValidateRect(w,NULL) && ValidateRect(clipped,NULL));
