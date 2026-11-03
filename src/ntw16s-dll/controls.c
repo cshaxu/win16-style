@@ -34,6 +34,7 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include "../lib/win16-control/fileowner_message.h"
 #include "../lib/win16-control/notify_message.h"
 #include "../lib/win16-control/combo_text.h"
+#include "../lib/win16-control/native_presentation.h"
 
 #include "../lib/win16-control/scroll_assets.h"
 #include "scroll_track.h"
@@ -251,14 +252,7 @@ static void draw_scroll(HWND w,control_style *s,HDC dc,LONG object,BOOL vertical
 }
 
 static void nonclient_scrollbars(HWND w,control_style *s,HDC target)
-{
-    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);HDC dc;
-    if(!(style&(WS_HSCROLL|WS_VSCROLL)))return;
-    dc=target?target:GetWindowDC(w);if(!dc)return;
-    if(style&WS_HSCROLL)draw_scroll(w,s,dc,OBJID_HSCROLL,FALSE);
-    if(style&WS_VSCROLL)draw_scroll(w,s,dc,OBJID_VSCROLL,TRUE);
-    if(!target)ReleaseDC(w,dc);
-}
+{win16_control_nonclient_scrollbars(w,s,target,draw_scroll);}
 
 void win16_style_scrollbars_paint(HWND w,HDC target,const win16_style_palette *palette)
 {
@@ -342,24 +336,11 @@ static LRESULT set_list_tabs(HWND w,control_style *s,WPARAM count,LPARAM values)
 static void draw_sizebox(HWND w,control_style *s,HDC dc)
 {(void)s;win16_control_draw_sizebox(w,dc);}
 static void draw_tab(HWND w,control_style *s,HDC dc)
-{
-    HFONT font=s->font;win16_style_system_retain(font);
-    if(!win16_style_tab_paint(w,dc,&s->palette,font,&s->detached,&s->tab_epoch) && !s->detached)
-        DefSubclassProc(w,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT);
-    win16_style_system_release(font);
-}
+{win16_control_draw_tab(w,s,dc);}
 static void draw_header(HWND w,control_style *s,HDC dc)
-{
-    HFONT font=s->font;win16_style_system_retain(font);
-    if(!win16_style_header_paint(w,dc,&s->palette,font,&s->detached,&s->header_epoch,s->header_pressed) && !s->detached)
-        DefSubclassProc(w,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT);
-    win16_style_system_release(font);
-}
+{win16_control_draw_header(w,s,dc);}
 static void draw_progress(HWND w,control_style *s,HDC dc)
-{
-    if(!win16_style_progress_paint(w,dc,&s->palette,&s->detached,&s->progress_epoch) && !s->detached)
-        DefSubclassProc(w,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT);
-}
+{win16_control_draw_progress(w,s,dc);}
 /* The v5 progress color and state getters are unavailable. Only paint the
  * verified static edge, after the native procedure; leave the client intact. */
 static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
