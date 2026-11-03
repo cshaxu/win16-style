@@ -558,3 +558,25 @@ HMODULE win16_attachment_observe_native(HWND w,UINT message,WNDPROC proc,const v
     if(!owner || caller!=owner || !native_owner)return NULL;
     return native_owner;
 }
+
+void win16_attachment_classify_vcl(HWND w,DWORD original_style,BOOL ready,BOOL picture,BOOL checklist,BOOL status,BOOL spin,
+    const win16_attachment_initial_classification *i,win16_control_vcl_candidates *v)
+{
+    *v=(win16_control_vcl_candidates){0};
+    if(!i->control && !i->report && !i->tree && !picture && !checklist && !i->legacy_progress && !status && !spin &&
+       (original_style&WS_CHILD) && i->owner)win16_control_vcl_classify(w,original_style,ready,i->owner,v);
+}
+int win16_attachment_eligibility(DWORD original_style,BOOL picture,BOOL checklist,BOOL status,BOOL spin,BOOL vcl_mdi_probe,
+    const win16_attachment_initial_classification *i,const win16_control_vcl_candidates *v,const win16_control_vcl_extra_candidates *e)
+{
+    if(!i->control && !i->report && !i->tree && !picture && !checklist && !i->legacy_progress && !status && !spin && !v->static_candidate && !v->scroll_candidate && !v->edit_candidate && !v->group_button_candidate && !v->grid_candidate && !v->inplace_candidate && !v->nav_candidate && !v->vcl_toolbar_candidate && !v->track_candidate && !v->tab_candidate && !v->vcl_report_candidate && !v->color_candidate && !v->date_candidate && !v->status_candidate && !v->bit_candidate && !v->group_frame_candidate && !v->panel_frame_candidate && (original_style&WS_CHILD) &&
+            i->owner && i->owner!=GetModuleHandleW(NULL) && !e->vb_mdi_child && !vcl_mdi_probe && !e->vb_user_edge && !e->vb_data_edge && !e->rich_candidate && !e->box_candidate && !e->controlbar_candidate && !e->cool_candidate){
+        return 1;
+    }
+    /* A custom client-only child and MDICLIENT keep application painting.
+     * MDI child frames have WS_CAPTION and take the ordinary frame route. */
+    if(!i->control && !i->report && !picture && !checklist && !i->legacy_progress && !status && !spin && !v->static_candidate && !v->scroll_candidate && !v->edit_candidate && !v->group_button_candidate && !v->grid_candidate && !v->inplace_candidate && !v->nav_candidate && !v->vcl_toolbar_candidate && !v->track_candidate && !v->tab_candidate && !v->vcl_report_candidate && !v->color_candidate && !v->date_candidate && !v->status_candidate && !v->bit_candidate && !v->group_frame_candidate && !v->panel_frame_candidate && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME)) && !e->vb_user_edge && !e->vb_data_edge && !e->rich_candidate && !e->box_candidate && !e->controlbar_candidate && !e->cool_candidate){
+        return 2;
+    }
+    return 0;
+}

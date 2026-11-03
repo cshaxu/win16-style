@@ -8,6 +8,7 @@
 #include "lib/win16-control/frame_view.h"
 #include "lib/win16-control/frame_state.h"
 #include "lib/win16-control/control_state.h"
+#include "lib/win16-control/attachment_state.h"
 #include "lib/win16-control/fileowner_message.h"
 #include "lib/win16-control/list_paint.h"
 #include "lib/win16-control/theme_state.h"
@@ -43,6 +44,21 @@ static void test_button_paint(HWND w,void *context,int hit)
 {(void)w;(void)context;if(hit==HTMINBUTTON)++button_paints;}
 int main(void)
 {
+    win16_attachment_initial_classification initial={0};
+    win16_control_vcl_candidates vcl={0};win16_control_vcl_extra_candidates extra={0};
+    initial.owner=(HMODULE)(UINT_PTR)1;
+    if(win16_attachment_eligibility(WS_CHILD,FALSE,FALSE,FALSE,FALSE,FALSE,&initial,&vcl,&extra)!=1)return 85;
+    initial.owner=GetModuleHandleW(NULL);
+    if(win16_attachment_eligibility(WS_CHILD,FALSE,FALSE,FALSE,FALSE,FALSE,&initial,&vcl,&extra)!=2)return 86;
+    initial.tree=TRUE;initial.owner=(HMODULE)(UINT_PTR)1;
+    if(win16_attachment_eligibility(WS_CHILD,FALSE,FALSE,FALSE,FALSE,FALSE,&initial,&vcl,&extra)!=2)return 87;
+    initial.tree=FALSE;vcl.tab_candidate=TRUE;
+    if(win16_attachment_eligibility(WS_CHILD,FALSE,FALSE,FALSE,FALSE,FALSE,&initial,&vcl,&extra)!=0)return 88;
+    vcl.tab_candidate=FALSE;extra.vb_user_edge=TRUE;
+    if(win16_attachment_eligibility(WS_CHILD,FALSE,FALSE,FALSE,FALSE,FALSE,&initial,&vcl,&extra)!=0)return 89;
+    extra.vb_user_edge=FALSE;
+    if(win16_attachment_eligibility(WS_CAPTION,FALSE,FALSE,FALSE,FALSE,FALSE,&initial,&vcl,&extra)!=0)return 90;
+    puts("ATTACH_ELIGIBILITY_OK distinct_release=1 tree=1 vcl=1 edge=1 frame=1");
     HDC policy_dc=CreateCompatibleDC(NULL);if(!policy_dc)return 81;
     if(!win16_control_report_wide_text(policy_dc,L"abc",3,TRUE) ||
        win16_control_report_wide_text(policy_dc,L"\x4e2d",1,TRUE) ||

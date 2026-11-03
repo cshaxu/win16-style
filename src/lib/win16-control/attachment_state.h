@@ -5,6 +5,7 @@
 #include "status_font.h"
 #include "control_protocol.h"
 #include "vb_text.h"
+#include "vcl_identity.h"
 typedef struct attachment {
     unsigned calls;
     BOOL detached,tree,file_owner,picture,button_owner,checklist,status,spin,static_candidate,static_verified;
@@ -144,4 +145,6 @@ typedef struct win16_attachment_initial_classification {
     HMODULE owner;
 } win16_attachment_initial_classification;
 BOOL win16_attachment_classify_initial(HWND,DWORD,BOOL,BOOL,BOOL,BOOL,win16_attachment_initial_classification *);
+void win16_attachment_classify_vcl(HWND,DWORD,BOOL,BOOL,BOOL,BOOL,BOOL,const win16_attachment_initial_classification *,win16_control_vcl_candidates *);
+int win16_attachment_eligibility(DWORD,BOOL,BOOL,BOOL,BOOL,BOOL,const win16_attachment_initial_classification *,const win16_control_vcl_candidates *,const win16_control_vcl_extra_candidates *);
 #endif

@@ -678,7 +678,7 @@ BOOL __cdecl Ntw16sWindowTerminal(HWND w)
 static BOOL install_created(HWND w,DWORD original_style)
 {
     BOOL ready=InterlockedCompareExchange(&status_hooks_ready,0,0)!=0;
-    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=win16_control_checklist_identity(w),status=ready && status_identity(w,NULL,NULL),spin=ready && (win16_control_spin_identity(w)||win16_control_modern_spin_shape(w)),status_candidate=FALSE,bit_candidate=FALSE,inplace_candidate=FALSE,nav_candidate=FALSE,group_frame_candidate=FALSE,panel_frame_candidate=FALSE,static_candidate=FALSE,scroll_candidate=FALSE,edit_candidate=FALSE,group_button_candidate=FALSE,grid_candidate=FALSE,vcl_toolbar_candidate=FALSE,track_candidate=FALSE,tab_candidate=FALSE,vcl_report_candidate=FALSE,color_candidate=FALSE,date_candidate=FALSE;HWND parent;HMODULE owner;attachment *a;DWORD error;
+    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=win16_control_checklist_identity(w),status=ready && status_identity(w,NULL,NULL),spin=ready && (win16_control_spin_identity(w)||win16_control_modern_spin_shape(w));HWND parent;HMODULE owner;attachment *a;DWORD error;
     ntw16s_control_protocol *protocol=NULL;
     if(lookup(w))return TRUE;
     /* COMBOBOX installs its own internal list when construction finishes.
@@ -690,28 +690,8 @@ static BOOL install_created(HWND w,DWORD original_style)
     if(!win16_attachment_classify_initial(w,original_style,ready,checklist,status,spin,&initial))return FALSE;
     edit=initial.edit;control=initial.control;report=initial.report;tree=initial.tree;
     legacy_progress=initial.legacy_progress;protocol=initial.protocol;owner=initial.owner;
-    if(!control && !report && !tree && !picture && !checklist && !legacy_progress && !status && !spin &&
-       (original_style&WS_CHILD) && owner){
-        win16_control_vcl_candidates candidates;
-        win16_control_vcl_classify(w,original_style,ready,owner,&candidates);
-        static_candidate=candidates.static_candidate;
-        scroll_candidate=candidates.scroll_candidate;
-        edit_candidate=candidates.edit_candidate;
-        tab_candidate=candidates.tab_candidate;
-        vcl_report_candidate=candidates.vcl_report_candidate;
-        track_candidate=candidates.track_candidate;
-        color_candidate=candidates.color_candidate;
-        bit_candidate=candidates.bit_candidate;
-        inplace_candidate=candidates.inplace_candidate;
-        nav_candidate=candidates.nav_candidate;
-        group_frame_candidate=candidates.group_frame_candidate;
-        panel_frame_candidate=candidates.panel_frame_candidate;
-        group_button_candidate=candidates.group_button_candidate;
-        grid_candidate=candidates.grid_candidate;
-        vcl_toolbar_candidate=candidates.vcl_toolbar_candidate;
-        status_candidate=candidates.status_candidate;
-        date_candidate=candidates.date_candidate;
-    }
+    win16_control_vcl_candidates candidates;
+    win16_attachment_classify_vcl(w,original_style,ready,picture,checklist,status,spin,&initial,&candidates);
     HWND popup_source=lookup_popup_creator,popup_source_parent=popup_source?GetParent(popup_source):NULL;
     attachment *popup_source_attachment=popup_source?lookup(popup_source):NULL;
     BOOL lookup_popup_candidate=ready && popup_source_attachment && win16_control_lookup_popup_identity(w,popup_source,popup_source_parent,owner);
@@ -727,21 +707,13 @@ static BOOL install_created(HWND w,DWORD original_style)
     BOOL rich_candidate=extra.rich_candidate;
     BOOL vb_user_edge=extra.vb_user_edge;
     BOOL vb_data_edge=extra.vb_data_edge;
-    BOOL vb_mdi_child=extra.vb_mdi_child;
     BOOL vcl_mdi_probe=mdi_identity(w,GetParent(w),GetParent(GetParent(w)),owner);
-    if(!control && !report && !tree && !picture && !checklist && !legacy_progress && !status && !spin && !static_candidate && !scroll_candidate && !edit_candidate && !group_button_candidate && !grid_candidate && !inplace_candidate && !nav_candidate && !vcl_toolbar_candidate && !track_candidate && !tab_candidate && !vcl_report_candidate && !color_candidate && !date_candidate && !status_candidate && !bit_candidate && !group_frame_candidate && !panel_frame_candidate && (original_style&WS_CHILD) &&
-            owner && owner!=GetModuleHandleW(NULL) && !vb_mdi_child && !vcl_mdi_probe && !vb_user_edge && !vb_data_edge && !rich_candidate && !box_candidate && !controlbar_candidate && !cool_candidate){
-        ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
-    }
-    /* A custom client-only child and MDICLIENT keep application painting.
-     * MDI child frames have WS_CAPTION and take the ordinary frame route. */
-    if(!control && !report && !picture && !checklist && !legacy_progress && !status && !spin && !static_candidate && !scroll_candidate && !edit_candidate && !group_button_candidate && !grid_candidate && !inplace_candidate && !nav_candidate && !vcl_toolbar_candidate && !track_candidate && !tab_candidate && !vcl_report_candidate && !color_candidate && !date_candidate && !status_candidate && !bit_candidate && !group_frame_candidate && !panel_frame_candidate && (original_style&WS_CHILD) && !(original_style&(WS_CAPTION|WS_THICKFRAME)) && !vb_user_edge && !vb_data_edge && !rich_candidate && !box_candidate && !controlbar_candidate && !cool_candidate){
-        SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
-    }
+    int rejected=win16_attachment_eligibility(original_style,picture,checklist,status,spin,vcl_mdi_probe,&initial,&candidates,&extra);
+    if(rejected){if(rejected==1)ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     a=calloc(1,sizeof(*a));
     if(!a){ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    a->calls=1;a->cool_candidate=cool_candidate;a->cool_parent=GetParent(w);a->cool_owner=owner;if(cool_candidate)a->report_window=w;a->mdi_candidate=vcl_mdi_probe;a->mdi_parent=GetParent(w);a->mdi_host=GetParent(a->mdi_parent);a->mdi_owner=owner;a->mdi_host_attachment=vcl_mdi_probe?lookup(a->mdi_host):NULL;if(a->mdi_host_attachment)++a->mdi_host_attachment->calls;a->nav_candidate=nav_candidate;a->nav_parent=GetParent(w);a->nav_owner=owner;a->lookup_popup_candidate=lookup_popup_candidate;a->lookup_popup_source=popup_source;a->lookup_popup_source_parent=popup_source_parent;a->lookup_popup_owner=owner;a->lookup_popup_source_attachment=lookup_popup_candidate?popup_source_attachment:NULL;if(a->lookup_popup_source_attachment)++a->lookup_popup_source_attachment->calls;a->controlbar_candidate=controlbar_candidate;a->controlbar_parent=GetParent(w);a->controlbar_owner=owner;a->rich_popup=rich_popup;a->rich_month=rich_month;a->rich_hotkey=rich_hotkey;a->box_candidate=box_candidate;a->box_owner=owner;a->box_parent=GetParent(w);a->rich_unicode=rich_unicode;a->rich_candidate=rich_candidate;a->rich_parent=rich_popup?GetDesktopWindow():GetParent(w);a->rich_owner=owner;a->group_frame_candidate=group_frame_candidate;a->panel_frame_candidate=panel_frame_candidate;a->vb_user_candidate=vb_user_edge;a->vb_data_candidate=vb_data_edge;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;a->status=status;a->spin=spin;a->modern_spin=spin&&win16_control_modern_spin_shape(w);a->static_candidate=static_candidate;
-    a->scroll_candidate=scroll_candidate;a->scroll_parent=GetParent(w);a->edit_candidate=edit_candidate;a->link_candidate=edit_candidate && class_is(w,L"TLinkLabel");a->combo_candidate=edit_candidate && (class_is(w,L"TComboBox") || class_is(w,L"TDBComboBox"));a->combo_parent=GetParent(w);a->combo_original_type=original_style&3;a->spinedit_candidate=edit_candidate && class_is(w,L"TSpinEdit");a->group_button_candidate=group_button_candidate;a->grid_candidate=grid_candidate;a->inplace_candidate=inplace_candidate;a->inplace_owner=owner;a->inplace_parent=GetParent(w);a->vcl_toolbar_candidate=vcl_toolbar_candidate;a->vcl_toolbar_owner=owner;a->vcl_toolbar_parent=GetParent(w);a->grid_owner=owner;a->grid_parent=GetParent(w);a->edit_original_style=original_style;a->track_candidate=track_candidate;a->tab_candidate=tab_candidate;a->tab_parent=GetParent(w);a->vcl_report_candidate=vcl_report_candidate;a->vcl_report_parent=GetParent(w);a->vcl_report_owner=owner;a->vcl_report_tree=vcl_report_candidate && class_is(w,L"TTreeView");a->color_candidate=color_candidate;a->date_candidate=date_candidate;a->status_candidate=status_candidate;a->bit_candidate=bit_candidate;
+    a->calls=1;a->cool_candidate=cool_candidate;a->cool_parent=GetParent(w);a->cool_owner=owner;if(cool_candidate)a->report_window=w;a->mdi_candidate=vcl_mdi_probe;a->mdi_parent=GetParent(w);a->mdi_host=GetParent(a->mdi_parent);a->mdi_owner=owner;a->mdi_host_attachment=vcl_mdi_probe?lookup(a->mdi_host):NULL;if(a->mdi_host_attachment)++a->mdi_host_attachment->calls;a->nav_candidate=candidates.nav_candidate;a->nav_parent=GetParent(w);a->nav_owner=owner;a->lookup_popup_candidate=lookup_popup_candidate;a->lookup_popup_source=popup_source;a->lookup_popup_source_parent=popup_source_parent;a->lookup_popup_owner=owner;a->lookup_popup_source_attachment=lookup_popup_candidate?popup_source_attachment:NULL;if(a->lookup_popup_source_attachment)++a->lookup_popup_source_attachment->calls;a->controlbar_candidate=controlbar_candidate;a->controlbar_parent=GetParent(w);a->controlbar_owner=owner;a->rich_popup=rich_popup;a->rich_month=rich_month;a->rich_hotkey=rich_hotkey;a->box_candidate=box_candidate;a->box_owner=owner;a->box_parent=GetParent(w);a->rich_unicode=rich_unicode;a->rich_candidate=rich_candidate;a->rich_parent=rich_popup?GetDesktopWindow():GetParent(w);a->rich_owner=owner;a->group_frame_candidate=candidates.group_frame_candidate;a->panel_frame_candidate=candidates.panel_frame_candidate;a->vb_user_candidate=vb_user_edge;a->vb_data_candidate=vb_data_edge;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;a->status=status;a->spin=spin;a->modern_spin=spin&&win16_control_modern_spin_shape(w);a->static_candidate=candidates.static_candidate;
+    a->scroll_candidate=candidates.scroll_candidate;a->scroll_parent=GetParent(w);a->edit_candidate=candidates.edit_candidate;a->link_candidate=candidates.edit_candidate && class_is(w,L"TLinkLabel");a->combo_candidate=candidates.edit_candidate && (class_is(w,L"TComboBox") || class_is(w,L"TDBComboBox"));a->combo_parent=GetParent(w);a->combo_original_type=original_style&3;a->spinedit_candidate=candidates.edit_candidate && class_is(w,L"TSpinEdit");a->group_button_candidate=candidates.group_button_candidate;a->grid_candidate=candidates.grid_candidate;a->inplace_candidate=candidates.inplace_candidate;a->inplace_owner=owner;a->inplace_parent=GetParent(w);a->vcl_toolbar_candidate=candidates.vcl_toolbar_candidate;a->vcl_toolbar_owner=owner;a->vcl_toolbar_parent=GetParent(w);a->grid_owner=owner;a->grid_parent=GetParent(w);a->edit_original_style=original_style;a->track_candidate=candidates.track_candidate;a->tab_candidate=candidates.tab_candidate;a->tab_parent=GetParent(w);a->vcl_report_candidate=candidates.vcl_report_candidate;a->vcl_report_parent=GetParent(w);a->vcl_report_owner=owner;a->vcl_report_tree=candidates.vcl_report_candidate && class_is(w,L"TTreeView");a->color_candidate=candidates.color_candidate;a->date_candidate=candidates.date_candidate;a->status_candidate=candidates.status_candidate;a->bit_candidate=candidates.bit_candidate;
     if(report || tree || a->file_owner || a->button_owner || a->checklist || a->bit_candidate){a->report_window=w;a->tree=tree;
         a->report_module=(a->file_owner || a->button_owner || a->bit_candidate)?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}
     if(!SetWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc,(DWORD_PTR)a)){
