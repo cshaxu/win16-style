@@ -25,7 +25,6 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include "../lib/win16-control/present.h"
 #include "../lib/win16-control/choice_paint.h"
 #include "../lib/win16-control/choice_view.h"
-#include "../lib/win16-control/custom_draw.h"
 #include "../lib/win16-control/spin_identity.h"
 #include "../lib/win16-control/control_state.h"
 #include "../lib/win16-control/list_message.h"
@@ -33,6 +32,8 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include "../lib/win16-control/basic_message.h"
 #include "../lib/win16-control/scroll_message.h"
 #include "../lib/win16-control/fileowner_message.h"
+#include "../lib/win16-control/notify_message.h"
+#include "../lib/win16-control/combo_text.h"
 
 #include "../lib/win16-control/scroll_assets.h"
 #include "scroll_track.h"
@@ -42,7 +43,6 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include "tab_paint.h"
 #include "header_paint.h"
 #include "progress_paint.h"
-#include "toolbar_paint.h"
 #include "trackbar_paint.h"
 #include "updown_paint.h"
 #include "vb_text.h"
@@ -54,15 +54,6 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include <stdlib.h>
 #include <limits.h>
 
-typedef struct track_paint_scope {
-    struct track_paint_scope *previous;
-    control_style *owner;
-    const NMCUSTOMDRAW *draw;
-    HDC dc;
-    UINT_PTR item;
-    RECT rect;
-    BOOL active,pending;
-} track_paint_scope;
 static _Thread_local track_paint_scope *track_paint;
 static void track_paint_end(void *data)
 {track_paint_scope *scope=data;track_paint=scope->previous;}
@@ -86,57 +77,10 @@ static BOOL updown_acquire(void *owner)
 static void updown_release(void *owner)
 {control_style *s=owner;if(!--s->calls && s->detached)win16_control_state_dispose(s);}
 
-/* Keep native-painter borrowed font returns alive through reentrant setters.
- * Finite cache follows the existing 32-lease VB text scope limit. */
-static HFONT combo_edit_font(control_style *s,HFONT source)
-{
-    HFONT font=win16_style_vb_font_acquire(source);if(!font)return source;
-    for(unsigned i=0;i<s->combo_font_count;++i)if(s->combo_fonts[i]==font){win16_style_system_release(font);return font;}
-    if(s->combo_font_count==ARRAYSIZE(s->combo_fonts)){win16_style_system_release(font);return source;}
-    s->combo_fonts[s->combo_font_count++]=font;return font;
-}
-static void combo_text_unbind(control_style *,BOOL);
 static LRESULT CALLBACK combo_text_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
-{
-    control_style *s=(control_style *)data;++s->calls;LRESULT result;
-    HFONT pinned=s->combo_edit_font,outbound=NULL;win16_style_system_retain(pinned);
-    BOOL related=!s->detached && s->combo_edit==w && GetParent(w)==s->combo_parent;
-    BOOL painting=related && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT);if(painting)++s->combo_paints;
-    if(m==WM_NCDESTROY){RemoveWindowSubclass(w,combo_text_proc,id);if(s->combo_edit==w){s->combo_edit=NULL;if(s->combo_bound){s->combo_bound=FALSE;--s->calls;}}}
-    if(related && m==WM_GETFONT)result=(LRESULT)(s->combo_paints && s->combo_edit_font?s->combo_edit_font:s->combo_edit_source);
-    else {
-        if(related && m==WM_SETFONT){
-            HFONT source=win16_style_system_source((HFONT)a),font=combo_edit_font(s,source);
-            s->combo_edit_source=source;s->combo_edit_font=font;
-            outbound=s->combo_edit_font;win16_style_system_retain(outbound);a=(WPARAM)outbound;
-        }
-        result=DefSubclassProc(w,m,a,b);
-    }
-    /* A native setter can reenter removal; restore only after it returns. */
-    if(!related && m!=WM_NCDESTROY && !s->detached && s->combo_edit==w)combo_text_unbind(s,FALSE);
-    if(m==WM_SETFONT && s->detached && IsWindow(w)){
-        DWORD_PTR successor;HFONT source=s->combo_edit_source;
-        if(GetWindowSubclass(w,combo_text_proc,(UINT_PTR)combo_text_proc,&successor))source=((control_style *)successor)->combo_edit_source;
-        else if(GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&successor))source=((control_style *)successor)->original_font;
-        SendMessageW(w,WM_SETFONT,(WPARAM)source,b);
-    }
-    if(painting)--s->combo_paints;
-    win16_style_system_release(outbound);win16_style_system_release(pinned);
-    if(!--s->calls && s->detached)win16_control_state_dispose(s);
-    return result;
-}
+{return win16_control_combo_text_message(w,m,a,b,id,(control_style *)data,combo_text_proc,control_proc);}
 static void combo_text_unbind(control_style *s,BOOL terminal)
-{
-    HWND edit=s->combo_edit;DWORD_PTR data;
-    if(!s->combo_bound)return;
-    BOOL owned=edit && GetWindowSubclass(edit,combo_text_proc,(UINT_PTR)combo_text_proc,&data) && data==(DWORD_PTR)s;
-    if(owned && !RemoveWindowSubclass(edit,combo_text_proc,(UINT_PTR)combo_text_proc))return;
-    s->combo_edit=NULL;s->combo_bound=FALSE;--s->calls;
-    if(owned && !terminal && IsWindow(edit)){
-        SendMessageW(edit,WM_SETFONT,(WPARAM)s->combo_edit_source,FALSE);
-        if(IsWindow(edit))InvalidateRect(edit,NULL,TRUE);
-    }
-}
+{win16_control_combo_text_unbind(s,terminal,combo_text_proc);}
 static void trackbar_unbind(control_style *s)
 {
     DWORD_PTR value;
@@ -151,71 +95,10 @@ static void toolbar_unbind(control_style *s)
         value==(DWORD_PTR)s)RemoveWindowSubclass(s->toolbar_parent,toolbar_notify,(UINT_PTR)s->toolbar_window);
     s->toolbar_parent=NULL;s->toolbar_internal=FALSE;
 }
-/* Extra part notifications are private to this renderer, and are requested
- * only after the application returned exactly CDRF_DODEFAULT. Its own requested
- * stages and all non-drawing notifications keep their original route/result. */
 static LRESULT CALLBACK trackbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
-{
-    control_style *s=(control_style *)data;DWORD entry=GetLastError();LRESULT result;BOOL internal=FALSE;
-    ++s->calls;NMCUSTOMDRAW *draw=NULL;
-    if(m==WM_NOTIFY && l && !s->detached && GetParent(s->track_window)==parent){
-        NMHDR *header=(NMHDR *)l;
-        if(header->hwndFrom==s->track_window && header->code==NM_CUSTOMDRAW)draw=(NMCUSTOMDRAW *)l;
-    }
-    if(draw && ntw16s_control_protocol_runtime_trackbar(s->track_window)){
-        track_paint_scope *scope=track_paint;
-        BOOL match=scope && scope->owner==s && scope->active && scope->draw==draw && scope->dc==draw->hdc;
-        if(match && draw->dwDrawStage==CDDS_ITEMPOSTPAINT && scope->pending && scope->item==draw->dwItemSpec){
-            scope->pending=FALSE;
-            if(EqualRect(&scope->rect,&draw->rc))win16_style_trackbar_runtime_border(s->track_window,draw,&s->palette);
-            result=CDRF_DODEFAULT;
-        }else if(match && draw->dwDrawStage==CDDS_POSTPAINT){scope->active=FALSE;result=CDRF_DODEFAULT;}
-        else {
-            SetLastError(entry);result=DefSubclassProc(parent,m,p,l);DWORD error=GetLastError();
-            if(!s->detached && scope && track_paint==scope && scope->owner==s){
-                if(draw->dwDrawStage==CDDS_PREPAINT && result==CDRF_NOTIFYITEMDRAW &&
-                   win16_style_trackbar_supported(s->track_window)){
-                    scope->draw=draw;scope->dc=draw->hdc;scope->active=TRUE;
-                    result=CDRF_NOTIFYITEMDRAW|CDRF_NOTIFYPOSTPAINT;
-                }else if(match && draw->dwDrawStage==CDDS_ITEMPREPAINT && result==CDRF_DODEFAULT && !scope->pending &&
-                    (draw->dwItemSpec==TBCD_CHANNEL || draw->dwItemSpec==TBCD_THUMB)){
-                    scope->item=draw->dwItemSpec;scope->rect=draw->rc;scope->pending=TRUE;result=CDRF_NOTIFYPOSTPAINT;
-                }
-            }
-            if(!--s->calls && s->detached)win16_control_state_dispose(s);
-            SetLastError(error);return result;
-        }
-        if(!--s->calls && s->detached)win16_control_state_dispose(s);
-        SetLastError(entry);return result;
-    }
-    if(draw && draw->dwDrawStage!=CDDS_PREPAINT && s->track_internal)internal=TRUE;
-    if(m==WM_NCDESTROY){RemoveWindowSubclass(parent,trackbar_notify,id);s->track_parent=NULL;s->track_internal=FALSE;}
-    SetLastError(entry);
-    result=internal?CDRF_DODEFAULT:DefSubclassProc(parent,m,p,l);DWORD error=GetLastError();
-    if(draw && !s->detached)result=win16_control_custom_draw_after(s->track_window,draw,&s->track_internal,internal,result,
-        &s->palette,win16_style_trackbar_supported,win16_style_trackbar_part);
-    if(!--s->calls && s->detached)win16_control_state_dispose(s);
-    SetLastError(error);return result;
-}
-/* The OCX wrapper retains command routing and its return values.  Item drawing
- * is requested only after it selects the default custom-draw route. */
+{return win16_control_trackbar_notify(parent,m,p,l,id,(control_style *)data,trackbar_notify,&track_paint);}
 static LRESULT CALLBACK toolbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
-{
-    control_style *s=(control_style *)data;DWORD entry=GetLastError();LRESULT result;BOOL internal=FALSE;
-    ++s->calls;NMCUSTOMDRAW *draw=NULL;
-    if(m==WM_NOTIFY && l && !s->detached && GetParent(s->toolbar_window)==parent){
-        NMHDR *header=(NMHDR *)l;
-        if(header->hwndFrom==s->toolbar_window && header->code==NM_CUSTOMDRAW)draw=(NMCUSTOMDRAW *)l;
-    }
-    if(draw && draw->dwDrawStage!=CDDS_PREPAINT && s->toolbar_internal)internal=TRUE;
-    if(m==WM_NCDESTROY){RemoveWindowSubclass(parent,toolbar_notify,id);s->toolbar_parent=NULL;s->toolbar_internal=FALSE;}
-    SetLastError(entry);result=internal?CDRF_DODEFAULT:DefSubclassProc(parent,m,p,l);DWORD error=GetLastError();
-    if(draw && !s->detached)result=win16_control_custom_draw_after(s->toolbar_window,draw,&s->toolbar_internal,internal,result,
-        &s->palette,win16_style_toolbar_supported,win16_style_toolbar_part);
-    if(!--s->calls && s->detached)win16_control_state_dispose(s);
-    SetLastError(error);return result;
-}
-
+{return win16_control_toolbar_notify(parent,m,p,l,id,(control_style *)data,toolbar_notify);}
 static BOOL is_exact_native_button(HWND w)
 {WCHAR name[32];return GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpiW(name,L"BUTTON");}
 static BOOL is_static(HWND w)
