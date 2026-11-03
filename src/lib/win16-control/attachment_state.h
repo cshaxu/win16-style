@@ -147,4 +147,14 @@ typedef struct win16_attachment_initial_classification {
 BOOL win16_attachment_classify_initial(HWND,DWORD,BOOL,BOOL,BOOL,BOOL,win16_attachment_initial_classification *);
 void win16_attachment_classify_vcl(HWND,DWORD,BOOL,BOOL,BOOL,BOOL,BOOL,const win16_attachment_initial_classification *,win16_control_vcl_candidates *);
 int win16_attachment_eligibility(DWORD,BOOL,BOOL,BOOL,BOOL,BOOL,const win16_attachment_initial_classification *,const win16_control_vcl_candidates *,const win16_control_vcl_extra_candidates *);
+typedef struct win16_attachment_seed {
+    const win16_attachment_initial_classification *initial;
+    const win16_control_vcl_candidates *vcl;
+    const win16_control_vcl_extra_candidates *extra;
+    BOOL picture,checklist,status,spin,vcl_mdi_probe,lookup_popup_candidate;
+    HWND popup_source,popup_source_parent;
+    attachment *popup_source_attachment;
+    attachment *(*lookup)(HWND);
+} win16_attachment_seed;
+void win16_attachment_initialize(HWND,DWORD,attachment *,const win16_attachment_seed *);
 #endif

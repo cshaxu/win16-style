@@ -698,24 +698,14 @@ static BOOL install_created(HWND w,DWORD original_style)
     win16_control_vcl_extra_candidates extra;
     win16_control_vcl_classify_extra(w,original_style,ready,owner,&extra);
     BOOL cool_candidate=extra.cool_candidate;
-    BOOL box_candidate=extra.box_candidate;
-    BOOL controlbar_candidate=extra.controlbar_candidate;
-    BOOL rich_month=extra.rich_month;
-    BOOL rich_hotkey=extra.rich_hotkey;
-    BOOL rich_popup=extra.rich_popup;
-    BOOL rich_unicode=extra.rich_unicode;
-    BOOL rich_candidate=extra.rich_candidate;
-    BOOL vb_user_edge=extra.vb_user_edge;
-    BOOL vb_data_edge=extra.vb_data_edge;
     BOOL vcl_mdi_probe=mdi_identity(w,GetParent(w),GetParent(GetParent(w)),owner);
     int rejected=win16_attachment_eligibility(original_style,picture,checklist,status,spin,vcl_mdi_probe,&initial,&candidates,&extra);
     if(rejected){if(rejected==1)ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     a=calloc(1,sizeof(*a));
     if(!a){ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    a->calls=1;a->cool_candidate=cool_candidate;a->cool_parent=GetParent(w);a->cool_owner=owner;if(cool_candidate)a->report_window=w;a->mdi_candidate=vcl_mdi_probe;a->mdi_parent=GetParent(w);a->mdi_host=GetParent(a->mdi_parent);a->mdi_owner=owner;a->mdi_host_attachment=vcl_mdi_probe?lookup(a->mdi_host):NULL;if(a->mdi_host_attachment)++a->mdi_host_attachment->calls;a->nav_candidate=candidates.nav_candidate;a->nav_parent=GetParent(w);a->nav_owner=owner;a->lookup_popup_candidate=lookup_popup_candidate;a->lookup_popup_source=popup_source;a->lookup_popup_source_parent=popup_source_parent;a->lookup_popup_owner=owner;a->lookup_popup_source_attachment=lookup_popup_candidate?popup_source_attachment:NULL;if(a->lookup_popup_source_attachment)++a->lookup_popup_source_attachment->calls;a->controlbar_candidate=controlbar_candidate;a->controlbar_parent=GetParent(w);a->controlbar_owner=owner;a->rich_popup=rich_popup;a->rich_month=rich_month;a->rich_hotkey=rich_hotkey;a->box_candidate=box_candidate;a->box_owner=owner;a->box_parent=GetParent(w);a->rich_unicode=rich_unicode;a->rich_candidate=rich_candidate;a->rich_parent=rich_popup?GetDesktopWindow():GetParent(w);a->rich_owner=owner;a->group_frame_candidate=candidates.group_frame_candidate;a->panel_frame_candidate=candidates.panel_frame_candidate;a->vb_user_candidate=vb_user_edge;a->vb_data_candidate=vb_data_edge;a->protocol=protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=checklist;a->status=status;a->spin=spin;a->modern_spin=spin&&win16_control_modern_spin_shape(w);a->static_candidate=candidates.static_candidate;
-    a->scroll_candidate=candidates.scroll_candidate;a->scroll_parent=GetParent(w);a->edit_candidate=candidates.edit_candidate;a->link_candidate=candidates.edit_candidate && class_is(w,L"TLinkLabel");a->combo_candidate=candidates.edit_candidate && (class_is(w,L"TComboBox") || class_is(w,L"TDBComboBox"));a->combo_parent=GetParent(w);a->combo_original_type=original_style&3;a->spinedit_candidate=candidates.edit_candidate && class_is(w,L"TSpinEdit");a->group_button_candidate=candidates.group_button_candidate;a->grid_candidate=candidates.grid_candidate;a->inplace_candidate=candidates.inplace_candidate;a->inplace_owner=owner;a->inplace_parent=GetParent(w);a->vcl_toolbar_candidate=candidates.vcl_toolbar_candidate;a->vcl_toolbar_owner=owner;a->vcl_toolbar_parent=GetParent(w);a->grid_owner=owner;a->grid_parent=GetParent(w);a->edit_original_style=original_style;a->track_candidate=candidates.track_candidate;a->tab_candidate=candidates.tab_candidate;a->tab_parent=GetParent(w);a->vcl_report_candidate=candidates.vcl_report_candidate;a->vcl_report_parent=GetParent(w);a->vcl_report_owner=owner;a->vcl_report_tree=candidates.vcl_report_candidate && class_is(w,L"TTreeView");a->color_candidate=candidates.color_candidate;a->date_candidate=candidates.date_candidate;a->status_candidate=candidates.status_candidate;a->bit_candidate=candidates.bit_candidate;
-    if(report || tree || a->file_owner || a->button_owner || a->checklist || a->bit_candidate){a->report_window=w;a->tree=tree;
-        a->report_module=(a->file_owner || a->button_owner || a->bit_candidate)?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}
+    const win16_attachment_seed seed={&initial,&candidates,&extra,picture,checklist,status,spin,
+        vcl_mdi_probe,lookup_popup_candidate,popup_source,popup_source_parent,popup_source_attachment,lookup};
+    win16_attachment_initialize(w,original_style,a,&seed);
     if(!SetWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc,(DWORD_PTR)a)){
         DWORD failure=GetLastError();ntw16s_control_protocol_release(protocol);if(a->lookup_popup_source_attachment)release(a->lookup_popup_source_attachment);if(a->mdi_host_attachment)release(a->mdi_host_attachment);free(a);SetLastError(failure);return FALSE;
     }

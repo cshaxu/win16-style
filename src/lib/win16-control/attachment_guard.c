@@ -1,6 +1,7 @@
 #include "attachment_state.h"
 #include "control_class.h"
 #include "vcl_identity.h"
+#include "spin_identity.h"
 
 void win16_attachment_retire_frames(HWND w,attachment *a)
 {
@@ -579,4 +580,15 @@ int win16_attachment_eligibility(DWORD original_style,BOOL picture,BOOL checklis
         return 2;
     }
     return 0;
+}
+
+void win16_attachment_initialize(HWND w,DWORD original_style,attachment *a,const win16_attachment_seed *seed)
+{
+    const win16_attachment_initial_classification *i=seed->initial;
+    const win16_control_vcl_candidates *v=seed->vcl;
+    const win16_control_vcl_extra_candidates *e=seed->extra;
+    a->calls=1;a->cool_candidate=e->cool_candidate;a->cool_parent=GetParent(w);a->cool_owner=i->owner;if(e->cool_candidate)a->report_window=w;a->mdi_candidate=seed->vcl_mdi_probe;a->mdi_parent=GetParent(w);a->mdi_host=GetParent(a->mdi_parent);a->mdi_owner=i->owner;a->mdi_host_attachment=seed->vcl_mdi_probe?seed->lookup(a->mdi_host):NULL;if(a->mdi_host_attachment)++a->mdi_host_attachment->calls;a->nav_candidate=v->nav_candidate;a->nav_parent=GetParent(w);a->nav_owner=i->owner;a->lookup_popup_candidate=seed->lookup_popup_candidate;a->lookup_popup_source=seed->popup_source;a->lookup_popup_source_parent=seed->popup_source_parent;a->lookup_popup_owner=i->owner;a->lookup_popup_source_attachment=seed->lookup_popup_candidate?seed->popup_source_attachment:NULL;if(a->lookup_popup_source_attachment)++a->lookup_popup_source_attachment->calls;a->controlbar_candidate=e->controlbar_candidate;a->controlbar_parent=GetParent(w);a->controlbar_owner=i->owner;a->rich_popup=e->rich_popup;a->rich_month=e->rich_month;a->rich_hotkey=e->rich_hotkey;a->box_candidate=e->box_candidate;a->box_owner=i->owner;a->box_parent=GetParent(w);a->rich_unicode=e->rich_unicode;a->rich_candidate=e->rich_candidate;a->rich_parent=e->rich_popup?GetDesktopWindow():GetParent(w);a->rich_owner=i->owner;a->group_frame_candidate=v->group_frame_candidate;a->panel_frame_candidate=v->panel_frame_candidate;a->vb_user_candidate=e->vb_user_edge;a->vb_data_candidate=e->vb_data_edge;a->protocol=i->protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=seed->picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=seed->checklist;a->status=seed->status;a->spin=seed->spin;a->modern_spin=seed->spin&&win16_control_modern_spin_shape(w);a->static_candidate=v->static_candidate;
+    a->scroll_candidate=v->scroll_candidate;a->scroll_parent=GetParent(w);a->edit_candidate=v->edit_candidate;a->link_candidate=v->edit_candidate && ntw16s_class_is(w,L"TLinkLabel");a->combo_candidate=v->edit_candidate && (ntw16s_class_is(w,L"TComboBox") || ntw16s_class_is(w,L"TDBComboBox"));a->combo_parent=GetParent(w);a->combo_original_type=original_style&3;a->spinedit_candidate=v->edit_candidate && ntw16s_class_is(w,L"TSpinEdit");a->group_button_candidate=v->group_button_candidate;a->grid_candidate=v->grid_candidate;a->inplace_candidate=v->inplace_candidate;a->inplace_owner=i->owner;a->inplace_parent=GetParent(w);a->vcl_toolbar_candidate=v->vcl_toolbar_candidate;a->vcl_toolbar_owner=i->owner;a->vcl_toolbar_parent=GetParent(w);a->grid_owner=i->owner;a->grid_parent=GetParent(w);a->edit_original_style=original_style;a->track_candidate=v->track_candidate;a->tab_candidate=v->tab_candidate;a->tab_parent=GetParent(w);a->vcl_report_candidate=v->vcl_report_candidate;a->vcl_report_parent=GetParent(w);a->vcl_report_owner=i->owner;a->vcl_report_tree=v->vcl_report_candidate && ntw16s_class_is(w,L"TTreeView");a->color_candidate=v->color_candidate;a->date_candidate=v->date_candidate;a->status_candidate=v->status_candidate;a->bit_candidate=v->bit_candidate;
+    if(i->report || i->tree || a->file_owner || a->button_owner || a->checklist || a->bit_candidate){a->report_window=w;a->tree=i->tree;
+        a->report_module=(a->file_owner || a->button_owner || a->bit_candidate)?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):i->tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}
 }
