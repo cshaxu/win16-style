@@ -8,6 +8,7 @@
 #include "../lib/win16-control/frame_state.h"
 #include "../lib/win16-control/menu_iteration.h"
 #include "../lib/win16-control/menu_message.h"
+#include "../lib/win16-control/frame_message.h"
 #include "../lib/win16-control/frame_layout.h"
 #include "../lib/win16-control/present.h"
 #include "menu_bar.h"
@@ -309,22 +310,29 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
     }
     switch(msg){
     case WM_SHOWWINDOW:
-        if(wp && s->pending_frame){
-            RECT client;BOOL normal=!IsIconic(w)&&!IsZoomed(w);
-            win16_control_client_screen(w,&client);s->pending_frame=FALSE;
-            activate_frame(w,s,&client,normal);
-            if(s->detached)break;
-        }
-        goto forward;
     case WM_CTLCOLORDLG:
     case WM_CTLCOLORSTATIC:
-        if(s->dialog){
-            /* Native dialogs still own their contents and notifications.
-             * Supply a coherent client palette, including native SysLink;
-             * ordinary application windows retain their painting contract. */
-            result=win16_control_dialog_colors((HDC)wp,&s->palette);break;
-        }
+    case WM_NCCALCSIZE:
+    case WM_NCPAINT:
+    case WM_SETCURSOR:
+    case STYLE_NCUAHDRAWCAPTION:
+    case STYLE_NCUAHDRAWFRAME:
+    case STYLE_UAHDRAWMENU:
+    case STYLE_UAHDRAWMENUITEM:
+    case WM_NCACTIVATE:
+    case WM_NCHITTEST:
+    case WM_PRINT:
+    case WM_SETTEXT:
+    case WM_HSCROLL:
+    case WM_VSCROLL:
+    case WM_DPICHANGED:
+    case WM_SETTINGCHANGE:
+    case WM_SYSCOLORCHANGE:
+    case WM_THEMECHANGED: {
+        const win16_control_frame_message_services services={measure_window,activate_frame,paint,paint_callback,paint_buffered_callback,win16_style_hit_test,refresh_font};
+        if(win16_control_frame_message(w,s,msg,wp,lp,&services,&result))break;
         goto forward;
+    }
     case WM_MEASUREITEM:
     case WM_DRAWITEM:
     case WM_MENUCHAR:
@@ -342,36 +350,6 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
     case WM_KILLFOCUS:
         if(s->bar_keyboard)leave_bar(w,s,FALSE);
         goto forward;
-    case WM_NCCALCSIZE:
-        r=wp?((NCCALCSIZE_PARAMS *)lp)->rgrc[0]:*(RECT *)lp;
-        if(measure_window(w,s,&r,&l)){
-            /* USER maintains scrollbar-presence state during native NC
-             * calculation. Let that owner update, then supply our client
-             * rectangle; no native nonclient drawing is requested here. */
-            DefSubclassProc(w,msg,wp,lp);
-            if(s->detached)break;
-            OffsetRect(&l.client,r.left,r.top);
-            if(wp)((NCCALCSIZE_PARAMS *)lp)->rgrc[0]=l.client;else *(RECT *)lp=l.client;
-            break;
-        }
-        goto forward;
-    case WM_NCPAINT:
-        win16_control_frame_ncpaint(w,wp,s,paint_callback,paint_buffered_callback);
-        break;
-    case WM_SETCURSOR:
-        /* Default NC cursor handling can also repaint native caption buttons.
-         * Only our frame belongs to us; preserve the application's client
-         * cursor and error handling. No hover artwork exists in Win3.1. */
-        if(win16_control_frame_set_cursor(w,wp,lp)){result=TRUE;break;}
-        goto forward;
-    case STYLE_NCUAHDRAWCAPTION:
-    case STYLE_NCUAHDRAWFRAME:
-        if(IsIconic(w))goto forward;
-        break; /* Drawing notifications do not contain mouse coordinates. */
-    case STYLE_UAHDRAWMENU:
-    case STYLE_UAHDRAWMENUITEM:
-        if(IsIconic(w) || !GetMenu(w))goto forward;
-        break; /* Native hover must not paint a second, host-font menu item. */
     case WM_NCMOUSEMOVE:
         if(s->bar_keyboard && !tracking_menu){
             POINT cursor={GET_X_LPARAM(lp),GET_Y_LPARAM(lp)};int hit=bar_at_screen(w,s,cursor);
@@ -396,16 +374,6 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
          * Win3.1 buttons have no hover drawing. Press tracking remains in
          * WM_MOUSEMOVE below; menu/drag/size commands still go to USER. */
         break;
-    case WM_NCACTIVATE:
-        s->active=(BOOL)wp;
-        if(IsIconic(w))goto forward;
-        /* Own activation drawing too. Forwarding even with lp=-1 leaves
-         * native themed-caption pixels below the shorter custom caption.
-         * TRUE permits deactivation; WM_ACTIVATE/focus still go downstream. */
-        result=TRUE;paint(w,s,NULL);break;
-    case WM_NCHITTEST:
-        if(win16_style_hit_test(w,lp,&result))break;
-        goto forward;
     case WM_SYSCOMMAND:
         if((wp&0xfff0)==SC_KEYMENU && !lp && GetMenu(w)){
             if(s->bar_keyboard)leave_bar(w,s,TRUE);else select_bar(w,s,0);
@@ -508,32 +476,6 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
         if(msg==WM_CANCELMODE && s->bar_keyboard)leave_bar(w,s,TRUE);
         {const win16_control_frame_button_view view=button_view(s);
          (void)win16_control_frame_button_cancel(w,&view,msg);}goto forward;
-    case WM_PRINT:
-        if((lp&PRF_CHECKVISIBLE) && !IsWindowVisible(w))break;
-        if(lp&PRF_NONCLIENT)paint(w,s,(HDC)wp);
-        if(!s->detached)win16_control_print_client_and_children(w,&s->detached,(HDC)wp,lp);
-        break;
-    case WM_SETTEXT:
-        result=DefSubclassProc(w,msg,wp,lp);
-        if(!s->detached)paint(w,s,NULL);
-        break;
-    case WM_HSCROLL:
-    case WM_VSCROLL:
-        result=DefSubclassProc(w,msg,wp,lp);
-        /* A nonzero lParam identifies a child SCROLLBAR notification, not a
-         * change to this window's nonclient bars. */
-        /* Styled frame scroll updates repaint the affected bar via the API
-         * binding; child notifications never invalidate unrelated bars. */
-        break;
-    case WM_DPICHANGED:
-        result=DefSubclassProc(w,msg,wp,lp);
-        if(!s->detached){refresh_font(w,s);win16_control_frame_changed(w);}break;
-    case WM_SETTINGCHANGE:
-    case WM_SYSCOLORCHANGE:
-    case WM_THEMECHANGED:
-        result=DefSubclassProc(w,msg,wp,lp);
-        if(!s->detached)paint(w,s,NULL);
-        break;
     case WM_NCDESTROY:
         (void)win16_style_frame_terminal(w);
         result=DefSubclassProc(w,msg,wp,lp);break;
