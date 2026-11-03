@@ -3353,7 +3353,7 @@
       "path": "src/ntw16s-dll/injection/com_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "8c10eebf45d6a6879be7dfc474d16bbf6d5f195019f1f6fba204ab8b9bee2d8e",
+      "sha256": "395aaff27b07734680f8d68f8ce1bc76f0a04721719a8ec80d8cbef596e00aef",
       "disposition": "authored",
       "review": "T20 S1 COM dialog bridge and real native probe under development; T21 S13 unified late style hooks and stop semantics",
       "notice": "Project-authored; no imported code or resources"
@@ -4370,7 +4370,7 @@
       "path": "tests/lib/win16_dialog_link.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4ce6fad0b6632f5b4d0a7fc84171c74acad5d2a8024ed129538bb8daef801df8",
+      "sha256": "baea9ff104f57a137d6f5025dd2f754bfa3af77d6787a84532318741552386ae",
       "disposition": "authored",
       "review": "T21 S23 independent whole-library link and page range test",
       "notice": "Project-authored C17; project MIT license"
@@ -5243,7 +5243,7 @@
       "path": "src/lib/win16-dialog/classic_events.c",
       "source": null,
       "source_blob": null,
-      "sha256": "80251fa45151e98a5688eea769ffdb8dee5523ae3bbef2a0f0dcfc17f0a0220b",
+      "sha256": "0d843ac59cf0036186a44a11c54f952b20099bab0ba11a4dde6ddcb4363c5ecf",
       "disposition": "authored",
       "review": "T21 S24 extract classic dialog event adaptation",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -5252,7 +5252,7 @@
       "path": "src/lib/win16-dialog/classic_events.h",
       "source": null,
       "source_blob": null,
-      "sha256": "c5728ef78cd2351b2c9fd044789f95a1ff6eb22234679487983447dc342a09da",
+      "sha256": "91b96c70cfaecca7af21a90ae316187c74e6f2e27799c6051e7ac33eccfe2c34",
       "disposition": "authored",
       "review": "T21 S24 extract classic dialog event adaptation",
       "notice": "Project-authored C implementation; original notices preserved"

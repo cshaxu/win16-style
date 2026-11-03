@@ -119,16 +119,6 @@ static HRESULT show_native(file_proxy *p,HWND owner)
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
 static UINT_PTR classic_folder_observe(HWND,UINT,WPARAM,LPARAM,void *);
 #endif
-/* Read the template's selected ancestor path rather than the mutable
- * process current directory when reporting the dialog's current folder. */
-static void classic_capture_folder(file_proxy *p)
-{
-#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-    win16_dialog_proxy_capture_folder(p,TRUE);
-#else
-    win16_dialog_proxy_capture_folder(p,FALSE);
-#endif
-}
 static const WCHAR folder_message_name[]=L"Win16Style.T20.ComSetFolder";
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
 static HRESULT classic_changing_owned(file_proxy *p,IShellItem *item)
@@ -226,89 +216,34 @@ static void classic_hidden_schedule(HWND w,file_proxy *p)
 {win16_dialog_hidden_schedule(w,p && p->classic_hidden);}
 
 #endif
-static void com_hook_attach(void *owner,HWND w,OPENFILENAMEW *ofn)
-{
-    file_proxy *p=owner;(void)ofn;
+static const win16_dialog_classic_message_services classic_messages={
+#if !defined(NTW16S_EXPERIMENTAL_CLASSIC_EVENTS) && !defined(NTW16S_EXPERIMENTAL_CLASSIC_HIDDEN)
+    .events_enabled=FALSE,
+#endif
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-    win16_dialog_hook_attach_base(p,w,TRUE);
-#else
-    win16_dialog_hook_attach_base(p,w,FALSE);
+    .events_enabled=TRUE,.list_changing=classic_list_changing,.typed_changing=classic_typed_changing,
+    .drive_changing=classic_drive_changing,.overwrite_check=classic_overwrite_check,
+    .event_dispatch=classic_event_dispatch,.file_ok=classic_event_file_ok,.share=classic_share_owned,.initial=classic_initial_events,
 #endif
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_HIDDEN
-    classic_hidden_schedule(w,p);
+    .hidden_enabled=TRUE,.hidden_schedule=classic_hidden_schedule,.hidden_files=classic_hidden_files,
 #endif
-#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-    p->classic_ofn=ofn;HWND drives=GetDlgItem(w,cmb2);p->classic_drive_index=drives?SendMessageW(drives,CB_GETCURSEL,0,0):CB_ERR;
-    if(p->events && p->live_folder)classic_initial_events(w,p,L"Win16Style.T20.ComDialog");
-#endif
-}
+};
+static void com_hook_attach(void *owner,HWND w,OPENFILENAMEW *ofn)
+{win16_dialog_classic_attach(owner,w,ofn,&classic_messages);}
 static PCWSTR com_hook_label(void *owner,int which)
 {return win16_dialog_hook_label(owner,which);}
 static void com_hook_detach(void *owner,HWND w)
-{
-#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-    win16_dialog_hook_detach(owner,w,TRUE);
-#else
-    win16_dialog_hook_detach(owner,w,FALSE);
-#endif
-}
+{win16_dialog_hook_detach(owner,w,classic_messages.events_enabled);}
 static BOOL com_hook_command(void *owner,HWND w,WPARAM wp,UINT_PTR *result)
-{
-    file_proxy *p=owner;(void)p;(void)w;(void)wp;(void)result;
-#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-    if(LOWORD(wp)==lst2 && HIWORD(wp)==LBN_DBLCLK){if(p && p->events && !classic_list_changing(w,p)){*result=1;return TRUE;}return FALSE;}
-    if(LOWORD(wp)==IDOK){if(p && p->events && !p->classic_navigating && (!classic_typed_changing(w,p)||!classic_overwrite_check(w,p))){*result=1;return TRUE;}return FALSE;}
-    if(LOWORD(wp)==cmb2 && HIWORD(wp)==CBN_SELCHANGE){if(p && p->events && !classic_drive_changing(w,p)){*result=1;return TRUE;}return FALSE;}
-#endif
-#ifdef NTW16S_EXPERIMENTAL_CLASSIC_HIDDEN
-    if(LOWORD(wp)==cmb1 && HIWORD(wp)==CBN_SELCHANGE)classic_hidden_schedule(w,p);
-#endif
-    return FALSE;
-}
+{return win16_dialog_classic_command(owner,w,wp,result,&classic_messages);}
 static BOOL com_hook_before(void *owner,HWND w,UINT message,WPARAM wp,UINT_PTR *result)
-{
-    file_proxy *p=owner;(void)p;(void)w;(void)message;(void)wp;(void)result;
-#ifdef NTW16S_EXPERIMENTAL_CLASSIC_HIDDEN
-    UINT refresh=RegisterWindowMessageW(L"Win16Style.T20.HiddenFilesRefresh");
-    if(refresh && message==refresh){if(p && p->classic_hidden)classic_hidden_files(w,p);*result=1;return TRUE;}
-    UINT selection=RegisterWindowMessageW(LBSELCHSTRINGW);
-    if(selection && message==selection && (wp==lst2 || wp==cmb2))classic_hidden_schedule(w,p);
-#endif
-    return FALSE;
-}
+{return win16_dialog_classic_before(owner,w,message,wp,result,&classic_messages);}
 static void com_hook_selection(void *owner,HWND w,WPARAM wp)
-{
-    file_proxy *p=owner;(void)w;if(!p)return;
-    if(wp==lst2 || wp==cmb2){classic_capture_folder(p);
-#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-        if(wp==cmb2){HWND drives=GetDlgItem(w,cmb2);p->classic_drive_index=drives?SendMessageW(drives,CB_GETCURSEL,0,0):CB_ERR;}
-        if(p->events)(void)classic_event_dispatch(p,CLASSIC_FOLDER_CHANGED,NULL);
-#endif
-    }
-#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-    else if(wp==lst1){win16_dialog_proxy_capture_selection(w,p);if(p->events)(void)classic_event_dispatch(p,CLASSIC_SELECTION_CHANGED,NULL);}
-    else if(wp==cmb1){FILEOPENDIALOGOPTIONS options=0;
-        if(p->events && (p->filter || FAILED(IFileDialog_GetOptions(p->native,&options)) || !(options&FOS_PICKFOLDERS)))
-            (void)classic_event_dispatch(p,CLASSIC_TYPE_CHANGED,NULL);}
-#endif
-}
+{win16_dialog_classic_selection(owner,w,wp,&classic_messages);}
 static void com_hook_navigate(void *owner,HWND w,PCWSTR key){classic_navigate_folder(w,owner,key);}
 static BOOL com_hook_after(void *owner,HWND w,UINT message,LPARAM lp,UINT_PTR *result)
-{
-    file_proxy *p=owner;(void)p;(void)w;(void)message;(void)lp;(void)result;
-#ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-    UINT fileok=RegisterWindowMessageW(FILEOKSTRINGW);
-    if(fileok && message==fileok && p && p->events){*result=classic_event_file_ok(p,(OPENFILENAMEW *)lp);return TRUE;}
-    UINT share=RegisterWindowMessageW(SHAREVISTRINGW);
-    if(share && message==share){FILEOPENDIALOGOPTIONS options=0;IShellItem *item=NULL;
-        if(p && p->events && lp && SUCCEEDED(IFileDialog_GetOptions(p->native,&options)) && (options&FOS_SHAREAWARE) &&
-            SUCCEEDED(SHCreateItemFromParsingName((PCWSTR)lp,NULL,&IID_IShellItem,(void **)&item))){
-            FDE_SHAREVIOLATION_RESPONSE response=classic_share_owned(p,item);
-            if(response==FDESVR_ACCEPT){*result=OFN_SHAREFALLTHROUGH;return TRUE;}
-            if(response==FDESVR_REFUSE){*result=OFN_SHARENOWARN;return TRUE;}}}
-#endif
-    return FALSE;
-}
+{return win16_dialog_classic_after(owner,w,message,lp,result,&classic_messages);}
 static UINT_PTR CALLBACK classic_hook(HWND w,UINT message,WPARAM wp,LPARAM lp)
 {
     const win16_dialog_com_hook_services services={folder_message_name,com_hook_attach,com_hook_label,com_hook_detach,

@@ -614,8 +614,8 @@ try{
         (Case 'vb-controls-64' (Join-Path $x64 'core-vb.exe') @($run,(Join-Path $x64 'vb-fixture/MSVBVM60.dll')) @('VB_WINDOWED_OK bits=64 styled=1','VB_EDIT_OK undo=1','VB_EDIT_FONT_PIXELS changed=1','VB_CONTAINER_PAINT_OK label_changed=1','VB_CLEANUP_OK'))
     )
     $cases+=@(
-        (Case 'dialog-classic-result-32' (Join-Path $x86 'core-win16-dialog-link.exe') @() @('CLASSIC_RESULT_OK folder=1 commit=1 revoke=1 invalid_multi=1','WIN16_DIALOG_STANDALONE_LINK_OK')),
-        (Case 'dialog-classic-result-64' (Join-Path $x64 'core-win16-dialog-link.exe') @() @('CLASSIC_RESULT_OK folder=1 commit=1 revoke=1 invalid_multi=1','WIN16_DIALOG_STANDALONE_LINK_OK')),
+        (Case 'dialog-classic-result-32' (Join-Path $x86 'core-win16-dialog-link.exe') @() @('CLASSIC_RESULT_OK folder=1 commit=1 revoke=1 invalid_multi=1','CLASSIC_MESSAGE_OK reject=1 navigating=1 fileok=1 hidden=1','WIN16_DIALOG_STANDALONE_LINK_OK')),
+        (Case 'dialog-classic-result-64' (Join-Path $x64 'core-win16-dialog-link.exe') @() @('CLASSIC_RESULT_OK folder=1 commit=1 revoke=1 invalid_multi=1','CLASSIC_MESSAGE_OK reject=1 navigating=1 fileok=1 hidden=1','WIN16_DIALOG_STANDALONE_LINK_OK')),
         (Case 'control-eligibility-32' (Join-Path $x86 'core-win16-control-link.exe') @() @('ATTACH_ELIGIBILITY_OK distinct_release=1 tree=1 vcl=1 edge=1 frame=1','ATTACH_DISPATCH_OK priority=1 detached=1 nested=1 spin=1')),
         (Case 'control-eligibility-64' (Join-Path $x64 'core-win16-control-link.exe') @() @('ATTACH_ELIGIBILITY_OK distinct_release=1 tree=1 vcl=1 edge=1 frame=1','ATTACH_DISPATCH_OK priority=1 detached=1 nested=1 spin=1')),
         (Case 'control-scope-32' (Join-Path $x86 'core-win16-control-scope.exe') @() @('CONTROL_SCOPE_OK nested=1 counts=1 reentrant=1 cleanup=1')),

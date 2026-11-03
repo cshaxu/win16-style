@@ -2,6 +2,7 @@
 #include "classic_events.h"
 #include "file_helpers.h"
 #include "shell_item.h"
+#include "hook_state.h"
 #include <wchar.h>
 #include <string.h>
 #include <dlgs.h>
@@ -75,4 +76,56 @@ void win16_dialog_classic_result_cleanup(void *data)
         scope->proxy->result=NULL;scope->proxy->completed=FALSE;}
     if(scope->revoke && scope->items && scope->proxy->results==scope->items){IShellItemArray_Release(scope->items);
         scope->proxy->results=NULL;scope->proxy->completed=FALSE;}
+}
+
+void win16_dialog_classic_attach(win16_dialog_proxy *p,HWND w,OPENFILENAMEW *ofn,const win16_dialog_classic_message_services *v)
+{
+    win16_dialog_hook_attach_base(p,w,v->events_enabled);
+    if(v->hidden_enabled)v->hidden_schedule(w,p);
+    if(v->events_enabled){p->classic_ofn=ofn;HWND drives=GetDlgItem(w,cmb2);
+        p->classic_drive_index=drives?SendMessageW(drives,CB_GETCURSEL,0,0):CB_ERR;
+        if(p->events && p->live_folder)v->initial(w,p,L"Win16Style.T20.ComDialog");}
+}
+BOOL win16_dialog_classic_command(win16_dialog_proxy *p,HWND w,WPARAM wp,UINT_PTR *result,const win16_dialog_classic_message_services *v)
+{
+    if(v->events_enabled){
+        if(LOWORD(wp)==lst2 && HIWORD(wp)==LBN_DBLCLK){if(p && p->events && !v->list_changing(w,p)){*result=1;return TRUE;}return FALSE;}
+        if(LOWORD(wp)==IDOK){if(p && p->events && !p->classic_navigating && (!v->typed_changing(w,p)||!v->overwrite_check(w,p))){*result=1;return TRUE;}return FALSE;}
+        if(LOWORD(wp)==cmb2 && HIWORD(wp)==CBN_SELCHANGE){if(p && p->events && !v->drive_changing(w,p)){*result=1;return TRUE;}return FALSE;}
+    }
+    if(v->hidden_enabled && LOWORD(wp)==cmb1 && HIWORD(wp)==CBN_SELCHANGE)v->hidden_schedule(w,p);
+    return FALSE;
+}
+BOOL win16_dialog_classic_before(win16_dialog_proxy *p,HWND w,UINT message,WPARAM wp,UINT_PTR *result,const win16_dialog_classic_message_services *v)
+{
+    if(v->hidden_enabled){UINT refresh=RegisterWindowMessageW(L"Win16Style.T20.HiddenFilesRefresh");
+        if(refresh && message==refresh){if(p && p->classic_hidden)v->hidden_files(w,p);*result=1;return TRUE;}
+        UINT selection=RegisterWindowMessageW(LBSELCHSTRINGW);
+        if(selection && message==selection && (wp==lst2 || wp==cmb2))v->hidden_schedule(w,p);}
+    return FALSE;
+}
+void win16_dialog_classic_selection(win16_dialog_proxy *p,HWND w,WPARAM wp,const win16_dialog_classic_message_services *v)
+{
+    if(!p)return;
+    if(wp==lst2 || wp==cmb2){win16_dialog_proxy_capture_folder(p,v->events_enabled);
+        if(v->events_enabled){if(wp==cmb2){HWND drives=GetDlgItem(w,cmb2);p->classic_drive_index=drives?SendMessageW(drives,CB_GETCURSEL,0,0):CB_ERR;}
+            if(p->events)(void)v->event_dispatch(p,CLASSIC_FOLDER_CHANGED,NULL);}
+    }else if(v->events_enabled && wp==lst1){win16_dialog_proxy_capture_selection(w,p);if(p->events)(void)v->event_dispatch(p,CLASSIC_SELECTION_CHANGED,NULL);}
+    else if(v->events_enabled && wp==cmb1){FILEOPENDIALOGOPTIONS options=0;
+        if(p->events && (p->filter || FAILED(IFileDialog_GetOptions(p->native,&options)) || !(options&FOS_PICKFOLDERS)))
+            (void)v->event_dispatch(p,CLASSIC_TYPE_CHANGED,NULL);}
+}
+BOOL win16_dialog_classic_after(win16_dialog_proxy *p,HWND w,UINT message,LPARAM lp,UINT_PTR *result,const win16_dialog_classic_message_services *v)
+{
+    (void)w;if(!v->events_enabled)return FALSE;
+    UINT fileok=RegisterWindowMessageW(FILEOKSTRINGW);
+    if(fileok && message==fileok && p && p->events){*result=v->file_ok(p,(OPENFILENAMEW *)lp);return TRUE;}
+    UINT share=RegisterWindowMessageW(SHAREVISTRINGW);
+    if(share && message==share){FILEOPENDIALOGOPTIONS options=0;IShellItem *item=NULL;
+        if(p && p->events && lp && SUCCEEDED(IFileDialog_GetOptions(p->native,&options)) && (options&FOS_SHAREAWARE) &&
+            SUCCEEDED(SHCreateItemFromParsingName((PCWSTR)lp,NULL,&IID_IShellItem,(void **)&item))){
+            FDE_SHAREVIOLATION_RESPONSE response=v->share(p,item);
+            if(response==FDESVR_ACCEPT){*result=OFN_SHAREFALLTHROUGH;return TRUE;}
+            if(response==FDESVR_REFUSE){*result=OFN_SHARENOWARN;return TRUE;}}}
+    return FALSE;
 }

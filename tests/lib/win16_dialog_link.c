@@ -282,6 +282,32 @@ static BOOL test_classic_results(void)
     if(win16_dialog_classic_prepare_result(&proxy,&input) || proxy.result || proxy.results || proxy.completed)return FALSE;
     puts("CLASSIC_RESULT_OK folder=1 commit=1 revoke=1 invalid_multi=1");return TRUE;
 }
+static int classic_reject_calls,classic_hidden_calls,classic_fileok_calls;
+static BOOL classic_reject(HWND w,win16_dialog_proxy *p)
+{(void)w;(void)p;++classic_reject_calls;return FALSE;}
+static void classic_hidden_test(HWND w,win16_dialog_proxy *p)
+{(void)w;(void)p;++classic_hidden_calls;}
+static UINT_PTR classic_fileok_test(win16_dialog_proxy *p,OPENFILENAMEW *ofn)
+{(void)p;(void)ofn;++classic_fileok_calls;return 7;}
+static BOOL test_classic_messages(void)
+{
+    win16_dialog_proxy p={0};UINT_PTR result=0;
+    win16_dialog_classic_message_services v={0};
+    if(win16_dialog_classic_command(&p,NULL,MAKEWPARAM(lst2,LBN_DBLCLK),&result,&v))return FALSE;
+    v.events_enabled=TRUE;v.list_changing=classic_reject;v.typed_changing=classic_reject;v.drive_changing=classic_reject;
+    v.overwrite_check=classic_reject;v.file_ok=classic_fileok_test;p.events=(event_adapter *)(UINT_PTR)1;
+    if(!win16_dialog_classic_command(&p,NULL,MAKEWPARAM(lst2,LBN_DBLCLK),&result,&v) || result!=1 || classic_reject_calls!=1)return FALSE;
+    if(!win16_dialog_classic_command(&p,NULL,IDOK,&result,&v) || classic_reject_calls!=2)return FALSE;
+    p.classic_navigating=TRUE;if(win16_dialog_classic_command(&p,NULL,IDOK,&result,&v))return FALSE;p.classic_navigating=FALSE;
+    if(!win16_dialog_classic_command(&p,NULL,MAKEWPARAM(cmb2,CBN_SELCHANGE),&result,&v) || classic_reject_calls!=3)return FALSE;
+    UINT fileok=RegisterWindowMessageW(FILEOKSTRINGW);
+    if(!fileok || !win16_dialog_classic_after(&p,NULL,fileok,0,&result,&v) || result!=7 || classic_fileok_calls!=1)return FALSE;
+    v.hidden_enabled=TRUE;v.hidden_schedule=classic_hidden_test;v.hidden_files=classic_hidden_test;
+    if(win16_dialog_classic_command(&p,NULL,MAKEWPARAM(cmb1,CBN_SELCHANGE),&result,&v) || classic_hidden_calls!=1)return FALSE;
+    p.classic_hidden=TRUE;UINT refresh=RegisterWindowMessageW(L"Win16Style.T20.HiddenFilesRefresh");
+    if(!refresh || !win16_dialog_classic_before(&p,NULL,refresh,0,&result,&v) || result!=1 || classic_hidden_calls!=2)return FALSE;
+    puts("CLASSIC_MESSAGE_OK reject=1 navigating=1 fileok=1 hidden=1");return TRUE;
+}
 int main(void)
 {
     if(!test_hidden_dialog_files())return 41;
@@ -355,6 +381,7 @@ int main(void)
     WCHAR temp[MAX_PATH],unused[MAX_PATH];IShellItem *item=NULL;PWSTR selected=NULL;
     if(FAILED(CoInitializeEx(NULL,COINIT_APARTMENTTHREADED)))return 19;
     if(!test_classic_results()){CoUninitialize();return 44;}
+    if(!test_classic_messages()){CoUninitialize();return 45;}
     if(!test_hook_state()){CoUninitialize();return 42;}
     if(!test_classic_event_policy()){CoUninitialize();return 43;}
     if(!test_event_snapshot()){CoUninitialize();return 40;}
