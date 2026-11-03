@@ -30,3 +30,58 @@ void win16_attachment_guard_roles(HWND w,UINT m,attachment *a,const win16_attach
     if(a->scroll_candidate && !a->detached && GetParent(w)!=a->scroll_parent)(void)v->remove(w);
     if(a->vcl_report_candidate && !a->detached && GetParent(w)!=a->vcl_report_parent)(void)v->remove(w);
 }
+
+void win16_attachment_post_box(HWND w,attachment *a,BOOL box_witnessed,const win16_attachment_post_services *v)
+{
+    if(box_witnessed && !a->box_installed && !a->detached && win16_control_box_identity(w,a->box_owner,a->box_parent)){
+        DWORD saved=GetLastError();a->box_installed=TRUE;
+        if(v->grid_install(w,NULL,a,&a->detached) && !a->detached && win16_control_box_identity(w,a->box_owner,a->box_parent))RedrawWindow(w,NULL,NULL,RDW_FRAME|RDW_INVALIDATE);
+        else if(!a->detached){a->box_installed=FALSE;v->remove_owned(w,a);}
+        SetLastError(saved);
+    }
+}
+void win16_attachment_post_controls(HWND w,UINT m,attachment *a,const win16_attachment_post_services *v)
+{
+    /* Runtime controls may initially have a temporary parent. Bind the
+     * verified border to the current parent only at the first real paint. */
+    if(m==WM_PAINT && a->vb_data_candidate && !a->vb_data_attempted && !a->detached){
+        DWORD saved=GetLastError();HWND parent=GetParent(w);
+        if(win16_control_vb_data_role(w,parent)){
+            a->vb_data_attempted=TRUE;a->vb_data_parent=parent;a->vb_data_edge=TRUE;
+            BOOL installed=v->grid_install(w,NULL,a,&a->detached);
+            if(installed && !a->detached && win16_control_vb_data_role(w,parent))RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);
+            else if(!a->detached){a->vb_data_edge=FALSE;v->remove_owned(w,a);}
+        }
+        SetLastError(saved);
+    }
+    if(m==WM_PAINT && a->vb_user_candidate && !a->vb_user_attempted && !a->detached){
+        DWORD saved=GetLastError();HWND parent=GetParent(w);
+        if(win16_control_vb_user_edge_identity(w,parent)){
+            a->vb_user_attempted=TRUE;
+            a->vb_user_parent=parent;a->vb_user_edge=TRUE;
+            BOOL installed=v->grid_install(w,NULL,a,&a->detached);
+            if(installed && !a->detached)RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);
+            else if(!a->detached){a->vb_user_edge=FALSE;v->remove_owned(w,a);}
+        }
+        SetLastError(saved);
+    }
+    if(m==WM_PAINT && a->rich_candidate && !a->rich_installed && a->rich_witness && v->rich_identity(w,a)){
+        DWORD saved=GetLastError();a->rich_installed=TRUE;
+        if((a->rich_month || v->grid_install(w,NULL,a,&a->detached)) && !a->detached && v->rich_identity(w,a)){if(!a->rich_month)RedrawWindow(w,NULL,NULL,RDW_FRAME|RDW_INVALIDATE);}
+        else if(!a->detached){a->rich_installed=FALSE;v->remove_owned(w,a);}
+        SetLastError(saved);
+    }
+    if(m==WM_PAINT && a->grid_candidate && !a->grid_attempted && !a->detached){
+        DWORD saved=GetLastError();SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_ALL};DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
+        a->grid_attempted=TRUE;
+        if(win16_control_grid_identity(w,a->grid_owner,a->grid_parent) &&
+            ((ntw16s_class_is(w,L"TValueListEditor") && !(style&(WS_HSCROLL|WS_VSCROLL))) ||
+             (v->get_scroll_info(w,(style&WS_HSCROLL)?SB_HORZ:SB_VERT,&info) &&
+              info.nMin<=info.nMax && info.nPos>=info.nMin && info.nPos<=info.nMax)) && !a->detached){
+            BOOL installed=v->grid_install(w,NULL,a,&a->detached);
+            if(installed && !a->detached){a->grid_installed=TRUE;RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);}
+            else if(!a->detached)v->remove_owned(w,a);
+        }
+        SetLastError(saved);
+    }
+}

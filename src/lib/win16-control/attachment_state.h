@@ -1,5 +1,6 @@
 #ifndef WIN16_CONTROL_ATTACHMENT_STATE_H
 #define WIN16_CONTROL_ATTACHMENT_STATE_H
+#include "palette.h"
 #include "status_font.h"
 #include "control_protocol.h"
 #include "vb_text.h"
@@ -54,4 +55,12 @@ typedef struct win16_attachment_guard_services {
 void win16_attachment_retire_frames(HWND,attachment *);
 void win16_attachment_guard_cool(HWND,UINT,attachment *,const win16_attachment_guard_services *);
 void win16_attachment_guard_roles(HWND,UINT,attachment *,const win16_attachment_guard_services *);
+typedef struct win16_attachment_post_services {
+    BOOL (*grid_install)(HWND,const win16_style_palette *,const void *,const BOOL *);
+    BOOL (*remove_owned)(HWND,const void *);
+    BOOL (*rich_identity)(HWND,attachment *);
+    BOOL (*get_scroll_info)(HWND,int,LPSCROLLINFO);
+} win16_attachment_post_services;
+void win16_attachment_post_box(HWND,attachment *,BOOL,const win16_attachment_post_services *);
+void win16_attachment_post_controls(HWND,UINT,attachment *,const win16_attachment_post_services *);
 #endif

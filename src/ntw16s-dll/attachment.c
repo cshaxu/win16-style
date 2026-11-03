@@ -739,12 +739,8 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     status_current=prior;
     if(spin_message){spin_stack=spin_scope.previous_stack;win16_control_spin_buffers_clear(&spin_scope);}
     spin_current=spin_prior;
-    if(box_witnessed && !a->box_installed && !a->detached && win16_control_box_identity(w,a->box_owner,a->box_parent)){
-        DWORD saved=GetLastError();a->box_installed=TRUE;
-        if(win16_style_grid_install_created(w,NULL,a,&a->detached) && !a->detached && win16_control_box_identity(w,a->box_owner,a->box_parent))RedrawWindow(w,NULL,NULL,RDW_FRAME|RDW_INVALIDATE);
-        else if(!a->detached){a->box_installed=FALSE;win16_style_control_remove_owned(w,a);}
-        SetLastError(saved);
-    }
+    const win16_attachment_post_services post={win16_style_grid_install_created,win16_style_control_remove_owned,rich_identity,ntw16s_native_get_scroll_info};
+    win16_attachment_post_box(w,a,box_witnessed,&post);
     if(m==WM_PAINT && a->vcl_toolbar_candidate && !a->vcl_toolbar_attempted && !a->detached && a->vcl_toolbar_witness){
         DWORD saved=GetLastError();a->vcl_toolbar_attempted=TRUE;
         ntw16s_control_protocol *protocol=win16_control_vcl_toolbar_identity(w,a->vcl_toolbar_owner,a->vcl_toolbar_parent)?ntw16s_control_protocol_bind_verified_toolbar(w,a->vcl_toolbar_witness):NULL;
@@ -755,48 +751,7 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
         }else if(protocol)ntw16s_control_protocol_release(protocol);
         SetLastError(saved);
     }
-    /* Runtime controls may initially have a temporary parent. Bind the
-     * verified border to the current parent only at the first real paint. */
-    if(m==WM_PAINT && a->vb_data_candidate && !a->vb_data_attempted && !a->detached){
-        DWORD saved=GetLastError();HWND parent=GetParent(w);
-        if(win16_control_vb_data_role(w,parent)){
-            a->vb_data_attempted=TRUE;a->vb_data_parent=parent;a->vb_data_edge=TRUE;
-            BOOL installed=win16_style_grid_install_created(w,NULL,a,&a->detached);
-            if(installed && !a->detached && win16_control_vb_data_role(w,parent))RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);
-            else if(!a->detached){a->vb_data_edge=FALSE;win16_style_control_remove_owned(w,a);}
-        }
-        SetLastError(saved);
-    }
-    if(m==WM_PAINT && a->vb_user_candidate && !a->vb_user_attempted && !a->detached){
-        DWORD saved=GetLastError();HWND parent=GetParent(w);
-        if(win16_control_vb_user_edge_identity(w,parent)){
-            a->vb_user_attempted=TRUE;
-            a->vb_user_parent=parent;a->vb_user_edge=TRUE;
-            BOOL installed=win16_style_grid_install_created(w,NULL,a,&a->detached);
-            if(installed && !a->detached)RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);
-            else if(!a->detached){a->vb_user_edge=FALSE;win16_style_control_remove_owned(w,a);}
-        }
-        SetLastError(saved);
-    }
-    if(m==WM_PAINT && a->rich_candidate && !a->rich_installed && a->rich_witness && rich_identity(w,a)){
-        DWORD saved=GetLastError();a->rich_installed=TRUE;
-        if((a->rich_month || win16_style_grid_install_created(w,NULL,a,&a->detached)) && !a->detached && rich_identity(w,a)){if(!a->rich_month)RedrawWindow(w,NULL,NULL,RDW_FRAME|RDW_INVALIDATE);}
-        else if(!a->detached){a->rich_installed=FALSE;win16_style_control_remove_owned(w,a);}
-        SetLastError(saved);
-    }
-    if(m==WM_PAINT && a->grid_candidate && !a->grid_attempted && !a->detached){
-        DWORD saved=GetLastError();SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_ALL};DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
-        a->grid_attempted=TRUE;
-        if(win16_control_grid_identity(w,a->grid_owner,a->grid_parent) &&
-            ((class_is(w,L"TValueListEditor") && !(style&(WS_HSCROLL|WS_VSCROLL))) ||
-             (ntw16s_native_get_scroll_info(w,(style&WS_HSCROLL)?SB_HORZ:SB_VERT,&info) &&
-              info.nMin<=info.nMax && info.nPos>=info.nMin && info.nPos<=info.nMax)) && !a->detached){
-            BOOL installed=win16_style_grid_install_created(w,NULL,a,&a->detached);
-            if(installed && !a->detached){a->grid_installed=TRUE;RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);}
-            else if(!a->detached)win16_style_control_remove_owned(w,a);
-        }
-        SetLastError(saved);
-    }
+    win16_attachment_post_controls(w,m,a,&post);
     if(m==WM_PAINT && a->group_button_candidate && !a->group_button_attempted && !a->detached && a->group_button_witness_owner){
         DWORD saved=GetLastError();a->group_button_attempted=TRUE;
         ntw16s_control_protocol *protocol=win16_control_group_button_identity(w)?ntw16s_control_protocol_bind_verified_group_button(w,a->group_button_witness_owner):NULL;
