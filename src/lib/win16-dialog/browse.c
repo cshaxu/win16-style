@@ -23,3 +23,18 @@ int CALLBACK win16_dialog_folder_selection_callback(HWND window,UINT message,LPA
     if(message==BFFM_VALIDATEFAILEDA || message==BFFM_VALIDATEFAILEDW)ctx->invalid=TRUE;
     return 0;
 }
+#define BROWSE_ADAPT(name,type,native_type) \
+PIDLIST_ABSOLUTE name(type *info,native_type native,BOOL enabled) { \
+    if(!enabled || !info)return native(info); \
+    win16_dialog_browse_plan plan=win16_dialog_plan_browse(info->ulFlags,info->lpfn!=NULL); \
+    if(plan.mode==WIN16_BROWSE_NATIVE)return native(info); \
+    type copy=*info;copy.ulFlags=plan.flags; \
+    if(plan.mode==WIN16_BROWSE_VALIDATE){win16_dialog_folder_selection ctx={0}; \
+        copy.lpfn=win16_dialog_folder_selection_callback;copy.lParam=(LPARAM)&ctx; \
+        PIDLIST_ABSOLUTE result=native(&copy); \
+        if(!result && ctx.invalid && ctx.selected){result=ctx.selected;ctx.selected=NULL;} \
+        if(ctx.selected){CoTaskMemFree(ctx.selected);}return result;} \
+    return native(&copy); \
+}
+BROWSE_ADAPT(win16_dialog_browse_a,BROWSEINFOA,win16_dialog_browse_native_a)
+BROWSE_ADAPT(win16_dialog_browse_w,BROWSEINFOW,win16_dialog_browse_native_w)

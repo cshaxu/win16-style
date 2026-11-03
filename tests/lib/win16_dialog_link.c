@@ -17,6 +17,19 @@
 #include "lib/win16-dialog/browse.h"
 #include "lib/win16-dialog/events.h"
 
+static void *browse_argument;static UINT browse_flags;static BOOL browse_validate;
+static PIDLIST_ABSOLUTE WINAPI fake_browse_a(LPBROWSEINFOA info)
+{browse_argument=info;browse_flags=info?info->ulFlags:0;return (PIDLIST_ABSOLUTE)(UINT_PTR)1;}
+static PIDLIST_ABSOLUTE WINAPI fake_browse_w(LPBROWSEINFOW info)
+{
+    browse_argument=info;browse_flags=info?info->ulFlags:0;
+    if(browse_validate && info && info->lpfn){
+        PIDLIST_ABSOLUTE id=ILCreateFromPathW(L"C:\\");if(!id)return NULL;
+        info->lpfn(NULL,BFFM_SELCHANGED,(LPARAM)id,info->lParam);
+        info->lpfn(NULL,BFFM_VALIDATEFAILEDW,0,info->lParam);CoTaskMemFree(id);return NULL;
+    }
+    return (PIDLIST_ABSOLUTE)(UINT_PTR)1;
+}
 static UINT_PTR CALLBACK fake_print_hook(HWND w,UINT message,WPARAM wp,LPARAM lp)
 {(void)w;(void)message;(void)wp;(void)lp;return 0;}
 static void *observed_owner;static win16_dialog_v2_operation observed_op;static ULONG_PTR observed_a,observed_b;
@@ -321,6 +334,16 @@ int main(void)
     win16_dialog_folder_selection selection={0};
     win16_dialog_folder_selection_callback(NULL,BFFM_VALIDATEFAILEDW,0,(LPARAM)&selection);
     if(!selection.invalid || selection.selected)return 34;
+    BROWSEINFOA browse_a={0};browse_a.ulFlags=browse_base;
+    if(win16_dialog_browse_a(&browse_a,fake_browse_a,FALSE)!=(PIDLIST_ABSOLUTE)(UINT_PTR)1 || browse_argument!=&browse_a || browse_flags!=browse_base)return 36;
+    if(win16_dialog_browse_a(&browse_a,fake_browse_a,TRUE)!=(PIDLIST_ABSOLUTE)(UINT_PTR)1 || browse_argument==&browse_a || browse_flags!=BIF_RETURNONLYFSDIRS || browse_a.ulFlags!=browse_base)return 37;
+    BROWSEINFOW browse_w={0};browse_w.ulFlags=browse_base|BIF_NONEWFOLDERBUTTON;browse_validate=TRUE;
+    PIDLIST_ABSOLUTE retained=win16_dialog_browse_w(&browse_w,fake_browse_w,TRUE);browse_validate=FALSE;
+    if(!retained || browse_argument==&browse_w || browse_flags!=(BIF_RETURNONLYFSDIRS|BIF_EDITBOX|BIF_VALIDATE) || browse_w.ulFlags!=(browse_base|BIF_NONEWFOLDERBUTTON))return 38;
+    CoTaskMemFree(retained);
+    browse_w.ulFlags=browse_base|BIF_BROWSEFORCOMPUTER;
+    if(win16_dialog_browse_w(&browse_w,fake_browse_w,TRUE)!=(PIDLIST_ABSOLUTE)(UINT_PTR)1 || browse_argument!=&browse_w)return 39;
+    if(win16_dialog_browse_w(NULL,fake_browse_w,TRUE)!=(PIDLIST_ABSOLUTE)(UINT_PTR)1 || browse_argument)return 40;
     if(win16_dialog_show_modern(NULL,1,NULL,0,NULL)!=E_INVALIDARG)return 35;
     puts("WIN16_DIALOG_STANDALONE_LINK_OK ranges=1 file_contract=1 modern_invalid=1");return 0;
 }

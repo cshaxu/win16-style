@@ -70,22 +70,10 @@ HRESULT ntw16s_classic_folder(HWND owner,PCWSTR title,PCWSTR initial,PCWSTR ok_l
 #endif
     return win16_dialog_classic_folder_finish(chosen,error,file,result,capacity);
 }
-#define BROWSE_WRAPPER(name,type,native) \
-static PIDLIST_ABSOLUTE WINAPI name(type *info) { \
-    if(!ntw16s_process_session_active())return native(info); \
-    if(!info || active)return native(info); \
-    win16_dialog_browse_plan plan=win16_dialog_plan_browse(info->ulFlags,info->lpfn!=NULL); \
-    if(plan.mode==WIN16_BROWSE_NATIVE)return native(info); \
-    type copy=*info;copy.ulFlags=plan.flags; \
-    if(plan.mode==WIN16_BROWSE_VALIDATE){win16_dialog_folder_selection ctx={0}; \
-        copy.lpfn=win16_dialog_folder_selection_callback;copy.lParam=(LPARAM)&ctx; \
-        PIDLIST_ABSOLUTE result=native(&copy); \
-        if(!result && ctx.invalid && ctx.selected){result=ctx.selected;ctx.selected=NULL;} \
-        if(ctx.selected){CoTaskMemFree(ctx.selected);}return result;} \
-    return native(&copy); \
-}
-BROWSE_WRAPPER(browse_a,BROWSEINFOA,native_browse_a)
-BROWSE_WRAPPER(browse_w,BROWSEINFOW,native_browse_w)
+static PIDLIST_ABSOLUTE WINAPI browse_a(LPBROWSEINFOA info)
+{return win16_dialog_browse_a(info,native_browse_a,ntw16s_process_session_active() && !active);}
+static PIDLIST_ABSOLUTE WINAPI browse_w(LPBROWSEINFOW info)
+{return win16_dialog_browse_w(info,native_browse_w,ntw16s_process_session_active() && !active);}
 LONG ntw16s_attach_folder_dialogs_using(DWORD (*attach)(void *,void *))
 {
     if(!attach)return ERROR_INVALID_PARAMETER;

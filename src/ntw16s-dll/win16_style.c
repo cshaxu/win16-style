@@ -25,16 +25,6 @@ void win16_style_menu_system(win16_style_menu_scope *scope,HMENU menu,HFONT font
 static LRESULT CALLBACK style_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static LRESULT CALLBACK style_proc_body(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 
-typedef struct menu_frame {
-    HWND window;
-    RECT button;
-    BOOL double_click,escape;
-    LPARAM point;
-    HMENU root,active;
-    int direction;
-    style_window *style;
-    int selected,target;
-} menu_frame;
 /* -3 means outside the bar/system cell; -2 denotes the system cell. */
 static int bar_at_screen(HWND,style_window *,POINT);
 /* Bound only while this thread runs a dialog's native system-menu loop.
@@ -149,60 +139,16 @@ static int bar_at_screen(HWND w,style_window *s,POINT point)
     return win16_control_menu_bar_hit_screen(w,&l,s->menu_font,s->dpi,point);
 }
 
-static int open_bar_once(HWND w,style_window *s,int index,int *hover)
-{
-    win16_style_layout l;win16_style_bar bar;POINT origin,anchor;RECT outer;
-    HMENU popup;UINT command;BOOL merged_system;
-    menu_frame frame={0},*previous=tracking_menu;HHOOK hook=NULL;
-    *hover=-3;frame.target=-3;
-    if(index==-2){
-        s->bar_direction=0;s->bar_hover=-3;
-        SendMessageW(w,WM_SYSCOMMAND,SC_KEYMENU,L' ');
-        *hover=s->bar_hover;
-        return s->bar_direction;
-    }
-    SendMessageW(w,WM_INITMENU,(WPARAM)GetMenu(w),0);
-    if(s->detached || !layout(w,s,&l) || IsRectEmpty(&l.menu))return 0;
-    origin.x=l.menu.left;origin.y=l.menu.top;
-    if(!win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar))return 0;
-    if(index<0 || (UINT)index>=bar.count || (bar.items[index].state&MFS_DISABLED)){
-        win16_style_bar_free(&bar);return 0;}
-    popup=bar.items[index].popup;command=bar.items[index].id;
-    merged_system=bar.items[index].control==HBMMENU_SYSTEM;
-    GetWindowRect(w,&outer);anchor.x=outer.left+bar.rects[index].left;
-    anchor.y=outer.top+bar.rects[index].bottom;
-    if(popup){
-        frame.window=w;frame.root=frame.active=popup;
-        frame.style=s;frame.selected=index;
-        if(merged_system){frame.button=bar.rects[index];OffsetRect(&frame.button,outer.left,outer.top);}
-        tracking_menu=&frame;hook=SetWindowsHookExW(WH_GETMESSAGE,menu_filter,NULL,GetCurrentThreadId());
-    }
-    win16_style_bar_free(&bar);s->bar_selected=index;paint_menu_state(w,s);
-    if(s->bar_keyboard){
-        if(popup)command=(UINT)TrackPopupMenuEx(popup,TPM_LEFTALIGN|TPM_TOPALIGN|TPM_RETURNCMD,
-            anchor.x,anchor.y,w,NULL);
-        if(!s->detached){
-            if(command){leave_bar(w,s,TRUE);if(!s->detached)PostMessageW(w,WM_COMMAND,command,0);}
-            else if(!frame.direction && frame.target==-3 && !frame.escape)leave_bar(w,s,TRUE);
-            else paint_menu_state(w,s); /* Keyboard Escape returns to the selected bar. */
-        }
-    }else{
-        if(popup)TrackPopupMenuEx(popup,TPM_LEFTALIGN|TPM_TOPALIGN,anchor.x,anchor.y,w,NULL);
-        else PostMessageW(w,WM_COMMAND,command,0);
-        if(!s->detached){s->bar_selected=-1;paint_menu_state(w,s);}
-    }
-    if(popup){
-        if(hook)UnhookWindowsHookEx(hook);
-        tracking_menu=previous;
-        if(frame.double_click && !s->detached)
-            PostMessageW(w,WM_NCLBUTTONDBLCLK,HTMENU,frame.point);
-    }
-    *hover=frame.target;return frame.direction;
-}
+static menu_frame *menu_current(void)
+{return tracking_menu;}
+static void menu_begin(menu_frame *frame)
+{tracking_menu=frame;frame->hook=SetWindowsHookExW(WH_GETMESSAGE,menu_filter,NULL,GetCurrentThreadId());}
+static void menu_end(menu_frame *frame)
+{if(frame->hook)UnhookWindowsHookEx(frame->hook);tracking_menu=frame->previous;}
 
 static void open_bar(HWND w,style_window *s,int index)
 {
-    const win16_control_menu_bar_services services={open_bar_once,layout,state,leave_bar,paint_menu_state,select_bar};
+    const win16_control_menu_bar_services services={menu_current,menu_begin,menu_end,layout,state,leave_bar,paint_menu_state,select_bar};
     win16_control_open_menu_bar(w,s,index,&services);
 }
 

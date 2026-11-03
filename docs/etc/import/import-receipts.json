@@ -1166,7 +1166,7 @@
       "path": "src/ntw16s-dll/win16_style.c",
       "source": "src/ntw16s-dll/win16_style.c",
       "source_blob": "4235f085cb00c0d17145deec2d04a57c97b98d47",
-      "sha256": "f6fb402ba90c2e222e2c1fc7b08bada05935dc1817e33820d7b31ad82ba79b24",
+      "sha256": "8c6231ce226f675a1e15eac81b55507fedd565673712be800cf6f7b08a81f0a8",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T15 S8 verified initialized native tree protocol and bounded existing System paint scope, native item/font/image/geometry/notifications preserved; exact pending frame ownership and cancellation; ASCII test-thread IME isolation after native no-DLL MSCTF teardown evidence; no external code or original graphics modified; T18 S64 scoped observed Delphi TPopupMenu owner, native callbacks and item restoration; private cleanup, no external code or graphics changed; T21 S22 frame painter extracted; T21 S22 caption and sizing-band presentation extracted with live state references; T21 S22 frame presentation extraction, preserving fault instrumentation; T21 S22 buffered frame/menu/button presentation extraction; T21 S22 frame layout and high-contrast palette extraction",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -3200,7 +3200,7 @@
       "path": "src/ntw16s-dll/injection/folder_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e6ad13229aa730dc2bb3fffcbf9463c1ddd329372f1408629ce91c42b9236a72",
+      "sha256": "a315797ff287962f2e3e13ae121f660c5c8ee430d56ced4ef2c0870b78827ef3",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture; T21 S13 unified late style hooks and stop semantics",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
@@ -4370,7 +4370,7 @@
       "path": "tests/lib/win16_dialog_link.c",
       "source": null,
       "source_blob": null,
-      "sha256": "9c7dec9cbfe4e3570e02b72558dd0a6c8334c420a1cb5ef92a9c07a8a96386c6",
+      "sha256": "0efbab9bdf5011c6d5c818e3c17da9605025f9adb389c5cbc9791eb541e2d10f",
       "disposition": "authored",
       "review": "T21 S23 independent whole-library link and page range test",
       "notice": "Project-authored C17; project MIT license"
@@ -4631,7 +4631,7 @@
       "path": "src/lib/win16-dialog/browse.c",
       "source": null,
       "source_blob": null,
-      "sha256": "a383a9cca7427e557cd6a066239f6552fa43bf968c86f0c5885b8256237c35ad",
+      "sha256": "e5ec05f48e83dbead2d391687abd0488005e99cce7979a5af8c137acad814aa4",
       "disposition": "authored",
       "review": "T21 S23 extract Shell browse layout planning and selection callback",
       "notice": "Project-authored code; no imported resources"
@@ -4640,7 +4640,7 @@
       "path": "src/lib/win16-dialog/browse.h",
       "source": null,
       "source_blob": null,
-      "sha256": "86f20c31a090476bf56304427c0041aeb3e6ad00468f6e4ff15fdc40adc1deb0",
+      "sha256": "58bc1f2744aa83d7110046f1981136954453961da56289e7f8f7f0c27288b373",
       "disposition": "authored",
       "review": "T21 S23 extract Shell browse layout planning and selection callback",
       "notice": "Project-authored code; no imported resources"
@@ -5027,7 +5027,7 @@
       "path": "src/lib/win16-control/menu_iteration.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f2571bf4d0abf676bc30bd8638a792121c3965f23e3840c0ce82e3381c71ee4f",
+      "sha256": "355679db6d77e1b51fd8d2482cfc6d64485a3c5de5fbf6342d0e56a883ea9a65",
       "disposition": "authored",
       "review": "T21 S24 extract in-process menu navigation and state iteration",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -5036,7 +5036,7 @@
       "path": "src/lib/win16-control/menu_iteration.h",
       "source": null,
       "source_blob": null,
-      "sha256": "dd2650b39adb54be0d5da100cce8d128b65ede104be611d503f9b48f874f32db",
+      "sha256": "54d392f1a8a331c2ae2d7213267a52217366cdc948dee7b51729ad80b0be679f",
       "disposition": "authored",
       "review": "T21 S24 extract in-process menu navigation and state iteration",
       "notice": "Project-authored C implementation; original notices preserved"

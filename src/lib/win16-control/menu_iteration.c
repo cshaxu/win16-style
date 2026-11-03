@@ -1,6 +1,57 @@
 #include "menu_iteration.h"
 #include "menu_bar.h"
 
+static int open_bar_once(HWND w,style_window *s,int index,int *hover,const win16_control_menu_bar_services *services)
+{
+    win16_style_layout l;win16_style_bar bar;POINT origin,anchor;RECT outer;
+    HMENU popup;UINT command;BOOL merged_system;
+    menu_frame frame={0};frame.previous=services->current();
+    *hover=-3;frame.target=-3;
+    if(index==-2){
+        s->bar_direction=0;s->bar_hover=-3;
+        SendMessageW(w,WM_SYSCOMMAND,SC_KEYMENU,L' ');
+        *hover=s->bar_hover;
+        return s->bar_direction;
+    }
+    SendMessageW(w,WM_INITMENU,(WPARAM)GetMenu(w),0);
+    if(s->detached || !services->layout(w,s,&l) || IsRectEmpty(&l.menu))return 0;
+    origin.x=l.menu.left;origin.y=l.menu.top;
+    if(!win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar))return 0;
+    if(index<0 || (UINT)index>=bar.count || (bar.items[index].state&MFS_DISABLED)){
+        win16_style_bar_free(&bar);return 0;}
+    popup=bar.items[index].popup;command=bar.items[index].id;
+    merged_system=bar.items[index].control==HBMMENU_SYSTEM;
+    GetWindowRect(w,&outer);anchor.x=outer.left+bar.rects[index].left;
+    anchor.y=outer.top+bar.rects[index].bottom;
+    if(popup){
+        frame.window=w;frame.root=frame.active=popup;
+        frame.style=s;frame.selected=index;
+        if(merged_system){frame.button=bar.rects[index];OffsetRect(&frame.button,outer.left,outer.top);}
+        services->begin(&frame);
+    }
+    win16_style_bar_free(&bar);s->bar_selected=index;services->paint(w,s);
+    if(s->bar_keyboard){
+        if(popup)command=(UINT)TrackPopupMenuEx(popup,TPM_LEFTALIGN|TPM_TOPALIGN|TPM_RETURNCMD,
+            anchor.x,anchor.y,w,NULL);
+        if(!s->detached){
+            if(command){services->leave(w,s,TRUE);if(!s->detached)PostMessageW(w,WM_COMMAND,command,0);}
+            else if(!frame.direction && frame.target==-3 && !frame.escape)services->leave(w,s,TRUE);
+            else services->paint(w,s); /* Keyboard Escape returns to the selected bar. */
+        }
+    }else{
+        if(popup)TrackPopupMenuEx(popup,TPM_LEFTALIGN|TPM_TOPALIGN,anchor.x,anchor.y,w,NULL);
+        else PostMessageW(w,WM_COMMAND,command,0);
+        if(!s->detached){s->bar_selected=-1;services->paint(w,s);}
+    }
+    if(popup){
+        services->end(&frame);
+        if(frame.double_click && !s->detached)
+            PostMessageW(w,WM_NCLBUTTONDBLCLK,HTMENU,frame.point);
+    }
+    *hover=frame.target;return frame.direction;
+}
+
+
 void win16_control_open_menu_bar(HWND w,style_window *s,int index,const win16_control_menu_bar_services *services)
 {
     int direction,hover;BOOL mouse_origin=!s->bar_keyboard;
@@ -8,7 +59,7 @@ void win16_control_open_menu_bar(HWND w,style_window *s,int index,const win16_co
     ++s->calls; /* The iterator may change HWND; pin its current style state. */
     for(;;){
         win16_style_layout l;win16_style_bar bar;POINT origin;BOOL popup;int count=0;
-        direction=services->open_once(w,s,index,&hover);
+        direction=open_bar_once(w,s,index,&hover,services);
         if(s->detached || (!direction && hover==-3))break;
         if(GetMenu(w) && services->layout(w,s,&l)){
             origin.x=l.menu.left;origin.y=l.menu.top;
