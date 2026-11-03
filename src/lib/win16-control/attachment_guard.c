@@ -85,3 +85,84 @@ void win16_attachment_post_controls(HWND w,UINT m,attachment *a,const win16_atta
         SetLastError(saved);
     }
 }
+
+void win16_attachment_post_toolbar(HWND w,UINT m,attachment *a,const win16_attachment_verified_services *v)
+{
+    if(m==WM_PAINT && a->vcl_toolbar_candidate && !a->vcl_toolbar_attempted && !a->detached && a->vcl_toolbar_witness){
+        DWORD saved=GetLastError();a->vcl_toolbar_attempted=TRUE;
+        ntw16s_control_protocol *protocol=win16_control_vcl_toolbar_identity(w,a->vcl_toolbar_owner,a->vcl_toolbar_parent)?ntw16s_control_protocol_bind_verified_toolbar(w,a->vcl_toolbar_witness):NULL;
+        if(protocol && !a->detached){
+            a->protocol=protocol;BOOL installed=v->toolbar_install(w,NULL,a,&a->detached);
+            if(installed && !a->detached){a->vcl_toolbar_installed=TRUE;InvalidateRect(w,NULL,TRUE);}
+            else if(!a->detached){v->remove_owned(w,a);ntw16s_control_protocol_release(a->protocol);a->protocol=NULL;}
+        }else if(protocol)ntw16s_control_protocol_release(protocol);
+        SetLastError(saved);
+    }
+}
+void win16_attachment_post_verified(HWND w,UINT m,attachment *a,const win16_attachment_verified_services *v)
+{
+    if(m==WM_PAINT && a->group_button_candidate && !a->group_button_attempted && !a->detached && a->group_button_witness_owner){
+        DWORD saved=GetLastError();a->group_button_attempted=TRUE;
+        ntw16s_control_protocol *protocol=win16_control_group_button_identity(w)?ntw16s_control_protocol_bind_verified_group_button(w,a->group_button_witness_owner):NULL;
+        if(protocol && !a->detached){
+            a->protocol=protocol;
+            BOOL installed=v->control_install(w,FALSE,FALSE,FALSE,NULL,a,&a->detached);
+            if(installed && !a->detached){a->group_button_parent=GetParent(w);a->group_button_installed=TRUE;InvalidateRect(w,NULL,TRUE);}
+            else if(!a->detached){v->remove_owned(w,a);ntw16s_control_protocol_release(a->protocol);a->protocol=NULL;}
+        }else if(protocol)ntw16s_control_protocol_release(protocol);
+        SetLastError(saved);
+    }
+    if(m==WM_PAINT && a->scroll_candidate && !a->scroll_attempted && !a->detached && a->scroll_witness){
+        DWORD saved=GetLastError();a->scroll_attempted=TRUE;
+        ntw16s_control_protocol *protocol=GetParent(w)==a->scroll_parent?ntw16s_control_protocol_bind_verified_scroll(w,a->scroll_witness):NULL;
+        if(protocol && !a->detached && GetParent(w)==a->scroll_parent){a->protocol=protocol;
+            BOOL installed=v->control_install(w,FALSE,FALSE,FALSE,NULL,a,&a->detached);
+            if(installed && !a->detached && GetParent(w)==a->scroll_parent){a->scroll_installed=TRUE;InvalidateRect(w,NULL,TRUE);}
+            else if(!a->detached){v->remove_owned(w,a);ntw16s_control_protocol_release(a->protocol);a->protocol=NULL;}
+        }else if(protocol)ntw16s_control_protocol_release(protocol);
+        SetLastError(saved);
+    }
+    if(m==WM_PAINT && a->edit_candidate && !a->edit_attempted && !a->detached && a->edit_witness_owner){
+        DWORD saved=GetLastError();a->edit_attempted=TRUE;
+        ntw16s_control_protocol *protocol=a->combo_candidate && !v->combo_same_role(w,a)?NULL:a->link_candidate?ntw16s_control_protocol_bind_verified_link(w,a->edit_witness_owner):a->combo_candidate?ntw16s_control_protocol_bind_verified_combo(w,a->edit_witness_owner):ntw16s_control_protocol_bind_verified_edit(w,a->edit_witness_owner);
+        if(protocol && !a->detached && (!a->combo_candidate || v->combo_same_role(w,a))){
+            a->protocol=protocol;
+            BOOL installed=v->control_install(w,!a->link_candidate && !a->combo_candidate,(a->edit_original_style&WS_BORDER)!=0,FALSE,NULL,a,&a->detached);
+            if(installed && !a->detached && !a->link_candidate && !a->combo_candidate && !a->spinedit_candidate && (a->edit_original_style&ES_MULTILINE)){
+                a->themed=w;
+                installed=v->theme_enable(w,a) && v->edit_scrollbars_enable(w);
+            }
+            if(installed && !a->detached && (!a->combo_candidate || v->combo_same_role(w,a))){a->edit_installed=TRUE;InvalidateRect(w,NULL,TRUE);}
+            else if(!a->detached){v->remove_owned(w,a);if(a->themed){v->theme_remove(w,a);a->themed=NULL;}
+                ntw16s_control_protocol_release(a->protocol);a->protocol=NULL;}
+        }else if(protocol)ntw16s_control_protocol_release(protocol);
+        /* An empty link has no ideal height. Retry on a later paint only
+         * after a fresh same-owner native SysLink forwarding witness. */
+        if(a->link_candidate && !a->detached && !a->edit_installed){
+            a->edit_attempted=FALSE;a->edit_witness_owner=NULL;
+        }
+        SetLastError(saved);
+    }
+    if(m==WM_PAINT && a->vcl_report_candidate && !a->vcl_report_attempted && !a->detached && a->vcl_report_witness)v->vcl_report_try_bind(w,a);
+    if(m==WM_PAINT && a->tab_candidate && !a->tab_attempted && !a->detached && a->tab_witness_owner){
+        DWORD saved=GetLastError();a->tab_attempted=TRUE;
+        ntw16s_control_protocol *protocol=GetParent(w)==a->tab_parent?ntw16s_control_protocol_bind_verified_tab(w,a->tab_witness_owner):NULL;
+        if(protocol && !a->detached){a->protocol=protocol;
+            BOOL installed=v->control_install(w,FALSE,FALSE,FALSE,NULL,a,&a->detached);
+            if(installed && !a->detached){a->tab_installed=TRUE;InvalidateRect(w,NULL,TRUE);}
+            else if(!a->detached){v->remove_owned(w,a);ntw16s_control_protocol_release(a->protocol);a->protocol=NULL;}
+        }else if(protocol)ntw16s_control_protocol_release(protocol);
+        SetLastError(saved);
+    }
+    if(m==WM_PAINT && a->track_candidate && !a->track_attempted && !a->detached && a->track_witness_owner){
+        DWORD saved=GetLastError();a->track_attempted=TRUE;
+        ntw16s_control_protocol *protocol=ntw16s_control_protocol_bind_verified_trackbar(w,a->track_witness_owner);
+        if(protocol && !a->detached){
+            a->protocol=protocol;
+            BOOL installed=v->trackbar_install(w,NULL,a,&a->detached);
+            if(installed && !a->detached){a->track_installed=TRUE;InvalidateRect(w,NULL,TRUE);}
+            else if(!a->detached){v->remove_owned(w,a);ntw16s_control_protocol_release(a->protocol);a->protocol=NULL;}
+        }else if(protocol)ntw16s_control_protocol_release(protocol);
+        SetLastError(saved);
+    }
+}

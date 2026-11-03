@@ -63,4 +63,17 @@ typedef struct win16_attachment_post_services {
 } win16_attachment_post_services;
 void win16_attachment_post_box(HWND,attachment *,BOOL,const win16_attachment_post_services *);
 void win16_attachment_post_controls(HWND,UINT,attachment *,const win16_attachment_post_services *);
+typedef struct win16_attachment_verified_services {
+    BOOL (*toolbar_install)(HWND,const win16_style_palette *,const void *,const BOOL *);
+    BOOL (*control_install)(HWND,BOOL,BOOL,BOOL,const win16_style_palette *,const void *,const BOOL *);
+    BOOL (*trackbar_install)(HWND,const win16_style_palette *,const void *,const BOOL *);
+    BOOL (*remove_owned)(HWND,const void *);
+    BOOL (*combo_same_role)(HWND,attachment *);
+    BOOL (*theme_enable)(HWND,const void *);
+    BOOL (*edit_scrollbars_enable)(HWND);
+    void (*theme_remove)(HWND,const void *);
+    void (*vcl_report_try_bind)(HWND,attachment *);
+} win16_attachment_verified_services;
+void win16_attachment_post_toolbar(HWND,UINT,attachment *,const win16_attachment_verified_services *);
+void win16_attachment_post_verified(HWND,UINT,attachment *,const win16_attachment_verified_services *);
 #endif
