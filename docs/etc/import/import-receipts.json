@@ -1391,9 +1391,9 @@
       "path": "src/run16s-exe/main.c",
       "source": null,
       "source_blob": null,
-      "sha256": "cfab75450df014993975bb387b2b3188620f2051facc78dc701ec5ad5dcf9e44",
+      "sha256": "54e7ea6a54416332550df8894b41160323c094fe3af2722dfe7080abf5a67089",
       "disposition": "authored",
-      "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes; T21 S3 global controller and independent ordinary-mode ownership",
+      "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes; T21 S3 global controller and independent ordinary-mode ownership; T21 S29 command line extraction",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -5634,6 +5634,24 @@
       "disposition": "authored",
       "review": "T21 S28 extraction from existing project installer.c adaptation; no new sibling source imported",
       "notice": "Project C extraction; installer adaptation provenance retained in existing receipt"
+    },
+    {
+      "path": "src/lib-win32/process-launch/command_line.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "2e091f08db0ffaba49f6cb426d4358d13fe74b9765cb549154eadf4e3a35c7cb",
+      "disposition": "authored",
+      "review": "T21 S29 extract existing command-line tail helper",
+      "notice": "Project-authored C helper"
+    },
+    {
+      "path": "src/lib-win32/process-launch/command_line.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "f210c0f3478c6f56c9b51878a9dd3bce9d25937ded30cdd564e0f0ce24a4b7a9",
+      "disposition": "authored",
+      "review": "T21 S29 extract existing command-line tail helper",
+      "notice": "Project-authored C helper"
     }
   ]
 }

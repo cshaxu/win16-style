@@ -1,5 +1,6 @@
 #include "ntw16s-dll/injection/injection.h"
 #include "elevation.h"
+#include "lib-win32/process-launch/command_line.h"
 #include "startup_error.h"
 #include "global.h"
 #include "tray.h"
@@ -10,21 +11,6 @@
 /* MinGW CRT must preserve native arguments. Globbing otherwise interprets the
  * '?' in explicit extended paths (\\?\) before target resolution. */
 int _dowildcard=0;
-/* Locate the raw next argument without reserializing the target command line. */
-static PCWSTR next_argument(PCWSTR p)
-{
-    BOOL quoted=FALSE;
-    while(*p==L' ' || *p==L'\t')++p;
-    while(*p){
-        unsigned slashes=0;
-        if(!quoted && (*p==L' ' || *p==L'\t'))break;
-        while(*p==L'\\'){++slashes;++p;}
-        if(*p==L'"'){if(!(slashes&1))quoted=!quoted;++p;}
-        else if(*p && (quoted || (*p!=L' ' && *p!=L'\t')))++p;
-    }
-    while(*p==L' ' || *p==L'\t')++p;
-    return p;
-}
 static int diagnostic(int code,DWORD error,PCWSTR phase)
 {
     WCHAR message[512]={0};
@@ -69,12 +55,12 @@ int wmain(int argc,WCHAR **argv)
     int first=1;BOOL wait=FALSE,reentered=FALSE;DWORD error,exit_code=0;WORD subsystem=0;
     WCHAR image[NTW16S_PATH_CAP];ntw16s_context context;
     STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION child={0};
-    PCWSTR raw=next_argument(GetCommandLineW());PWSTR command;
+    PCWSTR raw=win32_process_next_argument(GetCommandLineW());PWSTR command;
     if(argc>first && !wcscmp(argv[first],L"--elevated")){
-        reentered=TRUE;++first;raw=next_argument(raw);
+        reentered=TRUE;++first;raw=win32_process_next_argument(raw);
         if(!run16s_is_elevated(&error))return diagnostic(9,error?error:ERROR_ACCESS_DENIED,L"elevated launcher token");
     }
-    if(argc>first && !wcscmp(argv[first],L"--wait")){wait=TRUE;++first;raw=next_argument(raw);}
+    if(argc>first && !wcscmp(argv[first],L"--wait")){wait=TRUE;++first;raw=win32_process_next_argument(raw);}
     if(argc<=first || !wcscmp(argv[first],L"--help")){
         fwprintf(argc<=first?stderr:stdout,L"Usage: run16s.exe [--wait] <application> [arguments]\n       run16s.exe --global\nConsole targets wait by default; --wait also waits for GUI targets.\n");
         return argc<=first?2:0;
@@ -88,7 +74,7 @@ int wmain(int argc,WCHAR **argv)
             /* No target has been created. Choose one error channel, retaining
              * the initial validation exit code even if Shell returns 1223. */
             if(FreeConsole()){
-                run16s_system_error(image,next_argument(raw),ShellExecuteExW);
+                run16s_system_error(image,win32_process_next_argument(raw),ShellExecuteExW);
                 return 4;
             }
         }
@@ -105,7 +91,7 @@ int wmain(int argc,WCHAR **argv)
             DWORD token_error=0;BOOL elevated=run16s_is_elevated(&token_error);
             if(token_error)return diagnostic(9,token_error,L"launcher token");
             if(!elevated){
-                error=run16s_elevate(image,next_argument(raw),wait,ShellExecuteExW,&exit_code);
+                error=run16s_elevate(image,win32_process_next_argument(raw),wait,ShellExecuteExW,&exit_code);
                 if(error)return diagnostic(error==ERROR_CANCELLED?ERROR_CANCELLED:9,error,L"UAC elevation");
                 return (int)exit_code;
             }
