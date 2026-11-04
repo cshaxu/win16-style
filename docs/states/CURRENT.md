@@ -2,28 +2,7 @@
 
 ## Current Work
 
-## M0 T21 S31 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | New；自动续作。 |
-| Admission And Approval | 用户授权制作双方可用的公共 Win32 组件。 |
-| Objective | 提取提权状态查询与控制台标准错误输出重绑的通用机制。 |
-| Non-goals | 不迁移全局进程管理、不改变 runas 业务流程、不修改隔壁。 |
-| Reference Baseline | S30 P1 94781d1；启动器 elevation.c。 |
-| Candidate Proposal | [公共 Win32 组件](../proposals/win32-common-components.md)。 |
-| Files And ABI Surface | security/elevation、console、调用方适配和原生测试；不增加产品导出。 |
-| Applicable Rules | M0、C17、双宽 GCC/Ninja/ccache；原资源不变。 |
-| Verification | 双宽提权与控制台既有测试、干净四文件实际包测试、发布推送复核。 |
-| Expected Markers | 通用库不依赖产品状态，启动器保留 UAC 和控制台策略。 |
-| Asset Needs | 原图形和许可保留。 |
-| Reporting Requirements | 报告抽取范围及隔壁尚未适配、实际 UAC 未验证部分。 |
-| Stop Conditions | 不修改兄弟仓库或扩大权限，不用 computer-use。 |
-| Exit Criteria | 双宽干净构建、测试、两处发布、提交推送和远端复核。 |
-| Original Owner Request | 调研并制作双方可用的公共组件。 |
-| Similar-Issue Sweep | 检查 elevation.c 所有测试及复用该文件的夹具。 |
-
-P1：按用户要求使用独立 `console` 而非 io；提权状态查询归 `security`，控制台标准错误重绑归 `console`，原启动器保留 runas 和全局业务。改名后的双宽控制台测试通过；`s31-clean2` 双宽干净构建和资源/ABI 检查通过，`s31-package1` 实包 13/13 无跳过，包括双宽模拟 UAC 和控制台重绑；`s31-publish1` 同批四文件发布两处并核对摘要。真实 UAC、隔壁适配和完整 UI 矩阵未验证；提交推送及远端复核待完成。
+无活动任务包。S31 的 console/security 基础提取已交付；T21 保持开放。跨项目适配与其余启动辅助尚未验证，详见[记录](../history/M0-T21-S31-console-security.md)。
 
 S25 经用户验收收口，交付范围见 [记录](../history/M0-T21-S25-common.md)。
 
@@ -434,8 +413,8 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
 - Last allocated T21 S: 31
-- Last verified remote delivery: M0 T21 S30 P1，`94781d1`；四产品和 module-import 源码远端对象已复核。
-- Open task: T21；S31 security/console 实施中。Explorer.exe 仍被排除。
+- Last verified remote delivery: M0 T21 S31 P1，`345238f`；四产品和 console/security 源码远端对象已复核。
+- Open task: T21；S31 已交付。Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。
@@ -485,6 +464,8 @@ S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1已收口；T20此后按用户要求有限范围收口。
 
 ## Recent Closure
+
+- M0 T21 S31：console 和 security 基础机制提取；[记录](../history/M0-T21-S31-console-security.md)。
 
 - M0 T21 S30：独立 module-import；[记录](../history/M0-T21-S30-module-import.md)。
 
