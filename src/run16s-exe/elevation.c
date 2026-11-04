@@ -1,4 +1,6 @@
 #include "elevation.h"
+#include "lib-win32/console/console.h"
+#include "lib-win32/security/elevation.h"
 #include <objbase.h>
 #include <stdlib.h>
 #include <wchar.h>
@@ -8,29 +10,9 @@
 #include <stdint.h>
 
 void run16s_rebind_console_stderr(void)
-{
-    /* A UAC child may have stale CRT handles after attaching to its parent's
-     * console. Keep stderr open if binding fails; tray startup remains valid. */
-    HANDLE console=CreateFileW(L"CONOUT$",GENERIC_WRITE,FILE_SHARE_READ|FILE_SHARE_WRITE,
-        NULL,OPEN_EXISTING,0,NULL);
-    if(console==INVALID_HANDLE_VALUE)return;
-    int fd=_open_osfhandle((intptr_t)console,_O_WRONLY|_O_TEXT);
-    if(fd<0){CloseHandle(console);return;}
-    if(fd!=2){(void)_dup2(fd,2);_close(fd);}
-    clearerr(stderr);
-}
-
+{win32_console_rebind_stderr();}
 BOOL run16s_is_elevated(DWORD *error)
-{
-    HANDLE token=NULL;TOKEN_ELEVATION elevation={0};DWORD bytes=0;
-    *error=ERROR_SUCCESS;
-    if(!OpenProcessToken(GetCurrentProcess(),TOKEN_QUERY,&token)){
-        *error=GetLastError();return FALSE;
-    }
-    BOOL ok=GetTokenInformation(token,TokenElevation,&elevation,sizeof(elevation),&bytes);
-    if(!ok)*error=GetLastError();
-    CloseHandle(token);return ok && elevation.TokenIsElevated;
-}
+{return win32_security_is_elevated(error);}
 BOOL run16s_global_interactive_console(void)
 {
     DWORD mode=0,pids[1];HANDLE error=GetStdHandle(STD_ERROR_HANDLE);
