@@ -1895,7 +1895,7 @@
       "path": "src/lib-win32/process-hook/staging.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6e54aacdd925305fdb035e5630b8ee172b1e43e4cb5ddc81f64dcbaba4c6bc54",
+      "sha256": "f3d8ec879d3663d6fce42812959d7ca15c43e92ce283d24c541095f21fa48025",
       "disposition": "authored",
       "review": "T6 S1 private C PE stager/OS helper or explicit native Windows manifest/import contract; see M0-T6-S1-package.md; final clean-package regression pending; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained",
       "notice": "Project-authored; project MIT LICENSE"
@@ -1904,7 +1904,7 @@
       "path": "src/lib-win32/process-hook/staging.h",
       "source": null,
       "source_blob": null,
-      "sha256": "70208ac3a4e138000d316b7d7137ffdd5e4cd23c842c8a3fb2e63f1002742b60",
+      "sha256": "910166162612075fc4916b0d4cdcd05dcdc29f191e5b6ffd963681f3c35b8514",
       "disposition": "authored",
       "review": "T21 S26 project-neutral opaque-payload staging interface",
       "notice": "Project-authored; project MIT LICENSE"

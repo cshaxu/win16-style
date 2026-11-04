@@ -2,7 +2,28 @@
 
 ## Current Work
 
-无活动任务包。S26 已按用户要求完成库目录统一并再次收口，T21 保持开放；详见[交付记录](../history/M0-T21-S26-process-hook.md)。
+## M0 T21 S27 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | New；T21 内下一 S。 |
+| Admission And Approval | 用户要求补齐公共库纯载荷缺口。 |
+| Objective | 为自有新建挂起目标增加不加载 DLL 的载荷写入、回读及恢复能力。 |
+| Non-goals | 不修改隔壁仓库、不声称 Detours ABI 或完整迁移兼容、不新增产品文件。 |
+| Reference Baseline | S26 P4 8ea6b6b；现有 staging 与双宽传播测试。 |
+| Candidate Proposal | [进程钩子库](../proposals/process-hook-library.md)。 |
+| Files And ABI Surface | process-hook 内部静态接口、原生自有进程测试及文档；不改产品 DLL 导出。 |
+| Applicable Rules | M0、纯 C、双宽 GCC/Ninja/ccache；资源原样保留。 |
+| Verification | 双宽真实挂起目标读取和恢复、无 DLL 负例、错误与资源行为；原 DLL 传播回归、干净包及发布复核。 |
+| Expected Markers | 目标读取准确载荷、恢复原导入目录且未加载样式 DLL；同批包验证通过。 |
+| Asset Needs | 原始图形资源及第三方许可逐字节保留。 |
+| Reporting Requirements | 报告纯载荷已验证范围和隔壁仍需适配的协议、helper 与挂钩。 |
+| Stop Conditions | 不修改兄弟仓库、不得声称未经实测的隔壁兼容性。 |
+| Exit Criteria | 自有测试、双宽干净包、两处发布、提交推送与远端复核完成。 |
+| Original Owner Request | 补齐纯载荷缺口，以便 NTVDM64 导入适配。 |
+| Similar-Issue Sweep | 检查现有 staging、helper、载荷读取与原有 DLL 导入兼容。 |
+
+P1：新增同位宽新建挂起目标的纯载荷 staging；目标自身在加载器结束后读取、恢复原导入信息并释放暂存内存，不添加 DLL 导入。真实自有子进程测试双宽覆盖准确载荷、替换/重复写入、样式 DLL 未加载、恢复和释放；`s27-clean1` 双宽干净构建、ABI 与资源核验通过，`s27-package1` 实际包聚焦 13/13 无跳过，包括原有 DLL 安装及真实 cmd 四条传播边。`s27-publish1` 已发布同批四文件到 assets 与 O:/winnt 并核对摘要；尚待提交推送与远端复核。跨宽纯载荷、Detours GUID 格式及隔壁迁移未实现或验证。
 
 S25 经用户验收收口，交付范围见 [记录](../history/M0-T21-S25-common.md)。
 
@@ -412,9 +433,9 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
-- Last allocated T21 S: 26
+- Last allocated T21 S: 27
 - Last verified remote delivery: M0 T21 S26 P3，`78fa07d`；四产品及六个库代表源码远端对象已复核一致。
-- Open task: T21；S26 已收口。Explorer.exe 仍被排除。
+- Open task: T21；S27 纯载荷实施中。Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。
