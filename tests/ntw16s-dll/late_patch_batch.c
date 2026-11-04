@@ -1,8 +1,8 @@
 #define _WIN32_WINNT 0x0A00
 #include <windows.h>
 #include <stdio.h>
-#include "ntw16s-dll/injection/late_patch.h"
-#include "ntw16s-dll/injection/minhook/src/buffer.h"
+#include "lib-win32/process-hook/late_patch.h"
+#include "lib-win32/process-hook/minhook/src/buffer.h"
 typedef int (*sample_fn)(int);
 static sample_fn original_a,original_b;static sample_fn volatile call_a,call_b;
 static volatile LONG running=1,errors,calls;
@@ -11,24 +11,24 @@ static __attribute__((noinline)) int sample_b(int n){return n+9;}
 static int detour_a(int n){return original_a(n)+100;}
 static int detour_b(int n){return original_b(n)+200;}
 static DWORD WINAPI worker(void *p){(void)p;while(InterlockedCompareExchange(&running,0,0)){int a=call_a(5),b=call_b(5);if((a!=12&&a!=112)||(b!=14&&b!=214))InterlockedIncrement(&errors);InterlockedIncrement(&calls);}return 0;}
-static DWORD attempt(ntw16s_late_guard *g,ntw16s_late_patch **items)
-{DWORD error=ERROR_BUSY;for(unsigned i=0;i<100&&(error==ERROR_BUSY||error==ERROR_RETRY);++i){error=ntw16s_late_patch_install_batch(g,items,2);if(error==ERROR_BUSY||error==ERROR_RETRY)Sleep(1);}return error;}
+static DWORD attempt(process_hook_late_guard *g,process_hook_late_patch **items)
+{DWORD error=ERROR_BUSY;for(unsigned i=0;i<100&&(error==ERROR_BUSY||error==ERROR_RETRY);++i){error=process_hook_late_patch_install_batch(g,items,2);if(error==ERROR_BUSY||error==ERROR_RETRY)Sleep(1);}return error;}
 int main(void)
 {
  InitializeBuffer();original_a=sample_a;original_b=sample_b;call_a=sample_a;call_b=sample_b;
  HANDLE thread=CreateThread(NULL,0,worker,NULL,0,NULL);if(!thread)return 2;while(!InterlockedCompareExchange(&calls,0,0))Sleep(1);
- ntw16s_late_patch a={0},b={0};ntw16s_late_patch *items[]={&a,&b};ntw16s_late_guard guard={0};
- if(ntw16s_late_patch_prepare(&a,&original_a,(void *)detour_a)||ntw16s_late_patch_prepare(&b,&original_b,(void *)detour_b))return 3;
- ntw16s_late_guard_test_fail_free(2);DWORD cleanup_fault=ntw16s_late_patch_install_batch(&guard,items,2);
- BOOL retained=guard.snapshots!=NULL && !guard.threads;DWORD refused=ntw16s_late_patch_install_batch(&guard,items,2);
- DWORD cleanup=ntw16s_late_guard_end(&guard);BOOL clear=!guard.snapshots && !guard.threads;
- a.guard.snapshots=(void *)1;DWORD discard_refused=ntw16s_late_patch_discard(&a);a.guard.snapshots=NULL;
+ process_hook_late_patch a={0},b={0};process_hook_late_patch *items[]={&a,&b};process_hook_late_guard guard={0};
+ if(process_hook_late_patch_prepare(&a,&original_a,(void *)detour_a)||process_hook_late_patch_prepare(&b,&original_b,(void *)detour_b))return 3;
+ process_hook_late_guard_test_fail_free(2);DWORD cleanup_fault=process_hook_late_patch_install_batch(&guard,items,2);
+ BOOL retained=guard.snapshots!=NULL && !guard.threads;DWORD refused=process_hook_late_patch_install_batch(&guard,items,2);
+ DWORD cleanup=process_hook_late_guard_end(&guard);BOOL clear=!guard.snapshots && !guard.threads;
+ a.guard.snapshots=(void *)1;DWORD discard_refused=process_hook_late_patch_discard(&a);a.guard.snapshots=NULL;
  if(cleanup_fault!=ERROR_ACCESS_DENIED || !retained || refused!=ERROR_INVALID_PARAMETER || cleanup || !clear || discard_refused!=ERROR_INVALID_STATE)return 10;
  printf("PSS BATCH CLEANUP PASS bits=%u retained=1 refused=1 retry=1\n",(unsigned)(sizeof(void*)*8));
  MEMORY_BASIC_INFORMATION before={0},after={0};if(!VirtualQuery((void *)sample_a,&before,sizeof(before)))return 8;
  b.backup[0]^=1;DWORD conflict=attempt(&guard,items);b.backup[0]^=1;
  if(conflict!=ERROR_REVISION_MISMATCH||a.installed||b.installed||original_a!=sample_a||original_b!=sample_b||call_a(5)!=12||call_b(5)!=14)return 4;
- ntw16s_late_patch_test_fail_protect_after(1);DWORD fault=attempt(&guard,items);ntw16s_late_patch_test_fail_protect_after(MAXDWORD);
+ process_hook_late_patch_test_fail_protect_after(1);DWORD fault=attempt(&guard,items);process_hook_late_patch_test_fail_protect_after(MAXDWORD);
  if(!VirtualQuery((void *)sample_a,&after,sizeof(after)) || before.Protect!=after.Protect)return 9;
  if(fault!=ERROR_ACCESS_DENIED||a.installed||b.installed||original_a!=sample_a||original_b!=sample_b||call_a(5)!=12||call_b(5)!=14)return 5;
  DWORD result=attempt(&guard,items);if(result||!a.installed||!b.installed||call_a(5)!=112||call_b(5)!=214||original_a(5)!=12||original_b(5)!=14)return 6;

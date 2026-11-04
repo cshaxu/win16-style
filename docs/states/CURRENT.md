@@ -2,7 +2,30 @@
 
 ## Current Work
 
-当前无活动任务包；M0 T21 保持开放。S25 经用户验收通过并收口，未准入 S26。交付和验证范围见 [S25 收口记录](../history/M0-T21-S25-common.md)。
+## M0 T21 S26 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | New; active. |
+| Admission And Approval | 用户要求将本项目进程 DLL 安装和挂钩机制提炼为双方可复用的纯 C 库，沿用 T21。 |
+| Objective | 建立 `src/lib-win32/process-hook`，迁移现有可共享的同宽/跨宽挂起目标安装、启动期及晚期挂钩事务和现有生命周期能力；设计可供 NTVDM64 同源码使用的调用方中立接口。 |
+| Non-goals | 隔壁仓库只读；不改变全局模式业务、样式逻辑或公共 DLL ABI；不声称尚未证明的物理解钩或 Detours 等价能力。 |
+| Reference Baseline | S25 已关闭 `c326c8c`；现有 staging、helper、startup_hooks、late_patch 及原生传播测试。 |
+| Candidate Proposal | [纯 C 进程挂钩库](../proposals/process-hook-library.md)。 |
+| Files And ABI Surface | `src/lib-win32/process-hook`、调用方适配、CMake、对应原生测试及来源记录；不新增产品文件或公开 DLL 导出。 |
+| Applicable Rules | M0；C17、MinGW GCC、Ninja、ccache；保持加载和失败语义、图形资源、四文件产品契约。 |
+| Verification | 清点双项目调用契约；双位宽独立构建及真实目标、四条位宽边、载荷、原函数、失败回滚、冲突和生命周期；同批干净四文件包测试、发布、提交推送及远端复核。 |
+| Expected Markers | 库不依赖任一产品上下文；所有接入调用方通过明确参数和回调使用唯一实现；停用与物理解钩状态分开验证。 |
+| Asset Needs | MinHook/HDE 来源及许可证原样保留；不增加运行时产品。 |
+| Reporting Requirements | 逐项报告迁移与遗留、同源码引入隔壁所需适配、测试证据、失败跳过及实际解除能力。 |
+| Stop Conditions | 需要修改隔壁仓库、扩大产品 ABI 或引入新产品时停止并报告；未证明的物理解钩不可冒充成功。 |
+| Exit Criteria | 本项目调用方迁移、对应验证和产品交付闭环完成；隔壁兼容性以已实际验证的证据为准。 |
+| Original Owner Request | 准入新 S，将已有 DLL 安装、同宽与跨宽钩子、晚期挂钩及现有清理能力抽成通用纯 C 库；没有的物理解除能力不新发明，目标供两个项目共同使用。 |
+| Similar-Issue Sweep | 搜索 staging、helper、startup_hooks、late_patch、MinHook 引用及隔壁 Detours 调用；区分共享机制与业务、生命周期和失败处理。 |
+
+P1：将现有启动期 staging、跨宽 helper、MinHook 事务和晚期 guard/patch 抽入纯 C 静态库，并以调用方回调适配原产品；保留既有晚期清理边界，不新增物理卸钩。`s26-clean3` 双宽干净构建、来源/资源及 ABI 检查通过；`s26-package4` 实际四文件聚焦 15/15、无跳过，真实嵌套 cmd 四条位宽边通过，另有双宽晚期事务和独立链接验证。前两次实包尝试分别发现探针私有符号重名及短命 helper 退出竞争，修正探针并保留失败证据。`s26-publish1` 已将同批四文件发布至 assets 根及 O:/winnt，逐项摘要一致。未运行完整 UI 矩阵或隔壁构建；隔壁纯载荷与 Detours 替换尚未证明。提交和远端复核待完成，S26 保持活动。
+
+S25 经用户验收收口，交付范围见 [记录](../history/M0-T21-S25-common.md)。
 
 S24 已准入；S23 产品提交 `4eb5c7c` 及远端四文件已复核，详情见 [交付记录](../history/M0-T21-S23-dialog-library.md)。用户进一步要求为后续 Win2000 样式库准备接口；候选边界见库设计，不能将尚未验证的草案宣称为已实现的多主题框架。S24 的库职责盘点、迁移、构建、实际包测试、双位置发布、提交、推送和远端复核均已完成。
 
@@ -410,9 +433,9 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
-- Last allocated T21 S: 25
+- Last allocated T21 S: 26
 - Last verified remote delivery: M0 T21 S25 P2，`4733862`；P1 四产品已复核一致。
-- Open task: T21；S25 已按用户验收收口，当前无活动 S；S26 未准入。Explorer.exe 仍被排除。
+- Open task: T21；S26 活动中，S25 已按用户验收收口。Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。

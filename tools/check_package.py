@@ -77,7 +77,7 @@ def main():
     abi = json.loads((root/'docs/etc/import/abi-decisions.json').read_text(encoding='utf-8'))
     names = sorted({e['symbol'] for e in abi['exports'] if e['decision'] == 'retain-public'})
     license_bytes = (root/'LICENSE').read_bytes()
-    minhook_license = (root/'src/ntw16s-dll/injection/minhook/LICENSE.txt').read_bytes()
+    minhook_license = (root/'src/lib-win32/process-hook/minhook/LICENSE.txt').read_bytes()
     # Independently read the retained C atlas rows and require those exact
     # compiled tables, plus provenance, in both DLLs. No visual substitute.
     glyph_tables = {}

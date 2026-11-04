@@ -115,14 +115,18 @@ static BOOL cmd_snapshot(cmd_inventory *inventory)
             fprintf(inventory->report,"DLL pid=%lu path=%ls sha256=%s\n",p->pid,m.szExePath,hash);
             if(nthook)p->nthook=TRUE;
             if(ntw){DWORD committed=0,count=0,flags=0;SIZE_T got;
-                DWORD a=cmd_symbol(m.szExePath,"committed"),b=cmd_symbol(m.szExePath,"count"),c=cmd_symbol(m.szExePath,"ntw16s_process_context");
+                DWORD a=cmd_symbol(m.szExePath,"process_hook_startup_committed"),b=cmd_symbol(m.szExePath,"process_hook_startup_count"),c=cmd_symbol(m.szExePath,"ntw16s_process_context");
                 if(!a||!b||!c||!ReadProcessMemory(p->handle,m.modBaseAddr+a,&committed,4,&got)||
                    !ReadProcessMemory(p->handle,m.modBaseAddr+b,&count,4,&got)||!ReadProcessMemory(p->handle,m.modBaseAddr+c,&flags,4,&got)){
                     DWORD error=GetLastError();
                     /* A short-lived owned helper can exit between the module
                      * snapshot and RPM. That is not a failed cmd launch. Keep
                      * its native exit status, without inventing initialization. */
-                    if(WaitForSingleObject(p->handle,0)==WAIT_OBJECT_0){
+                    /* The loader can unmap a short-lived helper before its
+                     * process object becomes signaled. Give that owned,
+                     * non-cmd process a bounded opportunity to finish. */
+                    DWORD wait_ms=(error==ERROR_PARTIAL_COPY&&!p->is_cmd)?200:0;
+                    if(WaitForSingleObject(p->handle,wait_ms)==WAIT_OBJECT_0){
                         GetExitCodeProcess(p->handle,&p->exit_code);
                         fprintf(inventory->report,"OBSERVE exited during state read pid=%lu read_error=%lu exit=%lu initialized_unconfirmed=1\n",p->pid,error,p->exit_code);
                         continue;

@@ -1,19 +1,19 @@
 #include "late_process.h"
-#include "late_patch.h"
+#include "lib-win32/process-hook/late_patch.h"
 #include "intercept.h"
-#include "minhook/src/buffer.h"
+#include "lib-win32/process-hook/minhook/src/buffer.h"
 #include <string.h>
 #include <wchar.h>
 static SRWLOCK init_lock=SRWLOCK_INIT;
-static ntw16s_late_patch hooks[88];
-static ntw16s_late_patch *items[88];
-static ntw16s_late_guard guard;
+static process_hook_late_patch hooks[88];
+static process_hook_late_patch *items[88];
+static process_hook_late_guard guard;
 static DWORD count,sticky_error;
 static BOOL installed;
 static DWORD prepare(void *slot,void *replacement)
 {
     if(count>=ARRAYSIZE(hooks))return ERROR_INSUFFICIENT_BUFFER;
-    DWORD error=ntw16s_late_patch_prepare(&hooks[count],slot,replacement);
+    DWORD error=process_hook_late_patch_prepare(&hooks[count],slot,replacement);
     if(!error){items[count]=&hooks[count];++count;}return error;
 }
 DWORD ntw16s_late_process_init(PCWSTR directory,DWORD session_cookie)
@@ -48,14 +48,14 @@ DWORD ntw16s_late_process_init(PCWSTR directory,DWORD session_cookie)
     if(!error){
         error=ERROR_BUSY;
         for(unsigned i=0;i<100 && (error==ERROR_BUSY || error==ERROR_RETRY);++i){
-            error=ntw16s_late_patch_install_batch(&guard,items,count);
+            error=process_hook_late_patch_install_batch(&guard,items,count);
             if(error==ERROR_BUSY || error==ERROR_RETRY)Sleep(1);
         }
     }
     if(!error){installed=TRUE;goto done;}
     BOOL any_installed=FALSE;for(DWORD i=0;i<count;++i)if(hooks[i].installed)any_installed=TRUE;
     if(guard.threads || guard.snapshots || any_installed){sticky_error=error;goto done;}
-    for(DWORD i=0;i<count;++i)(void)ntw16s_late_patch_discard(&hooks[i]);
+    for(DWORD i=0;i<count;++i)(void)process_hook_late_patch_discard(&hooks[i]);
     count=0;ZeroMemory(&ntw16s_process_context,sizeof(ntw16s_process_context));
  done:
     ReleaseSRWLockExclusive(&init_lock);return error;

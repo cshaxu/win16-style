@@ -75,7 +75,7 @@ static DWORD current_stage(HANDLE process,const image_info *image,stage_header *
     if(stage->version!=1 || stage->reserved || stage->image_base!=(uint64_t)(uintptr_t)image->base ||
        stage->allocation_base>(uint64_t)UINTPTR_MAX || stage->allocation_bytes>STAGE_LIMIT ||
        stage->descriptor_offset<sizeof(*stage) || stage->descriptor_offset>stage->allocation_bytes ||
-       stage->packet_bytes<sizeof(ntw16s_packet) || stage->packet_bytes>65536 ||
+       !stage->packet_bytes || stage->packet_bytes>65536 ||
        stage->packet_bytes>stage->descriptor_offset-sizeof(*stage) ||
        stage->allocation_base+(uint64_t)stage->descriptor_offset!=(uint64_t)(uintptr_t)image->base+rva ||
        stage->allocation_base+stage->allocation_bytes<stage->allocation_base)return ERROR_INVALID_DATA;
@@ -144,13 +144,13 @@ static DWORD complete_iat(HANDLE child,const image_info *image,const IMAGE_IMPOR
     if(count){iat->VirtualAddress=first;iat->Size=last-first;}
     return ERROR_SUCCESS;
 }
-DWORD ntw16s_stage_process(HANDLE child,const char *dll,const void *packet,DWORD bytes)
+DWORD process_hook_stage_process(HANDLE child,const char *dll,const void *packet,DWORD bytes)
 {
     image_info image;stage_header previous,*stage;BOOL staged;DWORD error;unsigned old_count=0;
     IMAGE_IMPORT_DESCRIPTOR *old,*imports;BYTE *scratch=NULL,*local=NULL,*remote=NULL;
     IMAGE_NT_HEADERS next;SIZE_T header_offset,descriptor_offset,thunk_offset,name_offset,total,written=0;
     uintptr_t *thunks;SIZE_T dll_bytes;
-    if(!child || !dll || !packet || bytes<sizeof(ntw16s_packet) || bytes>65536)return ERROR_INVALID_PARAMETER;
+    if(!child || !dll || !packet || !bytes || bytes>65536)return ERROR_INVALID_PARAMETER;
     dll_bytes=strnlen(dll,4096)+1;if(dll_bytes>4096)return ERROR_FILENAME_EXCED_RANGE;
     error=find_image(child,&image);if(error)return error;
     error=current_stage(child,&image,&previous,&staged);if(error)return error;
@@ -221,19 +221,19 @@ done:
     if(scratch)HeapFree(GetProcessHeap(),0,scratch);
     return error;
 }
-DWORD ntw16s_stage_read(ntw16s_context *context,BOOL *found)
+DWORD process_hook_stage_read(process_hook_payload_consumer consume,void *context,BOOL *found)
 {
     image_info image;stage_header stage;BYTE *packet;DWORD error;
-    if(!context || !found)return ERROR_INVALID_PARAMETER;
-    *found=FALSE;ZeroMemory(context,sizeof(*context));
+    if(!consume || !context || !found)return ERROR_INVALID_PARAMETER;
+    *found=FALSE;
     error=read_image(GetCurrentProcess(),(BYTE *)GetModuleHandleW(NULL),&image);if(error)return error;
     error=current_stage(GetCurrentProcess(),&image,&stage,found);if(error || !*found)return error;
     packet=HeapAlloc(GetProcessHeap(),0,stage.packet_bytes);if(!packet)return ERROR_NOT_ENOUGH_MEMORY;
     error=read_memory(GetCurrentProcess(),(void *)(uintptr_t)stage.allocation_base,packet,stage.packet_bytes);
-    if(!error)error=ntw16s_packet_parse(packet,stage.packet_bytes,image.nt.FileHeader.Machine,context);
+    if(!error)error=consume(packet,stage.packet_bytes,image.nt.FileHeader.Machine,context);
     HeapFree(GetProcessHeap(),0,packet);return error;
 }
-DWORD ntw16s_stage_restore(void)
+DWORD process_hook_stage_restore(void)
 {
     image_info image;stage_header stage;BOOL found;DWORD error;
     error=read_image(GetCurrentProcess(),(BYTE *)GetModuleHandleW(NULL),&image);if(error)return error;

@@ -1,7 +1,7 @@
 #define _WIN32_WINNT 0x0A00
 #include <windows.h>
 #include <stdio.h>
-#include "ntw16s-dll/injection/late_guard.h"
+#include "lib-win32/process-hook/late_guard.h"
 static volatile LONG entered,gate,running=1,ticks;
 static HANDLE late_thread;
 static HANDLE heap_start,heap_locked;
@@ -22,8 +22,8 @@ int main(void)
 {
     HANDLE exited_thread=CreateThread(NULL,0,already_exited,NULL,0,NULL);
     if(!exited_thread || WaitForSingleObject(exited_thread,2000)!=WAIT_OBJECT_0)return 17;
-    ntw16s_late_guard exited_guard={0};DWORD exited_begin=ntw16s_late_guard_begin(&exited_guard,NULL,0);
-    DWORD exited_end=exited_begin?exited_begin:ntw16s_late_guard_end(&exited_guard);
+    process_hook_late_guard exited_guard={0};DWORD exited_begin=process_hook_late_guard_begin(&exited_guard,NULL,0);
+    DWORD exited_end=exited_begin?exited_begin:process_hook_late_guard_end(&exited_guard);
     CloseHandle(exited_thread);
     printf("PSS EXITED HANDLE bits=%u begin=%lu end=%lu\n",(unsigned)(sizeof(void*)*8),exited_begin,exited_end);
     if(exited_begin || exited_end)return 18;
@@ -33,47 +33,47 @@ int main(void)
     if(!entered)return 3;
     FILETIME created,exited,kernel,user;if(!GetThreadTimes(busy_thread,&created,&exited,&kernel,&user))return 15;
     DWORD pid=GetCurrentProcessId(),tid=GetThreadId(busy_thread);FILETIME stale=created;stale.dwLowDateTime^=1;
-    if(ntw16s_late_guard_test_identity(busy_thread,pid,tid,created) ||
-       ntw16s_late_guard_test_identity(busy_thread,pid^1u,tid,created)!=ERROR_RETRY ||
-       ntw16s_late_guard_test_identity(busy_thread,pid,tid^1u,created)!=ERROR_RETRY ||
-       ntw16s_late_guard_test_identity(busy_thread,pid,tid,stale)!=ERROR_RETRY)return 16;
+    if(process_hook_late_guard_test_identity(busy_thread,pid,tid,created) ||
+       process_hook_late_guard_test_identity(busy_thread,pid^1u,tid,created)!=ERROR_RETRY ||
+       process_hook_late_guard_test_identity(busy_thread,pid,tid^1u,created)!=ERROR_RETRY ||
+       process_hook_late_guard_test_identity(busy_thread,pid,tid,stale)!=ERROR_RETRY)return 16;
     printf("PSS IDENTITY PASS bits=%u pid=1 tid=1 birth=1\n",(unsigned)(sizeof(void*)*8));
-    ntw16s_late_guard guard={0};ntw16s_late_region region={(const void *)busy,256};
-    ntw16s_late_guard_test_fail_free(2);
-    DWORD cleanup_failure=ntw16s_late_guard_begin(&guard,NULL,0);
+    process_hook_late_guard guard={0};process_hook_late_region region={(const void *)busy,256};
+    process_hook_late_guard_test_fail_free(2);
+    DWORD cleanup_failure=process_hook_late_guard_begin(&guard,NULL,0);
     BOOL retained=guard.snapshots!=NULL && !guard.threads;
-    DWORD cleanup_retry=ntw16s_late_guard_end(&guard);
+    DWORD cleanup_retry=process_hook_late_guard_end(&guard);
     if(cleanup_failure!=ERROR_ACCESS_DENIED || !retained || cleanup_retry || guard.snapshots)return 9;
-    DWORD cleanup_started=ntw16s_late_guard_begin(&guard,NULL,0);if(cleanup_started)return 10;
-    ntw16s_late_guard_test_fail_free(1);
-    DWORD post_failure=ntw16s_late_guard_end(&guard);
+    DWORD cleanup_started=process_hook_late_guard_begin(&guard,NULL,0);if(cleanup_started)return 10;
+    process_hook_late_guard_test_fail_free(1);
+    DWORD post_failure=process_hook_late_guard_end(&guard);
     BOOL post_retained=guard.snapshots!=NULL && !guard.threads && !guard.suspended;
-    DWORD post_retry=ntw16s_late_guard_end(&guard);
+    DWORD post_retry=process_hook_late_guard_end(&guard);
     if(post_failure!=ERROR_ACCESS_DENIED || !post_retained || post_retry || guard.snapshots)return 11;
     printf("PSS CLEANUP PASS bits=%u retained=1 retry=1 resumed=1\n",(unsigned)(sizeof(void*)*8));
-    ntw16s_late_guard_test_fail_after(1);
-    DWORD failed=ntw16s_late_guard_begin(&guard,NULL,0);
-    ntw16s_late_guard_test_fail_after(MAXDWORD);
+    process_hook_late_guard_test_fail_after(1);
+    DWORD failed=process_hook_late_guard_begin(&guard,NULL,0);
+    process_hook_late_guard_test_fail_after(MAXDWORD);
     LONG before_failure=InterlockedCompareExchange(&ticks,0,0);Sleep(30);
     if(failed!=ERROR_ACCESS_DENIED || guard.threads || InterlockedCompareExchange(&ticks,0,0)<=before_failure)return 7;
-    ntw16s_late_guard_test_after_suspend(spawn_late);
-    DWORD changed=ntw16s_late_guard_begin(&guard,NULL,0);
-    ntw16s_late_guard_test_after_suspend(NULL);
+    process_hook_late_guard_test_after_suspend(spawn_late);
+    DWORD changed=process_hook_late_guard_begin(&guard,NULL,0);
+    process_hook_late_guard_test_after_suspend(NULL);
     if(changed!=ERROR_RETRY || !late_thread || guard.threads)return 8;
-    DWORD rejected=ntw16s_late_guard_begin(&guard,&region,1);gate=1;
+    DWORD rejected=process_hook_late_guard_begin(&guard,&region,1);gate=1;
     DWORD completed=WaitForSingleObject(busy_thread,2000),value=0;GetExitCodeThread(busy_thread,&value);CloseHandle(busy_thread);
     if(rejected!=ERROR_BUSY || completed!=WAIT_OBJECT_0 || value!=17 || guard.threads)return 4;
-    DWORD started=ntw16s_late_guard_begin(&guard,NULL,0);if(started)return 5;
+    DWORD started=process_hook_late_guard_begin(&guard,NULL,0);if(started)return 5;
     LONG before=InterlockedCompareExchange(&ticks,0,0);Sleep(30);LONG during=InterlockedCompareExchange(&ticks,0,0);
-    DWORD released=ntw16s_late_guard_end(&guard);Sleep(30);LONG after=InterlockedCompareExchange(&ticks,0,0);
+    DWORD released=process_hook_late_guard_end(&guard);Sleep(30);LONG after=InterlockedCompareExchange(&ticks,0,0);
     InterlockedExchange(&running,0);DWORD stopped=WaitForSingleObject(counter_thread,2000),late_stopped=WaitForSingleObject(late_thread,2000);CloseHandle(counter_thread);CloseHandle(late_thread);
     heap_start=CreateEventW(NULL,TRUE,FALSE,NULL);heap_locked=CreateEventW(NULL,TRUE,FALSE,NULL);
     if(!heap_start || !heap_locked)return 12;
     HANDLE owner=CreateThread(NULL,0,heap_owner,NULL,0,NULL);if(!owner)return 13;
-    ntw16s_late_guard_test_before_suspend(hold_heap_before_suspend);
-    DWORD heap_begin=ntw16s_late_guard_begin(&guard,NULL,0);
-    ntw16s_late_guard_test_before_suspend(NULL);
-    DWORD heap_end=heap_begin?heap_begin:ntw16s_late_guard_end(&guard);
+    process_hook_late_guard_test_before_suspend(hold_heap_before_suspend);
+    DWORD heap_begin=process_hook_late_guard_begin(&guard,NULL,0);
+    process_hook_late_guard_test_before_suspend(NULL);
+    DWORD heap_end=heap_begin?heap_begin:process_hook_late_guard_end(&guard);
     DWORD heap_wait=WaitForSingleObject(owner,2000),heap_code=1;GetExitCodeThread(owner,&heap_code);
     CloseHandle(owner);CloseHandle(heap_locked);CloseHandle(heap_start);
     if(heap_begin || heap_end || heap_wait!=WAIT_OBJECT_0 || heap_code)return 14;

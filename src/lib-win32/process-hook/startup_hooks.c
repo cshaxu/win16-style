@@ -43,27 +43,27 @@ typedef struct hook_entry {
     BOOL above,enabled;
 } hook_entry;
 static hook_entry hooks[HOOK_LIMIT];
-static unsigned count;
-static BOOL transaction,committed;
+static unsigned process_hook_startup_count;
+static BOOL transaction,process_hook_startup_committed;
 
-DWORD ntw16s_hooks_begin(void)
+DWORD process_hook_startup_begin(void)
 {
-    if(transaction || committed)return ERROR_INVALID_STATE;
-    InitializeBuffer();count=0;transaction=TRUE;return ERROR_SUCCESS;
+    if(transaction || process_hook_startup_committed)return ERROR_INVALID_STATE;
+    InitializeBuffer();process_hook_startup_count=0;transaction=TRUE;return ERROR_SUCCESS;
 }
-DWORD ntw16s_hooks_attach(void *original_slot,void *replacement)
+DWORD process_hook_startup_attach(void *original_slot,void *replacement)
 {
     TRAMPOLINE ct={0};hook_entry *hook;void *target;
     if(!transaction || !original_slot || !replacement)return ERROR_INVALID_PARAMETER;
     memcpy(&target,original_slot,sizeof(target));
     if(!target)return ERROR_INVALID_PARAMETER;
-    if(count==HOOK_LIMIT)return ERROR_INSUFFICIENT_BUFFER;
+    if(process_hook_startup_count==HOOK_LIMIT)return ERROR_INSUFFICIENT_BUFFER;
     if(!IsExecutableAddress(target) || !IsExecutableAddress(replacement))return ERROR_INVALID_ADDRESS;
-    for(unsigned i=0;i<count;++i)if(hooks[i].target==target)return ERROR_ALREADY_EXISTS;
+    for(unsigned i=0;i<process_hook_startup_count;++i)if(hooks[i].target==target)return ERROR_ALREADY_EXISTS;
     ct.pTarget=target;ct.pDetour=replacement;ct.pTrampoline=AllocateBuffer(target);
     if(!ct.pTrampoline)return ERROR_NOT_ENOUGH_MEMORY;
     if(!CreateTrampolineFunction(&ct)){FreeBuffer(ct.pTrampoline);return ERROR_NOT_SUPPORTED;}
-    hook=&hooks[count++];ZeroMemory(hook,sizeof(*hook));
+    hook=&hooks[process_hook_startup_count++];ZeroMemory(hook,sizeof(*hook));
     hook->target=ct.pTarget;hook->trampoline=ct.pTrampoline;hook->above=ct.patchAbove;hook->slot=original_slot;
 #ifdef _WIN64
     hook->replacement=ct.pRelay;
@@ -92,10 +92,10 @@ static DWORD patch(hook_entry *hook,BOOL enable)
     if(!FlushInstructionCache(GetCurrentProcess(),target,size) && !error)error=GetLastError();
     return error;
 }
-void ntw16s_hooks_abort(void)
+void process_hook_startup_abort(void)
 {
     if(!transaction)return;
-    for(unsigned i=count;i;i--){hook_entry *hook=&hooks[i-1];
+    for(unsigned i=process_hook_startup_count;i;i--){hook_entry *hook=&hooks[i-1];
         if(hook->enabled && patch(hook,FALSE)){
             /* A partially patched process cannot safely return to application
              * entry. This is solely this freshly staged, uncommitted process. */
@@ -104,12 +104,12 @@ void ntw16s_hooks_abort(void)
         }
         memcpy(hook->slot,&hook->target,sizeof(hook->target));
     }
-    UninitializeBuffer();count=0;transaction=FALSE;
+    UninitializeBuffer();process_hook_startup_count=0;transaction=FALSE;
 }
-DWORD ntw16s_hooks_commit(void)
+DWORD process_hook_startup_commit(void)
 {
     DWORD error;
     if(!transaction)return ERROR_INVALID_STATE;
-    for(unsigned i=0;i<count;++i)if((error=patch(&hooks[i],TRUE))){ntw16s_hooks_abort();return error;}
-    transaction=FALSE;committed=TRUE;return ERROR_SUCCESS;
+    for(unsigned i=0;i<process_hook_startup_count;++i)if((error=patch(&hooks[i],TRUE))){process_hook_startup_abort();return error;}
+    transaction=FALSE;process_hook_startup_committed=TRUE;return ERROR_SUCCESS;
 }

@@ -257,7 +257,7 @@ every application or DPI configuration has been validated.
 ## Licenses and origins
 
 Project-authored code is covered by the [MIT license](LICENSE). The bundled
-MinHook/HDE code retains its [BSD license and notices](src/ntw16s-dll/injection/minhook/LICENSE.txt).
+MinHook/HDE code retains its [BSD license and notices](src/lib-win32/process-hook/minhook/LICENSE.txt).
 
 Historical Windows graphics retain their original bytes and
 [resource provenance](src/ntw16s-dll/resources.md). They are Microsoft artwork,

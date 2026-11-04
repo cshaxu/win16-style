@@ -6,20 +6,20 @@
  * and the verification snapshot is disposed only after all threads resume. */
 typedef struct snap { HPSS value; HPSSWALK marker; } snap;
 typedef struct snapshot_owner { snap first,verify; } snapshot_owner;
-#ifdef NTW16S_LATE_GUARD_TEST
+#ifdef PROCESS_HOOK_LATE_GUARD_TEST
 static DWORD fail_after=MAXDWORD;
 static void (*after_suspend)(void);
 static void (*before_suspend)(void);
 static DWORD fail_snapshot_free;
-void ntw16s_late_guard_test_fail_after(DWORD n){fail_after=n;}
-void ntw16s_late_guard_test_after_suspend(void (*f)(void)){after_suspend=f;}
-void ntw16s_late_guard_test_before_suspend(void (*f)(void)){before_suspend=f;}
-void ntw16s_late_guard_test_fail_free(DWORD times){fail_snapshot_free=times;}
+void process_hook_late_guard_test_fail_after(DWORD n){fail_after=n;}
+void process_hook_late_guard_test_after_suspend(void (*f)(void)){after_suspend=f;}
+void process_hook_late_guard_test_before_suspend(void (*f)(void)){before_suspend=f;}
+void process_hook_late_guard_test_fail_free(DWORD times){fail_snapshot_free=times;}
 #endif
 static DWORD dispose(snap *s) {
     DWORD e=ERROR_SUCCESS;
     if(s->value){
-#ifdef NTW16S_LATE_GUARD_TEST
+#ifdef PROCESS_HOOK_LATE_GUARD_TEST
         if(fail_snapshot_free){--fail_snapshot_free;e=ERROR_ACCESS_DENIED;}
         else
 #endif
@@ -43,11 +43,11 @@ static DWORD thread_identity(HANDLE thread,DWORD pid,DWORD tid,FILETIME created)
     if(actual.dwLowDateTime!=created.dwLowDateTime || actual.dwHighDateTime!=created.dwHighDateTime)return ERROR_RETRY;
     return ERROR_SUCCESS;
 }
-#ifdef NTW16S_LATE_GUARD_TEST
-DWORD ntw16s_late_guard_test_identity(HANDLE thread,DWORD pid,DWORD tid,FILETIME created)
+#ifdef PROCESS_HOOK_LATE_GUARD_TEST
+DWORD process_hook_late_guard_test_identity(HANDLE thread,DWORD pid,DWORD tid,FILETIME created)
 {return thread_identity(thread,pid,tid,created);}
 #endif
-static DWORD verify(const ntw16s_late_guard *g,DWORD pid,DWORD self) {
+static DWORD verify(const process_hook_late_guard *g,DWORD pid,DWORD self) {
     snapshot_owner *owner=g->snapshots;snap *verify_snap=&owner->verify;
     DWORD e=PssCaptureSnapshot(GetCurrentProcess(),PSS_CAPTURE_THREADS,0,&verify_snap->value),found=0;
     if(e)return e;
@@ -63,7 +63,7 @@ static DWORD verify(const ntw16s_late_guard *g,DWORD pid,DWORD self) {
     if(e!=ERROR_NO_MORE_ITEMS)return e;
     return found==g->count?ERROR_SUCCESS:ERROR_RETRY;
 }
-DWORD ntw16s_late_guard_end(ntw16s_late_guard *g) {
+DWORD process_hook_late_guard_end(process_hook_late_guard *g) {
     DWORD e=ERROR_SUCCESS;if(!g)return ERROR_INVALID_PARAMETER;
     for(DWORD i=0;i<g->suspended;++i){
         if(g->threads[i] && ResumeThread(g->threads[i])==(DWORD)-1){if(!e)e=GetLastError();}
@@ -79,7 +79,7 @@ DWORD ntw16s_late_guard_end(ntw16s_late_guard *g) {
     if(owner)HeapFree(GetProcessHeap(),0,owner);
     ZeroMemory(g,sizeof(*g));return e;
 }
-DWORD ntw16s_late_guard_begin(ntw16s_late_guard *g,const ntw16s_late_region *regions,DWORD count) {
+DWORD process_hook_late_guard_begin(process_hook_late_guard *g,const process_hook_late_region *regions,DWORD count) {
     if(!g || g->threads || g->count || g->suspended || g->snapshots || (count&&!regions))return ERROR_INVALID_PARAMETER;
     for(DWORD i=0;i<count;++i)if(!regions[i].address || !regions[i].bytes || (uintptr_t)regions[i].address>UINTPTR_MAX-regions[i].bytes)return ERROR_INVALID_PARAMETER;
     snapshot_owner *owner=HeapAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY,sizeof(*owner));if(!owner)return ERROR_NOT_ENOUGH_MEMORY;
@@ -104,11 +104,11 @@ DWORD ntw16s_late_guard_begin(ntw16s_late_guard *g,const ntw16s_late_region *reg
     if(e!=ERROR_NO_MORE_ITEMS)goto done;
     e=dispose(first);if(e)goto done;
     e=PssWalkMarkerCreate(NULL,&verify_snap->marker);if(e)goto done;
-#ifdef NTW16S_LATE_GUARD_TEST
+#ifdef PROCESS_HOOK_LATE_GUARD_TEST
     if(before_suspend)before_suspend();
 #endif
     for(DWORD i=0;i<g->count;++i){
-#ifdef NTW16S_LATE_GUARD_TEST
+#ifdef PROCESS_HOOK_LATE_GUARD_TEST
         if(i==fail_after){e=ERROR_ACCESS_DENIED;goto done;}
 #endif
         if(SuspendThread(g->threads[i])==(DWORD)-1){e=GetLastError();goto done;}++g->suspended;
@@ -122,11 +122,11 @@ DWORD ntw16s_late_guard_begin(ntw16s_late_guard *g,const ntw16s_late_region *reg
 #endif
         for(DWORD j=0;j<count;++j){uintptr_t start=(uintptr_t)regions[j].address;if(ip>=start && ip-start<regions[j].bytes){e=ERROR_BUSY;goto done;}}
     }
-#ifdef NTW16S_LATE_GUARD_TEST
+#ifdef PROCESS_HOOK_LATE_GUARD_TEST
     if(after_suspend)after_suspend();
 #endif
     e=verify(g,pid,self);
 done:
-    if(e){DWORD d=ntw16s_late_guard_end(g);if(d)return d;}
+    if(e){DWORD d=process_hook_late_guard_end(g);if(d)return d;}
     return e;
 }

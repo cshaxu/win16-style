@@ -5,9 +5,11 @@
 #ifndef NTW16S_STAGING_H
 #define NTW16S_STAGING_H
 #include "injection.h"
-DWORD ntw16s_stage_process(HANDLE child,const char *dll,const void *packet,DWORD bytes);
+#include "../../lib-win32/process-hook/staging.h"
+#include "../../lib-win32/process-hook/helper.h"
+#define ntw16s_stage_process process_hook_stage_process
+#define ntw16s_stage_restore process_hook_stage_restore
 DWORD ntw16s_stage_read(ntw16s_context *context,BOOL *found);
-DWORD ntw16s_stage_restore(void);
-DWORD ntw16s_install_helper(HANDLE child,PCWSTR dll,const void *packet,DWORD bytes,ntw16s_create_w create);
+#define ntw16s_install_helper process_hook_install_helper
 void ntw16s_run_helper(void);
 #endif

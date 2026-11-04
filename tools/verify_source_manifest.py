@@ -38,14 +38,14 @@ def third_party_entries(manifest, files):
             manifest["source_repository"] == "https://github.com/TsudaKageyu/minhook.git" and
             manifest["source_commit"] == "c3fcafdc10146beb5919319d0683e44e3c30d537" and
             manifest["source_tag"] == "v1.3.4", "unreviewed MinHook identity")
-    license_path = "src/ntw16s-dll/injection/minhook/LICENSE.txt"
+    license_path = "src/lib-win32/process-hook/minhook/LICENSE.txt"
     require(manifest["license_destination"] == license_path, "missing MinHook license identity")
     entries, destinations = {}, set()
     require(len(manifest["entries"]) == 14, "MinHook coverage changed")
     for entry in manifest["entries"]:
         source, destination = safe_path(entry["source"]), safe_path(entry["destination"])
         require(source.startswith("minhook/") and source not in entries, "duplicate/foreign MinHook source")
-        require(destination.startswith("src/ntw16s-dll/injection/") and
+        require(destination.startswith("src/lib-win32/process-hook/") and
                 destination.casefold() not in destinations, "duplicate/foreign MinHook destination")
         require(entry["action"] in {"retain", "adapt"} and entry["mode"] == "100644" and
                 hex_value(entry["blob"], 40) and hex_value(entry["sha256"], 64) and
