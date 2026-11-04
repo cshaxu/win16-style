@@ -2,30 +2,7 @@
 
 ## Current Work
 
-## M0 T21 S25 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | New; active; scope refined before first delivery. |
-| Admission And Approval | 用户要求将现有两库拆分为清晰的 window/control/dialog，并在实施中明确要求把 win16-window 再提炼为 win16-common，使 win16-window 与 win16-control 共同依赖 common；沿用 T21，不新建 S。 |
-| Objective | 完成 win16-common、win16-window、win16-control、win16-dialog 的职责分离：common 承载无窗口/控件业务身份的共享字体、调色板、基础几何与通用呈现。 |
-| Non-goals | 不修改 global_*、跨进程接入、传播、公开 ABI、原图形及来源声明；不增加运行时产物或主题功能。 |
-| Reference Baseline | S24 已关闭（`27e33f7`）；S25 的未提交三库迁移已经双宽构建和库回归通过，但干净包未完成发布。 |
-| Candidate Proposal | [库设计与依赖审计](../proposals/win16-libraries.md)。 |
-| Files And ABI Surface | win16-common、win16-window、win16-control、win16-dialog 四个内部静态库、现有进程内样式及构建/镜像测试；保持对外 ABI。 |
-| Applicable Rules | 固定 M0；C17、MinGW GCC、Ninja、ccache；同批四文件构建、测试和双位置发布。 |
-| Verification | 双宽四个独立库链接、同名镜像源/测登记、受影响窗口/控件/对话框原生探针、ABI、资源身份、同批四文件干净包回归及摘要。 |
-| Expected Markers | common 不包含窗口/控件业务判定；window/control 均只单向依赖 common；dialog 独立；每个库源文件有明确对应测试单元或测试适配器。 |
-| Asset Needs | 保留三组件四产物和原资源，不新增运行产物。 |
-| Reporting Requirements | 按文件与职责记录迁移和留存、验证范围、失败及未覆盖项、部署和远端复核。 |
-| Stop Conditions | 必须更改跨进程接入、公开 ABI、原资源或增加产物时先记录和说明。 |
-| Exit Criteria | 全部范围逐项核验；同批构建、测试、发布、提交推送及远端复核完成。 |
-| Original Owner Request | 将 lib win16-control 和 win16-dialog 再拆分为清晰的 win16-common、win16-window、win16-control、win16-dialog，并使源/测目录一一对应。 |
-| Similar-Issue Sweep | 审计所有 common/window/control 头与源、CMake 链接方向、独立库测试、DLL 适配器包含路径和资源身份路径。 |
-
-P1（已发布并推送，待用户验收）：完成共享基础的四库重构。`win16-common` 承载字体、调色板、布局、菜单布局及无业务身份的呈现协作；`win16-window` 承载框架/菜单；`win16-control` 承载控件；`win16-dialog` 保持独立。`global_*` 未移动，公开 ABI、三组件四产物及原始图形资源均保持。干净包 `s25-common-final-clean13` 双位宽全构建和 ABI 通过，四件套门禁通过；实际包 `s25-common-final-focused13` 聚焦 14/14、无 skip 通过。发布 `s25-common-final-publish1` 已将同批文件部署到 `assets/` 根目录及 `O:/winnt`：`run16s.exe` `317ccf6422542480073d9126b4dfa6ef07695a77744a1ce1d76769f8825f3d21`，`ntw16s32.dll` `483cb5ca35fe67ab298dce11ad0cc354a34366fb3a608c6ba1b7d011c9fb3651`，`ntw16s64.dll` `2cb0b78e828fdfda4fdad42ffb4e3782ac4f268573cc3205cf9544b1056bc641`，`demo.exe` `911cb4c700dd46edceb080564c8bf281fb40c6942b2a2369fe92d1b188dc9435`。提交 `c57c612` 已推送，远端分支和四个二进制 Git blob/摘要均已复核；S25 保持开放。
-
-P2（测试结构校正，待用户验收）：交付后自审发现 `win16-window` 测试映射引用了尚未独立存在的适配器。已新增 `tests/lib/win16-window/window_link.c`，并把原共享适配器明确为 `tests/lib/win16-common/common_link.c`；CMake 增加独立 `core/win16-common-link` 目标。`s25-test-layout-p2b` 双位宽 8/8 通过、无 skip（common/window/control/dialog 的链接及聚焦适配器）。本 P 仅改变测试和构建登记；生产渲染源、公开 ABI 和 P1 已发布四件套摘要均未改变，故不重新发布二进制。S25 保持开放，等待用户验收。
+当前无活动任务包；M0 T21 保持开放。S25 经用户验收通过并收口，未准入 S26。交付和验证范围见 [S25 收口记录](../history/M0-T21-S25-common.md)。
 
 S24 已准入；S23 产品提交 `4eb5c7c` 及远端四文件已复核，详情见 [交付记录](../history/M0-T21-S23-dialog-library.md)。用户进一步要求为后续 Win2000 样式库准备接口；候选边界见库设计，不能将尚未验证的草案宣称为已实现的多主题框架。S24 的库职责盘点、迁移、构建、实际包测试、双位置发布、提交、推送和远端复核均已完成。
 
@@ -433,9 +410,9 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
-- Last allocated T21 S: 24
-- Last verified remote delivery: M0 T21 S20 P1，`8f25892`；四产品已复核一致。
-- Open task: T21；S23 活动中，S22 已收口，S21 产品包验证转交 S22，S20、S19、S18、S17、S16、S15 已收口；Explorer.exe 仍被排除。
+- Last allocated T21 S: 25
+- Last verified remote delivery: M0 T21 S25 P2，`4733862`；P1 四产品已复核一致。
+- Open task: T21；S25 已按用户验收收口，当前无活动 S；S26 未准入。Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。
