@@ -38,3 +38,22 @@ done:
 }
 DWORD win32_process_image_validate(PCWSTR path,WORD machine,BOOL dll)
 {return win32_process_image_validate_ex(path,machine,dll,NULL);}
+
+BOOL win32_process_image_is_legacy(PCWSTR image)
+{
+    HANDLE file=CreateFileW(image,GENERIC_READ,FILE_SHARE_READ|FILE_SHARE_DELETE,
+        NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
+    if(file==INVALID_HANDLE_VALUE)return FALSE;
+    IMAGE_DOS_HEADER dos;DWORD read,signature=0;BOOL legacy=FALSE;
+    if(ReadFile(file,&dos,sizeof(dos),&read,NULL) && read==sizeof(dos) &&
+            dos.e_magic==IMAGE_DOS_SIGNATURE){
+        legacy=TRUE;
+        if(dos.e_lfanew>=0){
+            LARGE_INTEGER offset;offset.QuadPart=dos.e_lfanew;
+            if(!SetFilePointerEx(file,offset,NULL,FILE_BEGIN) ||
+                    !ReadFile(file,&signature,sizeof(signature),&read,NULL))legacy=FALSE;
+            else if(read==sizeof(signature) && signature==IMAGE_NT_SIGNATURE)legacy=FALSE;
+        }
+    }
+    CloseHandle(file);return legacy;
+}

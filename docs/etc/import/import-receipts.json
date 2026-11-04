@@ -1391,9 +1391,9 @@
       "path": "src/run16s-exe/main.c",
       "source": null,
       "source_blob": null,
-      "sha256": "54e7ea6a54416332550df8894b41160323c094fe3af2722dfe7080abf5a67089",
+      "sha256": "ecfb257dec911b7cea8e035140c9092c1e473c83670c01987b3f69a5aa0f7d08",
       "disposition": "authored",
-      "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes; T21 S3 global controller and independent ordinary-mode ownership; T21 S29 command line extraction",
+      "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes; T21 S3 global controller and independent ordinary-mode ownership; T21 S29 command line extraction; T21 S32 remaining common mechanism extraction",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -2048,9 +2048,9 @@
       "path": "src/run16s-exe/elevation.c",
       "source": null,
       "source_blob": null,
-      "sha256": "34f15def975acf946529bdc4f727b5b51d1fabe8073c903461ab85f0459d43bc",
+      "sha256": "27ec8d404f5e71bacd5f8ce1136bcb4587c5d50163e66f65c52fd7bb7935d407",
       "disposition": "authored",
-      "review": "T11 S1: project-authored C17 on-demand runas coordinator/private interface/asInvoker manifest; no third-party code copied; T21 S31 security and console extraction",
+      "review": "T11 S1: project-authored C17 on-demand runas coordinator/private interface/asInvoker manifest; no third-party code copied; T21 S31 security and console extraction; T21 S32 remaining common mechanism extraction",
       "notice": "Project-authored source; project MIT license"
     },
     {
@@ -2086,8 +2086,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "1623faa579edfbabac3fa6a58a5f0339983c507f116ad39bcabbb9868570cf1f",
-      "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes"
+      "sha256": "ff73b1f4b929d0a25a48964a3e839f75e774ef2dbfa6ba39ce3595e841b5f428",
+      "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes; T21 S32 remaining common mechanism extraction"
     },
     {
       "path": "src/run16s-exe/startup_error.h",
@@ -2104,7 +2104,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "9f54d8dd6af41c36269325b0259b56ed4483b08a11e21f3de472005f05856f41",
+      "sha256": "e271902f384e8ff49aa361cf7d8355cb2954c400d7539c2f26e15d9b6609ee2e",
       "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes"
     },
     {
@@ -3713,7 +3713,7 @@
       "path": "src/lib-win32/module-import/import_scan.h",
       "source": null,
       "source_blob": null,
-      "sha256": "7e129c9e858c81c4893f53a1f331b1a37c96ffdf794bbbdb1e72d1466e24fa29",
+      "sha256": "f255eb452e2fe7a1102f2d6af0b0c8d9ae6843045ad9e4881dcccbd509be94ee",
       "disposition": "authored",
       "review": "T21 S13 bounded read-only local PE import scanning and native dual-width tests; T21 S30 generic IAT extraction",
       "notice": "Project-authored source; no imported code or resources"
@@ -5621,18 +5621,18 @@
       "path": "src/lib-win32/process-image/image.c",
       "source": null,
       "source_blob": null,
-      "sha256": "75883095a6c6c434d394a5e793679861255b26c700aa52820bfba215cb5868e3",
+      "sha256": "c9bb55054465aaba97259bc778feef444943022796231ca0b46fa10c0011b210",
       "disposition": "authored",
-      "review": "T21 S28 extraction from existing project installer.c adaptation; no new sibling source imported",
+      "review": "T21 S28 extraction from existing project installer.c adaptation; no new sibling source imported; T21 S32 remaining common mechanism extraction",
       "notice": "Project C extraction; installer adaptation provenance retained in existing receipt"
     },
     {
       "path": "src/lib-win32/process-image/image.h",
       "source": null,
       "source_blob": null,
-      "sha256": "f5ce7ca558bae6e529b483ea431468165dc5879f978875df0e76af4f113681ed",
+      "sha256": "1f267696c2e4cca4177a3592779f74284f0ba2f6ea3b2b325cbab295c271c0e7",
       "disposition": "authored",
-      "review": "T21 S28 extraction from existing project installer.c adaptation; no new sibling source imported",
+      "review": "T21 S28 extraction from existing project installer.c adaptation; no new sibling source imported; T21 S32 remaining common mechanism extraction",
       "notice": "Project C extraction; installer adaptation provenance retained in existing receipt"
     },
     {
@@ -5675,19 +5675,37 @@
       "path": "src/lib-win32/security/elevation.c",
       "source": null,
       "source_blob": null,
-      "sha256": "50c1759ca9b0bfec6b32453958e71a1f732b6003350698edef40d6fbb6b1512f",
+      "sha256": "70dde5ab0f57a9c86564d1cde9da8caf889dde770cf2fdc148240f6dffc959d0",
       "disposition": "authored",
-      "review": "T21 S31 extract existing launcher mechanism",
+      "review": "T21 S31 extract existing launcher mechanism; T21 S32 remaining common mechanism extraction",
       "notice": "Project-authored C helper"
     },
     {
       "path": "src/lib-win32/security/elevation.h",
       "source": null,
       "source_blob": null,
-      "sha256": "a6833a5026987f98a93e804504f07bf9935117f280efc77315a00d949ad4f91f",
+      "sha256": "e28087d079e859e8c74fe557e17aafa1555cd6892cea515f927425caf42d6391",
       "disposition": "authored",
-      "review": "T21 S31 extract existing launcher mechanism",
+      "review": "T21 S31 extract existing launcher mechanism; T21 S32 remaining common mechanism extraction",
       "notice": "Project-authored C helper"
+    },
+    {
+      "path": "src/lib-win32/process-launch/process.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "7eb628087497cadcf9275d1e70352fd80b9598d20d63d5176e90d8e001acfefc",
+      "disposition": "authored",
+      "review": "T21 S32 extract existing new-child activation and wait",
+      "notice": "Project-authored C helper; caller retains prepare policy"
+    },
+    {
+      "path": "src/lib-win32/process-launch/process.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "91b6879b9dc36380af9e78540b359fbe4700f652d6fbf1d9bf7b102937bb71e5",
+      "disposition": "authored",
+      "review": "T21 S32 extract existing new-child activation and wait",
+      "notice": "Project-authored C helper; caller retains prepare policy"
     }
   ]
 }

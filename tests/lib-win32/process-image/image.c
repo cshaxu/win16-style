@@ -15,6 +15,11 @@ int main(void)
     CHECK(win32_process_image_validate(self,other,FALSE)==ERROR_BAD_EXE_FORMAT);
     CHECK(win32_process_image_validate(self,expected,TRUE)==ERROR_BAD_EXE_FORMAT);
     CHECK(win32_process_image_validate(L"?:\\invalid\\missing.exe",expected,FALSE)!=ERROR_SUCCESS);
+    HANDLE file=CreateFileW(self,GENERIC_READ,FILE_SHARE_READ|FILE_SHARE_DELETE,NULL,OPEN_EXISTING,0,NULL);
+    CHECK(file!=INVALID_HANDLE_VALUE);
+    HANDLE mapping=CreateFileMappingW(file,NULL,PAGE_READONLY|SEC_IMAGE,0,0,NULL);
+    CHECK(mapping!=NULL);CloseHandle(mapping);CloseHandle(file);
+    printf("IMAGE_COMPARE_SELF bits=%u expected=0 wrong_machine=%u sec_image=0\n",(unsigned)(sizeof(void *)*8),(unsigned)ERROR_BAD_EXE_FORMAT);
     printf("PROCESS_IMAGE_PASS bits=%u subsystem=%u\n",(unsigned)(sizeof(void *)*8),subsystem);
     return 0;
 }

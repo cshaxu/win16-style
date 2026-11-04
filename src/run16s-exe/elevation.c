@@ -28,17 +28,7 @@ DWORD run16s_elevate_global(DWORD parent_pid,run16s_shell_execute execute,DWORD 
     if(swprintf(parameters,ARRAYSIZE(parameters),L"--global-elevated %lu",parent_pid)<0)return ERROR_INSUFFICIENT_BUFFER;
     SHELLEXECUTEINFOW info={.cbSize=sizeof(info),.fMask=SEE_MASK_NOCLOSEPROCESS|SEE_MASK_NOASYNC|SEE_MASK_NO_CONSOLE,
         .lpVerb=L"runas",.lpFile=self,.lpParameters=parameters,.lpDirectory=directory,.nShow=SW_HIDE};
-    HRESULT apartment=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);
-    if(FAILED(apartment)&&apartment!=RPC_E_CHANGED_MODE)error=(DWORD)apartment;
-    else if(!SetConsoleCtrlHandler(NULL,TRUE))error=GetLastError();
-    else{
-        if(!execute(&info)){error=GetLastError();if(!error)error=ERROR_GEN_FAILURE;}
-        else if(!info.hProcess)error=ERROR_INVALID_HANDLE;
-        else if(WaitForSingleObject(info.hProcess,INFINITE)!=WAIT_OBJECT_0 || !GetExitCodeProcess(info.hProcess,exit_code))error=GetLastError();
-        SetConsoleCtrlHandler(NULL,FALSE);
-    }
-    if(info.hProcess)CloseHandle(info.hProcess);
-    if(SUCCEEDED(apartment))CoUninitialize();
+    error=win32_security_shell_wait(&info,execute,TRUE,exit_code);
     return error;
 }
 DWORD run16s_elevate(PCWSTR image,PCWSTR arguments,BOOL wait,
@@ -60,14 +50,6 @@ DWORD run16s_elevate(PCWSTR image,PCWSTR arguments,BOOL wait,
         .fMask=SEE_MASK_NOCLOSEPROCESS|SEE_MASK_NOASYNC|SEE_MASK_FLAG_NO_UI,
         .lpVerb=L"runas",.lpFile=self,.lpParameters=parameters,
         .lpDirectory=directory,.nShow=SW_SHOWNORMAL};
-    HRESULT apartment=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);
-    DWORD error=ERROR_SUCCESS;
-    if(FAILED(apartment)&&apartment!=RPC_E_CHANGED_MODE)error=(DWORD)apartment;
-    else if(!execute(&info)){error=GetLastError();if(!error)error=ERROR_GEN_FAILURE;}
-    else if(!info.hProcess)error=ERROR_INVALID_HANDLE;
-    else if(WaitForSingleObject(info.hProcess,INFINITE)!=WAIT_OBJECT_0 ||
-            !GetExitCodeProcess(info.hProcess,exit_code))error=GetLastError();
-    if(info.hProcess)CloseHandle(info.hProcess);
-    if(SUCCEEDED(apartment))CoUninitialize();
+    DWORD error=win32_security_shell_wait(&info,execute,FALSE,exit_code);
     free(parameters);return error;
 }

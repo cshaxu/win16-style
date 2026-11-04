@@ -1,4 +1,5 @@
 #include "run16s-exe/elevation.h"
+#include "lib-win32/security/elevation.h"
 #include <stdio.h>
 #include <wchar.h>
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"UAC UNIT FAIL line=%d error=%lu\n",__LINE__,GetLastError());return 1;}}while(0)
@@ -39,6 +40,10 @@ static BOOL WINAPI global_shell_probe(SHELLEXECUTEINFOW *info)
 int wmain(void)
 {
     DWORD error,exit_code=999,before=0,after=0;
+    HANDLE borrowed=CreateEventW(NULL,TRUE,FALSE,NULL);CHECK(borrowed);
+    SHELLEXECUTEINFOW invalid={.cbSize=sizeof(invalid),.hProcess=borrowed};
+    CHECK(win32_security_shell_wait(&invalid,shell_probe,FALSE,&exit_code)==ERROR_INVALID_PARAMETER);
+    CHECK(WaitForSingleObject(borrowed,0)==WAIT_TIMEOUT);CloseHandle(borrowed);
     (void)run16s_is_elevated(&error);CHECK(!error);
     /* Warm COM caches before the per-call handle ownership check. */
     CHECK(!run16s_elevate(L"C:\\space dir\\target.exe",L"\"\" \"a b\" tail\\",TRUE,shell_probe,&exit_code));

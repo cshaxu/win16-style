@@ -2,6 +2,9 @@
 #define WIN32_MODULE_IMPORT_SCAN_H
 #include <windows.h>
 #include <stddef.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct win32_module_import_query {
     const char *library;
@@ -24,4 +27,7 @@ typedef struct win32_module_import_change {
  * the module containing replacements until no other thread can call them. */
 DWORD win32_module_import_apply(HMODULE image,const win32_module_import_change *changes,
                           size_t count,unsigned *changed);
+#ifdef __cplusplus
+}
+#endif
 #endif

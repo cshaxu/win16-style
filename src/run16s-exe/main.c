@@ -1,6 +1,7 @@
 #include "ntw16s-dll/injection/injection.h"
 #include "elevation.h"
 #include "lib-win32/process-launch/command_line.h"
+#include "lib-win32/process-launch/process.h"
 #include "startup_error.h"
 #include "global.h"
 #include "tray.h"
@@ -11,6 +12,8 @@
 /* MinGW CRT must preserve native arguments. Globbing otherwise interprets the
  * '?' in explicit extended paths (\\?\) before target resolution. */
 int _dowildcard=0;
+static DWORD prepare_target(HANDLE process,void *context)
+{return ntw16s_install(process,context,CreateProcessW);}
 static int diagnostic(int code,DWORD error,PCWSTR phase)
 {
     WCHAR message[512]={0};
@@ -85,8 +88,9 @@ int wmain(int argc,WCHAR **argv)
     wait=wait || subsystem==IMAGE_SUBSYSTEM_WINDOWS_CUI;
     error=ntw16s_context_paths(&context,NULL);if(error)return diagnostic(6,error,L"package directory");
     command=_wcsdup(raw);if(!command)return diagnostic(5,ERROR_NOT_ENOUGH_MEMORY,L"command allocation");
-    if(!CreateProcessW(image,command,NULL,NULL,FALSE,CREATE_SUSPENDED,NULL,NULL,&startup,&child)){
-        error=GetLastError();free(command);
+    error=win32_process_create_suspended(image,command,NULL,NULL,FALSE,0,NULL,NULL,&startup,&child);
+    if(error){
+        free(command);
         if(error==ERROR_ELEVATION_REQUIRED && !reentered){
             DWORD token_error=0;BOOL elevated=run16s_is_elevated(&token_error);
             if(token_error)return diagnostic(9,token_error,L"launcher token");
@@ -98,17 +102,10 @@ int wmain(int argc,WCHAR **argv)
         }
         return diagnostic(5,error,L"target creation");
     }
-    free(command);error=ntw16s_install(child.hProcess,&context,CreateProcessW);
-    int failure=6;
-    if(!error){DWORD previous;failure=7;previous=ResumeThread(child.hThread);
-        if(previous!=1)error=previous==(DWORD)-1?GetLastError():ERROR_INVALID_STATE;}
-    if(error){
-        TerminateProcess(child.hProcess,error);WaitForSingleObject(child.hProcess,5000);
-        CloseHandle(child.hThread);CloseHandle(child.hProcess);return diagnostic(failure,error,L"installation/resume");
-    }
-    CloseHandle(child.hThread);
-    if(wait && (WaitForSingleObject(child.hProcess,INFINITE)!=WAIT_OBJECT_0 || !GetExitCodeProcess(child.hProcess,&exit_code))){
-        error=GetLastError();CloseHandle(child.hProcess);return diagnostic(8,error,L"target wait");
+    free(command);unsigned phase=0;error=win32_process_activate(&child,prepare_target,&context,&phase);
+    if(error)return diagnostic(phase==WIN32_PROCESS_PREPARE_FAILED?6:7,error,L"installation/resume");
+    if(wait && (error=win32_process_wait(child.hProcess,&exit_code))){
+        CloseHandle(child.hProcess);return diagnostic(8,error,L"target wait");
     }
     CloseHandle(child.hProcess);return (int)exit_code;
 }
