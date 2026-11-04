@@ -11,7 +11,7 @@ static void stage_free(void *p){if(!p)return;for(unsigned i=0;i<count;++i)if(own
 #define calloc stage_calloc
 #define free stage_free
 #define _wcsdup stage_dup
-#include "../../src/lib/win16-control/theme_state.c"
+#include "../../src/lib-win32/win16-control/theme_state.c"
 #include "../../src/ntw16s-dll/theme.c"
 #undef calloc
 #undef free

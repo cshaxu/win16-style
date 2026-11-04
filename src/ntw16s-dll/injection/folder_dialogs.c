@@ -3,10 +3,10 @@
 #include "intercept.h"
 #include "startup_hooks.h"
 #include "unwind.h"
-#include "../../lib/win16-dialog/folder_create.h"
-#include "../../lib/win16-dialog/chrome.h"
-#include "../../lib/win16-dialog/browse.h"
-#include "../../lib/win16-dialog/classic_folder.h"
+#include "../../lib-win32/win16-dialog/folder_create.h"
+#include "../../lib-win32/win16-dialog/chrome.h"
+#include "../../lib-win32/win16-dialog/browse.h"
+#include "../../lib-win32/win16-dialog/classic_folder.h"
 #include "ntw16s-dll/controls.h"
 #include <dlgs.h>
 #include <commctrl.h>

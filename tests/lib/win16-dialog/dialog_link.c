@@ -4,21 +4,21 @@
 #include <string.h>
 #include <wchar.h>
 #include <dlgs.h>
-#include "lib/win16-dialog/print_ranges.h"
-#include "lib/win16-dialog/print_classic.h"
-#include "lib/win16-dialog/file_contract.h"
-#include "lib/win16-dialog/file_helpers.h"
-#include "lib/win16-dialog/modern.h"
-#include "lib/win16-dialog/shell_item.h"
-#include "lib/win16-dialog/v2.h"
-#include "lib/win16-dialog/primary.h"
-#include "lib/win16-dialog/com_show.h"
-#include "lib/win16-dialog/proxy.h"
-#include "lib/win16-dialog/browse.h"
-#include "lib/win16-dialog/hidden_files.h"
-#include "lib/win16-dialog/hook_state.h"
-#include "lib/win16-dialog/classic_events.h"
-#include "lib/win16-dialog/events.h"
+#include "lib-win32/win16-dialog/print_ranges.h"
+#include "lib-win32/win16-dialog/print_classic.h"
+#include "lib-win32/win16-dialog/file_contract.h"
+#include "lib-win32/win16-dialog/file_helpers.h"
+#include "lib-win32/win16-dialog/modern.h"
+#include "lib-win32/win16-dialog/shell_item.h"
+#include "lib-win32/win16-dialog/v2.h"
+#include "lib-win32/win16-dialog/primary.h"
+#include "lib-win32/win16-dialog/com_show.h"
+#include "lib-win32/win16-dialog/proxy.h"
+#include "lib-win32/win16-dialog/browse.h"
+#include "lib-win32/win16-dialog/hidden_files.h"
+#include "lib-win32/win16-dialog/hook_state.h"
+#include "lib-win32/win16-dialog/classic_events.h"
+#include "lib-win32/win16-dialog/events.h"
 
 static void *browse_argument;static UINT browse_flags;static BOOL browse_validate;
 static PIDLIST_ABSOLUTE WINAPI fake_browse_a(LPBROWSEINFOA info)

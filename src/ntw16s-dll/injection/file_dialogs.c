@@ -5,9 +5,9 @@
 #include "intercept.h"
 #include "startup_hooks.h"
 #include "unwind.h"
-#include "../../lib/win16-dialog/file_helpers.h"
-#include "../../lib/win16-dialog/file_contract.h"
-#include "../../lib/win16-dialog/file_hook.h"
+#include "../../lib-win32/win16-dialog/file_helpers.h"
+#include "../../lib-win32/win16-dialog/file_contract.h"
+#include "../../lib-win32/win16-dialog/file_hook.h"
 #include <dlgs.h>
 #include <commdlg.h>
 #include <shlobj.h>

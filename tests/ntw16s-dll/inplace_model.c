@@ -6,7 +6,7 @@
 #include <setjmp.h>
 #include <string.h>
 #include "ntw16s-dll/injection/unwind.h"
-#include "lib/win16-control/combo_glyph.h"
+#include "lib-win32/win16-control/combo_glyph.h"
 #define NTW16S_TEST_PROCESS_TIMEOUT 15000
 #include "isolated_process.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"INPLACE_FAIL line=%d err=%lu %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)

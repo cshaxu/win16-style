@@ -1,5 +1,5 @@
 #include "controls.h"
-#include "../lib/win16-control/control_scope.h"
+#include "../lib-win32/win16-control/control_scope.h"
 
 static _Thread_local win16_style_control_scope *scopes;
 static _Thread_local HHOOK creation_hook;

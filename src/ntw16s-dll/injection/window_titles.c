@@ -1,7 +1,7 @@
-#include "../../lib/win16-control/text_policy.h"
-#include "../../lib/win16-window/menu_iteration.h"
-#include "../../lib/win16-dialog/print_classic.h"
-#include "../../lib/win16-dialog/chrome.h"
+#include "../../lib-win32/win16-control/text_policy.h"
+#include "../../lib-win32/win16-window/menu_iteration.h"
+#include "../../lib-win32/win16-dialog/print_classic.h"
+#include "../../lib-win32/win16-dialog/chrome.h"
 #include "intercept.h"
 #include "startup_hooks.h"
 #include "unwind.h"
@@ -23,7 +23,7 @@
 #include <vssym32.h>
 #include "ntw16s-dll/font.h"
 #include "ntw16s-dll/month_text.h"
-#include "lib/win16-control/special_paint.h"
+#include "lib-win32/win16-control/special_paint.h"
 HFONT ntw16s_month_text_borrow(HTHEME,HDC,int,int,DWORD,DWORD,const RECT *,const void *);
 BOOL ntw16s_month_text_room(HTHEME,HDC,int,int,DWORD,DWORD,const RECT *,int,const void *);
 typedef struct month_text_room_context {HTHEME theme;HDC dc;int part,state;DWORD flags,flags2;const RECT *rect;const void *caller;} month_text_room_context;

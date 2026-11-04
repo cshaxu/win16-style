@@ -1,6 +1,6 @@
 #include "theme.h"
 #include "native_api.h"
-#include "../lib/win16-control/theme_state.h"
+#include "../lib-win32/win16-control/theme_state.h"
 BOOL ntw16s_theme_capture(HWND w){return win16_control_theme_capture(w);}
 BOOL ntw16s_theme_stage(HWND w){return win16_control_theme_stage(w);}
 BOOL ntw16s_theme_commit(HWND w){return win16_control_theme_commit(w);}

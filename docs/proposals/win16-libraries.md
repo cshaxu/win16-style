@@ -12,10 +12,10 @@
 
 M0 T21 S21 为设计和依赖盘点；不修改产品行为、原图形资源、公开 ABI、全局管理或进程接入。两个库均作为内部 C17 静态构建单元，不增加运行时产品文件，维持三个产品组件、四个交付文件。产品消费和导出仍由 ntw16s DLL 管理。
 
-## `src/lib/win16-control`
+## `src/lib-win32/win16-control`
 
 S22 资源路径记录：原 `src/ntw16s-dll/menu_glyphs.h`、`frame_buttons.h`、`control_glyphs.h`、`combo_glyph.h` 和 `scroll_glyphs.h`
-已逐字节迁至 `src/lib/win16-control/`；原 `resources.md` 作为历史来源声明
+已逐字节迁至 `src/lib-win32/win16-control/`；原 `resources.md` 作为历史来源声明
 保持逐字节不变，其中重现命令的旧 `-VerifyHeader` 路径对应新的位置。
 资源身份校验器和来源清单跟踪新路径，图形和来源声明的摘要均未改变。
 
@@ -23,7 +23,7 @@ S22 资源路径记录：原 `src/ntw16s-dll/menu_glyphs.h`、`frame_buttons.h`�
 
 窗口附着可由进程内调用者显式调用；何时、怎样把代码带入目标进程，仍是调用方现有职责，不属于此库。标准控件、标题、菜单、滚动条和已有应用兼容行为均以既有证据为基准；不声称全部应用自绘控件均受支持。
 
-## `src/lib/win16-dialog`
+## `src/lib-win32/win16-dialog`
 
 候选职责为进程内公共对话框的参数检查、可转换性判定、旧式布局调用、结果与取消语义转换以及资源释放。初始盘点对象包括 `file_dialogs.c`、`folder_dialogs.c`、`com_dialogs.c`、`print_extended.c`、`print_ranges.c`；它们目前同时包含适配与接入相关职责，须先区分并建立调用契约。`modern_dialogs.c` 包含调用者显式请求现代布局的既有公开入口，应保持其行为和 ABI。
 

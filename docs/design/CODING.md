@@ -6,6 +6,7 @@
 src/run16s-exe/       x64 CLI / 首次启动
 src/ntw16s-dll/       双位宽 renderer / interception / injection
 src/demo-exe/         x64 原生示例
+src/lib-win32/        内部 Win32 静态库：托盘、Win16 公共/窗口/控件/对话框、进程挂钩
 tests/run16s-exe/     启动契约测试
 tests/ntw16s-dll/     双位宽 DLL 单元及生命周期测试
 tests/demo-exe/       原生 demo 边界测试
@@ -15,8 +16,8 @@ assets/       四产物的发布包
 build/               全部生成物（忽略）
 ```
 
-组件不引入第四个通用产品层；共享注入实现归 ntw16s-dll，启动器只消费其明确的
-内部构建接口。demo 只依赖 Windows API。产品 ABI 与私有头分离，消费者不得
+内部静态库不产生第四个产品组件；启动器和 DLL 通过明确的内部构建接口使用共享代码。
+demo 只依赖 Windows API。产品 ABI 与私有头分离，消费者不得
 通过包含 renderer 私有头绕过责任边界。
 
 目标构建基线：纯 C17、MinGW-w64 GCC + Ninja + ccache，警告作为错误，

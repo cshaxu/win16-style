@@ -1,5 +1,5 @@
 #include "tray.h"
-#include "lib/tray/tray.h"
+#include "lib-win32/tray/tray.h"
 #include "global.h"
 #include "ntw16s-dll/global_session.h"
 #include <stdio.h>

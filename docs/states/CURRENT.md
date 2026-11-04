@@ -2,7 +2,28 @@
 
 ## Current Work
 
-无活动任务包。S26 已完成现有进程挂钩底层能力的提取并发布；适配边界与证据见 [记录](../history/M0-T21-S26-process-hook.md)。T21 保持开放。
+## M0 T21 S26 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Owner-Reopen；用户明确要求继续使用同一 S26。 |
+| Admission And Approval | 用户要求将 src/lib 合并到 src/lib-win32。 |
+| Objective | 将 tray 和四个 win16 库迁入 src/lib-win32，更新所有有效引用并保持行为。 |
+| Non-goals | 不改业务行为、DLL ABI、原始图形资源或兄弟仓库。 |
+| Reference Baseline | S26 P2 d30f371；工作区干净。 |
+| Candidate Proposal | [库设计](../proposals/win16-libraries.md)和[进程钩子库](../proposals/process-hook-library.md)。 |
+| Files And ABI Surface | 源码布局、构建、测试、来源清单及其当前文档；不新增产物或导出。 |
+| Applicable Rules | M0、纯 C、双宽 Ninja/ccache；用户明确要求沿用 S26。 |
+| Verification | 来源与原始资源身份、双宽干净构建、实际四文件包聚焦测试、两处发布、提交推送与远端复核。 |
+| Expected Markers | 旧源码路径无活动引用；五个迁移库和 process-hook 均构建，实包回归通过。 |
+| Asset Needs | 原图形与第三方资源字节保留。 |
+| Reporting Requirements | 说明迁移、测试、产物、未覆盖面及远端复核。 |
+| Stop Conditions | 不修改兄弟仓库、不扩大 ABI；失败留证并修复。 |
+| Exit Criteria | 同批包验证发布且远端复核后收口 S26；T21 保持开放。 |
+| Original Owner Request | lib 合并进 lib-win32；作为同一个 S 任务。 |
+| Similar-Issue Sweep | 审计源码、测试、构建和来源校验中的旧路径及相对 include。 |
+
+P3：将 tray、win16-common、win16-window、win16-control 和 win16-dialog 迁至 `src/lib-win32`，原 process-hook 保持原位；测试目录不迁移，库职责和产品 ABI 不变。`s26-unify-clean1` 双宽干净构建、资源来源和 ABI 检查通过，六个库的独立测试双宽各 6/6 通过；`s26-unify-test1` 实际包聚焦 14/14、无跳过，覆盖 demo、系统菜单、双宽启动和真实 cmd 四条传播边。`s26-unify-publish1` 已将同批四文件发布到 assets 与 O:/winnt 并核对摘要。完整 UI 矩阵未运行，提交推送及远端复核待完成。
 
 S25 经用户验收收口，交付范围见 [记录](../history/M0-T21-S25-common.md)。
 
@@ -414,7 +435,7 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T20 S: 19
 - Last allocated T21 S: 26
 - Last verified remote delivery: M0 T21 S26 P1，`22b2449`；四产品及代表源码远端对象已复核一致。
-- Open task: T21；S26 已收口。Explorer.exe 仍被排除。
+- Open task: T21；用户要求 S26 继续目录合并。Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。
