@@ -2,28 +2,7 @@
 
 ## Current Work
 
-## M0 T21 S32 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | New；用户要求一次完成剩余内容。 |
-| Admission And Approval | 用户要求不留第三批，完成先前列出的公共机制。 |
-| Objective | 抽取现有 MZ/NE 判断、可复用进程创建及句柄生命周期、通用 runas；对照隔壁映像语义并明确适配。 |
-| Non-goals | 不修改隔壁仓库，不改产品策略、全局管理、资源或公开 DLL 导出。 |
-| Reference Baseline | S31 P2 4d2b3d3；现有启动器与 NTVDM64 只读对照。 |
-| Candidate Proposal | [公共 Win32 组件](../proposals/win32-common-components.md)。 |
-| Files And ABI Surface | process-image、process-launch、security、调用方适配及原生测试；三组件四产物不变。 |
-| Applicable Rules | M0、纯 C17、双位宽 GCC/Ninja/ccache；保留原有生命周期及失败行为。 |
-| Verification | 双宽独立测试、创建/等待/失败和模拟 UAC、真实实包回归、干净四文件发布、推送和远端核验。 |
-| Expected Markers | 机制与策略清晰分离，旧调用行为不变，隔壁语义差异有实际证据。 |
-| Asset Needs | 原始图形资源与来源逐字节保留。 |
-| Reporting Requirements | 报告覆盖、跨项目实际验证、剩余不兼容和测试结果。 |
-| Stop Conditions | 不修改兄弟仓库，不依赖外部构建或现有用户进程。 |
-| Exit Criteria | 范围内提取与验证、双位宽构建、实包测试、发布推送及远端复核完成。 |
-| Original Owner Request | 一次做完剩余公共组件，不再分第三批。 |
-| Similar-Issue Sweep | 审计 main、elevation、startup_error 及其测试夹具，保留原本退出码和错误处理。 |
-
-P1：将原有 MZ/非 PE 判断迁至 process-image；将新建挂起进程创建、调用方准备、恢复、失败清理和等待迁至 process-launch；将调用方配置的 Shell 执行/等待和句柄清理迁至 security；module-import 保持独立并补 C ABI 头。双宽真实自有子进程覆盖成功、准备失败和恢复失败；模拟 UAC 含借用句柄拒绝。自有七种合成样本的 PE 校验和 SEC_IMAGE 映射均返回 193，有效自身映像均接受；该有限对照不代表隔壁完整 NtQuerySection 语义。`s32-clean2` 双宽干净构建、ABI/来源/资源检查通过；干净树进程生命周期与映像双宽各 2/2，`s32-package2` 实包 23/23 无跳过；`s32-publish2` 同批四文件已发布两处并核对摘要。真实 UAC、隔壁源码集成及完整 UI 矩阵未验证；提交推送和远端复核待完成。
+无活动任务包。S32 已完成本项目内公共机制的剩余提取；T21 保持开放。隔壁实际源码集成与真实 UAC 未测试，详见[记录](../history/M0-T21-S32-common-completion.md)。
 
 S25 经用户验收收口，交付范围见 [记录](../history/M0-T21-S25-common.md)。
 
@@ -434,8 +413,8 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
 - Last allocated T21 S: 32
-- Last verified remote delivery: M0 T21 S31 P1，`345238f`；四产品和 console/security 源码远端对象已复核。
-- Open task: T21；S32 实施中。Explorer.exe 仍被排除。
+- Last verified remote delivery: M0 T21 S32 P1，`e0e9d11`；四产品和四类组件代表源码远端对象已复核。
+- Open task: T21；S32 已交付。Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。
@@ -485,6 +464,8 @@ S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1已收口；T20此后按用户要求有限范围收口。
 
 ## Recent Closure
+
+- M0 T21 S32：完成本项目现有公共映像、启动及 Shell 机制提取；[记录](../history/M0-T21-S32-common-completion.md)。
 
 - M0 T21 S31：console 和 security 基础机制提取；[记录](../history/M0-T21-S31-console-security.md)。
 
