@@ -2,28 +2,28 @@
 
 ## Current Work
 
-## M0 T21 S29 Packet
+## M0 T21 S30 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | New；自动续作。 |
 | Admission And Approval | 用户授权制作双方可用的公共 Win32 组件。 |
-| Objective | 提取启动器保留原始命令行的通用解析辅助并建立独立静态库。 |
-| Non-goals | 不改进程生命周期、UAC、等待策略及兄弟仓库。 |
-| Reference Baseline | S28 P1 736f483；原有 next_argument。 |
+| Objective | 将现有导入表查询及比较交换机制提取到 module-import。 |
+| Non-goals | 不更改目标选择、钩子策略、全局管理流程及兄弟仓库。 |
+| Reference Baseline | S29 P1 6d13e80；现有 import scan/patch 和 VB 适配。 |
 | Candidate Proposal | [公共 Win32 组件](../proposals/win32-common-components.md)。 |
-| Files And ABI Surface | process-launch、启动器接入、原生测试；不增加产品导出。 |
-| Applicable Rules | M0、C17、双宽 GCC/Ninja/ccache、原资源不变。 |
-| Verification | 双宽独立解析测试、真实启动回归、干净四文件包及发布推送。 |
-| Expected Markers | 独立通用接口保留原始命令行尾部，启动器唯一调用实现。 |
-| Asset Needs | 资源及许可不变。 |
-| Reporting Requirements | 区分实现能力、后续启动机制和隔壁未验证兼容。 |
-| Stop Conditions | 不修改兄弟仓库；不改变用户命令行和启动语义。 |
-| Exit Criteria | 双宽构建、测试、发布、提交推送及远端核验。 |
+| Files And ABI Surface | 通用 IAT 源码、调用方适配、测试与构建；不增加产品导出。 |
+| Applicable Rules | M0、C17、双宽 GCC/Ninja/ccache；保留现有行为。 |
+| Verification | 双宽导入查询、冲突、回滚和原调用方实测，四文件干净包及发布推送。 |
+| Expected Markers | 唯一生产实现无产品私有依赖、原调用方和负例通过。 |
+| Asset Needs | 图形资源和许可不变。 |
+| Reporting Requirements | 报告机制边界、原调用方范围及隔壁尚未适配。 |
+| Stop Conditions | 不修改兄弟仓库、不擅自改变 hook 策略。 |
+| Exit Criteria | 双宽构建、实包测试、发布提交推送及远端复核。 |
 | Original Owner Request | 调研并制作双方可用的公共组件。 |
-| Similar-Issue Sweep | 检查引号、反斜杠、空白与参数尾部调用。 |
+| Similar-Issue Sweep | 审核导入表扫描、原子交换、保护恢复和并发负例。 |
 
-P1：启动器原始命令行尾部解析迁入独立 process-launch；策略和进程创建仍由调用方负责。`s29-clean1` 因复用 main 的 tray-fixture 漏链接失败，补齐依赖后 `s29-clean2` 双宽干净构建及 ABI 通过；独立解析测试双宽通过，`s29-package1` 实包聚焦 13/13 无跳过，`s29-publish1` 同批四文件已发布两处并核对摘要。完整进程创建抽象、隔壁适配及完整 UI 矩阵未验证；提交和远端复核待完成。
+P1：根据用户纠正，导入表查询与比较交换迁入独立 `module-import`，不是 process-hook 子目录；原 VB 调用方保留具体目标和生命周期。双宽扫描与回滚测试通过；`s30-clean1` 双宽干净构建及 ABI/资源检查通过，`s30-package1` 实包 14/14 无跳过，含原调用方；`s30-publish1` 四文件已发布两处并核对摘要。隔壁尚未适配；提交和远端复核待完成。
 
 S25 经用户验收收口，交付范围见 [记录](../history/M0-T21-S25-common.md)。
 
@@ -433,9 +433,9 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
-- Last allocated T21 S: 29
-- Last verified remote delivery: M0 T21 S28 P1，`736f483`；四产品和 process-image 源码远端对象已复核。
-- Open task: T21；S29 process-launch 实施中。Explorer.exe 仍被排除。
+- Last allocated T21 S: 30
+- Last verified remote delivery: M0 T21 S29 P1，`6d13e80`；四产品和 process-launch 源码远端对象已复核。
+- Open task: T21；S30 module-import 实施中。Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。
@@ -485,6 +485,8 @@ S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1已收口；T20此后按用户要求有限范围收口。
 
 ## Recent Closure
+
+- M0 T21 S29：原生命令行尾部解析迁入 process-launch；[记录](../history/M0-T21-S29-process-launch.md)。
 
 - M0 T21 S28：process-image PE 校验和位宽查询提取；[记录](../history/M0-T21-S28-process-image.md)。
 

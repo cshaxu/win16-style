@@ -3,14 +3,14 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "ntw16s-dll/global_vb_text.h"
-#include "ntw16s-dll/import_scan.h"
+#include "lib-win32/module-import/import_scan.h"
 #include "ntw16s-dll/vb_text.h"
 #include "isolated_process.h"
 
 #define CHECK(x) do{if(!(x)){printf("GLOBAL_VB_TEXT FAIL line=%d error=%lu\n",__LINE__,GetLastError());return 1;}}while(0)
 typedef BOOL (WINAPI *register_fn)(void);
 typedef BOOL (WINAPI *draw_fn)(HDC,unsigned);
-static const ntw16s_import_query queries[]={
+static const win32_module_import_query queries[]={
     {"USER32.dll","DrawTextA"},{"USER32.dll","DrawTextExA"},
     {"GDI32.dll","TextOutA"},{"GDI32.dll","ExtTextOutA"}};
 
@@ -47,7 +47,7 @@ static int worker(int argc,WCHAR **argv)
     register_fn reg=(void *)GetProcAddress(runtime,"VbGlobalRegister"),release=(void *)GetProcAddress(runtime,"VbGlobalRelease");
     draw_fn draw=(void *)GetProcAddress(runtime,"VbGlobalDraw");CHECK(reg && release && draw && reg());
     HWND form=CreateWindowW(L"ThunderRT6FormDC",L"test",WS_OVERLAPPEDWINDOW,0,0,200,100,NULL,NULL,runtime,NULL);CHECK(form);
-    void **slots[4]={0};void *original[4];CHECK(!ntw16s_import_slots(runtime,queries,4,slots));
+    void **slots[4]={0};void *original[4];CHECK(!win32_module_import_slots(runtime,queries,4,slots));
     for(unsigned i=0;i<4;++i){CHECK(slots[i] && *slots[i]);original[i]=*slots[i];}
     BOOL changed=TRUE;
     CHECK(ntw16s_global_vb_text(GetDesktopWindow(),&changed)==ERROR_NOT_SUPPORTED && !changed);

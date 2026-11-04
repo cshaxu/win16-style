@@ -37,7 +37,7 @@ static BOOL read_name(const BYTE *base,size_t limit,size_t offset,char out[IMPOR
     return FALSE;
 }
 
-DWORD ntw16s_import_slots(HMODULE image,const ntw16s_import_query *queries,
+DWORD win32_module_import_slots(HMODULE image,const win32_module_import_query *queries,
                           size_t count,void ***slots)
 {
     BYTE *base=(BYTE *)image;IMAGE_DOS_HEADER dos;IMAGE_NT_HEADERS nt;void **found[IMPORT_QUERY_LIMIT]={0};

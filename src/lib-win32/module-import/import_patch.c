@@ -3,10 +3,10 @@
 
 #define IMPORT_PATCH_LIMIT 8u
 static SRWLOCK import_patch_lock=SRWLOCK_INIT;
-#ifdef NTW16S_IMPORT_PATCH_TESTING
-extern BOOL ntw16s_import_patch_test_fail(size_t);
-extern void ntw16s_import_patch_test_protected(void *);
-extern BOOL ntw16s_import_patch_test_restore_fail(void);
+#ifdef WIN32_MODULE_IMPORT_PATCH_TESTING
+extern BOOL win32_module_import_patch_test_fail(size_t);
+extern void win32_module_import_patch_test_protected(void *);
+extern BOOL win32_module_import_patch_test_restore_fail(void);
 #endif
 static BOOL read_slot(void **slot,void **value)
 {
@@ -38,13 +38,13 @@ static DWORD exchange(HMODULE image,void **slot,void *from,void *to,BOOL *exchan
     if(!slot_region(image,slot,&writable))return ERROR_INVALID_ADDRESS;
     if(!VirtualProtect(slot,sizeof(void *),writable,&old))return GetLastError();
     *original=old;
-#ifdef NTW16S_IMPORT_PATCH_TESTING
-    ntw16s_import_patch_test_protected(slot);
+#ifdef WIN32_MODULE_IMPORT_PATCH_TESTING
+    win32_module_import_patch_test_protected(slot);
 #endif
     previous=InterlockedCompareExchangePointer((void *volatile *)slot,to,from);
     *exchanged=previous==from;
-#ifdef NTW16S_IMPORT_PATCH_TESTING
-    if(ntw16s_import_patch_test_restore_fail())error=ERROR_ACCESS_DENIED;
+#ifdef WIN32_MODULE_IMPORT_PATCH_TESTING
+    if(win32_module_import_patch_test_restore_fail())error=ERROR_ACCESS_DENIED;
     else
 #endif
     if(!VirtualProtect(slot,sizeof(void *),old,&ignored))error=GetLastError();
@@ -52,7 +52,7 @@ static DWORD exchange(HMODULE image,void **slot,void *from,void *to,BOOL *exchan
     return error;
 }
 
-DWORD ntw16s_import_apply(HMODULE image,const ntw16s_import_change *changes,
+DWORD win32_module_import_apply(HMODULE image,const win32_module_import_change *changes,
                           size_t count,unsigned *changed)
 {
     BOOL installed[IMPORT_PATCH_LIMIT]={0};DWORD protection[IMPORT_PATCH_LIMIT]={0},error=ERROR_SUCCESS;unsigned total=0;
@@ -69,8 +69,8 @@ DWORD ntw16s_import_apply(HMODULE image,const ntw16s_import_change *changes,
     }
     for(size_t i=0;i<count;++i){
         void *current;
-#ifdef NTW16S_IMPORT_PATCH_TESTING
-        if(ntw16s_import_patch_test_fail(i)){error=ERROR_WRITE_FAULT;goto rollback;}
+#ifdef WIN32_MODULE_IMPORT_PATCH_TESTING
+        if(win32_module_import_patch_test_fail(i)){error=ERROR_WRITE_FAULT;goto rollback;}
 #endif
         if(!read_slot(changes[i].slot,&current)){error=ERROR_INVALID_ADDRESS;goto rollback;}
         if(current==changes[i].replacement)continue;

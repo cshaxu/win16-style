@@ -1,25 +1,25 @@
 #define _WIN32_WINNT 0x0A00
 #include <windows.h>
 #include <stdio.h>
-#include "ntw16s-dll/import_scan.h"
+#include "lib-win32/module-import/import_scan.h"
 
 #define CHECK(x) do{if(!(x)){printf("IMPORT_PATCH FAIL line=%d error=%lu\n",__LINE__,GetLastError());return 1;}}while(0)
-typedef struct race {HANDLE start;HMODULE image;ntw16s_import_change change;DWORD error;unsigned changed;} race;
+typedef struct race {HANDLE start;HMODULE image;win32_module_import_change change;DWORD error;unsigned changed;} race;
 static unsigned fault_mode;
 static void **fault_slot;
 static void *fault_foreign;
 static int (*page_code)(void);
 static unsigned executable_checks;
 static BOOL fail_restore_once;
-BOOL ntw16s_import_patch_test_restore_fail(void)
+BOOL win32_module_import_patch_test_restore_fail(void)
 {BOOL fail=fail_restore_once;fail_restore_once=FALSE;return fail;}
-void ntw16s_import_patch_test_protected(void *slot)
+void win32_module_import_patch_test_protected(void *slot)
 {
     MEMORY_BASIC_INFORMATION info;
     if(VirtualQuery(slot,&info,sizeof(info)) && (info.Protect&0xff)==PAGE_EXECUTE_READWRITE && page_code && page_code()==42)
         ++executable_checks;
 }
-BOOL ntw16s_import_patch_test_fail(size_t index)
+BOOL win32_module_import_patch_test_fail(size_t index)
 {
     if(index!=1 || !fault_mode)return FALSE;
     if(fault_mode==2){DWORD old,ignored;
@@ -32,7 +32,7 @@ BOOL ntw16s_import_patch_test_fail(size_t index)
 static DWORD WINAPI compete(void *data)
 {
     race *r=data;if(WaitForSingleObject(r->start,2000)!=WAIT_OBJECT_0)return 1;
-    r->error=ntw16s_import_apply(r->image,&r->change,1,&r->changed);return 0;
+    r->error=win32_module_import_apply(r->image,&r->change,1,&r->changed);return 0;
 }
 static BOOL protect(void *p,DWORD mode)
 {DWORD old;return VirtualProtect(p,4096,mode,&old);}
@@ -49,26 +49,26 @@ int wmain(void)
     void *a=(void *)(UINT_PTR)0x11111110,*b=(void *)(UINT_PTR)0x22222220;
     void *x=(void *)(UINT_PTR)0x33333330,*y=(void *)(UINT_PTR)0x44444440,*foreign=(void *)(UINT_PTR)0x55555550;
     base[0]=a;base[1]=b;CHECK(protect(base,PAGE_EXECUTE_READ));
-    ntw16s_import_change changes[]={{&base[0],a,x},{&base[1],b,y}};unsigned changed=99;
-    CHECK(ntw16s_import_apply((HMODULE)base,changes,2,&changed)==ERROR_SUCCESS && changed==2);
+    win32_module_import_change changes[]={{&base[0],a,x},{&base[1],b,y}};unsigned changed=99;
+    CHECK(win32_module_import_apply((HMODULE)base,changes,2,&changed)==ERROR_SUCCESS && changed==2);
     CHECK(base[0]==x && base[1]==y && protection(base)==PAGE_EXECUTE_READ);
-    CHECK(ntw16s_import_apply((HMODULE)base,changes,2,&changed)==ERROR_SUCCESS && changed==0);
+    CHECK(win32_module_import_apply((HMODULE)base,changes,2,&changed)==ERROR_SUCCESS && changed==0);
     CHECK(protect(base,PAGE_READWRITE));base[0]=a;base[1]=foreign;CHECK(protect(base,PAGE_EXECUTE_READ));
-    CHECK(ntw16s_import_apply((HMODULE)base,changes,2,&changed)==ERROR_BUSY && changed==0);
+    CHECK(win32_module_import_apply((HMODULE)base,changes,2,&changed)==ERROR_BUSY && changed==0);
     CHECK(base[0]==a && base[1]==foreign && protection(base)==PAGE_EXECUTE_READ);
     CHECK(protect(base,PAGE_READWRITE));base[0]=a;base[1]=b;CHECK(protect(base,PAGE_EXECUTE_READ));
-    fault_mode=1;CHECK(ntw16s_import_apply((HMODULE)base,changes,2,&changed)==ERROR_WRITE_FAULT && changed==0);
+    fault_mode=1;CHECK(win32_module_import_apply((HMODULE)base,changes,2,&changed)==ERROR_WRITE_FAULT && changed==0);
     CHECK(base[0]==a && base[1]==b && protection(base)==PAGE_EXECUTE_READ);
     fault_mode=2;fault_slot=&base[0];fault_foreign=foreign;
-    CHECK(ntw16s_import_apply((HMODULE)base,changes,2,&changed)==ERROR_WRITE_FAULT && changed==0);
+    CHECK(win32_module_import_apply((HMODULE)base,changes,2,&changed)==ERROR_WRITE_FAULT && changed==0);
     CHECK(base[0]==foreign && base[1]==b && protection(base)==PAGE_EXECUTE_READ);fault_mode=0;
     CHECK(protect(base,PAGE_READWRITE));base[0]=a;base[1]=b;CHECK(protect(base,PAGE_EXECUTE_READ));
-    fail_restore_once=TRUE;CHECK(ntw16s_import_apply((HMODULE)base,changes,2,&changed)==ERROR_ACCESS_DENIED && changed==0);
+    fail_restore_once=TRUE;CHECK(win32_module_import_apply((HMODULE)base,changes,2,&changed)==ERROR_ACCESS_DENIED && changed==0);
     CHECK(base[0]==a && base[1]==b && protection(base)==PAGE_EXECUTE_READ);
-    changes[1].slot=&base[0];CHECK(ntw16s_import_apply((HMODULE)base,changes,2,&changed)==ERROR_INVALID_PARAMETER && changed==0);
-    changes[1].slot=(void **)((BYTE *)base+1);CHECK(ntw16s_import_apply((HMODULE)base,changes,2,&changed)==ERROR_INVALID_ADDRESS);
+    changes[1].slot=&base[0];CHECK(win32_module_import_apply((HMODULE)base,changes,2,&changed)==ERROR_INVALID_PARAMETER && changed==0);
+    changes[1].slot=(void **)((BYTE *)base+1);CHECK(win32_module_import_apply((HMODULE)base,changes,2,&changed)==ERROR_INVALID_ADDRESS);
     changes[1].slot=&base[1];CHECK(protect(base,PAGE_EXECUTE_READ|PAGE_GUARD));
-    CHECK(ntw16s_import_apply((HMODULE)base,changes,2,&changed)==ERROR_INVALID_ADDRESS);
+    CHECK(win32_module_import_apply((HMODULE)base,changes,2,&changed)==ERROR_INVALID_ADDRESS);
     CHECK(protect(base,PAGE_READWRITE));base[0]=a;base[1]=b;CHECK(protect(base,PAGE_EXECUTE_READ));
     HANDLE start=CreateEventW(NULL,TRUE,FALSE,NULL);CHECK(start);
     race r[2]={{start,(HMODULE)base,{&base[0],a,x},0,0},{start,(HMODULE)base,{&base[0],a,y},0,0}};

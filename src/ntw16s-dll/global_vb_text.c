@@ -1,5 +1,5 @@
 #include "global_vb_text.h"
-#include "import_scan.h"
+#include "lib-win32/module-import/import_scan.h"
 #include "vb_text.h"
 
 static INIT_ONCE originals_once=INIT_ONCE_STATIC_INIT;
@@ -58,7 +58,7 @@ static BOOL WINAPI global_text_ex(HDC dc,int x,int y,UINT options,const RECT *re
 
 DWORD ntw16s_global_vb_text(HWND window,BOOL *changed)
 {
-    static const ntw16s_import_query queries[]={
+    static const win32_module_import_query queries[]={
         {"USER32.dll","DrawTextA"},{"USER32.dll","DrawTextExA"},
         {"GDI32.dll","TextOutA"},{"GDI32.dll","ExtTextOutA"}};
     HMODULE runtime=NULL;DWORD process=0,error=ERROR_NOT_SUPPORTED;WCHAR name[64];
@@ -70,13 +70,13 @@ DWORD ntw16s_global_vb_text(HWND window,BOOL *changed)
     if(!GetModuleHandleExW(0,L"MSVBVM60.DLL",&runtime))return ERROR_NOT_SUPPORTED;
     if((HMODULE)GetClassLongPtrW(window,GCLP_HMODULE)!=runtime)goto done;
     if(!InitOnceExecuteOnce(&originals_once,originals_init,NULL,NULL)){error=ERROR_PROC_NOT_FOUND;goto done;}
-    error=ntw16s_import_slots(runtime,queries,ARRAYSIZE(queries),slots);if(error)goto done;
-    ntw16s_import_change changes[]={
+    error=win32_module_import_slots(runtime,queries,ARRAYSIZE(queries),slots);if(error)goto done;
+    win32_module_import_change changes[]={
         {slots[0],(void *)original_draw,(void *)global_draw},
         {slots[1],(void *)original_draw_ex,(void *)global_draw_ex},
         {slots[2],(void *)original_text,(void *)global_text},
         {slots[3],(void *)original_text_ex,(void *)global_text_ex}};
-    error=ntw16s_import_apply(runtime,changes,ARRAYSIZE(changes),&count);
+    error=win32_module_import_apply(runtime,changes,ARRAYSIZE(changes),&count);
     if(!error)*changed=count!=0;
 done:
     FreeLibrary(runtime);return error;

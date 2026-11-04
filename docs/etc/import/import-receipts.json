@@ -3701,46 +3701,46 @@
       "notice": "Project-authored test; no imported resources"
     },
     {
-      "path": "src/ntw16s-dll/import_scan.c",
+      "path": "src/lib-win32/module-import/import_scan.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1278f0721c0c6703942b07161164d8755d61f89f3d3369fe98d539b4e6a5333f",
+      "sha256": "3258f16182cdae684c59956bebed517439bd581b188d0b7a665575c8a60682c7",
       "disposition": "authored",
-      "review": "T21 S13 bounded read-only local PE import scanning and native dual-width tests",
+      "review": "T21 S13 bounded read-only local PE import scanning and native dual-width tests; T21 S30 generic IAT extraction",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/import_scan.h",
+      "path": "src/lib-win32/module-import/import_scan.h",
       "source": null,
       "source_blob": null,
-      "sha256": "72cc1c8430afedbfe9878c824cddb7563a06ee96a1c3614ef15487ccd9e6da7a",
+      "sha256": "7e129c9e858c81c4893f53a1f331b1a37c96ffdf794bbbdb1e72d1466e24fa29",
       "disposition": "authored",
-      "review": "T21 S13 bounded read-only local PE import scanning and native dual-width tests",
+      "review": "T21 S13 bounded read-only local PE import scanning and native dual-width tests; T21 S30 generic IAT extraction",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/ntw16s-dll/import_scan.c",
       "source": null,
       "source_blob": null,
-      "sha256": "8d2b18d710ef258b359b944811d46bfc5e3bca485049acc28916f4c3fb0d7ad7",
+      "sha256": "f67149e673b6a63f171f5e2b93f67f24cd88f7870c8ac13be7d0898abee8c461",
       "disposition": "authored",
       "review": "T21 S13 bounded read-only local PE import scanning and native dual-width tests",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/import_patch.c",
+      "path": "src/lib-win32/module-import/import_patch.c",
       "source": null,
       "source_blob": null,
-      "sha256": "dfeb9e55515c5748fdbc03039c4e7d7a815fd2c66f90ba3b3f7e2c1ce298f85b",
+      "sha256": "5540557e24d82d4bdd83f08ec63f3f1953e82858274b0046e967d4b5b5e63025",
       "disposition": "authored",
-      "review": "T21 S13 guarded atomic import updates and native fault tests",
+      "review": "T21 S13 guarded atomic import updates and native fault tests; T21 S30 generic IAT extraction",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/ntw16s-dll/import_patch.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d082663f3d3d48e39854141809bf31ea6086206a17a673e8d676f1e71ce55a15",
+      "sha256": "1ffda21ce1cef284a59b0ba0597a1118a7726407a9e2f440f91782c686928ee7",
       "disposition": "authored",
       "review": "T21 S13 guarded atomic import updates and native fault tests",
       "notice": "Project-authored source; no imported code or resources"
@@ -3749,7 +3749,7 @@
       "path": "src/ntw16s-dll/global_vb_text.c",
       "source": null,
       "source_blob": null,
-      "sha256": "365c2218eab75ee153859319b8bc08399df8bc49e0db79e160e13649617a0ae8",
+      "sha256": "4496db84f2506080a169e39e6d72c48a5b9a6f1df6451715a5f4bd94a7754579",
       "disposition": "authored",
       "review": "T21 S13 controlled VB6 global text attachment and native fixture",
       "notice": "Project-authored source; no imported code or resources"
@@ -3776,7 +3776,7 @@
       "path": "tests/ntw16s-dll/global_vb_text.c",
       "source": null,
       "source_blob": null,
-      "sha256": "37491c59784a9a3237c511f51b6c236772a43d5734ec73745d357b0862c55117",
+      "sha256": "77dab3979f63aa232603fe4ef3a19728a0f1e966d5a2bd7b82c5c6735a950e89",
       "disposition": "authored",
       "review": "T21 S13 controlled VB6 global text attachment and native fixture",
       "notice": "Project-authored source; no imported code or resources"
