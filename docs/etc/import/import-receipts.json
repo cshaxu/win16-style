@@ -1382,9 +1382,9 @@
       "path": "src/ntw16s-dll/injection/installer.c",
       "source": "src/nthook32-dll/installer.cpp",
       "source_blob": "84e78935b3079089569b9167eaed994df3220ebd",
-      "sha256": "0dfe647f558108723907494219f601c373e8d27292697823b4753064be75d778",
+      "sha256": "3bd21aea86cffe68db4396449ff71af83f51b7cf8ab84f11d4fa2c1d90fcaf4a",
       "disposition": "adapt",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified session stop semantics",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified session stop semantics; T21 S28 image operations extracted to process-image",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -5616,6 +5616,24 @@
       "disposition": "authored",
       "review": "T21 S24 extracted frame message dispatch from project-authored src/ntw16s-dll/win16_style.c",
       "notice": "Project-authored source; existing resource and provenance notices retained"
+    },
+    {
+      "path": "src/lib-win32/process-image/image.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "75883095a6c6c434d394a5e793679861255b26c700aa52820bfba215cb5868e3",
+      "disposition": "authored",
+      "review": "T21 S28 extraction from existing project installer.c adaptation; no new sibling source imported",
+      "notice": "Project C extraction; installer adaptation provenance retained in existing receipt"
+    },
+    {
+      "path": "src/lib-win32/process-image/image.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "f5ce7ca558bae6e529b483ea431468165dc5879f978875df0e76af4f113681ed",
+      "disposition": "authored",
+      "review": "T21 S28 extraction from existing project installer.c adaptation; no new sibling source imported",
+      "notice": "Project C extraction; installer adaptation provenance retained in existing receipt"
     }
   ]
 }

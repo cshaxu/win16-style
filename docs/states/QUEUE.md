@@ -16,6 +16,8 @@ CURRENT 是唯一活动工作权威；本文件拥有顺序，各 proposal 拥�
 
 [纯 C Win32 进程挂钩库](../proposals/process-hook-library.md)已按用户要求准入，活动状态由CURRENT管理。
 
+[公共 Win32 基础组件](../proposals/win32-common-components.md)已按用户要求准入，活动状态由CURRENT管理。
+
 [VB6框架控件外观](../proposals/madshow-controls.md)及[Delphi控件适配](../proposals/delphi-win32-controls.md)已按用户确认的有限范围收口，未覆盖项见TODO。
 
 [启动器与首次自动附着](../proposals/launcher-injection.md)已关闭；

@@ -2,7 +2,28 @@
 
 ## Current Work
 
-无活动任务包。S27 同位宽纯载荷入口已交付，T21 保持开放；跨位宽纯载荷及隔壁适配尚未验证，详见[记录](../history/M0-T21-S27-payload.md)。
+## M0 T21 S28 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | New；T21 后续 S。 |
+| Admission And Approval | 用户要求调研并制作两项目可用的 Win32 公共组件。 |
+| Objective | 提取本项目 PE 文件与进程位宽识别，建立可独立构建的纯 C process-image 接口。 |
+| Non-goals | 隔壁只读，不改变系统分类语义、启动策略、公共产品 ABI 或资源。 |
+| Reference Baseline | S27 交付 df59550；隔壁 main 的 common/native_image 为只读比较。 |
+| Candidate Proposal | [公共 Win32 组件](../proposals/win32-common-components.md)。 |
+| Files And ABI Surface | src/lib-win32/process-image、现有调用方适配、构建与原生测试；不增加产品文件或导出。 |
+| Applicable Rules | M0、纯 C17、双位宽 GCC/Ninja/ccache；保留原文件来源声明。 |
+| Verification | 双位宽独立库及真实 PE/进程、错误和拒绝路径；干净四文件实际包回归、发布、提交推送与远端复核。 |
+| Expected Markers | 单一生产实现被本项目调用；不依赖产品头或兄弟仓库。 |
+| Asset Needs | 原图形资源和第三方声明不变。 |
+| Reporting Requirements | 精确区分两项目语义及尚未实际集成验证的部分。 |
+| Stop Conditions | 不修改隔壁或将其变成构建依赖；不能将接口相似冒充行为等价。 |
+| Exit Criteria | 双宽构建、实包测试、发布推送与远端复核；后续组件按用户授权继续。 |
+| Original Owner Request | 调研并开始制作双方可使用的公共组件，覆盖已讨论四类能力。 |
+| Similar-Issue Sweep | 核对 PE 校验、进程位宽、旧格式识别和相关调用方及测试。 |
+
+P1：将 PE 映像校验和进程位宽查询从 installer 提取为不依赖产品头的 process-image 静态库；原 ntw16s 名称以薄适配转发。`s28-clean1` 双宽干净构建、来源/资源与 ABI 检查通过，干净树独立测试双宽通过；`s28-package1` 实包聚焦 13/13、无跳过，覆盖启动、旧 IAT、真实四位宽边；`s28-publish1` 四文件已发布两处并核对摘要。旧 MZ/NE 识别仍在启动器；隔壁 SEC_IMAGE 语义、直接适配与完整 UI 矩阵未验证。提交推送及远端复核待完成。
 
 S25 经用户验收收口，交付范围见 [记录](../history/M0-T21-S25-common.md)。
 
@@ -412,9 +433,9 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
-- Last allocated T21 S: 27
+- Last allocated T21 S: 28
 - Last verified remote delivery: M0 T21 S27 P1，`2227486`；四产品、纯载荷源码及探针远端对象已复核一致。
-- Open task: T21；S27 同位宽范围已交付。Explorer.exe 仍被排除。
+- Open task: T21；S28 process-image 实施中。Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。
