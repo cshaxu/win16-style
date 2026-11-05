@@ -6,6 +6,7 @@
 #include "lib-win32/process-global/enumerate.h"
 #include "lib-win32/process-global/queue.h"
 #include "lib-win32/process-global/dispatch.h"
+#include "lib-win32/process-global/registry.h"
 #include <stdlib.h>
 #include <string.h>
 #include <wchar.h>
@@ -19,49 +20,45 @@ typedef struct manager_entry {
     win32_process_global_queue_node queue_node;
     DWORD pid,thread_id;HWND window;entry_state state;unsigned attempts;
     ntw16s_global_attach attach;
-    struct manager_entry *hash_next;
+    win32_process_global_registry_node registry_node;
 } manager_entry;
 struct ntw16s_global_manager {
     ntw16s_global_discover discover;ntw16s_global_policy policy;ntw16s_global_session *session;
     HANDLE mapping,stop,quit,work,changed,workers[MANAGER_WORKERS],ready[MANAGER_WORKERS];
     win32_process_global_dispatch contexts[MANAGER_WORKERS];
     HDESK desktop;WCHAR *dll_path;WORD machine;DWORD owner_thread;SRWLOCK lock;
-    manager_entry *buckets[MANAGER_BUCKETS];win32_process_global_queue queue;unsigned count,reap_bucket;
+    win32_process_global_registry_node *buckets[MANAGER_BUCKETS];win32_process_global_registry registry;win32_process_global_queue queue;unsigned count;
     volatile LONG queued,working,active,failed,overflow;
     SRWLOCK process_locks[64];
     ntw16s_global_process *process_monitor;
 };
 
 static void notify_change(ntw16s_global_manager *m){SetEvent(m->changed);}
-static unsigned bucket(DWORD pid,DWORD tid){return (unsigned)((pid^(tid*33u))%MANAGER_BUCKETS);}
-/* Called under the manager lock. Bound normal event work to a few buckets;
- * at capacity scan the rest before refusing a newly discovered target. */
-static void reap(ntw16s_global_manager *m,unsigned budget)
+/* The registry owns only its intrusive index; this callback applies the
+ * product's existing ticket-lifetime rules under the manager lock. */
+static BOOL expired(void *owner,void *context)
 {
-    BOOL changed=FALSE;
-    while(budget--){
-        manager_entry **link=&m->buckets[m->reap_bucket];
-        m->reap_bucket=(m->reap_bucket+1)%MANAGER_BUCKETS;
-        while(*link){
-            manager_entry *e=*link;BOOL dead=FALSE;
-            if(e->state==ENTRY_ACTIVE && e->attach.start.thread &&
-               WaitForSingleObject(e->attach.start.thread,0)==WAIT_OBJECT_0)dead=TRUE;
-            else if(e->state==ENTRY_FAILED){
-                if(e->attach.process)dead=WaitForSingleObject(e->attach.process,0)==WAIT_OBJECT_0;
-                else{
-                    HANDLE process=OpenProcess(SYNCHRONIZE,FALSE,e->pid);
-                    if(process){dead=WaitForSingleObject(process,0)==WAIT_OBJECT_0;CloseHandle(process);}
-                    else dead=GetLastError()==ERROR_INVALID_PARAMETER;
-                }
-            }
-            if(dead && !ntw16s_global_attach_close(&e->attach)){
-                *link=e->hash_next;if(e->state==ENTRY_ACTIVE)InterlockedDecrement(&m->active);
-                --m->count;free(e);changed=TRUE;
-            }else link=&e->hash_next;
+    manager_entry *e=(manager_entry *)owner;BOOL dead=FALSE;(void)context;
+    if(e->state==ENTRY_ACTIVE && e->attach.start.thread &&
+       WaitForSingleObject(e->attach.start.thread,0)==WAIT_OBJECT_0)dead=TRUE;
+    else if(e->state==ENTRY_FAILED){
+        if(e->attach.process)dead=WaitForSingleObject(e->attach.process,0)==WAIT_OBJECT_0;
+        else{
+            HANDLE process=OpenProcess(SYNCHRONIZE,FALSE,e->pid);
+            if(process){dead=WaitForSingleObject(process,0)==WAIT_OBJECT_0;CloseHandle(process);}
+            else dead=GetLastError()==ERROR_INVALID_PARAMETER;
         }
     }
-    if(changed)notify_change(m);
+    return dead && !ntw16s_global_attach_close(&e->attach);
 }
+static void release_entry(void *owner,void *context)
+{
+    manager_entry *e=(manager_entry *)owner;ntw16s_global_manager *m=(ntw16s_global_manager *)context;
+    if(e->state==ENTRY_ACTIVE)InterlockedDecrement(&m->active);
+    --m->count;free(e);
+}
+static void reap(ntw16s_global_manager *m,unsigned budget)
+{if(win32_process_global_registry_reap(&m->registry,budget,expired,release_entry,m))notify_change(m);}
 static void enqueue(ntw16s_global_manager *m,manager_entry *entry)
 {
     entry->state=ENTRY_QUEUED;win32_process_global_queue_push(&m->queue,&entry->queue_node);
@@ -73,8 +70,7 @@ static void discovered(HWND window,DWORD pid,DWORD thread_id,void *context)
     if(m->session->phase!=NTW16S_GLOBAL_ACTIVE || pid==m->session->owner_pid || pid==m->session->host_pid)return;
     AcquireSRWLockExclusive(&m->lock);
     reap(m,m->count>=MANAGER_LIMIT?MANAGER_BUCKETS:8u);
-    unsigned index=bucket(pid,thread_id);manager_entry *entry=m->buckets[index];
-    while(entry && (entry->pid!=pid || entry->thread_id!=thread_id))entry=entry->hash_next;
+    manager_entry *entry=(manager_entry *)win32_process_global_registry_find(&m->registry,pid,thread_id);
     if(entry){
         /* A finished worker may be a dead thread or a recycled thread ID. */
         if(entry->state==ENTRY_ACTIVE && entry->attach.start.thread &&
@@ -88,7 +84,7 @@ static void discovered(HWND window,DWORD pid,DWORD thread_id,void *context)
     entry=(manager_entry *)calloc(1,sizeof(*entry));
     if(!entry){InterlockedIncrement(&m->failed);ReleaseSRWLockExclusive(&m->lock);notify_change(m);return;}
     entry->pid=pid;entry->thread_id=thread_id;entry->window=window;
-    entry->hash_next=m->buckets[index];m->buckets[index]=entry;++m->count;enqueue(m,entry);
+    win32_process_global_registry_insert(&m->registry,&entry->registry_node,pid,thread_id,entry);++m->count;enqueue(m,entry);
     ReleaseSRWLockExclusive(&m->lock);
 }
 /* Startup-only snapshot. Runtime discovery remains event driven. Prefer the
@@ -101,8 +97,10 @@ static BOOL discover_existing_thread(DWORD pid,DWORD tid,void *context)
     if(!GetThreadDesktop(tid))return TRUE;
     AcquireSRWLockShared(&m->lock);
     for(unsigned i=0;i<MANAGER_BUCKETS && !found;++i)
-        for(manager_entry *entry=m->buckets[i];entry;entry=entry->hash_next)
+        for(win32_process_global_registry_node *node=m->buckets[i];node;node=node->next){
+            manager_entry *entry=(manager_entry *)node->owner;
             if(entry->pid==pid && entry->state!=ENTRY_FAILED){found=TRUE;break;}
+        }
     ReleaseSRWLockShared(&m->lock);
     if(!found){
         ntw16s_global_identity identity;
@@ -248,8 +246,7 @@ DWORD ntw16s_global_manager_wait_idle(ntw16s_global_manager *m,DWORD timeout)
 BOOL ntw16s_global_manager_tracks(ntw16s_global_manager *m,DWORD pid,DWORD thread_id)
 {
     if(!m || !pid || !thread_id)return FALSE;
-    AcquireSRWLockShared(&m->lock);manager_entry *e=m->buckets[bucket(pid,thread_id)];
-    while(e && (e->pid!=pid || e->thread_id!=thread_id))e=e->hash_next;
+    AcquireSRWLockShared(&m->lock);manager_entry *e=(manager_entry *)win32_process_global_registry_find(&m->registry,pid,thread_id);
     BOOL found=e!=NULL;ReleaseSRWLockShared(&m->lock);return found;
 }
 void ntw16s_global_manager_stats_read(ntw16s_global_manager *m,ntw16s_global_manager_stats *s)
@@ -271,12 +268,13 @@ DWORD ntw16s_global_manager_stop(ntw16s_global_manager *m,DWORD timeout)
         DWORD wait=WaitForSingleObject(m->workers[i],remaining);
         if(wait!=WAIT_OBJECT_0)return wait==WAIT_TIMEOUT?ERROR_TIMEOUT:(wait==WAIT_FAILED?GetLastError():ERROR_INVALID_STATE);
     }
-    for(unsigned i=0;i<MANAGER_BUCKETS;++i)for(manager_entry *e=m->buckets[i];e;e=e->hash_next){
+    for(unsigned i=0;i<MANAGER_BUCKETS;++i)for(win32_process_global_registry_node *node=m->buckets[i];node;node=node->next){
+        manager_entry *e=(manager_entry *)node->owner;
         if(e->attach.start.thread){ULONGLONG now=GetTickCount64();DWORD left=now<deadline?(DWORD)(deadline-now):0;WaitForSingleObject(e->attach.start.thread,left);}
         if(e->attach.load.thread){ULONGLONG now=GetTickCount64();DWORD left=now<deadline?(DWORD)(deadline-now):0;WaitForSingleObject(e->attach.load.thread,left);}
         DWORD error=ntw16s_global_attach_close(&e->attach);if(error)return error;
     }
-    for(unsigned i=0;i<MANAGER_BUCKETS;++i){manager_entry *e=m->buckets[i];while(e){manager_entry *next=e->hash_next;free(e);e=next;}}
+    for(unsigned i=0;i<MANAGER_BUCKETS;++i){win32_process_global_registry_node *node=m->buckets[i];while(node){win32_process_global_registry_node *next=node->next;free(node->owner);node=next;}}
     for(unsigned i=0;i<MANAGER_WORKERS;++i){if(m->workers[i])CloseHandle(m->workers[i]);if(m->ready[i])CloseHandle(m->ready[i]);}
     if(m->session)UnmapViewOfFile(m->session);
     if(m->mapping)CloseHandle(m->mapping);
@@ -292,6 +290,7 @@ DWORD ntw16s_global_manager_start(const WCHAR *dll_path,WORD machine,ntw16s_glob
     if(result)*result=NULL;
     if(!dll_path || !*dll_path || !result || machine!=(sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386))return ERROR_INVALID_PARAMETER;
     ntw16s_global_manager *m=(ntw16s_global_manager *)calloc(1,sizeof(*m));if(!m)return ERROR_NOT_ENOUGH_MEMORY;
+    win32_process_global_registry_init(&m->registry,m->buckets,MANAGER_BUCKETS);
     m->owner_thread=GetCurrentThreadId();m->desktop=GetThreadDesktop(m->owner_thread);m->machine=machine;
     size_t length=wcslen(dll_path);if(length>=32752){error=ERROR_FILENAME_EXCED_RANGE;goto fail;}
     m->dll_path=(WCHAR *)calloc(length+1,sizeof(WCHAR));if(!m->dll_path){error=ERROR_NOT_ENOUGH_MEMORY;goto fail;}

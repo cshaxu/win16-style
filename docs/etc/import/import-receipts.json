@@ -320,7 +320,7 @@
       "path": "src/ntw16s-dll/global_manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "07e3b14510d6899daaf4a58c9a021fc676790e7c81538a00ae4a0fd0962dee00",
+      "sha256": "2e2e9eb461b055c6810ca337ba001e14d7a5a52b649fff0ec34d1beb31da5f4b",
       "disposition": "authored",
       "review": "T21 S40 shared Toolhelp iteration; caller retains selection and lifecycle",
       "notice": "Project-authored C"
@@ -5882,7 +5882,7 @@
       "path": "tests/lib-win32/process-global/enumerate.c",
       "source": null,
       "source_blob": null,
-      "sha256": "9153a32c3b4993629ca1b52e0e20375eb53f6b205295f3d3e2a6074016bb9c22",
+      "sha256": "7bfb7e916dfd7e78cf009e5bb0963731e21ba8224e09a4435c296352acd3a77a",
       "disposition": "authored",
       "review": "T21 S41 shared global work queue",
       "notice": "Project-authored C code; no imported artwork"
@@ -6038,6 +6038,24 @@
       "sha256": "dafca52669a0517270a481b3f53f12499ccf7ea55a2f3df3eee9b2b93cb8e3e1",
       "disposition": "authored",
       "review": "T21 S41 dispatch standalone lifecycle test",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-global/registry.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "264a7c4fb57c0158c1adc3f0dfcd595414e3cb62552387db6e0c35a7a6b35ec0",
+      "disposition": "authored",
+      "review": "T21 S41 extract process thread registry",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-global/registry.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "b0b1551ddb7760243d8d9a5d73c818b49489fd5c77a00aab3d0360a2cc161393",
+      "disposition": "authored",
+      "review": "T21 S41 extract process thread registry",
       "notice": "Project-authored C code; no imported artwork"
     }
   ]
