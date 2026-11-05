@@ -267,7 +267,7 @@ P23 交付证据：`s41-clean27` 双位宽干净构建、ABI、来源与资源�
 | `tests/lib-win32/process-hook/unwind.c` | `af559cbbb44c7668bd3b1d544bc59789c7b36e71da2e278c154a9ae75a5653a1` |
 | `tests/lib-win32/process-hook/late_batch.c` | `ee21feb9db2c4d0134901ea7169ed453b7b99b46b75665cf168da5e163e81c5b` |
 | `tests/lib-win32/process-hook/propagate.c` | `de7182170c3c9da8fbd30899db62854eb9a13c20835e45d157e31f615df20d10` |
-| `tests/lib-win32/process-hook/portable/CMakeLists.txt` | `ee49f56f9c0f1bb36231259008c38413175b51d5da102485cf9aca9ae4ec25c1` |
+| `tests/lib-win32/process-hook/portable/CMakeLists.txt` | `cceab1d507ec747fe08acace78588e1d63e2fdd9588de34b903bb5c1dc5c157c` |
 
 当前只读对照：兄弟仓库缺少 late_batch、propagate、unwind；其 late_patch 的 88 上限在 .c 内，本项目移到 .h 以供 batch 调用，需同步合并两个文件；startup_hooks 差异是 MSVC 内建函数分支，兄弟仓库现通过 `src/compat/include/process_hook_msvc.h` 强制包含模拟，合并时核查冲突并移除冗余适配。其 helper、payload、staging、late_guard、MinHook 文件及许可当前摘要相同；必须再次核验，保留所有来源及许可证。
 
@@ -276,3 +276,5 @@ P23 交付证据：`s41-clean27` 双位宽干净构建、ABI、来源与资源�
 late_batch 的已提交 trampoline 不能安全物理卸载；停用只使传播回到透传。产品组合的实际托盘、管理员 ETW 以及恢复差异仍沿用此前已记录的限制。
 
 P24 交付：`s41-clean28` 双宽干净构建、ABI、来源与资源、公共源码和静态库边界检查通过；干净树两位宽各 8 项钩子/展开/生命周期测试通过。`s41-package28` 同批四文件实际包聚焦 32 项通过，无顶层跳过；manager 两位宽恢复摘要仍为 2875890938，与旧版相同且不等于原始 343534586。`s41-publish24` 两个目录四文件摘要一致。MSVC 可移植 CMake 入口双宽各 3 项通过；这不构成 ntvdm64 产品验证。
+
+导入清单中的便携 CMake 摘要按提交后的 LF 文件计算；`s41-clean28` 快照中该文件为 CRLF，内容相同但字节摘要为 `ee49f56f9c0f1bb36231259008c38413175b51d5da102485cf9aca9ae4ec25c1`，该文件不参与产品构建入口。
