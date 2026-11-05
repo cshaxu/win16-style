@@ -2,6 +2,10 @@
 
 # Deferred Debt
 
+- [ ] TODO(Low): 全局模式管理员 ETW、真实托盘端到端及其他 window station 的环境受限验证；Owner：未来明确准入的全局模式验证。Evidence：[S41 审计](../proposals/global-process-audit.md) 中私有桌面托盘创建错误、非管理员 ETW 和 station 子项跳过；未计通过。Admission：具备合适会话和授权后，使用自有实例、有限等待及清理复测。
+
+- [ ] TODO(Low): 全局组合停止后的 Button 绘制摘要不等原始值；Owner：未来用户明确要求的样式恢复调查。Evidence：[S41 审计](../proposals/global-process-audit.md) 中新旧版本同样复现；用户要求以重构前后结果一致为准，不继续深挖。Admission：需要改进恢复时再准入；不声称此前像素恢复通过。
+
 - [ ] TODO(Medium): 月历模型屏幕 DC 在样式激活时偶现左缘 39 像素差异；Owner：后续月历测试/呈现调查。Evidence：[S22 审计](../history/M0-T21-S22-control-library.md)：迁移前后均可复现，同样式重复采样亦可出现；原因未确定。Admission：识别实际绘制源或可验证的采样条件，保留原始失败及像素断言。
 
 - [ ] TODO(Medium): 颜色控件测试启动期进程级 GDI 对象波动的具体来源；Owner：后续资源生命周期调查。Evidence：[S22 审计](../history/M0-T21-S22-control-library.md)：空闲对照也增长，稳定后重复打印与持续泄漏负例均已检查，不能排除启动期或慢泄漏。Admission：识别对象类型和归属并核实释放，不以等待或重试证明无泄漏。

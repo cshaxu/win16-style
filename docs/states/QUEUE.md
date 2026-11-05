@@ -10,7 +10,7 @@ CURRENT 是唯一活动工作权威；本文件拥有顺序，各 proposal 拥�
 | 顺序 | T 候选 | 前置完成条件 | 核心交付/任务级退出条件 |
 | --- | --- | --- | --- |
 
-[run16s 手动全局样式模式](../proposals/global-style-mode.md)已按用户要求准入，活动状态由CURRENT管理。 [S41 全局进程审计](../proposals/global-process-audit.md)属于当前活动 S，并非新增队列候选。
+[run16s 手动全局样式模式](../proposals/global-style-mode.md)已按用户要求准入，活动状态由CURRENT管理。 [S41 全局进程审计](../proposals/global-process-audit.md)已完成并收口，并非新增队列候选。
 
 [Win16 控件与对话框内部库设计](../proposals/win16-libraries.md)已按用户要求准入，活动状态由CURRENT管理。
 
