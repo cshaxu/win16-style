@@ -7,16 +7,16 @@
 #include "ntw16s-dll/injection/late_process.h"
 #include "ntw16s-dll/global_session.h"
 ntw16s_context ntw16s_process_context;
-static volatile LONG running=1,ticks;
+static volatile LONG running=1,ticks,style_registrations;
 /* The ordinary-startup backend is not linked into this isolated fixture. */
 DWORD ntw16s_hooks_attach(void *slot,void *replacement)
 {(void)slot;(void)replacement;return ERROR_NOT_SUPPORTED;}
 /* This fixture isolates process propagation. Real style registrations are
  * exercised by the actual DLL integration tests. */
-LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *)){return attach?NO_ERROR:ERROR_INVALID_PARAMETER;}
-LONG ntw16s_attach_file_dialogs_using(DWORD (*attach)(void *,void *)){return attach?NO_ERROR:ERROR_INVALID_PARAMETER;}
-LONG ntw16s_attach_com_dialogs_using(DWORD (*attach)(void *,void *)){return attach?NO_ERROR:ERROR_INVALID_PARAMETER;}
-LONG ntw16s_attach_folder_dialogs_using(DWORD (*attach)(void *,void *)){return attach?NO_ERROR:ERROR_INVALID_PARAMETER;}
+LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *)){if(attach){InterlockedIncrement(&style_registrations);return NO_ERROR;}return ERROR_INVALID_PARAMETER;}
+LONG ntw16s_attach_file_dialogs_using(DWORD (*attach)(void *,void *)){if(attach){InterlockedIncrement(&style_registrations);return NO_ERROR;}return ERROR_INVALID_PARAMETER;}
+LONG ntw16s_attach_com_dialogs_using(DWORD (*attach)(void *,void *)){if(attach){InterlockedIncrement(&style_registrations);return NO_ERROR;}return ERROR_INVALID_PARAMETER;}
+LONG ntw16s_attach_folder_dialogs_using(DWORD (*attach)(void *,void *)){if(attach){InterlockedIncrement(&style_registrations);return NO_ERROR;}return ERROR_INVALID_PARAMETER;}
 static DWORD WINAPI background(void *p)
 {(void)p;while(InterlockedCompareExchange(&running,0,0)){InterlockedIncrement(&ticks);Sleep(1);}return 0;}
 int wmain(int argc,WCHAR **argv)
@@ -29,7 +29,9 @@ int wmain(int argc,WCHAR **argv)
         printf("LATE EXISTING bits=%u status=%lu unchanged=%d\n",(unsigned)(sizeof(void*)*8),status,unchanged);
         return !status && unchanged?0:1;
     }
-    if(argc!=4 || (wcscmp(argv[3],L"A") && wcscmp(argv[3],L"W")))return 2;
+    BOOL propagation_only=argc==5 && !wcscmp(argv[4],L"propagation-only");
+    if((argc!=4 && !propagation_only) || (wcscmp(argv[3],L"A") && wcscmp(argv[3],L"W")))return 2;
+    if(propagation_only && !SetEnvironmentVariableW(L"WIN16S_TEST_PROPAGATION_ONLY",L"1"))return 2;
     WCHAR directory[NTW16S_PATH_CAP];DWORD length=GetFullPathNameW(argv[2],NTW16S_PATH_CAP,directory,NULL);
     if(!length || length>=NTW16S_PATH_CAP)return 3;
     WCHAR session_name[NTW16S_GLOBAL_NAME_CAP];if(!ntw16s_global_name(session_name,ARRAYSIZE(session_name)))return 9;
@@ -45,9 +47,10 @@ int wmain(int argc,WCHAR **argv)
     session->phase=NTW16S_GLOBAL_ACTIVE;
     HANDLE thread=CreateThread(NULL,0,background,NULL,0,NULL);if(!thread)return 4;
     while(!InterlockedCompareExchange(&ticks,0,0))Sleep(1);
-    DWORD error=ntw16s_late_process_init(directory,session->cookie);
+    DWORD error=propagation_only?ntw16s_late_process_init_mode(directory,session->cookie,NTW16S_POLICY_PROPAGATE):ntw16s_late_process_init(directory,session->cookie);
     if(error){printf("LATE PROCESS install=%lu\n",error);return 6;}
-    DWORD repeat=ntw16s_late_process_init(directory,session->cookie);if(repeat)return 5;
+    DWORD repeat=propagation_only?ntw16s_late_process_init_mode(directory,session->cookie,NTW16S_POLICY_PROPAGATE):ntw16s_late_process_init(directory,session->cookie);if(repeat)return 5;
+    if(propagation_only && (style_registrations || (ntw16s_process_context.flags&NTW16S_POLICY_STYLE)))return 11;
     PROCESS_INFORMATION child={0};BOOL made=FALSE;
     if(!wcscmp(argv[3],L"W")){
         WCHAR command[32768];STARTUPINFOW si={.cb=sizeof(si)};
@@ -83,12 +86,13 @@ int wmain(int argc,WCHAR **argv)
     }
     DWORD stopped_code=99;if(stopped_created){if(WaitForSingleObject(after.hProcess,5000)==WAIT_OBJECT_0)GetExitCodeProcess(after.hProcess,&stopped_code);else{TerminateProcess(after.hProcess,ERROR_TIMEOUT);WaitForSingleObject(after.hProcess,1000);}CloseHandle(after.hThread);CloseHandle(after.hProcess);}
     session->cookie^=0x100u;session->phase=NTW16S_GLOBAL_ACTIVE;
-    DWORD reinit=ntw16s_late_process_init(directory,session->cookie);PROCESS_INFORMATION again={0};STARTUPINFOW again_si={.cb=sizeof(again_si)};WCHAR again_command[32768];BOOL restarted=FALSE;
+    DWORD reinit=propagation_only?ntw16s_late_process_init_mode(directory,session->cookie,NTW16S_POLICY_PROPAGATE):ntw16s_late_process_init(directory,session->cookie);PROCESS_INFORMATION again={0};STARTUPINFOW again_si={.cb=sizeof(again_si)};WCHAR again_command[32768];BOOL restarted=FALSE;
     if(!reinit && swprintf(again_command,ARRAYSIZE(again_command),L"\"%ls\" child",argv[1])>=0)
         restarted=CreateProcessW(argv[1],again_command,NULL,NULL,TRUE,0,NULL,NULL,&again_si,&again);
     DWORD again_code=99;if(restarted){if(WaitForSingleObject(again.hProcess,5000)==WAIT_OBJECT_0)GetExitCodeProcess(again.hProcess,&again_code);else{TerminateProcess(again.hProcess,ERROR_TIMEOUT);WaitForSingleObject(again.hProcess,1000);}CloseHandle(again.hThread);CloseHandle(again.hProcess);}
     InterlockedExchange(&running,0);DWORD joined=WaitForSingleObject(thread,2000);CloseHandle(thread);
     printf("LATE PROCESS bits=%u api=%ls init=1 repeat=1 created=%d exit=%lu stopped=%d stopped_exit=%lu descendant=%d restarted=%d joined=%d\n",(unsigned)(sizeof(void*)*8),argv[3],made,code,stopped_created,stopped_code,waiting_ready&&waiting_code==0,restarted&&again_code==0,joined==WAIT_OBJECT_0);
+    if(propagation_only)printf("LATE PROPAGATION ONLY bits=%u style_registration=%ld style_flag=%u\n",(unsigned)(sizeof(void*)*8),style_registrations,(unsigned)!!(ntw16s_process_context.flags&NTW16S_POLICY_STYLE));
     UnmapViewOfFile(session);CloseHandle(mapping);
     /* Test process exits with detours and trampoline storage still live. */
     return made && code==0 && stopped_created && stopped_code==41 && waiting_ready && waiting_code==0 && restarted && again_code==0 && joined==WAIT_OBJECT_0?0:1;

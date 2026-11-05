@@ -194,7 +194,7 @@
       "path": "src/ntw16s-dll/injection/late_process.h",
       "source": null,
       "source_blob": null,
-      "sha256": "9ef3c1736b2ae325521e05b8e1f67787c7aea038971c27e5a6a328d0cb512ab3",
+      "sha256": "44cfb3bd0ae6958041131830ffe82feeabe8adc6fb82fb9786aab1e518631778",
       "disposition": "authored",
       "review": "T21 S13 experimental synchronized late process initializer; not linked into product; T21 S13 global session propagation policy",
       "notice": "Project-authored source; uses existing project hook and installer code"
@@ -203,7 +203,7 @@
       "path": "src/ntw16s-dll/injection/late_process.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4656776b6c7cecd0bd6dfbec2e63013064146e8887d8778735f29b0c7b4ecfcc",
+      "sha256": "ac2dff10107bacb708fc45480f09e668102ba3f00c4c8637d594fc26d3b02e2f",
       "disposition": "authored",
       "review": "T21 S13 experimental synchronized late process initializer; not linked into product; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S13 PSS guard ownership candidate; T21 S13 unified session stop semantics",
       "notice": "Project-authored source; uses existing project hook and installer code"
@@ -212,7 +212,7 @@
       "path": "tests/integration/late_process_prototype.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b861dd96cfe193676390a8f71839d5578fa8f35b0b43858ab8072f1434e88727",
+      "sha256": "54727770e9f7866bd22718622e2c9c93ff1e01b5e7d11e4d004b8093d83d3fd0",
       "disposition": "authored",
       "review": "T21 S13 experimental late process-hook adapter exercising production propagation implementation; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy; T21 S13 session-bound propagation tests; T21 S13 session-bound propagation tests; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics",
       "notice": "Project-authored source; no imported code or resources"
@@ -266,7 +266,7 @@
       "path": "tests/integration/global_propagation_probe.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6625c445aaf5662ddaf76b3c899bb865d54f23101d0b7e437ca9a551205f2b0d",
+      "sha256": "1e14ed43a0968a5086df4cf6de1ecc309c7d00d1981f83ed0892360b0ffe9364",
       "disposition": "authored",
       "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product; T21 S13 session-bound propagation tests; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S13 headless propagation regression; T21 S13 uninstrumented headless parent to GUI discovery regression",
       "notice": "Project-authored source; no imported code or resources"
@@ -1373,7 +1373,7 @@
       "path": "src/ntw16s-dll/injection/context.c",
       "source": "src/nthook32-dll/context.cpp",
       "source_blob": "f435db72a3475ef34d921a57d1632d6990d407af",
-      "sha256": "15413db41fe519c869e6bfb6a4f1b17e18fad7ab20ebeb39993a46dd8e0c5fff",
+      "sha256": "a230db823def5a3c7d81d73b65da3b3d29777e26b9aa3de71eda2c3afd4b0d04",
       "disposition": "adapt",
       "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T21 S13 global session propagation policy",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
@@ -1418,7 +1418,7 @@
       "path": "tests/run16s-exe/payload.c",
       "source": null,
       "source_blob": null,
-      "sha256": "947f2f6e5109dddd6033e8d8f4c6a2e84c16d08821eb54702d7dfad07dfe2647",
+      "sha256": "5b6c3aa5ed0ed6a344a71fd47804075a6ec9f817ccd71b76164b7300c99ac339",
       "disposition": "authored",
       "review": "T3 S3 final path/CLI contract audit; UNC namespace case and actual exit/I-O cases; docs/proposals/launcher-injection.md; T21 S13 global session propagation policy",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"

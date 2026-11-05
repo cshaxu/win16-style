@@ -25,7 +25,7 @@ DWORD ntw16s_packet_parse(const void *data,DWORD bytes,DWORD machine,ntw16s_cont
     memcpy(&h,data,sizeof(h));
     if(h.bytes!=bytes || h.version!=1 || h.machine!=machine ||
         (machine!=IMAGE_FILE_MACHINE_I386 && machine!=IMAGE_FILE_MACHINE_AMD64) ||
-        !(h.flags&NTW16S_POLICY_STYLE) || (h.flags&~7u) || h.reserved1 ||
+        !(h.flags&(NTW16S_POLICY_STYLE|NTW16S_POLICY_PROPAGATE)) || (h.flags&~7u) || h.reserved1 ||
         (!!(h.flags&NTW16S_POLICY_GLOBAL_SESSION)!=!!h.reserved0) ||
         h.directory_offset!=sizeof(h) || h.directory_bytes!=bytes-sizeof(h) ||
         h.directory_bytes<8 || h.directory_bytes%2)return ERROR_INVALID_DATA;

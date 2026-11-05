@@ -16,8 +16,9 @@ static DWORD prepare(void *slot,void *replacement)
     DWORD error=process_hook_late_patch_prepare(&hooks[count],slot,replacement);
     if(!error){items[count]=&hooks[count];++count;}return error;
 }
-DWORD ntw16s_late_process_init(PCWSTR directory,DWORD session_cookie)
+static DWORD initialize(PCWSTR directory,DWORD session_cookie,DWORD flags,BOOL strict)
 {
+    if(!(flags&NTW16S_POLICY_PROPAGATE) || (flags&~(NTW16S_POLICY_STYLE|NTW16S_POLICY_PROPAGATE)))return ERROR_INVALID_PARAMETER;
     if(!directory)return ERROR_INVALID_PARAMETER;
     size_t n=wcsnlen_s(directory,NTW16S_PATH_CAP);
     BOOL drive=n>=3 && ((directory[0]>=L'A' && directory[0]<=L'Z') || (directory[0]>=L'a' && directory[0]<=L'z')) && directory[1]==L':' && directory[2]==L'\\';
@@ -26,7 +27,9 @@ DWORD ntw16s_late_process_init(PCWSTR directory,DWORD session_cookie)
     AcquireSRWLockExclusive(&init_lock);
     DWORD error=ERROR_SUCCESS;
     if(sticky_error){error=sticky_error;goto done;}
-    if(__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE) && session_cookie){
+    DWORD existing=__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE);
+    if(strict && existing && (existing&(NTW16S_POLICY_STYLE|NTW16S_POLICY_PROPAGATE))!=flags){error=ERROR_ALREADY_EXISTS;goto done;}
+    if(existing && session_cookie){
         /* Adopt an already initialized ordinary process into this session.
          * Publish the cookie first so a concurrent hook cannot observe the
          * session policy before its identity has been installed. */
@@ -37,13 +40,13 @@ DWORD ntw16s_late_process_init(PCWSTR directory,DWORD session_cookie)
     if(installed)goto done;
     if(ntw16s_process_context.flags)goto done;
     memcpy(ntw16s_process_context.directory,directory,(n+1)*sizeof(WCHAR));
-    ntw16s_process_context.flags=NTW16S_POLICY_STYLE|NTW16S_POLICY_PROPAGATE;
+    ntw16s_process_context.flags=flags;
     if(session_cookie){ntw16s_process_context.flags|=NTW16S_POLICY_GLOBAL_SESSION;ntw16s_process_context.session_cookie=session_cookie;}
     InitializeBuffer();error=(DWORD)ntw16s_attach_processes_using(prepare);
-    if(!error)error=(DWORD)ntw16s_attach_titles_using(prepare);
-    if(!error)error=(DWORD)ntw16s_attach_file_dialogs_using(prepare);
-    if(!error)error=(DWORD)ntw16s_attach_com_dialogs_using(prepare);
-    if(!error)error=(DWORD)ntw16s_attach_folder_dialogs_using(prepare);
+    if(!error && (flags&NTW16S_POLICY_STYLE))error=(DWORD)ntw16s_attach_titles_using(prepare);
+    if(!error && (flags&NTW16S_POLICY_STYLE))error=(DWORD)ntw16s_attach_file_dialogs_using(prepare);
+    if(!error && (flags&NTW16S_POLICY_STYLE))error=(DWORD)ntw16s_attach_com_dialogs_using(prepare);
+    if(!error && (flags&NTW16S_POLICY_STYLE))error=(DWORD)ntw16s_attach_folder_dialogs_using(prepare);
     if(!error && count<2)error=ERROR_INVALID_STATE;
     if(!error){
         error=ERROR_BUSY;
@@ -60,3 +63,8 @@ DWORD ntw16s_late_process_init(PCWSTR directory,DWORD session_cookie)
  done:
     ReleaseSRWLockExclusive(&init_lock);return error;
 }
+
+DWORD ntw16s_late_process_init(PCWSTR directory,DWORD session_cookie)
+{return initialize(directory,session_cookie,NTW16S_POLICY_STYLE|NTW16S_POLICY_PROPAGATE,FALSE);}
+DWORD ntw16s_late_process_init_mode(PCWSTR directory,DWORD session_cookie,DWORD flags)
+{return initialize(directory,session_cookie,flags,TRUE);}

@@ -143,8 +143,26 @@ int wmain(int argc,WCHAR **argv)
     if(argc==2 && (!wcscmp(argv[1],L"child") || !wcscmp(argv[1],L"grandchild"))){
         BOOL loaded=module()!=NULL;printf("PROPAGATION ENTRY bits=%u role=%ls dll=%d\n",(unsigned)(sizeof(void*)*8),argv[1],loaded);
         if(!loaded)return 41;
+        WCHAR only[2];
+        if(GetEnvironmentVariableW(L"WIN16S_TEST_PROPAGATION_ONLY",only,ARRAYSIZE(only))){
+            WNDCLASSW klass={.hInstance=GetModuleHandleW(NULL),.lpfnWndProc=DefWindowProcW,.lpszClassName=L"PropagationOnlyOwned"};
+            if(!RegisterClassW(&klass))return 45;
+            HWND w=CreateWindowW(klass.lpszClassName,L"Propagation only",WS_OVERLAPPEDWINDOW|WS_VISIBLE,20,20,160,100,NULL,NULL,klass.hInstance,NULL);
+            attached_fn attached=(attached_fn)(void*)GetProcAddress(module(),"Ntw16sWindowAttached");
+            BOOL styled=w && attached && attached(w);BOOL valid=w && attached;
+            if(w)DestroyWindow(w);
+            UnregisterClassW(klass.lpszClassName,klass.hInstance);
+            printf("PROPAGATION ONLY WINDOW bits=%u role=%ls attached=%d\n",(unsigned)(sizeof(void*)*8),argv[1],styled);
+            if(!valid || styled)return 46;
+        }
         if(!wcscmp(argv[1],L"child")){DWORD code=99;BOOL ok=create_owned(L"grandchild",&code);printf("PROPAGATION CHILD create=%d exit=%lu\n",ok,code);return ok&&code==0?0:42;}
         return 0;
+    }
+    WCHAR only_mode[2];
+    if(argc==1 && GetEnvironmentVariableW(L"WIN16S_TEST_PROPAGATION_ONLY",only_mode,ARRAYSIZE(only_mode))){
+        DWORD code=99;BOOL made=create_owned(L"child",&code);
+        printf("PROPAGATION ONLY ROOT create=%d child_exit=%lu\n",made,code);
+        return made && code==0?0:47;
     }
     managed=argc==2 && !wcscmp(argv[1],L"managed");
     WNDCLASSW c={.hInstance=GetModuleHandleW(NULL),.lpfnWndProc=proc,.lpszClassName=L"GlobalPropagationProbe"};

@@ -11,6 +11,9 @@ int main(void)
     h.directory_offset=sizeof(h);h.directory_bytes=sizeof(directory);
     memcpy(raw,&h,sizeof(h));memcpy(raw+sizeof(h),directory,sizeof(directory));
     CHECK(!ntw16s_packet_parse(raw,h.bytes,machine,&context));CHECK(context.flags==1);
+    memcpy(copy,raw,h.bytes);((ntw16s_packet *)copy)->flags=NTW16S_POLICY_PROPAGATE;
+    CHECK(!ntw16s_packet_parse(copy,h.bytes,machine,&context));CHECK(context.flags==NTW16S_POLICY_PROPAGATE);
+    ((ntw16s_packet *)copy)->flags=0;CHECK(ntw16s_packet_parse(copy,h.bytes,machine,&context)==ERROR_INVALID_DATA);
     CHECK(ntw16s_packet_parse(raw,sizeof(h)-1,machine,&context)==ERROR_INVALID_DATA);
     CHECK(ntw16s_packet_parse(raw,65537,machine,&context)==ERROR_INVALID_DATA);
     for(unsigned i=0;i<8;++i){
