@@ -1922,10 +1922,10 @@
       "path": "src/lib-win32/process-hook/helper.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b3a349a197ae2d68f2ca7f076420d602ac571ac47aa7dc3cd354577f805f4fac",
+      "sha256": "24dbccc276f80fea3a24c65c24827b58d28318441e267e39a066a45afee9cc96",
       "disposition": "authored",
-      "review": "T21 S26 cross-width handoff mechanism extracted from product helper",
-      "notice": "Project-authored; project MIT LICENSE"
+      "review": "T21 S33 byte-exact reimport from ntvdm64 eac2932d5; detailed source blobs in S33 record",
+      "notice": "Project MIT; preserved LICENSE.win16style; MinHook retains BSD notices"
     },
     {
       "path": "src/lib-win32/process-hook/helper.h",
@@ -5706,6 +5706,33 @@
       "disposition": "authored",
       "review": "T21 S32 extract existing new-child activation and wait",
       "notice": "Project-authored C helper; caller retains prepare policy"
+    },
+    {
+      "path": "src/lib-win32/process-hook/payload.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "sha256": "37360c011349e3e6aed1b276fdfc45f30e579d3e8bbd75460eb2260b541cade4",
+      "review": "T21 S33 byte-exact reimport from ntvdm64 eac2932d5; detailed source blobs in S33 record",
+      "notice": "Project MIT; preserved LICENSE.win16style; MinHook retains BSD notices"
+    },
+    {
+      "path": "src/lib-win32/process-hook/payload.h",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "sha256": "5dc1e08b15c8b4608307f3588b5ee9466179229026d4edab357b208b85b94a6c",
+      "review": "T21 S33 byte-exact reimport from ntvdm64 eac2932d5; detailed source blobs in S33 record",
+      "notice": "Project MIT; preserved LICENSE.win16style; MinHook retains BSD notices"
+    },
+    {
+      "path": "src/lib-win32/process-hook/LICENSE.win16style",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "sha256": "71337277c6c03463ca6d7b56aba20fed81d3e6f1c8a823f7d5ab30760de8a389",
+      "review": "T21 S33 byte-exact reimport from ntvdm64 eac2932d5; detailed source blobs in S33 record",
+      "notice": "Project MIT; preserved LICENSE.win16style; MinHook retains BSD notices"
     }
   ]
 }

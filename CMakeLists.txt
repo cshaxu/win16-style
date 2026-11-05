@@ -134,7 +134,7 @@ else()
   set(hde_source ${minhook_root}/hde/hde64.c)
 endif()
 add_library(process-hook STATIC
-  ${process_hook_root}/staging.c ${process_hook_root}/helper.c
+  ${process_hook_root}/staging.c ${process_hook_root}/helper.c ${process_hook_root}/payload.c
   ${process_hook_root}/startup_hooks.c ${process_hook_root}/late_patch.c ${process_hook_root}/late_guard.c
   ${minhook_root}/buffer.c ${minhook_root}/trampoline.c ${hde_source})
 target_include_directories(process-hook PUBLIC src)
