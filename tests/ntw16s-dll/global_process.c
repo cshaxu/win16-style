@@ -1,4 +1,5 @@
 #include "ntw16s-dll/global_process.h"
+#include "lib-win32/process-global/recovery.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -24,5 +25,10 @@ int main(void)
     if(ntw16s_global_process_parse_name(L"Win16S-ETW-01234-0123456789abcdef",&owner,&high,&low) ||
        ntw16s_global_process_parse_name(L"Win16S-ETW-1234-0123456789abcdef-extra",&owner,&high,&low) ||
        ntw16s_global_process_parse_name(L"Other-ETW-1234-0123456789abcdef",&owner,&high,&low))return 7;
+    FILETIME created,exited,kernel,user;
+    if(!GetProcessTimes(GetCurrentProcess(),&created,&exited,&kernel,&user))return 8;
+    if(win32_process_global_trace_orphan(GetCurrentProcessId(),created.dwHighDateTime,created.dwLowDateTime))return 9;
+    if(!win32_process_global_trace_orphan(GetCurrentProcessId(),created.dwHighDateTime,created.dwLowDateTime^1u))return 10;
+    win32_process_global_recover_orphans(NULL);
     puts("GLOBAL PROCESS PARSER PASS 32=1 64=1 short=1 opcode=1 provider=1");return 0;
 }

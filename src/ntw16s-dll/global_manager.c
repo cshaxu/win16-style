@@ -5,6 +5,7 @@
 #include "global_process.h"
 #include "lib-win32/process-global/enumerate.h"
 #include "lib-win32/process-global/queue.h"
+#include "lib-win32/process-global/dispatch.h"
 #include <stdlib.h>
 #include <string.h>
 #include <wchar.h>
@@ -20,11 +21,10 @@ typedef struct manager_entry {
     ntw16s_global_attach attach;
     struct manager_entry *hash_next;
 } manager_entry;
-typedef struct worker_context {struct ntw16s_global_manager *manager;unsigned index;} worker_context;
 struct ntw16s_global_manager {
     ntw16s_global_discover discover;ntw16s_global_policy policy;ntw16s_global_session *session;
     HANDLE mapping,stop,quit,work,changed,workers[MANAGER_WORKERS],ready[MANAGER_WORKERS];
-    worker_context contexts[MANAGER_WORKERS];DWORD worker_errors[MANAGER_WORKERS];
+    win32_process_global_dispatch contexts[MANAGER_WORKERS];
     HDESK desktop;WCHAR *dll_path;WORD machine;DWORD owner_thread;SRWLOCK lock;
     manager_entry *buckets[MANAGER_BUCKETS];win32_process_global_queue queue;unsigned count,reap_bucket;
     volatile LONG queued,working,active,failed,overflow;
@@ -199,39 +199,29 @@ static DWORD process_entry(ntw16s_global_manager *m,manager_entry *entry)
     scan_state scan={m,entry,GetTickCount64()+1000};EnumThreadWindows(entry->thread_id,notify_top,(LPARAM)&scan);
     return error;
 }
-static DWORD WINAPI worker(void *parameter)
+static BOOL process_next(void *parameter)
 {
-    worker_context *context=(worker_context *)parameter;ntw16s_global_manager *m=context->manager;
-    if(!SetThreadDesktop(m->desktop)){m->worker_errors[context->index]=GetLastError();SetEvent(m->ready[context->index]);return 1;}
-    SetEvent(m->ready[context->index]);HANDLE waits[]={m->quit,m->stop,m->work};
-    for(;;){
-        DWORD result=WaitForMultipleObjects(ARRAYSIZE(waits),waits,FALSE,INFINITE);
-        if(result==WAIT_OBJECT_0 || result==WAIT_OBJECT_0+1)break;
-        if(result!=WAIT_OBJECT_0+2)break;
-        for(;;){
-            AcquireSRWLockExclusive(&m->lock);manager_entry *entry=(manager_entry *)win32_process_global_queue_pop(&m->queue);
-            if(entry){entry->state=ENTRY_WORKING;InterlockedDecrement(&m->queued);InterlockedIncrement(&m->working);}
-            ReleaseSRWLockExclusive(&m->lock);if(!entry)break;
-            /* Late patching snapshots all threads in a target process. Do not
-             * create competing remote workers for two of its GUI threads. */
-            SRWLOCK *process_lock=&m->process_locks[entry->pid%ARRAYSIZE(m->process_locks)];
-            AcquireSRWLockExclusive(process_lock);
-            DWORD error=process_entry(m,entry);
-            ReleaseSRWLockExclusive(process_lock);
-            BOOL installed=error==ERROR_NOT_READY && entry->attach.control_error==ERROR_NOT_READY &&
-                entry->attach.start.thread && WaitForSingleObject(entry->attach.start.thread,0)==WAIT_TIMEOUT;
-            if(error && !installed)(void)ntw16s_global_attach_close(&entry->attach);
-            AcquireSRWLockExclusive(&m->lock);++entry->attempts;
-            InterlockedDecrement(&m->working);
-            if(!error || installed){entry->state=ENTRY_ACTIVE;InterlockedIncrement(&m->active);if(error)InterlockedIncrement(&m->failed);}
-            else{
-                entry->state=ENTRY_FAILED;InterlockedIncrement(&m->failed);
-            }
-            ReleaseSRWLockExclusive(&m->lock);notify_change(m);
-            if(WaitForSingleObject(m->quit,0)==WAIT_OBJECT_0 || WaitForSingleObject(m->stop,0)==WAIT_OBJECT_0)break;
-        }
+    ntw16s_global_manager *m=(ntw16s_global_manager *)parameter;
+    AcquireSRWLockExclusive(&m->lock);manager_entry *entry=(manager_entry *)win32_process_global_queue_pop(&m->queue);
+    if(entry){entry->state=ENTRY_WORKING;InterlockedDecrement(&m->queued);InterlockedIncrement(&m->working);}
+    ReleaseSRWLockExclusive(&m->lock);if(!entry)return FALSE;
+    /* Late patching snapshots all threads in a target process. Do not
+     * create competing remote workers for two of its GUI threads. */
+    SRWLOCK *process_lock=&m->process_locks[entry->pid%ARRAYSIZE(m->process_locks)];
+    AcquireSRWLockExclusive(process_lock);
+    DWORD error=process_entry(m,entry);
+    ReleaseSRWLockExclusive(process_lock);
+    BOOL installed=error==ERROR_NOT_READY && entry->attach.control_error==ERROR_NOT_READY &&
+        entry->attach.start.thread && WaitForSingleObject(entry->attach.start.thread,0)==WAIT_TIMEOUT;
+    if(error && !installed)(void)ntw16s_global_attach_close(&entry->attach);
+    AcquireSRWLockExclusive(&m->lock);++entry->attempts;
+    InterlockedDecrement(&m->working);
+    if(!error || installed){entry->state=ENTRY_ACTIVE;InterlockedIncrement(&m->active);if(error)InterlockedIncrement(&m->failed);}
+    else{
+        entry->state=ENTRY_FAILED;InterlockedIncrement(&m->failed);
     }
-    return 0;
+    ReleaseSRWLockExclusive(&m->lock);notify_change(m);
+    return TRUE;
 }
 HANDLE ntw16s_global_manager_changed(ntw16s_global_manager *m){return m?m->changed:NULL;}
 DWORD ntw16s_global_manager_refresh(ntw16s_global_manager *m)
@@ -316,12 +306,13 @@ DWORD ntw16s_global_manager_start(const WCHAR *dll_path,WORD machine,ntw16s_glob
     m->work=CreateEventW(NULL,FALSE,FALSE,NULL);m->changed=CreateEventW(NULL,FALSE,FALSE,NULL);
     if(!m->stop || !m->quit || !m->work || !m->changed){error=GetLastError();goto fail;}
     for(unsigned i=0;i<MANAGER_WORKERS;++i){
-        m->ready[i]=CreateEventW(NULL,TRUE,FALSE,NULL);m->contexts[i].manager=m;m->contexts[i].index=i;
+        m->ready[i]=CreateEventW(NULL,TRUE,FALSE,NULL);
         if(!m->ready[i]){error=GetLastError();goto fail;}
-        m->workers[i]=CreateThread(NULL,0,worker,&m->contexts[i],0,NULL);if(!m->workers[i]){error=GetLastError();goto fail;}
+        m->contexts[i]=(win32_process_global_dispatch){m->desktop,m->quit,m->stop,m->work,m->ready[i],0,process_next,m};
+        m->workers[i]=CreateThread(NULL,0,win32_process_global_dispatch_run,&m->contexts[i],0,NULL);if(!m->workers[i]){error=GetLastError();goto fail;}
     }
     if(WaitForMultipleObjects(MANAGER_WORKERS,m->ready,TRUE,3000)!=WAIT_OBJECT_0){error=ERROR_TIMEOUT;goto fail;}
-    for(unsigned i=0;i<MANAGER_WORKERS;++i)if(m->worker_errors[i]){error=m->worker_errors[i];goto fail;}
+    for(unsigned i=0;i<MANAGER_WORKERS;++i)if(m->contexts[i].error){error=m->contexts[i].error;goto fail;}
     error=ntw16s_global_discover_start(&m->discover,discovered,m);if(error)goto fail;
     /* The optional system process trace requires elevation. Retain normal
      * window-event discovery when that permission is not available. */
