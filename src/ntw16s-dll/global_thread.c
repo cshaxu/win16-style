@@ -1,5 +1,6 @@
 #include "global_thread.h"
 #include "global_session.h"
+#include "lib-win32/process-global/window.h"
 #include <wchar.h>
 #ifdef NTW16S_BUILD
 #include "injection/late_process.h"
@@ -18,7 +19,7 @@ DWORD WINAPI ntw16s_global_thread_worker(void *parameter)
     WCHAR name[NTW16S_GLOBAL_NAME_CAP],ready_name[NTW16S_GLOBAL_NAME_CAP+64];
     WCHAR stop_name[NTW16S_GLOBAL_NAME_CAP+16];
     HANDLE thread=NULL,mapping=NULL,owner=NULL,ready=NULL,stop=NULL;
-    ntw16s_global_session *session=NULL;HHOOK hook=NULL;DWORD error=ERROR_SUCCESS;
+    ntw16s_global_session *session=NULL;DWORD error=ERROR_SUCCESS;
     if(!parameter || !ReadProcessMemory(GetCurrentProcess(),parameter,&packet,sizeof(packet),&read) ||
        read!=sizeof(packet) || packet.bytes!=sizeof(packet) || packet.version!=1 ||
        !packet.thread_id || !packet.cookie)return ERROR_INVALID_PARAMETER;
@@ -64,14 +65,9 @@ DWORD WINAPI ntw16s_global_thread_worker(void *parameter)
     if(!ready){error=GetLastError();goto done;}
     stop=OpenEventW(SYNCHRONIZE,FALSE,stop_name);
     if(!stop){error=GetLastError();goto done;}
-    hook=SetWindowsHookExW(WH_CALLWNDPROC,Ntw16sGlobalHook,NULL,packet.thread_id);
-    if(!hook){error=GetLastError();goto done;}
-    if(!SetEvent(ready)){error=GetLastError();goto done;}
-    HANDLE waits[]={stop,owner,thread};DWORD result=WaitForMultipleObjects(ARRAYSIZE(waits),waits,FALSE,INFINITE);
-    if(result>=WAIT_OBJECT_0+ARRAYSIZE(waits))
-        error=result==WAIT_FAILED?GetLastError():ERROR_INVALID_STATE;
+    HANDLE waits[]={stop,owner,thread};
+    error=win32_process_global_window_hook_wait(WH_CALLWNDPROC,Ntw16sGlobalHook,NULL,packet.thread_id,ready,waits,ARRAYSIZE(waits));
 done:
-    if(hook && !UnhookWindowsHookEx(hook) && !error)error=GetLastError();
     if(stop)CloseHandle(stop);
     if(ready)CloseHandle(ready);
     if(owner)CloseHandle(owner);

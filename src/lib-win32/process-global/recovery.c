@@ -2,6 +2,7 @@
 #include "identity.h"
 #include <evntrace.h>
 #include <stdlib.h>
+#include <wchar.h>
 
 BOOL win32_process_global_trace_orphan(DWORD pid,DWORD high,DWORD low)
 {
@@ -14,6 +15,18 @@ BOOL win32_process_global_trace_orphan(DWORD pid,DWORD high,DWORD low)
         CloseHandle(process);
     }else orphan=GetLastError()==ERROR_INVALID_PARAMETER;
     return orphan;
+}
+
+DWORD win32_process_global_trace_stop_peer(HANDLE process,DWORD pid,const WCHAR *name)
+{
+    if(!process || !pid || !name || !*name || GetProcessId(process)!=pid || WaitForSingleObject(process,0)!=WAIT_OBJECT_0)return ERROR_INVALID_PARAMETER;
+    size_t length=wcsnlen_s(name,32768);if(length>=32768)return ERROR_INVALID_NAME;
+    size_t bytes=sizeof(EVENT_TRACE_PROPERTIES)+(length+1)*sizeof(WCHAR);
+    EVENT_TRACE_PROPERTIES *p=(EVENT_TRACE_PROPERTIES *)calloc(1,bytes);
+    if(!p)return ERROR_NOT_ENOUGH_MEMORY;
+    p->Wnode.BufferSize=(ULONG)bytes;p->LoggerNameOffset=sizeof(*p);
+    DWORD error=ControlTraceW(0,name,p,EVENT_TRACE_CONTROL_STOP);free(p);
+    return error==ERROR_WMI_INSTANCE_NOT_FOUND || error==ERROR_ACTIVE_CONNECTIONS?ERROR_SUCCESS:error;
 }
 
 void win32_process_global_recover_orphans(win32_process_global_trace_name_parser parse)

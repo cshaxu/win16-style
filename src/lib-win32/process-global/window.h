@@ -23,4 +23,8 @@ DWORD win32_process_global_window_stop(win32_process_global_window *watcher);
  * or the native enumeration error. */
 typedef BOOL (*win32_process_global_visit_window)(HWND,void *);
 BOOL win32_process_global_window_walk(DWORD thread_id,ULONGLONG deadline,win32_process_global_visit_window,void *);
+/* Installs one thread-specific hook, signals ready, waits for any borrowed
+ * handle and unhooks before returning; no caller handle is closed. The hook
+ * procedure and module are caller policy and must outlive the call. */
+DWORD win32_process_global_window_hook_wait(int,HOOKPROC,HINSTANCE,DWORD,HANDLE,const HANDLE *,DWORD);
 #endif

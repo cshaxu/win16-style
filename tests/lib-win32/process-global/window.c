@@ -9,6 +9,15 @@ static BOOL visit(HWND w,void *context)
     if(w==s->grandchild)s->mask|=4;
     return !(s->cancel && w==s->parent);
 }
+typedef struct hook_test {DWORD thread_id;HANDLE ready,stop;DWORD result;} hook_test;
+static volatile LONG hook_hits;
+static LRESULT CALLBACK callback(int code,WPARAM wp,LPARAM lp)
+{if(code>=0)InterlockedIncrement(&hook_hits);return CallNextHookEx(NULL,code,wp,lp);}
+static DWORD WINAPI hook_worker(void *context)
+{
+    hook_test *s=context;HANDLE waits[]={s->stop};
+    s->result=win32_process_global_window_hook_wait(WH_CALLWNDPROC,callback,NULL,s->thread_id,s->ready,waits,1);return 0;
+}
 int main(void)
 {
     HINSTANCE instance=GetModuleHandleW(NULL);
@@ -22,7 +31,24 @@ int main(void)
     s.mask=0;s.cancel=TRUE;if(!error && (win32_process_global_window_walk(GetCurrentThreadId(),GetTickCount64()+3000,visit,&s) || GetLastError()!=ERROR_CANCELLED || s.mask!=1))error=4;
     s.mask=0;s.cancel=FALSE;if(!error && (win32_process_global_window_walk(GetCurrentThreadId(),0,visit,&s) || GetLastError()!=ERROR_TIMEOUT || s.mask))error=5;
     if(!error && (win32_process_global_window_walk(0,0,NULL,NULL) || GetLastError()!=ERROR_INVALID_PARAMETER))error=6;
+    HANDLE ready=CreateEventW(NULL,TRUE,FALSE,NULL),stop=CreateEventW(NULL,TRUE,FALSE,NULL),worker=NULL;
+    hook_test hook={GetCurrentThreadId(),ready,stop,ERROR_GEN_FAILURE};
+    if(!error && (!ready || !stop))error=7;
+    if(!error){worker=CreateThread(NULL,0,hook_worker,&hook,0,NULL);if(!worker)error=8;}
+    if(!error && WaitForSingleObject(ready,3000)!=WAIT_OBJECT_0)error=9;
+    if(!error){SendMessageW(parent,WM_NULL,0,0);if(!InterlockedCompareExchange(&hook_hits,0,0))error=10;}
+    if(stop)SetEvent(stop);
+    if(worker){
+        if(WaitForSingleObject(worker,3000)!=WAIT_OBJECT_0)error=11;
+        else if(hook.result)error=12;
+        CloseHandle(worker);
+    }
+    LONG before=InterlockedCompareExchange(&hook_hits,0,0);
+    SendMessageW(parent,WM_NULL,0,0);
+    if(!error && InterlockedCompareExchange(&hook_hits,0,0)!=before)error=13;
+    if(ready)CloseHandle(ready);
+    if(stop)CloseHandle(stop);
     DestroyWindow(parent);
     if(error){printf("WINDOW WALK FAIL %d\n",error);return error;}
-    puts("WINDOW WALK PASS desktop=1 thread=1 children=1 cancel=1 timeout=1");return 0;
+    puts("WINDOW WALK PASS desktop=1 thread=1 children=1 cancel=1 timeout=1 hook=1 unhook=1");return 0;
 }

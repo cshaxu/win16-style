@@ -82,3 +82,19 @@ BOOL win32_process_global_window_walk(DWORD thread_id,ULONGLONG deadline,win32_p
     if(state.stopped){SetLastError(state.stopped);return FALSE;}
     return result || GetLastError()==ERROR_SUCCESS;
 }
+
+DWORD win32_process_global_window_hook_wait(int type,HOOKPROC proc,HINSTANCE module,DWORD thread_id,
+    HANDLE ready,const HANDLE *waits,DWORD count)
+{
+    if(!proc || !thread_id || !ready || !waits || !count || count>MAXIMUM_WAIT_OBJECTS)return ERROR_INVALID_PARAMETER;
+    HHOOK hook=SetWindowsHookExW(type,proc,module,thread_id);
+    if(!hook)return GetLastError();
+    DWORD error=ERROR_SUCCESS;
+    if(!SetEvent(ready))error=GetLastError();
+    else{
+        DWORD result=WaitForMultipleObjects(count,waits,FALSE,INFINITE);
+        if(result>=WAIT_OBJECT_0+count)error=result==WAIT_FAILED?GetLastError():ERROR_INVALID_STATE;
+    }
+    if(!UnhookWindowsHookEx(hook) && !error)error=GetLastError();
+    return error;
+}
