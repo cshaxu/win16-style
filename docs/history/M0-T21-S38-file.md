@@ -25,3 +25,5 @@ s38-publish 将同批四文件发布至 assets 根和 O:/winnt，摘要与测试
 - ntw16s32.dll `bb468befe0b742f7679f8595ffa69aa197255915b8277e2d1287d2c98620b307`
 - ntw16s64.dll `b6cdf28e3acbf958be053c74d2d67776653f66ba2152ad374cb4757917b8ccac`
 - demo.exe `cff97866c448879f5bfa2db10038ef21f44c4540b43dce91cf0247ea9ee283d9`
+
+P1 `4beea773b943e7cece595745fcd9920a7e0fa81c` 已推送，实际远端树复核四源码、两测试和四产物；两处发布摘要再次核对。S38 关闭，T21 保持开放。
