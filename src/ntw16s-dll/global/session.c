@@ -1,4 +1,4 @@
-#include "global_session.h"
+#include "ntw16s-dll/global/session.h"
 #include <stdint.h>
 #include <wchar.h>
 #include <stdlib.h>
@@ -18,7 +18,7 @@ BOOL ntw16s_global_owner_alive(const ntw16s_global_session *s)
     if(!s || s->magic!=NTW16S_GLOBAL_MAGIC || s->version!=NTW16S_GLOBAL_VERSION || !s->owner_pid || !s->cookie)return FALSE;
     HANDLE process=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION|SYNCHRONIZE,FALSE,s->owner_pid);
     if(!process)return FALSE;
-    if(WaitForSingleObject(process,0)==WAIT_TIMEOUT && ntw16s_global_birth(process,&low,&high) &&
+    if(WaitForSingleObject(process,0)==WAIT_TIMEOUT && win32_process_global_birth(process,&low,&high) &&
        low==s->owner_birth_low && high==s->owner_birth_high)result=TRUE;
     CloseHandle(process);return result;
 }
@@ -55,7 +55,7 @@ BOOL ntw16s_global_owner_matches(const ntw16s_global_session *s,HMODULE module)
             DWORD n=GetModuleFileNameW(module,dll,32752);WCHAR *owner_slash=wcsrchr(owner,L'\\');
             if(n && n<32752 && owner_slash && (size_t)(owner_slash-owner)+16<32752){
                 wcscpy(owner_slash+1,sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");
-                ok=ntw16s_global_files_equal(dll,owner);
+                ok=win32_process_global_files_equal(dll,owner);
                 if(ok){cached_cookie=s->cookie;cached_pid=s->owner_pid;cached_module=module;}
             }
         }

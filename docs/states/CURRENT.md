@@ -2,7 +2,9 @@
 
 ## Current Work
 
-T21 S41 已收口：现有通用全局进程能力已抽离并完成有限验证；T21 保持开放，当前无活动任务包。详见 [S41 收口记录](../history/M0-T21-S41-process-global.md)。
+T21 S42 已准入：按用户要求清理全局能力提取后的产品侧目录、文件、结构、函数和变量；T21 保持开放。S41 交付及限制见 [收口记录](../history/M0-T21-S41-process-global.md)。
+
+S42 P1 本地交付：产品全局适配集中于 DLL 的 global/，删除 discover 和 load 两对产品垫片、纯转发函数及公共类型别名，简化管理器字段；保留产品协议、策略和渲染调用。双宽干净构建、ABI、资源与公共依赖门禁通过，干净树各 11 项核心回归通过，实际包聚焦 44 项通过；其他 window station 双宽子项跳过，组合恢复摘要与旧版一致但不等原始。首次发布因 sol.exe 持有 32 位 DLL 中断并形成混包；确认 PID、映像、启动时间及 DLL 后正常关闭，仅以同一候选包重试 s42-publish2 完成两处四文件发布和摘要核对。提交、推送及远端复核尚待完成；S42/T21 保持开放。
 
 P24：完成公共 process-hook GCC/MSVC 兼容适配与可移植测试入口。两种编译器 x86/x64 均编译、链接并通过异常展开、批处理及传播自有进程测试，覆盖重入与容量 0/88/89 入口；88 不代表实际安装 88 项。GCC 干净树双宽各 8 项生命周期回归通过，s41-clean28 双宽干净构建、ABI、来源资源与依赖门禁通过；s41-package28 实包聚焦 32 项通过，双宽恢复摘要与旧版一致但仍不等原始值。四文件发布 assets 与 O:/winnt 并核对（s41-publish24）；ntvdm64 仅作只读对照，逐项导入清单见审计，未导入或验证兄弟产品。真实托盘端到端、管理员 ETW、真实 PID/TID 重用及恢复差异沿用 P23 边界，S41/T21 保持开放。
 
@@ -460,9 +462,9 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
-- Last allocated T21 S: 41
+- Last allocated T21 S: 42
 - Last verified remote delivery: M0 T21 S41 P24，`a960e605`；公共源码、审计和四产品远端对象已复核。
-- Open task: T21；无活动 S。Explorer.exe 仍被排除。
+- Open task: T21；S42 进行中。Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。
@@ -510,6 +512,27 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前原版真实点击正常；历史异常根因未查明，本S没有产品代码或二进制修改。
 
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1已收口；T20此后按用户要求有限范围收口。
+
+## M0 T21 S42 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Continuation |
+| Admission And Approval | 用户要求公共能力下沉，删除和整理 DLL/EXE 产品侧多余代码。 |
+| Objective | 全面审查产品侧全局代码，去除不必要垫片、重复实现和无意义文件，将可复用机制下沉公共库，令目录、文件、结构、函数和变量职责清晰。 |
+| Non-goals | 不新增 T、改变全局权限或目标范围、钩子行为、产品 ABI、Win16 资源或修改兄弟仓库。 |
+| Reference Baseline | S41 P25 `652315f1`，已有公共组件和产品适配。 |
+| Candidate Proposal | [全局进程审计](../proposals/global-process-audit.md)。 |
+| Files And ABI Surface | 产品 DLL/EXE 及 lib-win32 对应机制、构建和测试；产品导出 ABI 保持。 |
+| Applicable Rules | M0、纯 C17、GCC/Ninja/ccache、原资源身份及线程生命周期。 |
+| Verification | 冻结生产文件与调用者，双宽增量及干净构建；仅发现、仅传播、仅样式及产品组合回归，资源和依赖检查，记录环境跳过。 |
+| Expected Markers | 冗余垫片删除，现有调用直接使用公共机制，保留项逐一说明；既有功能无回归。 |
+| Asset Needs | 二进制变化时同批四文件实包测试并发布 assets 和 O:/winnt。 |
+| Reporting Requirements | 汇报五大清理维度、删除与保留的文件、代码和具体理由，以及测试、限制及远端复核。 |
+| Stop Conditions | 安全或权限阻止必需验证或发布时记录实际限制。 |
+| Exit Criteria | 五个维度完成审计和必要重构；双宽构建、实际包测试、发布、提交推送和远端复核；T21 保持开放。 |
+| Original Owner Request | 所有已抽公共能力在 DLL/EXE 侧精简接线与垫片；目录、文件、结构、函数、变量均干净。 |
+| Similar-Issue Sweep | 审核所有 global 生产文件、公共接口及测试/构建调用者，列出可删、可合并、可下沉与产品职责。 |
 
 ## Recent Closure
 

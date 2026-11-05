@@ -25,6 +25,4 @@ BOOL ntw16s_global_name(WCHAR *name,DWORD capacity);
 BOOL ntw16s_global_owner_alive(const ntw16s_global_session *session);
 BOOL ntw16s_global_policy_active(DWORD cookie);
 BOOL ntw16s_global_owner_matches(const ntw16s_global_session *,HMODULE);
-#define ntw16s_global_files_equal win32_process_global_files_equal
-#define ntw16s_global_birth win32_process_global_birth
 #endif

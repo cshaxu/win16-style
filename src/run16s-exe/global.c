@@ -1,8 +1,8 @@
 #include "global.h"
 #include "elevation.h"
-#include "ntw16s-dll/global_session.h"
-#include "ntw16s-dll/global_manager.h"
-#include "ntw16s-dll/global_process.h"
+#include "ntw16s-dll/global/session.h"
+#include "ntw16s-dll/global/manager.h"
+#include "ntw16s-dll/global/process.h"
 #include "lib-win32/process-global/window.h"
 #include "ntw16s-dll/injection/injection.h"
 #include <windows.h>
@@ -92,7 +92,7 @@ int run16s_global_with_parent(HANDLE parent)
     if(!mapping){error=GetLastError();goto done;}if(GetLastError()==ERROR_ALREADY_EXISTS){error=ERROR_ALREADY_EXISTS;goto done;}
     s=(ntw16s_global_session *)MapViewOfFile(mapping,FILE_MAP_ALL_ACCESS,0,0,sizeof(*s));if(!s){error=GetLastError();goto done;}
     ZeroMemory(s,sizeof(*s));s->magic=NTW16S_GLOBAL_MAGIC;s->version=NTW16S_GLOBAL_VERSION;s->owner_pid=GetCurrentProcessId();
-    if(!ntw16s_global_birth(GetCurrentProcess(),&s->owner_birth_low,&s->owner_birth_high) || !random_cookie(&s->cookie)){error=GetLastError();goto done;}
+    if(!win32_process_global_birth(GetCurrentProcess(),&s->owner_birth_low,&s->owner_birth_high) || !random_cookie(&s->cookie)){error=GetLastError();goto done;}
     ready=CreateEventW(&attributes,TRUE,FALSE,ready_name);if(!ready){error=GetLastError();goto done;}if(GetLastError()==ERROR_ALREADY_EXISTS){error=ERROR_ALREADY_EXISTS;goto done;}
     host_stop=CreateEventW(&attributes,TRUE,FALSE,host_stop_name);if(!host_stop){error=GetLastError();goto done;}if(GetLastError()==ERROR_ALREADY_EXISTS){error=ERROR_ALREADY_EXISTS;goto done;}
     stop_signal=CreateEventW(&attributes,TRUE,FALSE,request_name);if(!stop_signal){error=GetLastError();goto done;}

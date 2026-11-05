@@ -1,4 +1,4 @@
-#include "global_process.h"
+#include "ntw16s-dll/global/process.h"
 #include "lib-win32/process-global/recovery.h"
 #include "lib-win32/process-global/identity.h"
 #include <evntrace.h>
@@ -27,9 +27,7 @@ DWORD ntw16s_global_process_stop_peer(HANDLE process,DWORD pid)
     if(!pid || swprintf(name,ARRAYSIZE(name),L"Win16S-ETW-%lu-%08lx%08lx",pid,high,low)<0)return ERROR_INVALID_PARAMETER;
     return win32_process_global_trace_stop_peer(process,pid,name);
 }
-DWORD ntw16s_global_process_event_pid(const EVENT_RECORD *record)
-{return win32_process_global_monitor_event_pid(record);}
-DWORD ntw16s_global_process_start(ntw16s_global_process_callback callback,void *context,ntw16s_global_process **result)
+DWORD ntw16s_global_process_start(win32_process_global_monitor_callback callback,void *context,win32_process_global_monitor **result)
 {
     WCHAR name[96];DWORD high=0,low=0;
     if(result)*result=NULL;
@@ -39,5 +37,3 @@ DWORD ntw16s_global_process_start(ntw16s_global_process_callback callback,void *
     win32_process_global_recover_orphans(ntw16s_global_process_parse_name);
     return win32_process_global_monitor_start(name,callback,context,result);
 }
-DWORD ntw16s_global_process_stop(ntw16s_global_process *monitor)
-{return win32_process_global_monitor_stop(monitor);}

@@ -1,11 +1,11 @@
-#include "global_thread.h"
-#include "global_session.h"
+#include "ntw16s-dll/global/thread.h"
+#include "ntw16s-dll/global/session.h"
 #include "lib-win32/process-global/window.h"
 #include <wchar.h>
 #ifdef NTW16S_BUILD
-#include "injection/late_process.h"
-#include "injection/injection.h"
-#include "global_late.h"
+#include "ntw16s-dll/injection/late_process.h"
+#include "ntw16s-dll/injection/injection.h"
+#include "ntw16s-dll/global/late.h"
 #include <stdlib.h>
 #endif
 
@@ -42,7 +42,7 @@ DWORD WINAPI ntw16s_global_thread_worker(void *parameter)
     owner=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION|SYNCHRONIZE,FALSE,session->owner_pid);
     if(!owner){error=GetLastError();goto done;}
     DWORD low=0,high=0;
-    if(!ntw16s_global_birth(owner,&low,&high) || low!=session->owner_birth_low ||
+    if(!win32_process_global_birth(owner,&low,&high) || low!=session->owner_birth_low ||
        high!=session->owner_birth_high || WaitForSingleObject(owner,0)!=WAIT_TIMEOUT){error=ERROR_INVALID_STATE;goto done;}
 #ifdef NTW16S_BUILD
     /* Global fallback already runs this worker in the target outside DllMain.

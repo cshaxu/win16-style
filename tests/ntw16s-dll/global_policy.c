@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <wchar.h>
-#include "ntw16s-dll/global_policy.h"
+#include "ntw16s-dll/global/policy.h"
 
 static LRESULT CALLBACK window_proc(HWND w,UINT m,WPARAM a,LPARAM b)
 {
@@ -45,7 +45,7 @@ int wmain(int argc,WCHAR **argv)
        ntw16s_global_image_allowed(L"C:\\WINDOWS\\System32\\RuntimeBroker.EXE",L"C:\\Windows") ||
        !ntw16s_global_image_allowed(L"C:\\other\\explorer.exe",L"C:\\Windows") ||
        !ntw16s_global_image_allowed(L"C:\\Windows\\notepad.exe",L"C:\\Windows"))return 7;
-    ntw16s_global_policy policy;DWORD init=ntw16s_global_policy_init(&policy);if(init)return 8;
+    win32_process_global_policy policy;DWORD init=win32_process_global_policy_init(&policy);if(init)return 8;
     swprintf(name,ARRAYSIZE(name),L"Local\\Win16PolicyReady-%lu",GetCurrentProcessId());
     SetEnvironmentVariableW(L"WIN16_POLICY_READY",name);HANDLE ready=CreateEventW(NULL,TRUE,FALSE,name);
     GetModuleFileNameW(NULL,self,ARRAYSIZE(self));swprintf(cmd,ARRAYSIZE(cmd),L"\"%ls\" target",self);
@@ -53,25 +53,25 @@ int wmain(int argc,WCHAR **argv)
     if(!ready || !CreateProcessW(self,cmd,NULL,NULL,FALSE,0,NULL,NULL,&si,&pi))return 9;
     BOOL started=WaitForSingleObject(ready,3000)==WAIT_OBJECT_0;HWND window=FindWindowW(L"Win16OwnedPolicyTest",L"owned");
     WORD machine=sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386;
-    ntw16s_global_identity identity={0},invalid={0},zero={0};
+    win32_process_global_identity identity={0},invalid={0},zero={0};
     DWORD result=started?ntw16s_global_policy_inspect(&policy,window,pi.dwProcessId,pi.dwThreadId,machine,&identity):ERROR_TIMEOUT;
     DWORD wrong_pid=ntw16s_global_policy_inspect(&policy,window,pi.dwProcessId+1,pi.dwThreadId,machine,&invalid);
     BOOL cleared=!memcmp(&invalid,&zero,sizeof(zero));
     DWORD wrong_thread=ntw16s_global_policy_inspect(&policy,window,pi.dwProcessId,pi.dwThreadId+1,machine,&invalid);
     DWORD wrong_arch=ntw16s_global_policy_inspect(&policy,window,pi.dwProcessId,pi.dwThreadId,
         machine==IMAGE_FILE_MACHINE_I386?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,&invalid);
-    ntw16s_global_policy bad_policy=policy;bad_policy.sid_bytes=sizeof(bad_policy.sid)+1;
+    win32_process_global_policy bad_policy=policy;bad_policy.sid_bytes=sizeof(bad_policy.sid)+1;
     DWORD wrong_sid=ntw16s_global_policy_inspect(&bad_policy,window,pi.dwProcessId,pi.dwThreadId,machine,&invalid);
-    DWORD revalidate=ntw16s_global_policy_revalidate(pi.hProcess,window,&identity);
-    ntw16s_global_identity stale=identity;stale.process_birth_low^=1;
-    DWORD stale_process=ntw16s_global_policy_revalidate(pi.hProcess,window,&stale);
+    DWORD revalidate=win32_process_global_policy_revalidate(pi.hProcess,window,&identity);
+    win32_process_global_identity stale=identity;stale.process_birth_low^=1;
+    DWORD stale_process=win32_process_global_policy_revalidate(pi.hProcess,window,&stale);
     stale=identity;stale.thread_birth_low^=1;
-    DWORD stale_thread=ntw16s_global_policy_revalidate(pi.hProcess,window,&stale);
-    ntw16s_global_identity thread_identity={0};
+    DWORD stale_thread=win32_process_global_policy_revalidate(pi.hProcess,window,&stale);
+    win32_process_global_identity thread_identity={0};
     DWORD thread_result=ntw16s_global_policy_inspect_thread(&policy,pi.dwProcessId,pi.dwThreadId,machine,&thread_identity);
-    DWORD thread_valid=ntw16s_global_policy_revalidate_thread(pi.hProcess,&thread_identity);
+    DWORD thread_valid=win32_process_global_policy_revalidate_thread(pi.hProcess,&thread_identity);
     stale=thread_identity;stale.thread_birth_low^=1;
-    DWORD thread_stale=ntw16s_global_policy_revalidate_thread(pi.hProcess,&stale);
+    DWORD thread_stale=win32_process_global_policy_revalidate_thread(pi.hProcess,&stale);
     DWORD thread_wrong_arch=ntw16s_global_policy_inspect_thread(&policy,pi.dwProcessId,pi.dwThreadId,
         machine==IMAGE_FILE_MACHINE_I386?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,&invalid);
     /* A suspended new process may not have attached its first thread to USER

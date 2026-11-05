@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <wchar.h>
 #include <tlhelp32.h>
-#include "ntw16s-dll/global_session.h"
+#include "ntw16s-dll/global/session.h"
 typedef BOOL (__cdecl *attached_fn)(HWND);
 static int result=1;
 static BOOL managed;

@@ -278,3 +278,34 @@ late_batch 的已提交 trampoline 不能安全物理卸载；停用只使传播
 P24 交付：`s41-clean28` 双宽干净构建、ABI、来源与资源、公共源码和静态库边界检查通过；干净树两位宽各 8 项钩子/展开/生命周期测试通过。`s41-package28` 同批四文件实际包聚焦 32 项通过，无顶层跳过；manager 两位宽恢复摘要仍为 2875890938，与旧版相同且不等于原始 343534586。`s41-publish24` 两个目录四文件摘要一致。MSVC 可移植 CMake 入口双宽各 3 项通过；这不构成 ntvdm64 产品验证。
 
 导入清单中的便携 CMake 摘要按提交后的 LF 文件计算；`s41-clean28` 快照中该文件为 CRLF，内容相同但字节摘要为 `ee49f56f9c0f1bb36231259008c38413175b51d5da102485cf9aca9ae4ec25c1`，该文件不参与产品构建入口。
+
+## S42：产品侧五项清理（进行中）
+
+基线为 S41 的 `652315f1`：DLL 产品侧 14 个 `global_*.c` 和 13 个头，C 源约 1003 行；另检查 EXE、injection 及测试/构建调用者，避免仅按文件名前缀判断。逐项以目录、文件、结构、函数、变量检查，不将简单搬文件或增加包装当作完成。
+
+初步处置：`global_discover.c/.h` 是完全转发，已删除，管理器与发现测试直接调用公共 window API；`global_start` 的 ready/close、`global_process` 的 event_pid/stop 是完全转发，调用者改用公共 worker/monitor API。`global_load`、`global_remote` 混合纯转发和产品 DLL/导出名，待合并并核对产品路径；`global_manager` 逐函数复审公共协调和产品策略；`global_hook/window/vb_text` 的消息及样式由产品承担，但仍须核对结构；`global_attach/start/thread/process/session/policy/late` 的产品协议、鉴权和公共 API 调用逐项核对。EXE 侧 `global.c` 和测试的调用者一并检查。
+
+现阶段源修改尚未完成双宽回归、干净构建、发布和远端复核，S42/T21 保持开放。
+
+### S42 当前保留文件复审
+
+| 产品适配 | 保留原因及公共边界 |
+| --- | --- |
+| `global/attach.c/.h` | 会话 cookie、目标身份、控制消息和附着票据属于产品协议；事务状态机及远端工作由公共库执行。 |
+| `global/hook.c` | 产品导出、窗口线程鉴权和消息路由，调用产品样式及公共钩子；不把 Win16 协议放入公共库。 |
+| `global/late.c/.h` | 会话资格与 STYLE/PROPAGATE 产品组合；后台调度、批量钩子由公共库承担。 |
+| `global/manager.c/.h` | 产品会话、DLL 路径、目标资格和各阶段产品回调；队列、目标管理、事务、发现与停止引擎使用公共库。保留回调是由各个产品契约决定，不另加转发文件。 |
+| `global/policy.c/.h` | 产品共享宿主排除表与策略回调；公共初始化及身份重验直接调用公共 API。 |
+| `global/process.c/.h` | 产品 ETW 名称和孤儿会话策略；事件解析及关闭直接调用公共 API。 |
+| `global/remote.c/.h` | 产品 DLL 名、导出名及两项加载配置集中在此；LoadLibrary 解析及释放直接调用公共 API。 |
+| `global/session.c/.h` | 产品共享内存结构、协议、会话命名和所有者鉴权；身份和文件比较直接调用公共 API。 |
+| `global/start.c/.h` | 产品线程数据包、就绪事件名称及既有安全描述符；通用线程启动、就绪和关闭由公共 worker 提供。 |
+| `global/thread.c/.h` | 产品线程 packet 验证和窗口钩子回调；等待及注销机制由公共 window 接口完成。 |
+| `global/vb_text.c/.h` | VB 窗口文本的产品适配，不属于通用进程管理。 |
+| `global/window.c/.h` | 样式控制与窗口线程附着/移除产品调用，不属于通用进程管理。 |
+
+目录：产品适配置于 `src/ntw16s-dll/global/`，去掉文件名重复前缀；公共库不依赖产品目录。文件：删除原 discover、load 两对文件；load 中产品名称配置合并进 remote。结构/函数：删除发现、worker ready/close、monitor stop/event、policy init/revalidate、loader discard/address 等纯转发；调用者直接使用公共接口。变量/类型：清除产品重命名公共类型、身份函数宏以及管理器无用 include/常量。具体功能与跨位宽验证以实际结果为准。
+
+S42 增量证据：整理目录及调用后 x86/x64 各 11 项发现、策略、加载、远端解析、接入、线程、窗口、管理器及停止竞态通过；管理器移除仅启动期使用的 desktop 字段和仅单次使用的 scan deadline 字段，保留现有线程和时间语义。原资源身份、来源清单与公共库边界检查通过。最终干净构建及实际包测试尚待执行。
+
+S42 P1 本地交付：`s42-clean1` GCC/Ninja/ccache 双宽干净包、ABI、来源、原资源及公共库反向依赖门禁通过；干净树双宽各 11 项核心回归通过。`s42-package1` 同批实际包聚焦 44 项通过，但两个 policy 子项报告其他 window station SKIP（exit 12）；组合绘制摘要与旧版一致但恢复仍不等原始。首次 `s42-publish1` 因 O:/winnt/ntw16s32.dll 被 D:/programs/misc/sol.exe PID 4120 持有而中断，资产目录及目标目录短暂混包；核实路径、启动时间和模块后正常关闭该进程，使用同一候选包 `s42-publish2` 完成两个目录四文件替换和 SHA 核验。尚待提交推送及远端复核。

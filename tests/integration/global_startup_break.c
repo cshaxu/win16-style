@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "ntw16s-dll/global_session.h"
+#include "ntw16s-dll/global/session.h"
 
 int wmain(int argc,WCHAR **argv)
 {

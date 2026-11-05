@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "ntw16s-dll/global_session.h"
+#include "ntw16s-dll/global/session.h"
 static BOOL launch(const WCHAR *image,const WCHAR *argument,PROCESS_INFORMATION *p)
 {WCHAR command[32768];STARTUPINFOW si={.cb=sizeof(si)};return swprintf(command,ARRAYSIZE(command),L"\"%ls\" %ls",image,argument)>=0 && CreateProcessW(image,command,NULL,NULL,TRUE,0,NULL,NULL,&si,p);}
 static int query(HWND window,UINT message,DWORD timeout)

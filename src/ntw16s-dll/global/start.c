@@ -1,8 +1,7 @@
-#include "lib-win32/handle/duplicate.h"
-#include "global_start.h"
-#include "global_thread.h"
-#include "global_session.h"
-#include "global_remote.h"
+#include "ntw16s-dll/global/start.h"
+#include "ntw16s-dll/global/thread.h"
+#include "ntw16s-dll/global/session.h"
+#include "ntw16s-dll/global/remote.h"
 #include <sddl.h>
 #include <stdlib.h>
 #include <wchar.h>
@@ -31,11 +30,8 @@ done:
     free(sddl);free(user);return event;
 }
 
-DWORD ntw16s_global_start_close(ntw16s_global_start *ticket)
-{return win32_process_global_worker_close(ticket);}
-
 DWORD ntw16s_global_start_begin(HANDLE process,DWORD pid,DWORD thread_id,DWORD cookie,
-                                const WCHAR *dll_path,SECURITY_ATTRIBUTES *security,ntw16s_global_start *ticket)
+                                const WCHAR *dll_path,SECURITY_ATTRIBUTES *security,win32_process_global_worker *ticket)
 {
     WCHAR name[NTW16S_GLOBAL_NAME_CAP],ready_name[NTW16S_GLOBAL_NAME_CAP+64];
     HANDLE gui=NULL;void *worker=NULL;DWORD error;
@@ -57,8 +53,5 @@ DWORD ntw16s_global_start_begin(HANDLE process,DWORD pid,DWORD thread_id,DWORD c
     CloseHandle(gui);return ERROR_SUCCESS;
 fail:
     if(gui)CloseHandle(gui);
-    {DWORD release=ntw16s_global_start_close(ticket);return release?release:error;}
+    {DWORD release=win32_process_global_worker_close(ticket);return release?release:error;}
 }
-
-DWORD ntw16s_global_start_ready(ntw16s_global_start *ticket,DWORD timeout)
-{return win32_process_global_worker_ready(ticket,timeout);}

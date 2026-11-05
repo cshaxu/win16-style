@@ -5,7 +5,7 @@
 #include <wchar.h>
 #include "ntw16s-dll/injection/intercept.h"
 #include "ntw16s-dll/injection/late_process.h"
-#include "ntw16s-dll/global_session.h"
+#include "ntw16s-dll/global/session.h"
 ntw16s_context ntw16s_process_context;
 static volatile LONG running=1,ticks,style_registrations;
 /* The ordinary-startup backend is not linked into this isolated fixture. */
@@ -39,7 +39,7 @@ int wmain(int argc,WCHAR **argv)
     if(!mapping || GetLastError()==ERROR_ALREADY_EXISTS)return 9;
     ntw16s_global_session *session=MapViewOfFile(mapping,FILE_MAP_WRITE,0,0,sizeof(*session));if(!session)return 9;
     session->magic=NTW16S_GLOBAL_MAGIC;session->version=NTW16S_GLOBAL_VERSION;session->owner_pid=GetCurrentProcessId();session->cookie=0x513a9187;
-    if(!ntw16s_global_birth(GetCurrentProcess(),&session->owner_birth_low,&session->owner_birth_high))return 9;
+    if(!win32_process_global_birth(GetCurrentProcess(),&session->owner_birth_low,&session->owner_birth_high))return 9;
     session->phase=NTW16S_GLOBAL_ACTIVE;
     SetLastError(777);BOOL active=ntw16s_global_policy_active(session->cookie),wrong=ntw16s_global_policy_active(session->cookie^1u);
     if(!active || wrong || GetLastError()!=777)return 10;

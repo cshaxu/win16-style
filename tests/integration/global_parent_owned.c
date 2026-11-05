@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <wchar.h>
 #include "run16s-exe/global.h"
-#include "ntw16s-dll/global_session.h"
+#include "ntw16s-dll/global/session.h"
 
 static int witness(void)
 {

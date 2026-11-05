@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <wchar.h>
-#include "ntw16s-dll/global_remote.h"
+#include "ntw16s-dll/global/remote.h"
+#include "lib-win32/process-global/remote_loader.h"
 #include "lib-win32/process-global/remote_export.h"
 
 static HANDLE event_from_env(const WCHAR *variable,DWORD access)
@@ -46,8 +47,8 @@ int wmain(int argc,WCHAR **argv)
     STARTUPINFOW si={.cb=sizeof(si)};PROCESS_INFORMATION pi={0};
     if(!ready || !stop || !CreateProcessW(self,cmd,NULL,NULL,FALSE,0,NULL,NULL,&si,&pi))return 5;
     BOOL started=WaitForSingleObject(ready,3000)==WAIT_OBJECT_0;void *remote=NULL,*invalid=(void *)1;
-    DWORD error=started?ntw16s_remote_loadlibrary(pi.hProcess,pi.dwProcessId,&remote):ERROR_TIMEOUT;
-    DWORD bad=ntw16s_remote_loadlibrary(pi.hProcess,pi.dwProcessId+1,&invalid);
+    DWORD error=started?win32_process_global_remote_loadlibrary(pi.hProcess,pi.dwProcessId,&remote):ERROR_TIMEOUT;
+    DWORD bad=win32_process_global_remote_loadlibrary(pi.hProcess,pi.dwProcessId+1,&invalid);
     void *worker=NULL,*invalid_worker=(void *)1;
     DWORD worker_error=started?ntw16s_remote_global_thread(pi.hProcess,pi.dwProcessId,argv[1],&worker):ERROR_TIMEOUT;
     DWORD bad_name=ntw16s_remote_global_thread(pi.hProcess,pi.dwProcessId,L"C:\\not-project.dll",&invalid_worker);

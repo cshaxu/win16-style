@@ -1,20 +1,20 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "ntw16s-dll/global_discover.h"
+#include "lib-win32/process-global/window.h"
 
 typedef struct owned_target {PROCESS_INFORMATION process;HANDLE ready,stop,late;} owned_target;
-typedef struct observations {ntw16s_global_discover *watcher;DWORD first,second;unsigned existing,created,late,invalid;DWORD nested_stop;} observations;
+typedef struct observations {win32_process_global_window *watcher;DWORD first,second;unsigned existing,created,late,invalid;DWORD nested_stop;} observations;
 static void discovered(HWND window,DWORD process,DWORD thread,void *parameter)
 {
     observations *s=(observations *)parameter;DWORD actual=0;
     if(GetWindowThreadProcessId(window,&actual)!=thread || actual!=process)++s->invalid;
     if(process==s->first){WCHAR text[32];++s->existing;if(GetWindowTextW(window,text,ARRAYSIZE(text)) && !lstrcmpW(text,L"late"))++s->late;}
     if(process==s->second)++s->created;
-    if(!s->nested_stop)s->nested_stop=ntw16s_global_discover_stop(s->watcher);
+    if(!s->nested_stop)s->nested_stop=win32_process_global_window_stop(s->watcher);
 }
 static DWORD WINAPI wrong_thread(void *parameter)
-{return ntw16s_global_discover_stop((ntw16s_global_discover *)parameter);}
+{return win32_process_global_window_stop((win32_process_global_window *)parameter);}
 static int target(void)
 {
     WCHAR ready_name[128],stop_name[128],late_name[128];
@@ -70,29 +70,29 @@ int wmain(int argc,WCHAR **argv)
     WCHAR desktop[128];DWORD needed=0;
     if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desktop,sizeof(desktop),&needed) ||
        wcsncmp(desktop,L"Win16S-Dialog-",14))return 5;
-    owned_target targets[3]={0};ntw16s_global_discover watcher={0},duplicate={0};observations s={.watcher=&watcher};BOOL pass=FALSE;
-    DWORD empty_start=ntw16s_global_discover_start(&watcher,discovered,&s);
-    DWORD empty_refresh=empty_start?ERROR_INVALID_STATE:ntw16s_global_discover_refresh(&watcher);
-    DWORD empty_stop=empty_refresh?ERROR_INVALID_STATE:ntw16s_global_discover_stop(&watcher);
+    owned_target targets[3]={0};win32_process_global_window watcher={0},duplicate={0};observations s={.watcher=&watcher};BOOL pass=FALSE;
+    DWORD empty_start=win32_process_global_window_start(&watcher,discovered,&s);
+    DWORD empty_refresh=empty_start?ERROR_INVALID_STATE:win32_process_global_window_refresh(&watcher);
+    DWORD empty_stop=empty_refresh?ERROR_INVALID_STATE:win32_process_global_window_stop(&watcher);
     printf("DISCOVER EMPTY bits=%u start=%lu refresh=%lu stop=%lu\n",(unsigned)(sizeof(void*)*8),empty_start,empty_refresh,empty_stop);
     if(empty_start || empty_refresh || empty_stop)goto done;
     if(!launch(&targets[0],1))goto done;
     s.first=targets[0].process.dwProcessId;
-    if(ntw16s_global_discover_start(&watcher,discovered,&s) || !s.existing || s.nested_stop!=ERROR_BUSY)goto done;
+    if(win32_process_global_window_start(&watcher,discovered,&s) || !s.existing || s.nested_stop!=ERROR_BUSY)goto done;
     SetEvent(targets[0].late);pump(150);if(!s.late)goto done;
-    if(ntw16s_global_discover_start(&duplicate,discovered,&s)!=ERROR_BUSY)goto done;
+    if(win32_process_global_window_start(&duplicate,discovered,&s)!=ERROR_BUSY)goto done;
     HANDLE other=CreateThread(NULL,0,wrong_thread,&watcher,0,NULL);DWORD other_code=0;
     if(!other || WaitForSingleObject(other,3000)!=WAIT_OBJECT_0 || !GetExitCodeThread(other,&other_code) || other_code!=ERROR_INVALID_PARAMETER)goto done;
     CloseHandle(other);
     if(!launch(&targets[1],2))goto done;
     s.second=targets[1].process.dwProcessId;
     pump(250);if(!s.created || s.invalid)goto done;
-    if(ntw16s_global_discover_stop(&watcher))goto done;
+    if(win32_process_global_window_stop(&watcher))goto done;
     unsigned prior=s.created+s.existing;if(!launch(&targets[2],3))goto done;pump(150);
     if(s.created+s.existing!=prior)goto done;
     pass=TRUE;
 done:
-    if(watcher.hook)ntw16s_global_discover_stop(&watcher);
+    if(watcher.hook)win32_process_global_window_stop(&watcher);
     for(unsigned i=0;i<ARRAYSIZE(targets);++i)cleanup(&targets[i]);
     if(!pass){printf("DISCOVER FAIL existing=%u created=%u late=%u invalid=%u nested=%lu\n",s.existing,s.created,s.late,s.invalid,s.nested_stop);return 6;}
     printf("DISCOVER PASS bits=%u existing=1 new=1 late=1 stop=1 nested=1 wrong_thread=1\n",(unsigned)(sizeof(void*)*8));return 0;

@@ -5,7 +5,7 @@
 #include <wchar.h>
 #include <sddl.h>
 #include <tlhelp32.h>
-#include "ntw16s-dll/global_session.h"
+#include "ntw16s-dll/global/session.h"
 
 static BOOL launch(const WCHAR *image,WCHAR *command,WCHAR *desktop,PROCESS_INFORMATION *p)
 {STARTUPINFOW si={.cb=sizeof(si),.lpDesktop=desktop};return CreateProcessW(image,command,NULL,NULL,TRUE,0,NULL,NULL,&si,p);}

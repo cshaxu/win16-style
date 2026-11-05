@@ -2,7 +2,7 @@
 #include "intercept.h"
 #include "startup_hooks.h"
 #include "system_process.h"
-#include "ntw16s-dll/global_session.h"
+#include "ntw16s-dll/global/session.h"
 #include "lib-win32/process-hook/propagate.h"
 BOOL ntw16s_process_session_active(void)
 {return !(__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE)&NTW16S_POLICY_GLOBAL_SESSION) || ntw16s_global_policy_active(__atomic_load_n(&ntw16s_process_context.session_cookie,__ATOMIC_ACQUIRE));}

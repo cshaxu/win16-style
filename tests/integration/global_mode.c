@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "ntw16s-dll/global_session.h"
+#include "ntw16s-dll/global/session.h"
 #define QUERY_STYLE (WM_APP+71)
 #define CREATE_EXTRA (WM_APP+72)
 #define CREATE_PROCESS (WM_APP+73)

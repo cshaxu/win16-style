@@ -1,7 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "ntw16s-dll/global_load.h"
+#include "ntw16s-dll/global/remote.h"
 
 static HANDLE env_event(const WCHAR *key,DWORD access)
 {WCHAR name[128];return GetEnvironmentVariableW(key,name,ARRAYSIZE(name))?OpenEventW(access,FALSE,name):NULL;}
@@ -28,14 +28,14 @@ int wmain(int argc,WCHAR **argv)
     STARTUPINFOW si={.cb=sizeof(si)};PROCESS_INFORMATION pi={0};
     if(!CreateProcessW(self,cmd,NULL,NULL,FALSE,0,NULL,NULL,&si,&pi))return 7;
     BOOL started=WaitForSingleObject(events[0],3000)==WAIT_OBJECT_0;
-    ntw16s_global_load ticket={0},invalid={0};void *worker=NULL;
+    win32_process_global_load ticket={0},invalid={0};void *worker=NULL;
     DWORD bad_pid=ntw16s_global_load_begin(pi.hProcess,pi.dwProcessId+1,argv[1],&invalid);
     DWORD bad_name=ntw16s_global_load_begin(pi.hProcess,pi.dwProcessId,L"C:\\wrong.dll",&invalid);
     DWORD begin=started?ntw16s_global_load_begin(pi.hProcess,pi.dwProcessId,argv[1],&ticket):ERROR_TIMEOUT;
     BOOL entered=!begin && WaitForSingleObject(events[2],3000)==WAIT_OBJECT_0;
     DWORD duplicate=entered?ntw16s_global_load_begin(pi.hProcess,pi.dwProcessId,argv[1],&ticket):ERROR_INVALID_STATE;
     DWORD timed=entered?ntw16s_global_load_finish(&ticket,0,&worker):ERROR_TIMEOUT;
-    DWORD busy=entered?ntw16s_global_load_discard(&ticket):ERROR_INVALID_STATE;
+    DWORD busy=entered?win32_process_global_load_discard(&ticket):ERROR_INVALID_STATE;
     BOOL retained=ticket.process && ticket.thread && ticket.remote_path && ticket.path && !worker;
     SetEvent(events[3]);
     DWORD finished=begin?begin:ntw16s_global_load_finish(&ticket,5000,&worker);
@@ -46,7 +46,7 @@ int wmain(int argc,WCHAR **argv)
     for(unsigned i=0;i<ARRAYSIZE(events);++i)ResetEvent(events[i]);
     swprintf(cmd,ARRAYSIZE(cmd),L"\"%ls\" target",self);STARTUPINFOW dead_si={.cb=sizeof(dead_si)};PROCESS_INFORMATION dead={0};
     if(!CreateProcessW(self,cmd,NULL,NULL,FALSE,0,NULL,NULL,&dead_si,&dead))return 9;
-    BOOL dead_ready=WaitForSingleObject(events[0],3000)==WAIT_OBJECT_0;ntw16s_global_load dead_ticket={0};void *dead_worker=NULL;
+    BOOL dead_ready=WaitForSingleObject(events[0],3000)==WAIT_OBJECT_0;win32_process_global_load dead_ticket={0};void *dead_worker=NULL;
     DWORD dead_begin=dead_ready?ntw16s_global_load_begin(dead.hProcess,dead.dwProcessId,argv[1],&dead_ticket):ERROR_TIMEOUT;
     BOOL dead_entered=!dead_begin && WaitForSingleObject(events[2],3000)==WAIT_OBJECT_0;
     BOOL killed=TerminateProcess(dead.hProcess,91);DWORD dead_wait=WaitForSingleObject(dead.hProcess,3000);

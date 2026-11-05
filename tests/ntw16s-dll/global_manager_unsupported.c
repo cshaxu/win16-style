@@ -1,8 +1,8 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "ntw16s-dll/global_manager.h"
-#include "ntw16s-dll/global_session.h"
+#include "ntw16s-dll/global/manager.h"
+#include "ntw16s-dll/global/session.h"
 
 static HWND button,later;static unsigned clicks;
 static LRESULT CALLBACK window_proc(HWND w,UINT m,WPARAM a,LPARAM b)
@@ -54,7 +54,7 @@ int wmain(int argc,WCHAR **argv)
     ntw16s_global_session *session=(ntw16s_global_session *)MapViewOfFile(map,FILE_MAP_ALL_ACCESS,0,0,sizeof(*session));if(!session)return 10;
     ZeroMemory(session,sizeof(*session));session->magic=NTW16S_GLOBAL_MAGIC;session->version=NTW16S_GLOBAL_VERSION;
     session->owner_pid=GetCurrentProcessId();session->cookie=0x3579;session->phase=NTW16S_GLOBAL_ACTIVE;
-    if(!ntw16s_global_birth(GetCurrentProcess(),&session->owner_birth_low,&session->owner_birth_high))return 11;
+    if(!win32_process_global_birth(GetCurrentProcess(),&session->owner_birth_low,&session->owner_birth_high))return 11;
     swprintf(ready_name,ARRAYSIZE(ready_name),L"Local\\Win16AttachReady-%lu",GetCurrentProcessId());SetEnvironmentVariableW(L"WIN16_ATTACH_TEST_READY",ready_name);
     HANDLE ready=CreateEventW(NULL,TRUE,FALSE,ready_name),stop=CreateEventW(NULL,TRUE,FALSE,stop_name);
     GetModuleFileNameW(NULL,self,ARRAYSIZE(self));wcscpy(dll,self);WCHAR *slash=wcsrchr(dll,L'\\');if(!slash)return 12;

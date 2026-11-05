@@ -1,8 +1,8 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "ntw16s-dll/global_session.h"
-#include "ntw16s-dll/global_thread.h"
+#include "ntw16s-dll/global/session.h"
+#include "ntw16s-dll/global/thread.h"
 
 LRESULT CALLBACK Ntw16sGlobalHook(int code,WPARAM a,LPARAM b)
 {
@@ -78,7 +78,7 @@ int wmain(int argc,WCHAR **argv)
         if(!owner_stop || !CreateProcessW(self,owner_cmd,NULL,NULL,FALSE,0,NULL,NULL,&owner_si,&owner))return 22;
         s->owner_pid=owner.dwProcessId;
     }
-    if(!ntw16s_global_birth(owner_loss?owner.hProcess:GetCurrentProcess(),&s->owner_birth_low,&s->owner_birth_high))return 14;
+    if(!win32_process_global_birth(owner_loss?owner.hProcess:GetCurrentProcess(),&s->owner_birth_low,&s->owner_birth_high))return 14;
     swprintf(hit_name,ARRAYSIZE(hit_name),L"Local\\Win16ThreadTest-%lu",GetCurrentProcessId());
     SetEnvironmentVariableW(L"WIN16_THREAD_TEST_HIT",hit_name);
     HANDLE stop=CreateEventW(NULL,TRUE,FALSE,stop_name),hit=CreateEventW(NULL,TRUE,FALSE,hit_name);

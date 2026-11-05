@@ -1,9 +1,9 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "ntw16s-dll/global_session.h"
-#include "ntw16s-dll/global_start.h"
-#include "ntw16s-dll/global_load.h"
+#include "ntw16s-dll/global/session.h"
+#include "ntw16s-dll/global/start.h"
+#include "ntw16s-dll/global/remote.h"
 
 static LRESULT CALLBACK window_proc(HWND w,UINT m,WPARAM a,LPARAM b)
 {
@@ -41,7 +41,7 @@ int wmain(int argc,WCHAR **argv)
     ntw16s_global_session *session=(ntw16s_global_session *)MapViewOfFile(map,FILE_MAP_ALL_ACCESS,0,0,sizeof(*session));if(!session)return 10;
     ZeroMemory(session,sizeof(*session));session->magic=NTW16S_GLOBAL_MAGIC;session->version=NTW16S_GLOBAL_VERSION;
     session->owner_pid=GetCurrentProcessId();session->cookie=0x2468;session->phase=NTW16S_GLOBAL_ACTIVE;
-    if(!ntw16s_global_birth(GetCurrentProcess(),&session->owner_birth_low,&session->owner_birth_high))return 11;
+    if(!win32_process_global_birth(GetCurrentProcess(),&session->owner_birth_low,&session->owner_birth_high))return 11;
     swprintf(child_ready_name,ARRAYSIZE(child_ready_name),L"Local\\Win16StartReady-%lu",GetCurrentProcessId());
     SetEnvironmentVariableW(L"WIN16_START_TEST_DLL",argv[1]);SetEnvironmentVariableW(L"WIN16_START_TEST_READY",child_ready_name);
     SetEnvironmentVariableW(L"WIN16_START_TEST_REMOTE",remote_load?L"1":NULL);
@@ -50,10 +50,10 @@ int wmain(int argc,WCHAR **argv)
     STARTUPINFOW si={.cb=sizeof(si)};PROCESS_INFORMATION pi={0};
     if(!child_ready || !stop || !CreateProcessW(self,cmd,NULL,NULL,FALSE,0,NULL,NULL,&si,&pi))return 12;
     BOOL started=WaitForSingleObject(child_ready,3000)==WAIT_OBJECT_0;
-    ntw16s_global_load load={0};void *loaded_worker=NULL;
+    win32_process_global_load load={0};void *loaded_worker=NULL;
     DWORD load_begin=remote_load && started?ntw16s_global_load_begin(pi.hProcess,pi.dwProcessId,argv[1],&load):ERROR_SUCCESS;
     DWORD load_finish=remote_load && !load_begin?ntw16s_global_load_finish(&load,3000,&loaded_worker):load_begin;
-    ntw16s_global_start bad={0},wrong={0},collision_ticket={0},ticket={0};
+    win32_process_global_worker bad={0},wrong={0},collision_ticket={0},ticket={0};
     DWORD bad_pid=ntw16s_global_start_begin(pi.hProcess,pi.dwProcessId+1,pi.dwThreadId,session->cookie,argv[1],NULL,&bad);
     DWORD bad_thread=ntw16s_global_start_begin(pi.hProcess,pi.dwProcessId,GetCurrentThreadId(),session->cookie,argv[1],NULL,&bad);
     WCHAR collision_name[NTW16S_GLOBAL_NAME_CAP+64];
@@ -62,15 +62,15 @@ int wmain(int argc,WCHAR **argv)
     DWORD collision_error=collision?ntw16s_global_start_begin(pi.hProcess,pi.dwProcessId,pi.dwThreadId,session->cookie,argv[1],NULL,&collision_ticket):ERROR_INVALID_HANDLE;
     BOOL collision_unchanged=collision && WaitForSingleObject(collision,0)==WAIT_TIMEOUT;if(collision)CloseHandle(collision);
     DWORD wrong_begin=ntw16s_global_start_begin(pi.hProcess,pi.dwProcessId,pi.dwThreadId,session->cookie+1,argv[1],NULL,&wrong);
-    DWORD wrong_ready=wrong_begin?wrong_begin:ntw16s_global_start_ready(&wrong,3000);
+    DWORD wrong_ready=wrong_begin?wrong_begin:win32_process_global_worker_ready(&wrong,3000);
     DWORD wrong_wait=wrong.thread?WaitForSingleObject(wrong.thread,3000):WAIT_FAILED;
-    DWORD wrong_close=wrong_begin?wrong_begin:ntw16s_global_start_close(&wrong);
+    DWORD wrong_close=wrong_begin?wrong_begin:win32_process_global_worker_close(&wrong);
     DWORD begin=started?ntw16s_global_start_begin(pi.hProcess,pi.dwProcessId,pi.dwThreadId,session->cookie,argv[1],NULL,&ticket):ERROR_TIMEOUT;
-    DWORD ready=begin?begin:ntw16s_global_start_ready(&ticket,3000);
+    DWORD ready=begin?begin:win32_process_global_worker_ready(&ticket,3000);
     BOOL packet_freed=!begin && !ready && !ticket.remote_packet;
-    DWORD busy=begin?begin:ntw16s_global_start_close(&ticket);
+    DWORD busy=begin?begin:win32_process_global_worker_close(&ticket);
     SetEvent(stop);DWORD worker_wait=ticket.thread?WaitForSingleObject(ticket.thread,3000):WAIT_FAILED;
-    DWORD close_error=begin?begin:ntw16s_global_start_close(&ticket);
+    DWORD close_error=begin?begin:win32_process_global_worker_close(&ticket);
     HWND window=FindWindowW(L"Win16OwnedStartTest",L"owned");if(window)PostMessageW(window,WM_CLOSE,0,0);
     DWORD child_wait=WaitForSingleObject(pi.hProcess,3000),code=99;
     if(child_wait==WAIT_OBJECT_0)GetExitCodeProcess(pi.hProcess,&code);else TerminateProcess(pi.hProcess,ERROR_TIMEOUT);

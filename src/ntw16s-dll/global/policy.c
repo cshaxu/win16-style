@@ -1,4 +1,4 @@
-#include "global_policy.h"
+#include "ntw16s-dll/global/policy.h"
 #include <wchar.h>
 
 BOOL ntw16s_global_image_allowed(const WCHAR *image,const WCHAR *windows)
@@ -15,13 +15,7 @@ BOOL ntw16s_global_image_allowed(const WCHAR *image,const WCHAR *windows)
     return TRUE;
 }
 
-DWORD ntw16s_global_policy_init(ntw16s_global_policy *p)
-{return win32_process_global_policy_init(p);}
-DWORD ntw16s_global_policy_inspect(const ntw16s_global_policy *p,HWND w,DWORD pid,DWORD tid,WORD machine,ntw16s_global_identity *i)
+DWORD ntw16s_global_policy_inspect(const win32_process_global_policy *p,HWND w,DWORD pid,DWORD tid,WORD machine,win32_process_global_identity *i)
 {return win32_process_global_policy_inspect(p,w,pid,tid,machine,i,ntw16s_global_image_allowed);}
-DWORD ntw16s_global_policy_inspect_thread(const ntw16s_global_policy *p,DWORD pid,DWORD tid,WORD machine,ntw16s_global_identity *i)
+DWORD ntw16s_global_policy_inspect_thread(const win32_process_global_policy *p,DWORD pid,DWORD tid,WORD machine,win32_process_global_identity *i)
 {return win32_process_global_policy_inspect_thread(p,pid,tid,machine,i,ntw16s_global_image_allowed);}
-DWORD ntw16s_global_policy_revalidate(HANDLE p,HWND w,const ntw16s_global_identity *i)
-{return win32_process_global_policy_revalidate(p,w,i);}
-DWORD ntw16s_global_policy_revalidate_thread(HANDLE p,const ntw16s_global_identity *i)
-{return win32_process_global_policy_revalidate_thread(p,i);}

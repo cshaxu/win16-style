@@ -1,6 +1,6 @@
-#include "global_vb_text.h"
+#include "ntw16s-dll/global/vb_text.h"
 #include "lib-win32/module-import/import_scan.h"
-#include "vb_text.h"
+#include "ntw16s-dll/vb_text.h"
 
 static INIT_ONCE originals_once=INIT_ONCE_STATIC_INIT;
 static int (WINAPI *original_draw)(HDC,LPCSTR,int,LPRECT,UINT);

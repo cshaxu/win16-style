@@ -1,8 +1,8 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "ntw16s-dll/global_attach.h"
-#include "ntw16s-dll/global_session.h"
+#include "ntw16s-dll/global/attach.h"
+#include "ntw16s-dll/global/session.h"
 
 static HWND button;static unsigned clicks;
 static LRESULT CALLBACK window_proc(HWND w,UINT m,WPARAM a,LPARAM b)
@@ -55,7 +55,7 @@ int wmain(int argc,WCHAR **argv)
     ntw16s_global_session *session=(ntw16s_global_session *)MapViewOfFile(map,FILE_MAP_ALL_ACCESS,0,0,sizeof(*session));if(!session)return 10;
     ZeroMemory(session,sizeof(*session));session->magic=NTW16S_GLOBAL_MAGIC;session->version=NTW16S_GLOBAL_VERSION;
     session->owner_pid=GetCurrentProcessId();session->cookie=0x3579;session->phase=NTW16S_GLOBAL_ACTIVE;
-    if(!ntw16s_global_birth(GetCurrentProcess(),&session->owner_birth_low,&session->owner_birth_high))return 11;
+    if(!win32_process_global_birth(GetCurrentProcess(),&session->owner_birth_low,&session->owner_birth_high))return 11;
     swprintf(ready_name,ARRAYSIZE(ready_name),L"Local\\Win16AttachReady-%lu",GetCurrentProcessId());SetEnvironmentVariableW(L"WIN16_ATTACH_TEST_READY",ready_name);
     swprintf(entered_name,ARRAYSIZE(entered_name),L"Local\\Win16AttachStallEntered-%lu",GetCurrentProcessId());
     swprintf(release_name,ARRAYSIZE(release_name),L"Local\\Win16AttachStallRelease-%lu",GetCurrentProcessId());
@@ -67,7 +67,7 @@ int wmain(int argc,WCHAR **argv)
     STARTUPINFOW si={.cb=sizeof(si)};PROCESS_INFORMATION pi={0};
     if(!ready || !stop || !entered || !release || !CreateProcessW(self,cmd,NULL,NULL,FALSE,0,NULL,NULL,&si,&pi))return 13;
     BOOL started=WaitForSingleObject(ready,3000)==WAIT_OBJECT_0;HWND window=FindWindowW(L"Win16OwnedAttachTest",L"owned");
-    ntw16s_global_policy policy;DWORD init=ntw16s_global_policy_init(&policy);ntw16s_global_attach ticket={0};
+    win32_process_global_policy policy;DWORD init=win32_process_global_policy_init(&policy);ntw16s_global_attach ticket={0};
     int before=window?query(window,WM_APP+52):-1;
     DWORD begin=started && !init?ntw16s_global_attach_begin(&policy,window,pi.dwProcessId,pi.dwThreadId,
         sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,session->cookie,dll,&ticket):ERROR_INVALID_STATE;

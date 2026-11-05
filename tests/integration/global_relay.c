@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "ntw16s-dll/global_session.h"
+#include "ntw16s-dll/global/session.h"
 int wmain(int argc,WCHAR **argv)
 {if(argc!=4)return 2;WCHAR desk[128],name[NTW16S_GLOBAL_NAME_CAP],request[NTW16S_GLOBAL_NAME_CAP+16],cmd[8192];DWORD len=0;
  if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desk,sizeof(desk),&len)||wcsncmp(desk,L"Win16S-Dialog-",14))return 3;

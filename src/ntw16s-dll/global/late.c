@@ -1,8 +1,8 @@
-#include "global_late.h"
-#include "global_session.h"
+#include "ntw16s-dll/global/late.h"
+#include "ntw16s-dll/global/session.h"
 #include "lib-win32/process-global/background.h"
-#include "injection/injection.h"
-#include "injection/late_process.h"
+#include "ntw16s-dll/injection/injection.h"
+#include "ntw16s-dll/injection/late_process.h"
 #include <stdlib.h>
 typedef struct late_work {DWORD cookie;HDESK desktop;HMODULE module;} late_work;
 static win32_process_global_background background;

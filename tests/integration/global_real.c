@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <wchar.h>
-#include "ntw16s-dll/global_session.h"
+#include "ntw16s-dll/global/session.h"
 static DWORD target_pid;
 static HWND target_window;
 static BOOL CALLBACK find_window(HWND w,LPARAM unused)

@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "ntw16s-dll/global_session.h"
+#include "ntw16s-dll/global/session.h"
 #define QUERY (WM_APP+81)
 #define CONTENT (WM_APP+82)
 #define CREATE_LATE (WM_APP+83)

@@ -1,4 +1,4 @@
-#include "ntw16s-dll/global_process.h"
+#include "ntw16s-dll/global/process.h"
 #include "lib-win32/process-global/recovery.h"
 #include <stdio.h>
 #include <string.h>
@@ -11,15 +11,15 @@ int main(int argc,char **argv)
     record.EventHeader.ProviderId=provider;record.EventHeader.EventDescriptor.Opcode=1;
     record.UserData=data;record.UserDataLength=sizeof(data);
     memcpy(data+8,&pid,sizeof(pid));
-    if(ntw16s_global_process_event_pid(&record)!=pid)return 1;
+    if(win32_process_global_monitor_event_pid(&record)!=pid)return 1;
     ZeroMemory(data,sizeof(data));memcpy(data+4,&pid,sizeof(pid));
     record.EventHeader.Flags=EVENT_HEADER_FLAG_32_BIT_HEADER;
-    if(ntw16s_global_process_event_pid(&record)!=pid)return 2;
-    record.UserDataLength=7;if(ntw16s_global_process_event_pid(&record))return 3;
+    if(win32_process_global_monitor_event_pid(&record)!=pid)return 2;
+    record.UserDataLength=7;if(win32_process_global_monitor_event_pid(&record))return 3;
     record.UserDataLength=sizeof(data);record.EventHeader.EventDescriptor.Opcode=2;
-    if(ntw16s_global_process_event_pid(&record))return 4;
+    if(win32_process_global_monitor_event_pid(&record))return 4;
     record.EventHeader.EventDescriptor.Opcode=1;record.EventHeader.ProviderId.Data1++;
-    if(ntw16s_global_process_event_pid(&record) || ntw16s_global_process_event_pid(NULL))return 5;
+    if(win32_process_global_monitor_event_pid(&record) || win32_process_global_monitor_event_pid(NULL))return 5;
     DWORD owner=0,high=0,low=0;
     if(!ntw16s_global_process_parse_name(L"Win16S-ETW-1234-0123456789abcdef",&owner,&high,&low) ||
        owner!=1234 || high!=0x01234567 || low!=0x89abcdef)return 6;

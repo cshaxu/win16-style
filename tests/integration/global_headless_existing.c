@@ -3,10 +3,10 @@
 #include <stdio.h>
 #include <wchar.h>
 #include <tlhelp32.h>
-#include "ntw16s-dll/global_session.h"
-#include "ntw16s-dll/global_load.h"
-#include "ntw16s-dll/global_start.h"
-#include "ntw16s-dll/global_attach.h"
+#include "ntw16s-dll/global/session.h"
+#include "ntw16s-dll/global/remote.h"
+#include "ntw16s-dll/global/start.h"
+#include "ntw16s-dll/global/attach.h"
 
 static BOOL launch(const WCHAR *image, const WCHAR *args, PROCESS_INFORMATION *p)
 {
@@ -57,7 +57,7 @@ int wmain(int argc,WCHAR **argv)
     swprintf(aftername,ARRAYSIZE(aftername),L"Local\\Win16S.HeadlessAfter.%lu",GetCurrentProcessId());
     swprintf(readyname,ARRAYSIZE(readyname),L"%ls.ready",aftername);
     HANDLE go=CreateEventW(NULL,TRUE,FALSE,goname),after=CreateEventW(NULL,TRUE,FALSE,aftername),ready=CreateEventW(NULL,TRUE,FALSE,readyname),started=CreateEventW(NULL,TRUE,FALSE,started_name),map=NULL,stop=NULL;ntw16s_global_session *s=NULL;
-    PROCESS_INFORMATION target={0},manager={0};ntw16s_global_attach ticket={0};ntw16s_global_policy policy;
+    PROCESS_INFORMATION target={0},manager={0};ntw16s_global_attach ticket={0};win32_process_global_policy policy;
     DWORD error=0,code=99;BOOL ok=FALSE;
     if(!go || !after || !ready || !started || !GetModuleFileNameW(NULL,self,ARRAYSIZE(self)))goto done;
     swprintf(cmd,ARRAYSIZE(cmd),L"target %ls %ls",goname,aftername);
@@ -85,7 +85,7 @@ int wmain(int argc,WCHAR **argv)
         printf("EXISTING auto_load=%d\n",loaded);if(!loaded)goto done;
         Sleep(250);
     }else{
-    error=ntw16s_global_policy_init(&policy);
+    error=win32_process_global_policy_init(&policy);
     if(!error)error=ntw16s_global_attach_begin_thread(&policy,target.dwProcessId,target.dwThreadId,
         sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,s->cookie,argv[2],&ticket);
     if(!error && WaitForSingleObject(ticket.load.thread,5000)==WAIT_OBJECT_0){

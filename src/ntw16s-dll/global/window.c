@@ -1,8 +1,8 @@
 /* Global-mode window attachment, confined to the target GUI thread.
  * This layer does not install desktop hooks or patch process entry points. */
-#include "global_window.h"
-#include "attachment.h"
-#include "global_session.h"
+#include "ntw16s-dll/global/window.h"
+#include "ntw16s-dll/attachment.h"
+#include "ntw16s-dll/global/session.h"
 #include <commctrl.h>
 #include <stdlib.h>
 

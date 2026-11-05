@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <stdint.h>
-#include "ntw16s-dll/global_vb_text.h"
+#include "ntw16s-dll/global/vb_text.h"
 #include "lib-win32/module-import/import_scan.h"
 #include "ntw16s-dll/vb_text.h"
 #include "isolated_process.h"

@@ -3,7 +3,7 @@
 #include <tlhelp32.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "ntw16s-dll/global_session.h"
+#include "ntw16s-dll/global/session.h"
 #define QUERY_STYLE (WM_APP+71)
 static const WCHAR cls[]=L"Win16GlobalE2ETarget";
 static BOOL launch(const WCHAR *image,const WCHAR *argument,PROCESS_INFORMATION *p)

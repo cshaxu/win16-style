@@ -1,9 +1,9 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "ntw16s-dll/global_manager.h"
-#include "ntw16s-dll/global_policy.h"
-#include "ntw16s-dll/global_session.h"
+#include "ntw16s-dll/global/manager.h"
+#include "ntw16s-dll/global/policy.h"
+#include "ntw16s-dll/global/session.h"
 
 static HWND button;
 static unsigned clicks;
@@ -131,7 +131,7 @@ static int stop_race(void)
     ntw16s_global_session *session=(ntw16s_global_session *)MapViewOfFile(map,FILE_MAP_ALL_ACCESS,0,0,sizeof(*session));if(!session)return 10;
     ZeroMemory(session,sizeof(*session));session->magic=NTW16S_GLOBAL_MAGIC;session->version=NTW16S_GLOBAL_VERSION;
     session->owner_pid=GetCurrentProcessId();session->cookie=0x7894;session->phase=NTW16S_GLOBAL_ACTIVE;
-    if(!ntw16s_global_birth(GetCurrentProcess(),&session->owner_birth_low,&session->owner_birth_high))return 11;
+    if(!win32_process_global_birth(GetCurrentProcess(),&session->owner_birth_low,&session->owner_birth_high))return 11;
     HANDLE stop=CreateEventW(NULL,TRUE,FALSE,stop_name);if(!stop)return 12;
     GetModuleFileNameW(NULL,self,ARRAYSIZE(self));wcscpy(dll,self);WCHAR *slash=wcsrchr(dll,L'\\');if(!slash)return 13;
     wcscpy(slash+1,sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");
@@ -139,8 +139,8 @@ static int stop_race(void)
     ntw16s_global_manager *manager=NULL;DWORD start=sentinel?ntw16s_global_manager_start(dll,sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,&manager):GetLastError();
     PROCESS_INFORMATION pi={0};STARTUPINFOW si={.cb=sizeof(si)};swprintf(cmd,ARRAYSIZE(cmd),L"\"%ls\" race-child",self);
     BOOL created=!start && CreateProcessW(self,cmd,NULL,NULL,FALSE,CREATE_SUSPENDED,NULL,NULL,&si,&pi);
-    ntw16s_global_policy policy={0};ntw16s_global_identity identity;DWORD initial=ERROR_INVALID_STATE;
-    if(created && !ntw16s_global_policy_init(&policy)){
+    win32_process_global_policy policy={0};win32_process_global_identity identity;DWORD initial=ERROR_INVALID_STATE;
+    if(created && !win32_process_global_policy_init(&policy)){
         initial=ntw16s_global_policy_inspect_thread(&policy,pi.dwProcessId,pi.dwThreadId,sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,&identity);
         ntw16s_global_manager_test_process(manager,pi.dwProcessId);
     }
@@ -171,7 +171,7 @@ int wmain(int argc,WCHAR **argv)
     ntw16s_global_session *session=(ntw16s_global_session *)MapViewOfFile(map,FILE_MAP_ALL_ACCESS,0,0,sizeof(*session));if(!session)return 10;
     ZeroMemory(session,sizeof(*session));session->magic=NTW16S_GLOBAL_MAGIC;session->version=NTW16S_GLOBAL_VERSION;
     session->owner_pid=GetCurrentProcessId();session->cookie=0x7893;session->phase=NTW16S_GLOBAL_ACTIVE;
-    if(!ntw16s_global_birth(GetCurrentProcess(),&session->owner_birth_low,&session->owner_birth_high))return 11;
+    if(!win32_process_global_birth(GetCurrentProcess(),&session->owner_birth_low,&session->owner_birth_high))return 11;
     HANDLE stop=CreateEventW(NULL,TRUE,FALSE,stop_name);if(!stop)return 12;
     GetModuleFileNameW(NULL,self,ARRAYSIZE(self));wcscpy(dll,self);WCHAR *slash=wcsrchr(dll,L'\\');if(!slash)return 13;
     wcscpy(slash+1,sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");

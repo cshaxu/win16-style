@@ -1,4 +1,4 @@
-#include "ntw16s-dll/global_process.h"
+#include "ntw16s-dll/global/process.h"
 #include <evntrace.h>
 #include <stdio.h>
 #include <wchar.h>
@@ -15,7 +15,7 @@ static ULONG query(const WCHAR *name)
 int wmain(int argc,WCHAR **argv)
 {
     if(argc==2 && !wcscmp(argv[1],L"--orphan")){
-        ntw16s_global_process *m=NULL;DWORD error=ntw16s_global_process_start(event,NULL,&m);
+        win32_process_global_monitor *m=NULL;DWORD error=ntw16s_global_process_start(event,NULL,&m);
         if(error==ERROR_ACCESS_DENIED || error==ERROR_PRIVILEGE_NOT_HELD)return 77;
         return error?2:0; /* Deliberate process exit without stopping our own trace. */
     }
@@ -29,8 +29,8 @@ int wmain(int argc,WCHAR **argv)
     if(!ok){CloseHandle(child.hThread);CloseHandle(child.hProcess);return 5;}
     if(exitcode==77){CloseHandle(child.hThread);CloseHandle(child.hProcess);puts("GLOBAL ORPHAN SKIP elevation required");return 77;}
     if(exitcode || swprintf(name,ARRAYSIZE(name),L"Win16S-ETW-%lu-%08lx%08lx",child.dwProcessId,created.dwHighDateTime,created.dwLowDateTime)<0){CloseHandle(child.hThread);CloseHandle(child.hProcess);return 6;}
-    ULONG before=query(name);ntw16s_global_process *m=NULL;DWORD start=ntw16s_global_process_start(event,NULL,&m);
-    ULONG after=query(name);DWORD stop=m?ntw16s_global_process_stop(m):0;
+    ULONG before=query(name);win32_process_global_monitor *m=NULL;DWORD start=ntw16s_global_process_start(event,NULL,&m);
+    ULONG after=query(name);DWORD stop=m?win32_process_global_monitor_stop(m):0;
     /* Clean up the explicitly owned orphan if a failure prevented recovery. */
     if(after!=ERROR_WMI_INSTANCE_NOT_FOUND){BYTE buffer[sizeof(EVENT_TRACE_PROPERTIES)+192*sizeof(WCHAR)]={0};EVENT_TRACE_PROPERTIES *p=(EVENT_TRACE_PROPERTIES *)(void *)buffer;p->Wnode.BufferSize=sizeof(buffer);p->LoggerNameOffset=sizeof(*p);(void)ControlTraceW(0,name,p,EVENT_TRACE_CONTROL_STOP);}
     CloseHandle(child.hThread);CloseHandle(child.hProcess);

@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "ntw16s-dll/global_session.h"
+#include "ntw16s-dll/global/session.h"
 int wmain(int argc,WCHAR **argv)
 {
     if(argc!=3)return 2;
@@ -13,7 +13,7 @@ int wmain(int argc,WCHAR **argv)
     if(!mapping || GetLastError()==ERROR_ALREADY_EXISTS)return 5;
     ntw16s_global_session *s=MapViewOfFile(mapping,FILE_MAP_WRITE,0,0,sizeof(*s));if(!s)return 6;
     s->magic=NTW16S_GLOBAL_MAGIC;s->version=NTW16S_GLOBAL_VERSION;s->owner_pid=GetCurrentProcessId();s->cookie=0x672ad713;
-    if(!ntw16s_global_birth(GetCurrentProcess(),&s->owner_birth_low,&s->owner_birth_high))return 7;
+    if(!win32_process_global_birth(GetCurrentProcess(),&s->owner_birth_low,&s->owner_birth_high))return 7;
     s->phase=NTW16S_GLOBAL_ACTIVE;STARTUPINFOW si={.cb=sizeof(si)};PROCESS_INFORMATION child={0};
     if(swprintf(command,ARRAYSIZE(command),L"\"%ls\" localhook \"%ls\"",argv[1],argv[2])<0 || !CreateProcessW(argv[1],command,NULL,NULL,TRUE,0,NULL,NULL,&si,&child))return 8;
     DWORD code=99;if(WaitForSingleObject(child.hProcess,12000)==WAIT_OBJECT_0)GetExitCodeProcess(child.hProcess,&code);

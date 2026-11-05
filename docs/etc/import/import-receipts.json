@@ -95,9 +95,9 @@
       "path": "src/run16s-exe/tray_controller.c",
       "source": null,
       "source_blob": null,
-      "sha256": "50be6cd33d407d78260aa4cce2c532ac3beca4f694dff6f08ad5105b7574b9c2",
+      "sha256": "f9681de0da6d6f8c76d2ba8c796ef038318207d13dd9891d3845b44beb7e0686",
       "disposition": "authored",
-      "review": "T21 S19 tray control using existing global session; T21 S20 tray library split",
+      "review": "T21 S19 tray control using existing global session; T21 S20 tray library split; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored C orchestration; no imported hook implementation"
     },
     {
@@ -113,81 +113,81 @@
       "path": "tests/integration/global_parent_owned.c",
       "source": null,
       "source_blob": null,
-      "sha256": "41383ade8c48e0706d2c9008ee2129f23e4143a66f9b8aebbc8cf98ff4dc8134",
+      "sha256": "ed6c525b11ff00f61a69eea8734de3d7b37739d8aa780ee297599699bc9c32c0",
       "disposition": "authored",
-      "review": "T21 S15 elevated controller parent lifetime regression",
+      "review": "T21 S15 elevated controller parent lifetime regression; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/integration/global_cross_origin.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4f1a6274d3d4692797de8ecd4f7e650d5bd716146d9854cff8337dcb0eca32a6",
+      "sha256": "fe8884cf220377268bdc98835db0d16ff901567d48a230c732f5c1d3e57202b9",
       "disposition": "authored",
-      "review": "T21 S13 cross-desktop uninstrumented parent window discovery regression",
+      "review": "T21 S13 cross-desktop uninstrumented parent window discovery regression; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/integration/global_startup_break.c",
       "source": null,
       "source_blob": null,
-      "sha256": "299b76d929fda8a817236fadfdf00b3f9f64e9435438b6a6c377a9cfb082a0a9",
+      "sha256": "b803a3466d50bf244b34bf0a01e07ab9c7136fd73fa801143f508979ea6651dd",
       "disposition": "authored",
-      "review": "T21 S13 startup console break and host cleanup regression",
+      "review": "T21 S13 startup console break and host cleanup regression; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/integration/global_headless_existing.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ba8088b29eaa09815ef1bf701187b5560e72d1281d26b53a6462dfa6438118e9",
+      "sha256": "3eea27d4313a770162da949c8a39e7f5e99081342a75e179919c3b75ac3a4184",
       "disposition": "authored",
-      "review": "T21 S13 startup-discovered headless process propagation and stop regression",
+      "review": "T21 S13 startup-discovered headless process propagation and stop regression; T21 S42 direct public calls and product-side cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/ntw16s-dll/global_manager_unsupported.c",
       "source": null,
       "source_blob": null,
-      "sha256": "fafa8718f79808eccd43c7ff3bdd2e347363af1d1900bdd479937ed854f72520",
+      "sha256": "a0c890e9d01fa931d895164d27d7ee52729572c0df94661b377034b540202a8d",
       "disposition": "authored",
-      "review": "T21 S13 unsupported and later window acknowledgement tests",
+      "review": "T21 S13 unsupported and later window acknowledgement tests; T21 S42 direct public calls and product-side cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/integration/global_propagation_lifecycle.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b2b2c81aaf4fec3923a7a510fd12d0321c958ba5fb7413c37e00dfa582d0fc80",
+      "sha256": "e396d84e4b2d1596daa081e32b0f4c832b57aa19a4a597b87b87e2f83d8acd9d",
       "disposition": "authored",
-      "review": "T21 S13 experimental global process propagation integration and owned regression; T21 S13 unified late style hooks and stop semantics; T21 S13 ordinary-mode repeated global lifecycle regression",
+      "review": "T21 S13 experimental global process propagation integration and owned regression; T21 S13 unified late style hooks and stop semantics; T21 S13 ordinary-mode repeated global lifecycle regression; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/integration/global_hook_owner.c",
       "source": null,
       "source_blob": null,
-      "sha256": "acc5485a53a7e731785814f1fd5178f6822db8e1cdd3d775dfd3128154e16c67",
+      "sha256": "c8d1756ccff260574aee38196ffcaabd8b9fd3b4e07b92e4f3dfe8c8cc3a800c",
       "disposition": "authored",
-      "review": "T21 S13 experimental global process propagation integration and owned regression",
+      "review": "T21 S13 experimental global process propagation integration and owned regression; T21 S42 direct public calls and product-side cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/global_late.h",
+      "path": "src/ntw16s-dll/global/late.h",
       "source": null,
       "source_blob": null,
       "sha256": "ebf3f5a6bdf90c291d84c64fa7c1681b0b5e2be54c8b3e67da6f1bc0ba0ea11e",
       "disposition": "authored",
-      "review": "T21 S13 experimental global process propagation integration and owned regression",
+      "review": "T21 S13 experimental global process propagation integration and owned regression; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/global_late.c",
+      "path": "src/ntw16s-dll/global/late.c",
       "source": null,
       "source_blob": null,
-      "sha256": "40b931d28c323c7e7edfbc046b31f47f8087d1132912af990a4dc1b4d420f18b",
+      "sha256": "4ef6e3d6665fc01886d69695c2d13e3c40046daabdd58ad987f93f76cf4b528c",
       "disposition": "authored",
-      "review": "T21 S13 experimental global process propagation integration and owned regression",
+      "review": "T21 S13 experimental global process propagation integration and owned regression; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -212,9 +212,9 @@
       "path": "tests/integration/late_process_prototype.c",
       "source": null,
       "source_blob": null,
-      "sha256": "54727770e9f7866bd22718622e2c9c93ff1e01b5e7d11e4d004b8093d83d3fd0",
+      "sha256": "f1bd9bbd302f80c7ef374afd7daabbd3fb068ee03dbe555b97cf87adcf8d3bd0",
       "disposition": "authored",
-      "review": "T21 S13 experimental late process-hook adapter exercising production propagation implementation; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy; T21 S13 session-bound propagation tests; T21 S13 session-bound propagation tests; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics",
+      "review": "T21 S13 experimental late process-hook adapter exercising production propagation implementation; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy; T21 S13 session-bound propagation tests; T21 S13 session-bound propagation tests; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S42 direct public calls and product-side cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -266,9 +266,9 @@
       "path": "tests/integration/global_propagation_probe.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1e14ed43a0968a5086df4cf6de1ecc309c7d00d1981f83ed0892360b0ffe9364",
+      "sha256": "700cb793322a7232695ebc169eaec50920b212954f4d02c81feb20a3400e32cb",
       "disposition": "authored",
-      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product; T21 S13 session-bound propagation tests; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S13 headless propagation regression; T21 S13 uninstrumented headless parent to GUI discovery regression",
+      "review": "T21 S13 late global hook and propagation regression; experimental and not linked to product; T21 S13 session-bound propagation tests; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S13 headless propagation regression; T21 S13 uninstrumented headless parent to GUI discovery regression; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -302,27 +302,27 @@
       "path": "tests/ntw16s-dll/global_manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "92b0252af944580a0389f36bc518d675148d96e4c137a9e4c4193d4ee37436fd",
+      "sha256": "1966d83190795c52851d0cc2e4c3aac7318570d34e4832a545df9f14c545f3cb",
       "disposition": "authored",
-      "review": "T21 S13 manager startup wait timeout and completion test",
+      "review": "T21 S13 manager startup wait timeout and completion test; T21 S42 direct public calls and product-side cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/global_manager.h",
+      "path": "src/ntw16s-dll/global/manager.h",
       "source": null,
       "source_blob": null,
       "sha256": "8b51e974682b4162f095c26f12fb853d19f56d258262c6afd7abc365399c4a82",
       "disposition": "authored",
-      "review": "T21 S13 bounded startup attachment completion",
+      "review": "T21 S13 bounded startup attachment completion; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/global_manager.c",
+      "path": "src/ntw16s-dll/global/manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "5ac9a755b4fa541b81ad7e9791f3e1c59953b76b265c682cd9260c31efdd7180",
+      "sha256": "16c95a7565c45bb840bd53472acad826b0ad35640e6c474d181c43d8d47d3148",
       "disposition": "authored",
-      "review": "T21 S40 shared Toolhelp iteration; caller retains selection and lifecycle",
+      "review": "T21 S40 shared Toolhelp iteration; caller retains selection and lifecycle; T21 S42 direct public discovery calls; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored C"
     },
     {
@@ -338,9 +338,9 @@
       "path": "tests/integration/global_threads.c",
       "source": null,
       "source_blob": null,
-      "sha256": "fea3e7bae1a6359bb8c9d7d50d994cdf726b74d4367b4cde6808ece547a017e7",
+      "sha256": "eb0b97103ecabcb065cb5b00156d288dec4b89ff4a812c02cd423a29542a2ce9",
       "disposition": "authored",
-      "review": "T21 S6 dual-width multithread and bounded lifecycle probe; T21 S13 later regression coverage",
+      "review": "T21 S6 dual-width multithread and bounded lifecycle probe; T21 S13 later regression coverage; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -356,36 +356,36 @@
       "path": "tests/integration/global_common.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d633dd3479495d6b9b384a1e6d4d73cefbb68dddb1851a4b02c7e44881dc50ae",
+      "sha256": "70279710910a490e845baa4655f82c8af450ff5227d8564a7a163a8edd3631be",
       "disposition": "authored",
-      "review": "T21 S5 dual-width common control attachment regression; T21 S12 dynamic child controls regression; T21 S13 scoped VB6 text and end-to-end verification",
+      "review": "T21 S5 dual-width common control attachment regression; T21 S12 dynamic child controls regression; T21 S13 scoped VB6 text and end-to-end verification; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/integration/global_relay.c",
       "source": null,
       "source_blob": null,
-      "sha256": "9712307c1562ae442f6246d417b19d34cf0613299aa25311e5668cff3b8162ff",
+      "sha256": "2639ce9da49226bd2893f775a6db6249aa937df3a5b741ed2f9118cfa9d58fa9",
       "disposition": "authored",
-      "review": "T21 S5 private-desktop global menu relay probe; T21 S13 truthful global readiness and pre-subclass menu drawing witness",
+      "review": "T21 S5 private-desktop global menu relay probe; T21 S13 truthful global readiness and pre-subclass menu drawing witness; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/integration/global_lifecycle.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3f753d7085db1e5751001045af1edbeca44d7fabec1804f39ab285985fa77511",
+      "sha256": "4a0e42555e6d167d74d3b068fa49ba13e2cca1196c35d0406f84f1fc53f9863e",
       "disposition": "authored",
-      "review": "T21 S4 native isolated desktop real application and lifecycle probe; T21 S4 host failure detection and regression; T21 S11 bounded timeout retry and restart probe",
+      "review": "T21 S4 native isolated desktop real application and lifecycle probe; T21 S4 host failure detection and regression; T21 S11 bounded timeout retry and restart probe; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/integration/global_real.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3e18884380730261920899f617ecb2b0d6048882e87c265ee342de3cc87c5e2c",
+      "sha256": "4817fc32be0ca11646899bf381c9273e5a372ee90bd171d4755b7f354b7427c9",
       "disposition": "authored",
-      "review": "T21 S4 native isolated desktop real application and lifecycle probe",
+      "review": "T21 S4 native isolated desktop real application and lifecycle probe; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -401,9 +401,9 @@
       "path": "tests/integration/global_mode.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c82d9d003e47b7788cba80313b072466ef7e68b3822cd444c311b8818730d38d",
+      "sha256": "5f9d6c02f8769506efbeede35c1e738e77e50e31a65afccd28282d2e335093a4",
       "disposition": "authored",
-      "review": "T21 S3 global controller and private-desktop integration; T21 S4 dual-width and lifecycle validation; T21 S7 per-monitor DPI and controlled input; T21 S8 DPI-unaware 96 virtualization fixture; T21 S13 unified late style hooks and stop semantics; T21 S13 unified session stop semantics; T21 S13 hidden ordinary-window global stop regression; T21 S13 verify hidden windows shown after stop; T21 S13 cross-directory compatible module reuse",
+      "review": "T21 S3 global controller and private-desktop integration; T21 S4 dual-width and lifecycle validation; T21 S7 per-monitor DPI and controlled input; T21 S8 DPI-unaware 96 virtualization fixture; T21 S13 unified late style hooks and stop semantics; T21 S13 unified session stop semantics; T21 S13 hidden ordinary-window global stop regression; T21 S13 verify hidden windows shown after stop; T21 S13 cross-directory compatible module reuse; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -419,63 +419,63 @@
       "path": "src/run16s-exe/global.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1bb808288c72e322721525fe4999eb220fe52d6aef9a636dde016fb2f9490ef6",
+      "sha256": "932da3aca78b64108772c854b234cbbfabce701eb1515a1dee426a0063e4c880",
       "disposition": "authored",
-      "review": "T21 S13 bounded startup attachment completion",
+      "review": "T21 S13 bounded startup attachment completion; T21 S42 direct public calls and product-side cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/global_session.h",
+      "path": "src/ntw16s-dll/global/session.h",
       "source": null,
       "source_blob": null,
-      "sha256": "183670addd6f48e0fc217b16f01b592af81a9e2718a103a07e30079de9874128",
+      "sha256": "7f5d7e22978e652aa50f6bdc90aeb6befc86dc9d62df35675b6fb6ba0f524fae",
       "disposition": "authored",
-      "review": "T21 S3 global controller and private-desktop integration; T21 S13 truthful global readiness and pre-subclass menu drawing witness; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 attached-window acknowledgement candidate; T21 S13 cross-directory compatible module reuse",
+      "review": "T21 S3 global controller and private-desktop integration; T21 S13 truthful global readiness and pre-subclass menu drawing witness; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 attached-window acknowledgement candidate; T21 S13 cross-directory compatible module reuse; T21 S42 direct public calls and product-side cleanup; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/global_session.c",
+      "path": "src/ntw16s-dll/global/session.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6d06b6799ca3edf19f40b23a59e5e80ec8d158106f466a7b65e1b874456e71f3",
+      "sha256": "649722f72dcb82e1b90c675b47aa698b9ab42e328e92ce02d610af17555a049f",
       "disposition": "authored",
-      "review": "T21 S3 global controller and private-desktop integration; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 cross-directory compatible module reuse",
+      "review": "T21 S3 global controller and private-desktop integration; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 cross-directory compatible module reuse; T21 S42 direct public calls and product-side cleanup; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/global_hook.c",
+      "path": "src/ntw16s-dll/global/hook.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e81faba68833d600e126864045df6d49d1e8d84665ce3e601b8e598c1e6880c0",
+      "sha256": "53f13b3f89d14595c391831b5432ac925c3f7b2e401aac85b43eafc2dd7b4c83",
       "disposition": "authored",
-      "review": "T21 S13 bounded startup attachment completion; T21 S13 cross-directory compatible module reuse",
+      "review": "T21 S13 bounded startup attachment completion; T21 S13 cross-directory compatible module reuse; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/ntw16s-dll/global_window.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2f04f0ab2f7765470ea6d1cb72ce652e27490c6fec89248bc5a92f39f48e9cdc",
+      "sha256": "40a49a9abf0d7d7cb59b94e67efc7247a1c64f444c686d402a4228951f90eab1",
       "disposition": "authored",
-      "review": "T21 S2 same-thread global window lifecycle foundation; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier; T21 S13 unified late style hooks and stop semantics; T21 S13 unmarked attachment removal test; T21 S13 cross-directory compatible module reuse",
+      "review": "T21 S2 same-thread global window lifecycle foundation; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier; T21 S13 unified late style hooks and stop semantics; T21 S13 unmarked attachment removal test; T21 S13 cross-directory compatible module reuse; T21 S42 direct public calls and product-side cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/global_window.h",
+      "path": "src/ntw16s-dll/global/window.h",
       "source": null,
       "source_blob": null,
       "sha256": "a5454f9c2cc694e8ba1d824321e647ab0602abd3b733465a5725454df0523746",
       "disposition": "authored",
-      "review": "T21 S2 same-thread global window lifecycle foundation; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier",
+      "review": "T21 S2 same-thread global window lifecycle foundation; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/global_window.c",
+      "path": "src/ntw16s-dll/global/window.c",
       "source": null,
       "source_blob": null,
-      "sha256": "584a41ac18c346bd570d250dcd1cf6d03b8b982769abe7663fc4896fb3a01d12",
+      "sha256": "609129ee8ea18136df1057fc039345240b5fdf31c15b5283546fcbb97cfe7743",
       "disposition": "authored",
-      "review": "T21 S2 same-thread global window lifecycle foundation; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier; T21 S13 unified late style hooks and stop semantics; T21 S13 attached-window acknowledgement candidate; T21 S13 hidden ordinary-window global stop regression",
+      "review": "T21 S2 same-thread global window lifecycle foundation; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier; T21 S13 unified late style hooks and stop semantics; T21 S13 attached-window acknowledgement candidate; T21 S13 hidden ordinary-window global stop regression; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -1526,9 +1526,9 @@
       "path": "src/ntw16s-dll/injection/create_process.c",
       "source": "src/nthook32-dll/create_process.cpp",
       "source_blob": "2369ce7a7c46e79fc23f73367db9d42e0c40c9da",
-      "sha256": "979930592752bacdeb217f945e93736b48d71673ffc3e998768d0a98bb042d5b",
+      "sha256": "db13cc3cf96b1b4c08fee4a4d6e4ece050da72ec294737011cd47246545ec440",
       "disposition": "adapt",
-      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S13 unified session stop semantics",
+      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S13 unified session stop semantics; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source adaptation or new native fixture, repository MIT"
     },
     {
@@ -3737,21 +3737,21 @@
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/global_vb_text.c",
+      "path": "src/ntw16s-dll/global/vb_text.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4496db84f2506080a169e39e6d72c48a5b9a6f1df6451715a5f4bd94a7754579",
+      "sha256": "97caa2e08ce8af3fca025347bde993cbcfa8037dd86f0c2cb18ff930aec6665b",
       "disposition": "authored",
-      "review": "T21 S13 controlled VB6 global text attachment and native fixture",
+      "review": "T21 S13 controlled VB6 global text attachment and native fixture; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/global_vb_text.h",
+      "path": "src/ntw16s-dll/global/vb_text.h",
       "source": null,
       "source_blob": null,
       "sha256": "2cb836aaa78e9cd97f1e5ca17fbcb61303b40b2ab9adab2d8b70ee3b1da3678f",
       "disposition": "authored",
-      "review": "T21 S13 controlled VB6 global text attachment and native fixture",
+      "review": "T21 S13 controlled VB6 global text attachment and native fixture; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -3767,90 +3767,72 @@
       "path": "tests/ntw16s-dll/global_vb_text.c",
       "source": null,
       "source_blob": null,
-      "sha256": "77dab3979f63aa232603fe4ef3a19728a0f1e966d5a2bd7b82c5c6735a950e89",
+      "sha256": "645ace627365e5c260462fc1570fd997857ff71d4ee1c52c16c0a02529c05672",
       "disposition": "authored",
-      "review": "T21 S13 controlled VB6 global text attachment and native fixture",
+      "review": "T21 S13 controlled VB6 global text attachment and native fixture; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/global_thread.c",
+      "path": "src/ntw16s-dll/global/thread.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1da80bef947e54e12702d52944f836e7a071422f75324b5cc732d2be1833da8e",
+      "sha256": "504532867675ba510b5f4826ed54a2a41553d29d4cfa67150a950f9da301ecf8",
       "disposition": "authored",
-      "review": "T21 S13 target-local thread worker and owned private-desktop probe; T21 S13 global late process propagation integration",
+      "review": "T21 S13 target-local thread worker and owned private-desktop probe; T21 S13 global late process propagation integration; T21 S42 direct public calls and product-side cleanup; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/global_thread.h",
+      "path": "src/ntw16s-dll/global/thread.h",
       "source": null,
       "source_blob": null,
       "sha256": "f83259f6ca42ad24d497e71459fa17e95267199a75c97a8a3a9cfdcd245400f9",
       "disposition": "authored",
-      "review": "T21 S13 target-local thread worker and owned private-desktop probe",
+      "review": "T21 S13 target-local thread worker and owned private-desktop probe; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/ntw16s-dll/global_thread.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ba643790370d04497ee3d78a020732dfea75cb138ce1487ecf8841c2d199f943",
+      "sha256": "e17703345cc1b063706ce50f5c1e57b9165905d5a47587cad67d82864eca1016",
       "disposition": "authored",
-      "review": "T21 S13 target-local thread worker and owned private-desktop probe",
+      "review": "T21 S13 target-local thread worker and owned private-desktop probe; T21 S42 direct public calls and product-side cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/global_remote.c",
+      "path": "src/ntw16s-dll/global/remote.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7b61c957246c3c717296acf37e64b7728b41ffd256a5cec863afff9c6389a4f6",
+      "sha256": "4fb41690f3c4355c164ab8869d140a599251b8b2f95ad981cedd985e94b7ca00",
       "disposition": "authored",
-      "review": "T21 S13 bounded same-bitness system loader address resolution and owned target test; target-local exported worker resolution",
+      "review": "T21 S13 bounded same-bitness system loader address resolution and owned target test; target-local exported worker resolution; T21 S42 direct public calls and product-side cleanup; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/global_remote.h",
+      "path": "src/ntw16s-dll/global/remote.h",
       "source": null,
       "source_blob": null,
-      "sha256": "54808bdeefc5bc7aa802bb66c484617c29542e5950266be2ca28cdac63f9a188",
+      "sha256": "6ff170c39ca25027c40948704e1bf03e495e1d05fd3f3e9ff719330a9fc9854c",
       "disposition": "authored",
-      "review": "T21 S13 bounded same-bitness system loader address resolution and owned target test; target-local exported worker resolution",
+      "review": "T21 S13 bounded same-bitness system loader address resolution and owned target test; target-local exported worker resolution; T21 S42 direct public calls and product-side cleanup; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/ntw16s-dll/global_remote.c",
       "source": null,
       "source_blob": null,
-      "sha256": "526b3488f6443ca591fe09d210b64dc3c988cf8a828ba009f323fc4058c79754",
+      "sha256": "8a90e580ff7312922b9e702fa7369bbf7bd915674928f783018db7cee819eac5",
       "disposition": "authored",
-      "review": "T21 S13 bounded same-bitness system loader address resolution and owned target test; target-local exported worker resolution",
-      "notice": "Project-authored source; no imported code or resources"
-    },
-    {
-      "path": "src/ntw16s-dll/global_load.c",
-      "source": null,
-      "source_blob": null,
-      "sha256": "6a8ffd8e80510ce34ce6e38303f6588a4244f5eade99face2f1efe3ad085c5bf",
-      "disposition": "authored",
-      "review": "T21 S37 handle library fixed source or caller migration; see source record",
-      "notice": "Owner-authorized sibling project source; source identity recorded; no additional third-party notice in imported files"
-    },
-    {
-      "path": "src/ntw16s-dll/global_load.h",
-      "source": null,
-      "source_blob": null,
-      "sha256": "dfdc15cd9ad6ce32499c059e72ff733f8a5bb9ab10bd3eef4eee7ec8c3ff5614",
-      "disposition": "authored",
-      "review": "T21 S13 target-local fallback loader lifetime and isolated timeout fixture",
+      "review": "T21 S13 bounded same-bitness system loader address resolution and owned target test; target-local exported worker resolution; T21 S42 direct public calls and product-side cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/ntw16s-dll/global_load.c",
       "source": null,
       "source_blob": null,
-      "sha256": "eead9906f255cc6356fa85f655510587598d6e7187f99030e0689195ed5535b1",
+      "sha256": "63339d2c29b97dcd500ecaca3634260902c17195427760090770b80cebb63f45",
       "disposition": "authored",
-      "review": "T21 S13 target-local fallback loader lifetime and isolated timeout fixture",
+      "review": "T21 S13 target-local fallback loader lifetime and isolated timeout fixture; T21 S42 direct public calls and product-side cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -3863,147 +3845,129 @@
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/global_start.c",
+      "path": "src/ntw16s-dll/global/start.c",
       "source": null,
       "source_blob": null,
-      "sha256": "5a5e69d244c4e582c0bc66c138fc79731485aa1882d45cb0a28381adf89ba53c",
+      "sha256": "c4975f130076fbfc7310160db6ee87f94c6b1af707a2c1cd26f9cb5bdf0bbb31",
       "disposition": "authored",
-      "review": "T21 S37 handle library fixed source or caller migration; see source record",
+      "review": "T21 S37 handle library fixed source or caller migration; see source record; T21 S42 direct public calls and product-side cleanup; T21 S42 product adapter directory cleanup",
       "notice": "Owner-authorized sibling project source; source identity recorded; no additional third-party notice in imported files"
     },
     {
-      "path": "src/ntw16s-dll/global_start.h",
+      "path": "src/ntw16s-dll/global/start.h",
       "source": null,
       "source_blob": null,
-      "sha256": "784d854b3713f616db1eabbcda3076eb5fa03eec25aca5c91137a11e67f7b48b",
+      "sha256": "488d2a9f2a23876bcea9f0484a36a00744993b9b5fce9a9b9009886aad66d627",
       "disposition": "authored",
-      "review": "T21 S13 target-local worker startup ticket and owned actual DLL tests",
+      "review": "T21 S13 target-local worker startup ticket and owned actual DLL tests; T21 S42 direct public calls and product-side cleanup; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/ntw16s-dll/global_start.c",
       "source": null,
       "source_blob": null,
-      "sha256": "41aa7bbafebb837753ccec7dd4440938f97e478dd33ea44ef4369af3650a2c76",
+      "sha256": "051c9a9e153abfd11a55c63ad4b03f92d37ed6fb0677a55723d198dd9b3697f2",
       "disposition": "authored",
-      "review": "T21 S13 target-local worker startup ticket and owned actual DLL tests",
-      "notice": "Project-authored source; no imported code or resources"
-    },
-    {
-      "path": "src/ntw16s-dll/global_discover.c",
-      "source": null,
-      "source_blob": null,
-      "sha256": "4aecdedacf9ea9dfa4f8bf675e710869ed3bd71898499209ca5db6b8fd3a205c",
-      "disposition": "authored",
-      "review": "T21 S13 startup window rediscovery and process enumeration",
-      "notice": "Project-authored source; no imported code or resources"
-    },
-    {
-      "path": "src/ntw16s-dll/global_discover.h",
-      "source": null,
-      "source_blob": null,
-      "sha256": "206c1270d5aa0d1e9800d9da4214162dab3fac629dcedf09e7a80f17dc1fa0d6",
-      "disposition": "authored",
-      "review": "T21 S13 startup window rediscovery and process enumeration",
+      "review": "T21 S13 target-local worker startup ticket and owned actual DLL tests; T21 S42 direct public calls and product-side cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/ntw16s-dll/global_discover.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b12bfa30dc0ce88438c3f391b461f28e16fc08444d60d286a24e6a71c31b8f98",
+      "sha256": "606586e59e4cd71949fb809e3f3f39a2706906c6cf8baa2bfaf4b7ba61f970d9",
       "disposition": "authored",
-      "review": "T21 S13 target window discovery for existing and future windows",
+      "review": "T21 S13 target window discovery for existing and future windows; T21 S42 direct public discovery calls",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/global_policy.c",
+      "path": "src/ntw16s-dll/global/policy.c",
       "source": null,
       "source_blob": null,
-      "sha256": "82bd3bf4fea41b01c5a07329d4a9632403de7c7c237b5b00afd5c2bf29101717",
+      "sha256": "bf8c3cead7caf4302e55cdd0723a092fbeffe02decb7f9c3e58e9ddf00fff05e",
       "disposition": "authored",
-      "review": "T21 S37 handle library fixed source or caller migration; see source record",
+      "review": "T21 S37 handle library fixed source or caller migration; see source record; T21 S42 direct public calls and product-side cleanup; T21 S42 product adapter directory cleanup",
       "notice": "Owner-authorized sibling project source; source identity recorded; no additional third-party notice in imported files"
     },
     {
-      "path": "src/ntw16s-dll/global_policy.h",
+      "path": "src/ntw16s-dll/global/policy.h",
       "source": null,
       "source_blob": null,
-      "sha256": "d134cc03caa24cdb44a7289bd0e7620f94eabeab1a1ad29c6dfbd6f75155c633",
+      "sha256": "98f4c4f3708def9842b63567f2f87487ea87f6d778eb448545e2dc0235ec43b4",
       "disposition": "authored",
-      "review": "T21 S13 thread identity and explicit startup attachment preparation",
+      "review": "T21 S13 thread identity and explicit startup attachment preparation; T21 S42 direct public calls and product-side cleanup; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/ntw16s-dll/global_policy.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7e618a0436cd3d247908647a4a3709a7579f013b09be7b551af7e24b23489b7a",
+      "sha256": "e41f059d4914c630772e40482e5b8eba1b15e6664b53200f19cbaf81bbb4fa9b",
       "disposition": "authored",
-      "review": "T21 S13 thread identity and explicit startup attachment preparation",
+      "review": "T21 S13 thread identity and explicit startup attachment preparation; T21 S42 direct public calls and product-side cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/global_attach.c",
+      "path": "src/ntw16s-dll/global/attach.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b86822a8a111be030d54a7dedb62ffe309a1f9799eaa4e76a587c6b2a7b1507a",
+      "sha256": "a64464470b8e0f4a890dccc32d7a4aeaba3bce29cdbd8a0fe25925f08d012aad",
       "disposition": "authored",
-      "review": "T21 S13 thread identity and explicit startup attachment preparation; T21 S13 cross-directory compatible module reuse",
+      "review": "T21 S13 thread identity and explicit startup attachment preparation; T21 S13 cross-directory compatible module reuse; T21 S42 direct public calls and product-side cleanup; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/global_attach.h",
+      "path": "src/ntw16s-dll/global/attach.h",
       "source": null,
       "source_blob": null,
-      "sha256": "efa60844aef7e6c5876b5410dd53305b8aca4505de13f2c2feca880bfe75452f",
+      "sha256": "d102884dc0a48b543092c8851b557b2d7737808879247b2303cf9e05e00e9e51",
       "disposition": "authored",
-      "review": "T21 S13 thread identity and explicit startup attachment preparation",
+      "review": "T21 S13 thread identity and explicit startup attachment preparation; T21 S42 direct public calls and product-side cleanup; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/ntw16s-dll/global_attach.c",
       "source": null,
       "source_blob": null,
-      "sha256": "dabc3cf7d87835c250cf8c33b58e50a60e6697822918e0c40c028b1b96c7279c",
+      "sha256": "efdd252fef7b25c6833fe1a1e4701f4ca7a68e7908e3044de5aa6f936ca9db53",
       "disposition": "authored",
-      "review": "T21 S13 same-bitness target attachment coordinator and actual DLL integration test",
+      "review": "T21 S13 same-bitness target attachment coordinator and actual DLL integration test; T21 S42 direct public calls and product-side cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/global_process.c",
+      "path": "src/ntw16s-dll/global/process.c",
       "source": null,
       "source_blob": null,
-      "sha256": "020c6252c0324b6c0382d3e2a8899a94058594ae55c7fd7c8405181d0f2dac91",
+      "sha256": "482ce1b0256016cf4a4f65b74599a5bb2108662853f724080ee9e55043bf0f38",
       "disposition": "authored",
-      "review": "M0 T21 S13 process event discovery and owned cleanup tests",
+      "review": "M0 T21 S13 process event discovery and owned cleanup tests; T21 S42 direct public calls and product-side cleanup; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/global_process.h",
+      "path": "src/ntw16s-dll/global/process.h",
       "source": null,
       "source_blob": null,
-      "sha256": "444e46db6d93337556e2ea286c59c0f21a65dc20572b9f15d15493119a3f7cbd",
+      "sha256": "7eaae6de7774a74eec9dfd79f595985df8ece347535d5bcec8d025a44080e836",
       "disposition": "authored",
-      "review": "M0 T21 S13 process event discovery and owned cleanup tests",
+      "review": "M0 T21 S13 process event discovery and owned cleanup tests; T21 S42 direct public calls and product-side cleanup; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/ntw16s-dll/global_process.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1620cf16557cbb94a533a29aadb5571cdcb791afa5ebd5ebbc096dfbe903e99c",
+      "sha256": "9b8481eeff2bf595bea05f862d53417fe09802523e599d8bfda28cc12ffd6d09",
       "disposition": "authored",
-      "review": "M0 T21 S13 process event discovery and owned cleanup tests",
+      "review": "M0 T21 S13 process event discovery and owned cleanup tests; T21 S42 direct public calls and product-side cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/ntw16s-dll/global_process_integration.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1b089437655251606e61e188cec0ab3b304d189478feda1c3c89b99250292494",
+      "sha256": "82553676351dc3b4fc9e831f61021445246b1b47b34d0a88e78bd26c1cbb7cd5",
       "disposition": "authored",
-      "review": "M0 T21 S13 process event discovery and owned cleanup tests",
+      "review": "M0 T21 S13 process event discovery and owned cleanup tests; T21 S42 direct public calls and product-side cleanup",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
