@@ -1,19 +1,9 @@
 #ifndef NTW16S_GLOBAL_DISCOVER_H
 #define NTW16S_GLOBAL_DISCOVER_H
-#include <windows.h>
-
-typedef void (*ntw16s_global_discovered)(HWND window,DWORD process,DWORD thread,void *context);
-typedef struct ntw16s_global_discover {
-    HWINEVENTHOOK hook;
-    ntw16s_global_discovered callback;
-    void *context;
-    DWORD owner_thread;
-    unsigned dispatching;
-} ntw16s_global_discover;
-
-/* Start, callbacks, and stop must run on one message-pumping thread. Window
- * identity can change immediately after the callback; consumers revalidate. */
-DWORD ntw16s_global_discover_start(ntw16s_global_discover *watcher,ntw16s_global_discovered callback,void *context);
-DWORD ntw16s_global_discover_refresh(ntw16s_global_discover *watcher);
-DWORD ntw16s_global_discover_stop(ntw16s_global_discover *watcher);
+#include "lib-win32/process-global/window.h"
+typedef win32_process_global_window_callback ntw16s_global_discovered;
+typedef win32_process_global_window ntw16s_global_discover;
+DWORD ntw16s_global_discover_start(ntw16s_global_discover *,ntw16s_global_discovered,void *);
+DWORD ntw16s_global_discover_refresh(ntw16s_global_discover *);
+DWORD ntw16s_global_discover_stop(ntw16s_global_discover *);
 #endif

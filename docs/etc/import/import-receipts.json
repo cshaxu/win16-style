@@ -3902,7 +3902,7 @@
       "path": "src/ntw16s-dll/global_discover.c",
       "source": null,
       "source_blob": null,
-      "sha256": "23d442cacffd48d3f1c1aa45e500a6174a55758a8f982b562fd87cb6c96304a5",
+      "sha256": "4aecdedacf9ea9dfa4f8bf675e710869ed3bd71898499209ca5db6b8fd3a205c",
       "disposition": "authored",
       "review": "T21 S13 startup window rediscovery and process enumeration",
       "notice": "Project-authored source; no imported code or resources"
@@ -3911,7 +3911,7 @@
       "path": "src/ntw16s-dll/global_discover.h",
       "source": null,
       "source_blob": null,
-      "sha256": "20d07aae24fcdc61fdd7c501dbdc2b1eb98dab673df0eb92c060154233a5ab30",
+      "sha256": "206c1270d5aa0d1e9800d9da4214162dab3fac629dcedf09e7a80f17dc1fa0d6",
       "disposition": "authored",
       "review": "T21 S13 startup window rediscovery and process enumeration",
       "notice": "Project-authored source; no imported code or resources"
@@ -3983,7 +3983,7 @@
       "path": "src/ntw16s-dll/global_process.c",
       "source": null,
       "source_blob": null,
-      "sha256": "9da31933f2a778e9c50e723411e2a1ba70b5b7ff92d9e358a738e411611b0da9",
+      "sha256": "c0d5f1e6de840e2c9acf959e2ab688c1abd6c566b77baef7f364d695eee100ee",
       "disposition": "authored",
       "review": "M0 T21 S13 process event discovery and owned cleanup tests",
       "notice": "Project-authored source; no imported code or resources"
@@ -3992,7 +3992,7 @@
       "path": "src/ntw16s-dll/global_process.h",
       "source": null,
       "source_blob": null,
-      "sha256": "ea55d58a96e006adbf89e14a7ebe73eaf71275ae6cef57255402c9594a8f5328",
+      "sha256": "444e46db6d93337556e2ea286c59c0f21a65dc20572b9f15d15493119a3f7cbd",
       "disposition": "authored",
       "review": "M0 T21 S13 process event discovery and owned cleanup tests",
       "notice": "Project-authored source; no imported code or resources"
@@ -5787,6 +5787,42 @@
       "sha256": "50a4105b2d37e946edf259955592bf22809d088cbca4557e70c012f395473e7d",
       "review": "T21 S40 shared Toolhelp iteration; caller retains selection and lifecycle",
       "notice": "Project-authored C"
+    },
+    {
+      "path": "src/lib-win32/process-global/window.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ca874221e3a4a847f5d1c692559e7710b1a4de39879b6fee44cbb69bfa2606ce",
+      "disposition": "authored",
+      "review": "T21 S41 extract existing project-authored global mechanism",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-global/window.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ba90f1a3105825becd9a32df3be60872b1b56fbf4402983d9c9fb01f49b397b4",
+      "disposition": "authored",
+      "review": "T21 S41 extract existing project-authored global mechanism",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-global/monitor.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "73c87b15989a575bafb24ebb9f4a6a4c73157bcad5afd6ccaf81f787272a93d5",
+      "disposition": "authored",
+      "review": "T21 S41 extract existing project-authored global mechanism",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-global/monitor.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "19b0f9b0895eb23e11b1e465d3a9e453d7d9fcdddff5f38daa03c3bbaa6a21da",
+      "disposition": "authored",
+      "review": "T21 S41 extract existing project-authored global mechanism",
+      "notice": "Project-authored C code; no imported artwork"
     }
   ]
 }

@@ -2,7 +2,9 @@
 
 ## Current Work
 
-无活动任务包。T21 S40 已抽出公共线程快照遍历；T21 保持开放。详见[记录](../history/M0-T21-S40-process-global.md)。
+T21 S41 已准入：继续抽取窗口发现和进程通知通用机制；T21 保持开放。
+
+P1：窗口枚举及显示事件发现、ETW 进程通知和会话生命周期移入 `lib-win32/process-global`；DLL 保留 Win16S 会话命名、孤儿会话恢复及接入策略。双宽干净构建和 ABI、来源与资源门禁通过；实际包聚焦 15/15 无跳过；双宽进程事件解析及枚举测试通过，ETW 管理员集成双宽因未提权跳过，未做完整矩阵。四文件已发布 assets 根目录及 O:/winnt 并核对摘要（s41-publish）。S41 与 T21 保持开放。
 
 S25 经用户验收收口，交付范围见 [记录](../history/M0-T21-S25-common.md)。
 
@@ -412,9 +414,9 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
-- Last allocated T21 S: 40
+- Last allocated T21 S: 41
 - Last verified remote delivery: M0 T21 S40 P1，`67c2f2b`；公共枚举器及四产品远端对象已复核。
-- Open task: T21；S40 已交付。Explorer.exe 仍被排除。
+- Open task: T21；S41 进行中。Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。
@@ -462,6 +464,27 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前原版真实点击正常；历史异常根因未查明，本S没有产品代码或二进制修改。
 
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1已收口；T20此后按用户要求有限范围收口。
+
+## M0 T21 S41 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Continuation |
+| Admission And Approval | 用户要求继续将可拆分的 global 部分移入公共组件并提交 P。 |
+| Objective | 抽取窗口发现及 ETW 进程通知与生命周期机制，保留产品会话命名、孤儿处理与接入策略。 |
+| Non-goals | 不增加监控范围、修改权限策略、钩子行为、公开 ABI 或兄弟仓库。 |
+| Reference Baseline | 本项目 19ce180，S40 公共枚举器。 |
+| Candidate Proposal | [全局样式](../proposals/global-style-mode.md)。 |
+| Files And ABI Surface | process-global、DLL 发现与进程监视包装、CMake 和测试；产品 ABI 不变。 |
+| Applicable Rules | M0、纯 C、资源身份和线程生命周期规则。 |
+| Verification | 双宽干净构建；解析、窗口发现和自有隔离目标回归；ETW 权限边界如实记录。 |
+| Expected Markers | 双宽发现与管理器回归通过；公共库无产品会话名称。 |
+| Asset Needs | 有二进制变化则同批四文件发布 assets 和 O:/winnt。 |
+| Reporting Requirements | 说明抽离边界、结果、跳过及远端复核。 |
+| Stop Conditions | 构建、测试或发布权限失败无法安全处理。 |
+| Exit Criteria | 构建测试发布、P 提交推送及远端复核。 |
+| Original Owner Request | 追加 P，把可拆分部分继续移入公共组件。 |
+| Similar-Issue Sweep | 审计窗口发现、ETW 会话生命周期及孤儿清理所有调用者。 |
 
 ## Recent Closure
 

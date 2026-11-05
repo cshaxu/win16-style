@@ -1,10 +1,10 @@
 #ifndef NTW16S_GLOBAL_PROCESS_H
 #define NTW16S_GLOBAL_PROCESS_H
 #include <windows.h>
-#include <evntcons.h>
+#include "lib-win32/process-global/monitor.h"
 
-typedef struct ntw16s_global_process ntw16s_global_process;
-typedef void (*ntw16s_global_process_callback)(DWORD pid,void *context);
+typedef win32_process_global_monitor ntw16s_global_process;
+typedef win32_process_global_monitor_callback ntw16s_global_process_callback;
 DWORD ntw16s_global_process_event_pid(const EVENT_RECORD *record);
 BOOL ntw16s_global_process_parse_name(const WCHAR *name,DWORD *pid,DWORD *high,DWORD *low);
 DWORD ntw16s_global_process_start(ntw16s_global_process_callback callback,void *context,
