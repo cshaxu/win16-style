@@ -49,3 +49,5 @@ GCC 16.1.0, Ninja and ccache 4.13.6 clean package `s33-clean2` passed x86/x64, A
 - ntw16s32.dll: `00b36c5b4f45b55f6059bc5ddd1a34f63a7a38ed59acd31ea9fc65569109d91c`
 - ntw16s64.dll: `0c66e0c14b8488998babf6341e4abb79264a4074215a7225ced9eff5ad25501b`
 - demo.exe: `c792490bd202febcfd0288330b8463528ac226ddc13f0daad0ec0d09aca11fed`
+
+P1 `9793d27786e202b9e63a858a30a49100ada6d6a8` pushed; actual remote main and GitHub tree were read and compared for four assets and helper/payload source blobs. S33 closed; T21 remains open.

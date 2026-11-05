@@ -2,7 +2,7 @@
 
 ## Current Work
 
-T21 S33 已准入：原样导入隔壁固定版本 process-hook，T21 保持开放。S32 记录见[记录](../history/M0-T21-S32-common-completion.md)。
+无活动任务包。T21 S33 原样导入并验证隔壁 process-hook，已发布并复核；T21 保持开放。详见[记录](../history/M0-T21-S33-import.md)。
 
 S25 经用户验收收口，交付范围见 [记录](../history/M0-T21-S25-common.md)。
 
@@ -413,8 +413,8 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
 - Last allocated T21 S: 33
-- Last verified remote delivery: M0 T21 S32 P1，`e0e9d11`；四产品和四类组件代表源码远端对象已复核。
-- Open task: T21；S33 进行中。Explorer.exe 仍被排除。
+- Last verified remote delivery: M0 T21 S33 P1，`9793d27`；四产品和 process-hook 代表源码远端对象已复核。
+- Open task: T21；S33 已交付。Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。
@@ -463,28 +463,9 @@ S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前
 
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1已收口；T20此后按用户要求有限范围收口。
 
-## M0 T21 S33 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Continuation |
-| Admission And Approval | 用户授权原样导入、构建、测试、发布、提交推送。 |
-| Objective | 固定隔壁提交 eac2932d5ea07d2b3528a05f9ddb6f7c44d7f01d，原样导入 process-hook 并验证。 |
-| Non-goals | 不修改隔壁，不改变外观、公开 ABI 或全局策略。 |
-| Reference Baseline | 本项目 f168896；来源隔壁 eac2932d5。 |
-| Candidate Proposal | [进程挂钩公共库](../proposals/process-hook-library.md)。 |
-| Files And ABI Surface | process-hook、构建、来源清单和必要测试；产品 DLL ABI 不变。 |
-| Applicable Rules | M0 执行、C17、来源和资源规则。 |
-| Verification | 双宽干净构建，载荷及原有传播、失败清理、实际同批包测试。 |
-| Expected Markers | 构建成功、双宽载荷和四位宽传播通过、原始来源 blob 一致。 |
-| Asset Needs | 同批四文件发布 assets 根和 O:/winnt，逐项 SHA 核对。 |
-| Reporting Requirements | 报告来源固定提交、测试、跳过、发布及远端复核。 |
-| Stop Conditions | 来源许可、不可解决的构建或测试失败、发布权限失败。 |
-| Exit Criteria | 验证发布提交推送并读取实际远端复核。 |
-| Original Owner Request | 准入一个 S 原样导入隔壁 process-hook 后编译发布测试提交推送。 |
-| Similar-Issue Sweep | 对照 helper 所有调用方确认失败后未交付子进程回滚；检查两套载荷语义。 |
-
 ## Recent Closure
+
+- M0 T21 S33：原样导入隔壁 process-hook，双宽构建与包回归通过；[记录](../history/M0-T21-S33-import.md)。
 
 - M0 T21 S32：完成本项目现有公共映像、启动及 Shell 机制提取；[记录](../history/M0-T21-S32-common-completion.md)。
 
