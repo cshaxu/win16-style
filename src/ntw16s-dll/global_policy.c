@@ -1,4 +1,5 @@
 #include "global_policy.h"
+#include "lib-win32/process-image/image.h"
 #include <stdlib.h>
 #include <wchar.h>
 
@@ -62,7 +63,7 @@ static DWORD inspect(const ntw16s_global_policy *policy,HWND window,DWORD pid,DW
                                    WORD expected_machine,ntw16s_global_identity *identity)
 {
     HANDLE process=NULL,thread=NULL,token=NULL;TOKEN_USER *user=NULL;DWORD error=ERROR_SUCCESS,actual=0,session=0;
-    FILETIME created,exited,kernel,user_time;USHORT machine=0,native=0;DWORD appcontainer=0,bytes=0;
+    FILETIME created,exited,kernel,user_time;WORD machine=0;DWORD appcontainer=0,bytes=0;
     WCHAR *image=NULL,windows[MAX_PATH];DWORD length=32752;UINT windows_length;
     if(identity)ZeroMemory(identity,sizeof(*identity));
     if(!policy || !policy->sid_bytes || !identity || !pid || !thread_id || pid==GetCurrentProcessId() ||
@@ -78,9 +79,8 @@ static DWORD inspect(const ntw16s_global_policy *policy,HWND window,DWORD pid,DW
     if(WaitForSingleObject(process,0)!=WAIT_TIMEOUT){error=ERROR_PROCESS_ABORTED;goto done;}
     if(!GetProcessTimes(process,&created,&exited,&kernel,&user_time)){error=GetLastError();goto done;}
     identity->process_birth_low=created.dwLowDateTime;identity->process_birth_high=created.dwHighDateTime;
-    if(!IsWow64Process2(process,&machine,&native)){error=GetLastError();goto done;}
-    if(native!=IMAGE_FILE_MACHINE_AMD64){error=ERROR_NOT_SUPPORTED;goto done;}
-    identity->machine=machine==IMAGE_FILE_MACHINE_UNKNOWN?IMAGE_FILE_MACHINE_AMD64:machine;
+    error=win32_process_image_machine(process,&machine);if(error)goto done;
+    identity->machine=machine;
     if(identity->machine!=expected_machine){error=ERROR_BAD_EXE_FORMAT;goto done;}
     if(!OpenProcessToken(process,TOKEN_QUERY,&token)){error=GetLastError();goto done;}
     error=token_user(token,&user);if(error)goto done;

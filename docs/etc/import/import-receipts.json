@@ -3929,9 +3929,9 @@
       "path": "src/ntw16s-dll/global_policy.c",
       "source": null,
       "source_blob": null,
-      "sha256": "211f98f1d4c6793205d2943d4ba7e81672a98cf9da30f99b712771932d5b8386",
+      "sha256": "e0114deb2f861e65cd3642de1bb99bcb5ed9e57a0d5d0ddd90560a203948787a",
       "disposition": "authored",
-      "review": "T21 S13 thread identity and explicit startup attachment preparation",
+      "review": "T21 S13 thread identity and explicit startup attachment preparation; T21 S35 reuse process-image machine query",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
