@@ -54,42 +54,35 @@ static void discovered(HWND window,DWORD pid,DWORD thread_id,void *context)
     if(m->session->phase!=NTW16S_GLOBAL_ACTIVE || pid==m->session->owner_pid || pid==m->session->host_pid)return;
     win32_process_global_engine_submit(&m->engine,pid,thread_id,window);
 }
-/* Startup-only snapshot. Runtime discovery remains event driven. Prefer the
- * existing window entry for a process and add one eligible thread only when
- * no window entry is already queued. Identity is checked again by the worker. */
-static BOOL discover_existing_thread(DWORD pid,DWORD tid,void *context)
+/* Snapshot and per-process scan order live in the public component; identity,
+ * session and desktop eligibility remain product policy and are revalidated. */
+static BOOL existing_has_process(DWORD pid,void *context)
 {
-    ntw16s_global_manager *m=(ntw16s_global_manager *)context;BOOL found=FALSE;
-    if(!pid || !tid || pid==GetCurrentProcessId() || pid==m->session->owner_pid || pid==m->session->host_pid)return TRUE;
-    if(!GetThreadDesktop(tid))return TRUE;
-    found=win32_process_global_engine_has_process(&m->engine,pid);
-    if(!found){
-        ntw16s_global_identity identity;
-        if(!ntw16s_global_policy_inspect_thread(&m->policy,pid,tid,m->machine,&identity))discovered(NULL,pid,tid,m);
-    }
-    return TRUE;
+    ntw16s_global_manager *m=context;
+    return !pid || pid==GetCurrentProcessId() || pid==m->session->owner_pid || pid==m->session->host_pid ||
+        win32_process_global_engine_has_process(&m->engine,pid);
 }
+static DWORD inspect_existing_thread(DWORD pid,DWORD tid,void *context)
+{
+    ntw16s_global_manager *m=context;ntw16s_global_identity identity;
+    if(!tid || !GetThreadDesktop(tid))return ERROR_NOT_READY;
+    return ntw16s_global_policy_inspect_thread(&m->policy,pid,tid,m->machine,&identity);
+}
+static DWORD inspect_new_thread(DWORD pid,DWORD tid,void *context)
+{
+    ntw16s_global_manager *m=context;ntw16s_global_identity identity;
+    return ntw16s_global_policy_inspect_thread(&m->policy,pid,tid,m->machine,&identity);
+}
+static void select_thread(DWORD pid,DWORD tid,void *context)
+{discovered(NULL,pid,tid,context);}
 static void discover_existing_processes(ntw16s_global_manager *m)
-{(void)win32_process_global_threads(0,discover_existing_thread,m);}
-/* Only inspect threads belonging to the reported PID. The worker repeats all
- * identity and desktop checks before modifying the target. */
-typedef struct discover_process_scan {ntw16s_global_manager *manager;DWORD pending;BOOL queued;} discover_process_scan;
-static BOOL discover_process_thread(DWORD pid,DWORD tid,void *context)
-{
-    discover_process_scan *scan=(discover_process_scan *)context;ntw16s_global_identity identity;
-    DWORD check=ntw16s_global_policy_inspect_thread(&scan->manager->policy,pid,tid,scan->manager->machine,&identity);
-    if(!check){discovered(NULL,pid,tid,scan->manager);scan->queued=TRUE;return FALSE;}
-    if(check==ERROR_NOT_READY && !scan->pending)scan->pending=tid;
-    return TRUE;
-}
+{(void)win32_process_global_scan_existing(existing_has_process,inspect_existing_thread,select_thread,m);}
 static void discovered_process(DWORD pid,void *context)
 {
-    ntw16s_global_manager *m=(ntw16s_global_manager *)context;DWORD session=0;
+    ntw16s_global_manager *m=context;DWORD session=0;
     if(!pid || pid==GetCurrentProcessId() || pid==m->session->owner_pid || pid==m->session->host_pid ||
        !ProcessIdToSessionId(pid,&session) || session!=m->policy.session)return;
-    discover_process_scan scan={m,0,FALSE};
-    (void)win32_process_global_threads(pid,discover_process_thread,&scan);
-    if(!scan.queued && scan.pending)discovered(NULL,pid,scan.pending,m);
+    (void)win32_process_global_scan_process(pid,inspect_new_thread,select_thread,m);
 }
 #ifdef NTW16S_GLOBAL_MANAGER_TEST
 void ntw16s_global_manager_test_process(ntw16s_global_manager *manager,DWORD pid)

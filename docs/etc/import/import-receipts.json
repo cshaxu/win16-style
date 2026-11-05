@@ -320,7 +320,7 @@
       "path": "src/ntw16s-dll/global_manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "95d087427fcb959c3d6d72419679a6ac9331782776018bfe96bf7e0b463468e8",
+      "sha256": "07510adfad1dbf7420fdacec6c1c67bb697f50a646c4d5a216d18b3b88a8562f",
       "disposition": "authored",
       "review": "T21 S40 shared Toolhelp iteration; caller retains selection and lifecycle",
       "notice": "Project-authored C"
@@ -5775,7 +5775,7 @@
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "sha256": "98e11de2f350f8ca6a657a7b7d047f90fabac507c70077d041f68bd10e405c65",
+      "sha256": "968893c45a1976d4498d33d241643563c7d7d00965867a79fb38eac07cf451d0",
       "review": "T21 S40 shared Toolhelp iteration; caller retains selection and lifecycle",
       "notice": "Project-authored C"
     },
@@ -5784,7 +5784,7 @@
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "sha256": "50a4105b2d37e946edf259955592bf22809d088cbca4557e70c012f395473e7d",
+      "sha256": "77170efdb3f6f088d23712b24f21a53722c80f86afa095116b59bdfc1087e947",
       "review": "T21 S40 shared Toolhelp iteration; caller retains selection and lifecycle",
       "notice": "Project-authored C"
     },
@@ -5882,7 +5882,7 @@
       "path": "tests/lib-win32/process-global/enumerate.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7bfb7e916dfd7e78cf009e5bb0963731e21ba8224e09a4435c296352acd3a77a",
+      "sha256": "b994cc9dd1aacb1b96b7773f23c297ad56f30a17cb4a58dda36b023ccc9d1a8d",
       "disposition": "authored",
       "review": "T21 S41 shared global work queue",
       "notice": "Project-authored C code; no imported artwork"

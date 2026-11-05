@@ -10,6 +10,16 @@ static BOOL observe(DWORD pid,DWORD thread,void *context)
     ++o->count;if(thread==o->thread)++o->found;
     return !o->stop;
 }
+typedef struct selection {DWORD pid,chosen,status;unsigned inspected,selected;BOOL tracked;} selection;
+static BOOL has_target(DWORD pid,void *context)
+{selection *s=context;return pid!=s->pid || s->tracked;}
+static DWORD inspect_target(DWORD pid,DWORD tid,void *context)
+{selection *s=context;if(pid!=s->pid || !tid)return ERROR_INVALID_PARAMETER;++s->inspected;return s->status;}
+static void select_target(DWORD pid,DWORD tid,void *context)
+{selection *s=context;if(pid==s->pid && tid){s->chosen=tid;++s->selected;s->tracked=TRUE;}}
+static DWORD prefer_ready(DWORD pid,DWORD tid,void *context)
+{selection *s=context;if(pid!=s->pid || !tid)return ERROR_INVALID_PARAMETER;return ++s->inspected==1?ERROR_NOT_READY:ERROR_SUCCESS;}
+static DWORD WINAPI waiting_thread(void *event){WaitForSingleObject((HANDLE)event,3000);return 0;}
 static BOOL remove_marked(void *owner,void *context)
 {(void)context;return *(int *)owner!=0;}
 static void count_removed(void *owner,void *context)
@@ -38,6 +48,24 @@ int main(void)
     if(win32_process_global_threads(o.pid,observe,&o) || o.count!=1)return 4;
     o.count=0;o.stop=FALSE;
     if(win32_process_global_threads(0xffffffffu,observe,&o) || o.count)return 5;
+    selection sel={.pid=GetCurrentProcessId()};
+    if(win32_process_global_scan_existing(NULL,inspect_target,select_target,&sel)!=ERROR_INVALID_PARAMETER ||
+       win32_process_global_scan_process(0,inspect_target,select_target,&sel)!=ERROR_INVALID_PARAMETER)return 13;
+    if(win32_process_global_scan_existing(has_target,inspect_target,select_target,&sel) || sel.selected!=1 || !sel.chosen)return 14;
+    unsigned inspected=sel.inspected;
+    if(win32_process_global_scan_existing(has_target,inspect_target,select_target,&sel) || sel.inspected!=inspected || sel.selected!=1)return 15;
+    sel=(selection){.pid=GetCurrentProcessId(),.status=ERROR_NOT_READY};
+    if(win32_process_global_scan_process(sel.pid,inspect_target,select_target,&sel) || sel.selected!=1 || !sel.chosen)return 16;
+    sel=(selection){.pid=GetCurrentProcessId(),.status=ERROR_ACCESS_DENIED};
+    if(win32_process_global_scan_process(sel.pid,inspect_target,select_target,&sel) || sel.selected)return 17;
+    sel=(selection){.pid=GetCurrentProcessId()};
+    if(win32_process_global_scan_process(sel.pid,inspect_target,select_target,&sel) || sel.selected!=1 || sel.inspected!=1)return 18;
+    HANDLE event=CreateEventW(NULL,TRUE,FALSE,NULL);if(!event)return 19;
+    HANDLE thread=CreateThread(NULL,0,waiting_thread,event,0,NULL);if(!thread){CloseHandle(event);return 20;}
+    sel=(selection){.pid=GetCurrentProcessId()};
+    DWORD scan=win32_process_global_scan_process(sel.pid,prefer_ready,select_target,&sel);
+    SetEvent(event);WaitForSingleObject(thread,3000);CloseHandle(thread);CloseHandle(event);
+    if(scan || sel.selected!=1 || sel.inspected!=2)return 21;
     if(!GetProcessHandleCount(GetCurrentProcess(),&after) || after!=before)return 6;
-    puts("PROCESS_GLOBAL_PASS own=1 filter=1 early_stop=1 no_match=1 cleanup=1");return 0;
+    puts("PROCESS_GLOBAL_PASS own=1 filter=1 early_stop=1 no_match=1 selection=1 fallback=1 prefer_ready=1 policy=1 cleanup=1");return 0;
 }
