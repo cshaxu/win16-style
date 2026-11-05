@@ -1,5 +1,6 @@
 #include "lib-win32/handle/duplicate.h"
 #include "global_policy.h"
+#include "lib-win32/process-global/identity.h"
 #include "lib-win32/process-image/image.h"
 #include <stdlib.h>
 #include <wchar.h>
@@ -18,18 +19,6 @@ BOOL ntw16s_global_image_allowed(const WCHAR *image,const WCHAR *windows)
     return TRUE;
 }
 
-static DWORD token_user(HANDLE token,TOKEN_USER **user)
-{
-    DWORD bytes=0;*user=NULL;
-    if(GetTokenInformation(token,TokenUser,NULL,0,&bytes))return ERROR_INVALID_DATA;
-    DWORD query_error=GetLastError();
-    if(query_error!=ERROR_INSUFFICIENT_BUFFER)return query_error?query_error:ERROR_INVALID_DATA;
-    if(bytes<sizeof(TOKEN_USER) || bytes>65536)return ERROR_INVALID_DATA;
-    *user=(TOKEN_USER *)malloc(bytes);if(!*user)return ERROR_NOT_ENOUGH_MEMORY;
-    if(!GetTokenInformation(token,TokenUser,*user,bytes,&bytes)){DWORD error=GetLastError();free(*user);*user=NULL;return error;}
-    return ERROR_SUCCESS;
-}
-
 DWORD ntw16s_global_policy_init(ntw16s_global_policy *policy)
 {
     HANDLE token=NULL;TOKEN_USER *user=NULL;DWORD error;
@@ -37,25 +26,13 @@ DWORD ntw16s_global_policy_init(ntw16s_global_policy *policy)
     ZeroMemory(policy,sizeof(*policy));
     if(!ProcessIdToSessionId(GetCurrentProcessId(),&policy->session))return GetLastError();
     if(!OpenProcessToken(GetCurrentProcess(),TOKEN_QUERY,&token))return GetLastError();
-    error=token_user(token,&user);CloseHandle(token);if(error)return error;
+    error=win32_process_global_token_user(token,&user);CloseHandle(token);if(error)return error;
     if(!IsValidSid(user->User.Sid) || GetLengthSid(user->User.Sid)>sizeof(policy->sid))error=ERROR_INVALID_SID;
     else{
         policy->sid_bytes=GetLengthSid(user->User.Sid);
         if(!CopySid(sizeof(policy->sid),policy->sid,user->User.Sid))error=GetLastError();
     }
     free(user);if(error)ZeroMemory(policy,sizeof(*policy));return error;
-}
-
-static DWORD desktop_status(DWORD thread_id)
-{
-    HDESK a=GetThreadDesktop(GetCurrentThreadId());SetLastError(ERROR_SUCCESS);HDESK b=GetThreadDesktop(thread_id);DWORD target_error=GetLastError();
-    win32_handle_compare_fn compare=win32_handle_compare_provider();
-    /* Names alone do not distinguish desktops in separate window stations. */
-    if(!a || !compare)return ERROR_ACCESS_DENIED;
-    /* A freshly created thread may not yet be connected to a USER desktop.
-     * A null handle without an error is not evidence of a different desktop. */
-    if(!b)return target_error?target_error:ERROR_NOT_READY;
-    return compare(a,b)?ERROR_SUCCESS:ERROR_ACCESS_DENIED;
 }
 
 static DWORD inspect(const ntw16s_global_policy *policy,HWND window,DWORD pid,DWORD thread_id,
@@ -70,7 +47,7 @@ static DWORD inspect(const ntw16s_global_policy *policy,HWND window,DWORD pid,DW
     if(policy->sid_bytes>sizeof(policy->sid) || !IsValidSid((PSID)policy->sid) ||
        GetLengthSid((PSID)policy->sid)!=policy->sid_bytes)return ERROR_INVALID_SID;
     if(window && (GetWindowThreadProcessId(window,&actual)!=thread_id || actual!=pid || !IsWindowVisible(window)))return ERROR_INVALID_WINDOW_HANDLE;
-    if(!window){error=desktop_status(thread_id);if(error && error!=ERROR_NOT_READY)return error;}
+    if(!window){error=win32_process_global_desktop_status(thread_id);if(error && error!=ERROR_NOT_READY)return error;}
     if(!ProcessIdToSessionId(pid,&session))return GetLastError();
     if(session!=policy->session)return ERROR_ACCESS_DENIED;
     process=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION|SYNCHRONIZE,FALSE,pid);
@@ -82,7 +59,7 @@ static DWORD inspect(const ntw16s_global_policy *policy,HWND window,DWORD pid,DW
     identity->machine=machine;
     if(identity->machine!=expected_machine){error=ERROR_BAD_EXE_FORMAT;goto done;}
     if(!OpenProcessToken(process,TOKEN_QUERY,&token)){error=GetLastError();goto done;}
-    error=token_user(token,&user);if(error)goto done;
+    error=win32_process_global_token_user(token,&user);if(error)goto done;
     if(!IsValidSid(user->User.Sid) || !EqualSid((PSID)policy->sid,user->User.Sid)){error=ERROR_ACCESS_DENIED;goto done;}
     if(!GetTokenInformation(token,TokenIsAppContainer,&appcontainer,sizeof(appcontainer),&bytes)){error=GetLastError();goto done;}
     if(appcontainer){error=ERROR_ACCESS_DENIED;goto done;}
@@ -97,7 +74,7 @@ static DWORD inspect(const ntw16s_global_policy *policy,HWND window,DWORD pid,DW
     if(GetProcessIdOfThread(thread)!=pid || WaitForSingleObject(thread,0)!=WAIT_TIMEOUT){error=ERROR_INVALID_THREAD_ID;goto done;}
     if(!GetThreadTimes(thread,&created,&exited,&kernel,&user_time)){error=GetLastError();goto done;}
     identity->thread_birth_low=created.dwLowDateTime;identity->thread_birth_high=created.dwHighDateTime;
-    if(!window){error=desktop_status(thread_id);if(error)goto done;}
+    if(!window){error=win32_process_global_desktop_status(thread_id);if(error)goto done;}
     if((window && (GetWindowThreadProcessId(window,&actual)!=thread_id || actual!=pid || !IsWindowVisible(window))) ||
        WaitForSingleObject(process,0)!=WAIT_TIMEOUT || WaitForSingleObject(thread,0)!=WAIT_TIMEOUT){
         error=ERROR_INVALID_WINDOW_HANDLE;goto done;
@@ -124,7 +101,7 @@ static DWORD revalidate(HANDLE process,HWND window,const ntw16s_global_identity 
     if(!GetThreadTimes(thread,&created,&exited,&kernel,&user_time)){error=GetLastError();goto done;}
     if(created.dwLowDateTime!=identity->thread_birth_low || created.dwHighDateTime!=identity->thread_birth_high){error=ERROR_INVALID_STATE;goto done;}
     if((window && (GetWindowThreadProcessId(window,&actual)!=identity->thread_id || actual!=identity->pid || !IsWindowVisible(window))) ||
-       (!window && desktop_status(identity->thread_id)!=ERROR_SUCCESS)){
+       (!window && win32_process_global_desktop_status(identity->thread_id)!=ERROR_SUCCESS)){
         error=ERROR_INVALID_WINDOW_HANDLE;goto done;
     }
     if(WaitForSingleObject(process,0)!=WAIT_TIMEOUT || WaitForSingleObject(thread,0)!=WAIT_TIMEOUT)error=ERROR_INVALID_STATE;

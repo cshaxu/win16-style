@@ -3812,7 +3812,7 @@
       "path": "src/ntw16s-dll/global_remote.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7979ee59e7c92062c4aac6f8e8ce9a267b457e54ef68309bf120cfd5d5b1e999",
+      "sha256": "1fe43489791144c4aac9bbc6104462e1a8b1b37e64edf496a4ad05a91982a860",
       "disposition": "authored",
       "review": "T21 S13 bounded same-bitness system loader address resolution and owned target test; target-local exported worker resolution",
       "notice": "Project-authored source; no imported code or resources"
@@ -3929,7 +3929,7 @@
       "path": "src/ntw16s-dll/global_policy.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c91877bcdad911cbe9ab94eef99de7a520f5a342f3591add3584ed41fa21c73f",
+      "sha256": "6d6f14c7a7ec9c93dd8e98ac6659f2e8cdd7d36d8e4d093216add1b34963b522",
       "disposition": "authored",
       "review": "T21 S37 handle library fixed source or caller migration; see source record",
       "notice": "Owner-authorized sibling project source; source identity recorded; no additional third-party notice in imported files"
@@ -5822,6 +5822,42 @@
       "sha256": "19b0f9b0895eb23e11b1e465d3a9e453d7d9fcdddff5f38daa03c3bbaa6a21da",
       "disposition": "authored",
       "review": "T21 S41 extract existing project-authored global mechanism",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-global/identity.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "7f2e8bf6950565bcf57b5672f767dd4834b519b4240cb133c63a54446ae0f252",
+      "disposition": "authored",
+      "review": "T21 S41 extract existing identity utilities",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-global/identity.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "d5af0583e826f35d106d8c5c794ed05f7841bd525332f6aab3b865153b9eb2d9",
+      "disposition": "authored",
+      "review": "T21 S41 extract existing identity utilities",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-image/remote.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "14b13288ae5d2b7be750ce0e59c53cf5505631539096d4c414912c8cd4124eed",
+      "disposition": "authored",
+      "review": "T21 S41 extract existing remote image validation helpers",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-image/remote.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "43668622ccbd9b486b85d88c98679cebb52088e7235b2678a577e336e92ef0e9",
+      "disposition": "authored",
+      "review": "T21 S41 extract existing remote image validation helpers",
       "notice": "Project-authored C code; no imported artwork"
     }
   ]
