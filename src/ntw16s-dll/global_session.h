@@ -1,6 +1,8 @@
 #ifndef NTW16S_GLOBAL_SESSION_H
 #define NTW16S_GLOBAL_SESSION_H
 #include <windows.h>
+#include "lib-win32/process-global/identity.h"
+#include "lib-win32/process-global/module.h"
 #define NTW16S_GLOBAL_MAGIC 0x47363157u
 #define NTW16S_GLOBAL_VERSION 1u
 #define NTW16S_GLOBAL_ACTIVE 1
@@ -23,7 +25,6 @@ BOOL ntw16s_global_name(WCHAR *name,DWORD capacity);
 BOOL ntw16s_global_owner_alive(const ntw16s_global_session *session);
 BOOL ntw16s_global_policy_active(DWORD cookie);
 BOOL ntw16s_global_owner_matches(const ntw16s_global_session *,HMODULE);
-/* Compare locked, regular files byte-for-byte; FALSE includes read failures. */
-BOOL ntw16s_global_files_equal(const WCHAR *,const WCHAR *);
-BOOL ntw16s_global_birth(HANDLE process,DWORD *low,DWORD *high);
+#define ntw16s_global_files_equal win32_process_global_files_equal
+#define ntw16s_global_birth win32_process_global_birth
 #endif

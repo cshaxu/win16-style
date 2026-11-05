@@ -1,6 +1,8 @@
 #include "identity.h"
 #include "lib-win32/handle/duplicate.h"
 #include <stdlib.h>
+#include <stdint.h>
+#include <wchar.h>
 
 DWORD win32_process_global_token_user(HANDLE token,TOKEN_USER **user)
 {
@@ -26,3 +28,23 @@ DWORD win32_process_global_desktop_status(DWORD thread_id)
     return compare(a,b)?ERROR_SUCCESS:ERROR_ACCESS_DENIED;
 }
 
+
+BOOL win32_process_global_birth(HANDLE process,DWORD *low,DWORD *high)
+{
+    FILETIME creation,exit,kernel,user;
+    if(!process || !low || !high){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
+    if(!GetProcessTimes(process,&creation,&exit,&kernel,&user))return FALSE;
+    *low=creation.dwLowDateTime;*high=creation.dwHighDateTime;return TRUE;
+}
+
+BOOL win32_process_global_desktop_key(DWORD *session,ULONGLONG *fingerprint)
+{
+    WCHAR desktop[256];DWORD needed=0;uint64_t hash=UINT64_C(1469598103934665603);
+    if(!session || !fingerprint){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
+    if(!ProcessIdToSessionId(GetCurrentProcessId(),session))return FALSE;
+    HDESK desk=GetThreadDesktop(GetCurrentThreadId());
+    if(!desk || !GetUserObjectInformationW(desk,UOI_NAME,desktop,sizeof(desktop),&needed))return FALSE;
+    desktop[ARRAYSIZE(desktop)-1]=0;CharUpperBuffW(desktop,(DWORD)wcslen(desktop));
+    for(const WCHAR *p=desktop;*p;++p){hash^=(uint16_t)*p;hash*=UINT64_C(1099511628211);}
+    *fingerprint=(ULONGLONG)hash;return TRUE;
+}

@@ -1,4 +1,5 @@
 #include "recovery.h"
+#include "identity.h"
 #include <evntrace.h>
 #include <stdlib.h>
 
@@ -7,9 +8,9 @@ BOOL win32_process_global_trace_orphan(DWORD pid,DWORD high,DWORD low)
     HANDLE process=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION|SYNCHRONIZE,FALSE,pid);
     BOOL orphan=FALSE;
     if(process){
-        FILETIME created,exited,kernel,user;
-        if(GetProcessTimes(process,&created,&exited,&kernel,&user))
-            orphan=created.dwHighDateTime!=high || created.dwLowDateTime!=low || WaitForSingleObject(process,0)==WAIT_OBJECT_0;
+        DWORD actual_low=0,actual_high=0;
+        if(win32_process_global_birth(process,&actual_low,&actual_high))
+            orphan=actual_high!=high || actual_low!=low || WaitForSingleObject(process,0)==WAIT_OBJECT_0;
         CloseHandle(process);
     }else orphan=GetLastError()==ERROR_INVALID_PARAMETER;
     return orphan;

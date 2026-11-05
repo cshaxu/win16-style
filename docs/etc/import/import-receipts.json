@@ -428,7 +428,7 @@
       "path": "src/ntw16s-dll/global_session.h",
       "source": null,
       "source_blob": null,
-      "sha256": "5350a893e3a584f00802f38fef3d7230819ffb09de0ee9a189cfab7f1754f2ef",
+      "sha256": "183670addd6f48e0fc217b16f01b592af81a9e2718a103a07e30079de9874128",
       "disposition": "authored",
       "review": "T21 S3 global controller and private-desktop integration; T21 S13 truthful global readiness and pre-subclass menu drawing witness; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 attached-window acknowledgement candidate; T21 S13 cross-directory compatible module reuse",
       "notice": "Project-authored source; no imported code or resources"
@@ -437,7 +437,7 @@
       "path": "src/ntw16s-dll/global_session.c",
       "source": null,
       "source_blob": null,
-      "sha256": "11cf6ad1926932bcd75d588860ca526f8fb79675491b74e540944be43a577ae9",
+      "sha256": "6d06b6799ca3edf19f40b23a59e5e80ec8d158106f466a7b65e1b874456e71f3",
       "disposition": "authored",
       "review": "T21 S3 global controller and private-desktop integration; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 cross-directory compatible module reuse",
       "notice": "Project-authored source; no imported code or resources"
@@ -3974,7 +3974,7 @@
       "path": "src/ntw16s-dll/global_process.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7665bd5535c5ff525f730e83c8e6a34dab7572dbc18c208c0e1a91c782eac4ab",
+      "sha256": "6e59573b253c2b235a59c6bfedc7e1498119575860c7db61bdd2f2e454aadfd3",
       "disposition": "authored",
       "review": "M0 T21 S13 process event discovery and owned cleanup tests",
       "notice": "Project-authored source; no imported code or resources"
@@ -5819,7 +5819,7 @@
       "path": "src/lib-win32/process-global/identity.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7f2e8bf6950565bcf57b5672f767dd4834b519b4240cb133c63a54446ae0f252",
+      "sha256": "e2950d90dbd761bce55fa1bd15c9a70a5be4093ab1529557b6cd95502d153c30",
       "disposition": "authored",
       "review": "T21 S41 extract existing identity utilities",
       "notice": "Project-authored C code; no imported artwork"
@@ -5828,7 +5828,7 @@
       "path": "src/lib-win32/process-global/identity.h",
       "source": null,
       "source_blob": null,
-      "sha256": "d5af0583e826f35d106d8c5c794ed05f7841bd525332f6aab3b865153b9eb2d9",
+      "sha256": "be2c1d8956d7d963bf1dfffcdf71e9ed32f74e683b63d35a4fd09c8da8e8ef53",
       "disposition": "authored",
       "review": "T21 S41 extract existing identity utilities",
       "notice": "Project-authored C code; no imported artwork"
@@ -5873,7 +5873,7 @@
       "path": "tests/lib-win32/process-global/enumerate.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b994cc9dd1aacb1b96b7773f23c297ad56f30a17cb4a58dda36b023ccc9d1a8d",
+      "sha256": "a3de23e7ff3585f1981d499f8a8df62a994b2be6772ef731de94a35ca176fc63",
       "disposition": "authored",
       "review": "T21 S41 shared global work queue",
       "notice": "Project-authored C code; no imported artwork"
@@ -5972,7 +5972,7 @@
       "path": "src/lib-win32/process-global/policy.c",
       "source": null,
       "source_blob": null,
-      "sha256": "607bcc4d1e06dc1257055ba3ef01a25c74f1dd0979885a491ea8c9464c56a08a",
+      "sha256": "fdaff9c40110ae26ade5ae6bc04ededc59333369427a3bf245bd098cd2c10368",
       "disposition": "authored",
       "review": "T21 S41 parameterize target identity checks",
       "notice": "Project-authored C code; no imported artwork"
@@ -5990,7 +5990,7 @@
       "path": "src/lib-win32/process-global/recovery.c",
       "source": null,
       "source_blob": null,
-      "sha256": "273383dd590247c11f0552507e44775fa48a0a2a8816a1272c58467a53a47417",
+      "sha256": "545ceaad512de2ec9ea7643c6fd628640044de5598feef71df1b423326021674",
       "disposition": "authored",
       "review": "T21 S41 extract ETW orphan recovery mechanics",
       "notice": "Project-authored C code; no imported artwork"
@@ -6053,7 +6053,7 @@
       "path": "src/lib-win32/process-global/module.c",
       "source": null,
       "source_blob": null,
-      "sha256": "af48a3dd1f79d4039582770e9543a693d247101bc25c58fbbb770ce7f7ea1f8f",
+      "sha256": "e60f1fea0811dc9bba10120cd874fbddebfdf2af2d597529b4b731ebdaf6a9f4",
       "disposition": "authored",
       "review": "T21 S41 parameterize mapped module selection and identity checks",
       "notice": "Project-authored C code; no imported artwork"
@@ -6062,7 +6062,7 @@
       "path": "src/lib-win32/process-global/module.h",
       "source": null,
       "source_blob": null,
-      "sha256": "4c5e3a3061f7f9ba7c5e934f49d6eb03aec55d7889e17d286b276490efd2920d",
+      "sha256": "c93a83626e3a220d4610a6eac042fff998cd8d5b14107714f85ec655aa360071",
       "disposition": "authored",
       "review": "T21 S41 parameterize mapped module selection and identity checks",
       "notice": "Project-authored C code; no imported artwork"
@@ -6071,7 +6071,7 @@
       "path": "tests/lib-win32/process-global/module.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7151b1a90a2ab0629e71bb7f6ccc1a9f3183213b1df77c9bc29836277bf3a1de",
+      "sha256": "96d523433540a8c26b50bee6cded60cfd0334f414514f313bc308d24c4805afd",
       "disposition": "authored",
       "review": "T21 S41 existing module selection test",
       "notice": "Project-authored C code; no imported artwork"

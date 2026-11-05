@@ -46,6 +46,8 @@ try{
     $snapshot | ConvertTo-Json -Depth 3 | Set-Content (Join-Path $scratch 'snapshot.json') -Encoding utf8
     Push-Location $clean
     try{
+        & python (Join-Path $clean 'tools/check_process_global_boundary.py') --self-test
+        if($LASTEXITCODE){throw 'Public process boundary gate failed'}
         & python (Join-Path $clean 'tools/verify_source_manifest.py') --self-test
         if($LASTEXITCODE){throw 'Snapshot source gate failed'}
         & python (Join-Path $clean 'tools/verify_resource_identity.py') --self-test
@@ -63,6 +65,13 @@ try{
             Copy-Item -LiteralPath (Join-Path $tree "$($pair[0])/$($pair[1])") -Destination (Join-Path $candidate $pair[1])
         }
         foreach($arch in @('x86','x64')){
+            $compiler=($toolchains.toolchains | Where-Object architecture -eq $arch).compiler
+            $nm=Join-Path (Split-Path $compiler -Parent) 'nm.exe'
+            $archives=@('libprocess-global.a','libprocess-hook.a','libprocess-image.a','libwin32-handle.a')
+            $arguments=@('--self-test','--nm',$nm)
+            foreach($archive in $archives){$arguments+=@('--archive',(Join-Path $tree "$arch/$archive"))}
+            & python (Join-Path $clean 'tools/check_process_global_boundary.py') @arguments
+            if($LASTEXITCODE){throw "Public process binary boundary gate failed: $arch"}
             $dependencies=& ninja -C (Join-Path $tree $arch) -t deps
             if($LASTEXITCODE){throw 'Dependency trace failed'}
             $dependencies | Set-Content (Join-Path $scratch "$arch-deps.txt") -Encoding utf8

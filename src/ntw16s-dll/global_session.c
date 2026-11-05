@@ -6,22 +6,11 @@
 
 BOOL ntw16s_global_name(WCHAR *name,DWORD capacity)
 {
-    WCHAR desktop[256];DWORD needed=0,session=0;uint64_t hash=UINT64_C(1469598103934665603);
+    DWORD session=0;ULONGLONG hash=0;
     if(!name || capacity<NTW16S_GLOBAL_NAME_CAP){SetLastError(ERROR_INSUFFICIENT_BUFFER);return FALSE;}
-    if(!ProcessIdToSessionId(GetCurrentProcessId(),&session))return FALSE;
-    HDESK desk=GetThreadDesktop(GetCurrentThreadId());
-    if(!desk || !GetUserObjectInformationW(desk,UOI_NAME,desktop,sizeof(desktop),&needed))return FALSE;
-    desktop[ARRAYSIZE(desktop)-1]=0;CharUpperBuffW(desktop,(DWORD)wcslen(desktop));
-    for(const WCHAR *p=desktop;*p;++p){hash^=(uint16_t)*p;hash*=UINT64_C(1099511628211);}
+    if(!win32_process_global_desktop_key(&session,&hash))return FALSE;
     if(swprintf(name,capacity,L"Local\\Win16Style.Global.%lu.%016llx",session,(unsigned long long)hash)<0){SetLastError(ERROR_INSUFFICIENT_BUFFER);return FALSE;}
     return TRUE;
-}
-BOOL ntw16s_global_birth(HANDLE process,DWORD *low,DWORD *high)
-{
-    FILETIME creation,exit,kernel,user;
-    if(!process || !low || !high){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
-    if(!GetProcessTimes(process,&creation,&exit,&kernel,&user))return FALSE;
-    *low=creation.dwLowDateTime;*high=creation.dwHighDateTime;return TRUE;
 }
 BOOL ntw16s_global_owner_alive(const ntw16s_global_session *s)
 {
@@ -44,27 +33,6 @@ BOOL ntw16s_global_policy_active(DWORD cookie)
         if(mapping)CloseHandle(mapping);
     }
     SetLastError(saved);return active;
-}
-BOOL ntw16s_global_files_equal(const WCHAR *a,const WCHAR *b)
-{
-    HANDLE left=INVALID_HANDLE_VALUE,right=INVALID_HANDLE_VALUE;BOOL equal=FALSE;
-    BY_HANDLE_FILE_INFORMATION li,ri;LARGE_INTEGER ls,rs;BYTE x[16384],y[16384];DWORD nx,ny;
-    if(!a || !b)return FALSE;
-    left=CreateFileW(a,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_FLAG_OPEN_REPARSE_POINT,NULL);
-    if(left==INVALID_HANDLE_VALUE)goto done;
-    right=CreateFileW(b,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_FLAG_OPEN_REPARSE_POINT,NULL);
-    if(right==INVALID_HANDLE_VALUE)goto done;
-    if(!GetFileInformationByHandle(left,&li) || !GetFileInformationByHandle(right,&ri) ||
-       ((li.dwFileAttributes|ri.dwFileAttributes)&(FILE_ATTRIBUTE_DIRECTORY|FILE_ATTRIBUTE_REPARSE_POINT)) ||
-       !GetFileSizeEx(left,&ls) || !GetFileSizeEx(right,&rs) || ls.QuadPart<=0 || ls.QuadPart!=rs.QuadPart)goto done;
-    do{
-        if(!ReadFile(left,x,sizeof(x),&nx,NULL) || !ReadFile(right,y,sizeof(y),&ny,NULL) || nx!=ny || memcmp(x,y,nx))goto done;
-    }while(nx);
-    equal=TRUE;
-done:
-    if(right!=INVALID_HANDLE_VALUE)CloseHandle(right);
-    if(left!=INVALID_HANDLE_VALUE)CloseHandle(left);
-    return equal;
 }
 BOOL ntw16s_global_owner_matches(const ntw16s_global_session *s,HMODULE module)
 {

@@ -38,8 +38,7 @@ static DWORD inspect(const win32_process_global_policy *policy,HWND window,DWORD
     process=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION|SYNCHRONIZE,FALSE,pid);
     if(!process)return GetLastError();
     if(WaitForSingleObject(process,0)!=WAIT_TIMEOUT){error=ERROR_PROCESS_ABORTED;goto done;}
-    if(!GetProcessTimes(process,&created,&exited,&kernel,&user_time)){error=GetLastError();goto done;}
-    identity->process_birth_low=created.dwLowDateTime;identity->process_birth_high=created.dwHighDateTime;
+    if(!win32_process_global_birth(process,&identity->process_birth_low,&identity->process_birth_high)){error=GetLastError();goto done;}
     error=win32_process_image_machine(process,&machine);if(error)goto done;
     identity->machine=machine;
     if(identity->machine!=expected_machine){error=ERROR_BAD_EXE_FORMAT;goto done;}
@@ -77,8 +76,9 @@ static DWORD revalidate(HANDLE process,HWND window,const win32_process_global_id
     if(!process || !identity || !identity->pid || !identity->thread_id ||
        GetProcessId(process)!=identity->pid)return ERROR_INVALID_PARAMETER;
     if(WaitForSingleObject(process,0)!=WAIT_TIMEOUT)return ERROR_PROCESS_ABORTED;
-    if(!GetProcessTimes(process,&created,&exited,&kernel,&user_time))return GetLastError();
-    if(created.dwLowDateTime!=identity->process_birth_low || created.dwHighDateTime!=identity->process_birth_high)
+    DWORD birth_low=0,birth_high=0;
+    if(!win32_process_global_birth(process,&birth_low,&birth_high))return GetLastError();
+    if(birth_low!=identity->process_birth_low || birth_high!=identity->process_birth_high)
         return ERROR_INVALID_STATE;
     thread=OpenThread(THREAD_QUERY_LIMITED_INFORMATION|SYNCHRONIZE,FALSE,identity->thread_id);
     if(!thread)return GetLastError();

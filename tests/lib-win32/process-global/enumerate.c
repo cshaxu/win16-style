@@ -1,4 +1,5 @@
 #include "lib-win32/process-global/enumerate.h"
+#include "lib-win32/process-global/identity.h"
 #include "lib-win32/process-global/queue.h"
 #include "lib-win32/process-global/registry.h"
 #include <stdio.h>
@@ -39,6 +40,14 @@ int main(void)
     if(win32_process_global_registry_find(&registry,1,1)!=&keep || win32_process_global_registry_find(&registry,3,1)!=&drop || win32_process_global_registry_find(&registry,2,1))return 10;
     if(win32_process_global_registry_reap(&registry,1,remove_marked,count_removed,&removed)!=1 || removed!=1 || win32_process_global_registry_find(&registry,3,1) || win32_process_global_registry_find(&registry,1,1)!=&keep)return 11;
     keep=1;if(win32_process_global_registry_reap(&registry,2,remove_marked,count_removed,&removed)!=1 || removed!=2)return 12;
+    DWORD session=0,session_again=0,expected_session=0;ULONGLONG key=0,key_again=0;
+    if(!win32_process_global_desktop_key(&session,&key) || !win32_process_global_desktop_key(&session_again,&key_again) ||
+       !ProcessIdToSessionId(GetCurrentProcessId(),&expected_session) || session!=expected_session || session!=session_again || key!=key_again)return 24;
+    if(win32_process_global_desktop_key(NULL,&key) || GetLastError()!=ERROR_INVALID_PARAMETER)return 25;
+    FILETIME created,exited,kernel,user;DWORD low=0,high=0;
+    if(!GetProcessTimes(GetCurrentProcess(),&created,&exited,&kernel,&user) ||
+       !win32_process_global_birth(GetCurrentProcess(),&low,&high) || low!=created.dwLowDateTime || high!=created.dwHighDateTime)return 22;
+    if(win32_process_global_birth(NULL,&low,&high) || GetLastError()!=ERROR_INVALID_PARAMETER)return 23;
     observed o={GetCurrentProcessId(),GetCurrentThreadId(),0,0,FALSE};
     DWORD before=0,after=0;
     if(win32_process_global_threads(0,NULL,NULL)!=ERROR_INVALID_PARAMETER)return 1;
@@ -67,5 +76,5 @@ int main(void)
     SetEvent(event);WaitForSingleObject(thread,3000);CloseHandle(thread);CloseHandle(event);
     if(scan || sel.selected!=1 || sel.inspected!=2)return 21;
     if(!GetProcessHandleCount(GetCurrentProcess(),&after) || after!=before)return 6;
-    puts("PROCESS_GLOBAL_PASS own=1 filter=1 early_stop=1 no_match=1 selection=1 fallback=1 prefer_ready=1 policy=1 cleanup=1");return 0;
+    puts("PROCESS_GLOBAL_PASS own=1 filter=1 early_stop=1 no_match=1 birth=1 desktop=1 selection=1 fallback=1 prefer_ready=1 policy=1 cleanup=1");return 0;
 }

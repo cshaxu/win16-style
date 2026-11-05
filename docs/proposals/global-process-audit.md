@@ -197,3 +197,5 @@ P16：`process-global/enumerate` 提供存量线程扫描和单进程首个就�
 P17：`process-hook/propagate` 负责原有创建拦截、暂停创建、重入保护、成功恢复与失败回收，`process-hook/unwind` 提供原有 C 异常展开；`injection/create_process.c` 提供会话、排除与载荷回调并调用公共入口。独立同位宽真实钩子测试验证无样式 DLL 的纯载荷子孙、A/W、停用、拒绝及 193 失败回收；产品实包 28 项通过，含双宽/AW 的仅传播和组合各八项。停用不等于物理卸载。`global-e2e` 的私有桌面托盘限制、管理员 ETW 和最终逐项审计仍待处理。发布 `s41-publish17`。
 
 P18：`process-global/window` 提供带截止时间和取消的窗口树遍历，控制器和管理器分别提供过滤与样式消息；`process-global/transaction` 负责原有接入等待、取消及重试，产品保留会话、身份、载荷与通知。双宽独立测试和 20 项实包聚焦通过，发布 `s41-publish18`；真实全局端到端托盘限制及最终全项审计仍待处理。
+
+P19：`process-global/identity` 提供进程创建时间与桌面指纹，`process-global/module` 提供模块文件字节比较；产品会话/ETW 代码以及公共策略/恢复复用，保留产品对象命名。`tools/check_process_global_boundary.py` 检查四个公共组件源码和构建静态库的产品私有引用，已接入打包门禁；双宽干净构建、独立测试及 20 项实包聚焦通过，发布 `s41-publish19`。全局端到端托盘和管理员 ETW 限制、最终审计仍未解除。
