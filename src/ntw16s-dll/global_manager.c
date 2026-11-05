@@ -4,6 +4,7 @@
 #include "global_session.h"
 #include "global_process.h"
 #include "lib-win32/process-global/enumerate.h"
+#include "lib-win32/process-global/queue.h"
 #include <stdlib.h>
 #include <string.h>
 #include <wchar.h>
@@ -14,9 +15,10 @@
 #define MANAGER_LIMIT 16384u
 typedef enum entry_state {ENTRY_QUEUED,ENTRY_WORKING,ENTRY_ACTIVE,ENTRY_FAILED} entry_state;
 typedef struct manager_entry {
+    win32_process_global_queue_node queue_node;
     DWORD pid,thread_id;HWND window;entry_state state;unsigned attempts;
     ntw16s_global_attach attach;
-    struct manager_entry *hash_next,*queue_next;
+    struct manager_entry *hash_next;
 } manager_entry;
 typedef struct worker_context {struct ntw16s_global_manager *manager;unsigned index;} worker_context;
 struct ntw16s_global_manager {
@@ -24,7 +26,7 @@ struct ntw16s_global_manager {
     HANDLE mapping,stop,quit,work,changed,workers[MANAGER_WORKERS],ready[MANAGER_WORKERS];
     worker_context contexts[MANAGER_WORKERS];DWORD worker_errors[MANAGER_WORKERS];
     HDESK desktop;WCHAR *dll_path;WORD machine;DWORD owner_thread;SRWLOCK lock;
-    manager_entry *buckets[MANAGER_BUCKETS],*queue_head,*queue_tail;unsigned count,reap_bucket;
+    manager_entry *buckets[MANAGER_BUCKETS];win32_process_global_queue queue;unsigned count,reap_bucket;
     volatile LONG queued,working,active,failed,overflow;
     SRWLOCK process_locks[64];
     ntw16s_global_process *process_monitor;
@@ -62,9 +64,8 @@ static void reap(ntw16s_global_manager *m,unsigned budget)
 }
 static void enqueue(ntw16s_global_manager *m,manager_entry *entry)
 {
-    entry->state=ENTRY_QUEUED;entry->queue_next=NULL;
-    if(m->queue_tail)m->queue_tail->queue_next=entry;else m->queue_head=entry;
-    m->queue_tail=entry;InterlockedIncrement(&m->queued);SetEvent(m->work);
+    entry->state=ENTRY_QUEUED;win32_process_global_queue_push(&m->queue,&entry->queue_node);
+    InterlockedIncrement(&m->queued);SetEvent(m->work);
 }
 static void discovered(HWND window,DWORD pid,DWORD thread_id,void *context)
 {
@@ -208,8 +209,8 @@ static DWORD WINAPI worker(void *parameter)
         if(result==WAIT_OBJECT_0 || result==WAIT_OBJECT_0+1)break;
         if(result!=WAIT_OBJECT_0+2)break;
         for(;;){
-            AcquireSRWLockExclusive(&m->lock);manager_entry *entry=m->queue_head;
-            if(entry){m->queue_head=entry->queue_next;if(!m->queue_head)m->queue_tail=NULL;entry->state=ENTRY_WORKING;InterlockedDecrement(&m->queued);InterlockedIncrement(&m->working);}
+            AcquireSRWLockExclusive(&m->lock);manager_entry *entry=(manager_entry *)win32_process_global_queue_pop(&m->queue);
+            if(entry){entry->state=ENTRY_WORKING;InterlockedDecrement(&m->queued);InterlockedIncrement(&m->working);}
             ReleaseSRWLockExclusive(&m->lock);if(!entry)break;
             /* Late patching snapshots all threads in a target process. Do not
              * create competing remote workers for two of its GUI threads. */

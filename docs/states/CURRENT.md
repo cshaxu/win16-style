@@ -2,7 +2,9 @@
 
 ## Current Work
 
-T21 S41 已准入：继续抽取窗口发现和进程通知通用机制；T21 保持开放。
+T21 S41 已准入：按用户续指令完成现有全局进程能力的公共组件拆分；T21 保持开放。
+
+P4：抽离现有管理器 FIFO、DLL 加载事务和系统加载器远端地址校验至 process-global；产品提供 DLL 名、远端入口解析和策略。双宽干净构建、ABI 与来源资源门禁通过；队列双宽通过（首轮因未设置捕获目录未执行）；实际包串行 22/22 无跳过。此前 P2 并行 x64 接入 1460 根因未明，管理员 ETW 正例和完整矩阵未覆盖。四文件已发布 assets 及 O:/winnt 并核对摘要（s41-publish4）；S41、T21 仍开放。
 
 P3：将已有 DLL 文件句柄的映像校验迁入 process-image；加载策略和资源生命周期不变。双宽干净构建及 ABI、来源和原资源门禁通过；同批实际包 16/16 串行通过，无跳过，覆盖双宽远端读取、加载、启动和策略；完整矩阵及管理员 ETW 集成未覆盖。四文件发布 assets 和 O:/winnt 并核对摘要（s41-publish3）。S41 与 T21 保持开放。
 
@@ -475,20 +477,20 @@ T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文
 | --- | --- |
 | Identifier Mode | Continuation |
 | Admission And Approval | 用户要求继续将可拆分的 global 部分移入公共组件并提交 P。 |
-| Objective | 抽取窗口发现及 ETW 进程通知与生命周期机制，保留产品会话命名、孤儿处理与接入策略。 |
+| Objective | 抽取现有全局进程枚举、发现、监视、管理、身份和生命周期通用机制；产品样式行为、接入策略及协议由调用方提供。 |
 | Non-goals | 不增加监控范围、修改权限策略、钩子行为、公开 ABI 或兄弟仓库。 |
 | Reference Baseline | 本项目 19ce180，S40 公共枚举器。 |
 | Candidate Proposal | [全局样式](../proposals/global-style-mode.md)。 |
-| Files And ABI Surface | process-global、DLL 发现与进程监视包装、CMake 和测试；产品 ABI 不变。 |
+| Files And ABI Surface | process-global、相关 DLL 适配、CMake 和测试；内部接口按需调整，产品 ABI 不变。 |
 | Applicable Rules | M0、纯 C、资源身份和线程生命周期规则。 |
-| Verification | 双宽干净构建；解析、窗口发现和自有隔离目标回归；ETW 权限边界如实记录。 |
-| Expected Markers | 双宽发现与管理器回归通过；公共库无产品会话名称。 |
+| Verification | 双宽干净构建；解析、队列/生命周期、窗口发现和自有隔离目标回归；ETW 权限边界如实记录。 |
+| Expected Markers | 双宽发现与管理器回归通过；公共库不依赖产品私有头和样式策略。 |
 | Asset Needs | 有二进制变化则同批四文件发布 assets 和 O:/winnt。 |
 | Reporting Requirements | 说明抽离边界、结果、跳过及远端复核。 |
 | Stop Conditions | 构建、测试或发布权限失败无法安全处理。 |
 | Exit Criteria | 构建测试发布、P 提交推送及远端复核。 |
-| Original Owner Request | 追加 P，把可拆分部分继续移入公共组件。 |
-| Similar-Issue Sweep | 审计窗口发现、ETW 会话生命周期及孤儿清理所有调用者。 |
+| Original Owner Request | 用户要求设定持续目标，将全局进程相关现有能力提取到 process-global，直至完成。 |
+| Similar-Issue Sweep | 冻结 global 生产文件全集，区分通用进程机制、产品协议和窗口样式，逐项记录迁移或保留理由并检查调用者。 |
 
 ## Recent Closure
 

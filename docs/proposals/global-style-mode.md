@@ -94,3 +94,18 @@ S6 已验证双宽四个 GUI 线程与三轮启停的有限资源计数；S7 补
 接口依据：[SetWindowsHookEx](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexw)、
 [rundll32](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/rundll32)。
 官方机制依据不能替代本项目双宽宿主与初始化原型证据。
+
+
+## S41 全局进程能力抽离范围
+
+逐项审计范围固定为 `src/ntw16s-dll/global_*.c/.h` 和
+`src/run16s-exe/global.c/.h`：线程枚举、窗口发现、进程事件监视、
+身份/桌面检查、远端映像读取、DLL 加载、线程启动、进程管理队列、
+会话与孤儿恢复、接入事务、钩子宿主以及窗口样式通知。现有公共能力
+放入 `lib-win32/process-global`（映像通用读取保留 `process-image`）；
+会话命名、DLL 名称、窗口绘制及用户选择属于产品职责，通过调用方
+参数或回调连接，不能照搬产品名称到公共库。
+
+当前进行中：枚举、发现、ETW 监视已交付；加载事务、系统加载器
+地址验证、工作队列正在迁移。其余条目尚需逐一检查和记录，未完成
+前不称整个抽离完成。无产品 ABI 或系统安全策略变更。

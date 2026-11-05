@@ -1,4 +1,5 @@
 #include "lib-win32/process-global/enumerate.h"
+#include "lib-win32/process-global/queue.h"
 #include <stdio.h>
 typedef struct observed {DWORD pid,thread;unsigned count,found;BOOL stop;} observed;
 static BOOL observe(DWORD pid,DWORD thread,void *context)
@@ -10,6 +11,11 @@ static BOOL observe(DWORD pid,DWORD thread,void *context)
 }
 int main(void)
 {
+    win32_process_global_queue q={0};win32_process_global_queue_node a={0},b={0};
+    if(win32_process_global_queue_pop(&q))return 7;
+    win32_process_global_queue_push(&q,&a);win32_process_global_queue_push(&q,&b);
+    if(win32_process_global_queue_pop(&q)!=&a || win32_process_global_queue_pop(&q)!=&b || win32_process_global_queue_pop(&q) || q.tail)return 8;
+    win32_process_global_queue_push(&q,&a);if(win32_process_global_queue_pop(&q)!=&a || q.head || q.tail)return 9;
     observed o={GetCurrentProcessId(),GetCurrentThreadId(),0,0,FALSE};
     DWORD before=0,after=0;
     if(win32_process_global_threads(0,NULL,NULL)!=ERROR_INVALID_PARAMETER)return 1;
