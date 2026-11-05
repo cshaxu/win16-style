@@ -1,7 +1,7 @@
 #include "ntw16s-dll/injection/injection.h"
 #include "elevation.h"
 #include "lib-win32/process-launch/command_line.h"
-#include "lib-win32/process-launch/process.h"
+#include "process_lifecycle.h"
 #include "startup_error.h"
 #include "global.h"
 #include "tray.h"

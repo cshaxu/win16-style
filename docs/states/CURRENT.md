@@ -2,7 +2,7 @@
 
 ## Current Work
 
-无活动任务包。T21 S35 已将全局架构查询统一至 process-image 并交付；T21 保持开放。详见[记录](../history/M0-T21-S35-global-machine.md)。
+T21 S36 已准入：原样导入隔壁 process-launch，并保留启动器进程事务；T21 保持开放。
 
 S25 经用户验收收口，交付范围见 [记录](../history/M0-T21-S25-common.md)。
 
@@ -412,9 +412,9 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
-- Last allocated T21 S: 35
+- Last allocated T21 S: 36
 - Last verified remote delivery: M0 T21 S35 P1，`f5871dc`；四产品及策略源码远端对象已复核。
-- Open task: T21；S35 已交付。Explorer.exe 仍被排除。
+- Open task: T21；S36 进行中。Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。
@@ -462,6 +462,27 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前原版真实点击正常；历史异常根因未查明，本S没有产品代码或二进制修改。
 
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1已收口；T20此后按用户要求有限范围收口。
+
+## M0 T21 S36 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Continuation |
+| Admission And Approval | 用户要求原样导入隔壁 process-launch。 |
+| Objective | 固定来源导入六文件，按用户要求统一 LF；现有启动事务归回 run16s-exe 并调用公共创建原语。 |
+| Non-goals | 不修改隔壁、图形资源、产品 ABI 或目标创建策略。 |
+| Reference Baseline | 本项目 cc8a673；隔壁 ac8bb9864。 |
+| Candidate Proposal | [公共基础组件](../proposals/win32-common-components.md)。 |
+| Files And ABI Surface | process-launch、run16s 事务、构建、测试和来源清单；不变更产品 ABI。 |
+| Applicable Rules | C17、M0 执行、来源和资源规则。 |
+| Verification | 双宽干净构建，属性生命周期、启动事务、失败回滚、命令行与实包传播。 |
+| Expected Markers | 源码语义一致（两文件仅换行符转 LF）；双宽测试和实际包基线通过。 |
+| Asset Needs | 四文件同批测试并视二进制变化发布 assets 和 O:/winnt。 |
+| Reporting Requirements | 报告来源、行为保持、测试、发布和远端复核。 |
+| Stop Conditions | 来源、构建、测试或发布权限失败无法安全处置。 |
+| Exit Criteria | 构建测试、必要发布、提交推送与实际远端复核。 |
+| Original Owner Request | 准入新 S 原样导入隔壁 process-launch。 |
+| Similar-Issue Sweep | 对照全部 process-launch 调用者及创建、恢复、句柄所有权。 |
 
 ## Recent Closure
 

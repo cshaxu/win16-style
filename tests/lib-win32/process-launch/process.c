@@ -1,4 +1,4 @@
-#include "lib-win32/process-launch/process.h"
+#include "run16s-exe/process_lifecycle.h"
 #include <stdio.h>
 #include <string.h>
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"PROCESS_LIFECYCLE_FAIL line=%d error=%lu\n",__LINE__,GetLastError());return 1;}}while(0)
