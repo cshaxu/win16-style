@@ -3839,7 +3839,7 @@
       "path": "src/ntw16s-dll/global_load.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c72cc988c5dae5c0d491e94665de059d3f1e9384db9e75b7ef9b137a519c9b9b",
+      "sha256": "b2646499546a1665657339b11cac9e9e7cc9c33d49d207a9711e662f14226ee2",
       "disposition": "authored",
       "review": "T21 S37 handle library fixed source or caller migration; see source record",
       "notice": "Owner-authorized sibling project source; source identity recorded; no additional third-party notice in imported files"
@@ -5858,6 +5858,24 @@
       "sha256": "43668622ccbd9b486b85d88c98679cebb52088e7235b2678a577e336e92ef0e9",
       "disposition": "authored",
       "review": "T21 S41 extract existing remote image validation helpers",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-image/file_handle.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "fcd6e29414264e1d06fcada7bed9408a1990912516fc9e2b183accaca5df426a",
+      "disposition": "authored",
+      "review": "T21 S41 extract existing DLL image validation",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-image/file_handle.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "8060ae3cde9f20937b381ff6b2f8045c87fbbe405c9acc8177e73a6cea476ce6",
+      "disposition": "authored",
+      "review": "T21 S41 extract existing DLL image validation",
       "notice": "Project-authored C code; no imported artwork"
     }
   ]

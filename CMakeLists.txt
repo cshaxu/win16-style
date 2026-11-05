@@ -125,7 +125,7 @@ add_library(process-global STATIC src/lib-win32/process-global/enumerate.c src/l
 target_link_libraries(process-global PUBLIC win32-handle user32 advapi32)
 target_include_directories(process-global PUBLIC src)
 target_compile_definitions(process-global PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-add_library(process-image STATIC src/lib-win32/process-image/image.c src/lib-win32/process-image/remote.c)
+add_library(process-image STATIC src/lib-win32/process-image/image.c src/lib-win32/process-image/remote.c src/lib-win32/process-image/file_handle.c)
 target_include_directories(process-image PUBLIC src)
 target_compile_definitions(process-image PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 add_library(process-launch STATIC src/lib-win32/process-launch/command_line.c src/lib-win32/process-launch/process.c src/lib-win32/process-launch/attributes.c)
