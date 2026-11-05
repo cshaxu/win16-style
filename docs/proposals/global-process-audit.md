@@ -210,3 +210,37 @@ P21：`process-hook/late_batch` 管理已有晚期钩子批量准备、重试、
 实际管理器自有目标同一 Button 的 `WM_PRINT` 像素摘要在 x86/x64 增量对照均为原始 343534586、应用 2033954149、移除 2875890938：应用确实改变绘制，但移除后不等于原始，不得称为完全恢复。P20 已发布 DLL 在同一探针中得到同样结果；不点击该按钮仍复现，控件样式位相同，`WM_GETFONT` 均为 0。原因未确认；采样为内存 DIB 的真实绘制，不是屏幕截图。管理器测试要求绘制变化并记录恢复结果，故其通过不表示恢复像素相同。用户允许无法完全恢复时的残影；保留限制并在最终报告说明。
 
 P22：`PROCESS_HOOK_LATE_PATCH_LIMIT` 公布 88 条，并在 `process_hook_late_batch_begin` 超额时返回 `ERROR_INVALID_PARAMETER`；双宽干净构建及批处理负例通过。实际包 `s41-package26` 20/20 聚焦通过，双宽管理器日志分别记录 `changed=1 restored_equal=0`；发布 `s41-publish22`。该聚焦通过不表示像素恢复通过。
+
+
+## 冻结清单逐项复审（P23，尚未收口）
+
+此表基于 P22 已发布源码；冻结时的旧分类保留在上文供比较。每行所列测试是该项证据，不能推广为完整矩阵；`global-e2e` 私有桌面托盘失败与管理员 ETW 未覆盖继续有效。
+
+| 冻结条目 | 当前公共入口与实际产品调用位置 | 留在产品侧的具体原因 | 对应验证及边界 |
+| --- | --- | --- | --- |
+| `global_attach.c/.h` | `transaction_advance/run`、`select_path`、`load_*`、`worker_*`；`ntw16s_global_attach_begin/advance/close` 和 `global_manager.c::process_entry` 调用 | ticket 内 cookie、目标身份、注册消息、APPLY/QUERY/REMOVE 及 ACK 值是产品协议；调用方回调决定如何处理 | P22 双宽 attach/manager/stop-race；超时、无窗口及失败由 `tests/lib-win32/process-global/transaction.c` 验证 |
+| `global_discover.c/.h` | `window_start/refresh/stop`，产品包装仅转换既有 API；`global_manager_start/refresh/stop` 调用 | 保留既有产品内部接口及测试调用者；没有第二套枚举算法 | 双宽 `global-discover` 与自有目标测试；窗口身份须在使用前重验 |
+| `global_manager.c/.h` | `engine_start/submit/wait_idle/stop`、`scan_existing/scan_process`、`targets_*`、`transaction_run`、`window_walk` | 会话阶段/排除、DLL 路径、接入 ticket、重验证及窗口消息是产品特定；公共引擎拥有队列、去重、工作线程、失败和关闭 | 双宽仅管理、manager、停止竞态、目标退出与替换；PID/TID 重用仅用篡改出生时间模拟，未强制系统真实重用 |
+| `global_policy.c/.h` | `policy_init/inspect/inspect_thread/revalidate`、`identity`；产品 `ntw16s_global_image_allowed` 回调 | Windows 宿主排除及产品目标资格是产品选择；公共 policy 是可选的既有同用户/桌面及 AppContainer 限制，调用方可使用其他策略 | 双宽 `global-policy`，含错误 PID/TID、位宽、出生时间过期；其他 window station 启动失败时为 skip |
+| `global_load.c/.h`、`global_remote.c/.h` | `load_begin/finish/discard`、`remote_loadlibrary`、`remote_export`；产品提供路径及导出名称 | 具体 DLL、导出和身份约束属于产品，不嵌入公共库 | 双宽 load/remote/attach；跨位宽由对应位宽宿主或 process-hook helper 配合，非单个 API 跨宽任意装载 |
+| `global_start.c/.h` | `worker_begin/ready/close`，产品 `ntw16s_global_start_*` 调用 | 线程 packet、事件命名及低完整性用户 SDDL 属现有安全策略，必须保留原 ACL 和错误行为；通用远端内存、线程与就绪资源在公共 worker | 双宽 global-start、thread、attach；未通过更改权限掩盖 ETW 限制 |
+| `global_thread.c/.h` | `window_hook_wait` 负责线程钩子、就绪、等待和撤销；产品 worker 调用 | packet/session cookie、所属进程验证、DLL 固定、具体 WH_CALLWNDPROC 回调和 Win16 初始化为产品职责 | 双宽独立同进程钩子接收/撤销、global-thread 与 owner-loss；移除线程钩子不等于移除 inline trampoline |
+| `global_process.c/.h` | `monitor_start/stop/event_pid`、`recover_orphans`、`trace_stop_peer`；产品提供名称解析 | 只停止产品命名的会话；保留名称生成和已退出同伴身份约束 | 双宽解析、无会话及已退出自有进程负例；真实管理员 ETW 正例未执行，不计通过 |
+| `global_session.c/.h` | `birth`、`desktop_key`、`files_equal`；`ntw16s_global_name/owner_alive/owner_matches` 调用 | 映射布局、owner/cookie、产品可执行文件和 DLL 名及身份认证属于产品协议；旧 helper 名称仅为头文件别名 | 双宽身份/模块测试及产品策略、接入；不视别名为第二套实现 |
+| `global_late.c/.h`、`injection/late_process.c/.h` | `background_schedule/mark`、`late_batch_begin/prepare/commit`、`late_patch_*`；产品注册回调 | 会话校验、DLL 固定、STYLE/PROPAGATE 组合及样式消息为产品职责；公共批处理 88 项上限、失败后持有资源 | 双宽后台、late-batch、16 个产品 A/W 位宽组合；线程创建不被 guard 排除，不能安全物理卸载 |
+| `injection/create_process.c`、`entry.c`、`context.c`、`installer.c`、`injection.h`、`intercept.h` | `propagation_attach`、`staging`、`payload`、`helper`、`startup_hooks`；产品提供会话许可、排除、载荷和初始化 | 产品载荷字段、DLL 路径、helper 与 session 策略需由产品提供；普通 run16s 默认保持原组合 | 独立同宽无样式 DLL 子孙载荷 A/W、停用/193；产品双宽与跨宽 A/W 验证；独立通用 helper 跨宽全矩阵未证明 |
+| `global_hook.c`、`global_window.c/.h`、`global_vb_text.c/.h`、`attachment.c/.h`、`controls.c`、`control_scope.c` | 产品调用 `Ntw16sWindowAttach/Remove` 与 win16-window/control/dialog；不被公共 process-global 依赖 | 窗口线程内的产品鉴权、样式分类、绘制和恢复策略；不是通用进程生命周期 | 双宽仅样式 DIB 绘制及 A/W 子进程无 DLL；组合 manager 中 DIB changed=1，但 restored_equal=0，屏幕采样未做 |
+| `run16s-exe/global.c/.h`、`main.c`、`tray_controller.c` | `window_walk`、`engine`、`process-hook`、`lib-tray`；`run16s_global_with_parent` 组合 | 托盘交互、会话对象/安全描述符、x86 宿主、具体回调、消息及启动停止顺序是产品组合 | 已发布包局部 manager 与 local-hook 双宽；真实 `--global` 私有桌面托盘创建失败，不能视为端到端通过 |
+| `process-global/*`、`process-hook/*` 及 MinHook | 公共 C API 见各头；产品调用点见上各行。`check_process_global_boundary.py` 在打包检查源码与两个位宽静态库未定义符号 | MinHook 版权/资源来源不变；其 late guard 不能排除新建线程或保证调用退出；保留运行期 trampoline | `s41-clean25` 源码/静态库门禁、ABI；停止会话使传播 pass-through，不能称为卸载 DLL 或还原所有代码 |
+
+### 独立与组合证据边界
+
+- 仅管理：`tests/lib-win32/process-global/targets.c` 启动自有子进程和窗口，验证发现、去重、目标处理、关闭失败重试及无样式 DLL；未证明系统所有 PID/TID 的真实重用。
+- 仅传播：`tests/lib-win32/process-hook/propagate.c` 使用真实本进程 A/W 拦截和同位宽纯载荷子孙、暂停/禁用/拒绝/193 回滚；跨宽测试目前在产品适配器和对应 DLL 中。
+- 仅样式：`tests/ntw16s-dll/global_window.c` 直接应用和移除，DIB 绘制改变并恢复，A/W 自有子进程无 DLL；普通 run16s 双位宽启动相同子探针均返回 42，证明加载负例可检出。
+- 产品组合：`tests/ntw16s-dll/global_manager.c` 双宽自有现有/新建目标、点击、退出、停止竞态；DIB 显示实际绘制改变而移除后仍不等。`global-hook-local` 双宽看到子孙 DLL 和退出，但不能取代真实托盘端到端。
+- P22 的恢复差异、窗口截图未覆盖、真实管理员 ETW 与私有桌面托盘端到端失败均保留；停止后的 inline 钩子和固定 DLL 可能留在目标进程。
+
+P23：`window_start_ex` 允许公共调用方显式发现自身窗口，产品仍通过旧 `window_start` 排除自身；双宽增量测试覆盖已有和新建窗口。已发布包 `s41-audit1` 聚焦 15 项通过，但双宽其他 window station 子项均输出 SKIP（exit 12），未提权控制器提示 ETW 不可用；自有父进程退出后的控制器会话清理通过，测试没有目标窗口。
+
+P23 交付证据：`s41-clean27` 双位宽干净构建、ABI、来源与资源及公共源码/静态库依赖门禁通过；`core/process-global-window` 干净树双宽通过。`s41-package27` 同批实际包聚焦 23 项通过，测试本身报告零顶层跳过，但两个 policy 日志分别包含其他 window station 子项 SKIP（exit 12）；父进程日志报告未启用管理员 ETW。manager 双宽均为 changed=1、restored_equal=0。四文件经 `s41-publish23` 发布到 assets 与 O:/winnt，摘要一致；真实托盘端到端、管理员 ETW、真实 PID/TID 重用及上述恢复差异仍未证明。

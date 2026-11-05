@@ -9,6 +9,8 @@ static BOOL visit(HWND w,void *context)
     if(w==s->grandchild)s->mask|=4;
     return !(s->cancel && w==s->parent);
 }
+static void discovered(HWND window,DWORD pid,DWORD tid,void *context)
+{seen *s=context;if(pid==GetCurrentProcessId() && tid==GetCurrentThreadId())(void)visit(window,s);}
 typedef struct hook_test {DWORD thread_id;HANDLE ready,stop;DWORD result;} hook_test;
 static volatile LONG hook_hits;
 static LRESULT CALLBACK callback(int code,WPARAM wp,LPARAM lp)
@@ -31,6 +33,28 @@ int main(void)
     s.mask=0;s.cancel=TRUE;if(!error && (win32_process_global_window_walk(GetCurrentThreadId(),GetTickCount64()+3000,visit,&s) || GetLastError()!=ERROR_CANCELLED || s.mask!=1))error=4;
     s.mask=0;s.cancel=FALSE;if(!error && (win32_process_global_window_walk(GetCurrentThreadId(),0,visit,&s) || GetLastError()!=ERROR_TIMEOUT || s.mask))error=5;
     if(!error && (win32_process_global_window_walk(0,0,NULL,NULL) || GetLastError()!=ERROR_INVALID_PARAMETER))error=6;
+    ShowWindow(parent,SW_SHOW);UpdateWindow(parent);
+    win32_process_global_window watcher={0};s.mask=0;
+    if(!error && win32_process_global_window_start_ex(&watcher,discovered,&s,2)!=ERROR_INVALID_PARAMETER)error=14;
+    if(!error && win32_process_global_window_start(&watcher,discovered,&s))error=15;
+    if(!error && s.mask)error=16;
+    if(watcher.hook && win32_process_global_window_stop(&watcher))error=17;
+    s.mask=0;
+    if(!error && win32_process_global_window_start_ex(&watcher,discovered,&s,WIN32_PROCESS_GLOBAL_WINDOW_INCLUDE_SELF))error=18;
+    if(!error && !(s.mask&1))error=19;
+    HWND later=NULL;
+    if(!error){
+        later=CreateWindowW(L"STATIC",L"later",WS_OVERLAPPEDWINDOW,0,0,100,80,NULL,NULL,instance,NULL);
+        if(!later)error=21;
+        else{
+            s.parent=later;s.mask=0;ShowWindow(later,SW_SHOW);
+            ULONGLONG deadline=GetTickCount64()+2000;
+            while(!(s.mask&1) && GetTickCount64()<deadline){MSG msg;while(PeekMessageW(&msg,NULL,0,0,PM_REMOVE)){TranslateMessage(&msg);DispatchMessageW(&msg);}Sleep(10);}
+            if(!(s.mask&1))error=22;
+        }
+    }
+    if(watcher.hook && win32_process_global_window_stop(&watcher))error=20;
+    if(later)DestroyWindow(later);
     HANDLE ready=CreateEventW(NULL,TRUE,FALSE,NULL),stop=CreateEventW(NULL,TRUE,FALSE,NULL),worker=NULL;
     hook_test hook={GetCurrentThreadId(),ready,stop,ERROR_GEN_FAILURE};
     if(!error && (!ready || !stop))error=7;
@@ -50,5 +74,5 @@ int main(void)
     if(stop)CloseHandle(stop);
     DestroyWindow(parent);
     if(error){printf("WINDOW WALK FAIL %d\n",error);return error;}
-    puts("WINDOW WALK PASS desktop=1 thread=1 children=1 cancel=1 timeout=1 hook=1 unhook=1");return 0;
+    puts("WINDOW WALK PASS desktop=1 thread=1 children=1 cancel=1 timeout=1 hook=1 unhook=1 self_opt_in=1 self_new=1");return 0;
 }

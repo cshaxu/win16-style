@@ -5783,7 +5783,7 @@
       "path": "src/lib-win32/process-global/window.c",
       "source": null,
       "source_blob": null,
-      "sha256": "891f7559ceadcbc3bc378a1acd7e75ac8eb057726fdc0f5ec9b1d8a8caf7e918",
+      "sha256": "1c055d679837ab98b9c33b8ce587f16f567c3d8f11aec8a16dd0200c68c55888",
       "disposition": "authored",
       "review": "T21 S41 extract existing project-authored global mechanism",
       "notice": "Project-authored C code; no imported artwork"
@@ -5792,7 +5792,7 @@
       "path": "src/lib-win32/process-global/window.h",
       "source": null,
       "source_blob": null,
-      "sha256": "886454a48cc02c7c616cce902bddc10e7e784aa621a88178385068b0f3add7a3",
+      "sha256": "cb425e17f9dd98922ac99140e851f2050ce40e702d755c600d225e9903baa2f4",
       "disposition": "authored",
       "review": "T21 S41 extract existing project-authored global mechanism",
       "notice": "Project-authored C code; no imported artwork"
@@ -6197,7 +6197,7 @@
       "path": "tests/lib-win32/process-global/window.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7cf4f027e4d9f89bfade09a1939157ddf0d406e9d711e9fe8ec217c4c6ccfb08",
+      "sha256": "9ed57fe8dda0788c28bd0195b72b31f848720d13b740b12931d35bb71d7d6460",
       "disposition": "authored",
       "review": "T21 S41 shared bounded window traversal test",
       "notice": "Project-authored C code; project MIT LICENSE"

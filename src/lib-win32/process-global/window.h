@@ -8,11 +8,15 @@ typedef struct win32_process_global_window {
     win32_process_global_window_callback callback;
     void *context;
     DWORD owner_thread;
-    unsigned dispatching;
+    unsigned dispatching;DWORD flags;
 } win32_process_global_window;
 
 /* Start, callbacks, and stop must run on one message-pumping thread. Window
  * identity can change immediately after the callback; consumers revalidate. */
+#define WIN32_PROCESS_GLOBAL_WINDOW_INCLUDE_SELF 0x00000001u
+/* The legacy start excludes the caller process. start_ex lets callers opt in;
+ * this is discovery only and does not authorize attaching to any target. */
+DWORD win32_process_global_window_start_ex(win32_process_global_window *watcher,win32_process_global_window_callback callback,void *context,DWORD flags);
 DWORD win32_process_global_window_start(win32_process_global_window *watcher,win32_process_global_window_callback callback,void *context);
 DWORD win32_process_global_window_refresh(win32_process_global_window *watcher);
 DWORD win32_process_global_window_stop(win32_process_global_window *watcher);
