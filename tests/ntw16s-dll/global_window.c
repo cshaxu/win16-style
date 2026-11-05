@@ -42,6 +42,27 @@ static BOOL rendered_hash(HWND window,uint64_t *hash)
     for(SIZE_T i=0;i<(SIZE_T)width*(SIZE_T)height*4;++i){value^=bytes[i];value*=UINT64_C(1099511628211);}
     SelectObject(dc,old);DeleteObject(bitmap);DeleteDC(dc);*hash=value;return TRUE;
 }
+static BOOL no_child_style(BOOL ansi)
+{
+    WCHAR path[MAX_PATH],command[MAX_PATH+4];char path_a[MAX_PATH],command_a[MAX_PATH+4];
+    if(!GetModuleFileNameW(NULL,path,ARRAYSIZE(path)))return FALSE;
+    WCHAR *slash=wcsrchr(path,L'\\');if(!slash)return FALSE;
+    if(wcscpy_s(slash+1,ARRAYSIZE(path)-(size_t)(slash+1-path),L"style-only-child.exe"))return FALSE;
+    PROCESS_INFORMATION child={0};BOOL created;
+    if(ansi){
+        if(!WideCharToMultiByte(CP_ACP,WC_NO_BEST_FIT_CHARS,path,-1,path_a,ARRAYSIZE(path_a),NULL,NULL))return FALSE;
+        if(snprintf(command_a,sizeof(command_a),"\"%s\"",path_a)<0)return FALSE;
+        STARTUPINFOA startup={.cb=sizeof(startup)};created=CreateProcessA(path_a,command_a,NULL,NULL,FALSE,CREATE_NO_WINDOW,NULL,NULL,&startup,&child);
+    }else{
+        if(swprintf(command,ARRAYSIZE(command),L"\"%ls\"",path)<0)return FALSE;
+        STARTUPINFOW startup={.cb=sizeof(startup)};created=CreateProcessW(path,command,NULL,NULL,FALSE,CREATE_NO_WINDOW,NULL,NULL,&startup,&child);
+    }
+    if(!created)return FALSE;
+    DWORD code=0,wait=WaitForSingleObject(child.hProcess,3000);
+    if(wait==WAIT_OBJECT_0)GetExitCodeProcess(child.hProcess,&code);
+    else{TerminateProcess(child.hProcess,ERROR_TIMEOUT);WaitForSingleObject(child.hProcess,1000);}
+    CloseHandle(child.hThread);CloseHandle(child.hProcess);return wait==WAIT_OBJECT_0 && code==31;
+}
 static int worker(int argc,WCHAR **argv)
 {
     (void)argc;(void)argv;
@@ -53,7 +74,9 @@ static int worker(int argc,WCHAR **argv)
     cls.hInstance=instance;cls.lpfnWndProc=owner;cls.lpszClassName=L"Win16GlobalWindowFixture";
     CHECK(RegisterClassW(&cls));
     HWND root=CreateWindowW(cls.lpszClassName,L"Original",WS_OVERLAPPEDWINDOW,20,20,380,240,NULL,NULL,instance,NULL);
-    BYTE process_before[16],window_before[16];memcpy(process_before,(void *)CreateProcessW,sizeof(process_before));memcpy(window_before,(void *)CreateWindowExW,sizeof(window_before));
+    BYTE process_before[16],window_before[16],process_a_before[16],window_a_before[16];
+    memcpy(process_before,(void *)CreateProcessW,sizeof(process_before));memcpy(window_before,(void *)CreateWindowExW,sizeof(window_before));
+    memcpy(process_a_before,(void *)CreateProcessA,sizeof(process_a_before));memcpy(window_a_before,(void *)CreateWindowExA,sizeof(window_a_before));
     CHECK(root);HWND button=CreateWindowW(L"BUTTON",L"Action",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,20,20,100,28,root,(HMENU)1,instance,NULL);CHECK(button);
     HWND edit=CreateWindowW(L"EDIT",L"Original text",WS_CHILD|WS_VISIBLE|WS_BORDER,20,60,180,28,root,(HMENU)2,instance,NULL);CHECK(edit);
     ShowWindow(root,SW_SHOW);UpdateWindow(root);uint64_t native=0,styled=0,restored=0;
@@ -62,7 +85,9 @@ static int worker(int argc,WCHAR **argv)
     CHECK(ntw16s_global_window_apply(root));CHECK(ntw16s_global_window_apply(button));CHECK(ntw16s_global_window_attached(button));
     CHECK(ntw16s_global_window_apply(edit));CHECK(ntw16s_global_window_attached(edit));
     CHECK(rendered_hash(button,&styled));CHECK(native!=styled);
-    CHECK(!memcmp(process_before,(void *)CreateProcessW,sizeof(process_before)) && !memcmp(window_before,(void *)CreateWindowExW,sizeof(window_before)));
+    CHECK(!memcmp(process_before,(void *)CreateProcessW,sizeof(process_before)) && !memcmp(window_before,(void *)CreateWindowExW,sizeof(window_before)) &&
+          !memcmp(process_a_before,(void *)CreateProcessA,sizeof(process_a_before)) && !memcmp(window_a_before,(void *)CreateWindowExA,sizeof(window_a_before)));
+    CHECK(no_child_style(TRUE));CHECK(no_child_style(FALSE));
     CHECK(SendMessageW(root,WM_APP+1,0,0)==314);
     wrong_window=root;HANDLE thread=CreateThread(NULL,0,wrong_thread,NULL,0,NULL);CHECK(thread);
     CHECK(WaitForSingleObject(thread,5000)==WAIT_OBJECT_0);DWORD result=1;CHECK(GetExitCodeThread(thread,&result)&&!result);CloseHandle(thread);
@@ -71,8 +96,10 @@ static int worker(int argc,WCHAR **argv)
     CHECK(ntw16s_global_window_remove(button));CHECK(!ntw16s_global_window_attached(button));
     CHECK(ntw16s_global_window_remove(root));CHECK(!ntw16s_global_window_attached(root));
     CHECK(rendered_hash(button,&restored));CHECK(native==restored);
-    CHECK(!memcmp(process_before,(void *)CreateProcessW,sizeof(process_before)) && !memcmp(window_before,(void *)CreateWindowExW,sizeof(window_before)));
-    printf("STYLE ONLY DRAW PASS bits=%u changed=1 restored=1 create_w_entries_unchanged=1\n",(unsigned)(sizeof(void*)*8));
+    CHECK(!memcmp(process_before,(void *)CreateProcessW,sizeof(process_before)) && !memcmp(window_before,(void *)CreateWindowExW,sizeof(window_before)) &&
+          !memcmp(process_a_before,(void *)CreateProcessA,sizeof(process_a_before)) && !memcmp(window_a_before,(void *)CreateWindowExA,sizeof(window_a_before)));
+    CHECK(no_child_style(FALSE));
+    printf("STYLE ONLY DRAW PASS bits=%u changed=1 restored=1 create_w_entries_unchanged=1 aw_child_no_dll=1\n",(unsigned)(sizeof(void*)*8));
     CHECK(!ntw16s_global_window_remove(root)&&GetLastError()==ERROR_NOT_FOUND);
     CHECK(ntw16s_global_window_apply(root));CHECK(DestroyWindow(root));
     HWND reentrant_parent=CreateWindowW(cls.lpszClassName,L"Reentrant",WS_OVERLAPPEDWINDOW,20,20,380,240,NULL,NULL,instance,NULL);CHECK(reentrant_parent);

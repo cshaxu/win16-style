@@ -201,3 +201,5 @@ P18：`process-global/window` 提供带截止时间和取消的窗口树遍历�
 P19：`process-global/identity` 提供进程创建时间与桌面指纹，`process-global/module` 提供模块文件字节比较；产品会话/ETW 代码以及公共策略/恢复复用，保留产品对象命名。`tools/check_process_global_boundary.py` 检查四个公共组件源码和构建静态库的产品私有引用，已接入打包门禁；双宽干净构建、独立测试及 20 项实包聚焦通过，发布 `s41-publish19`。全局端到端托盘和管理员 ETW 限制、最终审计仍未解除。
 
 P20：`process-global/window` 负责线程钩子安装、就绪、等待和撤销；`process-global/background` 管理后台调度和完成标记；`process-global/recovery` 只在同伴进程已退出且身份匹配时停止调用方命名的跟踪。`global_thread.c`、`global_late.c`、`global_process.c` 提供产品策略和协议。双宽自有窗口钩子及后台测试、无跟踪会话负例和实际包 20 项聚焦通过，含双宽本地全局钩子与子孙传播；真实管理员 ETW 正例及完整端到端未覆盖。发布 `s41-publish20`。
+
+P21：`process-hook/late_batch` 管理已有晚期钩子批量准备、重试、失败清理和危险状态保留，产品 `late_process.c` 选择注册传播及样式回调；安装后没有物理卸载。仅样式测试增加双宽 A/W 子进程 DLL 缺席和入口字节对照，已发布 run16s 双宽负例退出 42。双宽干净构建及 28 项实际包聚焦通过，发布 `s41-publish21`；底层 88 条上限需增加公共入口早期验证，ETW 正例和真实全局托盘仍未覆盖。

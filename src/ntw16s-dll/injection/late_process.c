@@ -1,21 +1,14 @@
 #include "late_process.h"
-#include "lib-win32/process-hook/late_patch.h"
+#include "lib-win32/process-hook/late_batch.h"
 #include "intercept.h"
-#include "lib-win32/process-hook/minhook/src/buffer.h"
 #include <string.h>
 #include <wchar.h>
 static SRWLOCK init_lock=SRWLOCK_INIT;
 static process_hook_late_patch hooks[88];
 static process_hook_late_patch *items[88];
-static process_hook_late_guard guard;
-static DWORD count,sticky_error;
-static BOOL installed;
+static process_hook_late_batch batch;
 static DWORD prepare(void *slot,void *replacement)
-{
-    if(count>=ARRAYSIZE(hooks))return ERROR_INSUFFICIENT_BUFFER;
-    DWORD error=process_hook_late_patch_prepare(&hooks[count],slot,replacement);
-    if(!error){items[count]=&hooks[count];++count;}return error;
-}
+{return process_hook_late_batch_prepare(&batch,slot,replacement);}
 static DWORD initialize(PCWSTR directory,DWORD session_cookie,DWORD flags,BOOL strict)
 {
     if(!(flags&NTW16S_POLICY_PROPAGATE) || (flags&~(NTW16S_POLICY_STYLE|NTW16S_POLICY_PROPAGATE)))return ERROR_INVALID_PARAMETER;
@@ -26,7 +19,7 @@ static DWORD initialize(PCWSTR directory,DWORD session_cookie,DWORD flags,BOOL s
     if(n>=NTW16S_PATH_CAP || (!drive && !unc))return ERROR_INVALID_NAME;
     AcquireSRWLockExclusive(&init_lock);
     DWORD error=ERROR_SUCCESS;
-    if(sticky_error){error=sticky_error;goto done;}
+    if(batch.sticky_error){error=batch.sticky_error;goto done;}
     DWORD existing=__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE);
     if(strict && existing && (existing&(NTW16S_POLICY_STYLE|NTW16S_POLICY_PROPAGATE))!=flags){error=ERROR_ALREADY_EXISTS;goto done;}
     if(existing && session_cookie){
@@ -37,29 +30,20 @@ static DWORD initialize(PCWSTR directory,DWORD session_cookie,DWORD flags,BOOL s
         __atomic_fetch_or(&ntw16s_process_context.flags,NTW16S_POLICY_GLOBAL_SESSION,__ATOMIC_RELEASE);
         goto done;
     }
-    if(installed)goto done;
+    if(batch.installed)goto done;
     if(ntw16s_process_context.flags)goto done;
     memcpy(ntw16s_process_context.directory,directory,(n+1)*sizeof(WCHAR));
     ntw16s_process_context.flags=flags;
     if(session_cookie){ntw16s_process_context.flags|=NTW16S_POLICY_GLOBAL_SESSION;ntw16s_process_context.session_cookie=session_cookie;}
-    InitializeBuffer();error=(DWORD)ntw16s_attach_processes_using(prepare);
+    error=process_hook_late_batch_begin(&batch,hooks,items,ARRAYSIZE(hooks));
+    if(!error)error=(DWORD)ntw16s_attach_processes_using(prepare);
     if(!error && (flags&NTW16S_POLICY_STYLE))error=(DWORD)ntw16s_attach_titles_using(prepare);
     if(!error && (flags&NTW16S_POLICY_STYLE))error=(DWORD)ntw16s_attach_file_dialogs_using(prepare);
     if(!error && (flags&NTW16S_POLICY_STYLE))error=(DWORD)ntw16s_attach_com_dialogs_using(prepare);
     if(!error && (flags&NTW16S_POLICY_STYLE))error=(DWORD)ntw16s_attach_folder_dialogs_using(prepare);
-    if(!error && count<2)error=ERROR_INVALID_STATE;
-    if(!error){
-        error=ERROR_BUSY;
-        for(unsigned i=0;i<100 && (error==ERROR_BUSY || error==ERROR_RETRY);++i){
-            error=process_hook_late_patch_install_batch(&guard,items,count);
-            if(error==ERROR_BUSY || error==ERROR_RETRY)Sleep(1);
-        }
-    }
-    if(!error){installed=TRUE;goto done;}
-    BOOL any_installed=FALSE;for(DWORD i=0;i<count;++i)if(hooks[i].installed)any_installed=TRUE;
-    if(guard.threads || guard.snapshots || any_installed){sticky_error=error;goto done;}
-    for(DWORD i=0;i<count;++i)(void)process_hook_late_patch_discard(&hooks[i]);
-    count=0;ZeroMemory(&ntw16s_process_context,sizeof(ntw16s_process_context));
+    if(!error && batch.count<2)error=ERROR_INVALID_STATE;
+    error=process_hook_late_batch_commit(&batch,error,100,1);
+    if(error && !batch.sticky_error)ZeroMemory(&ntw16s_process_context,sizeof(ntw16s_process_context));
  done:
     ReleaseSRWLockExclusive(&init_lock);return error;
 }

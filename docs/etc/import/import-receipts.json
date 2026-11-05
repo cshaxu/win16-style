@@ -203,7 +203,7 @@
       "path": "src/ntw16s-dll/injection/late_process.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ac2dff10107bacb708fc45480f09e668102ba3f00c4c8637d594fc26d3b02e2f",
+      "sha256": "6045a74cd5657bdb795ab01f119ea80d190a9318398339dcc875e0485bcb15df",
       "disposition": "authored",
       "review": "T21 S13 experimental synchronized late process initializer; not linked into product; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S13 PSS guard ownership candidate; T21 S13 unified session stop semantics",
       "notice": "Project-authored source; uses existing project hook and installer code"
@@ -455,7 +455,7 @@
       "path": "tests/ntw16s-dll/global_window.c",
       "source": null,
       "source_blob": null,
-      "sha256": "136a0caa1872c9cb972079fe0810daadfb3db5414ae9341c51affd425caa2e7d",
+      "sha256": "2f04f0ab2f7765470ea6d1cb72ce652e27490c6fec89248bc5a92f39f48e9cdc",
       "disposition": "authored",
       "review": "T21 S2 same-thread global window lifecycle foundation; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier; T21 S13 unified late style hooks and stop semantics; T21 S13 unmarked attachment removal test; T21 S13 cross-directory compatible module reuse",
       "notice": "Project-authored source; no imported code or resources"
@@ -6227,6 +6227,42 @@
       "sha256": "8442f5290c511f2d6fe609794ca39e0fa659d10d09c246f0200ed9c5e200cbdb",
       "disposition": "authored",
       "review": "T21 S41 shared background initialization scheduler",
+      "notice": "Project-authored C code; project MIT LICENSE"
+    },
+    {
+      "path": "tests/ntw16s-dll/style_only_child.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "f89ae6018d207c66c5688a8ec26d223a5b95f0a01358e944a7ef8cfe78484712",
+      "disposition": "authored",
+      "review": "T21 S41 style-only propagation independence native child",
+      "notice": "Project-authored C code; project MIT LICENSE"
+    },
+    {
+      "path": "src/lib-win32/process-hook/late_batch.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "65b0cfbabf8e08d8b3261eb3a540238c8d7a58b13d4a4d3d014683fab8ba9720",
+      "disposition": "authored",
+      "review": "T21 S41 shared late hook batch lifecycle",
+      "notice": "Project-authored C code; project MIT LICENSE"
+    },
+    {
+      "path": "src/lib-win32/process-hook/late_batch.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "0588ed8b1d6f951705b084cbde7e558827afbd69d8229fb614556e428442fbb7",
+      "disposition": "authored",
+      "review": "T21 S41 shared late hook batch lifecycle",
+      "notice": "Project-authored C code; project MIT LICENSE"
+    },
+    {
+      "path": "tests/lib-win32/process-hook/late_batch.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "48bb40750e2ad006bc7961cb95c9adabd822469c923f90a597c1980df25e3cb9",
+      "disposition": "authored",
+      "review": "T21 S41 shared late hook batch lifecycle",
       "notice": "Project-authored C code; project MIT LICENSE"
     }
   ]
