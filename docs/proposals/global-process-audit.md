@@ -193,3 +193,5 @@ P14：`process-global/dispatch` 提供公共线程池启动、限时等待与释
 P15：`process-global/engine` 组合目标表与线程池，负责启动、消息泵空闲等待、停止和失败重试；`global_manager.c` 提供策略/接入回调并使用公共入口。双宽独立自有目标生命周期测试和 16 项实际包聚焦通过；`global-e2e` 私有桌面托盘创建失败（2147500037，manager_not_active=2），上一版 P14 同条件同错，未计通过。发布 `s41-publish15`；产品侧发现编排和公共传播接口仍待处理。
 
 P16：`process-global/enumerate` 提供存量线程扫描和单进程首个就绪线程/暂未就绪回退协调；`global_manager.c` 提供产品许可、会话与桌面检查。双宽独立线程选择测试及 16 项实包聚焦通过；发布 `s41-publish16`。全局端到端托盘和管理员 ETW 限制保持不变，公共传播接口仍待完成。
+
+P17：`process-hook/propagate` 负责原有创建拦截、暂停创建、重入保护、成功恢复与失败回收，`process-hook/unwind` 提供原有 C 异常展开；`injection/create_process.c` 提供会话、排除与载荷回调并调用公共入口。独立同位宽真实钩子测试验证无样式 DLL 的纯载荷子孙、A/W、停用、拒绝及 193 失败回收；产品实包 28 项通过，含双宽/AW 的仅传播和组合各八项。停用不等于物理卸载。`global-e2e` 的私有桌面托盘限制、管理员 ETW 和最终逐项审计仍待处理。发布 `s41-publish17`。

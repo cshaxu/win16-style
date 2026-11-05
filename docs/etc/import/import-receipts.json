@@ -194,7 +194,7 @@
       "path": "src/ntw16s-dll/injection/late_process.h",
       "source": null,
       "source_blob": null,
-      "sha256": "44cfb3bd0ae6958041131830ffe82feeabe8adc6fb82fb9786aab1e518631778",
+      "sha256": "923fc11663961293cbf41e86f66338e61deaade0d3ff8ba033351927fb2d6a1d",
       "disposition": "authored",
       "review": "T21 S13 experimental synchronized late process initializer; not linked into product; T21 S13 global session propagation policy",
       "notice": "Project-authored source; uses existing project hook and installer code"
@@ -1526,7 +1526,7 @@
       "path": "src/ntw16s-dll/injection/create_process.c",
       "source": "src/nthook32-dll/create_process.cpp",
       "source_blob": "2369ce7a7c46e79fc23f73367db9d42e0c40c9da",
-      "sha256": "dc13033e3d354d0e68fefb2e4d80c5f84af650fe8ebd2036e06f282e34c77503",
+      "sha256": "979930592752bacdeb217f945e93736b48d71673ffc3e998768d0a98bb042d5b",
       "disposition": "adapt",
       "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S13 unified session stop semantics",
       "notice": "Project-authored source adaptation or new native fixture, repository MIT"
@@ -1715,16 +1715,7 @@
       "path": "src/ntw16s-dll/injection/unwind.h",
       "source": null,
       "source_blob": null,
-      "sha256": "ccf03098093e0dbc6ea931b8ad7c7cb6bad33dba21103f661cb8a6eb8bd1f0d4",
-      "disposition": "authored",
-      "review": "T6 S1 pure-C facade cleanup; production module exercised with native nested SEH, normal cleanup, last-error preservation, same-thread reuse and two-thread isolation on x86/x64; see M0-T6-S1-package.md",
-      "notice": "Project-authored; project MIT LICENSE"
-    },
-    {
-      "path": "src/ntw16s-dll/injection/unwind.c",
-      "source": null,
-      "source_blob": null,
-      "sha256": "a6966eb2be1cb4a9746cd51456f7bb8c52f627ca59fdc7317d28a890ab7378c8",
+      "sha256": "f97bd35f4c41844a5040b7dac9979babc2c4cfb314381580518f1f30496d7f3b",
       "disposition": "authored",
       "review": "T6 S1 pure-C facade cleanup; production module exercised with native nested SEH, normal cleanup, last-error preservation, same-thread reuse and two-thread isolation on x86/x64; see M0-T6-S1-package.md",
       "notice": "Project-authored; project MIT LICENSE"
@@ -6156,6 +6147,51 @@
       "disposition": "authored",
       "review": "T21 S41 generic target manager lifecycle coordination",
       "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-hook/unwind.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "330a29b353dff4248c80845fd8dd73b47f38610b01d6d3b7662d1bd541c38cd5",
+      "disposition": "authored",
+      "review": "T21 S41 shared propagation and native unwind; preserves T6 S1 cleanup design",
+      "notice": "Project-authored C code; project MIT LICENSE"
+    },
+    {
+      "path": "src/lib-win32/process-hook/unwind.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "8d3efb134617881831adb75148399a0b526b25ef2443ee3f024f4a2ec51b7c87",
+      "disposition": "authored",
+      "review": "T21 S41 shared propagation and native unwind; preserves T6 S1 cleanup design",
+      "notice": "Project-authored C code; project MIT LICENSE"
+    },
+    {
+      "path": "src/lib-win32/process-hook/propagate.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "2cf1439318bbf68a744350dff718638a6a69da24d1879f6b583113295b9b0c11",
+      "disposition": "authored",
+      "review": "T21 S41 shared propagation and native unwind; preserves T6 S1 cleanup design",
+      "notice": "Project-authored C code; project MIT LICENSE"
+    },
+    {
+      "path": "src/lib-win32/process-hook/propagate.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "2c41a4d82f0bbec556c96bcb582674fc3efcd5d9576cb93b9b0830d1411dacae",
+      "disposition": "authored",
+      "review": "T21 S41 shared propagation and native unwind; preserves T6 S1 cleanup design",
+      "notice": "Project-authored C code; project MIT LICENSE"
+    },
+    {
+      "path": "tests/lib-win32/process-hook/propagate.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "08edf838e10e7e7830e634b456c9fa0bcea2df0ac8a9de78f367f929786ac8de",
+      "disposition": "authored",
+      "review": "T21 S41 shared propagation and native unwind; preserves T6 S1 cleanup design",
+      "notice": "Project-authored C code; project MIT LICENSE"
     }
   ]
 }

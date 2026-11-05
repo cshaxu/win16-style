@@ -1,7 +1,7 @@
 #include "unwind.h"
-static _Thread_local ntw16s_unwind_scope *active;
+static _Thread_local process_hook_unwind_scope *active;
 
-static void close_scope(ntw16s_unwind_scope *scope,BOOL abnormal)
+static void close_scope(process_hook_unwind_scope *scope,BOOL abnormal)
 {
     DWORD error=GetLastError();
     if(active!=scope){RaiseFailFastException(NULL,NULL,0);__builtin_unreachable();}
@@ -16,7 +16,7 @@ static void close_scope(ntw16s_unwind_scope *scope,BOOL abnormal)
     SetLastError(error);
 }
 #ifdef _WIN64
-EXCEPTION_DISPOSITION NTAPI ntw16s_unwind_handler(EXCEPTION_RECORD *exception,
+EXCEPTION_DISPOSITION NTAPI process_hook_unwind_handler(EXCEPTION_RECORD *exception,
     void *frame,CONTEXT *context,DISPATCHER_CONTEXT *dispatcher)
 {
     (void)context;(void)dispatcher;
@@ -34,7 +34,7 @@ static EXCEPTION_DISPOSITION NTAPI unwind32(EXCEPTION_RECORD *exception,
     return ExceptionContinueSearch;
 }
 #endif
-void ntw16s_unwind_begin(ntw16s_unwind_scope *scope,void *frame,void (*cleanup)(void *),void *data)
+void process_hook_unwind_begin(process_hook_unwind_scope *scope,void *frame,void (*cleanup)(void *),void *data)
 {
     DWORD error=GetLastError();
     scope->previous=active;scope->frame=frame;scope->cleanup=cleanup;scope->data=data;
@@ -46,5 +46,5 @@ void ntw16s_unwind_begin(ntw16s_unwind_scope *scope,void *frame,void (*cleanup)(
 #endif
     SetLastError(error);
 }
-void ntw16s_unwind_end(ntw16s_unwind_scope *scope)
+void process_hook_unwind_end(process_hook_unwind_scope *scope)
 {close_scope(scope,FALSE);}
