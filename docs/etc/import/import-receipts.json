@@ -3929,7 +3929,7 @@
       "path": "src/ntw16s-dll/global_policy.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6d6f14c7a7ec9c93dd8e98ac6659f2e8cdd7d36d8e4d093216add1b34963b522",
+      "sha256": "82bd3bf4fea41b01c5a07329d4a9632403de7c7c237b5b00afd5c2bf29101717",
       "disposition": "authored",
       "review": "T21 S37 handle library fixed source or caller migration; see source record",
       "notice": "Owner-authorized sibling project source; source identity recorded; no additional third-party notice in imported files"
@@ -3938,7 +3938,7 @@
       "path": "src/ntw16s-dll/global_policy.h",
       "source": null,
       "source_blob": null,
-      "sha256": "132cd26e0d63286c7d8e9628b600598510bac17e0190e709f8a129bfa4e63352",
+      "sha256": "d134cc03caa24cdb44a7289bd0e7620f94eabeab1a1ad29c6dfbd6f75155c633",
       "disposition": "authored",
       "review": "T21 S13 thread identity and explicit startup attachment preparation",
       "notice": "Project-authored source; no imported code or resources"
@@ -5975,6 +5975,24 @@
       "sha256": "2a04c13f6a7c7ce4e25c04a747dbc6e701d4903ff18b8083def2d687cd037094",
       "disposition": "authored",
       "review": "T21 S41 parameterize existing module export verification",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-global/policy.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "607bcc4d1e06dc1257055ba3ef01a25c74f1dd0979885a491ea8c9464c56a08a",
+      "disposition": "authored",
+      "review": "T21 S41 parameterize target identity checks",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-global/policy.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "64d6d0dd6e0763e83d687b273623d4800ad4f5a0ddaee1d9c65f5cbf0fc5f475",
+      "disposition": "authored",
+      "review": "T21 S41 parameterize target identity checks",
       "notice": "Project-authored C code; no imported artwork"
     }
   ]
