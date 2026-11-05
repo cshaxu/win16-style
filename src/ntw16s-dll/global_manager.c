@@ -4,6 +4,8 @@
 #include "global_session.h"
 #include "global_process.h"
 #include "lib-win32/process-global/enumerate.h"
+#include "lib-win32/process-global/window.h"
+#include "lib-win32/process-global/transaction.h"
 #include "lib-win32/process-global/queue.h"
 #include "lib-win32/process-global/engine.h"
 #include "lib-win32/process-global/registry.h"
@@ -89,10 +91,9 @@ void ntw16s_global_manager_test_process(ntw16s_global_manager *manager,DWORD pid
 {discovered_process(pid,manager);}
 #endif
 typedef struct scan_state {ntw16s_global_manager *manager;manager_entry *entry;ULONGLONG deadline;} scan_state;
-static BOOL CALLBACK notify_window(HWND window,LPARAM parameter)
+static BOOL notify_window(HWND window,void *parameter)
 {
     scan_state *scan=(scan_state *)parameter;DWORD pid=0;
-    if(GetTickCount64()>=scan->deadline)return FALSE;
     if(GetWindowThreadProcessId(window,&pid)==scan->entry->target.thread_id && pid==scan->entry->target.pid && IsWindowVisible(window) &&
        !ntw16s_global_policy_revalidate(scan->entry->attach.process,window,&scan->entry->attach.identity)){
         UINT message=RegisterWindowMessageW(NTW16S_GLOBAL_CONTROL);DWORD_PTR ignored=0;
@@ -101,54 +102,42 @@ static BOOL CALLBACK notify_window(HWND window,LPARAM parameter)
     }
     return TRUE;
 }
-static BOOL CALLBACK notify_top(HWND window,LPARAM parameter)
+typedef struct process_run {ntw16s_global_manager *manager;manager_entry *entry;BOOL begun;} process_run;
+static BOOL process_active(void *context)
+{return ((process_run *)context)->manager->session->phase==NTW16S_GLOBAL_ACTIVE;}
+static DWORD process_begin(void *context)
 {
-    if(!notify_window(window,parameter))return FALSE;
-    EnumChildWindows(window,notify_window,parameter);return GetTickCount64()<((scan_state *)parameter)->deadline;
+    process_run *r=context;ntw16s_global_manager *m=r->manager;manager_entry *e=r->entry;
+    DWORD error=e->target.window?ntw16s_global_attach_begin(&m->policy,e->target.window,e->target.pid,e->target.thread_id,m->machine,
+        m->session->cookie,m->dll_path,&e->attach):ntw16s_global_attach_begin_thread(&m->policy,e->target.pid,e->target.thread_id,m->machine,
+        m->session->cookie,m->dll_path,&e->attach);
+    if(!error)r->begun=TRUE;
+    return error;
 }
+static DWORD process_advance(void *context)
+{return ntw16s_global_attach_advance(&((process_run *)context)->entry->attach,NULL);}
+static unsigned process_pending(void *context,HANDLE handles[2])
+{
+    ntw16s_global_attach *a=&((process_run *)context)->entry->attach;
+    if(a->load.thread){handles[0]=a->load.thread;return 1;}
+    if(a->start.ready && a->start.thread){handles[0]=a->start.ready;handles[1]=a->start.thread;return 2;}
+    return 0;
+}
+static BOOL process_retry(void *context,DWORD error)
+{return error==ERROR_TIMEOUT && ((process_run *)context)->entry->attach.control_error==ERROR_TIMEOUT;}
+static DWORD process_apply(void *context)
+{return ntw16s_global_attach_apply(&((process_run *)context)->entry->attach);}
 static DWORD process_entry(ntw16s_global_manager *m,manager_entry *entry)
 {
     ULONGLONG deadline=GetTickCount64()+5000;
     if(WaitForSingleObject(m->quit,0)==WAIT_OBJECT_0 || WaitForSingleObject(m->stop,0)==WAIT_OBJECT_0 ||
        m->session->phase!=NTW16S_GLOBAL_ACTIVE)return ERROR_CANCELLED;
     if(entry->attach.process){DWORD closed=ntw16s_global_attach_close(&entry->attach);if(closed)return closed;}
-    DWORD error;ULONGLONG desktop_deadline=GetTickCount64()+1000;
-    for(;;){
-        if(m->session->phase!=NTW16S_GLOBAL_ACTIVE){error=ERROR_CANCELLED;break;}
-        error=entry->target.window?ntw16s_global_attach_begin(&m->policy,entry->target.window,entry->target.pid,entry->target.thread_id,m->machine,
-                                                m->session->cookie,m->dll_path,&entry->attach):
-            ntw16s_global_attach_begin_thread(&m->policy,entry->target.pid,entry->target.thread_id,m->machine,
-                                             m->session->cookie,m->dll_path,&entry->attach);
-        if(error!=ERROR_NOT_READY || entry->target.window || GetTickCount64()>=desktop_deadline)break;
-        HANDLE waits[]={m->quit,m->stop};DWORD wait=WaitForMultipleObjects(ARRAYSIZE(waits),waits,FALSE,20);
-        if(wait!=WAIT_TIMEOUT){error=wait==WAIT_FAILED?GetLastError():ERROR_CANCELLED;break;}
-    }
-    if(error)return error;
-    for(;;){
-        if(WaitForSingleObject(m->quit,0)==WAIT_OBJECT_0 || WaitForSingleObject(m->stop,0)==WAIT_OBJECT_0 ||
-           m->session->phase!=NTW16S_GLOBAL_ACTIVE)return ERROR_CANCELLED;
-        error=ntw16s_global_attach_advance(&entry->attach,NULL);
-        if(error!=ERROR_IO_PENDING)break;
-        HANDLE waits[4]={m->quit,m->stop,NULL,NULL};DWORD count=2;
-        if(entry->attach.load.thread)waits[count++]=entry->attach.load.thread;
-        else if(entry->attach.start.ready && entry->attach.start.thread){waits[count++]=entry->attach.start.ready;waits[count++]=entry->attach.start.thread;}
-        else return ERROR_INVALID_STATE;
-        ULONGLONG now=GetTickCount64();DWORD left=now<deadline?(DWORD)(deadline-now):0;
-        DWORD result=WaitForMultipleObjects(count,waits,FALSE,left);
-        if(result==WAIT_TIMEOUT)return ERROR_TIMEOUT;
-        if(result==WAIT_OBJECT_0 || result==WAIT_OBJECT_0+1)return ERROR_CANCELLED;
-        if(result==WAIT_FAILED)return GetLastError();
-        if(result>=WAIT_OBJECT_0+count)return ERROR_INVALID_STATE;
-    }
-    /* The target worker is already installed when a control send times out.
-     * Retry that message without reloading or installing another worker. */
-    while(error==ERROR_TIMEOUT && entry->attach.control_error==ERROR_TIMEOUT && GetTickCount64()<deadline){
-        if(WaitForSingleObject(m->quit,0)==WAIT_OBJECT_0 || WaitForSingleObject(m->stop,0)==WAIT_OBJECT_0 ||
-           m->session->phase!=NTW16S_GLOBAL_ACTIVE)return ERROR_CANCELLED;
-        error=ntw16s_global_attach_apply(&entry->attach);
-    }
-    if(error && error!=ERROR_NOT_READY)return error;
-    scan_state scan={m,entry,GetTickCount64()+1000};EnumThreadWindows(entry->target.thread_id,notify_top,(LPARAM)&scan);
+    static const win32_process_global_transaction_run_ops ops={process_active,process_begin,process_advance,process_pending,process_retry,process_apply};
+    process_run run={m,entry,FALSE};DWORD error=win32_process_global_transaction_run(m->quit,m->stop,deadline,GetTickCount64()+1000,
+        entry->target.window==NULL,&ops,&run);
+    if(error && (!run.begun || error!=ERROR_NOT_READY))return error;
+    scan_state scan={m,entry,GetTickCount64()+1000};(void)win32_process_global_window_walk(entry->target.thread_id,scan.deadline,notify_window,&scan);
     return error;
 }
 static DWORD execute_target(win32_process_global_target *target,void *context,BOOL *retained)

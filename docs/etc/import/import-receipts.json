@@ -320,7 +320,7 @@
       "path": "src/ntw16s-dll/global_manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "07510adfad1dbf7420fdacec6c1c67bb697f50a646c4d5a216d18b3b88a8562f",
+      "sha256": "5ac9a755b4fa541b81ad7e9791f3e1c59953b76b265c682cd9260c31efdd7180",
       "disposition": "authored",
       "review": "T21 S40 shared Toolhelp iteration; caller retains selection and lifecycle",
       "notice": "Project-authored C"
@@ -419,7 +419,7 @@
       "path": "src/run16s-exe/global.c",
       "source": null,
       "source_blob": null,
-      "sha256": "fbe05c26e3c0556ce2053ec6d8d6dd37a108932dd72f7649751b0e2fba33f445",
+      "sha256": "1bb808288c72e322721525fe4999eb220fe52d6aef9a636dde016fb2f9490ef6",
       "disposition": "authored",
       "review": "T21 S13 bounded startup attachment completion",
       "notice": "Project-authored source; no imported code or resources"
@@ -5783,7 +5783,7 @@
       "path": "src/lib-win32/process-global/window.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ca874221e3a4a847f5d1c692559e7710b1a4de39879b6fee44cbb69bfa2606ce",
+      "sha256": "0e5a794cb806d05e8fd111841511bdd47aa8cc23b9b223899b09859886115c55",
       "disposition": "authored",
       "review": "T21 S41 extract existing project-authored global mechanism",
       "notice": "Project-authored C code; no imported artwork"
@@ -5792,7 +5792,7 @@
       "path": "src/lib-win32/process-global/window.h",
       "source": null,
       "source_blob": null,
-      "sha256": "ba90f1a3105825becd9a32df3be60872b1b56fbf4402983d9c9fb01f49b397b4",
+      "sha256": "f717936183b3919621e2b02e567bf16fa2237f7cf60d678f87450f802b49232d",
       "disposition": "authored",
       "review": "T21 S41 extract existing project-authored global mechanism",
       "notice": "Project-authored C code; no imported artwork"
@@ -6080,7 +6080,7 @@
       "path": "src/lib-win32/process-global/transaction.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b51033f10e6775688cc7b4f56f7b20decf2fd2fff8a33909fa9045364f800af1",
+      "sha256": "1e96c6038b32fc0b9ee3702da339a8d6b9a67355a4471efccd06c7a329212646",
       "disposition": "authored",
       "review": "T21 S41 extract attachment transaction progression",
       "notice": "Project-authored C code; no imported artwork"
@@ -6089,7 +6089,7 @@
       "path": "src/lib-win32/process-global/transaction.h",
       "source": null,
       "source_blob": null,
-      "sha256": "e44e397cd563881ee1750790d2a14f85e4eecd9a446896a6daa703cba39ae46a",
+      "sha256": "e28c87eb5d6ddb493b267cb5962988ccc1028458b6ec830eb630e68a24f97e50",
       "disposition": "authored",
       "review": "T21 S41 extract attachment transaction progression",
       "notice": "Project-authored C code; no imported artwork"
@@ -6098,7 +6098,7 @@
       "path": "tests/lib-win32/process-global/transaction.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3f024b8351d0504f1f81c477b5d68e89b52d0041196d13a3b82bac7e0713268e",
+      "sha256": "7261c5391840473269b4ef3e49d3364ae1e13db474b198d6961e7c0f6735126a",
       "disposition": "authored",
       "review": "T21 S41 transaction phase contract tests",
       "notice": "Project-authored C code; no imported artwork"
@@ -6191,6 +6191,15 @@
       "sha256": "08edf838e10e7e7830e634b456c9fa0bcea2df0ac8a9de78f367f929786ac8de",
       "disposition": "authored",
       "review": "T21 S41 shared propagation and native unwind; preserves T6 S1 cleanup design",
+      "notice": "Project-authored C code; project MIT LICENSE"
+    },
+    {
+      "path": "tests/lib-win32/process-global/window.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "77bd5667d5ac2aa2d86d21cf325963187cf7c6edf31730652b339a0651abc5a2",
+      "disposition": "authored",
+      "review": "T21 S41 shared bounded window traversal test",
       "notice": "Project-authored C code; project MIT LICENSE"
     }
   ]

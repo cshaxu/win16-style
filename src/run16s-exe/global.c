@@ -3,6 +3,7 @@
 #include "ntw16s-dll/global_session.h"
 #include "ntw16s-dll/global_manager.h"
 #include "ntw16s-dll/global_process.h"
+#include "lib-win32/process-global/window.h"
 #include "ntw16s-dll/injection/injection.h"
 #include <windows.h>
 #include <sddl.h>
@@ -19,10 +20,9 @@ static BOOL WINAPI stop_handler(DWORD reason)
     if(stop_signal)SetEvent(stop_signal);
     return TRUE;
 }
-static BOOL CALLBACK sweep_window(HWND w,LPARAM parameter)
+static BOOL sweep_window(HWND w,void *parameter)
 {
     sweep_state *s=(sweep_state *)parameter;DWORD process=0;DWORD_PTR result=0;
-    if(GetTickCount64()>=s->deadline)return FALSE;
     if(!GetWindowThreadProcessId(w,&process) || process==GetCurrentProcessId() || process==s->host)return TRUE;
     ++s->attempted;
     if(!SendMessageTimeoutW(w,s->message,s->cookie,s->action,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,50,&result)){
@@ -33,17 +33,10 @@ static BOOL CALLBACK sweep_window(HWND w,LPARAM parameter)
     }
     return TRUE;
 }
-static BOOL CALLBACK sweep_top(HWND w,LPARAM parameter)
-{
-    sweep_state *s=(sweep_state *)parameter;
-    if(!sweep_window(w,parameter))return FALSE;
-    EnumChildWindows(w,sweep_window,parameter);
-    return GetTickCount64()<s->deadline;
-}
 static void sweep(UINT message,DWORD cookie,DWORD host,LPARAM action)
 {
     sweep_state s={message,cookie,host,action,GetTickCount64()+5000,0,0};
-    EnumWindows(sweep_top,(LPARAM)&s);
+    (void)win32_process_global_window_walk(0,s.deadline,sweep_window,&s);
     fwprintf(stderr,L"run16s: global %ls: %u windows notified, %u timed out or failed%s\n",
         action==NTW16S_GLOBAL_APPLY?L"start":L"stop",s.attempted,s.failed,
         GetTickCount64()>=s.deadline?L"; time limit reached":L"");

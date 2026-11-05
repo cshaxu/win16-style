@@ -55,3 +55,30 @@ DWORD win32_process_global_window_stop(win32_process_global_window *watcher)
     if(!UnhookWinEvent(watcher->hook)){DWORD error=GetLastError();return error?error:ERROR_GEN_FAILURE;}
     current=NULL;ZeroMemory(watcher,sizeof(*watcher));return ERROR_SUCCESS;
 }
+
+typedef struct walk_state {ULONGLONG deadline;win32_process_global_visit_window visit;void *context;DWORD stopped;} walk_state;
+static BOOL CALLBACK walk_child(HWND window,LPARAM parameter)
+{
+    walk_state *s=(walk_state *)parameter;
+    if(GetTickCount64()>=s->deadline){s->stopped=ERROR_TIMEOUT;return FALSE;}
+    if(!s->visit(window,s->context)){s->stopped=ERROR_CANCELLED;return FALSE;}
+    return TRUE;
+}
+static BOOL CALLBACK walk_top(HWND window,LPARAM parameter)
+{
+    walk_state *s=(walk_state *)parameter;
+    if(!walk_child(window,parameter))return FALSE;
+    EnumChildWindows(window,walk_child,parameter);
+    if(s->stopped)return FALSE;
+    if(GetTickCount64()>=s->deadline){s->stopped=ERROR_TIMEOUT;return FALSE;}
+    return TRUE;
+}
+BOOL win32_process_global_window_walk(DWORD thread_id,ULONGLONG deadline,win32_process_global_visit_window visit,void *context)
+{
+    if(!visit){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
+    walk_state state={deadline,visit,context,FALSE};
+    SetLastError(ERROR_SUCCESS);
+    BOOL result=thread_id?EnumThreadWindows(thread_id,walk_top,(LPARAM)&state):EnumWindows(walk_top,(LPARAM)&state);
+    if(state.stopped){SetLastError(state.stopped);return FALSE;}
+    return result || GetLastError()==ERROR_SUCCESS;
+}
