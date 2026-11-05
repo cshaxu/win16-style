@@ -10,3 +10,5 @@ publish2 同批四文件发布到 assets 根及 O:/winnt，摘要一致：
 - ntw16s32.dll `dee60222c146a70990136434ccf9aa116b34f63deec0e2ddc068c2685b69cb2d`
 - ntw16s64.dll `e475cea0e23bcba9d82e1ec566c9453034bd68c12fdbc9bdd4d30b3d62fa4520`
 - demo.exe `67d16bb202f85dc4a0db68de8d78cec51d9211fc8ebda820a73a6b0c0ac7eb85`
+
+P1 `67c2f2bb660a985a1dec4c866eb736f78182d5de` 已推送，远端源码与四产物、两处部署摘要均复核。S40 关闭，T21 保持开放。
