@@ -2,7 +2,7 @@
 
 ## Current Work
 
-T21 S35 已准入：全局策略复用公共 process-image 架构查询；T21 保持开放。
+无活动任务包。T21 S35 已将全局架构查询统一至 process-image 并交付；T21 保持开放。详见[记录](../history/M0-T21-S35-global-machine.md)。
 
 S25 经用户验收收口，交付范围见 [记录](../history/M0-T21-S25-common.md)。
 
@@ -413,8 +413,8 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
 - Last allocated T21 S: 35
-- Last verified remote delivery: M0 T21 S34 P1，`fae3f5e`；四产品及启动器源码远端对象已复核。
-- Open task: T21；S35 进行中。Explorer.exe 仍被排除。
+- Last verified remote delivery: M0 T21 S35 P1，`f5871dc`；四产品及策略源码远端对象已复核。
+- Open task: T21；S35 已交付。Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。
@@ -463,28 +463,9 @@ S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前
 
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1已收口；T20此后按用户要求有限范围收口。
 
-## M0 T21 S35 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Continuation |
-| Admission And Approval | 用户要求 global_policy 采用公共 process-image。 |
-| Objective | 删除重复 IsWow64Process2 查询，复用公共函数及保留架构比较。 |
-| Non-goals | 不改全局接入流程、权限策略、公开 ABI 或兄弟仓库。 |
-| Reference Baseline | 本项目 d92c301，公共 process-image。 |
-| Candidate Proposal | [公共基础组件](../proposals/win32-common-components.md)。 |
-| Files And ABI Surface | global_policy.c、构建依赖和来源回执；无公开 ABI 变更。 |
-| Applicable Rules | C17、M0 执行、原生错误及资源身份规则。 |
-| Verification | 双宽干净构建；全球策略与错误位宽、安装与传播的实际包回归。 |
-| Expected Markers | 双宽 policy PASS；不再有其他独立架构查询。 |
-| Asset Needs | 四文件同批测试并视二进制变化发布 assets 和 O:/winnt。 |
-| Reporting Requirements | 报告错误码语义、测试、发布和远端验证。 |
-| Stop Conditions | 无法解决的构建、测试或发布权限失败。 |
-| Exit Criteria | 构建测试、必要发布、提交推送和远端复核。 |
-| Original Owner Request | global_policy 采用公共 process-image，删除自主实现。 |
-| Similar-Issue Sweep | 搜索 IsWow64Process2 所有生产命中及 global_policy 构建目标。 |
-
 ## Recent Closure
+
+- M0 T21 S35：全局架构查询复用 process-image；[记录](../history/M0-T21-S35-global-machine.md)。
 
 - M0 T21 S34：控制台重绑定归回启动器；[记录](../history/M0-T21-S34-console-return.md)。
 

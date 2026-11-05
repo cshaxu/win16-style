@@ -10,3 +10,5 @@ GCC 16.1.0、Ninja、ccache 4.13.6 的 s35-clean1 双宽干净构建、ABI、来
 - ntw16s32.dll `7a7bc65d95492d9cefcaaa38ef8a8b563dd22ccad1e49dd103fa2292f65e8c2b`
 - ntw16s64.dll `25862762838ef213fad8f46dfcc5c4854bd6b0280f0c6a2f792e2d653e5858f3`
 - demo.exe `7a5f5a35e506adc540e7c14c6b36325f5b91323b33c9334500e4b4e079049ee6`
+
+P1 `f5871dcda327146df314dcfd7e501b13031b8a23` 已推送，远端树实际复核四产物、策略源码和构建文件；两处发布文件与测试包摘要再次核对。S35 关闭，T21 保持开放。
