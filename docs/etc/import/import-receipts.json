@@ -3956,7 +3956,7 @@
       "path": "src/ntw16s-dll/global_attach.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e1b7ca64dd76e1216587d4e83f63308d397da9261d0cf9b16151f8b2438eba5d",
+      "sha256": "4099acb92b1deb8009af01ad479dcd3b654b658ba41c8cd8f24845b83605f1f2",
       "disposition": "authored",
       "review": "T21 S13 thread identity and explicit startup attachment preparation; T21 S13 cross-directory compatible module reuse",
       "notice": "Project-authored source; no imported code or resources"
@@ -6056,6 +6056,33 @@
       "sha256": "b0b1551ddb7760243d8d9a5d73c818b49489fd5c77a00aab3d0360a2cc161393",
       "disposition": "authored",
       "review": "T21 S41 extract process thread registry",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-global/module.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "af48a3dd1f79d4039582770e9543a693d247101bc25c58fbbb770ce7f7ea1f8f",
+      "disposition": "authored",
+      "review": "T21 S41 parameterize mapped module selection and identity checks",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-global/module.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "4c5e3a3061f7f9ba7c5e934f49d6eb03aec55d7889e17d286b276490efd2920d",
+      "disposition": "authored",
+      "review": "T21 S41 parameterize mapped module selection and identity checks",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "tests/lib-win32/process-global/module.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "7151b1a90a2ab0629e71bb7f6ccc1a9f3183213b1df77c9bc29836277bf3a1de",
+      "disposition": "authored",
+      "review": "T21 S41 existing module selection test",
       "notice": "Project-authored C code; no imported artwork"
     }
   ]
