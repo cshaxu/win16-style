@@ -12,3 +12,5 @@
 S32 将既有 MZ/非 PE 判断、挂起进程创建及未交付子进程激活/失败清理/等待、通用 Shell 调用及句柄等待迁入相应公共库。调用方仍持有目标解析、是否等待、DLL 准备、UAC 参数、用户提示与已交付进程策略。module-import 独立于 process-hook。目标是源码共用，但隔壁尚未导入或构建验证。
 
 隔壁的映像查询使用 NtCreateSection/SEC_IMAGE 与 NtQuerySection；本项目保留自身文件头校验和 MZ/非 PE 判断。自有双宽探针对七种合成旧/无效样本对照 CreateFileMappingW 的 SEC_IMAGE：本项目 PE 校验及映像节均返回 193；本机有效自身映像两者均接受，本项目额外拒绝不匹配的预期机器。该探针不是隔壁 NtQuerySection 的完整结果比较，不证明所有格式和错误码相同；选择机制及兼容判断仍须由隔壁调用方负责。
+
+S34 按用户要求把唯一由启动器使用的 stderr 重绑定归回 run16s-exe，不再保留独立 console 库；security 库不变。

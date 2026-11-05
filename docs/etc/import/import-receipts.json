@@ -2048,9 +2048,9 @@
       "path": "src/run16s-exe/elevation.c",
       "source": null,
       "source_blob": null,
-      "sha256": "27ec8d404f5e71bacd5f8ce1136bcb4587c5d50163e66f65c52fd7bb7935d407",
+      "sha256": "da82ebced1da9dc011f99f92c3a6522416dd4019d80dcd09461cb2b0a2d90d28",
       "disposition": "authored",
-      "review": "T11 S1: project-authored C17 on-demand runas coordinator/private interface/asInvoker manifest; no third-party code copied; T21 S31 security and console extraction; T21 S32 remaining common mechanism extraction",
+      "review": "T11 S1: project-authored C17 on-demand runas coordinator/private interface/asInvoker manifest; no third-party code copied; T21 S31 security and console extraction; T21 S32 remaining common mechanism extraction; T21 S34 returned stderr rebind to launcher",
       "notice": "Project-authored source; project MIT license"
     },
     {
@@ -5651,24 +5651,6 @@
       "sha256": "f210c0f3478c6f56c9b51878a9dd3bce9d25937ded30cdd564e0f0ce24a4b7a9",
       "disposition": "authored",
       "review": "T21 S29 extract existing command-line tail helper",
-      "notice": "Project-authored C helper"
-    },
-    {
-      "path": "src/lib-win32/console/console.c",
-      "source": null,
-      "source_blob": null,
-      "sha256": "36e3d33d17679bc803f3ebe4d678fe43ea5a69b989bc8b2d66e03fb5d59836e8",
-      "disposition": "authored",
-      "review": "T21 S31 extract existing launcher mechanism",
-      "notice": "Project-authored C helper"
-    },
-    {
-      "path": "src/lib-win32/console/console.h",
-      "source": null,
-      "source_blob": null,
-      "sha256": "2f9415d8caf461b6b294447c066b913372ddde2e71ea9930cddf4e7c5e6dfdce",
-      "disposition": "authored",
-      "review": "T21 S31 extract existing launcher mechanism",
       "notice": "Project-authored C helper"
     },
     {

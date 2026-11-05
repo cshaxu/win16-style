@@ -1,5 +1,4 @@
 #include "elevation.h"
-#include "lib-win32/console/console.h"
 #include "lib-win32/security/elevation.h"
 #include <objbase.h>
 #include <stdlib.h>
@@ -10,7 +9,17 @@
 #include <stdint.h>
 
 void run16s_rebind_console_stderr(void)
-{win32_console_rebind_stderr();}
+{
+    /* A process may have stale CRT handles after attaching to a console.
+     * Keep stderr open if binding fails. */
+    HANDLE console=CreateFileW(L"CONOUT$",GENERIC_WRITE,FILE_SHARE_READ|FILE_SHARE_WRITE,
+        NULL,OPEN_EXISTING,0,NULL);
+    if(console==INVALID_HANDLE_VALUE)return;
+    int fd=_open_osfhandle((intptr_t)console,_O_WRONLY|_O_TEXT);
+    if(fd<0){CloseHandle(console);return;}
+    if(fd!=2){(void)_dup2(fd,2);_close(fd);}
+    clearerr(stderr);
+}
 BOOL run16s_is_elevated(DWORD *error)
 {return win32_security_is_elevated(error);}
 BOOL run16s_global_interactive_console(void)

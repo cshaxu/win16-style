@@ -2,7 +2,7 @@
 
 ## Current Work
 
-无活动任务包。T21 S33 原样导入并验证隔壁 process-hook，已发布并复核；T21 保持开放。详见[记录](../history/M0-T21-S33-import.md)。
+T21 S34 已准入：将唯一启动器使用的控制台重绑定逻辑归回 run16s-exe，保持行为；T21 保持开放。
 
 S25 经用户验收收口，交付范围见 [记录](../history/M0-T21-S25-common.md)。
 
@@ -412,9 +412,9 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
-- Last allocated T21 S: 33
+- Last allocated T21 S: 34
 - Last verified remote delivery: M0 T21 S33 P1，`9793d27`；四产品和 process-hook 代表源码远端对象已复核。
-- Open task: T21；S33 已交付。Explorer.exe 仍被排除。
+- Open task: T21；S34 进行中。Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。
@@ -462,6 +462,27 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前原版真实点击正常；历史异常根因未查明，本S没有产品代码或二进制修改。
 
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1已收口；T20此后按用户要求有限范围收口。
+
+## M0 T21 S34 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Continuation |
+| Admission And Approval | 用户要求把少量控制台能力归回启动器。 |
+| Objective | 移除独立 console 静态库，将 stderr 重绑定原样归入 run16s-exe。 |
+| Non-goals | 不修改功能策略、挂钩、外观、公开 ABI 或兄弟仓库。 |
+| Reference Baseline | 本项目 181f222；S31 提取记录。 |
+| Candidate Proposal | [公共基础组件](../proposals/win32-common-components.md)。 |
+| Files And ABI Surface | elevation.c、CMake、来源回执；不改公开 ABI。 |
+| Applicable Rules | C17、M0 执行、资源身份与原生调用约束。 |
+| Verification | 双宽干净构建，实际包双宽 console 重绑、模拟 UAC、CLI 与基线传播。 |
+| Expected Markers | console 双宽恢复及无控制台场景通过；原库无剩余引用。 |
+| Asset Needs | 四文件同批测试后若二进制变化发布 assets 根及 O:/winnt。 |
+| Reporting Requirements | 报告验证、跳过、二进制摘要及远端复核。 |
+| Stop Conditions | 无法解决的构建、回归或发布权限失败。 |
+| Exit Criteria | 编译测试、必要发布、提交推送及远端验证完成。 |
+| Original Owner Request | 内容不多则送回 run16s-exe。 |
+| Similar-Issue Sweep | 搜索 win32-console 与重绑定符号所有生产和测试调用。 |
 
 ## Recent Closure
 
