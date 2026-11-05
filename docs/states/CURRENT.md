@@ -2,7 +2,7 @@
 
 ## Current Work
 
-无活动任务包。T21 S37 已导入隔壁 handle 并完成交付；T21 保持开放。详见[记录](../history/M0-T21-S37-handle.md)。
+T21 S38 已准入：导入适用的公共文件原语并验证；T21 保持开放。
 
 S25 经用户验收收口，交付范围见 [记录](../history/M0-T21-S25-common.md)。
 
@@ -412,9 +412,9 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
-- Last allocated T21 S: 37
+- Last allocated T21 S: 38
 - Last verified remote delivery: M0 T21 S37 P1，`881e698`；四产品及公共库与调用者远端对象已复核。
-- Open task: T21；S37 已交付。Explorer.exe 仍被排除。
+- Open task: T21；S38 进行中。Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。
@@ -462,6 +462,27 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前原版真实点击正常；历史异常根因未查明，本S没有产品代码或二进制修改。
 
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1已收口；T20此后按用户要求有限范围收口。
+
+## M0 T21 S38 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Continuation |
+| Admission And Approval | 用户要求导入隔壁公共组件的本项目所需子集及测试。 |
+| Objective | 导入 file 文件身份与最终路径原语，验证两种接口；核对既有共享库。 |
+| Non-goals | 不以文件身份替代文件内容检查，不更改目标解析、挂钩、公开 ABI 或隔壁。 |
+| Reference Baseline | 本项目 a1d542e；隔壁 50668d7ab02e8bd463a17e0c54194f5c123f59bb。 |
+| Candidate Proposal | [公共基础组件](../proposals/win32-common-components.md)。 |
+| Files And ABI Surface | file 静态库及原生测试、构建、来源清单；无公开 ABI 变更。 |
+| Applicable Rules | M0 执行、C17、LF、来源与资源规则。 |
+| Verification | 双宽干净构建，文件身份与路径正负测试，同批实际包及传播基线。 |
+| Expected Markers | 两种接口双宽通过，来源文件按 LF 一致。 |
+| Asset Needs | 同批四文件测试；二进制变化时发布 assets 根及 O:/winnt。 |
+| Reporting Requirements | 说明无等价产品调用、来源、测试、发布和未覆盖项。 |
+| Stop Conditions | 来源、构建、测试或发布权限失败不可安全解决。 |
+| Exit Criteria | 构建测试、必要发布、提交推送及远端复核。 |
+| Original Owner Request | 准入新 S 原样导入 ntvdm64 公共组件所需子集和对应测试集。 |
+| Similar-Issue Sweep | 比较文件身份、文件内容和路径语义；核对已共享组件的差异。 |
 
 ## Recent Closure
 

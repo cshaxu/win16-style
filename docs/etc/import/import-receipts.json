@@ -5769,6 +5769,42 @@
       "sha256": "f39b055b6678a24d8c69e97496adaf46bc6b16322859e7a88f899a84aefbfd26",
       "review": "T21 S37 handle library fixed source or caller migration; see source record",
       "notice": "Owner-authorized sibling project source; source identity recorded; no additional third-party notice in imported files"
+    },
+    {
+      "path": "src/lib-win32/file/identity.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "69f6cc49da69919409b098a832ccbd9454457f44b35e238773b02af97c727dcc",
+      "disposition": "authored",
+      "review": "T21 S38 owner-authorized sibling file primitives; fixed source blobs in S38 record",
+      "notice": "Owner-authorized sibling project source; no file-internal third-party notice"
+    },
+    {
+      "path": "src/lib-win32/file/identity.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "2ef85eb205659294495f3f2d38e4217cc5cef56923c00d8e11505a0996b5e750",
+      "disposition": "authored",
+      "review": "T21 S38 owner-authorized sibling file primitives; fixed source blobs in S38 record",
+      "notice": "Owner-authorized sibling project source; no file-internal third-party notice"
+    },
+    {
+      "path": "src/lib-win32/file/native_path.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ee0abc65fb60b94bc6753a7c47e43a06c7fc72983ecad2bc279e85b98baa477c",
+      "disposition": "authored",
+      "review": "T21 S38 owner-authorized sibling file primitives; fixed source blobs in S38 record",
+      "notice": "Owner-authorized sibling project source; no file-internal third-party notice"
+    },
+    {
+      "path": "src/lib-win32/file/native_path.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "6146edd97ddeb7194009cca3dddb2b87ba4f4a7f18061f339f518294bafbb701",
+      "disposition": "authored",
+      "review": "T21 S38 owner-authorized sibling file primitives; fixed source blobs in S38 record",
+      "notice": "Owner-authorized sibling project source; no file-internal third-party notice"
     }
   ]
 }
