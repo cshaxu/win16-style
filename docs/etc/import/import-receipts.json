@@ -320,7 +320,7 @@
       "path": "src/ntw16s-dll/global_manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2e2e9eb461b055c6810ca337ba001e14d7a5a52b649fff0ec34d1beb31da5f4b",
+      "sha256": "60745963fd1f43fcd90b092325f87e722d3847933e4c8a2884e0f942f389cd1f",
       "disposition": "authored",
       "review": "T21 S40 shared Toolhelp iteration; caller retains selection and lifecycle",
       "notice": "Project-authored C"
@@ -6110,6 +6110,33 @@
       "sha256": "3f024b8351d0504f1f81c477b5d68e89b52d0041196d13a3b82bac7e0713268e",
       "disposition": "authored",
       "review": "T21 S41 transaction phase contract tests",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-global/targets.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "fbd84d993097fa880511419b5f017ed4e72bf0e450d0e31d912ee77fccc49bc5",
+      "disposition": "authored",
+      "review": "T21 S41 extract target lifecycle engine",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-global/targets.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "4529133bfa79922144ee6cbf831f375039bf163280c0a3e8ea77f7805c4c0453",
+      "disposition": "authored",
+      "review": "T21 S41 extract target lifecycle engine",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "tests/lib-win32/process-global/targets.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "3f81db97bfaa051429866ae20a3f63eac9af40335f681ba6152318ecb6ec622f",
+      "disposition": "authored",
+      "review": "T21 S41 target manager core and no-hook test",
       "notice": "Project-authored C code; no imported artwork"
     }
   ]
