@@ -320,10 +320,10 @@
       "path": "src/ntw16s-dll/global_manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c575d96327815f8b4ed9442f28bccb775703073becc9c68a920f93a5dd31dc01",
+      "sha256": "362aab761f8fee909befdb28ff9df01e7dd6064247b706721e619eb9ab8d5972",
       "disposition": "authored",
-      "review": "T21 S13 bounded startup attachment completion",
-      "notice": "Project-authored source; no imported code or resources"
+      "review": "T21 S40 shared Toolhelp iteration; caller retains selection and lifecycle",
+      "notice": "Project-authored C"
     },
     {
       "path": "tests/integration/global_threads_target.c",
@@ -5769,6 +5769,24 @@
       "sha256": "f39b055b6678a24d8c69e97496adaf46bc6b16322859e7a88f899a84aefbfd26",
       "review": "T21 S37 handle library fixed source or caller migration; see source record",
       "notice": "Owner-authorized sibling project source; source identity recorded; no additional third-party notice in imported files"
+    },
+    {
+      "path": "src/lib-win32/process-global/enumerate.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "sha256": "98e11de2f350f8ca6a657a7b7d047f90fabac507c70077d041f68bd10e405c65",
+      "review": "T21 S40 shared Toolhelp iteration; caller retains selection and lifecycle",
+      "notice": "Project-authored C"
+    },
+    {
+      "path": "src/lib-win32/process-global/enumerate.h",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "sha256": "50a4105b2d37e946edf259955592bf22809d088cbca4557e70c012f395473e7d",
+      "review": "T21 S40 shared Toolhelp iteration; caller retains selection and lifecycle",
+      "notice": "Project-authored C"
     }
   ]
 }

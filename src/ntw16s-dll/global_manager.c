@@ -3,6 +3,7 @@
 #include "global_discover.h"
 #include "global_session.h"
 #include "global_process.h"
+#include "lib-win32/process-global/enumerate.h"
 #include <stdlib.h>
 #include <string.h>
 #include <wchar.h>
@@ -92,49 +93,43 @@ static void discovered(HWND window,DWORD pid,DWORD thread_id,void *context)
 /* Startup-only snapshot. Runtime discovery remains event driven. Prefer the
  * existing window entry for a process and add one eligible thread only when
  * no window entry is already queued. Identity is checked again by the worker. */
-static void discover_existing_processes(ntw16s_global_manager *m)
+static BOOL discover_existing_thread(DWORD pid,DWORD tid,void *context)
 {
-    HANDLE snapshot=CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD,0);
-    if(snapshot==INVALID_HANDLE_VALUE)return;
-    THREADENTRY32 e={.dwSize=sizeof(e)};
-    if(Thread32First(snapshot,&e))do{
-        DWORD pid=e.th32OwnerProcessID,tid=e.th32ThreadID;BOOL found=FALSE;
-        if(!pid || !tid || pid==GetCurrentProcessId() || pid==m->session->owner_pid || pid==m->session->host_pid)continue;
-        /* Startup does not need to retry unbound threads; the process-event
-         * path handles the brief unbound state for newly created targets. */
-        if(!GetThreadDesktop(tid))continue;
-        AcquireSRWLockShared(&m->lock);
-        for(unsigned i=0;i<MANAGER_BUCKETS && !found;++i)
-            for(manager_entry *entry=m->buckets[i];entry;entry=entry->hash_next)
-                if(entry->pid==pid && entry->state!=ENTRY_FAILED){found=TRUE;break;}
-        ReleaseSRWLockShared(&m->lock);
-        if(found)continue;
+    ntw16s_global_manager *m=(ntw16s_global_manager *)context;BOOL found=FALSE;
+    if(!pid || !tid || pid==GetCurrentProcessId() || pid==m->session->owner_pid || pid==m->session->host_pid)return TRUE;
+    if(!GetThreadDesktop(tid))return TRUE;
+    AcquireSRWLockShared(&m->lock);
+    for(unsigned i=0;i<MANAGER_BUCKETS && !found;++i)
+        for(manager_entry *entry=m->buckets[i];entry;entry=entry->hash_next)
+            if(entry->pid==pid && entry->state!=ENTRY_FAILED){found=TRUE;break;}
+    ReleaseSRWLockShared(&m->lock);
+    if(!found){
         ntw16s_global_identity identity;
         if(!ntw16s_global_policy_inspect_thread(&m->policy,pid,tid,m->machine,&identity))discovered(NULL,pid,tid,m);
-    }while(Thread32Next(snapshot,&e));
-    CloseHandle(snapshot);
+    }
+    return TRUE;
 }
+static void discover_existing_processes(ntw16s_global_manager *m)
+{(void)win32_process_global_threads(0,discover_existing_thread,m);}
 /* Only inspect threads belonging to the reported PID. The worker repeats all
  * identity and desktop checks before modifying the target. */
+typedef struct discover_process_scan {ntw16s_global_manager *manager;DWORD pending;BOOL queued;} discover_process_scan;
+static BOOL discover_process_thread(DWORD pid,DWORD tid,void *context)
+{
+    discover_process_scan *scan=(discover_process_scan *)context;ntw16s_global_identity identity;
+    DWORD check=ntw16s_global_policy_inspect_thread(&scan->manager->policy,pid,tid,scan->manager->machine,&identity);
+    if(!check){discovered(NULL,pid,tid,scan->manager);scan->queued=TRUE;return FALSE;}
+    if(check==ERROR_NOT_READY && !scan->pending)scan->pending=tid;
+    return TRUE;
+}
 static void discovered_process(DWORD pid,void *context)
 {
     ntw16s_global_manager *m=(ntw16s_global_manager *)context;DWORD session=0;
     if(!pid || pid==GetCurrentProcessId() || pid==m->session->owner_pid || pid==m->session->host_pid ||
        !ProcessIdToSessionId(pid,&session) || session!=m->policy.session)return;
-    HANDLE snapshot=CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD,0);
-    if(snapshot==INVALID_HANDLE_VALUE)return;
-    THREADENTRY32 e={.dwSize=sizeof(e)};DWORD pending=0;BOOL queued=FALSE;
-    if(Thread32First(snapshot,&e))do{
-        if(e.th32OwnerProcessID!=pid)continue;
-        ntw16s_global_identity identity;
-        DWORD check=ntw16s_global_policy_inspect_thread(&m->policy,pid,e.th32ThreadID,m->machine,&identity);
-        if(!check){
-            discovered(NULL,pid,e.th32ThreadID,m);queued=TRUE;break;
-        }
-        if(check==ERROR_NOT_READY && !pending)pending=e.th32ThreadID;
-    }while(Thread32Next(snapshot,&e));
-    CloseHandle(snapshot);
-    if(!queued && pending)discovered(NULL,pid,pending,m);
+    discover_process_scan scan={m,0,FALSE};
+    (void)win32_process_global_threads(pid,discover_process_thread,&scan);
+    if(!scan.queued && scan.pending)discovered(NULL,pid,scan.pending,m);
 }
 #ifdef NTW16S_GLOBAL_MANAGER_TEST
 void ntw16s_global_manager_test_process(ntw16s_global_manager *manager,DWORD pid)
