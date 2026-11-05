@@ -2,7 +2,7 @@
 
 ## Current Work
 
-T21 S37 已准入：导入隔壁 handle 并接入现有句柄调用；T21 保持开放。
+无活动任务包。T21 S37 已导入隔壁 handle 并完成交付；T21 保持开放。详见[记录](../history/M0-T21-S37-handle.md)。
 
 S25 经用户验收收口，交付范围见 [记录](../history/M0-T21-S25-common.md)。
 
@@ -413,8 +413,8 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
 - Last allocated T21 S: 37
-- Last verified remote delivery: M0 T21 S36 P1，`62ac033`；四产品与公共库源码远端对象已复核。
-- Open task: T21；S37 进行中。Explorer.exe 仍被排除。
+- Last verified remote delivery: M0 T21 S37 P1，`881e698`；四产品及公共库与调用者远端对象已复核。
+- Open task: T21；S37 已交付。Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。
@@ -463,28 +463,9 @@ S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前
 
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1已收口；T20此后按用户要求有限范围收口。
 
-## M0 T21 S37 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Continuation |
-| Admission And Approval | 用户要求原样导入隔壁 handle 组件。 |
-| Objective | 固定来源导入公共 handle 并替换两处同权限复制和一处比较函数查找。 |
-| Non-goals | 不修改兄弟仓库、挂钩流程、访问策略、公开 ABI 或图形资源。 |
-| Reference Baseline | 本项目 dcac3a4，隔壁 d524de6ad7d5edb83263a4cb0fdd2cb88713bf9d。 |
-| Candidate Proposal | [公共基础组件](../proposals/win32-common-components.md)。 |
-| Files And ABI Surface | handle、调用者、构建和测试；产品 ABI 不变。 |
-| Applicable Rules | M0 执行、纯 C、来源和资源规则。 |
-| Verification | 双宽干净构建，句柄本地和自有进程远端生命周期及策略、实际包回归。 |
-| Expected Markers | 两源码与固定来源一致；双宽句柄测试及 global 基线通过。 |
-| Asset Needs | 同批四文件测试；二进制变化时发布 assets 根和 O:/winnt。 |
-| Reporting Requirements | 来源提交、行为、测试、跳过、部署和远端复核。 |
-| Stop Conditions | 来源许可、构建、测试或发布权限失败不可安全解决。 |
-| Exit Criteria | 验证并按规范发布、提交推送、远端复核。 |
-| Original Owner Request | 准入新 S 原样导入 handle 组件。 |
-| Similar-Issue Sweep | 搜索 DuplicateHandle 与 CompareObjectHandles，保留不同权限及所有权调用。 |
-
 ## Recent Closure
+
+- M0 T21 S37：导入 handle 并接入现有句柄调用；[记录](../history/M0-T21-S37-handle.md)。
 
 - M0 T21 S36：共享 process-launch 导入及启动器事务归属；[记录](../history/M0-T21-S36-process-launch.md)。
 

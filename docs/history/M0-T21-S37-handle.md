@@ -24,3 +24,5 @@ s37-publish 发布至 assets 根及 O:/winnt 并核对：
 - ntw16s32.dll `6c5daa4abc893e5e5150a8eb419559215cb209227ed6d77a27c0ae37930eec5f`
 - ntw16s64.dll `f476fea3c65a723a4fcacc5e5e04b3e72cd3c595181742aa9b8a007fae1cd6b1`
 - demo.exe `3179337fd8b48e02b75074b1aa60688e3118fba13c2bdce98d8e9cd7c386e6c8`
+
+P1 `881e6982e5b506f3b21d4e27c74996a6aa415dc5` 已推送，实际远端树复核公共组件、三个调用点和四产物；两处发布摘要再次核对。S37 关闭，T21 保持开放。
