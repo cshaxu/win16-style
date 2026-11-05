@@ -21,8 +21,8 @@ typedef struct manager_entry {
 } manager_entry;
 struct ntw16s_global_manager {
     ntw16s_global_discover discover;ntw16s_global_policy policy;ntw16s_global_session *session;
-    HANDLE mapping,stop,quit,work,changed,workers[MANAGER_WORKERS],ready[MANAGER_WORKERS];
-    win32_process_global_dispatch contexts[MANAGER_WORKERS];
+    HANDLE mapping,stop,quit,work,changed;
+    win32_process_global_dispatch_pool pool;
     HDESK desktop;WCHAR *dll_path;WORD machine;DWORD owner_thread;
     win32_process_global_targets targets;
     ntw16s_global_process *process_monitor;
@@ -218,13 +218,9 @@ DWORD ntw16s_global_manager_stop(ntw16s_global_manager *m,DWORD timeout)
     if(m->process_monitor){DWORD error=ntw16s_global_process_stop(m->process_monitor);if(error)return error;m->process_monitor=NULL;}
     if(m->discover.hook){DWORD error=ntw16s_global_discover_stop(&m->discover);if(error)return error;}
     SetEvent(m->quit);ULONGLONG deadline=GetTickCount64()+timeout;
-    for(unsigned i=0;i<MANAGER_WORKERS;++i)if(m->workers[i]){
-        ULONGLONG now=GetTickCount64();DWORD remaining=now<deadline?(DWORD)(deadline-now):0;
-        DWORD wait=WaitForSingleObject(m->workers[i],remaining);
-        if(wait!=WAIT_OBJECT_0)return wait==WAIT_TIMEOUT?ERROR_TIMEOUT:(wait==WAIT_FAILED?GetLastError():ERROR_INVALID_STATE);
-    }
+    DWORD wait_error=win32_process_global_dispatch_pool_wait(&m->pool,deadline);if(wait_error)return wait_error;
     DWORD close_error=win32_process_global_targets_close(&m->targets,deadline,close_target,m);if(close_error)return close_error;
-    for(unsigned i=0;i<MANAGER_WORKERS;++i){if(m->workers[i])CloseHandle(m->workers[i]);if(m->ready[i])CloseHandle(m->ready[i]);}
+    win32_process_global_dispatch_pool_release(&m->pool);
     if(m->session)UnmapViewOfFile(m->session);
     if(m->mapping)CloseHandle(m->mapping);
     if(m->stop)CloseHandle(m->stop);
@@ -254,14 +250,8 @@ DWORD ntw16s_global_manager_start(const WCHAR *dll_path,WORD machine,ntw16s_glob
     if(!m->stop || !m->quit || !m->work || !m->changed){error=GetLastError();goto fail;}
     const win32_process_global_target_ops ops={expired,active_finished,failed_retryable,execute_target,dispose_target};
     error=win32_process_global_targets_init(&m->targets,m->work,m->changed,sizeof(manager_entry),&ops,m);if(error)goto fail;
-    for(unsigned i=0;i<MANAGER_WORKERS;++i){
-        m->ready[i]=CreateEventW(NULL,TRUE,FALSE,NULL);
-        if(!m->ready[i]){error=GetLastError();goto fail;}
-        m->contexts[i]=(win32_process_global_dispatch){m->desktop,m->quit,m->stop,m->work,m->ready[i],0,process_next,m};
-        m->workers[i]=CreateThread(NULL,0,win32_process_global_dispatch_run,&m->contexts[i],0,NULL);if(!m->workers[i]){error=GetLastError();goto fail;}
-    }
-    if(WaitForMultipleObjects(MANAGER_WORKERS,m->ready,TRUE,3000)!=WAIT_OBJECT_0){error=ERROR_TIMEOUT;goto fail;}
-    for(unsigned i=0;i<MANAGER_WORKERS;++i)if(m->contexts[i].error){error=m->contexts[i].error;goto fail;}
+    error=win32_process_global_dispatch_pool_start(&m->pool,MANAGER_WORKERS,m->desktop,m->quit,m->stop,m->work,process_next,m,3000);
+    if(error)goto fail;
     error=ntw16s_global_discover_start(&m->discover,discovered,m);if(error)goto fail;
     /* The optional system process trace requires elevation. Retain normal
      * window-event discovery when that permission is not available. */

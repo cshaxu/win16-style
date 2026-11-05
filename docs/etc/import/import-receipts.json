@@ -320,7 +320,7 @@
       "path": "src/ntw16s-dll/global_manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "60dc849f4d84b4c551cac26be34bc5160674a9d9fbbf344415bf37228d8fb753",
+      "sha256": "b60ae60b18fd7eae8875644e560bce2cdc7009822b4a8c4d00b55ec20d41e531",
       "disposition": "authored",
       "review": "T21 S40 shared Toolhelp iteration; caller retains selection and lifecycle",
       "notice": "Project-authored C"
@@ -6017,7 +6017,7 @@
       "path": "src/lib-win32/process-global/dispatch.c",
       "source": null,
       "source_blob": null,
-      "sha256": "311392058b220c4e4558795c8bfad923a67fbe6fe8c8203e52c21b7a2e8b0134",
+      "sha256": "a0cf44a5891c432b9dc2cfbcca5a1d4e33e3af724e6d30e5f26f35f1815a29c0",
       "disposition": "authored",
       "review": "T21 S41 extract dispatcher event loop",
       "notice": "Project-authored C code; no imported artwork"
@@ -6026,7 +6026,7 @@
       "path": "src/lib-win32/process-global/dispatch.h",
       "source": null,
       "source_blob": null,
-      "sha256": "10fbf004eb51b5479870a9f185a1701cd5b1266e657739513cafb4a05c456b3e",
+      "sha256": "c5b7e49f37963914b8e608198cc8fea4c0bff289fd6ec848794708f8f8c81d71",
       "disposition": "authored",
       "review": "T21 S41 extract dispatcher event loop",
       "notice": "Project-authored C code; no imported artwork"
@@ -6035,7 +6035,7 @@
       "path": "tests/lib-win32/process-global/dispatch.c",
       "source": null,
       "source_blob": null,
-      "sha256": "dafca52669a0517270a481b3f53f12499ccf7ea55a2f3df3eee9b2b93cb8e3e1",
+      "sha256": "737fe34f74023d3a568b3e90e31a1de51a007da15a55780c890e2ce4cd921ae2",
       "disposition": "authored",
       "review": "T21 S41 dispatch standalone lifecycle test",
       "notice": "Project-authored C code; no imported artwork"

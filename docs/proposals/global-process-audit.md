@@ -187,3 +187,5 @@ Names below are a broad source-token inventory (including callers/types, not a c
 | P13 | targets 提供关闭、失败重试及进程查询；双宽仅样式 Button 的 WM_PRINT 绘制变化与恢复、两个创建入口字节不变；18 项实包聚焦通过。 | 屏幕实际显示、更多控件及独立管理器/传播 API；该测试不证明所有钩子均未安装。 |
 
 P13 构建 `s41-clean16`、测试 `s41-package16`、发布 `s41-publish13`；双宽候选 DLL 与测试构建 DLL 摘要一致。管理员 ETW、完整矩阵和跨目录既有限制未因聚焦通过而解除；保留 S41 开放。
+
+P14：`process-global/dispatch` 提供公共线程池启动、限时等待与释放；`global_manager.c` 使用该接口并继续提供处理回调。双宽独立池测试覆盖超时后重试及重新启动，双宽干净构建和 14 项实际包聚焦通过；独立发现协调和公共传播接口仍未实现。发布 `s41-publish14`。
