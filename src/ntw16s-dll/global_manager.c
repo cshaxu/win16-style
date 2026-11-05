@@ -63,13 +63,7 @@ static BOOL discover_existing_thread(DWORD pid,DWORD tid,void *context)
     ntw16s_global_manager *m=(ntw16s_global_manager *)context;BOOL found=FALSE;
     if(!pid || !tid || pid==GetCurrentProcessId() || pid==m->session->owner_pid || pid==m->session->host_pid)return TRUE;
     if(!GetThreadDesktop(tid))return TRUE;
-    AcquireSRWLockShared(&m->targets.lock);
-    for(unsigned i=0;i<MANAGER_BUCKETS && !found;++i)
-        for(win32_process_global_registry_node *node=m->targets.buckets[i];node;node=node->next){
-            manager_entry *entry=(manager_entry *)node->owner;
-            if(entry->target.pid==pid && entry->target.state!=WIN32_TARGET_FAILED){found=TRUE;break;}
-        }
-    ReleaseSRWLockShared(&m->targets.lock);
+    found=win32_process_global_targets_has_process(&m->targets,pid);
     if(!found){
         ntw16s_global_identity identity;
         if(!ntw16s_global_policy_inspect_thread(&m->policy,pid,tid,m->machine,&identity))discovered(NULL,pid,tid,m);
@@ -211,6 +205,13 @@ void ntw16s_global_manager_stats_read(ntw16s_global_manager *m,ntw16s_global_man
     s->queued=InterlockedCompareExchange(&m->targets.queued,0,0);s->active=InterlockedCompareExchange(&m->targets.active,0,0);
     s->failed=InterlockedCompareExchange(&m->targets.failed,0,0);s->overflow=InterlockedCompareExchange(&m->targets.overflow,0,0);
 }
+static DWORD close_target(win32_process_global_target *target,void *context,ULONGLONG deadline)
+{
+    manager_entry *e=(manager_entry *)target;(void)context;
+    if(e->attach.start.thread){ULONGLONG now=GetTickCount64();DWORD left=now<deadline?(DWORD)(deadline-now):0;WaitForSingleObject(e->attach.start.thread,left);}
+    if(e->attach.load.thread){ULONGLONG now=GetTickCount64();DWORD left=now<deadline?(DWORD)(deadline-now):0;WaitForSingleObject(e->attach.load.thread,left);}
+    return ntw16s_global_attach_close(&e->attach);
+}
 DWORD ntw16s_global_manager_stop(ntw16s_global_manager *m,DWORD timeout)
 {
     if(!m || m->owner_thread!=GetCurrentThreadId())return ERROR_INVALID_PARAMETER;
@@ -222,13 +223,7 @@ DWORD ntw16s_global_manager_stop(ntw16s_global_manager *m,DWORD timeout)
         DWORD wait=WaitForSingleObject(m->workers[i],remaining);
         if(wait!=WAIT_OBJECT_0)return wait==WAIT_TIMEOUT?ERROR_TIMEOUT:(wait==WAIT_FAILED?GetLastError():ERROR_INVALID_STATE);
     }
-    for(unsigned i=0;i<MANAGER_BUCKETS;++i)for(win32_process_global_registry_node *node=m->targets.buckets[i];node;node=node->next){
-        manager_entry *e=(manager_entry *)node->owner;
-        if(e->attach.start.thread){ULONGLONG now=GetTickCount64();DWORD left=now<deadline?(DWORD)(deadline-now):0;WaitForSingleObject(e->attach.start.thread,left);}
-        if(e->attach.load.thread){ULONGLONG now=GetTickCount64();DWORD left=now<deadline?(DWORD)(deadline-now):0;WaitForSingleObject(e->attach.load.thread,left);}
-        DWORD error=ntw16s_global_attach_close(&e->attach);if(error)return error;
-    }
-    win32_process_global_targets_dispose(&m->targets);
+    DWORD close_error=win32_process_global_targets_close(&m->targets,deadline,close_target,m);if(close_error)return close_error;
     for(unsigned i=0;i<MANAGER_WORKERS;++i){if(m->workers[i])CloseHandle(m->workers[i]);if(m->ready[i])CloseHandle(m->ready[i]);}
     if(m->session)UnmapViewOfFile(m->session);
     if(m->mapping)CloseHandle(m->mapping);

@@ -16,6 +16,8 @@ static BOOL retryable(win32_process_global_target *t,void *p){(void)t;(void)p;re
 static DWORD execute(win32_process_global_target *t,void *p,BOOL *retained)
 {observed *o=p;(void)t;*retained=FALSE;++o->executed;return ERROR_SUCCESS;}
 static void dispose(win32_process_global_target *t,void *p){observed *o=p;(void)t;++o->disposed;}
+static DWORD close_target(win32_process_global_target *t,void *p,ULONGLONG deadline)
+{unsigned *calls=p;(void)t;(void)deadline;return ++*calls==1?ERROR_BUSY:ERROR_SUCCESS;}
 static void discovered(HWND w,DWORD pid,DWORD tid,void *p)
 {observed *o=p;if(pid==o->pids[0] || pid==o->pids[1])win32_process_global_targets_submit(o->targets,pid,tid,w);}
 static int child(const WCHAR *event,const WCHAR *title)
@@ -61,6 +63,10 @@ int wmain(int argc,WCHAR **argv)
     for(unsigned i=0;i<2;++i){DWORD_PTR loaded=1;
         if(!SendMessageTimeoutW(w[i],WM_APP+1,0,0,SMTO_ABORTIFHUNG,1000,&loaded) || loaded)goto done;
     }
+    unsigned closes=0;
+    if(win32_process_global_targets_close(&targets,GetTickCount64()+1000,close_target,&closes)!=ERROR_BUSY || targets.count!=2)goto done;
+    if(win32_process_global_targets_close(&targets,GetTickCount64()+1000,close_target,&closes) || o.disposed!=2)goto done;
+    if(win32_process_global_targets_init(&targets,work,changed,sizeof(win32_process_global_target),&ops,&o))goto done;
     error=0;
 done:
     if(watching && win32_process_global_window_stop(&watcher))error=1;
@@ -73,5 +79,5 @@ done:
     if(work)CloseHandle(work);
     if(changed)CloseHandle(changed);
     if(error || o.disposed!=2){printf("TARGETS FAIL error=%lu exec=%u dispose=%u\n",error,o.executed,o.disposed);return 1;}
-    puts("TARGETS PASS existing=1 new=1 dedup=1 no_dll=1 cleanup=1");return 0;
+    puts("TARGETS PASS existing=1 new=1 dedup=1 no_dll=1 close_retry=1 reinit=1 cleanup=1");return 0;
 }

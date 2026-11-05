@@ -4,6 +4,8 @@
 #include "isolated_process.h"
 #include <commctrl.h>
 #include <stdio.h>
+#include <stdint.h>
+#include <string.h>
 #define CHECK(x) do { if(!(x)){fprintf(stderr,"GLOBAL WINDOW FAIL line=%d error=%lu: %s\n",__LINE__,GetLastError(),#x);return 1;} } while(0)
 static HWND wrong_window;
 static BOOL destroy_on_position;
@@ -26,6 +28,20 @@ static LRESULT CALLBACK owner(HWND w,UINT m,WPARAM a,LPARAM b)
     if(m==WM_APP+1)return 314;
     return DefWindowProcW(w,m,a,b);
 }
+static BOOL rendered_hash(HWND window,uint64_t *hash)
+{
+    RECT r;if(!GetWindowRect(window,&r) || r.right<=r.left || r.bottom<=r.top)return FALSE;
+    int width=r.right-r.left,height=r.bottom-r.top;
+    BITMAPINFO info={0};info.bmiHeader.biSize=sizeof(info.bmiHeader);info.bmiHeader.biWidth=width;
+    info.bmiHeader.biHeight=-height;info.bmiHeader.biPlanes=1;info.bmiHeader.biBitCount=32;info.bmiHeader.biCompression=BI_RGB;
+    void *bits=NULL;HDC dc=CreateCompatibleDC(NULL);if(!dc)return FALSE;
+    HBITMAP bitmap=CreateDIBSection(dc,&info,DIB_RGB_COLORS,&bits,NULL,0);if(!bitmap || !bits){if(bitmap)DeleteObject(bitmap);DeleteDC(dc);return FALSE;}
+    HGDIOBJ old=SelectObject(dc,bitmap);ZeroMemory(bits,(SIZE_T)width*(SIZE_T)height*4);
+    SendMessageW(window,WM_PRINT,(WPARAM)dc,PRF_NONCLIENT|PRF_CLIENT|PRF_ERASEBKGND);GdiFlush();
+    uint64_t value=UINT64_C(1469598103934665603);const BYTE *bytes=bits;
+    for(SIZE_T i=0;i<(SIZE_T)width*(SIZE_T)height*4;++i){value^=bytes[i];value*=UINT64_C(1099511628211);}
+    SelectObject(dc,old);DeleteObject(bitmap);DeleteDC(dc);*hash=value;return TRUE;
+}
 static int worker(int argc,WCHAR **argv)
 {
     (void)argc;(void)argv;
@@ -37,11 +53,16 @@ static int worker(int argc,WCHAR **argv)
     cls.hInstance=instance;cls.lpfnWndProc=owner;cls.lpszClassName=L"Win16GlobalWindowFixture";
     CHECK(RegisterClassW(&cls));
     HWND root=CreateWindowW(cls.lpszClassName,L"Original",WS_OVERLAPPEDWINDOW,20,20,380,240,NULL,NULL,instance,NULL);
+    BYTE process_before[16],window_before[16];memcpy(process_before,(void *)CreateProcessW,sizeof(process_before));memcpy(window_before,(void *)CreateWindowExW,sizeof(window_before));
     CHECK(root);HWND button=CreateWindowW(L"BUTTON",L"Action",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,20,20,100,28,root,(HMENU)1,instance,NULL);CHECK(button);
     HWND edit=CreateWindowW(L"EDIT",L"Original text",WS_CHILD|WS_VISIBLE|WS_BORDER,20,60,180,28,root,(HMENU)2,instance,NULL);CHECK(edit);
+    ShowWindow(root,SW_SHOW);UpdateWindow(root);uint64_t native=0,styled=0,restored=0;
+    CHECK(rendered_hash(button,&native));
     CHECK(ntw16s_global_window_apply(root));CHECK(ntw16s_global_window_attached(root));
     CHECK(ntw16s_global_window_apply(root));CHECK(ntw16s_global_window_apply(button));CHECK(ntw16s_global_window_attached(button));
     CHECK(ntw16s_global_window_apply(edit));CHECK(ntw16s_global_window_attached(edit));
+    CHECK(rendered_hash(button,&styled));CHECK(native!=styled);
+    CHECK(!memcmp(process_before,(void *)CreateProcessW,sizeof(process_before)) && !memcmp(window_before,(void *)CreateWindowExW,sizeof(window_before)));
     CHECK(SendMessageW(root,WM_APP+1,0,0)==314);
     wrong_window=root;HANDLE thread=CreateThread(NULL,0,wrong_thread,NULL,0,NULL);CHECK(thread);
     CHECK(WaitForSingleObject(thread,5000)==WAIT_OBJECT_0);DWORD result=1;CHECK(GetExitCodeThread(thread,&result)&&!result);CloseHandle(thread);
@@ -49,6 +70,9 @@ static int worker(int argc,WCHAR **argv)
     WCHAR text[32];CHECK(GetWindowTextW(edit,text,32)&&!wcscmp(text,L"Original text"));
     CHECK(ntw16s_global_window_remove(button));CHECK(!ntw16s_global_window_attached(button));
     CHECK(ntw16s_global_window_remove(root));CHECK(!ntw16s_global_window_attached(root));
+    CHECK(rendered_hash(button,&restored));CHECK(native==restored);
+    CHECK(!memcmp(process_before,(void *)CreateProcessW,sizeof(process_before)) && !memcmp(window_before,(void *)CreateWindowExW,sizeof(window_before)));
+    printf("STYLE ONLY DRAW PASS bits=%u changed=1 restored=1 create_w_entries_unchanged=1\n",(unsigned)(sizeof(void*)*8));
     CHECK(!ntw16s_global_window_remove(root)&&GetLastError()==ERROR_NOT_FOUND);
     CHECK(ntw16s_global_window_apply(root));CHECK(DestroyWindow(root));
     HWND reentrant_parent=CreateWindowW(cls.lpszClassName,L"Reentrant",WS_OVERLAPPEDWINDOW,20,20,380,240,NULL,NULL,instance,NULL);CHECK(reentrant_parent);

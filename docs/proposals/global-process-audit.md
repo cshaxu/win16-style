@@ -173,3 +173,17 @@ Names below are a broad source-token inventory (including callers/types, not a c
 | `src/ntw16s-dll/attachment.h` | `Ntw16sCreationBegin`、`Ntw16sCreationEnd`、`Ntw16sScrollChanged`、`Ntw16sSetWindowTheme`、`Ntw16sWindowAttached`、`Ntw16sWindowRemove`、`Ntw16sWindowTerminal`、`ntw16s_creation_result`、`ntw16s_creation_scope` |
 | `src/ntw16s-dll/controls.c` | `Ntw16sWindowRemove`、`ntw16s_button_type`、`ntw16s_checklist_draw_target`、`ntw16s_class_is`、`ntw16s_control_protocol_is`、`ntw16s_grid_valid`、`ntw16s_group_button_valid`、`ntw16s_group_choice_button`、`ntw16s_group_push_button`、`ntw16s_managed_scrollbars_active`、`ntw16s_native_get_combo_info`、`ntw16s_native_get_scroll_info`、`ntw16s_native_set_scroll_info`、`ntw16s_rich_valid`、`ntw16s_theme_capture`、`ntw16s_theme_enable`、`ntw16s_theme_remove`、`ntw16s_theme_retained`、`ntw16s_theme_terminal`、`ntw16s_unwind_scope`、`ntw16s_vb_button`、`ntw16s_vb_checkbox`、`ntw16s_vb_combo`、`ntw16s_vb_data_attached`、`ntw16s_vb_data_valid`、`ntw16s_vb_drive`、`ntw16s_vb_frame`、`ntw16s_vb_graphical_button`、`ntw16s_vb_graphical_choice`、`ntw16s_vb_list`、`ntw16s_vb_option`、`ntw16s_vb_plain_choice`、`ntw16s_vb_user_edge_dormant`、`ntw16s_vb_user_edge_valid`、`ntw16s_vcl_combo_candidate`、`ntw16s_vcl_combo_valid`、`ntw16s_vcl_tab_valid`、`ntw16s_vcl_toolbar_valid` |
 | `src/ntw16s-dll/control_scope.c` | 内部回调/类型，详见文件 |
+
+
+## 冻结审计后的进展（S41 P10–P13）
+
+上文为迁移前冻结基线；以下记录增量，不把尚待完成的条目视为已解决。
+
+| 阶段 | 实际变化和验证 | 仍待完成 |
+| --- | --- | --- |
+| P10 | 接入事务状态推进迁入 process-global，产品提供具体操作回调；双宽事务及实包聚焦通过。 | 独立协调与独立传播接口。 |
+| P11 | 产品内部支持仅传播策略；八种父子位宽/A/W 组合观察子孙加载、未附着、停用与重启。 | 公共传播 API、真实像素及物理卸载；父探针样式注册为桩。 |
+| P12 | targets 管理目标索引、去重、队列、重试、工作状态与回收；双宽自有进程仅管理测试通过。 | 发现和工作线程的完整公共协调。 |
+| P13 | targets 提供关闭、失败重试及进程查询；双宽仅样式 Button 的 WM_PRINT 绘制变化与恢复、两个创建入口字节不变；18 项实包聚焦通过。 | 屏幕实际显示、更多控件及独立管理器/传播 API；该测试不证明所有钩子均未安装。 |
+
+P13 构建 `s41-clean16`、测试 `s41-package16`、发布 `s41-publish13`；双宽候选 DLL 与测试构建 DLL 摘要一致。管理员 ETW、完整矩阵和跨目录既有限制未因聚焦通过而解除；保留 S41 开放。

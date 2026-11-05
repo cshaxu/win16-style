@@ -25,7 +25,7 @@ typedef struct win32_process_global_targets {
     volatile LONG queued,working,active,failed,overflow;
     HANDLE work,changed;SIZE_T target_size;win32_process_global_target_ops ops;void *context;
 } win32_process_global_targets;
-/* Caller owns event handles; callbacks run on discovery or worker threads.
+/* Zero-initialize before init. Caller owns event handles; callbacks run on discovery or worker threads.
  * Target allocations are owned by this table; caller supplies a size at least
  * sizeof(target) and embeds target as its first member. */
 DWORD win32_process_global_targets_init(win32_process_global_targets *,HANDLE,HANDLE,SIZE_T,const win32_process_global_target_ops *,void *);
@@ -33,6 +33,11 @@ void win32_process_global_targets_submit(win32_process_global_targets *,DWORD,DW
 BOOL win32_process_global_targets_next(win32_process_global_targets *);
 BOOL win32_process_global_targets_contains(win32_process_global_targets *,DWORD,DWORD);
 BOOL win32_process_global_targets_idle(win32_process_global_targets *);
+BOOL win32_process_global_targets_has_process(win32_process_global_targets *,DWORD);
+typedef DWORD (*win32_process_global_target_close_fn)(win32_process_global_target *,void *,ULONGLONG);
+/* After workers stop, close each target under a shared deadline. On error the
+ * table remains allocated and the caller may retry the operation. */
+DWORD win32_process_global_targets_close(win32_process_global_targets *,ULONGLONG,win32_process_global_target_close_fn,void *);
 /* After workers stop and application cleanup succeeds, release all records. */
 void win32_process_global_targets_dispose(win32_process_global_targets *);
 #endif

@@ -48,8 +48,28 @@ BOOL win32_process_global_targets_contains(win32_process_global_targets *s,DWORD
 {AcquireSRWLockShared(&s->lock);BOOL found=win32_process_global_registry_find(&s->registry,pid,tid)!=NULL;ReleaseSRWLockShared(&s->lock);return found;}
 BOOL win32_process_global_targets_idle(win32_process_global_targets *s)
 {AcquireSRWLockShared(&s->lock);BOOL idle=s->queued==0 && s->working==0;ReleaseSRWLockShared(&s->lock);return idle;}
+BOOL win32_process_global_targets_has_process(win32_process_global_targets *s,DWORD pid)
+{
+    BOOL found=FALSE;AcquireSRWLockShared(&s->lock);
+    for(unsigned i=0;i<WIN32_PROCESS_GLOBAL_TARGET_BUCKETS && !found;++i)
+        for(win32_process_global_registry_node *n=s->buckets[i];n;n=n->next){
+            win32_process_global_target *t=n->owner;
+            if(t->pid==pid && t->state!=WIN32_TARGET_FAILED){found=TRUE;break;}
+        }
+    ReleaseSRWLockShared(&s->lock);return found;
+}
+DWORD win32_process_global_targets_close(win32_process_global_targets *s,ULONGLONG deadline,win32_process_global_target_close_fn close,void *context)
+{
+    if(!s || !close)return ERROR_INVALID_PARAMETER;
+    for(unsigned i=0;i<WIN32_PROCESS_GLOBAL_TARGET_BUCKETS;++i)
+        for(win32_process_global_registry_node *n=s->buckets[i];n;n=n->next){
+            DWORD error=close(n->owner,context,deadline);if(error)return error;
+        }
+    win32_process_global_targets_dispose(s);return ERROR_SUCCESS;
+}
 void win32_process_global_targets_dispose(win32_process_global_targets *s)
 {
     for(unsigned i=0;i<WIN32_PROCESS_GLOBAL_TARGET_BUCKETS;++i){win32_process_global_registry_node *n=s->buckets[i];
         while(n){win32_process_global_registry_node *next=n->next;win32_process_global_target *t=n->owner;s->ops.dispose(t,s->context);free(t);n=next;}s->buckets[i]=NULL;}
+    ZeroMemory(s,sizeof(*s));
 }
