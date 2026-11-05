@@ -16,3 +16,5 @@ S32 将既有 MZ/非 PE 判断、挂起进程创建及未交付子进程激活/�
 S34 按用户要求把唯一由启动器使用的 stderr 重绑定归回 run16s-exe，不再保留独立 console 库；security 库不变。
 
 S36 导入隔壁 process-launch，按用户要求统一 LF；启动器的准备、恢复、失败回滚及等待事务留在 run16s-exe。
+
+S37 从固定来源导入 handle，调用者继续持有句柄所有权和策略。

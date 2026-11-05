@@ -1,3 +1,4 @@
+#include "lib-win32/handle/duplicate.h"
 #include "global_load.h"
 #include "global_remote.h"
 #include <stdint.h>
@@ -60,9 +61,8 @@ DWORD ntw16s_global_load_begin(HANDLE process,DWORD pid,const WCHAR *path,ntw16s
     if(!length || length>=32752 || !filename || _wcsicmp(filename,sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll")){
         error=ERROR_INVALID_NAME;goto fail;
     }
-    if(!DuplicateHandle(GetCurrentProcess(),process,GetCurrentProcess(),&ticket->process,0,FALSE,DUPLICATE_SAME_ACCESS)){
-        error=GetLastError();goto fail;
-    }
+    error=win32_handle_duplicate(GetCurrentProcess(),process,GetCurrentProcess(),&ticket->process);
+    if(error)goto fail;
     ticket->pid=pid;
     ticket->file=CreateFileW(ticket->path,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,
                              FILE_ATTRIBUTE_NORMAL|FILE_FLAG_OPEN_REPARSE_POINT,NULL);

@@ -1,3 +1,4 @@
+#include "lib-win32/handle/duplicate.h"
 #include "global_policy.h"
 #include "lib-win32/process-image/image.h"
 #include <stdlib.h>
@@ -48,9 +49,7 @@ DWORD ntw16s_global_policy_init(ntw16s_global_policy *policy)
 static DWORD desktop_status(DWORD thread_id)
 {
     HDESK a=GetThreadDesktop(GetCurrentThreadId());SetLastError(ERROR_SUCCESS);HDESK b=GetThreadDesktop(thread_id);DWORD target_error=GetLastError();
-    typedef BOOL (WINAPI *compare_fn)(HANDLE,HANDLE);
-    HMODULE kernel=GetModuleHandleW(L"kernelbase.dll");
-    compare_fn compare=kernel?(compare_fn)(void *)GetProcAddress(kernel,"CompareObjectHandles"):NULL;
+    win32_handle_compare_fn compare=win32_handle_compare_provider();
     /* Names alone do not distinguish desktops in separate window stations. */
     if(!a || !compare)return ERROR_ACCESS_DENIED;
     /* A freshly created thread may not yet be connected to a USER desktop.

@@ -1,3 +1,4 @@
+#include "lib-win32/handle/duplicate.h"
 #include "global_start.h"
 #include "global_thread.h"
 #include "global_session.h"
@@ -70,9 +71,8 @@ DWORD ntw16s_global_start_begin(HANDLE process,DWORD pid,DWORD thread_id,DWORD c
     ticket->ready=ready_event(ready_name,security,&error);
     if(!ticket->ready)goto fail;
     if(error==ERROR_ALREADY_EXISTS){error=ERROR_ALREADY_EXISTS;goto fail;}
-    if(!DuplicateHandle(GetCurrentProcess(),process,GetCurrentProcess(),&ticket->process,0,FALSE,DUPLICATE_SAME_ACCESS)){
-        error=GetLastError();goto fail;
-    }
+    error=win32_handle_duplicate(GetCurrentProcess(),process,GetCurrentProcess(),&ticket->process);
+    if(error)goto fail;
     ticket->remote_packet=VirtualAllocEx(ticket->process,NULL,sizeof(packet),MEM_COMMIT|MEM_RESERVE,PAGE_READWRITE);
     if(!ticket->remote_packet){error=GetLastError();goto fail;}
     if(!WriteProcessMemory(ticket->process,ticket->remote_packet,&packet,sizeof(packet),&written) || written!=sizeof(packet)){
