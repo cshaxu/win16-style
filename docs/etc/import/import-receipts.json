@@ -3812,7 +3812,7 @@
       "path": "src/ntw16s-dll/global_remote.c",
       "source": null,
       "source_blob": null,
-      "sha256": "116f46ca3250ae8e126af0bc747863caa2cb86e32c1116d1f78aaf9b2e8abea4",
+      "sha256": "7b61c957246c3c717296acf37e64b7728b41ffd256a5cec863afff9c6389a4f6",
       "disposition": "authored",
       "review": "T21 S13 bounded same-bitness system loader address resolution and owned target test; target-local exported worker resolution",
       "notice": "Project-authored source; no imported code or resources"
@@ -3830,7 +3830,7 @@
       "path": "tests/ntw16s-dll/global_remote.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4aeec3ee47cbfa9ddd39576991157625210a5f113a937881ba6f28e9a3a74808",
+      "sha256": "526b3488f6443ca591fe09d210b64dc3c988cf8a828ba009f323fc4058c79754",
       "disposition": "authored",
       "review": "T21 S13 bounded same-bitness system loader address resolution and owned target test; target-local exported worker resolution",
       "notice": "Project-authored source; no imported code or resources"
@@ -3875,7 +3875,7 @@
       "path": "src/ntw16s-dll/global_start.c",
       "source": null,
       "source_blob": null,
-      "sha256": "03f4d6dad1f61a2f05356fb23b3af83e3b83ae751810ed3cf832fd2520d76fbf",
+      "sha256": "5a5e69d244c4e582c0bc66c138fc79731485aa1882d45cb0a28381adf89ba53c",
       "disposition": "authored",
       "review": "T21 S37 handle library fixed source or caller migration; see source record",
       "notice": "Owner-authorized sibling project source; source identity recorded; no additional third-party notice in imported files"
@@ -3884,7 +3884,7 @@
       "path": "src/ntw16s-dll/global_start.h",
       "source": null,
       "source_blob": null,
-      "sha256": "866622b47d9b9bd88ebb48df1f0da9a1c6f0e6f9f79e99288b8f0a9e12c58490",
+      "sha256": "784d854b3713f616db1eabbcda3076eb5fa03eec25aca5c91137a11e67f7b48b",
       "disposition": "authored",
       "review": "T21 S13 target-local worker startup ticket and owned actual DLL tests",
       "notice": "Project-authored source; no imported code or resources"
@@ -5939,6 +5939,42 @@
       "sha256": "7cda73e5d399c0d3febb002593a23c159540f6ca615427b588db200f8ce11bf7",
       "disposition": "authored",
       "review": "T21 S41 extract existing target loader resolution",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-global/worker.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ca3ed14fdda5d84219971959886be895d3aa57297c3f9433474c32394f2da69e",
+      "disposition": "authored",
+      "review": "T21 S41 extract existing worker lifecycle",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-global/worker.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "858c8f361cdbd95fa2f07626b2e1c6e0b0d9747cbdd783560e3b6e4cddb544b5",
+      "disposition": "authored",
+      "review": "T21 S41 extract existing worker lifecycle",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-global/remote_export.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "97c6e7cae9b67f36ee3f8f3c1630e33685c1f96c1cc35abede1dcf79743f4a7c",
+      "disposition": "authored",
+      "review": "T21 S41 parameterize existing module export verification",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-global/remote_export.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "2a04c13f6a7c7ce4e25c04a747dbc6e701d4903ff18b8083def2d687cd037094",
+      "disposition": "authored",
+      "review": "T21 S41 parameterize existing module export verification",
       "notice": "Project-authored C code; no imported artwork"
     }
   ]

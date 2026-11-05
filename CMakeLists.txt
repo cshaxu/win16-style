@@ -121,7 +121,7 @@ add_library(win32-handle STATIC src/lib-win32/handle/duplicate.c)
 target_include_directories(win32-handle PUBLIC src)
 # The upstream library casts the Win32 FARPROC returned by GetProcAddress.
 target_compile_options(win32-handle PRIVATE -Wno-cast-function-type)
-add_library(process-global STATIC src/lib-win32/process-global/enumerate.c src/lib-win32/process-global/window.c src/lib-win32/process-global/monitor.c src/lib-win32/process-global/identity.c src/lib-win32/process-global/queue.c src/lib-win32/process-global/load.c src/lib-win32/process-global/remote_loader.c)
+add_library(process-global STATIC src/lib-win32/process-global/enumerate.c src/lib-win32/process-global/window.c src/lib-win32/process-global/monitor.c src/lib-win32/process-global/identity.c src/lib-win32/process-global/queue.c src/lib-win32/process-global/load.c src/lib-win32/process-global/remote_loader.c src/lib-win32/process-global/worker.c src/lib-win32/process-global/remote_export.c)
 target_link_libraries(process-global PUBLIC win32-handle process-image user32 advapi32)
 target_include_directories(process-global PUBLIC src)
 target_compile_definitions(process-global PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)

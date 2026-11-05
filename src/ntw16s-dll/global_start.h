@@ -2,13 +2,8 @@
 #define NTW16S_GLOBAL_START_H
 #include <windows.h>
 
-/* Zero-initialize; retain the ticket across timeouts. The caller must retain
- * a verified target DLL reference until the worker returns. The session's
- * stop event controls the worker. close() never terminates target or thread. */
-typedef struct ntw16s_global_start {
-    HANDLE process,thread,ready;
-    void *remote_packet;
-} ntw16s_global_start;
+#include "lib-win32/process-global/worker.h"
+typedef win32_process_global_worker ntw16s_global_start;
 
 DWORD ntw16s_global_start_begin(HANDLE process,DWORD pid,DWORD thread_id,DWORD cookie,
                                 const WCHAR *dll_path,SECURITY_ATTRIBUTES *security,ntw16s_global_start *ticket);
