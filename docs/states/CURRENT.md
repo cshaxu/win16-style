@@ -2,7 +2,7 @@
 
 ## Current Work
 
-无活动任务包。T21 S38 已导入公共文件原语并验证；T21 保持开放。详见[记录](../history/M0-T21-S38-file.md)。
+T21 S39 已准入：按用户要求移除 S38 的 file 公共库与测试；T21 保持开放。
 
 S25 经用户验收收口，交付范围见 [记录](../history/M0-T21-S25-common.md)。
 
@@ -412,9 +412,9 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
-- Last allocated T21 S: 38
+- Last allocated T21 S: 39
 - Last verified remote delivery: M0 T21 S38 P1，`4beea77`；四产品及 file 源码测试远端对象已复核。
-- Open task: T21；S38 已交付。Explorer.exe 仍被排除。
+- Open task: T21；S39 进行中。Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。
@@ -462,6 +462,27 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前原版真实点击正常；历史异常根因未查明，本S没有产品代码或二进制修改。
 
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1已收口；T20此后按用户要求有限范围收口。
+
+## M0 T21 S39 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Owner-Reopen |
+| Admission And Approval | 用户要求删除 S38 file 公共组件及测试并提交。 |
+| Objective | 移除无生产消费者的 file 库、两份测试和构建依赖。 |
+| Non-goals | 不变更既有文件检查、其他组件、外观、ABI 或兄弟仓库。 |
+| Reference Baseline | S38 6b46283；用户调整该已关闭任务的范围。 |
+| Candidate Proposal | [公共基础组件](../proposals/win32-common-components.md)。 |
+| Files And ABI Surface | file 四文件、测试两文件、CMake 与来源回执；无公开 ABI。 |
+| Applicable Rules | M0 执行、C17、来源与原资源规则。 |
+| Verification | 双宽干净构建、包检查、启动及传播实包回归。 |
+| Expected Markers | 无 file 构建或源引用，实际包基线通过。 |
+| Asset Needs | 二进制变化时同批发布 assets 和 O:/winnt。 |
+| Reporting Requirements | 删除范围、测试、摘要、发布和远端验证。 |
+| Stop Conditions | 构建、测试或发布权限失败无法安全处理。 |
+| Exit Criteria | 构建测试、必要发布、P 提交推送及实际远端复核。 |
+| Original Owner Request | 删除公共 file 组件及其测试，P 提交。 |
+| Similar-Issue Sweep | 搜索 win32-file、core-file 和 lib-win32/file 残留引用。 |
 
 ## Recent Closure
 
