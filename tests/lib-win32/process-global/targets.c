@@ -1,4 +1,5 @@
 #include "lib-win32/process-global/targets.h"
+#include "lib-win32/process-global/engine.h"
 #include "lib-win32/process-global/window.h"
 #include <stdio.h>
 #include <wchar.h>
@@ -67,7 +68,26 @@ int wmain(int argc,WCHAR **argv)
     if(win32_process_global_targets_close(&targets,GetTickCount64()+1000,close_target,&closes)!=ERROR_BUSY || targets.count!=2)goto done;
     if(win32_process_global_targets_close(&targets,GetTickCount64()+1000,close_target,&closes) || o.disposed!=2)goto done;
     if(win32_process_global_targets_init(&targets,work,changed,sizeof(win32_process_global_target),&ops,&o))goto done;
+    /* The coordinator uses only public mechanisms and a caller callback; the
+     * existing owned child is never loaded with or sent a styling DLL. */
+    HANDLE quit=CreateEventW(NULL,TRUE,FALSE,NULL),stop=CreateEventW(NULL,TRUE,FALSE,NULL);
+    win32_process_global_engine engine={0};observed managed={0};unsigned engine_closes=0;
+    if(!quit || !stop)goto done;
+    if(win32_process_global_engine_start(&engine,GetThreadDesktop(GetCurrentThreadId()),quit,stop,work,changed,
+        1,sizeof(win32_process_global_target),&ops,&managed,3000))goto engine_done;
+    win32_process_global_engine_submit(&engine,p[1].dwProcessId,p[1].dwThreadId,w[1]);
+    if(win32_process_global_engine_wait_idle(&engine,3000) || managed.executed!=1 ||
+       !win32_process_global_engine_contains(&engine,p[1].dwProcessId,p[1].dwThreadId))goto engine_done;
+    if(win32_process_global_engine_stop(&engine,3000,close_target,&engine_closes)!=ERROR_BUSY)goto engine_done;
+    if(win32_process_global_engine_stop(&engine,3000,close_target,&engine_closes) || managed.disposed!=1)goto engine_done;
+    ResetEvent(quit);
+    if(win32_process_global_engine_start(&engine,GetThreadDesktop(GetCurrentThreadId()),quit,stop,work,changed,
+        1,sizeof(win32_process_global_target),&ops,&managed,3000))goto engine_done;
+    if(win32_process_global_engine_stop(&engine,3000,close_target,&engine_closes))goto engine_done;
     error=0;
+engine_done:
+    if(engine.owner)(void)win32_process_global_engine_stop(&engine,3000,close_target,&engine_closes);
+    CloseHandle(stop);CloseHandle(quit);
 done:
     if(watching && win32_process_global_window_stop(&watcher))error=1;
     win32_process_global_targets_dispose(&targets);
@@ -79,5 +99,5 @@ done:
     if(work)CloseHandle(work);
     if(changed)CloseHandle(changed);
     if(error || o.disposed!=2){printf("TARGETS FAIL error=%lu exec=%u dispose=%u\n",error,o.executed,o.disposed);return 1;}
-    puts("TARGETS PASS existing=1 new=1 dedup=1 no_dll=1 close_retry=1 reinit=1 cleanup=1");return 0;
+    puts("TARGETS PASS existing=1 new=1 dedup=1 no_dll=1 close_retry=1 reinit=1 engine_retry=1 engine_restart=1 cleanup=1");return 0;
 }

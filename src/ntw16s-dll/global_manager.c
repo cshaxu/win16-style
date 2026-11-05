@@ -5,7 +5,7 @@
 #include "global_process.h"
 #include "lib-win32/process-global/enumerate.h"
 #include "lib-win32/process-global/queue.h"
-#include "lib-win32/process-global/dispatch.h"
+#include "lib-win32/process-global/engine.h"
 #include "lib-win32/process-global/registry.h"
 #include "lib-win32/process-global/targets.h"
 #include <stdlib.h>
@@ -22,9 +22,8 @@ typedef struct manager_entry {
 struct ntw16s_global_manager {
     ntw16s_global_discover discover;ntw16s_global_policy policy;ntw16s_global_session *session;
     HANDLE mapping,stop,quit,work,changed;
-    win32_process_global_dispatch_pool pool;
+    win32_process_global_engine engine;
     HDESK desktop;WCHAR *dll_path;WORD machine;DWORD owner_thread;
-    win32_process_global_targets targets;
     ntw16s_global_process *process_monitor;
 };
 
@@ -53,7 +52,7 @@ static void discovered(HWND window,DWORD pid,DWORD thread_id,void *context)
 {
     ntw16s_global_manager *m=(ntw16s_global_manager *)context;
     if(m->session->phase!=NTW16S_GLOBAL_ACTIVE || pid==m->session->owner_pid || pid==m->session->host_pid)return;
-    win32_process_global_targets_submit(&m->targets,pid,thread_id,window);
+    win32_process_global_engine_submit(&m->engine,pid,thread_id,window);
 }
 /* Startup-only snapshot. Runtime discovery remains event driven. Prefer the
  * existing window entry for a process and add one eligible thread only when
@@ -63,7 +62,7 @@ static BOOL discover_existing_thread(DWORD pid,DWORD tid,void *context)
     ntw16s_global_manager *m=(ntw16s_global_manager *)context;BOOL found=FALSE;
     if(!pid || !tid || pid==GetCurrentProcessId() || pid==m->session->owner_pid || pid==m->session->host_pid)return TRUE;
     if(!GetThreadDesktop(tid))return TRUE;
-    found=win32_process_global_targets_has_process(&m->targets,pid);
+    found=win32_process_global_engine_has_process(&m->engine,pid);
     if(!found){
         ntw16s_global_identity identity;
         if(!ntw16s_global_policy_inspect_thread(&m->policy,pid,tid,m->machine,&identity))discovered(NULL,pid,tid,m);
@@ -168,8 +167,6 @@ static DWORD execute_target(win32_process_global_target *target,void *context,BO
     if(error && !*retained)(void)ntw16s_global_attach_close(&entry->attach);
     return error;
 }
-static BOOL process_next(void *parameter)
-{return win32_process_global_targets_next(&((ntw16s_global_manager *)parameter)->targets);}
 HANDLE ntw16s_global_manager_changed(ntw16s_global_manager *m){return m?m->changed:NULL;}
 DWORD ntw16s_global_manager_refresh(ntw16s_global_manager *m)
 {
@@ -179,31 +176,20 @@ DWORD ntw16s_global_manager_refresh(ntw16s_global_manager *m)
 DWORD ntw16s_global_manager_wait_idle(ntw16s_global_manager *m,DWORD timeout)
 {
     if(!m || m->owner_thread!=GetCurrentThreadId())return ERROR_INVALID_PARAMETER;
-    ULONGLONG deadline=GetTickCount64()+timeout;HANDLE waits[]={m->stop,m->quit,m->changed};
-    for(;;){
-        BOOL idle=win32_process_global_targets_idle(&m->targets);
-        if(idle)return ERROR_SUCCESS;
-        ULONGLONG now=GetTickCount64();if(now>=deadline)return ERROR_TIMEOUT;
-        DWORD result=MsgWaitForMultipleObjects(ARRAYSIZE(waits),waits,FALSE,(DWORD)(deadline-now),QS_ALLINPUT);
-        if(result==WAIT_OBJECT_0 || result==WAIT_OBJECT_0+1)return ERROR_CANCELLED;
-        if(result==WAIT_TIMEOUT)return ERROR_TIMEOUT;
-        if(result==WAIT_FAILED)return GetLastError();
-        if(result==WAIT_OBJECT_0+ARRAYSIZE(waits)){MSG message;while(PeekMessageW(&message,NULL,0,0,PM_REMOVE)){TranslateMessage(&message);DispatchMessageW(&message);}}
-        else if(result!=WAIT_OBJECT_0+2)return ERROR_INVALID_STATE;
-    }
+    return win32_process_global_engine_wait_idle(&m->engine,timeout);
 }
 BOOL ntw16s_global_manager_tracks(ntw16s_global_manager *m,DWORD pid,DWORD thread_id)
 {
     if(!m || !pid || !thread_id)return FALSE;
-    return win32_process_global_targets_contains(&m->targets,pid,thread_id);
+    return win32_process_global_engine_contains(&m->engine,pid,thread_id);
 }
 void ntw16s_global_manager_stats_read(ntw16s_global_manager *m,ntw16s_global_manager_stats *s)
 {
     if(!s)return;
     ZeroMemory(s,sizeof(*s));
     if(!m)return;
-    s->queued=InterlockedCompareExchange(&m->targets.queued,0,0);s->active=InterlockedCompareExchange(&m->targets.active,0,0);
-    s->failed=InterlockedCompareExchange(&m->targets.failed,0,0);s->overflow=InterlockedCompareExchange(&m->targets.overflow,0,0);
+    win32_process_global_engine_stats stats;win32_process_global_engine_stats_read(&m->engine,&stats);
+    s->queued=stats.queued;s->active=stats.active;s->failed=stats.failed;s->overflow=stats.overflow;
 }
 static DWORD close_target(win32_process_global_target *target,void *context,ULONGLONG deadline)
 {
@@ -217,10 +203,7 @@ DWORD ntw16s_global_manager_stop(ntw16s_global_manager *m,DWORD timeout)
     if(!m || m->owner_thread!=GetCurrentThreadId())return ERROR_INVALID_PARAMETER;
     if(m->process_monitor){DWORD error=ntw16s_global_process_stop(m->process_monitor);if(error)return error;m->process_monitor=NULL;}
     if(m->discover.hook){DWORD error=ntw16s_global_discover_stop(&m->discover);if(error)return error;}
-    SetEvent(m->quit);ULONGLONG deadline=GetTickCount64()+timeout;
-    DWORD wait_error=win32_process_global_dispatch_pool_wait(&m->pool,deadline);if(wait_error)return wait_error;
-    DWORD close_error=win32_process_global_targets_close(&m->targets,deadline,close_target,m);if(close_error)return close_error;
-    win32_process_global_dispatch_pool_release(&m->pool);
+    DWORD close_error=win32_process_global_engine_stop(&m->engine,timeout,close_target,m);if(close_error)return close_error;
     if(m->session)UnmapViewOfFile(m->session);
     if(m->mapping)CloseHandle(m->mapping);
     if(m->stop)CloseHandle(m->stop);
@@ -249,8 +232,8 @@ DWORD ntw16s_global_manager_start(const WCHAR *dll_path,WORD machine,ntw16s_glob
     m->work=CreateEventW(NULL,FALSE,FALSE,NULL);m->changed=CreateEventW(NULL,FALSE,FALSE,NULL);
     if(!m->stop || !m->quit || !m->work || !m->changed){error=GetLastError();goto fail;}
     const win32_process_global_target_ops ops={expired,active_finished,failed_retryable,execute_target,dispose_target};
-    error=win32_process_global_targets_init(&m->targets,m->work,m->changed,sizeof(manager_entry),&ops,m);if(error)goto fail;
-    error=win32_process_global_dispatch_pool_start(&m->pool,MANAGER_WORKERS,m->desktop,m->quit,m->stop,m->work,process_next,m,3000);
+    error=win32_process_global_engine_start(&m->engine,m->desktop,m->quit,m->stop,m->work,m->changed,
+        MANAGER_WORKERS,sizeof(manager_entry),&ops,m,3000);
     if(error)goto fail;
     error=ntw16s_global_discover_start(&m->discover,discovered,m);if(error)goto fail;
     /* The optional system process trace requires elevation. Retain normal

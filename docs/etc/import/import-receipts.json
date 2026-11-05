@@ -320,7 +320,7 @@
       "path": "src/ntw16s-dll/global_manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b60ae60b18fd7eae8875644e560bce2cdc7009822b4a8c4d00b55ec20d41e531",
+      "sha256": "95d087427fcb959c3d6d72419679a6ac9331782776018bfe96bf7e0b463468e8",
       "disposition": "authored",
       "review": "T21 S40 shared Toolhelp iteration; caller retains selection and lifecycle",
       "notice": "Project-authored C"
@@ -6134,9 +6134,27 @@
       "path": "tests/lib-win32/process-global/targets.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b081516fbbfbfecfc96e8b18d15d7697db1ac9f8b21f11ed75e852f215120641",
+      "sha256": "dcf9b26849815bfd0658e38b8d38ba09f42f6abd0f7370ff5794613682ab4b20",
       "disposition": "authored",
       "review": "T21 S41 target manager core and no-hook test",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-global/engine.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "46237e514fb6f7e36001d1b1179af1fc13a801567b52b2f28c704f15d39e4af9",
+      "disposition": "authored",
+      "review": "T21 S41 generic target manager lifecycle coordination",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-global/engine.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "447aff3af796a04563b450de66adb87b859e7e27352c7254f630872e32485863",
+      "disposition": "authored",
+      "review": "T21 S41 generic target manager lifecycle coordination",
       "notice": "Project-authored C code; no imported artwork"
     }
   ]
