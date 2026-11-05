@@ -1850,9 +1850,9 @@
       "path": "src/lib-win32/process-hook/startup_hooks.c",
       "source": "minhook/src/hook.c",
       "source_blob": "68a006a768c884372a34ee34043e20db079deba6",
-      "sha256": "0cbeff0b7f738d84c5a79d388206b5c8847bcb20dd23e71165ca38cf7861cf4c",
+      "sha256": "bc1b0cafdf1d2c932ea729bd2588b6570d2e3291d65aba7245794a75c93ef999",
       "disposition": "adapt",
-      "review": "Private static C trampoline/decoder backend; hook.c reduced to bounded startup-only patching, no thread enumeration, suspension, spin lock, waits or late attach; T6 S1 fixed MinHook source admission; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T18 S64 VB6 checklist scoped 96 DPI bitmap rendering and additional BitBlt hook; native fallbacks retained; T18 S64 P110 modern SpinButton bounded theme, bitmap and paint handling; T20 S1 common-dialog bridge and version; T20 S1 common find/replace creation scope",
+      "review": "Private static C trampoline/decoder backend; hook.c reduced to bounded startup-only patching, no thread enumeration, suspension, spin lock, waits or late attach; T6 S1 fixed MinHook source admission; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T18 S64 VB6 checklist scoped 96 DPI bitmap rendering and additional BitBlt hook; native fallbacks retained; T18 S64 P110 modern SpinButton bounded theme, bitmap and paint handling; T20 S1 common-dialog bridge and version; T20 S1 common find/replace creation scope; T21 S41 P24 compiler compatibility and boundary testing",
       "notice": "MinHook/HDE BSD-2-Clause; retain original notices and full LICENSE.txt in binary resources"
     },
     {
@@ -6152,27 +6152,27 @@
       "path": "src/lib-win32/process-hook/unwind.c",
       "source": null,
       "source_blob": null,
-      "sha256": "330a29b353dff4248c80845fd8dd73b47f38610b01d6d3b7662d1bd541c38cd5",
+      "sha256": "4faed5146e2dbba2632d6acebe48014ee68e14be5653600e88809194eb9b5361",
       "disposition": "authored",
-      "review": "T21 S41 shared propagation and native unwind; preserves T6 S1 cleanup design",
+      "review": "T21 S41 shared propagation and native unwind; preserves T6 S1 cleanup design; T21 S41 P24 compiler compatibility and boundary testing",
       "notice": "Project-authored C code; project MIT LICENSE"
     },
     {
       "path": "src/lib-win32/process-hook/unwind.h",
       "source": null,
       "source_blob": null,
-      "sha256": "8d3efb134617881831adb75148399a0b526b25ef2443ee3f024f4a2ec51b7c87",
+      "sha256": "03bfd2b444393e1b1e236825013c45e7cad5c36f31b5c74a41ba220f5af94a8a",
       "disposition": "authored",
-      "review": "T21 S41 shared propagation and native unwind; preserves T6 S1 cleanup design",
+      "review": "T21 S41 shared propagation and native unwind; preserves T6 S1 cleanup design; T21 S41 P24 compiler compatibility and boundary testing",
       "notice": "Project-authored C code; project MIT LICENSE"
     },
     {
       "path": "src/lib-win32/process-hook/propagate.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2cf1439318bbf68a744350dff718638a6a69da24d1879f6b583113295b9b0c11",
+      "sha256": "8d9b5b62d6a8a1e34bd21a7fcd0d0c4fc45d9c357634f450278496e29ce23559",
       "disposition": "authored",
-      "review": "T21 S41 shared propagation and native unwind; preserves T6 S1 cleanup design",
+      "review": "T21 S41 shared propagation and native unwind; preserves T6 S1 cleanup design; T21 S41 P24 compiler compatibility and boundary testing",
       "notice": "Project-authored C code; project MIT LICENSE"
     },
     {
@@ -6188,9 +6188,9 @@
       "path": "tests/lib-win32/process-hook/propagate.c",
       "source": null,
       "source_blob": null,
-      "sha256": "08edf838e10e7e7830e634b456c9fa0bcea2df0ac8a9de78f367f929786ac8de",
+      "sha256": "de7182170c3c9da8fbd30899db62854eb9a13c20835e45d157e31f615df20d10",
       "disposition": "authored",
-      "review": "T21 S41 shared propagation and native unwind; preserves T6 S1 cleanup design",
+      "review": "T21 S41 shared propagation and native unwind; preserves T6 S1 cleanup design; T21 S41 P24 reentrant propagation test",
       "notice": "Project-authored C code; project MIT LICENSE"
     },
     {
@@ -6260,9 +6260,18 @@
       "path": "tests/lib-win32/process-hook/late_batch.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b0cc20547136ee48671dcb4499241f507e99a006da9c33d0ab36094182888895",
+      "sha256": "ee21feb9db2c4d0134901ea7169ed453b7b99b46b75665cf168da5e163e81c5b",
       "disposition": "authored",
-      "review": "T21 S41 shared late hook batch lifecycle",
+      "review": "T21 S41 shared late hook batch lifecycle; T21 S41 P24 compiler compatibility and boundary testing",
+      "notice": "Project-authored C code; project MIT LICENSE"
+    },
+    {
+      "path": "tests/lib-win32/process-hook/unwind.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "af559cbbb44c7668bd3b1d544bc59789c7b36e71da2e278c154a9ae75a5653a1",
+      "disposition": "authored",
+      "review": "T21 S41 P24 portable native unwind test adapted from project-authored tests/run16s-exe/unwind.c",
       "notice": "Project-authored C code; project MIT LICENSE"
     }
   ]

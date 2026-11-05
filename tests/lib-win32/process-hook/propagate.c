@@ -5,6 +5,8 @@
 #include <wchar.h>
 #include <string.h>
 static BOOL enabled=TRUE,accepted=TRUE,fail_install=FALSE;static unsigned installations;static HANDLE failed_child;
+static BOOL reenter,recursive_ok;
+static DWORD launch(const WCHAR *,DWORD,BOOL);
 static const BYTE payload[]={0x51,0x26,0x37,0xa5};
 static BOOL active(void *context){(void)context;return enabled;}
 static BOOL accept_w(LPCWSTR a,LPWSTR c,void *context){(void)a;(void)c;(void)context;return accepted;}
@@ -12,6 +14,7 @@ static BOOL accept_a(LPCSTR a,LPSTR c,void *context){(void)a;(void)c;(void)conte
 static DWORD install(HANDLE process,process_hook_create_w create,void *context)
 {
     (void)create;(void)context;++installations;
+    if(reenter){reenter=FALSE;recursive_ok=launch(L"plain",0,FALSE)==73;}
     if(fail_install){
         if(!DuplicateHandle(GetCurrentProcess(),process,GetCurrentProcess(),&failed_child,0,FALSE,DUPLICATE_SAME_ACCESS))return GetLastError();
         return ERROR_BAD_EXE_FORMAT;
@@ -62,7 +65,7 @@ int wmain(int argc,WCHAR **argv)
     }
     if(argc>1)return process_hook_stage_read(consume,&valid,&found) || found?4:73;
     if(initialize())return 5;
-    if(launch(L"child",0,FALSE)!=72 || installations!=1)return 6;
+    reenter=TRUE;if(launch(L"child",0,FALSE)!=72 || installations!=1 || !recursive_ok)return 6;
     if(launch(L"leaf",CREATE_SUSPENDED,TRUE)!=71 || installations!=2)return 7;
     if(launch_a("leaf")!=71 || installations!=3)return 8;
     enabled=FALSE;if(launch(L"plain",0,FALSE)!=73 || installations!=3)return 9;
@@ -70,5 +73,5 @@ int wmain(int argc,WCHAR **argv)
     accepted=TRUE;fail_install=TRUE;if(launch(L"leaf",0,FALSE)!=ERROR_BAD_EXE_FORMAT || installations!=4 || !failed_child)return 11;
     DWORD failed_exit=0;BOOL reaped=WaitForSingleObject(failed_child,0)==WAIT_OBJECT_0 && GetExitCodeProcess(failed_child,&failed_exit) && failed_exit==ERROR_BAD_EXE_FORMAT;
     CloseHandle(failed_child);if(!reaped)return 12;
-    printf("PROCESS HOOK PROPAGATE PASS width=%u child=1 grandchild=1 aw=1 suspended=1 disabled=1 rejected=1 error193=1 no_style=1\n",(unsigned)(sizeof(void*)*8));return 0;
+    printf("PROCESS HOOK PROPAGATE PASS width=%u child=1 grandchild=1 aw=1 suspended=1 disabled=1 rejected=1 error193=1 no_style=1 reentrant=1\n",(unsigned)(sizeof(void*)*8));return 0;
 }

@@ -244,3 +244,35 @@ P22：`PROCESS_HOOK_LATE_PATCH_LIMIT` 公布 88 条，并在 `process_hook_late_
 P23：`window_start_ex` 允许公共调用方显式发现自身窗口，产品仍通过旧 `window_start` 排除自身；双宽增量测试覆盖已有和新建窗口。已发布包 `s41-audit1` 聚焦 15 项通过，但双宽其他 window station 子项均输出 SKIP（exit 12），未提权控制器提示 ETW 不可用；自有父进程退出后的控制器会话清理通过，测试没有目标窗口。
 
 P23 交付证据：`s41-clean27` 双位宽干净构建、ABI、来源与资源及公共源码/静态库依赖门禁通过；`core/process-global-window` 干净树双宽通过。`s41-package27` 同批实际包聚焦 23 项通过，测试本身报告零顶层跳过，但两个 policy 日志分别包含其他 window station 子项 SKIP（exit 12）；父进程日志报告未启用管理员 ETW。manager 双宽均为 changed=1、restored_equal=0。四文件经 `s41-publish23` 发布到 assets 与 O:/winnt，摘要一致；真实托盘端到端、管理员 ETW、真实 PID/TID 重用及上述恢复差异仍未证明。
+
+## S41 P24：公共 process-hook 编译器兼容与导入清单
+
+已在本项目对 GCC 16.1 和 MSVC 19.43 各自 x86/x64 编译链接并运行自有进程测试：异常清理正常路径、嵌套 SEH、同线程复用和跨线程隔离；批处理容量 0/88/89 的入口边界、准备失败清理、成功后保留和 sticky 失败；传播 A/W、子孙、暂停、停用、拒绝、193 及安装回调内重入。GCC 的既有启动期、晚期 guard/patch/batch 双宽回归各 5 项通过。88 的证据是容量被接受，不是已实际安装 88 个钩子。异常展开的公共探针不代表每个产品回调异常路径均已验证。
+
+编译器边界：GCC 保持现有 x86 注册链和 x64 SEH 汇编；MSVC 使用 C 的 `__try/__finally` 和 `__assume`，调用同一清理代码；MSVC 的 BEGIN/END 形成词法块，END 后要使用的变量须在 BEGIN 前声明。传播的 ANSI 函数类型使用显式 Windows C 签名。MSVC CMake 早期 Debug 编译器探测报 C1902；便携测试入口设置 Release 探测后双宽通过。可编译链接和自有测试通过，不等于 ntvdm64 已接入或产品已验证。
+
+导入清单（SHA-256 为本项目当前文件字节摘要，逐项比较、合并而非目录覆盖）：
+
+| 文件 | SHA-256 |
+| --- | --- |
+| `src/lib-win32/process-hook/late_batch.c` | `d7729f780638131d74399458cba18f9ece7956ae70d1086f0dc80c8d5a7541be` |
+| `src/lib-win32/process-hook/late_batch.h` | `ca31262acbbd5574500bbb6a13df6009e9258388e3266d9cbe81672448c01c74` |
+| `src/lib-win32/process-hook/late_patch.c` | `15b689bf11a42844876ff8d4bd7ffbf8cd1afad1502c4762518300a5514fc89e` |
+| `src/lib-win32/process-hook/late_patch.h` | `30a44d505c3ce8b6b64ee9fb36654014c19607d4247e0c62c4315ab05112aa27` |
+| `src/lib-win32/process-hook/propagate.c` | `8d9b5b62d6a8a1e34bd21a7fcd0d0c4fc45d9c357634f450278496e29ce23559` |
+| `src/lib-win32/process-hook/propagate.h` | `2c41a4d82f0bbec556c96bcb582674fc3efcd5d9576cb93b9b0830d1411dacae` |
+| `src/lib-win32/process-hook/unwind.c` | `4faed5146e2dbba2632d6acebe48014ee68e14be5653600e88809194eb9b5361` |
+| `src/lib-win32/process-hook/unwind.h` | `03bfd2b444393e1b1e236825013c45e7cad5c36f31b5c74a41ba220f5af94a8a` |
+| `src/lib-win32/process-hook/startup_hooks.c` | `bc1b0cafdf1d2c932ea729bd2588b6570d2e3291d65aba7245794a75c93ef999` |
+| `tests/lib-win32/process-hook/unwind.c` | `af559cbbb44c7668bd3b1d544bc59789c7b36e71da2e278c154a9ae75a5653a1` |
+| `tests/lib-win32/process-hook/late_batch.c` | `ee21feb9db2c4d0134901ea7169ed453b7b99b46b75665cf168da5e163e81c5b` |
+| `tests/lib-win32/process-hook/propagate.c` | `de7182170c3c9da8fbd30899db62854eb9a13c20835e45d157e31f615df20d10` |
+| `tests/lib-win32/process-hook/portable/CMakeLists.txt` | `ee49f56f9c0f1bb36231259008c38413175b51d5da102485cf9aca9ae4ec25c1` |
+
+当前只读对照：兄弟仓库缺少 late_batch、propagate、unwind；其 late_patch 的 88 上限在 .c 内，本项目移到 .h 以供 batch 调用，需同步合并两个文件；startup_hooks 差异是 MSVC 内建函数分支，兄弟仓库现通过 `src/compat/include/process_hook_msvc.h` 强制包含模拟，合并时核查冲突并移除冗余适配。其 helper、payload、staging、late_guard、MinHook 文件及许可当前摘要相同；必须再次核验，保留所有来源及许可证。
+
+兄弟构建入口包括 `tools/build/New-NativeHook64Ninja.ps1`、`tools/build/New-NativeWorkerNinja.ps1`、`tools/build/New-T310OriginalSoftpcNinja.ps1`；现有 nthook 在 `src/nthook32-dll/create_process.c` 自行完成 CreateProcess 策略，不能以传播库覆盖其策略、生命周期或错误处理。载荷和跨宽协调由 `src/common/native-hook/installer.c`、`context.c` 提供，需单独适配回调及有效期。新增测试入口 `tests/lib-win32/process-hook/portable` 适配兄弟的目录后运行，并保留其 `test/lib-win32/process-hook/payload_test.c`、跨宽、竞争和来源校验；不能因本项目自有用例通过而删掉或声称替代。
+
+late_batch 的已提交 trampoline 不能安全物理卸载；停用只使传播回到透传。产品组合的实际托盘、管理员 ETW 以及恢复差异仍沿用此前已记录的限制。
+
+P24 交付：`s41-clean28` 双宽干净构建、ABI、来源与资源、公共源码和静态库边界检查通过；干净树两位宽各 8 项钩子/展开/生命周期测试通过。`s41-package28` 同批四文件实际包聚焦 32 项通过，无顶层跳过；manager 两位宽恢复摘要仍为 2875890938，与旧版相同且不等于原始 343534586。`s41-publish24` 两个目录四文件摘要一致。MSVC 可移植 CMake 入口双宽各 3 项通过；这不构成 ntvdm64 产品验证。

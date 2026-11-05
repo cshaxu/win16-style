@@ -1,7 +1,9 @@
 #include "propagate.h"
 #include "unwind.h"
 static process_hook_create_w create_w;
-static __typeof__(&CreateProcessA) create_a;
+typedef BOOL (WINAPI *process_hook_create_a)(LPCSTR,LPSTR,LPSECURITY_ATTRIBUTES,
+    LPSECURITY_ATTRIBUTES,BOOL,DWORD,LPVOID,LPCSTR,LPSTARTUPINFOA,LPPROCESS_INFORMATION);
+static process_hook_create_a create_a;
 static process_hook_propagation_ops ops;
 static _Thread_local unsigned entering;
 static void leave(void *unused){(void)unused;--entering;}
