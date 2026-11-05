@@ -239,7 +239,7 @@
       "path": "src/lib-win32/process-hook/late_patch.h",
       "source": null,
       "source_blob": null,
-      "sha256": "cdc27ff7cbbd70bb2e08fd741f7aac15bb1b7128b4e2c5afe35d983e077c5f04",
+      "sha256": "30a44d505c3ce8b6b64ee9fb36654014c19607d4247e0c62c4315ab05112aa27",
       "disposition": "authored",
       "review": "T21 S13 experimental late-patch primitive using existing MinHook trampoline backend; not linked to product; T21 S13 experimental batch preflight",
       "notice": "Project-authored source; existing MinHook license retained where applicable"
@@ -248,7 +248,7 @@
       "path": "src/lib-win32/process-hook/late_patch.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f331d76aab38c1f222c71615b74dad38c7ff49a93312898c608a4f5948898c7a",
+      "sha256": "15b689bf11a42844876ff8d4bd7ffbf8cd1afad1502c4762518300a5514fc89e",
       "disposition": "authored",
       "review": "T21 S13 experimental late-patch primitive using existing MinHook trampoline backend; not linked to product; T21 S13 experimental batch preflight; T21 S13 PSS guard ownership candidate",
       "notice": "Project-authored source; existing MinHook license retained where applicable"
@@ -302,7 +302,7 @@
       "path": "tests/ntw16s-dll/global_manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "074a7bbc4eeece855a5d223c4cd810105cc78f22e98e9db44fb864ac8f643499",
+      "sha256": "92b0252af944580a0389f36bc518d675148d96e4c137a9e4c4193d4ee37436fd",
       "disposition": "authored",
       "review": "T21 S13 manager startup wait timeout and completion test",
       "notice": "Project-authored source; no imported code or resources"
@@ -6242,7 +6242,7 @@
       "path": "src/lib-win32/process-hook/late_batch.c",
       "source": null,
       "source_blob": null,
-      "sha256": "65b0cfbabf8e08d8b3261eb3a540238c8d7a58b13d4a4d3d014683fab8ba9720",
+      "sha256": "d7729f780638131d74399458cba18f9ece7956ae70d1086f0dc80c8d5a7541be",
       "disposition": "authored",
       "review": "T21 S41 shared late hook batch lifecycle",
       "notice": "Project-authored C code; project MIT LICENSE"
@@ -6251,7 +6251,7 @@
       "path": "src/lib-win32/process-hook/late_batch.h",
       "source": null,
       "source_blob": null,
-      "sha256": "0588ed8b1d6f951705b084cbde7e558827afbd69d8229fb614556e428442fbb7",
+      "sha256": "ca31262acbbd5574500bbb6a13df6009e9258388e3266d9cbe81672448c01c74",
       "disposition": "authored",
       "review": "T21 S41 shared late hook batch lifecycle",
       "notice": "Project-authored C code; project MIT LICENSE"
@@ -6260,7 +6260,7 @@
       "path": "tests/lib-win32/process-hook/late_batch.c",
       "source": null,
       "source_blob": null,
-      "sha256": "48bb40750e2ad006bc7961cb95c9adabd822469c923f90a597c1980df25e3cb9",
+      "sha256": "b0cc20547136ee48671dcb4499241f507e99a006da9c33d0ab36094182888895",
       "disposition": "authored",
       "review": "T21 S41 shared late hook batch lifecycle",
       "notice": "Project-authored C code; project MIT LICENSE"

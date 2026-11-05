@@ -3,7 +3,8 @@
 #include "late_patch.h"
 /* Caller zeroes state and patch array, and owns arrays and synchronization
  * for process life. The MinHook buffer allocator must not be shared with a
- * concurrent hook backend.
+ * concurrent hook backend. Capacity must not exceed
+ * PROCESS_HOOK_LATE_PATCH_LIMIT.
  * Successful patches and sticky failed transactions retain their storage;
  * committed trampolines cannot be physically removed by this API. */
 typedef struct process_hook_late_batch {

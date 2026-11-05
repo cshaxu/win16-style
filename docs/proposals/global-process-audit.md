@@ -203,3 +203,10 @@ P19：`process-global/identity` 提供进程创建时间与桌面指纹，`proce
 P20：`process-global/window` 负责线程钩子安装、就绪、等待和撤销；`process-global/background` 管理后台调度和完成标记；`process-global/recovery` 只在同伴进程已退出且身份匹配时停止调用方命名的跟踪。`global_thread.c`、`global_late.c`、`global_process.c` 提供产品策略和协议。双宽自有窗口钩子及后台测试、无跟踪会话负例和实际包 20 项聚焦通过，含双宽本地全局钩子与子孙传播；真实管理员 ETW 正例及完整端到端未覆盖。发布 `s41-publish20`。
 
 P21：`process-hook/late_batch` 管理已有晚期钩子批量准备、重试、失败清理和危险状态保留，产品 `late_process.c` 选择注册传播及样式回调；安装后没有物理卸载。仅样式测试增加双宽 A/W 子进程 DLL 缺席和入口字节对照，已发布 run16s 双宽负例退出 42。双宽干净构建及 28 项实际包聚焦通过，发布 `s41-publish21`；底层 88 条上限需增加公共入口早期验证，ETW 正例和真实全局托盘仍未覆盖。
+
+
+## P22 绘制恢复对照
+
+实际管理器自有目标同一 Button 的 `WM_PRINT` 像素摘要在 x86/x64 增量对照均为原始 343534586、应用 2033954149、移除 2875890938：应用确实改变绘制，但移除后不等于原始，不得称为完全恢复。P20 已发布 DLL 在同一探针中得到同样结果；不点击该按钮仍复现，控件样式位相同，`WM_GETFONT` 均为 0。原因未确认；采样为内存 DIB 的真实绘制，不是屏幕截图。管理器测试要求绘制变化并记录恢复结果，故其通过不表示恢复像素相同。用户允许无法完全恢复时的残影；保留限制并在最终报告说明。
+
+P22：`PROCESS_HOOK_LATE_PATCH_LIMIT` 公布 88 条，并在 `process_hook_late_batch_begin` 超额时返回 `ERROR_INVALID_PARAMETER`；双宽干净构建及批处理负例通过。实际包 `s41-package26` 20/20 聚焦通过，双宽管理器日志分别记录 `changed=1 restored_equal=0`；发布 `s41-publish22`。该聚焦通过不表示像素恢复通过。

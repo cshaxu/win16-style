@@ -7,6 +7,7 @@ static int detour(int n){return original(n)+100;}
 int main(void)
 {
     process_hook_late_batch batch={0};process_hook_late_patch patches[1]={{0}};process_hook_late_patch *items[1]={0};
+    if(process_hook_late_batch_begin(&batch,patches,items,PROCESS_HOOK_LATE_PATCH_LIMIT+1)!=ERROR_INVALID_PARAMETER || batch.patches)return 8;
     original=sample;call=sample;
     if(process_hook_late_batch_begin(&batch,patches,items,1) || process_hook_late_batch_prepare(&batch,&original,(void *)detour))return 1;
     if(process_hook_late_batch_prepare(&batch,&original,(void *)detour)!=ERROR_INSUFFICIENT_BUFFER)return 2;
@@ -22,5 +23,5 @@ int main(void)
     if(process_hook_late_batch_begin(&sticky,patches,items,1)!=ERROR_ACCESS_DENIED ||
        process_hook_late_batch_prepare(&sticky,&original,(void *)detour)!=ERROR_ACCESS_DENIED ||
        process_hook_late_batch_commit(&sticky,0,1,0)!=ERROR_ACCESS_DENIED)return 7;
-    printf("PROCESS HOOK LATE BATCH PASS bits=%u abort=1 retry=1 installed=1 retained=1 sticky=1\n",(unsigned)(sizeof(void*)*8));return 0;
+    printf("PROCESS HOOK LATE BATCH PASS bits=%u abort=1 retry=1 installed=1 retained=1 sticky=1 limit=1\n",(unsigned)(sizeof(void*)*8));return 0;
 }

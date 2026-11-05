@@ -2,7 +2,7 @@
 #include "minhook/src/buffer.h"
 DWORD process_hook_late_batch_begin(process_hook_late_batch *batch,process_hook_late_patch *patches,process_hook_late_patch **items,DWORD capacity)
 {
-    if(!batch || !patches || !items || !capacity)return ERROR_INVALID_PARAMETER;
+    if(!batch || !patches || !items || !capacity || capacity>PROCESS_HOOK_LATE_PATCH_LIMIT)return ERROR_INVALID_PARAMETER;
     if(batch->sticky_error)return batch->sticky_error;
     if(batch->installed || batch->count)return ERROR_INVALID_STATE;
     batch->patches=patches;batch->items=items;batch->capacity=capacity;InitializeBuffer();return ERROR_SUCCESS;

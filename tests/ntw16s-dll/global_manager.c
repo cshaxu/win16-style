@@ -9,6 +9,20 @@ static HWND button;
 static unsigned clicks;
 static BOOL delayed;
 static HANDLE delay_started;
+static DWORD rendered_button(void)
+{
+    RECT r;if(!button || !GetWindowRect(button,&r) || r.right<=r.left || r.bottom<=r.top)return 0;
+    int width=r.right-r.left,height=r.bottom-r.top;BITMAPINFO info={0};
+    info.bmiHeader.biSize=sizeof(info.bmiHeader);info.bmiHeader.biWidth=width;info.bmiHeader.biHeight=-height;
+    info.bmiHeader.biPlanes=1;info.bmiHeader.biBitCount=32;info.bmiHeader.biCompression=BI_RGB;
+    void *bits=NULL;HDC dc=CreateCompatibleDC(NULL);if(!dc)return 0;
+    HBITMAP bitmap=CreateDIBSection(dc,&info,DIB_RGB_COLORS,&bits,NULL,0);if(!bitmap || !bits){if(bitmap)DeleteObject(bitmap);DeleteDC(dc);return 0;}
+    HGDIOBJ old=SelectObject(dc,bitmap);ZeroMemory(bits,(SIZE_T)width*(SIZE_T)height*4);
+    SendMessageW(button,WM_PRINT,(WPARAM)dc,PRF_NONCLIENT|PRF_CLIENT|PRF_ERASEBKGND);GdiFlush();
+    DWORD hash=2166136261u;const BYTE *p=bits;
+    for(SIZE_T i=0;i<(SIZE_T)width*(SIZE_T)height*4;++i){hash^=p[i];hash*=16777619u;}
+    SelectObject(dc,old);DeleteObject(bitmap);DeleteDC(dc);return hash?hash:1;
+}
 static LRESULT CALLBACK window_proc(HWND w,UINT m,WPARAM a,LPARAM b)
 {
     if(m==RegisterWindowMessageW(NTW16S_GLOBAL_CONTROL) && b==NTW16S_GLOBAL_APPLY && !delayed){
@@ -20,6 +34,9 @@ static LRESULT CALLBACK window_proc(HWND w,UINT m,WPARAM a,LPARAM b)
         return attached?(attached(w)?1:0)|(attached(button)?2:0):0;
     }
     if(m==WM_APP+53)return clicks;
+    if(m==WM_APP+55)return (LRESULT)(DWORD)rendered_button();
+    if(m==WM_APP+56){LOGFONTW font={0};HFONT value=(HFONT)SendMessageW(button,WM_GETFONT,0,0);if(!value || !GetObjectW(value,sizeof(font),&font))return 0;return (LRESULT)(DWORD)(((unsigned)font.lfHeight&0xffffu)|(((unsigned)font.lfWeight&0xffffu)<<16));}
+    if(m==WM_APP+57)return GetWindowLongW(button,GWL_STYLE);
     if(m==WM_APP+54){ShowWindow(button,SW_HIDE);ShowWindow(button,SW_SHOW);return 1;}
     if(m==WM_COMMAND && HIWORD(a)==BN_CLICKED){++clicks;return 0;}
     if(m==WM_CLOSE){DestroyWindow(w);return 0;}
@@ -162,11 +179,14 @@ int wmain(int argc,WCHAR **argv)
     WCHAR delay_name[128];swprintf(delay_name,ARRAYSIZE(delay_name),L"Local\\Win16ManagerDelay-%lu",GetCurrentProcessId());
     HANDLE delay_event=CreateEventW(NULL,TRUE,FALSE,delay_name);SetEnvironmentVariableW(L"WIN16_MANAGER_DELAY_STARTED",delay_name);
     BOOL before=spawn(self,0,&pi[0],&windows[0]);
+    DWORD native_draw=before?(DWORD)query(windows[0],WM_APP+55):0;
+    DWORD native_font=before?(DWORD)query(windows[0],WM_APP+56):0,native_style=before?(DWORD)query(windows[0],WM_APP+57):0;
     DWORD start=before?ntw16s_global_manager_start(dll,sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,&manager):ERROR_INVALID_STATE;
     BOOL delayed_started=delay_event && WaitForSingleObject(delay_event,3000)==WAIT_OBJECT_0;
     DWORD idle_timeout=manager && delayed_started?ntw16s_global_manager_wait_idle(manager,20):ERROR_INVALID_STATE;
     DWORD idle_done=manager?ntw16s_global_manager_wait_idle(manager,3000):ERROR_INVALID_STATE;
     BOOL first=!start && wait_attached(manager,windows[0]);
+    DWORD styled_draw=first?(DWORD)query(windows[0],WM_APP+55):0;
     BOOL created=first && spawn(self,1,&pi[1],&windows[1]);
     BOOL second_attached=created && wait_attached(manager,windows[1]);
     BOOL second_active=second_attached && wait_active(manager,2);
@@ -174,23 +194,25 @@ int wmain(int argc,WCHAR **argv)
     ntw16s_global_manager_stats stats={0};if(manager)ntw16s_global_manager_stats_read(manager,&stats);
     int clicked[2]={-1,-1};
     for(unsigned i=0;i<2;++i)if(windows[i]){HWND child=GetDlgItem(windows[i],101);if(child)SendMessageW(child,BM_CLICK,0,0);clicked[i]=query(windows[i],WM_APP+53);}
-    DWORD old_pid=pi[0].dwProcessId,old_tid=pi[0].dwThreadId;
+    DWORD old_pid=pi[1].dwProcessId,old_tid=pi[1].dwThreadId;
     BOOL tracked=manager && ntw16s_global_manager_tracks(manager,old_pid,old_tid),exited=FALSE,retired=FALSE;
-    if(second && windows[0] && pi[0].hProcess){
-        PostMessageW(windows[0],WM_CLOSE,0,0);exited=WaitForSingleObject(pi[0].hProcess,3000)==WAIT_OBJECT_0;
-        if(exited){CloseHandle(pi[0].hThread);CloseHandle(pi[0].hProcess);ZeroMemory(&pi[0],sizeof(pi[0]));windows[0]=NULL;
-            for(unsigned i=0;i<40;++i)query(windows[1],WM_APP+54);
+    if(second && windows[1] && pi[1].hProcess){
+        PostMessageW(windows[1],WM_CLOSE,0,0);exited=WaitForSingleObject(pi[1].hProcess,3000)==WAIT_OBJECT_0;
+        if(exited){CloseHandle(pi[1].hThread);CloseHandle(pi[1].hProcess);ZeroMemory(&pi[1],sizeof(pi[1]));windows[1]=NULL;
+            for(unsigned i=0;i<40;++i)query(windows[0],WM_APP+54);
             retired=wait_retired(manager,old_pid,old_tid);}
     }
-    int survivor=windows[1]?query(windows[1],WM_APP+52):-1;
-    if(windows[1]){HWND child=GetDlgItem(windows[1],101);if(child)SendMessageW(child,BM_CLICK,0,0);}
-    int survivor_clicks=windows[1]?query(windows[1],WM_APP+53):-1;
-    BOOL replacement=retired && spawn(self,2,&pi[0],&windows[0]) && wait_attached(manager,windows[0]);
-    if(replacement){HWND child=GetDlgItem(windows[0],101);if(child)SendMessageW(child,BM_CLICK,0,0);}
-    int replacement_clicks=replacement?query(windows[0],WM_APP+53):-1;
+    int survivor=windows[0]?query(windows[0],WM_APP+52):-1;
+    if(windows[0]){HWND child=GetDlgItem(windows[0],101);if(child)SendMessageW(child,BM_CLICK,0,0);}
+    int survivor_clicks=windows[0]?query(windows[0],WM_APP+53):-1;
+    BOOL replacement=retired && spawn(self,2,&pi[1],&windows[1]) && wait_attached(manager,windows[1]);
+    if(replacement){HWND child=GetDlgItem(windows[1],101);if(child)SendMessageW(child,BM_CLICK,0,0);}
+    int replacement_clicks=replacement?query(windows[1],WM_APP+53):-1;
     session->phase=NTW16S_GLOBAL_STOPPING;UINT control=RegisterWindowMessageW(NTW16S_GLOBAL_CONTROL);
     for(unsigned i=0;i<2;++i)if(windows[i]){DWORD_PTR ignored;SendMessageTimeoutW(windows[i],control,session->cookie,NTW16S_GLOBAL_REMOVE,SMTO_ABORTIFHUNG,500,&ignored);}
     int removed[2]={windows[0]?query(windows[0],WM_APP+52):0,windows[1]?query(windows[1],WM_APP+52):-1};
+    DWORD restored_draw=windows[0]?(DWORD)query(windows[0],WM_APP+55):0;
+    DWORD restored_font=windows[0]?(DWORD)query(windows[0],WM_APP+56):0,restored_style=windows[0]?(DWORD)query(windows[0],WM_APP+57):0;
     SetEvent(stop);DWORD stopped=manager?ntw16s_global_manager_stop(manager,5000):ERROR_INVALID_STATE;
     BOOL cleaned=TRUE;
     for(unsigned i=0;i<2;++i)if(pi[i].hProcess){
@@ -200,7 +222,9 @@ int wmain(int argc,WCHAR **argv)
     }
     if(delay_event)CloseHandle(delay_event);
     CloseHandle(stop);UnmapViewOfFile(session);CloseHandle(map);
-    if(!before || start || !delayed_started || idle_timeout!=ERROR_TIMEOUT || idle_done || !first || !created || !second || !tracked || !exited || !retired || !replacement || replacement_clicks!=1 || survivor!=3 || survivor_clicks!=2 || clicked[0]!=1 || clicked[1]!=1 || removed[0] || removed[1] || stopped || !cleaned){
+    printf("MANAGER DRAW bits=%u changed=%d restored_equal=%d native=%lu styled=%lu restored=%lu font=%lu/%lu style=%lu/%lu\n",(unsigned)(sizeof(void*)*8),native_draw!=styled_draw,native_draw==restored_draw,native_draw,styled_draw,restored_draw,native_font,restored_font,native_style,restored_style);
+    if(!native_draw || !styled_draw || !restored_draw || native_draw==styled_draw ||
+       !before || start || !delayed_started || idle_timeout!=ERROR_TIMEOUT || idle_done || !first || !created || !second || !tracked || !exited || !retired || !replacement || replacement_clicks!=1 || survivor!=3 || survivor_clicks!=2 || clicked[0]!=1 || clicked[1]!=1 || removed[0] || removed[1] || stopped || !cleaned){
         printf("MANAGER FAIL before=%d start=%lu delay=%d idle_timeout=%lu idle_done=%lu first=%d created=%d second=%d attached=%d active=%d exited=%d retired=%d replacement=%d replacement_clicks=%d survivor=%d survivor_clicks=%d stats=%ld,%ld,%ld,%ld clicks=%d,%d removed=%d,%d stop=%lu cleanup=%d\n",before,start,delayed_started,idle_timeout,idle_done,first,created,second,second_attached,second_active,exited,retired,replacement,replacement_clicks,survivor,survivor_clicks,stats.queued,stats.active,stats.failed,stats.overflow,clicked[0],clicked[1],removed[0],removed[1],stopped,cleaned);return 14;
     }
     printf("MANAGER IDLE bits=%u timeout=%lu completed=%lu\n",(unsigned)(sizeof(void*)*8),idle_timeout,idle_done);
