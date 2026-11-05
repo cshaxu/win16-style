@@ -3956,7 +3956,7 @@
       "path": "src/ntw16s-dll/global_attach.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4099acb92b1deb8009af01ad479dcd3b654b658ba41c8cd8f24845b83605f1f2",
+      "sha256": "b86822a8a111be030d54a7dedb62ffe309a1f9799eaa4e76a587c6b2a7b1507a",
       "disposition": "authored",
       "review": "T21 S13 thread identity and explicit startup attachment preparation; T21 S13 cross-directory compatible module reuse",
       "notice": "Project-authored source; no imported code or resources"
@@ -6083,6 +6083,33 @@
       "sha256": "7151b1a90a2ab0629e71bb7f6ccc1a9f3183213b1df77c9bc29836277bf3a1de",
       "disposition": "authored",
       "review": "T21 S41 existing module selection test",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-global/transaction.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "b51033f10e6775688cc7b4f56f7b20decf2fd2fff8a33909fa9045364f800af1",
+      "disposition": "authored",
+      "review": "T21 S41 extract attachment transaction progression",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/process-global/transaction.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e44e397cd563881ee1750790d2a14f85e4eecd9a446896a6daa703cba39ae46a",
+      "disposition": "authored",
+      "review": "T21 S41 extract attachment transaction progression",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "tests/lib-win32/process-global/transaction.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "3f024b8351d0504f1f81c477b5d68e89b52d0041196d13a3b82bac7e0713268e",
+      "disposition": "authored",
+      "review": "T21 S41 transaction phase contract tests",
       "notice": "Project-authored C code; no imported artwork"
     }
   ]

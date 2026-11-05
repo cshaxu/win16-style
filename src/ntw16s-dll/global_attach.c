@@ -2,14 +2,15 @@
 #include "global_session.h"
 #include "global_remote.h"
 #include "lib-win32/process-global/module.h"
+#include "lib-win32/process-global/transaction.h"
 #include <stdlib.h>
 #include <string.h>
 #include <wchar.h>
 #include <tlhelp32.h>
 
-#define ATTACH_LOADING 1u
-#define ATTACH_STARTING 2u
-#define ATTACH_ACTIVE 3u
+#define ATTACH_LOADING WIN32_PROCESS_GLOBAL_LOADING
+#define ATTACH_STARTING WIN32_PROCESS_GLOBAL_STARTING
+#define ATTACH_ACTIVE WIN32_PROCESS_GLOBAL_ACTIVE
 
 DWORD ntw16s_global_attach_close(ntw16s_global_attach *ticket)
 {
@@ -76,30 +77,26 @@ static DWORD control(ntw16s_global_attach *ticket,LPARAM action)
     return ERROR_SUCCESS;
 }
 
+typedef struct attach_steps {ntw16s_global_attach *ticket;SECURITY_ATTRIBUTES *security;} attach_steps;
+static DWORD step_load(void *context)
+{attach_steps *s=(attach_steps *)context;void *worker=NULL;return ntw16s_global_load_finish(&s->ticket->load,0,&worker);}
+static DWORD step_validate(void *context)
+{return revalidate(((attach_steps *)context)->ticket);}
+static DWORD step_start(void *context)
+{
+    attach_steps *s=(attach_steps *)context;ntw16s_global_attach *t=s->ticket;
+    return ntw16s_global_start_begin(t->process,t->identity.pid,t->identity.thread_id,t->cookie,t->dll_path,s->security,&t->start);
+}
+static DWORD step_ready(void *context)
+{return ntw16s_global_start_ready(&((attach_steps *)context)->ticket->start,0);}
+static DWORD step_apply(void *context)
+{return control(((attach_steps *)context)->ticket,NTW16S_GLOBAL_APPLY);}
 DWORD ntw16s_global_attach_advance(ntw16s_global_attach *ticket,SECURITY_ATTRIBUTES *security)
 {
-    DWORD error;void *worker=NULL;
+    static const win32_process_global_transaction_ops ops={step_load,step_validate,step_start,step_ready,step_apply};
     if(!ticket || !ticket->process || !ticket->dll_path || !ticket->phase)return ERROR_INVALID_PARAMETER;
-    if(ticket->phase==ATTACH_LOADING){
-        error=ntw16s_global_load_finish(&ticket->load,0,&worker);
-        if(error==ERROR_TIMEOUT)return ERROR_IO_PENDING;
-        if(error)return error;
-        error=revalidate(ticket);if(error)return error;
-        error=ntw16s_global_start_begin(ticket->process,ticket->identity.pid,ticket->identity.thread_id,ticket->cookie,
-                                        ticket->dll_path,security,&ticket->start);
-        if(error)return error;
-        ticket->phase=ATTACH_STARTING;
-    }
-    if(ticket->phase==ATTACH_STARTING){
-        error=ntw16s_global_start_ready(&ticket->start,0);
-        if(error==ERROR_TIMEOUT)return ERROR_IO_PENDING;
-        if(error)return error;
-        ticket->phase=ATTACH_ACTIVE;
-        if(!ticket->window)return ERROR_SUCCESS;
-        ticket->control_error=control(ticket,NTW16S_GLOBAL_APPLY);
-        return ticket->control_error;
-    }
-    return ticket->phase==ATTACH_ACTIVE?ticket->control_error:ERROR_INVALID_STATE;
+    attach_steps steps={ticket,security};
+    return win32_process_global_transaction_advance(&ticket->phase,&ticket->control_error,ticket->window!=NULL,&steps,&ops);
 }
 
 DWORD ntw16s_global_attach_remove(ntw16s_global_attach *ticket)

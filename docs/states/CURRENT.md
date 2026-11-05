@@ -4,6 +4,8 @@
 
 T21 S41 已准入：按用户续指令完成现有全局进程能力的公共组件拆分；T21 保持开放。
 
+P10：冻结全局三能力审计清单及迁移顺序，事务状态推进迁入 process-global；产品提供加载、身份、工作线程和样式回调。双宽干净构建、ABI、来源与资源门禁通过；独立事务 pending/失败/无窗口测试双宽通过；实际包串行 16/16 无跳过，含接入与管理器停止竞态。仅管理、仅传播、仅样式及完整组合尚未按新要求证明；跨目录与管理员 ETW 既有限制未消除。四文件发布 assets 与 O:/winnt 摘要一致（s41-publish10）；S41/T21 继续开放。
+
 P9：同名目标模块选择与映像身份校验迁入 process-global；产品提供文件比较和实际导出解析。双宽干净构建、ABI、来源与资源门禁通过；双宽自有进程模块选择及拒绝/回退测试通过，实际包串行聚焦 16/16 无跳过，包含接入、管理器、远端解析和加载。跨目录真实端到端因托盘创建失败 2147500037、manager_not_active=2 未完成；上一发布包同条件同错，不认定是回归亦不算通过。管理员 ETW 和完整矩阵未覆盖。四文件发布 assets 及 O:/winnt 并核对摘要（s41-publish9）；S41/T21 继续开放。
 
 P8：管理器 PID/TID 索引、碰撞链与分批回收遍历迁入 process-global；目标生命周期、关闭及计数由产品回调保持原策略。双宽干净构建、ABI、来源和资源门禁通过；双宽索引碰撞/回收测试通过，实际包串行 20/20 无跳过，包含管理器、停止竞态、拒绝目标及接入；管理员 ETW 正例及完整矩阵未覆盖。四文件发布 assets 及 O:/winnt 并核对摘要（s41-publish8）；S41/T21 继续开放。
@@ -487,18 +489,18 @@ T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文
 | --- | --- |
 | Identifier Mode | Continuation |
 | Admission And Approval | 用户要求继续将可拆分的 global 部分移入公共组件并提交 P。 |
-| Objective | 抽取现有全局进程枚举、发现、监视、管理、身份和生命周期通用机制；产品样式行为、接入策略及协议由调用方提供。 |
+| Objective | 冻结全量审计后解耦全局目标管理、挂钩传播及窗口样式控制，迁移既有通用机制并验证三个独立路径及组合；产品策略与协议由调用方提供。 |
 | Non-goals | 不增加监控范围、修改权限策略、钩子行为、公开 ABI 或兄弟仓库。 |
 | Reference Baseline | 本项目 19ce180，S40 公共枚举器。 |
-| Candidate Proposal | [全局样式](../proposals/global-style-mode.md)。 |
+| Candidate Proposal | [全局样式](../proposals/global-style-mode.md)、[全量审计](../proposals/global-process-audit.md)。 |
 | Files And ABI Surface | process-global、相关 DLL 适配、CMake 和测试；内部接口按需调整，产品 ABI 不变。 |
 | Applicable Rules | M0、纯 C、资源身份和线程生命周期规则。 |
-| Verification | 双宽干净构建；解析、队列/生命周期、窗口发现和自有隔离目标回归；ETW 权限边界如实记录。 |
+| Verification | 双宽干净构建；独立管理、仅传播、仅样式及组合的自有目标回归，明确加载、初始化、传播、附着、绘制、恢复及权限跳过。 |
 | Expected Markers | 双宽发现与管理器回归通过；公共库不依赖产品私有头和样式策略。 |
 | Asset Needs | 有二进制变化则同批四文件发布 assets 和 O:/winnt。 |
 | Reporting Requirements | 说明抽离边界、结果、跳过及远端复核。 |
 | Stop Conditions | 构建、测试或发布权限失败无法安全处理。 |
-| Exit Criteria | 构建测试发布、P 提交推送及远端复核。 |
+| Exit Criteria | 逐项审计及独立/组合验证、依赖检查、构建测试发布、P 提交推送和远端复核；完成 S41，T21 开放。 |
 | Original Owner Request | 用户要求设定持续目标，将全局进程相关现有能力提取到 process-global，直至完成。 |
 | Similar-Issue Sweep | 冻结 global 生产文件全集，区分通用进程机制、产品协议和窗口样式，逐项记录迁移或保留理由并检查调用者。 |
 
