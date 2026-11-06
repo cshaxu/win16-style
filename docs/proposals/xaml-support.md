@@ -75,3 +75,15 @@ InputSink 子窗口同属 ApplicationFrameHost 的一个 GUI 线程；其中一�
 不变。144 DPI 计算器真实截图确认标题、按钮和系统菜单可见。只有本次新建应用
 的 x64 ApplicationFrameHost 已进入验证；全局模式、复用实例、WinUI 3 和客户区
 不在此候选覆盖内。产品交付状态以 CURRENT 为准，不能将源码实现等同已发布。
+
+## T22 current delivered boundary
+
+The candidate-only descriptions above are historical. P34 is published in assets
+and O:/winnt: x64 ApplicationFrameHost-hosted Calculator and Scan exterior styling,
+system calc.exe recognition, explicit --app activation and global existing/new
+window discovery. P40 additionally verified actual production tray Uncheck,
+residency and repeat Enable/Uncheck with ordinary-token window discovery.
+Internal XAML controls remain excluded; WinUI/desktop hybrids are separately queued.
+The host DLL remains pinned; removing style surfaces is not physical unloading.
+See [current coverage audit](../history/M0-T22-coverage.md) for evidence and limits;
+CURRENT alone owns task status. No universal UWP or all-DPI claim is made.

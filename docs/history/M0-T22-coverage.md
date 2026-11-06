@@ -2,7 +2,7 @@
 
 This audit preserves the user's window-only scope. Internal XAML controls and
 WinUI/desktop hybrid adaptation are not silently counted as implemented. M0 T22
-S1 remains open. The published product is P34; P37/P38 added verification only.
+S1 remains open. The published product is P34; P37/P38/P40 added verification only.
 
 | Requirement | Observed result and authoritative evidence | Status |
 | --- | --- | --- |
@@ -15,9 +15,9 @@ S1 remains open. The published product is P34; P37/P38 added verification only.
 | Shared host and ownership | Separate frame/CoreWindow identity, no host propagation, per-frame removal; P36 both owned surfaces destroyed without terminating host. | Verified sampled coexistence; DLL stays pinned, no physical unload claim |
 | Framework classification | Notepad packaged FullTrustApplication/WinUI, Terminal FullTrustApplication dependency; Explorer desktop mixed Shell; Task Manager desktop with incomplete framework-module evidence. See modern-desktop-window-style proposal. | Classified at recorded confidence; deferred candidate, not UWP pass counts |
 | Preserve existing native style and artwork | clean12 same-snapshot four-file build/gates; package8 passed20 focused cases with no skips. No changes between P22 and HEAD in win16-window-uwp, win16-window or win16-common at this audit. | Verified focused scope, not universal Win32 compatibility |
-| Architecture/toolchain and delivery | Pure C17, GCC/Ninja/ccache dual-width products, three components/four files. P34 assets and O:/winnt hashes match; P38 fetched remote artifacts verified. | Delivered; current pending probe changes do not change products |
+| Architecture/toolchain and delivery | Pure C17, GCC/Ninja/ccache dual-width products, three components/four files. P34 assets and O:/winnt hashes match; P38 fetched remote artifacts verified. | Delivered; subsequent test/documentation changes do not change products |
 
-## Required next verification
+## Verification status and remaining check
 
 P40 completed the bounded formal tray test against published O:/winnt/run16s.exe:
 wait for session.ready, invoke the enabled checked menu item through MSAA,
@@ -35,6 +35,12 @@ proven to have the same cause. These are real production menu actions through
 MSAA, not physical Explorer clicks. Each desktop sweep reported92 failed/timed-out
 notifications; successful restoration of the two owned UWP surfaces does not prove
 all other desktop windows restored.
+
+P41 requested elevation for the same P40 fixture with --toggle. Windows
+UAC canceled before creating the probe: no PID or actual.log, so administrator
+repeat-toggle remains unverified. No repeated prompt was issued. The production
+files remain unchanged.
+
 After this, review the completed scoped evidence and delivery before closing S1
 or T22. This audit does not authorize closure or claim the goal is already complete.
 
