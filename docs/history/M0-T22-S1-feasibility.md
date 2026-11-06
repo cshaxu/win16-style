@@ -620,3 +620,36 @@ when overlay is present, rather than repeat SetCursor variants. Other remaining
 scope includes activation reuse/ordinary entry integration, title replacement,
 and additional real UWP applications. No product or binary changes in P8;
 P6 tested/deployed hashes remain the current baseline. S1/T22 stay open.
+
+## P9 original-root and plain Win32 cursor controls
+
+No product changes. All experiments remain under registered s1-window-audit.
+The common menu-message dispatcher does not intercept WM_NCHITTEST or
+WM_SETCURSOR; inspection ruled out that suspected query contamination.
+
+- cursor-root1: fresh Calculator PID15468, host12040/TID27836. Native root hit
+  is10; root actually receives two WM_SETCURSOR calls (lParam33554442) and
+  returns with thread cursor0x10011. Global cursor remains0x10003. Thus the
+  HTTRANSPARENT test reached the original root; missing delivery is not the cause.
+- cursor-layered-pass1: PID29320/TID9492. WS_EX_TRANSPARENT on the complete
+  layered surface makes WindowFromPoint return the original root; root cursor
+  messages still execute, but visible cursor remains arrow. This experiment
+  disables pointer access to custom title buttons, so it is not a candidate fix.
+- cursor-observer1: PID24900/TID28336 using unchanged clean6 product DLL. Removed
+  the WindowFromPoint observation before polling; cursor still fails. That
+  observer call alone is not the cause.
+- cursor-fixture.exe: pure C owned ordinary Win32 window plus the same clean6
+  win16-window-uwp static library. Native/styled/restored visible cursor all
+  equal expected0x10011; apply/remove succeed. Independent UI thread pumps real
+  mouse input; pointer restored and own window closed. No injection or UWP used.
+
+These results bound the failure to this host environment rather than a universal
+failure of the adapter's cursor selection. They do not prove the exact UWP input
+owner or justify changing host-wide mouse/pointer settings. No polling/cursor
+forcing, shared-class modifications, extra input hooks or UI worker threads
+were added to the product. A different input-thread placement is only a future
+candidate and would require explicit lifetime and cross-thread UI design plus a
+real prototype; it is not implemented or validated here.
+
+The P6 package is unchanged. This is diagnostic progress, not cursor repair or
+complete UWP support. S1/T22 remain open.

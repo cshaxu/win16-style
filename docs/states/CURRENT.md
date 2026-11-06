@@ -764,3 +764,5 @@ s1-publish2已将同批四文件发布assets根目录及O:/winnt并校验摘要�
 P7复核：P6 b1db5d2aa0f4349f8ef978aa6d6be7d724f1e7de 已推送；重新fetch后读取10个变更blob逐字节一致，远端四产物与两处八个部署文件均匹配实包SHA256。仅登记复核，无二进制变化；S1/T22保持开放，可见边框光标失败及其他有限覆盖边界不变。
 
 P8光标审计：未换肤计算器同坐标原生HTLEFT/SIZEWE通过；覆盖层真实WM_SETCURSOR及NC鼠标消息已到达，线程内SetCursor正确但系统可见光标仍为箭头。正确NC命中、移动消息后设置、自有窗口类及HTTRANSPARENT对照均未解决；全部只在已登记s1-window-audit中，不合入无效产品修改。未变更二进制，沿用P6包；详细PID/线程/限制见研究记录，S1/T22保持开放。
+
+P9对照：原窗口已收到真实HTLEFT光标消息并设置SIZEWE；完全鼠标透传的分层窗也未解决。移除探针WindowFromPoint观察仍复现。同一clean6适配库在自建普通Win32窗口上的native/styled/restored光标三态全部通过，故不能称适配库普遍失效；当前断点属于本机UWP宿主场景，具体输入所有权仍未证实。仅更新研究记录，P6产品包不变，S1/T22继续开放。
