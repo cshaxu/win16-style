@@ -82,3 +82,7 @@ open for owner acceptance, T23 remains open, S2 not admitted.
 | ntw16s32.dll | `e59094f5e71d84f4761f2ba2d7c36cb2741152941876a6558f3996364e1958f9` |
 | ntw16s64.dll | `8018f23efd11e33cf6bdee85307e467f94663934fa2f22f08c0f98c0ef100a1a` |
 | run16s.exe | `611029193467742be6dac20f092d14420035b5b7f43bf6cc46fd305330486c33` |
+
+## Owner acceptance
+
+User confirmed the system menu no longer flickers. S1 acceptance is complete; T23 remains open. This does not turn the unfinished final native screenshot into a passed test.

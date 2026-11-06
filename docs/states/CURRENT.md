@@ -2,79 +2,10 @@
 
 ## Current Work
 
-当前活动任务：M0 T23 S1，记事本原生外框恢复、标准启动接入及交付。
-用户批准准入队列首项；T22/S1已[收口](../history/M0-T22-closure.md)。
-最后分配数值T为T23，S1处于verified，P6系统菜单悬停修复已发布，等待用户复验；P1–P3为研究，P4完成产品修复与发布，P5记录远端复核。
-登记scratch：build/t23-package/s1-admission，仅保存治理检查日志。
-登记scratch：build/t23-package/s1-topology1，只读原生窗口/模块快照；本S提炼后回收。
-用户追加要求：保留顶部标签页与菜单的内容、布局和交互，不用覆盖层遮掉它们。
-
-P2初步研究见[窗口结构记录](../history/M0-T23-S1-topology.md)：Notepad最终子进程、
-顶端客户区及多线程已实测；Explorer现有窗口只读，Task Manager模块错误5，
-Terminal无实例。顶部内容保留是设计约束；S1未收口，产品未变。
-
-登记scratch：build/t23-package/s1-notepad-native1，用户批准的自有Notepad原窗口
-定向线程原型；仅调用已发布WindowAttach/Remove，不安装传播或新增外壳。
-保存before/styled/restored截图、几何和原生返回；本S提炼后回收。
-
-登记scratch：build/t23-package/s1-notepad-native2，原生移除后的窗口局部刷新对照；
-不抢前台，保留首次失败图像，不改产品renderer。
-
-P3原生记事本原型见[实测记录](../history/M0-T23-S1-notepad-native.md)：现有WindowAttach
-直接绘制原窗口标题/边框，标签与菜单可见、客户区几何不变，无覆盖层。撤销几何
-恢复但原生标题按钮绘制未恢复，局部theme刷新未解决；交互验证未完成，不计产品通过。
-
-登记scratch：build/t23-package/s1-notepad-restore1，DWM恢复原因对照、标准启动诊断及日志；本S提炼后回收。
-
-登记scratch：build/t23-package/s1-clean1（首轮干净包，晚期容量回归失败，不发布）、
-build/t23-package/s1-clean2（README来源摘要检查失败，未构建）、build/t23-package/s1-clean3（修正摘要后的同批干净缓存构建）、
-build/t23-package/s1-package2（私有桌面托盘入口失败）、build/t23-package/s1-package3（局部双宽挂钩实包回归）、
-build/t23-package/s1-package1（实包回归）、build/t23-package/s1-publish1（部署备份及摘要）；本S提炼后回收。
-
-实施边界：已证实Notepad的CreateProcessAsUserW转交绕过A/W传播；
-公共传播增加可选AsUserW入口，产品接入同一事务，不新增导出或扫描目标。
-DWM只保存可查询的NCRENDERING_ENABLED有效状态；不能恢复系统未公开的原策略枚举。
-P4双宽干净构建通过，核心10/10及实包25/25通过；已发布0.23.0.0到assets根目录与O:/winnt，摘要一致。
-标准命令在正式目录再次通过；撤销后原生标题恢复。私有桌面托盘用例失败不计通过，详见交付记录。
-细节及限制见[当前交付记录](../history/M0-T23-S1-notepad-delivery.md)。
-
-P6双宽干净构建、核心10/10及实包29/29通过；同批四文件已发布assets和O:/winnt。最终真实菜单截图复核未完成，不计通过；既有Notepad未操作。详见：[系统菜单悬停诊断](../history/M0-T23-S1-system-menu-hover.md)。
-
-登记scratch：build/t23-package/s1-menu-hover1，有限原生系统菜单悬停/重绘诊断；保留既有标签、菜单和恢复行为，不推进S2。
-
-登记scratch：build/t23-package/s1-clean4（P6同批干净包）、build/t23-package/s1-package4（菜单修复实包回归）、build/t23-package/s1-publish2（P6部署记录）；本S验收后提炼清理。
-
-## M0 T23 S1 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | New |
-| Admission And Approval | 用户批准队列首项并明确将S1扩展为Notepad正式接入、恢复修复、测试发布提交推送后验收；后续按应用顺序推进。 |
-| Objective | 用户批准按应用调整顺序；S1完成Notepad恢复修复与标准run16s notepad接入、测试、发布提交推送，等待用户验收。 |
-| Non-goals | 不处理客户区/XAML控件、标签内容或应用数据；不修改系统注册表/安全设置；不改兄弟仓库；不结束用户既有会话。 |
-| Reference Baseline | T22收口83c1a2c1；已部署产品P34 0.22.0.0。 |
-| Candidate Proposal | docs/proposals/modern-desktop-window-style.md |
-| Files And ABI Surface | run16s-exe启动协调、ntw16s-dll附着、lib-win32/win16-window恢复及对应测试；优先复用现有入口，必要导出先记录ABI；保持四产物。 |
-| Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT；固定M0，C17/MinGW GCC/Ninja/ccache。 |
-| Verification | 原生只读快照及自有实例有限运行；逐层PID/创建时间/路径/位宽/包身份/框架模块/HWND；模块加载、附着与绘制分开；环境失败记skip。 |
-| Expected Markers | 标准启动最终Notepad进程DLL与实际外框可见；移除DWM状态与原生按钮恢复；标签选择、三个菜单及窗口状态正常；旧DLL恢复负例与A/W-only传播负例检出。 |
-| Asset Needs | 保留原图形资源及声明；同批四文件发布assets根目录与O:/winnt，版本0.23.0.0。 |
-| Reporting Requirements | 报告两个实测根因、标准命令结果、原生交互/恢复证据、双宽测试和负例、同批四文件摘要与远端复核；不将其他应用计入S1通过。 |
-| Stop Conditions | 不可确认窗口/会话所有权则只读；权限失败留证据、不改安全策略；UAC单次发起超过一分钟才提醒。 |
-| Exit Criteria | 标准run16s notepad实际窗口换肤、移除恢复、标签与菜单保留通过；双宽干净构建、实包测试、assets与O:/winnt同批发布、推送复核后等待用户验收；其他应用后续S。 |
-| Original Owner Request | 把S1记事本做完，标准run16s notepad跑通，修好恢复，测试发布提交推送后给用户验收。 |
-| Similar-Issue Sweep | 对照T22激活转交、共享宿主和自定义标题边界；复用现有公共进程及窗口能力，避免逐应用复制renderer。 |
-
-当前技术基线：T23 S1 P4四文件0.23.0.0，新增标准Notepad转交传播与DWM有效状态恢复；S1等待验收，T23开放。
-
-继承基线：P34四文件曾发布assets根目录与O:/winnt；P40/P42验证普通及管理员
-正式托盘两轮启停。支持已验证的x64 ApplicationFrameHost承载Calculator/Scan
-外框（144DPI），系统calc.exe入口、显式--app和全局已有/新建发现。内部XAML、
-WinUI桌面混合窗口未包含在该基线中；现在由T23审计适配。共享宿主定向运行时接入，不启用
-宿主传播；移除样式层不等于卸载固定DLL。具体限制见收口审计和TODO。
-
-T21此前按用户要求[有限范围收口](../history/M0-T21-closure.md)。
-以下为历次记录，旧“开放/待验证”描述由上述当前状态及最终审计覆盖。
+M0 T23 保持开放。S1 记事本已验收通过并收口；用户确认系统菜单不再闪烁。
+P6 `e37da0db` 四文件已发布至 assets 根目录及 O:/winnt，双宽构建、核心10项及实包29项通过；最终真实菜单截图复核未完成，不计通过。
+详细记录见 [S1交付](../history/M0-T23-S1-notepad-delivery.md)和[菜单修复](../history/M0-T23-S1-system-menu-hover.md)。
+下一项为已规划的 S2 Task Manager；当前无活动任务包。保留登记的 S1 scratch，待核对仍映射的旧 DLL 后安全清理。
 
 ## Historical delivery notes
 
@@ -538,7 +469,7 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
 - Last verified remote delivery: M0 T23 S1 P4，`37d534be`；已实际下载四产品及六个源码/测试/交付文件逐字节复核。P5仅记录复核，产品不变。
-- Open task: T23 S1；T22已收口。Explorer现有产品排除策略尚未改变。
+- Open task: T23；S1已验收收口，S2待准入；T22已收口。Explorer现有产品排除策略尚未改变。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。
