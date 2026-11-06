@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
-static HMENU system_menu;static HWND popup;static UINT before_type,seen_type;static ULONG_PTR before_data,seen_data;static BOOL seen,checked,selected,custom;static COLORREF sample=CLR_INVALID;static unsigned idles,custom_draws;
+static HMENU system_menu;static HWND popup;static UINT before_type,seen_type;static ULONG_PTR before_data,seen_data;static BOOL seen,checked,selected,custom;static COLORREF sample=CLR_INVALID;static unsigned idles,custom_draws;static BOOL hover,hover_checked,hover_preserved;
 static BOOL CALLBACK find_popup(HWND w,LPARAM unused){(void)unused;WCHAR cls[32];MENUBARINFO mbi={.cbSize=sizeof(mbi)};if(IsWindowVisible(w)&&GetClassNameW(w,cls,32)&&!lstrcmpW(cls,L"#32768")&&GetMenuBarInfo(w,OBJID_CLIENT,0,&mbi)&&mbi.hMenu==system_menu){popup=w;return FALSE;}return TRUE;}
 static BOOL sample_menu(void){
     if(!EnumThreadWindows(GetCurrentThreadId(),find_popup,0)&&!popup)return FALSE;
@@ -24,7 +24,27 @@ static BOOL sample_menu(void){
 }
 static LRESULT CALLBACK proc(HWND w,UINT m,WPARAM a,LPARAM b){
     if(m==WM_INITMENUPOPUP&&HIWORD(b)){MENUITEMINFOW i={.cbSize=sizeof(i),.fMask=MIIM_FTYPE|MIIM_DATA};if(GetMenuItemInfoW((HMENU)a,0,TRUE,&i)){seen=TRUE;seen_type=i.fType;seen_data=i.dwItemData;}}
-    if(m==WM_ENTERIDLE&&a==MSGF_MENU){++idles;if(sample_menu()){EndMenu();return 0;}if(idles==1)PostMessageW(w,WM_KEYDOWN,VK_DOWN,1);}
+    if(m==WM_ENTERIDLE&&a==MSGF_MENU){++idles;
+        /* Model a host retaining native string presentation, as modern Notepad
+         * does. Leave item data intact for the adapter's normal cleanup. */
+        if(hover&&!hover_checked){int count=GetMenuItemCount(system_menu);
+            for(int i=0;i<count;++i){MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_FTYPE};
+                if(GetMenuItemInfoW(system_menu,(UINT)i,TRUE,&item)){item.fType&=~MFT_OWNERDRAW;SetMenuItemInfoW(system_menu,(UINT)i,TRUE,&item);}}
+        }
+        if(sample_menu()){
+            if(hover){RECT row;int count=GetMenuItemCount(system_menu);
+                if(GetMenuItemRect(NULL,system_menu,(UINT)(count-1),&row)){
+                    MapWindowPoints(NULL,popup,(POINT *)&row,2);
+                    SendMessageW(popup,WM_MOUSEMOVE,0,MAKELPARAM(15,35));
+                    HDC dc=GetDC(popup);int x=row.right-5,y=(row.top+row.bottom)/2;
+                    COLORREF marker=RGB(243,17,219);SetPixel(dc,x,y,marker);ReleaseDC(popup,dc);
+                    for(int i=0;i<3;++i)SendMessageW(popup,WM_MOUSEMOVE,0,MAKELPARAM(16+i,35));
+                    dc=GetDC(popup);hover_preserved=GetPixel(dc,x,y)==marker;ReleaseDC(popup,dc);
+                    hover_checked=TRUE;
+                }
+                printf("SYSTEM_HOVER unchanged_row=%d checked=%d\n",hover_preserved,hover_checked);
+            }
+            EndMenu();return 0;}if(idles==1)PostMessageW(w,WM_KEYDOWN,VK_DOWN,1);}
     if(m==WM_TIMER&&a==1){KillTimer(w,1);EndMenu();return 0;}
     if(m==WM_EXITMENULOOP)PostQuitMessage(0);
     if(m==WM_MEASUREITEM&&custom){MEASUREITEMSTRUCT *x=(MEASUREITEMSTRUCT *)b;if(x&&x->CtlType==ODT_MENU&&x->itemID==12345){x->itemWidth=80;x->itemHeight=20;return TRUE;}}
@@ -33,7 +53,7 @@ static LRESULT CALLBACK proc(HWND w,UINT m,WPARAM a,LPARAM b){
 }
 int wmain(int argc,WCHAR **argv){
     if(argc!=2)return 2;
-    custom=!lstrcmpW(argv[1],L"custom");if(!custom&&lstrcmpW(argv[1],L"normal"))return 2;
+    custom=!lstrcmpW(argv[1],L"custom");hover=!lstrcmpW(argv[1],L"hover");if(!custom&&!hover&&lstrcmpW(argv[1],L"normal"))return 2;
     WNDCLASSW cls={.lpfnWndProc=proc,.hInstance=GetModuleHandleW(NULL),.lpszClassName=L"Win16SysMenuWitness"};if(!RegisterClassW(&cls))return 4;
     HMENU bar=CreateMenu(),sub=CreatePopupMenu();if(!bar||!sub||!AppendMenuW(sub,MF_STRING,42,L"Item")||!AppendMenuW(bar,MF_POPUP,(UINT_PTR)sub,L"&File"))return 5;
     HWND w=CreateWindowW(cls.lpszClassName,L"System menu witness",WS_OVERLAPPEDWINDOW|WS_CLIPCHILDREN,30,30,360,200,NULL,bar,cls.hInstance,NULL);if(!w)return 5;
@@ -44,6 +64,6 @@ int wmain(int argc,WCHAR **argv){
     MSG msg;while(GetMessageW(&msg,NULL,0,0)>0){TranslateMessage(&msg);DispatchMessageW(&msg);}KillTimer(w,1);
     BOOL intact=GetMenuItemInfoW(system_menu,0,TRUE,&i)&&i.fType==before_type&&i.dwItemData==before_data;
     BOOL style=sample==RGB(164,200,240);printf("SYSTEM_MENU bits=%u custom=%d seen=%d unchanged=%d checked=%d selected=%d blue=%d sample=%06lx idles=%u custom_draws=%u\n",(unsigned)(sizeof(void*)*8),custom,seen,seen_type==before_type&&seen_data==before_data&&intact,checked,selected,style,(DWORD)sample,idles,custom_draws);
-    DestroyWindow(w);return seen&&seen_type==before_type&&seen_data==before_data&&intact&&selected&&(custom?custom_draws>0:style)?0:1;
+    DestroyWindow(w);return seen&&seen_type==before_type&&seen_data==before_data&&intact&&selected&&(custom?custom_draws>0:style)&&(!hover||(hover_checked&&hover_preserved))?0:1;
 }
 

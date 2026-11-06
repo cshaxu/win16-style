@@ -4,7 +4,7 @@
 
 当前活动任务：M0 T23 S1，记事本原生外框恢复、标准启动接入及交付。
 用户批准准入队列首项；T22/S1已[收口](../history/M0-T22-closure.md)。
-最后分配数值T为T23，S1处于verified，等待用户验收；P1–P3为研究，P4完成产品修复与发布，P5记录远端复核。
+最后分配数值T为T23，S1处于verified，P6系统菜单悬停修复已发布，等待用户复验；P1–P3为研究，P4完成产品修复与发布，P5记录远端复核。
 登记scratch：build/t23-package/s1-admission，仅保存治理检查日志。
 登记scratch：build/t23-package/s1-topology1，只读原生窗口/模块快照；本S提炼后回收。
 用户追加要求：保留顶部标签页与菜单的内容、布局和交互，不用覆盖层遮掉它们。
@@ -37,6 +37,12 @@ DWM只保存可查询的NCRENDERING_ENABLED有效状态；不能恢复系统未�
 P4双宽干净构建通过，核心10/10及实包25/25通过；已发布0.23.0.0到assets根目录与O:/winnt，摘要一致。
 标准命令在正式目录再次通过；撤销后原生标题恢复。私有桌面托盘用例失败不计通过，详见交付记录。
 细节及限制见[当前交付记录](../history/M0-T23-S1-notepad-delivery.md)。
+
+P6双宽干净构建、核心10/10及实包29/29通过；同批四文件已发布assets和O:/winnt。最终真实菜单截图复核未完成，不计通过；既有Notepad未操作。详见：[系统菜单悬停诊断](../history/M0-T23-S1-system-menu-hover.md)。
+
+登记scratch：build/t23-package/s1-menu-hover1，有限原生系统菜单悬停/重绘诊断；保留既有标签、菜单和恢复行为，不推进S2。
+
+登记scratch：build/t23-package/s1-clean4（P6同批干净包）、build/t23-package/s1-package4（菜单修复实包回归）、build/t23-package/s1-publish2（P6部署记录）；本S验收后提炼清理。
 
 ## M0 T23 S1 Packet
 

@@ -500,9 +500,9 @@
       "path": "tests/ntw16s-dll/system_menu_visual.c",
       "source": null,
       "source_blob": null,
-      "sha256": "42b22eb6cce4ae9ba5c9a05107f8bc492fbb641b8bfb51f4eb4e0f64e38fcb1c",
+      "sha256": "73cc2e6b8d5be1b6aaef0295d8f082da862f4904fa279c925e9fea84ed1e92f2",
       "disposition": "authored",
-      "review": "T20 S19 native system menu regression witness",
+      "review": "T20 S19 native system menu regression witness; T23 S1 native system-menu hover buffering and unchanged-selection regression",
       "notice": "Project-authored test; no imported code or resources"
     },
     {
@@ -1067,9 +1067,9 @@
       "path": "src/lib-win32/win16-window/menu_scope.c",
       "source": "src/ntw16s-dll/menu_scope.c",
       "source_blob": "b27da79667d1dce3f17336721ef7c6be06fc18f7",
-      "sha256": "2f0b7b0d0a9860029c4d45ea9d0cc32ec8c73110fd374b2c5fa6063e210302a3",
+      "sha256": "71dda9049201eb736e122f28d4c99d4ddbbf02313114397aa02e6a2be9dd9bbd",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T8 S3 scoped USER SysShadow suppression and actual popup border/shadow regression; T21 S22 unchanged same-thread popup scope migration",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T8 S3 scoped USER SysShadow suppression and actual popup border/shadow regression; T21 S22 unchanged same-thread popup scope migration; T23 S1 native system-menu hover buffering and unchanged-selection regression",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {

@@ -126,15 +126,44 @@ static void paint_system(HWND w,popup *p,HDC target,BOOL window_coordinates)
         else if(!(item.fType&MFT_SEPARATOR)&&!win16_style_menu_columns_read(dc,font,dpi,rows[i].text,&columns))valid=FALSE;
         else{rows[i].type=item.fType;rows[i].state=item.fState;rows[i].submenu=item.hSubMenu!=NULL;}
     }
+    /* Compose the popup before presenting it; clearing each row directly on
+     * the screen exposes blank text/background between GDI calls. */
+    RECT client;HDC memory=NULL,output=dc;HBITMAP bitmap=NULL,old=NULL;
+    if(valid&&!target&&GetClientRect(w,&client)){
+        memory=CreateCompatibleDC(dc);
+        if(memory)bitmap=CreateCompatibleBitmap(dc,client.right,client.bottom);
+        if(bitmap)old=(HBITMAP)SelectObject(memory,bitmap);
+        if(old&&old!=(HBITMAP)HGDI_ERROR&&BitBlt(memory,0,0,client.right,client.bottom,dc,0,0,SRCCOPY))dc=memory;
+    }
     for(int i=0;valid&&i<count&&!p->detached;++i){RECT r=rows[i].rect;
         MapWindowPoints(NULL,w,(POINT *)&r,2);OffsetRect(&r,delta.x,delta.y);
         UINT state=0;if(rows[i].state&MFS_HILITE)state|=ODS_SELECTED;if(rows[i].state&MFS_DISABLED)state|=ODS_DISABLED;if(rows[i].state&MFS_CHECKED)state|=ODS_CHECKED;
         (void)win16_style_menu_text_columns(dc,&r,font,dpi,&p->palette,rows[i].text,state,(rows[i].type&MFT_SEPARATOR)?WIN16_STYLE_MENU_SEPARATOR:WIN16_STYLE_MENU_ROW,rows[i].submenu,&columns);
     }
-    if(saved)RestoreDC(dc,saved);
-    if(!target)ReleaseDC(w,dc);
+    if(dc==memory&&!p->detached)BitBlt(output,0,0,client.right,client.bottom,memory,0,0,SRCCOPY);
+    if(old&&old!=(HBITMAP)HGDI_ERROR)SelectObject(memory,old);
+    if(bitmap)DeleteObject(bitmap);
+    if(memory)DeleteDC(memory);
+    if(saved)RestoreDC(output,saved);
+    if(!target)ReleaseDC(w,output);
     free(rows);
     p->painting=FALSE;
+}
+
+/* A mouse move inside the already selected row changes no presentation.
+ * Read native selection around dispatch instead of retaining a second menu state. */
+static BOOL system_selection(HWND w,popup *p,ULONGLONG *selected)
+{
+    MENUBARINFO info={.cbSize=sizeof(info)};
+    if(!p->scope||!p->scope->system||!GetMenuBarInfo(w,OBJID_CLIENT,0,&info)||
+        info.hMenu!=p->scope->system)return FALSE;
+    int count=GetMenuItemCount(info.hMenu);if(count<1||count>64)return FALSE;
+    *selected=0;
+    for(int i=0;i<count;++i){MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_STATE};
+        if(!GetMenuItemInfoW(info.hMenu,(UINT)i,TRUE,&item))return FALSE;
+        if(item.fState&MFS_HILITE)*selected|=(ULONGLONG)1<<i;
+    }
+    return TRUE;
 }
 
 static LRESULT CALLBACK popup_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
@@ -150,11 +179,15 @@ static LRESULT CALLBACK popup_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,D
          * this HWND. Keep the node alive but never paint after detachment. */
         if(!p->detached && (b&PRF_NONCLIENT))paint_border(w,p,(HDC)a);
         if(!p->detached && (b&PRF_CLIENT))paint_system(w,p,(HDC)a,TRUE);
-    }else {result=DefSubclassProc(w,m,a,b);
+    }else {
+        BOOL mouse=m==WM_MOUSEMOVE||m==WM_NCMOUSEMOVE;ULONGLONG before=0,after=0;
+        BOOL observed=mouse&&system_selection(w,p,&before);
+        result=DefSubclassProc(w,m,a,b);
         if(!p->detached && m==WM_WINDOWPOSCHANGED && b &&
             (((WINDOWPOS *)b)->flags&SWP_SHOWWINDOW))
             RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
-        if(!p->detached && (m==WM_WINDOWPOSCHANGED||m==0x92||m==WM_MOUSEMOVE||m==WM_NCMOUSEMOVE))paint_system(w,p,NULL,FALSE);}
+        if(!p->detached && (m==WM_WINDOWPOSCHANGED||m==0x92||
+            (mouse&&(!observed||!system_selection(w,p,&after)||before!=after))))paint_system(w,p,NULL,FALSE);}
     if(!--p->calls && p->detached)free(p);
     return result;
 }
