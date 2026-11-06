@@ -691,3 +691,37 @@ after apply, matching product lifetime. Cursor still arrow; reinstall solely to
 remove succeeds. Retained installer hook does not explain cursor failure.
 No product changes: P6 package remains published. S1/T22 open; placeholder tests
 are not normal-app acceptance, and unsupported Scan is not a styling pass.
+
+## P11 dual-title functional prototype
+
+Scratch scan-app1/aux: first owned activationPID36892 did not produce a ready
+associated frame within10s; cleaned, not a pass. SecondPID12704 uses new host
+PID18304/TID28816 (host change observed, not initiated by this task). Posting
+native left-title button messages opens a menu with Share and Settings; down
+succeeds, synchronous up times out in modal handling. visual39 confirms menu.
+No menu item/scan/recording action selected. This proves the entry must survive.
+
+scan-title1 selects the widest visible title child only in a scratch adapter.
+OwnPID15928/host18304/TID22752,144DPI: apply, actual visual40 title/system menu,
+remove and geometry all pass on normal Scan UI. Thus title selection explains
+ERROR_NOT_SUPPORTED50. This prototype alone hides the auxiliary entry and is
+not suitable for product delivery.
+
+scan-aux-route1 adds a scratch Application menu... system-menu command and
+routes it by asynchronously posting the original auxiliary child's button
+messages. OwnPID19524/host18304/TID1720: visual41 classic frame/system menu and
+visual41-aux original Share/Settings popup visible; apply/remove/geometry pass.
+No XAML changes or cloned menu actions. Prototype deliberately not production:
+fixed command ID, unchecked subclass/menu setup, duplicate install and teardown
+contracts require proper implementation/tests; direct command dispatch proves
+routing but does not yet prove selecting the added item by keyboard/mouse.
+Original popup remains native, consistent with no client-control styling scope.
+Next implement caption selection plus optional auxiliary action in window library,
+with product supplying actual HWND/behavior and owned command lifetime; do not
+leave scratch's ad hoc product-side renderer or unchecked command allocation.
+
+cursor-unhook1/new-host: unchanged P6 DLL, own CalculatorPID34000, new host18304/
+TID14964 still shows arrow at confirmed edge after installer unhook. Old-host
+lifetime alone does not explain cursor issue. No product binary changes. All
+scratch covered by registered s1-window-audit; pinned prototypes remain until
+host exit. S1/T22 open; deployed P6 package unchanged.
