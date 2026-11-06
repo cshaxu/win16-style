@@ -67,3 +67,11 @@ InputSink 子窗口同属 ApplicationFrameHost 的一个 GUI 线程；其中一�
 
 探针只读检查已完成；尚未改变共享宿主排除规则，尚未安装宿主样式、截屏或
 验证按钮操作，不能称为已修复/已发布。研究scratch登记在CURRENT。
+
+## T22 S1 candidate implementation update
+
+前述原型待办保留为研究过程，不代表当前代码状态。候选已实现显式 AUMID 激活、
+定向宿主线程接入与可撤销外框覆盖层；复用现有 Win16 renderer，原生客户区布局
+不变。144 DPI 计算器真实截图确认标题、按钮和系统菜单可见。只有本次新建应用
+的 x64 ApplicationFrameHost 已进入验证；全局模式、复用实例、WinUI 3 和客户区
+不在此候选覆盖内。产品交付状态以 CURRENT 为准，不能将源码实现等同已发布。

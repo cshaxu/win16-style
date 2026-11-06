@@ -1229,18 +1229,18 @@
       "path": "src/ntw16s-dll/ntw16s32.def",
       "source": null,
       "source_blob": null,
-      "sha256": "e00f3d4f527a8c079360cbf1cd00e3be3d91ce4fd12fcf7d0afbb609629d945c",
+      "sha256": "b51c201ec8444ec46fb9fcdfeec8f138c6915dd8f25ffde0aeb5a6ea9e9205bf",
       "disposition": "authored",
-      "review": "T3 S2 payload bootstrap/real helper ABI, version or bounded test process budget; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier; T21 S13 additive target-local worker entry ABI audit",
+      "review": "T3 S2 payload bootstrap/real helper ABI, version or bounded test process budget; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier; T21 S13 additive target-local worker entry ABI audit; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version",
       "notice": "Project-authored, repository MIT"
     },
     {
       "path": "src/ntw16s-dll/ntw16s64.def",
       "source": null,
       "source_blob": null,
-      "sha256": "50b5e6c7422d7fec9075df858f2bd6f4ee35fe0ec0a2a273ae4fc40ff90ad60d",
+      "sha256": "72d9f081b4083b820eaccb765a1806aeeecba559f0087380f5d27aea4afdd2ff",
       "disposition": "authored",
-      "review": "T3 S2 payload bootstrap/real helper ABI, version or bounded test process budget; docs/proposals/launcher-injection.md; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier; T21 S13 additive target-local worker entry ABI audit",
+      "review": "T3 S2 payload bootstrap/real helper ABI, version or bounded test process budget; docs/proposals/launcher-injection.md; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier; T21 S13 additive target-local worker entry ABI audit; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version",
       "notice": "Project-authored, repository MIT"
     },
     {
@@ -1256,18 +1256,18 @@
       "path": "src/ntw16s-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "f86f43423f68b37a9c5ed3b03cf3d25abf4a56a9f93e2413c3be8b32a8f07024",
+      "sha256": "f9c4079bedefdfd9c8a7e955a67109b9d3050dfe142c86c246c0e20dbf3f23c1",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL TEdit/TListBox wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL TEdit/TListBox wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version",
       "notice": "Project-authored, repository MIT"
     },
     {
       "path": "tests/ntw16s-dll/abi.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c969c468b867877efa913d46edeea2fdd811a09d1e1e9d2dcec3b7d8d54d6a88",
+      "sha256": "6d5a19e09f091c6e018120d8b69fcc1822c1c422f6ac5a8609cf3ea6b68fa6ee",
       "disposition": "authored",
-      "review": "T2 S1 real DLL ABI fixture; docs/history/M0-T2-S1-import.md; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier; T21 S13 additive target-local worker entry ABI audit",
+      "review": "T2 S1 real DLL ABI fixture; docs/history/M0-T2-S1-import.md; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier; T21 S13 additive target-local worker entry ABI audit; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version",
       "notice": "Project-authored, MIT"
     },
     {
@@ -1391,27 +1391,27 @@
       "path": "src/run16s-exe/main.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2c916deb334e5471a58c5043bbb2b1419ab72c4bc0f89995ee46d34a767f6c51",
+      "sha256": "18765421cb414ce2083e3a633c7f6ace468e0a48291bf4b49b8f19e6af256e81",
       "disposition": "authored",
-      "review": "T21 S36 process launch source and launcher ownership; see fixed source record",
+      "review": "T21 S36 process launch source and launcher ownership; see fixed source record; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version",
       "notice": "Project MIT; upstream ntvdm64 source identity recorded"
     },
     {
       "path": "src/run16s-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "dcf771d78fe639ef99b11961aba1aa245abe58c99ef91d3607d3509de67169f5",
+      "sha256": "db46700411a592919228cb1f1e415f5440f2d961379d65a26825d9c0fad6ee45",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
       "path": "src/run16s-exe/README.md",
       "source": null,
       "source_blob": null,
-      "sha256": "270d8213d9f0afd8d307a07b48a72ac9a7d374788addcbc12b6ee68e8d486cb8",
+      "sha256": "d31884ffa8419190a966c635f9aad5b93c6cbb7f82efa4ce19b73bafa8165010",
       "disposition": "authored",
-      "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes; T21 S13 clarify ordinary and global launch boundary",
+      "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes; T21 S13 clarify ordinary and global launch boundary; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -1616,9 +1616,9 @@
       "path": "src/demo-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "854c878fb9aeab53fce43d3dde16d1ca18cbf90fd74b38c9420045c9a94e73b1",
+      "sha256": "1bed1da39012fe4b9285e8ae47d54f321990a2b1b7d7f97ec1c1be8bddb710d9",
       "disposition": "authored",
-      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version",
+      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version",
       "notice": "Project-authored source per frozen W16Style README; no third-party artwork"
     },
     {
@@ -6237,6 +6237,105 @@
       "disposition": "authored",
       "review": "T21 S41 P24 portable native unwind test adapted from project-authored tests/run16s-exe/unwind.c",
       "notice": "Project-authored C code; project MIT LICENSE"
+    },
+    {
+      "path": "src/lib-win32/win16-window-uwp/frame.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "27a70bc8ebd0ea5f362078d9fa0b6faf6bdf1a827a8b3d245dc553b4f54b962e",
+      "disposition": "authored",
+      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned",
+      "notice": "Project MIT; existing graphic resources and their notices unchanged"
+    },
+    {
+      "path": "src/lib-win32/win16-window-uwp/frame.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "634e4cb1f123716015af2c52df622a6658f6f1fbb9ba013da094d8ae245c6b0a",
+      "disposition": "authored",
+      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 window-only library extraction, activation and thread hook remain product-owned",
+      "notice": "Project MIT; existing graphic resources and their notices unchanged"
+    },
+    {
+      "path": "src/lib-win32/win16-window-uwp/frame_layout.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "3e5f1839b3b4a648f8c182c5a8faaee1e9f65a41b5e554951d97482944d069b6",
+      "disposition": "authored",
+      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 window-only library extraction, activation and thread hook remain product-owned",
+      "notice": "Project MIT; existing graphic resources and their notices unchanged"
+    },
+    {
+      "path": "src/lib-win32/win16-window-uwp/frame_layout.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "d793ddf273aee7a5189b1e854b4bb092dfb595c4496944f57514e9f6fdd9e2b9",
+      "disposition": "authored",
+      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned",
+      "notice": "Project MIT; existing graphic resources and their notices unchanged"
+    },
+    {
+      "path": "src/ntw16s-dll/uwp/hook.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "538ed1adc8da81613fd9e4b4b22a9a22af9c19851797e0071014ddc45591bfda",
+      "disposition": "authored",
+      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 window-only library extraction, activation and thread hook remain product-owned",
+      "notice": "Project MIT; existing graphic resources and their notices unchanged"
+    },
+    {
+      "path": "src/ntw16s-dll/uwp/hook.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "c741cb3dbc71751568e73a60c2184b8bafa46167d557303feb648c432c73eb68",
+      "disposition": "authored",
+      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied",
+      "notice": "Project MIT; existing graphic resources and their notices unchanged"
+    },
+    {
+      "path": "src/run16s-exe/uwp.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "77d10b6c839a9e1424ab543beef7079cc702cb6d2517415092cf0a20d2bf7a12",
+      "disposition": "authored",
+      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied",
+      "notice": "Project MIT; existing graphic resources and their notices unchanged"
+    },
+    {
+      "path": "src/run16s-exe/uwp.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "46552aa9711122db3a3d32d142ebd73133432055b0d38e2beea22778d3ff98ba",
+      "disposition": "authored",
+      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied",
+      "notice": "Project MIT; existing graphic resources and their notices unchanged"
+    },
+    {
+      "path": "tests/lib-win32/win16-window-uwp/frame.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "f39d4b509bc993a7586b05c7c623abd48ba90b1f683269d77e1d661c0a2e493d",
+      "disposition": "authored",
+      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned",
+      "notice": "Project MIT; existing graphic resources and their notices unchanged"
+    },
+    {
+      "path": "tests/lib-win32/win16-window-uwp/frame_layout.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e367454a768ec924e76aa1bf7255442b806c36e4f36c52e928dbc71b853ec543",
+      "disposition": "authored",
+      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 window-only library extraction, activation and thread hook remain product-owned",
+      "notice": "Project MIT; existing graphic resources and their notices unchanged"
+    },
+    {
+      "path": "tests/run16s-exe/uwp.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "9e7173dd2bfe995e4da7f5a6a5d08de5509722b3fcf88b8e3c812144706795e0",
+      "disposition": "authored",
+      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned",
+      "notice": "Project MIT; existing graphic resources and their notices unchanged"
     }
   ]
 }

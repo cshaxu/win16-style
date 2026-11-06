@@ -1,6 +1,16 @@
 # run16s launcher
 
 CLI contract: `run16s.exe [--wait] <application> [arguments]`.
+
+Development UWP entry: `run16s.exe --app <AUMID>` activates a new instance and
+waits up to ten seconds for its visible CoreWindow/ApplicationFrameWindow
+association. It targets that frame's GUI thread only, with the x64 package DLL;
+it does not enable propagation in the shared host or alter client controls.
+Reused processes and other window frameworks are currently rejected. Failure
+leaves the activated application running and reports phase/code10. The frame
+adapter is removed with the window; its DLL remains mapped until host exit.
+This candidate has not completed real-display acceptance or package release.
+
 The launcher is x64. The target must be an x86/x64 Windows native GUI/console PE.
 The application is resolved with Windows SearchPath; the original target command
 line tail is passed to CreateProcessW without reconstructing its arguments.

@@ -10,6 +10,7 @@ static const char *const names[]={
     "Ntw16sGlobalHook",
     "Ntw16sGlobalHost",
     "Ntw16sGlobalThread",
+    "Ntw16sUwpFrameHook",
     "Ntw16sScrollChanged",
     "Ntw16sShowModernFileDialog",
     "Ntw16sSetWindowTheme",

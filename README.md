@@ -102,6 +102,27 @@ a later visible window can still be discovered. If a system-wide hook cannot
 be registered, the target-thread fallback is asynchronous, so the first frame
 is not guaranteed to be styled.
 
+### Experimental UWP window frames
+
+The T22 development candidate adds an explicit application-ID entry:
+
+```powershell
+.\run16s.exe --app 'Microsoft.WindowsCalculator_8wekyb3d8bbwe!App'
+```
+
+This route styles the outer frame of a newly activated app hosted by the x64
+Windows ApplicationFrameHost. It leaves XAML content and controls untouched.
+It is separate from `--global` and ordinary executable launching; `run16s calc`
+does not automatically select this route. Reused app processes, WinUI 3 desktop
+windows and other hosting arrangements are not covered by this first adapter.
+
+Native tests on Calculator cover activation, caption-button commands and frame
+removal. Final on-screen appearance and cross-monitor DPI acceptance remain
+pending. The runtime adapter writes neither application files nor registry
+settings. Its drawing window is removed with the app frame, while the styling
+DLL stays mapped until the shared host exits. See the
+[current development evidence](docs/history/M0-T22-S1-feasibility.md) for limits.
+
 ## Screenshots
 
 These are captures of **real application windows** using the checked-in

@@ -2,11 +2,17 @@
 
 ## Current Work
 
-T21 按用户要求[有限范围收口](../history/M0-T21-closure.md)，未覆盖项保留 TODO。T22 S1 已形成[可行性研究结论](../history/M0-T22-S1-feasibility.md)：XAML接入已有历史实证，完整宿主标题适配仍需原型验证。S1保持开放；本轮文档交付不冒称产品支持或S收口。M0固定。
+T21 按用户要求[有限范围收口](../history/M0-T21-closure.md)。当前 M0 T22 S1
+实现 UWP 外框的有限适配，已发布有限开发验收包，待交付远端复核，S1/T22 保持开放。
 
-用户已明确：允许运行时注入，包括本次目标外框的宿主接入；禁止修改目标程序文件、注册表及系统持久配置。仅窗口外观，不启用共享宿主传播，不处理内部控件。
+用户允许运行时接入本次目标的共享宿主；禁止修改目标文件、注册表和系统持久
+配置。本次仅窗口外观，不启用宿主传播，不处理内部 XAML 控件。
 
-当前优先级覆盖P1建议：先窗口外观，不先做XAML按钮。Scratch：build/t22-package/s1-window-audit，本S所有，原生探针、编译日志，单次30秒；首次在无既有CalculatorApp时激活；系统再激活返回新PID，均按自有实例跟踪。目标线程原生绘制已产生Win3.x标题；正常计算器已证实直接附着与清除重定向标志均不能完成屏幕呈现。正常显示实测：子层不呈现；独立owned标题层已在真实计算器上显示Win3.x标题，创建/删除及外框几何通过，输入/DPI/完整边框/像素恢复仍未实现或未验证。三次研究DLL引用待清理；详见研究记录。
+候选入口为 `run16s --app <AUMID>`，仅处理本次新建应用、x64
+ApplicationFrameHost 外框。真实计算器 144 DPI 截图已证明标题及系统菜单呈现，
+窗口按钮、撤销和几何有原生探针证据；不代表其他 UWP、WinUI 3、全局模式或
+复用实例已经支持。最终包与剩余验证状态见本页末尾及
+[研究记录](../history/M0-T22-S1-feasibility.md)。
 
 ## M0 T22 S1 Packet
 
@@ -18,7 +24,7 @@ T21 按用户要求[有限范围收口](../history/M0-T21-closure.md)，未覆�
 | Non-goals | 不处理客户区控件/字体/模板，不改变系统安全设置，不修改兄弟仓库。 |
 | Reference Baseline | T21 S44 交付 523e7d31；T10 S1 研究记录。 |
 | Candidate Proposal | docs/proposals/xaml-support.md |
-| Files And ABI Surface | 独立owned标题层原型复用现有renderer；后续在现有DLL内实现窗口适配，产品ABI变更须先记录，不递归客户区、不启用宿主传播。 |
+| Files And ABI Surface | 实现 lib-win32/win16-window-uwp 的 frame、frame_layout 及对应原生测试；产品侧保留 ntw16s-dll/uwp/hook，复用 win16-window/common。新增同位宽定向线程回调 Ntw16sUwpFrameHook @38，原有ABI3导出及序号保持；使用注册消息和目标CoreWindow句柄校验关联。启动器已增加显式AUMID激活入口；不递归客户区、不启用宿主传播。模块按宿主进程生命周期固定，撤销只删除窗口适配，不宣称物理卸载。 |
 | Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT；M0，原图形资源保留。 |
 | Verification | 查阅官方接口和既有原生探针证据，区分客户区、标题按钮、接入与绘制。 |
 | Expected Markers | 明确可实现范围、失败条件、恢复方式及真实应用验证计划。 |
@@ -660,3 +666,61 @@ T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文
 - M0 T18 S64 / T18：按用户确认的常用可见控件范围收口；非视觉、应用自绘不处理，安全契约不足及长尾留TODO。首次焦点回归失败、重入负例不足、物理输入和完整矩阵未覆盖均保留记录。
 
 2026-10-29 阶段包 P218 已构建、聚焦测试及双位置发布；完整矩阵和公共对话框桥接仍在进行，不代表 T20/S1 收口。失败、跳过与已知回退见阶段证据。
+
+## T22 S1 implementation status
+
+当前候选通过显式 `--app <AUMID>` 激活新应用，以@38定向回调适配x64
+ApplicationFrameHost外框；不启用宿主传播，不改XAML客户区，不接入复用实例。
+适配撤销不等于DLL卸载；模块固定至宿主退出。三组件四产物保持。
+
+- 最大化按monitor工作区剪裁；visual3真实144DPI截图确认标题按钮完整及撤销恢复。
+- 原生私有桌面激活复现GDI31->44->42；正式测试保留原生预热及首轮适配基线，
+  后续无增长断言。原失败及精确对照已保留，不声称所有系统USER缓存物理卸载。
+- host-menu8双宽各3项通过，无skip（ABI、布局、生命周期、真实菜单取消）。
+- 真实presenter诊断证明动画临时WS_EX_LAYERED导致原路径跳过；已删除呈现hook、
+  TLS和诊断属性。现用WM_ENTERIDLE及单次TPM_NOANIMATION，不改系统动画设置。
+- visual11：自有Calculator21380、宿主10220/TID38944、144DPI；菜单在标题按钮下
+  完整显示，取消、应用/撤销、几何通过。客户区不改。visual10因目标不在前台作废，
+  截图已删除，原生截图探针增加前台身份检查。
+- clean1来源门禁、clean2链接、clean3版本字符串门禁失败均保留；clean3双宽编译
+  和ABI通过，但未发布。版本字符串已统一M0 T22/0.22.0.0。
+- clean4已冻结当前源码，后台双宽重建中，工作器PID26424；实包测试、发布、
+  提交及远端复核尚未完成。实际菜单命令完整矩阵、物理拖动/缩放、跨屏DPI及
+  其他UWP仍未认证。S1/T22及目标保持开放，不以阶段包代替最终验收。
+
+本S scratch均位于build/t22-package，证据提炼后由本S清理；已映射DLL保留：
+`s1-frame-buttons1`、`s1-clean1`、`s1-clean2`、`s1-clean3`；
+`s1-window-audit`、`s1-frame-core1`、`s1-frame-core2`、`s1-frame-core3`；
+`s1-frame-core4`、`s1-frame-menu1`、`s1-frame-product1`、`s1-frame-launch1`；
+`s1-frame-launch2`、`s1-frame-launch3`、`s1-frame-motion1`、`s1-frame-motion2`；
+`s1-frame-motion3`、`s1-frame-motion4`、`s1-frame-motion5`、`s1-link-fix1`；
+`s1-frame-clip1`、`s1-frame-clip2`、`s1-frame-clip3`、`s1-frame-host-menu1`；
+`s1-frame-host-menu2`、`s1-frame-host-menu3`、`s1-frame-host-menu4`、`s1-frame-host-menu5`；
+`s1-frame-host-menu6`、`s1-frame-host-menu7`、`s1-frame-host-menu8`、`s1-package1`；
+`s1-publish1`、`s1-clean4`。
+详见[原始失败与最终验证](../history/M0-T22-S1-feasibility.md)。
+
+用户指定库边界：本 S 将绘制、布局、应用及撤销迁入
+`lib-win32/win16-window-uwp`，以便未来并列实现 `win2k-window-uwp`；
+激活、宿主定位、线程钩子及模块生命周期留在产品层。clean4快照早于此迁移，
+继续完成构建作为基线，但不发布。后续scratch `s1-library1`、`s1-clean5`
+分别用于增量验证及最终同快照包；沿用已登记实包/发布目录。
+
+迁移首轮静态链接声明缺失导致palette导入符号链接失败，已改为静态声明；
+`s1-library2`为修正后增量验证，不将首轮失败算通过。
+
+迁移结果：s1-library2双宽各3项通过，无skip；静态库未定义符号审计仅依赖
+Windows/C运行库及已有Win16绘图库，无产品私有实现。clean4双宽干净构建和
+包门禁通过，因早于库迁移不发布。clean5后台PID12668是当前交付快照；
+首轮scratch编译探针漏_WIN32_WINNT定义已修正，不影响产品源码。
+
+用户永久授权：发布本项目文件时可随时结束实际占用者，不再重复请求确认。
+执行前仍核对PID、映像路径、启动时间及被映射的准确发布路径；不按名字批量
+结束或处理无关进程。当前只读检查assets/ntw16s64.dll占用者为ApplicationFrameHost
+PID10220，启动2026-11-03T07:30:25.1227778-08:00；实际执行前重新核实。
+
+P4本地交付：clean5双宽干净构建、ABI/资源/边界门禁通过；UWP库双宽各2项
+通过，实包14项聚焦通过无skip。真实计算器144DPI激活、按钮及撤销几何通过，
+visual12菜单屏幕截图通过。s1-publish1完成assets根目录与O:/winnt四文件发布，
+摘要完全一致。S1/T22保留开放；完整限制及来源摘要见release.json及本S研究记录。
+提交推送和实际远端复核进行中；不得将此开发包称为所有UWP支持完成。

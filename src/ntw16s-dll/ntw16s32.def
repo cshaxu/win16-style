@@ -37,3 +37,4 @@ EXPORTS
     Ntw16sGlobalHost=Ntw16sGlobalHost@16 @35
     Ntw16sWindowAttach @36
     Ntw16sGlobalThread=ntw16s_global_thread_worker@4 @37
+    Ntw16sUwpFrameHook=Ntw16sUwpFrameHook@12 @38

@@ -37,3 +37,18 @@ T1曾以独立MSVC C17/C++17、/MT双架构探针验证旧基线；该探针及�
 入口为tools/Build-Core.ps1，不能用历史探针结果替代当前GCC整包验证。
 本机双架构 SDK/DLL/TLS 实测已通过，结果及证明局限见
 [工具链记录](../etc/import/TOOLCHAIN.md)，不等于产品构建成功。
+
+## UWP window style library (T22 S1 candidate)
+
+`src/lib-win32/win16-window-uwp/frame.{c,h}` owns same-GUI-thread apply,
+remove and surface lifetime; `frame_layout.{c,h}` owns geometry and hit testing.
+Matching tests are in `tests/lib-win32/win16-window-uwp/`. Public functions use
+`win16_uwp_frame_*`, without product names. The library reuses `win16-window`
+and `win16-common`; it does not call the launcher, process hooks or activation.
+
+The caller supplies the root and native title HWND, runs on their GUI thread,
+and retains the containing module until callbacks have returned after removal.
+`ntw16s-dll/uwp/hook` owns the exported thread callback, message protocol and
+module pin; `run16s-exe/uwp` owns AUMID activation and target/host selection.
+A future `win2k-window-uwp` can provide a parallel style implementation at this
+boundary. No unimplemented theme-dispatch framework is introduced here.

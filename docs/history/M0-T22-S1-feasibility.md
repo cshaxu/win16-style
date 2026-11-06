@@ -273,3 +273,244 @@ fixture), implement geometry/DPI/activation/lifecycle synchronization, native sy
 commands and menu, full border coverage, and tests of input and recovery. Keep the
 client area untouched. Integration into existing ntw16s DLL and run16s app activation
 must preserve the three-component/four-file architecture. No product release yet.
+
+### Adapter development (not a delivery)
+
+The new private uwp/frame and frame_layout modules directly use existing frame
+painting and fonts; the hidden render-model fixture is no longer needed by this
+candidate. They currently build through test targets only, not the product DLL.
+The private-desktop fixture covers a client-content hole, posted minimize command,
+hide/show, duplicate apply, three removals, owner destruction, and steady GDI/USER
+counts after warmup. Layout checks cover 96/144/192 DPI. s1-frame-core4 passed
+two tests per architecture (x86/x64), with no skips. It does not prove physical
+input, full move/resize/minimize/restore, or actual screen appearance.
+
+The first test run failed because the private worker startup hid the fixture;
+explicitly showing it corrected the test. The real host exposed a separate
+assumption error: its title child can cover only the right-hand caption buttons.
+The adapter now accepts that native band while retaining its client boundary.
+This partial-width title case is included in the repeated lifecycle test.
+
+Real own Calculator runs adapter-run4 (PID8488) and adapter-run5 (PID26376) in
+the registered window-audit scratch reported apply/remove=1, geometry=1 and
+observer unhook=1. Both processes were confirmed exited. Captures failed with
+BitBlt error5, including after clipping the negative outer coordinates to the
+virtual screen. Session4 was RDP Active; no evidence justifies blaming a locked
+desktop or claiming visual success. A subsequent host module check confirmed
+the temporary probe DLL absent. Earlier passive renderer references remain
+outstanding. System menu styling, real input/DPI/restoration, product integration
+and deployment remain unfinished. No new product binaries were published.
+
+The subsequent menu implementation reuses menu_message/frame_state directly.
+The private-desktop test checks system-menu owner-draw conversion, nonzero item
+measurement, and restoration of native type/data on exit. s1-frame-menu1 passed
+two tests per width. s1-frame-product1 linked the adapter into both actual DLLs
+and passed three tests per width, including ABI export verification. The added
+ordinal38 hook validates a frame/CoreWindow association and operates only on
+that GUI thread. A successful installation pins the containing DLL until host
+exit; removing the frame adapter does not unload the module. No propagation is
+installed in the shared host.
+
+The new development --app AUMID launcher path activates a new process, waits for
+its visible frame association, and uses the adjacent x64 DLL. Existing processes
+and non-ApplicationFrameWindow frameworks remain explicitly unsupported by this
+entry. Compilation/runtime verification of this launcher and final package
+delivery are pending. The s1-frame-launch1 all-target build was unnecessarily
+broad; subsequent incremental builds should use a dedicated dual-width aggregate.
+
+s1-frame-launch1's monitor failed reading the busy architecture log; its worker
+and descendants were confirmed gone before a retry. The uwp-development aggregate
+then completed s1-frame-launch2: three tests per width, x64 launcher linked,
+no skips. Invalid AUMID input returned Windows error87 and launcher exit10.
+This is not yet a successful real-activation launcher test.
+
+product-run1 used the actual x64 product DLL copy in scratch/product1 (SHA256
+A2A165EF9CDEAC9982D04E7713C163B7962E98F6F7C41D8A96585C5C28117156).
+Its own Calculator PID27056 and host10220/thread39600 reported actual export
+apply/remove success, unchanged geometry and coordinator hook removal. Neither
+CAPTUREBLT (error5) nor SRCCOPY fallback (error6) captured a screenshot; visual
+acceptance remains unproven. This candidate DLL is deliberately pinned for host
+lifetime. The product DLL reference is not a lingering installed coordinator
+hook and is not claimed physically unloaded.
+
+The launcher production activation function passed launch-real1 (own PID38040),
+with a live owned surface, removal and unchanged geometry. The optional native
+test is tests/run16s-exe/uwp.c; without --activate it skips explicitly. It refuses
+an existing Calculator and cleans only the PID confirmed newly created by
+activation. It does not run implicitly in the ordinary test suite.
+
+The frame now observes the selected native title child's layout/lifetime as well
+as its owner. motion5/buttons1 passed three cases per architecture, including
+two moves, native minimize/maximize/restore, title destruction and owner teardown.
+Early resource counts before native animations settled grew; after a bounded
+500ms message drain GDI counts were equal and USER sometimes decreased. The
+final assertion is no growth after warmup, not identical counts or a universal
+leak-freedom claim. One intermediate test compile failed misleading-indentation
+and was fixed. All earlier failures remain in registered scratch.
+
+Real button runs real2/3 initially failed: native frame state returned before
+the CoreWindow was re-associated, so early removal was rejected with error1400.
+Title child identities did not change. After waiting at most1.5s for both native
+state and the real CoreWindow/surface association, launch-real4 (PID33052) passed
+maximize/restore, minimize, restore visibility, removal and geometry. This uses
+product2/ntw16s64.dll SHA5284FB5439A73B6F17D1EE4BF08ED7F4DAD1BE7F5B7BA2AF8DEA39BA6554AEC8.
+The own process was subsequently confirmed exited. No physical mouse or screen
+appearance is inferred from these message/API checks.
+
+Independent capture-diagnostic, without styling DLLs, had valid DC object types:
+memory fill/copy succeeded; screen SRCCOPY failed6, CAPTUREBLT failed5 and screen
+GetPixel returned CLR_INVALID. duplicate-diagnostic created a D3D11 device/output
+but DXGI DuplicateOutput returned E_ACCESSDENIED(0x80070005). No registry, security
+setting or application file was changed. Visual acceptance remains outstanding.
+
+### Desktop recovery: production-adapter visual evidence
+
+用户恢复普通桌面后，独立 capture-diagnostic 的 SRCCOPY/CAPTUREBLT/GetPixel
+均成功。本轮 `s1-window-audit/visual2.out` 使用既有 product2 候选 DLL 的
+Ntw16sUwpFrameHook，激活自有 Calculator PID 10716，关联宿主 PID 10220 /
+TID 31884，实际 DPI 144。应用/撤销回调均返回1，三张真实屏幕截图成功，
+窗口几何不变，定向 hook 已撤销，自有进程确认退出，未结束共享宿主。
+
+`visual2-styled.bmp` 显示经典标题/按钮和未修改的计算器客户区；
+`visual2-restored.bmp` 显示恢复原生标题。这是已固定 product2 原型的屏幕证据，
+不是待发布0.22干净候选的实包验证。最大化时顶部/左右外缘被屏幕裁切，
+标题按钮几何还需修正与复验，不能据此宣称视觉验收完成。
+
+`s1-clean2` x64在tray-fixture链接时缺少DwmGetWindowAttribute；其复用启动器
+源码但未同步dwmapi库，已补齐uuid/dwmapi，并纳入uwp-development依赖。
+`s1-link-fix1` x86构建和ABI/布局通过，但生命周期测试资源计数失败：
+iteration1 GDI44/31，USER54/45；没有放宽断言，原因待查。该失败使工作器
+未进入x64，故链接修正仍待实编译验证。未启动s1-clean3，不重复完整打包。
+### Maximized geometry and resource-control follow-up
+
+The maximized adapter now intersects the native outer rectangle with the target
+monitor work area before calculating its surface geometry. This removes invisible
+native sizing margins from the classic caption without moving XAML content.
+The layout contract and native button probe now use surface-relative coordinates.
+
+Resource diagnostics preserved in s1-window-audit:
+- native-resources: current-desktop native window remains GDI9/USER15; it did not
+  match the failing private-desktop activation conditions.
+- native-private: no adapter or styling DLL, same private desktop and activation,
+  GDI31 ->44 ->44 ->42, USER47 ->50 ->50 ->49; after owner destruction GDI22/USER9.
+- resource-trace: six adapter cycles plateau GDI42/USER52; after owner destruction
+  GDI22/USER10. Diagnostic omits the resource assertion, so is not an acceptance pass.
+
+This establishes that the original 31->44 increase is reproducible without the
+adapter; it does not establish the origin of every retained USER object. The test
+keeps its original first complete adapter/menu-cycle baseline and strict subsequent
+no-growth assertions, but first exercises native private-desktop activation.
+s1-frame-clip2 tried a native-only baseline and failed USER52/50; this failure is
+preserved, not presented as a pass. s1-frame-clip3 checks the amended test.
+### Actual host menu presentation and current incomplete candidate
+
+s1-frame-clip3 and s1-frame-host-menu1/2/3 each passed six core cases across x86/x64.
+visual3 confirmed maximized caption glyphs fully visible; geometry/apply/remove
+passed. launch-real5 failed because the observed maximize flag preceded surface
+geometry; launch-ready-max then passed after waiting for actual clipped surface
+bounds as well as CoreWindow association. This waiting is in the test only.
+
+Native SC_KEYMENU on the tested host produced a white popup even without applying
+the adapter. menu-trace2 proved its hook was live but received no classic menu
+init/measure/draw messages. The new UWP adapter therefore tracks the existing
+GetSystemMenu handle using its own surface as menu owner, reusing the existing
+menu-message renderer and forwarding chosen WM_SYSCOMMAND to the original frame.
+It does not copy menu items or alter client controls.
+
+The tracked #32768 popup (style94800000/ex189) still appeared white on screen,
+while menu4-print.bmp showed correct classic rows/border through PrintWindow.
+menu4-layered verified that temporarily setting WS_EX_LAYERED and opaque alpha
+on that exact popup presented the same rows on screen; its prior ex-style was
+restored. Product menu presentation now uses a thread-local hook limited to the
+matching HMENU, then restores its added flag and removes the hook at tracking end.
+This is runtime-only and does not change shared menu classes or system settings.
+
+visual5/visual6 confirm readable classic rows and successful cancellation/removal,
+but their popup position was 0,0 instead of below the title button. This remains
+an acceptance failure. s1-frame-host-menu4 restricts the presentation change to the
+SWP_SHOWWINDOW notification rather than earlier placement messages; its actual
+screen placement still requires verification. Do not claim menu completion.
+
+s1-clean3 completed both clean architectures (350.6s/438.3s) and ABI checks, but
+failed candidate version validation: FileVersion strings still said M0 T21 although
+numeric version was0.22. The three resource strings are corrected in the worktree.
+The clean3 snapshot also predates the menu changes and is not publishable as the
+current candidate. No T22 product publication/commit has occurred yet.
+Follow-up: host-menu4 passed six core tests, but visual7 was white again at the correct position. The SWP_SHOWWINDOW pre-dispatch filter is therefore insufficient. host-menu5 uses WH_CALLWNDPROCRET after a visible popup's native position handler, preserving coordinates and repainting after enabling layered presentation. Results pending; no menu completion claim. Temporary observation DLL hooks were removed by their drivers; the product candidate DLLs remain pinned to host lifetime by design.
+
+Final observed result this turn: host-menu5 six core cases PASS; visual8 (own Calculator30580, host10220/thread26500,144DPI) still shows a white popup. The external exact-HWND layered prototype succeeded, but the production in-thread timing/identity path is not yet proven. Cancel/remove/geometry still pass. Next diagnostic must inspect actual presenter callback identity and API return values rather than infer success from native tests. No current candidate is declared visually complete or published.
+
+
+### Presenter breakpoint resolved, final clean candidate underway
+
+presenter-diagnostic: hook=1, seen=1, visible=matched=106433460,
+error=0, layered=0. The correct popup was matched but already had USER animation's
+WS_EX_LAYERED, so the guard skipped it. The temporary properties and extra hook/TLS
+were removed. The adapter now uses the owner WM_ENTERIDLE HWND and disables animation
+for this one TrackPopupMenuEx call with TPM_NOANIMATION; system settings are untouched.
+References: https://learn.microsoft.com/en-us/windows/win32/dlgbox/wm-enteridle and
+https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-trackpopupmenu .
+
+host-menu8: x86/x64 each3 passed, no skips. visual11 real screen shows a complete
+classic menu below the title button, own Calculator21380 / host10220 thread38944,
+144DPI, apply/remove/geometry all pass. DLL SHA256
+7fcadf84a65b8efbd4e2e5be780144084f83ff53ac196dc33dc317bdf6aac8a2.
+visual10 was occluded by another foreground window, not valid product evidence;
+those screenshots were deleted and the native screenshot driver now checks foreground
+identity before capture. No unrelated window was modified.
+
+clean4 starts after receipts and version strings were updated. A documentation
+compaction command failed on default Python encoding before changing CURRENT;
+this did not modify product inputs. Snapshot froze successfully; CURRENT was then
+updated with explicit UTF-8. Final package testing and publication remain pending.
+
+### Window library extraction requested during final build
+
+User requested `lib-win32/win16-window-uwp` for a future parallel
+`win2k-window-uwp`. Moved frame/layout implementation and matching tests,
+renamed local APIs to `win16_uwp_frame_*`, added a real static-library target;
+the DLL links it rather than compiling a duplicate implementation. Product
+activation, host selection, callback protocol and module pin remain product-owned.
+No product headers are included by the new library. Tests instantiate the library
+without process injection; the live activation fixture also links this library.
+
+First incremental attempt failed due to the existing palette API's DLL-import
+annotation; using its static-link declaration resolved this. `s1-library2` passed
+three tests on each architecture with zero skips. Pre-migration clean4 remains
+baseline evidence only, not a publishable candidate after this relocation.
+The final snapshot is clean5. Graphics/provenance bytes are unchanged.
+
+### P4 final candidate delivery
+
+Final snapshot `s1-clean5`: x86/x64 clean builds and ABI gates passed. Independent
+UWP library tests passed two per architecture, no skips. Actual four-file package
+`s1-package1`: 14 focused cases passed in 41.15 seconds, zero skips, including
+ordinary injection/propagation, menu cancellation, first display and system menus.
+This is not the full matrix. All resource headers/provenance and embedded original
+graphics passed the byte-identity checks. Production inputs match the frozen snapshot.
+
+Real same-SHA package test: new Calculator PID11840,144DPI; activation, maximize/
+restore, minimize/restore, removal and unchanged geometry all passed. Final screen
+probe: ownPID27468,hostPID12040,thread34468,144DPI; before/styled/menu/restored
+captures passed, apply/remove returned1, geometry matched and hook removal succeeded.
+Screenshot `build/t22-package/s1-window-audit/visual12-menu.bmp` shows the actual
+classic title and popup on the visible Calculator; client XAML remains unchanged.
+
+Publication `s1-publish1` succeeded: all four tested files are identical at assets/
+and O:/winnt. Previous exact occupant ApplicationFrameHost PID10220 (start
+2026-11-03T07:30:25.1227778-08:00) was revalidated, normal close requested, and exit
+confirmed under permanent user authorization. No unrelated process was targeted.
+Checksums, toolchains and selected cases are in docs/etc/release.json.
+
+Limits remain: explicit --app/new-instance/x64-host only; global, reused targets,
+WinUI3 and XAML controls are not implemented. Physical input, multi-monitor DPI,
+full system-menu command and enabled-state matrix remain unverified. Native
+resize cursors and replacement title-child rebinding are not implemented by this
+adapter. Removing it releases owned windows/GDI resources; the containing DLL is
+pinned until host exit, not physically unloaded. S1/T22 remain open.
+
+Staged code footprint against P3: src/ +581/-13 (net +568), tests/ +259/-0;
+new library implementation is 382 C lines plus 23 header lines. No duplicate old
+frame/layout files remain in the DLL directory. Existing rendering and resource
+owners are unchanged; adapter state belongs to its GUI-thread instance.
+Clean build timings: x86 348.43s, x64 418.92s, Ninja8/ccache; ABI tests both passed.

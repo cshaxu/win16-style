@@ -5,6 +5,7 @@
 #include "startup_error.h"
 #include "global.h"
 #include "tray.h"
+#include "uwp.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <wchar.h>
@@ -22,6 +23,10 @@ static int diagnostic(int code,DWORD error,PCWSTR phase)
 }
 int wmain(int argc,WCHAR **argv)
 {
+    if(argc>=2 && !wcscmp(argv[1],L"--app")){
+        if(argc!=3){fwprintf(stderr,L"Usage: run16s.exe --app <AUMID>\n");return 2;}
+        DWORD error=run16s_uwp_activate(argv[2],NULL);return error?diagnostic(10,error,L"UWP frame activation"):0;
+    }
     if(argc>=2 && !wcscmp(argv[1],L"--global-elevated")){
         WCHAR *end=NULL;DWORD error=0;errno=0;
         unsigned long parent=argc==3?wcstoul(argv[2],&end,10):0;
@@ -65,7 +70,7 @@ int wmain(int argc,WCHAR **argv)
     }
     if(argc>first && !wcscmp(argv[first],L"--wait")){wait=TRUE;++first;raw=win32_process_next_argument(raw);}
     if(argc<=first || !wcscmp(argv[first],L"--help")){
-        fwprintf(argc<=first?stderr:stdout,L"Usage: run16s.exe [--wait] <application> [arguments]\n       run16s.exe --global\nConsole targets wait by default; --wait also waits for GUI targets.\n");
+        fwprintf(argc<=first?stderr:stdout,L"Usage: run16s.exe [--wait] <application> [arguments]\n       run16s.exe --global\n       run16s.exe --app <AUMID>\nConsole targets wait by default; --wait also waits for GUI targets.\n");
         return argc<=first?2:0;
     }
     DWORD length=SearchPathW(NULL,argv[first],L".exe",NTW16S_PATH_CAP,image,NULL);
