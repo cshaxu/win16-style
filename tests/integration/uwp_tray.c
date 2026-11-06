@@ -14,6 +14,22 @@
 typedef struct application { DWORD pid; HANDLE process; HWND frame,surface; } application;
 static HWND tray,menu_window;
 static DWORD controller_pid;
+static BOOL wait_ready(void)
+{
+    WCHAR name[NTW16S_GLOBAL_NAME_CAP];if(!ntw16s_global_name(name,ARRAYSIZE(name)))return FALSE;
+    ULONGLONG end=GetTickCount64()+15000;
+    do{
+        HANDLE mapping=OpenFileMappingW(FILE_MAP_READ,FALSE,name);
+        ntw16s_global_session *s=mapping?MapViewOfFile(mapping,FILE_MAP_READ,0,0,sizeof(*s)):NULL;
+        BOOL ready=s&&s->magic==NTW16S_GLOBAL_MAGIC&&s->version==NTW16S_GLOBAL_VERSION&&
+            s->owner_pid==controller_pid&&s->phase==NTW16S_GLOBAL_ACTIVE&&s->ready;
+        if(s)UnmapViewOfFile(s);
+        if(mapping)CloseHandle(mapping);
+        if(ready)return TRUE;
+        Sleep(20);
+    }while(GetTickCount64()<end);
+    return FALSE;
+}
 static BOOL stop_owned_controller(void)
 {
     WCHAR name[NTW16S_GLOBAL_NAME_CAP],request[NTW16S_GLOBAL_NAME_CAP+16];
@@ -118,10 +134,22 @@ static BOOL choose(BOOL expected_checked,BOOL exit_menu)
     if(state==0xffffffffu||GetMenuItemCount(menu)!=2||!!(state&MF_CHECKED)!=expected_checked||(!exit_menu&&(state&(MF_GRAYED|MF_DISABLED)))){
         PostMessageW(menu_window,WM_CANCELMODE,0,0);return FALSE;
     }
+    MENUITEMINFOW info={.cbSize=sizeof(info),.fMask=MIIM_FTYPE|MIIM_STATE};
+    GetMenuItemInfoW(menu,exit_menu?1:0,TRUE,&info);
+    printf("MENU_TYPE type=%x state=%x\n",info.fType,info.fState);
     IAccessible *accessible=NULL;
     HRESULT hr=AccessibleObjectFromWindow(menu_window,OBJID_CLIENT,&IID_IAccessible,(void **)&accessible);
     if(SUCCEEDED(hr)){
         VARIANT child;VariantInit(&child);V_VT(&child)=VT_I4;V_I4(&child)=exit_menu?2:1;
+        BSTR name=NULL,action=NULL;VARIANT state;VariantInit(&state);LONG count=0;
+        IAccessible_get_accChildCount(accessible,&count);
+        HRESULT name_hr=IAccessible_get_accName(accessible,child,&name);
+        HRESULT action_hr=IAccessible_get_accDefaultAction(accessible,child,&action);
+        HRESULT state_hr=IAccessible_get_accState(accessible,child,&state);
+        printf("MENU_PROVIDER children=%ld name_hr=%lx name=%ls action_hr=%lx action=%ls state_hr=%lx state=%ld\n",
+            count,(unsigned long)name_hr,name?name:L"",(unsigned long)action_hr,action?action:L"",
+            (unsigned long)state_hr,V_VT(&state)==VT_I4?V_I4(&state):-1L);
+        SysFreeString(name);SysFreeString(action);VariantClear(&state);
         hr=IAccessible_accDoDefaultAction(accessible,child);IAccessible_Release(accessible);
     }
     printf("MENU_ACCESSIBLE hr=%lx\n",(unsigned long)hr);return SUCCEEDED(hr);
@@ -137,14 +165,18 @@ int wmain(int argc,WCHAR **argv)
 {
     BOOL dpi_set=SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
     BOOL menu_only=argc==4&&!wcscmp(argv[3],L"--menu-only");
-    if(argc!=3&&!menu_only){puts("SKIP opt-in executable and log path required");return 77;}
+    BOOL window_events=argc==4&&!wcscmp(argv[3],L"--window-events");
+    BOOL toggle=window_events||(argc==4&&!wcscmp(argv[3],L"--toggle"));
+    if(argc!=3&&!menu_only&&!toggle){puts("SKIP opt-in executable and log path required");return 77;}
     if(!_wfreopen(argv[2],L"w",stdout))return 1;
     setvbuf(stdout,NULL,_IONBF,0);
     printf("DPI_SET ok=%d awareness=%d\n",dpi_set,(int)GetAwarenessFromDpiAwarenessContext(GetThreadDpiAwarenessContext()));
     HANDLE token=NULL;TOKEN_ELEVATION elevation={0};DWORD bytes=0;
     if(!OpenProcessToken(GetCurrentProcess(),TOKEN_QUERY,&token))return 1;
     BOOL elevated=GetTokenInformation(token,TokenElevation,&elevation,sizeof(elevation),&bytes)&&elevation.TokenIsElevated;
-    CloseHandle(token);if(!elevated&&!menu_only){puts("SKIP elevated probe required");return 77;}
+    CloseHandle(token);
+    printf("TOKEN elevated=%d window_events_only=%d\n",elevated,window_events);
+    if(!elevated&&!menu_only&&!window_events){puts("SKIP elevated probe required");return 77;}
     HDESK input=OpenInputDesktop(0,FALSE,DESKTOP_READOBJECTS);WCHAR desktop[80]={0};
     if(input){GetUserObjectInformationW(input,UOI_NAME,desktop,sizeof(desktop),&bytes);CloseDesktop(input);}
     if(wcscmp(desktop,L"Default")||!GetForegroundWindow()){puts("SKIP normal input desktop required");return 77;}
@@ -181,16 +213,32 @@ int wmain(int argc,WCHAR **argv)
     if(!activate(&apps[1],L"Microsoft.WindowsScan_8wekyb3d8bbwe!App")||!wait_style(&apps[1],TRUE))goto done;
     puts("NEW_UWP_STYLED");
     HWND first=apps[0].surface,second=apps[1].surface;
+    if(toggle&&!wait_ready()){puts("FAIL session not ready for Uncheck");goto done;}
     /* The controller may still be finishing discovery when the first surface
        appears. Allow its UI to process the ready notification before the menu. */
     pump(250);
-    /* Exercise the exact stop event used by the menu action. MSAA invocation
-       of the checked item is separately unverified (DISP_E_MEMBERNOTFOUND). */
-    BOOL stopped=stop_owned_controller();printf("STOP_REQUEST completed=%d\n",stopped);
+    /* Toggle exercises the real menu action; the default mode separately
+       exercises the owned controller shutdown event. */
+    BOOL stopped=toggle?choose(TRUE,FALSE):stop_owned_controller();printf("STOP_REQUEST completed=%d\n",stopped);
     if(!stopped||!wait_style(&apps[0],FALSE)||!wait_style(&apps[1],FALSE))goto done;
     enabled=FALSE;
     printf("REMOVE first_exists=%d second_exists=%d\n",IsWindow(first),IsWindow(second));
     if(IsWindow(first)||IsWindow(second))goto done;
+    if(toggle){
+        if(WaitForSingleObject(process.hProcess,0)!=WAIT_TIMEOUT||!IsWindow(tray))goto done;
+        puts("UNCHECK_RESIDENT_PASS");
+        pump(250);
+        if(!choose(FALSE,FALSE))goto done;
+        enabled=TRUE;
+        if(!wait_style(&apps[0],TRUE)||!wait_style(&apps[1],TRUE)||!wait_ready())goto done;
+        puts("REENABLE_EXISTING_UWP_PASS");
+        first=apps[0].surface;second=apps[1].surface;
+        pump(250);
+        if(!choose(TRUE,FALSE)||!wait_style(&apps[0],FALSE)||!wait_style(&apps[1],FALSE))goto done;
+        enabled=FALSE;
+        if(IsWindow(first)||IsWindow(second)||WaitForSingleObject(process.hProcess,0)!=WAIT_TIMEOUT||!IsWindow(tray))goto done;
+        puts("SECOND_UNCHECK_RESIDENT_PASS");goto exit_tray;
+    }
     /* An external stop request does not set the tray's private stopping flag:
        the worker exits normally and the controller follows it. This is a
        shutdown test, not proof of the Uncheck-and-remain-resident UI action. */
@@ -215,5 +263,5 @@ done:
     if(input_handle!=INVALID_HANDLE_VALUE)CloseHandle(input_handle);
     cleanup(&apps[1]);cleanup(&apps[0]);CoUninitialize();
     if(restore_pointer)SetCursorPos(pointer.x,pointer.y);
-    printf("UWP_TRAY_%s mode=%s enabled_at_cleanup=%d\n",ok?"PASS":"FAIL",menu_only?"menu-exit":"enable-shutdown",enabled);return ok?0:1;
+    printf("UWP_TRAY_%s mode=%s enabled_at_cleanup=%d\n",ok?"PASS":"FAIL",menu_only?"menu-exit":toggle?"toggle-resident":"enable-shutdown",enabled);return ok?0:1;
 }

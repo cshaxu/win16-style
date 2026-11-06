@@ -9,8 +9,8 @@ S1 remains open. The published product is P34; P37/P38 added verification only.
 | Ordinary UWP exterior without app cooperation | Calculator and Scan hosted ApplicationFrameWindow receive the shared Win16 title, system menu, buttons and border. P34 actual-package existing/new screenshots and logs in s1-global-package2/native were reread/viewed. Client UI stays native. | Verified for these actual targets at144 DPI; not all UWP variants |
 | Simple Calculator command | Published system calc.exe recognition, real --wait lifecycle and actual launcher/manager coexistence; research P22/P28/P37 and s1-global-package1/native/explicit-command.log. | Verified; other AUMIDs use --app or global discovery |
 | Global existing and newly opened UWP | P34 uncloak ordering regression and actual-package four cases; P38 formal production controller Enable styles existing Calculator12284 and new Scan37796. | Verified within current x64 hosted boundary |
-| Disable and restore | Manager fixtures destroy exact surface HWNDs; P38 formal external request also destroys both and exits controller0. This differs from Uncheck-and-remain-resident. | Engine shutdown verified; actual Uncheck residency pending |
-| Repeated use and coexistence | P30 actual same-PID Scan reactivation plus surface destruction; P36 two frames in one host and immediate-stop; P37 actual launcher then manager. | Verified sampled paths; formal tray off/on repeat pending |
+| Disable and restore | Manager fixtures destroy exact surface HWNDs; P38 formal external request also destroys both and exits controller0. This differs from Uncheck-and-remain-resident. | Engine shutdown verified; P40 actual Uncheck residency verified for ordinary-token window discovery |
+| Repeated use and coexistence | P30 actual same-PID Scan reactivation plus surface destruction; P36 two frames in one host and immediate-stop; P37 actual launcher then manager. | Verified sampled paths; P40 formal tray off/on repeat passed on ordinary-token window discovery |
 | Title/menu/buttons and input | Real screenshots, native move/resize/system-menu actions P21, corrected visible cursor P27, minimize/maximize/restore logs, Scan full-screen round trip. P34 actual launcher buttons/removal also pass. | Verified sampled144-DPI paths; not every input/DPI combination |
 | Shared host and ownership | Separate frame/CoreWindow identity, no host propagation, per-frame removal; P36 both owned surfaces destroyed without terminating host. | Verified sampled coexistence; DLL stays pinned, no physical unload claim |
 | Framework classification | Notepad packaged FullTrustApplication/WinUI, Terminal FullTrustApplication dependency; Explorer desktop mixed Shell; Task Manager desktop with incomplete framework-module evidence. See modern-desktop-window-style proposal. | Classified at recorded confidence; deferred candidate, not UWP pass counts |
@@ -19,16 +19,22 @@ S1 remains open. The published product is P34; P37/P38 added verification only.
 
 ## Required next verification
 
-Finish the bounded formal tray test: wait for the existing session.ready state,
-invoke the enabled checked menu item, require both exact surfaces destroyed and
-the controller still resident, then verify a subsequent enable cycle. Earlier
-surface appearance was insufficient: toggle1 captured a checked but disabled
-menu. The ready-aware toggle2 fixture compiles both widths but its actual launch
-has twice been canceled at UAC before creating a probe. It remains unverified.
-Do not equate external request shutdown with that UI behavior or label MSAA calls
-as physical Explorer clicks. The initial 0x80020003 remains unexplained until
-ready-aware evidence is available.
+P40 completed the bounded formal tray test against published O:/winnt/run16s.exe:
+wait for session.ready, invoke the enabled checked menu item through MSAA,
+require both exact surfaces destroyed and the controller resident, then enable
+and disable again before Exit. All passed at144 DPI for existing Calculator39528
+and new Scan34520, controller39840 (s1-tray-window-events2/actual.log). The probe
+and product used the ordinary token's existing window-discovery path; administrator
+ETW and cross-integrity behavior are not counted as passed by this run. Both-width
+probe builds passed; actual execution was x64. There was no new UAC prompt.
 
+This corrects the fixture's assumption that visible styling means the menu is
+ready. toggle1 had directly observed disabled=1; ready-aware runs observed enabled
+checked actions returning0. The older isolated0x80020003 is not independently
+proven to have the same cause. These are real production menu actions through
+MSAA, not physical Explorer clicks. Each desktop sweep reported92 failed/timed-out
+notifications; successful restoration of the two owned UWP surfaces does not prove
+all other desktop windows restored.
 After this, review the completed scoped evidence and delivery before closing S1
 or T22. This audit does not authorize closure or claim the goal is already complete.
 

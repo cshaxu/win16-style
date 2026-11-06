@@ -6413,7 +6413,7 @@
       "path": "tests/integration/uwp_tray.c",
       "source": null,
       "source_blob": null,
-      "sha256": "a8b505f48cc19e94a2c7bd9a73379fd87e7ba4ebac6473ecd22093c0cc802c44",
+      "sha256": "afa1ad58497b551e4261408b7c484a8f418da36385f97a3a38ca63d261c84b62",
       "disposition": "authored",
       "review": "T22 S1 P38 opt-in published tray controller UWP integration; native menu input and owned targets",
       "notice": "Project-authored pure C test; no imported artwork"

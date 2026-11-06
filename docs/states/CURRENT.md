@@ -1194,3 +1194,14 @@ P39审计续作：第二次toggle2管理员启动也由系统返回取消，未�
 已复核发布截图、原始日志及P22至HEAD renderer无diff，形成[有限范围收口审计](../history/M0-T22-coverage.md)。
 剩余真实托盘Uncheck/再次启用驻留验证；其余范围和限制逐项列明，不临时扩张。
 本轮可交付审计文档，ready-aware测试及其receipt继续保留未提交，等待实际复测。
+
+P40验证准备：登记s1-tray-window-events1，探针--window-events显式使用产品现有
+非交互普通权限窗口发现路径，无UAC。只验证当前用户自有UWP/托盘Uncheck，
+不声称管理员ETW或跨权限通过，不改变产品权限策略。
+
+P40：登记s1-tray-window-events2，真实普通权限生产控制器39840对已有Calculator39528、
+新Scan34520完成Enable、Uncheck驻留、再次Enable/Uncheck驻留及Exit0；144DPI，
+原生MSAA菜单动作，精确surface销毁。session.ready等待修正了测试过早操作；
+不将普通权限窗口发现算作管理员ETW或物理Explorer点击通过。两宽测试编译通过，
+x86 Ninja缓存恢复警告后成功；真实运行x64。每轮92条通知失败如实保留，不声称
+全桌面完全恢复。仅测试及记录变更，P34产品保持，两处摘要复核；M0/T22/S1开放。

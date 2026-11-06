@@ -1522,3 +1522,23 @@ creation. Published screenshots and original logs were reread; renderer source
 comparison P22..HEAD is empty for win16-window-uwp/window/common. The scoped
 [coverage audit](M0-T22-coverage.md) separates completed evidence, required tray
 verification and explicit limitations. Pending test changes are not certified.
+
+## P40: ready-aware formal tray repeat
+
+The native fixture now waits for the existing session ready state before Uncheck.
+No product policy or hook/rendering code changes. Optional --window-events uses
+ordinary-token window discovery already supported by the noninteractive product;
+it does not claim administrator ETW or cross-integrity coverage. Both-width Ninja
+build/link passed (x86 recovered its existing premature-end cache warning).
+Actual x64 runs s1-tray-window-events1 and2 passed; the second covers two complete
+menu on/off cycles, both precise surfaces destroyed, resident controller, Exit0,
+and owned-app cleanup. Existing Calculator39528, new Scan34520, controller39840,
+144DPI. MSAA actions all returned0; this is not physical Explorer interaction.
+The earlier disabled menu observation is addressed by readiness, while the older
+isolated80020003 is not retrospectively assigned a proven cause. Desktop sweep
+failures92 remain outside the successful owned-UWP assertions. Default no-argument
+interactive cases remain explicit skip, not runtime pass. Product files unchanged.
+Test entry: uwp-tray.exe O:/winnt/run16s.exe <fresh-absolute-log> --window-events;
+--toggle retains elevated-only coverage and --menu-only tests menu Exit alone.
+State owners remain the production session/controller and self-owned test handles;
+no second product path or test export was added. This test-only P keeps S1/T22 open.
