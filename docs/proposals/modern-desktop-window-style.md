@@ -1,7 +1,7 @@
 # Modern desktop window adaptation
 
-用户要求先完成 UWP 外框；WinUI 桌面及混合 Shell 窗口另作后续 T 候选。
-本候选未分配 T/S，不在当前 T22 内实施。仅窗口外框，不含客户区控件。
+T22 UWP外框已收口；用户批准本候选为M0 T23，当前准入S1审计。
+仅窗口外框，不含客户区控件；CURRENT拥有活动状态。
 
 ## 本机分类基线
 
@@ -26,3 +26,21 @@ WinUI 是界面框架，UWP 是应用模型；两者不能当成互斥分类。
 4. 自有实例分别验证实际绘制、移动/缩放、按钮、菜单、重复启动与撤销；
    权限失败和未覆盖单列。Explorer 共享 Shell 与 Terminal 会话单独约束。
 5. 按准入时治理规范完成同批交付。不得提前声称这些程序已支持。
+
+## T23 planned S sequence
+
+| S | Work and exit evidence |
+| --- | --- |
+| S1 (active) | Four-target launch/hosting/capability audit; reuse candidates and minimal design, bounded native evidence. Historical classification is a starting point, not current proof. |
+| S2 | Implement the common desktop exterior adapter justified by S1; self-owned native fixtures prove apply/remove/input and preserve existing Win32/UWP paths. |
+| S3 | Integrate and verify packaged desktop targets Notepad and Terminal, including activation handoff and new windows, preserving tabs/client data and user sessions. |
+| S4 | Integrate and verify Task Manager and Explorer folder windows with explicit privilege/shared-shell ownership boundaries; do not restyle desktop/taskbar by accident. |
+| S5 | Consolidated actual-package regression, source/resource/ABI review, four-file deployment and remote verification, task-wide closure audit. |
+
+Only S1 is currently admitted; subsequent S tasks follow this approved task scope
+in order, with one active packet. Evidence may require splitting implementation
+steps into additional S tasks; never reuse an allocated identifier or silently
+hide an unsupported target. No universal framework support is promised by a single
+successful app. Product binary changes require the normal same-snapshot dual-width
+build, actual-package tests and assets/O:/winnt publication. Admission alone does
+not change the existing0.22.0.0 deployed package or claim a new binary release.

@@ -2,14 +2,36 @@
 
 ## Current Work
 
-当前无活动任务包。M0 T22 S1 已完成实现、验证、发布及交付，P43按
-[收口审计](../history/M0-T22-closure.md)关闭S1/T22；不自动准入下一T。
-最后分配数值T为T22，最后交付P43；M0不变。
+当前活动任务：M0 T23 S1，现代桌面混合窗口适配的启动链与窗口能力审计。
+用户批准准入队列首项；T22/S1已[收口](../history/M0-T22-closure.md)。
+最后分配数值T为T23，S1处于active；本次P1仅准入与冻结计划，无产品改动。
+登记scratch：build/t23-package/s1-admission，仅保存治理检查日志。
+
+## M0 T23 S1 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | New |
+| Admission And Approval | 用户“准入吧”，批准队列首项现代桌面混合窗口适配。 |
+| Objective | 冻结Notepad、Terminal、Task Manager、Explorer四目标的启动转交、最终进程和外框承载关系；给出可复用适配入口与实施次序。 |
+| Non-goals | 不处理客户区/XAML控件、标签内容或应用数据；不修改系统注册表/安全设置；不改兄弟仓库；不结束用户既有会话。 |
+| Reference Baseline | T22收口83c1a2c1；已部署产品P34 0.22.0.0。 |
+| Candidate Proposal | docs/proposals/modern-desktop-window-style.md |
+| Files And ABI Surface | S1审计现有run16s-exe、ntw16s-dll及lib-win32窗口/进程入口；探针归tests或登记scratch；当前不新增产品导出/文件。 |
+| Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT；固定M0，C17/MinGW GCC/Ninja/ccache。 |
+| Verification | 原生只读快照及自有实例有限运行；逐层PID/创建时间/路径/位宽/包身份/框架模块/HWND；模块加载、附着与绘制分开；环境失败记skip。 |
+| Expected Markers | 四目标各有证据、断点或明确缺证项；通用与产品职责清晰；不凭应用名/类名独断框架或宣布支持。 |
+| Asset Needs | 保留原图形资源及声明；审计不替换产品文件。 |
+| Reporting Requirements | 四目标矩阵、可复用能力、最小方案、验证与限制；无binary change核对摘要，有变化按双宽同批四文件交付。 |
+| Stop Conditions | 不可确认窗口/会话所有权则只读；权限失败留证据、不改安全策略；UAC单次发起超过一分钟才提醒。 |
+| Exit Criteria | 完成四目标审计、最小实施方案和必要探针验证，交付复核；不得用本S审计通过声称整个T已换肤。 |
+| Original Owner Request | 准入队列首项：现代桌面混合窗口适配。 |
+| Similar-Issue Sweep | 对照T22激活转交、共享宿主和自定义标题边界；复用现有公共进程及窗口能力，避免逐应用复制renderer。 |
 
 技术基线：P34四文件已发布assets根目录与O:/winnt；P40/P42验证普通及管理员
 正式托盘两轮启停。支持已验证的x64 ApplicationFrameHost承载Calculator/Scan
 外框（144DPI），系统calc.exe入口、显式--app和全局已有/新建发现。内部XAML、
-WinUI桌面混合窗口不在本次范围；后者见QUEUE。共享宿主定向运行时接入，不启用
+WinUI桌面混合窗口未包含在该基线中；现在由T23审计适配。共享宿主定向运行时接入，不启用
 宿主传播；移除样式层不等于卸载固定DLL。具体限制见收口审计和TODO。
 
 T21此前按用户要求[有限范围收口](../history/M0-T21-closure.md)。
@@ -470,14 +492,14 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 ## Identifier State
 
 - Milestone: M0 (fixed)
-- Last allocated T: 22
+- Last allocated T: 23
 - Last allocated Td S: 18
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
-- Last verified remote delivery: M0 T21 S44 P1，`39e590c8`；本次文件及四产品远端对象已复核。
-- Open task: T22 S1；T21 按用户要求有限范围收口。Explorer.exe 仍被排除。
+- Last verified remote delivery: M0 T22 S1 P43，`83c1a2c1`；文档与四产品远端对象已复核。
+- Open task: T23 S1；T22已收口。Explorer现有产品排除策略尚未改变。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。
