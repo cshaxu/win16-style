@@ -18,6 +18,8 @@ LONG ntw16s_attach_processes_using(DWORD (*attach)(void *,void *))
     if(!attach)return ERROR_INVALID_PARAMETER;
     if(!(ntw16s_process_context.flags&NTW16S_POLICY_PROPAGATE))return NO_ERROR;
     const process_hook_propagation_ops ops={active,accept_w,accept_a,install,NULL};
-    return (LONG)process_hook_propagation_attach(attach,&ops);
+    DWORD error=process_hook_propagation_attach(attach,&ops);
+    if(!error)error=process_hook_propagation_attach_as_user_w(attach);
+    return (LONG)error;
 }
 LONG ntw16s_attach_processes(void){return ntw16s_attach_processes_using(ntw16s_hooks_attach);}

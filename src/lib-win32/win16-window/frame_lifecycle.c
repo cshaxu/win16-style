@@ -28,8 +28,12 @@ BOOL win16_control_frame_install(HWND w,const win16_style_palette *p,BOOL creati
     {win16_style_layout checked;
         if(!v->layout(w,s,&checked)){win16_control_frame_state_dispose(s);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}}
     win16_control_client_screen(w,&client);
-    s->policy_saved=!(style&WS_CHILD) && SUCCEEDED(v->get_window_attribute(w,DWMWA_NCRENDERING_POLICY,
-        &s->old_policy,sizeof(s->old_policy)));
+    /* POLICY is set-only. Preserve the observable rendering state instead;
+     * Windows does not expose whether it came from USEWINDOWSTYLE or ENABLED. */
+    BOOL nc_enabled=FALSE;
+    s->policy_saved=!(style&WS_CHILD) && SUCCEEDED(v->get_window_attribute(w,DWMWA_NCRENDERING_ENABLED,
+        &nc_enabled,sizeof(nc_enabled)));
+    s->old_policy=nc_enabled?DWMNCRP_ENABLED:DWMNCRP_DISABLED;
     if(cancelled && *cancelled){win16_control_frame_state_dispose(s);SetLastError(ERROR_CANCELLED);return FALSE;}
     if(!SetWindowSubclass(w,v->style_proc,(UINT_PTR)v->style_proc,(DWORD_PTR)s)){win16_control_frame_state_dispose(s);return FALSE;}
     /* Bars may be added by range/visibility changes after attachment. Keep

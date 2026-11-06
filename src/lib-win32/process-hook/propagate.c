@@ -4,6 +4,10 @@ static process_hook_create_w create_w;
 typedef BOOL (WINAPI *process_hook_create_a)(LPCSTR,LPSTR,LPSECURITY_ATTRIBUTES,
     LPSECURITY_ATTRIBUTES,BOOL,DWORD,LPVOID,LPCSTR,LPSTARTUPINFOA,LPPROCESS_INFORMATION);
 static process_hook_create_a create_a;
+typedef BOOL (WINAPI *process_hook_create_user_w)(HANDLE,LPCWSTR,LPWSTR,
+    LPSECURITY_ATTRIBUTES,LPSECURITY_ATTRIBUTES,BOOL,DWORD,LPVOID,LPCWSTR,
+    LPSTARTUPINFOW,LPPROCESS_INFORMATION);
+static process_hook_create_user_w create_user_w;
 static process_hook_propagation_ops ops;
 static _Thread_local unsigned entering;
 static void leave(void *unused){(void)unused;--entering;}
@@ -57,4 +61,26 @@ DWORD process_hook_propagation_attach(DWORD (*attach)(void *,void *),const proce
     DWORD error=attach(&create_w,(void *)hook_w);
     if(!error)error=attach(&create_a,(void *)hook_a);
     return error;
+}
+
+static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_user_w(HANDLE token,LPCWSTR application,
+    LPWSTR command,LPSECURITY_ATTRIBUTES pa,LPSECURITY_ATTRIBUTES ta,BOOL inherit,
+    DWORD flags,LPVOID environment,LPCWSTR directory,LPSTARTUPINFOW startup,
+    LPPROCESS_INFORMATION child)
+{
+    if(entering || !startup || !child || !ops.active(ops.context) || !ops.accept_w(application,command,ops.context))
+        return create_user_w(token,application,command,pa,ta,inherit,flags,environment,directory,startup,child);
+    BOOL result=FALSE;DWORD error=ERROR_SUCCESS;process_hook_unwind_scope scope;++entering;
+    PROCESS_HOOK_UNWIND_BEGIN(scope,leave,NULL);
+    {
+        result=create_user_w(token,application,command,pa,ta,inherit,flags|CREATE_SUSPENDED,environment,directory,startup,child);
+        error=GetLastError();result=finish(result,flags,child,error);error=GetLastError();
+    }
+    PROCESS_HOOK_UNWIND_END(scope);SetLastError(error);return result;
+}
+DWORD process_hook_propagation_attach_as_user_w(DWORD (*attach)(void *,void *))
+{
+    if(!attach || !create_w || !ops.install)return ERROR_INVALID_PARAMETER;
+    create_user_w=CreateProcessAsUserW;
+    return attach(&create_user_w,(void *)hook_user_w);
 }

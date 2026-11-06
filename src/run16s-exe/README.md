@@ -67,3 +67,9 @@ so the initial creation of a console can still briefly appear. Malformed/native
 PE and other validation errors do not receive an unstyled Shell fallback. A
 system-configured legacy handler is Windows' responsibility, not NE style support.
 The existing ERROR_ELEVATION_REQUIRED path remains unchanged.
+
+T23 S1: `run16s notepad` follows the installed packaged Notepad's AsUserW child
+through the ordinary startup propagation transaction. Its native frame uses the
+existing renderer; client tabs and menus remain application-owned. No special
+launcher syntax or AUMID is required. This does not opt into global mode or scan
+unrelated already-running applications.

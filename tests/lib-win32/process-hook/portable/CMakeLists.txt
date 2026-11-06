@@ -21,6 +21,10 @@ add_library(process_hook STATIC "${P}/staging.c" "${P}/helper.c" "${P}/payload.c
   "${P}/late_patch.c" "${P}/late_guard.c" "${P}/minhook/src/buffer.c"
   "${P}/minhook/src/trampoline.c" "${HDE}")
 target_include_directories(process_hook PUBLIC "${ROOT}/src")
+# MSVC does not supply the Windows token-creation import library implicitly.
+if(MSVC)
+  target_link_libraries(process_hook PUBLIC advapi32)
+endif()
 target_compile_definitions(process_hook PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
   target_compile_options(process_hook PRIVATE -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-lto)

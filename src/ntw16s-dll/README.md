@@ -8,7 +8,7 @@ A versioned launch payload enables early API interception and automatic window
 attachment through this same renderer. OS rundll32 uses the real NONAME ordinal1
 installer callback for opposite-width targets. Staged imports and actual target
 initialization are separate verification events. The default launcher policy
-enables styling and native CreateProcess A/W descendant propagation. Each
+enables styling and native CreateProcess A/W plus CreateProcessAsUserW descendant propagation. Each
 creation layer retains the original caller suspension or releases only its own
 added suspension. Installation failure rolls back only its uncommitted child.
 

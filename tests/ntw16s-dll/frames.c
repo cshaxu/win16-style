@@ -1,6 +1,7 @@
 #include "ntw16s-dll/ntw16s.h"
 #include <stdio.h>
 #include <wchar.h>
+#include <dwmapi.h>
 #include "isolated_process.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"FRAME FAIL line=%d error=%lu: %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
 static LRESULT CALLBACK owner(HWND w,UINT m,WPARAM a,LPARAM b)
@@ -57,6 +58,23 @@ static int frame_worker(int argc,WCHAR **argv)
             100,100,420,280,NULL,NULL,cls.hInstance,NULL);CHECK(w);
         client_screen(w,&before);CHECK(!win16_style_install(w,NULL) && GetLastError()==ERROR_NOT_SUPPORTED);
         client_screen(w,&after);CHECK(EqualRect(&before,&after) && DestroyWindow(w));
+    }
+    /* Read the documented query attribute; exercise both initial states and
+     * two cycles so an apparently successful remove cannot hide disabled DWM. */
+    for(DWORD policy=DWMNCRP_DISABLED;policy<=DWMNCRP_ENABLED;++policy){
+        w=CreateWindowW(cls.lpszClassName,L"DWM restore",WS_OVERLAPPEDWINDOW,
+            100,100,420,280,NULL,NULL,cls.hInstance,NULL);CHECK(w);
+        CHECK(SUCCEEDED(DwmSetWindowAttribute(w,DWMWA_NCRENDERING_POLICY,&policy,sizeof(policy))));
+        for(unsigned cycle=0;cycle<2;++cycle){
+            BOOL original=FALSE,current=FALSE;
+            CHECK(SUCCEEDED(DwmGetWindowAttribute(w,DWMWA_NCRENDERING_ENABLED,&original,sizeof(original))));
+            CHECK(original==(policy==DWMNCRP_ENABLED));
+            CHECK(win16_style_install(w,NULL));
+            CHECK(SUCCEEDED(DwmGetWindowAttribute(w,DWMWA_NCRENDERING_ENABLED,&current,sizeof(current))) && !current);
+            CHECK(win16_style_remove(w));
+            CHECK(SUCCEEDED(DwmGetWindowAttribute(w,DWMWA_NCRENDERING_ENABLED,&current,sizeof(current))) && current==original);
+        }
+        CHECK(DestroyWindow(w));
     }
     CHECK(UnregisterClassW(cls.lpszClassName,cls.hInstance));
     puts("FRAME PASS six forms, client screen preservation, same geometry hit test, title/palette, maximize/minimize/restore, three exclusions");

@@ -2,9 +2,9 @@
 
 ## Current Work
 
-当前活动任务：M0 T23 S1，现代桌面混合窗口适配的启动链与窗口能力审计。
+当前活动任务：M0 T23 S1，记事本原生外框恢复、标准启动接入及交付。
 用户批准准入队列首项；T22/S1已[收口](../history/M0-T22-closure.md)。
-最后分配数值T为T23，S1处于active；本次P1仅准入与冻结计划，无产品改动。
+最后分配数值T为T23，S1处于verified，等待用户验收；P1–P3为研究，P4完成产品修复与发布。
 登记scratch：build/t23-package/s1-admission，仅保存治理检查日志。
 登记scratch：build/t23-package/s1-topology1，只读原生窗口/模块快照；本S提炼后回收。
 用户追加要求：保留顶部标签页与菜单的内容、布局和交互，不用覆盖层遮掉它们。
@@ -24,28 +24,44 @@ P3原生记事本原型见[实测记录](../history/M0-T23-S1-notepad-native.md)
 直接绘制原窗口标题/边框，标签与菜单可见、客户区几何不变，无覆盖层。撤销几何
 恢复但原生标题按钮绘制未恢复，局部theme刷新未解决；交互验证未完成，不计产品通过。
 
+登记scratch：build/t23-package/s1-notepad-restore1，DWM恢复原因对照、标准启动诊断及日志；本S提炼后回收。
+
+登记scratch：build/t23-package/s1-clean1（首轮干净包，晚期容量回归失败，不发布）、
+build/t23-package/s1-clean2（README来源摘要检查失败，未构建）、build/t23-package/s1-clean3（修正摘要后的同批干净缓存构建）、
+build/t23-package/s1-package2（私有桌面托盘入口失败）、build/t23-package/s1-package3（局部双宽挂钩实包回归）、
+build/t23-package/s1-package1（实包回归）、build/t23-package/s1-publish1（部署备份及摘要）；本S提炼后回收。
+
+实施边界：已证实Notepad的CreateProcessAsUserW转交绕过A/W传播；
+公共传播增加可选AsUserW入口，产品接入同一事务，不新增导出或扫描目标。
+DWM只保存可查询的NCRENDERING_ENABLED有效状态；不能恢复系统未公开的原策略枚举。
+P4双宽干净构建通过，核心10/10及实包25/25通过；已发布0.23.0.0到assets根目录与O:/winnt，摘要一致。
+标准命令在正式目录再次通过；撤销后原生标题恢复。私有桌面托盘用例失败不计通过，详见交付记录。
+细节及限制见[当前交付记录](../history/M0-T23-S1-notepad-delivery.md)。
+
 ## M0 T23 S1 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | New |
-| Admission And Approval | 用户“准入吧”，批准队列首项现代桌面混合窗口适配。 |
-| Objective | 冻结Notepad、Terminal、Task Manager、Explorer四目标的启动转交、最终进程和外框承载关系；给出可复用适配入口与实施次序。 |
+| Admission And Approval | 用户批准队列首项并明确将S1扩展为Notepad正式接入、恢复修复、测试发布提交推送后验收；后续按应用顺序推进。 |
+| Objective | 用户批准按应用调整顺序；S1完成Notepad恢复修复与标准run16s notepad接入、测试、发布提交推送，等待用户验收。 |
 | Non-goals | 不处理客户区/XAML控件、标签内容或应用数据；不修改系统注册表/安全设置；不改兄弟仓库；不结束用户既有会话。 |
 | Reference Baseline | T22收口83c1a2c1；已部署产品P34 0.22.0.0。 |
 | Candidate Proposal | docs/proposals/modern-desktop-window-style.md |
-| Files And ABI Surface | S1审计现有run16s-exe、ntw16s-dll及lib-win32窗口/进程入口；探针归tests或登记scratch；当前不新增产品导出/文件。 |
+| Files And ABI Surface | run16s-exe启动协调、ntw16s-dll附着、lib-win32/win16-window恢复及对应测试；优先复用现有入口，必要导出先记录ABI；保持四产物。 |
 | Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT；固定M0，C17/MinGW GCC/Ninja/ccache。 |
 | Verification | 原生只读快照及自有实例有限运行；逐层PID/创建时间/路径/位宽/包身份/框架模块/HWND；模块加载、附着与绘制分开；环境失败记skip。 |
-| Expected Markers | 四目标各有证据、断点或明确缺证项；通用与产品职责清晰；不凭应用名/类名独断框架或宣布支持。 |
-| Asset Needs | 保留原图形资源及声明；审计不替换产品文件。 |
-| Reporting Requirements | 四目标矩阵、可复用能力、最小方案、验证与限制；无binary change核对摘要，有变化按双宽同批四文件交付。 |
+| Expected Markers | 标准启动最终Notepad进程DLL与实际外框可见；移除DWM状态与原生按钮恢复；标签选择、三个菜单及窗口状态正常；旧DLL恢复负例与A/W-only传播负例检出。 |
+| Asset Needs | 保留原图形资源及声明；同批四文件发布assets根目录与O:/winnt，版本0.23.0.0。 |
+| Reporting Requirements | 报告两个实测根因、标准命令结果、原生交互/恢复证据、双宽测试和负例、同批四文件摘要与远端复核；不将其他应用计入S1通过。 |
 | Stop Conditions | 不可确认窗口/会话所有权则只读；权限失败留证据、不改安全策略；UAC单次发起超过一分钟才提醒。 |
-| Exit Criteria | 完成四目标审计、最小实施方案和必要探针验证，交付复核；不得用本S审计通过声称整个T已换肤。 |
-| Original Owner Request | 准入队列首项：现代桌面混合窗口适配。 |
+| Exit Criteria | 标准run16s notepad实际窗口换肤、移除恢复、标签与菜单保留通过；双宽干净构建、实包测试、assets与O:/winnt同批发布、推送复核后等待用户验收；其他应用后续S。 |
+| Original Owner Request | 把S1记事本做完，标准run16s notepad跑通，修好恢复，测试发布提交推送后给用户验收。 |
 | Similar-Issue Sweep | 对照T22激活转交、共享宿主和自定义标题边界；复用现有公共进程及窗口能力，避免逐应用复制renderer。 |
 
-技术基线：P34四文件已发布assets根目录与O:/winnt；P40/P42验证普通及管理员
+当前技术基线：T23 S1 P4四文件0.23.0.0，新增标准Notepad转交传播与DWM有效状态恢复；S1等待验收，T23开放。
+
+继承基线：P34四文件曾发布assets根目录与O:/winnt；P40/P42验证普通及管理员
 正式托盘两轮启停。支持已验证的x64 ApplicationFrameHost承载Calculator/Scan
 外框（144DPI），系统calc.exe入口、显式--app和全局已有/新建发现。内部XAML、
 WinUI桌面混合窗口未包含在该基线中；现在由T23审计适配。共享宿主定向运行时接入，不启用

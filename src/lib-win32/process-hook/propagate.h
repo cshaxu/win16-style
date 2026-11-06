@@ -17,4 +17,8 @@ typedef struct process_hook_propagation_ops {
     void *context;
 } process_hook_propagation_ops;
 DWORD process_hook_propagation_attach(DWORD (*attach)(void *,void *),const process_hook_propagation_ops *);
+/* Optional token-preserving W entry, after propagation_attach in the same
+ * transaction. The caller supplies the original token; no elevation or token
+ * acquisition is performed here. Same suspension, rollback and reentry rules. */
+DWORD process_hook_propagation_attach_as_user_w(DWORD (*attach)(void *,void *));
 #endif

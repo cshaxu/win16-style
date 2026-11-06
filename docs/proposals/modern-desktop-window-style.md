@@ -1,6 +1,6 @@
 # Modern desktop window adaptation
 
-T22 UWP外框已收口；用户批准本候选为M0 T23，当前准入S1审计。
+T22 UWP外框已收口；用户批准本候选为M0 T23，当前S1按用户批准扩展为记事本实现与交付。
 仅窗口外框，不含客户区控件；CURRENT拥有活动状态。
 
 ## 本机分类基线
@@ -31,11 +31,11 @@ WinUI 是界面框架，UWP 是应用模型；两者不能当成互斥分类。
 
 | S | Work and exit evidence |
 | --- | --- |
-| S1 (active) | Four-target launch/hosting/capability audit; reuse candidates and minimal design, bounded native evidence. Historical classification is a starting point, not current proof. |
-| S2 | Implement the common desktop exterior adapter justified by S1; self-owned native fixtures prove apply/remove/input and preserve existing Win32/UWP paths. |
-| S3 | Integrate and verify packaged desktop targets Notepad and Terminal, including activation handoff and new windows, preserving tabs/client data and user sessions. |
-| S4 | Integrate and verify Task Manager and Explorer folder windows with explicit privilege/shared-shell ownership boundaries; do not restyle desktop/taskbar by accident. |
-| S5 | Consolidated actual-package regression, source/resource/ABI review, four-file deployment and remote verification, task-wide closure audit. |
+| S1 (active) | Notepad: native frame restoration, standard `run16s notepad` launch handoff, tab/menu preservation, actual package tests and publication for acceptance. |
+| S2 | Task Manager: standard `run16s taskmgr`, privilege and native frame verification. |
+| S3 | Explorer folder windows: standard `run16s explorer`, shared-shell boundaries; preserve desktop/taskbar. |
+| S4 | Terminal and console hosting: standard `run16s cmd` and `run16s conhost`, identify actual window host and preserve console/session semantics; Terminal separately verified. |
+| S5 | Consolidated regression and closure audit across the standard launch commands. |
 
 Only S1 is currently admitted; subsequent S tasks follow this approved task scope
 in order, with one active packet. Evidence may require splitting implementation
