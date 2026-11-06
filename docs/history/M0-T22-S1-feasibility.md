@@ -581,3 +581,42 @@ P6本地交付完成：clean6双宽干净构建及ABI/资源/依赖门禁通过�
 s1-publish2已将同批四文件发布assets根目录及O:/winnt并校验摘要。原生输入visual22移动/缩放各一次及键盘菜单最大化通过，但可见缩放光标仍为箭头；该失败不能被其他通过项替代。S1/T22保持开放。产品差异仅frame.c及对应测试，31/1与25/4行增删；无第二套渲染路径、无资源变更。当前提交推送及远端复核待完成。
 
 P7复核：P6 b1db5d2aa0f4349f8ef978aa6d6be7d724f1e7de 已推送；重新fetch后读取10个变更blob逐字节一致，远端四产物与两处八个部署文件均匹配实包SHA256。仅登记复核，无二进制变化；S1/T22保持开放，可见边框光标失败及其他有限覆盖边界不变。
+
+## P8 cursor routing audit (no product change)
+
+All probes used fresh Calculator instances on Default desktop, 144 DPI, host
+PID12040, bounded execution and owned-instance cleanup. The already registered
+`s1-window-audit` scratch contains these immutable experiment directories:
+
+| Experiment | Own PID / host UI TID | Result |
+| --- | --- | --- |
+| cursor-nchit1 | 35236 / 25640 | Report native resize hits and forward NC press: visible cursor still arrow; move/resize and restore pass. |
+| cursor-events1 | 35952 / 18168 | Real WM_SETCURSOR received three times; lParam33554442 = mouse-move/HTLEFT, thread cursor0x10011, global cursor0x10003. NC mouse move received three times. |
+| cursor-move1 | 11108 / 5724 | SetCursor after DefSubclassProc on NC mouse move also does not change global cursor. No drag repeated. |
+| cursor-class1 | 35236 / 16492 | Private owned class instead of STATIC still fails; real cursor messages arrive. No shared class changed. PID was reused by the OS, not assumed same process. |
+| cursor-native-frame1 | 26940 / 8224 | Before applying style, exact point(325,528) hits root/HTLEFT and global cursor is expected SIZEWE0x10011. Native baseline passes. |
+| cursor-transparent1 | 26272 / 35960 | Ask native root hit and return HTTRANSPARENT for sizing: visible cursor still arrow; move/resize/menu/restore pass. |
+
+The original native Calculator works at the same edge. The adapter changes that
+behavior. This is not only a faulty expected cursor handle, absent input, or a
+missing WM_SETCURSOR message. A correct thread-local SetCursor observation does
+not establish the globally displayed cursor. Correct NC hits, delayed SetCursor,
+a private surface class, and HTTRANSPARENT did not fix the observed failure.
+The exact host/input routing cause is still unresolved; do not assert DWM,
+CoreWindow.PointerCursor or an OS bug without further evidence. Failed variants
+remain scratch only; no extra hooks, polling, thread attachment or global cursor
+settings were added to the product. Prototype DLLs are pinned in host lifetime;
+removal restores only the owned window adapter, not physical DLL unloading.
+
+References reviewed:
+- https://learn.microsoft.com/en-us/windows/win32/menurc/wm-setcursor
+- https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-nchittest
+- https://learn.microsoft.com/en-us/uwp/api/windows.ui.core.corewindow.pointercursor
+
+Microsoft documents HTTRANSPARENT routing to underlying windows of the same
+thread. This was a candidate mechanism, not proof that it fixes this host.
+Next useful test should identify the actual original-root cursor/input dispatch
+when overlay is present, rather than repeat SetCursor variants. Other remaining
+scope includes activation reuse/ordinary entry integration, title replacement,
+and additional real UWP applications. No product or binary changes in P8;
+P6 tested/deployed hashes remain the current baseline. S1/T22 stay open.
