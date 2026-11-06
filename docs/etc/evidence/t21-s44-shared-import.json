@@ -1,0 +1,645 @@
+{
+  "source_commit": "967ef3d31fcb2a6d21074151875d7accd1e4c18a",
+  "source_repository": "https://github.com/cshaxu/ntvdm64",
+  "entries": [
+    {
+      "source": "src/lib-win32/handle/duplicate.c",
+      "blob": "95a87120c173e7fd00e0afee83ea76960ee64548",
+      "destination": "src/lib-win32/handle/duplicate.c",
+      "source_sha256": "7036b95282ffa11d76305094c8efc076cf0a6a864ea3fd508c993e3ce3090596",
+      "local_sha256": "7036b95282ffa11d76305094c8efc076cf0a6a864ea3fd508c993e3ce3090596",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/handle/duplicate.h",
+      "blob": "d7a2e90a161e125be71cd00cda4bf8c0b0732ce4",
+      "destination": "src/lib-win32/handle/duplicate.h",
+      "source_sha256": "f39b055b6678a24d8c69e97496adaf46bc6b16322859e7a88f899a84aefbfd26",
+      "local_sha256": "f39b055b6678a24d8c69e97496adaf46bc6b16322859e7a88f899a84aefbfd26",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/LICENSE.win16style",
+      "blob": "83f5b494cd73d1fc0571c30ef807c430ea4c25d8",
+      "destination": "src/lib-win32/process-hook/LICENSE.win16style",
+      "source_sha256": "71337277c6c03463ca6d7b56aba20fed81d3e6f1c8a823f7d5ab30760de8a389",
+      "local_sha256": "71337277c6c03463ca6d7b56aba20fed81d3e6f1c8a823f7d5ab30760de8a389",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/helper.c",
+      "blob": "17fb7b1f013401b2f4021619defe596e7494904b",
+      "destination": "src/lib-win32/process-hook/helper.c",
+      "source_sha256": "7ced9af82c88a4bd9e48b3fdd9d7b25735c2bd8dc12ec6a7bea609fd253ed02a",
+      "local_sha256": "7ced9af82c88a4bd9e48b3fdd9d7b25735c2bd8dc12ec6a7bea609fd253ed02a",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/helper.h",
+      "blob": "d703ca6a9f80822035d93277d095ba018e15b4b7",
+      "destination": "src/lib-win32/process-hook/helper.h",
+      "source_sha256": "746ad04512cb83ed4494d4090824ab13fbf68db505beee6c2552159e92a1b64f",
+      "local_sha256": "746ad04512cb83ed4494d4090824ab13fbf68db505beee6c2552159e92a1b64f",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/late_batch.c",
+      "blob": "cb9e7dcc6bc152dcf12ff5b0692a8ce74d543ed0",
+      "destination": "src/lib-win32/process-hook/late_batch.c",
+      "source_sha256": "d7729f780638131d74399458cba18f9ece7956ae70d1086f0dc80c8d5a7541be",
+      "local_sha256": "d7729f780638131d74399458cba18f9ece7956ae70d1086f0dc80c8d5a7541be",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/late_batch.h",
+      "blob": "405cef69b700b1c4d25b8c67b006833bd8cdfc1d",
+      "destination": "src/lib-win32/process-hook/late_batch.h",
+      "source_sha256": "ca31262acbbd5574500bbb6a13df6009e9258388e3266d9cbe81672448c01c74",
+      "local_sha256": "ca31262acbbd5574500bbb6a13df6009e9258388e3266d9cbe81672448c01c74",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/late_guard.c",
+      "blob": "ac6d5a3d6d6ba634b3b7db2fe5bc2b3d77e7f92f",
+      "destination": "src/lib-win32/process-hook/late_guard.c",
+      "source_sha256": "67b623f41ebd50247d723903134f5b99ffc60053b93fba276758e74d162d2c4c",
+      "local_sha256": "67b623f41ebd50247d723903134f5b99ffc60053b93fba276758e74d162d2c4c",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/late_guard.h",
+      "blob": "d7703dec3df03ae9815ff5ea558bb1a98d92d00c",
+      "destination": "src/lib-win32/process-hook/late_guard.h",
+      "source_sha256": "8f6805a2cf238da66fcd4c7039bd96bfd392049d6bfa2e83f81e0faeeb2b773f",
+      "local_sha256": "8f6805a2cf238da66fcd4c7039bd96bfd392049d6bfa2e83f81e0faeeb2b773f",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/late_patch.c",
+      "blob": "3f35cbeb7d4c0aecd241bd6970abd47127a81f39",
+      "destination": "src/lib-win32/process-hook/late_patch.c",
+      "source_sha256": "15b689bf11a42844876ff8d4bd7ffbf8cd1afad1502c4762518300a5514fc89e",
+      "local_sha256": "15b689bf11a42844876ff8d4bd7ffbf8cd1afad1502c4762518300a5514fc89e",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/late_patch.h",
+      "blob": "b3a87e76b99a3d95414c76b7a2e89c165c06616c",
+      "destination": "src/lib-win32/process-hook/late_patch.h",
+      "source_sha256": "30a44d505c3ce8b6b64ee9fb36654014c19607d4247e0c62c4315ab05112aa27",
+      "local_sha256": "30a44d505c3ce8b6b64ee9fb36654014c19607d4247e0c62c4315ab05112aa27",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/minhook/AUTHORS.txt",
+      "blob": "ebef1a6cdc5ec50de284e5990577864df5a235ce",
+      "destination": "src/lib-win32/process-hook/minhook/AUTHORS.txt",
+      "source_sha256": "073b4e8b0a5a0cd9f4dfa838369f4fc7a4f47151d930b4e1fd891644060a897f",
+      "local_sha256": "073b4e8b0a5a0cd9f4dfa838369f4fc7a4f47151d930b4e1fd891644060a897f",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/minhook/LICENSE.txt",
+      "blob": "74dea27229c05b53b095aa22b9ee7ee9f549e414",
+      "destination": "src/lib-win32/process-hook/minhook/LICENSE.txt",
+      "source_sha256": "d5c2224982b0b95a16b098a561335fa93f3eaf4d0aa964b7843edb986df78dc8",
+      "local_sha256": "d5c2224982b0b95a16b098a561335fa93f3eaf4d0aa964b7843edb986df78dc8",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/minhook/src/buffer.c",
+      "blob": "059b4548fa3b1682b75fd060edb667b11c4085ae",
+      "destination": "src/lib-win32/process-hook/minhook/src/buffer.c",
+      "source_sha256": "53228de3f2a14a390f6d97538d702c20a4388eea42e53b5b999532bab018287b",
+      "local_sha256": "53228de3f2a14a390f6d97538d702c20a4388eea42e53b5b999532bab018287b",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/minhook/src/buffer.h",
+      "blob": "204d551bffb7f11760bc1e474aa835e55f4cbb00",
+      "destination": "src/lib-win32/process-hook/minhook/src/buffer.h",
+      "source_sha256": "9769702bd625249e59a19ede05c84365fcc7707e1fa0e5df08df42227cee13e3",
+      "local_sha256": "9769702bd625249e59a19ede05c84365fcc7707e1fa0e5df08df42227cee13e3",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/minhook/src/hde/hde32.c",
+      "blob": "eb6af9b8ac8f3d83ab370f807467f2733fb4210d",
+      "destination": "src/lib-win32/process-hook/minhook/src/hde/hde32.c",
+      "source_sha256": "5da4941e9044f7b325c7f952b5840089e365f374740b7fe7318805d08c0d6c32",
+      "local_sha256": "5da4941e9044f7b325c7f952b5840089e365f374740b7fe7318805d08c0d6c32",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/minhook/src/hde/hde32.h",
+      "blob": "1112450d87ae6772ad805f4f7fa07965c5bbbdb0",
+      "destination": "src/lib-win32/process-hook/minhook/src/hde/hde32.h",
+      "source_sha256": "5132de5be8ac7a9d054420f5caef0fb01437faa892f03b3cdc77f795973bf15a",
+      "local_sha256": "5132de5be8ac7a9d054420f5caef0fb01437faa892f03b3cdc77f795973bf15a",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/minhook/src/hde/hde64.c",
+      "blob": "ce773b1e25f95b312a4c05f3acf053d87ec6d20c",
+      "destination": "src/lib-win32/process-hook/minhook/src/hde/hde64.c",
+      "source_sha256": "824eafa315322e6da105a7ce4ec1fc0e0adeee0106d32152fbb0b59e709bd15c",
+      "local_sha256": "824eafa315322e6da105a7ce4ec1fc0e0adeee0106d32152fbb0b59e709bd15c",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/minhook/src/hde/hde64.h",
+      "blob": "ecbf4df958ac24646c0ba645ee4ba8340e8a74c8",
+      "destination": "src/lib-win32/process-hook/minhook/src/hde/hde64.h",
+      "source_sha256": "e99aa4997bda14b534c614c3d8cb78a72c4aca91a1212c8b03ec605d1d75e36e",
+      "local_sha256": "e99aa4997bda14b534c614c3d8cb78a72c4aca91a1212c8b03ec605d1d75e36e",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/minhook/src/hde/pstdint.h",
+      "blob": "84d82a012311a72f5dfb1fc88554f7820fbdf216",
+      "destination": "src/lib-win32/process-hook/minhook/src/hde/pstdint.h",
+      "source_sha256": "604d1cdf45c5a95bc9cf1bbf39ca05ef83013541101d34971c5cd7577e3d5247",
+      "local_sha256": "604d1cdf45c5a95bc9cf1bbf39ca05ef83013541101d34971c5cd7577e3d5247",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/minhook/src/hde/table32.h",
+      "blob": "7b3e12e32fdb7c362ca333c992e3c2e05556edb5",
+      "destination": "src/lib-win32/process-hook/minhook/src/hde/table32.h",
+      "source_sha256": "43bf687a9fff071b5f46070db4d36c846f8e069cdc57485ee897c499aacdde23",
+      "local_sha256": "43bf687a9fff071b5f46070db4d36c846f8e069cdc57485ee897c499aacdde23",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/minhook/src/hde/table64.h",
+      "blob": "01d4541f97765a1fe14ad4a60f3705156abaf176",
+      "destination": "src/lib-win32/process-hook/minhook/src/hde/table64.h",
+      "source_sha256": "b774446d2f110ce954fb0a710f4693c5562ddbd8d56fe84106f2ee80db8b50a2",
+      "local_sha256": "b774446d2f110ce954fb0a710f4693c5562ddbd8d56fe84106f2ee80db8b50a2",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/minhook/src/trampoline.c",
+      "blob": "d4d6f99d9fb23d980b12eb0ba4f722e5f8377d87",
+      "destination": "src/lib-win32/process-hook/minhook/src/trampoline.c",
+      "source_sha256": "f13a169f803ff5a8e45c58ce668b4377a9878c0fc4452369b8a1325065186b2b",
+      "local_sha256": "f13a169f803ff5a8e45c58ce668b4377a9878c0fc4452369b8a1325065186b2b",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/minhook/src/trampoline.h",
+      "blob": "bdffdac0a7bc838b52dd35733c943a9d5c7bc7b5",
+      "destination": "src/lib-win32/process-hook/minhook/src/trampoline.h",
+      "source_sha256": "53ed9934492320617a27bfd952ffe7f5b7a4a1d09963d4512447082fe7b727b4",
+      "local_sha256": "53ed9934492320617a27bfd952ffe7f5b7a4a1d09963d4512447082fe7b727b4",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/payload.c",
+      "blob": "05eec3a4c756cc566b74f3757f8a83d031ed5e58",
+      "destination": "src/lib-win32/process-hook/payload.c",
+      "source_sha256": "37360c011349e3e6aed1b276fdfc45f30e579d3e8bbd75460eb2260b541cade4",
+      "local_sha256": "37360c011349e3e6aed1b276fdfc45f30e579d3e8bbd75460eb2260b541cade4",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/payload.h",
+      "blob": "8a18f8b8339c1c6cc2bd23a49e8e4c8b72a04bbf",
+      "destination": "src/lib-win32/process-hook/payload.h",
+      "source_sha256": "5dc1e08b15c8b4608307f3588b5ee9466179229026d4edab357b208b85b94a6c",
+      "local_sha256": "5dc1e08b15c8b4608307f3588b5ee9466179229026d4edab357b208b85b94a6c",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/propagate.c",
+      "blob": "8d4fff21f2ae932730f250a42b4622492c24a5cc",
+      "destination": "src/lib-win32/process-hook/propagate.c",
+      "source_sha256": "8d9b5b62d6a8a1e34bd21a7fcd0d0c4fc45d9c357634f450278496e29ce23559",
+      "local_sha256": "8d9b5b62d6a8a1e34bd21a7fcd0d0c4fc45d9c357634f450278496e29ce23559",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/propagate.h",
+      "blob": "9f6fcb60bb429ef38ee386b38da412ffc389aaa5",
+      "destination": "src/lib-win32/process-hook/propagate.h",
+      "source_sha256": "4a71140917e36f6d1a4cb152f95970a9b293bb98d836fce7f1da59a2491cbbaa",
+      "local_sha256": "4a71140917e36f6d1a4cb152f95970a9b293bb98d836fce7f1da59a2491cbbaa",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/staging.c",
+      "blob": "d7b8e4f16c711fca96587eaa02a36d4b3bf4891b",
+      "destination": "src/lib-win32/process-hook/staging.c",
+      "source_sha256": "5bb5c83fad1abedc5e9d96573e16d47306654b856eba1b54cbcc3717ae198dcd",
+      "local_sha256": "5bb5c83fad1abedc5e9d96573e16d47306654b856eba1b54cbcc3717ae198dcd",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/staging.h",
+      "blob": "bba1837f14a76382fb79b4f9b859c3e1b69709b7",
+      "destination": "src/lib-win32/process-hook/staging.h",
+      "source_sha256": "910166162612075fc4916b0d4cdcd05dcdc29f191e5b6ffd963681f3c35b8514",
+      "local_sha256": "910166162612075fc4916b0d4cdcd05dcdc29f191e5b6ffd963681f3c35b8514",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/startup_hooks.c",
+      "blob": "bca0c47c2e444ad303b79b83ce9a790e2d9752ef",
+      "destination": "src/lib-win32/process-hook/startup_hooks.c",
+      "source_sha256": "bc1b0cafdf1d2c932ea729bd2588b6570d2e3291d65aba7245794a75c93ef999",
+      "local_sha256": "bc1b0cafdf1d2c932ea729bd2588b6570d2e3291d65aba7245794a75c93ef999",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/startup_hooks.h",
+      "blob": "5ef8873ae167d62c71dbbbd384f3e161cd67411a",
+      "destination": "src/lib-win32/process-hook/startup_hooks.h",
+      "source_sha256": "7c7c7b8007199447567895982b9e65805be36165d2e7a4783a573559d4d0a89d",
+      "local_sha256": "7c7c7b8007199447567895982b9e65805be36165d2e7a4783a573559d4d0a89d",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/unwind.c",
+      "blob": "03ba6258775171b9b472d15b70bf4edf8cb56b35",
+      "destination": "src/lib-win32/process-hook/unwind.c",
+      "source_sha256": "4faed5146e2dbba2632d6acebe48014ee68e14be5653600e88809194eb9b5361",
+      "local_sha256": "4faed5146e2dbba2632d6acebe48014ee68e14be5653600e88809194eb9b5361",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-hook/unwind.h",
+      "blob": "460a2c3c63613634ea04889b1e112e52dba2da77",
+      "destination": "src/lib-win32/process-hook/unwind.h",
+      "source_sha256": "03bfd2b444393e1b1e236825013c45e7cad5c36f31b5c74a41ba220f5af94a8a",
+      "local_sha256": "03bfd2b444393e1b1e236825013c45e7cad5c36f31b5c74a41ba220f5af94a8a",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-image/file_handle.c",
+      "blob": "295491c806d15656c84dfb5e5635018cb7f3fb49",
+      "destination": "src/lib-win32/process-image/file_handle.c",
+      "source_sha256": "fcd6e29414264e1d06fcada7bed9408a1990912516fc9e2b183accaca5df426a",
+      "local_sha256": "fcd6e29414264e1d06fcada7bed9408a1990912516fc9e2b183accaca5df426a",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-image/file_handle.h",
+      "blob": "d9098e7654de86794eabcf6ba67375a38031255e",
+      "destination": "src/lib-win32/process-image/file_handle.h",
+      "source_sha256": "c0fb8a4894050c458b17c945344a4e03b4686a1a9fa2513c47cd49d225116d0d",
+      "local_sha256": "c0fb8a4894050c458b17c945344a4e03b4686a1a9fa2513c47cd49d225116d0d",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-image/image.c",
+      "blob": "a6bb98abc965b5c575543448bdb7ed84fcad747e",
+      "destination": "src/lib-win32/process-image/image.c",
+      "source_sha256": "c9bb55054465aaba97259bc778feef444943022796231ca0b46fa10c0011b210",
+      "local_sha256": "c9bb55054465aaba97259bc778feef444943022796231ca0b46fa10c0011b210",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-image/image.h",
+      "blob": "205759dad2f5996d2cf29549977b9c81cbcb7958",
+      "destination": "src/lib-win32/process-image/image.h",
+      "source_sha256": "1f267696c2e4cca4177a3592779f74284f0ba2f6ea3b2b325cbab295c271c0e7",
+      "local_sha256": "1f267696c2e4cca4177a3592779f74284f0ba2f6ea3b2b325cbab295c271c0e7",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-image/remote.c",
+      "blob": "4d1292d0844ef36eda5f9be76ebd47f57f094099",
+      "destination": "src/lib-win32/process-image/remote.c",
+      "source_sha256": "14b13288ae5d2b7be750ce0e59c53cf5505631539096d4c414912c8cd4124eed",
+      "local_sha256": "14b13288ae5d2b7be750ce0e59c53cf5505631539096d4c414912c8cd4124eed",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-image/remote.h",
+      "blob": "07056c152826d58fa4f7b249822a2ed5543ecb0b",
+      "destination": "src/lib-win32/process-image/remote.h",
+      "source_sha256": "43668622ccbd9b486b85d88c98679cebb52088e7235b2678a577e336e92ef0e9",
+      "local_sha256": "43668622ccbd9b486b85d88c98679cebb52088e7235b2678a577e336e92ef0e9",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-launch/attributes.c",
+      "blob": "745605017fdaef0f8b620da5310c684da559f035",
+      "destination": "src/lib-win32/process-launch/attributes.c",
+      "source_sha256": "5bb012796b56d581a93b95b012d5a5fc60b86f1ee2a30e97bf911f36ae562cc6",
+      "local_sha256": "5bb012796b56d581a93b95b012d5a5fc60b86f1ee2a30e97bf911f36ae562cc6",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-launch/attributes.h",
+      "blob": "c09e38aabefa06def087090c74d557fb59ca822c",
+      "destination": "src/lib-win32/process-launch/attributes.h",
+      "source_sha256": "dc527f1c3fafd49dfe3aac5c9c5f98418f8423bbb742f69e6adb9a2affc1ced8",
+      "local_sha256": "dc527f1c3fafd49dfe3aac5c9c5f98418f8423bbb742f69e6adb9a2affc1ced8",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-launch/command_line.c",
+      "blob": "158bc62d59e55562d91a4accddd365d330fd7445",
+      "destination": "src/lib-win32/process-launch/command_line.c",
+      "source_sha256": "2e091f08db0ffaba49f6cb426d4358d13fe74b9765cb549154eadf4e3a35c7cb",
+      "local_sha256": "2e091f08db0ffaba49f6cb426d4358d13fe74b9765cb549154eadf4e3a35c7cb",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-launch/command_line.h",
+      "blob": "86edd4c5a3166946ad7a841b30f653b1c5d7a1be",
+      "destination": "src/lib-win32/process-launch/command_line.h",
+      "source_sha256": "f210c0f3478c6f56c9b51878a9dd3bce9d25937ded30cdd564e0f0ce24a4b7a9",
+      "local_sha256": "f210c0f3478c6f56c9b51878a9dd3bce9d25937ded30cdd564e0f0ce24a4b7a9",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-launch/process.c",
+      "blob": "7813dc67c0544f673c76fd481211f4e32a73a28b",
+      "destination": "src/lib-win32/process-launch/process.c",
+      "source_sha256": "42c9800e39b7ca622def80b4274fa54875c3d9361c7333b83955a29261e8524d",
+      "local_sha256": "42c9800e39b7ca622def80b4274fa54875c3d9361c7333b83955a29261e8524d",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "src/lib-win32/process-launch/process.h",
+      "blob": "d01daf54fa6333673d4e4ffaba4913f01973240e",
+      "destination": "src/lib-win32/process-launch/process.h",
+      "source_sha256": "378677ef568ad2b14992dfa7ca9ce62de12054f79a9b3f3b8fa8e1230ab052da",
+      "local_sha256": "378677ef568ad2b14992dfa7ca9ce62de12054f79a9b3f3b8fa8e1230ab052da",
+      "disposition": "identical",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/CMakeLists.txt",
+      "blob": "3be32b4921ab20fabde59dfcbcbe78b373b9f288",
+      "destination": "tests/lib-win32/CMakeLists.txt",
+      "source_sha256": "35f61a8881bf81b101646e4e6bacadf05a568d3d8a2ecd6233dd1120a55fe6f2",
+      "local_sha256": "35f61a8881bf81b101646e4e6bacadf05a568d3d8a2ecd6233dd1120a55fe6f2",
+      "disposition": "import-test",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/README.md",
+      "blob": "bec9fdc6dfef517c0c0df77c7c3e082f7d5875d5",
+      "destination": "tests/lib-win32/README.md",
+      "source_sha256": "bd40afd27034f88d05bec1976e6c0f9d831aa079c73246661b39003532ac51eb",
+      "local_sha256": "bd40afd27034f88d05bec1976e6c0f9d831aa079c73246661b39003532ac51eb",
+      "disposition": "import-test",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/handle/handle.c",
+      "blob": "5f80b3287007b0ad54e4f790d48b7b403a734c6e",
+      "destination": "tests/lib-win32/handle/handle.c",
+      "source_sha256": "42e01105103f803c7f25ea28d0cb86f157be99ec5912e02bfe7c607973d95f4d",
+      "local_sha256": "42e01105103f803c7f25ea28d0cb86f157be99ec5912e02bfe7c607973d95f4d",
+      "disposition": "import-test",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/process-hook/cross_helper.c",
+      "blob": "0d5d74a204007ff2777e0923923300e2ee3886cd",
+      "destination": "tests/lib-win32/process-hook/cross_helper.c",
+      "source_sha256": "43beadbf2bc356101f9d042d5590f17a093813feed094c025d207ad56cb76f02",
+      "local_sha256": "43beadbf2bc356101f9d042d5590f17a093813feed094c025d207ad56cb76f02",
+      "disposition": "import-test",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/process-hook/cross_helper.def",
+      "blob": "8b902c5d71e1977692c492fa639b0eb938eb9810",
+      "destination": "tests/lib-win32/process-hook/cross_helper.def",
+      "source_sha256": "a7b4c776b484530694124f41963441e48b374823cb483fdaf2a9ca66f615ea8f",
+      "local_sha256": "a7b4c776b484530694124f41963441e48b374823cb483fdaf2a9ca66f615ea8f",
+      "disposition": "import-test",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/process-hook/cross_payload.c",
+      "blob": "8fe97beb6518c23e6d6d4f6edd3bc500eca6eb5d",
+      "destination": "tests/lib-win32/process-hook/cross_payload.c",
+      "source_sha256": "a69d9d6d9e27ed44b39890591f4c63d926950324a702171ce1c204dcd5b072ee",
+      "local_sha256": "a69d9d6d9e27ed44b39890591f4c63d926950324a702171ce1c204dcd5b072ee",
+      "disposition": "import-test",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/process-hook/late_batch.c",
+      "blob": "be5270e2e2948197e8bb17ace1ecc3e5d91cc493",
+      "destination": "tests/lib-win32/process-hook/late_batch.c",
+      "source_sha256": "ee21feb9db2c4d0134901ea7169ed453b7b99b46b75665cf168da5e163e81c5b",
+      "local_sha256": "ee21feb9db2c4d0134901ea7169ed453b7b99b46b75665cf168da5e163e81c5b",
+      "disposition": "import-test",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/process-hook/late_guard_race.c",
+      "blob": "606466925e642d8d19800b1461f7f21bdcd8a28f",
+      "destination": "tests/lib-win32/process-hook/late_guard_race.c",
+      "source_sha256": "005b8eec4d0bdaa25101c8f7aa90a85deb878c00971b577f1aaaaf310cc26f87",
+      "local_sha256": "005b8eec4d0bdaa25101c8f7aa90a85deb878c00971b577f1aaaaf310cc26f87",
+      "disposition": "import-test",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/process-hook/link.c",
+      "blob": "05ccccd2a211524f313e8bef05a7c81b81c6b890",
+      "destination": "tests/lib-win32/process-hook/link.c",
+      "source_sha256": "01fa54a324e84f5b55f476e9481dff0933f70fc85a54864ec280d1407a96bc80",
+      "local_sha256": "01fa54a324e84f5b55f476e9481dff0933f70fc85a54864ec280d1407a96bc80",
+      "disposition": "import-test",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/process-hook/payload.c",
+      "blob": "787a4aaaf008dffb04af55d3450613dadeec546b",
+      "destination": "tests/lib-win32/process-hook/payload.c",
+      "source_sha256": "a0c40f4b38eddda65cc8bc20b3c0a8dd86ccb36528e4c3fda2fc892f36d320df",
+      "local_sha256": "a0c40f4b38eddda65cc8bc20b3c0a8dd86ccb36528e4c3fda2fc892f36d320df",
+      "disposition": "import-test",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/process-hook/payload_direct.c",
+      "blob": "931eeb0a4c5b1688185ca8f25aee313c3b74c489",
+      "destination": "tests/lib-win32/process-hook/payload_direct.c",
+      "source_sha256": "aa4c2891813e11379a10c4551fa1394f3bb32236f06206fb312136f5ac313d1b",
+      "local_sha256": "aa4c2891813e11379a10c4551fa1394f3bb32236f06206fb312136f5ac313d1b",
+      "disposition": "import-test",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/process-hook/payload_test.c",
+      "blob": "cd9d25ca98f3ab0a6185b2a1583addcbfc1bb27d",
+      "destination": "tests/lib-win32/process-hook/payload_test.c",
+      "source_sha256": "387f397792bdecf28b2ff05e3bdc1b0da4b6041e70a3ed4881549cf4c7749af1",
+      "local_sha256": "387f397792bdecf28b2ff05e3bdc1b0da4b6041e70a3ed4881549cf4c7749af1",
+      "disposition": "import-test",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/process-hook/portable/CMakeLists.txt",
+      "blob": "37a49b4e9b2e00338771d6ec4e0133daf5923c31",
+      "destination": "tests/lib-win32/process-hook/portable/CMakeLists.txt",
+      "source_sha256": "f49901774b64379e9276754674f2e5562f2041644ec7c76d0f257330e6ad99ce",
+      "local_sha256": "f49901774b64379e9276754674f2e5562f2041644ec7c76d0f257330e6ad99ce",
+      "disposition": "import-test",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/process-hook/portable/README.md",
+      "blob": "9f3bcd013d28e2aa70a0ec792e30f8f2b6daefe3",
+      "destination": "tests/lib-win32/process-hook/portable/README.md",
+      "source_sha256": "c96e0009e195b972a2d31e1288615d5bbf1c07f66ff50ea135a9af412e1d1abf",
+      "local_sha256": "c96e0009e195b972a2d31e1288615d5bbf1c07f66ff50ea135a9af412e1d1abf",
+      "disposition": "import-test",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/process-hook/propagate.c",
+      "blob": "deb7ef871351e5b595681c0a3f303cf168e35065",
+      "destination": "tests/lib-win32/process-hook/propagate.c",
+      "source_sha256": "224011bfdcbe9e9f359cb81b957ea9745d1e6123189352ff8c1ab01449f807f6",
+      "local_sha256": "224011bfdcbe9e9f359cb81b957ea9745d1e6123189352ff8c1ab01449f807f6",
+      "disposition": "import-test",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/process-hook/unwind.c",
+      "blob": "a1daeac2c12072c7a29ff82691db97c8f8adc4a6",
+      "destination": "tests/lib-win32/process-hook/unwind.c",
+      "source_sha256": "af559cbbb44c7668bd3b1d544bc59789c7b36e71da2e278c154a9ae75a5653a1",
+      "local_sha256": "af559cbbb44c7668bd3b1d544bc59789c7b36e71da2e278c154a9ae75a5653a1",
+      "disposition": "import-test",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/process-hook/upstream-sha256.txt",
+      "blob": "1e812faeebe85b98e02838d22211cb0d735829cc",
+      "destination": "tests/lib-win32/process-hook/upstream-sha256.txt",
+      "source_sha256": "96496b3c83fa8caf7873ee69a953fa8d3e0d666bdece7ab8ed094b681d52cc81",
+      "local_sha256": "96496b3c83fa8caf7873ee69a953fa8d3e0d666bdece7ab8ed094b681d52cc81",
+      "disposition": "adapt-license-LF-hash-only",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/process-hook/verify-upstream.py",
+      "blob": "e6b5ea1dbfbbd694ae1948d62fc89f41f885fdf7",
+      "destination": "tests/lib-win32/process-hook/verify-upstream.py",
+      "source_sha256": "af5b808372258bb0d7e063abfeb81d95211d705f038865de19d87a5c0e44c3d5",
+      "local_sha256": "af5b808372258bb0d7e063abfeb81d95211d705f038865de19d87a5c0e44c3d5",
+      "disposition": "import-test",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/process-image/access.c",
+      "blob": "9a60782f4a8b78168f751c3afa3b9347b4935131",
+      "destination": "tests/lib-win32/process-image/access.c",
+      "source_sha256": "185d3320d39a2c19203ddb4a717a15b1e14db7d9a217cc7fb3b7cf5e370c00ca",
+      "local_sha256": "185d3320d39a2c19203ddb4a717a15b1e14db7d9a217cc7fb3b7cf5e370c00ca",
+      "disposition": "import-test",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/process-image/image.c",
+      "blob": "b8cd51d38ced871e5cadf8f8b90668928f880dab",
+      "destination": "tests/lib-win32/process-image/image.c",
+      "source_sha256": "482f3467c82159bb25beb89aeb2846c0fd09291f52ea2b33e6c9fafa11bbea89",
+      "local_sha256": "482f3467c82159bb25beb89aeb2846c0fd09291f52ea2b33e6c9fafa11bbea89",
+      "disposition": "import-test",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/process-image/image_machine_test.c",
+      "blob": "e6214b059d24530c2504c256f705e88c2bca0b5b",
+      "destination": "tests/lib-win32/process-image/image_machine_test.c",
+      "source_sha256": "9b91be88440594ab92de138747a76a48e7296cacf1fafc0d9be15ab3bd5851b2",
+      "local_sha256": "44864909fcb91b3a60895fba55feec0cb7d489b4ccd8bbe9feecc9cf28f11109",
+      "disposition": "adapt-warning-only-split-independent-if-statements",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/process-launch/attributes.c",
+      "blob": "53981df1c8d6efa8d5a82e919ca1fd9383a0834f",
+      "destination": "tests/lib-win32/process-launch/attributes.c",
+      "source_sha256": "f852c9ba3343ff7639b83bc0ef9f30a8d806eb41c523e64be76081444f04d936",
+      "local_sha256": "f852c9ba3343ff7639b83bc0ef9f30a8d806eb41c523e64be76081444f04d936",
+      "disposition": "import-test",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/process-launch/command_line.c",
+      "blob": "d818ee5e3e4c3bba2644a920309b2e378fbc02a4",
+      "destination": "tests/lib-win32/process-launch/command_line.c",
+      "source_sha256": "49cbe50f9e16f9004173ff73d36a23bc171cde99f5c1828c8e769d7f529a512f",
+      "local_sha256": "49cbe50f9e16f9004173ff73d36a23bc171cde99f5c1828c8e769d7f529a512f",
+      "disposition": "import-test",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/process-launch/process.c",
+      "blob": "95065fd50261f0adbe39cfbf1517eea95fda948e",
+      "destination": "tests/lib-win32/process-launch/process.c",
+      "source_sha256": "1cb04ffc852c2d97251e111f6852b94715f336e5d448ca0f6ee3eda22d46a2dc",
+      "local_sha256": "1cb04ffc852c2d97251e111f6852b94715f336e5d448ca0f6ee3eda22d46a2dc",
+      "disposition": "import-test",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    },
+    {
+      "source": "test/lib-win32/verify-matrix.ps1",
+      "blob": "6d4fb6a4cb4ed8e89f54ed3169ca47e6da82de98",
+      "destination": "tests/lib-win32/verify-matrix.ps1",
+      "source_sha256": "d982cc3d414b430af64536456f21611c649404a1a70d3c1a162c882c1a8be3d9",
+      "local_sha256": "d982cc3d414b430af64536456f21611c649404a1a70d3c1a162c882c1a8be3d9",
+      "disposition": "import-test",
+      "notice": "Preserve original file notices; project MIT and MinHook BSD as applicable"
+    }
+  ]
+}

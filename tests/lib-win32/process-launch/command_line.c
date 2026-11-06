@@ -8,6 +8,10 @@ int main(void)
         {L"  \"C:\\Program Files\\app.exe\"  /x \"a b\"",L"/x \"a b\""},
         {L"app\t\tsecond",L"second"},
         {L"\"a\\\" b\" tail",L"tail"},
+        {L"cmd /c ver",L"/c ver"},
+        {L"cmd /c echo hi > out",L"/c echo hi > out"},
+        {L"cmd /c echo hi >> out",L"/c echo hi >> out"},
+        {L"cmd /c echo hi | more",L"/c echo hi | more"},
         {L"single",L""},
         {L"   ",L""}
     };

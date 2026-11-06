@@ -6152,9 +6152,9 @@
       "path": "tests/lib-win32/process-hook/propagate.c",
       "source": null,
       "source_blob": null,
-      "sha256": "de7182170c3c9da8fbd30899db62854eb9a13c20835e45d157e31f615df20d10",
+      "sha256": "224011bfdcbe9e9f359cb81b957ea9745d1e6123189352ff8c1ab01449f807f6",
       "disposition": "authored",
-      "review": "T21 S41 shared propagation and native unwind; preserves T6 S1 cleanup design; T21 S41 P24 reentrant propagation test",
+      "review": "T21 S41 shared propagation and native unwind; preserves T6 S1 cleanup design; T21 S41 P24 reentrant propagation test; T21 S44 shared test import from ntvdm64 967ef3d31, see pinned evidence manifest",
       "notice": "Project-authored C code; project MIT LICENSE"
     },
     {

@@ -56,7 +56,7 @@ static DWORD launch_a(const char *mode)
 int wmain(int argc,WCHAR **argv)
 {
     BOOL found=FALSE,valid=FALSE;
-    if(GetModuleHandleW(L"ntw16s32.dll") || GetModuleHandleW(L"ntw16s64.dll"))return 1;
+    if(GetModuleHandleW(L"cross-helper.dll") || GetModuleHandleW(L"second.dll"))return 1;
     if(argc>1 && wcscmp(argv[1],L"plain")){
         if(process_hook_stage_read(consume,&valid,&found) || !found || !valid || process_hook_stage_restore())return 2;
         if(!wcscmp(argv[1],L"leaf"))return 71;

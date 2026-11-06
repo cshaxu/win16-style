@@ -64,14 +64,14 @@ int main(int argc,char **argv)
         MEMORY_BASIC_INFORMATION allocation;
         BYTE *base=(BYTE *)GetModuleHandleW(NULL);
         BYTE *staged=base+headers()->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress;
-        if(GetModuleHandleW(L"ntw16s32.dll") || GetModuleHandleW(L"ntw16s64.dll"))return 10;
+        if(GetModuleHandleW(L"first.dll") || GetModuleHandleW(L"second.dll"))return 10;
         if(process_hook_stage_read(consume,&matched,&found) || !found || !matched)return 11;
         if(process_hook_stage_restore())return 12;
         if(!VirtualQuery(staged,&allocation,sizeof(allocation)) || allocation.State!=MEM_FREE)return 16;
         if(headers()->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress!=strtoul(argv[1],NULL,10))return 13;
         found=TRUE;matched=FALSE;
         if(process_hook_stage_read(consume,&matched,&found) || found)return 14;
-        if(GetModuleHandleW(L"ntw16s32.dll") || GetModuleHandleW(L"ntw16s64.dll"))return 15;
+        if(GetModuleHandleW(L"first.dll") || GetModuleHandleW(L"second.dll"))return 15;
         return 42;
     }
     if(dll_contract())return 17;

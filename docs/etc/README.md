@@ -206,3 +206,5 @@
 
 - [T17 S17扩展OCX审计](evidence/vb-extension-ocx-audit.json)：官方扩展目录、
   公共控件已有路径与缺少真实wrapper协议的边界；没有产品实现。
+
+- [T21 S44公共交集导入](evidence/t21-s44-shared-import.json)：固定来源blob、摘要与差异清单。
