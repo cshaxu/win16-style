@@ -1,7 +1,7 @@
 # M0 T23 S1: native Notepad launch and restoration
 
-P4 implementation and publication are verified locally. S1 remains open for
-owner acceptance; remote verification is recorded after push.
+P4 implementation, publication and remote content are verified. S1 remains
+open for owner acceptance. P5 records the completed remote review.
 
 ## Confirmed causes and implementation
 
@@ -150,3 +150,18 @@ in the worktree and excluded from this delivery commit.
 Source snapshot SHA-256: `6fec096678b50c211d54fd488231618d52342d368885b6cde8fd9a35c64bb4c9`.
 
 Retained task evidence: s1-notepad-restore1 (native sources/logs/screenshots and mapped backup), s1-clean3 (source/build), s1-package3 (25 case results), s1-publish1 (eight deployment digests). Earlier failure scratch remains for this acceptance cycle; S1 is not closed.
+
+## P5 remote review and acceptance handoff
+
+P4 commit `37d534bece92f7b5455a0d8168670f7936bfa608` was pushed to origin/main.
+Fetched remote main equals the local delivery commit. Ten files were downloaded
+from raw.githubusercontent.com at that immutable commit: four product binaries,
+three implementation files, two regression sources and this delivery record.
+Every downloaded byte matched its committed object; product SHA values match the
+same tested/deployed table above. Governance self-test13 negatives, source checks,
+resource identity and diff whitespace checks passed before commit.
+
+P5 only records verification/status; four products are unchanged. Retained
+QUEUE and xaml-control-style proposal work is uncommitted and outside P4/P5.
+M0 and T23 remain open; S1 is verified, awaiting owner acceptance. No S2 admission
+or all-app compatibility claim is made by this delivery.

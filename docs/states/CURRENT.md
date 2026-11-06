@@ -4,7 +4,7 @@
 
 当前活动任务：M0 T23 S1，记事本原生外框恢复、标准启动接入及交付。
 用户批准准入队列首项；T22/S1已[收口](../history/M0-T22-closure.md)。
-最后分配数值T为T23，S1处于verified，等待用户验收；P1–P3为研究，P4完成产品修复与发布。
+最后分配数值T为T23，S1处于verified，等待用户验收；P1–P3为研究，P4完成产品修复与发布，P5记录远端复核。
 登记scratch：build/t23-package/s1-admission，仅保存治理检查日志。
 登记scratch：build/t23-package/s1-topology1，只读原生窗口/模块快照；本S提炼后回收。
 用户追加要求：保留顶部标签页与菜单的内容、布局和交互，不用覆盖层遮掉它们。
@@ -531,7 +531,7 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
-- Last verified remote delivery: M0 T22 S1 P43，`83c1a2c1`；文档与四产品远端对象已复核。
+- Last verified remote delivery: M0 T23 S1 P4，`37d534be`；已实际下载四产品及六个源码/测试/交付文件逐字节复核。P5仅记录复核，产品不变。
 - Open task: T23 S1；T22已收口。Explorer现有产品排除策略尚未改变。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
