@@ -831,3 +831,47 @@ References reviewed (primary documentation):
 Known open items remain full-screen menu integration/normal display validation,
 visible resizing cursor, title replacement, ordinary/global/reused UWP paths,
 and broader app/DPI coverage. No S/T closure or new binary publication.
+
+## P16 in-host UIA worker proof and unsupported-action control
+
+`fullscreen-host1` in registered s1-window-audit compiled pure C17 with
+-Wall -Wextra -Werror. The temporary selected-thread hook validates root/title
+ownership and starts one independent MTA worker from its explicit request;
+DllMain has no added work. Worker acquires its own module reference, locates
+the direct native title child by AutomationId, invokes the original provider,
+releases COM objects/apartment and exits through FreeLibraryAndExitThread.
+No propagation, XAML traversal, registry or target-file modification.
+
+2026-11-06 00:06 local: own ScanPID19028, shared host18304/TID29396,144DPI.
+Exact clean7 style DLL applies successfully. In-host EnterFullScreen and
+ExitFullScreen both return S_OK; root geometry returns from fullscreen
+(0,0,1920,1080) to original(-11,-11,1931,1019). Same overlay0x4808ee is valid/
+hidden during fullscreen and visible afterward. Style removal succeeds.
+DriverPID36188 exits. Subsequent host module enumeration finds zero mapped
+fullscreen-host1 prototype modules. This proves that prototype worker's finite
+module reference release, not physical unloading of the pinned product DLL.
+Timeout/hung UIA provider behavior is not proven by this successful run.
+
+`fullscreen-calculator1`, own CalculatorPID20852, host18304/TID2448,144DPI:
+native TitleBar exposes Minimize/Maximize/Close, no EnterFullScreen or
+ExitFullScreen. Thus do not unconditionally add a full-screen command to all
+UWP frames. Both runs used inactive input desktop, no visible-pixel or real
+mouse/keyboard acceptance; all instances were probe-owned and closed.
+
+Minimum next product change, constrained to witnessed Calculator/Scan:
+1. Extend the public frame optional-action input to a copied array, preserving
+   the single-action wrapper. Temporary menu insertion/collision/cleanup and
+   callbacks remain in the common frame implementation, no UIA in renderer.
+2. Coordinator probes native title full-screen capability outside host GUI
+   thread before requesting apply; pass only a capability flag, not a COM
+   pointer or foreign heap pointer. No button on witnessed unsupported target.
+3. Product callback schedules the validated independent-thread native toggle;
+   no UIA client work/wait in DllMain or GUI callback. Original auxiliary menu
+   remains accessible. Module reference belongs to each outstanding worker.
+4. Test two menu actions, command collision/cancel/cleanup, absent capability,
+   real in-host enter/exit, release and product menu invocation. Keep failure,
+   provider timeout and normal-display validation distinct. Only after these
+   pass perform the required frozen dual-width package/release.
+
+No product changes or republishing in P16. Existing cursor, lifecycle,
+ordinary/global/reuse and broader-target limitations remain; S1/T22 open.
