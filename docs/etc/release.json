@@ -1895,8 +1895,9 @@
         "reused": false,
         "second_styled": true
       },
-      "cleanup": "Owned apps exited; overlay HWNDs still existed but hidden, not proof of resource disposal",
-      "evidence": "build/t22-package/s1-reactivate1/native/{scan,calc}.log"
+      "cleanup": "P30 PASS: Scan8488 and Calculator18880->18008 overlays destroyed within1500ms after owned app close; earlier P29 sampling stopped at hidden state",
+      "evidence": "build/t22-package/s1-reactivate1/native/{scan,calc}.log",
+      "cleanup_evidence": "build/t22-package/s1-retire1/native/{scan,calc}.log"
     }
   },
   "validation": {
@@ -1912,8 +1913,7 @@
       "Full-screen menu selection verified only for this Scan version at144 DPI; not all UWP applications",
       "UIA per-call timeouts do not prove an overall worker deadline or safe cancellation of a hung provider",
       "Final clean10 real Calculator command skipped due to existing instance; incremental command evidence only",
-      "System Notepad final /SESSION process lacks DLL; propagation failure remains",
-      "After app close, tested host overlay HWND remains hidden; resource reclamation and host-frame recycling require further audit"
+      "System Notepad final /SESSION process lacks DLL; propagation failure remains"
     ]
   },
   "closure": {

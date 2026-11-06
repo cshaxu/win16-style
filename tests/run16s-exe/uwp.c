@@ -251,10 +251,10 @@ int wmain(int argc,WCHAR **argv)
     if(process){if(WaitForSingleObject(process,3000)!=WAIT_OBJECT_0){TerminateProcess(process,0);WaitForSingleObject(process,1000);}CloseHandle(process);}
     if(repeat_mode){
         ULONGLONG deadline=GetTickCount64()+1500;
-        while(IsWindow(closing_surface)&&IsWindowVisible(closing_surface)&&GetTickCount64()<deadline)MsgWaitForMultipleObjects(0,NULL,FALSE,20,0);
-        BOOL hidden=!IsWindow(closing_surface)||!IsWindowVisible(closing_surface);
-        printf("REACTIVATE_CLEANUP surface_exists=%d surface_hidden=%d\n",IsWindow(closing_surface),hidden);
-        ok=ok&&hidden;
+        while(IsWindow(closing_surface)&&GetTickCount64()<deadline)MsgWaitForMultipleObjects(0,NULL,FALSE,20,0);
+        BOOL destroyed=!IsWindow(closing_surface);
+        printf("REACTIVATE_CLEANUP surface_destroyed=%d\n",destroyed);
+        ok=ok&&destroyed;
     }
     printf("UWP_LAUNCH_REAL_%s\n",ok?"PASS":"FAIL");return ok?0:1;
 }

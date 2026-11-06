@@ -1221,3 +1221,28 @@ frame.c currently ties destruction to host/title WM_NCDESTROY, so application
 exit alone is not equivalent to detachment. This lifecycle boundary requires
 further audit; S1/T22 remain open. Sources/resources and eight deployed file
 SHA256 values remain unchanged; no binary republish is needed.
+
+## P30 asynchronous surface retirement
+
+P29 stopped observing as soon as a surface became hidden. Its immediate HWND
+existence did not establish persistent cache retention. A subsequent read-only
+host enumeration found none of those owned frames or surfaces. A pure system
+activation (no style DLL load) created Scan PID27204, acquired a hosted frame
+in235ms, found no owned layered surface and exited normally. Foreground
+permission returned80070005; activation and hosting succeeded, no physical-input
+or screenshot claim is made. This comparison did not force reuse of a specific
+cached host HWND and therefore does not prove all recycling cases.
+
+The formal repeat fixture now waits at most1500ms for actual surface destruction.
+Published P22 DLL: Scan8488 reused its PID/CoreWindow/frame and restyled after
+removal; Calculator18880->18008 created a new styled instance. Both printed
+REACTIVATE_CLEANUP surface_destroyed=1 and UWP_LAUNCH_REAL_PASS. This closes the
+observed surface-retirement question for these samples without a speculative
+production patch. It does not prove pinned module unload or all host heap
+allocations reclaimed. Evidence: s1-retire1/native/{scan,calc}.log; raw control
+s1-window-audit/scan-unhooked.log. Only owned app processes were closed.
+
+Incremental x86 three/x64 four focused tests passed without skips. Source and
+resource checks passed; product inputs and all eight deployed SHA256 values
+remain P22. Test delta4 additions/4 deletions, same fixture ownership, no new
+production path. S1/T22 remain open for the remaining requested coverage.
