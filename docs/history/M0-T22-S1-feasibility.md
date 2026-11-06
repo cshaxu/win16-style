@@ -653,3 +653,41 @@ real prototype; it is not implemented or validated here.
 
 The P6 package is unchanged. This is diagnostic progress, not cursor repair or
 complete UWP support. S1/T22 remain open.
+
+## P10 additional applications and dual-title boundary
+
+Same clean6 DLL/current production activation code, native owned instances,
+144DPI, shared hostPID12040; no alarm, recording or scan action invoked. Scratch
+under s1-window-audit: alarms-app1, recorder-app1, scan-app1, cursor-unhook1.
+
+| Target | Live PID | Screenshot PID / host TID | Actual result |
+| --- | --- | --- | --- |
+| WindowsAlarms | 10728 | 2012 / 28764 | Activation, caption buttons and remove geometry pass; visual33 is update-required placeholder, not normal app UI. |
+| WindowsSoundRecorder | 31228 | 32440 / 16356 | Same exterior checks pass; visual34 also update-required placeholder, not normal app UI. |
+| WindowsScan | 8240 | 11696 / 20516 | Real CoreWindow and host found; apply fails ERROR_NOT_SUPPORTED50, no styled surface. |
+
+Scan captures exist but do not prove styling: result51 encodes error50; remove
+result1169 encodes NOT_FOUND1168. GeometryPID28028/TID13572 and menuPID37080/
+TID32544 confirm maximized root(-11,-11,1931,1019), client1920x1019 at(0,-11).
+Two visible ApplicationFrameTitleBarWindow children:(0,0,69,48),(0,0,1920,48).
+Product title_child picks the first visible child; geometry rejects right edge69
+instead of1920. This is the confirmed first unsupported node. Native system menu
+has only Restore/Move/Size/Minimize/Maximize/Close; separate left hamburger is not
+represented there. Selecting the full-width title alone would cover that entry.
+No naive selection patch merged. Correct support needs true-caption selection
+and preservation of auxiliary host-menu semantics, without XAML client changes.
+Those semantics remain unverified. No target files/registry/settings modified.
+
+Read-only local package identities (not required build/test dependencies):
+
+- Microsoft.WindowsAlarms_1.1.158.0_x64__8wekyb3d8bbwe; Microsoft.WindowsAlarms_8wekyb3d8bbwe!App; `C:\Program Files\WindowsApps\Microsoft.WindowsAlarms_1.1.158.0_x64__8wekyb3d8bbwe\Time.exe`; SHA256 `6b7ca93a5e65ac50bdddad10288892a662c28a1862e435b51a7d85393d93a494`.
+
+- Microsoft.WindowsSoundRecorder_1.1.127.0_x64__8wekyb3d8bbwe; Microsoft.WindowsSoundRecorder_8wekyb3d8bbwe!App; `C:\Program Files\WindowsApps\Microsoft.WindowsSoundRecorder_1.1.127.0_x64__8wekyb3d8bbwe\SoundRec.exe`; SHA256 `63504f33392834e5de090141092fde15248cff3f4babf7f1f9dba7a1ddfda446`.
+
+- Microsoft.WindowsScan_6.3.9654.17133_x64__8wekyb3d8bbwe; Microsoft.WindowsScan_8wekyb3d8bbwe!App; `C:\Program Files\WindowsApps\Microsoft.WindowsScan_6.3.9654.17133_x64__8wekyb3d8bbwe\ScanApp.exe`; SHA256 `cb6ec8fab98458bc9019a264c936b4996fb2bef0a323fd23abfe057ac5578d6b`.
+
+Calculator cursor-unhook1 PID2644/TID27768 removes installer hook immediately
+after apply, matching product lifetime. Cursor still arrow; reinstall solely to
+remove succeeds. Retained installer hook does not explain cursor failure.
+No product changes: P6 package remains published. S1/T22 open; placeholder tests
+are not normal-app acceptance, and unsupported Scan is not a styling pass.
