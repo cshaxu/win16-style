@@ -1111,3 +1111,39 @@ unavailable, but causality is not proven. No scan or preview command executed.
 Fixture exited and PID14156 was confirmed absent after cleanup. Evidence:
 s1-multiapp-fixture1/scan.log. This does not replace earlier successful Scan
 normal-desktop evidence, nor count as a current pass. No product files changed.
+
+## P26 restored desktop observations (in progress)
+
+Native cursor-baseline-resume1 passed: cursor flags1, SIZEWE and pointer over
+the owned window. Scan-resume2 still timed out1460. A subsequent pure C baseline
+without loading the style DLL returned activation S_OK, foreground permission
+S_OK and a hosted frame after250ms (PID32208), then closed its own target.
+The same published DLL then passed scan-resume3, ownPID23452,144DPI: attachment,
+maximize/minimize/restore, removal and geometry. This is API evidence, not a
+claim that the earlier timeouts were fixed or their cause established.
+
+mouse-scan-p22 used the published DLL, ownPID16244,host18304/TID20992,144DPI.
+Real title movement and left-edge resizing changed the intended rectangle;
+remove restored original geometry and captures succeeded. Stable point179,528
+was over the surface, cursor flags1 but handle arrow0x10003 instead of SIZEWE
+0x10011: this is a valid visible-cursor failure, unlike the suppressed sample.
+The immediate post-movement styled.bmp actually shows the native title. Its
+menu.bmp shows the Win3.x title and menu. A second independent run with500ms
+post-movement wait (mouse-scan-p22-delay/styled.bmp) visually shows Win3.x title
+without an open menu. Persistent visual reversion is therefore not established;
+the immediate image can capture an unfinished compositor update. No timing
+delay was added to production. Second-run pointer moved away during cursor
+sampling, so that run is not cursor evidence.
+
+The inherited fixed UP/UP/ENTER menu fixture encountered Scan's extra Application
+menu item. Its pre-Enter guard canceled because Close, not Maximize, was selected;
+no Close command executed. This is a fixture selection limitation, not proof
+that the product Maximize menu command fails. Both own instances were cleaned.
+
+cursor-order.c adds temporary WH_CALLWNDPROCRET/WH_GETMESSAGE observers only on
+the selected owned frame thread; it records cursor state without intercepting
+or changing SetCursor. mouse-scan-order1 activated ownPID2744,host18304/TID17888,
+and installed both observers. SetForegroundWindow failed; foreground belonged
+to PID19692 instead. Cursor/input/capture checks skipped, apply/remove and
+geometry succeeded, observers were removed and own target closed. This does
+not identify the cursor overwriter. The earlier stable flags1 failure remains.
