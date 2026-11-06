@@ -780,3 +780,54 @@ P14验证完成：s1-title-visibility1双宽各3项通过、无skip；构建分�
 测试4.60/4.35秒。仅测试新增7行及审计文档更新，产品源码和资源未改变；
 assets与O:/winnt四文件仍逐项等于clean7实测包，无需重新发布相同产品。
 全屏入口缺失已确认；真实调用探针因屏保桌面跳过，未计通过。S1/T22开放。
+
+## P15 native full-screen interface and styled round trip
+
+2026-11-05/06, registered `s1-window-audit` scratch; pure C17 MinGW GCC
+compiled metadata and invocation probes. No production changes. The ordinary
+visual probe retry PID30396 again skipped before activation because input
+was not Default. Subsequent probes explicitly permit metadata/API testing on
+the inactive desktop; none capture pixels or send global keyboard/mouse input.
+
+- `fullscreen-audit2`: own ScanPID25664, host18304/TID24084,144DPI.
+  MSAA root/title traversal succeeds but does not expose the full-screen action.
+- `fullscreen-uia1`: own ScanPID32088, host18304/TID8260,144DPI.
+  UIA native title `TitleBar` exposes button AutomationId `EnterFullScreen`,
+  name `Full screen Scan`, bounds1644,0,1713,48. Left title exposes `Actions`.
+  These IDs are observed host implementation details, not a universal API promise.
+- `fullscreen-invoke1`: own ScanPID33424, host18304/TID25136,144DPI.
+  Non-null IUIAutomationInvokePattern calls return S_OK. Enter changes root
+  from(-11,-11,1931,1019) to(0,0,1920,1080), hides native title; querying the
+  retained title HWND exposes `ExitFullScreen`. Exit returns S_OK, title visible,
+  original geometry restored. This is distinct from maximize.
+- `fullscreen-styled1`: own ScanPID12532, host18304/TID1420,144DPI;
+  loads exact clean7 tested x64 DLL SHA
+  9fceda211bdae7dc337bb0388ed2a0f9ce482879fba2f7f93cf3f550e4bb03b0.
+  Apply callback succeeds. Surface HWND0x110ad4 remains valid but hidden during
+  native full screen, becomes visible after exit, geometry restored; removal
+  callback succeeds. Temporary thread hook removed; only own Scan closed.
+
+All four probes exited; no shared host termination, no global propagation,
+no target-file/registry changes. API state evidence is not normal-display visual
+acceptance. The styled system menu still lacks a user-accessible full-screen
+entry; this experiment does not implement that entry.
+
+Next implementation constraint: do not run UIA client queries against the
+host's own UI synchronously inside the GUI/menu callback. Microsoft documents
+using a separate thread when a UIA client accesses its own UI. Candidate route:
+query supported native title actions outside that GUI thread, expose only
+observed actions in the classic menu, asynchronously invoke the original
+provider after menu tracking ends, release COM objects on their owning thread.
+First verify this in-host thread/lifetime route; preserve three components/four
+files and existing renderer. No permanent provider cache or client-control tree
+walk is needed. Do not blindly replace full screen with SC_MAXIMIZE, guessed
+coordinates, or an undocumented command.
+
+References reviewed (primary documentation):
+- https://learn.microsoft.com/en-us/windows/win32/winauto/uiauto-threading
+- https://learn.microsoft.com/en-us/windows/win32/winauto/using-iaccessible
+- https://learn.microsoft.com/en-us/uwp/api/windows.ui.viewmanagement.applicationview.isfullscreenmode
+
+Known open items remain full-screen menu integration/normal display validation,
+visible resizing cursor, title replacement, ordinary/global/reused UWP paths,
+and broader app/DPI coverage. No S/T closure or new binary publication.
