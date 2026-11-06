@@ -751,3 +751,32 @@ actual package tests and publication remain pending; S1/T22 open.
 P12交付：clean7双宽干净构建、ABI、原图形资源及依赖门禁通过；最终库各2项通过。s1-package3共14项聚焦通过、无skip、33.97秒。最终包ScanPID11928/宿主18304/TID16224、144DPI实际UP/ENTER选择eff0后原Share/Settings打开，visual43截图及移除几何通过；CalculatorPID38488的窗口按钮、恢复/撤销几何通过。s1-publish3两处四文件摘要匹配测试包。静态库增加apply_action，不新增产品导出/第五产物；src三文件69增6删，测试26增1删。公开库无产品私有依赖，原资源未改。原生附加菜单不重新绘制，缩放光标仍未修复；S1/T22保持开放。当前提交推送复核待完成。
 
 P13复核：P12 3c334b3b8ecf0aef9bdddbf259e3a15edc536703 已推送；重新fetch并读取12个变更blob逐字节一致，远端四文件及两处八个部署文件与实包SHA一致。无新增二进制变化，S1/T22保持开放。
+
+## P14 title visibility and omitted full-screen action audit
+
+The P12 native Scan capture `s1-window-audit/visual43-before.bmp` shows a
+full-screen glyph to the left of minimize. Production frame_layout currently
+contains only system/minimize/maximize, and the optional action forwards the
+left Share/Settings button. Thus this visible native full-screen entry has no
+replacement in the styled title/system menu. P12 preserves the application
+menu, not every native title action. Do not infer that full-screen itself is
+unsupported by the OS or that maximize is an equivalent operation.
+
+A pure C MSAA probe in registered scratch
+`s1-window-audit/fullscreen-audit1` was compiled to enumerate the new owned
+Scan frame/title accessible objects (name, role, location, default action).
+PID13728 started 2026-11-05 23:50:53 local and exited with
+`SKIP input desktop not Default`, before activation. No host injection or app
+operation occurred. Native invocation/interface evidence remains unavailable;
+no guessed coordinate or undocumented command entered product code.
+
+The private-desktop production-library test now checks title hide/show:
+surface disappears while the native title is hidden, attachment remains,
+same surface returns when title is shown, and owner client geometry remains
+unchanged. This tests lifecycle prerequisites only; it is not a real UWP
+full-screen acceptance result. No product source, export or resource change.
+
+P14验证完成：s1-title-visibility1双宽各3项通过、无skip；构建分别11.97/6.48秒，
+测试4.60/4.35秒。仅测试新增7行及审计文档更新，产品源码和资源未改变；
+assets与O:/winnt四文件仍逐项等于clean7实测包，无需重新发布相同产品。
+全屏入口缺失已确认；真实调用探针因屏保桌面跳过，未计通过。S1/T22开放。

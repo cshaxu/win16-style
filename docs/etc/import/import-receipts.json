@@ -6314,7 +6314,7 @@
       "path": "tests/lib-win32/win16-window-uwp/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "001126061e95b0563461f6167b081540fd85e5137c10e49ccdc933c209700de1",
+      "sha256": "48a42d40d330aa0c2e37a46130c36e28095ecd7f3491ce890071405709bbd695",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T22 S1 system-menu temporary command state and native cursor handling",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"

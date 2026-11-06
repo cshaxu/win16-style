@@ -87,6 +87,13 @@ static int worker(int argc,WCHAR **argv)
         SendMessageW(surface,WM_LBUTTONUP,0,click);pump();CHECK(command==SC_MINIMIZE);
         ShowWindow(w,SW_HIDE);CHECK(!IsWindowVisible(surface));ShowWindow(w,SW_SHOWNOACTIVATE);
         CHECK(IsWindowVisible(surface));
+        /* Native full-screen modes may temporarily hide the title. Keep the
+         * adapter installed, but never leave an input surface over content. */
+        ShowWindow(title,SW_HIDE);CHECK(!IsWindowVisible(surface));
+        CHECK(win16_uwp_frame_surface(w)==surface);
+        ShowWindow(title,SW_SHOWNOACTIVATE);CHECK(IsWindowVisible(surface));
+        RECT title_client;CHECK(GetClientRect(w,&title_client));
+        CHECK(EqualRect(&client,&title_client));
         HMENU menu=GetSystemMenu(w,FALSE);MENUITEMINFOW native={.cbSize=sizeof(native),.fMask=MIIM_FTYPE|MIIM_DATA};
         CHECK(GetMenuItemInfoW(menu,SC_CLOSE,FALSE,&native));
         SendMessageW(w,WM_ENTERMENULOOP,FALSE,0);
