@@ -1886,9 +1886,9 @@
       "path": "src/lib-win32/process-hook/staging.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f3d8ec879d3663d6fce42812959d7ca15c43e92ce283d24c541095f21fa48025",
+      "sha256": "5bb5c83fad1abedc5e9d96573e16d47306654b856eba1b54cbcc3717ae198dcd",
       "disposition": "authored",
-      "review": "T6 S1 private C PE stager/OS helper or explicit native Windows manifest/import contract; see M0-T6-S1-package.md; final clean-package regression pending; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained",
+      "review": "T6 S1 private C PE stager/OS helper or explicit native Windows manifest/import contract; see M0-T6-S1-package.md; final clean-package regression pending; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T21 S43 minimal public contract/lifetime corrections; original resources unchanged",
       "notice": "Project-authored; project MIT LICENSE"
     },
     {
@@ -1913,18 +1913,18 @@
       "path": "src/lib-win32/process-hook/helper.c",
       "source": null,
       "source_blob": null,
-      "sha256": "24dbccc276f80fea3a24c65c24827b58d28318441e267e39a066a45afee9cc96",
+      "sha256": "7ced9af82c88a4bd9e48b3fdd9d7b25735c2bd8dc12ec6a7bea609fd253ed02a",
       "disposition": "authored",
-      "review": "T21 S33 byte-exact reimport from ntvdm64 eac2932d5; detailed source blobs in S33 record",
+      "review": "T21 S33 byte-exact reimport from ntvdm64 eac2932d5; detailed source blobs in S33 record; T21 S43 minimal public contract/lifetime corrections; original resources unchanged",
       "notice": "Project MIT; preserved LICENSE.win16style; MinHook retains BSD notices"
     },
     {
       "path": "src/lib-win32/process-hook/helper.h",
       "source": null,
       "source_blob": null,
-      "sha256": "81b42b8a73062340531dd483c1a949d1493b420aca0c46d23acd995c9e57987e",
+      "sha256": "746ad04512cb83ed4494d4090824ab13fbf68db505beee6c2552159e92a1b64f",
       "disposition": "authored",
-      "review": "T21 S26 cross-width handoff callback interface",
+      "review": "T21 S26 cross-width handoff callback interface; T21 S43 minimal public contract/lifetime corrections; original resources unchanged",
       "notice": "Project-authored; project MIT LICENSE"
     },
     {
@@ -5828,9 +5828,9 @@
       "path": "src/lib-win32/process-image/file_handle.h",
       "source": null,
       "source_blob": null,
-      "sha256": "8060ae3cde9f20937b381ff6b2f8045c87fbbe405c9acc8177e73a6cea476ce6",
+      "sha256": "c0fb8a4894050c458b17c945344a4e03b4686a1a9fa2513c47cd49d225116d0d",
       "disposition": "authored",
-      "review": "T21 S41 extract existing DLL image validation",
+      "review": "T21 S41 extract existing DLL image validation; T21 S43 minimal public contract/lifetime corrections; original resources unchanged",
       "notice": "Project-authored C code; no imported artwork"
     },
     {
@@ -5909,9 +5909,9 @@
       "path": "src/lib-win32/process-global/worker.h",
       "source": null,
       "source_blob": null,
-      "sha256": "858c8f361cdbd95fa2f07626b2e1c6e0b0d9747cbdd783560e3b6e4cddb544b5",
+      "sha256": "351d3862b00167a9f77377496b3d48b804955e166a0e69f032a823569ffb307b",
       "disposition": "authored",
-      "review": "T21 S41 extract existing worker lifecycle",
+      "review": "T21 S41 extract existing worker lifecycle; T21 S43 minimal public contract/lifetime corrections; original resources unchanged",
       "notice": "Project-authored C code; no imported artwork"
     },
     {
@@ -6044,9 +6044,9 @@
       "path": "src/lib-win32/process-global/transaction.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1e96c6038b32fc0b9ee3702da339a8d6b9a67355a4471efccd06c7a329212646",
+      "sha256": "c0f6a75355b52e0e31c003a2a9e7e4e2413df8ce19417b077f97919ba43ffce4",
       "disposition": "authored",
-      "review": "T21 S41 extract attachment transaction progression",
+      "review": "T21 S41 extract attachment transaction progression; T21 S43 minimal public contract/lifetime corrections; original resources unchanged",
       "notice": "Project-authored C code; no imported artwork"
     },
     {
@@ -6062,18 +6062,18 @@
       "path": "tests/lib-win32/process-global/transaction.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7261c5391840473269b4ef3e49d3364ae1e13db474b198d6961e7c0f6735126a",
+      "sha256": "ee0695ae3a7b271072165c714c76cfd47f7faf2bf464bbb48562f1cafd640b61",
       "disposition": "authored",
-      "review": "T21 S41 transaction phase contract tests",
+      "review": "T21 S41 transaction phase contract tests; T21 S43 minimal public contract/lifetime corrections; original resources unchanged",
       "notice": "Project-authored C code; no imported artwork"
     },
     {
       "path": "src/lib-win32/process-global/targets.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f8ee347680ee55d5790b0380d0829aa2dae1e0af4b87a121d8ebc7afadce7732",
+      "sha256": "d324c6d3b672dc9a347f211be6a5ff6af483e9ccc4b625f9d51ee1e0cac390f4",
       "disposition": "authored",
-      "review": "T21 S41 extract target lifecycle engine",
+      "review": "T21 S41 extract target lifecycle engine; T21 S43 minimal public contract/lifetime corrections; original resources unchanged",
       "notice": "Project-authored C code; no imported artwork"
     },
     {
@@ -6089,9 +6089,9 @@
       "path": "tests/lib-win32/process-global/targets.c",
       "source": null,
       "source_blob": null,
-      "sha256": "dcf9b26849815bfd0658e38b8d38ba09f42f6abd0f7370ff5794613682ab4b20",
+      "sha256": "d0b92d6469df8f66dcca06920dac0536cca749b695d0189b02451a1c95301f2e",
       "disposition": "authored",
-      "review": "T21 S41 target manager core and no-hook test",
+      "review": "T21 S41 target manager core and no-hook test; T21 S43 minimal public contract/lifetime corrections; original resources unchanged",
       "notice": "Project-authored C code; no imported artwork"
     },
     {
@@ -6143,9 +6143,9 @@
       "path": "src/lib-win32/process-hook/propagate.h",
       "source": null,
       "source_blob": null,
-      "sha256": "2c41a4d82f0bbec556c96bcb582674fc3efcd5d9576cb93b9b0830d1411dacae",
+      "sha256": "4a71140917e36f6d1a4cb152f95970a9b293bb98d836fce7f1da59a2491cbbaa",
       "disposition": "authored",
-      "review": "T21 S41 shared propagation and native unwind; preserves T6 S1 cleanup design",
+      "review": "T21 S41 shared propagation and native unwind; preserves T6 S1 cleanup design; T21 S43 minimal public contract/lifetime corrections; original resources unchanged",
       "notice": "Project-authored C code; project MIT LICENSE"
     },
     {

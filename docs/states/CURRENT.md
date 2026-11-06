@@ -2,7 +2,30 @@
 
 ## Current Work
 
-T21 S42 已收口：产品侧目录、文件、结构、函数及变量清理完成；T21 保持开放，当前无活动任务包。详情见 [S42 收口记录](../history/M0-T21-S42-global-cleanup.md)。
+T21 S43 已实现并验证：四处极简修正及契约完成，双宽干净包与串行44项实包通过，s43-publish1 已发布两处四文件并核对；提交远端复核待完成。M0 固定，T21 保持开放。阶段记录见 [S43](../history/M0-T21-S43-public-contracts.md)。
+
+## M0 T21 S43 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | New |
+| Admission And Approval | 用户批准终审列出的四处代码修正和一组契约整理；自动验证、发布、提交推送。 |
+| Objective | 修正目标回收状态、事务截止时间、staging DLL 重复判定及 helper 载荷长度契约；补齐所有权和回调前提。 |
+| Non-goals | 不扩展容错框架、物理卸载或产品功能；不修改兄弟仓库。 |
+| Reference Baseline | 359f96e6；S42 已收口，工作树干净，无已有构建。 |
+| Candidate Proposal | docs/proposals/global-process-audit.md |
+| Files And ABI Surface | process-global、process-hook 实现及公共头、process-image 注释、对应测试；无新导出。 |
+| Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT；纯 C17，LF。 |
+| Verification | 四项聚焦负例及双宽回归；同快照干净包、实际包传播和全局测试、资源及依赖检查。 |
+| Expected Markers | 聚焦用例通过，旧实现检出；包 passed-focused，四文件两处摘要一致。 |
+| Asset Needs | 保留原资源与声明；只发布既定四文件。 |
+| Reporting Requirements | 记录具体行为、测试失败/跳过、代码增删、部署摘要及远端复核。 |
+| Stop Conditions | 权限或环境阻断如实记录；不改变安全设置，不扩大目标范围。 |
+| Exit Criteria | 四处修正和契约完成，双宽构建测试、发布、提交推送复核后收口 S43，T21 开放。 |
+| Original Owner Request | 准入一个s任务完成修复；极简、错误上返、减少 footprint。 |
+| Similar-Issue Sweep | 检查同类队列回收、pending 等待、重复 staging 和 helper 双端参数；只修已确认四项。 |
+
+Scratch：build/t21-package/s43-review（临时负例与日志）、s43-incremental、s43-clean1、s43-package1、s43-package2、s43-publish1；本 S 所有，证据提炼后安全清理无需保留的临时源。长任务隐藏后台，日志与退出码落盘，构建每宽上限600秒、包测试1800秒。
 
 S42 P1：删除 discover 和 load 两对产品垫片及多组纯转发和公共别名，产品专属适配置于 global/；双宽干净构建、ABI、资源及公共库边界检查通过，双宽各 11 项核心回归及 44 项实际包聚焦通过，其他 window station 子项双宽跳过，恢复摘要与旧版一致但仍不等原始。s42-publish1 因已核实的 sol.exe 占用中断，正常关闭后以同批候选包 s42-publish2 完成两处四文件发布并核对摘要。产品提交 `7301e504` 已推送并逐项复核远端。
 
@@ -462,7 +485,7 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
-- Last allocated T21 S: 42
+- Last allocated T21 S: 43
 - Last verified remote delivery: M0 T21 S42 P1，`7301e504`；本次文件及四产品远端对象已复核。
 - Open task: T21；无活动 S。Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。

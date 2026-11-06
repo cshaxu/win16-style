@@ -6,10 +6,10 @@ static DWORD validate(void *p){test_state *s=p;++s->calls[1];return s->validate;
 static DWORD start(void *p){test_state *s=p;++s->calls[2];return s->start;}
 static DWORD ready(void *p){test_state *s=p;++s->calls[3];return s->ready;}
 static DWORD apply(void *p){test_state *s=p;++s->calls[4];return s->apply;}
-typedef struct run_state {HANDLE event;unsigned begins,advances,applies;DWORD status;BOOL alive,retry,empty;} run_state;
+typedef struct run_state {HANDLE event;unsigned begins,advances,applies;DWORD status;BOOL alive,retry,empty,stuck;} run_state;
 static BOOL run_active(void *p){return ((run_state *)p)->alive;}
 static DWORD run_begin(void *p){run_state *s=p;return ++s->begins==1?ERROR_NOT_READY:ERROR_SUCCESS;}
-static DWORD run_advance(void *p){run_state *s=p;return ++s->advances==1?ERROR_IO_PENDING:s->status;}
+static DWORD run_advance(void *p){run_state *s=p;return ++s->advances==1 || (s->stuck && s->advances<10000)?ERROR_IO_PENDING:s->status;}
 static unsigned run_pending(void *p,HANDLE handles[2]){run_state *s=p;if(s->empty)return 0;handles[0]=s->event;return 1;}
 static BOOL run_retry(void *p,DWORD status){return ((run_state *)p)->retry && status==ERROR_TIMEOUT;}
 static DWORD run_apply(void *p){++((run_state *)p)->applies;return ERROR_SUCCESS;}
@@ -40,6 +40,8 @@ int main(void)
     if(win32_process_global_transaction_run(quit,stop,GetTickCount64(),GetTickCount64(),FALSE,&run_ops,&r)!=ERROR_TIMEOUT)return 11;
     r=(run_state){.event=event,.alive=TRUE,.begins=1,.empty=TRUE};
     if(win32_process_global_transaction_run(quit,stop,GetTickCount64()+1000,GetTickCount64(),FALSE,&run_ops,&r)!=ERROR_INVALID_STATE)return 12;
+    SetEvent(event);r=(run_state){.event=event,.alive=TRUE,.begins=1,.stuck=TRUE};
+    if(win32_process_global_transaction_run(quit,stop,GetTickCount64(),GetTickCount64(),FALSE,&run_ops,&r)!=ERROR_TIMEOUT)return 13;
     CloseHandle(event);CloseHandle(stop);CloseHandle(quit);
     puts("PROCESS_GLOBAL_TRANSACTION_PASS pending=1 active=1 failure=1 headless=1 run_retry=1 cancel=1 timeout=1 invalid=1");return 0;
 }

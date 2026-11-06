@@ -1,7 +1,12 @@
 #include "targets.h"
 #include <stdlib.h>
 static BOOL expired(void *owner,void *context)
-{win32_process_global_targets *s=context;return s->ops.expired(owner,s->context);}
+{
+    win32_process_global_targets *s=context;
+    win32_process_global_target *t=owner;
+    return t->state!=WIN32_TARGET_QUEUED && t->state!=WIN32_TARGET_WORKING &&
+        s->ops.expired(t,s->context);
+}
 static void release(void *owner,void *context)
 {
     win32_process_global_targets *s=context;win32_process_global_target *t=owner;

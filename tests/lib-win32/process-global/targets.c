@@ -42,8 +42,38 @@ static BOOL spawn(unsigned i,PROCESS_INFORMATION *pi,HWND *window)
     if(ok){*window=FindWindowW(L"GlobalTargetsFixture",title);ok=*window!=NULL;}
     CloseHandle(ready);return ok;
 }
+static BOOL always_expired(win32_process_global_target *t,void *p){(void)t;(void)p;return TRUE;}
+static DWORD execute_reap(win32_process_global_target *t,void *p,BOOL *retained)
+{
+    observed *o=p;(void)t;*retained=FALSE;
+    for(unsigned i=0;i<33;++i)win32_process_global_targets_submit(o->targets,1,2,NULL);
+    ++o->executed;return ERROR_SUCCESS;
+}
+static int lifetime_contract(void)
+{
+    HANDLE work=CreateEventW(NULL,FALSE,FALSE,NULL),changed=CreateEventW(NULL,FALSE,FALSE,NULL);
+    win32_process_global_targets targets={0};observed o={.targets=&targets};
+    const win32_process_global_target_ops ops={always_expired,finished,retryable,execute_reap,dispose};
+    int result=1;
+    if(!work || !changed || win32_process_global_targets_init(&targets,work,changed,sizeof(win32_process_global_target),&ops,&o))goto done;
+    for(unsigned i=0;i<33;++i)win32_process_global_targets_submit(&targets,1,2,NULL);
+    /* Stop before executing on old code: its queue already contains freed nodes. */
+    if(o.disposed || targets.count!=1)goto done;
+    if(!win32_process_global_targets_next(&targets) || o.disposed || o.executed!=1)goto done;
+    for(unsigned i=0;i<33;++i)win32_process_global_targets_submit(&targets,3,4,NULL);
+    if(o.disposed!=1 || targets.count!=1)goto done;
+    result=0;
+done:
+    win32_process_global_targets_dispose(&targets);
+    if(work)CloseHandle(work);
+    if(changed)CloseHandle(changed);
+    printf("TARGET_LIFETIME_%s queued=1 working=1 expired_active=1\n",result?"FAIL":"PASS");
+    return result;
+}
 int wmain(int argc,WCHAR **argv)
 {
+    if(argc==2 && !wcscmp(argv[1],L"contracts"))return lifetime_contract();
+    if(lifetime_contract())return 20;
     if(argc==4 && !wcscmp(argv[1],L"child"))return child(argv[2],argv[3]);
     PROCESS_INFORMATION p[2]={{0}};HWND w[2]={0};HANDLE work=CreateEventW(NULL,FALSE,FALSE,NULL),changed=CreateEventW(NULL,FALSE,FALSE,NULL);
     win32_process_global_targets targets={0};win32_process_global_window watcher={0};observed o={.targets=&targets};

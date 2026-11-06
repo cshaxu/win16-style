@@ -35,6 +35,7 @@ DWORD win32_process_global_transaction_run(HANDLE quit,HANDLE stop,ULONGLONG dea
     if(error)return error;
     for(;;){
         if(cancelled(quit,stop,ops,context))return ERROR_CANCELLED;
+        if(GetTickCount64()>=deadline)return ERROR_TIMEOUT;
         error=ops->advance(context);if(error!=ERROR_IO_PENDING)break;
         HANDLE waits[4]={quit,stop,NULL,NULL};unsigned count=ops->pending(context,&waits[2]);
         if(!count || count>2 || !waits[2] || (count==2 && !waits[3]))return ERROR_INVALID_STATE;
