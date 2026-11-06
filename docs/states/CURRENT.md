@@ -13,6 +13,17 @@ P2初步研究见[窗口结构记录](../history/M0-T23-S1-topology.md)：Notepa
 顶端客户区及多线程已实测；Explorer现有窗口只读，Task Manager模块错误5，
 Terminal无实例。顶部内容保留是设计约束；S1未收口，产品未变。
 
+登记scratch：build/t23-package/s1-notepad-native1，用户批准的自有Notepad原窗口
+定向线程原型；仅调用已发布WindowAttach/Remove，不安装传播或新增外壳。
+保存before/styled/restored截图、几何和原生返回；本S提炼后回收。
+
+登记scratch：build/t23-package/s1-notepad-native2，原生移除后的窗口局部刷新对照；
+不抢前台，保留首次失败图像，不改产品renderer。
+
+P3原生记事本原型见[实测记录](../history/M0-T23-S1-notepad-native.md)：现有WindowAttach
+直接绘制原窗口标题/边框，标签与菜单可见、客户区几何不变，无覆盖层。撤销几何
+恢复但原生标题按钮绘制未恢复，局部theme刷新未解决；交互验证未完成，不计产品通过。
+
 ## M0 T23 S1 Packet
 
 | Field | Required record |
