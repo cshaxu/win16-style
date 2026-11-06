@@ -1,6 +1,6 @@
 # M0 T21 S44：同步公共交集与共享测试
 
-S44 已本地验证并发布，待提交及远端复核；M0 固定，T21 保持开放。来源固定为 ntvdm64
+S44 已收口：验证、发布、提交推送和实际远端复核完成；M0 固定，T21 保持开放。来源固定为 ntvdm64
 `967ef3d31fcb2a6d21074151875d7accd1e4c18a`，本地基线 `d27956b4`。
 只读取来源 Git 对象，未修改兄弟仓库，也不把它作为构建、运行或测试依赖。
 
@@ -76,3 +76,21 @@ run16s/demo/ntw16s64 为 x64，ntw16s32 为 x86。
 - `ntw16s64.dll`：`ddff9678928ea2f67dddbd64912c930ef8599e3f61af34fa44a7219affd3c3c1`
 
 - `demo.exe`：`af6e90b6e45bf2c4b3816fc4427e02da7cded8155c6ebd37ed0db7438f3efbae`
+
+## 收口复核
+
+P1 `39e590c8` 已推送；读取 GitHub main、全部 1317 个文件的 blob 树及
+四个 assets 文件的实际字节，与本地提交和 O:/winnt 摘要完全一致。
+提交 30 个文件，文本新增 1259 行、删除 68 行；其中生产源码变动为零，
+新增主要为共享测试和 71 项来源清单。无新生产状态、接口或容错机制。
+治理 13 项拒绝用例、来源门禁、71 项回执和 git diff --check 通过。
+
+两项目交集仅为本记录的四项；本地 module-import/process-global/security/tray
+及样式库未动，上游独有组件未导入。调用方无需产品适配，原生命周期测试仍在。
+测试构建可在两项目 test/tests 路径下使用；不要整目录覆盖任一项目独有测试。
+本次没有验证或声称修改了 ntvdm64 产品。
+
+scratch：s44-review、s44-incremental、s44-incremental2、s44-incremental3、
+s44-clean1、s44-package1、s44-publish1，均在 build/t21-package 下。
+独立 MSVC 生成树已在提炼后清理；保留原始日志、干净快照、测试包、部署备份
+和远端核对证据。S44 关闭，T21 保持开放，不准入下一 S。

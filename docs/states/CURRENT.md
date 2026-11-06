@@ -2,30 +2,7 @@
 
 ## Current Work
 
-T21 S44 已验证及发布：公共交集同步、双工具链共享测试和实际包回归通过；待提交及远端复核。见 [记录](../history/M0-T21-S44-shared-refresh.md)。M0 固定，T21 保持开放。
-
-## M0 T21 S44 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | New |
-| Admission And Approval | 用户明确要求准入S导入ntvdm64最新公共交集组件。 |
-| Objective | 固定967ef3d31fcb2a6d21074151875d7accd1e4c18a，核对handle/process-image/process-launch/process-hook，导入通用测试与构建修正并保持产品行为。 |
-| Non-goals | 不修改兄弟仓库，不引入其产品依赖，不覆盖本地process-global及样式能力，不增加产品文件。 |
-| Reference Baseline | 本地d27956b4，两边工作区干净；固定Git源46文件逐字节相同，工作区许可证换行差异不作为源差异。 |
-| Candidate Proposal | docs/proposals/win32-common-components.md |
-| Files And ABI Surface | 四公共交集源码核对；tests/lib-win32通用测试及构建入口；产品生命周期测试移回tests/run16s-exe。无ABI变化。 |
-| Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT及来源策略；LF，纯C17产品GCC/Ninja/ccache。 |
-| Verification | 来源blob/SHA清单；共享测试双宽、跨宽13用例矩阵；同快照双宽干净包及实包串行聚焦。 |
-| Expected Markers | shared CTest通过，矩阵PASS；来源/资源/边界门禁通过，四文件摘要一致。 |
-| Asset Needs | 保留原资源声明；无新图形资产。 |
-| Reporting Requirements | 区分源码相同与测试修正，记录导入差异、通过/失败/跳过、发布与远端复核。 |
-| Stop Conditions | 不把兄弟未提交修改当来源；遇外部依赖停止该导入项，保留本地工作。 |
-| Exit Criteria | 交集审计、所需测试原样导入及最小本地接线完成，构建测试发布提交推送复核后收口S44，T21开放。 |
-| Original Owner Request | 我已经原样导入给ntvdm64，并做了一定的修复，请你准入一个S导入ntvdm64最新的公共交集组件。 |
-| Similar-Issue Sweep | 比较四交集生产与测试全集；保留本地产品生命周期、跨宽及process-global测试，不目录覆盖。 |
-
-Scratch：build/t21-package/s44-review、s44-incremental、s44-incremental2、s44-incremental3、s44-clean1、s44-package1、s44-publish1；本S所有，隐藏后台记录PID/log/result，构建每宽600秒、包1800秒，提炼后清理临时材料。
+当前无活动任务包。T21 S44 已收口：公共交集同步、双工具链共享测试、实际包回归、发布及远端复核完成。见 [记录](../history/M0-T21-S44-shared-refresh.md)。M0 固定，T21 保持开放。
 
 S42 P1：删除 discover 和 load 两对产品垫片及多组纯转发和公共别名，产品专属适配置于 global/；双宽干净构建、ABI、资源及公共库边界检查通过，双宽各 11 项核心回归及 44 项实际包聚焦通过，其他 window station 子项双宽跳过，恢复摘要与旧版一致但仍不等原始。s42-publish1 因已核实的 sol.exe 占用中断，正常关闭后以同批候选包 s42-publish2 完成两处四文件发布并核对摘要。产品提交 `7301e504` 已推送并逐项复核远端。
 
@@ -486,7 +463,7 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
-- Last verified remote delivery: M0 T21 S43 P1，`7fd72964`；本次文件及四产品远端对象已复核。
+- Last verified remote delivery: M0 T21 S44 P1，`39e590c8`；本次文件及四产品远端对象已复核。
 - Open task: T21；无活动 S。Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
@@ -537,6 +514,8 @@ S3调查结果见[收口记录](../history/M0-T19-S3-dialog-closure.md)：当前
 T20 S1 的阶段包已发布部分公共对话框和 COM 桥接，P231 默认文件夹新建保留旧式布局并修正选中目录及输入路径后的确认问题；P234 处理旧式列表系统主题动画覆盖项目滚动条，同源码增量候选的双宽真实拖动通过，干净包的双宽聚焦消息驱动测试及 x64 真实拖动通过，干净包 x86 真实鼠标复测因近期输入跳过。按用户最新指示暂停COM布局桥接及其长尾。事件桥接实验默认关闭，定制、隐藏目录及完整矩阵仍未完成；公开新式对话框 API 与 demo 路径已纳入阶段包。详见[阶段证据](../history/M0-T20-S1-preliminary.md)；S1已收口；T20此后按用户要求有限范围收口。
 
 ## Recent Closure
+
+- M0 T21 S44：同步公共交集及通用测试；[记录](../history/M0-T21-S44-shared-refresh.md)。
 
 - M0 T21 S43：公共组件极简契约修正；[记录](../history/M0-T21-S43-public-contracts.md)。
 
