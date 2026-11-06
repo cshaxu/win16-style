@@ -52,3 +52,11 @@ and retains the containing module until callbacks have returned after removal.
 module pin; `run16s-exe/uwp` owns AUMID activation and target/host selection.
 A future `win2k-window-uwp` can provide a parallel style implementation at this
 boundary. No unimplemented theme-dispatch framework is introduced here.
+
+T22 S1 native title actions: the frame library copies an optional action array;
+labels and contexts are borrowed until removal. Menu commands are temporary,
+collision-checked and removed before callbacks. Product `uwp/native` selects
+the witnessed native title and queries/invokes its full-screen UIA provider.
+Coordinator queries run outside the target GUI thread; menu invocation uses
+an independent MTA worker with a module reference. OLEAUT32 is an OS dependency,
+not an additional product. This does not style XAML controls or enable global UWP.

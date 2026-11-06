@@ -115,11 +115,11 @@ def main():
             assert struct.unpack_from('<H', raw, pe+22)[0] & 0x2000, 'DLL flag missing'
             assert machine == (0x14c if arch == 'x86' else 0x8664)
             assert public == sorted(names + ['Ntw16sShowModernFileDialog','Ntw16sGlobalHook','Ntw16sGlobalHost','Ntw16sWindowAttach','Ntw16sGlobalThread','Ntw16sUwpFrameHook']) and ordinals == {**{n: i+2 for i, n in enumerate(names)}, 'Ntw16sShowModernFileDialog': 33, 'Ntw16sGlobalHook': 34, 'Ntw16sGlobalHost': 35, 'Ntw16sWindowAttach': 36, 'Ntw16sGlobalThread': 37, 'Ntw16sUwpFrameHook': 38} and live == set(range(1, 39))
-            assert {n.lower() for n in imports if not core.system_crt(n)} == {'kernel32.dll', 'user32.dll', 'gdi32.dll', 'comctl32.dll', 'comdlg32.dll', 'shell32.dll', 'ole32.dll', 'dwmapi.dll', 'uxtheme.dll', 'advapi32.dll'}
+            assert {n.lower() for n in imports if not core.system_crt(n)} == {'kernel32.dll', 'user32.dll', 'gdi32.dll', 'comctl32.dll', 'comdlg32.dll', 'shell32.dll', 'ole32.dll', 'oleaut32.dll', 'dwmapi.dll', 'uxtheme.dll', 'advapi32.dll'}
         else:
             subsystem, imports = application(path)
             assert subsystem == (2 if name == 'demo.exe' else 3)
-            assert {n for n in imports if not core.system_crt(n)} == ({'kernel32.dll', 'user32.dll', 'gdi32.dll', 'comctl32.dll', 'comdlg32.dll', 'shell32.dll', 'ole32.dll'} if name == 'demo.exe' else {'kernel32.dll', 'user32.dll', 'shell32.dll', 'ole32.dll', 'advapi32.dll', 'dwmapi.dll'})
+            assert {n for n in imports if not core.system_crt(n)} == ({'kernel32.dll', 'user32.dll', 'gdi32.dll', 'comctl32.dll', 'comdlg32.dll', 'shell32.dll', 'ole32.dll'} if name == 'demo.exe' else {'kernel32.dll', 'user32.dll', 'shell32.dll', 'ole32.dll', 'oleaut32.dll', 'advapi32.dll', 'dwmapi.dll'})
             digest = hashlib.sha256(raw).hexdigest()
         if args.built_root:
             assert hashlib.sha256((args.built_root/arch/name).read_bytes()).hexdigest() == digest, 'mixed build'

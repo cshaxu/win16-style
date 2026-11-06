@@ -12,6 +12,9 @@ typedef struct win16_uwp_frame_action {
 } win16_uwp_frame_action;
 /* Optional action is copied; label/context remain borrowed until removal.
  * Called on the owner GUI thread after menu tracking and temporary-item cleanup. */
+/* Array is copied; labels/contexts remain borrowed. At most 256 actions,
+ * bounded by the reserved menu-command range, with collision checks at display. */
+BOOL win16_uwp_frame_apply_actions(HWND frame,HWND native_title,const win16_uwp_frame_action *actions,unsigned count);
 BOOL win16_uwp_frame_apply_action(HWND frame,HWND native_title,const win16_uwp_frame_action *action);
 BOOL win16_uwp_frame_apply(HWND frame,HWND native_title);
 BOOL win16_uwp_frame_remove(HWND frame);

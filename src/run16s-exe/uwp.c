@@ -1,6 +1,7 @@
 #define COBJMACROS
 #include "uwp.h"
 #include "ntw16s-dll/uwp/hook.h"
+#include "ntw16s-dll/uwp/native.h"
 #include "lib-win32/process-image/image.h"
 #include <shobjidl.h>
 #include <dwmapi.h>
@@ -29,6 +30,11 @@ static DWORD install(app_window *app)
     WORD machine=0;error=win32_process_image_machine(host,&machine);CloseHandle(host);
     if(error)return error;
     if(machine!=IMAGE_FILE_MACHINE_AMD64)return ERROR_NOT_SUPPORTED;
+    HWND auxiliary=NULL,title=ntw16s_uwp_title(app->frame,&auxiliary);
+    if(!title)return ERROR_NOT_SUPPORTED;
+    HRESULT capability=ntw16s_uwp_fullscreen_available(title);
+    if(FAILED(capability))return (DWORD)capability;
+    WPARAM action=capability==S_OK?NTW16S_UWP_APPLY_FULLSCREEN:NTW16S_UWP_APPLY;
     WCHAR path[32768];DWORD length=GetModuleFileNameW(NULL,path,ARRAYSIZE(path));
     if(!length||length>=ARRAYSIZE(path))return ERROR_INSUFFICIENT_BUFFER;
     WCHAR *tail=wcsrchr(path,L'\\');if(!tail || (size_t)(tail-path)+20>=ARRAYSIZE(path))return ERROR_BAD_PATHNAME;
@@ -42,7 +48,7 @@ static DWORD install(app_window *app)
     if(hook){
         RemovePropW(app->frame,NTW16S_UWP_RESULT);DWORD_PTR ignored=0;
         UINT message=RegisterWindowMessageW(NTW16S_UWP_MESSAGE);
-        if(!SendMessageTimeoutW(app->frame,message,NTW16S_UWP_APPLY,(LPARAM)app->core,
+        if(!SendMessageTimeoutW(app->frame,message,action,(LPARAM)app->core,
             SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,3000,&ignored))error=GetLastError()?GetLastError():ERROR_TIMEOUT;
         else {uintptr_t result=(uintptr_t)GetPropW(app->frame,NTW16S_UWP_RESULT);error=result?(DWORD)(result-1):ERROR_INVALID_DATA;}
         RemovePropW(app->frame,NTW16S_UWP_RESULT);

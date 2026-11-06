@@ -875,3 +875,55 @@ Minimum next product change, constrained to witnessed Calculator/Scan:
 
 No product changes or republishing in P16. Existing cursor, lifecycle,
 ordinary/global/reuse and broader-target limitations remain; S1/T22 open.
+
+## P17 implementation and pre-package evidence
+
+Public apply_actions copies up to 256 optional callbacks (the natural reserved
+command range); single-action and no-action APIs retained. Per-menu insertion
+uses free aligned IDs and owned item data, and unwinds partial insertion before
+callbacks. Product shares native title selection between coordinator and DLL.
+Coordinator's UIA8 query adds APPLY_FULLSCREEN only for an actual native invoke
+provider; failed query reports HRESULT without silently removing an unknown
+action. Callback invokes native EnterFullScreen/ExitFullScreen on independent
+MTA worker, one module reference per request; GUI thread never waits. UIA
+connection/transaction timeouts are 1000ms each, not a proven overall worker
+lifetime deadline; provider hang/unload failure is not claimed solved. Product
+module remains pinned. No global integration or client-control changes.
+
+New DLL/launcher system import OLEAUT32 is explicitly allowed in exact package
+checks; no external runtime, export, ABI number or fifth product added. First
+incremental x86 PE gate correctly rejected the previously undeclared import.
+Second round double-width each3 passed. Third round native selection fixture
+failed because its parent inherited hidden startup; explicit ShowWindow fixes
+the fixture. Final s1-native-actions4 double-width each4 passed, no skips;
+build9.51/11.15s, test4.66/4.95s. Includes multiple actions, collision, cancel,
+partial insertion rollback, title selection and refusal of same-GUI-thread UIA.
+
+API-only real probes use inactive input desktop (no pixel/input acceptance):
+- native-menu1 Calculator activation ownPID5276,144DPI: new product capability
+  query, attachment, max/restore/min/restore and remove/geometry pass.
+- native-menu1 Scan same product activation/button/removal path passes.
+- native-worker1 fixed short wait observed no change, not a successful test.
+  native-worker2 adds scratch-only completion HRESULT, waits bounded3s:
+  actual production native.c worker enters/exits successfully, same overlay
+  hidden/restored, original geometry and removal pass. No diagnostic property
+  enters production.
+- native-menu-select1 synthetic mouse messages caused target window to vanish;
+  host18304 remained alive, no corresponding application crash event found.
+  Cause not established; this is a failed probe, not proof of a product crash.
+- select2 native MSAA exact menu item returns S_OK without state change; select3
+  posted keyboard does not highlight the target and refuses submission.
+  select4 waits4s for real state: no change despite MSAA S_OK. Thus actual
+  menu-selection end-to-end remains unverified, not passed. Stop repeating
+  inactive-desktop input substitutes; normal-desktop selection remains needed.
+
+Frozen package s1-clean8, actual package s1-package4 and deployment s1-publish4
+are reserved for this change. Keep S1/T22 open; no full-screen UI acceptance
+claim until the real menu route and normal display have evidence.
+
+P17本地交付：clean8双位宽干净构建、ABI/原资源/来源/依赖门禁通过；最终UWP
+测试双宽各3项通过无skip。s1-package4共14项聚焦通过无skip，32.06秒。
+最终DLL计算器PID36124与ScanPID18888、144DPI的API接入/按钮/撤销通过；
+全屏工作线程的生产源码诊断对照通过，但菜单实际选择仍未验证（屏保下替代
+消息/无障碍均未证明状态变化）。s1-publish4两处四文件与测试摘要相同。
+本次没有正常桌面截图，不以API验证替代外观/真实菜单选择验收；S1/T22保持开放。

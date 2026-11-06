@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <windowsx.h>
 
+typedef struct frame_action { win16_uwp_frame_action value; UINT command; } frame_action;
+
 typedef struct uwp_frame {
     HWND window,title,surface;
     unsigned calls;
@@ -24,7 +26,8 @@ typedef struct uwp_frame {
     win16_style_layout layout;
     style_window *menu;
     HWND menu_window;
-    win16_uwp_frame_action action;
+    unsigned action_count;
+    frame_action actions[];
 } uwp_frame;
 
 static LRESULT CALLBACK owner_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
@@ -221,26 +224,25 @@ static void system_menu(uwp_frame *s)
         saved[i]=GetMenuState(menu,ids[i],MF_BYCOMMAND);
         if(saved[i]!=(UINT)-1 && disabled[i])EnableMenuItem(menu,ids[i],MF_BYCOMMAND|MF_GRAYED);
     }
-    UINT action_id=0;
-    if(s->action.invoke){
+    BOOL actions_ready=TRUE;
+    for(unsigned i=0;i<s->action_count;++i){
+        frame_action *action=&s->actions[i];action->command=0;
         for(UINT id=0xeff0;id>=0xe000;id-=16)if(GetMenuState(menu,id,MF_BYCOMMAND)==(UINT)-1){
             MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_ID|MIIM_STRING|MIIM_DATA,
-                .wID=id,.dwTypeData=(PWSTR)s->action.label,.dwItemData=(ULONG_PTR)s};
-            if(InsertMenuItemW(menu,(UINT)-1,TRUE,&item))action_id=id;
+                .wID=id,.dwTypeData=(PWSTR)action->value.label,.dwItemData=(ULONG_PTR)action};
+            if(InsertMenuItemW(menu,(UINT)-1,TRUE,&item))action->command=id;
             break;
         }
-        /* Do not present a replacement menu with its required action missing. */
-        if(!action_id){
-            for(unsigned i=0;i<ARRAYSIZE(ids);++i)if(saved[i]!=(UINT)-1 && disabled[i])
-                EnableMenuItem(menu,ids[i],MF_BYCOMMAND|(saved[i]&(MF_DISABLED|MF_GRAYED)));
-            s->tracking=FALSE;return;
-        }
+        if(!action->command){actions_ready=FALSE;break;}
     }
-    s->no_menu=TRUE;refresh(s);
-    UINT command=0;
-    if(!s->detached)command=TrackPopupMenuEx(menu,TPM_LEFTALIGN|TPM_TOPALIGN|TPM_RETURNCMD|TPM_NOANIMATION,
-        surface.left+s->layout.system.left,surface.top+s->layout.system.bottom,
-        s->surface,NULL);
+    UINT command=0;unsigned selected=s->action_count;
+    /* Never present a replacement menu with a required action missing. */
+    if(actions_ready){
+        s->no_menu=TRUE;refresh(s);
+        if(!s->detached)command=TrackPopupMenuEx(menu,TPM_LEFTALIGN|TPM_TOPALIGN|TPM_RETURNCMD|TPM_NOANIMATION,
+            surface.left+s->layout.system.left,surface.top+s->layout.system.bottom,
+            s->surface,NULL);
+    }
     if(s->menu_window){
         MENUBARINFO info={.cbSize=sizeof(info)};
         if(GetMenuBarInfo(s->menu_window,OBJID_CLIENT,0,&info) && info.hMenu==menu)
@@ -250,16 +252,20 @@ static void system_menu(uwp_frame *s)
     if(!s->detached && GetSystemMenu(s->window,FALSE)==menu)for(unsigned i=0;i<ARRAYSIZE(ids);++i)
         if(saved[i]!=(UINT)-1 && disabled[i])
             EnableMenuItem(menu,ids[i],MF_BYCOMMAND|(saved[i]&(MF_DISABLED|MF_GRAYED)));
-    if(action_id){
+    for(unsigned i=0;i<s->action_count;++i){
+        frame_action *action=&s->actions[i];
+        if(!action->command)continue;
+        if(command==action->command)selected=i;
         MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_DATA};
-        if(GetMenuItemInfoW(menu,action_id,FALSE,&item)&&item.dwItemData==(ULONG_PTR)s)
-            DeleteMenu(menu,action_id,MF_BYCOMMAND);
+        if(GetMenuItemInfoW(menu,action->command,FALSE,&item)&&item.dwItemData==(ULONG_PTR)action)
+            DeleteMenu(menu,action->command,MF_BYCOMMAND);
+        action->command=0;
     }
     s->tracking=FALSE;s->no_menu=FALSE;
     if(!s->detached){
         refresh(s);
         if(!s->detached && command){
-            if(command==action_id)s->action.invoke(s->window,s->action.context);
+            if(selected<s->action_count)s->actions[selected].value.invoke(s->window,s->actions[selected].value.context);
             else PostMessageW(s->window,WM_SYSCOMMAND,command,0);
         }
     }
@@ -363,17 +369,20 @@ static LRESULT CALLBACK owner_proc(HWND w,UINT message,WPARAM a,LPARAM b,UINT_PT
     }
     release(s);return result;
 }
-BOOL win16_uwp_frame_apply_action(HWND w,HWND title,const win16_uwp_frame_action *action)
+BOOL win16_uwp_frame_apply_actions(HWND w,HWND title,const win16_uwp_frame_action *actions,unsigned count)
 {
-    if(action && (!action->label || !*action->label || !action->invoke)){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
+    /* There are 256 available 16-aligned command slots below SC_SIZE. */
+    if(count>256 || (count&&!actions)){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
+    for(unsigned i=0;i<count;++i)if(!actions[i].label || !*actions[i].label || !actions[i].invoke){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
     if(!local(w) || !local(title))return FALSE;
     if(lookup(w)){SetLastError(ERROR_ALREADY_EXISTS);return FALSE;}
     if(GetParent(title)!=w){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
-    uwp_frame *s=calloc(1,sizeof(*s));if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
+    uwp_frame *s=calloc(1,sizeof(*s)+(size_t)count*sizeof(frame_action));if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
     s->menu=win16_control_frame_state_create();
     if(!s->menu){free(s);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
     win16_style_default_palette(&s->menu->palette);
-    if(action)s->action=*action;
+    s->action_count=count;
+    for(unsigned i=0;i<count;++i)s->actions[i].value=actions[i];
     s->window=w;s->title=title;s->calls=1;s->no_selection=-1;s->active=GetForegroundWindow()==w;
     if(!SetWindowSubclass(w,owner_proc,(UINT_PTR)owner_proc,(DWORD_PTR)s)){win16_control_frame_state_dispose(s->menu);free(s);return FALSE;}
     if(!SetWindowSubclass(title,title_proc,(UINT_PTR)title_proc,(DWORD_PTR)s)){
@@ -387,8 +396,10 @@ BOOL win16_uwp_frame_apply_action(HWND w,HWND title,const win16_uwp_frame_action
     if(!ok){detach(s);if(!error)error=ERROR_NOT_SUPPORTED;}
     release(s);SetLastError(error);return ok;
 }
+BOOL win16_uwp_frame_apply_action(HWND w,HWND title,const win16_uwp_frame_action *action)
+{return win16_uwp_frame_apply_actions(w,title,action,action?1:0);}
 BOOL win16_uwp_frame_apply(HWND w,HWND title)
-{return win16_uwp_frame_apply_action(w,title,NULL);}
+{return win16_uwp_frame_apply_actions(w,title,NULL,0);}
 BOOL win16_uwp_frame_remove(HWND w)
 {
     if(!local(w))return FALSE;

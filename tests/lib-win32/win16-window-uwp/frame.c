@@ -6,7 +6,7 @@
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"FAIL line=%d error=%lu\n",__LINE__,GetLastError());return 1;}}while(0)
 static UINT command,menu_notifications;
 static BOOL tracked_menu,menu_states_ok,expect_action,action_seen;
-static unsigned action_calls;
+static unsigned action_calls,expected_actions;
 static void extra_action(HWND frame,void *context)
 {(void)frame;(*(unsigned *)context)++;}
 static void CALLBACK cancel_menu(HWND w,UINT message,UINT_PTR timer,DWORD tick)
@@ -28,6 +28,7 @@ static void CALLBACK cancel_menu(HWND w,UINT message,UINT_PTR timer,DWORD tick)
     if(expect_action){
         action_seen=GetMenuState(menu,0xefe0,MF_BYCOMMAND)!=(UINT)-1 &&
             GetMenuState(menu,0xeff0,MF_BYCOMMAND)!=(UINT)-1;
+        if(expected_actions==2)action_seen=action_seen&&GetMenuState(menu,0xefd0,MF_BYCOMMAND)!=(UINT)-1;
     }
     SendMessageW(w,WM_CANCELMODE,0,0);
 }
@@ -154,17 +155,31 @@ static int worker(int argc,WCHAR **argv)
     win16_uwp_frame_action invalid={0};
     CHECK(!win16_uwp_frame_apply_action(w,title,&invalid)&&GetLastError()==ERROR_INVALID_PARAMETER);
     win16_uwp_frame_action action={L"Application menu...",extra_action,&action_calls};
+    win16_uwp_frame_action actions[]={action,{L"Second action",extra_action,&action_calls}};
+    CHECK(!win16_uwp_frame_apply_actions(w,title,NULL,1)&&GetLastError()==ERROR_INVALID_PARAMETER);
+    CHECK(!win16_uwp_frame_apply_actions(w,title,actions,257)&&GetLastError()==ERROR_INVALID_PARAMETER);
     for(int iteration=0;iteration<2;++iteration){
-        CHECK(win16_uwp_frame_apply_action(w,title,&action));
+        expected_actions=(unsigned)iteration+1;
+        CHECK(win16_uwp_frame_apply_actions(w,title,actions,expected_actions));
         CHECK(!win16_uwp_frame_apply_action(w,title,&action)&&GetLastError()==ERROR_ALREADY_EXISTS);
         CHECK(GetMenuItemCount(extras)==count);
         expect_action=TRUE;action_seen=FALSE;CHECK(SetTimer(w,1,200,cancel_menu));
         SendMessageW(w,WM_SYSCOMMAND,SC_KEYMENU,L' ');KillTimer(w,1);expect_action=FALSE;
         CHECK(action_seen);CHECK(!action_calls);CHECK(GetMenuItemCount(extras)==count);
         CHECK(GetMenuState(extras,0xefe0,MF_BYCOMMAND)==(UINT)-1);
+        CHECK(GetMenuState(extras,0xefd0,MF_BYCOMMAND)==(UINT)-1);
         CHECK(GetMenuState(extras,0xeff0,MF_BYCOMMAND)!=(UINT)-1);
         CHECK(win16_uwp_frame_remove(w));CHECK(GetMenuItemCount(extras)==count);
     }
+    /* Leave one free command for two actions: partial insertion must unwind. */
+    for(UINT id=0xefd0;id>=0xe000;id-=16)CHECK(AppendMenuW(extras,MF_STRING,id,L"Reserved"));
+    count=GetMenuItemCount(extras);
+    CHECK(win16_uwp_frame_apply_actions(w,title,actions,2));
+    SendMessageW(w,WM_SYSCOMMAND,SC_KEYMENU,L' ');
+    CHECK(GetMenuItemCount(extras)==count&&!action_calls);
+    CHECK(GetMenuState(extras,0xefe0,MF_BYCOMMAND)==(UINT)-1);
+    CHECK(win16_uwp_frame_remove(w));
+    for(UINT id=0xefd0;id>=0xe000;id-=16)CHECK(DeleteMenu(extras,id,MF_BYCOMMAND));
     CHECK(DeleteMenu(extras,0xeff0,MF_BYCOMMAND));
     CHECK(win16_uwp_frame_apply(w,title));HWND surface=win16_uwp_frame_surface(w);
     CHECK(DestroyWindow(title));CHECK(!IsWindow(surface));CHECK(!win16_uwp_frame_surface(w));

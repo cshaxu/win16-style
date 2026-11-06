@@ -1,24 +1,11 @@
 #include "hook.h"
+#include "native.h"
 #include "lib-win32/win16-window-uwp/frame.h"
 #include <stdint.h>
 #include <wchar.h>
 static _Thread_local BOOL busy;
 static BOOL class_is(HWND w,PCWSTR name)
 {WCHAR value[80];return GetClassNameW(w,value,ARRAYSIZE(value))&&!wcscmp(value,name);}
-static HWND title_child(HWND frame,HWND *auxiliary)
-{
-    HWND best=NULL;LONG width=0;*auxiliary=NULL;
-    for(HWND child=GetWindow(frame,GW_CHILD);child;child=GetWindow(child,GW_HWNDNEXT)){
-        RECT r;
-        if(IsWindowVisible(child)&&class_is(child,L"ApplicationFrameTitleBarWindow")&&GetWindowRect(child,&r)&&r.right-r.left>width){best=child;width=r.right-r.left;}
-    }
-    for(HWND child=GetWindow(frame,GW_CHILD);child;child=GetWindow(child,GW_HWNDNEXT))
-        if(child!=best && IsWindowVisible(child)&&class_is(child,L"ApplicationFrameTitleBarWindow")){
-            if(*auxiliary)return NULL; /* Unknown multi-action layout. */
-            *auxiliary=child;
-        }
-    return best;
-}
 static void application_menu(HWND frame,void *context)
 {
     HWND child=(HWND)context;RECT r;
@@ -28,19 +15,21 @@ static void application_menu(HWND frame,void *context)
     PostMessageW(child,WM_LBUTTONDOWN,MK_LBUTTON,point);
     PostMessageW(child,WM_LBUTTONUP,0,point);
 }
-static BOOL apply_frame(HWND frame)
+static BOOL apply_frame(HWND frame,BOOL fullscreen)
 {
-    HWND auxiliary=NULL,title=title_child(frame,&auxiliary);
+    HWND auxiliary=NULL,title=ntw16s_uwp_title(frame,&auxiliary);
     if(!title){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
-    win16_uwp_frame_action action={L"Application menu...",application_menu,auxiliary};
-    return win16_uwp_frame_apply_action(frame,title,auxiliary?&action:NULL);
+    win16_uwp_frame_action actions[2];unsigned count=0;
+    if(auxiliary)actions[count++]=(win16_uwp_frame_action){L"Application menu...",application_menu,auxiliary};
+    if(fullscreen)actions[count++]=(win16_uwp_frame_action){L"Toggle full screen",ntw16s_uwp_fullscreen,title};
+    return win16_uwp_frame_apply_actions(frame,title,actions,count);
 }
 LRESULT CALLBACK Ntw16sUwpFrameHook(int code,WPARAM parameter,LPARAM message)
 {
     if(code>=0&&!busy){
         const CWPSTRUCT *m=(const CWPSTRUCT *)message;
         if(m && m->message==RegisterWindowMessageW(NTW16S_UWP_MESSAGE) &&
-           (m->wParam==NTW16S_UWP_APPLY || m->wParam==NTW16S_UWP_REMOVE)){
+           (m->wParam==NTW16S_UWP_APPLY || m->wParam==NTW16S_UWP_APPLY_FULLSCREEN || m->wParam==NTW16S_UWP_REMOVE)){
             busy=TRUE;DWORD error=ERROR_INVALID_WINDOW_HANDLE;HWND core=(HWND)m->lParam;
             DWORD owner=0;DWORD thread=GetWindowThreadProcessId(m->hwnd,&owner);
             if(thread==GetCurrentThreadId()&&owner==GetCurrentProcessId()&&
@@ -51,7 +40,7 @@ LRESULT CALLBACK Ntw16sUwpFrameHook(int code,WPARAM parameter,LPARAM message)
                 if(m->wParam==NTW16S_UWP_REMOVE)ok=win16_uwp_frame_remove(m->hwnd);
                 else if(win16_uwp_frame_surface(m->hwnd))ok=TRUE;
                 else ok=GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_PIN,
-                    (PCWSTR)(uintptr_t)Ntw16sUwpFrameHook,&module)&&apply_frame(m->hwnd);
+                    (PCWSTR)(uintptr_t)Ntw16sUwpFrameHook,&module)&&apply_frame(m->hwnd,m->wParam==NTW16S_UWP_APPLY_FULLSCREEN);
                 error=ok?ERROR_SUCCESS:GetLastError();if(!ok&&!error)error=ERROR_NOT_SUPPORTED;
             }
             SetPropW(m->hwnd,NTW16S_UWP_RESULT,(HANDLE)(uintptr_t)((ULONGLONG)error+1));

@@ -6242,7 +6242,7 @@
       "path": "src/lib-win32/win16-window-uwp/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "83a0ae2d5ba1f1e97b2241ad1b009a84917a56f156ffff47f780db27e3b15701",
+      "sha256": "9db8149e585ecd18152e0ea1f345b2f4007ad77e53b1640de20177c26b5ad98e",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T22 S1 system-menu temporary command state and native cursor handling",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -6251,7 +6251,7 @@
       "path": "src/lib-win32/win16-window-uwp/frame.h",
       "source": null,
       "source_blob": null,
-      "sha256": "5e82de91404671a7b3cf480c5f40a860ca94f9cf403e33e60b90570f30791dc4",
+      "sha256": "0bd0049adc987844e1af526cceda7b48779cc1b767f19973226ae6f0ae43a28e",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 window-only library extraction, activation and thread hook remain product-owned",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -6278,7 +6278,7 @@
       "path": "src/ntw16s-dll/uwp/hook.c",
       "source": null,
       "source_blob": null,
-      "sha256": "11a869bf99effe2a95ceda5f79ae05616326d4fbe6aa9b10d5ba873fc5a7329c",
+      "sha256": "6cddcb4e98dd260bd651bcee6d0d26576e422f386f7b7a4a8247e52f4df15795",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 window-only library extraction, activation and thread hook remain product-owned",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -6287,7 +6287,7 @@
       "path": "src/ntw16s-dll/uwp/hook.h",
       "source": null,
       "source_blob": null,
-      "sha256": "c741cb3dbc71751568e73a60c2184b8bafa46167d557303feb648c432c73eb68",
+      "sha256": "f116ce527e8907a9c85c3ef2f22a50fd93c27be573d35973649d4860db6cfc10",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -6296,7 +6296,7 @@
       "path": "src/run16s-exe/uwp.c",
       "source": null,
       "source_blob": null,
-      "sha256": "77d10b6c839a9e1424ab543beef7079cc702cb6d2517415092cf0a20d2bf7a12",
+      "sha256": "7c17687c6ccfc1644f1ccbdea5b0041eaabc3f9a0300e72d3c983c250dbcef45",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -6314,7 +6314,7 @@
       "path": "tests/lib-win32/win16-window-uwp/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "48a42d40d330aa0c2e37a46130c36e28095ecd7f3491ce890071405709bbd695",
+      "sha256": "2d510f52550017f2c754663cc57b658fc3151643e105ae0048d11d438777b9bc",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T22 S1 system-menu temporary command state and native cursor handling",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -6335,6 +6335,33 @@
       "sha256": "9e7173dd2bfe995e4da7f5a6a5d08de5509722b3fcf88b8e3c812144706795e0",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned",
+      "notice": "Project MIT; existing graphic resources and their notices unchanged"
+    },
+    {
+      "path": "src/ntw16s-dll/uwp/native.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "b2d353aca82db9141452edf750a136fb6a37cbe884587553448fc3acde1a63ef",
+      "disposition": "authored",
+      "review": "T22 S1 native UWP title actions; original pure C implementation using system UI Automation, no external code copied",
+      "notice": "Project MIT; existing graphic resources and their notices unchanged"
+    },
+    {
+      "path": "src/ntw16s-dll/uwp/native.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "7cf6b65de167e4a0cb87cf8b8c169608e51c1e9b8ddbb4186deed20300b625b5",
+      "disposition": "authored",
+      "review": "T22 S1 native UWP title actions; original pure C implementation using system UI Automation, no external code copied",
+      "notice": "Project MIT; existing graphic resources and their notices unchanged"
+    },
+    {
+      "path": "tests/ntw16s-dll/uwp/native.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "4e4687b4ce8cd6cfcf16a18a18cf6f769cfbb791a48ee53b076b707a488cbd96",
+      "disposition": "authored",
+      "review": "T22 S1 native UWP title actions; original pure C implementation using system UI Automation, no external code copied",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
     }
   ]

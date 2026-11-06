@@ -1,1673 +1,1682 @@
 {
   "schema": 1,
-  "delivery": "M0 T22 S1 P12",
-  "stage": "development acceptance; M0/T22/S1 open; Calculator frame-only candidate",
+  "delivery": "M0 T22 S1 P17",
+  "stage": "development acceptance; M0/T22/S1 open; native full-screen menu added, real menu selection pending",
   "version": "0.22.0.0",
   "version_contract": "M0 T22; sequential S does not increment T version",
   "package_directory": "assets",
-  "source_snapshot_sha256": "53a69149a12f0534765359e278b81f9fb537930daf8ae32e6464c23562ba7fde",
+  "source_snapshot_sha256": "6ca100623b2821104c9c6c568d90484443334f0b863953e6b69dfa86178d9c0c",
   "source_snapshot_format": "SHA256 of the clean build snapshot.json bytes",
   "source_inputs": [
     {
-      "sha256": "ab287779efab108fde68ac0d4e25bf860767be0a994e78c2c7a3f523e89ba618",
-      "path": "src\\demo-exe\\catalog.c"
+      "path": "src\\demo-exe\\catalog.c",
+      "sha256": "ab287779efab108fde68ac0d4e25bf860767be0a994e78c2c7a3f523e89ba618"
     },
     {
-      "sha256": "ad14c14cfde73211c48c2d05e5fe1ecf49210f34f10f88d3ce88ca80df7d50f3",
-      "path": "src\\demo-exe\\catalog.rc"
+      "path": "src\\demo-exe\\catalog.rc",
+      "sha256": "ad14c14cfde73211c48c2d05e5fe1ecf49210f34f10f88d3ce88ca80df7d50f3"
     },
     {
-      "sha256": "5ba292a6ddf280eed04da97c5f6ff77c006ee7d34cecc27ecc04f5f8105e7156",
-      "path": "src\\demo-exe\\demo.manifest"
+      "path": "src\\demo-exe\\demo.manifest",
+      "sha256": "5ba292a6ddf280eed04da97c5f6ff77c006ee7d34cecc27ecc04f5f8105e7156"
     },
     {
-      "sha256": "34ebfff116f855d8db1366b92b0e31852b971dcf60d8b65d26c0efd554788fd5",
-      "path": "src\\demo-exe\\dialogs.c"
+      "path": "src\\demo-exe\\dialogs.c",
+      "sha256": "34ebfff116f855d8db1366b92b0e31852b971dcf60d8b65d26c0efd554788fd5"
     },
     {
-      "sha256": "3a91c2674155859e7b417f4307c9aadba460b8aa058d79721b636cd331d34055",
-      "path": "src\\demo-exe\\gallery.c"
+      "path": "src\\demo-exe\\gallery.c",
+      "sha256": "3a91c2674155859e7b417f4307c9aadba460b8aa058d79721b636cd331d34055"
     },
     {
-      "sha256": "431bc305c7bd2f2b7845333d685ab4eea8cf6ce0e873611641bbc5014519edc0",
-      "path": "src\\demo-exe\\main.c"
+      "path": "src\\demo-exe\\main.c",
+      "sha256": "431bc305c7bd2f2b7845333d685ab4eea8cf6ce0e873611641bbc5014519edc0"
     },
     {
-      "sha256": "f1c81a65b0655b9cac8b3876eb359097d53d7c8a950fdc93ca88f4ce375c5bf7",
-      "path": "src\\demo-exe\\README.md"
+      "path": "src\\demo-exe\\README.md",
+      "sha256": "f1c81a65b0655b9cac8b3876eb359097d53d7c8a950fdc93ca88f4ce375c5bf7"
     },
     {
-      "sha256": "1bed1da39012fe4b9285e8ae47d54f321990a2b1b7d7f97ec1c1be8bddb710d9",
-      "path": "src\\demo-exe\\version.rc"
+      "path": "src\\demo-exe\\version.rc",
+      "sha256": "1bed1da39012fe4b9285e8ae47d54f321990a2b1b7d7f97ec1c1be8bddb710d9"
     },
     {
-      "sha256": "7036b95282ffa11d76305094c8efc076cf0a6a864ea3fd508c993e3ce3090596",
-      "path": "src\\lib-win32\\handle\\duplicate.c"
+      "path": "src\\lib-win32\\handle\\duplicate.c",
+      "sha256": "7036b95282ffa11d76305094c8efc076cf0a6a864ea3fd508c993e3ce3090596"
     },
     {
-      "sha256": "f39b055b6678a24d8c69e97496adaf46bc6b16322859e7a88f899a84aefbfd26",
-      "path": "src\\lib-win32\\handle\\duplicate.h"
+      "path": "src\\lib-win32\\handle\\duplicate.h",
+      "sha256": "f39b055b6678a24d8c69e97496adaf46bc6b16322859e7a88f899a84aefbfd26"
     },
     {
-      "sha256": "5540557e24d82d4bdd83f08ec63f3f1953e82858274b0046e967d4b5b5e63025",
-      "path": "src\\lib-win32\\module-import\\import_patch.c"
+      "path": "src\\lib-win32\\module-import\\import_patch.c",
+      "sha256": "5540557e24d82d4bdd83f08ec63f3f1953e82858274b0046e967d4b5b5e63025"
     },
     {
-      "sha256": "3258f16182cdae684c59956bebed517439bd581b188d0b7a665575c8a60682c7",
-      "path": "src\\lib-win32\\module-import\\import_scan.c"
+      "path": "src\\lib-win32\\module-import\\import_scan.c",
+      "sha256": "3258f16182cdae684c59956bebed517439bd581b188d0b7a665575c8a60682c7"
     },
     {
-      "sha256": "f255eb452e2fe7a1102f2d6af0b0c8d9ae6843045ad9e4881dcccbd509be94ee",
-      "path": "src\\lib-win32\\module-import\\import_scan.h"
+      "path": "src\\lib-win32\\module-import\\import_scan.h",
+      "sha256": "f255eb452e2fe7a1102f2d6af0b0c8d9ae6843045ad9e4881dcccbd509be94ee"
     },
     {
-      "sha256": "220a05bef469656c1c332109c4379a7f6b705e20f37c614bea2409dec70b3ddd",
-      "path": "src\\lib-win32\\process-global\\background.c"
+      "path": "src\\lib-win32\\process-global\\background.c",
+      "sha256": "220a05bef469656c1c332109c4379a7f6b705e20f37c614bea2409dec70b3ddd"
     },
     {
-      "sha256": "c6ee2a215d368f3338f181acfef63cbb8259a7d6e480f811bf2d65728cbba2fd",
-      "path": "src\\lib-win32\\process-global\\background.h"
+      "path": "src\\lib-win32\\process-global\\background.h",
+      "sha256": "c6ee2a215d368f3338f181acfef63cbb8259a7d6e480f811bf2d65728cbba2fd"
     },
     {
-      "sha256": "a0cf44a5891c432b9dc2cfbcca5a1d4e33e3af724e6d30e5f26f35f1815a29c0",
-      "path": "src\\lib-win32\\process-global\\dispatch.c"
+      "path": "src\\lib-win32\\process-global\\dispatch.c",
+      "sha256": "a0cf44a5891c432b9dc2cfbcca5a1d4e33e3af724e6d30e5f26f35f1815a29c0"
     },
     {
-      "sha256": "c5b7e49f37963914b8e608198cc8fea4c0bff289fd6ec848794708f8f8c81d71",
-      "path": "src\\lib-win32\\process-global\\dispatch.h"
+      "path": "src\\lib-win32\\process-global\\dispatch.h",
+      "sha256": "c5b7e49f37963914b8e608198cc8fea4c0bff289fd6ec848794708f8f8c81d71"
     },
     {
-      "sha256": "46237e514fb6f7e36001d1b1179af1fc13a801567b52b2f28c704f15d39e4af9",
-      "path": "src\\lib-win32\\process-global\\engine.c"
+      "path": "src\\lib-win32\\process-global\\engine.c",
+      "sha256": "46237e514fb6f7e36001d1b1179af1fc13a801567b52b2f28c704f15d39e4af9"
     },
     {
-      "sha256": "447aff3af796a04563b450de66adb87b859e7e27352c7254f630872e32485863",
-      "path": "src\\lib-win32\\process-global\\engine.h"
+      "path": "src\\lib-win32\\process-global\\engine.h",
+      "sha256": "447aff3af796a04563b450de66adb87b859e7e27352c7254f630872e32485863"
     },
     {
-      "sha256": "968893c45a1976d4498d33d241643563c7d7d00965867a79fb38eac07cf451d0",
-      "path": "src\\lib-win32\\process-global\\enumerate.c"
+      "path": "src\\lib-win32\\process-global\\enumerate.c",
+      "sha256": "968893c45a1976d4498d33d241643563c7d7d00965867a79fb38eac07cf451d0"
     },
     {
-      "sha256": "77170efdb3f6f088d23712b24f21a53722c80f86afa095116b59bdfc1087e947",
-      "path": "src\\lib-win32\\process-global\\enumerate.h"
+      "path": "src\\lib-win32\\process-global\\enumerate.h",
+      "sha256": "77170efdb3f6f088d23712b24f21a53722c80f86afa095116b59bdfc1087e947"
     },
     {
-      "sha256": "e2950d90dbd761bce55fa1bd15c9a70a5be4093ab1529557b6cd95502d153c30",
-      "path": "src\\lib-win32\\process-global\\identity.c"
+      "path": "src\\lib-win32\\process-global\\identity.c",
+      "sha256": "e2950d90dbd761bce55fa1bd15c9a70a5be4093ab1529557b6cd95502d153c30"
     },
     {
-      "sha256": "be2c1d8956d7d963bf1dfffcdf71e9ed32f74e683b63d35a4fd09c8da8e8ef53",
-      "path": "src\\lib-win32\\process-global\\identity.h"
+      "path": "src\\lib-win32\\process-global\\identity.h",
+      "sha256": "be2c1d8956d7d963bf1dfffcdf71e9ed32f74e683b63d35a4fd09c8da8e8ef53"
     },
     {
-      "sha256": "fa3cd7bc4f1e7f92b91308485fb68c4db55fdeba40527d363fe09374412d7e80",
-      "path": "src\\lib-win32\\process-global\\load.c"
+      "path": "src\\lib-win32\\process-global\\load.c",
+      "sha256": "fa3cd7bc4f1e7f92b91308485fb68c4db55fdeba40527d363fe09374412d7e80"
     },
     {
-      "sha256": "23e5075125d3c06d0a63380fde0153f8b12f77d3fdf0c493d18c9adc0c238c86",
-      "path": "src\\lib-win32\\process-global\\load.h"
+      "path": "src\\lib-win32\\process-global\\load.h",
+      "sha256": "23e5075125d3c06d0a63380fde0153f8b12f77d3fdf0c493d18c9adc0c238c86"
     },
     {
-      "sha256": "e60f1fea0811dc9bba10120cd874fbddebfdf2af2d597529b4b731ebdaf6a9f4",
-      "path": "src\\lib-win32\\process-global\\module.c"
+      "path": "src\\lib-win32\\process-global\\module.c",
+      "sha256": "e60f1fea0811dc9bba10120cd874fbddebfdf2af2d597529b4b731ebdaf6a9f4"
     },
     {
-      "sha256": "c93a83626e3a220d4610a6eac042fff998cd8d5b14107714f85ec655aa360071",
-      "path": "src\\lib-win32\\process-global\\module.h"
+      "path": "src\\lib-win32\\process-global\\module.h",
+      "sha256": "c93a83626e3a220d4610a6eac042fff998cd8d5b14107714f85ec655aa360071"
     },
     {
-      "sha256": "73c87b15989a575bafb24ebb9f4a6a4c73157bcad5afd6ccaf81f787272a93d5",
-      "path": "src\\lib-win32\\process-global\\monitor.c"
+      "path": "src\\lib-win32\\process-global\\monitor.c",
+      "sha256": "73c87b15989a575bafb24ebb9f4a6a4c73157bcad5afd6ccaf81f787272a93d5"
     },
     {
-      "sha256": "19b0f9b0895eb23e11b1e465d3a9e453d7d9fcdddff5f38daa03c3bbaa6a21da",
-      "path": "src\\lib-win32\\process-global\\monitor.h"
+      "path": "src\\lib-win32\\process-global\\monitor.h",
+      "sha256": "19b0f9b0895eb23e11b1e465d3a9e453d7d9fcdddff5f38daa03c3bbaa6a21da"
     },
     {
-      "sha256": "fdaff9c40110ae26ade5ae6bc04ededc59333369427a3bf245bd098cd2c10368",
-      "path": "src\\lib-win32\\process-global\\policy.c"
+      "path": "src\\lib-win32\\process-global\\policy.c",
+      "sha256": "fdaff9c40110ae26ade5ae6bc04ededc59333369427a3bf245bd098cd2c10368"
     },
     {
-      "sha256": "64d6d0dd6e0763e83d687b273623d4800ad4f5a0ddaee1d9c65f5cbf0fc5f475",
-      "path": "src\\lib-win32\\process-global\\policy.h"
+      "path": "src\\lib-win32\\process-global\\policy.h",
+      "sha256": "64d6d0dd6e0763e83d687b273623d4800ad4f5a0ddaee1d9c65f5cbf0fc5f475"
     },
     {
-      "sha256": "4f499e42308419308ff62428e60cd4812f12097c35889b9448e0a01dd9094b0b",
-      "path": "src\\lib-win32\\process-global\\queue.c"
+      "path": "src\\lib-win32\\process-global\\queue.c",
+      "sha256": "4f499e42308419308ff62428e60cd4812f12097c35889b9448e0a01dd9094b0b"
     },
     {
-      "sha256": "28cff1990cf7f39fa33a507138262dfd86ac07162c8cd33a5b8a4c734ae50996",
-      "path": "src\\lib-win32\\process-global\\queue.h"
+      "path": "src\\lib-win32\\process-global\\queue.h",
+      "sha256": "28cff1990cf7f39fa33a507138262dfd86ac07162c8cd33a5b8a4c734ae50996"
     },
     {
-      "sha256": "4608b06b133ec4964bd1dffbd046ed660ee79035549e4b29e3f8f97185d52dc5",
-      "path": "src\\lib-win32\\process-global\\recovery.c"
+      "path": "src\\lib-win32\\process-global\\recovery.c",
+      "sha256": "4608b06b133ec4964bd1dffbd046ed660ee79035549e4b29e3f8f97185d52dc5"
     },
     {
-      "sha256": "5df203f555b53cb0d04f7d383321241024ee7f72ac3bdefdfd0fd2399693c214",
-      "path": "src\\lib-win32\\process-global\\recovery.h"
+      "path": "src\\lib-win32\\process-global\\recovery.h",
+      "sha256": "5df203f555b53cb0d04f7d383321241024ee7f72ac3bdefdfd0fd2399693c214"
     },
     {
-      "sha256": "264a7c4fb57c0158c1adc3f0dfcd595414e3cb62552387db6e0c35a7a6b35ec0",
-      "path": "src\\lib-win32\\process-global\\registry.c"
+      "path": "src\\lib-win32\\process-global\\registry.c",
+      "sha256": "264a7c4fb57c0158c1adc3f0dfcd595414e3cb62552387db6e0c35a7a6b35ec0"
     },
     {
-      "sha256": "b0b1551ddb7760243d8d9a5d73c818b49489fd5c77a00aab3d0360a2cc161393",
-      "path": "src\\lib-win32\\process-global\\registry.h"
+      "path": "src\\lib-win32\\process-global\\registry.h",
+      "sha256": "b0b1551ddb7760243d8d9a5d73c818b49489fd5c77a00aab3d0360a2cc161393"
     },
     {
-      "sha256": "97c6e7cae9b67f36ee3f8f3c1630e33685c1f96c1cc35abede1dcf79743f4a7c",
-      "path": "src\\lib-win32\\process-global\\remote_export.c"
+      "path": "src\\lib-win32\\process-global\\remote_export.c",
+      "sha256": "97c6e7cae9b67f36ee3f8f3c1630e33685c1f96c1cc35abede1dcf79743f4a7c"
     },
     {
-      "sha256": "2a04c13f6a7c7ce4e25c04a747dbc6e701d4903ff18b8083def2d687cd037094",
-      "path": "src\\lib-win32\\process-global\\remote_export.h"
+      "path": "src\\lib-win32\\process-global\\remote_export.h",
+      "sha256": "2a04c13f6a7c7ce4e25c04a747dbc6e701d4903ff18b8083def2d687cd037094"
     },
     {
-      "sha256": "735ec9fe961cc4b39e20e19df4d4ddc41b8c5328e3d2b882bc4bc0402e774e80",
-      "path": "src\\lib-win32\\process-global\\remote_loader.c"
+      "path": "src\\lib-win32\\process-global\\remote_loader.c",
+      "sha256": "735ec9fe961cc4b39e20e19df4d4ddc41b8c5328e3d2b882bc4bc0402e774e80"
     },
     {
-      "sha256": "7cda73e5d399c0d3febb002593a23c159540f6ca615427b588db200f8ce11bf7",
-      "path": "src\\lib-win32\\process-global\\remote_loader.h"
+      "path": "src\\lib-win32\\process-global\\remote_loader.h",
+      "sha256": "7cda73e5d399c0d3febb002593a23c159540f6ca615427b588db200f8ce11bf7"
     },
     {
-      "sha256": "d324c6d3b672dc9a347f211be6a5ff6af483e9ccc4b625f9d51ee1e0cac390f4",
-      "path": "src\\lib-win32\\process-global\\targets.c"
+      "path": "src\\lib-win32\\process-global\\targets.c",
+      "sha256": "d324c6d3b672dc9a347f211be6a5ff6af483e9ccc4b625f9d51ee1e0cac390f4"
     },
     {
-      "sha256": "d96c3a76c259ed54a5d12b2cbfb68bb3be94510fe5dcc55337d048e1ba1ad68b",
-      "path": "src\\lib-win32\\process-global\\targets.h"
+      "path": "src\\lib-win32\\process-global\\targets.h",
+      "sha256": "d96c3a76c259ed54a5d12b2cbfb68bb3be94510fe5dcc55337d048e1ba1ad68b"
     },
     {
-      "sha256": "c0f6a75355b52e0e31c003a2a9e7e4e2413df8ce19417b077f97919ba43ffce4",
-      "path": "src\\lib-win32\\process-global\\transaction.c"
+      "path": "src\\lib-win32\\process-global\\transaction.c",
+      "sha256": "c0f6a75355b52e0e31c003a2a9e7e4e2413df8ce19417b077f97919ba43ffce4"
     },
     {
-      "sha256": "e28c87eb5d6ddb493b267cb5962988ccc1028458b6ec830eb630e68a24f97e50",
-      "path": "src\\lib-win32\\process-global\\transaction.h"
+      "path": "src\\lib-win32\\process-global\\transaction.h",
+      "sha256": "e28c87eb5d6ddb493b267cb5962988ccc1028458b6ec830eb630e68a24f97e50"
     },
     {
-      "sha256": "1c055d679837ab98b9c33b8ce587f16f567c3d8f11aec8a16dd0200c68c55888",
-      "path": "src\\lib-win32\\process-global\\window.c"
+      "path": "src\\lib-win32\\process-global\\window.c",
+      "sha256": "1c055d679837ab98b9c33b8ce587f16f567c3d8f11aec8a16dd0200c68c55888"
     },
     {
-      "sha256": "cb425e17f9dd98922ac99140e851f2050ce40e702d755c600d225e9903baa2f4",
-      "path": "src\\lib-win32\\process-global\\window.h"
+      "path": "src\\lib-win32\\process-global\\window.h",
+      "sha256": "cb425e17f9dd98922ac99140e851f2050ce40e702d755c600d225e9903baa2f4"
     },
     {
-      "sha256": "ca3ed14fdda5d84219971959886be895d3aa57297c3f9433474c32394f2da69e",
-      "path": "src\\lib-win32\\process-global\\worker.c"
+      "path": "src\\lib-win32\\process-global\\worker.c",
+      "sha256": "ca3ed14fdda5d84219971959886be895d3aa57297c3f9433474c32394f2da69e"
     },
     {
-      "sha256": "351d3862b00167a9f77377496b3d48b804955e166a0e69f032a823569ffb307b",
-      "path": "src\\lib-win32\\process-global\\worker.h"
+      "path": "src\\lib-win32\\process-global\\worker.h",
+      "sha256": "351d3862b00167a9f77377496b3d48b804955e166a0e69f032a823569ffb307b"
     },
     {
-      "sha256": "7ced9af82c88a4bd9e48b3fdd9d7b25735c2bd8dc12ec6a7bea609fd253ed02a",
-      "path": "src\\lib-win32\\process-hook\\helper.c"
+      "path": "src\\lib-win32\\process-hook\\helper.c",
+      "sha256": "7ced9af82c88a4bd9e48b3fdd9d7b25735c2bd8dc12ec6a7bea609fd253ed02a"
     },
     {
-      "sha256": "746ad04512cb83ed4494d4090824ab13fbf68db505beee6c2552159e92a1b64f",
-      "path": "src\\lib-win32\\process-hook\\helper.h"
+      "path": "src\\lib-win32\\process-hook\\helper.h",
+      "sha256": "746ad04512cb83ed4494d4090824ab13fbf68db505beee6c2552159e92a1b64f"
     },
     {
-      "sha256": "d7729f780638131d74399458cba18f9ece7956ae70d1086f0dc80c8d5a7541be",
-      "path": "src\\lib-win32\\process-hook\\late_batch.c"
+      "path": "src\\lib-win32\\process-hook\\late_batch.c",
+      "sha256": "d7729f780638131d74399458cba18f9ece7956ae70d1086f0dc80c8d5a7541be"
     },
     {
-      "sha256": "ca31262acbbd5574500bbb6a13df6009e9258388e3266d9cbe81672448c01c74",
-      "path": "src\\lib-win32\\process-hook\\late_batch.h"
+      "path": "src\\lib-win32\\process-hook\\late_batch.h",
+      "sha256": "ca31262acbbd5574500bbb6a13df6009e9258388e3266d9cbe81672448c01c74"
     },
     {
-      "sha256": "67b623f41ebd50247d723903134f5b99ffc60053b93fba276758e74d162d2c4c",
-      "path": "src\\lib-win32\\process-hook\\late_guard.c"
+      "path": "src\\lib-win32\\process-hook\\late_guard.c",
+      "sha256": "67b623f41ebd50247d723903134f5b99ffc60053b93fba276758e74d162d2c4c"
     },
     {
-      "sha256": "8f6805a2cf238da66fcd4c7039bd96bfd392049d6bfa2e83f81e0faeeb2b773f",
-      "path": "src\\lib-win32\\process-hook\\late_guard.h"
+      "path": "src\\lib-win32\\process-hook\\late_guard.h",
+      "sha256": "8f6805a2cf238da66fcd4c7039bd96bfd392049d6bfa2e83f81e0faeeb2b773f"
     },
     {
-      "sha256": "15b689bf11a42844876ff8d4bd7ffbf8cd1afad1502c4762518300a5514fc89e",
-      "path": "src\\lib-win32\\process-hook\\late_patch.c"
+      "path": "src\\lib-win32\\process-hook\\late_patch.c",
+      "sha256": "15b689bf11a42844876ff8d4bd7ffbf8cd1afad1502c4762518300a5514fc89e"
     },
     {
-      "sha256": "30a44d505c3ce8b6b64ee9fb36654014c19607d4247e0c62c4315ab05112aa27",
-      "path": "src\\lib-win32\\process-hook\\late_patch.h"
+      "path": "src\\lib-win32\\process-hook\\late_patch.h",
+      "sha256": "30a44d505c3ce8b6b64ee9fb36654014c19607d4247e0c62c4315ab05112aa27"
     },
     {
-      "sha256": "71337277c6c03463ca6d7b56aba20fed81d3e6f1c8a823f7d5ab30760de8a389",
-      "path": "src\\lib-win32\\process-hook\\LICENSE.win16style"
+      "path": "src\\lib-win32\\process-hook\\LICENSE.win16style",
+      "sha256": "71337277c6c03463ca6d7b56aba20fed81d3e6f1c8a823f7d5ab30760de8a389"
     },
     {
-      "sha256": "37360c011349e3e6aed1b276fdfc45f30e579d3e8bbd75460eb2260b541cade4",
-      "path": "src\\lib-win32\\process-hook\\payload.c"
+      "path": "src\\lib-win32\\process-hook\\payload.c",
+      "sha256": "37360c011349e3e6aed1b276fdfc45f30e579d3e8bbd75460eb2260b541cade4"
     },
     {
-      "sha256": "5dc1e08b15c8b4608307f3588b5ee9466179229026d4edab357b208b85b94a6c",
-      "path": "src\\lib-win32\\process-hook\\payload.h"
+      "path": "src\\lib-win32\\process-hook\\payload.h",
+      "sha256": "5dc1e08b15c8b4608307f3588b5ee9466179229026d4edab357b208b85b94a6c"
     },
     {
-      "sha256": "8d9b5b62d6a8a1e34bd21a7fcd0d0c4fc45d9c357634f450278496e29ce23559",
-      "path": "src\\lib-win32\\process-hook\\propagate.c"
+      "path": "src\\lib-win32\\process-hook\\propagate.c",
+      "sha256": "8d9b5b62d6a8a1e34bd21a7fcd0d0c4fc45d9c357634f450278496e29ce23559"
     },
     {
-      "sha256": "4a71140917e36f6d1a4cb152f95970a9b293bb98d836fce7f1da59a2491cbbaa",
-      "path": "src\\lib-win32\\process-hook\\propagate.h"
+      "path": "src\\lib-win32\\process-hook\\propagate.h",
+      "sha256": "4a71140917e36f6d1a4cb152f95970a9b293bb98d836fce7f1da59a2491cbbaa"
     },
     {
-      "sha256": "5bb5c83fad1abedc5e9d96573e16d47306654b856eba1b54cbcc3717ae198dcd",
-      "path": "src\\lib-win32\\process-hook\\staging.c"
+      "path": "src\\lib-win32\\process-hook\\staging.c",
+      "sha256": "5bb5c83fad1abedc5e9d96573e16d47306654b856eba1b54cbcc3717ae198dcd"
     },
     {
-      "sha256": "910166162612075fc4916b0d4cdcd05dcdc29f191e5b6ffd963681f3c35b8514",
-      "path": "src\\lib-win32\\process-hook\\staging.h"
+      "path": "src\\lib-win32\\process-hook\\staging.h",
+      "sha256": "910166162612075fc4916b0d4cdcd05dcdc29f191e5b6ffd963681f3c35b8514"
     },
     {
-      "sha256": "bc1b0cafdf1d2c932ea729bd2588b6570d2e3291d65aba7245794a75c93ef999",
-      "path": "src\\lib-win32\\process-hook\\startup_hooks.c"
+      "path": "src\\lib-win32\\process-hook\\startup_hooks.c",
+      "sha256": "bc1b0cafdf1d2c932ea729bd2588b6570d2e3291d65aba7245794a75c93ef999"
     },
     {
-      "sha256": "7c7c7b8007199447567895982b9e65805be36165d2e7a4783a573559d4d0a89d",
-      "path": "src\\lib-win32\\process-hook\\startup_hooks.h"
+      "path": "src\\lib-win32\\process-hook\\startup_hooks.h",
+      "sha256": "7c7c7b8007199447567895982b9e65805be36165d2e7a4783a573559d4d0a89d"
     },
     {
-      "sha256": "4faed5146e2dbba2632d6acebe48014ee68e14be5653600e88809194eb9b5361",
-      "path": "src\\lib-win32\\process-hook\\unwind.c"
+      "path": "src\\lib-win32\\process-hook\\unwind.c",
+      "sha256": "4faed5146e2dbba2632d6acebe48014ee68e14be5653600e88809194eb9b5361"
     },
     {
-      "sha256": "03bfd2b444393e1b1e236825013c45e7cad5c36f31b5c74a41ba220f5af94a8a",
-      "path": "src\\lib-win32\\process-hook\\unwind.h"
+      "path": "src\\lib-win32\\process-hook\\unwind.h",
+      "sha256": "03bfd2b444393e1b1e236825013c45e7cad5c36f31b5c74a41ba220f5af94a8a"
     },
     {
-      "sha256": "073b4e8b0a5a0cd9f4dfa838369f4fc7a4f47151d930b4e1fd891644060a897f",
-      "path": "src\\lib-win32\\process-hook\\minhook\\AUTHORS.txt"
+      "path": "src\\lib-win32\\process-hook\\minhook\\AUTHORS.txt",
+      "sha256": "073b4e8b0a5a0cd9f4dfa838369f4fc7a4f47151d930b4e1fd891644060a897f"
     },
     {
-      "sha256": "d5c2224982b0b95a16b098a561335fa93f3eaf4d0aa964b7843edb986df78dc8",
-      "path": "src\\lib-win32\\process-hook\\minhook\\LICENSE.txt"
+      "path": "src\\lib-win32\\process-hook\\minhook\\LICENSE.txt",
+      "sha256": "d5c2224982b0b95a16b098a561335fa93f3eaf4d0aa964b7843edb986df78dc8"
     },
     {
-      "sha256": "53228de3f2a14a390f6d97538d702c20a4388eea42e53b5b999532bab018287b",
-      "path": "src\\lib-win32\\process-hook\\minhook\\src\\buffer.c"
+      "path": "src\\lib-win32\\process-hook\\minhook\\src\\buffer.c",
+      "sha256": "53228de3f2a14a390f6d97538d702c20a4388eea42e53b5b999532bab018287b"
     },
     {
-      "sha256": "9769702bd625249e59a19ede05c84365fcc7707e1fa0e5df08df42227cee13e3",
-      "path": "src\\lib-win32\\process-hook\\minhook\\src\\buffer.h"
+      "path": "src\\lib-win32\\process-hook\\minhook\\src\\buffer.h",
+      "sha256": "9769702bd625249e59a19ede05c84365fcc7707e1fa0e5df08df42227cee13e3"
     },
     {
-      "sha256": "f13a169f803ff5a8e45c58ce668b4377a9878c0fc4452369b8a1325065186b2b",
-      "path": "src\\lib-win32\\process-hook\\minhook\\src\\trampoline.c"
+      "path": "src\\lib-win32\\process-hook\\minhook\\src\\trampoline.c",
+      "sha256": "f13a169f803ff5a8e45c58ce668b4377a9878c0fc4452369b8a1325065186b2b"
     },
     {
-      "sha256": "53ed9934492320617a27bfd952ffe7f5b7a4a1d09963d4512447082fe7b727b4",
-      "path": "src\\lib-win32\\process-hook\\minhook\\src\\trampoline.h"
+      "path": "src\\lib-win32\\process-hook\\minhook\\src\\trampoline.h",
+      "sha256": "53ed9934492320617a27bfd952ffe7f5b7a4a1d09963d4512447082fe7b727b4"
     },
     {
-      "sha256": "5da4941e9044f7b325c7f952b5840089e365f374740b7fe7318805d08c0d6c32",
-      "path": "src\\lib-win32\\process-hook\\minhook\\src\\hde\\hde32.c"
+      "path": "src\\lib-win32\\process-hook\\minhook\\src\\hde\\hde32.c",
+      "sha256": "5da4941e9044f7b325c7f952b5840089e365f374740b7fe7318805d08c0d6c32"
     },
     {
-      "sha256": "5132de5be8ac7a9d054420f5caef0fb01437faa892f03b3cdc77f795973bf15a",
-      "path": "src\\lib-win32\\process-hook\\minhook\\src\\hde\\hde32.h"
+      "path": "src\\lib-win32\\process-hook\\minhook\\src\\hde\\hde32.h",
+      "sha256": "5132de5be8ac7a9d054420f5caef0fb01437faa892f03b3cdc77f795973bf15a"
     },
     {
-      "sha256": "824eafa315322e6da105a7ce4ec1fc0e0adeee0106d32152fbb0b59e709bd15c",
-      "path": "src\\lib-win32\\process-hook\\minhook\\src\\hde\\hde64.c"
+      "path": "src\\lib-win32\\process-hook\\minhook\\src\\hde\\hde64.c",
+      "sha256": "824eafa315322e6da105a7ce4ec1fc0e0adeee0106d32152fbb0b59e709bd15c"
     },
     {
-      "sha256": "e99aa4997bda14b534c614c3d8cb78a72c4aca91a1212c8b03ec605d1d75e36e",
-      "path": "src\\lib-win32\\process-hook\\minhook\\src\\hde\\hde64.h"
+      "path": "src\\lib-win32\\process-hook\\minhook\\src\\hde\\hde64.h",
+      "sha256": "e99aa4997bda14b534c614c3d8cb78a72c4aca91a1212c8b03ec605d1d75e36e"
     },
     {
-      "sha256": "604d1cdf45c5a95bc9cf1bbf39ca05ef83013541101d34971c5cd7577e3d5247",
-      "path": "src\\lib-win32\\process-hook\\minhook\\src\\hde\\pstdint.h"
+      "path": "src\\lib-win32\\process-hook\\minhook\\src\\hde\\pstdint.h",
+      "sha256": "604d1cdf45c5a95bc9cf1bbf39ca05ef83013541101d34971c5cd7577e3d5247"
     },
     {
-      "sha256": "43bf687a9fff071b5f46070db4d36c846f8e069cdc57485ee897c499aacdde23",
-      "path": "src\\lib-win32\\process-hook\\minhook\\src\\hde\\table32.h"
+      "path": "src\\lib-win32\\process-hook\\minhook\\src\\hde\\table32.h",
+      "sha256": "43bf687a9fff071b5f46070db4d36c846f8e069cdc57485ee897c499aacdde23"
     },
     {
-      "sha256": "b774446d2f110ce954fb0a710f4693c5562ddbd8d56fe84106f2ee80db8b50a2",
-      "path": "src\\lib-win32\\process-hook\\minhook\\src\\hde\\table64.h"
+      "path": "src\\lib-win32\\process-hook\\minhook\\src\\hde\\table64.h",
+      "sha256": "b774446d2f110ce954fb0a710f4693c5562ddbd8d56fe84106f2ee80db8b50a2"
     },
     {
-      "sha256": "fcd6e29414264e1d06fcada7bed9408a1990912516fc9e2b183accaca5df426a",
-      "path": "src\\lib-win32\\process-image\\file_handle.c"
+      "path": "src\\lib-win32\\process-image\\file_handle.c",
+      "sha256": "fcd6e29414264e1d06fcada7bed9408a1990912516fc9e2b183accaca5df426a"
     },
     {
-      "sha256": "c0fb8a4894050c458b17c945344a4e03b4686a1a9fa2513c47cd49d225116d0d",
-      "path": "src\\lib-win32\\process-image\\file_handle.h"
+      "path": "src\\lib-win32\\process-image\\file_handle.h",
+      "sha256": "c0fb8a4894050c458b17c945344a4e03b4686a1a9fa2513c47cd49d225116d0d"
     },
     {
-      "sha256": "c9bb55054465aaba97259bc778feef444943022796231ca0b46fa10c0011b210",
-      "path": "src\\lib-win32\\process-image\\image.c"
+      "path": "src\\lib-win32\\process-image\\image.c",
+      "sha256": "c9bb55054465aaba97259bc778feef444943022796231ca0b46fa10c0011b210"
     },
     {
-      "sha256": "1f267696c2e4cca4177a3592779f74284f0ba2f6ea3b2b325cbab295c271c0e7",
-      "path": "src\\lib-win32\\process-image\\image.h"
+      "path": "src\\lib-win32\\process-image\\image.h",
+      "sha256": "1f267696c2e4cca4177a3592779f74284f0ba2f6ea3b2b325cbab295c271c0e7"
     },
     {
-      "sha256": "14b13288ae5d2b7be750ce0e59c53cf5505631539096d4c414912c8cd4124eed",
-      "path": "src\\lib-win32\\process-image\\remote.c"
+      "path": "src\\lib-win32\\process-image\\remote.c",
+      "sha256": "14b13288ae5d2b7be750ce0e59c53cf5505631539096d4c414912c8cd4124eed"
     },
     {
-      "sha256": "43668622ccbd9b486b85d88c98679cebb52088e7235b2678a577e336e92ef0e9",
-      "path": "src\\lib-win32\\process-image\\remote.h"
+      "path": "src\\lib-win32\\process-image\\remote.h",
+      "sha256": "43668622ccbd9b486b85d88c98679cebb52088e7235b2678a577e336e92ef0e9"
     },
     {
-      "sha256": "5bb012796b56d581a93b95b012d5a5fc60b86f1ee2a30e97bf911f36ae562cc6",
-      "path": "src\\lib-win32\\process-launch\\attributes.c"
+      "path": "src\\lib-win32\\process-launch\\attributes.c",
+      "sha256": "5bb012796b56d581a93b95b012d5a5fc60b86f1ee2a30e97bf911f36ae562cc6"
     },
     {
-      "sha256": "dc527f1c3fafd49dfe3aac5c9c5f98418f8423bbb742f69e6adb9a2affc1ced8",
-      "path": "src\\lib-win32\\process-launch\\attributes.h"
+      "path": "src\\lib-win32\\process-launch\\attributes.h",
+      "sha256": "dc527f1c3fafd49dfe3aac5c9c5f98418f8423bbb742f69e6adb9a2affc1ced8"
     },
     {
-      "sha256": "2e091f08db0ffaba49f6cb426d4358d13fe74b9765cb549154eadf4e3a35c7cb",
-      "path": "src\\lib-win32\\process-launch\\command_line.c"
+      "path": "src\\lib-win32\\process-launch\\command_line.c",
+      "sha256": "2e091f08db0ffaba49f6cb426d4358d13fe74b9765cb549154eadf4e3a35c7cb"
     },
     {
-      "sha256": "f210c0f3478c6f56c9b51878a9dd3bce9d25937ded30cdd564e0f0ce24a4b7a9",
-      "path": "src\\lib-win32\\process-launch\\command_line.h"
+      "path": "src\\lib-win32\\process-launch\\command_line.h",
+      "sha256": "f210c0f3478c6f56c9b51878a9dd3bce9d25937ded30cdd564e0f0ce24a4b7a9"
     },
     {
-      "sha256": "42c9800e39b7ca622def80b4274fa54875c3d9361c7333b83955a29261e8524d",
-      "path": "src\\lib-win32\\process-launch\\process.c"
+      "path": "src\\lib-win32\\process-launch\\process.c",
+      "sha256": "42c9800e39b7ca622def80b4274fa54875c3d9361c7333b83955a29261e8524d"
     },
     {
-      "sha256": "378677ef568ad2b14992dfa7ca9ce62de12054f79a9b3f3b8fa8e1230ab052da",
-      "path": "src\\lib-win32\\process-launch\\process.h"
+      "path": "src\\lib-win32\\process-launch\\process.h",
+      "sha256": "378677ef568ad2b14992dfa7ca9ce62de12054f79a9b3f3b8fa8e1230ab052da"
     },
     {
-      "sha256": "70dde5ab0f57a9c86564d1cde9da8caf889dde770cf2fdc148240f6dffc959d0",
-      "path": "src\\lib-win32\\security\\elevation.c"
+      "path": "src\\lib-win32\\security\\elevation.c",
+      "sha256": "70dde5ab0f57a9c86564d1cde9da8caf889dde770cf2fdc148240f6dffc959d0"
     },
     {
-      "sha256": "e28087d079e859e8c74fe557e17aafa1555cd6892cea515f927425caf42d6391",
-      "path": "src\\lib-win32\\security\\elevation.h"
+      "path": "src\\lib-win32\\security\\elevation.h",
+      "sha256": "e28087d079e859e8c74fe557e17aafa1555cd6892cea515f927425caf42d6391"
     },
     {
-      "sha256": "53a8e4262b4c78a7d656639dfc5660e3c70a32f4df06d3e7d577855217e642ed",
-      "path": "src\\lib-win32\\tray\\tray.c"
+      "path": "src\\lib-win32\\tray\\tray.c",
+      "sha256": "53a8e4262b4c78a7d656639dfc5660e3c70a32f4df06d3e7d577855217e642ed"
     },
     {
-      "sha256": "1c8803c1938c601b19fb2a0e83bbcf7717eeebd4eb2dd342b5d23652ce1cfb76",
-      "path": "src\\lib-win32\\tray\\tray.h"
+      "path": "src\\lib-win32\\tray\\tray.h",
+      "sha256": "1c8803c1938c601b19fb2a0e83bbcf7717eeebd4eb2dd342b5d23652ce1cfb76"
     },
     {
-      "sha256": "3c26e7bdd7cc1fa995bc9aab43e321c70234a369577ea4e396ea1365429efd84",
-      "path": "src\\lib-win32\\win16-common\\control_api.h"
+      "path": "src\\lib-win32\\win16-common\\control_api.h",
+      "sha256": "3c26e7bdd7cc1fa995bc9aab43e321c70234a369577ea4e396ea1365429efd84"
     },
     {
-      "sha256": "9b6c86c186db3f393992c9ed2debcb387c76afb85a05a51d9d7e7270cf3d126e",
-      "path": "src\\lib-win32\\win16-common\\font.c"
+      "path": "src\\lib-win32\\win16-common\\font.c",
+      "sha256": "9b6c86c186db3f393992c9ed2debcb387c76afb85a05a51d9d7e7270cf3d126e"
     },
     {
-      "sha256": "9f4a3ad4bb0489013f44483dcdc155407ae689241db1faca401a4989efec2a37",
-      "path": "src\\lib-win32\\win16-common\\font.h"
+      "path": "src\\lib-win32\\win16-common\\font.h",
+      "sha256": "9f4a3ad4bb0489013f44483dcdc155407ae689241db1faca401a4989efec2a37"
     },
     {
-      "sha256": "83cd34e01d35e27fc40c54e82460cab945b45d3a986b3d5ee2ec8ac9ab5c4ede",
-      "path": "src\\lib-win32\\win16-common\\layout.c"
+      "path": "src\\lib-win32\\win16-common\\layout.c",
+      "sha256": "83cd34e01d35e27fc40c54e82460cab945b45d3a986b3d5ee2ec8ac9ab5c4ede"
     },
     {
-      "sha256": "a55b5d4bad75fda24a46828966f0b8024c85dd52648ac8166e77ae94c541d2d3",
-      "path": "src\\lib-win32\\win16-common\\layout.h"
+      "path": "src\\lib-win32\\win16-common\\layout.h",
+      "sha256": "a55b5d4bad75fda24a46828966f0b8024c85dd52648ac8166e77ae94c541d2d3"
     },
     {
-      "sha256": "cde752459255f121492daa908df6cd6201a549d0080d2cf73b8975b6042dc62c",
-      "path": "src\\lib-win32\\win16-common\\menu_layout.c"
+      "path": "src\\lib-win32\\win16-common\\menu_layout.c",
+      "sha256": "cde752459255f121492daa908df6cd6201a549d0080d2cf73b8975b6042dc62c"
     },
     {
-      "sha256": "e70959ddd21f2cb3d2904a7bf756f79066e839144d7ecc7174a97f026a065e19",
-      "path": "src\\lib-win32\\win16-common\\menu_layout.h"
+      "path": "src\\lib-win32\\win16-common\\menu_layout.h",
+      "sha256": "e70959ddd21f2cb3d2904a7bf756f79066e839144d7ecc7174a97f026a065e19"
     },
     {
-      "sha256": "c7487eede32ec62a4d803d98bc26f72e890fee6751be31676374e0e0d5b3d9ae",
-      "path": "src\\lib-win32\\win16-common\\palette.c"
+      "path": "src\\lib-win32\\win16-common\\palette.c",
+      "sha256": "c7487eede32ec62a4d803d98bc26f72e890fee6751be31676374e0e0d5b3d9ae"
     },
     {
-      "sha256": "f3a47af9ce56a40f6afa6785fbb67033b46965f7e6fd538f00316d6307e40a36",
-      "path": "src\\lib-win32\\win16-common\\palette.h"
+      "path": "src\\lib-win32\\win16-common\\palette.h",
+      "sha256": "f3a47af9ce56a40f6afa6785fbb67033b46965f7e6fd538f00316d6307e40a36"
     },
     {
-      "sha256": "55dee0a225b9a62a8e6219e383d6ab9ba9f350d9a134e5f16098ebbd931efe25",
-      "path": "src\\lib-win32\\win16-common\\present.c"
+      "path": "src\\lib-win32\\win16-common\\present.c",
+      "sha256": "55dee0a225b9a62a8e6219e383d6ab9ba9f350d9a134e5f16098ebbd931efe25"
     },
     {
-      "sha256": "d97882ab6885e17a54beb0c6af76f5fcf0b4562f27d9d4587784bb4a181eae63",
-      "path": "src\\lib-win32\\win16-common\\present.h"
+      "path": "src\\lib-win32\\win16-common\\present.h",
+      "sha256": "d97882ab6885e17a54beb0c6af76f5fcf0b4562f27d9d4587784bb4a181eae63"
     },
     {
-      "sha256": "96e3bd89ef70a105d4ef044ad2adbe1843e8828c5d736dea4769ca2f7328a043",
-      "path": "src\\lib-win32\\win16-control\\attachment_guard.c"
+      "path": "src\\lib-win32\\win16-control\\attachment_guard.c",
+      "sha256": "96e3bd89ef70a105d4ef044ad2adbe1843e8828c5d736dea4769ca2f7328a043"
     },
     {
-      "sha256": "4d83b6b12dc8f3d35060e8b7683984f0aeb36177fb1e93034c9445e34342ff6a",
-      "path": "src\\lib-win32\\win16-control\\attachment_state.h"
+      "path": "src\\lib-win32\\win16-control\\attachment_state.h",
+      "sha256": "4d83b6b12dc8f3d35060e8b7683984f0aeb36177fb1e93034c9445e34342ff6a"
     },
     {
-      "sha256": "84cd36924e3e9fca2eb276d13cfb90c27ed90e17483e1fad24a12a033fe3c529",
-      "path": "src\\lib-win32\\win16-control\\basic_message.c"
+      "path": "src\\lib-win32\\win16-control\\basic_message.c",
+      "sha256": "84cd36924e3e9fca2eb276d13cfb90c27ed90e17483e1fad24a12a033fe3c529"
     },
     {
-      "sha256": "22e3e7959725de7eb3972df0238d3a8fdbb1f3b61d8c5fda50390e3a956fa24c",
-      "path": "src\\lib-win32\\win16-control\\basic_message.h"
+      "path": "src\\lib-win32\\win16-control\\basic_message.h",
+      "sha256": "22e3e7959725de7eb3972df0238d3a8fdbb1f3b61d8c5fda50390e3a956fa24c"
     },
     {
-      "sha256": "37f3f616efd10817cabb94d14d4770fd704ffb8dd00e4a6a31448040e04d7202",
-      "path": "src\\lib-win32\\win16-control\\basic_paint.c"
+      "path": "src\\lib-win32\\win16-control\\basic_paint.c",
+      "sha256": "37f3f616efd10817cabb94d14d4770fd704ffb8dd00e4a6a31448040e04d7202"
     },
     {
-      "sha256": "db5fd5cd49c5e5528d4d34240ea659d4235013f62f669ba030cd4f16ba48d604",
-      "path": "src\\lib-win32\\win16-control\\basic_paint.h"
+      "path": "src\\lib-win32\\win16-control\\basic_paint.h",
+      "sha256": "db5fd5cd49c5e5528d4d34240ea659d4235013f62f669ba030cd4f16ba48d604"
     },
     {
-      "sha256": "6150963c665cd0a607d800dc293ef0ec14779bd12e1e0fe2865f96629e734cd9",
-      "path": "src\\lib-win32\\win16-control\\choice_paint.c"
+      "path": "src\\lib-win32\\win16-control\\choice_paint.c",
+      "sha256": "6150963c665cd0a607d800dc293ef0ec14779bd12e1e0fe2865f96629e734cd9"
     },
     {
-      "sha256": "6efc933f3e2293f106275bcaa13ce66067da445af567a91ef3c35c069677902c",
-      "path": "src\\lib-win32\\win16-control\\choice_paint.h"
+      "path": "src\\lib-win32\\win16-control\\choice_paint.h",
+      "sha256": "6efc933f3e2293f106275bcaa13ce66067da445af567a91ef3c35c069677902c"
     },
     {
-      "sha256": "f503d83a451163dc8792e6686b1d413cb9551e30e6059ccceea15b01454cbf08",
-      "path": "src\\lib-win32\\win16-control\\choice_view.c"
+      "path": "src\\lib-win32\\win16-control\\choice_view.c",
+      "sha256": "f503d83a451163dc8792e6686b1d413cb9551e30e6059ccceea15b01454cbf08"
     },
     {
-      "sha256": "02a9c00c937c411be9e66158a56bbbfdc7dac5f82e07e4591cb24761947bc92d",
-      "path": "src\\lib-win32\\win16-control\\choice_view.h"
+      "path": "src\\lib-win32\\win16-control\\choice_view.h",
+      "sha256": "02a9c00c937c411be9e66158a56bbbfdc7dac5f82e07e4591cb24761947bc92d"
     },
     {
-      "sha256": "75b05a50bf02bbc8fcbd6c6f84948fcdbf82fa7f0fbbfc590a6e4eb94c3ffe34",
-      "path": "src\\lib-win32\\win16-control\\combo_glyph.h"
+      "path": "src\\lib-win32\\win16-control\\combo_glyph.h",
+      "sha256": "75b05a50bf02bbc8fcbd6c6f84948fcdbf82fa7f0fbbfc590a6e4eb94c3ffe34"
     },
     {
-      "sha256": "d72971c499a918bde18a7dfa18ea96ffe0f877f2760b44aa5c1184428982d1f9",
-      "path": "src\\lib-win32\\win16-control\\combo_paint.c"
+      "path": "src\\lib-win32\\win16-control\\combo_paint.c",
+      "sha256": "d72971c499a918bde18a7dfa18ea96ffe0f877f2760b44aa5c1184428982d1f9"
     },
     {
-      "sha256": "9aff44009ff2d51bb54aa237d8ebf0a4a4b2f295976383147c8aae0c67cbabca",
-      "path": "src\\lib-win32\\win16-control\\combo_paint.h"
+      "path": "src\\lib-win32\\win16-control\\combo_paint.h",
+      "sha256": "9aff44009ff2d51bb54aa237d8ebf0a4a4b2f295976383147c8aae0c67cbabca"
     },
     {
-      "sha256": "661697675d0818b8f9ac8cf11de08772ca9bd874fc84989dcdcd106ba2fcd4bf",
-      "path": "src\\lib-win32\\win16-control\\combo_text.c"
+      "path": "src\\lib-win32\\win16-control\\combo_text.c",
+      "sha256": "661697675d0818b8f9ac8cf11de08772ca9bd874fc84989dcdcd106ba2fcd4bf"
     },
     {
-      "sha256": "dc8aaafadbdf403f34c37b33829067c7353a72b96c6db233fff8a0b302c118a0",
-      "path": "src\\lib-win32\\win16-control\\combo_text.h"
+      "path": "src\\lib-win32\\win16-control\\combo_text.h",
+      "sha256": "dc8aaafadbdf403f34c37b33829067c7353a72b96c6db233fff8a0b302c118a0"
     },
     {
-      "sha256": "d09c05d6ebf0acac797e203544dc53541e742c8d5deb9b5489fa794fdd837177",
-      "path": "src\\lib-win32\\win16-control\\control_class.h"
+      "path": "src\\lib-win32\\win16-control\\control_class.h",
+      "sha256": "d09c05d6ebf0acac797e203544dc53541e742c8d5deb9b5489fa794fdd837177"
     },
     {
-      "sha256": "a1e8bb7da8816f64cc0cb7f2cb3eb207eedde2148d546fa91b3a0aa8fd4b60fc",
-      "path": "src\\lib-win32\\win16-control\\control_dispatch.c"
+      "path": "src\\lib-win32\\win16-control\\control_dispatch.c",
+      "sha256": "a1e8bb7da8816f64cc0cb7f2cb3eb207eedde2148d546fa91b3a0aa8fd4b60fc"
     },
     {
-      "sha256": "299ead239b40d141908fbce6b776767a45bef6d6f6bad6f2e619fc0b53e830d8",
-      "path": "src\\lib-win32\\win16-control\\control_dispatch.h"
+      "path": "src\\lib-win32\\win16-control\\control_dispatch.h",
+      "sha256": "299ead239b40d141908fbce6b776767a45bef6d6f6bad6f2e619fc0b53e830d8"
     },
     {
-      "sha256": "75031b93af2382f8ce1f47d971f32efdfe00cb7000e0db09ef878a1b50adff83",
-      "path": "src\\lib-win32\\win16-control\\control_glyphs.h"
+      "path": "src\\lib-win32\\win16-control\\control_glyphs.h",
+      "sha256": "75031b93af2382f8ce1f47d971f32efdfe00cb7000e0db09ef878a1b50adff83"
     },
     {
-      "sha256": "9ba62b083f0e52c63e505bbd02d48e17b6d1662eb5abe510cad519c53e943956",
-      "path": "src\\lib-win32\\win16-control\\control_guard.c"
+      "path": "src\\lib-win32\\win16-control\\control_guard.c",
+      "sha256": "9ba62b083f0e52c63e505bbd02d48e17b6d1662eb5abe510cad519c53e943956"
     },
     {
-      "sha256": "0a122894b6de946481f48cf3b5820d5f36c372221e457b63245104fa0758bec7",
-      "path": "src\\lib-win32\\win16-control\\control_guard.h"
+      "path": "src\\lib-win32\\win16-control\\control_guard.h",
+      "sha256": "0a122894b6de946481f48cf3b5820d5f36c372221e457b63245104fa0758bec7"
     },
     {
-      "sha256": "077f016ade8e403de5fc30568f2244acd9f33b782034194bbc30a3d35e4cfaa4",
-      "path": "src\\lib-win32\\win16-control\\control_install.c"
+      "path": "src\\lib-win32\\win16-control\\control_install.c",
+      "sha256": "077f016ade8e403de5fc30568f2244acd9f33b782034194bbc30a3d35e4cfaa4"
     },
     {
-      "sha256": "dbe7b18324cb3ff529189f43264fb20504d7cb29adfa0f7b22736a65195f2839",
-      "path": "src\\lib-win32\\win16-control\\control_install.h"
+      "path": "src\\lib-win32\\win16-control\\control_install.h",
+      "sha256": "dbe7b18324cb3ff529189f43264fb20504d7cb29adfa0f7b22736a65195f2839"
     },
     {
-      "sha256": "2c14befd8209a6caeb1235662f9b406368fc50349cbf047aa7db5b86dda41c15",
-      "path": "src\\lib-win32\\win16-control\\control_lifetime.c"
+      "path": "src\\lib-win32\\win16-control\\control_lifetime.c",
+      "sha256": "2c14befd8209a6caeb1235662f9b406368fc50349cbf047aa7db5b86dda41c15"
     },
     {
-      "sha256": "4147b1628c0cc000d12a00731121539abd04f4bd2faad7eb9a45ab489d5ea173",
-      "path": "src\\lib-win32\\win16-control\\control_lifetime.h"
+      "path": "src\\lib-win32\\win16-control\\control_lifetime.h",
+      "sha256": "4147b1628c0cc000d12a00731121539abd04f4bd2faad7eb9a45ab489d5ea173"
     },
     {
-      "sha256": "6bd244b8fcb6699b4cd79a1b35a47e6a9e2c03935a60a8e1b3290dac4677fd96",
-      "path": "src\\lib-win32\\win16-control\\control_protocol.c"
+      "path": "src\\lib-win32\\win16-control\\control_protocol.c",
+      "sha256": "6bd244b8fcb6699b4cd79a1b35a47e6a9e2c03935a60a8e1b3290dac4677fd96"
     },
     {
-      "sha256": "47cec56b46c382ad9fbc2fd4b0af499b8dbd97556449434ace2082484b44abb4",
-      "path": "src\\lib-win32\\win16-control\\control_protocol.h"
+      "path": "src\\lib-win32\\win16-control\\control_protocol.h",
+      "sha256": "47cec56b46c382ad9fbc2fd4b0af499b8dbd97556449434ace2082484b44abb4"
     },
     {
-      "sha256": "039b843d7f12980cd329544a3e8990304e9bf1d5005977e32d73315c09df5e95",
-      "path": "src\\lib-win32\\win16-control\\control_remove.c"
+      "path": "src\\lib-win32\\win16-control\\control_remove.c",
+      "sha256": "039b843d7f12980cd329544a3e8990304e9bf1d5005977e32d73315c09df5e95"
     },
     {
-      "sha256": "dbcd064a957c340b5c296e0c3a7debd67bfc8f46e5e7036f09dd54cda31e9c3f",
-      "path": "src\\lib-win32\\win16-control\\control_remove.h"
+      "path": "src\\lib-win32\\win16-control\\control_remove.h",
+      "sha256": "dbcd064a957c340b5c296e0c3a7debd67bfc8f46e5e7036f09dd54cda31e9c3f"
     },
     {
-      "sha256": "09d9c95a7252dc23f52fa3e306287591772b5fcf8467df1d93090315ea35f460",
-      "path": "src\\lib-win32\\win16-control\\control_scope.c"
+      "path": "src\\lib-win32\\win16-control\\control_scope.c",
+      "sha256": "09d9c95a7252dc23f52fa3e306287591772b5fcf8467df1d93090315ea35f460"
     },
     {
-      "sha256": "b7f228dff1c39baab74f493215e3fad249ce2ccf0fbc95e284a05157d075d174",
-      "path": "src\\lib-win32\\win16-control\\control_scope.h"
+      "path": "src\\lib-win32\\win16-control\\control_scope.h",
+      "sha256": "b7f228dff1c39baab74f493215e3fad249ce2ccf0fbc95e284a05157d075d174"
     },
     {
-      "sha256": "06030f40392e51f9e0f514e588b2c0fab846e665565fee2d12c74d7fc521beb4",
-      "path": "src\\lib-win32\\win16-control\\control_state.c"
+      "path": "src\\lib-win32\\win16-control\\control_state.c",
+      "sha256": "06030f40392e51f9e0f514e588b2c0fab846e665565fee2d12c74d7fc521beb4"
     },
     {
-      "sha256": "51de626df490e68dec2d61a226b59a1849a3e3f8c472c7804defde76b8c063d9",
-      "path": "src\\lib-win32\\win16-control\\control_state.h"
+      "path": "src\\lib-win32\\win16-control\\control_state.h",
+      "sha256": "51de626df490e68dec2d61a226b59a1849a3e3f8c472c7804defde76b8c063d9"
     },
     {
-      "sha256": "aa997498d8dd3e9c8e7afa8c2bfa25723266b0cdf0a5f160a6cfc8e69c81a147",
-      "path": "src\\lib-win32\\win16-control\\cool_grip_identity.c"
+      "path": "src\\lib-win32\\win16-control\\cool_grip_identity.c",
+      "sha256": "aa997498d8dd3e9c8e7afa8c2bfa25723266b0cdf0a5f160a6cfc8e69c81a147"
     },
     {
-      "sha256": "53b6d50fbb5c047e21dd688bda1e78e012fe885c9d71598a340283c94d36c294",
-      "path": "src\\lib-win32\\win16-control\\cool_grip_identity.h"
+      "path": "src\\lib-win32\\win16-control\\cool_grip_identity.h",
+      "sha256": "53b6d50fbb5c047e21dd688bda1e78e012fe885c9d71598a340283c94d36c294"
     },
     {
-      "sha256": "7b34269068ece36dc6231336a057dbe720c2aa3090bbd2aed4728e8bcb417de5",
-      "path": "src\\lib-win32\\win16-control\\custom_draw.c"
+      "path": "src\\lib-win32\\win16-control\\custom_draw.c",
+      "sha256": "7b34269068ece36dc6231336a057dbe720c2aa3090bbd2aed4728e8bcb417de5"
     },
     {
-      "sha256": "cbb3d5d70b1e8da4331f75b30bac502bb8d313ad5a0f27a1091370b1e27873d7",
-      "path": "src\\lib-win32\\win16-control\\custom_draw.h"
+      "path": "src\\lib-win32\\win16-control\\custom_draw.h",
+      "sha256": "cbb3d5d70b1e8da4331f75b30bac502bb8d313ad5a0f27a1091370b1e27873d7"
     },
     {
-      "sha256": "0f284d9fd2d537c1162ccba633d9ff7d2d1150f657d4f442d767695ea1af6357",
-      "path": "src\\lib-win32\\win16-control\\edit_message.c"
+      "path": "src\\lib-win32\\win16-control\\edit_message.c",
+      "sha256": "0f284d9fd2d537c1162ccba633d9ff7d2d1150f657d4f442d767695ea1af6357"
     },
     {
-      "sha256": "d7c5da65909dc16c9ed2ac58f59dbf34de20af6c10030737d5fae6b316e5ee21",
-      "path": "src\\lib-win32\\win16-control\\edit_message.h"
+      "path": "src\\lib-win32\\win16-control\\edit_message.h",
+      "sha256": "d7c5da65909dc16c9ed2ac58f59dbf34de20af6c10030737d5fae6b316e5ee21"
     },
     {
-      "sha256": "d0ae9366238dd0bdcd539370fd2c1d2a5ad3fd2a7f6a5a2a05800e10f127b5d1",
-      "path": "src\\lib-win32\\win16-control\\fileowner_message.c"
+      "path": "src\\lib-win32\\win16-control\\fileowner_message.c",
+      "sha256": "d0ae9366238dd0bdcd539370fd2c1d2a5ad3fd2a7f6a5a2a05800e10f127b5d1"
     },
     {
-      "sha256": "8f08379fd2ff61873b4cfff7006cfadc9c48b039d27fd4232e2ce8445cf99f88",
-      "path": "src\\lib-win32\\win16-control\\fileowner_message.h"
+      "path": "src\\lib-win32\\win16-control\\fileowner_message.h",
+      "sha256": "8f08379fd2ff61873b4cfff7006cfadc9c48b039d27fd4232e2ce8445cf99f88"
     },
     {
-      "sha256": "9bcf190b4606c88c8ba5a9ece6a636682ea8a3a4251b6f820418355c96c0aad2",
-      "path": "src\\lib-win32\\win16-control\\header_paint.c"
+      "path": "src\\lib-win32\\win16-control\\header_paint.c",
+      "sha256": "9bcf190b4606c88c8ba5a9ece6a636682ea8a3a4251b6f820418355c96c0aad2"
     },
     {
-      "sha256": "0242e8b959c1aa6900e5282708515c55f07bfe0d7bab833935feb06abbf829f3",
-      "path": "src\\lib-win32\\win16-control\\header_paint.h"
+      "path": "src\\lib-win32\\win16-control\\header_paint.h",
+      "sha256": "0242e8b959c1aa6900e5282708515c55f07bfe0d7bab833935feb06abbf829f3"
     },
     {
-      "sha256": "6818eccfb44c503b6c90b3790bb724cca9c800f98d464c4849295be021563c7f",
-      "path": "src\\lib-win32\\win16-control\\list_message.c"
+      "path": "src\\lib-win32\\win16-control\\list_message.c",
+      "sha256": "6818eccfb44c503b6c90b3790bb724cca9c800f98d464c4849295be021563c7f"
     },
     {
-      "sha256": "96b05ce3b3a94624aa9327119cb120b25ea7cf631ad736262a4a3754c183a7cb",
-      "path": "src\\lib-win32\\win16-control\\list_message.h"
+      "path": "src\\lib-win32\\win16-control\\list_message.h",
+      "sha256": "96b05ce3b3a94624aa9327119cb120b25ea7cf631ad736262a4a3754c183a7cb"
     },
     {
-      "sha256": "b6ddf334c77d5bd6161e1e1f921d690b93e73073b4f760efab6501bc3ab5d7ca",
-      "path": "src\\lib-win32\\win16-control\\list_paint.c"
+      "path": "src\\lib-win32\\win16-control\\list_paint.c",
+      "sha256": "b6ddf334c77d5bd6161e1e1f921d690b93e73073b4f760efab6501bc3ab5d7ca"
     },
     {
-      "sha256": "108ddfa842255a92e1d92e5e66208970b444fa124b307fc9753ee8107301758c",
-      "path": "src\\lib-win32\\win16-control\\list_paint.h"
+      "path": "src\\lib-win32\\win16-control\\list_paint.h",
+      "sha256": "108ddfa842255a92e1d92e5e66208970b444fa124b307fc9753ee8107301758c"
     },
     {
-      "sha256": "9e0735b5b64f94438c9198c781af21770b7edaccf6ff2aa58546fe9ca62b4ccc",
-      "path": "src\\lib-win32\\win16-control\\month_paint.c"
+      "path": "src\\lib-win32\\win16-control\\month_paint.c",
+      "sha256": "9e0735b5b64f94438c9198c781af21770b7edaccf6ff2aa58546fe9ca62b4ccc"
     },
     {
-      "sha256": "54019ebba59ec1f11e6d2a0d70a2a019c96304d6c440360a61e3b7e30267bf60",
-      "path": "src\\lib-win32\\win16-control\\month_paint.h"
+      "path": "src\\lib-win32\\win16-control\\month_paint.h",
+      "sha256": "54019ebba59ec1f11e6d2a0d70a2a019c96304d6c440360a61e3b7e30267bf60"
     },
     {
-      "sha256": "cac6b67de87b786a77d44bb0565a3d9b80670af1afd6b615db926a6cd2873ba4",
-      "path": "src\\lib-win32\\win16-control\\month_text.c"
+      "path": "src\\lib-win32\\win16-control\\month_text.c",
+      "sha256": "cac6b67de87b786a77d44bb0565a3d9b80670af1afd6b615db926a6cd2873ba4"
     },
     {
-      "sha256": "13a533325ee251c26bb2077130bb5e37be6cee9458dbb3c7d3fa53c8f6a1c84a",
-      "path": "src\\lib-win32\\win16-control\\month_text.h"
+      "path": "src\\lib-win32\\win16-control\\month_text.h",
+      "sha256": "13a533325ee251c26bb2077130bb5e37be6cee9458dbb3c7d3fa53c8f6a1c84a"
     },
     {
-      "sha256": "9c71e5baebe7b5320434b50b31ecdc9e85e7e287f5cf61b0a5ed743bd016b79b",
-      "path": "src\\lib-win32\\win16-control\\native_combo_identity.c"
+      "path": "src\\lib-win32\\win16-control\\native_combo_identity.c",
+      "sha256": "9c71e5baebe7b5320434b50b31ecdc9e85e7e287f5cf61b0a5ed743bd016b79b"
     },
     {
-      "sha256": "6c9710516250a05fd4cb5b0a2e662b11714a4533b6f477334dcf79f313a5c864",
-      "path": "src\\lib-win32\\win16-control\\native_combo_identity.h"
+      "path": "src\\lib-win32\\win16-control\\native_combo_identity.h",
+      "sha256": "6c9710516250a05fd4cb5b0a2e662b11714a4533b6f477334dcf79f313a5c864"
     },
     {
-      "sha256": "8c45aa60cb3d07789765c6b6476423f871b908bcf3b1d2f0a24f2a1801e5ad8e",
-      "path": "src\\lib-win32\\win16-control\\native_presentation.c"
+      "path": "src\\lib-win32\\win16-control\\native_presentation.c",
+      "sha256": "8c45aa60cb3d07789765c6b6476423f871b908bcf3b1d2f0a24f2a1801e5ad8e"
     },
     {
-      "sha256": "5edd24a570f25d3d6b07374a2ba2cbed166eebe66721ace5acc5144326125e36",
-      "path": "src\\lib-win32\\win16-control\\native_presentation.h"
+      "path": "src\\lib-win32\\win16-control\\native_presentation.h",
+      "sha256": "5edd24a570f25d3d6b07374a2ba2cbed166eebe66721ace5acc5144326125e36"
     },
     {
-      "sha256": "e6807de3223d3fd1c4ed6a396006fdb0ce911e28dbc762fb662306aa782eed57",
-      "path": "src\\lib-win32\\win16-control\\notify_message.c"
+      "path": "src\\lib-win32\\win16-control\\notify_message.c",
+      "sha256": "e6807de3223d3fd1c4ed6a396006fdb0ce911e28dbc762fb662306aa782eed57"
     },
     {
-      "sha256": "44ac844c460c0a26ce509497a5a8db3315e895e09ff584b44f587421317002df",
-      "path": "src\\lib-win32\\win16-control\\notify_message.h"
+      "path": "src\\lib-win32\\win16-control\\notify_message.h",
+      "sha256": "44ac844c460c0a26ce509497a5a8db3315e895e09ff584b44f587421317002df"
     },
     {
-      "sha256": "cb3569dcef00dd5c65da5e7ec64b575f82368e8a028885abd6e35d1459d1cf21",
-      "path": "src\\lib-win32\\win16-control\\other_paint.c"
+      "path": "src\\lib-win32\\win16-control\\other_paint.c",
+      "sha256": "cb3569dcef00dd5c65da5e7ec64b575f82368e8a028885abd6e35d1459d1cf21"
     },
     {
-      "sha256": "94459d8578fcebd60cc401db53ef589b1a7b663ff0ce35b5185167ca79aca278",
-      "path": "src\\lib-win32\\win16-control\\other_paint.h"
+      "path": "src\\lib-win32\\win16-control\\other_paint.h",
+      "sha256": "94459d8578fcebd60cc401db53ef589b1a7b663ff0ce35b5185167ca79aca278"
     },
     {
-      "sha256": "a54b8d950b6f884a75121fa87a51d14679e1785ef0d6551451ed79155f3fa72e",
-      "path": "src\\lib-win32\\win16-control\\progress_paint.c"
+      "path": "src\\lib-win32\\win16-control\\progress_paint.c",
+      "sha256": "a54b8d950b6f884a75121fa87a51d14679e1785ef0d6551451ed79155f3fa72e"
     },
     {
-      "sha256": "f43e978a1dfebe98344cb5b3d051186e475777eb5209a73fcdb854f3a6dafa4a",
-      "path": "src\\lib-win32\\win16-control\\progress_paint.h"
+      "path": "src\\lib-win32\\win16-control\\progress_paint.h",
+      "sha256": "f43e978a1dfebe98344cb5b3d051186e475777eb5209a73fcdb854f3a6dafa4a"
     },
     {
-      "sha256": "257fa54bcca6b8d8c0f5bdcb091f3002a35d4158c9c3b1cf7c0b87f8ee183a81",
-      "path": "src\\lib-win32\\win16-control\\scroll_assets.c"
+      "path": "src\\lib-win32\\win16-control\\scroll_assets.c",
+      "sha256": "257fa54bcca6b8d8c0f5bdcb091f3002a35d4158c9c3b1cf7c0b87f8ee183a81"
     },
     {
-      "sha256": "a21066150e645b60aa05436dcfa7690fcb413057c5ab8b295cf08b52d7307eb4",
-      "path": "src\\lib-win32\\win16-control\\scroll_assets.h"
+      "path": "src\\lib-win32\\win16-control\\scroll_assets.h",
+      "sha256": "a21066150e645b60aa05436dcfa7690fcb413057c5ab8b295cf08b52d7307eb4"
     },
     {
-      "sha256": "a748e7d89d52abf6225403244971da442c5b391ab877d1f248ddf2ca96001d40",
-      "path": "src\\lib-win32\\win16-control\\scroll_glyphs.h"
+      "path": "src\\lib-win32\\win16-control\\scroll_glyphs.h",
+      "sha256": "a748e7d89d52abf6225403244971da442c5b391ab877d1f248ddf2ca96001d40"
     },
     {
-      "sha256": "0b1b344fcbe0ef2a8060ef140c539cefeb5fa79c7b93c322452513d15b95b4d0",
-      "path": "src\\lib-win32\\win16-control\\scroll_layout.c"
+      "path": "src\\lib-win32\\win16-control\\scroll_layout.c",
+      "sha256": "0b1b344fcbe0ef2a8060ef140c539cefeb5fa79c7b93c322452513d15b95b4d0"
     },
     {
-      "sha256": "b8398eafbc51af77a5e5ce72c4dd06f12e51a6cdf6bdd51cf2ef6275b0b9fcb4",
-      "path": "src\\lib-win32\\win16-control\\scroll_layout.h"
+      "path": "src\\lib-win32\\win16-control\\scroll_layout.h",
+      "sha256": "b8398eafbc51af77a5e5ce72c4dd06f12e51a6cdf6bdd51cf2ef6275b0b9fcb4"
     },
     {
-      "sha256": "4087b80d97e6f9ffaacd39343c1a3d985db91a0c2fd5bd2c997756c407a32a90",
-      "path": "src\\lib-win32\\win16-control\\scroll_message.c"
+      "path": "src\\lib-win32\\win16-control\\scroll_message.c",
+      "sha256": "4087b80d97e6f9ffaacd39343c1a3d985db91a0c2fd5bd2c997756c407a32a90"
     },
     {
-      "sha256": "ac96754592cbe76b8701fa04915ea18b461991a44b5bb16de44a9c5efa184b69",
-      "path": "src\\lib-win32\\win16-control\\scroll_message.h"
+      "path": "src\\lib-win32\\win16-control\\scroll_message.h",
+      "sha256": "ac96754592cbe76b8701fa04915ea18b461991a44b5bb16de44a9c5efa184b69"
     },
     {
-      "sha256": "4b33f9f72a2b80fb35efe3c71c3b5c96f3a4cbf245951b803c10e37275ad60b9",
-      "path": "src\\lib-win32\\win16-control\\scroll_native.c"
+      "path": "src\\lib-win32\\win16-control\\scroll_native.c",
+      "sha256": "4b33f9f72a2b80fb35efe3c71c3b5c96f3a4cbf245951b803c10e37275ad60b9"
     },
     {
-      "sha256": "70f14ed21e33a60a9ab152c2ebdc488543b1b747b0bee6c5ed90d9c650a24a1b",
-      "path": "src\\lib-win32\\win16-control\\scroll_native.h"
+      "path": "src\\lib-win32\\win16-control\\scroll_native.h",
+      "sha256": "70f14ed21e33a60a9ab152c2ebdc488543b1b747b0bee6c5ed90d9c650a24a1b"
     },
     {
-      "sha256": "1db57e66c45d51c5631d815f04443258e95d5bba79a5eb22d197d6b847f3817b",
-      "path": "src\\lib-win32\\win16-control\\scroll_paint.c"
+      "path": "src\\lib-win32\\win16-control\\scroll_paint.c",
+      "sha256": "1db57e66c45d51c5631d815f04443258e95d5bba79a5eb22d197d6b847f3817b"
     },
     {
-      "sha256": "73430fabd8399933fcde5ed2829e522c4677926efa95b5d83a7e3403a8319fc7",
-      "path": "src\\lib-win32\\win16-control\\scroll_paint.h"
+      "path": "src\\lib-win32\\win16-control\\scroll_paint.h",
+      "sha256": "73430fabd8399933fcde5ed2829e522c4677926efa95b5d83a7e3403a8319fc7"
     },
     {
-      "sha256": "0b9c5d40849d321e3e467635d4c28b85c5897d8ee4dd8ec7bf3ed1d39fcd72ee",
-      "path": "src\\lib-win32\\win16-control\\scroll_track.c"
+      "path": "src\\lib-win32\\win16-control\\scroll_track.c",
+      "sha256": "0b9c5d40849d321e3e467635d4c28b85c5897d8ee4dd8ec7bf3ed1d39fcd72ee"
     },
     {
-      "sha256": "36be02d2e879175c02863c495693d5c79dfa1cbca716419c6e0ec46b59c5934e",
-      "path": "src\\lib-win32\\win16-control\\scroll_track.h"
+      "path": "src\\lib-win32\\win16-control\\scroll_track.h",
+      "sha256": "36be02d2e879175c02863c495693d5c79dfa1cbca716419c6e0ec46b59c5934e"
     },
     {
-      "sha256": "5f5db509ee52b2f7c874e201fc5e2f82a4e8c3c3f2a8cd4aa62b00ce4a16e08f",
-      "path": "src\\lib-win32\\win16-control\\special_install.c"
+      "path": "src\\lib-win32\\win16-control\\special_install.c",
+      "sha256": "5f5db509ee52b2f7c874e201fc5e2f82a4e8c3c3f2a8cd4aa62b00ce4a16e08f"
     },
     {
-      "sha256": "b4be7bbb66ac51e85b62bfae1c90cb926829b021bd9c726505269572df670f20",
-      "path": "src\\lib-win32\\win16-control\\special_install.h"
+      "path": "src\\lib-win32\\win16-control\\special_install.h",
+      "sha256": "b4be7bbb66ac51e85b62bfae1c90cb926829b021bd9c726505269572df670f20"
     },
     {
-      "sha256": "e09a0a67344ef657415973ec157794df482f2e443d4ec1bc858ec06e7e8cea57",
-      "path": "src\\lib-win32\\win16-control\\special_paint.c"
+      "path": "src\\lib-win32\\win16-control\\special_paint.c",
+      "sha256": "e09a0a67344ef657415973ec157794df482f2e443d4ec1bc858ec06e7e8cea57"
     },
     {
-      "sha256": "9eed7cbc5eec9fe4be5a35f3d80e2a90e8f592006404968eb47ebf1df40d9a08",
-      "path": "src\\lib-win32\\win16-control\\special_paint.h"
+      "path": "src\\lib-win32\\win16-control\\special_paint.h",
+      "sha256": "9eed7cbc5eec9fe4be5a35f3d80e2a90e8f592006404968eb47ebf1df40d9a08"
     },
     {
-      "sha256": "d19563240b4cc67495059b3a4a923921aaa245d07e56ed43abfb3133b78b0c28",
-      "path": "src\\lib-win32\\win16-control\\spin_identity.c"
+      "path": "src\\lib-win32\\win16-control\\spin_identity.c",
+      "sha256": "d19563240b4cc67495059b3a4a923921aaa245d07e56ed43abfb3133b78b0c28"
     },
     {
-      "sha256": "c3785d6d6e1ba7976829b74b6a8d433648cbc7098a92b2bf9550652d4a3e4a05",
-      "path": "src\\lib-win32\\win16-control\\spin_identity.h"
+      "path": "src\\lib-win32\\win16-control\\spin_identity.h",
+      "sha256": "c3785d6d6e1ba7976829b74b6a8d433648cbc7098a92b2bf9550652d4a3e4a05"
     },
     {
-      "sha256": "b58d26349ce12ebd2b087a96e52c3b185beb21a43c840319c00a3616df5a1929",
-      "path": "src\\lib-win32\\win16-control\\spin_scope.c"
+      "path": "src\\lib-win32\\win16-control\\spin_scope.c",
+      "sha256": "b58d26349ce12ebd2b087a96e52c3b185beb21a43c840319c00a3616df5a1929"
     },
     {
-      "sha256": "1e435d595fe40eba8d581186d18d3e0f51ac153d87a5ae79cfb9d7ea282626ce",
-      "path": "src\\lib-win32\\win16-control\\spin_scope.h"
+      "path": "src\\lib-win32\\win16-control\\spin_scope.h",
+      "sha256": "1e435d595fe40eba8d581186d18d3e0f51ac153d87a5ae79cfb9d7ea282626ce"
     },
     {
-      "sha256": "cce26d4e34b445df76d9623e68717419ae5366e5f016a1367f727e8b802435ce",
-      "path": "src\\lib-win32\\win16-control\\status_font.c"
+      "path": "src\\lib-win32\\win16-control\\status_font.c",
+      "sha256": "cce26d4e34b445df76d9623e68717419ae5366e5f016a1367f727e8b802435ce"
     },
     {
-      "sha256": "e987f7856503f0e0164b46d5c5ba3302a3c179defc6153944102a56ea6a54293",
-      "path": "src\\lib-win32\\win16-control\\status_font.h"
+      "path": "src\\lib-win32\\win16-control\\status_font.h",
+      "sha256": "e987f7856503f0e0164b46d5c5ba3302a3c179defc6153944102a56ea6a54293"
     },
     {
-      "sha256": "7750644db9cecc280c350ab4e8d76a01749a2584c9364d9691830ff22948731f",
-      "path": "src\\lib-win32\\win16-control\\status_frame.c"
+      "path": "src\\lib-win32\\win16-control\\status_frame.c",
+      "sha256": "7750644db9cecc280c350ab4e8d76a01749a2584c9364d9691830ff22948731f"
     },
     {
-      "sha256": "feb401af2547580ca41f873c42c25a24969d530a51f2ef330d439532dbe89df0",
-      "path": "src\\lib-win32\\win16-control\\status_frame.h"
+      "path": "src\\lib-win32\\win16-control\\status_frame.h",
+      "sha256": "feb401af2547580ca41f873c42c25a24969d530a51f2ef330d439532dbe89df0"
     },
     {
-      "sha256": "ac95de35082a6c4b25822a3794cf85c15f9fb49e8e4334a34bb58f6c603113b3",
-      "path": "src\\lib-win32\\win16-control\\status_identity.c"
+      "path": "src\\lib-win32\\win16-control\\status_identity.c",
+      "sha256": "ac95de35082a6c4b25822a3794cf85c15f9fb49e8e4334a34bb58f6c603113b3"
     },
     {
-      "sha256": "378a4f96a091a1db617cd598b85422f946aa2383434193c4b56160802c3111b4",
-      "path": "src\\lib-win32\\win16-control\\status_identity.h"
+      "path": "src\\lib-win32\\win16-control\\status_identity.h",
+      "sha256": "378a4f96a091a1db617cd598b85422f946aa2383434193c4b56160802c3111b4"
     },
     {
-      "sha256": "54beaa2f6742d25b4b1eef4674a341a7a3db7fcc7537db07082d22c7c0c37233",
-      "path": "src\\lib-win32\\win16-control\\status_text.c"
+      "path": "src\\lib-win32\\win16-control\\status_text.c",
+      "sha256": "54beaa2f6742d25b4b1eef4674a341a7a3db7fcc7537db07082d22c7c0c37233"
     },
     {
-      "sha256": "74fb3b53a38e931c7312f6dbfde2e350a13915e2629d9ae853f41da1a495f466",
-      "path": "src\\lib-win32\\win16-control\\status_text.h"
+      "path": "src\\lib-win32\\win16-control\\status_text.h",
+      "sha256": "74fb3b53a38e931c7312f6dbfde2e350a13915e2629d9ae853f41da1a495f466"
     },
     {
-      "sha256": "851b637c211182d994f27117d4ccde0993e59719916982c2cc95e7d98395603e",
-      "path": "src\\lib-win32\\win16-control\\tab_paint.c"
+      "path": "src\\lib-win32\\win16-control\\tab_paint.c",
+      "sha256": "851b637c211182d994f27117d4ccde0993e59719916982c2cc95e7d98395603e"
     },
     {
-      "sha256": "b23708ff1dbb04542b2174b2e32d4355f4b11391fed9dca7e14f061abb0ad0de",
-      "path": "src\\lib-win32\\win16-control\\tab_paint.h"
+      "path": "src\\lib-win32\\win16-control\\tab_paint.h",
+      "sha256": "b23708ff1dbb04542b2174b2e32d4355f4b11391fed9dca7e14f061abb0ad0de"
     },
     {
-      "sha256": "69096cf8e505c6c8b7c0d4bd25743ba5aa93fdde8d50a922294d8892bd1231af",
-      "path": "src\\lib-win32\\win16-control\\text_policy.c"
+      "path": "src\\lib-win32\\win16-control\\text_policy.c",
+      "sha256": "69096cf8e505c6c8b7c0d4bd25743ba5aa93fdde8d50a922294d8892bd1231af"
     },
     {
-      "sha256": "50074d3156e5516ac52cb161388629b6a9cc688199b63b2f62bc592475ad04c1",
-      "path": "src\\lib-win32\\win16-control\\text_policy.h"
+      "path": "src\\lib-win32\\win16-control\\text_policy.h",
+      "sha256": "50074d3156e5516ac52cb161388629b6a9cc688199b63b2f62bc592475ad04c1"
     },
     {
-      "sha256": "9922a523099271ac5985af9f93d7a8c995580ed7c04ba231acedab1f4932daed",
-      "path": "src\\lib-win32\\win16-control\\theme_state.c"
+      "path": "src\\lib-win32\\win16-control\\theme_state.c",
+      "sha256": "9922a523099271ac5985af9f93d7a8c995580ed7c04ba231acedab1f4932daed"
     },
     {
-      "sha256": "933347dc7ad1476903862e6d93236d42ef43f752725042c51fccefdda0366a9c",
-      "path": "src\\lib-win32\\win16-control\\theme_state.h"
+      "path": "src\\lib-win32\\win16-control\\theme_state.h",
+      "sha256": "933347dc7ad1476903862e6d93236d42ef43f752725042c51fccefdda0366a9c"
     },
     {
-      "sha256": "80a942b47f67f9d7f40c9fe943a438aa112237c48f9e95353bd136030100759d",
-      "path": "src\\lib-win32\\win16-control\\toolbar_paint.c"
+      "path": "src\\lib-win32\\win16-control\\toolbar_paint.c",
+      "sha256": "80a942b47f67f9d7f40c9fe943a438aa112237c48f9e95353bd136030100759d"
     },
     {
-      "sha256": "478968df38c7fe227172d25d5de5a207cb3e1c3a03259d594eebc116a3600409",
-      "path": "src\\lib-win32\\win16-control\\toolbar_paint.h"
+      "path": "src\\lib-win32\\win16-control\\toolbar_paint.h",
+      "sha256": "478968df38c7fe227172d25d5de5a207cb3e1c3a03259d594eebc116a3600409"
     },
     {
-      "sha256": "7b11f979f943213837219b4f94dc799b1a05b2a9fd2d0e6d667596354448511b",
-      "path": "src\\lib-win32\\win16-control\\trackbar_paint.c"
+      "path": "src\\lib-win32\\win16-control\\trackbar_paint.c",
+      "sha256": "7b11f979f943213837219b4f94dc799b1a05b2a9fd2d0e6d667596354448511b"
     },
     {
-      "sha256": "f10a8f3b2240710eb32589987b4328b5cd82f385cc39679e257bbb17e87eb33e",
-      "path": "src\\lib-win32\\win16-control\\trackbar_paint.h"
+      "path": "src\\lib-win32\\win16-control\\trackbar_paint.h",
+      "sha256": "f10a8f3b2240710eb32589987b4328b5cd82f385cc39679e257bbb17e87eb33e"
     },
     {
-      "sha256": "01dd0012baeb819e1cf4f843136f579e05ea81d9325430fce2ca5b47a233fd21",
-      "path": "src\\lib-win32\\win16-control\\updown_adapter.c"
+      "path": "src\\lib-win32\\win16-control\\updown_adapter.c",
+      "sha256": "01dd0012baeb819e1cf4f843136f579e05ea81d9325430fce2ca5b47a233fd21"
     },
     {
-      "sha256": "2cc302bd4b319c046e70a1fda89c433c40fe8af2feb038a65ee7423d1052a232",
-      "path": "src\\lib-win32\\win16-control\\updown_adapter.h"
+      "path": "src\\lib-win32\\win16-control\\updown_adapter.h",
+      "sha256": "2cc302bd4b319c046e70a1fda89c433c40fe8af2feb038a65ee7423d1052a232"
     },
     {
-      "sha256": "66925149de796f9f234ade7253a76f4bc5a813731a1aee9022373d75b1882d24",
-      "path": "src\\lib-win32\\win16-control\\updown_paint.c"
+      "path": "src\\lib-win32\\win16-control\\updown_paint.c",
+      "sha256": "66925149de796f9f234ade7253a76f4bc5a813731a1aee9022373d75b1882d24"
     },
     {
-      "sha256": "228d753f3ea4c5c14f6f6f69af97bbfa778e962160716705ab673b31d6553567",
-      "path": "src\\lib-win32\\win16-control\\updown_paint.h"
+      "path": "src\\lib-win32\\win16-control\\updown_paint.h",
+      "sha256": "228d753f3ea4c5c14f6f6f69af97bbfa778e962160716705ab673b31d6553567"
     },
     {
-      "sha256": "3bcaff3f37e0fe5be36e0997b7c144a82460624c69670879a050b179b45f8f90",
-      "path": "src\\lib-win32\\win16-control\\vb_text.c"
+      "path": "src\\lib-win32\\win16-control\\vb_text.c",
+      "sha256": "3bcaff3f37e0fe5be36e0997b7c144a82460624c69670879a050b179b45f8f90"
     },
     {
-      "sha256": "24aec97fbaf41db7171f925064f3d9a574e26634c879955ed2f826db66b0ad74",
-      "path": "src\\lib-win32\\win16-control\\vb_text.h"
+      "path": "src\\lib-win32\\win16-control\\vb_text.h",
+      "sha256": "24aec97fbaf41db7171f925064f3d9a574e26634c879955ed2f826db66b0ad74"
     },
     {
-      "sha256": "adf29f95afaf0cfd7f16e83e6c6e7df2b334459ad1cc0d74ac585a44ce61b686",
-      "path": "src\\lib-win32\\win16-control\\vcl_extra_frame.c"
+      "path": "src\\lib-win32\\win16-control\\vcl_extra_frame.c",
+      "sha256": "adf29f95afaf0cfd7f16e83e6c6e7df2b334459ad1cc0d74ac585a44ce61b686"
     },
     {
-      "sha256": "c83a619ef8bb4138c40a588551ec55dd792d3d7e7cbe14ab049f669f3a7f9edc",
-      "path": "src\\lib-win32\\win16-control\\vcl_extra_frame.h"
+      "path": "src\\lib-win32\\win16-control\\vcl_extra_frame.h",
+      "sha256": "c83a619ef8bb4138c40a588551ec55dd792d3d7e7cbe14ab049f669f3a7f9edc"
     },
     {
-      "sha256": "7da0eb44524e9aecd849680c3d53e2ed21a0efeca38277550c40b0ea5a4a232b",
-      "path": "src\\lib-win32\\win16-control\\vcl_frame_policy.c"
+      "path": "src\\lib-win32\\win16-control\\vcl_frame_policy.c",
+      "sha256": "7da0eb44524e9aecd849680c3d53e2ed21a0efeca38277550c40b0ea5a4a232b"
     },
     {
-      "sha256": "f3abc4a76f5e02da02b0ffa9578615ba1b7746a5a4d43390c8035084c37aeb9e",
-      "path": "src\\lib-win32\\win16-control\\vcl_frame_policy.h"
+      "path": "src\\lib-win32\\win16-control\\vcl_frame_policy.h",
+      "sha256": "f3abc4a76f5e02da02b0ffa9578615ba1b7746a5a4d43390c8035084c37aeb9e"
     },
     {
-      "sha256": "5a525cba95dd7d5625e4ed07447a9edaf762634b6ebae51d379229c7fb141f9d",
-      "path": "src\\lib-win32\\win16-control\\vcl_identity.c"
+      "path": "src\\lib-win32\\win16-control\\vcl_identity.c",
+      "sha256": "5a525cba95dd7d5625e4ed07447a9edaf762634b6ebae51d379229c7fb141f9d"
     },
     {
-      "sha256": "34a43ca790184b99dba17a5c13836f58017ca5cc39386782e3204f248a035633",
-      "path": "src\\lib-win32\\win16-control\\vcl_identity.h"
+      "path": "src\\lib-win32\\win16-control\\vcl_identity.h",
+      "sha256": "34a43ca790184b99dba17a5c13836f58017ca5cc39386782e3204f248a035633"
     },
     {
-      "sha256": "d7b3c37eff76bb70fe39933cece26aab36882b178b510a70e050a11ed9088c2d",
-      "path": "src\\lib-win32\\win16-control\\vcl_native_paint.c"
+      "path": "src\\lib-win32\\win16-control\\vcl_native_paint.c",
+      "sha256": "d7b3c37eff76bb70fe39933cece26aab36882b178b510a70e050a11ed9088c2d"
     },
     {
-      "sha256": "2372cae31d72c1b5d0381905fa077efdcbaf785cb484e8fec6c876731e4aa06d",
-      "path": "src\\lib-win32\\win16-control\\vcl_native_paint.h"
+      "path": "src\\lib-win32\\win16-control\\vcl_native_paint.h",
+      "sha256": "2372cae31d72c1b5d0381905fa077efdcbaf785cb484e8fec6c876731e4aa06d"
     },
     {
-      "sha256": "e5ec05f48e83dbead2d391687abd0488005e99cce7979a5af8c137acad814aa4",
-      "path": "src\\lib-win32\\win16-dialog\\browse.c"
+      "path": "src\\lib-win32\\win16-dialog\\browse.c",
+      "sha256": "e5ec05f48e83dbead2d391687abd0488005e99cce7979a5af8c137acad814aa4"
     },
     {
-      "sha256": "58bc1f2744aa83d7110046f1981136954453961da56289e7f8f7f0c27288b373",
-      "path": "src\\lib-win32\\win16-dialog\\browse.h"
+      "path": "src\\lib-win32\\win16-dialog\\browse.h",
+      "sha256": "58bc1f2744aa83d7110046f1981136954453961da56289e7f8f7f0c27288b373"
     },
     {
-      "sha256": "c449f4ebadf579993253a19c35878ac373afecae87cfc53f934d08e65d2498d1",
-      "path": "src\\lib-win32\\win16-dialog\\chrome.c"
+      "path": "src\\lib-win32\\win16-dialog\\chrome.c",
+      "sha256": "c449f4ebadf579993253a19c35878ac373afecae87cfc53f934d08e65d2498d1"
     },
     {
-      "sha256": "35c6f8e1680ad8afc0001c1c4cd5ee8424f42cbbaa58a7465ae81c98e309efe7",
-      "path": "src\\lib-win32\\win16-dialog\\chrome.h"
+      "path": "src\\lib-win32\\win16-dialog\\chrome.h",
+      "sha256": "35c6f8e1680ad8afc0001c1c4cd5ee8424f42cbbaa58a7465ae81c98e309efe7"
     },
     {
-      "sha256": "8f5ebe87d2c7ec2604578dfdca7859bdc69151f7153fe956dc4d8ee992dfe602",
-      "path": "src\\lib-win32\\win16-dialog\\classic_events.c"
+      "path": "src\\lib-win32\\win16-dialog\\classic_events.c",
+      "sha256": "8f5ebe87d2c7ec2604578dfdca7859bdc69151f7153fe956dc4d8ee992dfe602"
     },
     {
-      "sha256": "5c596b16e0f682710fd6576f96aad1806be210c0f932436f499b3af5c0f44cab",
-      "path": "src\\lib-win32\\win16-dialog\\classic_events.h"
+      "path": "src\\lib-win32\\win16-dialog\\classic_events.h",
+      "sha256": "5c596b16e0f682710fd6576f96aad1806be210c0f932436f499b3af5c0f44cab"
     },
     {
-      "sha256": "c6d1e895ef13f6c14fd0298444412e4ecd13b2e8abdef6fd69c28d88ee891b11",
-      "path": "src\\lib-win32\\win16-dialog\\classic_folder.c"
+      "path": "src\\lib-win32\\win16-dialog\\classic_folder.c",
+      "sha256": "c6d1e895ef13f6c14fd0298444412e4ecd13b2e8abdef6fd69c28d88ee891b11"
     },
     {
-      "sha256": "0adb05e91705e036d06bef8591f38433ec928941965436d545acbe59d182a4e7",
-      "path": "src\\lib-win32\\win16-dialog\\classic_folder.h"
+      "path": "src\\lib-win32\\win16-dialog\\classic_folder.h",
+      "sha256": "0adb05e91705e036d06bef8591f38433ec928941965436d545acbe59d182a4e7"
     },
     {
-      "sha256": "c62b84fc602f0c9eac5706bbe092fcbba53fec8e4cfa85ad571c584a93c57a76",
-      "path": "src\\lib-win32\\win16-dialog\\com_hook.c"
+      "path": "src\\lib-win32\\win16-dialog\\com_hook.c",
+      "sha256": "c62b84fc602f0c9eac5706bbe092fcbba53fec8e4cfa85ad571c584a93c57a76"
     },
     {
-      "sha256": "b386ddd54aa6683bf1af73dfe35d8f8fffeb9dd816dd1a2ae026044fb2fd6855",
-      "path": "src\\lib-win32\\win16-dialog\\com_hook.h"
+      "path": "src\\lib-win32\\win16-dialog\\com_hook.h",
+      "sha256": "b386ddd54aa6683bf1af73dfe35d8f8fffeb9dd816dd1a2ae026044fb2fd6855"
     },
     {
-      "sha256": "ec06ae31c5e3df3dd554822265e1b274dbd230500adc158529ae0a307071b725",
-      "path": "src\\lib-win32\\win16-dialog\\com_show.c"
+      "path": "src\\lib-win32\\win16-dialog\\com_show.c",
+      "sha256": "ec06ae31c5e3df3dd554822265e1b274dbd230500adc158529ae0a307071b725"
     },
     {
-      "sha256": "f01129e9446202b0577282374de421c31c6f67c22c8fc83a69b2e7e7ae6cc65a",
-      "path": "src\\lib-win32\\win16-dialog\\com_show.h"
+      "path": "src\\lib-win32\\win16-dialog\\com_show.h",
+      "sha256": "f01129e9446202b0577282374de421c31c6f67c22c8fc83a69b2e7e7ae6cc65a"
     },
     {
-      "sha256": "bdbc689e8b40c3df1c5c89e501085ef93ed88063c3003f1279165201ddd8c7b7",
-      "path": "src\\lib-win32\\win16-dialog\\customize.c"
+      "path": "src\\lib-win32\\win16-dialog\\customize.c",
+      "sha256": "bdbc689e8b40c3df1c5c89e501085ef93ed88063c3003f1279165201ddd8c7b7"
     },
     {
-      "sha256": "542eeb17ebbaa136ea47f2027f5a6ad0b29dc9be409206ec743fe69aab41246f",
-      "path": "src\\lib-win32\\win16-dialog\\customize.h"
+      "path": "src\\lib-win32\\win16-dialog\\customize.h",
+      "sha256": "542eeb17ebbaa136ea47f2027f5a6ad0b29dc9be409206ec743fe69aab41246f"
     },
     {
-      "sha256": "d024d5bcf98f3428a11b5e33a82002f69382a5032014cd719878f82ecfba8ceb",
-      "path": "src\\lib-win32\\win16-dialog\\events.c"
+      "path": "src\\lib-win32\\win16-dialog\\events.c",
+      "sha256": "d024d5bcf98f3428a11b5e33a82002f69382a5032014cd719878f82ecfba8ceb"
     },
     {
-      "sha256": "59d4fd197c0e5f40d91d4f6c124cf3f5d1566743825ca2dfe0b372c7f5089a57",
-      "path": "src\\lib-win32\\win16-dialog\\events.h"
+      "path": "src\\lib-win32\\win16-dialog\\events.h",
+      "sha256": "59d4fd197c0e5f40d91d4f6c124cf3f5d1566743825ca2dfe0b372c7f5089a57"
     },
     {
-      "sha256": "f281cf41e2bdf5547602f576c9011b1bd74e0a090e1f9498c529be4066941145",
-      "path": "src\\lib-win32\\win16-dialog\\file_contract.c"
+      "path": "src\\lib-win32\\win16-dialog\\file_contract.c",
+      "sha256": "f281cf41e2bdf5547602f576c9011b1bd74e0a090e1f9498c529be4066941145"
     },
     {
-      "sha256": "0ec4624c1953745695321c850458f2979c6b25a7f6817d6b596769b9ba86a632",
-      "path": "src\\lib-win32\\win16-dialog\\file_contract.h"
+      "path": "src\\lib-win32\\win16-dialog\\file_contract.h",
+      "sha256": "0ec4624c1953745695321c850458f2979c6b25a7f6817d6b596769b9ba86a632"
     },
     {
-      "sha256": "0d7747f1f04efe6cbc1284d9ed610ba734c968e2844a15bd3b9ee70805e7b0e7",
-      "path": "src\\lib-win32\\win16-dialog\\file_helpers.c"
+      "path": "src\\lib-win32\\win16-dialog\\file_helpers.c",
+      "sha256": "0d7747f1f04efe6cbc1284d9ed610ba734c968e2844a15bd3b9ee70805e7b0e7"
     },
     {
-      "sha256": "2987ea9ced74628b6ccce4274cac917f9c9c3797d4fd5da9a2547ffba2486f81",
-      "path": "src\\lib-win32\\win16-dialog\\file_helpers.h"
+      "path": "src\\lib-win32\\win16-dialog\\file_helpers.h",
+      "sha256": "2987ea9ced74628b6ccce4274cac917f9c9c3797d4fd5da9a2547ffba2486f81"
     },
     {
-      "sha256": "9d385add8407cc0df599c366ff319e924c72af92b420a9e57e4d87179e51371e",
-      "path": "src\\lib-win32\\win16-dialog\\file_hook.c"
+      "path": "src\\lib-win32\\win16-dialog\\file_hook.c",
+      "sha256": "9d385add8407cc0df599c366ff319e924c72af92b420a9e57e4d87179e51371e"
     },
     {
-      "sha256": "c99b71ff6f1a3d0f26384ef15d6ec8d1c6cb2126629ca0ea1db3e646a4c9b192",
-      "path": "src\\lib-win32\\win16-dialog\\file_hook.h"
+      "path": "src\\lib-win32\\win16-dialog\\file_hook.h",
+      "sha256": "c99b71ff6f1a3d0f26384ef15d6ec8d1c6cb2126629ca0ea1db3e646a4c9b192"
     },
     {
-      "sha256": "5f599969d1956769b538ee481f249b849471cffab31f1005883ce754d22254a0",
-      "path": "src\\lib-win32\\win16-dialog\\file_live.c"
+      "path": "src\\lib-win32\\win16-dialog\\file_live.c",
+      "sha256": "5f599969d1956769b538ee481f249b849471cffab31f1005883ce754d22254a0"
     },
     {
-      "sha256": "ef397277f3419bc2c7270310a5c096cff45bc935ac47a617bec14036efccda7a",
-      "path": "src\\lib-win32\\win16-dialog\\file_live.h"
+      "path": "src\\lib-win32\\win16-dialog\\file_live.h",
+      "sha256": "ef397277f3419bc2c7270310a5c096cff45bc935ac47a617bec14036efccda7a"
     },
     {
-      "sha256": "0985e6f5099196a786b37db24c07e64abcbabfa605a8dfd546ba8aaa60f1633b",
-      "path": "src\\lib-win32\\win16-dialog\\folder_create.c"
+      "path": "src\\lib-win32\\win16-dialog\\folder_create.c",
+      "sha256": "0985e6f5099196a786b37db24c07e64abcbabfa605a8dfd546ba8aaa60f1633b"
     },
     {
-      "sha256": "81a2a98aa3ad93260a8ba30d9cb9c156a52d8cc220a9da178de2a6d18955c27c",
-      "path": "src\\lib-win32\\win16-dialog\\folder_create.h"
+      "path": "src\\lib-win32\\win16-dialog\\folder_create.h",
+      "sha256": "81a2a98aa3ad93260a8ba30d9cb9c156a52d8cc220a9da178de2a6d18955c27c"
     },
     {
-      "sha256": "6d4b626e29316884be4a5a30886a9c42c299db7da4a7bb12c5e7663086db919a",
-      "path": "src\\lib-win32\\win16-dialog\\hidden_files.c"
+      "path": "src\\lib-win32\\win16-dialog\\hidden_files.c",
+      "sha256": "6d4b626e29316884be4a5a30886a9c42c299db7da4a7bb12c5e7663086db919a"
     },
     {
-      "sha256": "c20bf1ab974b0e306d2e3fd928f7eafaa16372af965207dac89f4b7c659d103a",
-      "path": "src\\lib-win32\\win16-dialog\\hidden_files.h"
+      "path": "src\\lib-win32\\win16-dialog\\hidden_files.h",
+      "sha256": "c20bf1ab974b0e306d2e3fd928f7eafaa16372af965207dac89f4b7c659d103a"
     },
     {
-      "sha256": "4c8afe5333b79639ade32f0c67e81cf8d9fe113a8b72f357a914f09c1f71f326",
-      "path": "src\\lib-win32\\win16-dialog\\hook_state.c"
+      "path": "src\\lib-win32\\win16-dialog\\hook_state.c",
+      "sha256": "4c8afe5333b79639ade32f0c67e81cf8d9fe113a8b72f357a914f09c1f71f326"
     },
     {
-      "sha256": "df0f3009e9a51c45c61da8eefabccd0dfbbeb89a18f7980dd52838927aaa6e2d",
-      "path": "src\\lib-win32\\win16-dialog\\hook_state.h"
+      "path": "src\\lib-win32\\win16-dialog\\hook_state.h",
+      "sha256": "df0f3009e9a51c45c61da8eefabccd0dfbbeb89a18f7980dd52838927aaa6e2d"
     },
     {
-      "sha256": "ce2826a08ef13bf84a8c401be82a8fbda60895cacde13f4d345108d1bae43afb",
-      "path": "src\\lib-win32\\win16-dialog\\modern.c"
+      "path": "src\\lib-win32\\win16-dialog\\modern.c",
+      "sha256": "ce2826a08ef13bf84a8c401be82a8fbda60895cacde13f4d345108d1bae43afb"
     },
     {
-      "sha256": "df8c5f47bf2759486234db2123ceb5cd618e372eecbd63d6e2a5dc26da68e3b5",
-      "path": "src\\lib-win32\\win16-dialog\\modern.h"
+      "path": "src\\lib-win32\\win16-dialog\\modern.h",
+      "sha256": "df8c5f47bf2759486234db2123ceb5cd618e372eecbd63d6e2a5dc26da68e3b5"
     },
     {
-      "sha256": "d1524968eee6d9f810a223aacdc2ad63a11026e93b480ec59efbb2bfd76b2701",
-      "path": "src\\lib-win32\\win16-dialog\\ole_window.c"
+      "path": "src\\lib-win32\\win16-dialog\\ole_window.c",
+      "sha256": "d1524968eee6d9f810a223aacdc2ad63a11026e93b480ec59efbb2bfd76b2701"
     },
     {
-      "sha256": "4edd8c213441044b99002b7522053a7a7faaa1af794e899598f333607bb349a3",
-      "path": "src\\lib-win32\\win16-dialog\\ole_window.h"
+      "path": "src\\lib-win32\\win16-dialog\\ole_window.h",
+      "sha256": "4edd8c213441044b99002b7522053a7a7faaa1af794e899598f333607bb349a3"
     },
     {
-      "sha256": "b34b1dd5e943e5c5b8dccd1008891af7b0c5bb6f15ecd961f91fcedf43e2e6fb",
-      "path": "src\\lib-win32\\win16-dialog\\primary.c"
+      "path": "src\\lib-win32\\win16-dialog\\primary.c",
+      "sha256": "b34b1dd5e943e5c5b8dccd1008891af7b0c5bb6f15ecd961f91fcedf43e2e6fb"
     },
     {
-      "sha256": "dfb14f2bf8a64ecffccfefe15cfaf53024bfc3a0a33849b55ee8b37721524e70",
-      "path": "src\\lib-win32\\win16-dialog\\primary.h"
+      "path": "src\\lib-win32\\win16-dialog\\primary.h",
+      "sha256": "dfb14f2bf8a64ecffccfefe15cfaf53024bfc3a0a33849b55ee8b37721524e70"
     },
     {
-      "sha256": "9ed6bfe38dd7cddc22b69939c1343629eab24e837d8282f0d5e7749ba6909061",
-      "path": "src\\lib-win32\\win16-dialog\\print_classic.c"
+      "path": "src\\lib-win32\\win16-dialog\\print_classic.c",
+      "sha256": "9ed6bfe38dd7cddc22b69939c1343629eab24e837d8282f0d5e7749ba6909061"
     },
     {
-      "sha256": "6d8e0cb667bf49f0936679ae4afbd9e666226ff14d1c0cc4d33395b378020bcd",
-      "path": "src\\lib-win32\\win16-dialog\\print_classic.h"
+      "path": "src\\lib-win32\\win16-dialog\\print_classic.h",
+      "sha256": "6d8e0cb667bf49f0936679ae4afbd9e666226ff14d1c0cc4d33395b378020bcd"
     },
     {
-      "sha256": "163b6dbd96f29610045f13e2a3ae4b509ee574213f8fd11b0ada34edc4e53b89",
-      "path": "src\\lib-win32\\win16-dialog\\print_extended.c"
+      "path": "src\\lib-win32\\win16-dialog\\print_extended.c",
+      "sha256": "163b6dbd96f29610045f13e2a3ae4b509ee574213f8fd11b0ada34edc4e53b89"
     },
     {
-      "sha256": "d47e2abf43fc25acd4983e7e8a160be4b914240e8497d6a6b2d554885e65f5b2",
-      "path": "src\\lib-win32\\win16-dialog\\print_extended.h"
+      "path": "src\\lib-win32\\win16-dialog\\print_extended.h",
+      "sha256": "d47e2abf43fc25acd4983e7e8a160be4b914240e8497d6a6b2d554885e65f5b2"
     },
     {
-      "sha256": "40162659540b4b3583863c93cea2f65b4e680bcd962c75c4368bcabdd12b35d6",
-      "path": "src\\lib-win32\\win16-dialog\\print_ranges.c"
+      "path": "src\\lib-win32\\win16-dialog\\print_ranges.c",
+      "sha256": "40162659540b4b3583863c93cea2f65b4e680bcd962c75c4368bcabdd12b35d6"
     },
     {
-      "sha256": "2ca83be061944276cc10707fda5c3eb730ce62cfe394d40f9324a428142e5cd0",
-      "path": "src\\lib-win32\\win16-dialog\\print_ranges.h"
+      "path": "src\\lib-win32\\win16-dialog\\print_ranges.h",
+      "sha256": "2ca83be061944276cc10707fda5c3eb730ce62cfe394d40f9324a428142e5cd0"
     },
     {
-      "sha256": "819eeaa1ca7d726492cf5908b3d5873963879f3253f7816ddc847cea4828d3af",
-      "path": "src\\lib-win32\\win16-dialog\\proxy_dispatch.c"
+      "path": "src\\lib-win32\\win16-dialog\\proxy_dispatch.c",
+      "sha256": "819eeaa1ca7d726492cf5908b3d5873963879f3253f7816ddc847cea4828d3af"
     },
     {
-      "sha256": "262a8d1a79843422972aaf13eb7f6e55a62329d7d5fd5b9022e8bdaa98af59e0",
-      "path": "src\\lib-win32\\win16-dialog\\proxy_dispatch.h"
+      "path": "src\\lib-win32\\win16-dialog\\proxy_dispatch.h",
+      "sha256": "262a8d1a79843422972aaf13eb7f6e55a62329d7d5fd5b9022e8bdaa98af59e0"
     },
     {
-      "sha256": "99c104169ed08b24b6bfba4f396e1a05bb328bd9dab6136073e9777d03c28c1e",
-      "path": "src\\lib-win32\\win16-dialog\\proxy.c"
+      "path": "src\\lib-win32\\win16-dialog\\proxy.c",
+      "sha256": "99c104169ed08b24b6bfba4f396e1a05bb328bd9dab6136073e9777d03c28c1e"
     },
     {
-      "sha256": "f3e8a50c94db1022936f5aed7152c2dd1451309469fb4f4a200dd4dea45bf7dc",
-      "path": "src\\lib-win32\\win16-dialog\\proxy.h"
+      "path": "src\\lib-win32\\win16-dialog\\proxy.h",
+      "sha256": "f3e8a50c94db1022936f5aed7152c2dd1451309469fb4f4a200dd4dea45bf7dc"
     },
     {
-      "sha256": "5e187a51bf8e8f6cc12221a2ed497932ff236a028d9a0c03b5dc9403139c2b57",
-      "path": "src\\lib-win32\\win16-dialog\\shell_folder.c"
+      "path": "src\\lib-win32\\win16-dialog\\shell_folder.c",
+      "sha256": "5e187a51bf8e8f6cc12221a2ed497932ff236a028d9a0c03b5dc9403139c2b57"
     },
     {
-      "sha256": "e6b4330f9fa80419a7f7680d66f04cea748c437db74b53cb0b6d715aee8654b6",
-      "path": "src\\lib-win32\\win16-dialog\\shell_folder.h"
+      "path": "src\\lib-win32\\win16-dialog\\shell_folder.h",
+      "sha256": "e6b4330f9fa80419a7f7680d66f04cea748c437db74b53cb0b6d715aee8654b6"
     },
     {
-      "sha256": "573fcf0a684acd88c3b2529eea01b25069684989627c5a3e7d4a6ac2d05bf02d",
-      "path": "src\\lib-win32\\win16-dialog\\shell_item.c"
+      "path": "src\\lib-win32\\win16-dialog\\shell_item.c",
+      "sha256": "573fcf0a684acd88c3b2529eea01b25069684989627c5a3e7d4a6ac2d05bf02d"
     },
     {
-      "sha256": "146b13f16def796ea441fdb4345f885aae3b1bdc707f9951858662dd7c1c4b2d",
-      "path": "src\\lib-win32\\win16-dialog\\shell_item.h"
+      "path": "src\\lib-win32\\win16-dialog\\shell_item.h",
+      "sha256": "146b13f16def796ea441fdb4345f885aae3b1bdc707f9951858662dd7c1c4b2d"
     },
     {
-      "sha256": "9668e176053cf87130c016c21c99d2b35f35c80689159a6aeffb540cd16ece94",
-      "path": "src\\lib-win32\\win16-dialog\\v2.c"
+      "path": "src\\lib-win32\\win16-dialog\\v2.c",
+      "sha256": "9668e176053cf87130c016c21c99d2b35f35c80689159a6aeffb540cd16ece94"
     },
     {
-      "sha256": "b72bcb9470b7d62763f97326b085067f9abbcd4e4bc4644e2cab93185146b53b",
-      "path": "src\\lib-win32\\win16-dialog\\v2.h"
+      "path": "src\\lib-win32\\win16-dialog\\v2.h",
+      "sha256": "b72bcb9470b7d62763f97326b085067f9abbcd4e4bc4644e2cab93185146b53b"
     },
     {
-      "sha256": "e7a472d76858c3d01fb1501a34d958ccd8337c8d8ccc36893c17ef9222bac0c5",
-      "path": "src\\lib-win32\\win16-window\\frame_buttons.h"
+      "path": "src\\lib-win32\\win16-window\\frame_buttons.h",
+      "sha256": "e7a472d76858c3d01fb1501a34d958ccd8337c8d8ccc36893c17ef9222bac0c5"
     },
     {
-      "sha256": "ccf74f90e09f97698aa592070a1b1812e5975f4d37a790162724e8b0150c0cbf",
-      "path": "src\\lib-win32\\win16-window\\frame_dispatch.c"
+      "path": "src\\lib-win32\\win16-window\\frame_dispatch.c",
+      "sha256": "ccf74f90e09f97698aa592070a1b1812e5975f4d37a790162724e8b0150c0cbf"
     },
     {
-      "sha256": "d4f4e072950a064296e6c8a7abcc50fc6cdcd9caa087c3c9bdffc460ec49a2d3",
-      "path": "src\\lib-win32\\win16-window\\frame_dispatch.h"
+      "path": "src\\lib-win32\\win16-window\\frame_dispatch.h",
+      "sha256": "d4f4e072950a064296e6c8a7abcc50fc6cdcd9caa087c3c9bdffc460ec49a2d3"
     },
     {
-      "sha256": "f11288d5223624830d9212549c1046a9843cc17ef76f9cd346c5d62875d0d93d",
-      "path": "src\\lib-win32\\win16-window\\frame_font.c"
+      "path": "src\\lib-win32\\win16-window\\frame_font.c",
+      "sha256": "f11288d5223624830d9212549c1046a9843cc17ef76f9cd346c5d62875d0d93d"
     },
     {
-      "sha256": "11cc7af916129e10e9f222865d52fef3b75c4920f9701ff672d3ab24f3a14fdd",
-      "path": "src\\lib-win32\\win16-window\\frame_input.c"
+      "path": "src\\lib-win32\\win16-window\\frame_input.c",
+      "sha256": "11cc7af916129e10e9f222865d52fef3b75c4920f9701ff672d3ab24f3a14fdd"
     },
     {
-      "sha256": "2725920d1159d39153d0bfac2e7e94d86aa79c8e725fdd1bcb12f0ae8fd45233",
-      "path": "src\\lib-win32\\win16-window\\frame_input.h"
+      "path": "src\\lib-win32\\win16-window\\frame_input.h",
+      "sha256": "2725920d1159d39153d0bfac2e7e94d86aa79c8e725fdd1bcb12f0ae8fd45233"
     },
     {
-      "sha256": "f1aafa1b1b9d9a71fe582b73f568202df8c7d3f38b566b9519f74746524bcec2",
-      "path": "src\\lib-win32\\win16-window\\frame_layout.c"
+      "path": "src\\lib-win32\\win16-window\\frame_layout.c",
+      "sha256": "f1aafa1b1b9d9a71fe582b73f568202df8c7d3f38b566b9519f74746524bcec2"
     },
     {
-      "sha256": "e12a697a9b36f06a169360a3e5191cc06bf6e5a9d77126db4066637c1de8dcb2",
-      "path": "src\\lib-win32\\win16-window\\frame_layout.h"
+      "path": "src\\lib-win32\\win16-window\\frame_layout.h",
+      "sha256": "e12a697a9b36f06a169360a3e5191cc06bf6e5a9d77126db4066637c1de8dcb2"
     },
     {
-      "sha256": "e1935bb9083d2a5023097379ed018a9a2f806f74ee883b6fe2a26ac8dc14fb21",
-      "path": "src\\lib-win32\\win16-window\\frame_lifecycle.c"
+      "path": "src\\lib-win32\\win16-window\\frame_lifecycle.c",
+      "sha256": "e1935bb9083d2a5023097379ed018a9a2f806f74ee883b6fe2a26ac8dc14fb21"
     },
     {
-      "sha256": "9471ceb5aab4c90b11becf74dfbe1969bb2faa3526e3eeff956cf25c7cedddb8",
-      "path": "src\\lib-win32\\win16-window\\frame_lifecycle.h"
+      "path": "src\\lib-win32\\win16-window\\frame_lifecycle.h",
+      "sha256": "9471ceb5aab4c90b11becf74dfbe1969bb2faa3526e3eeff956cf25c7cedddb8"
     },
     {
-      "sha256": "2a159622f94982f6491da75031fd0d762e359eb7d2d3e4cba6743e4424c0801c",
-      "path": "src\\lib-win32\\win16-window\\frame_message.c"
+      "path": "src\\lib-win32\\win16-window\\frame_message.c",
+      "sha256": "2a159622f94982f6491da75031fd0d762e359eb7d2d3e4cba6743e4424c0801c"
     },
     {
-      "sha256": "dd42ca6758f2e5fc5664848f34081295680653792e39b74399d4e0719314d347",
-      "path": "src\\lib-win32\\win16-window\\frame_message.h"
+      "path": "src\\lib-win32\\win16-window\\frame_message.h",
+      "sha256": "dd42ca6758f2e5fc5664848f34081295680653792e39b74399d4e0719314d347"
     },
     {
-      "sha256": "5091893ade4200a8a5cd6933a3636c1ec538f96310573268fc335c81c50af513",
-      "path": "src\\lib-win32\\win16-window\\frame_paint.c"
+      "path": "src\\lib-win32\\win16-window\\frame_paint.c",
+      "sha256": "5091893ade4200a8a5cd6933a3636c1ec538f96310573268fc335c81c50af513"
     },
     {
-      "sha256": "e9324c74dcd59cfe6c9af7cd1bffc467b4020ddbc1c1da375a57a0546c5eb5fc",
-      "path": "src\\lib-win32\\win16-window\\frame_paint.h"
+      "path": "src\\lib-win32\\win16-window\\frame_paint.h",
+      "sha256": "e9324c74dcd59cfe6c9af7cd1bffc467b4020ddbc1c1da375a57a0546c5eb5fc"
     },
     {
-      "sha256": "85765a7b1c676b58b33b7fb2ab626c558693a83de81cfb51feacb3c3599e0831",
-      "path": "src\\lib-win32\\win16-window\\frame_state.c"
+      "path": "src\\lib-win32\\win16-window\\frame_state.c",
+      "sha256": "85765a7b1c676b58b33b7fb2ab626c558693a83de81cfb51feacb3c3599e0831"
     },
     {
-      "sha256": "34089ad1e9f7742a7b8d58d18a614c5e3dd1999e3e990c02d694abf31cce02e2",
-      "path": "src\\lib-win32\\win16-window\\frame_state.h"
+      "path": "src\\lib-win32\\win16-window\\frame_state.h",
+      "sha256": "34089ad1e9f7742a7b8d58d18a614c5e3dd1999e3e990c02d694abf31cce02e2"
     },
     {
-      "sha256": "d6c4efc10e4f2c0658fbcac01756230ced15c9a421148164d0d1166541b503ca",
-      "path": "src\\lib-win32\\win16-window\\frame_view.c"
+      "path": "src\\lib-win32\\win16-window\\frame_view.c",
+      "sha256": "d6c4efc10e4f2c0658fbcac01756230ced15c9a421148164d0d1166541b503ca"
     },
     {
-      "sha256": "ad89ea8b187165e8c1f260f7717fdc8924a648d3adca3a991ca8135c9723107a",
-      "path": "src\\lib-win32\\win16-window\\frame_view.h"
+      "path": "src\\lib-win32\\win16-window\\frame_view.h",
+      "sha256": "ad89ea8b187165e8c1f260f7717fdc8924a648d3adca3a991ca8135c9723107a"
     },
     {
-      "sha256": "392b28274f295dfed1cbf48c464b194784fdb6af055eaff03fc0c530a074bd94",
-      "path": "src\\lib-win32\\win16-window\\menu_bar_paint.c"
+      "path": "src\\lib-win32\\win16-window\\menu_bar_paint.c",
+      "sha256": "392b28274f295dfed1cbf48c464b194784fdb6af055eaff03fc0c530a074bd94"
     },
     {
-      "sha256": "9c1930a791b6d2f6346891f09b187c391ccb8f2b3c28afc07023c2010a3c382e",
-      "path": "src\\lib-win32\\win16-window\\menu_bar.c"
+      "path": "src\\lib-win32\\win16-window\\menu_bar.c",
+      "sha256": "9c1930a791b6d2f6346891f09b187c391ccb8f2b3c28afc07023c2010a3c382e"
     },
     {
-      "sha256": "00e59e2863eb2b0e471716e9eaa4134e12e3ddbe86ebfb1db24fa2b20c83393b",
-      "path": "src\\lib-win32\\win16-window\\menu_bar.h"
+      "path": "src\\lib-win32\\win16-window\\menu_bar.h",
+      "sha256": "00e59e2863eb2b0e471716e9eaa4134e12e3ddbe86ebfb1db24fa2b20c83393b"
     },
     {
-      "sha256": "03922a10b6a7b46e1792852b93f1e1590d45546a57a63cead41fb7b0f0eefa4e",
-      "path": "src\\lib-win32\\win16-window\\menu_glyphs.h"
+      "path": "src\\lib-win32\\win16-window\\menu_glyphs.h",
+      "sha256": "03922a10b6a7b46e1792852b93f1e1590d45546a57a63cead41fb7b0f0eefa4e"
     },
     {
-      "sha256": "50ffdecade278016841546433fb6650c0c8e2e3d7996725eefb5e77e10be0706",
-      "path": "src\\lib-win32\\win16-window\\menu_items.c"
+      "path": "src\\lib-win32\\win16-window\\menu_items.c",
+      "sha256": "50ffdecade278016841546433fb6650c0c8e2e3d7996725eefb5e77e10be0706"
     },
     {
-      "sha256": "24dff3476635ede1304b7ee3bdf28c3639b4ded55826c8000e7142531ac69b18",
-      "path": "src\\lib-win32\\win16-window\\menu_items.h"
+      "path": "src\\lib-win32\\win16-window\\menu_items.h",
+      "sha256": "24dff3476635ede1304b7ee3bdf28c3639b4ded55826c8000e7142531ac69b18"
     },
     {
-      "sha256": "bf56f623b42c29098a6579aceab386f6163157493aafbcd3a0fce4734f00e96d",
-      "path": "src\\lib-win32\\win16-window\\menu_iteration.c"
+      "path": "src\\lib-win32\\win16-window\\menu_iteration.c",
+      "sha256": "bf56f623b42c29098a6579aceab386f6163157493aafbcd3a0fce4734f00e96d"
     },
     {
-      "sha256": "1e5e3870b89cba0a817b10eeeb494231795dda9b760b286df1b365f839be5926",
-      "path": "src\\lib-win32\\win16-window\\menu_iteration.h"
+      "path": "src\\lib-win32\\win16-window\\menu_iteration.h",
+      "sha256": "1e5e3870b89cba0a817b10eeeb494231795dda9b760b286df1b365f839be5926"
     },
     {
-      "sha256": "8d9485bab573e805c652fa4c797687ffede28f6515257e4b1803b337f7d1abfd",
-      "path": "src\\lib-win32\\win16-window\\menu_message.c"
+      "path": "src\\lib-win32\\win16-window\\menu_message.c",
+      "sha256": "8d9485bab573e805c652fa4c797687ffede28f6515257e4b1803b337f7d1abfd"
     },
     {
-      "sha256": "deaedbf7c25bbebf64e892ad7f647cb37a6e19944eef1c73f5dece6673d95b79",
-      "path": "src\\lib-win32\\win16-window\\menu_message.h"
+      "path": "src\\lib-win32\\win16-window\\menu_message.h",
+      "sha256": "deaedbf7c25bbebf64e892ad7f647cb37a6e19944eef1c73f5dece6673d95b79"
     },
     {
-      "sha256": "00df595f7ab3f4471bd5d851930aac1e03d48430c45a8ed8ecb372dbdc108e84",
-      "path": "src\\lib-win32\\win16-window\\menu_paint.c"
+      "path": "src\\lib-win32\\win16-window\\menu_paint.c",
+      "sha256": "00df595f7ab3f4471bd5d851930aac1e03d48430c45a8ed8ecb372dbdc108e84"
     },
     {
-      "sha256": "590f81afb53614015b31baf3fd06ac3643175ef346c2deee94ea8442a3591e02",
-      "path": "src\\lib-win32\\win16-window\\menu_paint.h"
+      "path": "src\\lib-win32\\win16-window\\menu_paint.h",
+      "sha256": "590f81afb53614015b31baf3fd06ac3643175ef346c2deee94ea8442a3591e02"
     },
     {
-      "sha256": "2f0b7b0d0a9860029c4d45ea9d0cc32ec8c73110fd374b2c5fa6063e210302a3",
-      "path": "src\\lib-win32\\win16-window\\menu_scope.c"
+      "path": "src\\lib-win32\\win16-window\\menu_scope.c",
+      "sha256": "2f0b7b0d0a9860029c4d45ea9d0cc32ec8c73110fd374b2c5fa6063e210302a3"
     },
     {
-      "sha256": "e7f130982359c73f3aa790cdbe8915c2acf5aa2a4889dbd5dfda7855a652a699",
-      "path": "src\\lib-win32\\win16-window\\menu_scope.h"
+      "path": "src\\lib-win32\\win16-window\\menu_scope.h",
+      "sha256": "e7f130982359c73f3aa790cdbe8915c2acf5aa2a4889dbd5dfda7855a652a699"
     },
     {
-      "sha256": "5e927143c2ebae5ff80e4b36cb125c5fdd1fbaf3a02d3d76a0a1c9c05765ecd0",
-      "path": "src\\lib-win32\\win16-window\\win16_style.h"
+      "path": "src\\lib-win32\\win16-window\\win16_style.h",
+      "sha256": "5e927143c2ebae5ff80e4b36cb125c5fdd1fbaf3a02d3d76a0a1c9c05765ecd0"
     },
     {
-      "sha256": "3e5f1839b3b4a648f8c182c5a8faaee1e9f65a41b5e554951d97482944d069b6",
-      "path": "src\\lib-win32\\win16-window-uwp\\frame_layout.c"
+      "path": "src\\lib-win32\\win16-window-uwp\\frame_layout.c",
+      "sha256": "3e5f1839b3b4a648f8c182c5a8faaee1e9f65a41b5e554951d97482944d069b6"
     },
     {
-      "sha256": "d793ddf273aee7a5189b1e854b4bb092dfb595c4496944f57514e9f6fdd9e2b9",
-      "path": "src\\lib-win32\\win16-window-uwp\\frame_layout.h"
+      "path": "src\\lib-win32\\win16-window-uwp\\frame_layout.h",
+      "sha256": "d793ddf273aee7a5189b1e854b4bb092dfb595c4496944f57514e9f6fdd9e2b9"
     },
     {
-      "sha256": "83a0ae2d5ba1f1e97b2241ad1b009a84917a56f156ffff47f780db27e3b15701",
-      "path": "src\\lib-win32\\win16-window-uwp\\frame.c"
+      "path": "src\\lib-win32\\win16-window-uwp\\frame.c",
+      "sha256": "9db8149e585ecd18152e0ea1f345b2f4007ad77e53b1640de20177c26b5ad98e"
     },
     {
-      "sha256": "5e82de91404671a7b3cf480c5f40a860ca94f9cf403e33e60b90570f30791dc4",
-      "path": "src\\lib-win32\\win16-window-uwp\\frame.h"
+      "path": "src\\lib-win32\\win16-window-uwp\\frame.h",
+      "sha256": "0bd0049adc987844e1af526cceda7b48779cc1b767f19973226ae6f0ae43a28e"
     },
     {
-      "sha256": "54868063bf3c5df8b0b544c244cc8eb1d658e49b9ee3340340421d952a73601a",
-      "path": "src\\ntw16s-dll\\api.h"
+      "path": "src\\ntw16s-dll\\api.h",
+      "sha256": "54868063bf3c5df8b0b544c244cc8eb1d658e49b9ee3340340421d952a73601a"
     },
     {
-      "sha256": "80a14b518d9fd1cae3e9026f5a74ae465c052fa848c2b9f7abfbf7c417708d1c",
-      "path": "src\\ntw16s-dll\\attachment.c"
+      "path": "src\\ntw16s-dll\\attachment.c",
+      "sha256": "80a14b518d9fd1cae3e9026f5a74ae465c052fa848c2b9f7abfbf7c417708d1c"
     },
     {
-      "sha256": "7a5cde7dcf7fb6925373ec34b0877ff37b2175f19ecb5a9c2cfa5e52ee49a7ed",
-      "path": "src\\ntw16s-dll\\attachment.h"
+      "path": "src\\ntw16s-dll\\attachment.h",
+      "sha256": "7a5cde7dcf7fb6925373ec34b0877ff37b2175f19ecb5a9c2cfa5e52ee49a7ed"
     },
     {
-      "sha256": "2abccdab3a9a45ad75042bf5a59896c0adeee33c6389da61b551a9dd7255c812",
-      "path": "src\\ntw16s-dll\\control_class.h"
+      "path": "src\\ntw16s-dll\\control_class.h",
+      "sha256": "2abccdab3a9a45ad75042bf5a59896c0adeee33c6389da61b551a9dd7255c812"
     },
     {
-      "sha256": "2b70f536f065f798187d96c7810897ae41ba241c0261fb3651df3d3fbc7d9a88",
-      "path": "src\\ntw16s-dll\\control_scope.c"
+      "path": "src\\ntw16s-dll\\control_scope.c",
+      "sha256": "2b70f536f065f798187d96c7810897ae41ba241c0261fb3651df3d3fbc7d9a88"
     },
     {
-      "sha256": "a5b53e4a01c7f2d3b9f62c2ff7e395f32d276c21320986249baa9f98c006ae35",
-      "path": "src\\ntw16s-dll\\controls.c"
+      "path": "src\\ntw16s-dll\\controls.c",
+      "sha256": "a5b53e4a01c7f2d3b9f62c2ff7e395f32d276c21320986249baa9f98c006ae35"
     },
     {
-      "sha256": "ee2c9519555719ac8096fb3941915238842406516772f56f4fb69ab2a3f26336",
-      "path": "src\\ntw16s-dll\\controls.h"
+      "path": "src\\ntw16s-dll\\controls.h",
+      "sha256": "ee2c9519555719ac8096fb3941915238842406516772f56f4fb69ab2a3f26336"
     },
     {
-      "sha256": "056212610fa33c9ad268fab84de07db2bcb9de41b5c215f37e0c2685751e397c",
-      "path": "src\\ntw16s-dll\\dllmain.c"
+      "path": "src\\ntw16s-dll\\dllmain.c",
+      "sha256": "056212610fa33c9ad268fab84de07db2bcb9de41b5c215f37e0c2685751e397c"
     },
     {
-      "sha256": "56294291f4c2a046f8dc2ff2e9ab7b557161ef3ea963bf42ba51c45629341cce",
-      "path": "src\\ntw16s-dll\\font.h"
+      "path": "src\\ntw16s-dll\\font.h",
+      "sha256": "56294291f4c2a046f8dc2ff2e9ab7b557161ef3ea963bf42ba51c45629341cce"
     },
     {
-      "sha256": "b7d39b522884d056ef7b1a5126d26e6388677303fecbce8a4590913e934c3bb4",
-      "path": "src\\ntw16s-dll\\menu_bar.h"
+      "path": "src\\ntw16s-dll\\menu_bar.h",
+      "sha256": "b7d39b522884d056ef7b1a5126d26e6388677303fecbce8a4590913e934c3bb4"
     },
     {
-      "sha256": "cb3b1c11b6916b2925d84fdafc2391c9316034a6e3695a0347ceda61ebe01ce1",
-      "path": "src\\ntw16s-dll\\menu_items.h"
+      "path": "src\\ntw16s-dll\\menu_items.h",
+      "sha256": "cb3b1c11b6916b2925d84fdafc2391c9316034a6e3695a0347ceda61ebe01ce1"
     },
     {
-      "sha256": "f41f78f58ad00fee51f4aa498928c528128c5e86895dad64e927037dff978934",
-      "path": "src\\ntw16s-dll\\menu_paint.h"
+      "path": "src\\ntw16s-dll\\menu_paint.h",
+      "sha256": "f41f78f58ad00fee51f4aa498928c528128c5e86895dad64e927037dff978934"
     },
     {
-      "sha256": "6978037ff7b65c28263832fe201aa76b7b644a78c8e20225953b1f408017e108",
-      "path": "src\\ntw16s-dll\\menu_scope.h"
+      "path": "src\\ntw16s-dll\\menu_scope.h",
+      "sha256": "6978037ff7b65c28263832fe201aa76b7b644a78c8e20225953b1f408017e108"
     },
     {
-      "sha256": "7446a9e54c5347bafc6030a546cb5ef736a2e55cbac1a0087078214700abab88",
-      "path": "src\\ntw16s-dll\\month_text.h"
+      "path": "src\\ntw16s-dll\\month_text.h",
+      "sha256": "7446a9e54c5347bafc6030a546cb5ef736a2e55cbac1a0087078214700abab88"
     },
     {
-      "sha256": "4dcd66856f892290468ba0785835b2060b873a679b2938337d4ca87fb0e75b6f",
-      "path": "src\\ntw16s-dll\\native_api.c"
+      "path": "src\\ntw16s-dll\\native_api.c",
+      "sha256": "4dcd66856f892290468ba0785835b2060b873a679b2938337d4ca87fb0e75b6f"
     },
     {
-      "sha256": "2e8b3c5b585b9ee61afb597cacc3d18cfd15631de6eadc34fc2870c30ba657c8",
-      "path": "src\\ntw16s-dll\\native_api.h"
+      "path": "src\\ntw16s-dll\\native_api.h",
+      "sha256": "2e8b3c5b585b9ee61afb597cacc3d18cfd15631de6eadc34fc2870c30ba657c8"
     },
     {
-      "sha256": "d10566f17c968fedc73459dd2f5d5b1f184f315e220a3feacd6d8281f9083b59",
-      "path": "src\\ntw16s-dll\\ntw16s.h"
+      "path": "src\\ntw16s-dll\\ntw16s.h",
+      "sha256": "d10566f17c968fedc73459dd2f5d5b1f184f315e220a3feacd6d8281f9083b59"
     },
     {
-      "sha256": "b51c201ec8444ec46fb9fcdfeec8f138c6915dd8f25ffde0aeb5a6ea9e9205bf",
-      "path": "src\\ntw16s-dll\\ntw16s32.def"
+      "path": "src\\ntw16s-dll\\ntw16s32.def",
+      "sha256": "b51c201ec8444ec46fb9fcdfeec8f138c6915dd8f25ffde0aeb5a6ea9e9205bf"
     },
     {
-      "sha256": "72d9f081b4083b820eaccb765a1806aeeecba559f0087380f5d27aea4afdd2ff",
-      "path": "src\\ntw16s-dll\\ntw16s64.def"
+      "path": "src\\ntw16s-dll\\ntw16s64.def",
+      "sha256": "72d9f081b4083b820eaccb765a1806aeeecba559f0087380f5d27aea4afdd2ff"
     },
     {
-      "sha256": "463a18b977c1fa78d7d1741c42c5ff8ff3c54356091a5f16e3447df2d63295d7",
-      "path": "src\\ntw16s-dll\\README.md"
+      "path": "src\\ntw16s-dll\\README.md",
+      "sha256": "463a18b977c1fa78d7d1741c42c5ff8ff3c54356091a5f16e3447df2d63295d7"
     },
     {
-      "sha256": "211d1d1d85e65bef001990fb229bd5959e272e1992b95d9086acc7c67716b6a7",
-      "path": "src\\ntw16s-dll\\resources.md"
+      "path": "src\\ntw16s-dll\\resources.md",
+      "sha256": "211d1d1d85e65bef001990fb229bd5959e272e1992b95d9086acc7c67716b6a7"
     },
     {
-      "sha256": "7529dee20918e2ed28ffacfbaef24d0d6e5b7916b571dfd85ea12b079adb7f82",
-      "path": "src\\ntw16s-dll\\static_text.h"
+      "path": "src\\ntw16s-dll\\static_text.h",
+      "sha256": "7529dee20918e2ed28ffacfbaef24d0d6e5b7916b571dfd85ea12b079adb7f82"
     },
     {
-      "sha256": "759e1afbc2d76798a3a3cc7da595587d1e3e4f969deeef56b93253c9c740f920",
-      "path": "src\\ntw16s-dll\\status_theme.h"
+      "path": "src\\ntw16s-dll\\status_theme.h",
+      "sha256": "759e1afbc2d76798a3a3cc7da595587d1e3e4f969deeef56b93253c9c740f920"
     },
     {
-      "sha256": "46b72b938e39f33324125db394cc60fea1f38874d05096162e6567bd7fd1738e",
-      "path": "src\\ntw16s-dll\\theme.c"
+      "path": "src\\ntw16s-dll\\theme.c",
+      "sha256": "46b72b938e39f33324125db394cc60fea1f38874d05096162e6567bd7fd1738e"
     },
     {
-      "sha256": "b97ad1fe44e2303ccd6f80621f7a6a7d49f5e73a775949dec1dbfde536c45d81",
-      "path": "src\\ntw16s-dll\\theme.h"
+      "path": "src\\ntw16s-dll\\theme.h",
+      "sha256": "b97ad1fe44e2303ccd6f80621f7a6a7d49f5e73a775949dec1dbfde536c45d81"
     },
     {
-      "sha256": "4e49e9743de4184b3c04f0cc2adc0e6d5957fbc79860e19a7342898529f5ad6c",
-      "path": "src\\ntw16s-dll\\updown_paint.h"
+      "path": "src\\ntw16s-dll\\updown_paint.h",
+      "sha256": "4e49e9743de4184b3c04f0cc2adc0e6d5957fbc79860e19a7342898529f5ad6c"
     },
     {
-      "sha256": "5a0c96d7a19b39de39f98ffc522f03ec7f65133bc96086f994d581f9008d4a93",
-      "path": "src\\ntw16s-dll\\vb_text.c"
+      "path": "src\\ntw16s-dll\\vb_text.c",
+      "sha256": "5a0c96d7a19b39de39f98ffc522f03ec7f65133bc96086f994d581f9008d4a93"
     },
     {
-      "sha256": "b3a8fb5d0a0aad395195533752a247da62e788c74bbb9473f4b72a2e57fd9666",
-      "path": "src\\ntw16s-dll\\vb_text.h"
+      "path": "src\\ntw16s-dll\\vb_text.h",
+      "sha256": "b3a8fb5d0a0aad395195533752a247da62e788c74bbb9473f4b72a2e57fd9666"
     },
     {
-      "sha256": "f9c4079bedefdfd9c8a7e955a67109b9d3050dfe142c86c246c0e20dbf3f23c1",
-      "path": "src\\ntw16s-dll\\version.rc"
+      "path": "src\\ntw16s-dll\\version.rc",
+      "sha256": "f9c4079bedefdfd9c8a7e955a67109b9d3050dfe142c86c246c0e20dbf3f23c1"
     },
     {
-      "sha256": "fb0ea77eecc3932957c6c40d8da7826cd91c0cdc6ff7617ed5863e076d26dfb4",
-      "path": "src\\ntw16s-dll\\win16_style.c"
+      "path": "src\\ntw16s-dll\\win16_style.c",
+      "sha256": "fb0ea77eecc3932957c6c40d8da7826cd91c0cdc6ff7617ed5863e076d26dfb4"
     },
     {
-      "sha256": "2b5b9c4041fb67bf7c4b8c45298e0261dc2e10630f71798c296ece657e2499cc",
-      "path": "src\\ntw16s-dll\\win16_style.h"
+      "path": "src\\ntw16s-dll\\win16_style.h",
+      "sha256": "2b5b9c4041fb67bf7c4b8c45298e0261dc2e10630f71798c296ece657e2499cc"
     },
     {
-      "sha256": "a64464470b8e0f4a890dccc32d7a4aeaba3bce29cdbd8a0fe25925f08d012aad",
-      "path": "src\\ntw16s-dll\\global\\attach.c"
+      "path": "src\\ntw16s-dll\\global\\attach.c",
+      "sha256": "a64464470b8e0f4a890dccc32d7a4aeaba3bce29cdbd8a0fe25925f08d012aad"
     },
     {
-      "sha256": "d102884dc0a48b543092c8851b557b2d7737808879247b2303cf9e05e00e9e51",
-      "path": "src\\ntw16s-dll\\global\\attach.h"
+      "path": "src\\ntw16s-dll\\global\\attach.h",
+      "sha256": "d102884dc0a48b543092c8851b557b2d7737808879247b2303cf9e05e00e9e51"
     },
     {
-      "sha256": "53f13b3f89d14595c391831b5432ac925c3f7b2e401aac85b43eafc2dd7b4c83",
-      "path": "src\\ntw16s-dll\\global\\hook.c"
+      "path": "src\\ntw16s-dll\\global\\hook.c",
+      "sha256": "53f13b3f89d14595c391831b5432ac925c3f7b2e401aac85b43eafc2dd7b4c83"
     },
     {
-      "sha256": "4ef6e3d6665fc01886d69695c2d13e3c40046daabdd58ad987f93f76cf4b528c",
-      "path": "src\\ntw16s-dll\\global\\late.c"
+      "path": "src\\ntw16s-dll\\global\\late.c",
+      "sha256": "4ef6e3d6665fc01886d69695c2d13e3c40046daabdd58ad987f93f76cf4b528c"
     },
     {
-      "sha256": "ebf3f5a6bdf90c291d84c64fa7c1681b0b5e2be54c8b3e67da6f1bc0ba0ea11e",
-      "path": "src\\ntw16s-dll\\global\\late.h"
+      "path": "src\\ntw16s-dll\\global\\late.h",
+      "sha256": "ebf3f5a6bdf90c291d84c64fa7c1681b0b5e2be54c8b3e67da6f1bc0ba0ea11e"
     },
     {
-      "sha256": "16c95a7565c45bb840bd53472acad826b0ad35640e6c474d181c43d8d47d3148",
-      "path": "src\\ntw16s-dll\\global\\manager.c"
+      "path": "src\\ntw16s-dll\\global\\manager.c",
+      "sha256": "16c95a7565c45bb840bd53472acad826b0ad35640e6c474d181c43d8d47d3148"
     },
     {
-      "sha256": "8b51e974682b4162f095c26f12fb853d19f56d258262c6afd7abc365399c4a82",
-      "path": "src\\ntw16s-dll\\global\\manager.h"
+      "path": "src\\ntw16s-dll\\global\\manager.h",
+      "sha256": "8b51e974682b4162f095c26f12fb853d19f56d258262c6afd7abc365399c4a82"
     },
     {
-      "sha256": "bf8c3cead7caf4302e55cdd0723a092fbeffe02decb7f9c3e58e9ddf00fff05e",
-      "path": "src\\ntw16s-dll\\global\\policy.c"
+      "path": "src\\ntw16s-dll\\global\\policy.c",
+      "sha256": "bf8c3cead7caf4302e55cdd0723a092fbeffe02decb7f9c3e58e9ddf00fff05e"
     },
     {
-      "sha256": "98f4c4f3708def9842b63567f2f87487ea87f6d778eb448545e2dc0235ec43b4",
-      "path": "src\\ntw16s-dll\\global\\policy.h"
+      "path": "src\\ntw16s-dll\\global\\policy.h",
+      "sha256": "98f4c4f3708def9842b63567f2f87487ea87f6d778eb448545e2dc0235ec43b4"
     },
     {
-      "sha256": "482ce1b0256016cf4a4f65b74599a5bb2108662853f724080ee9e55043bf0f38",
-      "path": "src\\ntw16s-dll\\global\\process.c"
+      "path": "src\\ntw16s-dll\\global\\process.c",
+      "sha256": "482ce1b0256016cf4a4f65b74599a5bb2108662853f724080ee9e55043bf0f38"
     },
     {
-      "sha256": "7eaae6de7774a74eec9dfd79f595985df8ece347535d5bcec8d025a44080e836",
-      "path": "src\\ntw16s-dll\\global\\process.h"
+      "path": "src\\ntw16s-dll\\global\\process.h",
+      "sha256": "7eaae6de7774a74eec9dfd79f595985df8ece347535d5bcec8d025a44080e836"
     },
     {
-      "sha256": "4fb41690f3c4355c164ab8869d140a599251b8b2f95ad981cedd985e94b7ca00",
-      "path": "src\\ntw16s-dll\\global\\remote.c"
+      "path": "src\\ntw16s-dll\\global\\remote.c",
+      "sha256": "4fb41690f3c4355c164ab8869d140a599251b8b2f95ad981cedd985e94b7ca00"
     },
     {
-      "sha256": "6ff170c39ca25027c40948704e1bf03e495e1d05fd3f3e9ff719330a9fc9854c",
-      "path": "src\\ntw16s-dll\\global\\remote.h"
+      "path": "src\\ntw16s-dll\\global\\remote.h",
+      "sha256": "6ff170c39ca25027c40948704e1bf03e495e1d05fd3f3e9ff719330a9fc9854c"
     },
     {
-      "sha256": "649722f72dcb82e1b90c675b47aa698b9ab42e328e92ce02d610af17555a049f",
-      "path": "src\\ntw16s-dll\\global\\session.c"
+      "path": "src\\ntw16s-dll\\global\\session.c",
+      "sha256": "649722f72dcb82e1b90c675b47aa698b9ab42e328e92ce02d610af17555a049f"
     },
     {
-      "sha256": "7f5d7e22978e652aa50f6bdc90aeb6befc86dc9d62df35675b6fb6ba0f524fae",
-      "path": "src\\ntw16s-dll\\global\\session.h"
+      "path": "src\\ntw16s-dll\\global\\session.h",
+      "sha256": "7f5d7e22978e652aa50f6bdc90aeb6befc86dc9d62df35675b6fb6ba0f524fae"
     },
     {
-      "sha256": "c4975f130076fbfc7310160db6ee87f94c6b1af707a2c1cd26f9cb5bdf0bbb31",
-      "path": "src\\ntw16s-dll\\global\\start.c"
+      "path": "src\\ntw16s-dll\\global\\start.c",
+      "sha256": "c4975f130076fbfc7310160db6ee87f94c6b1af707a2c1cd26f9cb5bdf0bbb31"
     },
     {
-      "sha256": "488d2a9f2a23876bcea9f0484a36a00744993b9b5fce9a9b9009886aad66d627",
-      "path": "src\\ntw16s-dll\\global\\start.h"
+      "path": "src\\ntw16s-dll\\global\\start.h",
+      "sha256": "488d2a9f2a23876bcea9f0484a36a00744993b9b5fce9a9b9009886aad66d627"
     },
     {
-      "sha256": "504532867675ba510b5f4826ed54a2a41553d29d4cfa67150a950f9da301ecf8",
-      "path": "src\\ntw16s-dll\\global\\thread.c"
+      "path": "src\\ntw16s-dll\\global\\thread.c",
+      "sha256": "504532867675ba510b5f4826ed54a2a41553d29d4cfa67150a950f9da301ecf8"
     },
     {
-      "sha256": "f83259f6ca42ad24d497e71459fa17e95267199a75c97a8a3a9cfdcd245400f9",
-      "path": "src\\ntw16s-dll\\global\\thread.h"
+      "path": "src\\ntw16s-dll\\global\\thread.h",
+      "sha256": "f83259f6ca42ad24d497e71459fa17e95267199a75c97a8a3a9cfdcd245400f9"
     },
     {
-      "sha256": "97caa2e08ce8af3fca025347bde993cbcfa8037dd86f0c2cb18ff930aec6665b",
-      "path": "src\\ntw16s-dll\\global\\vb_text.c"
+      "path": "src\\ntw16s-dll\\global\\vb_text.c",
+      "sha256": "97caa2e08ce8af3fca025347bde993cbcfa8037dd86f0c2cb18ff930aec6665b"
     },
     {
-      "sha256": "2cb836aaa78e9cd97f1e5ca17fbcb61303b40b2ab9adab2d8b70ee3b1da3678f",
-      "path": "src\\ntw16s-dll\\global\\vb_text.h"
+      "path": "src\\ntw16s-dll\\global\\vb_text.h",
+      "sha256": "2cb836aaa78e9cd97f1e5ca17fbcb61303b40b2ab9adab2d8b70ee3b1da3678f"
     },
     {
-      "sha256": "609129ee8ea18136df1057fc039345240b5fdf31c15b5283546fcbb97cfe7743",
-      "path": "src\\ntw16s-dll\\global\\window.c"
+      "path": "src\\ntw16s-dll\\global\\window.c",
+      "sha256": "609129ee8ea18136df1057fc039345240b5fdf31c15b5283546fcbb97cfe7743"
     },
     {
-      "sha256": "a5454f9c2cc694e8ba1d824321e647ab0602abd3b733465a5725454df0523746",
-      "path": "src\\ntw16s-dll\\global\\window.h"
+      "path": "src\\ntw16s-dll\\global\\window.h",
+      "sha256": "a5454f9c2cc694e8ba1d824321e647ab0602abd3b733465a5725454df0523746"
     },
     {
-      "sha256": "0796086596d4ea8943745f5d1de063f67a744e35baad08cf89c9f6656021721b",
-      "path": "src\\ntw16s-dll\\injection\\com_dialogs.c"
+      "path": "src\\ntw16s-dll\\injection\\com_dialogs.c",
+      "sha256": "0796086596d4ea8943745f5d1de063f67a744e35baad08cf89c9f6656021721b"
     },
     {
-      "sha256": "a230db823def5a3c7d81d73b65da3b3d29777e26b9aa3de71eda2c3afd4b0d04",
-      "path": "src\\ntw16s-dll\\injection\\context.c"
+      "path": "src\\ntw16s-dll\\injection\\context.c",
+      "sha256": "a230db823def5a3c7d81d73b65da3b3d29777e26b9aa3de71eda2c3afd4b0d04"
     },
     {
-      "sha256": "db13cc3cf96b1b4c08fee4a4d6e4ece050da72ec294737011cd47246545ec440",
-      "path": "src\\ntw16s-dll\\injection\\create_process.c"
+      "path": "src\\ntw16s-dll\\injection\\create_process.c",
+      "sha256": "db13cc3cf96b1b4c08fee4a4d6e4ece050da72ec294737011cd47246545ec440"
     },
     {
-      "sha256": "e31ae84af1eb26bb2f03cd96eb3d802bd358db8b0b69d94279c79c2bab85981c",
-      "path": "src\\ntw16s-dll\\injection\\entry.c"
+      "path": "src\\ntw16s-dll\\injection\\entry.c",
+      "sha256": "e31ae84af1eb26bb2f03cd96eb3d802bd358db8b0b69d94279c79c2bab85981c"
     },
     {
-      "sha256": "aee8e105dd7f7d1d0d0ef4b65d5d79ad86981df642731543d6e6537fbbd3f428",
-      "path": "src\\ntw16s-dll\\injection\\file_dialogs.c"
+      "path": "src\\ntw16s-dll\\injection\\file_dialogs.c",
+      "sha256": "aee8e105dd7f7d1d0d0ef4b65d5d79ad86981df642731543d6e6537fbbd3f428"
     },
     {
-      "sha256": "9fe69a52f675b59c46ea3b1bc96def491399b78599260a12fdc906ae7a554f50",
-      "path": "src\\ntw16s-dll\\injection\\folder_dialogs.c"
+      "path": "src\\ntw16s-dll\\injection\\folder_dialogs.c",
+      "sha256": "9fe69a52f675b59c46ea3b1bc96def491399b78599260a12fdc906ae7a554f50"
     },
     {
-      "sha256": "b5888ee39355d7586194eb895247ead3053d93c08ecf0b7bdeb5a1a96c34e2bc",
-      "path": "src\\ntw16s-dll\\injection\\helper.c"
+      "path": "src\\ntw16s-dll\\injection\\helper.c",
+      "sha256": "b5888ee39355d7586194eb895247ead3053d93c08ecf0b7bdeb5a1a96c34e2bc"
     },
     {
-      "sha256": "6d38d280ae9fe22cb0de8bc0c8b952f0cf417a4db858e3e0460338d1d325c43e",
-      "path": "src\\ntw16s-dll\\injection\\injection.h"
+      "path": "src\\ntw16s-dll\\injection\\injection.h",
+      "sha256": "6d38d280ae9fe22cb0de8bc0c8b952f0cf417a4db858e3e0460338d1d325c43e"
     },
     {
-      "sha256": "3bd21aea86cffe68db4396449ff71af83f51b7cf8ab84f11d4fa2c1d90fcaf4a",
-      "path": "src\\ntw16s-dll\\injection\\installer.c"
+      "path": "src\\ntw16s-dll\\injection\\installer.c",
+      "sha256": "3bd21aea86cffe68db4396449ff71af83f51b7cf8ab84f11d4fa2c1d90fcaf4a"
     },
     {
-      "sha256": "54f07c087f98efc87c46081c9dd3f319b74b96af84487bc8195f2c9b52714cdb",
-      "path": "src\\ntw16s-dll\\injection\\intercept.h"
+      "path": "src\\ntw16s-dll\\injection\\intercept.h",
+      "sha256": "54f07c087f98efc87c46081c9dd3f319b74b96af84487bc8195f2c9b52714cdb"
     },
     {
-      "sha256": "6045a74cd5657bdb795ab01f119ea80d190a9318398339dcc875e0485bcb15df",
-      "path": "src\\ntw16s-dll\\injection\\late_process.c"
+      "path": "src\\ntw16s-dll\\injection\\late_process.c",
+      "sha256": "6045a74cd5657bdb795ab01f119ea80d190a9318398339dcc875e0485bcb15df"
     },
     {
-      "sha256": "923fc11663961293cbf41e86f66338e61deaade0d3ff8ba033351927fb2d6a1d",
-      "path": "src\\ntw16s-dll\\injection\\late_process.h"
+      "path": "src\\ntw16s-dll\\injection\\late_process.h",
+      "sha256": "923fc11663961293cbf41e86f66338e61deaade0d3ff8ba033351927fb2d6a1d"
     },
     {
-      "sha256": "6bead2deca24dbf0598a97a281e74a57ffcdf7d5e32129bce6f785d44de066eb",
-      "path": "src\\ntw16s-dll\\injection\\modern_dialogs.c"
+      "path": "src\\ntw16s-dll\\injection\\modern_dialogs.c",
+      "sha256": "6bead2deca24dbf0598a97a281e74a57ffcdf7d5e32129bce6f785d44de066eb"
     },
     {
-      "sha256": "a54c977f56af617b777fae3a7169d2e3d7fc798aefcfd58bf8cc74df95559700",
-      "path": "src\\ntw16s-dll\\injection\\print_extended.h"
+      "path": "src\\ntw16s-dll\\injection\\print_extended.h",
+      "sha256": "a54c977f56af617b777fae3a7169d2e3d7fc798aefcfd58bf8cc74df95559700"
     },
     {
-      "sha256": "11adea3811df7ed1325b691606eb8968fc8dba4f48bee2eca5f3dc698bcafc1c",
-      "path": "src\\ntw16s-dll\\injection\\print_ranges.h"
+      "path": "src\\ntw16s-dll\\injection\\print_ranges.h",
+      "sha256": "11adea3811df7ed1325b691606eb8968fc8dba4f48bee2eca5f3dc698bcafc1c"
     },
     {
-      "sha256": "d8e7e27b255c1736ce744566d9ac1093e5ac20a03ce23916f5757bab41370e07",
-      "path": "src\\ntw16s-dll\\injection\\staging.h"
+      "path": "src\\ntw16s-dll\\injection\\staging.h",
+      "sha256": "d8e7e27b255c1736ce744566d9ac1093e5ac20a03ce23916f5757bab41370e07"
     },
     {
-      "sha256": "afa1d58a82029e17162930935eac5c2e24e098dd8e6eeda7bdeb1d91cdee3bd8",
-      "path": "src\\ntw16s-dll\\injection\\startup_hooks.h"
+      "path": "src\\ntw16s-dll\\injection\\startup_hooks.h",
+      "sha256": "afa1d58a82029e17162930935eac5c2e24e098dd8e6eeda7bdeb1d91cdee3bd8"
     },
     {
-      "sha256": "1bb586134e8c3bdbfde4122b502d373a12112d33435aa3956952f067e2f82551",
-      "path": "src\\ntw16s-dll\\injection\\subclass32.def"
+      "path": "src\\ntw16s-dll\\injection\\subclass32.def",
+      "sha256": "1bb586134e8c3bdbfde4122b502d373a12112d33435aa3956952f067e2f82551"
     },
     {
-      "sha256": "7801e6b16a6795f252cb92a997594e1c32a72f6dfe178b5ff03eb08509bbec09",
-      "path": "src\\ntw16s-dll\\injection\\subclass64.def"
+      "path": "src\\ntw16s-dll\\injection\\subclass64.def",
+      "sha256": "7801e6b16a6795f252cb92a997594e1c32a72f6dfe178b5ff03eb08509bbec09"
     },
     {
-      "sha256": "d2332549ca45b6e5eb7da4e6d71f58e10db92bb17f25aa460115acd2b2f53daf",
-      "path": "src\\ntw16s-dll\\injection\\system_process.c"
+      "path": "src\\ntw16s-dll\\injection\\system_process.c",
+      "sha256": "d2332549ca45b6e5eb7da4e6d71f58e10db92bb17f25aa460115acd2b2f53daf"
     },
     {
-      "sha256": "355936be0443766c68fc2fce232f0e648559cca507b70a15f11374a180370dd0",
-      "path": "src\\ntw16s-dll\\injection\\system_process.h"
+      "path": "src\\ntw16s-dll\\injection\\system_process.h",
+      "sha256": "355936be0443766c68fc2fce232f0e648559cca507b70a15f11374a180370dd0"
     },
     {
-      "sha256": "64fb9d3c260eae02d00e598e681e37e8fd6f96d8855d48493e12112cd32ffd9c",
-      "path": "src\\ntw16s-dll\\injection\\theme_track.c"
+      "path": "src\\ntw16s-dll\\injection\\theme_track.c",
+      "sha256": "64fb9d3c260eae02d00e598e681e37e8fd6f96d8855d48493e12112cd32ffd9c"
     },
     {
-      "sha256": "80ccd4cf3cf931cbdb917bf9100fdd23c90fa24280b28b006261dab198176d26",
-      "path": "src\\ntw16s-dll\\injection\\theme_track.h"
+      "path": "src\\ntw16s-dll\\injection\\theme_track.h",
+      "sha256": "80ccd4cf3cf931cbdb917bf9100fdd23c90fa24280b28b006261dab198176d26"
     },
     {
-      "sha256": "f97bd35f4c41844a5040b7dac9979babc2c4cfb314381580518f1f30496d7f3b",
-      "path": "src\\ntw16s-dll\\injection\\unwind.h"
+      "path": "src\\ntw16s-dll\\injection\\unwind.h",
+      "sha256": "f97bd35f4c41844a5040b7dac9979babc2c4cfb314381580518f1f30496d7f3b"
     },
     {
-      "sha256": "463f32fd4879526d36725b97a5c1287ce1d590706f8fa11863b1c55a2c97b61a",
-      "path": "src\\ntw16s-dll\\injection\\window_titles.c"
+      "path": "src\\ntw16s-dll\\injection\\window_titles.c",
+      "sha256": "463f32fd4879526d36725b97a5c1287ce1d590706f8fa11863b1c55a2c97b61a"
     },
     {
-      "sha256": "11a869bf99effe2a95ceda5f79ae05616326d4fbe6aa9b10d5ba873fc5a7329c",
-      "path": "src\\ntw16s-dll\\uwp\\hook.c"
+      "path": "src\\ntw16s-dll\\uwp\\hook.c",
+      "sha256": "6cddcb4e98dd260bd651bcee6d0d26576e422f386f7b7a4a8247e52f4df15795"
     },
     {
-      "sha256": "c741cb3dbc71751568e73a60c2184b8bafa46167d557303feb648c432c73eb68",
-      "path": "src\\ntw16s-dll\\uwp\\hook.h"
+      "path": "src\\ntw16s-dll\\uwp\\hook.h",
+      "sha256": "f116ce527e8907a9c85c3ef2f22a50fd93c27be573d35973649d4860db6cfc10"
     },
     {
-      "sha256": "da82ebced1da9dc011f99f92c3a6522416dd4019d80dcd09461cb2b0a2d90d28",
-      "path": "src\\run16s-exe\\elevation.c"
+      "path": "src\\ntw16s-dll\\uwp\\native.c",
+      "sha256": "b2d353aca82db9141452edf750a136fb6a37cbe884587553448fc3acde1a63ef"
     },
     {
-      "sha256": "970f7d96566c7c59790682b65bc772ee6e72c3b2c7d9bcecd332ccdf52a5b0cd",
-      "path": "src\\run16s-exe\\elevation.h"
+      "path": "src\\ntw16s-dll\\uwp\\native.h",
+      "sha256": "7cf6b65de167e4a0cb87cf8b8c169608e51c1e9b8ddbb4186deed20300b625b5"
     },
     {
-      "sha256": "932da3aca78b64108772c854b234cbbfabce701eb1515a1dee426a0063e4c880",
-      "path": "src\\run16s-exe\\global.c"
+      "path": "src\\run16s-exe\\elevation.c",
+      "sha256": "da82ebced1da9dc011f99f92c3a6522416dd4019d80dcd09461cb2b0a2d90d28"
     },
     {
-      "sha256": "ab4970cc1b2003edfe8b97f6c3e91a438f5ad74f24c9fd6c34c776820756b713",
-      "path": "src\\run16s-exe\\global.h"
+      "path": "src\\run16s-exe\\elevation.h",
+      "sha256": "970f7d96566c7c59790682b65bc772ee6e72c3b2c7d9bcecd332ccdf52a5b0cd"
     },
     {
-      "sha256": "18765421cb414ce2083e3a633c7f6ace468e0a48291bf4b49b8f19e6af256e81",
-      "path": "src\\run16s-exe\\main.c"
+      "path": "src\\run16s-exe\\global.c",
+      "sha256": "932da3aca78b64108772c854b234cbbfabce701eb1515a1dee426a0063e4c880"
     },
     {
-      "sha256": "fbe209ecb9d2b8e771502c75513cc93feac42d03d9a6a64a43ad85acffa8536d",
-      "path": "src\\run16s-exe\\process_lifecycle.c"
+      "path": "src\\run16s-exe\\global.h",
+      "sha256": "ab4970cc1b2003edfe8b97f6c3e91a438f5ad74f24c9fd6c34c776820756b713"
     },
     {
-      "sha256": "91b6879b9dc36380af9e78540b359fbe4700f652d6fbf1d9bf7b102937bb71e5",
-      "path": "src\\run16s-exe\\process_lifecycle.h"
+      "path": "src\\run16s-exe\\main.c",
+      "sha256": "18765421cb414ce2083e3a633c7f6ace468e0a48291bf4b49b8f19e6af256e81"
     },
     {
-      "sha256": "d31884ffa8419190a966c635f9aad5b93c6cbb7f82efa4ce19b73bafa8165010",
-      "path": "src\\run16s-exe\\README.md"
+      "path": "src\\run16s-exe\\process_lifecycle.c",
+      "sha256": "fbe209ecb9d2b8e771502c75513cc93feac42d03d9a6a64a43ad85acffa8536d"
     },
     {
-      "sha256": "3a0e0e8e26abcacaeaa7e3e84dc4b033367a524e94f8a16a46f1a00e9141f066",
-      "path": "src\\run16s-exe\\run16s.manifest"
+      "path": "src\\run16s-exe\\process_lifecycle.h",
+      "sha256": "91b6879b9dc36380af9e78540b359fbe4700f652d6fbf1d9bf7b102937bb71e5"
     },
     {
-      "sha256": "ff73b1f4b929d0a25a48964a3e839f75e774ef2dbfa6ba39ce3595e841b5f428",
-      "path": "src\\run16s-exe\\startup_error.c"
+      "path": "src\\run16s-exe\\README.md",
+      "sha256": "d31884ffa8419190a966c635f9aad5b93c6cbb7f82efa4ce19b73bafa8165010"
     },
     {
-      "sha256": "0421db650da4f08f2e27e1ad059433ef465e8059bb61ff173431bac5f29bd83a",
-      "path": "src\\run16s-exe\\startup_error.h"
+      "path": "src\\run16s-exe\\run16s.manifest",
+      "sha256": "3a0e0e8e26abcacaeaa7e3e84dc4b033367a524e94f8a16a46f1a00e9141f066"
     },
     {
-      "sha256": "f9681de0da6d6f8c76d2ba8c796ef038318207d13dd9891d3845b44beb7e0686",
-      "path": "src\\run16s-exe\\tray_controller.c"
+      "path": "src\\run16s-exe\\startup_error.c",
+      "sha256": "ff73b1f4b929d0a25a48964a3e839f75e774ef2dbfa6ba39ce3595e841b5f428"
     },
     {
-      "sha256": "8b198469b5337fc60aae4d7e5c724568e347474f4be18adee104b78ba514ad13",
-      "path": "src\\run16s-exe\\tray.h"
+      "path": "src\\run16s-exe\\startup_error.h",
+      "sha256": "0421db650da4f08f2e27e1ad059433ef465e8059bb61ff173431bac5f29bd83a"
     },
     {
-      "sha256": "77d10b6c839a9e1424ab543beef7079cc702cb6d2517415092cf0a20d2bf7a12",
-      "path": "src\\run16s-exe\\uwp.c"
+      "path": "src\\run16s-exe\\tray_controller.c",
+      "sha256": "f9681de0da6d6f8c76d2ba8c796ef038318207d13dd9891d3845b44beb7e0686"
     },
     {
-      "sha256": "46552aa9711122db3a3d32d142ebd73133432055b0d38e2beea22778d3ff98ba",
-      "path": "src\\run16s-exe\\uwp.h"
+      "path": "src\\run16s-exe\\tray.h",
+      "sha256": "8b198469b5337fc60aae4d7e5c724568e347474f4be18adee104b78ba514ad13"
     },
     {
-      "sha256": "db46700411a592919228cb1f1e415f5440f2d961379d65a26825d9c0fad6ee45",
-      "path": "src\\run16s-exe\\version.rc"
+      "path": "src\\run16s-exe\\uwp.c",
+      "sha256": "7c17687c6ccfc1644f1ccbdea5b0041eaabc3f9a0300e72d3c983c250dbcef45"
     },
     {
-      "sha256": "d00d4e812b5c6ef6f135c7016da358c26d7dbf2e769f17b465efde3d02599323",
-      "path": "src\\run16s-exe\\winlogo-source.md"
+      "path": "src\\run16s-exe\\uwp.h",
+      "sha256": "46552aa9711122db3a3d32d142ebd73133432055b0d38e2beea22778d3ff98ba"
     },
     {
-      "sha256": "07c5557a7c2f7f853b34287bb75304ecc01c51e8919138bc8e9ae6896bfa876e",
-      "path": "src\\run16s-exe\\winlogo.ico"
+      "path": "src\\run16s-exe\\version.rc",
+      "sha256": "db46700411a592919228cb1f1e415f5440f2d961379d65a26825d9c0fad6ee45"
     },
     {
-      "sha256": "3884c3d2d9a00a58203aec288052b1a6255a18deede6ce5d2155cc7dcbad3625",
-      "path": "CMakeLists.txt"
+      "path": "src\\run16s-exe\\winlogo-source.md",
+      "sha256": "d00d4e812b5c6ef6f135c7016da358c26d7dbf2e769f17b465efde3d02599323"
     },
     {
-      "sha256": "71337277c6c03463ca6d7b56aba20fed81d3e6f1c8a823f7d5ab30760de8a389",
-      "path": "LICENSE"
+      "path": "src\\run16s-exe\\winlogo.ico",
+      "sha256": "07c5557a7c2f7f853b34287bb75304ecc01c51e8919138bc8e9ae6896bfa876e"
+    },
+    {
+      "path": "CMakeLists.txt",
+      "sha256": "4b41295b1732de8fda7964d6cc1d8e0df8fe637260d61f63eba546e4c2e41938"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "71337277c6c03463ca6d7b56aba20fed81d3e6f1c8a823f7d5ab30760de8a389"
     }
   ],
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T22",
-      "sha256": "4757279eea32e70a061195b2c6e733da7c0b1e6a50f4557c8d255f2bd8a95122",
+      "sha256": "72fba2ecf97d1b9d3a4148c42508e0c11aef83a33c0951e49489177df6702367",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
         "kernel32.dll",
         "msvcrt.dll",
         "ole32.dll",
+        "oleaut32.dll",
         "shell32.dll",
         "user32.dll"
       ]
@@ -1675,7 +1684,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T22",
-      "sha256": "bee0a088345c5d6b25f27ec72407d45a6384da091be978cdcc113bf1d35b2b4f",
+      "sha256": "b57b4a32485ddf57e5f5edd5848c2a4bc9da6ede7895f0cbfd52f03feffd940a",
       "imports": [
         "ADVAPI32.dll",
         "COMCTL32.dll",
@@ -1690,6 +1699,7 @@
         "api-ms-win-crt-stdio-l1-1-0.dll",
         "api-ms-win-crt-string-l1-1-0.dll",
         "ole32.dll",
+        "OLEAUT32.dll",
         "SHELL32.dll",
         "USER32.dll",
         "UxTheme.dll",
@@ -1699,7 +1709,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T22",
-      "sha256": "9fceda211bdae7dc337bb0388ed2a0f9ce482879fba2f7f93cf3f550e4bb03b0",
+      "sha256": "90a892990799966ea99b2e208ff9cf3f65403d650086372f685434a1816e6343",
       "imports": [
         "ADVAPI32.dll",
         "COMCTL32.dll",
@@ -1709,6 +1719,7 @@
         "KERNEL32.dll",
         "msvcrt.dll",
         "ole32.dll",
+        "OLEAUT32.dll",
         "SHELL32.dll",
         "USER32.dll",
         "UxTheme.dll",
@@ -1718,7 +1729,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T22",
-      "sha256": "f3f82b4d2ea02537b4aa274dd6480face794604e019bda321321c0e5e5862696",
+      "sha256": "5ba8f56c8bbfb88eaa4e41160ca54fa96c44e591c44fc3bdd50004f009058e09",
       "imports": [
         "comctl32.dll",
         "comdlg32.dll",
@@ -1732,74 +1743,74 @@
     }
   },
   "toolchains": {
-    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
-    "ccache_version": "ccache version 4.13.6",
     "toolchains": [
       {
-        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
-        "target": "i686-w64-mingw32",
         "version": "16.1.0",
+        "target": "i686-w64-mingw32",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
         "architecture": "x86",
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe"
+        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6"
       },
       {
-        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
-        "target": "x86_64-w64-mingw32",
         "version": "16.1.0",
+        "target": "x86_64-w64-mingw32",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
         "architecture": "x64",
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe"
+        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad"
       }
     ],
-    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe"
+    "ccache_version": "ccache version 4.13.6",
+    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
+    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe"
   },
   "architecture": "C17, MinGW GCC, Ninja and ccache; three components, four product files; ABI 3 plus callback ordinal 38",
-  "binary_batch_delivery": "M0 T22 S1 P12",
+  "binary_batch_delivery": "M0 T22 S1 P17",
   "verification": {
     "clean_build": {
-      "profile": "Focused",
+      "build_root": "O:\\repos.hobby\\win16style\\build\\t22-package\\s1-clean8\\clean-source\\build\\.ninja",
       "targets": "all",
-      "exit_code": 0,
+      "tests": [
+        {
+          "configure_seconds": 9.052972899982706,
+          "tests": 1,
+          "build_seconds": 229.77390849997755,
+          "test_seconds": 0.8330490000080317,
+          "architecture": "x86",
+          "skipped": [],
+          "passed": 1
+        },
+        {
+          "configure_seconds": 10.080590500030667,
+          "tests": 1,
+          "build_seconds": 244.24565940001048,
+          "test_seconds": 0.6889157000696287,
+          "architecture": "x64",
+          "skipped": [],
+          "passed": 1
+        }
+      ],
       "architectures": [
         "x86",
         "x64"
       ],
-      "selection": "^core/abi$",
-      "status": "passed",
+      "exit_code": 0,
       "test_jobs": 4,
-      "build_root": "O:\\repos.hobby\\win16style\\build\\t22-package\\s1-clean7\\clean-source\\build\\.ninja",
-      "tests": [
-        {
-          "architecture": "x86",
-          "configure_seconds": 7.663904199958779,
-          "test_seconds": 1.0006494000554085,
-          "tests": 1,
-          "skipped": [],
-          "build_seconds": 194.01401040004566,
-          "passed": 1
-        },
-        {
-          "architecture": "x64",
-          "configure_seconds": 9.53641499998048,
-          "test_seconds": 0.67136160004884,
-          "tests": 1,
-          "skipped": [],
-          "build_seconds": 236.6837380999932,
-          "passed": 1
-        }
-      ],
-      "build_jobs": 8
+      "profile": "Focused",
+      "build_jobs": 8,
+      "selection": "^core/abi$",
+      "status": "passed"
     },
     "actual_package": [
       {
         "status": "passed-focused",
         "cases": 14,
-        "seconds": 33.9737816,
+        "seconds": 32.0578577,
         "skipped": [],
         "sha256": {
-          "demo.exe": "f3f82b4d2ea02537b4aa274dd6480face794604e019bda321321c0e5e5862696",
-          "ntw16s32.dll": "bee0a088345c5d6b25f27ec72407d45a6384da091be978cdcc113bf1d35b2b4f",
-          "ntw16s64.dll": "9fceda211bdae7dc337bb0388ed2a0f9ce482879fba2f7f93cf3f550e4bb03b0",
-          "run16s.exe": "4757279eea32e70a061195b2c6e733da7c0b1e6a50f4557c8d255f2bd8a95122"
+          "demo.exe": "5ba8f56c8bbfb88eaa4e41160ca54fa96c44e591c44fc3bdd50004f009058e09",
+          "ntw16s32.dll": "b57b4a32485ddf57e5f5edd5848c2a4bc9da6ede7895f0cbfd52f03feffd940a",
+          "ntw16s64.dll": "90a892990799966ea99b2e208ff9cf3f65403d650086372f685434a1816e6343",
+          "run16s.exe": "72fba2ecf97d1b9d3a4148c42508e0c11aef83a33c0951e49489177df6702367"
         },
         "selected_cases": [
           "progress-sharing",
@@ -1820,33 +1831,26 @@
       }
     ],
     "uwp_library": {
-      "x86": 2,
-      "x64": 2,
+      "x86": 3,
+      "x64": 3,
       "skipped": []
     },
+    "original_resource_tables_per_dll": 18,
     "real_calculator": {
       "dpi": 144,
-      "own_pid": 38488,
-      "activation_buttons_remove_geometry": "passed final clean7 package",
-      "visible_resize_cursor": "unresolved; unchanged implementation"
+      "own_pid": 36124,
+      "activation_buttons_remove_geometry": "passed final clean8 DLL; API-only inactive desktop"
     },
-    "original_resource_tables_per_dll": 18,
     "real_scan": {
       "dpi": 144,
-      "own_pid": 11928,
-      "host_pid": 18304,
-      "host_thread": 16224,
-      "keyboard_menu_action": "UP/ENTER selects eff0 and opens original Share/Settings",
-      "screenshots": [
-        "visual43-menu.bmp",
-        "visual43-aux.bmp"
-      ],
-      "remove_geometry": "passed",
-      "device_operations": "none"
+      "own_pid": 18888,
+      "activation_buttons_remove_geometry": "passed final clean8 DLL; API-only inactive desktop",
+      "full_screen_worker": "production source diagnostic fixture passed native enter/exit and overlay restore",
+      "full_screen_menu_selection": "NOT VERIFIED; synthetic messages/MSAA did not establish state change"
     }
   },
   "validation": {
-    "status": "focused automated and real Calculator screen evidence; no full matrix",
+    "status": "focused automated and API evidence; normal-desktop full-screen menu selection pending",
     "evidence": "docs/history/M0-T22-S1-feasibility.md",
     "limitations": [
       "explicit --app AUMID only; new instance and x64 ApplicationFrameHost",
@@ -1854,14 +1858,15 @@
       "visible resize cursor remains arrow; multi-monitor DPI and title-child replacement not certified",
       "Calculator and Scan exterior verified; Clock/Recorder tested only update placeholders",
       "auxiliary menu stays native; supports one optional additional title; original HWND replacement not rebound",
-      "adapter removal does not physically unload pinned DLL"
+      "adapter removal does not physically unload pinned DLL",
+      "New full-screen menu entry has no successful real-input selection evidence yet; inactive-desktop MSAA S_OK did not cause state change",
+      "UIA per-call timeouts do not prove an overall worker deadline or safe cancellation of a hung provider"
     ]
   },
   "closure": {
     "status": "M0/T22/S1 open; bounded development delivery",
     "remote": {
-      "product_commit": "3c334b3b8ecf0aef9bdddbf259e3a15edc536703",
-      "status": "fetched origin/main and compared all 12 changed blobs; remote four files and eight deployed files match tested SHA256"
+      "status": "pending commit/push and actual remote blob comparison"
     }
   }
 }
