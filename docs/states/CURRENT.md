@@ -928,3 +928,11 @@ Scan多一个菜单项，旧夹具固定UP/UP未选中最大化，取消后无�
 cursor-order/mouse-scan-order1定向线程消息观察未取得前台（当前前台另属PID19692），
 输入/光标/截图跳过，附着/撤销几何通过且观察钩子及自有实例已清理；不推定
 光标覆盖来源。P26仅记录当前证据，边缘光标问题未修复。
+
+P27纠正P26光标结论：旧scratch重复使用CURSORINFO，首次调用后cbSize变0，
+后续返回87却继续报告旧箭头。逐次初始化后正确；正式测试增加显式
+--activate-pointer AUMID image.exe，最多500ms采样并恢复指针和原topmost。
+scratch s1-pointer-regression1双宽增量3/4项通过无skip；使用已发布P22 DLL，
+Scan自有PID29168、144DPI的真实可见SIZEWE、窗口按钮、撤销几何通过，实例清理。
+原先光标失败判定作废，不改产品renderer；此前激活超时原因仍未确定。
+产品及两处四文件保持P22；S1/T22开放。

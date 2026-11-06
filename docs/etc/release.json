@@ -1866,6 +1866,11 @@
         "O:/winnt"
       ],
       "four_files_match_tested_sha256": true
+    },
+    "pointer_regression": {
+      "status": "PASS P27; published P22 DLL, Scan own PID29168 at144 DPI; visible SIZEWE, pointer/topmost restored, caption buttons and removal geometry passed",
+      "evidence": "build/t22-package/s1-pointer-regression1/native/scan.log",
+      "correction": "P26 arrow failure invalidated: repeated GetCursorInfo failed87 after cbSize became0; stale sample was reported"
     }
   },
   "validation": {
@@ -1874,7 +1879,7 @@
     "limitations": [
       "Calculator-specific system calc.exe mapping and explicit --app; x64 ApplicationFrameHost only",
       "No global UWP or general WinUI 3 support; activation-returned reuse accepted but not verified; no client styling",
-      "visible resize cursor remains arrow; multi-monitor DPI and title-child replacement not certified",
+      "multi-monitor DPI and title-child replacement not certified",
       "Calculator and Scan exterior verified; Clock/Recorder tested only update placeholders",
       "auxiliary menu stays native; supports one optional additional title; original HWND replacement not rebound",
       "adapter removal does not physically unload pinned DLL",

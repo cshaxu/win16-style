@@ -1147,3 +1147,26 @@ and installed both observers. SetForegroundWindow failed; foreground belonged
 to PID19692 instead. Cursor/input/capture checks skipped, apply/remove and
 geometry succeeded, observers were removed and own target closed. This does
 not identify the cursor overwriter. The earlier stable flags1 failure remains.
+
+## P27 cursor probe correction
+
+The P26 assertion of a valid visible-cursor failure is superseded. The scratch
+loop reused CURSORINFO without resetting cbSize. In mouse-scan-trace1-resume1,
+the first successful call left cbSize=0; later calls returned error87 and the
+probe reported stale arrow data. This does not prove a renderer defect.
+With a fresh structure per call, resume3 observed arrow then SIZEWE on the
+same surface edge, flags1, and restored the target geometry.
+
+The production-path fixture now offers `--activate-pointer AUMID image.exe`.
+It samples for at most500ms, verifies the visible cursor and pointer over the
+owned surface edge, and restores pointer/topmost state. No observer DLL is
+needed. Incremental GCC/Ninja/ccache x86 three and x64 four tests passed, no
+skips (s1-pointer-regression1/result.json). The actual published P22 DLL passed
+with Scan PID29168 at144 DPI: sent=1 match=1 flags=1 error=0 restored=1;
+maximize/minimize/restore, removal and original geometry also passed. The
+probe and owned target exited. Evidence: native/scan.log in that scratch.
+
+Only tests and evidence changed; product renderer, ABI and resource bytes are
+unchanged. Prior activation1460 failures remain unexplained. Multi-monitor
+DPI, actual reuse, title-child replacement and --wait remain outside this
+result. No claim of general UWP or WinUI compatibility; S1/T22 remain open.

@@ -8,6 +8,35 @@
 static DWORD pid;
 static HWND frame,core,surface;
 static PCWSTR target_image=L"CalculatorApp.exe";
+static BOOL resize_pointer(void)
+{
+    RECT r;POINT previous;
+    if(!surface||!GetWindowRect(surface,&r)||!GetCursorPos(&previous))return FALSE;
+    BOOL topmost=!!(GetWindowLongPtrW(frame,GWL_EXSTYLE)&WS_EX_TOPMOST);
+    if(!topmost&&!SetWindowPos(frame,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE))return FALSE;
+    INPUT movement={.type=INPUT_MOUSE};
+    movement.mi.dwFlags=MOUSEEVENTF_MOVE|MOUSEEVENTF_ABSOLUTE|MOUSEEVENTF_VIRTUALDESK;
+    movement.mi.dx=MulDiv(r.left+2-GetSystemMetrics(SM_XVIRTUALSCREEN),65535,GetSystemMetrics(SM_CXVIRTUALSCREEN)-1);
+    movement.mi.dy=MulDiv((r.top+r.bottom)/2-GetSystemMetrics(SM_YVIRTUALSCREEN),65535,GetSystemMetrics(SM_CYVIRTUALSCREEN)-1);
+    BOOL sent=SendInput(1,&movement,sizeof(movement))==1,ok=FALSE;
+    DWORD last_error=0,flags=0;HCURSOR last=NULL;
+    ULONGLONG deadline=GetTickCount64()+500;
+    while(sent&&GetTickCount64()<deadline){
+        /* cbSize is an input on every call; do not reuse an output structure. */
+        CURSORINFO cursor={.cbSize=sizeof(cursor)};
+        if(GetCursorInfo(&cursor)){
+            flags=cursor.flags;last=cursor.hCursor;
+            POINT p=cursor.ptScreenPos;
+            BOOL edge=p.x>=r.left&&p.x<r.left+8&&p.y>r.top+40&&p.y<r.bottom-40;
+            if(edge&&WindowFromPoint(p)==surface&&(flags&CURSOR_SHOWING)&&last==LoadCursorW(NULL,IDC_SIZEWE)){ok=TRUE;break;}
+        }else last_error=GetLastError();
+        MsgWaitForMultipleObjects(0,NULL,FALSE,20,0);
+    }
+    BOOL restored=SetCursorPos(previous.x,previous.y);
+    if(!topmost)restored=SetWindowPos(frame,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE)&&restored;
+    printf("UWP_RESIZE_POINTER sent=%d match=%d flags=%lu cursor=%p error=%lu restored=%d\n",sent,ok,flags,(void*)last,last_error,restored);
+    return ok&&restored;
+}
 static BOOL copied_entry(PCWSTR system_image)
 {
     WCHAR root[MAX_PATH],directory[MAX_PATH],copy[MAX_PATH];
@@ -103,9 +132,10 @@ int wmain(int argc,WCHAR **argv)
         printf("UWP_CALCULATOR_RESOLVE_%s\n",ok?"PASS":"FAIL");return ok?0:1;
     }
     BOOL command_mode=argc==3&&!wcscmp(argv[1],L"--command-api");
+    BOOL pointer_mode=argc==4&&!wcscmp(argv[1],L"--activate-pointer");
     BOOL api_only=command_mode||(argc>=2&&!wcscmp(argv[1],L"--activate-api"));
     PCWSTR app_id=L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App";
-    if(argc==4&&!wcscmp(argv[1],L"--activate-api")){
+    if(argc==4&&(!wcscmp(argv[1],L"--activate-api")||pointer_mode)){
         app_id=argv[2];target_image=argv[3];
         if(!wcschr(app_id,L'!')||!*target_image||wcschr(target_image,L'\\')||wcschr(target_image,L'/'))return 2;
     }else if((argc!=2&&!command_mode)||(!api_only&&wcscmp(argv[1],L"--activate"))){puts("SKIP use --activate, --activate-api [AUMID image.exe], or --command-api launcher");return 77;}
@@ -137,6 +167,7 @@ int wmain(int argc,WCHAR **argv)
     EnumWindows(top,0);EnumWindows(owned,0);BOOL ok=!error&&core&&frame&&surface;
     printf("TARGET core=%p frame=%p surface=%p dpi=%u\n",(void*)core,(void*)frame,(void*)surface,frame?GetDpiForWindow(frame):0);
     if(ok){
+        BOOL pointer_ok=!pointer_mode||resize_pointer();
         titles("before");
         BOOL zoomed=IsZoomed(frame);
         BOOL motion=await_state(FALSE,zoomed)&&button(HTMAXBUTTON)&&await_state(FALSE,!zoomed)&&button(HTMAXBUTTON)&&await_state(FALSE,zoomed);
@@ -158,7 +189,7 @@ int wmain(int argc,WCHAR **argv)
         if(hook)ok=UnhookWindowsHookEx(hook)&&ok;
         if(module)FreeLibrary(module);
         printf("REMOVE_AND_GEOMETRY=%d\n",ok);
-        ok=ok&&actions;
+        ok=ok&&actions&&pointer_ok;
     }
     if(frame)PostMessageW(frame,WM_CLOSE,0,0);
     if(process){if(WaitForSingleObject(process,3000)!=WAIT_OBJECT_0){TerminateProcess(process,0);WaitForSingleObject(process,1000);}CloseHandle(process);}
