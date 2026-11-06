@@ -6404,7 +6404,7 @@
       "path": "tests/ntw16s-dll/uwp/global.c",
       "source": null,
       "source_blob": null,
-      "sha256": "de2c17a6e9dba2c805ea575f1260e746c1f5e621144146437f61a5c7e990e733",
+      "sha256": "6da5391b1cbac8db6491197cb20734c7978a257537ed8266b779bc10295a63ef",
       "disposition": "authored",
       "review": "T22 S1 P32 product UWP coordination; no third-party import",
       "notice": "Project-authored C; original resource bytes unchanged"

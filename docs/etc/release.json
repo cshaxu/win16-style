@@ -1972,6 +1972,16 @@
       "restart_immediate_stop": "no surfaces for either frame",
       "evidence": "build/t22-package/s1-global-pair1/native/{pair,pair-styled}.log",
       "limits": "existing pair and shared single-target API prestyle; not full launcher/global CLI coexistence or two concurrent activations"
+    },
+    "uwp_launcher_manager": {
+      "status": "PASS P37; unchanged published P34 four-file package",
+      "evidence": "build/t22-package/s1-global-cli2/native/pair-cli.log",
+      "calculator_pid": 14540,
+      "scan_pid": 12208,
+      "host_pid": 37040,
+      "launcher": "actual adjacent run16s.exe --app; exit0; visible surface before manager starts",
+      "manager": "test-filtered production manager; active2 failed0; distinct visible surfaces; both removed; restart/immediate-stop clear",
+      "limits": "not Explorer tray/UAC end-to-end; launcher failure cleanup branch reviewed but not fault-injected"
     }
   },
   "validation": {

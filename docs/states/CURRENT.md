@@ -1092,3 +1092,17 @@ Scan24552共享宿主37040，两个不同surface同时可见，active=2 failed=0
 预先经单目标API换肤的计算器13084与Scan30396也同结果；重新启动立即停止均无surface。
 生产manager预处理结果双宽与P34完全一致；两处八文件摘要未变，无新binary发布。
 本轮是同宿主并存/API预置样式证明，不冒充完整CLI/托盘端到端。待提交推送复核。
+
+P37验证准备：P36提交7049bfa9已推送复核（pair1/remote.json），发布摘要未变。
+登记s1-global-cli1：pair-cli由真实发布run16s --app启动第一个自有计算器，核对
+新PID出生时间和初始surface，再与Scan一同进入生产manager夹具；区分真实启动器
+和测试过滤的全局manager，不冒充托盘/UAC完整路径。本轮仅测试变更。
+
+cli1真实启动器组合通过：Calculator7164与Scan22092共享host37040，active2/failed0，
+撤销及重复启停通过。登记s1-global-cli2，修正夹具在CLI非零但已激活新实例时，
+先取得并验证出生时间再走自有清理；仅测试变化，未宣称该失败分支已实测。
+
+P37验证完成：cli2双宽编译及各1项布局测试通过，无skip；发布P34真实启动器创建
+Calculator14540并预先换肤，与Scan12208共享host37040，active2/failed0。两surface
+可见、停止均销毁，重复启停清理通过。测试专用失败清理分支未故障注入。两处八文件
+摘要仍与P34一致，无新binary发布；完整Explorer托盘/UAC仍未验证，S1/T22保持开放。

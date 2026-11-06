@@ -1415,3 +1415,25 @@ nor two simultaneous activations. It does not claim additional visual UI coverag
 Production manager preprocessing with the test macro absent was byte-identical
 to the P34 source for both compilers. Eight deployed hashes still match P34;
 no binary release is needed for this test-only change. No neighbor repo changed.
+
+## P37 actual launcher and manager coexistence
+
+The pair-cli fixture starts the actual adjacent published run16s.exe --app,
+requires exit0 and a visible styled surface before starting the global manager.
+It then verifies the same shared-host pair and removal contracts as P36.
+The manager retains its test-only owned-PID filter; this is not Explorer tray,
+UAC or full --global CLI verification. No product code or binary changed.
+
+cli2 dual-width fixture build and each1 layout test passed without skip.
+Published P34 package: Calculator14540 and Scan12208 shared host37040,
+active2/failed0, distinct visible surfaces, both destroyed at stop, neither
+remaining after restart/immediate-stop. cli1 also passed before the test-only
+cleanup correction. CLI failure after activation now obtains and validates the
+new application handle before cleanup; that failure branch was reviewed, not
+fault-injected. Existing/ambiguous image identities are rejected, not terminated.
+
+Background worker observation initially produced no completed result; the same
+incremental tree was resumed and final result.json passed. The original supervisor
+subsequently completed the real test with exit0; a redundant supervisor attempt
+was rejected by its existing-directory guard before launching any app. No result
+was overwritten. Eight deployment hashes still match the tested P34 release.

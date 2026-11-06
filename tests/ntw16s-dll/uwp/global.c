@@ -71,12 +71,12 @@ static BOOL CALLBACK owned(HWND w,LPARAM unused)
     }
     return TRUE;
 }
-static BOOL existing(PCWSTR image)
+static DWORD image_pid(PCWSTR image)
 {
-    HANDLE snapshot=CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS,0);if(snapshot==INVALID_HANDLE_VALUE)return TRUE;
-    PROCESSENTRY32W entry={.dwSize=sizeof(entry)};BOOL found=FALSE;
+    HANDLE snapshot=CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS,0);if(snapshot==INVALID_HANDLE_VALUE)return MAXDWORD;
+    PROCESSENTRY32W entry={.dwSize=sizeof(entry)};DWORD found=0;
     for(BOOL n=Process32FirstW(snapshot,&entry);n;n=Process32NextW(snapshot,&entry))
-        if(!_wcsicmp(entry.szExeFile,image))found=TRUE;
+        if(!_wcsicmp(entry.szExeFile,image)){if(found){found=MAXDWORD;break;}found=entry.th32ProcessID;}
     CloseHandle(snapshot);return found;
 }
 int wmain(int argc,WCHAR **argv)
@@ -84,9 +84,10 @@ int wmain(int argc,WCHAR **argv)
     SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
     BOOL new_target=argc==4&&!wcscmp(argv[3],L"new");
     BOOL prestyled=argc==6&&!wcscmp(argv[3],L"pair-styled");
-    BOOL pair=prestyled||(argc==6&&!wcscmp(argv[3],L"pair"));
+    BOOL command=argc==6&&!wcscmp(argv[3],L"pair-cli");
+    BOOL pair=command||prestyled||(argc==6&&!wcscmp(argv[3],L"pair"));
     if((argc!=3&&!new_target&&!pair)||sizeof(void*)!=8){puts("SKIP explicit AUMID/image and x64 host required");return 77;}
-    if(existing(argv[2])||(pair&&existing(argv[5]))){puts("SKIP existing application");return 77;}
+    if(image_pid(argv[2])||(pair&&image_pid(argv[5]))){puts("SKIP existing application");return 77;}
     WCHAR name[NTW16S_GLOBAL_NAME_CAP],stop_name[NTW16S_GLOBAL_NAME_CAP+16],dll[32768];DWORD n=GetModuleFileNameW(NULL,dll,ARRAYSIZE(dll));
     WCHAR *tail=wcsrchr(dll,L'\\');if(!n||n>=ARRAYSIZE(dll)||!tail||(size_t)(tail-dll)+20>=ARRAYSIZE(dll))return 1;
     wcscpy(tail+1,L"ntw16s64.dll");
@@ -110,14 +111,30 @@ int wmain(int argc,WCHAR **argv)
         if(error)goto done;
     }
     FILETIME start;GetSystemTimeAsFileTime(&start);DWORD pid=0;IApplicationActivationManager *manager=NULL;
-    hr=CoCreateInstance(&CLSID_ApplicationActivationManager,NULL,CLSCTX_LOCAL_SERVER,&IID_IApplicationActivationManager,(void**)&manager);
-    if(SUCCEEDED(hr)){CoAllowSetForegroundWindow((IUnknown*)manager,NULL);hr=IApplicationActivationManager_ActivateApplication(manager,argv[1],NULL,AO_NOERRORUI,&pid);IApplicationActivationManager_Release(manager);}
+    if(command){
+        WCHAR launcher[32768],line[33024];wcscpy(launcher,dll);WCHAR *slash=wcsrchr(launcher,L'\\');wcscpy(slash+1,L"run16s.exe");
+        int length=swprintf(line,ARRAYSIZE(line),L"\"%ls\" --app \"%ls\"",launcher,argv[1]);
+        STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION child={0};DWORD code=MAXDWORD;
+        if(length<=0||(size_t)length>=ARRAYSIZE(line)||!CreateProcessW(launcher,line,NULL,NULL,FALSE,CREATE_NO_WINDOW,NULL,NULL,&startup,&child))goto done;
+        CloseHandle(child.hThread);
+        if(WaitForSingleObject(child.hProcess,15000)==WAIT_OBJECT_0)GetExitCodeProcess(child.hProcess,&code);
+        else{TerminateProcess(child.hProcess,ERROR_TIMEOUT);WaitForSingleObject(child.hProcess,1000);}
+        CloseHandle(child.hProcess);pid=image_pid(argv[2]);
+        printf("PAIR_CLI exit=%lu pid=%lu\n",code,pid);
+        error=code;
+        if(!pid||pid==MAXDWORD)goto done;
+        hr=S_OK;
+    }else{
+        hr=CoCreateInstance(&CLSID_ApplicationActivationManager,NULL,CLSCTX_LOCAL_SERVER,&IID_IApplicationActivationManager,(void**)&manager);
+        if(SUCCEEDED(hr)){CoAllowSetForegroundWindow((IUnknown*)manager,NULL);hr=IApplicationActivationManager_ActivateApplication(manager,argv[1],NULL,AO_NOERRORUI,&pid);IApplicationActivationManager_Release(manager);}
+    }
     printf("ACTIVATE hr=%lx pid=%lu\n",(unsigned long)hr,pid);if(FAILED(hr))goto done;
     observed_pid=pid;
     ntw16s_global_manager_test_filter(pid);
     application=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION|SYNCHRONIZE|PROCESS_TERMINATE,FALSE,pid);
     FILETIME birth,a,b,c;
     if(!application||!GetProcessTimes(application,&birth,&a,&b,&c)||CompareFileTime(&birth,&start)<0){if(application)CloseHandle(application);application=NULL;goto done;}
+    if(command&&error)goto done;
     ULONGLONG deadline=GetTickCount64()+10000;
     while(!ntw16s_uwp_target_find(pid,&target)&&GetTickCount64()<deadline){
         MsgWaitForMultipleObjects(0,NULL,FALSE,20,QS_ALLINPUT);
@@ -125,7 +142,7 @@ int wmain(int argc,WCHAR **argv)
     }
     frame=target.frame;EnumWindows(owned,0);
     printf("BEFORE frame=%p core=%p surfaces=%u\n",(void*)frame,(void*)target.core,surfaces);
-    if(!frame||(!new_target&&surfaces))goto done;
+    if(!frame||(command?(surfaces!=1||!IsWindowVisible(surface)):(!new_target&&surfaces)))goto done;
     if(pair){
         GetSystemTimeAsFileTime(&start);DWORD second_pid=0;
         manager=NULL;hr=CoCreateInstance(&CLSID_ApplicationActivationManager,NULL,CLSCTX_LOCAL_SERVER,&IID_IApplicationActivationManager,(void**)&manager);
