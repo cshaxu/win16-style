@@ -10,8 +10,8 @@ T21 按用户要求[有限范围收口](../history/M0-T21-closure.md)。当前 M
 
 候选入口为 `run16s --app <AUMID>`；P22已发布系统 `calc.exe` 专用识别入口；代码接受本次激活返回的复用实例，Scan同PID/同窗口撤销后重新接入已验证。仍限定 x64
 ApplicationFrameHost 外框。真实计算器 144 DPI 截图已证明标题及系统菜单呈现，
-窗口按钮、撤销和几何有原生探针证据；不代表其他 UWP、WinUI 3、全局模式或
-所有复用实例已经支持。最终包与剩余验证状态见本页末尾及
+窗口按钮、撤销和几何有原生探针证据；P34/P38已验证全局已有/新建Calculator与Scan，
+不代表其他UWP、WinUI桌面或所有复用实例已经支持。最终包与剩余验证状态见本页末尾及
 [研究记录](../history/M0-T22-S1-feasibility.md)。
 
 ## M0 T22 S1 Packet
@@ -1170,3 +1170,27 @@ P38最终复测通过：native11管理员probe39232启动正式controller15932�
 实际144DPI，图标rect查询0；start/stop各5条窗口通知失败，不宣称全桌面完全恢复。
 默认双宽交互CTest仍skip，真实运行仅x64；Uncheck驻留、Explorer点击及启动器自身
 UAC路径未验证。本轮仅测试/构建入口/记录，无产品变更，待提交推送复核。
+
+P39诊断准备：P38提交cf807fad已推送复核。登记s1-menu-msaa1，先用自有原生
+checked/unchecked标准菜单对照MSAA默认动作，不启用全局、不请求UAC，不改产品。
+
+menu-msaa1原生unchecked/checked均返回invoke0、command1001。登记s1-menu-msaa2，
+自有自定义顶层窗口同一二进制比较普通启动与正式run16s --wait启动，隔离样式因素。
+
+menu-msaa2同一自有程序普通及run16s --wait启动均通过两个菜单状态；不凭此推断
+正式托盘失败原因。登记s1-tray-toggle1，在现有实包探针加--toggle分支，记录真实
+菜单类型及MSAA名称/动作/状态后执行Uncheck，验证controller驻留和surface销毁。
+
+toggle1两UWP已换肤，但Uncheck菜单disabled=1，探针拒绝执行，清理使用正式stop
+事件完成。登记s1-tray-toggle2：等正式session.ready后再核对菜单，不凭surface出现
+推断全局启动完成。未改产品；也尚不能据此解释此前80020003。
+
+P39待验证：toggle2修正两条编译缩进警告后双宽增量构建成功。管理员启动在等待
+超过1分钟提醒后由系统返回取消，未产生actual.log或探针PID，不重复发起。
+普通/样式自有菜单对照通过；真实toggle1发现菜单disabled=1，ready等待修正尚待
+实测。未改产品或发布文件，P39工作保留未提交，M0/T22/S1开放。
+
+P39审计续作：第二次toggle2管理员启动也由系统返回取消，未创建探针，不重发。
+已复核发布截图、原始日志及P22至HEAD renderer无diff，形成[有限范围收口审计](../history/M0-T22-coverage.md)。
+剩余真实托盘Uncheck/再次启用驻留验证；其余范围和限制逐项列明，不临时扩张。
+本轮可交付审计文档，ready-aware测试及其receipt继续保留未提交，等待实际复测。

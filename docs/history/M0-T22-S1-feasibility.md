@@ -1493,3 +1493,32 @@ admin token and only invokes Exit. It refuses existing controller/app instances.
 Evidence: build/t22-package/s1-tray-native11/{actual.log,actual.log.controller.log,
 menu.log,result.json,deployed.json}. Source products/resources unchanged; no
 new four-file release. S1/T22 remain open pending the remaining scoped audit.
+
+## P39 Uncheck readiness investigation (pending)
+
+Standalone native menu probes in s1-menu-msaa1 and s1-menu-msaa2 invoked the same
+menu item successfully with checked and unchecked states. The second fixture
+used an owned custom top-level window and the same executable both directly
+and through published run16s --wait. Both modes returned command1001 twice.
+This excludes checked state alone in those fixtures; it does not certify actual
+tray accessibility or prove every renderer path was active in the small probe.
+
+The real elevated --toggle diagnostic (s1-tray-toggle1) styled Calculator2356
+and Scan3756, but the next menu was checked AND disabled. The fixture refused
+to invoke it and used the owned request-event cleanup. Both global start/stop
+were logged. Surface appearance did not prove the controller was ready for a
+second command. This does not yet explain the earlier 0x80020003 failure.
+
+The fixture now waits for the existing session.ready contract before inspecting
+the real menu and invoking Uncheck, then requires surface destruction, controller
+residency and a subsequent Exit. No product semantics were altered. Its initial
+two misleading-indentation warnings were corrected; both-width incremental
+builds passed. Final s1-tray-toggle2 administrator launch was canceled at Windows
+UAC before creating the probe, so this revised branch remains unverified and
+uncommitted. No deployed product change. Previous P38 evidence remains valid.
+
+P39 audit continuation: second ready-aware UAC launch also canceled before probe
+creation. Published screenshots and original logs were reread; renderer source
+comparison P22..HEAD is empty for win16-window-uwp/window/common. The scoped
+[coverage audit](M0-T22-coverage.md) separates completed evidence, required tray
+verification and explicit limitations. Pending test changes are not certified.
