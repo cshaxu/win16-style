@@ -725,3 +725,27 @@ TID14964 still shows arrow at confirmed edge after installer unhook. Old-host
 lifetime alone does not explain cursor issue. No product binary changes. All
 scratch covered by registered s1-window-audit; pinned prototypes remain until
 host exit. S1/T22 open; deployed P6 package unchanged.
+
+## P12 implementation and incremental verification (delivery pending)
+
+Public frame_action supplies borrowed label/context and GUI-thread callback.
+Only menu tracking temporarily inserts an available16-aligned command from
+0xeff0..0xe000; cleanup verifies item ownership before deletion. No permanent
+system-menu replacement. Product selects widest visible native title and retains
+one optional auxiliary title action; ambiguous additional titles rejected.
+Callback posts native down/up after tracking ends; does not clone Share/Settings.
+Static C API addition only; DLL exported ABI unchanged. Original resources intact.
+
+s1-aux-action1 x86/x64 each3 passed, zero skips; conflict with existing0xeff0,
+repeated apply/remove, invalid action, no menu mutation outside tracking,
+cancel does not invoke callback, temporary0xefe0 removed and original0xeff0
+preserved. Existing lifecycle/menu-state/resource tests still pass.
+scan-action-product1 uses actual incremental DLL SHA256
+033f2a95edad126cdee5539e4e3489b90e92a451cabe673da40da9697e0a9d71.
+Owned ScanPID12420/host18304/TID23204,144DPI: actual UP/ENTER selects0xeff0,
+visual42-aux shows original Share/Settings; before/styled/restored captures,
+remove/geometry/unhook pass. No menu business item selected. Unlike P11 direct
+command probe, this verifies the real menu selection route. Complete build,
+actual package tests and publication remain pending; S1/T22 open.
+
+P12交付：clean7双宽干净构建、ABI、原图形资源及依赖门禁通过；最终库各2项通过。s1-package3共14项聚焦通过、无skip、33.97秒。最终包ScanPID11928/宿主18304/TID16224、144DPI实际UP/ENTER选择eff0后原Share/Settings打开，visual43截图及移除几何通过；CalculatorPID38488的窗口按钮、恢复/撤销几何通过。s1-publish3两处四文件摘要匹配测试包。静态库增加apply_action，不新增产品导出/第五产物；src三文件69增6删，测试26增1删。公开库无产品私有依赖，原资源未改。原生附加菜单不重新绘制，缩放光标仍未修复；S1/T22保持开放。当前提交推送复核待完成。

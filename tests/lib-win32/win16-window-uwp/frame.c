@@ -5,7 +5,10 @@
 #include <windowsx.h>
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"FAIL line=%d error=%lu\n",__LINE__,GetLastError());return 1;}}while(0)
 static UINT command,menu_notifications;
-static BOOL tracked_menu,menu_states_ok;
+static BOOL tracked_menu,menu_states_ok,expect_action,action_seen;
+static unsigned action_calls;
+static void extra_action(HWND frame,void *context)
+{(void)frame;(*(unsigned *)context)++;}
 static void CALLBACK cancel_menu(HWND w,UINT message,UINT_PTR timer,DWORD tick)
 {
     (void)message;(void)tick;KillTimer(w,timer);
@@ -22,6 +25,10 @@ static void CALLBACK cancel_menu(HWND w,UINT message,UINT_PTR timer,DWORD tick)
     UINT move=GetMenuState(menu,SC_MOVE,MF_BYCOMMAND),size=GetMenuState(menu,SC_SIZE,MF_BYCOMMAND);
     menu_states_ok=menu_states_ok && !!(move&MF_GRAYED)==!!IsZoomed(w) &&
         !!(size&MF_GRAYED)==!!IsZoomed(w);
+    if(expect_action){
+        action_seen=GetMenuState(menu,0xefe0,MF_BYCOMMAND)!=(UINT)-1 &&
+            GetMenuState(menu,0xeff0,MF_BYCOMMAND)!=(UINT)-1;
+    }
     SendMessageW(w,WM_CANCELMODE,0,0);
 }
 static LRESULT CALLBACK observe(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
@@ -134,6 +141,24 @@ static int worker(int argc,WCHAR **argv)
             printf("RESOURCES iteration=%d gdi=%lu/%lu user=%lu/%lu\n",i,now_gdi,gdi,now_user,user);
             CHECK(now_gdi<=gdi);CHECK(now_user<=user);}
     }
+    HMENU extras=GetSystemMenu(w,FALSE);
+    CHECK(AppendMenuW(extras,MF_STRING,0xeff0,L"Application-owned collision"));
+    int count=GetMenuItemCount(extras);
+    win16_uwp_frame_action invalid={0};
+    CHECK(!win16_uwp_frame_apply_action(w,title,&invalid)&&GetLastError()==ERROR_INVALID_PARAMETER);
+    win16_uwp_frame_action action={L"Application menu...",extra_action,&action_calls};
+    for(int iteration=0;iteration<2;++iteration){
+        CHECK(win16_uwp_frame_apply_action(w,title,&action));
+        CHECK(!win16_uwp_frame_apply_action(w,title,&action)&&GetLastError()==ERROR_ALREADY_EXISTS);
+        CHECK(GetMenuItemCount(extras)==count);
+        expect_action=TRUE;action_seen=FALSE;CHECK(SetTimer(w,1,200,cancel_menu));
+        SendMessageW(w,WM_SYSCOMMAND,SC_KEYMENU,L' ');KillTimer(w,1);expect_action=FALSE;
+        CHECK(action_seen);CHECK(!action_calls);CHECK(GetMenuItemCount(extras)==count);
+        CHECK(GetMenuState(extras,0xefe0,MF_BYCOMMAND)==(UINT)-1);
+        CHECK(GetMenuState(extras,0xeff0,MF_BYCOMMAND)!=(UINT)-1);
+        CHECK(win16_uwp_frame_remove(w));CHECK(GetMenuItemCount(extras)==count);
+    }
+    CHECK(DeleteMenu(extras,0xeff0,MF_BYCOMMAND));
     CHECK(win16_uwp_frame_apply(w,title));HWND surface=win16_uwp_frame_surface(w);
     CHECK(DestroyWindow(title));CHECK(!IsWindow(surface));CHECK(!win16_uwp_frame_surface(w));
     title=CreateWindowExW(0,L"STATIC",L"Native title",WS_CHILD|WS_VISIBLE,0,0,client.right,48,w,NULL,NULL,NULL);CHECK(title);

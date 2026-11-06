@@ -5,11 +5,35 @@
 static _Thread_local BOOL busy;
 static BOOL class_is(HWND w,PCWSTR name)
 {WCHAR value[80];return GetClassNameW(w,value,ARRAYSIZE(value))&&!wcscmp(value,name);}
-static HWND title_child(HWND frame)
+static HWND title_child(HWND frame,HWND *auxiliary)
 {
+    HWND best=NULL;LONG width=0;*auxiliary=NULL;
+    for(HWND child=GetWindow(frame,GW_CHILD);child;child=GetWindow(child,GW_HWNDNEXT)){
+        RECT r;
+        if(IsWindowVisible(child)&&class_is(child,L"ApplicationFrameTitleBarWindow")&&GetWindowRect(child,&r)&&r.right-r.left>width){best=child;width=r.right-r.left;}
+    }
     for(HWND child=GetWindow(frame,GW_CHILD);child;child=GetWindow(child,GW_HWNDNEXT))
-        if(IsWindowVisible(child)&&class_is(child,L"ApplicationFrameTitleBarWindow"))return child;
-    return NULL;
+        if(child!=best && IsWindowVisible(child)&&class_is(child,L"ApplicationFrameTitleBarWindow")){
+            if(*auxiliary)return NULL; /* Unknown multi-action layout. */
+            *auxiliary=child;
+        }
+    return best;
+}
+static void application_menu(HWND frame,void *context)
+{
+    HWND child=(HWND)context;RECT r;
+    if(GetParent(child)!=frame || !IsWindowVisible(child) ||
+       !class_is(child,L"ApplicationFrameTitleBarWindow") || !GetClientRect(child,&r))return;
+    LPARAM point=MAKELPARAM(r.right/2,r.bottom/2);
+    PostMessageW(child,WM_LBUTTONDOWN,MK_LBUTTON,point);
+    PostMessageW(child,WM_LBUTTONUP,0,point);
+}
+static BOOL apply_frame(HWND frame)
+{
+    HWND auxiliary=NULL,title=title_child(frame,&auxiliary);
+    if(!title){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    win16_uwp_frame_action action={L"Application menu...",application_menu,auxiliary};
+    return win16_uwp_frame_apply_action(frame,title,auxiliary?&action:NULL);
 }
 LRESULT CALLBACK Ntw16sUwpFrameHook(int code,WPARAM parameter,LPARAM message)
 {
@@ -27,7 +51,7 @@ LRESULT CALLBACK Ntw16sUwpFrameHook(int code,WPARAM parameter,LPARAM message)
                 if(m->wParam==NTW16S_UWP_REMOVE)ok=win16_uwp_frame_remove(m->hwnd);
                 else if(win16_uwp_frame_surface(m->hwnd))ok=TRUE;
                 else ok=GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_PIN,
-                    (PCWSTR)(uintptr_t)Ntw16sUwpFrameHook,&module)&&win16_uwp_frame_apply(m->hwnd,title_child(m->hwnd));
+                    (PCWSTR)(uintptr_t)Ntw16sUwpFrameHook,&module)&&apply_frame(m->hwnd);
                 error=ok?ERROR_SUCCESS:GetLastError();if(!ok&&!error)error=ERROR_NOT_SUPPORTED;
             }
             SetPropW(m->hwnd,NTW16S_UWP_RESULT,(HANDLE)(uintptr_t)((ULONGLONG)error+1));
