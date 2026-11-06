@@ -1880,6 +1880,23 @@
       "launcher_exit": 0,
       "evidence": "build/t22-package/s1-wait-regression2/real-wait.log",
       "limits": "Frame HWND still existed immediately after application exit; not physical DLL unload or host destruction evidence"
+    },
+    "real_uwp_reactivation": {
+      "status": "PASS P29 published P22 DLL, API-only",
+      "scan": {
+        "pid": 33664,
+        "created_on_second_activation": 0,
+        "same_pid_core_and_frame": true,
+        "restyled_after_remove": true
+      },
+      "calculator": {
+        "first_pid": 14144,
+        "second_pid": 24496,
+        "reused": false,
+        "second_styled": true
+      },
+      "cleanup": "Owned apps exited; overlay HWNDs still existed but hidden, not proof of resource disposal",
+      "evidence": "build/t22-package/s1-reactivate1/native/{scan,calc}.log"
     }
   },
   "validation": {
@@ -1887,7 +1904,7 @@
     "evidence": "docs/history/M0-T22-S1-feasibility.md",
     "limitations": [
       "Calculator-specific system calc.exe mapping and explicit --app; x64 ApplicationFrameHost only",
-      "No global UWP or general WinUI 3 support; activation-returned reuse accepted but not verified; no client styling",
+      "No global UWP or general WinUI 3 support; Scan reuse verified; other app reuse not certified; no client styling",
       "multi-monitor DPI and title-child replacement not certified",
       "Calculator and Scan exterior verified; Clock/Recorder tested only update placeholders",
       "auxiliary menu stays native; supports one optional additional title; original HWND replacement not rebound",
@@ -1895,7 +1912,8 @@
       "Full-screen menu selection verified only for this Scan version at144 DPI; not all UWP applications",
       "UIA per-call timeouts do not prove an overall worker deadline or safe cancellation of a hung provider",
       "Final clean10 real Calculator command skipped due to existing instance; incremental command evidence only",
-      "System Notepad final /SESSION process lacks DLL; propagation failure remains"
+      "System Notepad final /SESSION process lacks DLL; propagation failure remains",
+      "After app close, tested host overlay HWND remains hidden; resource reclamation and host-frame recycling require further audit"
     ]
   },
   "closure": {

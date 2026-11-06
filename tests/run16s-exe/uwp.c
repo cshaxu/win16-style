@@ -174,9 +174,10 @@ int wmain(int argc,WCHAR **argv)
     }
     BOOL command_mode=argc==3&&!wcscmp(argv[1],L"--command-api");
     BOOL pointer_mode=argc==4&&!wcscmp(argv[1],L"--activate-pointer");
-    BOOL api_only=command_mode||(argc>=2&&!wcscmp(argv[1],L"--activate-api"));
+    BOOL repeat_mode=argc==4&&!wcscmp(argv[1],L"--repeat-api");
+    BOOL api_only=command_mode||repeat_mode||(argc>=2&&!wcscmp(argv[1],L"--activate-api"));
     PCWSTR app_id=L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App";
-    if(argc==4&&(!wcscmp(argv[1],L"--activate-api")||pointer_mode)){
+    if(argc==4&&(!wcscmp(argv[1],L"--activate-api")||pointer_mode||repeat_mode)){
         app_id=argv[2];target_image=argv[3];
         if(!wcschr(app_id,L'!')||!*target_image||wcschr(target_image,L'\\')||wcschr(target_image,L'/'))return 2;
     }else if((argc!=2&&!command_mode)||(!api_only&&wcscmp(argv[1],L"--activate"))){puts("SKIP use --activate, --activate-api [AUMID image.exe], or --command-api launcher");return 77;}
@@ -232,7 +233,28 @@ int wmain(int argc,WCHAR **argv)
         printf("REMOVE_AND_GEOMETRY=%d\n",ok);
         ok=ok&&actions&&pointer_ok;
     }
+    if(ok&&repeat_mode){
+        DWORD first_pid=pid,fresh=0;HWND first_frame=frame,first_core=core;
+        error=run16s_uwp_activate(app_id,&fresh);
+        if(fresh&&fresh!=pid){
+            PostMessageW(frame,WM_CLOSE,0,0);
+            if(process){if(WaitForSingleObject(process,3000)!=WAIT_OBJECT_0){TerminateProcess(process,0);WaitForSingleObject(process,1000);}CloseHandle(process);}
+            pid=fresh;process=OpenProcess(SYNCHRONIZE|PROCESS_TERMINATE|PROCESS_QUERY_LIMITED_INFORMATION,FALSE,pid);
+        }
+        frame=NULL;core=NULL;surface=NULL;EnumWindows(top,0);EnumWindows(owned,0);
+        BOOL reused=!fresh&&pid==first_pid&&frame==first_frame&&core==first_core;
+        ok=!error&&process&&surface&&IsWindowVisible(surface)&&(fresh||reused);
+        printf("REACTIVATE error=%lu first_pid=%lu created_pid=%lu target_pid=%lu reused=%d styled=%d\n",error,first_pid,fresh,pid,reused,ok);
+    }
+    HWND closing_surface=surface;
     if(frame)PostMessageW(frame,WM_CLOSE,0,0);
     if(process){if(WaitForSingleObject(process,3000)!=WAIT_OBJECT_0){TerminateProcess(process,0);WaitForSingleObject(process,1000);}CloseHandle(process);}
+    if(repeat_mode){
+        ULONGLONG deadline=GetTickCount64()+1500;
+        while(IsWindow(closing_surface)&&IsWindowVisible(closing_surface)&&GetTickCount64()<deadline)MsgWaitForMultipleObjects(0,NULL,FALSE,20,0);
+        BOOL hidden=!IsWindow(closing_surface)||!IsWindowVisible(closing_surface);
+        printf("REACTIVATE_CLEANUP surface_exists=%d surface_hidden=%d\n",IsWindow(closing_surface),hidden);
+        ok=ok&&hidden;
+    }
     printf("UWP_LAUNCH_REAL_%s\n",ok?"PASS":"FAIL");return ok?0:1;
 }

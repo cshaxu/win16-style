@@ -1195,3 +1195,29 @@ published file hashes remain unchanged. Original artwork identity and source
 manifest pass. Test-only delta:42 additions/1 deletion; enumeration ownership
 remains in this fixture and no production path is replaced. Actual reuse and
 multi-monitor behavior remain unverified; S1/T22 remain open.
+
+## P29 real reactivation after style removal
+
+The existing fixture's explicit --repeat-api AUMID image.exe mode removes the
+first attachment, activates again and distinguishes a newly created PID from
+reuse of the original PID, CoreWindow and host frame. Only initially absent
+applications are used; both owned instances are closed on the new-PID branch.
+The closing overlay is sampled for at most1500ms. This tests hidden state,
+not actual destruction or physical DLL unload. Test delta24 additions/2 removals;
+production state ownership and all renderer code are unchanged.
+
+s1-reactivate1: incremental x86 three/x64 four focused tests passed, no skips.
+With published P22 ntw16s64.dll at144 DPI, Scan PID33664 returned created_pid=0
+on the second activation, retained the same CoreWindow/frame and regained a
+visible style surface after removal. Calculator instead created PID24496 from
+first PID14144; its second instance was styled. Both cases passed caption
+buttons, removal geometry and final hidden-surface checks; owned app processes
+were absent afterward. Logs: native/scan.log and native/calc.log in that scratch.
+No new screenshots or physical-input claims are made by this API-only fixture.
+
+Both final overlay HWNDs still existed while hidden. This does not establish
+resource reclamation or safe future recycling of the cached host frame. Product
+frame.c currently ties destruction to host/title WM_NCDESTROY, so application
+exit alone is not equivalent to detachment. This lifecycle boundary requires
+further audit; S1/T22 remain open. Sources/resources and eight deployed file
+SHA256 values remain unchanged; no binary republish is needed.
