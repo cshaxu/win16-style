@@ -6,6 +6,12 @@
 用户批准准入队列首项；T22/S1已[收口](../history/M0-T22-closure.md)。
 最后分配数值T为T23，S1处于active；本次P1仅准入与冻结计划，无产品改动。
 登记scratch：build/t23-package/s1-admission，仅保存治理检查日志。
+登记scratch：build/t23-package/s1-topology1，只读原生窗口/模块快照；本S提炼后回收。
+用户追加要求：保留顶部标签页与菜单的内容、布局和交互，不用覆盖层遮掉它们。
+
+P2初步研究见[窗口结构记录](../history/M0-T23-S1-topology.md)：Notepad最终子进程、
+顶端客户区及多线程已实测；Explorer现有窗口只读，Task Manager模块错误5，
+Terminal无实例。顶部内容保留是设计约束；S1未收口，产品未变。
 
 ## M0 T23 S1 Packet
 
