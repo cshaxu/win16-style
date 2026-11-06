@@ -6408,6 +6408,15 @@
       "disposition": "authored",
       "review": "T22 S1 P32 product UWP coordination; no third-party import",
       "notice": "Project-authored C; original resource bytes unchanged"
+    },
+    {
+      "path": "tests/integration/uwp_tray.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "a8b505f48cc19e94a2c7bd9a73379fd87e7ba4ebac6473ecd22093c0cc802c44",
+      "disposition": "authored",
+      "review": "T22 S1 P38 opt-in published tray controller UWP integration; native menu input and owned targets",
+      "notice": "Project-authored pure C test; no imported artwork"
     }
   ]
 }

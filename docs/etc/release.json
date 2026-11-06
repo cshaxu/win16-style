@@ -1982,6 +1982,19 @@
       "launcher": "actual adjacent run16s.exe --app; exit0; visible surface before manager starts",
       "manager": "test-filtered production manager; active2 failed0; distinct visible surfaces; both removed; restart/immediate-stop clear",
       "limits": "not Explorer tray/UAC end-to-end; launcher failure cleanup branch reviewed but not fault-injected"
+    },
+    "uwp_formal_enable_shutdown": {
+      "status": "PASS P38; published P34 unchanged",
+      "evidence": "build/t22-package/s1-tray-native11/actual.log",
+      "controller_pid": 15932,
+      "calculator_pid": 12284,
+      "scan_pid": 37796,
+      "dpi": 144,
+      "enable": "actual production menu via MSAA default action",
+      "stop": "validated owner request event; both surface HWNDs destroyed; controller exit0",
+      "menu_exit": "separate final x64 menu-only PASS",
+      "default_ctest": "x86/x64 explicit skip; not counted as runtime pass",
+      "limits": "real runtime x64 only; not Uncheck residency, physical Explorer click, or launcher-triggered UAC; five failed/timed-out window notifications on each sweep"
     }
   },
   "validation": {

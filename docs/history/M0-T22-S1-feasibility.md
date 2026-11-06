@@ -1437,3 +1437,59 @@ incremental tree was resumed and final result.json passed. The original supervis
 subsequently completed the real test with exit0; a redundant supervisor attempt
 was rejected by its existing-directory guard before launching any app. No result
 was overwritten. Eight deployment hashes still match the tested P34 release.
+
+## P38 formal tray Enable and external shutdown
+
+The opt-in pure C `uwp-tray` fixture runs the unchanged published controller,
+not RUN16S_TRAY_TEST. It rejects existing controller/target images, activates
+owned Calculator/Scan instances, checks birth times, uses bounded waits and
+cleans its own handles/processes. No product source has changed.
+
+Native1-8 did not prove menu commands executed: keyboard/mouse/posted-key
+attempts failed. Native4 proved a menu-coordinate hit mismatch; native5 exposed
+96-DPI logical menu geometry versus a 144-DPI physical popup. Foreground checks
+also failed. These are failed test interactions, not established UWP regressions.
+The final fixture uses standard MSAA menu default actions. It does not claim
+Explorer icon clicks or physical input. Native9 menu-only Exit passed; its
+formal Enable styled existing Calculator21860 and new Scan15044. Invoking the
+checked item returned DISP_E_MEMBERNOTFOUND (0x80020003); Exit succeeded but
+is not restoration. The checked-item invocation remains unverified.
+
+Native10 used the menu action's request event with validated session owner.
+Calculator21476 and Scan30972 were styled. The request completed, both surface
+HWNDs were destroyed, and controller exited0. The fixture incorrectly expected
+the tray to remain for a subsequent menu action and therefore returned failure.
+Source inspection explains this: an external request does not set the tray's
+private stopping flag, so normal worker exit ends the controller. This proves
+Enable plus external shutdown, not Uncheck-and-remain-resident. The global
+sweeps reported five timed-out/failed window notifications at start and stop;
+this does not prove restoration of every desktop window.
+
+Native11 corrects only that fixture expectation. Both widths compile/link;
+default CTest invocation explicitly skips the interactive test (0 runtime
+passes), while the final x64 menu-only mode passed. The final administrator
+run was canceled at Windows UAC before creating a probe, so the revised full
+case had not passed at that point. The subsequent retry below supersedes that pending status.
+Eight deployed hashes still equal P34; no binary release. Remaining formal
+coverage: final Enable/external-shutdown repeat, Uncheck residency/actual click,
+and launcher elevation path (the fixture elevates itself before launching the
+actual controller). Do not label this complete tray/UAC end-to-end.
+
+P38 final retry of native11 passed: elevated probe39232, actual O:/winnt/run16s.exe
+controller15932, existing Calculator12284 and newly activated Scan37796 at144 DPI.
+Shell icon rectangle query succeeded; MSAA invoked the actual unchecked Enable
+menu item. Both app surfaces became visible, the owner-validated request event
+completed shutdown, both exact surface HWNDs were destroyed, controller exit0,
+and the probe cleaned its owned application instances and exited0. The final
+menu-only test also passed. Default CTest remains an explicit interactive skip
+on both widths; only x64 performed this real desktop test. Start/stop sweeps each
+reported five timed-out/failed window notifications; no universal desktop restore
+claim. No physical Explorer click, Uncheck residency or launcher-triggered UAC
+coverage is added. The probe was elevated, then created the production controller.
+
+Test entry: build target `uwp-tray`; elevated native invocation takes the published
+run16s.exe absolute path and a fresh log path. Optional `--menu-only` requires no
+admin token and only invokes Exit. It refuses existing controller/app instances.
+Evidence: build/t22-package/s1-tray-native11/{actual.log,actual.log.controller.log,
+menu.log,result.json,deployed.json}. Source products/resources unchanged; no
+new four-file release. S1/T22 remain open pending the remaining scoped audit.

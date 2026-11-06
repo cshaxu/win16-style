@@ -1106,3 +1106,67 @@ P37验证完成：cli2双宽编译及各1项布局测试通过，无skip；发�
 Calculator14540并预先换肤，与Scan12208共享host37040，active2/failed0。两surface
 可见、停止均销毁，重复启停清理通过。测试专用失败清理分支未故障注入。两处八文件
 摘要仍与P34一致，无新binary发布；完整Explorer托盘/UAC仍未验证，S1/T22保持开放。
+
+P38验证准备：P37已推送8fa027f1并复核。登记s1-tray-native1，原生探针运行正式
+run16s --global，经托盘通知打开真实TrackPopupMenu，用键盘选择启用/停用，观察
+自有UWP窗口；不使用测试导出，不把通知模拟算Explorer图标真实点击。管理员探针
+需要系统UAC同意；不改产品实现。
+
+tray-native1双宽编译成功，默认交互用例明确skip；管理员真实运行失败：图标rect
+查询0、菜单初始unchecked，通过选择后未观察到UWP样式，控制器退出。尚无子进程
+错误输出不能归因。登记s1-tray-native2，仅增加正式控制器stderr和退出码诊断。
+
+tray-native2实测失败，但controller在清理前仍STILL_ACTIVE(259)，再次打开菜单
+仍unchecked且stderr为空，说明输入尚未触发Enable，不能归因于接入。登记
+s1-tray-native3，测试改用GetMenuItemRect+原生鼠标点击并恢复指针，保留上述负例。
+
+tray-native3鼠标输入返回2但菜单仍unchecked，controller仍259、stderr空。尚未证实
+命令触发，不算UWP接入失败。登记s1-tray-native4：DPI设置前移至任何窗口/COM之前，
+增加WindowFromPoint命中及实际DPI awareness证据；这是探针修正，不改变产品。
+
+tray-native4 DPI设置成功(awareness2)，但菜单项坐标WindowFromPoint命中其他HWND，
+因此拒绝点击，未启用全局。登记s1-tray-native5：记录popup几何并按菜单窗口DPI
+转换坐标；先以--menu-only普通权限只点Exit验证输入，不创建UWP或启用全局。
+
+tray-native5只点Exit对照证实菜单为96DPI，其项目rect为逻辑坐标，popup物理rect
+按当前144DPI放大；点转换API未成功。登记s1-tray-native6，测试在菜单自身DPI
+上下文读取项目/窗口逻辑rect，再映射到原上下文物理rect并验证WindowFromPoint。
+
+tray-native6菜单前台校验未通过，未发送点击。登记s1-tray-native7：改由原生
+菜单消息队列选择Home/End+Enter，走真实TrackPopupMenu/action，不使用产品测试
+命令；不宣称物理输入或Explorer图标点击通过，停止扩展输入自动化。
+
+tray-native7向popup HWND发送按键未触发Exit；登记s1-tray-native8，最后对照原生
+菜单owner HWND的消息路径，不将上述队列发送成功算作命令执行成功。
+
+tray-native8 owner按键队列同样未执行Exit。登记s1-tray-native9，采用标准MSAA
+IAccessible::accDoDefaultAction执行真实菜单项，不增加产品测试入口，不依赖焦点
+或物理坐标；先仅Exit对照，失败仍不算产品回归。
+
+tray-native9的MSAA Exit已通过。正式管理员Enable回调成功，已有Calculator21860
+及新Scan15044均出现surface；checked菜单项MSAA执行返回80020003，撤销未通过，
+Exit按原产品语义未恢复其他窗口。登记s1-tray-native10：通过同一菜单action使用
+的request事件停用，验证owner身份、事件退出、surface销毁及菜单unchecked后Exit。
+明确不将此算成勾选菜单项MSAA/物理点击已通过；失败清理也复用该受控停止路径。
+
+tray-native10真实Calculator21476/Scan30972均换肤，request完成，两surface销毁，
+controller退出0；夹具随后等待托盘菜单而失败。代码审查确认外部request未设置
+托盘state.stopping，worker正常退出时controller按现有语义随之退出；不是Uncheck
+后继续驻留。登记s1-tray-native11，仅修测试为正式Enable+外部shutdown契约，
+明确Uncheck驻留UI未验证，不改变产品语义或冒称完整托盘端到端。
+
+P38当前：native11双宽构建成功；默认交互测试各skip，不计运行通过。最终管理员
+启动仍在等待UAC（尚无探针PID/日志），保持同一启动，不重发。已有native10实际
+Enable、已有/新建UWP、外部停止及surface销毁证据；修正后的最终用例待执行。
+src产品无diff，两处八文件SHA仍与P34一致。遵循用户新指示：UAC发起后监控，
+只有超过1分钟未批准才提醒，不立即反复询问。
+
+P38更新：上述同一次UAC最终返回取消，未创建探针（不得算pass）。native11最终
+x64 menu-only通过；管理员Enable/external-shutdown最终复测尚未运行。工作保留
+未提交，详情见研究记录P38。M0/T22/S1继续开放，无产品或部署变更。
+
+P38最终复测通过：native11管理员probe39232启动正式controller15932，已有Calculator
+12284及新Scan37796均换肤；request停止完成、两surface销毁、controller/probe退出0。
+实际144DPI，图标rect查询0；start/stop各5条窗口通知失败，不宣称全桌面完全恢复。
+默认双宽交互CTest仍skip，真实运行仅x64；Uncheck驻留、Explorer点击及启动器自身
+UAC路径未验证。本轮仅测试/构建入口/记录，无产品变更，待提交推送复核。
