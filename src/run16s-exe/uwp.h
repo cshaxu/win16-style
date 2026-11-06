@@ -4,4 +4,7 @@
 /* Optional PID is set only after confirming activation created a new process,
  * including when subsequent frame installation fails. Caller does not own it. */
 DWORD run16s_uwp_activate(PCWSTR app_id,DWORD *created_pid);
+/* System calculator entry or byte-identical copy; other same-name files stay native. */
+BOOL run16s_uwp_calculator_image(PCWSTR image);
+DWORD run16s_uwp_command(PCWSTR image,PCWSTR arguments,BOOL wait,BOOL *handled);
 #endif

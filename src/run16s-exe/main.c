@@ -75,6 +75,9 @@ int wmain(int argc,WCHAR **argv)
     }
     DWORD length=SearchPathW(NULL,argv[first],L".exe",NTW16S_PATH_CAP,image,NULL);
     if(!length || length>=NTW16S_PATH_CAP)return diagnostic(3,length?ERROR_FILENAME_EXCED_RANGE:GetLastError(),L"target resolution");
+    BOOL uwp_handled=FALSE;
+    error=run16s_uwp_command(image,win32_process_next_argument(raw),wait,&uwp_handled);
+    if(error||uwp_handled)return error?diagnostic(10,error,L"UWP frame activation"):0;
     error=ntw16s_validate_image_ex(image,IMAGE_FILE_MACHINE_AMD64,FALSE,&subsystem);
     if(error==ERROR_BAD_EXE_FORMAT)error=ntw16s_validate_image_ex(image,IMAGE_FILE_MACHINE_I386,FALSE,&subsystem);
     if(error){

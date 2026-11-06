@@ -60,3 +60,9 @@ the witnessed native title and queries/invokes its full-screen UIA provider.
 Coordinator queries run outside the target GUI thread; menu invocation uses
 an independent MTA worker with a module reference. OLEAUT32 is an OS dependency,
 not an additional product. This does not style XAML controls or enable global UWP.
+
+T22 S1 P22 launcher maps resolved System32/SysWOW64 calc.exe and byte-identical copies to the installed
+Calculator package, forwarding activation arguments and optional wait. Other
+same-name images retain native launch. Activation-returned reused instances are
+accepted; created_pid remains zero for reused processes. This is explicit target
+activation, not global enumeration or host propagation.

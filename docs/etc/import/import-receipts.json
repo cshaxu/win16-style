@@ -1391,9 +1391,9 @@
       "path": "src/run16s-exe/main.c",
       "source": null,
       "source_blob": null,
-      "sha256": "18765421cb414ce2083e3a633c7f6ace468e0a48291bf4b49b8f19e6af256e81",
+      "sha256": "6f81f1e93ed9d8283703a3ba54b28f963df54dc850f05e797002482e6d36e21d",
       "disposition": "authored",
-      "review": "T21 S36 process launch source and launcher ownership; see fixed source record; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version",
+      "review": "T21 S36 process launch source and launcher ownership; see fixed source record; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained",
       "notice": "Project MIT; upstream ntvdm64 source identity recorded"
     },
     {
@@ -6296,27 +6296,27 @@
       "path": "src/run16s-exe/uwp.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7c17687c6ccfc1644f1ccbdea5b0041eaabc3f9a0300e72d3c983c250dbcef45",
+      "sha256": "450cf28bbce96676fb777d313f06e932eba827f8319e870fd4ed573949236db2",
       "disposition": "authored",
-      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied",
+      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
     },
     {
       "path": "src/run16s-exe/uwp.h",
       "source": null,
       "source_blob": null,
-      "sha256": "46552aa9711122db3a3d32d142ebd73133432055b0d38e2beea22778d3ff98ba",
+      "sha256": "230f5a21ebdeff5ea854d760b5c29c48336aba68f494ec3ed09d1a0564d83926",
       "disposition": "authored",
-      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied",
+      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
     },
     {
       "path": "tests/lib-win32/win16-window-uwp/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2d510f52550017f2c754663cc57b658fc3151643e105ae0048d11d438777b9bc",
+      "sha256": "b1cea4bd042e69695deb10caffa73ec032f0bdf5af95af0699f69dcebbd06284",
       "disposition": "authored",
-      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T22 S1 system-menu temporary command state and native cursor handling",
+      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T22 S1 system-menu temporary command state and native cursor handling; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
     },
     {
@@ -6332,9 +6332,9 @@
       "path": "tests/run16s-exe/uwp.c",
       "source": null,
       "source_blob": null,
-      "sha256": "9e7173dd2bfe995e4da7f5a6a5d08de5509722b3fcf88b8e3c812144706795e0",
+      "sha256": "d3de4aef70bf1c3743c1789105941fcd6897e3f2b5d90656c614ff4ebcff6654",
       "disposition": "authored",
-      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned",
+      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
     },
     {

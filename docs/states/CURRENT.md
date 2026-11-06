@@ -8,7 +8,7 @@ T21 按用户要求[有限范围收口](../history/M0-T21-closure.md)。当前 M
 用户允许运行时接入本次目标的共享宿主；禁止修改目标文件、注册表和系统持久
 配置。本次仅窗口外观，不启用宿主传播，不处理内部 XAML 控件。
 
-候选入口为 `run16s --app <AUMID>`，仅处理本次新建应用、x64
+候选入口为 `run16s --app <AUMID>`；P22已发布系统 `calc.exe` 专用识别入口；代码接受本次激活返回的复用实例，实际复用仍待验证。仍限定 x64
 ApplicationFrameHost 外框。真实计算器 144 DPI 截图已证明标题及系统菜单呈现，
 窗口按钮、撤销和几何有原生探针证据；不代表其他 UWP、WinUI 3、全局模式或
 复用实例已经支持。最终包与剩余验证状态见本页末尾及
@@ -847,3 +847,42 @@ P20桌面复测：Default/Active并不代表输入可用；自有计算器接入
 P21：正常桌面恢复，正式clean8 DLL计算器真实移动/缩放/菜单最大化/撤销几何通过，
 稳定边缘采样仍为箭头（失败保留）。Scan全屏菜单真实UP/ENTER往返及有限等待后
 原矩形恢复通过，截图已检查；更新release验证状态。产品未改，S1/T22开放。
+
+P22实施：用户明确要求run16s calc.exe，无需手写AUMID。仅匹配解析后的系统
+calc路径且存在已安装计算器包时使用激活；同名其他程序保留原路，参数转交，
+--wait保留等待。允许本次激活API返回的复用实例，created_pid仍仅标记新建；
+不启用global或客户区换肤。scratch s1-calc-entry1用于增量验证，正式发布待完成。
+
+P22首轮增量x86四项/x64五项通过无skip；补真实正式launcher calc.exe对自有
+计算器撤销后重新附着验证，scratch s1-calc-entry2。
+
+P22正式命令夹具因桌面条件skip（未发现已有Calculator）；增加显式--activate-api
+仅API模式，不发送真实输入、不声称显示验证。scratch s1-calc-entry3继续增量。
+
+P22本机重复激活创建第二个新PID而非复用；旧测试同PID假设失败，已清理探针
+明确新建实例。正式命令测试改为无现有计算器前提、核对新PID创建时间并自行清理，
+不承诺本机一定复用。scratch s1-calc-entry4。
+
+P22 entry4双宽4/5项通过无skip；正式候选run16s calc.exe实际退出0，自有计算器
+PID21776在144DPI接入、按钮、移除几何通过（API-only，不计新截图）。冻结
+s1-clean9，同批实包s1-package5、发布s1-publish5；后续不改冻结产品输入。
+
+P22环境核对：O:/winnt/calc.exe与System32/calc.exe SHA均621ba393...f829d8。
+增加系统启动器逐字节副本识别，避免O:/winnt工作目录命中副本后遗漏。clean9
+继续作为早期基线，不发布；最终快照改s1-clean10，增量s1-calc-entry5。
+
+P22副本识别补充临时复制正例及修改首字节负例；scratch s1-calc-entry6作为最终
+增量快照验证，随后冻结clean10，clean9保留为不发布基线。
+
+P22 entry6双宽4/5项通过无skip；O:/winnt工作目录真实calc副本入口退出0，
+自有PID6532接入/按钮/撤销几何通过。clean9基线已完整通过但不发布；冻结clean10。
+另按用户要求实测系统notepad：打包FullTrust/WinUI桌面程序，首层PID32228有DLL，
+最终/SESSION子进程31464无ntw16s DLL，传播未通过；已关闭自有文档及进程，
+不将其称为UWP支持或追加名字映射来掩盖。
+
+P22交付：clean10双宽干净构建及来源/资源/ABI/依赖门禁通过，最终外框双宽各3项、
+启动器识别1项通过无skip；s1-package5实际四文件14项聚焦通过（31.16秒）。
+最终真实计算器命令因已有PID27072而skip，非通过；该实例时间与旧负例吻合但
+归属链未证实，未关闭。s1-publish5完成assets和O:/winnt四文件发布、摘要一致。
+记事本最终进程无DLL、resize cursor及既有其他边界仍开放，不收口S1/T22。
+后台verify-final PID26748只等待既有构建并执行测试，无重启或产品修改。

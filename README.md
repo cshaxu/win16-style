@@ -104,17 +104,19 @@ is not guaranteed to be styled.
 
 ### Experimental UWP window frames
 
-The T22 development candidate adds an explicit application-ID entry:
+Launch the system Calculator without remembering an application ID:
 
 ```powershell
-.\run16s.exe --app 'Microsoft.WindowsCalculator_8wekyb3d8bbwe!App'
+.\run16s.exe calc.exe
 ```
 
-This route styles the outer frame of a newly activated app hosted by the x64
+This route styles the outer frame of the activated app hosted by the x64
 Windows ApplicationFrameHost. It leaves XAML content and controls untouched.
-It is separate from `--global` and ordinary executable launching; `run16s calc`
-does not automatically select this route. Reused app processes, WinUI 3 desktop
-windows and other hosting arrangements are not covered by this first adapter.
+The system Calculator executable and byte-identical copies are redirected when its UWP
+package is installed; unrelated programs named calc.exe retain normal launching.
+`--app <AUMID>` remains available for other supported applications. Activation
+may create a new instance or return an existing one; the returned target is used.
+Global UWP styling, WinUI 3 and other hosting arrangements are not yet supported.
 
 Native tests on Calculator cover activation, caption-button commands and frame
 removal. Final on-screen appearance and cross-monitor DPI acceptance remain

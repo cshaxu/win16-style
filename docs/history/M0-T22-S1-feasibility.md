@@ -1018,3 +1018,48 @@ Only evidence/manifest changed; product four files remain clean8. No rebuild or
 republish of unchanged binaries. Full-screen real-selection gap is now closed;
 resize cursor, global/reuse, automatic title replacement and wider DPI remain.
 S1/T22 stay open.
+
+## P22 ordinary Calculator command and Notepad classification
+
+The launcher candidate recognizes resolved System32/SysWOW64 calc.exe and
+byte-identical copies named calc.exe, then activates the installed Calculator
+package. This is an explicit Calculator compatibility mapping, not generic
+executable-to-AUMID discovery. Unrelated same-name executables retain native
+launch. Arguments are forwarded; optional waiting is implemented but has not
+yet received a real close-and-wait test. Activation-returned reused instances
+are accepted by the code; this machine's Calculator manifest enables multiple
+instances, and observed repeat activation created a new PID, not a reuse proof.
+
+Incremental entry6 passed x86 four and x64 five selected tests without skips.
+From O:/winnt, the real candidate command created Calculator PID6532 at144 DPI;
+frame attachment, caption buttons, removal and original geometry passed. This
+was API-only evidence, not a new physical-input or screenshot verification.
+System32 and O:/winnt calc.exe were byte-identical, SHA256
+621ba3934afc45c35a4ee16386f4da30119f39fa243e8dc8fef3491a76f829d8.
+Recognition tests also copy the system stub, then modify its first byte and
+verify rejection. The old clean8 launcher returned0 but the command fixture
+found no new owned Calculator immediately afterward; this timing-sensitive
+negative is not proof that the old launcher could never activate it later.
+
+The requested system Notepad test FAILED propagation to the displayed process.
+Installed Microsoft.WindowsNotepad_11.2607.14.0_x64__8wekyb3d8bbwe declares
+Notepad/Notepad.exe with Windows.FullTrustApplication. It is packaged WinUI
+desktop, not Calculator's UWP/ApplicationFrameHost topology. The native probe
+launched System32/notepad.exe with its own scratch text file. Package process
+PID32228 loaded build/.ninja/x64/ntw16s64.dll, then a /SESSION child PID31464
+owned the visible Notepad-class window (HWND0x680a9e, TID29172).
+That final process loaded NotepadXamlUI.dll and Microsoft.UI.Xaml.dll but no
+ntw16s DLL. Module presence in the intermediate process is not successful
+window styling. The exact child creation API and hook initialization state
+remain unproven; no specific bypass API is asserted. Both owned instances were
+closed, without touching existing user documents. Evidence scratch:
+s1-window-audit/notepad-entry1. No Notepad-name mapping was added to hide this
+failure. Product delivery and remaining task scope are recorded in CURRENT.
+
+P22 final delivery: clean10 dual-width clean build and gates passed; final UWP
+frame tests3 per architecture plus x64 resolve1 passed without skip. Actual
+four-file package5 passed14 focused cases in31.16s. Final live command skipped
+for existing Calculator PID27072 (created08:06:14, same time as old negative,
+but ownership chain not established); it was not terminated. Publish5 copied
+the tested batch to assets and O:/winnt with all eight hashes matching. No
+new screenshot or real-input claim; P21 is earlier renderer evidence.

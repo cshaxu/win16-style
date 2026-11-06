@@ -7,6 +7,20 @@
 #include <wchar.h>
 static DWORD pid;
 static HWND frame,core,surface;
+static BOOL copied_entry(PCWSTR system_image)
+{
+    WCHAR root[MAX_PATH],directory[MAX_PATH],copy[MAX_PATH];
+    if(!GetTempPathW(ARRAYSIZE(root),root)||!GetTempFileNameW(root,L"wca",0,directory))return FALSE;
+    DeleteFileW(directory);
+    if(!CreateDirectoryW(directory,NULL))return FALSE;
+    BOOL ok=swprintf(copy,ARRAYSIZE(copy),L"%ls\\calc.exe",directory)>0&&CopyFileW(system_image,copy,FALSE);
+    if(ok)ok=run16s_uwp_calculator_image(copy);
+    HANDLE file=CreateFileW(copy,GENERIC_WRITE,0,NULL,OPEN_EXISTING,0,NULL);DWORD written=0;BYTE byte=0;
+    if(file!=INVALID_HANDLE_VALUE){ok=WriteFile(file,&byte,1,&written,NULL)&&written==1&&ok;CloseHandle(file);}
+    else ok=FALSE;
+    ok=!run16s_uwp_calculator_image(copy)&&ok;
+    DeleteFileW(copy);RemoveDirectoryW(directory);return ok;
+}
 static BOOL CALLBACK child(HWND w,LPARAM unused)
 {
     (void)unused;DWORD id=0;WCHAR name[80];GetWindowThreadProcessId(w,&id);GetClassNameW(w,name,80);
@@ -21,12 +35,12 @@ static BOOL CALLBACK owned(HWND w,LPARAM unused)
     if(GetWindow(w,GW_OWNER)==frame&&(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_LAYERED))surface=w;
     return TRUE;
 }
-static BOOL existing_calculator(void)
+static DWORD calculator_pid(void)
 {
-    HANDLE snapshot=CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS,0);if(snapshot==INVALID_HANDLE_VALUE)return TRUE;
-    PROCESSENTRY32W entry={.dwSize=sizeof(entry)};BOOL found=FALSE;
+    HANDLE snapshot=CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS,0);if(snapshot==INVALID_HANDLE_VALUE)return MAXDWORD;
+    PROCESSENTRY32W entry={.dwSize=sizeof(entry)};DWORD found=0;
     for(BOOL next=Process32FirstW(snapshot,&entry);next;next=Process32NextW(snapshot,&entry))
-        if(!_wcsicmp(entry.szExeFile,L"CalculatorApp.exe")){found=TRUE;break;}
+        if(!_wcsicmp(entry.szExeFile,L"CalculatorApp.exe")){found=entry.th32ProcessID;break;}
     CloseHandle(snapshot);return found;
 }
 static BOOL button(int hit)
@@ -75,12 +89,44 @@ static void titles(PCSTR phase)
 }
 int wmain(int argc,WCHAR **argv)
 {
-    if(argc!=2||wcscmp(argv[1],L"--activate")){puts("SKIP real UWP activation requires --activate");return 77;}
+    if(argc==2&&!wcscmp(argv[1],L"--resolve")){
+        WCHAR path[MAX_PATH];UINT n=GetSystemDirectoryW(path,ARRAYSIZE(path));
+        if(!n||n+10>=ARRAYSIZE(path))return 1;
+        wcscpy(path+n,L"\\calc.exe");
+        BOOL ok=run16s_uwp_calculator_image(path)&&copied_entry(path);CharUpperBuffW(path,(DWORD)wcslen(path));
+        ok=ok&&run16s_uwp_calculator_image(path);
+        ok=ok&&!run16s_uwp_calculator_image(NULL)&&!run16s_uwp_calculator_image(L"calc.exe")&&
+            !run16s_uwp_calculator_image(L"C:\\other\\calc.exe")&&!run16s_uwp_calculator_image(L"C:\\other\\notepad.exe");
+        BOOL handled=TRUE;
+        ok=ok&&!run16s_uwp_command(L"C:\\other\\calc.exe",L"",FALSE,&handled)&&!handled;
+        printf("UWP_CALCULATOR_RESOLVE_%s\n",ok?"PASS":"FAIL");return ok?0:1;
+    }
+    BOOL command_mode=argc==3&&!wcscmp(argv[1],L"--command-api");
+    BOOL api_only=command_mode||(argc>=2&&!wcscmp(argv[1],L"--activate-api"));
+    if((argc!=2&&argc!=3)||(!api_only&&wcscmp(argv[1],L"--activate"))){puts("SKIP real UWP activation requires --activate [launcher]");return 77;}
     HDESK desktop=OpenInputDesktop(0,FALSE,DESKTOP_READOBJECTS);WCHAR name[80]={0};DWORD needed;
     if(desktop){GetUserObjectInformationW(desktop,UOI_NAME,name,sizeof(name),&needed);CloseDesktop(desktop);}
-    if(wcscmp(name,L"Default")||existing_calculator()){puts("SKIP desktop or existing Calculator");return 77;}
+    if((!api_only&&wcscmp(name,L"Default"))||calculator_pid()){puts("SKIP desktop or existing Calculator");return 77;}
+    if(api_only)puts("DISPLAY_UNVERIFIED API-only activation; no physical input or screenshot assertions");
     SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-    DWORD error=run16s_uwp_activate(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App",&pid);
+    DWORD error=0;
+    if(command_mode){
+        WCHAR command_line[2048];STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION child_process={0};
+        int n=swprintf(command_line,ARRAYSIZE(command_line),L"\"%ls\" calc.exe",argv[2]);
+        FILETIME started;GetSystemTimeAsFileTime(&started);
+        if(n<=0||(size_t)n>=ARRAYSIZE(command_line)||!CreateProcessW(argv[2],command_line,NULL,NULL,FALSE,0,NULL,NULL,&startup,&child_process))return 1;
+        CloseHandle(child_process.hThread);DWORD code=~0u;
+        if(WaitForSingleObject(child_process.hProcess,15000)==WAIT_OBJECT_0)GetExitCodeProcess(child_process.hProcess,&code);
+        else {TerminateProcess(child_process.hProcess,1);WaitForSingleObject(child_process.hProcess,1000);}
+        CloseHandle(child_process.hProcess);printf("CALC_COMMAND exit=%lu\n",code);
+        pid=calculator_pid();
+        HANDLE candidate=pid&&pid!=MAXDWORD?OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION,FALSE,pid):NULL;
+        FILETIME created,exited,kernel,user;
+        BOOL fresh=candidate&&GetProcessTimes(candidate,&created,&exited,&kernel,&user)&&CompareFileTime(&created,&started)>=0;
+        if(candidate)CloseHandle(candidate);
+        if(!fresh){puts("FAIL no new owned calculator candidate");return 1;}
+        error=code;
+    }else error=run16s_uwp_activate(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App",&pid);
     printf("ACTIVATE error=%lu own_pid=%lu\n",error,pid);fflush(stdout);
     HANDLE process=pid?OpenProcess(SYNCHRONIZE|PROCESS_TERMINATE|PROCESS_QUERY_LIMITED_INFORMATION,FALSE,pid):NULL;
     EnumWindows(top,0);EnumWindows(owned,0);BOOL ok=!error&&core&&frame&&surface;
