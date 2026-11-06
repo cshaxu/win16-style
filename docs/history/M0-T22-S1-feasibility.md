@@ -931,3 +931,28 @@ P17本地交付：clean8双位宽干净构建、ABI/原资源/来源/依赖门�
 P18远端复核：P17 621d2beeb1e18da801fa88577603d5f23b81d0e3 已推送；重新fetch逐字节比对全部21个变更blob，
 远端四产物及两处八文件与测试SHA一致。仅登记复核，产品未变；S1/T22开放，
 全屏菜单真实选择及正常显示仍未验证。
+
+## P19 shared-host lifetime verification
+
+Added a private-desktop native regression using two frames on the same GUI
+thread. While the first frame is inside the real TrackPopupMenu nested loop,
+a timer destroys its native title. The test verifies that its overlay and
+borrowed action menu items disappear, no action callback fires, and the second
+frame keeps its visible overlay and geometry. Explicit attachment to a replacement
+title succeeds; removing and destroying the second frame leaves the first intact.
+This proves library isolation, not automatic product tracking of title replacement.
+
+First run s1-host-lifecycle1 failed with error50 because the new fixture's title
+width was hardcoded rather than ending at the client right edge. Corrected the
+fixture to use GetClientRect; the production geometry contract is unchanged.
+Final s1-host-lifecycle2: x86 and x64 each4/4 passed, zero skips; incremental
+build9.78/5.89 seconds, tests4.86/4.85 seconds. Marker:
+UWP_FRAME_SHARED_THREAD_PASS menu-title-destroy=1 explicit-reattach=1 peer-isolated=1.
+
+The authorized mouse-final1 probe exited before activation/input because the
+input desktop was not Default. No physical mouse validation was performed.
+No production source or binary changes. assets and O:/winnt four-file hashes
+remain equal to tested s1-clean8/candidate. No redundant product rebuild/release.
+Remaining: real full-screen menu selection, visible resize cursor defect,
+automatic title replacement, global/reused-instance integration and broader DPI
+coverage. S1/T22 and the UWP window-style goal remain open.

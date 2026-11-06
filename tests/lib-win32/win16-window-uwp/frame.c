@@ -7,6 +7,16 @@
 static UINT command,menu_notifications;
 static BOOL tracked_menu,menu_states_ok,expect_action,action_seen;
 static unsigned action_calls,expected_actions;
+static HWND retiring_title;
+static BOOL retired_in_menu;
+static void CALLBACK retire_title(HWND w,UINT message,UINT_PTR timer,DWORD tick)
+{
+    (void)message;(void)tick;KillTimer(w,timer);
+    GUITHREADINFO info={.cbSize=sizeof(info)};
+    retired_in_menu=GetGUIThreadInfo(GetCurrentThreadId(),&info) &&
+        (info.flags&GUI_INMENUMODE) && DestroyWindow(retiring_title);
+    if(!retired_in_menu)SendMessageW(w,WM_CANCELMODE,0,0);
+}
 static void extra_action(HWND frame,void *context)
 {(void)frame;(*(unsigned *)context)++;}
 static void CALLBACK cancel_menu(HWND w,UINT message,UINT_PTR timer,DWORD tick)
@@ -181,6 +191,31 @@ static int worker(int argc,WCHAR **argv)
     CHECK(win16_uwp_frame_remove(w));
     for(UINT id=0xefd0;id>=0xe000;id-=16)CHECK(DeleteMenu(extras,id,MF_BYCOMMAND));
     CHECK(DeleteMenu(extras,0xeff0,MF_BYCOMMAND));
+    /* Two frames on one host thread must have independent lifetimes. Retire
+     * one native title inside TrackPopupMenu's nested loop, then reattach it. */
+    HWND peer=CreateWindowExW(0,L"STATIC",L"Other hosted app",WS_OVERLAPPEDWINDOW|WS_VISIBLE,
+        550,20,400,300,NULL,NULL,NULL,NULL);CHECK(peer);ShowWindow(peer,SW_SHOWNOACTIVATE);
+    RECT peer_client;CHECK(GetClientRect(peer,&peer_client));
+    HWND peer_title=CreateWindowExW(0,L"STATIC",L"Other native title",WS_CHILD|WS_VISIBLE,
+        0,0,peer_client.right,48,peer,NULL,NULL,NULL);CHECK(peer_title);
+    CHECK(win16_uwp_frame_apply(peer,peer_title));
+    HWND peer_surface=win16_uwp_frame_surface(peer);CHECK(peer_surface);
+    RECT peer_before,peer_after;CHECK(GetWindowRect(peer,&peer_before));
+    CHECK(win16_uwp_frame_apply_actions(w,title,actions,2));
+    HWND retiring_surface=win16_uwp_frame_surface(w);CHECK(retiring_surface);
+    count=GetMenuItemCount(extras);retiring_title=title;retired_in_menu=FALSE;
+    CHECK(SetTimer(w,2,100,retire_title));
+    SendMessageW(w,WM_SYSCOMMAND,SC_KEYMENU,L' ');KillTimer(w,2);
+    CHECK(retired_in_menu&&!IsWindow(retiring_surface)&&!win16_uwp_frame_surface(w));
+    CHECK(GetMenuItemCount(extras)==count&&!action_calls);
+    CHECK(win16_uwp_frame_surface(peer)==peer_surface&&IsWindowVisible(peer_surface));
+    CHECK(GetWindowRect(peer,&peer_after)&&EqualRect(&peer_before,&peer_after));
+    title=CreateWindowExW(0,L"STATIC",L"Replacement title",WS_CHILD|WS_VISIBLE,
+        0,0,client.right,48,w,NULL,NULL,NULL);CHECK(title);
+    CHECK(win16_uwp_frame_apply(w,title));CHECK(win16_uwp_frame_remove(peer));
+    CHECK(!IsWindow(peer_surface)&&win16_uwp_frame_surface(w));
+    CHECK(DestroyWindow(peer));CHECK(win16_uwp_frame_remove(w));
+    puts("UWP_FRAME_SHARED_THREAD_PASS menu-title-destroy=1 explicit-reattach=1 peer-isolated=1");
     CHECK(win16_uwp_frame_apply(w,title));HWND surface=win16_uwp_frame_surface(w);
     CHECK(DestroyWindow(title));CHECK(!IsWindow(surface));CHECK(!win16_uwp_frame_surface(w));
     title=CreateWindowExW(0,L"STATIC",L"Native title",WS_CHILD|WS_VISIBLE,0,0,client.right,48,w,NULL,NULL,NULL);CHECK(title);
