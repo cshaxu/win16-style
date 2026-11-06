@@ -130,3 +130,5 @@ S15包测试进度文件共享冲突已由[S17记录](../history/M0-T18-S17-test
 - [ ] TODO(Medium): Delphi 其他未验证的原生或框架控件及变体（包括 `TAnimate`、旧式 `TTabSet`、`TDockTabSet`、外部容器和模型-only路径）保留原生外观或未认证；Owner：未来出现具体普通可见应用需求时准入。Evidence：[T18台账](../history/M0-T18-S64-control-inventory.md)。Admission：准确运行库、所有权、绘制与交互证据；不把模型当真实运行库认证。
 
 - [ ] TODO(Medium): Delphi非报告列表视图协议在同步查询中改变父窗或样式的重入保护尚缺独立有效故障负例；Owner：后续控件生命周期测试。Evidence：[列表调查](../history/M0-T18-S64-runtime-lists.md)：移除末尾重检的故障版仍通过现有重入模型。Admission：建立能检出该故障且不影响应用语义的可重复原生测试；不称已证实完整重入安全。
+
+- [ ] TODO(Low): UWP外框未认证边界：其他宿主、多显示器DPI、原生title HWND替换、挂起UIA提供者及全局通知失败；Owner：未来用户明确准入的UWP兼容扩展。Evidence：[T22收口](../history/M0-T22-closure.md)的实际目标/144DPI/通知失败与固定模块边界。Admission：有具体目标和可复现失败，再按自有实例验证；不将当前计算器/Scan成功扩张为所有UWP，不把样式移除称物理卸载。

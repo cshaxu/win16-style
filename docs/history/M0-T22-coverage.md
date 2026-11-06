@@ -2,7 +2,7 @@
 
 This audit preserves the user's window-only scope. Internal XAML controls and
 WinUI/desktop hybrid adaptation are not silently counted as implemented. M0 T22
-S1 remains open. The published product is P34; P37/P38/P40/P42 added verification only.
+S1/T22 closed in P43; see [closure](M0-T22-closure.md). The published product is P34; P37/P38/P40/P42 added verification only.
 
 | Requirement | Observed result and authoritative evidence | Status |
 | --- | --- | --- |
@@ -41,8 +41,8 @@ UAC canceled before creating the probe: no PID or actual.log, so administrator
 repeat-toggle remains unverified. No repeated prompt was issued. The production
 files remain unchanged.
 
-After this, review the completed scoped evidence and delivery before closing S1
-or T22. This audit does not authorize closure or claim the goal is already complete.
+The final P43 audit reread the evidence and delivery; see the closure record for
+the completed scope and retained limitations.
 
 ## Explicit limits, not additional implicit tasks
 

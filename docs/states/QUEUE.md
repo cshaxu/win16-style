@@ -9,7 +9,7 @@ CURRENT 是唯一活动工作权威；本文件拥有顺序，各 proposal 拥�
 
 | 顺序 | T 候选 | 前置完成条件 | 核心交付/任务级退出条件 |
 | --- | --- | --- | --- |
-| 1 | [现代桌面混合窗口适配](../proposals/modern-desktop-window-style.md) | 当前 UWP 外框任务完成；用户另行准入 | Notepad、Terminal、Task Manager、Explorer 分类接入及外框验证；复用绘制，不处理客户区 |
+| 1 | [现代桌面混合窗口适配](../proposals/modern-desktop-window-style.md) | UWP 外框已收口；用户另行准入 | Notepad、Terminal、Task Manager、Explorer 分类接入及外框验证；复用绘制，不处理客户区 |
 
 [run16s 手动全局样式模式](../proposals/global-style-mode.md)已按用户要求准入，活动状态由CURRENT管理。 [S41 全局进程审计](../proposals/global-process-audit.md)已完成并收口，并非新增队列候选。
 
@@ -39,7 +39,7 @@ CURRENT中的完成审计。待准入候选及顺序见上表。
 
 [构建与测试效率](../proposals/build-test-efficiency.md)已完成Td S9工具修复并收口，证据见其完成记录，状态由CURRENT管理。
 
-[UWP/XAML接入](../proposals/xaml-support.md)的旧任务已取消；重新准入的T22已发布有限UWP外框支持，当前范围与验证见CURRENT，内部XAML仍不在范围内。
+[UWP/XAML接入](../proposals/xaml-support.md)的旧任务已取消；重新准入的T22已发布有限UWP外框支持并收口（记录见CURRENT），内部XAML仍不在范围内。
 
 [UAC提权与样式注入](../proposals/uac-elevation.md)已完成并收口，实际支持边界和交付见CURRENT。
 

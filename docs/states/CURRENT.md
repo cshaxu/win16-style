@@ -2,38 +2,20 @@
 
 ## Current Work
 
-T21 按用户要求[有限范围收口](../history/M0-T21-closure.md)。当前 M0 T22 S1
-实现 UWP 外框的有限适配；P34已发布全局UWP外框及UNCLOAKED发现修复并完成远端复核，S1/T22 保持开放。
+当前无活动任务包。M0 T22 S1 已完成实现、验证、发布及交付，P43按
+[收口审计](../history/M0-T22-closure.md)关闭S1/T22；不自动准入下一T。
+最后分配数值T为T22，最后交付P43；M0不变。
 
-用户允许运行时接入本次目标的共享宿主；禁止修改目标文件、注册表和系统持久
-配置。本次仅窗口外观，不启用宿主传播，不处理内部 XAML 控件。
+技术基线：P34四文件已发布assets根目录与O:/winnt；P40/P42验证普通及管理员
+正式托盘两轮启停。支持已验证的x64 ApplicationFrameHost承载Calculator/Scan
+外框（144DPI），系统calc.exe入口、显式--app和全局已有/新建发现。内部XAML、
+WinUI桌面混合窗口不在本次范围；后者见QUEUE。共享宿主定向运行时接入，不启用
+宿主传播；移除样式层不等于卸载固定DLL。具体限制见收口审计和TODO。
 
-候选入口为 `run16s --app <AUMID>`；P22已发布系统 `calc.exe` 专用识别入口；代码接受本次激活返回的复用实例，Scan同PID/同窗口撤销后重新接入已验证。仍限定 x64
-ApplicationFrameHost 外框。真实计算器 144 DPI 截图已证明标题及系统菜单呈现，
-窗口按钮、撤销和几何有原生探针证据；P34/P38已验证全局已有/新建Calculator与Scan，
-不代表其他UWP、WinUI桌面或所有复用实例已经支持。最终包与剩余验证状态见本页末尾及
-[研究记录](../history/M0-T22-S1-feasibility.md)。
+T21此前按用户要求[有限范围收口](../history/M0-T21-closure.md)。
+以下为历次记录，旧“开放/待验证”描述由上述当前状态及最终审计覆盖。
 
-## M0 T22 S1 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | New |
-| Admission And Approval | 用户要求收口 T21，准入 T22 研究 UWP Win3.x 窗口样式。 |
-| Objective | 研究并实现UWP外框、标题栏、系统菜单及窗口按钮的运行时Win3.x适配；内部XAML控件暂不做。 |
-| Non-goals | 不处理客户区控件/字体/模板，不改变系统安全设置，不修改兄弟仓库。 |
-| Reference Baseline | T21 S44 交付 523e7d31；T10 S1 研究记录。 |
-| Candidate Proposal | docs/proposals/xaml-support.md |
-| Files And ABI Surface | 实现 lib-win32/win16-window-uwp 的 frame、frame_layout 及对应原生测试；产品侧保留 ntw16s-dll/uwp/hook，复用 win16-window/common。新增同位宽定向线程回调 Ntw16sUwpFrameHook @38，原有ABI3导出及序号保持；使用注册消息和目标CoreWindow句柄校验关联。启动器已增加显式AUMID激活入口；不递归客户区、不启用宿主传播。模块按宿主进程生命周期固定，撤销只删除窗口适配，不宣称物理卸载。 |
-| Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT；M0，原图形资源保留。 |
-| Verification | 查阅官方接口和既有原生探针证据，区分客户区、标题按钮、接入与绘制。 |
-| Expected Markers | 明确可实现范围、失败条件、恢复方式及真实应用验证计划。 |
-| Asset Needs | 原有图形资源和来源声明不变。 |
-| Reporting Requirements | 明确既有事实、假设、限制及下一步，不虚构产品支持。 |
-| Stop Conditions | 遇权限限制保留证据，不修改系统安全设置。 |
-| Exit Criteria | 真实目标正常显示、外框绘制/操作/恢复验证后完成产品集成及规定交付；未满足不得收口或宣称支持。 |
-| Original Owner Request | 收口 T21，准入 T22，研究 UWP 程序的 Win3.x 窗口样式。 |
-| Similar-Issue Sweep | 对照 T10 计算器接入、共享标题宿主与 XAML 控件研究。 |
+## Historical delivery notes
 
 S42 P1：删除 discover 和 load 两对产品垫片及多组纯转发和公共别名，产品专属适配置于 global/；双宽干净构建、ABI、资源及公共库边界检查通过，双宽各 11 项核心回归及 44 项实际包聚焦通过，其他 window station 子项双宽跳过，恢复摘要与旧版一致但仍不等原始。s42-publish1 因已核实的 sol.exe 占用中断，正常关闭后以同批候选包 s42-publish2 完成两处四文件发布并核对摘要。产品提交 `7301e504` 已推送并逐项复核远端。
 
