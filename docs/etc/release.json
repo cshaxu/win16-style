@@ -1871,6 +1871,15 @@
       "status": "PASS P27; published P22 DLL, Scan own PID29168 at144 DPI; visible SIZEWE, pointer/topmost restored, caption buttons and removal geometry passed",
       "evidence": "build/t22-package/s1-pointer-regression1/native/scan.log",
       "correction": "P26 arrow failure invalidated: repeated GetCursorInfo failed87 after cbSize became0; stale sample was reported"
+    },
+    "real_uwp_wait": {
+      "status": "PASS P28 published P22 run16s --wait system calc.exe",
+      "own_pid": 22048,
+      "launcher_held_while_styled": true,
+      "app_exited_after_close": true,
+      "launcher_exit": 0,
+      "evidence": "build/t22-package/s1-wait-regression2/real-wait.log",
+      "limits": "Frame HWND still existed immediately after application exit; not physical DLL unload or host destruction evidence"
     }
   },
   "validation": {
@@ -1886,8 +1895,7 @@
       "Full-screen menu selection verified only for this Scan version at144 DPI; not all UWP applications",
       "UIA per-call timeouts do not prove an overall worker deadline or safe cancellation of a hung provider",
       "Final clean10 real Calculator command skipped due to existing instance; incremental command evidence only",
-      "System Notepad final /SESSION process lacks DLL; propagation failure remains",
-      "Optional UWP --wait implemented but real close-and-wait not verified"
+      "System Notepad final /SESSION process lacks DLL; propagation failure remains"
     ]
   },
   "closure": {

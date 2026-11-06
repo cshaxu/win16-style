@@ -62,7 +62,7 @@ static BOOL CALLBACK top(HWND w,LPARAM unused)
 static BOOL CALLBACK owned(HWND w,LPARAM unused)
 {
     (void)unused;
-    if(GetWindow(w,GW_OWNER)==frame&&(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_LAYERED))surface=w;
+    if(frame&&GetWindow(w,GW_OWNER)==frame&&(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_LAYERED))surface=w;
     return TRUE;
 }
 static DWORD target_pid(void)
@@ -117,8 +117,49 @@ static void titles(PCSTR phase)
         if(!wcscmp(name,L"ApplicationFrameTitleBarWindow"))printf("TITLE hwnd=%p visible=%d\n",(void*)w,IsWindowVisible(w));
     }
 }
+static int wait_command(PCWSTR launcher)
+{
+ if(target_pid()){puts("SKIP existing calculator");return 77;}
+ FILETIME start;GetSystemTimeAsFileTime(&start);
+ WCHAR system[MAX_PATH],command[32768];UINT length=GetSystemDirectoryW(system,ARRAYSIZE(system));
+ if(!length||length+10>=ARRAYSIZE(system))return 1;
+ wcscpy(system+length,L"\\calc.exe");
+ int written=swprintf(command,ARRAYSIZE(command),L"\"%ls\" --wait \"%ls\"",launcher,system);
+ if(written<=0||(size_t)written>=ARRAYSIZE(command))return 1;
+ STARTUPINFOW si={.cb=sizeof(si)};PROCESS_INFORMATION pi={0};
+ if(!CreateProcessW(launcher,command,NULL,NULL,FALSE,CREATE_NO_WINDOW,NULL,NULL,&si,&pi)){printf("CREATE_ERROR=%lu\n",GetLastError());return 1;}
+ CloseHandle(pi.hThread);HANDLE app=NULL;ULONGLONG end=GetTickCount64()+15000;
+ while(GetTickCount64()<end){
+  if(!app){DWORD id=target_pid();if(id&&id!=MAXDWORD){
+   HANDLE candidate=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION|SYNCHRONIZE|PROCESS_TERMINATE,FALSE,id);
+   FILETIME birth,exit,kernel,user;
+   if(candidate&&GetProcessTimes(candidate,&birth,&exit,&kernel,&user)&&CompareFileTime(&birth,&start)>=0){app=candidate;pid=id;}
+   else if(candidate)CloseHandle(candidate);
+  }}
+  if(app){
+   frame=NULL;surface=NULL;EnumWindows(top,0);WCHAR name[80];
+   if(frame&&(!GetClassNameW(frame,name,ARRAYSIZE(name))||wcscmp(name,L"ApplicationFrameWindow")))frame=NULL;
+   if(frame)EnumWindows(owned,0);
+   if(surface)break;
+  }
+  if(WaitForSingleObject(pi.hProcess,50)==WAIT_OBJECT_0)break;
+ }
+ BOOL held=surface&&WaitForSingleObject(pi.hProcess,200)==WAIT_TIMEOUT;
+ printf("WAIT_ATTACHED pid=%lu frame=%p surface=%p held=%d\n",pid,(void*)frame,(void*)surface,held);fflush(stdout);
+ BOOL close=frame&&PostMessageW(frame,WM_CLOSE,0,0);
+ DWORD launcher_wait=WaitForSingleObject(pi.hProcess,10000),code=~0u;
+ GetExitCodeProcess(pi.hProcess,&code);
+ DWORD app_wait=app?WaitForSingleObject(app,0):WAIT_FAILED;
+ printf("WAIT_CLOSE posted=%d launcher_wait=%lu exit=%lu app_wait=%lu frame_exists=%d\n",close,launcher_wait,code,app_wait,IsWindow(frame));fflush(stdout);
+ BOOL ok=held&&close&&launcher_wait==WAIT_OBJECT_0&&code==0&&app_wait==WAIT_OBJECT_0;
+ if(app){if(app_wait!=WAIT_OBJECT_0){TerminateProcess(app,0);WaitForSingleObject(app,1000);}CloseHandle(app);}
+ if(WaitForSingleObject(pi.hProcess,1000)!=WAIT_OBJECT_0){TerminateProcess(pi.hProcess,1);WaitForSingleObject(pi.hProcess,1000);}CloseHandle(pi.hProcess);
+ puts(ok?"WAIT_PASS":"WAIT_FAIL");return ok?0:1;
+}
+
 int wmain(int argc,WCHAR **argv)
 {
+    if(argc==3&&!wcscmp(argv[1],L"--wait-api"))return wait_command(argv[2]);
     if(argc==2&&!wcscmp(argv[1],L"--resolve")){
         WCHAR path[MAX_PATH];UINT n=GetSystemDirectoryW(path,ARRAYSIZE(path));
         if(!n||n+10>=ARRAYSIZE(path))return 1;

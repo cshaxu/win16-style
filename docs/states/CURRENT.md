@@ -936,3 +936,18 @@ scratch s1-pointer-regression1双宽增量3/4项通过无skip；使用已发布P
 Scan自有PID29168、144DPI的真实可见SIZEWE、窗口按钮、撤销几何通过，实例清理。
 原先光标失败判定作废，不改产品renderer；此前激活超时原因仍未确定。
 产品及两处四文件保持P22；S1/T22开放。
+P28验证准备：登记build/t22-package/s1-wait-audit，自有纯C探针运行已发布
+run16s --wait calc.exe，核对新建PID/外框/覆盖窗，关闭外框后观察启动器退出；
+任何已有Calculator实例则skip，不终止宿主。不改产品，限时并清理本次实例。
+
+P28正式夹具增加--wait-api launcher，同一既有uwp.c复用目标发现及外框识别，
+无新产品/构建依赖。登记s1-wait-regression1用于双宽增量与已发布程序实际测试。
+
+P28首轮正式等待夹具失败：frame为空时owned误匹配无owner分层窗，未发送关闭；
+目标PID16112已由测试超时清理。修正空frame保护及等待期间ApplicationFrameWindow
+校验；登记s1-wait-regression2，沿用既有产品，不将夹具失败视为产品故障。
+
+P28最终验证：s1-wait-regression2双宽3/4项无skip；正式夹具调用O:/winnt发布
+程序，自有Calculator PID22048的样式窗口存续时启动器等待，关闭后应用及启动器
+退出，返回0。测试和证据已修正，产品输入及两处四文件SHA不变，无新二进制发布。
+--wait真实关闭验证完成；不将宿主尚存HWND视为销毁或物理卸载。S1/T22开放。

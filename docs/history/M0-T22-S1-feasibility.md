@@ -1170,3 +1170,28 @@ Only tests and evidence changed; product renderer, ABI and resource bytes are
 unchanged. Prior activation1460 failures remain unexplained. Multi-monitor
 DPI, actual reuse, title-child replacement and --wait remain outside this
 result. No claim of general UWP or WinUI compatibility; S1/T22 remain open.
+
+## P28 real launcher wait lifecycle
+
+A bounded pure C probe ran the deployed O:/winnt/run16s.exe --wait calc.exe.
+With no existing Calculator process, own PID16672 acquired the styled hosted
+frame; the launcher remained running. WM_CLOSE ended the application and the
+launcher exited0. The frame HWND still existed at immediate sampling; this is
+not evidence of host-window destruction or DLL unload.
+
+The corresponding --wait-api launcher mode was added to the existing native
+fixture. Its first run failed because owned-window enumeration accepted a null
+frame and mistook an unrelated ownerless layered window for the surface. No
+close was sent; PID16112 was cleaned by the bounded failure path. The fixture
+now rejects null owners and waits for the exact ApplicationFrameWindow class.
+This is a test correction, not a product change. Scratch: s1-wait-audit,
+s1-wait-regression1 and s1-wait-regression2 under build/t22-package.
+
+Final s1-wait-regression2: x86 three and x64 four focused tests passed, no skips.
+The formal fixture with deployed P22 launcher passed on own PID22048: styled
+surface present, held=1; close posted=1, launcher_wait=0, exit=0, app_wait=0.
+Both owned processes exited; no host termination. Product inputs and eight
+published file hashes remain unchanged. Original artwork identity and source
+manifest pass. Test-only delta:42 additions/1 deletion; enumeration ownership
+remains in this fixture and no production path is replaced. Actual reuse and
+multi-monitor behavior remain unverified; S1/T22 remain open.
