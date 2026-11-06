@@ -6332,9 +6332,9 @@
       "path": "tests/run16s-exe/uwp.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d3de4aef70bf1c3743c1789105941fcd6897e3f2b5d90656c614ff4ebcff6654",
+      "sha256": "fc33d28b1d05ed968fc244512d176bdf7b48933fba28960f970f64eb352cf89d",
       "disposition": "authored",
-      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained",
+      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained; T22 S1 P25 explicit native fixture target identity",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
     },
     {

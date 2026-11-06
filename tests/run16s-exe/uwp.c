@@ -7,6 +7,7 @@
 #include <wchar.h>
 static DWORD pid;
 static HWND frame,core,surface;
+static PCWSTR target_image=L"CalculatorApp.exe";
 static BOOL copied_entry(PCWSTR system_image)
 {
     WCHAR root[MAX_PATH],directory[MAX_PATH],copy[MAX_PATH];
@@ -35,12 +36,12 @@ static BOOL CALLBACK owned(HWND w,LPARAM unused)
     if(GetWindow(w,GW_OWNER)==frame&&(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_LAYERED))surface=w;
     return TRUE;
 }
-static DWORD calculator_pid(void)
+static DWORD target_pid(void)
 {
     HANDLE snapshot=CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS,0);if(snapshot==INVALID_HANDLE_VALUE)return MAXDWORD;
     PROCESSENTRY32W entry={.dwSize=sizeof(entry)};DWORD found=0;
     for(BOOL next=Process32FirstW(snapshot,&entry);next;next=Process32NextW(snapshot,&entry))
-        if(!_wcsicmp(entry.szExeFile,L"CalculatorApp.exe")){found=entry.th32ProcessID;break;}
+        if(!_wcsicmp(entry.szExeFile,target_image)){found=entry.th32ProcessID;break;}
     CloseHandle(snapshot);return found;
 }
 static BOOL button(int hit)
@@ -103,10 +104,14 @@ int wmain(int argc,WCHAR **argv)
     }
     BOOL command_mode=argc==3&&!wcscmp(argv[1],L"--command-api");
     BOOL api_only=command_mode||(argc>=2&&!wcscmp(argv[1],L"--activate-api"));
-    if((argc!=2&&argc!=3)||(!api_only&&wcscmp(argv[1],L"--activate"))){puts("SKIP real UWP activation requires --activate [launcher]");return 77;}
+    PCWSTR app_id=L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App";
+    if(argc==4&&!wcscmp(argv[1],L"--activate-api")){
+        app_id=argv[2];target_image=argv[3];
+        if(!wcschr(app_id,L'!')||!*target_image||wcschr(target_image,L'\\')||wcschr(target_image,L'/'))return 2;
+    }else if((argc!=2&&!command_mode)||(!api_only&&wcscmp(argv[1],L"--activate"))){puts("SKIP use --activate, --activate-api [AUMID image.exe], or --command-api launcher");return 77;}
     HDESK desktop=OpenInputDesktop(0,FALSE,DESKTOP_READOBJECTS);WCHAR name[80]={0};DWORD needed;
     if(desktop){GetUserObjectInformationW(desktop,UOI_NAME,name,sizeof(name),&needed);CloseDesktop(desktop);}
-    if((!api_only&&wcscmp(name,L"Default"))||calculator_pid()){puts("SKIP desktop or existing Calculator");return 77;}
+    if((!api_only&&wcscmp(name,L"Default"))||target_pid()){puts("SKIP desktop or existing target");return 77;}
     if(api_only)puts("DISPLAY_UNVERIFIED API-only activation; no physical input or screenshot assertions");
     SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
     DWORD error=0;
@@ -119,14 +124,14 @@ int wmain(int argc,WCHAR **argv)
         if(WaitForSingleObject(child_process.hProcess,15000)==WAIT_OBJECT_0)GetExitCodeProcess(child_process.hProcess,&code);
         else {TerminateProcess(child_process.hProcess,1);WaitForSingleObject(child_process.hProcess,1000);}
         CloseHandle(child_process.hProcess);printf("CALC_COMMAND exit=%lu\n",code);
-        pid=calculator_pid();
+        pid=target_pid();
         HANDLE candidate=pid&&pid!=MAXDWORD?OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION,FALSE,pid):NULL;
         FILETIME created,exited,kernel,user;
         BOOL fresh=candidate&&GetProcessTimes(candidate,&created,&exited,&kernel,&user)&&CompareFileTime(&created,&started)>=0;
         if(candidate)CloseHandle(candidate);
         if(!fresh){puts("FAIL no new owned calculator candidate");return 1;}
         error=code;
-    }else error=run16s_uwp_activate(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App",&pid);
+    }else error=run16s_uwp_activate(app_id,&pid);
     printf("ACTIVATE error=%lu own_pid=%lu\n",error,pid);fflush(stdout);
     HANDLE process=pid?OpenProcess(SYNCHRONIZE|PROCESS_TERMINATE|PROCESS_QUERY_LIMITED_INFORMATION,FALSE,pid):NULL;
     EnumWindows(top,0);EnumWindows(owned,0);BOOL ok=!error&&core&&frame&&surface;

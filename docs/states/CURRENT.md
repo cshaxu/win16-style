@@ -906,3 +906,12 @@ scratch s1-layout-boundaries1，双位宽增量构建；不把布局计算测试
 
 P24布局测试双位宽通过无skip；仅测试/证据变更，产品输入和发布包保持P22，
 不重复发布。当前桌面光标对照skip仍保留；S1/T22不收口。
+
+P25验证中：原生launch-uwp-live增加显式测试AUMID/映像名参数，仍在目标已有
+实例时跳过，产品入口不增加应用名映射。scratch s1-multiapp-fixture1用于双宽
+增量与自有Windows Scan API回归；不执行扫描/预览，不计正常桌面绘制验收。
+
+P25增量双宽3/4项通过无skip；正式P22 DLL的Scan自有PID14156激活等待外框
+超时1460，后续观察CoreWindow自身为root、无surface，FAIL。探针和自有目标
+均已退出；无扫描操作。输入桌面同样不可用，但尚未证实因果。产品不变，
+保留失败证据，已询问正常桌面可用时机；S1/T22开放。

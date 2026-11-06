@@ -1092,3 +1092,22 @@ Dual-width incremental Ninja/ccache build and native tests passed without skips
 (s1-layout-boundaries1; build x86 8.19s, x64 6.94s). Only test/source-receipt and
 evidence documents changed; production inputs and the P22 deployed batch remain
 unchanged. Previous unavailable-desktop cursor probe remains a separate skip.
+
+## P25 explicit multi-application native fixture
+
+launch-uwp-live accepts --activate-api AUMID image.exe for an explicitly selected
+UWP test target. Existing matching processes still cause a skip; target creation
+ownership remains supplied by the activation coordinator. This is test selection,
+not a product application-name mapping. Default Calculator and command modes
+remain. Incremental x86 three/x64 four UWP tests passed without skips.
+
+Real Windows Scan 6.3.9654.17133 test used the published DLL SHA256
+4842c285f9c0e757f650c20431ca4a2b1fa043e201b75f4103f01f18b5e36295 in a scratch
+test directory. Activation created own PID14156 but returned ERROR_TIMEOUT1460
+waiting for the associated hosted frame. The later fixture snapshot found
+CoreWindow0x15307ec as its own root, no adapter surface,144DPI. The test FAILED;
+it did not establish why the hosted frame was absent. Input desktop was also
+unavailable, but causality is not proven. No scan or preview command executed.
+Fixture exited and PID14156 was confirmed absent after cleanup. Evidence:
+s1-multiapp-fixture1/scan.log. This does not replace earlier successful Scan
+normal-desktop evidence, nor count as a current pass. No product files changed.
