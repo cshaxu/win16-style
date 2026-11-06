@@ -1975,9 +1975,10 @@
     ]
   },
   "closure": {
-    "status": "M0/T22/S1 open; P34 delivered locally",
+    "status": "M0/T22/S1 open; P34 delivered and verified",
     "remote": {
-      "status": "pending commit/push verification"
+      "product_commit": "12bfe7e943d37dd17904704614cf65d2e008597e",
+      "status": "fetched origin/main; all13 changed blobs match; four remote artifacts and eight deployed files match tested SHA256"
     }
   }
 }
