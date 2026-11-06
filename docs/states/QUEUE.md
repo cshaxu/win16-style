@@ -38,7 +38,7 @@ CURRENT中的完成审计。待准入候选及顺序见上表。
 
 [构建与测试效率](../proposals/build-test-efficiency.md)已完成Td S9工具修复并收口，证据见其完成记录，状态由CURRENT管理。
 
-[UWP/XAML接入](../proposals/xaml-support.md)已按用户请求取消，无产品支持发布。
+[UWP/XAML接入](../proposals/xaml-support.md)的旧任务已取消；用户现重新准入研究，当前无产品支持发布。
 
 [UAC提权与样式注入](../proposals/uac-elevation.md)已完成并收口，实际支持边界和交付见CURRENT。
 

@@ -2,7 +2,28 @@
 
 ## Current Work
 
-当前无活动任务包。T21 S44 已收口：公共交集同步、双工具链共享测试、实际包回归、发布及远端复核完成。见 [记录](../history/M0-T21-S44-shared-refresh.md)。M0 固定，T21 保持开放。
+T21 按用户要求[有限范围收口](../history/M0-T21-closure.md)，未覆盖项保留 TODO。T22 S1 已形成[可行性研究结论](../history/M0-T22-S1-feasibility.md)：XAML接入已有历史实证，完整宿主标题适配仍需原型验证。S1保持开放；本轮文档交付不冒称产品支持或S收口。M0固定。
+
+## M0 T22 S1 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | New |
+| Admission And Approval | 用户要求收口 T21，准入 T22 研究 UWP Win3.x 窗口样式。 |
+| Objective | 整理并验证普通 UWP 窗口及 XAML 样式的可行方案和边界。 |
+| Non-goals | 不改变系统安全设置，不假称支持所有 UWP，不修改兄弟仓库。 |
+| Reference Baseline | T21 S44 交付 523e7d31；T10 S1 研究记录。 |
+| Candidate Proposal | docs/proposals/xaml-support.md |
+| Files And ABI Surface | 初期研究与证据；产品实现及 ABI 变化先明确记录。 |
+| Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT；M0，原图形资源保留。 |
+| Verification | 查阅官方接口和既有原生探针证据，区分客户区、标题按钮、接入与绘制。 |
+| Expected Markers | 明确可实现范围、失败条件、恢复方式及真实应用验证计划。 |
+| Asset Needs | 原有图形资源和来源声明不变。 |
+| Reporting Requirements | 明确既有事实、假设、限制及下一步，不虚构产品支持。 |
+| Stop Conditions | 遇权限限制保留证据，不修改系统安全设置。 |
+| Exit Criteria | 形成可复核方案和有限验证证据，按规则交付。 |
+| Original Owner Request | 收口 T21，准入 T22，研究 UWP 程序的 Win3.x 窗口样式。 |
+| Similar-Issue Sweep | 对照 T10 计算器接入、共享标题宿主与 XAML 控件研究。 |
 
 S42 P1：删除 discover 和 load 两对产品垫片及多组纯转发和公共别名，产品专属适配置于 global/；双宽干净构建、ABI、资源及公共库边界检查通过，双宽各 11 项核心回归及 44 项实际包聚焦通过，其他 window station 子项双宽跳过，恢复摘要与旧版一致但仍不等原始。s42-publish1 因已核实的 sol.exe 占用中断，正常关闭后以同批候选包 s42-publish2 完成两处四文件发布并核对摘要。产品提交 `7301e504` 已推送并逐项复核远端。
 
@@ -457,14 +478,14 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 ## Identifier State
 
 - Milestone: M0 (fixed)
-- Last allocated T: 21
+- Last allocated T: 22
 - Last allocated Td S: 18
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
 - Last verified remote delivery: M0 T21 S44 P1，`39e590c8`；本次文件及四产品远端对象已复核。
-- Open task: T21；无活动 S。Explorer.exe 仍被排除。
+- Open task: T22 S1；T21 按用户要求有限范围收口。Explorer.exe 仍被排除。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。
