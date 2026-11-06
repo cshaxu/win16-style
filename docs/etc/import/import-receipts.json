@@ -6242,9 +6242,9 @@
       "path": "src/lib-win32/win16-window-uwp/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "27a70bc8ebd0ea5f362078d9fa0b6faf6bdf1a827a8b3d245dc553b4f54b962e",
+      "sha256": "5331694490f9f9e1de9f6e9fa947e9b0e21fd36545d85926f3593f850b51a1c4",
       "disposition": "authored",
-      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned",
+      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T22 S1 system-menu temporary command state and native cursor handling",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
     },
     {
@@ -6314,9 +6314,9 @@
       "path": "tests/lib-win32/win16-window-uwp/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f39d4b509bc993a7586b05c7c623abd48ba90b1f683269d77e1d661c0a2e493d",
+      "sha256": "6f4f379c1c9f54b38d2a27a0fb164dbbdcd17900fe0e7cf0e295e86ccfa386b3",
       "disposition": "authored",
-      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned",
+      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T22 S1 system-menu temporary command state and native cursor handling",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
     },
     {

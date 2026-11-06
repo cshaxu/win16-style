@@ -522,3 +522,60 @@ all 33 changed blobs byte-for-byte, and verified SHA256 of all four remote
 binaries against the tested package and both deployment directories (eight files).
 P5 changes only delivery review records; binaries remain the tested P4 batch.
 S1/T22 remain open with the limitations above; no full UWP/global claim.
+
+### P6 menu-state and input work (not yet delivered)
+
+Negative `s1-menu-state-negative1` failed on the published logic: normal Restore
+and Maximize both returned0x100 (owner-draw, enabled). The TrackPopup path does not
+perform the original window's automatic system-menu state update. Added a bounded
+five-command state scope: preserve original flags, add only state-dependent
+restrictions, notify original WM_INITMENU, and restore temporary restrictions
+while the original window/menu still exist. Application-disabled Close is untouched.
+Reference: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsystemmenu
+
+State tests cover normal/maximized Restore/Maximize/Move/Size, original notification,
+restoration and application-disabled Close. `s1-menu-state1/3` each passed three
+cases per architecture, no skips. `s1-menu-state2` failed because posted keyboard
+messages on the private desktop did not select a real menu command; that invalid
+input method was removed, not reported as a product pass.
+
+Real visual16/17/18/19/20: keyboard Up/Up selectsSC_MAXIMIZE(0xf030), Return causes
+IsZoomed=1, removal and original geometry restore pass. Earlier End/Up probe
+selected Close and the own window exited; hostPID12040 remained alive, not a host
+crash. visual13 and21 lacked target foreground and are not visual/input passes.
+
+Cursor code selects native cursor by actual border hit. Temporary diagnostic
+confirmed HTLEFT=10 and target GetCursor=IDC_SIZEWE, but visible GetCursorInfo did
+not match; this is not a visible-cursor pass. Native no-DLL control initially
+failed due to inherited hidden startup/zero movement; explicit visibility and
+one-pixel input passed. UWP one-pixel run showed pointer at54,281 instead of requested
+324,528; subsequent absolute-input run lacked foreground. Visible cursor remains
+unverified. All temporary T22Cursor properties were removed before final build.
+Scratch is the registered s1-window-audit; input targets were self-created and
+closed, pointer restored, no shared host termination in this series.
+
+### Native move/resize verification on user-confirmed idle desktop
+
+User confirmed availability for the limited native-input test. visual22 used the
+non-diagnostic final incremental DLL (`s1-menu-state4`, x64 SHA256
+ a1548da1c7efe919db448f8c64c756951105f73292172b2a75ed50286b66e2ba), ownCalculator40740,
+host12040/TID14508,144DPI. Real SendInput title drag moved root from
+(323,123,825,933) to (343,143,845,953); left-edge resize expanded it to
+(303,123,825,933). Both were restored. Real menu Up/Up selectedSC_MAXIMIZE, Return
+maximized; adaptation removal and original geometry restoration passed, hook removed.
+Before/styled/menu/restored captures succeeded. Probe closed its own calculator.
+
+Visible resize cursor did NOT pass: pointer confirmed at(325,528) on the surface,
+but GetCursorInfo returned arrow0x10003 instead ofSIZEWE0x10011. This is now an
+observed limitation, not only missing coverage. Earlier diagnostic proved the
+host thread could set SIZEWE; global visible cursor does not follow in this case.
+Native no-DLL control passed after explicit ShowWindow override of hidden startup
+and nonzero input movement. No claim of full cursor correctness is made.
+
+Final incremental s1-menu-state4 passed x86/x64 each3 tests with zero skips.
+No T22Cursor diagnostic properties remain. Clean snapshot s1-clean6 was launched
+in background with PID30928; publication is pending the actual package gates.
+
+P6本地交付完成：clean6双宽干净构建及ABI/资源/依赖门禁通过，最终库双宽各2项通过；s1-package2共14项聚焦实包通过，36.72秒，无skip。初次测试命令误写Task22参数未执行，改为Task 22；沙箱后台无结果退出后确认已结束，再以获准的后台工作器完成。
+最终包真实计算器PID5240的激活、最大化/还原、最小化/还原及撤销几何通过；visual23初次沙箱激活E_ACCESSDENIED，获准环境重跑PID16800/宿主12040/线程5924，144DPI标题、菜单截图、撤销与几何通过。未改系统设置。
+s1-publish2已将同批四文件发布assets根目录及O:/winnt并校验摘要。原生输入visual22移动/缩放各一次及键盘菜单最大化通过，但可见缩放光标仍为箭头；该失败不能被其他通过项替代。S1/T22保持开放。产品差异仅frame.c及对应测试，31/1与25/4行增删；无第二套渲染路径、无资源变更。当前提交推送及远端复核待完成。

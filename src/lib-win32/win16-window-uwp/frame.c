@@ -205,7 +205,22 @@ static void system_menu(uwp_frame *s)
     if(s->tracking || s->detached)return;
     HMENU menu=GetSystemMenu(s->window,FALSE);RECT surface;
     if(!menu || !GetWindowRect(s->surface,&surface))return;
-    s->tracking=TRUE;s->no_menu=TRUE;refresh(s);
+    s->tracking=TRUE;
+    SendMessageW(s->window,WM_INITMENU,(WPARAM)menu,0);
+    if(s->detached){s->tracking=FALSE;return;}
+    /* TrackPopupMenu does not apply the root window's system-command states.
+     * Add only temporary restrictions; retain application-disabled commands. */
+    const UINT ids[]={SC_RESTORE,SC_MOVE,SC_SIZE,SC_MINIMIZE,SC_MAXIMIZE};
+    UINT saved[ARRAYSIZE(ids)];
+    DWORD style=(DWORD)GetWindowLongPtrW(s->window,GWL_STYLE);
+    BOOL zoomed=IsZoomed(s->window),iconic=IsIconic(s->window);
+    BOOL disabled[]={!zoomed&&!iconic,zoomed,zoomed||iconic||!(style&WS_THICKFRAME),
+        iconic||!(style&WS_MINIMIZEBOX),zoomed||!(style&WS_MAXIMIZEBOX)};
+    for(unsigned i=0;i<ARRAYSIZE(ids);++i){
+        saved[i]=GetMenuState(menu,ids[i],MF_BYCOMMAND);
+        if(saved[i]!=(UINT)-1 && disabled[i])EnableMenuItem(menu,ids[i],MF_BYCOMMAND|MF_GRAYED);
+    }
+    s->no_menu=TRUE;refresh(s);
     UINT command=0;
     if(!s->detached)command=TrackPopupMenuEx(menu,TPM_LEFTALIGN|TPM_TOPALIGN|TPM_RETURNCMD|TPM_NOANIMATION,
         surface.left+s->layout.system.left,surface.top+s->layout.system.bottom,
@@ -216,6 +231,9 @@ static void system_menu(uwp_frame *s)
             SetWindowLongPtrW(s->menu_window,GWL_EXSTYLE,GetWindowLongPtrW(s->menu_window,GWL_EXSTYLE)&~WS_EX_LAYERED);
         s->menu_window=NULL;
     }
+    if(!s->detached && GetSystemMenu(s->window,FALSE)==menu)for(unsigned i=0;i<ARRAYSIZE(ids);++i)
+        if(saved[i]!=(UINT)-1 && disabled[i])
+            EnableMenuItem(menu,ids[i],MF_BYCOMMAND|(saved[i]&(MF_DISABLED|MF_GRAYED)));
     s->tracking=FALSE;s->no_menu=FALSE;
     if(!s->detached){refresh(s);if(command)PostMessageW(s->window,WM_SYSCOMMAND,command,0);}
 }
@@ -232,6 +250,18 @@ static LRESULT CALLBACK surface_proc(HWND w,UINT message,WPARAM a,LPARAM b,UINT_
     switch(message){
     case WM_ENTERIDLE:if(a==MSGF_MENU)menu_present(s,(HWND)b);break;
     case WM_MOUSEACTIVATE:result=MA_NOACTIVATE;break;
+    case WM_SETCURSOR: {
+        POINT point;
+        if(!GetCursorPos(&point)||!ScreenToClient(w,&point)){handled=FALSE;break;}
+        int hit=(int)win16_uwp_frame_hit(&s->layout,point);
+        PCWSTR cursor=IDC_ARROW;
+        if(hit==HTLEFT||hit==HTRIGHT)cursor=IDC_SIZEWE;
+        else if(hit==HTTOP||hit==HTBOTTOM)cursor=IDC_SIZENS;
+        else if(hit==HTTOPLEFT||hit==HTBOTTOMRIGHT)cursor=IDC_SIZENWSE;
+        else if(hit==HTTOPRIGHT||hit==HTBOTTOMLEFT)cursor=IDC_SIZENESW;
+        SetCursor(LoadCursorW(NULL,cursor));
+        result=TRUE;break;
+    }
     case WM_NCHITTEST:result=HTCLIENT;break; /* The window region excludes client content. */
     case WM_LBUTTONDOWN: {
         int hit=(int)point_hit(s,b);SetForegroundWindow(s->window);

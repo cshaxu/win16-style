@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "delivery": "M0 T22 S1 P4",
+  "delivery": "M0 T22 S1 P6",
   "stage": "development acceptance; M0/T22/S1 open; Calculator frame-only candidate",
   "version": "0.22.0.0",
   "version_contract": "M0 T22; sequential S does not increment T version",
   "package_directory": "assets",
-  "source_snapshot_sha256": "82a6bae540bd16d33dd08d6cdec4dc8f06b4e141a8b58f8d5e95cde6f005081f",
+  "source_snapshot_sha256": "fb9aba5839eb30f345825b382167f9612c3b48398bba35c8707cbbd2c54ed02c",
   "source_snapshot_format": "SHA256 of the clean build snapshot.json bytes",
   "source_inputs": [
     {
@@ -1245,7 +1245,7 @@
       "path": "src\\lib-win32\\win16-window-uwp\\frame_layout.h"
     },
     {
-      "sha256": "27a70bc8ebd0ea5f362078d9fa0b6faf6bdf1a827a8b3d245dc553b4f54b962e",
+      "sha256": "5331694490f9f9e1de9f6e9fa947e9b0e21fd36545d85926f3593f850b51a1c4",
       "path": "src\\lib-win32\\win16-window-uwp\\frame.c"
     },
     {
@@ -1661,7 +1661,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T22",
-      "sha256": "69971f213bf3d7c4ee99cc5fb653ff50f80d085c4cbbb151abab3bee2e612d4e",
+      "sha256": "a622f4b1d0ea1cdf14dd528f1151f79536cfdc31ba98a35f6f068c06e611118d",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -1675,7 +1675,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T22",
-      "sha256": "eefd8002c83f39dc3eafdb150b518de0798556244d538dc6bb97a55ffb0150d9",
+      "sha256": "d66ce3753f28ce0c78726497de7139827cd9c5f92f08aa948852d6f5f25d2cd7",
       "imports": [
         "ADVAPI32.dll",
         "COMCTL32.dll",
@@ -1699,7 +1699,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T22",
-      "sha256": "e7cede4555e39ab149c72724d648f98a98c80a339fcdf2078b31606ec34c35e5",
+      "sha256": "dcc1d3129909dcb4f1dfd1aa91ad9ebb1ef215cedc6761a2da407f92cd18231d",
       "imports": [
         "ADVAPI32.dll",
         "COMCTL32.dll",
@@ -1718,7 +1718,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T22",
-      "sha256": "d874ea956feb2e8135a4a543de1de4f90aebe931a0670c466e693b26cb48c515",
+      "sha256": "4255b554719fb311aacc2c799d8b6d6ec00cf209e7515da6dece1cd78b8e569a",
       "imports": [
         "comctl32.dll",
         "comdlg32.dll",
@@ -1732,74 +1732,74 @@
     }
   },
   "toolchains": {
-    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
     "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
+    "ccache_version": "ccache version 4.13.6",
     "toolchains": [
       {
-        "version": "16.1.0",
-        "target": "i686-w64-mingw32",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
         "architecture": "x86",
         "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe"
+        "version": "16.1.0",
+        "target": "i686-w64-mingw32"
       },
       {
-        "version": "16.1.0",
-        "target": "x86_64-w64-mingw32",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
         "architecture": "x64",
         "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe"
+        "version": "16.1.0",
+        "target": "x86_64-w64-mingw32"
       }
     ],
-    "ccache_version": "ccache version 4.13.6"
+    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe"
   },
   "architecture": "C17, MinGW GCC, Ninja and ccache; three components, four product files; ABI 3 plus callback ordinal 38",
-  "binary_batch_delivery": "M0 T22 S1 P4",
+  "binary_batch_delivery": "M0 T22 S1 P6",
   "verification": {
     "clean_build": {
       "profile": "Focused",
-      "test_jobs": 4,
-      "status": "passed",
       "targets": "all",
-      "selection": "^core/abi$",
-      "tests": [
-        {
-          "architecture": "x86",
-          "skipped": [],
-          "configure_seconds": 11.76288939989172,
-          "tests": 1,
-          "build_seconds": 348.4339686000021,
-          "passed": 1,
-          "test_seconds": 1.022913199965842
-        },
-        {
-          "architecture": "x64",
-          "skipped": [],
-          "configure_seconds": 16.637777299969457,
-          "tests": 1,
-          "build_seconds": 418.92499329999555,
-          "passed": 1,
-          "test_seconds": 1.0007845000363886
-        }
-      ],
       "build_jobs": 8,
+      "test_jobs": 4,
       "architectures": [
         "x86",
         "x64"
       ],
-      "build_root": "O:\\repos.hobby\\win16style\\build\\t22-package\\s1-clean5\\clean-source\\build\\.ninja",
-      "exit_code": 0
+      "build_root": "O:\\repos.hobby\\win16style\\build\\t22-package\\s1-clean6\\clean-source\\build\\.ninja",
+      "selection": "^core/abi$",
+      "status": "passed",
+      "exit_code": 0,
+      "tests": [
+        {
+          "passed": 1,
+          "configure_seconds": 11.683030399959534,
+          "test_seconds": 0.8467566000763327,
+          "tests": 1,
+          "skipped": [],
+          "architecture": "x86",
+          "build_seconds": 330.7206483000191
+        },
+        {
+          "passed": 1,
+          "configure_seconds": 13.053502000053413,
+          "test_seconds": 0.8264047000557184,
+          "tests": 1,
+          "skipped": [],
+          "architecture": "x64",
+          "build_seconds": 396.3439889999572
+        }
+      ]
     },
     "actual_package": [
       {
         "status": "passed-focused",
         "cases": 14,
-        "seconds": 41.1509698,
+        "seconds": 36.7180529,
         "skipped": [],
         "sha256": {
-          "demo.exe": "d874ea956feb2e8135a4a543de1de4f90aebe931a0670c466e693b26cb48c515",
-          "ntw16s32.dll": "eefd8002c83f39dc3eafdb150b518de0798556244d538dc6bb97a55ffb0150d9",
-          "ntw16s64.dll": "e7cede4555e39ab149c72724d648f98a98c80a339fcdf2078b31606ec34c35e5",
-          "run16s.exe": "69971f213bf3d7c4ee99cc5fb653ff50f80d085c4cbbb151abab3bee2e612d4e"
+          "demo.exe": "4255b554719fb311aacc2c799d8b6d6ec00cf209e7515da6dece1cd78b8e569a",
+          "ntw16s32.dll": "d66ce3753f28ce0c78726497de7139827cd9c5f92f08aa948852d6f5f25d2cd7",
+          "ntw16s64.dll": "dcc1d3129909dcb4f1dfd1aa91ad9ebb1ef215cedc6761a2da407f92cd18231d",
+          "run16s.exe": "a622f4b1d0ea1cdf14dd528f1151f79536cfdc31ba98a35f6f068c06e611118d"
         },
         "selected_cases": [
           "progress-sharing",
@@ -1826,13 +1826,14 @@
     },
     "real_calculator": {
       "dpi": 144,
-      "activation_buttons_remove_geometry": "passed",
-      "own_pid": 11840,
-      "visual_own_pid": 27468,
+      "activation_buttons_remove_geometry": "passed final clean6 package",
+      "own_pid": 5240,
+      "visual_own_pid": 16800,
       "visual_host_pid": 12040,
-      "visual_thread": 34468,
-      "menu_screenshot": "visual12-menu.bmp",
-      "input": "native API/message probes; physical input not certified"
+      "visual_thread": 5924,
+      "menu_screenshot": "visual23-menu.bmp",
+      "input": "visual22: native SendInput move/resize once each and menu keyboard maximize passed on final incremental source; pointer and window restored",
+      "visible_resize_cursor": "failed: global cursor remains arrow; not fixed"
     },
     "original_resource_tables_per_dll": 18
   },
@@ -1842,16 +1843,13 @@
     "limitations": [
       "explicit --app AUMID only; new instance and x64 ApplicationFrameHost",
       "no --global or calc alias integration, reused apps, WinUI 3 or client controls",
-      "physical drag/resize and multi-monitor DPI not certified",
-      "complete system-menu command/enabled-state matrix not certified",
+      "visible resize cursor remains arrow; multi-monitor DPI and title-child replacement not certified",
+      "finite normal/maximized menu-state checks passed; not every application command/state combination",
       "adapter removal does not physically unload the pinned DLL"
     ]
   },
   "closure": {
     "status": "M0/T22/S1 open; bounded development delivery",
-    "remote": {
-      "product_commit": "c06ea3edbcb2f3146a278ee9297deab438112997",
-      "status": "fetched origin/main and read all 33 changed blobs; four remote binaries and eight deployed files match tested SHA256"
-    }
+    "remote": null
   }
 }

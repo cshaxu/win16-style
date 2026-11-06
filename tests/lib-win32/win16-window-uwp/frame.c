@@ -4,19 +4,30 @@
 #include <commctrl.h>
 #include <windowsx.h>
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"FAIL line=%d error=%lu\n",__LINE__,GetLastError());return 1;}}while(0)
-static UINT command;
-static BOOL tracked_menu;
+static UINT command,menu_notifications;
+static BOOL tracked_menu,menu_states_ok;
 static void CALLBACK cancel_menu(HWND w,UINT message,UINT_PTR timer,DWORD tick)
 {
     (void)message;(void)tick;KillTimer(w,timer);
     GUITHREADINFO info={.cbSize=sizeof(info)};
     tracked_menu=GetGUIThreadInfo(GetCurrentThreadId(),&info) &&
         (info.flags&GUI_INMENUMODE) && info.hwndMenuOwner==win16_uwp_frame_surface(w);
+    HMENU menu=GetSystemMenu(w,FALSE);
+    UINT restore=GetMenuState(menu,SC_RESTORE,MF_BYCOMMAND);
+    UINT maximize=GetMenuState(menu,SC_MAXIMIZE,MF_BYCOMMAND);
+    printf("SYSTEM_MENU_STATE zoomed=%d restore=%x maximize=%x\n",IsZoomed(w),restore,maximize);
+    menu_states_ok=restore!=(UINT)-1 && maximize!=(UINT)-1 &&
+        !!(restore&(MF_DISABLED|MF_GRAYED))==!IsZoomed(w) &&
+        !!(maximize&(MF_DISABLED|MF_GRAYED))==!!IsZoomed(w);
+    UINT move=GetMenuState(menu,SC_MOVE,MF_BYCOMMAND),size=GetMenuState(menu,SC_SIZE,MF_BYCOMMAND);
+    menu_states_ok=menu_states_ok && !!(move&MF_GRAYED)==!!IsZoomed(w) &&
+        !!(size&MF_GRAYED)==!!IsZoomed(w);
     SendMessageW(w,WM_CANCELMODE,0,0);
 }
 static LRESULT CALLBACK observe(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
 {
     (void)id;(void)data;
+    if(m==WM_INITMENU)++menu_notifications;
     if(m==WM_SYSCOMMAND){command=(UINT)a&0xfff0;return 0;}
     return DefSubclassProc(w,m,a,b);
 }
@@ -81,9 +92,9 @@ static int worker(int argc,WCHAR **argv)
         CHECK(GetMenuItemInfoW(menu,SC_CLOSE,FALSE,&styled));
         CHECK(styled.fType==native.fType&&styled.dwItemData==native.dwItemData);
         if(!i){
-            tracked_menu=FALSE;CHECK(SetTimer(w,1,200,cancel_menu));
+            tracked_menu=FALSE;menu_notifications=0;CHECK(SetTimer(w,1,200,cancel_menu));
             SendMessageW(w,WM_SYSCOMMAND,SC_KEYMENU,L' ');KillTimer(w,1);
-            CHECK(tracked_menu);
+            CHECK(tracked_menu);CHECK(menu_states_ok);CHECK(menu_notifications==1);
             CHECK(GetMenuItemInfoW(menu,SC_CLOSE,FALSE,&styled));
             CHECK(styled.fType==native.fType&&styled.dwItemData==native.dwItemData);
         }
@@ -100,6 +111,16 @@ static int worker(int argc,WCHAR **argv)
             CHECK(GetMonitorInfoW(MonitorFromWindow(w,MONITOR_DEFAULTTONEAREST),&monitor));
             CHECK(IntersectRect(&visible,&moved,&monitor.rcWork));
             CHECK(EqualRect(&visible,&layer));CHECK(IsWindowVisible(surface));
+            if(!i){
+                UINT original=GetMenuState(menu,SC_MAXIMIZE,MF_BYCOMMAND);
+                EnableMenuItem(menu,SC_CLOSE,MF_BYCOMMAND|MF_GRAYED);
+                CHECK(SetTimer(w,1,200,cancel_menu));
+                SendMessageW(w,WM_SYSCOMMAND,SC_KEYMENU,L' ');KillTimer(w,1);
+                CHECK(menu_states_ok);
+                CHECK(GetMenuState(menu,SC_MAXIMIZE,MF_BYCOMMAND)==original);
+                CHECK(GetMenuState(menu,SC_CLOSE,MF_BYCOMMAND)&MF_GRAYED);
+                EnableMenuItem(menu,SC_CLOSE,MF_BYCOMMAND|MF_ENABLED);
+            }
             ShowWindow(w,SW_RESTORE);GetClientRect(w,&client);
             CHECK(SetWindowPos(title,NULL,0,0,client.right,48,SWP_NOZORDER|SWP_NOACTIVATE));
             CHECK(SetWindowPos(w,NULL,before.left,before.top,0,0,SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE));
