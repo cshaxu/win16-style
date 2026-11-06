@@ -21,6 +21,7 @@ BOOL ntw16s_global_manager_tracks(ntw16s_global_manager *manager,DWORD pid,DWORD
 void ntw16s_global_manager_test_process(ntw16s_global_manager *manager,DWORD pid);
 /* Restrict the real observer to a test-owned app and its associated UWP frame. */
 void ntw16s_global_manager_test_filter(DWORD pid);
+void ntw16s_global_manager_test_second(DWORD pid);
 #endif
 DWORD ntw16s_global_manager_stop(ntw16s_global_manager *manager,DWORD timeout);
 #endif

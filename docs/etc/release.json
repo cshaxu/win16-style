@@ -1954,6 +1954,24 @@
       "negative": "diagnostic2 old observer: three real failures",
       "positive": "uncloak2: three real successes; PID30432 Core SHOW then host UNCLOAKED31ms later triggers apply0",
       "unit": "native NotifyWinEvent test x86/x64; optional observer flag; default unchanged"
+    },
+    "uwp_concurrent": {
+      "status": "PASS P36 using published P34 DLL",
+      "host_pid": 37040,
+      "pair": [
+        34104,
+        24552
+      ],
+      "prestyled_pair": [
+        13084,
+        30396
+      ],
+      "both_active": 2,
+      "distinct_visible_surfaces": true,
+      "removed_both": true,
+      "restart_immediate_stop": "no surfaces for either frame",
+      "evidence": "build/t22-package/s1-global-pair1/native/{pair,pair-styled}.log",
+      "limits": "existing pair and shared single-target API prestyle; not full launcher/global CLI coexistence or two concurrent activations"
     }
   },
   "validation": {
@@ -1968,10 +1986,10 @@
       "Full-screen menu selection verified only for this Scan version at144 DPI; not all UWP applications",
       "UIA per-call timeouts do not prove an overall worker deadline or safe cancellation of a hung provider",
       "System Notepad final /SESSION process lacks DLL; propagation failure remains",
-      "Global x64 ApplicationFrameHost adapter only; no WinUI or client styling; concurrent hosted applications and explicit/global coexistence not yet certified",
+      "Global x64 ApplicationFrameHost adapter only; no WinUI or client styling; concurrent Calculator/Scan verified via manager fixture; full explicit/global CLI coexistence not yet certified",
       "First actual-package x86 classic-manager cleanup timeout; identical package serial rerun passed, no root cause claimed",
       "Uncloaking ordering fixed and actual-package verified; not every activation ordering certified",
-      "Elevated tray end-to-end, multiple simultaneous hosted targets and explicit/global coexistence still pending"
+      "Elevated tray end-to-end and full explicit/global CLI coexistence still pending; concurrent Calculator/Scan and API prestyle passed P36"
     ]
   },
   "closure": {

@@ -6,8 +6,10 @@
 #ifdef NTW16S_GLOBAL_MANAGER_TEST
 #include "ntw16s-dll/uwp/target.h"
 #include <stdio.h>
-static DWORD test_pid;
-void ntw16s_global_manager_test_filter(DWORD pid){test_pid=pid;}
+static DWORD test_pid,test_second_pid;
+void ntw16s_global_manager_test_filter(DWORD pid){test_pid=pid;test_second_pid=0;}
+void ntw16s_global_manager_test_second(DWORD pid){test_second_pid=pid;}
+static BOOL test_allowed(DWORD pid){return pid==test_pid||(test_second_pid&&pid==test_second_pid);}
 #endif
 #include "lib-win32/process-global/enumerate.h"
 #include "lib-win32/process-global/window.h"
@@ -58,9 +60,9 @@ static void discovered(HWND window,DWORD pid,DWORD thread_id,void *context)
     ntw16s_global_manager *m=(ntw16s_global_manager *)context;
     if(m->session->phase!=NTW16S_GLOBAL_ACTIVE || pid==m->session->owner_pid || pid==m->session->host_pid)return;
 #ifdef NTW16S_GLOBAL_MANAGER_TEST
-    if(test_pid&&pid!=test_pid){ntw16s_uwp_target target;
+    if(test_pid&&!test_allowed(pid)){ntw16s_uwp_target target;
         if(!window||!ntw16s_uwp_target_window(window,&target))return;
-        if(target.pid!=test_pid){printf("UWP_TEST_FILTER skipped_pid=%lu allowed=%lu\n",target.pid,test_pid);return;}}
+        if(!test_allowed(target.pid)){printf("UWP_TEST_FILTER skipped_pid=%lu allowed=%lu\n",target.pid,test_pid);return;}}
 #endif
     if(window&&ntw16s_uwp_global_observe(m->uwp,window))return;
     win32_process_global_engine_submit(&m->engine,pid,thread_id,window);
@@ -71,7 +73,7 @@ static BOOL existing_has_process(DWORD pid,void *context)
 {
     ntw16s_global_manager *m=context;
 #ifdef NTW16S_GLOBAL_MANAGER_TEST
-    if(test_pid&&pid!=test_pid)return TRUE;
+    if(test_pid&&!test_allowed(pid))return TRUE;
 #endif
     return !pid || pid==GetCurrentProcessId() || pid==m->session->owner_pid || pid==m->session->host_pid ||
         win32_process_global_engine_has_process(&m->engine,pid);

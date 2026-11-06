@@ -311,7 +311,7 @@
       "path": "src/ntw16s-dll/global/manager.h",
       "source": null,
       "source_blob": null,
-      "sha256": "1613d64b816b6f6e59166dab5b81401b300f44dbcdbdf3d86f8ee8d5056eed0e",
+      "sha256": "a6c16ed0d8522ae93564fa4d16e5fc604cefd83007bc9e0e6eb45a19486b6a26",
       "disposition": "authored",
       "review": "T21 S13 bounded startup attachment completion; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
@@ -320,7 +320,7 @@
       "path": "src/ntw16s-dll/global/manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c6d71314091785175c33e903cef0d99f39010be2c343211ba8435514ceab1090",
+      "sha256": "d469948b3311609c97e9d6133074efa2b3ad821899ecd36b31eabad719688574",
       "disposition": "authored",
       "review": "T21 S40 shared Toolhelp iteration; caller retains selection and lifecycle; T21 S42 direct public discovery calls; T21 S42 product adapter directory cleanup; T22 S1 P32 shared UWP target coordination and window-scoped global admission",
       "notice": "Project-authored C"
@@ -6404,7 +6404,7 @@
       "path": "tests/ntw16s-dll/uwp/global.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2b12f429e4215d3942f4a717d63f00300a11341e4fdda6cbb4ff1c0777d97510",
+      "sha256": "de2c17a6e9dba2c805ea575f1260e746c1f5e621144146437f61a5c7e990e733",
       "disposition": "authored",
       "review": "T22 S1 P32 product UWP coordination; no third-party import",
       "notice": "Project-authored C; original resource bytes unchanged"

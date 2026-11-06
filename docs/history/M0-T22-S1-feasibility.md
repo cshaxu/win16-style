@@ -1394,3 +1394,24 @@ with AppContainer1 while targeted UWP apply returned0, confirming the aggregate
 counts need not mean exterior failure. publish7 deployed identical tested files
 to assets and O:/winnt; no mapped deployment occupant found. Concurrent hosted
 apps and complete elevated tray path remain unverified. Commit/remote review pending.
+
+## P36 concurrent hosted windows
+
+The native manager fixture accepts two explicitly owned PIDs only in test builds.
+It checks both app images are absent before activation, validates creation times,
+requires distinct frames in the same host PID, and checks distinct visible surfaces.
+Stopping checks both surface HWNDs destroyed; restart/immediate-stop enumerates
+both frames again. Owned app handles are closed with bounded process cleanup.
+No global product filter or runtime export changes.
+
+s1-global-pair1: x86/x64 each4 classic-manager tests passed without skip. Published
+P34 DLL: Calculator34104 and Scan24552 shared host37040; both visible and distinct,
+active2/failed0, stop removed both, restart/immediate-stop left neither surface.
+Calculator13084 was styled first through the same single-target coordinator API,
+then joined global management alongside Scan30396 in host37040; all corresponding
+checks passed. This is API-level coexistence, not complete launcher/tray CLI E2E,
+nor two simultaneous activations. It does not claim additional visual UI coverage.
+
+Production manager preprocessing with the test macro absent was byte-identical
+to the P34 source for both compilers. Eight deployed hashes still match P34;
+no binary release is needed for this test-only change. No neighbor repo changed.
