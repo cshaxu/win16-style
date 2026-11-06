@@ -43,3 +43,27 @@ C ABI TAP 适配，经 XAML Diagnostics 接入并按 UI 线程管理元素。客
 - https://github.com/m417z/UWPSpy/blob/main/UWPSpy/visualtreewatcher.cpp
 
 研究结论、最小实现设计和原型判据见 [T22 S1研究](../history/M0-T22-S1-feasibility.md)。当前没有产品变更。
+
+## 当前实施范围：窗口优先（覆盖此前先单按钮的建议）
+
+用户明确要求只处理外框、标题栏、系统菜单与窗口按钮；内部XAML控件、字体、
+模板和客户区均延期。本阶段不需要先建设TAP/XAML控件树适配。
+
+原生只读窗口探针实测：可见 ApplicationFrameWindow 及其两个标题子窗口、
+InputSink 子窗口同属 ApplicationFrameHost 的一个 GUI 线程；其中一个标题
+子窗口可见，另一个隐藏。该观察没有修改用户窗口，也没有验证样式效果。
+仅按 CoreWindow 类名识别不够：探针同时发现 Explorer、TextInputHost、TabTip
+和 ShellHost 中的 CoreWindow，不能把它们当作普通目标应用。
+
+代码审计：Ntw16sWindowAttach 在 attachment.c 623 行附近只附着所给HWND，
+并要求同进程同GUI线程；这是可复用的单窗口入口。global/hook.c 则递归处理
+子窗口并调度 late propagation，global/thread.c 初始化传播；不能直接作为
+本轮宿主适配入口，否则违反“不处理内部控件”的范围。
+
+最小候选：在所属线程对唯一选定的外框调用单窗口附着/移除接口；不递归
+子窗口，不启用进程传播。另需对原生标题子窗口的显示、布局和绘制做专门
+协调，防止旧标题覆盖新标题；保留原状态以恢复。是否必须隐藏/调整该子窗
+只能在自有目标原型中决定，不凭类名直接批量隐藏。
+
+探针只读检查已完成；尚未改变共享宿主排除规则，尚未安装宿主样式、截屏或
+验证按钮操作，不能称为已修复/已发布。研究scratch登记在CURRENT。

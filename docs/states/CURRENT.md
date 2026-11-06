@@ -4,14 +4,16 @@
 
 T21 按用户要求[有限范围收口](../history/M0-T21-closure.md)，未覆盖项保留 TODO。T22 S1 已形成[可行性研究结论](../history/M0-T22-S1-feasibility.md)：XAML接入已有历史实证，完整宿主标题适配仍需原型验证。S1保持开放；本轮文档交付不冒称产品支持或S收口。M0固定。
 
+当前优先级覆盖P1建议：先窗口外观，不先做XAML按钮。Scratch：build/t22-package/s1-window-audit，本S所有，原生只读探针、编译日志，单次30秒。
+
 ## M0 T22 S1 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | New |
 | Admission And Approval | 用户要求收口 T21，准入 T22 研究 UWP Win3.x 窗口样式。 |
-| Objective | 整理并验证普通 UWP 窗口及 XAML 样式的可行方案和边界。 |
-| Non-goals | 不改变系统安全设置，不假称支持所有 UWP，不修改兄弟仓库。 |
+| Objective | 按用户最新指令，仅验证UWP外框、标题栏、系统菜单及窗口按钮；内部XAML控件暂不做。 |
+| Non-goals | 不处理客户区控件/字体/模板，不改变系统安全设置，不修改兄弟仓库。 |
 | Reference Baseline | T21 S44 交付 523e7d31；T10 S1 研究记录。 |
 | Candidate Proposal | docs/proposals/xaml-support.md |
 | Files And ABI Surface | 初期研究与证据；产品实现及 ABI 变化先明确记录。 |
