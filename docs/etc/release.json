@@ -1850,6 +1850,9 @@
   },
   "closure": {
     "status": "M0/T22/S1 open; bounded development delivery",
-    "remote": null
+    "remote": {
+      "product_commit": "b1db5d2aa0f4349f8ef978aa6d6be7d724f1e7de",
+      "status": "fetched origin/main; read all 10 changed blobs byte-for-byte; four remote binaries and eight deployed files match tested SHA256"
+    }
   }
 }
