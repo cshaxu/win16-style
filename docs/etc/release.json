@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "delivery": "M0 T22 S1 P17",
-  "stage": "development acceptance; M0/T22/S1 open; native full-screen menu added, real menu selection pending",
+  "stage": "development acceptance; M0/T22/S1 open; native full-screen menu real-input round trip verified; resize cursor unresolved",
   "version": "0.22.0.0",
   "version_contract": "M0 T22; sequential S does not increment T version",
   "package_directory": "assets",
@@ -1846,11 +1846,11 @@
       "own_pid": 18888,
       "activation_buttons_remove_geometry": "passed final clean8 DLL; API-only inactive desktop",
       "full_screen_worker": "production source diagnostic fixture passed native enter/exit and overlay restore",
-      "full_screen_menu_selection": "NOT VERIFIED; synthetic messages/MSAA did not establish state change"
+      "full_screen_menu_selection": "PASSED P21; final clean8 DLL, Scan PID38096 at144 DPI; actual UP/ENTER selected0xefe0 twice; native enter/exit, geometry and removal passed"
     }
   },
   "validation": {
-    "status": "focused automated and API evidence; normal-desktop full-screen menu selection pending",
+    "status": "focused automated, API and normal-desktop full-screen menu evidence; remaining limitations below",
     "evidence": "docs/history/M0-T22-S1-feasibility.md",
     "limitations": [
       "explicit --app AUMID only; new instance and x64 ApplicationFrameHost",
@@ -1859,7 +1859,7 @@
       "Calculator and Scan exterior verified; Clock/Recorder tested only update placeholders",
       "auxiliary menu stays native; supports one optional additional title; original HWND replacement not rebound",
       "adapter removal does not physically unload pinned DLL",
-      "New full-screen menu entry has no successful real-input selection evidence yet; inactive-desktop MSAA S_OK did not cause state change",
+      "Full-screen menu selection verified only for this Scan version at144 DPI; not all UWP applications",
       "UIA per-call timeouts do not prove an overall worker deadline or safe cancellation of a hung provider"
     ]
   },

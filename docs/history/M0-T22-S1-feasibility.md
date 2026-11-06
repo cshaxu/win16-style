@@ -981,3 +981,40 @@ settings changed. Waiting for user observation of the actual RDP display.
 
 No product or tracked test change; deployed four-file package remains P17.
 S1/T22 remain open. Do not substitute these API results for real input/display.
+
+## P21 normal-desktop real input resumed
+
+Session5 input WinSta0/Default recovered with nonzero foreground. User confirmed
+normal desktop. No system settings changed. Earlier foreground0 observations
+remain valid for that earlier state; they do not establish the underlying cause.
+
+Final clean8 product DLL (SHA90a89299...e6343), Calculator PID16260,
+host18304/TID11232,144DPI: real mouse title drag moved20px horizontally/vertically;
+left-edge resize changed width by1px at the screen boundary. Real system-menu
+UP/UP/ENTER selected SC_MAXIMIZE. Capture, removal and exact original geometry
+restoration passed. Pointer restored; own instance closed. Cursor remained arrow
+at the stable sampled point(1,405); that check FAILS, overall cursor-inclusive
+probe is not a pass. Evidence mouse-final1/resume2.log.
+
+Diagnostic current-source DLL cursor-owner1/resume3, Calculator PID7032,
+host18304/TID28744: callback's GetCursorInfo immediately before/after SetCursor
+and thread GetCursor all0x10011(SIZEWE), but external later sample0x10003(arrow),
+with pointer still(1,405). This establishes a later/different-context discrepancy,
+not the identity of the overwriter. Previous resume2 had pointer move away during
+sampling and is not used as the stable cursor result. No diagnostic code published.
+
+Final clean8 Scan DLL full-screen menu real input:
+- fullscreen-real1 first run PID4048: UP/ENTER selects0xefe0 twice; both caption
+  state transitions pass, immediate geometry differs. Initial probe sampled
+  before asynchronous native restoration had finished.
+- driver2 waits at most2s for original rectangle: ownPID38096, host18304/TID26396,
+ 144DPI. Both actual UP/ENTER selections and native enter/exit succeed; original
+ (-11,-11,1931,1019) equals final rectangle. Apply/remove and captures pass.
+ Own instance closed; no scan/preview command invoked.
+- menu.bmp visually inspected: Win3.x title and system menu show Application
+ menu and Toggle full screen; client area remains native as intended.
+
+Only evidence/manifest changed; product four files remain clean8. No rebuild or
+republish of unchanged binaries. Full-screen real-selection gap is now closed;
+resize cursor, global/reuse, automatic title replacement and wider DPI remain.
+S1/T22 stay open.
