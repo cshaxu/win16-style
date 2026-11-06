@@ -1542,3 +1542,15 @@ Test entry: uwp-tray.exe O:/winnt/run16s.exe <fresh-absolute-log> --window-event
 --toggle retains elevated-only coverage and --menu-only tests menu Exit alone.
 State owners remain the production session/controller and self-owned test handles;
 no second product path or test export was added. This test-only P keeps S1/T22 open.
+
+## P42: elevated production tray repeat passed
+
+User-approved UAC created probe11248 (elevated=1). Actual published controller10284
+styled existing Calculator21548 and new Scan34716 at144 DPI. The P40 ready-aware
+fixture exercised real MSAA menu Enable/Uncheck twice, observed both owned surfaces
+destroyed after each disable, required controller residency, then Exit0/probe0.
+Self-owned application cleanup completed. All menu actions returned0. Logs in
+s1-tray-admin-repeat2; each global start/stop reported5 failed notifications.
+No product changes or new binaries; P34 package still deployed. This completes the
+pending elevated repeat case, without claiming physical Explorer clicks, separate
+launcher-triggered UAC coverage or restoration of every desktop window.

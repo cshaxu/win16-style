@@ -2,15 +2,15 @@
 
 This audit preserves the user's window-only scope. Internal XAML controls and
 WinUI/desktop hybrid adaptation are not silently counted as implemented. M0 T22
-S1 remains open. The published product is P34; P37/P38/P40 added verification only.
+S1 remains open. The published product is P34; P37/P38/P40/P42 added verification only.
 
 | Requirement | Observed result and authoritative evidence | Status |
 | --- | --- | --- |
 | Ordinary UWP exterior without app cooperation | Calculator and Scan hosted ApplicationFrameWindow receive the shared Win16 title, system menu, buttons and border. P34 actual-package existing/new screenshots and logs in s1-global-package2/native were reread/viewed. Client UI stays native. | Verified for these actual targets at144 DPI; not all UWP variants |
 | Simple Calculator command | Published system calc.exe recognition, real --wait lifecycle and actual launcher/manager coexistence; research P22/P28/P37 and s1-global-package1/native/explicit-command.log. | Verified; other AUMIDs use --app or global discovery |
 | Global existing and newly opened UWP | P34 uncloak ordering regression and actual-package four cases; P38 formal production controller Enable styles existing Calculator12284 and new Scan37796. | Verified within current x64 hosted boundary |
-| Disable and restore | Manager fixtures destroy exact surface HWNDs; P38 formal external request also destroys both and exits controller0. This differs from Uncheck-and-remain-resident. | Engine shutdown verified; P40 actual Uncheck residency verified for ordinary-token window discovery |
-| Repeated use and coexistence | P30 actual same-PID Scan reactivation plus surface destruction; P36 two frames in one host and immediate-stop; P37 actual launcher then manager. | Verified sampled paths; P40 formal tray off/on repeat passed on ordinary-token window discovery |
+| Disable and restore | Manager fixtures destroy exact surface HWNDs; P38 formal external request also destroys both and exits controller0. This differs from Uncheck-and-remain-resident. | Engine shutdown verified; P40 ordinary-token and P42 administrator actual Uncheck residency verified |
+| Repeated use and coexistence | P30 actual same-PID Scan reactivation plus surface destruction; P36 two frames in one host and immediate-stop; P37 actual launcher then manager. | Verified sampled paths; P40 ordinary-token and P42 administrator formal tray off/on repeat passed |
 | Title/menu/buttons and input | Real screenshots, native move/resize/system-menu actions P21, corrected visible cursor P27, minimize/maximize/restore logs, Scan full-screen round trip. P34 actual launcher buttons/removal also pass. | Verified sampled144-DPI paths; not every input/DPI combination |
 | Shared host and ownership | Separate frame/CoreWindow identity, no host propagation, per-frame removal; P36 both owned surfaces destroyed without terminating host. | Verified sampled coexistence; DLL stays pinned, no physical unload claim |
 | Framework classification | Notepad packaged FullTrustApplication/WinUI, Terminal FullTrustApplication dependency; Explorer desktop mixed Shell; Task Manager desktop with incomplete framework-module evidence. See modern-desktop-window-style proposal. | Classified at recorded confidence; deferred candidate, not UWP pass counts |
@@ -60,3 +60,18 @@ or T22. This audit does not authorize closure or claim the goal is already compl
 
 Evidence records are in [S1 research](M0-T22-S1-feasibility.md); build scratch is
 registered in CURRENT. No neighboring repository is a runtime/test dependency.
+
+## P42 administrator repeat completed
+
+The same P40 fixture was elevated successfully on the user's confirmation.
+Probe11248 recorded elevated=1; published controller10284 styled existing
+Calculator21548 and newly activated Scan34716 at144 DPI. Actual production menu
+MSAA actions returned0 for Enable, Uncheck, re-Enable, second Uncheck and Exit.
+Both exact surface HWNDs were destroyed after each disable, and the controller
+remained resident until Exit. Controller and probe exited0; owned apps were cleaned.
+Evidence: s1-tray-admin-repeat2/actual.log and actual.log.controller.log. This
+supersedes the pending administrator repeat check, not the earlier canceled run.
+Start/stop sweeps each reported5 failed/timed-out notifications; no universal
+restoration claim. The elevated probe starts the formal controller: this does
+not independently test launcher-triggered elevation or physical Explorer clicks.
+No product source/binary change, no new release; P34 remains the tested package.
