@@ -886,3 +886,11 @@ P22交付：clean10双宽干净构建及来源/资源/ABI/依赖门禁通过，�
 归属链未证实，未关闭。s1-publish5完成assets和O:/winnt四文件发布、摘要一致。
 记事本最终进程无DLL、resize cursor及既有其他边界仍开放，不收口S1/T22。
 后台verify-final PID26748只等待既有构建并执行测试，无重启或产品修改。
+
+P23分类与交付复核：P22 58b9841288b8f1b29fa30359697af1796747640b已推送，
+fetch读取15个远端变更blob全部一致；两处八文件SHA与实包一致。
+用户要求先不处理WinUI桌面；Notepad、Terminal、Task Manager、Explorer归入
+未编号的[后续候选](../proposals/modern-desktop-window-style.md)，不新增T/S。
+原生只读分类探针使用已登记s1-window-audit；Explorer/Task Manager均无包且
+非AppContainer；Terminal清单为FullTrustApplication。Task Manager模块枚举
+错误5保留，不计框架版本或换肤验证通过。当前继续UWP外框，S1/T22开放。
