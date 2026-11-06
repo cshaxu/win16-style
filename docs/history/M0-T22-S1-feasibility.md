@@ -514,3 +514,11 @@ new library implementation is 382 C lines plus 23 header lines. No duplicate old
 frame/layout files remain in the DLL directory. Existing rendering and resource
 owners are unchanged; adapter state belongs to its GUI-thread instance.
 Clean build timings: x86 348.43s, x64 418.92s, Ninja8/ccache; ABI tests both passed.
+
+### P5 remote delivery review
+
+Fetched origin/main at c06ea3edbcb2f3146a278ee9297deab438112997, read and compared
+all 33 changed blobs byte-for-byte, and verified SHA256 of all four remote
+binaries against the tested package and both deployment directories (eight files).
+P5 changes only delivery review records; binaries remain the tested P4 batch.
+S1/T22 remain open with the limitations above; no full UWP/global claim.
