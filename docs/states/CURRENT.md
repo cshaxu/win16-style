@@ -776,3 +776,5 @@ P12实施中：可选附加菜单动作进入win16-window-uwp；菜单项目仅�
 P12增量：s1-aux-action1双宽各3项通过无skip；正式增量DLL真实扫描PID12420/宿主18304/TID23204，144DPI键盘UP/ENTER实际选中eff0，原生Share/Settings菜单截图visual42-aux通过，撤销/几何通过。新增scratch s1-clean7、s1-package3、s1-publish3用于本批完整交付；冻结源码后不再改产品输入。
 
 P12交付：clean7双宽干净构建、ABI、原图形资源及依赖门禁通过；最终库各2项通过。s1-package3共14项聚焦通过、无skip、33.97秒。最终包ScanPID11928/宿主18304/TID16224、144DPI实际UP/ENTER选择eff0后原Share/Settings打开，visual43截图及移除几何通过；CalculatorPID38488的窗口按钮、恢复/撤销几何通过。s1-publish3两处四文件摘要匹配测试包。静态库增加apply_action，不新增产品导出/第五产物；src三文件69增6删，测试26增1删。公开库无产品私有依赖，原资源未改。原生附加菜单不重新绘制，缩放光标仍未修复；S1/T22保持开放。当前提交推送复核待完成。
+
+P13复核：P12 3c334b3b8ecf0aef9bdddbf259e3a15edc536703 已推送；重新fetch并读取12个变更blob逐字节一致，远端四文件及两处八个部署文件与实包SHA一致。无新增二进制变化，S1/T22保持开放。
