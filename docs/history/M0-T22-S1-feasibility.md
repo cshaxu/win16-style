@@ -956,3 +956,28 @@ remain equal to tested s1-clean8/candidate. No redundant product rebuild/release
 Remaining: real full-screen menu selection, visible resize cursor defect,
 automatic title replacement, global/reused-instance integration and broader DPI
 coverage. S1/T22 and the UWP window-style goal remain open.
+
+## P20 resumed desktop / foreground control
+
+Input desktop changed to Default; query session reports RDP session5 Active.
+Both process window station and thread desktop are WinSta0/Default. This is
+not sufficient evidence of usable foreground input: GetForegroundWindow is0.
+
+cursor-owner1/resume1 (diagnostic build from current frame source): own Calculator
+PID35940, host18304/TID19340,144DPI. Apply/remove and geometry restore pass;
+foreground request fails and all capture/cursor/mouse checks skip. No mouse input
+was sent. Own application and probe are closed. This is not published-DLL visual
+acceptance and not a successful cursor diagnosis.
+
+foreground-control1/probe2.exe independently creates an ordinary Win32 STATIC
+root, explicitly shows it, pumps messages for at most1.5s, requests foreground,
+and destroys its own window. Result: VISIBLE=1, REQUEST=0, FOREGROUND=0, MATCH=0.
+Thus the observed foreground failure also occurs without UWP, hooks or styling.
+Its first probe had VISIBLE=0 because the first ShowWindow honored hidden startup
+information; that defective fixture is not used for the conclusion. The corrected
+probe explicitly shows again and confirms visibility. Both instances exited.
+The precise session/display cause remains unknown; no security, registry or RDP
+settings changed. Waiting for user observation of the actual RDP display.
+
+No product or tracked test change; deployed four-file package remains P17.
+S1/T22 remain open. Do not substitute these API results for real input/display.
