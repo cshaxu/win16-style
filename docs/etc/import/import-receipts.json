@@ -6323,9 +6323,9 @@
       "path": "tests/lib-win32/win16-window-uwp/frame_layout.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e367454a768ec924e76aa1bf7255442b806c36e4f36c52e928dbc71b853ec543",
+      "sha256": "83456c82cdd0e1511243252ec37579d94916d89f6bd30b66df07c860696a79a2",
       "disposition": "authored",
-      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 window-only library extraction, activation and thread hook remain product-owned",
+      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T22 S1 P24 DPI and non-client/client boundary regression",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
     },
     {

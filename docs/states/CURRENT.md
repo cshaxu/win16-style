@@ -894,3 +894,15 @@ fetch读取15个远端变更blob全部一致；两处八文件SHA与实包一致
 原生只读分类探针使用已登记s1-window-audit；Explorer/Task Manager均无包且
 非AppContainer；Terminal清单为FullTrustApplication。Task Manager模块枚举
 错误5保留，不计框架版本或换肤验证通过。当前继续UWP外框，S1/T22开放。
+
+后续光标审计：旧宿主采样flags=2是CURSOR_SUPPRESSED；外部箭头句柄采样没有
+记录flags，故不能证明箭头实际可见，也不能判定已修复。s1-window-audit内
+新增纯C cursor-baseline对照，当前因输入桌面/前台不可用返回77，在创建窗口
+及移动鼠标前跳过。记录保留，产品未改；待可显示环境继续验证，不改系统设置。
+
+P24验证中：仅扩展frame_layout原生测试，覆盖96/120/144/168/192/240/288 DPI，
+八方向缩放边缘、原生隐形边缘与XAML客户区边界、最大化及固定尺寸禁止缩放。
+scratch s1-layout-boundaries1，双位宽增量构建；不把布局计算测试算作跨屏显示验收。
+
+P24布局测试双位宽通过无skip；仅测试/证据变更，产品输入和发布包保持P22，
+不重复发布。当前桌面光标对照skip仍保留；S1/T22不收口。

@@ -1063,3 +1063,32 @@ for existing Calculator PID27072 (created08:06:14, same time as old negative,
 but ownership chain not established); it was not terminated. Publish5 copied
 the tested batch to assets and O:/winnt with all eight hashes matching. No
 new screenshot or real-input claim; P21 is earlier renderer evidence.
+
+## Cursor evidence qualification after P23
+
+Re-reading cursor-owner1/resume3 exposed CURSORINFO.flags=2 in the host-side
+sample. Microsoft defines this as CURSOR_SUPPRESSED, meaning the system is not
+drawing that cursor. Source: https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-cursorinfo
+The external sample still recorded an arrow handle but did not record flags.
+Thus the handle discrepancy is real; the previous wording that a visible arrow
+was proven is too strong. Neither correct visible rendering nor the cause of
+the discrepancy is established. No renderer change is justified by this alone.
+
+A pure C native-sizewe baseline was compiled in registered s1-window-audit.
+It requires Default input desktop and nonzero foreground, records showing/
+suppressed flags, verifies the pointer is over its own window, and restores
+pointer/foreground. Current run returned77 before creating a window or moving
+the pointer: GetCursorInfo failed and the input-desktop precondition was not
+met. This is SKIP, not a pass or a product regression. No system setting changed.
+
+## P24 layout boundary regression
+
+The existing pure C frame_layout test now covers 96/120/144/168/192/240/288 DPI,
+all eight resize directions, the left/right/bottom native invisible margin next
+to the XAML client hole, outside-window points, and fixed-size/maximized windows
+that must not advertise resizing. The client rectangle remains unchanged in
+each mode. These are geometry contracts, not visual or cross-monitor acceptance.
+Dual-width incremental Ninja/ccache build and native tests passed without skips
+(s1-layout-boundaries1; build x86 8.19s, x64 6.94s). Only test/source-receipt and
+evidence documents changed; production inputs and the P22 deployed batch remain
+unchanged. Previous unavailable-desktop cursor probe remains a separate skip.
