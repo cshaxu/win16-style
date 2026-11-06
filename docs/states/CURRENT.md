@@ -1046,3 +1046,33 @@ fetch后18个变更blob逐项相同，远端四产物及两处八文件摘要与
 P32统计18文件，文本+768/-136，净+632；目标协调所有权已移至产品uwp适配层，
 启动器重复发现/安装路径删除；窗口renderer/原图形资源不变。本次P33仅记录复核，
 无新二进制变化；s1-clean11/governance2自测13项拒绝通过，S1/T22继续开放。
+
+P34诊断准备：登记s1-global-diagnostic1，测试构建记录经典目标失败的PID/TID、
+错误码和AppContainer属性；不修改生产分支或准入策略。用已发布P32 DLL运行
+最多三次新建Calculator，区分经典策略拒绝统计与外框接入失败，不无限重试。
+
+s1-global-diagnostic1双宽编译/布局测试通过；实际三次计算器11584失败、15760/9220通过。
+11584经典目标返回5、AppContainer=1，外框最终存在但没有UWP_TARGET_RESULT，定位为
+未进入外框接入。登记s1-global-diagnostic2，增加自有目标SHOW/PARENTCHANGE/UNCLOAKED
+只读事件诊断，先验证顺序再改发现逻辑。
+
+s1-global-diagnostic2三次新建计算器均失败；29964/1152日志显示CoreWindow SHOW时
+外框未就绪，宿主在后续47/31ms发出UNCLOAKED，旧观察器只处理SHOW，UWP路径未执行。
+最小修复：公共window观察器增加可选UNCLOAKED订阅，x64管理器开启，既有默认及x86
+不变；复用原准入/队列/renderer，无轮询、不放开AppContainer经典路径。登记
+s1-global-uncloak1增量双宽公共观察器、UWP和经典管理器回归；随后同旧夹具实测。
+
+uncloak1产品编译通过，公共测试未定义Win8+头版本导致UNCLOAKED常量不可见；
+测试显式使用Win10 SDK声明，登记s1-global-uncloak2续编，不改变产品实现。
+
+P34修复对照：uncloak2双宽8/9项通过无skip；真实Calculator30432/38888/37300
+三次全部通过。30432重现Core SHOW后31ms宿主UNCLOAKED，新增订阅触发UWP接入0，
+停止surface销毁。旧diagnostic2三次失败形成实测负例；经典error5/AppContainer=1
+解释同类failed计数，不改策略或将其算作UWP失败。登记s1-clean12冻结同批构建，
+s1-package8实包回归及s1-global-package2真实UWP；待通过后s1-publish7发布。
+
+P34交付验证：clean12双宽323/318秒完成干净构建及门禁；package8实包20/20
+无skip。global-package2已有/新建Scan和Calculator四项通过，144DPI截图正常，
+停止surface销毁。calc-new14632两条经典error5明确AppContainer=1，UWP接入0。
+发布前未发现实际占用；publish7已更新assets及O:/winnt，同包八文件摘要一致。
+待提交推送及远端复核；并存/托盘端到端仍待验证，S1/T22开放。

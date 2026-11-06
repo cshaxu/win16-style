@@ -1359,3 +1359,38 @@ truncated seconds and refused without acting; precise ticks were reread before
 the actual close. No other process was terminated for deployment. Source and
 renderer resources are unchanged except the described adapter/coordination work.
 S1/T22 remain open with the above limitations; commit/push verification follows.
+
+## P34 uncloaking discovery fix (candidate)
+
+Native diagnostic1 separated a classic-policy rejection (error5, AppContainer1)
+from an absent UWP admission. diagnostic2 reproduced three failures with the old
+observer. For Calculator29964 and1152, CoreWindow SHOW preceded the associated
+ApplicationFrameWindow UNCLOAKED by47/31ms. The SHOW-only observer rejected the
+not-yet-uncloaked frame and had no later notification at readiness. No renderer
+call occurred, despite a valid frame being found later by the fixture.
+
+The minimal fix adds an optional UNCLOAKED event subscription to the generic
+window observer. Default subscribers and x86 retain SHOW-only behavior; the x64
+product manager opts in. Both notifications use the same identity/admission path.
+No polling, broad host propagation, registry change or AppContainer policy change.
+The optional second hook is removed before the original hook; failure retains
+state for retry. Public source/header consumers must rebuild the watcher struct.
+This is a source-level internal-library change, not a new exported DLL ABI.
+
+uncloak2 x86 8/8 and x64 9/9 tests passed without skips, including native event
+notification and classic manager regression. Three real new Calculator targets
+30432/38888/37300 passed. The first reproduced the same delayed-uncloaking order:
+Core SHOW then host UNCLOAKED31ms later, followed by UWP_TARGET_RESULT0 and visible
+surface. Stop destroyed it. Classic error5 still appears separately; retaining
+this policy rejection is intentional. The old three failures and corresponding
+new successes establish regression detection for this ordering, not universal
+proof for every possible activation failure. Full package delivery remains pending.
+
+P34 actual delivery: clean12 dual-width clean build/ABI/resource/boundary gates
+passed (323/318s), package8 passed20/20 without skip. global-package2 four
+existing/new Scan/Calculator cases passed with visible144-DPI screenshots and
+surface destruction at stop. calc-new14632 recorded two classic error5 entries
+with AppContainer1 while targeted UWP apply returned0, confirming the aggregate
+counts need not mean exterior failure. publish7 deployed identical tested files
+to assets and O:/winnt; no mapped deployment occupant found. Concurrent hosted
+apps and complete elevated tray path remain unverified. Commit/remote review pending.

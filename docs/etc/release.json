@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "delivery": "M0 T22 S1 P32",
-  "stage": "development acceptance; explicit and global x64 UWP exterior; M0/T22/S1 open",
+  "delivery": "M0 T22 S1 P34",
+  "stage": "development acceptance; UWP uncloaking discovery fix; M0/T22/S1 open",
   "version": "0.22.0.0",
   "version_contract": "M0 T22; sequential S does not increment T version",
   "package_directory": "assets",
-  "source_snapshot_sha256": "0fe06fe14989cc1d0d1c7f05aec2bf827e22c84125098412a2de450dd3f48d14",
+  "source_snapshot_sha256": "ba7b03a171e9705ad4b57e566ab861ec9d9581b867176124ef2236108c34f71f",
   "source_snapshot_format": "SHA256 of the clean build snapshot.json bytes",
   "source_inputs": [
     {
@@ -189,11 +189,11 @@
       "path": "src\\lib-win32\\process-global\\transaction.h"
     },
     {
-      "sha256": "1c055d679837ab98b9c33b8ce587f16f567c3d8f11aec8a16dd0200c68c55888",
+      "sha256": "f7b05748575d461c304d6965ee226563a0481bbe17aeb2696e47225edffe7b19",
       "path": "src\\lib-win32\\process-global\\window.c"
     },
     {
-      "sha256": "cb425e17f9dd98922ac99140e851f2050ce40e702d755c600d225e9903baa2f4",
+      "sha256": "dec77cc9b5da02baccba3d33492124d6ed91e669e6b13d3e755b7606f99ff262",
       "path": "src\\lib-win32\\process-global\\window.h"
     },
     {
@@ -1397,7 +1397,7 @@
       "path": "src\\ntw16s-dll\\global\\late.h"
     },
     {
-      "sha256": "cdaca51bcfbdbd3ea9743a93847b4912af1ec0b8793a656220a2be7e8342be2b",
+      "sha256": "c6d71314091785175c33e903cef0d99f39010be2c343211ba8435514ceab1090",
       "path": "src\\ntw16s-dll\\global\\manager.c"
     },
     {
@@ -1685,7 +1685,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T22",
-      "sha256": "aa48b6ee56c022e16022b1b6a96cd2ab6728498ecb6c8f1aeab888cc62916d17",
+      "sha256": "184493daf6074bde4bdd9402fc8ca1e7952631499f6a83852436972c1d963231",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -1700,7 +1700,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T22",
-      "sha256": "087e29ba0ef1d47904a0101401e9d7004835698fdd6388a3cb33f85581c7971a",
+      "sha256": "d878f16d55d2040b75a9f940f5fed40140f75b150429d9f01bf59d8b07213ac0",
       "imports": [
         "ADVAPI32.dll",
         "COMCTL32.dll",
@@ -1725,7 +1725,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T22",
-      "sha256": "efd1f3251a42b16b5eb9657ed69cb3ea1190ac652c3c622b5270ee18c2312f41",
+      "sha256": "9c7f824a535ca02068c52794016ad0e51087be88d5f4a4c1ecc621afb249cc5f",
       "imports": [
         "ADVAPI32.dll",
         "COMCTL32.dll",
@@ -1745,7 +1745,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T22",
-      "sha256": "441ff2f1f4865b04faff93bf90817dd04278692000272c4a52a3431851b459d9",
+      "sha256": "75e89bc1eaf024714a3ba883731f06231fa35bc24db7abb46834e138ceb7628e",
       "imports": [
         "comctl32.dll",
         "comdlg32.dll",
@@ -1759,73 +1759,73 @@
     }
   },
   "toolchains": {
-    "ccache_version": "ccache version 4.13.6",
+    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
     "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
+    "ccache_version": "ccache version 4.13.6",
     "toolchains": [
       {
-        "architecture": "x86",
         "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
-        "target": "i686-w64-mingw32",
         "version": "16.1.0",
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe"
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
+        "architecture": "x86",
+        "target": "i686-w64-mingw32"
       },
       {
-        "architecture": "x64",
         "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
-        "target": "x86_64-w64-mingw32",
         "version": "16.1.0",
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe"
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
+        "architecture": "x64",
+        "target": "x86_64-w64-mingw32"
       }
-    ],
-    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe"
+    ]
   },
   "architecture": "C17, MinGW GCC, Ninja and ccache; three components, four product files; ABI 3 plus callback ordinal 38",
-  "binary_batch_delivery": "M0 T22 S1 P32",
+  "binary_batch_delivery": "M0 T22 S1 P34",
   "verification": {
     "clean_build": {
-      "build_root": "O:\\repos.hobby\\win16style\\build\\t22-package\\s1-clean11\\clean-source\\build\\.ninja",
       "targets": "all",
-      "test_jobs": 4,
-      "status": "passed",
       "architectures": [
         "x86",
         "x64"
       ],
       "selection": "^core/abi$",
+      "exit_code": 0,
+      "test_jobs": 4,
       "build_jobs": 8,
-      "profile": "Focused",
+      "status": "passed",
       "tests": [
         {
-          "architecture": "x86",
+          "configure_seconds": 8.779090599971823,
           "passed": 1,
-          "configure_seconds": 12.391699900035746,
-          "build_seconds": 256.46562939998694,
-          "tests": 1,
+          "build_seconds": 323.40874270000495,
+          "architecture": "x86",
           "skipped": [],
-          "test_seconds": 0.7474489000160247
+          "test_seconds": 1.1441353000700474,
+          "tests": 1
         },
         {
-          "architecture": "x64",
+          "configure_seconds": 15.52038550004363,
           "passed": 1,
-          "configure_seconds": 17.508812200045213,
-          "build_seconds": 273.71600809996016,
-          "tests": 1,
+          "build_seconds": 318.4287761999294,
+          "architecture": "x64",
           "skipped": [],
-          "test_seconds": 0.8108033000025898
+          "test_seconds": 1.3221643000142649,
+          "tests": 1
         }
       ],
-      "exit_code": 0
+      "build_root": "O:\\repos.hobby\\win16style\\build\\t22-package\\s1-clean12\\clean-source\\build\\.ninja",
+      "profile": "Focused"
     },
     "actual_package": {
       "status": "passed-focused",
       "cases": 20,
-      "seconds": 64.9370769,
+      "seconds": 65.4977707,
       "skipped": [],
       "sha256": {
-        "demo.exe": "441ff2f1f4865b04faff93bf90817dd04278692000272c4a52a3431851b459d9",
-        "ntw16s32.dll": "087e29ba0ef1d47904a0101401e9d7004835698fdd6388a3cb33f85581c7971a",
-        "ntw16s64.dll": "efd1f3251a42b16b5eb9657ed69cb3ea1190ac652c3c622b5270ee18c2312f41",
-        "run16s.exe": "aa48b6ee56c022e16022b1b6a96cd2ab6728498ecb6c8f1aeab888cc62916d17"
+        "demo.exe": "75e89bc1eaf024714a3ba883731f06231fa35bc24db7abb46834e138ceb7628e",
+        "ntw16s32.dll": "d878f16d55d2040b75a9f940f5fed40140f75b150429d9f01bf59d8b07213ac0",
+        "ntw16s64.dll": "9c7f824a535ca02068c52794016ad0e51087be88d5f4a4c1ecc621afb249cc5f",
+        "run16s.exe": "184493daf6074bde4bdd9402fc8ca1e7952631499f6a83852436972c1d963231"
       },
       "selected_cases": [
         "global-unsupported-later-x86",
@@ -1880,7 +1880,7 @@
       "reason": "final FullTrust/WinUI /SESSION child had no ntw16s DLL; exact creation API not yet established"
     },
     "publication": {
-      "result": "s1-publish6 passed",
+      "result": "s1-publish7 passed",
       "destinations": [
         "assets",
         "O:/winnt"
@@ -1920,34 +1920,40 @@
       "cleanup_evidence": "build/t22-package/s1-retire1/native/{scan,calc}.log"
     },
     "global_uwp": {
-      "status": "four real owned-app combinations passed",
-      "evidence": "build/t22-package/s1-global-package1",
+      "status": "four actual-package owned-app combinations passed",
+      "evidence": "build/t22-package/s1-global-package2",
       "cases": [
         {
-          "exit": 0,
-          "case": "scan-existing"
+          "case": "scan-existing",
+          "exit": 0
         },
         {
-          "exit": 0,
-          "case": "scan-new"
+          "case": "scan-new",
+          "exit": 0
         },
         {
-          "exit": 0,
-          "case": "calc-existing"
+          "case": "calc-existing",
+          "exit": 0
         },
         {
-          "exit": 0,
-          "case": "calc-new"
+          "case": "calc-new",
+          "exit": 0
         }
       ],
       "dpi": 144,
-      "removal": "surfaces destroyed; pinned DLL not unloaded",
-      "limits": "test-only admission filter; not elevated tray end-to-end; calc-new aggregate failed=2 despite target error=0, exact rejected records not identified"
+      "removal": "surfaces destroyed; DLL remains pinned",
+      "limits": "test-only admission filter; not elevated tray end-to-end",
+      "rejected_classic_entries": "calc-new PID14632 two error5 AppContainer1 records; separate UWP target change returned0"
     },
-    "explicit_current_package": {
+    "explicit_previous_P32_package": {
       "command": "PASS own Calculator16252; buttons/remove/geometry",
       "wait": "PASS own Calculator12124 held until close, launcher exit0",
       "evidence": "build/t22-package/s1-global-package1/native/explicit-{command,wait}.log"
+    },
+    "uncloaking_regression": {
+      "negative": "diagnostic2 old observer: three real failures",
+      "positive": "uncloak2: three real successes; PID30432 Core SHOW then host UNCLOAKED31ms later triggers apply0",
+      "unit": "native NotifyWinEvent test x86/x64; optional observer flag; default unchanged"
     }
   },
   "validation": {
@@ -1963,16 +1969,15 @@
       "UIA per-call timeouts do not prove an overall worker deadline or safe cancellation of a hung provider",
       "System Notepad final /SESSION process lacks DLL; propagation failure remains",
       "Global x64 ApplicationFrameHost adapter only; no WinUI or client styling; concurrent hosted applications and explicit/global coexistence not yet certified",
-      "Earlier new-Calculator intermittent adapter failure remains unexplained; later actual-package combinations passed",
       "First actual-package x86 classic-manager cleanup timeout; identical package serial rerun passed, no root cause claimed",
-      "Not actual elevated tray end-to-end; aggregate failed target count=2 in one successful new-Calculator case remains unclassified"
+      "Uncloaking ordering fixed and actual-package verified; not every activation ordering certified",
+      "Elevated tray end-to-end, multiple simultaneous hosted targets and explicit/global coexistence still pending"
     ]
   },
   "closure": {
-    "status": "M0/T22/S1 open; P32 development delivery",
+    "status": "M0/T22/S1 open; P34 delivered locally",
     "remote": {
-      "product_commit": "56b5c0e85de753b7e7bb1f6fda2e2ebae6e8582f",
-      "status": "fetched origin/main; all 18 changed blobs match; four remote assets and eight deployed files match tested SHA256"
+      "status": "pending commit/push verification"
     }
   }
 }

@@ -51,6 +51,18 @@ static BOOL capture(HWND window)
 }
 static HWND frame,surface;
 static unsigned surfaces;
+static DWORD observed_pid;
+static void CALLBACK events(HWINEVENTHOOK hook,DWORD event,HWND window,LONG object,LONG child,DWORD thread,DWORD time)
+{
+    (void)hook;(void)thread;
+    if(object!=OBJID_WINDOW||child!=CHILDID_SELF||!observed_pid)return;
+    if(event!=EVENT_OBJECT_SHOW&&event!=EVENT_OBJECT_PARENTCHANGE&&event!=EVENT_OBJECT_UNCLOAKED)return;
+    DWORD pid=0;GetWindowThreadProcessId(window,&pid);ntw16s_uwp_target target;
+    if(pid!=observed_pid&&(!ntw16s_uwp_target_window(window,&target)||target.pid!=observed_pid))return;
+    WCHAR cls[80]={0};GetClassNameW(window,cls,ARRAYSIZE(cls));
+    printf("WINDOW_EVENT event=%lx time=%lu pid=%lu hwnd=%p root=%p visible=%d class=%ls\n",
+        (unsigned long)event,time,pid,(void*)window,(void*)GetAncestor(window,GA_ROOT),IsWindowVisible(window),cls);
+}
 static BOOL CALLBACK owned(HWND w,LPARAM unused)
 {
     (void)unused;
@@ -85,6 +97,7 @@ int wmain(int argc,WCHAR **argv)
     HANDLE stop=CreateEventW(NULL,TRUE,FALSE,stop_name),application=NULL;
     ntw16s_global_manager *global=NULL;ntw16s_uwp_target target={0};BOOL ok=FALSE;DWORD error=0;
     HRESULT hr=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);BOOL com=SUCCEEDED(hr);
+    HWINEVENTHOOK event_hook=SetWinEventHook(EVENT_OBJECT_CREATE,EVENT_OBJECT_UNCLOAKED,NULL,events,0,0,WINEVENT_OUTOFCONTEXT);
     if(!s||!stop||!com)goto done;
     *s=(ntw16s_global_session){.magic=NTW16S_GLOBAL_MAGIC,.version=NTW16S_GLOBAL_VERSION,.owner_pid=GetCurrentProcessId(),.cookie=GetCurrentProcessId(),.phase=NTW16S_GLOBAL_ACTIVE};
     if(!win32_process_global_birth(GetCurrentProcess(),&s->owner_birth_low,&s->owner_birth_high))goto done;
@@ -97,6 +110,7 @@ int wmain(int argc,WCHAR **argv)
     hr=CoCreateInstance(&CLSID_ApplicationActivationManager,NULL,CLSCTX_LOCAL_SERVER,&IID_IApplicationActivationManager,(void**)&manager);
     if(SUCCEEDED(hr)){CoAllowSetForegroundWindow((IUnknown*)manager,NULL);hr=IApplicationActivationManager_ActivateApplication(manager,argv[1],NULL,AO_NOERRORUI,&pid);IApplicationActivationManager_Release(manager);}
     printf("ACTIVATE hr=%lx pid=%lu\n",(unsigned long)hr,pid);if(FAILED(hr))goto done;
+    observed_pid=pid;
     ntw16s_global_manager_test_filter(pid);
     application=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION|SYNCHRONIZE|PROCESS_TERMINATE,FALSE,pid);
     FILETIME birth,a,b,c;
@@ -142,6 +156,7 @@ done:
     if(application){if(frame)PostMessageW(frame,WM_CLOSE,0,0);if(WaitForSingleObject(application,3000)!=WAIT_OBJECT_0){TerminateProcess(application,0);WaitForSingleObject(application,1000);}CloseHandle(application);}
     if(global){DWORD removed=ntw16s_global_manager_stop(global,5000);if(removed){printf("FAIL retained worker error=%lu\n",removed);return 1;}}
     if(com)CoUninitialize();
+    if(event_hook)UnhookWinEvent(event_hook);
     if(s)UnmapViewOfFile(s);
     CloseHandle(mapping);
     if(stop)CloseHandle(stop);

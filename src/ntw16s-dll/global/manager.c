@@ -156,6 +156,19 @@ static DWORD execute_target(win32_process_global_target *target,void *context,BO
 {
     ntw16s_global_manager *m=(ntw16s_global_manager *)context;manager_entry *entry=(manager_entry *)target;
     DWORD error=process_entry(m,entry);
+#ifdef NTW16S_GLOBAL_MANAGER_TEST
+    if(error){
+        DWORD appcontainer=MAXDWORD,bytes=0;HANDLE token=NULL;
+        HANDLE process=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION,FALSE,target->pid);
+        if(process&&OpenProcessToken(process,TOKEN_QUERY,&token)){
+            if(!GetTokenInformation(token,TokenIsAppContainer,&appcontainer,sizeof(appcontainer),&bytes))appcontainer=MAXDWORD;
+            CloseHandle(token);
+        }
+        if(process)CloseHandle(process);
+        printf("CLASSIC_TARGET_RESULT pid=%lu tid=%lu window=%p error=%lu appcontainer=%lu\n",
+            target->pid,target->thread_id,(void*)target->window,error,appcontainer);
+    }
+#endif
     *retained=error==ERROR_NOT_READY && entry->attach.control_error==ERROR_NOT_READY &&
         entry->attach.start.thread && WaitForSingleObject(entry->attach.start.thread,0)==WAIT_TIMEOUT;
     if(error && !*retained)(void)ntw16s_global_attach_close(&entry->attach);
@@ -239,7 +252,8 @@ DWORD ntw16s_global_manager_start(const WCHAR *dll_path,WORD machine,ntw16s_glob
         error=ntw16s_uwp_global_start(&m->policy,m->dll_path,desktop,m->quit,m->stop,m->session->cookie,&m->uwp);
         if(error)goto fail;
     }
-    error=win32_process_global_window_start(&m->discover,discovered,m);if(error)goto fail;
+    error=win32_process_global_window_start_ex(&m->discover,discovered,m,
+        machine==IMAGE_FILE_MACHINE_AMD64?WIN32_PROCESS_GLOBAL_WINDOW_UNCLOAKED:0);if(error)goto fail;
     /* The optional system process trace requires elevation. Retain normal
      * window-event discovery when that permission is not available. */
     error=ntw16s_global_process_start(discovered_process,m,&m->process_monitor);

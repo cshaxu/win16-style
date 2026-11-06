@@ -4,7 +4,7 @@
 
 typedef void (*win32_process_global_window_callback)(HWND window,DWORD process,DWORD thread,void *context);
 typedef struct win32_process_global_window {
-    HWINEVENTHOOK hook;
+    HWINEVENTHOOK hook,uncloaked_hook;
     win32_process_global_window_callback callback;
     void *context;
     DWORD owner_thread;
@@ -14,6 +14,8 @@ typedef struct win32_process_global_window {
 /* Start, callbacks, and stop must run on one message-pumping thread. Window
  * identity can change immediately after the callback; consumers revalidate. */
 #define WIN32_PROCESS_GLOBAL_WINDOW_INCLUDE_SELF 0x00000001u
+/* Opt in to visibility transitions that do not produce another SHOW event. */
+#define WIN32_PROCESS_GLOBAL_WINDOW_UNCLOAKED 0x00000002u
 /* The legacy start excludes the caller process. start_ex lets callers opt in;
  * this is discovery only and does not authorize attaching to any target. */
 DWORD win32_process_global_window_start_ex(win32_process_global_window *watcher,win32_process_global_window_callback callback,void *context,DWORD flags);

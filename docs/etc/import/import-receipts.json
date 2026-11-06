@@ -320,7 +320,7 @@
       "path": "src/ntw16s-dll/global/manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "cdaca51bcfbdbd3ea9743a93847b4912af1ec0b8793a656220a2be7e8342be2b",
+      "sha256": "c6d71314091785175c33e903cef0d99f39010be2c343211ba8435514ceab1090",
       "disposition": "authored",
       "review": "T21 S40 shared Toolhelp iteration; caller retains selection and lifecycle; T21 S42 direct public discovery calls; T21 S42 product adapter directory cleanup; T22 S1 P32 shared UWP target coordination and window-scoped global admission",
       "notice": "Project-authored C"
@@ -5747,7 +5747,7 @@
       "path": "src/lib-win32/process-global/window.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1c055d679837ab98b9c33b8ce587f16f567c3d8f11aec8a16dd0200c68c55888",
+      "sha256": "f7b05748575d461c304d6965ee226563a0481bbe17aeb2696e47225edffe7b19",
       "disposition": "authored",
       "review": "T21 S41 extract existing project-authored global mechanism",
       "notice": "Project-authored C code; no imported artwork"
@@ -5756,7 +5756,7 @@
       "path": "src/lib-win32/process-global/window.h",
       "source": null,
       "source_blob": null,
-      "sha256": "cb425e17f9dd98922ac99140e851f2050ce40e702d755c600d225e9903baa2f4",
+      "sha256": "dec77cc9b5da02baccba3d33492124d6ed91e669e6b13d3e755b7606f99ff262",
       "disposition": "authored",
       "review": "T21 S41 extract existing project-authored global mechanism",
       "notice": "Project-authored C code; no imported artwork"
@@ -6161,7 +6161,7 @@
       "path": "tests/lib-win32/process-global/window.c",
       "source": null,
       "source_blob": null,
-      "sha256": "9ed57fe8dda0788c28bd0195b72b31f848720d13b740b12931d35bb71d7d6460",
+      "sha256": "8eb221566a981c3934d5d57f2d810049c1ab08cc134cf9b1d13530e9e6c23a1d",
       "disposition": "authored",
       "review": "T21 S41 shared bounded window traversal test",
       "notice": "Project-authored C code; project MIT LICENSE"
@@ -6404,7 +6404,7 @@
       "path": "tests/ntw16s-dll/uwp/global.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e1796276ee5a4febd53529dcfadcc0f5bbad6e1a69c0c1ffa184fa6542cf8ce8",
+      "sha256": "2b12f429e4215d3942f4a717d63f00300a11341e4fdda6cbb4ff1c0777d97510",
       "disposition": "authored",
       "review": "T22 S1 P32 product UWP coordination; no third-party import",
       "notice": "Project-authored C; original resource bytes unchanged"

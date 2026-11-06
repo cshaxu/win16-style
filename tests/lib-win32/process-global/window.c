@@ -1,3 +1,5 @@
+#define _WIN32_WINNT 0x0A00
+#define WINVER 0x0A00
 #include "lib-win32/process-global/window.h"
 #include <stdio.h>
 typedef struct seen {HWND parent,child,grandchild;unsigned mask;BOOL cancel;} seen;
@@ -35,7 +37,7 @@ int main(void)
     if(!error && (win32_process_global_window_walk(0,0,NULL,NULL) || GetLastError()!=ERROR_INVALID_PARAMETER))error=6;
     ShowWindow(parent,SW_SHOW);UpdateWindow(parent);
     win32_process_global_window watcher={0};s.mask=0;
-    if(!error && win32_process_global_window_start_ex(&watcher,discovered,&s,2)!=ERROR_INVALID_PARAMETER)error=14;
+    if(!error && win32_process_global_window_start_ex(&watcher,discovered,&s,4)!=ERROR_INVALID_PARAMETER)error=14;
     if(!error && win32_process_global_window_start(&watcher,discovered,&s))error=15;
     if(!error && s.mask)error=16;
     if(watcher.hook && win32_process_global_window_stop(&watcher))error=17;
@@ -54,6 +56,20 @@ int main(void)
         }
     }
     if(watcher.hook && win32_process_global_window_stop(&watcher))error=20;
+    s.parent=parent;s.mask=0;
+    if(!error && win32_process_global_window_start_ex(&watcher,discovered,&s,
+        WIN32_PROCESS_GLOBAL_WINDOW_INCLUDE_SELF|WIN32_PROCESS_GLOBAL_WINDOW_UNCLOAKED))error=23;
+    s.mask=0;
+    if(!error){
+        NotifyWinEvent(EVENT_OBJECT_UNCLOAKED,parent,OBJID_WINDOW,CHILDID_SELF);
+        ULONGLONG deadline=GetTickCount64()+1000;
+        while(!(s.mask&1)&&GetTickCount64()<deadline){
+            MsgWaitForMultipleObjects(0,NULL,FALSE,20,QS_ALLINPUT);
+            MSG msg;while(PeekMessageW(&msg,NULL,0,0,PM_REMOVE)){TranslateMessage(&msg);DispatchMessageW(&msg);}
+        }
+        if(!(s.mask&1))error=24;
+    }
+    if(watcher.hook && win32_process_global_window_stop(&watcher))error=25;
     if(later)DestroyWindow(later);
     HANDLE ready=CreateEventW(NULL,TRUE,FALSE,NULL),stop=CreateEventW(NULL,TRUE,FALSE,NULL),worker=NULL;
     hook_test hook={GetCurrentThreadId(),ready,stop,ERROR_GEN_FAILURE};

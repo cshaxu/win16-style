@@ -21,25 +21,30 @@ static void CALLBACK on_event(HWINEVENTHOOK hook,DWORD event,HWND window,LONG ob
 {
     DWORD saved=GetLastError();
     (void)thread;(void)time;
-    if(current && current->hook==hook && event==EVENT_OBJECT_SHOW && object==OBJID_WINDOW && child==CHILDID_SELF)
+    if(current && ((current->hook==hook && event==EVENT_OBJECT_SHOW) ||
+       (current->uncloaked_hook==hook && event==EVENT_OBJECT_UNCLOAKED)) && object==OBJID_WINDOW && child==CHILDID_SELF)
         report(current,window);
     SetLastError(saved);
 }
 DWORD win32_process_global_window_start_ex(win32_process_global_window *watcher,win32_process_global_window_callback callback,void *context,DWORD flags)
 {
-    if(!watcher || !callback || (flags&~WIN32_PROCESS_GLOBAL_WINDOW_INCLUDE_SELF))return ERROR_INVALID_PARAMETER;
-    if(current || watcher->hook || watcher->callback || watcher->owner_thread)return ERROR_BUSY;
+    if(!watcher || !callback || (flags&~(WIN32_PROCESS_GLOBAL_WINDOW_INCLUDE_SELF|WIN32_PROCESS_GLOBAL_WINDOW_UNCLOAKED)))return ERROR_INVALID_PARAMETER;
+    if(current || watcher->hook || watcher->uncloaked_hook || watcher->callback || watcher->owner_thread)return ERROR_BUSY;
     watcher->callback=callback;watcher->context=context;watcher->owner_thread=GetCurrentThreadId();watcher->flags=flags;current=watcher;
     DWORD options=WINEVENT_OUTOFCONTEXT;
     if(!(flags&WIN32_PROCESS_GLOBAL_WINDOW_INCLUDE_SELF))options|=WINEVENT_SKIPOWNPROCESS;
     watcher->hook=SetWinEventHook(EVENT_OBJECT_SHOW,EVENT_OBJECT_SHOW,NULL,on_event,0,0,options);
     if(!watcher->hook){DWORD error=GetLastError();current=NULL;ZeroMemory(watcher,sizeof(*watcher));return error?error:ERROR_GEN_FAILURE;}
+    if(flags&WIN32_PROCESS_GLOBAL_WINDOW_UNCLOAKED){
+        watcher->uncloaked_hook=SetWinEventHook(EVENT_OBJECT_UNCLOAKED,EVENT_OBJECT_UNCLOAKED,NULL,on_event,0,0,options);
+        if(!watcher->uncloaked_hook){DWORD error=GetLastError(),cleanup=win32_process_global_window_stop(watcher);return cleanup?cleanup:(error?error:ERROR_GEN_FAILURE);}
+    }
     SetLastError(ERROR_SUCCESS);
     if(!EnumWindows(scan_top,(LPARAM)watcher)){
         DWORD error=GetLastError();
         /* scan_top never stops enumeration; no windows also returns FALSE
          * without setting an error on an empty desktop. */
-        if(error){UnhookWinEvent(watcher->hook);current=NULL;ZeroMemory(watcher,sizeof(*watcher));return error;}
+        if(error){DWORD cleanup=win32_process_global_window_stop(watcher);return cleanup?cleanup:error;}
     }
     return ERROR_SUCCESS;
 }
@@ -56,6 +61,10 @@ DWORD win32_process_global_window_stop(win32_process_global_window *watcher)
 {
     if(!watcher || !watcher->hook || current!=watcher || watcher->owner_thread!=GetCurrentThreadId())return ERROR_INVALID_PARAMETER;
     if(watcher->dispatching)return ERROR_BUSY;
+    if(watcher->uncloaked_hook){
+        if(!UnhookWinEvent(watcher->uncloaked_hook)){DWORD error=GetLastError();return error?error:ERROR_GEN_FAILURE;}
+        watcher->uncloaked_hook=NULL;
+    }
     if(!UnhookWinEvent(watcher->hook)){DWORD error=GetLastError();return error?error:ERROR_GEN_FAILURE;}
     current=NULL;ZeroMemory(watcher,sizeof(*watcher));return ERROR_SUCCESS;
 }
