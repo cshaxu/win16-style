@@ -103,3 +103,173 @@ Z序、任务栏及生命周期保持证据。不建议系统文件、注册表�
 
 本轮不改生产代码、资源、注册表、目标文件或系统安全设置，不增加产品文件，
 不修改兄弟仓库。旧 C ABI 双宽成功只证明本地接口原型，不等于新模板完整可编译运行。
+
+## T22 S1 runtime frame prototype — 2026-11-05
+
+This section supersedes the earlier requirement to prove a XAML button first.
+Only the exterior frame is in scope. The user explicitly permits runtime injection,
+including the selected application's shared frame host; target files, registry and
+system persistent configuration must remain untouched. No production code or ABI
+has changed in this experiment.
+
+### Target identity and presentation
+
+The x64 native COM activator returned own CalculatorApp PID 24216 (18:34:21 local),
+from Microsoft.WindowsCalculator_11.2607.0.0_x64__8wekyb3d8bbwe. Its CoreWindow
+0x0f90062e / TID 16460 was a top-level HWND with DWMWA_CLOAKED=2. Thus GA_ROOT
+and parent traversal alone did not identify the displayed frame.
+
+The new ApplicationFrameWindow 0x06870694 / TID 26232 belonged to the pre-existing
+ApplicationFrameHost PID 10220. Its window property PKEY_AppUserModel_ID was
+Microsoft.WindowsCalculator_8wekyb3d8bbwe!App, cloak=0, DPI=144. The pre-existing
+Realtek Audio Console frame had a different AUMID and was not targeted. AUMID alone
+is not a unique window identity: a second activation later returned PID 37344
+(18:51:10), producing a second calculator frame 0x0af40d8c / TID 24064. Product
+selection must also account for activation generation/new-frame identity and
+ambiguous or reused windows; title text alone is insufficient.
+
+Both own calculator processes subsequently had all 44 observed threads in the
+Suspended wait reason. CoAllowSetForegroundWindow and ActivateApplication returned
+S_OK, but normal ShowWindowAsync/SetForegroundWindow did not make the second
+CoreWindow respond: foreground request returned 0, GetForegroundWindow was NULL.
+Input desktop was Default and WTS reported console session 4 Active. The cause of
+the suspension is not established; it must not be reported as proven lock-screen,
+permission, injection or renderer failure. No thread was forcibly resumed.
+
+### Finite tests and evidence
+
+Scratch: build/t22-package/s1-window-audit, owned by S1. Native C17 x64 GCC probes
+were compiled in hidden background processes with warnings as errors. These are
+research probes, not additional product files or a product release.
+
+| Test | Actual result | Limit |
+| --- | --- | --- |
+| Private-desktop independent frame model | PASS: root attached, child title/button unstyled, button pixel hash unchanged, CreateProcessW entry bytes unchanged, root rectangle and WM_PRINT hash restored | Artificial ordinary HWND, not a UWP compatibility pass |
+| Exact-thread WH_CALLWNDPROC on own calculator frame | Attach and remove returned success/error 0; observer UnhookWindowsHookEx succeeded | No process propagation installed; success is not visual proof |
+| Normal screen BitBlt | Returned success but all-black image | Failed visual evidence |
+| External PrintWindow | Captured calculator splash/composited native buttons; no confirmed Win3.x title | App had not reached normal UI; initial driver also lacked DPI awareness and its capture was cropped |
+| Temporarily remove WS_EX_NOREDIRECTIONBITMAP on selected frame | Attach/remove succeeded; PrintWindow still did not demonstrate desired title | Flag alone is not a verified fix; original flag and saved rectangle restored by the prototype |
+| Explicit external WM_PRINT | All-black output | Not treated as renderer success |
+| In-target UI-thread WM_PRINT, pixels returned via pagefile-backed mapping | Real Win3.x title text, system-menu box, min/max glyphs and border visible in inthread-styled.bmp | Offscreen renderer output only; client area black; not normal on-screen composition or interaction proof |
+
+Private model hashes: native/restored 6725876898959568569; styled
+17996494764306535664. A first model run failed its visible-child assertion because
+the hidden test launcher supplied STARTF_USESHOWWINDOW/SW_HIDE; consuming that first
+ShowWindow override and explicitly showing the private model corrected the fixture.
+This was not a product visibility fix.
+
+The in-target probe called existing Ntw16sWindowAttach/Ntw16sWindowRemove on the
+exact host HWND/GUI thread. No bootstrap, recursive child attachment, XAML change,
+CreateProcess hook or global target-policy change was made. It used the existing
+O:/repos.hobby/win16style/assets/ntw16s64.dll with SHA-256
+DDFF9678928EA2F67DDDBD64912C930EF8599E3F61AF34FA44A7219AFFD3C3C1.
+Module enumeration confirmed that absolute path in the host; temporary observer
+DLLs were absent after their tests. Three passive renderer LoadLibrary references were retained across the independent
+observer runs (the redirection variant borrowed the existing module). Removal is
+not physical module unloading; reference cleanup is still outstanding.
+
+Do not claim exact real-host geometry restoration: the first, DPI-unaware driver
+left the frame width at 512 rather than its initial 502 physical pixels. Subsequent
+local state restoration and the private model do not retroactively prove that first
+host cycle reversible. This remains a required adapter regression case.
+
+### Implementation conclusion and next gate
+
+Runtime-only, frame-specific entry is demonstrated. Existing Win3.x rendering can
+produce the intended exterior on the actual host UI thread. It is therefore not
+necessary to invent another title renderer or to begin with internal XAML controls.
+However, neither module loading nor the offscreen picture proves normal UWP frame
+presentation. A plain call to the existing attachment API is not yet a validated
+complete solution.
+
+Next: obtain a normally running own calculator; verify visible composition, native
+title-child coexistence, hit tests/buttons, movement/resize/minimize/restore, and
+exact DPI-aware cleanup. Only then decide whether a small host-specific presentation
+adapter is necessary. Do not preemptively add overlays, reparenting, private host
+protocols or another renderer. Real application activation/reuse needs explicit
+identity handling. Product integration, x86 coverage, normal-display screenshot,
+interaction and full delivery remain uncompleted; S1/T22 stay open.
+
+References for the read-only identity and rendering distinction:
+- https://learn.microsoft.com/en-us/windows/win32/properties/props-system-appusermodel-id
+- https://learn.microsoft.com/en-us/windows/win32/winmsg/extended-window-styles
+- https://learn.microsoft.com/en-us/windows/win32/api/objbase/nf-objbase-coallowsetforegroundwindow
+
+### Follow-up on the normal desktop
+
+After the user returned to the desktop, both earlier own calculator processes had
+already exited; the shared host PID 10220 retained its original start time. A fresh
+activation (foreground grant S_OK) returned own PID 27640 at 19:05:07 local. This
+instance responded normally, and its CoreWindow 0x093c0d4c became a child of frame
+0x0d0d059a (host TID 9612), cloak=0. Native screen capture showed the fully rendered
+calculator at 144 DPI. The earlier disconnected CoreWindow topology is therefore
+not a stable ready-window model; product code must wait for normal association.
+
+On this ready target, direct attachment still failed the visual goal: native screen
+capture showed the modern title/content shifted beneath an empty new nonclient
+band. Native geometry restoration was false. A second experiment temporarily
+cleared WS_EX_NOREDIRECTIONBITMAP and explicitly restored the saved outer rectangle;
+geometry then matched, but the visible title was still modern. Clearing that flag
+alone is not a solution. Both experiments removed their window attachment and
+observer hook; no production policy or persistent configuration changed.
+
+A following small presentation prototype uses the existing renderer on an invisible
+own model window, and presents its title pixels in a removable layered child over
+the selected frame's title area. It does not attach the real frame, move its client
+area, change XAML controls or create a separate product renderer. Layer/model
+creation and removal succeeded and real outer geometry stayed unchanged. However,
+the input desktop had switched to Screen-saver before capture: screen calls failed,
+so visible composition is NOT proved. A bounded one-pixel native mouse wake attempt
+could not return to Default and skipped without executing the test. It did not
+change screen-saver/security settings or interact with authentication UI.
+
+This child-layer test is visual only, not a complete adapter: the 48-pixel title
+height is a temporary 144-DPI fixture, and hit testing, command forwarding, active
+state, DPI/resize updates and border coverage remain unimplemented. It must not be
+shipped or described as working UWP styling on the strength of successful creation.
+
+Automatic approval review rejected a proposed three-reference FreeLibrary cleanup
+inside the shared host because uncertain ownership could crash it. That cleanup
+was NOT executed. The user subsequently explicitly accepted host-test/cleanup risk;
+no retry has yet occurred. Passive research module references remain outstanding,
+separate from the already removed observer hooks and window attachments.
+
+### Visible title surface result
+
+The self-contained owned-layer driver now activates only when no calculator exists,
+waits at most 10 seconds for its returned PID's CoreWindow to join an uncloaked
+ApplicationFrameWindow, marks only that exact HWND, installs a thread-specific
+observer, captures before/after/removal, and closes its own application. It refuses
+stale HWNDs and existing application instances. No shared host is terminated.
+
+The child-layer variant on own PID 38260 returned success for creation/removal and
+screen sampling, but its actual screenshot remained entirely modern: visual test
+FAILED despite successful API calls. A separate owned top-level layered title
+surface on own PID 6960 / frame 0x0c3c04fa / host thread 32936 then visibly presented
+the existing Win3.x title glyphs and caption on the normally running calculator.
+The top-level surface has the selected host frame as its owner, uses NOACTIVATE and
+TOOLWINDOW, and is created/deleted in the host GUI thread. It does not alter target
+files, the registry, internal XAML controls or real-frame geometry.
+
+Evidence: owned-overlay-styled.bmp, SHA-256
+0276A5DF8D669E931472AB69DCD53E01A6D68A7DB3454242BF5E8B099E9B06E2,
+in the registered scratch. This is an actual screen capture, unlike the earlier
+in-thread WM_PRINT. The finite run reported before/styled/restored captures=1,
+geometry=1, apply/remove=1 and observer unhook=1. A later process/module inspection
+confirmed that all recorded own calculator PIDs had exited and temporary observer
+DLLs were absent. The passive product DLL remains mapped.
+
+Visible restoration is not certified pixel-identical: before/restored screenshot
+SHA values differ (8C75BB7329821A58337BE76E1CF860C15F6F622F197C80B7CCE7469310248A6D
+versus 1CAE68B067632FC276943B18FD6A38290C019BA2E5945213CB7072574C012036).
+Focus/activation and normal application animation must be measured, not assumed.
+
+The feasible presentation direction is therefore a small owned frame surface using
+existing Win16 drawing, not direct GDI attachment to the composition host and not a
+child HWND layer. The current fixture has visible edge/padding defects and a fixed
+48-pixel title strip. It is NOT a releasable adapter. Required next implementation:
+reuse frame layout/paint/hit-test primitives directly (remove the hidden render-model
+fixture), implement geometry/DPI/activation/lifecycle synchronization, native system
+commands and menu, full border coverage, and tests of input and recovery. Keep the
+client area untouched. Integration into existing ntw16s DLL and run16s app activation
+must preserve the three-component/four-file architecture. No product release yet.

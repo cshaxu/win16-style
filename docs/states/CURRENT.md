@@ -4,7 +4,9 @@
 
 T21 按用户要求[有限范围收口](../history/M0-T21-closure.md)，未覆盖项保留 TODO。T22 S1 已形成[可行性研究结论](../history/M0-T22-S1-feasibility.md)：XAML接入已有历史实证，完整宿主标题适配仍需原型验证。S1保持开放；本轮文档交付不冒称产品支持或S收口。M0固定。
 
-当前优先级覆盖P1建议：先窗口外观，不先做XAML按钮。Scratch：build/t22-package/s1-window-audit，本S所有，原生只读探针、编译日志，单次30秒。
+用户已明确：允许运行时注入，包括本次目标外框的宿主接入；禁止修改目标程序文件、注册表及系统持久配置。仅窗口外观，不启用共享宿主传播，不处理内部控件。
+
+当前优先级覆盖P1建议：先窗口外观，不先做XAML按钮。Scratch：build/t22-package/s1-window-audit，本S所有，原生探针、编译日志，单次30秒；首次在无既有CalculatorApp时激活；系统再激活返回新PID，均按自有实例跟踪。目标线程原生绘制已产生Win3.x标题；正常计算器已证实直接附着与清除重定向标志均不能完成屏幕呈现。正常显示实测：子层不呈现；独立owned标题层已在真实计算器上显示Win3.x标题，创建/删除及外框几何通过，输入/DPI/完整边框/像素恢复仍未实现或未验证。三次研究DLL引用待清理；详见研究记录。
 
 ## M0 T22 S1 Packet
 
@@ -12,18 +14,18 @@ T21 按用户要求[有限范围收口](../history/M0-T21-closure.md)，未覆�
 | --- | --- |
 | Identifier Mode | New |
 | Admission And Approval | 用户要求收口 T21，准入 T22 研究 UWP Win3.x 窗口样式。 |
-| Objective | 按用户最新指令，仅验证UWP外框、标题栏、系统菜单及窗口按钮；内部XAML控件暂不做。 |
+| Objective | 研究并实现UWP外框、标题栏、系统菜单及窗口按钮的运行时Win3.x适配；内部XAML控件暂不做。 |
 | Non-goals | 不处理客户区控件/字体/模板，不改变系统安全设置，不修改兄弟仓库。 |
 | Reference Baseline | T21 S44 交付 523e7d31；T10 S1 研究记录。 |
 | Candidate Proposal | docs/proposals/xaml-support.md |
-| Files And ABI Surface | 初期研究与证据；产品实现及 ABI 变化先明确记录。 |
+| Files And ABI Surface | 独立owned标题层原型复用现有renderer；后续在现有DLL内实现窗口适配，产品ABI变更须先记录，不递归客户区、不启用宿主传播。 |
 | Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT；M0，原图形资源保留。 |
 | Verification | 查阅官方接口和既有原生探针证据，区分客户区、标题按钮、接入与绘制。 |
 | Expected Markers | 明确可实现范围、失败条件、恢复方式及真实应用验证计划。 |
 | Asset Needs | 原有图形资源和来源声明不变。 |
 | Reporting Requirements | 明确既有事实、假设、限制及下一步，不虚构产品支持。 |
 | Stop Conditions | 遇权限限制保留证据，不修改系统安全设置。 |
-| Exit Criteria | 形成可复核方案和有限验证证据，按规则交付。 |
+| Exit Criteria | 真实目标正常显示、外框绘制/操作/恢复验证后完成产品集成及规定交付；未满足不得收口或宣称支持。 |
 | Original Owner Request | 收口 T21，准入 T22，研究 UWP 程序的 Win3.x 窗口样式。 |
 | Similar-Issue Sweep | 对照 T10 计算器接入、共享标题宿主与 XAML 控件研究。 |
 
