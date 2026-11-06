@@ -2,6 +2,13 @@
 #include "ntw16s-dll/global/attach.h"
 #include "ntw16s-dll/global/session.h"
 #include "ntw16s-dll/global/process.h"
+#include "ntw16s-dll/uwp/global.h"
+#ifdef NTW16S_GLOBAL_MANAGER_TEST
+#include "ntw16s-dll/uwp/target.h"
+#include <stdio.h>
+static DWORD test_pid;
+void ntw16s_global_manager_test_filter(DWORD pid){test_pid=pid;}
+#endif
 #include "lib-win32/process-global/enumerate.h"
 #include "lib-win32/process-global/window.h"
 #include "lib-win32/process-global/transaction.h"
@@ -22,6 +29,7 @@ struct ntw16s_global_manager {
     win32_process_global_engine engine;
     WCHAR *dll_path;WORD machine;DWORD owner_thread;
     win32_process_global_monitor *process_monitor;
+    ntw16s_uwp_global *uwp;
 };
 
 static BOOL expired(win32_process_global_target *target,void *context)
@@ -49,6 +57,12 @@ static void discovered(HWND window,DWORD pid,DWORD thread_id,void *context)
 {
     ntw16s_global_manager *m=(ntw16s_global_manager *)context;
     if(m->session->phase!=NTW16S_GLOBAL_ACTIVE || pid==m->session->owner_pid || pid==m->session->host_pid)return;
+#ifdef NTW16S_GLOBAL_MANAGER_TEST
+    if(test_pid&&pid!=test_pid){ntw16s_uwp_target target;
+        if(!window||!ntw16s_uwp_target_window(window,&target))return;
+        if(target.pid!=test_pid){printf("UWP_TEST_FILTER skipped_pid=%lu allowed=%lu\n",target.pid,test_pid);return;}}
+#endif
+    if(window&&ntw16s_uwp_global_observe(m->uwp,window))return;
     win32_process_global_engine_submit(&m->engine,pid,thread_id,window);
 }
 /* Snapshot and per-process scan order live in the public component; identity,
@@ -56,6 +70,9 @@ static void discovered(HWND window,DWORD pid,DWORD thread_id,void *context)
 static BOOL existing_has_process(DWORD pid,void *context)
 {
     ntw16s_global_manager *m=context;
+#ifdef NTW16S_GLOBAL_MANAGER_TEST
+    if(test_pid&&pid!=test_pid)return TRUE;
+#endif
     return !pid || pid==GetCurrentProcessId() || pid==m->session->owner_pid || pid==m->session->host_pid ||
         win32_process_global_engine_has_process(&m->engine,pid);
 }
@@ -153,7 +170,11 @@ DWORD ntw16s_global_manager_refresh(ntw16s_global_manager *m)
 DWORD ntw16s_global_manager_wait_idle(ntw16s_global_manager *m,DWORD timeout)
 {
     if(!m || m->owner_thread!=GetCurrentThreadId())return ERROR_INVALID_PARAMETER;
-    return win32_process_global_engine_wait_idle(&m->engine,timeout);
+    ULONGLONG deadline=GetTickCount64()+timeout;
+    DWORD error=win32_process_global_engine_wait_idle(&m->engine,timeout);
+    if(error)return error;
+    ULONGLONG now=GetTickCount64();
+    return ntw16s_uwp_global_wait_idle(m->uwp,now<deadline?(DWORD)(deadline-now):0);
 }
 BOOL ntw16s_global_manager_tracks(ntw16s_global_manager *m,DWORD pid,DWORD thread_id)
 {
@@ -167,6 +188,7 @@ void ntw16s_global_manager_stats_read(ntw16s_global_manager *m,ntw16s_global_man
     if(!m)return;
     win32_process_global_engine_stats stats;win32_process_global_engine_stats_read(&m->engine,&stats);
     s->queued=stats.queued;s->active=stats.active;s->failed=stats.failed;s->overflow=stats.overflow;
+    ntw16s_uwp_global_stats_read(m->uwp,&s->queued,&s->active,&s->failed);
 }
 static DWORD close_target(win32_process_global_target *target,void *context,ULONGLONG deadline)
 {
@@ -181,6 +203,7 @@ DWORD ntw16s_global_manager_stop(ntw16s_global_manager *m,DWORD timeout)
     if(m->process_monitor){DWORD error=win32_process_global_monitor_stop(m->process_monitor);if(error)return error;m->process_monitor=NULL;}
     if(m->discover.hook){DWORD error=win32_process_global_window_stop(&m->discover);if(error)return error;}
     DWORD close_error=win32_process_global_engine_stop(&m->engine,timeout,close_target,m);if(close_error)return close_error;
+    if(m->uwp){close_error=ntw16s_uwp_global_stop(m->uwp,timeout);if(close_error)return close_error;m->uwp=NULL;}
     if(m->session)UnmapViewOfFile(m->session);
     if(m->mapping)CloseHandle(m->mapping);
     if(m->stop)CloseHandle(m->stop);
@@ -212,6 +235,10 @@ DWORD ntw16s_global_manager_start(const WCHAR *dll_path,WORD machine,ntw16s_glob
     error=win32_process_global_engine_start(&m->engine,desktop,m->quit,m->stop,m->work,m->changed,
         MANAGER_WORKERS,sizeof(manager_entry),&ops,m,3000);
     if(error)goto fail;
+    if(machine==IMAGE_FILE_MACHINE_AMD64){
+        error=ntw16s_uwp_global_start(&m->policy,m->dll_path,desktop,m->quit,m->stop,m->session->cookie,&m->uwp);
+        if(error)goto fail;
+    }
     error=win32_process_global_window_start(&m->discover,discovered,m);if(error)goto fail;
     /* The optional system process trace requires elevation. Retain normal
      * window-event discovery when that permission is not available. */

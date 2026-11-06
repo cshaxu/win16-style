@@ -66,3 +66,13 @@ Calculator package, forwarding activation arguments and optional wait. Other
 same-name images retain native launch. Activation-returned reused instances are
 accepted; created_pid remains zero for reused processes. This is explicit target
 activation, not global enumeration or host propagation.
+
+T22 S1 P32 candidate: product `uwp/target` shares frame discovery and targeted
+apply/remove coordination between explicit activation and the global manager.
+Product `uwp/global` tracks individual CoreWindow/frame pairs using public
+process-global identity, queue and worker primitives. The x64 manager observes
+existing and new windows; the ordinary host exclusion and propagation policy
+remain unchanged. The shared host receives only selected frame adaptation,
+not client-control styling or propagation. Stop removes surviving adaptations;
+the pinned DLL is not physically unloaded. Native fixture coverage and remaining
+intermittent activation failure are recorded in CURRENT; not universal UWP support.

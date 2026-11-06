@@ -311,7 +311,7 @@
       "path": "src/ntw16s-dll/global/manager.h",
       "source": null,
       "source_blob": null,
-      "sha256": "8b51e974682b4162f095c26f12fb853d19f56d258262c6afd7abc365399c4a82",
+      "sha256": "1613d64b816b6f6e59166dab5b81401b300f44dbcdbdf3d86f8ee8d5056eed0e",
       "disposition": "authored",
       "review": "T21 S13 bounded startup attachment completion; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
@@ -320,9 +320,9 @@
       "path": "src/ntw16s-dll/global/manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "16c95a7565c45bb840bd53472acad826b0ad35640e6c474d181c43d8d47d3148",
+      "sha256": "cdaca51bcfbdbd3ea9743a93847b4912af1ec0b8793a656220a2be7e8342be2b",
       "disposition": "authored",
-      "review": "T21 S40 shared Toolhelp iteration; caller retains selection and lifecycle; T21 S42 direct public discovery calls; T21 S42 product adapter directory cleanup",
+      "review": "T21 S40 shared Toolhelp iteration; caller retains selection and lifecycle; T21 S42 direct public discovery calls; T21 S42 product adapter directory cleanup; T22 S1 P32 shared UWP target coordination and window-scoped global admission",
       "notice": "Project-authored C"
     },
     {
@@ -6296,9 +6296,9 @@
       "path": "src/run16s-exe/uwp.c",
       "source": null,
       "source_blob": null,
-      "sha256": "450cf28bbce96676fb777d313f06e932eba827f8319e870fd4ed573949236db2",
+      "sha256": "24a332ff290cd6636fd2f747d81e37788dbd928e2cce0b50cd0082961ff14ea8",
       "disposition": "authored",
-      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained",
+      "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained; T22 S1 P32 shared UWP target coordination and window-scoped global admission",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
     },
     {
@@ -6363,6 +6363,51 @@
       "disposition": "authored",
       "review": "T22 S1 native UWP title actions; original pure C implementation using system UI Automation, no external code copied",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
+    },
+    {
+      "path": "src/ntw16s-dll/uwp/global.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ef5a97edc5850085dc079cd1aabf698eab744e89eedb84225ff3d1f8d0070871",
+      "disposition": "authored",
+      "review": "T22 S1 P32 product UWP coordination; no third-party import",
+      "notice": "Project-authored C; original resource bytes unchanged"
+    },
+    {
+      "path": "src/ntw16s-dll/uwp/global.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "c6aad8d8be64bfb89bfd986b552dc14ec88b08f0481dee01f61a35ae6d3ca12e",
+      "disposition": "authored",
+      "review": "T22 S1 P32 product UWP coordination; no third-party import",
+      "notice": "Project-authored C; original resource bytes unchanged"
+    },
+    {
+      "path": "src/ntw16s-dll/uwp/target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "18e3524ed022a0e1eccba05dfd2683698244eb005283e5a7e304f2b11209e5bf",
+      "disposition": "authored",
+      "review": "T22 S1 P32 product UWP coordination; no third-party import",
+      "notice": "Project-authored C; original resource bytes unchanged"
+    },
+    {
+      "path": "src/ntw16s-dll/uwp/target.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "8c266cd531f1f6e3bd722c071f318227d418bb2857e9c687a6ccbdd3972fefc1",
+      "disposition": "authored",
+      "review": "T22 S1 P32 product UWP coordination; no third-party import",
+      "notice": "Project-authored C; original resource bytes unchanged"
+    },
+    {
+      "path": "tests/ntw16s-dll/uwp/global.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e1796276ee5a4febd53529dcfadcc0f5bbad6e1a69c0c1ffa184fa6542cf8ce8",
+      "disposition": "authored",
+      "review": "T22 S1 P32 product UWP coordination; no third-party import",
+      "notice": "Project-authored C; original resource bytes unchanged"
     }
   ]
 }

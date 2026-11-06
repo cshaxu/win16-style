@@ -1297,3 +1297,65 @@ Frozen integration sequence within the current S:
 
 This is an implementation plan grounded in actual event evidence, not a claim
 of delivered global UWP support. Current published binaries remain P22.
+
+## P32 implementation and incremental evidence (delivery pending)
+
+The launch coordinator now calls product uwp/target for discovery and targeted
+apply/remove. The global manager routes recognized frame/CoreWindow pairs into
+product uwp/global before its classic process engine. This adapter reuses public
+policy identity validation, queue and a single dispatch worker; it neither
+changes the ordinary ApplicationFrameHost exclusion nor enables propagation or
+recursive client styling in that host. Policy and DLL path are borrowed until
+stop succeeds; app/host handles and per-frame records belong to the adapter.
+Queued/working records are not reaped. Execution checks session phase and current
+identity; failed stop retains its object, and removal is not physical DLL unload.
+The manager's tracks(pid,tid) remains a classic-engine query used by classic
+fixtures only; UWP admission is per frame, with aggregate counts in manager stats.
+
+Real fixture compiles the production manager with a test-only target PID filter.
+It creates its own session and application, rejects preexisting same-image apps,
+checks process birth and closes only the owned instance. New-target mode starts
+the observer before activation and does not refresh to manufacture discovery.
+This is actual manager/adapter integration, not a full elevated tray end-to-end.
+The test filter and stdout result diagnostics are absent from product builds.
+
+Incremental manager3/desktop-restored passed existing/new Scan and Calculator;
+visual1 passed x86 7 and x64 8 focused tests without skip. visual3 captured normal
+144-DPI Scan8068 and Calculator608 with classic exterior and native client area;
+all changes returned0, stop destroyed the surface, and restart/immediate-stop
+left no surface. Screen IME candidate UI was external to the owned targets.
+Earlier visual1 screenshots were occluded and visual2 Calculator was still in
+activation animation; neither is used to claim stable rendering. Optional capture
+now waits one second only after attachment success and briefly raises/restores
+its own window. It does not change the product's readiness or retry policy.
+
+Unresolved: manager2 and manager3/validation each once failed newly activated
+Calculator. The latter recorded failed=1, proving asynchronous admission occurred,
+but no precise result was retained then. Subsequent runs passed; this is not a
+confirmed fix or proof of desktop-state causality. Diagnostic result logging now
+records the native code in the fixture. Multiple concurrent hosted apps, explicit
+activation/global coexistence, full elevated tray path, title HWND replacement,
+other DPI/monitors and general WinUI remain outside this evidence. No schema,
+export, artwork or client-control rendering change. Clean11 and actual-package
+results must be checked before claiming this P delivered.
+
+P32 delivery verification: clean11 all-target GCC x86/x64 rebuild passed in
+256/274 seconds; ABI, source/resource identity and four-library dependency gates
+passed. package6 failed classic x86 cleanup=0 after all functional fields passed;
+unchanged same-package serial package7 passed20/20 without skip in65 seconds.
+This retry does not identify or fix the first cleanup timeout. Actual-package
+UWP existing/new Scan and Calculator all passed (s1-global-package1); native
+screenshots show completed clients and144-DPI exterior. calc-new aggregate
+failed=2 remains unclassified; its UWP target change returned0 and surface was
+visible then destroyed on stop. Plain calc command/buttons/remove/geometry and
+--wait close/exit passed against this candidate as well. No scan was performed.
+
+Publication s1-publish6 copied exactly the tested four files to assets and
+O:/winnt and checked all eight hashes. The only old release occupant was host
+18304, C:/Windows/System32/ApplicationFrameHost.exe, born2026-11-05T23:22:34.2855450;
+normal-close attempt followed by bounded termination under permanent user
+release authorization freed the mapped DLL. First identity comparison used
+truncated seconds and refused without acting; precise ticks were reread before
+the actual close. No other process was terminated for deployment. Source and
+renderer resources are unchanged except the described adapter/coordination work.
+S1/T22 remain open with the above limitations; commit/push verification follows.

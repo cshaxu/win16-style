@@ -3,7 +3,7 @@
 ## Current Work
 
 T21 按用户要求[有限范围收口](../history/M0-T21-closure.md)。当前 M0 T22 S1
-实现 UWP 外框的有限适配，已发布有限开发验收包并完成远端复核，S1/T22 保持开放。
+实现 UWP 外框的有限适配；P32已发布含全局外框接入的开发验收包，待远端复核，S1/T22 保持开放。
 
 用户允许运行时接入本次目标的共享宿主；禁止修改目标文件、注册表和系统持久
 配置。本次仅窗口外观，不启用宿主传播，不处理内部 XAML 控件。
@@ -985,3 +985,58 @@ P31全局接入审计：Scan23684原生事件证明CoreWindow关联完成后再�
 普通控件及传播路径。后续在同一S按外框/CoreWindow身份单独排队，复用公共
 调度/队列及单目标外框协议；冻结顺序和判据见研究记录P31。仅研究文档变更，
 尚未实现/发布全局UWP，产品与P22不变；观察探针及自有实例已清理。
+
+P32实施中：先提取产品侧uwp/target共享协调器，启动器调用同一外框发现/接入
+路径；新增按窗口发现及撤销接口供全局适配调用，不扩展公开DLL导出。保持
+原启动行为、既有标题资源和协议。s1-global-coordinator1用于增量验证；尚未发布。
+
+P32增量记录：coordinator1的x64链接失败为宿主18304映射增量DLL；已只读核实
+路径/启动时间，将该DLL同目录保留为ntw16s64.p32-pinned.dll后重链，未结束宿主。
+coordinator2双宽3/4项通过。新增产品uwp/global按外框/CoreWindow排队，公共调度
+执行；经典进程过滤保留。s1-global-coordinator3加入真实定向适配夹具与经典manager
+回归，不启用全桌面样式；产品集成仍待实测与完整打包发布，不声称已交付。
+
+coordinator3夹具GCC缩进警告修正后，coordinator4双宽7/8项通过；真实定向Scan
+PID10904原先无surface，调度后单个可见surface，停止移除成功。尚非正式托盘
+全桌面端到端或最终发布。coordinator5补UWP就绪等待及入队立即停止竞态验证。
+
+coordinator5双宽7/8项通过；定向Scan10776接入、停止移除、立即停止再入队均通过。
+manager1扩为实际生产manager观察路径，测试构建过滤到自有PID；x86原有manager
+首次失败为cleanup=0（自有子进程关闭超时），其余字段通过，未认定产品回归。
+manager2串行复测并覆盖启动管理器后才创建UWP的真实SHOW路径，不依赖手动refresh。
+
+manager2串行双宽7/8项通过；生产manager定向已有/新建Scan、已有Calculator通过，
+新建Calculator未出现覆盖层，失败保留。manager3增加UWP队列/活跃/失败统计及
+测试过滤诊断，双宽7/8项通过；新建Calculator25148复测通过（active=1 failed=0）。
+此前失败原因尚未确定，不以重跑通过宣称修复；validation目录再核对完整四组合。
+
+P32桌面恢复复测：manager3/desktop-restored四组合通过，实际自有Scan35748/36896、
+Calculator24856/25284均active=1 failed=0，停止后surface实际销毁。此前validation
+新建Calculator24012为failed=1，不是纯发现遗漏；未保留具体错误，原因未确定。
+登记s1-global-visual1用于增加测试专用错误码和可选正常屏幕截图，继续增量双宽回归。
+
+s1-global-visual1双宽7/8项通过；自有Scan28240及Calculator36768接入/撤销通过，
+error=0、144DPI。屏幕截图被其他窗口遮挡，不计绘制通过。登记s1-global-visual2，
+仅修测试截图时自有窗口短暂置顶后恢复；不修改产品行为。
+
+s1-global-visual2实际Scan15928及Calculator27280外框绘制可见，停止均销毁surface；
+计算器截图仍有激活动画，不计稳定客户区画面。登记s1-global-visual3仅在截图采样前
+泵消息等待1秒，不延长/更改原接入验证条件；保持正常显示与附着状态证据分开。
+
+s1-global-visual3：自有Scan8068、Calculator608，144DPI，接入返回0；正常客户区
+显示后的截图可见经典标题/按钮/边框（屏幕另有IME候选层，不属于本项目窗口）。
+两实例停止返回0且surface实际销毁，重复启动立即停止通过。夹具双宽编译及各1项
+布局回归通过；完整聚焦沿用visual1双宽7/8项。未运行扫描/打印等应用操作。
+当前P32尚未完成干净同批打包、实际包验证、发布及提交；既有发布仍P22，S1/T22开放。
+
+P32交付冻结：登记s1-clean11，同一快照双宽干净构建；四文件实包验证将另用
+s1-package6及s1-global-package1，发布用s1-publish6。沿用已有实际桌面证据，
+此前新建Calculator偶发失败仍为未解决项；不将开发验收包等同T22收口。
+
+P32本地交付：s1-clean11双宽干净构建通过（256/274秒）；s1-package6首次经典x86
+cleanup超时，原断言同包串行s1-package7复测20/20通过、无skip。真实同包已有/新建
+Scan与Calculator四项通过，正常144DPI截图通过，撤销surface销毁；calc-new统计
+failed=2但目标结果0，失败记录身份尚未确定，不宣称全局零失败。普通calc命令
+及--wait同包通过。已核实并关闭唯一旧DLL占用宿主18304，s1-publish6两处四文件
+摘要一致。此前偶发接入失败和清理超时保留未解记录；未完成托盘端到端及并存矩阵。
+当前待提交推送/远端复核，S1/T22保持开放。
