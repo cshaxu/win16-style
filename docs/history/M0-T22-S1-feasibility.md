@@ -1246,3 +1246,54 @@ Incremental x86 three/x64 four focused tests passed without skips. Source and
 resource checks passed; product inputs and all eight deployed SHA256 values
 remain P22. Test delta4 additions/4 deletions, same fixture ownership, no new
 production path. S1/T22 remain open for the remaining requested coverage.
+
+## P31 global integration audit and observed discovery boundary
+
+Read-only production audit: global/manager.c discovered submits PID/TID/window
+to process-global/engine; targets are keyed by PID/TID. policy.c excludes the
+shared host and global/hook.c gates local styling using that policy. Permitting
+the host there would also enter late propagation and recursive child styling.
+That is not the window-only UWP adapter and is not an acceptable integration.
+The existing process-global/window observer enumerates visible roots/children
+and watches EVENT_OBJECT_SHOW; only one watcher per owning thread is allowed.
+The dispatcher pool, queue and registry are already reusable independently of
+the process-keyed engine. No public-library Win16 dependency is needed.
+
+Native scan-events.c (registered s1-window-audit) directly activated owned Scan
+PID23684 with no style injection. Host18304 frame0x109037e was initially cloaked,
+received SHOW while cloaked, then UNCLOAKED before the application's CoreWindow
+0xad0b32 was parented. The CoreWindow subsequently reported UNCLOAKED and SHOW
+with GA_ROOT=0x109037e, and hosting was confirmed at250ms. The own process exited
+and the observer hook was removed. Logs: scan-events.log. This establishes a
+usable existing SHOW route for this sample; it does not prove every UWP emits
+the same ordering or that global styling already works.
+
+Frozen integration sequence within the current S:
+
+1. Extract the current launcher's targeted external frame coordinator into the
+   product UWP adapter, shared by explicit activation and global management.
+   Keep the local renderer in win16-window-uwp; preserve explicit activation
+   behavior, full-screen capability probing and the existing ordinal38 protocol.
+2. Feed candidates from the existing manager window observer before the ordinary
+   process-engine path. Resolve the host frame/CoreWindow relationship; validate
+   host image, architecture, session/desktop and HWND ownership at execution.
+   Queue by frame/CoreWindow identity, not solely by shared-host PID/TID. Reuse
+   public dispatch/queue/registry mechanisms; no second desktop observer on the
+   same thread, no ordinary propagation or recursive client styling in the host.
+   Run cross-process capability queries off the manager's discovery callback.
+3. Retain only per-window adapter records and borrowed/shared session identity.
+   STOPPING ends admission, drains/cancels queued work, then explicitly removes
+   surviving adapters through the same targeted protocol. Destruction retires
+   records; timeout retains owned state for a later wait, not premature freeing.
+   Do not promise physical DLL unload. Preserve the existing tray enable/disable
+   semantics and ordinary Win32 manager/policy behavior.
+4. Verify self-owned existing/new UWP frames, same host multiple frames, repeated
+   enable/disable, stop racing pending discovery and explicit-launch coexistence.
+   Observe actual styling and removal separately from DLL loading; private C
+   model tests do not replace real hosted-app tests. Keep x86 classic regression
+   and the validated x64 UWP host boundary explicit. Then one frozen dual-width
+   four-file delivery, real package tests, both publication locations and remote
+   verification. No new T/S, fifth product, registry or target-file changes.
+
+This is an implementation plan grounded in actual event evidence, not a claim
+of delivered global UWP support. Current published binaries remain P22.
