@@ -38,3 +38,4 @@ EXPORTS
     Ntw16sWindowAttach @36
     Ntw16sGlobalThread=ntw16s_global_thread_worker@4 @37
     Ntw16sUwpFrameHook=Ntw16sUwpFrameHook@12 @38
+    Ntw16sWindowThreadHook=Ntw16sWindowThreadHook@12 @39

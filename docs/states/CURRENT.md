@@ -6,6 +6,7 @@ M0 T23 保持开放。S1 记事本已验收通过并收口；用户确认系统�
 S2 Task Manager 按用户要求有限收口，不再继续要求用户批准该项 UAC；顶部重复图标、白条和拖动标题丢帧转入 TODO，不能记作已修复。双宽干净包、29 项实际包聚焦及14项核心/注入回归通过，四文件已发布 assets 和 O:/winnt，P1 `6afe9420` 已推送并逐项读取远端复核；[有限交付记录](../history/M0-T23-S2-task-manager.md)。准入 S3 Explorer，先识别真实窗口承载及共享 Shell 边界。
 P6 `e37da0db` 四文件已发布至 assets 根目录及 O:/winnt，双宽构建、核心10项及实包29项通过；最终真实菜单截图复核未完成，不计通过。
 详细记录见 [S1交付](../history/M0-T23-S1-notepad-delivery.md)和[菜单修复](../history/M0-T23-S1-system-menu-hover.md)。
+S3 P1 同批四文件已通过干净构建、29项实际包回归及私有桌面标准启动对照，并发布至 assets 与 O:/winnt；物理交互与用户验收待完成，T23/S3 保持开放。[交付与限制](../history/M0-T23-S3-explorer.md)。
 按用户确认的顺序准入 S3 Explorer；保留已有用户桌面、任务栏和文件夹窗口，不以进程名批量操作。保留登记的 S1/S2 scratch，核验仍映射的旧 DLL 后安全清理。
 
 登记scratch：build/t23-package/s2-launch1，Task Manager 自有挂起创建、隔离桌面启动与权限诊断。
@@ -1542,3 +1543,34 @@ S2 登记 interactive-position：基于短拖拽时序，先以夹具验证尺�
 S2 interactive-position：负例证实应用处理位置变化后没有即时 WM_NCPAINT；候选只在直接 XAML 宿主的交互移动/尺寸循环期间，于 WM_WINDOWPOSCHANGED 完成后立即补画。x86/x64 core/frames 通过；登记实际短拖拽对照，失败则撤回。
 S2 interactive-position 实测失败：自有 PID4092、候选 DLL SHA256=5e9e53eaedcd51c879f2a0ef74bab6705c139d957daa3a50424105a2d35901c4，短拖拽宽774→804，标题蓝像素8693,8774,8782,95,95,95,95；即时位置补画未改善，已撤回对应产品代码与测试原型。用户要求优先私有桌面；登记验证真实 Taskmgr 能否在私有桌面启动和绘制，不切换用户桌面。
 S2 私有桌面可行性：构建原生探针，以独立 CreateDesktop/STARTUPINFO.lpDesktop 启动自建 Taskmgr，不切换输入桌面；枚举目标、检查 DLL、PrintWindow 采样并清理自有进程。采样若为空或黑屏计失败，不等同真实前台绘制。
+S3 只读基线：共享 Explorer PID9248 同时拥有桌面、任务栏和两个现有 CabinetWClass 文件夹窗口；两个文件夹窗口直接包含 Microsoft.UI.Content.DesktopChildSiteBridge、TITLE_BAR_SCAFFOLDING_WINDOW_CLASS 和 ShellTabWindowClass，未操作已有窗口。当前通用桥接识别只匹配 Windows.UI.Composition.DesktopWindowContentBridge，登记 s3-explorer1 用双位宽自有夹具先验证现代桥接类的启动/清理负例。
+S3 s3-explorer1 负例：双位宽实际启动注入夹具中旧桥接类通过、现代 DesktopChildSiteBridge 均退出15（未建立预期的延迟清理计时器）；候选将两种直接桥接类统一供延迟激活、可见性、重绘及边缘几何判定复用，不按 Explorer 进程名特判。该夹具不代表真实 Explorer 已接入。
+S3 s3-explorer1 首轮候选：x64 两种桥接通过；x86 仍旧失败，经日志确认脚本仅构建夹具未重链 x86 DLL，使用了旧 DLL，不计候选失败或通过。脚本已修正为双宽均构建 ntw16s 后复测。
+S3 s3-explorer1 修正脚本后，旧及现代桥接类在 x86/x64 实际启动注入夹具均通过；双宽 core/frames 通过。当前仅证明识别、延迟激活、绘制夹具和清理，不证明共享 Explorer 的窗口接入、真实绘制或标签交互。
+S3 登记 s3-explorer-handoff：私有桌面启动同批已发布 run16s explorer /n,自有空目录；记录启动树、Shell 窗口 PID 与 DLL，不接入共享 Shell。仅当 HWND 原先不存在且实际目录仍精确匹配自有目录时关闭该新窗口；仅结束已验证的本次启动器子进程，不结束现有 Explorer。该带参数对照不代替无参数标准命令。
+S3 s3-explorer-handoff 首轮：启动器返回0，但观察脚本在启动日志为空时 regex 报错，未确认目标窗口，不计通过；修正空日志处理后使用新自有目录复测。期间新出现 /factory Explorer PID14508，无法证明它为本次独占或可安全终止，未操作该进程。
+
+S3 隔离桌面转交复核：Shell.Application.Windows 只观察调用方桌面，先前 not_observed 不能证明无窗口。通过 OpenDesktopW/EnumDesktopWindows 在两个各自创建的私有桌面确认 CabinetWClass 窗口分别由新建 Explorer PID14508、PID8544 持有，均为系统 COM factory 启动，未加载 ntw16s DLL；已发布 run16s 返回0不代表最终窗口已附着。两窗口已关闭（句柄身份复核为无效），两个 COM 进程仍存活，未强制终止。该 /n 加自有目录试验不代表无参数命令，也不证明实际绘制。
+S3 登记 scratch：build/t23-package/s3-private-attach，独立桌面内针对新建 Explorer 文件夹窗口做单窗口附着及撤销原型，检查进程身份和句柄，不使用共享 Shell 或系统设置；这不等同正式启动接入或实际屏幕视觉通过。
+S3 s3-private-attach：在未切换的独立桌面启动 run16s explorer /n,自有空目录，枚举新 CabinetWClass PID35832/TID32192；针对该窗口线程的临时 WH_CALLWNDPROC 原型加载增量 ntw16s64.dll，Ntw16sWindowAttach 返回成功、Attached=1；随后 Ntw16sWindowRemove 返回成功、Attached=0，并请求关闭该自有窗口；整个试验无 UAC。仅证明目标 UI 线程调用附着及撤销，不证明正式 run16s 转交接入、绘制、交互、恢复的视觉效果或无参数命令。
+S3 私有桌面 PrintWindow 对照：Explorer 自有目录窗口附着后采样可见 Win16 标题，但采样前画面未完成初始化、XAML 区域呈黑且非真实输入桌面；不计完整视觉或交互通过。截图留在登记 scratch 供本任务提炼，未发布。
+S3 产品级线程入口候选：新增 DLL 序号39 Ntw16sWindowThreadHook（双宽 ABI 清单同步），短期线程钩子仅按明确 HWND 调用既有附着或撤销并返回 Win32 错误；成功附着会固定 DLL，不等于物理卸载。双宽 GCC/Ninja 增量构建、core/abi、core/window-thread、core/frames 各3/3通过；窗口夹具验证不同 HWND 拒绝、目标附着、重复附着、撤销及第二窗口保持未附着。首次 CTest 因未设置登记 capture 目录未执行，设置后复测通过。
+S3 产品级入口私有桌面实际验证：目标 Explorer PID29008 的自有窗口通过 DLL 序号39 附着和移除返回成功，PrintWindow 附着后可见标题，XAML 区域采样不完整；尚未接入正式 run16s，也没有完成真实桌面、标签、拖拽及恢复验收。后续 /separate,/n 对照仍由既有测试创建的 COM 进程 PID29008 处理，故 PID 新旧、独立桌面或 /separate 均不足以唯一关联某次启动；未操作用户已有桌面窗口。
+S3 标准命令隔离对照：私有桌面无参数 run16s explorer，启动器 PID31428；有限等待约10秒未在该私有桌面枚举到 CabinetWClass，探针返回6、未进行附着。尚不能区分跨桌面复用、启动失败或其他系统转交，不计标准启动通过；没有据此修改用户既有窗口。
+S3 标准命令负例根因已定位：空私有桌面中的 run16s explorer 返回0，但其子进程 PID3876（父 PID31852，出生时间与系统 explorer.exe 路径已核对）创建 Progman、Shell_TrayWnd 等私有 shell 窗口，未创建文件夹窗口；此前 PID35608 同样由探针启动器 PID31428 创建。两个自有私有 shell 均按身份核验后结束；现有用户 shell PID9248 未操作。登记同一私有桌面先启动自有 shell，再运行无参数 run16s explorer 的对照。
+S3 已有 shell 的私有桌面对照：先启动本任务自有 shell PID15756，再执行无参数 run16s explorer（启动器 PID22072，退出0）；该私有桌面出现 Home CabinetWClass，实际由同一 shell PID15756 承载。只对新窗口调用 DLL 线程入口，附着及撤销返回成功；随后关闭新窗口并结束自有私有 shell。与空桌面不同，这提供了标准命令转交的隔离证据，但仍未证明正式启动器定位或真实屏幕交互。
+S3 COM 精确句柄候选：参考微软 Developing with Windows Explorer 文档所述 CLSID_ShellBrowserWindow / IWebBrowser2，新建自有私有 shell 后在该桌面调用 CoCreateInstance 返回 E_FAIL 0x80004005，未取得窗口句柄；该结果只说明本机该隔离上下文失败，不概括其他系统，未改注册表。
+S3 登记 scratch：build/t23-package/s3-explorer-candidate，用双宽增量 DLL 和候选启动器建立非交付隔离包；在先有自建 shell 的私有桌面运行无参数标准命令，独立查询最终窗口是否由候选自动附着，再清理自有实例。候选使用启动前窗口快照及唯一新增窗口条件，尚未完成并发归属、真实绘制或正式包验证。
+S3 启动器候选私有桌面实测：先建立自有 shell 和已有文件夹，再以非交付增量包运行无参数 run16s explorer。最终新 Home 窗口由同一 shell PID35088 持有；独立线程查询新窗口 Attached=1，先前窗口 Attached=0，两者属于同一 Explorer 进程；启动器退出0，自有窗口和 shell 已清理。另一先前窗口在独立 Explorer PID33232 的对照也显示其未加载 DLL、新窗口已附着。快照筛选不能证明与其他进程并发启动时的因果归属，仍需并发负例及真实桌面验证。
+S3 并发负例：同一私有 shell 在候选启动同时创建两个新 Home 窗口，两个独立查询均显示未附着（目标 DLL 未加载），原有窗口也未附着；本次候选拒绝了多个新增目标。候选增加约200ms稳定窗口，仍无法从唯一新增窗口本身证明它一定由本次请求引起，若另一应用恰在此时单独打开窗口而本次请求未创建窗口，仍有误归属可能；这是未解决的关联限制。
+S3 重复启动对照：自有私有 shell PID32048 中，已有窗口未附着；连续两次候选标准启动各取得一个新窗口，独立查询均 Attached=1，均在同一 shell 进程；自有实例已清理。已加载 DLL 时，候选检查模块路径和回调前64字节一致性以避免明显旧版本错位；此检查不是完整映像摘要或所有加载竞态的证明。
+S3 隔离桌面 DPI 感知对照：自有 shell PID23700，标准启动新窗口附着=1、同进程先前窗口附着=0，最大化 showCmd=3 与恢复 showCmd=1 后附着仍为1，重复启动的新窗口附着=1。Per-Monitor V2 的 PrintWindow 采样可见完整 Win16 标题及原有 Explorer 标签、导航区；这不是物理输入桌面，不证明鼠标菜单、拖拽闪烁或标签操作。采样包含用户 Home 快捷访问列表，仅留登记 scratch，不纳入提交。
+S3 launch/explorer-selection：x64 原生夹具在独立桌面检查已存在窗口不附着、唯一新增窗口附着以及两个新增窗口的歧义拒绝，1/1通过；产品候选另在真实隔离 Explorer 上完成上述正例与并发负例。
+S3 回归：双宽 core/abi、core/window-thread、core/menu-cancel、core/frames 通过；x86 core/menu-dispatch通过。x64 menu-dispatch与x86 UI 测试并行时一次在断言97失败，单独复测1/1通过；并行干扰是可能原因，未证明根因，保留该失败记录。
+S3 补充目标选择测试：私有桌面 x64 夹具验证已有隐藏窗口显示后仍不被当作新窗口、两个新窗口不附着，以及子进程已映射不同路径 ntw16s64.dll 时返回 ERROR_REVISION_MISMATCH 并正常关闭子进程，1/1通过。线程代码前64字节相同仍不能保证整个已映射 DLL 是相同构建，保留为限制。
+S3 登记 scratch：build/t23-package/s3-clean1，用同一源码快照进行双宽干净 Ninja/ccache 构建及包身份检查，作为后续实际包测试候选，不等于用户验收。
+S3 s3-clean1：同一源码快照双宽干净构建、包结构及 ABI 检查通过（GCC 16.1、Ninja、ccache 4.13.6）。该实际候选包在先有自建 shell 的私有桌面运行无参数 run16s explorer：目标加载路径为 s3-clean1/candidate/ntw16s64.dll，已有同进程窗口 Attached=0、新窗口 Attached=1；144 DPI 下系统/最小化/最大化命中分别3/8/9，系统菜单打开并采样，最大化/恢复状态3/1后仍附着，第二次启动也附着。PrintWindow 能见经典标题及系统菜单；未覆盖真实鼠标交互和导航、标签操作。自有 shell 已结束。
+S3 登记 scratch：build/t23-package/s3-package1，使用该干净包及其干净构建树运行上次已选29项相关实际包聚焦回归；后台单任务执行以减少UI测试竞争。
+S3 s3-package1：同批四文件实际包29项聚焦回归全部通过、无跳过，单任务约61秒；覆盖首次注入、双位宽传播、标题菜单与相关全局回归，不替代实际 Explorer 物理交互。干净构建树 launch/explorer-selection 1/1通过。另以同路径但自有子进程回调首字节被修改的内存映像对照，候选返回版本不匹配，子进程正常清理；仅覆盖这一模拟差异。
+S3 登记 scratch：build/t23-package/s3-publish1，备份并发布 s3-clean1 同批四文件至 assets 根目录和 O:/winnt，逐项核对测试摘要；保持 S3 开放待用户验收。
+S3 s3-publish1：已发布 s3-clean1 同批四文件到 assets 根目录与 O:/winnt，两处摘要均与 s3-package1 一致；未改系统设置。准备提交和远端复核，用户实际桌面验收仍待完成。

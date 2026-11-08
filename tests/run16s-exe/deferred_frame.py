@@ -9,10 +9,12 @@ package = pathlib.Path.cwd() / "package"
 package.mkdir()
 for source in (launcher, dll32, dll64, fixture):
     shutil.copy2(source, package / source.name)
-result = subprocess.run(
-    [str(package / launcher.name), "--wait", str(package / fixture.name)],
-    capture_output=True,
-    timeout=15,
-)
-print(f"exit={result.returncode} stdout={result.stdout!r} stderr={result.stderr!r}")
-sys.exit(0 if result.returncode == 0 and b"DEFER waiting=0" in result.stdout else 1)
+for kind in ("legacy", "modern"):
+    result = subprocess.run(
+        [str(package / launcher.name), "--wait", str(package / fixture.name), kind],
+        capture_output=True,
+        timeout=15,
+    )
+    print(f"{kind}: exit={result.returncode} stdout={result.stdout!r} stderr={result.stderr!r}")
+    if result.returncode != 0 or b"DEFER waiting=0" not in result.stdout:
+        sys.exit(1)

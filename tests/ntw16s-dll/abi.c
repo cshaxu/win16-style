@@ -18,6 +18,7 @@ static const char *const names[]={
     "Ntw16sWindowAttached",
     "Ntw16sWindowRemove",
     "Ntw16sWindowTerminal",
+    "Ntw16sWindowThreadHook",
     "win16_style_control_install",
     "win16_style_control_remove",
     "win16_style_controls_begin",
@@ -59,6 +60,6 @@ int wmain(int argc,WCHAR **argv)
     DWORD (WINAPI *thread_worker)(void *)=(void *)GetProcAddress(module,"Ntw16sGlobalThread");
     CHECK(thread_worker && thread_worker(NULL)==ERROR_INVALID_PARAMETER);
     CHECK(FreeLibrary(module));
-    printf("ABI PASS width=%u version=3 public=36 private-bind-exports=0\n",(unsigned)(sizeof(void *)*8));
+    printf("ABI PASS width=%u version=3 public=38 private-bind-exports=0\n",(unsigned)(sizeof(void *)*8));
     return 0;
 }

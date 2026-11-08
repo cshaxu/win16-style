@@ -34,6 +34,9 @@
 #include <string.h>
 #include <wchar.h>
 #include <limits.h>
+#include <stdint.h>
+#include "attachment.h"
+#include "window_thread.h"
 
 /* This coordinator composes the one existing renderer. It observes only
  * creation inside explicit caller scopes; it never scans a desktop or infers
@@ -630,6 +633,32 @@ BOOL __cdecl Ntw16sWindowAttach(HWND w)
     if(!install_created(w,(DWORD)GetWindowLongPtrW(w,GWL_STYLE)))return FALSE;
     if(!lookup(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     return TRUE;
+}
+LRESULT CALLBACK Ntw16sWindowThreadHook(int code,WPARAM wp,LPARAM lp)
+{
+    static _Thread_local BOOL busy;
+    const CWPSTRUCT *message=(const CWPSTRUCT *)lp;
+    DWORD saved=GetLastError();
+    if(code>=0 && message && !busy &&
+       message->message==RegisterWindowMessageW(NTW16S_WINDOW_THREAD_MESSAGE) &&
+       (message->wParam==NTW16S_WINDOW_THREAD_ATTACH || message->wParam==NTW16S_WINDOW_THREAD_REMOVE) &&
+       (HWND)message->lParam==message->hwnd){
+        DWORD pid=0,error=0;HMODULE pinned=NULL;BOOL ok=FALSE;
+        busy=TRUE;
+        if(GetWindowThreadProcessId(message->hwnd,&pid)!=GetCurrentThreadId() || pid!=GetCurrentProcessId())
+            error=ERROR_INVALID_THREAD_ID;
+        else {
+            SetLastError(0);
+            if(message->wParam==NTW16S_WINDOW_THREAD_REMOVE)ok=Ntw16sWindowRemove(message->hwnd);
+            else if(Ntw16sWindowAttached(message->hwnd))ok=TRUE;
+            else if(GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_PIN,
+                      (PCWSTR)(uintptr_t)Ntw16sWindowThreadHook,&pinned))ok=Ntw16sWindowAttach(message->hwnd);
+            if(!ok)error=GetLastError()?GetLastError():ERROR_GEN_FAILURE;
+        }
+        SetPropW(message->hwnd,NTW16S_WINDOW_THREAD_RESULT,(HANDLE)(uintptr_t)((ULONGLONG)error+1));
+        busy=FALSE;
+    }
+    LRESULT result=CallNextHookEx(NULL,code,wp,lp);SetLastError(saved);return result;
 }
 static LRESULT CALLBACK creation_before(int code,WPARAM p,LPARAM l)
 {

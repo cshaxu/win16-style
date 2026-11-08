@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 #include <wchar.h>
 typedef BOOL (__cdecl *query_fn)(HWND);
 static HWND destroy_during_timer,created_timer;
@@ -28,7 +29,7 @@ static unsigned active_pixels(HWND w)
     if(screen)ReleaseDC(NULL,screen);
     return count;
 }
-int main(void)
+int main(int argc,char **argv)
 {
     WCHAR deskname[64];swprintf(deskname,64,L"Win16DeferFixture-%lu",GetCurrentProcessId());
     HDESK desk=CreateDesktopW(deskname,NULL,NULL,0,GENERIC_ALL,NULL);if(!desk||!SetThreadDesktop(desk))return 2;
@@ -36,7 +37,8 @@ int main(void)
     query_fn attached=module?(query_fn)(uintptr_t)GetProcAddress(module,"Ntw16sWindowAttached"):NULL;
     query_fn remove=module?(query_fn)(uintptr_t)GetProcAddress(module,"Ntw16sWindowRemove"):NULL;if(!attached||!remove)return 3;
     WNDCLASSW root={0},bridge={0};root.lpfnWndProc=proc;root.hInstance=GetModuleHandleW(NULL);root.lpszClassName=L"Win16DeferFixture";
-    bridge.lpfnWndProc=DefWindowProcW;bridge.hInstance=root.hInstance;bridge.lpszClassName=L"Windows.UI.Composition.DesktopWindowContentBridge";
+    bridge.lpfnWndProc=DefWindowProcW;bridge.hInstance=root.hInstance;
+    bridge.lpszClassName=argc==2 && !strcmp(argv[1],"modern")?L"Microsoft.UI.Content.DesktopChildSiteBridge":L"Windows.UI.Composition.DesktopWindowContentBridge";
     if(!RegisterClassW(&root)||!RegisterClassW(&bridge))return 4;
     MONITORINFO monitor={.cbSize=sizeof(monitor)};POINT primary={0,0};
     if(!GetMonitorInfoW(MonitorFromPoint(primary,MONITOR_DEFAULTTOPRIMARY),&monitor))return 22;

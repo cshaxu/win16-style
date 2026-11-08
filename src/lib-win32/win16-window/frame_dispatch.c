@@ -3,13 +3,6 @@
 #include <commctrl.h>
 #include <windowsx.h>
 static BOOL queue_repaint(HWND,style_window *);
-static BOOL visible_xaml_bridge(HWND w)
-{
-    HWND child=NULL;
-    while((child=FindWindowExW(w,child,L"Windows.UI.Composition.DesktopWindowContentBridge",NULL))!=NULL)
-        if(IsWindowVisible(child))return TRUE;
-    return FALSE;
-}
 static LRESULT CALLBACK repaint_proc(HWND timer,UINT msg,WPARAM wp,LPARAM lp,UINT_PTR id,DWORD_PTR data)
 {
     style_window *s=(style_window *)data;
@@ -19,7 +12,7 @@ static LRESULT CALLBACK repaint_proc(HWND timer,UINT msg,WPARAM wp,LPARAM lp,UIN
         ++s->calls;
         if(s->xaml_waiting){
             HWND owner=s->xaml_repaint_owner;
-            if(!visible_xaml_bridge(owner) && GetTickCount64()<s->xaml_deadline && queue_repaint(owner,s)){
+            if(!win16_control_frame_xaml_bridge(owner,TRUE) && GetTickCount64()<s->xaml_deadline && queue_repaint(owner,s)){
                 if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);
                 return 0;
             }
@@ -80,7 +73,7 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
     if(s->pending_frame && msg!=WM_SHOWWINDOW && msg!=WM_NCDESTROY)goto forward;
     if(msg==WM_SHOWWINDOW && s->pending_frame){
         if(s->xaml_waiting){if(!wp)win16_control_frame_cancel_repaint(s);goto forward;}
-        if(wp && FindWindowExW(w,NULL,L"Windows.UI.Composition.DesktopWindowContentBridge",NULL)){
+        if(wp && win16_control_frame_xaml_bridge(w,FALSE)){
             s->xaml_waiting=TRUE;s->xaml_deadline=GetTickCount64()+2000;s->xaml_activate=v->message->activate;
             if(queue_repaint(w,s))goto forward;
             s->xaml_waiting=FALSE;
@@ -101,7 +94,7 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
         /* Coalesce a burst of XAML background erases into one frame refresh.
          * Classic windows do not schedule this additional paint. */
         if(!s->detached && !s->xaml_repainting && !s->xaml_repaint_pending && !(GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD) &&
-           FindWindowExW(w,NULL,L"Windows.UI.Composition.DesktopWindowContentBridge",NULL)){
+           win16_control_frame_xaml_bridge(w,FALSE)){
             (void)queue_repaint(w,s);
         }
         break;

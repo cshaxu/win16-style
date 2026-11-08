@@ -6,6 +6,7 @@
 #include "global.h"
 #include "tray.h"
 #include "uwp.h"
+#include "explorer.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <wchar.h>
@@ -110,8 +111,17 @@ int wmain(int argc,WCHAR **argv)
         }
         return diagnostic(5,error,L"target creation");
     }
+    run16s_explorer_snapshot *folders=run16s_explorer_default(image,win32_process_next_argument(raw))?
+        run16s_explorer_snapshot_create():NULL;
     free(command);unsigned phase=0;error=win32_process_activate(&child,prepare_target,&context,&phase);
-    if(error)return diagnostic(phase==WIN32_PROCESS_PREPARE_FAILED?6:7,error,L"installation/resume");
+    if(error){run16s_explorer_snapshot_free(folders);return diagnostic(phase==WIN32_PROCESS_PREPARE_FAILED?6:7,error,L"installation/resume");}
+    if(folders){
+        /* The Shell may forward this launch into an existing Explorer process.
+         * Only a new, unambiguous folder window can be attached. */
+        DWORD attached=run16s_explorer_attach_new(folders,image,context.directory);
+        if(attached && attached!=ERROR_NOT_FOUND)diagnostic(0,attached,L"Explorer window attachment");
+        run16s_explorer_snapshot_free(folders);
+    }
     if(wait && (error=win32_process_wait(child.hProcess,&exit_code))){
         CloseHandle(child.hProcess);return diagnostic(8,error,L"target wait");
     }
