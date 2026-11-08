@@ -92,3 +92,13 @@ not operated. Screen captures and test profiles are not product artifacts.
   a safe, scoped and verifiable approach, preserve application controls and
   disclose any remaining restoration limit. No universal WinUI/Chromium
   compatibility follows from these samples.
+
+* A separate native Terminal test created two uniquely named windows on a
+  private desktop. Both windows belonged to the same self-created Terminal
+  process, while each tab's `GetConsoleWindow()` returned a distinct
+  `PseudoConsoleWindow` whose owner and root owner were its corresponding
+  Terminal window. Both test windows were closed and the process exited. This
+  is a useful candidate for identifying the host of an existing `run16s cmd`
+  session, not a documented universal contract: other Terminal versions, tab
+  changes, default-terminal handoff, classic console and identity/security
+  checks remain unverified. No host was attached in this experiment.
