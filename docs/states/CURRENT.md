@@ -1574,3 +1574,4 @@ S3 登记 scratch：build/t23-package/s3-package1，使用该干净包及其干�
 S3 s3-package1：同批四文件实际包29项聚焦回归全部通过、无跳过，单任务约61秒；覆盖首次注入、双位宽传播、标题菜单与相关全局回归，不替代实际 Explorer 物理交互。干净构建树 launch/explorer-selection 1/1通过。另以同路径但自有子进程回调首字节被修改的内存映像对照，候选返回版本不匹配，子进程正常清理；仅覆盖这一模拟差异。
 S3 登记 scratch：build/t23-package/s3-publish1，备份并发布 s3-clean1 同批四文件至 assets 根目录和 O:/winnt，逐项核对测试摘要；保持 S3 开放待用户验收。
 S3 s3-publish1：已发布 s3-clean1 同批四文件到 assets 根目录与 O:/winnt，两处摘要均与 s3-package1 一致；未改系统设置。准备提交和远端复核，用户实际桌面验收仍待完成。
+S3 发布后补充私有桌面验证：使用 O:/winnt 实包的自建 Explorer 窗口，以 UI Automation 调用 Add New Tab，观察 tab 项由3增至6；调用 Close Tab 恢复3；选择 This PC 后窗口标题变为 This PC 且附着查询仍为1，既有窗口未附着；自有 shell 已结束。此为对应辅助功能路径，不证明物理鼠标、拖拽或所有导航。ShellWindows 集合未返回私有窗口，未执行该方式导航，不计失败或通过。P1 4b9f164a 已推送，实际远端提交与四文件及关键源码摘要已复核。

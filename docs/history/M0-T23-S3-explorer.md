@@ -40,8 +40,17 @@ new window. The owned shell and windows were closed after testing. An empty
 private desktop starts a shell for an unqualified `explorer.exe`, rather than a
 folder; this is distinct from the existing-shell test.
 
+A further private-desktop test used the published `O:\winnt` package and
+Windows UI Automation against the newly created folder window. Invoking its
+Add New Tab control changed the observed tab-item count from 3 to 6; invoking
+Close Tab brought it back to 3. Selecting This PC changed the window title to
+This PC and the frame still reported attached. This checks these specific
+provider operations, not physical mouse input or every navigation path. The
+ShellWindows automation collection did not return the private-desktop window,
+so that separate navigation method was not exercised.
+
 These checks do not prove physical mouse clicks, hover flicker, live dragging,
-Explorer tab/navigation operations, all DPI configurations, or every concurrent
+other Explorer tab/navigation operations, all DPI configurations, or every concurrent
 launch. The task remains open for the owner's acceptance. No Task Manager UAC
 was requested; its separate previously documented visual issues remain open.
 
