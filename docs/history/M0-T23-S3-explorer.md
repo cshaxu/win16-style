@@ -128,3 +128,16 @@ to validate the owner and command IDs; a no-switch preparation also confirmed
 the two menu item rectangles are available. The corrected physical hover test
 has not yet run. These observations do not prove hover selection, absence of
 flicker, menu command execution, live dragging, or other DPI behavior.
+
+## Corrected physical menu hover
+
+On the owner's retry, the native probe created a private Explorer shell and
+used the published launcher. The new folder reported attached, while the prior
+folder reported unattached. At 144 DPI a real click opened the system menu;
+its target PID and command IDs matched even though its popup menu handle
+differed from `GetSystemMenu`. Moving the real pointer over Move and then Size
+kept the menu visible and highlighted the respective item. Captures showed
+the Win16 menu and expected highlights. The probe restored the original input
+desktop and pointer and ended its own shell. This verifies these two hover
+positions, not the absence of transient flicker, command execution, live
+dragging, other DPI values, or owner acceptance.
