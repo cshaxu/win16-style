@@ -25,13 +25,16 @@ BOOL win16_control_frame_message(HWND w,style_window *s,UINT msg,WPARAM wp,LPARA
         if(!s->dialog)return FALSE;
         *result=win16_control_dialog_colors((HDC)wp,&s->palette);return TRUE;
     case WM_NCCALCSIZE: {
-        RECT r=wp?((NCCALCSIZE_PARAMS *)lp)->rgrc[0]:*(RECT *)lp;win16_style_layout l;
+        RECT r=wp?((NCCALCSIZE_PARAMS *)lp)->rgrc[0]:*(RECT *)lp;win16_style_layout l;LRESULT native;
         if(!v->measure(w,s,&r,&l))return FALSE;
         /* USER still updates scrollbar state before our geometry is applied. */
-        DefSubclassProc(w,msg,wp,lp);
+        native=DefSubclassProc(w,msg,wp,lp);
         if(s->detached)return TRUE;
         OffsetRect(&l.client,r.left,r.top);
         if(wp)((NCCALCSIZE_PARAMS *)lp)->rgrc[0]=l.client;else *(RECT *)lp=l.client;
+        /* Preserve explicit redraw requests; VALIDRECTS describe the old
+         * geometry and cannot be reused after replacing the client rect. */
+        if(wp && !(native&WVR_VALIDRECTS))*result=native&WVR_REDRAW;
         return TRUE;
     }
     case WM_NCPAINT:

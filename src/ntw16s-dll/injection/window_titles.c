@@ -116,6 +116,22 @@ static NTW16S_UNWIND_FUNCTION HWND WINAPI window_##S(DWORD ex,T cls,T text,DWORD
 WINDOW_HOOK(A,LPCSTR)
 WINDOW_HOOK(W,LPCWSTR)
 
+/* Some modern desktop windows use this optional USER32 entry point rather
+ * than CreateWindowExW. Preserve its band and use the same creation scope. */
+typedef HWND (WINAPI *create_window_band_fn)(DWORD,LPCWSTR,LPCWSTR,DWORD,int,int,int,int,HWND,HMENU,HINSTANCE,void *,DWORD);
+static create_window_band_fn create_band;
+static NTW16S_UNWIND_FUNCTION HWND WINAPI window_band(DWORD ex,LPCWSTR cls,LPCWSTR text,DWORD style,int x,int y,int cx,int cy,HWND parent,HMENU menu,HINSTANCE instance,void *param,DWORD band)
+{
+    ntw16s_unwind_scope unwind;title_scope scope;HWND result=NULL;DWORD error=ERROR_SUCCESS;
+    if(!begin_titles(&scope,FALSE))return NULL;
+    NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope);
+    {result=create_band(ex,cls,text,style,x,y,cx,cy,parent,menu,instance,param,band);error=GetLastError();}
+    NTW16S_UNWIND_END(unwind);
+    if(scope.failure){if(result)DestroyWindow(result);result=NULL;error=scope.failure;}
+    if(result && scope.enabled)mark_menu_owner(result,__builtin_return_address(0));
+    SetLastError(error);return result;
+}
+
 #define DIALOG_HOOK(NAME,TYPE,RET,MODAL,FAIL) \
 static __typeof__(&NAME) real_##NAME; \
 static NTW16S_UNWIND_FUNCTION RET WINAPI hook_##NAME(HINSTANCE instance,TYPE name,HWND parent,DLGPROC proc,LPARAM param) \
@@ -735,6 +751,9 @@ LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *))
     real_show_scroll=ShowScrollBar;real_enable_scroll=EnableScrollBar;
     error=(LONG)attach(&create_A,(void *)window_A);
     if(!error)error=(LONG)attach(&create_W,(void *)window_W);
+    FARPROC band_symbol=GetProcAddress(GetModuleHandleW(L"user32.dll"),"CreateWindowInBand");
+    memcpy(&create_band,&band_symbol,sizeof(band_symbol));
+    if(create_band && !error)error=(LONG)attach(&create_band,(void *)window_band);
     if(!error)error=(LONG)attach(&real_get_scroll,(void *)hook_get_scroll);
     if(!error)error=(LONG)attach(&real_set_scroll,(void *)hook_set_scroll);
     if(!error)error=(LONG)attach(&real_set_pos,(void *)hook_set_pos);

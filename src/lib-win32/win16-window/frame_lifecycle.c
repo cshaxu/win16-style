@@ -1,5 +1,6 @@
 #include "frame_lifecycle.h"
 #include "frame_layout.h"
+#include "frame_dispatch.h"
 #include "../win16-common/font.h"
 #include <dwmapi.h>
 
@@ -78,13 +79,14 @@ BOOL win16_control_frame_remove(HWND w,const win16_control_frame_lifecycle_servi
     normal=!IsIconic(w)&&!IsZoomed(w);win16_control_client_screen(w,&client);
     if(!RemoveWindowSubclass(w,v->style_proc,(UINT_PTR)v->style_proc))return FALSE;
     ++s->calls;
+    win16_control_frame_cancel_repaint(s);
     s->detached=TRUE;
     v->control_remove(w,s);
     while(s->menus)win16_control_frame_state_end_menu(s);
     win16_style_menu_restore(&s->menu_items);
     if(s->bar_keyboard)v->leave_bar(w,s,TRUE);
     if(s->pressed && GetCapture()==w)ReleaseCapture();
-    win16_control_frame_restore(w,&s->pending_frame,&s->policy_saved,&s->old_policy,&client,normal,v->set_window_attribute);
+    win16_control_frame_restore(w,&s->pending_frame,&s->policy_saved,&s->old_policy,&client,normal&&!s->keep_outer,v->set_window_attribute);
     if(!--s->calls)win16_control_frame_state_dispose(s);
     return TRUE;
 }
@@ -106,7 +108,7 @@ BOOL win16_control_frame_terminal(HWND w,const win16_control_frame_lifecycle_ser
     if(!RemoveWindowSubclass(w,v->style_proc,(UINT_PTR)v->style_proc)){
         SetLastError(ERROR_INVALID_STATE);return FALSE;
     }
-    ++s->calls;s->detached=TRUE;
+    ++s->calls;win16_control_frame_cancel_repaint(s);s->detached=TRUE;
     while(s->menus)win16_control_frame_state_end_menu(s);
     if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);
     return TRUE;

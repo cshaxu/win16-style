@@ -20,7 +20,10 @@ typedef struct style_window {
     menu_loop *menus;
     unsigned menu_depth;
     DWORD old_policy;
-    BOOL policy_saved, pending_frame;
+    BOOL policy_saved, pending_frame, xaml_repainting, xaml_repaint_pending, xaml_waiting, keep_outer;
+    HWND xaml_repaint_window, xaml_repaint_owner;
+    ULONGLONG xaml_deadline;
+    void (*xaml_activate)(HWND,struct style_window *,const RECT *,BOOL);
     const void *creation_owner;
 } style_window;
 

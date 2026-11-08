@@ -1166,7 +1166,7 @@
       "path": "src/ntw16s-dll/win16_style.c",
       "source": "src/ntw16s-dll/win16_style.c",
       "source_blob": "4235f085cb00c0d17145deec2d04a57c97b98d47",
-      "sha256": "fb0ea77eecc3932957c6c40d8da7826cd91c0cdc6ff7617ed5863e076d26dfb4",
+      "sha256": "d1272e880fae8f389b6efdc5e6e88f858a48d1a22f366c191e02693c36cf7ff0",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T15 S8 verified initialized native tree protocol and bounded existing System paint scope, native item/font/image/geometry/notifications preserved; exact pending frame ownership and cancellation; ASCII test-thread IME isolation after native no-DLL MSCTF teardown evidence; no external code or original graphics modified; T18 S64 scoped observed Delphi TPopupMenu owner, native callbacks and item restoration; private cleanup, no external code or graphics changed; T21 S22 frame painter extracted; T21 S22 caption and sizing-band presentation extracted with live state references; T21 S22 frame presentation extraction, preserving fault instrumentation; T21 S22 buffered frame/menu/button presentation extraction; T21 S22 frame layout and high-contrast palette extraction",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -1346,9 +1346,9 @@
       "path": "tests/ntw16s-dll/frames.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2f69d3c792937126ec4a680613a5eb25736549fabfc2c533826719317b61fc7c",
+      "sha256": "9167e26dafa6c8a59bec4042036fa815c1c48b9a99615ce9fb011d012d68fa93",
       "disposition": "authored",
-      "review": "T2 S2 actual-DLL runtime/native counterpart and process-owned private desktop; docs/history/M0-T2-S2-runtime.md; T23 S1 preserve documented DWM rendering state on removal",
+      "review": "T2 S2 actual-DLL runtime/native counterpart and process-owned private desktop; docs/history/M0-T2-S2-runtime.md; T23 S1 preserve documented DWM rendering state on removal; T23 S2 custom-caption geometry fixture",
       "notice": "Project-authored, repository MIT"
     },
     {
@@ -1463,7 +1463,7 @@
       "path": "src/ntw16s-dll/injection/window_titles.c",
       "source": "src/nthook32-dll/window_titles.cpp",
       "source_blob": "0a3d1cd942345edb25e879b9377311929551a0ec",
-      "sha256": "463f32fd4879526d36725b97a5c1287ce1d590706f8fa11863b1c55a2c97b61a",
+      "sha256": "b606a8239c10b824c440a75dda4fc93327f0f1940ea8a591c7dabe6a34fe1f52",
       "disposition": "adapt",
       "review": "T3 S2 same-DLL delayed binding and read-only native-target diagnostics; docs/proposals/launcher-injection.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S7 bounded initialized public report-list text scope, exact native custom-draw DC and unchanged app callbacks, independent host System bitmap and ownership/late-view tests; no external code copied or original resources modified; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T18 S21 scoped observed checklist owner-draw frame, public state and original graphic, no external code or resource changes; T18 S27 exact observed TSpinButton frame scope, native primitive semantics retained, no external code or original graphics changed; T18 S31 verified native STATIC drawing scope, source font and application printing preserved; T18 S64 VB6 checklist scoped 96 DPI bitmap rendering and additional BitBlt hook; native fallbacks retained; T18 S64 P50 bounded VB6 Data navigation graphics; T18 S64: scoped ordinary Delphi group paint witness and native theme text entry, original notices retained; T18 S64 scoped observed Delphi TPopupMenu owner, native callbacks and item restoration; private cleanup, no external code or graphics changed; T18 S64 observed paired Delphi TPanel outer bevel paint scope, caller/parent/clip and native pen preserved; project-authored native tests; no external code or resources copied; T18 S64 P110 modern SpinButton bounded theme, bitmap and paint handling; T18 S64 P117 verified simple Delphi status scoped typography; T18 S64 P117 isolated font lease and lifecycle verification; T18 S64 P119 bounded multi-pane status font; T18 S64 P121 ANSI RichEdit witness and native chrome; T18 S64 P122 Unicode witness and abnormal paint cleanup; T18 S64 P123 scroll box witness; T18 S64 P125 native month calendar arrows; T18 S64 P126 selected-date color; T18 S64 P127 bounded native calendar title and query guards; T18 S64 P128 bounded calendar text; T18 S64 P129 witnessed TValueListEditor in-place button; T18 S64 P130 witnessed combo theme and dropdown arrow; T18 S64 witnessed VCL control bar frame; T18 S64 control bar observed bevel variants; T18 S64 app-owned ANSI DBEdit forwarding witness and negative model; T18 S64 bounded ANSI data combo forwarding witness; T18 S64 P160: bounded same-owner TDBNavigator button backgrounds; T20 S1 common find/replace creation scope; T21 S13 unified late style hooks and stop semantics",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
@@ -1526,9 +1526,9 @@
       "path": "src/ntw16s-dll/injection/create_process.c",
       "source": "src/nthook32-dll/create_process.cpp",
       "source_blob": "2369ce7a7c46e79fc23f73367db9d42e0c40c9da",
-      "sha256": "14f4df7072e6dc3ff0ce2a0a6f17c5fb5b9888fc83d808634843489bf0cd72f0",
+      "sha256": "f11e19ba9e6c3afb714b1892d70183b11b1fefe643ae4f17ee5dfc77680ec2eb",
       "disposition": "adapt",
-      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S13 unified session stop semantics; T21 S42 product adapter directory cleanup; T23 S1 optional AsUserW propagation and DWM restoration regression",
+      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S13 unified session stop semantics; T21 S42 product adapter directory cleanup; T23 S1 optional AsUserW propagation and DWM restoration regression; T23 S2 bounded self-elevation redirect candidate",
       "notice": "Project-authored source adaptation or new native fixture, repository MIT"
     },
     {
@@ -4282,7 +4282,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "f1aafa1b1b9d9a71fe582b73f568202df8c7d3f38b566b9519f74746524bcec2",
+      "sha256": "bb8ae5a69e741d46f95283dd4d8ed455e1607371841d36c07dc02b6d773af147",
       "review": "T21 S22 extraction of window frame geometry with caller-owned state"
     },
     {
@@ -4291,7 +4291,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "e12a697a9b36f06a169360a3e5191cc06bf6e5a9d77126db4066637c1de8dcb2",
+      "sha256": "2b3547283b8079b374e21e814d16d3cfd4d1e36d21ce7f80ff5add17d756b51d",
       "review": "T21 S22 extraction of window frame geometry with caller-owned state"
     },
     {
@@ -4847,7 +4847,7 @@
       "path": "src/lib-win32/win16-window/frame_state.h",
       "source": null,
       "source_blob": null,
-      "sha256": "34089ad1e9f7742a7b8d58d18a614c5e3dd1999e3e990c02d694abf31cce02e2",
+      "sha256": "ae9069bad191cf5b0fbe5d84d187148d78783ba6968bb71901ea6c1e9d8037ac",
       "disposition": "authored",
       "review": "T21 S24 extract frame presentation state and resource lifetime",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -5072,7 +5072,7 @@
       "path": "src/lib-win32/win16-window/frame_message.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2a159622f94982f6491da75031fd0d762e359eb7d2d3e4cba6743e4424c0801c",
+      "sha256": "23ef86109816747bfda8a64702578eab7e5c4de4b1429d5a0708515bf828d709",
       "disposition": "authored",
       "review": "T21 S24 extract nonclient frame presentation message handling",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -5360,7 +5360,7 @@
       "path": "src/lib-win32/win16-window/frame_lifecycle.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d826e40d7f78f362bbea767c1c7004fe4bfe65491fdd723c1b44c697fc2ffc36",
+      "sha256": "c185d3093c6f6580cb74ffbe6dfa6fb8dafdfd6100cf4dd60b7c83a768eea7d1",
       "disposition": "authored",
       "review": "T21 S24 extract frame lifecycle; T23 S1 preserve documented DWM rendering state on removal",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -5558,7 +5558,7 @@
       "path": "src/lib-win32/win16-window/frame_dispatch.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ccf74f90e09f97698aa592070a1b1812e5975f4d37a790162724e8b0150c0cbf",
+      "sha256": "eb043c2a0290f0ecd6a2f7d82dda1047e7d36699ebdaafb1e3d5656510b01e9b",
       "disposition": "authored",
       "review": "T21 S24 extracted frame message dispatch from project-authored src/ntw16s-dll/win16_style.c",
       "notice": "Project-authored source; existing resource and provenance notices retained"
@@ -5567,7 +5567,7 @@
       "path": "src/lib-win32/win16-window/frame_dispatch.h",
       "source": null,
       "source_blob": null,
-      "sha256": "d4f4e072950a064296e6c8a7abcc50fc6cdcd9caa087c3c9bdffc460ec49a2d3",
+      "sha256": "c3594646308177b23fbc73ace951031c79b940f879b7d9c60107dbebd2e7c8e4",
       "disposition": "authored",
       "review": "T21 S24 extracted frame message dispatch from project-authored src/ntw16s-dll/win16_style.c",
       "notice": "Project-authored source; existing resource and provenance notices retained"

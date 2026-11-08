@@ -149,7 +149,11 @@ static BOOL refresh_font(HWND w,style_window *s)
 {return win16_control_refresh_frame_fonts(w,&s->dpi,&s->title_font,&s->menu_font);}
 
 static void activate_frame(HWND w,style_window *s,const RECT *client,BOOL normal)
-{win16_control_frame_activate(w,&s->detached,client,normal,DwmSetWindowAttribute);}
+{
+    win16_style_layout l;
+    s->keep_outer=normal && client && layout(w,s,&l) && !s->detached && win16_control_frame_keep_outer(w,client,&l);
+    if(!s->detached)win16_control_frame_activate(w,&s->detached,client,normal&&!s->keep_outer,DwmSetWindowAttribute);
+}
 
 static const win16_control_frame_lifecycle_services frame_lifecycle={style_proc,DwmGetWindowAttribute,DwmSetWindowAttribute,local_window,state,refresh_font,layout,activate_frame,
     win16_style_frame_scrollbars_install_owned,win16_style_frame_scrollbars_palette_owned,win16_style_control_remove_owned,

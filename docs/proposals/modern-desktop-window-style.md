@@ -1,6 +1,6 @@
 # Modern desktop window adaptation
 
-T22 UWP外框已收口；用户批准本候选为M0 T23，当前S1按用户批准扩展为记事本实现与交付。
+T22 UWP外框已收口；用户批准本候选为M0 T23，当前活动 S 及状态以 CURRENT 为准。
 仅窗口外框，不含客户区控件；CURRENT拥有活动状态。
 
 ## 本机分类基线
@@ -31,14 +31,26 @@ WinUI 是界面框架，UWP 是应用模型；两者不能当成互斥分类。
 
 | S | Work and exit evidence |
 | --- | --- |
-| S1 (active) | Notepad: native frame restoration, standard `run16s notepad` launch handoff, tab/menu preservation, actual package tests and publication for acceptance. |
-| S2 | Task Manager: standard `run16s taskmgr`, privilege and native frame verification. |
+| S1 (closed) | Notepad: native frame restoration, standard `run16s notepad` launch handoff, tab/menu preservation, actual package tests and publication for acceptance. |
+| S2 (active) | Task Manager: standard `run16s taskmgr`, privilege and native frame verification. |
 | S3 | Explorer folder windows: standard `run16s explorer`, shared-shell boundaries; preserve desktop/taskbar. |
 | S4 | Terminal and console hosting: standard `run16s cmd` and `run16s conhost`, identify actual window host and preserve console/session semantics; Terminal separately verified. |
-| S5 | Consolidated regression and closure audit across the standard launch commands. |
+| 待准入 | Codex Desktop and Chrome: classify actual window ownership and verify frame behavior on test-owned instances. |
+| 待准入 | Consolidated regression and closure audit across the standard launch commands and tested applications. |
 
-Only S1 is currently admitted; subsequent S tasks follow this approved task scope
-in order, with one active packet. Evidence may require splitting implementation
+After the existing Explorer and Terminal work, verify **Codex Desktop** and
+**Chrome Browser** as additional real-application targets before the consolidated
+closure audit. Their S identifiers are not allocated here. First identify each
+installed executable, process handoff, actual window owner and UI framework;
+do not assume either application uses the same XAML path as Task Manager. Use
+test-owned instances and profiles where available, preserve existing user sessions,
+and verify title rendering, controls in the title area, menus, resize, focus,
+restoration and ordinary launch behavior. Record unsupported or skipped cases
+without treating them as passes. This work concerns window frames; XAML client
+controls remain in their separate candidate.
+
+Subsequent S tasks follow the approved task scope in order, with one active packet.
+Evidence may require splitting implementation
 steps into additional S tasks; never reuse an allocated identifier or silently
 hide an unsupported target. No universal framework support is promised by a single
 successful app. Product binary changes require the normal same-snapshot dual-width

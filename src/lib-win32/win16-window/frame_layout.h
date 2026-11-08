@@ -7,6 +7,7 @@ BOOL win16_control_frame_hit_test(HWND window,const win16_style_layout *layout,L
 void win16_control_frame_changed(HWND window);
 void win16_control_client_screen(HWND window,RECT *client);
 void win16_control_restore_client(HWND window,const RECT *wanted);
+BOOL win16_control_frame_keep_outer(HWND window,const RECT *wanted,const win16_style_layout *layout);
 typedef HRESULT (WINAPI *win16_control_set_window_attribute)(HWND,DWORD,LPCVOID,DWORD);
 void win16_control_frame_activate(HWND window,const BOOL *detached,const RECT *client,BOOL normal,win16_control_set_window_attribute set_attribute);
 void win16_control_frame_restore(HWND window,const BOOL *pending,const BOOL *policy_saved,const DWORD *old_policy,const RECT *client,BOOL normal,win16_control_set_window_attribute set_attribute);

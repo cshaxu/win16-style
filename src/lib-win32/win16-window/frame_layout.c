@@ -40,6 +40,15 @@ void win16_control_client_screen(HWND w,RECT *r)
 {
     POINT p={0,0};GetClientRect(w,r);ClientToScreen(w,&p);OffsetRect(r,p.x,p.y);
 }
+BOOL win16_control_frame_keep_outer(HWND w,const RECT *wanted,const win16_style_layout *layout)
+{
+    RECT outer;MONITORINFO monitor={.cbSize=sizeof(monitor)};
+    if(!wanted || !layout || (GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD) ||
+       !FindWindowExW(w,NULL,L"Windows.UI.Composition.DesktopWindowContentBridge",NULL) ||
+       !GetWindowRect(w,&outer) || !GetMonitorInfoW(MonitorFromRect(&outer,MONITOR_DEFAULTTONEAREST),&monitor))return FALSE;
+    return (outer.top>=monitor.rcWork.top && wanted->top-layout->client.top<monitor.rcWork.top) ||
+           (outer.left>=monitor.rcWork.left && wanted->left-layout->client.left<monitor.rcWork.left);
+}
 void win16_control_restore_client(HWND w,const RECT *wanted)
 {
     RECT r,outer;POINT origin;win16_control_client_screen(w,&r);GetWindowRect(w,&outer);

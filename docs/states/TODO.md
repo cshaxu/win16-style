@@ -2,6 +2,8 @@
 
 # Deferred Debt
 
+- [ ] TODO(High): Task Manager 的 Win16 外框顶部出现裁切的重复图标及右侧白条，真实拖动尺寸时标题仍会间歇消失；Owner：未来明确准入的现代桌面外框修复。Evidence：M0 T23 S2 的标准启动加载和附着验证、DWM 边距对照及短拖拽蓝像素与消息记录；仅修改顶部客户区几何即可复现图标残影，擦除后和位置变化后同步补画均未改善。Admission：在可完成自有目标验证时，保留汉堡菜单、窗口交互与恢复，验证实际拖拽、最大化及不同 DPI；用户要求本轮不再进行 Task Manager UAC 验证，不将未覆盖项视为通过。
+
 - [ ] TODO(Low): 全局模式管理员 ETW、真实托盘端到端及其他 window station 的环境受限验证；Owner：未来明确准入的全局模式验证。Evidence：[S41 审计](../proposals/global-process-audit.md) 中私有桌面托盘创建错误、非管理员 ETW 和 station 子项跳过；未计通过。Admission：具备合适会话和授权后，使用自有实例、有限等待及清理复测。
 
 - [ ] TODO(Low): 全局组合停止后的 Button 绘制摘要不等原始值；Owner：未来用户明确要求的样式恢复调查。Evidence：[S41 审计](../proposals/global-process-audit.md) 中新旧版本同样复现；用户要求以重构前后结果一致为准，不继续深挖。Admission：需要改进恢复时再准入；不声称此前像素恢复通过。

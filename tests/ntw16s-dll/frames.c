@@ -6,6 +6,45 @@
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"FRAME FAIL line=%d error=%lu: %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
 static LRESULT CALLBACK owner(HWND w,UINT m,WPARAM a,LPARAM b)
 {if(m==WM_APP+8)return 808;return DefWindowProcW(w,m,a,b);}
+static LRESULT CALLBACK custom_caption(HWND w,UINT m,WPARAM a,LPARAM b)
+{if(m==WM_NCCALCSIZE)return 0;return DefWindowProcW(w,m,a,b);}
+static unsigned xaml_paints,xaml_erases,xaml_timers;
+static HWND repaint_watch;
+static HWND destroy_on_repaint;
+static unsigned repaint_messages;
+static LRESULT CALLBACK watch_repaint(int code,WPARAM wp,LPARAM lp)
+{
+    if(code>=0 && lp){const CWPSTRUCT *message=(const CWPSTRUCT *)lp;
+        if(message->hwnd==repaint_watch && message->message==WM_NCPAINT)++repaint_messages;
+        if(message->hwnd==destroy_on_repaint && message->message==WM_NCPAINT){
+            HWND root=destroy_on_repaint;destroy_on_repaint=NULL;DestroyWindow(root);}}
+    return CallNextHookEx(NULL,code,wp,lp);
+}
+static LRESULT xaml_nccalc_result;
+static HWND destroy_during_timer,created_timer;
+static LRESULT CALLBACK destroy_on_timer_create(int code,WPARAM wp,LPARAM lp)
+{
+    if(code==HCBT_CREATEWND && destroy_during_timer){
+        WCHAR name[32]={0};GetClassNameW((HWND)wp,name,ARRAYSIZE(name));
+        if(!lstrcmpiW(name,L"Static")){
+            HWND root=destroy_during_timer;destroy_during_timer=NULL;created_timer=(HWND)wp;DestroyWindow(root);
+        }
+    }
+    return CallNextHookEx(NULL,code,wp,lp);
+}
+static LRESULT CALLBACK xaml_frame(HWND w,UINT m,WPARAM a,LPARAM b)
+{
+    if(m==WM_NCCALCSIZE && a && xaml_nccalc_result){DefWindowProcW(w,m,a,b);return xaml_nccalc_result;}
+    if(m==WM_ERASEBKGND){++xaml_erases;return 1;}
+    if(m==WM_TIMER)++xaml_timers;
+    if(m==WM_PAINT){PAINTSTRUCT ps;++xaml_paints;BeginPaint(w,&ps);EndPaint(w,&ps);return 0;}
+    return DefWindowProcW(w,m,a,b);
+}
+static void pump_for(DWORD ms)
+{
+    ULONGLONG end=GetTickCount64()+ms;MSG msg;
+    do{while(PeekMessageW(&msg,NULL,0,0,PM_REMOVE)){TranslateMessage(&msg);DispatchMessageW(&msg);}Sleep(1);}while(GetTickCount64()<end);
+}
 static void client_screen(HWND w,RECT *r)
 {GetClientRect(w,r);MapWindowPoints(w,NULL,(POINT *)r,2);}
 
@@ -58,6 +97,85 @@ static int frame_worker(int argc,WCHAR **argv)
             100,100,420,280,NULL,NULL,cls.hInstance,NULL);CHECK(w);
         client_screen(w,&before);CHECK(!win16_style_install(w,NULL) && GetLastError()==ERROR_NOT_SUPPORTED);
         client_screen(w,&after);CHECK(EqualRect(&before,&after) && DestroyWindow(w));
+    }
+    {
+        WNDCLASSW custom={.lpfnWndProc=custom_caption,.lpszClassName=L"Win16CustomCaptionFixture",.hInstance=cls.hInstance};
+        RECT original_outer,restored_outer;
+        CHECK(RegisterClassW(&custom));
+        w=CreateWindowW(custom.lpszClassName,L"Custom caption fixture",WS_OVERLAPPEDWINDOW,
+            100,100,420,280,NULL,NULL,custom.hInstance,NULL);CHECK(w);
+        CHECK(GetWindowRect(w,&original_outer));client_screen(w,&before);
+        CHECK(before.top==original_outer.top);
+        CHECK(win16_style_install(w,NULL));client_screen(w,&after);CHECK(EqualRect(&before,&after));
+        CHECK(win16_style_remove(w));client_screen(w,&after);CHECK(EqualRect(&before,&after));
+        CHECK(GetWindowRect(w,&restored_outer) && EqualRect(&original_outer,&restored_outer));
+        CHECK(DestroyWindow(w) && UnregisterClassW(custom.lpszClassName,custom.hInstance));
+    }
+    {
+        WNDCLASSW root={.lpfnWndProc=xaml_frame,.lpszClassName=L"Win16XamlFrameFixture",.hInstance=cls.hInstance};
+        WNDCLASSW bridge={.lpfnWndProc=DefWindowProcW,.lpszClassName=L"Windows.UI.Composition.DesktopWindowContentBridge",.hInstance=cls.hInstance};
+        CHECK(RegisterClassW(&root) && RegisterClassW(&bridge));
+        w=CreateWindowW(root.lpszClassName,L"XAML frame",WS_OVERLAPPEDWINDOW,100,100,420,280,NULL,NULL,root.hInstance,NULL);CHECK(w);
+        HWND child=CreateWindowW(bridge.lpszClassName,L"",WS_CHILD|WS_VISIBLE,0,0,200,100,w,NULL,bridge.hInstance,NULL);CHECK(child);
+        NCCALCSIZE_PARAMS params={0};WINDOWPOS pos={0};params.lppos=&pos;GetWindowRect(w,&params.rgrc[0]);
+        xaml_nccalc_result=WVR_REDRAW;
+        CHECK(SendMessageW(w,WM_NCCALCSIZE,TRUE,(LPARAM)&params)==WVR_REDRAW);
+        CHECK(win16_style_install(w,NULL));ShowWindow(w,SW_SHOWNOACTIVATE);UpdateWindow(w);pump_for(100);
+        const LRESULT flags[]={WVR_REDRAW,WVR_HREDRAW,WVR_VREDRAW,WVR_VALIDRECTS};
+        for(unsigned n=0;n<sizeof(flags)/sizeof(flags[0]);++n){xaml_nccalc_result=flags[n];GetWindowRect(w,&params.rgrc[0]);
+            CHECK(SendMessageW(w,WM_NCCALCSIZE,TRUE,(LPARAM)&params)==(flags[n]==WVR_VALIDRECTS?0:flags[n]));}
+        xaml_nccalc_result=0;
+        repaint_watch=w;repaint_messages=0;
+        HHOOK repaint_hook=SetWindowsHookExW(WH_CALLWNDPROC,watch_repaint,NULL,GetCurrentThreadId());CHECK(repaint_hook);
+        xaml_paints=xaml_erases=xaml_timers=0;HDC dc=GetDC(w);CHECK(dc);
+        for(int n=0;n<5;++n){CHECK(SendMessageW(w,WM_ERASEBKGND,(WPARAM)dc,0)==1);}ReleaseDC(w,dc);
+        CHECK(xaml_erases==5 && xaml_paints==0);pump_for(150);
+        CHECK(xaml_erases==5 && xaml_paints==0 && xaml_timers==0 && repaint_messages>0);
+        CHECK(UnhookWindowsHookEx(repaint_hook));repaint_watch=NULL;
+        dc=GetDC(w);CHECK(dc);CHECK(SendMessageW(w,WM_ERASEBKGND,(WPARAM)dc,0)==1);ReleaseDC(w,dc);
+        Sleep(50);MSG queued;CHECK(PeekMessageW(&queued,NULL,WM_TIMER,WM_TIMER,PM_NOREMOVE));CHECK(queued.hwnd!=w && IsWindow(queued.hwnd));
+        HWND timer=queued.hwnd;CHECK(win16_style_remove(w));CHECK(!IsWindow(timer));UpdateWindow(w);xaml_timers=0;pump_for(100);CHECK(xaml_timers==0);
+        CHECK(DestroyWindow(w));
+        w=CreateWindowW(root.lpszClassName,L"XAML destroy",WS_OVERLAPPEDWINDOW,100,100,420,280,NULL,NULL,root.hInstance,NULL);CHECK(w);
+        child=CreateWindowW(bridge.lpszClassName,L"",WS_CHILD|WS_VISIBLE,0,0,200,100,w,NULL,bridge.hInstance,NULL);CHECK(child);
+        CHECK(win16_style_install(w,NULL));ShowWindow(w,SW_SHOWNOACTIVATE);UpdateWindow(w);pump_for(100);
+        dc=GetDC(w);CHECK(dc);CHECK(SendMessageW(w,WM_ERASEBKGND,(WPARAM)dc,0)==1);ReleaseDC(w,dc);
+        Sleep(50);CHECK(PeekMessageW(&queued,NULL,WM_TIMER,WM_TIMER,PM_NOREMOVE));timer=queued.hwnd;CHECK(timer!=w && IsWindow(timer));
+        CHECK(DestroyWindow(w));CHECK(!IsWindow(timer));xaml_timers=0;pump_for(100);CHECK(xaml_timers==0);
+        w=CreateWindowW(root.lpszClassName,L"Classic frame",WS_OVERLAPPEDWINDOW,100,100,420,280,NULL,NULL,root.hInstance,NULL);CHECK(w);
+        CHECK(win16_style_install(w,NULL));ShowWindow(w,SW_SHOWNOACTIVATE);UpdateWindow(w);
+        xaml_paints=xaml_erases=0;dc=GetDC(w);CHECK(dc);
+        CHECK(SendMessageW(w,WM_ERASEBKGND,(WPARAM)dc,0)==1);ReleaseDC(w,dc);
+        CHECK(xaml_erases==1 && xaml_paints==0);
+        CHECK(win16_style_remove(w) && DestroyWindow(w));
+        w=CreateWindowW(root.lpszClassName,L"XAML repaint destroy",WS_OVERLAPPEDWINDOW,100,100,420,280,NULL,NULL,root.hInstance,NULL);CHECK(w);
+        child=CreateWindowW(bridge.lpszClassName,L"",WS_CHILD|WS_VISIBLE,0,0,200,100,w,NULL,bridge.hInstance,NULL);CHECK(child);
+        CHECK(win16_style_install(w,NULL));ShowWindow(w,SW_SHOWNOACTIVATE);UpdateWindow(w);pump_for(100);
+        repaint_hook=SetWindowsHookExW(WH_CALLWNDPROC,watch_repaint,NULL,GetCurrentThreadId());CHECK(repaint_hook);
+        dc=GetDC(w);CHECK(dc);CHECK(SendMessageW(w,WM_ERASEBKGND,(WPARAM)dc,0)==1);ReleaseDC(w,dc);
+        Sleep(50);CHECK(PeekMessageW(&queued,NULL,WM_TIMER,WM_TIMER,PM_NOREMOVE));timer=queued.hwnd;CHECK(timer!=w && IsWindow(timer));
+        destroy_on_repaint=w;pump_for(100);CHECK(!IsWindow(w) && !IsWindow(timer));CHECK(UnhookWindowsHookEx(repaint_hook));
+        w=CreateWindowW(root.lpszClassName,L"XAML reentrant destroy",WS_OVERLAPPEDWINDOW,100,100,420,280,NULL,NULL,root.hInstance,NULL);CHECK(w);
+        child=CreateWindowW(bridge.lpszClassName,L"",WS_CHILD|WS_VISIBLE,0,0,200,100,w,NULL,bridge.hInstance,NULL);CHECK(child);
+        destroy_during_timer=w;created_timer=NULL;
+        HHOOK cbt=SetWindowsHookExW(WH_CBT,destroy_on_timer_create,NULL,GetCurrentThreadId());CHECK(cbt);
+        BOOL installed=win16_style_install(w,NULL);
+        if(installed && IsWindow(w)){dc=GetDC(w);CHECK(dc);SendMessageW(w,WM_ERASEBKGND,(WPARAM)dc,0);ReleaseDC(w,dc);}
+        UnhookWindowsHookEx(cbt);
+        CHECK(!IsWindow(w));CHECK(created_timer);CHECK(!IsWindow(created_timer));pump_for(80);
+        WNDCLASSW edge={.lpfnWndProc=custom_caption,.lpszClassName=L"Win16XamlEdgeFixture",.hInstance=cls.hInstance};
+        MONITORINFO monitor={.cbSize=sizeof(monitor)};POINT origin={0,0};RECT edge_before,edge_after;
+        CHECK(GetMonitorInfoW(MonitorFromPoint(origin,MONITOR_DEFAULTTONEAREST),&monitor));CHECK(RegisterClassW(&edge));
+        for(unsigned edge_case=0;edge_case<2;edge_case++){
+            w=CreateWindowW(edge.lpszClassName,L"XAML work-area edge",WS_OVERLAPPEDWINDOW,
+                monitor.rcWork.left+(edge_case?0:100),monitor.rcWork.top+(edge_case?100:0),420,280,NULL,NULL,edge.hInstance,NULL);CHECK(w);
+            child=CreateWindowW(bridge.lpszClassName,L"",WS_CHILD|WS_VISIBLE,0,0,200,100,w,NULL,bridge.hInstance,NULL);CHECK(child);
+            CHECK(GetWindowRect(w,&edge_before));CHECK(win16_style_install(w,NULL));CHECK(GetWindowRect(w,&edge_after));
+            CHECK(edge_after.top>=monitor.rcWork.top && edge_after.left>=monitor.rcWork.left);CHECK(win16_style_remove(w));CHECK(GetWindowRect(w,&edge_after));
+            CHECK(EqualRect(&edge_before,&edge_after));CHECK(DestroyWindow(w));
+        }
+        CHECK(UnregisterClassW(edge.lpszClassName,edge.hInstance));
+        CHECK(UnregisterClassW(bridge.lpszClassName,bridge.hInstance) && UnregisterClassW(root.lpszClassName,root.hInstance));
     }
     /* Read the documented query attribute; exercise both initial states and
      * two cycles so an apparently successful remove cannot hide disabled DWM. */

@@ -1,6 +1,62 @@
 #include "frame_dispatch.h"
+#include "frame_layout.h"
 #include <commctrl.h>
 #include <windowsx.h>
+static BOOL queue_repaint(HWND,style_window *);
+static BOOL visible_xaml_bridge(HWND w)
+{
+    HWND child=NULL;
+    while((child=FindWindowExW(w,child,L"Windows.UI.Composition.DesktopWindowContentBridge",NULL))!=NULL)
+        if(IsWindowVisible(child))return TRUE;
+    return FALSE;
+}
+static LRESULT CALLBACK repaint_proc(HWND timer,UINT msg,WPARAM wp,LPARAM lp,UINT_PTR id,DWORD_PTR data)
+{
+    style_window *s=(style_window *)data;
+    (void)id;
+    if(msg==WM_TIMER && wp==(UINT_PTR)s){
+        KillTimer(timer,(UINT_PTR)s);s->xaml_repaint_pending=FALSE;
+        ++s->calls;
+        if(s->xaml_waiting){
+            HWND owner=s->xaml_repaint_owner;
+            if(!visible_xaml_bridge(owner) && GetTickCount64()<s->xaml_deadline && queue_repaint(owner,s)){
+                if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);
+                return 0;
+            }
+            s->xaml_waiting=FALSE;s->pending_frame=FALSE;
+            RECT client;BOOL normal=!IsIconic(owner)&&!IsZoomed(owner);
+            win16_control_client_screen(owner,&client);s->xaml_activate(owner,s,&client,normal);
+        }else{
+            s->xaml_repainting=TRUE;
+            SendMessageW(s->xaml_repaint_owner,WM_NCPAINT,1,0);
+            s->xaml_repainting=FALSE;
+        }
+        if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);
+        return 0;
+    }
+    return DefSubclassProc(timer,msg,wp,lp);
+}
+void win16_control_frame_cancel_repaint(style_window *s)
+{
+    if(s->xaml_repaint_window){
+        KillTimer(s->xaml_repaint_window,(UINT_PTR)s);
+        DestroyWindow(s->xaml_repaint_window);
+        s->xaml_repaint_window=NULL;s->xaml_repaint_pending=FALSE;s->xaml_waiting=FALSE;
+    }
+}
+static BOOL queue_repaint(HWND w,style_window *s)
+{
+    if(!s->xaml_repaint_window){
+        HWND timer=CreateWindowExW(0,L"STATIC",L"",0,0,0,0,0,HWND_MESSAGE,NULL,GetModuleHandleW(NULL),NULL);
+        if(!timer)return FALSE;
+        if(s->detached || !IsWindow(w)){DestroyWindow(timer);return FALSE;}
+        if(!SetWindowSubclass(timer,repaint_proc,(UINT_PTR)repaint_proc,(DWORD_PTR)s)){DestroyWindow(timer);return FALSE;}
+        if(s->detached || !IsWindow(w)){DestroyWindow(timer);return FALSE;}
+        s->xaml_repaint_owner=w;s->xaml_repaint_window=timer;
+    }
+    if(!SetTimer(s->xaml_repaint_window,(UINT_PTR)s,30,NULL))return FALSE;
+    s->xaml_repaint_pending=TRUE;return TRUE;
+}
 LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM lp,
     const win16_control_frame_dispatch_services *v)
 {
@@ -13,6 +69,24 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
      * merged-control retro painting is a separate S4 menu surface. */
     if((GetWindowLongPtr(w,GWL_EXSTYLE)&WS_EX_MDICHILD) && IsZoomed(w) &&
        msg!=WM_NCDESTROY)goto forward;
+    /* Hidden creation must retain the application's geometry until showing.
+     * XAML bridges may become visible after the parent show notification. */
+    if(s->pending_frame && msg==WM_NCACTIVATE)s->active=(BOOL)wp;
+    if(s->pending_frame && msg==WM_DPICHANGED){
+        result=DefSubclassProc(w,msg,wp,lp);
+        if(!s->detached)v->message->refresh_font(w,s);
+        goto done;
+    }
+    if(s->pending_frame && msg!=WM_SHOWWINDOW && msg!=WM_NCDESTROY)goto forward;
+    if(msg==WM_SHOWWINDOW && s->pending_frame){
+        if(s->xaml_waiting){if(!wp)win16_control_frame_cancel_repaint(s);goto forward;}
+        if(wp && FindWindowExW(w,NULL,L"Windows.UI.Composition.DesktopWindowContentBridge",NULL)){
+            s->xaml_waiting=TRUE;s->xaml_deadline=GetTickCount64()+2000;s->xaml_activate=v->message->activate;
+            if(queue_repaint(w,s))goto forward;
+            s->xaml_waiting=FALSE;
+            if(s->detached)goto done;
+        }
+    }
     /* Our menu bar is custom nonclient chrome. USER hot-tracks HTMENU before
      * NC mouse dispatch (classic/WOW has no UAH draw callback to intercept).
      * Expose neutral nonclient hit-test ownership and route clicks by our
@@ -22,6 +96,15 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
         if(PtInRect(&l.menu,point))wp=HTMENU;
     }
     switch(msg){
+    case WM_ERASEBKGND:
+        result=DefSubclassProc(w,msg,wp,lp);
+        /* Coalesce a burst of XAML background erases into one frame refresh.
+         * Classic windows do not schedule this additional paint. */
+        if(!s->detached && !s->xaml_repainting && !s->xaml_repaint_pending && !(GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD) &&
+           FindWindowExW(w,NULL,L"Windows.UI.Composition.DesktopWindowContentBridge",NULL)){
+            (void)queue_repaint(w,s);
+        }
+        break;
     case WM_SHOWWINDOW:
     case WM_CTLCOLORDLG:
     case WM_CTLCOLORSTATIC:
@@ -84,6 +167,7 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
 forward:
         result=DefSubclassProc(w,msg,wp,lp);break;
     }
+done:
     if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);
     return result;
 

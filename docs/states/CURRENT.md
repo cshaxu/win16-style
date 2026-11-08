@@ -3,9 +3,99 @@
 ## Current Work
 
 M0 T23 保持开放。S1 记事本已验收通过并收口；用户确认系统菜单不再闪烁。
+用户要求 S2 Task Manager 按当前有限成果收口并转入后续程序，不再继续要求用户批准 Task Manager UAC；顶部重复图标、白条和拖动标题丢帧转入 TODO，不能记作已修复。双宽干净包、29 项实际包聚焦及14项核心/注入回归通过，四文件已发布 assets 和 O:/winnt；[有限交付记录](../history/M0-T23-S2-task-manager.md)。提交推送及远端复核前 S2 尚未关闭。
 P6 `e37da0db` 四文件已发布至 assets 根目录及 O:/winnt，双宽构建、核心10项及实包29项通过；最终真实菜单截图复核未完成，不计通过。
 详细记录见 [S1交付](../history/M0-T23-S1-notepad-delivery.md)和[菜单修复](../history/M0-T23-S1-system-menu-hover.md)。
-下一项为已规划的 S2 Task Manager；当前无活动任务包。保留登记的 S1 scratch，待核对仍映射的旧 DLL 后安全清理。
+已按用户确认的顺序准入 S2 Task Manager，先验证标准启动、提权和实际窗口；已有 Task Manager PID26784 不属于本任务，不操作。保留登记的 S1 scratch，待核对仍映射的旧 DLL 后安全清理。
+
+登记scratch：build/t23-package/s2-launch1，Task Manager 自有挂起创建、隔离桌面启动与权限诊断。
+登记scratch：build/t23-package/s2-uac-build1，双位宽增量构建自提权探针。
+登记scratch：build/t23-package/s2-uac-fix1，双位宽增量构建自重启提权转接候选；候选尚未验证或发布。
+登记scratch：build/t23-package/s2-uac-regression1，候选双位宽首次注入及 staging 聚焦回归。
+登记scratch：build/t23-package/s2-uac-regression2，候选普通消息及对话框聚焦回归。
+登记scratch：build/t23-package/s2-uac-handle1，双位宽探针增量构建与 Shell 句柄自动回归。
+登记scratch：build/t23-package/s2-uac-unit1，候选转接单元测试双位宽 Ninja/CTest 回归。
+登记scratch：build/t23-package/s2-uac-fix2，路径缓冲区调整后的双位宽候选增量构建与转接单元测试。
+登记scratch：build/t23-package/s2-uac-fix3，策略范围及原子读取修改后的双位宽增量构建和单元回归。
+fix3 双宽 Ninja 构建及 self-elevate-unit 各 1/1 通过、无 skip；这是模拟 Shell，不是 Task Manager 绘制或真实提权的证明。
+登记scratch：build/t23-package/s2-uac-candidate2，调整后候选 DLL 的自有提权对照，不是最终发布包。
+新版 x64 自有对照父 PID4308 attached=1；120 秒外层等待返回 WAIT_TIMEOUT=258、launcher_exit=259，无子报告；候选目录相关自有进程检查无残留。该次不计正例，不能推断 UAC 原因。
+fix2 双宽 Ninja 构建成功，launch/self-elevate-unit 各 1/1 通过，无 skip；仅验证模拟 Shell，调整后真实提权路径尚未重测。
+追加 Shell 结构体字段断言后，双宽 Ninja/CTest 各 1/1 再通过；x86 Ninja 提示 premature end of file 并自动恢复，当前成因未知，需在交付构建前核验缓存状态。
+x86 的 .ninja_deps 对该目标显示 deps not found；确认无活动构建后将损坏缓存逐字节备份至 s2-uac-unit1/x86-ninja-deps-damaged，重建生成缓存与该目标，后续 dry-run 显示 no work to do。其他目标依赖记录需随其下次构建重建；原损坏原因未知。
+登记scratch：build/t23-package/s2-shell-matrix1，Shell 正常句柄及错误回退自动回归。
+登记scratch：build/t23-package/s2-custom-frame1，自有客户区顶到外框顶部的几何附着/恢复模型回归；不是 Task Manager 实测。
+登记scratch：build/t23-package/s2-clean1，当前候选源码快照的双位宽干净构建与 ABI 检查；不代表最终验收或发布。
+clean1 在编译前因两个已修改文件的本地来源摘要未更新而停止；已保留原始来源和许可声明并更新本地摘要，source-manifest 自检通过。登记 build/t23-package/s2-clean2 重做当前快照的干净构建。
+该模型 x86/x64 各 1/1 通过，附着和移除后客户区屏幕矩形保持，移除后外框矩形与原始一致；不证明真实 Task Manager 的绘制或交互。
+当前候选治理自检及13项拒绝负例通过，git diff --check 通过；未提交的 QUEUE 与 xaml-control-style 候选属于其他工作，继续保留。
+该隔离包回归 x86/x64 的普通句柄、非自身无效目标、带句柄标志的无效目标共 6/6 通过；只比较这些原生/候选输出，不证明真实 Task Manager 或 runas 句柄成功路径。
+路径缓冲区调整后的 fix2 DLL 再次运行同一隔离包矩阵，6/6 通过；仍不证明真实提权或 Task Manager 绘制。
+该回归完成：x86/x64 各 1/1 通过、无 skip；仅为模拟 Shell 的转接单元测试。
+新增无 UAC 转接单元测试：双宽 GCC 直接运行通过，验证同映像参数改写、取消错误和 hInstApp，以及句柄标志、其他映像、open、global 会话的原路径；真实 Shell/UAC 不由模拟证明。
+候选将三个大路径缓冲区从目标线程栈移至临时堆分配，避免占用约192KiB栈；分配失败沿用原 Shell 路径。调整后双宽模拟转接单元测试通过；此前候选实测使用旧缓冲区版本，调整后尚未重新实测或发布。
+进一步收紧：全局会话不安装该 Shell 钩子；双宽模拟测试验证全局调用原路径及注册时不安装。该修改后的 DLL 未做实际提权测试或发布。
+策略审计发现仅传播载荷经 --elevated 会被启动器重置为样式+传播；候选现仅在 flags 精确为样式+传播时安装/执行转接，双宽模拟测试验证仅传播和 global 不安装。最新修改尚未真实提权验证或发布。
+候选运行时策略判断改为与现有 session 路径一致的原子读取，避免与全局策略位更新发生非原子读取；双宽模拟单元测试通过。尚未实测并发竞态或发布。
+句柄自动回归首次 x86 因启动器目录缺少 32 位 DLL 而失败；改为测试自有隔离双宽包后，x86/x64 两项均通过。覆盖普通 open 成功句柄，不代表 runas 句柄或 Task Manager 正例。
+该回归 x86 未配置对应测试、不得计通过；x64 单独执行 dialogs/messages 2/2 通过，无 skip。
+该聚焦回归完成：x86 staging 1/1、x64 staging 与 automatic 2/2，均无 skip；x86 未配置 automatic，不能计作该项通过。未覆盖真实 Task Manager 或新的 Shell 转接边界。
+登记scratch：build/t23-package/s2-uac-candidate1，候选 DLL 与已发布启动器组成的开发验证目录，仅用于自有提权探针；不是最终同批发布包。
+候选自有 x64 对照：父 PID27196 加载候选 DLL 且 attached=1；按实测 0x400 runas 自重启后子 PID27420 elevated=1、加载同目录候选 DLL 且 attached=1。仅证明该受限调用的自有窗口接入，不证明实际绘制、Task Manager 或其他 Shell 标志。
+候选 x86 对照：父 PID24228 加载候选 DLL 且 attached=1；Shell 返回 1223（取消），没有子进程报告。x86 提权正例未完成，不能计通过。
+后续有界 x86 正例：父 PID20088 加载候选 ntw16s32.dll 且 attached=1，提权子 PID25516 加载同目录候选 ntw16s32.dll 且 elevated=1、attached=1；驱动记录 wait=0、launcher_exit=0。仅为受限调用自有窗口接入，非真实 Task Manager 或绘制证明。
+重试父 PID12932 attached=1，但 ShellExecuteExW 等待系统响应超过测试预算；核验映像、出生时间、父子关系后结束该自有探针，启动器随之退出，无子报告。现有 90 秒等待仅发生在 Shell 调用返回之后，不能约束 UAC 等待；测试驱动需增加外层有界管理，不能将该次计为通过。
+新增 Job 外层驱动（120 秒）双宽编译通过；自有假目标对照中有效报告返回0、旧报告拒绝8、attached=0 返回9。真实 UAC 超时/清理及脱离 Job 的提权后继仍未验证。
+外层驱动使用自有挂起假目标和 500ms 预算得到 WAIT_TIMEOUT=258、退出1460，目标 PID27560 已结束；此结果只证明 Job 内目标清理，不证明 UAC 后脱离 Job 的进程清理。
+候选只尝试 runas、自映像、fMask 精确为 SEE_MASK_FLAG_NO_UI 且非 global 会话的转接；其他调用沿原路径。转接改变 UAC 中请求执行的映像为 run16s.exe，且 Shell 返回只表示启动器获准，不保证其后目标创建成功；这两项用户体验/错误语义差异尚未解决，不能据自有窗口正例宣布产品修复。
+非自身不存在目标的 x64 无 UAC 负例：直接运行与候选 run16s 启动均返回 result=0、error=15；仅覆盖该路径，不代表所有 Shell 参数或错误均已验证。
+x86 同一负例直接运行与候选启动也均为 result=0、error=15。
+带 SEE_MASK_NOCLOSEPROCESS 的非自身不存在目标，双宽直接/候选均为 result=0、error=15、handle=0；它不验证成功创建时的真实句柄所有权。
+双宽自有正常 open + SEE_MASK_NOCLOSEPROCESS 对照，直接和候选均取得可等待句柄、子退出37并由调用者关闭；未验证 runas 成功的句柄语义。
+真实 Task Manager 候选对照：新建首进程 PID7572（父候选启动器 PID22624）后，两者均退出；没有捕获退出码或最终目标窗口，标准输出与错误输出为空。原有 PID18744 未操作；本次结果不计通过，原因待查。
+随后真实对照由候选启动器 PID15984 创建首进程 PID10120，出现新 Taskmgr PID18692（父 PID19032），但查询时已退出；未保留出生时模块、窗口或退出码，不能认定绘制成功或崩溃原因。原有 PID18744 未操作。
+候选原生跟踪另建首进程 PID25092 并加载候选 DLL；90 秒预算结束前未记录转交/退出或最终窗口，自有调试进程和该首进程随后均已结束。不据此认定 UAC 结果或产品故障原因。
+只读 objdump 显示本机 System32/Taskmgr.exe 的静态导入包含 SHELL32.dll；这排除“完全没有静态导入 Shell”的猜测，但尚未证明候选在该进程实际成功安装钩子。
+原生 EnumWindows 只读检查现有 PID18744：存在可见 TaskManagerWindow（HWND 0x30522，标题 Task Manager）；此前 Get-Process 返回 MainWindowHandle=0 不能证明没有可见窗口。未对该实例操作；是否导致新实例退出仍未证实。
+只读结构探针记录该窗口 TID7344、style=0x14cf0000、exstyle=0x100、GetDpiForWindow=144，客户区起点与外框顶边相同；子层包含可见 DesktopWindowContentBridge、DirectUIHWND 和隐藏 CoreWindow。探针未设置 DPI awareness，记录的几何不可直接当作物理像素；未发送消息或附着样式。
+DPI 感知上下文复测成功：同一 HWND 在144 DPI 下 outer=(-9,110,765,848)、clientorigin=(2,110)、client=(0,0,752,727)，可见 DesktopWindowContentBridge 充满客户区。仅为原生前状态，不验证样式或恢复。
+S1 原生外框的实际证明仅针对 Notepad 根 HWND，复用 Ntw16sWindowAttach；源码搜索没有独立 TaskManagerWindow 专项适配。不能因同样加载 XAML 或自有普通窗口附着而推断 Task Manager 已支持，仍需真实窗口验证。
+管理员跟踪已启动：高权限启动器 PID23828 创建 Taskmgr PID7392，加载候选 DLL 后该进程退出码0。日志没有记录窗口观察，原有 PID18744 同时存在；不能据退出0推断样式、窗口或复用原因。跟踪 PID25168 仍在其 90 秒预算内。
+管理员跟踪 PID25168 已结束，自有 Taskmgr PID7392 不再存在；记录器的汇总 exit 字段为 null，因此只使用调试事件中明确的目标退出码0。原有 PID18744 仍在，未操作。
+任务 scratch 跟踪器改为所有自有被跟踪进程退出后立即结束；自有 cmd 对照捕获两个进程均退出0，总耗时302ms，不再无条件等待90秒。管理员窗口效果尚未验证。
+新增仅记录被跟踪 PID 的原生窗口 CREATE/SHOW 观察；自有短时窗口 PID25856 捕获到可见 Win16OwnedTraceControl 的 CREATE 和 SHOW，进程退出0。此为探针正例，不是 Task Manager 窗口结果。
+管理员真实窗口跟踪的系统 UAC 返回取消，未创建 trace-window.exe 或日志；该次不计通过，未重复发起。
+该增量构建完成：Ninja x86/x64 均编译 uac-self-elevate，原有 launch/elevation-unit 各 1/1 通过；此单元测试不覆盖目标自行提权，不能替代负例或产品修复验证。
+补充实际转交证据：原生调试器观察首个 Taskmgr PID29760 已加载 O:/winnt/ntw16s64.dll，随后调用 ShellExecuteExW（verb=runas，目标为 System32/taskmgr.exe），并以 0x80004004 退出；其后继 PID28396 当时由 PID29760 创建。现有 CreateProcess 传播未覆盖此提权路径。提权后外框接入及恢复尚未验证，不据 DLL 加载声称样式生效。当前另有 PID18744，来源未核实，不操作。
+工具链 shellapi.h 对照：本次调用 fMask=1024 (0x400) 是 SEE_MASK_FLAG_NO_UI，不包含 SEE_MASK_NOCLOSEPROCESS (0x40) 或 SEE_MASK_NOASYNC (0x100)。这仅是此调用的观察，不代表其他调用可忽略句柄所有权。
+测试审计：tests/run16s-exe/elevation_unit.c 覆盖启动器自身 ERROR_ELEVATION_REQUIRED 的 UAC 重入参数，uac_driver.c 覆盖提权启动包及载荷；两者均未覆盖已注入的目标进程自行 ShellExecuteExW(runas) 重启，不能作为 Task Manager 传播通过的证据。PID18744 当前仍存在，路径和窗口查询受权限限制，来源仍未核实。
+自有 self-elevate 探针经发布版 run16s 启动并调用 ShellExecuteExW(runas)，实际提权子进程 PID18720 报告 elevated=1、dll 路径为空；负例证实此自提权路径未传播 DLL。该报告不验证窗口附着或绘制，产品修复及回归仍待完成。
+增强对照同时记录父子：父 PID7032 加载 O:/winnt/ntw16s64.dll，提权子 PID404 报告 elevated=1 且 DLL 路径为空。此结果证明该夹具的模块传播断点；不证明父钩子初始化或子窗口绘制。
+x86 同一自有对照：父 PID8328 加载 O:/winnt/ntw16s32.dll，提权子 PID9920 报告 elevated=1 且 DLL 路径为空；同样仅证明模块状态，未证明初始化或绘制。
+增强窗口探针 x64：父 PID12444 加载 O:/winnt/ntw16s64.dll，提权子 PID2652 报告 elevated=1、dll 为空、attached=0；为当前发布版的窗口附着负例，不代表实际绘制验证。
+父窗口附着增强对照：PID4828 的 DLL 路径为 O:/winnt/ntw16s64.dll，attached=1；同次启动器 PID27616 已退出但未产生子进程报告，未捕获退出码或 UAC 结果，子进程部分不计通过或失败。
+原生挂起创建成功 error0，进程立即回收；隔离桌面 run16s --wait taskmgr 返回0x80004004，未发现自有窗口，不能计通过；直接启动同一隔离桌面对照同样返回0x80004004且无自有窗口；目前不能归因于注入。现有PID26784仍存活，隔离桌面或Job及单实例交互的原因待查。用户退出既有实例后普通桌面标准启动产生Taskmgr PID26460（父4448已退出），TaskManagerWindow在144DPI显示；管理员只读模块检查只发现系统XAML，未发现ntw16s DLL，需定位中转及权限边界；本次实例普通权限无法结束，已核验身份后管理员关闭。复用原生调试器观察标准启动：run16s PID26676创建Taskmgr PID14784，后者加载O:/winnt/ntw16s64.dll并以0x80004004退出；最终Taskmgr PID21116的父进程为14784，管理员只读检查无ntw16s模块。仅记录观察，提升或创建API尚未确定。
+
+## M0 T23 S2 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | New |
+| Admission And Approval | 用户批准 S1记事本、S2 taskmgr、S3 explorer 的顺序，要求标准 run16s taskmgr 跑通。 |
+| Objective | 验证并实现 Task Manager 窗口 Win16 外框，保留应用交互和恢复。 |
+| Non-goals | 不处理内部控件或其他应用；不修改系统注册表、安全设置或已有进程。 |
+| Reference Baseline | S1 P6 e37da0db，四文件0.23.0.0已发布。 |
+| Candidate Proposal | docs/proposals/modern-desktop-window-style.md |
+| Files And ABI Surface | 先观察标准启动与窗口路径，优先复用现有renderer和启动机制；必要改动按证据记录。 |
+| Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT；M0、C17、GCC、Ninja、ccache。 |
+| Verification | 自有实例原生探针；分离启动、提权、进程身份、模块、附着、绘制、交互及恢复；失败和跳过分别记录。 |
+| Expected Markers | 标准命令下目标窗口实际绘制Win16外框并保持原应用交互，移除后尽力恢复。 |
+| Asset Needs | 不改原资源；二进制改变时同批四文件发布assets和O:/winnt并核对。 |
+| Reporting Requirements | 明确路径、权限、运行证据、测试边界、发布提交推送和未解决事项。 |
+| Stop Conditions | 不操作用户已有进程或修改安全策略；UAC等待按用户已授权方式处理。 |
+| Exit Criteria | 标准启动、真实窗口效果及交互验证、必要回归和按规范交付后等待验收。 |
+| Original Owner Request | run16s taskmgr 标准命令跑通，并按已确认顺序完成S2。 |
+| Similar-Issue Sweep | 对照Notepad中转、UWP宿主和既有提权路径，不据模块加载推断绘制成功。 |
 
 ## Historical delivery notes
 
@@ -1196,3 +1286,259 @@ P42：管理员probe11248、正式controller10284，已有Calculator21548/新Sca
 144DPI，真实MSAA菜单两轮Enable/Uncheck、两次驻留和最后Exit全部通过（退出0）。
 每次精确surface销毁；自有应用清理。start/stop各5条通知失败，未声称全桌面恢复。
 先前UAC阻塞已解除。此次只记录最终证据，P34产品不变；交付复核后进行最终收口审计。
+
+S2 实包验证 scratch：build/t23-package/s2-package1；使用 s2-clean2 同快照四文件与对应 clean-source，聚焦 demo-system-menu、startup-errors，保留其他任务改动。
+S2 干净构建 s2-clean2 通过双位宽 ABI，生成同快照四文件；s2-package1 聚焦实包 10/10 通过、skip 0（不是完整矩阵，未验证真实 Task Manager）。clean-source 双位宽 launch/self-elevate-unit 与 core/frames 各通过；首次运行因未设置 WIN16STYLE_CAPTURE_DIR 在测试框架入口失败，指定自有目录后重跑通过。真实窗口接入、绘制、恢复仍未证明，未发布。
+S2 clean-source 双位宽 Shell 句柄、无效目标及带句柄无效目标对照共 6/6 通过；该对照不验证 runas 成功句柄或 Task Manager。未发现残留的自有 self-elevate 探针进程。
+S2 当前只读枚举未发现 Taskmgr.exe，登记 s2-live1 为候选标准命令自有实例测试；不操作其他实例。
+S2 s2-live1 无旧 Task Manager 情况下候选 --wait taskmgr 新建 PID24412、启动器 PID26224；两分钟内未观察到后续实例或输出，未确认 UAC 结果，按身份核验后回收自有目标及启动器；不计通过。
+S2 登记 clean-source/build/t23-package/s2-core1：候选同快照双位宽 Quick 核心矩阵，后台运行。
+S2 同快照 Quick 矩阵 s2-core1：x86 5/6 通过，core/geometry 退出 0xc0000139（入口点未找到，原因未证实），脚本因此未运行 x64；矩阵未通过，需诊断，不得计为通过。
+S2 s2-geometry-fix：core/geometry 链接的 GetWindowSubclass 在系统默认 comctl32 v5 不按名称导出；复用现有 control_extensions.rc v6 清单，双位宽增量验证登记于 s2-geometry-fix。
+S2 s2-geometry-fix：复用 v6 清单后 geometry 双位宽各 1/1 通过；原 s2-core1 仍为失败记录。登记 s2-quick2 执行修正后的双位宽 Quick 矩阵。
+S2 s2-quick2：修正测试清单后 Quick 矩阵通过，x86 6/6、x64 8/8，skip 0；这是增量工作树验证，不替代最终同快照干净构建。
+S2 登记 s2-clean3：纳入 geometry 测试清单修复的同快照双位宽干净构建，后台运行。
+S2 s2-clean3 同快照双位宽干净构建通过；登记 s2-package2 对该候选四文件做实包启动、菜单与传播聚焦回归。
+S2 s2-package2：s2-clean3 同批四文件聚焦实包 10/10 通过、skip 0；physical input 未测，完整矩阵和真实 Task Manager 未完成，不视为交付通过。
+S2 登记 s2-clean3-core：对 s2-clean3 干净快照直接执行双位宽 Quick 测试，不重新配置或重建候选。
+S2 s2-clean3-core：干净快照 Quick x86 6/6、x64 8/8 通过；补充 self-elevate-unit、frames 双宽及 shell 六项共 10/10 通过。均不代表实际 Task Manager 提权、绘制或恢复通过。
+S2 登记 s2-package3：干净候选普通双宽传播及系统菜单隔离实包回归。
+S2 s2-package3 未通过：x86/x64 global-system-menu 启动全局控制器时 cannot create tray icon (2147500037)，隔离桌面无托盘结果未确认；普通传播用例未执行，不计通过。登记 s2-package4 单独测试普通传播。
+S2 s2-package4：普通传播 x86/x64 和必需实包测试共 10/10 通过、skip 0；不覆盖 self-runas 真正提权或 Task Manager。s2-package3 全局托盘错误保留待排查。
+S2 登记 s2-tray-baseline：私有桌面使用已发布 O:/winnt/run16s.exe 与自有目标，对照全局系统菜单托盘启动；不使用真实桌面。
+S2 s2-tray-baseline：同一私有桌面测试用 O:/winnt 已发布启动器也得到 cannot create tray icon (2147500037)、target_exit=99；证明候选与发布版在该测试条件下均失败，不证明具体原因或真实桌面托盘回归。
+S2 会话检查：query user 显示会话 1 为 Disc；s2-live1 的两个自有 PID 均不存在。本次无法观察可交互 UAC 与窗口；无证据确认此前超时由会话断开造成。
+S2 s2-clean3 四文件 SHA 与 s2-package2 实包记录一致；check_package 原始资源表和来源声明校验通过。Windows 会话仍 Disc，真实目标等待会话恢复。
+S2 会话已恢复 Active，未发现现存 Taskmgr；登记 s2-live2：干净候选 run16s --wait taskmgr 自有实例及有限等待。
+S2 s2-live2：Windows 会话 Active，无既有 Taskmgr；候选启动器 PID25684 创建 Taskmgr PID352。约一分钟后仍无后继，稍后两者均已退出，无 stdout/stderr，未捕获退出码或 UAC 结果；未观测目标窗口，不能计通过。
+S2 用户反馈 s2-live2 未看到 UAC；登记 s2-trace2，复用现有自有原生跟踪器跟踪 s2-clean3 进程创建、Shell 请求及退出，不操作现有进程。
+S2 s2-trace2（用户反馈上次未见 UAC）：候选启动器 PID21992 创建 Taskmgr PID11252，加载 s2-clean3 ntw16s64.dll；90 秒内仅观察到隐藏 OleMainThreadWndClass，未捕获 ShellExecuteExW、主窗口或最终提权进程；探针结束后两个自有 PID 已不存在。跟踪器使用调试断点，不能排除跟踪影响，也不证明初始化或绘制。
+S2 登记 s2-live3：无调试断点的自有候选启动和只读线程等待状态对照。
+S2 s2-live3 无调试断点：候选 --wait 启动器 PID26200 创建 Taskmgr PID7572，90 秒内启动器未退出且没有 stdout/stderr，线程采样显示 UserRequest/EventPairLow 等待；无法据此确定具体等待对象或是否进入 Shell。超时后核验身份并清理自有进程。
+S2 登记 s2-native-control：相同交互桌面无候选 DLL 的 Taskmgr 启动对照；仅处理自有实例。
+S2 s2-native-control：直接启动 Taskmgr 首 PID25844 创建后继 PID20616；后继出现 TaskManagerWindow，但 visible=0。对照发现 Start-Process -WindowStyle Hidden 可影响目标显示，因此 s2-live2/3 无可见窗口不构成样式失败证据。后继按身份关闭。登记 s2-visible1 以正常窗口显示方式重测。
+S2 s2-visible1：正常显示候选启动后 TaskManagerWindow PID3448 HWND0x210684 可见，用户截图证实滚动条已换肤而标题仍原生。只读管理员模块探针确认加载 s2-clean3/candidate/ntw16s64.dll SHA256=ebe2e38aec3a4cb89c7909d08e472a2a8b595ea02015fba44445ab12d1f21e97。144 DPI 客户区从外框顶部开始并含 XAML bridge；尚不能判断顶层附着失败还是应用覆盖绘制。用户正在观察该窗口，保留不关闭。
+S2 s2-visible1 附着查询探针仅对自有 PID3448 的窗口线程查询 Ntw16sWindowAttached，临时消息和属性在结束时清理，不调用附着或移除。
+S2 s2-visible1 顶层附着只读探针的管理员启动返回取消（1223），未创建探针或查询结果；不据此判断附着状态。用户反馈前次 UAC 未见，不能推断本次是否显示。
+S2 用户反馈附着探针 UAC 未看到。静态审计：本机 Taskmgr.exe 同时导入 CreateWindowExW 和 CreateWindowInBand；后者调用点 RVA 0x134d40 传入 style=0x00cf0000，与可见目标的创建样式部分一致。当前窗口创建拦截只注册 CreateWindowExA/W，临时 CBT scope 又由这些调用包围；CreateWindowInBand 绕过是强相关假设，尚未运行时证明该调用创建 TaskManagerWindow，也未排除附着后覆盖。
+S2 s2-visible1 静态反汇编：TaskManagerWindow 类名地址存入栈变量，随后原样作为 CreateWindowInBand 第二参数，style=0x00cf0000；与实际顶层类和样式一致。自有纯 C band=0 夹具经 s2-clean3 run16s 启动创建成功、候选 DLL 已加载、Ntw16sWindowAttached=0；这是创建入口遗漏的运行时负例，但不单独证明 Task Manager 顶层运行时附着状态。
+S2 登记 s2-band-build1：CreateWindowInBand 复用现有创建期作用域的双位宽增量构建及自有夹具；保留此前候选。
+S2 s2-band-build1：可选 CreateWindowInBand 复用现有创建作用域，x86/x64 构建与 ABI 通过；自有 band=0 原生/候选夹具双宽 2/2 通过，旧 s2-clean3 x64 负例 attached=0 被测试检出。来源摘要校验通过；尚未验证真实 Task Manager 外框、交互或恢复，不能宣布修复完成。
+S2 登记 s2-band-build2：band 自有窗口增加移除后未附着的双位宽验证。
+S2 s2-band-build2：双宽自有 band 窗口创建、附着、移除和移除后状态测试均通过；登记 s2-band-clean1 作同快照双位宽干净构建。
+S2 s2-band-clean1 双位宽干净构建通过；登记 s2-band-package1 进行同批实包启动、传播、菜单回归。
+S2 为避免任务管理器单实例复用，核验 PID3448、父 PID24940、出生时间及名称后关闭本任务上次创建的目标；登记 s2-band-live1 测试新干净候选。
+S2 s2-band-package1：同批四文件聚焦 12/12 通过、skip 0；干净快照 band x86/x64 创建/附着/移除均通过。s2-band-live1 新真实实例首进程 PID25440 等待超过两分钟，未出现后继或输出；按身份核验清理，UAC 状态未确认，真实窗口未验证。
+S2 登记 s2-band-visual2：私有桌面 band 自绘客户区夹具，验证可见状态的客户区偏移及移除恢复；不代表真实应用绘制。
+S2 用户反馈 s2-band-live1 未见 UAC。s2-band-visual2：私有桌面双位宽真实 CreateWindowInBand 自绘客户区窗口，原生 top=0、样式后 top>0、移除后 top=0 均通过；这验证几何恢复，不证明像素或真实 Task Manager 通过。
+S2 登记 s2-band-clean2：包含私有桌面几何与恢复夹具的同快照干净构建，后台运行。
+S2 s2-band-clean2 双位宽干净构建通过；登记 s2-band-package2 同快照实包回归及 s2-band-clean2-tests 原生测试。
+S2 s2-band-clean2：干净快照 band 创建/附着/几何恢复 x86/x64 通过，Quick x86 6/6、x64 8/8 通过；s2-band-package2 同批四文件聚焦 12/12 通过、skip 0。仍未验证真实 Task Manager 或发布。
+S2 登记 s2-band-errors：双位宽 band 无效窗口类原生/候选错误码对照。
+S2 s2-band-errors：无效窗口类的 native 与 styled 对照 x86/x64 均返回 NULL、ERROR_CANNOT_FIND_WND_CLASS=1407；创建、附着、移除和几何恢复的双宽夹具通过。
+S2 登记 s2-band-live2：无已有 Taskmgr，使用 s2-band-clean2 正常显示标准命令 run16s taskmgr；只观测和回收自有目标。
+S2 s2-band-live2：标准 run16s taskmgr 创建首进程 PID19308，超过 110 秒无后继窗口和日志，UAC 状态尚未确认；核验身份清理自有首进程，不计真实通过。
+S2 登记 s2-band-print：私有桌面自有 band 窗口 WM_PRINT 非客户区像素验证及恢复。
+S2 s2-band-print：私有桌面 x86/x64 band 窗口 WM_PRINT 非客户区均检测到黑、白、灰像素并通过附着/几何移除及错误码测试；该 WM_PRINT 证据不替代正常屏幕合成像素或真实 Task Manager。
+S2 s2-band-live2 后只读桌面诊断：OpenInputDesktop 返回 Default，前台 HWND 非零；当前探针令牌为 Medium，Administrators 为 deny-only，当前无 consent.exe。该状态是事后采样，不能反推先前等待时是否出现 UAC。
+S2 登记 s2-uac-observe1：实时只读观察标准候选启动时 Taskmgr/consent 进程及输入桌面；只清理自有目标。
+S2 s2-uac-observe1：实时看到 consent.exe PID26348，OpenInputDesktop 返回5；用户确认“是”后，目标 Taskmgr PID8552 HWND0x10b0a74 正常可见，用户截图可见 Win16 标题，但标题下方出现疑似重叠/透明残影；144 DPI 只读几何 outer=(0,92,774,830)、clientorigin=(6,127)，XAML bridge=(6,127,768,824)。该结果证明可见外框，不证明交互、恢复或残影修复。
+S2 s2-uac-observe1：尝试普通权限 PrintWindow 捕获真实 PID8552 的目标窗口返回 error=5，未生成截图；无法用本次捕获判断用户看到的标题下方残影是否持续。未操作或关闭目标。
+S2 s2-uac-observe1 进一步截图：普通权限 PrintWindow 返回5；管理员截图探针启动返回取消（1223），没有截图结果，不能判断残影是否持续或推断 UAC 是否显示。用户截图和真实窗口几何仍是当前证据。
+S2 styled 真实窗口 DWM 查询：NCRENDERING_ENABLED=0，USE_IMMERSIVE_DARK_MODE=1，SYSTEMBACKDROP_TYPE=2；原因未判定。为原生对照按 PID8552、父12884和出生时间核验后关闭自有样式实例。登记 s2-dwm-native。
+S2 s2-dwm-native：原生真实窗口 DWM NCRENDERING_ENABLED=1、dark=1、SYSTEMBACKDROP_TYPE=2；候选窗口分别为0、1、2。背景类型两者相同，不能认定是残影原因；自有原生对照 PID8328 经身份核验关闭。
+S2 登记 s2-screen-native：正常桌面自有原生 Task Manager 前台屏幕像素采样，只截取窗口矩形。
+S2 s2-screen-native：自有原生 Task Manager 前台屏幕截图 native.bmp，顶部应用标题区域正常深色不透出其他程序；以身份核验后关闭对照目标。登记 s2-screen-styled 做同机候选对照。
+S2 s2-screen-styled：同机候选标准启动时实时观察 Taskmgr PID23660 和 consent PID23424，普通进程访问输入桌面 error5；约两分钟后两者消失、桌面恢复 Default，未观察到目标窗口，UAC 结果未捕获，未生成候选截图。
+S2 登记 s2-screen-auto：同批候选自有目标前台原生 BitBlt 截图，按 PID 和窗口类核验，不捕获其他区域。
+S2 s2-screen-auto：候选首进程 PID23960 和 consent PID9660 出现，随后约两分钟内均消失；未发现候选目标，未截图，UAC 结果未捕获。前台窗口检查为零，不能从中推断残影。
+S2 s2-screen-auto/watch：会话恢复后使用已登记自有窗口截图探针与 110 秒受限监控；只对本次启动后的前台 TaskManagerWindow 截取。
+S2 s2-screen-auto/watch：用户恢复后自有候选最终 Taskmgr PID27148 出现，前台检测后 BitBlt 误采到非目标画面，已立即删除该截图；随后 PID27148 已退出。Application 日志查询未发现该时段 Taskmgr/ntw16s 崩溃记录；未捕获退出码，不能判断退出原因，也未验证残影。
+S2 登记 s2-screen-auto2：截图前等待稳定并检查前后台和标题颜色，只在确认目标图像时写出文件。
+S2 s2-screen-auto2：自有首进程 PID7500 与 consent 出现，110 秒内无后继；观察脚本超时写结果时因数字键 JSON 序列化失败，现已修正并将自有目标清理提前；复查首进程和启动器均不存在。本次无截图，UAC 结果未捕获。
+S2 截图判定阈值离线负例：原生截图顶部蓝色像素334，用户提供样式截图17535；原阈值100错误接受原生，已改为窗口宽度3倍（原生阈值2322，用户截图阈值2316），并重建探针。该判定仅筛选，不证明截图无其他遮挡。
+S2 登记 s2-band-clean3：纳入 band 像素、错误路径测试后的双位宽同快照干净构建，后台运行。
+S2 s2-band-clean3 双位宽同快照干净构建通过，登记 s2-band-package3 及 s2-band-clean3-tests 执行实际包与核心回归。
+S2 s2-band-clean3/tests：最新快照双位宽 band 创建、像素、恢复、失败路径通过；Quick x86 6/6、x64 8/8 通过；s2-band-package3 同批四文件聚焦 12/12 通过、skip 0。真实 Task Manager 残影和恢复未完成，尚未发布。
+S2 用户回复 retry；登记 s2-screen-auto3，使用最新干净候选和稳定/像素校验的自有窗口截图探针。
+S2 用户提供同一 Task Manager 标题时有时无及白块截图；前台目标 PID23388 的屏幕像素探针在标题应有区域多点读到 RGB(32,32,32)，和 Win16 蓝色标题不一致，复现不可见状态。随后目标退出，单次重绘探针身份检查未通过并未执行重绘；未捕获退出码，不能推断原因。
+S2 登记 s2-repaint1：准备自有目标非客户区重绘前后像素统计探针，不保存屏幕图像。
+S2 s2-repaint1：重绘前/300ms/1300ms 标题蓝色像素统计探针已编译；错误 PID 负例返回2，未触碰其他窗口。尚未在真实目标运行；交互会话长时间无输入，未重新弹出 UAC。
+S2 用户要求 retry；登记 s2-repaint2，标准候选启动并在自有目标前台时自动做一次重绘像素对照，110秒上限。
+S2 用户补充稳定复现：点击 hamburger 后 Win16 标题消失并变黑。登记 s2-repaint3，使用单次 BitBlt 批量像素读取的快速重绘探针对自有目标对照。
+S2 用户补充：点击 hamburger 后标题消失；失焦或最大化可恢复绘制，但随后更正贴边不能恢复。上述为用户观察，自动对照待完成。
+S2 用户更正：最大化后原本可见的标题消失、还原也不恢复；贴边也不能恢复，不再将这些视作恢复手段。
+S2 s2-repaint3 管理员重绘对照：重绘调用成功，前/300ms/1300ms 蓝色像素均8693；该次标题本来可见，不覆盖消失状态。
+S2 s2-repaint3：管理员重绘在标题可见状态前后均8693蓝像素，未覆盖汉堡触发；新增自有目标坐标和PID核验、恢复鼠标位置的一次点击探针，错误PID拒绝。
+S2 s2-repaint3 自动点击：目标前台时标题蓝像素8693，点击 hamburger 后95；RedrawWindow 成功后300ms与1300ms均8693。此证明一次重绘可恢复至少1.3秒，但触发消息尚未定位。
+S2 登记 s2-repaint-prototype1：自有目标窗口线程临时探针仅在顶层 WM_ERASEBKGND 后投递 WM_NCPAINT，验证异步重绘是否能避免汉堡后覆盖；探针不作为产品实现。
+S2 s2-repaint-prototype1：WM_ERASEBKGND 后直接 PostMessage(WM_NCPAINT) 原型未令标题在600ms内恢复（clicked=95），主动 RedrawWindow 后恢复；不能把该原型作为修复。
+S2 登记 s2-repaint-prototype2：自有窗口短时延迟合并重绘原型；仅验证，不引入产品或轮询。
+S2 s2-repaint-prototype2：基于顶层 WM_ERASEBKGND 的异步合并重绘仍未在600ms内恢复（clicked=95）；手动重绘后恢复。后续失焦使最后一帧不可比较，不能将该原型作为修复。登记 s2-repaint-prototype3 追踪自定义消息是否到达。
+S2 s2-repaint-prototype3：顶层 WM_ERASEBKGND 后注册消息合并原型未在600ms内恢复，且记录未见注册消息送达；主动重绘仍恢复。尚未采用。登记 s2-repaint-prototype4 检验擦除返回后的同步重绘。
+S2 s2-repaint-prototype4 对照无效：驱动仍安装 WH_CALLWNDPROC，但回调读取 CWPRETSTRUCT，导致未获得消息；像素仍仅证明手动重绘可恢复。登记 s2-repaint-prototype5 纠正钩子类型。
+S2 s2-repaint-prototype5：纠正 WH_CALLWNDPROCRET 后，目标 WM_ERASEBKGND 返回后同步 RedrawWindow 原型使点击前、点击后600ms和重绘后1300ms蓝像素均8693；真实目标一次正例，不证明全部XAML或最大化。
+S2 登记 s2-xaml-repaint1：将验证过的擦除后同步重绘限定于带 XAML composition bridge 的顶层窗口，增加自有宿主和重入边界测试；尚待双宽及真实目标验证。
+S2 登记 s2-xaml-repaint2：XAML 宿主擦除后同步重绘的双位宽正例、普通窗口负例和重入边界；仅为增量测试，真实应用与菜单回归未完成。
+S2 s2-xaml-repaint2：双宽宿主正例、无宿主普通窗口负例及重入界限通过；为新候选实测核验并关闭自有 PID19516。登记 s2-xaml-candidate1 为增量实测包。
+S2 登记 s2-xaml-live1：新增量候选标准 run16s taskmgr 真实窗口多次操作对照。
+S2 用户确认 hamburger 和最大化标题保持，但标题下有残影且缩放时闪烁；登记 s2-backdrop1，仅对自有实例暂时更改单窗口 DWM 背景属性并立即恢复，检查残影关联。
+S2 s2-backdrop1：真实候选窗口的 SYSTEMBACKDROP_TYPE 由2临时切为1并成功恢复2；前后原生屏幕截图中白块仍在且关闭背景后部分区域透出更多文字，故不采用背景属性调整。用户另报告拖动缩放时标题闪烁，须查重复绘制。
+S2 登记 s2-ncpolicy1：对自有候选窗口临时启用 DWM 非客户区渲染后截图，并恢复本项目原先显式禁用状态；只作机制对照，不作为产品方案。
+S2 s2-ncpolicy1：自有目标临时启用 DWM 非客户区渲染后白块仍存在，恢复显式禁用返回成功；标题形状变化是预期对照，不能把白块归因于 DWM NC 开关。
+S2 s2-ncpolicy1 白块区域只读 WindowFromPoint：左侧命中 TaskManagerWindow，右侧命中 GlassWindow；不能认定为普通编辑框。登记 s2-resize-trace1，针对自有目标一次放大还原统计消息。
+S2 s2-resize-trace1：自有真实目标一次扩大并还原，标题像素保持且尺寸已恢复；顶层窗口在两次尺寸变化期间产生多次 WM_ERASEBKGND / WM_PAINT / WM_NCPAINT（日志保留），支持同步强制全窗重绘可能引入缩放重复绘制，但此对照不等于真实拖拽闪烁的视频证据。
+S2 登记 s2-xaml-coalesce1：按宿主背景擦除合并30ms非客户区重绘，移除/销毁取消；双宽夹具验证突发擦除、普通窗口负例与重入，真实窗口和缩放仍待测。
+S2 登记 s2-xaml-coalesce2：补充待处理重绘时移除窗口样式的计时器清理验证。
+S2 s2-xaml-coalesce2 双宽通过：五次擦除合并、普通窗口负例及移除计时器清理；为实测经身份核验关闭自有 PID16528，登记 s2-coalesce-candidate1。
+S2 登记 s2-coalesce-live1：标准候选启动，核对汉堡菜单、最大化和真实缩放绘制。
+S2 s2-coalesce-live1：候选首进程 PID28896 和 consent PID13748 出现，约两分钟后均消失，未捕获 UAC 结果或最终目标；重绘合并真实窗口回归未运行，用户此前报告白块及缩放闪烁仍未解决。
+S2 用户要求重试合并重绘候选；登记 s2-coalesce-live2，自动观察自有目标与标题截图，110秒上限。
+S2 s2-coalesce-live2：用户要求 retry 后，合并重绘候选最终 Taskmgr PID22652、父21732 可见，原生前台采样证实 Win16 标题存在，但标题下方能看到其他窗口内容透出，残影仍复现；截图含非目标背景内容，已删除原图。汉堡/最大化/缩放尚未完整回归。
+S2 登记 s2-coalesce-resize：复用自有目标 PID22652 的单次扩大还原和只读附着查询；根窗口已附着，查询到的 GlassWindow、FilterControlGlassWindow 和 composition bridge 未附着。顶层非客户区重绘 4 次，原同步候选同类测试为 20 次；不代表连续拖动无闪烁。
+S2 登记 s2-client-refresh：对同一自有目标进行一次完整客户区重绘前后有界像素差异采样，不保存屏幕图像；用于检验残影是否只是未失效的客户区。
+S2 s2-client-refresh：首次未在前台，未执行；第二次自有目标前台，含子窗口的完整 RedrawWindow 返回成功，500ms 后标题下方采样区域 50310 像素中仅 20 个变化。该次对照不支持简单的失效区域遗漏，亦不能独立证明透明成因。
+S2 登记 s2-client-occlusion：在自有目标后短暂放置自有纯色窗口，采样目标标题下方纯色像素数量后立即销毁；不保存其他窗口图像，以验证是否存在底层画面透出。
+S2 s2-client-occlusion：首次目标区域纯色采样为零，但没有背景可见的正对照，结论不充分；补正对照的第二次因目标未在前台而未执行，不据此确认或排除透明。
+S2 s2-client-occlusion 正对照重试：目标标题下方纯色像素前后均为0，相邻正对照区域3900像素均呈纯色，目标保持前台并自动销毁背景窗口。该次不支持标题下方实时透出紧邻其后的窗口；旧画面残留与应用合成内容仍待定位。
+S2 s2-client-occlusion 补测采样区域平均 RGB 前后均为(36,37,37)，正对照3900纯色像素；不支持整条采样区域存在可观的即时颜色透出。该汇总不能排除局部透明或合成滤镜，未解决残影。
+S2 登记 s2-bridge-resize：仅对自有任务管理器的 XAML composition bridge 临时改变宽度一像素并立即还原，比较标题下方的采样变化；验证合成表面尺寸变化能否刷新残影，不保存截图。
+S2 s2-bridge-resize：改变并恢复调用均成功，最终尺寸与原值相同；但结束时目标不在前台，像素对照无效，不能据此判断残影。
+S2 登记 s2-coalesce-hamburger：自有候选目标前台时复用单击探针，采样单击后600ms的标题颜色，随后恢复鼠标并进行手动重绘对照；不操作其他目标。
+S2 s2-coalesce-hamburger：第一轮等待前台超时，未点击；第二轮系统提权等待超过一分钟后返回取消，未创建单击探针日志，不计通过或失败。
+S2 文档和源码审计：frame_message.c 处理 WM_NCCALCSIZE 调用原过程后不保留其返回值；Microsoft 文档说明 TRUE 参数返回0会保留并左上对齐旧客户区。是否造成真实残影尚无证据。登记 s2-nccalc-fixture，以自有窗口对照重算时返回标志与旧像素保留，不修改目标应用。
+S2 s2-nccalc-fixture：私有桌面双宽原生窗口同样扩大20像素时，返回0仅使新增20像素区域失效；返回 WVR_REDRAW 使304像素客户区全宽失效。首次 x86 编译因使用错误目录失败，改用项目已配置的 x86 GCC 后通过。该夹具证明返回值影响无效区域，不证明 Task Manager 的原始返回值或残影原因。
+S2 登记 s2-nccalc-return：对模拟 XAML 宿主检查应用要求 WVR_REDRAW 时安装外框前后返回值，先复现再决定最小修正；不将此夹具结果等同真实 Task Manager。
+S2 s2-nccalc-return x64 增量负例证实原生返回 WVR_REDRAW、安装外框后返回0。候选仅传递原过程明确请求的 WVR_REDRAW 位；VALIDRECTS 使用原几何，仍不传递，避免错误复用。登记 s2-nccalc-fix 双宽增量回归；真实应用返回值和残影关联未证实。
+S2 s2-nccalc-fix 双宽外框回归和 ABI 检查通过；登记 s2-nccalc-fix2 补测水平、垂直和 VALIDRECTS。s2-nccalc-fix2 双宽外框回归和 ABI 检查通过，均为自有夹具，尚未验证真实目标或发布。
+S2 登记 s2-nccalc-candidate：此前候选启动器/demo 与增量新双宽 DLL 组成的开发验证包，四文件摘要已核对；不是干净同快照交付包，未发布。
+S2 登记 s2-nccalc-live：对经身份核验的自有旧候选目标关闭后，以管理员探针启动增量候选并核验真实外框和汉堡操作；此为提升后运行时对照，不替代标准命令的完整交付验证。
+S2 登记 s2-nccalc-private：针对增量候选运行私有桌面 demo 系统菜单及 x86/x64 普通传播聚焦回归；不计作正式同批交付测试。
+S2 s2-nccalc-private：demo 系统菜单及普通传播 x86/x64 三项均退出0；为增量包聚焦回归，不覆盖完整矩阵。s2-nccalc-live 同一次系统提权等待超过一分钟后返回取消，管理员 worker 未启动；旧测试实例未由该 worker 关闭，真实目标和残影不计通过。
+S2 s2-nccalc-live 用户重试后，已关闭旧目标；提升后启动器 PID31112 创建真实 Taskmgr PID1924，加载增量候选 ntw16s64.dll SHA256=75149e3616be970e4de69139d1b562f458321096a171b7070ee8943b82ace259。单击探针命中启动器的可见 ConsoleWindowClass 而非目标，返回5，未点击；标题、残影和交互不计通过。登记 s2-nccalc-unobscured，临时隐藏该测试自有控制台并恢复。
+S2 s2-nccalc-unobscured：临时隐藏自有启动器控制台后，目标前台且命中 PID1924；真实单击前和600ms后标题蓝色像素均8693，手动重绘后与1秒后亦8693，控制台已恢复。证明本次候选单次汉堡操作标题保持，不证明连续缩放或残影修复。
+S2 s2-timer-queued x64 负例：WM_TIMER 已排队后移除样式，应用窗口过程接收到内部计时器，原测试失败；须在交付前消除消息泄漏并考虑排队回调与 DLL 卸载生命周期。
+S2 登记 s2-nccalc-visible：只截取当前自有候选 Taskmgr 前台窗口以检查残影，临时隐藏并恢复自有控制台；如包含非目标内容，提取结论后删除截图。
+S2 s2-nccalc-visible 截图探针返回2，目标不在前台，未产生截图；不据此判断残影。登记 s2-timer-isolated：将延迟重绘计时器隔离到内部消息窗口，验证排队后移除及双位宽回归；仍需真实应用测试。
+S2 s2-timer-isolated 双宽外框和 ABI 回归通过；登记 s2-timer-destroy 并验证排队消息后移除/销毁根窗口，内部消息窗口均销毁、应用过程未收到该计时器；双宽测试与 ABI 通过。该改动尚未在真实 Task Manager 测试或发布。
+S2 登记 s2-timer-unload：自有进程直接加载相应位宽 DLL，制造已排队计时器后移除样式并卸载 DLL，再派发队列，验证无过期回调；不涉及远程进程或物理卸载产品注入。
+S2 s2-timer-unload 私有桌面双宽原生测试均返回0：样式移除后内部消息窗口已销毁，DLL 实际卸载，再派发队列未崩溃且根窗口未收到内部计时器；只覆盖本地直接加载接口，不代表远程注入的物理卸载。
+S2 登记 s2-timer-candidate 和 s2-timer-live：增量测试包包含新计时器隔离 DLL；真实管理员目标重测将核验新 DLL 摘要、前台与单次汉堡操作，不作为最终同批交付。
+S2 s2-timer-live：管理员启动器 PID25188 创建自有 Taskmgr PID26904，实际加载候选 ntw16s64.dll SHA256=727429b4ded0485a2bb85428be3968164f139bdf1f6c5c3f398413cf2159d808。临时隐藏自有启动器控制台后，单击前、后600ms、主动重绘后及1秒后标题蓝像素均8693；控制台已恢复。此为单次汉堡正例，不证明残影、连续缩放或普通权限启动路径。
+S2 登记 s2-timer-visible：对上述自有目标前台截图核查残影，排除并恢复测试控制台遮挡；检查后删除包含非目标内容的图像。
+S2 s2-timer-visible：前台截图标题蓝像素17487，标题下方仍显示非目标界面片段；确认 WVR 标志透传及计时器隔离未单独修复残影。截图含非目标内容已删除。登记 s2-nocopy：自有目标上一次不移动不缩放的 SWP_FRAMECHANGED|SWP_NOCOPYBITS 对照，前后临时截图核查并删除。
+S2 s2-nocopy 管理员启动在等待后返回取消，worker 未启动，未生成截图；对照未执行。登记 s2-timer-topology：仅读取现有自有目标的 DPI 感知窗口层级，以定位残影与客户区边界。
+S2 s2-timer-topology：144 DPI 时顶层 outer=(28,150,802,877)、client=(34,185,796,871)，可见主 composition bridge 填满客户区；GlassWindow 与内层 bridge 到屏幕 x=517。对照 s2-timer-visible 截图中右侧残图片区约为窗口相对 x=492..770，与该内层右边界接近；窗口位置已变化，此为跨时刻近似比较，不能单独认定残影由该边界导致。
+S2 s2-nocopy 当前权限尝试：前后截图采集成功，但 SetWindowPos 返回 FALSE，未捕获错误码；不计重算对照，不能断言失败原因。两张临时截图已删除。
+S2 登记 s2-residue-hit：只读采样自有目标标题下方多点的实际屏幕窗口和进程，检查外部置顶窗口遮挡；仅当前台身份匹配时使用结果。
+S2 s2-residue-hit：目标前台且截图再次显示同一残图片段；在标题下方45/55/70/85像素高度，多点命中均为目标 PID26904 的 TaskManagerWindow 或 GlassWindow。与前次窗口不同屏幕位置的截图相比，残图片段仍处于相同窗口相对位置，支持内容被保留而非简单屏幕位置残留；WindowFromPoint 无法排除透明命中穿透，因而不作为完整根因证明。含其他界面片段的临时截图已删除。
+S2 s2-nocopy 当前权限补测：截图脚本因目标不在前台停止；独立只记录返回值的探针对自有 PID26904 取得 SetWindowPos=FALSE、GetLastError=5。该权限下未执行重算，真实 SWP_NOCOPYBITS 效果仍未验证。
+S2 s2-nocopy 管理员重试：自有目标 SetWindowPos(SWP_FRAMECHANGED|SWP_NOCOPYBITS) 返回 TRUE；首次后截图因前台变化失败，随后临时隐藏测试控制台、确认目标前台补拍，残图片段仍在。前后截图均已删除；该方案未解决真实问题，不引入产品。
+S2 登记 s2-bridge-visibility：在自有目标中短暂隐藏再显示原本可见的主 composition bridge，核验句柄、进程和恢复状态，以区分可见性重建与普通客户区重绘；此为诊断，不作为产品方案。
+S2 s2-bridge-visibility：主 bridge 短暂隐藏并恢复可见，前后目标均为前台且标题蓝像素17487；残图片段仍在。前后临时截图已删除；不采用该动作作为修复。
+S2 登记 s2-print-client：对自有目标使用真实 PrintWindow 客户区采样，与正常桌面截图对照；区分应用绘制与屏幕合成，失败不计结论，含非目标内容图片核验后删除。
+S2 s2-print-client：管理员 PrintWindow(PW_CLIENTONLY|PW_RENDERFULLCONTENT) 返回 TRUE、客户区762×686，结果顶部同样含相同非目标界面残图片段；因此该现象也出现在目标窗口打印结果，不只是截图时可见置顶窗口遮挡。PrintWindow 可使用合成内容，不能仅凭本次结果断言具体渲染层。含非目标内容图像已删除。
+S2 登记 s2-frame-toggle：对自有 Taskmgr 窗口在其 UI 线程临时移除 Win16 外框、采样，再立即恢复附着；记录移除/恢复返回值和窗口身份，比较残影并验证恢复。不会操作其他实例或持久修改系统。
+S2 s2-frame-toggle：真实 PID26904 上 Ntw16sWindowRemove 和再次 Ntw16sWindowAttach 均成功，状态由附着→未附着→附着；PrintWindow 显示移除及再附着后原有非目标界面残影消失。随后自有控制台遮挡排除、目标前台 BitBlt 也未显示该残影，但应用图标区域出现重复，不能计视觉完全通过。截图已删除。该结果支持附着时机或状态转换相关假设，尚不能确定具体原因或支持自动重附作为修复。
+S2 创建时机源码对照：隐藏的普通目标在创建期安装时 pending_frame=TRUE，首次 WM_SHOWWINDOW 才激活外框；已经显示的再次附着则立即激活。实际 Task Manager 的首次 WM_SHOWWINDOW、XAML bridge 创建和首次合成相对顺序尚未实测，不能把此差异直接认定为根因。
+S2 登记 s2-creation-timeline：只对新建自有 Taskmgr 记录 WinEvent 窗口创建/显示事件与候选启动顺序；事件只反映可访问窗口事件，不等同内部 WM_SHOWWINDOW 或首次合成。
+S2 s2-creation-timeline：管理员启动自有 Taskmgr PID31728，记录根窗口 CREATE=140ms、bridge CREATE=281–375ms、根 SHOW=875ms、bridge SHOW=1437–1468ms；时间为事件回调相对启动的观察值。说明桥接窗口显示晚于根显示，不等同实际 WM_SHOWWINDOW 或首次合成时间。
+S2 登记 s2-late-frame-prototype：自有普通 Taskmgr 先按原生方式显示，等直接 composition bridge 的 SHOW 事件后仅在其 UI 线程附着候选 Win16 外框；对照首屏残影、交互和恢复，不改产品启动行为。
+S2 s2-late-frame-prototype：自有原生启动 PID7864 在直接 bridge SHOW 后由目标 UI 线程附着，成功加载 s2-timer-candidate ntw16s64.dll SHA256=727429b4ded0485a2bb85428be3968164f139bdf1f6c5c3f398413cf2159d808。PrintWindow 与真实前台屏幕采样均未见先前非目标界面残影，标题蓝像素17487；客户区两侧仍有细白条。汉堡单击前/后蓝像素均8693；一次扩大/恢复蓝像素8693/9233/8693；一次最大化/恢复状态正常、蓝像素8693/16979/8693。截图已清理。此仅为晚期附着原型，未覆盖标准 run16s 启动、连续拖拽和所有 WinUI 应用。
+S2 登记 s2-defer-build：候选在隐藏创建阶段保留原生外框消息；首次显示时若已存在 XAML bridge，等待直接 bridge 可见再激活，最长2秒后回退激活。此代码尚未验证，先做双宽回归和真实创建时序夹具，不据原型声称产品通过。
+S2 s2-defer-build 双宽 core/frames 和 ABI 检查通过。s2-defer-fixture 双宽真实启动注入夹具通过：隐藏 bridge 期间原始客户区顶部0、显示后25、移除恢复0；普通窗口立即应用25，隐藏/再次显示、2秒回退及待处理定时器销毁均通过。登记 s2-defer-candidate 和 s2-defer-live：仅用于真实 Taskmgr 启动对照，非交付包。
+S2 s2-defer-live：管理员启动器 PID28332 创建 Taskmgr PID31172，加载候选 ntw16s64.dll SHA256=23e2b8580095e13eb6aa0d1ffed3c348f46a82284752b943e239ecd182c2f9bd。首屏真实截图中未复现原外部界面残影，但仍有图标重复及右侧细白条，临时截图已删；第一次点击后失焦，采样无效。s2-defer-interaction 遮挡排除后重测，目标持续前台，汉堡单击前后蓝像素均8693。登记 s2-defer-motion 做一次扩大及最大化恢复；登记 s2-defer-tests 将自有夹具纳入项目并测试。
+S2 s2-defer-tests：项目内 launch/deferred-frame-x86/x64 两项通过，覆盖实际注入、XAML 等待/显示、普通窗口、隐藏恢复、2秒回退和待处理窗口销毁。s2-defer-motion 系统提权等待超过一分钟后返回取消，运动对照未执行；不计通过。
+S2 s2-defer-private：新增量候选私有桌面 demo 系统菜单与普通传播 x86/x64 三项均退出0；本地 source manifest 校验通过。以上非干净同批交付测试。
+S2 登记 s2-defer-nocopy：针对自有延迟激活候选 PID31172，比较无复制重算前后 PrintWindow 客户区中的重复图标及细白条；不改变位置尺寸，截图提炼后删除。
+S2 s2-defer-nocopy：目标处于汉堡菜单展开状态，SetWindowPos(SWP_NOCOPYBITS|SWP_FRAMECHANGED) 成功，前后 PrintWindow 均成功；右侧白条及顶部裁切图标仍在，未解决。截图已删除。此不能排除其他显示状态的差异。
+S2 s2-defer-motion 管理员重试：自有 PID31172 在前台，一次扩大/恢复标题蓝像素8693/9233/8693，一次最大化/恢复状态正常、蓝像素8693/16979/8693。运动前菜单展开、之后菜单收起；之后 PrintWindow 白条未见，但顶部图标仍重复，无法将白条消失归因于某次运动。截图已删除；连续拖动和闪烁视觉仍未验证。
+S2 登记 s2-activation-nocopy：仅对存在直接 XAML bridge 的目标，在外框首次激活改变客户区几何时尝试 SWP_NOCOPYBITS；此前对已完成激活窗口的事后重算无效，此次检验旧像素复制发生时机。未证明有效，若真实对照无改善则撤回候选。
+S2 s2-activation-nocopy 双宽 core/frames、ABI 与 deferred-frame 夹具通过；真实 Taskmgr PID10068 加载原型 DLL SHA256=c16a1dd0f03adb167d032ff32ac26e275cb1ff6285ff4d229acf5ac4f53e644d，标题持续可见，但首屏出现额外的整条残留标题栏，菜单操作后仍局部存在。原型比先前更差，frame_layout.c 已原样撤回；截图已删除。此结果不作为交付。
+S2 s2-activation-revert：撤回几何原型后双宽增量 core/frames 和 ABI 检查通过，source manifest 校验通过；PID10068 是仍在运行的自有失败原型目标，后续测试前按身份清理。
+S2 登记 s2-layer-target 和 s2-layer-capture：重启自有延迟激活候选后分别采样根客户区和可见合成子窗口，定位重复图标属于哪个绘制层；只用于研究，临时截图核对后删除。
+S2 s2-layer-target：自有 Taskmgr PID32472 已创建；自动点击探针命中其他 PID 后拒绝点击，worker 无完整结束报告，不计交互通过，临时截图已删除。s2-layer-capture 使用同一目标的 PrintWindow：根、可见主 composition bridge、GlassWindow 均返回成功；主 bridge 结果本身包含重复图标及右侧白条，GlassWindow 采样为黑色。PrintWindow 可包含合成后内容，说明现象已存在于 bridge 采样结果，不能据此断言精确的 XAML 内部元素。图片已删除。
+S2 登记 s2-late-layers：对同一新建自有原生 Taskmgr 在可见 bridge 显示后，采样附着前客户区，再在同一 UI 线程附着并采样；对比重复图标与边缘细条。临时截图核查后删除，不代表标准启动路径验证。
+S2 s2-late-layers：PID7536 的首个 bridge SHOW 后立即采样时，原生客户区仅出现图标，主要内容尚未绘制；随后附着成功，500ms 后出现主内容和顶部裁切图标、边缘白条。该对照说明 bridge 可见不等于应用首屏已完整绘制，但不同时间状态不能独立解释重复图标；图片已删除。登记 s2-settled-layers，在同样的自有原型中等待1秒后再附着以作对照，不将固定延时作为产品方案。
+S2 s2-settled-layers：自有 PID18540 的 bridge SHOW 后等待1秒，附着前 PrintWindow 已显示完整主内容及单个图标；随后 UI 线程附着成功、500ms 后 PrintWindow 出现原图标及顶部裁切的第二份图标。两次采样为同一目标、但探针未设置 DPI awareness，不能用于精确坐标比较；结果不支持简单延迟1秒消除重复，不引入固定延时。图片已删除。
+S2 登记 s2-xaml-outer：对已有直接 XAML bridge 的窗口，原型在附着与移除时保持外框位置尺寸，让客户区重新布局；用于验证原有“保留客户区屏幕位置”导致的几何移动是否造成图标残影。普通窗口保持原路径；效果不佳则撤回。
+S2 s2-xaml-outer 双宽 core/frames、ABI 与 deferred-frame 夹具通过；真实自有 Taskmgr PID33444 加载原型 DLL SHA256=4086be5bd68ae8a87be3c6466e5fbf2ad559f4e1a567e682bde3349f079836d9，PrintWindow 仍出现顶部重复图标及右侧白条。保持外框尺寸未解决问题，frame_layout.c 与相应试验断言已撤回，截图已删除；此原型不交付。
+S2 s2-xaml-outer-revert：撤回几何原型后双宽 core/frames、ABI 和 source manifest 通过。PID33444 为自有失败原型目标，后续按身份清理；图标和白条仍待定位。
+S2 登记 s2-caption-edge：真实候选 PID33836 的 DPI 感知几何为 outer.top=-35、client.top=0，标题被移出屏幕；构造原生客户区顶到工作区边缘的 XAML 窗口，先验证附着后标题可见与移除后外框恢复。
+S2 s2-caption-edge 负例复现顶部越界；修正只在原本位于工作区内的 XAML 外框将被接管动作推过顶部或左侧边界时保留外框几何，移除时保持对应外框。s2-caption-edge-final 双宽顶部/左侧和恢复夹具、core/frames 与 ABI 通过；s2-caption-edge-injection 双宽延迟创建注入回归通过。登记 s2-caption-edge-live：自有真实 Taskmgr 原生窗口先置于工作区顶部，再在 UI 线程附着当前候选并核对实际外框位置。
+S2 s2-caption-edge-live：自有原生 Taskmgr PID4236 已验证加载候选 DLL SHA256=bb7607bdf1c77a50181029761d501267ff5b5232eb89a7c94fa0aee505313ec1；144 DPI 工作区顶部0，原生外框定位 top=0、UI线程附着后 top=0，未再被推至负坐标。客户区打印仍有顶部重复图标，截图已删除；这是晚期附着原型，标准启动、实际屏幕标题及真实移除恢复仍需验证。
+S2 登记 s2-caption-edge-remove：对上述自有目标在 UI 线程移除并重新附着，核验 DPI 感知的前/移除/再附着外框坐标；不操作其他目标。
+S2 s2-caption-edge-remove：真实自有 PID4236 的移除和再次附着均成功；144 DPI 外框前、移除后、再附着后均为(976,0,1750,937)，未出现标题越界或外框漂移。此覆盖工作区顶部的晚期附着与恢复，不代表标准启动、多屏或跨 DPI 全覆盖。
+S2 登记 s2-xaml-dwm-initial：已知原生目标 DWM 非客户区启用、当前首次附着会禁用；仅对存在直接 XAML bridge 的目标原型保留原 DWM 状态，检查首次状态切换是否造成图标重复。若外框或效果不正确则撤回，不改变系统级设置。
+S2 s2-xaml-dwm-initial 双宽 core/frames、ABI 与 deferred-frame 夹具通过。真实目标 PID33888 加载原型 DLL SHA256=a69383337692aa1c293aebb119286fa4db26bb0fa67179c5177e4a09d10ba9e6；首次屏幕采样误采其他窗口，已立即删除，不计结果；经身份校验的 PrintWindow 客户区仍有重复图标与右侧白条。原型未改善，frame_layout.c 已撤回，客户区临时截图已删除；非客户区实际绘制未获有效证据。
+S2 s2-dwm-revert 双宽 core/frames 和 ABI 通过。登记 s2-capture-guard：屏幕采样前后检查九个点所属进程和根窗口；原私有桌面 WindowFromPoint 对照因不可见返回0，不计通过。纯 C 模型验证无覆盖、同进程其他窗口和异进程覆盖的分支，均符合预期；采样不能保证发现所有遮挡或透明穿透，真实目标尚未验证，优先使用身份校验的 PrintWindow。
+S2 s2-defer-focus-before2 双宽注入负例：等待 XAML bridge 时收到 WM_NCACTIVATE 后，激活的标题像素为0；已在等待期间保留活动状态，并在 WM_DPICHANGED 后刷新字体但不提前改变外框。s2-defer-focus-final 双宽注入夹具验证活动/非活动标题及既有延迟、清理场景通过，双宽 core/frames 与 ABI 通过。尚未完成真实跨 DPI 变更验证及新候选实包测试。
+S2 登记 s2-timer-reentrant：验证应用在内部计时器窗口创建过程重入销毁根窗口时，是否遗留持有已释放状态的消息窗口；先做私有桌面负例。
+S2 s2-timer-reentrant4 证实根窗口在 CBT 创建回调中被销毁后，内部消息窗口仍存活；已在创建及子类化后检查脱离状态并销毁未完成窗口。s2-timer-reentrant-fix 双宽 core/frames 和 ABI 通过；s2-reentrant-injection 双宽实际启动注入的同一重入场景及延迟激活全套夹具通过。未重新实测真实 Task Manager，也未发布。
+S2 登记 s2-nocopy-fixture：私有桌面自有窗口对照 FRAMECHANGED 与 NOCOPYBITS 在不变尺寸和扩大尺寸时的客户区失效范围；不替代真实 XAML 合成验证。
+S2 s2-nocopy-fixture 双宽原生对照一致：不变尺寸且无 NOCOPYBITS 时无客户区重绘，有 NOCOPYBITS 时全客户区失效；扩大20像素时无该标志仅新20像素失效，有该标志则全宽失效。此前真实目标完整重绘未消除残影，所以不能据此推断该标志能修复 XAML 合成残影，也尚未变更产品位置标志。
+S2 登记 s2-timer-injection：使用同一增量候选 run16s 及双位宽自有私有桌面窗口，验证实际创建钩子路径中 XAML 计时器窗口的创建、排队、移除与回收；不声称真实 WinUI 视觉通过。
+S2 s2-timer-injection：x86/x64 实际启动注入均显示根窗口和内部 STATIC 消息窗口被附着；移除根样式后内部窗口销毁、应用未收到计时器，两项退出0。s2-timer-class 专用类别对照仍被附着，尝试未解决额外附着，已撤销并保留系统 STATIC；s2-timer-final 双宽外框和 ABI 回归通过。消息窗口会获得一次额外附着，已验证销毁回收；真实目标完整生命周期仍需验证。
+S2 登记 s2-timer-queued：在私有桌面构造重绘计时器消息已排队后移除样式的情况，验证内部计时器是否泄漏到应用窗口过程。
+S2 s2-caption-edge-screen：用户关闭旧任务管理器后，对先前自建 PID4236 重试管理员屏幕探针，身份和前台检查通过；实际标题蓝色像素17487（阈值2322），但标题下方仍有重复图标。截图提炼后删除。s2-defer-tests 增量双位宽实际注入与工作区边缘附着/移除检查通过；不代表真实启动或连续拖动视觉通过。
+S2 登记 s2-defer-nocopy/bridge-refresh：对已核验身份的自建 PID4236 的直接 XAML bridge 暂时缩窄一像素后恢复，前后采样客户区，检验合成层尺寸刷新是否消除重复图标；只操作该窗口，截图检查后删除。
+S2 s2-defer-nocopy/bridge-refresh：枚举找到 PID4236 的可见最大直接 XAML bridge，宽752高926；临时缩窄1像素及恢复均成功，前后客户区截图的顶部重复图标仍在。该对照不支持用子窗口尺寸刷新解决；未修改产品代码，截图提炼后删除。首次调用 FindWindowEx 的托管探针未匹配目标，未执行尺寸变更，后改用直接枚举。
+S2 登记 s2-defer-nocopy/layer-sample：只对自建 PID4236 的四个可见合成子窗口按各自 HWND 与 PID 采样，定位重复图标所属层；临时截图检查后删除。
+S2 s2-defer-nocopy/layer-sample：四个直接可见合成子窗口的 PID 校验与 PrintWindow 均成功；顶部重复图标出现在覆盖完整客户区的 bridge 3805284 采样，不在标题辅助 bridge 5705590 或内容 bridge 1118378 采样中。PrintWindow 可能包含合成子层，不能据此断言具体 XAML 元素；临时图片已删除。
+S2 s2-defer-tests/edge-workarea：实际注入夹具改为查询主显示器工作区顶边放置窗口，避免硬编码 (10,10) 造成任务栏位置变化时测试失真；双位宽增量构建与 launch/deferred-frame-x86/x64 均通过，验证该夹具中的工作区边缘接入及移除后外框保持。真实窗口连续拖动与残影修复仍未通过。
+S2 登记 s2-defer-tests/frame-repaint：原生合成窗口夹具先检查延迟外框重绘是否意外触发客户区 WM_PAINT，作为减少闪烁候选的负例；如调整实现，须重新验证真实 Taskmgr 汉堡、最大化、拉伸及普通窗口。
+S2 s2-defer-tests/frame-repaint：负例证明原计时重绘会触发应用客户区 WM_PAINT；候选改为同一线程直接请求 WM_NCPAINT，双位宽 core/frames 通过且不触发额外客户区绘制。登记 s2-caption-edge-live/repaint-worker：关闭已核验的自有旧 PID4236，以当前候选 DLL 重建自有 Taskmgr 实测；真实拉伸与残影仍待验证。
+S2 s2-caption-edge-live/repaint-worker：新建 Taskmgr PID28260、HWND1052852 加载候选 ntw16s64.dll SHA256=4d09bd679d39ef928ada6e39ea5c747a490f9ff7d633fcd8d80bbed586a60ea6，工作区顶边 late attach 成功。登记 repaint-check：仅自有目标前台时一次汉堡点击与扩大/恢复，采样标题并恢复指针和前台；不能代替连续拖动及标准启动。
+S2 repaint 候选验证：x86/x64 core/frames 和 launch/deferred-frame-x86/x64 通过；真实自有 PID28260 标题绘制采样蓝像素17487（阈值2322），但顶部重复图标及右侧细白条仍可见。汉堡输入后的即时蓝像素8693，但随后前台丢失，尺寸变化探针退出2未执行；该点击对照不能证明完整交互或闪烁已解决。候选未发布，临时截图提炼后删除。
+S2 登记 repaint-resize-alone：对仍存活的自有 PID28260 在前台独立进行一次扩大及恢复，检验前一测试中的前台失效；含身份与前台校验。
+S2 repaint-resize-alone：脚本生成时替换表达式报错，误保留汉堡探针；命中校验 PID=0，探针拒绝输入。窗口扩大/恢复 API 均成功，但屏幕标题采样全0，不计视觉通过。frame-repaint-verify 新增线程消息探针，证明合成窗口补画确实发送 WM_NCPAINT，且不额外触发客户区 WM_PAINT；x86/x64 core/frames 通过。真实拉伸闪烁及标题残影仍未解决。
+S2 登记 s2-caption-edge-remove/geometry：对已核验自建 PID28260，单线程移除并重新附着候选，对比原生和接管状态的根客户区及直接可见子窗口坐标，并采样客户区；finally 恢复附着，截图核验后删除。
+S2 geometry 首次目标最小化、客户区高度0，PrintWindow 不可用，未执行移除；登记 geometry-wrapper 临时恢复目标，测试后恢复其最小化状态。
+S2 geometry 对照：自有 PID28260 最小化后临时恢复，原生/样式切换及再次附着成功，测试后恢复最小化。144 DPI 下外框保持 (976,0,1750,937)；原生客户区原点 (987,0)，接管后 (982,35)，主要 bridge 随客户区移动 (−5,+35)，子窗口之间相对坐标不变。PrintWindow 原生显示单个图标，再附着后出现顶部裁切图标；这支持残影与非客户区接管有关，但不足以确定 XAML 合成内部根因。部分采样出现外部画面痕迹，不据此评价内容；图片均删除。
+S2 登记 geometry-only：对自建 PID28260 暂时移除 Win16 外框，仅以可移除子类调整 WM_NCCALCSIZE 至相同客户区，采样前后；finally 解除该子类并恢复 Win16 样式和原窗口最小化状态。该探针仅研究几何，不进入产品。
+S2 geometry-only 对照：自有 PID28260 先移除 Win16 样式，仅按已测偏移调整 WM_NCCALCSIZE，不绘制经典标题；原生客户区图标单个，几何调整后复现顶部裁切的重复图标。探针所产生的根客户区及可见子窗口坐标与样式状态一致；可卸载子类解除成功、Win16 再附着成功、原最小化状态恢复。证据说明改变客户区几何本身足以复现现象；不证明内部合成实现细节，也未解决。采样已清理。
+S2 登记 geometry-axes：只对自建 PID28260 分别测试单独顶部与单独侧边/底部客户区偏移，比较重复图标；每次移除临时子类，finally 恢复样式和最小化状态。
+S2 geometry-axes：自有 PID28260 的原生基线图标单个；仅将客户区顶部下移35像素时复现顶部裁切图标，仅调整左右及底部（顶部不变）未观察到该重复。两次临时子类均成功移除，Win16 样式与最小化状态恢复；PrintWindow 样本有限，不能推断所有 WinUI 或证明修复。采样已删除。
+S2 登记 dwm-notice：对自有 PID28260 的已接管窗口发送一次 WM_DWMCOMPOSITIONCHANGED 并对比客户区，检验宿主是否自行重新协调 DWM 扩展区域；恢复最小化，截图核查后删除。
+S2 dwm-notice：向自有 PID28260 发送 WM_DWMCOMPOSITIONCHANGED 成功；前后 PrintWindow 均仍见顶部裁切图标，未支持此通知能修复。采样含其他画面痕迹，已删除；恢复最小化。
+S2 登记 dwm-margins：对自有 PID28260 对照 DwmExtendFrameIntoClientArea 顶部边距0、35及−1，采样客户区；原扩展边距无法读取，测试结束按身份结束该自建实例而不声称恢复其边距；不修改系统设置。
+S2 dwm-margins：DwmExtendFrameIntoClientArea 顶部边距0、35、−1均返回 S_OK，自建 PID28260 已结束；四张 PrintWindow 采样顶部含其他画面，不可用于判断残影是否消失，结果标记 inconclusive，未引入产品改动，图片已删除。
+S2 登记 s2-standard-repaint：用现有双宽增量产物组成隔离候选包，由普通权限执行 run16s taskmgr，观察自有进程、UAC 和目标窗口；此不是干净交付包，不发布。
+S2 s2-standard-repaint：普通权限 run16s taskmgr 经 UAC 创建 PID31868，真实载入隔离包 ntw16s64.dll SHA256=4d09bd679d39ef928ada6e39ea5c747a490f9ff7d633fcd8d80bbed586a60ea6，窗口附着查询成功；前台屏幕标题蓝像素17487，实际画出经典标题但顶部重复图标及右侧细白条仍可见。登记标准启动目标单次扩大/恢复；增量包非正式交付。
+S2 s2-standard-repaint/resize：扩大和恢复 API 返回成功，标题采样蓝色像素8693/6391/6306；结束时前台已变化且捕获守卫返回2，采样受遮挡或焦点变化影响，不计标题持续显示或无闪烁通过。初始标准启动截图已提炼并删除。
+S2 登记 s2-size-notify：从隔离增量包标准启动自有 Taskmgr，检查已知真实窗口位置变化日志中主窗口未出现 WM_SIZE 的现象；如观察到目标，单次受限尺寸通知对照后清理，仅研究不进入产品。
+S2 size-notify 首次探针进程未设置 DPI 感知，在144 DPI 下将虚拟化尺寸508×597作为 WM_SIZE 参数；前后顶部重复图标仍在，但参数与实际尺寸不一致，不计有效对照。已修正为 Per-Monitor V2，登记重试；首次截图已清理。
+S2 size-notify 重试：Per-Monitor V2 下查询实际客户区762×896，WM_SIZE 发送成功，前后身份与遮挡检查通过，标题蓝像素均16029；顶部重复图标仍在，单独补发正确尺寸通知未修复。屏幕采样已删除，目标随后按身份结束。
+S2 登记 s2-dwm-visible：对照微软 WinUI 自定义标题文档，使用身份及前台遮挡校验重新检验窗口级 DWM 顶部扩展边距；只在自建目标上运行，结束目标而不声称能恢复不可读取的原边距。
+S2 s2-dwm-visible：标准启动已创建自有 PID35576；后续管理员对照的 consent 曾出现并结束，但 worker 无任何输出，未运行 DWM 对照，不计结果。按 PID、启动时间核验并结束自建目标。微软 WinUI 标题设计资料说明存在 glass 子窗口与 composition bridge；这只提供研究方向，不证明本机残影根因。
+S2 登记 s2-dwm-visible/combined：一次受限管理员探针启动增量包自有 Taskmgr 并校验 DLL 身份，再逐项采样 DWM 边距；最终清理自有目标。提权前不启动任何对照。
+S2 登记 frame-regression：UAC 等待期间，对当前增量候选运行双位宽菜单取消、菜单分派与延迟外框所有权回归；不替代真实 WinUI 显示验证。
+S2 s2-dwm-visible/combined：同一次管理员请求等待后返回系统取消（1223），worker 未启动、无 DWM 结果；不重复发起。frame-regression 双位宽 core/menu-cancel、core/menu-dispatch、core/pending-frame-owner 共6项通过；不覆盖真实 WinUI 残影与拖动。
+S2 登记 frame-repaint-destroy：在私有桌面模拟合成窗口收到延迟 WM_NCPAINT 时重入销毁，核对根窗口与内部计时器均释放；不触碰现有记事本。
+S2 frame-repaint-destroy：x86/x64 私有桌面测试均通过，合成窗口在计时器发送 WM_NCPAINT 的调用钩子中重入销毁后，根窗口和内部计时器均不再存活；仅覆盖该受控路径，不代表真实 WinUI 残影或动态视觉通过。
+S2 combined 重试：输入桌面检测为 Default；重试同一受限自建管理员 DWM 对照一次，若未获提权不计通过。
+S2 combined 重试：同一次系统 UAC 等待后返回取消（1223），探针未启动，无任务管理器对照结果。现有 Notepad PID27948 为用户 softpc.ini 窗口且未发现 ntw16s DLL，未操作；保持用户数据和进程。
+S2 非提权替代目标审计：本机存在 Windows Notepad、Windows Terminal 和 Paint 包，但当前 Notepad PID27948 打开用户 softpc.ini；尚无证据证明再次激活可避免复用或影响其文档。未启动或操作这些应用，也未把它们视为 Taskmgr 对照；继续保留 S2。
+S2 用户请求 retry：保留现有改动，重试一次受限管理员 DWM 对照；如未执行不计通过。
+S2 用户 retry：同一次 UAC 等待后返回取消（1223），受限管理员 worker 未启动，未产生对照；未重复发起。
+S2 用户反馈上次看不到 UAC 并要求再试；核验发起 pwsh 与活动控制台均为 session 1，重试一次受限管理员探针。
+S2 用户 retry 实际提权成功：自有 Taskmgr PID14596 加载增量 DLL SHA256=4d09bd679d39ef928ada6e39ea5c747a490f9ff7d633fcd8d80bbed586a60ea6；基线真实屏幕标题可见，重复图标与右侧白条仍在。DWM top=0 返回 S_OK 后目标被 PID9248 遮挡，守卫拒绝截图，效果不计；目标已清理。登记 combined 重新获取目标前台后再采样，不操作遮挡窗口。
+S2 combined 前台重试：PID35092 加载正确 DLL，但无法取得前台，未做 DWM 调整并已清理；登记自有目标短暂置顶后对照，结束目标时消除置顶。
+S2 combined 置顶对照：自有 Taskmgr PID8004 加载增量 DLL SHA256=4d09bd679d39ef928ada6e39ea5c747a490f9ff7d633fcd8d80bbed586a60ea6；真实屏幕基线及 DWM 顶部边距0、35、−1 的前台/遮挡守卫均通过，三次 API 均 S_OK，顶部重复图标与右侧细白条均仍在，部分边距产生额外黑色背景；未引入 DWM 产品改动。实例已退出，截图提炼后删除。
+S2 登记 s2-force-wvr：在自有 Taskmgr 的 UI 线程先临时设置仅返回 WVR_REDRAW 的下层子类，再使用当前 DLL 正常附着，核对标记及前台屏幕；试验只存在于目标进程，结束后关闭自有目标，不修改产品源码。
+S2 s2-force-wvr：自有 PID34912 的下层子类确认实际返回 WVR_REDRAW、DLL 附着成功；屏幕守卫返回2未取得目标前台，不能评价真实屏幕。PrintWindow 试验样本中首行汉堡及图标被裁切，不能证明可用，且呈现潜在内容裁切；不引入该原型。自建目标已退出，采样已清理。
+S2 登记 s2-drag-check：自有 Taskmgr 前台和右边框命中校验后进行一次30像素短拖拽、采样标题像素、恢复外框和鼠标；非逐帧录像，不能单独证明绝无闪烁。
+S2 s2-drag-check：同一次系统 UAC 最终返回取消（1223），探针未启动，无拖拽或视觉结果；不计通过。
+S2 drag 探针预检：PowerShell 解析无错误，HWND 参数实测传给原生程序为数字；drag.exe 为 x64 且无参数时退出2，候选 DLL SHA256 与前述增量验证一致。此预检不代表拖拽运行或视觉通过。
+S2 用户请求拖拽探针 retry：确认无任务管理器、UAC 和构建进程，重试一次自有目标短拖拽对照。
+S2 用户重试 drag：UAC 成功，自有 PID36800 加载目标 DLL，但窗口未取得前台，按保护条件退出，未发送鼠标输入，目标已清理。调整探针临时连接前台线程输入队列并在 finally 解除，再重试；仅作用自建目标。
+S2 drag 前台重试：自有 PID18708 仍无法取得前台，未发送输入并已清理。登记标题栏命中探针：仅 WindowFromPoint 属于自有根窗口且 WM_NCHITTEST=HTCAPTION 时点击，并恢复鼠标；随后仍须通过现有前台和右边框命中校验。
+S2 用户 retry drag 实测：自有 PID31940 标准候选，目标前台且命中右边框，一次短拖拽宽774→803像素；标题蓝像素7次采样为8693,8774,95,8782,95,8963,8917，确认中途丢帧。登记 interactive-repaint：先以合成窗口夹具验证交互缩放中擦除后即时重绘的负例，再测试候选。
+S2 interactive-repaint：负例在擦除后无即时 WM_NCPAINT；候选在 WM_ENTERSIZEMOVE 至 WM_EXITSIZEMOVE 的直接 XAML 宿主擦除后即时补画，其他阶段仍合并计时重绘。x86/x64 core/frames 通过；登记同一自有 Taskmgr 短拖拽实际对照，非交付。
+S2 interactive-repaint 实测失败：自有 PID34332 加载候选 DLL SHA256=3f092a3e721ededb52932b0783afa192e5bc54320076a5e9b61e9b9a263da493，真实短拖拽宽774→804，蓝像素8693,8774,95,8782,95,8963,95；与基线相比仍多次丢帧。已撤回同步擦除补画原型与其期望断言；此前独立 NC 补画候选保留。登记撤回后双宽回归。
+S2 interactive-revert：撤回无效同步重绘后 x86/x64 core/frames 均通过，来源清单通过。登记 drag-trace：一次30像素自有短拖拽同步记录窗口消息与蓝像素采样时刻，确定丢帧相对于 WM_ERASEBKGND、WM_NCPAINT 与进入/退出尺寸循环的时序；非长时间压力测试。
+S2 drag-trace：自有 PID27676 加载撤回后 DLL SHA256=e2f976251ca81a65554622d7af19b8e5937803ff200174958f14eea68a4f4276，前台命中短拖拽宽774→805。蓝像素/采样毫秒为8693/63、8728/141、95/219、95/313、8909/391、95/453、95/516；低样本与 WM_NCCALCSIZE 在219、313、516ms 同时或接近，相关 WM_NCPAINT 在235、313、532ms。消息和采样来自不同进程，不构成因果证明，支持进一步检查尺寸变化期间非客户区呈现；目标与指针已清理恢复。
+S2 登记 interactive-position：基于短拖拽时序，先以夹具验证尺寸循环中应用处理 WM_WINDOWPOSCHANGED 后是否即时补画非客户区；负例确认后再测试候选，不作为已解决。
+S2 interactive-position：负例证实应用处理位置变化后没有即时 WM_NCPAINT；候选只在直接 XAML 宿主的交互移动/尺寸循环期间，于 WM_WINDOWPOSCHANGED 完成后立即补画。x86/x64 core/frames 通过；登记实际短拖拽对照，失败则撤回。
+S2 interactive-position 实测失败：自有 PID4092、候选 DLL SHA256=5e9e53eaedcd51c879f2a0ef74bab6705c139d957daa3a50424105a2d35901c4，短拖拽宽774→804，标题蓝像素8693,8774,8782,95,95,95,95；即时位置补画未改善，已撤回对应产品代码与测试原型。用户要求优先私有桌面；登记验证真实 Taskmgr 能否在私有桌面启动和绘制，不切换用户桌面。
+S2 私有桌面可行性：构建原生探针，以独立 CreateDesktop/STARTUPINFO.lpDesktop 启动自建 Taskmgr，不切换输入桌面；枚举目标、检查 DLL、PrintWindow 采样并清理自有进程。采样若为空或黑屏计失败，不等同真实前台绘制。

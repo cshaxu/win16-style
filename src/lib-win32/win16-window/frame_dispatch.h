@@ -16,4 +16,5 @@ typedef struct win16_control_frame_dispatch_services {
     BOOL (*terminal)(HWND);
 } win16_control_frame_dispatch_services;
 LRESULT win16_control_frame_dispatch(HWND,style_window *,UINT,WPARAM,LPARAM,const win16_control_frame_dispatch_services *);
+void win16_control_frame_cancel_repaint(style_window *);
 #endif
