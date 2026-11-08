@@ -56,3 +56,39 @@ hide an unsupported target. No universal framework support is promised by a sing
 successful app. Product binary changes require the normal same-snapshot dual-width
 build, actual-package tests and assets/O:/winnt publication. Admission alone does
 not change the existing0.22.0.0 deployed package or claim a new binary release.
+
+## Subsequent-target preliminary observations
+
+The following are bounded research observations while S3 remains active; they
+do not admit a new S, alter the product, or establish application support.
+Targets were self-created on private desktops and the existing user windows were
+not operated. Screen captures and test profiles are not product artifacts.
+
+* Windows Terminal 1.24.12741.0: a launch with the explicit installed binary,
+  `-w new` and a uniquely titled `cmd` tab reached a newly created
+  `CASCADIA_HOSTING_WINDOW_CLASS` window outside the launcher's job. Its process
+  loaded the published DLL and reported the window attached. At 144 DPI the
+  offscreen sample showed a dark title area, not a Win16 caption; maximize and
+  restore states were observed. This does not establish physical display,
+  standard `run16s cmd` or `run16s conhost`, shared-process behavior or recovery.
+  Cleanup used the unique window identity; a separate two-tab experiment needed
+  termination of its verified self-created process after a close timeout.
+* Chrome 157.0.8103.38: a unique private profile ran natively, but the published
+  style-plus-propagation path repeatedly terminated GPU children and eventually
+  the browser with `0x80000003`. The local GPU log reported message-window
+  creation error 13. A scratch diagnostic observed attachment error 13 for a
+  message-only window and a nested system IME window; it does not identify the
+  internal failure responsible. Style-only and propagation-only contrasts
+  remained alive during their short observation, without establishing general
+  compatibility. Existing user Chrome instances were not operated.
+* A scratch-only prototype skipped the direct message-window creation scope and
+  system IME attachment, and changed `WS_EX_NOREDIRECTIONBITMAP` at creation
+  for captioned windows. In these local samples Chrome and Terminal stayed
+  alive, their Win16 captions appeared, and UI Automation opened and closed a
+  test tab. Chrome's own caption buttons remained duplicated. This is not a
+  product design: the broad creation-time flag change can affect composition,
+  and both applications returned error 87 when the original flag was restored
+  on the owning window thread after removing the frame. Further work must find
+  a safe, scoped and verifiable approach, preserve application controls and
+  disclose any remaining restoration limit. No universal WinUI/Chromium
+  compatibility follows from these samples.
