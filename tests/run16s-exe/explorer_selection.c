@@ -91,7 +91,26 @@ int wmain(int argc,WCHAR **argv)
     owned_window target={.pid=child.dwProcessId};EnumWindows(find_owned,(LPARAM)&target);CHECK(target.window);
     CHECK(PostMessageW(target.window,WM_CLOSE,0,0));CHECK(WaitForSingleObject(child.hProcess,3000)==WAIT_OBJECT_0);
     CloseHandle(child.hThread);CloseHandle(child.hProcess);run16s_explorer_snapshot_free(snapshot);
-    CHECK(DeleteFileW(other));CHECK(RemoveDirectoryW(scratch));DestroyWindow(old);FreeLibrary(module);
+    CHECK(DeleteFileW(other));CHECK(RemoveDirectoryW(scratch));
+
+    /* A loaded module keeps its original loader name after the mapped file is
+     * renamed and replaced. The replacement can contain identical code. */
+    CHECK(CreateDirectoryW(scratch,NULL));CHECK(CopyFileW(path,other,TRUE));
+    WCHAR moved[32768],package[32768];wcscpy(moved,scratch);wcscat(moved,L"\\mapped-old.dll");
+    wcscpy(package,scratch);wcscat(package,L"\\");
+    snapshot=run16s_explorer_snapshot_create();CHECK(snapshot);
+    CHECK(swprintf(command,ARRAYSIZE(command),L"\"%ls\" --other-module \"%ls\"",image,other)>0);
+    child=(PROCESS_INFORMATION){0};CHECK(CreateProcessW(image,command,NULL,NULL,FALSE,0,NULL,NULL,&startup,&child));
+    target=(owned_window){.pid=child.dwProcessId};
+    for(unsigned i=0;i<60 && !target.window;i++){EnumWindows(find_owned,(LPARAM)&target);if(!target.window)Sleep(50);}
+    CHECK(target.window);CHECK(MoveFileW(other,moved));CHECK(CopyFileW(path,other,TRUE));
+    DWORD changed=run16s_explorer_attach_new(snapshot,image,package);
+    printf("renamed_mapping_result=%lu\n",changed);
+    CHECK(PostMessageW(target.window,WM_CLOSE,0,0));CHECK(WaitForSingleObject(child.hProcess,3000)==WAIT_OBJECT_0);
+    CloseHandle(child.hThread);CloseHandle(child.hProcess);run16s_explorer_snapshot_free(snapshot);
+    CHECK(DeleteFileW(other));CHECK(DeleteFileW(moved));CHECK(RemoveDirectoryW(scratch));
+    CHECK(changed==ERROR_REVISION_MISMATCH);
+    DestroyWindow(old);FreeLibrary(module);
     CHECK(UnregisterClassW(wc.lpszClassName,wc.hInstance));
     CHECK(SetThreadDesktop(original));CHECK(CloseDesktop(desktop));
     puts("explorer-selection PASS");return 0;

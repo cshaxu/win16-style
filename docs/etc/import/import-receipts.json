@@ -6431,9 +6431,9 @@
       "path": "src/run16s-exe/explorer.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c2ac4a28573554b2e0dd0b1cae1f084d63ec6c0cd228c7714665e58250df15e4",
+      "sha256": "9893add27970a59325724a7fde6ae8fb0dcf18eb80ade1df2834c514464ab1bd",
       "disposition": "authored",
-      "review": "T23 S3 Explorer target discovery and window-thread attachment; project-authored",
+      "review": "T23 S3 Explorer target discovery and window-thread attachment; project-authored; mapped-file identity prevents reusing a renamed old image",
       "notice": "Project-authored, repository MIT"
     },
     {

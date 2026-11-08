@@ -69,3 +69,44 @@ The verified package was published to the assets root and `O:\winnt`:
 | ntw16s32.dll | `8be15e272ecd6a548a7a565474dd337ebab9e4ad2463427f4765687633b39037` |
 | ntw16s64.dll | `a4e4a0f38555437cd65884138e165b4957d10d32634febf56494e3d4ee0af627` |
 | demo.exe | `cb4697009ed9859b15dfe315a435709ef67bbfdb814322cde0bb53b1e4bd9144` |
+
+
+## P4: mapped DLL identity
+
+The P1 check used the loader-reported DLL path and 64 callback bytes. An owned
+process experiment showed that renaming a mapped DLL and placing a same-byte
+replacement at the original path leaves the loader-reported path unchanged.
+The P1 selection code returned success for that stale mapping. The P4 launcher
+also compares the actual mapped-file names before installing the thread hook;
+the same regression returns `ERROR_REVISION_MISMATCH` (1306). Existing path and
+callback checks remain. This avoids treating a renamed old mapping as the new
+file; it is not physical DLL unloading or a claim about every possible image
+mutation.
+
+An isolated real Explorer test loaded the candidate DLL into its own shell,
+renamed the mapped scratch copy, replaced the original path with identical
+bytes, and launched a second folder window. The first window was attached and
+the second was not, as intended. Another isolated test with unchanged files
+verified standard launch, an existing same-process window remaining unattached,
+title-button hit tests at 144 DPI, system menu, maximize/restore and repeated
+launch. The normal clean package also passed its selection test. Separate
+private-desktop API checks performed one move/resize and a minimize/restore;
+the caption remained visible in PrintWindow samples. These are not physical
+mouse or live-drag flicker tests; the input desktop was Screen-saver.
+
+The P4 same-snapshot C17, MinGW GCC 16.1, Ninja and ccache dual-width clean
+build passed, as did 29 focused actual-package tests without skips. The tested
+four files were published to the assets root and `O:\winnt`:
+
+| File | SHA-256 |
+| --- | --- |
+| run16s.exe | `e214556d958241a9d06b4c775700484fc201b12641934f9d6c47d8044cd7d640` |
+| ntw16s32.dll | `54d51d6f93f6269bd3c66f3b2fdc1b2b467bda9daeefa361cbde7c8488cf163e` |
+| ntw16s64.dll | `aec3839c721efcd6030fad93e40d803de8c2741704128f3e51e68b16b9dfc938` |
+| demo.exe | `a2a3c7fd29ace79120c1d84c6b8fe1628da1abd7550cd7a432a466fa0c4b2c9b` |
+
+If a shared Explorer process already holds an older mapped DLL, the new
+launcher will refuse to apply the new hook to that process rather than use the
+wrong code offset. Restarting that host is needed to load the new DLL. The
+user's shared shell was not terminated during this delivery. S3 remains open
+for owner acceptance and the previously stated concurrent-attribution limit.

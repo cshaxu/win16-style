@@ -6,6 +6,7 @@ M0 T23 保持开放。S1 记事本已验收通过并收口；用户确认系统�
 S2 Task Manager 按用户要求有限收口，不再继续要求用户批准该项 UAC；顶部重复图标、白条和拖动标题丢帧转入 TODO，不能记作已修复。双宽干净包、29 项实际包聚焦及14项核心/注入回归通过，四文件已发布 assets 和 O:/winnt，P1 `6afe9420` 已推送并逐项读取远端复核；[有限交付记录](../history/M0-T23-S2-task-manager.md)。准入 S3 Explorer，先识别真实窗口承载及共享 Shell 边界。
 P6 `e37da0db` 四文件已发布至 assets 根目录及 O:/winnt，双宽构建、核心10项及实包29项通过；最终真实菜单截图复核未完成，不计通过。
 详细记录见 [S1交付](../history/M0-T23-S1-notepad-delivery.md)和[菜单修复](../history/M0-T23-S1-system-menu-hover.md)。
+S3 P4 映射身份修复已通过双宽干净构建、29项实包回归并发布至 assets 与 O:/winnt；其物理交互与用户验收仍待完成。
 S3 P1 同批四文件已通过干净构建、29项实际包回归及私有桌面标准启动对照，并发布至 assets 与 O:/winnt；物理交互与用户验收待完成，T23/S3 保持开放。[交付与限制](../history/M0-T23-S3-explorer.md)。
 按用户确认的顺序准入 S3 Explorer；保留已有用户桌面、任务栏和文件夹窗口，不以进程名批量操作。保留登记的 S1/S2 scratch，核验仍映射的旧 DLL 后安全清理。
 
@@ -1576,3 +1577,13 @@ S3 登记 scratch：build/t23-package/s3-publish1，备份并发布 s3-clean1 �
 S3 s3-publish1：已发布 s3-clean1 同批四文件到 assets 根目录与 O:/winnt，两处摘要均与 s3-package1 一致；未改系统设置。准备提交和远端复核，用户实际桌面验收仍待完成。
 S3 发布后补充私有桌面验证：使用 O:/winnt 实包的自建 Explorer 窗口，以 UI Automation 调用 Add New Tab，观察 tab 项由3增至6；调用 Close Tab 恢复3；选择 This PC 后窗口标题变为 This PC 且附着查询仍为1，既有窗口未附着；自有 shell 已结束。此为对应辅助功能路径，不证明物理鼠标、拖拽或所有导航。ShellWindows 集合未返回私有窗口，未执行该方式导航，不计失败或通过。P1 4b9f164a 已推送，实际远端提交与四文件及关键源码摘要已复核。
 S3 发布包私有窗口重绘与移除补测：标签新建、关闭及选择 This PC 后分别用 PrintWindow 采样，三次仍可见 Win16 标题；同一自建窗口调用线程移除入口返回成功，附着查询由1变0，采样显示原生 Explorer 标题恢复；DLL 仍固定于目标直到该自有 shell 退出。三次菜单 WM_MOUSEMOVE 消息后菜单保持可见，但菜单项高亮均为0，悬停交互不计通过，也不能证明物理鼠标无闪烁；自有 shell 已清理。
+S3 P4 映射身份修正：自建 DLL 占用探针显示直接覆盖失败，改名后可安装新文件，但旧映射文件在进程退出前无法删除；GetModuleFileNameEx 仍显示旧名称，GetMappedFileName 显示改名后的真实映射。旧 P1 源码在改名再用相同内容替换的原生负例中返回0（错误接受），目标子进程已正常清理；候选增加目标与本地实际映射名比较，原有64字节检查保留，负例返回1306且完整选择测试通过。
+S3 登记 scratch：build/t23-package/s3-map-candidate1，增量启动器和现发布的双位宽 DLL 组成非交付包，用自有私有桌面复测标准启动、同进程旧窗口和重复启动。
+S3 P4 负例与实测：上一发布版源码在自建子进程先加载 DLL、再将映射文件改名并以相同字节替换原名时返回0，错误地接受了旧映射；更正后返回 ERROR_REVISION_MISMATCH=1306，完整私有桌面选择测试通过，子进程及临时文件清理。增量候选在自有 Explorer shell PID37680 的标准启动与重复启动均附着，已有同进程窗口未附着，144 DPI 标题按钮命中、菜单采样、最大化和恢复通过；该增量包不是交付包。
+S3 登记 scratch：build/t23-package/s3-map-clean1，对 P4 同一快照后台执行双位宽干净构建和包检查；下一步使用同批四文件实际包测试。
+S3 登记 scratch：build/t23-package/s3-map-replace1，以自有隔离 Explorer 先加载测试 DLL，再在同一 scratch 内改名并替换同内容文件，复测第二次标准启动应拒绝旧映射；不涉及用户共享 shell 或发布目录。
+S3 P4 真实旧映射对照：私有 Explorer shell PID7732 加载测试包 DLL，改名旧映射并以同字节替换后，第二次标准启动的新窗口独立查询未附着；初次新窗口已附着、先前窗口未附着，私有 shell 结束后旧 scratch DLL 可删除。P4 s3-map-clean1 双宽干净构建和包身份检查通过；干净树 launch/explorer-selection 1/1通过，另以该干净包在自有 shell PID19464 验证标准启动、已有窗口不附着、144 DPI 标题按钮、系统菜单、最大化/还原及重复启动通过，不代表物理鼠标验证。
+S3 登记 scratch：build/t23-package/s3-map-package1，对 P4 干净包运行29项同批实际包聚焦回归，单任务以避免菜单测试竞争。
+S3 s3-map-package1：P4 同批干净包29项实际包聚焦回归通过、无跳过；干净树窗口选择负例通过。发布前只读查询用户共享 Explorer PID9248，未发现 ntw16s64.dll，未改变或结束该进程。
+S3 登记 scratch：build/t23-package/s3-map-publish1，备份并发布 P4 同批四文件至 assets 和 O:/winnt，核对摘要；S3 保持开放，物理交互及用户验收待完成。
+S3 s3-map-publish1：P4 同批四文件已发布至 assets 根目录与 O:/winnt，两处摘要与 s3-map-package1 一致；共享 Explorer PID9248 未结束。屏保输入桌面下未执行物理鼠标测试；S3 保持开放。

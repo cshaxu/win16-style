@@ -1,6 +1,7 @@
 #include "explorer.h"
 #include "ntw16s-dll/window_thread.h"
 #include <stdint.h>
+#include <psapi.h>
 #include <stdlib.h>
 #include <string.h>
 #include <tlhelp32.h>
@@ -66,10 +67,20 @@ static DWORD compatible_module(DWORD pid,HMODULE module,HOOKPROC callback,PCWSTR
         if(_wcsicmp(entry.szExePath,path)){error=ERROR_REVISION_MISMATCH;break;}
         HANDLE process=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION|PROCESS_VM_READ,FALSE,pid);
         if(!process){error=GetLastError();break;}
+        /* The loader's stored path does not change when a mapped DLL is
+         * renamed. Compare the mapped files as well as the loader names. */
+        WCHAR local_mapping[2048],remote_mapping[2048];
+        DWORD local_length=GetMappedFileNameW(GetCurrentProcess(),module,local_mapping,ARRAYSIZE(local_mapping));
+        if(!local_length)error=GetLastError()?GetLastError():ERROR_GEN_FAILURE;
+        DWORD remote_length=error?0:GetMappedFileNameW(process,entry.modBaseAddr,remote_mapping,ARRAYSIZE(remote_mapping));
+        if(!error && !remote_length)error=GetLastError()?GetLastError():ERROR_GEN_FAILURE;
+        if(!error && (local_length>=ARRAYSIZE(local_mapping)-1 || remote_length>=ARRAYSIZE(remote_mapping)-1))
+            error=ERROR_INSUFFICIENT_BUFFER;
+        if(!error && _wcsicmp(local_mapping,remote_mapping))error=ERROR_REVISION_MISMATCH;
         BYTE remote[64];SIZE_T received=0;uintptr_t offset=(uintptr_t)callback-(uintptr_t)module;
-        if(offset+sizeof(remote)>entry.modBaseSize ||
+        if(!error && (offset+sizeof(remote)>entry.modBaseSize ||
            !ReadProcessMemory(process,entry.modBaseAddr+offset,remote,sizeof(remote),&received) ||
-           received!=sizeof(remote) || memcmp(remote,(const void *)(uintptr_t)callback,sizeof(remote)))
+           received!=sizeof(remote) || memcmp(remote,(const void *)(uintptr_t)callback,sizeof(remote))))
             error=ERROR_REVISION_MISMATCH;
         CloseHandle(process);break;
     }while(Module32NextW(list,&entry));
