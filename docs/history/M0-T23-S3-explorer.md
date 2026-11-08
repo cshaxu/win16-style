@@ -110,3 +110,21 @@ launcher will refuse to apply the new hook to that process rather than use the
 wrong code offset. Restarting that host is needed to load the new DLL. The
 user's shared shell was not terminated during this delivery. S3 remains open
 for owner acceptance and the previously stated concurrent-attribution limit.
+
+## Additional physical menu observation
+
+At the owner's confirmed time, a native probe switched briefly to a private
+desktop containing its own Explorer shell and folders. The standard published
+launcher attached the new folder; a prior folder in that shell remained
+unattached. At 144 DPI, `WindowFromPoint` confirmed the target under the
+system-button coordinate, and an actual mouse click opened a visible menu.
+The original desktop and pointer were restored, and the owned shell exited.
+
+The probe then rejected the menu because its popup handle differed from
+`GetSystemMenu`, so it did not move over an item. A separate no-switch private
+desktop inspection found the popup in the target process, with the expected
+system command IDs and a Win16-style static capture. The probe was corrected
+to validate the owner and command IDs; a no-switch preparation also confirmed
+the two menu item rectangles are available. The corrected physical hover test
+has not yet run. These observations do not prove hover selection, absence of
+flicker, menu command execution, live dragging, or other DPI behavior.
