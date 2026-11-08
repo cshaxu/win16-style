@@ -47,7 +47,14 @@ Close Tab brought it back to 3. Selecting This PC changed the window title to
 This PC and the frame still reported attached. This checks these specific
 provider operations, not physical mouse input or every navigation path. The
 ShellWindows automation collection did not return the private-desktop window,
-so that separate navigation method was not exercised.
+so that separate navigation method was not exercised. Additional PrintWindow
+samples after each tab operation and the This PC navigation showed the Win16
+caption. Removing the window attachment on the same owned window succeeded,
+the attachment query became false, and a sample showed the native Explorer
+caption again; the DLL remained pinned until the owned shell exited. Three
+synthetic hover messages left the system menu visible but did not produce a
+highlighted menu state, so they do not establish working mouse hover or absence
+of flicker.
 
 These checks do not prove physical mouse clicks, hover flicker, live dragging,
 other Explorer tab/navigation operations, all DPI configurations, or every concurrent

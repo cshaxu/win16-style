@@ -1575,3 +1575,4 @@ S3 s3-package1：同批四文件实际包29项聚焦回归全部通过、无跳�
 S3 登记 scratch：build/t23-package/s3-publish1，备份并发布 s3-clean1 同批四文件至 assets 根目录和 O:/winnt，逐项核对测试摘要；保持 S3 开放待用户验收。
 S3 s3-publish1：已发布 s3-clean1 同批四文件到 assets 根目录与 O:/winnt，两处摘要均与 s3-package1 一致；未改系统设置。准备提交和远端复核，用户实际桌面验收仍待完成。
 S3 发布后补充私有桌面验证：使用 O:/winnt 实包的自建 Explorer 窗口，以 UI Automation 调用 Add New Tab，观察 tab 项由3增至6；调用 Close Tab 恢复3；选择 This PC 后窗口标题变为 This PC 且附着查询仍为1，既有窗口未附着；自有 shell 已结束。此为对应辅助功能路径，不证明物理鼠标、拖拽或所有导航。ShellWindows 集合未返回私有窗口，未执行该方式导航，不计失败或通过。P1 4b9f164a 已推送，实际远端提交与四文件及关键源码摘要已复核。
+S3 发布包私有窗口重绘与移除补测：标签新建、关闭及选择 This PC 后分别用 PrintWindow 采样，三次仍可见 Win16 标题；同一自建窗口调用线程移除入口返回成功，附着查询由1变0，采样显示原生 Explorer 标题恢复；DLL 仍固定于目标直到该自有 shell 退出。三次菜单 WM_MOUSEMOVE 消息后菜单保持可见，但菜单项高亮均为0，悬停交互不计通过，也不能证明物理鼠标无闪烁；自有 shell 已清理。
