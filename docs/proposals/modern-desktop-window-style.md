@@ -32,8 +32,8 @@ WinUI 是界面框架，UWP 是应用模型；两者不能当成互斥分类。
 | S | Work and exit evidence |
 | --- | --- |
 | S1 (closed) | Notepad: native frame restoration, standard `run16s notepad` launch handoff, tab/menu preservation, actual package tests and publication for acceptance. |
-| S2 (active) | Task Manager: standard `run16s taskmgr`, privilege and native frame verification. |
-| S3 | Explorer folder windows: standard `run16s explorer`, shared-shell boundaries; preserve desktop/taskbar. |
+| S2 (closed, limited) | Task Manager: standard launch and frame attached; duplicate icon, white strip and resize flicker remain in TODO by owner decision. |
+| S3 (active) | Explorer folder windows: standard `run16s explorer`, shared-shell boundaries; preserve desktop/taskbar. |
 | S4 | Terminal and console hosting: standard `run16s cmd` and `run16s conhost`, identify actual window host and preserve console/session semantics; Terminal separately verified. |
 | 待准入 | Codex Desktop and Chrome: classify actual window ownership and verify frame behavior on test-owned instances. |
 | 待准入 | Consolidated regression and closure audit across the standard launch commands and tested applications. |

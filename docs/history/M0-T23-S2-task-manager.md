@@ -58,3 +58,9 @@ The original user request, unchanged S2 evidence, and individual experiments
 remain recorded in CURRENT and the registered scratch logs pending review.
 Remote verification and S2 closure are recorded separately after the delivery
 commit is pushed; the next work is Explorer folder windows under T23 S3.
+
+P1 `6afe94200f9014e94db891c2082db4fd6d68ed23` was pushed to origin/main.
+The four assets, the frame dispatch and elevation source files, and this record
+were read from the actual remote commit and each SHA-256 matched local content.
+The owner explicitly directed limited S2 closure with the outstanding defects
+retained in TODO; that decision is not a visual pass. T23 S3 Explorer is next.

@@ -3,10 +3,10 @@
 ## Current Work
 
 M0 T23 保持开放。S1 记事本已验收通过并收口；用户确认系统菜单不再闪烁。
-用户要求 S2 Task Manager 按当前有限成果收口并转入后续程序，不再继续要求用户批准 Task Manager UAC；顶部重复图标、白条和拖动标题丢帧转入 TODO，不能记作已修复。双宽干净包、29 项实际包聚焦及14项核心/注入回归通过，四文件已发布 assets 和 O:/winnt；[有限交付记录](../history/M0-T23-S2-task-manager.md)。提交推送及远端复核前 S2 尚未关闭。
+S2 Task Manager 按用户要求有限收口，不再继续要求用户批准该项 UAC；顶部重复图标、白条和拖动标题丢帧转入 TODO，不能记作已修复。双宽干净包、29 项实际包聚焦及14项核心/注入回归通过，四文件已发布 assets 和 O:/winnt，P1 `6afe9420` 已推送并逐项读取远端复核；[有限交付记录](../history/M0-T23-S2-task-manager.md)。准入 S3 Explorer，先识别真实窗口承载及共享 Shell 边界。
 P6 `e37da0db` 四文件已发布至 assets 根目录及 O:/winnt，双宽构建、核心10项及实包29项通过；最终真实菜单截图复核未完成，不计通过。
 详细记录见 [S1交付](../history/M0-T23-S1-notepad-delivery.md)和[菜单修复](../history/M0-T23-S1-system-menu-hover.md)。
-已按用户确认的顺序准入 S2 Task Manager，先验证标准启动、提权和实际窗口；已有 Task Manager PID26784 不属于本任务，不操作。保留登记的 S1 scratch，待核对仍映射的旧 DLL 后安全清理。
+按用户确认的顺序准入 S3 Explorer；保留已有用户桌面、任务栏和文件夹窗口，不以进程名批量操作。保留登记的 S1/S2 scratch，核验仍映射的旧 DLL 后安全清理。
 
 登记scratch：build/t23-package/s2-launch1，Task Manager 自有挂起创建、隔离桌面启动与权限诊断。
 登记scratch：build/t23-package/s2-uac-build1，双位宽增量构建自提权探针。
@@ -76,26 +76,26 @@ x86 同一自有对照：父 PID8328 加载 O:/winnt/ntw16s32.dll，提权子 PI
 父窗口附着增强对照：PID4828 的 DLL 路径为 O:/winnt/ntw16s64.dll，attached=1；同次启动器 PID27616 已退出但未产生子进程报告，未捕获退出码或 UAC 结果，子进程部分不计通过或失败。
 原生挂起创建成功 error0，进程立即回收；隔离桌面 run16s --wait taskmgr 返回0x80004004，未发现自有窗口，不能计通过；直接启动同一隔离桌面对照同样返回0x80004004且无自有窗口；目前不能归因于注入。现有PID26784仍存活，隔离桌面或Job及单实例交互的原因待查。用户退出既有实例后普通桌面标准启动产生Taskmgr PID26460（父4448已退出），TaskManagerWindow在144DPI显示；管理员只读模块检查只发现系统XAML，未发现ntw16s DLL，需定位中转及权限边界；本次实例普通权限无法结束，已核验身份后管理员关闭。复用原生调试器观察标准启动：run16s PID26676创建Taskmgr PID14784，后者加载O:/winnt/ntw16s64.dll并以0x80004004退出；最终Taskmgr PID21116的父进程为14784，管理员只读检查无ntw16s模块。仅记录观察，提升或创建API尚未确定。
 
-## M0 T23 S2 Packet
+## M0 T23 S3 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | New |
-| Admission And Approval | 用户批准 S1记事本、S2 taskmgr、S3 explorer 的顺序，要求标准 run16s taskmgr 跑通。 |
-| Objective | 验证并实现 Task Manager 窗口 Win16 外框，保留应用交互和恢复。 |
-| Non-goals | 不处理内部控件或其他应用；不修改系统注册表、安全设置或已有进程。 |
-| Reference Baseline | S1 P6 e37da0db，四文件0.23.0.0已发布。 |
+| Admission And Approval | 用户要求按 S1 记事本、S2 Task Manager、S3 Explorer 的顺序继续；S2 按用户决定有限收口。 |
+| Objective | 调研并实现标准 run16s explorer 的文件夹窗口 Win16 外框，保留标签、导航、窗口操作及恢复。 |
+| Non-goals | 不处理客户区 XAML 控件；不修改系统注册表或安全设置，不改变用户已有桌面、任务栏和窗口。 |
+| Reference Baseline | S2 P1 6afe9420，四文件已发布并实际读取远端复核；S2 视觉遗留见 TODO。 |
 | Candidate Proposal | docs/proposals/modern-desktop-window-style.md |
-| Files And ABI Surface | 先观察标准启动与窗口路径，优先复用现有renderer和启动机制；必要改动按证据记录。 |
+| Files And ABI Surface | 先识别新建文件夹窗口的进程转交、线程与合成宿主；优先复用现有 renderer，ABI 变化先记录并核验。 |
 | Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT；M0、C17、GCC、Ninja、ccache。 |
-| Verification | 自有实例原生探针；分离启动、提权、进程身份、模块、附着、绘制、交互及恢复；失败和跳过分别记录。 |
-| Expected Markers | 标准命令下目标窗口实际绘制Win16外框并保持原应用交互，移除后尽力恢复。 |
+| Verification | 优先私有桌面及自有窗口原生探针；分离标准启动、转交、进程身份、附着、绘制、标签/导航、窗口操作和恢复；失败、跳过与共享进程影响分别记录。 |
+| Expected Markers | 标准命令创建的目标文件夹窗口显示 Win16 外框并保留标签导航及窗口操作；桌面、任务栏和用户既有窗口不受影响。 |
 | Asset Needs | 不改原资源；二进制改变时同批四文件发布assets和O:/winnt并核对。 |
 | Reporting Requirements | 明确路径、权限、运行证据、测试边界、发布提交推送和未解决事项。 |
-| Stop Conditions | 不操作用户已有进程或修改安全策略；UAC等待按用户已授权方式处理。 |
-| Exit Criteria | 标准启动、真实窗口效果及交互验证、必要回归和按规范交付后等待验收。 |
-| Original Owner Request | run16s taskmgr 标准命令跑通，并按已确认顺序完成S2。 |
-| Similar-Issue Sweep | 对照Notepad中转、UWP宿主和既有提权路径，不据模块加载推断绘制成功。 |
+| Stop Conditions | 不结束共享 Explorer，不修改用户既有窗口或系统设置；隔离失败时记录并继续不依赖该操作的工作。 |
+| Exit Criteria | 有限范围内完成标准启动、真实窗口及交互验证、必要回归和按规范交付；未知与不支持项明确记录。 |
+| Original Owner Request | Task Manager 先按现状收口，继续后续程序；按既定顺序执行 Explorer，并支持 run16s explorer。 |
+| Similar-Issue Sweep | 对照记事本中转、Task Manager 的客户区偏移、现有全局共享 Shell 排除及两种合成子窗口类，不据模块加载推断绘制成功。 |
 
 ## Historical delivery notes
 
