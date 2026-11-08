@@ -141,3 +141,23 @@ the Win16 menu and expected highlights. The probe restored the original input
 desktop and pointer and ended its own shell. This verifies these two hover
 positions, not the absence of transient flicker, command execution, live
 dragging, other DPI values, or owner acceptance.
+
+## Explorer navigation frame regression
+
+The owner reported that navigating between folders restores a system-looking
+caption. A private-desktop actual-screen test reproduced the regression when
+navigating to This PC. The folder remained attached in a separate control and
+DWM reported non-client rendering disabled; these facts do not identify the
+source of the system-looking pixels. Window, client and XAML bridge geometry
+remained unchanged. The visible residue persisted for two seconds and after
+requesting parent and bridge redraw. Focus-only and externally setting the
+title alone did not reproduce it in these bounded tests.
+
+A candidate coalesced delayed frame repaint after XAML-host title updates.
+Dual-width frame model tests passed, but actual screen navigation still showed
+residual system caption pixels. In a separate diagnostic, a temporary
+subclass on a self-created window suppressed WM_SETTEXT; the address and
+content visibly changed to This PC while a system caption still appeared.
+The temporary subclass was removed and the private desktop restored. This
+diagnostic is not a product solution. The delayed-title candidate and its
+tests were withdrawn; root cause and a verified fix remain open.
