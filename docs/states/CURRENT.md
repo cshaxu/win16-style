@@ -2,7 +2,9 @@
 
 ## Current Work
 
-M0 T23 保持开放。S1 记事本已验收通过并收口；S3 Explorer 已获用户手动验收并收口；S4 Terminal/cmd/conhost 基本通过用户验收，有限收口；S5 Codex Desktop 按用户要求跳过，未实现或验收；S6 Chrome 准入。
+无活动任务包；T23 后续汇总回归和收口审计待准入。
+
+M0 T23 保持开放。S1 记事本已验收通过并收口；S3 Explorer 已获用户手动验收并收口；S4 Terminal/cmd/conhost 基本通过用户验收，有限收口；S5 Codex Desktop 按用户要求跳过，未实现或验收；S6 Chrome 已获用户验收，收口；T23 汇总回归和收口审计待执行。
 S2 Task Manager 按用户要求有限收口，不再继续要求用户批准该项 UAC；顶部重复图标、白条和拖动标题丢帧转入 TODO，不能记作已修复。双宽干净包、29 项实际包聚焦及14项核心/注入回归通过，四文件已发布 assets 和 O:/winnt，P1 `6afe9420` 已推送并逐项读取远端复核；[有限交付记录](../history/M0-T23-S2-task-manager.md)。准入 S3 Explorer，先识别真实窗口承载及共享 Shell 边界。
 P6 `e37da0db` 四文件已发布至 assets 根目录及 O:/winnt，双宽构建、核心10项及实包29项通过；最终真实菜单截图复核未完成，不计通过。
 详细记录见 [S1交付](../history/M0-T23-S1-notepad-delivery.md)和[菜单修复](../history/M0-T23-S1-system-menu-hover.md)。
@@ -212,28 +214,7 @@ s6-remove2 对同批候选的自有 Chrome 验证：附着且表面存在，移�
 
 s6-package4 串行同批实际包聚焦29项通过、零跳过；s6-publish2 已将最终同批四文件发布到 assets 和 O:/winnt 并核对摘要，取代包含移除缺口的前一候选。实屏 Chrome 视觉和交互仍未验证，等待用户验收。
 
-S6 P1 `01e485c4` 已推送并读取远端 main 核对；两处发布文件与测试候选摘要相同。代码变更范围：frame_font.c +3/-0，attachment.c +6/-2；保留原渲染器及移除路径，未引入第二套绘制。正式包、提交和远端核对后，s6-clean4、s6-package4、s6-publish1、s6-publish2 临时构建、测试输出与发布备份已清理；失败原始输出和交付摘要保留在 history。S6 等待用户实屏验收，T23 保持开放。
-
-## M0 T23 S6 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | New |
-| Admission And Approval | 用户要求跳过 Codex，继续此前指定的 Chrome。 |
-| Objective | 验证并按需实现标准 run16s 启动 Chrome 的 Win16 外框和正常浏览器生命周期。 |
-| Non-goals | 不改客户区控件、用户已有浏览器会话、注册表或系统安全设置；不预称 Codex 或其他宿主兼容。 |
-| Reference Baseline | S4 产品提交 1b46f186；四文件已发布至 assets 与 O:/winnt，摘要一致。 |
-| Candidate Proposal | docs/proposals/modern-desktop-window-style.md |
-| Files And ABI Surface | 先确认窗口承载与启动转交，再按证据选择公共外框和启动接入；变动导出需 ABI 审核。 |
-| Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT；M0、C17、GCC、Ninja、ccache。 |
-| Verification | 自建独立 profile 及私有桌面；分别验证标准启动、目标身份、进程存活、DLL、附着、实际绘制、标签和标题区交互及恢复；适用的双位宽和普通启动回归。 |
-| Expected Markers | 标准命令目标窗口采用 Win16 外框并保留标题区功能；已有会话不受影响。 |
-| Asset Needs | 保留原图形及声明；二进制变化时同批四文件发布 assets 与 O:/winnt 并核对。 |
-| Reporting Requirements | 区分实际宿主与新建/现有会话，记录失败、跳过、恢复限制与用户验收。 |
-| Stop Conditions | 不结束无关进程或修改系统安全设置；按永久授权可关闭经核验的发布占用者。 |
-| Exit Criteria | 完成范围内实现、实际应用与回归验证、构建发布推送和用户验收；不支持情形有具体证据。 |
-| Original Owner Request | 跳过 Codex，继续验证 Chrome 的 Win16 窗口外框。 |
-| Similar-Issue Sweep | 检查进程转交、多窗口身份、已有会话、标题区及退出恢复，不以单一类名推断。 |
+S6 P1 `01e485c4` 已推送并读取远端 main 核对；两处发布文件与测试候选摘要相同。代码变更范围：frame_font.c +3/-0，attachment.c +6/-2；保留原渲染器及移除路径，未引入第二套绘制。正式包、提交和远端核对后，s6-clean4、s6-package4、s6-publish1、s6-publish2 临时构建、测试输出与发布备份已清理；失败原始输出和交付摘要保留在 history。用户确认 Chrome 验收通过，S6 收口；两轮私有桌面未释放原因仍未知，T23 保持开放。
 
 ## Historical delivery notes
 

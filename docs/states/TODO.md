@@ -2,6 +2,8 @@
 
 # Deferred Debt
 
+- [ ] TODO(Medium): T23 S6 两轮并行实包测试中私有桌面未释放；Owner：后续可复现的测试生命周期调查。Evidence：[原始失败输出](../history/M0-T23-S6-package-failures.md)；串行29项及单独对应位宽测试通过，原因仍未知，不能把失败视为已修复。Admission：复现并定位持有者和释放路径，不放宽桌面清理断言。
+
 - [ ] TODO(Medium): Codex Desktop 无标题栏窗口 Win16 外框未实现或验收；Owner：后续用户准入的 Codex 适配。Evidence：T23 S5 模型及安装包只读调查见 CURRENT；用户要求先跳过。Admission：具备自有真实实例并验证标题区、样式归属、重绘、交互和恢复；不得把模型通过作为实际程序通过。
 
 - [ ] TODO(Medium): Windows Terminal 自绘 XAML 标题区仍显示原生最小化、最大化和关闭按钮，与 Win16 外框按钮重复；Owner：后续明确准入的标题区适配。Evidence：T23 S4 实例中隐藏拖拽 HWND 和清除窗口最小化/最大化样式位均未隐藏 XAML 按钮；用户基本验收通过。Admission：保留标签、可访问性与按钮交互，验证实际布局和恢复，不把控件隐藏等同于外框接管。
