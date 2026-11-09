@@ -1,6 +1,7 @@
 #define COBJMACROS
 #include "button_style.h"
 #include "button_template.h"
+#include "checkbox_template.h"
 #include <oleauto.h>
 #include <roapi.h>
 #include <winstring.h>
@@ -79,7 +80,16 @@ HRESULT win16_xaml_button_apply(IVisualTreeService *service, IXamlDiagnostics *d
     reader *factory=NULL;
     IInspectable *style=NULL;
     InstanceHandle target=0,value=0;
-    const wchar_t *markup=win16_xaml_button_template();
+    HSTRING runtime_name=NULL;
+    const wchar_t *markup=NULL;
+    if (SUCCEEDED(hr)) hr=IInspectable_GetRuntimeClassName(button,&runtime_name);
+    if (SUCCEEDED(hr) && runtime_name) {
+        const wchar_t *runtime=WindowsGetStringRawBuffer(runtime_name,NULL);
+        if (!wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.Button")) markup=win16_xaml_button_template();
+        else if (!wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.CheckBox")) markup=win16_xaml_checkbox_template();
+    }
+    if (SUCCEEDED(hr) && !markup) hr=HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
+    if (runtime_name) WindowsDeleteString(runtime_name);
     if (SUCCEEDED(hr)) hr=WindowsCreateString(name_value,(UINT32)(ARRAYSIZE(name_value)-1),&name);
     if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&reader_iid,(void **)&factory);
     if (SUCCEEDED(hr)) hr=WindowsCreateString(markup,(UINT32)lstrlenW(markup),&text);
@@ -90,7 +100,7 @@ HRESULT win16_xaml_button_apply(IVisualTreeService *service, IXamlDiagnostics *d
     if (SUCCEEDED(hr)) {
         IInspectable_AddRef(button);
         state->button=button; state->installed_style=style; style=NULL;
-        state->property_index=index; state->thread_id=GetCurrentThreadId();
+        state->property_index=index; state->thread_id=GetCurrentThreadId(); state->handle=target;
     }
     if (style) IInspectable_Release(style);
     if (factory) factory->vtable->release(factory);

@@ -5,4 +5,5 @@
 void ntw16s_xaml_start(void);
 /* Stop styling on its owning UI thread; disconnection runs on a worker. */
 HRESULT ntw16s_xaml_stop(void);
+HRESULT ntw16s_xaml_remove_window(HWND window);
 #endif

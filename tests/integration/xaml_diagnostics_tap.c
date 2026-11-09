@@ -11,6 +11,7 @@
 #include <wchar.h>
 #include <stdio.h>
 #include "lib-win32/win16-control-xaml/button_template.h"
+#include "lib-win32/win16-control-xaml/checkbox_template.h"
 #include "lib-win32/win16-control-xaml/button_style.h"
 #include "lib-win32/win16-control-xaml/visual_tree.h"
 #include "lib-win32/win16-control-xaml/session.h"
@@ -510,6 +511,236 @@ static DWORD WINAPI test_wrong_thread(LPVOID context)
     return (DWORD)win16_xaml_button_set_discard((win16_xaml_button_set *)context);
 }
 
+typedef struct test_control test_control;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_control *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_control *);
+    ULONG (STDMETHODCALLTYPE *release)(test_control *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(test_control *,ULONG *,IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(test_control *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(test_control *,TrustLevel *);
+    void (STDMETHODCALLTYPE *unused[55])(void);
+    HRESULT (STDMETHODCALLTYPE *apply_template)(test_control *,boolean *);
+} test_control_vtable;
+struct test_control { const test_control_vtable *vtable; };
+typedef struct test_ui test_ui;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_ui *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_ui *);
+    ULONG (STDMETHODCALLTYPE *release)(test_ui *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(test_ui *,ULONG *,IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(test_ui *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(test_ui *,TrustLevel *);
+    void (STDMETHODCALLTYPE *unused[3])(void);
+    HRESULT (STDMETHODCALLTYPE *get_opacity)(test_ui *,double *);
+} test_ui_vtable;
+struct test_ui { const test_ui_vtable *vtable; };
+static const IID test_ui_iid={0xc3c01020,0x320c,0x5cf6,{0x9d,0x24,0xd3,0x96,0xbb,0xfa,0x4d,0x8b}};
+typedef struct test_toggle test_toggle;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_toggle *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_toggle *);
+    ULONG (STDMETHODCALLTYPE *release)(test_toggle *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(test_toggle *,ULONG *,IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(test_toggle *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(test_toggle *,TrustLevel *);
+    HRESULT (STDMETHODCALLTYPE *get_checked)(test_toggle *,IUnknown **);
+    HRESULT (STDMETHODCALLTYPE *put_checked)(test_toggle *,IUnknown *);
+    HRESULT (STDMETHODCALLTYPE *get_three)(test_toggle *,boolean *);
+    HRESULT (STDMETHODCALLTYPE *put_three)(test_toggle *,boolean);
+} test_toggle_vtable;
+struct test_toggle { const test_toggle_vtable *vtable; };
+static const IID test_toggle_iid={0x686fbaa4,0xc866,0x568b,{0x8f,0x75,0x48,0x1d,0x8d,0x54,0x52,0x91}};
+typedef struct test_window test_window;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_window *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_window *);
+    ULONG (STDMETHODCALLTYPE *release)(test_window *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(test_window *,ULONG *,IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(test_window *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(test_window *,TrustLevel *);
+    void (STDMETHODCALLTYPE *unused0[2])(void);
+    HRESULT (STDMETHODCALLTYPE *get_content)(test_window *,IInspectable **);
+    HRESULT (STDMETHODCALLTYPE *put_content)(test_window *,IInspectable *);
+    void (STDMETHODCALLTYPE *unused1[16])(void);
+    HRESULT (STDMETHODCALLTYPE *activate)(test_window *);
+    HRESULT (STDMETHODCALLTYPE *close)(test_window *);
+} test_window_vtable;
+struct test_window { const test_window_vtable *vtable; };
+static const IID test_window_iid={0x61f0ec79,0x5d52,0x56b5,{0x86,0xfb,0x40,0xfa,0x4a,0xf2,0x88,0xb0}};
+
+static HRESULT check_checkbox_states(IInspectable *checkbox)
+{
+    static const wchar_t tree_name[]=L"Microsoft.UI.Xaml.Media.VisualTreeHelper";
+    static const wchar_t vsm_name[]=L"Microsoft.UI.Xaml.VisualStateManager";
+    static const wchar_t *states[]={L"Unchecked",L"Checked",L"Indeterminate"};
+    static const double expected[][2]={{0,0},{1,0},{0,1}};
+    HSTRING name=NULL; winui_tree *tree=NULL; winui_vsm *manager=NULL; test_control *control=NULL;
+    test_toggle *toggle=NULL; __x_ABI_CWindows_CFoundation_CIPropertyValueStatics *properties=NULL;
+    IInspectable *root=NULL,*box=NULL,*grid=NULL,*mark=NULL,*mixed=NULL,*focus=NULL,*dep=NULL;
+    test_ui *ui[2]={0},*focus_ui=NULL; boolean applied=0;
+    HRESULT hr=IInspectable_QueryInterface(checkbox,&winui_control_iid,(void **)&control);
+    if (SUCCEEDED(hr)) hr=control->vtable->apply_template(control,&applied);
+    if (SUCCEEDED(hr) && !applied) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(tree_name,(UINT32)(ARRAYSIZE(tree_name)-1),&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_tree_iid,(void **)&tree);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(checkbox,&winui_dependency_iid,(void **)&dep);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,0,&root);
+    if (dep) { IInspectable_Release(dep); dep=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(root,&winui_dependency_iid,(void **)&dep);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,0,&box);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,1,&focus);
+    if (dep) { IInspectable_Release(dep); dep=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(focus,&test_ui_iid,(void **)&focus_ui);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(box,&winui_dependency_iid,(void **)&dep);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,0,&grid);
+    if (dep) { IInspectable_Release(dep); dep=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(grid,&winui_dependency_iid,(void **)&dep);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,0,&mark);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,1,&mixed);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(mark,&test_ui_iid,(void **)&ui[0]);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(mixed,&test_ui_iid,(void **)&ui[1]);
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(vsm_name,(UINT32)(ARRAYSIZE(vsm_name)-1),&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_vsm_iid,(void **)&manager);
+    static const wchar_t *common_states[]={L"Normal",L"PointerOver",L"Pressed",L"Disabled"};
+    for (unsigned int i=0;SUCCEEDED(hr) && i<ARRAYSIZE(common_states);i++) {
+        HSTRING state=NULL; boolean changed=0;
+        hr=WindowsCreateString(common_states[i],(UINT32)lstrlenW(common_states[i]),&state);
+        if (SUCCEEDED(hr)) hr=manager->vtable->go_to_state(manager,(IInspectable *)control,state,0,&changed);
+        if (SUCCEEDED(hr) && !changed) hr=E_FAIL;
+        if (state) WindowsDeleteString(state);
+    }
+    if (SUCCEEDED(hr)) {
+        HSTRING state=NULL; boolean changed=0;
+        hr=WindowsCreateString(L"Normal",6,&state);
+        if (SUCCEEDED(hr)) hr=manager->vtable->go_to_state(manager,(IInspectable *)control,state,0,&changed);
+        if (SUCCEEDED(hr) && !changed) hr=E_FAIL;
+        if (state) WindowsDeleteString(state);
+    }
+    static const wchar_t *focus_states[]={L"Focused",L"Unfocused"};
+    for (unsigned int i=0;SUCCEEDED(hr) && i<ARRAYSIZE(focus_states);i++) {
+        HSTRING state=NULL; boolean changed=0; double opacity=-1;
+        hr=WindowsCreateString(focus_states[i],(UINT32)lstrlenW(focus_states[i]),&state);
+        if (SUCCEEDED(hr)) hr=manager->vtable->go_to_state(manager,(IInspectable *)control,state,0,&changed);
+        if (SUCCEEDED(hr) && !changed) hr=E_FAIL;
+        if (SUCCEEDED(hr)) hr=focus_ui->vtable->get_opacity(focus_ui,&opacity);
+        if (SUCCEEDED(hr) && opacity!=(i==0 ? 1.0 : 0.0)) hr=E_FAIL;
+        if (state) WindowsDeleteString(state);
+    }
+    for (unsigned int i=0;SUCCEEDED(hr) && i<ARRAYSIZE(states);i++) {
+        HSTRING state=NULL; boolean changed=0;
+        hr=WindowsCreateString(states[i],(UINT32)lstrlenW(states[i]),&state);
+        if (SUCCEEDED(hr)) hr=manager->vtable->go_to_state(manager,(IInspectable *)control,state,0,&changed);
+        if (SUCCEEDED(hr) && !changed) hr=E_FAIL;
+        for (unsigned int j=0;SUCCEEDED(hr) && j<2;j++) {
+            double opacity=-1; hr=ui[j]->vtable->get_opacity(ui[j],&opacity);
+            if (SUCCEEDED(hr) && opacity!=expected[i][j]) hr=E_FAIL;
+        }
+        if (state) WindowsDeleteString(state);
+    }
+    if (SUCCEEDED(hr)) {
+        HSTRING state=NULL; boolean changed=0;
+        hr=WindowsCreateString(L"Unchecked",9,&state);
+        if (SUCCEEDED(hr)) hr=manager->vtable->go_to_state(manager,(IInspectable *)control,state,0,&changed);
+        if (SUCCEEDED(hr) && !changed) hr=E_FAIL;
+        if (state) WindowsDeleteString(state);
+    }
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Windows.Foundation.PropertyValue",32,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&IID___x_ABI_CWindows_CFoundation_CIPropertyValueStatics,(void **)&properties);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(checkbox,&test_toggle_iid,(void **)&toggle);
+    if (SUCCEEDED(hr)) hr=toggle->vtable->put_three(toggle,1);
+    for (unsigned int i=0;SUCCEEDED(hr) && i<ARRAYSIZE(states);i++) {
+        IInspectable *boxed=NULL; IUnknown *reference=NULL;
+        if (i<2) hr=__x_ABI_CWindows_CFoundation_CIPropertyValueStatics_CreateBoolean(properties,(boolean)i,&boxed);
+        if (SUCCEEDED(hr) && boxed) hr=IInspectable_QueryInterface(boxed,&IID___FIReference_1_boolean,(void **)&reference);
+        if (SUCCEEDED(hr)) hr=toggle->vtable->put_checked(toggle,reference);
+        for (unsigned int j=0;SUCCEEDED(hr) && j<2;j++) {
+            double opacity=-1; hr=ui[j]->vtable->get_opacity(ui[j],&opacity);
+            if (SUCCEEDED(hr) && opacity!=expected[i][j]) hr=E_FAIL;
+        }
+        if (reference) IUnknown_Release(reference);
+        if (boxed) IInspectable_Release(boxed);
+    }
+    if (toggle) toggle->vtable->release(toggle);
+    if (properties) __x_ABI_CWindows_CFoundation_CIPropertyValueStatics_Release(properties);
+    if (ui[1]) ui[1]->vtable->release(ui[1]);
+    if (ui[0]) ui[0]->vtable->release(ui[0]);
+    if (focus_ui) focus_ui->vtable->release(focus_ui);
+    if (manager) manager->vtable->release(manager);
+    if (dep) IInspectable_Release(dep);
+    if (mixed) IInspectable_Release(mixed);
+    if (mark) IInspectable_Release(mark);
+    if (grid) IInspectable_Release(grid);
+    if (box) IInspectable_Release(box);
+    if (focus) IInspectable_Release(focus);
+    if (root) IInspectable_Release(root);
+    if (tree) tree->vtable->release(tree);
+    if (control) control->vtable->release(control);
+    if (name) WindowsDeleteString(name);
+    return hr;
+}
+
+static HRESULT test_checkbox_apply(void)
+{
+    const wchar_t runtime[]=L"Microsoft.UI.Xaml.Controls.CheckBox";
+    const wchar_t window_runtime[]=L"Microsoft.UI.Xaml.Window";
+    HSTRING name=NULL; IInspectable *checkbox=NULL,*window_object=NULL,*element=NULL;
+    test_window *window=NULL; win16_xaml_adapter adapter={0};
+    VisualElement element_info={0}; ParentChildRelation relation={0};
+    unsigned int source=0,index=0;
+    HRESULT hr=WindowsCreateString(runtime,(UINT32)(ARRAYSIZE(runtime)-1),&name);
+    if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&checkbox);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(window_runtime,(UINT32)(ARRAYSIZE(window_runtime)-1),&name);
+    if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&window_object);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(window_object,&test_window_iid,(void **)&window);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(checkbox,&test_ui_iid,(void **)&element);
+    if (SUCCEEDED(hr)) hr=window->vtable->put_content(window,element);
+    if (SUCCEEDED(hr)) hr=window->vtable->activate(window);
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    if (SUCCEEDED(hr)) {
+        element_info.Type=(BSTR)runtime;
+        /* Exercise root scanning with a real CheckBox as the root. */
+        relation.Parent=0;
+        hr=IXamlDiagnostics_GetHandleFromIInspectable(diagnostics,checkbox,&element_info.Handle);
+        if (SUCCEEDED(hr)) hr=win16_xaml_adapter_change(&adapter,relation,element_info,Add,NULL);
+        if (hr==S_FALSE) hr=E_FAIL;
+    }
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,checkbox,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceLocal) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=check_checkbox_states(checkbox);
+    if (SUCCEEDED(hr)) {
+        hr=win16_xaml_adapter_change(&adapter,relation,element_info,Remove,NULL);
+        if (hr==S_FALSE) hr=E_FAIL;
+        if (SUCCEEDED(hr) && adapter.session.thread_id) hr=E_FAIL;
+    }
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,checkbox,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceDefault) hr=E_FAIL;
+    if (SUCCEEDED(hr)) {
+        relation.Parent=1; /* Also exercise the direct element-notification path. */
+        hr=win16_xaml_adapter_change(&adapter,relation,element_info,Add,NULL);
+        if (hr==S_FALSE) hr=E_FAIL;
+    }
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,checkbox,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceLocal) hr=E_FAIL;
+    if (adapter.service) {
+        HRESULT removed=win16_xaml_adapter_stop(&adapter);
+        if (SUCCEEDED(hr)) hr=removed;
+    }
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,checkbox,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceDefault) hr=E_FAIL;
+    if (adapter.session.service) (void)win16_xaml_button_set_discard(&adapter.session.buttons);
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    if (window) { (void)window->vtable->close(window); window->vtable->release(window); }
+    if (element) IInspectable_Release(element);
+    if (window_object) IInspectable_Release(window_object);
+    if (checkbox) IInspectable_Release(checkbox);
+    if (name) WindowsDeleteString(name);
+    return hr;
+}
+
 static void test_template_parse(void)
 {
     static const wchar_t reader_name[]=L"Microsoft.UI.Xaml.Markup.XamlReader";
@@ -518,11 +749,16 @@ static void test_template_parse(void)
     HSTRING name=NULL,text=NULL;
     reader *factory=NULL;
     IInspectable *style=NULL;
-    const wchar_t *markup=win16_xaml_button_template();
+    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_CHECKBOX_TEST",NULL,0)
+        ? win16_xaml_checkbox_template() : win16_xaml_button_template();
     HRESULT hr=WindowsCreateString(reader_name,(UINT32)(ARRAYSIZE(reader_name)-1),&name);
     if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_reader_iid,(void **)&factory);
     if (SUCCEEDED(hr)) hr=WindowsCreateString(markup,(UINT32)lstrlenW(markup),&text);
     if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,text,&style);
+    if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_CHECKBOX_TEST",NULL,0)) {
+        HRESULT checkbox=test_checkbox_apply();
+        signal_named(SUCCEEDED(checkbox) ? L"WIN16_XAML_CHECKBOX_OK_EVENT" : L"WIN16_XAML_FAILED_EVENT");
+    }
     signal_named(SUCCEEDED(hr) && style ? L"WIN16_XAML_PARSE_OK_EVENT" : L"WIN16_XAML_FAILED_EVENT");
     if (style) IInspectable_Release(style);
     if (factory) factory->vtable->release(factory);
@@ -672,6 +908,9 @@ static HRESULT STDMETHODCALLTYPE callback_change(IVisualTreeServiceCallback *sel
         callback_thread_tag=CreateEventW(NULL,TRUE,FALSE,tag_name);
     }
     signal_named(L"WIN16_XAML_TREE_EVENT");
+    /* The template fixture needs a WinUI callback thread, not a Button event. */
+    if (mutation==Add && diagnostics && element.Type &&
+        !wcsncmp(element.Type,L"Microsoft.UI.Xaml.",18)) test_template_parse();
     if (mutation == Add && element.Type) fwprintf(stderr,L"type=%ls handle=%llu parent=%llu children=%u\n",element.Type,
         (unsigned long long)element.Handle,(unsigned long long)relation.Parent,element.NumChildren);
     if (mutation == Add && button_class(element.Type)) {

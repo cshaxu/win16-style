@@ -896,9 +896,9 @@
       "path": "src/ntw16s-dll/attachment.c",
       "source": "src/ntw16s-dll/attachment.c",
       "source_blob": "e467006ab99ada1846f9298b650c30605807466b",
-      "sha256": "532bd85150a413fee3e5babe9d853b131a21c893dc78fca241ea9e0ae6c803c4",
+      "sha256": "d6dcf418ce1e169f8e6c5154ad4d171255a38885a6fe07194e2e1745bdccb1dd",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T15 S4 verified initialized public control roles and native image/PushLike/client-edge support; original notices and resources preserved; T15 S5 verified initialized native/TPageControl tab protocol, native geometry and borrowed image/font painting, pending-install exact ownership and cancellation cleanup; no external code copied, original notices/resources retained; T15 S7 bounded initialized public report-list text scope, exact native custom-draw DC and unchanged app callbacks, independent host System bitmap and ownership/late-view tests; no external code copied or original resources modified; T15 S8 verified initialized native tree protocol and bounded existing System paint scope, native item/font/image/geometry/notifications preserved; exact pending frame ownership and cancellation; ASCII test-thread IME isolation after native no-DLL MSCTF teardown evidence; no external code or original graphics modified; T15 S9 bounded initialized native-v6 progress painter with unchanged public range/position/step/colors/font; old-v5/emulated-state and special-style native fallback; epoch/cancellation guard and existing passive-font ownership; controlled test-thread keyboard state and native positive/negative proofs; no copied external code or original resource changes; T15 S10 initialized trackbar public protocol, exact native custom-draw rectangles/states with original application-requested stages preserved; private extra default-only part stages and per-window native cache invalidation; no font/data/input changes, no external code or original resources changed; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T17 S7 exact VB5 file-list roles and bounded owner-draw DC ownership; self-contained dual-width text/image/input/resource tests and optional authentic sample witness; no external implementation or original resources changed; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T18 S21 scoped observed checklist owner-draw frame, public state and original graphic, no external code or resource changes; T18 S23 bounded v5 TProgressBar static edge, native client and colors retained; dual-width public-protocol and fallback model; T18 S27 exact observed TSpinButton frame scope, native primitive semantics retained, no external code or original graphics changed; T18 S31 verified native STATIC drawing scope, source font and application printing preserved; T18 S54 scoped runtime grid nonclient border/scrollbars with actual public scroll check, guarded retirement and self-owned dual-width model; original resources retained; T18 S57 witnessed VCL toolbar print forwarding, unique zero-command text-only painting and native fallback, dual-width self-owned tests; original graphics retained; T18 S60 witnessed runtime TTabControl native WM_PAINT forwarding, existing public tab protocol and parent lifetime guard; resources preserved; T18 S64 P19 scoped VB6 checkbox list text and retirement witness; T18 S64 P23 real VB5 checkbox list; T18 S64 P30 exact VB MDI frame identity and self-contained public-window model; T18 S64 P36 bounded VB6 UserControl client-edge renderer, pending paint and role retirement, no external code or graphic changes; T18 S64 P47 limited VB6 Data border; T18 S64 P50 bounded VB6 Data navigation graphics; T18 S64 P52 observed VB6 Data 144 DPI; T18 S64: scoped ordinary Delphi group paint witness and native theme text entry, original notices retained; T18 S64: extend witnessed group frame to ordinary TRadioGroup, original notices retained; T18 S64 observed paired Delphi TPanel outer bevel paint scope, caller/parent/clip and native pen preserved; project-authored native tests; no external code or resources copied; T18 S64: disabled ordinary Delphi group frame, state-consistent paint and reentrant-state regression; T18 S64: disabled Delphi panel outer bevel with mid-pair state validation; T18 S64: witnessed Delphi scrollbar role and disabled direct-key native semantics; T18 S64 exact witnessed TLabeledEdit role; T18 S64 witnessed TNumberBox role; T18 S64 witnessed Delphi SysLink protocol and native typography; no graphics or external code changed; T18 S64 delayed text link retry with fresh native witness; T18 S64 witnessed runtime SpinEdit EDIT protocol, native button retained; T18 S64 P110 modern SpinButton bounded theme, bitmap and paint handling; T18 S64 P111 scoped runtime-owned Delphi push button; T18 S64 P112 runtime-owned Delphi checkbox and parent-background regression; T18 S64 P113 Delphi radio parent-background preservation; T18 S64 P114 witnessed runtime-owned editable Delphi combo; T18 S64 P115 verified Delphi dropdown-list combo ownership, role and font lifecycle; T18 S64 P116 verified Delphi simple combo mode; T18 S64 P117 verified simple Delphi status scoped typography; T18 S64 P117 isolated font lease and lifecycle verification; T18 S64 P119 bounded multi-pane status font; T18 S64 P120 ordinary no-border pane text; T18 S64 P121 ANSI RichEdit witness and native chrome; T18 S64 P122 Unicode witness and abnormal paint cleanup; T18 S64 P123 scroll box witness; T18 S64 P124 hotkey witness; T18 S64 P125 native month calendar arrows; T18 S64 P126 selected-date color; T18 S64 P127 bounded native calendar title and query guards; T18 S64 P128 bounded calendar text; T18 S64 P129 witnessed TValueListEditor in-place button; T18 S64 P130 witnessed combo theme and dropdown arrow; T18 S64 popup list native forwarding and nonclient adaptation; T18 S64 short popup list and dynamic scrollbar transitions; T18 S64 value editor native frame; T18 S64 ordinary grids without visible scrollbars; T18 S64 witnessed VCL control bar frame; T18 S64 control bar observed bevel variants; T18 S64 witnessed TMaskEdit; T18 S64 bounded app-owned TDBGrid frame and model; T18 S64 app-owned ANSI DBEdit forwarding witness and negative model; T18 S64 bounded ANSI data combo forwarding witness; T18 S64 P156: bounded same-owner TDBLookupComboBox dropdown paint witness; original resources and notices retained; T18 S64 P158: scoped lookup popup lifecycle and scrollbar rendering; T18 S64 P159: Alt+Down lookup popup creation scope; T18 S64 P160: bounded same-owner TDBNavigator button backgrounds; T18 S64 P161: bounded TMediaPlayer normal/pressed button backgrounds; T18 S64 P162: bounded disabled/focused TMediaPlayer button backgrounds; T18 S64: same-owner Delphi MDI frame identity and lifecycle; T18 S64: modeled TDBLookupListBox nonclient frame and scrollbar; T18 S64: release MDI host reference on failed subclass installation; T18 S64: candidate bounded same-owner TCoolBar grip custom draw and paint scope; T18 S64 P192: extend witnessed native tab attachment to TPageControl, preserve parent and fallback; T18 S64 runtime-owned tree/report native-paint witness and public-protocol reuse; project-authored adaptation, no graphic changes; preserve existing main-EXE list path after package regression; T18 S64 bounded witnessed list view modes, app-owned images and native state preserved; T21 S5 shared creation and late-attachment classifier; T21 S22 native embedded combo button painter extracted; T23 S4 console and Terminal window adaptation and native tests; T23 S6 Chromium composed frame and stock menu font fallback; T23 S7 composed frame reuse for Paint and XamlWindow; T25 S1 WinUI diagnostics start and stop on attached windows",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T15 S4 verified initialized public control roles and native image/PushLike/client-edge support; original notices and resources preserved; T15 S5 verified initialized native/TPageControl tab protocol, native geometry and borrowed image/font painting, pending-install exact ownership and cancellation cleanup; no external code copied, original notices/resources retained; T15 S7 bounded initialized public report-list text scope, exact native custom-draw DC and unchanged app callbacks, independent host System bitmap and ownership/late-view tests; no external code copied or original resources modified; T15 S8 verified initialized native tree protocol and bounded existing System paint scope, native item/font/image/geometry/notifications preserved; exact pending frame ownership and cancellation; ASCII test-thread IME isolation after native no-DLL MSCTF teardown evidence; no external code or original graphics modified; T15 S9 bounded initialized native-v6 progress painter with unchanged public range/position/step/colors/font; old-v5/emulated-state and special-style native fallback; epoch/cancellation guard and existing passive-font ownership; controlled test-thread keyboard state and native positive/negative proofs; no copied external code or original resource changes; T15 S10 initialized trackbar public protocol, exact native custom-draw rectangles/states with original application-requested stages preserved; private extra default-only part stages and per-window native cache invalidation; no font/data/input changes, no external code or original resources changed; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T17 S7 exact VB5 file-list roles and bounded owner-draw DC ownership; self-contained dual-width text/image/input/resource tests and optional authentic sample witness; no external implementation or original resources changed; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T18 S21 scoped observed checklist owner-draw frame, public state and original graphic, no external code or resource changes; T18 S23 bounded v5 TProgressBar static edge, native client and colors retained; dual-width public-protocol and fallback model; T18 S27 exact observed TSpinButton frame scope, native primitive semantics retained, no external code or original graphics changed; T18 S31 verified native STATIC drawing scope, source font and application printing preserved; T18 S54 scoped runtime grid nonclient border/scrollbars with actual public scroll check, guarded retirement and self-owned dual-width model; original resources retained; T18 S57 witnessed VCL toolbar print forwarding, unique zero-command text-only painting and native fallback, dual-width self-owned tests; original graphics retained; T18 S60 witnessed runtime TTabControl native WM_PAINT forwarding, existing public tab protocol and parent lifetime guard; resources preserved; T18 S64 P19 scoped VB6 checkbox list text and retirement witness; T18 S64 P23 real VB5 checkbox list; T18 S64 P30 exact VB MDI frame identity and self-contained public-window model; T18 S64 P36 bounded VB6 UserControl client-edge renderer, pending paint and role retirement, no external code or graphic changes; T18 S64 P47 limited VB6 Data border; T18 S64 P50 bounded VB6 Data navigation graphics; T18 S64 P52 observed VB6 Data 144 DPI; T18 S64: scoped ordinary Delphi group paint witness and native theme text entry, original notices retained; T18 S64: extend witnessed group frame to ordinary TRadioGroup, original notices retained; T18 S64 observed paired Delphi TPanel outer bevel paint scope, caller/parent/clip and native pen preserved; project-authored native tests; no external code or resources copied; T18 S64: disabled ordinary Delphi group frame, state-consistent paint and reentrant-state regression; T18 S64: disabled Delphi panel outer bevel with mid-pair state validation; T18 S64: witnessed Delphi scrollbar role and disabled direct-key native semantics; T18 S64 exact witnessed TLabeledEdit role; T18 S64 witnessed TNumberBox role; T18 S64 witnessed Delphi SysLink protocol and native typography; no graphics or external code changed; T18 S64 delayed text link retry with fresh native witness; T18 S64 witnessed runtime SpinEdit EDIT protocol, native button retained; T18 S64 P110 modern SpinButton bounded theme, bitmap and paint handling; T18 S64 P111 scoped runtime-owned Delphi push button; T18 S64 P112 runtime-owned Delphi checkbox and parent-background regression; T18 S64 P113 Delphi radio parent-background preservation; T18 S64 P114 witnessed runtime-owned editable Delphi combo; T18 S64 P115 verified Delphi dropdown-list combo ownership, role and font lifecycle; T18 S64 P116 verified Delphi simple combo mode; T18 S64 P117 verified simple Delphi status scoped typography; T18 S64 P117 isolated font lease and lifecycle verification; T18 S64 P119 bounded multi-pane status font; T18 S64 P120 ordinary no-border pane text; T18 S64 P121 ANSI RichEdit witness and native chrome; T18 S64 P122 Unicode witness and abnormal paint cleanup; T18 S64 P123 scroll box witness; T18 S64 P124 hotkey witness; T18 S64 P125 native month calendar arrows; T18 S64 P126 selected-date color; T18 S64 P127 bounded native calendar title and query guards; T18 S64 P128 bounded calendar text; T18 S64 P129 witnessed TValueListEditor in-place button; T18 S64 P130 witnessed combo theme and dropdown arrow; T18 S64 popup list native forwarding and nonclient adaptation; T18 S64 short popup list and dynamic scrollbar transitions; T18 S64 value editor native frame; T18 S64 ordinary grids without visible scrollbars; T18 S64 witnessed VCL control bar frame; T18 S64 control bar observed bevel variants; T18 S64 witnessed TMaskEdit; T18 S64 bounded app-owned TDBGrid frame and model; T18 S64 app-owned ANSI DBEdit forwarding witness and negative model; T18 S64 bounded ANSI data combo forwarding witness; T18 S64 P156: bounded same-owner TDBLookupComboBox dropdown paint witness; original resources and notices retained; T18 S64 P158: scoped lookup popup lifecycle and scrollbar rendering; T18 S64 P159: Alt+Down lookup popup creation scope; T18 S64 P160: bounded same-owner TDBNavigator button backgrounds; T18 S64 P161: bounded TMediaPlayer normal/pressed button backgrounds; T18 S64 P162: bounded disabled/focused TMediaPlayer button backgrounds; T18 S64: same-owner Delphi MDI frame identity and lifecycle; T18 S64: modeled TDBLookupListBox nonclient frame and scrollbar; T18 S64: release MDI host reference on failed subclass installation; T18 S64: candidate bounded same-owner TCoolBar grip custom draw and paint scope; T18 S64 P192: extend witnessed native tab attachment to TPageControl, preserve parent and fallback; T18 S64 runtime-owned tree/report native-paint witness and public-protocol reuse; project-authored adaptation, no graphic changes; preserve existing main-EXE list path after package regression; T18 S64 bounded witnessed list view modes, app-owned images and native state preserved; T21 S5 shared creation and late-attachment classifier; T21 S22 native embedded combo button painter extracted; T23 S4 console and Terminal window adaptation and native tests; T23 S6 Chromium composed frame and stock menu font fallback; T23 S7 composed frame reuse for Paint and XamlWindow; T25 S1 WinUI diagnostics start and stop on attached windows; T25 S1 CheckBox and window-scoped XAML lifecycle candidate",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -6521,45 +6521,45 @@
       "path": "src/lib-win32/win16-control-xaml/adapter.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ff1aeebbd07b3df59997bedb42aaca0ea3511dbfb3353111cac7d676d1104910",
+      "sha256": "006dc66279a75f14ec2fff2dfceba5eb6c751e160a4e59dfff72d12aca900ae1",
       "disposition": "authored",
-      "review": "M0 T25 S1 XAML control adaptation and diagnostics",
+      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
     },
     {
       "path": "src/lib-win32/win16-control-xaml/adapter.h",
       "source": null,
       "source_blob": null,
-      "sha256": "683f1c212c285c618187c0b498201716be03187aff72828428502bc0f6a45a44",
+      "sha256": "a744f8f45e0488522a953710e395e4b840e1c6bc40bbab44d4bea91327e894d9",
       "disposition": "authored",
-      "review": "M0 T25 S1 XAML control adaptation and diagnostics",
+      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
     },
     {
       "path": "src/lib-win32/win16-control-xaml/button_set.c",
       "source": null,
       "source_blob": null,
-      "sha256": "517f2c8508b7d7d1cd54873213a22386e772855b9a9471afb784eb043d79c65b",
+      "sha256": "c7e0ddb77fc52a71db51c57d87a2925f4057f8bf1d69f81708384f097af8dbaa",
       "disposition": "authored",
-      "review": "M0 T25 S1 XAML control adaptation and diagnostics",
+      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
     },
     {
       "path": "src/lib-win32/win16-control-xaml/button_style.c",
       "source": null,
       "source_blob": null,
-      "sha256": "781c1cad42c92b2fee0fbbc9e4e289398203c8bd3f1634a0450dc30787bb17ba",
+      "sha256": "18cc606240bd965bcd4bb6a9dcefe741f1c17040e6c0ed0a996b409a70095d34",
       "disposition": "authored",
-      "review": "M0 T25 S1 XAML control adaptation and diagnostics",
+      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
     },
     {
       "path": "src/lib-win32/win16-control-xaml/button_style.h",
       "source": null,
       "source_blob": null,
-      "sha256": "f32b29e7120f25d7c71a711caa0f5f32ff1561cf33eae70f1fdbbafee30681b3",
+      "sha256": "58e70a42fd77d056cdf08d953e987d1f54b55949ee9d726d4e4bba8b64aaa3d7",
       "disposition": "authored",
-      "review": "M0 T25 S1 XAML control adaptation and diagnostics",
+      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
     },
     {
@@ -6674,18 +6674,18 @@
       "path": "src/lib-win32/win16-control-xaml/session.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c2d82ce555973036838fb20d4a38c3ab892438f07e9edfe714880d382bbb4341",
+      "sha256": "5066174fd88dfbbc08e1e694cdb48af6bb23606d8b3b148b20c07b64c2df9ea3",
       "disposition": "authored",
-      "review": "M0 T25 S1 XAML control adaptation and diagnostics",
+      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
     },
     {
       "path": "src/lib-win32/win16-control-xaml/session.h",
       "source": null,
       "source_blob": null,
-      "sha256": "0418065cca10076481ac0acff4791f3a6e4b16bb17956f28c2074413be278256",
+      "sha256": "c651878926375d968dc134c46cb0699b522387150f25b02b78f7ed91af0739ff",
       "disposition": "authored",
-      "review": "M0 T25 S1 XAML control adaptation and diagnostics",
+      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
     },
     {
@@ -6710,19 +6710,55 @@
       "path": "src/ntw16s-dll/xaml_site.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7c3fa1e349ce9ff0481fc4748b8b3369800914c956f44b52459444d9ca71c1a6",
+      "sha256": "fb6a72e0f9daaf1663c0452dd9e17880e1a64f68d0295730e0399e20b5c9f564",
       "disposition": "authored",
-      "review": "M0 T25 S1 XAML control adaptation and diagnostics",
+      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
     },
     {
       "path": "src/ntw16s-dll/xaml_site.h",
       "source": null,
       "source_blob": null,
-      "sha256": "33cccf3d4734f5f9524fb2aff6f585126a48fb51a28342bbe20243c67d460913",
+      "sha256": "451196aea1c84b78c5b00d5b09bcbdc3354dbe428c1d1103bc9c0298f15920a4",
       "disposition": "authored",
-      "review": "M0 T25 S1 XAML control adaptation and diagnostics",
+      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/win16-control-xaml/checkbox_template.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "d73e50d1363112fead416a30f499d5e9ca6d96ced9f6966135b5e0b9df2dec11",
+      "disposition": "authored",
+      "review": "T25 S1 CheckBox and XAML window ownership candidate",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/win16-control-xaml/checkbox_template.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e4bbe3d5e3c10a2deadb576a23c89964d0a6f434d8c60ea0b4856fe3983a14b7",
+      "disposition": "authored",
+      "review": "T25 S1 CheckBox and XAML window ownership candidate",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/win16-control-xaml/owner.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "35b78a31080bd3a95673785d711401288d95ad5ad496ac3f658005171566dd53",
+      "disposition": "authored",
+      "review": "T25 S1 CheckBox and XAML window ownership candidate",
+      "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/win16-control-xaml/owner.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "4cf8314847c0540adbc6cd7643385f60d6df2f3f89b51a2c6aa920a814031b0a",
+      "disposition": "authored",
+      "review": "T25 S1 CheckBox and XAML window ownership candidate",
+      "notice": "Project-authored C code; no imported artwork"
     }
   ]
 }

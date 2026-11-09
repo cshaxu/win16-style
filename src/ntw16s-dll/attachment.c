@@ -24,10 +24,12 @@
 #include "../lib-win32/win16-control/vcl_extra_frame.h"
 #include "../lib-win32/win16-control/month_paint.h"
 #include "../lib-win32/win16-window-uwp/frame.h"
+#include "../lib-win32/win16-window/frame_layout.h"
 #include "injection/unwind.h"
 #include "status_theme.h"
 #include "month_text.h"
 #include "xaml_site.h"
+static const WCHAR xaml_host_property[]=L"Ntw16s.XamlHost.v1";
 #include <commctrl.h>
 #include <uxtheme.h>
 #include <vssym32.h>
@@ -560,6 +562,22 @@ static const win16_attachment_lifecycle_services lifecycle_services={lookup,cool
     ntw16s_theme_terminal,release,win16_style_scrollbars_paint};
 BOOL __cdecl Ntw16sWindowAttached(HWND w)
 {return win16_attachment_attached(w,&lifecycle_services);}
+typedef struct xaml_host_search { HWND excluded; BOOL found; } xaml_host_search;
+static BOOL CALLBACK other_xaml_host(HWND w,LPARAM parameter)
+{
+    xaml_host_search *search=(xaml_host_search *)parameter;
+    if(w!=search->excluded && (GetPropW(w,xaml_host_property) || win16_control_frame_xaml_bridge(w,FALSE)) &&
+       Ntw16sWindowAttached(w)){
+        search->found=TRUE;return FALSE;
+    }
+    return TRUE;
+}
+static BOOL xaml_last_host(HWND w)
+{
+    xaml_host_search search={.excluded=w};
+    EnumThreadWindows(GetCurrentThreadId(),other_xaml_host,(LPARAM)&search);
+    return !search.found;
+}
 void __cdecl Ntw16sScrollChanged(HWND w)
 {win16_attachment_scroll_changed(w,&lifecycle_services);}
 static BOOL composed_frame_class(HWND w)
@@ -572,11 +590,22 @@ BOOL __cdecl Ntw16sWindowRemove(HWND w)
 {
     if(composed_frame_class(w) && win16_uwp_frame_surface(w) &&
        !win16_uwp_frame_remove(w))return FALSE;
-    if(w==GetAncestor(w,GA_ROOT) && Ntw16sWindowAttached(w))(void)ntw16s_xaml_stop();
-    return win16_attachment_remove(w,&lifecycle_services);
+    if(w==GetAncestor(w,GA_ROOT) && Ntw16sWindowAttached(w) &&
+       (GetPropW(w,xaml_host_property) || win16_control_frame_xaml_bridge(w,FALSE))){
+        if(xaml_last_host(w))(void)ntw16s_xaml_stop();
+        else (void)ntw16s_xaml_remove_window(w);
+    }
+    BOOL removed=win16_attachment_remove(w,&lifecycle_services);
+    if(removed)RemovePropW(w,xaml_host_property);
+    return removed;
 }
 BOOL __cdecl Ntw16sWindowTerminal(HWND w)
-{return win16_attachment_terminal(w,&lifecycle_services);}
+{
+    if(w==GetAncestor(w,GA_ROOT) && Ntw16sWindowAttached(w) &&
+       GetPropW(w,xaml_host_property) && xaml_last_host(w))(void)ntw16s_xaml_stop();
+    RemovePropW(w,xaml_host_property);
+    return win16_attachment_terminal(w,&lifecycle_services);
+}
 
 static BOOL install_created(HWND w,DWORD original_style)
 {
@@ -641,7 +670,12 @@ static BOOL install_created(HWND w,DWORD original_style)
        !win16_uwp_frame_apply_nonclient(w)){
         error=GetLastError();Ntw16sWindowRemove(w);installed=FALSE;
     }
-    if(installed){DWORD saved=GetLastError();ntw16s_xaml_start();SetLastError(saved);}
+    if(installed){
+        DWORD saved=GetLastError();HWND root=GetAncestor(w,GA_ROOT);
+        if(root && Ntw16sWindowAttached(root) && win16_control_frame_xaml_bridge(root,FALSE))
+            SetPropW(root,xaml_host_property,(HANDLE)(ULONG_PTR)1);
+        ntw16s_xaml_start();SetLastError(saved);
+    }
     else SetLastError(error?error:ERROR_GEN_FAILURE);
     return installed;
 }

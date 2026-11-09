@@ -22,9 +22,19 @@ HRESULT win16_xaml_adapter_change(win16_xaml_adapter *adapter,ParentChildRelatio
 {
     if (applied) *applied=NULL;
     if (!adapter || !adapter->service || !adapter->diagnostics) return E_INVALIDARG;
-    if (!adapter->connected || InterlockedCompareExchange(&adapter->stopping,0,0) || mutation!=Add) return S_FALSE;
+    if (!adapter->connected || InterlockedCompareExchange(&adapter->stopping,0,0)) return S_FALSE;
     if (adapter->session.thread_id && adapter->session.thread_id!=GetCurrentThreadId()) return S_FALSE;
-    BOOL button=element.Type && !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.Button");
+    if (mutation==Remove) {
+        if (!element.Handle || !adapter->session.service) return S_FALSE;
+        HRESULT hr=win16_xaml_button_set_remove_handle(&adapter->session.buttons,adapter->service,
+                                                        adapter->diagnostics,element.Handle);
+        if (hr==S_OK && !adapter->session.buttons.first)
+            (void)InterlockedCompareExchange((volatile LONG *)&adapter->session.thread_id,0,(LONG)GetCurrentThreadId());
+        return hr;
+    }
+    if (mutation!=Add) return S_FALSE;
+    BOOL button=element.Type && (!wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.Button") ||
+                                 !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.CheckBox"));
     BOOL root=!relation.Parent;
     InstanceHandle handle=(button || root) ? element.Handle : relation.Parent;
     if (!handle) return S_FALSE;
@@ -60,6 +70,15 @@ HRESULT win16_xaml_adapter_stop(win16_xaml_adapter *adapter)
     InterlockedExchange(&adapter->stopping,1);
     HRESULT hr=adapter->session.service ? win16_xaml_session_stop(&adapter->session) : S_OK;
     if (SUCCEEDED(hr) && !adapter->connected) release_interfaces(adapter);
+    return hr;
+}
+HRESULT win16_xaml_adapter_remove_window(win16_xaml_adapter *adapter,HWND window)
+{
+    if (!adapter || !window) return E_INVALIDARG;
+    if (!adapter->session.service) return S_FALSE;
+    HRESULT hr=win16_xaml_button_set_remove_window(&adapter->session.buttons,adapter->service,adapter->diagnostics,window);
+    if (SUCCEEDED(hr) && !adapter->session.buttons.first)
+        (void)InterlockedCompareExchange((volatile LONG *)&adapter->session.thread_id,0,(LONG)GetCurrentThreadId());
     return hr;
 }
 void win16_xaml_adapter_disconnect(win16_xaml_adapter *adapter)

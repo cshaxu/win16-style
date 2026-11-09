@@ -11,6 +11,7 @@ typedef struct win16_xaml_button_style {
     IInspectable *installed_style;
     unsigned int property_index;
     DWORD thread_id;
+    InstanceHandle handle;
 } win16_xaml_button_style;
 
 HRESULT win16_xaml_button_source(IVisualTreeService *service, IXamlDiagnostics *diagnostics,
@@ -38,6 +39,12 @@ HRESULT win16_xaml_button_set_add(win16_xaml_button_set *set, IVisualTreeService
 /* Failure leaves the entry owned by the set for a later retry or discard. */
 HRESULT win16_xaml_button_set_remove(win16_xaml_button_set *set, IVisualTreeService *service,
                                      IXamlDiagnostics *diagnostics, win16_xaml_button_style *state);
+/* Retire a tracked object when XAML reports that its handle left the tree. */
+HRESULT win16_xaml_button_set_remove_handle(win16_xaml_button_set *set, IVisualTreeService *service,
+                                            IXamlDiagnostics *diagnostics, InstanceHandle handle);
+/* Unknown ownership is retained and reported as S_FALSE. */
+HRESULT win16_xaml_button_set_remove_window(win16_xaml_button_set *set,IVisualTreeService *service,
+                                            IXamlDiagnostics *diagnostics,HWND window);
 /* Caller must stop discovery first. Stops on the first failure and retains
  * that entry and all remaining entries. */
 HRESULT win16_xaml_button_set_remove_all(win16_xaml_button_set *set, IVisualTreeService *service,

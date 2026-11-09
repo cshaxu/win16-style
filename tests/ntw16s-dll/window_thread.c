@@ -25,11 +25,17 @@ int wmain(int argc,WCHAR **argv)
     WNDCLASSW wc={.lpfnWndProc=window_proc,.hInstance=GetModuleHandleW(NULL),
         .lpszClassName=L"S3ThreadHookFixture"};
     CHECK(RegisterClassW(&wc));
+    WNDCLASSW bridge_class={.lpfnWndProc=window_proc,.hInstance=wc.hInstance,
+        .lpszClassName=L"Microsoft.UI.Content.DesktopChildSiteBridge"};
+    CHECK(RegisterClassW(&bridge_class));
     HWND first=CreateWindowW(wc.lpszClassName,L"one",WS_OVERLAPPEDWINDOW,
         0,0,400,300,NULL,NULL,wc.hInstance,NULL);
     HWND other=CreateWindowW(wc.lpszClassName,L"two",WS_OVERLAPPEDWINDOW,
         0,0,400,300,NULL,NULL,wc.hInstance,NULL);
     CHECK(first && other && !attached(first) && !attached(other));
+    HWND bridge=CreateWindowW(bridge_class.lpszClassName,L"",WS_CHILD,
+        0,0,100,100,first,NULL,wc.hInstance,NULL);
+    CHECK(bridge);
     HHOOK hook=SetWindowsHookExW(WH_CALLWNDPROC,callback,dll,GetCurrentThreadId());
     CHECK(hook);
     UINT message=RegisterWindowMessageW(NTW16S_WINDOW_THREAD_MESSAGE);
@@ -43,10 +49,15 @@ int wmain(int argc,WCHAR **argv)
     RemovePropW(first,NTW16S_WINDOW_THREAD_RESULT);
     SendMessageW(first,message,NTW16S_WINDOW_THREAD_ATTACH,(LPARAM)first);
     CHECK((uintptr_t)GetPropW(first,NTW16S_WINDOW_THREAD_RESULT)==1 && attached(first));
+    CHECK(GetPropW(first,L"Ntw16s.XamlHost.v1"));
+    CHECK(!GetPropW(other,L"Ntw16s.XamlHost.v1"));
+    CHECK(DestroyWindow(bridge));
+    CHECK(GetPropW(first,L"Ntw16s.XamlHost.v1"));
     RemovePropW(first,NTW16S_WINDOW_THREAD_RESULT);
     SendMessageW(first,message,NTW16S_WINDOW_THREAD_REMOVE,(LPARAM)first);
     CHECK((uintptr_t)GetPropW(first,NTW16S_WINDOW_THREAD_RESULT)==1);
     CHECK(!attached(first) && !attached(other));
+    CHECK(!GetPropW(first,L"Ntw16s.XamlHost.v1"));
     CHECK(UnhookWindowsHookEx(hook));
     DestroyWindow(first);
     DestroyWindow(other);

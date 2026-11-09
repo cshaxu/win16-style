@@ -33,6 +33,10 @@ int main(void)
     CHECK(win16_xaml_adapter_change(&adapter,relation,element,Add,NULL)==E_ACCESSDENIED);
     CHECK(calls==2 && !adapter.session.service);
     CHECK(win16_xaml_adapter_change(&adapter,relation,element,Remove,NULL)==S_FALSE && calls==2);
+    adapter.session.service=adapter.service;
+    element.Handle=42;
+    CHECK(win16_xaml_adapter_change(&adapter,relation,element,Remove,NULL)==S_FALSE && calls==2);
+    adapter.session.service=NULL;
     stop_during_resolve=&adapter;
     CHECK(win16_xaml_adapter_change(&adapter,relation,element,Add,NULL)==S_FALSE && calls==3);
     stop_during_resolve=NULL;

@@ -1,5 +1,6 @@
 #define COBJMACROS
 #include "button_style.h"
+#include "owner.h"
 
 struct win16_xaml_button_entry {
     struct win16_xaml_button_entry *next;
@@ -77,6 +78,37 @@ HRESULT win16_xaml_button_set_remove_all(win16_xaml_button_set *set, IVisualTree
         if (FAILED(hr)) return hr;
     }
     return S_OK;
+}
+
+HRESULT win16_xaml_button_set_remove_handle(win16_xaml_button_set *set,IVisualTreeService *service,
+                                            IXamlDiagnostics *diagnostics,InstanceHandle handle)
+{
+    if (!set || !service || !diagnostics || !handle) return E_INVALIDARG;
+    if (set->thread_id && set->thread_id!=GetCurrentThreadId()) return RPC_E_WRONG_THREAD;
+    for (win16_xaml_button_entry *entry=set->first;entry;entry=entry->next)
+        if (entry->style.handle==handle)
+            return win16_xaml_button_set_remove(set,service,diagnostics,&entry->style);
+    return S_FALSE;
+}
+
+HRESULT win16_xaml_button_set_remove_window(win16_xaml_button_set *set,IVisualTreeService *service,
+                                            IXamlDiagnostics *diagnostics,HWND window)
+{
+    if (!set || !service || !diagnostics || !window) return E_INVALIDARG;
+    if (set->thread_id && set->thread_id!=GetCurrentThreadId()) return RPC_E_WRONG_THREAD;
+    BOOL unknown=FALSE;
+    for (;;) {
+        win16_xaml_button_entry *match=NULL;
+        for (win16_xaml_button_entry *entry=set->first;entry;entry=entry->next) {
+            HWND owner=NULL;
+            HRESULT hr=win16_xaml_element_owner(entry->style.button,&owner);
+            if (FAILED(hr) || !owner) unknown=TRUE;
+            else if (owner==window) { match=entry; break; }
+        }
+        if (!match) return unknown ? S_FALSE : S_OK;
+        HRESULT hr=win16_xaml_button_set_remove(set,service,diagnostics,&match->style);
+        if (FAILED(hr)) return hr;
+    }
 }
 
 HRESULT win16_xaml_button_set_discard(win16_xaml_button_set *set)

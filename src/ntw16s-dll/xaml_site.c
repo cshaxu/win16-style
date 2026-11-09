@@ -111,6 +111,8 @@ static DWORD WINAPI disconnect_worker(void *context)
     IObjectWithSite_Release(site);
     return 0;
 }
+HRESULT ntw16s_xaml_remove_window(HWND window)
+{ return win16_xaml_adapter_remove_window(&adapter,window); }
 HRESULT ntw16s_xaml_stop(void)
 {
     AcquireSRWLockShared(&site_lock);

@@ -19,5 +19,6 @@ HRESULT win16_xaml_adapter_connect(win16_xaml_adapter *adapter,IVisualTreeServic
 HRESULT win16_xaml_adapter_change(win16_xaml_adapter *adapter,ParentChildRelation relation,
                                   VisualElement element,VisualMutationType mutation,IInspectable **applied);
 HRESULT win16_xaml_adapter_stop(win16_xaml_adapter *adapter);
+HRESULT win16_xaml_adapter_remove_window(win16_xaml_adapter *adapter,HWND window);
 void win16_xaml_adapter_disconnect(win16_xaml_adapter *adapter);
 #endif

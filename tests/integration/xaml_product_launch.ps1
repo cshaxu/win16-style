@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$BuildDirectory,[string]$PackageDirectory,[string]$CapturePath,[switch]$InspectSession,[switch]$CheckRemove)
+param([Parameter(Mandatory=$true)][string]$BuildDirectory,[string]$PackageDirectory,[string]$CapturePath,[switch]$InspectSession,[switch]$CheckRemove,[switch]$CheckCheckbox,[switch]$ExistingRoot,[switch]$Preexisting,[switch]$RemoveBridge,[switch]$KeepFixture)
 $ErrorActionPreference='Stop'
 $build=(Resolve-Path -LiteralPath $BuildDirectory).Path
 $package=if($PackageDirectory){(Resolve-Path -LiteralPath $PackageDirectory).Path}else{$build}
@@ -76,7 +76,7 @@ public static class XamlMemory {
             if (-not $line -or $line -notmatch '^([0-9a-fA-F]+)') { throw 'adapter symbol missing' }
             $adapter=[UInt64]$module.BaseAddress.ToInt64()+([Convert]::ToUInt64($Matches[1],16)-$preferred)
             $layout=(& (Join-Path $build 'xaml-adapter-layout.exe')) -split ' '
-            if ($layout.Count -ne 4) { throw 'adapter layout unavailable' }
+            if ($layout.Count -ne 6) { throw 'adapter layout unavailable' }
             $firstOffset=[UInt64]$layout[0]; $busyOffset=[UInt64]$layout[1]; $styleOffset=[UInt64]$layout[2]
             $styled=$false; $deadline=[DateTime]::UtcNow.AddSeconds(5)
             do {
@@ -105,11 +105,14 @@ public static class XamlMemory {
             if ([XamlMemory]::ReadProcessMemory($handle,[IntPtr]::new([long]($adapter+[UInt64]$layout[3])),$ownerBytes,[UIntPtr]::new(4),[ref]$read)) {
                 Write-Output "button_thread=$([BitConverter]::ToUInt32($ownerBytes,0))"
             }
-            if (-not $styled -and -not $CheckRemove) { exit 3 }
-            if ($CheckRemove) {
-                if ($styled) { & (Join-Path $build 'xaml-remove-window.exe') $process.Id $dll (Join-Path $build 'libxaml-property-probe.dll') $adapter }
+            if (-not $styled -and -not $CheckRemove -and -not $CheckCheckbox) { exit 3 }
+            if ($CheckRemove -or $CheckCheckbox) {
+                if ($CheckCheckbox) { $mode=if($KeepFixture){'--keep-fixture'}elseif($RemoveBridge){'--no-bridge'}elseif($Preexisting){'--preexisting'}elseif($ExistingRoot){'--existing'}else{'--checkbox'}; & (Join-Path $build 'xaml-remove-window.exe') $process.Id $dll (Join-Path $build 'libxaml-property-probe.dll') $adapter $mode }
+                elseif ($styled) { & (Join-Path $build 'xaml-remove-window.exe') $process.Id $dll (Join-Path $build 'libxaml-property-probe.dll') $adapter }
                 else { & (Join-Path $build 'xaml-remove-window.exe') $process.Id $dll }
-                if ($LASTEXITCODE -ne 0) { Write-Output "remove_probe_exit=$LASTEXITCODE"; exit $LASTEXITCODE }
+                if ($LASTEXITCODE -ne 0) {
+                    Write-Output "remove_probe_exit=$LASTEXITCODE"; exit $LASTEXITCODE
+                }
                 $stopped=$false; $deadline=[DateTime]::UtcNow.AddSeconds(5)
                 do {
                     $siteBytes=[byte[]]::new(8); $firstBytes=[byte[]]::new(8); $read=[UIntPtr]::Zero
@@ -119,8 +122,17 @@ public static class XamlMemory {
                     if (-not $stopped) { Start-Sleep -Milliseconds 100 }
                 } while (-not $stopped -and [DateTime]::UtcNow -lt $deadline)
                 Write-Output "session_and_records_cleared=$stopped"
+                if (-not $stopped -and $ok) {
+                    Write-Output ('session_pointer=0x{0:X} first_record=0x{1:X}' -f [BitConverter]::ToUInt64($siteBytes,0),[BitConverter]::ToUInt64($firstBytes,0))
+                    foreach($field in @(@('thread',$layout[3]),@('connected',$layout[4]),@('stopping',$layout[5]))) {
+                        $raw=[byte[]]::new(4)
+                        if([XamlMemory]::ReadProcessMemory($handle,[IntPtr]::new([long]($adapter+[UInt64]$field[1])),$raw,[UIntPtr]::new(4),[ref]$read)){
+                            Write-Output "$($field[0])=$([BitConverter]::ToUInt32($raw,0))"
+                        }
+                    }
+                }
                 if (-not $stopped) { exit 4 }
-                if (-not $styled) { Write-Output 'SKIP no_styled_button_to_restore'; exit 77 }
+                if (-not $styled -and -not $CheckCheckbox) { Write-Output 'SKIP no_styled_button_to_restore'; exit 77 }
             }
         } finally { $null=[XamlMemory]::CloseHandle($handle) }
     }

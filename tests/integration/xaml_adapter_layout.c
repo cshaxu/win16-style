@@ -10,8 +10,9 @@ typedef struct observed_entry {
 } observed_entry;
 int main(void)
 {
-    printf("%zu %zu %zu %zu\n",offsetof(win16_xaml_adapter,session)+offsetof(win16_xaml_session,buttons)+offsetof(win16_xaml_button_set,first),
+    printf("%zu %zu %zu %zu %zu %zu\n",offsetof(win16_xaml_adapter,session)+offsetof(win16_xaml_session,buttons)+offsetof(win16_xaml_button_set,first),
            offsetof(observed_entry,installing),offsetof(observed_entry,style)+offsetof(win16_xaml_button_style,installed_style),
-           offsetof(win16_xaml_adapter,session)+offsetof(win16_xaml_session,thread_id));
+           offsetof(win16_xaml_adapter,session)+offsetof(win16_xaml_session,thread_id),
+           offsetof(win16_xaml_adapter,connected),offsetof(win16_xaml_adapter,stopping));
     return 0;
 }

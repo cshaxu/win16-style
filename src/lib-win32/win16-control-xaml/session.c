@@ -14,7 +14,9 @@ static BOOL visit(IInspectable *object, unsigned int depth, void *context)
     HSTRING name=NULL;
     HRESULT hr=IInspectable_GetRuntimeClassName(object,&name);
     if (FAILED(hr)) { o->result=hr; return FALSE; }
-    BOOL button=name && !wcscmp(WindowsGetStringRawBuffer(name,NULL),L"Microsoft.UI.Xaml.Controls.Button");
+    PCWSTR runtime=name ? WindowsGetStringRawBuffer(name,NULL) : NULL;
+    BOOL button=runtime && (!wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.Button") ||
+                            !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.CheckBox"));
     if (name) WindowsDeleteString(name);
     if (!button) return TRUE;
     DWORD thread=GetCurrentThreadId();

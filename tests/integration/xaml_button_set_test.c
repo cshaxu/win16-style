@@ -22,11 +22,14 @@ static HRESULT STDMETHODCALLTYPE fake_trust(IInspectable *self, TrustLevel *leve
 { (void)self; (void)level; return E_NOTIMPL; }
 static IInspectableVtbl fake_vtable={fake_query,fake_addref,fake_release,fake_iids,fake_name,fake_trust};
 
-static int fail_apply, fail_remove, reenter_apply;
+static int fail_apply, fail_remove, reenter_apply, reenter_remove;
 static HRESULT nested_result;
 static win16_xaml_button_set *current_set;
+static IInspectable *unknown_owner;
 static IVisualTreeService *fake_service=(IVisualTreeService *)(UINT_PTR)1;
 static IXamlDiagnostics *fake_diagnostics=(IXamlDiagnostics *)(UINT_PTR)1;
+HRESULT win16_xaml_element_owner(IInspectable *element,HWND *owner)
+{ if(!element || !owner)return E_INVALIDARG; *owner=NULL; if(element==unknown_owner)return E_NOINTERFACE; *owner=(HWND)(UINT_PTR)element; return S_OK; }
 
 HRESULT win16_xaml_button_apply(IVisualTreeService *service, IXamlDiagnostics *diagnostics,
                                IInspectable *button, win16_xaml_button_style *state)
@@ -37,12 +40,15 @@ HRESULT win16_xaml_button_apply(IVisualTreeService *service, IXamlDiagnostics *d
     }
     if (fail_apply) return E_FAIL;
     IInspectable_AddRef(button); state->button=button; state->thread_id=GetCurrentThreadId();
+    state->handle=(InstanceHandle)(UINT_PTR)button;
     return S_OK;
 }
 HRESULT win16_xaml_button_remove(IVisualTreeService *service, IXamlDiagnostics *diagnostics,
                                 win16_xaml_button_style *state)
 {
     (void)service; (void)diagnostics;
+    if (reenter_remove)
+        nested_result=win16_xaml_button_set_remove_handle(current_set,service,diagnostics,state->handle);
     if (fail_remove) return HRESULT_FROM_WIN32(ERROR_REVISION_MISMATCH);
     IInspectable_Release(state->button); *state=(win16_xaml_button_style){0}; return S_OK;
 }
@@ -78,8 +84,22 @@ int main(void)
     CHECK(win16_xaml_button_set_remove_all(&set,fake_service,fake_diagnostics)==HRESULT_FROM_WIN32(ERROR_REVISION_MISMATCH));
     CHECK(a.references==3 && b.references==3);
     fail_remove=0;
+    CHECK(win16_xaml_button_set_remove_handle(&set,fake_service,fake_diagnostics,(InstanceHandle)1)==S_FALSE);
+    reenter_remove=1;
+    CHECK(win16_xaml_button_set_remove_window(&set,fake_service,fake_diagnostics,(HWND)(UINT_PTR)&b.iface)==S_OK);
+    CHECK(nested_result==HRESULT_FROM_WIN32(ERROR_BUSY));
+    reenter_remove=0;
+    CHECK(b.references==1 && a.references==3);
     CHECK(win16_xaml_button_set_remove_all(&set,fake_service,fake_diagnostics)==S_OK);
     CHECK(!set.first && !set.thread_id && a.references==1 && b.references==1);
+    CHECK(win16_xaml_button_set_add(&set,fake_service,fake_diagnostics,&a.iface,&one)==S_OK);
+    CHECK(win16_xaml_button_set_add(&set,fake_service,fake_diagnostics,&b.iface,&two)==S_OK);
+    unknown_owner=&b.iface;
+    CHECK(win16_xaml_button_set_remove_window(&set,fake_service,fake_diagnostics,(HWND)(UINT_PTR)&a.iface)==S_FALSE);
+    CHECK(a.references==1 && b.references==3);
+    unknown_owner=NULL;
+    CHECK(win16_xaml_button_set_remove_all(&set,fake_service,fake_diagnostics)==S_OK);
+    CHECK(a.references==1 && b.references==1);
     CHECK(win16_xaml_button_set_discard(&set)==S_OK);
     return 0;
 }
