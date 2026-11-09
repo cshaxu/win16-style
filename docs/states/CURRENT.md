@@ -2,6 +2,8 @@
 
 ## Current Work
 
+T25 S1 P7 复核：提交 `6e26e737` 已推送并核对远端 main；assets 与 O:/winnt 四文件摘要一致，已清理本次 clean1、package1、publish1 临时构建、测试输出和备份。S1/T25 保持开放，手动验收及键盘、输入法、像素和 x86 WinUI 限制不变。
+
 T25 S1 P7 TextBox 阶段包已发布 assets 根目录及 O:/winnt，四文件摘要与同批测试包一致；13 项聚焦实包回归通过。详见 [P7 记录](../history/M0-T25-S1-P7-xaml-textbox.md)。真实键盘探针跳过，输入法、实际像素及 x86 WinUI 尚未验证；S1/T25 保持开放，提交推送和 scratch 清理待完成。
 
 T25 S1 TextBox 补测：自有 x64 控件验证 Header 内容绑定、本地样式保护、常见状态和程序化文本行为；双宽测试探针编译及来源清单检查通过。标准启动的键盘探针未取得测试窗口前台，标记 SKIP，不能计作真实输入通过；实例已清理。登记 `build/t25-package/s1-textbox-clean1` 做双宽干净构建，完成交付后清理 scratch。
