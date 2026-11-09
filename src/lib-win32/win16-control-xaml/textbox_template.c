@@ -1,0 +1,31 @@
+#include "textbox_template.h"
+
+const wchar_t *win16_xaml_textbox_template(void)
+{
+    return L"<Style xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' "
+        L"xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' TargetType='TextBox'>"
+        L"<Setter Property='Foreground' Value='Black'/><Setter Property='Background' Value='White'/>"
+        L"<Setter Property='Template'><Setter.Value><ControlTemplate TargetType='TextBox'>"
+        L"<Grid><Grid.RowDefinitions><RowDefinition Height='Auto'/><RowDefinition Height='*'/>"
+        L"<RowDefinition Height='Auto'/></Grid.RowDefinitions>"
+        L"<VisualStateManager.VisualStateGroups><VisualStateGroup x:Name='CommonStates'>"
+        L"<VisualState x:Name='Normal'/><VisualState x:Name='PointerOver'/><VisualState x:Name='Focused'/>"
+        L"<VisualState x:Name='Disabled'><VisualState.Setters>"
+        L"<Setter Target='ContentElement.Foreground' Value='#808080'/>"
+        L"<Setter Target='PlaceholderTextContentPresenter.Foreground' Value='#808080'/>"
+        L"</VisualState.Setters></VisualState></VisualStateGroup></VisualStateManager.VisualStateGroups>"
+        L"<ContentPresenter Content='{TemplateBinding Header}' ContentTemplate='{TemplateBinding HeaderTemplate}'/>"
+        L"<Border Grid.Row='1' BorderBrush='Black' BorderThickness='1' Background='{TemplateBinding Background}'>"
+        L"<Grid><ScrollViewer x:Name='ContentElement' Foreground='{TemplateBinding Foreground}' "
+        L"Padding='{TemplateBinding Padding}' IsTabStop='False' ZoomMode='Disabled' "
+        L"HorizontalScrollMode='{TemplateBinding ScrollViewer.HorizontalScrollMode}' "
+        L"HorizontalScrollBarVisibility='{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}' "
+        L"VerticalScrollMode='{TemplateBinding ScrollViewer.VerticalScrollMode}' "
+        L"VerticalScrollBarVisibility='{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}'/>"
+        L"<TextBlock x:Name='PlaceholderTextContentPresenter' Text='{TemplateBinding PlaceholderText}' "
+        L"Padding='{TemplateBinding Padding}' TextAlignment='{TemplateBinding TextAlignment}' "
+        L"TextWrapping='{TemplateBinding TextWrapping}' IsHitTestVisible='False'/></Grid></Border>"
+        L"<ContentPresenter Grid.Row='2' Content='{TemplateBinding Description}'/>"
+        L"</Grid>"
+        L"</ControlTemplate></Setter.Value></Setter></Style>";
+}

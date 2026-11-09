@@ -13,6 +13,7 @@
 #include "lib-win32/win16-control-xaml/button_template.h"
 #include "lib-win32/win16-control-xaml/checkbox_template.h"
 #include "lib-win32/win16-control-xaml/radio_template.h"
+#include "lib-win32/win16-control-xaml/textbox_template.h"
 #include "lib-win32/win16-control-xaml/button_style.h"
 #include "lib-win32/win16-control-xaml/visual_tree.h"
 #include "lib-win32/win16-control-xaml/session.h"
@@ -534,6 +535,8 @@ typedef struct {
     HRESULT (STDMETHODCALLTYPE *get_trust)(test_ui *,TrustLevel *);
     void (STDMETHODCALLTYPE *unused[3])(void);
     HRESULT (STDMETHODCALLTYPE *get_opacity)(test_ui *,double *);
+    void (STDMETHODCALLTYPE *unused_visibility[13])(void);
+    HRESULT (STDMETHODCALLTYPE *get_visibility)(test_ui *,INT32 *);
 } test_ui_vtable;
 struct test_ui { const test_ui_vtable *vtable; };
 static const IID test_ui_iid={0xc3c01020,0x320c,0x5cf6,{0x9d,0x24,0xd3,0x96,0xbb,0xfa,0x4d,0x8b}};
@@ -902,6 +905,181 @@ static HRESULT test_radio_group(void)
     return hr;
 }
 
+typedef struct test_textbox test_textbox;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_textbox *, REFIID, void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_textbox *);
+    ULONG (STDMETHODCALLTYPE *release)(test_textbox *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(test_textbox *, ULONG *, IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(test_textbox *, HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(test_textbox *, TrustLevel *);
+    HRESULT (STDMETHODCALLTYPE *get_text)(test_textbox *, HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *put_text)(test_textbox *, HSTRING);
+    HRESULT (STDMETHODCALLTYPE *get_selected_text)(test_textbox *, HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *put_selected_text)(test_textbox *, HSTRING);
+    HRESULT (STDMETHODCALLTYPE *get_selection_length)(test_textbox *, INT32 *);
+    HRESULT (STDMETHODCALLTYPE *put_selection_length)(test_textbox *, INT32);
+    HRESULT (STDMETHODCALLTYPE *get_selection_start)(test_textbox *, INT32 *);
+    HRESULT (STDMETHODCALLTYPE *put_selection_start)(test_textbox *, INT32);
+    void (STDMETHODCALLTYPE *unused[16])(void);
+    HRESULT (STDMETHODCALLTYPE *get_header)(test_textbox *, IInspectable **);
+    HRESULT (STDMETHODCALLTYPE *put_header)(test_textbox *, IInspectable *);
+    void (STDMETHODCALLTYPE *unused_header[2])(void);
+    HRESULT (STDMETHODCALLTYPE *get_placeholder)(test_textbox *, HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *put_placeholder)(test_textbox *, HSTRING);
+} test_textbox_vtable;
+struct test_textbox { const test_textbox_vtable *vtable; };
+static const IID test_textbox_iid = {0x873af7c2,0xab89,0x5d76,{0x8d,0xbe,0x3d,0x63,0x25,0x66,0x9d,0xf5}};
+
+static HRESULT test_textbox_candidate(void)
+{
+    static const wchar_t textbox_name[]=L"Microsoft.UI.Xaml.Controls.TextBox";
+    static const wchar_t window_name[]=L"Microsoft.UI.Xaml.Window";
+    HSTRING name=NULL,text=NULL,actual=NULL,replacement=NULL;
+    IInspectable *object=NULL,*window_object=NULL,*ui=NULL,*dep=NULL,*root=NULL,*header=NULL,*header_value=NULL,*border=NULL,*grid=NULL,*placeholder=NULL,*boxed_header=NULL;
+    test_textbox *box=NULL; test_window *window=NULL; test_control *control=NULL;
+    winui_tree *tree=NULL; winui_vsm *manager=NULL; test_ui *placeholder_ui=NULL;
+    content_interface *header_presenter=NULL;
+    __x_ABI_CWindows_CFoundation_CIPropertyValueStatics *properties=NULL;
+    __x_ABI_CWindows_CFoundation_CIPropertyValue *header_property=NULL;
+    win16_xaml_adapter adapter={0}; VisualElement info={0}; ParentChildRelation relation={0};
+    unsigned int source=0,index=0;
+    HRESULT hr=WindowsCreateString(textbox_name,(UINT32)(ARRAYSIZE(textbox_name)-1),&name);
+    if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&object);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(window_name,(UINT32)(ARRAYSIZE(window_name)-1),&name);
+    if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&window_object);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(window_object,&test_window_iid,(void **)&window);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&test_ui_iid,(void **)&ui);
+    if (SUCCEEDED(hr)) hr=window->vtable->put_content(window,ui);
+    if (SUCCEEDED(hr)) hr=window->vtable->activate(window);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&test_textbox_iid,(void **)&box);
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"alpha beta",10,&text);
+    HSTRING hint=NULL;
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Hint",4,&hint);
+    if (SUCCEEDED(hr)) hr=box->vtable->put_placeholder(box,hint);
+    HSTRING header_text=NULL;
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Header",6,&header_text);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Windows.Foundation.PropertyValue",32,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&IID___x_ABI_CWindows_CFoundation_CIPropertyValueStatics,(void **)&properties);
+    if (SUCCEEDED(hr)) hr=__x_ABI_CWindows_CFoundation_CIPropertyValueStatics_CreateString(properties,header_text,&boxed_header);
+    if (SUCCEEDED(hr)) hr=box->vtable->put_header(box,boxed_header);
+    if (SUCCEEDED(hr)) hr=box->vtable->put_text(box,text);
+    if (SUCCEEDED(hr)) hr=box->vtable->put_selection_start(box,2);
+    if (SUCCEEDED(hr)) hr=box->vtable->put_selection_length(box,3);
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    if (SUCCEEDED(hr)) { info.Type=(BSTR)textbox_name; relation.Parent=1; hr=IXamlDiagnostics_GetHandleFromIInspectable(diagnostics,object,&info.Handle); }
+    if (SUCCEEDED(hr)) { hr=win16_xaml_adapter_change(&adapter,relation,info,Add,NULL); if(hr==S_FALSE)hr=E_FAIL; }
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,object,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceLocal) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_control_iid,(void **)&control);
+    boolean applied=0;
+    if (SUCCEEDED(hr)) hr=control->vtable->apply_template(control,&applied);
+    if (SUCCEEDED(hr) && !applied) hr=E_FAIL;
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Media.VisualTreeHelper",40,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_tree_iid,(void **)&tree);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_dependency_iid,(void **)&dep);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,0,&root);
+    if (dep) { IInspectable_Release(dep); dep=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(root,&winui_dependency_iid,(void **)&dep);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,0,&header);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(header,&winui_presenter_iid,(void **)&header_presenter);
+    if (SUCCEEDED(hr)) hr=header_presenter->vtable->get_content(header_presenter,&header_value);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(header_value,&property_value_iid,(void **)&header_property);
+    HSTRING displayed_header=NULL;
+    if (SUCCEEDED(hr)) hr=__x_ABI_CWindows_CFoundation_CIPropertyValue_GetString(header_property,&displayed_header);
+    if (SUCCEEDED(hr) && wcscmp(WindowsGetStringRawBuffer(displayed_header,NULL),L"Header")) hr=E_FAIL;
+    if (displayed_header) WindowsDeleteString(displayed_header);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,1,&border);
+    if (dep) { IInspectable_Release(dep); dep=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(border,&winui_dependency_iid,(void **)&dep);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,0,&grid);
+    if (dep) { IInspectable_Release(dep); dep=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(grid,&winui_dependency_iid,(void **)&dep);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,1,&placeholder);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(placeholder,&test_ui_iid,(void **)&placeholder_ui);
+    INT32 visibility=-1;
+    if (SUCCEEDED(hr)) hr=placeholder_ui->vtable->get_visibility(placeholder_ui,&visibility);
+    if (SUCCEEDED(hr) && visibility!=1) hr=E_FAIL; /* Collapsed when text exists. */
+    INT32 start=-1,length=-1;
+    if (SUCCEEDED(hr)) hr=box->vtable->get_text(box,&actual);
+    if (SUCCEEDED(hr) && wcscmp(WindowsGetStringRawBuffer(actual,NULL),L"alpha beta")) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=box->vtable->get_selection_start(box,&start);
+    if (SUCCEEDED(hr)) hr=box->vtable->get_selection_length(box,&length);
+    if (SUCCEEDED(hr) && (start!=2 || length!=3)) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"XYZ",3,&replacement);
+    if (SUCCEEDED(hr)) hr=box->vtable->put_selected_text(box,replacement);
+    if (actual) { WindowsDeleteString(actual); actual=NULL; }
+    if (SUCCEEDED(hr)) hr=box->vtable->get_text(box,&actual);
+    if (SUCCEEDED(hr) && wcscmp(WindowsGetStringRawBuffer(actual,NULL),L"alXYZ beta")) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=box->vtable->put_text(box,NULL);
+    if (SUCCEEDED(hr)) hr=placeholder_ui->vtable->get_visibility(placeholder_ui,&visibility);
+    if (SUCCEEDED(hr) && visibility!=0) hr=E_FAIL; /* Visible when empty. */
+    if (SUCCEEDED(hr)) hr=box->vtable->put_text(box,text);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.VisualStateManager",36,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_vsm_iid,(void **)&manager);
+    static const wchar_t *states[]={L"Disabled",L"PointerOver",L"Focused",L"Normal"};
+    for (unsigned int i=0;SUCCEEDED(hr) && i<ARRAYSIZE(states);i++) {
+        HSTRING state=NULL; boolean changed=0;
+        hr=WindowsCreateString(states[i],(UINT32)lstrlenW(states[i]),&state);
+        if (SUCCEEDED(hr)) hr=manager->vtable->go_to_state(manager,(IInspectable *)control,state,0,&changed);
+        if (SUCCEEDED(hr) && !changed) hr=E_FAIL;
+        if (state) WindowsDeleteString(state);
+    }
+    if (adapter.service) { HRESULT stopped=win16_xaml_adapter_stop(&adapter); if(SUCCEEDED(hr))hr=stopped; }
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,object,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceDefault) hr=E_FAIL;
+    if (actual) { WindowsDeleteString(actual); actual=NULL; }
+    if (SUCCEEDED(hr)) hr=box->vtable->get_text(box,&actual);
+    if (SUCCEEDED(hr) && wcscmp(WindowsGetStringRawBuffer(actual,NULL),L"alpha beta")) hr=E_FAIL;
+    if (adapter.session.service) (void)win16_xaml_button_set_discard(&adapter.session.buttons);
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    win16_xaml_button_style external={0};
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_apply(service,diagnostics,object,&external);
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    if (SUCCEEDED(hr)) {
+        HRESULT observed=win16_xaml_adapter_change(&adapter,relation,info,Add,NULL);
+        if (observed!=S_FALSE) hr=E_FAIL;
+    }
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,object,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceLocal) hr=E_FAIL;
+    if (adapter.service) { HRESULT stopped=win16_xaml_adapter_stop(&adapter); if(SUCCEEDED(hr))hr=stopped; }
+    if (adapter.session.service) (void)win16_xaml_button_set_discard(&adapter.session.buttons);
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    if (external.button) { HRESULT removed=win16_xaml_button_remove(service,diagnostics,&external); if(SUCCEEDED(hr))hr=removed; }
+    if (external.button) win16_xaml_button_discard(&external);
+    if (actual) WindowsDeleteString(actual);
+    if (placeholder_ui) placeholder_ui->vtable->release(placeholder_ui);
+    if (dep) IInspectable_Release(dep);
+    if (placeholder) IInspectable_Release(placeholder);
+    if (header_property) __x_ABI_CWindows_CFoundation_CIPropertyValue_Release(header_property);
+    if (header_presenter) header_presenter->vtable->release(header_presenter);
+    if (header_value) IInspectable_Release(header_value);
+    if (header) IInspectable_Release(header);
+    if (boxed_header) IInspectable_Release(boxed_header);
+    if (properties) __x_ABI_CWindows_CFoundation_CIPropertyValueStatics_Release(properties);
+    if (grid) IInspectable_Release(grid);
+    if (border) IInspectable_Release(border);
+    if (root) IInspectable_Release(root);
+    if (tree) tree->vtable->release(tree);
+    if (manager) manager->vtable->release(manager);
+    if (control) control->vtable->release(control);
+    if (box) box->vtable->release(box);
+    if (window) { (void)window->vtable->close(window); window->vtable->release(window); }
+    if (ui) IInspectable_Release(ui);
+    if (window_object) IInspectable_Release(window_object);
+    if (object) IInspectable_Release(object);
+    if (replacement) WindowsDeleteString(replacement);
+    if (hint) WindowsDeleteString(hint);
+    if (header_text) WindowsDeleteString(header_text);
+    if (text) WindowsDeleteString(text);
+    if (name) WindowsDeleteString(name);
+    return hr;
+}
+
 static void test_template_parse(void)
 {
     static const wchar_t reader_name[]=L"Microsoft.UI.Xaml.Markup.XamlReader";
@@ -910,13 +1088,18 @@ static void test_template_parse(void)
     HSTRING name=NULL,text=NULL;
     reader *factory=NULL;
     IInspectable *style=NULL;
-    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_RADIO_TEST",NULL,0)
+    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_TEXTBOX_TEST",NULL,0)
+        ? win16_xaml_textbox_template() : GetEnvironmentVariableW(L"WIN16_XAML_RADIO_TEST",NULL,0)
         ? win16_xaml_radio_template() : GetEnvironmentVariableW(L"WIN16_XAML_CHECKBOX_TEST",NULL,0)
         ? win16_xaml_checkbox_template() : win16_xaml_button_template();
     HRESULT hr=WindowsCreateString(reader_name,(UINT32)(ARRAYSIZE(reader_name)-1),&name);
     if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_reader_iid,(void **)&factory);
     if (SUCCEEDED(hr)) hr=WindowsCreateString(markup,(UINT32)lstrlenW(markup),&text);
     if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,text,&style);
+    if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_TEXTBOX_TEST",NULL,0)) {
+        HRESULT candidate=test_textbox_candidate();
+        signal_named(SUCCEEDED(candidate) ? L"WIN16_XAML_TEXTBOX_OK_EVENT" : L"WIN16_XAML_FAILED_EVENT");
+    }
     if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_CHECKBOX_TEST",NULL,0)) {
         HRESULT checkbox=test_checkbox_apply();
         signal_named(SUCCEEDED(checkbox) ? L"WIN16_XAML_CHECKBOX_OK_EVENT" : L"WIN16_XAML_FAILED_EVENT");

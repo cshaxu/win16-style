@@ -3,6 +3,7 @@
 #include "button_template.h"
 #include "checkbox_template.h"
 #include "radio_template.h"
+#include "textbox_template.h"
 #include <oleauto.h>
 #include <roapi.h>
 #include <winstring.h>
@@ -89,6 +90,7 @@ HRESULT win16_xaml_button_apply(IVisualTreeService *service, IXamlDiagnostics *d
         if (!wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.Button")) markup=win16_xaml_button_template();
         else if (!wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.CheckBox")) markup=win16_xaml_checkbox_template();
         else if (!wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.RadioButton")) markup=win16_xaml_radio_template();
+        else if (!wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.TextBox")) markup=win16_xaml_textbox_template();
     }
     if (SUCCEEDED(hr) && !markup) hr=HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
     if (runtime_name) WindowsDeleteString(runtime_name);

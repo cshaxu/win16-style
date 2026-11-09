@@ -17,7 +17,8 @@ static BOOL visit(IInspectable *object, unsigned int depth, void *context)
     PCWSTR runtime=name ? WindowsGetStringRawBuffer(name,NULL) : NULL;
     BOOL button=runtime && (!wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.Button") ||
                             !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.CheckBox") ||
-                            !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.RadioButton"));
+                            !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.RadioButton") ||
+                            !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.TextBox"));
     if (name) WindowsDeleteString(name);
     if (!button) return TRUE;
     DWORD thread=GetCurrentThreadId();

@@ -5,7 +5,7 @@
 #include <wchar.h>
 #include "ntw16s-dll/window_thread.h"
 
-typedef struct probe { DWORD pid; HMODULE module,property_module; HOOKPROC callback,property_callback; uintptr_t adapter; BOOL removed,property_ok,checkbox,radio,existing,preexisting,remove_bridge,keep_fixture; } probe;
+typedef struct probe { DWORD pid; HMODULE module,property_module; HOOKPROC callback,property_callback; uintptr_t adapter; BOOL removed,property_ok,checkbox,radio,textbox,existing,preexisting,remove_bridge,keep_fixture; } probe;
 static uintptr_t send_property(HWND window,UINT message,WPARAM operation,uintptr_t adapter)
 {
     DWORD_PTR ignored=0; RemovePropW(window,L"Win16Xaml.Test.Property.Result");
@@ -105,7 +105,7 @@ static BOOL CALLBACK visit(HWND window,LPARAM parameter)
     uintptr_t before=0,after=0,fixture_attached=0;
     if (property_hook && property_message) {
         RemovePropW(window,L"Win16Xaml.Test.Property.Result");
-        if (SendMessageTimeoutW(window,property_message,p->existing?5:p->radio?17:p->checkbox?3:1,(LPARAM)p->adapter,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,2000,&ignored))
+        if (SendMessageTimeoutW(window,property_message,p->existing?5:p->textbox?18:p->radio?17:p->checkbox?3:1,(LPARAM)p->adapter,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,2000,&ignored))
             before=(uintptr_t)GetPropW(window,L"Win16Xaml.Test.Property.Result");
         RemovePropW(window,L"Win16Xaml.Test.Property.Result");
         if (p->checkbox) wprintf(L"checkbox_create_result=%llu\n",(unsigned long long)before);
@@ -131,6 +131,19 @@ static BOOL CALLBACK visit(HWND window,LPARAM parameter)
         if (p->checkbox && !p->existing) {
             fixture_attached=send_property(window,property_message,13,p->adapter);
             wprintf(L"fixture_attached=%llu\n",(unsigned long long)fixture_attached);
+            if (p->textbox) {
+                HWND fixture=(HWND)GetPropW(window,L"Win16Xaml.Test.FixtureHwnd");
+                if (fixture && SetForegroundWindow(fixture) && GetForegroundWindow()==fixture &&
+                    send_property(window,property_message,19,0)==2 && GetForegroundWindow()==fixture) {
+                    INPUT input[2]={{0},{0}};
+                    input[0].type=INPUT_KEYBOARD; input[0].ki.wScan=L'z'; input[0].ki.dwFlags=KEYEVENTF_UNICODE;
+                    input[1]=input[0]; input[1].ki.dwFlags|=KEYEVENTF_KEYUP;
+                    UINT sent=SendInput(2,input,sizeof(INPUT)); Sleep(300);
+                    uintptr_t result=send_property(window,property_message,20,0);
+                    wprintf(L"textbox_keyboard_sent=%u result=%llu\n",sent,(unsigned long long)result);
+                    if (sent!=2 || result!=2) before=0;
+                } else wprintf(L"SKIP textbox_keyboard_foreground\n");
+            }
             RemovePropW(window,L"Win16Xaml.Test.FixtureHwnd");
             RemovePropW(window,L"Win16Xaml.Test.FixtureHost");
         }
@@ -172,7 +185,8 @@ int wmain(int argc,WCHAR **argv)
         p.remove_bridge=argc==6 && !wcscmp(argv[5],L"--no-bridge");
         p.keep_fixture=argc==6 && !wcscmp(argv[5],L"--keep-fixture");
         p.radio=argc==6 && !wcscmp(argv[5],L"--radio");
-        p.checkbox=p.existing || p.preexisting || p.radio || (argc==6 && !wcscmp(argv[5],L"--checkbox"));
+        p.textbox=argc==6 && !wcscmp(argv[5],L"--textbox");
+        p.checkbox=p.existing || p.preexisting || p.radio || p.textbox || (argc==6 && !wcscmp(argv[5],L"--checkbox"));
     }
     EnumWindows(visit,(LPARAM)&p);
     if (p.property_module) FreeLibrary(p.property_module);

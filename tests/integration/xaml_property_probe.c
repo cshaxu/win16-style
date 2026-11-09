@@ -47,6 +47,30 @@ typedef struct {
 struct window_native { const window_native_vtable *vtable; };
 static const IID window_native_iid={0xeecdbf0e,0xbae9,0x4cb6,{0xa6,0x8e,0x95,0x98,0xe1,0xcb,0x57,0xbb}};
 static const IID ui_iid={0xc3c01020,0x320c,0x5cf6,{0x9d,0x24,0xd3,0x96,0xbb,0xfa,0x4d,0x8b}};
+typedef struct input_element input_element;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(input_element *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(input_element *);
+    ULONG (STDMETHODCALLTYPE *release)(input_element *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(input_element *,ULONG *,IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(input_element *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(input_element *,TrustLevel *);
+    void (STDMETHODCALLTYPE *unused[220])(void);
+    HRESULT (STDMETHODCALLTYPE *focus)(input_element *,INT32,boolean *);
+} input_element_vtable;
+struct input_element { const input_element_vtable *vtable; };
+typedef struct input_textbox input_textbox;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(input_textbox *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(input_textbox *);
+    ULONG (STDMETHODCALLTYPE *release)(input_textbox *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(input_textbox *,ULONG *,IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(input_textbox *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(input_textbox *,TrustLevel *);
+    HRESULT (STDMETHODCALLTYPE *get_text)(input_textbox *,HSTRING *);
+} input_textbox_vtable;
+struct input_textbox { const input_textbox_vtable *vtable; };
+static const IID input_textbox_iid={0x873af7c2,0xab89,0x5d76,{0x8d,0xbe,0x3d,0x63,0x25,0x66,0x9d,0xf5}};
 typedef struct test_control test_control;
 typedef struct {
     HRESULT (STDMETHODCALLTYPE *query)(test_control *,REFIID,void **);
@@ -109,7 +133,7 @@ static void clear(void)
     if (service) IVisualTreeService_Release(service);
     button=NULL; other_button=NULL; diagnostics=NULL; service=NULL;
 }
-static HRESULT create_checkbox(win16_xaml_adapter *adapter,BOOL radio)
+static HRESULT create_checkbox(win16_xaml_adapter *adapter,int kind)
 {
     if (adapter && (!adapter->service || !adapter->diagnostics)) return E_INVALIDARG;
     HMODULE pin=NULL;
@@ -121,7 +145,8 @@ static HRESULT create_checkbox(win16_xaml_adapter *adapter,BOOL radio)
     }
     HSTRING name=NULL; IInspectable *object=NULL,*element=NULL; test_control *control=NULL;
     boolean applied=0;
-    const WCHAR *class_name=radio ? L"Microsoft.UI.Xaml.Controls.RadioButton" : L"Microsoft.UI.Xaml.Controls.CheckBox";
+    const WCHAR *class_name=kind==2 ? L"Microsoft.UI.Xaml.Controls.TextBox" :
+        kind==1 ? L"Microsoft.UI.Xaml.Controls.RadioButton" : L"Microsoft.UI.Xaml.Controls.CheckBox";
     HRESULT hr=WindowsCreateString(class_name,(UINT32)lstrlenW(class_name),&name);
     if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&button);
     if (name) { WindowsDeleteString(name); name=NULL; }
@@ -205,10 +230,10 @@ __declspec(dllexport) LRESULT CALLBACK XamlPropertyProbe(int code,WPARAM wp,LPAR
                     hr=win16_xaml_button_source(service,diagnostics,button,&source,&index);
                 }
             }
-        } else if (m->wParam==3 || m->wParam==5 || m->wParam==7 || m->wParam==17) {
+        } else if (m->wParam==3 || m->wParam==5 || m->wParam==7 || m->wParam==17 || m->wParam==18) {
             clear();
-            hr=m->wParam==7 ? create_checkbox(NULL,FALSE) : m->wParam==3 || m->wParam==17
-                ? create_checkbox((win16_xaml_adapter *)m->lParam,m->wParam==17)
+            hr=m->wParam==7 ? create_checkbox(NULL,0) : m->wParam==3 || m->wParam==17 || m->wParam==18
+                ? create_checkbox((win16_xaml_adapter *)m->lParam,m->wParam==18 ? 2 : m->wParam==17 ? 1 : 0)
                 : create_checkbox_in_tree((win16_xaml_adapter *)m->lParam);
         } else if (m->wParam==4 && button) {
             win16_xaml_adapter *adapter=(win16_xaml_adapter *)m->lParam;
@@ -249,6 +274,19 @@ __declspec(dllexport) LRESULT CALLBACK XamlPropertyProbe(int code,WPARAM wp,LPAR
                 }
             } else if (SUCCEEDED(hr)) hr=E_FAIL;
             if (native) native->vtable->release(native);
+        } else if (m->wParam==19 && button) {
+            input_element *input=NULL; boolean focused=0;
+            hr=IInspectable_QueryInterface(button,&ui_iid,(void **)&input);
+            if (SUCCEEDED(hr)) hr=input->vtable->focus(input,1,&focused);
+            if (SUCCEEDED(hr)) source=focused ? 1 : 0;
+            if (input) input->vtable->release(input);
+        } else if (m->wParam==20 && button) {
+            input_textbox *input=NULL; HSTRING text=NULL;
+            hr=IInspectable_QueryInterface(button,&input_textbox_iid,(void **)&input);
+            if (SUCCEEDED(hr)) hr=input->vtable->get_text(input,&text);
+            if (SUCCEEDED(hr)) source=text && !wcscmp(WindowsGetStringRawBuffer(text,NULL),L"z") ? 1 : 0;
+            if (text) WindowsDeleteString(text);
+            if (input) input->vtable->release(input);
         } else if (m->wParam==14) {
             win16_xaml_adapter *adapter=(win16_xaml_adapter *)m->lParam;
             if (!other_button && adapter) {

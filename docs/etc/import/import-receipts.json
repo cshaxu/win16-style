@@ -6521,9 +6521,9 @@
       "path": "src/lib-win32/win16-control-xaml/adapter.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2bd52b38029fa55b8b94654107c439021e29987923499b182566adf97ead46bf",
+      "sha256": "ac994ca575d723d6d27e225f89ad3912682a04650e6d1b35f3a2f155c5b9525e",
       "disposition": "authored",
-      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate; T25 S1 RadioButton candidate",
+      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate; T25 S1 RadioButton candidate; T25 S1 TextBox candidate",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
     },
     {
@@ -6548,9 +6548,9 @@
       "path": "src/lib-win32/win16-control-xaml/button_style.c",
       "source": null,
       "source_blob": null,
-      "sha256": "a34bccf839b1eed87507dea75fed2053b0ab3125686a46b6ea4ace92bd07d273",
+      "sha256": "494a66936c34bc0fad1d9754b0cdee54aaef86ff2eadfb947688d1c797f436cc",
       "disposition": "authored",
-      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate; T25 S1 RadioButton candidate",
+      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate; T25 S1 RadioButton candidate; T25 S1 TextBox candidate",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
     },
     {
@@ -6674,9 +6674,9 @@
       "path": "src/lib-win32/win16-control-xaml/session.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d5378666c288b4371d7e34f16f86e3a596c8d2f27189bc136e848d0141f0981e",
+      "sha256": "547e52315278200316b235bb3388480c8d6ab5634ca75719cea4cb3a3fa2a371",
       "disposition": "authored",
-      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate; T25 S1 RadioButton candidate",
+      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate; T25 S1 RadioButton candidate; T25 S1 TextBox candidate",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
     },
     {
@@ -6777,6 +6777,24 @@
       "disposition": "authored",
       "review": "T25 S1 RadioButton candidate",
       "notice": "Project-authored C code; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/win16-control-xaml/textbox_template.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "4a2c71f22a5d11273ddc19becbe4c2acb6d64dbcb864a1c9688eefd2de04b70c",
+      "disposition": "authored",
+      "review": "M0 T25 S1 TextBox candidate",
+      "notice": "Project-authored C source; XAML template part names and bindings follow documented platform interfaces; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/win16-control-xaml/textbox_template.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "076225950cee1a7868bbe3890c63c40b3138f0646f6bc372a73078c5785d3b66",
+      "disposition": "authored",
+      "review": "M0 T25 S1 TextBox candidate",
+      "notice": "Project-authored C source; XAML template part names and bindings follow documented platform interfaces; no imported artwork"
     }
   ]
 }
