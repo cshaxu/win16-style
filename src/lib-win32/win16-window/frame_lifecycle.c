@@ -13,8 +13,15 @@ BOOL win16_control_frame_install(HWND w,const win16_style_palette *p,BOOL creati
     if(!v->local_window(w))return FALSE;
     if(v->state(w)){SetLastError(ERROR_ALREADY_EXISTS);return FALSE;}
     style=(DWORD)GetWindowLongPtr(w,GWL_STYLE);ex=(DWORD)GetWindowLongPtr(w,GWL_EXSTYLE);
-    if(ex&(WS_EX_CLIENTEDGE|WS_EX_TOOLWINDOW|WS_EX_LAYERED)){
+    if(ex&(WS_EX_CLIENTEDGE|WS_EX_TOOLWINDOW)){
         SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
+    }
+    if(ex&WS_EX_LAYERED){
+        WCHAR name[32];COLORREF key;BYTE alpha;DWORD flags;
+        if(!GetClassNameW(w,name,ARRAYSIZE(name)) || lstrcmpW(name,L"ConsoleWindowClass") ||
+           !GetLayeredWindowAttributes(w,&key,&alpha,&flags)){
+            SetLastError(ERROR_NOT_SUPPORTED);return FALSE;
+        }
     }
     normal=!IsIconic(w)&&!IsZoomed(w);
     s=win16_control_frame_state_create();

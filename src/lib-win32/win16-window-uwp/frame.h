@@ -17,6 +17,9 @@ typedef struct win16_uwp_frame_action {
 BOOL win16_uwp_frame_apply_actions(HWND frame,HWND native_title,const win16_uwp_frame_action *actions,unsigned count);
 BOOL win16_uwp_frame_apply_action(HWND frame,HWND native_title,const win16_uwp_frame_action *action);
 BOOL win16_uwp_frame_apply(HWND frame,HWND native_title);
+/* Render an already allocated non-client frame without replacing a native
+ * title child. The caller owns allocation and restoration of that frame. */
+BOOL win16_uwp_frame_apply_nonclient(HWND frame);
 BOOL win16_uwp_frame_remove(HWND frame);
 HWND win16_uwp_frame_surface(HWND frame);
 #endif

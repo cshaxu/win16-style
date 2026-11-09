@@ -70,7 +70,7 @@ static BOOL detach(uwp_frame *s)
     if(!RemoveWindowSubclass(s->window,owner_proc,(UINT_PTR)owner_proc))return FALSE;
     s->detached=TRUE;
     if(s->tracking)EndMenu();
-    RemoveWindowSubclass(s->title,title_proc,(UINT_PTR)title_proc);
+    if(s->title)RemoveWindowSubclass(s->title,title_proc,(UINT_PTR)title_proc);
     s->menu->detached=TRUE;
     while(s->menu->menus)win16_control_frame_state_end_menu(s->menu);
     win16_style_menu_restore(&s->menu->menu_items);
@@ -85,9 +85,9 @@ static BOOL detach(uwp_frame *s)
 static BOOL geometry(uwp_frame *s,RECT *outer)
 {
     RECT content,title;
-    if(!IsWindow(s->title) || GetParent(s->title)!=s->window || !IsWindowVisible(s->title) ||
-       !GetWindowRect(s->window,outer) || !GetWindowRect(s->title,&title) ||
-       !GetClientRect(s->window,&content))return FALSE;
+    if(!GetWindowRect(s->window,outer) || !GetClientRect(s->window,&content))return FALSE;
+    if(s->title && (!IsWindow(s->title) || GetParent(s->title)!=s->window ||
+       !IsWindowVisible(s->title) || !GetWindowRect(s->title,&title)))return FALSE;
     if(IsZoomed(s->window)){
         MONITORINFO monitor={.cbSize=sizeof(monitor)};RECT visible;
         if(!GetMonitorInfoW(MonitorFromWindow(s->window,MONITOR_DEFAULTTONEAREST),&monitor) ||
@@ -99,8 +99,10 @@ static BOOL geometry(uwp_frame *s,RECT *outer)
      * elsewhere remain outside its region and input path. */
     /* The host can restrict its title child to the right-hand caption buttons;
      * its bottom still defines the shared title strip above XAML content. */
-    if(title.left<origin.x || title.right!=outer->left+content.right || title.bottom<=origin.y)return FALSE;
-    content.top=title.bottom-outer->top;
+    if(s->title){
+        if(title.left<origin.x || title.right!=outer->left+content.right || title.bottom<=origin.y)return FALSE;
+        content.top=title.bottom-outer->top;
+    }
     SIZE size={outer->right-outer->left,outer->bottom-outer->top};
     UINT dpi=GetDpiForWindow(s->window);
     if(!win16_uwp_frame_layout(size,dpi,(DWORD)GetWindowLongPtrW(s->window,GWL_STYLE),IsZoomed(s->window),content,&s->layout))return FALSE;
@@ -369,14 +371,14 @@ static LRESULT CALLBACK owner_proc(HWND w,UINT message,WPARAM a,LPARAM b,UINT_PT
     }
     release(s);return result;
 }
-BOOL win16_uwp_frame_apply_actions(HWND w,HWND title,const win16_uwp_frame_action *actions,unsigned count)
+static BOOL apply_actions(HWND w,HWND title,const win16_uwp_frame_action *actions,unsigned count)
 {
     /* There are 256 available 16-aligned command slots below SC_SIZE. */
     if(count>256 || (count&&!actions)){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
     for(unsigned i=0;i<count;++i)if(!actions[i].label || !*actions[i].label || !actions[i].invoke){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
-    if(!local(w) || !local(title))return FALSE;
+    if(!local(w) || (title && !local(title)))return FALSE;
     if(lookup(w)){SetLastError(ERROR_ALREADY_EXISTS);return FALSE;}
-    if(GetParent(title)!=w){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
+    if(title && GetParent(title)!=w){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
     uwp_frame *s=calloc(1,sizeof(*s)+(size_t)count*sizeof(frame_action));if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
     s->menu=win16_control_frame_state_create();
     if(!s->menu){free(s);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
@@ -385,7 +387,7 @@ BOOL win16_uwp_frame_apply_actions(HWND w,HWND title,const win16_uwp_frame_actio
     for(unsigned i=0;i<count;++i)s->actions[i].value=actions[i];
     s->window=w;s->title=title;s->calls=1;s->no_selection=-1;s->active=GetForegroundWindow()==w;
     if(!SetWindowSubclass(w,owner_proc,(UINT_PTR)owner_proc,(DWORD_PTR)s)){win16_control_frame_state_dispose(s->menu);free(s);return FALSE;}
-    if(!SetWindowSubclass(title,title_proc,(UINT_PTR)title_proc,(DWORD_PTR)s)){
+    if(title && !SetWindowSubclass(title,title_proc,(UINT_PTR)title_proc,(DWORD_PTR)s)){
         DWORD error=GetLastError();detach(s);release(s);SetLastError(error);return FALSE;
     }
     s->surface=CreateWindowExW(WS_EX_LAYERED|WS_EX_TOOLWINDOW|WS_EX_NOACTIVATE,L"STATIC",L"",
@@ -396,6 +398,13 @@ BOOL win16_uwp_frame_apply_actions(HWND w,HWND title,const win16_uwp_frame_actio
     if(!ok){detach(s);if(!error)error=ERROR_NOT_SUPPORTED;}
     release(s);SetLastError(error);return ok;
 }
+BOOL win16_uwp_frame_apply_actions(HWND w,HWND title,const win16_uwp_frame_action *actions,unsigned count)
+{
+    if(!title){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
+    return apply_actions(w,title,actions,count);
+}
+BOOL win16_uwp_frame_apply_nonclient(HWND w)
+{return apply_actions(w,NULL,NULL,0);}
 BOOL win16_uwp_frame_apply_action(HWND w,HWND title,const win16_uwp_frame_action *action)
 {return win16_uwp_frame_apply_actions(w,title,action,action?1:0);}
 BOOL win16_uwp_frame_apply(HWND w,HWND title)

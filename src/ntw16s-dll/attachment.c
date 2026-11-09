@@ -23,6 +23,7 @@
 #include "../lib-win32/win16-control/attachment_state.h"
 #include "../lib-win32/win16-control/vcl_extra_frame.h"
 #include "../lib-win32/win16-control/month_paint.h"
+#include "../lib-win32/win16-window-uwp/frame.h"
 #include "injection/unwind.h"
 #include "status_theme.h"
 #include "month_text.h"
@@ -561,7 +562,11 @@ BOOL __cdecl Ntw16sWindowAttached(HWND w)
 void __cdecl Ntw16sScrollChanged(HWND w)
 {win16_attachment_scroll_changed(w,&lifecycle_services);}
 BOOL __cdecl Ntw16sWindowRemove(HWND w)
-{return win16_attachment_remove(w,&lifecycle_services);}
+{
+    if(class_is(w,L"CASCADIA_HOSTING_WINDOW_CLASS") && win16_uwp_frame_surface(w) &&
+       !win16_uwp_frame_remove(w))return FALSE;
+    return win16_attachment_remove(w,&lifecycle_services);
+}
 BOOL __cdecl Ntw16sWindowTerminal(HWND w)
 {return win16_attachment_terminal(w,&lifecycle_services);}
 
@@ -620,6 +625,11 @@ static BOOL install_created(HWND w,DWORD original_style)
         win16_style_edit_scrollbars_enable,ntw16s_theme_remove,Ntw16sWindowRemove};
     installed=win16_attachment_install_style(w,a,protocol,original_style,legacy_progress,tree,picture,control,edit,report,&error,&install_services);
     release(a);
+    if(installed && lookup(w) && class_is(w,L"CASCADIA_HOSTING_WINDOW_CLASS") &&
+       (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_NOREDIRECTIONBITMAP) &&
+       !win16_uwp_frame_apply_nonclient(w)){
+        error=GetLastError();Ntw16sWindowRemove(w);installed=FALSE;
+    }
     if(!installed)SetLastError(error?error:ERROR_GEN_FAILURE);
     return installed;
 }

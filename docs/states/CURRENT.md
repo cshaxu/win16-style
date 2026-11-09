@@ -84,6 +84,62 @@ x86 同一自有对照：父 PID8328 加载 O:/winnt/ntw16s32.dll，提权子 PI
 父窗口附着增强对照：PID4828 的 DLL 路径为 O:/winnt/ntw16s64.dll，attached=1；同次启动器 PID27616 已退出但未产生子进程报告，未捕获退出码或 UAC 结果，子进程部分不计通过或失败。
 原生挂起创建成功 error0，进程立即回收；隔离桌面 run16s --wait taskmgr 返回0x80004004，未发现自有窗口，不能计通过；直接启动同一隔离桌面对照同样返回0x80004004且无自有窗口；目前不能归因于注入。现有PID26784仍存活，隔离桌面或Job及单实例交互的原因待查。用户退出既有实例后普通桌面标准启动产生Taskmgr PID26460（父4448已退出），TaskManagerWindow在144DPI显示；管理员只读模块检查只发现系统XAML，未发现ntw16s DLL，需定位中转及权限边界；本次实例普通权限无法结束，已核验身份后管理员关闭。复用原生调试器观察标准启动：run16s PID26676创建Taskmgr PID14784，后者加载O:/winnt/ntw16s64.dll并以0x80004004退出；最终Taskmgr PID21116的父进程为14784，管理员只读检查无ntw16s模块。仅记录观察，提升或创建API尚未确定。
 
+S4 初始实测：标准 cmd 私有桌面探针检测到已有 Windows Terminal 进程，按保护条件跳过，未操作该会话。标准 conhost 自建窗口可见且目标模块枚举到发布 DLL；线程探针发送成功但附着及结果属性均为0，不能判为附着或样式通过。两次自建任务按自身清理机制结束。先前多窗口伪控制台 owner 关联只是候选，边界见 proposal。
+
+S4 自有 conhost 进一步对照：同一自建作业内 conhost 的线程钩子捕获窗口消息；外部观察的窗口 PID/TID 属于 cmd，在回调内部则为实际 conhost 消息线程。现有附着因 WS_EX_LAYERED 返回50；原型仅对自建窗口临时移除分层后附着和移除均成功，离屏截图显示标题与控制台文字。原始透明度180时仅恢复样式位会变255；显式恢复属性后180、标志和样式位一致，附着期间自建控制台 echo 输入输出通过。未验证实屏、鼠标、一般分层窗口、异常清理或产品启动路径；原型未发布。
+
+S4 后续候选：仅对具有可查询恒定分层属性的 ConsoleWindowClass 保留 WS_EX_LAYERED 并尝试既有外框附着；自建 conhost 的探针在宿主真实 UI 线程手动附着、移除并恢复分层属性，实屏截图出现 Win16 标题。该结果不是标准启动自动附着，候选未发布。当前会话新建私有桌面返回错误 5，alpha=180 对照未执行；x64 core/window-thread 通过，core/frames 与 core/pending-frame-owner 因 PRIVATE_DESKTOP_CREATE_FAIL error=5 未执行，不算通过。继续查标准启动接入及桌面权限，不影响用户已有终端。
+
+S4 补充：在允许创建私有桌面的执行环境中，自建 conhost 候选保持 WS_EX_LAYERED，透明度设为180后附着和移除均成功，移除时仍为180；测试后探针恢复原属性。产品 Ntw16sWindowThreadHook 对自有宿主的线程定向接入与移除均返回成功，但仍由探针手动触发。作业内快照见 conhost 为启动器子进程、cmd 为 conhost 子进程；这是本次观察而非普遍保证。同一候选 x64 core/frames、core/window-thread、core/pending-frame-owner 各通过；不代表标准启动已实现。
+
+S4 外框候选已完成 x86/x64 增量编译；补充普通分层窗口显式设置 alpha=180 后仍应拒绝安装的负例，双宽 core/frames 各 1/1 通过。此负例不替代真实 conhost 的自动接入与恢复测试。
+
+S4 标准 conhost 候选：启动器针对本次创建的系统 conhost，查找其子进程报告的唯一控制台窗口，并使用该宿主线程定向产品回调。自建作业与私有桌面中，标准候选命令启动后独立线程探针查询 attached=1，随后 remove=1；窗口和宿主均为本次测试创建。首次候选因客户端句柄缺少 SYNCHRONIZE 返回1400，已修正后复测；尚未验证并发身份、输入输出、Terminal/cmd、恢复和完整交付。代码未提交未发布。
+
+S4 候选进一步验证：标准启动自有 conhost 自动附着后，向其 cmd 输入 echo，成功观察回显与输出，移除后原分层位及透明度255一致；启动器重查子进程出生时间和父子关系后的候选重测也通过。x64 启动器目标选择单元测试及 Explorer 选择回归各通过。当前存在既有 WindowsTerminal PID24120（由权限外只读检查确认），独立 Terminal 探针按保护条件跳过，未操作该进程；不能计为 Terminal 或 cmd 通过。
+
+S4 负例：启动器针对本次创建且已退出的宿主返回 ERROR_PROCESS_ABORTED；x64 launch/console-host 通过。窗口枚举失败时现在保留非零错误。Terminal 上游资料指出其窗口可能复用已存在的进程，且曾移除 isolated mode（https://github.com/microsoft/terminal/issues/19468）；目前本机已有用户 Terminal，仍需证明仅针对新窗口且不改变现有会话的测试与产品路径。
+
+S4 自建 conhost 参数对照：`run16s conhost.exe cmd.exe /d /k` 自动附着查询成功，控制台 echo 输入及输出标记成功，移除后分层属性保持；该次仍是开发候选，不是四文件发布包。
+
+S4 快速退出对照：自有 `conhost cmd /d /c exit 37` 在私有桌面中结束，候选不再因宿主已退出输出附着失败；探针未发现窗口，不据此推断退出码语义或其他参数覆盖。
+
+S4 已将自建私有桌面的 conhost 自动接入、echo 输入输出和移除整理为纯 C 原生集成测试 launch/console-integration；x64 构建及测试 1/1 通过，耗时约1秒。测试仅查询实际附着与控制台内容，不代表物理绘制、Terminal 或正式包通过；辅助观察 DLL 只用于测试，不加入产品包。
+
+S4 分层边界自动回归补充：自有 ConsoleWindowClass 测试窗口在没有可查询分层属性时拒绝附着，设置恒定 alpha=180 后允许附着和移除，移除后样式位、alpha 与标志不变；x86/x64 core/frames 均通过。普通分层窗口仍被拒绝。该模型不替代其他桌面合成模式验证。
+
+S4 Terminal 新证据：自建私有桌面内启动 Terminal 后，从其测试 cmd 的 PseudoConsoleWindow 查到唯一 CASCADIA_HOSTING_WINDOW_CLASS owner；独立 run16s cmd 中 cmd 加载 DLL，Terminal 宿主未加载 DLL，故尚未自动接入。无持久系统修改的临时原型在真实自有 Terminal GUI 线程调用已有外框附着，保留 WS_EX_NOREDIRECTIONBITMAP，另建自有分层表面；物理屏幕截图出现蓝色标题区域且标签行位于其下，移除外框及销毁表面均成功，扩展样式前后均为 0x00200100。该表面目前只是纯色，无标题文字、按钮、命中测试、重绘、缩放、透明度或可靠清理验证，不是产品实现；测试窗口与进程已关闭、桌面已恢复。上游 Terminal 源码说明该标志用于 vintage 透明度（https://github.com/microsoft/terminal/blob/main/src/cascadia/WindowsTerminal/IslandWindow.cpp），因此不能无验证地长期清除此标志。
+
+S4 Terminal 候选：Win16 UWP 绘制层新增已分配非客户区模式，供 Terminal 在保留 WS_EX_NOREDIRECTIONBITMAP 时使用；真实自有 Terminal 的定向附着与移除均成功，实屏可见 Win16 标题和下方标签行，移除后扩展样式仍为 0x00200100。启动器从自身 PseudoConsoleWindow 的 root owner 定位单个 Terminal，标准候选 `run16s cmd` 对照中宿主加载候选 DLL 且 attached=1；该次为自有窗口、结束后进程退出。双宽 UWP frame 回归、x64 conhost/Explorer 相关三项回归通过。尚未完成标准命令实屏、标题按钮/菜单、移动缩放、透明、共用进程隔离、run16s Terminal 直接启动及完整发布；不计 S4 验收通过。
+
+S4 直接 Terminal 候选：创建时附着路径也启用非客户区绘制层；自有标准启动对照中 DLL 已加载、附着状态为1，私有桌面144 DPI实屏可见 Win16 标题与标签行，窗口最大化和还原状态分别为3和1。截图同时显示标签行右侧仍有原生最小化、最大化和关闭图标，与 Win16 外框按钮重复；尚未修复，不能计验收通过。该截图只证明当次绘制，不证明移动、鼠标或移除后恢复。
+
+S4 重复按钮调查：自有 Terminal UI Automation 可见 Minimize、Maximize、Close，子窗口仅见 DRAG_BAR_WINDOW_CLASS 与 XAML bridge 等；临时隐藏并恢复 drag bar 后三按钮仍在。另在宿主 GUI 线程临时清除 WS_MINIMIZEBOX/WS_MAXIMIZEBOX 后，Win16 按钮消失但 Terminal 三按钮仍在；原样式已恢复。故不能通过隐藏该拖拽窗口或清除这两个样式位安全解决，重复按钮仍未修复。
+
+S4 直接 Terminal 候选增加启动前窗口快照，只选择本次新增且映像匹配的 Terminal 窗口以处理宿主复用；自有无既存实例的直接启动复测 attached=1、实屏显示标题、最大化/还原状态正常，x64 三项启动回归通过。已存在宿主时的新窗口分支仍未实测，且启动已有窗口而无新窗口可能等待上限，需验证处理；重复 XAML 原生按钮仍未解决。
+
+S4 共享宿主自有对照：先独立创建 Terminal 第一窗口，再用候选 run16s 打开第二个；两窗口同属自有 PID，第二窗口 attached=1，第一窗口 attached=0，均按唯一身份关闭，宿主退出。仅验证此次新窗口选择与附着状态，不证明所有窗口竞争场景。Terminal 上游源码明确 caption 按钮由其 XAML 标题栏提供、拖拽 HWND 只转发交互（https://github.com/microsoft/terminal/blob/main/src/cascadia/WindowsTerminal/NonClientIslandWindow.cpp）；目前不修改客户区 XAML，重复按钮仍为已知限制。
+
+S4 自有 Terminal 真实鼠标对照：私有桌面单击 Win16 左上角按钮后，GUI 线程进入菜单模式且 owner 为绘制表面；发送 Esc 后退出菜单模式，鼠标位置和桌面已恢复。随后原生最大化及还原状态正确。该次未检查菜单逐项命令或拖拽；重复 XAML 按钮仍存在。
+
+登记 scratch：build/t23-package/s4-terminal-clean1，用于当前候选同快照双位宽干净构建及四文件包；本候选包含 Terminal 重复 XAML 按钮已知限制，构建完成不代表 S4 收口。
+
+s4-terminal-clean1 后台进程未创建源码快照即退出，日志和结果均为空，保留该目录；登记 build/t23-package/s4-terminal-clean2 用于有权后台重试。
+
+干净构建 s4-terminal-clean2 在 x86 测试夹具链接时暴露缺少 win16-window-uwp 依赖，结果 failed；已修正 test-painter-common 的公开链接依赖。x64 全目标增量构建通过，x86 全目标增量构建仍在进行；此前失败包不得用于发布。
+
+双宽全目标增量构建已完成；登记 build/t23-package/s4-terminal-clean3 为依赖修复后的同快照干净构建及候选包。
+
+干净构建 s4-terminal-clean3 双宽及依赖边界通过，候选四文件已生成；登记 build/t23-package/s4-terminal-package1 为同包聚焦回归，不以构建通过替代包测试。
+
+同批干净包补充：自有 conhost 集成程序针对 s4-terminal-clean3 候选启动器与同目录 DLL 返回0（附着、echo输入输出及移除）；独立 Terminal 中候选 run16s cmd 的宿主 DLL 已加载且 attached=1，测试宿主正常退出。标准包回归 s4-terminal-package1 仍在运行。
+
+s4-terminal-package1 的 cmd-nested 64→32 项失败：测试在等待标记时报告失败，但最终 transcript 包含 inner 标记，子进程及 DLL 实际出现；原因未判定，不能计通过。登记 build/t23-package/s4-terminal-package2 同包聚焦重测并保留首次证据。
+
+s4-terminal-package2 同包29项聚焦回归通过、零跳过，cmd-nested 四组合均通过；首次 package1 的间歇失败原因仍未判定，不删除证据。为发布已按永久占用授权核验并结束映射 O:/winnt/ntw16s64.dll 的 Explorer PID22072（2026-11-08 16:02:47.8184880 -08:00），随后重启 Explorer；原 Explorer 文件夹窗口可能已关闭。登记 build/t23-package/s4-terminal-publish1 存放发布前备份和摘要。
+
+S4 P1 候选四文件已按同包测试摘要发布 assets 与 O:/winnt；[交付与已知限制](../history/M0-T23-S4-P1-console-terminal.md)。重复 Terminal XAML 按钮、首次 cmd-nested 间歇失败原因及用户验收仍未解决，S4/T23 和目标保持开放；提交推送及远端复核进行中。
+
 ## M0 T23 S4 Packet
 
 | Field | Required record |

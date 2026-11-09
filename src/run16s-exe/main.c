@@ -7,6 +7,7 @@
 #include "tray.h"
 #include "uwp.h"
 #include "explorer.h"
+#include "console_host.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <wchar.h>
@@ -113,6 +114,7 @@ int wmain(int argc,WCHAR **argv)
     }
     run16s_explorer_snapshot *folders=run16s_explorer_default(image,win32_process_next_argument(raw))?
         run16s_explorer_snapshot_create():NULL;
+    if(!folders && run16s_terminal_image(image))folders=run16s_terminal_snapshot_create();
     free(command);unsigned phase=0;error=win32_process_activate(&child,prepare_target,&context,&phase);
     if(error){run16s_explorer_snapshot_free(folders);return diagnostic(phase==WIN32_PROCESS_PREPARE_FAILED?6:7,error,L"installation/resume");}
     if(folders){
@@ -121,6 +123,16 @@ int wmain(int argc,WCHAR **argv)
         DWORD attached=run16s_explorer_attach_new(folders,image,context.directory);
         if(attached && attached!=ERROR_NOT_FOUND)diagnostic(0,attached,L"Explorer window attachment");
         run16s_explorer_snapshot_free(folders);
+    }
+    if(run16s_console_host_image(image)){
+        DWORD attached=run16s_console_host_attach(child.hProcess,context.directory);
+        if(attached && attached!=ERROR_NOT_FOUND && attached!=ERROR_PROCESS_ABORTED)
+            diagnostic(0,attached,L"console window attachment");
+    }
+    else if(subsystem==IMAGE_SUBSYSTEM_WINDOWS_CUI){
+        DWORD attached=run16s_console_host_attach_current(context.directory);
+        if(attached && attached!=ERROR_NOT_FOUND)
+            diagnostic(0,attached,L"terminal window attachment");
     }
     if(wait && (error=win32_process_wait(child.hProcess,&exit_code))){
         CloseHandle(child.hProcess);return diagnostic(8,error,L"target wait");

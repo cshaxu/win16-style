@@ -51,6 +51,9 @@ int wmain(int argc,WCHAR **argv)
     CHECK(run16s_explorer_default(system_explorer,L" \t"));
     CHECK(!run16s_explorer_default(system_explorer,L"/n"));
     CHECK(!run16s_explorer_default(L"C:\\other\\explorer.exe",L""));
+    CHECK(run16s_terminal_image(L"C:\\Apps\\WindowsTerminal.exe"));
+    CHECK(!run16s_terminal_image(L"C:\\Apps\\not-terminal.exe"));
+    CHECK(!run16s_terminal_image(NULL));
     swprintf(desktop_name,ARRAYSIZE(desktop_name),L"S3Selection-%lu",GetCurrentProcessId());
     HDESK original=GetThreadDesktop(GetCurrentThreadId());CHECK(original);
     HDESK desktop=CreateDesktopW(desktop_name,NULL,NULL,0,GENERIC_ALL,NULL);
@@ -73,6 +76,19 @@ int wmain(int argc,WCHAR **argv)
     CHECK(run16s_explorer_attach_new(snapshot,image,directory)==ERROR_SUCCESS);
     CHECK(attached(fresh) && !attached(old));
     CHECK(remove(fresh));DestroyWindow(fresh);run16s_explorer_snapshot_free(snapshot);
+    {
+        WNDCLASSW terminal={.lpfnWndProc=window_proc,.hInstance=wc.hInstance,.lpszClassName=L"CASCADIA_HOSTING_WINDOW_CLASS"};
+        CHECK(RegisterClassW(&terminal));
+        HWND previous=CreateWindowW(terminal.lpszClassName,L"previous",WS_OVERLAPPEDWINDOW|WS_VISIBLE,
+            0,0,300,200,NULL,NULL,terminal.hInstance,NULL);CHECK(previous);
+        snapshot=run16s_terminal_snapshot_create();CHECK(snapshot);
+        HWND created=CreateWindowW(terminal.lpszClassName,L"created",WS_OVERLAPPEDWINDOW|WS_VISIBLE,
+            0,0,300,200,NULL,NULL,terminal.hInstance,NULL);CHECK(created);
+        CHECK(run16s_explorer_attach_new(snapshot,image,directory)==ERROR_SUCCESS);
+        CHECK(attached(created) && !attached(previous));
+        CHECK(remove(created));DestroyWindow(created);DestroyWindow(previous);
+        run16s_explorer_snapshot_free(snapshot);CHECK(UnregisterClassW(terminal.lpszClassName,terminal.hInstance));
+    }
     snapshot=run16s_explorer_snapshot_create();CHECK(snapshot);
     HWND one=make_folder(wc.hInstance),two=make_folder(wc.hInstance);CHECK(one && two);
     CHECK(run16s_explorer_attach_new(snapshot,image,directory)==ERROR_MORE_DATA);

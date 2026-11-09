@@ -68,6 +68,16 @@ static int worker(int argc,WCHAR **argv)
     SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
     HWND w=CreateWindowExW(0,L"STATIC",L"Frame fixture",WS_OVERLAPPEDWINDOW|WS_VISIBLE,20,20,500,400,NULL,NULL,NULL,NULL);
     CHECK(w);ShowWindow(w,SW_SHOWNOACTIVATE);RECT client,before,after;GetClientRect(w,&client);
+    {
+        HWND nonclient=CreateWindowExW(WS_EX_NOREDIRECTIONBITMAP,L"STATIC",L"Non-client fixture",
+            WS_OVERLAPPEDWINDOW|WS_VISIBLE,20,20,500,400,NULL,NULL,NULL,NULL);
+        CHECK(nonclient);LONG_PTR original=GetWindowLongPtrW(nonclient,GWL_EXSTYLE);
+        CHECK(win16_uwp_frame_apply_nonclient(nonclient));
+        CHECK(win16_uwp_frame_surface(nonclient));
+        CHECK(win16_uwp_frame_remove(nonclient));
+        CHECK(GetWindowLongPtrW(nonclient,GWL_EXSTYLE)==original);
+        CHECK(DestroyWindow(nonclient));
+    }
     HWND title=CreateWindowExW(0,L"STATIC",L"Native title",WS_CHILD|WS_VISIBLE,0,0,client.right,48,w,NULL,NULL,NULL);
     CHECK(title);GetWindowRect(w,&before);LONG_PTR style=GetWindowLongPtrW(w,GWL_STYLE);
     CHECK(SetWindowSubclass(w,observe,1,0));

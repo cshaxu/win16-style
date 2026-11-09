@@ -99,8 +99,23 @@ static int frame_worker(int argc,WCHAR **argv)
     for(i=0;i<sizeof(excluded)/sizeof(excluded[0]);++i){
         w=CreateWindowExW(excluded[i],cls.lpszClassName,L"Unsupported form",WS_OVERLAPPEDWINDOW,
             100,100,420,280,NULL,NULL,cls.hInstance,NULL);CHECK(w);
+        if(excluded[i]==WS_EX_LAYERED)CHECK(SetLayeredWindowAttributes(w,0,180,LWA_ALPHA));
         client_screen(w,&before);CHECK(!win16_style_install(w,NULL) && GetLastError()==ERROR_NOT_SUPPORTED);
         client_screen(w,&after);CHECK(EqualRect(&before,&after) && DestroyWindow(w));
+    }
+    {
+        WNDCLASSW console={.lpfnWndProc=owner,.lpszClassName=L"ConsoleWindowClass",.hInstance=cls.hInstance};
+        CHECK(RegisterClassW(&console));
+        w=CreateWindowExW(WS_EX_LAYERED,console.lpszClassName,L"Layered console fixture",WS_OVERLAPPEDWINDOW,
+            100,100,420,280,NULL,NULL,console.hInstance,NULL);CHECK(w);
+        CHECK(!win16_style_install(w,NULL) && GetLastError()==ERROR_NOT_SUPPORTED);
+        CHECK(SetLayeredWindowAttributes(w,0,180,LWA_ALPHA));
+        CHECK(win16_style_install(w,NULL));
+        CHECK(win16_style_remove(w));
+        COLORREF key=0;BYTE alpha=0;DWORD flags=0;
+        CHECK(GetLayeredWindowAttributes(w,&key,&alpha,&flags) && alpha==180 && flags==LWA_ALPHA);
+        CHECK((GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_LAYERED)!=0);
+        CHECK(DestroyWindow(w) && UnregisterClassW(console.lpszClassName,console.hInstance));
     }
     {
         WNDCLASSW custom={.lpfnWndProc=custom_caption,.lpszClassName=L"Win16CustomCaptionFixture",.hInstance=cls.hInstance};
