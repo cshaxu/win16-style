@@ -2,6 +2,8 @@
 
 ## Current Work
 
+T25 S1 P3 复核：提交 `8ca8ac4f` 已推送，实际远端 main 指向该提交；assets 与 O:/winnt 的四文件摘要逐项一致。已清理本次 clean2、package1、publish1 临时构建、测试输出和备份；S1/T25 仍开放，手动验收及未覆盖项保留。
+
 T25 S1 P3 阶段包已发布 assets 根目录及 O:/winnt，四文件摘要与实包一致；13项聚焦包回归、干净树双宽6项和自有 x64 动态/双窗口对照通过。详细边界与摘要见 [P3 阶段记录](../history/M0-T25-S1-P3-xaml-checkbox.md)。S1/T25 继续开放，待提交推送和远端复核；手动验收未进行。
 
 T25 S1 阶段包验证：`s1-checkbox-package1` 同批四文件13项聚焦实包回归通过、无跳过；干净树集合/适配器/会话双宽6项通过。同批包自有 x64 记事本分别通过动态 CheckBox 和双窗口按窗口恢复对照。真实输入、实际像素、旧版及跨线程仍未覆盖；登记 `build/t25-package/s1-checkbox-publish1` 备份发布，发布后核对并清理 scratch。
