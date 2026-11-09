@@ -212,6 +212,8 @@ s6-remove2 对同批候选的自有 Chrome 验证：附着且表面存在，移�
 
 s6-package4 串行同批实际包聚焦29项通过、零跳过；s6-publish2 已将最终同批四文件发布到 assets 和 O:/winnt 并核对摘要，取代包含移除缺口的前一候选。实屏 Chrome 视觉和交互仍未验证，等待用户验收。
 
+S6 P1 `01e485c4` 已推送并读取远端 main 核对；两处发布文件与测试候选摘要相同。代码变更范围：frame_font.c +3/-0，attachment.c +6/-2；保留原渲染器及移除路径，未引入第二套绘制。正式包、提交和远端核对后，s6-clean4、s6-package4、s6-publish1、s6-publish2 临时构建、测试输出与发布备份已清理；失败原始输出和交付摘要保留在 history。S6 等待用户实屏验收，T23 保持开放。
+
 ## M0 T23 S6 Packet
 
 | Field | Required record |
