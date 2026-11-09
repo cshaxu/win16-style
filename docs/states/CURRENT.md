@@ -2,6 +2,8 @@
 
 ## Current Work
 
+T25 S1 P5 复核：提交 `191ae51a` 已推送且远端 main 核对一致，assets 与 O:/winnt 四文件摘要一致；已清理 radio clean1、package1、publish1 临时构建、测试输出和备份。S1/T25 保持开放，手动验收未进行。
+
 T25 S1 P5 RadioButton 阶段包已发布 assets 根目录及 O:/winnt，四文件与测试包摘要一致；详见 [P5 记录](../history/M0-T25-S1-P5-xaml-radio.md)。S1/T25 保持开放，提交推送及复核待完成；手动验收未进行。
 
 T25 S1 RadioButton 阶段验证：`s1-radio-package1` 同批13项聚焦实包回归通过、无跳过；同批候选自有 x64 动态 RadioButton、Button/CheckBox 双窗口恢复通过，同快照 WinUI 夹具验证选中互斥和本地样式保护通过。登记发布备份 `build/t25-package/s1-radio-publish1`，完成发布、复核后清理所有本次 scratch；真实输入、像素及 x86 WinUI 未验证。
