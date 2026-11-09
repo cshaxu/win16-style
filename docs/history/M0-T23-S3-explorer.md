@@ -161,3 +161,47 @@ content visibly changed to This PC while a system caption still appeared.
 The temporary subclass was removed and the private desktop restored. This
 diagnostic is not a product solution. The delayed-title candidate and its
 tests were withdrawn; root cause and a verified fix remain open.
+
+## Icon-message navigation candidate
+
+In a self-created Explorer, debugger observation during navigation found
+system theme caption/button drawing while the root processed icon messages.
+Temporarily suppressing both icon queries and updates prevented the visible
+caption residue, but is not acceptable because it changes icon semantics.
+The candidate instead forwards those messages normally on a XAML-bridge
+top-level window, temporarily clears the native dialog-frame bit during the
+call, restores the bit, and recalculates the frame. This scope can cause a
+short frame recalculation and associated style-change notifications; flicker
+and app-specific reactions require owner validation. It does not establish
+compatibility with all WinUI applications.
+
+A self-created Explorer with an incremental candidate navigated to This PC;
+its actual screen showed the Win16 caption without the reported system strip.
+A second self-created probe checked icon set/get return values, restored icon,
+style and client/window geometry. The clean build adds a reentrant destruction
+guard after the earlier visible candidate; its actual-screen attempt could
+not run because the input desktop was unavailable. Do not treat the earlier
+image as a visual test of identical clean-build bytes. The deployed package
+was separately checked on a private desktop: expected DLL loaded; a previous
+folder remained unattached; maximize/restore, opening/closing a tab, navigation,
+repeat launch and frame removal were observed. These were API/UI Automation
+and PrintWindow observations, not a physical-input or flicker pass.
+
+The same-snapshot x86/x64 clean GCC/Ninja/ccache build, ABI and source/resource
+gates passed. Focused actual-package tests passed 29/29 with no skips; six
+clean-snapshot frame/lifecycle tests passed across both architectures. The
+full package matrix was not run. The four tested files were published to
+`assets` and `O:\winnt` with matching SHA-256:
+
+| File | SHA-256 |
+| --- | --- |
+| run16s.exe | `879807075dea0064fb5cead75d5395994313aa2d7b7b5c1337e4d6d0327c86da` |
+| ntw16s32.dll | `2d8c641dae8a72a510ce0b0792b12ab1a27ad24273a0e0ae190e465d334a1df3` |
+| ntw16s64.dll | `d42a8f2924d0028174015f478c4b27c197c1f03db17cf1b92a61d8d7e262c25f` |
+| demo.exe | `4e68747f6059a5ebe60f633e21ec51fea1cdd544b88d0e64a2d0358717d94a14` |
+
+The first publication stopped when the existing desktop Explorer held the DLL.
+Under the owner's standing authorization for occupying processes, the exact
+verified Explorer PID was stopped and the desktop shell restarted; existing
+Explorer windows were consequently closed. A second publication completed.
+The task remains open for owner testing and visual validation.

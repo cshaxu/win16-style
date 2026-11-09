@@ -21,7 +21,7 @@ static LRESULT CALLBACK watch_repaint(int code,WPARAM wp,LPARAM lp)
     return CallNextHookEx(NULL,code,wp,lp);
 }
 static LRESULT xaml_nccalc_result;
-static HWND destroy_during_timer,created_timer;
+static HWND destroy_during_timer,created_timer,destroy_during_icon_style;
 static LRESULT CALLBACK destroy_on_timer_create(int code,WPARAM wp,LPARAM lp)
 {
     if(code==HCBT_CREATEWND && destroy_during_timer){
@@ -34,6 +34,10 @@ static LRESULT CALLBACK destroy_on_timer_create(int code,WPARAM wp,LPARAM lp)
 }
 static LRESULT CALLBACK xaml_frame(HWND w,UINT m,WPARAM a,LPARAM b)
 {
+    if(m==WM_STYLECHANGED && destroy_during_icon_style==w && a==(WPARAM)(LONG_PTR)GWL_STYLE &&
+       !(((STYLESTRUCT *)b)->styleNew&WS_DLGFRAME)){
+        destroy_during_icon_style=NULL;DestroyWindow(w);return 0;
+    }
     if(m==WM_NCCALCSIZE && a && xaml_nccalc_result){DefWindowProcW(w,m,a,b);return xaml_nccalc_result;}
     if(m==WM_ERASEBKGND){++xaml_erases;return 1;}
     if(m==WM_TIMER)++xaml_timers;
@@ -121,6 +125,16 @@ static int frame_worker(int argc,WCHAR **argv)
         xaml_nccalc_result=WVR_REDRAW;
         CHECK(SendMessageW(w,WM_NCCALCSIZE,TRUE,(LPARAM)&params)==WVR_REDRAW);
         CHECK(win16_style_install(w,NULL));ShowWindow(w,SW_SHOWNOACTIVATE);UpdateWindow(w);pump_for(100);
+        RECT icon_before,icon_after,icon_outer_before,icon_outer_after;
+        client_screen(w,&icon_before);CHECK(GetWindowRect(w,&icon_outer_before));
+        LONG_PTR icon_style=GetWindowLongPtrW(w,GWL_STYLE);HICON sample=LoadIconW(NULL,IDI_WARNING);CHECK(sample);
+        HICON initial=(HICON)(uintptr_t)SendMessageW(w,WM_GETICON,ICON_SMALL,0);
+        HICON previous=(HICON)(uintptr_t)SendMessageW(w,WM_SETICON,ICON_SMALL,(LPARAM)sample);
+        CHECK(previous==initial && (HICON)(uintptr_t)SendMessageW(w,WM_GETICON,ICON_SMALL,0)==sample);
+        CHECK((HICON)(uintptr_t)SendMessageW(w,WM_SETICON,ICON_SMALL,(LPARAM)previous)==sample);
+        CHECK((HICON)(uintptr_t)SendMessageW(w,WM_GETICON,ICON_SMALL,0)==initial);
+        client_screen(w,&icon_after);CHECK(GetWindowRect(w,&icon_outer_after));
+        CHECK(GetWindowLongPtrW(w,GWL_STYLE)==icon_style && EqualRect(&icon_before,&icon_after) && EqualRect(&icon_outer_before,&icon_outer_after));pump_for(150);
         const LRESULT flags[]={WVR_REDRAW,WVR_HREDRAW,WVR_VREDRAW,WVR_VALIDRECTS};
         for(unsigned n=0;n<sizeof(flags)/sizeof(flags[0]);++n){xaml_nccalc_result=flags[n];GetWindowRect(w,&params.rgrc[0]);
             CHECK(SendMessageW(w,WM_NCCALCSIZE,TRUE,(LPARAM)&params)==(flags[n]==WVR_VALIDRECTS?0:flags[n]));}
@@ -136,6 +150,10 @@ static int frame_worker(int argc,WCHAR **argv)
         Sleep(50);MSG queued;CHECK(PeekMessageW(&queued,NULL,WM_TIMER,WM_TIMER,PM_NOREMOVE));CHECK(queued.hwnd!=w && IsWindow(queued.hwnd));
         HWND timer=queued.hwnd;CHECK(win16_style_remove(w));CHECK(!IsWindow(timer));UpdateWindow(w);xaml_timers=0;pump_for(100);CHECK(xaml_timers==0);
         CHECK(DestroyWindow(w));
+        w=CreateWindowW(root.lpszClassName,L"XAML icon style destroy",WS_OVERLAPPEDWINDOW,100,100,420,280,NULL,NULL,root.hInstance,NULL);CHECK(w);
+        child=CreateWindowW(bridge.lpszClassName,L"",WS_CHILD|WS_VISIBLE,0,0,200,100,w,NULL,bridge.hInstance,NULL);CHECK(child);
+        CHECK(win16_style_install(w,NULL));destroy_during_icon_style=w;
+        SendMessageW(w,WM_GETICON,ICON_SMALL,0);CHECK(!IsWindow(w) && !destroy_during_icon_style);
         w=CreateWindowW(root.lpszClassName,L"XAML destroy",WS_OVERLAPPEDWINDOW,100,100,420,280,NULL,NULL,root.hInstance,NULL);CHECK(w);
         child=CreateWindowW(bridge.lpszClassName,L"",WS_CHILD|WS_VISIBLE,0,0,200,100,w,NULL,bridge.hInstance,NULL);CHECK(child);
         CHECK(win16_style_install(w,NULL));ShowWindow(w,SW_SHOWNOACTIVATE);UpdateWindow(w);pump_for(100);

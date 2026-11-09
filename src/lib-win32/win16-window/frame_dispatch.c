@@ -89,6 +89,34 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
         if(PtInRect(&l.menu,point))wp=HTMENU;
     }
     switch(msg){
+    case WM_GETICON:
+    case WM_SETICON: {
+        LONG_PTR style=GetWindowLongPtrW(w,GWL_STYLE);
+        if(!s->xaml_icon_update && !(style&WS_CHILD) && (style&WS_DLGFRAME) &&
+           win16_control_frame_xaml_bridge(w,FALSE)){
+            s->xaml_icon_update=TRUE;SetLastError(0);
+            LONG_PTR old=SetWindowLongPtrW(w,GWL_STYLE,style&~WS_DLGFRAME);
+            if(old || !GetLastError()){
+                if(s->detached || !IsWindow(w)){
+                    if(IsWindow(w)){
+                        SetWindowLongPtrW(w,GWL_STYLE,GetWindowLongPtrW(w,GWL_STYLE)|WS_DLGFRAME);
+                        result=DefSubclassProc(w,msg,wp,lp);
+                    }
+                    s->xaml_icon_update=FALSE;break;
+                }
+                result=DefSubclassProc(w,msg,wp,lp);DWORD error=GetLastError();
+                if(IsWindow(w)){
+                    LONG_PTR current=GetWindowLongPtrW(w,GWL_STYLE);
+                    SetWindowLongPtrW(w,GWL_STYLE,current|WS_DLGFRAME);
+                    if(!s->detached)SetWindowPos(w,NULL,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|
+                        SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
+                }
+                s->xaml_icon_update=FALSE;SetLastError(error);break;
+            }
+            s->xaml_icon_update=FALSE;
+        }
+        goto forward;
+    }
     case WM_ERASEBKGND:
         result=DefSubclassProc(w,msg,wp,lp);
         /* Coalesce a burst of XAML background erases into one frame refresh.
