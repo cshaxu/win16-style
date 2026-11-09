@@ -617,7 +617,7 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 
 - Milestone: M0 (fixed)
 - Last allocated T: 23
-- Last allocated Td S: 18
+- Last allocated Td S: 19
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
