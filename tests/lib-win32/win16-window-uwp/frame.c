@@ -49,6 +49,13 @@ static LRESULT CALLBACK observe(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWOR
     if(m==WM_SYSCOMMAND){command=(UINT)a&0xfff0;return 0;}
     return DefSubclassProc(w,m,a,b);
 }
+static LRESULT CALLBACK expanded_maximized_client(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
+{
+    (void)id;(void)data;
+    LRESULT result=DefSubclassProc(w,m,a,b);
+    if(m==WM_NCCALCSIZE && a && IsZoomed(w))((NCCALCSIZE_PARAMS *)b)->rgrc[0].bottom+=80;
+    return result;
+}
 static void pump(void)
 {MSG m;while(PeekMessageW(&m,NULL,0,0,PM_REMOVE)){TranslateMessage(&m);DispatchMessageW(&m);}}
 static void settle(void)
@@ -73,7 +80,16 @@ static int worker(int argc,WCHAR **argv)
             WS_OVERLAPPEDWINDOW|WS_VISIBLE,20,20,500,400,NULL,NULL,NULL,NULL);
         CHECK(nonclient);LONG_PTR original=GetWindowLongPtrW(nonclient,GWL_EXSTYLE);
         CHECK(win16_uwp_frame_apply_nonclient(nonclient));
-        CHECK(win16_uwp_frame_surface(nonclient));
+        HWND nonclient_surface=win16_uwp_frame_surface(nonclient);CHECK(nonclient_surface);
+        ShowWindow(nonclient,SW_MAXIMIZE);pump();
+        CHECK(SetWindowSubclass(nonclient,expanded_maximized_client,2,0));
+        MONITORINFO monitor={.cbSize=sizeof(monitor)};
+        CHECK(GetMonitorInfoW(MonitorFromWindow(nonclient,MONITOR_DEFAULTTONEAREST),&monitor));
+        CHECK(SetWindowPos(nonclient,NULL,monitor.rcWork.left,monitor.rcWork.top,
+            monitor.rcWork.right-monitor.rcWork.left,monitor.rcWork.bottom-monitor.rcWork.top+80,
+            SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED));pump();
+        CHECK(IsZoomed(nonclient));CHECK(IsWindowVisible(nonclient_surface));
+        CHECK(RemoveWindowSubclass(nonclient,expanded_maximized_client,2));
         CHECK(win16_uwp_frame_remove(nonclient));
         CHECK(GetWindowLongPtrW(nonclient,GWL_EXSTYLE)==original);
         CHECK(DestroyWindow(nonclient));

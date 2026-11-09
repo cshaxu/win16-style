@@ -2,7 +2,41 @@
 
 ## Current Work
 
-无活动任务包；T23 后续汇总回归和收口审计待准入。
+M0 T23 S7 已准入：盘点并验证 Paint、截图工具、设置和设备管理器，按收益修复外框问题；完成发布后等待用户验收。
+
+本机只读清单：Paint 11.2609.401.0 为打包 FullTrustApplication，入口 PaintApp/mspaint.exe；截图工具 11.2608.41.0 为打包 FullTrustApplication，入口 SnippingTool/SnippingTool.exe；设置包入口 SystemSettings.exe；设备管理器为 System32/mmc.exe 与 devmgmt.msc。未发现相应已有进程；仅清单不证明实际样式或运行方式。登记 scratch build/t23-package/s7-inventory1，存放自有实例探针及输出，完成即清理。
+
+S7 发布版探针：首次私有桌面中 Paint、截图工具和设置没有捕获到目标窗口；设备管理器 launcher exit=9、未捕获窗口，均未计通过。Paint 和截图工具目标进程脱离测试作业；按 PID、父进程和映像核验后结束两个自有残留，未操作身份不明的设置进程。普通桌面自有 Paint 和截图工具分别识别 MSPaintApp 与 XamlWindow，均为 NOREDIRECTIONBITMAP、144 DPI、DLL 加载且附着；Paint 实屏截图显示原生标题，截图工具被遮挡，二者均不计视觉通过。测试进程核验退出后 s7-inventory1 临时产物清理。
+
+S7 开发候选：将这两种已观察的合成窗口类接入与 Chrome 相同的非客户区绘制表面及移除路径；尚未验证或发布。登记 scratch build/t23-package/s7-composed1，用于自有实例增量候选验证，结束后清理。
+
+S7 增量候选实屏：自有截图工具在调整窗口后标题可见，移除后绘制表面销毁；自有 Paint 初始标题可见，但调整窗口后表面隐藏、恢复原生标题，移除后表面销毁。两者均未完成交互和完整回归。临时截图已提炼并删除；保留探针和候选供 Paint 几何诊断，结束后清理。
+
+S7 Paint 隐藏原因：最大化时目标客户区超出可见工作区，现有表面布局拒绝越界几何。新增自有窗口最大化扩展客户区回归，修复前 x64 失败；候选对最大化客户区与可见边界求交后 x86/x64 各1项通过。诊断 DLL 为临时文件，不计最终包验证。
+
+S7 当前增量候选：自有 Paint 和截图工具的非客户区表面均存在，真实屏幕截图分别显示 Win16 标题；各一次最大化和还原后表面保持可见，移除后附着清除、表面销毁、合成标志保留。截图工具最后一次前台切换失败，最终截图不能计作实屏通过；此前一次前台截图显示标题。此证据不覆盖菜单逐项或实际截图/绘画功能。设备管理器的 MMC 清单为 highestAvailable，正式启动 UAC 返回取消1223，未获得窗口，不计通过；设置当前已有身份不明的用户窗口，为避免影响该会话，未对其附着或关闭。自有实例与临时产物已核验并清理。
+
+登记 scratch build/t23-package/s7-clean1，进行已验证候选的同快照双宽干净构建、同包测试及发布；完成后按清理规则回收。
+
+s7-clean1 双宽干净构建、ABI、资源来源及公共库边界检查通过；登记 s7-package1 串行同包聚焦回归，结束后清理临时产物。
+
+s7-package1 串行同包29项聚焦回归通过、零跳过；登记 scratch s7-actual1 用于同包自有 Paint 和截图工具短对照，结束后清理。
+
+s7-actual1 同批包自有实例对照：Paint 与截图工具均观察到可见表面；查询及移除返回成功、附着状态清除、表面销毁。Paint 驱动退出0；截图工具观察器退出0，但外层 PowerShell 结束码为1且无额外错误输出，原因未知，不将外层完整测试计通过；两程序已确认退出。测试临时产物按规则清理。
+
+s7-extra1 干净构建树的最大化几何回归 x86/x64 各1项通过；临时测试输出已清理。
+
+登记 s7-publish1：发布 s7-clean1 四文件，使用 s7-package1 实包测试结果，发布后核对摘要并清理临时构建。
+
+s7-publish1 因 O:/winnt/ntw16s64.dll 占用中断；依用户永久授权核验 ApplicationFrameHost PID17436、映像和启动时间 2026-11-09 08:04:54.455667 -08:00 后正常关闭。该共享宿主中的窗口可能关闭；登记 s7-publish2 使用同批候选重做全部替换并核对。
+
+s7-publish2 四文件已发布到 assets 与 O:/winnt 且摘要一致；发布后不再有设置或 ApplicationFrameHost 进程，登记 s7-settings1 验证新建设置应用，完成清理。设备管理器此前 UAC 取消仍未计通过。
+
+s7-settings1 使用发布版 `--app windows.immersivecontrolpanel_cw5n1h2txyewy!microsoft.windows.immersivecontrolpanel` 新建设置实例；新建 ApplicationFrameHost 加载 O:/winnt/ntw16s64.dll，拥有可见表面，实际屏幕截图可见 Win16 Settings 标题。前台切换失败且截图部分被其他窗口遮挡，不证明完整视觉或交互；设置窗口及进程已关闭，空闲系统宿主不强制结束。测试输出清理。
+
+S7 P1 同批四文件已发布 assets 和 O:/winnt 并核对摘要，[证据和限制](../history/M0-T23-S7-P1-system-apps.md)；设备管理器提权取消未验证，Paint 和截图工具的系统别名返回1920，设置仅有限实屏观察。等待用户验收，S7/T23 保持开放。
+
+s7-alias1 已发布包的 `run16s mspaint` 和 `run16s SnippingTool` 均因 Windows App Execution Alias 返回错误1920；两者完整安装路径此前可启动。别名为 APPEXECLINK 重解析点，其内部数据布局不是公开兼容契约；本 S 不按私有结构猜测转接，记录为待办。测试进程退出，临时输出已清理。
 
 M0 T23 保持开放。S1 记事本已验收通过并收口；S3 Explorer 已获用户手动验收并收口；S4 Terminal/cmd/conhost 基本通过用户验收，有限收口；S5 Codex Desktop 按用户要求跳过，未实现或验收；S6 Chrome 已获用户验收，收口；T23 汇总回归和收口审计待执行。
 S2 Task Manager 按用户要求有限收口，不再继续要求用户批准该项 UAC；顶部重复图标、白条和拖动标题丢帧转入 TODO，不能记作已修复。双宽干净包、29 项实际包聚焦及14项核心/注入回归通过，四文件已发布 assets 和 O:/winnt，P1 `6afe9420` 已推送并逐项读取远端复核；[有限交付记录](../history/M0-T23-S2-task-manager.md)。准入 S3 Explorer，先识别真实窗口承载及共享 Shell 边界。
@@ -215,6 +249,27 @@ s6-remove2 对同批候选的自有 Chrome 验证：附着且表面存在，移�
 s6-package4 串行同批实际包聚焦29项通过、零跳过；s6-publish2 已将最终同批四文件发布到 assets 和 O:/winnt 并核对摘要，取代包含移除缺口的前一候选。实屏 Chrome 视觉和交互仍未验证，等待用户验收。
 
 S6 P1 `01e485c4` 已推送并读取远端 main 核对；两处发布文件与测试候选摘要相同。代码变更范围：frame_font.c +3/-0，attachment.c +6/-2；保留原渲染器及移除路径，未引入第二套绘制。正式包、提交和远端核对后，s6-clean4、s6-package4、s6-publish1、s6-publish2 临时构建、测试输出与发布备份已清理；失败原始输出和交付摘要保留在 history。用户确认 Chrome 验收通过，S6 收口；两轮私有桌面未释放原因仍未知，T23 保持开放。
+
+## M0 T23 S7 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | New |
+| Admission And Approval | 用户准入四个 Windows 程序的盘点、测试和高收益外框修复。 |
+| Objective | 测试 Paint、截图工具、设置和设备管理器，复用现有外框，按 ROI 修复并交付。 |
+| Non-goals | 不处理内部控件、Codex 或无关长尾；不修改注册表、系统安全设置及已有用户会话。 |
+| Reference Baseline | S6 P1 01e485c4，四文件已发布并获得用户验收。 |
+| Candidate Proposal | docs/proposals/modern-desktop-window-style.md |
+| Files And ABI Surface | 先盘点实际入口、进程和窗口，再按证据修改现有产品适配；ABI 变化另审。 |
+| Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT；M0、C17、GCC、Ninja、ccache。 |
+| Verification | 自有实例与私有桌面优先；分别核验启动、目标身份、绘制、基本交互和恢复，区分跳过与通过，回归相关已有程序。 |
+| Expected Markers | 四个程序逐一说明原生入口、复用情况及真实外框结果；高收益故障修复或明确限制。 |
+| Asset Needs | 保留图形及来源；按规范双宽构建、同批四文件测试并发布至 assets 和 O:/winnt。 |
+| Reporting Requirements | 按程序列出已验证、修复、失败、跳过和用户验收状态。 |
+| Stop Conditions | 不操作无关进程或改变系统安全设置；用户永久授权的自有非 computer-use 测试照常执行。 |
+| Exit Criteria | 完成有限范围调查、必要修复、构建测试、发布提交推送，用户验收后收口。 |
+| Original Owner Request | Paint、截图工具、设置和设备管理器先盘点测试，按 ROI 修复并发布验收。 |
+| Similar-Issue Sweep | 查找相同承载、启动转交、权限和合成机制，优先共性处理。 |
 
 ## Historical delivery notes
 

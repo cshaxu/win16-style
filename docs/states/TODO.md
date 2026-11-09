@@ -2,6 +2,8 @@
 
 # Deferred Debt
 
+- [ ] TODO(High): `run16s mspaint` 和 `run16s SnippingTool` 的 Windows App Execution Alias 在目标验证时返回1920；Owner：后续通用启动器兼容工作。Evidence：T23 S7 已发布包实测；对应完整安装路径可以启动。Admission：基于可验证的系统接口保留参数、目标身份、位宽及启动/传播语义，不依赖猜测私有重解析数据格式或写注册表。
+
 - [ ] TODO(Medium): T23 S6 两轮并行实包测试中私有桌面未释放；Owner：后续可复现的测试生命周期调查。Evidence：[原始失败输出](../history/M0-T23-S6-package-failures.md)；串行29项及单独对应位宽测试通过，原因仍未知，不能把失败视为已修复。Admission：复现并定位持有者和释放路径，不放宽桌面清理断言。
 
 - [ ] TODO(Medium): Codex Desktop 无标题栏窗口 Win16 外框未实现或验收；Owner：后续用户准入的 Codex 适配。Evidence：T23 S5 模型及安装包只读调查见 CURRENT；用户要求先跳过。Admission：具备自有真实实例并验证标题区、样式归属、重绘、交互和恢复；不得把模型通过作为实际程序通过。

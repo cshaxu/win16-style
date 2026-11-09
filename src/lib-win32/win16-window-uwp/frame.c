@@ -88,7 +88,8 @@ static BOOL geometry(uwp_frame *s,RECT *outer)
     if(!GetWindowRect(s->window,outer) || !GetClientRect(s->window,&content))return FALSE;
     if(s->title && (!IsWindow(s->title) || GetParent(s->title)!=s->window ||
        !IsWindowVisible(s->title) || !GetWindowRect(s->title,&title)))return FALSE;
-    if(IsZoomed(s->window)){
+    BOOL zoomed=IsZoomed(s->window);
+    if(zoomed){
         MONITORINFO monitor={.cbSize=sizeof(monitor)};RECT visible;
         if(!GetMonitorInfoW(MonitorFromWindow(s->window,MONITOR_DEFAULTTONEAREST),&monitor) ||
            !IntersectRect(&visible,outer,&monitor.rcWork))return FALSE;
@@ -104,8 +105,12 @@ static BOOL geometry(uwp_frame *s,RECT *outer)
         content.top=title.bottom-outer->top;
     }
     SIZE size={outer->right-outer->left,outer->bottom-outer->top};
+    if(zoomed){
+        RECT bounds={0,0,size.cx,size.cy};
+        if(!IntersectRect(&content,&content,&bounds))return FALSE;
+    }
     UINT dpi=GetDpiForWindow(s->window);
-    if(!win16_uwp_frame_layout(size,dpi,(DWORD)GetWindowLongPtrW(s->window,GWL_STYLE),IsZoomed(s->window),content,&s->layout))return FALSE;
+    if(!win16_uwp_frame_layout(size,dpi,(DWORD)GetWindowLongPtrW(s->window,GWL_STYLE),zoomed,content,&s->layout))return FALSE;
     if(dpi!=s->dpi && !win16_control_refresh_frame_fonts(s->window,&s->dpi,&s->title_font,&s->menu_font))return FALSE;
     s->menu->dpi=s->dpi;s->menu->menu_font=s->menu_font;
     return !s->detached;

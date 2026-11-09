@@ -561,10 +561,15 @@ BOOL __cdecl Ntw16sWindowAttached(HWND w)
 {return win16_attachment_attached(w,&lifecycle_services);}
 void __cdecl Ntw16sScrollChanged(HWND w)
 {win16_attachment_scroll_changed(w,&lifecycle_services);}
+static BOOL composed_frame_class(HWND w)
+{
+    return class_is(w,L"CASCADIA_HOSTING_WINDOW_CLASS") ||
+        class_is(w,L"Chrome_WidgetWin_1") || class_is(w,L"MSPaintApp") ||
+        class_is(w,L"XamlWindow");
+}
 BOOL __cdecl Ntw16sWindowRemove(HWND w)
 {
-    if((class_is(w,L"CASCADIA_HOSTING_WINDOW_CLASS") || class_is(w,L"Chrome_WidgetWin_1")) &&
-       win16_uwp_frame_surface(w) &&
+    if(composed_frame_class(w) && win16_uwp_frame_surface(w) &&
        !win16_uwp_frame_remove(w))return FALSE;
     return win16_attachment_remove(w,&lifecycle_services);
 }
@@ -628,7 +633,7 @@ static BOOL install_created(HWND w,DWORD original_style)
     release(a);
     if(installed && lookup(w) &&
        (class_is(w,L"CASCADIA_HOSTING_WINDOW_CLASS") ||
-        (class_is(w,L"Chrome_WidgetWin_1") &&
+        (composed_frame_class(w) &&
          (GetWindowLongPtrW(w,GWL_STYLE)&WS_CAPTION)==WS_CAPTION)) &&
        (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_NOREDIRECTIONBITMAP) &&
        !win16_uwp_frame_apply_nonclient(w)){
