@@ -4,6 +4,7 @@
 #include "ntw16s-dll/api.h"
 #define CHECK(x) do {if(!(x)){fprintf(stderr,"ABI FAIL line=%d error=%lu\n",__LINE__,GetLastError());return 1;}}while(0)
 static const char *const names[]={
+    "DllGetClassObject",
     "Ntw16sCreationBegin",
     "Ntw16sCreationEnd",
     "Ntw16sGetAbiVersion",
@@ -60,6 +61,6 @@ int wmain(int argc,WCHAR **argv)
     DWORD (WINAPI *thread_worker)(void *)=(void *)GetProcAddress(module,"Ntw16sGlobalThread");
     CHECK(thread_worker && thread_worker(NULL)==ERROR_INVALID_PARAMETER);
     CHECK(FreeLibrary(module));
-    printf("ABI PASS width=%u version=3 public=38 private-bind-exports=0\n",(unsigned)(sizeof(void *)*8));
+    printf("ABI PASS width=%u version=3 public=39 private-bind-exports=0\n",(unsigned)(sizeof(void *)*8));
     return 0;
 }

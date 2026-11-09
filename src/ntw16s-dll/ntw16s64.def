@@ -39,3 +39,4 @@ EXPORTS
     Ntw16sGlobalThread=ntw16s_global_thread_worker @37
     Ntw16sUwpFrameHook @38
     Ntw16sWindowThreadHook @39
+    DllGetClassObject @40

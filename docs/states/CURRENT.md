@@ -2,7 +2,155 @@
 
 ## Current Work
 
-M0 T23 S7 已准入：盘点并验证 Paint、截图工具、设置和设备管理器，按收益修复外框问题；完成发布后等待用户验收。
+用户要求有限收口当前研究并准入控件移植。M0 T25 S1 已准入，承接 T24 S1 实验及未完成验证；T24 的技术交付、推送和复核尚未完成，不能记作已完成收口。T23 的未手动验收边界见 [T23 收口](../history/M0-T23-closure.md)。
+
+T25 S1 候选产品 DLL 已链接实验 XAML 类工厂和单线程适配器，新增导出 ordinal 40；x86/x64 增量链接、实 DLL 类工厂实例化及 PE 导入导出检查通过。当前没有启动器自动建立会话，也没有产品化 UI 线程停止路径；正确 CLSID 请求会将模块固定到进程退出，其他线程和断开竞态未覆盖。未发布，不计控件样式交付。
+
+T25 S1 产品入口补测：通过实际候选 DLL 的工厂创建 site，使用模拟服务双宽验证异步订阅、空通知及断开后引用回收；不涉及真实 XAML 控件、绘制或启动器。控制器会话存活期及界面线程恢复仍须接通。
+
+T25 S1 候选停止入口：site 连接时保留会话引用，调用方在所属 UI 线程请求停止后，由工作线程异步断开订阅；模拟空会话双宽测试通过。调用方尚未接入；带样式的恢复、停止期间的新通知与并发断开尚未证明，不能视为产品可用。
+
+T25 S1 停止时通知：适配器先设置停止标记，再执行恢复；句柄解析中重入停止后也不会继续处理该通知。双宽模拟测试通过；多 UI 线程及并发断开仍未覆盖。
+
+T25 S1 进程内启动验证：自有 UWP XAML Island 在私有桌面以本进程工作线程调用诊断入口，x86/x64 均返回 S_OK 且测试 site 监听就绪；沙箱内私有桌面拒绝访问，沙箱外双宽通过。该测试使用测试 TAP，不覆盖 WinUI 3、真实控件样式或正式自动启动。
+
+T25 S1 自动启动候选：窗口附着后若已加载 WinUI 运行时，目标内工作线程建立诊断会话并持有运行时；顶层窗口移除时请求恢复及异步断开。多窗口移除、并发、实际控件绘制仍未充分验证，不能计完整通过。
+
+T25 S1 P1 阶段包已发布 assets 根目录及 O:/winnt，四文件摘要一致；干净双宽构建、11项聚焦实包及一次真实 Button 来源恢复通过。全局托盘私有桌面用例失败且旧版同样失败，视觉和物理输入未验证。详见 [P1 阶段记录](../history/M0-T25-S1-P1-xaml-button.md)；提交、推送和复核待完成，S1/T25 保持开放。
+
+T25 S1 真实 WinUI 启动补测：记事本的转交进程与 WinUI 子进程分离；修正探针目标并按父 PID、创建时间清理自有父子后，x64 标准候选启动中只读观察到子进程加载候选 DLL、诊断 site 已连接，以及至少一个完成安装且持有样式对象的按钮记录。一次尝试无法取得前台，未采到实际屏幕；该证据不证明像素、输入或撤销，x86 WinUI 和多窗口仍未验证。
+
+T25 S1 稳定性与移除复测：后续多次自有记事本在限时内未记录按钮样式，发现路径并不稳定；其中一次实际 Notepad 窗口经产品线程入口移除返回成功，site 和按钮集合均为空，但该次没有已换样式的按钮，不证明恢复。前台截图仍不可用。仅在已附着顶层窗口移除时请求停止 XAML，防止对其他窗口的无效移除停止会话。
+
+T25 S1 线程绑定候选：会话不再因首个非按钮节点就绑定其线程，而在首次发现 Button 时绑定；初始化加锁，仍只支持一个按钮 UI 线程。双宽增量编译通过；两次自有记事本中首次未发现按钮，第二次观察到已安装按钮、产品窗口移除成功、会话及样式记录清空。后者代码路径执行 ClearProperty，但未独立读取恢复后的属性来源，不能视为视觉或完整恢复通过；首例表明仍不能声称发现稳定。
+
+T25 S1 根节点子树扫描候选：尝试对现有根节点做有界扫描（最多 2048 节点）；x64 自有记事本中检测到按钮线程但未保留已应用样式记录，产品返回错误记录为零，说明不能将该次归因为显式失败。随后调整未支持按钮不能永久占用线程；实际效果和子树扫描可靠性仍需验证。前台截图未成功。
+
+T25 S1 最新候选实测：未支持按钮释放临时线程绑定后，两次独立自有 x64 记事本均观察到已安装按钮记录；两次产品窗口移除返回成功、会话与记录清空、未记录显式 XAML 错误。仅为两次对照，不证明所有控件、恢复属性来源、键鼠交互或实际像素，仍需复核。
+
+T25 S1 线程绑定单元验证：自有模拟会话确认普通节点不绑定、未支持 Button 释放线程名额、后续支持的 Button 可绑定并停止，x86/x64 均通过；不证明真实应用中所有按钮的样式来源或支持率。
+
+T25 S1 真实按钮恢复来源：测试专用线程探针在自有 x64 记事本的同一 Button 上读取到安装后来源 Local，调用产品窗口移除后复读为 Default；同时会话和样式记录清空。探针及目标均为本次自有进程资源，测试后退出；此为一次属性来源对照，不证明所有按钮、键鼠交互或视觉。
+
+T25 S1 显示环境：本轮只读 OpenInputDesktop 返回错误5，不能据此判定用户是否在屏保；前台截图没有取得，视觉验证跳过。候选避免每个附着控件重复分配启动缓冲，并抑制同线程嵌套根扫描；双宽增量构建及相关模拟测试通过，x64 自有记事本一次再次观察到按钮 Local -> Default 恢复，但尚未独立覆盖该优化的真实重入情况。
+
+T25 S1 普通窗口回归：候选 DLL 的 x86/x64 core/window-thread 各通过，覆盖普通窗口线程附着和移除；第一次因未设置测试输出目录未执行，补设本次专用 scratch 后通过，结果记入本条后已清理 scratch。不代表全部 Win32 控件或包回归。
+
+T25 S1 聚焦构建与回归：补齐复用产品源码的 test-painter-common 对 XAML 库的链接，双宽增量构建通过；core/abi 和 process-hook-propagate 双宽通过。control-present、scroll-native、control-visibility 在沙箱内均因创建桌面错误5失败，沙箱外同项双宽通过；control-present 分别耗时约37秒和31秒，属于既有绘制循环，不作本任务完整包回归。结束后清理本次 scratch。
+
+T25 S1 增量包结构检查：三个版本资源及 CMake 版本更新为 M0 T25；同一增量快照四文件通过位宽、版本、导入导出、原资源及来源检查。SHA-256：run16s 141d91d10fade8f15c48790013e1a1e4d0def8c25040e7c809c9e67a4e720004；ntw16s32 ee799549dee10461dc29c67b4b03fe6d8adea0af504e78c89791c1745c861a64；ntw16s64 1624f45b96f667aa3b7042223bbaf7c2f2769223b5f3d6ac943e9f6a66a677dd；demo 9d157d01ec794d8423f92a01d905097a6599238b77a7a3f3581bde2b69283e1a。不是干净构建、实包回归或发布；检查后删除临时包。
+
+T25 S1 动态树句柄：实验适配器对句柄解析返回 ERROR_NOT_FOUND 的通知返回 S_FALSE，其他错误继续上报；新增模拟测试在 x86/x64 增量构建和原生运行均通过。尚不能确认它与此前实机 ERROR_NOT_FOUND 同源，也未验证正式产品接入。
+
+T25 S1 新增实验诊断 site 组件并由测试 TAP 可选调用；自建记事本 x64 第二次对照观察到连接、应用及首按钮默认来源恢复，首次未见事件；断开、多线程及产品类工厂尚未验证。
+
+T25 S1 实验单 UI 线程适配器：自有记事本 x64 观察到按钮应用、首按钮来源恢复和断开；同时出现未定位 ERROR_NOT_FOUND。多线程、断开竞态及正式 DLL 接入未验证。
+
+T25 S1 COM 工厂：公共工厂双宽原生测试及自有记事本 x64 测试 DLL 连接通过；正式 ntw16s DLL 尚未导出，产品启动与生命周期未接入。
+
+T25 S1 异步 site 断开：自有记事本 x64 一次先恢复首按钮再实际断开成功；双宽模拟通过订阅进行中拒绝断开和完成后释放。多 UI 线程及产品接入仍未验证。
+
+T25 S1 通用 site 异步订阅：自有记事本 x64 观察到订阅就绪、按钮应用和首按钮默认来源恢复；跳过非 WinUI 视觉对象，异步断开、多 UI 线程及产品接入尚未验证。
+
+T25 S1 工作线程诊断订阅已提取为纯 C 入口；测试 TAP 使用该入口在自有记事本 x64 一次完成订阅、按钮应用及恢复，双宽编译通过；真实断开和正式 DLL 接入未完成。
+
+T25 S1 订阅线程研究：自有记事本 UI 线程同步订阅发生等待；测试回调使用自由线程封送并在 MTA 工作线程订阅后，x64 实例观察到订阅完成、视觉树回调在窗口 UI 线程、按钮应用及默认来源恢复。仅为一次线程对照，产品尚未接入。
+
+T25 S1 运行时定位：测试控制器已按目标已加载模块查找 WinUI 运行时；自有记事本 x64 会话对照通过，无模块返回126，x86 查 x64 返回299；正式启动器和跨位宽连接未实现。
+
+T25 S1 诊断初始化已提取到可传入目标运行时路径的公共入口，测试控制器实际使用；自建记事本 x64 一次会话应用及首按钮来源恢复通过，双宽编译通过；产品启动和位宽适配尚未接入。
+
+T25 S1 Button 对象属性：自有 WinUI 记事本 x64 一次检查到正常/按下状态四边画刷颜色按预期反转；这不是屏幕像素或物理输入验证。
+
+T25 S1 新 Button 实验模板：自有记事本 x64 解析、默认按钮应用、程序调用常见及焦点状态、文本值对照和默认来源恢复通过；尚无像素或实际输入验证，未接入产品。
+
+T25 S1 会话补测：自有记事本 x64 对会话首次应用的 Button，停止后读取到 Default 来源；仅为一次首按钮结果，不代表全部控件恢复或正式产品接入。
+
+T25 S1 新增同 UI 线程实验会话，组合发现、默认 Button 应用及停止撤销；双宽编译、自有 WinUI 记事本 x64 一次应用/停止返回成功。未逐项核验来源或视觉，也未接入正式 DLL。
+
+T25 S1 本地 Style 研究：自有记事本一次观察到本地样式含对象句柄；绑定亦可能是本地值，无法仅凭来源安全覆盖。双宽探针编译通过，新增可复用自有记事本对照脚本，非默认来源尚未接管。
+
+T25 S1 深层祖先遍历已提取到纯 C 组件并由测试 TAP 使用；双宽编译及自有记事本 x64 深层发现、双按钮来源恢复对照通过，正式产品尚未调用。
+
+T25 S1 诊断探针增加深层祖先查找；自有记事本 x64 观察到深层按钮命中、两个按钮默认来源恢复及错误线程拒绝，双宽编译通过；不证明发现可靠率、实际视觉或产品接入。
+
+T25 S1 新增自有原生 Button 集合测试，模拟样式操作并实际运行集合：双宽各 1 项通过，覆盖去重、两对象、失败回滚、重入和线程约束；不代表真实 XAML 绘制通过。
+
+T25 S1 多 Button 补测：自有 WinUI 记事本一次有限等待未观察到应用，另一次观察到两个不同条目应用、第二项移除成功、第一项默认来源恢复；第二项来源及视觉、真实交互未验证，详见研究记录。
+
+T25 S1 增加实验 Button 集合并通过双宽增量编译；自有 WinUI 记事本 x64 验证单按钮重复接入去重、正常恢复及冲突时保留新值，首次正常对照仍有未发现可应用按钮。多个不同按钮、重入全覆盖及正式产品接入未验证。
+
+T25 S1 承接验证：实验 Button 组件和 TAP 双宽增量构建通过；自有 XAML Island 基础夹具沙箱外双宽通过。自有 WinUI 记事本 x64 首次正常对照未发现可接管按钮，再次对照应用及恢复成功，两次冲突对照保留应用新值；位图仍失败，未证明产品接入或真实交互。详见 [研究记录](../history/M0-T24-S1-xaml-baseline.md)。
+
+T24 S1 初步基线：现有 UWP 路径只处理外框；双宽 MinGW C17 已通过 XAML Diagnostics 头与监听调用的语法检查，目标接入、链接和真实控件操作均未验证。本机本次 `Get-AppxPackage` 对 Calculator/Notepad 返回拒绝访问；[详细证据及下一步](../history/M0-T24-S1-xaml-baseline.md)。
+
+`build/t24-s1-exports` 自有双宽 C 探针成功加载系统 XAML 模块并解析 InitializeXamlDiagnosticsEx；仅验证入口存在，不代表初始化或控件接入成功。测试结束后清理临时目录。
+
+`build/t24-s1-xaml-host` 双宽自有进程成功取得 WindowsXamlManager 工厂，但线程初始化均返回 E_UNEXPECTED (0x8000FFFF)，未证明 XAML 宿主可用。原因未确定；测试结束清理临时目录。
+
+`build/t24-s1-host-manifest` 自有双宽探针嵌入 maxversiontested 清单后，WindowsXamlManager 线程初始化均返回 S_OK；链接器报告资源清单合并警告，影响尚未查明。仅验证宿主初始化，非控件换肤；测试结束清理临时目录。
+
+`build/t24-s1-button` 自有双宽 C 进程成功创建 `Windows.UI.Xaml.Controls.Button` 并读取类型；尚未附着到可见树、接入诊断、绘制或测试交互和恢复，链接器清单合并警告仍存在。测试后清理 scratch。
+
+`build/t24-s1-island` 双宽自有 C 目标成功创建 XAML Island 并将 Button 设为内容；隐藏窗口不证明可见绘制、交互或诊断。测试源码保留在 `tests/integration/xaml_island_target.c`，尚未接入自动构建；测试后清理 scratch。
+
+`build/t24-s1-island-private` 沙箱内双宽创建桌面错误5，跳过；沙箱外同一目标双宽验证 Button 的 COM 身份和私有桌面有限消息循环通过，不证明屏幕绘制或样式。测试后清理 scratch。
+
+`build/t24-s1-style` 自有双宽 XAML Island 成功调用 XamlReader 加载实验 Button 模板、设置及恢复先前 Style；没有验证视觉、绑定或恢复来源，也未接入普通应用。测试后清理 scratch。
+
+`build/t24-s1-style-identity` 双宽自有 Button 验证设定的 Style 和恢复前值的 COM 身份；未覆盖绑定、资源来源或可见样式。测试后清理 scratch。
+
+`build/t24-s1-style-template` 双宽私有桌面上实验 Style 的 ApplyTemplate 返回 true，在样式生效时运行消息循环并恢复读取值身份；未核验实际像素、模板子树或输入。测试后清理 scratch。
+
+`build/t24-s1-style-tree` 双宽自有 Button 实验模板产生预期的 Border 直接视觉子节点；未核验像素或交互。测试后清理 scratch。
+
+`build/t24-s1-diagnostics` 自有进程双宽 XAML 诊断初始化、SetSite 与部分视觉树回调成功，但3秒内均未观察到 Button，测试返回2；需定位目标树关联或控件尚未进入该树的原因。未接入产品；测试后清理 scratch。
+
+`build/t24-s1-diagnostics-remount` 双宽自有 Button 的视觉父节点为 Border，但监听后重新挂载仍未报告 Button；另试 Connection2 双宽返回未找到。根关联原因仍未知；测试后清理 scratch。
+
+`build/t24-s1-diagnostics-identity` 双宽已知自有 Button 经 IXamlDiagnostics 句柄往返与原 COM 身份相同，但监听仍未发现 Button，整体探针返回2；目标主动提供指针的对照不证明普通应用发现能力。测试后清理 scratch。
+
+`build/t24-s1-property-chain` 双宽自有 Button 属性链显示：实验前 Style 来源为默认(1)，重设读取值后变成本地(4)，证实读取值身份相同不等于恢复来源；诊断监听仍未发现 Button，探针返回2。测试后清理 scratch。
+
+`build/t24-s1-default-restore` 自有双宽 Button 经确认原来源 Default、实验后 Local，再清除该本地覆盖，属性链均回到 Default；不覆盖原绑定、资源或本地值，诊断监听未发现 Button、完整探针返回2。测试后清理 scratch。
+
+`build/t24-s1-tree-ancestry` 测试 TAP 从子节点诊断事件反查 Button 父对象：x64 本次在已知指针操作前识别，x86 需测试主动应用模板才触发；不证明普通应用覆盖或通用发现，非产品实现。测试后清理 scratch。
+
+`build/t24-s1-discovered-style` 自有目标重挂 Button 后，x64 通过诊断子事件反查对象并成功执行实验 Style，x86 三秒未发现返回2；目标仍主动参与，不证明普通应用接入。测试后清理 scratch。
+
+`build/t24-s1-hit-test` 自有双宽 Island 的诊断 HitTest 以测试矩形返回 E_INVALIDARG，原因未确定；WinUI 3 的 XamlRoot 接口须单独验证。测试后清理 scratch。
+
+`build/t24-s1-passive` 自有双宽被动 Island 目标由独立控制器建立 XAML 诊断，双宽初始化 S_OK、目标正常退出；2.5秒内均未发现 Button，不计自动发现通过。目标仅配合测试就绪/停止；测试后清理 scratch。
+
+只读 WinUI 基线：本机 Notepad 清单依赖 WindowsAppRuntime.2；已安装 2.6.5.0 的双宽 `Microsoft.Internal.FrameworkUdk.dll` 均导出 `InitializeXamlDiagnosticsEx`。尚未确认记事本实际加载版本或在 WinUI 3 建立会话；包信息查询需沙箱外执行。
+
+`build/t24-s1-winui-module` 双宽自有控制器可加载已安装 WinUI 运行时模块并取得诊断导出；未连接目标、未调用诊断入口。测试后清理 scratch。
+
+`build/t24-s1-notepad-inventory` 自有空文档记事本实际子进程加载 WindowsAppRuntime.2 2.6.5.0 x64 的 FrameworkUdk、Microsoft.UI.Xaml 等模块；隐藏启动未见主窗口，不证明诊断或绘制。首次遗留自有子进程已依据父 PID、路径与时间核验并结束；第二次自有父子已清理，scratch 随后清理。
+
+`build/t24-s1-winui-notepad` 自有空文档记事本的真实 WinUI x64 子进程上，独立控制器初始化诊断 S_OK，测试 TAP 报告 Button 发现事件；仅只读发现，未设样式、未验证可见交互或 x86。自有父子进程和 scratch 已清理。
+
+`build/t24-s1-winui-style` 自有记事本 x64 测试 TAP 跳过 Local 样式按钮，对一个原来源为 Default 的 WinUI Button 设置实验模板后立即清除，属性链回到 Default；未验证视觉、交互、绑定、并发或 x86，非产品实现。自有进程与 scratch 已清理。
+
+`build/t24-s1-winui-deferred` 自有记事本 x64 保持实验 Style 约350ms，撤销前校验当前对象身份，来源回到 Default；未构造冲突负例或验证像素、交互，非产品实现。自有进程与 scratch 已清理。
+
+`build/t24-s1-winui-conflict` 自有记事本 x64 模拟应用改写后，持有原 Style 对象的测试探针识别冲突并验证新值保留；无冲突正例首次 FAILED、再次 RESTORED，首次原因未知。均非产品实现，不能视为完整竞争安全；自有进程与 scratch 已清理。
+
+`build/t24-s1-winui-tree` 自有记事本 x64 实验 Button 模板生效期间观察到预期 WinUI Border 子节点并恢复默认来源；TAP 双宽编译通过但 x86 未实测。未验证屏幕像素或交互；此前偶发 FAILED 仍未解决，测试后清理 scratch。
+
+`build/t24-s1-restore-audit` 旧自有记事本探针复现诊断 GetProperty 失败；改为从持有的 Button 读取公开 Style、清除前重新取句柄后，本次 x64 正例恢复、冲突负例保留新值。此前未定位失败不能据此认定同因；非产品实现，测试后清理 scratch。
+
+`build/t24-s1-winui-states` 自有记事本 x64 Button 实验模板支持程序调用 Normal、PointerOver、Pressed、Disabled 并恢复默认来源；内容、实际像素及用户交互未验证，非产品实现。自有进程及 scratch 已清理。
+
+`build/t24-s1-winui-content` 自有记事本 x64 实验 Button 的非空内容对照：一次 COM 身份不同，另一次经 IPropertyValue 比较文本值相等；不证明同一按钮、图标、动态绑定或屏幕显示。测试进程及 scratch 已清理。
+
+`build/t24-s1-winui-bitmap` 自有记事本实验 Button 的诊断位图读取两次失败，第二次定位到 RenderTargetBitmap 调用，HRESULT 和原因未知；不计视觉通过。测试进程及 scratch 已清理。
+
+T24 S1 自有 Island、诊断 TAP 和控制器已纳入 CMake 测试构建，双宽 Ninja 增量编译通过；Island 基础夹具沙箱外双宽各1项通过，沙箱内 x64 按错误5跳过。该夹具不测试诊断或换肤，未改变四产品包；复用既有 build/.ninja 缓存。
+
+T24 S1 已将实验 Button 模板提取到 `src/lib-win32/win16-control-xaml` 并由测试 TAP 复用；双宽增量构建及自有记事本 x64 结构/状态/文本/默认来源对照通过，位图读取失败。产品启动接入、x86 实际 WinUI 和视觉验收未完成。
+
+`build/t24-s1-library-validation` 自有记事本使用新组件模板完成受限结构和状态对照；位图读取失败，非视觉验收。自有进程和 scratch 已清理。
 
 本机只读清单：Paint 11.2609.401.0 为打包 FullTrustApplication，入口 PaintApp/mspaint.exe；截图工具 11.2608.41.0 为打包 FullTrustApplication，入口 SnippingTool/SnippingTool.exe；设置包入口 SystemSettings.exe；设备管理器为 System32/mmc.exe 与 devmgmt.msc。未发现相应已有进程；仅清单不证明实际样式或运行方式。登记 scratch build/t23-package/s7-inventory1，存放自有实例探针及输出，完成即清理。
 
@@ -34,13 +182,13 @@ s7-publish2 四文件已发布到 assets 与 O:/winnt 且摘要一致；发布�
 
 s7-settings1 使用发布版 `--app windows.immersivecontrolpanel_cw5n1h2txyewy!microsoft.windows.immersivecontrolpanel` 新建设置实例；新建 ApplicationFrameHost 加载 O:/winnt/ntw16s64.dll，拥有可见表面，实际屏幕截图可见 Win16 Settings 标题。前台切换失败且截图部分被其他窗口遮挡，不证明完整视觉或交互；设置窗口及进程已关闭，空闲系统宿主不强制结束。测试输出清理。
 
-S7 P1 同批四文件已发布 assets 和 O:/winnt 并核对摘要，[证据和限制](../history/M0-T23-S7-P1-system-apps.md)；设备管理器提权取消未验证，Paint 和截图工具的系统别名返回1920，设置仅有限实屏观察。等待用户验收，S7/T23 保持开放。
+S7 P1 同批四文件已发布 assets 和 O:/winnt 并核对摘要，[证据和限制](../history/M0-T23-S7-P1-system-apps.md)；设备管理器提权取消未验证，Paint 和截图工具的系统别名返回1920，设置仅有限实屏观察。用户要求不经手动验收有限收口。
 
 S7 P1 `8eee38b8` 已推送并核对远端；两处发布文件与测试候选摘要一致。源码及测试变更统计：frame.c +7/-2、attachment.c +8/-3、frame 测试 +17/-1；沿用既有表面和窗口状态所有权。发布核对后 s7-clean1、s7-package1、s7-publish1 和 s7-publish2 临时构建、测试输出及备份已清理；S7 等待用户验收，未验证项不计通过。
 
 s7-alias1 已发布包的 `run16s mspaint` 和 `run16s SnippingTool` 均因 Windows App Execution Alias 返回错误1920；两者完整安装路径此前可启动。别名为 APPEXECLINK 重解析点，其内部数据布局不是公开兼容契约；本 S 不按私有结构猜测转接，记录为待办。测试进程退出，临时输出已清理。
 
-M0 T23 保持开放。S1 记事本已验收通过并收口；S3 Explorer 已获用户手动验收并收口；S4 Terminal/cmd/conhost 基本通过用户验收，有限收口；S5 Codex Desktop 按用户要求跳过，未实现或验收；S6 Chrome 已获用户验收，收口；T23 汇总回归和收口审计待执行。
+M0 T23 按用户要求有限收口。S1 记事本已验收通过；S3 Explorer 已获用户手动验收；S4 Terminal/cmd/conhost 基本通过用户验收，有限收口；S5 Codex Desktop 按用户要求跳过，未实现或验收；S6 Chrome 已获用户验收。S7 未经用户手动验收，未执行额外任务级汇总回归。
 S2 Task Manager 按用户要求有限收口，不再继续要求用户批准该项 UAC；顶部重复图标、白条和拖动标题丢帧转入 TODO，不能记作已修复。双宽干净包、29 项实际包聚焦及14项核心/注入回归通过，四文件已发布 assets 和 O:/winnt，P1 `6afe9420` 已推送并逐项读取远端复核；[有限交付记录](../history/M0-T23-S2-task-manager.md)。准入 S3 Explorer，先识别真实窗口承载及共享 Shell 边界。
 P6 `e37da0db` 四文件已发布至 assets 根目录及 O:/winnt，双宽构建、核心10项及实包29项通过；最终真实菜单截图复核未完成，不计通过。
 详细记录见 [S1交付](../history/M0-T23-S1-notepad-delivery.md)和[菜单修复](../history/M0-T23-S1-system-menu-hover.md)。
@@ -252,26 +400,26 @@ s6-package4 串行同批实际包聚焦29项通过、零跳过；s6-publish2 已
 
 S6 P1 `01e485c4` 已推送并读取远端 main 核对；两处发布文件与测试候选摘要相同。代码变更范围：frame_font.c +3/-0，attachment.c +6/-2；保留原渲染器及移除路径，未引入第二套绘制。正式包、提交和远端核对后，s6-clean4、s6-package4、s6-publish1、s6-publish2 临时构建、测试输出与发布备份已清理；失败原始输出和交付摘要保留在 history。用户确认 Chrome 验收通过，S6 收口；两轮私有桌面未释放原因仍未知，T23 保持开放。
 
-## M0 T23 S7 Packet
+## M0 T25 S1 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | New |
-| Admission And Approval | 用户准入四个 Windows 程序的盘点、测试和高收益外框修复。 |
-| Objective | 测试 Paint、截图工具、设置和设备管理器，复用现有外框，按 ROI 修复并交付。 |
-| Non-goals | 不处理内部控件、Codex 或无关长尾；不修改注册表、系统安全设置及已有用户会话。 |
-| Reference Baseline | S6 P1 01e485c4，四文件已发布并获得用户验收。 |
-| Candidate Proposal | docs/proposals/modern-desktop-window-style.md |
-| Files And ABI Surface | 先盘点实际入口、进程和窗口，再按证据修改现有产品适配；ABI 变化另审。 |
+| Admission And Approval | 用户要求当前研究有限收口，不进行手动验收，并准入下一 T 实施可做的控件移植。 |
+| Objective | 承接已有实验，优先完成标准 XAML Button 的 Win16 风格产品接入与验证，再根据证据和收益扩展其他可做的标准控件。 |
+| Non-goals | 不声称全部 UWP 或 WinUI 控件已支持；不处理应用自绘及非可见控件；不修改目标文件、注册表或系统安全设置。 |
+| Reference Baseline | T24 S1 未提交研究与实验，证据见 docs/history/M0-T24-S1-xaml-baseline.md；T23 S7 未经用户手动验收。 |
+| Candidate Proposal | docs/proposals/xaml-control-style.md |
+| Files And ABI Surface | 复用已有 win16-control-xaml 与测试实验，按真实运行时及产品调用关系实施；保持四产品文件。 |
 | Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT；M0、C17、GCC、Ninja、ccache。 |
-| Verification | 自有实例与私有桌面优先；分别核验启动、目标身份、绘制、基本交互和恢复，区分跳过与通过，回归相关已有程序。 |
-| Expected Markers | 四个程序逐一说明原生入口、复用情况及真实外框结果；高收益故障修复或明确限制。 |
-| Asset Needs | 保留图形及来源；按规范双宽构建、同批四文件测试并发布至 assets 和 O:/winnt。 |
-| Reporting Requirements | 按程序列出已验证、修复、失败、跳过和用户验收状态。 |
-| Stop Conditions | 不操作无关进程或改变系统安全设置；用户永久授权的自有非 computer-use 测试照常执行。 |
-| Exit Criteria | 完成有限范围调查、必要修复、构建测试、发布提交推送，用户验收后收口。 |
-| Original Owner Request | Paint、截图工具、设置和设备管理器先盘点测试，按 ROI 修复并发布验收。 |
-| Similar-Issue Sweep | 查找相同承载、启动转交、权限和合成机制，优先共性处理。 |
+| Verification | 自有实例、原生探针和私有桌面；分别验证发现、外观、交互、撤销和动态控件，记录失败和跳过。 |
+| Expected Markers | 可复用的真实产品接入及至少一个标准控件的外观、交互和恢复证据；未覆盖项明确列示。 |
+| Asset Needs | 保留原资源和来源；有二进制变更时同批四文件双宽构建、测试并发布。 |
+| Reporting Requirements | 按控件及运行时列出实现、验证、失败、跳过与未覆盖项；不得把实验结果称为产品支持。 |
+| Stop Conditions | 不操作无关进程或更改系统安全设置；自有非 computer-use 测试按永久授权执行。 |
+| Exit Criteria | 完成准入范围的实现与验证，按规范交付和复核；用户验收按后续指示。 |
+| Original Owner Request | 先收口当前 T（未做手动验收），准入下一 T 做可行的控件移植。 |
+| Similar-Issue Sweep | 比较 UWP 系统 XAML 与 WinUI 3 的运行时、样式来源和动态生命周期，避免按应用名猜测。 |
 
 ## Historical delivery notes
 
@@ -728,14 +876,14 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 ## Identifier State
 
 - Milestone: M0 (fixed)
-- Last allocated T: 23
+- Last allocated T: 25
 - Last allocated Td S: 19
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
 - Last verified remote delivery: M0 T23 S1 P4，`37d534be`；已实际下载四产品及六个源码/测试/交付文件逐字节复核。P5仅记录复核，产品不变。
-- Open task: T23；S1已验收收口，S2待准入；T22已收口。Explorer现有产品排除策略尚未改变。
+- Open task: T25 S1；T24 依用户要求结束研究，交付与正式收口待完成；T23 有限收口，S7 未经用户手动验收。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。

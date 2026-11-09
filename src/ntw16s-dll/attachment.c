@@ -27,6 +27,7 @@
 #include "injection/unwind.h"
 #include "status_theme.h"
 #include "month_text.h"
+#include "xaml_site.h"
 #include <commctrl.h>
 #include <uxtheme.h>
 #include <vssym32.h>
@@ -571,6 +572,7 @@ BOOL __cdecl Ntw16sWindowRemove(HWND w)
 {
     if(composed_frame_class(w) && win16_uwp_frame_surface(w) &&
        !win16_uwp_frame_remove(w))return FALSE;
+    if(w==GetAncestor(w,GA_ROOT) && Ntw16sWindowAttached(w))(void)ntw16s_xaml_stop();
     return win16_attachment_remove(w,&lifecycle_services);
 }
 BOOL __cdecl Ntw16sWindowTerminal(HWND w)
@@ -639,7 +641,8 @@ static BOOL install_created(HWND w,DWORD original_style)
        !win16_uwp_frame_apply_nonclient(w)){
         error=GetLastError();Ntw16sWindowRemove(w);installed=FALSE;
     }
-    if(!installed)SetLastError(error?error:ERROR_GEN_FAILURE);
+    if(installed){DWORD saved=GetLastError();ntw16s_xaml_start();SetLastError(saved);}
+    else SetLastError(error?error:ERROR_GEN_FAILURE);
     return installed;
 }
 BOOL __cdecl Ntw16sWindowAttach(HWND w)
