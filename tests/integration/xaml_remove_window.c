@@ -5,7 +5,7 @@
 #include <wchar.h>
 #include "ntw16s-dll/window_thread.h"
 
-typedef struct probe { DWORD pid; HMODULE module,property_module; HOOKPROC callback,property_callback; uintptr_t adapter; BOOL removed,property_ok,checkbox,existing,preexisting,remove_bridge,keep_fixture; } probe;
+typedef struct probe { DWORD pid; HMODULE module,property_module; HOOKPROC callback,property_callback; uintptr_t adapter; BOOL removed,property_ok,checkbox,radio,existing,preexisting,remove_bridge,keep_fixture; } probe;
 static uintptr_t send_property(HWND window,UINT message,WPARAM operation,uintptr_t adapter)
 {
     DWORD_PTR ignored=0; RemovePropW(window,L"Win16Xaml.Test.Property.Result");
@@ -105,7 +105,7 @@ static BOOL CALLBACK visit(HWND window,LPARAM parameter)
     uintptr_t before=0,after=0,fixture_attached=0;
     if (property_hook && property_message) {
         RemovePropW(window,L"Win16Xaml.Test.Property.Result");
-        if (SendMessageTimeoutW(window,property_message,p->existing?5:p->checkbox?3:1,(LPARAM)p->adapter,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,2000,&ignored))
+        if (SendMessageTimeoutW(window,property_message,p->existing?5:p->radio?17:p->checkbox?3:1,(LPARAM)p->adapter,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,2000,&ignored))
             before=(uintptr_t)GetPropW(window,L"Win16Xaml.Test.Property.Result");
         RemovePropW(window,L"Win16Xaml.Test.Property.Result");
         if (p->checkbox) wprintf(L"checkbox_create_result=%llu\n",(unsigned long long)before);
@@ -171,7 +171,8 @@ int wmain(int argc,WCHAR **argv)
         p.preexisting=argc==6 && (!wcscmp(argv[5],L"--preexisting") || !wcscmp(argv[5],L"--no-bridge") || !wcscmp(argv[5],L"--keep-fixture"));
         p.remove_bridge=argc==6 && !wcscmp(argv[5],L"--no-bridge");
         p.keep_fixture=argc==6 && !wcscmp(argv[5],L"--keep-fixture");
-        p.checkbox=p.existing || p.preexisting || (argc==6 && !wcscmp(argv[5],L"--checkbox"));
+        p.radio=argc==6 && !wcscmp(argv[5],L"--radio");
+        p.checkbox=p.existing || p.preexisting || p.radio || (argc==6 && !wcscmp(argv[5],L"--checkbox"));
     }
     EnumWindows(visit,(LPARAM)&p);
     if (p.property_module) FreeLibrary(p.property_module);

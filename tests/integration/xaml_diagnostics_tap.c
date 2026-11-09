@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include "lib-win32/win16-control-xaml/button_template.h"
 #include "lib-win32/win16-control-xaml/checkbox_template.h"
+#include "lib-win32/win16-control-xaml/radio_template.h"
 #include "lib-win32/win16-control-xaml/button_style.h"
 #include "lib-win32/win16-control-xaml/visual_tree.h"
 #include "lib-win32/win16-control-xaml/session.h"
@@ -741,6 +742,166 @@ static HRESULT test_checkbox_apply(void)
     return hr;
 }
 
+static HRESULT test_radio_apply(void)
+{
+    static const wchar_t runtime[]=L"Microsoft.UI.Xaml.Controls.RadioButton";
+    static const wchar_t window_runtime[]=L"Microsoft.UI.Xaml.Window";
+    static const wchar_t tree_runtime[]=L"Microsoft.UI.Xaml.Media.VisualTreeHelper";
+    HSTRING name=NULL; IInspectable *radio=NULL,*window_object=NULL,*element=NULL,*root=NULL,*box=NULL,*mark=NULL,*dep=NULL;
+    test_window *window=NULL; test_control *control=NULL; test_toggle *toggle=NULL; test_ui *mark_ui=NULL;
+    winui_tree *tree=NULL; win16_xaml_adapter adapter={0};
+    __x_ABI_CWindows_CFoundation_CIPropertyValueStatics *properties=NULL;
+    VisualElement info={0}; ParentChildRelation relation={0}; unsigned int source=0,index=0;
+    HRESULT hr=WindowsCreateString(runtime,(UINT32)(ARRAYSIZE(runtime)-1),&name);
+    if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&radio);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(window_runtime,(UINT32)(ARRAYSIZE(window_runtime)-1),&name);
+    if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&window_object);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(window_object,&test_window_iid,(void **)&window);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(radio,&test_ui_iid,(void **)&element);
+    if (SUCCEEDED(hr)) hr=window->vtable->put_content(window,element);
+    if (SUCCEEDED(hr)) hr=window->vtable->activate(window);
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    if (SUCCEEDED(hr)) { info.Type=(BSTR)runtime; relation.Parent=1; hr=IXamlDiagnostics_GetHandleFromIInspectable(diagnostics,radio,&info.Handle); }
+    if (SUCCEEDED(hr)) { hr=win16_xaml_adapter_change(&adapter,relation,info,Add,NULL); if(hr==S_FALSE)hr=E_FAIL; }
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,radio,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceLocal) hr=E_FAIL;
+    boolean applied=0;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(radio,&winui_control_iid,(void **)&control);
+    if (SUCCEEDED(hr)) hr=control->vtable->apply_template(control,&applied);
+    if (SUCCEEDED(hr) && !applied) hr=E_FAIL;
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(tree_runtime,(UINT32)(ARRAYSIZE(tree_runtime)-1),&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_tree_iid,(void **)&tree);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(radio,&winui_dependency_iid,(void **)&dep);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,0,&root);
+    if (dep) { IInspectable_Release(dep); dep=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(root,&winui_dependency_iid,(void **)&dep);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,0,&box);
+    if (dep) { IInspectable_Release(dep); dep=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(box,&winui_dependency_iid,(void **)&dep);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,1,&mark);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(mark,&test_ui_iid,(void **)&mark_ui);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Windows.Foundation.PropertyValue",32,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&IID___x_ABI_CWindows_CFoundation_CIPropertyValueStatics,(void **)&properties);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(radio,&test_toggle_iid,(void **)&toggle);
+    for (unsigned int i=0;SUCCEEDED(hr) && i<2;i++) {
+        IInspectable *boxed=NULL; IUnknown *reference=NULL; double opacity=-1;
+        hr=__x_ABI_CWindows_CFoundation_CIPropertyValueStatics_CreateBoolean(properties,(boolean)i,&boxed);
+        if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(boxed,&IID___FIReference_1_boolean,(void **)&reference);
+        if (SUCCEEDED(hr)) hr=toggle->vtable->put_checked(toggle,reference);
+        if (SUCCEEDED(hr)) hr=mark_ui->vtable->get_opacity(mark_ui,&opacity);
+        if (SUCCEEDED(hr) && opacity!=(double)i) hr=E_FAIL;
+        if (reference) IUnknown_Release(reference);
+        if (boxed) IInspectable_Release(boxed);
+    }
+    if (adapter.service) { HRESULT removed=win16_xaml_adapter_stop(&adapter); if(SUCCEEDED(hr))hr=removed; }
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,radio,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceDefault) hr=E_FAIL;
+    if (adapter.session.service) (void)win16_xaml_button_set_discard(&adapter.session.buttons);
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    /* A local style owned by an application must not be replaced. */
+    win16_xaml_button_style external={0};
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_apply(service,diagnostics,radio,&external);
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    if (SUCCEEDED(hr)) {
+        HRESULT observed=win16_xaml_adapter_change(&adapter,relation,info,Add,NULL);
+        if (observed!=S_FALSE) hr=E_FAIL;
+    }
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,radio,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceLocal) hr=E_FAIL;
+    if (adapter.service) { HRESULT stopped=win16_xaml_adapter_stop(&adapter); if(SUCCEEDED(hr))hr=stopped; }
+    if (adapter.session.service) (void)win16_xaml_button_set_discard(&adapter.session.buttons);
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    if (external.button) { HRESULT removed=win16_xaml_button_remove(service,diagnostics,&external); if(SUCCEEDED(hr))hr=removed; }
+    if (external.button) win16_xaml_button_discard(&external);
+    if (toggle) toggle->vtable->release(toggle);
+    if (properties) __x_ABI_CWindows_CFoundation_CIPropertyValueStatics_Release(properties);
+    if (mark_ui) mark_ui->vtable->release(mark_ui);
+    if (dep) IInspectable_Release(dep);
+    if (mark) IInspectable_Release(mark);
+    if (box) IInspectable_Release(box);
+    if (root) IInspectable_Release(root);
+    if (tree) tree->vtable->release(tree);
+    if (control) control->vtable->release(control);
+    if (window) { (void)window->vtable->close(window); window->vtable->release(window); }
+    if (element) IInspectable_Release(element);
+    if (window_object) IInspectable_Release(window_object);
+    if (radio) IInspectable_Release(radio);
+    if (name) WindowsDeleteString(name);
+    return hr;
+}
+
+static HRESULT test_radio_group(void)
+{
+    static const wchar_t reader_name[]=L"Microsoft.UI.Xaml.Markup.XamlReader";
+    static const wchar_t tree_name[]=L"Microsoft.UI.Xaml.Media.VisualTreeHelper";
+    static const wchar_t window_name[]=L"Microsoft.UI.Xaml.Window";
+    static const wchar_t markup[]=L"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><RadioButton/><RadioButton/></StackPanel>";
+    HSTRING name=NULL,text=NULL; reader *factory=NULL; winui_tree *tree=NULL; test_window *window=NULL;
+    IInspectable *panel=NULL,*window_object=NULL,*ui=NULL,*dep=NULL,*items[2]={NULL,NULL};
+    test_toggle *toggles[2]={NULL,NULL}; win16_xaml_adapter adapter={0};
+    __x_ABI_CWindows_CFoundation_CIPropertyValueStatics *properties=NULL;
+    HRESULT hr=WindowsCreateString(reader_name,(UINT32)(ARRAYSIZE(reader_name)-1),&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_reader_iid,(void **)&factory);
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(markup,(UINT32)(ARRAYSIZE(markup)-1),&text);
+    if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,text,&panel);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(window_name,(UINT32)(ARRAYSIZE(window_name)-1),&name);
+    if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&window_object);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(window_object,&test_window_iid,(void **)&window);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(panel,&test_ui_iid,(void **)&ui);
+    if (SUCCEEDED(hr)) hr=window->vtable->put_content(window,ui);
+    if (SUCCEEDED(hr)) hr=window->vtable->activate(window);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(tree_name,(UINT32)(ARRAYSIZE(tree_name)-1),&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_tree_iid,(void **)&tree);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(panel,&winui_dependency_iid,(void **)&dep);
+    for (int i=0;SUCCEEDED(hr) && i<2;i++) hr=tree->vtable->get_child(tree,dep,i,&items[i]);
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    for (unsigned int i=0;SUCCEEDED(hr) && i<2;i++) {
+        VisualElement info={0}; ParentChildRelation relation={0}; relation.Parent=1;
+        info.Type=(BSTR)L"Microsoft.UI.Xaml.Controls.RadioButton";
+        hr=IXamlDiagnostics_GetHandleFromIInspectable(diagnostics,items[i],&info.Handle);
+        if (SUCCEEDED(hr)) { hr=win16_xaml_adapter_change(&adapter,relation,info,Add,NULL); if(hr==S_FALSE)hr=E_FAIL; }
+        if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(items[i],&test_toggle_iid,(void **)&toggles[i]);
+    }
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Windows.Foundation.PropertyValue",32,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&IID___x_ABI_CWindows_CFoundation_CIPropertyValueStatics,(void **)&properties);
+    IInspectable *boxed=NULL; IUnknown *value=NULL,*first=NULL;
+    __x_ABI_CWindows_CFoundation_CIPropertyValue *first_value=NULL; boolean first_checked=1;
+    if (SUCCEEDED(hr)) hr=__x_ABI_CWindows_CFoundation_CIPropertyValueStatics_CreateBoolean(properties,1,&boxed);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(boxed,&IID___FIReference_1_boolean,(void **)&value);
+    if (SUCCEEDED(hr)) hr=toggles[0]->vtable->put_checked(toggles[0],value);
+    if (SUCCEEDED(hr)) hr=toggles[1]->vtable->put_checked(toggles[1],value);
+    if (SUCCEEDED(hr)) hr=toggles[0]->vtable->get_checked(toggles[0],&first);
+    if (SUCCEEDED(hr) && !first) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IUnknown_QueryInterface(first,&IID___x_ABI_CWindows_CFoundation_CIPropertyValue,(void **)&first_value);
+    if (SUCCEEDED(hr)) hr=__x_ABI_CWindows_CFoundation_CIPropertyValue_GetBoolean(first_value,&first_checked);
+    if (SUCCEEDED(hr) && first_checked) hr=E_FAIL;
+    if (first_value) __x_ABI_CWindows_CFoundation_CIPropertyValue_Release(first_value);
+    if (first) IUnknown_Release(first);
+    if (value) IUnknown_Release(value);
+    if (boxed) IInspectable_Release(boxed);
+    if (properties) __x_ABI_CWindows_CFoundation_CIPropertyValueStatics_Release(properties);
+    if (adapter.service) { HRESULT stopped=win16_xaml_adapter_stop(&adapter); if(SUCCEEDED(hr))hr=stopped; }
+    if (adapter.session.service) (void)win16_xaml_button_set_discard(&adapter.session.buttons);
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    for (int i=1;i>=0;i--) { if(toggles[i])toggles[i]->vtable->release(toggles[i]); if(items[i])IInspectable_Release(items[i]); }
+    if (dep) IInspectable_Release(dep);
+    if (tree) tree->vtable->release(tree);
+    if (window) { (void)window->vtable->close(window); window->vtable->release(window); }
+    if (ui) IInspectable_Release(ui);
+    if (window_object) IInspectable_Release(window_object);
+    if (panel) IInspectable_Release(panel);
+    if (factory) factory->vtable->release(factory);
+    if (text) WindowsDeleteString(text);
+    if (name) WindowsDeleteString(name);
+    return hr;
+}
+
 static void test_template_parse(void)
 {
     static const wchar_t reader_name[]=L"Microsoft.UI.Xaml.Markup.XamlReader";
@@ -749,7 +910,8 @@ static void test_template_parse(void)
     HSTRING name=NULL,text=NULL;
     reader *factory=NULL;
     IInspectable *style=NULL;
-    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_CHECKBOX_TEST",NULL,0)
+    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_RADIO_TEST",NULL,0)
+        ? win16_xaml_radio_template() : GetEnvironmentVariableW(L"WIN16_XAML_CHECKBOX_TEST",NULL,0)
         ? win16_xaml_checkbox_template() : win16_xaml_button_template();
     HRESULT hr=WindowsCreateString(reader_name,(UINT32)(ARRAYSIZE(reader_name)-1),&name);
     if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_reader_iid,(void **)&factory);
@@ -758,6 +920,11 @@ static void test_template_parse(void)
     if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_CHECKBOX_TEST",NULL,0)) {
         HRESULT checkbox=test_checkbox_apply();
         signal_named(SUCCEEDED(checkbox) ? L"WIN16_XAML_CHECKBOX_OK_EVENT" : L"WIN16_XAML_FAILED_EVENT");
+    }
+    if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_RADIO_TEST",NULL,0)) {
+        HRESULT radio=test_radio_apply();
+        if (SUCCEEDED(radio)) radio=test_radio_group();
+        signal_named(SUCCEEDED(radio) ? L"WIN16_XAML_RADIO_OK_EVENT" : L"WIN16_XAML_FAILED_EVENT");
     }
     signal_named(SUCCEEDED(hr) && style ? L"WIN16_XAML_PARSE_OK_EVENT" : L"WIN16_XAML_FAILED_EVENT");
     if (style) IInspectable_Release(style);

@@ -1,4 +1,5 @@
-param([Parameter(Mandatory=$true)][string]$BuildDirectory,[string]$PackageDirectory,[string]$CapturePath,[switch]$InspectSession,[switch]$CheckRemove,[switch]$CheckCheckbox,[switch]$ExistingRoot,[switch]$Preexisting,[switch]$RemoveBridge,[switch]$KeepFixture)
+param([Parameter(Mandatory=$true)][string]$BuildDirectory,[string]$PackageDirectory,[string]$CapturePath,[switch]$InspectSession,[switch]$CheckRemove,[switch]$CheckCheckbox,[switch]$CheckRadio,[switch]$ExistingRoot,[switch]$Preexisting,[switch]$RemoveBridge,[switch]$KeepFixture)
+$CheckCheckbox=$CheckCheckbox -or $CheckRadio
 $ErrorActionPreference='Stop'
 $build=(Resolve-Path -LiteralPath $BuildDirectory).Path
 $package=if($PackageDirectory){(Resolve-Path -LiteralPath $PackageDirectory).Path}else{$build}
@@ -107,7 +108,7 @@ public static class XamlMemory {
             }
             if (-not $styled -and -not $CheckRemove -and -not $CheckCheckbox) { exit 3 }
             if ($CheckRemove -or $CheckCheckbox) {
-                if ($CheckCheckbox) { $mode=if($KeepFixture){'--keep-fixture'}elseif($RemoveBridge){'--no-bridge'}elseif($Preexisting){'--preexisting'}elseif($ExistingRoot){'--existing'}else{'--checkbox'}; & (Join-Path $build 'xaml-remove-window.exe') $process.Id $dll (Join-Path $build 'libxaml-property-probe.dll') $adapter $mode }
+                if ($CheckCheckbox) { $mode=if($CheckRadio){'--radio'}elseif($KeepFixture){'--keep-fixture'}elseif($RemoveBridge){'--no-bridge'}elseif($Preexisting){'--preexisting'}elseif($ExistingRoot){'--existing'}else{'--checkbox'}; & (Join-Path $build 'xaml-remove-window.exe') $process.Id $dll (Join-Path $build 'libxaml-property-probe.dll') $adapter $mode }
                 elseif ($styled) { & (Join-Path $build 'xaml-remove-window.exe') $process.Id $dll (Join-Path $build 'libxaml-property-probe.dll') $adapter }
                 else { & (Join-Path $build 'xaml-remove-window.exe') $process.Id $dll }
                 if ($LASTEXITCODE -ne 0) {

@@ -109,7 +109,7 @@ static void clear(void)
     if (service) IVisualTreeService_Release(service);
     button=NULL; other_button=NULL; diagnostics=NULL; service=NULL;
 }
-static HRESULT create_checkbox(win16_xaml_adapter *adapter)
+static HRESULT create_checkbox(win16_xaml_adapter *adapter,BOOL radio)
 {
     if (adapter && (!adapter->service || !adapter->diagnostics)) return E_INVALIDARG;
     HMODULE pin=NULL;
@@ -121,7 +121,8 @@ static HRESULT create_checkbox(win16_xaml_adapter *adapter)
     }
     HSTRING name=NULL; IInspectable *object=NULL,*element=NULL; test_control *control=NULL;
     boolean applied=0;
-    HRESULT hr=WindowsCreateString(L"Microsoft.UI.Xaml.Controls.CheckBox",35,&name);
+    const WCHAR *class_name=radio ? L"Microsoft.UI.Xaml.Controls.RadioButton" : L"Microsoft.UI.Xaml.Controls.CheckBox";
+    HRESULT hr=WindowsCreateString(class_name,(UINT32)lstrlenW(class_name),&name);
     if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&button);
     if (name) { WindowsDeleteString(name); name=NULL; }
     if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Window",24,&name);
@@ -204,10 +205,10 @@ __declspec(dllexport) LRESULT CALLBACK XamlPropertyProbe(int code,WPARAM wp,LPAR
                     hr=win16_xaml_button_source(service,diagnostics,button,&source,&index);
                 }
             }
-        } else if (m->wParam==3 || m->wParam==5 || m->wParam==7) {
+        } else if (m->wParam==3 || m->wParam==5 || m->wParam==7 || m->wParam==17) {
             clear();
-            hr=m->wParam==7 ? create_checkbox(NULL) : m->wParam==3
-                ? create_checkbox((win16_xaml_adapter *)m->lParam)
+            hr=m->wParam==7 ? create_checkbox(NULL,FALSE) : m->wParam==3 || m->wParam==17
+                ? create_checkbox((win16_xaml_adapter *)m->lParam,m->wParam==17)
                 : create_checkbox_in_tree((win16_xaml_adapter *)m->lParam);
         } else if (m->wParam==4 && button) {
             win16_xaml_adapter *adapter=(win16_xaml_adapter *)m->lParam;

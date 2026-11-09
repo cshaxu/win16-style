@@ -2,6 +2,22 @@
 
 ## Current Work
 
+T25 S1 P5 RadioButton 阶段包已发布 assets 根目录及 O:/winnt，四文件与测试包摘要一致；详见 [P5 记录](../history/M0-T25-S1-P5-xaml-radio.md)。S1/T25 保持开放，提交推送及复核待完成；手动验收未进行。
+
+T25 S1 RadioButton 阶段验证：`s1-radio-package1` 同批13项聚焦实包回归通过、无跳过；同批候选自有 x64 动态 RadioButton、Button/CheckBox 双窗口恢复通过，同快照 WinUI 夹具验证选中互斥和本地样式保护通过。登记发布备份 `build/t25-package/s1-radio-publish1`，完成发布、复核后清理所有本次 scratch；真实输入、像素及 x86 WinUI 未验证。
+
+T25 S1 `s1-radio-clean1` 双宽干净构建、来源资源、ABI 与包检查通过；登记 `build/t25-package/s1-radio-package1` 执行同批四文件聚焦实包回归，验证完成后清理 scratch。
+
+T25 S1 登记 RadioButton 阶段构建 `build/t25-package/s1-radio-clean1`：执行同快照双宽干净构建和包结构检查，随后实包测试及发布；测试完成后按规则清理 scratch。S1/T25 保持开放，真实输入、像素和其他控件仍未覆盖。
+
+T25 S1 RadioButton 本地样式保护：自有 x64 WinUI RadioButton 先设置测试方拥有的 Local 样式，再经候选适配器观察，返回 S_FALSE；来源保持 Local，测试方随后按对象身份校验并成功移除原样式。双宽会话模拟也覆盖不支持 RadioButton 不占线程。绑定、资源及其他自定义来源尚未逐项验证。
+
+T25 S1 RadioButton 组对照：自有 x64 WinUI StackPanel 含两个同组单选项，两个均通过适配器应用模板；依次设为选中后，读取第一项为未选中，组内互斥保持，停止会话成功，RADIO_OK 触发。该测试为程序化属性操作，不证明物理鼠标/键盘、像素或不同组；实例已清理。
+
+T25 S1 RadioButton 真实对象：自有 x64 WinUI 控件经适配器模拟通知应用模板，程序设置 IsChecked=false/true 时读取标记透明度0→1，停止后来源恢复 Default；另在标准候选启动的自有记事本中动态创建 RadioButton，观察自动接入、移除主窗口后保留第二窗口样式、关闭最后窗口后会话清空，均退出0。组内互斥、真实输入、像素及 x86 WinUI 尚未验证，候选未发布。
+
+T25 S1 RadioButton 候选：复用现有 WinUI 控件发现及默认来源保护，新增圆形标记模板；双宽增量编译及会话模拟通过，自有 x64 记事本运行时模板解析通过，CheckBox 夹具回归通过。尚未验证真实 RadioButton 的选中互斥、焦点、动态接入、恢复或实际绘制；未发布。
+
 T25 S1 P3 复核：提交 `8ca8ac4f` 已推送，实际远端 main 指向该提交；assets 与 O:/winnt 的四文件摘要逐项一致。已清理本次 clean2、package1、publish1 临时构建、测试输出和备份；S1/T25 仍开放，手动验收及未覆盖项保留。
 
 T25 S1 P3 阶段包已发布 assets 根目录及 O:/winnt，四文件摘要与实包一致；13项聚焦包回归、干净树双宽6项和自有 x64 动态/双窗口对照通过。详细边界与摘要见 [P3 阶段记录](../history/M0-T25-S1-P3-xaml-checkbox.md)。S1/T25 继续开放，待提交推送和远端复核；手动验收未进行。

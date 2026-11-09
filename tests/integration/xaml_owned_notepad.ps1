@@ -1,8 +1,9 @@
-param([Parameter(Mandatory=$true)][string]$BuildDirectory,[switch]$Session,[switch]$Parse,[switch]$CheckboxParse,[switch]$GenericSite,[switch]$Visible,[switch]$WaitForWindow,[switch]$HoldController,[switch]$WaitChain,[switch]$DeferSubscribe,[switch]$WorkerSubscribe,[switch]$AsyncSite,[switch]$DisconnectSite,[switch]$Factory,[switch]$Adapter)
-$kinds=@('FOUND','TREE','APPLIED','RESTORED','FAILED','PARSE_OK','CHECKBOX_OK','SITE_CONNECTED','SITE_READY','SITE_FAILED','SITE_DISCONNECTING','SITE_DISCONNECTED','SUBSCRIBE_SCHEDULED','SUBSCRIBE_TIMER','WORKER_SUBSCRIBING','WORKER_SERVICE_MARSHALLED','WORKER_MARSHAL_FAILED','WORKER_UNMARSHAL_FAILED','STATES','CONTENT_TEXT_MATCH','BITMAP_OK','BITMAP_FAILED','BITMAP_NOTIMPL','BITMAP_DENIED','BITMAP_INVALID','BITMAP_EFAIL','BITMAP_OTHER','LOCAL_BINDING','LOCAL_HANDLE','LOCAL_EVALUATED','LOCAL_NULL','SESSION_APPLIED','SESSION_STOPPED','SESSION_NOCHANGE','SESSION_ERROR','SESSION_WRONG_THREAD','SESSION_OTHER_ERROR','SESSION_NOINTERFACE','SESSION_INVALID','SESSION_NOTFOUND','SESSION_DEPTH')
+param([Parameter(Mandatory=$true)][string]$BuildDirectory,[switch]$Session,[switch]$Parse,[switch]$CheckboxParse,[switch]$RadioParse,[switch]$GenericSite,[switch]$Visible,[switch]$WaitForWindow,[switch]$HoldController,[switch]$WaitChain,[switch]$DeferSubscribe,[switch]$WorkerSubscribe,[switch]$AsyncSite,[switch]$DisconnectSite,[switch]$Factory,[switch]$Adapter)
+$kinds=@('FOUND','TREE','APPLIED','RESTORED','FAILED','PARSE_OK','CHECKBOX_OK','RADIO_OK','SITE_CONNECTED','SITE_READY','SITE_FAILED','SITE_DISCONNECTING','SITE_DISCONNECTED','SUBSCRIBE_SCHEDULED','SUBSCRIBE_TIMER','WORKER_SUBSCRIBING','WORKER_SERVICE_MARSHALLED','WORKER_MARSHAL_FAILED','WORKER_UNMARSHAL_FAILED','STATES','CONTENT_TEXT_MATCH','BITMAP_OK','BITMAP_FAILED','BITMAP_NOTIMPL','BITMAP_DENIED','BITMAP_INVALID','BITMAP_EFAIL','BITMAP_OTHER','LOCAL_BINDING','LOCAL_HANDLE','LOCAL_EVALUATED','LOCAL_NULL','SESSION_APPLIED','SESSION_STOPPED','SESSION_NOCHANGE','SESSION_ERROR','SESSION_WRONG_THREAD','SESSION_OTHER_ERROR','SESSION_NOINTERFACE','SESSION_INVALID','SESSION_NOTFOUND','SESSION_DEPTH')
 $events=@{};$nonce=[Guid]::NewGuid().ToString('N');$starter=$null;$child=$null
 foreach($k in $kinds){$n="Local\w16-$k-$nonce";[Environment]::SetEnvironmentVariable("WIN16_XAML_${k}_EVENT",$n,'Process');$events[$k]=[Threading.EventWaitHandle]::new($false,[Threading.EventResetMode]::ManualReset,$n)}
 if($CheckboxParse){$Parse=$true;$env:WIN16_XAML_CHECKBOX_TEST='1'}
+if($RadioParse){$Parse=$true;$env:WIN16_XAML_RADIO_TEST='1'}
 if($Session){$env:WIN16_XAML_SESSION_TEST='1'}elseif($Parse){$env:WIN16_XAML_PARSE_TEST='1'}else{$env:WIN16_XAML_APPLY_TEST='1'}
 if($GenericSite){$env:WIN16_XAML_GENERIC_SITE_TEST='1'}
 if($AsyncSite){$env:WIN16_XAML_GENERIC_SITE_TEST='1';$env:WIN16_XAML_ASYNC_SITE_TEST='1'}
@@ -38,7 +39,7 @@ try {
  $build=(Resolve-Path -LiteralPath $BuildDirectory).Path;$tap=Join-Path $build 'libxaml-diagnostics-tap.dll';$argList=@('--winui',"$($child.ProcessId)","`"$tap`"")
  $ctrl=Start-Process (Join-Path $build 'xaml-diagnostics-controller.exe') -ArgumentList $argList -WindowStyle Hidden -PassThru
  if(-not $HoldController -and -not $ctrl.WaitForExit(6000)){Stop-Process -Id $ctrl.Id -Force;throw 'controller timeout'}
- $success=if($DisconnectSite){'SITE_DISCONNECTED'}elseif($Session){'SESSION_STOPPED'}elseif($CheckboxParse){'CHECKBOX_OK'}elseif($Parse){'PARSE_OK'}else{'RESTORED'}
+ $success=if($DisconnectSite){'SITE_DISCONNECTED'}elseif($Session){'SESSION_STOPPED'}elseif($CheckboxParse){'CHECKBOX_OK'}elseif($RadioParse){'RADIO_OK'}elseif($Parse){'PARSE_OK'}else{'RESTORED'}
  $terminal=[Threading.WaitHandle[]]@($events[$success],$events['FAILED'],$events['SITE_FAILED']);$index=[Threading.WaitHandle]::WaitAny($terminal,4500)
  if($WaitChain){
   $report=Join-Path $build "wct-$nonce.txt"
@@ -68,5 +69,5 @@ try {
  if($starter -and -not $starter.HasExited){$null=$starter.CloseMainWindow();if(-not $starter.WaitForExit(2000)){Stop-Process -Id $starter.Id -Force -ErrorAction SilentlyContinue}}
  foreach($k in $kinds){$events[$k].Dispose();[Environment]::SetEnvironmentVariable("WIN16_XAML_${k}_EVENT",$null,'Process')}
  if($done){$null=$done.Set();$done.Dispose()}
- Remove-Item Env:WIN16_XAML_APPLY_TEST,Env:WIN16_XAML_SESSION_TEST,Env:WIN16_XAML_PARSE_TEST,Env:WIN16_XAML_CHECKBOX_TEST,Env:WIN16_XAML_GENERIC_SITE_TEST,Env:WIN16_XAML_ASYNC_SITE_TEST,Env:WIN16_XAML_FACTORY_TEST,Env:WIN16_XAML_ADAPTER_TEST,Env:WIN16_XAML_DISCONNECT_TEST,Env:WIN16_XAML_CONTROLLER_DONE_EVENT,Env:WIN16_XAML_THREAD_TAG,Env:WIN16_XAML_CALLBACK_TAG,Env:WIN16_XAML_DEFER_SUBSCRIBE,Env:WIN16_XAML_WORKER_SUBSCRIBE -ErrorAction SilentlyContinue;Remove-Item -LiteralPath $doc -Force -ErrorAction SilentlyContinue
+ Remove-Item Env:WIN16_XAML_APPLY_TEST,Env:WIN16_XAML_SESSION_TEST,Env:WIN16_XAML_PARSE_TEST,Env:WIN16_XAML_CHECKBOX_TEST,Env:WIN16_XAML_RADIO_TEST,Env:WIN16_XAML_GENERIC_SITE_TEST,Env:WIN16_XAML_ASYNC_SITE_TEST,Env:WIN16_XAML_FACTORY_TEST,Env:WIN16_XAML_ADAPTER_TEST,Env:WIN16_XAML_DISCONNECT_TEST,Env:WIN16_XAML_CONTROLLER_DONE_EVENT,Env:WIN16_XAML_THREAD_TAG,Env:WIN16_XAML_CALLBACK_TAG,Env:WIN16_XAML_DEFER_SUBSCRIBE,Env:WIN16_XAML_WORKER_SUBSCRIBE -ErrorAction SilentlyContinue;Remove-Item -LiteralPath $doc -Force -ErrorAction SilentlyContinue
 }

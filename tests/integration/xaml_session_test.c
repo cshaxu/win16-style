@@ -15,7 +15,8 @@ static HRESULT STDMETHODCALLTYPE name(IInspectable *p,HSTRING *out)
 {
     int kind=((fake *)p)->kind;
     const WCHAR *s=kind==1 ? L"Microsoft.UI.Xaml.Controls.Button" :
-        kind==2 ? L"Microsoft.UI.Xaml.Controls.CheckBox" : L"Microsoft.UI.Xaml.Controls.Grid";
+        kind==2 ? L"Microsoft.UI.Xaml.Controls.CheckBox" :
+        kind==3 ? L"Microsoft.UI.Xaml.Controls.RadioButton" : L"Microsoft.UI.Xaml.Controls.Grid";
     return WindowsCreateString(s,(UINT32)lstrlenW(s),out);
 }
 static HRESULT STDMETHODCALLTYPE trust(IInspectable *p,TrustLevel *level)
@@ -40,11 +41,12 @@ HRESULT win16_xaml_visit_descendants(IInspectable *object,win16_xaml_ancestor_vi
 int main(void)
 {
     win16_xaml_session session={0};
-    fake grid={{&vtable},0,1},button={{&vtable},1,1},checkbox={{&vtable},2,1};
+    fake grid={{&vtable},0,1},button={{&vtable},1,1},checkbox={{&vtable},2,1},radio={{&vtable},3,1};
     CHECK(win16_xaml_session_init(&session,(IVisualTreeService *)(UINT_PTR)1,(IXamlDiagnostics *)(UINT_PTR)1)==S_OK);
     CHECK(!session.thread_id);
     CHECK(win16_xaml_session_observe(&session,&grid.iface,NULL)==S_FALSE && !session.thread_id);
     CHECK(win16_xaml_session_observe(&session,&checkbox.iface,NULL)==S_FALSE && !session.thread_id);
+    CHECK(win16_xaml_session_observe(&session,&radio.iface,NULL)==S_FALSE && !session.thread_id);
     CHECK(win16_xaml_session_observe(&session,&button.iface,NULL)==S_FALSE && !session.thread_id);
     unsupported=FALSE;
     CHECK(win16_xaml_session_observe(&session,&button.iface,NULL)==S_OK && session.thread_id==GetCurrentThreadId());
@@ -52,6 +54,9 @@ int main(void)
     CHECK(win16_xaml_session_init(&session,(IVisualTreeService *)(UINT_PTR)1,(IXamlDiagnostics *)(UINT_PTR)1)==S_OK);
     CHECK(win16_xaml_session_observe(&session,&checkbox.iface,NULL)==S_OK && session.thread_id==GetCurrentThreadId());
     CHECK(win16_xaml_session_stop(&session)==S_OK && !session.service);
-    CHECK(grid.references==1 && button.references==1 && checkbox.references==1);
+    CHECK(win16_xaml_session_init(&session,(IVisualTreeService *)(UINT_PTR)1,(IXamlDiagnostics *)(UINT_PTR)1)==S_OK);
+    CHECK(win16_xaml_session_observe(&session,&radio.iface,NULL)==S_OK);
+    CHECK(win16_xaml_session_stop(&session)==S_OK && !session.service);
+    CHECK(grid.references==1 && button.references==1 && checkbox.references==1 && radio.references==1);
     return 0;
 }
