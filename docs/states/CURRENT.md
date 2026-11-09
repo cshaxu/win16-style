@@ -140,6 +140,16 @@ s4-terminal-package2 同包29项聚焦回归通过、零跳过，cmd-nested 四�
 
 S4 P1 候选四文件已按同包测试摘要发布 assets 与 O:/winnt；[交付与已知限制](../history/M0-T23-S4-P1-console-terminal.md)。重复 Terminal XAML 按钮、首次 cmd-nested 间歇失败原因及用户验收仍未解决，S4/T23 和目标保持开放；P1 已提交 00d3e6c6 并推送，远端 main 已读取核对。
 
+S4 P3 开发中：已复现 P1 在传统 conhost 内运行 run16s cmd 时宿主 DLL 未加载、窗口未附着。自有探针的当前进程 ProcessConsoleHostProcess 查询给出所属 conhost PID（低两位为标志），候选仅验证系统 conhost 映像和当前 HWND 后向该宿主定向附着；查询不可用时保持原状。该 NtQueryInformationProcess 信息类别为 Windows 内部接口，未来兼容性不可保证，动态查询并明确降级。自有私有桌面负例 attached=0，修复候选正例 attached=1，echo 输入输出及移除成功；新增 launch/console-inherited，与新建控制台和边界测试共 3/3 通过。候选尚未干净打包、发布或提交，不改变 P1 已发布版本。
+
+S4 P3 增量回归：x64 启动器边界、直接 conhost、继承 conhost 及 Explorer 选择共4/4通过；登记 build/t23-package/s4-inherited-clean1 为双宽同快照干净构建。
+
+S4 P3 s4-inherited-clean1 双宽干净构建及包检查通过；登记 build/t23-package/s4-inherited-package1 为实际包回归。
+
+S4 P3 同批包29项聚焦回归通过、无跳过；传统控制台直接与继承模式的同包输入输出/移除测试通过。登记 build/t23-package/s4-inherited-publish1 为发布备份及摘要，交付后按测试清理规则回收不再需要的临时构建。
+
+S4 P3 同批四文件已发布 assets 及 O:/winnt，摘要与通过的包一致；[交付及限制](../history/M0-T23-S4-P3-inherited-console.md)。Terminal 重复 XAML 按钮与 P1 首次 cmd-nested 间歇失败原因仍未解决，S4/T23 保持开放。
+
 ## M0 T23 S4 Packet
 
 | Field | Required record |

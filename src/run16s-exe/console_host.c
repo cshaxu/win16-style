@@ -5,6 +5,8 @@
 #include <tlhelp32.h>
 #include <wchar.h>
 
+static DWORD attach_current_conhost(HWND console,PCWSTR directory);
+
 BOOL run16s_console_host_image(PCWSTR image)
 {
     WCHAR system[MAX_PATH];UINT n=GetSystemDirectoryW(system,ARRAYSIZE(system));
@@ -14,9 +16,12 @@ BOOL run16s_console_host_image(PCWSTR image)
 
 DWORD run16s_console_host_attach_current(PCWSTR directory)
 {
+    if(!directory)return ERROR_INVALID_PARAMETER;
     HWND console=GetConsoleWindow();WCHAR name[64];
-    if(!console || !GetClassNameW(console,name,ARRAYSIZE(name)) || wcscmp(name,L"PseudoConsoleWindow"))
+    if(!console || !GetClassNameW(console,name,ARRAYSIZE(name)))
         return ERROR_NOT_FOUND;
+    if(!wcscmp(name,L"ConsoleWindowClass"))return attach_current_conhost(console,directory);
+    if(wcscmp(name,L"PseudoConsoleWindow"))return ERROR_NOT_FOUND;
     HWND root=GetAncestor(console,GA_ROOTOWNER);DWORD pid=0;
     DWORD thread=root?GetWindowThreadProcessId(root,&pid):0;
     if(!thread || !pid || !GetClassNameW(root,name,ARRAYSIZE(name)) ||
@@ -97,6 +102,33 @@ done:
     CloseHandle(snapshot);
     while(count)UnhookWindowsHookEx(hooks[--count]);
     return error;
+}
+
+/* Windows exposes no public API for the server PID of a classic console.
+ * Query only this launcher's console, validate the system image, and fall
+ * back to no attachment if the internal query is unavailable. */
+static DWORD attach_current_conhost(HWND console,PCWSTR directory)
+{
+    typedef LONG (NTAPI *query_fn)(HANDLE,ULONG,void *,ULONG,ULONG *);
+    HMODULE ntdll=GetModuleHandleW(L"ntdll.dll");
+    query_fn query=ntdll?(query_fn)(uintptr_t)GetProcAddress(ntdll,"NtQueryInformationProcess"):NULL;
+    ULONG_PTR value=0;ULONG bytes=0;
+    if(!query || query(GetCurrentProcess(),49,&value,sizeof(value),&bytes)<0 ||
+       bytes!=sizeof(value) || !(value&~(ULONG_PTR)3) || (value&~(ULONG_PTR)3)>MAXDWORD)
+        return ERROR_NOT_FOUND;
+    DWORD host=(DWORD)(value&~(ULONG_PTR)3);HANDLE process=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION|SYNCHRONIZE,FALSE,host);
+    if(!process)return GetLastError();
+    WCHAR image[32768],path[32768];DWORD length=ARRAYSIZE(image);size_t directory_length=wcslen(directory);
+    if(!QueryFullProcessImageNameW(process,0,image,&length) || !run16s_console_host_image(image) ||
+       WaitForSingleObject(process,0)!=WAIT_TIMEOUT || GetConsoleWindow()!=console){CloseHandle(process);return ERROR_NOT_FOUND;}
+    if(directory_length+14>=ARRAYSIZE(path)){CloseHandle(process);return ERROR_FILENAME_EXCED_RANGE;}
+    wcscpy(path,directory);wcscat(path,L"ntw16s64.dll");
+    HMODULE module=LoadLibraryExW(path,NULL,LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR|LOAD_LIBRARY_SEARCH_SYSTEM32);
+    if(!module){DWORD error=GetLastError();CloseHandle(process);return error;}
+    HOOKPROC callback=(HOOKPROC)(uintptr_t)GetProcAddress(module,"Ntw16sWindowThreadHook");
+    DWORD error=callback?run16s_window_module_compatible(host,module,callback,path):ERROR_PROC_NOT_FOUND;
+    if(!error)error=send_to_host(host,console,module,callback);
+    FreeLibrary(module);CloseHandle(process);return error;
 }
 
 DWORD run16s_console_host_attach(HANDLE process,PCWSTR directory)

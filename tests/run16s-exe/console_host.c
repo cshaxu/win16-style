@@ -15,6 +15,7 @@ int wmain(void)
     CHECK(!run16s_console_host_image(L"C:\\other\\conhost.exe"));
     CHECK(!run16s_console_host_image(L"C:\\Windows\\System32\\cmd.exe"));
     CHECK(run16s_console_host_attach(NULL,NULL)==ERROR_INVALID_PARAMETER);
+    CHECK(run16s_console_host_attach_current(NULL)==ERROR_INVALID_PARAMETER);
     STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION child={0};
     WCHAR command[]=L"cmd.exe /c exit";
     CHECK(CreateProcessW(NULL,command,NULL,NULL,FALSE,CREATE_SUSPENDED|CREATE_NO_WINDOW,NULL,NULL,&startup,&child));

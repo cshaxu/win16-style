@@ -78,7 +78,7 @@ static BOOL console_io(DWORD client)
 
 int wmain(int argc,WCHAR **argv)
 {
-    if(argc!=3)return 2;
+    if(argc!=3 && (argc!=4 || wcscmp(argv[3],L"inherited")))return 2;
     int result=1;HHOOK hooks[128]={0};unsigned count=0;PROCESS_INFORMATION launch={0};
     HDESK old=GetThreadDesktop(GetCurrentThreadId()),desktop=NULL;HMODULE observer=NULL;
     test_state state={0};WCHAR name[80],command[32768],system[MAX_PATH];
@@ -90,9 +90,15 @@ int wmain(int argc,WCHAR **argv)
     if(!state.job || !SetInformationJobObject(state.job,JobObjectExtendedLimitInformation,&limits,sizeof(limits)))goto done;
     UINT n=GetSystemDirectoryW(system,ARRAYSIZE(system));if(!n || n+13>=ARRAYSIZE(system))goto done;
     wcscat(system,L"\\conhost.exe");
-    if(swprintf(command,ARRAYSIZE(command),L"\"%ls\" \"%ls\"",argv[1],system)<0)goto done;
+    PCWSTR application=argv[1];
+    if(argc==4){
+        WCHAR cmd[MAX_PATH];UINT length=GetSystemDirectoryW(cmd,ARRAYSIZE(cmd));
+        if(!length || length+9>=ARRAYSIZE(cmd))goto done;
+        wcscat(cmd,L"\\cmd.exe");application=system;
+        if(swprintf(command,ARRAYSIZE(command),L"\"%ls\" \"%ls\" /d /k \"\"%ls\" cmd\"",system,cmd,argv[1])<0)goto done;
+    }else if(swprintf(command,ARRAYSIZE(command),L"\"%ls\" \"%ls\"",argv[1],system)<0)goto done;
     STARTUPINFOW startup={.cb=sizeof(startup),.lpDesktop=name};
-    if(!CreateProcessW(argv[1],command,NULL,NULL,FALSE,CREATE_SUSPENDED,NULL,NULL,&startup,&launch))goto done;
+    if(!CreateProcessW(application,command,NULL,NULL,FALSE,CREATE_SUSPENDED,NULL,NULL,&startup,&launch))goto done;
     if(!AssignProcessToJobObject(state.job,launch.hProcess)){TerminateProcess(launch.hProcess,1);goto done;}
     ResumeThread(launch.hThread);
     ULONGLONG deadline=GetTickCount64()+5000;

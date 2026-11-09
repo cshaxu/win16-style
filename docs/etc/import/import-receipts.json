@@ -6458,9 +6458,9 @@
       "path": "src/run16s-exe/console_host.c",
       "source": null,
       "source_blob": null,
-      "sha256": "5974514acdaf5c0afd28cfd00690b1d1eec2d9fd55b2bfda6cea5a55f6c0de85",
+      "sha256": "358395ce884bf4ecec847ec5767835e5eaba86c43b2dde28dee3c188bd525f2d",
       "disposition": "authored",
-      "review": "T23 S4 console and Terminal window adaptation and native tests",
+      "review": "T23 S4 console and Terminal window adaptation and native tests; T23 S4 P3 inherited classic console identity and regression",
       "notice": "Project-authored C implementation; repository MIT"
     },
     {
@@ -6494,18 +6494,18 @@
       "path": "tests/run16s-exe/console_host.c",
       "source": null,
       "source_blob": null,
-      "sha256": "490a4e64cd6feef169d46db95e7a86dc1a4a10773255a0978959cc2dcaa0684c",
+      "sha256": "534ac867f05369a25fc1a15a8e6c8c6c86bcb009a9b93f690e335baa0bde1ee9",
       "disposition": "authored",
-      "review": "T23 S4 console and Terminal window adaptation and native tests",
+      "review": "T23 S4 console and Terminal window adaptation and native tests; T23 S4 P3 inherited classic console identity and regression",
       "notice": "Project-authored C implementation; repository MIT"
     },
     {
       "path": "tests/run16s-exe/console_integration.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3e2dcc8977bd242a6b550ca5139c2a4472d11db6e683a5b17c8af28f1da1e332",
+      "sha256": "ff8234302073ca13693fe899d839ffd348eaa9754953bb9bcd16646cb64139b7",
       "disposition": "authored",
-      "review": "T23 S4 console and Terminal window adaptation and native tests",
+      "review": "T23 S4 console and Terminal window adaptation and native tests; T23 S4 P3 inherited classic console identity and regression",
       "notice": "Project-authored C implementation; repository MIT"
     },
     {
