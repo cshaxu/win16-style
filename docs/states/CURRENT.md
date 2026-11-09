@@ -36,6 +36,8 @@ s7-settings1 使用发布版 `--app windows.immersivecontrolpanel_cw5n1h2txyewy!
 
 S7 P1 同批四文件已发布 assets 和 O:/winnt 并核对摘要，[证据和限制](../history/M0-T23-S7-P1-system-apps.md)；设备管理器提权取消未验证，Paint 和截图工具的系统别名返回1920，设置仅有限实屏观察。等待用户验收，S7/T23 保持开放。
 
+S7 P1 `8eee38b8` 已推送并核对远端；两处发布文件与测试候选摘要一致。源码及测试变更统计：frame.c +7/-2、attachment.c +8/-3、frame 测试 +17/-1；沿用既有表面和窗口状态所有权。发布核对后 s7-clean1、s7-package1、s7-publish1 和 s7-publish2 临时构建、测试输出及备份已清理；S7 等待用户验收，未验证项不计通过。
+
 s7-alias1 已发布包的 `run16s mspaint` 和 `run16s SnippingTool` 均因 Windows App Execution Alias 返回错误1920；两者完整安装路径此前可启动。别名为 APPEXECLINK 重解析点，其内部数据布局不是公开兼容契约；本 S 不按私有结构猜测转接，记录为待办。测试进程退出，临时输出已清理。
 
 M0 T23 保持开放。S1 记事本已验收通过并收口；S3 Explorer 已获用户手动验收并收口；S4 Terminal/cmd/conhost 基本通过用户验收，有限收口；S5 Codex Desktop 按用户要求跳过，未实现或验收；S6 Chrome 已获用户验收，收口；T23 汇总回归和收口审计待执行。
