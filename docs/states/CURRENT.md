@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T23 保持开放。S1 记事本已验收通过并收口；用户确认系统菜单不再闪烁。S3 Explorer 已获用户手动验收并收口；S4 Terminal/cmd/conhost 准入。
+M0 T23 保持开放。S1 记事本已验收通过并收口；S3 Explorer 已获用户手动验收并收口；S4 Terminal/cmd/conhost 基本通过用户验收，有限收口；S5 Codex Desktop 准入。
 S2 Task Manager 按用户要求有限收口，不再继续要求用户批准该项 UAC；顶部重复图标、白条和拖动标题丢帧转入 TODO，不能记作已修复。双宽干净包、29 项实际包聚焦及14项核心/注入回归通过，四文件已发布 assets 和 O:/winnt，P1 `6afe9420` 已推送并逐项读取远端复核；[有限交付记录](../history/M0-T23-S2-task-manager.md)。准入 S3 Explorer，先识别真实窗口承载及共享 Shell 边界。
 P6 `e37da0db` 四文件已发布至 assets 根目录及 O:/winnt，双宽构建、核心10项及实包29项通过；最终真实菜单截图复核未完成，不计通过。
 详细记录见 [S1交付](../history/M0-T23-S1-notepad-delivery.md)和[菜单修复](../history/M0-T23-S1-system-menu-hover.md)。
@@ -148,28 +148,34 @@ S4 P3 s4-inherited-clean1 双宽干净构建及包检查通过；登记 build/t2
 
 S4 P3 同批包29项聚焦回归通过、无跳过；传统控制台直接与继承模式的同包输入输出/移除测试通过。登记 build/t23-package/s4-inherited-publish1 为发布备份及摘要，交付后按测试清理规则回收不再需要的临时构建。
 
-S4 P3 同批四文件已发布 assets 及 O:/winnt，摘要与通过的包一致；[交付及限制](../history/M0-T23-S4-P3-inherited-console.md)。Terminal 重复 XAML 按钮与 P1 首次 cmd-nested 间歇失败原因仍未解决，S4/T23 保持开放。
+S4 P3 同批四文件已发布 assets 及 O:/winnt，摘要与通过的包一致；[交付及限制](../history/M0-T23-S4-P3-inherited-console.md)。用户基本验收通过；Terminal 重复 XAML 按钮与 P1 首次 cmd-nested 间歇失败原因仍未解决，列入 TODO；S4 有限收口，T23 保持开放。
 
-## M0 T23 S4 Packet
+发布版 P3 自有 Terminal 实屏短测：Win16 标题及标签行可见；真实鼠标打开系统菜单，Esc 后关闭；最大化与还原状态分别为 3、1，扩展样式为 0x00200100，测试进程退出并恢复桌面和指针。原生 XAML 三按钮仍重复；该次不证明菜单每项命令、拖拽或所有透明模式。测试用临时探针按清理规则移除。
+
+发布版 P3 自有传统 conhost 中运行 run16s cmd 的实屏短测：附着后可见 Win16 标题与滚动条；移除后可见原生标题和滚动条，分层属性保持，桌面恢复且测试实例退出。该次不证明每种 DPI 或透明模式；临时探针与截图按清理规则移除。
+
+按测试后清理规则，已清理 s3-private-attach 内99个已结束的 core/launch 测试输出目录；保留尚需的 Chrome 后续研究原型及其目录，其后续用途结束即清理。
+
+## M0 T23 S5 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | New |
-| Admission And Approval | 用户确认 S3 Explorer 手动验收通过，并此前批准按顺序继续 Terminal、cmd、conhost。 |
-| Objective | 调查并实现标准 run16s cmd 和 run16s conhost 的窗口外框，验证 Windows Terminal 宿主及控制台语义。 |
-| Non-goals | 不改客户区控件、用户现有终端会话、注册表或系统安全设置；不预称其他宿主兼容。 |
-| Reference Baseline | S3 产品提交 784c3676；四文件已发布至 assets 与 O:/winnt 并复核。 |
+| Admission And Approval | 用户要求依次验证 Codex Desktop 和 Chrome；S4 用户基本验收通过。 |
+| Objective | 识别 Codex Desktop 窗口及进程承载，验证并按需实现标准 run16s 启动的 Win16 外框。 |
+| Non-goals | 不改客户区控件、用户已有会话、注册表或系统安全设置；不预称其他宿主兼容。 |
+| Reference Baseline | S4 产品提交 1b46f186；四文件已发布至 assets 与 O:/winnt，摘要一致。 |
 | Candidate Proposal | docs/proposals/modern-desktop-window-style.md |
-| Files And ABI Surface | 先确认宿主和会话转交，再按证据选择公共外框和启动接入；变动导出需 ABI 审核。 |
+| Files And ABI Surface | 先确认窗口承载与启动转交，再按证据选择公共外框和启动接入；变动导出需 ABI 审核。 |
 | Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT；M0、C17、GCC、Ninja、ccache。 |
-| Verification | 自建私有桌面目标；分别验证标准启动、最终窗口身份、DLL、附着、实际绘制、标签、控制台输入输出、退出与恢复；双位宽适用项和普通启动回归。 |
-| Expected Markers | 标准命令目标窗口采用 Win16 外框，保留控制台与标签行为；已有会话不受影响。 |
+| Verification | 自建实例及私有桌面；分别验证标准启动、最终窗口身份、DLL、附着、实际绘制、标题区交互及恢复；适用的双位宽和普通启动回归。 |
+| Expected Markers | 标准命令目标窗口采用 Win16 外框并保留标题区功能；已有会话不受影响。 |
 | Asset Needs | 保留原图形及声明；二进制变化时同批四文件发布 assets 与 O:/winnt 并核对。 |
-| Reporting Requirements | 区分不同宿主及新建/现有会话，记录失败、跳过、恢复限制与用户验收。 |
+| Reporting Requirements | 区分实际宿主与新建/现有会话，记录失败、跳过、恢复限制与用户验收。 |
 | Stop Conditions | 不结束无关进程或修改系统安全设置；按永久授权可关闭经核验的发布占用者。 |
 | Exit Criteria | 完成范围内实现、实际应用与回归验证、构建发布推送和用户验收；不支持情形有具体证据。 |
-| Original Owner Request | 标准 run16s cmd、run16s conhost 跑通，并依序验证 Windows Terminal。 |
-| Similar-Issue Sweep | 检查进程转交、伪控制台宿主、多窗口身份、跨位宽、已有会话及退出恢复，不以单一类名推断。 |
+| Original Owner Request | 验证 Codex Desktop 的 Win16 窗口外框，随后验证 Chrome。 |
+| Similar-Issue Sweep | 检查进程转交、多窗口身份、已有会话、标题区及退出恢复，不以单一类名推断。 |
 
 ## Historical delivery notes
 

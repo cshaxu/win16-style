@@ -2,6 +2,10 @@
 
 # Deferred Debt
 
+- [ ] TODO(Medium): Windows Terminal 自绘 XAML 标题区仍显示原生最小化、最大化和关闭按钮，与 Win16 外框按钮重复；Owner：后续明确准入的标题区适配。Evidence：T23 S4 实例中隐藏拖拽 HWND 和清除窗口最小化/最大化样式位均未隐藏 XAML 按钮；用户基本验收通过。Admission：保留标签、可访问性与按钮交互，验证实际布局和恢复，不把控件隐藏等同于外框接管。
+
+- [ ] TODO(Low): T23 S4 P1 首次 cmd-nested 64→32 测试等待标记失败，最终 transcript 已出现标记；同包重测及 P3 实包通过，但首次原因未知。Owner：后续可复现的测试维护。Admission：复现时定位同步或启动原因，不将重测通过视为根因修复。
+
 - [ ] TODO(High): Task Manager 的 Win16 外框顶部出现裁切的重复图标及右侧白条，真实拖动尺寸时标题仍会间歇消失；Owner：未来明确准入的现代桌面外框修复。Evidence：M0 T23 S2 的标准启动加载和附着验证、DWM 边距对照及短拖拽蓝像素与消息记录；仅修改顶部客户区几何即可复现图标残影，擦除后和位置变化后同步补画均未改善。Admission：在可完成自有目标验证时，保留汉堡菜单、窗口交互与恢复，验证实际拖拽、最大化及不同 DPI；用户要求本轮不再进行 Task Manager UAC 验证，不将未覆盖项视为通过。
 
 - [ ] TODO(Low): 全局模式管理员 ETW、真实托盘端到端及其他 window station 的环境受限验证；Owner：未来明确准入的全局模式验证。Evidence：[S41 审计](../proposals/global-process-audit.md) 中私有桌面托盘创建错误、非管理员 ETW 和 station 子项跳过；未计通过。Admission：具备合适会话和授权后，使用自有实例、有限等待及清理复测。
