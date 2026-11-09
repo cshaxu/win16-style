@@ -205,3 +205,11 @@ Under the owner's standing authorization for occupying processes, the exact
 verified Explorer PID was stopped and the desktop shell restarted; existing
 Explorer windows were consequently closed. A second publication completed.
 The task remains open for owner testing and visual validation.
+
+## Owner acceptance and closure
+
+The owner manually accepted the published Explorer result. S3 closes on that
+basis. The acceptance does not expand the recorded coverage: the final build's
+separate private-desktop physical screenshot was not obtained, flicker was
+not independently measured, and concurrent folder attribution and other
+WinUI applications retain their previously stated boundaries. T23 continues.
