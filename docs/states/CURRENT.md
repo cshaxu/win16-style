@@ -138,7 +138,7 @@ s4-terminal-package1 的 cmd-nested 64→32 项失败：测试在等待标记时
 
 s4-terminal-package2 同包29项聚焦回归通过、零跳过，cmd-nested 四组合均通过；首次 package1 的间歇失败原因仍未判定，不删除证据。为发布已按永久占用授权核验并结束映射 O:/winnt/ntw16s64.dll 的 Explorer PID22072（2026-11-08 16:02:47.8184880 -08:00），随后重启 Explorer；原 Explorer 文件夹窗口可能已关闭。登记 build/t23-package/s4-terminal-publish1 存放发布前备份和摘要。
 
-S4 P1 候选四文件已按同包测试摘要发布 assets 与 O:/winnt；[交付与已知限制](../history/M0-T23-S4-P1-console-terminal.md)。重复 Terminal XAML 按钮、首次 cmd-nested 间歇失败原因及用户验收仍未解决，S4/T23 和目标保持开放；提交推送及远端复核进行中。
+S4 P1 候选四文件已按同包测试摘要发布 assets 与 O:/winnt；[交付与已知限制](../history/M0-T23-S4-P1-console-terminal.md)。重复 Terminal XAML 按钮、首次 cmd-nested 间歇失败原因及用户验收仍未解决，S4/T23 和目标保持开放；P1 已提交 00d3e6c6 并推送，远端 main 已读取核对。
 
 ## M0 T23 S4 Packet
 
