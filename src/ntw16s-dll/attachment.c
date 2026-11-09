@@ -563,7 +563,8 @@ void __cdecl Ntw16sScrollChanged(HWND w)
 {win16_attachment_scroll_changed(w,&lifecycle_services);}
 BOOL __cdecl Ntw16sWindowRemove(HWND w)
 {
-    if(class_is(w,L"CASCADIA_HOSTING_WINDOW_CLASS") && win16_uwp_frame_surface(w) &&
+    if((class_is(w,L"CASCADIA_HOSTING_WINDOW_CLASS") || class_is(w,L"Chrome_WidgetWin_1")) &&
+       win16_uwp_frame_surface(w) &&
        !win16_uwp_frame_remove(w))return FALSE;
     return win16_attachment_remove(w,&lifecycle_services);
 }
@@ -625,7 +626,10 @@ static BOOL install_created(HWND w,DWORD original_style)
         win16_style_edit_scrollbars_enable,ntw16s_theme_remove,Ntw16sWindowRemove};
     installed=win16_attachment_install_style(w,a,protocol,original_style,legacy_progress,tree,picture,control,edit,report,&error,&install_services);
     release(a);
-    if(installed && lookup(w) && class_is(w,L"CASCADIA_HOSTING_WINDOW_CLASS") &&
+    if(installed && lookup(w) &&
+       (class_is(w,L"CASCADIA_HOSTING_WINDOW_CLASS") ||
+        (class_is(w,L"Chrome_WidgetWin_1") &&
+         (GetWindowLongPtrW(w,GWL_STYLE)&WS_CAPTION)==WS_CAPTION)) &&
        (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_NOREDIRECTIONBITMAP) &&
        !win16_uwp_frame_apply_nonclient(w)){
         error=GetLastError();Ntw16sWindowRemove(w);installed=FALSE;

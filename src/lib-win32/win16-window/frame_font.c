@@ -8,6 +8,9 @@ BOOL win16_control_refresh_frame_fonts(HWND w,UINT *current_dpi,HFONT *current_t
         DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,NONANTIALIASED_QUALITY,
         DEFAULT_PITCH,L"MS Sans Serif");
     menu=win16_style_menu_font_acquire(dpi);
+    /* Sandboxed helper processes may be unable to register a memory font.
+     * A stock font keeps window creation working in that environment. */
+    if(!menu)menu=(HFONT)GetStockObject(SYSTEM_FONT);
     if(!title || !menu){if(title)DeleteObject(title);win16_style_system_release(menu);return FALSE;}
     if(*current_title)DeleteObject(*current_title);
     win16_style_system_release(*current_menu);

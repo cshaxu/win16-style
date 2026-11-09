@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T23 保持开放。S1 记事本已验收通过并收口；S3 Explorer 已获用户手动验收并收口；S4 Terminal/cmd/conhost 基本通过用户验收，有限收口；S5 Codex Desktop 准入。
+M0 T23 保持开放。S1 记事本已验收通过并收口；S3 Explorer 已获用户手动验收并收口；S4 Terminal/cmd/conhost 基本通过用户验收，有限收口；S5 Codex Desktop 按用户要求跳过，未实现或验收；S6 Chrome 准入。
 S2 Task Manager 按用户要求有限收口，不再继续要求用户批准该项 UAC；顶部重复图标、白条和拖动标题丢帧转入 TODO，不能记作已修复。双宽干净包、29 项实际包聚焦及14项核心/注入回归通过，四文件已发布 assets 和 O:/winnt，P1 `6afe9420` 已推送并逐项读取远端复核；[有限交付记录](../history/M0-T23-S2-task-manager.md)。准入 S3 Explorer，先识别真实窗口承载及共享 Shell 边界。
 P6 `e37da0db` 四文件已发布至 assets 根目录及 O:/winnt，双宽构建、核心10项及实包29项通过；最终真实菜单截图复核未完成，不计通过。
 详细记录见 [S1交付](../history/M0-T23-S1-notepad-delivery.md)和[菜单修复](../history/M0-T23-S1-system-menu-hover.md)。
@@ -156,25 +156,81 @@ S4 P3 同批四文件已发布 assets 及 O:/winnt，摘要与通过的包一致
 
 按测试后清理规则，已清理 s3-private-attach 内99个已结束的 core/launch 测试输出目录；保留尚需的 Chrome 后续研究原型及其目录，其后续用途结束即清理。
 
-## M0 T23 S5 Packet
+S5 只读身份调查：本机 OpenAI.Codex_26.1103.3517.0_x64__2p2nqsd0c76g0 清单中的 App 入口为 app/ChatGPT.exe（FullTrustApplication），文件产品版本 157.0.8103.39；当前已有该映像的主进程与 GPU、renderer 等子进程。resources/codex.exe 是不同入口，不能仅按文件名选择。受限环境 Get-AppxPackage 返回访问拒绝，非受限只读清单和进程查询可用。先前只读窗口观察到主进程的 Chrome_WidgetWin_1 无 WS_CAPTION，client 顶部偏移为0，加载 chrome.dll；自有模型中现有附着状态为真但无蓝色标题，显式添加 WS_CAPTION 后才出现标题。该模型不能证明真实 Codex 的可用性或安全恢复；先核实独立实例，不操作已有会话。
+
+S5 进一步只读检查已安装应用的 app.asar：早期入口读取 CODEX_ELECTRON_USER_DATA_PATH 并据此设置 Electron userData，随后调用单实例锁；另有 macOS 演示启动代码同时隔离 CODEX_HOME 与 userData。此证据提供独立实例候选，但尚未证明 Windows 上隔离启动、锁的隔离范围及其他持久状态，不能据此启动或关闭现有窗口；未修改已安装文件。
+
+S5 代码边界：现有 win16-window-uwp/frame_layout.c 明确拒绝缺少 WS_CAPTION 的窗口，且非客户区绘制层依赖已分配的标题空间；直接套用 Terminal 路径不足以给 Codex 无标题栏窗口画标题。只读检查当前包的单实例判定函数表明 Windows 打包应用会请求锁，不能仅凭传入独立 userData 就断言锁隔离；需先验证真实新实例及数据所有权，再验证布局与恢复。
+
+S5 发布版原生模型复测：自建私有桌面下运行既有 chromium-fixture 两次，原始无标题样式 attached=1、客户区顶偏移4、标题蓝色像素0；测试窗口显式添加 WS_CAPTION 后 attached=1、偏移25、蓝色像素8919，两次均退出0。这只证明本模型的发布版行为，不证明真实 Codex、交互或恢复。复用的 s3-private-attach/chromium-fixture 源码和程序暂留，用于后续候选同模型对照，用途完成后清理；本次无新建临时构建。
+
+S5 自有无标题栏模型恢复对照：发布版附着后临时设置 WS_CAPTION，客户区顶偏移25、标题蓝色像素8919；调用移除并恢复原始 style 后，style=0x15070000、顶偏移0、蓝色像素0，与未附着对照一致，两次退出0。该模型由测试主动恢复样式，不证明产品已自动恢复或真实 Codex 行为。首次探针构建因旧夹具缩进触发 -Werror 而失败，修正测试源码缩进后编译成功。测试 scratch 为 build/t23-package/s5-caption-restore1，结果提炼后清理。
+
+S5 自有模型中，临时设置 WS_CAPTION 时 attached=1、标题蓝色像素8919；模拟应用重新写回无标题样式并触发 FRAMECHANGED 后仍 attached=1，但顶偏移0、蓝色像素0。该对照证明单次设置不足以应对模型中的样式重设；未证明真实 Codex 会发生该消息或重设。测试 scratch build/t23-package/s5-caption-change1 已于结果提炼后清理。
+
+S5 生命周期审计：普通 frame 安装读取窗口样式用于布局，但现有移除路径恢复 DWM 策略、菜单及客户区几何，并不拥有或恢复外部添加的 WS_CAPTION；也未处理宿主自行重设该位。故将测试中的 SetWindowLongPtr 直接加到普通安装流程会留下恢复和归属缺口，不能视为正式修复。
+
+S5 临时样式所有权模型：自有窗口在 WM_STYLECHANGING 中保留附加标题位，同时记录应用明确提交的原始标题位；测试中应用删除 THICKFRAME、增加 MINIMIZEBOX 并清除标题，移除原型后两个变更及无标题状态均保留，退出0。首次编译因 WPARAM 与 GWL_STYLE 有符号性比较被 -Werror 拒绝，显式转换后成功。此模型不能区分应用读回适配后样式再写入时的真实意图，也未验证实际绘制、重入或 Codex，不进入产品；测试 scratch s5-style-owner1 已清理。
+
+S5 共享 Chromium 风险复查：先前自有 Chrome 调查发现消息窗口及嵌套系统 IME 的附着错误13传播至创建 scope，最终 GPU/浏览器退出；当前 attachment.c 的 creation_return 仍会将非 ERROR_NOT_SUPPORTED 的安装错误记入 owner->result.failure。旧实验在特定样本跳过这两类辅助窗口后进程可存活，但不能证明根因或 IME 兼容；不得直接将实验性类名排除升级为产品修复，也未证明 Codex 存在同一故障。
+
+S5 辅助窗口故障候选定位：frame_lifecycle.c 在 refresh_font 失败时明确设置 ERROR_INVALID_DATA(13)；frame_font.c 需要创建标题字体及获取菜单字体。这是先前 Chromium 错误13的一个代码路径，不是该次运行的调用栈证明，也不能据此将所有错误13归因于字体；需对自有 Chromium 进程验证具体失败调用。
+
+S5 自有 Chromium GPU 诊断：临时 DLL 在字体分配失败路径输出诊断，并仅对 GPU 进程保留创建失败窗口以便观察；该 GPU 进程两次报告菜单字体获取失败，标题字体未报告失败。浏览器及 GPU 最终退出0；这是诊断候选而非发布 DLL 或功能修复，尚未识别菜单字体内部失败的具体 API，也未证明真实 Codex 相同。核验自有进程退出后清理 scratch build/t23-package/s5-font-diagnostic1 和构建脚本 build/s5-font-diagnostic-build.py。
+
+S5 共用窗口策略检查：现有 frames 测试明确覆盖无标题 WS_POPUP 和 WS_POPUP|WS_BORDER；因而不能简单排除全部无标题或 popup 窗口来绕过 Chromium GPU 的字体失败，否则会丢失既有支持。菜单字体生成包含 DC、位图、字体资源及字体度量多项操作，目前仅确认获取失败，不能推断某一个 API 是根因。
+
+S6 发布版基线：私有桌面和独立 profile 的自有 Chrome 加载 O:/winnt/ntw16s64.dll 并报告附着，约两秒后目标进程以 0x80000003 退出；驱动退出0不代表浏览器测试通过。按测试清理规则核验自有进程并删除 profile build/t23-package/s3-private-attach/chrome-profile-35120；已有浏览器未操作。
+
+S6 自有 Chromium GPU 诊断：菜单字体生成两次在 `AddFontMemResourceEx` 的返回句柄/计数检查处失败（GetLastError 为0，未分别记录句柄和计数），对应先前菜单字体获取失败；该临时诊断仅对 GPU 保留失败窗口以观察，不代表正式行为已修复。浏览器和 GPU 正常退出；独立资料和 scratch build/t23-package/s6-font-reason1、构建脚本 build/s6-font-reason-build.py 在核验进程结束后清理。
+
+S6 开发候选：自定义菜单字体获取失败时使用系统 stock 字体，不改变成功路径；x86/x64 Ninja 增量构建及各4项外框、字体聚焦测试通过。测试首次因未设置 WIN16STYLE_CAPTURE_DIR、第二次因目录未预先创建而在执行前失败；修正后通过。自有独立 Chrome 加载候选 DLL 并附着，4秒观察内窗口保持存活，最大化/还原状态为3/1；离屏截图仍无 Win16 标题，不能计外框通过或恢复通过。候选未发布；测试进程退出后清理 scratch build/t23-package/s6-font-fallback1。
+
+S6 Chromium 非客户区绘制层候选：对带 WS_CAPTION 和 NOREDIRECTIONBITMAP 的 Chrome_WidgetWin_1 复用现有绘制表面；双宽 DLL 增量构建通过。自有 Chrome 候选加载并附着，独立 owner 表面存在且可见，窗口最大化/还原状态3/1；PrintWindow 无法捕获该表面（返回0），输入桌面不可用导致私有桌面实屏验证跳过，不可据此声称视觉通过。测试进程退出后 scratch build/t23-package/s6-frame-probe1 已清理；候选未发布。
+
+登记 scratch build/t23-package/s6-clean1：当前候选同快照双宽干净构建、后续实包回归及发布；交付后依清理规范回收临时构建。
+
+s6-clean1 后台进程已退出且无结果和源码快照，不计构建通过；s6-clean2 因两个变更文件的来源摘要未更新而被 source manifest 拦截，未构建或发布。已更新项目内两个摘要与审计说明并通过源摘要自测；两次失败临时构建按规则清理。登记 s6-clean3 重新执行双宽干净构建。
+
+s6-clean3 同快照双宽干净编译、ABI、来源、资源及公共库边界检查通过；登记 s6-package1 为实际四文件聚焦回归，s6-chrome1 为同包自有 Chrome 对照，测试完成后按清理规则处理。
+
+同批包自有 Chrome 加载候选 DLL、附着并在4秒观察内保持存活；未验证实际屏幕视觉或恢复。s6-package1 在 late-only-x64-x86-w 报告 PRIVATE_DESKTOP_LEAK 并退出8，虽然传播标记通过；原因未知，不能将首轮计作通过。登记 s6-package2 同包重测，保留首轮精简结果；s6-chrome1 自有进程退出后清理。
+
+s6-package2 的 late-only-x86-x64-w 同样报告 PRIVATE_DESKTOP_LEAK，功能标记通过；两处失败桌面稍后仍可打开但无顶层窗口，未枚举到关联线程，原因未知。候选两种位宽单独测试均退出0，旧发布包单独测试 x86→x64 亦退出0，不能据此认定根因或首两轮通过。[失败原始输出](../history/M0-T23-S6-package-failures.md)已提炼，前两轮临时测试输出清理；s6-package3 串行同包聚焦回归，不放宽断言。
+
+s6-package3 串行同包聚焦29项通过、零跳过；前两轮桌面清理失败的根因仍未知。s6-publish1 已发布同批四文件至 assets 和 O:/winnt 并核对摘要；[交付及限制](../history/M0-T23-S6-P1-chrome.md)。实屏 Chrome 标题及交互尚未验证，等待用户验收；S6/T23 保持开放。
+
+发布后审查发现 Chrome 新增表面未包含在 Ntw16sWindowRemove 移除分支，s6-publish1 不应作为验收版本；已添加 Chrome 表面移除分支并更新来源摘要，双宽增量 DLL 构建通过。登记 s6-remove1 对自有 Chrome 验证表面销毁，随后重做干净包、回归和发布；最终产物发布前保留 S6 开放。
+
+s6-remove1 自有 Chrome 实际候选：移除前表面存在，移除返回成功、附着状态清除、表面句柄销毁，客户区顶偏移恢复0，NOREDIRECTIONBITMAP 保持；浏览器和 GPU 退出0。该测试不代表实屏绘制或所有恢复状态，临时资料与探针核验进程退出后清理。
+
+旧 s6-clean3 构建树和 s6-package3 测试输出已清理，测试摘要保留在 s6-publish1；登记 s6-clean4 用于移除修复后的同快照双宽干净构建。
+
+s6-clean4 双宽干净构建、ABI 和来源资源门禁通过；登记 s6-package4 串行实际包回归、s6-remove2 同包 Chrome 移除对照，结束后清理临时产物。
+
+s6-remove2 对同批候选的自有 Chrome 验证：附着且表面存在，移除成功后附着清除、表面销毁、客户区顶偏移恢复0，合成扩展标志保持；浏览器及 GPU 退出0。该对照不证明实屏外观，测试进程退出后清理 s6-remove2。
+
+s6-package4 串行同批实际包聚焦29项通过、零跳过；s6-publish2 已将最终同批四文件发布到 assets 和 O:/winnt 并核对摘要，取代包含移除缺口的前一候选。实屏 Chrome 视觉和交互仍未验证，等待用户验收。
+
+## M0 T23 S6 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | New |
-| Admission And Approval | 用户要求依次验证 Codex Desktop 和 Chrome；S4 用户基本验收通过。 |
-| Objective | 识别 Codex Desktop 窗口及进程承载，验证并按需实现标准 run16s 启动的 Win16 外框。 |
-| Non-goals | 不改客户区控件、用户已有会话、注册表或系统安全设置；不预称其他宿主兼容。 |
+| Admission And Approval | 用户要求跳过 Codex，继续此前指定的 Chrome。 |
+| Objective | 验证并按需实现标准 run16s 启动 Chrome 的 Win16 外框和正常浏览器生命周期。 |
+| Non-goals | 不改客户区控件、用户已有浏览器会话、注册表或系统安全设置；不预称 Codex 或其他宿主兼容。 |
 | Reference Baseline | S4 产品提交 1b46f186；四文件已发布至 assets 与 O:/winnt，摘要一致。 |
 | Candidate Proposal | docs/proposals/modern-desktop-window-style.md |
 | Files And ABI Surface | 先确认窗口承载与启动转交，再按证据选择公共外框和启动接入；变动导出需 ABI 审核。 |
 | Applicable Rules | EXECUTION、ARCHITECTURE、CODING、DOCUMENT；M0、C17、GCC、Ninja、ccache。 |
-| Verification | 自建实例及私有桌面；分别验证标准启动、最终窗口身份、DLL、附着、实际绘制、标题区交互及恢复；适用的双位宽和普通启动回归。 |
+| Verification | 自建独立 profile 及私有桌面；分别验证标准启动、目标身份、进程存活、DLL、附着、实际绘制、标签和标题区交互及恢复；适用的双位宽和普通启动回归。 |
 | Expected Markers | 标准命令目标窗口采用 Win16 外框并保留标题区功能；已有会话不受影响。 |
 | Asset Needs | 保留原图形及声明；二进制变化时同批四文件发布 assets 与 O:/winnt 并核对。 |
 | Reporting Requirements | 区分实际宿主与新建/现有会话，记录失败、跳过、恢复限制与用户验收。 |
 | Stop Conditions | 不结束无关进程或修改系统安全设置；按永久授权可关闭经核验的发布占用者。 |
 | Exit Criteria | 完成范围内实现、实际应用与回归验证、构建发布推送和用户验收；不支持情形有具体证据。 |
-| Original Owner Request | 验证 Codex Desktop 的 Win16 窗口外框，随后验证 Chrome。 |
+| Original Owner Request | 跳过 Codex，继续验证 Chrome 的 Win16 窗口外框。 |
 | Similar-Issue Sweep | 检查进程转交、多窗口身份、已有会话、标题区及退出恢复，不以单一类名推断。 |
 
 ## Historical delivery notes
