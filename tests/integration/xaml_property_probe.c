@@ -185,16 +185,18 @@ static HRESULT create_checkbox(win16_xaml_adapter *adapter,int kind)
     }
     HSTRING name=NULL; IInspectable *object=NULL,*element=NULL; test_control *control=NULL;
     boolean applied=0;
-    const WCHAR *class_name=kind==4 ? L"Microsoft.UI.Xaml.Controls.Primitives.ScrollBar" : kind==3 ? L"Microsoft.UI.Xaml.Controls.ComboBox" : kind==2 ? L"Microsoft.UI.Xaml.Controls.TextBox" :
+    const WCHAR *class_name=kind==5 ? L"Microsoft.UI.Xaml.Controls.ListBox" : kind==4 ? L"Microsoft.UI.Xaml.Controls.Primitives.ScrollBar" : kind==3 ? L"Microsoft.UI.Xaml.Controls.ComboBox" : kind==2 ? L"Microsoft.UI.Xaml.Controls.TextBox" :
         kind==1 ? L"Microsoft.UI.Xaml.Controls.RadioButton" : L"Microsoft.UI.Xaml.Controls.CheckBox";
     HRESULT hr=S_OK;
-    if (kind==3) {
+    if (kind==3 || kind==5) {
         static const WCHAR reader_name[]=L"Microsoft.UI.Xaml.Markup.XamlReader";
         static const WCHAR markup[]=L"<ComboBox xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'><x:String>First</x:String><x:String>Second</x:String></ComboBox>";
+        static const WCHAR list_markup[]=L"<ListBox xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'><x:String>First</x:String><x:String>Second</x:String></ListBox>";
         xaml_reader *reader=NULL; HSTRING text=NULL;
         hr=WindowsCreateString(reader_name,(UINT32)(ARRAYSIZE(reader_name)-1),&name);
         if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&xaml_reader_iid,(void **)&reader);
-        if (SUCCEEDED(hr)) hr=WindowsCreateString(markup,(UINT32)(ARRAYSIZE(markup)-1),&text);
+        const WCHAR *chosen=kind==5 ? list_markup : markup;
+        if (SUCCEEDED(hr)) hr=WindowsCreateString(chosen,(UINT32)lstrlenW(chosen),&text);
         if (SUCCEEDED(hr)) hr=reader->vtable->load(reader,text,&button);
         if (reader) reader->vtable->release(reader);
         if (text) WindowsDeleteString(text);
@@ -283,10 +285,10 @@ __declspec(dllexport) LRESULT CALLBACK XamlPropertyProbe(int code,WPARAM wp,LPAR
                     hr=win16_xaml_button_source(service,diagnostics,button,&source,&index);
                 }
             }
-        } else if (m->wParam==3 || m->wParam==5 || m->wParam==7 || m->wParam==17 || m->wParam==18 || m->wParam==21 || m->wParam==24) {
+        } else if (m->wParam==3 || m->wParam==5 || m->wParam==7 || m->wParam==17 || m->wParam==18 || m->wParam==21 || m->wParam==24 || m->wParam==27) {
             clear();
-            hr=m->wParam==7 ? create_checkbox(NULL,0) : m->wParam==3 || m->wParam==17 || m->wParam==18 || m->wParam==21 || m->wParam==24
-                ? create_checkbox((win16_xaml_adapter *)m->lParam,m->wParam==24 ? 4 : m->wParam==21 ? 3 : m->wParam==18 ? 2 : m->wParam==17 ? 1 : 0)
+            hr=m->wParam==7 ? create_checkbox(NULL,0) : m->wParam==3 || m->wParam==17 || m->wParam==18 || m->wParam==21 || m->wParam==24 || m->wParam==27
+                ? create_checkbox((win16_xaml_adapter *)m->lParam,m->wParam==27 ? 5 : m->wParam==24 ? 4 : m->wParam==21 ? 3 : m->wParam==18 ? 2 : m->wParam==17 ? 1 : 0)
                 : create_checkbox_in_tree((win16_xaml_adapter *)m->lParam);
         } else if (m->wParam==4 && button) {
             win16_xaml_adapter *adapter=(win16_xaml_adapter *)m->lParam;
@@ -327,6 +329,15 @@ __declspec(dllexport) LRESULT CALLBACK XamlPropertyProbe(int code,WPARAM wp,LPAR
                 }
             } else if (SUCCEEDED(hr)) hr=E_FAIL;
             if (native) native->vtable->release(native);
+        } else if (m->wParam==28 && button) {
+            input_element *element=NULL; item_mapping *mapping=NULL;
+            hr=IInspectable_QueryInterface(button,&ui_iid,(void **)&element);
+            if (SUCCEEDED(hr)) hr=element->vtable->update_layout(element);
+            if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(button,&item_mapping_iid,(void **)&mapping);
+            if (SUCCEEDED(hr)) hr=mapping->vtable->container_from_index(mapping,0,&other_button);
+            if (SUCCEEDED(hr) && !other_button) hr=E_FAIL;
+            if (mapping) mapping->vtable->release(mapping);
+            if (element) element->vtable->release(element);
         } else if (m->wParam==22 && button) {
             input_element *element=NULL; combo_control *combo=NULL; item_mapping *mapping=NULL;
             hr=IInspectable_QueryInterface(button,&ui_iid,(void **)&element);

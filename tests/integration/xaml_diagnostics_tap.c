@@ -16,6 +16,7 @@
 #include "lib-win32/win16-control-xaml/textbox_template.h"
 #include "lib-win32/win16-control-xaml/combo_template.h"
 #include "lib-win32/win16-control-xaml/scroll_template.h"
+#include "lib-win32/win16-control-xaml/list_template.h"
 #include "lib-win32/win16-control-xaml/button_style.h"
 #include "lib-win32/win16-control-xaml/visual_tree.h"
 #include "lib-win32/win16-control-xaml/session.h"
@@ -1670,6 +1671,133 @@ cleanup:
     return hr;
 }
 
+typedef struct test_list test_list;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_list *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_list *);
+    ULONG (STDMETHODCALLTYPE *release)(test_list *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(test_list *,ULONG *,IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(test_list *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(test_list *,TrustLevel *);
+    void (STDMETHODCALLTYPE *unused[2])(void);
+    HRESULT (STDMETHODCALLTYPE *put_mode)(test_list *,INT32);
+    void (STDMETHODCALLTYPE *unused_select_all[3])(void);
+    HRESULT (STDMETHODCALLTYPE *select_all)(test_list *);
+} test_list_vtable;
+struct test_list { const test_list_vtable *vtable; };
+static const IID list_iid={0xf3e7dedf,0x7a3c,0x59f1,{0x9e,0x05,0xae,0x50,0x26,0xb5,0x42,0x93}};
+typedef struct test_selector_item test_selector_item;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_selector_item *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_selector_item *);
+    ULONG (STDMETHODCALLTYPE *release)(test_selector_item *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(test_selector_item *,ULONG *,IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(test_selector_item *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(test_selector_item *,TrustLevel *);
+    HRESULT (STDMETHODCALLTYPE *get_selected)(test_selector_item *,boolean *);
+} test_selector_item_vtable;
+struct test_selector_item { const test_selector_item_vtable *vtable; };
+static const IID selector_item_iid={0x5772c4de,0x60ea,0x5492,{0x8c,0x5e,0xb3,0x32,0x3d,0x5a,0x3c,0xa6}};
+
+static HRESULT test_list_candidate(reader *factory,IInspectable *style)
+{
+    static const wchar_t markup[]=L"<ListBox xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'><x:String>First</x:String><x:String>Second</x:String></ListBox>";
+    HSTRING text=NULL,name=NULL; IInspectable *object=NULL,*window_object=NULL,*ui=NULL;
+    test_window *window=NULL; winui_element *element=NULL; test_control *control=NULL;
+    test_selector *selector=NULL; test_item_mapping *mapping=NULL; test_list *list=NULL;
+    test_selector_item *items[2]={NULL,NULL};
+    win16_xaml_adapter adapter={0}; VisualElement info={0}; ParentChildRelation relation={0};
+    unsigned int source=0,property_index=0; winui_tree *tree=NULL;
+    (void)style;
+    HRESULT hr=WindowsCreateString(markup,(UINT32)(ARRAYSIZE(markup)-1),&text);
+    if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,text,&object);
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Window",24,&name);
+    if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&window_object);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(window_object,&test_window_iid,(void **)&window);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&test_ui_iid,(void **)&ui);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_element_iid,(void **)&element);
+    if (SUCCEEDED(hr)) hr=window->vtable->put_content(window,ui);
+    if (SUCCEEDED(hr)) hr=window->vtable->activate(window);
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    if (SUCCEEDED(hr)) { info.Type=(BSTR)L"Microsoft.UI.Xaml.Controls.ListBox"; relation.Parent=1; hr=IXamlDiagnostics_GetHandleFromIInspectable(diagnostics,object,&info.Handle); }
+    if (SUCCEEDED(hr)) { hr=win16_xaml_adapter_change(&adapter,relation,info,Add,NULL); if(hr==S_FALSE)hr=E_FAIL; }
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,object,&source,&property_index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceLocal) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_control_iid,(void **)&control);
+    boolean applied=0;
+    if (SUCCEEDED(hr)) hr=control->vtable->apply_template(control,&applied);
+    if (SUCCEEDED(hr) && !applied) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=((test_layout *)ui)->vtable->update_layout((test_layout *)ui);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&selector_iid,(void **)&selector);
+    if (SUCCEEDED(hr)) hr=selector->vtable->put_index(selector,1);
+    INT32 selected=-1;
+    if (SUCCEEDED(hr)) hr=selector->vtable->get_index(selector,&selected);
+    if (SUCCEEDED(hr) && selected!=1) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&item_mapping_iid,(void **)&mapping);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Media.VisualTreeHelper",40,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_tree_iid,(void **)&tree);
+    for (INT32 i=0;SUCCEEDED(hr) && i<2;i++) {
+        IInspectable *item=NULL; unsigned int source=0,index=0;
+        hr=mapping->vtable->container_from_index(mapping,i,&item);
+        if (SUCCEEDED(hr) && !item) hr=E_FAIL;
+        if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,item,&source,&index);
+        if (SUCCEEDED(hr)) signal_named(source==BaseValueSourceDefault
+            ? L"WIN16_XAML_SESSION_APPLIED_EVENT" : L"WIN16_XAML_SESSION_NOCHANGE_EVENT");
+        VisualElement item_info={0}; ParentChildRelation item_relation={0};
+        item_info.Type=(BSTR)L"Microsoft.UI.Xaml.Controls.ListBoxItem"; item_relation.Parent=1;
+        if (SUCCEEDED(hr)) hr=IXamlDiagnostics_GetHandleFromIInspectable(diagnostics,item,&item_info.Handle);
+        if (SUCCEEDED(hr)) { hr=win16_xaml_adapter_change(&adapter,item_relation,item_info,Add,NULL); if(hr==S_FALSE)hr=E_FAIL; }
+        test_control *item_control=NULL; boolean item_applied=0;
+        if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(item,&winui_control_iid,(void **)&item_control);
+        if (SUCCEEDED(hr)) hr=item_control->vtable->apply_template(item_control,&item_applied);
+        if (SUCCEEDED(hr) && !item_applied) hr=E_FAIL;
+        if (SUCCEEDED(hr)) hr=test_combo_item_states(item,tree,item_control,i);
+        if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(item,&selector_item_iid,(void **)&items[i]);
+        if (item_control) item_control->vtable->release(item_control);
+        if (item) IInspectable_Release(item);
+    }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&list_iid,(void **)&list);
+    if (SUCCEEDED(hr)) hr=list->vtable->put_mode(list,1);
+    if (SUCCEEDED(hr)) hr=list->vtable->select_all(list);
+    for (INT32 i=0;SUCCEEDED(hr) && i<2;i++) {
+        boolean selected_item=0;
+        hr=items[i]->vtable->get_selected(items[i],&selected_item);
+        if (SUCCEEDED(hr) && !selected_item) hr=E_FAIL;
+    }
+    if (adapter.service) { HRESULT stopped=win16_xaml_adapter_stop(&adapter); if(SUCCEEDED(hr))hr=stopped; }
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,object,&source,&property_index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceDefault) hr=E_FAIL;
+    if (adapter.session.service) (void)win16_xaml_button_set_discard(&adapter.session.buttons);
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    win16_xaml_button_style external={0};
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_apply(service,diagnostics,object,&external);
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    if (SUCCEEDED(hr)) {
+        HRESULT observed=win16_xaml_adapter_change(&adapter,relation,info,Add,NULL);
+        if (observed!=S_FALSE) hr=E_FAIL;
+    }
+    if (adapter.service) { HRESULT stopped=win16_xaml_adapter_stop(&adapter); if(SUCCEEDED(hr))hr=stopped; }
+    if (adapter.session.service) (void)win16_xaml_button_set_discard(&adapter.session.buttons);
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    if (external.button) { HRESULT removed=win16_xaml_button_remove(service,diagnostics,&external); if(SUCCEEDED(hr))hr=removed; }
+    if (external.button) win16_xaml_button_discard(&external);
+    if (tree) tree->vtable->release(tree);
+    for (INT32 i=0;i<2;i++) if(items[i]) items[i]->vtable->release(items[i]);
+    if (list) list->vtable->release(list);
+    if (mapping) mapping->vtable->release(mapping);
+    if (selector) selector->vtable->release(selector);
+    if (control) control->vtable->release(control);
+    if (element) element->vtable->release(element);
+    if (window) { (void)window->vtable->close(window); window->vtable->release(window); }
+    if (ui) IInspectable_Release(ui);
+    if (window_object) IInspectable_Release(window_object);
+    if (object) IInspectable_Release(object);
+    if (text) WindowsDeleteString(text);
+    if (name) WindowsDeleteString(name);
+    return hr;
+}
+
 static void test_template_parse(void)
 {
     static const wchar_t reader_name[]=L"Microsoft.UI.Xaml.Markup.XamlReader";
@@ -1678,7 +1806,8 @@ static void test_template_parse(void)
     HSTRING name=NULL,text=NULL;
     reader *factory=NULL;
     IInspectable *style=NULL;
-    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_SCROLL_TEST",NULL,0)
+    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_LIST_TEST",NULL,0)
+        ? win16_xaml_list_template() : GetEnvironmentVariableW(L"WIN16_XAML_SCROLL_TEST",NULL,0)
         ? win16_xaml_scroll_template() : GetEnvironmentVariableW(L"WIN16_XAML_COMBO_TEST",NULL,0)
         ? win16_xaml_combo_template() : GetEnvironmentVariableW(L"WIN16_XAML_TEXTBOX_TEST",NULL,0)
         ? win16_xaml_textbox_template() : GetEnvironmentVariableW(L"WIN16_XAML_RADIO_TEST",NULL,0)
@@ -1688,6 +1817,10 @@ static void test_template_parse(void)
     if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_reader_iid,(void **)&factory);
     if (SUCCEEDED(hr)) hr=WindowsCreateString(markup,(UINT32)lstrlenW(markup),&text);
     if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,text,&style);
+    if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_LIST_TEST",NULL,0)) {
+        HRESULT list=test_list_candidate(factory,style);
+        signal_named(SUCCEEDED(list) ? L"WIN16_XAML_LIST_OK_EVENT" : L"WIN16_XAML_FAILED_EVENT");
+    }
     if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_SCROLL_TEST",NULL,0)) {
         HRESULT scroll=test_scroll_candidate(style,0);
         if (!GetEnvironmentVariableW(L"WIN16_XAML_SCROLL_ASYNC",NULL,0)) {

@@ -39,7 +39,9 @@ HRESULT win16_xaml_adapter_change(win16_xaml_adapter *adapter,ParentChildRelatio
                                  !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.TextBox") ||
                                  !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.ComboBox") ||
                                  !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.ComboBoxItem") ||
-                                 !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.Primitives.ScrollBar"));
+                                 !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.Primitives.ScrollBar") ||
+                                 !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.ListBox") ||
+                                 !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.ListBoxItem"));
     BOOL root=!relation.Parent;
     InstanceHandle handle=(button || root) ? element.Handle : relation.Parent;
     if (!handle) return S_FALSE;
