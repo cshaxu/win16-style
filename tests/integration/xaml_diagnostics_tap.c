@@ -1491,6 +1491,36 @@ static void CALLBACK test_scroll_async_timer(HWND window,UINT message,UINT_PTR t
     ZeroMemory(&scroll_async,sizeof(scroll_async));
 }
 
+static HRESULT test_scroll_arrow_visual(winui_element *root,const wchar_t *part)
+{
+    static const wchar_t vsm_name[]=L"Microsoft.UI.Xaml.VisualStateManager";
+    HSTRING name=NULL; IInspectable *arrow=NULL; test_control *control=NULL; winui_vsm *manager=NULL;
+    HRESULT hr=WindowsCreateString(part,(UINT32)lstrlenW(part),&name);
+    if (SUCCEEDED(hr)) hr=root->vtable->find_name(root,name,&arrow);
+    if (SUCCEEDED(hr) && !arrow) hr=E_FAIL;
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(arrow,&winui_control_iid,(void **)&control);
+    boolean applied=0;
+    if (SUCCEEDED(hr)) hr=control->vtable->apply_template(control,&applied);
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(vsm_name,(UINT32)(ARRAYSIZE(vsm_name)-1),&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_vsm_iid,(void **)&manager);
+    static const wchar_t *states[]={L"Normal",L"Pressed",L"Disabled"};
+    for (unsigned int i=0;SUCCEEDED(hr) && i<ARRAYSIZE(states);i++) {
+        HSTRING state=NULL; boolean changed=0;
+        hr=WindowsCreateString(states[i],(UINT32)lstrlenW(states[i]),&state);
+        if (SUCCEEDED(hr)) hr=manager->vtable->go_to_state(manager,(IInspectable *)control,state,0,&changed);
+        if (SUCCEEDED(hr) && !changed) hr=E_FAIL;
+        if (SUCCEEDED(hr) && i<2 && !check_edge_colors(arrow,i==1)) hr=E_FAIL;
+        if (SUCCEEDED(hr) && i==2 && !check_disabled_text(arrow)) hr=E_FAIL;
+        if (state) WindowsDeleteString(state);
+    }
+    if (manager) manager->vtable->release(manager);
+    if (control) control->vtable->release(control);
+    if (arrow) IInspectable_Release(arrow);
+    if (name) WindowsDeleteString(name);
+    return hr;
+}
+
 static HRESULT test_scroll_candidate(IInspectable *style,INT32 orientation)
 {
     static const wchar_t class_name[]=L"Microsoft.UI.Xaml.Controls.Primitives.ScrollBar";
@@ -1599,6 +1629,7 @@ static HRESULT test_scroll_candidate(IInspectable *style,INT32 orientation)
     if (SUCCEEDED(hr)) hr=range->vtable->put_value(range,35);
     if (SUCCEEDED(hr)) hr=range->vtable->get_value(range,&value);
     if (SUCCEEDED(hr) && value!=35) hr=E_FAIL;
+    if (SUCCEEDED(hr) && !baseline) hr=test_scroll_arrow_visual(root_element,orientation ? L"VerticalSmallIncrease" : L"HorizontalSmallIncrease");
     if (adapter.service) { HRESULT stopped=win16_xaml_adapter_stop(&adapter); if(SUCCEEDED(hr))hr=stopped; }
     if (SUCCEEDED(hr) && !baseline && !async) hr=win16_xaml_button_source(service,diagnostics,object,&source,&index);
     if (SUCCEEDED(hr) && !baseline && !async && source!=BaseValueSourceDefault) hr=E_FAIL;

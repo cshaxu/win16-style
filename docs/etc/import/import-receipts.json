@@ -6836,9 +6836,9 @@
       "path": "src/lib-win32/win16-control-xaml/scroll_template.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e1bbd6e5d39d12342c64944b49bd55a581489851980bc7c76685fd84ca9826ff",
+      "sha256": "53a8021605d55a76f90f6a6d66ec7cc5c9af71da88dffa3460ef2bf88c26d1a1",
       "disposition": "authored",
-      "review": "M0 T25 S1 ScrollBar candidate",
+      "review": "M0 T25 S1 ScrollBar candidate; T25 S1 arrow states",
       "notice": "Project-authored C source; XAML template part names follow platform interfaces; no imported artwork"
     },
     {
