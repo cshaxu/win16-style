@@ -2,6 +2,8 @@
 
 ## Current Work
 
+T25 S1 P21 复核：提交 `4ca3694e` 已推送并核对远端 main；assets 与 O:/winnt 同批摘要一致，本次 clean1、package1、publish1 scratch 已清理。S1/T25 保持开放，真实输入、像素、反向和 x86 WinUI 未覆盖。
+
 T25 S1 P21 Slider 阶段包已发布 assets 和 O:/winnt，双宽干净构建、13项聚焦实包回归及同批 x64 横竖对象与标准启动对照通过；详见 [P21记录](../history/M0-T25-S1-P21-xaml-slider.md)。真实输入、像素、反向及 x86 WinUI 未覆盖；提交推送和 scratch 清理待完成。
 
 T25 S1 Slider 标准启动候选：自有 x64 记事本经 run16s 启动并动态创建 Slider，观察自动接入和最后窗口关闭后会话清空；双宽增量编译和 XAML 核心各3项通过。登记 `build/t25-package/s1-slider-clean1` 双宽干净构建，完成同批测试发布并清理 scratch；真实输入和 x86 WinUI 未覆盖。
