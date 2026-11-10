@@ -45,7 +45,12 @@ HRESULT win16_xaml_adapter_change(win16_xaml_adapter *adapter,ParentChildRelatio
                                  !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.ProgressBar") ||
                             !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.ToggleSwitch") ||
                             !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.Slider") ||
-                            !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.Primitives.ToggleButton"));
+                            !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.Primitives.ToggleButton") ||
+                            !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter") ||
+                            !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.MenuFlyoutItem") ||
+                            !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem") ||
+                            !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem") ||
+                            !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.MenuFlyoutSeparator"));
     BOOL root=!relation.Parent;
     InstanceHandle handle=(button || root) ? element.Handle : relation.Parent;
     if (!handle) return S_FALSE;

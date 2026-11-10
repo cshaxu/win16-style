@@ -12,6 +12,11 @@
 #include "toggle_template.h"
 #include "slider_template.h"
 #include "toggle_button_template.h"
+#include "menu_presenter_template.h"
+#include "menu_item_template.h"
+#include "toggle_menu_template.h"
+#include "submenu_template.h"
+#include "menu_separator_template.h"
 #include <oleauto.h>
 #include <roapi.h>
 #include <winstring.h>
@@ -108,6 +113,11 @@ HRESULT win16_xaml_button_apply(IVisualTreeService *service, IXamlDiagnostics *d
         else if (!wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.ToggleSwitch")) markup=win16_xaml_toggle_template();
         else if (!wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.Slider")) markup=win16_xaml_slider_template();
         else if (!wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.Primitives.ToggleButton")) markup=win16_xaml_toggle_button_template();
+        else if (!wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter")) markup=win16_xaml_menu_presenter_template();
+        else if (!wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.MenuFlyoutItem")) markup=win16_xaml_menu_item_template();
+        else if (!wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem")) markup=win16_xaml_toggle_menu_template();
+        else if (!wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem")) markup=win16_xaml_submenu_template();
+        else if (!wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.MenuFlyoutSeparator")) markup=win16_xaml_menu_separator_template();
     }
     if (SUCCEEDED(hr) && !markup) hr=HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
     if (runtime_name) WindowsDeleteString(runtime_name);

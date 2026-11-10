@@ -27,7 +27,12 @@ static BOOL visit(IInspectable *object, unsigned int depth, void *context)
                             !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.ProgressBar") ||
                             !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.ToggleSwitch") ||
                             !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.Slider") ||
-                            !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.Primitives.ToggleButton"));
+                            !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.Primitives.ToggleButton") ||
+                            !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter") ||
+                            !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.MenuFlyoutItem") ||
+                            !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem") ||
+                            !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem") ||
+                            !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.MenuFlyoutSeparator"));
     if (name) WindowsDeleteString(name);
     if (!button) return TRUE;
     DWORD thread=GetCurrentThreadId();

@@ -6521,7 +6521,7 @@
       "path": "src/lib-win32/win16-control-xaml/adapter.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c3aa55b58f4de4761b92bf8c2903109b1bbea3ced8a5bb769a51438e05edc779",
+      "sha256": "34399956478ae452ec58c77b51bfc9d9cd7cb290a928e4177f8d2adc76048fd4",
       "disposition": "authored",
       "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate; T25 S1 RadioButton candidate; T25 S1 TextBox candidate; T25 S1 ComboBox candidate; T25 S1 ScrollBar candidate; T25 S1 ListBox candidate; T25 S1 ProgressBar candidate",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
@@ -6548,7 +6548,7 @@
       "path": "src/lib-win32/win16-control-xaml/button_style.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3254088338f3cfcd06de59f4e93c66d9fddd75adb63bf793be246b3d6a6db5c9",
+      "sha256": "acce253192e4d6e0cc0826c12a3b45012f359020ef22f06f3ae954b5daee78bd",
       "disposition": "authored",
       "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate; T25 S1 RadioButton candidate; T25 S1 TextBox candidate; T25 S1 ComboBox candidate; T25 S1 ScrollBar candidate; T25 S1 ListBox candidate; T25 S1 ProgressBar candidate",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
@@ -6674,7 +6674,7 @@
       "path": "src/lib-win32/win16-control-xaml/session.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e315dde5eac58d04547cbbd171d079e766a4408b7e302bf9ce54458eac5650db",
+      "sha256": "85d876f2c7a7273bcd8ce871985d5f19ebc830e8f00d9cc729917fbae4d402a6",
       "disposition": "authored",
       "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate; T25 S1 RadioButton candidate; T25 S1 TextBox candidate; T25 S1 ComboBox candidate; T25 S1 ScrollBar candidate; T25 S1 ListBox candidate; T25 S1 ProgressBar candidate",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
@@ -6939,6 +6939,96 @@
       "disposition": "authored",
       "review": "M0 T25 S1 ToggleButton candidate",
       "notice": "Project-authored C source; XAML state names follow platform interfaces; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/win16-control-xaml/menu_presenter_template.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e9b9dd3852ae470097be70bf7df634c055ea5ca08de854dd88ab11792ed56b0a",
+      "disposition": "authored",
+      "review": "M0 T25 S1 MenuFlyoutPresenter candidate",
+      "notice": "Project-authored C source; XAML part names follow platform interfaces; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/win16-control-xaml/menu_presenter_template.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ca9fac341c9428efd20dc89b2dceecde51cdb981d0e30beb61b1229d6f8fc518",
+      "disposition": "authored",
+      "review": "M0 T25 S1 MenuFlyoutPresenter candidate",
+      "notice": "Project-authored C source; XAML part names follow platform interfaces; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/win16-control-xaml/menu_item_template.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "27986cadb14989246407f65c73fe505ce7aae227006d6895c597d849ff1ceb3e",
+      "disposition": "authored",
+      "review": "M0 T25 S1 MenuFlyoutItem candidate",
+      "notice": "Project-authored C source; XAML part names follow platform interfaces; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/win16-control-xaml/menu_item_template.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "20d34b3c351cbeb579b4e23d3db95a59117ab4ef24daaa86631f2d0f17fc8a78",
+      "disposition": "authored",
+      "review": "M0 T25 S1 MenuFlyoutItem candidate",
+      "notice": "Project-authored C source; XAML part names follow platform interfaces; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/win16-control-xaml/toggle_menu_template.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "c9a19502ac025a6e6485dce2a7fad7542e0c0f31bb6c1e1a0a66537457ea5da9",
+      "disposition": "authored",
+      "review": "M0 T25 S1 ToggleMenuFlyoutItem candidate",
+      "notice": "Project-authored C source; XAML part names follow platform interfaces; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/win16-control-xaml/toggle_menu_template.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "15312ac52ce28129daece8769733d4567e3f2fd6b1f6ac4b8f5958869748e32d",
+      "disposition": "authored",
+      "review": "M0 T25 S1 ToggleMenuFlyoutItem candidate",
+      "notice": "Project-authored C source; XAML part names follow platform interfaces; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/win16-control-xaml/submenu_template.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "40030b67f4e208ab2a78e0e9487aa03efeedb6a6093d2e5513af12967ec83719",
+      "disposition": "authored",
+      "review": "M0 T25 S1 MenuFlyoutSubItem candidate",
+      "notice": "Project-authored C source; XAML part names follow platform interfaces; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/win16-control-xaml/submenu_template.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "a881088c461804047b882624aa6beea7eb56e330e0d496046b998f54ef6c0d7d",
+      "disposition": "authored",
+      "review": "M0 T25 S1 MenuFlyoutSubItem candidate",
+      "notice": "Project-authored C source; XAML part names follow platform interfaces; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/win16-control-xaml/menu_separator_template.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "89bbf038a6f78fb8565172c3de9632b5b4186ea893a17d74b7e47f421cff37e0",
+      "disposition": "authored",
+      "review": "M0 T25 S1 MenuFlyoutSeparator candidate",
+      "notice": "Project-authored C source; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/win16-control-xaml/menu_separator_template.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "0226d3ae3f0f62d22a2e3131e7f8e6412236b0f2cf7b8a4966fc4e8109879e00",
+      "disposition": "authored",
+      "review": "M0 T25 S1 MenuFlyoutSeparator candidate",
+      "notice": "Project-authored C source; no imported artwork"
     }
   ]
 }

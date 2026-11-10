@@ -5,11 +5,11 @@
 #include <wchar.h>
 #include "ntw16s-dll/window_thread.h"
 
-typedef struct probe { DWORD pid; HMODULE module,property_module; HOOKPROC callback,property_callback; uintptr_t adapter; BOOL removed,property_ok,checkbox,radio,textbox,combo,scroll,list,progress,toggle,slider,toggle_button,existing,preexisting,remove_bridge,keep_fixture; } probe;
+typedef struct probe { DWORD pid; HMODULE module,property_module; HOOKPROC callback,property_callback; uintptr_t adapter; BOOL removed,property_ok,checkbox,radio,textbox,combo,scroll,list,progress,toggle,slider,toggle_button,menu,menu_popup,existing,preexisting,remove_bridge,keep_fixture; } probe;
 static uintptr_t send_property(HWND window,UINT message,WPARAM operation,uintptr_t adapter)
 {
     DWORD_PTR ignored=0; RemovePropW(window,L"Win16Xaml.Test.Property.Result");
-    if (!SendMessageTimeoutW(window,message,operation,(LPARAM)adapter,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,2000,&ignored)) return 0;
+    if (!SendMessageTimeoutW(window,message,operation,(LPARAM)adapter,SMTO_NORMAL|SMTO_ERRORONEXIT,5000,&ignored)) return 0;
     uintptr_t result=(uintptr_t)GetPropW(window,L"Win16Xaml.Test.Property.Result");
     RemovePropW(window,L"Win16Xaml.Test.Property.Result"); return result;
 }
@@ -91,7 +91,7 @@ static BOOL CALLBACK visit(HWND window,LPARAM parameter)
     probe *p=(probe *)parameter; DWORD pid=0;
     DWORD thread=GetWindowThreadProcessId(window,&pid);
     if (pid!=p->pid || !thread || GetAncestor(window,GA_ROOT)!=window) return TRUE;
-    if (p->toggle_button && !IsWindowVisible(window)) return TRUE;
+    if ((p->toggle_button || p->menu || p->menu_popup) && !IsWindowVisible(window)) return TRUE;
     WCHAR name[120]={0}; GetClassNameW(window,name,ARRAYSIZE(name));
     wprintf(L"window_class=%ls visible=%d thread=%lu hwnd=0x%llX\n",name,IsWindowVisible(window),(unsigned long)thread,(unsigned long long)(uintptr_t)window);
     HHOOK hook=SetWindowsHookExW(WH_CALLWNDPROC,p->callback,p->module,thread);
@@ -106,7 +106,7 @@ static BOOL CALLBACK visit(HWND window,LPARAM parameter)
     uintptr_t before=0,after=0,fixture_attached=0;
     if (property_hook && property_message) {
         RemovePropW(window,L"Win16Xaml.Test.Property.Result");
-        if (SendMessageTimeoutW(window,property_message,p->existing?5:p->toggle_button?32:p->slider?31:p->toggle?30:p->progress?29:p->list?27:p->scroll?24:p->combo?21:p->textbox?18:p->radio?17:p->checkbox?3:1,(LPARAM)p->adapter,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,2000,&ignored))
+        if (SendMessageTimeoutW(window,property_message,p->existing?5:p->menu_popup?38:p->menu?33:p->toggle_button?32:p->slider?31:p->toggle?30:p->progress?29:p->list?27:p->scroll?24:p->combo?21:p->textbox?18:p->radio?17:p->checkbox?3:1,(LPARAM)p->adapter,(p->menu_popup?SMTO_NORMAL:SMTO_ABORTIFHUNG)|SMTO_ERRORONEXIT,p->menu_popup?8000:2000,&ignored))
             before=(uintptr_t)GetPropW(window,L"Win16Xaml.Test.Property.Result");
         RemovePropW(window,L"Win16Xaml.Test.Property.Result");
         if (p->checkbox) wprintf(L"checkbox_create_result=%llu\n",(unsigned long long)before);
@@ -132,6 +132,38 @@ static BOOL CALLBACK visit(HWND window,LPARAM parameter)
         if (p->checkbox && !p->existing) {
             fixture_attached=send_property(window,property_message,13,p->adapter);
             wprintf(L"fixture_attached=%llu\n",(unsigned long long)fixture_attached);
+            if (p->menu_popup) {
+                uintptr_t popup_source=0;
+                uintptr_t opened=send_property(window,property_message,40,0);
+                for (unsigned int i=0;opened==1 && i<150 && (uintptr_t)GetPropW(window,L"Win16Xaml.Test.PopupPhase")!=4;i++) Sleep(100);
+                if ((uintptr_t)GetPropW(window,L"Win16Xaml.Test.PopupPhase")==4) for (unsigned int i=0;i<30 && popup_source!=5;i++) {
+                    popup_source=send_property(window,property_message,39,0);
+                    if (popup_source!=5) Sleep(100);
+                }
+                wprintf(L"popup_open_scheduled=%llu popup_presenter_source=%llu\n",(unsigned long long)opened,(unsigned long long)popup_source);
+                wprintf(L"popup_phase=%llu popup_hr=0x%08lX\n",(unsigned long long)(uintptr_t)GetPropW(window,L"Win16Xaml.Test.PopupPhase"),(unsigned long)(uintptr_t)GetPropW(window,L"Win16Xaml.Test.PopupResult"));
+                RemovePropW(window,L"Win16Xaml.Test.PopupPhase");
+                RemovePropW(window,L"Win16Xaml.Test.PopupResult");
+                if (popup_source!=5) before=0;
+            }
+            if (p->menu || (p->menu_popup && before!=0)) {
+                for (unsigned int item=0;item<4;item++) {
+                    uintptr_t item_source=0;
+                    for (unsigned int i=0;i<30 && item_source!=5;i++) {
+                        Sleep(100); item_source=send_property(window,property_message,34+item,0);
+                    }
+                    wprintf(L"menu_item_%u_source=%llu\n",item,(unsigned long long)item_source);
+                    if (item_source!=5) before=0;
+                }
+            }
+            if (p->menu_popup && before!=0) {
+                for (unsigned int i=0;i<30 && before!=5;i++) {
+                    before=send_property(window,property_message,4,0);
+                    if (before!=5) Sleep(100);
+                }
+                if (fixture_attached!=2) fixture_attached=send_property(window,property_message,13,p->adapter);
+                wprintf(L"popup_fixture_attached=%llu button_source_before_remove=%llu\n",(unsigned long long)fixture_attached,(unsigned long long)before);
+            }
             if (p->combo) {
                 uintptr_t opened=send_property(window,property_message,22,0),item_source=0;
                 if (opened==1) for (unsigned int i=0;i<30 && item_source!=5;i++) {
@@ -210,7 +242,9 @@ int wmain(int argc,WCHAR **argv)
         p.toggle=argc==6 && !wcscmp(argv[5],L"--toggle");
         p.slider=argc==6 && !wcscmp(argv[5],L"--slider");
         p.toggle_button=argc==6 && !wcscmp(argv[5],L"--toggle-button");
-        p.checkbox=p.toggle_button || p.slider || p.toggle || p.existing || p.preexisting || p.radio || p.textbox || p.combo || p.scroll || p.list || p.progress || (argc==6 && !wcscmp(argv[5],L"--checkbox"));
+        p.menu_popup=argc==6 && !wcscmp(argv[5],L"--menu-popup");
+        p.menu=argc==6 && !wcscmp(argv[5],L"--menu");
+        p.checkbox=p.menu_popup || p.menu || p.toggle_button || p.slider || p.toggle || p.existing || p.preexisting || p.radio || p.textbox || p.combo || p.scroll || p.list || p.progress || (argc==6 && !wcscmp(argv[5],L"--checkbox"));
     }
     EnumWindows(visit,(LPARAM)&p);
     if (p.property_module) FreeLibrary(p.property_module);

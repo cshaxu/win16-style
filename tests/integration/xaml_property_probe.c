@@ -163,8 +163,128 @@ static BOOL children_are_collection(InstanceHandle handle)
     }
     CoTaskMemFree(sources); CoTaskMemFree(values); return found;
 }
+typedef struct test_button_flyout test_button_flyout;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_button_flyout *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_button_flyout *);
+    ULONG (STDMETHODCALLTYPE *release)(test_button_flyout *);
+    void (STDMETHODCALLTYPE *inspectable[3])(void);
+    HRESULT (STDMETHODCALLTYPE *get_flyout)(test_button_flyout *,IInspectable **);
+} test_button_flyout_vtable;
+struct test_button_flyout { const test_button_flyout_vtable *vtable; };
+static const IID test_button_flyout_iid={0x216c183d,0xd07a,0x5aa5,{0xb8,0xa4,0x03,0x00,0xa2,0x68,0x3e,0x87}};
+typedef struct test_flyout test_flyout;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_flyout *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_flyout *);
+    ULONG (STDMETHODCALLTYPE *release)(test_flyout *);
+    void (STDMETHODCALLTYPE *unused_to_open[24])(void);
+    HRESULT (STDMETHODCALLTYPE *get_open)(test_flyout *,boolean *);
+    HRESULT (STDMETHODCALLTYPE *get_xaml_root)(test_flyout *,IInspectable **);
+    void (STDMETHODCALLTYPE *unused_to_show[9])(void);
+    HRESULT (STDMETHODCALLTYPE *show_at)(test_flyout *,IInspectable *);
+    void (STDMETHODCALLTYPE *show_at_options)(void);
+    HRESULT (STDMETHODCALLTYPE *hide)(test_flyout *);
+} test_flyout_vtable;
+struct test_flyout { const test_flyout_vtable *vtable; };
+static const IID test_flyout_iid={0xbb6603bf,0x744d,0x5c31,{0xa8,0x7d,0x74,0x43,0x94,0x63,0x4d,0x77}};
+
+typedef struct test_popup_tree test_popup_tree;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_popup_tree *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_popup_tree *);
+    ULONG (STDMETHODCALLTYPE *release)(test_popup_tree *);
+    void (STDMETHODCALLTYPE *unused[12])(void);
+    HRESULT (STDMETHODCALLTYPE *get_popups)(test_popup_tree *,IInspectable *,IInspectable **);
+} test_popup_tree_vtable;
+struct test_popup_tree { const test_popup_tree_vtable *vtable; };
+typedef struct test_popup_list test_popup_list;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_popup_list *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_popup_list *);
+    ULONG (STDMETHODCALLTYPE *release)(test_popup_list *);
+    void (STDMETHODCALLTYPE *inspectable[3])(void);
+    HRESULT (STDMETHODCALLTYPE *get_at)(test_popup_list *,UINT32,IInspectable **);
+    HRESULT (STDMETHODCALLTYPE *get_size)(test_popup_list *,UINT32 *);
+} test_popup_list_vtable;
+struct test_popup_list { const test_popup_list_vtable *vtable; };
+typedef struct test_popup_child test_popup_child;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_popup_child *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_popup_child *);
+    ULONG (STDMETHODCALLTYPE *release)(test_popup_child *);
+    void (STDMETHODCALLTYPE *inspectable[3])(void);
+    HRESULT (STDMETHODCALLTYPE *get_child)(test_popup_child *,IInspectable **);
+} test_popup_child_vtable;
+struct test_popup_child { const test_popup_child_vtable *vtable; };
+
+static BOOL find_menu_presenter(IInspectable *object,unsigned int depth,void *context)
+{
+    (void)depth; IInspectable **found=context; HSTRING runtime=NULL;
+    if (SUCCEEDED(IInspectable_GetRuntimeClassName(object,&runtime)) && runtime &&
+        !wcscmp(WindowsGetStringRawBuffer(runtime,NULL),L"Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter")) {
+        *found=object; IInspectable_AddRef(object);
+    }
+    if (runtime) WindowsDeleteString(runtime);
+    return !*found;
+}
+
+static const IID popup_element_iid={0xfe08f13d,0xdc6a,0x5495,{0xad,0x44,0xc2,0xd8,0xd2,0x18,0x63,0xb0}};
+static const IID popup_tree_iid={0x5aece43c,0x7651,0x5bb5,{0x85,0x5c,0x21,0x98,0x49,0x6e,0x45,0x5e}};
+static test_flyout *fixture_flyout;
+static UINT_PTR popup_timer;
+static HRESULT popup_result;
+static HWND popup_probe_window;
+static void CALLBACK show_fixture_popup(HWND hwnd,UINT message,UINT_PTR timer,DWORD tick)
+{
+    (void)hwnd; (void)message; (void)tick;
+    KillTimer(NULL,timer); popup_timer=0;
+    SetPropW(popup_probe_window,L"Win16Xaml.Test.PopupPhase",(HANDLE)(uintptr_t)1);
+    test_button_flyout *control=NULL; IInspectable *flyout_object=NULL,*target=NULL,*root=NULL,*list=NULL;
+    test_popup_tree *tree=NULL; HSTRING name=NULL; boolean open=0; UINT32 count=0;
+    HRESULT hr=IInspectable_QueryInterface(button,&test_button_flyout_iid,(void **)&control);
+    if (SUCCEEDED(hr)) hr=control->vtable->get_flyout(control,&flyout_object);
+    if (SUCCEEDED(hr) && !flyout_object) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(flyout_object,&test_flyout_iid,(void **)&fixture_flyout);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(button,&popup_element_iid,(void **)&target);
+    if (SUCCEEDED(hr)) SetPropW(popup_probe_window,L"Win16Xaml.Test.PopupPhase",(HANDLE)(uintptr_t)2);
+    if (SUCCEEDED(hr)) hr=fixture_flyout->vtable->show_at(fixture_flyout,target);
+    if (SUCCEEDED(hr)) SetPropW(popup_probe_window,L"Win16Xaml.Test.PopupPhase",(HANDLE)(uintptr_t)3);
+    if (SUCCEEDED(hr)) hr=fixture_flyout->vtable->get_open(fixture_flyout,&open);
+    if (SUCCEEDED(hr) && !open) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=fixture_flyout->vtable->get_xaml_root(fixture_flyout,&root);
+    if (SUCCEEDED(hr) && !root) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Media.VisualTreeHelper",40,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&popup_tree_iid,(void **)&tree);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_popups(tree,root,&list);
+    if (SUCCEEDED(hr) && !list) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=((test_popup_list *)list)->vtable->get_size((test_popup_list *)list,&count);
+    for (UINT32 i=0;SUCCEEDED(hr) && i<count && !other_button;i++) {
+        IInspectable *popup=NULL,*child=NULL;
+        hr=((test_popup_list *)list)->vtable->get_at((test_popup_list *)list,i,&popup);
+        if (SUCCEEDED(hr) && !popup) hr=E_FAIL;
+        if (SUCCEEDED(hr)) hr=((test_popup_child *)popup)->vtable->get_child((test_popup_child *)popup,&child);
+        if (SUCCEEDED(hr) && child) hr=win16_xaml_visit_descendants(child,find_menu_presenter,&other_button);
+        if (child) IInspectable_Release(child);
+        if (popup) IInspectable_Release(popup);
+    }
+    if (SUCCEEDED(hr) && !other_button) hr=E_FAIL;
+    if (name) WindowsDeleteString(name);
+    if (list) IInspectable_Release(list);
+    if (tree) tree->vtable->release(tree);
+    if (root) IInspectable_Release(root);
+    if (target) IInspectable_Release(target);
+    if (flyout_object) IInspectable_Release(flyout_object);
+    if (control) control->vtable->release(control);
+    popup_result=hr;
+    SetPropW(popup_probe_window,L"Win16Xaml.Test.PopupResult",(HANDLE)(uintptr_t)(DWORD)hr);
+    SetPropW(popup_probe_window,L"Win16Xaml.Test.PopupPhase",(HANDLE)(uintptr_t)4);
+}
+
 static void clear(void)
 {
+    if (popup_timer) { KillTimer(NULL,popup_timer); popup_timer=0; }
+    if (fixture_flyout) { (void)fixture_flyout->vtable->hide(fixture_flyout); fixture_flyout->vtable->release(fixture_flyout); fixture_flyout=NULL; }
     if (fixture_window) { (void)fixture_window->vtable->close(fixture_window); fixture_window->vtable->release(fixture_window); }
     fixture_window=NULL;
     if (button) IInspectable_Release(button);
@@ -185,10 +305,10 @@ static HRESULT create_checkbox(win16_xaml_adapter *adapter,int kind)
     }
     HSTRING name=NULL; IInspectable *object=NULL,*element=NULL; test_control *control=NULL;
     boolean applied=0;
-    const WCHAR *class_name=kind==9 ? L"Microsoft.UI.Xaml.Controls.Primitives.ToggleButton" : kind==8 ? L"Microsoft.UI.Xaml.Controls.Slider" : kind==7 ? L"Microsoft.UI.Xaml.Controls.ToggleSwitch" : kind==6 ? L"Microsoft.UI.Xaml.Controls.ProgressBar" : kind==5 ? L"Microsoft.UI.Xaml.Controls.ListBox" : kind==4 ? L"Microsoft.UI.Xaml.Controls.Primitives.ScrollBar" : kind==3 ? L"Microsoft.UI.Xaml.Controls.ComboBox" : kind==2 ? L"Microsoft.UI.Xaml.Controls.TextBox" :
+    const WCHAR *class_name=kind==10 ? L"Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter" : kind==9 ? L"Microsoft.UI.Xaml.Controls.Primitives.ToggleButton" : kind==8 ? L"Microsoft.UI.Xaml.Controls.Slider" : kind==7 ? L"Microsoft.UI.Xaml.Controls.ToggleSwitch" : kind==6 ? L"Microsoft.UI.Xaml.Controls.ProgressBar" : kind==5 ? L"Microsoft.UI.Xaml.Controls.ListBox" : kind==4 ? L"Microsoft.UI.Xaml.Controls.Primitives.ScrollBar" : kind==3 ? L"Microsoft.UI.Xaml.Controls.ComboBox" : kind==2 ? L"Microsoft.UI.Xaml.Controls.TextBox" :
         kind==1 ? L"Microsoft.UI.Xaml.Controls.RadioButton" : L"Microsoft.UI.Xaml.Controls.CheckBox";
     HRESULT hr=S_OK;
-    if (kind==3 || kind==5 || kind==6 || kind==7 || kind==8 || kind==9) {
+    if (kind==3 || kind==5 || kind==6 || kind==7 || kind==8 || kind==9 || kind==10 || kind==11) {
         static const WCHAR reader_name[]=L"Microsoft.UI.Xaml.Markup.XamlReader";
         static const WCHAR markup[]=L"<ComboBox xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'><x:String>First</x:String><x:String>Second</x:String></ComboBox>";
         static const WCHAR list_markup[]=L"<ListBox xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'><x:String>First</x:String><x:String>Second</x:String></ListBox>";
@@ -196,10 +316,12 @@ static HRESULT create_checkbox(win16_xaml_adapter *adapter,int kind)
         static const WCHAR toggle_markup[]=L"<ToggleSwitch xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'/>";
         static const WCHAR slider_markup[]=L"<Slider xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'/>";
         static const WCHAR toggle_button_markup[]=L"<ToggleButton xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' Content='Test'/>";
+        static const WCHAR menu_markup[]=L"<MenuFlyoutPresenter xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><MenuFlyoutItem Text='First'/><ToggleMenuFlyoutItem Text='Toggle'/><MenuFlyoutSubItem Text='More'><MenuFlyoutItem Text='Child'/></MenuFlyoutSubItem><MenuFlyoutSeparator/></MenuFlyoutPresenter>";
+        static const WCHAR popup_markup[]=L"<Button xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' Content='Test'><Button.Flyout><MenuFlyout><MenuFlyoutItem Text='First'/><ToggleMenuFlyoutItem Text='Toggle'/><MenuFlyoutSubItem Text='More'><MenuFlyoutItem Text='Child'/></MenuFlyoutSubItem><MenuFlyoutSeparator/></MenuFlyout></Button.Flyout></Button>";
         xaml_reader *reader=NULL; HSTRING text=NULL;
         hr=WindowsCreateString(reader_name,(UINT32)(ARRAYSIZE(reader_name)-1),&name);
         if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&xaml_reader_iid,(void **)&reader);
-        const WCHAR *chosen=kind==9 ? toggle_button_markup : kind==8 ? slider_markup : kind==7 ? toggle_markup : kind==6 ? progress_markup : kind==5 ? list_markup : markup;
+        const WCHAR *chosen=kind==11 ? popup_markup : kind==10 ? menu_markup : kind==9 ? toggle_button_markup : kind==8 ? slider_markup : kind==7 ? toggle_markup : kind==6 ? progress_markup : kind==5 ? list_markup : markup;
         if (SUCCEEDED(hr)) hr=WindowsCreateString(chosen,(UINT32)lstrlenW(chosen),&text);
         if (SUCCEEDED(hr)) hr=reader->vtable->load(reader,text,&button);
         if (reader) reader->vtable->release(reader);
@@ -221,6 +343,9 @@ static HRESULT create_checkbox(win16_xaml_adapter *adapter,int kind)
     if (element) IInspectable_Release(element);
     if (object) IInspectable_Release(object);
     if (name) WindowsDeleteString(name);
+    if (SUCCEEDED(hr) && kind==11) {
+        popup_result=E_PENDING;
+    }
     if (FAILED(hr)) clear();
     return hr;
 }
@@ -289,10 +414,11 @@ __declspec(dllexport) LRESULT CALLBACK XamlPropertyProbe(int code,WPARAM wp,LPAR
                     hr=win16_xaml_button_source(service,diagnostics,button,&source,&index);
                 }
             }
-        } else if (m->wParam==3 || m->wParam==5 || m->wParam==7 || m->wParam==17 || m->wParam==18 || m->wParam==21 || m->wParam==24 || m->wParam==27 || m->wParam==29 || m->wParam==30 || m->wParam==31 || m->wParam==32) {
+        } else if (m->wParam==3 || m->wParam==5 || m->wParam==7 || m->wParam==17 || m->wParam==18 || m->wParam==21 || m->wParam==24 || m->wParam==27 || m->wParam==29 || m->wParam==30 || m->wParam==31 || m->wParam==32 || m->wParam==33 || m->wParam==38) {
             clear();
-            hr=m->wParam==7 ? create_checkbox(NULL,0) : m->wParam==3 || m->wParam==17 || m->wParam==18 || m->wParam==21 || m->wParam==24 || m->wParam==27 || m->wParam==29 || m->wParam==30 || m->wParam==31 || m->wParam==32
-                ? create_checkbox((win16_xaml_adapter *)m->lParam,m->wParam==32 ? 9 : m->wParam==31 ? 8 : m->wParam==30 ? 7 : m->wParam==29 ? 6 : m->wParam==27 ? 5 : m->wParam==24 ? 4 : m->wParam==21 ? 3 : m->wParam==18 ? 2 : m->wParam==17 ? 1 : 0)
+            if (m->wParam==38) popup_probe_window=m->hwnd;
+            hr=m->wParam==7 ? create_checkbox(NULL,0) : m->wParam==3 || m->wParam==17 || m->wParam==18 || m->wParam==21 || m->wParam==24 || m->wParam==27 || m->wParam==29 || m->wParam==30 || m->wParam==31 || m->wParam==32 || m->wParam==33 || m->wParam==38
+                ? create_checkbox((win16_xaml_adapter *)m->lParam,m->wParam==38 ? 11 : m->wParam==33 ? 10 : m->wParam==32 ? 9 : m->wParam==31 ? 8 : m->wParam==30 ? 7 : m->wParam==29 ? 6 : m->wParam==27 ? 5 : m->wParam==24 ? 4 : m->wParam==21 ? 3 : m->wParam==18 ? 2 : m->wParam==17 ? 1 : 0)
                 : create_checkbox_in_tree((win16_xaml_adapter *)m->lParam);
         } else if (m->wParam==4 && button) {
             win16_xaml_adapter *adapter=(win16_xaml_adapter *)m->lParam;
@@ -333,6 +459,18 @@ __declspec(dllexport) LRESULT CALLBACK XamlPropertyProbe(int code,WPARAM wp,LPAR
                 }
             } else if (SUCCEEDED(hr)) hr=E_FAIL;
             if (native) native->vtable->release(native);
+        } else if (m->wParam>=34 && m->wParam<=37 && button && service && diagnostics) {
+            input_element *element=NULL; item_mapping *mapping=NULL; IInspectable *item=NULL;
+            IInspectable *presenter=other_button ? other_button : button;
+            hr=IInspectable_QueryInterface(presenter,&ui_iid,(void **)&element);
+            if (SUCCEEDED(hr)) hr=element->vtable->update_layout(element);
+            if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(presenter,&item_mapping_iid,(void **)&mapping);
+            if (SUCCEEDED(hr)) hr=mapping->vtable->container_from_index(mapping,(INT32)(m->wParam-34),&item);
+            if (SUCCEEDED(hr) && !item) hr=E_FAIL;
+            if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,item,&source,&index);
+            if (item) IInspectable_Release(item);
+            if (mapping) mapping->vtable->release(mapping);
+            if (element) element->vtable->release(element);
         } else if (m->wParam==28 && button) {
             input_element *element=NULL; item_mapping *mapping=NULL;
             hr=IInspectable_QueryInterface(button,&ui_iid,(void **)&element);
@@ -355,6 +493,12 @@ __declspec(dllexport) LRESULT CALLBACK XamlPropertyProbe(int code,WPARAM wp,LPAR
             if (mapping) mapping->vtable->release(mapping);
             if (combo) combo->vtable->release(combo);
             if (element) element->vtable->release(element);
+        } else if (m->wParam==40 && button && !popup_timer) {
+            popup_timer=SetTimer(NULL,0,100,show_fixture_popup);
+            hr=popup_timer ? S_OK : HRESULT_FROM_WIN32(GetLastError());
+        } else if (m->wParam==39) {
+            hr=popup_result;
+            if (SUCCEEDED(hr) && other_button) hr=win16_xaml_button_source(service,diagnostics,other_button,&source,&index);
         } else if (m->wParam==23 && other_button && service && diagnostics) {
             hr=win16_xaml_button_source(service,diagnostics,other_button,&source,&index);
         } else if (m->wParam==19 && button) {

@@ -47,7 +47,7 @@ try {
  if(-not $HoldController -and -not $ctrl.WaitForExit(6000)){Stop-Process -Id $ctrl.Id -Force;throw 'controller timeout'}
  $success=if($DisconnectSite){'SITE_DISCONNECTED'}elseif($Session){'SESSION_STOPPED'}elseif($CheckboxParse){'CHECKBOX_OK'}elseif($RadioParse){'RADIO_OK'}elseif($TextboxParse){'TEXTBOX_OK'}elseif($ComboParse){'COMBO_OK'}elseif($ScrollParse){'SCROLL_OK'}elseif($ListParse){'LIST_OK'}elseif($ProgressParse){'PROGRESS_OK'}elseif($Parse){'PARSE_OK'}else{'RESTORED'}
  $terminal=[Threading.WaitHandle[]]@($events[$success],$events['FAILED'],$events['SITE_FAILED'])
- $terminalTimeout=if($ProgressParse -and $env:WIN16_XAML_PROGRESS_ASYNC){10000}else{4500}
+ $terminalTimeout=if($Parse -and $env:WIN16_XAML_MENU_POPUP){12000}elseif($ProgressParse -and $env:WIN16_XAML_PROGRESS_ASYNC){10000}else{4500}
  $index=[Threading.WaitHandle]::WaitAny($terminal,$terminalTimeout)
  if($WaitChain){
   $report=Join-Path $build "wct-$nonce.txt"

@@ -21,6 +21,11 @@
 #include "lib-win32/win16-control-xaml/toggle_template.h"
 #include "lib-win32/win16-control-xaml/slider_template.h"
 #include "lib-win32/win16-control-xaml/toggle_button_template.h"
+#include "lib-win32/win16-control-xaml/menu_presenter_template.h"
+#include "lib-win32/win16-control-xaml/menu_item_template.h"
+#include "lib-win32/win16-control-xaml/toggle_menu_template.h"
+#include "lib-win32/win16-control-xaml/submenu_template.h"
+#include "lib-win32/win16-control-xaml/menu_separator_template.h"
 #include "lib-win32/win16-control-xaml/button_style.h"
 #include "lib-win32/win16-control-xaml/visual_tree.h"
 #include "lib-win32/win16-control-xaml/session.h"
@@ -1828,6 +1833,8 @@ typedef struct {
     HRESULT (STDMETHODCALLTYPE *get_name)(test_shape *,HSTRING *);
     HRESULT (STDMETHODCALLTYPE *get_trust)(test_shape *,TrustLevel *);
     HRESULT (STDMETHODCALLTYPE *get_fill)(test_shape *,IInspectable **);
+    void (STDMETHODCALLTYPE *put_fill)(void);
+    HRESULT (STDMETHODCALLTYPE *get_stroke)(test_shape *,IInspectable **);
 } test_shape_vtable;
 struct test_shape { const test_shape_vtable *vtable; };
 static const IID shape_iid={0x9941aad3,0x6af2,0x5ba2,{0x90,0x85,0x85,0x06,0xd5,0xf2,0x48,0x5e}};
@@ -1842,6 +1849,20 @@ static HRESULT test_shape_color(IInspectable *shape,BYTE r,BYTE g,BYTE b)
     if (SUCCEEDED(hr) && (color.r!=r || color.g!=g || color.b!=b)) hr=E_FAIL;
     if (brush) brush->vtable->release(brush);
     if (fill) IInspectable_Release(fill);
+    if (s) s->vtable->release(s);
+    return hr;
+}
+static HRESULT test_shape_stroke(IInspectable *shape,BYTE expected)
+{
+    test_shape *s=NULL; test_brush *brush=NULL; IInspectable *stroke=NULL; test_color color={0};
+    HRESULT hr=IInspectable_QueryInterface(shape,&shape_iid,(void **)&s);
+    if (SUCCEEDED(hr)) hr=s->vtable->get_stroke(s,&stroke);
+    if (SUCCEEDED(hr) && !stroke) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(stroke,&brush_iid,(void **)&brush);
+    if (SUCCEEDED(hr)) hr=brush->vtable->get_color(brush,&color);
+    if (SUCCEEDED(hr) && (color.r!=expected || color.g!=expected || color.b!=expected)) hr=E_FAIL;
+    if (brush) brush->vtable->release(brush);
+    if (stroke) IInspectable_Release(stroke);
     if (s) s->vtable->release(s);
     return hr;
 }
@@ -2580,6 +2601,669 @@ static HRESULT test_toggle_button_candidate(reader *factory,IInspectable *style)
     return hr;
 }
 
+typedef struct test_menu_item test_menu_item;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_menu_item *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_menu_item *);
+    ULONG (STDMETHODCALLTYPE *release)(test_menu_item *);
+    void (STDMETHODCALLTYPE *inspectable[3])(void);
+    HRESULT (STDMETHODCALLTYPE *get_text)(test_menu_item *,HSTRING *);
+} test_menu_item_vtable;
+struct test_menu_item { const test_menu_item_vtable *vtable; };
+static const IID test_menu_item_iid={0x4252df5a,0x44f9,0x5ee8,{0xb1,0xcc,0x53,0xde,0x9a,0xaa,0x40,0x95}};
+
+typedef struct test_button_flyout test_button_flyout;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_button_flyout *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_button_flyout *);
+    ULONG (STDMETHODCALLTYPE *release)(test_button_flyout *);
+    void (STDMETHODCALLTYPE *inspectable[3])(void);
+    HRESULT (STDMETHODCALLTYPE *get_flyout)(test_button_flyout *,IInspectable **);
+} test_button_flyout_vtable;
+struct test_button_flyout { const test_button_flyout_vtable *vtable; };
+static const IID test_button_flyout_iid={0x216c183d,0xd07a,0x5aa5,{0xb8,0xa4,0x03,0x00,0xa2,0x68,0x3e,0x87}};
+typedef struct test_flyout test_flyout;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_flyout *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_flyout *);
+    ULONG (STDMETHODCALLTYPE *release)(test_flyout *);
+    void (STDMETHODCALLTYPE *unused_to_open[24])(void);
+    HRESULT (STDMETHODCALLTYPE *get_open)(test_flyout *,boolean *);
+    HRESULT (STDMETHODCALLTYPE *get_xaml_root)(test_flyout *,IInspectable **);
+    void (STDMETHODCALLTYPE *unused_to_show[9])(void);
+    HRESULT (STDMETHODCALLTYPE *show_at)(test_flyout *,IInspectable *);
+    void (STDMETHODCALLTYPE *show_at_options)(void);
+    HRESULT (STDMETHODCALLTYPE *hide)(test_flyout *);
+} test_flyout_vtable;
+struct test_flyout { const test_flyout_vtable *vtable; };
+static const IID test_flyout_iid={0xbb6603bf,0x744d,0x5c31,{0xa8,0x7d,0x74,0x43,0x94,0x63,0x4d,0x77}};
+
+typedef struct test_popup_tree test_popup_tree;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_popup_tree *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_popup_tree *);
+    ULONG (STDMETHODCALLTYPE *release)(test_popup_tree *);
+    void (STDMETHODCALLTYPE *unused[12])(void);
+    HRESULT (STDMETHODCALLTYPE *get_popups)(test_popup_tree *,IInspectable *,IInspectable **);
+} test_popup_tree_vtable;
+struct test_popup_tree { const test_popup_tree_vtable *vtable; };
+typedef struct test_popup_list test_popup_list;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_popup_list *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_popup_list *);
+    ULONG (STDMETHODCALLTYPE *release)(test_popup_list *);
+    void (STDMETHODCALLTYPE *inspectable[3])(void);
+    HRESULT (STDMETHODCALLTYPE *get_at)(test_popup_list *,UINT32,IInspectable **);
+    HRESULT (STDMETHODCALLTYPE *get_size)(test_popup_list *,UINT32 *);
+} test_popup_list_vtable;
+struct test_popup_list { const test_popup_list_vtable *vtable; };
+typedef struct test_popup_child test_popup_child;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_popup_child *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_popup_child *);
+    ULONG (STDMETHODCALLTYPE *release)(test_popup_child *);
+    void (STDMETHODCALLTYPE *inspectable[3])(void);
+    HRESULT (STDMETHODCALLTYPE *get_child)(test_popup_child *,IInspectable **);
+} test_popup_child_vtable;
+struct test_popup_child { const test_popup_child_vtable *vtable; };
+
+static BOOL find_menu_presenter(IInspectable *object,unsigned int depth,void *context)
+{
+    (void)depth; IInspectable **found=context; HSTRING runtime=NULL;
+    if (SUCCEEDED(IInspectable_GetRuntimeClassName(object,&runtime)) && runtime &&
+        !wcscmp(WindowsGetStringRawBuffer(runtime,NULL),L"Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter")) {
+        *found=object; IInspectable_AddRef(object);
+    }
+    if (runtime) WindowsDeleteString(runtime);
+    return !*found;
+}
+
+static HRESULT test_menu_popup(reader *factory)
+{
+    static const wchar_t markup[]=L"<Button xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' Content='Test'><Button.Flyout><MenuFlyout><MenuFlyoutItem Text='First'/><MenuFlyoutItem Text='Second'/></MenuFlyout></Button.Flyout></Button>";
+    HSTRING name=NULL; IInspectable *object=NULL,*window_object=NULL,*ui=NULL,*flyout_object=NULL;
+    test_window *window=NULL; test_button_flyout *button=NULL; test_flyout *flyout=NULL; winui_element *target=NULL;
+    HRESULT hr=WindowsCreateString(markup,(UINT32)(ARRAYSIZE(markup)-1),&name);
+    if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,name,&object);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Window",24,&name);
+    if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&window_object);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(window_object,&test_window_iid,(void **)&window);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&test_ui_iid,(void **)&ui);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_element_iid,(void **)&target);
+    if (SUCCEEDED(hr)) hr=window->vtable->put_content(window,ui);
+    if (SUCCEEDED(hr)) hr=window->vtable->activate(window);
+    if (SUCCEEDED(hr)) hr=((test_layout *)ui)->vtable->update_layout((test_layout *)ui);
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_STATES_EVENT");
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&test_button_flyout_iid,(void **)&button);
+    if (SUCCEEDED(hr)) hr=button->vtable->get_flyout(button,&flyout_object);
+    if (SUCCEEDED(hr) && !flyout_object) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(flyout_object,&test_flyout_iid,(void **)&flyout);
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_LOCAL_BINDING_EVENT");
+    if (SUCCEEDED(hr)) hr=flyout->vtable->show_at(flyout,(IInspectable *)target);
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_LOCAL_EVALUATED_EVENT");
+    boolean open=0;
+    if (SUCCEEDED(hr)) hr=flyout->vtable->get_open(flyout,&open);
+    if (SUCCEEDED(hr) && !open) hr=E_FAIL;
+    IInspectable *xaml_root=NULL,*popup_list=NULL,*popup_object=NULL,*child=NULL,*presenter=NULL;
+    test_popup_tree *popup_tree=NULL; test_popup_child *popup=NULL; win16_xaml_adapter adapter={0};
+    if (SUCCEEDED(hr)) hr=flyout->vtable->get_xaml_root(flyout,&xaml_root);
+    if (SUCCEEDED(hr) && !xaml_root) hr=E_FAIL;
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Media.VisualTreeHelper",40,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_tree_iid,(void **)&popup_tree);
+    if (SUCCEEDED(hr)) hr=popup_tree->vtable->get_popups(popup_tree,xaml_root,&popup_list);
+    UINT32 count=0;
+    if (SUCCEEDED(hr)) hr=((test_popup_list *)popup_list)->vtable->get_size((test_popup_list *)popup_list,&count);
+    for (UINT32 i=0;SUCCEEDED(hr) && i<count && !presenter;i++) {
+        hr=((test_popup_list *)popup_list)->vtable->get_at((test_popup_list *)popup_list,i,&popup_object);
+        if (SUCCEEDED(hr) && !popup_object) hr=E_FAIL;
+        if (SUCCEEDED(hr)) { popup=(test_popup_child *)popup_object; hr=popup->vtable->get_child(popup,&child); }
+        if (SUCCEEDED(hr) && child) hr=win16_xaml_visit_descendants(child,find_menu_presenter,&presenter);
+        if (child) { IInspectable_Release(child); child=NULL; }
+        if (popup_object) { IInspectable_Release(popup_object); popup_object=NULL; popup=NULL; }
+    }
+    if (SUCCEEDED(hr) && !presenter) hr=E_FAIL;
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_LOCAL_NULL_EVENT");
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    VisualElement info={0}; ParentChildRelation relation={0};
+    if (SUCCEEDED(hr)) {
+        info.Type=(BSTR)L"Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter"; relation.Parent=1;
+        hr=IXamlDiagnostics_GetHandleFromIInspectable(diagnostics,presenter,&info.Handle);
+    }
+    if (SUCCEEDED(hr)) { hr=win16_xaml_adapter_change(&adapter,relation,info,Add,NULL); if(hr==S_FALSE)hr=E_FAIL; }
+    unsigned int source=0,index=0;
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,presenter,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceLocal) hr=E_FAIL;
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_SESSION_APPLIED_EVENT");
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_stop(&adapter);
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,presenter,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceDefault) hr=E_FAIL;
+    if (adapter.session.service) (void)win16_xaml_button_set_discard(&adapter.session.buttons);
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    if (presenter) IInspectable_Release(presenter);
+    if (popup_list) IInspectable_Release(popup_list);
+    if (popup_tree) popup_tree->vtable->release(popup_tree);
+    if (xaml_root) IInspectable_Release(xaml_root);
+    if (SUCCEEDED(hr)) hr=flyout->vtable->hide(flyout);
+    if (SUCCEEDED(hr)) hr=flyout->vtable->get_open(flyout,&open);
+    if (SUCCEEDED(hr) && open) hr=E_FAIL;
+    if (flyout) flyout->vtable->release(flyout);
+    if (flyout_object) IInspectable_Release(flyout_object);
+    if (button) button->vtable->release(button);
+    if (target) target->vtable->release(target);
+    if (window) { (void)window->vtable->close(window); window->vtable->release(window); }
+    if (ui) IInspectable_Release(ui);
+    if (window_object) IInspectable_Release(window_object);
+    if (object) IInspectable_Release(object);
+    if (name) WindowsDeleteString(name);
+    return hr;
+}
+
+static reader *menu_popup_factory;
+static void CALLBACK test_menu_popup_timer(HWND window,UINT message,UINT_PTR timer,DWORD time)
+{
+    (void)window; (void)message; (void)time;
+    KillTimer(NULL,timer);
+    HRESULT hr=test_menu_popup(menu_popup_factory);
+    menu_popup_factory->vtable->release(menu_popup_factory); menu_popup_factory=NULL;
+    signal_named(SUCCEEDED(hr) ? L"WIN16_XAML_PARSE_OK_EVENT" : L"WIN16_XAML_FAILED_EVENT");
+}
+
+static HRESULT test_menu_presenter_candidate(reader *factory,IInspectable *style)
+{
+    static const wchar_t markup[]=L"<MenuFlyoutPresenter xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><MenuFlyoutItem Text='First'/><MenuFlyoutItem Text='Second'/></MenuFlyoutPresenter>";
+    HSTRING name=NULL; IInspectable *object=NULL,*window_object=NULL,*ui=NULL,*dep=NULL,*root=NULL,*scroll=NULL;
+    winui_element *element=NULL,*root_element=NULL; winui_tree *tree=NULL; test_window *window=NULL; test_control *control=NULL; test_item_mapping *mapping=NULL;
+    win16_xaml_adapter adapter={0}; VisualElement info={0}; ParentChildRelation relation={0};
+    HRESULT hr=WindowsCreateString(markup,(UINT32)(ARRAYSIZE(markup)-1),&name);
+    if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,name,&object);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Window",24,&name);
+    if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&window_object);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(window_object,&test_window_iid,(void **)&window);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&test_ui_iid,(void **)&ui);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_element_iid,(void **)&element);
+    if (SUCCEEDED(hr)) hr=window->vtable->put_content(window,ui);
+    if (SUCCEEDED(hr)) hr=window->vtable->activate(window);
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    if (SUCCEEDED(hr)) {
+        info.Type=(BSTR)L"Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter"; relation.Parent=1;
+        hr=IXamlDiagnostics_GetHandleFromIInspectable(diagnostics,object,&info.Handle);
+    }
+    if (SUCCEEDED(hr)) { hr=win16_xaml_adapter_change(&adapter,relation,info,Add,NULL); if(hr==S_FALSE)hr=E_FAIL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_control_iid,(void **)&control);
+    boolean applied=0;
+    if (SUCCEEDED(hr)) hr=control->vtable->apply_template(control,&applied);
+    if (SUCCEEDED(hr) && !applied) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=((test_layout *)ui)->vtable->update_layout((test_layout *)ui);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&item_mapping_iid,(void **)&mapping);
+    for (INT32 i=0;SUCCEEDED(hr) && i<2;i++) {
+        IInspectable *item=NULL; test_menu_item *menu_item=NULL; HSTRING text=NULL;
+        hr=mapping->vtable->container_from_index(mapping,i,&item);
+        if (SUCCEEDED(hr) && !item) hr=E_FAIL;
+        if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(item,&test_menu_item_iid,(void **)&menu_item);
+        if (SUCCEEDED(hr)) hr=menu_item->vtable->get_text(menu_item,&text);
+        if (SUCCEEDED(hr) && wcscmp(WindowsGetStringRawBuffer(text,NULL),i ? L"Second" : L"First")) hr=E_FAIL;
+        if (text) WindowsDeleteString(text);
+        if (menu_item) menu_item->vtable->release(menu_item);
+        if (item) IInspectable_Release(item);
+    }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Media.VisualTreeHelper",40,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_tree_iid,(void **)&tree);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_dependency_iid,(void **)&dep);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,0,&root);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(root,&winui_element_iid,(void **)&root_element);
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"MenuFlyoutPresenterScrollViewer",31,&name);
+    if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,name,&scroll);
+    if (SUCCEEDED(hr) && !scroll) hr=E_FAIL;
+    unsigned int source=0,index=0;
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,object,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceLocal) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_stop(&adapter);
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,object,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceDefault) hr=E_FAIL;
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    if (SUCCEEDED(hr)) hr=element->vtable->put_style(element,style);
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    if (SUCCEEDED(hr)) {
+        HRESULT observed=win16_xaml_adapter_change(&adapter,relation,info,Add,NULL);
+        if (observed!=S_FALSE) hr=E_FAIL;
+    }
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,object,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceLocal) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IVisualTreeService_ClearProperty(service,info.Handle,index);
+    if (adapter.session.service) (void)win16_xaml_button_set_discard(&adapter.session.buttons);
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    if (mapping) mapping->vtable->release(mapping);
+    if (scroll) IInspectable_Release(scroll);
+    if (root_element) root_element->vtable->release(root_element);
+    if (root) IInspectable_Release(root);
+    if (dep) IInspectable_Release(dep);
+    if (tree) tree->vtable->release(tree);
+    if (control) control->vtable->release(control);
+    if (window) { (void)window->vtable->close(window); window->vtable->release(window); }
+    if (element) element->vtable->release(element);
+    if (ui) IInspectable_Release(ui);
+    if (window_object) IInspectable_Release(window_object);
+    if (object) IInspectable_Release(object);
+    if (name) WindowsDeleteString(name);
+    return hr;
+}
+
+typedef struct test_text_block test_text_block;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_text_block *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_text_block *);
+    ULONG (STDMETHODCALLTYPE *release)(test_text_block *);
+    void (STDMETHODCALLTYPE *unused_to_foreground[15])(void);
+    HRESULT (STDMETHODCALLTYPE *get_foreground)(test_text_block *,IInspectable **);
+    void (STDMETHODCALLTYPE *unused_to_text[7])(void);
+    HRESULT (STDMETHODCALLTYPE *get_text)(test_text_block *,HSTRING *);
+} test_text_block_vtable;
+struct test_text_block { const test_text_block_vtable *vtable; };
+static const IID test_text_block_iid={0x1ac8d84f,0x392c,0x5c7e,{0x83,0xf5,0xa5,0x3e,0x3b,0xf0,0xab,0xb0}};
+
+typedef struct test_toggle_menu test_toggle_menu;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_toggle_menu *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_toggle_menu *);
+    ULONG (STDMETHODCALLTYPE *release)(test_toggle_menu *);
+    void (STDMETHODCALLTYPE *inspectable[3])(void);
+    HRESULT (STDMETHODCALLTYPE *get_checked)(test_toggle_menu *,boolean *);
+    HRESULT (STDMETHODCALLTYPE *put_checked)(test_toggle_menu *,boolean);
+} test_toggle_menu_vtable;
+struct test_toggle_menu { const test_toggle_menu_vtable *vtable; };
+static const IID test_toggle_menu_iid={0x1803f260,0x67e4,0x5bc1,{0xa6,0x3a,0x12,0x35,0x10,0x16,0x7b,0xb8}};
+
+static HRESULT test_menu_item_candidate(reader *factory,IInspectable *style)
+{
+    static const wchar_t markup[]=L"<MenuFlyoutItem xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' Text='First' KeyboardAcceleratorTextOverride='Ctrl+S'><MenuFlyoutItem.Icon><SymbolIcon Symbol='Save'/></MenuFlyoutItem.Icon></MenuFlyoutItem>";
+    static const wchar_t toggle_markup[]=L"<ToggleMenuFlyoutItem xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' Text='First' KeyboardAcceleratorTextOverride='Ctrl+S'><ToggleMenuFlyoutItem.Icon><SymbolIcon Symbol='Save'/></ToggleMenuFlyoutItem.Icon></ToggleMenuFlyoutItem>";
+    BOOL toggle_menu=GetEnvironmentVariableW(L"WIN16_XAML_TOGGLEMENU_PARSE",NULL,0)!=0;
+    HSTRING name=NULL; IInspectable *object=NULL,*window_object=NULL,*ui=NULL,*dep=NULL,*root=NULL,*label=NULL,*accelerator=NULL,*icon=NULL,*icon_value=NULL;
+    winui_element *element=NULL,*root_element=NULL; winui_tree *tree=NULL; winui_vsm *manager=NULL;
+    test_window *window=NULL; test_control *control=NULL; test_text_block *text=NULL,*shortcut=NULL; content_interface *icon_presenter=NULL; test_ui *shortcut_ui=NULL;
+    win16_xaml_adapter adapter={0}; VisualElement info={0}; ParentChildRelation relation={0};
+    const wchar_t *chosen=toggle_menu ? toggle_markup : markup;
+    HRESULT hr=WindowsCreateString(chosen,(UINT32)lstrlenW(chosen),&name);
+    if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,name,&object);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Window",24,&name);
+    if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&window_object);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(window_object,&test_window_iid,(void **)&window);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&test_ui_iid,(void **)&ui);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_element_iid,(void **)&element);
+    if (SUCCEEDED(hr)) hr=window->vtable->put_content(window,ui);
+    if (SUCCEEDED(hr)) hr=window->vtable->activate(window);
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_STATES_EVENT");
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_LOCAL_BINDING_EVENT");
+    if (SUCCEEDED(hr)) {
+        info.Type=(BSTR)(toggle_menu ? L"Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem" : L"Microsoft.UI.Xaml.Controls.MenuFlyoutItem"); relation.Parent=1;
+        hr=IXamlDiagnostics_GetHandleFromIInspectable(diagnostics,object,&info.Handle);
+    }
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_LOCAL_HANDLE_EVENT");
+    if (SUCCEEDED(hr)) { hr=win16_xaml_adapter_change(&adapter,relation,info,Add,NULL); if(hr==S_FALSE)hr=E_FAIL; }
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_LOCAL_EVALUATED_EVENT");
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_control_iid,(void **)&control);
+    boolean applied=0;
+    if (SUCCEEDED(hr)) hr=control->vtable->apply_template(control,&applied);
+    if (SUCCEEDED(hr) && !applied) hr=E_FAIL;
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_LOCAL_NULL_EVENT");
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Media.VisualTreeHelper",40,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_tree_iid,(void **)&tree);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_dependency_iid,(void **)&dep);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,0,&root);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(root,&winui_element_iid,(void **)&root_element);
+    if (SUCCEEDED(hr) && toggle_menu) {
+        IInspectable *mark=NULL; test_ui *mark_ui=NULL; test_toggle_menu *toggle=NULL; HSTRING part=NULL;
+        hr=WindowsCreateString(L"CheckGlyph",10,&part);
+        if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,part,&mark);
+        if (SUCCEEDED(hr) && !mark) hr=E_FAIL;
+        if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(mark,&test_ui_iid,(void **)&mark_ui);
+        if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&test_toggle_menu_iid,(void **)&toggle);
+        for (unsigned int i=0;SUCCEEDED(hr) && i<3;i++) {
+            boolean checked=(boolean)(i==1); double opacity=-1;
+            hr=toggle->vtable->put_checked(toggle,checked);
+            if (SUCCEEDED(hr)) hr=mark_ui->vtable->get_opacity(mark_ui,&opacity);
+            if (SUCCEEDED(hr) && opacity!=(double)checked) hr=E_FAIL;
+        }
+        if (toggle) toggle->vtable->release(toggle);
+        if (mark_ui) mark_ui->vtable->release(mark_ui);
+        if (mark) IInspectable_Release(mark);
+        if (part) WindowsDeleteString(part);
+    }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"TextBlock",9,&name);
+    if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,name,&label);
+    if (SUCCEEDED(hr) && !label) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(label,&test_text_block_iid,(void **)&text);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"KeyboardAcceleratorTextBlock",28,&name);
+    if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,name,&accelerator);
+    if (SUCCEEDED(hr) && !accelerator) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(accelerator,&test_text_block_iid,(void **)&shortcut);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(accelerator,&test_ui_iid,(void **)&shortcut_ui);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"IconContent",11,&name);
+    if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,name,&icon);
+    if (SUCCEEDED(hr) && !icon) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(icon,&winui_presenter_iid,(void **)&icon_presenter);
+    if (SUCCEEDED(hr)) hr=icon_presenter->vtable->get_content(icon_presenter,&icon_value);
+    if (SUCCEEDED(hr) && !icon_value) hr=E_FAIL;
+    if (SUCCEEDED(hr) && toggle_menu) {
+        IInspectable *mark=NULL; test_offset *mark_offset=NULL,*icon_offset=NULL; HSTRING part=NULL;
+        test_vector3 mark_position={0},icon_position={0};
+        hr=((test_layout *)ui)->vtable->update_layout((test_layout *)ui);
+        if (SUCCEEDED(hr)) hr=WindowsCreateString(L"CheckGlyph",10,&part);
+        if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,part,&mark);
+        if (SUCCEEDED(hr) && !mark) hr=E_FAIL;
+        if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(mark,&test_ui_iid,(void **)&mark_offset);
+        if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(icon,&test_ui_iid,(void **)&icon_offset);
+        if (SUCCEEDED(hr)) hr=mark_offset->vtable->get_offset(mark_offset,&mark_position);
+        if (SUCCEEDED(hr)) hr=icon_offset->vtable->get_offset(icon_offset,&icon_position);
+        if (SUCCEEDED(hr) && !(icon_position.x>mark_position.x)) hr=E_FAIL;
+        if (icon_offset) icon_offset->vtable->release(icon_offset);
+        if (mark_offset) mark_offset->vtable->release(mark_offset);
+        if (mark) IInspectable_Release(mark);
+        if (part) WindowsDeleteString(part);
+    }
+    HSTRING label_text=NULL,shortcut_text=NULL;
+    if (SUCCEEDED(hr)) hr=text->vtable->get_text(text,&label_text);
+    if (SUCCEEDED(hr)) hr=shortcut->vtable->get_text(shortcut,&shortcut_text);
+    if (SUCCEEDED(hr) && (wcscmp(WindowsGetStringRawBuffer(label_text,NULL),L"First") || wcscmp(WindowsGetStringRawBuffer(shortcut_text,NULL),L"Ctrl+S"))) hr=E_FAIL;
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.VisualStateManager",36,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_vsm_iid,(void **)&manager);
+    static const wchar_t *shortcut_states[]={L"KeyboardAcceleratorTextVisible",L"KeyboardAcceleratorTextCollapsed"};
+    for (unsigned int i=0;SUCCEEDED(hr) && i<2;i++) {
+        HSTRING state=NULL; boolean changed=0; INT32 visibility=-1;
+        hr=WindowsCreateString(shortcut_states[i],(UINT32)lstrlenW(shortcut_states[i]),&state);
+        if (SUCCEEDED(hr)) hr=manager->vtable->go_to_state(manager,(IInspectable *)control,state,0,&changed);
+        if (SUCCEEDED(hr) && !changed) hr=E_FAIL;
+        if (SUCCEEDED(hr)) hr=shortcut_ui->vtable->get_visibility(shortcut_ui,&visibility);
+        if (SUCCEEDED(hr) && visibility!=(INT32)i) hr=E_FAIL;
+        if (state) WindowsDeleteString(state);
+    }
+    static const wchar_t *states[]={L"Normal",L"PointerOver",L"Disabled"};
+    for (unsigned int i=0;SUCCEEDED(hr) && i<ARRAYSIZE(states);i++) {
+        HSTRING state=NULL; boolean changed=0; IInspectable *foreground=NULL; test_brush *brush=NULL; test_color color={0};
+        hr=WindowsCreateString(states[i],(UINT32)lstrlenW(states[i]),&state);
+        if (SUCCEEDED(hr)) hr=manager->vtable->go_to_state(manager,(IInspectable *)control,state,0,&changed);
+        if (SUCCEEDED(hr) && !changed) hr=E_FAIL;
+        if (SUCCEEDED(hr)) hr=text->vtable->get_foreground(text,&foreground);
+        if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(foreground,&brush_iid,(void **)&brush);
+        if (SUCCEEDED(hr)) hr=brush->vtable->get_color(brush,&color);
+        BYTE expected=i==0 ? 0 : i==1 ? 255 : 128;
+        if (SUCCEEDED(hr) && (color.r!=expected || color.g!=expected || color.b!=expected)) hr=E_FAIL;
+        if (SUCCEEDED(hr) && toggle_menu) {
+            IInspectable *mark=NULL; HSTRING part=NULL;
+            hr=WindowsCreateString(L"CheckGlyph",10,&part);
+            if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,part,&mark);
+            if (SUCCEEDED(hr) && !mark) hr=E_FAIL;
+            if (SUCCEEDED(hr)) hr=test_shape_stroke(mark,expected);
+            if (mark) IInspectable_Release(mark);
+            if (part) WindowsDeleteString(part);
+        }
+        if (brush) brush->vtable->release(brush);
+        if (foreground) IInspectable_Release(foreground);
+        if (state) WindowsDeleteString(state);
+    }
+    unsigned int source=0,index=0;
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,object,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceLocal) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_stop(&adapter);
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,object,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceDefault) hr=E_FAIL;
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    if (SUCCEEDED(hr)) hr=element->vtable->put_style(element,style);
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    if (SUCCEEDED(hr)) {
+        HRESULT observed=win16_xaml_adapter_change(&adapter,relation,info,Add,NULL);
+        if (observed!=S_FALSE) hr=E_FAIL;
+    }
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,object,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceLocal) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IVisualTreeService_ClearProperty(service,info.Handle,index);
+    if (adapter.session.service) (void)win16_xaml_button_set_discard(&adapter.session.buttons);
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    if (icon_value) IInspectable_Release(icon_value);
+    if (icon_presenter) icon_presenter->vtable->release(icon_presenter);
+    if (icon) IInspectable_Release(icon);
+    if (shortcut_ui) shortcut_ui->vtable->release(shortcut_ui);
+    if (shortcut_text) WindowsDeleteString(shortcut_text);
+    if (label_text) WindowsDeleteString(label_text);
+    if (shortcut) shortcut->vtable->release(shortcut);
+    if (text) text->vtable->release(text);
+    if (manager) manager->vtable->release(manager);
+    if (accelerator) IInspectable_Release(accelerator);
+    if (label) IInspectable_Release(label);
+    if (root_element) root_element->vtable->release(root_element);
+    if (root) IInspectable_Release(root);
+    if (dep) IInspectable_Release(dep);
+    if (tree) tree->vtable->release(tree);
+    if (control) control->vtable->release(control);
+    if (window) { (void)window->vtable->close(window); window->vtable->release(window); }
+    if (element) element->vtable->release(element);
+    if (ui) IInspectable_Release(ui);
+    if (window_object) IInspectable_Release(window_object);
+    if (object) IInspectable_Release(object);
+    if (name) WindowsDeleteString(name);
+    return hr;
+}
+
+typedef struct test_submenu test_submenu;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_submenu *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_submenu *);
+    ULONG (STDMETHODCALLTYPE *release)(test_submenu *);
+    void (STDMETHODCALLTYPE *inspectable[3])(void);
+    HRESULT (STDMETHODCALLTYPE *get_items)(test_submenu *,IInspectable **);
+} test_submenu_vtable;
+struct test_submenu { const test_submenu_vtable *vtable; };
+static const IID test_submenu_iid={0x6b0688c1,0x47b0,0x53b5,{0xb6,0xf9,0x5e,0xc5,0xd6,0x62,0x3b,0x84}};
+typedef struct test_vector test_vector;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_vector *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_vector *);
+    ULONG (STDMETHODCALLTYPE *release)(test_vector *);
+    void (STDMETHODCALLTYPE *inspectable[3])(void);
+    void (STDMETHODCALLTYPE *get_at)(void);
+    HRESULT (STDMETHODCALLTYPE *get_size)(test_vector *,UINT32 *);
+} test_vector_vtable;
+struct test_vector { const test_vector_vtable *vtable; };
+
+static HRESULT test_submenu_candidate(reader *factory,IInspectable *style)
+{
+    static const wchar_t markup[]=L"<MenuFlyoutSubItem xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' Text='More'><MenuFlyoutSubItem.Icon><SymbolIcon Symbol='Save'/></MenuFlyoutSubItem.Icon><MenuFlyoutItem Text='Child'/></MenuFlyoutSubItem>";
+    HSTRING name=NULL; IInspectable *object=NULL,*window_object=NULL,*ui=NULL,*items=NULL,*dep=NULL,*root=NULL,*label=NULL,*arrow=NULL,*icon=NULL,*icon_value=NULL;
+    winui_element *element=NULL,*root_element=NULL; winui_tree *tree=NULL; winui_vsm *manager=NULL; test_window *window=NULL; test_control *control=NULL; test_submenu *submenu=NULL; test_text_block *text=NULL; content_interface *icon_presenter=NULL;
+    win16_xaml_adapter adapter={0}; VisualElement info={0}; ParentChildRelation relation={0};
+    HRESULT hr=WindowsCreateString(markup,(UINT32)(ARRAYSIZE(markup)-1),&name);
+    if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,name,&object);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Window",24,&name);
+    if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&window_object);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(window_object,&test_window_iid,(void **)&window);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&test_ui_iid,(void **)&ui);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_element_iid,(void **)&element);
+    if (SUCCEEDED(hr)) hr=window->vtable->put_content(window,ui);
+    if (SUCCEEDED(hr)) hr=window->vtable->activate(window);
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    if (SUCCEEDED(hr)) {
+        info.Type=(BSTR)L"Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem"; relation.Parent=1;
+        hr=IXamlDiagnostics_GetHandleFromIInspectable(diagnostics,object,&info.Handle);
+    }
+    if (SUCCEEDED(hr)) { hr=win16_xaml_adapter_change(&adapter,relation,info,Add,NULL); if(hr==S_FALSE)hr=E_FAIL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_control_iid,(void **)&control);
+    boolean applied=0;
+    if (SUCCEEDED(hr)) hr=control->vtable->apply_template(control,&applied);
+    if (SUCCEEDED(hr) && !applied) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&test_submenu_iid,(void **)&submenu);
+    if (SUCCEEDED(hr)) hr=submenu->vtable->get_items(submenu,&items);
+    UINT32 count=0;
+    if (SUCCEEDED(hr)) hr=((test_vector *)items)->vtable->get_size((test_vector *)items,&count);
+    if (SUCCEEDED(hr) && count!=1) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Media.VisualTreeHelper",40,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_tree_iid,(void **)&tree);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_dependency_iid,(void **)&dep);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,0,&root);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(root,&winui_element_iid,(void **)&root_element);
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"TextBlock",9,&name);
+    if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,name,&label);
+    if (SUCCEEDED(hr) && !label) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(label,&test_text_block_iid,(void **)&text);
+    HSTRING value=NULL;
+    if (SUCCEEDED(hr)) hr=text->vtable->get_text(text,&value);
+    if (SUCCEEDED(hr) && wcscmp(WindowsGetStringRawBuffer(value,NULL),L"More")) hr=E_FAIL;
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"SubItemChevron",14,&name);
+    if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,name,&arrow);
+    if (SUCCEEDED(hr) && !arrow) hr=E_FAIL;
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"IconContent",11,&name);
+    if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,name,&icon);
+    if (SUCCEEDED(hr) && !icon) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(icon,&winui_presenter_iid,(void **)&icon_presenter);
+    if (SUCCEEDED(hr)) hr=icon_presenter->vtable->get_content(icon_presenter,&icon_value);
+    if (SUCCEEDED(hr) && !icon_value) hr=E_FAIL;
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.VisualStateManager",36,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_vsm_iid,(void **)&manager);
+    static const wchar_t *states[]={L"Normal",L"PointerOver",L"SubMenuOpened",L"Disabled"};
+    for (unsigned int i=0;SUCCEEDED(hr) && i<ARRAYSIZE(states);i++) {
+        HSTRING state=NULL; boolean changed=0; IInspectable *foreground=NULL; test_brush *brush=NULL; test_color color={0};
+        hr=WindowsCreateString(states[i],(UINT32)lstrlenW(states[i]),&state);
+        if (SUCCEEDED(hr)) hr=manager->vtable->go_to_state(manager,(IInspectable *)control,state,0,&changed);
+        if (SUCCEEDED(hr) && !changed) hr=E_FAIL;
+        if (SUCCEEDED(hr)) hr=text->vtable->get_foreground(text,&foreground);
+        if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(foreground,&brush_iid,(void **)&brush);
+        if (SUCCEEDED(hr)) hr=brush->vtable->get_color(brush,&color);
+        BYTE expected=i==0 ? 0 : i==3 ? 128 : 255;
+        if (SUCCEEDED(hr) && (color.r!=expected || color.g!=expected || color.b!=expected)) hr=E_FAIL;
+        if (SUCCEEDED(hr)) hr=test_shape_stroke(arrow,expected);
+        if (brush) brush->vtable->release(brush);
+        if (foreground) IInspectable_Release(foreground);
+        if (state) WindowsDeleteString(state);
+    }
+    unsigned int source=0,index=0;
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,object,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceLocal) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_stop(&adapter);
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,object,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceDefault) hr=E_FAIL;
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    if (SUCCEEDED(hr)) hr=element->vtable->put_style(element,style);
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    if (SUCCEEDED(hr)) {
+        HRESULT observed=win16_xaml_adapter_change(&adapter,relation,info,Add,NULL);
+        if (observed!=S_FALSE) hr=E_FAIL;
+    }
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,object,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceLocal) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IVisualTreeService_ClearProperty(service,info.Handle,index);
+    if (adapter.session.service) (void)win16_xaml_button_set_discard(&adapter.session.buttons);
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    if (manager) manager->vtable->release(manager);
+    if (icon_value) IInspectable_Release(icon_value);
+    if (icon_presenter) icon_presenter->vtable->release(icon_presenter);
+    if (icon) IInspectable_Release(icon);
+    if (value) WindowsDeleteString(value);
+    if (arrow) IInspectable_Release(arrow);
+    if (text) text->vtable->release(text);
+    if (label) IInspectable_Release(label);
+    if (root_element) root_element->vtable->release(root_element);
+    if (root) IInspectable_Release(root);
+    if (dep) IInspectable_Release(dep);
+    if (tree) tree->vtable->release(tree);
+    if (items) IInspectable_Release(items);
+    if (submenu) submenu->vtable->release(submenu);
+    if (control) control->vtable->release(control);
+    if (window) { (void)window->vtable->close(window); window->vtable->release(window); }
+    if (element) element->vtable->release(element);
+    if (ui) IInspectable_Release(ui);
+    if (window_object) IInspectable_Release(window_object);
+    if (object) IInspectable_Release(object);
+    if (name) WindowsDeleteString(name);
+    return hr;
+}
+
+static HRESULT test_menu_separator_candidate(reader *factory,IInspectable *style)
+{
+    static const wchar_t markup[]=L"<MenuFlyoutSeparator xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'/>";
+    HSTRING name=NULL; IInspectable *object=NULL,*window_object=NULL,*ui=NULL,*dep=NULL,*root=NULL,*line=NULL;
+    winui_element *element=NULL,*root_element=NULL; winui_tree *tree=NULL; test_window *window=NULL; test_control *control=NULL;
+    win16_xaml_adapter adapter={0}; VisualElement info={0}; ParentChildRelation relation={0};
+    HRESULT hr=WindowsCreateString(markup,(UINT32)(ARRAYSIZE(markup)-1),&name);
+    if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,name,&object);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Window",24,&name);
+    if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&window_object);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(window_object,&test_window_iid,(void **)&window);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&test_ui_iid,(void **)&ui);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_element_iid,(void **)&element);
+    if (SUCCEEDED(hr)) hr=window->vtable->put_content(window,ui);
+    if (SUCCEEDED(hr)) hr=window->vtable->activate(window);
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    if (SUCCEEDED(hr)) {
+        info.Type=(BSTR)L"Microsoft.UI.Xaml.Controls.MenuFlyoutSeparator"; relation.Parent=1;
+        hr=IXamlDiagnostics_GetHandleFromIInspectable(diagnostics,object,&info.Handle);
+    }
+    if (SUCCEEDED(hr)) { hr=win16_xaml_adapter_change(&adapter,relation,info,Add,NULL); if(hr==S_FALSE)hr=E_FAIL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_control_iid,(void **)&control);
+    boolean applied=0;
+    if (SUCCEEDED(hr)) hr=control->vtable->apply_template(control,&applied);
+    if (SUCCEEDED(hr) && !applied) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Media.VisualTreeHelper",40,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_tree_iid,(void **)&tree);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_dependency_iid,(void **)&dep);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,0,&root);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(root,&winui_element_iid,(void **)&root_element);
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"SeparatorLine",13,&name);
+    if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,name,&line);
+    if (SUCCEEDED(hr) && !line) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=test_shape_color(line,0,0,0);
+    unsigned int source=0,index=0;
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,object,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceLocal) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_stop(&adapter);
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,object,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceDefault) hr=E_FAIL;
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    if (SUCCEEDED(hr)) hr=element->vtable->put_style(element,style);
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    if (SUCCEEDED(hr)) {
+        HRESULT observed=win16_xaml_adapter_change(&adapter,relation,info,Add,NULL);
+        if (observed!=S_FALSE) hr=E_FAIL;
+    }
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,object,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceLocal) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IVisualTreeService_ClearProperty(service,info.Handle,index);
+    if (adapter.session.service) (void)win16_xaml_button_set_discard(&adapter.session.buttons);
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    if (line) IInspectable_Release(line);
+    if (root_element) root_element->vtable->release(root_element);
+    if (root) IInspectable_Release(root);
+    if (dep) IInspectable_Release(dep);
+    if (tree) tree->vtable->release(tree);
+    if (control) control->vtable->release(control);
+    if (window) { (void)window->vtable->close(window); window->vtable->release(window); }
+    if (element) element->vtable->release(element);
+    if (ui) IInspectable_Release(ui);
+    if (window_object) IInspectable_Release(window_object);
+    if (object) IInspectable_Release(object);
+    if (name) WindowsDeleteString(name);
+    return hr;
+}
+
 static void test_template_parse(void)
 {
     static const wchar_t reader_name[]=L"Microsoft.UI.Xaml.Markup.XamlReader";
@@ -2622,7 +3306,12 @@ static void test_template_parse(void)
     HSTRING name=NULL,text=NULL;
     reader *factory=NULL;
     IInspectable *style=NULL;
-    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_TOGGLEBUTTON_PARSE",NULL,0)
+    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_SEPARATOR_PARSE",NULL,0)
+        ? win16_xaml_menu_separator_template() : GetEnvironmentVariableW(L"WIN16_XAML_SUBMENU_PARSE",NULL,0)
+        ? win16_xaml_submenu_template() : GetEnvironmentVariableW(L"WIN16_XAML_TOGGLEMENU_PARSE",NULL,0)
+        ? win16_xaml_toggle_menu_template() : GetEnvironmentVariableW(L"WIN16_XAML_MENUITEM_PARSE",NULL,0)
+        ? win16_xaml_menu_item_template() : GetEnvironmentVariableW(L"WIN16_XAML_MENU_PARSE",NULL,0)
+        ? win16_xaml_menu_presenter_template() : GetEnvironmentVariableW(L"WIN16_XAML_TOGGLEBUTTON_PARSE",NULL,0)
         ? win16_xaml_toggle_button_template() : GetEnvironmentVariableW(L"WIN16_XAML_PASSWORD_PARSE",NULL,0)
         ? password_markup : GetEnvironmentVariableW(L"WIN16_XAML_SLIDER_PARSE",NULL,0)
         ? win16_xaml_slider_template() : GetEnvironmentVariableW(L"WIN16_XAML_TOGGLE_PARSE",NULL,0)
@@ -2638,6 +3327,22 @@ static void test_template_parse(void)
     if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_reader_iid,(void **)&factory);
     if (SUCCEEDED(hr)) hr=WindowsCreateString(markup,(UINT32)lstrlenW(markup),&text);
     if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,text,&style);
+    if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_SEPARATOR_PARSE",NULL,0))
+        hr=test_menu_separator_candidate(factory,style);
+    if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_SUBMENU_PARSE",NULL,0))
+        hr=test_submenu_candidate(factory,style);
+    if (SUCCEEDED(hr) && style && (GetEnvironmentVariableW(L"WIN16_XAML_MENUITEM_PARSE",NULL,0) || GetEnvironmentVariableW(L"WIN16_XAML_TOGGLEMENU_PARSE",NULL,0)))
+        hr=test_menu_item_candidate(factory,style);
+    BOOL popup=GetEnvironmentVariableW(L"WIN16_XAML_MENU_POPUP",NULL,0)!=0;
+    if (SUCCEEDED(hr) && style && popup) {
+        menu_popup_factory=factory; factory->vtable->add_ref(factory);
+        if (!SetTimer(NULL,0,100,test_menu_popup_timer)) {
+            menu_popup_factory->vtable->release(menu_popup_factory); menu_popup_factory=NULL;
+            hr=HRESULT_FROM_WIN32(GetLastError());
+        }
+    }
+    if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_MENU_PARSE",NULL,0))
+        hr=test_menu_presenter_candidate(factory,style);
     if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_TOGGLEBUTTON_PARSE",NULL,0))
         hr=test_toggle_button_candidate(factory,style);
     if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_PASSWORD_PARSE",NULL,0))
@@ -2688,7 +3393,7 @@ static void test_template_parse(void)
         if (SUCCEEDED(radio)) radio=test_radio_group();
         signal_named(SUCCEEDED(radio) ? L"WIN16_XAML_RADIO_OK_EVENT" : L"WIN16_XAML_FAILED_EVENT");
     }
-    signal_named(SUCCEEDED(hr) && style ? L"WIN16_XAML_PARSE_OK_EVENT" : L"WIN16_XAML_FAILED_EVENT");
+    if (!popup || FAILED(hr)) signal_named(SUCCEEDED(hr) && style ? L"WIN16_XAML_PARSE_OK_EVENT" : L"WIN16_XAML_FAILED_EVENT");
     if (style) IInspectable_Release(style);
     if (factory) factory->vtable->release(factory);
     if (text) WindowsDeleteString(text);

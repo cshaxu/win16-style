@@ -1,5 +1,5 @@
-param([Parameter(Mandatory=$true)][string]$BuildDirectory,[string]$PackageDirectory,[string]$CapturePath,[switch]$InspectSession,[switch]$CheckRemove,[switch]$CheckCheckbox,[switch]$CheckRadio,[switch]$CheckTextbox,[switch]$CheckCombo,[switch]$CheckScroll,[switch]$CheckList,[switch]$CheckProgress,[switch]$CheckToggle,[switch]$CheckSlider,[switch]$CheckToggleButton,[switch]$ExistingRoot,[switch]$Preexisting,[switch]$RemoveBridge,[switch]$KeepFixture)
-$CheckCheckbox=$CheckCheckbox -or $CheckRadio -or $CheckTextbox -or $CheckCombo -or $CheckScroll -or $CheckList -or $CheckProgress -or $CheckToggle -or $CheckSlider -or $CheckToggleButton
+param([Parameter(Mandatory=$true)][string]$BuildDirectory,[string]$PackageDirectory,[string]$CapturePath,[switch]$InspectSession,[switch]$CheckRemove,[switch]$CheckCheckbox,[switch]$CheckRadio,[switch]$CheckTextbox,[switch]$CheckCombo,[switch]$CheckScroll,[switch]$CheckList,[switch]$CheckProgress,[switch]$CheckToggle,[switch]$CheckSlider,[switch]$CheckToggleButton,[switch]$CheckMenu,[switch]$CheckMenuPopup,[switch]$ExistingRoot,[switch]$Preexisting,[switch]$RemoveBridge,[switch]$KeepFixture)
+$CheckCheckbox=$CheckCheckbox -or $CheckRadio -or $CheckTextbox -or $CheckCombo -or $CheckScroll -or $CheckList -or $CheckProgress -or $CheckToggle -or $CheckSlider -or $CheckToggleButton -or $CheckMenu -or $CheckMenuPopup
 $ErrorActionPreference='Stop'
 $build=(Resolve-Path -LiteralPath $BuildDirectory).Path
 $package=if($PackageDirectory){(Resolve-Path -LiteralPath $PackageDirectory).Path}else{$build}
@@ -108,7 +108,7 @@ public static class XamlMemory {
             }
             if (-not $styled -and -not $CheckRemove -and -not $CheckCheckbox) { exit 3 }
             if ($CheckRemove -or $CheckCheckbox) {
-                if ($CheckCheckbox) { $mode=if($CheckToggleButton){'--toggle-button'}elseif($CheckSlider){'--slider'}elseif($CheckToggle){'--toggle'}elseif($CheckProgress){'--progress'}elseif($CheckList){'--list'}elseif($CheckScroll){'--scroll'}elseif($CheckCombo){'--combo'}elseif($CheckTextbox){'--textbox'}elseif($CheckRadio){'--radio'}elseif($KeepFixture){'--keep-fixture'}elseif($RemoveBridge){'--no-bridge'}elseif($Preexisting){'--preexisting'}elseif($ExistingRoot){'--existing'}else{'--checkbox'}; & (Join-Path $build 'xaml-remove-window.exe') $process.Id $dll (Join-Path $build 'libxaml-property-probe.dll') $adapter $mode }
+                if ($CheckCheckbox) { $mode=if($CheckMenuPopup){'--menu-popup'}elseif($CheckMenu){'--menu'}elseif($CheckToggleButton){'--toggle-button'}elseif($CheckSlider){'--slider'}elseif($CheckToggle){'--toggle'}elseif($CheckProgress){'--progress'}elseif($CheckList){'--list'}elseif($CheckScroll){'--scroll'}elseif($CheckCombo){'--combo'}elseif($CheckTextbox){'--textbox'}elseif($CheckRadio){'--radio'}elseif($KeepFixture){'--keep-fixture'}elseif($RemoveBridge){'--no-bridge'}elseif($Preexisting){'--preexisting'}elseif($ExistingRoot){'--existing'}else{'--checkbox'}; & (Join-Path $build 'xaml-remove-window.exe') $process.Id $dll (Join-Path $build 'libxaml-property-probe.dll') $adapter $mode }
                 elseif ($styled) { & (Join-Path $build 'xaml-remove-window.exe') $process.Id $dll (Join-Path $build 'libxaml-property-probe.dll') $adapter }
                 else { & (Join-Path $build 'xaml-remove-window.exe') $process.Id $dll }
                 if ($LASTEXITCODE -ne 0) {
@@ -172,14 +172,14 @@ public static class XamlCapture {
         $current=Get-CimInstance Win32_Process -Filter "ProcessId=$($target.ProcessId)" -ErrorAction SilentlyContinue
         if ($current -and $current.CreationDate -eq $target.CreationDate -and $parent -and $current.ParentProcessId -eq $parent.ProcessId -and $current.Name -eq 'Notepad.exe') {
             $process=Get-Process -Id $target.ProcessId -ErrorAction SilentlyContinue
-            if ($process) { $null=$process.CloseMainWindow(); if (-not $process.WaitForExit(2000)) { Stop-Process -Id $process.Id -Force } }
+            if ($process) { $null=$process.CloseMainWindow(); if (-not $process.WaitForExit(2000)) { try { Stop-Process -Id $process.Id -Force } catch { if (Get-Process -Id $process.Id -ErrorAction SilentlyContinue) { throw } } } }
         }
     }
     if ($parent) {
         $current=Get-CimInstance Win32_Process -Filter "ProcessId=$($parent.ProcessId)" -ErrorAction SilentlyContinue
         if ($current -and $current.CreationDate -eq $parent.CreationDate -and $current.CommandLine -and $current.CommandLine.Contains($doc)) {
             $process=Get-Process -Id $parent.ProcessId -ErrorAction SilentlyContinue
-            if ($process) { $null=$process.CloseMainWindow(); if (-not $process.WaitForExit(2000)) { Stop-Process -Id $process.Id -Force } }
+            if ($process) { $null=$process.CloseMainWindow(); if (-not $process.WaitForExit(2000)) { try { Stop-Process -Id $process.Id -Force } catch { if (Get-Process -Id $process.Id -ErrorAction SilentlyContinue) { throw } } } }
         }
     }
     if ($launch -and -not $launch.HasExited) { Stop-Process -Id $launch.Id -Force }
