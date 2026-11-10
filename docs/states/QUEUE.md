@@ -10,7 +10,7 @@ CURRENT 是唯一活动工作权威；本文件拥有顺序，各 proposal 拥�
 | 顺序 | T 候选 | 前置完成条件 | 核心交付/任务级退出条件 |
 | --- | --- | --- | --- |
 
-当前无待准入候选。[现代桌面混合窗口适配](../proposals/modern-desktop-window-style.md)已获用户准入，活动任务与编号见CURRENT。
+当前无待准入候选。[现代桌面混合窗口适配](../proposals/modern-desktop-window-style.md)已按用户要求有限收口，证据见 CURRENT。
 
 [run16s 手动全局样式模式](../proposals/global-style-mode.md)已按用户要求准入，活动状态由CURRENT管理。 [S41 全局进程审计](../proposals/global-process-audit.md)已完成并收口，并非新增队列候选。
 

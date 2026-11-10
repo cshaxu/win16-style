@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T23 S7 已准入：盘点并验证 Paint、截图工具、设置和设备管理器，按收益修复外框问题；完成发布后等待用户验收。
+M0 T23 已按用户要求有限收口；S7 未进行用户手动验收，不声称完整交互通过。当前无已准入的活动任务；任务证据和范围见 [T23 收口](../history/M0-T23-closure.md)。
 
 本机只读清单：Paint 11.2609.401.0 为打包 FullTrustApplication，入口 PaintApp/mspaint.exe；截图工具 11.2608.41.0 为打包 FullTrustApplication，入口 SnippingTool/SnippingTool.exe；设置包入口 SystemSettings.exe；设备管理器为 System32/mmc.exe 与 devmgmt.msc。未发现相应已有进程；仅清单不证明实际样式或运行方式。登记 scratch build/t23-package/s7-inventory1，存放自有实例探针及输出，完成即清理。
 
@@ -735,7 +735,7 @@ P63 同源码双宽干净构建及 44 项实际包聚焦测试通过：启动前
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
 - Last verified remote delivery: M0 T23 S1 P4，`37d534be`；已实际下载四产品及六个源码/测试/交付文件逐字节复核。P5仅记录复核，产品不变。
-- Open task: T23；S1已验收收口，S2待准入；T22已收口。Explorer现有产品排除策略尚未改变。
+- Open task: 无；T23 已按用户要求有限收口，S7 未经手动验收；T22 已收口。
 - 下列较早 P 编号的“尚需”“未发布”等描述是当时的历史状态，当前状态以上方 Current Work 和阶段证据为准。
 - S13 P59 阶段包 `72ff492` 已双位置发布、推送并复核远端；后续仍需处理本节列出的时序、资源和线程竞态，S13/T21 均未收口。
 - S13 P37 阶段包已发布至 assets 和 O:/winnt；真实部署路径遇到 126 时，双宽已有/新建自有窗口接入及退出恢复通过。目标退出后的管理器记录可在后续窗口事件中分批回收。备用路径仍为异步接入，不能保证所有应用的首帧或全部窗口均被接管，S13/T21 保持开放。
