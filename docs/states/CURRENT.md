@@ -2,6 +2,14 @@
 
 ## Current Work
 
+T25 S1 P17 ProgressBar 阶段包已发布 assets 根目录及 O:/winnt，四文件摘要与同批包一致；双宽干净构建及13项聚焦实包回归通过，详见 [P17 记录](../history/M0-T25-S1-P17-xaml-progress.md)。实际像素、其他运行时和 x86 WinUI 未验证；提交推送与 scratch 清理待完成。
+
+T25 S1 ProgressBar 产品候选：自有 x64 控件经适配器验证数值宽度、暂停/错误状态颜色、本地样式保护与恢复；回调结束后异步采样原型及系统默认动画均观察到位移，暂停/错误切换后原型延长等待也观察到位移。标准 run16s 自有记事本动态进度条自动接入和会话清理通过；双宽核心各3项及来源检查通过。实际像素、DPI、x86 WinUI 未验证；登记 `build/t25-package/s1-progress-clean1` 双宽干净构建，交付后清理。
+
+T25 S1 ProgressBar 动画对照补充：自有 x64 控件能通过 XamlReader 创建并验证数值宽度及不确定状态透明度；异步采样原型未观察到变化。系统默认模板同条件一次返回失败，另一次仅完成首次采样后限时退出，不能据此判断原型动画是否运行。双宽探针编译通过；候选仅在测试中，未接入或发布。
+
+T25 S1 ProgressBar 测试原型：WinUI 原生激活失败，但 XamlReader 能创建自有 x64 控件；数值25→75时填充宽度增大，不确定模式指示元素不透明度为1。异步两次采样变换未观察到位移，尚不能区分动画未运行与采样无法观察合成动画；错误/暂停、动画像素、恢复和产品接入尚未验证。原型仅在测试中，未发布。参考微软实现 https://github.com/microsoft/microsoft-ui-xaml/blob/main/controls/dev/ProgressBar/ProgressBar.xaml 。
+
 T25 S1 P15 复核：提交 `aa6d7361` 已推送并核对远端 main，assets 与 O:/winnt 摘要一致；本次 clean1、package1、publish1 临时目录已清理。S1/T25 保持开放，真实交互、像素、x86 WinUI 和手动验收限制不变。
 
 T25 S1 P15 ListBox 阶段包已发布 assets 根目录及 O:/winnt，四文件摘要与同批包一致；双宽干净构建及13项聚焦实包回归通过，详见 [P15 记录](../history/M0-T25-S1-P15-xaml-list.md)。真实键鼠、多选交互、滚动、像素及 x86 WinUI 未验证；提交推送和 scratch 清理待完成。

@@ -17,6 +17,7 @@
 #include "lib-win32/win16-control-xaml/combo_template.h"
 #include "lib-win32/win16-control-xaml/scroll_template.h"
 #include "lib-win32/win16-control-xaml/list_template.h"
+#include "lib-win32/win16-control-xaml/progress_template.h"
 #include "lib-win32/win16-control-xaml/button_style.h"
 #include "lib-win32/win16-control-xaml/visual_tree.h"
 #include "lib-win32/win16-control-xaml/session.h"
@@ -1798,6 +1799,267 @@ static HRESULT test_list_candidate(reader *factory,IInspectable *style)
     return hr;
 }
 
+typedef struct test_progress test_progress;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_progress *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_progress *);
+    ULONG (STDMETHODCALLTYPE *release)(test_progress *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(test_progress *,ULONG *,IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(test_progress *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(test_progress *,TrustLevel *);
+    HRESULT (STDMETHODCALLTYPE *get_indeterminate)(test_progress *,boolean *);
+    HRESULT (STDMETHODCALLTYPE *put_indeterminate)(test_progress *,boolean);
+    HRESULT (STDMETHODCALLTYPE *get_error)(test_progress *,boolean *);
+    HRESULT (STDMETHODCALLTYPE *put_error)(test_progress *,boolean);
+    HRESULT (STDMETHODCALLTYPE *get_paused)(test_progress *,boolean *);
+    HRESULT (STDMETHODCALLTYPE *put_paused)(test_progress *,boolean);
+} test_progress_vtable;
+struct test_progress { const test_progress_vtable *vtable; };
+static const IID progress_iid={0x87555c8c,0x0aaf,0x52c1,{0x83,0x90,0x0d,0xb1,0x7f,0x40,0x43,0x8e}};
+typedef struct test_shape test_shape;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_shape *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_shape *);
+    ULONG (STDMETHODCALLTYPE *release)(test_shape *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(test_shape *,ULONG *,IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(test_shape *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(test_shape *,TrustLevel *);
+    HRESULT (STDMETHODCALLTYPE *get_fill)(test_shape *,IInspectable **);
+} test_shape_vtable;
+struct test_shape { const test_shape_vtable *vtable; };
+static const IID shape_iid={0x9941aad3,0x6af2,0x5ba2,{0x90,0x85,0x85,0x06,0xd5,0xf2,0x48,0x5e}};
+static HRESULT test_shape_color(IInspectable *shape,BYTE r,BYTE g,BYTE b)
+{
+    test_shape *s=NULL; test_brush *brush=NULL; IInspectable *fill=NULL; test_color color={0};
+    HRESULT hr=IInspectable_QueryInterface(shape,&shape_iid,(void **)&s);
+    if (SUCCEEDED(hr)) hr=s->vtable->get_fill(s,&fill);
+    if (SUCCEEDED(hr) && !fill) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(fill,&brush_iid,(void **)&brush);
+    if (SUCCEEDED(hr)) hr=brush->vtable->get_color(brush,&color);
+    if (SUCCEEDED(hr) && (color.r!=r || color.g!=g || color.b!=b)) hr=E_FAIL;
+    if (brush) brush->vtable->release(brush);
+    if (fill) IInspectable_Release(fill);
+    if (s) s->vtable->release(s);
+    return hr;
+}
+typedef struct test_transform test_transform;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_transform *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_transform *);
+    ULONG (STDMETHODCALLTYPE *release)(test_transform *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(test_transform *,ULONG *,IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(test_transform *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(test_transform *,TrustLevel *);
+    HRESULT (STDMETHODCALLTYPE *get_x)(test_transform *,double *);
+} test_transform_vtable;
+struct test_transform { const test_transform_vtable *vtable; };
+static const IID translate_iid={0xcfa21ca9,0xb79f,0x5450,{0xb4,0x59,0xa9,0x6c,0x48,0xcb,0x2c,0x8f}};
+typedef struct test_composite test_composite;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_composite *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_composite *);
+    ULONG (STDMETHODCALLTYPE *release)(test_composite *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(test_composite *,ULONG *,IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(test_composite *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(test_composite *,TrustLevel *);
+    void (STDMETHODCALLTYPE *unused[14])(void);
+    HRESULT (STDMETHODCALLTYPE *get_x)(test_composite *,double *);
+} test_composite_vtable;
+struct test_composite { const test_composite_vtable *vtable; };
+static const IID composite_iid={0x55c5f8f3,0x20e4,0x5b80,{0xa0,0x46,0xce,0x4d,0x0f,0x62,0xf2,0xfe}};
+typedef struct test_transform_owner test_transform_owner;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_transform_owner *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_transform_owner *);
+    ULONG (STDMETHODCALLTYPE *release)(test_transform_owner *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(test_transform_owner *,ULONG *,IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(test_transform_owner *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(test_transform_owner *,TrustLevel *);
+    void (STDMETHODCALLTYPE *unused[7])(void);
+    HRESULT (STDMETHODCALLTYPE *get_transform)(test_transform_owner *,IInspectable **);
+} test_transform_owner_vtable;
+struct test_transform_owner { const test_transform_owner_vtable *vtable; };
+static struct { test_window *window; test_transform *transform; double first; unsigned int phase; BOOL baseline; } progress_async;
+
+static void CALLBACK test_progress_timer(HWND window,UINT message,UINT_PTR timer,DWORD time)
+{
+    (void)window; (void)message; (void)time;
+    double current=0; HRESULT hr=progress_async.baseline
+        ? ((test_composite *)progress_async.transform)->vtable->get_x((test_composite *)progress_async.transform,&current)
+        : progress_async.transform->vtable->get_x(progress_async.transform,&current);
+    if (SUCCEEDED(hr) && !progress_async.phase) { progress_async.first=current; progress_async.phase=1; signal_named(L"WIN16_XAML_SESSION_APPLIED_EVENT"); return; }
+    if (SUCCEEDED(hr) && current==progress_async.first) hr=E_FAIL;
+    KillTimer(NULL,timer);
+    signal_named(SUCCEEDED(hr) ? L"WIN16_XAML_PROGRESS_OK_EVENT" : L"WIN16_XAML_FAILED_EVENT");
+    (void)progress_async.window->vtable->close(progress_async.window);
+    progress_async.window->vtable->release(progress_async.window);
+    if (progress_async.transform) progress_async.transform->vtable->release(progress_async.transform);
+    ZeroMemory(&progress_async,sizeof(progress_async));
+}
+
+static HRESULT test_progress_candidate(reader *factory,IInspectable *style)
+{
+    static const wchar_t class_name[]=L"Microsoft.UI.Xaml.Controls.ProgressBar";
+    HSTRING name=NULL; IInspectable *object=NULL,*window_object=NULL,*ui=NULL,*dep=NULL,*root=NULL,*indicator=NULL,*indeterminate=NULL;
+    BOOL keep_window=FALSE;
+    BOOL baseline=GetEnvironmentVariableW(L"WIN16_XAML_PROGRESS_BASELINE",NULL,0)!=0;
+    BOOL async=GetEnvironmentVariableW(L"WIN16_XAML_PROGRESS_ASYNC",NULL,0)!=0;
+    win16_xaml_adapter adapter={0}; VisualElement info={0}; ParentChildRelation relation={0};
+    unsigned int source=0,index=0;
+    test_window *window=NULL; test_control *control=NULL; test_range *range=NULL; test_progress *progress=NULL;
+    test_size *size=NULL,*indicator_size=NULL; test_ui *indeterminate_ui=NULL;
+    winui_element *element=NULL,*root_element=NULL; winui_tree *tree=NULL;
+    (void)class_name;
+    static const wchar_t markup[]=L"<ProgressBar xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'/>";
+    HSTRING markup_text=NULL;
+    HRESULT hr=WindowsCreateString(markup,(UINT32)(ARRAYSIZE(markup)-1),&markup_text);
+    if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,markup_text,&object);
+    if (markup_text) WindowsDeleteString(markup_text);
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_CONTENT_TEXT_MATCH_EVENT");
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Window",24,&name);
+    if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&window_object);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(window_object,&test_window_iid,(void **)&window);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&test_ui_iid,(void **)&ui);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_element_iid,(void **)&element);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_element_iid,(void **)&size);
+    if (SUCCEEDED(hr)) hr=size->vtable->put_width(size,200);
+    if (SUCCEEDED(hr)) hr=size->vtable->put_height(size,20);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&range_iid,(void **)&range);
+    if (SUCCEEDED(hr)) hr=range->vtable->put_maximum(range,100);
+    if (SUCCEEDED(hr)) hr=window->vtable->put_content(window,ui);
+    if (SUCCEEDED(hr)) hr=window->vtable->activate(window);
+    if (SUCCEEDED(hr) && !baseline && async) hr=element->vtable->put_style(element,style);
+    if (SUCCEEDED(hr) && !baseline && !async) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    if (SUCCEEDED(hr) && !baseline && !async) {
+        info.Type=(BSTR)class_name; relation.Parent=1;
+        hr=IXamlDiagnostics_GetHandleFromIInspectable(diagnostics,object,&info.Handle);
+    }
+    if (SUCCEEDED(hr) && !baseline && !async) { hr=win16_xaml_adapter_change(&adapter,relation,info,Add,NULL); if(hr==S_FALSE)hr=E_FAIL; }
+    if (SUCCEEDED(hr) && !baseline && !async) hr=win16_xaml_button_source(service,diagnostics,object,&source,&index);
+    if (SUCCEEDED(hr) && !baseline && !async && source!=BaseValueSourceLocal) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_control_iid,(void **)&control);
+    boolean applied=0;
+    if (SUCCEEDED(hr)) hr=control->vtable->apply_template(control,&applied);
+    if (SUCCEEDED(hr) && !applied && !baseline) hr=E_FAIL;
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_STATES_EVENT");
+    if (SUCCEEDED(hr)) hr=((test_layout *)ui)->vtable->update_layout((test_layout *)ui);
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Media.VisualTreeHelper",40,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_tree_iid,(void **)&tree);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_dependency_iid,(void **)&dep);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,0,&root);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(root,&winui_element_iid,(void **)&root_element);
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"DeterminateProgressBarIndicator",31,&name);
+    if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,name,&indicator);
+    if (SUCCEEDED(hr) && !indicator) hr=E_FAIL;
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"IndeterminateProgressBarIndicator",33,&name);
+    if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,name,&indeterminate);
+    if (SUCCEEDED(hr) && !indeterminate) hr=E_FAIL;
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_LOCAL_HANDLE_EVENT");
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(indicator,&winui_element_iid,(void **)&indicator_size);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(indeterminate,&test_ui_iid,(void **)&indeterminate_ui);
+    if (SUCCEEDED(hr)) hr=range->vtable->put_value(range,25);
+    if (SUCCEEDED(hr)) hr=((test_layout *)ui)->vtable->update_layout((test_layout *)ui);
+    double first=0,second=0,opacity=0;
+    if (SUCCEEDED(hr)) hr=indicator_size->vtable->get_width(indicator_size,&first);
+    if (SUCCEEDED(hr)) hr=range->vtable->put_value(range,75);
+    if (SUCCEEDED(hr)) hr=((test_layout *)ui)->vtable->update_layout((test_layout *)ui);
+    if (SUCCEEDED(hr)) hr=indicator_size->vtable->get_width(indicator_size,&second);
+    if (SUCCEEDED(hr) && !(first>0 && second>first)) hr=E_FAIL;
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_LOCAL_BINDING_EVENT");
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&progress_iid,(void **)&progress);
+    if (SUCCEEDED(hr) && !baseline && !async) hr=progress->vtable->put_paused(progress,1);
+    if (SUCCEEDED(hr) && !baseline && !async) hr=test_shape_color(indicator,128,128,128);
+    if (SUCCEEDED(hr) && !baseline && !async) hr=progress->vtable->put_paused(progress,0);
+    if (SUCCEEDED(hr) && !baseline && !async) hr=progress->vtable->put_error(progress,1);
+    if (SUCCEEDED(hr) && !baseline && !async) hr=test_shape_color(indicator,128,0,0);
+    if (SUCCEEDED(hr) && !baseline && !async) hr=progress->vtable->put_error(progress,0);
+    if (SUCCEEDED(hr)) hr=progress->vtable->put_indeterminate(progress,1);
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_LOCAL_EVALUATED_EVENT");
+    if (SUCCEEDED(hr)) hr=indeterminate_ui->vtable->get_opacity(indeterminate_ui,&opacity);
+    if (SUCCEEDED(hr) && opacity!=1) hr=E_FAIL;
+    BOOL transitions=!async || GetEnvironmentVariableW(L"WIN16_XAML_PROGRESS_TRANSITIONS",NULL,0)!=0;
+    if (SUCCEEDED(hr) && transitions) hr=progress->vtable->put_paused(progress,1);
+    if (SUCCEEDED(hr) && !baseline && transitions) hr=test_shape_color(indeterminate,128,128,128);
+    if (SUCCEEDED(hr) && transitions) hr=progress->vtable->put_paused(progress,0);
+    if (SUCCEEDED(hr) && transitions) hr=progress->vtable->put_error(progress,1);
+    if (SUCCEEDED(hr) && !baseline && transitions) hr=test_shape_color(indeterminate,128,0,0);
+    if (SUCCEEDED(hr) && transitions) hr=progress->vtable->put_error(progress,0);
+    if (SUCCEEDED(hr) && GetEnvironmentVariableW(L"WIN16_XAML_PROGRESS_ASYNC",NULL,0)) {
+        test_transform_owner *owner=NULL; IInspectable *transform_object=NULL; test_transform *transform=NULL;
+        hr=IInspectable_QueryInterface(indeterminate,&test_ui_iid,(void **)&owner);
+        if (SUCCEEDED(hr)) hr=owner->vtable->get_transform(owner,&transform_object);
+        if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(transform_object,baseline ? &composite_iid : &translate_iid,(void **)&transform);
+        if (SUCCEEDED(hr)) {
+            progress_async.window=window; window->vtable->add_ref(window);
+            progress_async.transform=transform; if(transform)transform->vtable->add_ref(transform);
+            progress_async.baseline=baseline;
+            if (SetTimer(NULL,0,300,test_progress_timer)) { keep_window=TRUE; signal_named(L"WIN16_XAML_LOCAL_NULL_EVENT"); }
+            else {
+                hr=HRESULT_FROM_WIN32(GetLastError());
+                progress_async.window->vtable->release(progress_async.window);
+                if(progress_async.transform)progress_async.transform->vtable->release(progress_async.transform);
+                ZeroMemory(&progress_async,sizeof(progress_async));
+            }
+        }
+        if (transform) transform->vtable->release(transform);
+        if (transform_object) IInspectable_Release(transform_object);
+        if (owner) owner->vtable->release(owner);
+    }
+    if (adapter.service) { HRESULT stopped=win16_xaml_adapter_stop(&adapter); if(SUCCEEDED(hr))hr=stopped; }
+    if (SUCCEEDED(hr) && !baseline && !async) hr=win16_xaml_button_source(service,diagnostics,object,&source,&index);
+    if (SUCCEEDED(hr) && !baseline && !async && source!=BaseValueSourceDefault) hr=E_FAIL;
+    if (adapter.session.service) (void)win16_xaml_button_set_discard(&adapter.session.buttons);
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    win16_xaml_button_style external={0};
+    if (SUCCEEDED(hr) && !baseline && !async) hr=win16_xaml_button_apply(service,diagnostics,object,&external);
+    if (SUCCEEDED(hr) && !baseline && !async) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    if (SUCCEEDED(hr) && !baseline && !async) {
+        HRESULT observed=win16_xaml_adapter_change(&adapter,relation,info,Add,NULL);
+        if (observed!=S_FALSE) hr=E_FAIL;
+    }
+    if (adapter.service) { HRESULT stopped=win16_xaml_adapter_stop(&adapter); if(SUCCEEDED(hr))hr=stopped; }
+    if (adapter.session.service) (void)win16_xaml_button_set_discard(&adapter.session.buttons);
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    if (external.button) { HRESULT removed=win16_xaml_button_remove(service,diagnostics,&external); if(SUCCEEDED(hr))hr=removed; }
+    if (external.button) win16_xaml_button_discard(&external);
+    if (progress) progress->vtable->release(progress);
+    if (indeterminate_ui) indeterminate_ui->vtable->release(indeterminate_ui);
+    if (indicator_size) indicator_size->vtable->release(indicator_size);
+    if (root_element) root_element->vtable->release(root_element);
+    if (indeterminate) IInspectable_Release(indeterminate);
+    if (indicator) IInspectable_Release(indicator);
+    if (root) IInspectable_Release(root);
+    if (dep) IInspectable_Release(dep);
+    if (tree) tree->vtable->release(tree);
+    if (range) range->vtable->release(range);
+    if (size) size->vtable->release(size);
+    if (control) control->vtable->release(control);
+    if (element) element->vtable->release(element);
+    if (window) { if(!keep_window)(void)window->vtable->close(window); window->vtable->release(window); }
+    if (ui) IInspectable_Release(ui);
+    if (window_object) IInspectable_Release(window_object);
+    if (object) IInspectable_Release(object);
+    if (name) WindowsDeleteString(name);
+    return hr;
+}
+
+static reader *progress_factory;
+static IInspectable *progress_style;
+static void CALLBACK test_progress_start_timer(HWND window,UINT message,UINT_PTR timer,DWORD time)
+{
+    (void)window; (void)message; (void)time;
+    KillTimer(NULL,timer);
+    HRESULT result=test_progress_candidate(progress_factory,progress_style);
+    IInspectable_Release(progress_style); progress_style=NULL;
+    progress_factory->vtable->release(progress_factory); progress_factory=NULL;
+    if (!GetEnvironmentVariableW(L"WIN16_XAML_PROGRESS_ASYNC",NULL,0) || FAILED(result))
+        signal_named(SUCCEEDED(result) ? L"WIN16_XAML_PROGRESS_OK_EVENT" : L"WIN16_XAML_FAILED_EVENT");
+}
+
 static void test_template_parse(void)
 {
     static const wchar_t reader_name[]=L"Microsoft.UI.Xaml.Markup.XamlReader";
@@ -1806,7 +2068,8 @@ static void test_template_parse(void)
     HSTRING name=NULL,text=NULL;
     reader *factory=NULL;
     IInspectable *style=NULL;
-    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_LIST_TEST",NULL,0)
+    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_PROGRESS_TEST",NULL,0)
+        ? win16_xaml_progress_template() : GetEnvironmentVariableW(L"WIN16_XAML_LIST_TEST",NULL,0)
         ? win16_xaml_list_template() : GetEnvironmentVariableW(L"WIN16_XAML_SCROLL_TEST",NULL,0)
         ? win16_xaml_scroll_template() : GetEnvironmentVariableW(L"WIN16_XAML_COMBO_TEST",NULL,0)
         ? win16_xaml_combo_template() : GetEnvironmentVariableW(L"WIN16_XAML_TEXTBOX_TEST",NULL,0)
@@ -1817,6 +2080,15 @@ static void test_template_parse(void)
     if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_reader_iid,(void **)&factory);
     if (SUCCEEDED(hr)) hr=WindowsCreateString(markup,(UINT32)lstrlenW(markup),&text);
     if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,text,&style);
+    if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_PROGRESS_TEST",NULL,0)) {
+        progress_factory=factory; factory->vtable->add_ref(factory);
+        progress_style=style; IInspectable_AddRef(style);
+        if (!SetTimer(NULL,0,100,test_progress_start_timer)) {
+            IInspectable_Release(progress_style); progress_style=NULL;
+            progress_factory->vtable->release(progress_factory); progress_factory=NULL;
+            signal_named(L"WIN16_XAML_FAILED_EVENT");
+        }
+    }
     if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_LIST_TEST",NULL,0)) {
         HRESULT list=test_list_candidate(factory,style);
         signal_named(SUCCEEDED(list) ? L"WIN16_XAML_LIST_OK_EVENT" : L"WIN16_XAML_FAILED_EVENT");

@@ -6521,9 +6521,9 @@
       "path": "src/lib-win32/win16-control-xaml/adapter.c",
       "source": null,
       "source_blob": null,
-      "sha256": "dc707e86f477d288cbd40058cbdfad88f71feb852963f3817838d5e8a9c338f1",
+      "sha256": "50207dd4e606bf7a0baaea1390d2886a92fe1ce61a66c19e83eab99328df5ab6",
       "disposition": "authored",
-      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate; T25 S1 RadioButton candidate; T25 S1 TextBox candidate; T25 S1 ComboBox candidate; T25 S1 ScrollBar candidate; T25 S1 ListBox candidate",
+      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate; T25 S1 RadioButton candidate; T25 S1 TextBox candidate; T25 S1 ComboBox candidate; T25 S1 ScrollBar candidate; T25 S1 ListBox candidate; T25 S1 ProgressBar candidate",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
     },
     {
@@ -6548,9 +6548,9 @@
       "path": "src/lib-win32/win16-control-xaml/button_style.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ca3877c352e0c3807e53e7406ccb8f6d287c07a51618243478b8f7120f6c5824",
+      "sha256": "1dc6c3df10fd0f340f380a66cdb2ea4a84866f758902a3607b1be123d368124b",
       "disposition": "authored",
-      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate; T25 S1 RadioButton candidate; T25 S1 TextBox candidate; T25 S1 ComboBox candidate; T25 S1 ScrollBar candidate; T25 S1 ListBox candidate",
+      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate; T25 S1 RadioButton candidate; T25 S1 TextBox candidate; T25 S1 ComboBox candidate; T25 S1 ScrollBar candidate; T25 S1 ListBox candidate; T25 S1 ProgressBar candidate",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
     },
     {
@@ -6674,9 +6674,9 @@
       "path": "src/lib-win32/win16-control-xaml/session.c",
       "source": null,
       "source_blob": null,
-      "sha256": "37662546c9bd84f5ec556eba11e63054a92869b10c047885a0f8de05b0234edc",
+      "sha256": "2d7097dfea47b2debf17ac8b096d388d9430796f34ed73863de2200e749bac4e",
       "disposition": "authored",
-      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate; T25 S1 RadioButton candidate; T25 S1 TextBox candidate; T25 S1 ComboBox candidate; T25 S1 ScrollBar candidate; T25 S1 ListBox candidate",
+      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate; T25 S1 RadioButton candidate; T25 S1 TextBox candidate; T25 S1 ComboBox candidate; T25 S1 ScrollBar candidate; T25 S1 ListBox candidate; T25 S1 ProgressBar candidate",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
     },
     {
@@ -6867,6 +6867,24 @@
       "disposition": "authored",
       "review": "M0 T25 S1 ListBox candidate",
       "notice": "Project-authored C source; XAML template part names follow platform interfaces; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/win16-control-xaml/progress_template.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "481730d3a53507624ebfda00caee361c848451374dd9b3d3ca2de11e7ba9110f",
+      "disposition": "authored",
+      "review": "M0 T25 S1 ProgressBar candidate",
+      "notice": "Project-authored C source; XAML part names and template settings follow platform interfaces; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/win16-control-xaml/progress_template.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "88437af9686224ef875a275caef6a9aadc73b83e8a04a2ae954cb09e0ad65c3f",
+      "disposition": "authored",
+      "review": "M0 T25 S1 ProgressBar candidate",
+      "notice": "Project-authored C source; XAML part names and template settings follow platform interfaces; no imported artwork"
     }
   ]
 }
