@@ -2,6 +2,8 @@
 
 ## Current Work
 
+T25 S1 P28 复核：菜单阶段提交 `bf882fe3` 已推送并核对远端 main，assets 与 O:/winnt 同批四文件摘要一致；本次 clean1、package1、publish1 scratch 已清理。S1/T25 保持开放，真实输入、命令、像素及 x86 WinUI 未覆盖。
+
 T25 S1 P27 菜单阶段包已发布 assets 与 O:/winnt，双宽干净构建、13项聚焦包回归、同快照五类对象对照及标准启动真实弹出来源对照通过，详见 [P27记录](../history/M0-T25-S1-P27-xaml-menu.md)。首轮对象测试因测试脚本留下空环境变量导致开关串扰，正确移除后通过；真实输入、命令、像素及 x86 WinUI 未验证。提交、远端复核与本次 scratch 清理待完成。
 
 T25 S1 同批菜单候选：`s1-menu-clean1` 双宽干净构建通过；同批 `s1-menu-package1` 聚焦13项通过、无跳过；标准启动真实 Popup 和四类项目的自动样式来源对照通过一次。随后同快照独立对象回归中，MenuFlyoutPresenter 通过，MenuFlyoutItem、ToggleMenuFlyoutItem、MenuFlyoutSeparator 返回失败，SubItem 超时跳过；原因待查，不能发布或把属性来源当作行为通过。候选及测试 scratch 暂保留以排查，结束后按要求清理。
