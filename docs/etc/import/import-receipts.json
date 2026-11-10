@@ -1202,9 +1202,9 @@
       "path": "src/ntw16s-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "43f3c90eee387889976fad5232fd56558aabf308fd4232bc700feaedb267ef89",
+      "sha256": "5f177d1fb9e18e9f7a326e3eb114e7027062970b9594045785c3bd711ee2366b",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL TEdit/TListBox wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T23 S1 native Notepad delivery",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL TEdit/TListBox wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T23 S1 native Notepad delivery; M0 T25 S1: style selection and experimental Windows 2000 integration",
       "notice": "Project-authored, repository MIT"
     },
     {
@@ -1310,45 +1310,45 @@
       "path": "src/ntw16s-dll/injection/injection.h",
       "source": "src/nthook32-dll/hook.h",
       "source_blob": "ed368c6a8b71cda0a1a84e57a542ddf8452de1ad",
-      "sha256": "560f7e421e8ecf41de5586744292653eee88b40b9b3ff7feb7f76ffea64506cb",
+      "sha256": "e1852dd53b97143bcb8bb43702592fb5ed5346ec06e0f1eea67b478409728e35",
       "disposition": "adapt",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T21 S13 global session propagation policy; T24 S1 directly use process-image interface",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T21 S13 global session propagation policy; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
       "path": "src/ntw16s-dll/injection/context.c",
       "source": "src/nthook32-dll/context.cpp",
       "source_blob": "f435db72a3475ef34d921a57d1632d6990d407af",
-      "sha256": "6ab16015b976f0b9d7de9e00f18b261614469554035f1b2c6049d9ff0af41533",
+      "sha256": "57fe57f762ec3ea0218dd5b161d72979ae739014133a57d92a917b10bf3d8217",
       "disposition": "adapt",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T21 S13 global session propagation policy",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T21 S13 global session propagation policy; M0 T25 S1: style selection and experimental Windows 2000 integration",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
       "path": "src/ntw16s-dll/injection/installer.c",
       "source": "src/nthook32-dll/installer.cpp",
       "source_blob": "84e78935b3079089569b9167eaed994df3220ebd",
-      "sha256": "ebdd7d56bddecfcc22896fdf2c100e121d32af5c55d6884ff852c40ebe015115",
+      "sha256": "8ff6ed60d1d53f4e08b026cd234d9ae7972140b65bfcfed5b07a3370709d3caa",
       "disposition": "adapt",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified session stop semantics; T21 S28 image operations extracted to process-image; T24 S1 directly use process-image interface",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified session stop semantics; T21 S28 image operations extracted to process-image; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
       "path": "src/run16s-exe/main.c",
       "source": null,
       "source_blob": null,
-      "sha256": "cbca50526c833995dac8117b8615f7a1af276a07d712d38919b85c128012b8ea",
+      "sha256": "c057bf34247b2fd2a968ea0308820435871069cb105ca9a278da2bcac1c7c405",
       "disposition": "authored",
-      "review": "T21 S36 process launch source and launcher ownership; see fixed source record; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained; T23 S4 console and Terminal window adaptation and native tests; T24 S1 directly use process-image interface",
+      "review": "T21 S36 process launch source and launcher ownership; see fixed source record; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained; T23 S4 console and Terminal window adaptation and native tests; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration",
       "notice": "Project MIT; upstream ntvdm64 source identity recorded"
     },
     {
       "path": "src/run16s-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "59e9eb4dedeaab1fa69103b63b7ec9ea924d46eb935d74fa0ead3bee12744fed",
+      "sha256": "82582f9e81044bf6f6a00198c91973b330d0602a8c0096ed3fac93009d03ea5d",
       "disposition": "authored",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T23 S1 native Notepad delivery",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T23 S1 native Notepad delivery; M0 T25 S1: style selection and experimental Windows 2000 integration",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -1364,9 +1364,9 @@
       "path": "tests/run16s-exe/payload.c",
       "source": null,
       "source_blob": null,
-      "sha256": "5b6c3aa5ed0ed6a344a71fd47804075a6ec9f817ccd71b76164b7300c99ac339",
+      "sha256": "22db41cd661e26ce0612de0952b0a179dbb82f2407c2584df0d50d171ca2bd76",
       "disposition": "authored",
-      "review": "T3 S3 final path/CLI contract audit; UNC namespace case and actual exit/I-O cases; docs/proposals/launcher-injection.md; T21 S13 global session propagation policy",
+      "review": "T3 S3 final path/CLI contract audit; UNC namespace case and actual exit/I-O cases; docs/proposals/launcher-injection.md; T21 S13 global session propagation policy; M0 T25 S1: style selection and experimental Windows 2000 integration",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -1382,18 +1382,18 @@
       "path": "tests/run16s-exe/cli.py",
       "source": null,
       "source_blob": null,
-      "sha256": "2deb83397ee6c19dc347269616ce1cc3bb8b2490a1d807a1fa78b67b4dda725d",
+      "sha256": "443be3dc28f6cea42a6f2c47a60118c5aa07e9c25dafe4fb20cc21db50622f1e",
       "disposition": "authored",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; M0 T25 S1: style selection and experimental Windows 2000 integration",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
       "path": "src/ntw16s-dll/injection/entry.c",
       "source": "src/nthook32-dll/entry.cpp",
       "source_blob": "39504e103bf2a934721d2898b1a1a2e8b6dd2f6b",
-      "sha256": "4772c230bb167ad593e8a5294d072e6b612c8b59ebc0e12c69dadb4ae5f68c84",
+      "sha256": "67485bf75f9d2e872ceb17d9c9d0325343328528058deea9183c76b3a85f3e6b",
       "disposition": "adapt",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T20 S1 common-dialog bridge and version",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T20 S1 common-dialog bridge and version; M0 T25 S1: style selection and experimental Windows 2000 integration",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
     },
     {
@@ -1562,9 +1562,9 @@
       "path": "src/demo-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "b09a068828ca6745383a6b6906a41fd586e77bbe58ae5ec3e3130d9a4bba473a",
+      "sha256": "17073827380f68ebfeb686653c3f36abc517d9cbc99ee8fd2bd3aaa8415b11f2",
       "disposition": "authored",
-      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T23 S1 native Notepad delivery",
+      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T23 S1 native Notepad delivery; M0 T25 S1: style selection and experimental Windows 2000 integration",
       "notice": "Project-authored source per frozen W16Style README; no third-party artwork"
     },
     {
@@ -1850,9 +1850,9 @@
       "path": "src/ntw16s-dll/injection/helper.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7976f1bf16d742faf0b1e9d3ac68899d12c3ffd38e44cd8c5ab49276173d8e18",
+      "sha256": "c1a0f1efa8bb92d1ebf55b514bbbb59098fb616dc271b62cb0e0412440a58f6a",
       "disposition": "authored",
-      "review": "T6 S1 private C PE stager/OS helper or explicit native Windows manifest/import contract; see M0-T6-S1-package.md; final clean-package regression pending; T24 S1 directly use process-image interface",
+      "review": "T6 S1 private C PE stager/OS helper or explicit native Windows manifest/import contract; see M0-T6-S1-package.md; final clean-package regression pending; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration",
       "notice": "Project-authored; project MIT LICENSE"
     },
     {
@@ -1913,9 +1913,9 @@
       "path": "tests/run16s-exe/wait.py",
       "source": null,
       "source_blob": null,
-      "sha256": "87d03c16e130148651ced42ab6f5906e660f2632ed5dbec52ffa8012a5ed0997",
+      "sha256": "f8b20f3d5461698e0e2982202d8d2b4a7d64fe624096bb1c051fcd189bdc33a1",
       "disposition": "authored",
-      "review": "T6 S3 held native CUI/GUI target and actual cmd/event/console-membership wait contract; explicit same-batch DLL staging and failure stdout/stderr capture; console membership is authoritative in headless contexts with NULL console HWND; check parent liveness before membership",
+      "review": "T6 S3 held native CUI/GUI target and actual cmd/event/console-membership wait contract; explicit same-batch DLL staging and failure stdout/stderr capture; console membership is authoritative in headless contexts with NULL console HWND; check parent liveness before membership; M0 T25 S1: style selection and experimental Windows 2000 integration",
       "notice": "Project-authored C17/Python native integration fixture, MIT"
     },
     {
@@ -1958,18 +1958,18 @@
       "path": "src/run16s-exe/elevation.c",
       "source": null,
       "source_blob": null,
-      "sha256": "973b7596409d3e129149fa31fe1d8a2b8ad3397100397503b49fd0121f91f812",
+      "sha256": "f3ad7d77cadf1dc3bbaa656e156dc4d684c2972a2541e4b246f4a1bae32da5c3",
       "disposition": "authored",
-      "review": "T11 S1: project-authored C17 on-demand runas coordinator/private interface/asInvoker manifest; no third-party code copied; T21 S31 security and console extraction; T21 S32 remaining common mechanism extraction; T21 S34 returned stderr rebind to launcher",
+      "review": "T11 S1: project-authored C17 on-demand runas coordinator/private interface/asInvoker manifest; no third-party code copied; T21 S31 security and console extraction; T21 S32 remaining common mechanism extraction; T21 S34 returned stderr rebind to launcher; M0 T25 S1: style selection and experimental Windows 2000 integration",
       "notice": "Project-authored source; project MIT license"
     },
     {
       "path": "src/run16s-exe/elevation.h",
       "source": null,
       "source_blob": null,
-      "sha256": "155a58bd09deb80eafc2f2eae5df154dc411981fdf177628ca18a46b43dc9f45",
+      "sha256": "1efaf78f468b93ac71d5c9d5f8a30019e393142edc9e6e3dd922bd4ab40e88ca",
       "disposition": "authored",
-      "review": "T11 S1: project-authored C17 on-demand runas coordinator/private interface/asInvoker manifest; no third-party code copied",
+      "review": "T11 S1: project-authored C17 on-demand runas coordinator/private interface/asInvoker manifest; no third-party code copied; M0 T25 S1: style selection and experimental Windows 2000 integration",
       "notice": "Project-authored source; project MIT license"
     },
     {
@@ -6534,6 +6534,87 @@
       "disposition": "authored",
       "review": "T24 S1 remote loader path error propagation regression",
       "notice": "Project-authored C17; project MIT license"
+    },
+    {
+      "path": "src/ntw2ks-dll/button.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "a0974289571e1c263e847ca8d12ead7d3b3997de6d4678209ec577b08895d356",
+      "disposition": "authored",
+      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes",
+      "notice": "Project-authored source; no imported Windows 2000 code or artwork"
+    },
+    {
+      "path": "src/ntw2ks-dll/controls.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "c6241c817a962b809f6a9d73780f9af16f8e35b3980ab4c9cd5818ee4d166a29",
+      "disposition": "authored",
+      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes",
+      "notice": "Project-authored source; no imported Windows 2000 code or artwork"
+    },
+    {
+      "path": "src/ntw2ks-dll/dllmain.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "3e66656615ded4701a9526f3fe6c9f752e598cd4ff5484d1afeb0a84b50f98b8",
+      "disposition": "authored",
+      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes",
+      "notice": "Project-authored source; no imported Windows 2000 code or artwork"
+    },
+    {
+      "path": "src/ntw2ks-dll/ntw2ks.def",
+      "source": null,
+      "source_blob": null,
+      "sha256": "36f7d68712e417ca3bf9ad994df9ea98074f6c1b2f9f6590b2eaf644dd4e9acf",
+      "disposition": "authored",
+      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes",
+      "notice": "Project-authored source; no imported Windows 2000 code or artwork"
+    },
+    {
+      "path": "src/ntw2ks-dll/version.rc",
+      "source": null,
+      "source_blob": null,
+      "sha256": "79743210c7d1349a8fac8d25ec6519c144e4e3136006c003e457cc9efdb66ebd",
+      "disposition": "authored",
+      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes",
+      "notice": "Project-authored source; no imported Windows 2000 code or artwork"
+    },
+    {
+      "path": "tests/ntw2ks-dll/button.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "14d941be2c0efb3e9c999679e392c045fe8357c697b5b57487546f9856c939f8",
+      "disposition": "authored",
+      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes",
+      "notice": "Project-authored source; no imported Windows 2000 code or artwork"
+    },
+    {
+      "path": "tests/ntw2ks-dll/control_target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "7894787ec37767aa606efbe884e0d0fd226f185e33f7ae10386d6935db6d2e3e",
+      "disposition": "authored",
+      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes",
+      "notice": "Project-authored source; no imported Windows 2000 code or artwork"
+    },
+    {
+      "path": "tests/ntw2ks-dll/staging.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e7d0936f83e69f0bb8c906b3851e2b84477dc513e6c976728dfdace09d408696",
+      "disposition": "authored",
+      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes",
+      "notice": "Project-authored source; no imported Windows 2000 code or artwork"
+    },
+    {
+      "path": "tests/ntw2ks-dll/staging_target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "934138ebaf51d55bb231864e91cfd76520437567851a7216837ef3474a303c2a",
+      "disposition": "authored",
+      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes",
+      "notice": "Project-authored source; no imported Windows 2000 code or artwork"
     }
   ]
 }

@@ -33,10 +33,10 @@ if(!$Worker){
     return
 }
 function Package-Hashes {
-    $expected=@('demo.exe','ntw16s32.dll','ntw16s64.dll','run16s.exe')
+    $expected=@('demo.exe','ntw16s32.dll','ntw16s64.dll','ntw2ks32.dll','ntw2ks64.dll','run16s.exe')
     $files=@(Get-ChildItem -LiteralPath $Package -Force)
     if(@(Compare-Object $expected @($files.Name|Sort-Object)).Count -or
-        @($files|Where-Object { $_.PSIsContainer -or ($_.Attributes -band [IO.FileAttributes]::ReparsePoint) }).Count){throw 'Package must contain exactly four regular files'}
+        @($files|Where-Object { $_.PSIsContainer -or ($_.Attributes -band [IO.FileAttributes]::ReparsePoint) }).Count){throw 'Package must contain exactly six regular files'}
     $result=[ordered]@{}
     foreach($file in $files){$result[$file.Name]=(Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash.ToLowerInvariant()}
     return $result
@@ -63,6 +63,20 @@ try{
     $pair=@($run,$d32,$d64,(Join-Path $x86 'launch-target.exe'),(Join-Path $x64 'launch-target.exe'))
     $tree=@($run,$d32,$d64,(Join-Path $x86 'propagate-target.exe'),(Join-Path $x64 'propagate-target.exe'))
     $cases=@(
+        (Case 'ntw2ks-button-x86' (Join-Path $x86 'core-ntw2ks-button.exe') @((Join-Path $Package 'ntw2ks32.dll')) @('NTW2KS_BUTTON_OK bits=32 states=5 native_equivalent=1') 15),
+        (Case 'ntw2ks-button-x64' (Join-Path $x64 'core-ntw2ks-button.exe') @((Join-Path $Package 'ntw2ks64.dll')) @('NTW2KS_BUTTON_OK bits=64 states=5 native_equivalent=1') 15),
+        (Case 'ntw2ks-staging-x86-x86' (Join-Path $x86 'ntw2ks-staging.exe') @((Join-Path $x86 'ntw2ks-staging-target.exe'),$Package) @('NTW2KS STAGING PASS selected=win2k win16_absent=1') 20),
+        (Case 'ntw2ks-staging-x86-x64' (Join-Path $x86 'ntw2ks-staging.exe') @((Join-Path $x64 'ntw2ks-staging-target.exe'),$Package) @('NTW2KS STAGING PASS selected=win2k win16_absent=1') 20),
+        (Case 'ntw2ks-staging-x64-x86' (Join-Path $x64 'ntw2ks-staging.exe') @((Join-Path $x86 'ntw2ks-staging-target.exe'),$Package) @('NTW2KS STAGING PASS selected=win2k win16_absent=1') 20),
+        (Case 'ntw2ks-staging-x64-x64' (Join-Path $x64 'ntw2ks-staging.exe') @((Join-Path $x64 'ntw2ks-staging-target.exe'),$Package) @('NTW2KS STAGING PASS selected=win2k win16_absent=1') 20),
+        (Case 'ntw2ks-propagate-x86-x86' (Join-Path $x64 'ntw2ks-staging.exe') @((Join-Path $x86 'ntw2ks-staging-target.exe'),$Package,(Join-Path $x86 'ntw2ks-staging-target.exe')) @('NTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=1') 25),
+        (Case 'ntw2ks-propagate-x86-x64' (Join-Path $x64 'ntw2ks-staging.exe') @((Join-Path $x86 'ntw2ks-staging-target.exe'),$Package,(Join-Path $x64 'ntw2ks-staging-target.exe')) @('NTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=1') 25),
+        (Case 'ntw2ks-propagate-x64-x86' (Join-Path $x64 'ntw2ks-staging.exe') @((Join-Path $x64 'ntw2ks-staging-target.exe'),$Package,(Join-Path $x86 'ntw2ks-staging-target.exe')) @('NTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=1') 25),
+        (Case 'ntw2ks-propagate-x64-x64' (Join-Path $x64 'ntw2ks-staging.exe') @((Join-Path $x64 'ntw2ks-staging-target.exe'),$Package,(Join-Path $x64 'ntw2ks-staging-target.exe')) @('NTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=1') 25),
+        (Case 'ntw2ks-control-native-x86' (Join-Path $x86 'ntw2ks-control-target.exe') @() @('NTW2KS CONTROL theme=active') 15),
+        (Case 'ntw2ks-control-native-x64' (Join-Path $x64 'ntw2ks-control-target.exe') @() @('NTW2KS CONTROL theme=active') 15),
+        (Case 'ntw2ks-control-launch-x86' $run @('--2k','--wait',(Join-Path $x86 'ntw2ks-control-target.exe'),'--disabled') @('NTW2KS CONTROL theme=disabled') 20),
+        (Case 'ntw2ks-control-launch-x64' $run @('--2k','--wait',(Join-Path $x64 'ntw2ks-control-target.exe'),'--disabled') @('NTW2KS CONTROL theme=disabled') 20),
         (Case 'global-e2e' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-e2e.exe'),$run,(Join-Path $x86 'global-e2e-target.exe'),(Join-Path $x64 'global-e2e-target.exe')) @('GLOBAL E2E PASS old=4 new=4 restore=8 post_stop_windows=4 post_stop_children=4 stopped=1','GLOBAL HIDDEN RESTORE PASS normal=4 shown=4','GLOBAL INPUT PASS native=2 active=8 stopped=8 dpi32=','dpi64=','DIALOG_DRIVER exit=0') 35),
         (Case 'global-parent-owned' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $scratch 'parent-owned/run16s.exe')) @('GLOBAL PARENT OWNER result=0 witness=0 gone=1','DIALOG_DRIVER exit=0') 20),
         (Case 'global-start-failure' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $scratch 'start-failure/run16s.exe')) @('run16s: global startup or shutdown failed (5)','GLOBAL START WAIT FAILURE result=10 injected=1 gone=1','DIALOG_DRIVER exit=0') 20),

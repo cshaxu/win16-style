@@ -25,7 +25,8 @@ DWORD ntw16s_packet_parse(const void *data,DWORD bytes,DWORD machine,ntw16s_cont
     memcpy(&h,data,sizeof(h));
     if(h.bytes!=bytes || h.version!=1 || h.machine!=machine ||
         (machine!=IMAGE_FILE_MACHINE_I386 && machine!=IMAGE_FILE_MACHINE_AMD64) ||
-        !(h.flags&(NTW16S_POLICY_STYLE|NTW16S_POLICY_PROPAGATE)) || (h.flags&~7u) || h.reserved1 ||
+        !(h.flags&(NTW16S_POLICY_STYLE|NTW16S_POLICY_PROPAGATE)) || (h.flags&~15u) || h.reserved1 ||
+        ((h.flags&NTW16S_POLICY_WIN2K) && (h.flags&NTW16S_POLICY_GLOBAL_SESSION)) ||
         (!!(h.flags&NTW16S_POLICY_GLOBAL_SESSION)!=!!h.reserved0) ||
         h.directory_offset!=sizeof(h) || h.directory_bytes!=bytes-sizeof(h) ||
         h.directory_bytes<8 || h.directory_bytes%2)return ERROR_INVALID_DATA;
@@ -54,4 +55,15 @@ DWORD ntw16s_context_paths(ntw16s_context *context,HMODULE module)
     if(!count || count>=NTW16S_PATH_CAP)return count?ERROR_FILENAME_EXCED_RANGE:GetLastError();
     WCHAR *slash=wcsrchr(context->directory,L'\\');if(!slash)return ERROR_INVALID_NAME;
     slash[1]=0;context->flags=NTW16S_POLICY_STYLE|NTW16S_POLICY_PROPAGATE;return ERROR_SUCCESS;
+}
+DWORD ntw16s_context_library(const ntw16s_context *context,WORD machine,WCHAR *path,size_t capacity)
+{
+    if(!context || !path || !capacity || (machine!=IMAGE_FILE_MACHINE_I386 && machine!=IMAGE_FILE_MACHINE_AMD64))return ERROR_INVALID_PARAMETER;
+    size_t length=wcsnlen_s(context->directory,NTW16S_PATH_CAP);
+    if(!length || length>=NTW16S_PATH_CAP)return ERROR_INVALID_DATA;
+    const WCHAR *name=(context->flags&NTW16S_POLICY_WIN2K)?L"ntw2ks":L"ntw16s";
+    if(swprintf_s(path,capacity,L"%ls%ls%ls%u.dll",context->directory,
+        context->directory[length-1]==L'\\'?L"":L"\\",name,machine==IMAGE_FILE_MACHINE_I386?32u:64u)<0)
+        return ERROR_FILENAME_EXCED_RANGE;
+    return ERROR_SUCCESS;
 }

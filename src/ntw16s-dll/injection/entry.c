@@ -11,6 +11,7 @@ BOOL ntw16s_bootstrap(void)
     DWORD error=ntw16s_context_read(&ntw16s_process_context,&found);
     if(error){SetLastError(error);return FALSE;}
     if(!found)return TRUE;
+    if(ntw16s_process_context.flags&NTW16S_POLICY_WIN2K){SetLastError(ERROR_INVALID_DATA);return FALSE;}
     error=process_hook_stage_restore();if(error){SetLastError(error);return FALSE;}
     LONG status=(LONG)process_hook_startup_begin();
     if(status!=NO_ERROR){SetLastError(status);return FALSE;}

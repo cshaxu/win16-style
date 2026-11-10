@@ -8,7 +8,10 @@ import subprocess
 import shutil
 import sys
 
-launcher,dll32,dll64,probe32,probe64,gui=map(lambda p:Path(p).resolve(),sys.argv[1:])
+launcher,dll32,dll64,probe32,probe64,gui=map(lambda p:Path(p).resolve(),sys.argv[1:7])
+style=sys.argv[7:]
+if style not in ([],['--16']):
+    raise SystemExit('optional style must be --16')
 root=Path(os.environ['WIN16STYLE_CAPTURE_DIR'])/'wait-contract'
 root.mkdir()
 package=root/'package';package.mkdir()
@@ -29,7 +32,7 @@ for index,(probe,force,blocking) in enumerate([(probe32,False,True),(probe64,Fal
     release_name=f'Local\\Win16WaitRelease-{os.getpid()}-{index}'
     ready=k.CreateEventW(None,True,False,ready_name);release=k.CreateEventW(None,True,False,release_name)
     assert ready and release
-    line=f'"{launcher}" '+('--wait ' if force else '')+f'"{probe}" "{report}" "{ready_name}" "{release_name}"'
+    line=f'"{launcher}" '+('--16 ' if style else '')+('--wait ' if force else '')+f'"{probe}" "{report}" "{ready_name}" "{release_name}"'
     tail=f'{line} & set "code=!errorlevel!" & echo returned>"{after}" & exit /b !code!'
     command=f'"{cmd}" /d /v:on /s /c "{tail}"'
     startup=subprocess.STARTUPINFO();startup.dwFlags=subprocess.STARTF_USESHOWWINDOW;startup.wShowWindow=0

@@ -28,6 +28,14 @@ static int diagnostic(int code,DWORD error,PCWSTR phase)
 }
 int wmain(int argc,WCHAR **argv)
 {
+    BOOL explicit16=argc>=2 && !wcscmp(argv[1],L"--16");
+    BOOL win2k=argc>=2 && !wcscmp(argv[1],L"--2k");
+    if(explicit16 || win2k){++argv;--argc;}
+    if((explicit16 || win2k) && argc>=2 && (!wcscmp(argv[1],L"--16") || !wcscmp(argv[1],L"--2k"))){
+        fwprintf(stderr,L"run16s: specify at most one style\n");return 2;
+    }
+    if(win2k && argc>=2 && (!wcscmp(argv[1],L"--app") || !wcscmp(argv[1],L"--global") || !wcscmp(argv[1],L"--global-elevated")))
+        return diagnostic(10,ERROR_NOT_SUPPORTED,L"Windows 2000 style for this launch mode");
     if(argc>=2 && !wcscmp(argv[1],L"--app")){
         if(argc!=3){fwprintf(stderr,L"Usage: run16s.exe --app <AUMID>\n");return 2;}
         DWORD error=run16s_uwp_activate(argv[2],NULL);return error?diagnostic(10,error,L"UWP frame activation"):0;
@@ -69,19 +77,23 @@ int wmain(int argc,WCHAR **argv)
     WCHAR image[NTW16S_PATH_CAP];ntw16s_context context;
     STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION child={0};
     PCWSTR raw=win32_process_next_argument(GetCommandLineW());PWSTR command;
+    if(explicit16 || win2k)raw=win32_process_next_argument(raw);
     if(argc>first && !wcscmp(argv[first],L"--elevated")){
         reentered=TRUE;++first;raw=win32_process_next_argument(raw);
         if(!win32_security_is_elevated(&error))return diagnostic(9,error?error:ERROR_ACCESS_DENIED,L"elevated launcher token");
     }
     if(argc>first && !wcscmp(argv[first],L"--wait")){wait=TRUE;++first;raw=win32_process_next_argument(raw);}
     if(argc<=first || !wcscmp(argv[first],L"--help")){
-        fwprintf(argc<=first?stderr:stdout,L"Usage: run16s.exe [--wait] <application> [arguments]\n       run16s.exe --global\n       run16s.exe --app <AUMID>\nConsole targets wait by default; --wait also waits for GUI targets.\n");
+        fwprintf(argc<=first?stderr:stdout,L"Usage: run16s.exe [--16|--2k] [--wait] <application> [arguments]\n       run16s.exe --global\n       run16s.exe --app <AUMID>\n--2k is experimental: standard controls only; window frames are not yet implemented.\nConsole targets wait by default; --wait also waits for GUI targets.\n");
         return argc<=first?2:0;
     }
     DWORD length=SearchPathW(NULL,argv[first],L".exe",NTW16S_PATH_CAP,image,NULL);
     if(!length || length>=NTW16S_PATH_CAP)return diagnostic(3,length?ERROR_FILENAME_EXCED_RANGE:GetLastError(),L"target resolution");
+    if(win2k && (run16s_uwp_calculator_image(image) || run16s_explorer_default(image,win32_process_next_argument(raw)) ||
+        run16s_terminal_image(image) || run16s_console_host_image(image)))
+        return diagnostic(10,ERROR_NOT_SUPPORTED,L"Windows 2000 style for this target");
     BOOL uwp_handled=FALSE;
-    error=run16s_uwp_command(image,win32_process_next_argument(raw),wait,&uwp_handled);
+    error=win2k?ERROR_SUCCESS:run16s_uwp_command(image,win32_process_next_argument(raw),wait,&uwp_handled);
     if(error||uwp_handled)return error?diagnostic(10,error,L"UWP frame activation"):0;
     error=win32_process_image_validate_ex(image,IMAGE_FILE_MACHINE_AMD64,FALSE,&subsystem);
     if(error==ERROR_BAD_EXE_FORMAT)error=win32_process_image_validate_ex(image,IMAGE_FILE_MACHINE_I386,FALSE,&subsystem);
@@ -100,6 +112,7 @@ int wmain(int argc,WCHAR **argv)
      * targets stay asynchronous unless --wait explicitly requests otherwise. */
     wait=wait || subsystem==IMAGE_SUBSYSTEM_WINDOWS_CUI;
     error=ntw16s_context_paths(&context,NULL);if(error)return diagnostic(6,error,L"package directory");
+    if(win2k)context.flags|=NTW16S_POLICY_WIN2K;
     command=_wcsdup(raw);if(!command)return diagnostic(5,ERROR_NOT_ENOUGH_MEMORY,L"command allocation");
     if(win32_process_create(image,command,NULL,NULL,FALSE,CREATE_SUSPENDED,NULL,NULL,&startup,&child))error=ERROR_SUCCESS;
     else{error=GetLastError();if(!error)error=ERROR_GEN_FAILURE;}
@@ -109,7 +122,7 @@ int wmain(int argc,WCHAR **argv)
             DWORD token_error=0;BOOL elevated=win32_security_is_elevated(&token_error);
             if(token_error)return diagnostic(9,token_error,L"launcher token");
             if(!elevated){
-                error=run16s_elevate(image,win32_process_next_argument(raw),wait,ShellExecuteExW,&exit_code);
+                error=run16s_elevate(image,win32_process_next_argument(raw),wait,win2k,ShellExecuteExW,&exit_code);
                 if(error)return diagnostic(error==ERROR_CANCELLED?ERROR_CANCELLED:9,error,L"UAC elevation");
                 return (int)exit_code;
             }
@@ -130,12 +143,12 @@ int wmain(int argc,WCHAR **argv)
         if(attached && attached!=ERROR_NOT_FOUND)diagnostic(0,attached,L"Explorer window attachment");
         run16s_explorer_snapshot_free(folders);
     }
-    if(run16s_console_host_image(image)){
+    if(!win2k && run16s_console_host_image(image)){
         DWORD attached=run16s_console_host_attach(child.hProcess,context.directory);
         if(attached && attached!=ERROR_NOT_FOUND && attached!=ERROR_PROCESS_ABORTED)
             diagnostic(0,attached,L"console window attachment");
     }
-    else if(subsystem==IMAGE_SUBSYSTEM_WINDOWS_CUI){
+    else if(!win2k && subsystem==IMAGE_SUBSYSTEM_WINDOWS_CUI){
         DWORD attached=run16s_console_host_attach_current(context.directory);
         if(attached && attached!=ERROR_NOT_FOUND)
             diagnostic(0,attached,L"terminal window attachment");

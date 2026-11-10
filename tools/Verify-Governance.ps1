@@ -104,13 +104,14 @@ function Test-Governance([hashtable]$Files) {
     try {
         $contract = $Files['docs/etc/product-contract.json'] | ConvertFrom-Json
         $expected = @('run16s-exe|run16s.exe|x64','ntw16s-dll|ntw16s32.dll|x86',
-            'ntw16s-dll|ntw16s64.dll|x64','demo-exe|demo.exe|x64') | Sort-Object
+            'ntw16s-dll|ntw16s64.dll|x64','ntw2ks-dll|ntw2ks32.dll|x86',
+            'ntw2ks-dll|ntw2ks64.dll|x64','demo-exe|demo.exe|x64') | Sort-Object
         $actual = @($contract.components | ForEach-Object {
             $component = $_.id
             foreach ($artifact in $_.artifacts) { "$component|$($artifact.name)|$($artifact.architecture)" }
         } | Sort-Object)
-        if ($contract.milestone -ne 0 -or @($contract.components).Count -ne 3 -or
-            @(Compare-Object $expected $actual).Count) { $issues.Add('Invalid three-component/four-artifact contract') }
+        if ($contract.milestone -ne 0 -or @($contract.components).Count -ne 4 -or
+            @(Compare-Object $expected $actual).Count) { $issues.Add('Invalid four-component/six-artifact contract') }
         if ($contract.demo.direct -ne 'native' -or $contract.demo.launched -ne 'win16' -or
             $contract.demo.links_style_dll -ne $false) { $issues.Add('Invalid demo dual-launch contract') }
         if ($contract.import_status -eq 'not-imported' -and @($Files.Keys | Where-Object { $_ -like 'src/*' }).Count) {
@@ -165,7 +166,7 @@ if ($SelfTest) {
         malformed_packet = { param($f) $f['docs/states/CURRENT.md'] = $f['docs/states/CURRENT.md'] -replace '(?m)^## M0 (Td|T[1-9][0-9]*) S[1-9][0-9]* Packet', '## M0 T0 S0 Packet' }
         missing_field = { param($f) $f['docs/states/CURRENT.md'] = $f['docs/states/CURRENT.md'] -replace 'Similar-Issue Sweep', 'Missing-Field' }
         nonzero_milestone = { param($f) $f['docs/etc/product-contract.json'] = $f['docs/etc/product-contract.json'] -replace '"milestone": 0','"milestone": 1' }
-        fifth_product = { param($f) $f['docs/etc/product-contract.json'] = $f['docs/etc/product-contract.json'] -replace '"run16s.exe"','"helper.exe"' }
+        wrong_product = { param($f) $f['docs/etc/product-contract.json'] = $f['docs/etc/product-contract.json'] -replace '"run16s.exe"','"helper.exe"' }
         demo_self_style = { param($f) $f['docs/etc/product-contract.json'] = $f['docs/etc/product-contract.json'] -replace '"links_style_dll": false','"links_style_dll": true' }
         premature_source = { param($f)
             $contract = $f['docs/etc/product-contract.json'] | ConvertFrom-Json

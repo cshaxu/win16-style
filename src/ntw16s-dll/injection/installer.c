@@ -34,8 +34,7 @@ DWORD ntw16s_install(HANDLE child,const ntw16s_context *context,ntw16s_create_w 
     header.directory_bytes=header.bytes-sizeof(header);
     memcpy(work->data,&header,sizeof(header));memcpy(work->data+sizeof(header),context->directory,header.directory_bytes);
     error=ntw16s_packet_parse(work->data,header.bytes,machine,&work->parsed);if(error)goto done;
-    if(swprintf_s(work->path,NTW16S_PATH_CAP,L"%ls%lsntw16s%u.dll",context->directory,
-        context->directory[length-1]==L'\\'?L"":L"\\",machine==IMAGE_FILE_MACHINE_I386?32u:64u)<0){error=ERROR_FILENAME_EXCED_RANGE;goto done;}
+    error=ntw16s_context_library(context,machine,work->path,NTW16S_PATH_CAP);if(error)goto done;
     error=win32_process_image_validate(work->path,machine,TRUE);if(error)goto done;
     error=import_path(work->path,work->dll,sizeof(work->dll));if(error)goto done;
     if(machine==(sizeof(void *)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386))

@@ -5,7 +5,7 @@
 typedef BOOL (WINAPI *run16s_shell_execute)(SHELLEXECUTEINFOW *);
 /* Only the launcher handles ERROR_ELEVATION_REQUIRED. CreateProcess hooks keep
  * their native failure contract; no shell/broker policy is added to the DLL. */
-DWORD run16s_elevate(PCWSTR image,PCWSTR arguments,BOOL wait,
+DWORD run16s_elevate(PCWSTR image,PCWSTR arguments,BOOL wait,BOOL win2k,
     run16s_shell_execute execute,DWORD *exit_code);
 BOOL run16s_global_interactive_console(void);
 /* Best effort: a missing writable console must not abort the tray process. */

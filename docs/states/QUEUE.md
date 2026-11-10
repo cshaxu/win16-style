@@ -10,6 +10,8 @@ CURRENT 是唯一活动工作权威；本文件拥有顺序，各 proposal 拥�
 | 顺序 | T 候选 | 前置完成条件 | 核心交付/任务级退出条件 |
 | --- | --- | --- | --- |
 
+[Windows 2000 经典风格调研与准备](../proposals/windows-2000-classic.md)已由用户准入；活动状态见 CURRENT。
+
 当前无待准入候选。[现代桌面混合窗口适配](../proposals/modern-desktop-window-style.md)已按用户要求有限收口，证据见 CURRENT。
 
 [代码质量治理](../proposals/code-quality-governance.md)已按用户决定有限收口，未完成事项见 CURRENT 及 TODO。

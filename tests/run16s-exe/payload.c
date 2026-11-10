@@ -11,6 +11,17 @@ int main(void)
     h.directory_offset=sizeof(h);h.directory_bytes=sizeof(directory);
     memcpy(raw,&h,sizeof(h));memcpy(raw+sizeof(h),directory,sizeof(directory));
     CHECK(!ntw16s_packet_parse(raw,h.bytes,machine,&context));CHECK(context.flags==1);
+    {WCHAR path[64];
+        CHECK(!ntw16s_context_library(&context,IMAGE_FILE_MACHINE_I386,path,64));CHECK(!wcscmp(path,L"C:\\Package\\ntw16s32.dll"));
+        CHECK(!ntw16s_context_library(&context,IMAGE_FILE_MACHINE_AMD64,path,64));CHECK(!wcscmp(path,L"C:\\Package\\ntw16s64.dll"));
+        memcpy(copy,raw,h.bytes);((ntw16s_packet *)copy)->flags=NTW16S_POLICY_STYLE|NTW16S_POLICY_WIN2K;
+        CHECK(!ntw16s_packet_parse(copy,h.bytes,machine,&context));
+        CHECK(!ntw16s_context_library(&context,IMAGE_FILE_MACHINE_I386,path,64));CHECK(!wcscmp(path,L"C:\\Package\\ntw2ks32.dll"));
+        CHECK(!ntw16s_context_library(&context,IMAGE_FILE_MACHINE_AMD64,path,64));CHECK(!wcscmp(path,L"C:\\Package\\ntw2ks64.dll"));
+        CHECK(ntw16s_context_library(&context,machine,path,3)==ERROR_FILENAME_EXCED_RANGE);
+        ((ntw16s_packet *)copy)->flags|=NTW16S_POLICY_GLOBAL_SESSION;((ntw16s_packet *)copy)->reserved0=1;
+        CHECK(ntw16s_packet_parse(copy,h.bytes,machine,&context)==ERROR_INVALID_DATA);
+    }
     memcpy(copy,raw,h.bytes);((ntw16s_packet *)copy)->flags=NTW16S_POLICY_PROPAGATE;
     CHECK(!ntw16s_packet_parse(copy,h.bytes,machine,&context));CHECK(context.flags==NTW16S_POLICY_PROPAGATE);
     ((ntw16s_packet *)copy)->flags=0;CHECK(ntw16s_packet_parse(copy,h.bytes,machine,&context)==ERROR_INVALID_DATA);

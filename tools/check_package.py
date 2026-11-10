@@ -1,4 +1,4 @@
-"""Verify a four-file package against the source, PE and Windows version data."""
+"""Verify the product package against source, PE and Windows version data."""
 import argparse
 import ctypes
 import hashlib
@@ -69,8 +69,9 @@ def main():
     parser.add_argument('--task', type=int, required=True)
     args = parser.parse_args()
     package, root = args.package.resolve(), args.source_root.resolve()
-    expected = {'run16s.exe': 'x64', 'ntw16s32.dll': 'x86', 'ntw16s64.dll': 'x64', 'demo.exe': 'x64'}
-    assert args.task > 0 and {p.name for p in package.iterdir()} == set(expected), 'package must contain exactly four files'
+    expected = {'run16s.exe': 'x64', 'ntw16s32.dll': 'x86', 'ntw16s64.dll': 'x64',
+                'ntw2ks32.dll': 'x86', 'ntw2ks64.dll': 'x64', 'demo.exe': 'x64'}
+    assert args.task > 0 and {p.name for p in package.iterdir()} == set(expected), 'package must contain exactly six files'
     spec = importlib.util.spec_from_file_location('core_pe', root/'tools/check_core_binary.py')
     core = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(core)
@@ -105,7 +106,7 @@ def main():
         raw = path.read_bytes()
         version(path, args.task)
         assert license_bytes in raw, 'project license missing from '+name
-        if name.endswith('.dll'):
+        if name.startswith('ntw16s'):
             assert minhook_license in raw, 'MinHook/HDE license missing from '+name
             assert provenance in raw, 'original resource provenance missing from '+name
             for symbol, data in glyph_tables.items():
@@ -116,6 +117,14 @@ def main():
             assert machine == (0x14c if arch == 'x86' else 0x8664)
             assert public == sorted(names + ['Ntw16sShowModernFileDialog','Ntw16sGlobalHook','Ntw16sGlobalHost','Ntw16sWindowAttach','Ntw16sGlobalThread','Ntw16sUwpFrameHook','Ntw16sWindowThreadHook']) and ordinals == {**{n: i+2 for i, n in enumerate(names)}, 'Ntw16sShowModernFileDialog': 33, 'Ntw16sGlobalHook': 34, 'Ntw16sGlobalHost': 35, 'Ntw16sWindowAttach': 36, 'Ntw16sGlobalThread': 37, 'Ntw16sUwpFrameHook': 38, 'Ntw16sWindowThreadHook': 39} and live == set(range(1, 40))
             assert {n.lower() for n in imports if not core.system_crt(n)} == {'kernel32.dll', 'user32.dll', 'gdi32.dll', 'comctl32.dll', 'comdlg32.dll', 'shell32.dll', 'ole32.dll', 'oleaut32.dll', 'dwmapi.dll', 'uxtheme.dll', 'advapi32.dll'}
+        elif name.startswith('ntw2ks'):
+            assert minhook_license in raw, 'MinHook/HDE license missing from '+name
+            machine, public, imports, digest, ordinals, live = core.inspect(path)
+            pe = struct.unpack_from('<I', raw, 60)[0]
+            assert struct.unpack_from('<H', raw, pe+22)[0] & 0x2000, 'DLL flag missing'
+            assert machine == (0x14c if arch == 'x86' else 0x8664)
+            assert public == ['Ntw2ksDrawButton'] and ordinals == {'Ntw2ksDrawButton': 2} and live == {1, 2}
+            assert {n.lower() for n in imports if not core.system_crt(n)} == {'kernel32.dll', 'user32.dll', 'advapi32.dll', 'uxtheme.dll'}
         else:
             subsystem, imports = application(path)
             assert subsystem == (2 if name == 'demo.exe' else 3)
@@ -124,7 +133,7 @@ def main():
         if args.built_root:
             assert hashlib.sha256((args.built_root/arch/name).read_bytes()).hexdigest() == digest, 'mixed build'
         result[name] = dict(architecture=arch, version='M0 T'+str(args.task), sha256=digest, imports=imports)
-    print(json.dumps(dict(status='PACKAGE PASS', artifacts=result, original_resource_tables_per_dll=len(glyph_tables)), indent=2))
+    print(json.dumps(dict(status='PACKAGE PASS', artifacts=result, original_resource_tables_per_ntw16s_dll=len(glyph_tables)), indent=2))
 
 
 if __name__ == '__main__':
