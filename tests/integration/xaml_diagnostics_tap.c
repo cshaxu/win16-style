@@ -3397,8 +3397,20 @@ static HRESULT test_content_dialog_candidate(reader *factory,IInspectable *style
     test_window *window=NULL; winui_element *element=NULL,*root_element=NULL;
     test_control *control=NULL; winui_tree *tree=NULL;
     const wchar_t *chosen=GetEnvironmentVariableW(L"WIN16_XAML_CONTENTDIALOG_DEFAULT",NULL,0) ? default_markup : markup;
-    HRESULT hr=WindowsCreateString(chosen,(UINT32)lstrlenW(chosen),&name);
+    wchar_t *resource_markup=NULL; HRESULT hr=S_OK;
+    if (GetEnvironmentVariableW(L"WIN16_XAML_CONTENTDIALOG_RESOURCE",NULL,0)) {
+        const wchar_t *button=win16_xaml_button_template(),*target=wcsstr(button,L"TargetType='Button'");
+        size_t capacity=wcslen(button)+2048;
+        if (!target) hr=E_FAIL;
+        else if (!(resource_markup=calloc(capacity,sizeof(*resource_markup)))) hr=E_OUTOFMEMORY;
+        else if (swprintf(resource_markup,capacity,
+            L"<ContentDialog xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' Title='Title' Content='Body' PrimaryButtonText='Yes' SecondaryButtonText='No' CloseButtonText='Cancel' DefaultButton='Primary'><ContentDialog.Resources>%.*lsx:Key='AccentButtonStyle' %ls</ContentDialog.Resources></ContentDialog>",
+            (int)(target-button),button,target)<0) hr=E_FAIL;
+        else chosen=resource_markup;
+    }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(chosen,(UINT32)lstrlenW(chosen),&name);
     if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,name,&dialog);
+    free(resource_markup);
     if (name) { WindowsDeleteString(name); name=NULL; }
     if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Window",24,&name);
     if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&window_object);
@@ -3435,6 +3447,7 @@ static HRESULT test_content_dialog_candidate(reader *factory,IInspectable *style
             if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(background,&brush_iid,(void **)&brush);
             if (SUCCEEDED(hr)) hr=brush->vtable->get_color(brush,&color);
             if (SUCCEEDED(hr) && (color.r!=192 || color.g!=192 || color.b!=192)) hr=E_FAIL;
+            if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_BITMAP_STAGE_2_EVENT");
             if (brush) brush->vtable->release(brush);
             if (background) IInspectable_Release(background);
             if (border) border->vtable->release(border);
@@ -3450,6 +3463,7 @@ static HRESULT test_content_dialog_candidate(reader *factory,IInspectable *style
             if (SUCCEEDED(hr)) hr=__x_ABI_CWindows_CFoundation_CIPropertyValue_GetString(property,&text);
             if (SUCCEEDED(hr) && wcscmp(WindowsGetStringRawBuffer(text,NULL),labels[i-3])) hr=E_FAIL;
             if (SUCCEEDED(hr) && GetEnvironmentVariableW(L"WIN16_XAML_CONTENTDIALOG_BUTTONS",NULL,0)) {
+                if (i==3) signal_named(L"WIN16_XAML_BITMAP_STAGE_4_EVENT");
                 test_control *button_control=NULL; boolean button_applied=0;
                 hr=IInspectable_QueryInterface(part,&winui_control_iid,(void **)&button_control);
                 if (SUCCEEDED(hr)) hr=button_control->vtable->apply_template(button_control,&button_applied);

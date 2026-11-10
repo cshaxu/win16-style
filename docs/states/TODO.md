@@ -2,6 +2,8 @@
 
 # Deferred Debt
 
+- [ ] TODO(Medium): WinUI ContentDialog 兼容默认按钮的 Win16 样式；Owner：后续对话框适配。Evidence：T25 S1 自有对话框继承系统模板并设置三种按钮样式时，无默认按钮的显示/关闭及 None 返回对照通过；指定 Primary 为默认按钮时首按钮模板对照失败，将 AccentButtonStyle 放入该对话框的局部资源后仍失败。系统三个按钮的 Style 来源为 Local，不能无条件覆盖绑定或应用自定义值。Admission：保留默认按钮的 Enter、关闭结果、应用自定义样式与恢复，验证显示、焦点、按钮交互和视觉后再接入；不改变全局资源。
+
 - [ ] TODO(Medium): WinUI PasswordBox Win16 模板及按住显示验证；Owner：后续可验证真实输入与绘制时继续。Evidence：T25 S1 自有假数据控件的模式与占位状态通过，但 XAML 诊断 RenderTargetBitmap 返回 E_NOTIMPL，真实遮蔽及按住显示未验证，原型仅在测试中。Admission：自有实例验证默认遮蔽、按住显示与释放恢复、键盘及样式撤销，不读取用户密码。
 
 - [ ] TODO(High): `run16s mspaint` 和 `run16s SnippingTool` 的 Windows App Execution Alias 在目标验证时返回1920；Owner：后续通用启动器兼容工作。Evidence：T23 S7 已发布包实测；对应完整安装路径可以启动。Admission：基于可验证的系统接口保留参数、目标身份、位宽及启动/传播语义，不依赖猜测私有重解析数据格式或写注册表。
