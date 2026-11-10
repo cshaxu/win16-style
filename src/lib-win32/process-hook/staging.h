@@ -5,6 +5,9 @@
  * its creator owns rollback on failure. The payload is an opaque byte span. */
 typedef DWORD (*process_hook_payload_consumer)(const void *,DWORD,DWORD,void *);
 DWORD process_hook_stage_process(HANDLE child,const char *dll,const void *payload,DWORD bytes);
+/* Add a dependency before the primary module in the same startup transaction.
+ * Both module paths are caller-selected; no search path or process environment is changed. */
+DWORD process_hook_stage_pair(HANDLE child,const char *dependency,const char *dll,const void *payload,DWORD bytes);
 /* The receiver must link this library and call stage_read/restore itself after
  * the Windows loader has finished. Restore releases the payload allocation.
  * No DLL is added to the target's imports. Same-width suspended targets only. */

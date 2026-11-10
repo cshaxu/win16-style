@@ -43,11 +43,13 @@ int wmain(int argc,WCHAR **argv)
     DWORD begin=started && !init?ntw16s_global_attach_begin(&policy,window,pi.dwProcessId,pi.dwThreadId,
         sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,session->cookie,dll,&ticket):ERROR_INVALID_STATE;
     DWORD advance=begin;
-    if(!begin && WaitForSingleObject(ticket.load.thread,3000)==WAIT_OBJECT_0){
-        advance=ntw16s_global_attach_advance(&ticket,NULL);
-        if(advance==ERROR_IO_PENDING && ticket.start.ready){
-            HANDLE waits[]={ticket.start.ready,ticket.start.thread};
-            if(WaitForMultipleObjects(ARRAYSIZE(waits),waits,FALSE,3000)<WAIT_OBJECT_0+ARRAYSIZE(waits))advance=ntw16s_global_attach_advance(&ticket,NULL);
+    if(!begin){
+        advance=ERROR_IO_PENDING;
+        for(unsigned i=0;i<4 && advance==ERROR_IO_PENDING;++i){
+            if(ticket.load.thread){if(WaitForSingleObject(ticket.load.thread,3000)!=WAIT_OBJECT_0)break;}
+            else if(ticket.start.ready){HANDLE waits[]={ticket.start.ready,ticket.start.thread};
+                if(WaitForMultipleObjects(ARRAYSIZE(waits),waits,FALSE,3000)>=WAIT_OBJECT_0+ARRAYSIZE(waits))break;}
+            advance=ntw16s_global_attach_advance(&ticket,NULL);
         }
     }
     int attached=window?query(window,WM_APP+52):-1;

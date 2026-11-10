@@ -4,7 +4,7 @@
 #include <wchar.h>
 #ifdef NTW16S_BUILD
 #include "ntw16s-dll/injection/late_process.h"
-#include "ntw16s-dll/injection/injection.h"
+#include "ntwshk-dll/injection.h"
 #include "ntw16s-dll/global/late.h"
 #include <stdlib.h>
 #endif
@@ -54,9 +54,9 @@ DWORD WINAPI ntw16s_global_thread_worker(void *parameter)
     HMODULE pinned=NULL;
     if(!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_PIN,
             (LPCWSTR)(void *)&ntw16s_global_thread_worker,&pinned)){error=GetLastError();goto done;}
-    ntw16s_context *paths=(ntw16s_context *)calloc(1,sizeof(*paths));
+    ntwshk_context *paths=(ntwshk_context *)calloc(1,sizeof(*paths));
     if(!paths){error=ERROR_NOT_ENOUGH_MEMORY;goto done;}
-    error=ntw16s_context_paths(paths,module);
+    error=ntwshk_context_paths(paths,module);
     if(!error)error=ntw16s_late_process_init(paths->directory,packet.cookie);
     free(paths);if(error)goto done;
     ntw16s_global_late_mark_ready(packet.cookie);

@@ -61,7 +61,7 @@ try{
         $compilerRoots=@($toolchains.toolchains | ForEach-Object {
             [IO.Path]::GetFullPath((Split-Path (Split-Path $_.compiler -Parent) -Parent))+[IO.Path]::DirectorySeparatorChar
         })
-        foreach($pair in @(@('x64','run16s.exe'),@('x86','ntw16s32.dll'),@('x64','ntw16s64.dll'),@('x86','ntw2ks32.dll'),@('x64','ntw2ks64.dll'),@('x64','demo.exe'))){
+        foreach($pair in @(@('x64','run16s.exe'),@('x86','ntw16s32.dll'),@('x64','ntw16s64.dll'),@('x86','ntw2ks32.dll'),@('x64','ntw2ks64.dll'),@('x86','ntwshk32.dll'),@('x64','ntwshk64.dll'),@('x64','demo.exe'))){
             Copy-Item -LiteralPath (Join-Path $tree "$($pair[0])/$($pair[1])") -Destination (Join-Path $candidate $pair[1])
         }
         foreach($arch in @('x86','x64')){

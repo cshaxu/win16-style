@@ -2,7 +2,7 @@
 #include <wchar.h>
 /* The Windows print subsystem creates this shared host on demand. It is a
  * system service process, not an application descendant to be styled. */
-BOOL ntw16s_system_print_host_w(LPCWSTR application,LPCWSTR command)
+BOOL ntwshk_system_print_host_w(LPCWSTR application,LPCWSTR command)
 {
     WCHAR system[MAX_PATH],expected[MAX_PATH],candidate[MAX_PATH];UINT length=GetSystemWindowsDirectoryW(system,MAX_PATH);
     if(!length || length>=MAX_PATH)return FALSE;
@@ -15,11 +15,11 @@ BOOL ntw16s_system_print_host_w(LPCWSTR application,LPCWSTR command)
     size_t count=(size_t)(end-command);if(!count || count>=MAX_PATH || (quoted && *end!=L'"'))return FALSE;
     wmemcpy(candidate,command,count);candidate[count]=0;return !_wcsicmp(candidate,expected);
 }
-BOOL ntw16s_system_print_host_a(LPCSTR application,LPCSTR command)
+BOOL ntwshk_system_print_host_a(LPCSTR application,LPCSTR command)
 {
     WCHAR app[MAX_PATH],cmd[2048];LPCWSTR wide_app=NULL,wide_cmd=NULL;
     if(application){if(!MultiByteToWideChar(CP_ACP,MB_ERR_INVALID_CHARS,application,-1,app,MAX_PATH))return FALSE;wide_app=app;}
     if(command && !application){if(!MultiByteToWideChar(CP_ACP,MB_ERR_INVALID_CHARS,command,-1,cmd,2048))return FALSE;wide_cmd=cmd;}
-    return ntw16s_system_print_host_w(wide_app,wide_cmd);
+    return ntwshk_system_print_host_w(wide_app,wide_cmd);
 }
 

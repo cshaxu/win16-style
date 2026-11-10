@@ -3,7 +3,7 @@
 #include "staging.h"
 #include <wchar.h>
 #include <string.h>
-const GUID ntw16s_payload_guid={0xa170a252,0x7d0c,0x4b4a,{0xa2,0x86,0x61,0xd3,0x7a,0xea,0x39,0xc8}};
+const GUID ntwshk_payload_guid={0xa170a252,0x7d0c,0x4b4a,{0xa2,0x86,0x61,0xd3,0x7a,0xea,0x39,0xc8}};
 static BOOL dos_absolute(PCWSTR p,size_t n)
 {return n>=3 && ((p[0]>=L'A' && p[0]<=L'Z') || (p[0]>=L'a' && p[0]<=L'z')) && p[1]==L':' && p[2]==L'\\';}
 static BOOL unc_absolute(PCWSTR p)
@@ -16,52 +16,62 @@ static BOOL absolute(PCWSTR p,size_t n)
         (n>=8 && !_wcsnicmp(p+4,L"UNC\\",4) && unc_absolute(p+8));
     return p[2]!=L'.' && p[2]!=L'?' && unc_absolute(p+2);
 }
-DWORD ntw16s_packet_parse(const void *data,DWORD bytes,DWORD machine,ntw16s_context *context)
+DWORD ntwshk_packet_parse(const void *data,DWORD bytes,DWORD machine,ntwshk_context *context)
 {
-    ntw16s_packet h;const WCHAR *directory;
+    ntwshk_packet h;const WCHAR *directory;
     if(!data || !context)return ERROR_INVALID_PARAMETER;
     ZeroMemory(context,sizeof(*context));
     if(bytes<sizeof(h) || bytes>65536)return ERROR_INVALID_DATA;
     memcpy(&h,data,sizeof(h));
-    if(h.bytes!=bytes || h.version!=1 || h.machine!=machine ||
+    if(h.bytes!=bytes || h.version!=2 || h.machine!=machine ||
         (machine!=IMAGE_FILE_MACHINE_I386 && machine!=IMAGE_FILE_MACHINE_AMD64) ||
-        !(h.flags&(NTW16S_POLICY_STYLE|NTW16S_POLICY_PROPAGATE)) || (h.flags&~15u) || h.reserved1 ||
-        ((h.flags&NTW16S_POLICY_WIN2K) && (h.flags&NTW16S_POLICY_GLOBAL_SESSION)) ||
-        (!!(h.flags&NTW16S_POLICY_GLOBAL_SESSION)!=!!h.reserved0) ||
-        h.directory_offset!=sizeof(h) || h.directory_bytes!=bytes-sizeof(h) ||
-        h.directory_bytes<8 || h.directory_bytes%2)return ERROR_INVALID_DATA;
+        !(h.flags&(NTWSHK_POLICY_STYLE|NTWSHK_POLICY_PROPAGATE)) || (h.flags&~7u) ||
+        (!!(h.flags&NTWSHK_POLICY_GLOBAL_SESSION)!=!!h.reserved0) ||
+        h.directory_offset!=sizeof(h) || h.directory_bytes<8 || h.directory_bytes%2 ||
+        h.reserved1<4 || h.reserved1%2 || h.reserved1>sizeof(context->module) ||
+        h.directory_bytes>sizeof(context->directory) ||
+        h.directory_bytes+h.reserved1!=bytes-sizeof(h))return ERROR_INVALID_DATA;
     /* Do not assume the external payload pointer's alignment. */
     memcpy(context->directory,(const BYTE *)data+sizeof(h),h.directory_bytes);
+    memcpy(context->module,(const BYTE *)data+sizeof(h)+h.directory_bytes,h.reserved1);
     directory=context->directory;
     size_t count=h.directory_bytes/sizeof(WCHAR);
-    if(directory[count-1] || wcsnlen_s(directory,count)!=count-1 || !absolute(directory,count-1)){
+    size_t module_count=h.reserved1/sizeof(WCHAR);
+    if(directory[count-1] || wcsnlen_s(directory,count)!=count-1 || !absolute(directory,count-1) ||
+       context->module[module_count-1] || wcsnlen_s(context->module,module_count)!=module_count-1){
         ZeroMemory(context,sizeof(*context));return ERROR_INVALID_DATA;
+    }
+    for(size_t i=0;i<module_count-1;++i){WCHAR c=context->module[i];
+        if(!((c>=L'a' && c<=L'z') || (c>=L'A' && c<=L'Z') || (c>=L'0' && c<=L'9') || c==L'_' || c==L'-')){
+            ZeroMemory(context,sizeof(*context));return ERROR_INVALID_DATA;
+        }
     }
     context->flags=h.flags;context->session_cookie=h.reserved0;return ERROR_SUCCESS;
 }
 static DWORD consume_packet(const void *data,DWORD bytes,DWORD machine,void *context)
-{return ntw16s_packet_parse(data,bytes,machine,(ntw16s_context *)context);}
-DWORD ntw16s_context_read(ntw16s_context *context,BOOL *found)
+{return ntwshk_packet_parse(data,bytes,machine,(ntwshk_context *)context);}
+DWORD ntwshk_context_read(ntwshk_context *context,BOOL *found)
 {
     if(!context || !found)return ERROR_INVALID_PARAMETER;
     ZeroMemory(context,sizeof(*context));
     return process_hook_stage_read(consume_packet,context,found);
 }
-DWORD ntw16s_context_paths(ntw16s_context *context,HMODULE module)
+DWORD ntwshk_context_paths(ntwshk_context *context,HMODULE module)
 {
     if(!context)return ERROR_INVALID_PARAMETER;
     ZeroMemory(context,sizeof(*context));
-    DWORD count=GetModuleFileNameW(module,context->directory,NTW16S_PATH_CAP);
-    if(!count || count>=NTW16S_PATH_CAP)return count?ERROR_FILENAME_EXCED_RANGE:GetLastError();
+    DWORD count=GetModuleFileNameW(module,context->directory,NTWSHK_PATH_CAP);
+    if(!count || count>=NTWSHK_PATH_CAP)return count?ERROR_FILENAME_EXCED_RANGE:GetLastError();
     WCHAR *slash=wcsrchr(context->directory,L'\\');if(!slash)return ERROR_INVALID_NAME;
-    slash[1]=0;context->flags=NTW16S_POLICY_STYLE|NTW16S_POLICY_PROPAGATE;return ERROR_SUCCESS;
+    slash[1]=0;context->flags=NTWSHK_POLICY_STYLE|NTWSHK_POLICY_PROPAGATE;return ERROR_SUCCESS;
 }
-DWORD ntw16s_context_library(const ntw16s_context *context,WORD machine,WCHAR *path,size_t capacity)
+DWORD ntwshk_context_library(const ntwshk_context *context,WORD machine,WCHAR *path,size_t capacity)
 {
     if(!context || !path || !capacity || (machine!=IMAGE_FILE_MACHINE_I386 && machine!=IMAGE_FILE_MACHINE_AMD64))return ERROR_INVALID_PARAMETER;
-    size_t length=wcsnlen_s(context->directory,NTW16S_PATH_CAP);
-    if(!length || length>=NTW16S_PATH_CAP)return ERROR_INVALID_DATA;
-    const WCHAR *name=(context->flags&NTW16S_POLICY_WIN2K)?L"ntw2ks":L"ntw16s";
+    size_t length=wcsnlen_s(context->directory,NTWSHK_PATH_CAP);
+    if(!length || length>=NTWSHK_PATH_CAP)return ERROR_INVALID_DATA;
+    const WCHAR *name=context->module;
+    if(!*name || wcsnlen_s(name,NTWSHK_MODULE_CAP)>=NTWSHK_MODULE_CAP)return ERROR_INVALID_DATA;
     if(swprintf_s(path,capacity,L"%ls%ls%ls%u.dll",context->directory,
         context->directory[length-1]==L'\\'?L"":L"\\",name,machine==IMAGE_FILE_MACHINE_I386?32u:64u)<0)
         return ERROR_FILENAME_EXCED_RANGE;

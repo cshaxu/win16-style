@@ -3,6 +3,7 @@
 #include <rpc.h>
 #define NTW16S_TEST_PROCESS_TIMEOUT 300000
 #include "../ntw16s-dll/isolated_process.h"
+#include "shared_dll_fixture.h"
 
 typedef struct output {char bytes[131072];SIZE_T used;HANDLE pipe;FILE *transcript;} output;
 static BOOL send_line(HANDLE input,const char *line)
@@ -206,7 +207,7 @@ static BOOL fixture_package(PCWSTR scratch,PCWSTR run,PCWSTR dll32,PCWSTR dll64,
         if(swprintf_s(target,ARRAYSIZE(target),L"%ls\\%ls",package,names[i])<0||!cmd_hash(sources[i],before)||
            !CopyFileW(sources[i],target,TRUE)||!cmd_hash(target,after)||strcmp(before,after))return FALSE;
     }
-    return TRUE;
+    return copy_shared_dlls(package,dll32,dll64);
 }
 static int matrix(int argc,WCHAR **argv)
 {

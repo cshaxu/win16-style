@@ -1,4 +1,5 @@
 #include <windows.h>
+#include "../integration/shared_dll_fixture.h"
 #include <tlhelp32.h>
 #include <commctrl.h>
 #include <shlobj.h>
@@ -260,6 +261,7 @@ static int matrix(int argc,WCHAR **argv)
     CHECK(swprintf_s(launcher,MAX_PATH,L"%ls\\run16s.exe",package)>0 && CopyFileW(argv[1],launcher,FALSE));
     CHECK(swprintf_s(path,MAX_PATH,L"%ls\\ntw16s64.dll",package)>0 && CopyFileW(argv[2],path,FALSE));
     CHECK(swprintf_s(path,MAX_PATH,L"%ls\\ntw16s32.dll",package)>0 && CopyFileW(argv[3],path,FALSE));
+    CHECK(copy_shared_dlls(package,argv[3],argv[2]));
     CHECK(swprintf_s(image,MAX_PATH,L"%ls\\demo.exe",package)>0 && CopyFileW(argv[4],image,FALSE));
     ready=CreateEventW(NULL,TRUE,FALSE,NULL);CHECK(ready);
     focus_ready=CreateEventW(NULL,TRUE,FALSE,NULL);property_closed=CreateEventW(NULL,TRUE,FALSE,NULL);CHECK(focus_ready && property_closed);

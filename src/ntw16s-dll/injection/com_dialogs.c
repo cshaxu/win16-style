@@ -388,7 +388,7 @@ static HRESULT WINAPI bridge_class_object(REFCLSID clsid,DWORD context,LPVOID se
 LONG ntw16s_attach_com_dialogs_using(DWORD (*attach)(void *,void *))
 {
     if(!attach)return ERROR_INVALID_PARAMETER;
-    if(!(ntw16s_process_context.flags & NTW16S_POLICY_STYLE))return NO_ERROR;
+    if(!(ntw16s_process_context.flags & NTWSHK_POLICY_STYLE))return NO_ERROR;
     native_create=CoCreateInstance;native_create_ex=CoCreateInstanceEx;native_class_object=CoGetClassObject;
     LONG error=(LONG)attach(&native_create,(void *)bridge_create);
     if(!error)error=(LONG)attach(&native_create_ex,(void *)bridge_create_ex);

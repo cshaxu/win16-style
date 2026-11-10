@@ -1,5 +1,5 @@
 #include "lib-win32/process-image/image.h"
-#include "ntw16s-dll/injection/injection.h"
+#include "ntwshk-dll/injection.h"
 #include <stdio.h>
 #include <wchar.h>
 #include <stdint.h>
@@ -45,10 +45,10 @@ static BYTE *main_image(HANDLE process,IMAGE_DOS_HEADER *dos,IMAGE_NT_HEADERS *n
 }
 /* Self-contained equivalent of an earlier startup installer's relocated import
  * descriptors. No Detours, broker, installed VDM or sibling binary is needed. */
-static BOOL external_case(const WCHAR *self,ntw16s_context *context,unsigned mode)
+static BOOL external_case(const WCHAR *self,ntwshk_context *context,unsigned mode)
 {
     STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION child={0};
-    WCHAR command[NTW16S_PATH_CAP+4];IMAGE_DOS_HEADER dos;IMAGE_NT_HEADERS nt;
+    WCHAR command[NTWSHK_PATH_CAP+4];IMAGE_DOS_HEADER dos;IMAGE_NT_HEADERS nt;
     IMAGE_IMPORT_DESCRIPTOR descriptors[1025]={0};SIZE_T got;BOOL result=FALSE;
     CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\"",self)>0);
     CHECK(CreateProcessW(self,command,NULL,NULL,FALSE,CREATE_SUSPENDED|CREATE_NO_WINDOW,NULL,NULL,&startup,&child));
@@ -79,7 +79,7 @@ static BOOL external_case(const WCHAR *self,ntw16s_context *context,unsigned mod
     CHECK(WriteProcessMemory(child.hProcess,base+dos.e_lfanew,&nt,sizeof(nt),&got) && got==sizeof(nt));
     CHECK(VirtualProtectEx(child.hProcess,base+dos.e_lfanew,sizeof(nt),protect,&unused));
     if(mode==1)CHECK(VirtualProtectEx(child.hProcess,remote,bytes,PAGE_NOACCESS,&unused));
-    DWORD error=ntw16s_install(child.hProcess,context,CreateProcessW);
+    DWORD error=ntwshk_install(child.hProcess,context,CreateProcessW);
     if(mode){
         CHECK(error!=ERROR_SUCCESS);
         if(mode>=2)CHECK(error==ERROR_BAD_EXE_FORMAT);
@@ -102,10 +102,10 @@ failed:
 /* DoubleKiller omits the IAT directory as well as OriginalFirstThunk. Isolate
  * the missing directory from the zero-OFT shape in two private image copies.
  * No installed target or fixture file is modified. */
-static BOOL legacy_iat_case(const WCHAR *self,ntw16s_context *context,unsigned mode)
+static BOOL legacy_iat_case(const WCHAR *self,ntwshk_context *context,unsigned mode)
 {
     STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION child={0};
-    WCHAR command[NTW16S_PATH_CAP+4];IMAGE_DOS_HEADER dos;IMAGE_NT_HEADERS nt;
+    WCHAR command[NTWSHK_PATH_CAP+4];IMAGE_DOS_HEADER dos;IMAGE_NT_HEADERS nt;
     IMAGE_IMPORT_DESCRIPTOR descriptors[1025]={0};SIZE_T got;BOOL result=FALSE;DWORD protect,unused;
     CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" --legacy-child",self)>0);
     CHECK(CreateProcessW(self,command,NULL,NULL,FALSE,CREATE_SUSPENDED|CREATE_NO_WINDOW,NULL,NULL,&startup,&child));
@@ -135,7 +135,7 @@ static BOOL legacy_iat_case(const WCHAR *self,ntw16s_context *context,unsigned m
     CHECK(VirtualProtectEx(child.hProcess,base+dos.e_lfanew,sizeof(nt),PAGE_READWRITE,&protect));
     CHECK(WriteProcessMemory(child.hProcess,base+dos.e_lfanew,&nt,sizeof(nt),&got) && got==sizeof(nt));
     CHECK(VirtualProtectEx(child.hProcess,base+dos.e_lfanew,sizeof(nt),protect,&unused));
-    DWORD install_error=ntw16s_install(child.hProcess,context,CreateProcessW);
+    DWORD install_error=ntwshk_install(child.hProcess,context,CreateProcessW);
     if(mode>=2){
         CHECK(install_error==ERROR_BAD_EXE_FORMAT);
         IMAGE_NT_HEADERS after;
@@ -159,15 +159,16 @@ failed:
 }
 int wmain(int argc,WCHAR **argv)
 {
-    WCHAR self[NTW16S_PATH_CAP],command[NTW16S_PATH_CAP+4];ntw16s_context context;
+    WCHAR self[NTWSHK_PATH_CAP],command[NTWSHK_PATH_CAP+4];ntwshk_context context;
     STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION child={0};WORD machine;
     DWORD expected=sizeof(void *)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386;int result=1;
     if(argc==1)return initialized_child(FALSE);
     if(argc==2 && !wcscmp(argv[1],L"--legacy-child"))return initialized_child(TRUE);
     CHECK((argc==2 || argc==3) && !wcscmp(argv[1],L"--parent"));
-    CHECK(!ntw16s_context_paths(&context,NULL));
-    if(argc==3)CHECK(!wcscpy_s(context.directory,NTW16S_PATH_CAP,argv[2]));
-    CHECK(GetModuleFileNameW(NULL,self,NTW16S_PATH_CAP));
+    CHECK(!ntwshk_context_paths(&context,NULL));
+    wcscpy(context.module,L"ntw16s");
+    if(argc==3)CHECK(!wcscpy_s(context.directory,NTWSHK_PATH_CAP,argv[2]));
+    CHECK(GetModuleFileNameW(NULL,self,NTWSHK_PATH_CAP));
     CHECK(!win32_process_image_validate(self,(WORD)expected,FALSE));
     CHECK(win32_process_image_validate(self,(WORD)expected,TRUE)==ERROR_BAD_EXE_FORMAT);
     CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\"",self)>0);
@@ -175,9 +176,17 @@ int wmain(int argc,WCHAR **argv)
     CHECK(!win32_process_image_machine(child.hProcess,&machine) && machine==expected);
     CHECK(SuspendThread(child.hThread)==1 && ResumeThread(child.hThread)==2);
     context.flags=0x80000001u;
-    CHECK(ntw16s_install(child.hProcess,&context,CreateProcessW)==ERROR_INVALID_DATA);
+    CHECK(ntwshk_install(child.hProcess,&context,CreateProcessW)==ERROR_INVALID_DATA);
     context.flags=1;
-    CHECK(!ntw16s_install(child.hProcess,&context,CreateProcessW));
+    CHECK(!ntwshk_install(child.hProcess,&context,CreateProcessW));
+    {IMAGE_DOS_HEADER dos;IMAGE_NT_HEADERS before,after;
+        BYTE *base=main_image(child.hProcess,&dos,&before);CHECK(base);
+        CHECK(!ntwshk_install(child.hProcess,&context,CreateProcessW));
+        SIZE_T read=0;
+        CHECK(ReadProcessMemory(child.hProcess,base+dos.e_lfanew,&after,sizeof(after),&read) && read==sizeof(after));
+        CHECK(!memcmp(&before,&after,sizeof(before)));
+        puts("STAGING REPEAT PASS same import metadata");
+    }
     CHECK(SuspendThread(child.hThread)==1 && ResumeThread(child.hThread)==2);
     CHECK(WaitForSingleObject(child.hProcess,0)==WAIT_TIMEOUT);
     puts("STAGING PASS actual same-width target, payload/imports staged, original suspension retained; initialization not claimed");result=0;

@@ -7,7 +7,7 @@
 #include "ntw16s-dll/global/process.h"
 #include "lib-win32/process-global/window.h"
 #include "lib-win32/process-global/identity.h"
-#include "ntw16s-dll/injection/injection.h"
+#include "ntwshk-dll/injection.h"
 #include <windows.h>
 #include <wincrypt.h>
 #include <stdio.h>
@@ -58,8 +58,8 @@ static int fail(DWORD error,PCWSTR what)
 int run16s_global_with_parent(HANDLE parent)
 {
     WCHAR name[NTW16S_GLOBAL_NAME_CAP],ready_name[NTW16S_GLOBAL_NAME_CAP+16],host_stop_name[NTW16S_GLOBAL_NAME_CAP+16],request_name[NTW16S_GLOBAL_NAME_CAP+16];
-    WCHAR wow[MAX_PATH],host_image[MAX_PATH],dll64[NTW16S_PATH_CAP],dll32[NTW16S_PATH_CAP],command[NTW16S_PATH_CAP+MAX_PATH+64];
-    ntw16s_context *context=NULL;PSECURITY_DESCRIPTOR security=NULL;SECURITY_ATTRIBUTES attributes={sizeof(attributes),NULL,FALSE};
+    WCHAR wow[MAX_PATH],host_image[MAX_PATH],dll64[NTWSHK_PATH_CAP],dll32[NTWSHK_PATH_CAP],command[NTWSHK_PATH_CAP+MAX_PATH+64];
+    ntwshk_context *context=NULL;PSECURITY_DESCRIPTOR security=NULL;SECURITY_ATTRIBUTES attributes={sizeof(attributes),NULL,FALSE};
     HANDLE mapping=NULL,ready=NULL,host_stop=NULL;ntw16s_global_session *s=NULL;HMODULE dll=NULL;HHOOK hook=NULL;
     PROCESS_INFORMATION host={0};DWORD error=0;UINT message=0;int result=10;BOOL handler=FALSE;
     ntw16s_global_manager *manager=NULL;
@@ -88,8 +88,8 @@ int run16s_global_with_parent(HANDLE parent)
     /* Startup may include a process snapshot. Honour Ctrl+C during that work
      * and reach the same orderly cleanup path as an active session. */
     if(!SetConsoleCtrlHandler(stop_handler,TRUE)){error=GetLastError();goto done;}handler=TRUE;
-    context=(ntw16s_context *)calloc(1,sizeof(*context));if(!context){error=ERROR_NOT_ENOUGH_MEMORY;goto done;}
-    error=ntw16s_context_paths(context,NULL);if(error)goto done;
+    context=(ntwshk_context *)calloc(1,sizeof(*context));if(!context){error=ERROR_NOT_ENOUGH_MEMORY;goto done;}
+    error=ntwshk_context_paths(context,NULL);if(error)goto done;
     if(swprintf(dll64,ARRAYSIZE(dll64),L"%lsntw16s64.dll",context->directory)<0 || swprintf(dll32,ARRAYSIZE(dll32),L"%lsntw16s32.dll",context->directory)<0){error=ERROR_INSUFFICIENT_BUFFER;goto done;}
     error=win32_process_image_validate(dll64,IMAGE_FILE_MACHINE_AMD64,TRUE);if(error)goto done;
     error=win32_process_image_validate(dll32,IMAGE_FILE_MACHINE_I386,TRUE);if(error)goto done;

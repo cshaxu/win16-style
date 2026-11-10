@@ -4,6 +4,7 @@
 #include <string.h>
 #define NTW16S_TEST_PROCESS_TIMEOUT 500000
 #include "../ntw16s-dll/isolated_process.h"
+#include "shared_dll_fixture.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"CONTRACT MATRIX FAIL %d error=%lu: %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
 static int completed(PCWSTR path,const char *phase,unsigned expected)
 {
@@ -19,6 +20,7 @@ static int matrix(int argc,WCHAR **argv)
     CHECK(swprintf_s(package,MAX_PATH,L"%ls\\contract package",scratch)>0 && CreateDirectoryW(package,NULL));
     CHECK(swprintf_s(executables,MAX_PATH,L"%ls\\separate executables",scratch)>0 && CreateDirectoryW(executables,NULL));
     CHECK(swprintf_s(launcher,MAX_PATH,L"%ls\\run16s.exe",package)>0 && CopyFileW(argv[1],launcher,FALSE));
+    CHECK(copy_shared_dlls(package,argv[2],argv[3]));
     for(unsigned i=0;i<2;++i){
         CHECK(swprintf_s(files[i],MAX_PATH,L"%ls\\ntw16s%u.dll",package,i?64:32)>0 && CopyFileW(argv[2+i],files[i],FALSE));
         CHECK(swprintf_s(files[2+i],MAX_PATH,L"%ls\\contract%u.exe",executables,i?64:32)>0 && CopyFileW(argv[4+i],files[2+i],FALSE));

@@ -3,6 +3,8 @@
 #include "ntw16s-dll/global/remote.h"
 #include "lib-win32/process-global/module.h"
 #include "lib-win32/process-global/transaction.h"
+#include "lib-win32/process-global/remote_loader.h"
+#include "lib-win32/process-global/remote_export.h"
 #include <stdlib.h>
 #include <string.h>
 #include <wchar.h>
@@ -45,7 +47,14 @@ static DWORD begin(const win32_process_global_policy *policy,HWND window,DWORD p
     ticket->dll_path=(WCHAR *)calloc(32752,sizeof(WCHAR));if(!ticket->dll_path){error=ERROR_NOT_ENOUGH_MEMORY;goto fail;}
     error=win32_process_global_select_path(ticket->process,pid,dll_path,ticket->dll_path,32752,win32_process_global_files_equal,mapped_identity);if(error)goto fail;
     ticket->window=window;ticket->cookie=cookie;
-    error=ntw16s_global_load_begin(ticket->process,pid,ticket->dll_path,&ticket->load);if(error)goto fail;
+    {WCHAR *slash=wcsrchr(ticket->dll_path,L'\\');WCHAR *shared;
+     if(!slash){error=ERROR_INVALID_NAME;goto fail;}
+     size_t prefix=(size_t)(slash-ticket->dll_path)+1;
+     shared=(WCHAR *)calloc(prefix+32,sizeof(WCHAR));if(!shared){error=ERROR_NOT_ENOUGH_MEMORY;goto fail;}
+     memcpy(shared,ticket->dll_path,prefix*sizeof(WCHAR));
+     wcscpy(shared+prefix,sizeof(void*)==8?L"ntwshk64.dll":L"ntwshk32.dll");
+     error=win32_process_global_load_begin(ticket->process,pid,shared,sizeof(void*)==8?L"ntwshk64.dll":L"ntwshk32.dll",win32_process_global_remote_loadlibrary,&ticket->load);
+     free(shared);if(error)goto fail;ticket->loading_shared=TRUE;}
     ticket->phase=ATTACH_LOADING;return ERROR_SUCCESS;
 fail:
     {DWORD release=ntw16s_global_attach_close(ticket);return release?release:error;}
@@ -78,8 +87,17 @@ static DWORD control(ntw16s_global_attach *ticket,LPARAM action)
 }
 
 typedef struct attach_steps {ntw16s_global_attach *ticket;SECURITY_ATTRIBUTES *security;} attach_steps;
+static DWORD shared_export(HANDLE process,DWORD pid,const WCHAR *path,void **address)
+{return win32_process_global_remote_export(process,pid,path,sizeof(void*)==8?L"ntwshk64.dll":L"ntwshk32.dll","process_hook_startup_begin",address);}
 static DWORD step_load(void *context)
-{attach_steps *s=(attach_steps *)context;void *worker=NULL;return ntw16s_global_load_finish(&s->ticket->load,0,&worker);}
+{
+    attach_steps *s=(attach_steps *)context;ntw16s_global_attach *t=s->ticket;void *worker=NULL;DWORD error;
+    if(!t->loading_shared)return ntw16s_global_load_finish(&t->load,0,&worker);
+    error=win32_process_global_load_finish(&t->load,0,shared_export,&worker);if(error)return error;
+    error=revalidate(t);if(error)return error;
+    error=ntw16s_global_load_begin(t->process,t->identity.pid,t->dll_path,&t->load);if(error)return error;
+    t->loading_shared=FALSE;return ERROR_TIMEOUT;
+}
 static DWORD step_validate(void *context)
 {return revalidate(((attach_steps *)context)->ticket);}
 static DWORD step_start(void *context)

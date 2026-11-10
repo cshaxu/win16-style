@@ -88,10 +88,13 @@ int wmain(int argc,WCHAR **argv)
     error=win32_process_global_policy_init(&policy);
     if(!error)error=ntw16s_global_attach_begin_thread(&policy,target.dwProcessId,target.dwThreadId,
         sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,s->cookie,argv[2],&ticket);
-    if(!error && WaitForSingleObject(ticket.load.thread,5000)==WAIT_OBJECT_0){
-        error=ntw16s_global_attach_advance(&ticket,NULL);
-        if(error==ERROR_IO_PENDING && ticket.start.ready){HANDLE waits[]={ticket.start.ready,ticket.start.thread};
-            if(WaitForMultipleObjects(ARRAYSIZE(waits),waits,FALSE,5000)<WAIT_OBJECT_0+ARRAYSIZE(waits))error=ntw16s_global_attach_advance(&ticket,NULL);}
+    if(!error){error=ERROR_IO_PENDING;
+        for(unsigned i=0;i<4 && error==ERROR_IO_PENDING;++i){
+            if(ticket.load.thread){if(WaitForSingleObject(ticket.load.thread,5000)!=WAIT_OBJECT_0)break;}
+            else if(ticket.start.ready){HANDLE waits[]={ticket.start.ready,ticket.start.thread};
+                if(WaitForMultipleObjects(ARRAYSIZE(waits),waits,FALSE,5000)>=WAIT_OBJECT_0+ARRAYSIZE(waits))break;}
+            error=ntw16s_global_attach_advance(&ticket,NULL);
+        }
     }
     printf("EXISTING attach=%lu\n",error);
     if(error)goto done;

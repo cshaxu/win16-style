@@ -17,6 +17,9 @@ root.mkdir()
 package=root/'package';package.mkdir()
 for src,name in ((launcher,'run16s.exe'),(dll32,'ntw16s32.dll'),(dll64,'ntw16s64.dll')):
     shutil.copyfile(src,package/name)
+for bits,source in ((32,dll32),(64,dll64)):
+    shared=source.with_name(f'ntwshk{bits}.dll')
+    shutil.copyfile(shared,package/shared.name)
 launcher=package/'run16s.exe'
 k=ctypes.WinDLL('kernel32',use_last_error=True)
 k.CreateEventW.argtypes=[ctypes.c_void_p,W.BOOL,W.BOOL,W.LPCWSTR];k.CreateEventW.restype=W.HANDLE

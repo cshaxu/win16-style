@@ -9,6 +9,9 @@ package = pathlib.Path.cwd() / "package"
 package.mkdir()
 for source in (launcher, dll32, dll64, fixture):
     shutil.copy2(source, package / source.name)
+for bits, source in ((32, dll32), (64, dll64)):
+    shared = source.with_name(f"ntwshk{bits}.dll")
+    shutil.copy2(shared, package / shared.name)
 for kind in ("legacy", "modern"):
     result = subprocess.run(
         [str(package / launcher.name), "--wait", str(package / fixture.name), kind],

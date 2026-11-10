@@ -84,7 +84,7 @@
       "size": 3582,
       "sha256": "4edaf633935aab4a1de73cca2d273384639efeed2f43f30106511679dfd252cb",
       "action": "adapt",
-      "destination": "src/ntw16s-dll/injection/context.c",
+      "destination": "src/ntwshk-dll/context.c",
       "notice": "project-authored-review",
       "reason": "Strip broker/VDM/launcher modes; merge DLL, rewrite payload, bind renderer directly; rewrite old export definitions",
       "receiver": "launcher-injection/descendant-propagation"
@@ -216,7 +216,7 @@
       "size": 1110,
       "sha256": "e77e446b2e09b953942257c52cf248fde87da527198261c16d76a0220f74998d",
       "action": "adapt",
-      "destination": "src/ntw16s-dll/injection/injection.h",
+      "destination": "src/ntwshk-dll/injection.h",
       "notice": "project-authored-review",
       "reason": "Strip broker/VDM/launcher modes; merge DLL, rewrite payload, bind renderer directly; rewrite old export definitions",
       "receiver": "launcher-injection/descendant-propagation"
@@ -228,7 +228,7 @@
       "size": 5451,
       "sha256": "463ae8754610f66da662e44ff2e98be1424fd35e152d1382968b642a514d0237",
       "action": "adapt",
-      "destination": "src/ntw16s-dll/injection/installer.c",
+      "destination": "src/ntwshk-dll/installer.c",
       "notice": "project-authored-review",
       "reason": "Strip broker/VDM/launcher modes; merge DLL, rewrite payload, bind renderer directly; rewrite old export definitions",
       "receiver": "launcher-injection/descendant-propagation"

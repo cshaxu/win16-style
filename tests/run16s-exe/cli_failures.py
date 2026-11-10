@@ -16,6 +16,9 @@ for width,target in [(32,target32),(64,target64)]:
         exe=folder/'run16s.exe'
         shutil.copy2(launcher,exe)
         for bits,source in [(32,dll32),(64,dll64)]:
+            shared=source.with_name(f'ntwshk{bits}.dll')
+            shutil.copy2(shared,folder/shared.name)
+        for bits,source in [(32,dll32),(64,dll64)]:
             destination=folder/f'ntw16s{bits}.dll'
             if bits!=width or case!='missing':shutil.copy2(source,destination)
         changed=folder/f'ntw16s{width}.dll'
@@ -36,6 +39,9 @@ healthy=root/'healthy'
 healthy.mkdir()
 for source,name in [(launcher,'run16s.exe'),(dll32,'ntw16s32.dll'),(dll64,'ntw16s64.dll')]:
     shutil.copy2(source,healthy/name)
+for bits,source in [(32,dll32),(64,dll64)]:
+    shared=source.with_name(f'ntwshk{bits}.dll')
+    shutil.copy2(shared,healthy/shared.name)
 windows=ctypes.create_unicode_buffer(32768)
 count=ctypes.windll.kernel32.GetWindowsDirectoryW(windows,len(windows))
 if not 0<count<len(windows):raise SystemExit('Windows directory query failed')

@@ -707,7 +707,7 @@ LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *))
 {
     if(!attach)return ERROR_INVALID_PARAMETER;
     LONG error=NO_ERROR;
-    if(!(ntw16s_process_context.flags&NTW16S_POLICY_STYLE))return error;
+    if(!(ntw16s_process_context.flags&NTWSHK_POLICY_STYLE))return error;
     create_A=CreateWindowExA;create_W=CreateWindowExW;
     real_get_scroll=GetScrollInfo;real_set_scroll=SetScrollInfo;real_set_theme=SetWindowTheme;
     real_set_pos=SetScrollPos;real_set_range=SetScrollRange;

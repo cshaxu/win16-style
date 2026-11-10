@@ -13,6 +13,7 @@ typedef struct ntw16s_global_attach {
     HWND window;
     WCHAR *dll_path;
     DWORD cookie,phase,control_error;
+    BOOL loading_shared;
 } ntw16s_global_attach;
 
 /* Each operation is nonblocking except for one bounded control message. The

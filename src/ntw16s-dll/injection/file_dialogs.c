@@ -85,7 +85,7 @@ BRIDGE(bridge_save_w, OPENFILENAMEW, w, native_save_w, 0)
 LONG ntw16s_attach_file_dialogs_using(DWORD (*attach)(void *,void *))
 {
     if(!attach)return ERROR_INVALID_PARAMETER;
-    if (!(ntw16s_process_context.flags & NTW16S_POLICY_STYLE)) return NO_ERROR;
+    if (!(ntw16s_process_context.flags & NTWSHK_POLICY_STYLE)) return NO_ERROR;
     native_open_a=GetOpenFileNameA; native_open_w=GetOpenFileNameW;
     native_save_a=GetSaveFileNameA; native_save_w=GetSaveFileNameW;
     LONG error=(LONG)attach(&native_open_a,(void *)bridge_open_a);

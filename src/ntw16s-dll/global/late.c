@@ -1,7 +1,7 @@
 #include "ntw16s-dll/global/late.h"
 #include "ntw16s-dll/global/session.h"
 #include "lib-win32/process-global/background.h"
-#include "ntw16s-dll/injection/injection.h"
+#include "ntwshk-dll/injection.h"
 #include "ntw16s-dll/injection/late_process.h"
 #include <stdlib.h>
 typedef struct late_work {DWORD cookie;HDESK desktop;HMODULE module;} late_work;
@@ -21,8 +21,8 @@ static void initialize(DWORD key,void *value,void *context)
 {
     late_work *work=(late_work *)value;DWORD error=ERROR_INVALID_STATE;(void)key;(void)context;
     if(SetThreadDesktop(work->desktop) && ntw16s_global_policy_active(work->cookie)){
-        ntw16s_context *paths=(ntw16s_context *)calloc(1,sizeof(*paths));
-        if(paths){error=ntw16s_context_paths(paths,work->module);if(!error)error=ntw16s_late_process_init(paths->directory,work->cookie);free(paths);}
+        ntwshk_context *paths=(ntwshk_context *)calloc(1,sizeof(*paths));
+        if(paths){error=ntwshk_context_paths(paths,work->module);if(!error)error=ntw16s_late_process_init(paths->directory,work->cookie);free(paths);}
     }
     if(!error && ntw16s_global_policy_active(work->cookie)){
         ntw16s_global_late_mark_ready(work->cookie);

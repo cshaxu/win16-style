@@ -4,6 +4,7 @@
 #include <string.h>
 #define NTW16S_TEST_PROCESS_TIMEOUT 500000
 #include "../ntw16s-dll/isolated_process.h"
+#include "shared_dll_fixture.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"LAUNCH MATRIX FAIL line=%d error=%lu: %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
 static int matrix(int argc,WCHAR **argv)
 {
@@ -19,6 +20,7 @@ static int matrix(int argc,WCHAR **argv)
     CHECK(swprintf_s(dll32,MAX_PATH,L"%ls\\ntw16s32.dll",package)>0);
     CHECK(swprintf_s(dll64,MAX_PATH,L"%ls\\ntw16s64.dll",package)>0);
     CHECK(CopyFileW(argv[1],launcher,FALSE) && CopyFileW(argv[2],dll32,FALSE) && CopyFileW(argv[3],dll64,FALSE));
+    CHECK(copy_shared_dlls(package,argv[2],argv[3]));
     for(unsigned i=0;i<2;++i){CHECK(swprintf_s(targets[i],MAX_PATH,L"%ls\\目标 程序%u.exe",scratch,i?64:32)>0);
         CHECK(CopyFileW(argv[4+i],targets[i],FALSE));}
     for(unsigned width=0;width<2;++width)for(unsigned styled=0;styled<2;++styled){

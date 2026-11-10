@@ -72,7 +72,7 @@ static DWORD current_stage(HANDLE process,const image_info *image,stage_header *
     if(read_memory(process,image->base+rva-sizeof(*stage),stage,sizeof(*stage)))return ERROR_SUCCESS;
     if(stage->magic0!=STAGE_MAGIC0 || stage->magic1!=STAGE_MAGIC1)return ERROR_SUCCESS;
     *found=TRUE;
-    if(stage->version!=1 || stage->reserved>1 || stage->image_base!=(uint64_t)(uintptr_t)image->base ||
+    if(stage->version!=1 || stage->reserved>2 || stage->image_base!=(uint64_t)(uintptr_t)image->base ||
        stage->allocation_base>(uint64_t)UINTPTR_MAX || stage->allocation_bytes>STAGE_LIMIT ||
        stage->descriptor_offset<sizeof(*stage) || stage->descriptor_offset>stage->allocation_bytes ||
        !stage->packet_bytes || stage->packet_bytes>65536 ||
@@ -144,20 +144,23 @@ static DWORD complete_iat(HANDLE child,const image_info *image,const IMAGE_IMPOR
     if(count){iat->VirtualAddress=first;iat->Size=last-first;}
     return ERROR_SUCCESS;
 }
-static DWORD stage_process(HANDLE child,const char *dll,const void *packet,DWORD bytes)
+static DWORD stage_process(HANDLE child,const char *dependency,const char *dll,const void *packet,DWORD bytes)
 {
     image_info image;stage_header previous,*stage;BOOL staged;DWORD error;unsigned old_count=0;
     IMAGE_IMPORT_DESCRIPTOR *old,*imports;BYTE *scratch=NULL,*local=NULL,*remote=NULL;
     IMAGE_NT_HEADERS next;SIZE_T header_offset,descriptor_offset,thunk_offset,name_offset,total,written=0;
-    uintptr_t *thunks;SIZE_T dll_bytes;
+    uintptr_t *thunks;SIZE_T dll_bytes,dependency_bytes;unsigned added;
     if(!child || !packet || !bytes || bytes>65536)return ERROR_INVALID_PARAMETER;
+    if(dependency && !dll)return ERROR_INVALID_PARAMETER;
     dll_bytes=dll?strnlen(dll,4096)+1:0;if(dll_bytes>4096)return ERROR_FILENAME_EXCED_RANGE;
+    dependency_bytes=dependency?strnlen(dependency,4096)+1:0;if(dependency_bytes>4096)return ERROR_FILENAME_EXCED_RANGE;
+    added=(dll?1u:0u)+(dependency?1u:0u);
     error=find_image(child,&image);if(error)return error;
     error=current_stage(child,&image,&previous,&staged);if(error)return error;
     scratch=HeapAlloc(GetProcessHeap(),0,65536);if(!scratch)return ERROR_NOT_ENOUGH_MEMORY;
     old=(IMAGE_IMPORT_DESCRIPTOR *)scratch;next=image.nt;
     if(staged){
-        if(previous.reserved==(dll?0u:1u) && previous.packet_bytes==bytes && !read_memory(child,(void *)(uintptr_t)previous.allocation_base,scratch,bytes) &&
+        if(previous.reserved==(dependency?2u:dll?0u:1u) && previous.packet_bytes==bytes && !read_memory(child,(void *)(uintptr_t)previous.allocation_base,scratch,bytes) &&
            !memcmp(scratch,packet,bytes)){
             if(!dll)goto done;
             IMAGE_IMPORT_DESCRIPTOR descriptor;
@@ -165,10 +168,20 @@ static DWORD stage_process(HANDLE child,const char *dll,const void *packet,DWORD
             DWORD rva=image.nt.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress;
             error=read_memory(child,(void *)(base+rva),&descriptor,sizeof(descriptor));
             if(error)goto done;
-            if(base>UINTPTR_MAX-descriptor.Name || dll_bytes-1>UINTPTR_MAX-base-descriptor.Name){error=ERROR_BAD_EXE_FORMAT;goto done;}
-            error=read_memory(child,(void *)(base+descriptor.Name),scratch,dll_bytes);
+            const char *first=dependency?dependency:dll;
+            SIZE_T first_bytes=dependency?dependency_bytes:dll_bytes;
+            if(base>UINTPTR_MAX-descriptor.Name || first_bytes-1>UINTPTR_MAX-base-descriptor.Name){error=ERROR_BAD_EXE_FORMAT;goto done;}
+            error=read_memory(child,(void *)(base+descriptor.Name),scratch,first_bytes);
             if(error)goto done;
-            if(!memcmp(scratch,dll,dll_bytes))goto done;
+            if(!memcmp(scratch,first,first_bytes)){
+                if(!dependency)goto done;
+                error=read_memory(child,(void *)(base+rva+sizeof(descriptor)),&descriptor,sizeof(descriptor));
+                if(error)goto done;
+                if(base>UINTPTR_MAX-descriptor.Name || dll_bytes-1>UINTPTR_MAX-base-descriptor.Name){error=ERROR_BAD_EXE_FORMAT;goto done;}
+                error=read_memory(child,(void *)(base+descriptor.Name),scratch,dll_bytes);
+                if(error)goto done;
+                if(!memcmp(scratch,dll,dll_bytes))goto done;
+            }
         }
         next.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT]=previous.imports;
         next.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT]=previous.bound;
@@ -192,14 +205,14 @@ static DWORD stage_process(HANDLE child,const char *dll,const void *packet,DWORD
         if(old_count==IMPORT_LIMIT){error=ERROR_BAD_EXE_FORMAT;goto done;}
     }
     header_offset=align_size(bytes,16);descriptor_offset=header_offset+sizeof(*stage);
-    thunk_offset=align_size(descriptor_offset+(old_count+1+(dll?1:0))*sizeof(*imports),sizeof(uintptr_t));
-    name_offset=thunk_offset+(dll?4*sizeof(uintptr_t):0);total=name_offset+dll_bytes;
+    thunk_offset=align_size(descriptor_offset+(old_count+1+added)*sizeof(*imports),sizeof(uintptr_t));
+    name_offset=thunk_offset+added*4*sizeof(uintptr_t);total=name_offset+dependency_bytes+dll_bytes;
     if(total>STAGE_LIMIT){error=ERROR_INSUFFICIENT_BUFFER;goto done;}
     local=HeapAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY,total);if(!local){error=ERROR_NOT_ENOUGH_MEMORY;goto done;}
     remote=allocate_near(child,&image,total);if(!remote){error=GetLastError();goto done;}
     memcpy(local,packet,bytes);stage=(stage_header *)(local+header_offset);
     stage->magic0=STAGE_MAGIC0;stage->magic1=STAGE_MAGIC1;stage->version=1;
-    stage->reserved=dll?0u:1u;
+    stage->reserved=dependency?2u:dll?0u:1u;
     stage->allocation_bytes=(DWORD)total;stage->packet_bytes=bytes;stage->descriptor_offset=(DWORD)descriptor_offset;
     stage->allocation_base=(uint64_t)(uintptr_t)remote;stage->image_base=(uint64_t)(uintptr_t)image.base;
     stage->imports=next.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
@@ -209,17 +222,22 @@ static DWORD stage_process(HANDLE child,const char *dll,const void *packet,DWORD
     if(error)goto done;
     DWORD rva=(DWORD)((uintptr_t)remote-(uintptr_t)image.base);
     imports=(IMAGE_IMPORT_DESCRIPTOR *)(local+descriptor_offset);
-    memcpy(imports+(dll?1:0),old,old_count*sizeof(*old));
-    if(dll){
-        imports->OriginalFirstThunk=rva+(DWORD)thunk_offset;imports->FirstThunk=imports->OriginalFirstThunk+2*sizeof(uintptr_t);
-        imports->Name=rva+(DWORD)name_offset;
-        thunks=(uintptr_t *)(local+thunk_offset);thunks[0]=thunks[2]=((uintptr_t)1<<(sizeof(uintptr_t)*8-1))|1;
-        memcpy(local+name_offset,dll,dll_bytes);
+    memcpy(imports+added,old,old_count*sizeof(*old));
+    for(unsigned i=0;i<added;++i){
+        const char *name=(dependency && i==0)?dependency:dll;
+        SIZE_T name_bytes=(dependency && i==0)?dependency_bytes:dll_bytes;
+        SIZE_T name_at=name_offset+(dependency && i?dependency_bytes:0);
+        imports[i].OriginalFirstThunk=rva+(DWORD)(thunk_offset+i*4*sizeof(uintptr_t));
+        imports[i].FirstThunk=imports[i].OriginalFirstThunk+2*sizeof(uintptr_t);
+        imports[i].Name=rva+(DWORD)name_at;
+        thunks=(uintptr_t *)(local+thunk_offset+i*4*sizeof(uintptr_t));
+        thunks[0]=thunks[2]=((uintptr_t)1<<(sizeof(uintptr_t)*8-1))|1;
+        memcpy(local+name_at,name,name_bytes);
     }
     if(!WriteProcessMemory(child,remote,local,total,&written)){error=GetLastError();goto done;}
     if(written!=total){error=ERROR_PARTIAL_COPY;goto done;}
     next.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress=rva+(DWORD)descriptor_offset;
-    next.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].Size=(old_count+1+(dll?1:0))*sizeof(*imports);
+    next.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].Size=(old_count+1+added)*sizeof(*imports);
     next.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT].VirtualAddress=0;
     next.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT].Size=0;next.OptionalHeader.CheckSum=0;
     error=write_header(child,&image,&next);
@@ -240,9 +258,11 @@ done:
     return error;
 }
 DWORD process_hook_stage_process(HANDLE child,const char *dll,const void *packet,DWORD bytes)
-{return dll?stage_process(child,dll,packet,bytes):ERROR_INVALID_PARAMETER;}
+{return dll?stage_process(child,NULL,dll,packet,bytes):ERROR_INVALID_PARAMETER;}
+DWORD process_hook_stage_pair(HANDLE child,const char *dependency,const char *dll,const void *packet,DWORD bytes)
+{return dependency && dll?stage_process(child,dependency,dll,packet,bytes):ERROR_INVALID_PARAMETER;}
 DWORD process_hook_stage_payload(HANDLE child,const void *packet,DWORD bytes)
-{return stage_process(child,NULL,packet,bytes);}
+{return stage_process(child,NULL,NULL,packet,bytes);}
 DWORD process_hook_stage_read(process_hook_payload_consumer consume,void *context,BOOL *found)
 {
     image_info image;stage_header stage;BYTE *packet;DWORD error;

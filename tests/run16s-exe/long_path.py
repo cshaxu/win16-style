@@ -12,6 +12,9 @@ package = scratch/'package'
 package.mkdir()
 for source, name in [(launcher, 'run16s.exe'), (dll32, 'ntw16s32.dll'), (dll64, 'ntw16s64.dll')]:
     shutil.copy2(source, package/name)
+for bits,source in [(32,dll32),(64,dll64)]:
+    shared=source.with_name(f'ntwshk{bits}.dll')
+    shutil.copy2(shared,package/shared.name)
 deep = Path('\\\\?\\'+str(scratch.resolve()))
 for letter in 'xyz':
     deep = deep/('segment-'+letter*75)

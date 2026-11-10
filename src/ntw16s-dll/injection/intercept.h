@@ -1,7 +1,7 @@
 #ifndef NTW16S_INTERCEPT_H
 #define NTW16S_INTERCEPT_H
-#include "injection.h"
-extern ntw16s_context ntw16s_process_context;
+#include "ntwshk-dll/injection.h"
+extern ntwshk_context ntw16s_process_context;
 BOOL ntw16s_process_session_active(void);
 LONG ntw16s_attach_titles(void); /* joins the current early Detours transaction */
 LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *));

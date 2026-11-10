@@ -27,7 +27,7 @@ static PIDLIST_ABSOLUTE WINAPI browse_w(LPBROWSEINFOW info)
 LONG ntw16s_attach_folder_dialogs_using(DWORD (*attach)(void *,void *))
 {
     if(!attach)return ERROR_INVALID_PARAMETER;
-    if(!(ntw16s_process_context.flags & NTW16S_POLICY_STYLE))return NO_ERROR;
+    if(!(ntw16s_process_context.flags & NTWSHK_POLICY_STYLE))return NO_ERROR;
     native_browse_a=SHBrowseForFolderA;native_browse_w=SHBrowseForFolderW;
     LONG error=(LONG)attach(&native_browse_a,(void *)browse_a);
     if(!error)error=(LONG)attach(&native_browse_w,(void *)browse_w);

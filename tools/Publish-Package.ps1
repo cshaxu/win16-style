@@ -9,13 +9,13 @@ param(
 $ErrorActionPreference='Stop'
 $repo=Split-Path $PSScriptRoot -Parent
 . (Join-Path $PSScriptRoot 'Select-PackageCases.ps1')
-$names=@('demo.exe','ntw16s32.dll','ntw16s64.dll','ntw2ks32.dll','ntw2ks64.dll','run16s.exe')
+$names=@('demo.exe','ntw16s32.dll','ntw16s64.dll','ntw2ks32.dll','ntw2ks64.dll','ntwshk32.dll','ntwshk64.dll','run16s.exe')
 $Package=(Resolve-Path -LiteralPath $Package).Path
 $tested=Get-Content -LiteralPath $TestResult -Raw|ConvertFrom-Json
 if($tested.status -notin @('passed','passed-with-skips','passed-focused','passed-focused-with-skips')){throw 'Only a passed actual-package result may be published'}
 Assert-PackageCoverage -Result $tested
 $files=@(Get-ChildItem -LiteralPath $Package -Force)
-if(@(Compare-Object $names @($files.Name|Sort-Object)).Count){throw 'Expected exactly six candidate files'}
+if(@(Compare-Object $names @($files.Name|Sort-Object)).Count){throw 'Expected exactly eight candidate files'}
 function Hash([string]$Path){(Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()}
 foreach($file in $files){
     if($file.PSIsContainer -or ($file.Attributes -band [IO.FileAttributes]::ReparsePoint)){throw 'Candidate must be regular files'}
@@ -32,7 +32,7 @@ foreach($destination in $destinations){
         if((Test-Path -LiteralPath $target) -and ((Get-Item -LiteralPath $target -Force).Attributes -band ([IO.FileAttributes]::ReparsePoint -bor [IO.FileAttributes]::Directory))){throw 'Destination is not a regular file'}
     }
 }
-if($ValidateOnly){'PUBLISH VALIDATION PASS: tested hashes, exact six files, assets root and fixed O:\winnt';return}
+if($ValidateOnly){'PUBLISH VALIDATION PASS: tested hashes, exact eight files, assets root and fixed O:\winnt';return}
 $scratch=Join-Path $repo "build/t$Task-package/$RunName"
 if(Test-Path -LiteralPath $scratch){throw 'Use a fresh publication run name; preserve prior backups'}
 New-Item -ItemType Directory -Path $scratch|Out-Null
@@ -56,7 +56,7 @@ try{
         if($record.after -ne $record.expected){throw "Published hash mismatch: $($record.path)"}
     }
     @{status='passed';test_status=$tested.status;skipped=@($tested.skipped);tested_package=$Package;test_result=(Resolve-Path -LiteralPath $TestResult).Path;files=@($records)}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
-    'PUBLISH PASS: six tested files identical at assets root and O:\winnt'
+    'PUBLISH PASS: eight tested files identical at assets root and O:\winnt'
 }catch{
     @{status='incomplete';error=$_.Exception.Message;files=@($records)}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
     throw

@@ -4,6 +4,7 @@
 #include <string.h>
 #define NTW16S_TEST_PROCESS_TIMEOUT 300000
 #include "../ntw16s-dll/isolated_process.h"
+#include "shared_dll_fixture.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"TREE MATRIX FAIL %d error=%lu: %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
 static int matrix(int argc,WCHAR **argv)
 {
@@ -11,6 +12,7 @@ static int matrix(int argc,WCHAR **argv)
     CHECK(argc==6 && GetEnvironmentVariableW(L"WIN16STYLE_CAPTURE_DIR",scratch,MAX_PATH));
     CHECK(swprintf_s(package,MAX_PATH,L"%ls\\tree package",scratch)>0 && CreateDirectoryW(package,NULL));
     CHECK(swprintf_s(launcher,MAX_PATH,L"%ls\\run16s.exe",package)>0 && CopyFileW(argv[1],launcher,FALSE));
+    CHECK(copy_shared_dlls(package,argv[2],argv[3]));
     static const WCHAR *const names[]={L"ntw16s32.dll",L"ntw16s64.dll",L"tree32.exe",L"tree64.exe"};
     for(unsigned i=0;i<4;++i)CHECK(swprintf_s(files[i],MAX_PATH,L"%ls\\%ls",package,names[i])>0 && CopyFileW(argv[2+i],files[i],FALSE));
     for(unsigned root=0;root<2;++root)for(unsigned child=0;child<2;++child)for(unsigned api=0;api<2;++api){

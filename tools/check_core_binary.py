@@ -76,6 +76,7 @@ def main():
     if ordinals!={**{name:index+2 for index,name in enumerate(sorted(expected))}, 'Ntw16sShowModernFileDialog':33, 'Ntw16sGlobalHook':34, 'Ntw16sGlobalHost':35, 'Ntw16sWindowAttach':36, 'Ntw16sGlobalThread':37, 'Ntw16sUwpFrameHook':38, 'Ntw16sWindowThreadHook':39} or live!=set(range(1,40)):
         raise SystemExit('PE ordinal map differs from core plan; helper ordinal 1 must be NONAME')
     native={'kernel32.dll','user32.dll','gdi32.dll','comctl32.dll','comdlg32.dll','shell32.dll','ole32.dll','oleaut32.dll','dwmapi.dll','uxtheme.dll','advapi32.dll'}
+    native.add('ntwshk32.dll' if args.arch=='x86' else 'ntwshk64.dll')
     if any(name.lower() not in native and not system_crt(name) for name in imports):
         raise SystemExit('Forbidden external/compiler runtime import: '+repr(imports))
     print(json.dumps(dict(status='PE PASS',architecture=args.arch,public_exports=len(names),ordinals='1 NONAME helper; 2..32 core; 33 modern dialog; 34 global hook; 35 global host; 36 window attach; 37 global thread; 38 UWP frame hook; 39 window thread hook',imports=imports,sha256=digest)))

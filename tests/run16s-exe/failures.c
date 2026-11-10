@@ -1,5 +1,5 @@
-#include "ntw16s-dll/injection/injection.h"
-#include "ntw16s-dll/injection/staging.h"
+#include "ntwshk-dll/injection.h"
+#include "ntwshk-dll/staging.h"
 #include <stdio.h>
 #include <wchar.h>
 #include <string.h>
@@ -16,7 +16,7 @@ static void owned_close(owned_child *child)
     if(child->p.hThread)CloseHandle(child->p.hThread);
     ZeroMemory(&child->p,sizeof(child->p));
 }
-static WCHAR self[NTW16S_PATH_CAP];
+static WCHAR self[NTWSHK_PATH_CAP];
 #ifdef _WIN64
 static DWORD helper_mode,helper_calls;
 static owned_child helper_observer;
@@ -63,14 +63,15 @@ int wmain(int argc,WCHAR **argv)
     if(argc==2 && !wcscmp(argv[1],L"--stall")){
         HANDLE never=CreateEventW(NULL,TRUE,FALSE,NULL);if(!never)return 1;
         WaitForSingleObject(never,INFINITE);CloseHandle(never);return 0;}
-    CHECK(argc==2 && GetModuleFileNameW(NULL,self,NTW16S_PATH_CAP));
-    ntw16s_context context;CHECK(!ntw16s_context_paths(&context,NULL));
+    CHECK(argc==2 && GetModuleFileNameW(NULL,self,NTWSHK_PATH_CAP));
+    ntwshk_context context;CHECK(!ntwshk_context_paths(&context,NULL));
+    wcscpy(context.module,L"ntw16s");
     {owned_child *warm=&children[count++];CHECK(spawn(warm,self,L""));owned_close(warm);}
     DWORD before=0,after=0;CHECK(GetProcessHandleCount(GetCurrentProcess(),&before));
     {
         owned_child *child=&children[count++];HANDLE restricted=NULL;CHECK(spawn(child,self,L""));
         restricted=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION|SYNCHRONIZE,FALSE,child->p.dwProcessId);CHECK(restricted);
-        DWORD error=ntw16s_install(restricted,&context,CreateProcessW);CloseHandle(restricted);
+        DWORD error=ntwshk_install(restricted,&context,CreateProcessW);CloseHandle(restricted);
         if(error!=ERROR_ACCESS_DENIED)fprintf(stderr,"RESTRICTED install error=%lu\n",error);
         CHECK(error==ERROR_ACCESS_DENIED && suspended(child));
     }
@@ -80,12 +81,12 @@ int wmain(int argc,WCHAR **argv)
         CHECK(swprintf_s(marker,MAX_PATH,L"%ls\\invalid-payload-entry.txt",scratch)>0);
         CHECK(GetFileAttributesW(marker)==INVALID_FILE_ATTRIBUTES);
         CHECK(swprintf_s(tail,ARRAYSIZE(tail),L"--entry \"%ls\"",marker)>0 && spawn(child,self,tail));
-        BYTE data[65536];ntw16s_packet h={0};h.version=99;h.flags=1;
+        BYTE data[65536];ntwshk_packet h={0};h.version=99;h.flags=1;
         h.machine=sizeof(void *)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386;
         h.directory_offset=sizeof(h);h.directory_bytes=(DWORD)((wcslen(context.directory)+1)*sizeof(WCHAR));h.bytes=sizeof(h)+h.directory_bytes;
         memcpy(data,&h,sizeof(h));memcpy(data+sizeof(h),context.directory,h.directory_bytes);
-        WCHAR dll[NTW16S_PATH_CAP];char dll_a[4096];
-        CHECK(swprintf_s(dll,NTW16S_PATH_CAP,L"%lsntw16s%u.dll",context.directory,(unsigned)(sizeof(void *)*8))>0);
+        WCHAR dll[NTWSHK_PATH_CAP];char dll_a[4096];
+        CHECK(swprintf_s(dll,NTWSHK_PATH_CAP,L"%lsntw16s%u.dll",context.directory,(unsigned)(sizeof(void *)*8))>0);
         CHECK(WideCharToMultiByte(CP_ACP,0,dll,-1,dll_a,sizeof(dll_a),NULL,NULL));
         CHECK(!process_hook_stage_process(child->p.hProcess,dll_a,data,h.bytes));
         CHECK(ResumeThread(child->p.hThread)==1 && WaitForSingleObject(child->p.hProcess,10000)==WAIT_OBJECT_0);
@@ -93,12 +94,12 @@ int wmain(int argc,WCHAR **argv)
         CHECK(GetFileAttributesW(marker)==INVALID_FILE_ATTRIBUTES);
     }
 #ifdef _WIN64
-    ntw16s_context foreign;CHECK(GetFullPathNameW(argv[1],NTW16S_PATH_CAP,foreign.directory,NULL));
-    WCHAR *slash=wcsrchr(foreign.directory,L'\\');CHECK(slash);slash[1]=0;foreign.flags=1;
+    ntwshk_context foreign;CHECK(GetFullPathNameW(argv[1],NTWSHK_PATH_CAP,foreign.directory,NULL));
+    WCHAR *slash=wcsrchr(foreign.directory,L'\\');CHECK(slash);slash[1]=0;foreign.flags=1;wcscpy(foreign.module,L"ntw16s");
     for(helper_mode=1;helper_mode<=3;++helper_mode){
         owned_child *child=&children[count++];CHECK(spawn(child,argv[1],L""));helper_calls=0;
         controlled_target=child->p.hProcess;
-        ULONGLONG start=GetTickCount64();DWORD error=ntw16s_install(child->p.hProcess,&foreign,controlled_helper);
+        ULONGLONG start=GetTickCount64();DWORD error=ntwshk_install(child->p.hProcess,&foreign,controlled_helper);
         ULONGLONG elapsed=GetTickCount64()-start;
         CHECK(helper_calls==1);
         if(helper_mode!=3)CHECK(suspended(child));

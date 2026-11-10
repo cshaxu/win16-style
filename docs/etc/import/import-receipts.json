@@ -131,9 +131,9 @@
       "path": "tests/integration/global_headless_existing.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3eea27d4313a770162da949c8a39e7f5e99081342a75e179919c3b75ac3a4184",
+      "sha256": "98b9798e93fa2114b59da72c5f86a48b4aabd3dc65d0b0af46477cbed3b9c6b1",
       "disposition": "authored",
-      "review": "T21 S13 startup-discovered headless process propagation and stop regression; T21 S42 direct public calls and product-side cleanup",
+      "review": "T21 S13 startup-discovered headless process propagation and stop regression; T21 S42 direct public calls and product-side cleanup; T25 S2 shared runtime extraction",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -176,9 +176,9 @@
       "path": "src/ntw16s-dll/global/late.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4ef6e3d6665fc01886d69695c2d13e3c40046daabdd58ad987f93f76cf4b528c",
+      "sha256": "5c4c11323c085222fa01e9581d37135322b5f7f63cbb361cfd5023ff13958bc3",
       "disposition": "authored",
-      "review": "T21 S13 experimental global process propagation integration and owned regression; T21 S42 product adapter directory cleanup",
+      "review": "T21 S13 experimental global process propagation integration and owned regression; T21 S42 product adapter directory cleanup; T25 S2 shared runtime extraction",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -194,18 +194,18 @@
       "path": "src/ntw16s-dll/injection/late_process.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6045a74cd5657bdb795ab01f119ea80d190a9318398339dcc875e0485bcb15df",
+      "sha256": "97d50f9425d5a7fae4db236ad3783366cf081f1b1358f7f9fd5a39400cd62c66",
       "disposition": "authored",
-      "review": "T21 S13 experimental synchronized late process initializer; not linked into product; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S13 PSS guard ownership candidate; T21 S13 unified session stop semantics",
+      "review": "T21 S13 experimental synchronized late process initializer; not linked into product; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S13 PSS guard ownership candidate; T21 S13 unified session stop semantics; T25 S2 shared runtime extraction",
       "notice": "Project-authored source; uses existing project hook and installer code"
     },
     {
       "path": "tests/integration/late_process_prototype.c",
       "source": null,
       "source_blob": null,
-      "sha256": "73deb407e16ee517d1d91110323da917511cc5dbaa78a118c533d47a7c3511f3",
+      "sha256": "8b514ff323789176ebc923f71c3622e67d6dbbde321781aa9b2fe09325b8bac0",
       "disposition": "authored",
-      "review": "T21 S13 experimental late process-hook adapter exercising production propagation implementation; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy; T21 S13 session-bound propagation tests; T21 S13 session-bound propagation tests; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S42 direct public calls and product-side cleanup",
+      "review": "T21 S13 experimental late process-hook adapter exercising production propagation implementation; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy; T21 S13 session-bound propagation tests; T21 S13 session-bound propagation tests; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S42 direct public calls and product-side cleanup; T25 S2 shared runtime extraction",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -410,9 +410,9 @@
       "path": "src/run16s-exe/global.c",
       "source": null,
       "source_blob": null,
-      "sha256": "712a09eafc441aaca514176ef62a570d2b972cd9aa74d7a31b279732e9a1acb4",
+      "sha256": "c5e7c2536ae9067d52ee26f182d847c1cc5337922ddc81ccdd4c6424732aa745",
       "disposition": "authored",
-      "review": "T21 S13 bounded startup attachment completion; T21 S42 direct public calls and product-side cleanup; T24 S1 quality refactor; T24 S1 directly use process-image interface; T24 S1 preserve global startup wait error; T24 S1 report sweep enumeration errors",
+      "review": "T21 S13 bounded startup attachment completion; T21 S42 direct public calls and product-side cleanup; T24 S1 quality refactor; T24 S1 directly use process-image interface; T24 S1 preserve global startup wait error; T24 S1 report sweep enumeration errors; T25 S2 shared runtime extraction",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -1307,39 +1307,39 @@
       "notice": "Project-authored, repository MIT"
     },
     {
-      "path": "src/ntw16s-dll/injection/injection.h",
+      "path": "src/ntwshk-dll/injection.h",
       "source": "src/nthook32-dll/hook.h",
       "source_blob": "ed368c6a8b71cda0a1a84e57a542ddf8452de1ad",
-      "sha256": "e1852dd53b97143bcb8bb43702592fb5ed5346ec06e0f1eea67b478409728e35",
+      "sha256": "e26830db4a8405bbe46f41f4fd49754903129f79addc5fae04b2957b9ee21c3a",
       "disposition": "adapt",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T21 S13 global session propagation policy; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T21 S13 global session propagation policy; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
-      "path": "src/ntw16s-dll/injection/context.c",
+      "path": "src/ntwshk-dll/context.c",
       "source": "src/nthook32-dll/context.cpp",
       "source_blob": "f435db72a3475ef34d921a57d1632d6990d407af",
-      "sha256": "57fe57f762ec3ea0218dd5b161d72979ae739014133a57d92a917b10bf3d8217",
+      "sha256": "cb0e7bdb56e58b4bc8003c2a4441c3e19ec1f13e725d2def4f69cd3ea070408a",
       "disposition": "adapt",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T21 S13 global session propagation policy; M0 T25 S1: style selection and experimental Windows 2000 integration",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T21 S13 global session propagation policy; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
-      "path": "src/ntw16s-dll/injection/installer.c",
+      "path": "src/ntwshk-dll/installer.c",
       "source": "src/nthook32-dll/installer.cpp",
       "source_blob": "84e78935b3079089569b9167eaed994df3220ebd",
-      "sha256": "8ff6ed60d1d53f4e08b026cd234d9ae7972140b65bfcfed5b07a3370709d3caa",
+      "sha256": "f0abefcea10481529d4c6bb4323e388ed69b44bd8b98c63977bf30481182c329",
       "disposition": "adapt",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified session stop semantics; T21 S28 image operations extracted to process-image; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified session stop semantics; T21 S28 image operations extracted to process-image; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
       "path": "src/run16s-exe/main.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c057bf34247b2fd2a968ea0308820435871069cb105ca9a278da2bcac1c7c405",
+      "sha256": "b98e53c9b34fe28a585ac0f33f60ff5e973efd4c9ddf77c1526f83c21cd0cf52",
       "disposition": "authored",
-      "review": "T21 S36 process launch source and launcher ownership; see fixed source record; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained; T23 S4 console and Terminal window adaptation and native tests; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration",
+      "review": "T21 S36 process launch source and launcher ownership; see fixed source record; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained; T23 S4 console and Terminal window adaptation and native tests; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction",
       "notice": "Project MIT; upstream ntvdm64 source identity recorded"
     },
     {
@@ -1364,18 +1364,18 @@
       "path": "tests/run16s-exe/payload.c",
       "source": null,
       "source_blob": null,
-      "sha256": "22db41cd661e26ce0612de0952b0a179dbb82f2407c2584df0d50d171ca2bd76",
+      "sha256": "64cc819d503835638fcb26d0848c8968d925e0e27b2fb8ac19c0eb84c110ba32",
       "disposition": "authored",
-      "review": "T3 S3 final path/CLI contract audit; UNC namespace case and actual exit/I-O cases; docs/proposals/launcher-injection.md; T21 S13 global session propagation policy; M0 T25 S1: style selection and experimental Windows 2000 integration",
+      "review": "T3 S3 final path/CLI contract audit; UNC namespace case and actual exit/I-O cases; docs/proposals/launcher-injection.md; T21 S13 global session propagation policy; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
       "path": "tests/run16s-exe/staging.c",
       "source": null,
       "source_blob": null,
-      "sha256": "58fb4b96f3431d388c3ad811f46d1cb5069e40e9446796b97fcb4b3f7fb5e86a",
+      "sha256": "e5dd001f0a4f8c0326f74b3da5329a9f36971bb853c62f732a71da02f4e67843",
       "disposition": "authored",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T24 S1 directly use process-image interface",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T24 S1 directly use process-image interface; T25 S2 shared runtime extraction",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -1391,27 +1391,27 @@
       "path": "src/ntw16s-dll/injection/entry.c",
       "source": "src/nthook32-dll/entry.cpp",
       "source_blob": "39504e103bf2a934721d2898b1a1a2e8b6dd2f6b",
-      "sha256": "67485bf75f9d2e872ceb17d9c9d0325343328528058deea9183c76b3a85f3e6b",
+      "sha256": "385850e32eaa1f788c87ccea7b2a9f21c77d8a363b30c29fc2354b892a5ac690",
       "disposition": "adapt",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T20 S1 common-dialog bridge and version; M0 T25 S1: style selection and experimental Windows 2000 integration",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T20 S1 common-dialog bridge and version; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
     },
     {
       "path": "src/ntw16s-dll/injection/intercept.h",
       "source": "src/nthook32-dll/intercept.h",
       "source_blob": "b9b7ea48abb2548f2c980db63896321d079a80cd",
-      "sha256": "7fe3b77f1e75e7f490974a576234fb68a57c24a9aede7dd0c2fcc2e625bfe1ba",
+      "sha256": "1fa964e83afa6ec0aa0b63ed67d77d8618114ce8ee54fc215bba201d68fccf58",
       "disposition": "adapt",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T20 S1 common-dialog bridge and version; T21 S13 reusable late initializer and process-detour adapter; T21 S13 unified late style hooks and stop semantics; T24 S1 quality refactor",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T20 S1 common-dialog bridge and version; T21 S13 reusable late initializer and process-detour adapter; T21 S13 unified late style hooks and stop semantics; T24 S1 quality refactor; T25 S2 shared runtime extraction",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
     },
     {
       "path": "src/ntw16s-dll/injection/window_titles.c",
       "source": "src/nthook32-dll/window_titles.cpp",
       "source_blob": "0a3d1cd942345edb25e879b9377311929551a0ec",
-      "sha256": "e44d58994a8f3813614ab8e1040b8bca92261b60f40388a142a2de67fc70e09f",
+      "sha256": "017e8dfbd3509aa34cee56e39eba331bc6e1f6886c2ec632f309493d66e6f35a",
       "disposition": "adapt",
-      "review": "T3 S2 same-DLL delayed binding and read-only native-target diagnostics; docs/proposals/launcher-injection.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S7 bounded initialized public report-list text scope, exact native custom-draw DC and unchanged app callbacks, independent host System bitmap and ownership/late-view tests; no external code copied or original resources modified; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T18 S21 scoped observed checklist owner-draw frame, public state and original graphic, no external code or resource changes; T18 S27 exact observed TSpinButton frame scope, native primitive semantics retained, no external code or original graphics changed; T18 S31 verified native STATIC drawing scope, source font and application printing preserved; T18 S64 VB6 checklist scoped 96 DPI bitmap rendering and additional BitBlt hook; native fallbacks retained; T18 S64 P50 bounded VB6 Data navigation graphics; T18 S64: scoped ordinary Delphi group paint witness and native theme text entry, original notices retained; T18 S64 scoped observed Delphi TPopupMenu owner, native callbacks and item restoration; private cleanup, no external code or graphics changed; T18 S64 observed paired Delphi TPanel outer bevel paint scope, caller/parent/clip and native pen preserved; project-authored native tests; no external code or resources copied; T18 S64 P110 modern SpinButton bounded theme, bitmap and paint handling; T18 S64 P117 verified simple Delphi status scoped typography; T18 S64 P117 isolated font lease and lifecycle verification; T18 S64 P119 bounded multi-pane status font; T18 S64 P121 ANSI RichEdit witness and native chrome; T18 S64 P122 Unicode witness and abnormal paint cleanup; T18 S64 P123 scroll box witness; T18 S64 P125 native month calendar arrows; T18 S64 P126 selected-date color; T18 S64 P127 bounded native calendar title and query guards; T18 S64 P128 bounded calendar text; T18 S64 P129 witnessed TValueListEditor in-place button; T18 S64 P130 witnessed combo theme and dropdown arrow; T18 S64 witnessed VCL control bar frame; T18 S64 control bar observed bevel variants; T18 S64 app-owned ANSI DBEdit forwarding witness and negative model; T18 S64 bounded ANSI data combo forwarding witness; T18 S64 P160: bounded same-owner TDBNavigator button backgrounds; T20 S1 common find/replace creation scope; T21 S13 unified late style hooks and stop semantics; T24 S1 unify simple common dialog scope hooks",
+      "review": "T3 S2 same-DLL delayed binding and read-only native-target diagnostics; docs/proposals/launcher-injection.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S7 bounded initialized public report-list text scope, exact native custom-draw DC and unchanged app callbacks, independent host System bitmap and ownership/late-view tests; no external code copied or original resources modified; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T18 S21 scoped observed checklist owner-draw frame, public state and original graphic, no external code or resource changes; T18 S27 exact observed TSpinButton frame scope, native primitive semantics retained, no external code or original graphics changed; T18 S31 verified native STATIC drawing scope, source font and application printing preserved; T18 S64 VB6 checklist scoped 96 DPI bitmap rendering and additional BitBlt hook; native fallbacks retained; T18 S64 P50 bounded VB6 Data navigation graphics; T18 S64: scoped ordinary Delphi group paint witness and native theme text entry, original notices retained; T18 S64 scoped observed Delphi TPopupMenu owner, native callbacks and item restoration; private cleanup, no external code or graphics changed; T18 S64 observed paired Delphi TPanel outer bevel paint scope, caller/parent/clip and native pen preserved; project-authored native tests; no external code or resources copied; T18 S64 P110 modern SpinButton bounded theme, bitmap and paint handling; T18 S64 P117 verified simple Delphi status scoped typography; T18 S64 P117 isolated font lease and lifecycle verification; T18 S64 P119 bounded multi-pane status font; T18 S64 P121 ANSI RichEdit witness and native chrome; T18 S64 P122 Unicode witness and abnormal paint cleanup; T18 S64 P123 scroll box witness; T18 S64 P125 native month calendar arrows; T18 S64 P126 selected-date color; T18 S64 P127 bounded native calendar title and query guards; T18 S64 P128 bounded calendar text; T18 S64 P129 witnessed TValueListEditor in-place button; T18 S64 P130 witnessed combo theme and dropdown arrow; T18 S64 witnessed VCL control bar frame; T18 S64 control bar observed bevel variants; T18 S64 app-owned ANSI DBEdit forwarding witness and negative model; T18 S64 bounded ANSI data combo forwarding witness; T18 S64 P160: bounded same-owner TDBNavigator button backgrounds; T20 S1 common find/replace creation scope; T21 S13 unified late style hooks and stop semantics; T24 S1 unify simple common dialog scope hooks; T25 S2 shared runtime extraction",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
     },
     {
@@ -1436,9 +1436,9 @@
       "path": "tests/integration/automatic_launch.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1a015e7843f2425b3ec53f12821a318da230219fbe6577b41d403a813676d5db",
+      "sha256": "85a8274b38d1be0fe16836c59d6b7fb2b8ebe8ba77950d657c490b876a7d2879",
       "disposition": "authored",
-      "review": "T3 S2 native MB_OK single-button oracle, exact witnesses and Unicode targets; docs/history/M0-T3-S2-bootstrap.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "review": "T3 S2 native MB_OK single-button oracle, exact witnesses and Unicode targets; docs/history/M0-T3-S2-bootstrap.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T25 S2 shared runtime extraction",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
     },
     {
@@ -1454,27 +1454,27 @@
       "path": "tests/run16s-exe/failures.c",
       "source": null,
       "source_blob": null,
-      "sha256": "a719d54e6131bdd7b1526f1b8cd030906f8459c6ada50cf4fc3ec2545e43d9ec",
+      "sha256": "daeebb47636df05810d292d21d8b9c4a929b1a916137e1f28cad390f16a00530",
       "disposition": "authored",
-      "review": "T3 S3 real permission/initialization/helper/CLI failure paths; docs/proposals/launcher-injection.md; T4 S3 target-first-exit helper branch, see docs/history/M0-T4-completion.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "review": "T3 S3 real permission/initialization/helper/CLI failure paths; docs/proposals/launcher-injection.md; T4 S3 target-first-exit helper branch, see docs/history/M0-T4-completion.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T25 S2 shared runtime extraction",
       "notice": "Project-authored test, repository MIT"
     },
     {
       "path": "tests/run16s-exe/cli_failures.py",
       "source": null,
       "source_blob": null,
-      "sha256": "4c9e5271fbfaed6f2b34031dea0f00cd6b730b2fe34dddd89bf2888baa282cc9",
+      "sha256": "1e1fb1e9d67d6f5f24b8a4d3a7f8b4a6df7d9ea2665ed2dff89d75a03c2be638",
       "disposition": "authored",
-      "review": "T3 S3 final path/CLI contract audit; UNC namespace case and actual exit/I-O cases; docs/proposals/launcher-injection.md; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait",
+      "review": "T3 S3 final path/CLI contract audit; UNC namespace case and actual exit/I-O cases; docs/proposals/launcher-injection.md; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T25 S2 shared runtime extraction",
       "notice": "Project-authored test, repository MIT"
     },
     {
       "path": "src/ntw16s-dll/injection/create_process.c",
       "source": "src/nthook32-dll/create_process.cpp",
       "source_blob": "2369ce7a7c46e79fc23f73367db9d42e0c40c9da",
-      "sha256": "24a8922b4c90fb25bba4ad7c9b04d574dac36a1b99561e08599c6b9cdcaba30c",
+      "sha256": "b2fede8b6a9aabe5fb74d4dce7468b8265539c1f684e11abe5d59dcf6b463bdb",
       "disposition": "adapt",
-      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S13 unified session stop semantics; T21 S42 product adapter directory cleanup; T23 S1 optional AsUserW propagation and DWM restoration regression; T23 S2 bounded self-elevation redirect candidate",
+      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S13 unified session stop semantics; T21 S42 product adapter directory cleanup; T23 S1 optional AsUserW propagation and DWM restoration regression; T23 S2 bounded self-elevation redirect candidate; T25 S2 shared runtime extraction; T25 S2 shared runtime extraction",
       "notice": "Project-authored source adaptation or new native fixture, repository MIT"
     },
     {
@@ -1490,9 +1490,9 @@
       "path": "tests/integration/propagate_basic.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f9fe8746f2d15d35558305b03fa0cf93cc66914e8706b20753383183adc309a8",
+      "sha256": "27122f68739f9c05e616e70bce7d5342aa2649c55518f84e53ef8074a3e0906d",
       "disposition": "authored",
-      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T25 S2 shared runtime extraction",
       "notice": "Project-authored source adaptation or new native fixture, repository MIT"
     },
     {
@@ -1517,9 +1517,9 @@
       "path": "tests/integration/creation_contract_driver.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4456ca4267b372696e822f7c9283e3e5afb2cb2afa6df6fd19dad32fdf4b3026",
+      "sha256": "f822bf42622c4679fdab227920872fee214b2830767b6776c48c49c8645aeed4",
       "disposition": "authored",
-      "review": "T4 S2 native/injected field and owned-job rollback contracts; docs/history/M0-T4-S2-contract.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "review": "T4 S2 native/injected field and owned-job rollback contracts; docs/history/M0-T4-S2-contract.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T25 S2 shared runtime extraction",
       "notice": "Project-authored fixture, repository MIT"
     },
     {
@@ -1535,9 +1535,9 @@
       "path": "tests/integration/rollback_contract_driver.c",
       "source": null,
       "source_blob": null,
-      "sha256": "9de4a198af55646b3525a8c7360cc69bf178062d5b121bd232f5a8f8744b8ead",
+      "sha256": "a44379e34948e870a7acc0f0721d78c241b1b836ac97fda922953355e0626800",
       "disposition": "authored",
-      "review": "T4 S2 native/injected field and owned-job rollback contracts; docs/history/M0-T4-S2-contract.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending",
+      "review": "T4 S2 native/injected field and owned-job rollback contracts; docs/history/M0-T4-S2-contract.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T25 S2 shared runtime extraction",
       "notice": "Project-authored fixture, repository MIT"
     },
     {
@@ -1580,9 +1580,9 @@
       "path": "tests/demo-exe/observe.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4489d1611e38bad30a60592ad2d586d9e1c8205f00f9c5dfc5a9eb2dab17e3e3",
+      "sha256": "e8e379b9588a515af403cd0ed48471d8579f2228245080062b9045d81e1a13c3",
       "disposition": "authored",
-      "review": "T5 S2 external owned demo observer; docs/history/M0-T5-S2-pair.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T17 S8 exact observed VB6 FileListBox/DirListBox roles, dual-version file protocol models and authentic private-activation witness; native image/font/data ownership and original notices preserved; T18 S6 corrects the observer's one-time native cache timing: a second identical reopen/close must equal the post-warm count, preserving recurring-leak detection without calling an OS lazy cache a product leak",
+      "review": "T5 S2 external owned demo observer; docs/history/M0-T5-S2-pair.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T17 S8 exact observed VB6 FileListBox/DirListBox roles, dual-version file protocol models and authentic private-activation witness; native image/font/data ownership and original notices preserved; T18 S6 corrects the observer's one-time native cache timing: a second identical reopen/close must equal the post-warm count, preserving recurring-leak detection without calling an OS lazy cache a product leak; T25 S2 shared runtime extraction",
       "notice": "Project-authored fixture, repository MIT; T18 S7 allows a measured decrease after reopening while still rejecting growth above the settled baseline"
     },
     {
@@ -1652,9 +1652,9 @@
       "path": "tests/run16s-exe/long_path.py",
       "source": null,
       "source_blob": null,
-      "sha256": "777f8dd4809fc5a89195faa69b911909d537501aba4ae09e25747cd3a793d87c",
+      "sha256": "aa2c6d408922b4ebc2b71e4d5d31f6e244139550ce4d16203a1668d174c26883",
       "disposition": "authored",
-      "review": "T6 S1 extended target path native CLI/entry proof; docs/history/M0-T6-S1-package.md",
+      "review": "T6 S1 extended target path native CLI/entry proof; docs/history/M0-T6-S1-package.md; T25 S2 shared runtime extraction",
       "notice": "Project-authored fixture, repository MIT"
     },
     {
@@ -1805,27 +1805,27 @@
       "path": "src/lib-win32/process-hook/staging.c",
       "source": null,
       "source_blob": null,
-      "sha256": "5bb5c83fad1abedc5e9d96573e16d47306654b856eba1b54cbcc3717ae198dcd",
+      "sha256": "65f6f18e5d54d6afafc0f478e065418ee2181775e7d94cb94082d117828e6f87",
       "disposition": "authored",
-      "review": "T6 S1 private C PE stager/OS helper or explicit native Windows manifest/import contract; see M0-T6-S1-package.md; final clean-package regression pending; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T21 S43 minimal public contract/lifetime corrections; original resources unchanged",
+      "review": "T6 S1 private C PE stager/OS helper or explicit native Windows manifest/import contract; see M0-T6-S1-package.md; final clean-package regression pending; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T21 S43 minimal public contract/lifetime corrections; original resources unchanged; T25 S2 shared runtime extraction",
       "notice": "Project-authored; project MIT LICENSE"
     },
     {
       "path": "src/lib-win32/process-hook/staging.h",
       "source": null,
       "source_blob": null,
-      "sha256": "910166162612075fc4916b0d4cdcd05dcdc29f191e5b6ffd963681f3c35b8514",
+      "sha256": "403c3a6f684efa5b9bbbb6f28dba965bee6eb7a8c4c0552ce7ca47ddc72a35b7",
       "disposition": "authored",
-      "review": "T21 S26 project-neutral opaque-payload staging interface",
+      "review": "T21 S26 project-neutral opaque-payload staging interface; T25 S2 shared runtime extraction",
       "notice": "Project-authored; project MIT LICENSE"
     },
     {
-      "path": "src/ntw16s-dll/injection/staging.h",
+      "path": "src/ntwshk-dll/staging.h",
       "source": null,
       "source_blob": null,
-      "sha256": "020a5449f99a318e95e6cc2fc4bb1ed5dfc0e19a46001e5a1289d2f7a7639ec4",
+      "sha256": "bfa39ce0ec11379a1c1b4c2ca7a93a71aeeaadb1c50931a751e8b862c8307c70",
       "disposition": "authored",
-      "review": "T6 S1 private C PE stager/OS helper or explicit native Windows manifest/import contract; see M0-T6-S1-package.md; final clean-package regression pending",
+      "review": "T6 S1 private C PE stager/OS helper or explicit native Windows manifest/import contract; see M0-T6-S1-package.md; final clean-package regression pending; T25 S2 shared runtime extraction",
       "notice": "Project-authored; project MIT LICENSE"
     },
     {
@@ -1847,12 +1847,12 @@
       "notice": "Project-authored; project MIT LICENSE"
     },
     {
-      "path": "src/ntw16s-dll/injection/helper.c",
+      "path": "src/ntwshk-dll/helper.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c1a0f1efa8bb92d1ebf55b514bbbb59098fb616dc271b62cb0e0412440a58f6a",
+      "sha256": "01e553ae718d138a2b24cf636fa62ae806b4d8b70ce30c4d1acf71672626e18a",
       "disposition": "authored",
-      "review": "T6 S1 private C PE stager/OS helper or explicit native Windows manifest/import contract; see M0-T6-S1-package.md; final clean-package regression pending; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration",
+      "review": "T6 S1 private C PE stager/OS helper or explicit native Windows manifest/import contract; see M0-T6-S1-package.md; final clean-package regression pending; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction",
       "notice": "Project-authored; project MIT LICENSE"
     },
     {
@@ -1913,9 +1913,9 @@
       "path": "tests/run16s-exe/wait.py",
       "source": null,
       "source_blob": null,
-      "sha256": "f8b20f3d5461698e0e2982202d8d2b4a7d64fe624096bb1c051fcd189bdc33a1",
+      "sha256": "796b5a4b57c0ffab8c5958a52c654ab2b4ae6b6a0546377c8d911414f2599a76",
       "disposition": "authored",
-      "review": "T6 S3 held native CUI/GUI target and actual cmd/event/console-membership wait contract; explicit same-batch DLL staging and failure stdout/stderr capture; console membership is authoritative in headless contexts with NULL console HWND; check parent liveness before membership; M0 T25 S1: style selection and experimental Windows 2000 integration",
+      "review": "T6 S3 held native CUI/GUI target and actual cmd/event/console-membership wait contract; explicit same-batch DLL staging and failure stdout/stderr capture; console membership is authoritative in headless contexts with NULL console HWND; check parent liveness before membership; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction",
       "notice": "Project-authored C17/Python native integration fixture, MIT"
     },
     {
@@ -1940,9 +1940,9 @@
       "path": "tests/integration/cmd_nested.c",
       "source": null,
       "source_blob": null,
-      "sha256": "09f92227c7e524000400f062746bc5146c6a8993c18ae521a0089b51dfdfad5f",
+      "sha256": "4fb06be0690bc7195122694c2920d8dcd3cad890ffeb0d95edcd77b1ac8680bf",
       "disposition": "authored",
-      "review": "T9 S1 pure C real interactive nested cmd pipe driver, self-contained core and separately optional isolated installed-backend coverage; docs/proposals/vdm-propagation.md",
+      "review": "T9 S1 pure C real interactive nested cmd pipe driver, self-contained core and separately optional isolated installed-backend coverage; docs/proposals/vdm-propagation.md; T25 S2 shared runtime extraction",
       "notice": "Project-authored; project MIT LICENSE"
     },
     {
@@ -3056,18 +3056,18 @@
       "path": "src/ntw16s-dll/injection/file_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1001dd3e3d51f43e2dac7a257d7df2820ce781756e7c830f679f981775a34e94",
+      "sha256": "ac4a296da9cecb35e734bb4896110426d6e8eb0391502b64f4450ad7e605dfd6",
       "disposition": "authored",
-      "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture; T21 S13 unified late style hooks and stop semantics",
+      "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture; T21 S13 unified late style hooks and stop semantics; T25 S2 shared runtime extraction",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
     },
     {
       "path": "src/ntw16s-dll/injection/folder_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f444c7d526d006659266c88dbc6c5fef99395220638e8a41b86d88f8ab5029dd",
+      "sha256": "dc593d410d2e2a1b4e83e0e98d58f31626975c0d032c6fed3b2409e89c3c321c",
       "disposition": "authored",
-      "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture; T21 S13 unified late style hooks and stop semantics; T24 S1 quality refactor",
+      "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture; T21 S13 unified late style hooks and stop semantics; T24 S1 quality refactor; T25 S2 shared runtime extraction",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
     },
     {
@@ -3218,9 +3218,9 @@
       "path": "src/ntw16s-dll/injection/com_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4710448f63bc6b99f2afc35703d0b851834809e5873bd7be01328dc7a472dad5",
+      "sha256": "7568b891d20537acbb952fd4d610ab243e6c419f349a95ef3d25896a11d13441",
       "disposition": "authored",
-      "review": "T20 S1 COM dialog bridge and real native probe under development; T21 S13 unified late style hooks and stop semantics",
+      "review": "T20 S1 COM dialog bridge and real native probe under development; T21 S13 unified late style hooks and stop semantics; T25 S2 shared runtime extraction",
       "notice": "Project-authored; no imported code or resources"
     },
     {
@@ -3476,30 +3476,30 @@
       "notice": "Project-authored test; no imported resources"
     },
     {
-      "path": "src/ntw16s-dll/injection/system_process.c",
+      "path": "src/ntwshk-dll/system_process.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d2332549ca45b6e5eb7da4e6d71f58e10db92bb17f25aa460115acd2b2f53daf",
+      "sha256": "f6365216fe65f855f7955111d0a197392354942b85417c25c7203bf2fa4a65ab",
       "disposition": "authored",
-      "review": "T20 S1 Windows print-host propagation boundary",
+      "review": "T20 S1 Windows print-host propagation boundary; T25 S2 shared runtime extraction",
       "notice": "Project-authored C code; no imported resources"
     },
     {
-      "path": "src/ntw16s-dll/injection/system_process.h",
+      "path": "src/ntwshk-dll/system_process.h",
       "source": null,
       "source_blob": null,
-      "sha256": "355936be0443766c68fc2fce232f0e648559cca507b70a15f11374a180370dd0",
+      "sha256": "1e20b4caabfbf01ffca0fc8f13dc4a1c4a7137bea08b55a7916b97dd471bce09",
       "disposition": "authored",
-      "review": "T20 S1 Windows print-host propagation boundary",
+      "review": "T20 S1 Windows print-host propagation boundary; T25 S2 shared runtime extraction",
       "notice": "Project-authored C code; no imported resources"
     },
     {
       "path": "tests/ntw16s-dll/print_host_policy.c",
       "source": null,
       "source_blob": null,
-      "sha256": "dc894baadafa5d1d1a2b94dcf4260446c3888a72d197d07df2ea0dca7f965403",
+      "sha256": "20f8ed613976968bf5526d07e26d8063dd1ec356be9098ba446b8f90340b6cd0",
       "disposition": "authored",
-      "review": "T20 S1 Windows print-host propagation boundary",
+      "review": "T20 S1 Windows print-host propagation boundary; T25 S2 shared runtime extraction",
       "notice": "Project-authored C code; no imported resources"
     },
     {
@@ -3605,9 +3605,9 @@
       "path": "src/ntw16s-dll/global/thread.c",
       "source": null,
       "source_blob": null,
-      "sha256": "504532867675ba510b5f4826ed54a2a41553d29d4cfa67150a950f9da301ecf8",
+      "sha256": "af7ee9732e1a5dd603729a234e4b98cc79f4524ad1609e902465e7e3a0a0f98a",
       "disposition": "authored",
-      "review": "T21 S13 target-local thread worker and owned private-desktop probe; T21 S13 global late process propagation integration; T21 S42 direct public calls and product-side cleanup; T21 S42 product adapter directory cleanup",
+      "review": "T21 S13 target-local thread worker and owned private-desktop probe; T21 S13 global late process propagation integration; T21 S42 direct public calls and product-side cleanup; T21 S42 product adapter directory cleanup; T25 S2 shared runtime extraction",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -3740,27 +3740,27 @@
       "path": "src/ntw16s-dll/global/attach.c",
       "source": null,
       "source_blob": null,
-      "sha256": "a64464470b8e0f4a890dccc32d7a4aeaba3bce29cdbd8a0fe25925f08d012aad",
+      "sha256": "982dafe59d85f9f4209cdeb42d01c1c17d9a2aeb4ffeb2d8c9477bdac668d267",
       "disposition": "authored",
-      "review": "T21 S13 thread identity and explicit startup attachment preparation; T21 S13 cross-directory compatible module reuse; T21 S42 direct public calls and product-side cleanup; T21 S42 product adapter directory cleanup",
+      "review": "T21 S13 thread identity and explicit startup attachment preparation; T21 S13 cross-directory compatible module reuse; T21 S42 direct public calls and product-side cleanup; T21 S42 product adapter directory cleanup; T25 S2 shared runtime extraction",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "src/ntw16s-dll/global/attach.h",
       "source": null,
       "source_blob": null,
-      "sha256": "d102884dc0a48b543092c8851b557b2d7737808879247b2303cf9e05e00e9e51",
+      "sha256": "9537a395e0a3acb3004e772b3b27d8b243e7a422fab09fcfad7ba28a2f4ccf47",
       "disposition": "authored",
-      "review": "T21 S13 thread identity and explicit startup attachment preparation; T21 S42 direct public calls and product-side cleanup; T21 S42 product adapter directory cleanup",
+      "review": "T21 S13 thread identity and explicit startup attachment preparation; T21 S42 direct public calls and product-side cleanup; T21 S42 product adapter directory cleanup; T25 S2 shared runtime extraction",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
       "path": "tests/ntw16s-dll/global_attach.c",
       "source": null,
       "source_blob": null,
-      "sha256": "48bbd0afd68333d5773a542c01fe83173e9785d8ce429678429e29823a5fe339",
+      "sha256": "5b998bf5ebff4fde41ef41937f9e41d3ed265625b932a08591c829203c3ba391",
       "disposition": "authored",
-      "review": "T21 S13 same-bitness target attachment coordinator and actual DLL integration test; T21 S42 direct public calls and product-side cleanup",
+      "review": "T21 S13 same-bitness target attachment coordinator and actual DLL integration test; T21 S42 direct public calls and product-side cleanup; T25 S2 shared runtime extraction",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
@@ -6557,9 +6557,9 @@
       "path": "src/ntw2ks-dll/dllmain.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3e66656615ded4701a9526f3fe6c9f752e598cd4ff5484d1afeb0a84b50f98b8",
+      "sha256": "9856fbd0e5d4f27465e0a508b0e3b71016080580300dd1f6fbb2432854269da7",
       "disposition": "authored",
-      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes",
+      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T25 S2 shared runtime extraction; T25 S2 shared runtime extraction",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
     },
     {
@@ -6602,9 +6602,9 @@
       "path": "tests/ntw2ks-dll/staging.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e7d0936f83e69f0bb8c906b3851e2b84477dc513e6c976728dfdace09d408696",
+      "sha256": "f9eb078ec213bedefe38ea793d0810a8e892f2d76038e27331713bde61d2d32f",
       "disposition": "authored",
-      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes",
+      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T25 S2 shared runtime extraction",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
     },
     {
@@ -6615,6 +6615,87 @@
       "disposition": "authored",
       "review": "M0 T25 S1: experimental Windows 2000 integration and native probes",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
+    },
+    {
+      "path": "src/ntwshk-dll/dllmain.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "24f11b55b59b9f67b073f34da632f010bd5b8a15fbfc5c5b2efc2d7b23ba9793",
+      "disposition": "authored",
+      "review": "T25 S2 shared runtime and native verification",
+      "notice": "Project-authored; no imported artwork"
+    },
+    {
+      "path": "src/ntwshk-dll/ntwshk.def",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e7caf5e003d7981c10bdbe0168d6e6c7a8e736ed77befbc12ec04bf5b13c2ddf",
+      "disposition": "authored",
+      "review": "T25 S2 shared runtime and native verification; T25 S2 shared runtime extraction",
+      "notice": "Project-authored; no imported artwork"
+    },
+    {
+      "path": "src/ntwshk-dll/version.rc",
+      "source": null,
+      "source_blob": null,
+      "sha256": "caaff8619d945b2bff432873d0a0707c05f9ddb473e7d53d8acba4427bfe089c",
+      "disposition": "authored",
+      "review": "T25 S2 shared runtime and native verification",
+      "notice": "Project-authored; no imported artwork"
+    },
+    {
+      "path": "tests/ntwshk-dll/hook_target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "aeb3a28b64001e605b76f23e45f669ba233175cc865e8ace02a830ed059f6332",
+      "disposition": "authored",
+      "review": "T25 S2 shared runtime and native verification",
+      "notice": "Project-authored; no imported artwork"
+    },
+    {
+      "path": "tests/ntwshk-dll/load_target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "cbac2b015c1aaa4db9816159804061ba28aed61706d5423c2907e503276dcf92",
+      "disposition": "authored",
+      "review": "T25 S2 shared runtime and native verification",
+      "notice": "Project-authored; no imported artwork"
+    },
+    {
+      "path": "tests/ntwshk-dll/path_target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "231bafb2305af1023444d1def0b7db208e9d11a97520fe6cbab60cb9c0cd331e",
+      "disposition": "authored",
+      "review": "T25 S2 shared runtime and native verification",
+      "notice": "Project-authored; no imported artwork"
+    },
+    {
+      "path": "tests/ntwshk-dll/separate_paths.py",
+      "source": null,
+      "source_blob": null,
+      "sha256": "66e47e925badd4ceac029cb3ae7141cff48f1171ddf652688c79670d242e0e1b",
+      "disposition": "authored",
+      "review": "T25 S2 shared runtime and native verification",
+      "notice": "Project-authored; no imported artwork"
+    },
+    {
+      "path": "tests/ntwshk-dll/win16_target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "b4850d7ac113be95223d1b7823e21ee12e341f33b24bf5a7ff2bd6777026bc7d",
+      "disposition": "authored",
+      "review": "T25 S2 shared runtime and native verification",
+      "notice": "Project-authored; no imported artwork"
+    },
+    {
+      "path": "tests/integration/shared_dll_fixture.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "6b69a9555c888335c399e9a54b2372536792afe1f6d58c3cba4f2bcc9199100b",
+      "disposition": "authored",
+      "review": "T25 S2 shared runtime test fixtures",
+      "notice": "Project-authored test helper"
     }
   ]
 }

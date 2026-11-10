@@ -1,0 +1,29 @@
+EXPORTS
+    process_hook_install_helper @1
+    process_hook_run_helper
+    process_hook_stage_process
+    process_hook_stage_pair
+    process_hook_stage_payload
+    process_hook_stage_read
+    process_hook_stage_restore
+    process_hook_startup_begin
+    process_hook_startup_attach
+    process_hook_startup_commit
+    process_hook_startup_abort
+    process_hook_propagation_attach
+    process_hook_propagation_attach_as_user_w
+    process_hook_late_batch_begin
+    process_hook_late_batch_prepare
+    process_hook_late_batch_commit
+    process_hook_unwind_begin
+    process_hook_unwind_end
+    process_hook_payload_write
+    process_hook_payload_take
+    ntwshk_packet_parse
+    ntwshk_context_read
+    ntwshk_context_paths
+    ntwshk_context_library
+    ntwshk_install
+    ntwshk_run_helper
+    ntwshk_system_print_host_a
+    ntwshk_system_print_host_w

@@ -9,6 +9,9 @@ package = pathlib.Path.cwd() / "package"
 package.mkdir()
 for source in (launcher, dll32, dll64, fixture):
     shutil.copy2(source, package / source.name)
+for bits, source in ((32, dll32), (64, dll64)):
+    shared = source.with_name(f"ntwshk{bits}.dll")
+    shutil.copy2(shared, package / shared.name)
 native = subprocess.run([str(package / fixture.name)], capture_output=True, timeout=15)
 styled = subprocess.run([str(package / launcher.name), "--wait", str(package / fixture.name), "styled"], capture_output=True, timeout=15)
 print(f"native={native.returncode} {native.stdout!r}; styled={styled.returncode} {styled.stdout!r}")

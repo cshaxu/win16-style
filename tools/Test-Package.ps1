@@ -33,10 +33,10 @@ if(!$Worker){
     return
 }
 function Package-Hashes {
-    $expected=@('demo.exe','ntw16s32.dll','ntw16s64.dll','ntw2ks32.dll','ntw2ks64.dll','run16s.exe')
+    $expected=@('demo.exe','ntw16s32.dll','ntw16s64.dll','ntw2ks32.dll','ntw2ks64.dll','ntwshk32.dll','ntwshk64.dll','run16s.exe')
     $files=@(Get-ChildItem -LiteralPath $Package -Force)
     if(@(Compare-Object $expected @($files.Name|Sort-Object)).Count -or
-        @($files|Where-Object { $_.PSIsContainer -or ($_.Attributes -band [IO.FileAttributes]::ReparsePoint) }).Count){throw 'Package must contain exactly six regular files'}
+        @($files|Where-Object { $_.PSIsContainer -or ($_.Attributes -band [IO.FileAttributes]::ReparsePoint) }).Count){throw 'Package must contain exactly eight regular files'}
     $result=[ordered]@{}
     foreach($file in $files){$result[$file.Name]=(Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash.ToLowerInvariant()}
     return $result
@@ -766,13 +766,13 @@ try{
         if(@($cases|Where-Object name -eq $spec[0]).Count){
             $fixture=Join-Path $scratch $spec[1];New-Item -ItemType Directory -Path $fixture | Out-Null
             Copy-Item -LiteralPath (Join-Path $x64 ($spec[2]+'.exe')) -Destination (Join-Path $fixture 'run16s.exe')
-            Copy-Item -LiteralPath $d32,$d64 -Destination $fixture
+            Copy-Item -LiteralPath $d32,$d64,(Join-Path $Package 'ntwshk32.dll'),(Join-Path $Package 'ntwshk64.dll') -Destination $fixture
             foreach($name in @('ntw16s32.dll','ntw16s64.dll')){if((Get-FileHash (Join-Path $fixture $name) -Algorithm SHA256).Hash -ne (Get-FileHash (Join-Path $Package $name) -Algorithm SHA256).Hash){throw "Fixture DLL differs: $name"}}
         }
     }
     if(@($cases|Where-Object name -eq 'global-cross-directory').Count){
         $fixture=Join-Path $scratch 'cross-directory';New-Item -ItemType Directory -Path $fixture | Out-Null
-        foreach($name in @('run16s.exe','ntw16s32.dll','ntw16s64.dll','demo.exe')){
+        foreach($name in @('run16s.exe','ntw16s32.dll','ntw16s64.dll','ntwshk32.dll','ntwshk64.dll','demo.exe')){
             Copy-Item -LiteralPath (Join-Path $Package $name) -Destination (Join-Path $fixture $name)
             if((Get-FileHash (Join-Path $fixture $name) -Algorithm SHA256).Hash -ne (Get-FileHash (Join-Path $Package $name) -Algorithm SHA256).Hash){throw "Cross-directory fixture differs: $name"}
         }
@@ -781,12 +781,12 @@ try{
         if(@($cases|Where-Object { $_.name -in @("global-start-$arch","global-start-remote-$arch") }).Count){
             $fixture=Join-Path $scratch "start-$arch";New-Item -ItemType Directory -Path $fixture | Out-Null
             Copy-Item -LiteralPath (Join-Path (Join-Path $BuildRoot $arch) 'global-start-fixture/run16s.exe') -Destination (Join-Path $fixture 'run16s.exe')
-            Copy-Item -LiteralPath $d32,$d64 -Destination $fixture
+            Copy-Item -LiteralPath $d32,$d64,(Join-Path $Package 'ntwshk32.dll'),(Join-Path $Package 'ntwshk64.dll') -Destination $fixture
         }
         if(@($cases|Where-Object name -eq "global-hook-local-$arch").Count){
             $fixture=Join-Path $scratch "local-hook-$arch";New-Item -ItemType Directory -Path $fixture | Out-Null
             Copy-Item -LiteralPath (Join-Path $x64 'global-hook-owner.exe') -Destination (Join-Path $fixture 'run16s.exe')
-            Copy-Item -LiteralPath $d32,$d64 -Destination $fixture
+            Copy-Item -LiteralPath $d32,$d64,(Join-Path $Package 'ntwshk32.dll'),(Join-Path $Package 'ntwshk64.dll') -Destination $fixture
             foreach($name in @('ntw16s32.dll','ntw16s64.dll')){if((Get-FileHash (Join-Path $fixture $name) -Algorithm SHA256).Hash -ne (Get-FileHash (Join-Path $Package $name) -Algorithm SHA256).Hash){throw "Local hook fixture DLL differs: $name"}}
         }
     }

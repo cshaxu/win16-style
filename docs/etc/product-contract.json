@@ -37,6 +37,13 @@
       ]
     },
     {
+      "id": "ntwshk-dll",
+      "artifacts": [
+        { "name": "ntwshk32.dll", "architecture": "x86" },
+        { "name": "ntwshk64.dll", "architecture": "x64" }
+      ]
+    },
+    {
       "id": "demo-exe",
       "artifacts": [
         {
