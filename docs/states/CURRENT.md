@@ -2,6 +2,8 @@
 
 ## Current Work
 
+T25 S1 Slider 反向补测：自有 x64 WinUI 横竖对象启用 IsDirectionReversed 后，值25→75时分别观察 Thumb 向左、向下移动；范围、右下刻度可见、程序化焦点/禁用和恢复对照通过。此为程序化位置，不证明实际键鼠或刻度像素。
+
 T25 S1 P21 复核：提交 `4ca3694e` 已推送并核对远端 main；assets 与 O:/winnt 同批摘要一致，本次 clean1、package1、publish1 scratch 已清理。S1/T25 保持开放，真实输入、像素、反向和 x86 WinUI 未覆盖。
 
 T25 S1 P21 Slider 阶段包已发布 assets 和 O:/winnt，双宽干净构建、13项聚焦实包回归及同批 x64 横竖对象与标准启动对照通过；详见 [P21记录](../history/M0-T25-S1-P21-xaml-slider.md)。真实输入、像素、反向及 x86 WinUI 未覆盖；提交推送和 scratch 清理待完成。

@@ -2221,15 +2221,27 @@ typedef struct {
 } test_offset_vtable;
 struct test_offset { const test_offset_vtable *vtable; };
 
+typedef struct test_slider test_slider;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_slider *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_slider *);
+    ULONG (STDMETHODCALLTYPE *release)(test_slider *);
+    void (STDMETHODCALLTYPE *unused[16])(void);
+    HRESULT (STDMETHODCALLTYPE *put_reversed)(test_slider *,boolean);
+} test_slider_vtable;
+struct test_slider { const test_slider_vtable *vtable; };
+static const IID test_slider_iid={0xf7418ecf,0x7c35,0x5216,{0x8b,0xf1,0xd8,0x2d,0x47,0xcc,0xe5,0xdf}};
+
 static HRESULT test_slider_candidate(reader *factory,IInspectable *style)
 {
     static const wchar_t markup[]=L"<Slider xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' TickFrequency='10' TickPlacement='BottomRight'/>";
     static const wchar_t vertical_markup[]=L"<Slider xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' Orientation='Vertical' TickFrequency='10' TickPlacement='BottomRight'/>";
     BOOL vertical=GetEnvironmentVariableW(L"WIN16_XAML_SLIDER_VERTICAL",NULL,0)!=0;
+    BOOL reversed=GetEnvironmentVariableW(L"WIN16_XAML_SLIDER_REVERSED",NULL,0)!=0;
     HSTRING name=NULL; IInspectable *object=NULL,*window_object=NULL,*ui=NULL,*dep=NULL,*root=NULL,*decrease=NULL,*thumb=NULL,*ticks=NULL,*focus=NULL;
     winui_element *element=NULL,*root_element=NULL; winui_tree *tree=NULL;
     test_window *window=NULL; test_control *control=NULL; test_range *range=NULL; test_size *size=NULL,*decrease_size=NULL;
-    test_offset *thumb_offset=NULL; test_ui *ticks_ui=NULL,*thumb_ui=NULL,*focus_ui=NULL; winui_vsm *manager=NULL;
+    test_offset *thumb_offset=NULL; test_ui *ticks_ui=NULL,*thumb_ui=NULL,*focus_ui=NULL; winui_vsm *manager=NULL; test_slider *slider=NULL;
     win16_xaml_adapter adapter={0}; VisualElement info={0}; ParentChildRelation relation={0};
     (void)style;
     const wchar_t *chosen=vertical ? vertical_markup : markup;
@@ -2247,6 +2259,8 @@ static HRESULT test_slider_candidate(reader *factory,IInspectable *style)
     if (SUCCEEDED(hr)) hr=size->vtable->put_height(size,vertical ? 200 : 30);
     if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&range_iid,(void **)&range);
     if (SUCCEEDED(hr)) hr=range->vtable->put_maximum(range,100);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&test_slider_iid,(void **)&slider);
+    if (SUCCEEDED(hr) && reversed) hr=slider->vtable->put_reversed(slider,1);
     if (SUCCEEDED(hr)) hr=window->vtable->put_content(window,ui);
     if (SUCCEEDED(hr)) hr=window->vtable->activate(window);
     if (SUCCEEDED(hr)) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
@@ -2297,7 +2311,8 @@ static HRESULT test_slider_candidate(reader *factory,IInspectable *style)
     if (SUCCEEDED(hr)) hr=thumb_offset->vtable->get_offset(thumb_offset,&second_offset);
     if (SUCCEEDED(hr)) hr=range->vtable->get_value(range,&value);
     if (SUCCEEDED(hr) && !(second>first && value==75)) hr=E_FAIL;
-    if (SUCCEEDED(hr) && !(vertical ? second_offset.y<first_offset.y : second_offset.x>first_offset.x)) hr=E_FAIL;
+    if (SUCCEEDED(hr) && !(vertical ? (reversed ? second_offset.y>first_offset.y : second_offset.y<first_offset.y)
+                                     : (reversed ? second_offset.x<first_offset.x : second_offset.x>first_offset.x))) hr=E_FAIL;
     if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(thumb,&test_ui_iid,(void **)&thumb_ui);
     if (name) { WindowsDeleteString(name); name=NULL; }
     if (SUCCEEDED(hr)) hr=WindowsCreateString(L"FocusFrame",10,&name);
@@ -2340,6 +2355,7 @@ static HRESULT test_slider_candidate(reader *factory,IInspectable *style)
     if (dep) IInspectable_Release(dep);
     if (tree) tree->vtable->release(tree);
     if (control) control->vtable->release(control);
+    if (slider) slider->vtable->release(slider);
     if (range) range->vtable->release(range);
     if (size) size->vtable->release(size);
     if (window) { (void)window->vtable->close(window); window->vtable->release(window); }
