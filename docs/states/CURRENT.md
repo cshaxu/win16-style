@@ -2,6 +2,8 @@
 
 ## Current Work
 
+T25 S1 P33 复核：菜单图标状态提交 `2c6a83f5` 已推送并核对远端 main，assets 与 O:/winnt 同批摘要一致；本次 clean1、package1、publish1 scratch 已清理。S1/T25 保持开放；图标实际继承、像素、真实键鼠和 x86 WinUI 未覆盖。
+
 T25 S1 P32 菜单图标容器状态修复已发布 assets 和 O:/winnt；双宽干净构建、13项聚焦实包回归、同批 x64 三类对象状态及真实 Popup 自动接入对照通过，详见 [P32记录](../history/M0-T25-S1-P32-xaml-menu-icons.md)。图标实际继承、像素、真实键鼠和 x86 WinUI 未覆盖；提交、推送及 scratch 清理待完成。
 
 T25 S1 菜单图标前景修复候选：自有 x64 普通菜单项对照证实图标容器正常状态为黑色，但 PointerOver 时未随文字变白；为普通、勾选和子菜单的悬停/按下/禁用等状态设置容器前景色，子菜单默认容器前景绑定控件。三类对象的程序化颜色对照通过，勾选项 RequestedTheme=Dark 对照通过；标准启动真实 Popup 与四类项目的自动接入及会话清理对照通过。x86/x64 增量编译与来源检查通过。测试读取容器画刷，不证明图标自身是否继承或屏幕像素；实际输入、命令和 x86 WinUI 未验证。登记 `build/t25-package/s1-menu-icon-clean1` 同批干净构建，交付复核后清理本次 scratch。
