@@ -2,6 +2,24 @@
 
 ## Current Work
 
+T25 S1 P19 ToggleSwitch 阶段包已发布 assets 和 O:/winnt，双宽干净构建、13 项聚焦实包回归及同批自有 x64 WinUI 状态和标准启动对照通过；详见 [P19 记录](../history/M0-T25-S1-P19-xaml-toggle.md)。真实输入、像素、x86 WinUI 和手动验收未覆盖；提交推送及 scratch 清理待完成。
+
+T25 S1 登记 `build/t25-package/s1-toggle-clean1`：对当前 ToggleSwitch 候选进行双宽干净构建，之后进行同批实际包测试与发布；交付核对后清理本次 scratch。真实鼠标和 x86 WinUI 不计通过。
+
+T25 S1 ToggleSwitch 标准启动候选：自有 x64 记事本经 run16s 启动后动态创建开关，观察自动应用、第二窗口附着及关闭最后窗口后会话记录清空；双宽 XAML 核心各3项通过。真实鼠标、拖动、像素、x86 WinUI 和实际包回归未验证，候选未发布。
+
+T25 S1 ToggleSwitch 产品候选：模板接入现有默认来源保护、视觉树发现、样式集合及停止恢复；双宽增量编译和来源门禁通过。自有 x64 WinUI 对象经实际适配器应用，验证状态、文案绑定与显示、程序化焦点状态及停止后默认来源恢复。尚未验证标准 run16s 动态发现、真实鼠标/拖动、实际像素或 x86 WinUI，未发布。
+
+T25 S1 ToggleSwitch 内容及焦点原型：自有 x64 对象验证 Header、OnContent、OffContent 实际绑定值，并通过 VisualStateManager 程序切换焦点状态、读取焦点框透明度；开关状态和清除来源对照同时通过。不是实际键盘焦点或输入测试，尚未接入产品和发布。
+
+T25 S1 ToggleSwitch 文案与清除原型：自有 x64 对象在 false→true→false 时，开关标记及 On/Off 文案透明度同步切换；通过诊断 ClearProperty 清除 Style 后来源恢复 Default。首次以 put_Style(NULL) 尝试未恢复默认来源，改为清除属性后通过。双宽探针编译通过；鼠标、拖动、焦点、文案内容绑定和产品自动接入仍未验证，未发布。
+
+T25 S1 ToggleSwitch 状态原型：自建 x64 WinUI 记事本中 XamlReader 创建 ToggleSwitch 并应用测试模板；依次程序设置 IsOn 为 false、true、false，标记透明度同步为 0、1、0，测试窗口已关闭。该测试不证明鼠标、拖动、文案、焦点、样式恢复或产品自动接入，原型未发布。
+
+T25 S1 ToggleSwitch 测试原型：仅测试夹具增加保留 SwitchThumb 与 Header/开关文案绑定的简化模板；x64 增量编译通过，自有 WinUI 记事本中 XamlReader 解析通过。首次探针因沙箱 CIM 访问不足未执行，允许环境重跑通过。尚未验证真实开关、拖动、内容状态、焦点、恢复或产品接入，未发布。
+
+T25 S1 ToggleSwitch 审计：微软 WinUI 默认模板使用 `SwitchThumb` 处理输入，分别绑定 Header、OnContent、OffContent 及其模板，并使用 ToggleStates 和 ContentStates；不能简单替换为 CheckBox 模板而假定交互仍有效。后续候选需验证开关、拖动、状态文案、禁用、焦点和撤销。当前只完成源码审计，尚无候选或产品支持；参考 https://github.com/microsoft/microsoft-ui-xaml/blob/main/controls/dev/CommonStyles/ToggleSwitch_themeresources.xaml 。
+
 T25 S1 P17 复核：提交 `fe36bd87` 已推送并核对远端 main，assets 与 O:/winnt 摘要一致；本次 clean1、package1、publish1 临时目录已清理。S1/T25 保持开放，实际像素、其他运行时、x86 WinUI 及手动验收限制不变。
 
 T25 S1 P17 ProgressBar 阶段包已发布 assets 根目录及 O:/winnt，四文件摘要与同批包一致；双宽干净构建及13项聚焦实包回归通过，详见 [P17 记录](../history/M0-T25-S1-P17-xaml-progress.md)。实际像素、其他运行时和 x86 WinUI 未验证；提交推送与 scratch 清理待完成。

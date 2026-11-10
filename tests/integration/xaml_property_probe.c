@@ -185,18 +185,19 @@ static HRESULT create_checkbox(win16_xaml_adapter *adapter,int kind)
     }
     HSTRING name=NULL; IInspectable *object=NULL,*element=NULL; test_control *control=NULL;
     boolean applied=0;
-    const WCHAR *class_name=kind==6 ? L"Microsoft.UI.Xaml.Controls.ProgressBar" : kind==5 ? L"Microsoft.UI.Xaml.Controls.ListBox" : kind==4 ? L"Microsoft.UI.Xaml.Controls.Primitives.ScrollBar" : kind==3 ? L"Microsoft.UI.Xaml.Controls.ComboBox" : kind==2 ? L"Microsoft.UI.Xaml.Controls.TextBox" :
+    const WCHAR *class_name=kind==7 ? L"Microsoft.UI.Xaml.Controls.ToggleSwitch" : kind==6 ? L"Microsoft.UI.Xaml.Controls.ProgressBar" : kind==5 ? L"Microsoft.UI.Xaml.Controls.ListBox" : kind==4 ? L"Microsoft.UI.Xaml.Controls.Primitives.ScrollBar" : kind==3 ? L"Microsoft.UI.Xaml.Controls.ComboBox" : kind==2 ? L"Microsoft.UI.Xaml.Controls.TextBox" :
         kind==1 ? L"Microsoft.UI.Xaml.Controls.RadioButton" : L"Microsoft.UI.Xaml.Controls.CheckBox";
     HRESULT hr=S_OK;
-    if (kind==3 || kind==5 || kind==6) {
+    if (kind==3 || kind==5 || kind==6 || kind==7) {
         static const WCHAR reader_name[]=L"Microsoft.UI.Xaml.Markup.XamlReader";
         static const WCHAR markup[]=L"<ComboBox xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'><x:String>First</x:String><x:String>Second</x:String></ComboBox>";
         static const WCHAR list_markup[]=L"<ListBox xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'><x:String>First</x:String><x:String>Second</x:String></ListBox>";
         static const WCHAR progress_markup[]=L"<ProgressBar xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'/>";
+        static const WCHAR toggle_markup[]=L"<ToggleSwitch xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'/>";
         xaml_reader *reader=NULL; HSTRING text=NULL;
         hr=WindowsCreateString(reader_name,(UINT32)(ARRAYSIZE(reader_name)-1),&name);
         if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&xaml_reader_iid,(void **)&reader);
-        const WCHAR *chosen=kind==6 ? progress_markup : kind==5 ? list_markup : markup;
+        const WCHAR *chosen=kind==7 ? toggle_markup : kind==6 ? progress_markup : kind==5 ? list_markup : markup;
         if (SUCCEEDED(hr)) hr=WindowsCreateString(chosen,(UINT32)lstrlenW(chosen),&text);
         if (SUCCEEDED(hr)) hr=reader->vtable->load(reader,text,&button);
         if (reader) reader->vtable->release(reader);
@@ -286,10 +287,10 @@ __declspec(dllexport) LRESULT CALLBACK XamlPropertyProbe(int code,WPARAM wp,LPAR
                     hr=win16_xaml_button_source(service,diagnostics,button,&source,&index);
                 }
             }
-        } else if (m->wParam==3 || m->wParam==5 || m->wParam==7 || m->wParam==17 || m->wParam==18 || m->wParam==21 || m->wParam==24 || m->wParam==27 || m->wParam==29) {
+        } else if (m->wParam==3 || m->wParam==5 || m->wParam==7 || m->wParam==17 || m->wParam==18 || m->wParam==21 || m->wParam==24 || m->wParam==27 || m->wParam==29 || m->wParam==30) {
             clear();
-            hr=m->wParam==7 ? create_checkbox(NULL,0) : m->wParam==3 || m->wParam==17 || m->wParam==18 || m->wParam==21 || m->wParam==24 || m->wParam==27 || m->wParam==29
-                ? create_checkbox((win16_xaml_adapter *)m->lParam,m->wParam==29 ? 6 : m->wParam==27 ? 5 : m->wParam==24 ? 4 : m->wParam==21 ? 3 : m->wParam==18 ? 2 : m->wParam==17 ? 1 : 0)
+            hr=m->wParam==7 ? create_checkbox(NULL,0) : m->wParam==3 || m->wParam==17 || m->wParam==18 || m->wParam==21 || m->wParam==24 || m->wParam==27 || m->wParam==29 || m->wParam==30
+                ? create_checkbox((win16_xaml_adapter *)m->lParam,m->wParam==30 ? 7 : m->wParam==29 ? 6 : m->wParam==27 ? 5 : m->wParam==24 ? 4 : m->wParam==21 ? 3 : m->wParam==18 ? 2 : m->wParam==17 ? 1 : 0)
                 : create_checkbox_in_tree((win16_xaml_adapter *)m->lParam);
         } else if (m->wParam==4 && button) {
             win16_xaml_adapter *adapter=(win16_xaml_adapter *)m->lParam;
