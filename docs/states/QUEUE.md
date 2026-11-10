@@ -12,7 +12,7 @@ CURRENT 是唯一活动工作权威；本文件拥有顺序，各 proposal 拥�
 
 当前无待准入候选。[现代桌面混合窗口适配](../proposals/modern-desktop-window-style.md)已按用户要求有限收口，证据见 CURRENT。
 
-[代码质量治理](../proposals/code-quality-governance.md)已由用户准入；活动状态及子任务范围见 CURRENT，不属于待准入候选。
+[代码质量治理](../proposals/code-quality-governance.md)已按用户决定有限收口，未完成事项见 CURRENT 及 TODO。
 
 [run16s 手动全局样式模式](../proposals/global-style-mode.md)已按用户要求准入，活动状态由CURRENT管理。 [S41 全局进程审计](../proposals/global-process-audit.md)已完成并收口，并非新增队列候选。
 
