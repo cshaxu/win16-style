@@ -6521,7 +6521,7 @@
       "path": "src/lib-win32/win16-control-xaml/adapter.c",
       "source": null,
       "source_blob": null,
-      "sha256": "59b582eb63a00a211a6c5cad55142e23a0cc6ad77fe22a462f1a5aef7d6b5842",
+      "sha256": "c3aa55b58f4de4761b92bf8c2903109b1bbea3ced8a5bb769a51438e05edc779",
       "disposition": "authored",
       "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate; T25 S1 RadioButton candidate; T25 S1 TextBox candidate; T25 S1 ComboBox candidate; T25 S1 ScrollBar candidate; T25 S1 ListBox candidate; T25 S1 ProgressBar candidate",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
@@ -6548,7 +6548,7 @@
       "path": "src/lib-win32/win16-control-xaml/button_style.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d0678cf0114291a51895f9ca0ec047bc00d2b9650b07e037a10db4474afb216f",
+      "sha256": "3254088338f3cfcd06de59f4e93c66d9fddd75adb63bf793be246b3d6a6db5c9",
       "disposition": "authored",
       "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate; T25 S1 RadioButton candidate; T25 S1 TextBox candidate; T25 S1 ComboBox candidate; T25 S1 ScrollBar candidate; T25 S1 ListBox candidate; T25 S1 ProgressBar candidate",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
@@ -6674,7 +6674,7 @@
       "path": "src/lib-win32/win16-control-xaml/session.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6c4e479fc2d7deaa6ccfd61414db9145208ac54599c6b7530f60e6b90e6a252c",
+      "sha256": "e315dde5eac58d04547cbbd171d079e766a4408b7e302bf9ce54458eac5650db",
       "disposition": "authored",
       "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate; T25 S1 RadioButton candidate; T25 S1 TextBox candidate; T25 S1 ComboBox candidate; T25 S1 ScrollBar candidate; T25 S1 ListBox candidate; T25 S1 ProgressBar candidate",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
@@ -6921,6 +6921,24 @@
       "disposition": "authored",
       "review": "M0 T25 S1 Slider candidate",
       "notice": "Project-authored C source; XAML part names follow platform interfaces; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/win16-control-xaml/toggle_button_template.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "f36ca4da07d6307859cdc68d97d714b83136f9d8b3829321fb8a9e3febd2a862",
+      "disposition": "authored",
+      "review": "M0 T25 S1 ToggleButton candidate",
+      "notice": "Project-authored C source; XAML state names follow platform interfaces; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/win16-control-xaml/toggle_button_template.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "38156c890a18fa7770078b63e85f90e9d4ab62c34b0accd2e8c72ae49e4dd98d",
+      "disposition": "authored",
+      "review": "M0 T25 S1 ToggleButton candidate",
+      "notice": "Project-authored C source; XAML state names follow platform interfaces; no imported artwork"
     }
   ]
 }

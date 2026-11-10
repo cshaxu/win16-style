@@ -5,7 +5,7 @@
 #include <wchar.h>
 #include "ntw16s-dll/window_thread.h"
 
-typedef struct probe { DWORD pid; HMODULE module,property_module; HOOKPROC callback,property_callback; uintptr_t adapter; BOOL removed,property_ok,checkbox,radio,textbox,combo,scroll,list,progress,toggle,slider,existing,preexisting,remove_bridge,keep_fixture; } probe;
+typedef struct probe { DWORD pid; HMODULE module,property_module; HOOKPROC callback,property_callback; uintptr_t adapter; BOOL removed,property_ok,checkbox,radio,textbox,combo,scroll,list,progress,toggle,slider,toggle_button,existing,preexisting,remove_bridge,keep_fixture; } probe;
 static uintptr_t send_property(HWND window,UINT message,WPARAM operation,uintptr_t adapter)
 {
     DWORD_PTR ignored=0; RemovePropW(window,L"Win16Xaml.Test.Property.Result");
@@ -91,6 +91,7 @@ static BOOL CALLBACK visit(HWND window,LPARAM parameter)
     probe *p=(probe *)parameter; DWORD pid=0;
     DWORD thread=GetWindowThreadProcessId(window,&pid);
     if (pid!=p->pid || !thread || GetAncestor(window,GA_ROOT)!=window) return TRUE;
+    if (p->toggle_button && !IsWindowVisible(window)) return TRUE;
     WCHAR name[120]={0}; GetClassNameW(window,name,ARRAYSIZE(name));
     wprintf(L"window_class=%ls visible=%d thread=%lu hwnd=0x%llX\n",name,IsWindowVisible(window),(unsigned long)thread,(unsigned long long)(uintptr_t)window);
     HHOOK hook=SetWindowsHookExW(WH_CALLWNDPROC,p->callback,p->module,thread);
@@ -105,7 +106,7 @@ static BOOL CALLBACK visit(HWND window,LPARAM parameter)
     uintptr_t before=0,after=0,fixture_attached=0;
     if (property_hook && property_message) {
         RemovePropW(window,L"Win16Xaml.Test.Property.Result");
-        if (SendMessageTimeoutW(window,property_message,p->existing?5:p->slider?31:p->toggle?30:p->progress?29:p->list?27:p->scroll?24:p->combo?21:p->textbox?18:p->radio?17:p->checkbox?3:1,(LPARAM)p->adapter,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,2000,&ignored))
+        if (SendMessageTimeoutW(window,property_message,p->existing?5:p->toggle_button?32:p->slider?31:p->toggle?30:p->progress?29:p->list?27:p->scroll?24:p->combo?21:p->textbox?18:p->radio?17:p->checkbox?3:1,(LPARAM)p->adapter,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,2000,&ignored))
             before=(uintptr_t)GetPropW(window,L"Win16Xaml.Test.Property.Result");
         RemovePropW(window,L"Win16Xaml.Test.Property.Result");
         if (p->checkbox) wprintf(L"checkbox_create_result=%llu\n",(unsigned long long)before);
@@ -208,7 +209,8 @@ int wmain(int argc,WCHAR **argv)
         p.progress=argc==6 && !wcscmp(argv[5],L"--progress");
         p.toggle=argc==6 && !wcscmp(argv[5],L"--toggle");
         p.slider=argc==6 && !wcscmp(argv[5],L"--slider");
-        p.checkbox=p.slider || p.toggle || p.existing || p.preexisting || p.radio || p.textbox || p.combo || p.scroll || p.list || p.progress || (argc==6 && !wcscmp(argv[5],L"--checkbox"));
+        p.toggle_button=argc==6 && !wcscmp(argv[5],L"--toggle-button");
+        p.checkbox=p.toggle_button || p.slider || p.toggle || p.existing || p.preexisting || p.radio || p.textbox || p.combo || p.scroll || p.list || p.progress || (argc==6 && !wcscmp(argv[5],L"--checkbox"));
     }
     EnumWindows(visit,(LPARAM)&p);
     if (p.property_module) FreeLibrary(p.property_module);

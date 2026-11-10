@@ -20,6 +20,7 @@
 #include "lib-win32/win16-control-xaml/progress_template.h"
 #include "lib-win32/win16-control-xaml/toggle_template.h"
 #include "lib-win32/win16-control-xaml/slider_template.h"
+#include "lib-win32/win16-control-xaml/toggle_button_template.h"
 #include "lib-win32/win16-control-xaml/button_style.h"
 #include "lib-win32/win16-control-xaml/visual_tree.h"
 #include "lib-win32/win16-control-xaml/session.h"
@@ -2515,6 +2516,70 @@ static HRESULT test_password_candidate(reader *factory,IInspectable *style)
     return hr;
 }
 
+static HRESULT test_toggle_button_candidate(reader *factory,IInspectable *style)
+{
+    static const wchar_t markup[]=L"<ToggleButton xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' Content='Test'/>";
+    HSTRING name=NULL; IInspectable *object=NULL,*window_object=NULL,*ui=NULL;
+    winui_element *element=NULL; test_window *window=NULL; test_control *control=NULL; test_toggle *toggle=NULL;
+    __x_ABI_CWindows_CFoundation_CIPropertyValueStatics *properties=NULL;
+    win16_xaml_adapter adapter={0}; VisualElement info={0}; ParentChildRelation relation={0};
+    (void)style;
+    HRESULT hr=WindowsCreateString(markup,(UINT32)(ARRAYSIZE(markup)-1),&name);
+    if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,name,&object);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Window",24,&name);
+    if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&window_object);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(window_object,&test_window_iid,(void **)&window);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&test_ui_iid,(void **)&ui);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_element_iid,(void **)&element);
+    if (SUCCEEDED(hr)) hr=window->vtable->put_content(window,ui);
+    if (SUCCEEDED(hr)) hr=window->vtable->activate(window);
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    if (SUCCEEDED(hr)) {
+        info.Type=(BSTR)L"Microsoft.UI.Xaml.Controls.Primitives.ToggleButton"; relation.Parent=1;
+        hr=IXamlDiagnostics_GetHandleFromIInspectable(diagnostics,object,&info.Handle);
+    }
+    if (SUCCEEDED(hr)) { hr=win16_xaml_adapter_change(&adapter,relation,info,Add,NULL); if(hr==S_FALSE)hr=E_FAIL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_control_iid,(void **)&control);
+    boolean applied=0;
+    if (SUCCEEDED(hr)) hr=control->vtable->apply_template(control,&applied);
+    if (SUCCEEDED(hr) && !applied) hr=E_FAIL;
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_STATES_EVENT");
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&test_toggle_iid,(void **)&toggle);
+    if (SUCCEEDED(hr)) hr=toggle->vtable->put_three(toggle,1);
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Windows.Foundation.PropertyValue",32,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&IID___x_ABI_CWindows_CFoundation_CIPropertyValueStatics,(void **)&properties);
+    for (unsigned int i=0;SUCCEEDED(hr) && i<3;i++) {
+        IInspectable *boxed=NULL; IUnknown *reference=NULL;
+        if (i<2) hr=__x_ABI_CWindows_CFoundation_CIPropertyValueStatics_CreateBoolean(properties,(boolean)i,&boxed);
+        if (SUCCEEDED(hr) && boxed) hr=IInspectable_QueryInterface(boxed,&IID___FIReference_1_boolean,(void **)&reference);
+        if (SUCCEEDED(hr)) hr=toggle->vtable->put_checked(toggle,reference);
+        if (SUCCEEDED(hr) && !check_edge_colors(object,i==1)) hr=E_FAIL;
+        if (SUCCEEDED(hr)) signal_named(i==0 ? L"WIN16_XAML_LOCAL_BINDING_EVENT" : i==1 ? L"WIN16_XAML_LOCAL_EVALUATED_EVENT" : L"WIN16_XAML_LOCAL_NULL_EVENT");
+        if (reference) IUnknown_Release(reference);
+        if (boxed) IInspectable_Release(boxed);
+    }
+    unsigned int source=0,index=0;
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,object,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceLocal) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_stop(&adapter);
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,object,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceDefault) hr=E_FAIL;
+    if (adapter.session.service) (void)win16_xaml_button_set_discard(&adapter.session.buttons);
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    if (properties) __x_ABI_CWindows_CFoundation_CIPropertyValueStatics_Release(properties);
+    if (toggle) toggle->vtable->release(toggle);
+    if (control) control->vtable->release(control);
+    if (window) { (void)window->vtable->close(window); window->vtable->release(window); }
+    if (element) element->vtable->release(element);
+    if (ui) IInspectable_Release(ui);
+    if (window_object) IInspectable_Release(window_object);
+    if (object) IInspectable_Release(object);
+    if (name) WindowsDeleteString(name);
+    return hr;
+}
+
 static void test_template_parse(void)
 {
     static const wchar_t reader_name[]=L"Microsoft.UI.Xaml.Markup.XamlReader";
@@ -2557,7 +2622,8 @@ static void test_template_parse(void)
     HSTRING name=NULL,text=NULL;
     reader *factory=NULL;
     IInspectable *style=NULL;
-    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_PASSWORD_PARSE",NULL,0)
+    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_TOGGLEBUTTON_PARSE",NULL,0)
+        ? win16_xaml_toggle_button_template() : GetEnvironmentVariableW(L"WIN16_XAML_PASSWORD_PARSE",NULL,0)
         ? password_markup : GetEnvironmentVariableW(L"WIN16_XAML_SLIDER_PARSE",NULL,0)
         ? win16_xaml_slider_template() : GetEnvironmentVariableW(L"WIN16_XAML_TOGGLE_PARSE",NULL,0)
         ? win16_xaml_toggle_template() : GetEnvironmentVariableW(L"WIN16_XAML_PROGRESS_TEST",NULL,0)
@@ -2572,6 +2638,8 @@ static void test_template_parse(void)
     if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_reader_iid,(void **)&factory);
     if (SUCCEEDED(hr)) hr=WindowsCreateString(markup,(UINT32)lstrlenW(markup),&text);
     if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,text,&style);
+    if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_TOGGLEBUTTON_PARSE",NULL,0))
+        hr=test_toggle_button_candidate(factory,style);
     if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_PASSWORD_PARSE",NULL,0))
         hr=test_password_candidate(factory,style);
     if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_SLIDER_PARSE",NULL,0))

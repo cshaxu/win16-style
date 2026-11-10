@@ -2,6 +2,14 @@
 
 ## Current Work
 
+T25 S1 P25 ToggleButton 阶段包已发布 assets 和 O:/winnt；双宽干净构建、13项聚焦实包回归及同批 x64 三态与标准启动对照通过，详见 [P25记录](../history/M0-T25-S1-P25-xaml-toggle-button.md)。真实输入、像素及 x86 WinUI 未覆盖；提交推送和 scratch 清理待完成。
+
+T25 S1 ToggleButton 标准启动候选：自有 x64 记事本动态创建控件后观察自动接入、最终会话清理；首次探针误选隐藏 GDI+ 窗口失败，复测通过，测试选择器随后限制本模式跳过隐藏窗口并再次通过。双宽增量构建及 XAML 核心各3项通过；登记 `build/t25-package/s1-togglebutton-clean1` 干净构建并在交付后清理 scratch。真实输入、像素和 x86 WinUI 未验证。
+
+T25 S1 ToggleButton 产品候选：接入现有 XAML 控件发现和默认样式保护；自有 x64 三态对象经实际适配器验证边缘状态及停止后默认来源恢复，x64 增量编译及来源门禁通过。标准启动动态发现、双宽构建、实际输入与像素尚未验证，未发布。
+
+T25 S1 ToggleButton 原型：自有 x64 WinUI 三态对象的 false、true、null 程序赋值分别观察平起、按下、平起边缘，符合系统不确定态外观；首次因模板漏掉 Indeterminate 导致 null 后边缘残留，补齐后通过。仅测试原型，真实输入、恢复及产品接入未验证，未发布。参考 https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.primitives.togglebutton.ischecked 。
+
 T25 S1 PasswordBox 位图诊断：自有 x64 控件的 XAML 诊断 `RenderTargetBitmap` 在调用阶段返回 E_NOTIMPL；已确认该路径无法在本次运行时取得像素，不把属性测试等同于密码遮蔽或按住显示。原型保留在测试中，暂不接入产品，后续使用其他自有实例验证路径；继续其他控件。
 
 T25 S1 PasswordBox 模式触发对照：自有 x64 测试先强制显示 RevealButton，再分别由控件设置 Hidden 和 Visible 模式，观察按钮自动折叠；假数据、占位和按钮边缘状态对照通过。XAML 诊断位图采样仍失败，实际遮蔽与按住显示未验证；未接入产品。
