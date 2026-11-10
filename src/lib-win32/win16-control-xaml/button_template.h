@@ -5,5 +5,6 @@
 
 /* Experimental standard Button template; the caller owns no returned storage. */
 const wchar_t *win16_xaml_button_template(void);
+const wchar_t *win16_xaml_repeat_button_template(void);
 
 #endif

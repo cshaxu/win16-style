@@ -2603,6 +2603,50 @@ static HRESULT test_toggle_button_candidate(reader *factory,IInspectable *style)
     return hr;
 }
 
+static HRESULT test_repeat_button_candidate(reader *factory,IInspectable *style)
+{
+    static const wchar_t markup[]=L"<RepeatButton xmlns='using:Microsoft.UI.Xaml.Controls.Primitives' Content='Test'/>";
+    HSTRING name=NULL; IInspectable *object=NULL,*window_object=NULL,*ui=NULL;
+    winui_element *element=NULL; test_window *window=NULL; test_control *control=NULL; winui_vsm *manager=NULL;
+    HRESULT hr=WindowsCreateString(markup,(UINT32)(ARRAYSIZE(markup)-1),&name);
+    if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,name,&object);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Window",24,&name);
+    if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&window_object);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(window_object,&test_window_iid,(void **)&window);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&test_ui_iid,(void **)&ui);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_element_iid,(void **)&element);
+    if (SUCCEEDED(hr)) hr=element->vtable->put_style(element,style);
+    if (SUCCEEDED(hr)) hr=window->vtable->put_content(window,ui);
+    if (SUCCEEDED(hr)) hr=window->vtable->activate(window);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_control_iid,(void **)&control);
+    boolean applied=0;
+    if (SUCCEEDED(hr)) hr=control->vtable->apply_template(control,&applied);
+    if (SUCCEEDED(hr) && !applied) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.VisualStateManager",36,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_vsm_iid,(void **)&manager);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    static const wchar_t *states[]={L"Normal",L"Pressed",L"Normal"};
+    for (unsigned int i=0;SUCCEEDED(hr) && i<ARRAYSIZE(states);i++) {
+        boolean changed=0;
+        hr=WindowsCreateString(states[i],(UINT32)lstrlenW(states[i]),&name);
+        if (SUCCEEDED(hr)) hr=manager->vtable->go_to_state(manager,(IInspectable *)control,name,0,&changed);
+        if (SUCCEEDED(hr) && (!changed || !check_edge_colors(object,i==1))) hr=E_FAIL;
+        if (name) { WindowsDeleteString(name); name=NULL; }
+    }
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_STATES_EVENT");
+    if (manager) manager->vtable->release(manager);
+    if (control) control->vtable->release(control);
+    if (window) { (void)window->vtable->close(window); window->vtable->release(window); }
+    if (element) element->vtable->release(element);
+    if (ui) IInspectable_Release(ui);
+    if (window_object) IInspectable_Release(window_object);
+    if (object) IInspectable_Release(object);
+    if (name) WindowsDeleteString(name);
+    return hr;
+}
+
 typedef struct test_menu_item test_menu_item;
 typedef struct {
     HRESULT (STDMETHODCALLTYPE *query)(test_menu_item *,REFIID,void **);
@@ -3606,7 +3650,8 @@ static void test_template_parse(void)
     reader *factory=NULL;
     IInspectable *style=NULL;
     wchar_t *owned_markup=NULL;
-    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_CONTENTDIALOG_PARSE",NULL,0)
+    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_REPEATBUTTON_PARSE",NULL,0)
+        ? win16_xaml_repeat_button_template() : GetEnvironmentVariableW(L"WIN16_XAML_CONTENTDIALOG_PARSE",NULL,0)
         ? content_dialog_markup : GetEnvironmentVariableW(L"WIN16_XAML_SEPARATOR_PARSE",NULL,0)
         ? win16_xaml_menu_separator_template() : GetEnvironmentVariableW(L"WIN16_XAML_SUBMENU_PARSE",NULL,0)
         ? win16_xaml_submenu_template() : GetEnvironmentVariableW(L"WIN16_XAML_TOGGLEMENU_PARSE",NULL,0)
@@ -3638,6 +3683,8 @@ static void test_template_parse(void)
     if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_reader_iid,(void **)&factory);
     if (SUCCEEDED(hr)) hr=WindowsCreateString(markup,(UINT32)lstrlenW(markup),&text);
     if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,text,&style);
+    if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_REPEATBUTTON_PARSE",NULL,0))
+        hr=test_repeat_button_candidate(factory,style);
     if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_CONTENTDIALOG_PARSE",NULL,0))
         hr=test_content_dialog_candidate(factory,style);
     if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_SEPARATOR_PARSE",NULL,0))

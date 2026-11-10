@@ -6566,7 +6566,7 @@
       "path": "src/lib-win32/win16-control-xaml/button_template.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f29051a6fd462e19f52f40690e34a9dd69f992c2568a67ca422ebaa25882f076",
+      "sha256": "9c64ddb4ed2a4d300a7c032db53c7980b2f5153e290ebfe6159d2f3442a06f71",
       "disposition": "authored",
       "review": "M0 T25 S1 XAML control adaptation and diagnostics",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
@@ -6575,7 +6575,7 @@
       "path": "src/lib-win32/win16-control-xaml/button_template.h",
       "source": null,
       "source_blob": null,
-      "sha256": "f60c7cf466bf3661516eb0b49cf2330cf3f0959e06f15971023e9ef8aeedcef2",
+      "sha256": "876823ecaa191c71a1c987048318fb9495a7a3559bbb97d85943fd56cf5a3df9",
       "disposition": "authored",
       "review": "M0 T25 S1 XAML control adaptation and diagnostics",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
