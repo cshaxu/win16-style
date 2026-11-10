@@ -2,6 +2,8 @@
 
 ## Current Work
 
+T25 S1 P11 复核：提交 `8a83844d` 已推送并核对远端 main，assets 与 O:/winnt 摘要一致；本次 clean1、package1、publish1 临时目录已清理。S1/T25 保持开放，真实交互、像素、x86 WinUI 和手动验收限制不变。
+
 T25 S1 P11 ScrollBar 阶段包已发布 assets 根目录及 O:/winnt，四文件摘要与同批包一致；干净双宽构建及13项聚焦实包回归通过，详见 [P11 记录](../history/M0-T25-S1-P11-xaml-scroll.md)。真实箭头、拖动、滚轮、像素及 x86 WinUI 未验证，S1/T25 保持开放；提交推送和 scratch 清理待完成。
 
 T25 S1 ScrollBar 产品候选：双宽增量构建、XAML 集合/适配器/会话各3项和来源检查通过；自有 x64 横竖滚动条经适配器应用、范围/几何、来源恢复、本地样式保护通过，ComboBox 对象回归通过。标准 run16s 自有记事本的动态滚动条自动接入及最终清理通过；真实箭头、拖动、滚轮、像素和 x86 WinUI 未验证。系统默认与原型在异步200ms视口单独变化对照中均未变大，原因未明；登记 `build/t25-package/s1-scroll-clean1` 做双宽干净构建，完成后清理。
