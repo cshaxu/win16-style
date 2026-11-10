@@ -14,6 +14,7 @@
 #include "lib-win32/win16-control-xaml/checkbox_template.h"
 #include "lib-win32/win16-control-xaml/radio_template.h"
 #include "lib-win32/win16-control-xaml/textbox_template.h"
+#include "lib-win32/win16-control-xaml/combo_template.h"
 #include "lib-win32/win16-control-xaml/button_style.h"
 #include "lib-win32/win16-control-xaml/visual_tree.h"
 #include "lib-win32/win16-control-xaml/session.h"
@@ -72,6 +73,8 @@ typedef struct {
     void (STDMETHODCALLTYPE *unused[46])(void);
     HRESULT (STDMETHODCALLTYPE *get_style)(winui_element *, IInspectable **);
     HRESULT (STDMETHODCALLTYPE *put_style)(winui_element *, IInspectable *);
+    void (STDMETHODCALLTYPE *unused_find_name[23])(void);
+    HRESULT (STDMETHODCALLTYPE *find_name)(winui_element *,HSTRING,IInspectable **);
 } winui_element_vtable;
 struct winui_element { const winui_element_vtable *vtable; };
 static const IID winui_reader_iid = {0x82a4cd9e,0x435e,0x5aeb,{0x8c,0x4f,0x30,0x0c,0xec,0xe4,0x5c,0xae}};
@@ -1080,6 +1083,320 @@ static HRESULT test_textbox_candidate(void)
     return hr;
 }
 
+typedef struct test_combo test_combo;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_combo *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_combo *);
+    ULONG (STDMETHODCALLTYPE *release)(test_combo *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(test_combo *,ULONG *,IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(test_combo *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(test_combo *,TrustLevel *);
+    HRESULT (STDMETHODCALLTYPE *get_open)(test_combo *,boolean *);
+    HRESULT (STDMETHODCALLTYPE *put_open)(test_combo *,boolean);
+    HRESULT (STDMETHODCALLTYPE *get_editable)(test_combo *,boolean *);
+    HRESULT (STDMETHODCALLTYPE *put_editable)(test_combo *,boolean);
+    void (STDMETHODCALLTYPE *unused_text[20])(void);
+    HRESULT (STDMETHODCALLTYPE *get_text)(test_combo *,HSTRING *);
+} test_combo_vtable;
+struct test_combo { const test_combo_vtable *vtable; };
+static const IID combo_iid={0xc77da58b,0x4fd7,0x51e0,{0xa4,0x31,0xf8,0x46,0x58,0xa8,0x3e,0x9e}};
+typedef struct test_selector test_selector;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_selector *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_selector *);
+    ULONG (STDMETHODCALLTYPE *release)(test_selector *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(test_selector *,ULONG *,IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(test_selector *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(test_selector *,TrustLevel *);
+    HRESULT (STDMETHODCALLTYPE *get_index)(test_selector *,INT32 *);
+    HRESULT (STDMETHODCALLTYPE *put_index)(test_selector *,INT32);
+} test_selector_vtable;
+struct test_selector { const test_selector_vtable *vtable; };
+static const IID selector_iid={0x8f7e2159,0xe61d,0x576f,{0x84,0x76,0xf8,0x3f,0xde,0x3d,0x68,0x9e}};
+typedef struct test_popup test_popup;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_popup *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_popup *);
+    ULONG (STDMETHODCALLTYPE *release)(test_popup *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(test_popup *,ULONG *,IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(test_popup *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(test_popup *,TrustLevel *);
+    void (STDMETHODCALLTYPE *unused[2])(void);
+    HRESULT (STDMETHODCALLTYPE *get_open)(test_popup *,boolean *);
+} test_popup_vtable;
+struct test_popup { const test_popup_vtable *vtable; };
+static const IID popup_iid={0x4e3ab19d,0x2f95,0x579c,{0x95,0x35,0x90,0x6c,0x58,0x62,0x94,0x37}};
+typedef struct test_layout test_layout;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_layout *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_layout *);
+    ULONG (STDMETHODCALLTYPE *release)(test_layout *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(test_layout *,ULONG *,IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(test_layout *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(test_layout *,TrustLevel *);
+    void (STDMETHODCALLTYPE *unused[214])(void);
+    HRESULT (STDMETHODCALLTYPE *update_layout)(test_layout *);
+} test_layout_vtable;
+struct test_layout { const test_layout_vtable *vtable; };
+typedef struct test_item_mapping test_item_mapping;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_item_mapping *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_item_mapping *);
+    ULONG (STDMETHODCALLTYPE *release)(test_item_mapping *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(test_item_mapping *,ULONG *,IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(test_item_mapping *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(test_item_mapping *,TrustLevel *);
+    void (STDMETHODCALLTYPE *unused[3])(void);
+    HRESULT (STDMETHODCALLTYPE *container_from_index)(test_item_mapping *,INT32,IInspectable **);
+} test_item_mapping_vtable;
+struct test_item_mapping { const test_item_mapping_vtable *vtable; };
+static const IID item_mapping_iid={0xb3e03a32,0xea83,0x5626,{0xbf,0xda,0xd3,0x27,0xa1,0xc7,0x55,0x0c}};
+
+static HRESULT test_combo_item_states(IInspectable *item,winui_tree *tree,test_control *control,INT32 index)
+{
+    static const wchar_t type_name[]=L"Microsoft.UI.Xaml.VisualStateManager";
+    HSTRING name=NULL; winui_vsm *manager=NULL;
+    IInspectable *dep=NULL,*root=NULL,*root_dep=NULL,*content=NULL;
+    HRESULT hr=WindowsCreateString(type_name,(UINT32)(ARRAYSIZE(type_name)-1),&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_vsm_iid,(void **)&manager);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(item,&winui_dependency_iid,(void **)&dep);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,0,&root);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(root,&winui_dependency_iid,(void **)&root_dep);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,root_dep,0,&content);
+    test_presenter *presenter=NULL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(content,&winui_presenter_iid,(void **)&presenter);
+    content_interface *content_view=NULL; IInspectable *content_value=NULL;
+    __x_ABI_CWindows_CFoundation_CIPropertyValue *property=NULL; HSTRING content_text=NULL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(content,&winui_presenter_iid,(void **)&content_view);
+    if (SUCCEEDED(hr)) hr=content_view->vtable->get_content(content_view,&content_value);
+    if (SUCCEEDED(hr) && !content_value) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(content_value,&property_value_iid,(void **)&property);
+    if (SUCCEEDED(hr)) hr=__x_ABI_CWindows_CFoundation_CIPropertyValue_GetString(property,&content_text);
+    if (SUCCEEDED(hr) && wcscmp(WindowsGetStringRawBuffer(content_text,NULL),index==0 ? L"First" : L"Second")) hr=E_FAIL;
+    static const wchar_t *states[]={L"Selected",L"Disabled"};
+    for (unsigned int i=0;SUCCEEDED(hr) && i<ARRAYSIZE(states);i++) {
+        HSTRING state=NULL; boolean changed=0; IInspectable *foreground=NULL; test_brush *brush=NULL; test_color color={0};
+        hr=WindowsCreateString(states[i],(UINT32)lstrlenW(states[i]),&state);
+        if (SUCCEEDED(hr)) hr=manager->vtable->go_to_state(manager,(IInspectable *)control,state,0,&changed);
+        if (SUCCEEDED(hr) && !changed) hr=E_FAIL;
+        if (SUCCEEDED(hr)) hr=presenter->vtable->get_foreground(presenter,&foreground);
+        if (SUCCEEDED(hr) && !foreground) hr=E_FAIL;
+        if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(foreground,&brush_iid,(void **)&brush);
+        if (SUCCEEDED(hr)) hr=brush->vtable->get_color(brush,&color);
+        BYTE expected=i==0 ? 255 : 128;
+        if (SUCCEEDED(hr) && (color.r!=expected || color.g!=expected || color.b!=expected)) hr=E_FAIL;
+        if (brush) brush->vtable->release(brush);
+        if (foreground) IInspectable_Release(foreground);
+        if (state) WindowsDeleteString(state);
+    }
+    if (presenter) presenter->vtable->release(presenter);
+    if (content_text) WindowsDeleteString(content_text);
+    if (property) __x_ABI_CWindows_CFoundation_CIPropertyValue_Release(property);
+    if (content_value) IInspectable_Release(content_value);
+    if (content_view) content_view->vtable->release(content_view);
+    if (content) IInspectable_Release(content);
+    if (root_dep) IInspectable_Release(root_dep);
+    if (root) IInspectable_Release(root);
+    if (dep) IInspectable_Release(dep);
+    if (manager) manager->vtable->release(manager);
+    if (name) WindowsDeleteString(name);
+    return hr;
+}
+
+static HRESULT test_combo_candidate(reader *factory,IInspectable *style)
+{
+    static const wchar_t markup[]=L"<ComboBox xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'><x:String>First</x:String><x:String>Second</x:String></ComboBox>";
+    HSTRING text=NULL,name=NULL; IInspectable *object=NULL,*window_object=NULL,*ui=NULL,*dep=NULL,*root=NULL,*popup_object=NULL;
+    test_window *window=NULL; test_control *control=NULL; test_combo *combo=NULL; test_selector *selector=NULL;
+    test_popup *popup=NULL; winui_tree *tree=NULL; winui_element *element=NULL,*root_element=NULL;
+    BOOL baseline=GetEnvironmentVariableW(L"WIN16_XAML_COMBO_BASELINE",NULL,0)!=0;
+    win16_xaml_adapter adapter={0}; VisualElement info={0}; ParentChildRelation relation={0};
+    unsigned int source=0,property_index=0;
+    (void)style;
+    HRESULT hr=WindowsCreateString(markup,(UINT32)(ARRAYSIZE(markup)-1),&text);
+    if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,text,&object);
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_CONTENT_TEXT_MATCH_EVENT");
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Window",24,&name);
+    if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&window_object);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(window_object,&test_window_iid,(void **)&window);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&test_ui_iid,(void **)&ui);
+    if (SUCCEEDED(hr)) hr=window->vtable->put_content(window,ui);
+    if (SUCCEEDED(hr)) hr=window->vtable->activate(window);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_element_iid,(void **)&element);
+    if (SUCCEEDED(hr) && !baseline) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    if (SUCCEEDED(hr) && !baseline) {
+        info.Type=(BSTR)L"Microsoft.UI.Xaml.Controls.ComboBox"; relation.Parent=1;
+        hr=IXamlDiagnostics_GetHandleFromIInspectable(diagnostics,object,&info.Handle);
+    }
+    if (SUCCEEDED(hr) && !baseline) {
+        hr=win16_xaml_adapter_change(&adapter,relation,info,Add,NULL);
+        if (hr==S_FALSE) hr=E_FAIL;
+    }
+    if (SUCCEEDED(hr) && !baseline) hr=win16_xaml_button_source(service,diagnostics,object,&source,&property_index);
+    if (SUCCEEDED(hr) && !baseline && source!=BaseValueSourceLocal) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_control_iid,(void **)&control);
+    boolean applied=0;
+    if (SUCCEEDED(hr)) hr=control->vtable->apply_template(control,&applied);
+    if (SUCCEEDED(hr) && !applied) hr=E_FAIL;
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_STATES_EVENT");
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&selector_iid,(void **)&selector);
+    if (SUCCEEDED(hr)) hr=selector->vtable->put_index(selector,1);
+    INT32 index=-1;
+    if (SUCCEEDED(hr)) hr=selector->vtable->get_index(selector,&index);
+    if (SUCCEEDED(hr) && index!=1) hr=E_FAIL;
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_LOCAL_BINDING_EVENT");
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Media.VisualTreeHelper",40,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_tree_iid,(void **)&tree);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_dependency_iid,(void **)&dep);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,0,&root);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(root,&winui_element_iid,(void **)&root_element);
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"ContentPresenter",16,&name);
+    IInspectable *presenter_object=NULL,*presented=NULL;
+    content_interface *presenter=NULL;
+    __x_ABI_CWindows_CFoundation_CIPropertyValue *presented_value=NULL;
+    HSTRING presented_text=NULL;
+    if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,name,&presenter_object);
+    if (SUCCEEDED(hr) && !presenter_object) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(presenter_object,&winui_presenter_iid,(void **)&presenter);
+    if (SUCCEEDED(hr)) hr=presenter->vtable->get_content(presenter,&presented);
+    if (SUCCEEDED(hr) && !presented) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(presented,&property_value_iid,(void **)&presented_value);
+    if (SUCCEEDED(hr)) hr=__x_ABI_CWindows_CFoundation_CIPropertyValue_GetString(presented_value,&presented_text);
+    if (SUCCEEDED(hr) && wcscmp(WindowsGetStringRawBuffer(presented_text,NULL),L"Second")) hr=E_FAIL;
+    if (presented_text) WindowsDeleteString(presented_text);
+    if (presented_value) __x_ABI_CWindows_CFoundation_CIPropertyValue_Release(presented_value);
+    if (presented) IInspectable_Release(presented);
+    if (presenter) presenter->vtable->release(presenter);
+    if (presenter_object) IInspectable_Release(presenter_object);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Popup",5,&name);
+    if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,name,&popup_object);
+    if (SUCCEEDED(hr) && !popup_object) hr=E_FAIL;
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_LOCAL_HANDLE_EVENT");
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(popup_object,&popup_iid,(void **)&popup);
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_LOCAL_EVALUATED_EVENT");
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&combo_iid,(void **)&combo);
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_LOCAL_NULL_EVENT");
+    if (SUCCEEDED(hr)) hr=((test_layout *)ui)->vtable->update_layout((test_layout *)ui);
+    if (SUCCEEDED(hr)) hr=combo->vtable->put_open(combo,1);
+    if (FAILED(hr)) {
+        WCHAR path[MAX_PATH];
+        DWORD length=GetEnvironmentVariableW(L"WIN16_XAML_COMBO_RESULT_FILE",path,ARRAYSIZE(path));
+        if (length && length<ARRAYSIZE(path)) {
+            HANDLE file=CreateFileW(path,GENERIC_WRITE,0,NULL,CREATE_NEW,FILE_ATTRIBUTE_TEMPORARY,NULL);
+            if (file!=INVALID_HANDLE_VALUE) {
+                DWORD written=0; (void)WriteFile(file,&hr,sizeof(hr),&written,NULL); CloseHandle(file);
+            }
+        }
+    }
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_BITMAP_OK_EVENT");
+    boolean opened=0;
+    if (SUCCEEDED(hr)) hr=popup->vtable->get_open(popup,&opened);
+    if (SUCCEEDED(hr) && !opened) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=((test_layout *)ui)->vtable->update_layout((test_layout *)ui);
+    test_item_mapping *mapping=NULL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&item_mapping_iid,(void **)&mapping);
+    for (INT32 i=0;SUCCEEDED(hr) && i<2;i++) {
+        IInspectable *item=NULL;
+        hr=mapping->vtable->container_from_index(mapping,i,&item);
+        if (SUCCEEDED(hr) && !item) hr=E_FAIL;
+        if (SUCCEEDED(hr)) {
+            unsigned int item_source=0,item_index=0;
+            hr=win16_xaml_button_source(service,diagnostics,item,&item_source,&item_index);
+            if (SUCCEEDED(hr)) signal_named(item_source==BaseValueSourceDefault
+                ? L"WIN16_XAML_SESSION_APPLIED_EVENT" : L"WIN16_XAML_SESSION_NOCHANGE_EVENT");
+            if (SUCCEEDED(hr) && !baseline) {
+                VisualElement item_info={0}; ParentChildRelation item_relation={0};
+                item_info.Type=(BSTR)L"Microsoft.UI.Xaml.Controls.ComboBoxItem"; item_relation.Parent=1;
+                hr=IXamlDiagnostics_GetHandleFromIInspectable(diagnostics,item,&item_info.Handle);
+                if (SUCCEEDED(hr)) { hr=win16_xaml_adapter_change(&adapter,item_relation,item_info,Add,NULL); if(hr==S_FALSE)hr=E_FAIL; }
+                if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,item,&item_source,&item_index);
+                if (SUCCEEDED(hr) && item_source!=BaseValueSourceLocal) hr=E_FAIL;
+                test_control *item_control=NULL;
+                if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(item,&winui_control_iid,(void **)&item_control);
+                boolean item_applied=0;
+                if (SUCCEEDED(hr)) hr=item_control->vtable->apply_template(item_control,&item_applied);
+                if (SUCCEEDED(hr) && !item_applied) hr=E_FAIL;
+                if (SUCCEEDED(hr)) hr=test_combo_item_states(item,tree,item_control,i);
+                if (item_control) item_control->vtable->release(item_control);
+            }
+        }
+        if (item) IInspectable_Release(item);
+    }
+    if (mapping) mapping->vtable->release(mapping);
+    if (SUCCEEDED(hr)) hr=combo->vtable->put_open(combo,0);
+    if (SUCCEEDED(hr)) hr=combo->vtable->put_editable(combo,1);
+    if (SUCCEEDED(hr)) hr=((test_layout *)ui)->vtable->update_layout((test_layout *)ui);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"EditableText",12,&name);
+    IInspectable *editable=NULL;
+    if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,name,&editable);
+    if (SUCCEEDED(hr) && !editable) hr=E_FAIL;
+    test_ui *editable_ui=NULL; test_textbox *editable_box=NULL; HSTRING edit_text=NULL,combo_text=NULL;
+    INT32 edit_visibility=-1;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(editable,&test_ui_iid,(void **)&editable_ui);
+    if (SUCCEEDED(hr)) hr=editable_ui->vtable->get_visibility(editable_ui,&edit_visibility);
+    if (SUCCEEDED(hr) && edit_visibility!=0) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(editable,&test_textbox_iid,(void **)&editable_box);
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Edited",6,&edit_text);
+    if (SUCCEEDED(hr)) hr=editable_box->vtable->put_text(editable_box,edit_text);
+    if (SUCCEEDED(hr)) hr=combo->vtable->get_text(combo,&combo_text);
+    if (SUCCEEDED(hr) && wcscmp(WindowsGetStringRawBuffer(combo_text,NULL),L"Edited")) hr=E_FAIL;
+    if (combo_text) WindowsDeleteString(combo_text);
+    if (edit_text) WindowsDeleteString(edit_text);
+    if (editable_box) editable_box->vtable->release(editable_box);
+    if (editable_ui) editable_ui->vtable->release(editable_ui);
+    if (editable) IInspectable_Release(editable);
+    if (adapter.service) { HRESULT stopped=win16_xaml_adapter_stop(&adapter); if(SUCCEEDED(hr))hr=stopped; }
+    if (SUCCEEDED(hr) && !baseline) hr=win16_xaml_button_source(service,diagnostics,object,&source,&property_index);
+    if (SUCCEEDED(hr) && !baseline && source!=BaseValueSourceDefault) hr=E_FAIL;
+    if (adapter.session.service) (void)win16_xaml_button_set_discard(&adapter.session.buttons);
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    win16_xaml_button_style external={0};
+    if (SUCCEEDED(hr) && !baseline) hr=win16_xaml_button_apply(service,diagnostics,object,&external);
+    if (SUCCEEDED(hr) && !baseline) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    if (SUCCEEDED(hr) && !baseline) {
+        HRESULT observed=win16_xaml_adapter_change(&adapter,relation,info,Add,NULL);
+        if (observed!=S_FALSE) hr=E_FAIL;
+    }
+    if (adapter.service) { HRESULT stopped=win16_xaml_adapter_stop(&adapter); if(SUCCEEDED(hr))hr=stopped; }
+    if (adapter.session.service) (void)win16_xaml_button_set_discard(&adapter.session.buttons);
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    if (external.button) { HRESULT removed=win16_xaml_button_remove(service,diagnostics,&external); if(SUCCEEDED(hr))hr=removed; }
+    if (external.button) win16_xaml_button_discard(&external);
+    if (combo) { (void)combo->vtable->put_open(combo,0); combo->vtable->release(combo); }
+    if (popup) popup->vtable->release(popup);
+    if (root_element) root_element->vtable->release(root_element);
+    if (popup_object) IInspectable_Release(popup_object);
+    if (root) IInspectable_Release(root);
+    if (dep) IInspectable_Release(dep);
+    if (tree) tree->vtable->release(tree);
+    if (selector) selector->vtable->release(selector);
+    if (control) control->vtable->release(control);
+    if (element) element->vtable->release(element);
+    if (window) { (void)window->vtable->close(window); window->vtable->release(window); }
+    if (ui) IInspectable_Release(ui);
+    if (window_object) IInspectable_Release(window_object);
+    if (object) IInspectable_Release(object);
+    if (text) WindowsDeleteString(text);
+    if (name) WindowsDeleteString(name);
+    return hr;
+}
+
+static reader *combo_factory;
+static IInspectable *combo_style;
+static void CALLBACK test_combo_timer(HWND window,UINT message,UINT_PTR timer,DWORD time)
+{
+    (void)window; (void)message; (void)time;
+    KillTimer(NULL,timer);
+    HRESULT candidate=test_combo_candidate(combo_factory,combo_style);
+    IInspectable_Release(combo_style); combo_style=NULL;
+    combo_factory->vtable->release(combo_factory); combo_factory=NULL;
+    signal_named(SUCCEEDED(candidate) ? L"WIN16_XAML_COMBO_OK_EVENT" : L"WIN16_XAML_FAILED_EVENT");
+}
+
 static void test_template_parse(void)
 {
     static const wchar_t reader_name[]=L"Microsoft.UI.Xaml.Markup.XamlReader";
@@ -1088,7 +1405,8 @@ static void test_template_parse(void)
     HSTRING name=NULL,text=NULL;
     reader *factory=NULL;
     IInspectable *style=NULL;
-    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_TEXTBOX_TEST",NULL,0)
+    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_COMBO_TEST",NULL,0)
+        ? win16_xaml_combo_template() : GetEnvironmentVariableW(L"WIN16_XAML_TEXTBOX_TEST",NULL,0)
         ? win16_xaml_textbox_template() : GetEnvironmentVariableW(L"WIN16_XAML_RADIO_TEST",NULL,0)
         ? win16_xaml_radio_template() : GetEnvironmentVariableW(L"WIN16_XAML_CHECKBOX_TEST",NULL,0)
         ? win16_xaml_checkbox_template() : win16_xaml_button_template();
@@ -1096,6 +1414,15 @@ static void test_template_parse(void)
     if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_reader_iid,(void **)&factory);
     if (SUCCEEDED(hr)) hr=WindowsCreateString(markup,(UINT32)lstrlenW(markup),&text);
     if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,text,&style);
+    if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_COMBO_TEST",NULL,0)) {
+        combo_factory=factory; factory->vtable->add_ref(factory);
+        combo_style=style; IInspectable_AddRef(style);
+        if (!SetTimer(NULL,0,100,test_combo_timer)) {
+            IInspectable_Release(combo_style); combo_style=NULL;
+            combo_factory->vtable->release(combo_factory); combo_factory=NULL;
+            signal_named(L"WIN16_XAML_FAILED_EVENT");
+        }
+    }
     if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_TEXTBOX_TEST",NULL,0)) {
         HRESULT candidate=test_textbox_candidate();
         signal_named(SUCCEEDED(candidate) ? L"WIN16_XAML_TEXTBOX_OK_EVENT" : L"WIN16_XAML_FAILED_EVENT");

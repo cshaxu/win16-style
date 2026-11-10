@@ -55,7 +55,9 @@ typedef struct {
     HRESULT (STDMETHODCALLTYPE *get_iids)(input_element *,ULONG *,IID **);
     HRESULT (STDMETHODCALLTYPE *get_name)(input_element *,HSTRING *);
     HRESULT (STDMETHODCALLTYPE *get_trust)(input_element *,TrustLevel *);
-    void (STDMETHODCALLTYPE *unused[220])(void);
+    void (STDMETHODCALLTYPE *unused[214])(void);
+    HRESULT (STDMETHODCALLTYPE *update_layout)(input_element *);
+    void (STDMETHODCALLTYPE *unused_focus[5])(void);
     HRESULT (STDMETHODCALLTYPE *focus)(input_element *,INT32,boolean *);
 } input_element_vtable;
 struct input_element { const input_element_vtable *vtable; };
@@ -71,6 +73,44 @@ typedef struct {
 } input_textbox_vtable;
 struct input_textbox { const input_textbox_vtable *vtable; };
 static const IID input_textbox_iid={0x873af7c2,0xab89,0x5d76,{0x8d,0xbe,0x3d,0x63,0x25,0x66,0x9d,0xf5}};
+typedef struct xaml_reader xaml_reader;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(xaml_reader *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(xaml_reader *);
+    ULONG (STDMETHODCALLTYPE *release)(xaml_reader *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(xaml_reader *,ULONG *,IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(xaml_reader *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(xaml_reader *,TrustLevel *);
+    HRESULT (STDMETHODCALLTYPE *load)(xaml_reader *,HSTRING,IInspectable **);
+} xaml_reader_vtable;
+struct xaml_reader { const xaml_reader_vtable *vtable; };
+static const IID xaml_reader_iid={0x82a4cd9e,0x435e,0x5aeb,{0x8c,0x4f,0x30,0x0c,0xec,0xe4,0x5c,0xae}};
+typedef struct combo_control combo_control;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(combo_control *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(combo_control *);
+    ULONG (STDMETHODCALLTYPE *release)(combo_control *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(combo_control *,ULONG *,IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(combo_control *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(combo_control *,TrustLevel *);
+    void (STDMETHODCALLTYPE *unused)(void);
+    HRESULT (STDMETHODCALLTYPE *put_open)(combo_control *,boolean);
+} combo_control_vtable;
+struct combo_control { const combo_control_vtable *vtable; };
+static const IID combo_control_iid={0xc77da58b,0x4fd7,0x51e0,{0xa4,0x31,0xf8,0x46,0x58,0xa8,0x3e,0x9e}};
+typedef struct item_mapping item_mapping;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(item_mapping *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(item_mapping *);
+    ULONG (STDMETHODCALLTYPE *release)(item_mapping *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(item_mapping *,ULONG *,IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(item_mapping *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(item_mapping *,TrustLevel *);
+    void (STDMETHODCALLTYPE *unused[3])(void);
+    HRESULT (STDMETHODCALLTYPE *container_from_index)(item_mapping *,INT32,IInspectable **);
+} item_mapping_vtable;
+struct item_mapping { const item_mapping_vtable *vtable; };
+static const IID item_mapping_iid={0xb3e03a32,0xea83,0x5626,{0xbf,0xda,0xd3,0x27,0xa1,0xc7,0x55,0x0c}};
 typedef struct test_control test_control;
 typedef struct {
     HRESULT (STDMETHODCALLTYPE *query)(test_control *,REFIID,void **);
@@ -145,10 +185,23 @@ static HRESULT create_checkbox(win16_xaml_adapter *adapter,int kind)
     }
     HSTRING name=NULL; IInspectable *object=NULL,*element=NULL; test_control *control=NULL;
     boolean applied=0;
-    const WCHAR *class_name=kind==2 ? L"Microsoft.UI.Xaml.Controls.TextBox" :
+    const WCHAR *class_name=kind==3 ? L"Microsoft.UI.Xaml.Controls.ComboBox" : kind==2 ? L"Microsoft.UI.Xaml.Controls.TextBox" :
         kind==1 ? L"Microsoft.UI.Xaml.Controls.RadioButton" : L"Microsoft.UI.Xaml.Controls.CheckBox";
-    HRESULT hr=WindowsCreateString(class_name,(UINT32)lstrlenW(class_name),&name);
-    if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&button);
+    HRESULT hr=S_OK;
+    if (kind==3) {
+        static const WCHAR reader_name[]=L"Microsoft.UI.Xaml.Markup.XamlReader";
+        static const WCHAR markup[]=L"<ComboBox xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'><x:String>First</x:String><x:String>Second</x:String></ComboBox>";
+        xaml_reader *reader=NULL; HSTRING text=NULL;
+        hr=WindowsCreateString(reader_name,(UINT32)(ARRAYSIZE(reader_name)-1),&name);
+        if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&xaml_reader_iid,(void **)&reader);
+        if (SUCCEEDED(hr)) hr=WindowsCreateString(markup,(UINT32)(ARRAYSIZE(markup)-1),&text);
+        if (SUCCEEDED(hr)) hr=reader->vtable->load(reader,text,&button);
+        if (reader) reader->vtable->release(reader);
+        if (text) WindowsDeleteString(text);
+    } else {
+        hr=WindowsCreateString(class_name,(UINT32)lstrlenW(class_name),&name);
+        if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&button);
+    }
     if (name) { WindowsDeleteString(name); name=NULL; }
     if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Window",24,&name);
     if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&object);
@@ -230,10 +283,10 @@ __declspec(dllexport) LRESULT CALLBACK XamlPropertyProbe(int code,WPARAM wp,LPAR
                     hr=win16_xaml_button_source(service,diagnostics,button,&source,&index);
                 }
             }
-        } else if (m->wParam==3 || m->wParam==5 || m->wParam==7 || m->wParam==17 || m->wParam==18) {
+        } else if (m->wParam==3 || m->wParam==5 || m->wParam==7 || m->wParam==17 || m->wParam==18 || m->wParam==21) {
             clear();
-            hr=m->wParam==7 ? create_checkbox(NULL,0) : m->wParam==3 || m->wParam==17 || m->wParam==18
-                ? create_checkbox((win16_xaml_adapter *)m->lParam,m->wParam==18 ? 2 : m->wParam==17 ? 1 : 0)
+            hr=m->wParam==7 ? create_checkbox(NULL,0) : m->wParam==3 || m->wParam==17 || m->wParam==18 || m->wParam==21
+                ? create_checkbox((win16_xaml_adapter *)m->lParam,m->wParam==21 ? 3 : m->wParam==18 ? 2 : m->wParam==17 ? 1 : 0)
                 : create_checkbox_in_tree((win16_xaml_adapter *)m->lParam);
         } else if (m->wParam==4 && button) {
             win16_xaml_adapter *adapter=(win16_xaml_adapter *)m->lParam;
@@ -274,6 +327,21 @@ __declspec(dllexport) LRESULT CALLBACK XamlPropertyProbe(int code,WPARAM wp,LPAR
                 }
             } else if (SUCCEEDED(hr)) hr=E_FAIL;
             if (native) native->vtable->release(native);
+        } else if (m->wParam==22 && button) {
+            input_element *element=NULL; combo_control *combo=NULL; item_mapping *mapping=NULL;
+            hr=IInspectable_QueryInterface(button,&ui_iid,(void **)&element);
+            if (SUCCEEDED(hr)) hr=element->vtable->update_layout(element);
+            if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(button,&combo_control_iid,(void **)&combo);
+            if (SUCCEEDED(hr)) hr=combo->vtable->put_open(combo,1);
+            if (SUCCEEDED(hr)) hr=element->vtable->update_layout(element);
+            if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(button,&item_mapping_iid,(void **)&mapping);
+            if (SUCCEEDED(hr)) hr=mapping->vtable->container_from_index(mapping,0,&other_button);
+            if (SUCCEEDED(hr) && !other_button) hr=E_FAIL;
+            if (mapping) mapping->vtable->release(mapping);
+            if (combo) combo->vtable->release(combo);
+            if (element) element->vtable->release(element);
+        } else if (m->wParam==23 && other_button && service && diagnostics) {
+            hr=win16_xaml_button_source(service,diagnostics,other_button,&source,&index);
         } else if (m->wParam==19 && button) {
             input_element *input=NULL; boolean focused=0;
             hr=IInspectable_QueryInterface(button,&ui_iid,(void **)&input);

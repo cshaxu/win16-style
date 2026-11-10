@@ -36,7 +36,9 @@ HRESULT win16_xaml_adapter_change(win16_xaml_adapter *adapter,ParentChildRelatio
     BOOL button=element.Type && (!wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.Button") ||
                                  !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.CheckBox") ||
                                  !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.RadioButton") ||
-                                 !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.TextBox"));
+                                 !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.TextBox") ||
+                                 !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.ComboBox") ||
+                                 !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.ComboBoxItem"));
     BOOL root=!relation.Parent;
     InstanceHandle handle=(button || root) ? element.Handle : relation.Parent;
     if (!handle) return S_FALSE;
