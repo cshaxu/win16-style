@@ -2,6 +2,14 @@
 
 ## Current Work
 
+T25 S1 P29 截图夹具维护：截图时正常显示自有窗口，并按 PID 和可见 Notepad 类定位；区分找不到窗口与不能取得前台。已发布版的非截图菜单容器对照通过，四类项目来源及会话清理符合预期；截图仍因当前输入桌面为 Screen-saver 而跳过。无产品二进制变更，临时目录已清理。
+
+T25 S1 视觉对照定位：截图夹具改为按自有 PID 枚举可见 Notepad 类窗口，避免依赖 MainWindowHandle，并区分未找到窗口与无法取得前台。实际找到窗口但 SetForegroundWindow 失败；只读 OpenInputDesktop 显示当前输入桌面为 Screen-saver。屏幕截图仍跳过，未证明绘制；不改变系统桌面或安全设置，测试 scratch 已清理。
+
+T25 S1 截图夹具修正：截图模式原先仍以 Hidden 启动 run16s，现仅在请求截图时改为 Normal；已发布包自有记事本复测仍报告 foreground_unavailable，故本次依旧跳过视觉验证，不将隐藏参数视为唯一原因。普通无截图模式保持 Hidden；临时目录已清理。
+
+T25 S1 已发布版实际绘制对照：自有记事本加载 O:/winnt 的 DLL 并连接 WinUI 会话、观察到样式记录，但系统未允许测试窗口取得前台，截图返回 foreground_unavailable；该次视觉验证跳过，不能证明屏幕像素。测试自有实例已结束，临时目录已清理。
+
 T25 S1 P28 复核：菜单阶段提交 `bf882fe3` 已推送并核对远端 main，assets 与 O:/winnt 同批四文件摘要一致；本次 clean1、package1、publish1 scratch 已清理。S1/T25 保持开放，真实输入、命令、像素及 x86 WinUI 未覆盖。
 
 T25 S1 P27 菜单阶段包已发布 assets 与 O:/winnt，双宽干净构建、13项聚焦包回归、同快照五类对象对照及标准启动真实弹出来源对照通过，详见 [P27记录](../history/M0-T25-S1-P27-xaml-menu.md)。首轮对象测试因测试脚本留下空环境变量导致开关串扰，正确移除后通过；真实输入、命令、像素及 x86 WinUI 未验证。提交、远端复核与本次 scratch 清理待完成。

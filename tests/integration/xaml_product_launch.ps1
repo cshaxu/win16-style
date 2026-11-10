@@ -7,7 +7,8 @@ $doc=Join-Path $build ("xaml-owned-"+[Guid]::NewGuid().ToString('N')+".txt")
 [IO.File]::WriteAllText($doc,'')
 $target=$null; $parent=$null; $launch=$null
 try {
-    $launch=Start-Process (Join-Path $package 'run16s.exe') -ArgumentList @('notepad.exe',"`"$doc`"") -WindowStyle Hidden -PassThru
+    $launchStyle=if($CapturePath){'Normal'}else{'Hidden'}
+    $launch=Start-Process (Join-Path $package 'run16s.exe') -ArgumentList @('notepad.exe',"`"$doc`"") -WindowStyle $launchStyle -PassThru
     if (-not $launch.WaitForExit(10000)) { throw 'launcher timed out' }
     if ($launch.ExitCode -ne 0) { throw "launcher exit $($launch.ExitCode)" }
     $deadline=[DateTime]::UtcNow.AddSeconds(10)
@@ -142,19 +143,37 @@ public static class XamlMemory {
         Add-Type @'
 using System;
 using System.Runtime.InteropServices;
+using System.Text;
 public static class XamlCapture {
     [StructLayout(LayoutKind.Sequential)] public struct Rect { public int Left,Top,Right,Bottom; }
+    private delegate bool EnumWindowProc(IntPtr window,IntPtr parameter);
+    [DllImport("user32.dll")] private static extern bool EnumWindows(EnumWindowProc callback,IntPtr parameter);
+    [DllImport("user32.dll")] private static extern uint GetWindowThreadProcessId(IntPtr window,out uint pid);
+    [DllImport("user32.dll")] private static extern bool IsWindowVisible(IntPtr window);
+    [DllImport("user32.dll",CharSet=CharSet.Unicode)] private static extern int GetClassName(IntPtr window,StringBuilder name,int size);
     [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr window);
     [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
     [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr window,out Rect rect);
+    public static IntPtr FindVisibleNotepad(uint target) {
+        IntPtr found=IntPtr.Zero;
+        EnumWindows((window,parameter) => {
+            uint pid; GetWindowThreadProcessId(window,out pid);
+            if (pid!=target || !IsWindowVisible(window)) return true;
+            var name=new StringBuilder(64);
+            if (GetClassName(window,name,name.Capacity)>0 && name.ToString()=="Notepad") { found=window; return false; }
+            return true;
+        },IntPtr.Zero);
+        return found;
+    }
 }
 '@
         $deadline=[DateTime]::UtcNow.AddSeconds(5); $window=[IntPtr]::Zero
         while ([DateTime]::UtcNow -lt $deadline -and $window -eq [IntPtr]::Zero) {
-            $process.Refresh(); $window=$process.MainWindowHandle
+            $window=[XamlCapture]::FindVisibleNotepad($process.Id)
             if ($window -eq [IntPtr]::Zero) { Start-Sleep -Milliseconds 100 }
         }
-        if ($window -eq [IntPtr]::Zero -or -not [XamlCapture]::SetForegroundWindow($window)) { Write-Output 'capture=foreground_unavailable'; exit 77 }
+        if ($window -eq [IntPtr]::Zero) { Write-Output 'capture=visible_window_unavailable'; exit 77 }
+        if (-not [XamlCapture]::SetForegroundWindow($window)) { Write-Output "capture=foreground_unavailable window=$window"; exit 77 }
         Start-Sleep -Milliseconds 1500
         if ([XamlCapture]::GetForegroundWindow() -ne $window) { Write-Output 'capture=foreground_lost'; exit 77 }
         $rect=[XamlCapture+Rect]::new()
