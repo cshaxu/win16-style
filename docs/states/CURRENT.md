@@ -2,6 +2,8 @@
 
 ## Current Work
 
+T25 S1 P15 复核：提交 `aa6d7361` 已推送并核对远端 main，assets 与 O:/winnt 摘要一致；本次 clean1、package1、publish1 临时目录已清理。S1/T25 保持开放，真实交互、像素、x86 WinUI 和手动验收限制不变。
+
 T25 S1 P15 ListBox 阶段包已发布 assets 根目录及 O:/winnt，四文件摘要与同批包一致；双宽干净构建及13项聚焦实包回归通过，详见 [P15 记录](../history/M0-T25-S1-P15-xaml-list.md)。真实键鼠、多选交互、滚动、像素及 x86 WinUI 未验证；提交推送和 scratch 清理待完成。
 
 T25 S1 ListBox 候选：列表及项目复用现有 XAML 发现和项目模板；自有 x64 对象验证单选、程序化多选、项目文本与颜色、样式恢复及本地样式保护通过。标准 run16s 自有记事本动态列表及首项自动接入、最后会话清空通过；ComboBox 对象回归、双宽 XAML 核心各3项及来源检查通过。真实键鼠、多选交互、滚动、像素和 x86 WinUI 未验证；登记 `build/t25-package/s1-list-clean1` 双宽干净构建，交付后清理。
