@@ -2,6 +2,8 @@
 
 ## Current Work
 
+T25 S1 P25 复核：提交 `ceb10ff9` 已推送并核对远端 main，assets 与 O:/winnt 同批摘要一致；本次 clean1、package1、publish1 scratch 已清理。S1/T25 保持开放，真实输入、像素及 x86 WinUI 未覆盖。
+
 T25 S1 P25 ToggleButton 阶段包已发布 assets 和 O:/winnt；双宽干净构建、13项聚焦实包回归及同批 x64 三态与标准启动对照通过，详见 [P25记录](../history/M0-T25-S1-P25-xaml-toggle-button.md)。真实输入、像素及 x86 WinUI 未覆盖；提交推送和 scratch 清理待完成。
 
 T25 S1 ToggleButton 标准启动候选：自有 x64 记事本动态创建控件后观察自动接入、最终会话清理；首次探针误选隐藏 GDI+ 窗口失败，复测通过，测试选择器随后限制本模式跳过隐藏窗口并再次通过。双宽增量构建及 XAML 核心各3项通过；登记 `build/t25-package/s1-togglebutton-clean1` 干净构建并在交付后清理 scratch。真实输入、像素和 x86 WinUI 未验证。
