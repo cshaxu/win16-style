@@ -2773,10 +2773,12 @@ static void CALLBACK test_menu_popup_timer(HWND window,UINT message,UINT_PTR tim
 static HRESULT test_menu_presenter_candidate(reader *factory,IInspectable *style)
 {
     static const wchar_t markup[]=L"<MenuFlyoutPresenter xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><MenuFlyoutItem Text='First'/><MenuFlyoutItem Text='Second'/></MenuFlyoutPresenter>";
+    static const wchar_t dark_markup[]=L"<MenuFlyoutPresenter xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' RequestedTheme='Dark'><MenuFlyoutItem Text='First'/><MenuFlyoutItem Text='Second'/></MenuFlyoutPresenter>";
     HSTRING name=NULL; IInspectable *object=NULL,*window_object=NULL,*ui=NULL,*dep=NULL,*root=NULL,*scroll=NULL;
     winui_element *element=NULL,*root_element=NULL; winui_tree *tree=NULL; test_window *window=NULL; test_control *control=NULL; test_item_mapping *mapping=NULL;
     win16_xaml_adapter adapter={0}; VisualElement info={0}; ParentChildRelation relation={0};
-    HRESULT hr=WindowsCreateString(markup,(UINT32)(ARRAYSIZE(markup)-1),&name);
+    const wchar_t *chosen=GetEnvironmentVariableW(L"WIN16_XAML_MENU_DARK",NULL,0) ? dark_markup : markup;
+    HRESULT hr=WindowsCreateString(chosen,(UINT32)lstrlenW(chosen),&name);
     if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,name,&object);
     if (name) { WindowsDeleteString(name); name=NULL; }
     if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Window",24,&name);
@@ -3083,10 +3085,12 @@ struct test_vector { const test_vector_vtable *vtable; };
 static HRESULT test_submenu_candidate(reader *factory,IInspectable *style)
 {
     static const wchar_t markup[]=L"<MenuFlyoutSubItem xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' Text='More'><MenuFlyoutSubItem.Icon><SymbolIcon Symbol='Save'/></MenuFlyoutSubItem.Icon><MenuFlyoutItem Text='Child'/></MenuFlyoutSubItem>";
+    static const wchar_t dark_markup[]=L"<MenuFlyoutSubItem xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' RequestedTheme='Dark' Text='More'><MenuFlyoutSubItem.Icon><SymbolIcon Symbol='Save'/></MenuFlyoutSubItem.Icon><MenuFlyoutItem Text='Child'/></MenuFlyoutSubItem>";
     HSTRING name=NULL; IInspectable *object=NULL,*window_object=NULL,*ui=NULL,*items=NULL,*dep=NULL,*root=NULL,*label=NULL,*arrow=NULL,*icon=NULL,*icon_value=NULL;
     winui_element *element=NULL,*root_element=NULL; winui_tree *tree=NULL; winui_vsm *manager=NULL; test_window *window=NULL; test_control *control=NULL; test_submenu *submenu=NULL; test_text_block *text=NULL; content_interface *icon_presenter=NULL;
     win16_xaml_adapter adapter={0}; VisualElement info={0}; ParentChildRelation relation={0};
-    HRESULT hr=WindowsCreateString(markup,(UINT32)(ARRAYSIZE(markup)-1),&name);
+    const wchar_t *chosen=GetEnvironmentVariableW(L"WIN16_XAML_MENU_DARK",NULL,0) ? dark_markup : markup;
+    HRESULT hr=WindowsCreateString(chosen,(UINT32)lstrlenW(chosen),&name);
     if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,name,&object);
     if (name) { WindowsDeleteString(name); name=NULL; }
     if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Window",24,&name);
@@ -3200,10 +3204,12 @@ static HRESULT test_submenu_candidate(reader *factory,IInspectable *style)
 static HRESULT test_menu_separator_candidate(reader *factory,IInspectable *style)
 {
     static const wchar_t markup[]=L"<MenuFlyoutSeparator xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'/>";
+    static const wchar_t dark_markup[]=L"<MenuFlyoutSeparator xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' RequestedTheme='Dark'/>";
     HSTRING name=NULL; IInspectable *object=NULL,*window_object=NULL,*ui=NULL,*dep=NULL,*root=NULL,*line=NULL;
     winui_element *element=NULL,*root_element=NULL; winui_tree *tree=NULL; test_window *window=NULL; test_control *control=NULL;
     win16_xaml_adapter adapter={0}; VisualElement info={0}; ParentChildRelation relation={0};
-    HRESULT hr=WindowsCreateString(markup,(UINT32)(ARRAYSIZE(markup)-1),&name);
+    const wchar_t *chosen=GetEnvironmentVariableW(L"WIN16_XAML_MENU_DARK",NULL,0) ? dark_markup : markup;
+    HRESULT hr=WindowsCreateString(chosen,(UINT32)lstrlenW(chosen),&name);
     if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,name,&object);
     if (name) { WindowsDeleteString(name); name=NULL; }
     if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Window",24,&name);
