@@ -2,6 +2,8 @@
 
 ## Current Work
 
+T25 S1 P19 复核：提交 `f992d649` 已推送并核对远端 main，assets 与 O:/winnt 同批四文件摘要一致；本次 clean1、package1、publish1 scratch 已清理。S1/T25 保持开放，真实输入、像素、x86 WinUI 和手动验收未覆盖。
+
 T25 S1 P19 ToggleSwitch 阶段包已发布 assets 和 O:/winnt，双宽干净构建、13 项聚焦实包回归及同批自有 x64 WinUI 状态和标准启动对照通过；详见 [P19 记录](../history/M0-T25-S1-P19-xaml-toggle.md)。真实输入、像素、x86 WinUI 和手动验收未覆盖；提交推送及 scratch 清理待完成。
 
 T25 S1 登记 `build/t25-package/s1-toggle-clean1`：对当前 ToggleSwitch 候选进行双宽干净构建，之后进行同批实际包测试与发布；交付核对后清理本次 scratch。真实鼠标和 x86 WinUI 不计通过。
