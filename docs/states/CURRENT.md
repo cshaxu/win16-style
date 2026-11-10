@@ -2,6 +2,8 @@
 
 ## Current Work
 
+T25 S1 P13 复核：提交 `c92af77d` 已推送并核对远端 main，assets 与 O:/winnt 摘要一致；本次 clean1、package1、publish1 临时目录已清理。S1/T25 保持开放，真实交互、像素、x86 WinUI 和手动验收限制不变。
+
 T25 S1 P13 滚动条箭头状态阶段包已发布 assets 根目录及 O:/winnt，四文件摘要与同批包一致；干净双宽构建及13项聚焦实包回归通过，详见 [P13 记录](../history/M0-T25-S1-P13-scroll-arrow.md)。自动化点击未执行，真实交互、像素及 x86 WinUI 尚未验证；提交推送和 scratch 清理待完成。
 
 T25 S1 ScrollBar 箭头状态候选：为箭头增加正常、按下边缘反转和禁用文字状态；自有 x64 WinUI 横竖对象验证状态切换、边缘及文字颜色通过，双宽增量编译通过。后台自动化探针在 UI 线程创建自动化对象时超时，未到实际调用；探针代码已移除，不证明点击行为。真实鼠标、拖动和滚轮仍未验证；登记 `build/t25-package/s1-scroll-state-clean1` 做双宽干净构建，交付后清理。
