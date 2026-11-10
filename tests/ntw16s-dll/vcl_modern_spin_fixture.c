@@ -1,7 +1,7 @@
 #define UNICODE
 #include <windows.h>
 #include <uxtheme.h>
-#include <string.h>
+#include "native_thunk.h"
 /* Test-only DLL: its class is owned outside the EXE. The synthetic delayed
  * native initialization exercises creation-scope admission; it does not
  * claim to reproduce a Delphi runtime's actual creation order. */
@@ -28,6 +28,7 @@ static LRESULT CALLBACK dispatch(HWND w,UINT m,WPARAM p,LPARAM l)
 static LRESULT CALLBACK initial(HWND w,UINT m,WPARAM p,LPARAM l)
 {LRESULT result=dispatch(w,m,p,l);if(m==WM_NCCREATE)SetWindowLongPtrW(w,GWLP_WNDPROC,(LONG_PTR)thunk);return result;}
 __declspec(dllexport) void WINAPI FixtureSetForeign(foreign_fn fn){foreign_paint=fn;}
+#ifdef TEST_MODERN_SPIN
 static int spin_mode;static COLORREF last_pixel;static HDC kept;static HBITMAP kept_bitmap;static HGDIOBJ kept_old;
 __declspec(dllexport) void WINAPI SpinMode(int value){spin_mode=value;}
 __declspec(dllexport) COLORREF WINAPI SpinLastPixel(void){return last_pixel;}
@@ -64,20 +65,15 @@ static LRESULT CALLBACK spin_proc(HWND w,UINT m,WPARAM p,LPARAM l)
  }
  return DefWindowProcW(w,m,p,l);
 }
+#else
+#define spin_proc DefWindowProcW
+#endif
 __declspec(dllexport) BOOL WINAPI FixtureRegister(int impostor)
 {
-    WNDCLASSEXW n={.cbSize=sizeof(n)},c={.cbSize=sizeof(c)};DWORD old;
+    WNDCLASSEXW n={.cbSize=sizeof(n)},c={.cbSize=sizeof(c)};
     if(!GetClassInfoExW(NULL,L"EDIT",&n))return FALSE;
     native_edit=n.lpfnWndProc;fake=impostor;enabled=FALSE;
-    thunk=VirtualAlloc(NULL,4096,MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);if(!thunk)return FALSE;
-#ifdef _WIN64
-    unsigned char code[]={0x48,0xb8,0,0,0,0,0,0,0,0,0xff,0xe0};void *target=(void*)dispatch;memcpy(code+2,&target,sizeof(target));
-#else
-    unsigned char code[]={0xb8,0,0,0,0,0xff,0xe0};void *target=(void*)dispatch;memcpy(code+1,&target,sizeof(target));
-#endif
-    memcpy(thunk,code,sizeof(code));
-    if(!VirtualProtect(thunk,4096,PAGE_EXECUTE_READ,&old)){VirtualFree(thunk,0,MEM_RELEASE);thunk=NULL;return FALSE;}
-    FlushInstructionCache(GetCurrentProcess(),thunk,sizeof(code));
+    thunk=test_create_native_thunk((void *)dispatch);if(!thunk)return FALSE;
     c.style=CS_DBLCLKS|CS_HREDRAW|CS_VREDRAW;c.cbWndExtra=n.cbWndExtra;c.hCursor=LoadCursorW(NULL,IDC_IBEAM);
     c.hInstance=owner;c.lpszClassName=EDIT_CLASS;c.lpfnWndProc=initial;
     if(RegisterClassExW(&c)){
@@ -109,6 +105,10 @@ __declspec(dllexport) HWND WINAPI FixtureAddButton(HWND parent)
     RECT r={2,2,180,24};if(child)SendMessageW(parent,EM_SETRECTNP,0,(LPARAM)&r);return child;
 }
 __declspec(dllexport) BOOL WINAPI FixtureUnregister(void)
-{if(kept){SelectObject(kept,kept_old);DeleteObject(kept_bitmap);DeleteDC(kept);kept=NULL;}BOOL ok=UnregisterClassW(L"TSpinButton",owner);ok=UnregisterClassW(EDIT_CLASS,owner)&&ok;if(thunk){ok=VirtualFree(thunk,0,MEM_RELEASE)&&ok;thunk=NULL;}return ok;}
+{
+#ifdef TEST_MODERN_SPIN
+if(kept){SelectObject(kept,kept_old);DeleteObject(kept_bitmap);DeleteDC(kept);kept=NULL;}
+#endif
+BOOL ok=UnregisterClassW(L"TSpinButton",owner);ok=UnregisterClassW(EDIT_CLASS,owner)&&ok;if(thunk){ok=VirtualFree(thunk,0,MEM_RELEASE)&&ok;thunk=NULL;}return ok;}
 BOOL WINAPI DllMain(HINSTANCE h,DWORD reason,LPVOID unused)
 {(void)unused;if(reason==DLL_PROCESS_ATTACH)owner=h;return TRUE;}

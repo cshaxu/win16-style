@@ -14,12 +14,12 @@
 #include "../lib-win32/win16-window/frame_input.h"
 #include "../lib-win32/win16-window/frame_layout.h"
 #include "../lib-win32/win16-common/present.h"
-#include "menu_bar.h"
-#include "menu_items.h"
-#include "menu_scope.h"
+#include "../lib-win32/win16-window/menu_bar.h"
+#include "../lib-win32/win16-window/menu_items.h"
+#include "../lib-win32/win16-window/menu_scope.h"
 #include "controls.h"
-#include "font.h"
-#include "injection/unwind.h"
+#include "../lib-win32/win16-common/font.h"
+#include "../lib-win32/process-hook/unwind.h"
 #include <commctrl.h>
 #include <dwmapi.h>
 #include <windowsx.h>
@@ -81,13 +81,10 @@ BOOL win16_style_hit_test(HWND w,LPARAM lp,LRESULT *result)
     return win16_control_frame_hit_test(w,&l,lp,result);
 }
 
-static void colors(style_window *s,win16_style_palette *p)
-{win16_control_resolve_palette(&s->palette,p);}
-
 static BOOL paint_layout(HWND w,void *context,win16_style_layout *result)
 {return layout(w,(style_window *)context,result);}
 static void paint_colors(void *context,win16_style_palette *palette)
-{colors((style_window *)context,palette);}
+{win16_control_resolve_palette(&((style_window *)context)->palette,palette);}
 static win16_control_frame_view paint_view(style_window *s)
 {
     const win16_control_frame_view view={s,&s->detached,&s->active,&s->menu_font,&s->title_font,
@@ -98,10 +95,9 @@ static win16_control_frame_view paint_view(style_window *s)
 static void paint(HWND w,style_window *s,HDC target)
 {const win16_control_frame_view view=paint_view(s);win16_control_paint_frame(w,&view,target);}
 
-static void paint_nonclient_buffered(HWND w,style_window *s,HDC dc)
-{const win16_control_frame_view view=paint_view(s);win16_control_frame_buffered(w,&view,dc);}
 static void paint_callback(HWND w,void *context,HDC dc){paint(w,(style_window *)context,dc);}
-static void paint_buffered_callback(HWND w,void *context,HDC dc){paint_nonclient_buffered(w,(style_window *)context,dc);}
+static void paint_buffered_callback(HWND w,void *context,HDC dc)
+{const win16_control_frame_view view=paint_view((style_window *)context);win16_control_frame_buffered(w,&view,dc);}
 static void paint_menu_state(HWND w,style_window *s)
 {const win16_control_frame_view view=paint_view(s);win16_control_frame_menu_state(w,&view);}
 static void paint_button_state(HWND w,style_window *s,int hit)
@@ -179,15 +175,15 @@ static void menu_dispatch_end(void *data)
     menu_dispatch_scope *scope=data;style_window *s=scope->state;
     if(!scope->returned && !--s->calls && s->detached)win16_control_frame_state_dispose(s);
 }
-static NTW16S_UNWIND_FUNCTION LRESULT CALLBACK style_proc(HWND w,UINT msg,WPARAM wp,LPARAM lp,
+static PROCESS_HOOK_UNWIND_FUNCTION LRESULT CALLBACK style_proc(HWND w,UINT msg,WPARAM wp,LPARAM lp,
     UINT_PTR id,DWORD_PTR data)
 {
-    style_window *s=(style_window *)data;ntw16s_unwind_scope unwind;
+    style_window *s=(style_window *)data;process_hook_unwind_scope unwind;
     if(!s->menu_only)return style_proc_body(w,msg,wp,lp,id,data);
     menu_dispatch_scope scope={s,FALSE};LRESULT result;
-    NTW16S_UNWIND_BEGIN(unwind,menu_dispatch_end,&scope);
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,menu_dispatch_end,&scope);
     result=style_proc_body(w,msg,wp,lp,id,data);scope.returned=TRUE;
-    NTW16S_UNWIND_END(unwind);return result;
+    PROCESS_HOOK_UNWIND_END(unwind);return result;
 }
 static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
     UINT_PTR id,DWORD_PTR data)

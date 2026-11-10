@@ -3,8 +3,8 @@
  * No external dialog resources are loaded or distributed. */
 #define COBJMACROS
 #include "intercept.h"
-#include "startup_hooks.h"
-#include "unwind.h"
+#include "../../lib-win32/process-hook/startup_hooks.h"
+#include "../../lib-win32/process-hook/unwind.h"
 #include "../../lib-win32/win16-dialog/file_helpers.h"
 #include "../../lib-win32/win16-dialog/file_contract.h"
 #include "../../lib-win32/win16-dialog/file_hook.h"
@@ -59,7 +59,7 @@ static UINT_PTR CALLBACK old_dialog_hook(HWND window,UINT message,WPARAM wparam,
     typedef struct name##_call {structure *value;BOOL result;DWORD incoming,error;} name##_call; \
     static HRESULT name##_invoke(void *value) {name##_call *call=value;SetLastError(call->incoming); \
         call->result=original(call->value);call->error=GetLastError();return S_OK;} \
-static NTW16S_UNWIND_FUNCTION BOOL WINAPI name(structure *value) \
+static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI name(structure *value) \
 { \
     if(!ntw16s_process_session_active())return original(value); \
     structure local;structure *passed=value; \
@@ -68,10 +68,10 @@ static NTW16S_UNWIND_FUNCTION BOOL WINAPI name(structure *value) \
     DWORD incoming=GetLastError(); \
     old_dialog_scope observer={0};observer.resolve_links=win16_dialog_file_resolve_links(eligible,(extra_flags),eligible && value->lpstrFilter,eligible?value->Flags:0); \
     observer.previous_active=active_file_dialog;active_file_dialog=&observer;NTW16S_OLD_DIALOG_OBSERVER(observer); \
-    ntw16s_unwind_scope unwind;name##_call call={passed,FALSE,incoming,ERROR_SUCCESS}; \
+    process_hook_unwind_scope unwind;name##_call call={passed,FALSE,incoming,ERROR_SUCCESS}; \
     HRESULT status; \
-    NTW16S_UNWIND_BEGIN(unwind,old_dialog_end,&observer); {status=ntw16s_dialog_style_scope(name##_invoke,&call); \
-    } NTW16S_UNWIND_END(unwind); \
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,old_dialog_end,&observer); {status=ntw16s_dialog_style_scope(name##_invoke,&call); \
+    } PROCESS_HOOK_UNWIND_END(unwind); \
     BOOL result=call.result;DWORD error=call.error; \
     if(FAILED(status)){result=FALSE;error=HRESULT_CODE(status);} \
     if(eligible)win16_dialog_file_result_##suffix(value,&local); \
@@ -95,4 +95,4 @@ LONG ntw16s_attach_file_dialogs_using(DWORD (*attach)(void *,void *))
     return error;
 }
 
-LONG ntw16s_attach_file_dialogs(void){return ntw16s_attach_file_dialogs_using(ntw16s_hooks_attach);}
+LONG ntw16s_attach_file_dialogs(void){return ntw16s_attach_file_dialogs_using(process_hook_startup_attach);}

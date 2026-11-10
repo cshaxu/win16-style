@@ -1,9 +1,9 @@
 #undef calloc
 #undef free
-#include "ntw16s-dll/font.h"
+#include "../../src/lib-win32/win16-common/font.h"
 #include <stdio.h>
 #include <wchar.h>
-#include "ntw16s-dll/vb_text.h"
+#include "lib-win32/win16-control/vb_text.h"
 #include "isolated_process.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"VB FONT FAIL %u error=%lu\n",__LINE__,GetLastError());return 1;}}while(0)
 /* This standalone font test does not link the window attachment module. */

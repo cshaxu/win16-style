@@ -1,22 +1,21 @@
 #ifndef NTW16S_CONTROL_CLASS_H
 #define NTW16S_CONTROL_CLASS_H
 #include <windows.h>
+#include <commctrl.h>
 #include "control_protocol.h"
 /* Private framework classification. A name alone is insufficient: only the
  * exact observed intrinsic classes registered by their loaded VB5/6 runtime are aliases.
  * No LoadLibrary, object-layout inspection or application-name special case. */
+static inline BOOL ntw16s_vb_runtime_class(HWND w,const WCHAR *name,const WCHAR *module)
+{
+    WCHAR actual[64];HMODULE runtime=GetModuleHandleW(module);
+    return runtime && (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==runtime &&
+        GetClassNameW(w,actual,ARRAYSIZE(actual)) && !lstrcmpiW(actual,name);
+}
 static inline BOOL ntw16s_vb_class(HWND w,const WCHAR *name)
-{
-    WCHAR actual[64];HMODULE runtime=GetModuleHandleW(L"MSVBVM60.DLL");
-    return runtime && (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==runtime &&
-        GetClassNameW(w,actual,ARRAYSIZE(actual)) && !lstrcmpiW(actual,name);
-}
+{return ntw16s_vb_runtime_class(w,name,L"MSVBVM60.DLL");}
 static inline BOOL ntw16s_vb5_class(HWND w,const WCHAR *name)
-{
-    WCHAR actual[64];HMODULE runtime=GetModuleHandleW(L"MSVBVM50.DLL");
-    return runtime && (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==runtime &&
-        GetClassNameW(w,actual,ARRAYSIZE(actual)) && !lstrcmpiW(actual,name);
-}
+{return ntw16s_vb_runtime_class(w,name,L"MSVBVM50.DLL");}
 static inline BOOL ntw16s_vb_checkbox(HWND w)
 {return ntw16s_vb_class(w,L"ThunderRT6CheckBox") || ntw16s_vb5_class(w,L"ThunderRT5CheckBox");}
 static inline BOOL ntw16s_vb_option(HWND w)
@@ -126,6 +125,23 @@ static inline BOOL ntw16s_class_is(HWND w,const WCHAR *expected)
     if(!lstrcmpiW(expected,L"EDIT"))return ntw16s_vb_class(w,L"ThunderRT6TextBox") || ntw16s_vb5_class(w,L"ThunderRT5TextBox") || ntw16s_control_protocol_is(w,expected);
     return ntw16s_control_protocol_is(w,expected);
 }
+static inline BOOL ntw16s_is_static(HWND w){return ntw16s_class_is(w,L"STATIC");}
+static inline BOOL ntw16s_is_edit(HWND w){return ntw16s_class_is(w,L"EDIT");}
+static inline BOOL ntw16s_is_combo(HWND w){return ntw16s_class_is(w,L"COMBOBOX");}
+static inline BOOL ntw16s_is_scroll(HWND w){return ntw16s_class_is(w,L"SCROLLBAR");}
+static inline BOOL ntw16s_is_link(HWND w)
+{return ntw16s_class_is(w,L"SysLink");}
+static inline BOOL ntw16s_is_tab(HWND w)
+{return ntw16s_class_is(w,WC_TABCONTROLW);}
+static inline BOOL ntw16s_is_header(HWND w){return ntw16s_class_is(w,WC_HEADERW);}
+static inline BOOL ntw16s_is_separator(HWND w)
+{
+    DWORD type=(DWORD)GetWindowLongPtrW(w,GWL_STYLE)&SS_TYPEMASK;
+    return ntw16s_is_static(w) && type>=SS_ETCHEDHORZ && type<=SS_ETCHEDFRAME;
+}
+static inline BOOL ntw16s_list_class(HWND w)
+{WCHAR name[16];return ntw16s_class_is(w,L"LISTBOX") || (GetClassNameW(w,name,16) && !lstrcmpiW(name,L"ComboLBox"));}
+
 static inline BOOL ntw16s_vb_frame(HWND w)
 {return ntw16s_vb_class(w,L"ThunderRT6Frame") || ntw16s_vb5_class(w,L"ThunderRT5Frame");}
 static inline BOOL ntw16s_vb_picture(HWND w)

@@ -103,23 +103,17 @@ void ntw16s_theme_close_end(HTHEME h, BOOL success)
     else { if (!success && h && !disabled) poison(h); --closing; }
     advance(); ReleaseSRWLockExclusive(&lock);
 }
-static ntw16s_theme_ticket theme_begin(HTHEME h,int kind)
+ntw16s_theme_ticket ntw16s_theme_begin(HTHEME h,int kind)
 {
     AcquireSRWLockShared(&lock);
     theme_record *r = find_record(h);
     ntw16s_theme_ticket t = {epoch, !disabled && !closing && !opening && r && r->kind==kind && !r->ambiguous, h};
     ReleaseSRWLockShared(&lock); return t;
 }
-static BOOL theme_end(HTHEME h,ntw16s_theme_ticket t,int kind)
+BOOL ntw16s_theme_end(HTHEME h,ntw16s_theme_ticket t,int kind)
 {
     AcquireSRWLockShared(&lock);
     theme_record *r = find_record(h);
     BOOL ok = t.eligible && t.theme == h && !disabled && !closing && !opening && t.epoch == epoch && r && r->kind==kind && !r->ambiguous;
     ReleaseSRWLockShared(&lock); return ok;
 }
-ntw16s_theme_ticket ntw16s_theme_button_begin(HTHEME h){return theme_begin(h,NTW16S_THEME_BUTTON);}
-BOOL ntw16s_theme_button_end(HTHEME h,ntw16s_theme_ticket t){return theme_end(h,t,NTW16S_THEME_BUTTON);}
-ntw16s_theme_ticket ntw16s_theme_combo_begin(HTHEME h){return theme_begin(h,NTW16S_THEME_COMBOBOX);}
-BOOL ntw16s_theme_combo_end(HTHEME h,ntw16s_theme_ticket t){return theme_end(h,t,NTW16S_THEME_COMBOBOX);}
-ntw16s_theme_ticket ntw16s_theme_glow_begin(HTHEME h){return theme_begin(h,NTW16S_THEME_TEXTGLOW);}
-BOOL ntw16s_theme_glow_end(HTHEME h,ntw16s_theme_ticket t){return theme_end(h,t,NTW16S_THEME_TEXTGLOW);}

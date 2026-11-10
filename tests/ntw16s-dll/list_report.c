@@ -116,20 +116,11 @@ static int child(BOOL styled,BOOL aware)
     printf("LIST_REPORT_OK bits=%u styled=%u aware=%u dpi=%u variants=18 native_font_geometry_data_callbacks=preserved\n",(unsigned)sizeof(void*)*8,styled,aware,GetDpiForWindow(root));
     CHECK(DestroyWindow(root));CHECK(UnregisterClassW(L"TListView",cls.hInstance));return 0;
 }
+#include "control_matrix.h"
 static int worker(int argc,WCHAR **argv)
 {
-    CHECK(argc==2);WCHAR self[MAX_PATH],command[2048];CHECK(GetModuleFileNameW(NULL,self,MAX_PATH));
-    for(unsigned aware=0;aware<2;++aware)for(unsigned styled=0;styled<2;++styled){
-        if(styled)swprintf_s(command,2048,L"\"%ls\" --wait \"%ls\" --child %ls",argv[1],self,aware?L"styled-aware":L"styled");
-        else swprintf_s(command,2048,L"\"%ls\" --child %ls",self,aware?L"native-aware":L"native");
-        HANDLE job=CreateJobObjectW(NULL,NULL);JOBOBJECT_EXTENDED_LIMIT_INFORMATION limit={0};limit.BasicLimitInformation.LimitFlags=JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
-        CHECK(job && SetInformationJobObject(job,JobObjectExtendedLimitInformation,&limit,sizeof(limit)));
-        STARTUPINFOW si={.cb=sizeof(si)};PROCESS_INFORMATION pi={0};si.dwFlags=STARTF_USESTDHANDLES;si.hStdInput=GetStdHandle(STD_INPUT_HANDLE);si.hStdOutput=GetStdHandle(STD_OUTPUT_HANDLE);si.hStdError=GetStdHandle(STD_ERROR_HANDLE);
-        CHECK(CreateProcessW(NULL,command,NULL,NULL,TRUE,CREATE_NO_WINDOW|CREATE_SUSPENDED,NULL,NULL,&si,&pi));
-        CHECK(AssignProcessToJobObject(job,pi.hProcess));ResumeThread(pi.hThread);DWORD code=1,wait=WaitForSingleObject(pi.hProcess,10000);
-        if(wait==WAIT_OBJECT_0)GetExitCodeProcess(pi.hProcess,&code);
-        CloseHandle(pi.hThread);CloseHandle(pi.hProcess);CloseHandle(job);CHECK(wait==WAIT_OBJECT_0 && !code);
-    }
+    CHECK(argc==2);
+    if(control_matrix(argv[1],NULL,FALSE))return 1;
     puts("LIST_REPORT_CLEANUP_OK");return 0;
 }
 int wmain(int argc,WCHAR **argv)

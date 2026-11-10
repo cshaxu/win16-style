@@ -1,4 +1,5 @@
 #include "run16s-exe/process_lifecycle.h"
+#include "lib-win32/process-launch/process.h"
 #include <stdio.h>
 #include <string.h>
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"PROCESS_LIFECYCLE_FAIL line=%d error=%lu\n",__LINE__,GetLastError());return 1;}}while(0)
@@ -9,7 +10,7 @@ static BOOL start(PROCESS_INFORMATION *child)
     WCHAR self[MAX_PATH],command[MAX_PATH+16];STARTUPINFOW startup={.cb=sizeof(startup)};
     if(!GetModuleFileNameW(NULL,self,MAX_PATH))return FALSE;
     if(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" child",self)<0)return FALSE;
-    return !win32_process_create_suspended(self,command,NULL,NULL,FALSE,CREATE_NO_WINDOW,NULL,NULL,&startup,child);
+    return win32_process_create(self,command,NULL,NULL,FALSE,CREATE_NO_WINDOW|CREATE_SUSPENDED,NULL,NULL,&startup,child);
 }
 int main(int argc,char **argv)
 {

@@ -8,6 +8,7 @@
 #include "lib-win32/win16-window/frame_view.h"
 #include "lib-win32/win16-window/frame_state.h"
 #include "lib-win32/win16-control/control_state.h"
+#include "lib-win32/win16-control/control_class.h"
 #include "lib-win32/win16-control/attachment_state.h"
 #include "lib-win32/win16-control/fileowner_message.h"
 #include "lib-win32/win16-control/list_paint.h"
@@ -194,6 +195,15 @@ int main(void)
     DeleteObject(title);win16_style_system_release(menu);
     HWND window=CreateWindowExW(0,L"STATIC",L"",WS_OVERLAPPED,20,20,100,100,NULL,NULL,GetModuleHandleW(NULL),NULL);
     if(!window)return 10;
+    const DWORD separator_styles[]={SS_ETCHEDHORZ,SS_ETCHEDVERT,SS_ETCHEDFRAME,SS_LEFT};
+    for(unsigned i=0;i<ARRAYSIZE(separator_styles);++i){
+        HWND child=CreateWindowW(L"STATIC",L"",WS_CHILD|separator_styles[i],0,0,10,10,window,NULL,GetModuleHandleW(NULL),NULL);
+        if(!child || ntw16s_is_separator(child)!=(i<3)){DestroyWindow(window);return 107;}
+        DestroyWindow(child);
+    }
+    HWND edit=CreateWindowW(L"EDIT",L"",WS_CHILD|SS_ETCHEDHORZ,0,0,10,10,window,NULL,GetModuleHandleW(NULL),NULL);
+    if(!edit || ntw16s_is_separator(edit)){DestroyWindow(window);return 108;}
+    DestroyWindow(edit);puts("CONTROL_SEPARATOR_OK etched=3 plain=1 nonstatic=1");
     HWND classic_combo=CreateWindowExW(0,L"COMBOBOX",L"",WS_CHILD|CBS_DROPDOWNLIST|CBS_OWNERDRAWFIXED|CBS_HASSTRINGS,
         0,0,80,80,window,(HMENU)(INT_PTR)1136,GetModuleHandleW(NULL),NULL);
     if(!classic_combo || !win16_control_common_dialog_combo_valid(classic_combo,window) ||

@@ -5,7 +5,7 @@
 #include <string.h>
 #include <setjmp.h>
 #include "isolated_process.h"
-#include "ntw16s-dll/injection/unwind.h"
+#include "../../src/lib-win32/process-hook/unwind.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"VCL_DATE_MODULE_FAIL line=%d error=%lu: %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
 typedef BOOL (WINAPI *reg_fn)(BOOL);
 typedef HWND (WINAPI *create_fn)(HWND,BOOL);
@@ -15,35 +15,18 @@ static HGDIOBJ tracked_region;static unsigned region_created,region_deleted;stat
 static HRGN (WINAPI *region_real)(int,int,int,int);static BOOL (WINAPI *delete_real)(HGDIOBJ);
 static HRGN WINAPI region_observer(int l,int t,int r,int b){HRGN v=region_real(l,t,r,b);if(track_active && v){tracked_region=v;++region_created;}return v;}
 static BOOL WINAPI delete_observer(HGDIOBJ object){if(track_active && object==tracked_region){++region_deleted;if(simulate_leak)return TRUE;}BOOL result=delete_real(object);if(track_active && object==tracked_region)delete_result=result;return result;}
-typedef struct slot_swap {void *volatile *slot;void *original,*replacement;DWORD protection;} slot_swap;
-static BOOL swap_import(HMODULE module,const char *name,void *replacement,slot_swap *out){BYTE *base=(BYTE*)module;IMAGE_DOS_HEADER *d=(void*)base;IMAGE_NT_HEADERS *n=(void*)(base+d->e_lfanew);DWORD size=n->OptionalHeader.SizeOfImage;IMAGE_DATA_DIRECTORY dir=n->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];if(n->Signature!=IMAGE_NT_SIGNATURE || dir.VirtualAddress>=size || dir.Size>size-dir.VirtualAddress)return FALSE;IMAGE_IMPORT_DESCRIPTOR *v=(void*)(base+dir.VirtualAddress);for(unsigned i=0;i<dir.Size/sizeof(*v)&&v[i].Name;i++){DWORD names=v[i].OriginalFirstThunk,addr=v[i].FirstThunk;if(!names||!addr||names>=size||addr>=size)continue;for(unsigned j=0;j<(size-names)/sizeof(IMAGE_THUNK_DATA)&&j<(size-addr)/sizeof(IMAGE_THUNK_DATA);j++){IMAGE_THUNK_DATA *a=(void*)(base+names+j*sizeof(*a)),*b=(void*)(base+addr+j*sizeof(*b));if(!a->u1.AddressOfData)break;if(IMAGE_SNAP_BY_ORDINAL(a->u1.Ordinal)||a->u1.AddressOfData>=size)continue;IMAGE_IMPORT_BY_NAME *item=(void*)(base+a->u1.AddressOfData);if(strcmp((char*)item->Name,name))continue;void *volatile *slot=(void*)&b->u1.Function;DWORD old,unused;if(!VirtualProtect((void*)slot,sizeof(*slot),PAGE_READWRITE,&old))return FALSE;void *original=InterlockedExchangePointer(slot,replacement);if(!VirtualProtect((void*)slot,sizeof(*slot),old,&unused))return FALSE;*out=(slot_swap){slot,original,replacement,old};return TRUE;}}return FALSE;}
-static BOOL restore_import(slot_swap *s){DWORD old,unused;if(!VirtualProtect((void*)s->slot,sizeof(*s->slot),PAGE_READWRITE,&old))return FALSE;void *prior=InterlockedCompareExchangePointer(s->slot,s->original,s->replacement);BOOL ok=VirtualProtect((void*)s->slot,sizeof(*s->slot),old,&unused);return prior==s->replacement && ok;}
+#include "import_swap.h"
 static HWND observed;
 static window_fn remove_style;
 static BOOL retire,destroy_item,removed,destroyed;
-static BOOL exception_seen;
 static unsigned drops,closes,changes;
 typedef void (WINAPI *signal_fn)(void);
 static signal_fn raise_print,reenter_info;
 #define COLOR_TEST_EXCEPTION 0xe0425342u
-#ifndef _WIN64
-typedef struct color_catcher {ntw16s_unwind_record record;jmp_buf saved;} color_catcher;
-static EXCEPTION_DISPOSITION NTAPI color_catch(EXCEPTION_RECORD *exception,void *frame,CONTEXT *context,void *dispatcher)
-{
-    (void)context;(void)dispatcher;
-    if(!(exception->ExceptionFlags&(EXCEPTION_UNWINDING|EXCEPTION_EXIT_UNWIND)) && exception->ExceptionCode==COLOR_TEST_EXCEPTION){
-        exception_seen=TRUE;RtlUnwind(frame,NULL,exception,NULL);longjmp(((color_catcher *)frame)->saved,1);
-    }
-    return ExceptionContinueSearch;
-}
-#else
-static LONG __attribute__((used)) color_filter(EXCEPTION_POINTERS *exception,void *frame)
-{
-    (void)frame;
-    if(exception->ExceptionRecord->ExceptionCode==COLOR_TEST_EXCEPTION){exception_seen=TRUE;return EXCEPTION_EXECUTE_HANDLER;}
-    return EXCEPTION_CONTINUE_SEARCH;
-}
-#endif
+#define NTW16S_TEST_EXCEPTION_CODE COLOR_TEST_EXCEPTION
+#define test_unwind exception_probe_send
+#include "exception_probe.h"
+#undef test_unwind
 static LRESULT CALLBACK parent_proc(HWND w,UINT m,WPARAM p,LPARAM l)
 {
     if(m==WM_APP+42 && (HWND)l==observed){if(retire){retire=FALSE;removed=remove_style(observed);}if(destroy_item){destroy_item=FALSE;destroyed=DestroyWindow(observed);}return 0;}
@@ -51,22 +34,9 @@ static LRESULT CALLBACK parent_proc(HWND w,UINT m,WPARAM p,LPARAM l)
     return DefWindowProcW(w,m,p,l);
 }
 static DWORD WINAPI watchdog(void *arg){Sleep(700);PostMessageW((HWND)arg,DTM_CLOSEMONTHCAL,0,0);return 0;}
-static NTW16S_UNWIND_FUNCTION BOOL test_unwind(HWND w,HDC dc)
+static BOOL test_unwind(HWND w,HDC dc)
 {
-    exception_seen=FALSE;raise_print();
-#ifndef _WIN64
-    color_catcher c;c.record.handler=color_catch;
-    __asm__ __volatile__("movl %%fs:0,%0":"=r"(c.record.previous)::"memory");
-    __asm__ __volatile__("movl %0,%%fs:0"::"r"(&c.record):"memory");
-    if(!setjmp(c.saved))SendMessageW(w,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT|PRF_ERASEBKGND);
-    __asm__ __volatile__("movl %0,%%fs:0"::"r"(c.record.previous):"memory");
-#else
-    __asm__ __volatile__(".Ls42_catch_start:\n.seh_handler __C_specific_handler, @except\n"
-        ".seh_handlerdata\n.long 1\n.rva .Ls42_catch_start,.Ls42_catch_end,color_filter,.Ls42_catch_end\n.text\n":::"memory");
-    SendMessageW(w,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT|PRF_ERASEBKGND);
-    __asm__ __volatile__("nop\n.Ls42_catch_end: nop\n":::"memory");
-#endif
-    return exception_seen;
+    raise_print();return exception_probe_send(w,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT|PRF_ERASEBKGND);
 }
 /* Track the exact temporary region used by this DLL. A simulated failed
  * release is detected and then explicitly cleaned up in this owned process. */
@@ -89,21 +59,7 @@ done:
     return call_ok && restored && cleaned && region_created==1 && region_deleted==1 &&
         (negative?(kind==OBJ_REGION && !delete_result):(!kind && delete_result));
 }
-static BOOL capture(HWND w,DWORD *pixels,int width,int height,const RECT *clip,RECT *returned_clip)
-{
-    HDC screen=GetDC(w),dc=CreateCompatibleDC(screen);BITMAPINFO bi={0};void *bits=NULL;
-    bi.bmiHeader.biSize=sizeof(bi.bmiHeader);bi.bmiHeader.biWidth=width;bi.bmiHeader.biHeight=-height;
-    bi.bmiHeader.biPlanes=1;bi.bmiHeader.biBitCount=32;
-    HBITMAP bmp=CreateDIBSection(screen,&bi,DIB_RGB_COLORS,&bits,NULL,0);HGDIOBJ old=dc && bmp?SelectObject(dc,bmp):NULL;
-    if(old){memset(bits,0x5a,(size_t)width*height*4);if(clip)IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom);
-        SendMessageW(w,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT|PRF_ERASEBKGND);GdiFlush();
-        if(returned_clip)GetClipBox(dc,returned_clip);
-        memcpy(pixels,bits,(size_t)width*height*4);SelectObject(dc,old);}
-    if(bmp)DeleteObject(bmp);
-    if(dc)DeleteDC(dc);
-    if(screen)ReleaseDC(w,screen);
-    return old!=NULL;
-}
+#include "vcl_capture.h"
 static int run(int argc,WCHAR **argv)
 {
     CHECK(argc==2);HMODULE fixture=LoadLibraryW(argv[1]);CHECK(fixture);

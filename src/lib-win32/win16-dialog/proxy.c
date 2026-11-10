@@ -2,7 +2,6 @@
 #define COBJMACROS
 #include "proxy.h"
 #include "file_contract.h"
-#include "file_live.h"
 #include "file_helpers.h"
 #include <dlgs.h>
 #include <stdio.h>
@@ -154,10 +153,6 @@ HRESULT win16_dialog_proxy_types(win16_dialog_proxy *p,UINT count,const COMDLG_F
     if(p->filter)CoTaskMemFree(p->filter);
     p->filter=filter;p->filter_index=1;return hr;
 }
-HRESULT win16_dialog_proxy_filter_index(win16_dialog_proxy *p,UINT index)
-{return win16_dialog_live_set_filter(p->native,&p->filter_index,index);}
-HRESULT win16_dialog_proxy_get_filter_index(win16_dialog_proxy *p,UINT *index)
-{return win16_dialog_live_get_filter(p->native,&p->active_window,&p->filter,index);}
 HRESULT win16_dialog_proxy_extension(win16_dialog_proxy *p,LPCWSTR value)
 {
     HRESULT hr=IFileDialog_SetDefaultExtension(p->native,value);if(FAILED(hr))return hr;
@@ -166,14 +161,6 @@ HRESULT win16_dialog_proxy_extension(win16_dialog_proxy *p,LPCWSTR value)
     if(p->extension)CoTaskMemFree(p->extension);
     p->extension=copy;return hr;
 }
-/* The native COM object is not showing when a classic file dialog is active.
- * Keep its saved configuration in sync, and use the real classic edit control
- * for live values changed by either the caller or the user. */
-HRESULT win16_dialog_proxy_set_filename(win16_dialog_proxy *p,LPCWSTR name)
-{return win16_dialog_live_set_name(p->native,&p->active_window,name);}
-HRESULT win16_dialog_proxy_get_filename(win16_dialog_proxy *p,LPWSTR *name)
-{return win16_dialog_live_get_name(p->native,&p->active_window,name);}
-
 void win16_dialog_proxy_capture_folder(win16_dialog_proxy *p,BOOL experimental_events)
 {
     WCHAR path[MAX_PATH];IShellItem *item=NULL;

@@ -16,15 +16,8 @@
 #include "vb_queue.h"
 #include "vb_control_text.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"VB_SAMPLE_FAIL line=%d error=%lu %s\n",__LINE__,GetLastError(),#x);ExitProcess(1);}}while(0)
-static void file_path(const WCHAR *path){
-    HANDLE f=CreateFileW(path,GENERIC_READ,FILE_SHARE_READ|FILE_SHARE_WRITE|FILE_SHARE_DELETE,NULL,OPEN_EXISTING,0,NULL);
-    CHECK(f!=INVALID_HANDLE_VALUE);
-    WCHAR actual[32768];
-    CHECK(GetFinalPathNameByHandleW(f,actual,32768,FILE_NAME_NORMALIZED));
-    printf("VB_SAMPLE_MODULE_FILE actual=%ls\n",actual);
-    CloseHandle(f);
-}
 static HANDLE job,ready,port;
+#include "vb_process.h"
 static HWND form;
 static BOOL graphical_pixel_check,close_vb5_squash;
 static DWORD pid;
@@ -55,20 +48,6 @@ static HANDLE queue_mapping,queue_ready;
 static vb_queue_state *queue_state;
 static HMODULE queue_module;
 static HHOOK queue_get,queue_sent;
-static DWORD pump(HANDLE h,DWORD timeout){
-    ULONGLONG end=GetTickCount64()+timeout;
-    for(;;){
-        ULONGLONG now=GetTickCount64();
-        if(now>=end)return WAIT_TIMEOUT;
-        DWORD r=MsgWaitForMultipleObjectsEx(1,&h,(DWORD)(end-now),QS_ALLINPUT,MWMO_INPUTAVAILABLE);
-        if(r!=WAIT_OBJECT_0+1)return r;
-        MSG m;
-        while(PeekMessageW(&m,NULL,0,0,PM_REMOVE)){
-            TranslateMessage(&m);
-            DispatchMessageW(&m);
-        }
-    }
-}
 static void queue_prepare(void)
 {
     WCHAR name[128],event_name[128];
@@ -152,15 +131,8 @@ static void CALLBACK shown(HWINEVENTHOOK h,DWORD e,HWND w,LONG object,LONG child
     (void)time;
     WCHAR cls[80];
     if(object!=OBJID_WINDOW || child || !GetClassNameW(w,cls,80))return;
-    DWORD candidate;
-    GetWindowThreadProcessId(w,&candidate);
-    HANDLE p=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION,FALSE,candidate);
-    BOOL own=FALSE;
-    if(p){
-        IsProcessInJob(p,job,&own);
-        CloseHandle(p);
-    }
-    if(own){
+    DWORD candidate=vb_process_member(w);
+    if(candidate){
         WCHAR title[160];GetWindowTextW(w,title,160);printf("SAMPLE_SHOW class=%ls title=%ls hwnd=%p\n",cls,title,(void *)w);fflush(stdout);
         if(close_vb5_squash && !wcscmp(cls,L"#32770") && !wcscmp(title,L"Jongmin Baek")){PostMessageW(w,WM_CLOSE,0,0);return;}
         if(!wcsstr(cls,L"Form") || GetParent(w))return;
@@ -188,28 +160,7 @@ static BOOL CALLBACK collect(HWND w,LPARAM ignored)
     if(count<80)checks[count++]=w;
     return TRUE;
 }
-static uint64_t capture(HWND w,const WCHAR *file,BOOL verify){
-    RECT r;
-    CHECK(GetWindowRect(w,&r));
-    int cx=r.right-r.left,cy=r.bottom-r.top;
-    CHECK(cx>0 && cy>0);
-    BITMAPINFO info= {0};
-    info.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
-    info.bmiHeader.biWidth=cx;
-    info.bmiHeader.biHeight=-cy;
-    info.bmiHeader.biPlanes=1;
-    info.bmiHeader.biBitCount=32;
-    HDC screen=GetDC(w),dc=CreateCompatibleDC(screen);
-    void *data;
-    HBITMAP bitmap=CreateDIBSection(screen,&info,DIB_RGB_COLORS,&data,NULL,0);
-    CHECK(screen && dc && bitmap);
-    HGDIOBJ old=SelectObject(dc,bitmap);
-    memset(data,255,(size_t)cx*cy*4);
-    CHECK(PrintWindow(w,dc,0));
-    uint64_t hash=14695981039346656037ull;
-    BYTE *b=data;
-    for(size_t i=0; i<(size_t)cx*cy*4;
-    ++i)hash=(hash^b[i])*1099511628211ull;
+static void capture_verify(HWND w,RECT r,int cx,int cy,void *data,BOOL verify){
     WCHAR role[100];GetClassNameW(w,role,100);
     if(graphical_pixel_check && wcsstr(role,L"CommandButton") && (GetWindowLongPtrW(w,GWL_STYLE)&BS_TYPEMASK)==BS_OWNERDRAW){
         int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));DWORD *pixels=data;
@@ -243,19 +194,9 @@ static uint64_t capture(HWND w,const WCHAR *file,BOOL verify){
         for(int y=0;y<13;++y)for(int x=0;x<14;++x){DWORD expected=control_checks[row+y][x+(check?14:0)]=='0'?0:0xffffff;CHECK((pixels[(top+MulDiv(y,dpi,96))*cx+MulDiv(x,dpi,96)]&0xffffff)==expected);}
         printf("VB_SAMPLE_GLYPH_OK source_pixels=182 check=%lld\n",(long long)check);
     }
-    BITMAPFILEHEADER head= {0};
-    head.bfType=0x4d42;
-    head.bfOffBits=sizeof(head)+sizeof(info.bmiHeader);
-    head.bfSize=head.bfOffBits+(DWORD)((size_t)cx*cy*4);
-    DWORD n;
-    HANDLE out=CreateFileW(file,GENERIC_WRITE,0,NULL,CREATE_NEW,0,NULL);
-    CHECK(out!=INVALID_HANDLE_VALUE && WriteFile(out,&head,sizeof(head),&n,NULL) && n==sizeof(head) && WriteFile(out,&info.bmiHeader,sizeof(info.bmiHeader),&n,NULL) && n==sizeof(info.bmiHeader) && WriteFile(out,data,head.bfSize-head.bfOffBits,&n,NULL) && n==head.bfSize-head.bfOffBits && CloseHandle(out));
-    SelectObject(dc,old);
-    DeleteObject(bitmap);
-    DeleteDC(dc);
-    ReleaseDC(w,screen);
-    return hash;
 }
+#include "vb_capture.h"
+
 static HWND picture_about;static WCHAR picture_dir[MAX_PATH];static unsigned picture_count;
 static BOOL CALLBACK locate_about(HWND w,LPARAM main){WCHAR cls[80];GetClassNameW(w,cls,80);if(w!=(HWND)main && IsWindowVisible(w) && !wcscmp(cls,L"ThunderRT5Form")){picture_about=w;return FALSE;}return TRUE;}
 static UINT about_menu(HMENU m){int count=GetMenuItemCount(m);for(int i=0;i<count;i++){WCHAR text[128]=L"";GetMenuStringW(m,i,text,128,MF_BYPOSITION);if(!wcscmp(text,L"&About.."))return GetMenuItemID(m,i);HMENU child=GetSubMenu(m,i);if(child){UINT id=about_menu(child);if(id)return id;}}return 0;}
@@ -286,35 +227,14 @@ static int worker(int argc,WCHAR **argv){
     if(argc==5)queue_prepare();
     close_vb5_squash=!wcscmp(argv[3],L"real-graphical-vb5-option");
     BOOL styled=wcscmp(argv[1],L"bare")!=0;
-    WCHAR command[2048],path[MAX_PATH],scratch[MAX_PATH];
+    WCHAR path[MAX_PATH],scratch[MAX_PATH];
     CHECK(GetEnvironmentVariableW(L"WIN16STYLE_CAPTURE_DIR",scratch,MAX_PATH));
-    JOBOBJECT_EXTENDED_LIMIT_INFORMATION limit= {0};
-    limit.BasicLimitInformation.LimitFlags=JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
-    job=CreateJobObjectW(NULL,NULL);
-    CHECK(job && SetInformationJobObject(job,JobObjectExtendedLimitInformation,&limit,sizeof(limit)));
-    port=CreateIoCompletionPort(INVALID_HANDLE_VALUE,NULL,0,1);
-    JOBOBJECT_ASSOCIATE_COMPLETION_PORT association= {.CompletionKey=job,.CompletionPort=port};
-    CHECK(port && SetInformationJobObject(job,JobObjectAssociateCompletionPortInformation,&association,sizeof(association)));
-    ready=CreateEventW(NULL,TRUE,FALSE,NULL);
-    HWINEVENTHOOK hook=SetWinEventHook(EVENT_OBJECT_SHOW,EVENT_OBJECT_SHOW,NULL,shown,0,0,WINEVENT_OUTOFCONTEXT|WINEVENT_SKIPOWNPROCESS);
-    CHECK(ready && hook);
-    STARTUPINFOW si= {.cb=sizeof(si)};
-    PROCESS_INFORMATION p= {0};
-    if(styled)CHECK(swprintf_s(command,2048,L"\"%ls\" --wait \"%ls\"",argv[1],argv[2])>0);
-    else CHECK(swprintf_s(command,2048,L"\"%ls\"",argv[2])>0);
-    CHECK(CreateProcessW(styled?argv[1]:argv[2],command,NULL,NULL,FALSE,CREATE_SUSPENDED|CREATE_NO_WINDOW,NULL,NULL,&si,&p));
-    CHECK(AssignProcessToJobObject(job,p.hProcess) && ResumeThread(p.hThread)==1 && pump(ready,12000)==WAIT_OBJECT_0);
+    PROCESS_INFORMATION p={0};
+    HWINEVENTHOOK hook=vb_process_start(argv,styled,shown,&p);
     HANDLE target=OpenProcess(PROCESS_QUERY_INFORMATION|SYNCHRONIZE,FALSE,pid);
     CHECK(target && WaitForInputIdle(target,5000)==0 && IsWindowVisible(form) && !IsIconic(form));
     if(queue_state)queue_install(argv[4]);
-    DWORD size=MAX_PATH;
-    CHECK(QueryFullProcessImageNameW(target,0,path,&size));
-    BOOL wow=FALSE;CHECK(IsWow64Process(target,&wow) && wow);
-    HANDLE process_snapshot=CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS,0);CHECK(process_snapshot!=INVALID_HANDLE_VALUE);
-    PROCESSENTRY32W entry= {.dwSize=sizeof(entry)};DWORD parent=0;CHECK(Process32FirstW(process_snapshot,&entry));
-    do{if(entry.th32ProcessID==pid){parent=entry.th32ParentProcessID;break;}}while(Process32NextW(process_snapshot,&entry));CloseHandle(process_snapshot);
-    CHECK(parent==(styled?p.dwProcessId:GetCurrentProcessId()));
-    printf("VB_SAMPLE_TARGET pid=%lu creator=%lu initial_pid=%lu bits=32 path=%ls dpi=%u\n",pid,parent,p.dwProcessId,path,GetDpiForWindow(form));
+    vb_process_identity(target,pid,styled?p.dwProcessId:GetCurrentProcessId(),p.dwProcessId,form,"VB_SAMPLE",path);
     HANDLE snap=INVALID_HANDLE_VALUE;unsigned retries=0;
     do{snap=CreateToolhelp32Snapshot(TH32CS_SNAPMODULE|TH32CS_SNAPMODULE32,pid);
         if(snap!=INVALID_HANDLE_VALUE || GetLastError()!=ERROR_BAD_LENGTH)break;
@@ -328,17 +248,17 @@ static int worker(int argc,WCHAR **argv){
     do{
         if(!_wcsicmp(mod.szModule,L"CompressZItLib6.dll") || !_wcsicmp(mod.szModule,L"vbalHook6.dll") || !_wcsicmp(mod.szModule,L"vbalHook.dll") ||
                 !_wcsicmp(mod.szModule,L"msscript.ocx") || !_wcsicmp(mod.szModule,L"vbscript.dll")){
-            printf("VB_SAMPLE_PRIVATE_COM base=%p path=%ls\n",(void *)mod.hModule,mod.szExePath);file_path(mod.szExePath);
+            printf("VB_SAMPLE_PRIVATE_COM base=%p path=%ls\n",(void *)mod.hModule,mod.szExePath);vb_process_file_path(mod.szExePath,"VB_SAMPLE");
         }
         if((!_wcsicmp(mod.szModule,L"MSVBVM60.DLL") || !_wcsicmp(mod.szModule,L"MSVBVM50.DLL"))){
             runtime=mod.hModule;
             printf("VB_SAMPLE_RUNTIME base=%p path=%ls\n",(void *)runtime,mod.szExePath);
-            file_path(mod.szExePath);
+            vb_process_file_path(mod.szExePath,"VB_SAMPLE");
         }
         if(!_wcsicmp(mod.szModule,L"ntw16s32.dll")){
             dll=TRUE;
             printf("VB_SAMPLE_STYLE_MODULE base=%p path=%ls\n",(void *)mod.hModule,mod.szExePath);
-            file_path(mod.szExePath);
+            vb_process_file_path(mod.szExePath,"VB_SAMPLE");
         }
     }
     while(Module32NextW(snap,&mod));
@@ -793,29 +713,7 @@ static int worker(int argc,WCHAR **argv){
     else if(real_vb6_sorted_combo)CHECK(PostMessageW(form,WM_CLOSE,0,0));
     else SendMessageW(form,WM_CLOSE,0,0);
     if((real_graphical || real_disabled_picture) && original_form!=form && IsWindow(original_form))SendMessageW(original_form,WM_CLOSE,0,0);
-    CHECK(WaitForSingleObject(target,5000)==WAIT_OBJECT_0 && WaitForSingleObject(p.hProcess,5000)==WAIT_OBJECT_0);
-    DWORD code;
-    CHECK(GetExitCodeProcess(target,&code) && !code);
-    BOOL zero=FALSE;
-    ULONGLONG deadline=GetTickCount64()+3000;
-    while(!zero){
-        ULONGLONG now=GetTickCount64();if(now>=deadline)break;
-        DWORD message;
-        ULONG_PTR key;
-        OVERLAPPED *overlap;
-        CHECK(GetQueuedCompletionStatus(port,&message,&key,&overlap,(DWORD)(deadline-now)));
-        if(key==(ULONG_PTR)job && message==JOB_OBJECT_MSG_ACTIVE_PROCESS_ZERO)zero=TRUE;
-    }
-    CHECK(zero);
-    JOBOBJECT_BASIC_ACCOUNTING_INFORMATION active;
-    CHECK(QueryInformationJobObject(job,JobObjectBasicAccountingInformation,&active,sizeof(active),NULL) && !active.ActiveProcesses);
-    CloseHandle(target);
-    CloseHandle(p.hProcess);
-    CloseHandle(p.hThread);
-    UnhookWinEvent(hook);
-    CloseHandle(ready);
-    CloseHandle(job);
-    CloseHandle(port);
+    vb_process_finish(target,&p,hook);
     if(queue_state){
         CHECK(FreeLibrary(queue_module) && UnmapViewOfFile(queue_state));queue_state=NULL;
         CHECK(CloseHandle(queue_ready) && CloseHandle(queue_mapping));

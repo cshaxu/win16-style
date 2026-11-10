@@ -4,7 +4,7 @@
 #include <uxtheme.h>
 #include <stdio.h>
 #include <setjmp.h>
-#include "ntw16s-dll/injection/unwind.h"
+#include "../../src/lib-win32/process-hook/unwind.h"
 #define NTW16S_TEST_PROCESS_TIMEOUT 15000
 #include "isolated_process.h"
 #define CHECK(x) do {if(!(x)){fprintf(stderr,"LOOKUP_POP_FAIL line=%d error=%lu %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
@@ -18,12 +18,12 @@ static LRESULT CALLBACK lookup_proc(HWND w,UINT m,WPARAM p,LPARAM l){
 }
 static BOOL exception_seen;
 #ifndef _WIN64
-typedef struct catcher {ntw16s_unwind_record record;jmp_buf saved;} catcher;
+typedef struct catcher {process_hook_unwind_record record;jmp_buf saved;} catcher;
 static EXCEPTION_DISPOSITION NTAPI catch_exception(EXCEPTION_RECORD *e,void *frame,CONTEXT *c,void *dispatcher){(void)c;(void)dispatcher;if(!(e->ExceptionFlags&(EXCEPTION_UNWINDING|EXCEPTION_EXIT_UNWIND)) && e->ExceptionCode==0xe0425342u){exception_seen=TRUE;RtlUnwind(frame,NULL,e,NULL);longjmp(((catcher*)frame)->saved,1);}return ExceptionContinueSearch;}
 #else
 static LONG __attribute__((used)) pop_filter(EXCEPTION_POINTERS *e,void *frame){(void)frame;if(e->ExceptionRecord->ExceptionCode==0xe0425342u){exception_seen=TRUE;return EXCEPTION_EXECUTE_HANDLER;}return EXCEPTION_CONTINUE_SEARCH;}
 #endif
-static NTW16S_UNWIND_FUNCTION BOOL test_exception(HWND w){exception_seen=FALSE;
+static PROCESS_HOOK_UNWIND_FUNCTION BOOL test_exception(HWND w){exception_seen=FALSE;
 #ifndef _WIN64
  catcher c;c.record.handler=catch_exception;__asm__ __volatile__("movl %%fs:0,%0":"=r"(c.record.previous)::"memory");__asm__ __volatile__("movl %0,%%fs:0"::"r"(&c.record):"memory");if(!setjmp(c.saved))SendMessageW(w,WM_LBUTTONDOWN,MK_LBUTTON,0);__asm__ __volatile__("movl %0,%%fs:0"::"r"(c.record.previous):"memory");
 #else

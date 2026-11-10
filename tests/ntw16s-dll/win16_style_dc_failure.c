@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "ntw16s-dll/menu_paint.h"
+#include "../../src/lib-win32/win16-window/menu_paint.h"
 #include "lib-win32/win16-common/menu_layout.h"
 #include <limits.h>
 static int save_calls, fail_save;

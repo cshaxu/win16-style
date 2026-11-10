@@ -20,10 +20,6 @@ void ntw16s_theme_open_end(ntw16s_theme_ticket, HTHEME, int);
 void ntw16s_theme_open_cancel(void);
 void ntw16s_theme_close_begin(HTHEME);
 void ntw16s_theme_close_end(HTHEME, BOOL);
-ntw16s_theme_ticket ntw16s_theme_button_begin(HTHEME);
-BOOL ntw16s_theme_button_end(HTHEME, ntw16s_theme_ticket);
-ntw16s_theme_ticket ntw16s_theme_combo_begin(HTHEME);
-BOOL ntw16s_theme_combo_end(HTHEME, ntw16s_theme_ticket);
-ntw16s_theme_ticket ntw16s_theme_glow_begin(HTHEME);
-BOOL ntw16s_theme_glow_end(HTHEME, ntw16s_theme_ticket);
+ntw16s_theme_ticket ntw16s_theme_begin(HTHEME, int);
+BOOL ntw16s_theme_end(HTHEME, ntw16s_theme_ticket, int);
 #endif

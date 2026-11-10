@@ -1,5 +1,10 @@
 /* Exercise the production C facade cleanup with native Windows exceptions. */
 #include "lib-win32/process-hook/unwind.h"
+#define TEST_UNWIND_SCOPE process_hook_unwind_scope
+#define TEST_UNWIND_RECORD process_hook_unwind_record
+#define TEST_UNWIND_FUNCTION PROCESS_HOOK_UNWIND_FUNCTION
+#define TEST_UNWIND_BEGIN PROCESS_HOOK_UNWIND_BEGIN
+#define TEST_UNWIND_END PROCESS_HOOK_UNWIND_END
 #include <stdio.h>
 #include <setjmp.h>
 #define TEST_EXCEPTION 0xe0424242u
@@ -7,24 +12,24 @@
 static _Thread_local unsigned cleaned,order;
 static void cleanup(void *value)
 {++cleaned;order=order*10+(unsigned)(ULONG_PTR)value;SetLastError(999);}
-static PROCESS_HOOK_UNWIND_FUNCTION void inner(BOOL raises)
+static TEST_UNWIND_FUNCTION void inner(BOOL raises)
 {
-    process_hook_unwind_scope scope;
-    PROCESS_HOOK_UNWIND_BEGIN(scope,cleanup,(void *)1);
+    TEST_UNWIND_SCOPE scope;
+    TEST_UNWIND_BEGIN(scope,cleanup,(void *)1);
     if(raises)RaiseException(TEST_EXCEPTION,0,0,NULL);
-    PROCESS_HOOK_UNWIND_END(scope);
+    TEST_UNWIND_END(scope);
 }
-static PROCESS_HOOK_UNWIND_FUNCTION void outer(void)
+static TEST_UNWIND_FUNCTION void outer(void)
 {
-    process_hook_unwind_scope scope;
-    PROCESS_HOOK_UNWIND_BEGIN(scope,cleanup,(void *)2);
+    TEST_UNWIND_SCOPE scope;
+    TEST_UNWIND_BEGIN(scope,cleanup,(void *)2);
     inner(TRUE);
-    PROCESS_HOOK_UNWIND_END(scope);
+    TEST_UNWIND_END(scope);
 }
 #if defined(_MSC_VER)
 /* MSVC uses its native SEH syntax in the test harness too. */
 #elif !defined(_WIN64)
-typedef struct catcher {process_hook_unwind_record record;jmp_buf saved;} catcher;
+typedef struct catcher {TEST_UNWIND_RECORD record;jmp_buf saved;} catcher;
 static EXCEPTION_DISPOSITION NTAPI catch32(EXCEPTION_RECORD *exception,
     void *frame,CONTEXT *context,void *dispatcher)
 {
@@ -43,7 +48,7 @@ static LONG __attribute__((used)) filter(EXCEPTION_POINTERS *exception,void *fra
         EXCEPTION_EXECUTE_HANDLER:EXCEPTION_CONTINUE_SEARCH;
 }
 #endif
-static PROCESS_HOOK_UNWIND_FUNCTION int exercise(void)
+static TEST_UNWIND_FUNCTION int exercise(void)
 {
     cleaned=order=0;SetLastError(1234);inner(FALSE);
     CHECK(GetLastError()==1234 && cleaned==1 && order==1);

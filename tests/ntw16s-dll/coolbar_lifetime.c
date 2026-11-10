@@ -5,19 +5,19 @@
 #include <stdlib.h>
 #include <string.h>
 #include <setjmp.h>
-#include "ntw16s-dll/injection/unwind.h"
+#include "../../src/lib-win32/process-hook/unwind.h"
 #define NTW16S_TEST_PROCESS_TIMEOUT 15000
 #include "isolated_process.h"
 #define CHECK(x) do{if(!(x)){printf("LIFETIME_FAIL line=%d error=%lu\n",__LINE__,GetLastError());return 1;}}while(0)
 static WNDPROC native;static HWND replacement;static int action,hits,nested_enabled,nested_hits,trigger_throw;static BOOL removed;static BOOL (__cdecl *remove_style)(HWND);static LRESULT CALLBACK barproc(HWND w,UINT m,WPARAM p,LPARAM l){return CallWindowProcW(native,w,m,p,l);}
 static BOOL exception_seen;
 #ifndef _WIN64
-typedef struct catcher {ntw16s_unwind_record record;jmp_buf saved;} catcher;
+typedef struct catcher {process_hook_unwind_record record;jmp_buf saved;} catcher;
 static EXCEPTION_DISPOSITION NTAPI catch_exception(EXCEPTION_RECORD *e,void *frame,CONTEXT *c,void *dispatcher){(void)c;(void)dispatcher;if(!(e->ExceptionFlags&(EXCEPTION_UNWINDING|EXCEPTION_EXIT_UNWIND)) && e->ExceptionCode==0xe0435342u){exception_seen=TRUE;RtlUnwind(frame,NULL,e,NULL);longjmp(((catcher*)frame)->saved,1);}return ExceptionContinueSearch;}
 #else
 static LONG __attribute__((used)) coolbar_filter(EXCEPTION_POINTERS *e,void *frame){(void)frame;if(e->ExceptionRecord->ExceptionCode==0xe0435342u){exception_seen=TRUE;return EXCEPTION_EXECUTE_HANDLER;}return EXCEPTION_CONTINUE_SEARCH;}
 #endif
-static NTW16S_UNWIND_FUNCTION BOOL test_exception(HWND w){exception_seen=FALSE;
+static PROCESS_HOOK_UNWIND_FUNCTION BOOL test_exception(HWND w){exception_seen=FALSE;
 #ifndef _WIN64
  catcher c;c.record.handler=catch_exception;__asm__ __volatile__("movl %%fs:0,%0":"=r"(c.record.previous)::"memory");__asm__ __volatile__("movl %0,%%fs:0"::"r"(&c.record):"memory");if(!setjmp(c.saved)){InvalidateRect(w,NULL,FALSE);SendMessageW(w,WM_PAINT,0,0);}__asm__ __volatile__("movl %0,%%fs:0"::"r"(c.record.previous):"memory");
 #else

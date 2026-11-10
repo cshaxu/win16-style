@@ -1,5 +1,5 @@
-#include "vb_text.h"
-#include "control_class.h"
+#include "../lib-win32/win16-control/vb_text.h"
+#include "../lib-win32/win16-control/control_class.h"
 #include "ntw16s.h"
 #include "native_api.h"
 #include "theme.h"
@@ -24,9 +24,9 @@
 #include "../lib-win32/win16-control/vcl_extra_frame.h"
 #include "../lib-win32/win16-control/month_paint.h"
 #include "../lib-win32/win16-window-uwp/frame.h"
-#include "injection/unwind.h"
+#include "../lib-win32/process-hook/unwind.h"
 #include "status_theme.h"
-#include "month_text.h"
+#include "../lib-win32/win16-control/month_text.h"
 #include <commctrl.h>
 #include <uxtheme.h>
 #include <vssym32.h>
@@ -223,8 +223,6 @@ static BOOL rich_identity(HWND w,attachment *a)
     return win16_control_rich_identity(w,&v);
 }
 
-static BOOL combo_same_role(HWND w,attachment *a)
-{return win16_attachment_combo_same_role(w,a);}
 BOOL ntw16s_vcl_combo_candidate(HWND w)
 {return win16_attachment_vcl_combo_candidate(w,lookup(w));}
 BOOL ntw16s_vcl_combo_valid(HWND w)
@@ -312,8 +310,6 @@ static _Thread_local box_witness_scope *box_current;
 void ntw16s_box_witness(HWND w,UINT msg,const void *address)
 {box_witness_scope *s=box_current;if(s)win16_attachment_box_witness(w,msg,address,s->owner,s->window,&s->witnessed);}
 
-BOOL ntw16s_controlbar_edge_allowed(UINT edge)
-{return win16_control_controlbar_edge_allowed(edge);}
 BOOL ntw16s_controlbar_edge_active(void)
 {return box_current && box_current->owner->controlbar_candidate && !box_current->owner->detached;}
 static BOOL controlbar_frame_identity(HWND w,void *owner)
@@ -329,13 +325,13 @@ BOOL ntw16s_rich_valid(HWND w)
 static _Thread_local BOOL month_query_active;
 static void month_query_end(void *unused){(void)unused;month_query_active=FALSE;}
 static win16_control_month_view month_view(static_paint_scope *s);
-static NTW16S_UNWIND_FUNCTION void month_header_query(HWND w,static_paint_scope *scope)
+static PROCESS_HOOK_UNWIND_FUNCTION void month_header_query(HWND w,static_paint_scope *scope)
 {
- ntw16s_unwind_scope unwind;
+ process_hook_unwind_scope unwind;
  if(month_query_active)return;
- scope->month.header_valid=FALSE;month_query_active=TRUE;NTW16S_UNWIND_BEGIN(unwind,month_query_end,NULL);
+ scope->month.header_valid=FALSE;month_query_active=TRUE;PROCESS_HOOK_UNWIND_BEGIN(unwind,month_query_end,NULL);
  const win16_control_month_view view=month_view(scope);win16_control_month_query(w,&view);
- NTW16S_UNWIND_END(unwind);
+ PROCESS_HOOK_UNWIND_END(unwind);
 }
 void ntw16s_rich_witness(WNDPROC proc,HWND w,UINT msg,const void *address,BOOL wide)
 {
@@ -361,7 +357,7 @@ void ntw16s_month_selection_text(HTHEME t,HDC dc,int p,int state,const RECT *r,D
 {static_paint_scope *s=static_paint;if(s){const win16_control_month_view v=month_view(s);win16_control_month_selection_text(&v,t,dc,p,state,r,f,addr);}}
 static void release(attachment *a)
 {if(!--a->calls && a->detached){attachment *source=a->lookup_popup_source_attachment,*host=a->mdi_host_attachment;win16_style_system_release(a->month_cached_font);win16_style_system_release(a->status_font.font);ntw16s_vb_fonts_clear(&a->fonts);free(a);if(source)release(source);if(host)release(host);}}
-static NTW16S_UNWIND_FUNCTION LRESULT static_paint_dispatch(attachment *,HWND,UINT,WPARAM,LPARAM,ntw16s_vb_paint *,void *,void *);
+static PROCESS_HOOK_UNWIND_FUNCTION LRESULT static_paint_dispatch(attachment *,HWND,UINT,WPARAM,LPARAM,ntw16s_vb_paint *,void *,void *);
 /* One paint scope per CoolBar invocation. It is never shared across threads. */
 typedef struct cool_scope {struct cool_scope *previous;attachment *owner;HWND window;BOOL ours,completed,nested;cool_observation observer;ntw16s_vb_paint *paint;void *status_prior,*spin_prior;} cool_scope;
 static _Thread_local cool_scope *cool_current;
@@ -392,32 +388,32 @@ static void cool_end(void *data)
 {
     cool_scope *s=data;cool_current=s->previous;cool_observing=s->observer.previous;if(!s->completed){ntw16s_vb_paint_end(s->paint);status_current=s->status_prior;spin_current=s->spin_prior;if(!s->nested)release(s->owner);}
 }
-static NTW16S_UNWIND_FUNCTION LRESULT cool_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,ntw16s_vb_paint *paint,void *status_prior,void *spin_prior)
+static PROCESS_HOOK_UNWIND_FUNCTION LRESULT cool_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,ntw16s_vb_paint *paint,void *status_prior,void *spin_prior)
 {
-    cool_scope scope={.previous=cool_current,.owner=a,.window=w,.paint=paint,.status_prior=status_prior,.spin_prior=spin_prior,.nested=static_paint!=NULL,.observer={.previous=cool_observing,.owner=a,.window=w}};ntw16s_unwind_scope unwind;DWORD entry=GetLastError(),error;LRESULT result;
-    cool_current=&scope;cool_observing=&scope.observer;NTW16S_UNWIND_BEGIN(unwind,cool_end,&scope);SetLastError(entry);
+    cool_scope scope={.previous=cool_current,.owner=a,.window=w,.paint=paint,.status_prior=status_prior,.spin_prior=spin_prior,.nested=static_paint!=NULL,.observer={.previous=cool_observing,.owner=a,.window=w}};process_hook_unwind_scope unwind;DWORD entry=GetLastError(),error;LRESULT result;
+    cool_current=&scope;cool_observing=&scope.observer;PROCESS_HOOK_UNWIND_BEGIN(unwind,cool_end,&scope);SetLastError(entry);
     result=scope.nested?static_paint_dispatch(a,w,m,p,l,NULL,NULL,NULL):DefSubclassProc(w,m,p,l);
-    error=GetLastError();scope.completed=TRUE;NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
+    error=GetLastError();scope.completed=TRUE;PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;
 }
 static void static_paint_end(void *data)
 {static_paint_scope *scope=data;static_paint=scope->previous;if(!scope->completed){if(scope->owned_paint){ntw16s_vb_paint_end(scope->owned_paint);status_current=scope->status_prior;spin_current=scope->spin_prior;}release(scope->owner);}}
-static NTW16S_UNWIND_FUNCTION LRESULT static_paint_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,ntw16s_vb_paint *owned_paint,void *status_prior,void *spin_prior)
+static PROCESS_HOOK_UNWIND_FUNCTION LRESULT static_paint_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,ntw16s_vb_paint *owned_paint,void *status_prior,void *spin_prior)
 {
-    static_paint_scope scope={.previous=static_paint,.owner=a,.window=w,.owned_paint=owned_paint,.status_prior=status_prior,.spin_prior=spin_prior};ntw16s_unwind_scope unwind;LRESULT result;DWORD entry=GetLastError(),error;
+    static_paint_scope scope={.previous=static_paint,.owner=a,.window=w,.owned_paint=owned_paint,.status_prior=status_prior,.spin_prior=spin_prior};process_hook_unwind_scope unwind;LRESULT result;DWORD entry=GetLastError(),error;
     static_paint=win16_attachment_static_paint(a,m)?&scope:NULL;
-    NTW16S_UNWIND_BEGIN(unwind,static_paint_end,&scope);
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,static_paint_end,&scope);
     SetLastError(entry);result=DefSubclassProc(w,m,p,l);error=GetLastError();scope.completed=TRUE;
-    NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
+    PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;
 }
 typedef struct lookup_popup_unwind {HWND previous;attachment *owner;ntw16s_vb_paint *paint;void *status_prior,*spin_prior;BOOL nested,completed;} lookup_popup_unwind;
 static void lookup_popup_unwind_end(void *data)
 {lookup_popup_unwind *s=data;lookup_popup_creator=s->previous;if(!s->completed){ntw16s_vb_paint_end(s->paint);status_current=s->status_prior;spin_current=s->spin_prior;if(!s->nested)release(s->owner);}}
-static NTW16S_UNWIND_FUNCTION LRESULT lookup_popup_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,ntw16s_vb_paint *paint,void *status_prior,void *spin_prior)
-{lookup_popup_unwind state={.previous=lookup_popup_creator,.owner=a,.paint=paint,.status_prior=status_prior,.spin_prior=spin_prior,.nested=static_paint!=NULL};ntw16s_unwind_scope unwind;DWORD entry=GetLastError(),error;lookup_popup_creator=w;NTW16S_UNWIND_BEGIN(unwind,lookup_popup_unwind_end,&state);SetLastError(entry);LRESULT result=state.nested?static_paint_dispatch(a,w,m,p,l,NULL,NULL,NULL):DefSubclassProc(w,m,p,l);error=GetLastError();state.completed=TRUE;NTW16S_UNWIND_END(unwind);SetLastError(error);return result;}
+static PROCESS_HOOK_UNWIND_FUNCTION LRESULT lookup_popup_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,ntw16s_vb_paint *paint,void *status_prior,void *spin_prior)
+{lookup_popup_unwind state={.previous=lookup_popup_creator,.owner=a,.paint=paint,.status_prior=status_prior,.spin_prior=spin_prior,.nested=static_paint!=NULL};process_hook_unwind_scope unwind;DWORD entry=GetLastError(),error;lookup_popup_creator=w;PROCESS_HOOK_UNWIND_BEGIN(unwind,lookup_popup_unwind_end,&state);SetLastError(entry);LRESULT result=state.nested?static_paint_dispatch(a,w,m,p,l,NULL,NULL,NULL):DefSubclassProc(w,m,p,l);error=GetLastError();state.completed=TRUE;PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;}
 static void box_witness_end(void *data)
 {box_witness_scope *s=data;box_current=s->previous;if(!s->completed){ntw16s_vb_paint_end(s->paint);status_current=s->status_prior;spin_current=s->spin_prior;if(!s->nested)release(s->owner);}}
-static NTW16S_UNWIND_FUNCTION LRESULT box_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,ntw16s_vb_paint *paint,void *status_prior,void *spin_prior,BOOL *witnessed)
-{box_witness_scope scope={.previous=box_current,.owner=a,.window=w,.nested=static_paint!=NULL,.paint=paint,.status_prior=status_prior,.spin_prior=spin_prior};ntw16s_unwind_scope unwind;DWORD entry=GetLastError(),error;LRESULT result;box_current=&scope;NTW16S_UNWIND_BEGIN(unwind,box_witness_end,&scope);SetLastError(entry);result=scope.nested?static_paint_dispatch(a,w,m,p,l,NULL,NULL,NULL):DefSubclassProc(w,m,p,l);error=GetLastError();*witnessed=scope.witnessed;scope.completed=TRUE;NTW16S_UNWIND_END(unwind);SetLastError(error);return result;}
+static PROCESS_HOOK_UNWIND_FUNCTION LRESULT box_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,ntw16s_vb_paint *paint,void *status_prior,void *spin_prior,BOOL *witnessed)
+{box_witness_scope scope={.previous=box_current,.owner=a,.window=w,.nested=static_paint!=NULL,.paint=paint,.status_prior=status_prior,.spin_prior=spin_prior};process_hook_unwind_scope unwind;DWORD entry=GetLastError(),error;LRESULT result;box_current=&scope;PROCESS_HOOK_UNWIND_BEGIN(unwind,box_witness_end,&scope);SetLastError(entry);result=scope.nested?static_paint_dispatch(a,w,m,p,l,NULL,NULL,NULL):DefSubclassProc(w,m,p,l);error=GetLastError();*witnessed=scope.witnessed;scope.completed=TRUE;PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;}
 typedef struct modern_spin_unwind {
     spin_draw_scope *scope,*prior;status_draw_scope *status_prior;ntw16s_vb_paint *paint;attachment *owner;BOOL completed,nested;
 } modern_spin_unwind;
@@ -426,12 +422,12 @@ static void modern_spin_end(void *data)
     modern_spin_unwind *s=data;if(!s->completed){spin_current=s->prior;spin_stack=s->scope->previous_stack;
         win16_control_spin_buffers_clear(s->scope);status_current=s->status_prior;ntw16s_vb_paint_end(s->paint);if(!s->nested)release(s->owner);}
 }
-static NTW16S_UNWIND_FUNCTION LRESULT modern_spin_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,spin_draw_scope *scope,spin_draw_scope *prior,status_draw_scope *status_prior,ntw16s_vb_paint *paint)
+static PROCESS_HOOK_UNWIND_FUNCTION LRESULT modern_spin_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,spin_draw_scope *scope,spin_draw_scope *prior,status_draw_scope *status_prior,ntw16s_vb_paint *paint)
 {
-    modern_spin_unwind state={scope,prior,status_prior,paint,a,FALSE,static_paint!=NULL};ntw16s_unwind_scope unwind;
-    DWORD entry=GetLastError(),error;LRESULT result;NTW16S_UNWIND_BEGIN(unwind,modern_spin_end,&state);
+    modern_spin_unwind state={scope,prior,status_prior,paint,a,FALSE,static_paint!=NULL};process_hook_unwind_scope unwind;
+    DWORD entry=GetLastError(),error;LRESULT result;PROCESS_HOOK_UNWIND_BEGIN(unwind,modern_spin_end,&state);
     SetLastError(entry);result=state.nested?static_paint_dispatch(a,w,m,p,l,NULL,NULL,NULL):DefSubclassProc(w,m,p,l);
-    error=GetLastError();state.completed=TRUE;NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
+    error=GetLastError();state.completed=TRUE;PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;
 }
 typedef struct color_print_scope {attachment *owner;HRGN clip;BOOL completed,nested;ntw16s_vb_paint *paint;status_draw_scope *status_prior;spin_draw_scope *spin_prior;} color_print_scope;
 static void color_print_end(void *data)
@@ -439,20 +435,20 @@ static void color_print_end(void *data)
     color_print_scope *scope=data;
     if(!scope->completed){ntw16s_vb_paint_end(scope->paint);status_current=scope->status_prior;spin_current=scope->spin_prior;DeleteObject(scope->clip);if(!scope->nested)release(scope->owner);}
 }
-static NTW16S_UNWIND_FUNCTION LRESULT color_print_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,HRGN clip,ntw16s_vb_paint *paint,status_draw_scope *status_prior,spin_draw_scope *spin_prior)
+static PROCESS_HOOK_UNWIND_FUNCTION LRESULT color_print_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,HRGN clip,ntw16s_vb_paint *paint,status_draw_scope *status_prior,spin_draw_scope *spin_prior)
 {
-    color_print_scope scope={a,clip,FALSE,static_paint!=NULL,paint,status_prior,spin_prior};ntw16s_unwind_scope unwind;
+    color_print_scope scope={a,clip,FALSE,static_paint!=NULL,paint,status_prior,spin_prior};process_hook_unwind_scope unwind;
     DWORD entry=GetLastError(),error;LRESULT result;
-    NTW16S_UNWIND_BEGIN(unwind,color_print_end,&scope);
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,color_print_end,&scope);
     SetLastError(entry);result=scope.nested?static_paint_dispatch(a,w,m,p,l,NULL,NULL,NULL):DefSubclassProc(w,m,p,l);
-    error=GetLastError();scope.completed=TRUE;NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
+    error=GetLastError();scope.completed=TRUE;PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;
 }
 typedef struct status_print_unwind {attachment *owner;ntw16s_vb_paint *paint;status_draw_scope *prior;spin_draw_scope *spin_prior;BOOL completed,nested;} status_print_unwind;
 static void status_print_end(void *data)
 {status_print_unwind *s=data;if(!s->completed){ntw16s_vb_paint_end(s->paint);status_current=s->prior;spin_current=s->spin_prior;if(!s->nested)release(s->owner);}}
-static NTW16S_UNWIND_FUNCTION LRESULT status_print_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,ntw16s_vb_paint *paint,status_draw_scope *prior,spin_draw_scope *spin_prior)
-{status_print_unwind state={a,paint,prior,spin_prior,FALSE,static_paint!=NULL};ntw16s_unwind_scope unwind;DWORD entry=GetLastError(),error;LRESULT result;
- NTW16S_UNWIND_BEGIN(unwind,status_print_end,&state);SetLastError(entry);result=state.nested?static_paint_dispatch(a,w,m,p,l,NULL,NULL,NULL):DefSubclassProc(w,m,p,l);error=GetLastError();state.completed=TRUE;NTW16S_UNWIND_END(unwind);SetLastError(error);return result;}
+static PROCESS_HOOK_UNWIND_FUNCTION LRESULT status_print_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,ntw16s_vb_paint *paint,status_draw_scope *prior,spin_draw_scope *spin_prior)
+{status_print_unwind state={a,paint,prior,spin_prior,FALSE,static_paint!=NULL};process_hook_unwind_scope unwind;DWORD entry=GetLastError(),error;LRESULT result;
+ PROCESS_HOOK_UNWIND_BEGIN(unwind,status_print_end,&state);SetLastError(entry);result=state.nested?static_paint_dispatch(a,w,m,p,l,NULL,NULL,NULL):DefSubclassProc(w,m,p,l);error=GetLastError();state.completed=TRUE;PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;}
 static BOOL color_identity(HWND w,attachment *a,COMBOBOXINFO *info)
 {const win16_control_native_combo_view v={&a->detached,&a->color_parent,&a->color_witness_owner};return win16_control_color_identity(w,&v,info);}
 static void color_button(HWND w,attachment *a,HDC dc,const RECT *dirty)
@@ -513,7 +509,7 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     const win16_attachment_post_services post={win16_style_grid_install_created,win16_style_control_remove_owned,rich_identity,ntw16s_native_get_scroll_info};
     win16_attachment_post_box(w,a,box_witnessed,&post);
     const win16_attachment_verified_services verified={win16_style_toolbar_install_created,win16_style_control_install_created,
-        win16_style_trackbar_install_created,win16_style_control_remove_owned,combo_same_role,ntw16s_theme_enable,
+        win16_style_trackbar_install_created,win16_style_control_remove_owned,win16_attachment_combo_same_role,ntw16s_theme_enable,
         win16_style_edit_scrollbars_enable,ntw16s_theme_remove,vcl_report_try_bind};
     win16_attachment_post_toolbar(w,m,a,&verified);
     win16_attachment_post_controls(w,m,a,&post);
@@ -527,13 +523,13 @@ static void bit_draw_end(void *data)
     bit_draw_scope *scope=data;bit_current=scope->previous;
     if(!scope->completed)release(scope->owner);
 }
-static NTW16S_UNWIND_FUNCTION LRESULT bit_draw_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,const DRAWITEMSTRUCT *item)
+static PROCESS_HOOK_UNWIND_FUNCTION LRESULT bit_draw_dispatch(attachment *a,HWND w,UINT m,WPARAM p,LPARAM l,const DRAWITEMSTRUCT *item)
 {
-    bit_draw_scope scope={bit_current,a,item->hwndItem,item->hDC,item->rcItem,item->itemState,FALSE};ntw16s_unwind_scope unwind;
+    bit_draw_scope scope={bit_current,a,item->hwndItem,item->hDC,item->rcItem,item->itemState,FALSE};process_hook_unwind_scope unwind;
     DWORD entry=GetLastError(),error;LRESULT result;bit_current=&scope;
-    NTW16S_UNWIND_BEGIN(unwind,bit_draw_end,&scope);
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,bit_draw_end,&scope);
     SetLastError(entry);result=DefSubclassProc(w,m,p,l);error=GetLastError();scope.completed=TRUE;
-    NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
+    PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;
 }
 /* Observe this verified child's native custom/owner-draw DC. Never request extra stages,
  * rewrite the application's result, select its font, or inspect item lParam. */
@@ -556,7 +552,7 @@ static void report_unbind(attachment *a)
 static const win16_attachment_lifecycle_services lifecycle_services={lookup,cool_identity,mdi_identity,controlbar_identity,rich_identity,
     ntw16s_vb_user_label_target,attachment_proc,report_unbind,cool_unbind,win16_style_frame_remove_owned,
     win16_style_control_remove_owned,ntw16s_theme_remove,win16_style_frame_terminal,win16_style_control_terminal,
-    ntw16s_theme_terminal,release,win16_style_scrollbars_paint};
+    win16_control_theme_terminal,release,win16_style_scrollbars_paint};
 BOOL __cdecl Ntw16sWindowAttached(HWND w)
 {return win16_attachment_attached(w,&lifecycle_services);}
 void __cdecl Ntw16sScrollChanged(HWND w)
@@ -695,10 +691,10 @@ static LRESULT CALLBACK creation_before(int code,WPARAM p,LPARAM l)
 #endif
         if(class_is((HWND)p,L"LISTBOX") || class_is((HWND)p,L"ComboLBox") ||
            (class_is((HWND)p,L"EDIT") && (pending->style&ES_MULTILINE))){
-            if(!ntw16s_theme_capture((HWND)p)){
+            if(!win16_control_theme_capture((HWND)p)){
                 scope->result.failure=GetLastError();return 1;
             }
-        }else if((pending->style&WS_CHILD) && !ntw16s_theme_stage((HWND)p)){
+        }else if((pending->style&WS_CHILD) && !win16_control_theme_stage((HWND)p)){
             scope->result.failure=GetLastError();return 1;
         }
     }
@@ -730,7 +726,7 @@ static LRESULT CALLBACK creation_return(int code,WPARAM p,LPARAM l)
         if(created && class_is(m->hwnd,L"#32770")){
             SetLastError(saved);return result;
         }
-        if(m->message==WM_NCDESTROY){pending_window *pending=take_pending(scope,m->hwnd);ntw16s_theme_cancel_stage(m->hwnd);free(pending);}
+        if(m->message==WM_NCDESTROY){pending_window *pending=take_pending(scope,m->hwnd);win16_control_theme_cancel_stage(m->hwnd);free(pending);}
         /* Some dialogs show themselves and run a nested loop inside
          * WM_INITDIALOG. Its return may be delayed until the application exits.
          * A completed first-show notification is also a safe boundary, but
@@ -769,7 +765,7 @@ static LRESULT CALLBACK creation_return(int code,WPARAM p,LPARAM l)
                 (DWORD)GetWindowLongPtrW(m->hwnd,GWL_STYLE);
             if(pending){style=pending->style;if(!first_show)free(pending);}
             BOOL already=lookup(m->hwnd)!=NULL;
-            BOOL installed=ntw16s_theme_commit(m->hwnd) && install_created(m->hwnd,style);
+            BOOL installed=win16_control_theme_commit(m->hwnd) && install_created(m->hwnd,style);
             if(installed){
                 if(first_show){
                     for(pending_window *record=owner->pending;record;record=record->next)
@@ -848,7 +844,7 @@ BOOL __cdecl Ntw16sCreationEnd(ntw16s_creation_scope *scope,ntw16s_creation_resu
 #ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
         if(IsWindow(pending->window))RemoveWindowSubclass(pending->window,creation_subclass,(UINT_PTR)creation_subclass);
 #endif
-        ntw16s_theme_cancel_stage(pending->window);free(pending);}
+        win16_control_theme_cancel_stage(pending->window);free(pending);}
 #ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
     if(scope->owns_return_hook){UnhookWindowsHookEx(creation_return_hook);creation_return_hook=NULL;}
     if(scope->suspended_return_hook){

@@ -10,6 +10,7 @@
 #define NOTE 2099
 #define ITEM_LIMIT 80
 BOOL demo_dialog_execute(HWND,unsigned);
+void demo_dialog_failure(HWND,PCWSTR);
 BOOL demo_dialog_notify(HWND,UINT,LPARAM);
 BOOL demo_dialog_message(MSG *);
 void demo_dialog_close(HWND);
@@ -46,8 +47,8 @@ static void relayout(HWND w,page *s)
 }
 static void files(HWND w,page *s,const WCHAR *path)
 {
-    WCHAR full[32768],pattern[32768];DWORD size=GetFullPathNameW(path,32768,full,NULL);
-    if(!size || size>=32768 || GetFileAttributesW(full)==INVALID_FILE_ATTRIBUTES || !(GetFileAttributesW(full)&FILE_ATTRIBUTE_DIRECTORY)){note(w,L"Directory is unavailable.");return;}
+    WCHAR full[32768],pattern[32768];DWORD size=GetFullPathNameW(path,32768,full,NULL),attributes;
+    if(!size || size>=32768 || (attributes=GetFileAttributesW(full))==INVALID_FILE_ATTRIBUTES || !(attributes&FILE_ATTRIBUTE_DIRECTORY)){note(w,L"Directory is unavailable.");return;}
     if(swprintf_s(pattern,32768,L"%ls%ls*",full,full[size-1]==L'\\'?L"":L"\\")<0){note(w,L"Path is too long.");return;}
     wcscpy_s(s->path,32768,full);SetDlgItemTextW(w,2300,full);SendDlgItemMessageW(w,2302,LB_RESETCONTENT,0,0);SendDlgItemMessageW(w,2303,LB_RESETCONTENT,0,0);
     WIN32_FIND_DATAW data;HANDLE find=FindFirstFileW(pattern,&data);unsigned count=0;
@@ -232,7 +233,7 @@ static LRESULT CALLBACK page_proc(HWND w,UINT m,WPARAM a,LPARAM b)
         if(id==2602)SendDlgItemMessageW(w,2601,PBM_STEPIT,0,0);
         if(id==2712){if(s->running){KillTimer(w,1);s->running=FALSE;}else s->running=SetTimer(w,1,500,NULL)!=0;SetDlgItemTextW(w,2712,s->running?L"&Stop timer":L"&Start timer");}
         if(id==2720 || id==2721){s->record=(s->record+(id==2721?1:2))%3;swprintf_s(text,400,L"Record %u: %ls",s->record+1,s->record==0?L"Alpha":s->record==1?L"Beta":L"Gamma");SetDlgItemTextW(w,2722,text);}
-        if(id==2730){WCHAR file[32768]=L"";OPENFILENAMEW open={.lStructSize=sizeof(open),.hwndOwner=w,.lpstrFilter=L"All files\0*.*\0\0",.lpstrFile=file,.nMaxFile=32768,.Flags=OFN_FILEMUSTEXIST|OFN_PATHMUSTEXIST|OFN_NOCHANGEDIR};if(GetOpenFileNameW(&open)){note(w,file);return 0;}note(w,L"File selection cancelled; no file was opened.");return 0;}
+        if(id==2730){WCHAR file[32768]=L"";OPENFILENAMEW open={.lStructSize=sizeof(open),.hwndOwner=w,.lpstrFilter=L"All files\0*.*\0\0",.lpstrFile=file,.nMaxFile=32768,.Flags=OFN_FILEMUSTEXIST|OFN_PATHMUSTEXIST|OFN_NOCHANGEDIR};if(GetOpenFileNameW(&open)){note(w,file);return 0;}demo_dialog_failure(w,L"File selection cancelled; no file was opened.");return 0;}
         if(id==2731)properties(w,s);
         swprintf_s(text,400,L"Control %u: notification %u (event %u)",id,HIWORD(a),++s->events);note(w,text);return 0;
     }

@@ -55,21 +55,22 @@ static unsigned ocx_toolbar_owner(HWND w,HMODULE owner,const WCHAR *name,WNDCLAS
 }
 static BOOL current(const ntw16s_control_protocol *b)
 {return IsWindow(b->window) && GetPropW(b->window,key)==(HANDLE)b;}
+static ntw16s_control_protocol *find_binding(HWND w,unsigned role)
+{
+    for(ntw16s_control_protocol *b=bindings;b;b=b->next)
+        if(b->window==w && (!role || b->role==role) && current(b))return b;
+    return NULL;
+}
 BOOL ntw16s_control_protocol_is(HWND w,const WCHAR *name)
 {
-    for(ntw16s_control_protocol *b=bindings;b;b=b->next)
-        if(b->window==w && current(b))return (b->role==1 && !lstrcmpiW(name,L"BUTTON")) ||
+    ntw16s_control_protocol *b=find_binding(w,0);
+    return b && ((b->role==1 && !lstrcmpiW(name,L"BUTTON")) ||
             (b->role==2 && !lstrcmpiW(name,L"COMBOBOX")) || (b->role==3 && !lstrcmpiW(name,WC_TABCONTROLW)) ||
             (b->role==4 && !lstrcmpiW(name,WC_HEADERW)) || (b->role==5 && !lstrcmpiW(name,WC_LISTVIEWW)) || (b->role==6 && !lstrcmpiW(name,WC_TREEVIEWW)) || (b->role==7 && !lstrcmpiW(name,PROGRESS_CLASSW)) || (b->role==8 && !lstrcmpiW(name,TRACKBAR_CLASSW)) || (b->role==9 && !lstrcmpiW(name,UPDOWN_CLASSW)) ||
-            (b->role==11 && !lstrcmpiW(name,L"EDIT")) || (b->role==12 && !lstrcmpiW(name,L"LISTBOX")) || (b->role==14 && !lstrcmpiW(name,L"SCROLLBAR")) || (b->role==15 && !lstrcmpiW(name,WC_LINK));
-    return FALSE;
+            (b->role==11 && !lstrcmpiW(name,L"EDIT")) || (b->role==12 && !lstrcmpiW(name,L"LISTBOX")) || (b->role==14 && !lstrcmpiW(name,L"SCROLLBAR")) || (b->role==15 && !lstrcmpiW(name,WC_LINK)));
 }
 BOOL ntw16s_control_protocol_toolbar(HWND w)
-{
-    for(ntw16s_control_protocol *b=bindings;b;b=b->next)
-        if(b->window==w && b->role==10 && current(b))return TRUE;
-    return FALSE;
-}
+{return find_binding(w,10)!=NULL;}
 BOOL ntw16s_control_protocol_runtime_toolbar(HWND w)
 {
     for(ntw16s_control_protocol *b=bindings;b;b=b->next)
@@ -83,32 +84,17 @@ BOOL ntw16s_control_protocol_runtime_trackbar(HWND w)
     return FALSE;
 }
 BOOL ntw16s_control_protocol_legacy_progress(HWND w)
-{
-    for(ntw16s_control_protocol *b=bindings;b;b=b->next)
-        if(b->window==w && b->role==13 && current(b))return TRUE;
-    return FALSE;
-}
+{return find_binding(w,13)!=NULL;}
 HMODULE ntw16s_control_protocol_list_module(HWND w)
-{
-    for(ntw16s_control_protocol *b=bindings;b;b=b->next)
-        if(b->window==w && b->role==5 && current(b))return b->native_module;
-    return NULL;
-}
+{ntw16s_control_protocol *b=find_binding(w,5);return b?b->native_module:NULL;}
 HMODULE ntw16s_control_protocol_tree_module(HWND w)
-{
-    for(ntw16s_control_protocol *b=bindings;b;b=b->next)
-        if(b->window==w && b->role==6 && current(b))return b->native_module;
-    return NULL;
-}
+{ntw16s_control_protocol *b=find_binding(w,6);return b?b->native_module:NULL;}
 HMODULE ntw16s_control_protocol_updown_module(HWND w)
-{
-    for(ntw16s_control_protocol *b=bindings;b;b=b->next)
-        if(b->window==w && b->role==9 && current(b))return b->native_module;
-    return NULL;
-}
+{ntw16s_control_protocol *b=find_binding(w,9);return b?b->native_module:NULL;}
 ntw16s_control_protocol *ntw16s_control_protocol_acquire(HWND w)
 {
-    for(ntw16s_control_protocol *b=bindings;b;b=b->next)if(b->window==w && current(b)){
+    ntw16s_control_protocol *b=find_binding(w,0);
+    if(b){
         if(b->refs==UINT_MAX){SetLastError(ERROR_ARITHMETIC_OVERFLOW);return NULL;}
         ++b->refs;return b;
     }

@@ -1,4 +1,4 @@
-#include "control_class.h"
+#include "../lib-win32/win16-control/control_class.h"
 #include "lib-win32/win16-control/scroll_native.h"
 #include "attachment.h"
 /* Internal guard for a witnessed VCL group button. */
@@ -44,16 +44,16 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 
 #include "../lib-win32/win16-control/scroll_assets.h"
 #include "scroll_track.h"
-#include "font.h"
+#include "../lib-win32/win16-common/font.h"
 #include "native_api.h"
 #include "theme.h"
 #include "tab_paint.h"
 #include "header_paint.h"
 #include "progress_paint.h"
 #include "trackbar_paint.h"
-#include "updown_paint.h"
-#include "vb_text.h"
-#include "injection/unwind.h"
+#include "../lib-win32/win16-control/updown_adapter.h"
+#include "../lib-win32/win16-control/vb_text.h"
+#include "../lib-win32/process-hook/unwind.h"
 #include <commctrl.h>
 #include <uxtheme.h>
 #include <vssym32.h>
@@ -64,21 +64,19 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 static _Thread_local track_paint_scope *track_paint;
 static void track_paint_end(void *data)
 {track_paint_scope *scope=data;track_paint=scope->previous;}
-static NTW16S_UNWIND_FUNCTION LRESULT track_paint_dispatch(control_style *s,HWND w,UINT m,WPARAM a,LPARAM b)
+static PROCESS_HOOK_UNWIND_FUNCTION LRESULT track_paint_dispatch(control_style *s,HWND w,UINT m,WPARAM a,LPARAM b)
 {
-    track_paint_scope scope={.previous=track_paint,.owner=s};ntw16s_unwind_scope unwind;
+    track_paint_scope scope={.previous=track_paint,.owner=s};process_hook_unwind_scope unwind;
     DWORD entry=GetLastError(),error;LRESULT result;
-    track_paint=&scope;NTW16S_UNWIND_BEGIN(unwind,track_paint_end,&scope);
+    track_paint=&scope;PROCESS_HOOK_UNWIND_BEGIN(unwind,track_paint_end,&scope);
     SetLastError(entry);result=DefSubclassProc(w,m,a,b);error=GetLastError();
-    NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
+    PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;
 }
 static LRESULT CALLBACK control_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static LRESULT CALLBACK trackbar_notify(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static LRESULT CALLBACK toolbar_notify(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static BOOL updown_acquire(void *owner)
 {return win16_control_updown_acquire(owner,control_proc);}
-static void updown_release(void *owner)
-{win16_control_updown_release(owner);}
 
 static LRESULT CALLBACK combo_text_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
 {return win16_control_combo_text_message(w,m,a,b,id,(control_style *)data,combo_text_proc,control_proc);}
@@ -94,29 +92,11 @@ static LRESULT CALLBACK toolbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT
 {return win16_control_toolbar_notify(parent,m,p,l,id,(control_style *)data,toolbar_notify);}
 static BOOL is_exact_native_button(HWND w)
 {WCHAR name[32];return GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpiW(name,L"BUTTON");}
-static BOOL is_static(HWND w)
-{return ntw16s_class_is(w,L"STATIC");}
-static BOOL is_edit(HWND w)
-{return ntw16s_class_is(w,L"EDIT");}
-static BOOL is_list(HWND w)
-{WCHAR name[16];return ntw16s_class_is(w,L"LISTBOX") || (GetClassNameW(w,name,16) && !lstrcmpiW(name,L"ComboLBox"));}
-static BOOL is_combo(HWND w)
-{return ntw16s_class_is(w,L"COMBOBOX");}
-static BOOL is_scroll(HWND w)
-{return ntw16s_class_is(w,L"SCROLLBAR");}
-static BOOL is_link(HWND w)
-{return ntw16s_class_is(w,L"SysLink") || ntw16s_control_protocol_is(w,WC_LINK);}
-static BOOL is_tab(HWND w)
-{return ntw16s_class_is(w,WC_TABCONTROLW) || ntw16s_control_protocol_is(w,WC_TABCONTROLW);}
-static BOOL is_header(HWND w)
-{return ntw16s_class_is(w,WC_HEADERW);}
 
 static _Thread_local HWND common_dialog_combo_pending;
 
 BOOL win16_style_checklist_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address)
 {return win16_control_checklist_frame(dc,rect,type,flags,address,ntw16s_checklist_draw_target);}
-BOOL win16_style_vb_checklist(HDC dc,int x,int y,int width,int height,HDC source,int sx,int sy,DWORD rop,const void *address)
-{return win16_control_vb_checklist(dc,x,y,width,height,source,sx,sy,rop,address);}
 BOOL win16_style_graphical_frame_prepare(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,RECT *copy)
 {return win16_control_graphical_frame_prepare(dc,rect,type,flags,address,copy,control_proc);}
 BOOL win16_style_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address)
@@ -127,7 +107,7 @@ BOOL win16_style_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,co
 static void draw(HWND w,control_style *s,HDC dc)
 {
     const win16_control_choice_view view={&s->detached,&s->palette,&s->font,
-        ntw16s_button_type,is_static,ntw16s_vb_frame,ntw16s_vb_button,
+        ntw16s_button_type,ntw16s_is_static,ntw16s_vb_frame,ntw16s_vb_button,
         ntw16s_group_choice_button,ntw16s_group_push_button};
     win16_control_draw_choice(w,&view,dc);
 }
@@ -184,7 +164,7 @@ void win16_style_scrollbars_paint(HWND w,HDC target,const win16_style_palette *p
 static win16_scroll_caret_view scroll_caret_view(control_style *s)
 {
     const win16_scroll_caret_view view={&s->detached,&s->scroll_caret,&s->scroll_caret_shown,
-        &s->scroll_caret_size,&s->scroll,is_scroll,scroll_layout};return view;
+        &s->scroll_caret_size,&s->scroll,ntw16s_is_scroll,scroll_layout};return view;
 }
 static void scroll_caret_destroy(HWND w,control_style *s)
 {const win16_scroll_caret_view view=scroll_caret_view(s);win16_scroll_caret_destroy(w,&view);}
@@ -251,19 +231,13 @@ static LRESULT set_list_tabs(HWND w,control_style *s,WPARAM count,LPARAM values)
 }
 static void draw_sizebox(HWND w,control_style *s,HDC dc)
 {(void)s;win16_control_draw_sizebox(w,dc);}
-static void draw_tab(HWND w,control_style *s,HDC dc)
-{win16_control_draw_tab(w,s,dc);}
-static void draw_header(HWND w,control_style *s,HDC dc)
-{win16_control_draw_header(w,s,dc);}
-static void draw_progress(HWND w,control_style *s,HDC dc)
-{win16_control_draw_progress(w,s,dc);}
 /* The v5 progress color and state getters are unavailable. Only paint the
  * verified static edge, after the native procedure; leave the client intact. */
 static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
 {
     control_style *s=(control_style *)data;LRESULT result=0;HFONT previous=NULL,pinned=s->font,outbound=NULL;(void)id;++s->calls;
     RECT spin_before={0};HWND spin_button=win16_control_spin_before(w,m,&spin_before);
-    BOOL tab=is_tab(w),header=is_header(w),progress=ntw16s_class_is(w,PROGRESS_CLASSW) || ntw16s_control_protocol_is(w,PROGRESS_CLASSW),native_font=tab || header;
+    BOOL tab=ntw16s_is_tab(w),header=ntw16s_is_header(w),progress=ntw16s_class_is(w,PROGRESS_CLASSW),native_font=tab || header;
     BOOL combo_paint=ntw16s_vb_combo(w) && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT);if(combo_paint)++s->combo_paints;
     if(progress && win16_style_progress_changes(m))++s->progress_epoch;
     if(tab && win16_style_tab_changes(m))++s->tab_epoch;
@@ -283,7 +257,7 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
         const win16_control_list_services list={embedded_scroll_input,set_list_tabs,present_control,draw_list,list_border,nonclient_scrollbars};
         const win16_control_edit_services edit={embedded_scroll_input,nonclient_scrollbars,list_border,edit_border};
         const win16_control_dispatch_services services={win16_style_control_terminal,ntw16s_class_is,track_paint_dispatch,trackbar_unbind,
-            is_link,is_scroll,is_combo,is_list,is_edit,present_control,draw_tab,draw_header,draw_progress,draw_combo,draw,
+            ntw16s_is_link,ntw16s_is_scroll,ntw16s_is_combo,ntw16s_list_class,ntw16s_is_edit,present_control,win16_control_draw_tab,win16_control_draw_header,win16_control_draw_progress,draw_combo,draw,
             &scroll,&fileowner,&list,&edit};
         result=win16_control_dispatch_message(w,s,&m,&a,&b,tab,header,progress,&services);
     }
@@ -306,7 +280,7 @@ static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL ori
 BOOL win16_style_common_dialog_combo_install(HWND w,const void *owner)
 {
     const win16_control_dialog_combo_services services={install,ntw16s_native_get_combo_info,
-        win16_style_grid_install_created,win16_style_list_scrollbar_enable,is_edit,win16_style_control_install_created};
+        win16_style_grid_install_created,win16_style_list_scrollbar_enable,ntw16s_is_edit,win16_style_control_install_created};
     return win16_control_dialog_combo_install(w,owner,&common_dialog_combo_pending,&services);
 }
 BOOL win16_style_control_install(HWND w,const win16_style_palette *palette)
@@ -324,11 +298,11 @@ BOOL win16_style_frame_scrollbars_install_owned(HWND w,const win16_style_palette
     return install(w,palette,FALSE,FALSE,TRUE,-1,NULL,owner,cancelled);
 }
 static const win16_control_managed_services managed_services={control_proc,win16_style_control_remove,
-    ntw16s_native_get_scroll_info,ntw16s_native_set_scroll_info,draw_scroll,is_list,is_edit};
+    ntw16s_native_get_scroll_info,ntw16s_native_set_scroll_info,draw_scroll,ntw16s_list_class,ntw16s_is_edit};
 void win16_style_frame_scrollbars_palette_owned(HWND w,const win16_style_palette *palette,const void *owner)
 {win16_control_managed_frame_scrollbars_palette_owned(w,palette,owner,&managed_services);}
-static const win16_control_special_services special_services={control_proc,trackbar_notify,toolbar_notify,updown_acquire,updown_release,
-    win16_style_frame_scrollbars_install_owned,win16_style_control_remove_owned,ntw16s_theme_retained,ntw16s_theme_capture,ntw16s_theme_enable};
+static const win16_control_special_services special_services={control_proc,trackbar_notify,toolbar_notify,updown_acquire,win16_control_updown_release,
+    win16_style_frame_scrollbars_install_owned,win16_style_control_remove_owned,win16_control_theme_retained,win16_control_theme_capture,ntw16s_theme_enable};
 BOOL win16_style_updown_install_created(HWND w,const win16_style_palette *p,const void *owner,const BOOL *cancelled)
 {return win16_control_special_updown_install(w,p,owner,cancelled,&special_services);}
 BOOL win16_style_trackbar_install_created(HWND w,const win16_style_palette *p,const void *owner,const BOOL *cancelled)
@@ -363,7 +337,7 @@ BOOL win16_style_edit_install(HWND w,BOOL original_border,const win16_style_pale
 BOOL win16_style_edit_scrollbars_enable(HWND w)
 {return win16_control_managed_edit_scrollbars_enable(w,&managed_services);}
 static const win16_control_remove_services control_remove_services={control_proc,scroll_finish,trackbar_unbind,toolbar_unbind,
-    combo_text_unbind,detach_combo_list,ntw16s_theme_remove,ntw16s_theme_terminal,scroll_caret_destroy,
+    combo_text_unbind,detach_combo_list,ntw16s_theme_remove,win16_control_theme_terminal,scroll_caret_destroy,
     scroll_stop_timer,scroll_release_capture,terminal_combo_list};
 BOOL win16_style_control_remove(HWND w)
 {return win16_control_remove(w,&control_remove_services);}

@@ -12,6 +12,18 @@
 #define WIDTH 512
 #define HEIGHT 64
 
+#ifdef NTW16S_STATUS_VCL
+typedef BOOL (WINAPI *fixture_reg_fn)(BOOL);
+typedef HWND (WINAPI *fixture_create_fn)(HWND,BOOL);
+typedef BOOL (WINAPI *fixture_unreg_fn)(void);
+static fixture_create_fn fixture_create;
+static HWND create_status(HWND parent)
+{HWND w=fixture_create(parent,FALSE);if(w)RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);return w;}
+#else
+static HWND create_status(HWND parent)
+{return CreateWindowW(STATUSCLASSNAMEW,L"",WS_CHILD|WS_VISIBLE|CCS_BOTTOM,0,0,400,30,parent,(HMENU)(INT_PTR)9,GetModuleHandleW(NULL),NULL);}
+#endif
+
 static unsigned owner_draws;
 static ULONG_PTR owner_data;
 static HWND status_window;
@@ -92,8 +104,15 @@ static int passive_case(const WCHAR *path)
 static int worker(int argc,WCHAR **argv)
 {
     if(argc==3 && !wcscmp(argv[1],L"passive"))return passive_case(argv[2]);
+#ifdef NTW16S_STATUS_VCL
+    CHECK(argc==2 || (argc==3 && !wcscmp(argv[2],L"aware")));
+    if(argc==3)CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));
+    HMODULE fixture=LoadLibraryW(argv[1]);CHECK(fixture);
+    fixture_reg_fn reg=(void*)GetProcAddress(fixture,"FixtureRegister");fixture_create=(void*)GetProcAddress(fixture,"FixtureCreate");fixture_unreg_fn unreg=(void*)GetProcAddress(fixture,"FixtureUnregister");CHECK(reg && fixture_create && unreg);
+#else
     CHECK(argc==1 || (argc==2 && !wcscmp(argv[1],L"aware")));
     if(argc==2)CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));
+#endif
     HMODULE dll=GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");CHECK(dll);
     BOOL (__cdecl *attached)(HWND)=(void *)GetProcAddress(dll,"Ntw16sWindowAttached");
     remove_style=(void *)GetProcAddress(dll,"Ntw16sWindowRemove");CHECK(attached&&remove_style);
@@ -108,7 +127,14 @@ static int worker(int argc,WCHAR **argv)
     printf("STATUS_CONTROL_VERSION bits=%u major=%lu minor=%lu\n",(unsigned)sizeof(void*)*8,version.dwMajorVersion,version.dwMinorVersion);
     WNDCLASSW parent={.hInstance=GetModuleHandleW(NULL),.lpfnWndProc=parent_proc,.lpszClassName=L"StatusControlParent"};CHECK(RegisterClassW(&parent));
     HWND root=CreateWindowW(parent.lpszClassName,L"status protocol",WS_OVERLAPPEDWINDOW,0,0,430,180,NULL,NULL,parent.hInstance,NULL);CHECK(root && attached(root));
-    status_window=CreateWindowW(STATUSCLASSNAMEW,L"",WS_CHILD|WS_VISIBLE|CCS_BOTTOM,0,0,400,30,root,(HMENU)(INT_PTR)9,parent.hInstance,NULL);CHECK(status_window);
+#ifdef NTW16S_STATUS_VCL
+    ShowWindow(root,SW_SHOWNA);
+    CHECK(reg(TRUE));HWND bogus=create_status(root);CHECK(bogus && !attached(bogus));CHECK(DestroyWindow(bogus) && unreg());CHECK(reg(FALSE));
+#endif
+    status_window=create_status(root);CHECK(status_window);
+#ifdef NTW16S_STATUS_VCL
+    SendMessageW(status_window,WM_SETFONT,(WPARAM)GetStockObject(SYSTEM_FONT),TRUE);
+#endif
     if(!attached(status_window)){fprintf(stderr,"STATUS_CONTROL_UNATTACHED bits=%u\n",(unsigned)sizeof(void*)*8);return 1;}
     int edges[2]={120,-1};CHECK(SendMessageW(status_window,SB_SETPARTS,2,(LPARAM)edges));
     CHECK(SendMessageW(status_window,SB_SETTEXTW,0,(LPARAM)L"ordinary"));
@@ -134,25 +160,36 @@ static int worker(int argc,WCHAR **argv)
     CHECK(DestroyWindow(status_window));status_window=NULL;
     const UINT native_modes[]={SBT_NOBORDERS,SBT_POPOUT};
     for(unsigned i=0;i<ARRAYSIZE(native_modes);++i){
-        status_window=CreateWindowW(STATUSCLASSNAMEW,L"",WS_CHILD|WS_VISIBLE|CCS_BOTTOM,0,0,400,30,root,(HMENU)(INT_PTR)9,parent.hInstance,NULL);CHECK(status_window&&attached(status_window));
+        status_window=create_status(root);CHECK(status_window&&attached(status_window));
+#ifdef NTW16S_STATUS_VCL
+        SendMessageW(status_window,WM_SETFONT,(WPARAM)GetStockObject(SYSTEM_FONT),TRUE);
+#endif
         CHECK(SendMessageW(status_window,SB_SETTEXTW,native_modes[i],(LPARAM)L"native"));capture(status_window,dc,bits,styled_pixels);
         CHECK(remove_style(status_window)&&!attached(status_window));capture(status_window,dc,bits,native_pixels);
         CHECK(!memcmp(styled_pixels,native_pixels,sizeof(styled_pixels)));CHECK(DestroyWindow(status_window));status_window=NULL;
     }
-    status_window=CreateWindowW(STATUSCLASSNAMEW,L"",WS_CHILD|WS_VISIBLE|CCS_BOTTOM,0,0,400,30,root,(HMENU)(INT_PTR)9,parent.hInstance,NULL);CHECK(status_window&&attached(status_window));
+    status_window=create_status(root);CHECK(status_window&&attached(status_window));
     SendMessageW(status_window,SB_SIMPLE,TRUE,0);CHECK(SendMessageW(status_window,SB_ISSIMPLE,0,0));CHECK(SendMessageW(status_window,SB_SETTEXTW,SB_SIMPLEID,(LPARAM)L"simple"));
     capture(status_window,dc,bits,styled_pixels);CHECK(remove_style(status_window)&&!attached(status_window));capture(status_window,dc,bits,native_pixels);
-    CHECK(!memcmp(styled_pixels,native_pixels,sizeof(styled_pixels)));CHECK(DestroyWindow(status_window));status_window=NULL;
-    status_window=CreateWindowW(STATUSCLASSNAMEW,L"",WS_CHILD|WS_VISIBLE|CCS_BOTTOM,0,0,400,30,root,(HMENU)(INT_PTR)9,parent.hInstance,NULL);CHECK(status_window&&attached(status_window));
+#ifdef NTW16S_STATUS_VCL
+    CHECK(memcmp(styled_pixels,native_pixels,sizeof(styled_pixels)));
+#else
+    CHECK(!memcmp(styled_pixels,native_pixels,sizeof(styled_pixels)));
+#endif
+    CHECK(DestroyWindow(status_window));status_window=NULL;
+    status_window=create_status(root);CHECK(status_window&&attached(status_window));
     CHECK(SendMessageW(status_window,SB_SETTEXTW,SBT_OWNERDRAW,(LPARAM)0x12345678));remove_in_draw=TRUE;capture(status_window,dc,bits,styled_pixels);
     CHECK(!remove_in_draw && !attached(status_window) && owner_data==0x12345678);CHECK(DestroyWindow(status_window));status_window=NULL;
-    status_window=CreateWindowW(STATUSCLASSNAMEW,L"",WS_CHILD|WS_VISIBLE|CCS_BOTTOM,0,0,400,30,root,(HMENU)(INT_PTR)9,parent.hInstance,NULL);CHECK(status_window&&attached(status_window));
+    status_window=create_status(root);CHECK(status_window&&attached(status_window));
     CHECK(SetWindowSubclass(status_window,app_subclass,1,0));CHECK(SendMessageW(status_window,SB_SETTEXTW,0,(LPARAM)L"before"));
     mutate_on_query=TRUE;capture(status_window,dc,bits,styled_pixels);CHECK(!mutate_on_query && attached(status_window));
     CHECK(remove_style(status_window)&&!attached(status_window));capture(status_window,dc,bits,native_pixels);CHECK(!memcmp(styled_pixels,native_pixels,sizeof(styled_pixels)));
     CHECK(RemoveWindowSubclass(status_window,app_subclass,1));CHECK(DestroyWindow(status_window));status_window=NULL;
-    status_window=CreateWindowW(STATUSCLASSNAMEW,L"",WS_CHILD|WS_VISIBLE|CCS_BOTTOM,0,0,400,30,root,(HMENU)(INT_PTR)9,parent.hInstance,NULL);CHECK(status_window&&attached(status_window));
+    status_window=create_status(root);CHECK(status_window&&attached(status_window));
     CHECK(SetWindowSubclass(status_window,app_subclass,1,0));HWND doomed=status_window;destroy_on_query=TRUE;capture(status_window,dc,bits,styled_pixels);CHECK(!destroy_on_query && !IsWindow(doomed));status_window=NULL;
+#ifdef NTW16S_STATUS_VCL
+    CHECK(unreg());CHECK(FreeLibrary(fixture));
+#endif
     WNDCLASSW fake={.hInstance=parent.hInstance,.lpfnWndProc=DefWindowProcW,.lpszClassName=L"TStatusBar"};CHECK(RegisterClassW(&fake));
     HWND impostor=CreateWindowW(fake.lpszClassName,L"",WS_CHILD,0,0,100,25,root,NULL,fake.hInstance,NULL);CHECK(impostor&&!attached(impostor));CHECK(DestroyWindow(impostor));CHECK(UnregisterClassW(fake.lpszClassName,fake.hInstance));
     fake.lpszClassName=STATUSCLASSNAMEW;SetLastError(ERROR_SUCCESS);ATOM shadow=RegisterClassW(&fake);DWORD registration_error=GetLastError();
@@ -161,7 +198,13 @@ static int worker(int argc,WCHAR **argv)
         CHECK((HMODULE)GetClassLongPtrW(impostor,GCLP_HMODULE)==parent.hInstance && !attached(impostor));
         CHECK(DestroyWindow(impostor));CHECK(UnregisterClassW(fake.lpszClassName,fake.hInstance));
     }else CHECK(registration_error==ERROR_CLASS_ALREADY_EXISTS);
-    printf("STATUS_BOUNDARY_OK noborders=1 popout=1 simple=1 reentrant_remove=1 mutate_query=1 destroy_query=1 fake_class=1 shadow_test=%u dpi=%u aware=%u\n",shadow!=0,GetDpiForWindow(root),argc==2);
+    printf("STATUS_BOUNDARY_OK noborders=1 popout=1 simple=1 reentrant_remove=1 mutate_query=1 destroy_query=1 fake_class=1 shadow_test=%u dpi=%u aware=%u\n",shadow!=0,GetDpiForWindow(root),
+#ifdef NTW16S_STATUS_VCL
+        argc==3);
+    CHECK(SelectObject(dc,old));CHECK(DeleteObject(bitmap));CHECK(DeleteDC(dc));CHECK(DestroyWindow(root));CHECK(UnregisterClassW(parent.lpszClassName,parent.hInstance));puts("VCL_STATUS_MODULE_OK");return 0;
+#else
+        argc==2);
     CHECK(SelectObject(dc,old));CHECK(DeleteObject(bitmap));CHECK(DeleteDC(dc));CHECK(DestroyWindow(root));CHECK(UnregisterClassW(parent.lpszClassName,parent.hInstance));puts("STATUS_CONTROL_CLEANUP_OK");return 0;
+#endif
 }
 int wmain(int argc,WCHAR **argv){return isolated_process(argc,argv,worker);}

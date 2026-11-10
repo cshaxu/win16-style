@@ -8,17 +8,7 @@ typedef BOOL (WINAPI *reg_fn)(int);
 typedef void (WINAPI *foreign_set_fn)(void *);
 __attribute__((noinline)) static LRESULT foreign_paint(WNDPROC proc,HWND w,UINT m,WPARAM p,LPARAM l)
 {volatile LRESULT value=CallWindowProcW(proc,w,m,p,l);return value;}
-typedef HWND (WINAPI *create_fn)(HWND,BOOL);
-typedef BOOL (WINAPI *unreg_fn)(void);
-typedef BOOL (__cdecl *window_fn)(HWND);
-static window_fn remove_style;
-static HWND observed;
-static BOOL remove_on_color,removed;
-static LRESULT CALLBACK parent_proc(HWND w,UINT m,WPARAM p,LPARAM l)
-{
-    if(m==WM_CTLCOLOREDIT && (HWND)l==observed && remove_on_color){remove_on_color=FALSE;removed=remove_style(observed);}
-    return DefWindowProcW(w,m,p,l);
-}
+#include "vcl_edit_observer.h"
 static int run(int argc,WCHAR **argv)
 {
     CHECK(argc==2);HMODULE fixture=LoadLibraryW(argv[1]);CHECK(fixture);
@@ -52,11 +42,7 @@ static int run(int argc,WCHAR **argv)
             HDC dc=GetDC(edit);CHECK(dc && SetPixelV(dc,marker_x,marker_y,RGB(3,254,5)));CHECK(ReleaseDC(edit,dc));
             RECT dirty={1,1,10,10};CHECK(RedrawWindow(edit,&dirty,NULL,RDW_INVALIDATE|RDW_UPDATENOW));
             dc=GetDC(edit);CHECK(dc && GetPixel(dc,marker_x,marker_y)==RGB(3,254,5));CHECK(ReleaseDC(edit,dc));
-            CHECK(SendMessageW(edit,WM_SETTEXT,0,(LPARAM)L"probe"));
-            SendMessageW(edit,EM_SETSEL,1,3);SendMessageW(edit,WM_CHAR,L'X',1);
-            WCHAR text[32];CHECK(GetWindowTextW(edit,text,32)>0 && !wcscmp(text,L"pXbe"));
-            CHECK(SendMessageW(edit,EM_SETREADONLY,TRUE,0));SendMessageW(edit,WM_CHAR,L'Y',1);
-            CHECK(GetWindowTextW(edit,text,32)>0 && !wcscmp(text,L"pXbe"));CHECK(SendMessageW(edit,EM_SETREADONLY,FALSE,0));
+            CHECK(check_edit_input(edit)==0);WCHAR text[32];
             observed=edit;removed=FALSE;remove_on_color=TRUE;
             CHECK(RedrawWindow(edit,NULL,NULL,RDW_INVALIDATE|RDW_ERASE|RDW_UPDATENOW));
             CHECK(removed && !attached(edit));observed=NULL;

@@ -1,7 +1,7 @@
 #define UNICODE
 #include <windows.h>
 #include <commctrl.h>
-#include <string.h>
+#include "native_thunk.h"
 static HINSTANCE owner;
 static WNDPROC native_proc;
 static BOOL fake,enabled,tree,flip_on_count;
@@ -16,17 +16,10 @@ static LRESULT CALLBACK initial(HWND w,UINT m,WPARAM p,LPARAM l)
 {LRESULT result=dispatch(w,m,p,l);if(m==WM_NCCREATE)SetWindowLongPtrW(w,GWLP_WNDPROC,(LONG_PTR)thunk);return result;}
 __declspec(dllexport) BOOL WINAPI FixtureRegister(BOOL impostor,BOOL is_tree)
 {
- WNDCLASSEXW n={.cbSize=sizeof(n)},c={.cbSize=sizeof(c)};DWORD old;
+ WNDCLASSEXW n={.cbSize=sizeof(n)},c={.cbSize=sizeof(c)};
  tree=is_tree;fake=impostor;enabled=FALSE;flip_on_count=FALSE;
  if(!GetClassInfoExW(NULL,tree?WC_TREEVIEWW:WC_LISTVIEWW,&n))return FALSE;
- native_proc=n.lpfnWndProc;thunk=VirtualAlloc(NULL,4096,MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);if(!thunk)return FALSE;
-#ifdef _WIN64
- unsigned char code[]={0x48,0xb8,0,0,0,0,0,0,0,0,0xff,0xe0};void *target=(void*)dispatch;memcpy(code+2,&target,sizeof(target));
-#else
- unsigned char code[]={0xb8,0,0,0,0,0xff,0xe0};void *target=(void*)dispatch;memcpy(code+1,&target,sizeof(target));
-#endif
- memcpy(thunk,code,sizeof(code));if(!VirtualProtect(thunk,4096,PAGE_EXECUTE_READ,&old)){VirtualFree(thunk,0,MEM_RELEASE);thunk=NULL;return FALSE;}
- FlushInstructionCache(GetCurrentProcess(),thunk,sizeof(code));c.style=CS_DBLCLKS|CS_HREDRAW|CS_VREDRAW;c.cbWndExtra=n.cbWndExtra;c.hCursor=LoadCursorW(NULL,IDC_ARROW);c.hInstance=owner;c.lpszClassName=name();c.lpfnWndProc=initial;
+ native_proc=n.lpfnWndProc;thunk=test_create_native_thunk((void *)dispatch);if(!thunk)return FALSE;c.style=CS_DBLCLKS|CS_HREDRAW|CS_VREDRAW;c.cbWndExtra=n.cbWndExtra;c.hCursor=LoadCursorW(NULL,IDC_ARROW);c.hInstance=owner;c.lpszClassName=name();c.lpfnWndProc=initial;
  if(RegisterClassExW(&c))return TRUE;
  VirtualFree(thunk,0,MEM_RELEASE);thunk=NULL;return FALSE;
 }

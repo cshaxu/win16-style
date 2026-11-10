@@ -1,5 +1,4 @@
 #include "startup_error.h"
-#include "lib-win32/process-image/image.h"
 #include <objbase.h>
 
 BOOL run16s_private_console(void)
@@ -16,8 +15,6 @@ BOOL run16s_private_console(void)
         (!(startup.dwFlags&STARTF_USESHOWWINDOW) || startup.wShowWindow!=SW_HIDE) &&
         GetConsoleProcessList(processes,2)==1 && processes[0]==GetCurrentProcessId();
 }
-BOOL run16s_legacy_image(PCWSTR image)
-{return win32_process_image_is_legacy(image);}
 DWORD run16s_system_error(PCWSTR image,PCWSTR arguments,
     BOOL (WINAPI *execute)(SHELLEXECUTEINFOW *))
 {

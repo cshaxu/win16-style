@@ -44,7 +44,7 @@ int wmain(void)
     SHELLEXECUTEINFOW invalid={.cbSize=sizeof(invalid),.hProcess=borrowed};
     CHECK(win32_security_shell_wait(&invalid,shell_probe,FALSE,&exit_code)==ERROR_INVALID_PARAMETER);
     CHECK(WaitForSingleObject(borrowed,0)==WAIT_TIMEOUT);CloseHandle(borrowed);
-    (void)run16s_is_elevated(&error);CHECK(!error);
+    (void)win32_security_is_elevated(&error);CHECK(!error);
     /* Warm COM caches before the per-call handle ownership check. */
     CHECK(!run16s_elevate(L"C:\\space dir\\target.exe",L"\"\" \"a b\" tail\\",TRUE,shell_probe,&exit_code));
     CHECK(request_valid&&exit_code==73);

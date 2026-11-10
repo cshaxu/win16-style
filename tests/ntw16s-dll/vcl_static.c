@@ -3,7 +3,7 @@
 #include <wchar.h>
 #include <setjmp.h>
 #include "isolated_process.h"
-#include "ntw16s-dll/injection/unwind.h"
+#include "../../src/lib-win32/process-hook/unwind.h"
 
 #define CHECK(x) do { if(!(x)){fprintf(stderr,"VCL_STATIC_FAIL line=%u error=%lu: %s\n",__LINE__,GetLastError(),#x);return 1;} } while(0)
 typedef BOOL (__cdecl *attached_fn)(HWND);
@@ -19,7 +19,7 @@ static BOOL trigger_nested,nested_ok;
 static BOOL raise_in_color,exception_seen;
 #define STATIC_TEST_EXCEPTION 0xe0425331u
 #ifndef _WIN64
-typedef struct static_catcher {ntw16s_unwind_record record;jmp_buf saved;} static_catcher;
+typedef struct static_catcher {process_hook_unwind_record record;jmp_buf saved;} static_catcher;
 static EXCEPTION_DISPOSITION NTAPI static_catch(EXCEPTION_RECORD *exception,void *frame,CONTEXT *context,void *dispatcher)
 {
     (void)context;(void)dispatcher;
@@ -93,7 +93,7 @@ static BOOL snapshot(HWND w,DWORD *pixels,unsigned width,unsigned height,BOOL pr
     if(source)ReleaseDC(w,source);
     return ok;
 }
-static NTW16S_UNWIND_FUNCTION BOOL test_unwind(HWND w)
+static PROCESS_HOOK_UNWIND_FUNCTION BOOL test_unwind(HWND w)
 {
     exception_seen=FALSE;raise_in_color=TRUE;
 #ifndef _WIN64

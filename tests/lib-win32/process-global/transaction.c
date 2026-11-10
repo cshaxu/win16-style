@@ -13,6 +13,7 @@ static DWORD run_advance(void *p){run_state *s=p;return ++s->advances==1 || (s->
 static unsigned run_pending(void *p,HANDLE handles[2]){run_state *s=p;if(s->empty)return 0;handles[0]=s->event;return 1;}
 static BOOL run_retry(void *p,DWORD status){return ((run_state *)p)->retry && status==ERROR_TIMEOUT;}
 static DWORD run_apply(void *p){++((run_state *)p)->applies;return ERROR_SUCCESS;}
+static DWORD WINAPI abandon(void *p){return WaitForSingleObject((HANDLE)p,1000)==WAIT_OBJECT_0?0:1;}
 int main(void)
 {
     static const win32_process_global_transaction_ops ops={load,validate,start,ready,apply};
@@ -42,6 +43,20 @@ int main(void)
     if(win32_process_global_transaction_run(quit,stop,GetTickCount64()+1000,GetTickCount64(),FALSE,&run_ops,&r)!=ERROR_INVALID_STATE)return 12;
     SetEvent(event);r=(run_state){.event=event,.alive=TRUE,.begins=1,.stuck=TRUE};
     if(win32_process_global_transaction_run(quit,stop,GetTickCount64(),GetTickCount64(),FALSE,&run_ops,&r)!=ERROR_TIMEOUT)return 13;
+    HANDLE restricted=NULL;
+    if(!DuplicateHandle(GetCurrentProcess(),event,GetCurrentProcess(),&restricted,EVENT_MODIFY_STATE,FALSE,0))return 14;
+    r=(run_state){.event=event,.alive=TRUE,.begins=1,.advances=1};
+    if(win32_process_global_transaction_run(restricted,stop,GetTickCount64()+1000,GetTickCount64(),FALSE,&run_ops,&r)!=ERROR_ACCESS_DENIED || r.advances!=1)return 15;
+    r=(run_state){.event=event,.alive=TRUE,.begins=1,.advances=1};
+    if(win32_process_global_transaction_run(quit,restricted,GetTickCount64()+1000,GetTickCount64(),FALSE,&run_ops,&r)!=ERROR_ACCESS_DENIED || r.advances!=1)return 16;
+    CloseHandle(restricted);
+    r=(run_state){.event=event,.alive=TRUE,.begins=1,.advances=1};
+    if(win32_process_global_transaction_run(quit,quit,GetTickCount64()+1000,GetTickCount64(),FALSE,&run_ops,&r))return 17;
+    HANDLE mutex=CreateMutexW(NULL,FALSE,NULL);HANDLE thread=mutex?CreateThread(NULL,0,abandon,mutex,0,NULL):NULL;
+    if(!thread || WaitForSingleObject(thread,1000)!=WAIT_OBJECT_0)return 18;
+    CloseHandle(thread);r=(run_state){.event=event,.alive=TRUE};
+    if(win32_process_global_transaction_run(mutex,stop,GetTickCount64()+1000,GetTickCount64()+1000,TRUE,&run_ops,&r)!=ERROR_INVALID_STATE || r.begins!=1)return 19;
+    ReleaseMutex(mutex);CloseHandle(mutex);
     CloseHandle(event);CloseHandle(stop);CloseHandle(quit);
-    puts("PROCESS_GLOBAL_TRANSACTION_PASS pending=1 active=1 failure=1 headless=1 run_retry=1 cancel=1 timeout=1 invalid=1");return 0;
+    puts("PROCESS_GLOBAL_TRANSACTION_PASS pending=1 active=1 failure=1 headless=1 run_retry=1 cancel=1 timeout=1 invalid=1 wait_error=1 shared_handle=1 abandoned=1");return 0;
 }

@@ -3,7 +3,7 @@
 #include <windows.h>
 #include <commdlg.h>
 #include <stdio.h>
-#include "ntw16s-dll/injection/startup_hooks.h"
+#include "../../src/lib-win32/process-hook/startup_hooks.h"
 static BOOL (WINAPI *real_edge)(HDC,LPRECT,UINT,UINT);static LONG count,matched;static HWND pick;
 static BOOL WINAPI edge(HDC dc,LPRECT rect,UINT kind,UINT flags){
     HWND w=WindowFromDC(dc);HMODULE mod=NULL;WCHAR path[MAX_PATH]=L"";
@@ -15,5 +15,5 @@ static BOOL WINAPI edge(HDC dc,LPRECT rect,UINT kind,UINT flags){
 }
 static UINT_PTR CALLBACK hook(HWND w,UINT m,WPARAM wp,LPARAM lp){(void)lp;if(m==WM_INITDIALOG){pick=w;for(int id=720;id<=721;++id){HWND child=GetDlgItem(w,id);RECT r={0};if(child&&GetWindowRect(child,&r)){MapWindowPoints(NULL,w,(POINT *)&r,2);printf("GRID id=%d rect=%ld,%ld,%ld,%ld\n",id,r.left,r.top,r.right,r.bottom);}}SetTimer(w,427,500,NULL);}if(m==WM_TIMER&&wp==427){KillTimer(w,427);PostMessageW(w,WM_COMMAND,IDCANCEL,0);}return 0;}
 int wmain(void){setvbuf(stdout,NULL,_IONBF,0);HMODULE u=GetModuleHandleW(L"user32.dll");real_edge=(void *)GetProcAddress(u,"DrawEdge");
-    if(!real_edge||ntw16s_hooks_begin()||ntw16s_hooks_attach(&real_edge,(void *)edge)||ntw16s_hooks_commit())return 2;
+    if(!real_edge||process_hook_startup_begin()||process_hook_startup_attach(&real_edge,(void *)edge)||process_hook_startup_commit())return 2;
     COLORREF colors[16]={0};CHOOSECOLORW o={0};o.lStructSize=sizeof(o);o.lpCustColors=colors;o.Flags=CC_ENABLEHOOK;o.lpfnHook=hook;BOOL result=ChooseColorW(&o);DWORD error=CommDlgExtendedError();printf("EDGE_RESULT bits=%u count=%ld matched=%ld result=%d error=%lu\n",(unsigned)(sizeof(void*)*8),count,matched,result,error);return result||error||matched<64?1:0;}

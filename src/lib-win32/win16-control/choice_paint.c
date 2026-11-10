@@ -1,3 +1,4 @@
+#include "dc_geometry.h"
 #include "choice_paint.h"
 #include "control_class.h"
 #include "control_glyphs.h"
@@ -5,10 +6,9 @@
 
 BOOL win16_control_checklist_target(HDC dc,HDC expected,HWND window,HWND parent,const RECT *item,const RECT *r,const void *address,BOOL (*identity)(HWND))
 {
-    HMODULE module=NULL;POINT origin;
+    HMODULE module=NULL;
     if(!r || dc!=expected || !identity(window) || GetParent(window)!=parent ||
-        WindowFromDC(dc)!=window || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
-        !GetViewportOrgEx(dc,&origin) || origin.x || origin.y ||
+        WindowFromDC(dc)!=window || !win16_control_pixel_viewport(dc) ||
         !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
             (const WCHAR *)address,&module) || module!=(HMODULE)GetClassLongPtrW(window,GCLP_HMODULE))return FALSE;
     int dpi=(int)GetDpiForWindow(window);
@@ -59,7 +59,7 @@ static BOOL vb_checklist_unchanged(HWND w,HDC dc,HWND parent,DWORD style,DWORD e
 BOOL win16_control_vb_checklist(HDC dc,int x,int y,int width,int height,HDC source,int sx,int sy,DWORD rop,const void *address)
 {
     static _Thread_local BOOL active;
-    HMODULE caller=NULL;HWND w,parent;POINT origin;RECT item;LRESULT hit,index;BITMAP bitmap;
+    HMODULE caller=NULL;HWND w,parent;RECT item;LRESULT hit,index;BITMAP bitmap;
     DWORD style,ex;BOOL result=FALSE,enabled;UINT dpi;
     if(active || !dc || !source || width!=11 || height!=11 || rop!=SRCCOPY ||
         (sx!=0 && sx!=11 && sx!=22 && sx!=33) || sy!=0 || GetObjectType(source)!=OBJ_MEMDC ||
@@ -68,8 +68,7 @@ BOOL win16_control_vb_checklist(HDC dc,int x,int y,int width,int height,HDC sour
         !(w=WindowFromDC(dc)) || GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() ||
         !ntw16s_vb_checklist_class(w) ||
         ((dpi=GetDpiForWindow(w))!=96 && dpi!=144) ||
-        GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
-        !GetViewportOrgEx(dc,&origin) || origin.x || origin.y ||
+        !win16_control_pixel_viewport(dc) ||
         !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
             (const WCHAR *)address,&caller) || caller!=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE))return FALSE;
     style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);

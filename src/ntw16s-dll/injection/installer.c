@@ -4,12 +4,6 @@
 #include "lib-win32/process-image/image.h"
 #include <wchar.h>
 #include <string.h>
-DWORD ntw16s_process_machine(HANDLE child,WORD *machine)
-{return win32_process_image_machine(child,machine);}
-DWORD ntw16s_validate_image_ex(PCWSTR path,WORD machine,BOOL dll,WORD *subsystem)
-{return win32_process_image_validate_ex(path,machine,dll,subsystem);}
-DWORD ntw16s_validate_image(PCWSTR path,WORD machine,BOOL dll)
-{return win32_process_image_validate(path,machine,dll);}
 static DWORD import_path(PCWSTR path,char *out,DWORD capacity)
 {
     typedef struct path_work {WCHAR short_path[NTW16S_PATH_CAP],roundtrip[NTW16S_PATH_CAP];} path_work;
@@ -31,7 +25,7 @@ DWORD ntw16s_install(HANDLE child,const ntw16s_context *context,ntw16s_create_w 
     if(!child || !context || !create_helper)return ERROR_INVALID_PARAMETER;
     size_t length=wcsnlen_s(context->directory,NTW16S_PATH_CAP);
     if(!length || length>=NTW16S_PATH_CAP)return ERROR_INVALID_DATA;
-    error=ntw16s_process_machine(child,&machine);if(error)return error;
+    error=win32_process_image_machine(child,&machine);if(error)return error;
     work=HeapAlloc(GetProcessHeap(),0,sizeof(*work));if(!work)return ERROR_NOT_ENOUGH_MEMORY;
     header.bytes=(DWORD)(sizeof(header)+(length+1)*sizeof(WCHAR));header.version=1;
     header.machine=machine;header.flags=__atomic_load_n(&context->flags,__ATOMIC_ACQUIRE);header.directory_offset=sizeof(header);
@@ -41,12 +35,12 @@ DWORD ntw16s_install(HANDLE child,const ntw16s_context *context,ntw16s_create_w 
     memcpy(work->data,&header,sizeof(header));memcpy(work->data+sizeof(header),context->directory,header.directory_bytes);
     error=ntw16s_packet_parse(work->data,header.bytes,machine,&work->parsed);if(error)goto done;
     if(swprintf_s(work->path,NTW16S_PATH_CAP,L"%ls%lsntw16s%u.dll",context->directory,
-        context->directory[length-1]==L'\\'?L"":L"\\",machine==IMAGE_FILE_MACHINE_I386?32:64)<0){error=ERROR_FILENAME_EXCED_RANGE;goto done;}
-    error=ntw16s_validate_image(work->path,machine,TRUE);if(error)goto done;
+        context->directory[length-1]==L'\\'?L"":L"\\",machine==IMAGE_FILE_MACHINE_I386?32u:64u)<0){error=ERROR_FILENAME_EXCED_RANGE;goto done;}
+    error=win32_process_image_validate(work->path,machine,TRUE);if(error)goto done;
     error=import_path(work->path,work->dll,sizeof(work->dll));if(error)goto done;
     if(machine==(sizeof(void *)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386))
-        error=ntw16s_stage_process(child,work->dll,work->data,header.bytes);
-    else error=ntw16s_install_helper(child,work->path,work->data,header.bytes,create_helper);
+        error=process_hook_stage_process(child,work->dll,work->data,header.bytes);
+    else error=process_hook_install_helper(child,work->path,work->data,header.bytes,create_helper);
 done:
     HeapFree(GetProcessHeap(),0,work);return error;
 }

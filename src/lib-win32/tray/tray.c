@@ -56,21 +56,21 @@ static void show_menu(tray_icon *tray)
     HMENU menu = tray->menu(tray->context);
     POINT point;
     if (!menu) return;
-    if (GetCursorPos(&point)) {
-        SetForegroundWindow(tray->window);
-#ifdef TRAY_TESTING
-        UINT command = test_selection;
-#else
-        UINT command = TrackPopupMenu(menu, TPM_RETURNCMD | TPM_NONOTIFY |
-                                     TPM_RIGHTBUTTON, point.x, point.y, 0,
-                                     tray->window, NULL);
-#endif
-        PostMessageW(tray->window, WM_NULL, 0, 0);
+    if (!GetCursorPos(&point)) {
         DestroyMenu(menu);
-        if (command) tray->command(command, tray->context);
         return;
     }
+    SetForegroundWindow(tray->window);
+#ifdef TRAY_TESTING
+    UINT command = test_selection;
+#else
+    UINT command = TrackPopupMenu(menu, TPM_RETURNCMD | TPM_NONOTIFY |
+                                 TPM_RIGHTBUTTON, point.x, point.y, 0,
+                                 tray->window, NULL);
+#endif
+    PostMessageW(tray->window, WM_NULL, 0, 0);
     DestroyMenu(menu);
+    if (command) tray->command(command, tray->context);
 }
 
 static LRESULT CALLBACK window_proc(HWND window, UINT message, WPARAM a, LPARAM b)

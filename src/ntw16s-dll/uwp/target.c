@@ -65,6 +65,7 @@ DWORD ntw16s_uwp_target_change(const ntw16s_uwp_target *app,PCWSTR path,BOOL app
     if(hook){
         RemovePropW(app->frame,NTW16S_UWP_RESULT);DWORD_PTR ignored=0;
         UINT message=RegisterWindowMessageW(NTW16S_UWP_MESSAGE);
+        if(message)SetLastError(ERROR_SUCCESS);
         if(!SendMessageTimeoutW(app->frame,message,action,(LPARAM)app->core,
             SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,3000,&ignored))error=GetLastError()?GetLastError():ERROR_TIMEOUT;
         else {uintptr_t result=(uintptr_t)GetPropW(app->frame,NTW16S_UWP_RESULT);error=result?(DWORD)(result-1):ERROR_INVALID_DATA;}

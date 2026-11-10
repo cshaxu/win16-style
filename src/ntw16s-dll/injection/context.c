@@ -40,14 +40,12 @@ DWORD ntw16s_packet_parse(const void *data,DWORD bytes,DWORD machine,ntw16s_cont
 }
 static DWORD consume_packet(const void *data,DWORD bytes,DWORD machine,void *context)
 {return ntw16s_packet_parse(data,bytes,machine,(ntw16s_context *)context);}
-DWORD ntw16s_stage_read(ntw16s_context *context,BOOL *found)
+DWORD ntw16s_context_read(ntw16s_context *context,BOOL *found)
 {
     if(!context || !found)return ERROR_INVALID_PARAMETER;
     ZeroMemory(context,sizeof(*context));
     return process_hook_stage_read(consume_packet,context,found);
 }
-DWORD ntw16s_context_read(ntw16s_context *context,BOOL *found)
-{return ntw16s_stage_read(context,found);}
 DWORD ntw16s_context_paths(ntw16s_context *context,HMODULE module)
 {
     if(!context)return ERROR_INVALID_PARAMETER;

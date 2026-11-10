@@ -107,30 +107,9 @@ static int child(BOOL enable,BOOL aware)
     CHECK(DestroyWindow(anchor));
     printf("DIALOG_SHOW_OK bits=%u styled=%u aware=%u cases=15 owner_draw_callbacks=1 initialization_active=1 initial_hidden_preserved=1 pixels=1 native_return=73 gdi_observed=1\n",(unsigned)(sizeof(void*)*8),styled,aware);return 0;
 }
+#include "owned_control_matrix.h"
 static int worker(int argc,WCHAR **argv)
-{
-    CHECK(argc==2);WCHAR self[MAX_PATH],command[2048];CHECK(GetModuleFileNameW(NULL,self,MAX_PATH));
-    for(unsigned aware=0;aware<2;++aware)for(unsigned mode=0;mode<2;++mode){
-        if(mode)swprintf_s(command,2048,L"\"%ls\" --wait \"%ls\" --child %ls",argv[1],self,aware?L"styled-aware":L"styled");
-        else swprintf_s(command,2048,L"\"%ls\" --child %ls",self,aware?L"bare-aware":L"bare");
-        HANDLE job=CreateJobObjectW(NULL,NULL);JOBOBJECT_EXTENDED_LIMIT_INFORMATION limits={0};
-        limits.BasicLimitInformation.LimitFlags=JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
-        CHECK(job && SetInformationJobObject(job,JobObjectExtendedLimitInformation,&limits,sizeof(limits)));
-        STARTUPINFOW si={.cb=sizeof(si)};PROCESS_INFORMATION pi={0};
-        si.dwFlags=STARTF_USESTDHANDLES;si.hStdInput=GetStdHandle(STD_INPUT_HANDLE);si.hStdOutput=GetStdHandle(STD_OUTPUT_HANDLE);si.hStdError=GetStdHandle(STD_ERROR_HANDLE);
-        CHECK(CreateProcessW(NULL,command,NULL,NULL,TRUE,CREATE_NO_WINDOW|CREATE_SUSPENDED,NULL,NULL,&si,&pi));
-        if(!AssignProcessToJobObject(job,pi.hProcess)){TerminateProcess(pi.hProcess,1);CHECK(FALSE);}
-        ResumeThread(pi.hThread);DWORD code=1,wait=WaitForSingleObject(pi.hProcess,60000);
-        if(wait==WAIT_OBJECT_0)GetExitCodeProcess(pi.hProcess,&code);
-        if(wait!=WAIT_OBJECT_0)TerminateJobObject(job,ERROR_TIMEOUT);
-        JOBOBJECT_BASIC_ACCOUNTING_INFORMATION accounting={0};BOOL empty=FALSE;ULONGLONG deadline=GetTickCount64()+5000;
-        do{CHECK(QueryInformationJobObject(job,JobObjectBasicAccountingInformation,&accounting,sizeof(accounting),NULL));
-            if(!accounting.ActiveProcesses){empty=TRUE;break;}WaitForSingleObject(pi.hProcess,10);
-        }while(GetTickCount64()<deadline);
-        CloseHandle(pi.hThread);CloseHandle(pi.hProcess);CloseHandle(job);CHECK(wait==WAIT_OBJECT_0 && !code && empty);
-    }
-    puts("DIALOG_SHOW_CLEANUP_OK owned_jobs_empty=4");return 0;
-}
+{return owned_control_matrix(argc,argv,60000,"DIALOG_SHOW_CLEANUP_OK");}
 int wmain(int argc,WCHAR **argv)
 {
     if(argc==3 && !wcscmp(argv[1],L"--child"))return child(!wcsncmp(argv[2],L"styled",6),wcsstr(argv[2],L"aware")!=NULL);

@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <wchar.h>
 #include <string.h>
-#include "ntw16s-dll/injection/startup_hooks.h"
+#include "../../src/lib-win32/process-hook/startup_hooks.h"
 
 static DWORD (WINAPI *native_error)(void);
 static BOOL (WINAPI *native_open_a)(LPOPENFILENAMEA);
@@ -132,10 +132,10 @@ int wmain(int argc,WCHAR **argv)
     void *extra_slots[]={&native_SaveA,&native_SaveW,&native_FontA,&native_FontW,&native_PrintA,&native_PrintW,&native_PageA,&native_PageW,&native_FindA,&native_FindW,&native_ReplaceA,&native_ReplaceW};
     void *extra_hooks[]={(void *)hook_SaveA,(void *)hook_SaveW,(void *)hook_FontA,(void *)hook_FontW,(void *)hook_PrintA,(void *)hook_PrintW,(void *)hook_PageA,(void *)hook_PageW,(void *)hook_FindA,(void *)hook_FindW,(void *)hook_ReplaceA,(void *)hook_ReplaceW};
     if(extended)for(unsigned i=0;i<ARRAYSIZE(extra_names);++i){FARPROC address=GetProcAddress(module,extra_names[i]);if(!address)return 3;memcpy(extra_slots[i],&address,sizeof(address));}
-    DWORD status=ntw16s_hooks_begin();if(!status)status=ntw16s_hooks_attach(&native_error,(void *)hook_error);if(!status)status=ntw16s_hooks_attach(&native_open_a,(void *)hook_open_a);if(!status)status=ntw16s_hooks_attach(&native_open_w,(void *)hook_open_w);if(!status)status=ntw16s_hooks_attach(&native_color_a,(void *)hook_color_a);if(!status)status=ntw16s_hooks_attach(&native_color_w,(void *)hook_color_w);
-    if(extended)for(unsigned i=0;!status && i<ARRAYSIZE(extra_names);++i)status=ntw16s_hooks_attach(extra_slots[i],extra_hooks[i]);
-    if(!status)status=ntw16s_hooks_commit();
-    if(status){ntw16s_hooks_abort();printf("SHADOW_HOOK_FAIL %lu\n",status);return 3;}
+    DWORD status=process_hook_startup_begin();if(!status)status=process_hook_startup_attach(&native_error,(void *)hook_error);if(!status)status=process_hook_startup_attach(&native_open_a,(void *)hook_open_a);if(!status)status=process_hook_startup_attach(&native_open_w,(void *)hook_open_w);if(!status)status=process_hook_startup_attach(&native_color_a,(void *)hook_color_a);if(!status)status=process_hook_startup_attach(&native_color_w,(void *)hook_color_w);
+    if(extended)for(unsigned i=0;!status && i<ARRAYSIZE(extra_names);++i)status=process_hook_startup_attach(extra_slots[i],extra_hooks[i]);
+    if(!status)status=process_hook_startup_commit();
+    if(status){process_hook_startup_abort();printf("SHADOW_HOOK_FAIL %lu\n",status);return 3;}
     BOOL special=open_dialog(TRUE);DWORD first=CommDlgExtendedError(),repeat=CommDlgExtendedError();
     if(nested_open_mode){printf("SHADOW_NESTED fixed=%d first=%lu repeat=%lu\n",extended,first,repeat);return !special&&first==repeat&&(extended?first==FNERR_BUFFERTOOSMALL:first!=FNERR_BUFFERTOOSMALL)?0:1;}
     if(matrix){unsigned passed=0;for(unsigned i=0;i<8;++i){if(i){special=open_dialog(TRUE);first=CommDlgExtendedError();}

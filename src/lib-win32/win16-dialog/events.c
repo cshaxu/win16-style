@@ -112,23 +112,21 @@ HRESULT win16_dialog_event_dispatch(const win16_dialog_event_snapshot *snapshot,
 }
 FDE_OVERWRITE_RESPONSE win16_dialog_event_overwrite(const win16_dialog_event_snapshot *snapshot,void *owner,IShellItem *item)
 {
-    FDE_OVERWRITE_RESPONSE result=FDEOR_DEFAULT;
     for(size_t i=0;i<snapshot->count;++i){event_adapter *e=snapshot->items[i];
         if(e->owner!=owner)continue;
         FDE_OVERWRITE_RESPONSE response=FDEOR_DEFAULT;
         HRESULT hr=IFileDialogEvents_OnOverwrite(e->target,(IFileDialog *)owner,item,&response);
-        if(SUCCEEDED(hr)){result=response;break;}
+        if(SUCCEEDED(hr))return response;
     }
-    return result;
+    return FDEOR_DEFAULT;
 }
 FDE_SHAREVIOLATION_RESPONSE win16_dialog_event_share(const win16_dialog_event_snapshot *snapshot,void *owner,IShellItem *item)
 {
-    FDE_SHAREVIOLATION_RESPONSE result=FDESVR_DEFAULT;
     for(size_t i=0;i<snapshot->count;++i){event_adapter *e=snapshot->items[i];
         if(e->owner!=owner)continue;
         FDE_SHAREVIOLATION_RESPONSE response=FDESVR_DEFAULT;
         HRESULT hr=IFileDialogEvents_OnShareViolation(e->target,(IFileDialog *)owner,item,&response);
-        if(SUCCEEDED(hr)){result=response;break;}
+        if(SUCCEEDED(hr))return response;
     }
-    return result;
+    return FDESVR_DEFAULT;
 }

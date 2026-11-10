@@ -1,6 +1,6 @@
 #define UNICODE
 #include <windows.h>
-#include <string.h>
+#include "native_thunk.h"
 #if defined(T18_CHECK)
 #define BUTTON_CLASS L"TCheckBox"
 #elif defined(T18_PUSH)
@@ -49,13 +49,7 @@ if(enabled && fake==2 && m==WM_PAINT && foreign_paint)return foreign_paint(nativ
 #endif
 return (!enabled || (fake&&m==WM_PAINT))?DefWindowProcW(w,m,p,l):CallWindowProcW(native_button,w,m,p,l);}
 static LRESULT CALLBACK initial(HWND w,UINT m,WPARAM p,LPARAM l){LRESULT r=dispatch(w,m,p,l);if(m==WM_NCCREATE)SetWindowLongPtrW(w,GWLP_WNDPROC,(LONG_PTR)thunk);return r;}
-__declspec(dllexport) BOOL WINAPI FixtureRegister(BOOL impostor){WNDCLASSEXW n={.cbSize=sizeof(n)},c={.cbSize=sizeof(c)};DWORD old;if(!GetClassInfoExW(NULL,L"BUTTON",&n))return FALSE;native_button=n.lpfnWndProc;fake=impostor;enabled=FALSE;thunk=VirtualAlloc(NULL,4096,MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);if(!thunk)return FALSE;
-#ifdef _WIN64
-unsigned char code[]={0x48,0xb8,0,0,0,0,0,0,0,0,0xff,0xe0};void *target=(void*)dispatch;memcpy(code+2,&target,sizeof(target));
-#else
-unsigned char code[]={0xb8,0,0,0,0,0xff,0xe0};void *target=(void*)dispatch;memcpy(code+1,&target,sizeof(target));
-#endif
-memcpy(thunk,code,sizeof(code));if(!VirtualProtect(thunk,4096,PAGE_EXECUTE_READ,&old))return FALSE;FlushInstructionCache(GetCurrentProcess(),thunk,sizeof(code));c.hInstance=owner;c.lpszClassName=L"TRadioGroup";c.lpfnWndProc=group_proc;if(!RegisterClassExW(&c))return FALSE;c.style=CS_DBLCLKS|CS_HREDRAW|CS_VREDRAW;c.cbWndExtra=n.cbWndExtra;c.lpszClassName=BUTTON_CLASS;c.lpfnWndProc=initial;return RegisterClassExW(&c)!=0;}
+__declspec(dllexport) BOOL WINAPI FixtureRegister(BOOL impostor){WNDCLASSEXW n={.cbSize=sizeof(n)},c={.cbSize=sizeof(c)};if(!GetClassInfoExW(NULL,L"BUTTON",&n))return FALSE;native_button=n.lpfnWndProc;fake=impostor;enabled=FALSE;thunk=test_create_native_thunk((void *)dispatch);if(!thunk)return FALSE;c.hInstance=owner;c.lpszClassName=L"TRadioGroup";c.lpfnWndProc=group_proc;if(!RegisterClassExW(&c))return FALSE;c.style=CS_DBLCLKS|CS_HREDRAW|CS_VREDRAW;c.cbWndExtra=n.cbWndExtra;c.lpszClassName=BUTTON_CLASS;c.lpfnWndProc=initial;return RegisterClassExW(&c)!=0;}
 __declspec(dllexport) HWND WINAPI FixtureGroup(HWND parent){return CreateWindowW(L"TRadioGroup",L"Group",WS_CHILD|WS_VISIBLE,0,0,300,120,parent,NULL,owner,NULL);}
 __declspec(dllexport) HWND WINAPI FixtureCreate(HWND parent,BOOL first){
 #if defined(T18_PUSH) || defined(T18_CHECK)

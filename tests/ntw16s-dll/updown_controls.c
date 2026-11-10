@@ -96,23 +96,14 @@ static int child(BOOL styled,BOOL aware)
     if(!styled){WCHAR path[MAX_PATH];CHECK(GetEnvironmentVariableW(L"WIN16STYLE_UP_PASSIVE_DLL",path,MAX_PATH));HMODULE passive=LoadLibraryW(path);CHECK(passive);ntw16s_creation_scope *(__cdecl *begin)(BOOL)=(void*)GetProcAddress(passive,"Ntw16sCreationBegin");BOOL (__cdecl *end)(ntw16s_creation_scope*,ntw16s_creation_result*)=(void*)GetProcAddress(passive,"Ntw16sCreationEnd");BOOL (__cdecl *is_attached)(HWND)=(void*)GetProcAddress(passive,"Ntw16sWindowAttached");CHECK(begin&&end&&is_attached);ntw16s_creation_scope *scope=begin(TRUE);CHECK(scope);HWND w=CreateWindowW(UPDOWN_CLASSW,L"",WS_CHILD,0,0,17,40,root,(HMENU)77,cls.hInstance,NULL);ntw16s_creation_result result={0};CHECK(w&&end(scope,&result)&&!result.failure&&result.unsupported&&!is_attached(w));capture(w,classic_bits,FALSE);CHECK(DestroyWindow(w));w=CreateWindowW(UPDOWN_CLASSW,L"",WS_CHILD,0,0,17,40,root,(HMENU)78,cls.hInstance,NULL);CHECK(w);capture(w,native_bits,FALSE);CHECK(!memcmp(classic_bits,native_bits,sizeof(native_bits))&&DestroyWindow(w)&&FreeLibrary(passive));puts("UPDOWN_PASSIVE_OK loaded=1 api_init=0 unattached=1 native_pixels=1");}
     printf("UPDOWN_CONTROL_OK bits=%u styled=%u aware=%u dpi=%u variants=%u\n",(unsigned)sizeof(void*)*8,styled,aware,GetDpiForWindow(root),variants);CHECK(DestroyWindow(buddy)&&DestroyWindow(root)&&SelectObject(dc,old)&&DeleteObject(bitmap)&&DeleteDC(dc));return 0;
 }
+#include "control_matrix.h"
 static int worker(int argc,WCHAR **argv)
 {
-    CHECK(argc==2);WCHAR self[MAX_PATH],command[2048],dll[MAX_PATH];CHECK(GetModuleFileNameW(NULL,self,MAX_PATH));
+    CHECK(argc==2);
+    WCHAR dll[MAX_PATH];
     CHECK(GetFullPathNameW(argv[1],MAX_PATH,dll,NULL));WCHAR *slash=wcsrchr(dll,L'\\');if(!slash)slash=wcsrchr(dll,L'/');CHECK(slash);slash[1]=0;
     CHECK(!wcscat_s(dll,MAX_PATH,sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll"));CHECK(SetEnvironmentVariableW(L"WIN16STYLE_UP_PASSIVE_DLL",dll));
-    for(unsigned aware=0;aware<2;++aware)for(unsigned styled=0;styled<2;++styled){
-        if(styled)swprintf_s(command,2048,L"\"%ls\" --wait \"%ls\" --child %ls",argv[1],self,aware?L"styled-aware":L"styled");
-        else swprintf_s(command,2048,L"\"%ls\" --child %ls",self,aware?L"native-aware":L"native");
-        HANDLE job=CreateJobObjectW(NULL,NULL);JOBOBJECT_EXTENDED_LIMIT_INFORMATION limit={0};limit.BasicLimitInformation.LimitFlags=JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
-        CHECK(job && SetInformationJobObject(job,JobObjectExtendedLimitInformation,&limit,sizeof(limit)));
-        STARTUPINFOW si={.cb=sizeof(si)};PROCESS_INFORMATION pi={0};si.dwFlags=STARTF_USESTDHANDLES;si.hStdInput=GetStdHandle(STD_INPUT_HANDLE);si.hStdOutput=GetStdHandle(STD_OUTPUT_HANDLE);si.hStdError=GetStdHandle(STD_ERROR_HANDLE);
-        CHECK(CreateProcessW(NULL,command,NULL,NULL,TRUE,CREATE_NO_WINDOW|CREATE_SUSPENDED,NULL,NULL,&si,&pi));
-        CHECK(AssignProcessToJobObject(job,pi.hProcess));ResumeThread(pi.hThread);DWORD started=GetTickCount(),code=1,wait=WaitForSingleObject(pi.hProcess,10000);
-        if(wait==WAIT_OBJECT_0)GetExitCodeProcess(pi.hProcess,&code);
-        printf("UPDOWN_WORKER aware=%u styled=%u child_pid=%lu creator_pid=%lu elapsed_ms=%lu wait=%lu exit=%lu\n",aware,styled,pi.dwProcessId,GetCurrentProcessId(),GetTickCount()-started,wait,code);
-        CloseHandle(pi.hThread);CloseHandle(pi.hProcess);CloseHandle(job);CHECK(wait==WAIT_OBJECT_0 && !code);
-    }
+    if(control_matrix(argv[1],"UPDOWN",TRUE))return 1;
     puts("UPDOWN_CLEANUP_OK");return 0;
 }
 int wmain(int argc,WCHAR **argv)

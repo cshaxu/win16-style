@@ -1,6 +1,6 @@
 /* Product policy and payload adapter for the shared creation transaction. */
 #include "intercept.h"
-#include "startup_hooks.h"
+#include "../../lib-win32/process-hook/startup_hooks.h"
 #include "system_process.h"
 #include "ntw16s-dll/global/session.h"
 #include "lib-win32/process-hook/propagate.h"
@@ -60,4 +60,4 @@ LONG ntw16s_attach_processes_using(DWORD (*attach)(void *,void *))
     }
     return (LONG)error;
 }
-LONG ntw16s_attach_processes(void){return ntw16s_attach_processes_using(ntw16s_hooks_attach);}
+LONG ntw16s_attach_processes(void){return ntw16s_attach_processes_using(process_hook_startup_attach);}

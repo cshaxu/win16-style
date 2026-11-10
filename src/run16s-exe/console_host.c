@@ -14,6 +14,13 @@ BOOL run16s_console_host_image(PCWSTR image)
     wcscat(system,L"\\conhost.exe");return !_wcsicmp(image,system);
 }
 
+static DWORD query_process_image(HANDLE process,WCHAR *image,DWORD *length)
+{
+    if(QueryFullProcessImageNameW(process,0,image,length))return ERROR_SUCCESS;
+    DWORD error=GetLastError();
+    return WaitForSingleObject(process,0)==WAIT_OBJECT_0?ERROR_NOT_FOUND:error;
+}
+
 DWORD run16s_console_host_attach_current(PCWSTR directory)
 {
     if(!directory)return ERROR_INVALID_PARAMETER;
@@ -29,8 +36,9 @@ DWORD run16s_console_host_attach_current(PCWSTR directory)
     HANDLE process=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION|SYNCHRONIZE,FALSE,pid);
     if(!process)return GetLastError();
     WCHAR image[32768];DWORD length=ARRAYSIZE(image);
-    BOOL ok=QueryFullProcessImageNameW(process,0,image,&length);
-    WCHAR *base=ok?wcsrchr(image,L'\\'):NULL;
+    DWORD image_error=query_process_image(process,image,&length);
+    if(image_error){CloseHandle(process);return image_error;}
+    WCHAR *base=wcsrchr(image,L'\\');
     if(!base || _wcsicmp(base+1,L"WindowsTerminal.exe") ||
        WaitForSingleObject(process,0)!=WAIT_TIMEOUT || GetAncestor(console,GA_ROOTOWNER)!=root){
         CloseHandle(process);return ERROR_NOT_FOUND;
@@ -54,15 +62,21 @@ static DWORD find_client(DWORD host,console_search *s)
     HANDLE snapshot=CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS,0);
     if(snapshot==INVALID_HANDLE_VALUE)return GetLastError();
     PROCESSENTRY32W item={.dwSize=sizeof(item)};DWORD error=ERROR_NOT_FOUND;
-    if(Process32FirstW(snapshot,&item))do{
-        if(item.th32ParentProcessID!=host)continue;
-        console_search found={.client=item.th32ProcessID};
-        if(!EnumWindows(find_console,(LPARAM)&found)){error=GetLastError()?GetLastError():ERROR_GEN_FAILURE;break;}
-        if(found.count){
-            if(found.count!=1 || error==ERROR_SUCCESS){error=ERROR_MORE_DATA;break;}
-            *s=found;error=ERROR_SUCCESS;
+    BOOL next=Process32FirstW(snapshot,&item);
+    if(!next && GetLastError()!=ERROR_NO_MORE_FILES)error=GetLastError();
+    while(next){
+        if(item.th32ParentProcessID==host){
+            console_search found={.client=item.th32ProcessID};
+            SetLastError(ERROR_SUCCESS);
+            if(!EnumWindows(find_console,(LPARAM)&found)){error=GetLastError();if(!error)error=ERROR_GEN_FAILURE;break;}
+            if(found.count){
+                if(found.count!=1 || error==ERROR_SUCCESS){error=ERROR_MORE_DATA;break;}
+                *s=found;error=ERROR_SUCCESS;
+            }
         }
-    }while(Process32NextW(snapshot,&item));
+        next=Process32NextW(snapshot,&item);
+        if(!next && GetLastError()!=ERROR_NO_MORE_FILES)error=GetLastError();
+    }
     CloseHandle(snapshot);return error;
 }
 
@@ -90,13 +104,8 @@ static DWORD send_to_host(DWORD host,HWND window,HMODULE module,HOOKPROC callbac
         if(hook)hooks[count++]=hook;
     }while(Thread32Next(snapshot,&item));
     if(count){
-        DWORD_PTR ignored=0;UINT message=RegisterWindowMessageW(NTW16S_WINDOW_THREAD_MESSAGE);
-        RemovePropW(window,NTW16S_WINDOW_THREAD_RESULT);
-        if(!message || !SendMessageTimeoutW(window,message,NTW16S_WINDOW_THREAD_ATTACH,(LPARAM)window,
-           SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,3000,&ignored))error=GetLastError()?GetLastError():ERROR_TIMEOUT;
-        else {uintptr_t result=(uintptr_t)GetPropW(window,NTW16S_WINDOW_THREAD_RESULT);
-            error=result?(DWORD)(result-1):ERROR_INVALID_DATA;}
-        RemovePropW(window,NTW16S_WINDOW_THREAD_RESULT);
+        UINT message=RegisterWindowMessageW(NTW16S_WINDOW_THREAD_MESSAGE);
+        error=run16s_window_send(window,message);
     }
 done:
     CloseHandle(snapshot);
@@ -118,16 +127,14 @@ static DWORD attach_current_conhost(HWND console,PCWSTR directory)
         return ERROR_NOT_FOUND;
     DWORD host=(DWORD)(value&~(ULONG_PTR)3);HANDLE process=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION|SYNCHRONIZE,FALSE,host);
     if(!process)return GetLastError();
-    WCHAR image[32768],path[32768];DWORD length=ARRAYSIZE(image);size_t directory_length=wcslen(directory);
-    if(!QueryFullProcessImageNameW(process,0,image,&length) || !run16s_console_host_image(image) ||
-       WaitForSingleObject(process,0)!=WAIT_TIMEOUT || GetConsoleWindow()!=console){CloseHandle(process);return ERROR_NOT_FOUND;}
-    if(directory_length+14>=ARRAYSIZE(path)){CloseHandle(process);return ERROR_FILENAME_EXCED_RANGE;}
-    wcscpy(path,directory);wcscat(path,L"ntw16s64.dll");
-    HMODULE module=LoadLibraryExW(path,NULL,LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR|LOAD_LIBRARY_SEARCH_SYSTEM32);
-    if(!module){DWORD error=GetLastError();CloseHandle(process);return error;}
-    HOOKPROC callback=(HOOKPROC)(uintptr_t)GetProcAddress(module,"Ntw16sWindowThreadHook");
-    DWORD error=callback?run16s_window_module_compatible(host,module,callback,path):ERROR_PROC_NOT_FOUND;
-    if(!error)error=send_to_host(host,console,module,callback);
+    WCHAR image[32768];DWORD length=ARRAYSIZE(image);
+    DWORD image_error=query_process_image(process,image,&length);
+    if(image_error){CloseHandle(process);return image_error;}
+    if(!run16s_console_host_image(image) || WaitForSingleObject(process,0)!=WAIT_TIMEOUT || GetConsoleWindow()!=console){CloseHandle(process);return ERROR_NOT_FOUND;}
+    HMODULE module;HOOKPROC callback;
+    DWORD error=run16s_window_module_open(host,directory,&module,&callback);
+    if(error){CloseHandle(process);return error;}
+    error=send_to_host(host,console,module,callback);
     FreeLibrary(module);CloseHandle(process);return error;
 }
 
@@ -147,18 +154,16 @@ DWORD run16s_console_host_attach(HANDLE process,PCWSTR directory)
     if(!client)return GetLastError();
     FILETIME host_created,client_created,exit_time,kernel_time,user_time;
     if(!GetProcessTimes(process,&host_created,&exit_time,&kernel_time,&user_time) ||
-       !GetProcessTimes(client,&client_created,&exit_time,&kernel_time,&user_time) ||
-       CompareFileTime(&client_created,&host_created)<0){CloseHandle(client);return ERROR_INVALID_DATA;}
+       !GetProcessTimes(client,&client_created,&exit_time,&kernel_time,&user_time)){
+        error=GetLastError();CloseHandle(client);return error;
+    }
+    if(CompareFileTime(&client_created,&host_created)<0){CloseHandle(client);return ERROR_INVALID_DATA;}
     DWORD pid=0;GetWindowThreadProcessId(target.window,&pid);
     if(pid!=target.client || !child_of(target.client,host) || WaitForSingleObject(process,0)!=WAIT_TIMEOUT ||
        WaitForSingleObject(client,0)!=WAIT_TIMEOUT){CloseHandle(client);return ERROR_INVALID_WINDOW_HANDLE;}
-    WCHAR path[32768];size_t length=wcslen(directory);
-    if(length+14>=ARRAYSIZE(path)){CloseHandle(client);return ERROR_FILENAME_EXCED_RANGE;}
-    wcscpy(path,directory);wcscat(path,L"ntw16s64.dll");
-    HMODULE module=LoadLibraryExW(path,NULL,LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR|LOAD_LIBRARY_SEARCH_SYSTEM32);
-    if(!module){error=GetLastError();CloseHandle(client);return error;}
-    HOOKPROC callback=(HOOKPROC)(uintptr_t)GetProcAddress(module,"Ntw16sWindowThreadHook");
-    error=callback?run16s_window_module_compatible(host,module,callback,path):ERROR_PROC_NOT_FOUND;
-    if(!error)error=send_to_host(host,target.window,module,callback);
+    HMODULE module;HOOKPROC callback;
+    error=run16s_window_module_open(host,directory,&module,&callback);
+    if(error){CloseHandle(client);return error;}
+    error=send_to_host(host,target.window,module,callback);
     FreeLibrary(module);CloseHandle(client);return error;
 }

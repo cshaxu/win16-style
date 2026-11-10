@@ -23,7 +23,7 @@ int wmain(void)
         DWORD signature=kind==1?IMAGE_OS2_SIGNATURE:kind==2?IMAGE_OS2_SIGNATURE_LE:(kind==3||kind==4)?IMAGE_NT_SIGNATURE:0;
         memcpy(bytes+(kind==4?4:64),&signature,4);HANDLE out=CreateFileW(file,GENERIC_WRITE,0,NULL,CREATE_ALWAYS,0,NULL);DWORD written;
         CHECK(out!=INVALID_HANDLE_VALUE&&WriteFile(out,bytes,kind==5?12:sizeof(bytes),&written,NULL)&&CloseHandle(out));
-        CHECK(run16s_legacy_image(file)==(kind<3));
+        CHECK(win32_process_image_is_legacy(file)==(kind<3));
         HANDLE source=CreateFileW(file,GENERIC_READ,FILE_SHARE_READ|FILE_SHARE_DELETE,NULL,OPEN_EXISTING,0,NULL);
         CHECK(source!=INVALID_HANDLE_VALUE);
         HANDLE mapping=CreateFileMappingW(source,NULL,PAGE_READONLY|SEC_IMAGE,0,0,NULL);
@@ -31,9 +31,9 @@ int wmain(void)
         if(mapping)CloseHandle(mapping);
         CloseHandle(source);
         DWORD pe_error=win32_process_image_validate(file,sizeof(void *)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,FALSE);
-        printf("IMAGE_COMPARE kind=%u legacy=%u pe=%lu sec_image=%lu\n",kind,run16s_legacy_image(file),pe_error,map_error);
+        printf("IMAGE_COMPARE kind=%u legacy=%u pe=%lu sec_image=%lu\n",kind,win32_process_image_is_legacy(file),pe_error,map_error);
     }
-    CHECK(DeleteFileW(file)&&!run16s_legacy_image(file));
+    CHECK(DeleteFileW(file)&&!win32_process_image_is_legacy(file));
     CHECK(!run16s_system_error(L"C:\\space dir\\old.exe",L"\"\" \"a b\" tail\\",execute));
     DWORD before,after;CHECK(GetProcessHandleCount(GetCurrentProcess(),&before));
     for(mode=0;mode<4;++mode){DWORD error=run16s_system_error(L"C:\\space dir\\old.exe",L"\"\" \"a b\" tail\\",execute);

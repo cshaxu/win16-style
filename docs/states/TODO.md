@@ -2,6 +2,11 @@
 
 # Deferred Debt
 
+- [ ] TODO(High): 全局调度线程运行期错误在退出码中保留但未传至最终控制器；Owner：后续经准入的全局生命周期工作；Evidence：[T24 审计](../history/M0-T24-S1-quality-audit.md)，停止失败保留资源供重试；Admission：明确运行期通知和清理所有权，双位宽注入与退出竞态验证。
+
+- [ ] TODO(Medium): 文件夹对话框测试有 20 项 Shell 旧布局和 10 项 COM 旧布局用例不匹配当前树布局；Owner：后续经准入的公共对话框测试；Evidence：[T24 审计](../history/M0-T24-S1-quality-audit.md)，当前树未观察到新建按钮，右键及快捷键未查；Admission：保留原用例意图，验证当前可用入口及清理，不把不匹配的旧用例算通过。
+
+
 - [ ] TODO(High): `run16s mspaint` 和 `run16s SnippingTool` 的 Windows App Execution Alias 在目标验证时返回1920；Owner：后续通用启动器兼容工作。Evidence：T23 S7 已发布包实测；对应完整安装路径可以启动。Admission：基于可验证的系统接口保留参数、目标身份、位宽及启动/传播语义，不依赖猜测私有重解析数据格式或写注册表。
 
 - [ ] TODO(Medium): T23 S6 两轮并行实包测试中私有桌面未释放；Owner：后续可复现的测试生命周期调查。Evidence：[原始失败输出](../history/M0-T23-S6-package-failures.md)；串行29项及单独对应位宽测试通过，原因仍未知，不能把失败视为已修复。Admission：复现并定位持有者和释放路径，不放宽桌面清理断言。

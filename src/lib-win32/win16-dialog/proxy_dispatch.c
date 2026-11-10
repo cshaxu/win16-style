@@ -1,5 +1,6 @@
 #define COBJMACROS
 #include "proxy_dispatch.h"
+#include "file_live.h"
 #include <shlobj.h>
 
 HRESULT win16_dialog_proxy_dispatch(win16_dialog_proxy *p,win16_dialog_v2_operation op,ULONG_PTR a,ULONG_PTR b,const win16_dialog_proxy_dispatch_services *services,BOOL experimental_events)
@@ -7,8 +8,8 @@ HRESULT win16_dialog_proxy_dispatch(win16_dialog_proxy *p,win16_dialog_v2_operat
     switch(op){
     case V2_SHOW:return services->show(p,(HWND)a);
     case V2_TYPES:return win16_dialog_proxy_types(p,(UINT)a,(const COMDLG_FILTERSPEC *)b);
-    case V2_SET_INDEX:return win16_dialog_proxy_filter_index(p,(UINT)a);
-    case V2_GET_INDEX:return win16_dialog_proxy_get_filter_index(p,(UINT *)a);
+    case V2_SET_INDEX:return win16_dialog_live_set_filter(p->native,&p->filter_index,(UINT)a);
+    case V2_GET_INDEX:return win16_dialog_live_get_filter(p->native,&p->active_window,&p->filter,(UINT *)a);
     case V2_ADVISE:return services->advise(p,(IFileDialogEvents *)a,(DWORD *)b);
     case V2_UNADVISE:return services->unadvise(p,(DWORD)a);
     case V2_SET_FOLDER:return services->set_folder(p,(IShellItem *)a);
@@ -16,8 +17,9 @@ HRESULT win16_dialog_proxy_dispatch(win16_dialog_proxy *p,win16_dialog_v2_operat
     case V2_GET_SELECTION:
         if(experimental_events)return win16_dialog_proxy_get_selection(p,(IShellItem **)a);
         return IFileDialog2_GetCurrentSelection(p->v2_native,(IShellItem **)a);
-    case V2_SET_NAME:return win16_dialog_proxy_set_filename(p,(LPCWSTR)a);
-    case V2_GET_NAME:return win16_dialog_proxy_get_filename(p,(LPWSTR *)a);
+    /* Keep the native configuration and the active classic edit synchronized. */
+    case V2_SET_NAME:return win16_dialog_live_set_name(p->native,&p->active_window,(LPCWSTR)a);
+    case V2_GET_NAME:return win16_dialog_live_get_name(p->native,&p->active_window,(LPWSTR *)a);
     case V2_TITLE:return win16_dialog_proxy_title(p,(LPCWSTR)a);
     case V2_LABEL:return win16_dialog_proxy_label(p,(LPCWSTR)a,(BOOL)b);
     case V2_RESULT:return win16_dialog_proxy_result(p,(IShellItem **)a);

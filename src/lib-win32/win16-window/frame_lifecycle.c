@@ -43,7 +43,9 @@ BOOL win16_control_frame_install(HWND w,const win16_style_palette *p,BOOL creati
         &nc_enabled,sizeof(nc_enabled)));
     s->old_policy=nc_enabled?DWMNCRP_ENABLED:DWMNCRP_DISABLED;
     if(cancelled && *cancelled){win16_control_frame_state_dispose(s);SetLastError(ERROR_CANCELLED);return FALSE;}
-    if(!SetWindowSubclass(w,v->style_proc,(UINT_PTR)v->style_proc,(DWORD_PTR)s)){win16_control_frame_state_dispose(s);return FALSE;}
+    if(!SetWindowSubclass(w,v->style_proc,(UINT_PTR)v->style_proc,(DWORD_PTR)s)){
+        DWORD error=GetLastError();win16_control_frame_state_dispose(s);SetLastError(error);return FALSE;
+    }
     /* Bars may be added by range/visibility changes after attachment. Keep
      * one frame tracker ready instead of conditionally installing it later. */
     if(!v->scrollbars_install(w,&s->palette,s,&s->detached)){
@@ -62,11 +64,15 @@ BOOL win16_control_frame_install(HWND w,const win16_style_palette *p,BOOL creati
 }
 BOOL win16_control_menu_owner_install(HWND w,const void *owner,const BOOL *cancelled,const win16_control_frame_lifecycle_services *v)
 {
- if(!v->local_window(w)||v->state(w)){SetLastError(ERROR_INVALID_STATE);return FALSE;}
+ if(!v->local_window(w))return FALSE;
+ if(v->state(w)){SetLastError(ERROR_INVALID_STATE);return FALSE;}
  style_window *s=win16_control_frame_state_create();if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
  s->creation_owner=owner;s->menu_only=TRUE;s->dpi=GetDpiForWindow(w);if(!s->dpi)s->dpi=96;
  win16_style_default_palette(&s->palette);s->menu_font=win16_style_menu_font_acquire(s->dpi);
- if(!s->menu_font || (cancelled&&*cancelled)){win16_control_frame_state_dispose(s);SetLastError(ERROR_CANCELLED);return FALSE;}
+ if(!s->menu_font || (cancelled&&*cancelled)){
+  DWORD error=cancelled&&*cancelled?ERROR_CANCELLED:ERROR_INVALID_DATA;
+  win16_control_frame_state_dispose(s);SetLastError(error);return FALSE;
+ }
  if(!SetWindowSubclass(w,v->style_proc,(UINT_PTR)v->style_proc,(DWORD_PTR)s)){DWORD error=GetLastError();win16_control_frame_state_dispose(s);SetLastError(error);return FALSE;}
  return TRUE;
 }
@@ -79,21 +85,23 @@ BOOL win16_control_frame_remove_owned(HWND w,const void *owner,const win16_contr
 
 BOOL win16_control_frame_remove(HWND w,const win16_control_frame_lifecycle_services *v)
 {
-    style_window *s;RECT client;BOOL normal;
+    style_window *s;RECT client;BOOL normal=FALSE,menu_only;
     if(!v->local_window(w))return FALSE;
     s=v->state(w);if(!s){SetLastError(ERROR_NOT_FOUND);return FALSE;}
-    if(s->menu_only){if(!RemoveWindowSubclass(w,v->style_proc,(UINT_PTR)v->style_proc))return FALSE;++s->calls;s->detached=TRUE;while(s->menus)win16_control_frame_state_end_menu(s);win16_style_menu_restore(&s->menu_items);if(!--s->calls)win16_control_frame_state_dispose(s);return TRUE;}
-    normal=!IsIconic(w)&&!IsZoomed(w);win16_control_client_screen(w,&client);
+    menu_only=s->menu_only;
+    if(!menu_only){normal=!IsIconic(w)&&!IsZoomed(w);win16_control_client_screen(w,&client);}
     if(!RemoveWindowSubclass(w,v->style_proc,(UINT_PTR)v->style_proc))return FALSE;
     ++s->calls;
-    win16_control_frame_cancel_repaint(s);
+    if(!menu_only)win16_control_frame_cancel_repaint(s);
     s->detached=TRUE;
-    v->control_remove(w,s);
+    if(!menu_only)v->control_remove(w,s);
     while(s->menus)win16_control_frame_state_end_menu(s);
     win16_style_menu_restore(&s->menu_items);
-    if(s->bar_keyboard)v->leave_bar(w,s,TRUE);
-    if(s->pressed && GetCapture()==w)ReleaseCapture();
-    win16_control_frame_restore(w,&s->pending_frame,&s->policy_saved,&s->old_policy,&client,normal&&!s->keep_outer,v->set_window_attribute);
+    if(!menu_only){
+        if(s->bar_keyboard)v->leave_bar(w,s,TRUE);
+        if(s->pressed && GetCapture()==w)ReleaseCapture();
+        win16_control_frame_restore(w,&s->pending_frame,&s->policy_saved,&s->old_policy,&client,normal&&!s->keep_outer,v->set_window_attribute);
+    }
     if(!--s->calls)win16_control_frame_state_dispose(s);
     return TRUE;
 }

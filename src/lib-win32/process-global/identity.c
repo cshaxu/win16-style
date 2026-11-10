@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <wchar.h>
+#include <sddl.h>
 
 DWORD win32_process_global_token_user(HANDLE token,TOKEN_USER **user)
 {
@@ -12,8 +13,26 @@ DWORD win32_process_global_token_user(HANDLE token,TOKEN_USER **user)
     if(query_error!=ERROR_INSUFFICIENT_BUFFER)return query_error?query_error:ERROR_INVALID_DATA;
     if(bytes<sizeof(TOKEN_USER) || bytes>65536)return ERROR_INVALID_DATA;
     *user=(TOKEN_USER *)malloc(bytes);if(!*user)return ERROR_NOT_ENOUGH_MEMORY;
-    if(!GetTokenInformation(token,TokenUser,*user,bytes,&bytes)){DWORD error=GetLastError();free(*user);*user=NULL;return error;}
+    if(!GetTokenInformation(token,TokenUser,*user,bytes,&bytes)){DWORD error=GetLastError();free(*user);*user=NULL;return error?error:ERROR_INVALID_DATA;}
     return ERROR_SUCCESS;
+}
+
+DWORD win32_process_global_user_security(BOOL low_integrity,PSECURITY_DESCRIPTOR *descriptor)
+{
+    HANDLE token=NULL;TOKEN_USER *user=NULL;LPWSTR sid=NULL;WCHAR *sddl=NULL;DWORD error=ERROR_SUCCESS;
+    if(!descriptor)return ERROR_INVALID_PARAMETER;
+    *descriptor=NULL;
+    if(!OpenProcessToken(GetCurrentProcess(),TOKEN_QUERY,&token)){error=GetLastError();goto done;}
+    error=win32_process_global_token_user(token,&user);if(error)goto done;
+    if(!ConvertSidToStringSidW(user->User.Sid,&sid)){error=GetLastError();goto done;}
+    size_t length=wcslen(sid)+(low_integrity?64:48);sddl=calloc(length,sizeof(*sddl));
+    if(!sddl){error=ERROR_NOT_ENOUGH_MEMORY;goto done;}
+    if(swprintf(sddl,length,low_integrity?L"D:P(A;;GA;;;SY)(A;;GA;;;%ls)S:(ML;;NW;;;LW)":L"D:P(A;;GA;;;SY)(A;;GA;;;%ls)",sid)<0){error=ERROR_INVALID_NAME;goto done;}
+    if(!ConvertStringSecurityDescriptorToSecurityDescriptorW(sddl,SDDL_REVISION_1,descriptor,NULL))error=GetLastError();
+done:
+    if(sid)LocalFree(sid);
+    if(token)CloseHandle(token);
+    free(sddl);free(user);return error;
 }
 
 DWORD win32_process_global_desktop_status(DWORD thread_id)

@@ -87,7 +87,7 @@ int wmain(int argc,WCHAR **argv)
         WCHAR dll[NTW16S_PATH_CAP];char dll_a[4096];
         CHECK(swprintf_s(dll,NTW16S_PATH_CAP,L"%lsntw16s%u.dll",context.directory,(unsigned)(sizeof(void *)*8))>0);
         CHECK(WideCharToMultiByte(CP_ACP,0,dll,-1,dll_a,sizeof(dll_a),NULL,NULL));
-        CHECK(!ntw16s_stage_process(child->p.hProcess,dll_a,data,h.bytes));
+        CHECK(!process_hook_stage_process(child->p.hProcess,dll_a,data,h.bytes));
         CHECK(ResumeThread(child->p.hThread)==1 && WaitForSingleObject(child->p.hProcess,10000)==WAIT_OBJECT_0);
         DWORD code;CHECK(GetExitCodeProcess(child->p.hProcess,&code) && code==0xc0000142u);
         CHECK(GetFileAttributesW(marker)==INVALID_FILE_ATTRIBUTES);

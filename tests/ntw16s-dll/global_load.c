@@ -29,6 +29,9 @@ int wmain(int argc,WCHAR **argv)
     if(!CreateProcessW(self,cmd,NULL,NULL,FALSE,0,NULL,NULL,&si,&pi))return 7;
     BOOL started=WaitForSingleObject(events[0],3000)==WAIT_OBJECT_0;
     win32_process_global_load ticket={0},invalid={0};void *worker=NULL;
+    static WCHAR long_path[33010];wmemset(long_path,L'x',ARRAYSIZE(long_path)-1);
+    long_path[0]=L'C';long_path[1]=L':';long_path[2]=L'\\';
+    DWORD long_error=ntw16s_global_load_begin(pi.hProcess,pi.dwProcessId,long_path,&invalid);
     DWORD bad_pid=ntw16s_global_load_begin(pi.hProcess,pi.dwProcessId+1,argv[1],&invalid);
     DWORD bad_name=ntw16s_global_load_begin(pi.hProcess,pi.dwProcessId,L"C:\\wrong.dll",&invalid);
     DWORD begin=started?ntw16s_global_load_begin(pi.hProcess,pi.dwProcessId,argv[1],&ticket):ERROR_TIMEOUT;
@@ -53,6 +56,7 @@ int wmain(int argc,WCHAR **argv)
     DWORD dead_finish=dead_begin?dead_begin:ntw16s_global_load_finish(&dead_ticket,3000,&dead_worker);
     BOOL dead_cleared=!dead_ticket.process && !dead_ticket.thread && !dead_ticket.remote_path && !dead_ticket.path && !dead_worker;
     CloseHandle(dead.hThread);CloseHandle(dead.hProcess);for(unsigned i=0;i<ARRAYSIZE(events);++i)CloseHandle(events[i]);
+    if(long_error!=ERROR_FILENAME_EXCED_RANGE || invalid.path){printf("GLOBAL LOAD PATH ERROR got=%lu retained=%d\n",long_error,invalid.path!=NULL);return 10;}
     if(!started || bad_pid!=ERROR_INVALID_PARAMETER || bad_name!=ERROR_INVALID_NAME || begin || !entered || duplicate!=ERROR_BUSY || timed!=ERROR_TIMEOUT || busy!=ERROR_BUSY || !retained || finished || !cleared || wait!=WAIT_OBJECT_0 || code || !dead_ready || dead_begin || !dead_entered || !killed || dead_wait!=WAIT_OBJECT_0 || dead_finish!=ERROR_PROCESS_ABORTED || !dead_cleared){
         printf("GLOBAL LOAD FAIL bad_pid=%lu bad_name=%lu begin=%lu entered=%d duplicate=%lu timed=%lu busy=%lu retained=%d finished=%lu cleared=%d wait=%lu code=%lu dead_ready=%d dead_begin=%lu dead_entered=%d killed=%d dead_wait=%lu dead_finish=%lu dead_cleared=%d\n",bad_pid,bad_name,begin,entered,duplicate,timed,busy,retained,finished,cleared,wait,code,dead_ready,dead_begin,dead_entered,killed,dead_wait,dead_finish,dead_cleared);return 8;
     }

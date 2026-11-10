@@ -1,3 +1,4 @@
+#include "lib-win32/process-image/image.h"
 #include "ntw16s-dll/injection/injection.h"
 #include <stdio.h>
 #include <wchar.h>
@@ -167,11 +168,11 @@ int wmain(int argc,WCHAR **argv)
     CHECK(!ntw16s_context_paths(&context,NULL));
     if(argc==3)CHECK(!wcscpy_s(context.directory,NTW16S_PATH_CAP,argv[2]));
     CHECK(GetModuleFileNameW(NULL,self,NTW16S_PATH_CAP));
-    CHECK(!ntw16s_validate_image(self,(WORD)expected,FALSE));
-    CHECK(ntw16s_validate_image(self,(WORD)expected,TRUE)==ERROR_BAD_EXE_FORMAT);
+    CHECK(!win32_process_image_validate(self,(WORD)expected,FALSE));
+    CHECK(win32_process_image_validate(self,(WORD)expected,TRUE)==ERROR_BAD_EXE_FORMAT);
     CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\"",self)>0);
     CHECK(CreateProcessW(self,command,NULL,NULL,FALSE,CREATE_SUSPENDED|CREATE_NO_WINDOW,NULL,NULL,&startup,&child));
-    CHECK(!ntw16s_process_machine(child.hProcess,&machine) && machine==expected);
+    CHECK(!win32_process_image_machine(child.hProcess,&machine) && machine==expected);
     CHECK(SuspendThread(child.hThread)==1 && ResumeThread(child.hThread)==2);
     context.flags=0x80000001u;
     CHECK(ntw16s_install(child.hProcess,&context,CreateProcessW)==ERROR_INVALID_DATA);

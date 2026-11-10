@@ -54,8 +54,9 @@ int wmain(int argc,WCHAR **argv)
 {
     if(argc!=3)return 2;
     BOOL nonew=!wcscmp(argv[1],L"shell-new-nonew") || !wcscmp(argv[1],L"shell-new-ansi-nonew"); BOOL com=!wcscmp(argv[1],L"com"),new_callback=!wcscmp(argv[1],L"shell-new-callback"),root_mode=!wcscmp(argv[1],L"shell-new-root") || !wcscmp(argv[1],L"shell-new-ansi-root"),new_ansi=!wcscmp(argv[1],L"shell-new-ansi-nonew") || !wcscmp(argv[1],L"shell-new-ansi") || !wcscmp(argv[1],L"shell-new-ansi-root"),new_shell=nonew || new_callback || root_mode || new_ansi || !wcscmp(argv[1],L"shell-new"),simple=!wcscmp(argv[1],L"shell-simple") || !wcscmp(argv[1],L"shell-simple-callback"),simple_callback=!wcscmp(argv[1],L"shell-simple-callback");cancel_mode=!wcscmp(argv[2],L"cancel");recover_mode=!wcscmp(argv[2],L"recover");validate_mode=recover_mode || !wcscmp(argv[2],L"validate");
+    BOOL ui_ansi=!wcscmp(argv[1],L"shell-ui-ansi-callback"),ui_callback=ui_ansi || !wcscmp(argv[1],L"shell-ui-callback");
     temp_mode=!wcscmp(argv[1],L"shell-temp");
-    if((!com && !simple && !new_shell && !temp_mode && wcscmp(argv[1],L"shell")) || (!cancel_mode && !validate_mode && wcscmp(argv[2],L"accept")) || ((com || new_shell) && validate_mode))return 2;
+    if((!com && !simple && !new_shell && !temp_mode && !ui_callback && wcscmp(argv[1],L"shell")) || (!cancel_mode && !validate_mode && wcscmp(argv[2],L"accept")) || ((com || new_shell) && validate_mode))return 2;
     UINT length=GetWindowsDirectoryW(wanted,ARRAYSIZE(wanted));if(!length || length>=ARRAYSIZE(wanted))return 3;
     if(temp_mode){WCHAR temp[MAX_PATH];if(!GetTempPathW(ARRAYSIZE(temp),temp)||!GetTempFileNameW(temp,L"w16",0,wanted)||!DeleteFileW(wanted)||!CreateDirectoryW(wanted,NULL))return 3;printf("TREE_TEMP_PATH %ls\n",wanted);fflush(stdout);}
     HRESULT init=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);if(FAILED(init))return 4;
@@ -75,9 +76,9 @@ int wmain(int argc,WCHAR **argv)
         if(d)IFileDialog_Release(d);
     }else{PIDLIST_ABSOLUTE item,root=NULL;
         if(root_mode && FAILED(SHParseDisplayName(wanted,NULL,&root,0,NULL)))return 6;
-        if(new_ansi){BROWSEINFOA b={0};b.ulFlags=BIF_RETURNONLYFSDIRS|BIF_NEWDIALOGSTYLE|(nonew?BIF_NONEWFOLDERBUTTON:0);b.pidlRoot=root;item=SHBrowseForFolderA(&b);}
+        if(new_ansi || ui_ansi){BROWSEINFOA b={0};b.ulFlags=ui_ansi?BIF_RETURNONLYFSDIRS|BIF_USENEWUI|BIF_VALIDATE:BIF_RETURNONLYFSDIRS|BIF_NEWDIALOGSTYLE|(nonew?BIF_NONEWFOLDERBUTTON:0);b.pidlRoot=root;if(ui_ansi){b.lpfn=callback;b.lParam=0x12345678;}item=SHBrowseForFolderA(&b);}
         else{BROWSEINFOW b={0};b.ulFlags=temp_mode?BIF_RETURNONLYFSDIRS:BIF_RETURNONLYFSDIRS|(nonew?BIF_NONEWFOLDERBUTTON:0)|(new_shell?BIF_NEWDIALOGSTYLE:BIF_USENEWUI|(simple?0:BIF_VALIDATE));b.pidlRoot=root;
-            if(validate_mode || simple_callback || new_callback || temp_mode){b.lpfn=callback;b.lParam=0x12345678;}item=SHBrowseForFolderW(&b);}
+            if(validate_mode || simple_callback || new_callback || temp_mode || ui_callback){b.lpfn=callback;b.lParam=0x12345678;}item=SHBrowseForFolderW(&b);}
         if(root)CoTaskMemFree(root);
         WCHAR path[MAX_PATH]=L"";
         correct=(cancel_mode || (validate_mode && !recover_mode))?!item:(item && SHGetPathFromIDListW(item,path) && !lstrcmpiW(path,wanted));
@@ -86,5 +87,5 @@ int wmain(int argc,WCHAR **argv)
     printf("TREE_FOLDER bits=%u com=%d cancel=%d tree=%ld windows=%ld result=%d hr=%08lx wait=%lu worker=%lu validated=%ld direct=%ld callback=%ld unknown=%ld\n",
         (unsigned)(sizeof(void*)*8),com,cancel_mode,trees,windows,correct,(DWORD)hr,wait,code,validated,direct_tree,callback_initialized,callback_unknown);
     printf("TREE_NONEW requested=%d visible=%ld\n",nonew,new_button_visible);
-    return (!nonew || !new_button_visible) && seen && trees && windows==1 && correct && wait==WAIT_OBJECT_0 && !code && (!validate_mode || (validated==1 && !direct_tree && callback_unknown==1)) && (!((simple && !simple_callback) || (new_shell && !new_callback)) || direct_tree) && (!(new_callback || simple_callback) || (!direct_tree && callback_unknown==1)) && (!(simple_callback || new_callback) || callback_initialized==1)?0:1;
+    return (!nonew || !new_button_visible) && seen && trees && windows==1 && correct && wait==WAIT_OBJECT_0 && !code && (!validate_mode || (validated==1 && !direct_tree && callback_unknown==1)) && (!((simple && !simple_callback) || (new_shell && !new_callback)) || direct_tree) && (!(new_callback || simple_callback || ui_callback) || (!direct_tree && callback_unknown==1)) && (!(simple_callback || new_callback || ui_callback) || callback_initialized==1)?0:1;
 }

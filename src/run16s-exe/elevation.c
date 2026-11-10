@@ -20,8 +20,6 @@ void run16s_rebind_console_stderr(void)
     if(fd!=2){(void)_dup2(fd,2);_close(fd);}
     clearerr(stderr);
 }
-BOOL run16s_is_elevated(DWORD *error)
-{return win32_security_is_elevated(error);}
 BOOL run16s_global_interactive_console(void)
 {
     DWORD mode=0,pids[1];HANDLE error=GetStdHandle(STD_ERROR_HANDLE);

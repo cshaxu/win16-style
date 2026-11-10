@@ -1,6 +1,6 @@
 #include "ntw16s-dll/global/vb_text.h"
 #include "lib-win32/module-import/import_scan.h"
-#include "ntw16s-dll/vb_text.h"
+#include "lib-win32/win16-control/vb_text.h"
 
 static INIT_ONCE originals_once=INIT_ONCE_STATIC_INIT;
 static int (WINAPI *original_draw)(HDC,LPCSTR,int,LPRECT,UINT);
@@ -31,30 +31,18 @@ static HGDIOBJ begin_text(HDC dc)
 static void end_text(HDC dc,HGDIOBJ previous)
 {if(previous)SelectObject(dc,previous);--text_depth;}
 
-static int WINAPI global_draw(HDC dc,LPCSTR text,int count,LPRECT rect,UINT format)
-{
-    DWORD entry=GetLastError();HGDIOBJ old=begin_text(dc);SetLastError(entry);
-    int result=original_draw(dc,text,count,rect,format);DWORD error=GetLastError();
-    end_text(dc,old);SetLastError(error);return result;
+#define TEXT_HOOK(name,type,parameters,arguments) \
+static type WINAPI global_##name parameters \
+{ \
+    DWORD entry=GetLastError();HGDIOBJ old=begin_text(dc);SetLastError(entry); \
+    type result=original_##name arguments;DWORD error=GetLastError(); \
+    end_text(dc,old);SetLastError(error);return result; \
 }
-static int WINAPI global_draw_ex(HDC dc,LPSTR text,int count,LPRECT rect,UINT format,LPDRAWTEXTPARAMS params)
-{
-    DWORD entry=GetLastError();HGDIOBJ old=begin_text(dc);SetLastError(entry);
-    int result=original_draw_ex(dc,text,count,rect,format,params);DWORD error=GetLastError();
-    end_text(dc,old);SetLastError(error);return result;
-}
-static BOOL WINAPI global_text(HDC dc,int x,int y,LPCSTR text,int count)
-{
-    DWORD entry=GetLastError();HGDIOBJ old=begin_text(dc);SetLastError(entry);
-    BOOL result=original_text(dc,x,y,text,count);DWORD error=GetLastError();
-    end_text(dc,old);SetLastError(error);return result;
-}
-static BOOL WINAPI global_text_ex(HDC dc,int x,int y,UINT options,const RECT *rect,LPCSTR text,UINT count,const INT *dx)
-{
-    DWORD entry=GetLastError();HGDIOBJ old=begin_text(dc);SetLastError(entry);
-    BOOL result=original_text_ex(dc,x,y,options,rect,text,count,dx);DWORD error=GetLastError();
-    end_text(dc,old);SetLastError(error);return result;
-}
+TEXT_HOOK(draw,int,(HDC dc,LPCSTR text,int count,LPRECT rect,UINT format),(dc,text,count,rect,format))
+TEXT_HOOK(draw_ex,int,(HDC dc,LPSTR text,int count,LPRECT rect,UINT format,LPDRAWTEXTPARAMS params),(dc,text,count,rect,format,params))
+TEXT_HOOK(text,BOOL,(HDC dc,int x,int y,LPCSTR text,int count),(dc,x,y,text,count))
+TEXT_HOOK(text_ex,BOOL,(HDC dc,int x,int y,UINT options,const RECT *rect,LPCSTR text,UINT count,const INT *dx),(dc,x,y,options,rect,text,count,dx))
+#undef TEXT_HOOK
 
 DWORD ntw16s_global_vb_text(HWND window,BOOL *changed)
 {

@@ -1,6 +1,6 @@
 #include "remote_export.h"
 #include "lib-win32/process-image/remote.h"
-#include <tlhelp32.h>
+#include "module_snapshot.h"
 #include <stdint.h>
 #include <string.h>
 #include <wchar.h>
@@ -17,12 +17,10 @@ DWORD win32_process_global_remote_export(HANDLE process,DWORD pid,const WCHAR *p
     size_t target_bytes=strlen(target)+1;if(target_bytes>256)return ERROR_INVALID_NAME;
     if(!module_path)return ERROR_PROC_NOT_FOUND;
     DWORD path_length=GetFullPathNameW(path,ARRAYSIZE(canonical),canonical,&filename);
-    if(!path_length || path_length>=ARRAYSIZE(canonical) || !filename)return ERROR_INVALID_NAME;
+    if(!path_length){DWORD error=GetLastError();return error?error:ERROR_INVALID_NAME;}
+    if(path_length>=ARRAYSIZE(canonical) || !filename)return ERROR_INVALID_NAME;
     if(_wcsicmp(filename,expected_name))return ERROR_INVALID_NAME;
-    for(unsigned attempt=0;attempt<8;++attempt){
-        snapshot=CreateToolhelp32Snapshot(TH32CS_SNAPMODULE|TH32CS_SNAPMODULE32,pid);
-        if(snapshot!=INVALID_HANDLE_VALUE || GetLastError()!=ERROR_BAD_LENGTH)break;
-    }
+    snapshot=win32_process_global_module_snapshot(pid);
     if(snapshot==INVALID_HANDLE_VALUE)return GetLastError();
     if(!Module32FirstW(snapshot,&entry)){error=GetLastError();goto done;}
     do{

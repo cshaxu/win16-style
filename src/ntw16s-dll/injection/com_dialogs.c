@@ -5,9 +5,8 @@
 #include "../../lib-win32/win16-dialog/hook_state.h"
 #include "../../lib-win32/win16-dialog/classic_events.h"
 #include "intercept.h"
-#include "startup_hooks.h"
-#include "unwind.h"
-#include "../../lib-win32/win16-dialog/shell_folder.h"
+#include "../../lib-win32/process-hook/startup_hooks.h"
+#include "../../lib-win32/process-hook/unwind.h"
 #include "../../lib-win32/win16-dialog/shell_item.h"
 #include "../../lib-win32/win16-dialog/file_contract.h"
 #include "../../lib-win32/win16-dialog/file_helpers.h"
@@ -35,11 +34,8 @@ static HRESULT (WINAPI *native_create_ex)(REFCLSID,IUnknown *,DWORD,COSERVERINFO
 static HRESULT (WINAPI *native_class_object)(REFCLSID,DWORD,LPVOID,REFIID,LPVOID *);
 static _Thread_local unsigned native_creation_depth;
 static HRESULT v2_dispatch(void *,win16_dialog_v2_operation,ULONG_PTR,ULONG_PTR);
-static ULONG proxy_add(file_proxy *p){return win16_dialog_proxy_add(p);}
-static ULONG proxy_release(file_proxy *p){return win16_dialog_proxy_release(p);}
-static HRESULT proxy_query(file_proxy *p,REFIID id,void **out){return win16_dialog_proxy_query(p,id,out);}
-static ULONG event_owner_add(void *owner){return proxy_add(owner);}
-static ULONG event_owner_release(void *owner){return proxy_release(owner);}
+static ULONG event_owner_add(void *owner){return win16_dialog_proxy_add(owner);}
+static ULONG event_owner_release(void *owner){return win16_dialog_proxy_release(owner);}
 static const win16_dialog_event_services event_services={event_owner_add,event_owner_release};
 static HRESULT proxy_advise(file_proxy *p,IFileDialogEvents *target,DWORD *cookie)
 {return win16_dialog_events_advise(p->native,&p->events,p,target,cookie,&event_services);}
@@ -50,34 +46,34 @@ static HRESULT proxy_unadvise(file_proxy *p,DWORD cookie)
 typedef struct classic_event_call {file_proxy *proxy;win16_dialog_event_snapshot snapshot;} classic_event_call;
 static void classic_event_cleanup(void *data)
 {
-    classic_event_call *call=data;win16_dialog_event_snapshot_free(&call->snapshot);proxy_release(call->proxy);
+    classic_event_call *call=data;win16_dialog_event_snapshot_free(&call->snapshot);win16_dialog_proxy_release(call->proxy);
 }
-static NTW16S_UNWIND_FUNCTION HRESULT classic_event_dispatch(file_proxy *p,enum classic_event_kind kind,IShellItem *item)
+static PROCESS_HOOK_UNWIND_FUNCTION HRESULT classic_event_dispatch(file_proxy *p,enum classic_event_kind kind,IShellItem *item)
 {
     classic_event_call call={.proxy=p};
     if(!win16_dialog_event_snapshot_init(p->events,&call.snapshot))return E_OUTOFMEMORY;
-    proxy_add(p);ntw16s_unwind_scope unwind;HRESULT result=S_OK;
-    NTW16S_UNWIND_BEGIN(unwind,classic_event_cleanup,&call);
+    win16_dialog_proxy_add(p);process_hook_unwind_scope unwind;HRESULT result=S_OK;
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,classic_event_cleanup,&call);
     result=win16_dialog_event_dispatch(&call.snapshot,p,kind,item);
-    NTW16S_UNWIND_END(unwind);return result;
+    PROCESS_HOOK_UNWIND_END(unwind);return result;
 }
-static NTW16S_UNWIND_FUNCTION FDE_OVERWRITE_RESPONSE classic_overwrite_dispatch(file_proxy *p,IShellItem *item)
+static PROCESS_HOOK_UNWIND_FUNCTION FDE_OVERWRITE_RESPONSE classic_overwrite_dispatch(file_proxy *p,IShellItem *item)
 {
     classic_event_call call={.proxy=p};FDE_OVERWRITE_RESPONSE result=FDEOR_DEFAULT;
     if(!win16_dialog_event_snapshot_init(p->events,&call.snapshot))return result;
-    proxy_add(p);ntw16s_unwind_scope unwind;
-    NTW16S_UNWIND_BEGIN(unwind,classic_event_cleanup,&call);
+    win16_dialog_proxy_add(p);process_hook_unwind_scope unwind;
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,classic_event_cleanup,&call);
     result=win16_dialog_event_overwrite(&call.snapshot,p,item);
-    NTW16S_UNWIND_END(unwind);return result;
+    PROCESS_HOOK_UNWIND_END(unwind);return result;
 }
-static NTW16S_UNWIND_FUNCTION FDE_SHAREVIOLATION_RESPONSE classic_share_dispatch(file_proxy *p,IShellItem *item)
+static PROCESS_HOOK_UNWIND_FUNCTION FDE_SHAREVIOLATION_RESPONSE classic_share_dispatch(file_proxy *p,IShellItem *item)
 {
     classic_event_call call={.proxy=p};FDE_SHAREVIOLATION_RESPONSE result=FDESVR_DEFAULT;
     if(!win16_dialog_event_snapshot_init(p->events,&call.snapshot))return result;
-    proxy_add(p);ntw16s_unwind_scope unwind;
-    NTW16S_UNWIND_BEGIN(unwind,classic_event_cleanup,&call);
+    win16_dialog_proxy_add(p);process_hook_unwind_scope unwind;
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,classic_event_cleanup,&call);
     result=win16_dialog_event_share(&call.snapshot,p,item);
-    NTW16S_UNWIND_END(unwind);return result;
+    PROCESS_HOOK_UNWIND_END(unwind);return result;
 }
 typedef struct classic_owned_event {IShellItem *item;WCHAR *path;} classic_owned_event;
 static void classic_owned_event_cleanup(void *data)
@@ -87,26 +83,26 @@ static void classic_owned_event_cleanup(void *data)
 }
 /* Takes the Shell-item reference. A path, if supplied, stays owned by the
  * caller on normal return and is reclaimed here during exceptional unwind. */
-static NTW16S_UNWIND_FUNCTION HRESULT classic_dispatch_owned(file_proxy *p,enum classic_event_kind kind,IShellItem *item,WCHAR *path)
+static PROCESS_HOOK_UNWIND_FUNCTION HRESULT classic_dispatch_owned(file_proxy *p,enum classic_event_kind kind,IShellItem *item,WCHAR *path)
 {
-    classic_owned_event owned={item,path};ntw16s_unwind_scope unwind;HRESULT hr;
-    NTW16S_UNWIND_BEGIN(unwind,classic_owned_event_cleanup,&owned);
+    classic_owned_event owned={item,path};process_hook_unwind_scope unwind;HRESULT hr;
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,classic_owned_event_cleanup,&owned);
     hr=classic_event_dispatch(p,kind,item);owned.path=NULL;
-    NTW16S_UNWIND_END(unwind);return hr;
+    PROCESS_HOOK_UNWIND_END(unwind);return hr;
 }
-static NTW16S_UNWIND_FUNCTION FDE_OVERWRITE_RESPONSE classic_overwrite_owned(file_proxy *p,IShellItem *item)
+static PROCESS_HOOK_UNWIND_FUNCTION FDE_OVERWRITE_RESPONSE classic_overwrite_owned(file_proxy *p,IShellItem *item)
 {
-    classic_owned_event owned={item,NULL};ntw16s_unwind_scope unwind;FDE_OVERWRITE_RESPONSE result;
-    NTW16S_UNWIND_BEGIN(unwind,classic_owned_event_cleanup,&owned);
+    classic_owned_event owned={item,NULL};process_hook_unwind_scope unwind;FDE_OVERWRITE_RESPONSE result;
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,classic_owned_event_cleanup,&owned);
     result=classic_overwrite_dispatch(p,item);
-    NTW16S_UNWIND_END(unwind);return result;
+    PROCESS_HOOK_UNWIND_END(unwind);return result;
 }
-static NTW16S_UNWIND_FUNCTION FDE_SHAREVIOLATION_RESPONSE classic_share_owned(file_proxy *p,IShellItem *item)
+static PROCESS_HOOK_UNWIND_FUNCTION FDE_SHAREVIOLATION_RESPONSE classic_share_owned(file_proxy *p,IShellItem *item)
 {
-    classic_owned_event owned={item,NULL};ntw16s_unwind_scope unwind;FDE_SHAREVIOLATION_RESPONSE result;
-    NTW16S_UNWIND_BEGIN(unwind,classic_owned_event_cleanup,&owned);
+    classic_owned_event owned={item,NULL};process_hook_unwind_scope unwind;FDE_SHAREVIOLATION_RESPONSE result;
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,classic_owned_event_cleanup,&owned);
     result=classic_share_dispatch(p,item);
-    NTW16S_UNWIND_END(unwind);return result;
+    PROCESS_HOOK_UNWIND_END(unwind);return result;
 }
 static UINT_PTR classic_event_file_ok(file_proxy *p,OPENFILENAMEW *ofn);
 #endif
@@ -136,7 +132,7 @@ static BOOL classic_overwrite_check(HWND w,file_proxy *p)
 static HRESULT proxy_set_folder(file_proxy *p,IShellItem *item)
 {return win16_dialog_proxy_set_folder(p,item,folder_message_name);}
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-static NTW16S_UNWIND_FUNCTION void classic_navigate_folder(HWND w,file_proxy *p,PCWSTR key)
+static PROCESS_HOOK_UNWIND_FUNCTION void classic_navigate_folder(HWND w,file_proxy *p,PCWSTR key)
 #else
 static void classic_navigate_folder(HWND w,file_proxy *p,PCWSTR key)
 #endif
@@ -144,10 +140,10 @@ static void classic_navigate_folder(HWND w,file_proxy *p,PCWSTR key)
     win16_dialog_navigation_scope navigation;
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
     if(!win16_dialog_navigation_begin(p,TRUE,&navigation))return;
-    ntw16s_unwind_scope unwind;
-    NTW16S_UNWIND_BEGIN(unwind,win16_dialog_navigation_cleanup,&navigation);
+    process_hook_unwind_scope unwind;
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,win16_dialog_navigation_cleanup,&navigation);
     win16_dialog_navigation_run(w,key,&navigation,classic_dispatch_owned);
-    NTW16S_UNWIND_END(unwind);
+    PROCESS_HOOK_UNWIND_END(unwind);
 #else
     if(!win16_dialog_navigation_begin(p,FALSE,&navigation))return;
     win16_dialog_navigation_run(w,key,&navigation,NULL);
@@ -155,13 +151,13 @@ static void classic_navigate_folder(HWND w,file_proxy *p,PCWSTR key)
 #endif
 }
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-static NTW16S_UNWIND_FUNCTION void classic_initial_events(HWND w,file_proxy *p,PCWSTR key)
+static PROCESS_HOOK_UNWIND_FUNCTION void classic_initial_events(HWND w,file_proxy *p,PCWSTR key)
 {
     win16_dialog_initial_scope state={p,p->live_folder,NULL,p->classic_initializing};
-    ntw16s_unwind_scope unwind;IShellItem_AddRef(state.item);
-    NTW16S_UNWIND_BEGIN(unwind,win16_dialog_initial_cleanup,&state);
+    process_hook_unwind_scope unwind;IShellItem_AddRef(state.item);
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,win16_dialog_initial_cleanup,&state);
     win16_dialog_initial_run(w,key,&state,classic_dispatch_owned,classic_navigate_folder,classic_event_dispatch);
-    NTW16S_UNWIND_END(unwind);
+    PROCESS_HOOK_UNWIND_END(unwind);
 }
 #endif
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_HIDDEN
@@ -186,8 +182,6 @@ static const win16_dialog_classic_message_services classic_messages={
 };
 static void com_hook_attach(void *owner,HWND w,OPENFILENAMEW *ofn)
 {win16_dialog_classic_attach(owner,w,ofn,&classic_messages);}
-static PCWSTR com_hook_label(void *owner,int which)
-{return win16_dialog_hook_label(owner,which);}
 static void com_hook_detach(void *owner,HWND w)
 {win16_dialog_hook_detach(owner,w,classic_messages.events_enabled);}
 static BOOL com_hook_command(void *owner,HWND w,WPARAM wp,UINT_PTR *result)
@@ -201,7 +195,7 @@ static BOOL com_hook_after(void *owner,HWND w,UINT message,LPARAM lp,UINT_PTR *r
 {return win16_dialog_classic_after(owner,w,message,lp,result,&classic_messages);}
 static UINT_PTR CALLBACK classic_hook(HWND w,UINT message,WPARAM wp,LPARAM lp)
 {
-    const win16_dialog_com_hook_services services={folder_message_name,com_hook_attach,com_hook_label,com_hook_detach,
+    const win16_dialog_com_hook_services services={folder_message_name,com_hook_attach,win16_dialog_hook_label,com_hook_detach,
         com_hook_command,com_hook_before,com_hook_selection,com_hook_navigate,com_hook_after};
     return win16_dialog_com_hook(w,message,wp,lp,&services);
 }
@@ -209,14 +203,14 @@ static UINT_PTR CALLBACK classic_hook(HWND w,UINT message,WPARAM wp,LPARAM lp)
 typedef struct folder_init_scope {OPENFILENAMEW *ofn;LPARAM saved;} folder_init_scope;
 static void folder_init_cleanup(void *value)
 {folder_init_scope *scope=value;scope->ofn->lCustData=scope->saved;}
-static NTW16S_UNWIND_FUNCTION UINT_PTR classic_folder_observe(HWND w,UINT message,WPARAM wp,LPARAM lp,void *context)
+static PROCESS_HOOK_UNWIND_FUNCTION UINT_PTR classic_folder_observe(HWND w,UINT message,WPARAM wp,LPARAM lp,void *context)
 {
     file_proxy *p=context;
     if(message==WM_INITDIALOG && lp){
-        OPENFILENAMEW *ofn=(OPENFILENAMEW *)lp;folder_init_scope scope={ofn,ofn->lCustData};ntw16s_unwind_scope unwind;
-        ofn->lCustData=(LPARAM)p;NTW16S_UNWIND_BEGIN(unwind,folder_init_cleanup,&scope);
+        OPENFILENAMEW *ofn=(OPENFILENAMEW *)lp;folder_init_scope scope={ofn,ofn->lCustData};process_hook_unwind_scope unwind;
+        ofn->lCustData=(LPARAM)p;PROCESS_HOOK_UNWIND_BEGIN(unwind,folder_init_cleanup,&scope);
         UINT_PTR result=classic_hook(w,message,wp,lp);
-        NTW16S_UNWIND_END(unwind);return result;
+        PROCESS_HOOK_UNWIND_END(unwind);return result;
     }
     if(message>=0xc000 && message<=0xffff && message==RegisterWindowMessageW(FILEOKSTRINGW) && lp){
         WCHAR folder[MAX_PATH];OPENFILENAMEW adjusted;
@@ -229,15 +223,15 @@ static NTW16S_UNWIND_FUNCTION UINT_PTR classic_folder_observe(HWND w,UINT messag
 /* The legacy multi-select contract returns space-separated 8.3 names. The
  * file offset separates the directory from its first name even for one file. */
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-static NTW16S_UNWIND_FUNCTION UINT_PTR classic_event_file_ok(file_proxy *p,OPENFILENAMEW *ofn)
+static PROCESS_HOOK_UNWIND_FUNCTION UINT_PTR classic_event_file_ok(file_proxy *p,OPENFILENAMEW *ofn)
 {
     if(!win16_dialog_classic_prepare_result(p,ofn))return 1;
     IShellItem *item=p->result;HRESULT hr;
-    win16_dialog_classic_result_scope result={p,item,p->results,TRUE};ntw16s_unwind_scope unwind;
-    NTW16S_UNWIND_BEGIN(unwind,win16_dialog_classic_result_cleanup,&result);
+    win16_dialog_classic_result_scope result={p,item,p->results,TRUE};process_hook_unwind_scope unwind;
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,win16_dialog_classic_result_cleanup,&result);
     hr=classic_event_dispatch(p,CLASSIC_OK,NULL);
     result.revoke=hr==S_FALSE || FAILED(hr);
-    NTW16S_UNWIND_END(unwind);return result.revoke?1:0;
+    PROCESS_HOOK_UNWIND_END(unwind);return result.revoke?1:0;
 }
 #endif
 static BOOL proxy_has_events(void *owner){return ((file_proxy *)owner)->events!=NULL;}
@@ -268,15 +262,15 @@ static void classic_proxy_release(void *data)
 {
     classic_show_scope *scope=data;
     if(!scope->completed)scope->proxy->classic_show_aborted=TRUE;
-    proxy_release(scope->proxy);
+    win16_dialog_proxy_release(scope->proxy);
 }
-static NTW16S_UNWIND_FUNCTION HRESULT proxy_show(file_proxy *p,HWND owner)
+static PROCESS_HOOK_UNWIND_FUNCTION HRESULT proxy_show(file_proxy *p,HWND owner)
 {
     if(p->classic_show_aborted)return E_UNEXPECTED;
-    proxy_add(p);ntw16s_unwind_scope unwind;HRESULT hr;classic_show_scope scope={p,FALSE};
-    NTW16S_UNWIND_BEGIN(unwind,classic_proxy_release,&scope);
+    win16_dialog_proxy_add(p);process_hook_unwind_scope unwind;HRESULT hr;classic_show_scope scope={p,FALSE};
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,classic_proxy_release,&scope);
     hr=proxy_show_impl(p,owner);scope.completed=TRUE;
-    NTW16S_UNWIND_END(unwind);return hr;
+    PROCESS_HOOK_UNWIND_END(unwind);return hr;
 }
 #else
 static HRESULT proxy_show(file_proxy *p,HWND owner){return proxy_show_impl(p,owner);}
@@ -299,30 +293,34 @@ static file_proxy *proxy_new(IUnknown *original,BOOL save)
     return win16_dialog_proxy_new(original,save,v2_dispatch,FALSE);
 #endif
 }
+static void proxy_replace(REFIID iid,void **out,BOOL save)
+{
+    IUnknown *original=(IUnknown *)*out;file_proxy *p=proxy_new(original,save);if(!p)return;
+    void *replacement=NULL;HRESULT hr=win16_dialog_proxy_query(p,iid,&replacement);win16_dialog_proxy_release(p);
+    if(FAILED(hr))return;
+    IUnknown_Release(original);*out=replacement;
+}
 static void creation_end(void *unused){(void)unused;--native_creation_depth;}
-static NTW16S_UNWIND_FUNCTION HRESULT WINAPI bridge_create(REFCLSID clsid,LPUNKNOWN outer,DWORD context,REFIID iid,LPVOID *out)
+static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI bridge_create(REFCLSID clsid,LPUNKNOWN outer,DWORD context,REFIID iid,LPVOID *out)
 {
     if(!ntw16s_process_session_active())return native_create(clsid,outer,context,iid,out);
-    BOOL nested=native_creation_depth!=0;ntw16s_unwind_scope unwind;HRESULT original_hr;
+    BOOL nested=native_creation_depth!=0;process_hook_unwind_scope unwind;HRESULT original_hr;
     ++native_creation_depth;
-    NTW16S_UNWIND_BEGIN(unwind,creation_end,NULL); {original_hr=native_create(clsid,outer,context,iid,out);}
-    NTW16S_UNWIND_END(unwind);
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,creation_end,NULL); {original_hr=native_create(clsid,outer,context,iid,out);}
+    PROCESS_HOOK_UNWIND_END(unwind);
     if(FAILED(original_hr)||!out||!*out||outer||nested||ntw16s_modern_dialog_active())return original_hr;
     BOOL save=IsEqualCLSID(clsid,&CLSID_FileSaveDialog),open=IsEqualCLSID(clsid,&CLSID_FileOpenDialog);
     if(!(save||open)||!win16_dialog_proxy_iid(iid,save))return original_hr;
-    IUnknown *original=(IUnknown *)*out;file_proxy *p=proxy_new(original,save);if(!p)return original_hr;
-    void *replacement=NULL;HRESULT hr=proxy_query(p,iid,&replacement);proxy_release(p);
-    if(FAILED(hr))return original_hr;
-    IUnknown_Release(original);*out=replacement;return original_hr;
+    proxy_replace(iid,out,save);return original_hr;
 }
-static NTW16S_UNWIND_FUNCTION HRESULT WINAPI bridge_create_ex(REFCLSID clsid,IUnknown *outer,DWORD context,
+static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI bridge_create_ex(REFCLSID clsid,IUnknown *outer,DWORD context,
     COSERVERINFO *server,DWORD count,MULTI_QI *results)
 {
     if(!ntw16s_process_session_active())return native_create_ex(clsid,outer,context,server,count,results);
-    BOOL nested=native_creation_depth!=0;ntw16s_unwind_scope unwind;HRESULT original_hr;
+    BOOL nested=native_creation_depth!=0;process_hook_unwind_scope unwind;HRESULT original_hr;
     ++native_creation_depth;
-    NTW16S_UNWIND_BEGIN(unwind,creation_end,NULL); {original_hr=native_create_ex(clsid,outer,context,server,count,results);}
-    NTW16S_UNWIND_END(unwind);
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,creation_end,NULL); {original_hr=native_create_ex(clsid,outer,context,server,count,results);}
+    PROCESS_HOOK_UNWIND_END(unwind);
     if(FAILED(original_hr)||outer||server||nested||ntw16s_modern_dialog_active()||!results||!count||count>64)return original_hr;
     BOOL save=IsEqualCLSID(clsid,&CLSID_FileSaveDialog),open=IsEqualCLSID(clsid,&CLSID_FileOpenDialog);
     if(!(save||open))return original_hr;
@@ -335,12 +333,12 @@ static NTW16S_UNWIND_FUNCTION HRESULT WINAPI bridge_create_ex(REFCLSID clsid,IUn
     file_proxy *p=proxy_new(original,save);if(!p)return original_hr;
     void *replacement[64]={0};BOOL complete=TRUE;
     for(DWORD i=0;i<count;++i)if(SUCCEEDED(results[i].hr) && results[i].pItf){
-        if(FAILED(proxy_query(p,results[i].pIID,&replacement[i]))){complete=FALSE;break;}
+        if(FAILED(win16_dialog_proxy_query(p,results[i].pIID,&replacement[i]))){complete=FALSE;break;}
     }
     if(complete){for(DWORD i=0;i<count;++i)if(replacement[i]){
         IUnknown_Release(results[i].pItf);results[i].pItf=(IUnknown *)replacement[i];
     }}else for(DWORD i=0;i<count;++i)if(replacement[i])IUnknown_Release((IUnknown *)replacement[i]);
-    proxy_release(p);return original_hr;
+    win16_dialog_proxy_release(p);return original_hr;
 }
 /* A caller can activate a dialog through the class factory directly. */
 typedef struct factory_proxy {IClassFactory iface;LONG refs;IClassFactory *native;BOOL save;} factory_proxy;
@@ -359,18 +357,15 @@ static ULONG STDMETHODCALLTYPE factory_release(IClassFactory *self)
     if(!count){IClassFactory_Release(factory->native);HeapFree(GetProcessHeap(),0,factory);}
     return (ULONG)count;
 }
-static NTW16S_UNWIND_FUNCTION HRESULT STDMETHODCALLTYPE factory_create(IClassFactory *self,IUnknown *outer,REFIID iid,void **out)
+static PROCESS_HOOK_UNWIND_FUNCTION HRESULT STDMETHODCALLTYPE factory_create(IClassFactory *self,IUnknown *outer,REFIID iid,void **out)
 {
-    factory_proxy *factory=(factory_proxy *)self;ntw16s_unwind_scope unwind;HRESULT original_hr;
+    factory_proxy *factory=(factory_proxy *)self;process_hook_unwind_scope unwind;HRESULT original_hr;
     if(!ntw16s_process_session_active())return IClassFactory_CreateInstance(factory->native,outer,iid,out);
     ++native_creation_depth;
-    NTW16S_UNWIND_BEGIN(unwind,creation_end,NULL); {original_hr=IClassFactory_CreateInstance(factory->native,outer,iid,out);}
-    NTW16S_UNWIND_END(unwind);
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,creation_end,NULL); {original_hr=IClassFactory_CreateInstance(factory->native,outer,iid,out);}
+    PROCESS_HOOK_UNWIND_END(unwind);
     if(FAILED(original_hr)||outer||!out||!*out||ntw16s_modern_dialog_active()||!win16_dialog_proxy_iid(iid,factory->save))return original_hr;
-    IUnknown *original=(IUnknown *)*out;file_proxy *p=proxy_new(original,factory->save);if(!p)return original_hr;
-    void *replacement=NULL;HRESULT hr=proxy_query(p,iid,&replacement);proxy_release(p);
-    if(FAILED(hr))return original_hr;
-    IUnknown_Release(original);*out=replacement;return original_hr;
+    proxy_replace(iid,out,factory->save);return original_hr;
 }
 static HRESULT STDMETHODCALLTYPE factory_lock(IClassFactory *self,BOOL lock)
 {return IClassFactory_LockServer(((factory_proxy *)self)->native,lock);}
@@ -401,4 +396,4 @@ LONG ntw16s_attach_com_dialogs_using(DWORD (*attach)(void *,void *))
     return error;
 }
 
-LONG ntw16s_attach_com_dialogs(void){return ntw16s_attach_com_dialogs_using(ntw16s_hooks_attach);}
+LONG ntw16s_attach_com_dialogs(void){return ntw16s_attach_com_dialogs_using(process_hook_startup_attach);}

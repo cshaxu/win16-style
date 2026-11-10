@@ -56,6 +56,11 @@ int wmain(int argc,WCHAR **argv)
     DWORD missing=ntw16s_remote_global_thread(pi.hProcess,pi.dwProcessId,
         sizeof(void*)==8?L"C:\\missing\\ntw16s64.dll":L"C:\\missing\\ntw16s32.dll",&missing_worker);
     void *generic_missing=(void *)1;
+    static WCHAR long_path[33010];wmemset(long_path,L'x',ARRAYSIZE(long_path)-1);
+    long_path[0]=L'C';long_path[1]=L':';long_path[2]=L'\\';
+    void *long_worker=(void *)1;
+    DWORD long_error=win32_process_global_remote_export(pi.hProcess,pi.dwProcessId,long_path,
+        sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll","Ntw16sGlobalThread",&long_worker);
     DWORD generic_error=win32_process_global_remote_export(pi.hProcess,pi.dwProcessId,argv[1],
         sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll","NoSuchWin16TestExport",&generic_missing);
     BYTE local_bytes[16],remote_bytes[16];SIZE_T count=0;FARPROC local=GetProcAddress(GetModuleHandleW(L"kernel32.dll"),"LoadLibraryW");
@@ -76,6 +81,7 @@ int wmain(int argc,WCHAR **argv)
     SetEvent(stop);DWORD corrupt_wait=WaitForSingleObject(corrupt_pi.hProcess,3000),corrupt_code=99;
     if(corrupt_wait==WAIT_OBJECT_0)GetExitCodeProcess(corrupt_pi.hProcess,&corrupt_code);else TerminateProcess(corrupt_pi.hProcess,ERROR_TIMEOUT);
     CloseHandle(corrupt_pi.hThread);CloseHandle(corrupt_pi.hProcess);CloseHandle(ready);CloseHandle(stop);
+    if(long_error!=ERROR_FILENAME_EXCED_RANGE || long_worker){printf("REMOTE PATH ERROR got=%lu worker=%p\n",long_error,long_worker);return 12;}
     if(generic_error!=ERROR_PROC_NOT_FOUND || generic_missing || error || !same || worker_error || !worker_same || bad!=ERROR_INVALID_PARAMETER || invalid || bad_name!=ERROR_INVALID_NAME || invalid_worker || missing!=ERROR_MOD_NOT_FOUND || missing_worker || wait!=WAIT_OBJECT_0 || code || corrupt_error!=ERROR_BAD_EXE_FORMAT || corrupt_worker || corrupt_wait!=WAIT_OBJECT_0 || corrupt_code){printf("REMOTE RESOLVE FAIL error=%lu worker_error=%lu bad=%lu bad_name=%lu missing=%lu corrupt=%lu same=%d worker=%d wait=%lu code=%lu\n",error,worker_error,bad,bad_name,missing,corrupt_error,same,worker_same,wait,code);return 6;}
     printf("REMOTE RESOLVE PASS bits=%u loader=1 worker=1 bad_pid=1 bad_name=1 missing=1 corrupt=1 cleanup=1\n",(unsigned)(sizeof(void*)*8));return 0;
 }

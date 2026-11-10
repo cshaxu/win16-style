@@ -17,16 +17,23 @@ static FINDREPLACEW find_parameters;
 static WCHAR find_text[128],replace_text[128];
 static UINT find_message;
 static void note(HWND owner,PCWSTR text){SetDlgItemTextW(owner,NOTE,text);}
+void demo_dialog_failure(HWND owner,PCWSTR cancelled)
+{
+    DWORD error=CommDlgExtendedError();
+    if(!error){note(owner,cancelled);return;}
+    WCHAR text[100];swprintf(text,ARRAYSIZE(text),L"Common-dialog error %lu",error);note(owner,text);
+}
 static UINT_PTR CALLBACK old_file_hook(HWND window,UINT message,WPARAM wparam,LPARAM lparam)
 {(void)window;(void)message;(void)wparam;(void)lparam;return 0;}
-static void old_file(HWND owner,BOOL save)
+static void file_dialog(HWND owner,BOOL save,BOOL classic)
 {
     WCHAR file[32768]=L"";OPENFILENAMEW options={0};options.lStructSize=sizeof(options);options.hwndOwner=owner;
     options.lpstrFile=file;options.nMaxFile=ARRAYSIZE(file);options.lpstrFilter=L"All files\0*.*\0Text files\0*.txt\0\0";
-    options.Flags=OFN_ENABLEHOOK|OFN_LONGNAMES|OFN_PATHMUSTEXIST|OFN_NOCHANGEDIR|(save?OFN_OVERWRITEPROMPT:OFN_FILEMUSTEXIST);
-    options.lpfnHook=old_file_hook;
+    options.Flags=OFN_PATHMUSTEXIST|OFN_NOCHANGEDIR|(save?OFN_OVERWRITEPROMPT:OFN_FILEMUSTEXIST);
+    if(classic){options.Flags|=OFN_ENABLEHOOK|OFN_LONGNAMES;options.lpfnHook=old_file_hook;}
+    else options.Flags|=OFN_EXPLORER;
     BOOL chosen=save?GetSaveFileNameW(&options):GetOpenFileNameW(&options);
-    note(owner,chosen?file:L"Cancelled. No file was opened or saved.");
+    if(chosen)note(owner,file);else demo_dialog_failure(owner,L"Cancelled. No file was opened or saved.");
 }
 static void multi_file(HWND owner,BOOL explorer)
 {
@@ -35,23 +42,16 @@ static void multi_file(HWND owner,BOOL explorer)
     options.nMaxFile=ARRAYSIZE(file);options.lpstrFilter=L"All files\0*.*\0Text files\0*.txt\0\0";
     options.Flags=OFN_ALLOWMULTISELECT|OFN_FILEMUSTEXIST|OFN_PATHMUSTEXIST|OFN_NOCHANGEDIR|OFN_LONGNAMES;
     if(explorer)options.Flags|=OFN_EXPLORER;else{options.Flags|=OFN_ENABLEHOOK;options.lpfnHook=old_file_hook;}
-    if(!GetOpenFileNameW(&options)){DWORD error=CommDlgExtendedError();
-        if(error){swprintf(text,ARRAYSIZE(text),L"Multi-open failed: common-dialog error %lu",error);note(owner,text);}
-        else note(owner,L"Multi-open cancelled. No files were opened.");
-        return;}
+    if(!GetOpenFileNameW(&options)){demo_dialog_failure(owner,L"Multi-open cancelled. No files were opened.");return;}
     if(explorer && options.nFileOffset && options.nFileOffset<ARRAYSIZE(file) && file[options.nFileOffset-1]==0){
         unsigned count=0;const WCHAR *name=file+options.nFileOffset;
-        while(*name && name<file+ARRAYSIZE(file)){++count;name+=wcslen(name)+1;}
+        while(name<file+ARRAYSIZE(file) && *name){
+            ++count;
+            while(name<file+ARRAYSIZE(file) && *name)++name;
+            if(name<file+ARRAYSIZE(file))++name;
+        }
         swprintf(text,ARRAYSIZE(text),L"Selected %u files in %.380ls",count,file);note(owner,text);
     }else{swprintf(text,ARRAYSIZE(text),L"Selected: %.480ls",file);note(owner,text);}
-}
-static void explorer_file(HWND owner,BOOL save)
-{
-    WCHAR file[32768]=L"",text[128];OPENFILENAMEW o={0};o.lStructSize=sizeof(o);o.hwndOwner=owner;
-    o.lpstrFile=file;o.nMaxFile=ARRAYSIZE(file);o.lpstrFilter=L"All files\0*.*\0Text files\0*.txt\0\0";
-    o.Flags=OFN_EXPLORER|OFN_NOCHANGEDIR|OFN_PATHMUSTEXIST|(save?OFN_OVERWRITEPROMPT:OFN_FILEMUSTEXIST);
-    if(save?GetSaveFileNameW(&o):GetOpenFileNameW(&o))note(owner,file);
-    else {DWORD error=CommDlgExtendedError();swprintf(text,ARRAYSIZE(text),L"Explorer API cancelled or failed: error %lu",error);note(owner,text);}
 }
 static void legacy_launch(HWND owner)
 {
@@ -59,7 +59,7 @@ static void legacy_launch(HWND owner)
     o.lStructSize=sizeof(o);o.hwndOwner=owner;o.lpstrFile=file;o.nMaxFile=ARRAYSIZE(file);
     o.lpstrTitle=L"Choose a 16-bit executable to launch";o.lpstrFilter=L"Executables\0*.exe\0All files\0*.*\0\0";
     o.Flags=OFN_EXPLORER|OFN_FILEMUSTEXIST|OFN_PATHMUSTEXIST|OFN_NOCHANGEDIR;
-    if(!GetOpenFileNameW(&o)){note(owner,L"Launch cancelled.");return;}
+    if(!GetOpenFileNameW(&o)){demo_dialog_failure(owner,L"Launch cancelled.");return;}
     DWORD length=GetModuleFileNameW(NULL,launcher,ARRAYSIZE(launcher));
     WCHAR *slash=length && length<ARRAYSIZE(launcher)?wcsrchr(launcher,L'\\'):NULL;
     if(!slash || (size_t)(slash-launcher)+12>=ARRAYSIZE(launcher)){note(owner,L"Cannot find run16s next to demo.");return;}
@@ -140,14 +140,14 @@ static void find_dialog(HWND owner,BOOL replace)
 static void font_dialog(HWND owner)
 {
     LOGFONTW font={0};CHOOSEFONTW options={0};options.lStructSize=sizeof(options);options.hwndOwner=owner;options.lpLogFont=&font;options.Flags=CF_SCREENFONTS;
-    if(ChooseFontW(&options))note(owner,font.lfFaceName);else note(owner,L"Font selection cancelled.");
+    if(ChooseFontW(&options))note(owner,font.lfFaceName);else demo_dialog_failure(owner,L"Font selection cancelled.");
 }
 static void color_dialog(HWND owner)
 {
     static COLORREF custom[16];CHOOSECOLORW options={0};options.lStructSize=sizeof(options);options.hwndOwner=owner;
     options.lpCustColors=custom;options.rgbResult=RGB(0,0,0);options.Flags=CC_RGBINIT;
     if(ChooseColorW(&options)){WCHAR text[100];swprintf(text,ARRAYSIZE(text),L"Selected RGB: %u, %u, %u",GetRValue(options.rgbResult),GetGValue(options.rgbResult),GetBValue(options.rgbResult));note(owner,text);}
-    else note(owner,L"Color selection cancelled.");
+    else demo_dialog_failure(owner,L"Color selection cancelled.");
 }
 static void print_dialog(HWND owner,BOOL extended)
 {
@@ -157,7 +157,9 @@ static void print_dialog(HWND owner,BOOL extended)
         HRESULT hr=PrintDlgExW(&options);mode=options.hDevMode;names=options.hDevNames;dc=options.hDC;
         note(owner,SUCCEEDED(hr)?L"Print dialog closed. No print job was sent.":L"The extended print dialog failed.");
     }else{PRINTDLGW options={0};options.lStructSize=sizeof(options);options.hwndOwner=owner;options.Flags=PD_RETURNDC;options.nCopies=1;options.nMinPage=1;options.nMaxPage=1000;
-        (void)PrintDlgW(&options);mode=options.hDevMode;names=options.hDevNames;dc=options.hDC;note(owner,L"Print dialog closed. No print job was sent.");}
+        BOOL chosen=PrintDlgW(&options);
+        if(chosen)note(owner,L"Print dialog closed. No print job was sent.");else demo_dialog_failure(owner,L"Print dialog cancelled. No print job was sent.");
+        mode=options.hDevMode;names=options.hDevNames;dc=options.hDC;}
     if(dc)DeleteDC(dc);
     if(mode)GlobalFree(mode);
     if(names)GlobalFree(names);
@@ -165,14 +167,16 @@ static void print_dialog(HWND owner,BOOL extended)
 static void page_dialog(HWND owner)
 {
     PAGESETUPDLGW options={0};options.lStructSize=sizeof(options);options.hwndOwner=owner;
-    (void)PageSetupDlgW(&options);if(options.hDevMode)GlobalFree(options.hDevMode);if(options.hDevNames)GlobalFree(options.hDevNames);
-    note(owner,L"Page setup closed. No print job was sent.");
+    if(PageSetupDlgW(&options))note(owner,L"Page setup closed. No print job was sent.");
+    else demo_dialog_failure(owner,L"Page setup cancelled. No print job was sent.");
+    if(options.hDevMode)GlobalFree(options.hDevMode);
+    if(options.hDevNames)GlobalFree(options.hDevNames);
 }
 BOOL demo_dialog_execute(HWND owner,unsigned id)
 {
     switch(id){
-    case 2901:old_file(owner,FALSE);break;case 2902:modern_file(owner,FALSE,FALSE);break;case 2903:forced_modern_file(owner,1);break;
-    case 2904:old_file(owner,TRUE);break;case 2905:modern_file(owner,TRUE,FALSE);break;case 2906:forced_modern_file(owner,2);break;
+    case 2901:file_dialog(owner,FALSE,TRUE);break;case 2902:modern_file(owner,FALSE,FALSE);break;case 2903:forced_modern_file(owner,1);break;
+    case 2904:file_dialog(owner,TRUE,TRUE);break;case 2905:modern_file(owner,TRUE,FALSE);break;case 2906:forced_modern_file(owner,2);break;
     case 2907:shell_folder(owner,FALSE);break;case 2908:modern_file(owner,FALSE,TRUE);break;case 2909:forced_modern_file(owner,3);break;
     case 2910:find_dialog(owner,FALSE);break;case 2911:find_dialog(owner,TRUE);break;case 2912:font_dialog(owner);break;case 2913:color_dialog(owner);break;
     case 2914:print_dialog(owner,FALSE);break;case 2915:print_dialog(owner,TRUE);break;case 2916:page_dialog(owner);break;
@@ -181,10 +185,13 @@ BOOL demo_dialog_execute(HWND owner,unsigned id)
     case 2920:shell_folder(owner,TRUE);break;
     case 2921:multi_file(owner,FALSE);break;case 2922:multi_file(owner,TRUE);break;
     case 2923:{PRINTDLGW options={0};options.lStructSize=sizeof(options);options.hwndOwner=owner;options.Flags=PD_PRINTSETUP;
-        (void)PrintDlgW(&options);if(options.hDevMode)GlobalFree(options.hDevMode);if(options.hDevNames)GlobalFree(options.hDevNames);
+        if(PrintDlgW(&options))note(owner,L"Print setup closed. No print job was sent.");
+        else demo_dialog_failure(owner,L"Print setup cancelled. No print job was sent.");
+        if(options.hDevMode)GlobalFree(options.hDevMode);
+        if(options.hDevNames)GlobalFree(options.hDevNames);
         if(options.hDC)DeleteDC(options.hDC);
-        note(owner,L"Print setup closed. No print job was sent.");break;}
-    case 2924:explorer_file(owner,FALSE);break;case 2925:explorer_file(owner,TRUE);break;
+        break;}
+    case 2924:file_dialog(owner,FALSE,FALSE);break;case 2925:file_dialog(owner,TRUE,FALSE);break;
     case 2926:com_multi_file(owner);break;
     case 2927:legacy_launch(owner);break;
     default:return FALSE;

@@ -8,6 +8,7 @@ BOOL win16_control_theme_capture(HWND window);
 BOOL win16_control_theme_stage(HWND window);
 BOOL win16_control_theme_commit(HWND window);
 void win16_control_theme_cancel_stage(HWND window);
+/* NULL owner retires this window's node; non-NULL guards an owned peer. */
 BOOL win16_control_theme_terminal(HWND window,const void *owner);
 BOOL win16_control_theme_enable(HWND window,const void *owner,win16_control_native_theme_fn native_theme);
 BOOL win16_control_theme_retained(HWND window);

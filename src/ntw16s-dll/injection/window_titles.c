@@ -3,15 +3,15 @@
 #include "../../lib-win32/win16-dialog/print_classic.h"
 #include "../../lib-win32/win16-dialog/chrome.h"
 #include "intercept.h"
-#include "startup_hooks.h"
-#include "unwind.h"
+#include "../../lib-win32/process-hook/startup_hooks.h"
+#include "../../lib-win32/process-hook/unwind.h"
 #include "theme_track.h"
-#include "print_extended.h"
+#include "../../lib-win32/win16-dialog/print_extended.h"
 #include "ntw16s-dll/ntw16s.h"
 #include "ntw16s-dll/attachment.h"
 #include "ntw16s-dll/native_api.h"
-#include "ntw16s-dll/vb_text.h"
-#include "ntw16s-dll/updown_paint.h"
+#include "lib-win32/win16-control/vb_text.h"
+#include "../../lib-win32/win16-control/updown_adapter.h"
 #include "ntw16s-dll/controls.h"
 #include "ntw16s-dll/static_text.h"
 #include "ntw16s-dll/status_theme.h"
@@ -21,9 +21,11 @@
 #include <commdlg.h>
 #include <commctrl.h>
 #include <vssym32.h>
-#include "ntw16s-dll/font.h"
-#include "ntw16s-dll/month_text.h"
+#include "../../lib-win32/win16-common/font.h"
+#include "../../lib-win32/win16-control/month_text.h"
 #include "lib-win32/win16-control/special_paint.h"
+#include "lib-win32/win16-control/choice_paint.h"
+#include "lib-win32/win16-control/vcl_extra_frame.h"
 HFONT ntw16s_month_text_borrow(HTHEME,HDC,int,int,DWORD,DWORD,const RECT *,const void *);
 BOOL ntw16s_month_text_room(HTHEME,HDC,int,int,DWORD,DWORD,const RECT *,int,const void *);
 typedef struct month_text_room_context {HTHEME theme;HDC dc;int part,state;DWORD flags,flags2;const RECT *rect;const void *caller;} month_text_room_context;
@@ -35,7 +37,6 @@ static void month_font_return(void *p){month_font_borrow *b=p;if(b->saved)Restor
 /* Private, synchronous coordinator scope; not part of the public ABI. */
 void ntw16s_status_frame(HDC,const RECT *,const RECT *,const void *);
 BOOL ntw16s_controlbar_edge_active(void);
-BOOL ntw16s_controlbar_edge_allowed(UINT);
 void ntw16s_controlbar_edge(HDC,const RECT *,UINT,UINT,const void *);
 void ntw16s_bit_theme_frame(HDC,int,const RECT *,const RECT *,const void *);
 void ntw16s_nav_theme(HDC,int,int,const RECT *,const RECT *,const void *);
@@ -96,21 +97,21 @@ static void end_titles(void *data)
  * CreateWindow entry points. Keep attachment active during their modal Show. */
 HRESULT ntw16s_dialog_style_scope(HRESULT (*callback)(void *),void *context)
 {
-    ntw16s_unwind_scope unwind;title_scope scope;HRESULT result=E_FAIL;
+    process_hook_unwind_scope unwind;title_scope scope;HRESULT result=E_FAIL;
     if(!callback)return E_INVALIDARG;
     if(!begin_titles(&scope,TRUE))return HRESULT_FROM_WIN32(GetLastError());
-    NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); {result=callback(context);}
-    NTW16S_UNWIND_END(unwind);
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,end_titles,&scope); {result=callback(context);}
+    PROCESS_HOOK_UNWIND_END(unwind);
     return scope.failure?HRESULT_FROM_WIN32(scope.failure):result;
 }
 
 #define WINDOW_HOOK(S,T) \
 static __typeof__(&CreateWindowEx##S) create_##S; \
-static NTW16S_UNWIND_FUNCTION HWND WINAPI window_##S(DWORD ex,T cls,T text,DWORD style,int x,int y,int cx,int cy,HWND parent,HMENU menu,HINSTANCE instance,void *param) \
-{ ntw16s_unwind_scope unwind;title_scope scope;HWND result=NULL;DWORD error=ERROR_SUCCESS; \
+static PROCESS_HOOK_UNWIND_FUNCTION HWND WINAPI window_##S(DWORD ex,T cls,T text,DWORD style,int x,int y,int cx,int cy,HWND parent,HMENU menu,HINSTANCE instance,void *param) \
+{ process_hook_unwind_scope unwind;title_scope scope;HWND result=NULL;DWORD error=ERROR_SUCCESS; \
   if(!begin_titles(&scope,FALSE))return NULL; \
-  NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); { result=create_##S(ex,cls,text,style,x,y,cx,cy,parent,menu,instance,param);error=GetLastError(); \
-  } NTW16S_UNWIND_END(unwind); \
+  PROCESS_HOOK_UNWIND_BEGIN(unwind,end_titles,&scope); { result=create_##S(ex,cls,text,style,x,y,cx,cy,parent,menu,instance,param);error=GetLastError(); \
+  } PROCESS_HOOK_UNWIND_END(unwind); \
   if(scope.failure){if(result)DestroyWindow(result);result=NULL;error=scope.failure;} \
   if(result && scope.enabled){mark_menu_owner(result,__builtin_return_address(0));} SetLastError(error);return result; }
 WINDOW_HOOK(A,LPCSTR)
@@ -120,13 +121,13 @@ WINDOW_HOOK(W,LPCWSTR)
  * than CreateWindowExW. Preserve its band and use the same creation scope. */
 typedef HWND (WINAPI *create_window_band_fn)(DWORD,LPCWSTR,LPCWSTR,DWORD,int,int,int,int,HWND,HMENU,HINSTANCE,void *,DWORD);
 static create_window_band_fn create_band;
-static NTW16S_UNWIND_FUNCTION HWND WINAPI window_band(DWORD ex,LPCWSTR cls,LPCWSTR text,DWORD style,int x,int y,int cx,int cy,HWND parent,HMENU menu,HINSTANCE instance,void *param,DWORD band)
+static PROCESS_HOOK_UNWIND_FUNCTION HWND WINAPI window_band(DWORD ex,LPCWSTR cls,LPCWSTR text,DWORD style,int x,int y,int cx,int cy,HWND parent,HMENU menu,HINSTANCE instance,void *param,DWORD band)
 {
-    ntw16s_unwind_scope unwind;title_scope scope;HWND result=NULL;DWORD error=ERROR_SUCCESS;
+    process_hook_unwind_scope unwind;title_scope scope;HWND result=NULL;DWORD error=ERROR_SUCCESS;
     if(!begin_titles(&scope,FALSE))return NULL;
-    NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope);
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,end_titles,&scope);
     {result=create_band(ex,cls,text,style,x,y,cx,cy,parent,menu,instance,param,band);error=GetLastError();}
-    NTW16S_UNWIND_END(unwind);
+    PROCESS_HOOK_UNWIND_END(unwind);
     if(scope.failure){if(result)DestroyWindow(result);result=NULL;error=scope.failure;}
     if(result && scope.enabled)mark_menu_owner(result,__builtin_return_address(0));
     SetLastError(error);return result;
@@ -134,11 +135,11 @@ static NTW16S_UNWIND_FUNCTION HWND WINAPI window_band(DWORD ex,LPCWSTR cls,LPCWS
 
 #define DIALOG_HOOK(NAME,TYPE,RET,MODAL,FAIL) \
 static __typeof__(&NAME) real_##NAME; \
-static NTW16S_UNWIND_FUNCTION RET WINAPI hook_##NAME(HINSTANCE instance,TYPE name,HWND parent,DLGPROC proc,LPARAM param) \
-{ ntw16s_unwind_scope unwind;title_scope scope;RET result=FAIL;DWORD error=ERROR_SUCCESS; \
+static PROCESS_HOOK_UNWIND_FUNCTION RET WINAPI hook_##NAME(HINSTANCE instance,TYPE name,HWND parent,DLGPROC proc,LPARAM param) \
+{ process_hook_unwind_scope unwind;title_scope scope;RET result=FAIL;DWORD error=ERROR_SUCCESS; \
   if(!begin_titles(&scope,TRUE))return FAIL; \
-  NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); { result=real_##NAME(instance,name,parent,proc,param);error=GetLastError(); \
-  } NTW16S_UNWIND_END(unwind); \
+  PROCESS_HOOK_UNWIND_BEGIN(unwind,end_titles,&scope); { result=real_##NAME(instance,name,parent,proc,param);error=GetLastError(); \
+  } PROCESS_HOOK_UNWIND_END(unwind); \
   if(scope.failure){if(!(MODAL)){if(result)DestroyWindow((HWND)result);}result=FAIL;error=scope.failure;} \
   SetLastError(error);return result; }
 DIALOG_HOOK(CreateDialogParamA,LPCSTR,HWND,FALSE,NULL)
@@ -153,20 +154,18 @@ DIALOG_HOOK(DialogBoxIndirectParamW,LPCDLGTEMPLATEW,INT_PTR,TRUE,-1)
 /* Find/Replace are modeless common dialogs.  Their internal dialog creation
  * can bypass exported CreateDialog hooks, so keep the ordinary creation scope
  * active around the public entry point and return the original HWND. */
-#define FIND_HOOK(NAME, TYPE) \
+#define SIMPLE_DIALOG_HOOK(NAME,PARAM,RET,FAIL,CLEANUP) \
 static __typeof__(&NAME) real_##NAME; \
-static NTW16S_UNWIND_FUNCTION HWND WINAPI hook_##NAME(TYPE *parameters) \
-{ ntw16s_unwind_scope unwind;title_scope scope;HWND result=NULL;DWORD error=ERROR_SUCCESS; \
-  if(!begin_titles(&scope,TRUE))return NULL; \
-  NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
-  } NTW16S_UNWIND_END(unwind); \
-  if(scope.failure){if(result)DestroyWindow(result);result=NULL;error=scope.failure;} \
-  SetLastError(error);return result; }
-FIND_HOOK(FindTextA,FINDREPLACEA)
-FIND_HOOK(FindTextW,FINDREPLACEW)
-FIND_HOOK(ReplaceTextA,FINDREPLACEA)
-FIND_HOOK(ReplaceTextW,FINDREPLACEW)
-#undef FIND_HOOK
+static PROCESS_HOOK_UNWIND_FUNCTION RET WINAPI hook_##NAME(PARAM parameters) \
+{ process_hook_unwind_scope unwind;title_scope scope;RET result=FAIL;DWORD error=ERROR_SUCCESS; \
+  if(!begin_titles(&scope,TRUE))return FAIL; \
+  PROCESS_HOOK_UNWIND_BEGIN(unwind,end_titles,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
+  } PROCESS_HOOK_UNWIND_END(unwind); \
+  if(scope.failure){CLEANUP;result=FAIL;error=scope.failure;} SetLastError(error);return result; }
+SIMPLE_DIALOG_HOOK(FindTextA,FINDREPLACEA *,HWND,NULL,if(result)DestroyWindow(result))
+SIMPLE_DIALOG_HOOK(FindTextW,FINDREPLACEW *,HWND,NULL,if(result)DestroyWindow(result))
+SIMPLE_DIALOG_HOOK(ReplaceTextA,FINDREPLACEA *,HWND,NULL,if(result)DestroyWindow(result))
+SIMPLE_DIALOG_HOOK(ReplaceTextW,FINDREPLACEW *,HWND,NULL,if(result)DestroyWindow(result))
 
 /* Font selection uses owner-drawn system combos.  Observe only the current
  * thread and only the standard font dialog's three required combo IDs; keep
@@ -191,12 +190,12 @@ static void font_dialog_end(void *value)
 }
 #define FONT_DIALOG_HOOK(NAME, TYPE) \
 static __typeof__(&NAME) real_##NAME; \
-static NTW16S_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
-{ ntw16s_unwind_scope unwind;font_dialog_scope scope={0};BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
+static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
+{ process_hook_unwind_scope unwind;font_dialog_scope scope={0};BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
   if(!begin_titles(&scope.title,TRUE))return FALSE; \
   if(scope.title.enabled)scope.hook=SetWindowsHookExW(WH_CALLWNDPROCRET,font_dialog_return,NULL,GetCurrentThreadId()); \
-  NTW16S_UNWIND_BEGIN(unwind,font_dialog_end,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
-  } NTW16S_UNWIND_END(unwind); \
+  PROCESS_HOOK_UNWIND_BEGIN(unwind,font_dialog_end,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
+  } PROCESS_HOOK_UNWIND_END(unwind); \
   if(scope.title.failure){result=FALSE;error=scope.title.failure;} SetLastError(error);return result; }
 FONT_DIALOG_HOOK(ChooseFontA,CHOOSEFONTA)
 FONT_DIALOG_HOOK(ChooseFontW,CHOOSEFONTW)
@@ -225,13 +224,13 @@ static LRESULT CALLBACK color_dialog_return(int code,WPARAM wparam,LPARAM lparam
 }
 #define COLOR_DIALOG_HOOK(NAME, TYPE) \
 static __typeof__(&NAME) real_##NAME; \
-static NTW16S_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
-{ ntw16s_unwind_scope unwind;color_dialog_scope scope={0};BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
+static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
+{ process_hook_unwind_scope unwind;color_dialog_scope scope={0};BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
   if(!begin_titles(&scope.base.title,TRUE))return FALSE; \
   scope.previous=active_color_dialog;active_color_dialog=&scope; \
   if(scope.base.title.enabled)scope.base.hook=SetWindowsHookExW(WH_CALLWNDPROCRET,color_dialog_return,NULL,GetCurrentThreadId()); \
-  NTW16S_UNWIND_BEGIN(unwind,color_dialog_end,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
-  } NTW16S_UNWIND_END(unwind); \
+  PROCESS_HOOK_UNWIND_BEGIN(unwind,color_dialog_end,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
+  } PROCESS_HOOK_UNWIND_END(unwind); \
   if(scope.base.title.failure){result=FALSE;error=scope.base.title.failure;} SetLastError(error);return result; }
 COLOR_DIALOG_HOOK(ChooseColorA,CHOOSECOLORA)
 COLOR_DIALOG_HOOK(ChooseColorW,CHOOSECOLORW)
@@ -241,94 +240,71 @@ COLOR_DIALOG_HOOK(ChooseColorW,CHOOSECOLORW)
  * Preserve caller-owned customization and less common flag contracts unchanged. */
 #define PRINT_HOOK(NAME,TYPE,SUFFIX) \
 static __typeof__(&NAME) real_##NAME; \
-static NTW16S_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
-{ ntw16s_unwind_scope unwind;title_scope scope;BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
+static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
+{ process_hook_unwind_scope unwind;title_scope scope;BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
   if(!begin_titles(&scope,TRUE))return FALSE; \
-  NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); { \
+  PROCESS_HOOK_UNWIND_BEGIN(unwind,end_titles,&scope); { \
     TYPE copy; \
     if(scope.enabled && win16_dialog_print_prepare_##SUFFIX(parameters,&copy)) { \
       result=real_##NAME(&copy);error=GetLastError(); \
       win16_dialog_print_result_##SUFFIX(parameters,&copy); \
     } else { result=real_##NAME(parameters);error=GetLastError(); } \
-  } NTW16S_UNWIND_END(unwind); \
+  } PROCESS_HOOK_UNWIND_END(unwind); \
   if(scope.failure){result=FALSE;error=scope.failure;}SetLastError(error);return result; }
 PRINT_HOOK(PrintDlgA,PRINTDLGA,a)
 PRINT_HOOK(PrintDlgW,PRINTDLGW,w)
 #undef PRINT_HOOK
 
 /* Synchronous common dialogs also create their own internal windows. */
-#define COMMON_HOOK(NAME, TYPE) \
-static __typeof__(&NAME) real_##NAME; \
-static NTW16S_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
-{ ntw16s_unwind_scope unwind;title_scope scope;BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
-  if(!begin_titles(&scope,TRUE))return FALSE; \
-  NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
-  } NTW16S_UNWIND_END(unwind); \
-  if(scope.failure){result=FALSE;error=scope.failure;} SetLastError(error);return result; }
-COMMON_HOOK(PageSetupDlgA,PAGESETUPDLGA)
-COMMON_HOOK(PageSetupDlgW,PAGESETUPDLGW)
-#undef COMMON_HOOK
+SIMPLE_DIALOG_HOOK(PageSetupDlgA,PAGESETUPDLGA *,BOOL,FALSE,(void)0)
+SIMPLE_DIALOG_HOOK(PageSetupDlgW,PAGESETUPDLGW *,BOOL,FALSE,(void)0)
 #define PRINT_EXTENDED_HOOK(NAME,TYPE,BRIDGE,PRINT) \
 static __typeof__(&NAME) real_##NAME; \
-static NTW16S_UNWIND_FUNCTION HRESULT WINAPI hook_##NAME(TYPE *parameters) \
-{ ntw16s_unwind_scope unwind;title_scope scope;HRESULT result=E_FAIL;DWORD error=ERROR_SUCCESS; \
+static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_##NAME(TYPE *parameters) \
+{ process_hook_unwind_scope unwind;title_scope scope;HRESULT result=E_FAIL;DWORD error=ERROR_SUCCESS; \
   if(!begin_titles(&scope,TRUE))return HRESULT_FROM_WIN32(GetLastError()); \
-  NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); { \
+  PROCESS_HOOK_UNWIND_BEGIN(unwind,end_titles,&scope); { \
     if(!scope.enabled || !BRIDGE(parameters,PRINT,&result)){result=real_##NAME(parameters);}error=GetLastError(); \
-  } NTW16S_UNWIND_END(unwind); \
+  } PROCESS_HOOK_UNWIND_END(unwind); \
   if(scope.failure){result=HRESULT_FROM_WIN32(scope.failure);error=scope.failure;}SetLastError(error);return result; }
 PRINT_EXTENDED_HOOK(PrintDlgExA,PRINTDLGEXA,ntw16s_print_extended_a,real_PrintDlgA)
 PRINT_EXTENDED_HOOK(PrintDlgExW,PRINTDLGEXW,ntw16s_print_extended_w,real_PrintDlgW)
 #undef PRINT_EXTENDED_HOOK
 
 /* Property sheets may create internal pages without public DialogBox calls. */
-#define SHEET_HOOK(NAME, TYPE) \
-static __typeof__(&NAME) real_##NAME; \
-static NTW16S_UNWIND_FUNCTION INT_PTR WINAPI hook_##NAME(const TYPE *parameters) \
-{ ntw16s_unwind_scope unwind;title_scope scope;INT_PTR result=-1;DWORD error=ERROR_SUCCESS; \
-  if(!begin_titles(&scope,TRUE))return -1; \
-  NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
-  } NTW16S_UNWIND_END(unwind); \
-  if(scope.failure){result=-1;error=scope.failure;} SetLastError(error);return result; }
-SHEET_HOOK(PropertySheetA,PROPSHEETHEADERA)
-SHEET_HOOK(PropertySheetW,PROPSHEETHEADERW)
-#undef SHEET_HOOK
+SIMPLE_DIALOG_HOOK(PropertySheetA,const PROPSHEETHEADERA *,INT_PTR,-1,(void)0)
+SIMPLE_DIALOG_HOOK(PropertySheetW,const PROPSHEETHEADERW *,INT_PTR,-1,(void)0)
+#undef SIMPLE_DIALOG_HOOK
 
 /* TaskDialog lives in ComCtl32 v6; bind only when that module exports it. */
 static __typeof__(&TaskDialog) real_TaskDialog;
 static __typeof__(&TaskDialogIndirect) real_TaskDialogIndirect;
-static NTW16S_UNWIND_FUNCTION HRESULT WINAPI hook_TaskDialog(HWND owner,HINSTANCE instance,
-    PCWSTR title,PCWSTR main_instruction,PCWSTR content,TASKDIALOG_COMMON_BUTTON_FLAGS buttons,
-    PCWSTR icon,int *button)
-{
-    ntw16s_unwind_scope unwind;title_scope scope;HRESULT result=E_FAIL;DWORD error=ERROR_SUCCESS;
-    if(!begin_titles(&scope,TRUE))return HRESULT_FROM_WIN32(GetLastError());
-    NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); {
-        result=real_TaskDialog(owner,instance,title,main_instruction,content,buttons,icon,button);error=GetLastError();
-    } NTW16S_UNWIND_END(unwind);
-    if(scope.failure){result=HRESULT_FROM_WIN32(scope.failure);error=scope.failure;}SetLastError(error);return result;
+#define TASK_DIALOG_HOOK(NAME,PARAMETERS,ARGUMENTS) \
+static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_##NAME PARAMETERS \
+{ \
+    process_hook_unwind_scope unwind;title_scope scope;HRESULT result=E_FAIL;DWORD error=ERROR_SUCCESS; \
+    if(!begin_titles(&scope,TRUE))return HRESULT_FROM_WIN32(GetLastError()); \
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,end_titles,&scope); { \
+        result=real_##NAME ARGUMENTS;error=GetLastError(); \
+    } PROCESS_HOOK_UNWIND_END(unwind); \
+    if(scope.failure){result=HRESULT_FROM_WIN32(scope.failure);error=scope.failure;}SetLastError(error);return result; \
 }
-static NTW16S_UNWIND_FUNCTION HRESULT WINAPI hook_TaskDialogIndirect(const TASKDIALOGCONFIG *config,
-    int *button,int *radio,BOOL *verification)
-{
-    ntw16s_unwind_scope unwind;title_scope scope;HRESULT result=E_FAIL;DWORD error=ERROR_SUCCESS;
-    if(!begin_titles(&scope,TRUE))return HRESULT_FROM_WIN32(GetLastError());
-    NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); {
-        result=real_TaskDialogIndirect(config,button,radio,verification);error=GetLastError();
-    } NTW16S_UNWIND_END(unwind);
-    if(scope.failure){result=HRESULT_FROM_WIN32(scope.failure);error=scope.failure;}SetLastError(error);return result;
-}
+TASK_DIALOG_HOOK(TaskDialog,(HWND owner,HINSTANCE instance,PCWSTR title,PCWSTR main_instruction,PCWSTR content,TASKDIALOG_COMMON_BUTTON_FLAGS buttons,PCWSTR icon,int *button),
+    (owner,instance,title,main_instruction,content,buttons,icon,button))
+TASK_DIALOG_HOOK(TaskDialogIndirect,(const TASKDIALOGCONFIG *config,int *button,int *radio,BOOL *verification),
+    (config,button,radio,verification))
+#undef TASK_DIALOG_HOOK
 
 /* MessageBox creates its own dialog inside USER rather than necessarily
  * calling an exported DialogBox entry. Keep its API/return contract and use
  * the same bounded creation scope as the other modal entry points. */
 #define MESSAGE_HOOK(NAME,PARAMETERS,ARGUMENTS) \
 static __typeof__(&NAME) real_##NAME; \
-static NTW16S_UNWIND_FUNCTION int WINAPI hook_##NAME PARAMETERS \
-{ ntw16s_unwind_scope unwind;title_scope scope;int result=0;DWORD error=ERROR_SUCCESS; \
+static PROCESS_HOOK_UNWIND_FUNCTION int WINAPI hook_##NAME PARAMETERS \
+{ process_hook_unwind_scope unwind;title_scope scope;int result=0;DWORD error=ERROR_SUCCESS; \
   if(!begin_titles(&scope,TRUE))return 0; \
-  NTW16S_UNWIND_BEGIN(unwind,end_titles,&scope); { result=real_##NAME ARGUMENTS;error=GetLastError(); \
-  } NTW16S_UNWIND_END(unwind); \
+  PROCESS_HOOK_UNWIND_BEGIN(unwind,end_titles,&scope); { result=real_##NAME ARGUMENTS;error=GetLastError(); \
+  } PROCESS_HOOK_UNWIND_END(unwind); \
   if(scope.failure){result=0;error=scope.failure;} SetLastError(error);return result; }
 MESSAGE_HOOK(MessageBoxA,(HWND owner,LPCSTR text,LPCSTR caption,UINT type),(owner,text,caption,type))
 MESSAGE_HOOK(MessageBoxW,(HWND owner,LPCWSTR text,LPCWSTR caption,UINT type),(owner,text,caption,type))
@@ -441,16 +417,16 @@ static __typeof__(&CallWindowProcA) real_CallWindowProcA;
 static LRESULT WINAPI hook_CallWindowProcA(WNDPROC proc,HWND w,UINT message,WPARAM wp,LPARAM lp)
 {DWORD entry=GetLastError();ntw16s_dbcombo_ansi_witness(proc,w,message,__builtin_return_address(0));ntw16s_dbedit_ansi_witness(proc,w,message,__builtin_return_address(0));ntw16s_rich_witness(proc,w,message,__builtin_return_address(0),FALSE);SetLastError(entry);return real_CallWindowProcA(proc,w,message,wp,lp);}
 static __typeof__(&CallWindowProcW) real_CallWindowProcW;
-static NTW16S_UNWIND_FUNCTION LRESULT WINAPI hook_CallWindowProcW(WNDPROC proc,HWND w,UINT message,WPARAM wp,LPARAM lp)
+static PROCESS_HOOK_UNWIND_FUNCTION LRESULT WINAPI hook_CallWindowProcW(WNDPROC proc,HWND w,UINT message,WPARAM wp,LPARAM lp)
 {
-    ntw16s_static_call call;ntw16s_unwind_scope unwind;LRESULT result;DWORD entry=GetLastError(),error;
+    ntw16s_static_call call;process_hook_unwind_scope unwind;LRESULT result;DWORD entry=GetLastError(),error;
     ntw16s_rich_witness(proc,w,message,__builtin_return_address(0),TRUE);
     if(!ntw16s_static_call_begin(&call,proc,w,message,__builtin_return_address(0)) && !ntw16s_static_call_suspend(&call)){
         SetLastError(entry);return real_CallWindowProcW(proc,w,message,wp,lp);
     }
-    NTW16S_UNWIND_BEGIN(unwind,ntw16s_static_call_end,&call);
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,ntw16s_static_call_end,&call);
     SetLastError(entry);result=real_CallWindowProcW(proc,w,message,wp,lp);error=GetLastError();
-    NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
+    PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;
 }
 HFONT ntw16s_status_simple_font(HDC,LPCWSTR,int,UINT,const void *,void **);
 void ntw16s_status_simple_return(void *,HFONT);
@@ -462,31 +438,31 @@ static void static_font_return(void *data)
     if(borrow->previous)SelectObject(borrow->dc,borrow->previous);
     if(borrow->font)win16_style_system_release(borrow->font);
 }
-static NTW16S_UNWIND_FUNCTION int WINAPI hook_DrawTextW(HDC dc,LPCWSTR text,int count,LPRECT rect,UINT flags)
+static PROCESS_HOOK_UNWIND_FUNCTION int WINAPI hook_DrawTextW(HDC dc,LPCWSTR text,int count,LPRECT rect,UINT flags)
 {
     DWORD entry=GetLastError(),error;HFONT font=ntw16s_static_text_font(dc,text,count,flags,__builtin_return_address(0));
     HGDIOBJ old=font?SelectObject(dc,font):NULL;
     if(old==HGDI_ERROR)old=NULL;
     if(!font){SetLastError(entry);return real_DrawTextW(dc,text,count,rect,flags);}
-    static_font_borrow borrow={dc,font,old};ntw16s_unwind_scope unwind;int result;
-    NTW16S_UNWIND_BEGIN(unwind,static_font_return,&borrow);
+    static_font_borrow borrow={dc,font,old};process_hook_unwind_scope unwind;int result;
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,static_font_return,&borrow);
     SetLastError(entry);result=real_DrawTextW(dc,text,count,rect,flags);error=GetLastError();
-    NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
+    PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;
 }
 
 
 typedef struct status_font_borrow {HDC dc;HFONT font;HGDIOBJ previous;void *token;} status_font_borrow;
 static void status_font_return(void *data){status_font_borrow *b=data;if(b->previous)SelectObject(b->dc,b->previous);ntw16s_status_simple_return(b->token,b->font);}
 static __typeof__(&DrawTextExW) real_DrawTextExW;
-static NTW16S_UNWIND_FUNCTION int WINAPI hook_DrawTextExW(HDC dc,LPWSTR text,int count,LPRECT rect,UINT flags,LPDRAWTEXTPARAMS params)
+static PROCESS_HOOK_UNWIND_FUNCTION int WINAPI hook_DrawTextExW(HDC dc,LPWSTR text,int count,LPRECT rect,UINT flags,LPDRAWTEXTPARAMS params)
 {
     DWORD entry=GetLastError(),error;void *token=NULL;HFONT font=ntw16s_status_simple_font(dc,text,count,flags,__builtin_return_address(0),&token);
     HGDIOBJ old=font?SelectObject(dc,font):NULL;if(old==HGDI_ERROR)old=NULL;
     if(!font){SetLastError(entry);return real_DrawTextExW(dc,text,count,rect,flags,params);}
-    status_font_borrow borrow={dc,font,old,token};ntw16s_unwind_scope unwind;int result;
-    NTW16S_UNWIND_BEGIN(unwind,status_font_return,&borrow);
+    status_font_borrow borrow={dc,font,old,token};process_hook_unwind_scope unwind;int result;
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,status_font_return,&borrow);
     SetLastError(entry);result=real_DrawTextExW(dc,text,count,rect,flags,params);error=GetLastError();
-    NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
+    PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;
 }
 
 
@@ -534,9 +510,9 @@ void ntw16s_month_header_text(HTHEME,HDC,int,int,const RECT *,DWORD,const void *
 void ntw16s_month_selection_background(HTHEME,HDC,int,int,const RECT *,const RECT *,const void *);
 void ntw16s_month_selection_text(HTHEME,HDC,int,int,const RECT *,DWORD,const void *);
 static __typeof__(&DrawThemeText) real_DrawThemeText;
-static NTW16S_UNWIND_FUNCTION HRESULT WINAPI hook_DrawThemeText(HTHEME theme,HDC dc,int part,int state,LPCWSTR text,int count,DWORD flags,DWORD flags2,const RECT *rect)
+static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_DrawThemeText(HTHEME theme,HDC dc,int part,int state,LPCWSTR text,int count,DWORD flags,DWORD flags2,const RECT *rect)
 {
-    DWORD saved=GetLastError(),error;HRESULT result;ntw16s_status_theme_scope scope;ntw16s_unwind_scope unwind;
+    DWORD saved=GetLastError(),error;HRESULT result;ntw16s_status_theme_scope scope;process_hook_unwind_scope unwind;
     ntw16s_month_header_text(theme,dc,part,state,rect,flags,__builtin_return_address(0));
     ntw16s_month_selection_text(theme,dc,part,state,rect,flags,__builtin_return_address(0));
     ntw16s_status_text_frame(dc,rect,flags,__builtin_return_address(0));
@@ -544,13 +520,13 @@ static NTW16S_UNWIND_FUNCTION HRESULT WINAPI hook_DrawThemeText(HTHEME theme,HDC
     if(!entered && text){
         int n=0;BOOL supported=ntw16s_month_text_length(text,count,&n);
         HFONT font=supported?ntw16s_month_text_borrow(theme,dc,part,state,flags,flags2,rect,__builtin_return_address(0)):NULL;
-        if(font){month_font_borrow borrow={dc,SaveDC(dc),font};BOOL done=FALSE;ntw16s_unwind_scope cleanup;NTW16S_UNWIND_BEGIN(cleanup,month_font_return,&borrow);
+        if(font){month_font_borrow borrow={dc,SaveDC(dc),font};BOOL done=FALSE;process_hook_unwind_scope cleanup;PROCESS_HOOK_UNWIND_BEGIN(cleanup,month_font_return,&borrow);
           if(borrow.saved){month_text_room_context room={theme,dc,part,state,flags,flags2,rect,__builtin_return_address(0)};done=win16_control_month_text(theme,dc,part,state,font,text,n,flags,rect,real_DrawTextW,month_text_room,&room);}
-          NTW16S_UNWIND_END(cleanup);if(done){SetLastError(saved);return S_OK;}}}
+          PROCESS_HOOK_UNWIND_END(cleanup);if(done){SetLastError(saved);return S_OK;}}}
     if(!entered){SetLastError(saved);return real_DrawThemeText(theme,dc,part,state,text,count,flags,flags2,rect);}
-    NTW16S_UNWIND_BEGIN(unwind,ntw16s_status_theme_end,&scope);
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,ntw16s_status_theme_end,&scope);
     SetLastError(saved);result=real_DrawThemeText(theme,dc,part,state,text,count,flags,flags2,rect);error=GetLastError();
-    NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
+    PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;
 }
 void ntw16s_group_frame(HDC,int,int,const RECT *,const RECT *,LPCWSTR,int,DWORD,const void *,BOOL);
 static __typeof__(&DrawThemeTextEx) real_DrawThemeTextEx;
@@ -575,41 +551,28 @@ static void theme_end(void *data)
     scope->active=FALSE;
 }
 
-static NTW16S_UNWIND_FUNCTION HTHEME WINAPI hook_OpenThemeData(HWND w,LPCWSTR name)
-{
-    DWORD entry=GetLastError(),error;HTHEME h;ntw16s_unwind_scope unwind;
-    theme_unwind scope={TRUE,FALSE,NULL};ntw16s_theme_ticket ticket=ntw16s_theme_open_begin();
-    NTW16S_UNWIND_BEGIN(unwind,theme_end,&scope);
-    SetLastError(entry);h=real_OpenThemeData(w,name);error=GetLastError();
-    ntw16s_theme_open_end(ticket,h,h?win16_control_theme_kind(name):NTW16S_THEME_OTHER);scope.active=FALSE;
-    NTW16S_UNWIND_END(unwind);SetLastError(error);return h;
+#define THEME_OPEN_HOOK(NAME,PARAMETERS,ARGUMENTS) \
+static PROCESS_HOOK_UNWIND_FUNCTION HTHEME WINAPI hook_##NAME PARAMETERS \
+{ \
+    DWORD entry=GetLastError(),error;HTHEME h;process_hook_unwind_scope unwind; \
+    theme_unwind scope={TRUE,FALSE,NULL};ntw16s_theme_ticket ticket=ntw16s_theme_open_begin(); \
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,theme_end,&scope); \
+    SetLastError(entry);h=real_##NAME ARGUMENTS;error=GetLastError(); \
+    ntw16s_theme_open_end(ticket,h,h?win16_control_theme_kind(name):NTW16S_THEME_OTHER);scope.active=FALSE; \
+    PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return h; \
 }
-static NTW16S_UNWIND_FUNCTION HTHEME WINAPI hook_OpenThemeDataEx(HWND w,LPCWSTR name,DWORD flags)
+THEME_OPEN_HOOK(OpenThemeData,(HWND w,LPCWSTR name),(w,name))
+THEME_OPEN_HOOK(OpenThemeDataEx,(HWND w,LPCWSTR name,DWORD flags),(w,name,flags))
+THEME_OPEN_HOOK(OpenThemeDataForDpi,(HWND w,LPCWSTR name,UINT dpi),(w,name,dpi))
+#undef THEME_OPEN_HOOK
+static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_CloseThemeData(HTHEME h)
 {
-    DWORD entry=GetLastError(),error;HTHEME h;ntw16s_unwind_scope unwind;
-    theme_unwind scope={TRUE,FALSE,NULL};ntw16s_theme_ticket ticket=ntw16s_theme_open_begin();
-    NTW16S_UNWIND_BEGIN(unwind,theme_end,&scope);
-    SetLastError(entry);h=real_OpenThemeDataEx(w,name,flags);error=GetLastError();
-    ntw16s_theme_open_end(ticket,h,h?win16_control_theme_kind(name):NTW16S_THEME_OTHER);scope.active=FALSE;
-    NTW16S_UNWIND_END(unwind);SetLastError(error);return h;
-}
-static NTW16S_UNWIND_FUNCTION HTHEME WINAPI hook_OpenThemeDataForDpi(HWND w,LPCWSTR name,UINT dpi)
-{
-    DWORD entry=GetLastError(),error;HTHEME h;ntw16s_unwind_scope unwind;
-    theme_unwind scope={TRUE,FALSE,NULL};ntw16s_theme_ticket ticket=ntw16s_theme_open_begin();
-    NTW16S_UNWIND_BEGIN(unwind,theme_end,&scope);
-    SetLastError(entry);h=real_OpenThemeDataForDpi(w,name,dpi);error=GetLastError();
-    ntw16s_theme_open_end(ticket,h,h?win16_control_theme_kind(name):NTW16S_THEME_OTHER);scope.active=FALSE;
-    NTW16S_UNWIND_END(unwind);SetLastError(error);return h;
-}
-static NTW16S_UNWIND_FUNCTION HRESULT WINAPI hook_CloseThemeData(HTHEME h)
-{
-    DWORD entry=GetLastError(),error;HRESULT result;ntw16s_unwind_scope unwind;
+    DWORD entry=GetLastError(),error;HRESULT result;process_hook_unwind_scope unwind;
     theme_unwind scope={TRUE,TRUE,h};ntw16s_theme_close_begin(h);
-    NTW16S_UNWIND_BEGIN(unwind,theme_end,&scope);
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,theme_end,&scope);
     SetLastError(entry);result=real_CloseThemeData(h);error=GetLastError();
     ntw16s_theme_close_end(h,SUCCEEDED(result));scope.active=FALSE;
-    NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
+    PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;
 }
 void ntw16s_modern_spin_dc_created(HDC,HDC);
 void ntw16s_modern_spin_dc_deleted(HDC);
@@ -631,7 +594,7 @@ static BOOL WINAPI hook_BitBlt(HDC dc,int x,int y,int width,int height,HDC sourc
 {
     BOOL result=real_BitBlt(dc,x,y,width,height,source,sx,sy,rop);DWORD error=GetLastError();
     if(result)ntw16s_modern_spin_blit(dc,x,y,width,height,source,sx,sy,rop);
-    if(result)win16_style_vb_checklist(dc,x,y,width,height,source,sx,sy,rop,__builtin_return_address(0));
+    if(result)win16_control_vb_checklist(dc,x,y,width,height,source,sx,sy,rop,__builtin_return_address(0));
     SetLastError(error);return result;
 }
 void ntw16s_panel_polyline(HDC,const POINT *,int,const void *,BOOL (WINAPI *)(HDC,const POINT *,int));
@@ -674,7 +637,7 @@ static BOOL WINAPI hook_DrawEdge(HDC dc,LPRECT rect,UINT edge,UINT flags)
 {
     DWORD incoming=GetLastError();
     RECT original={0};BOOL eligible=rect && edge==BDR_SUNKENOUTER && flags==(BF_RECT|BF_ADJUST);
-    BOOL controlbar=rect && flags==(BF_RECT|BF_ADJUST) && ntw16s_controlbar_edge_allowed(edge) && ntw16s_controlbar_edge_active();
+    BOOL controlbar=rect && flags==(BF_RECT|BF_ADJUST) && win16_control_controlbar_edge_allowed(edge) && ntw16s_controlbar_edge_active();
     BOOL color=FALSE;HWND dialog=active_color_dialog?active_color_dialog->dialog:NULL;HMODULE origin=NULL;
     if(rect&&dialog&&edge==EDGE_SUNKEN&&flags==(BF_RECT|BF_ADJUST)&&WindowFromDC(dc)==dialog&&
        GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)__builtin_return_address(0),&origin)&&origin==GetModuleHandleW(L"comdlg32.dll")){
@@ -689,20 +652,20 @@ static BOOL WINAPI hook_DrawEdge(HDC dc,LPRECT rect,UINT edge,UINT flags)
 }
 static HRESULT WINAPI hook_DrawThemeBackground(HTHEME theme,HDC dc,int part,int state,const RECT *rect,const RECT *clip)
 {
-    DWORD entry=GetLastError();ntw16s_theme_ticket ticket=ntw16s_theme_button_begin(theme);
-    ntw16s_theme_ticket combo={0};if(ntw16s_inplace_paint(dc))combo=ntw16s_theme_combo_begin(theme);
-    ntw16s_theme_ticket glow=ntw16s_theme_glow_begin(theme);
+    DWORD entry=GetLastError();ntw16s_theme_ticket ticket=ntw16s_theme_begin(theme,NTW16S_THEME_BUTTON);
+    ntw16s_theme_ticket combo={0};if(ntw16s_inplace_paint(dc))combo=ntw16s_theme_begin(theme,NTW16S_THEME_COMBOBOX);
+    ntw16s_theme_ticket glow=ntw16s_theme_begin(theme,NTW16S_THEME_TEXTGLOW);
     BOOL textglow=part==1 && state==0 && glow.eligible;
     if(!textglow)ntw16s_modern_spin_theme_begin(dc,rect);
     BOOL drawn=ntw16s_updown_draw_theme(theme,dc,part,state,rect,clip,__builtin_return_address(0));
     SetLastError(entry);if(drawn)return S_OK;
     HRESULT result=real_DrawThemeBackground(theme,dc,part,state,rect,clip);DWORD error=GetLastError();
-    if(textglow && !ntw16s_theme_glow_end(theme,glow))ntw16s_modern_spin_theme_begin(dc,NULL);
-    if(SUCCEEDED(result) && ntw16s_theme_button_end(theme,ticket)){
+    if(textglow && !ntw16s_theme_end(theme,glow,NTW16S_THEME_TEXTGLOW))ntw16s_modern_spin_theme_begin(dc,NULL);
+    if(SUCCEEDED(result) && ntw16s_theme_end(theme,ticket,NTW16S_THEME_BUTTON)){
         ntw16s_nav_theme(dc,part,state,rect,clip,__builtin_return_address(0));
         ntw16s_inplace_button(dc,part,state,rect,clip,__builtin_return_address(0));
         ntw16s_modern_spin_theme(dc,part,state,rect,clip,__builtin_return_address(0));}
-    if(SUCCEEDED(result) && combo.eligible && ntw16s_theme_combo_end(theme,combo))ntw16s_inplace_dropdown(dc,part,state,rect,clip,__builtin_return_address(0));
+    if(SUCCEEDED(result) && combo.eligible && ntw16s_theme_end(theme,combo,NTW16S_THEME_COMBOBOX))ntw16s_inplace_dropdown(dc,part,state,rect,clip,__builtin_return_address(0));
     if(SUCCEEDED(result) && part==1 && state==0)ntw16s_status_frame(dc,rect,clip,__builtin_return_address(0));
     if(SUCCEEDED(result))ntw16s_bit_theme_frame(dc,part,rect,clip,__builtin_return_address(0));
     if(SUCCEEDED(result))ntw16s_month_arrow(theme,dc,part,state,rect,clip,__builtin_return_address(0));
@@ -730,14 +693,14 @@ static void popup_owner_end(void *data)
  popup_owner_scope *scope=data;BOOL installed=scope->installed;HWND w=scope->window;
  scope->installed=FALSE;if(installed && IsWindow(w))win16_style_frame_remove_owned(w,scope);
 }
-static NTW16S_UNWIND_FUNCTION BOOL WINAPI hook_TrackPopupMenu(HMENU m,UINT flags,int x,int y,int reserved,HWND w,const RECT *r)
+static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_TrackPopupMenu(HMENU m,UINT flags,int x,int y,int reserved,HWND w,const RECT *r)
 {
- ntw16s_unwind_scope unwind;popup_owner_scope scope={w,FALSE};DWORD incoming=GetLastError(),error;BOOL result;
+ process_hook_unwind_scope unwind;popup_owner_scope scope={w,FALSE};DWORD incoming=GetLastError(),error;BOOL result;
  if(win16_control_menu_owner_eligible(w,menu_owner_property,(HANDLE)&menu_owner_marker))
      scope.installed=win16_style_menu_owner_install_created(w,&scope,NULL);
- NTW16S_UNWIND_BEGIN(unwind,popup_owner_end,&scope);
+ PROCESS_HOOK_UNWIND_BEGIN(unwind,popup_owner_end,&scope);
  SetLastError(incoming);result=real_TrackPopupMenu(m,flags,x,y,reserved,w,r);error=GetLastError();
- NTW16S_UNWIND_END(unwind);SetLastError(error);return result;
+ PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;
 }
 
 LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *))
@@ -793,4 +756,4 @@ LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *))
     return error;
 }
 
-LONG ntw16s_attach_titles(void){return ntw16s_attach_titles_using(ntw16s_hooks_attach);}
+LONG ntw16s_attach_titles(void){return ntw16s_attach_titles_using(process_hook_startup_attach);}

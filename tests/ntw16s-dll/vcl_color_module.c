@@ -5,7 +5,7 @@
 #include <string.h>
 #include <setjmp.h>
 #include "isolated_process.h"
-#include "ntw16s-dll/injection/unwind.h"
+#include "../../src/lib-win32/process-hook/unwind.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"VCL_COLOR_MODULE_FAIL line=%d error=%lu: %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
 typedef BOOL (WINAPI *reg_fn)(BOOL);
 typedef HWND (WINAPI *create_fn)(HWND,BOOL);
@@ -14,27 +14,13 @@ typedef BOOL (__cdecl *window_fn)(HWND);
 static HWND observed;
 static window_fn remove_style;
 static BOOL retire,destroy_item,removed,destroyed,nest_item,nested_done;
-static BOOL raise_item,exception_seen;
+static BOOL raise_item;
 static unsigned draws,commands;
 #define COLOR_TEST_EXCEPTION 0xe0425339u
-#ifndef _WIN64
-typedef struct color_catcher {ntw16s_unwind_record record;jmp_buf saved;} color_catcher;
-static EXCEPTION_DISPOSITION NTAPI color_catch(EXCEPTION_RECORD *exception,void *frame,CONTEXT *context,void *dispatcher)
-{
-    (void)context;(void)dispatcher;
-    if(!(exception->ExceptionFlags&(EXCEPTION_UNWINDING|EXCEPTION_EXIT_UNWIND)) && exception->ExceptionCode==COLOR_TEST_EXCEPTION){
-        exception_seen=TRUE;RtlUnwind(frame,NULL,exception,NULL);longjmp(((color_catcher *)frame)->saved,1);
-    }
-    return ExceptionContinueSearch;
-}
-#else
-static LONG __attribute__((used)) color_filter(EXCEPTION_POINTERS *exception,void *frame)
-{
-    (void)frame;
-    if(exception->ExceptionRecord->ExceptionCode==COLOR_TEST_EXCEPTION){exception_seen=TRUE;return EXCEPTION_EXECUTE_HANDLER;}
-    return EXCEPTION_CONTINUE_SEARCH;
-}
-#endif
+#define NTW16S_TEST_EXCEPTION_CODE COLOR_TEST_EXCEPTION
+#define test_unwind exception_probe_send
+#include "exception_probe.h"
+#undef test_unwind
 static LRESULT CALLBACK parent_proc(HWND w,UINT m,WPARAM p,LPARAM l)
 {
     if(m==WM_MEASUREITEM && l && ((MEASUREITEMSTRUCT*)l)->CtlType==ODT_COMBOBOX){((MEASUREITEMSTRUCT*)l)->itemHeight=18;return TRUE;}
@@ -57,38 +43,12 @@ static LRESULT CALLBACK parent_proc(HWND w,UINT m,WPARAM p,LPARAM l)
     if(m==WM_COMMAND && (HWND)l==observed)++commands;
     return DefWindowProcW(w,m,p,l);
 }
-static NTW16S_UNWIND_FUNCTION BOOL test_unwind(HWND w,HDC dc)
+static BOOL test_unwind(HWND w,HDC dc)
 {
-    exception_seen=FALSE;raise_item=TRUE;
-#ifndef _WIN64
-    color_catcher c;c.record.handler=color_catch;
-    __asm__ __volatile__("movl %%fs:0,%0":"=r"(c.record.previous)::"memory");
-    __asm__ __volatile__("movl %0,%%fs:0"::"r"(&c.record):"memory");
-    if(!setjmp(c.saved))SendMessageW(w,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT|PRF_ERASEBKGND);
-    __asm__ __volatile__("movl %0,%%fs:0"::"r"(c.record.previous):"memory");
-#else
-    __asm__ __volatile__(".Ls39_catch_start:\n.seh_handler __C_specific_handler, @except\n"
-        ".seh_handlerdata\n.long 1\n.rva .Ls39_catch_start,.Ls39_catch_end,color_filter,.Ls39_catch_end\n.text\n":::"memory");
-    SendMessageW(w,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT|PRF_ERASEBKGND);
-    __asm__ __volatile__("nop\n.Ls39_catch_end: nop\n":::"memory");
-#endif
-    raise_item=FALSE;return exception_seen;
+    raise_item=TRUE;BOOL seen=exception_probe_send(w,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT|PRF_ERASEBKGND);
+    raise_item=FALSE;return seen;
 }
-static BOOL capture(HWND w,DWORD *pixels,int width,int height,const RECT *clip,RECT *returned_clip)
-{
-    HDC screen=GetDC(w),dc=CreateCompatibleDC(screen);BITMAPINFO bi={0};void *bits=NULL;
-    bi.bmiHeader.biSize=sizeof(bi.bmiHeader);bi.bmiHeader.biWidth=width;bi.bmiHeader.biHeight=-height;
-    bi.bmiHeader.biPlanes=1;bi.bmiHeader.biBitCount=32;
-    HBITMAP bmp=CreateDIBSection(screen,&bi,DIB_RGB_COLORS,&bits,NULL,0);HGDIOBJ old=dc && bmp?SelectObject(dc,bmp):NULL;
-    if(old){memset(bits,0x5a,(size_t)width*height*4);if(clip)IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom);
-        SendMessageW(w,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT|PRF_ERASEBKGND);GdiFlush();
-        if(returned_clip)GetClipBox(dc,returned_clip);
-        memcpy(pixels,bits,(size_t)width*height*4);SelectObject(dc,old);}
-    if(bmp)DeleteObject(bmp);
-    if(dc)DeleteDC(dc);
-    if(screen)ReleaseDC(w,screen);
-    return old!=NULL;
-}
+#include "vcl_capture.h"
 static BOOL print_resources(HWND w)
 {
     HDC screen=GetDC(w),dc=CreateCompatibleDC(screen);HBITMAP bmp=CreateCompatibleBitmap(screen,220,64);

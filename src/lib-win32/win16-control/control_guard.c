@@ -41,14 +41,6 @@ BOOL win16_control_guard_message(HWND w,control_style *s,UINT m,WPARAM a,LPARAM 
     return FALSE;
 }
 
-static BOOL is_static(HWND w){return ntw16s_class_is(w,L"STATIC");}
-static BOOL is_edit(HWND w){return ntw16s_class_is(w,L"EDIT");}
-static BOOL is_list(HWND w){WCHAR name[16];return ntw16s_class_is(w,L"LISTBOX") || (GetClassNameW(w,name,16) && !lstrcmpiW(name,L"ComboLBox"));}
-static BOOL is_combo(HWND w){return ntw16s_class_is(w,L"COMBOBOX");}
-static BOOL is_scroll(HWND w){return ntw16s_class_is(w,L"SCROLLBAR");}
-static BOOL is_link(HWND w){return ntw16s_class_is(w,L"SysLink") || ntw16s_control_protocol_is(w,WC_LINK);}
-static BOOL is_tab(HWND w){return ntw16s_class_is(w,WC_TABCONTROLW) || ntw16s_control_protocol_is(w,WC_TABCONTROLW);}
-static BOOL is_header(HWND w){return ntw16s_class_is(w,WC_HEADERW);}
 
 BOOL win16_control_supported(HWND w,HWND common_dialog_combo_pending)
 {
@@ -56,16 +48,16 @@ BOOL win16_control_supported(HWND w,HWND common_dialog_combo_pending)
     if(ntw16s_vb_owner_file(w) || (w==common_dialog_combo_pending && win16_control_common_dialog_combo_valid(w,GetParent(w))))return TRUE;
     if((ntw16s_vb_checkbox(w) || ntw16s_vb_option(w)) &&
         !ntw16s_vb_plain_choice(w) && !ntw16s_vb_graphical_choice(w))return FALSE;
-    if(is_scroll(w))return !(style&SBS_SIZEGRIP);
-    if(is_link(w))return TRUE;
-    if(is_tab(w))return win16_style_tab_supported(w);
-    if(is_header(w))return win16_style_header_supported(w);
-    if(ntw16s_class_is(w,PROGRESS_CLASSW) || ntw16s_control_protocol_is(w,PROGRESS_CLASSW))return win16_style_progress_supported(w);
-    if(is_combo(w))return ((style&3)==CBS_DROPDOWNLIST || (style&3)==CBS_DROPDOWN || (style&3)==CBS_SIMPLE) &&
+    if(ntw16s_is_scroll(w))return !(style&SBS_SIZEGRIP);
+    if(ntw16s_is_link(w))return TRUE;
+    if(ntw16s_is_tab(w))return win16_style_tab_supported(w);
+    if(ntw16s_is_header(w))return win16_style_header_supported(w);
+    if(ntw16s_class_is(w,PROGRESS_CLASSW))return win16_style_progress_supported(w);
+    if(ntw16s_is_combo(w))return ((style&3)==CBS_DROPDOWNLIST || (style&3)==CBS_DROPDOWN || (style&3)==CBS_SIMPLE) &&
         !(style&(CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE));
-    if(is_list(w))return !(style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA|LBS_USETABSTOPS));
-    if(is_edit(w))return TRUE;
-    if(is_static(w)){type=style&SS_TYPEMASK;return type==SS_LEFT || type==SS_CENTER || type==SS_RIGHT ||
+    if(ntw16s_list_class(w))return !(style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA|LBS_USETABSTOPS));
+    if(ntw16s_is_edit(w))return TRUE;
+    if(ntw16s_is_static(w)){type=style&SS_TYPEMASK;return type==SS_LEFT || type==SS_CENTER || type==SS_RIGHT ||
         type==SS_ICON || type==SS_BITMAP || type==SS_SIMPLE || type==SS_LEFTNOWORDWRAP ||
         (type>=SS_BLACKRECT && type<=SS_WHITEFRAME) || (type>=SS_ETCHEDHORZ && type<=SS_ETCHEDFRAME);}
     if(!ntw16s_class_is(w,L"BUTTON"))return FALSE;

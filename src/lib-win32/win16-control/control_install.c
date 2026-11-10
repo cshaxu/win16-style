@@ -5,11 +5,6 @@
 #include "../win16-common/font.h"
 #include <stdlib.h>
 
-static BOOL is_edit(HWND w){return ntw16s_class_is(w,L"EDIT");}
-static BOOL is_combo(HWND w){return ntw16s_class_is(w,L"COMBOBOX");}
-static BOOL is_list(HWND w){WCHAR name[16];return ntw16s_class_is(w,L"LISTBOX") || (GetClassNameW(w,name,16) && !lstrcmpiW(name,L"ComboLBox"));}
-static BOOL is_separator(HWND w){DWORD type=(DWORD)GetWindowLongPtrW(w,GWL_STYLE)&SS_TYPEMASK;
-    return ntw16s_class_is(w,L"STATIC") && type>=SS_ETCHEDHORZ && type<=SS_ETCHEDFRAME;}
 
 BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL original_border,BOOL frame_bars,
     int tab_count,const int *tabs,const void *creation_owner,const BOOL *cancelled,HWND common_dialog_combo_pending,
@@ -19,11 +14,11 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
     if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId()){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
     if(GetWindowSubclass(w,services->control_proc,(UINT_PTR)services->control_proc,&existing)){SetLastError(ERROR_ALREADY_EXISTS);return FALSE;}
     if(tabbed){
-        if(!is_list(w) || !(style&LBS_USETABSTOPS) || (style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA))){
+        if(!ntw16s_list_class(w) || !(style&LBS_USETABSTOPS) || (style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA))){
             SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
         if((tab_count && !tabs) || (size_t)tab_count>((size_t)-1)/sizeof(int)){
             SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
-    }else if(!frame_bars && (!win16_control_supported(w,common_dialog_combo_pending) || is_edit(w)!=edit)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    }else if(!frame_bars && (!win16_control_supported(w,common_dialog_combo_pending) || ntw16s_is_edit(w)!=edit)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     s=win16_control_state_create();if(!s)return FALSE;
     s->creation_owner=creation_owner;
     s->header_pressed=-1;
@@ -50,7 +45,7 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
     /* Child attachment and WM_SETFONT can synchronously remove/destroy us.
      * Retain this attempt until its result is known, just like a callback. */
     ++s->calls;
-    if(!frame_bars && is_combo(w) && !s->file_owner){
+    if(!frame_bars && ntw16s_is_combo(w) && !s->file_owner){
         COMBOBOXINFO info={.cbSize=sizeof(info)};
         if(!services->get_combo_info(w,&info) || !services->install_control(info.hwndList,palette)){
             if(!s->detached)services->remove_control(w);
@@ -81,7 +76,7 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
     }
     if(!frame_bars){if(s->combo_passthrough && ((DWORD)GetWindowLongPtrW(w,GWL_STYLE)&3)==CBS_DROPDOWNLIST){HFONT replacement=win16_style_system_acquire(s->original_font);s->font=replacement?replacement:s->original_font;}
         if(!s->combo_passthrough)SendMessageW(w,WM_SETFONT,(WPARAM)s->original_font,FALSE);
-        if(!s->detached && is_separator(w))SetWindowPos(w,NULL,0,0,0,0,
+        if(!s->detached && ntw16s_is_separator(w))SetWindowPos(w,NULL,0,0,0,0,
             SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
         if(!s->detached)RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);}
 installed:

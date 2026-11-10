@@ -1,16 +1,4 @@
 #include "process_lifecycle.h"
-#include "lib-win32/process-launch/process.h"
-DWORD win32_process_create_suspended(PCWSTR application,PWSTR command,
-    LPSECURITY_ATTRIBUTES process_attributes,LPSECURITY_ATTRIBUTES thread_attributes,
-    BOOL inherit,DWORD flags,LPVOID environment,PCWSTR directory,
-    LPSTARTUPINFOW startup,LPPROCESS_INFORMATION child)
-{
-    if(!win32_process_create(application,command,process_attributes,thread_attributes,inherit,
-        flags|CREATE_SUSPENDED,environment,directory,startup,child)){
-        DWORD error=GetLastError();return error?error:ERROR_GEN_FAILURE;
-    }
-    return ERROR_SUCCESS;
-}
 DWORD win32_process_activate(PROCESS_INFORMATION *child,win32_process_prepare prepare,void *context,unsigned *phase)
 {
     DWORD error,previous;

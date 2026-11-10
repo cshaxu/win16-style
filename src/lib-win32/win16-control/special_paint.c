@@ -1,3 +1,4 @@
+#include "dc_geometry.h"
 #include "special_paint.h"
 #include "basic_paint.h"
 #include "scroll_assets.h"
@@ -243,8 +244,8 @@ BOOL win16_control_graphical_frame_prepare(HDC dc,const RECT *rect,UINT type,UIN
 }
 BOOL win16_control_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,SUBCLASSPROC proc)
 {
-    HWND w;RECT client;POINT origin;control_style *s=graphical_target(dc,type,flags,address,&w,proc);
+    HWND w;RECT client;control_style *s=graphical_target(dc,type,flags,address,&w,proc);
     if(!s || !rect || !GetClientRect(w,&client) || !EqualRect(rect,&client) ||
-            GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) || !GetViewportOrgEx(dc,&origin) || origin.x || origin.y)return FALSE;
+            !win16_control_pixel_viewport(dc))return FALSE;
     return win16_control_graphical_face(w,dc,rect,flags,&s->palette);
 }

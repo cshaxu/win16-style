@@ -6,7 +6,7 @@
 #include <string.h>
 #include <wchar.h>
 
-static BOOL old_dialog_folder(HWND window,WCHAR *out,size_t capacity)
+static BOOL old_dialog_folder(HWND window,WCHAR *out,size_t capacity,BOOL for_shortcut)
 {
     HWND list=GetDlgItem(window,lst2);WCHAR cls[32]=L"";
     if(!list||GetParent(list)!=window||!GetClassNameW(list,cls,ARRAYSIZE(cls))||
@@ -16,12 +16,15 @@ static BOOL old_dialog_folder(HWND window,WCHAR *out,size_t capacity)
     size_t used=0;out[0]=0;
     for(LRESULT i=0;i<=selected;++i){WCHAR part[MAX_PATH];LRESULT n=SendMessageW(list,LB_GETTEXTLEN,(WPARAM)i,0);
         if(n<=0||n>=MAX_PATH||used+(size_t)n+2>capacity||SendMessageW(list,LB_GETTEXT,(WPARAM)i,(LPARAM)part)!=n)return FALSE;
-        if(i==0){if(!(n==3&&part[1]==L':'&&part[2]==L'\\'))return FALSE;}
+        if(i==0){if(!(n==3&&part[1]==L':'&&part[2]==L'\\') &&
+                     !(!for_shortcut&&n>3&&part[0]==L'\\'&&part[1]==L'\\'))return FALSE;}
         else if(wcspbrk(part,L"\\/:*?\"<>|")||!lstrcmpW(part,L".")||!lstrcmpW(part,L".."))return FALSE;
         if(used&&out[used-1]!=L'\\')out[used++]=L'\\';
         memcpy(out+used,part,((size_t)n+1)*sizeof(WCHAR));used+=(size_t)n;
     }
-    return TRUE;
+    if(for_shortcut)return TRUE;
+    DWORD attrs=GetFileAttributesW(out);
+    return attrs!=INVALID_FILE_ATTRIBUTES && (attrs&FILE_ATTRIBUTE_DIRECTORY)!=0;
 }
 /* Let the system finish validation and produce offsets/buffer errors after a
  * regular file shortcut is resolved. Other link forms retain native handling. */
@@ -33,7 +36,7 @@ void win16_dialog_resolve_file(HWND window)
     if(!length||length>=ARRAYSIZE(path)-1)goto done;
     if(!(path[0]&&path[1]==L':'&&path[2]==L'\\')){
         WCHAR folder[MAX_PATH],combined[MAX_PATH];
-        if(wcspbrk(path,L"\\/:*?\"<>|")||!old_dialog_folder(window,folder,ARRAYSIZE(folder)))goto done;
+        if(wcspbrk(path,L"\\/:*?\"<>|")||!old_dialog_folder(window,folder,ARRAYSIZE(folder),TRUE))goto done;
         int count=swprintf(combined,ARRAYSIZE(combined),L"%ls\\%ls",folder,path);
         if(count<0||count>=MAX_PATH)goto done;
         memcpy(path,combined,((size_t)count+1)*sizeof(WCHAR));
@@ -61,26 +64,8 @@ done:
 BOOL ntw16s_old_dialog_folder(HWND window,PWSTR path,size_t capacity)
 {
     if(!window || !path || !capacity)return FALSE;
-    path[0]=0;HWND list=GetDlgItem(window,lst2);WCHAR cls[32];
-    if(!list || GetParent(list)!=window || !GetClassNameW(list,cls,ARRAYSIZE(cls)) ||
-       lstrcmpiW(cls,L"ListBox") || !(GetWindowLongPtrW(list,GWL_STYLE)&LBS_HASSTRINGS))return FALSE;
-    LRESULT last=SendMessageW(list,LB_GETCURSEL,0,0),count=SendMessageW(list,LB_GETCOUNT,0,0);
-    if(last<0 || count<=last || last>255)return FALSE;
-    size_t used=0;
-    for(LRESULT i=0;i<=last;++i){
-        LRESULT length=SendMessageW(list,LB_GETTEXTLEN,(WPARAM)i,0);
-        if(length<=0 || (size_t)length>=capacity || used+(size_t)length+2>capacity)return FALSE;
-        WCHAR part[MAX_PATH];if((size_t)length>=ARRAYSIZE(part) ||
-            SendMessageW(list,LB_GETTEXT,(WPARAM)i,(LPARAM)part)!=length)return FALSE;
-        if(i==0){
-            if(!(length==3 && part[1]==L':' && part[2]==L'\\') &&
-               !(length>3 && part[0]==L'\\' && part[1]==L'\\'))return FALSE;
-        }else if(wcspbrk(part,L"\\/:*?\"<>|") || !lstrcmpW(part,L".") || !lstrcmpW(part,L".."))return FALSE;
-        if(used && path[used-1]!=L'\\')path[used++]=L'\\';
-        memcpy(path+used,part,((size_t)length+1)*sizeof(WCHAR));used+=(size_t)length;
-    }
-    DWORD attrs=GetFileAttributesW(path);
-    return attrs!=INVALID_FILE_ATTRIBUTES && (attrs&FILE_ATTRIBUTE_DIRECTORY)!=0;
+    path[0]=0;
+    return old_dialog_folder(window,path,capacity,FALSE);
 }
 
 

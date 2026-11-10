@@ -23,13 +23,12 @@ static BOOL snap(int x,int y,int width,int height,DWORD *out)
     if(dc)ReleaseDC(NULL,dc);
     return ok;
 }
-/* Message/state probe that does not require access to the visible screen DC. */
-static int check_axis_behavior(HWND child,int bar)
+static BOOL thumb_points(HWND child,int bar,POINT *thumb,POINT *move)
 {
     LONG object=bar==SB_VERT?OBJID_VSCROLL:OBJID_HSCROLL;
     SCROLLBARINFO current={.cbSize=sizeof(current)};
     SCROLLINFO range={.cbSize=sizeof(range),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS};
-    if(!GetScrollBarInfo(child,object,&current) || !GetScrollInfo(child,bar,&range))return 8;
+    if(!GetScrollBarInfo(child,object,&current) || !GetScrollInfo(child,bar,&range))return FALSE;
     int length=bar==SB_VERT?current.rcScrollBar.bottom-current.rcScrollBar.top:current.rcScrollBar.right-current.rcScrollBar.left;
     int cross=bar==SB_VERT?current.rcScrollBar.right-current.rcScrollBar.left:current.rcScrollBar.bottom-current.rcScrollBar.top;
     int border=MulDiv(1,(int)GetDpiForWindow(child),96);if(border<1)border=1;
@@ -37,9 +36,15 @@ static int check_axis_behavior(HWND child,int bar)
     LONG maximum=range.nMax-(range.nPage?range.nPage-1:0);if(maximum<range.nMin)maximum=range.nMin;
     LONG position=range.nPos;if(position<range.nMin)position=range.nMin;if(position>maximum)position=maximum;
     int offset=origin+cross/2;if(maximum>range.nMin && travel>0)offset+=(int)(((LONGLONG)(position-range.nMin)*travel+(maximum-range.nMin)/2)/(maximum-range.nMin));
-    POINT thumb={bar==SB_VERT?(current.rcScrollBar.left+current.rcScrollBar.right)/2:current.rcScrollBar.left+offset,
+    *thumb=(POINT){bar==SB_VERT?(current.rcScrollBar.left+current.rcScrollBar.right)/2:current.rcScrollBar.left+offset,
         bar==SB_VERT?current.rcScrollBar.top+offset:(current.rcScrollBar.top+current.rcScrollBar.bottom)/2};
-    POINT move=thumb;if(bar==SB_VERT)move.y+=15;else move.x+=15;ScreenToClient(child,&move);
+    *move=*thumb;if(bar==SB_VERT)move->y+=15;else move->x+=15;ScreenToClient(child,move);
+    return TRUE;
+}
+/* Message/state probe that does not require access to the visible screen DC. */
+static int check_axis_behavior(HWND child,int bar)
+{
+    POINT thumb,move;if(!thumb_points(child,bar,&thumb,&move))return 8;
     SendMessageW(child,WM_NCLBUTTONDOWN,bar==SB_VERT?HTVSCROLL:HTHSCROLL,MAKELPARAM(thumb.x,thumb.y));
     SCROLLINFO tracking={.cbSize=sizeof(tracking),.fMask=SIF_TRACKPOS};
     BOOL captured=GetCapture()==child && GetScrollInfo(child,bar,&tracking);int start=tracking.nTrackPos;
@@ -73,18 +78,7 @@ static int check_axis(HWND root,HWND child,int bar,paint_fn paint)
         case 3:SendMessageW(child,WM_NCLBUTTONDOWN,bar==SB_VERT?HTVSCROLL:HTHSCROLL,MAKELPARAM(hitpt.x,hitpt.y));break;
         case 4:SendMessageW(child,WM_LBUTTONUP,0,MAKELPARAM(end.x,end.y));break;
         case 5:SendMessageW(child,bar==SB_VERT?WM_MOUSEWHEEL:WM_MOUSEHWHEEL,MAKEWPARAM(0,WHEEL_DELTA),MAKELPARAM(hitpt.x,hitpt.y));break;
-        case 6:{SCROLLBARINFO current={.cbSize=sizeof(current)};if(!GetScrollBarInfo(child,object,&current))return 8;
-            SCROLLINFO range={.cbSize=sizeof(range),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS};if(!GetScrollInfo(child,bar,&range))return 8;
-            int length=bar==SB_VERT?current.rcScrollBar.bottom-current.rcScrollBar.top:current.rcScrollBar.right-current.rcScrollBar.left;
-            int cross=bar==SB_VERT?current.rcScrollBar.right-current.rcScrollBar.left:current.rcScrollBar.bottom-current.rcScrollBar.top;
-            int border=MulDiv(1,(int)GetDpiForWindow(child),96);if(border<1)border=1;
-            int origin=cross-border,travel=length-cross-origin+border-cross;
-            LONG maximum=range.nMax-(range.nPage?range.nPage-1:0);if(maximum<range.nMin)maximum=range.nMin;
-            LONG position=range.nPos;if(position<range.nMin)position=range.nMin;if(position>maximum)position=maximum;
-            int thumb_offset=origin+cross/2;if(maximum>range.nMin && travel>0)thumb_offset+=(int)(((LONGLONG)(position-range.nMin)*travel+(maximum-range.nMin)/2)/(maximum-range.nMin));
-            thumb.x=bar==SB_VERT?(current.rcScrollBar.left+current.rcScrollBar.right)/2:current.rcScrollBar.left+thumb_offset;
-            thumb.y=bar==SB_VERT?current.rcScrollBar.top+thumb_offset:(current.rcScrollBar.top+current.rcScrollBar.bottom)/2;
-            move=thumb;if(bar==SB_VERT)move.y+=15;else move.x+=15;ScreenToClient(child,&move);
+        case 6:{if(!thumb_points(child,bar,&thumb,&move))return 8;
             SendMessageW(child,WM_NCLBUTTONDOWN,bar==SB_VERT?HTVSCROLL:HTHSCROLL,MAKELPARAM(thumb.x,thumb.y));
             SCROLLINFO tracking={.cbSize=sizeof(tracking),.fMask=SIF_TRACKPOS};drag_started=GetCapture()==child && GetScrollInfo(child,bar,&tracking);track_start=tracking.nTrackPos;break;}
         case 7:{SendMessageW(child,WM_MOUSEMOVE,MK_LBUTTON,MAKELPARAM(move.x,move.y));

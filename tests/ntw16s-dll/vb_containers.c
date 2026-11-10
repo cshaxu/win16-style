@@ -11,20 +11,12 @@ static LRESULT CALLBACK root_proc(HWND w,UINT m,WPARAM a,LPARAM b)
     if(m==WM_COMMAND && b)++notices;
     return DefWindowProcW(w,m,a,b);
 }
-static DWORD pump(HANDLE event)
-{
-    ULONGLONG end=GetTickCount64()+3000;
-    for(;;){ULONGLONG now=GetTickCount64();if(now>=end)return WAIT_TIMEOUT;
-        DWORD result=MsgWaitForMultipleObjectsEx(1,&event,(DWORD)(end-now),QS_ALLINPUT,MWMO_INPUTAVAILABLE);
-        if(result!=WAIT_OBJECT_0+1)return result;
-        MSG message;while(PeekMessageW(&message,NULL,0,0,PM_REMOVE)){TranslateMessage(&message);DispatchMessageW(&message);}
-    }
-}
+#include "../integration/vb_pump.h"
 static int survey(vb_queue_state *state,HANDLE event,HWND w,LONG action)
 {
     state->window=w;state->root=GetParent(w);state->action=action;++state->generation;
     CHECK(ResetEvent(event));UINT marker=RegisterWindowMessageW(VB_QUEUE_MESSAGE);
-    CHECK(marker && PostMessageW(w,marker,state->generation,0) && pump(event)==WAIT_OBJECT_0);
+    CHECK(marker && PostMessageW(w,marker,state->generation,0) && pump(event,3000)==WAIT_OBJECT_0);
     CHECK(state->completed==(LONG)state->generation);return 0;
 }
 static int pixels(HWND w)

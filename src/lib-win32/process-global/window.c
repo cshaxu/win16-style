@@ -39,13 +39,8 @@ DWORD win32_process_global_window_start_ex(win32_process_global_window *watcher,
         watcher->uncloaked_hook=SetWinEventHook(EVENT_OBJECT_UNCLOAKED,EVENT_OBJECT_UNCLOAKED,NULL,on_event,0,0,options);
         if(!watcher->uncloaked_hook){DWORD error=GetLastError(),cleanup=win32_process_global_window_stop(watcher);return cleanup?cleanup:(error?error:ERROR_GEN_FAILURE);}
     }
-    SetLastError(ERROR_SUCCESS);
-    if(!EnumWindows(scan_top,(LPARAM)watcher)){
-        DWORD error=GetLastError();
-        /* scan_top never stops enumeration; no windows also returns FALSE
-         * without setting an error on an empty desktop. */
-        if(error){DWORD cleanup=win32_process_global_window_stop(watcher);return cleanup?cleanup:error;}
-    }
+    DWORD error=win32_process_global_window_refresh(watcher);
+    if(error){DWORD cleanup=win32_process_global_window_stop(watcher);return cleanup?cleanup:error;}
     return ERROR_SUCCESS;
 }
 DWORD win32_process_global_window_start(win32_process_global_window *watcher,win32_process_global_window_callback callback,void *context)
@@ -53,6 +48,8 @@ DWORD win32_process_global_window_start(win32_process_global_window *watcher,win
 DWORD win32_process_global_window_refresh(win32_process_global_window *watcher)
 {
     if(!watcher || !watcher->hook || current!=watcher || watcher->owner_thread!=GetCurrentThreadId())return ERROR_INVALID_PARAMETER;
+    /* scan_top never stops enumeration; an empty desktop may return FALSE
+     * without setting an error. */
     SetLastError(ERROR_SUCCESS);
     if(!EnumWindows(scan_top,(LPARAM)watcher)){DWORD error=GetLastError();if(error)return error;}
     return ERROR_SUCCESS;

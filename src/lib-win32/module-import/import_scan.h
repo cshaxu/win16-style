@@ -22,9 +22,11 @@ typedef struct win32_module_import_change {
     void *replacement;
 } win32_module_import_change;
 
-/* Atomically replace only expected slots; leave pre-existing replacements in
- * place, and never overwrite a foreign pointer. The caller holds image and pins
- * the module containing replacements until no other thread can call them. */
+/* Replace only expected slots; leave pre-existing replacements in place and
+ * never overwrite a foreign pointer. On failure, rollback is best effort:
+ * changed is zero and does not describe slots that could not be restored.
+ * The caller holds image and pins the module containing replacements until no
+ * other thread can call them, including after a failed rollback. */
 DWORD win32_module_import_apply(HMODULE image,const win32_module_import_change *changes,
                           size_t count,unsigned *changed);
 #ifdef __cplusplus

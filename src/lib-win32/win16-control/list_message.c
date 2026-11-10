@@ -49,10 +49,7 @@ LRESULT win16_control_list_message(HWND w,control_style *s,UINT m,WPARAM a,LPARA
                 m==LB_SETCURSEL || m==LB_SETSEL || m==LB_SELITEMRANGE || m==LB_SELITEMRANGEEX ||
                 m==LB_SETCARETINDEX || m==LB_SETTOPINDEX);
             if(moving)before=list_view(w);
-            if(suppress && s->list_suppression++==0)DefSubclassProc(w,WM_SETREDRAW,FALSE,0);
-            result=DefSubclassProc(w,m,a,b);
-            if(suppress && --s->list_suppression==0 && !s->detached && !s->list_redraw_off)
-                DefSubclassProc(w,WM_SETREDRAW,TRUE,0);
+            result=win16_control_state_call_native(w,s,m,a,b,suppress);
             if(!s->detached && moving){after=list_view(w);
                 changed=before.top!=after.top || before.selection!=after.selection || before.caret!=after.caret;}
             if(!s->detached && !s->list_suppression && !s->list_redraw_off && (m==LB_SETCURSEL || m==LB_SETSEL || m==LB_SELITEMRANGE || m==LB_SELITEMRANGEEX ||

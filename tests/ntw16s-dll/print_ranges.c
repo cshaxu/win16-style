@@ -1,6 +1,6 @@
 #include <windows.h>
 #include <stdio.h>
-#include "ntw16s-dll/injection/print_ranges.h"
+#include "../../src/lib-win32/win16-dialog/print_ranges.h"
 #define CHECK(x) do {if(!(x)){printf("PRINT RANGES FAIL line=%d\n",__LINE__);return 1;}} while(0)
 int main(void)
 {

@@ -36,7 +36,7 @@ HRESULT win16_dialog_com_show(win16_dialog_com_show_state *p,HWND owner)
             return p->show_native(p->owner,owner);
         }
         WCHAR selected[32768];win16_dialog_shell_folder_call call={.owner=owner,.title=*p->title,.initial=folder_path,
-            .ok_label=*p->ok_label,.cancel_label=*p->cancel_label,.file_label=*p->file_label,.result=selected,.capacity=ARRAYSIZE(selected)};
+            .result=selected,.capacity=ARRAYSIZE(selected)};
         hr=p->scope(win16_dialog_shell_folder_show,&call);if(folder_path)CoTaskMemFree(folder_path);
         if(p->experimental_events && FAILED(hr) && *p->classic_close_pending)return *p->classic_close_result;
         if(FAILED(hr))return hr;

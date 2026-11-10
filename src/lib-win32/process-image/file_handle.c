@@ -7,11 +7,13 @@ DWORD win32_process_image_validate_dll_handle(HANDLE file)
     if(!GetFileInformationByHandle(file,&info))return GetLastError();
     if(info.dwFileAttributes&(FILE_ATTRIBUTE_DIRECTORY|FILE_ATTRIBUTE_REPARSE_POINT))return ERROR_ACCESS_DENIED;
     if(!GetFileSizeEx(file,&size))return GetLastError();
-    if(!ReadFile(file,&dos,sizeof(dos),&read,NULL) || read!=sizeof(dos) ||
-       dos.e_magic!=IMAGE_DOS_SIGNATURE || dos.e_lfanew<64 || dos.e_lfanew>1024*1024)return ERROR_BAD_EXE_FORMAT;
+    if(!ReadFile(file,&dos,sizeof(dos),&read,NULL))return GetLastError();
+    if(read!=sizeof(dos) || dos.e_magic!=IMAGE_DOS_SIGNATURE || dos.e_lfanew<64 || dos.e_lfanew>1024*1024)return ERROR_BAD_EXE_FORMAT;
     pos.QuadPart=dos.e_lfanew;
-    if(size.QuadPart<pos.QuadPart+(LONGLONG)sizeof(nt) || !SetFilePointerEx(file,pos,NULL,FILE_BEGIN) ||
-       !ReadFile(file,&nt,sizeof(nt),&read,NULL) || read!=sizeof(nt))return ERROR_BAD_EXE_FORMAT;
+    if(size.QuadPart<pos.QuadPart+(LONGLONG)sizeof(nt))return ERROR_BAD_EXE_FORMAT;
+    if(!SetFilePointerEx(file,pos,NULL,FILE_BEGIN))return GetLastError();
+    if(!ReadFile(file,&nt,sizeof(nt),&read,NULL))return GetLastError();
+    if(read!=sizeof(nt))return ERROR_BAD_EXE_FORMAT;
     if(nt.Signature!=IMAGE_NT_SIGNATURE || !(nt.FileHeader.Characteristics&IMAGE_FILE_DLL) ||
        nt.FileHeader.Machine!=(sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386) ||
        nt.FileHeader.SizeOfOptionalHeader<sizeof(IMAGE_OPTIONAL_HEADER) ||

@@ -3,10 +3,11 @@
 
 void win16_control_combo_arrow(HDC dc,int left,int top,int dpi)
 {
+    HBRUSH brush=(HBRUSH)GetStockObject(DC_BRUSH);
     for(int y=0;y<9;++y)for(int x=0;x<7;++x)if(combo_arrow[y][x]=='0'){
         RECT pixel={left+MulDiv(x,dpi,96),top+MulDiv(y,dpi,96),
             left+MulDiv(x+1,dpi,96),top+MulDiv(y+1,dpi,96)};
-        FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));
+        FillRect(dc,&pixel,brush);
     }
 }
 
@@ -44,10 +45,11 @@ RECT win16_control_button_border(HDC dc,RECT r,const win16_style_palette *palett
 void win16_control_scroll_arrow(HDC dc,RECT r,const char bits[17][18],const win16_style_palette *p)
 {
     int x,y;COLORREF colors[4]={p->edge,p->light,p->shadow,p->face};RECT pixel;
+    HBRUSH brush=(HBRUSH)GetStockObject(DC_BRUSH);
     for(y=0;y<17;++y)for(x=0;x<17;++x){
         SetDCBrushColor(dc,colors[bits[y][x]-'0']);
         SetRect(&pixel,r.left+MulDiv(x,r.right-r.left,17),r.top+MulDiv(y,r.bottom-r.top,17),
             r.left+MulDiv(x+1,r.right-r.left,17),r.top+MulDiv(y+1,r.bottom-r.top,17));
-        FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));
+        FillRect(dc,&pixel,brush);
     }
 }

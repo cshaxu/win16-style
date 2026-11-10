@@ -91,14 +91,17 @@ static DWORD inspect_new_thread(DWORD pid,DWORD tid,void *context)
 }
 static void select_thread(DWORD pid,DWORD tid,void *context)
 {discovered(NULL,pid,tid,context);}
-static void discover_existing_processes(ntw16s_global_manager *m)
-{(void)win32_process_global_scan_existing(existing_has_process,inspect_existing_thread,select_thread,m);}
 static void discovered_process(DWORD pid,void *context)
 {
     ntw16s_global_manager *m=context;DWORD session=0;
     if(!pid || pid==GetCurrentProcessId() || pid==m->session->owner_pid || pid==m->session->host_pid ||
        !ProcessIdToSessionId(pid,&session) || session!=m->policy.session)return;
-    (void)win32_process_global_scan_process(pid,inspect_new_thread,select_thread,m);
+    DWORD error=win32_process_global_scan_process(pid,inspect_new_thread,select_thread,m);
+    if(error){
+        WCHAR message[128];
+        if(swprintf(message,ARRAYSIZE(message),L"run16s: global process %lu scan failed (%lu)\n",pid,error)>0)
+            OutputDebugStringW(message);
+    }
 }
 #ifdef NTW16S_GLOBAL_MANAGER_TEST
 void ntw16s_global_manager_test_process(ntw16s_global_manager *manager,DWORD pid)
@@ -243,9 +246,10 @@ DWORD ntw16s_global_manager_start(const WCHAR *dll_path,WORD machine,ntw16s_glob
     m->session=(ntw16s_global_session *)MapViewOfFile(m->mapping,FILE_MAP_READ,0,0,sizeof(*m->session));
     if(!m->session){error=GetLastError();goto fail;}
     if(!ntw16s_global_owner_alive(m->session) || m->session->phase!=NTW16S_GLOBAL_ACTIVE){error=ERROR_INVALID_STATE;goto fail;}
-    m->stop=OpenEventW(SYNCHRONIZE,FALSE,stop_name);m->quit=CreateEventW(NULL,TRUE,FALSE,NULL);
-    m->work=CreateEventW(NULL,FALSE,FALSE,NULL);m->changed=CreateEventW(NULL,FALSE,FALSE,NULL);
-    if(!m->stop || !m->quit || !m->work || !m->changed){error=GetLastError();goto fail;}
+    m->stop=OpenEventW(SYNCHRONIZE,FALSE,stop_name);if(!m->stop){error=GetLastError();goto fail;}
+    m->quit=CreateEventW(NULL,TRUE,FALSE,NULL);if(!m->quit){error=GetLastError();goto fail;}
+    m->work=CreateEventW(NULL,FALSE,FALSE,NULL);if(!m->work){error=GetLastError();goto fail;}
+    m->changed=CreateEventW(NULL,FALSE,FALSE,NULL);if(!m->changed){error=GetLastError();goto fail;}
     const win32_process_global_target_ops ops={expired,active_finished,failed_retryable,execute_target,dispose_target};
     error=win32_process_global_engine_start(&m->engine,desktop,m->quit,m->stop,m->work,m->changed,
         MANAGER_WORKERS,sizeof(manager_entry),&ops,m,3000);
@@ -261,7 +265,7 @@ DWORD ntw16s_global_manager_start(const WCHAR *dll_path,WORD machine,ntw16s_glob
     error=ntw16s_global_process_start(discovered_process,m,&m->process_monitor);
     if(error && m->process_monitor)goto fail;
     if(error)OutputDebugStringW(L"run16s: global process events unavailable; using window discovery\n");
-    discover_existing_processes(m);
+    error=win32_process_global_scan_existing(existing_has_process,inspect_existing_thread,select_thread,m);if(error)goto fail;
     /* Targets can appear while the initial snapshot is inspected and before
      * this owner thread begins dispatching queued accessibility events. */
     error=win32_process_global_window_refresh(&m->discover);if(error)goto fail;

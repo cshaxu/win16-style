@@ -4,15 +4,7 @@
 #include "isolated_process.h"
 #include "../integration/vb_queue.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"VB_FILES_FAIL line=%d error=%lu %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
-static DWORD pump(HANDLE event,DWORD timeout)
-{
-    ULONGLONG end=GetTickCount64()+timeout;
-    for(;;){ULONGLONG now=GetTickCount64();if(now>=end)return WAIT_TIMEOUT;
-        DWORD result=MsgWaitForMultipleObjectsEx(1,&event,(DWORD)(end-now),QS_ALLINPUT,MWMO_INPUTAVAILABLE);
-        if(result!=WAIT_OBJECT_0+1)return result;
-        MSG message;while(PeekMessageW(&message,NULL,0,0,PM_REMOVE)){TranslateMessage(&message);DispatchMessageW(&message);}
-    }
-}
+#include "../integration/vb_pump.h"
 static int survey(vb_queue_state *state,HANDLE event,HWND w,LONG action)
 {
     state->window=w;state->root=GetParent(w);state->action=action;++state->generation;

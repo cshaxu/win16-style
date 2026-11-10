@@ -8,14 +8,15 @@
 
 /* SetWindowsHookEx uses the DLL's code offset in the target. If an older DLL
  * is already mapped there, the same offset need not be the same function. */
-DWORD run16s_window_module_compatible(DWORD pid,HMODULE module,HOOKPROC callback,PCWSTR path)
+static DWORD module_compatible(DWORD pid,HMODULE module,HOOKPROC callback,PCWSTR path)
 {
     HANDLE list=CreateToolhelp32Snapshot(TH32CS_SNAPMODULE,pid);
     if(list==INVALID_HANDLE_VALUE)return GetLastError();
-    MODULEENTRY32W entry={.dwSize=sizeof(entry)};DWORD error=0;
+    MODULEENTRY32W entry={.dwSize=sizeof(entry)};DWORD error=0;BOOL found=FALSE;
     if(!Module32FirstW(list,&entry)){error=GetLastError();CloseHandle(list);return error;}
     do {
         if(_wcsicmp(entry.szModule,L"ntw16s64.dll"))continue;
+        found=TRUE;
         if(_wcsicmp(entry.szExePath,path)){error=ERROR_REVISION_MISMATCH;break;}
         HANDLE process=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION|PROCESS_VM_READ,FALSE,pid);
         if(!process){error=GetLastError();break;}
@@ -30,40 +31,58 @@ DWORD run16s_window_module_compatible(DWORD pid,HMODULE module,HOOKPROC callback
             error=ERROR_INSUFFICIENT_BUFFER;
         if(!error && _wcsicmp(local_mapping,remote_mapping))error=ERROR_REVISION_MISMATCH;
         BYTE remote[64];SIZE_T received=0;uintptr_t offset=(uintptr_t)callback-(uintptr_t)module;
-        if(!error && (offset+sizeof(remote)>entry.modBaseSize ||
-           !ReadProcessMemory(process,entry.modBaseAddr+offset,remote,sizeof(remote),&received) ||
-           received!=sizeof(remote) || memcmp(remote,(const void *)(uintptr_t)callback,sizeof(remote))))
-            error=ERROR_REVISION_MISMATCH;
+        if(!error){
+            if(offset+sizeof(remote)>entry.modBaseSize)error=ERROR_REVISION_MISMATCH;
+            else if(!ReadProcessMemory(process,entry.modBaseAddr+offset,remote,sizeof(remote),&received)){
+                error=GetLastError();if(!error)error=ERROR_PARTIAL_COPY;
+            }else if(received!=sizeof(remote))error=ERROR_PARTIAL_COPY;
+            else if(memcmp(remote,(const void *)(uintptr_t)callback,sizeof(remote)))error=ERROR_REVISION_MISMATCH;
+        }
         CloseHandle(process);break;
     }while(Module32NextW(list,&entry));
+    if(!found){error=GetLastError();if(error==ERROR_NO_MORE_FILES)error=ERROR_SUCCESS;else if(!error)error=ERROR_GEN_FAILURE;}
     CloseHandle(list);return error;
 }
 
 
-DWORD run16s_window_attach(HWND window,DWORD expected_pid,DWORD expected_thread,PCWSTR directory)
+DWORD run16s_window_module_open(DWORD pid,PCWSTR directory,HMODULE *module,HOOKPROC *callback)
 {
     WCHAR path[32768];size_t length=wcslen(directory);
     if(length+14>=ARRAYSIZE(path))return ERROR_FILENAME_EXCED_RANGE;
     wcscpy(path,directory);wcscat(path,L"ntw16s64.dll");
-    HMODULE module=LoadLibraryExW(path,NULL,LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR|LOAD_LIBRARY_SEARCH_SYSTEM32);
-    if(!module)return GetLastError();
-    HOOKPROC callback=(HOOKPROC)(uintptr_t)GetProcAddress(module,"Ntw16sWindowThreadHook");
-    DWORD error=callback?run16s_window_module_compatible(expected_pid,module,callback,path):ERROR_PROC_NOT_FOUND;
-    HHOOK hook=!error?SetWindowsHookExW(WH_CALLWNDPROC,callback,module,expected_thread):NULL;
-    if(!hook && !error)error=GetLastError();
-    if(!hook && !error)error=ERROR_PROC_NOT_FOUND;
+    HMODULE loaded=LoadLibraryExW(path,NULL,LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR|LOAD_LIBRARY_SEARCH_SYSTEM32);
+    if(!loaded)return GetLastError();
+    HOOKPROC entry=(HOOKPROC)(uintptr_t)GetProcAddress(loaded,"Ntw16sWindowThreadHook");
+    DWORD error=entry?module_compatible(pid,loaded,entry,path):ERROR_PROC_NOT_FOUND;
+    if(error){FreeLibrary(loaded);return error;}
+    *module=loaded;*callback=entry;return ERROR_SUCCESS;
+}
+
+DWORD run16s_window_send(HWND window,UINT message)
+{
+    DWORD_PTR ignored=0;DWORD error;
+    RemovePropW(window,NTW16S_WINDOW_THREAD_RESULT);
+    if(message)SetLastError(ERROR_SUCCESS);
+    if(!message || !SendMessageTimeoutW(window,message,NTW16S_WINDOW_THREAD_ATTACH,(LPARAM)window,
+       SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,3000,&ignored))error=GetLastError()?GetLastError():ERROR_TIMEOUT;
+    else {uintptr_t result=(uintptr_t)GetPropW(window,NTW16S_WINDOW_THREAD_RESULT);
+        error=result?(DWORD)(result-1):ERROR_INVALID_DATA;}
+    RemovePropW(window,NTW16S_WINDOW_THREAD_RESULT);
+    return error;
+}
+
+DWORD run16s_window_attach(HWND window,DWORD expected_pid,DWORD expected_thread,PCWSTR directory)
+{
+    HMODULE module;HOOKPROC callback;
+    DWORD error=run16s_window_module_open(expected_pid,directory,&module,&callback);
+    if(error)return error;
+    HHOOK hook=SetWindowsHookExW(WH_CALLWNDPROC,callback,module,expected_thread);
+    if(!hook){error=GetLastError();if(!error)error=ERROR_PROC_NOT_FOUND;}
     if(hook){
-        DWORD pid=0,thread=GetWindowThreadProcessId(window,&pid);DWORD_PTR ignored=0;
+        DWORD pid=0,thread=GetWindowThreadProcessId(window,&pid);
         UINT message=RegisterWindowMessageW(NTW16S_WINDOW_THREAD_MESSAGE);
         if(pid!=expected_pid || thread!=expected_thread || !message)error=ERROR_INVALID_WINDOW_HANDLE;
-        else {
-            RemovePropW(window,NTW16S_WINDOW_THREAD_RESULT);
-            if(!SendMessageTimeoutW(window,message,NTW16S_WINDOW_THREAD_ATTACH,(LPARAM)window,
-                 SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,3000,&ignored))error=GetLastError()?GetLastError():ERROR_TIMEOUT;
-            else {uintptr_t result=(uintptr_t)GetPropW(window,NTW16S_WINDOW_THREAD_RESULT);
-                error=result?(DWORD)(result-1):ERROR_INVALID_DATA;}
-            RemovePropW(window,NTW16S_WINDOW_THREAD_RESULT);
-        }
+        else error=run16s_window_send(window,message);
         if(!UnhookWindowsHookEx(hook) && !error)error=GetLastError();
     }
     FreeLibrary(module);return error;

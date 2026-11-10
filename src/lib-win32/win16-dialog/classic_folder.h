@@ -20,6 +20,7 @@ typedef struct win16_dialog_classic_folder_context {
 HRESULT win16_dialog_classic_folder_prepare(win16_dialog_classic_folder_context *,OPENFILENAMEW *,WCHAR *,
     HWND,PCWSTR,PCWSTR,PCWSTR,PCWSTR,PCWSTR,LPOFNHOOKPROC);
 HRESULT win16_dialog_classic_folder_finish(BOOL,DWORD,WCHAR *,PWSTR,DWORD);
+/* WM_INITDIALOG receives the OPENFILENAMEW prepared above, with its live context. */
 UINT_PTR win16_dialog_classic_folder_hook(HWND,UINT,WPARAM,LPARAM,
     win16_dialog_classic_folder_context *active,void (*chrome)(HWND));
 #endif

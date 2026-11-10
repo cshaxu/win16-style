@@ -5,7 +5,7 @@
 #include <string.h>
 #include <setjmp.h>
 #include <uxtheme.h>
-#include "ntw16s-dll/injection/unwind.h"
+#include "../../src/lib-win32/process-hook/unwind.h"
 #include "isolated_process.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"BIT_MODULE_FAIL line=%d error=%lu expr=%s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
 typedef BOOL (WINAPI *register_fn)(void);typedef HWND (WINAPI *create_fn)(HWND);typedef BOOL (WINAPI *draw_fn)(const DRAWITEMSTRUCT*);typedef void (WINAPI *signal_fn)(void);typedef BOOL (__cdecl *window_fn)(HWND);
@@ -14,14 +14,14 @@ static LRESULT CALLBACK parent(HWND w,UINT m,WPARAM p,LPARAM l){if(m==WM_APP+17 
 
 #define BIT_TEST_EXCEPTION 0xe0425342u
 #ifndef _WIN64
-typedef struct catcher {ntw16s_unwind_record record;jmp_buf saved;} catcher;
+typedef struct catcher {process_hook_unwind_record record;jmp_buf saved;} catcher;
 static EXCEPTION_DISPOSITION NTAPI catch_exception(EXCEPTION_RECORD *e,void *frame,CONTEXT *c,void *dispatcher)
 {(void)c;(void)dispatcher;if(!(e->ExceptionFlags&(EXCEPTION_UNWINDING|EXCEPTION_EXIT_UNWIND)) && e->ExceptionCode==BIT_TEST_EXCEPTION){exception_seen=TRUE;RtlUnwind(frame,NULL,e,NULL);longjmp(((catcher*)frame)->saved,1);}return ExceptionContinueSearch;}
 #else
 static LONG __attribute__((used)) bit_filter(EXCEPTION_POINTERS *e,void *frame)
 {(void)frame;if(e->ExceptionRecord->ExceptionCode==BIT_TEST_EXCEPTION){exception_seen=TRUE;return EXCEPTION_EXECUTE_HANDLER;}return EXCEPTION_CONTINUE_SEARCH;}
 #endif
-static NTW16S_UNWIND_FUNCTION BOOL test_unwind(HWND w,HDC dc)
+static PROCESS_HOOK_UNWIND_FUNCTION BOOL test_unwind(HWND w,HDC dc)
 {exception_seen=FALSE;raise_next();
 #ifndef _WIN64
  catcher c;c.record.handler=catch_exception;__asm__ __volatile__("movl %%fs:0,%0":"=r"(c.record.previous)::"memory");__asm__ __volatile__("movl %0,%%fs:0"::"r"(&c.record):"memory");if(!setjmp(c.saved))SendMessageW(w,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT|PRF_ERASEBKGND);__asm__ __volatile__("movl %0,%%fs:0"::"r"(c.record.previous):"memory");

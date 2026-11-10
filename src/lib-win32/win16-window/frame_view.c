@@ -92,29 +92,33 @@ void win16_control_paint_frame(HWND w,const win16_control_frame_view *view,HDC t
 /* USER can request the entire frame when a popup changes. Compose the
  * requested non-client pixels off-screen so the background and text do not
  * become visible as separate drawing operations. */
-void win16_control_frame_buffered(HWND w,const win16_control_frame_view *view,HDC dc)
+static void paint_buffered(HWND w,const win16_control_frame_view *view,HDC dc,const RECT *bounds)
 {
-    win16_style_layout l;RECT bounds;int saved=SaveDC(dc);BOOL ready=FALSE;
-    HDC memory=NULL;HBITMAP bitmap=NULL,old=NULL;
-    if(!saved){win16_control_paint_frame(w,view,dc);return;}
-    if(view->layout(w,view->context,&l) && !*view->detached &&
-        ExcludeClipRect(dc,l.client.left,l.client.top,l.client.right,l.client.bottom)!=ERROR &&
-        GetClipBox(dc,&bounds)!=ERROR && bounds.right>bounds.left && bounds.bottom>bounds.top){
-        memory=CreateCompatibleDC(dc);
-        if(memory)bitmap=CreateCompatibleBitmap(dc,bounds.right-bounds.left,bounds.bottom-bounds.top);
-        if(bitmap)old=(HBITMAP)SelectObject(memory,bitmap);
-        if(old && old!=(HBITMAP)HGDI_ERROR &&
-            BitBlt(memory,0,0,bounds.right-bounds.left,bounds.bottom-bounds.top,dc,bounds.left,bounds.top,SRCCOPY) &&
-            SetWindowOrgEx(memory,bounds.left,bounds.top,NULL)){
-            win16_control_paint_frame(w,view,memory);
-            if(!*view->detached)ready=BitBlt(dc,bounds.left,bounds.top,bounds.right-bounds.left,
-                bounds.bottom-bounds.top,memory,bounds.left,bounds.top,SRCCOPY);
-        }
+    HDC memory=CreateCompatibleDC(dc);HBITMAP bitmap=NULL,old=NULL;BOOL ready=FALSE;
+    int width=bounds->right-bounds->left,height=bounds->bottom-bounds->top;
+    if(memory)bitmap=CreateCompatibleBitmap(dc,width,height);
+    if(bitmap)old=(HBITMAP)SelectObject(memory,bitmap);
+    if(old && old!=(HBITMAP)HGDI_ERROR &&
+        BitBlt(memory,0,0,width,height,dc,bounds->left,bounds->top,SRCCOPY) &&
+        SetWindowOrgEx(memory,bounds->left,bounds->top,NULL)){
+        win16_control_paint_frame(w,view,memory);
+        if(!*view->detached)ready=BitBlt(dc,bounds->left,bounds->top,width,height,memory,bounds->left,bounds->top,SRCCOPY);
     }
     if(old && old!=(HBITMAP)HGDI_ERROR)SelectObject(memory,old);
     if(bitmap)DeleteObject(bitmap);
     if(memory)DeleteDC(memory);
     if(!ready && !*view->detached)win16_control_paint_frame(w,view,dc);
+}
+
+void win16_control_frame_buffered(HWND w,const win16_control_frame_view *view,HDC dc)
+{
+    win16_style_layout l;RECT bounds;int saved=SaveDC(dc);
+    if(!saved){win16_control_paint_frame(w,view,dc);return;}
+    if(view->layout(w,view->context,&l) && !*view->detached &&
+        ExcludeClipRect(dc,l.client.left,l.client.top,l.client.right,l.client.bottom)!=ERROR &&
+        GetClipBox(dc,&bounds)!=ERROR && bounds.right>bounds.left && bounds.bottom>bounds.top)
+        paint_buffered(w,view,dc,&bounds);
+    else if(!*view->detached)win16_control_paint_frame(w,view,dc);
     RestoreDC(dc,saved);
 }
 
@@ -125,8 +129,7 @@ void win16_control_frame_buffered(HWND w,const win16_control_frame_view *view,HD
  * Reuse the frame painter with a bounded clip instead of clearing the frame. */
 void win16_control_frame_menu_state(HWND w,const win16_control_frame_view *view)
 {
-    win16_style_layout l;HDC dc,memory=NULL;HRGN clip,system;int saved;
-    RECT bounds;HBITMAP bitmap=NULL,old=NULL;BOOL ready=FALSE;
+    win16_style_layout l;HDC dc;HRGN clip,system;int saved;RECT bounds;
     if(!view->layout(w,view->context,&l))return;
     dc=GetWindowDC(w);if(!dc)return;saved=SaveDC(dc);
     if(!saved){ReleaseDC(w,dc);return;}
@@ -134,20 +137,7 @@ void win16_control_frame_menu_state(HWND w,const win16_control_frame_view *view)
     if(clip && system && CombineRgn(clip,clip,system,RGN_OR)!=ERROR &&
         ExtSelectClipRgn(dc,clip,RGN_AND)!=ERROR && GetRgnBox(clip,&bounds)!=ERROR &&
         bounds.right>bounds.left && bounds.bottom>bounds.top){
-        memory=CreateCompatibleDC(dc);
-        if(memory)bitmap=CreateCompatibleBitmap(dc,bounds.right-bounds.left,bounds.bottom-bounds.top);
-        if(bitmap)old=(HBITMAP)SelectObject(memory,bitmap);
-        if(old && old!=(HBITMAP)HGDI_ERROR &&
-            BitBlt(memory,0,0,bounds.right-bounds.left,bounds.bottom-bounds.top,dc,bounds.left,bounds.top,SRCCOPY) &&
-            SetWindowOrgEx(memory,bounds.left,bounds.top,NULL)){
-            win16_control_paint_frame(w,view,memory);
-            if(!*view->detached)ready=BitBlt(dc,bounds.left,bounds.top,bounds.right-bounds.left,
-                bounds.bottom-bounds.top,memory,bounds.left,bounds.top,SRCCOPY);
-        }
-        if(old && old!=(HBITMAP)HGDI_ERROR)SelectObject(memory,old);
-        if(bitmap)DeleteObject(bitmap);
-        if(memory)DeleteDC(memory);
-        if(!ready && !*view->detached)win16_control_paint_frame(w,view,dc);
+        paint_buffered(w,view,dc,&bounds);
     }
     if(system)DeleteObject(system);
     if(clip)DeleteObject(clip);
@@ -157,25 +147,13 @@ void win16_control_frame_menu_state(HWND w,const win16_control_frame_view *view)
 /* Press tracking changes one button, not the sizing band or other controls. */
 void win16_control_frame_button_state(HWND w,const win16_control_frame_view *view,int hit)
 {
-    win16_style_layout l;RECT r;HDC dc,memory;HBITMAP bitmap=NULL,old=NULL;int saved;BOOL ready=FALSE;
+    win16_style_layout l;RECT r;HDC dc;int saved;
     if(!view->layout(w,view->context,&l))return;
     r=hit==HTSYSMENU?l.system:hit==HTMINBUTTON?l.minimize:l.maximize;
     if(IsRectEmpty(&r))return;
     dc=GetWindowDC(w);if(!dc)return;saved=SaveDC(dc);
     if(saved){if(IntersectClipRect(dc,r.left,r.top,r.right,r.bottom)!=ERROR){
-        memory=CreateCompatibleDC(dc);
-        if(memory)bitmap=CreateCompatibleBitmap(dc,r.right-r.left,r.bottom-r.top);
-        if(bitmap)old=(HBITMAP)SelectObject(memory,bitmap);
-        if(old && old!=(HBITMAP)HGDI_ERROR &&
-            BitBlt(memory,0,0,r.right-r.left,r.bottom-r.top,dc,r.left,r.top,SRCCOPY) &&
-            SetWindowOrgEx(memory,r.left,r.top,NULL)){
-            win16_control_paint_frame(w,view,memory);
-            if(!*view->detached)ready=BitBlt(dc,r.left,r.top,r.right-r.left,r.bottom-r.top,memory,r.left,r.top,SRCCOPY);
-        }
-        if(old && old!=(HBITMAP)HGDI_ERROR)SelectObject(memory,old);
-        if(bitmap)DeleteObject(bitmap);
-        if(memory)DeleteDC(memory);
-        if(!ready && !*view->detached)win16_control_paint_frame(w,view,dc);
+        paint_buffered(w,view,dc,&r);
         }
         RestoreDC(dc,saved);}
     ReleaseDC(w,dc);

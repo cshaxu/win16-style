@@ -4,6 +4,7 @@
 #include "ntw16s-dll/global/manager.h"
 #include "ntw16s-dll/global/policy.h"
 #include "ntw16s-dll/global/session.h"
+#include "global_session_fixture.h"
 
 static HWND button;
 static unsigned clicks;
@@ -122,16 +123,9 @@ static int stop_race_child(void)
 }
 static int stop_race(void)
 {
-    WCHAR desktop[128],name[NTW16S_GLOBAL_NAME_CAP],stop_name[NTW16S_GLOBAL_NAME_CAP+16],self[MAX_PATH],dll[MAX_PATH],cmd[MAX_PATH+32];DWORD needed=0;
-    if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desktop,sizeof(desktop),&needed) ||
-       wcsncmp(desktop,L"Win16S-Dialog-",14))return 7;
-    if(!ntw16s_global_name(name,ARRAYSIZE(name)) || swprintf(stop_name,ARRAYSIZE(stop_name),L"%ls.stop",name)<0)return 8;
-    HANDLE map=CreateFileMappingW(INVALID_HANDLE_VALUE,NULL,PAGE_READWRITE,0,sizeof(ntw16s_global_session),name);
-    if(!map || GetLastError()==ERROR_ALREADY_EXISTS)return 9;
-    ntw16s_global_session *session=(ntw16s_global_session *)MapViewOfFile(map,FILE_MAP_ALL_ACCESS,0,0,sizeof(*session));if(!session)return 10;
-    ZeroMemory(session,sizeof(*session));session->magic=NTW16S_GLOBAL_MAGIC;session->version=NTW16S_GLOBAL_VERSION;
-    session->owner_pid=GetCurrentProcessId();session->cookie=0x7894;session->phase=NTW16S_GLOBAL_ACTIVE;
-    if(!win32_process_global_birth(GetCurrentProcess(),&session->owner_birth_low,&session->owner_birth_high))return 11;
+    WCHAR name[NTW16S_GLOBAL_NAME_CAP],stop_name[NTW16S_GLOBAL_NAME_CAP+16],self[MAX_PATH],dll[MAX_PATH],cmd[MAX_PATH+32];
+    HANDLE map=NULL;ntw16s_global_session *session=NULL;
+    int session_error=global_test_session(name,stop_name,&map,&session,0x7894);if(session_error)return session_error;
     HANDLE stop=CreateEventW(NULL,TRUE,FALSE,stop_name);if(!stop)return 12;
     GetModuleFileNameW(NULL,self,ARRAYSIZE(self));wcscpy(dll,self);WCHAR *slash=wcsrchr(dll,L'\\');if(!slash)return 13;
     wcscpy(slash+1,sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");
@@ -162,16 +156,9 @@ int wmain(int argc,WCHAR **argv)
     if(argc==2 && !lstrcmpW(argv[1],L"target"))return target();
     if(argc==2 && !lstrcmpW(argv[1],L"race-child"))return stop_race_child();
     if(argc==2 && !lstrcmpW(argv[1],L"stop-race"))return stop_race();
-    WCHAR desktop[128],name[NTW16S_GLOBAL_NAME_CAP],stop_name[NTW16S_GLOBAL_NAME_CAP+16],self[MAX_PATH],dll[MAX_PATH];DWORD needed=0;
-    if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desktop,sizeof(desktop),&needed) ||
-       wcsncmp(desktop,L"Win16S-Dialog-",14))return 7;
-    if(!ntw16s_global_name(name,ARRAYSIZE(name)) || swprintf(stop_name,ARRAYSIZE(stop_name),L"%ls.stop",name)<0)return 8;
-    HANDLE map=CreateFileMappingW(INVALID_HANDLE_VALUE,NULL,PAGE_READWRITE,0,sizeof(ntw16s_global_session),name);
-    if(!map || GetLastError()==ERROR_ALREADY_EXISTS)return 9;
-    ntw16s_global_session *session=(ntw16s_global_session *)MapViewOfFile(map,FILE_MAP_ALL_ACCESS,0,0,sizeof(*session));if(!session)return 10;
-    ZeroMemory(session,sizeof(*session));session->magic=NTW16S_GLOBAL_MAGIC;session->version=NTW16S_GLOBAL_VERSION;
-    session->owner_pid=GetCurrentProcessId();session->cookie=0x7893;session->phase=NTW16S_GLOBAL_ACTIVE;
-    if(!win32_process_global_birth(GetCurrentProcess(),&session->owner_birth_low,&session->owner_birth_high))return 11;
+    WCHAR name[NTW16S_GLOBAL_NAME_CAP],stop_name[NTW16S_GLOBAL_NAME_CAP+16],self[MAX_PATH],dll[MAX_PATH];
+    HANDLE map=NULL;ntw16s_global_session *session=NULL;
+    int session_error=global_test_session(name,stop_name,&map,&session,0x7893);if(session_error)return session_error;
     HANDLE stop=CreateEventW(NULL,TRUE,FALSE,stop_name);if(!stop)return 12;
     GetModuleFileNameW(NULL,self,ARRAYSIZE(self));wcscpy(dll,self);WCHAR *slash=wcsrchr(dll,L'\\');if(!slash)return 13;
     wcscpy(slash+1,sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");

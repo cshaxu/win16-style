@@ -3,27 +3,11 @@
 #include <windows.h>
 #include <stdio.h>
 #include <setjmp.h>
-#include "ntw16s-dll/injection/unwind.h"
+#include "../../src/lib-win32/process-hook/unwind.h"
 #include "isolated_process.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"SPIN_MODEL_FAIL line=%d error=%lu %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
 
-static BOOL exception_seen;
-#ifndef _WIN64
-typedef struct catcher {ntw16s_unwind_record record;jmp_buf saved;} catcher;
-static EXCEPTION_DISPOSITION NTAPI catch_exception(EXCEPTION_RECORD *e,void *frame,CONTEXT *c,void *dispatcher)
-{(void)c;(void)dispatcher;if(!(e->ExceptionFlags&(EXCEPTION_UNWINDING|EXCEPTION_EXIT_UNWIND)) && e->ExceptionCode==0xe0425342u){exception_seen=TRUE;RtlUnwind(frame,NULL,e,NULL);longjmp(((catcher*)frame)->saved,1);}return ExceptionContinueSearch;}
-#else
-static LONG __attribute__((used)) spin_filter(EXCEPTION_POINTERS *e,void *frame)
-{(void)frame;if(e->ExceptionRecord->ExceptionCode==0xe0425342u){exception_seen=TRUE;return EXCEPTION_EXECUTE_HANDLER;}return EXCEPTION_CONTINUE_SEARCH;}
-#endif
-static NTW16S_UNWIND_FUNCTION BOOL test_unwind(HWND w,HDC dc)
-{exception_seen=FALSE;
-#ifndef _WIN64
- catcher c;c.record.handler=catch_exception;__asm__ __volatile__("movl %%fs:0,%0":"=r"(c.record.previous)::"memory");__asm__ __volatile__("movl %0,%%fs:0"::"r"(&c.record):"memory");if(!setjmp(c.saved))SendMessageW(w,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT);__asm__ __volatile__("movl %0,%%fs:0"::"r"(c.record.previous):"memory");
-#else
- __asm__ __volatile__(".Lspin_start:\n.seh_handler __C_specific_handler, @except\n.seh_handlerdata\n.long 1\n.rva .Lspin_start,.Lspin_end,spin_filter,.Lspin_end\n.text\n":::"memory");SendMessageW(w,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT);__asm__ __volatile__("nop\n.Lspin_end: nop\n":::"memory");
-#endif
- return exception_seen;}
+#include "exception_probe.h"
 
 static int worker(int argc,WCHAR **argv)
 {
@@ -37,7 +21,7 @@ static int worker(int argc,WCHAR **argv)
  HWND parent=create(root,FALSE);CHECK(parent);CHECK(RedrawWindow(parent,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW));CHECK(attached(parent));
  HWND child=button(parent);CHECK(child);mode(1);CHECK(RedrawWindow(child,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW));CHECK(attached(child));
  HDC dc=GetDC(child);CHECK(dc);COLORREF styled=GetPixel(dc,3,3),glyph=GetPixel(dc,10,6);for(int gy=0;gy<3;gy++)for(int gx=0;gx<3;gx++)CHECK(GetPixel(dc,10+gx,6+gy)==RGB(220-40*gx,40*gy,20+30*gx));ReleaseDC(child,dc);CHECK(glyph==RGB(220,0,20));puts("SPIN_COLOR_GLYPH pixels=9 unchanged=9");
- HDC screen=GetDC(child),clipdc=CreateCompatibleDC(screen);CHECK(screen&&clipdc);HBITMAP clipbmp=CreateCompatibleBitmap(screen,20,24);CHECK(clipbmp);HGDIOBJ clipold=SelectObject(clipdc,clipbmp);CHECK(clipold);RECT all={0,0,20,24};HBRUSH sentinel=CreateSolidBrush(RGB(80,40,120));CHECK(sentinel);FillRect(clipdc,&all,sentinel);DeleteObject(sentinel);mode(8);CHECK(test_unwind(child,clipdc));CHECK(attached(child));CHECK(RedrawWindow(child,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW));puts("SPIN_UNWIND caught=1 later_paint=1");int clip_save=SaveDC(clipdc);CHECK(clip_save);CHECK(IntersectClipRect(clipdc,0,0,10,10)!=ERROR);SendMessageW(child,WM_PRINTCLIENT,(WPARAM)clipdc,PRF_CLIENT);CHECK(RestoreDC(clipdc,clip_save));COLORREF clipped_inside=GetPixel(clipdc,3,3),clipped_outside=GetPixel(clipdc,15,20);printf("SPIN_CLIP inside=%08lx outside=%08lx\n",(DWORD)clipped_inside,(DWORD)clipped_outside);CHECK(clipped_inside==RGB(192,192,192));CHECK(clipped_outside==RGB(80,40,120));SelectObject(clipdc,clipold);CHECK(DeleteObject(clipbmp));CHECK(DeleteDC(clipdc));ReleaseDC(child,screen);
+ HDC screen=GetDC(child),clipdc=CreateCompatibleDC(screen);CHECK(screen&&clipdc);HBITMAP clipbmp=CreateCompatibleBitmap(screen,20,24);CHECK(clipbmp);HGDIOBJ clipold=SelectObject(clipdc,clipbmp);CHECK(clipold);RECT all={0,0,20,24};HBRUSH sentinel=CreateSolidBrush(RGB(80,40,120));CHECK(sentinel);FillRect(clipdc,&all,sentinel);DeleteObject(sentinel);mode(8);CHECK(test_unwind(child,WM_PRINTCLIENT,(WPARAM)clipdc,PRF_CLIENT));CHECK(attached(child));CHECK(RedrawWindow(child,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW));puts("SPIN_UNWIND caught=1 later_paint=1");int clip_save=SaveDC(clipdc);CHECK(clip_save);CHECK(IntersectClipRect(clipdc,0,0,10,10)!=ERROR);SendMessageW(child,WM_PRINTCLIENT,(WPARAM)clipdc,PRF_CLIENT);CHECK(RestoreDC(clipdc,clip_save));COLORREF clipped_inside=GetPixel(clipdc,3,3),clipped_outside=GetPixel(clipdc,15,20);printf("SPIN_CLIP inside=%08lx outside=%08lx\n",(DWORD)clipped_inside,(DWORD)clipped_outside);CHECK(clipped_inside==RGB(192,192,192));CHECK(clipped_outside==RGB(80,40,120));SelectObject(clipdc,clipold);CHECK(DeleteObject(clipbmp));CHECK(DeleteDC(clipdc));ReleaseDC(child,screen);
  mode(7);CHECK(RedrawWindow(child,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW));dc=GetDC(child);CHECK(dc);COLORREF swapped=GetPixel(dc,3,3);ReleaseDC(child,dc);printf("SPIN_SWAP sampled=%08lx expected=%08lx\n",(DWORD)swapped,(DWORD)RGB(253,253,253));CHECK(swapped==RGB(253,253,253));mode(9);CHECK(RedrawWindow(child,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW));dc=GetDC(child);CHECK(dc);COLORREF swapped_back=GetPixel(dc,3,3);ReleaseDC(child,dc);printf("SPIN_SWAP_BACK sampled=%08lx expected=%08lx\n",(DWORD)swapped_back,(DWORD)RGB(253,253,253));CHECK(swapped_back==RGB(253,253,253));
 
  mode(11);CHECK(RedrawWindow(child,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW));dc=GetDC(child);CHECK(dc);COLORREF different_theme=GetPixel(dc,3,3);ReleaseDC(child,dc);printf("SPIN_OTHER_THEME sampled=%08lx expected=%08lx\n",(DWORD)different_theme,(DWORD)RGB(253,253,253));CHECK(different_theme==RGB(253,253,253));

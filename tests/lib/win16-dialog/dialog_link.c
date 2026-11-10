@@ -74,6 +74,9 @@ static HRESULT fake_v2_call(void *owner,win16_dialog_v2_operation op,ULONG_PTR a
 static HRESULT fake_v2_query(void *owner,REFIID iid,void **out)
 {(void)iid;*out=owner;return S_OK;}
 static ULONG fake_v2_ref(void *owner){return owner?7:0;}
+static HRESULT fake_cancel_result;
+static HRESULT STDMETHODCALLTYPE fake_cancel_label(IFileDialog2 *dialog,LPCWSTR label)
+{(void)dialog;(void)label;return fake_cancel_result;}
 static BOOL no_session(void){return FALSE;}
 static HRESULT fake_event_result;static unsigned fake_event_calls;static IFileDialog *fake_event_owner;
 static HRESULT STDMETHODCALLTYPE fake_event_ok(IFileDialogEvents *self,IFileDialog *dialog)
@@ -97,8 +100,11 @@ static BOOL test_event_dispatch(void)
     fake_event_result=E_FAIL;
     if(win16_dialog_event_dispatch(&snapshot,(void *)1,CLASSIC_FOLDER_CHANGING,NULL)!=E_FAIL || fake_event_calls!=3)return FALSE;
     fake_event_result=S_OK;
-    return win16_dialog_event_overwrite(&snapshot,(void *)1,NULL)==FDEOR_ACCEPT &&
-        win16_dialog_event_share(&snapshot,(void *)1,NULL)==FDESVR_REFUSE && fake_event_calls==5;
+    if(win16_dialog_event_overwrite(&snapshot,(void *)1,NULL)!=FDEOR_ACCEPT ||
+       win16_dialog_event_share(&snapshot,(void *)1,NULL)!=FDESVR_REFUSE || fake_event_calls!=5)return FALSE;
+    fake_event_result=E_FAIL;
+    return win16_dialog_event_overwrite(&snapshot,(void *)1,NULL)==FDEOR_DEFAULT &&
+        win16_dialog_event_share(&snapshot,(void *)1,NULL)==FDESVR_DEFAULT && fake_event_calls==7;
 }
 static BOOL test_event_snapshot(void)
 {
@@ -117,12 +123,18 @@ static BOOL test_classic_list_target(void)
     if(!GetTempPathW(MAX_PATH,dir) || dir[1]!=L':' || dir[2]!=L'\\')return FALSE;
     root[0]=dir[0];root[1]=L':';root[2]=L'\\';root[3]=0;
     parent=CreateWindowExW(0,L"STATIC",L"",WS_OVERLAPPED,0,0,80,80,NULL,NULL,GetModuleHandleW(NULL),NULL);
-    if(parent)list=CreateWindowExW(0,L"LISTBOX",L"",WS_CHILD,0,0,40,40,parent,(HMENU)(INT_PTR)lst2,GetModuleHandleW(NULL),NULL);
+    if(parent)list=CreateWindowExW(0,L"LISTBOX",L"",WS_CHILD|LBS_HASSTRINGS,0,0,40,40,parent,(HMENU)(INT_PTR)lst2,GetModuleHandleW(NULL),NULL);
     if(!list || FAILED(SHCreateItemFromParsingName(dir,NULL,&IID_IShellItem,(void **)&folder)))goto done;
     selected=win16_dialog_classic_list_target(parent,folder);if(selected)goto done;
     if(SendMessageW(list,LB_ADDSTRING,0,(LPARAM)root)==LB_ERR)goto done;
     SendMessageW(list,LB_SETCURSEL,0,0);selected=win16_dialog_classic_list_target(parent,folder);
     if(!selected || FAILED(IShellItem_GetDisplayName(selected,SIGDN_FILESYSPATH,&path)) || lstrcmpiW(path,root))goto done;
+    WCHAR resolved[MAX_PATH];
+    if(!ntw16s_old_dialog_folder(parent,resolved,ARRAYSIZE(resolved)) || lstrcmpiW(resolved,root) ||
+       ntw16s_old_dialog_folder(parent,resolved,4))goto done;
+    if(SendMessageW(list,LB_ADDSTRING,0,(LPARAM)L"..")<0)goto done;
+    SendMessageW(list,LB_SETCURSEL,1,0);
+    if(ntw16s_old_dialog_folder(parent,resolved,ARRAYSIZE(resolved)))goto done;
     IShellItem_Release(selected);selected=NULL;
     if(root[0]==L'Z' || root[0]==L'z')wrong[0]=L'Y';
     SendMessageW(list,LB_RESETCONTENT,0,0);SendMessageW(list,LB_ADDSTRING,0,(LPARAM)wrong);SendMessageW(list,LB_SETCURSEL,0,0);
@@ -146,6 +158,14 @@ static BOOL test_classic_entry_targets(void)
     if(!win16_dialog_classic_typed_target(parent,folder,&item) || !item)goto done;
     int order=1;if(FAILED(IShellItem_Compare(item,folder,SICHINT_CANONICAL,&order)) || order)goto done;
     IShellItem_Release(item);item=NULL;
+    WCHAR drive_relative[4]={dir[0],L':',L'.',0};
+    PCWSTR folder_inputs[]={dir+2,drive_relative};
+    for(unsigned i=0;i<ARRAYSIZE(folder_inputs);++i){
+        SetWindowTextW(edit,folder_inputs[i]);
+        if(!win16_dialog_classic_typed_target(parent,folder,&item) || !item ||
+           FAILED(IShellItem_Compare(item,folder,SICHINT_CANONICAL,&order)) || order)goto done;
+        IShellItem_Release(item);item=NULL;
+    }
     SetWindowTextW(edit,L"this-folder-does-not-exist-4ff47fc7");
     if(!win16_dialog_classic_typed_target(parent,folder,&item) || item)goto done;
     if(win16_dialog_classic_drive_target(parent,&index,&selected_combo))goto done;
@@ -159,6 +179,14 @@ static BOOL test_classic_entry_targets(void)
     CoTaskMemFree(actual);actual=NULL;IShellItem_Release(item);item=NULL;
     PCWSTR name=wcsrchr(path,L'\\');name=name?name+1:path;
     if(wcslen(name)>=ARRAYSIZE(basename))goto done;
+    WCHAR relative[MAX_PATH];
+    if(swprintf(relative,ARRAYSIZE(relative),L"%lc:%ls",dir[0],name)<0)goto done;
+    PCWSTR file_inputs[]={path+2,relative};
+    for(unsigned i=0;i<ARRAYSIZE(file_inputs);++i){
+        SetWindowTextW(edit,file_inputs[i]);item=win16_dialog_classic_overwrite_target(parent,folder,NULL);
+        if(!item || FAILED(IShellItem_GetDisplayName(item,SIGDN_FILESYSPATH,&actual)) || lstrcmpiW(actual,path))goto done;
+        CoTaskMemFree(actual);actual=NULL;IShellItem_Release(item);item=NULL;
+    }
     wcscpy(basename,name);WCHAR *dot=wcsrchr(basename,L'.');if(!dot || _wcsicmp(dot,L".tmp"))goto done;
     *dot=0;SetWindowTextW(edit,basename);item=win16_dialog_classic_overwrite_target(parent,folder,L"tmp");
     if(!item || FAILED(IShellItem_GetDisplayName(item,SIGDN_FILESYSPATH,&actual)) || lstrcmpiW(actual,path))goto done;
@@ -474,6 +502,15 @@ int main(void)
     if(IFileDialog2_SetOkButtonLabel(&adapter.iface,L"OK")!=S_FALSE || observed_op!=V2_LABEL || observed_b!=TRUE)return 23;
     if(IFileDialog2_Close(&adapter.iface,E_FAIL)!=S_FALSE || observed_op!=V2_CLOSE || (HRESULT)observed_a!=E_FAIL)return 24;
     if(IFileDialog2_AddRef(&adapter.iface)!=7 || IFileDialog2_Release(&adapter.iface)!=7)return 25;
+    IFileDialog2Vtbl native_vtable={.SetCancelButtonLabel=fake_cancel_label};
+    IFileDialog2 native_dialog={.lpVtbl=&native_vtable};adapter.native=&native_dialog;
+    fake_cancel_result=S_OK;
+    if(IFileDialog2_SetCancelButtonLabel(&adapter.iface,L"First")!=S_OK || !cancel_label || lstrcmpW(cancel_label,L"First"))return 45;
+    fake_cancel_result=E_FAIL;
+    if(IFileDialog2_SetCancelButtonLabel(&adapter.iface,L"Ignored")!=E_FAIL || lstrcmpW(cancel_label,L"First"))return 46;
+    fake_cancel_result=S_OK;
+    if(IFileDialog2_SetCancelButtonLabel(&adapter.iface,L"Second")!=S_OK || !cancel_label || lstrcmpW(cancel_label,L"Second"))return 47;
+    if(IFileDialog2_SetCancelButtonLabel(&adapter.iface,NULL)!=S_OK || cancel_label || unsupported)return 48;
     if(!win16_dialog_proxy_iid(&IID_IFileOpenDialog,FALSE) ||
        win16_dialog_proxy_iid(&IID_IFileOpenDialog,TRUE) ||
        !win16_dialog_proxy_iid(&IID_IFileSaveDialog,TRUE) ||

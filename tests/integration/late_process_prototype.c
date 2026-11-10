@@ -9,7 +9,7 @@
 ntw16s_context ntw16s_process_context;
 static volatile LONG running=1,ticks,style_registrations;
 /* The ordinary-startup backend is not linked into this isolated fixture. */
-DWORD ntw16s_hooks_attach(void *slot,void *replacement)
+DWORD process_hook_startup_attach(void *slot,void *replacement)
 {(void)slot;(void)replacement;return ERROR_NOT_SUPPORTED;}
 /* This fixture isolates process propagation. Real style registrations are
  * exercised by the actual DLL integration tests. */

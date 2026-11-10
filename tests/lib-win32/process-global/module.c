@@ -1,6 +1,18 @@
 #include "lib-win32/process-global/module.h"
 #include <stdio.h>
 #include <wchar.h>
+#include <tlhelp32.h>
+static unsigned snapshot_calls,snapshot_mode;
+static HANDLE WINAPI test_snapshot(DWORD flags,DWORD pid)
+{
+    if(flags!=(TH32CS_SNAPMODULE|TH32CS_SNAPMODULE32) || pid!=42){SetLastError(ERROR_INVALID_PARAMETER);return INVALID_HANDLE_VALUE;}
+    ++snapshot_calls;
+    if(snapshot_mode==1 && snapshot_calls==8)return (HANDLE)(ULONG_PTR)1;
+    SetLastError(snapshot_mode==0?ERROR_ACCESS_DENIED:ERROR_BAD_LENGTH);return INVALID_HANDLE_VALUE;
+}
+#define CreateToolhelp32Snapshot test_snapshot
+#include "lib-win32/process-global/module_snapshot.h"
+#undef CreateToolhelp32Snapshot
 static BOOL allow;static unsigned equals,checks;
 static BOOL same(const WCHAR *a,const WCHAR *b)
 {(void)a;(void)b;++equals;return allow;}
@@ -9,6 +21,12 @@ static DWORD check(HANDLE p,DWORD id,HMODULE m,const WCHAR *name,const WCHAR *pa
 int main(void)
 {
     WCHAR selected[MAX_PATH];HANDLE p=GetCurrentProcess();DWORD id=GetCurrentProcessId();
+    snapshot_mode=0;snapshot_calls=0;
+    if(win32_process_global_module_snapshot(42)!=INVALID_HANDLE_VALUE || snapshot_calls!=1 || GetLastError()!=ERROR_ACCESS_DENIED)return 10;
+    snapshot_mode=1;snapshot_calls=0;
+    if(win32_process_global_module_snapshot(42)!=(HANDLE)(ULONG_PTR)1 || snapshot_calls!=8)return 11;
+    snapshot_mode=2;snapshot_calls=0;
+    if(win32_process_global_module_snapshot(42)!=INVALID_HANDLE_VALUE || snapshot_calls!=8 || GetLastError()!=ERROR_BAD_LENGTH)return 12;
     DWORD e=win32_process_global_select_path(p,id,L"C:\\nonexistent\\kernel32.dll",selected,ARRAYSIZE(selected),same,check);
     if(e!=ERROR_REVISION_MISMATCH || equals!=1 || checks)return 1;
     allow=TRUE;e=win32_process_global_select_path(p,id,L"C:\\nonexistent\\kernel32.dll",selected,ARRAYSIZE(selected),same,check);

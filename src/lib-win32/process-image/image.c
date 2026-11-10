@@ -19,15 +19,20 @@ DWORD win32_process_image_validate_ex(PCWSTR path,WORD machine,BOOL dll,WORD *su
     IMAGE_DOS_HEADER dos;IMAGE_FILE_HEADER header;DWORD signature,read,error=ERROR_BAD_EXE_FORMAT;
     LARGE_INTEGER size,offset;WORD magic,subsystem;BYTE optional[sizeof(IMAGE_OPTIONAL_HEADER64)];
     if(!GetFileSizeEx(file,&size)){error=GetLastError();goto done;}
-    if(!ReadFile(file,&dos,sizeof(dos),&read,NULL) || read!=sizeof(dos) || dos.e_magic!=IMAGE_DOS_SIGNATURE || dos.e_lfanew<(LONG)sizeof(dos))goto done;
+    if(!ReadFile(file,&dos,sizeof(dos),&read,NULL)){error=GetLastError();goto done;}
+    if(read!=sizeof(dos) || dos.e_magic!=IMAGE_DOS_SIGNATURE || dos.e_lfanew<(LONG)sizeof(dos))goto done;
     offset.QuadPart=dos.e_lfanew;
-    if(offset.QuadPart>size.QuadPart-24 || !SetFilePointerEx(file,offset,NULL,FILE_BEGIN))goto done;
-    if(!ReadFile(file,&signature,4,&read,NULL) || read!=4 || signature!=IMAGE_NT_SIGNATURE ||
-       !ReadFile(file,&header,sizeof(header),&read,NULL) || read!=sizeof(header) || header.Machine!=machine ||
+    if(offset.QuadPart>size.QuadPart-24)goto done;
+    if(!SetFilePointerEx(file,offset,NULL,FILE_BEGIN)){error=GetLastError();goto done;}
+    if(!ReadFile(file,&signature,4,&read,NULL)){error=GetLastError();goto done;}
+    if(read!=4 || signature!=IMAGE_NT_SIGNATURE)goto done;
+    if(!ReadFile(file,&header,sizeof(header),&read,NULL)){error=GetLastError();goto done;}
+    if(read!=sizeof(header) || header.Machine!=machine ||
        !(header.Characteristics&IMAGE_FILE_EXECUTABLE_IMAGE) || !!(header.Characteristics&IMAGE_FILE_DLL)!=!!dll ||
        header.SizeOfOptionalHeader<70 || header.SizeOfOptionalHeader>sizeof(optional) ||
-       size.QuadPart-offset.QuadPart-24<header.SizeOfOptionalHeader ||
-       !ReadFile(file,optional,header.SizeOfOptionalHeader,&read,NULL) || read!=header.SizeOfOptionalHeader)goto done;
+       size.QuadPart-offset.QuadPart-24<header.SizeOfOptionalHeader)goto done;
+    if(!ReadFile(file,optional,header.SizeOfOptionalHeader,&read,NULL)){error=GetLastError();goto done;}
+    if(read!=header.SizeOfOptionalHeader)goto done;
     memcpy(&magic,optional,2);memcpy(&subsystem,optional+68,2);
     if(magic!=(machine==IMAGE_FILE_MACHINE_I386?IMAGE_NT_OPTIONAL_HDR32_MAGIC:IMAGE_NT_OPTIONAL_HDR64_MAGIC) ||
        (subsystem!=IMAGE_SUBSYSTEM_WINDOWS_GUI && subsystem!=IMAGE_SUBSYSTEM_WINDOWS_CUI))goto done;

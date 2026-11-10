@@ -7,7 +7,7 @@ DWORD WINAPI win32_process_global_dispatch_run(void *parameter)
     for(;;){
         DWORD result=WaitForMultipleObjects(ARRAYSIZE(waits),waits,FALSE,INFINITE);
         if(result==WAIT_OBJECT_0 || result==WAIT_OBJECT_0+1)break;
-        if(result!=WAIT_OBJECT_0+2)break;
+        if(result!=WAIT_OBJECT_0+2)return result==WAIT_FAILED?GetLastError():ERROR_INVALID_STATE;
         while(dispatch->next(dispatch->context)){
             if(WaitForSingleObject(dispatch->quit,0)==WAIT_OBJECT_0 || WaitForSingleObject(dispatch->stop,0)==WAIT_OBJECT_0)break;
         }
@@ -29,7 +29,8 @@ DWORD win32_process_global_dispatch_pool_start(win32_process_global_dispatch_poo
         pool->threads[i]=CreateThread(NULL,0,win32_process_global_dispatch_run,&pool->contexts[i],0,NULL);
         if(!pool->threads[i])return GetLastError();
     }
-    if(WaitForMultipleObjects(count,pool->ready,TRUE,timeout)!=WAIT_OBJECT_0)return ERROR_TIMEOUT;
+    DWORD wait=WaitForMultipleObjects(count,pool->ready,TRUE,timeout);
+    if(wait!=WAIT_OBJECT_0)return wait==WAIT_TIMEOUT?ERROR_TIMEOUT:(wait==WAIT_FAILED?GetLastError():ERROR_INVALID_STATE);
     for(unsigned i=0;i<count;++i)if(pool->contexts[i].error)return pool->contexts[i].error;
     return ERROR_SUCCESS;
 }

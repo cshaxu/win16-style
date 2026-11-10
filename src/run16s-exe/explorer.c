@@ -47,12 +47,20 @@ BOOL run16s_terminal_image(PCWSTR image)
     const WCHAR *base=image?wcsrchr(image,L'\\'):NULL;
     return base && !_wcsicmp(base+1,L"WindowsTerminal.exe");
 }
+static DWORD snapshot_collect(run16s_explorer_snapshot *s)
+{
+    SetLastError(ERROR_SUCCESS);
+    if(EnumWindows(collect,(LPARAM)s) && !s->overflow)return ERROR_SUCCESS;
+    DWORD error=s->overflow?ERROR_MORE_DATA:GetLastError();
+    return error?error:ERROR_GEN_FAILURE;
+}
 static run16s_explorer_snapshot *snapshot_create(PCWSTR class_name)
 {
     run16s_explorer_snapshot *s=calloc(1,sizeof(*s));
-    if(!s)return NULL;
+    if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return NULL;}
     s->class_name=class_name;
-    if(!EnumWindows(collect,(LPARAM)s) || s->overflow){free(s);return NULL;}
+    DWORD error=snapshot_collect(s);
+    if(error){free(s);SetLastError(error);return NULL;}
     return s;
 }
 run16s_explorer_snapshot *run16s_explorer_snapshot_create(void)
@@ -68,7 +76,7 @@ DWORD run16s_explorer_attach_new(run16s_explorer_snapshot *before,PCWSTR image,P
     ULONGLONG stable_since=0;folder previous={0};
     do {
         run16s_explorer_snapshot now={.class_name=before->class_name};folder candidate={0};unsigned count=0;
-        if(!EnumWindows(collect,(LPARAM)&now) || now.overflow)return ERROR_MORE_DATA;
+        DWORD error=snapshot_collect(&now);if(error)return error;
         for(unsigned i=0;i<now.count;i++){
             folder *f=&now.items[i];
             if(!listed(before,f) && IsWindowVisible(f->window) && image_matches(f->pid,image)){candidate=*f;count++;}

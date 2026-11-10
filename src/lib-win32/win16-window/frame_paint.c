@@ -9,10 +9,11 @@ void win16_control_fill(HDC dc,RECT r,COLORREF c)
 
 void win16_control_outline(HDC dc,RECT r,int u,COLORREF c)
 {
-    RECT q=r;q.bottom=q.top+u;win16_control_fill(dc,q,c);
-    q=r;q.top=q.bottom-u;win16_control_fill(dc,q,c);
-    q=r;q.right=q.left+u;win16_control_fill(dc,q,c);
-    q=r;q.left=q.right-u;win16_control_fill(dc,q,c);
+    RECT q=r;SetDCBrushColor(dc,c);HBRUSH brush=(HBRUSH)GetStockObject(DC_BRUSH);
+    q.bottom=q.top+u;FillRect(dc,&q,brush);
+    q=r;q.top=q.bottom-u;FillRect(dc,&q,brush);
+    q=r;q.right=q.left+u;FillRect(dc,&q,brush);
+    q=r;q.left=q.right-u;FillRect(dc,&q,brush);
 }
 
 void win16_control_frame_button(HDC dc,RECT r,int kind,BOOL down,BOOL zoom,BOOL child,int u,

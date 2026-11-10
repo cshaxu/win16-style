@@ -10,7 +10,7 @@
 static void classic_create_folder(HWND owner,win16_dialog_classic_folder_context *ctx)
 {
     WCHAR path[MAX_PATH];
-    if(win16_dialog_create_folder(owner,ctx?ctx->classic_current:NULL,path,ARRAYSIZE(path)) && IsWindow(owner)){
+    if(win16_dialog_create_folder(owner,ctx->classic_current,path,ARRAYSIZE(path)) && IsWindow(owner)){
         HWND edit=GetDlgItem(owner,edt1);WCHAR previous[MAX_PATH]=L"";
         if(edit){GetWindowTextW(edit,previous,ARRAYSIZE(previous));SetWindowTextW(edit,path);
             SendMessageW(owner,WM_COMMAND,MAKEWPARAM(IDOK,BN_CLICKED),(LPARAM)GetDlgItem(owner,IDOK));
@@ -27,10 +27,10 @@ UINT_PTR win16_dialog_classic_folder_hook(HWND window,UINT message,WPARAM wparam
         OPENFILENAMEW *ofn=(OPENFILENAMEW *)lparam;
         win16_dialog_classic_folder_context *ctx=(win16_dialog_classic_folder_context *)ofn->lCustData;
         SetPropW(window,L"Win16s.FolderBridge",ctx);
-        if(ctx)(void)ntw16s_old_dialog_folder(window,ctx->classic_current,ARRAYSIZE(ctx->classic_current));
-        if(ctx && ctx->experimental)ctx->classic_window=window;
-        if(ctx && ctx->ok_label)SetDlgItemTextW(window,IDOK,ctx->ok_label);
-        if(ctx && ctx->cancel_label)SetDlgItemTextW(window,IDCANCEL,ctx->cancel_label);
+        (void)ntw16s_old_dialog_folder(window,ctx->classic_current,ARRAYSIZE(ctx->classic_current));
+        if(ctx->experimental)ctx->classic_window=window;
+        if(ctx->ok_label)SetDlgItemTextW(window,IDOK,ctx->ok_label);
+        if(ctx->cancel_label)SetDlgItemTextW(window,IDCANCEL,ctx->cancel_label);
         PostMessageW(window,ctx->run_message,0,0);
         HWND cancel=GetDlgItem(window,IDCANCEL);
         HWND readonly=GetDlgItem(window,chx1);

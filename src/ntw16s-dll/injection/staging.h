@@ -7,9 +7,5 @@
 #include "injection.h"
 #include "../../lib-win32/process-hook/staging.h"
 #include "../../lib-win32/process-hook/helper.h"
-#define ntw16s_stage_process process_hook_stage_process
-#define ntw16s_stage_restore process_hook_stage_restore
-DWORD ntw16s_stage_read(ntw16s_context *context,BOOL *found);
-#define ntw16s_install_helper process_hook_install_helper
 void ntw16s_run_helper(void);
 #endif

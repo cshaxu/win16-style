@@ -31,6 +31,10 @@ int main(void)
     file=CreateFileW(path,GENERIC_READ,FILE_SHARE_READ|FILE_SHARE_DELETE,NULL,OPEN_EXISTING,0,NULL);
     CHECK(file!=INVALID_HANDLE_VALUE);
     CHECK(win32_process_image_validate_dll_handle(file)==ERROR_BAD_EXE_FORMAT);
+    CloseHandle(file);file=INVALID_HANDLE_VALUE;
+    file=CreateFileW(path,FILE_READ_ATTRIBUTES,FILE_SHARE_READ|FILE_SHARE_DELETE,NULL,OPEN_EXISTING,0,NULL);
+    CHECK(file!=INVALID_HANDLE_VALUE);
+    CHECK(win32_process_image_validate_dll_handle(file)==ERROR_ACCESS_DENIED);
 cleanup:
     if(file!=INVALID_HANDLE_VALUE)CloseHandle(file);
     if(!result)puts("IMAGE_ACCESS_PASS remote=1 bounds=1 executable=1 dll_handle=1");

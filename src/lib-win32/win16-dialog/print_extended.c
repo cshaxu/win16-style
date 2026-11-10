@@ -13,6 +13,13 @@ typedef struct state {
 } state;
 static void free_snapshot(state *s)
 {if(s->applied_dc)DeleteDC(s->applied_dc);if(s->applied_mode)GlobalFree(s->applied_mode);if(s->applied_names)GlobalFree(s->applied_names);s->applied_dc=NULL;s->applied_mode=NULL;s->applied_names=NULL;s->applied=FALSE;}
+static void free_print_result(state *s,HDC dc,HGLOBAL mode,HGLOBAL names)
+{
+    if(dc)DeleteDC(dc);
+    if(mode)GlobalFree(mode);
+    if(names)GlobalFree(names);
+    free_snapshot(s);
+}
 static BOOL global_available(HGLOBAL memory)
 {if(!memory)return TRUE;UINT flags=GlobalFlags(memory);return flags!=GMEM_INVALID_HANDLE && !(flags & GMEM_LOCKCOUNT);}
 static HGLOBAL clone_global(HGLOBAL original)
@@ -37,6 +44,23 @@ static HGLOBAL clone_file_devnames(HGLOBAL original,BOOL ansi)
     else if(result){GlobalFree(result);result=NULL;}
     GlobalUnlock(original);return result;
 }
+static HDC create_dc(void *mode,DEVNAMES *names,BOOL ansi,DWORD flags)
+{
+    if(ansi){
+        if(flags & PD_RETURNDC)return CreateDCA((char*)names+names->wDriverOffset,(char*)names+names->wDeviceOffset,(char*)names+names->wOutputOffset,mode);
+        if(flags & PD_RETURNIC)return CreateICA((char*)names+names->wDriverOffset,(char*)names+names->wDeviceOffset,(char*)names+names->wOutputOffset,mode);
+    }else{
+        if(flags & PD_RETURNDC)return CreateDCW((WCHAR*)names+names->wDriverOffset,(WCHAR*)names+names->wDeviceOffset,(WCHAR*)names+names->wOutputOffset,mode);
+        if(flags & PD_RETURNIC)return CreateICW((WCHAR*)names+names->wDriverOffset,(WCHAR*)names+names->wDeviceOffset,(WCHAR*)names+names->wOutputOffset,mode);
+    }
+    return NULL;
+}
+static void set_copies(void *data,BOOL ansi,short copies,BOOL collate)
+{
+    short value=collate?DMCOLLATE_TRUE:DMCOLLATE_FALSE;
+    if(ansi){DEVMODEA *mode=data;mode->dmCopies=copies;mode->dmCollate=value;}
+    else{DEVMODEW *mode=data;mode->dmCopies=copies;mode->dmCollate=value;}
+}
 /* PrintDlgEx embeds the requested copy count in the returned printer DC.
  * The legacy PrintDlg DC can omit it even when nCopies is returned correctly. */
 static HDC create_print_dc(HGLOBAL mode,HGLOBAL names,BOOL ansi,DWORD copies,DWORD flags)
@@ -45,12 +69,9 @@ static HDC create_print_dc(HGLOBAL mode,HGLOBAL names,BOOL ansi,DWORD copies,DWO
     HGLOBAL dc_mode=clone_global(mode);if(!dc_mode)return NULL;
     void *data=GlobalLock(dc_mode);DEVNAMES *dn=names?GlobalLock(names):NULL;HDC dc=NULL;
     if(data && dn){
-        if(ansi){DEVMODEA *dm=data;dm->dmCopies=(short)copies;dm->dmCollate=(flags&PD_COLLATE)?DMCOLLATE_TRUE:DMCOLLATE_FALSE;
-            if(flags & PD_RETURNDC)dc=CreateDCA((char*)dn+dn->wDriverOffset,(char*)dn+dn->wDeviceOffset,(char*)dn+dn->wOutputOffset,dm);
-            else if(flags & PD_RETURNIC)dc=CreateICA((char*)dn+dn->wDriverOffset,(char*)dn+dn->wDeviceOffset,(char*)dn+dn->wOutputOffset,dm);}
-        else{DEVMODEW *dm=data;dm->dmCopies=(short)copies;dm->dmCollate=(flags&PD_COLLATE)?DMCOLLATE_TRUE:DMCOLLATE_FALSE;
-            if(flags & PD_RETURNDC)dc=CreateDCW((WCHAR*)dn+dn->wDriverOffset,(WCHAR*)dn+dn->wDeviceOffset,(WCHAR*)dn+dn->wOutputOffset,dm);
-            else if(flags & PD_RETURNIC)dc=CreateICW((WCHAR*)dn+dn->wDriverOffset,(WCHAR*)dn+dn->wDeviceOffset,(WCHAR*)dn+dn->wOutputOffset,dm);}}
+        set_copies(data,ansi,(short)copies,(flags&PD_COLLATE)!=0);
+        dc=create_dc(data,dn,ansi,flags);
+    }
     if(data)GlobalUnlock(dc_mode);
     if(dn)GlobalUnlock(names);
     GlobalFree(dc_mode);return dc;
@@ -66,8 +87,7 @@ static BOOL normalize_driver_copies(HGLOBAL mode,BOOL ansi,WORD *copies,DWORD *f
             offsetof(DEVMODEW,dmCollate)+sizeof(((DEVMODEW *)0)->dmCollate);
         if(GlobalSize(mode)<needed)return FALSE;
         void *data=GlobalLock(mode);if(!data)return FALSE;
-        if(ansi){DEVMODEA *dm=data;dm->dmCopies=(short)*copies;dm->dmCollate=(*flags&PD_COLLATE)?DMCOLLATE_TRUE:DMCOLLATE_FALSE;}
-        else{DEVMODEW *dm=data;dm->dmCopies=(short)*copies;dm->dmCollate=(*flags&PD_COLLATE)?DMCOLLATE_TRUE:DMCOLLATE_FALSE;}
+        set_copies(data,ansi,(short)*copies,(*flags&PD_COLLATE)!=0);
         GlobalUnlock(mode);
     }
     *copies=1;*flags &= ~(DWORD)PD_COLLATE;return TRUE;
@@ -98,12 +118,11 @@ static BOOL save_snapshot(HWND window,state *s)
     void *mode_data=GlobalLock(mode),*dc_data=GlobalLock(dc_mode);DEVNAMES *dn=GlobalLock(names);HDC dc=NULL;
     BOOL ready=mode_data && dc_data && dn;
     if(ready){
-        if(s->ansi){DEVMODEA *dm=mode_data,*dc_dm=dc_data;dm->dmCopies=(flags&PD_USEDEVMODECOPIESANDCOLLATE)?(short)copies:1;dm->dmCollate=(flags&PD_USEDEVMODECOPIESANDCOLLATE)&&(flags&PD_COLLATE)?DMCOLLATE_TRUE:DMCOLLATE_FALSE;dc_dm->dmCopies=(short)copies;dc_dm->dmCollate=(flags&PD_COLLATE)?DMCOLLATE_TRUE:DMCOLLATE_FALSE;
-            if(flags & PD_RETURNDC)dc=CreateDCA((char*)dn+dn->wDriverOffset,(char*)dn+dn->wDeviceOffset,(char*)dn+dn->wOutputOffset,dc_dm);
-            else if(flags & PD_RETURNIC)dc=CreateICA((char*)dn+dn->wDriverOffset,(char*)dn+dn->wDeviceOffset,(char*)dn+dn->wOutputOffset,dc_dm);}
-        else {DEVMODEW *dm=mode_data,*dc_dm=dc_data;dm->dmCopies=(flags&PD_USEDEVMODECOPIESANDCOLLATE)?(short)copies:1;dm->dmCollate=(flags&PD_USEDEVMODECOPIESANDCOLLATE)&&(flags&PD_COLLATE)?DMCOLLATE_TRUE:DMCOLLATE_FALSE;dc_dm->dmCopies=(short)copies;dc_dm->dmCollate=(flags&PD_COLLATE)?DMCOLLATE_TRUE:DMCOLLATE_FALSE;
-            if(flags & PD_RETURNDC)dc=CreateDCW((WCHAR*)dn+dn->wDriverOffset,(WCHAR*)dn+dn->wDeviceOffset,(WCHAR*)dn+dn->wOutputOffset,dc_dm);
-            else if(flags & PD_RETURNIC)dc=CreateICW((WCHAR*)dn+dn->wDriverOffset,(WCHAR*)dn+dn->wDeviceOffset,(WCHAR*)dn+dn->wOutputOffset,dc_dm);}}
+        BOOL driver_copies=(flags&PD_USEDEVMODECOPIESANDCOLLATE)!=0;
+        set_copies(mode_data,s->ansi,driver_copies?(short)copies:1,driver_copies && (flags&PD_COLLATE));
+        set_copies(dc_data,s->ansi,(short)copies,(flags&PD_COLLATE)!=0);
+        dc=create_dc(dc_data,dn,s->ansi,flags);
+    }
     if(mode_data)GlobalUnlock(mode);
     if(dc_data)GlobalUnlock(dc_mode);
     if(dn)GlobalUnlock(names);
@@ -115,9 +134,9 @@ static BOOL save_snapshot(HWND window,state *s)
 static UINT_PTR print_hook_common(HWND window,UINT message,WPARAM wparam,state *initial)
 {
     state *s=message==WM_INITDIALOG?initial:(state *)GetPropW(window,CONTEXT_PROPERTY);
-    if(message==WM_INITDIALOG){s->initializing=TRUE;if(!SetPropW(window,CONTEXT_PROPERTY,s)){s->failed=TRUE;PostMessageW(window,WM_COMMAND,IDCANCEL,0);return 0;}
+    if(message==WM_INITDIALOG){s->initializing=TRUE;if(!SetPropW(window,CONTEXT_PROPERTY,s)){goto failed;}
         RECT first,last,ok;HWND a=GetDlgItem(window,1152),b=GetDlgItem(window,1153),button=GetDlgItem(window,IDOK);
-        if(!a || !b || !button){s->failed=TRUE;PostMessageW(window,WM_COMMAND,IDCANCEL,0);return 0;}
+        if(!a || !b || !button){goto failed;}
         GetWindowRect(a,&first);GetWindowRect(b,&last);GetWindowRect(button,&ok);
         MapWindowPoints(NULL,window,(POINT*)&first,2);MapWindowPoints(NULL,window,(POINT*)&last,2);MapWindowPoints(NULL,window,(POINT*)&ok,2);
         ShowWindow(GetDlgItem(window,1089),SW_HIDE);ShowWindow(GetDlgItem(window,1090),SW_HIDE);ShowWindow(a,SW_HIDE);ShowWindow(b,SW_HIDE);
@@ -126,30 +145,30 @@ static UINT_PTR print_hook_common(HWND window,UINT message,WPARAM wparam,state *
         int inset=MulDiv(25,dpi,96),gap=MulDiv(8,dpi,96);
         s->edit=CreateWindowExW(WS_EX_CLIENTEDGE,L"EDIT",s->initial,WS_CHILD|WS_VISIBLE|WS_TABSTOP|ES_AUTOHSCROLL,first.left-inset,first.top,last.right-first.left+inset,first.bottom-first.top,window,(HMENU)(INT_PTR)RANGE_CONTROL,GetModuleHandleW(NULL),NULL);
         s->apply=CreateWindowW(L"BUTTON",L"Apply",WS_CHILD|WS_VISIBLE|WS_TABSTOP|WS_DISABLED|BS_PUSHBUTTON,ok.left-(ok.right-ok.left)-gap,ok.top,ok.right-ok.left,ok.bottom-ok.top,window,(HMENU)(INT_PTR)APPLY_CONTROL,GetModuleHandleW(NULL),NULL);
-        if(!s->edit || !s->apply){s->failed=TRUE;PostMessageW(window,WM_COMMAND,IDCANCEL,0);return 0;}
+        if(!s->edit || !s->apply){goto failed;}
         if(!(s->input_flags & PD_NOCURRENTPAGE)){
             HWND group=GetDlgItem(window,1072),all=GetDlgItem(window,1056),pages=GetDlgItem(window,1058),selection=GetDlgItem(window,1057);
             RECT gr,ar,pr,sr;
             if(!group || !all || !pages || !selection || !GetWindowRect(group,&gr) || !GetWindowRect(all,&ar) || !GetWindowRect(pages,&pr) || !GetWindowRect(selection,&sr)){
-                s->failed=TRUE;PostMessageW(window,WM_COMMAND,IDCANCEL,0);return 0;
+                goto failed;
             }
             MapWindowPoints(NULL,window,(POINT*)&gr,2);MapWindowPoints(NULL,window,(POINT*)&ar,2);
             MapWindowPoints(NULL,window,(POINT*)&pr,2);MapWindowPoints(NULL,window,(POINT*)&sr,2);
             int height=ar.bottom-ar.top,start=gr.top+MulDiv(8,dpi,96),end=gr.bottom-MulDiv(5,dpi,96)-height;
             int step=(end-start)/3;
-            if(height<=0 || step<height){s->failed=TRUE;PostMessageW(window,WM_COMMAND,IDCANCEL,0);return 0;}
-            RECT edit;if(!GetWindowRect(s->edit,&edit)){s->failed=TRUE;PostMessageW(window,WM_COMMAND,IDCANCEL,0);return 0;}
+            if(height<=0 || step<height){goto failed;}
+            RECT edit;if(!GetWindowRect(s->edit,&edit)){goto failed;}
             MapWindowPoints(NULL,window,(POINT*)&edit,2);
             if(!SetWindowPos(all,NULL,ar.left,start,0,0,SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE) ||
                !SetWindowPos(pages,NULL,pr.left,start+step,0,0,SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE) ||
                !SetWindowPos(selection,NULL,sr.left,start+step*2,0,0,SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE) ||
                !SetWindowPos(s->edit,NULL,edit.left,start+step,0,0,SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE)){
-                s->failed=TRUE;PostMessageW(window,WM_COMMAND,IDCANCEL,0);return 0;
+                goto failed;
             }
             s->current=CreateWindowW(L"BUTTON",L"C&urrent page",WS_CHILD|WS_VISIBLE|BS_RADIOBUTTON,
                 ar.left,start+step*3,gr.right-ar.left-MulDiv(8,dpi,96),height,window,(HMENU)(INT_PTR)CURRENT_CONTROL,GetModuleHandleW(NULL),NULL);
             if(!s->current || !SetWindowPos(s->current,selection,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE)){
-                s->failed=TRUE;PostMessageW(window,WM_COMMAND,IDCANCEL,0);return 0;
+                goto failed;
             }
             SendMessageW(s->current,WM_SETFONT,(WPARAM)font,TRUE);
             if(s->input_flags & PD_CURRENTPAGE){SendDlgItemMessageW(window,1056,BM_SETCHECK,BST_UNCHECKED,0);SendMessageW(s->current,BM_SETCHECK,BST_CHECKED,0);}
@@ -172,6 +191,8 @@ static UINT_PTR print_hook_common(HWND window,UINT message,WPARAM wparam,state *
         if(id==IDOK && !read_ranges(window,s)){MessageBeep(MB_ICONEXCLAMATION);return 1;}}
     if(message==WM_DESTROY)RemovePropW(window,CONTEXT_PROPERTY);
     return 0;
+failed:
+    s->failed=TRUE;PostMessageW(window,WM_COMMAND,IDCANCEL,0);return 0;
 }
 static UINT_PTR CALLBACK print_hook_a(HWND w,UINT m,WPARAM wp,LPARAM lp)
 {state *s=NULL;if(m==WM_INITDIALOG){PRINTDLGA *p=(PRINTDLGA*)lp;s=(state*)p->lCustData;s->live_mode=&p->hDevMode;s->live_names=&p->hDevNames;}return print_hook_common(w,m,wp,s);}
@@ -187,10 +208,10 @@ BOOL NAME(EX_TYPE *p,PRINT_TYPE print,HRESULT *result) \
     if(p->hDevNames){d.hDevNames=clone_global(p->hDevNames);if(!d.hDevNames){if(d.hDevMode)GlobalFree(d.hDevMode);return FALSE;}} \
     BOOL ok=print(&d);DWORD error=ok?0:CommDlgExtendedError(); \
     if(ok && (p->Flags & (PD_RETURNDC|PD_RETURNIC)) && (!d.hDC || ((p->Flags & PD_RETURNDC) && d.nCopies>1))){HDC replacement=create_print_dc(d.hDevMode,d.hDevNames,IS_ANSI,d.nCopies,d.Flags|p->Flags); \
-        if(!replacement){if(d.hDC)DeleteDC(d.hDC);if(d.hDevMode)GlobalFree(d.hDevMode);if(d.hDevNames)GlobalFree(d.hDevNames);free_snapshot(&s);*result=E_FAIL;return TRUE;} \
+        if(!replacement){free_print_result(&s,d.hDC,d.hDevMode,d.hDevNames);*result=E_FAIL;return TRUE;} \
         if(d.hDC){DeleteDC(d.hDC);}d.hDC=replacement;} \
-    if(ok && (p->Flags & PD_USEDEVMODECOPIESANDCOLLATE) && !normalize_driver_copies(d.hDevMode,IS_ANSI,&d.nCopies,&d.Flags)){if(d.hDC)DeleteDC(d.hDC);if(d.hDevMode)GlobalFree(d.hDevMode);if(d.hDevNames)GlobalFree(d.hDevNames);free_snapshot(&s);*result=E_FAIL;return TRUE;} \
-    if(ok && (!global_available(p->hDevMode) || !global_available(p->hDevNames))){if(d.hDC)DeleteDC(d.hDC);if(d.hDevMode)GlobalFree(d.hDevMode);if(d.hDevNames)GlobalFree(d.hDevNames);free_snapshot(&s);*result=E_FAIL;return TRUE;} \
+    if(ok && (p->Flags & PD_USEDEVMODECOPIESANDCOLLATE) && !normalize_driver_copies(d.hDevMode,IS_ANSI,&d.nCopies,&d.Flags)){free_print_result(&s,d.hDC,d.hDevMode,d.hDevNames);*result=E_FAIL;return TRUE;} \
+    if(ok && (!global_available(p->hDevMode) || !global_available(p->hDevNames))){free_print_result(&s,d.hDC,d.hDevMode,d.hDevNames);*result=E_FAIL;return TRUE;} \
     if(ok){if(p->hDevMode)GlobalFree(p->hDevMode);if(p->hDevNames)GlobalFree(p->hDevNames);p->hDevMode=d.hDevMode;p->hDevNames=d.hDevNames;p->hDC=d.hDC;p->Flags=(d.Flags & ~(PD_ENABLEPRINTHOOK|PD_RETURNDC|PD_RETURNIC))|(p->Flags & (PD_RETURNDC|PD_RETURNIC|PD_NOCURRENTPAGE));if(s.current_selected)p->Flags=(p->Flags & ~(DWORD)(PD_SELECTION|PD_PAGENUMS))|PD_CURRENTPAGE;p->nCopies=d.nCopies;p->nPageRanges=s.count;if(s.count)CopyMemory(p->lpPageRanges,s.ranges,s.count*sizeof(PRINTPAGERANGE));p->dwResultAction=PD_RESULT_PRINT;free_snapshot(&s);*result=S_OK;return TRUE;} \
     if(d.hDC)DeleteDC(d.hDC); \
     if(d.hDevMode)GlobalFree(d.hDevMode); \

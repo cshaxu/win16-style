@@ -8,37 +8,10 @@ static void settle(void)
 {MSG m;while(PeekMessageW(&m,NULL,0,0,PM_REMOVE)){TranslateMessage(&m);DispatchMessageW(&m);}GdiFlush();}
 static LRESULT CALLBACK parent_proc(HWND w,UINT m,WPARAM a,LPARAM b)
 {if(m==WM_COMMAND && HIWORD(a)==BN_CLICKED)++clicks;return DefWindowProcW(w,m,a,b);}
-typedef struct capture_surface {HDC dc;HBITMAP bitmap;HGDIOBJ old;DWORD *bits;} capture_surface;
-static capture_surface surface;
-static void capture_end(void)
-{
-    if(!surface.dc)return;
-    if(!SelectObject(surface.dc,surface.old) || !DeleteObject(surface.bitmap) || !DeleteDC(surface.dc)){
-        fprintf(stderr,"SUPER_CAPTURE_CLEANUP_FAIL error=%lu\n",GetLastError());ExitProcess(1);
-    }
-    ZeroMemory(&surface,sizeof(surface));GdiFlush();
-}
-static DWORD image(HWND w,DWORD *pixels,UINT count)
-{
-    if(!surface.dc){
-        BITMAPINFO info={0};HDC dc=GetDC(w);surface.dc=CreateCompatibleDC(dc);ReleaseDC(w,dc);
-        info.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);info.bmiHeader.biWidth=200;info.bmiHeader.biHeight=-100;
-        info.bmiHeader.biPlanes=1;info.bmiHeader.biBitCount=32;
-        surface.bitmap=CreateDIBSection(surface.dc,&info,DIB_RGB_COLORS,(void **)&surface.bits,NULL,0);
-        if(!surface.dc || !surface.bitmap)ExitProcess(1);
-        surface.old=SelectObject(surface.dc,surface.bitmap);
-    }
-    int saved=SaveDC(surface.dc);if(!saved)ExitProcess(1);
-    RECT clear={0,0,200,100};FillRect(surface.dc,&clear,GetStockObject(WHITE_BRUSH));
-    WCHAR cls[64];GetClassNameW(w,cls,64);
-    if(!wcscmp(cls,L"TEdit") || !wcscmp(cls,L"TMemo") || !wcscmp(cls,L"TMaskEdit"))SendMessageW(w,WM_PRINT,(WPARAM)surface.dc,PRF_NONCLIENT|PRF_CLIENT|PRF_ERASEBKGND);
-    else SendMessageW(w,WM_PRINTCLIENT,(WPARAM)surface.dc,PRF_CLIENT);
-    GdiFlush();DWORD hash=2166136261u;
-    for(UINT i=0;i<200*100;++i)hash=(hash^surface.bits[i])*16777619u;
-    if(pixels && count==200*100)CopyMemory(pixels,surface.bits,count*sizeof(DWORD));
-    if(!RestoreDC(surface.dc,saved))ExitProcess(1);
-    return hash;
-}
+static BOOL capture_full(const WCHAR *cls)
+{return !wcscmp(cls,L"TEdit") || !wcscmp(cls,L"TMemo") || !wcscmp(cls,L"TMaskEdit");}
+#define CAPTURE_LABEL "SUPER"
+#include "control_capture.h"
 
 static WNDPROC native_procs[13];
 static const WCHAR *class_names[]={L"RenamedPush",L"RenamedCheck",L"TEdit",L"TComboBox",L"TListBox",L"RenamedStatic",L"RenamedScroll",L"TCheckBox",L"TRadioButton",L"TGroupBox",L"TMemo",L"TMaskEdit",L"TDBListBox"};
@@ -188,30 +161,9 @@ static int child(BOOL styled,BOOL aware)
     printf("SUPER_PROTOCOL_OK bits=%u styled=%u dpi=%u aware=%u types=7 clicks=2 undo=1 combo_cancel=1 source_retained=1\n",(unsigned)(sizeof(void *)*8),styled,dpi,aware);
     return 0;
 }
+#include "owned_control_matrix.h"
 static int worker(int argc,WCHAR **argv)
-{
-    CHECK(argc==2);WCHAR self[MAX_PATH],command[2048];CHECK(GetModuleFileNameW(NULL,self,MAX_PATH));
-    for(unsigned aware=0;aware<2;++aware)for(unsigned mode=0;mode<2;++mode){
-        if(mode)swprintf_s(command,2048,L"\"%ls\" --wait \"%ls\" --child %ls",argv[1],self,aware?L"styled-aware":L"styled");
-        else swprintf_s(command,2048,L"\"%ls\" --child %ls",self,aware?L"bare-aware":L"bare");
-        HANDLE job=CreateJobObjectW(NULL,NULL);JOBOBJECT_EXTENDED_LIMIT_INFORMATION limits={0};
-        limits.BasicLimitInformation.LimitFlags=JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
-        CHECK(job && SetInformationJobObject(job,JobObjectExtendedLimitInformation,&limits,sizeof(limits)));
-        STARTUPINFOW si={.cb=sizeof(si)};PROCESS_INFORMATION pi={0};
-        si.dwFlags=STARTF_USESTDHANDLES;si.hStdInput=GetStdHandle(STD_INPUT_HANDLE);si.hStdOutput=GetStdHandle(STD_OUTPUT_HANDLE);si.hStdError=GetStdHandle(STD_ERROR_HANDLE);
-        CHECK(CreateProcessW(NULL,command,NULL,NULL,TRUE,CREATE_NO_WINDOW|CREATE_SUSPENDED,NULL,NULL,&si,&pi));
-        if(!AssignProcessToJobObject(job,pi.hProcess)){TerminateProcess(pi.hProcess,1);CHECK(FALSE);}
-        ResumeThread(pi.hThread);DWORD code=1,wait=WaitForSingleObject(pi.hProcess,10000);
-        if(wait==WAIT_OBJECT_0)GetExitCodeProcess(pi.hProcess,&code);
-        if(wait!=WAIT_OBJECT_0)TerminateJobObject(job,ERROR_TIMEOUT);
-        JOBOBJECT_BASIC_ACCOUNTING_INFORMATION accounting={0};BOOL empty=FALSE;ULONGLONG deadline=GetTickCount64()+5000;
-        do{CHECK(QueryInformationJobObject(job,JobObjectBasicAccountingInformation,&accounting,sizeof(accounting),NULL));
-            if(!accounting.ActiveProcesses){empty=TRUE;break;}WaitForSingleObject(pi.hProcess,10);
-        }while(GetTickCount64()<deadline);
-        CloseHandle(pi.hThread);CloseHandle(pi.hProcess);CloseHandle(job);CHECK(wait==WAIT_OBJECT_0 && !code && empty);
-    }
-    puts("SUPER_CLEANUP_OK owned_jobs_empty=4");return 0;
-}
+{return owned_control_matrix(argc,argv,10000,"SUPER_CLEANUP_OK");}
 int wmain(int argc,WCHAR **argv)
 {
     if(argc==3 && !wcscmp(argv[1],L"--child"))return child(!wcsncmp(argv[2],L"styled",6),wcsstr(argv[2],L"aware")!=NULL);

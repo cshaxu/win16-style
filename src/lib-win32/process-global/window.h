@@ -12,7 +12,10 @@ typedef struct win32_process_global_window {
 } win32_process_global_window;
 
 /* Start, callbacks, and stop must run on one message-pumping thread. Window
- * identity can change immediately after the callback; consumers revalidate. */
+ * identity can change immediately after the callback; consumers revalidate.
+ * If start fails and rollback also fails, the rollback error is returned and
+ * watcher->hook remains live. Keep the watcher and callback context alive and
+ * retry stop on the owner thread. A failed stop likewise retains ownership. */
 #define WIN32_PROCESS_GLOBAL_WINDOW_INCLUDE_SELF 0x00000001u
 /* Opt in to visibility transitions that do not produce another SHOW event. */
 #define WIN32_PROCESS_GLOBAL_WINDOW_UNCLOAKED 0x00000002u

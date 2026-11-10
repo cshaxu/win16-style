@@ -11,16 +11,7 @@ static LRESULT CALLBACK parent(HWND w,UINT m,WPARAM a,LPARAM b)
     }
     return DefWindowProcW(w,m,a,b);
 }
-static DWORD pump(HANDLE event,DWORD timeout)
-{
-    ULONGLONG deadline=GetTickCount64()+timeout;
-    for(;;){
-        ULONGLONG now=GetTickCount64();if(now>=deadline)return WAIT_TIMEOUT;
-        DWORD result=MsgWaitForMultipleObjectsEx(1,&event,(DWORD)(deadline-now),QS_ALLINPUT,MWMO_INPUTAVAILABLE);
-        if(result!=WAIT_OBJECT_0+1)return result;
-        MSG message;while(PeekMessageW(&message,NULL,0,0,PM_REMOVE)){TranslateMessage(&message);DispatchMessageW(&message);}
-    }
-}
+#include "vb_pump.h"
 static int worker(int argc,WCHAR **argv)
 {
     CHECK(argc==2);WCHAR map_name[128],event_name[128];

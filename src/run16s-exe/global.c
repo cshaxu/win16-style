@@ -1,12 +1,14 @@
+#include "lib-win32/process-image/image.h"
 #include "global.h"
 #include "elevation.h"
+#include "lib-win32/security/elevation.h"
 #include "ntw16s-dll/global/session.h"
 #include "ntw16s-dll/global/manager.h"
 #include "ntw16s-dll/global/process.h"
 #include "lib-win32/process-global/window.h"
+#include "lib-win32/process-global/identity.h"
 #include "ntw16s-dll/injection/injection.h"
 #include <windows.h>
-#include <sddl.h>
 #include <wincrypt.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,41 +35,26 @@ static BOOL sweep_window(HWND w,void *parameter)
     }
     return TRUE;
 }
-static void sweep(UINT message,DWORD cookie,DWORD host,LPARAM action)
+static DWORD sweep(UINT message,DWORD cookie,DWORD host,LPARAM action)
 {
     sweep_state s={message,cookie,host,action,GetTickCount64()+5000,0,0};
-    (void)win32_process_global_window_walk(0,s.deadline,sweep_window,&s);
+    DWORD error=win32_process_global_window_walk(0,s.deadline,sweep_window,&s)?ERROR_SUCCESS:GetLastError();
     fwprintf(stderr,L"run16s: global %ls: %u windows notified, %u timed out or failed%s\n",
         action==NTW16S_GLOBAL_APPLY?L"start":L"stop",s.attempted,s.failed,
         GetTickCount64()>=s.deadline?L"; time limit reached":L"");
+    return error==ERROR_TIMEOUT?ERROR_SUCCESS:error;
 }
-static BOOL random_cookie(DWORD *value)
+static DWORD random_cookie(DWORD *value)
 {
-    HCRYPTPROV provider=0;BOOL ok=CryptAcquireContextW(&provider,NULL,NULL,PROV_RSA_FULL,CRYPT_VERIFYCONTEXT|CRYPT_SILENT);
-    if(ok){ok=CryptGenRandom(provider,sizeof(*value),(BYTE *)value);CryptReleaseContext(provider,0);}
-    if(ok && !*value)*value=1;
-    return ok;
+    HCRYPTPROV provider=0;
+    if(!CryptAcquireContextW(&provider,NULL,NULL,PROV_RSA_FULL,CRYPT_VERIFYCONTEXT|CRYPT_SILENT))return GetLastError();
+    DWORD error=CryptGenRandom(provider,sizeof(*value),(BYTE *)value)?ERROR_SUCCESS:GetLastError();
+    if(!CryptReleaseContext(provider,0) && !error)error=GetLastError();
+    if(!error && !*value)*value=1;
+    return error;
 }
 static int fail(DWORD error,PCWSTR what)
 {fwprintf(stderr,L"run16s: global %ls failed (%lu)\n",what,error);return 10;}
-/* An elevated token may choose the Administrators group as object owner.
- * The filtered token for the same user must still read the session objects. */
-static DWORD session_security(PSECURITY_DESCRIPTOR *descriptor)
-{
-    HANDLE token=NULL;TOKEN_USER *user=NULL;LPWSTR sid=NULL;WCHAR *sddl=NULL;DWORD bytes=0,error=ERROR_SUCCESS;
-    *descriptor=NULL;
-    if(!OpenProcessToken(GetCurrentProcess(),TOKEN_QUERY,&token)){error=GetLastError();goto done;}
-    if(GetTokenInformation(token,TokenUser,NULL,0,&bytes) || GetLastError()!=ERROR_INSUFFICIENT_BUFFER || !bytes){error=ERROR_INVALID_DATA;goto done;}
-    user=(TOKEN_USER *)malloc(bytes);if(!user){error=ERROR_NOT_ENOUGH_MEMORY;goto done;}
-    if(!GetTokenInformation(token,TokenUser,user,bytes,&bytes) || !ConvertSidToStringSidW(user->User.Sid,&sid)){error=GetLastError();goto done;}
-    size_t length=wcslen(sid)+48;sddl=(WCHAR *)calloc(length,sizeof(*sddl));if(!sddl){error=ERROR_NOT_ENOUGH_MEMORY;goto done;}
-    if(swprintf(sddl,length,L"D:P(A;;GA;;;SY)(A;;GA;;;%ls)",sid)<0){error=ERROR_INVALID_NAME;goto done;}
-    if(!ConvertStringSecurityDescriptorToSecurityDescriptorW(sddl,SDDL_REVISION_1,descriptor,NULL))error=GetLastError();
-done:
-    if(sid)LocalFree(sid);
-    if(token)CloseHandle(token);
-    free(sddl);free(user);return error;
-}
 int run16s_global_with_parent(HANDLE parent)
 {
     WCHAR name[NTW16S_GLOBAL_NAME_CAP],ready_name[NTW16S_GLOBAL_NAME_CAP+16],host_stop_name[NTW16S_GLOBAL_NAME_CAP+16],request_name[NTW16S_GLOBAL_NAME_CAP+16];
@@ -79,20 +66,21 @@ int run16s_global_with_parent(HANDLE parent)
     if(parent){DWORD state=WaitForSingleObject(parent,0);if(state==WAIT_OBJECT_0)return 0;
         if(state!=WAIT_TIMEOUT)return fail(state==WAIT_FAILED?GetLastError():ERROR_INVALID_HANDLE,L"parent wait");}
     DWORD elevation_error=0;
-    if(!run16s_is_elevated(&elevation_error)){
+    if(!win32_security_is_elevated(&elevation_error)){
         if(elevation_error)fwprintf(stderr,L"run16s: unable to check administrator token (%lu)\n",elevation_error);
         else fwprintf(stderr,L"run16s: global background process events require administrator privileges; window discovery remains active\n");
     }
     if(!ntw16s_global_name(name,ARRAYSIZE(name)))return fail(GetLastError(),L"desktop identity");
     if(swprintf(ready_name,ARRAYSIZE(ready_name),L"%ls.ready",name)<0 || swprintf(host_stop_name,ARRAYSIZE(host_stop_name),L"%ls.stop",name)<0 ||
        swprintf(request_name,ARRAYSIZE(request_name),L"%ls.request",name)<0)return fail(ERROR_INSUFFICIENT_BUFFER,L"object name");
-    error=session_security(&security);if(error)return fail(error,L"object security");
+    error=win32_process_global_user_security(FALSE,&security);if(error)return fail(error,L"object security");
     attributes.lpSecurityDescriptor=security;
     mapping=CreateFileMappingW(INVALID_HANDLE_VALUE,&attributes,PAGE_READWRITE,0,sizeof(*s),name);
     if(!mapping){error=GetLastError();goto done;}if(GetLastError()==ERROR_ALREADY_EXISTS){error=ERROR_ALREADY_EXISTS;goto done;}
     s=(ntw16s_global_session *)MapViewOfFile(mapping,FILE_MAP_ALL_ACCESS,0,0,sizeof(*s));if(!s){error=GetLastError();goto done;}
     ZeroMemory(s,sizeof(*s));s->magic=NTW16S_GLOBAL_MAGIC;s->version=NTW16S_GLOBAL_VERSION;s->owner_pid=GetCurrentProcessId();
-    if(!win32_process_global_birth(GetCurrentProcess(),&s->owner_birth_low,&s->owner_birth_high) || !random_cookie(&s->cookie)){error=GetLastError();goto done;}
+    if(!win32_process_global_birth(GetCurrentProcess(),&s->owner_birth_low,&s->owner_birth_high)){error=GetLastError();goto done;}
+    error=random_cookie(&s->cookie);if(error)goto done;
     ready=CreateEventW(&attributes,TRUE,FALSE,ready_name);if(!ready){error=GetLastError();goto done;}if(GetLastError()==ERROR_ALREADY_EXISTS){error=ERROR_ALREADY_EXISTS;goto done;}
     host_stop=CreateEventW(&attributes,TRUE,FALSE,host_stop_name);if(!host_stop){error=GetLastError();goto done;}if(GetLastError()==ERROR_ALREADY_EXISTS){error=ERROR_ALREADY_EXISTS;goto done;}
     stop_signal=CreateEventW(&attributes,TRUE,FALSE,request_name);if(!stop_signal){error=GetLastError();goto done;}
@@ -103,8 +91,8 @@ int run16s_global_with_parent(HANDLE parent)
     context=(ntw16s_context *)calloc(1,sizeof(*context));if(!context){error=ERROR_NOT_ENOUGH_MEMORY;goto done;}
     error=ntw16s_context_paths(context,NULL);if(error)goto done;
     if(swprintf(dll64,ARRAYSIZE(dll64),L"%lsntw16s64.dll",context->directory)<0 || swprintf(dll32,ARRAYSIZE(dll32),L"%lsntw16s32.dll",context->directory)<0){error=ERROR_INSUFFICIENT_BUFFER;goto done;}
-    error=ntw16s_validate_image(dll64,IMAGE_FILE_MACHINE_AMD64,TRUE);if(error)goto done;
-    error=ntw16s_validate_image(dll32,IMAGE_FILE_MACHINE_I386,TRUE);if(error)goto done;
+    error=win32_process_image_validate(dll64,IMAGE_FILE_MACHINE_AMD64,TRUE);if(error)goto done;
+    error=win32_process_image_validate(dll32,IMAGE_FILE_MACHINE_I386,TRUE);if(error)goto done;
     dll=LoadLibraryW(dll64);if(!dll){error=GetLastError();goto done;}
     HOOKPROC callback=(HOOKPROC)(void *)GetProcAddress(dll,"Ntw16sGlobalHook");if(!callback){error=GetLastError();goto done;}
     message=RegisterWindowMessageW(NTW16S_GLOBAL_CONTROL);if(!message){error=GetLastError();goto done;}
@@ -121,9 +109,13 @@ int run16s_global_with_parent(HANDLE parent)
     if(ResumeThread(host.hThread)==(DWORD)-1){error=GetLastError();goto done;}
     HANDLE startup_waits[3]={ready,host.hProcess,parent};DWORD startup_status=WaitForMultipleObjects(parent?3:2,startup_waits,FALSE,10000);
     if(parent && startup_status==WAIT_OBJECT_0+2){result=0;goto done;}
-    if(startup_status!=WAIT_OBJECT_0){error=startup_status==WAIT_TIMEOUT?ERROR_TIMEOUT:ERROR_DLL_INIT_FAILED;goto done;}
+    if(startup_status!=WAIT_OBJECT_0){
+        error=startup_status==WAIT_FAILED?GetLastError():startup_status==WAIT_TIMEOUT?ERROR_TIMEOUT:
+            startup_status==WAIT_OBJECT_0+1?ERROR_DLL_INIT_FAILED:ERROR_INVALID_STATE;
+        goto done;
+    }
     error=ntw16s_global_manager_start(dll64,IMAGE_FILE_MACHINE_AMD64,&manager);if(error)goto done;
-    sweep(message,s->cookie,s->host_pid,NTW16S_GLOBAL_APPLY);
+    error=sweep(message,s->cookie,s->host_pid,NTW16S_GLOBAL_APPLY);if(error)goto done;
     /* A target may have appeared while the startup sweep was sending
      * messages. Revisit it before announcing that discovery is ready. */
     error=ntw16s_global_manager_refresh(manager);if(error)goto done;
@@ -143,7 +135,8 @@ int run16s_global_with_parent(HANDLE parent)
     }
     result=0;
 done:
-    if(s && message){InterlockedExchange(&s->ready,0);InterlockedExchange(&s->phase,NTW16S_GLOBAL_STOPPING);sweep(message,s->cookie,s->host_pid,NTW16S_GLOBAL_REMOVE);}
+    if(s && message){InterlockedExchange(&s->ready,0);InterlockedExchange(&s->phase,NTW16S_GLOBAL_STOPPING);
+        DWORD sweep_error=sweep(message,s->cookie,s->host_pid,NTW16S_GLOBAL_REMOVE);if(sweep_error && !error)error=sweep_error;}
     if(hook)UnhookWindowsHookEx(hook);
     if(host_stop)SetEvent(host_stop);
     if(manager){DWORD stopped=ntw16s_global_manager_stop(manager,5000);if(stopped && !error)error=stopped;}
@@ -166,5 +159,3 @@ done:
     if(error)return fail(error,L"startup or shutdown");
     return result;
 }
-int run16s_global(void)
-{return run16s_global_with_parent(NULL);}

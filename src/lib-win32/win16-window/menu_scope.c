@@ -1,5 +1,6 @@
 #include "menu_scope.h"
 #include "menu_paint.h"
+#include "frame_paint.h"
 #include <commctrl.h>
 #include <stdlib.h>
 #include <wchar.h>
@@ -36,13 +37,9 @@ static void paint_border(HWND w,popup *p,HDC target)
     OffsetRect(&client,-outer.left,-outer.top);
     SetRect(&r,0,0,outer.right-outer.left,outer.bottom-outer.top);
     ExcludeClipRect(dc,client.left,client.top,client.right,client.bottom);
-    SetDCBrushColor(dc,p->palette.light);FillRect(dc,&r,(HBRUSH)GetStockObject(DC_BRUSH));
+    win16_control_fill(dc,r,p->palette.light);
     u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
-    SetDCBrushColor(dc,p->palette.edge);
-    {RECT edge=r;edge.bottom=u;FillRect(dc,&edge,(HBRUSH)GetStockObject(DC_BRUSH));
-     edge=r;edge.top=edge.bottom-u;FillRect(dc,&edge,(HBRUSH)GetStockObject(DC_BRUSH));
-     edge=r;edge.right=u;FillRect(dc,&edge,(HBRUSH)GetStockObject(DC_BRUSH));
-     edge=r;edge.left=edge.right-u;FillRect(dc,&edge,(HBRUSH)GetStockObject(DC_BRUSH));}
+    win16_control_outline(dc,r,u,p->palette.edge);
 done:
     RestoreDC(dc,saved);if(!target)ReleaseDC(w,dc);
 }

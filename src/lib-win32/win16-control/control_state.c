@@ -48,6 +48,15 @@ BOOL win16_control_state_prepare_font(HWND w,control_style *s,UINT m,WPARAM *a,B
 BOOL win16_control_state_can_suppress_redraw(HWND w,const control_style *s)
 {return !s->list_redraw_off && (s->list_suppression || (GetWindowLongPtrW(w,GWL_STYLE)&WS_VISIBLE));}
 
+LRESULT win16_control_state_call_native(HWND w,control_style *s,UINT m,WPARAM a,LPARAM b,BOOL suppress)
+{
+    if(suppress && s->list_suppression++==0)DefSubclassProc(w,WM_SETREDRAW,FALSE,0);
+    LRESULT result=DefSubclassProc(w,m,a,b);
+    if(suppress && --s->list_suppression==0 && !s->detached && !s->list_redraw_off)
+        DefSubclassProc(w,WM_SETREDRAW,TRUE,0);
+    return result;
+}
+
 LRESULT win16_control_combo_message(HWND w,control_style *s,UINT m,WPARAM a,LPARAM b,win16_control_state_present present,win16_control_state_painter paint)
 {
     LRESULT result=0;
@@ -55,17 +64,13 @@ LRESULT win16_control_combo_message(HWND w,control_style *s,UINT m,WPARAM a,LPAR
     else if(m==WM_PAINT){PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);present(w,s,dc,paint);EndPaint(w,&ps);}
     else if(m==WM_PRINTCLIENT)paint(w,s,(HDC)a);
     else if(m==WM_ERASEBKGND)result=1;
-    else {BOOL suppress=win16_control_state_can_suppress_redraw(w,s) &&
-            (m==CB_SETCURSEL || m==CB_SHOWDROPDOWN || m==WM_COMMAND || m==WM_ENABLE ||
-             m==WM_SETFONT || m==WM_SETFOCUS || m==WM_KILLFOCUS || m==WM_KEYDOWN ||
-             m==WM_LBUTTONDOWN || m==WM_LBUTTONUP);
-        if(suppress && s->list_suppression++==0)DefSubclassProc(w,WM_SETREDRAW,FALSE,0);
-        result=DefSubclassProc(w,m,a,b);
-        if(suppress && --s->list_suppression==0 && !s->detached && !s->list_redraw_off)
-            DefSubclassProc(w,WM_SETREDRAW,TRUE,0);
-        if(!s->detached && !s->list_suppression && !s->list_redraw_off && (m==CB_SETCURSEL || m==CB_SHOWDROPDOWN || m==WM_COMMAND || m==WM_ENABLE ||
+    else {BOOL affects=m==CB_SETCURSEL || m==CB_SHOWDROPDOWN || m==WM_COMMAND || m==WM_ENABLE ||
             m==WM_SETFONT || m==WM_SETFOCUS || m==WM_KILLFOCUS || m==WM_KEYDOWN ||
-            m==WM_LBUTTONDOWN || m==WM_LBUTTONUP))RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);}
+            m==WM_LBUTTONDOWN || m==WM_LBUTTONUP;
+        BOOL suppress=win16_control_state_can_suppress_redraw(w,s) && affects;
+        result=win16_control_state_call_native(w,s,m,a,b,suppress);
+        if(!s->detached && !s->list_suppression && !s->list_redraw_off && affects)
+            RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);}
     return result;
 }
 LRESULT win16_control_tab_message(HWND w,control_style *s,UINT m,WPARAM a,LPARAM b,win16_control_state_present present,win16_control_state_painter paint)
