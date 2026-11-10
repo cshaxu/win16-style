@@ -2,6 +2,8 @@
 
 ## Current Work
 
+T25 S1 P17 复核：提交 `fe36bd87` 已推送并核对远端 main，assets 与 O:/winnt 摘要一致；本次 clean1、package1、publish1 临时目录已清理。S1/T25 保持开放，实际像素、其他运行时、x86 WinUI 及手动验收限制不变。
+
 T25 S1 P17 ProgressBar 阶段包已发布 assets 根目录及 O:/winnt，四文件摘要与同批包一致；双宽干净构建及13项聚焦实包回归通过，详见 [P17 记录](../history/M0-T25-S1-P17-xaml-progress.md)。实际像素、其他运行时和 x86 WinUI 未验证；提交推送与 scratch 清理待完成。
 
 T25 S1 ProgressBar 产品候选：自有 x64 控件经适配器验证数值宽度、暂停/错误状态颜色、本地样式保护与恢复；回调结束后异步采样原型及系统默认动画均观察到位移，暂停/错误切换后原型延长等待也观察到位移。标准 run16s 自有记事本动态进度条自动接入和会话清理通过；双宽核心各3项及来源检查通过。实际像素、DPI、x86 WinUI 未验证；登记 `build/t25-package/s1-progress-clean1` 双宽干净构建，交付后清理。
