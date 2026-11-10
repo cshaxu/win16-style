@@ -22,6 +22,7 @@ if($WaitChain){$env:WIN16_XAML_THREAD_TAG="Local\w16-site-$nonce";$env:WIN16_XAM
 $done=$null
 if($HoldController){$doneName="Local\w16-controller-done-$nonce";$done=[Threading.EventWaitHandle]::new($false,[Threading.EventResetMode]::ManualReset,$doneName);$env:WIN16_XAML_CONTROLLER_DONE_EVENT=$doneName}
 $doc=Join-Path ([IO.Path]::GetTempPath()) "w16-owned-$nonce.txt";[IO.File]::WriteAllText($doc,'')
+$controllerLog=Join-Path ([IO.Path]::GetTempPath()) "w16-controller-$nonce.txt"
 try {
  $windowStyle=if($Visible){'Normal'}else{'Hidden'}
  $starter=Start-Process "$env:WINDIR\System32\notepad.exe" -ArgumentList @("`"$doc`"") -WindowStyle $windowStyle -PassThru
@@ -43,11 +44,12 @@ try {
   Write-Output 'owned_window_ready=True'
  }
  $build=(Resolve-Path -LiteralPath $BuildDirectory).Path;$tap=Join-Path $build 'libxaml-diagnostics-tap.dll';$argList=@('--winui',"$($child.ProcessId)","`"$tap`"")
- $ctrl=Start-Process (Join-Path $build 'xaml-diagnostics-controller.exe') -ArgumentList $argList -WindowStyle Hidden -PassThru
+ $ctrl=Start-Process (Join-Path $build 'xaml-diagnostics-controller.exe') -ArgumentList $argList -WindowStyle Hidden -PassThru -RedirectStandardOutput $controllerLog
  if(-not $HoldController -and -not $ctrl.WaitForExit(6000)){Stop-Process -Id $ctrl.Id -Force;throw 'controller timeout'}
+ if(-not $HoldController -and $ctrl.ExitCode -ne 0){Write-Output "controller=$($ctrl.ExitCode) terminal=not-started";Get-Content -LiteralPath $controllerLog;exit 1}
  $success=if($DisconnectSite){'SITE_DISCONNECTED'}elseif($Session){'SESSION_STOPPED'}elseif($CheckboxParse){'CHECKBOX_OK'}elseif($RadioParse){'RADIO_OK'}elseif($TextboxParse){'TEXTBOX_OK'}elseif($ComboParse){'COMBO_OK'}elseif($ScrollParse){'SCROLL_OK'}elseif($ListParse){'LIST_OK'}elseif($ProgressParse){'PROGRESS_OK'}elseif($Parse){'PARSE_OK'}else{'RESTORED'}
  $terminal=[Threading.WaitHandle[]]@($events[$success],$events['FAILED'],$events['SITE_FAILED'])
- $terminalTimeout=if($Parse -and $env:WIN16_XAML_MENU_POPUP){12000}elseif($ProgressParse -and $env:WIN16_XAML_PROGRESS_ASYNC){10000}else{4500}
+ $terminalTimeout=if($Parse -and ($env:WIN16_XAML_MENU_POPUP -or $env:WIN16_XAML_CONTENTDIALOG_SHOW)){12000}elseif($ProgressParse -and $env:WIN16_XAML_PROGRESS_ASYNC){10000}else{4500}
  $index=[Threading.WaitHandle]::WaitAny($terminal,$terminalTimeout)
  if($WaitChain){
   $report=Join-Path $build "wct-$nonce.txt"
@@ -70,12 +72,14 @@ try {
  }
  if($done){$null=$done.Set();if(-not $ctrl.WaitForExit(2000)){Stop-Process -Id $ctrl.Id -Force;throw 'controller timeout after stop'}}
  Write-Output "controller=$($ctrl.ExitCode) terminal=$index"
+ if($ctrl.ExitCode -ne 0 -and (Test-Path -LiteralPath $controllerLog)){Get-Content -LiteralPath $controllerLog}
  foreach($k in $kinds){if($events[$k].WaitOne(0)){Write-Output "$k=True"}}
  if($ctrl.ExitCode -ne 0 -or $index -eq 1 -or $index -eq 2){exit 1};if($index -eq 258){exit 77}
+ if($env:WIN16_XAML_CONTENTDIALOG_SHOW -and -not $events['SESSION_NOCHANGE'].WaitOne(0)){Write-Output 'SKIP dialog_result_pending';exit 77}
 } finally {
  if($child -and $starter){$v=Get-CimInstance Win32_Process -Filter "ProcessId=$($child.ProcessId)";if($v -and $v.ParentProcessId -eq $starter.Id -and $v.CreationDate -eq $child.CreationDate){$p=Get-Process -Id $v.ProcessId -ErrorAction SilentlyContinue;if($p){$null=$p.CloseMainWindow();if(-not $p.WaitForExit(2000)){Stop-Process -Id $p.Id -Force}}}}
  if($starter -and -not $starter.HasExited){$null=$starter.CloseMainWindow();if(-not $starter.WaitForExit(2000)){Stop-Process -Id $starter.Id -Force -ErrorAction SilentlyContinue}}
  foreach($k in $kinds){$events[$k].Dispose();[Environment]::SetEnvironmentVariable("WIN16_XAML_${k}_EVENT",$null,'Process')}
  if($done){$null=$done.Set();$done.Dispose()}
- Remove-Item Env:WIN16_XAML_APPLY_TEST,Env:WIN16_XAML_SESSION_TEST,Env:WIN16_XAML_PARSE_TEST,Env:WIN16_XAML_CHECKBOX_TEST,Env:WIN16_XAML_RADIO_TEST,Env:WIN16_XAML_TEXTBOX_TEST,Env:WIN16_XAML_COMBO_TEST,Env:WIN16_XAML_SCROLL_TEST,Env:WIN16_XAML_LIST_TEST,Env:WIN16_XAML_PROGRESS_TEST,Env:WIN16_XAML_GENERIC_SITE_TEST,Env:WIN16_XAML_ASYNC_SITE_TEST,Env:WIN16_XAML_FACTORY_TEST,Env:WIN16_XAML_ADAPTER_TEST,Env:WIN16_XAML_DISCONNECT_TEST,Env:WIN16_XAML_CONTROLLER_DONE_EVENT,Env:WIN16_XAML_THREAD_TAG,Env:WIN16_XAML_CALLBACK_TAG,Env:WIN16_XAML_DEFER_SUBSCRIBE,Env:WIN16_XAML_WORKER_SUBSCRIBE -ErrorAction SilentlyContinue;Remove-Item -LiteralPath $doc -Force -ErrorAction SilentlyContinue
+ Remove-Item Env:WIN16_XAML_APPLY_TEST,Env:WIN16_XAML_SESSION_TEST,Env:WIN16_XAML_PARSE_TEST,Env:WIN16_XAML_CHECKBOX_TEST,Env:WIN16_XAML_RADIO_TEST,Env:WIN16_XAML_TEXTBOX_TEST,Env:WIN16_XAML_COMBO_TEST,Env:WIN16_XAML_SCROLL_TEST,Env:WIN16_XAML_LIST_TEST,Env:WIN16_XAML_PROGRESS_TEST,Env:WIN16_XAML_GENERIC_SITE_TEST,Env:WIN16_XAML_ASYNC_SITE_TEST,Env:WIN16_XAML_FACTORY_TEST,Env:WIN16_XAML_ADAPTER_TEST,Env:WIN16_XAML_DISCONNECT_TEST,Env:WIN16_XAML_CONTROLLER_DONE_EVENT,Env:WIN16_XAML_THREAD_TAG,Env:WIN16_XAML_CALLBACK_TAG,Env:WIN16_XAML_DEFER_SUBSCRIBE,Env:WIN16_XAML_WORKER_SUBSCRIBE -ErrorAction SilentlyContinue;Remove-Item -LiteralPath $doc,$controllerLog -Force -ErrorAction SilentlyContinue
 }

@@ -3329,9 +3329,229 @@ static HRESULT test_menu_separator_candidate(reader *factory,IInspectable *style
     return hr;
 }
 
+typedef struct test_ui_root test_ui_root;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_ui_root *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_ui_root *);
+    ULONG (STDMETHODCALLTYPE *release)(test_ui_root *);
+    void (STDMETHODCALLTYPE *unused[106])(void);
+    HRESULT (STDMETHODCALLTYPE *get_xaml_root)(test_ui_root *,IInspectable **);
+    HRESULT (STDMETHODCALLTYPE *put_xaml_root)(test_ui_root *,IInspectable *);
+} test_ui_root_vtable;
+struct test_ui_root { const test_ui_root_vtable *vtable; };
+typedef struct test_content_dialog test_content_dialog;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_content_dialog *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_content_dialog *);
+    ULONG (STDMETHODCALLTYPE *release)(test_content_dialog *);
+    void (STDMETHODCALLTYPE *unused[51])(void);
+    HRESULT (STDMETHODCALLTYPE *hide)(test_content_dialog *);
+    HRESULT (STDMETHODCALLTYPE *show_async)(test_content_dialog *,IInspectable **);
+} test_content_dialog_vtable;
+struct test_content_dialog { const test_content_dialog_vtable *vtable; };
+static const IID test_content_dialog_iid={0xac2145a3,0x4a32,0x5305,{0xa8,0x1d,0x47,0x50,0x95,0x15,0xbf,0xce}};
+typedef struct test_async_info test_async_info;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_async_info *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_async_info *);
+    ULONG (STDMETHODCALLTYPE *release)(test_async_info *);
+    void (STDMETHODCALLTYPE *unused[4])(void);
+    HRESULT (STDMETHODCALLTYPE *get_status)(test_async_info *,INT32 *);
+} test_async_info_vtable;
+struct test_async_info { const test_async_info_vtable *vtable; };
+typedef struct test_dialog_operation test_dialog_operation;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_dialog_operation *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_dialog_operation *);
+    ULONG (STDMETHODCALLTYPE *release)(test_dialog_operation *);
+    void (STDMETHODCALLTYPE *unused[5])(void);
+    HRESULT (STDMETHODCALLTYPE *get_results)(test_dialog_operation *,INT32 *);
+} test_dialog_operation_vtable;
+struct test_dialog_operation { const test_dialog_operation_vtable *vtable; };
+static const IID test_async_info_iid={0x00000036,0x0000,0x0000,{0xc0,0x00,0x00,0x00,0x00,0x00,0x00,0x46}};
+
+static HRESULT check_dialog_button_frame(winui_tree *tree,IInspectable *button)
+{
+    IInspectable *dependency=NULL,*frame=NULL,*edge=NULL; winui_element *element=NULL; HSTRING name=NULL;
+    HRESULT hr=IInspectable_QueryInterface(button,&winui_dependency_iid,(void **)&dependency);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dependency,0,&frame);
+    if (SUCCEEDED(hr) && !frame) hr=HRESULT_FROM_WIN32(ERROR_NOT_FOUND);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(frame,&winui_element_iid,(void **)&element);
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"TopEdge",7,&name);
+    if (SUCCEEDED(hr)) hr=element->vtable->find_name(element,name,&edge);
+    if (SUCCEEDED(hr) && !edge) hr=HRESULT_FROM_WIN32(ERROR_NOT_FOUND);
+    if (edge) IInspectable_Release(edge);
+    if (name) WindowsDeleteString(name);
+    if (element) element->vtable->release(element);
+    if (frame) IInspectable_Release(frame);
+    if (dependency) IInspectable_Release(dependency);
+    return hr;
+}
+
+static HRESULT test_content_dialog_candidate(reader *factory,IInspectable *style)
+{
+    static const wchar_t markup[]=L"<ContentDialog xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' Title='Title' Content='Body' PrimaryButtonText='Yes' SecondaryButtonText='No' CloseButtonText='Cancel'/>";
+    static const wchar_t default_markup[]=L"<ContentDialog xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' Title='Title' Content='Body' PrimaryButtonText='Yes' SecondaryButtonText='No' CloseButtonText='Cancel' DefaultButton='Primary'/>";
+    static const wchar_t *parts[]={L"BackgroundElement",L"Content",L"Title",L"PrimaryButton",L"SecondaryButton",L"CloseButton"};
+    HSTRING name=NULL; IInspectable *dialog=NULL,*window_object=NULL,*ui=NULL,*dep=NULL,*root=NULL;
+    test_window *window=NULL; winui_element *element=NULL,*root_element=NULL;
+    test_control *control=NULL; winui_tree *tree=NULL;
+    const wchar_t *chosen=GetEnvironmentVariableW(L"WIN16_XAML_CONTENTDIALOG_DEFAULT",NULL,0) ? default_markup : markup;
+    HRESULT hr=WindowsCreateString(chosen,(UINT32)lstrlenW(chosen),&name);
+    if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,name,&dialog);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Window",24,&name);
+    if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&window_object);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(window_object,&test_window_iid,(void **)&window);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(dialog,&test_ui_iid,(void **)&ui);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(dialog,&winui_element_iid,(void **)&element);
+    if (SUCCEEDED(hr)) hr=element->vtable->put_style(element,style);
+    if (SUCCEEDED(hr)) hr=window->vtable->put_content(window,ui);
+    if (SUCCEEDED(hr)) hr=window->vtable->activate(window);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(dialog,&winui_control_iid,(void **)&control);
+    boolean applied=0;
+    if (SUCCEEDED(hr)) hr=control->vtable->apply_template(control,&applied);
+    if (SUCCEEDED(hr) && !applied) hr=E_FAIL;
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_STATES_EVENT");
+    if (SUCCEEDED(hr)) hr=((test_layout *)ui)->vtable->update_layout((test_layout *)ui);
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Media.VisualTreeHelper",40,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_tree_iid,(void **)&tree);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(dialog,&winui_dependency_iid,(void **)&dep);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,0,&root);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(root,&winui_element_iid,(void **)&root_element);
+    unsigned int default_buttons=0,local_buttons=0,other_buttons=0;
+    for (unsigned int i=0;SUCCEEDED(hr) && i<ARRAYSIZE(parts);i++) {
+        IInspectable *part=NULL;
+        hr=WindowsCreateString(parts[i],(UINT32)lstrlenW(parts[i]),&name);
+        if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,name,&part);
+        if (SUCCEEDED(hr) && !part) hr=HRESULT_FROM_WIN32(ERROR_NOT_FOUND);
+        if (SUCCEEDED(hr) && i==0) {
+            test_border *border=NULL; IInspectable *background=NULL; test_brush *brush=NULL; test_color color={0};
+            hr=IInspectable_QueryInterface(part,&border_iid,(void **)&border);
+            if (SUCCEEDED(hr)) hr=border->vtable->get_background(border,&background);
+            if (SUCCEEDED(hr) && !background) hr=E_FAIL;
+            if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(background,&brush_iid,(void **)&brush);
+            if (SUCCEEDED(hr)) hr=brush->vtable->get_color(brush,&color);
+            if (SUCCEEDED(hr) && (color.r!=192 || color.g!=192 || color.b!=192)) hr=E_FAIL;
+            if (brush) brush->vtable->release(brush);
+            if (background) IInspectable_Release(background);
+            if (border) border->vtable->release(border);
+        }
+        if (SUCCEEDED(hr) && i>=3) {
+            static const wchar_t *labels[]={L"Yes",L"No",L"Cancel"};
+            content_interface *button=NULL; IInspectable *value=NULL;
+            __x_ABI_CWindows_CFoundation_CIPropertyValue *property=NULL; HSTRING text=NULL;
+            hr=IInspectable_QueryInterface(part,&winui_content_iid,(void **)&button);
+            if (SUCCEEDED(hr)) hr=button->vtable->get_content(button,&value);
+            if (SUCCEEDED(hr) && !value) hr=E_FAIL;
+            if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(value,&property_value_iid,(void **)&property);
+            if (SUCCEEDED(hr)) hr=__x_ABI_CWindows_CFoundation_CIPropertyValue_GetString(property,&text);
+            if (SUCCEEDED(hr) && wcscmp(WindowsGetStringRawBuffer(text,NULL),labels[i-3])) hr=E_FAIL;
+            if (SUCCEEDED(hr) && GetEnvironmentVariableW(L"WIN16_XAML_CONTENTDIALOG_BUTTONS",NULL,0)) {
+                test_control *button_control=NULL; boolean button_applied=0;
+                hr=IInspectable_QueryInterface(part,&winui_control_iid,(void **)&button_control);
+                if (SUCCEEDED(hr)) hr=button_control->vtable->apply_template(button_control,&button_applied);
+                if (SUCCEEDED(hr)) hr=check_dialog_button_frame(tree,part);
+                if (SUCCEEDED(hr)) signal_named(i==3 ? L"WIN16_XAML_BITMAP_STAGE_5_EVENT" : i==4 ? L"WIN16_XAML_BITMAP_STAGE_6_EVENT" : L"WIN16_XAML_BITMAP_STAGE_7_EVENT");
+                if (button_control) button_control->vtable->release(button_control);
+            }
+            if (SUCCEEDED(hr)) {
+                unsigned int source=0,index=0;
+                hr=win16_xaml_button_source(service,diagnostics,part,&source,&index);
+                if (SUCCEEDED(hr)) {
+                    if (source==BaseValueSourceDefault) ++default_buttons;
+                    else if (source==BaseValueSourceLocal) ++local_buttons;
+                    else ++other_buttons;
+                }
+            }
+            if (text) WindowsDeleteString(text);
+            if (property) __x_ABI_CWindows_CFoundation_CIPropertyValue_Release(property);
+            if (value) IInspectable_Release(value);
+            if (button) button->vtable->release(button);
+        }
+        if (part) IInspectable_Release(part);
+        if (name) { WindowsDeleteString(name); name=NULL; }
+    }
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_CONTENT_TEXT_MATCH_EVENT");
+    if (SUCCEEDED(hr) && default_buttons==3) signal_named(L"WIN16_XAML_LOCAL_EVALUATED_EVENT");
+    if (SUCCEEDED(hr) && local_buttons) signal_named(L"WIN16_XAML_LOCAL_BINDING_EVENT");
+    if (SUCCEEDED(hr) && local_buttons==3) signal_named(L"WIN16_XAML_BITMAP_STAGE_3_EVENT");
+    if (SUCCEEDED(hr) && other_buttons) signal_named(L"WIN16_XAML_LOCAL_HANDLE_EVENT");
+    if (SUCCEEDED(hr) && GetEnvironmentVariableW(L"WIN16_XAML_CONTENTDIALOG_SHOW",NULL,0)) {
+        test_ui_root *root_interface=NULL; test_content_dialog *dialog_interface=NULL;
+        IInspectable *xaml_root=NULL,*operation=NULL;
+        hr=IInspectable_QueryInterface(dialog,&test_ui_iid,(void **)&root_interface);
+        if (SUCCEEDED(hr)) hr=root_interface->vtable->get_xaml_root(root_interface,&xaml_root);
+        if (SUCCEEDED(hr) && !xaml_root) hr=E_FAIL;
+        if (SUCCEEDED(hr)) hr=window->vtable->put_content(window,NULL);
+        if (SUCCEEDED(hr)) hr=root_interface->vtable->put_xaml_root(root_interface,xaml_root);
+        if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(dialog,&test_content_dialog_iid,(void **)&dialog_interface);
+        if (SUCCEEDED(hr)) hr=dialog_interface->vtable->show_async(dialog_interface,&operation);
+        if (SUCCEEDED(hr) && !operation) hr=E_FAIL;
+        if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_SESSION_APPLIED_EVENT");
+        if (SUCCEEDED(hr) && GetEnvironmentVariableW(L"WIN16_XAML_CONTENTDIALOG_BUTTONS",NULL,0)) {
+            for (unsigned int i=3;SUCCEEDED(hr) && i<ARRAYSIZE(parts);i++) {
+                IInspectable *part=NULL;
+                hr=WindowsCreateString(parts[i],(UINT32)lstrlenW(parts[i]),&name);
+                if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,name,&part);
+                if (SUCCEEDED(hr) && !part) hr=HRESULT_FROM_WIN32(ERROR_NOT_FOUND);
+                if (SUCCEEDED(hr)) hr=check_dialog_button_frame(tree,part);
+                if (part) IInspectable_Release(part);
+                if (name) { WindowsDeleteString(name); name=NULL; }
+            }
+            if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_SESSION_WRONG_THREAD_EVENT");
+        }
+        if (SUCCEEDED(hr)) hr=dialog_interface->vtable->hide(dialog_interface);
+        if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_SESSION_STOPPED_EVENT");
+        if (SUCCEEDED(hr)) {
+            test_async_info *info=NULL; INT32 status=-1;
+            hr=IInspectable_QueryInterface(operation,&test_async_info_iid,(void **)&info);
+            if (SUCCEEDED(hr)) hr=info->vtable->get_status(info,&status);
+            if (SUCCEEDED(hr) && status==1) {
+                INT32 result=-1;
+                hr=((test_dialog_operation *)operation)->vtable->get_results((test_dialog_operation *)operation,&result);
+                if (SUCCEEDED(hr) && result!=0) hr=E_FAIL;
+                if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_SESSION_NOCHANGE_EVENT");
+            } else if (SUCCEEDED(hr) && status==0) signal_named(L"WIN16_XAML_SESSION_OTHER_ERROR_EVENT");
+            else if (SUCCEEDED(hr)) hr=E_FAIL;
+            if (info) info->vtable->release(info);
+        }
+        if (operation) IInspectable_Release(operation);
+        if (dialog_interface) dialog_interface->vtable->release(dialog_interface);
+        if (xaml_root) IInspectable_Release(xaml_root);
+        if (root_interface) root_interface->vtable->release(root_interface);
+    }
+    if (root_element) root_element->vtable->release(root_element);
+    if (root) IInspectable_Release(root);
+    if (dep) IInspectable_Release(dep);
+    if (tree) tree->vtable->release(tree);
+    if (control) control->vtable->release(control);
+    if (window) { (void)window->vtable->close(window); window->vtable->release(window); }
+    if (element) element->vtable->release(element);
+    if (ui) IInspectable_Release(ui);
+    if (window_object) IInspectable_Release(window_object);
+    if (dialog) IInspectable_Release(dialog);
+    if (name) WindowsDeleteString(name);
+    return hr;
+}
+
 static void test_template_parse(void)
 {
     static const wchar_t reader_name[]=L"Microsoft.UI.Xaml.Markup.XamlReader";
+    static const wchar_t content_dialog_markup[]=
+        L"<Style xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' TargetType='ContentDialog' BasedOn='{StaticResource DefaultContentDialogStyle}'>"
+        L"<Setter Property='Background' Value='#C0C0C0'/><Setter Property='Foreground' Value='Black'/>"
+        L"<Setter Property='BorderBrush' Value='Black'/><Setter Property='BorderThickness' Value='1'/>"
+        L"<Setter Property='CornerRadius' Value='0'/></Style>";
+    static const wchar_t content_dialog_buttons_format[]=
+        L"<Style xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' TargetType='ContentDialog' BasedOn='{StaticResource DefaultContentDialogStyle}'>"
+        L"<Setter Property='Background' Value='#C0C0C0'/><Setter Property='Foreground' Value='Black'/>"
+        L"<Setter Property='BorderBrush' Value='Black'/><Setter Property='BorderThickness' Value='1'/><Setter Property='CornerRadius' Value='0'/>"
+        L"<Setter Property='PrimaryButtonStyle'><Setter.Value>%ls</Setter.Value></Setter>"
+        L"<Setter Property='SecondaryButtonStyle'><Setter.Value>%ls</Setter.Value></Setter>"
+        L"<Setter Property='CloseButtonStyle'><Setter.Value>%ls</Setter.Value></Setter></Style>";
     static const wchar_t password_markup[]=
         L"<Style xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' "
         L"xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' TargetType='PasswordBox'>"
@@ -3371,7 +3591,9 @@ static void test_template_parse(void)
     HSTRING name=NULL,text=NULL;
     reader *factory=NULL;
     IInspectable *style=NULL;
-    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_SEPARATOR_PARSE",NULL,0)
+    wchar_t *owned_markup=NULL;
+    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_CONTENTDIALOG_PARSE",NULL,0)
+        ? content_dialog_markup : GetEnvironmentVariableW(L"WIN16_XAML_SEPARATOR_PARSE",NULL,0)
         ? win16_xaml_menu_separator_template() : GetEnvironmentVariableW(L"WIN16_XAML_SUBMENU_PARSE",NULL,0)
         ? win16_xaml_submenu_template() : GetEnvironmentVariableW(L"WIN16_XAML_TOGGLEMENU_PARSE",NULL,0)
         ? win16_xaml_toggle_menu_template() : GetEnvironmentVariableW(L"WIN16_XAML_MENUITEM_PARSE",NULL,0)
@@ -3388,10 +3610,22 @@ static void test_template_parse(void)
         ? win16_xaml_textbox_template() : GetEnvironmentVariableW(L"WIN16_XAML_RADIO_TEST",NULL,0)
         ? win16_xaml_radio_template() : GetEnvironmentVariableW(L"WIN16_XAML_CHECKBOX_TEST",NULL,0)
         ? win16_xaml_checkbox_template() : win16_xaml_button_template();
-    HRESULT hr=WindowsCreateString(reader_name,(UINT32)(ARRAYSIZE(reader_name)-1),&name);
+    HRESULT hr=S_OK;
+    if (GetEnvironmentVariableW(L"WIN16_XAML_CONTENTDIALOG_PARSE",NULL,0) &&
+        GetEnvironmentVariableW(L"WIN16_XAML_CONTENTDIALOG_BUTTONS",NULL,0)) {
+        const wchar_t *button_markup=win16_xaml_button_template();
+        size_t capacity=ARRAYSIZE(content_dialog_buttons_format)+3*wcslen(button_markup);
+        owned_markup=calloc(capacity,sizeof(*owned_markup));
+        if (!owned_markup) hr=E_OUTOFMEMORY;
+        else if (swprintf(owned_markup,capacity,content_dialog_buttons_format,button_markup,button_markup,button_markup)<0) hr=E_FAIL;
+        else markup=owned_markup;
+    }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(reader_name,(UINT32)(ARRAYSIZE(reader_name)-1),&name);
     if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_reader_iid,(void **)&factory);
     if (SUCCEEDED(hr)) hr=WindowsCreateString(markup,(UINT32)lstrlenW(markup),&text);
     if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,text,&style);
+    if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_CONTENTDIALOG_PARSE",NULL,0))
+        hr=test_content_dialog_candidate(factory,style);
     if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_SEPARATOR_PARSE",NULL,0))
         hr=test_menu_separator_candidate(factory,style);
     if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_SUBMENU_PARSE",NULL,0))
@@ -3463,6 +3697,7 @@ static void test_template_parse(void)
     if (factory) factory->vtable->release(factory);
     if (text) WindowsDeleteString(text);
     if (name) WindowsDeleteString(name);
+    free(owned_markup);
 }
 
 /* Test-only: touch one default-style WinUI Button in the self-owned target. */

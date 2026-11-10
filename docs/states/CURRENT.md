@@ -2,6 +2,12 @@
 
 ## Current Work
 
+T25 S1 P36 ContentDialog 按钮对照：在自有 x64 对象的继承样式中为三个按钮设置已有 Win16 Button 模板；无默认按钮时，模板部件、文字、ShowAsync/Hide 及异步 None 结果对照通过。指定 Primary 为默认按钮时，相同对照在首按钮模板检查前未通过；系统参考模板的默认按钮状态会设置 AccentButtonStyle，推测该状态覆盖候选，具体属性来源尚待核实。三个系统按钮的样式来源均为 Local，既有默认来源保护不会直接接管。探针增加空子节点检查，避免模板不匹配时崩溃；诊断控制器初始化失败现会输出 HRESULT 并立即结束，先前观察到 0x80070490。探针双宽增量编译通过；产品未接入或发布。
+
+T25 S1 ContentDialog 显示原型：依据本机已安装 WinUI 公开元数据，测试夹具在自有 x64 对象上获取 XamlRoot、调用 ShowAsync 后 Hide；一次等待链对照中，完成事件在原等待期之后出现，观察到两次调用成功，但终态为超时跳过。将该特定探针等待窗口改为12秒后两次均为诊断控制器退出5、未进入对话框检查；不能计作稳定显示关闭通过。x86/x64 探针增量编译通过；按钮返回值、实际输入、视觉、资源恢复和产品接入未验证。
+
+T25 S1 ContentDialog 继承样式原型：自有 x64 WinUI 对象可从 DefaultContentDialogStyle 派生灰底、黑色前景和边框、无圆角样式；解析及应用后，原系统模板的标题、内容、背景和三个按钮部件存在，背景画刷为 RGB 192/192/192，三个按钮文字绑定分别为 Yes/No/Cancel。探针双宽增量编译通过；未实际 ShowAsync、验证按钮结果/ESC/焦点/可访问性、深色内容层、恢复或产品接入，不是屏幕像素测试，不发布。参考 https://github.com/microsoft/microsoft-ui-xaml/blob/main/controls/dev/CommonStyles/ContentDialog_themeresources.xaml 和 https://github.com/MicrosoftDocs/winapps-winrt-api/blob/docs/microsoft.ui.xaml.controls/contentdialog.md 。
+
 T25 S1 P35 菜单显式图标颜色对照：自有 x64 普通菜单项将 SymbolIcon.Foreground 显式设为红色，应用菜单模板并程序切换 Normal、PointerOver、Disabled 后，内部字形画刷均保持红色；默认颜色黑/白/灰对照继续通过。测试探针 x86/x64 增量编译通过；未验证其他图标类型、真实输入、屏幕像素或实际 x86 WinUI。无产品二进制变更。
 
 T25 S1 P34 菜单 SymbolIcon 字形画刷验证：先读取未完成布局的 SymbolIcon 属性时观察到黑色，不能据此判断最终绘制；完成布局后，自有 x64 普通菜单项的图标及内部 TextBlock 在 Normal、PointerOver、Disabled 分别读取黑、白、灰。将内部字形画刷断言纳入测试后，普通项、深色勾选项、深色子菜单对象对照均通过；测试探针双宽增量编译通过。此为实际字形元素属性，尚非屏幕像素、真实输入、其他图标类型或实际 x86 WinUI 验证；无产品二进制变更，诊断 scratch 已清理。
