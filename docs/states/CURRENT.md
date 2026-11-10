@@ -2,6 +2,8 @@
 
 ## Current Work
 
+T25 S1 P9 复核：提交 `553510ec` 已推送并核对远端 main，assets 与 O:/winnt 摘要一致；已清理本次 clean1、package1、publish1 临时目录。S1/T25 保持开放，手动验收及键鼠、滚动、像素、x86 WinUI 限制不变。
+
 T25 S1 P9 ComboBox 阶段包已发布 assets 根目录及 O:/winnt，四文件摘要与同批包一致；干净双宽构建及13项聚焦实包回归通过，详见 [P9 记录](../history/M0-T25-S1-P9-xaml-combo.md)。真实键鼠、滚动、像素及 x86 WinUI 尚未验证，S1/T25 保持开放；提交推送和 scratch 清理待完成。
 
 T25 S1 ComboBox 阶段候选：标准 run16s 自有 x64 记事本动态创建 ComboBox，打开后首项来源自动变为 Local，主窗口移除后控件保留、关闭最后窗口后会话清空；该次通过，之前仍有一次创建未返回。自有对象验证下拉两项文本及选中/禁用文字颜色，双宽 XAML 集合、适配器和会话各3项及来源检查通过。真实鼠标键盘、像素、x86 WinUI 未验证；登记 `build/t25-package/s1-combo-clean1` 干净构建，交付后清理 scratch。
