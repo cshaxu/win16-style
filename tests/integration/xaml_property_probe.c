@@ -185,7 +185,7 @@ static HRESULT create_checkbox(win16_xaml_adapter *adapter,int kind)
     }
     HSTRING name=NULL; IInspectable *object=NULL,*element=NULL; test_control *control=NULL;
     boolean applied=0;
-    const WCHAR *class_name=kind==3 ? L"Microsoft.UI.Xaml.Controls.ComboBox" : kind==2 ? L"Microsoft.UI.Xaml.Controls.TextBox" :
+    const WCHAR *class_name=kind==4 ? L"Microsoft.UI.Xaml.Controls.Primitives.ScrollBar" : kind==3 ? L"Microsoft.UI.Xaml.Controls.ComboBox" : kind==2 ? L"Microsoft.UI.Xaml.Controls.TextBox" :
         kind==1 ? L"Microsoft.UI.Xaml.Controls.RadioButton" : L"Microsoft.UI.Xaml.Controls.CheckBox";
     HRESULT hr=S_OK;
     if (kind==3) {
@@ -283,10 +283,10 @@ __declspec(dllexport) LRESULT CALLBACK XamlPropertyProbe(int code,WPARAM wp,LPAR
                     hr=win16_xaml_button_source(service,diagnostics,button,&source,&index);
                 }
             }
-        } else if (m->wParam==3 || m->wParam==5 || m->wParam==7 || m->wParam==17 || m->wParam==18 || m->wParam==21) {
+        } else if (m->wParam==3 || m->wParam==5 || m->wParam==7 || m->wParam==17 || m->wParam==18 || m->wParam==21 || m->wParam==24) {
             clear();
-            hr=m->wParam==7 ? create_checkbox(NULL,0) : m->wParam==3 || m->wParam==17 || m->wParam==18 || m->wParam==21
-                ? create_checkbox((win16_xaml_adapter *)m->lParam,m->wParam==21 ? 3 : m->wParam==18 ? 2 : m->wParam==17 ? 1 : 0)
+            hr=m->wParam==7 ? create_checkbox(NULL,0) : m->wParam==3 || m->wParam==17 || m->wParam==18 || m->wParam==21 || m->wParam==24
+                ? create_checkbox((win16_xaml_adapter *)m->lParam,m->wParam==24 ? 4 : m->wParam==21 ? 3 : m->wParam==18 ? 2 : m->wParam==17 ? 1 : 0)
                 : create_checkbox_in_tree((win16_xaml_adapter *)m->lParam);
         } else if (m->wParam==4 && button) {
             win16_xaml_adapter *adapter=(win16_xaml_adapter *)m->lParam;

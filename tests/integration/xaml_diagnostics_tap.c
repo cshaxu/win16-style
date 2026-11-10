@@ -15,6 +15,7 @@
 #include "lib-win32/win16-control-xaml/radio_template.h"
 #include "lib-win32/win16-control-xaml/textbox_template.h"
 #include "lib-win32/win16-control-xaml/combo_template.h"
+#include "lib-win32/win16-control-xaml/scroll_template.h"
 #include "lib-win32/win16-control-xaml/button_style.h"
 #include "lib-win32/win16-control-xaml/visual_tree.h"
 #include "lib-win32/win16-control-xaml/session.h"
@@ -1397,6 +1398,247 @@ static void CALLBACK test_combo_timer(HWND window,UINT message,UINT_PTR timer,DW
     signal_named(SUCCEEDED(candidate) ? L"WIN16_XAML_COMBO_OK_EVENT" : L"WIN16_XAML_FAILED_EVENT");
 }
 
+typedef struct test_range test_range;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_range *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_range *);
+    ULONG (STDMETHODCALLTYPE *release)(test_range *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(test_range *,ULONG *,IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(test_range *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(test_range *,TrustLevel *);
+    HRESULT (STDMETHODCALLTYPE *get_minimum)(test_range *,double *);
+    HRESULT (STDMETHODCALLTYPE *put_minimum)(test_range *,double);
+    HRESULT (STDMETHODCALLTYPE *get_maximum)(test_range *,double *);
+    HRESULT (STDMETHODCALLTYPE *put_maximum)(test_range *,double);
+    void (STDMETHODCALLTYPE *unused[4])(void);
+    HRESULT (STDMETHODCALLTYPE *get_value)(test_range *,double *);
+    HRESULT (STDMETHODCALLTYPE *put_value)(test_range *,double);
+} test_range_vtable;
+struct test_range { const test_range_vtable *vtable; };
+static const IID range_iid={0x540d6d61,0x8fac,0x5d5c,{0xb5,0xb0,0xe1,0x72,0xa7,0xdd,0xe1,0x03}};
+typedef struct test_scroll test_scroll;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_scroll *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_scroll *);
+    ULONG (STDMETHODCALLTYPE *release)(test_scroll *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(test_scroll *,ULONG *,IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(test_scroll *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(test_scroll *,TrustLevel *);
+    HRESULT (STDMETHODCALLTYPE *get_orientation)(test_scroll *,INT32 *);
+    HRESULT (STDMETHODCALLTYPE *put_orientation)(test_scroll *,INT32);
+    HRESULT (STDMETHODCALLTYPE *get_viewport)(test_scroll *,double *);
+    HRESULT (STDMETHODCALLTYPE *put_viewport)(test_scroll *,double);
+    HRESULT (STDMETHODCALLTYPE *get_indicator)(test_scroll *,INT32 *);
+    HRESULT (STDMETHODCALLTYPE *put_indicator)(test_scroll *,INT32);
+} test_scroll_vtable;
+struct test_scroll { const test_scroll_vtable *vtable; };
+static const IID scroll_iid={0x568cbf41,0xf741,0x5f05,{0x8e,0x08,0xc0,0xa5,0x0a,0xc1,0x7c,0x8c}};
+typedef struct test_size test_size;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_size *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_size *);
+    ULONG (STDMETHODCALLTYPE *release)(test_size *);
+    HRESULT (STDMETHODCALLTYPE *get_iids)(test_size *,ULONG *,IID **);
+    HRESULT (STDMETHODCALLTYPE *get_name)(test_size *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *get_trust)(test_size *,TrustLevel *);
+    void (STDMETHODCALLTYPE *unused[7])(void);
+    HRESULT (STDMETHODCALLTYPE *get_actual_width)(test_size *,double *);
+    HRESULT (STDMETHODCALLTYPE *get_actual_height)(test_size *,double *);
+    HRESULT (STDMETHODCALLTYPE *get_width)(test_size *,double *);
+    HRESULT (STDMETHODCALLTYPE *put_width)(test_size *,double);
+    HRESULT (STDMETHODCALLTYPE *get_height)(test_size *,double *);
+    HRESULT (STDMETHODCALLTYPE *put_height)(test_size *,double);
+} test_size_vtable;
+struct test_size { const test_size_vtable *vtable; };
+
+static struct {
+    test_window *window;
+    test_scroll *scroll;
+    test_size *thumb;
+    test_ui *ui;
+    double first;
+    unsigned int phase;
+} scroll_async;
+
+static void CALLBACK test_scroll_async_timer(HWND window,UINT message,UINT_PTR timer,DWORD time)
+{
+    (void)window; (void)message; (void)time;
+    HRESULT hr=((test_layout *)scroll_async.ui)->vtable->update_layout((test_layout *)scroll_async.ui);
+    double width=0;
+    if (SUCCEEDED(hr)) hr=scroll_async.thumb->vtable->get_actual_width(scroll_async.thumb,&width);
+    if (SUCCEEDED(hr) && !scroll_async.phase) {
+        scroll_async.first=width;
+        hr=scroll_async.scroll->vtable->put_viewport(scroll_async.scroll,80);
+        if (SUCCEEDED(hr)) { scroll_async.phase=1; return; }
+    } else if (SUCCEEDED(hr) && !(scroll_async.first>0 && width>scroll_async.first)) {
+        WCHAR path[MAX_PATH]; DWORD length=GetEnvironmentVariableW(L"WIN16_XAML_SCROLL_RESULT_FILE",path,ARRAYSIZE(path));
+        if (length && length<ARRAYSIZE(path)) {
+            HANDLE file=CreateFileW(path,GENERIC_WRITE,0,NULL,CREATE_NEW,FILE_ATTRIBUTE_TEMPORARY,NULL);
+            if (file!=INVALID_HANDLE_VALUE) {
+                DWORD written=0; (void)WriteFile(file,&scroll_async.first,sizeof(double),&written,NULL);
+                (void)WriteFile(file,&width,sizeof(double),&written,NULL); CloseHandle(file);
+            }
+        }
+        hr=E_FAIL;
+    }
+    KillTimer(NULL,timer);
+    signal_named(SUCCEEDED(hr) ? L"WIN16_XAML_SCROLL_OK_EVENT" : L"WIN16_XAML_FAILED_EVENT");
+    (void)scroll_async.window->vtable->close(scroll_async.window);
+    scroll_async.window->vtable->release(scroll_async.window);
+    scroll_async.scroll->vtable->release(scroll_async.scroll);
+    scroll_async.thumb->vtable->release(scroll_async.thumb);
+    scroll_async.ui->vtable->release(scroll_async.ui);
+    ZeroMemory(&scroll_async,sizeof(scroll_async));
+}
+
+static HRESULT test_scroll_candidate(IInspectable *style,INT32 orientation)
+{
+    static const wchar_t class_name[]=L"Microsoft.UI.Xaml.Controls.Primitives.ScrollBar";
+    HSTRING name=NULL; IInspectable *object=NULL,*window_object=NULL,*ui=NULL,*dep=NULL,*root=NULL,*thumb=NULL;
+    BOOL keep_window=FALSE;
+    BOOL baseline=GetEnvironmentVariableW(L"WIN16_XAML_SCROLL_BASELINE",NULL,0)!=0;
+    BOOL async=GetEnvironmentVariableW(L"WIN16_XAML_SCROLL_ASYNC",NULL,0)!=0;
+    win16_xaml_adapter adapter={0}; VisualElement info={0}; ParentChildRelation relation={0};
+    unsigned int source=0,index=0;
+    test_window *window=NULL; test_control *control=NULL; test_range *range=NULL; test_scroll *scroll=NULL;
+    test_size *size=NULL,*thumb_size=NULL; winui_element *element=NULL,*root_element=NULL; winui_tree *tree=NULL;
+    test_ui *thumb_ui=NULL; INT32 thumb_visibility=-1;
+    HRESULT hr=WindowsCreateString(class_name,(UINT32)(ARRAYSIZE(class_name)-1),&name);
+    if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&object);
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_CONTENT_TEXT_MATCH_EVENT");
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Window",24,&name);
+    if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&window_object);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(window_object,&test_window_iid,(void **)&window);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&test_ui_iid,(void **)&ui);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_element_iid,(void **)&element);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_element_iid,(void **)&size);
+    if (SUCCEEDED(hr)) hr=size->vtable->put_width(size,orientation ? 16 : 200);
+    if (SUCCEEDED(hr)) hr=size->vtable->put_height(size,orientation ? 200 : 16);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&range_iid,(void **)&range);
+    if (SUCCEEDED(hr)) hr=range->vtable->put_maximum(range,100);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&scroll_iid,(void **)&scroll);
+    /* WinUI Orientation is Vertical=0, Horizontal=1. */
+    if (SUCCEEDED(hr)) hr=scroll->vtable->put_orientation(scroll,orientation ? 0 : 1);
+    if (SUCCEEDED(hr)) hr=scroll->vtable->put_viewport(scroll,20);
+    if (SUCCEEDED(hr)) hr=window->vtable->put_content(window,ui);
+    if (SUCCEEDED(hr)) hr=window->vtable->activate(window);
+    if (SUCCEEDED(hr) && !baseline && async) hr=element->vtable->put_style(element,style);
+    if (SUCCEEDED(hr) && !baseline && !async) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    if (SUCCEEDED(hr) && !baseline && !async) {
+        info.Type=(BSTR)class_name; relation.Parent=1;
+        hr=IXamlDiagnostics_GetHandleFromIInspectable(diagnostics,object,&info.Handle);
+    }
+    if (SUCCEEDED(hr) && !baseline && !async) {
+        hr=win16_xaml_adapter_change(&adapter,relation,info,Add,NULL);
+        if(hr==S_FALSE)hr=E_FAIL;
+    }
+    if (SUCCEEDED(hr) && !baseline && !async) hr=win16_xaml_button_source(service,diagnostics,object,&source,&index);
+    if (SUCCEEDED(hr) && !baseline && !async && source!=BaseValueSourceLocal) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_control_iid,(void **)&control);
+    boolean applied=0;
+    if (SUCCEEDED(hr)) hr=control->vtable->apply_template(control,&applied);
+    if (SUCCEEDED(hr) && !applied && !GetEnvironmentVariableW(L"WIN16_XAML_SCROLL_BASELINE",NULL,0)) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=scroll->vtable->put_indicator(scroll,2);
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_STATES_EVENT");
+    if (SUCCEEDED(hr)) hr=((test_layout *)ui)->vtable->update_layout((test_layout *)ui);
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Media.VisualTreeHelper",40,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_tree_iid,(void **)&tree);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_dependency_iid,(void **)&dep);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,0,&root);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(root,&winui_element_iid,(void **)&root_element);
+    const wchar_t *part=orientation ? L"VerticalThumb" : L"HorizontalThumb";
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(part,(UINT32)lstrlenW(part),&name);
+    if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,name,&thumb);
+    if (SUCCEEDED(hr) && !thumb) hr=E_FAIL;
+    if (SUCCEEDED(hr)) signal_named(L"WIN16_XAML_LOCAL_HANDLE_EVENT");
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(thumb,&winui_element_iid,(void **)&thumb_size);
+    if (SUCCEEDED(hr) && GetEnvironmentVariableW(L"WIN16_XAML_SCROLL_ASYNC",NULL,0)) {
+        scroll_async.window=window; window->vtable->add_ref(window);
+        scroll_async.scroll=scroll; scroll->vtable->add_ref(scroll);
+        scroll_async.thumb=thumb_size; thumb_size->vtable->add_ref(thumb_size);
+        scroll_async.ui=(test_ui *)ui; IInspectable_AddRef(ui);
+        if (SetTimer(NULL,0,200,test_scroll_async_timer)) keep_window=TRUE;
+        else {
+            hr=HRESULT_FROM_WIN32(GetLastError());
+            scroll_async.window->vtable->release(scroll_async.window);
+            scroll_async.scroll->vtable->release(scroll_async.scroll);
+            scroll_async.thumb->vtable->release(scroll_async.thumb);
+            scroll_async.ui->vtable->release(scroll_async.ui);
+            ZeroMemory(&scroll_async,sizeof(scroll_async));
+        }
+        goto cleanup;
+    }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(thumb,&test_ui_iid,(void **)&thumb_ui);
+    if (SUCCEEDED(hr)) hr=thumb_ui->vtable->get_visibility(thumb_ui,&thumb_visibility);
+    if (SUCCEEDED(hr) && thumb_visibility==0) signal_named(L"WIN16_XAML_LOCAL_BINDING_EVENT");
+    double first=0,second=0,value=-1;
+    if (SUCCEEDED(hr)) hr=orientation ? thumb_size->vtable->get_actual_height(thumb_size,&first) : thumb_size->vtable->get_actual_width(thumb_size,&first);
+    if (SUCCEEDED(hr) && first>0) signal_named(L"WIN16_XAML_LOCAL_BINDING_EVENT");
+    if (SUCCEEDED(hr)) hr=scroll->vtable->put_viewport(scroll,80);
+    if (SUCCEEDED(hr) && !GetEnvironmentVariableW(L"WIN16_XAML_SCROLL_VIEWPORT_ONLY",NULL,0))
+        hr=range->vtable->put_value(range,35);
+    if (SUCCEEDED(hr)) hr=((test_layout *)ui)->vtable->update_layout((test_layout *)ui);
+    if (SUCCEEDED(hr)) hr=orientation ? thumb_size->vtable->get_actual_height(thumb_size,&second) : thumb_size->vtable->get_actual_width(thumb_size,&second);
+    if (SUCCEEDED(hr) && second>first) signal_named(L"WIN16_XAML_LOCAL_NULL_EVENT");
+    if (SUCCEEDED(hr) && !(first>0 && second>first)) {
+        WCHAR path[MAX_PATH]; DWORD length=GetEnvironmentVariableW(L"WIN16_XAML_SCROLL_RESULT_FILE",path,ARRAYSIZE(path));
+        if (length && length<ARRAYSIZE(path)) {
+            HANDLE file=CreateFileW(path,GENERIC_WRITE,0,NULL,CREATE_NEW,FILE_ATTRIBUTE_TEMPORARY,NULL);
+            if (file!=INVALID_HANDLE_VALUE) {
+                DWORD written=0; (void)WriteFile(file,&first,sizeof(first),&written,NULL);
+                (void)WriteFile(file,&second,sizeof(second),&written,NULL);
+                (void)WriteFile(file,&thumb_visibility,sizeof(thumb_visibility),&written,NULL); CloseHandle(file);
+            }
+        }
+    }
+    if (SUCCEEDED(hr) && !(first>0 && second>first)) hr=E_FAIL;
+    if (SUCCEEDED(hr)) signal_named(orientation ? L"WIN16_XAML_LOCAL_NULL_EVENT" : L"WIN16_XAML_LOCAL_EVALUATED_EVENT");
+    if (SUCCEEDED(hr)) hr=range->vtable->put_value(range,35);
+    if (SUCCEEDED(hr)) hr=range->vtable->get_value(range,&value);
+    if (SUCCEEDED(hr) && value!=35) hr=E_FAIL;
+    if (adapter.service) { HRESULT stopped=win16_xaml_adapter_stop(&adapter); if(SUCCEEDED(hr))hr=stopped; }
+    if (SUCCEEDED(hr) && !baseline && !async) hr=win16_xaml_button_source(service,diagnostics,object,&source,&index);
+    if (SUCCEEDED(hr) && !baseline && !async && source!=BaseValueSourceDefault) hr=E_FAIL;
+    if (adapter.session.service) (void)win16_xaml_button_set_discard(&adapter.session.buttons);
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    win16_xaml_button_style external={0};
+    if (SUCCEEDED(hr) && !baseline && !async) hr=win16_xaml_button_apply(service,diagnostics,object,&external);
+    if (SUCCEEDED(hr) && !baseline && !async) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    if (SUCCEEDED(hr) && !baseline && !async) {
+        HRESULT observed=win16_xaml_adapter_change(&adapter,relation,info,Add,NULL);
+        if (observed!=S_FALSE) hr=E_FAIL;
+    }
+    if (adapter.service) { HRESULT stopped=win16_xaml_adapter_stop(&adapter); if(SUCCEEDED(hr))hr=stopped; }
+    if (adapter.session.service) (void)win16_xaml_button_set_discard(&adapter.session.buttons);
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    if (external.button) { HRESULT removed=win16_xaml_button_remove(service,diagnostics,&external); if(SUCCEEDED(hr))hr=removed; }
+    if (external.button) win16_xaml_button_discard(&external);
+cleanup:
+    if (adapter.session.service) (void)win16_xaml_button_set_discard(&adapter.session.buttons);
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    if (thumb_size) thumb_size->vtable->release(thumb_size);
+    if (thumb_ui) thumb_ui->vtable->release(thumb_ui);
+    if (root_element) root_element->vtable->release(root_element);
+    if (thumb) IInspectable_Release(thumb);
+    if (root) IInspectable_Release(root);
+    if (dep) IInspectable_Release(dep);
+    if (tree) tree->vtable->release(tree);
+    if (scroll) scroll->vtable->release(scroll);
+    if (range) range->vtable->release(range);
+    if (size) size->vtable->release(size);
+    if (control) control->vtable->release(control);
+    if (element) element->vtable->release(element);
+    if (window) { if(!keep_window)(void)window->vtable->close(window); window->vtable->release(window); }
+    if (ui) IInspectable_Release(ui);
+    if (window_object) IInspectable_Release(window_object);
+    if (object) IInspectable_Release(object);
+    if (name) WindowsDeleteString(name);
+    return hr;
+}
+
 static void test_template_parse(void)
 {
     static const wchar_t reader_name[]=L"Microsoft.UI.Xaml.Markup.XamlReader";
@@ -1405,7 +1647,8 @@ static void test_template_parse(void)
     HSTRING name=NULL,text=NULL;
     reader *factory=NULL;
     IInspectable *style=NULL;
-    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_COMBO_TEST",NULL,0)
+    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_SCROLL_TEST",NULL,0)
+        ? win16_xaml_scroll_template() : GetEnvironmentVariableW(L"WIN16_XAML_COMBO_TEST",NULL,0)
         ? win16_xaml_combo_template() : GetEnvironmentVariableW(L"WIN16_XAML_TEXTBOX_TEST",NULL,0)
         ? win16_xaml_textbox_template() : GetEnvironmentVariableW(L"WIN16_XAML_RADIO_TEST",NULL,0)
         ? win16_xaml_radio_template() : GetEnvironmentVariableW(L"WIN16_XAML_CHECKBOX_TEST",NULL,0)
@@ -1414,6 +1657,13 @@ static void test_template_parse(void)
     if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_reader_iid,(void **)&factory);
     if (SUCCEEDED(hr)) hr=WindowsCreateString(markup,(UINT32)lstrlenW(markup),&text);
     if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,text,&style);
+    if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_SCROLL_TEST",NULL,0)) {
+        HRESULT scroll=test_scroll_candidate(style,0);
+        if (!GetEnvironmentVariableW(L"WIN16_XAML_SCROLL_ASYNC",NULL,0)) {
+            if (SUCCEEDED(scroll)) scroll=test_scroll_candidate(style,1);
+            signal_named(SUCCEEDED(scroll) ? L"WIN16_XAML_SCROLL_OK_EVENT" : L"WIN16_XAML_FAILED_EVENT");
+        } else if (FAILED(scroll)) signal_named(L"WIN16_XAML_FAILED_EVENT");
+    }
     if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_COMBO_TEST",NULL,0)) {
         combo_factory=factory; factory->vtable->add_ref(factory);
         combo_style=style; IInspectable_AddRef(style);

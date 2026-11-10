@@ -20,7 +20,8 @@ static BOOL visit(IInspectable *object, unsigned int depth, void *context)
                             !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.RadioButton") ||
                             !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.TextBox") ||
                             !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.ComboBox") ||
-                            !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.ComboBoxItem"));
+                            !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.ComboBoxItem") ||
+                            !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.Primitives.ScrollBar"));
     if (name) WindowsDeleteString(name);
     if (!button) return TRUE;
     DWORD thread=GetCurrentThreadId();

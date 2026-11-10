@@ -6521,9 +6521,9 @@
       "path": "src/lib-win32/win16-control-xaml/adapter.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f546b69c4be479b6905f1316dcffdcc44ffd6ce76e188607846649a4813e1de9",
+      "sha256": "7e39cb0b681343a1fe16fe7332f47693eed487c86f2d81f242de8276b9a98dca",
       "disposition": "authored",
-      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate; T25 S1 RadioButton candidate; T25 S1 TextBox candidate; T25 S1 ComboBox candidate",
+      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate; T25 S1 RadioButton candidate; T25 S1 TextBox candidate; T25 S1 ComboBox candidate; T25 S1 ScrollBar candidate",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
     },
     {
@@ -6548,9 +6548,9 @@
       "path": "src/lib-win32/win16-control-xaml/button_style.c",
       "source": null,
       "source_blob": null,
-      "sha256": "541a0a0372c278693cba1131740330545c3a16688d62f4da444fa20929b991b2",
+      "sha256": "c2fe855e76881681aa278aead095f3b48f239fa52ab445c91c0a5ab4de5d49d8",
       "disposition": "authored",
-      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate; T25 S1 RadioButton candidate; T25 S1 TextBox candidate; T25 S1 ComboBox candidate",
+      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate; T25 S1 RadioButton candidate; T25 S1 TextBox candidate; T25 S1 ComboBox candidate; T25 S1 ScrollBar candidate",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
     },
     {
@@ -6674,9 +6674,9 @@
       "path": "src/lib-win32/win16-control-xaml/session.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1fa20e34a59c9bca7e60749cf2e680906275ddbb5ea4e44f351bed6dba0fd709",
+      "sha256": "dbe65cbfbd9299044e22f80c28a0e1adcd1492c3b1c619afe9853dc2545e7c1b",
       "disposition": "authored",
-      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate; T25 S1 RadioButton candidate; T25 S1 TextBox candidate; T25 S1 ComboBox candidate",
+      "review": "M0 T25 S1 XAML control adaptation and diagnostics; T25 S1 CheckBox and window-scoped XAML lifecycle candidate; T25 S1 RadioButton candidate; T25 S1 TextBox candidate; T25 S1 ComboBox candidate; T25 S1 ScrollBar candidate",
       "notice": "Project-authored C source; WinRT interface identifiers from platform ABI; no imported artwork"
     },
     {
@@ -6831,6 +6831,24 @@
       "disposition": "authored",
       "review": "M0 T25 S1 ComboBox candidate",
       "notice": "Project-authored C source; XAML template part names and bindings follow platform interfaces; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/win16-control-xaml/scroll_template.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e1bbd6e5d39d12342c64944b49bd55a581489851980bc7c76685fd84ca9826ff",
+      "disposition": "authored",
+      "review": "M0 T25 S1 ScrollBar candidate",
+      "notice": "Project-authored C source; XAML template part names follow platform interfaces; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/win16-control-xaml/scroll_template.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ccce1d8e3c8109eb873b055d8d66026427b138ffc7bc122fc70c57585e2571f0",
+      "disposition": "authored",
+      "review": "M0 T25 S1 ScrollBar candidate",
+      "notice": "Project-authored C source; XAML template part names follow platform interfaces; no imported artwork"
     }
   ]
 }

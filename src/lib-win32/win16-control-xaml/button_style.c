@@ -6,6 +6,7 @@
 #include "textbox_template.h"
 #include "combo_template.h"
 #include "combo_item_template.h"
+#include "scroll_template.h"
 #include <oleauto.h>
 #include <roapi.h>
 #include <winstring.h>
@@ -95,6 +96,7 @@ HRESULT win16_xaml_button_apply(IVisualTreeService *service, IXamlDiagnostics *d
         else if (!wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.TextBox")) markup=win16_xaml_textbox_template();
         else if (!wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.ComboBox")) markup=win16_xaml_combo_template();
         else if (!wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.ComboBoxItem")) markup=win16_xaml_combo_item_template();
+        else if (!wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.Primitives.ScrollBar")) markup=win16_xaml_scroll_template();
     }
     if (SUCCEEDED(hr) && !markup) hr=HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
     if (runtime_name) WindowsDeleteString(runtime_name);
