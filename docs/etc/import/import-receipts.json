@@ -6962,7 +6962,7 @@
       "path": "src/lib-win32/win16-control-xaml/menu_item_template.c",
       "source": null,
       "source_blob": null,
-      "sha256": "27986cadb14989246407f65c73fe505ce7aae227006d6895c597d849ff1ceb3e",
+      "sha256": "07a53e57ed7da2c91c761b73ca14c2f13543c4ac78c86cc549af7be798e7ada8",
       "disposition": "authored",
       "review": "M0 T25 S1 MenuFlyoutItem candidate",
       "notice": "Project-authored C source; XAML part names follow platform interfaces; no imported artwork"
@@ -6980,7 +6980,7 @@
       "path": "src/lib-win32/win16-control-xaml/toggle_menu_template.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c9a19502ac025a6e6485dce2a7fad7542e0c0f31bb6c1e1a0a66537457ea5da9",
+      "sha256": "6232834ca823942f00719467ab20c422616654291ff9931b4516ef5dc2c2c3d4",
       "disposition": "authored",
       "review": "M0 T25 S1 ToggleMenuFlyoutItem candidate",
       "notice": "Project-authored C source; XAML part names follow platform interfaces; no imported artwork"
@@ -6998,7 +6998,7 @@
       "path": "src/lib-win32/win16-control-xaml/submenu_template.c",
       "source": null,
       "source_blob": null,
-      "sha256": "40030b67f4e208ab2a78e0e9487aa03efeedb6a6093d2e5513af12967ec83719",
+      "sha256": "78d29fbaf91775d8b43927e77c3bd2cbd981ae7eb86eacf35d8e0c8ccdd17b87",
       "disposition": "authored",
       "review": "M0 T25 S1 MenuFlyoutSubItem candidate",
       "notice": "Project-authored C source; XAML part names follow platform interfaces; no imported artwork"

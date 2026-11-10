@@ -123,6 +123,8 @@ typedef struct {
     HRESULT (STDMETHODCALLTYPE *get_name)(content_interface *, HSTRING *);
     HRESULT (STDMETHODCALLTYPE *get_trust)(content_interface *, TrustLevel *);
     HRESULT (STDMETHODCALLTYPE *get_content)(content_interface *, IInspectable **);
+    void (STDMETHODCALLTYPE *unused_to_foreground[19])(void);
+    HRESULT (STDMETHODCALLTYPE *get_foreground)(content_interface *, IInspectable **);
 } content_vtable;
 struct content_interface { const content_vtable *vtable; };
 
@@ -3005,6 +3007,18 @@ static HRESULT test_menu_item_candidate(reader *factory,IInspectable *style)
         if (SUCCEEDED(hr)) hr=brush->vtable->get_color(brush,&color);
         BYTE expected=i==0 ? 0 : i==1 ? 255 : 128;
         if (SUCCEEDED(hr) && (color.r!=expected || color.g!=expected || color.b!=expected)) hr=E_FAIL;
+        if (SUCCEEDED(hr) && GetEnvironmentVariableW(L"WIN16_XAML_ICON_COLOR_TEST",NULL,0)) {
+            IInspectable *icon_foreground=NULL; test_brush *icon_brush=NULL; test_color icon_color={0};
+            hr=icon_presenter->vtable->get_foreground(icon_presenter,&icon_foreground);
+            if (SUCCEEDED(hr) && !icon_foreground) hr=E_FAIL;
+            if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(icon_foreground,&brush_iid,(void **)&icon_brush);
+            if (SUCCEEDED(hr)) hr=icon_brush->vtable->get_color(icon_brush,&icon_color);
+            if (SUCCEEDED(hr) && (icon_color.r!=expected || icon_color.g!=expected || icon_color.b!=expected)) hr=E_FAIL;
+            if (SUCCEEDED(hr) && i==0) signal_named(L"WIN16_XAML_SESSION_APPLIED_EVENT");
+            if (SUCCEEDED(hr) && i==1) signal_named(L"WIN16_XAML_SESSION_STOPPED_EVENT");
+            if (icon_brush) icon_brush->vtable->release(icon_brush);
+            if (icon_foreground) IInspectable_Release(icon_foreground);
+        }
         if (SUCCEEDED(hr) && toggle_menu) {
             IInspectable *mark=NULL; HSTRING part=NULL;
             hr=WindowsCreateString(L"CheckGlyph",10,&part);
@@ -3154,6 +3168,16 @@ static HRESULT test_submenu_candidate(reader *factory,IInspectable *style)
         if (SUCCEEDED(hr)) hr=brush->vtable->get_color(brush,&color);
         BYTE expected=i==0 ? 0 : i==3 ? 128 : 255;
         if (SUCCEEDED(hr) && (color.r!=expected || color.g!=expected || color.b!=expected)) hr=E_FAIL;
+        if (SUCCEEDED(hr) && GetEnvironmentVariableW(L"WIN16_XAML_ICON_COLOR_TEST",NULL,0)) {
+            IInspectable *icon_foreground=NULL; test_brush *icon_brush=NULL; test_color icon_color={0};
+            hr=icon_presenter->vtable->get_foreground(icon_presenter,&icon_foreground);
+            if (SUCCEEDED(hr) && !icon_foreground) hr=E_FAIL;
+            if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(icon_foreground,&brush_iid,(void **)&icon_brush);
+            if (SUCCEEDED(hr)) hr=icon_brush->vtable->get_color(icon_brush,&icon_color);
+            if (SUCCEEDED(hr) && (icon_color.r!=expected || icon_color.g!=expected || icon_color.b!=expected)) hr=E_FAIL;
+            if (icon_brush) icon_brush->vtable->release(icon_brush);
+            if (icon_foreground) IInspectable_Release(icon_foreground);
+        }
         if (SUCCEEDED(hr)) hr=test_shape_stroke(arrow,expected);
         if (brush) brush->vtable->release(brush);
         if (foreground) IInspectable_Release(foreground);
