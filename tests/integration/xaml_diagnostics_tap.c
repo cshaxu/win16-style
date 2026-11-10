@@ -2882,12 +2882,15 @@ static HRESULT test_menu_item_candidate(reader *factory,IInspectable *style)
 {
     static const wchar_t markup[]=L"<MenuFlyoutItem xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' Text='First' KeyboardAcceleratorTextOverride='Ctrl+S'><MenuFlyoutItem.Icon><SymbolIcon Symbol='Save'/></MenuFlyoutItem.Icon></MenuFlyoutItem>";
     static const wchar_t toggle_markup[]=L"<ToggleMenuFlyoutItem xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' Text='First' KeyboardAcceleratorTextOverride='Ctrl+S'><ToggleMenuFlyoutItem.Icon><SymbolIcon Symbol='Save'/></ToggleMenuFlyoutItem.Icon></ToggleMenuFlyoutItem>";
+    static const wchar_t dark_markup[]=L"<MenuFlyoutItem xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' RequestedTheme='Dark' Text='First' KeyboardAcceleratorTextOverride='Ctrl+S'><MenuFlyoutItem.Icon><SymbolIcon Symbol='Save'/></MenuFlyoutItem.Icon></MenuFlyoutItem>";
+    static const wchar_t dark_toggle_markup[]=L"<ToggleMenuFlyoutItem xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' RequestedTheme='Dark' Text='First' KeyboardAcceleratorTextOverride='Ctrl+S'><ToggleMenuFlyoutItem.Icon><SymbolIcon Symbol='Save'/></ToggleMenuFlyoutItem.Icon></ToggleMenuFlyoutItem>";
     BOOL toggle_menu=GetEnvironmentVariableW(L"WIN16_XAML_TOGGLEMENU_PARSE",NULL,0)!=0;
+    BOOL dark=GetEnvironmentVariableW(L"WIN16_XAML_MENU_DARK",NULL,0)!=0;
     HSTRING name=NULL; IInspectable *object=NULL,*window_object=NULL,*ui=NULL,*dep=NULL,*root=NULL,*label=NULL,*accelerator=NULL,*icon=NULL,*icon_value=NULL;
     winui_element *element=NULL,*root_element=NULL; winui_tree *tree=NULL; winui_vsm *manager=NULL;
     test_window *window=NULL; test_control *control=NULL; test_text_block *text=NULL,*shortcut=NULL; content_interface *icon_presenter=NULL; test_ui *shortcut_ui=NULL;
     win16_xaml_adapter adapter={0}; VisualElement info={0}; ParentChildRelation relation={0};
-    const wchar_t *chosen=toggle_menu ? toggle_markup : markup;
+    const wchar_t *chosen=dark ? (toggle_menu ? dark_toggle_markup : dark_markup) : (toggle_menu ? toggle_markup : markup);
     HRESULT hr=WindowsCreateString(chosen,(UINT32)lstrlenW(chosen),&name);
     if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,name,&object);
     if (name) { WindowsDeleteString(name); name=NULL; }

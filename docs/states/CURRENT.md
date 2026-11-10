@@ -2,6 +2,8 @@
 
 ## Current Work
 
+T25 S1 P30 深色菜单对象对照：测试夹具新增 RequestedTheme=Dark 的普通与勾选菜单项；自有 x64 WinUI 对象分别验证文字/快捷键绑定、程序化 Normal/PointerOver/Disabled 文字颜色、勾选标记状态、默认样式撤销及本地样式保护，均通过。x86/x64 测试探针增量编译通过；非真实鼠标、屏幕像素或图标颜色验证，也未覆盖实际 x86 WinUI。无产品二进制改动。
+
 T25 S1 P29 截图夹具维护：截图时正常显示自有窗口，并按 PID 和可见 Notepad 类定位；区分找不到窗口与不能取得前台。已发布版的非截图菜单容器对照通过，四类项目来源及会话清理符合预期；截图仍因当前输入桌面为 Screen-saver 而跳过。无产品二进制变更，临时目录已清理。
 
 T25 S1 视觉对照定位：截图夹具改为按自有 PID 枚举可见 Notepad 类窗口，避免依赖 MainWindowHandle，并区分未找到窗口与无法取得前台。实际找到窗口但 SetForegroundWindow 失败；只读 OpenInputDesktop 显示当前输入桌面为 Screen-saver。屏幕截图仍跳过，未证明绘制；不改变系统桌面或安全设置，测试 scratch 已清理。
