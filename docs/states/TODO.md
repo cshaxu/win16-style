@@ -2,6 +2,10 @@
 
 # Deferred Debt
 
+- [ ] TODO(High): Windows 2000 经典窗口、控件和公共对话框的完整外观及原版对照尚未实现；Owner：T25 后续活动包。Evidence：[T25 S1 研究](../proposals/windows-2000-classic.md)与[实验包](../history/M0-T25-S1-P1-delivery.md)。Admission：按窗口、常用控件、对话框、菜单的优先级实现并验证，不将禁用视觉主题视为像素一致。
+
+- [ ] TODO(Medium): 全局模式旧 `global-e2e` 仍假设启动即启用，而当前托盘默认关闭；私有桌面真实托盘创建失败。Owner：后续全局测试维护。Evidence：[T25 S1 调查](../proposals/windows-2000-classic.md)和 T24 同条件对照；专用托盘夹具非管理员运行亦未通过。Admission：更新测试以符合用户主动启用语义，并在可用会话验证实际托盘与目标清理，不把桩替代真实托盘。
+
 - [ ] TODO(High): 全局调度线程运行期错误在退出码中保留但未传至最终控制器；Owner：后续经准入的全局生命周期工作；Evidence：[T24 审计](../history/M0-T24-S1-quality-audit.md)，停止失败保留资源供重试；Admission：明确运行期通知和清理所有权，双位宽注入与退出竞态验证。
 
 - [ ] TODO(Medium): 文件夹对话框测试有 20 项 Shell 旧布局和 10 项 COM 旧布局用例不匹配当前树布局；Owner：后续经准入的公共对话框测试；Evidence：[T24 审计](../history/M0-T24-S1-quality-audit.md)，当前树未观察到新建按钮，右键及快捷键未查；Admission：保留原用例意图，验证当前可用入口及清理，不把不匹配的旧用例算通过。
