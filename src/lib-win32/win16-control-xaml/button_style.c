@@ -10,6 +10,7 @@
 #include "list_template.h"
 #include "progress_template.h"
 #include "toggle_template.h"
+#include "slider_template.h"
 #include <oleauto.h>
 #include <roapi.h>
 #include <winstring.h>
@@ -104,6 +105,7 @@ HRESULT win16_xaml_button_apply(IVisualTreeService *service, IXamlDiagnostics *d
         else if (!wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.ListBoxItem")) markup=win16_xaml_list_item_template();
         else if (!wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.ProgressBar")) markup=win16_xaml_progress_template();
         else if (!wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.ToggleSwitch")) markup=win16_xaml_toggle_template();
+        else if (!wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.Slider")) markup=win16_xaml_slider_template();
     }
     if (SUCCEEDED(hr) && !markup) hr=HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
     if (runtime_name) WindowsDeleteString(runtime_name);

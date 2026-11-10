@@ -2,6 +2,22 @@
 
 ## Current Work
 
+T25 S1 P21 Slider 阶段包已发布 assets 和 O:/winnt，双宽干净构建、13项聚焦实包回归及同批 x64 横竖对象与标准启动对照通过；详见 [P21记录](../history/M0-T25-S1-P21-xaml-slider.md)。真实输入、像素、反向及 x86 WinUI 未覆盖；提交推送和 scratch 清理待完成。
+
+T25 S1 Slider 标准启动候选：自有 x64 记事本经 run16s 启动并动态创建 Slider，观察自动接入和最后窗口关闭后会话清空；双宽增量编译和 XAML 核心各3项通过。登记 `build/t25-package/s1-slider-clean1` 双宽干净构建，完成同批测试发布并清理 scratch；真实输入和 x86 WinUI 未覆盖。
+
+T25 S1 Slider 产品候选：现有适配器接入默认样式的 Slider；自有 x64 横竖控件经实际适配器验证范围、Thumb 偏移、右下刻度可见、程序化焦点/禁用状态及停止后默认来源恢复。x64 增量编译和来源门禁通过；标准启动动态发现、双宽交付构建、真实输入和像素未验证，未发布。
+
+T25 S1 Slider 外观状态原型：测试模板为横竖 Thumb 增加 Win16 风格边框；自有 x64 控件以 VisualStateManager 验证正常/禁用透明度与焦点框显示，数值、位置及刻度可见性对照保持通过。竖直首次未触发回调而超时，单独重试通过；尚未验证屏幕像素或真实输入，未接入或发布。
+
+T25 S1 Slider 刻度原型：测试模板加入系统命名的横竖刻度部件；自有 x64 对象设置 TickFrequency=10、TickPlacement=BottomRight 后，横向底部与竖向右侧刻度部件可见，数值及 Thumb 位置对照仍通过。尚未检查实际刻度像素、其他位置与动态变化；未接入或发布。
+
+T25 S1 Slider 横竖位置原型：自有 x64 WinUI 控件分别设置横、竖方向，值由25变75时，读取实际 Thumb 偏移分别向右、向上移动，已选区尺寸增大；两次测试通过并关闭自有窗口。不代表鼠标拖动、键盘、刻度、恢复或产品接入通过。
+
+T25 S1 Slider 数值原型：自建 x64 WinUI 控件应用测试模板后，程序设置值 25→75 并刷新布局，水平已选区宽度增大且读取值为 75；测试窗口已关闭。此结果不证明滑块实际位置、竖直方向、刻度或鼠标操作，尚未接入产品。
+
+T25 S1 Slider 测试原型：参考微软 Slider 默认模板保留横竖布局及各自 Thumb，简化模板在自有 x64 WinUI 记事本中解析通过；仅验证语法，数值、方向、刻度、键鼠、恢复及产品接入均未验证，未发布。参考 https://github.com/microsoft/microsoft-ui-xaml/blob/main/controls/dev/CommonStyles/Slider_themeresources.xaml 。
+
 T25 S1 P19 复核：提交 `f992d649` 已推送并核对远端 main，assets 与 O:/winnt 同批四文件摘要一致；本次 clean1、package1、publish1 scratch 已清理。S1/T25 保持开放，真实输入、像素、x86 WinUI 和手动验收未覆盖。
 
 T25 S1 P19 ToggleSwitch 阶段包已发布 assets 和 O:/winnt，双宽干净构建、13 项聚焦实包回归及同批自有 x64 WinUI 状态和标准启动对照通过；详见 [P19 记录](../history/M0-T25-S1-P19-xaml-toggle.md)。真实输入、像素、x86 WinUI 和手动验收未覆盖；提交推送及 scratch 清理待完成。

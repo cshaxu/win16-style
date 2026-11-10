@@ -19,6 +19,7 @@
 #include "lib-win32/win16-control-xaml/list_template.h"
 #include "lib-win32/win16-control-xaml/progress_template.h"
 #include "lib-win32/win16-control-xaml/toggle_template.h"
+#include "lib-win32/win16-control-xaml/slider_template.h"
 #include "lib-win32/win16-control-xaml/button_style.h"
 #include "lib-win32/win16-control-xaml/visual_tree.h"
 #include "lib-win32/win16-control-xaml/session.h"
@@ -2209,6 +2210,147 @@ static HRESULT test_switch_candidate(reader *factory,IInspectable *style)
     return hr;
 }
 
+typedef struct test_offset test_offset;
+typedef struct { float x,y,z; } test_vector3;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_offset *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_offset *);
+    ULONG (STDMETHODCALLTYPE *release)(test_offset *);
+    void (STDMETHODCALLTYPE *unused[104])(void);
+    HRESULT (STDMETHODCALLTYPE *get_offset)(test_offset *,test_vector3 *);
+} test_offset_vtable;
+struct test_offset { const test_offset_vtable *vtable; };
+
+static HRESULT test_slider_candidate(reader *factory,IInspectable *style)
+{
+    static const wchar_t markup[]=L"<Slider xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' TickFrequency='10' TickPlacement='BottomRight'/>";
+    static const wchar_t vertical_markup[]=L"<Slider xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' Orientation='Vertical' TickFrequency='10' TickPlacement='BottomRight'/>";
+    BOOL vertical=GetEnvironmentVariableW(L"WIN16_XAML_SLIDER_VERTICAL",NULL,0)!=0;
+    HSTRING name=NULL; IInspectable *object=NULL,*window_object=NULL,*ui=NULL,*dep=NULL,*root=NULL,*decrease=NULL,*thumb=NULL,*ticks=NULL,*focus=NULL;
+    winui_element *element=NULL,*root_element=NULL; winui_tree *tree=NULL;
+    test_window *window=NULL; test_control *control=NULL; test_range *range=NULL; test_size *size=NULL,*decrease_size=NULL;
+    test_offset *thumb_offset=NULL; test_ui *ticks_ui=NULL,*thumb_ui=NULL,*focus_ui=NULL; winui_vsm *manager=NULL;
+    win16_xaml_adapter adapter={0}; VisualElement info={0}; ParentChildRelation relation={0};
+    (void)style;
+    const wchar_t *chosen=vertical ? vertical_markup : markup;
+    HRESULT hr=WindowsCreateString(chosen,(UINT32)lstrlenW(chosen),&name);
+    if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,name,&object);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Window",24,&name);
+    if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&window_object);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(window_object,&test_window_iid,(void **)&window);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&test_ui_iid,(void **)&ui);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_element_iid,(void **)&element);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_element_iid,(void **)&size);
+    if (SUCCEEDED(hr)) hr=size->vtable->put_width(size,vertical ? 30 : 200);
+    if (SUCCEEDED(hr)) hr=size->vtable->put_height(size,vertical ? 200 : 30);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&range_iid,(void **)&range);
+    if (SUCCEEDED(hr)) hr=range->vtable->put_maximum(range,100);
+    if (SUCCEEDED(hr)) hr=window->vtable->put_content(window,ui);
+    if (SUCCEEDED(hr)) hr=window->vtable->activate(window);
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_connect(&adapter,service,diagnostics);
+    if (SUCCEEDED(hr)) {
+        info.Type=(BSTR)L"Microsoft.UI.Xaml.Controls.Slider"; relation.Parent=1;
+        hr=IXamlDiagnostics_GetHandleFromIInspectable(diagnostics,object,&info.Handle);
+    }
+    if (SUCCEEDED(hr)) { hr=win16_xaml_adapter_change(&adapter,relation,info,Add,NULL); if(hr==S_FALSE)hr=E_FAIL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_control_iid,(void **)&control);
+    boolean applied=0;
+    if (SUCCEEDED(hr)) hr=control->vtable->apply_template(control,&applied);
+    if (SUCCEEDED(hr) && !applied) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Media.VisualTreeHelper",40,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_tree_iid,(void **)&tree);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_dependency_iid,(void **)&dep);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,0,&root);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(root,&winui_element_iid,(void **)&root_element);
+    const wchar_t *part=vertical ? L"VerticalDecreaseRect" : L"HorizontalDecreaseRect";
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(part,(UINT32)lstrlenW(part),&name);
+    if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,name,&decrease);
+    if (SUCCEEDED(hr) && !decrease) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(decrease,&winui_element_iid,(void **)&decrease_size);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    part=vertical ? L"VerticalThumb" : L"HorizontalThumb";
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(part,(UINT32)lstrlenW(part),&name);
+    if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,name,&thumb);
+    if (SUCCEEDED(hr) && !thumb) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(thumb,&test_ui_iid,(void **)&thumb_offset);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    part=vertical ? L"RightTickBar" : L"BottomTickBar";
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(part,(UINT32)lstrlenW(part),&name);
+    if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,name,&ticks);
+    if (SUCCEEDED(hr) && !ticks) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(ticks,&test_ui_iid,(void **)&ticks_ui);
+    INT32 visibility=-1;
+    if (SUCCEEDED(hr)) hr=ticks_ui->vtable->get_visibility(ticks_ui,&visibility);
+    if (SUCCEEDED(hr) && visibility!=0) hr=E_FAIL;
+    double first=0,second=0,value=0;
+    test_vector3 first_offset={0},second_offset={0};
+    if (SUCCEEDED(hr)) hr=range->vtable->put_value(range,25);
+    if (SUCCEEDED(hr)) hr=((test_layout *)ui)->vtable->update_layout((test_layout *)ui);
+    if (SUCCEEDED(hr)) hr=vertical ? decrease_size->vtable->get_actual_height(decrease_size,&first) : decrease_size->vtable->get_actual_width(decrease_size,&first);
+    if (SUCCEEDED(hr)) hr=thumb_offset->vtable->get_offset(thumb_offset,&first_offset);
+    if (SUCCEEDED(hr)) hr=range->vtable->put_value(range,75);
+    if (SUCCEEDED(hr)) hr=((test_layout *)ui)->vtable->update_layout((test_layout *)ui);
+    if (SUCCEEDED(hr)) hr=vertical ? decrease_size->vtable->get_actual_height(decrease_size,&second) : decrease_size->vtable->get_actual_width(decrease_size,&second);
+    if (SUCCEEDED(hr)) hr=thumb_offset->vtable->get_offset(thumb_offset,&second_offset);
+    if (SUCCEEDED(hr)) hr=range->vtable->get_value(range,&value);
+    if (SUCCEEDED(hr) && !(second>first && value==75)) hr=E_FAIL;
+    if (SUCCEEDED(hr) && !(vertical ? second_offset.y<first_offset.y : second_offset.x>first_offset.x)) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(thumb,&test_ui_iid,(void **)&thumb_ui);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"FocusFrame",10,&name);
+    if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,name,&focus);
+    if (SUCCEEDED(hr) && !focus) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(focus,&test_ui_iid,(void **)&focus_ui);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.VisualStateManager",36,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_vsm_iid,(void **)&manager);
+    static const wchar_t *states[]={L"Disabled",L"Normal",L"Focused",L"Unfocused"};
+    for (unsigned int i=0;SUCCEEDED(hr) && i<ARRAYSIZE(states);i++) {
+        HSTRING state=NULL; boolean changed=0; double opacity=-1;
+        hr=WindowsCreateString(states[i],(UINT32)lstrlenW(states[i]),&state);
+        if (SUCCEEDED(hr)) hr=manager->vtable->go_to_state(manager,(IInspectable *)control,state,0,&changed);
+        if (SUCCEEDED(hr) && !changed) hr=E_FAIL;
+        if (SUCCEEDED(hr)) hr=(i<2 ? thumb_ui : focus_ui)->vtable->get_opacity(i<2 ? thumb_ui : focus_ui,&opacity);
+        if (SUCCEEDED(hr) && opacity!=(i==0 ? 0.5 : i==3 ? 0.0 : 1.0)) hr=E_FAIL;
+        if (state) WindowsDeleteString(state);
+    }
+    unsigned int source=0,index=0;
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,object,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceLocal) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=win16_xaml_adapter_stop(&adapter);
+    if (SUCCEEDED(hr)) hr=win16_xaml_button_source(service,diagnostics,object,&source,&index);
+    if (SUCCEEDED(hr) && source!=BaseValueSourceDefault) hr=E_FAIL;
+    if (adapter.session.service) (void)win16_xaml_button_set_discard(&adapter.session.buttons);
+    if (adapter.service) win16_xaml_adapter_disconnect(&adapter);
+    if (manager) manager->vtable->release(manager);
+    if (focus_ui) focus_ui->vtable->release(focus_ui);
+    if (thumb_ui) thumb_ui->vtable->release(thumb_ui);
+    if (focus) IInspectable_Release(focus);
+    if (ticks_ui) ticks_ui->vtable->release(ticks_ui);
+    if (ticks) IInspectable_Release(ticks);
+    if (thumb_offset) thumb_offset->vtable->release(thumb_offset);
+    if (thumb) IInspectable_Release(thumb);
+    if (decrease_size) decrease_size->vtable->release(decrease_size);
+    if (decrease) IInspectable_Release(decrease);
+    if (root_element) root_element->vtable->release(root_element);
+    if (root) IInspectable_Release(root);
+    if (dep) IInspectable_Release(dep);
+    if (tree) tree->vtable->release(tree);
+    if (control) control->vtable->release(control);
+    if (range) range->vtable->release(range);
+    if (size) size->vtable->release(size);
+    if (window) { (void)window->vtable->close(window); window->vtable->release(window); }
+    if (element) element->vtable->release(element);
+    if (ui) IInspectable_Release(ui);
+    if (window_object) IInspectable_Release(window_object);
+    if (object) IInspectable_Release(object);
+    if (name) WindowsDeleteString(name);
+    return hr;
+}
+
 static void test_template_parse(void)
 {
     static const wchar_t reader_name[]=L"Microsoft.UI.Xaml.Markup.XamlReader";
@@ -2218,7 +2360,8 @@ static void test_template_parse(void)
     HSTRING name=NULL,text=NULL;
     reader *factory=NULL;
     IInspectable *style=NULL;
-    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_TOGGLE_PARSE",NULL,0)
+    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_SLIDER_PARSE",NULL,0)
+        ? win16_xaml_slider_template() : GetEnvironmentVariableW(L"WIN16_XAML_TOGGLE_PARSE",NULL,0)
         ? win16_xaml_toggle_template() : GetEnvironmentVariableW(L"WIN16_XAML_PROGRESS_TEST",NULL,0)
         ? win16_xaml_progress_template() : GetEnvironmentVariableW(L"WIN16_XAML_LIST_TEST",NULL,0)
         ? win16_xaml_list_template() : GetEnvironmentVariableW(L"WIN16_XAML_SCROLL_TEST",NULL,0)
@@ -2231,6 +2374,8 @@ static void test_template_parse(void)
     if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_reader_iid,(void **)&factory);
     if (SUCCEEDED(hr)) hr=WindowsCreateString(markup,(UINT32)lstrlenW(markup),&text);
     if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,text,&style);
+    if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_SLIDER_PARSE",NULL,0))
+        hr=test_slider_candidate(factory,style);
     if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_TOGGLE_PARSE",NULL,0))
         hr=test_switch_candidate(factory,style);
     if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_PROGRESS_TEST",NULL,0)) {

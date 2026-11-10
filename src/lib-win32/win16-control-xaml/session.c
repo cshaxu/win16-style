@@ -25,7 +25,8 @@ static BOOL visit(IInspectable *object, unsigned int depth, void *context)
                             !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.ListBox") ||
                             !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.ListBoxItem") ||
                             !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.ProgressBar") ||
-                            !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.ToggleSwitch"));
+                            !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.ToggleSwitch") ||
+                            !wcscmp(runtime,L"Microsoft.UI.Xaml.Controls.Slider"));
     if (name) WindowsDeleteString(name);
     if (!button) return TRUE;
     DWORD thread=GetCurrentThreadId();

@@ -43,7 +43,8 @@ HRESULT win16_xaml_adapter_change(win16_xaml_adapter *adapter,ParentChildRelatio
                                  !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.ListBox") ||
                                  !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.ListBoxItem") ||
                                  !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.ProgressBar") ||
-                            !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.ToggleSwitch"));
+                            !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.ToggleSwitch") ||
+                            !wcscmp(element.Type,L"Microsoft.UI.Xaml.Controls.Slider"));
     BOOL root=!relation.Parent;
     InstanceHandle handle=(button || root) ? element.Handle : relation.Parent;
     if (!handle) return S_FALSE;
