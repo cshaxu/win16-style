@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T25 S2 已按用户要求准入：将 Win16 与 Win2000 可共用的 DLL 基础能力抽离至 `ntwshk-dll`，风格专有代码保留在各自样式组件。P1 已本地发布，重点回归通过；托盘端到端及 UWP 基线限制见[交付记录](../history/M0-T25-S2-P1-delivery.md)。S2 保持开放，等待远端复核和验收；后续任务规划暂缓。
+M0 T25 S2 已按用户要求准入：将 Win16 与 Win2000 可共用的 DLL 基础能力抽离至 `ntwshk-dll`，风格专有代码保留在各自样式组件。P1 已发布、推送并复核，重点回归通过；托盘端到端及 UWP 基线限制见[交付记录](../history/M0-T25-S2-P1-delivery.md)。S2 保持开放，等待验收；后续任务规划暂缓。
 
 ## M0 T25 S2 Packet
 
@@ -35,7 +35,7 @@ M0 T25 S2 已按用户要求准入：将 Win16 与 Win2000 可共用的 DLL 基�
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
 - Last allocated T25 S: 2
-- Last verified remote delivery: M0 T25 S1 P2，`ee32f7c38dcc6839c7cc52e6f4db273321e5d3e3`。
+- Last verified remote delivery: M0 T25 S2 P1，`9aecf5305714a8105072790afab2464c5bf4e4bc`。
 - Open task: M0 T25 S2；共用 DLL 分离。
 
 ## Technical Baseline
