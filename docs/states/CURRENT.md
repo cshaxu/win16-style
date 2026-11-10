@@ -2,6 +2,8 @@
 
 ## Current Work
 
+T25 S1 P34 菜单 SymbolIcon 字形画刷验证：先读取未完成布局的 SymbolIcon 属性时观察到黑色，不能据此判断最终绘制；完成布局后，自有 x64 普通菜单项的图标及内部 TextBlock 在 Normal、PointerOver、Disabled 分别读取黑、白、灰。将内部字形画刷断言纳入测试后，普通项、深色勾选项、深色子菜单对象对照均通过；测试探针双宽增量编译通过。此为实际字形元素属性，尚非屏幕像素、真实输入、其他图标类型或实际 x86 WinUI 验证；无产品二进制变更，诊断 scratch 已清理。
+
 T25 S1 P33 复核：菜单图标状态提交 `2c6a83f5` 已推送并核对远端 main，assets 与 O:/winnt 同批摘要一致；本次 clean1、package1、publish1 scratch 已清理。S1/T25 保持开放；图标实际继承、像素、真实键鼠和 x86 WinUI 未覆盖。
 
 T25 S1 P32 菜单图标容器状态修复已发布 assets 和 O:/winnt；双宽干净构建、13项聚焦实包回归、同批 x64 三类对象状态及真实 Popup 自动接入对照通过，详见 [P32记录](../history/M0-T25-S1-P32-xaml-menu-icons.md)。图标实际继承、像素、真实键鼠和 x86 WinUI 未覆盖；提交、推送及 scratch 清理待完成。

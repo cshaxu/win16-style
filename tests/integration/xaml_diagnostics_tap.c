@@ -2870,6 +2870,29 @@ typedef struct {
 struct test_text_block { const test_text_block_vtable *vtable; };
 static const IID test_text_block_iid={0x1ac8d84f,0x392c,0x5c7e,{0x83,0xf5,0xa5,0x3e,0x3b,0xf0,0xab,0xb0}};
 
+static BOOL find_icon_glyph(IInspectable *object,unsigned int depth,void *context)
+{
+    (void)depth;
+    test_text_block **glyph=context;
+    return FAILED(IInspectable_QueryInterface(object,&test_text_block_iid,(void **)glyph));
+}
+
+static HRESULT check_icon_glyph_foreground(IInspectable *icon,BYTE expected)
+{
+    test_text_block *glyph=NULL; IInspectable *foreground=NULL; test_brush *brush=NULL; test_color color={0};
+    HRESULT hr=win16_xaml_visit_descendants(icon,find_icon_glyph,&glyph);
+    if (SUCCEEDED(hr) && !glyph) hr=HRESULT_FROM_WIN32(ERROR_NOT_FOUND);
+    if (SUCCEEDED(hr)) hr=glyph->vtable->get_foreground(glyph,&foreground);
+    if (SUCCEEDED(hr) && !foreground) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(foreground,&brush_iid,(void **)&brush);
+    if (SUCCEEDED(hr)) hr=brush->vtable->get_color(brush,&color);
+    if (SUCCEEDED(hr) && (color.r!=expected || color.g!=expected || color.b!=expected)) hr=E_FAIL;
+    if (brush) brush->vtable->release(brush);
+    if (foreground) IInspectable_Release(foreground);
+    if (glyph) glyph->vtable->release(glyph);
+    return hr;
+}
+
 typedef struct test_toggle_menu test_toggle_menu;
 typedef struct {
     HRESULT (STDMETHODCALLTYPE *query)(test_toggle_menu *,REFIID,void **);
@@ -2962,6 +2985,8 @@ static HRESULT test_menu_item_candidate(reader *factory,IInspectable *style)
     if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(icon,&winui_presenter_iid,(void **)&icon_presenter);
     if (SUCCEEDED(hr)) hr=icon_presenter->vtable->get_content(icon_presenter,&icon_value);
     if (SUCCEEDED(hr) && !icon_value) hr=E_FAIL;
+    if (SUCCEEDED(hr) && GetEnvironmentVariableW(L"WIN16_XAML_ICON_COLOR_TEST",NULL,0))
+        hr=((test_layout *)ui)->vtable->update_layout((test_layout *)ui);
     if (SUCCEEDED(hr) && toggle_menu) {
         IInspectable *mark=NULL; test_offset *mark_offset=NULL,*icon_offset=NULL; HSTRING part=NULL;
         test_vector3 mark_position={0},icon_position={0};
@@ -3014,6 +3039,7 @@ static HRESULT test_menu_item_candidate(reader *factory,IInspectable *style)
             if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(icon_foreground,&brush_iid,(void **)&icon_brush);
             if (SUCCEEDED(hr)) hr=icon_brush->vtable->get_color(icon_brush,&icon_color);
             if (SUCCEEDED(hr) && (icon_color.r!=expected || icon_color.g!=expected || icon_color.b!=expected)) hr=E_FAIL;
+            if (SUCCEEDED(hr)) hr=check_icon_glyph_foreground(icon_value,expected);
             if (SUCCEEDED(hr) && i==0) signal_named(L"WIN16_XAML_SESSION_APPLIED_EVENT");
             if (SUCCEEDED(hr) && i==1) signal_named(L"WIN16_XAML_SESSION_STOPPED_EVENT");
             if (icon_brush) icon_brush->vtable->release(icon_brush);
@@ -3154,6 +3180,8 @@ static HRESULT test_submenu_candidate(reader *factory,IInspectable *style)
     if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(icon,&winui_presenter_iid,(void **)&icon_presenter);
     if (SUCCEEDED(hr)) hr=icon_presenter->vtable->get_content(icon_presenter,&icon_value);
     if (SUCCEEDED(hr) && !icon_value) hr=E_FAIL;
+    if (SUCCEEDED(hr) && GetEnvironmentVariableW(L"WIN16_XAML_ICON_COLOR_TEST",NULL,0))
+        hr=((test_layout *)ui)->vtable->update_layout((test_layout *)ui);
     if (name) { WindowsDeleteString(name); name=NULL; }
     if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.VisualStateManager",36,&name);
     if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_vsm_iid,(void **)&manager);
@@ -3175,6 +3203,7 @@ static HRESULT test_submenu_candidate(reader *factory,IInspectable *style)
             if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(icon_foreground,&brush_iid,(void **)&icon_brush);
             if (SUCCEEDED(hr)) hr=icon_brush->vtable->get_color(icon_brush,&icon_color);
             if (SUCCEEDED(hr) && (icon_color.r!=expected || icon_color.g!=expected || icon_color.b!=expected)) hr=E_FAIL;
+            if (SUCCEEDED(hr)) hr=check_icon_glyph_foreground(icon_value,expected);
             if (icon_brush) icon_brush->vtable->release(icon_brush);
             if (icon_foreground) IInspectable_Release(icon_foreground);
         }
