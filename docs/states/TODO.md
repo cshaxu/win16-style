@@ -2,6 +2,8 @@
 
 # Deferred Debt
 
+- [ ] TODO(Medium): WinUI PasswordBox Win16 模板及按住显示验证；Owner：后续可验证真实输入与绘制时继续。Evidence：T25 S1 自有假数据控件的模式与占位状态通过，但 XAML 诊断 RenderTargetBitmap 返回 E_NOTIMPL，真实遮蔽及按住显示未验证，原型仅在测试中。Admission：自有实例验证默认遮蔽、按住显示与释放恢复、键盘及样式撤销，不读取用户密码。
+
 - [ ] TODO(High): `run16s mspaint` 和 `run16s SnippingTool` 的 Windows App Execution Alias 在目标验证时返回1920；Owner：后续通用启动器兼容工作。Evidence：T23 S7 已发布包实测；对应完整安装路径可以启动。Admission：基于可验证的系统接口保留参数、目标身份、位宽及启动/传播语义，不依赖猜测私有重解析数据格式或写注册表。
 
 - [ ] TODO(Medium): T23 S6 两轮并行实包测试中私有桌面未释放；Owner：后续可复现的测试生命周期调查。Evidence：[原始失败输出](../history/M0-T23-S6-package-failures.md)；串行29项及单独对应位宽测试通过，原因仍未知，不能把失败视为已修复。Admission：复现并定位持有者和释放路径，不放宽桌面清理断言。

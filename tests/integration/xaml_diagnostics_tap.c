@@ -2367,16 +2367,198 @@ static HRESULT test_slider_candidate(reader *factory,IInspectable *style)
     return hr;
 }
 
+typedef struct test_password test_password;
+typedef struct {
+    HRESULT (STDMETHODCALLTYPE *query)(test_password *,REFIID,void **);
+    ULONG (STDMETHODCALLTYPE *add_ref)(test_password *);
+    ULONG (STDMETHODCALLTYPE *release)(test_password *);
+    void (STDMETHODCALLTYPE *inspectable[3])(void);
+    HRESULT (STDMETHODCALLTYPE *get_password)(test_password *,HSTRING *);
+    HRESULT (STDMETHODCALLTYPE *put_password)(test_password *,HSTRING);
+    void (STDMETHODCALLTYPE *unused[16])(void);
+    HRESULT (STDMETHODCALLTYPE *get_reveal_mode)(test_password *,INT32 *);
+    HRESULT (STDMETHODCALLTYPE *put_reveal_mode)(test_password *,INT32);
+} test_password_vtable;
+struct test_password { const test_password_vtable *vtable; };
+static const IID test_password_iid={0x6d3ccff7,0xaaee,0x5adc,{0x82,0x98,0x33,0x30,0x0f,0xa1,0x19,0xda}};
+
+static HRESULT test_password_candidate(reader *factory,IInspectable *style)
+{
+    static const wchar_t markup[]=L"<PasswordBox xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' PlaceholderText='Test hint'/>";
+    HSTRING name=NULL,fake=NULL,actual=NULL; IInspectable *object=NULL,*window_object=NULL,*ui=NULL,*dep=NULL,*root=NULL,*placeholder=NULL,*reveal=NULL;
+    winui_element *element=NULL,*root_element=NULL; winui_tree *tree=NULL; winui_vsm *manager=NULL;
+    test_window *window=NULL; test_control *control=NULL; test_password *password=NULL; test_ui *placeholder_ui=NULL,*reveal_ui=NULL;
+    HRESULT hr=WindowsCreateString(markup,(UINT32)(ARRAYSIZE(markup)-1),&name);
+    if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,name,&object);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Window",24,&name);
+    if (SUCCEEDED(hr)) hr=RoActivateInstance(name,&window_object);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(window_object,&test_window_iid,(void **)&window);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&test_ui_iid,(void **)&ui);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_element_iid,(void **)&element);
+    if (SUCCEEDED(hr)) hr=element->vtable->put_style(element,style);
+    if (SUCCEEDED(hr)) hr=window->vtable->put_content(window,ui);
+    if (SUCCEEDED(hr)) hr=window->vtable->activate(window);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_control_iid,(void **)&control);
+    boolean applied=0;
+    if (SUCCEEDED(hr)) hr=control->vtable->apply_template(control,&applied);
+    if (SUCCEEDED(hr) && !applied) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.Media.VisualTreeHelper",40,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_tree_iid,(void **)&tree);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&winui_dependency_iid,(void **)&dep);
+    if (SUCCEEDED(hr)) hr=tree->vtable->get_child(tree,dep,0,&root);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(root,&winui_element_iid,(void **)&root_element);
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"PlaceholderTextContentPresenter",31,&name);
+    if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,name,&placeholder);
+    if (SUCCEEDED(hr) && !placeholder) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(placeholder,&test_ui_iid,(void **)&placeholder_ui);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"RevealButton",12,&name);
+    if (SUCCEEDED(hr)) hr=root_element->vtable->find_name(root_element,name,&reveal);
+    if (SUCCEEDED(hr) && !reveal) hr=E_FAIL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(reveal,&test_ui_iid,(void **)&reveal_ui);
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(object,&test_password_iid,(void **)&password);
+    for (INT32 i=0;SUCCEEDED(hr) && i<3;i++) {
+        INT32 mode=-1;
+        hr=password->vtable->put_reveal_mode(password,i);
+        if (SUCCEEDED(hr)) hr=password->vtable->get_reveal_mode(password,&mode);
+        if (SUCCEEDED(hr) && mode!=i) hr=E_FAIL;
+    }
+    if (SUCCEEDED(hr)) hr=password->vtable->put_reveal_mode(password,0);
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"dummy-test",10,&fake);
+    if (SUCCEEDED(hr)) hr=password->vtable->put_password(password,fake);
+    if (SUCCEEDED(hr)) hr=password->vtable->get_password(password,&actual);
+    if (SUCCEEDED(hr) && wcscmp(WindowsGetStringRawBuffer(actual,NULL),L"dummy-test")) hr=E_FAIL;
+    if (SUCCEEDED(hr)) {
+        HRESULT bitmap_result=E_FAIL;
+        int bitmap=check_rendered_pixels(object,&bitmap_result);
+        signal_named(bitmap==1 ? L"WIN16_XAML_BITMAP_OK_EVENT" : L"WIN16_XAML_BITMAP_FAILED_EVENT");
+        if (bitmap!=1) {
+            WCHAR variable[64];
+            if (bitmap_result==E_NOTIMPL) signal_named(L"WIN16_XAML_BITMAP_NOTIMPL_EVENT");
+            else if (bitmap_result==E_ACCESSDENIED) signal_named(L"WIN16_XAML_BITMAP_DENIED_EVENT");
+            else if (bitmap_result==E_INVALIDARG) signal_named(L"WIN16_XAML_BITMAP_INVALID_EVENT");
+            else if (bitmap_result==E_FAIL) signal_named(L"WIN16_XAML_BITMAP_EFAIL_EVENT");
+            else signal_named(L"WIN16_XAML_BITMAP_OTHER_EVENT");
+            swprintf(variable,ARRAYSIZE(variable),L"WIN16_XAML_BITMAP_STAGE_%d_EVENT",bitmap);
+            signal_named(variable);
+        }
+    }
+    INT32 visibility=-1;
+    if (SUCCEEDED(hr)) hr=placeholder_ui->vtable->get_visibility(placeholder_ui,&visibility);
+    if (SUCCEEDED(hr) && visibility!=1) hr=E_FAIL;
+    HSTRING empty=NULL;
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"",0,&empty);
+    if (SUCCEEDED(hr)) hr=password->vtable->put_password(password,empty);
+    if (SUCCEEDED(hr)) hr=placeholder_ui->vtable->get_visibility(placeholder_ui,&visibility);
+    if (SUCCEEDED(hr) && visibility!=0) hr=E_FAIL;
+    if (empty) WindowsDeleteString(empty);
+    if (name) { WindowsDeleteString(name); name=NULL; }
+    if (SUCCEEDED(hr)) hr=WindowsCreateString(L"Microsoft.UI.Xaml.VisualStateManager",36,&name);
+    if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_vsm_iid,(void **)&manager);
+    static const wchar_t *states[]={L"ButtonVisible",L"ButtonCollapsed"};
+    for (unsigned int i=0;SUCCEEDED(hr) && i<2;i++) {
+        HSTRING state=NULL; boolean changed=0; visibility=-1;
+        hr=WindowsCreateString(states[i],(UINT32)lstrlenW(states[i]),&state);
+        if (SUCCEEDED(hr)) hr=manager->vtable->go_to_state(manager,(IInspectable *)control,state,0,&changed);
+        if (SUCCEEDED(hr) && !changed) hr=E_FAIL;
+        if (SUCCEEDED(hr)) hr=reveal_ui->vtable->get_visibility(reveal_ui,&visibility);
+        if (SUCCEEDED(hr) && visibility!=(INT32)i) hr=E_FAIL;
+        if (state) WindowsDeleteString(state);
+    }
+    for (INT32 mode=1;SUCCEEDED(hr) && mode<=2;mode++) {
+        HSTRING state=NULL; boolean changed=0; visibility=-1;
+        hr=password->vtable->put_reveal_mode(password,0);
+        if (SUCCEEDED(hr)) hr=WindowsCreateString(L"ButtonVisible",13,&state);
+        if (SUCCEEDED(hr)) hr=manager->vtable->go_to_state(manager,(IInspectable *)control,state,0,&changed);
+        if (SUCCEEDED(hr) && !changed) hr=E_FAIL;
+        if (SUCCEEDED(hr)) hr=password->vtable->put_reveal_mode(password,mode);
+        if (SUCCEEDED(hr)) hr=reveal_ui->vtable->get_visibility(reveal_ui,&visibility);
+        if (SUCCEEDED(hr) && visibility!=1) hr=E_FAIL;
+        if (state) WindowsDeleteString(state);
+    }
+    if (SUCCEEDED(hr)) hr=password->vtable->put_reveal_mode(password,0);
+    test_control *reveal_control=NULL;
+    if (SUCCEEDED(hr)) hr=IInspectable_QueryInterface(reveal,&winui_control_iid,(void **)&reveal_control);
+    if (SUCCEEDED(hr)) hr=reveal_control->vtable->apply_template(reveal_control,&applied);
+    if (SUCCEEDED(hr) && !applied) hr=E_FAIL;
+    static const wchar_t *button_states[]={L"Normal",L"Pressed"};
+    for (unsigned int i=0;SUCCEEDED(hr) && i<2;i++) {
+        HSTRING state=NULL; boolean changed=0;
+        hr=WindowsCreateString(button_states[i],(UINT32)lstrlenW(button_states[i]),&state);
+        if (SUCCEEDED(hr)) hr=manager->vtable->go_to_state(manager,(IInspectable *)reveal_control,state,0,&changed);
+        if (SUCCEEDED(hr) && (!changed || !check_edge_colors(reveal,i==1))) hr=E_FAIL;
+        if (state) WindowsDeleteString(state);
+    }
+    if (reveal_control) reveal_control->vtable->release(reveal_control);
+    if (manager) manager->vtable->release(manager);
+    if (password) password->vtable->release(password);
+    if (reveal_ui) reveal_ui->vtable->release(reveal_ui);
+    if (placeholder_ui) placeholder_ui->vtable->release(placeholder_ui);
+    if (reveal) IInspectable_Release(reveal);
+    if (placeholder) IInspectable_Release(placeholder);
+    if (root_element) root_element->vtable->release(root_element);
+    if (root) IInspectable_Release(root);
+    if (dep) IInspectable_Release(dep);
+    if (tree) tree->vtable->release(tree);
+    if (control) control->vtable->release(control);
+    if (window) { (void)window->vtable->close(window); window->vtable->release(window); }
+    if (element) element->vtable->release(element);
+    if (ui) IInspectable_Release(ui);
+    if (window_object) IInspectable_Release(window_object);
+    if (object) IInspectable_Release(object);
+    if (actual) WindowsDeleteString(actual);
+    if (fake) WindowsDeleteString(fake);
+    if (name) WindowsDeleteString(name);
+    return hr;
+}
+
 static void test_template_parse(void)
 {
     static const wchar_t reader_name[]=L"Microsoft.UI.Xaml.Markup.XamlReader";
+    static const wchar_t password_markup[]=
+        L"<Style xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' "
+        L"xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' TargetType='PasswordBox'>"
+        L"<Setter Property='Foreground' Value='Black'/><Setter Property='Background' Value='White'/>"
+        L"<Setter Property='Template'><Setter.Value><ControlTemplate TargetType='PasswordBox'><Grid>"
+        L"<VisualStateManager.VisualStateGroups><VisualStateGroup x:Name='CommonStates'>"
+        L"<VisualState x:Name='Normal'/><VisualState x:Name='PointerOver'/><VisualState x:Name='Focused'/>"
+        L"<VisualState x:Name='Disabled'><VisualState.Setters><Setter Target='ContentElement.Foreground' Value='#808080'/>"
+        L"<Setter Target='PlaceholderTextContentPresenter.Foreground' Value='#808080'/></VisualState.Setters></VisualState>"
+        L"</VisualStateGroup><VisualStateGroup x:Name='ButtonStates'><VisualState x:Name='ButtonCollapsed'/>"
+        L"<VisualState x:Name='ButtonVisible'><VisualState.Setters><Setter Target='RevealButton.Visibility' Value='Visible'/>"
+        L"</VisualState.Setters></VisualState></VisualStateGroup></VisualStateManager.VisualStateGroups>"
+        L"<Grid.RowDefinitions><RowDefinition Height='Auto'/><RowDefinition Height='*'/><RowDefinition Height='Auto'/></Grid.RowDefinitions>"
+        L"<Grid.ColumnDefinitions><ColumnDefinition Width='*'/><ColumnDefinition Width='Auto'/></Grid.ColumnDefinitions>"
+        L"<ContentPresenter x:Name='HeaderContentPresenter' Grid.ColumnSpan='2' Content='{TemplateBinding Header}' ContentTemplate='{TemplateBinding HeaderTemplate}'/>"
+        L"<Border x:Name='BorderElement' Grid.Row='1' Grid.ColumnSpan='2' Background='{TemplateBinding Background}' BorderBrush='Black' BorderThickness='1'/>"
+        L"<ScrollViewer x:Name='ContentElement' Grid.Row='1' Foreground='{TemplateBinding Foreground}' Padding='{TemplateBinding Padding}' IsTabStop='False' ZoomMode='Disabled'/>"
+        L"<TextBlock x:Name='PlaceholderTextContentPresenter' Grid.Row='1' Grid.ColumnSpan='2' Text='{TemplateBinding PlaceholderText}' Padding='{TemplateBinding Padding}' IsHitTestVisible='False'/>"
+        L"<ToggleButton x:Name='RevealButton' Grid.Row='1' Grid.Column='1' Width='24' IsTabStop='False' Visibility='Collapsed' Content='...'>"
+        L"<ToggleButton.Template><ControlTemplate TargetType='ToggleButton'><Border Background='#C0C0C0' BorderBrush='Black' BorderThickness='1'>"
+        L"<VisualStateManager.VisualStateGroups><VisualStateGroup x:Name='CommonStates'><VisualState x:Name='Normal'/>"
+        L"<VisualState x:Name='PointerOver'/><VisualState x:Name='Pressed'><VisualState.Setters>"
+        L"<Setter Target='TopEdge.Background' Value='#808080'/><Setter Target='LeftEdge.Background' Value='#808080'/>"
+        L"<Setter Target='BottomEdge.Background' Value='White'/><Setter Target='RightEdge.Background' Value='White'/>"
+        L"</VisualState.Setters></VisualState><VisualState x:Name='Disabled'/></VisualStateGroup>"
+        L"</VisualStateManager.VisualStateGroups><Grid><Border x:Name='TopEdge' Background='White' Height='1' VerticalAlignment='Top'/>"
+        L"<Border x:Name='LeftEdge' Background='White' Width='1' HorizontalAlignment='Left'/>"
+        L"<Border x:Name='BottomEdge' Background='#808080' Height='1' VerticalAlignment='Bottom'/>"
+        L"<Border x:Name='RightEdge' Background='#808080' Width='1' HorizontalAlignment='Right'/>"
+        L"<ContentPresenter Content='{TemplateBinding Content}' HorizontalAlignment='Center' VerticalAlignment='Center'/>"
+        L"</Grid></Border></ControlTemplate></ToggleButton.Template></ToggleButton>"
+        L"<ContentPresenter Grid.Row='2' Grid.ColumnSpan='2' Content='{TemplateBinding Description}'/>"
+        L"</Grid></ControlTemplate></Setter.Value></Setter></Style>";
 
     if (!GetEnvironmentVariableW(L"WIN16_XAML_PARSE_TEST",NULL,0) ||
         InterlockedCompareExchange(&template_parse_attempted,1,0)!=0) return;
     HSTRING name=NULL,text=NULL;
     reader *factory=NULL;
     IInspectable *style=NULL;
-    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_SLIDER_PARSE",NULL,0)
+    const wchar_t *markup=GetEnvironmentVariableW(L"WIN16_XAML_PASSWORD_PARSE",NULL,0)
+        ? password_markup : GetEnvironmentVariableW(L"WIN16_XAML_SLIDER_PARSE",NULL,0)
         ? win16_xaml_slider_template() : GetEnvironmentVariableW(L"WIN16_XAML_TOGGLE_PARSE",NULL,0)
         ? win16_xaml_toggle_template() : GetEnvironmentVariableW(L"WIN16_XAML_PROGRESS_TEST",NULL,0)
         ? win16_xaml_progress_template() : GetEnvironmentVariableW(L"WIN16_XAML_LIST_TEST",NULL,0)
@@ -2390,6 +2572,8 @@ static void test_template_parse(void)
     if (SUCCEEDED(hr)) hr=RoGetActivationFactory(name,&winui_reader_iid,(void **)&factory);
     if (SUCCEEDED(hr)) hr=WindowsCreateString(markup,(UINT32)lstrlenW(markup),&text);
     if (SUCCEEDED(hr)) hr=factory->vtable->load(factory,text,&style);
+    if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_PASSWORD_PARSE",NULL,0))
+        hr=test_password_candidate(factory,style);
     if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_SLIDER_PARSE",NULL,0))
         hr=test_slider_candidate(factory,style);
     if (SUCCEEDED(hr) && style && GetEnvironmentVariableW(L"WIN16_XAML_TOGGLE_PARSE",NULL,0))

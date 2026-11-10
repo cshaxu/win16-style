@@ -2,6 +2,18 @@
 
 ## Current Work
 
+T25 S1 PasswordBox 位图诊断：自有 x64 控件的 XAML 诊断 `RenderTargetBitmap` 在调用阶段返回 E_NOTIMPL；已确认该路径无法在本次运行时取得像素，不把属性测试等同于密码遮蔽或按住显示。原型保留在测试中，暂不接入产品，后续使用其他自有实例验证路径；继续其他控件。
+
+T25 S1 PasswordBox 模式触发对照：自有 x64 测试先强制显示 RevealButton，再分别由控件设置 Hidden 和 Visible 模式，观察按钮自动折叠；假数据、占位和按钮边缘状态对照通过。XAML 诊断位图采样仍失败，实际遮蔽与按住显示未验证；未接入产品。
+
+T25 S1 PasswordBox 显示模式补测：自有 x64 对象设置并读回 Peek/Hidden/Visible 三种模式，再恢复 Peek，状态属性对照通过；对该假数据控件尝试 XAML 诊断位图采样失败，未取得像素，原因未定，不能证明实际遮蔽或按住显示行为。原型未接入产品。
+
+T25 S1 PasswordBox 显示按钮原型：测试模板增加 Win16 风格按钮边缘；自有 x64 对象程序切换 Normal/Pressed，读取四边颜色反转，原有假数据与占位提示检查通过。这不是按住显示或遮蔽像素验证，未接入产品。
+
+T25 S1 PasswordBox 对象原型：自有 x64 控件设置并清空固定假数据，读取值一致、占位提示随空值显示；程序切换 ButtonVisible/ButtonCollapsed 时 RevealButton 可见性符合状态。未验证真实输入、遮蔽像素、按住显示或恢复，未接入产品；未读取用户密码。
+
+T25 S1 PasswordBox 测试原型：参考系统模板保留 ContentElement、RevealButton 及 ButtonStates，简化模板在自有 x64 WinUI 记事本解析通过；仅验证语法，不证明输入、遮蔽、按住显示、焦点或恢复。未读取用户密码，未接入或发布。参考 https://github.com/microsoft/microsoft-ui-xaml/blob/main/controls/dev/CommonStyles/PasswordBox_themeresources.xaml 。
+
 T25 S1 Slider 反向补测：自有 x64 WinUI 横竖对象启用 IsDirectionReversed 后，值25→75时分别观察 Thumb 向左、向下移动；范围、右下刻度可见、程序化焦点/禁用和恢复对照通过。此为程序化位置，不证明实际键鼠或刻度像素。
 
 T25 S1 P21 复核：提交 `4ca3694e` 已推送并核对远端 main；assets 与 O:/winnt 同批摘要一致，本次 clean1、package1、publish1 scratch 已清理。S1/T25 保持开放，真实输入、像素、反向和 x86 WinUI 未覆盖。
