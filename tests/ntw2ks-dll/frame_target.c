@@ -946,6 +946,25 @@ int wmain(int argc,WCHAR **argv)
         printf("WIN2K DEFAULT ICON bits=%u drawn=%u changed=%u title_changed=%u\n",(unsigned)(sizeof(void*)*8),drawn,changed,title_changed);
         return drawn>0 && changed>0 && title_changed==0?0:3;
     }
+    if(argc==2 && !lstrcmpW(argv[1],L"--tool-resize")){
+        HWND tool=CreateWindowExW(WS_EX_TOOLWINDOW,wc.lpszClassName,L"Tool resize",
+                                  WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU|WS_THICKFRAME,100,100,320,180,NULL,NULL,instance,NULL);
+        if(!tool)return 2;
+        ShowWindow(tool,SW_SHOW);UpdateWindow(tool);SendMessageW(tool,WM_NCACTIVATE,TRUE,0);
+        RECT outer;GetWindowRect(tool,&outer);TITLEBARINFOEX info={.cbSize=sizeof(info)};
+        SendMessageW(tool,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
+        MENUBARINFO system={.cbSize=sizeof(system)};BOOL got=GetMenuBarInfo(tool,OBJID_SYSMENU,0,&system);
+        UINT dpi=GetDpiForWindow(tool);if(!dpi)dpi=96;
+        int border=MulDiv(4,(int)dpi,96);
+        POINT caption={info.rcTitleBar.left+5,(info.rcTitleBar.top+info.rcTitleBar.bottom)/2};
+        BOOL no_icon=got && system.rcBar.right<=system.rcBar.left && system.rcBar.bottom<=system.rcBar.top;
+        BOOL geometry=info.rcTitleBar.left-outer.left==border && info.rcTitleBar.top-outer.top==border &&
+            info.rcTitleBar.bottom-info.rcTitleBar.top==MulDiv(16,(int)dpi,96);
+        BOOL hit=SendMessageW(tool,WM_NCHITTEST,0,MAKELPARAM(caption.x,caption.y))==HTCAPTION;
+        printf("WIN2K TOOL RESIZE bits=%u no_icon=%d geometry=%d hit=%d\n",
+               (unsigned)(sizeof(void*)*8),no_icon,geometry,hit);
+        DestroyWindow(tool);return no_icon && geometry && hit?0:3;
+    }
     if(argc==2 && !lstrcmpW(argv[1],L"--tool")){
         HWND tool=CreateWindowExW(WS_EX_TOOLWINDOW,wc.lpszClassName,L"Tool window",WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU,
                                   100,100,320,180,NULL,NULL,instance,NULL);
