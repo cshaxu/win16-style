@@ -2,6 +2,7 @@
 #include <uxtheme.h>
 #include <wchar.h>
 #include "lib-win32/process-hook/startup_hooks.h"
+#include "lib-win32/process-hook/unwind.h"
 #include "lib-win32/win2k-window/frame.h"
 
 static __typeof__(&CreateWindowExW) create_W;
@@ -25,10 +26,48 @@ static HWND WINAPI hook_##S(DWORD ex,T cls,T text,DWORD style,int x,int y,int wi
 WINDOW_HOOK(W,LPCWSTR)
 WINDOW_HOOK(A,LPCSTR)
 
+/* Dialog manager windows can bypass the exported CreateWindowEx entry points. */
+static LRESULT CALLBACK dialog_created(int code,WPARAM wp,LPARAM lp)
+{
+    DWORD incoming=GetLastError();
+    if(code>=0 && lp){
+        const CWPRETSTRUCT *event=(const CWPRETSTRUCT *)lp;
+        if(event->message==WM_INITDIALOG)win2k_frame_attach(event->hwnd);
+    }
+    SetLastError(incoming);return CallNextHookEx(NULL,code,wp,lp);
+}
+static void dialog_scope_end(void *context)
+{
+    HHOOK hook=*(HHOOK *)context;
+    if(hook)UnhookWindowsHookEx(hook);
+}
+#define DIALOG_HOOK(NAME,TYPE,RET) \
+static __typeof__(&NAME) real_##NAME; \
+static PROCESS_HOOK_UNWIND_FUNCTION RET WINAPI hook_##NAME(HINSTANCE instance,TYPE name,HWND parent,DLGPROC proc,LPARAM param) \
+{ DWORD incoming=GetLastError();HHOOK hook=SetWindowsHookExW(WH_CALLWNDPROCRET,dialog_created,NULL,GetCurrentThreadId()); \
+  process_hook_unwind_scope scope;RET result;DWORD error; \
+  PROCESS_HOOK_UNWIND_BEGIN(scope,dialog_scope_end,&hook);SetLastError(incoming); \
+  { result=real_##NAME(instance,name,parent,proc,param);error=GetLastError(); } \
+  PROCESS_HOOK_UNWIND_END(scope);SetLastError(error);return result; }
+DIALOG_HOOK(CreateDialogParamA,LPCSTR,HWND)
+DIALOG_HOOK(CreateDialogParamW,LPCWSTR,HWND)
+DIALOG_HOOK(CreateDialogIndirectParamA,LPCDLGTEMPLATEA,HWND)
+DIALOG_HOOK(CreateDialogIndirectParamW,LPCDLGTEMPLATEW,HWND)
+DIALOG_HOOK(DialogBoxParamA,LPCSTR,INT_PTR)
+DIALOG_HOOK(DialogBoxParamW,LPCWSTR,INT_PTR)
+DIALOG_HOOK(DialogBoxIndirectParamA,LPCDLGTEMPLATEA,INT_PTR)
+DIALOG_HOOK(DialogBoxIndirectParamW,LPCDLGTEMPLATEW,INT_PTR)
+
 DWORD ntw2ks_controls_attach(void)
 {
     create_W=CreateWindowExW;create_A=CreateWindowExA;
     DWORD error=process_hook_startup_attach(&create_W,(void *)hook_W);
     if(!error)error=process_hook_startup_attach(&create_A,(void *)hook_A);
+#define ATTACH_DIALOG(NAME) do { if(!error){real_##NAME=NAME;error=process_hook_startup_attach(&real_##NAME,(void *)hook_##NAME);} } while(0)
+    ATTACH_DIALOG(CreateDialogParamA);ATTACH_DIALOG(CreateDialogParamW);
+    ATTACH_DIALOG(CreateDialogIndirectParamA);ATTACH_DIALOG(CreateDialogIndirectParamW);
+    ATTACH_DIALOG(DialogBoxParamA);ATTACH_DIALOG(DialogBoxParamW);
+    ATTACH_DIALOG(DialogBoxIndirectParamA);ATTACH_DIALOG(DialogBoxIndirectParamW);
+#undef ATTACH_DIALOG
     return error;
 }
