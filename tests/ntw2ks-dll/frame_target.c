@@ -637,6 +637,25 @@ int wmain(int argc,WCHAR **argv)
                (unsigned)(sizeof(void*)*8),keyboard,f10,focus_ok,hit,menu_entries,menu_exits,menu_commands,menu_timeout);
         DestroyWindow(w);DestroyMenu(menu);return ok?0:3;
     }
+    if(argc==2 && !lstrcmpW(argv[1],L"--style-transition")){
+        HWND w=CreateWindowExW(0,wc.lpszClassName,L"Style transition",WS_OVERLAPPEDWINDOW,
+                                80,80,420,260,NULL,NULL,instance,NULL);
+        if(!w)return 2;
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);SendMessageW(w,WM_NCACTIVATE,TRUE,0);
+        BOOL initial=GetPropW(w,L"Win2kStyle.Frame") && blue_caption(w);
+        LONG_PTR style=GetWindowLongPtrW(w,GWL_STYLE);
+        SetWindowLongPtrW(w,GWL_STYLE,style&~WS_CAPTION);
+        BOOL changed=SetWindowPos(w,NULL,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
+        RECT client;POINT origin={0,0};BOOL valid=GetClientRect(w,&client) && ClientToScreen(w,&origin);
+        BOOL client_hit=valid && SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(origin.x+10,origin.y+10))==HTCLIENT;
+        SetWindowLongPtrW(w,GWL_STYLE,style);
+        BOOL reset=SetWindowPos(w,NULL,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
+        SendMessageW(w,WM_NCACTIVATE,TRUE,0);
+        BOOL restored=GetPropW(w,L"Win2kStyle.Frame") && blue_caption(w);
+        printf("WIN2K STYLE TRANSITION bits=%u initial=%d changed=%d client_hit=%d reset=%d restored=%d\n",
+               (unsigned)(sizeof(void*)*8),initial,changed,client_hit,reset,restored);
+        DestroyWindow(w);return initial && changed && client_hit && reset && restored?0:3;
+    }
     if(argc==2 && !lstrcmpW(argv[1],L"--menu-transition")){
         HWND w=CreateWindowExW(0,wc.lpszClassName,L"Menu transition",WS_OVERLAPPEDWINDOW,
                                 80,80,420,260,NULL,NULL,instance,NULL);

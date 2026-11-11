@@ -80,6 +80,8 @@ try{
         (Case 'ntw2ks-control-launch-x64' $run @('--2k','--wait',(Join-Path $x64 'ntw2ks-control-target.exe'),'--disabled') @('NTW2KS CONTROL theme=disabled') 20),
         (Case 'ntw2ks-frame-x86' $dialogDriver @('--direct',$run,'--2k','--wait',(Join-Path $x86 'ntw2ks-frame-target.exe')) @('WIN2K FRAME bits=32 attached=1','DIALOG_DRIVER exit=0') 20),
         (Case 'ntw2ks-frame-x64' $dialogDriver @('--direct',$run,'--2k','--wait',(Join-Path $x64 'ntw2ks-frame-target.exe')) @('WIN2K FRAME bits=64 attached=1','DIALOG_DRIVER exit=0') 20),
+        (Case 'ntw2ks-style-transition-x86' $dialogDriver @('--direct',$run,'--2k','--wait',(Join-Path $x86 'ntw2ks-frame-target.exe'),'--style-transition') @('WIN2K STYLE TRANSITION bits=32 initial=1 changed=1 client_hit=1 reset=1 restored=1','DIALOG_DRIVER exit=0') 20),
+        (Case 'ntw2ks-style-transition-x64' $dialogDriver @('--direct',$run,'--2k','--wait',(Join-Path $x64 'ntw2ks-frame-target.exe'),'--style-transition') @('WIN2K STYLE TRANSITION bits=64 initial=1 changed=1 client_hit=1 reset=1 restored=1','DIALOG_DRIVER exit=0') 20),
         (Case 'ntw2ks-tool-x86' $dialogDriver @('--direct',$run,'--2k','--wait',(Join-Path $x86 'ntw2ks-frame-target.exe'),'--tool') @('WIN2K TOOL bits=32 styled=1','DIALOG_DRIVER exit=0') 20),
         (Case 'ntw2ks-tool-x64' $dialogDriver @('--direct',$run,'--2k','--wait',(Join-Path $x64 'ntw2ks-frame-target.exe'),'--tool') @('WIN2K TOOL bits=64 styled=1','DIALOG_DRIVER exit=0') 20),
         (Case 'ntw2ks-default-icon-x86' $dialogDriver @('--direct',$run,'--2k','--wait',(Join-Path $x86 'ntw2ks-frame-target.exe'),'--no-icon') @('WIN2K DEFAULT ICON bits=32','DIALOG_DRIVER exit=0') 20),
