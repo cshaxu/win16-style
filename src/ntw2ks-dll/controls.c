@@ -58,6 +58,22 @@ DIALOG_HOOK(DialogBoxParamW,LPCWSTR,INT_PTR,FALSE)
 DIALOG_HOOK(DialogBoxIndirectParamA,LPCDLGTEMPLATEA,INT_PTR,FALSE)
 DIALOG_HOOK(DialogBoxIndirectParamW,LPCDLGTEMPLATEW,INT_PTR,FALSE)
 
+/* Message boxes may create dialogs internally without calling exported dialog APIs. */
+#define MESSAGE_HOOK(NAME,ARGS,CALL) \
+static __typeof__(&NAME) real_##NAME; \
+static PROCESS_HOOK_UNWIND_FUNCTION int WINAPI hook_##NAME ARGS \
+{ DWORD incoming=GetLastError();HHOOK hook=SetWindowsHookExW(WH_CALLWNDPROCRET,dialog_created,NULL,GetCurrentThreadId()); \
+  process_hook_unwind_scope scope;int result;DWORD error; \
+  PROCESS_HOOK_UNWIND_BEGIN(scope,dialog_scope_end,&hook);SetLastError(incoming); \
+  { result=real_##NAME CALL;error=GetLastError(); } \
+  PROCESS_HOOK_UNWIND_END(scope);SetLastError(error);return result; }
+MESSAGE_HOOK(MessageBoxA,(HWND owner,LPCSTR text,LPCSTR title,UINT type),(owner,text,title,type))
+MESSAGE_HOOK(MessageBoxW,(HWND owner,LPCWSTR text,LPCWSTR title,UINT type),(owner,text,title,type))
+MESSAGE_HOOK(MessageBoxExA,(HWND owner,LPCSTR text,LPCSTR title,UINT type,WORD language),(owner,text,title,type,language))
+MESSAGE_HOOK(MessageBoxExW,(HWND owner,LPCWSTR text,LPCWSTR title,UINT type,WORD language),(owner,text,title,type,language))
+MESSAGE_HOOK(MessageBoxIndirectA,(const MSGBOXPARAMSA *parameters),(parameters))
+MESSAGE_HOOK(MessageBoxIndirectW,(const MSGBOXPARAMSW *parameters),(parameters))
+
 DWORD ntw2ks_controls_attach(void)
 {
     create_W=CreateWindowExW;create_A=CreateWindowExA;
@@ -68,6 +84,9 @@ DWORD ntw2ks_controls_attach(void)
     ATTACH_DIALOG(CreateDialogIndirectParamA);ATTACH_DIALOG(CreateDialogIndirectParamW);
     ATTACH_DIALOG(DialogBoxParamA);ATTACH_DIALOG(DialogBoxParamW);
     ATTACH_DIALOG(DialogBoxIndirectParamA);ATTACH_DIALOG(DialogBoxIndirectParamW);
+    ATTACH_DIALOG(MessageBoxA);ATTACH_DIALOG(MessageBoxW);
+    ATTACH_DIALOG(MessageBoxExA);ATTACH_DIALOG(MessageBoxExW);
+    ATTACH_DIALOG(MessageBoxIndirectA);ATTACH_DIALOG(MessageBoxIndirectW);
 #undef ATTACH_DIALOG
     return error;
 }

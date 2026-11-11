@@ -74,6 +74,25 @@ static INT_PTR CALLBACK frame_dialog_proc(HWND window,UINT message,WPARAM wp,LPA
     return FALSE;
 }
 
+static volatile LONG message_seen,message_attached;
+static BOOL CALLBACK find_message_window(HWND window,LPARAM unused)
+{
+    (void)unused;DWORD pid=0;WCHAR title[64]={0};GetWindowThreadProcessId(window,&pid);
+    if(pid!=GetCurrentProcessId() || !IsWindowVisible(window) || !GetWindowTextW(window,title,ARRAYSIZE(title)) || lstrcmpW(title,L"Win2kMessageFixture"))return TRUE;
+    TITLEBARINFOEX info={.cbSize=sizeof(info)};DWORD_PTR response=0;
+    BOOL sent=SendMessageTimeoutW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&info,SMTO_ABORTIFHUNG,1000,&response)!=0;
+    UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
+    if(sent && GetPropW(window,L"Win2kStyle.Frame") && info.rcTitleBar.bottom-info.rcTitleBar.top==MulDiv(19,(int)dpi,96))InterlockedExchange(&message_attached,1);
+    InterlockedExchange(&message_seen,1);PostMessageW(window,WM_CLOSE,0,0);return FALSE;
+}
+static DWORD WINAPI close_message(void *unused)
+{
+    (void)unused;ULONGLONG deadline=GetTickCount64()+3000;
+    do{EnumWindows(find_message_window,0);if(InterlockedCompareExchange(&message_seen,0,0))return 0;Sleep(25);}while(GetTickCount64()<deadline);
+    ExitProcess(4);
+    return 1;
+}
+
 static BOOL blue_caption(HWND w)
 {
     TITLEBARINFOEX info={.cbSize=sizeof(info)};RECT outer;
@@ -214,6 +233,25 @@ int wmain(int argc,WCHAR **argv)
         }
         printf("WIN2K DIALOG FRAME bits=%u modeless=%d,%d modal=%d,%d no_proc=%d,%d named=%d,%d named_modal=%d,%d\n",(unsigned)(sizeof(void*)*8),modeless[0],modeless[1],modal[0],modal[1],no_proc[0],no_proc[1],named[0],named[1],named_modal[0],named_modal[1]);
         return modeless[0] && modeless[1] && modal[0] && modal[1] && no_proc[0] && no_proc[1] && named[0] && named[1] && named_modal[0] && named_modal[1]?0:3;
+    }
+    if(argc==2 && !lstrcmpW(argv[1],L"--message-frame")){
+        BOOL all=TRUE;
+        for(int i=0;i<6;++i){
+            InterlockedExchange(&message_seen,0);InterlockedExchange(&message_attached,0);
+            HANDLE thread=CreateThread(NULL,0,close_message,NULL,0,NULL);if(!thread)return 2;
+            int result=0;MSGBOXPARAMSA a={.cbSize=sizeof(a),.hwndOwner=NULL,.lpszText="Text",.lpszCaption="Win2kMessageFixture",.dwStyle=MB_OK};
+            MSGBOXPARAMSW w={.cbSize=sizeof(w),.hwndOwner=NULL,.lpszText=L"Text",.lpszCaption=L"Win2kMessageFixture",.dwStyle=MB_OK};
+            switch(i){case 0:result=MessageBoxA(NULL,"Text","Win2kMessageFixture",MB_OK);break;
+                case 1:result=MessageBoxW(NULL,L"Text",L"Win2kMessageFixture",MB_OK);break;
+                case 2:result=MessageBoxExA(NULL,"Text","Win2kMessageFixture",MB_OK,0);break;
+                case 3:result=MessageBoxExW(NULL,L"Text",L"Win2kMessageFixture",MB_OK,0);break;
+                case 4:result=MessageBoxIndirectA(&a);break;default:result=MessageBoxIndirectW(&w);break;}
+            DWORD wait=WaitForSingleObject(thread,1000);CloseHandle(thread);
+            BOOL pass=wait==WAIT_OBJECT_0 && result==IDOK && InterlockedCompareExchange(&message_seen,0,0) && InterlockedCompareExchange(&message_attached,0,0);
+            printf("WIN2K MESSAGE bits=%u api=%d attached=%ld result=%d\n",(unsigned)(sizeof(void*)*8),i,(long)InterlockedCompareExchange(&message_attached,0,0),result);
+            if(!pass)all=FALSE;
+        }
+        return all?0:3;
     }
     BOOL no_icon=argc==2 && !lstrcmpW(argv[1],L"--no-icon");
     WNDCLASSW wc={.lpfnWndProc=procedure,.hInstance=instance,.hIcon=no_icon?NULL:LoadIconW(NULL,MAKEINTRESOURCEW(32515)),

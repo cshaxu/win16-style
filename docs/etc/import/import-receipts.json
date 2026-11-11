@@ -6548,7 +6548,7 @@
       "path": "src/ntw2ks-dll/controls.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d4b4d2df3a4ccc1aac3c3c3bd5a94a378d0ae290e0c8398efed9d6d0f4053c8b",
+      "sha256": "338da3ffc0d2c7cf56aa4fb8345183bc49c8d92fc26586ca8ca2a38a789b1b47",
       "disposition": "authored",
       "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T25 S3 Win2000 frame",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
@@ -6746,7 +6746,7 @@
       "path": "tests/ntw2ks-dll/frame_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "19f423b9448362ed02f24c978526fedc9e3af4163b44b6e3de37d1c148e82143",
+      "sha256": "182d2fd8c27ba6af8c8451c70da194321e69ae7f108addfbcb88d0f975b87c35",
       "disposition": "authored",
       "review": "T25 S3 native Win2000 frame and fixture; T25 S4 caption state and icon; T25 S4 original caption region and state",
       "notice": "Project-authored C; no external source or artwork copied"
