@@ -60,7 +60,10 @@ BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinate
     int unit=max(1,MulDiv(1,(int)dpi,96));
     HFONT font=CreateFontW(-MulDiv(8,(int)dpi,72),0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,
         DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Tahoma");
-    if(font)SelectObject(dc,font);
+    HFONT bold=CreateFontW(-MulDiv(8,(int)dpi,72),0,0,0,FW_BOLD,FALSE,FALSE,FALSE,
+        DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Tahoma");
+    HFONT normal=font?font:(HFONT)GetCurrentObject(dc,OBJ_FONT);
+    if(normal)SelectObject(dc,normal);
     SetBkMode(dc,TRANSPARENT);
     POINT origin={0,0};
     if(window_coordinates){RECT outer;if(GetWindowRect(popup,&outer) && ClientToScreen(popup,&origin)){
@@ -77,6 +80,8 @@ BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinate
             HBRUSH shadow=CreateSolidBrush(RGB(128,128,128));
             if(shadow){FillRect(dc,&line,shadow);DeleteObject(shadow);}continue;
         }
+        if((rows[i].state&MFS_DEFAULT) && bold)SelectObject(dc,bold);
+        else if(normal)SelectObject(dc,normal);
         SetTextColor(dc,(rows[i].state&MFS_DISABLED)?RGB(128,128,128):selected?RGB(255,255,255):RGB(0,0,0));
         system_glyph(dc,&r,rows[i].bitmap,unit,(rows[i].state&MFS_DISABLED)?RGB(128,128,128):selected?RGB(255,255,255):RGB(0,0,0));
         RECT label=r;label.left+=MulDiv(22,(int)dpi,96);label.right-=MulDiv(16,(int)dpi,96);
@@ -88,7 +93,7 @@ BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinate
         if(rows[i].submenu){RECT arrow=r;arrow.left=arrow.right-MulDiv(13,(int)dpi,96);arrow.right-=unit;
             DrawFrameControl(dc,&arrow,DFC_MENU,DFCS_MENUARROW);}
     }
-    RestoreDC(dc,saved);if(font)DeleteObject(font);free(rows);return valid;
+    RestoreDC(dc,saved);if(bold)DeleteObject(bold);if(font)DeleteObject(font);free(rows);return valid;
 }
 
 typedef struct menu_scope menu_scope;

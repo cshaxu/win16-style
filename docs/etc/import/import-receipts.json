@@ -491,7 +491,7 @@
       "path": "tests/ntw16s-dll/system_menu_visual.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1c3917a75131f1c0d1e60e3c08f5774e8ccf8cae3fac85907a69054704eecad5",
+      "sha256": "4ed8d18eb01c42f40223d716059a90a55856763131f5eb4651c2d139175e4d4b",
       "disposition": "authored",
       "review": "T20 S19 native system menu regression witness; T23 S1 native system-menu hover buffering and unchanged-selection regression",
       "notice": "Project-authored test; no imported code or resources"
@@ -6764,7 +6764,7 @@
       "path": "src/lib-win32/win2k-window/system_menu.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3e037a752d66de72d18e0da62bcf9b214f885cc7b79e5a681e8d0d6bda7ffece",
+      "sha256": "e9ef52c053a65a5e8f2b12d2b070ae960a53423143adb17171987ea12fddcb2b",
       "disposition": "authored",
       "review": "T25 S4 Win2000 system menu presentation candidate",
       "notice": "Project-authored C; no external source or artwork copied"
