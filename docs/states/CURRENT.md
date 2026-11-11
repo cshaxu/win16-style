@@ -35,7 +35,7 @@ M0 T25 S3 已完成首版 Win2000 普通 Win32 窗口接入、发布与远端复
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
 - Last allocated T25 S: 4
-- Last verified remote delivery: M0 T25 S4 P11，`214539a5ed0ab1b20d6c4143674ab26712d72810`。
+- Last verified remote delivery: M0 T25 S4 P12，`2d51dc29379e27585be94edd3a43e9b0b517d594`。
 - Open task: M0 T25 S4；Win2000 普通 Win32 标题与外框绘制。
 
 ## Technical Baseline

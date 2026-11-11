@@ -109,6 +109,29 @@ int wmain(int argc,WCHAR **argv)
     BOOL no_icon=argc==2 && !lstrcmpW(argv[1],L"--no-icon");
     WNDCLASSW wc={.lpfnWndProc=procedure,.hInstance=instance,.hIcon=no_icon?NULL:LoadIconW(NULL,MAKEINTRESOURCEW(32515)),.lpszClassName=L"Win2kFrameFixture"};
     if(!RegisterClassW(&wc))return 1;
+    if(argc==2 && !lstrcmpW(argv[1],L"--menu-transition")){
+        HWND w=CreateWindowExW(0,wc.lpszClassName,L"Menu transition",WS_OVERLAPPEDWINDOW,
+                                80,80,420,260,NULL,NULL,instance,NULL);
+        HMENU menu=CreateMenu(),popup=CreatePopupMenu();
+        if(!w || !menu || !popup){if(w)DestroyWindow(w);if(menu)DestroyMenu(menu);if(popup)DestroyMenu(popup);return 2;}
+        AppendMenuW(popup,MF_STRING,101,L"Item");AppendMenuW(menu,MF_POPUP,(UINT_PTR)popup,L"File");
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);
+        TITLEBARINFOEX before={.cbSize=sizeof(before)},added={.cbSize=sizeof(added)},removed={.cbSize=sizeof(removed)};
+        SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&before);
+        BOOL attached=SetMenu(w,menu);DrawMenuBar(w);
+        SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&added);
+        MENUBARINFO bar={.cbSize=sizeof(bar)};BOOL has_bar=GetMenuBarInfo(w,OBJID_MENU,0,&bar);
+        POINT client={0,0};ClientToScreen(w,&client);
+        BOOL menu_ok=attached && has_bar && bar.rcBar.top>=added.rcTitleBar.bottom && bar.rcBar.bottom<=client.y;
+        BOOL detached=SetMenu(w,NULL);DrawMenuBar(w);
+        SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&removed);client=(POINT){0,0};ClientToScreen(w,&client);
+        BOOL bare_ok=detached && removed.rcTitleBar.bottom-removed.rcTitleBar.top==before.rcTitleBar.bottom-before.rcTitleBar.top &&
+            removed.rcTitleBar.bottom<=client.y && SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(client.x+20,client.y+1))==HTCLIENT;
+        printf("WIN2K MENU TRANSITION bits=%u menu=%d bare=%d before=%ld added=%ld removed=%ld\n",
+               (unsigned)(sizeof(void*)*8),menu_ok,bare_ok,before.rcTitleBar.bottom-before.rcTitleBar.top,
+               added.rcTitleBar.bottom-added.rcTitleBar.top,removed.rcTitleBar.bottom-removed.rcTitleBar.top);
+        DestroyWindow(w);DestroyMenu(menu);return menu_ok && bare_ok?0:3;
+    }
     if(argc==2 && (!lstrcmpW(argv[1],L"--geometry") || !lstrcmpW(argv[1],L"--geometry-bare"))){
         BOOL bare=!lstrcmpW(argv[1],L"--geometry-bare");
         HMENU menu=NULL,popup=NULL;
