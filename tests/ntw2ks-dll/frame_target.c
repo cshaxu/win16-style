@@ -106,6 +106,24 @@ int wmain(int argc,WCHAR **argv)
     BOOL no_icon=argc==2 && !lstrcmpW(argv[1],L"--no-icon");
     WNDCLASSW wc={.lpfnWndProc=procedure,.hInstance=instance,.hIcon=no_icon?NULL:LoadIconW(NULL,MAKEINTRESOURCEW(32515)),.lpszClassName=L"Win2kFrameFixture"};
     if(!RegisterClassW(&wc))return 1;
+    if(argc==2 && !lstrcmpW(argv[1],L"--geometry")){
+        HMENU menu=CreateMenu(),popup=CreatePopupMenu();
+        if(!menu || !popup)return 2;
+        AppendMenuW(popup,MF_STRING,101,L"Item");AppendMenuW(menu,MF_POPUP,(UINT_PTR)popup,L"File");
+        HWND w=CreateWindowExW(0,wc.lpszClassName,L"Geometry",WS_OVERLAPPEDWINDOW,
+                                80,80,420,260,NULL,menu,instance,NULL);
+        if(!w){DestroyMenu(menu);return 3;}
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);
+        RECT outer,client;GetWindowRect(w,&outer);GetClientRect(w,&client);
+        POINT origin={0,0};ClientToScreen(w,&origin);
+        TITLEBARINFOEX title={.cbSize=sizeof(title)};SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&title);
+        MENUBARINFO bar={.cbSize=sizeof(bar)};BOOL have_menu=GetMenuBarInfo(w,OBJID_MENU,0,&bar);
+        printf("WIN2K GEOMETRY bits=%u title=%ld menu=%ld,%ld client=%ld menu_ok=%d\n",
+               (unsigned)(sizeof(void*)*8),title.rcTitleBar.bottom-title.rcTitleBar.top,
+               bar.rcBar.top-outer.top,bar.rcBar.bottom-outer.top,origin.y-outer.top,have_menu);
+        BOOL good=have_menu && bar.rcBar.top>=title.rcTitleBar.bottom && bar.rcBar.bottom<=origin.y;
+        DestroyWindow(w);DestroyMenu(menu);return good?0:4;
+    }
     if(argc==2 && !lstrcmpW(argv[1],L"--buttons")){
         HWND w=CreateWindowExW(0,wc.lpszClassName,L"Caption commands",WS_OVERLAPPEDWINDOW,
                                 80,80,420,260,NULL,NULL,instance,NULL);
