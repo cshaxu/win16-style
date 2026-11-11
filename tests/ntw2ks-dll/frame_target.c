@@ -542,6 +542,17 @@ int wmain(int argc,WCHAR **argv)
             ok=measured && title.rcTitleBar.bottom-title.rcTitleBar.top==MulDiv(19,(int)dpi,96) && hit==HTMENU && opened;
             printf("WIN2K REAL APP bits=%u title=%ld menu=%d hit=%lld opened=%d\n",(unsigned)(sizeof(void*)*8),
                    title.rcTitleBar.bottom-title.rcTitleBar.top,measured,(long long)hit,opened);
+            DWORD_PTR activation_reply=0;
+            BOOL active_sent=SendMessageTimeoutW(app_window,WM_NCACTIVATE,TRUE,0,SMTO_ABORTIFHUNG,2000,&activation_reply)!=0;
+            COLORREF active_pixel=active_sent?caption_pixel(app_window):CLR_INVALID;
+            BOOL inactive_sent=SendMessageTimeoutW(app_window,WM_NCACTIVATE,FALSE,0,SMTO_ABORTIFHUNG,2000,&activation_reply)!=0;
+            COLORREF inactive_pixel=inactive_sent?caption_pixel(app_window):CLR_INVALID;
+            BOOL active_color=active_pixel!=CLR_INVALID && GetBValue(active_pixel)>GetRValue(active_pixel);
+            BOOL inactive_color=inactive_pixel!=CLR_INVALID && GetRValue(inactive_pixel)==GetGValue(inactive_pixel) &&
+                                GetGValue(inactive_pixel)==GetBValue(inactive_pixel) && GetRValue(inactive_pixel)>=128 && GetRValue(inactive_pixel)<=181;
+            printf("WIN2K REAL ACTIVATION active=%d inactive=%d pixels=%06lx,%06lx\n",active_color,inactive_color,
+                   (unsigned long)active_pixel,(unsigned long)inactive_pixel);
+            ok=ok && active_color && inactive_color;
             BOOL supports_max=(GetWindowLongPtrW(app_window,GWL_STYLE)&WS_MAXIMIZEBOX)!=0;
             BOOL maximized=FALSE,restored=FALSE,caption=FALSE;COLORREF max_pixel=CLR_INVALID,restore_pixel=CLR_INVALID;
             if(supports_max){DWORD_PTR ignored=0;

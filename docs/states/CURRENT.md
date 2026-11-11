@@ -35,7 +35,7 @@ M0 T25 S3 已完成首版 Win2000 普通 Win32 窗口接入、发布与远端复
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
 - Last allocated T25 S: 4
-- Last verified remote delivery: M0 T25 S4 P34，`4295bde9f279ac15398305a76365fd0e9bf01473`。
+- Last verified remote delivery: M0 T25 S4 P35，`705edad0b6be06ab423122ecf8e7250abe35e754`。
 - Open task: M0 T25 S4；Win2000 普通 Win32 标题与外框绘制。
 
 ## Technical Baseline
@@ -49,3 +49,5 @@ S4 P33 补充普通窗口动态移除和恢复标题栏验证，见[审计记录
 S4 P34 接入初始无标题、运行时添加标题的顶层窗口，见[交付记录](../history/M0-T25-S4-P34-caption-added.md)。
 
 S4 P35 以发布版复测两个实际程序窗口，见[审计记录](../history/M0-T25-S4-P35-published-real-window.md)。
+
+S4 P36 补充实际窗口模拟激活与失焦颜色采样，见[审计记录](../history/M0-T25-S4-P36-real-activation.md)。
