@@ -999,8 +999,10 @@ int wmain(int argc,WCHAR **argv)
             puts("WIN2K ACTIVATION SKIP no_foreground");DestroyWindow(second);DestroyWindow(first);return 77;
         }
         SetActiveWindow(first);BOOL first_active=GetActiveWindow()==first;
+        BOOL first_foreground=GetForegroundWindow()==first;
         COLORREF first_blue=caption_pixel(first),second_gray=caption_pixel(second);unsigned active_icon=caption_icon_pixels(first);
         SetActiveWindow(second);BOOL second_active=GetActiveWindow()==second;
+        BOOL second_foreground=GetForegroundWindow()==second;
         COLORREF first_gray=caption_pixel(first),second_blue=caption_pixel(second);unsigned inactive_icon=caption_icon_pixels(first);
         BOOL colors=GetBValue(first_blue)>GetRValue(first_blue) && GetRValue(second_gray)==GetGValue(second_gray) &&
             GetGValue(second_gray)==GetBValue(second_gray) && GetRValue(first_gray)==GetGValue(first_gray) &&
@@ -1009,7 +1011,10 @@ int wmain(int argc,WCHAR **argv)
         printf("WIN2K ACTIVATION bits=%u first=%d second=%d colors=%d pixels=%06lx,%06lx,%06lx,%06lx\n",(unsigned)(sizeof(void*)*8),first_active,second_active,colors,
                (unsigned long)first_blue,(unsigned long)second_gray,(unsigned long)first_gray,(unsigned long)second_blue);
         printf("WIN2K ACTIVATION ICON active=%u inactive=%u\n",active_icon,inactive_icon);
-        DestroyWindow(second);DestroyWindow(first);return first_active && second_active && colors && active_icon>0 && inactive_icon>0?0:3;
+        printf("WIN2K ACTIVATION FOREGROUND first=%d second=%d\n",first_foreground,second_foreground);
+        DestroyWindow(second);DestroyWindow(first);
+        if(!first_foreground || !second_foreground){puts("WIN2K ACTIVATION SKIP not_foreground");return 77;}
+        return first_active && second_active && colors && active_icon>0 && inactive_icon>0?0:3;
     }
     if(argc==2 && !lstrcmpW(argv[1],L"--caption-added")){
         HWND w=CreateWindowExW(0,wc.lpszClassName,L"Caption added",WS_POPUP,
