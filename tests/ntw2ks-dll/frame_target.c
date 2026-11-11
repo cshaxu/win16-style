@@ -1,7 +1,9 @@
+#define _WIN32_WINNT 0x0A00
 #include <windows.h>
 #include <oleacc.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <limits.h>
 
 static LRESULT CALLBACK procedure(HWND w,UINT message,WPARAM wp,LPARAM lp)
 {return DefWindowProcW(w,message,wp,lp);}
@@ -166,12 +168,29 @@ int wmain(int argc,WCHAR **argv)
         HWND tool=CreateWindowExW(WS_EX_TOOLWINDOW,wc.lpszClassName,L"Tool window",WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU,
                                   100,100,320,180,NULL,NULL,instance,NULL);
         BOOL tool_ok=FALSE;
+        int text_top=INT_MAX,text_bottom=-1;
         if(tool){
             ShowWindow(tool,SW_SHOW);UpdateWindow(tool);SendMessageW(tool,WM_NCACTIVATE,TRUE,0);
             tool_ok=GetPropW(tool,L"Win2kStyle.Frame")!=NULL && blue_caption(tool);
+            TITLEBARINFOEX info={.cbSize=sizeof(info)};RECT outer;
+            SendMessageW(tool,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);GetWindowRect(tool,&outer);
+            HDC dc=GetWindowDC(tool);
+            if(dc){
+                RECT title=info.rcTitleBar;OffsetRect(&title,-outer.left,-outer.top);
+                for(int y=title.top+1;y<title.bottom-1;++y)for(int x=title.left+1;x<title.left+100 && x<title.right;++x){
+                    COLORREF c=GetPixel(dc,x,y);
+                    if(c!=CLR_INVALID && GetRValue(c)>230 && GetGValue(c)>230 && GetBValue(c)>230){
+                        if(y<text_top)text_top=y;
+                        if(y>text_bottom)text_bottom=y;
+                    }
+                }
+                ReleaseDC(tool,dc);
+            }
+            UINT dpi=GetDpiForWindow(tool);if(!dpi)dpi=96;
+            tool_ok=tool_ok && text_bottom>=text_top && text_bottom-text_top+1<=MulDiv(8,(int)dpi,96);
             DestroyWindow(tool);
         }
-        printf("WIN2K TOOL bits=%u styled=%d\n",(unsigned)(sizeof(void*)*8),tool_ok);
+        printf("WIN2K TOOL bits=%u styled=%d glyph_height=%d\n",(unsigned)(sizeof(void*)*8),tool_ok,text_bottom>=text_top?text_bottom-text_top+1:0);
         return tool_ok?0:3;
     }
     if(argc!=1)return 2;

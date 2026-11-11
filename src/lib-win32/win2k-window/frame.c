@@ -101,7 +101,9 @@ static void paint(HWND window)
                !(info.rgstate[i]&STATE_SYSTEM_INVISIBLE))gradient.right=r.left;
         }
         UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
-        HFONT owned_font=CreateFontW(-MulDiv(8,(int)dpi,72),0,0,0,FW_BOLD,FALSE,FALSE,FALSE,
+        BOOL tool=(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)!=0;
+        int font_height=tool?MulDiv(8,(int)dpi,96):MulDiv(8,(int)dpi,72);
+        HFONT owned_font=CreateFontW(-font_height,0,0,0,FW_BOLD,FALSE,FALSE,FALSE,
             DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Tahoma");
         HFONT font=owned_font?owned_font:(HFONT)GetStockObject(DEFAULT_GUI_FONT);
         win2k_caption_colors solid=colors;solid.gradient=FALSE;
