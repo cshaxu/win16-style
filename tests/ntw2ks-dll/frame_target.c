@@ -301,7 +301,7 @@ static DWORD WINAPI physical_thread(void *parameter)
 
 int wmain(int argc,WCHAR **argv)
 {
-    if(argc>2 && !lstrcmpW(argv[1],L"--dpi-aware")){
+    if(argc>1 && !lstrcmpW(argv[1],L"--dpi-aware")){
         if(!SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2)){
             printf("WIN2K DPI AWARE SKIP error=%lu\n",GetLastError());return 77;
         }
@@ -512,10 +512,28 @@ int wmain(int argc,WCHAR **argv)
         }
         DestroyWindow(owner);UnregisterClassW(owner_class.lpszClassName,instance);return all?0:3;
     }
-    BOOL no_icon=argc==2 && !lstrcmpW(argv[1],L"--no-icon");
+    BOOL no_icon=argc==2 && (!lstrcmpW(argv[1],L"--no-icon") || !lstrcmpW(argv[1],L"--modal-no-icon"));
     WNDCLASSW wc={.lpfnWndProc=procedure,.hInstance=instance,.hIcon=no_icon?NULL:LoadIconW(NULL,MAKEINTRESOURCEW(32515)),
         .hbrBackground=(HBRUSH)(COLOR_WINDOW+1),.lpszClassName=L"Win2kFrameFixture"};
     if(!RegisterClassW(&wc))return 1;
+    if(argc==2 && !lstrcmpW(argv[1],L"--modal-no-icon")){
+        HWND w=CreateWindowExW(WS_EX_DLGMODALFRAME,wc.lpszClassName,L"",WS_POPUP|WS_CAPTION|WS_SYSMENU,
+                               80,80,420,260,NULL,NULL,instance,NULL);
+        if(!w)return 2;
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);SendMessageW(w,WM_NCACTIVATE,TRUE,0);
+        TITLEBARINFOEX info={.cbSize=sizeof(info)};RECT outer;MENUBARINFO system={.cbSize=sizeof(system)};
+        SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);GetWindowRect(w,&outer);
+        BOOL has_system=GetMenuBarInfo(w,OBJID_SYSMENU,0,&system);
+        HDC dc=GetWindowDC(w);unsigned irregular=0;
+        if(dc){int left=(int)(info.rcTitleBar.left-outer.left),top=(int)(info.rcTitleBar.top-outer.top);
+            for(int x=left+2;x<left+18;++x){COLORREF base=GetPixel(dc,x,top+2);
+                for(int y=top+3;y<top+15;++y)if(GetPixel(dc,x,y)!=base)++irregular;}
+            ReleaseDC(w,dc);}
+        printf("WIN2K MODAL ICON bits=%u visible=%d system=%d icon_state=%lu title_left=%ld icon_left=%ld irregular=%u\n",
+               (unsigned)(sizeof(void*)*8),IsWindowVisible(w),has_system,(unsigned long)info.rgstate[1],
+               info.rcTitleBar.left-outer.left,has_system?system.rcBar.left-outer.left:-1,irregular);
+        DestroyWindow(w);return dc && irregular==0?0:3;
+    }
     if(argc==2 && !lstrcmpW(argv[1],L"--startup-size")){
         startup_probe=TRUE;
         HWND w=CreateWindowExW(0,wc.lpszClassName,L"Startup size",WS_OVERLAPPEDWINDOW,
