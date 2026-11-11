@@ -58,6 +58,8 @@ S7 P8 验证实际 Delphi 程序的窗口外框，见[记录](../history/M0-T25-
 
 S7 P9 验证跨位宽父子窗口实际附着与标题绘制，见[记录](../history/M0-T25-S7-P9-propagated-frames.md)。
 
+S7 P10 在当前桌面验证双位宽真实鼠标标题按钮，见[记录](../history/M0-T25-S7-P10-physical-caption-buttons.md)。
+
 S6 P1 验证双位宽连续尺寸变化的几何与有限采样，见[记录](../history/M0-T25-S6-P1-resize-cycle.md)。
 
 S6 P2 验证重复最大化和还原，见[记录](../history/M0-T25-S6-P2-zoom-cycle.md)。
