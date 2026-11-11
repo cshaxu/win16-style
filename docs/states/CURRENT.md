@@ -46,6 +46,8 @@ S6 P2 验证重复最大化和还原，见[记录](../history/M0-T25-S6-P2-zoom-
 
 S6 P3 区分线程激活与前台窗口，见[记录](../history/M0-T25-S6-P3-activation-foreground.md)。
 
+S6 P4 验证尺寸变化后的自然消息重绘，见[记录](../history/M0-T25-S6-P4-natural-resize.md)。
+
 已发布基线为五组件、八产品文件；纯 C17、MinGW GCC、Ninja 和 ccache。T25 S5 P9 八文件已发布于项目 assets 根目录与 O:/winnt，摘要和验证范围见[交付记录](../history/M0-T25-S5-P9-caption-command-order.md)。历史状态见[T24 工作快照](../history/M0-T24-S1-working-log.md)和[原状态快照](../history/M0-T24-current-state-archive.md)。
 
 S4 P32 补充扩展打印窗口双位宽取消路径验证，见[审计记录](../history/M0-T25-S4-P32-print-ex-audit.md)；没有产品二进制变更。

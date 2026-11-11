@@ -898,7 +898,8 @@ int wmain(int argc,WCHAR **argv)
         DestroyWindow(w);DestroyMenu(menu);
         return maximized==8 && restored==8 && geometry==8 && caption==16 && hit==8 && content==8?0:3;
     }
-    if(argc==2 && !lstrcmpW(argv[1],L"--resize-cycle")){
+    if(argc==2 && (!lstrcmpW(argv[1],L"--resize-cycle") || !lstrcmpW(argv[1],L"--resize-natural"))){
+        BOOL natural=!lstrcmpW(argv[1],L"--resize-natural");
         HMENU menu=CreateMenu(),popup=CreatePopupMenu();if(!menu || !popup)return 2;
         AppendMenuW(popup,MF_STRING,101,L"Item");AppendMenuW(menu,MF_POPUP,(UINT_PTR)popup,L"File");
         HWND w=CreateWindowExW(0,wc.lpszClassName,L"Resize cycles",WS_OVERLAPPEDWINDOW,
@@ -907,7 +908,8 @@ int wmain(int argc,WCHAR **argv)
         ShowWindow(w,SW_SHOW);UpdateWindow(w);unsigned geometry=0,caption=0,client=0,hit=0,menu_clean=0;
         for(int i=0;i<24;++i){int width=320+(i%6)*29,height=220+(i%5)*23;
             if(!SetWindowPos(w,NULL,80+i,80+i,width,height,SWP_NOZORDER|SWP_NOACTIVATE))break;
-            RedrawWindow(w,NULL,NULL,RDW_FRAME|RDW_INVALIDATE|RDW_ERASE|RDW_ALLCHILDREN|RDW_UPDATENOW);
+            if(natural)pump_messages();
+            else RedrawWindow(w,NULL,NULL,RDW_FRAME|RDW_INVALIDATE|RDW_ERASE|RDW_ALLCHILDREN|RDW_UPDATENOW);
             RECT outer={0},area={0};POINT origin={0,0};
             BOOL measured=GetWindowRect(w,&outer) && GetClientRect(w,&area) && ClientToScreen(w,&origin);
             if(!measured || area.right<=20 || area.bottom<=20)break;
@@ -918,8 +920,8 @@ int wmain(int argc,WCHAR **argv)
             dc=GetWindowDC(w);if(dc){if(GetPixel(dc,origin.x-outer.left+2,title.rcTitleBar.bottom-outer.top+1)==RGB(212,208,200))++menu_clean;ReleaseDC(w,dc);}
             if(SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(outer.left+1,(outer.top+outer.bottom)/2))==HTLEFT)++hit;
         }
-        printf("WIN2K RESIZE CYCLE bits=%u dpi=%u geometry=%u caption=%u client=%u menu=%u hit=%u\n",
-               (unsigned)(sizeof(void*)*8),GetDpiForWindow(w),geometry,caption,client,menu_clean,hit);
+        printf("WIN2K RESIZE CYCLE bits=%u dpi=%u geometry=%u caption=%u client=%u menu=%u hit=%u natural=%d\n",
+               (unsigned)(sizeof(void*)*8),GetDpiForWindow(w),geometry,caption,client,menu_clean,hit,natural);
         DestroyWindow(w);DestroyMenu(menu);return geometry==24 && caption==24 && client==24 && menu_clean==24 && hit==24?0:3;
     }
     if(argc==4 && !lstrcmpW(argv[1],L"--frame-bounds")){
