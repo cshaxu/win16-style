@@ -52,6 +52,8 @@ S7 P5 检查实际记事本与 demo 并审计样式移除边界，见[记录](..
 
 S7 P6 审计 Win2000 恢复及后续共享生命周期边界，见[记录](../history/M0-T25-S7-P6-restore-boundary.md)。
 
+S7 P7 验证 64 位无菜单实际程序，见[记录](../history/M0-T25-S7-P7-charmap.md)。
+
 S6 P1 验证双位宽连续尺寸变化的几何与有限采样，见[记录](../history/M0-T25-S6-P1-resize-cycle.md)。
 
 S6 P2 验证重复最大化和还原，见[记录](../history/M0-T25-S6-P2-zoom-cycle.md)。

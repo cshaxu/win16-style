@@ -712,7 +712,8 @@ int wmain(int argc,WCHAR **argv)
         if(captions && app_dialog && !foreground)return 77;
         return dialog_styled && owner_disabled && measured && black==0 && gray>0 && wait==WAIT_OBJECT_0 && (!captions || colors)?0:3;
     }
-    if(argc==3 && !lstrcmpW(argv[1],L"--real-app")){
+    if(argc==3 && (!lstrcmpW(argv[1],L"--real-app") || !lstrcmpW(argv[1],L"--real-app-no-menu"))){
+        BOOL no_menu=!lstrcmpW(argv[1],L"--real-app-no-menu");
         WCHAR command[2048];if(swprintf(command,ARRAYSIZE(command),L"\"%ls\"",argv[2])<0)return 2;
         STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION process={0};
         if(!CreateProcessW(argv[2],command,NULL,NULL,FALSE,0,NULL,NULL,&startup,&process)){printf("WIN2K REAL CREATE error=%lu\n",GetLastError());return 3;}
@@ -741,9 +742,11 @@ int wmain(int argc,WCHAR **argv)
                 if(cancel){WaitForSingleObject(cancel,3000);CloseHandle(cancel);}
                 opened=sent && InterlockedCompareExchange(&app_popup_seen,0,0)!=0;
             }
-            ok=measured && title.rcTitleBar.bottom-title.rcTitleBar.top==MulDiv(19,(int)dpi,96) && hit==HTBORDER && opened;
-            printf("WIN2K REAL APP bits=%u title=%ld menu=%d hit=%lld opened=%d dpi=%u expected=%ld\n",(unsigned)(sizeof(void*)*8),
-                   title.rcTitleBar.bottom-title.rcTitleBar.top,measured,(long long)hit,opened,dpi,(long)MulDiv(19,(int)dpi,96));
+            BOOL menu_ok=no_menu?!menu:(measured && hit==HTBORDER && opened);
+            BOOL attached=GetPropW(app_window,L"Win2kStyle.Frame")!=NULL;
+            ok=attached && menu_ok && title.rcTitleBar.bottom-title.rcTitleBar.top==MulDiv(19,(int)dpi,96);
+            printf("WIN2K REAL APP bits=%u title=%ld menu=%d hit=%lld opened=%d dpi=%u expected=%ld no_menu=%d menu_ok=%d attached=%d\n",(unsigned)(sizeof(void*)*8),
+                   title.rcTitleBar.bottom-title.rcTitleBar.top,measured,(long long)hit,opened,dpi,(long)MulDiv(19,(int)dpi,96),no_menu,menu_ok,attached);
             DWORD_PTR activation_reply=0;
             BOOL active_sent=SendMessageTimeoutW(app_window,WM_NCACTIVATE,TRUE,0,SMTO_ABORTIFHUNG,2000,&activation_reply)!=0;
             COLORREF active_pixel=active_sent?caption_pixel(app_window):CLR_INVALID;
