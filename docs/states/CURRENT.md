@@ -141,3 +141,5 @@ S5 P7 验证标题栏上下文菜单消息入口，见[记录](../history/M0-T25
 S5 P8 验证系统菜单取消消息，见[记录](../history/M0-T25-S5-P8-menu-cancel.md)。
 
 S5 P9 修复标题按钮系统命令的同步顺序，见[交付记录](../history/M0-T25-S5-P9-caption-command-order.md)。
+
+S5 P10 复核实际应用及创建失败，见[记录](../history/M0-T25-S5-P10-real-app-regression.md)。

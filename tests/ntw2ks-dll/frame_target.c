@@ -668,7 +668,7 @@ int wmain(int argc,WCHAR **argv)
     if(argc==3 && !lstrcmpW(argv[1],L"--real-about")){
         WCHAR command[2048];if(swprintf(command,ARRAYSIZE(command),L"\"%ls\"",argv[2])<0)return 2;
         STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION process={0};
-        if(!CreateProcessW(argv[2],command,NULL,NULL,FALSE,0,NULL,NULL,&startup,&process))return 3;
+        if(!CreateProcessW(argv[2],command,NULL,NULL,FALSE,0,NULL,NULL,&startup,&process)){printf("WIN2K REAL CREATE error=%lu\n",GetLastError());return 3;}
         app_pid=process.dwProcessId;ULONGLONG deadline=GetTickCount64()+5000;
         do{EnumWindows(find_app_window,0);if(app_window)break;Sleep(50);}while(GetTickCount64()<deadline);
         HMENU menu=app_window?GetMenu(app_window):NULL;
@@ -699,7 +699,7 @@ int wmain(int argc,WCHAR **argv)
     if(argc==3 && !lstrcmpW(argv[1],L"--real-app")){
         WCHAR command[2048];if(swprintf(command,ARRAYSIZE(command),L"\"%ls\"",argv[2])<0)return 2;
         STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION process={0};
-        if(!CreateProcessW(argv[2],command,NULL,NULL,FALSE,0,NULL,NULL,&startup,&process))return 3;
+        if(!CreateProcessW(argv[2],command,NULL,NULL,FALSE,0,NULL,NULL,&startup,&process)){printf("WIN2K REAL CREATE error=%lu\n",GetLastError());return 3;}
         app_pid=process.dwProcessId;ULONGLONG deadline=GetTickCount64()+5000;
         do{EnumWindows(find_app_window,0);if(app_window)break;Sleep(50);}while(GetTickCount64()<deadline);
         BOOL ok=FALSE;
