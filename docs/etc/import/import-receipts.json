@@ -1463,7 +1463,7 @@
       "path": "tests/run16s-exe/cli_failures.py",
       "source": null,
       "source_blob": null,
-      "sha256": "1e1fb1e9d67d6f5f24b8a4d3a7f8b4a6df7d9ea2665ed2dff89d75a03c2be638",
+      "sha256": "d63f7df9f94c36a12f783b20ca7f97005144bfec39efe47bba12202d3879eec8",
       "disposition": "authored",
       "review": "T3 S3 final path/CLI contract audit; UNC namespace case and actual exit/I-O cases; docs/proposals/launcher-injection.md; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T25 S2 shared runtime extraction",
       "notice": "Project-authored test, repository MIT"

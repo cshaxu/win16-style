@@ -9,29 +9,34 @@ import sys
 launcher,dll32,dll64,target32,target64=map(Path,sys.argv[1:])
 root=Path(os.environ['WIN16STYLE_CAPTURE_DIR'])/'cli-failures'
 root.mkdir()
-for width,target in [(32,target32),(64,target64)]:
-    for case in ('missing','wrong-width','corrupt'):
-        folder=root/f'{width}-{case}'
-        folder.mkdir()
-        exe=folder/'run16s.exe'
-        shutil.copy2(launcher,exe)
-        for bits,source in [(32,dll32),(64,dll64)]:
-            shared=source.with_name(f'ntwshk{bits}.dll')
-            shutil.copy2(shared,folder/shared.name)
-        for bits,source in [(32,dll32),(64,dll64)]:
-            destination=folder/f'ntw16s{bits}.dll'
-            if bits!=width or case!='missing':shutil.copy2(source,destination)
-        changed=folder/f'ntw16s{width}.dll'
-        if case=='wrong-width':shutil.copy2(dll64 if width==32 else dll32,changed)
-        if case=='corrupt':changed.write_bytes(b'MZ truncated native image')
-        env=dict(os.environ,WIN16STYLE_CAPTURE_DIR=str(folder))
-        result=subprocess.run([str(exe),'--wait',str(target),'styled','two words','quote"inside',
-                               'trailing\\','','中文 αβ'],env=env,capture_output=True,timeout=20)
-        error=2 if case=='missing' else 193
-        if result.returncode!=6 or f'({error})'.encode() not in result.stderr:
-            raise SystemExit(f'CLI ROLLBACK FAIL width={width} {case} code={result.returncode} stderr={result.stderr!r}')
-        if list(folder.glob('target-*.txt')):raise SystemExit(f'Target entered after failed installation: {width} {case}')
-        print(f'CLI ROLLBACK PASS width={width} {case}, Windows error={error}, no target entry')
+styles=(('win16','ntw16s',dll32,dll64),
+        ('win2k','ntw2ks',launcher.with_name('ntw2ks32.dll'),launcher.with_name('ntw2ks64.dll')))
+for style,prefix,style32,style64 in styles:
+    for width,target in [(32,target32),(64,target64)]:
+        for case in ('missing','wrong-width','corrupt'):
+            folder=root/f'{style}-{width}-{case}'
+            folder.mkdir()
+            exe=folder/'run16s.exe'
+            shutil.copy2(launcher,exe)
+            for bits,source in [(32,dll32),(64,dll64)]:
+                shared=source.with_name(f'ntwshk{bits}.dll')
+                shutil.copy2(shared,folder/shared.name)
+            for bits,source in [(32,style32),(64,style64)]:
+                destination=folder/f'{prefix}{bits}.dll'
+                if bits!=width or case!='missing':shutil.copy2(source,destination)
+            changed=folder/f'{prefix}{width}.dll'
+            if case=='wrong-width':shutil.copy2(style64 if width==32 else style32,changed)
+            if case=='corrupt':changed.write_bytes(b'MZ truncated native image')
+            env=dict(os.environ,WIN16STYLE_CAPTURE_DIR=str(folder))
+            style_args=['--2k'] if style=='win2k' else []
+            result=subprocess.run([str(exe),*style_args,'--wait',str(target),'styled','two words','quote"inside',
+                                   'trailing\\','','中文 αβ'],env=env,capture_output=True,timeout=20)
+            error=2 if case=='missing' else 193
+            if result.returncode!=6 or f'({error})'.encode() not in result.stderr:
+                raise SystemExit(f'CLI ROLLBACK FAIL style={style} width={width} {case} code={result.returncode} stderr={result.stderr!r}')
+            if list(folder.glob('target-*.txt')):raise SystemExit(f'Target entered after failed installation: {style} {width} {case}')
+            label='WIN2K' if style=='win2k' else 'CLI'
+            print(f'{label} ROLLBACK PASS width={width} {case}, Windows error={error}, no target entry')
 
 # Public CLI boundary: actual Windows native programs consume stdin, produce
 # both output streams, and return a distinctive exit code. No product test flag.
