@@ -101,6 +101,30 @@ static DWORD WINAPI close_message(void *unused)
     return 1;
 }
 
+static BOOL CALLBACK find_common_window(HWND window,LPARAM unused)
+{
+    (void)unused;DWORD pid=0;WCHAR cls[32]={0};GetWindowThreadProcessId(window,&pid);
+    if(pid!=GetCurrentProcessId() || !IsWindowVisible(window) || !GetClassNameW(window,cls,ARRAYSIZE(cls)) || lstrcmpW(cls,L"#32770"))return TRUE;
+    TITLEBARINFOEX info={.cbSize=sizeof(info)};DWORD_PTR response=0;
+    BOOL sent=SendMessageTimeoutW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&info,SMTO_ABORTIFHUNG,1000,&response)!=0;
+    UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
+    if(sent && GetPropW(window,L"Win2kStyle.Frame") && info.rcTitleBar.bottom-info.rcTitleBar.top==MulDiv(19,(int)dpi,96))InterlockedExchange(&message_attached,1);
+    InterlockedExchange(&message_seen,1);
+    if(InterlockedCompareExchange(&message_accept,0,0)){
+        HWND button=GetDlgItem(window,IDOK);PostMessageW(window,WM_COMMAND,MAKEWPARAM(IDOK,BN_CLICKED),(LPARAM)button);
+        ULONGLONG deadline=GetTickCount64()+1500;
+        while(IsWindow(window) && GetTickCount64()<deadline)Sleep(25);
+        if(IsWindow(window)){PostMessageW(window,WM_CLOSE,0,0);Sleep(1000);if(IsWindow(window))ExitProcess(4);}
+    }else PostMessageW(window,WM_CLOSE,0,0);
+    return FALSE;
+}
+static DWORD WINAPI close_common(void *unused)
+{
+    (void)unused;ULONGLONG deadline=GetTickCount64()+3000;
+    do{EnumWindows(find_common_window,0);if(InterlockedCompareExchange(&message_seen,0,0))return 0;Sleep(25);}while(GetTickCount64()<deadline);
+    ExitProcess(4);return 1;
+}
+
 static UINT_PTR CALLBACK file_classic_hook(HWND window,UINT message,WPARAM wp,LPARAM lp)
 {(void)window;(void)message;(void)wp;(void)lp;return 0;}
 
@@ -267,6 +291,40 @@ int wmain(int argc,WCHAR **argv)
             DWORD wait=WaitForSingleObject(thread,1000);CloseHandle(thread);
             BOOL pass=wait==WAIT_OBJECT_0 && result==IDOK && InterlockedCompareExchange(&message_seen,0,0) && InterlockedCompareExchange(&message_attached,0,0);
             printf("WIN2K MESSAGE bits=%u api=%d attached=%ld result=%d\n",(unsigned)(sizeof(void*)*8),i,(long)InterlockedCompareExchange(&message_attached,0,0),result);
+            if(!pass)all=FALSE;
+        }
+        return all?0:3;
+    }
+    if(argc==2 && !lstrcmpW(argv[1],L"--color-accept")){
+        BOOL all=TRUE;InterlockedExchange(&message_accept,1);
+        for(int ansi=0;ansi<2;++ansi){
+            InterlockedExchange(&message_seen,0);InterlockedExchange(&message_attached,0);
+            HANDLE thread=CreateThread(NULL,0,close_common,NULL,0,NULL);if(!thread)return 2;
+            COLORREF colors[16]={0},expected=RGB(10,20,30);
+            CHOOSECOLORA a={.lStructSize=sizeof(a),.rgbResult=expected,.lpCustColors=colors,.Flags=CC_RGBINIT};
+            CHOOSECOLORW w={.lStructSize=sizeof(w),.rgbResult=expected,.lpCustColors=colors,.Flags=CC_RGBINIT};
+            BOOL result=ansi?ChooseColorA(&a):ChooseColorW(&w);DWORD error=CommDlgExtendedError();
+            DWORD wait=WaitForSingleObject(thread,1000);CloseHandle(thread);BOOL same=(ansi?a.rgbResult:w.rgbResult)==expected;
+            BOOL pass=wait==WAIT_OBJECT_0 && result && !error && same && InterlockedCompareExchange(&message_seen,0,0) && InterlockedCompareExchange(&message_attached,0,0);
+            printf("WIN2K COLOR bits=%u ansi=%d attached=%ld result=%d same=%d error=%lu\n",(unsigned)(sizeof(void*)*8),ansi,(long)InterlockedCompareExchange(&message_attached,0,0),result,same,(unsigned long)error);
+            if(!pass)all=FALSE;
+        }
+        InterlockedExchange(&message_accept,0);return all?0:3;
+    }
+    if(argc==2 && !lstrcmpW(argv[1],L"--color-font-frame")){
+        BOOL all=TRUE;
+        for(int ansi=0;ansi<2;++ansi)for(int font=0;font<2;++font){
+            InterlockedExchange(&message_seen,0);InterlockedExchange(&message_attached,0);
+            HANDLE thread=CreateThread(NULL,0,close_common,NULL,0,NULL);if(!thread)return 2;
+            COLORREF colors[16]={0};LOGFONTA log_a={0};LOGFONTW log_w={0};
+            CHOOSECOLORA ca={.lStructSize=sizeof(ca),.lpCustColors=colors,.Flags=CC_RGBINIT};
+            CHOOSECOLORW cw={.lStructSize=sizeof(cw),.lpCustColors=colors,.Flags=CC_RGBINIT};
+            CHOOSEFONTA fa={.lStructSize=sizeof(fa),.lpLogFont=&log_a,.Flags=CF_SCREENFONTS};
+            CHOOSEFONTW fw={.lStructSize=sizeof(fw),.lpLogFont=&log_w,.Flags=CF_SCREENFONTS};
+            BOOL result=ansi?(font?ChooseFontA(&fa):ChooseColorA(&ca)):(font?ChooseFontW(&fw):ChooseColorW(&cw));
+            DWORD error=CommDlgExtendedError();DWORD wait=WaitForSingleObject(thread,1000);CloseHandle(thread);
+            BOOL pass=wait==WAIT_OBJECT_0 && !result && error==0 && InterlockedCompareExchange(&message_seen,0,0) && InterlockedCompareExchange(&message_attached,0,0);
+            printf("WIN2K COMMON bits=%u ansi=%d font=%d attached=%ld cancelled=%d error=%lu\n",(unsigned)(sizeof(void*)*8),ansi,font,(long)InterlockedCompareExchange(&message_attached,0,0),!result,(unsigned long)error);
             if(!pass)all=FALSE;
         }
         return all?0:3;

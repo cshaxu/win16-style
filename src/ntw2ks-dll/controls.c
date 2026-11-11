@@ -89,8 +89,8 @@ FIND_HOOK(FindTextW,FINDREPLACEW)
 FIND_HOOK(ReplaceTextA,FINDREPLACEA)
 FIND_HOOK(ReplaceTextW,FINDREPLACEW)
 
-/* Older file dialogs can create their window without exported dialog calls. */
-#define FILE_HOOK(NAME,TYPE) \
+/* Common dialogs can create their window without exported dialog calls. */
+#define COMMON_MODAL_HOOK(NAME,TYPE) \
 static __typeof__(&NAME) real_##NAME; \
 static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
 { DWORD incoming=GetLastError();HHOOK hook=SetWindowsHookExW(WH_CALLWNDPROCRET,dialog_created,NULL,GetCurrentThreadId()); \
@@ -98,10 +98,12 @@ static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
   PROCESS_HOOK_UNWIND_BEGIN(scope,dialog_scope_end,&hook);SetLastError(incoming); \
   { result=real_##NAME(parameters);error=GetLastError(); } \
   PROCESS_HOOK_UNWIND_END(scope);SetLastError(error);return result; }
-FILE_HOOK(GetOpenFileNameA,OPENFILENAMEA)
-FILE_HOOK(GetOpenFileNameW,OPENFILENAMEW)
-FILE_HOOK(GetSaveFileNameA,OPENFILENAMEA)
-FILE_HOOK(GetSaveFileNameW,OPENFILENAMEW)
+COMMON_MODAL_HOOK(GetOpenFileNameA,OPENFILENAMEA)
+COMMON_MODAL_HOOK(GetOpenFileNameW,OPENFILENAMEW)
+COMMON_MODAL_HOOK(GetSaveFileNameA,OPENFILENAMEA)
+COMMON_MODAL_HOOK(GetSaveFileNameW,OPENFILENAMEW)
+COMMON_MODAL_HOOK(ChooseColorA,CHOOSECOLORA)
+COMMON_MODAL_HOOK(ChooseColorW,CHOOSECOLORW)
 
 DWORD ntw2ks_controls_attach(void)
 {
@@ -120,6 +122,7 @@ DWORD ntw2ks_controls_attach(void)
     ATTACH_DIALOG(ReplaceTextA);ATTACH_DIALOG(ReplaceTextW);
     ATTACH_DIALOG(GetOpenFileNameA);ATTACH_DIALOG(GetOpenFileNameW);
     ATTACH_DIALOG(GetSaveFileNameA);ATTACH_DIALOG(GetSaveFileNameW);
+    ATTACH_DIALOG(ChooseColorA);ATTACH_DIALOG(ChooseColorW);
 #undef ATTACH_DIALOG
     return error;
 }
