@@ -42,6 +42,8 @@ M0 T25 S7 按有限范围收口，见[记录](../history/M0-T25-S7-P13-closure.m
 
 S8 P5 按用户纠正全局选择、样式去重和最终审计的顺序，见[记录](../history/M0-T25-S8-P5-plan-correction.md)。
 
+S8 P6 审计现有全局流程及 Win2000 恢复缺口，见[记录](../history/M0-T25-S8-P6-global-path-audit.md)。
+
 S8 P1 冻结最终审计覆盖清单，见[记录](../history/M0-T25-S8-P1-audit-scope.md)。
 
 S8 P2 核对外框实现与证据，见[记录](../history/M0-T25-S8-P2-frame-audit.md)。
