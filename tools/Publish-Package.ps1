@@ -1,7 +1,8 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)][string]$Package,
-    [Parameter(Mandatory)][string]$TestResult,
+    [string]$TestResult,
+    [string]$BuildResult,
     [ValidatePattern('^[a-z0-9-]+$')][string]$RunName='publish',
     [ValidateRange(1,65535)][int]$Task=9,
     [switch]$ValidateOnly
@@ -11,9 +12,21 @@ $repo=Split-Path $PSScriptRoot -Parent
 . (Join-Path $PSScriptRoot 'Select-PackageCases.ps1')
 $names=@('demo.exe','ntw16s32.dll','ntw16s64.dll','ntw2ks32.dll','ntw2ks64.dll','ntwshk32.dll','ntwshk64.dll','run16s.exe')
 $Package=(Resolve-Path -LiteralPath $Package).Path
-$tested=Get-Content -LiteralPath $TestResult -Raw|ConvertFrom-Json
-if($tested.status -notin @('passed','passed-with-skips','passed-focused','passed-focused-with-skips')){throw 'Only a passed actual-package result may be published'}
-Assert-PackageCoverage -Result $tested
+if([bool]$TestResult -eq [bool]$BuildResult){throw 'Provide exactly one of BuildResult or TestResult'}
+if($BuildResult){
+    $build=Get-Content -LiteralPath $BuildResult -Raw|ConvertFrom-Json
+    if($build.status -ne 'passed' -or $build.exit_code -ne 0 -or
+       (Resolve-Path -LiteralPath $build.candidate).Path -ne $Package){throw 'A passed matching clean build is required'}
+    $buildRoot=Join-Path $build.clean_source 'build/.ninja'
+    & python (Join-Path $repo 'tools/check_package.py') $Package --source-root $build.clean_source --built-root $buildRoot --task $Task
+    if($LASTEXITCODE){throw 'Package/source/build identity gate failed'}
+    $hashes=[ordered]@{};foreach($name in $names){$hashes[$name]=(Get-FileHash -LiteralPath (Join-Path $Package $name) -Algorithm SHA256).Hash.ToLowerInvariant()}
+    $tested=@{status='pending-post-publication';skipped=@();sha256=$hashes}
+}else{
+    $tested=Get-Content -LiteralPath $TestResult -Raw|ConvertFrom-Json
+    if($tested.status -notin @('passed','passed-with-skips','passed-focused','passed-focused-with-skips')){throw 'Only a passed actual-package result may be published'}
+    Assert-PackageCoverage -Result $tested
+}
 $files=@(Get-ChildItem -LiteralPath $Package -Force)
 if(@(Compare-Object $names @($files.Name|Sort-Object)).Count){throw 'Expected exactly eight candidate files'}
 function Hash([string]$Path){(Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()}
@@ -32,7 +45,7 @@ foreach($destination in $destinations){
         if((Test-Path -LiteralPath $target) -and ((Get-Item -LiteralPath $target -Force).Attributes -band ([IO.FileAttributes]::ReparsePoint -bor [IO.FileAttributes]::Directory))){throw 'Destination is not a regular file'}
     }
 }
-if($ValidateOnly){'PUBLISH VALIDATION PASS: tested hashes, exact eight files, assets root and fixed O:\winnt';return}
+if($ValidateOnly){'PUBLISH VALIDATION PASS: package hashes, exact eight files, assets root and fixed O:\winnt';return}
 $scratch=Join-Path $repo "build/t$Task-package/$RunName"
 if(Test-Path -LiteralPath $scratch){throw 'Use a fresh publication run name; preserve prior backups'}
 New-Item -ItemType Directory -Path $scratch|Out-Null
@@ -55,8 +68,10 @@ try{
         $record.after=Hash $record.path
         if($record.after -ne $record.expected){throw "Published hash mismatch: $($record.path)"}
     }
-    @{status='passed';test_status=$tested.status;skipped=@($tested.skipped);tested_package=$Package;test_result=(Resolve-Path -LiteralPath $TestResult).Path;files=@($records)}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
-    'PUBLISH PASS: eight tested files identical at assets root and O:\winnt'
+    $evidence=if($TestResult){(Resolve-Path -LiteralPath $TestResult).Path}else{(Resolve-Path -LiteralPath $BuildResult).Path}
+    @{status='passed';test_status=$tested.status;skipped=@($tested.skipped);package=$Package;evidence=$evidence;
+      tested_package=$(if($TestResult){$Package}else{$null});test_result=$(if($TestResult){$evidence}else{$null});files=@($records)}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
+    'PUBLISH PASS: eight package files identical at assets root and O:\winnt'
 }catch{
     @{status='incomplete';error=$_.Exception.Message;files=@($records)}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $scratch 'result.json') -Encoding utf8
     throw

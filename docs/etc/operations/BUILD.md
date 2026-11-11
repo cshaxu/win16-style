@@ -62,7 +62,17 @@ RCDATA 3为四产物的项目LICENSE，RCDATA 4为两个DLL的完整MinHook/HDE 
 旧Detours源码/声明只保留在其历史交付中，当前产品不使用Detours。
 
 
-同包运行验证使用独立观察/控制器，将候选四文件作为实际参数；默认执行脚本登记的
+干净构建成功后先发布同批包至 assets 根目录和 `O:/winnt`：
+
+```powershell
+pwsh -NoProfile -File tools/Publish-Package.ps1 -Package build/t9-package/candidate-new/candidate -BuildResult build/t9-package/candidate-new/result.json -RunName publish-new
+```
+
+`-ValidateOnly`检查干净构建、包身份与目标路径，不写入；正式发布保存两处旧文件和
+摘要，失败记录为 incomplete。发布后从 `O:/winnt` 直接运行相关探针，并核对两处发布
+文件与包的摘要；下面的同包回归随后执行，失败不能标为通过或收口。
+
+同包运行验证使用独立观察/控制器，将候选包作为实际参数；默认执行脚本登记的
 全部标准包用例，包括真实交互式cmd、等待契约、双宽菜单取消和字体布局：
 
 ```powershell
@@ -71,7 +81,7 @@ pwsh -NoProfile -File tools/Test-Package.ps1 -RunName package-test-new -Package 
 
 传入`-FullIntegration`另外执行64字段对照、回滚、八对话框及六消息框；它仍不替代
 完整core矩阵或物理验收。工具记录每例参数/退出码/必要标记和四文件前后哈希，
-隐藏worker总预算1800秒，单例120/320/520秒。发布时只复制被测四文件，不换包。
+隐藏worker总预算1800秒，单例120/320/520秒。测试后确认发布文件与测试包摘要一致。
 
 每S可按活动包的改动范围显式传入例如`-Focus 'font-layout-x86,font-layout-x64'`。
 工具自动加入双位宽ABI、demo边界/双行为、首次启动和传播及工具自检；未知、重复、
@@ -85,17 +95,7 @@ pwsh -NoProfile -File tools/Test-Package.ps1 -RunName package-test-new -Package 
 run16s保持Console子系统，交互cmd自然等待启动器；控制台目标默认同步，GUI目标
 默认异步，显式--wait始终等待。GUI子系统试验已被用户否决且从未发布。
 
-用户指定的发布步骤：每S若有binary change，将已测试的同批四文件发布至assets根目录
-及O:/winnt/system32；系统目录原四文件备份至本S scratch，再逐项核对三处SHA。
-仅更新本项目四文件。占用时按EXECUTION核对实际PID/映像/启动时间，正常关闭、有限等待后可结束该已确认进程并继续替换；权限失败记录并停止，不扩大权限。无binary change记录摘要比较。
-部署入口（先完成同包测试，再运行）：
-
-```powershell
-pwsh -NoProfile -File tools/Publish-Package.ps1 -Package build/t9-package/candidate-new/candidate -TestResult build/t9-package/package-test-new/result.json -RunName publish-new
-```
-
-`-ValidateOnly`只检查被测哈希、四文件集合和目标路径，不写入；正式执行保存两处
-旧文件及before/after摘要到发布scratch，失败保留incomplete记录，不标为完成。
+占用时按EXECUTION核对实际PID/映像/启动时间，正常关闭、有限等待后可结束该已确认进程并继续替换；权限失败记录并停止，不扩大权限。无binary change记录摘要比较。
 当前交互验收使用原生探针，不用computer-use；私有剪贴板权限跳过和物理输入未覆盖
 如实单列，不再要求用户反复完成整套手工操作。
 

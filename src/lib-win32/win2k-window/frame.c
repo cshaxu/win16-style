@@ -465,7 +465,7 @@ static BOOL menu_keyboard_input(HWND window,UINT message,WPARAM wp,LPARAM lp)
 static BOOL button_input(HWND window,UINT message,WPARAM wp,LPARAM lp)
 {
     uintptr_t tracked=(uintptr_t)GetPropW(window,button_property);
-    if(message==WM_NCLBUTTONDOWN && !tracked){
+    if((message==WM_NCLBUTTONDOWN || message==WM_NCLBUTTONDBLCLK) && !tracked){
         if(IsIconic(window))return FALSE;
         unsigned index=wp==HTMINBUTTON?2:wp==HTMAXBUTTON?3:wp==HTHELP?4:wp==HTCLOSE?5:0;
         if(!index)return FALSE;

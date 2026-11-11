@@ -20,6 +20,15 @@ static POINT menu_hover_point;
 static DWORD app_pid;
 static HWND app_window;
 static volatile LONG app_popup_seen;
+static unsigned diagnostic_down,diagnostic_double,diagnostic_up;
+static LRESULT CALLBACK diagnostic_hook(int code,WPARAM wp,LPARAM lp)
+{
+    if(code>=0 && lp){const MSG *m=(const MSG *)lp;
+        if(m->message==WM_NCLBUTTONDOWN)++diagnostic_down;
+        else if(m->message==WM_NCLBUTTONDBLCLK)++diagnostic_double;
+        else if(m->message==WM_LBUTTONUP)++diagnostic_up;}
+    return CallNextHookEx(NULL,code,wp,lp);
+}
 static BOOL CALLBACK find_app_window(HWND window,LPARAM ignored)
 {
     (void)ignored;DWORD pid=0;GetWindowThreadProcessId(window,&pid);
@@ -918,7 +927,10 @@ int wmain(int argc,WCHAR **argv)
         SendMessageW(w,WM_MOUSEMOVE,0,MAKELPARAM(outside.x,outside.y));
         SendMessageW(w,WM_LBUTTONUP,0,MAKELPARAM(outside.x,outside.y));pump_messages();
         BOOL cancelled=captured && GetCapture()!=w && !IsZoomed(w);
-        BOOL maximized=cancelled && click_caption(w,3,HTMAXBUTTON) && IsZoomed(w);
+        SendMessageW(w,WM_NCLBUTTONDBLCLK,HTMAXBUTTON,MAKELPARAM(center.x,center.y));
+        BOOL double_captured=GetCapture()==w;POINT inside=center;ScreenToClient(w,&inside);
+        SendMessageW(w,WM_LBUTTONUP,0,MAKELPARAM(inside.x,inside.y));pump_messages();
+        BOOL maximized=cancelled && double_captured && IsZoomed(w);
         BOOL restored=maximized && click_caption(w,3,HTMAXBUTTON) && !IsZoomed(w);
         printf("WIN2K BUTTON CANCEL bits=%u captured=%d cancelled=%d max=%d restore=%d\n",
                (unsigned)(sizeof(void*)*8),captured,cancelled,maximized,restored);
@@ -940,6 +952,7 @@ int wmain(int argc,WCHAR **argv)
         return max && restore && min && close?0:3;
     }
     if(argc==2 && !lstrcmpW(argv[1],L"--physical")){
+        HHOOK diagnostic=SetWindowsHookExW(WH_GETMESSAGE,diagnostic_hook,NULL,GetCurrentThreadId());
         HWND w=CreateWindowExW(0,wc.lpszClassName,L"Caption mouse test",WS_OVERLAPPEDWINDOW,
                                 80,80,420,260,NULL,NULL,instance,NULL);
         if(!w)return 2;
@@ -954,6 +967,7 @@ int wmain(int argc,WCHAR **argv)
         WaitForSingleObject(worker,3000);CloseHandle(worker);DestroyWindow(w);
         printf("WIN2K PHYSICAL bits=%u foreground=%d input=%d pressed=%d capture=%d tracked=%llu hit=%lld gray=%u native=%u cancelled=%d max=%d restore=%d\n",
                (unsigned)(sizeof(void*)*8),probe.foreground,probe.input,probe.pressed,probe.capture,(unsigned long long)probe.tracked,(long long)probe.hit,probe.gray,probe.native,probe.cancelled,probe.maximized,probe.restored);
+        printf("WIN2K PHYSICAL TRACE down=%u double=%u up=%u\n",diagnostic_down,diagnostic_double,diagnostic_up);if(diagnostic)UnhookWindowsHookEx(diagnostic);
         return probe.foreground && probe.input && probe.pressed && probe.gray>80 && probe.native<20 && probe.cancelled && probe.maximized && probe.restored?0:3;
     }
     if(no_icon){
