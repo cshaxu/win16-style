@@ -60,6 +60,7 @@ try{
     $python=(Get-Command python.exe -ErrorAction Stop).Source
     $run=Join-Path $Package 'run16s.exe';$d32=Join-Path $Package 'ntw16s32.dll';$d64=Join-Path $Package 'ntw16s64.dll';$demo=Join-Path $Package 'demo.exe'
     $x86=Join-Path $BuildRoot 'x86';$x64=Join-Path $BuildRoot 'x64'
+    $dialogDriver=Join-Path $x64 'dialog-test-driver.exe'
     $pair=@($run,$d32,$d64,(Join-Path $x86 'launch-target.exe'),(Join-Path $x64 'launch-target.exe'))
     $tree=@($run,$d32,$d64,(Join-Path $x86 'propagate-target.exe'),(Join-Path $x64 'propagate-target.exe'))
     $cases=@(
@@ -77,6 +78,8 @@ try{
         (Case 'ntw2ks-control-native-x64' (Join-Path $x64 'ntw2ks-control-target.exe') @() @('NTW2KS CONTROL theme=active') 15),
         (Case 'ntw2ks-control-launch-x86' $run @('--2k','--wait',(Join-Path $x86 'ntw2ks-control-target.exe'),'--disabled') @('NTW2KS CONTROL theme=disabled') 20),
         (Case 'ntw2ks-control-launch-x64' $run @('--2k','--wait',(Join-Path $x64 'ntw2ks-control-target.exe'),'--disabled') @('NTW2KS CONTROL theme=disabled') 20),
+        (Case 'ntw2ks-frame-x86' $dialogDriver @('--direct',$run,'--2k','--wait',(Join-Path $x86 'ntw2ks-frame-target.exe')) @('WIN2K FRAME bits=32 attached=1','DIALOG_DRIVER exit=0') 20),
+        (Case 'ntw2ks-frame-x64' $dialogDriver @('--direct',$run,'--2k','--wait',(Join-Path $x64 'ntw2ks-frame-target.exe')) @('WIN2K FRAME bits=64 attached=1','DIALOG_DRIVER exit=0') 20),
         (Case 'global-e2e' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $x64 'global-e2e.exe'),$run,(Join-Path $x86 'global-e2e-target.exe'),(Join-Path $x64 'global-e2e-target.exe')) @('GLOBAL E2E PASS old=4 new=4 restore=8 post_stop_windows=4 post_stop_children=4 stopped=1','GLOBAL HIDDEN RESTORE PASS normal=4 shown=4','GLOBAL INPUT PASS native=2 active=8 stopped=8 dpi32=','dpi64=','DIALOG_DRIVER exit=0') 35),
         (Case 'global-parent-owned' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $scratch 'parent-owned/run16s.exe')) @('GLOBAL PARENT OWNER result=0 witness=0 gone=1','DIALOG_DRIVER exit=0') 20),
         (Case 'global-start-failure' (Join-Path $x64 'dialog-test-driver.exe') @('--direct',(Join-Path $scratch 'start-failure/run16s.exe')) @('run16s: global startup or shutdown failed (5)','GLOBAL START WAIT FAILURE result=10 injected=1 gone=1','DIALOG_DRIVER exit=0') 20),
@@ -193,7 +196,6 @@ try{
     }}}
     # Each native dialog target is owned by a timeout job and observes its own
     # UI thread. The driver runs the actual candidate launcher and both DLLs.
-    $dialogDriver=Join-Path $x64 'dialog-test-driver.exe'
     foreach($arch in @('x86','x64')) {
         $bits=if($arch -eq 'x86'){'32'}else{'64'}
         $scrollTarget=Join-Path (Join-Path $BuildRoot $arch) 'scroll-frame-target.exe'

@@ -1337,9 +1337,9 @@
       "path": "src/run16s-exe/main.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b98e53c9b34fe28a585ac0f33f60ff5e973efd4c9ddf77c1526f83c21cd0cf52",
+      "sha256": "4f4ef3076fddfbc10a86d068c1052196522e0703124857f0e7c0d64bada20bae",
       "disposition": "authored",
-      "review": "T21 S36 process launch source and launcher ownership; see fixed source record; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained; T23 S4 console and Terminal window adaptation and native tests; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction",
+      "review": "T21 S36 process launch source and launcher ownership; see fixed source record; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained; T23 S4 console and Terminal window adaptation and native tests; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction; T25 S3 Win2000 frame",
       "notice": "Project MIT; upstream ntvdm64 source identity recorded"
     },
     {
@@ -6548,9 +6548,9 @@
       "path": "src/ntw2ks-dll/controls.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c6241c817a962b809f6a9d73780f9af16f8e35b3980ab4c9cd5818ee4d166a29",
+      "sha256": "7fc29bb17c5b8118c12f01789410e65ac4eebc2d2cb8e176751422bb1853578d",
       "disposition": "authored",
-      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes",
+      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T25 S3 Win2000 frame",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
     },
     {
@@ -6696,6 +6696,60 @@
       "disposition": "authored",
       "review": "T25 S2 shared runtime test fixtures",
       "notice": "Project-authored test helper"
+    },
+    {
+      "path": "src/lib-win32/win2k-window/caption.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ab1ac337b04b6524b1872df279ec8715fd1decfa44247060f43e7f2019872ef9",
+      "disposition": "authored",
+      "review": "T25 S3 caption drawing primitive and test",
+      "notice": "Project-authored implementation; historical source observed only"
+    },
+    {
+      "path": "src/lib-win32/win2k-window/caption.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "752e5d019f9d12ae479a565533dda32101e0ed4ce3c7bb5f7e44067cfea30075",
+      "disposition": "authored",
+      "review": "T25 S3 caption drawing primitive and test",
+      "notice": "Project-authored implementation; historical source observed only"
+    },
+    {
+      "path": "tests/lib-win32/win2k-window/caption.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "1e0d598f958b0a5375367026685ad6f9953f64194a1a787e1660ef3e848048ee",
+      "disposition": "authored",
+      "review": "T25 S3 caption drawing primitive and test",
+      "notice": "Project-authored implementation; historical source observed only"
+    },
+    {
+      "path": "src/lib-win32/win2k-window/frame.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ea348ee0f0d4f1fc8c4b3886a670e7273244bd6e292b0815c4bbfba9966553c0",
+      "disposition": "authored",
+      "review": "T25 S3 native Win2000 frame and fixture; T25 S3 Win2000 frame",
+      "notice": "Project-authored C; no external source or artwork copied"
+    },
+    {
+      "path": "src/lib-win32/win2k-window/frame.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "63ad629007f2f3807415e4f863307b0c64e92c0db03fd5f5f17d8b1d6d7afc55",
+      "disposition": "authored",
+      "review": "T25 S3 native Win2000 frame and fixture",
+      "notice": "Project-authored C; no external source or artwork copied"
+    },
+    {
+      "path": "tests/ntw2ks-dll/frame_target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "4dde46be032a96061d18961aa83d964c0200c893aec5d0393eb7780db55a9e32",
+      "disposition": "authored",
+      "review": "T25 S3 native Win2000 frame and fixture",
+      "notice": "Project-authored C; no external source or artwork copied"
     }
   ]
 }

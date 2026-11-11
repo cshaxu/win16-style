@@ -84,7 +84,7 @@ int wmain(int argc,WCHAR **argv)
     }
     if(argc>first && !wcscmp(argv[first],L"--wait")){wait=TRUE;++first;raw=win32_process_next_argument(raw);}
     if(argc<=first || !wcscmp(argv[first],L"--help")){
-        fwprintf(argc<=first?stderr:stdout,L"Usage: run16s.exe [--16|--2k] [--wait] <application> [arguments]\n       run16s.exe --global\n       run16s.exe --app <AUMID>\n--2k is experimental: standard controls only; window frames are not yet implemented.\nConsole targets wait by default; --wait also waits for GUI targets.\n");
+        fwprintf(argc<=first?stderr:stdout,L"Usage: run16s.exe [--16|--2k] [--wait] <application> [arguments]\n       run16s.exe --global\n       run16s.exe --app <AUMID>\n--2k is experimental: Win32 frame and standard control coverage is partial.\nConsole targets wait by default; --wait also waits for GUI targets.\n");
         return argc<=first?2:0;
     }
     DWORD length=SearchPathW(NULL,argv[first],L".exe",NTWSHK_PATH_CAP,image,NULL);

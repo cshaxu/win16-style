@@ -2,6 +2,7 @@
 #include <uxtheme.h>
 #include <wchar.h>
 #include "lib-win32/process-hook/startup_hooks.h"
+#include "lib-win32/win2k-window/frame.h"
 
 static __typeof__(&CreateWindowExW) create_W;
 static __typeof__(&CreateWindowExA) create_A;
@@ -20,7 +21,7 @@ static void classic_control(HWND window,DWORD style)
 #define WINDOW_HOOK(S,T) \
 static HWND WINAPI hook_##S(DWORD ex,T cls,T text,DWORD style,int x,int y,int width,int height,HWND parent,HMENU menu,HINSTANCE instance,void *data) \
 { HWND result=create_##S(ex,cls,text,style,x,y,width,height,parent,menu,instance,data);DWORD error=GetLastError(); \
-  classic_control(result,style);SetLastError(error);return result; }
+  classic_control(result,style);if(result && !(style&WS_CHILD))win2k_frame_attach(result);SetLastError(error);return result; }
 WINDOW_HOOK(W,LPCWSTR)
 WINDOW_HOOK(A,LPCSTR)
 
