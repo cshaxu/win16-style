@@ -4,6 +4,7 @@
 #include <cderr.h>
 #include <oleacc.h>
 #include <objbase.h>
+#include <shellscalingapi.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <limits.h>
@@ -20,6 +21,17 @@ static POINT menu_hover_point;
 static DWORD app_pid;
 static HWND app_window;
 static volatile LONG app_popup_seen;
+static int expected_physical_border(HWND window,int pixels,BOOL horizontal)
+{
+    UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
+    UINT x=dpi,y=dpi;
+    DPI_AWARENESS_CONTEXT prior=SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+    if(prior){
+        if(FAILED(GetDpiForMonitor(MonitorFromWindow(window,MONITOR_DEFAULTTONEAREST),MDT_EFFECTIVE_DPI,&x,&y)) || !x || !y)x=y=dpi;
+        SetThreadDpiAwarenessContext(prior);
+    }
+    return max(1,MulDiv(pixels,(int)dpi,(int)(horizontal?x:y)));
+}
 static unsigned diagnostic_down,diagnostic_double,diagnostic_up;
 static LRESULT CALLBACK diagnostic_hook(int code,WPARAM wp,LPARAM lp)
 {
@@ -740,17 +752,31 @@ int wmain(int argc,WCHAR **argv)
                    has_system?system.rcBar.left-outer.left:-1,has_system?system.rcBar.top-outer.top:-1,
                    has_menu?bar.rcBar.left-outer.left:-1,has_menu?bar.rcBar.top-outer.top:-1,menu_spill);
             UINT dpi=GetDpiForWindow(w);if(!dpi)dpi=96;
-            int expected=MulDiv(resizable?4:3,(int)dpi,96);
-            BOOL corners=TRUE;
+            int expected_x=expected_physical_border(w,resizable?4:3,TRUE);
+            int expected_y=expected_physical_border(w,resizable?4:3,FALSE);
+            BOOL corners=TRUE,edge_pixels=TRUE;
             if(resizable){
                 const POINT points[]={{outer.left+1,outer.top+1},{outer.right-2,outer.top+1},
                                       {outer.left+1,outer.bottom-2},{outer.right-2,outer.bottom-2}};
                 const LRESULT hits[]={HTTOPLEFT,HTTOPRIGHT,HTBOTTOMLEFT,HTBOTTOMRIGHT};
                 for(unsigned i=0;i<ARRAYSIZE(points);++i)
                     if(SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(points[i].x,points[i].y))!=hits[i])corners=FALSE;
+                if(dpi==96){
+                    HDC dc=GetWindowDC(w);int width=outer.right-outer.left,height=outer.bottom-outer.top;
+                    if(!dc)edge_pixels=FALSE;
+                    else{
+                        COLORREF face=RGB(212,208,200),light=RGB(255,255,255),shadow=RGB(128,128,128),dark=RGB(0,0,0);
+                        edge_pixels=GetPixel(dc,0,height/2)==face && GetPixel(dc,1,height/2)==light &&
+                            GetPixel(dc,2,height/2)==face && GetPixel(dc,width/2,0)==face &&
+                            GetPixel(dc,width/2,1)==light && GetPixel(dc,width/2,2)==face &&
+                            GetPixel(dc,width-1,height/2)==dark && GetPixel(dc,width-2,height/2)==shadow &&
+                            GetPixel(dc,width/2,height-1)==dark && GetPixel(dc,width/2,height-2)==shadow;
+                        ReleaseDC(w,dc);
+                    }
+                }
             }
-            all=all && got && GetPropW(w,L"Win2kStyle.Frame")!=NULL && top==expected && left==expected && right==expected && bottom==expected &&
-                edge==(resizable?HTLEFT:HTBORDER) && corners && !menu_spill;
+            all=all && got && GetPropW(w,L"Win2kStyle.Frame")!=NULL && top==expected_y && left==expected_x && right==expected_x && bottom==expected_y &&
+                edge==(resizable?HTLEFT:HTBORDER) && corners && edge_pixels && !menu_spill;
             DestroyWindow(w);if(menu)DestroyMenu(menu);
         }
         return all?0:3;
@@ -1011,10 +1037,10 @@ int wmain(int argc,WCHAR **argv)
         SendMessageW(tool,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
         MENUBARINFO system={.cbSize=sizeof(system)};BOOL got=GetMenuBarInfo(tool,OBJID_SYSMENU,0,&system);
         UINT dpi=GetDpiForWindow(tool);if(!dpi)dpi=96;
-        int border=MulDiv(4,(int)dpi,96);
+        int border_x=expected_physical_border(tool,4,TRUE),border_y=expected_physical_border(tool,4,FALSE);
         POINT caption={info.rcTitleBar.left+5,(info.rcTitleBar.top+info.rcTitleBar.bottom)/2};
         BOOL no_icon=got && system.rcBar.right<=system.rcBar.left && system.rcBar.bottom<=system.rcBar.top;
-        BOOL geometry=info.rcTitleBar.left-outer.left==border && info.rcTitleBar.top-outer.top==border &&
+        BOOL geometry=info.rcTitleBar.left-outer.left==border_x && info.rcTitleBar.top-outer.top==border_y &&
             info.rcTitleBar.bottom-info.rcTitleBar.top==MulDiv(16,(int)dpi,96);
         BOOL hit=SendMessageW(tool,WM_NCHITTEST,0,MAKELPARAM(caption.x,caption.y))==HTCAPTION;
         printf("WIN2K TOOL RESIZE bits=%u no_icon=%d geometry=%d hit=%d\n",

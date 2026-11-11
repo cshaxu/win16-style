@@ -5,6 +5,7 @@
 #include <commctrl.h>
 #include <dwmapi.h>
 #include <oleacc.h>
+#include <shellscalingapi.h>
 #include <stdint.h>
 #include <stdatomic.h>
 #include <windowsx.h>
@@ -53,11 +54,22 @@ static BOOL compact_enabled(HWND window)
 static int frame_shift(HWND window,BOOL horizontal)
 {
     LONG_PTR style=GetWindowLongPtrW(window,GWL_STYLE);
-    if(!(style&WS_THICKFRAME) || (style&WS_CAPTION)!=WS_CAPTION || IsZoomed(window) || !compact_enabled(window))return 0;
+    if((style&WS_CAPTION)!=WS_CAPTION || IsZoomed(window) || !compact_enabled(window))return 0;
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
-    int metric=GetSystemMetricsForDpi(horizontal?SM_CXSIZEFRAME:SM_CYSIZEFRAME,dpi)+
-               GetSystemMetricsForDpi(SM_CXPADDEDBORDER,dpi);
-    return max(0,metric-MulDiv(4,(int)dpi,96));
+    UINT x=dpi,y=dpi;DWORD error=GetLastError();
+    DPI_AWARENESS_CONTEXT prior=SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+    if(prior){
+        HMONITOR monitor=MonitorFromWindow(window,MONITOR_DEFAULTTONEAREST);
+        if(FAILED(GetDpiForMonitor(monitor,MDT_EFFECTIVE_DPI,&x,&y)) || !x || !y)x=y=dpi;
+        SetThreadDpiAwarenessContext(prior);
+    }
+    SetLastError(error);
+    BOOL sizeable=(style&WS_THICKFRAME)!=0;
+    int metric=GetSystemMetricsForDpi(sizeable?(horizontal?SM_CXSIZEFRAME:SM_CYSIZEFRAME):
+        (horizontal?SM_CXFIXEDFRAME:SM_CYFIXEDFRAME),dpi);
+    if(sizeable)metric+=GetSystemMetricsForDpi(SM_CXPADDEDBORDER,dpi);
+    int target=max(1,MulDiv(sizeable?4:3,(int)dpi,(int)(horizontal?x:y)));
+    return max(0,metric-target);
 }
 
 static void offset_menu(HWND window,RECT *rect)
@@ -230,7 +242,7 @@ static void paint_button(HDC target,const RECT *rect,UINT state)
 
 static void paint_border(HDC dc,int width,int height,int thickness)
 {
-    static const COLORREF colors[]={RGB(255,255,255),RGB(0,0,0),RGB(212,208,200),RGB(128,128,128)};
+    static const COLORREF colors[]={RGB(212,208,200),RGB(0,0,0),RGB(255,255,255),RGB(128,128,128)};
     if(thickness>0 && width>2*thickness && height>2*thickness){
         HBRUSH face=CreateSolidBrush(RGB(212,208,200));
         if(face){
