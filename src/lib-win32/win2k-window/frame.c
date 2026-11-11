@@ -1,6 +1,7 @@
 #include "frame.h"
 #include "caption.h"
 #include "system_menu.h"
+#include "lib-win32/style-common/menu_hit.h"
 #include <commctrl.h>
 #include <dwmapi.h>
 #include <oleacc.h>
@@ -508,7 +509,7 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
     }
     if((message==WM_NCLBUTTONDOWN || message==WM_NCLBUTTONDBLCLK) && wp==HTBORDER && compact_enabled(window)){
         POINT point={GET_X_LPARAM(lp),GET_Y_LPARAM(lp)};
-        if(menu_bar_at(window,point)){
+        if(style_menu_route_click(message,wp,menu_bar_at(window,point))==HTMENU){
             if(message==WM_NCLBUTTONDOWN)menu_input(window,message,HTMENU,lp);
             SetLastError(incoming);return 0;
         }
@@ -569,9 +570,9 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
     BOOL preserve_hit=message==WM_NCHITTEST && (result==HTTRANSPARENT || result==HTERROR || result==HTNOWHERE || result==HTCLIENT);
     if(message==WM_NCHITTEST && !preserve_hit && compact_enabled(window)){
         RECT client;POINT point={GET_X_LPARAM(lp),GET_Y_LPARAM(lp)};
-        if(menu_bar_at(window,point))result=HTBORDER;
+        if(menu_bar_at(window,point))result=style_menu_neutral_hit(HTMENU);
         else if(GetClientRect(window,&client) && ScreenToClient(window,&point) && PtInRect(&client,point))result=HTCLIENT;
-        else if(result==HTMENU)result=HTBORDER;
+        else result=style_menu_neutral_hit(result);
     }
     if(message==WM_NCHITTEST && !preserve_hit && !IsIconic(window) &&
        (GetWindowLongPtrW(window,GWL_STYLE)&WS_CAPTION)==WS_CAPTION){

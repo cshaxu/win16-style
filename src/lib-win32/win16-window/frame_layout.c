@@ -1,4 +1,5 @@
 #include "frame_layout.h"
+#include "lib-win32/style-common/menu_hit.h"
 #include <dwmapi.h>
 #include "menu_bar.h"
 #include <windowsx.h>
@@ -80,7 +81,7 @@ BOOL win16_control_frame_hit_test(HWND w,const win16_style_layout *l,LPARAM lp,L
         *result=HTVSCROLL;return TRUE;}
     if(!GetWindowRect(w,&r))return FALSE;
     point.x=screen.x-r.left;point.y=screen.y-r.top;
-    *result=PtInRect(&l->menu,point)?HTBORDER:win16_style_hit(l,point);
+    *result=style_menu_neutral_hit(PtInRect(&l->menu,point)?HTMENU:win16_style_hit(l,point));
     return TRUE;
 }
 

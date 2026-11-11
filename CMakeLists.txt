@@ -41,7 +41,7 @@ add_library(win16-window STATIC
   src/lib-win32/win16-window/frame_input.c src/lib-win32/win16-window/frame_lifecycle.c
   src/lib-win32/win16-window/frame_message.c src/lib-win32/win16-window/frame_font.c
   src/lib-win32/win16-window/frame_state.c)
-target_include_directories(win16-window PUBLIC src/lib-win32/win16-window)
+target_include_directories(win16-window PUBLIC src/lib-win32/win16-window PRIVATE src)
 target_compile_definitions(win16-window PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(win16-window PUBLIC win16-common user32 gdi32 comctl32 uxtheme)
 add_library(win16-window-uwp STATIC
@@ -243,6 +243,9 @@ if(BUILD_TESTING)
   target_link_options(ntwshk-hook-target PRIVATE -municode)
   add_executable(core-ntw2ks-button tests/ntw2ks-dll/button.c)
   add_executable(core-win2k-caption tests/lib-win32/win2k-window/caption.c)
+  add_executable(core-style-menu-hit tests/lib-win32/style-common/menu_hit.c)
+  target_include_directories(core-style-menu-hit PRIVATE src)
+  add_test(NAME core/style-menu-hit COMMAND $<TARGET_FILE:core-style-menu-hit>)
   target_link_libraries(core-win2k-caption PRIVATE win2k-window)
   add_test(NAME core/win2k-caption COMMAND $<TARGET_FILE:core-win2k-caption>)
   add_executable(ntw2ks-frame-target tests/ntw2ks-dll/frame_target.c tests/ntw2ks-dll/frame_target.rc)

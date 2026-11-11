@@ -4057,7 +4057,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "1dfdd7f64523217c7c17a379f82e26829b93036937e486e74e607609022fdf7f",
+      "sha256": "11b33932c082d59af785e428092b70b01caeb1a4404aca1f7e94c0b87a63812f",
       "review": "T21 S22 extraction of window frame geometry with caller-owned state"
     },
     {
@@ -5306,7 +5306,7 @@
       "path": "src/lib-win32/win16-window/frame_dispatch.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e5619d5db1640fd964bcf179bdab5da3291a5c573e0a55e3c20b614c866a106c",
+      "sha256": "4261a2f1ccb278c519411d1ed67c72db8093d99a02cbcfe229ced434579f50e6",
       "disposition": "authored",
       "review": "T21 S24 extracted frame message dispatch from project-authored src/ntw16s-dll/win16_style.c",
       "notice": "Project-authored source; existing resource and provenance notices retained"
@@ -6728,7 +6728,7 @@
       "path": "src/lib-win32/win2k-window/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "78ea43b5196b6ab7928b408de46b926d93af02eccb89dfc76a74394fcb2f0b8f",
+      "sha256": "fea2735e9de2ea0e3dd578c44cc597890bed5ebf93c63e241eef1173f8dbdde7",
       "disposition": "authored",
       "review": "T25 S3 native Win2000 frame and fixture; T25 S3 Win2000 frame; T25 S4 caption state and icon; T25 S4 original caption region and state",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -6776,6 +6776,24 @@
       "sha256": "8608f209175f54efc7921b19a689eb435e8edd5a3825a7170496cee1c0207e8c",
       "disposition": "authored",
       "review": "T25 S4 Win2000 system menu presentation candidate",
+      "notice": "Project-authored C; no external source or artwork copied"
+    },
+    {
+      "path": "src/lib-win32/style-common/menu_hit.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "54a8bbc4106eadb3c7da7dec105ebf1f2ac6cbe93909d7a8627dd49eb531ee2c",
+      "disposition": "authored",
+      "review": "T25 S4 shared custom menu input protocol and test",
+      "notice": "Project-authored C; no external source or artwork copied"
+    },
+    {
+      "path": "tests/lib-win32/style-common/menu_hit.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "6b412ea700bcc8399e725037cfac81cecda0d15bae5d6d87cc603cabb117d0e9",
+      "disposition": "authored",
+      "review": "T25 S4 shared custom menu input protocol and test",
       "notice": "Project-authored C; no external source or artwork copied"
     }
   ]

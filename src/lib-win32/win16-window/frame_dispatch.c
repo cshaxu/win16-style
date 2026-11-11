@@ -1,5 +1,6 @@
 #include "frame_dispatch.h"
 #include "frame_layout.h"
+#include "lib-win32/style-common/menu_hit.h"
 #include <commctrl.h>
 #include <windowsx.h>
 static BOOL queue_repaint(HWND,style_window *);
@@ -86,7 +87,7 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
      * measured menu rectangle; never alter the application's HMENU. */
     if((msg==WM_NCLBUTTONDOWN || msg==WM_NCLBUTTONDBLCLK) && wp==HTBORDER && v->input->layout(w,s,&l)){
         GetWindowRect(w,&r);point.x=GET_X_LPARAM(lp)-r.left;point.y=GET_Y_LPARAM(lp)-r.top;
-        if(PtInRect(&l.menu,point))wp=HTMENU;
+        wp=style_menu_route_click(msg,wp,PtInRect(&l.menu,point));
     }
     switch(msg){
     case WM_GETICON:
