@@ -62,6 +62,8 @@ S7 P10 在当前桌面验证双位宽真实鼠标标题按钮，见[记录](../h
 
 S7 P11 在当前桌面验证双位宽真实鼠标移动和拉伸，见[记录](../history/M0-T25-S7-P11-physical-frame-drag.md)。
 
+S7 P12 验证系统版本信息窗口的外框，见[记录](../history/M0-T25-S7-P12-winver-window.md)。
+
 S6 P1 验证双位宽连续尺寸变化的几何与有限采样，见[记录](../history/M0-T25-S6-P1-resize-cycle.md)。
 
 S6 P2 验证重复最大化和还原，见[记录](../history/M0-T25-S6-P2-zoom-cycle.md)。
