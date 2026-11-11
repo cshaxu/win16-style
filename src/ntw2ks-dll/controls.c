@@ -89,6 +89,20 @@ FIND_HOOK(FindTextW,FINDREPLACEW)
 FIND_HOOK(ReplaceTextA,FINDREPLACEA)
 FIND_HOOK(ReplaceTextW,FINDREPLACEW)
 
+/* Older file dialogs can create their window without exported dialog calls. */
+#define FILE_HOOK(NAME,TYPE) \
+static __typeof__(&NAME) real_##NAME; \
+static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
+{ DWORD incoming=GetLastError();HHOOK hook=SetWindowsHookExW(WH_CALLWNDPROCRET,dialog_created,NULL,GetCurrentThreadId()); \
+  process_hook_unwind_scope scope;BOOL result;DWORD error; \
+  PROCESS_HOOK_UNWIND_BEGIN(scope,dialog_scope_end,&hook);SetLastError(incoming); \
+  { result=real_##NAME(parameters);error=GetLastError(); } \
+  PROCESS_HOOK_UNWIND_END(scope);SetLastError(error);return result; }
+FILE_HOOK(GetOpenFileNameA,OPENFILENAMEA)
+FILE_HOOK(GetOpenFileNameW,OPENFILENAMEW)
+FILE_HOOK(GetSaveFileNameA,OPENFILENAMEA)
+FILE_HOOK(GetSaveFileNameW,OPENFILENAMEW)
+
 DWORD ntw2ks_controls_attach(void)
 {
     create_W=CreateWindowExW;create_A=CreateWindowExA;
@@ -104,6 +118,8 @@ DWORD ntw2ks_controls_attach(void)
     ATTACH_DIALOG(MessageBoxIndirectA);ATTACH_DIALOG(MessageBoxIndirectW);
     ATTACH_DIALOG(FindTextA);ATTACH_DIALOG(FindTextW);
     ATTACH_DIALOG(ReplaceTextA);ATTACH_DIALOG(ReplaceTextW);
+    ATTACH_DIALOG(GetOpenFileNameA);ATTACH_DIALOG(GetOpenFileNameW);
+    ATTACH_DIALOG(GetSaveFileNameA);ATTACH_DIALOG(GetSaveFileNameW);
 #undef ATTACH_DIALOG
     return error;
 }

@@ -94,6 +94,9 @@ static DWORD WINAPI close_message(void *unused)
     return 1;
 }
 
+static UINT_PTR CALLBACK file_classic_hook(HWND window,UINT message,WPARAM wp,LPARAM lp)
+{(void)window;(void)message;(void)wp;(void)lp;return 0;}
+
 static UINT find_message;static unsigned find_terms;
 static LRESULT CALLBACK find_owner_proc(HWND window,UINT message,WPARAM wp,LPARAM lp)
 {
@@ -257,6 +260,22 @@ int wmain(int argc,WCHAR **argv)
             DWORD wait=WaitForSingleObject(thread,1000);CloseHandle(thread);
             BOOL pass=wait==WAIT_OBJECT_0 && result==IDOK && InterlockedCompareExchange(&message_seen,0,0) && InterlockedCompareExchange(&message_attached,0,0);
             printf("WIN2K MESSAGE bits=%u api=%d attached=%ld result=%d\n",(unsigned)(sizeof(void*)*8),i,(long)InterlockedCompareExchange(&message_attached,0,0),result);
+            if(!pass)all=FALSE;
+        }
+        return all?0:3;
+    }
+    if(argc==2 && !lstrcmpW(argv[1],L"--file-frame")){
+        BOOL all=TRUE;
+        for(int ansi=0;ansi<2;++ansi)for(int save=0;save<2;++save)for(int explorer=0;explorer<2;++explorer){
+            InterlockedExchange(&message_seen,0);InterlockedExchange(&message_attached,0);
+            HANDLE thread=CreateThread(NULL,0,close_message,NULL,0,NULL);if(!thread)return 2;
+            char file_a[260]={0};WCHAR file_w[260]={0};DWORD flags=OFN_NOCHANGEDIR|(explorer?OFN_EXPLORER:OFN_ENABLEHOOK);
+            OPENFILENAMEA a={.lStructSize=sizeof(a),.lpstrFilter="All\0*.*\0\0",.lpstrFile=file_a,.nMaxFile=260,.lpstrTitle="Win2kMessageFixture",.Flags=flags,.lpfnHook=file_classic_hook};
+            OPENFILENAMEW w={.lStructSize=sizeof(w),.lpstrFilter=L"All\0*.*\0\0",.lpstrFile=file_w,.nMaxFile=260,.lpstrTitle=L"Win2kMessageFixture",.Flags=flags,.lpfnHook=file_classic_hook};
+            BOOL result=ansi?(save?GetSaveFileNameA(&a):GetOpenFileNameA(&a)):(save?GetSaveFileNameW(&w):GetOpenFileNameW(&w));
+            DWORD error=CommDlgExtendedError();DWORD wait=WaitForSingleObject(thread,1000);CloseHandle(thread);
+            BOOL pass=wait==WAIT_OBJECT_0 && !result && error==0 && InterlockedCompareExchange(&message_seen,0,0) && InterlockedCompareExchange(&message_attached,0,0);
+            printf("WIN2K FILE bits=%u ansi=%d save=%d explorer=%d attached=%ld cancelled=%d error=%lu\n",(unsigned)(sizeof(void*)*8),ansi,save,explorer,(long)InterlockedCompareExchange(&message_attached,0,0),!result,(unsigned long)error);
             if(!pass)all=FALSE;
         }
         return all?0:3;
