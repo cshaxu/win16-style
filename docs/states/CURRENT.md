@@ -129,3 +129,5 @@ S5 P1 验证系统菜单基线，记录真实键盘超时及用户禁止隔离�
 S5 P2 在当前桌面验证程序键盘消息驱动的系统菜单选中绘制，见[记录](../history/M0-T25-S5-P2-menu-keyboard.md)。
 
 S5 P3 排除用简单投递 Escape 消息替代真实键盘的无效对照，见[记录](../history/M0-T25-S5-P3-escape-message-control.md)。
+
+S5 P4 记录当前桌面原生按键探针的无效负对照，见[记录](../history/M0-T25-S5-P4-escape-input-control.md)。
