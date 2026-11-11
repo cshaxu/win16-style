@@ -35,7 +35,7 @@ M0 T25 S3 已完成首版 Win2000 普通 Win32 窗口接入、发布与远端复
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
 - Last allocated T25 S: 4
-- Last verified remote delivery: M0 T25 S4 P46，`0b41ec72acdf55ab8f376c6125cdb22c07eaac39`。
+- Last verified remote delivery: M0 T25 S4 P47，`53d15dcde358f316b2f0ec58a84291e1e458f501`。
 - Open task: M0 T25 S4；Win2000 普通 Win32 标题与外框绘制。
 
 ## Technical Baseline
@@ -73,3 +73,5 @@ S4 P45 修正私有桌面系统菜单首次实时选中色，真实输入和完�
 S4 P46 验证程序触发的系统菜单选中项切换，见[记录](../history/M0-T25-S4-P46-menu-selection.md)。
 
 S4 P47 验证带横纵滚动条窗口的外框位置与命中，见[记录](../history/M0-T25-S4-P47-scroll-geometry.md)。
+
+S4 P48 验证标题按钮消息路径的拖离取消及后续最大化，见[记录](../history/M0-T25-S4-P48-button-cancel.md)。

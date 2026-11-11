@@ -866,6 +866,24 @@ int wmain(int argc,WCHAR **argv)
         printf("WIN2K HELP bits=%u visible=%d hit=%d clicked=%d commands=%u\n",(unsigned)(sizeof(void*)*8),visible,hit,clicked,help_commands);
         DestroyWindow(w);return visible && hit && clicked?0:3;
     }
+    if(argc==2 && !lstrcmpW(argv[1],L"--button-cancel")){
+        HWND w=CreateWindowExW(0,wc.lpszClassName,L"Caption cancellation",WS_OVERLAPPEDWINDOW,
+                                80,80,420,260,NULL,NULL,instance,NULL);
+        if(!w)return 2;
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);
+        TITLEBARINFOEX info={.cbSize=sizeof(info)};SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
+        RECT button=info.rgrect[3];POINT center={(button.left+button.right)/2,(button.top+button.bottom)/2};
+        SendMessageW(w,WM_NCLBUTTONDOWN,HTMAXBUTTON,MAKELPARAM(center.x,center.y));
+        BOOL captured=GetCapture()==w;POINT outside={10,100};
+        SendMessageW(w,WM_MOUSEMOVE,0,MAKELPARAM(outside.x,outside.y));
+        SendMessageW(w,WM_LBUTTONUP,0,MAKELPARAM(outside.x,outside.y));pump_messages();
+        BOOL cancelled=captured && GetCapture()!=w && !IsZoomed(w);
+        BOOL maximized=cancelled && click_caption(w,3,HTMAXBUTTON) && IsZoomed(w);
+        BOOL restored=maximized && click_caption(w,3,HTMAXBUTTON) && !IsZoomed(w);
+        printf("WIN2K BUTTON CANCEL bits=%u captured=%d cancelled=%d max=%d restore=%d\n",
+               (unsigned)(sizeof(void*)*8),captured,cancelled,maximized,restored);
+        DestroyWindow(w);return captured && cancelled && maximized && restored?0:3;
+    }
     if(argc==2 && !lstrcmpW(argv[1],L"--buttons")){
         HWND w=CreateWindowExW(0,wc.lpszClassName,L"Caption commands",WS_OVERLAPPEDWINDOW,
                                 80,80,420,260,NULL,NULL,instance,NULL);
