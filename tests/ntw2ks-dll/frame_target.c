@@ -872,6 +872,30 @@ int wmain(int argc,WCHAR **argv)
                horz.rcScrollBar.left-outer.left,horz.rcScrollBar.top-outer.top,horz.rcScrollBar.right-outer.left,horz.rcScrollBar.bottom-outer.top);
         DestroyWindow(w);return separate && hits?0:3;
     }
+    if(argc==2 && !lstrcmpW(argv[1],L"--resize-cycle")){
+        HMENU menu=CreateMenu(),popup=CreatePopupMenu();if(!menu || !popup)return 2;
+        AppendMenuW(popup,MF_STRING,101,L"Item");AppendMenuW(menu,MF_POPUP,(UINT_PTR)popup,L"File");
+        HWND w=CreateWindowExW(0,wc.lpszClassName,L"Resize cycles",WS_OVERLAPPEDWINDOW,
+                                80,80,420,260,NULL,menu,instance,NULL);
+        if(!w){DestroyMenu(menu);return 2;}
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);unsigned geometry=0,caption=0,client=0,hit=0,menu_clean=0;
+        for(int i=0;i<24;++i){int width=320+(i%6)*29,height=220+(i%5)*23;
+            if(!SetWindowPos(w,NULL,80+i,80+i,width,height,SWP_NOZORDER|SWP_NOACTIVATE))break;
+            RedrawWindow(w,NULL,NULL,RDW_FRAME|RDW_INVALIDATE|RDW_ERASE|RDW_ALLCHILDREN|RDW_UPDATENOW);
+            RECT outer={0},area={0};POINT origin={0,0};
+            BOOL measured=GetWindowRect(w,&outer) && GetClientRect(w,&area) && ClientToScreen(w,&origin);
+            if(!measured || area.right<=20 || area.bottom<=20)break;
+            if(outer.right-outer.left==width && outer.bottom-outer.top==height)++geometry;
+            if(classic_caption_pixel(caption_pixel(w)))++caption;
+            HDC dc=GetDC(w);if(dc){if(GetPixel(dc,area.right-10,area.bottom-10)==GetSysColor(COLOR_WINDOW))++client;ReleaseDC(w,dc);}
+            TITLEBARINFOEX title={.cbSize=sizeof(title)};SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&title);
+            dc=GetWindowDC(w);if(dc){if(GetPixel(dc,origin.x-outer.left+2,title.rcTitleBar.bottom-outer.top+1)==RGB(212,208,200))++menu_clean;ReleaseDC(w,dc);}
+            if(SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(outer.left+1,(outer.top+outer.bottom)/2))==HTLEFT)++hit;
+        }
+        printf("WIN2K RESIZE CYCLE bits=%u dpi=%u geometry=%u caption=%u client=%u menu=%u hit=%u\n",
+               (unsigned)(sizeof(void*)*8),GetDpiForWindow(w),geometry,caption,client,menu_clean,hit);
+        DestroyWindow(w);DestroyMenu(menu);return geometry==24 && caption==24 && client==24 && menu_clean==24 && hit==24?0:3;
+    }
     if(argc==4 && !lstrcmpW(argv[1],L"--frame-bounds")){
         BOOL all=TRUE;
         int resizable=argv[2][0]-L'0',with_menu=argv[3][0]-L'0';
