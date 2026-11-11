@@ -2,28 +2,28 @@
 
 ## Current Work
 
-M0 T25 S4 已按有限技术范围完成，详见[收口记录](../history/M0-T25-S4-P73-closure.md)；用户视觉验收和未覆盖项保留至 T25 后续工作。T25 保持开放，现进入 S5 标题按钮及系统菜单。
+M0 T25 S5 按已验证的有限技术范围收口，详见[收口记录](../history/M0-T25-S5-P17-closure.md)；真实 Alt+Space/Escape、原有首次超时及完整包矩阵仍未证明，转交 T25 后续验证与最终审计，不记通过。T25 保持开放，现进入 S6 窗口尺寸与交互。
 
-## M0 T25 S5 Packet
+## M0 T25 S6 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | New；T25 内下一 S。 |
-| Admission And Approval | 用户要求实现普通 Win32 的 Windows 2000 窗口外框并授权自行规划 S；S5 属于原定序列。 |
-| Objective | 完善标题按钮和系统菜单的外观、可用状态、鼠标与键盘输入和系统命令。 |
+| Admission And Approval | 用户要求继续完成普通 Win32 的 Windows 2000 外框并授权自行规划 S；S6 属于原定序列。 |
+| Objective | 检查和完善移动、缩放、最大化、还原、焦点与 DPI 变化期间的外框、标题及菜单持续重绘。 |
 | Non-goals | 不声称 UWP、WinUI、应用自绘客户区、控件内部或 Win2000 全局模式已支持。 |
-| Reference Baseline | S4 P73 技术收口；P70 八文件发布及测试，用户视觉验收待 T25 最终验收。 |
-| Candidate Proposal | docs/proposals/windows-2000-classic.md 中用户收窄后的 S5。 |
-| Files And ABI Surface | win2k-window 标题按钮及系统菜单、对应测试和包测试；不改变公开 ABI。 |
+| Reference Baseline | S5 P9 发布包及 P17 有限技术收口；真实键盘、完整包和视觉验收未完成。 |
+| Candidate Proposal | docs/proposals/windows-2000-classic.md 用户收窄后的 S6。 |
+| Files And ABI Surface | win2k-window 窗口布局、绘制和交互，以及对应测试、包和文档；不预设公开 ABI 变化。 |
 | Applicable Rules | M0；纯 C17、MinGW GCC、Ninja、ccache；八文件同批交付。 |
-| Verification | 双位宽检查关闭、最小化、最大化/还原、帮助、禁用状态，系统菜单鼠标/键盘、命令和取消；回归 Win16 与普通启动。 |
-| Expected Markers | 分别报告实际绘制、命中、真实输入、命令及菜单清理；与原版可取得证据对照。 |
-| Asset Needs | 保留现有图形资源和来源声明，不复制未获许可的原版资源。 |
-| Reporting Requirements | 分开说明程序消息、真实键鼠、实际应用、未覆盖的 DPI 和用户视觉验收。 |
-| Stop Conditions | 用户要求不使用隔离桌面；不改变系统安全设置、目标文件或兄弟仓库，环境限制如实记录。 |
-| Exit Criteria | 完成范围内状态和交互验证，构建、必要发布、测试、提交推送与远端复核；限制不得算通过。 |
+| Verification | 双位宽固定/可缩放/工具窗口；移动、调整尺寸、最大化还原、焦点/DPI 消息及实际应用；回归 Win16 和普通启动。 |
+| Expected Markers | 分别观察命中、几何、实际绘制、客户区语义、持续变化与清理；可用时对照原版。 |
+| Asset Needs | 保留图形资源与来源声明；不复制未获许可的原系统资源。 |
+| Reporting Requirements | 区分程序消息、真实输入、实际程序、各 DPI、用户视觉验收与未覆盖范围。 |
+| Stop Conditions | 不创建或切换隔离桌面；不改变系统安全设置、目标文件或兄弟仓库。 |
+| Exit Criteria | 已准入范围实现及实际验证，按规范构建、先发布后测试、提交推送与远端复核；受限项不计通过并交后续审计。 |
 | Original Owner Request | 实现普通 Win32 程序的 Windows 2000 经典窗口样式。 |
-| Similar-Issue Sweep | 比较普通和工具窗口、禁用和动态变化状态、菜单打开取消、Alt+Space 及焦点切换。 |
+| Similar-Issue Sweep | 对照普通/工具窗口、菜单、最大化/还原、真实应用及 Win16 路径，关注重复绘制和客户区残影。 |
 
 ## Identifier State
 
@@ -34,9 +34,9 @@ M0 T25 S4 已按有限技术范围完成，详见[收口记录](../history/M0-T2
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
-- Last allocated T25 S: 5
+- Last allocated T25 S: 6
 - Last verified remote delivery: M0 T25 S4 P73，`826503cf6fb16f2da7fad130a829118d65a6a4c3`。
-- Open task: M0 T25 S5；Win2000 标题按钮与系统菜单。
+- Open task: M0 T25 S6；Win2000 窗口尺寸与交互。
 
 ## Technical Baseline
 
@@ -153,3 +153,5 @@ S5 P13 检查 Solitaire 关于对话框与失活主窗口，见[记录](../histo
 S5 P14 验证标题按钮捕获丢失及取消，见[记录](../history/M0-T25-S5-P14-button-capture-loss.md)。
 
 S5 P15 区分应用菜单切换与真实 Escape，见[记录](../history/M0-T25-S5-P15-menu-switch.md)。
+
+S5 P17 按有限技术范围收口并准入 S6，见[记录](../history/M0-T25-S5-P17-closure.md)。
