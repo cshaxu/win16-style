@@ -56,6 +56,8 @@ S7 P7 验证 64 位无菜单实际程序，见[记录](../history/M0-T25-S7-P7-c
 
 S7 P8 验证实际 Delphi 程序的窗口外框，见[记录](../history/M0-T25-S7-P8-delphi-window.md)。
 
+S7 P9 验证跨位宽父子窗口实际附着与标题绘制，见[记录](../history/M0-T25-S7-P9-propagated-frames.md)。
+
 S6 P1 验证双位宽连续尺寸变化的几何与有限采样，见[记录](../history/M0-T25-S6-P1-resize-cycle.md)。
 
 S6 P2 验证重复最大化和还原，见[记录](../history/M0-T25-S6-P2-zoom-cycle.md)。

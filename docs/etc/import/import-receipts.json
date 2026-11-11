@@ -6602,7 +6602,7 @@
       "path": "tests/ntw2ks-dll/staging.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f9eb078ec213bedefe38ea793d0810a8e892f2d76038e27331713bde61d2d32f",
+      "sha256": "892e84ac6440431bfc85596573588204357a1d7a0c7038b4b755162d6f2f3f13",
       "disposition": "authored",
       "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T25 S2 shared runtime extraction",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
@@ -6611,7 +6611,7 @@
       "path": "tests/ntw2ks-dll/staging_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "934138ebaf51d55bb231864e91cfd76520437567851a7216837ef3474a303c2a",
+      "sha256": "b7e5b43393497caea71333c52e8b5ed73f55b92e225d28955695b67cc1e00ffb",
       "disposition": "authored",
       "review": "M0 T25 S1: experimental Windows 2000 integration and native probes",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"

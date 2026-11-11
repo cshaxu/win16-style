@@ -76,6 +76,10 @@ try{
         (Case 'ntw2ks-propagate-x86-x64' (Join-Path $x64 'ntw2ks-staging.exe') @((Join-Path $x86 'ntw2ks-staging-target.exe'),$Package,(Join-Path $x64 'ntw2ks-staging-target.exe')) @('NTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=1') 25),
         (Case 'ntw2ks-propagate-x64-x86' (Join-Path $x64 'ntw2ks-staging.exe') @((Join-Path $x64 'ntw2ks-staging-target.exe'),$Package,(Join-Path $x86 'ntw2ks-staging-target.exe')) @('NTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=1') 25),
         (Case 'ntw2ks-propagate-x64-x64' (Join-Path $x64 'ntw2ks-staging.exe') @((Join-Path $x64 'ntw2ks-staging-target.exe'),$Package,(Join-Path $x64 'ntw2ks-staging-target.exe')) @('NTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=1') 25),
+        (Case 'ntw2ks-propagate-frame-x86-x86' (Join-Path $x64 'ntw2ks-staging.exe') @((Join-Path $x86 'ntw2ks-staging-target.exe'),$Package,(Join-Path $x86 'ntw2ks-staging-target.exe'),'--frame') @('WIN2K PROPAGATION FRAME bits=32 role=parent attached=1 geometry=1 painted=1 destroyed=1','WIN2K PROPAGATION FRAME bits=32 role=child attached=1 geometry=1 painted=1 destroyed=1','NTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=1') 25),
+        (Case 'ntw2ks-propagate-frame-x86-x64' (Join-Path $x64 'ntw2ks-staging.exe') @((Join-Path $x86 'ntw2ks-staging-target.exe'),$Package,(Join-Path $x64 'ntw2ks-staging-target.exe'),'--frame') @('WIN2K PROPAGATION FRAME bits=32 role=parent attached=1 geometry=1 painted=1 destroyed=1','WIN2K PROPAGATION FRAME bits=64 role=child attached=1 geometry=1 painted=1 destroyed=1','NTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=1') 25),
+        (Case 'ntw2ks-propagate-frame-x64-x86' (Join-Path $x64 'ntw2ks-staging.exe') @((Join-Path $x64 'ntw2ks-staging-target.exe'),$Package,(Join-Path $x86 'ntw2ks-staging-target.exe'),'--frame') @('WIN2K PROPAGATION FRAME bits=64 role=parent attached=1 geometry=1 painted=1 destroyed=1','WIN2K PROPAGATION FRAME bits=32 role=child attached=1 geometry=1 painted=1 destroyed=1','NTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=1') 25),
+        (Case 'ntw2ks-propagate-frame-x64-x64' (Join-Path $x64 'ntw2ks-staging.exe') @((Join-Path $x64 'ntw2ks-staging-target.exe'),$Package,(Join-Path $x64 'ntw2ks-staging-target.exe'),'--frame') @('WIN2K PROPAGATION FRAME bits=64 role=parent attached=1 geometry=1 painted=1 destroyed=1','WIN2K PROPAGATION FRAME bits=64 role=child attached=1 geometry=1 painted=1 destroyed=1','NTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=1') 25),
         (Case 'ntw2ks-control-native-x86' (Join-Path $x86 'ntw2ks-control-target.exe') @() @('NTW2KS CONTROL theme=active') 15),
         (Case 'ntw2ks-control-native-x64' (Join-Path $x64 'ntw2ks-control-target.exe') @() @('NTW2KS CONTROL theme=active') 15),
         (Case 'ntw2ks-control-launch-x86' $run @('--2k','--wait',(Join-Path $x86 'ntw2ks-control-target.exe'),'--disabled') @('NTW2KS CONTROL theme=disabled') 20),
@@ -939,7 +943,7 @@ try{
             $used=0;foreach($entry in $running){$used+=$entry.cost}
             while($pending.Count){
                 $case=$pending[0]
-                $cost=if($case.name -match '^(vcl-status-font-alias-|scroll-(frame|list|edit)-)' ){$Jobs}elseif($case.name -match '^(font-layout|menu-cancel|dialogs|messages|tree-v[56]-)'){[Math]::Min(2,$Jobs)}else{1}
+                $cost=if($case.name -match '^(vcl-status-font-alias-|scroll-(frame|list|edit)-|ntw2ks-propagate-frame-)' ){$Jobs}elseif($case.name -match '^(font-layout|menu-cancel|dialogs|messages|tree-v[56]-)'){[Math]::Min(2,$Jobs)}else{1}
                 if($used+$cost -gt $Jobs){break}
                 $pending.RemoveAt(0)
                 $directory=Join-Path $scratch $case.name;New-Item -ItemType Directory -Path $directory | Out-Null
