@@ -14,6 +14,7 @@ static const WCHAR button_property[]=L"Win2kStyle.CaptionButton";
 static const WCHAR menu_property[]=L"Win2kStyle.Menu";
 static const WCHAR menu_keyboard_property[]=L"Win2kStyle.MenuKeyboard";
 static const WCHAR menu_focus_property[]=L"Win2kStyle.MenuFocus";
+static const WCHAR menu_hover_property[]=L"Win2kStyle.MenuHover";
 static const WCHAR pending_property[]=L"Win2kStyle.FramePending";
 static _Atomic UINT frame_message;
 
@@ -130,8 +131,12 @@ static void paint_menu(HWND window,HDC dc,const RECT *outer)
     HMENU menu=GetMenu(window);MENUBARINFO bar={.cbSize=sizeof(bar)};
     if(!menu || !compact_enabled(window) || !GetMenuBarInfo(window,OBJID_MENU,0,&bar))return;
     RECT area=bar.rcBar;offset_menu(window,&area);OffsetRect(&area,-outer->left,-outer->top);
-    POINT client={0,0};
+    POINT client={0,0};RECT client_rect;
     if(ClientToScreen(window,&client) && client.y-outer->top>area.bottom)area.bottom=client.y-outer->top;
+    if(GetClientRect(window,&client_rect)){
+        POINT right={client_rect.right,0};
+        if(ClientToScreen(window,&right))area.right=max(area.right,right.x-outer->left);
+    }
     HBRUSH face=CreateSolidBrush(RGB(192,192,192));if(!face)return;
     FillRect(dc,&area,face);DeleteObject(face);
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
@@ -160,6 +165,15 @@ static void repaint_menu(HWND window)
     RECT outer;if(!GetWindowRect(window,&outer))return;
     HDC dc=GetWindowDC(window);if(!dc)return;
     paint_menu(window,dc,&outer);ReleaseDC(window,dc);
+}
+
+static void refresh_menu_overlap(HWND window,BOOL immediate)
+{
+    MENUBARINFO bar={.cbSize=sizeof(bar)};RECT client,dirty;
+    if(!GetMenuBarInfo(window,OBJID_MENU,0,&bar) || !GetClientRect(window,&client))return;
+    MapWindowPoints(NULL,window,(POINT *)&bar.rcBar,2);
+    if(IntersectRect(&dirty,&bar.rcBar,&client))
+        RedrawWindow(window,&dirty,NULL,RDW_INVALIDATE|RDW_ERASE|RDW_ALLCHILDREN|(immediate?RDW_UPDATENOW:0));
 }
 
 static void classic_buttons(HWND window,TITLEBARINFOEX *info)
@@ -500,6 +514,20 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
         if(RemovePropW(window,pending_property))recalculate_frame(window);
         SetLastError(incoming);return 0;
     }
+    if(message==WM_NCMOUSEMOVE && wp==HTMENU && compact_enabled(window)){
+        SetLastError(incoming);LRESULT result=DefSubclassProc(window,message,wp,lp);DWORD outcome=GetLastError();
+        if(!IsWindow(window)){SetLastError(outcome);return result;}
+        POINT point={GET_X_LPARAM(lp),GET_Y_LPARAM(lp)};HMENU menu=GetMenu(window);
+        int count=GetMenuItemCount(menu),index=-1;
+        for(int i=0;i<count;++i){RECT item;if(GetMenuItemRect(window,menu,(UINT)i,&item) && PtInRect(&item,point)){index=i;break;}}
+        HANDLE hover=(HANDLE)(uintptr_t)(index+2);
+        if(GetPropW(window,menu_hover_property)!=hover){
+            SetPropW(window,menu_hover_property,hover);refresh_menu_overlap(window,TRUE);repaint_menu(window);
+        }
+        SetLastError(outcome);return result;
+    }
+    if((message==WM_NCMOUSELEAVE || (message==WM_NCMOUSEMOVE && wp!=HTMENU)) && RemovePropW(window,menu_hover_property))
+        refresh_menu_overlap(window,FALSE);
     if(message==WM_ENTERMENULOOP)win2k_system_menu_begin(window);
     else if(message==WM_INITMENUPOPUP && HIWORD(lp))win2k_system_menu_set(window,(HMENU)wp);
     else if(message==WM_ENTERIDLE && wp==MSGF_MENU)win2k_system_menu_idle(window);
@@ -519,7 +547,7 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
         HANDLE hit=(HANDLE)(uintptr_t)(wp+1);
         if(GetPropW(window,hover_property)!=hit){SetPropW(window,hover_property,hit);repaint=TRUE;}
     }else if(message==WM_NCMOUSELEAVE){RemovePropW(window,hover_property);repaint=TRUE;}
-    if(message==WM_NCDESTROY){RemovePropW(window,pending_property);RemovePropW(window,menu_focus_property);RemovePropW(window,menu_keyboard_property);RemovePropW(window,menu_property);RemovePropW(window,hover_property);RemovePropW(window,frame_property);RemoveWindowSubclass(window,frame_proc,id);}
+    if(message==WM_NCDESTROY){RemovePropW(window,menu_hover_property);RemovePropW(window,pending_property);RemovePropW(window,menu_focus_property);RemovePropW(window,menu_keyboard_property);RemovePropW(window,menu_property);RemovePropW(window,hover_property);RemovePropW(window,frame_property);RemoveWindowSubclass(window,frame_proc,id);}
     SetLastError(incoming);
     LRESULT result=DefSubclassProc(window,message,wp,lp);
     DWORD outcome=GetLastError();

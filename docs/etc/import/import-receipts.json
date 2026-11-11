@@ -6728,7 +6728,7 @@
       "path": "src/lib-win32/win2k-window/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "0bd00387cb9714d211a96b2af8f1abab013eeb55fb8b9bf2514b0ebf4630895d",
+      "sha256": "dac727239bbd0208bd493e1549ddbc341a5c80927d08b9551f85f0a4b15271cc",
       "disposition": "authored",
       "review": "T25 S3 native Win2000 frame and fixture; T25 S3 Win2000 frame; T25 S4 caption state and icon; T25 S4 original caption region and state",
       "notice": "Project-authored C; no external source or artwork copied"
