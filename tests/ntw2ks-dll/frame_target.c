@@ -50,7 +50,7 @@ static uint64_t button_signature(HWND w,unsigned index)
     ReleaseDC(w,dc);return value;
 }
 
-typedef struct { HWND window;BOOL input,pressed,cancelled,maximized,restored;unsigned gray,native; } physical_probe;
+typedef struct { HWND window;BOOL input,pressed,cancelled,maximized,restored;unsigned gray,native;LRESULT hit;uintptr_t tracked;BOOL capture; } physical_probe;
 static BOOL physical_click(POINT point)
 {
     INPUT event={.type=INPUT_MOUSE};
@@ -65,11 +65,15 @@ static DWORD WINAPI physical_thread(void *parameter)
     TITLEBARINFOEX info={.cbSize=sizeof(info)};RECT outer;
     SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);GetWindowRect(w,&outer);
     RECT button=info.rgrect[3];POINT center={(button.left+button.right)/2,(button.top+button.bottom)/2};
+    probe->hit=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(center.x,center.y));
     INPUT event={.type=INPUT_MOUSE};event.mi.dwFlags=MOUSEEVENTF_LEFTDOWN;
-    Sleep(200);probe->input=SetCursorPos(center.x,center.y) && SendInput(1,&event,sizeof(event))==1;
+    Sleep(200);BOOL positioned=SetCursorPos(center.x,center.y);Sleep(100);
+    probe->input=positioned && SendInput(1,&event,sizeof(event))==1;
     Sleep(250);
     GUITHREADINFO thread={.cbSize=sizeof(thread)};
-    probe->pressed=GetGUIThreadInfo(GetWindowThreadProcessId(w,NULL),&thread) && thread.hwndCapture==w;
+    probe->capture=GetGUIThreadInfo(GetWindowThreadProcessId(w,NULL),&thread) && thread.hwndCapture==w;
+    probe->tracked=(uintptr_t)GetPropW(w,L"Win2kStyle.CaptionButton");
+    probe->pressed=probe->capture;
     TITLEBARINFOEX down={.cbSize=sizeof(down)};SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&down);
     probe->pressed=probe->pressed && (down.rgstate[3]&STATE_SYSTEM_PRESSED)!=0;
     HDC dc=GetWindowDC(w);
@@ -130,9 +134,9 @@ int wmain(int argc,WCHAR **argv)
             TranslateMessage(&message);DispatchMessageW(&message);
         }
         WaitForSingleObject(worker,3000);CloseHandle(worker);DestroyWindow(w);
-        printf("WIN2K PHYSICAL bits=%u input=%d pressed=%d gray=%u native=%u cancelled=%d max=%d restore=%d\n",
-               (unsigned)(sizeof(void*)*8),probe.input,probe.pressed,probe.gray,probe.native,probe.cancelled,probe.maximized,probe.restored);
-        return probe.input && probe.pressed && probe.gray>200 && probe.native<20 && probe.cancelled && probe.maximized && probe.restored?0:3;
+        printf("WIN2K PHYSICAL bits=%u input=%d pressed=%d capture=%d tracked=%llu hit=%lld gray=%u native=%u cancelled=%d max=%d restore=%d\n",
+               (unsigned)(sizeof(void*)*8),probe.input,probe.pressed,probe.capture,(unsigned long long)probe.tracked,(long long)probe.hit,probe.gray,probe.native,probe.cancelled,probe.maximized,probe.restored);
+        return probe.input && probe.pressed && probe.gray>80 && probe.native<20 && probe.cancelled && probe.maximized && probe.restored?0:3;
     }
     if(no_icon){
         HWND w=CreateWindowExW(0,wc.lpszClassName,L"No icon",WS_OVERLAPPEDWINDOW,
@@ -187,7 +191,9 @@ int wmain(int argc,WCHAR **argv)
                 ReleaseDC(tool,dc);
             }
             UINT dpi=GetDpiForWindow(tool);if(!dpi)dpi=96;
-            tool_ok=tool_ok && text_bottom>=text_top && text_bottom-text_top+1<=MulDiv(8,(int)dpi,96);
+            int expected=MulDiv(15,(int)dpi,96);
+            tool_ok=tool_ok && text_bottom>=text_top && text_bottom-text_top+1<=MulDiv(8,(int)dpi,96) &&
+                info.rgrect[5].right-info.rgrect[5].left==expected && info.rgrect[5].bottom-info.rgrect[5].top==expected;
             DestroyWindow(tool);
         }
         printf("WIN2K TOOL bits=%u styled=%d glyph_height=%d\n",(unsigned)(sizeof(void*)*8),tool_ok,text_bottom>=text_top?text_bottom-text_top+1:0);
@@ -203,6 +209,21 @@ int wmain(int argc,WCHAR **argv)
     TITLEBARINFOEX info={.cbSize=sizeof(info)};
     SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
     RECT window;GetWindowRect(w,&window);
+    UINT dpi=GetDpiForWindow(w);if(!dpi)dpi=96;
+    int expected_button=MulDiv(18,(int)dpi,96);
+    BOOL button_size=TRUE,button_hits=TRUE;
+    for(unsigned i=2;i<=5;++i){
+        if(info.rgstate[i]&STATE_SYSTEM_INVISIBLE)continue;
+        RECT r=info.rgrect[i];
+        if(r.right-r.left!=expected_button || r.bottom-r.top!=expected_button)button_size=FALSE;
+        static const LRESULT hits[]={0,0,HTMINBUTTON,HTMAXBUTTON,HTHELP,HTCLOSE};
+        LRESULT observed=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM((r.left+r.right)/2,(r.top+r.bottom)/2));
+        if(observed!=hits[i])button_hits=FALSE;
+    }
+    if(!(info.rgstate[5]&STATE_SYSTEM_INVISIBLE) && !(info.rgstate[3]&STATE_SYSTEM_INVISIBLE)){
+        POINT gap={info.rgrect[5].left-1,(info.rgrect[5].top+info.rgrect[5].bottom)/2};
+        if(SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(gap.x,gap.y))!=HTCAPTION)button_hits=FALSE;
+    }
     HDC dc=GetWindowDC(w);
     int x=info.rcTitleBar.left-window.left+40;
     int y=info.rcTitleBar.top-window.top+2;
@@ -279,12 +300,12 @@ int wmain(int argc,WCHAR **argv)
     SendMessageW(w,WM_SYSCOMMAND,SC_RESTORE,0);
     uint64_t restore_button=button_signature(w,3);
     BOOL restored=!IsZoomed(w) && GetPropW(w,L"Win2kStyle.Frame")!=NULL && blue_caption(w) && restore_button==normal_button;
-    printf("WIN2K FRAME bits=%u attached=%d title=%ldx%ld frame_width=%d button_top=%ld button_edge=%06lx pixels=%06lx/%06lx end=%06lx inactive=%06lx/%06lx frame=%06lx button_gray=%u close_disabled=%d close_changed=%u icon_pixels=%u icon_changed=%u text_pixels=%u hit=%lld\n",
+    printf("WIN2K FRAME bits=%u attached=%d title=%ldx%ld button_size=%d button_hits=%d frame_width=%d button_top=%ld button_edge=%06lx pixels=%06lx/%06lx end=%06lx inactive=%06lx/%06lx frame=%06lx button_gray=%u close_disabled=%d close_changed=%u icon_pixels=%u icon_changed=%u text_pixels=%u hit=%lld\n",
         (unsigned)(sizeof(void*)*8),attached,info.rcTitleBar.right-info.rcTitleBar.left,
-        info.rcTitleBar.bottom-info.rcTitleBar.top,frame_width,info.rgrect[5].top-window.top,(unsigned long)button_top,(unsigned long)pixel,(unsigned long)pixel2,(unsigned long)endpoint,(unsigned long)inactive,(unsigned long)inactive_end,(unsigned long)frame_face,classic_button_pixels,close_disabled,close_changed,icon_pixels,icon_changed,changed,(long long)hit);
+        info.rcTitleBar.bottom-info.rcTitleBar.top,button_size,button_hits,frame_width,info.rgrect[5].top-window.top,(unsigned long)button_top,(unsigned long)pixel,(unsigned long)pixel2,(unsigned long)endpoint,(unsigned long)inactive,(unsigned long)inactive_end,(unsigned long)frame_face,classic_button_pixels,close_disabled,close_changed,icon_pixels,icon_changed,changed,(long long)hit);
     SendMessageW(w,WM_SYSCOMMAND,SC_CLOSE,0);
     BOOL closed=!IsWindow(w);if(!closed)DestroyWindow(w);
-    return attached && pixel!=CLR_INVALID && pixel2!=CLR_INVALID && pixel!=pixel2 && inactive!=CLR_INVALID &&
+    return attached && button_size && button_hits && pixel!=CLR_INVALID && pixel2!=CLR_INVALID && pixel!=pixel2 && inactive!=CLR_INVALID &&
            GetBValue(pixel)>GetRValue(pixel) && GetRValue(endpoint)>=150 && GetGValue(endpoint)>=180 && GetBValue(endpoint)>=220 && (frame_width<=4 || frame_face==RGB(192,192,192)) && button_top==RGB(255,255,255) && classic_button_pixels>20 && close_disabled && close_changed>0 &&
            GetRValue(inactive)==GetGValue(inactive) && GetGValue(inactive)==GetBValue(inactive) && GetRValue(inactive_end)>=175 && GetRValue(inactive_end)<=181 && icon_pixels>0 && icon_changed>0 && changed>0 &&
            hit==HTCAPTION && resized && maximized && restored && closed?0:3;

@@ -10,6 +10,30 @@ static const WCHAR frame_property[]=L"Win2kStyle.Frame";
 static const WCHAR hover_property[]=L"Win2kStyle.CaptionHover";
 static const WCHAR button_property[]=L"Win2kStyle.CaptionButton";
 
+static void classic_buttons(HWND window,TITLEBARINFOEX *info)
+{
+    LONG_PTR ex=GetWindowLongPtrW(window,GWL_EXSTYLE);
+    if(ex&WS_EX_LAYOUTRTL)return;
+    UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
+    int size=MulDiv((ex&WS_EX_TOOLWINDOW)?15:18,(int)dpi,96);
+    int gap=MulDiv(2,(int)dpi,96);
+    RECT title=info->rcTitleBar;
+    if(size<=0 || title.bottom-title.top<size)return;
+    RECT result[CCHILDREN_TITLEBAR+1];
+    for(unsigned i=0;i<ARRAYSIZE(result);++i)result[i]=info->rgrect[i];
+    int right=title.right;BOOL close=FALSE;
+    static const unsigned order[]={5,4,3,2};
+    for(unsigned n=0;n<ARRAYSIZE(order);++n){
+        unsigned i=order[n];
+        if((info->rgstate[i]&STATE_SYSTEM_INVISIBLE) || info->rgrect[i].right<=info->rgrect[i].left)continue;
+        if(close){right-=gap;close=FALSE;}
+        if(right-size<title.left)return;
+        result[i]=(RECT){right-size,title.top+(title.bottom-title.top-size)/2,right,title.top+(title.bottom-title.top-size)/2+size};
+        right-=size;if(i==5)close=TRUE;
+    }
+    for(unsigned i=2;i<ARRAYSIZE(result);++i)info->rgrect[i]=result[i];
+}
+
 /* DrawFrameControl uses the host's palette; remap its classic shades locally. */
 static void paint_button(HDC target,const RECT *rect,UINT state)
 {
@@ -198,8 +222,20 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
     if(message==WM_GETTITLEBARINFOEX && lp){
         uintptr_t tracked=(uintptr_t)GetPropW(window,button_property);
         TITLEBARINFOEX *info=(TITLEBARINFOEX *)lp;
-        if(info->cbSize>=sizeof(*info) && tracked/2>=2 && tracked/2<=CCHILDREN_TITLEBAR && (tracked&1))
-            info->rgstate[tracked/2]|=STATE_SYSTEM_PRESSED;
+        if(info->cbSize>=sizeof(*info)){
+            classic_buttons(window,info);
+            if(tracked/2>=2 && tracked/2<=CCHILDREN_TITLEBAR && (tracked&1))info->rgstate[tracked/2]|=STATE_SYSTEM_PRESSED;
+        }
+    }
+    if(message==WM_NCHITTEST && !IsIconic(window) &&
+       (result==HTCAPTION || result==HTMINBUTTON || result==HTMAXBUTTON || result==HTHELP || result==HTCLOSE)){
+        TITLEBARINFOEX info={.cbSize=sizeof(info)};POINT point={GET_X_LPARAM(lp),GET_Y_LPARAM(lp)};
+        SendMessageW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
+        static const LRESULT hits[]={0,0,HTMINBUTTON,HTMAXBUTTON,HTHELP,HTCLOSE};
+        BOOL button=FALSE;
+        for(unsigned i=2;i<ARRAYSIZE(hits);++i)
+            if(!(info.rgstate[i]&STATE_SYSTEM_INVISIBLE) && PtInRect(&info.rgrect[i],point)){result=hits[i];button=TRUE;break;}
+        if(!button && PtInRect(&info.rcTitleBar,point))result=HTCAPTION;
     }
     if(message==WM_NCPAINT || message==WM_NCACTIVATE || message==WM_SETTEXT || message==WM_SIZE ||
        message==WM_NCLBUTTONDOWN || message==WM_NCLBUTTONUP || message==WM_SETICON ||
