@@ -653,6 +653,29 @@ int wmain(int argc,WCHAR **argv)
                (unsigned)(sizeof(void*)*8),keyboard,f10,focus_ok,hit,menu_entries,menu_exits,menu_commands,menu_timeout);
         DestroyWindow(w);DestroyMenu(menu);return ok?0:3;
     }
+    if(argc==2 && !lstrcmpW(argv[1],L"--scroll-geometry")){
+        HWND w=CreateWindowExW(0,wc.lpszClassName,L"Scroll geometry",WS_OVERLAPPEDWINDOW|WS_HSCROLL|WS_VSCROLL,
+                                80,80,420,260,NULL,NULL,instance,NULL);
+        if(!w)return 2;
+        SCROLLINFO range={.cbSize=sizeof(range),.fMask=SIF_RANGE|SIF_PAGE,.nMin=0,.nMax=100,.nPage=10};
+        SetScrollInfo(w,SB_HORZ,&range,FALSE);SetScrollInfo(w,SB_VERT,&range,FALSE);
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);
+        RECT outer,client;SCROLLBARINFO vert={.cbSize=sizeof(vert)},horz={.cbSize=sizeof(horz)};
+        BOOL got=GetWindowRect(w,&outer) && GetClientRect(w,&client) &&
+            GetScrollBarInfo(w,OBJID_VSCROLL,&vert) && GetScrollBarInfo(w,OBJID_HSCROLL,&horz);
+        MapWindowPoints(w,NULL,(POINT *)&client,2);
+        BOOL separate=got && vert.rcScrollBar.left>=client.right && horz.rcScrollBar.top>=client.bottom &&
+            vert.rcScrollBar.right<=outer.right && horz.rcScrollBar.bottom<=outer.bottom;
+        POINT vp={(vert.rcScrollBar.left+vert.rcScrollBar.right)/2,vert.rcScrollBar.top+4};
+        POINT hp={horz.rcScrollBar.left+4,(horz.rcScrollBar.top+horz.rcScrollBar.bottom)/2};
+        BOOL hits=got && SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(vp.x,vp.y))==HTVSCROLL &&
+            SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(hp.x,hp.y))==HTHSCROLL;
+        printf("WIN2K SCROLL GEOMETRY bits=%u got=%d separate=%d hits=%d client=%ld,%ld,%ld,%ld vertical=%ld,%ld,%ld,%ld horizontal=%ld,%ld,%ld,%ld\n",
+               (unsigned)(sizeof(void*)*8),got,separate,hits,client.left-outer.left,client.top-outer.top,client.right-outer.left,client.bottom-outer.top,
+               vert.rcScrollBar.left-outer.left,vert.rcScrollBar.top-outer.top,vert.rcScrollBar.right-outer.left,vert.rcScrollBar.bottom-outer.top,
+               horz.rcScrollBar.left-outer.left,horz.rcScrollBar.top-outer.top,horz.rcScrollBar.right-outer.left,horz.rcScrollBar.bottom-outer.top);
+        DestroyWindow(w);return separate && hits?0:3;
+    }
     if(argc==4 && !lstrcmpW(argv[1],L"--frame-bounds")){
         BOOL all=TRUE;
         int resizable=argv[2][0]-L'0',with_menu=argv[3][0]-L'0';
