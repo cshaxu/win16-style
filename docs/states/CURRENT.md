@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T25 S3 已完成首版 Win2000 普通 Win32 窗口接入、发布与远端复核；验证范围和未覆盖见[S3 P1](../history/M0-T25-S3-P1-delivery.md)。用户尚未手动验收，不据此宣称视觉效果通过。按已准入的 T25 序列继续 S4；T25 仍开放。
+M0 T25 S3 已完成首版 Win2000 普通 Win32 窗口接入、发布与远端复核；验证范围和未覆盖见[S3 P1](../history/M0-T25-S3-P1-delivery.md)。S4 P1 已修正渐变与标题状态并发布，验证及限制见[S4 P1](../history/M0-T25-S4-P1-delivery.md)；用户尚未手动验收。继续 S4；T25 仍开放。
 
 ## M0 T25 S4 Packet
 
