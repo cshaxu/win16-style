@@ -41,22 +41,22 @@ static void dialog_scope_end(void *context)
     HHOOK hook=*(HHOOK *)context;
     if(hook)UnhookWindowsHookEx(hook);
 }
-#define DIALOG_HOOK(NAME,TYPE,RET) \
+#define DIALOG_HOOK(NAME,TYPE,RET,MODELESS) \
 static __typeof__(&NAME) real_##NAME; \
 static PROCESS_HOOK_UNWIND_FUNCTION RET WINAPI hook_##NAME(HINSTANCE instance,TYPE name,HWND parent,DLGPROC proc,LPARAM param) \
 { DWORD incoming=GetLastError();HHOOK hook=SetWindowsHookExW(WH_CALLWNDPROCRET,dialog_created,NULL,GetCurrentThreadId()); \
   process_hook_unwind_scope scope;RET result;DWORD error; \
   PROCESS_HOOK_UNWIND_BEGIN(scope,dialog_scope_end,&hook);SetLastError(incoming); \
   { result=real_##NAME(instance,name,parent,proc,param);error=GetLastError(); } \
-  PROCESS_HOOK_UNWIND_END(scope);SetLastError(error);return result; }
-DIALOG_HOOK(CreateDialogParamA,LPCSTR,HWND)
-DIALOG_HOOK(CreateDialogParamW,LPCWSTR,HWND)
-DIALOG_HOOK(CreateDialogIndirectParamA,LPCDLGTEMPLATEA,HWND)
-DIALOG_HOOK(CreateDialogIndirectParamW,LPCDLGTEMPLATEW,HWND)
-DIALOG_HOOK(DialogBoxParamA,LPCSTR,INT_PTR)
-DIALOG_HOOK(DialogBoxParamW,LPCWSTR,INT_PTR)
-DIALOG_HOOK(DialogBoxIndirectParamA,LPCDLGTEMPLATEA,INT_PTR)
-DIALOG_HOOK(DialogBoxIndirectParamW,LPCDLGTEMPLATEW,INT_PTR)
+  PROCESS_HOOK_UNWIND_END(scope);if((MODELESS) && result)win2k_frame_attach((HWND)result);SetLastError(error);return result; }
+DIALOG_HOOK(CreateDialogParamA,LPCSTR,HWND,TRUE)
+DIALOG_HOOK(CreateDialogParamW,LPCWSTR,HWND,TRUE)
+DIALOG_HOOK(CreateDialogIndirectParamA,LPCDLGTEMPLATEA,HWND,TRUE)
+DIALOG_HOOK(CreateDialogIndirectParamW,LPCDLGTEMPLATEW,HWND,TRUE)
+DIALOG_HOOK(DialogBoxParamA,LPCSTR,INT_PTR,FALSE)
+DIALOG_HOOK(DialogBoxParamW,LPCWSTR,INT_PTR,FALSE)
+DIALOG_HOOK(DialogBoxIndirectParamA,LPCDLGTEMPLATEA,INT_PTR,FALSE)
+DIALOG_HOOK(DialogBoxIndirectParamW,LPCDLGTEMPLATEW,INT_PTR,FALSE)
 
 DWORD ntw2ks_controls_attach(void)
 {
