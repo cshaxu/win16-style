@@ -247,19 +247,20 @@ static void paint_border(HDC dc,int width,int height,int thickness)
     }
 }
 
-static void paint_shifted_icon(HWND window,HDC dc,const RECT *outer)
+static BOOL caption_icon_rect(HWND window,const RECT *outer,RECT *icon)
 {
     int dx=frame_shift(window,TRUE),dy=frame_shift(window,FALSE);
-    if(!dx && !dy)return;
     MENUBARINFO info={.cbSize=sizeof(info)};
-    if(!GetMenuBarInfo(window,OBJID_SYSMENU,0,&info))return;
-    RECT icon=info.rcBar;OffsetRect(&icon,-outer->left-dx,-outer->top-dy);
+    if(!GetMenuBarInfo(window,OBJID_SYSMENU,0,&info))return FALSE;
+    *icon=info.rcBar;OffsetRect(icon,-outer->left-dx,-outer->top-dy);
     TITLEBARINFOEX title={.cbSize=sizeof(title)};SendMessageW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&title);
-    icon.top=max(icon.top,title.rcTitleBar.top-outer->top);
-    icon.bottom=min(icon.bottom,title.rcTitleBar.bottom-outer->top);
-    if(icon.right<=icon.left || icon.bottom<=icon.top)return;
-    HBRUSH face=CreateSolidBrush(RGB(192,192,192));if(!face)return;
-    FillRect(dc,&icon,face);DeleteObject(face);
+    icon->top=max(icon->top,title.rcTitleBar.top-outer->top);
+    icon->bottom=min(icon->bottom,title.rcTitleBar.bottom-outer->top);
+    return icon->right>icon->left && icon->bottom>icon->top;
+}
+
+static void paint_caption_icon(HWND window,HDC dc,const RECT *icon)
+{
     HICON image=(HICON)SendMessageW(window,WM_GETICON,ICON_SMALL2,0);
     if(!image)image=(HICON)SendMessageW(window,WM_GETICON,ICON_SMALL,0);
     if(!image)image=(HICON)SendMessageW(window,WM_GETICON,ICON_BIG,0);
@@ -267,10 +268,10 @@ static void paint_shifted_icon(HWND window,HDC dc,const RECT *outer)
     if(!image)image=(HICON)GetClassLongPtrW(window,GCLP_HICON);
     if(!image)image=LoadIconW(NULL,IDI_WINLOGO);
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
-    int width=min(icon.right-icon.left,GetSystemMetricsForDpi(SM_CXSMICON,dpi));
-    int height=min(icon.bottom-icon.top,GetSystemMetricsForDpi(SM_CYSMICON,dpi));
-    if(image && width>0 && height>0)DrawIconEx(dc,icon.left+(icon.right-icon.left-width)/2,
-        icon.top+(icon.bottom-icon.top-height)/2,image,width,height,0,NULL,DI_NORMAL);
+    int width=min(icon->right-icon->left,GetSystemMetricsForDpi(SM_CXSMICON,dpi));
+    int height=min(icon->bottom-icon->top,GetSystemMetricsForDpi(SM_CYSMICON,dpi));
+    if(image && width>0 && height>0)DrawIconEx(dc,icon->left+(icon->right-icon->left-width)/2,
+        icon->top+(icon->bottom-icon->top-height)/2,image,width,height,0,NULL,DI_NORMAL);
 }
 
 static void paint(HWND window)
@@ -282,6 +283,9 @@ static void paint(HWND window)
     if(info.rcTitleBar.right<=info.rcTitleBar.left || info.rcTitleBar.bottom<=info.rcTitleBar.top)return;
     RECT caption=info.rcTitleBar;
     OffsetRect(&caption,-outer.left,-outer.top);
+    RECT icon={0};BOOL has_icon=(GetWindowLongPtrW(window,GWL_STYLE)&WS_SYSMENU) &&
+        !(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW) && caption_icon_rect(window,&outer,&icon);
+    if(has_icon && icon.left<caption.left)caption.left=icon.left;
     int width=outer.right-outer.left,height=outer.bottom-outer.top;
     if(caption.left<0 || caption.top<0 || caption.right>width || caption.bottom>height)return;
     HDC dc=GetWindowDC(window);if(!dc)return;
@@ -291,7 +295,7 @@ static void paint(HWND window)
         (win2k_caption_colors){RGB(128,128,128),RGB(181,181,181),RGB(192,192,192),TRUE};
     int saved=SaveDC(dc);
     if(saved){
-        for(unsigned i=1;i<CCHILDREN_TITLEBAR+1;++i){
+        for(unsigned i=2;i<CCHILDREN_TITLEBAR+1;++i){
             RECT r=info.rgrect[i];OffsetRect(&r,-outer.left,-outer.top);
             if(r.right>r.left && r.bottom>r.top)ExcludeClipRect(dc,r.left,r.top,r.right,r.bottom);
         }
@@ -311,7 +315,7 @@ static void paint(HWND window)
         win2k_caption_colors solid=colors;solid.gradient=FALSE;
         win2k_caption_paint(dc,&caption,L"",font,&solid);
         if(gradient.right>gradient.left)win2k_caption_paint(dc,&gradient,L"",font,&colors);
-        RECT text=gradient;text.left+=2;
+        RECT text=gradient;text.left=has_icon?max(text.left,icon.right)+2:text.left+2;
         if(text.right>text.left){
             SetBkMode(dc,TRANSPARENT);SetTextColor(dc,colors.text);SelectObject(dc,font);
             DrawTextW(dc,title,-1,&text,DT_SINGLELINE|DT_VCENTER|DT_END_ELLIPSIS|DT_NOPREFIX);
@@ -328,7 +332,7 @@ static void paint(HWND window)
             if(border_saved)RestoreDC(dc,border_saved);
         }
         paint_menu(window,dc,&outer);
-        paint_shifted_icon(window,dc,&outer);
+        if(has_icon)paint_caption_icon(window,dc,&icon);
         static const UINT buttons[]={0,0,DFCS_CAPTIONMIN,DFCS_CAPTIONMAX,DFCS_CAPTIONHELP,DFCS_CAPTIONCLOSE};
         for(unsigned i=2;i<CCHILDREN_TITLEBAR+1;++i){
             RECT r=info.rgrect[i];OffsetRect(&r,-outer.left,-outer.top);
@@ -482,13 +486,18 @@ static BOOL button_input(HWND window,UINT message,WPARAM wp,LPARAM lp)
     return FALSE;
 }
 
+static void recalculate_frame(HWND window)
+{
+    SetWindowPos(window,NULL,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
+    if(IsWindow(window))RedrawWindow(window,NULL,NULL,RDW_INVALIDATE|RDW_ERASE|RDW_ALLCHILDREN);
+}
+
 static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,UINT_PTR id,DWORD_PTR ref)
 {
     (void)ref;
     DWORD incoming=GetLastError();
     if(message && message==atomic_load(&frame_message)){
-        if(RemovePropW(window,pending_property))
-            SetWindowPos(window,NULL,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
+        if(RemovePropW(window,pending_property))recalculate_frame(window);
         SetLastError(incoming);return 0;
     }
     if(message==WM_ENTERMENULOOP)win2k_system_menu_begin(window);
@@ -514,8 +523,7 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
     SetLastError(incoming);
     LRESULT result=DefSubclassProc(window,message,wp,lp);
     DWORD outcome=GetLastError();
-    if(message==WM_SHOWWINDOW && wp && IsWindow(window) && RemovePropW(window,pending_property))
-        SetWindowPos(window,NULL,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
+    if(message==WM_SHOWWINDOW && wp && IsWindow(window) && RemovePropW(window,pending_property))recalculate_frame(window);
     if(message==WM_NCCALCSIZE && lp && compact_enabled(window) &&
        (GetWindowLongPtrW(window,GWL_STYLE)&WS_CAPTION)==WS_CAPTION &&
        !(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_LAYOUTRTL)){

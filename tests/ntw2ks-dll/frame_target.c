@@ -887,8 +887,12 @@ int wmain(int argc,WCHAR **argv)
         POINT point={(icon.left+icon.right)/2,(icon.top+icon.bottom)/2};
         LRESULT hit_result=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(point.x,point.y));
         LRESULT edge_hit=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(icon.left+1,icon.top+1));BOOL hit=hit_result==HTSYSMENU && edge_hit==HTSYSMENU;
-        printf("WIN2K SYSTEM ICON bits=%u hit=%d result=%lld edge=%lld\n",(unsigned)(sizeof(void*)*8),hit,(long long)hit_result,(long long)edge_hit);
-        DestroyWindow(w);return hit?0:3;
+        SendMessageW(w,WM_NCACTIVATE,TRUE,0);HDC dc=GetWindowDC(w);
+        COLORREF background=dc?GetPixel(dc,icon.left-outer.left,icon.top-outer.top):CLR_INVALID;
+        if(dc)ReleaseDC(w,dc);
+        BOOL gradient=background!=CLR_INVALID && GetBValue(background)>GetRValue(background);
+        printf("WIN2K SYSTEM ICON bits=%u hit=%d result=%lld edge=%lld gradient=%d\n",(unsigned)(sizeof(void*)*8),hit,(long long)hit_result,(long long)edge_hit,gradient);
+        DestroyWindow(w);return hit && gradient?0:3;
     }
     if(argc==2 && !lstrcmpW(argv[1],L"--help-button")){
         HWND w=CreateWindowExW(WS_EX_CONTEXTHELP,wc.lpszClassName,L"Context help",
