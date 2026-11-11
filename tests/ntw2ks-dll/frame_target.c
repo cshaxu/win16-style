@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <oleacc.h>
 #include <stdio.h>
+#include <stdint.h>
 
 static LRESULT CALLBACK procedure(HWND w,UINT message,WPARAM wp,LPARAM lp)
 {return DefWindowProcW(w,message,wp,lp);}
@@ -14,6 +15,18 @@ static BOOL blue_caption(HWND w)
     COLORREF pixel=GetPixel(dc,info.rcTitleBar.left-outer.left+40,info.rcTitleBar.top-outer.top+2);
     ReleaseDC(w,dc);
     return pixel!=CLR_INVALID && GetBValue(pixel)>GetRValue(pixel);
+}
+
+static uint64_t button_signature(HWND w,unsigned index)
+{
+    TITLEBARINFOEX info={.cbSize=sizeof(info)};RECT outer;
+    SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
+    if(index>CCHILDREN_TITLEBAR || !GetWindowRect(w,&outer))return 0;
+    RECT r=info.rgrect[index];OffsetRect(&r,-outer.left,-outer.top);
+    HDC dc=GetWindowDC(w);if(!dc || r.right<=r.left || r.bottom<=r.top){if(dc)ReleaseDC(w,dc);return 0;}
+    uint64_t value=14695981039346656037ULL;
+    for(int y=r.top;y<r.bottom;++y)for(int x=r.left;x<r.right;++x){value^=GetPixel(dc,x,y);value*=1099511628211ULL;}
+    ReleaseDC(w,dc);return value;
 }
 
 int wmain(int argc,WCHAR **argv)
@@ -87,10 +100,26 @@ int wmain(int argc,WCHAR **argv)
     COLORREF pixel2=dc?GetPixel(dc,x+80,y):CLR_INVALID;
     COLORREF endpoint=dc?GetPixel(dc,end-3,y):CLR_INVALID;
     unsigned classic_button_pixels=0;
+    COLORREF close_before[64*64];unsigned close_changed=0;BOOL close_disabled=FALSE;
     if(dc){
         RECT button=info.rgrect[5];OffsetRect(&button,-window.left,-window.top);
         for(int by=button.top;by<button.bottom;++by)for(int bx=button.left;bx<button.right;++bx)
             if(GetPixel(dc,bx,by)==RGB(192,192,192))++classic_button_pixels;
+        int bw=button.right-button.left,bh=button.bottom-button.top;
+        HMENU system=GetSystemMenu(w,FALSE);
+        if(system && bw>0 && bw<=64 && bh>0 && bh<=64){
+            for(int by=0;by<bh;++by)for(int bx=0;bx<bw;++bx)
+                close_before[by*64+bx]=GetPixel(dc,button.left+bx,button.top+by);
+            EnableMenuItem(system,SC_CLOSE,MF_BYCOMMAND|MF_GRAYED);
+            DrawMenuBar(w);
+            TITLEBARINFOEX disabled={.cbSize=sizeof(disabled)};
+            SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&disabled);
+            close_disabled=(disabled.rgstate[5]&STATE_SYSTEM_UNAVAILABLE)!=0;
+            for(int by=0;by<bh;++by)for(int bx=0;bx<bw;++bx)
+                if(close_before[by*64+bx]!=GetPixel(dc,button.left+bx,button.top+by))++close_changed;
+            EnableMenuItem(system,SC_CLOSE,MF_BYCOMMAND|MF_ENABLED);
+            DrawMenuBar(w);
+        }
     }
     unsigned icon_pixels=0;
     COLORREF icon_before[16*12];
@@ -124,17 +153,20 @@ int wmain(int argc,WCHAR **argv)
     LRESULT hit=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(info.rcTitleBar.left+50,(info.rcTitleBar.top+info.rcTitleBar.bottom)/2));
     SendMessageW(w,WM_NCACTIVATE,TRUE,0);
     BOOL resized=SetWindowPos(w,NULL,0,0,520,320,SWP_NOMOVE|SWP_NOZORDER|SWP_NOACTIVATE) && blue_caption(w);
+    uint64_t normal_button=button_signature(w,3);
     SendMessageW(w,WM_SYSCOMMAND,SC_MAXIMIZE,0);
-    BOOL maximized=IsZoomed(w) && blue_caption(w);
+    uint64_t zoom_button=button_signature(w,3);
+    BOOL maximized=IsZoomed(w) && blue_caption(w) && normal_button && zoom_button && normal_button!=zoom_button;
     SendMessageW(w,WM_SYSCOMMAND,SC_RESTORE,0);
-    BOOL restored=!IsZoomed(w) && GetPropW(w,L"Win2kStyle.Frame")!=NULL && blue_caption(w);
-    printf("WIN2K FRAME bits=%u attached=%d title=%ldx%ld pixels=%06lx/%06lx end=%06lx inactive=%06lx/%06lx button_gray=%u icon_pixels=%u icon_changed=%u text_pixels=%u hit=%lld\n",
+    uint64_t restore_button=button_signature(w,3);
+    BOOL restored=!IsZoomed(w) && GetPropW(w,L"Win2kStyle.Frame")!=NULL && blue_caption(w) && restore_button==normal_button;
+    printf("WIN2K FRAME bits=%u attached=%d title=%ldx%ld pixels=%06lx/%06lx end=%06lx inactive=%06lx/%06lx button_gray=%u close_disabled=%d close_changed=%u icon_pixels=%u icon_changed=%u text_pixels=%u hit=%lld\n",
         (unsigned)(sizeof(void*)*8),attached,info.rcTitleBar.right-info.rcTitleBar.left,
-        info.rcTitleBar.bottom-info.rcTitleBar.top,(unsigned long)pixel,(unsigned long)pixel2,(unsigned long)endpoint,(unsigned long)inactive,(unsigned long)inactive_end,classic_button_pixels,icon_pixels,icon_changed,changed,(long long)hit);
+        info.rcTitleBar.bottom-info.rcTitleBar.top,(unsigned long)pixel,(unsigned long)pixel2,(unsigned long)endpoint,(unsigned long)inactive,(unsigned long)inactive_end,classic_button_pixels,close_disabled,close_changed,icon_pixels,icon_changed,changed,(long long)hit);
     SendMessageW(w,WM_SYSCOMMAND,SC_CLOSE,0);
     BOOL closed=!IsWindow(w);if(!closed)DestroyWindow(w);
     return attached && pixel!=CLR_INVALID && pixel2!=CLR_INVALID && pixel!=pixel2 && inactive!=CLR_INVALID &&
-           GetBValue(pixel)>GetRValue(pixel) && GetRValue(endpoint)>=150 && GetGValue(endpoint)>=180 && GetBValue(endpoint)>=220 && classic_button_pixels>20 &&
+           GetBValue(pixel)>GetRValue(pixel) && GetRValue(endpoint)>=150 && GetGValue(endpoint)>=180 && GetBValue(endpoint)>=220 && classic_button_pixels>20 && close_disabled && close_changed>0 &&
            GetRValue(inactive)==GetGValue(inactive) && GetGValue(inactive)==GetBValue(inactive) && GetRValue(inactive_end)>=175 && GetRValue(inactive_end)<=181 && icon_pixels>0 && icon_changed>0 && changed>0 &&
            hit==HTCAPTION && resized && maximized && restored && closed?0:3;
 }
