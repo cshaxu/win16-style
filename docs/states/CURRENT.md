@@ -125,3 +125,5 @@ S4 P71 在实际 Solitaire About 场景验证失活菜单，见[记录](../histo
 S4 P72 用真实鼠标验证禁用的标题按钮，见[记录](../history/M0-T25-S4-P72-disabled-buttons.md)。
 
 S5 P1 验证系统菜单基线，记录真实键盘超时及用户禁止隔离桌面的约束，见[记录](../history/M0-T25-S5-P1-system-menu-baseline.md)。
+
+S5 P2 在当前桌面验证程序键盘消息驱动的系统菜单选中绘制，见[记录](../history/M0-T25-S5-P2-menu-keyboard.md)。
