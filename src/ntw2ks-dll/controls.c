@@ -1,4 +1,5 @@
 #include <windows.h>
+#include <commdlg.h>
 #include <uxtheme.h>
 #include <wchar.h>
 #include "lib-win32/process-hook/startup_hooks.h"
@@ -74,6 +75,20 @@ MESSAGE_HOOK(MessageBoxExW,(HWND owner,LPCWSTR text,LPCWSTR title,UINT type,WORD
 MESSAGE_HOOK(MessageBoxIndirectA,(const MSGBOXPARAMSA *parameters),(parameters))
 MESSAGE_HOOK(MessageBoxIndirectW,(const MSGBOXPARAMSW *parameters),(parameters))
 
+/* Find and replace create modeless dialogs inside COMDLG32. */
+#define FIND_HOOK(NAME,TYPE) \
+static __typeof__(&NAME) real_##NAME; \
+static PROCESS_HOOK_UNWIND_FUNCTION HWND WINAPI hook_##NAME(TYPE *parameters) \
+{ DWORD incoming=GetLastError();HHOOK hook=SetWindowsHookExW(WH_CALLWNDPROCRET,dialog_created,NULL,GetCurrentThreadId()); \
+  process_hook_unwind_scope scope;HWND result;DWORD error; \
+  PROCESS_HOOK_UNWIND_BEGIN(scope,dialog_scope_end,&hook);SetLastError(incoming); \
+  { result=real_##NAME(parameters);error=GetLastError(); } \
+  PROCESS_HOOK_UNWIND_END(scope);if(result)win2k_frame_attach(result);SetLastError(error);return result; }
+FIND_HOOK(FindTextA,FINDREPLACEA)
+FIND_HOOK(FindTextW,FINDREPLACEW)
+FIND_HOOK(ReplaceTextA,FINDREPLACEA)
+FIND_HOOK(ReplaceTextW,FINDREPLACEW)
+
 DWORD ntw2ks_controls_attach(void)
 {
     create_W=CreateWindowExW;create_A=CreateWindowExA;
@@ -87,6 +102,8 @@ DWORD ntw2ks_controls_attach(void)
     ATTACH_DIALOG(MessageBoxA);ATTACH_DIALOG(MessageBoxW);
     ATTACH_DIALOG(MessageBoxExA);ATTACH_DIALOG(MessageBoxExW);
     ATTACH_DIALOG(MessageBoxIndirectA);ATTACH_DIALOG(MessageBoxIndirectW);
+    ATTACH_DIALOG(FindTextA);ATTACH_DIALOG(FindTextW);
+    ATTACH_DIALOG(ReplaceTextA);ATTACH_DIALOG(ReplaceTextW);
 #undef ATTACH_DIALOG
     return error;
 }

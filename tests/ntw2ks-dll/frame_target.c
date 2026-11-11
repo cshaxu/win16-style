@@ -1,5 +1,6 @@
 #define _WIN32_WINNT 0x0A00
 #include <windows.h>
+#include <commdlg.h>
 #include <oleacc.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -91,6 +92,13 @@ static DWORD WINAPI close_message(void *unused)
     do{EnumWindows(find_message_window,0);if(InterlockedCompareExchange(&message_seen,0,0))return 0;Sleep(25);}while(GetTickCount64()<deadline);
     ExitProcess(4);
     return 1;
+}
+
+static UINT find_message;static unsigned find_terms;
+static LRESULT CALLBACK find_owner_proc(HWND window,UINT message,WPARAM wp,LPARAM lp)
+{
+    if(message==find_message){FINDREPLACEW *record=(FINDREPLACEW *)lp;if(record && (record->Flags&FR_DIALOGTERM))++find_terms;return 0;}
+    return DefWindowProcW(window,message,wp,lp);
 }
 
 static BOOL blue_caption(HWND w)
@@ -252,6 +260,26 @@ int wmain(int argc,WCHAR **argv)
             if(!pass)all=FALSE;
         }
         return all?0:3;
+    }
+    if(argc==2 && !lstrcmpW(argv[1],L"--find-frame")){
+        find_message=RegisterWindowMessageW(FINDMSGSTRINGW);
+        WNDCLASSW owner_class={.lpfnWndProc=find_owner_proc,.hInstance=instance,.lpszClassName=L"Win2kFindFixture"};
+        if(!find_message || !RegisterClassW(&owner_class))return 2;
+        HWND owner=CreateWindowW(owner_class.lpszClassName,L"Find owner",WS_OVERLAPPEDWINDOW,0,0,320,200,NULL,NULL,instance,NULL);
+        if(!owner)return 2;
+        BOOL all=TRUE;
+        for(int ansi=0;ansi<2;++ansi)for(int replace=0;replace<2;++replace){
+            char find_a[64]="needle",replacement_a[64]="replacement";WCHAR find_w[64]=L"needle",replacement_w[64]=L"replacement";
+            FINDREPLACEA a={.lStructSize=sizeof(a),.hwndOwner=owner,.lpstrFindWhat=find_a,.wFindWhatLen=64,.lpstrReplaceWith=replacement_a,.wReplaceWithLen=64,.Flags=FR_DOWN};
+            FINDREPLACEW w={.lStructSize=sizeof(w),.hwndOwner=owner,.lpstrFindWhat=find_w,.wFindWhatLen=64,.lpstrReplaceWith=replacement_w,.wReplaceWithLen=64,.Flags=FR_DOWN};
+            find_terms=0;HWND dialog=ansi?(replace?ReplaceTextA(&a):FindTextA(&a)):(replace?ReplaceTextW(&w):FindTextW(&w));
+            BOOL attached=dialog && GetPropW(dialog,L"Win2kStyle.Frame")!=NULL;
+            if(dialog){SendMessageW(dialog,WM_CLOSE,0,0);pump_messages();}
+            BOOL gone=dialog && !IsWindow(dialog);BOOL pass=attached && gone && find_terms==1;
+            printf("WIN2K FIND bits=%u ansi=%d replace=%d attached=%d gone=%d terms=%u\n",(unsigned)(sizeof(void*)*8),ansi,replace,attached,gone,find_terms);
+            if(!pass)all=FALSE;
+        }
+        DestroyWindow(owner);UnregisterClassW(owner_class.lpszClassName,instance);return all?0:3;
     }
     BOOL no_icon=argc==2 && !lstrcmpW(argv[1],L"--no-icon");
     WNDCLASSW wc={.lpfnWndProc=procedure,.hInstance=instance,.hIcon=no_icon?NULL:LoadIconW(NULL,MAKEINTRESOURCEW(32515)),
