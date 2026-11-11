@@ -2,28 +2,28 @@
 
 ## Current Work
 
-M0 T25 S7 按已验证的有限技术范围收口，详见[收口记录](../history/M0-T25-S7-P13-closure.md)；真实键盘、菜单切换、连续闪烁、跨屏 DPI、完整包矩阵和运行中样式恢复仍未证明或未实现，交最终审计，不记通过。T25 保持开放，现进入 S8 统一审计。
+M0 T25 S7 按有限范围收口，见[记录](../history/M0-T25-S7-P13-closure.md)。用户明确纠正：S8 是全局风格选择，S9 是 Win16/Win2000 重复代码合并，S10 才是最终审计。此前误将 S8 作为最终审计，P1–P4 保留为前期证据，未完成的键盘、连续闪烁、跨屏 DPI、完整包矩阵及样式恢复不得计通过。T25 保持开放，现按用户确认继续 S8。
 
 ## M0 T25 S8 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | New；T25 内下一 S。 |
-| Admission And Approval | 用户要求完成普通 Win32 的 Windows 2000 外框并授权自行规划及继续 S；S8 为已提交计划中的最终审计。 |
-| Objective | 按原版参考、实现、实际程序、交互、双位宽、发布和恢复边界逐项审计 T25，修复可复现的高优先级缺陷并如实记录未覆盖项。 |
-| Non-goals | 不声称 UWP、WinUI、应用自绘客户区、控件内部或 Win2000 全局模式已支持。 |
+| Identifier Mode | Continuation；用户更正仍在进行的 S8 范围，保留已使用的 P 序号。 |
+| Admission And Approval | 用户明确指定 S8 为 --global 风格选择，S9 为两套样式去重，S10 为最终审计。 |
+| Objective | 在全局托盘提供互斥、可取消的 Win16 和 Win2000 样式选择，并实现对应启用、切换、停用及尽力恢复。 |
+| Non-goals | 不扩展 UWP、WinUI、应用自绘客户区或控件内部的 Win2000 支持；不把停用称为物理卸载。 |
 | Reference Baseline | S5 P9 八文件发布包；S7 P13 有限技术收口及其列出的遗留项。 |
-| Candidate Proposal | docs/proposals/windows-2000-classic.md 已提交版本中用户收窄后的 S8；工作区并行修改不自动准入。 |
-| Files And ABI Surface | run16s、ntw2ks、共享进程能力、win2k-window 及对应测试；必要变更保持 ABI 和既有样式行为。 |
+| Candidate Proposal | docs/proposals/windows-2000-classic.md 中用户确认的 S8 全局选择，S9 去重、S10 审计排在后续。 |
+| Files And ABI Surface | run16s 托盘与全局控制器、ntw16s/ntw2ks 全局适配及窗口恢复、共享进程能力和对应测试。 |
 | Applicable Rules | M0；纯 C17、MinGW GCC、Ninja、ccache；八文件同批交付。 |
-| Verification | 核实双位宽启动与传播、真实程序、外框和菜单证据、默认 Win16 回归及发布摘要；真实输入、DPI 和未覆盖项分别列明。 |
-| Expected Markers | 分开报告启动、加载、附着、绘制、交互、退出及资源清理；可用时对照原版。 |
+| Verification | 验证互斥选择、重复点击停用、切换、现有与新目标、双位宽、失败和清理；普通启动与 Win16 全局行为回归。 |
+| Expected Markers | 分开报告选择、全局启用、接入、样式应用、停用、恢复和实际卸载能力；失败与跳过明确记录。 |
 | Asset Needs | 保留图形资源与来源声明；实际应用只读使用，不复制或修改样本。 |
 | Reporting Requirements | 区分消息、真实输入、实际程序、前台焦点、各 DPI、用户视觉验收与未覆盖范围。 |
 | Stop Conditions | 不创建或切换隔离桌面；不改变系统安全设置、目标文件或兄弟仓库。 |
-| Exit Criteria | 完成冻结清单逐项审计和必要修复，按规范完成适用构建、发布、测试、提交、推送及远端复核；未验证或缺失能力如实保留，不虚构通过。 |
-| Original Owner Request | 实现普通 Win32 程序的 Windows 2000 经典窗口样式。 |
-| Similar-Issue Sweep | 对照真实程序与自有模型，检查位宽、进程传播、启动顺序、窗口交互和正常退出。 |
+| Exit Criteria | 实现并验证两种全局风格的选择、切换和停用，按规范构建、发布、测试、提交、推送和远端复核；恢复与卸载限制如实报告。 |
+| Original Owner Request | 实现 Windows 2000 经典窗口样式；用户随后明确 S8 全局选择、S9 去重和 S10 最终审计。 |
+| Similar-Issue Sweep | 检查现有托盘状态机、全局会话、目标接入、双位宽传播、样式附着和恢复，不建立重复控制路径。 |
 
 ## Identifier State
 
@@ -36,9 +36,11 @@ M0 T25 S7 按已验证的有限技术范围收口，详见[收口记录](../hist
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last verified remote delivery: M0 T25 S4 P73，`826503cf6fb16f2da7fad130a829118d65a6a4c3`。
-- Open task: M0 T25 S8；Win2000 外框统一审计。
+- Open task: M0 T25 S8；全局 Win16/Win2000 风格选择。
 
 ## Technical Baseline
+
+S8 P5 按用户纠正全局选择、样式去重和最终审计的顺序，见[记录](../history/M0-T25-S8-P5-plan-correction.md)。
 
 S8 P1 冻结最终审计覆盖清单，见[记录](../history/M0-T25-S8-P1-audit-scope.md)。
 
