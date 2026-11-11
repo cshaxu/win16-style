@@ -46,9 +46,18 @@ static void paint_button(HDC target,const RECT *rect,UINT state)
     DeleteDC(memory);
 }
 
-static void paint_border(HDC dc,int width,int height)
+static void paint_border(HDC dc,int width,int height,int thickness)
 {
     static const COLORREF colors[]={RGB(255,255,255),RGB(0,0,0),RGB(192,192,192),RGB(128,128,128)};
+    if(thickness>0 && width>2*thickness && height>2*thickness){
+        HBRUSH face=CreateSolidBrush(RGB(192,192,192));
+        if(face){
+            RECT top={0,0,width,thickness},bottom={0,height-thickness,width,height};
+            RECT left={0,thickness,thickness,height-thickness},right={width-thickness,thickness,width,height-thickness};
+            FillRect(dc,&top,face);FillRect(dc,&bottom,face);FillRect(dc,&left,face);FillRect(dc,&right,face);
+            DeleteObject(face);
+        }
+    }
     for(int inset=0;inset<2;++inset){
         HBRUSH light=CreateSolidBrush(colors[inset*2]),dark=CreateSolidBrush(colors[inset*2+1]);
         if(light && dark && width>2*inset && height>2*inset){
@@ -105,6 +114,15 @@ static void paint(HWND window)
         }
         RestoreDC(dc,saved);
         if(owned_font)DeleteObject(owned_font);
+        if(!IsZoomed(window)){
+            int border_saved=SaveDC(dc);MENUBARINFO system={.cbSize=sizeof(system)};
+            if(border_saved && GetMenuBarInfo(window,OBJID_SYSMENU,0,&system)){
+                RECT icon=system.rcBar;OffsetRect(&icon,-outer.left,-outer.top);
+                ExcludeClipRect(dc,icon.left,icon.top,icon.right,icon.bottom);
+            }
+            paint_border(dc,width,height,caption.top);
+            if(border_saved)RestoreDC(dc,border_saved);
+        }
         static const UINT buttons[]={0,0,DFCS_CAPTIONMIN,DFCS_CAPTIONMAX,DFCS_CAPTIONHELP,DFCS_CAPTIONCLOSE};
         for(unsigned i=2;i<CCHILDREN_TITLEBAR+1;++i){
             RECT r=info.rgrect[i];OffsetRect(&r,-outer.left,-outer.top);
@@ -116,7 +134,6 @@ static void paint(HWND window)
             if((tracked/2==i && (tracked&1)) || (info.rgstate[i]&STATE_SYSTEM_PRESSED))state|=DFCS_PUSHED;
             paint_button(dc,&r,state);
         }
-        if(!IsZoomed(window))paint_border(dc,width,height);
     }
     ReleaseDC(window,dc);
 }
