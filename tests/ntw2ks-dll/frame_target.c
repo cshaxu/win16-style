@@ -17,6 +17,25 @@ static BOOL blue_caption(HWND w)
     return pixel!=CLR_INVALID && GetBValue(pixel)>GetRValue(pixel);
 }
 
+static void pump_messages(void)
+{
+    MSG message;
+    while(PeekMessageW(&message,NULL,0,0,PM_REMOVE)){TranslateMessage(&message);DispatchMessageW(&message);}
+}
+
+static BOOL click_caption(HWND w,unsigned index,WPARAM hit)
+{
+    TITLEBARINFOEX info={.cbSize=sizeof(info)};
+    SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
+    POINT point={(info.rgrect[index].left+info.rgrect[index].right)/2,
+                 (info.rgrect[index].top+info.rgrect[index].bottom)/2};
+    SendMessageW(w,WM_NCLBUTTONDOWN,hit,MAKELPARAM(point.x,point.y));
+    if(GetCapture()!=w)return FALSE;
+    ScreenToClient(w,&point);
+    SendMessageW(w,WM_LBUTTONUP,0,MAKELPARAM(point.x,point.y));
+    pump_messages();return TRUE;
+}
+
 static uint64_t button_signature(HWND w,unsigned index)
 {
     TITLEBARINFOEX info={.cbSize=sizeof(info)};RECT outer;
@@ -81,6 +100,21 @@ int wmain(int argc,WCHAR **argv)
     BOOL no_icon=argc==2 && !lstrcmpW(argv[1],L"--no-icon");
     WNDCLASSW wc={.lpfnWndProc=procedure,.hInstance=instance,.hIcon=no_icon?NULL:LoadIconW(NULL,MAKEINTRESOURCEW(32515)),.lpszClassName=L"Win2kFrameFixture"};
     if(!RegisterClassW(&wc))return 1;
+    if(argc==2 && !lstrcmpW(argv[1],L"--buttons")){
+        HWND w=CreateWindowExW(0,wc.lpszClassName,L"Caption commands",WS_OVERLAPPEDWINDOW,
+                                80,80,420,260,NULL,NULL,instance,NULL);
+        if(!w)return 2;
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);
+        BOOL max=click_caption(w,3,HTMAXBUTTON) && IsZoomed(w);
+        BOOL restore=max && click_caption(w,3,HTMAXBUTTON) && !IsZoomed(w);
+        BOOL min=restore && click_caption(w,2,HTMINBUTTON) && IsIconic(w);
+        if(min){ShowWindow(w,SW_RESTORE);pump_messages();}
+        BOOL close=min && !IsIconic(w) && click_caption(w,5,HTCLOSE) && !IsWindow(w);
+        if(IsWindow(w))DestroyWindow(w);
+        printf("WIN2K COMMANDS bits=%u max=%d restore=%d min=%d close=%d\n",
+               (unsigned)(sizeof(void*)*8),max,restore,min,close);
+        return max && restore && min && close?0:3;
+    }
     if(argc==2 && !lstrcmpW(argv[1],L"--physical")){
         HWND w=CreateWindowExW(0,wc.lpszClassName,L"Caption mouse test",WS_OVERLAPPEDWINDOW,
                                 80,80,420,260,NULL,NULL,instance,NULL);
