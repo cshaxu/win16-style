@@ -35,7 +35,7 @@ M0 T25 S3 已完成首版 Win2000 普通 Win32 窗口接入、发布与远端复
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
 - Last allocated T25 S: 4
-- Last verified remote delivery: M0 T25 S4 P50，`9f85b08467d780ff650cae2111002628f70682dd`。
+- Last verified remote delivery: M0 T25 S4 P63，`a48cd88d9a93e618fc9f731e83122b9334a11044`。
 - Open task: M0 T25 S4；Win2000 普通 Win32 标题与外框绘制。
 
 ## Technical Baseline
@@ -105,3 +105,5 @@ S4 P61 用发布版复核双位宽标题按钮真实鼠标输入，见[记录](.
 S4 P62 对照原版修正标题渐变下的分隔线，见[交付记录](../history/M0-T25-S4-P62-caption-separator.md)。
 
 S4 P63 验证双位宽同线程窗口实际激活及标题颜色，见[记录](../history/M0-T25-S4-P63-window-activation.md)。
+
+S4 P64 按活动包要求审计已覆盖范围与限制，见[记录](../history/M0-T25-S4-P64-scope-audit.md)。
