@@ -35,12 +35,12 @@ M0 T25 S3 已完成首版 Win2000 普通 Win32 窗口接入、发布与远端复
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
 - Last allocated T25 S: 4
-- Last verified remote delivery: M0 T25 S4 P40，`a4beb137555be37200b379b51b4ce84abf1bf272`。
+- Last verified remote delivery: M0 T25 S4 P41，`3cf57e554b01e96462f75f7797226b5f1f2ca862`。
 - Open task: M0 T25 S4；Win2000 普通 Win32 标题与外框绘制。
 
 ## Technical Baseline
 
-已发布基线为五组件、八产品文件；纯 C17、MinGW GCC、Ninja 和 ccache。T25 S4 P34 八文件已发布于项目 assets 根目录与 O:/winnt，摘要和验证范围见[交付记录](../history/M0-T25-S4-P34-caption-added.md)。历史状态见[T24 工作快照](../history/M0-T24-S1-working-log.md)和[原状态快照](../history/M0-T24-current-state-archive.md)。
+已发布基线为五组件、八产品文件；纯 C17、MinGW GCC、Ninja 和 ccache。T25 S4 P42 八文件已发布于项目 assets 根目录与 O:/winnt，摘要和验证范围见[交付记录](../history/M0-T25-S4-P42-frame-geometry.md)。历史状态见[T24 工作快照](../history/M0-T24-S1-working-log.md)和[原状态快照](../history/M0-T24-current-state-archive.md)。
 
 S4 P32 补充扩展打印窗口双位宽取消路径验证，见[审计记录](../history/M0-T25-S4-P32-print-ex-audit.md)；没有产品二进制变更。
 
@@ -61,3 +61,5 @@ S4 P39 检查发布版自建普通窗口的 DC 画面，见[记录](../history/M
 S4 P40 发现常见默认配置下可缩放外框度量差距，后续几何修复须协调客户区、菜单和命中，见[记录](../history/M0-T25-S4-P40-frame-metric.md)。
 
 S4 P41 测量双位宽固定与可缩放窗口的边框及菜单几何，见[记录](../history/M0-T25-S4-P41-frame-baseline.md)。
+
+S4 P42 修正普通可缩放窗口的经典外框几何，见[交付记录](../history/M0-T25-S4-P42-frame-geometry.md)。

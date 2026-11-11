@@ -162,6 +162,15 @@ static BOOL blue_caption(HWND w)
     return pixel!=CLR_INVALID && GetBValue(pixel)>GetRValue(pixel);
 }
 
+static BOOL adjusted_menu_rect(HWND w,RECT *rect)
+{
+    MENUBARINFO bar={.cbSize=sizeof(bar)};TITLEBARINFOEX title={.cbSize=sizeof(title)};RECT outer;
+    if(!GetMenuBarInfo(w,OBJID_MENU,0,&bar) || !GetWindowRect(w,&outer))return FALSE;
+    SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&title);
+    int border=(int)(title.rcTitleBar.top-outer.top);
+    OffsetRect(rect,(int)(outer.left+border-bar.rcBar.left),(int)(title.rcTitleBar.bottom-bar.rcBar.top));return TRUE;
+}
+
 static void pump_messages(void)
 {
     MSG message;
@@ -484,8 +493,7 @@ int wmain(int argc,WCHAR **argv)
         if(!w){DestroyMenu(menu);return 3;}
         ShowWindow(w,SW_SHOW);UpdateWindow(w);SetForegroundWindow(w);
         RECT a,b;BOOL measured=GetMenuItemRect(w,menu,0,&a) && GetMenuItemRect(w,menu,1,&b);
-        UINT dpi=GetDpiForWindow(w);if(!dpi)dpi=96;int shift=GetSystemMetricsForDpi(SM_CYCAPTION,dpi)-MulDiv(19,(int)dpi,96);
-        OffsetRect(&a,0,-shift);OffsetRect(&b,0,-shift);
+        adjusted_menu_rect(w,&a);adjusted_menu_rect(w,&b);
         menu_physical_probe probe={.window=w,.first={(a.left+a.right)/2,(a.top+a.bottom)/2},.second={(b.left+b.right)/2,(b.top+b.bottom)/2},.toggle=toggle};
         if(toggle)probe.second=probe.first;
         menu_scenario=5;HANDLE worker=CreateThread(NULL,0,menu_physical_thread,&probe,0,NULL);
@@ -528,9 +536,8 @@ int wmain(int argc,WCHAR **argv)
             TITLEBARINFOEX title={.cbSize=sizeof(title)};RECT outer,item;
             SendMessageW(app_window,WM_GETTITLEBARINFOEX,0,(LPARAM)&title);GetWindowRect(app_window,&outer);
             HMENU menu=GetMenu(app_window);UINT dpi=GetDpiForWindow(app_window);if(!dpi)dpi=96;
-            int shift=GetSystemMetricsForDpi(SM_CYCAPTION,dpi)-MulDiv(19,(int)dpi,96);
             BOOL measured=menu && GetMenuItemRect(app_window,menu,0,&item);
-            if(measured)OffsetRect(&item,0,-shift);
+            if(measured)measured=adjusted_menu_rect(app_window,&item);
             LRESULT hit=measured?SendMessageW(app_window,WM_NCHITTEST,0,MAKELPARAM((item.left+item.right)/2,(item.top+item.bottom)/2)):0;
             BOOL opened=FALSE;
             if(measured && hit==HTMENU){
@@ -600,9 +607,7 @@ int wmain(int argc,WCHAR **argv)
         if(!w){DestroyMenu(menu);return 3;}
         ShowWindow(w,SW_SHOW);UpdateWindow(w);SetForegroundWindow(w);
         RECT a,b;BOOL measured=GetMenuItemRect(w,menu,0,&a) && GetMenuItemRect(w,menu,1,&b);
-        UINT dpi=GetDpiForWindow(w);if(!dpi)dpi=96;
-        int shift=GetSystemMetricsForDpi(SM_CYCAPTION,dpi)-MulDiv(19,(int)dpi,96);
-        OffsetRect(&a,0,-shift);OffsetRect(&b,0,-shift);
+        adjusted_menu_rect(w,&a);adjusted_menu_rect(w,&b);
         POINT click={(a.left+a.right)/2,(a.top+a.bottom)/2};menu_hover_point=(POINT){(b.left+b.right)/2,(b.top+b.bottom)/2};
         menu_scenario=nested?6:arrow?4:3;menu_idle=0;SetTimer(w,77,2500,NULL);
         SendMessageW(w,WM_NCLBUTTONDOWN,HTMENU,MAKELPARAM(click.x,click.y));
@@ -626,9 +631,7 @@ int wmain(int argc,WCHAR **argv)
         HWND edit=CreateWindowW(L"EDIT",L"",WS_CHILD|WS_VISIBLE|WS_TABSTOP,10,10,120,20,w,NULL,instance,NULL);
         if(edit)SetFocus(edit);
         RECT item;BOOL measured=GetMenuItemRect(w,menu,0,&item);
-        UINT dpi=GetDpiForWindow(w);if(!dpi)dpi=96;
-        int shift=GetSystemMetricsForDpi(SM_CYCAPTION,dpi)-MulDiv(19,(int)dpi,96);
-        OffsetRect(&item,0,-shift);POINT click={(item.left+item.right)/2,(item.top+item.bottom)/2};
+        adjusted_menu_rect(w,&item);POINT click={(item.left+item.right)/2,(item.top+item.bottom)/2};
         BOOL hit=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(click.x,click.y))==HTMENU;
         BOOL focus_ok=TRUE;
         for(menu_scenario=select?1:(keyboard||f10)?2:1;menu_scenario<=(select?1u:2u);++menu_scenario){
@@ -675,8 +678,18 @@ int wmain(int argc,WCHAR **argv)
                    (unsigned)(sizeof(void*)*8),resizable,with_menu,top,left,right,bottom,(long long)edge,
                    has_system?system.rcBar.left-outer.left:-1,has_system?system.rcBar.top-outer.top:-1,
                    has_menu?bar.rcBar.left-outer.left:-1,has_menu?bar.rcBar.top-outer.top:-1);
-            all=all && got && GetPropW(w,L"Win2kStyle.Frame")!=NULL && left>0 && right>0 && bottom>0 &&
-                edge==(resizable?HTLEFT:HTBORDER);
+            UINT dpi=GetDpiForWindow(w);if(!dpi)dpi=96;
+            int expected=MulDiv(resizable?4:3,(int)dpi,96);
+            BOOL corners=TRUE;
+            if(resizable){
+                const POINT points[]={{outer.left+1,outer.top+1},{outer.right-2,outer.top+1},
+                                      {outer.left+1,outer.bottom-2},{outer.right-2,outer.bottom-2}};
+                const LRESULT hits[]={HTTOPLEFT,HTTOPRIGHT,HTBOTTOMLEFT,HTBOTTOMRIGHT};
+                for(unsigned i=0;i<ARRAYSIZE(points);++i)
+                    if(SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(points[i].x,points[i].y))!=hits[i])corners=FALSE;
+            }
+            all=all && got && GetPropW(w,L"Win2kStyle.Frame")!=NULL && top==expected && left==expected && right==expected && bottom==expected &&
+                edge==(resizable?HTLEFT:HTBORDER) && corners;
             DestroyWindow(w);if(menu)DestroyMenu(menu);
         }
         return all?0:3;
@@ -749,9 +762,7 @@ int wmain(int argc,WCHAR **argv)
         BOOL attached=SetMenu(w,menu);DrawMenuBar(w);
         SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&added);
         MENUBARINFO bar={.cbSize=sizeof(bar)};BOOL has_bar=GetMenuBarInfo(w,OBJID_MENU,0,&bar);
-        UINT dpi=GetDpiForWindow(w);if(!dpi)dpi=96;
-        int shift=GetSystemMetricsForDpi(SM_CYCAPTION,dpi)-(added.rcTitleBar.bottom-added.rcTitleBar.top);
-        if(shift>0)OffsetRect(&bar.rcBar,0,-shift);
+        if(has_bar)adjusted_menu_rect(w,&bar.rcBar);
         POINT client={0,0};ClientToScreen(w,&client);
         BOOL menu_ok=attached && has_bar && bar.rcBar.top>=added.rcTitleBar.bottom && bar.rcBar.bottom<=client.y;
         BOOL detached=SetMenu(w,NULL);DrawMenuBar(w);
@@ -779,8 +790,7 @@ int wmain(int argc,WCHAR **argv)
         TITLEBARINFOEX title={.cbSize=sizeof(title)};SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&title);
         MENUBARINFO bar={.cbSize=sizeof(bar)};BOOL have_menu=GetMenuBarInfo(w,OBJID_MENU,0,&bar);
         UINT dpi=GetDpiForWindow(w);if(!dpi)dpi=96;
-        int shift=GetSystemMetricsForDpi(SM_CYCAPTION,dpi)-(title.rcTitleBar.bottom-title.rcTitleBar.top);
-        if(have_menu && shift>0)OffsetRect(&bar.rcBar,0,-shift);
+        if(have_menu)adjusted_menu_rect(w,&bar.rcBar);
         LRESULT client_hit=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(origin.x+20,origin.y+1));
         COLORREF menu_pixel=CLR_INVALID;
         HDC dc=GetWindowDC(w);if(dc && have_menu){menu_pixel=GetPixel(dc,bar.rcBar.right-outer.left-10,(bar.rcBar.top+bar.rcBar.bottom)/2-outer.top);ReleaseDC(w,dc);}

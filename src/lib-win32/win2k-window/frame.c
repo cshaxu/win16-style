@@ -46,13 +46,28 @@ static BOOL compact_enabled(HWND window)
     return !IsIconic(window) && !(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_LAYOUTRTL) && compact_menu(window);
 }
 
+static int frame_shift(HWND window,BOOL horizontal)
+{
+    LONG_PTR style=GetWindowLongPtrW(window,GWL_STYLE);
+    if(!(style&WS_THICKFRAME) || (style&WS_CAPTION)!=WS_CAPTION || IsZoomed(window) || !compact_enabled(window))return 0;
+    UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
+    int metric=GetSystemMetricsForDpi(horizontal?SM_CXSIZEFRAME:SM_CYSIZEFRAME,dpi)+
+               GetSystemMetricsForDpi(SM_CXPADDEDBORDER,dpi);
+    return max(0,metric-MulDiv(4,(int)dpi,96));
+}
+
+static void offset_menu(HWND window,RECT *rect)
+{
+    OffsetRect(rect,-frame_shift(window,TRUE),-menu_shift(window)-frame_shift(window,FALSE));
+}
+
 static int menu_item_at(HWND window,POINT point,RECT *bounds)
 {
     HMENU menu=GetMenu(window);if(!menu || !compact_enabled(window))return -1;
-    int count=GetMenuItemCount(menu),shift=menu_shift(window);
+    int count=GetMenuItemCount(menu);
     for(int i=0;i<count;++i){
         RECT r;if(!GetMenuItemRect(window,menu,(UINT)i,&r))return -1;
-        OffsetRect(&r,0,-shift);
+        offset_menu(window,&r);
         if(PtInRect(&r,point)){if(bounds)*bounds=r;return i;}
     }
     return -1;
@@ -62,7 +77,7 @@ static BOOL menu_bar_at(HWND window,POINT point)
 {
     MENUBARINFO bar={.cbSize=sizeof(bar)};
     if(!GetMenu(window) || !compact_enabled(window) || !GetMenuBarInfo(window,OBJID_MENU,0,&bar))return FALSE;
-    OffsetRect(&bar.rcBar,0,-menu_shift(window));return PtInRect(&bar.rcBar,point);
+    offset_menu(window,&bar.rcBar);return PtInRect(&bar.rcBar,point);
 }
 
 typedef struct menu_tracking { HWND window;HMENU root,active;int selected,target;BOOL armed;struct menu_tracking *previous; } menu_tracking;
@@ -111,7 +126,9 @@ static void paint_menu(HWND window,HDC dc,const RECT *outer)
 {
     HMENU menu=GetMenu(window);MENUBARINFO bar={.cbSize=sizeof(bar)};
     if(!menu || !compact_enabled(window) || !GetMenuBarInfo(window,OBJID_MENU,0,&bar))return;
-    int shift=menu_shift(window);RECT area=bar.rcBar;OffsetRect(&area,-outer->left,-outer->top-shift);
+    RECT area=bar.rcBar;offset_menu(window,&area);OffsetRect(&area,-outer->left,-outer->top);
+    POINT client={0,0};
+    if(ClientToScreen(window,&client) && client.y-outer->top>area.bottom)area.bottom=client.y-outer->top;
     HBRUSH face=CreateSolidBrush(RGB(192,192,192));if(!face)return;
     FillRect(dc,&area,face);DeleteObject(face);
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
@@ -125,7 +142,7 @@ static void paint_menu(HWND window,HDC dc,const RECT *outer)
             WCHAR text[512]={0};MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_STRING|MIIM_STATE,
                 .dwTypeData=text,.cch=ARRAYSIZE(text)-1};RECT r;
             if(!GetMenuItemInfoW(menu,(UINT)i,TRUE,&item) || !GetMenuItemRect(window,menu,(UINT)i,&r))continue;
-            OffsetRect(&r,-outer->left,-outer->top-shift);
+            offset_menu(window,&r);OffsetRect(&r,-outer->left,-outer->top);
             if(selected==(uintptr_t)i+1){HBRUSH active=CreateSolidBrush(RGB(0,0,128));if(active){FillRect(dc,&r,active);DeleteObject(active);}}
             SetTextColor(dc,(item.fState&MFS_DISABLED)?RGB(128,128,128):selected==(uintptr_t)i+1?RGB(255,255,255):RGB(0,0,0));
             DrawTextW(dc,text,-1,&r,DT_SINGLELINE|DT_VCENTER|DT_CENTER);
@@ -227,6 +244,25 @@ static void paint_border(HDC dc,int width,int height,int thickness)
     }
 }
 
+static void paint_shifted_icon(HWND window,HDC dc,const RECT *outer)
+{
+    int dx=frame_shift(window,TRUE),dy=frame_shift(window,FALSE);
+    if(!dx && !dy)return;
+    MENUBARINFO info={.cbSize=sizeof(info)};
+    if(!GetMenuBarInfo(window,OBJID_SYSMENU,0,&info))return;
+    RECT icon=info.rcBar;OffsetRect(&icon,-outer->left-dx,-outer->top-dy);
+    if(icon.right<=icon.left || icon.bottom<=icon.top)return;
+    HBRUSH face=CreateSolidBrush(RGB(192,192,192));if(!face)return;
+    FillRect(dc,&icon,face);DeleteObject(face);
+    HICON image=(HICON)SendMessageW(window,WM_GETICON,ICON_SMALL2,0);
+    if(!image)image=(HICON)SendMessageW(window,WM_GETICON,ICON_SMALL,0);
+    if(!image)image=(HICON)SendMessageW(window,WM_GETICON,ICON_BIG,0);
+    if(!image)image=(HICON)GetClassLongPtrW(window,GCLP_HICONSM);
+    if(!image)image=(HICON)GetClassLongPtrW(window,GCLP_HICON);
+    if(!image)image=LoadIconW(NULL,IDI_WINLOGO);
+    if(image)DrawIconEx(dc,icon.left,icon.top,image,icon.right-icon.left,icon.bottom-icon.top,0,NULL,DI_NORMAL);
+}
+
 static void paint(HWND window)
 {
     RECT outer;TITLEBARINFOEX info={0};WCHAR title[1024];
@@ -275,13 +311,14 @@ static void paint(HWND window)
         if(!IsZoomed(window)){
             int border_saved=SaveDC(dc);MENUBARINFO system={.cbSize=sizeof(system)};
             if(border_saved && GetMenuBarInfo(window,OBJID_SYSMENU,0,&system)){
-                RECT icon=system.rcBar;OffsetRect(&icon,-outer.left,-outer.top);
+                RECT icon=system.rcBar;OffsetRect(&icon,-outer.left-frame_shift(window,TRUE),-outer.top-frame_shift(window,FALSE));
                 ExcludeClipRect(dc,icon.left,icon.top,icon.right,icon.bottom);
             }
             paint_border(dc,width,height,caption.top);
             if(border_saved)RestoreDC(dc,border_saved);
         }
         paint_menu(window,dc,&outer);
+        paint_shifted_icon(window,dc,&outer);
         static const UINT buttons[]={0,0,DFCS_CAPTIONMIN,DFCS_CAPTIONMAX,DFCS_CAPTIONHELP,DFCS_CAPTIONCLOSE};
         for(unsigned i=2;i<CCHILDREN_TITLEBAR+1;++i){
             RECT r=info.rgrect[i];OffsetRect(&r,-outer.left,-outer.top);
@@ -310,7 +347,7 @@ static BOOL menu_input(HWND window,UINT message,WPARAM wp,LPARAM lp)
                 WCHAR candidate=*++p;if(candidate==L'&')continue;CharUpperBuffW(&candidate,1);
                 if(candidate==key){
                     RECT r;if(!GetMenuItemRect(window,menu,(UINT)i,&r))return TRUE;
-                    OffsetRect(&r,0,-menu_shift(window));
+                    offset_menu(window,&r);
                     return menu_input(window,WM_NCLBUTTONDOWN,HTMENU,MAKELPARAM((r.left+r.right)/2,(r.top+r.bottom)/2));
                 }
             }
@@ -329,7 +366,7 @@ static BOOL menu_input(HWND window,UINT message,WPARAM wp,LPARAM lp)
         MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_STATE|MIIM_ID|MIIM_SUBMENU};
         RECT native;if(!GetMenuItemInfoW(menu,(UINT)index,TRUE,&item) || (item.fState&MFS_DISABLED) ||
                        !GetMenuItemRect(window,menu,(UINT)index,&native))break;
-        OffsetRect(&native,0,-menu_shift(window));bounds=native;
+        offset_menu(window,&native);bounds=native;
         if(!SetPropW(window,menu_property,(HANDLE)(uintptr_t)(index+1)))break;
         tracking.selected=index;tracking.target=-1;tracking.root=tracking.active=item.hSubMenu;repaint_menu(window);
         if(item.hSubMenu)TrackPopupMenuEx(item.hSubMenu,TPM_LEFTALIGN|TPM_TOPALIGN,bounds.left,bounds.bottom,window,NULL);
@@ -384,7 +421,7 @@ static BOOL menu_keyboard_input(HWND window,UINT message,WPARAM wp,LPARAM lp)
     }
     if(wp==VK_DOWN || wp==VK_RETURN){
         RECT r;if(GetMenuItemRect(window,menu,(UINT)(selected-1),&r)){
-            OffsetRect(&r,0,-menu_shift(window));
+            offset_menu(window,&r);
             menu_input(window,WM_NCLBUTTONDOWN,HTMENU,MAKELPARAM((r.left+r.right)/2,(r.top+r.bottom)/2));
             if(IsWindow(window) && GetPropW(window,menu_keyboard_property)){
                 SetPropW(window,menu_property,(HANDLE)selected);repaint_menu(window);
@@ -468,12 +505,20 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
         int metric=(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)?SM_CYSMCAPTION:SM_CYCAPTION;
         int difference=GetSystemMetricsForDpi(metric,dpi)-caption_height(window);
         RECT *client=wp?&((NCCALCSIZE_PARAMS *)lp)->rgrc[0]:(RECT *)lp;
-        if(difference>0){client->top-=difference;if(wp)result&=~WVR_VALIDRECTS;}
+        int dx=frame_shift(window,TRUE),dy=frame_shift(window,FALSE);
+        if(difference>0 || dx || dy){
+            client->left-=dx;client->right+=dx;client->top-=max(0,difference)+dy;client->bottom+=dy;
+            if(wp)result&=~WVR_VALIDRECTS;
+        }
     }
     if(message==WM_GETTITLEBARINFOEX && lp){
         uintptr_t tracked=(uintptr_t)GetPropW(window,button_property);
         TITLEBARINFOEX *info=(TITLEBARINFOEX *)lp;
         if(info->cbSize>=sizeof(*info)){
+            int dx=frame_shift(window,TRUE),dy=frame_shift(window,FALSE);
+            info->rcTitleBar.left-=dx;info->rcTitleBar.right+=dx;
+            OffsetRect(&info->rcTitleBar,0,-dy);
+            OffsetRect(&info->rgrect[1],-dx,-dy);
             int height=caption_height(window);
             if(compact_enabled(window) &&
                height>0 && info->rcTitleBar.bottom-info->rcTitleBar.top>height)
@@ -488,14 +533,15 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
         else if(GetClientRect(window,&client) && ScreenToClient(window,&point) && PtInRect(&client,point))result=HTCLIENT;
     }
     if(message==WM_NCHITTEST && !IsIconic(window) &&
-       (result==HTCAPTION || result==HTMINBUTTON || result==HTMAXBUTTON || result==HTHELP || result==HTCLOSE)){
+       (GetWindowLongPtrW(window,GWL_STYLE)&WS_CAPTION)==WS_CAPTION){
         TITLEBARINFOEX info={.cbSize=sizeof(info)};POINT point={GET_X_LPARAM(lp),GET_Y_LPARAM(lp)};
         SendMessageW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
         static const LRESULT hits[]={0,0,HTMINBUTTON,HTMAXBUTTON,HTHELP,HTCLOSE};
         BOOL button=FALSE;
         for(unsigned i=2;i<ARRAYSIZE(hits);++i)
             if(!(info.rgstate[i]&STATE_SYSTEM_INVISIBLE) && PtInRect(&info.rgrect[i],point)){result=hits[i];button=TRUE;break;}
-        if(!button && PtInRect(&info.rcTitleBar,point))result=HTCAPTION;
+        if(!button && !(info.rgstate[1]&STATE_SYSTEM_INVISIBLE) && PtInRect(&info.rgrect[1],point))result=HTSYSMENU;
+        else if(!button && PtInRect(&info.rcTitleBar,point))result=HTCAPTION;
     }
     if(message==WM_NCPAINT || message==WM_NCACTIVATE || message==WM_SETTEXT || message==WM_SIZE ||
        message==WM_NCLBUTTONDOWN || message==WM_NCLBUTTONUP || message==WM_SETICON ||
