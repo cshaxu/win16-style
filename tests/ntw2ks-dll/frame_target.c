@@ -566,15 +566,15 @@ int wmain(int argc,WCHAR **argv)
             if(measured)measured=adjusted_menu_rect(app_window,&item);
             LRESULT hit=measured?SendMessageW(app_window,WM_NCHITTEST,0,MAKELPARAM((item.left+item.right)/2,(item.top+item.bottom)/2)):0;
             BOOL opened=FALSE;
-            if(measured && hit==HTMENU){
+            if(measured && hit==HTBORDER){
                 HANDLE cancel=CreateThread(NULL,0,cancel_app_menu,NULL,0,NULL);
                 DWORD_PTR reply=0;
-                BOOL sent=cancel && SendMessageTimeoutW(app_window,WM_NCLBUTTONDOWN,HTMENU,
+                BOOL sent=cancel && SendMessageTimeoutW(app_window,WM_NCLBUTTONDOWN,HTBORDER,
                     MAKELPARAM((item.left+item.right)/2,(item.top+item.bottom)/2),SMTO_ABORTIFHUNG,4000,&reply);
                 if(cancel){WaitForSingleObject(cancel,3000);CloseHandle(cancel);}
                 opened=sent && InterlockedCompareExchange(&app_popup_seen,0,0)!=0;
             }
-            ok=measured && title.rcTitleBar.bottom-title.rcTitleBar.top==MulDiv(19,(int)dpi,96) && hit==HTMENU && opened;
+            ok=measured && title.rcTitleBar.bottom-title.rcTitleBar.top==MulDiv(19,(int)dpi,96) && hit==HTBORDER && opened;
             printf("WIN2K REAL APP bits=%u title=%ld menu=%d hit=%lld opened=%d\n",(unsigned)(sizeof(void*)*8),
                    title.rcTitleBar.bottom-title.rcTitleBar.top,measured,(long long)hit,opened);
             DWORD_PTR activation_reply=0;
@@ -656,9 +656,11 @@ int wmain(int argc,WCHAR **argv)
         ShowWindow(w,SW_SHOW);UpdateWindow(w);SetForegroundWindow(w);
         HWND edit=CreateWindowW(L"EDIT",L"",WS_CHILD|WS_VISIBLE|WS_TABSTOP,10,10,120,20,w,NULL,instance,NULL);
         if(edit)SetFocus(edit);
-        RECT item;BOOL measured=GetMenuItemRect(w,menu,0,&item);
+        RECT item={0};BOOL measured=GetMenuItemRect(w,menu,0,&item);
+        POINT native={(item.left+item.right)/2,(item.top+item.bottom)/2};
+        BOOL native_neutral=measured && SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(native.x,native.y))!=HTMENU;
         adjusted_menu_rect(w,&item);POINT click={(item.left+item.right)/2,(item.top+item.bottom)/2};
-        BOOL hit=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(click.x,click.y))==HTMENU;
+        BOOL hit=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(click.x,click.y))==HTBORDER;
         BOOL focus_ok=TRUE;
         for(menu_scenario=select?1:(keyboard||f10)?2:1;menu_scenario<=(select?1u:2u);++menu_scenario){
             menu_idle=0;SetTimer(w,77,2500,NULL);
@@ -670,13 +672,13 @@ int wmain(int argc,WCHAR **argv)
                 if(!select)SendMessageW(w,WM_KEYDOWN,VK_ESCAPE,1);
                 focus_ok=focus_ok && GetFocus()==edit;
             }
-            else SendMessageW(w,WM_NCLBUTTONDOWN,HTMENU,MAKELPARAM(click.x,click.y));
+            else SendMessageW(w,WM_NCLBUTTONDOWN,HTBORDER,MAKELPARAM(click.x,click.y));
             KillTimer(w,77);pump_messages();
         }
         menu_scenario=0;
-        BOOL ok=measured && hit && focus_ok && !menu_timeout && menu_entries==((keyboard||f10)?1u:2u) && menu_exits==menu_entries && menu_commands==(select?1u:(keyboard||f10)?0u:1u) && GetCapture()==NULL;
-        printf("WIN2K MENU INPUT bits=%u keyboard=%d f10=%d focus=%d hit=%d entries=%u exits=%u commands=%u timeout=%d\n",
-               (unsigned)(sizeof(void*)*8),keyboard,f10,focus_ok,hit,menu_entries,menu_exits,menu_commands,menu_timeout);
+        BOOL ok=measured && native_neutral && hit && focus_ok && !menu_timeout && menu_entries==((keyboard||f10)?1u:2u) && menu_exits==menu_entries && menu_commands==(select?1u:(keyboard||f10)?0u:1u) && GetCapture()==NULL;
+        printf("WIN2K MENU INPUT bits=%u keyboard=%d f10=%d focus=%d hit=%d entries=%u exits=%u commands=%u timeout=%d native_neutral=%d\n",
+               (unsigned)(sizeof(void*)*8),keyboard,f10,focus_ok,hit,menu_entries,menu_exits,menu_commands,menu_timeout,native_neutral);
         DestroyWindow(w);DestroyMenu(menu);return ok?0:3;
     }
     if(argc==2 && !lstrcmpW(argv[1],L"--scroll-geometry")){
@@ -861,7 +863,7 @@ int wmain(int argc,WCHAR **argv)
         BOOL good=bare?(title.rcTitleBar.bottom-title.rcTitleBar.top==MulDiv(19,(int)dpi,96) &&
                         title.rcTitleBar.bottom<=origin.y && client_hit==HTCLIENT):
                        (have_menu && title.rcTitleBar.bottom-title.rcTitleBar.top==MulDiv(19,(int)dpi,96) &&
-                        bar.rcBar.top>=title.rcTitleBar.bottom && bar.rcBar.bottom<=origin.y && client_hit==HTCLIENT && blank_hit==HTMENU && menu_pixel==RGB(212,208,200));
+                        bar.rcBar.top>=title.rcTitleBar.bottom && bar.rcBar.bottom<=origin.y && client_hit==HTCLIENT && blank_hit==HTBORDER && menu_pixel==RGB(212,208,200));
         DestroyWindow(w);if(menu)DestroyMenu(menu);return good?0:4;
     }
     if(argc==2 && !lstrcmpW(argv[1],L"--hit-transparent")){

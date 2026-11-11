@@ -14,7 +14,6 @@ static const WCHAR button_property[]=L"Win2kStyle.CaptionButton";
 static const WCHAR menu_property[]=L"Win2kStyle.Menu";
 static const WCHAR menu_keyboard_property[]=L"Win2kStyle.MenuKeyboard";
 static const WCHAR menu_focus_property[]=L"Win2kStyle.MenuFocus";
-static const WCHAR menu_hover_property[]=L"Win2kStyle.MenuHover";
 static const WCHAR pending_property[]=L"Win2kStyle.FramePending";
 static _Atomic UINT frame_message;
 
@@ -165,15 +164,6 @@ static void repaint_menu(HWND window)
     RECT outer;if(!GetWindowRect(window,&outer))return;
     HDC dc=GetWindowDC(window);if(!dc)return;
     paint_menu(window,dc,&outer);ReleaseDC(window,dc);
-}
-
-static void refresh_menu_overlap(HWND window,BOOL immediate)
-{
-    MENUBARINFO bar={.cbSize=sizeof(bar)};RECT client,dirty;
-    if(!GetMenuBarInfo(window,OBJID_MENU,0,&bar) || !GetClientRect(window,&client))return;
-    MapWindowPoints(NULL,window,(POINT *)&bar.rcBar,2);
-    if(IntersectRect(&dirty,&bar.rcBar,&client))
-        RedrawWindow(window,&dirty,NULL,RDW_INVALIDATE|RDW_ERASE|RDW_ALLCHILDREN|(immediate?RDW_UPDATENOW:0));
 }
 
 static void classic_buttons(HWND window,TITLEBARINFOEX *info)
@@ -516,20 +506,13 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
         if(RemovePropW(window,pending_property))recalculate_frame(window);
         SetLastError(incoming);return 0;
     }
-    if(message==WM_NCMOUSEMOVE && wp==HTMENU && compact_enabled(window)){
-        SetLastError(incoming);LRESULT result=DefSubclassProc(window,message,wp,lp);DWORD outcome=GetLastError();
-        if(!IsWindow(window)){SetLastError(outcome);return result;}
-        POINT point={GET_X_LPARAM(lp),GET_Y_LPARAM(lp)};HMENU menu=GetMenu(window);
-        int count=GetMenuItemCount(menu),index=-1;
-        for(int i=0;i<count;++i){RECT item;if(GetMenuItemRect(window,menu,(UINT)i,&item) && PtInRect(&item,point)){index=i;break;}}
-        HANDLE hover=(HANDLE)(uintptr_t)(index+2);
-        if(GetPropW(window,menu_hover_property)!=hover){
-            SetPropW(window,menu_hover_property,hover);refresh_menu_overlap(window,TRUE);repaint_menu(window);
+    if((message==WM_NCLBUTTONDOWN || message==WM_NCLBUTTONDBLCLK) && wp==HTBORDER && compact_enabled(window)){
+        POINT point={GET_X_LPARAM(lp),GET_Y_LPARAM(lp)};
+        if(menu_bar_at(window,point)){
+            if(message==WM_NCLBUTTONDOWN)menu_input(window,message,HTMENU,lp);
+            SetLastError(incoming);return 0;
         }
-        SetLastError(outcome);return result;
     }
-    if((message==WM_NCMOUSELEAVE || (message==WM_NCMOUSEMOVE && wp!=HTMENU)) && RemovePropW(window,menu_hover_property))
-        refresh_menu_overlap(window,FALSE);
     if(message==WM_ENTERMENULOOP)win2k_system_menu_begin(window);
     else if(message==WM_INITMENUPOPUP && HIWORD(lp))win2k_system_menu_set(window,(HMENU)wp);
     else if(message==WM_ENTERIDLE && wp==MSGF_MENU)win2k_system_menu_idle(window);
@@ -549,7 +532,7 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
         HANDLE hit=(HANDLE)(uintptr_t)(wp+1);
         if(GetPropW(window,hover_property)!=hit){SetPropW(window,hover_property,hit);repaint=TRUE;}
     }else if(message==WM_NCMOUSELEAVE){RemovePropW(window,hover_property);repaint=TRUE;}
-    if(message==WM_NCDESTROY){RemovePropW(window,menu_hover_property);RemovePropW(window,pending_property);RemovePropW(window,menu_focus_property);RemovePropW(window,menu_keyboard_property);RemovePropW(window,menu_property);RemovePropW(window,hover_property);RemovePropW(window,frame_property);RemoveWindowSubclass(window,frame_proc,id);}
+    if(message==WM_NCDESTROY){RemovePropW(window,pending_property);RemovePropW(window,menu_focus_property);RemovePropW(window,menu_keyboard_property);RemovePropW(window,menu_property);RemovePropW(window,hover_property);RemovePropW(window,frame_property);RemoveWindowSubclass(window,frame_proc,id);}
     SetLastError(incoming);
     LRESULT result=DefSubclassProc(window,message,wp,lp);
     DWORD outcome=GetLastError();
@@ -586,8 +569,9 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
     BOOL preserve_hit=message==WM_NCHITTEST && (result==HTTRANSPARENT || result==HTERROR || result==HTNOWHERE || result==HTCLIENT);
     if(message==WM_NCHITTEST && !preserve_hit && compact_enabled(window)){
         RECT client;POINT point={GET_X_LPARAM(lp),GET_Y_LPARAM(lp)};
-        if(menu_bar_at(window,point))result=HTMENU;
+        if(menu_bar_at(window,point))result=HTBORDER;
         else if(GetClientRect(window,&client) && ScreenToClient(window,&point) && PtInRect(&client,point))result=HTCLIENT;
+        else if(result==HTMENU)result=HTBORDER;
     }
     if(message==WM_NCHITTEST && !preserve_hit && !IsIconic(window) &&
        (GetWindowLongPtrW(window,GWL_STYLE)&WS_CAPTION)==WS_CAPTION){
