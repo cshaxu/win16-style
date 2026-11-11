@@ -143,3 +143,5 @@ S5 P8 验证系统菜单取消消息，见[记录](../history/M0-T25-S5-P8-menu-
 S5 P9 修复标题按钮系统命令的同步顺序，见[交付记录](../history/M0-T25-S5-P9-caption-command-order.md)。
 
 S5 P10 复核实际应用及创建失败，见[记录](../history/M0-T25-S5-P10-real-app-regression.md)。
+
+S5 P11 对照启动环境并验证实际 Solitaire，见[记录](../history/M0-T25-S5-P11-solitaire-environment.md)。
