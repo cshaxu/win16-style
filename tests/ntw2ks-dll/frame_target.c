@@ -573,6 +573,11 @@ int wmain(int argc,WCHAR **argv)
         if(app_window){
             TITLEBARINFOEX title={.cbSize=sizeof(title)};RECT outer,item;
             SendMessageW(app_window,WM_GETTITLEBARINFOEX,0,(LPARAM)&title);GetWindowRect(app_window,&outer);
+            printf("WIN2K REAL BUTTONS title=%ld,%ld,%ld,%ld min=%ld,%ld,%ld,%ld max=%ld,%ld,%ld,%ld close=%ld,%ld,%ld,%ld\n",
+                   title.rcTitleBar.left-outer.left,title.rcTitleBar.top-outer.top,title.rcTitleBar.right-outer.left,title.rcTitleBar.bottom-outer.top,
+                   title.rgrect[2].left-outer.left,title.rgrect[2].top-outer.top,title.rgrect[2].right-outer.left,title.rgrect[2].bottom-outer.top,
+                   title.rgrect[3].left-outer.left,title.rgrect[3].top-outer.top,title.rgrect[3].right-outer.left,title.rgrect[3].bottom-outer.top,
+                   title.rgrect[5].left-outer.left,title.rgrect[5].top-outer.top,title.rgrect[5].right-outer.left,title.rgrect[5].bottom-outer.top);
             HMENU menu=GetMenu(app_window);UINT dpi=GetDpiForWindow(app_window);if(!dpi)dpi=96;
             BOOL measured=menu && GetMenuItemRect(app_window,menu,0,&item);
             if(measured)measured=adjusted_menu_rect(app_window,&item);
@@ -1095,14 +1100,14 @@ int wmain(int argc,WCHAR **argv)
     for(unsigned i=2;i<=5;++i){
         if(info.rgstate[i]&STATE_SYSTEM_INVISIBLE)continue;
         RECT r=info.rgrect[i];
-        int expected_top=info.rcTitleBar.top+(info.rcTitleBar.bottom-info.rcTitleBar.top-expected_height+1)/2;
+        int expected_top=info.rcTitleBar.top+(info.rcTitleBar.bottom-info.rcTitleBar.top-expected_height)/2;
         if(r.right-r.left!=expected_width || r.bottom-r.top!=expected_height || r.top!=expected_top)button_size=FALSE;
         static const LRESULT hits[]={0,0,HTMINBUTTON,HTMAXBUTTON,HTHELP,HTCLOSE};
         LRESULT observed=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM((r.left+r.right)/2,(r.top+r.bottom)/2));
         if(observed!=hits[i])button_hits=FALSE;
     }
     if(!(info.rgstate[5]&STATE_SYSTEM_INVISIBLE) && !(info.rgstate[3]&STATE_SYSTEM_INVISIBLE)){
-        if(info.rgrect[5].right!=info.rcTitleBar.right)button_size=FALSE;
+        if(info.rgrect[5].right!=info.rcTitleBar.right-MulDiv(2,(int)dpi,96))button_size=FALSE;
         POINT gap={info.rgrect[5].left-1,(info.rgrect[5].top+info.rgrect[5].bottom)/2};
         if(SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(gap.x,gap.y))!=HTCAPTION)button_hits=FALSE;
     }

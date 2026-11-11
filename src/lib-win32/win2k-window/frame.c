@@ -191,14 +191,14 @@ static void classic_buttons(HWND window,TITLEBARINFOEX *info)
     if(width<=0 || height<=0 || title.bottom-title.top<height)return;
     RECT result[CCHILDREN_TITLEBAR+1];
     for(unsigned i=0;i<ARRAYSIZE(result);++i)result[i]=info->rgrect[i];
-    int right=title.right;BOOL close=FALSE;
+    int right=title.right-gap;BOOL close=FALSE;
     static const unsigned order[]={5,4,3,2};
     for(unsigned n=0;n<ARRAYSIZE(order);++n){
         unsigned i=order[n];
         if((info->rgstate[i]&STATE_SYSTEM_INVISIBLE) || info->rgrect[i].right<=info->rgrect[i].left)continue;
         if(close){right-=gap;close=FALSE;}
         if(right-width<title.left)return;
-        result[i]=(RECT){right-width,title.top+(title.bottom-title.top-height+1)/2,right,title.top+(title.bottom-title.top-height+1)/2+height};
+        result[i]=(RECT){right-width,title.top+(title.bottom-title.top-height)/2,right,title.top+(title.bottom-title.top-height)/2+height};
         right-=width;if(i==5)close=TRUE;
     }
     for(unsigned i=2;i<ARRAYSIZE(result);++i)info->rgrect[i]=result[i];
