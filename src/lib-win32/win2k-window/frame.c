@@ -251,6 +251,9 @@ static void paint_shifted_icon(HWND window,HDC dc,const RECT *outer)
     MENUBARINFO info={.cbSize=sizeof(info)};
     if(!GetMenuBarInfo(window,OBJID_SYSMENU,0,&info))return;
     RECT icon=info.rcBar;OffsetRect(&icon,-outer->left-dx,-outer->top-dy);
+    TITLEBARINFOEX title={.cbSize=sizeof(title)};SendMessageW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&title);
+    icon.top=max(icon.top,title.rcTitleBar.top-outer->top);
+    icon.bottom=min(icon.bottom,title.rcTitleBar.bottom-outer->top);
     if(icon.right<=icon.left || icon.bottom<=icon.top)return;
     HBRUSH face=CreateSolidBrush(RGB(192,192,192));if(!face)return;
     FillRect(dc,&icon,face);DeleteObject(face);
@@ -260,7 +263,11 @@ static void paint_shifted_icon(HWND window,HDC dc,const RECT *outer)
     if(!image)image=(HICON)GetClassLongPtrW(window,GCLP_HICONSM);
     if(!image)image=(HICON)GetClassLongPtrW(window,GCLP_HICON);
     if(!image)image=LoadIconW(NULL,IDI_WINLOGO);
-    if(image)DrawIconEx(dc,icon.left,icon.top,image,icon.right-icon.left,icon.bottom-icon.top,0,NULL,DI_NORMAL);
+    UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
+    int width=min(icon.right-icon.left,GetSystemMetricsForDpi(SM_CXSMICON,dpi));
+    int height=min(icon.bottom-icon.top,GetSystemMetricsForDpi(SM_CYSMICON,dpi));
+    if(image && width>0 && height>0)DrawIconEx(dc,icon.left+(icon.right-icon.left-width)/2,
+        icon.top+(icon.bottom-icon.top-height)/2,image,width,height,0,NULL,DI_NORMAL);
 }
 
 static void paint(HWND window)

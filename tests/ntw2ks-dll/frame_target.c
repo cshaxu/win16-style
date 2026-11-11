@@ -665,6 +665,7 @@ int wmain(int argc,WCHAR **argv)
             HWND w=CreateWindowExW(0,wc.lpszClassName,L"Border metrics",style,80,80,420,260,NULL,menu,instance,NULL);
             if(!w){if(menu)DestroyMenu(menu);return 2;}
             ShowWindow(w,SW_SHOW);UpdateWindow(w);
+            SendMessageW(w,WM_NCACTIVATE,TRUE,0);
             RECT outer,client;POINT origin={0,0};TITLEBARINFOEX title={.cbSize=sizeof(title)};
             BOOL got=GetWindowRect(w,&outer) && GetClientRect(w,&client) && ClientToScreen(w,&origin);
             SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&title);
@@ -674,10 +675,19 @@ int wmain(int argc,WCHAR **argv)
             BOOL has_system=GetMenuBarInfo(w,OBJID_SYSMENU,0,&system);
             BOOL has_menu=with_menu && GetMenuBarInfo(w,OBJID_MENU,0,&bar);
             LRESULT edge=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(outer.left+1,(outer.top+outer.bottom)/2));
-            printf("WIN2K FRAME BOUNDS bits=%u resize=%d menu=%d top=%d left=%d right=%d bottom=%d edge=%lld icon=%ld,%ld bar=%ld,%ld\n",
+            unsigned menu_spill=0;
+            if(with_menu && resizable){
+                HDC dc=GetWindowDC(w);
+                if(dc){
+                    for(int y=(int)(title.rcTitleBar.bottom-outer.top);y<(int)(title.rcTitleBar.bottom-outer.top)+3;++y)
+                        for(int x=left;x<left+20;++x)if(GetPixel(dc,x,y)!=RGB(192,192,192))++menu_spill;
+                    ReleaseDC(w,dc);
+                }else menu_spill=UINT_MAX;
+            }
+            printf("WIN2K FRAME BOUNDS bits=%u resize=%d menu=%d top=%d left=%d right=%d bottom=%d edge=%lld icon=%ld,%ld bar=%ld,%ld spill=%u\n",
                    (unsigned)(sizeof(void*)*8),resizable,with_menu,top,left,right,bottom,(long long)edge,
                    has_system?system.rcBar.left-outer.left:-1,has_system?system.rcBar.top-outer.top:-1,
-                   has_menu?bar.rcBar.left-outer.left:-1,has_menu?bar.rcBar.top-outer.top:-1);
+                   has_menu?bar.rcBar.left-outer.left:-1,has_menu?bar.rcBar.top-outer.top:-1,menu_spill);
             UINT dpi=GetDpiForWindow(w);if(!dpi)dpi=96;
             int expected=MulDiv(resizable?4:3,(int)dpi,96);
             BOOL corners=TRUE;
@@ -689,7 +699,7 @@ int wmain(int argc,WCHAR **argv)
                     if(SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(points[i].x,points[i].y))!=hits[i])corners=FALSE;
             }
             all=all && got && GetPropW(w,L"Win2kStyle.Frame")!=NULL && top==expected && left==expected && right==expected && bottom==expected &&
-                edge==(resizable?HTLEFT:HTBORDER) && corners;
+                edge==(resizable?HTLEFT:HTBORDER) && corners && !menu_spill;
             DestroyWindow(w);if(menu)DestroyMenu(menu);
         }
         return all?0:3;
