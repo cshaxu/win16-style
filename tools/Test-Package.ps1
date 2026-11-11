@@ -64,6 +64,8 @@ try{
     $pair=@($run,$d32,$d64,(Join-Path $x86 'launch-target.exe'),(Join-Path $x64 'launch-target.exe'))
     $tree=@($run,$d32,$d64,(Join-Path $x86 'propagate-target.exe'),(Join-Path $x64 'propagate-target.exe'))
     $cases=@(
+        (Case 'process-lifecycle-x86' (Join-Path $x86 'core-process-lifecycle.exe') @() @('PROCESS_LIFECYCLE_PASS success=1 prepare_failure=1 resume_failure=1 exited=1') 15),
+        (Case 'process-lifecycle-x64' (Join-Path $x64 'core-process-lifecycle.exe') @() @('PROCESS_LIFECYCLE_PASS success=1 prepare_failure=1 resume_failure=1 exited=1') 15),
         (Case 'ntw2ks-button-x86' (Join-Path $x86 'core-ntw2ks-button.exe') @((Join-Path $Package 'ntw2ks32.dll')) @('NTW2KS_BUTTON_OK bits=32 states=5 native_equivalent=1') 15),
         (Case 'ntw2ks-button-x64' (Join-Path $x64 'core-ntw2ks-button.exe') @((Join-Path $Package 'ntw2ks64.dll')) @('NTW2KS_BUTTON_OK bits=64 states=5 native_equivalent=1') 15),
         (Case 'ntw2ks-staging-x86-x86' (Join-Path $x86 'ntw2ks-staging.exe') @((Join-Path $x86 'ntw2ks-staging-target.exe'),$Package) @('NTW2KS STAGING PASS selected=win2k win16_absent=1') 20),

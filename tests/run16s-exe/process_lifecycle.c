@@ -23,9 +23,13 @@ int main(int argc,char **argv)
     CHECK(start(&child));CHECK(DuplicateHandle(GetCurrentProcess(),child.hProcess,GetCurrentProcess(),&observed,0,FALSE,DUPLICATE_SAME_ACCESS));
     result=ERROR_ACCESS_DENIED;CHECK(win32_process_activate(&child,prepare,&result,&phase)==ERROR_ACCESS_DENIED);
     CHECK(phase==WIN32_PROCESS_PREPARE_FAILED && !child.hProcess && !child.hThread);
-    CHECK(WaitForSingleObject(observed,5000)==WAIT_OBJECT_0);CloseHandle(observed);
-    CHECK(start(&child));CHECK(SuspendThread(child.hThread)==1);result=0;
+    CHECK(WaitForSingleObject(observed,5000)==WAIT_OBJECT_0);
+    CHECK(GetExitCodeProcess(observed,&code) && code==ERROR_ACCESS_DENIED);CloseHandle(observed);
+    CHECK(start(&child));CHECK(DuplicateHandle(GetCurrentProcess(),child.hProcess,GetCurrentProcess(),&observed,0,FALSE,DUPLICATE_SAME_ACCESS));
+    CHECK(SuspendThread(child.hThread)==1);result=0;
     CHECK(win32_process_activate(&child,prepare,&result,&phase)==ERROR_INVALID_STATE);
     CHECK(phase==WIN32_PROCESS_RESUME_FAILED && !child.hProcess && !child.hThread);
-    puts("PROCESS_LIFECYCLE_PASS success=1 prepare_failure=1 resume_failure=1");return 0;
+    CHECK(WaitForSingleObject(observed,5000)==WAIT_OBJECT_0);
+    CHECK(GetExitCodeProcess(observed,&code) && code==ERROR_INVALID_STATE);CloseHandle(observed);
+    puts("PROCESS_LIFECYCLE_PASS success=1 prepare_failure=1 resume_failure=1 exited=1");return 0;
 }
