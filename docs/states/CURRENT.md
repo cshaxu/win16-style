@@ -40,6 +40,8 @@ M0 T25 S6 按已验证的有限技术范围收口，详见[收口记录](../hist
 
 ## Technical Baseline
 
+S7 P1 检查实际扫雷、Solitaire 和双位宽传播，见[记录](../history/M0-T25-S7-P1-real-apps.md)。
+
 S6 P1 验证双位宽连续尺寸变化的几何与有限采样，见[记录](../history/M0-T25-S6-P1-resize-cycle.md)。
 
 S6 P2 验证重复最大化和还原，见[记录](../history/M0-T25-S6-P2-zoom-cycle.md)。
