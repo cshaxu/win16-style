@@ -40,6 +40,8 @@ M0 T25 S7 按已验证的有限技术范围收口，详见[收口记录](../hist
 
 ## Technical Baseline
 
+S8 P1 冻结最终审计覆盖清单，见[记录](../history/M0-T25-S8-P1-audit-scope.md)。
+
 S7 P13 按有限范围收口并准入 S8，见[记录](../history/M0-T25-S7-P13-closure.md)。
 
 S7 P1 检查实际扫雷、Solitaire 和双位宽传播，见[记录](../history/M0-T25-S7-P1-real-apps.md)。
