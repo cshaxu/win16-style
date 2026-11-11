@@ -2,26 +2,26 @@
 
 ## Current Work
 
-M0 T25 S6 按已验证的有限技术范围收口，详见[收口记录](../history/M0-T25-S6-P5-closure.md)；真实拖动/缩放、瞬时闪烁、跨屏 DPI 和部分前台焦点仍未证明，转交真实程序回归及最终审计，不记通过。T25 保持开放，现进入 S7 多进程与真实应用回归。
+M0 T25 S7 按已验证的有限技术范围收口，详见[收口记录](../history/M0-T25-S7-P13-closure.md)；真实键盘、菜单切换、连续闪烁、跨屏 DPI、完整包矩阵和运行中样式恢复仍未证明或未实现，交最终审计，不记通过。T25 保持开放，现进入 S8 统一审计。
 
-## M0 T25 S7 Packet
+## M0 T25 S8 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | New；T25 内下一 S。 |
-| Admission And Approval | 用户要求继续完成普通 Win32 的 Windows 2000 外框并授权自行规划 S；S7 属于原定序列。 |
-| Objective | 用实际普通 Win32 程序和自有双位宽目标检查启动、传播、标题外框、菜单与窗口行为，核查 Win16 路径及失败清理。 |
+| Admission And Approval | 用户要求完成普通 Win32 的 Windows 2000 外框并授权自行规划及继续 S；S8 为已提交计划中的最终审计。 |
+| Objective | 按原版参考、实现、实际程序、交互、双位宽、发布和恢复边界逐项审计 T25，修复可复现的高优先级缺陷并如实记录未覆盖项。 |
 | Non-goals | 不声称 UWP、WinUI、应用自绘客户区、控件内部或 Win2000 全局模式已支持。 |
-| Reference Baseline | S5 P9 八文件发布包；S6 P5 有限技术收口，真实输入、完整包矩阵和视觉验收仍未完成。 |
-| Candidate Proposal | docs/proposals/windows-2000-classic.md 用户收窄后的 S7。 |
+| Reference Baseline | S5 P9 八文件发布包；S7 P13 有限技术收口及其列出的遗留项。 |
+| Candidate Proposal | docs/proposals/windows-2000-classic.md 已提交版本中用户收窄后的 S8；工作区并行修改不自动准入。 |
 | Files And ABI Surface | run16s、ntw2ks、共享进程能力、win2k-window 及对应测试；必要变更保持 ABI 和既有样式行为。 |
 | Applicable Rules | M0；纯 C17、MinGW GCC、Ninja、ccache；八文件同批交付。 |
-| Verification | 双位宽启动/传播及清理、实际 32/64 位程序外框、对话框和菜单、默认 Win16 回归；明确真实输入及 DPI 范围。 |
+| Verification | 核实双位宽启动与传播、真实程序、外框和菜单证据、默认 Win16 回归及发布摘要；真实输入、DPI 和未覆盖项分别列明。 |
 | Expected Markers | 分开报告启动、加载、附着、绘制、交互、退出及资源清理；可用时对照原版。 |
 | Asset Needs | 保留图形资源与来源声明；实际应用只读使用，不复制或修改样本。 |
 | Reporting Requirements | 区分消息、真实输入、实际程序、前台焦点、各 DPI、用户视觉验收与未覆盖范围。 |
 | Stop Conditions | 不创建或切换隔离桌面；不改变系统安全设置、目标文件或兄弟仓库。 |
-| Exit Criteria | 已准入范围实现及实际验证，按规范构建、必要发布、测试、提交推送与远端复核；受限项不计通过并交最终审计。 |
+| Exit Criteria | 完成冻结清单逐项审计和必要修复，按规范完成适用构建、发布、测试、提交、推送及远端复核；未验证或缺失能力如实保留，不虚构通过。 |
 | Original Owner Request | 实现普通 Win32 程序的 Windows 2000 经典窗口样式。 |
 | Similar-Issue Sweep | 对照真实程序与自有模型，检查位宽、进程传播、启动顺序、窗口交互和正常退出。 |
 
@@ -34,11 +34,13 @@ M0 T25 S6 按已验证的有限技术范围收口，详见[收口记录](../hist
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
-- Last allocated T25 S: 7
+- Last allocated T25 S: 8
 - Last verified remote delivery: M0 T25 S4 P73，`826503cf6fb16f2da7fad130a829118d65a6a4c3`。
-- Open task: M0 T25 S7；Win2000 多进程与真实应用回归。
+- Open task: M0 T25 S8；Win2000 外框统一审计。
 
 ## Technical Baseline
+
+S7 P13 按有限范围收口并准入 S8，见[记录](../history/M0-T25-S7-P13-closure.md)。
 
 S7 P1 检查实际扫雷、Solitaire 和双位宽传播，见[记录](../history/M0-T25-S7-P1-real-apps.md)。
 
