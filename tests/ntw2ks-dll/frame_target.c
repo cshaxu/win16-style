@@ -98,6 +98,8 @@ static LRESULT CALLBACK procedure(HWND w,UINT message,WPARAM wp,LPARAM lp)
                 PostMessageW(w,WM_MOUSEMOVE,0,MAKELPARAM(menu_hover_point.x,menu_hover_point.y));
             }
             else if(menu_scenario==4 && menu_entries==1)PostMessageW(w,WM_KEYDOWN,VK_RIGHT,1);
+            /* This case checks switching; posted Escape is not reliable input. */
+            else if((menu_scenario==3 || menu_scenario==4) && menu_entries>1)EndMenu();
             else if(menu_scenario==6 && menu_popup_inits==1){PostMessageW(w,WM_KEYDOWN,VK_DOWN,1);PostMessageW(w,WM_KEYDOWN,VK_RIGHT,1);}
             else if(menu_scenario==6){PostMessageW(w,WM_KEYDOWN,VK_ESCAPE,1);PostMessageW(w,WM_KEYDOWN,VK_ESCAPE,1);}
             else PostMessageW(w,WM_KEYDOWN,VK_ESCAPE,1);
