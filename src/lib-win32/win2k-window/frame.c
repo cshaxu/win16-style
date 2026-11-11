@@ -535,12 +535,13 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
             if(tracked/2>=2 && tracked/2<=CCHILDREN_TITLEBAR && (tracked&1))info->rgstate[tracked/2]|=STATE_SYSTEM_PRESSED;
         }
     }
-    if(message==WM_NCHITTEST && compact_enabled(window)){
+    BOOL preserve_hit=message==WM_NCHITTEST && (result==HTTRANSPARENT || result==HTERROR || result==HTNOWHERE);
+    if(message==WM_NCHITTEST && !preserve_hit && compact_enabled(window)){
         RECT client;POINT point={GET_X_LPARAM(lp),GET_Y_LPARAM(lp)};
         if(menu_bar_at(window,point))result=HTMENU;
         else if(GetClientRect(window,&client) && ScreenToClient(window,&point) && PtInRect(&client,point))result=HTCLIENT;
     }
-    if(message==WM_NCHITTEST && !IsIconic(window) &&
+    if(message==WM_NCHITTEST && !preserve_hit && !IsIconic(window) &&
        (GetWindowLongPtrW(window,GWL_STYLE)&WS_CAPTION)==WS_CAPTION){
         TITLEBARINFOEX info={.cbSize=sizeof(info)};POINT point={GET_X_LPARAM(lp),GET_Y_LPARAM(lp)};
         SendMessageW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);

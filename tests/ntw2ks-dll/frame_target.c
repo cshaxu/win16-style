@@ -12,6 +12,8 @@ static unsigned menu_scenario,menu_entries,menu_exits,menu_commands,menu_idle,me
 static volatile LONG menu_frame_paints;
 static BOOL menu_timeout;
 static unsigned help_commands;
+static BOOL custom_hit_enabled;
+static LRESULT custom_hit_value;
 static POINT menu_hover_point;
 static DWORD app_pid;
 static HWND app_window;
@@ -40,6 +42,7 @@ static DWORD WINAPI cancel_app_menu(void *ignored)
 }
 static LRESULT CALLBACK procedure(HWND w,UINT message,WPARAM wp,LPARAM lp)
 {
+    if(custom_hit_enabled && message==WM_NCHITTEST)return custom_hit_value;
     if(message==WM_SYSCOMMAND && (wp&0xfff0)==SC_CONTEXTHELP){++help_commands;return 0;}
     if(menu_scenario){
         if(message==WM_ENTERMENULOOP)++menu_entries;
@@ -837,6 +840,25 @@ int wmain(int argc,WCHAR **argv)
                        (have_menu && title.rcTitleBar.bottom-title.rcTitleBar.top==MulDiv(19,(int)dpi,96) &&
                         bar.rcBar.top>=title.rcTitleBar.bottom && bar.rcBar.bottom<=origin.y && client_hit==HTCLIENT && blank_hit==HTMENU && menu_pixel==RGB(192,192,192));
         DestroyWindow(w);if(menu)DestroyMenu(menu);return good?0:4;
+    }
+    if(argc==2 && !lstrcmpW(argv[1],L"--hit-transparent")){
+        HWND w=CreateWindowExW(0,wc.lpszClassName,L"Transparent hit",WS_OVERLAPPEDWINDOW,
+                                80,80,420,260,NULL,NULL,instance,NULL);
+        if(!w)return 2;
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);TITLEBARINFOEX info={.cbSize=sizeof(info)};
+        SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
+        RECT button=info.rgrect[3];POINT caption={info.rcTitleBar.left+30,(info.rcTitleBar.top+info.rcTitleBar.bottom)/2};
+        POINT maximize={(button.left+button.right)/2,(button.top+button.bottom)/2};POINT client={20,20};ClientToScreen(w,&client);
+        const LRESULT values[]={HTTRANSPARENT,HTERROR,HTNOWHERE};BOOL passed=TRUE;custom_hit_enabled=TRUE;
+        for(unsigned i=0;i<ARRAYSIZE(values);++i){custom_hit_value=values[i];
+            LRESULT a=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(caption.x,caption.y));
+            LRESULT b=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(maximize.x,maximize.y));
+            LRESULT c=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(client.x,client.y));
+            if(a!=values[i] || b!=values[i] || c!=values[i])passed=FALSE;
+        }
+        custom_hit_enabled=FALSE;
+        printf("WIN2K CUSTOM HIT bits=%u preserved=%d\n",(unsigned)(sizeof(void*)*8),passed);
+        DestroyWindow(w);return passed?0:3;
     }
     if(argc==2 && !lstrcmpW(argv[1],L"--system-icon")){
         HWND w=CreateWindowExW(0,wc.lpszClassName,L"System icon",WS_OVERLAPPEDWINDOW,
