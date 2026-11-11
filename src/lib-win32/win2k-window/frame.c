@@ -313,6 +313,14 @@ static void paint(HWND window)
         (win2k_caption_colors){RGB(128,128,128),RGB(181,181,181),RGB(192,192,192),TRUE};
     int saved=SaveDC(dc);
     if(saved){
+        UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
+        int separator_height=max(1,MulDiv(1,(int)dpi,96));
+        if(caption.bottom-caption.top>separator_height){
+            RECT separator=caption;separator.top=separator.bottom-separator_height;
+            HBRUSH face=CreateSolidBrush(RGB(212,208,200));
+            if(face){FillRect(dc,&separator,face);DeleteObject(face);}
+            caption.bottom-=separator_height;
+        }
         for(unsigned i=2;i<CCHILDREN_TITLEBAR+1;++i){
             RECT r=info.rgrect[i];OffsetRect(&r,-outer.left,-outer.top);
             if(r.right>r.left && r.bottom>r.top)ExcludeClipRect(dc,r.left,r.top,r.right,r.bottom);
@@ -324,7 +332,6 @@ static void paint(HWND window)
             if(r.left>gradient.left && r.left<gradient.right && r.right>r.left &&
                !(info.rgstate[i]&STATE_SYSTEM_INVISIBLE))gradient.right=r.left;
         }
-        UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
         BOOL tool=(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)!=0;
         int font_height=tool?MulDiv(8,(int)dpi,96):MulDiv(8,(int)dpi,72);
         HFONT owned_font=CreateFontW(-font_height,0,0,0,FW_BOLD,FALSE,FALSE,FALSE,

@@ -1123,6 +1123,7 @@ int wmain(int argc,WCHAR **argv)
     COLORREF pixel=dc?GetPixel(dc,x,y):CLR_INVALID;
     COLORREF pixel2=dc?GetPixel(dc,x+80,y):CLR_INVALID;
     COLORREF endpoint=dc?GetPixel(dc,end-3,y):CLR_INVALID;
+    COLORREF separator=dc?GetPixel(dc,x,info.rcTitleBar.bottom-window.top-1):CLR_INVALID;
     int frame_width=info.rcTitleBar.top-window.top;
     COLORREF frame_face=dc && frame_width>4?GetPixel(dc,frame_width/2,(window.bottom-window.top)/2):CLR_INVALID;
     unsigned classic_button_pixels=0;COLORREF button_top=CLR_INVALID;
@@ -1192,7 +1193,7 @@ int wmain(int argc,WCHAR **argv)
         info.rcTitleBar.bottom-info.rcTitleBar.top,button_size,button_hits,frame_width,info.rgrect[5].top-window.top,(unsigned long)button_top,(unsigned long)pixel,(unsigned long)pixel2,(unsigned long)endpoint,(unsigned long)inactive,(unsigned long)inactive_end,(unsigned long)frame_face,classic_button_pixels,close_disabled,close_changed,icon_pixels,icon_changed,changed,(long long)hit);
     SendMessageW(w,WM_SYSCOMMAND,SC_CLOSE,0);
     BOOL closed=!IsWindow(w);if(!closed)DestroyWindow(w);
-    return attached && button_size && button_hits && pixel!=CLR_INVALID && pixel2!=CLR_INVALID && pixel!=pixel2 && inactive!=CLR_INVALID &&
+    return attached && button_size && button_hits && separator==RGB(212,208,200) && pixel!=CLR_INVALID && pixel2!=CLR_INVALID && pixel!=pixel2 && inactive!=CLR_INVALID &&
            GetBValue(pixel)>GetRValue(pixel) && GetRValue(endpoint)>=150 && GetGValue(endpoint)>=180 && GetBValue(endpoint)>=220 && (frame_width<=4 || frame_face==RGB(212,208,200)) && button_top==RGB(255,255,255) && classic_button_pixels>20 && close_disabled && close_changed>0 &&
            GetRValue(inactive)==GetGValue(inactive) && GetGValue(inactive)==GetBValue(inactive) && GetRValue(inactive_end)>=175 && GetRValue(inactive_end)<=181 && icon_pixels>0 && icon_changed>0 && changed>0 &&
            hit==HTCAPTION && resized && maximized && restored && closed?0:3;
