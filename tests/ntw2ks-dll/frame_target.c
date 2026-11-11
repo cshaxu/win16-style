@@ -351,6 +351,44 @@ static DWORD WINAPI physical_thread(void *parameter)
     PostMessageW(w,WM_APP+1,0,0);return 0;
 }
 
+typedef struct { HWND window; BOOL foreground,input,moved,resized,painted; } drag_probe;
+static BOOL physical_drag(POINT from,POINT to)
+{
+    INPUT event={.type=INPUT_MOUSE};
+    if(!SetCursorPos(from.x,from.y))return FALSE;
+    Sleep(100);event.mi.dwFlags=MOUSEEVENTF_LEFTDOWN;
+    if(SendInput(1,&event,sizeof(event))!=1)return FALSE;
+    BOOL moved=TRUE;
+    for(int i=1;i<=8;++i){if(!SetCursorPos(from.x+(to.x-from.x)*i/8,from.y+(to.y-from.y)*i/8))moved=FALSE;Sleep(35);}
+    event.mi.dwFlags=MOUSEEVENTF_LEFTUP;
+    BOOL released=SendInput(1,&event,sizeof(event))==1;
+    return moved && released;
+}
+static DWORD WINAPI drag_thread(void *parameter)
+{
+    drag_probe *probe=parameter;HWND w=probe->window;POINT cursor;
+    BOOL saved=GetCursorPos(&cursor);
+    for(unsigned i=0;i<20 && GetForegroundWindow()!=w;++i)Sleep(50);
+    probe->foreground=GetForegroundWindow()==w;
+    if(probe->foreground){
+        RECT before,after;TITLEBARINFOEX title={.cbSize=sizeof(title)};
+        if(GetWindowRect(w,&before) && SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&title)){
+            POINT from={(title.rcTitleBar.left+title.rcTitleBar.right)/2,(title.rcTitleBar.top+title.rcTitleBar.bottom)/2};
+            POINT to={from.x+60,from.y+45};
+            probe->input=physical_drag(from,to);Sleep(200);
+            if(GetWindowRect(w,&after)){
+                probe->moved=after.left!=before.left && after.top!=before.top;
+                before=after;from.x=before.right-2;from.y=before.bottom-2;to.x=from.x+45;to.y=from.y+35;
+                probe->input=physical_drag(from,to) && probe->input;Sleep(200);
+                if(GetWindowRect(w,&after))probe->resized=after.right-after.left>before.right-before.left && after.bottom-after.top>before.bottom-before.top;
+                probe->painted=GetPropW(w,L"Win2kStyle.Frame")!=NULL && classic_caption_pixel(caption_pixel(w));
+            }
+        }
+    }
+    if(saved)SetCursorPos(cursor.x,cursor.y);
+    PostMessageW(w,WM_APP+1,0,0);return 0;
+}
+
 int wmain(int argc,WCHAR **argv)
 {
     if(argc>1 && !lstrcmpW(argv[1],L"--dpi-aware")){
@@ -1273,6 +1311,18 @@ int wmain(int argc,WCHAR **argv)
         printf("WIN2K COMMANDS bits=%u max=%d restore=%d min=%d close=%d\n",
                (unsigned)(sizeof(void*)*8),max,restore,min,close);
         return max && restore && min && close?0:3;
+    }
+    if(argc==2 && !lstrcmpW(argv[1],L"--physical-drag")){
+        HWND w=CreateWindowExW(0,wc.lpszClassName,L"Frame drag test",WS_OVERLAPPEDWINDOW,80,80,420,260,NULL,NULL,instance,NULL);
+        if(!w)return 2;
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);SetForegroundWindow(w);
+        drag_probe probe={.window=w};HANDLE worker=CreateThread(NULL,0,drag_thread,&probe,0,NULL);
+        if(!worker){DestroyWindow(w);return 3;}
+        MSG message;while(GetMessageW(&message,NULL,0,0)>0){if(message.message==WM_APP+1)break;TranslateMessage(&message);DispatchMessageW(&message);}
+        WaitForSingleObject(worker,3000);CloseHandle(worker);DestroyWindow(w);
+        printf("WIN2K PHYSICAL DRAG bits=%u foreground=%d input=%d moved=%d resized=%d painted=%d\n",(unsigned)(sizeof(void*)*8),probe.foreground,probe.input,probe.moved,probe.resized,probe.painted);
+        if(!probe.foreground)return 77;
+        return probe.input && probe.moved && probe.resized && probe.painted?0:3;
     }
     if(argc==2 && !lstrcmpW(argv[1],L"--physical")){
         HHOOK diagnostic=SetWindowsHookExW(WH_GETMESSAGE,diagnostic_hook,NULL,GetCurrentThreadId());
