@@ -35,13 +35,15 @@ M0 T25 S3 已完成首版 Win2000 普通 Win32 窗口接入、发布与远端复
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
 - Last allocated T25 S: 4
-- Last verified remote delivery: M0 T25 S4 P32，`56d47097f8c586b4414874b1cc8d12c92fcf3a79`。
+- Last verified remote delivery: M0 T25 S4 P33，`3a023d417797b535a16549017bc327a7588a7add`。
 - Open task: M0 T25 S4；Win2000 普通 Win32 标题与外框绘制。
 
 ## Technical Baseline
 
-已发布基线为五组件、八产品文件；纯 C17、MinGW GCC、Ninja 和 ccache。T25 S4 P31 八文件已发布于项目 assets 根目录与 O:/winnt，摘要和验证范围见[交付记录](../history/M0-T25-S4-P31-page-setup.md)。历史状态见[T24 工作快照](../history/M0-T24-S1-working-log.md)和[原状态快照](../history/M0-T24-current-state-archive.md)。
+已发布基线为五组件、八产品文件；纯 C17、MinGW GCC、Ninja 和 ccache。T25 S4 P34 八文件已发布于项目 assets 根目录与 O:/winnt，摘要和验证范围见[交付记录](../history/M0-T25-S4-P34-caption-added.md)。历史状态见[T24 工作快照](../history/M0-T24-S1-working-log.md)和[原状态快照](../history/M0-T24-current-state-archive.md)。
 
 S4 P32 补充扩展打印窗口双位宽取消路径验证，见[审计记录](../history/M0-T25-S4-P32-print-ex-audit.md)；没有产品二进制变更。
 
 S4 P33 补充普通窗口动态移除和恢复标题栏验证，见[审计记录](../history/M0-T25-S4-P33-style-transition.md)。
+
+S4 P34 接入初始无标题、运行时添加标题的顶层窗口，见[交付记录](../history/M0-T25-S4-P34-caption-added.md)。

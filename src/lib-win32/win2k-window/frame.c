@@ -505,12 +505,30 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
     return result;
 }
 
+static LRESULT CALLBACK pending_frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,UINT_PTR id,DWORD_PTR ref)
+{
+    (void)ref;
+    if(message==WM_NCDESTROY)RemoveWindowSubclass(window,pending_frame_proc,id);
+    LRESULT result=DefSubclassProc(window,message,wp,lp);
+    DWORD error=GetLastError();
+    if(message==WM_STYLECHANGED && wp==(WPARAM)GWL_STYLE && IsWindow(window)){
+        LONG_PTR style=GetWindowLongPtrW(window,GWL_STYLE);
+        if(!(style&WS_CHILD) && (style&WS_CAPTION)==WS_CAPTION){
+            RemoveWindowSubclass(window,pending_frame_proc,id);
+            win2k_frame_attach(window);
+        }
+    }
+    SetLastError(error);return result;
+}
+
 BOOL win2k_frame_attach(HWND window)
 {
     DWORD pid=0;
     if(!window || GetWindowThreadProcessId(window,&pid)!=GetCurrentThreadId() || pid!=GetCurrentProcessId())return FALSE;
     LONG_PTR style=GetWindowLongPtrW(window,GWL_STYLE);
-    if((style&WS_CHILD) || (style&WS_CAPTION)!=WS_CAPTION || GetPropW(window,frame_property))return FALSE;
+    if((style&WS_CHILD) || GetPropW(window,frame_property))return FALSE;
+    if((style&WS_CAPTION)!=WS_CAPTION)
+        return SetWindowSubclass(window,pending_frame_proc,(UINT_PTR)pending_frame_proc,0);
     if(!SetWindowSubclass(window,frame_proc,(UINT_PTR)frame_proc,0))return FALSE;
     if(!SetPropW(window,frame_property,(HANDLE)(uintptr_t)(GetActiveWindow()==window?2:1))){RemoveWindowSubclass(window,frame_proc,(UINT_PTR)frame_proc);return FALSE;}
     enum DWMNCRENDERINGPOLICY policy=DWMNCRP_DISABLED;

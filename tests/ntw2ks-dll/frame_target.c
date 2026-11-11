@@ -637,6 +637,21 @@ int wmain(int argc,WCHAR **argv)
                (unsigned)(sizeof(void*)*8),keyboard,f10,focus_ok,hit,menu_entries,menu_exits,menu_commands,menu_timeout);
         DestroyWindow(w);DestroyMenu(menu);return ok?0:3;
     }
+    if(argc==2 && !lstrcmpW(argv[1],L"--caption-added")){
+        HWND w=CreateWindowExW(0,wc.lpszClassName,L"Caption added",WS_POPUP,
+                                80,80,420,260,NULL,NULL,instance,NULL);
+        if(!w)return 2;
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);
+        BOOL initially_unattached=GetPropW(w,L"Win2kStyle.Frame")==NULL;
+        SetWindowLongPtrW(w,GWL_STYLE,WS_OVERLAPPEDWINDOW|WS_VISIBLE);
+        BOOL changed=SetWindowPos(w,NULL,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
+        SendMessageW(w,WM_NCACTIVATE,TRUE,0);
+        BOOL attached=GetPropW(w,L"Win2kStyle.Frame")!=NULL;
+        BOOL painted=blue_caption(w);
+        printf("WIN2K CAPTION ADDED bits=%u initial=%d changed=%d attached=%d painted=%d\n",
+               (unsigned)(sizeof(void*)*8),initially_unattached,changed,attached,painted);
+        DestroyWindow(w);return initially_unattached && changed && attached && painted?0:3;
+    }
     if(argc==2 && !lstrcmpW(argv[1],L"--style-transition")){
         HWND w=CreateWindowExW(0,wc.lpszClassName,L"Style transition",WS_OVERLAPPEDWINDOW,
                                 80,80,420,260,NULL,NULL,instance,NULL);
