@@ -497,9 +497,14 @@ static BOOL button_input(HWND window,UINT message,WPARAM wp,LPARAM lp)
         if(message==WM_LBUTTONUP){
             RemovePropW(window,button_property);if(GetCapture()==window)ReleaseCapture();
             if(IsWindow(window))paint(window);
-            if(inside && IsWindow(window))PostMessageW(window,WM_SYSCOMMAND,
-                index==2?SC_MINIMIZE:index==3?(IsZoomed(window)?SC_RESTORE:SC_MAXIMIZE):
-                index==4?SC_CONTEXTHELP:SC_CLOSE,MAKELPARAM(point.x,point.y));
+            if(inside && IsWindow(window)){
+                UINT command=index==2?SC_MINIMIZE:index==3?(IsZoomed(window)?SC_RESTORE:SC_MAXIMIZE):
+                    index==4?SC_CONTEXTHELP:SC_CLOSE;
+                HMENU system=GetSystemMenu(window,FALSE);
+                if(command==SC_CONTEXTHELP || !(GetWindowLongPtrW(window,GWL_STYLE)&WS_SYSMENU) ||
+                   (system && !(GetMenuState(system,command,MF_BYCOMMAND)&MFS_DISABLED)))
+                    PostMessageW(window,WM_SYSCOMMAND,command,MAKELPARAM(point.x,point.y));
+            }
         }else if(inside!=(BOOL)(tracked&1)){
             SetPropW(window,button_property,(HANDLE)(uintptr_t)(index*2+(inside?1:0)));paint(window);
         }

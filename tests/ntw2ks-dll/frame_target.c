@@ -13,6 +13,8 @@ static unsigned menu_scenario,menu_entries,menu_exits,menu_commands,menu_idle,me
 static volatile LONG menu_frame_paints;
 static BOOL menu_timeout;
 static unsigned help_commands;
+static BOOL watch_disabled_commands;
+static unsigned disabled_commands;
 static BOOL custom_hit_enabled;
 static LRESULT custom_hit_value;
 static BOOL startup_probe, startup_ready;
@@ -77,6 +79,10 @@ static LRESULT CALLBACK procedure(HWND w,UINT message,WPARAM wp,LPARAM lp)
 {
     if(startup_probe && message==WM_SIZE){if(startup_ready)++startup_late_size;else ++startup_early_size;}
     if(custom_hit_enabled && message==WM_NCHITTEST)return custom_hit_value;
+    if(watch_disabled_commands && message==WM_SYSCOMMAND &&
+       ((wp&0xfff0)==SC_MINIMIZE || (wp&0xfff0)==SC_MAXIMIZE || (wp&0xfff0)==SC_CLOSE)){
+        ++disabled_commands;return 0;
+    }
     if(message==WM_SYSCOMMAND && (wp&0xfff0)==SC_CONTEXTHELP){++help_commands;return 0;}
     if(menu_scenario){
         if(message==WM_ENTERMENULOOP)++menu_entries;
@@ -1115,6 +1121,27 @@ int wmain(int argc,WCHAR **argv)
         printf("WIN2K DISABLED PHYSICAL bits=%u button=%u states=%d input=%d safe=%d\n",(unsigned)(sizeof(void*)*8),index,states,probe.input,probe.safe);
         if(IsWindow(w))DestroyWindow(w);
         return states && probe.input && probe.safe?0:3;
+    }
+    if(argc==2 && !lstrcmpW(argv[1],L"--disabled-menu-commands")){
+        HWND w=CreateWindowExW(0,wc.lpszClassName,L"Disabled system commands",WS_OVERLAPPEDWINDOW,
+                                80,80,420,260,NULL,NULL,instance,NULL);
+        if(!w)return 2;
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);HMENU system=GetSystemMenu(w,FALSE);
+        if(!system){DestroyWindow(w);return 2;}
+        TITLEBARINFOEX info={.cbSize=sizeof(info)};SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
+        POINT point={(info.rgrect[5].left+info.rgrect[5].right)/2,(info.rgrect[5].top+info.rgrect[5].bottom)/2};
+        watch_disabled_commands=TRUE;SendMessageW(w,WM_NCLBUTTONDOWN,HTCLOSE,MAKELPARAM(point.x,point.y));
+        BOOL captured=GetCapture()==w;
+        EnableMenuItem(system,SC_CLOSE,MF_BYCOMMAND|MF_GRAYED);
+        UINT state=GetMenuState(system,SC_CLOSE,MF_BYCOMMAND);
+        ScreenToClient(w,&point);SendMessageW(w,WM_LBUTTONUP,0,MAKELPARAM(point.x,point.y));pump_messages();
+        unsigned blocked=disabled_commands;
+        EnableMenuItem(system,SC_CLOSE,MF_BYCOMMAND|MF_ENABLED);DrawMenuBar(w);
+        BOOL clicked=click_caption(w,5,HTCLOSE);
+        unsigned enabled=disabled_commands-blocked;watch_disabled_commands=FALSE;
+        printf("WIN2K DISABLED COMMANDS bits=%u captured=%d disabled=%d clicked=%d blocked=%u enabled=%u\n",
+               (unsigned)(sizeof(void*)*8),captured,(state&MFS_DISABLED)!=0,clicked,blocked,enabled);
+        DestroyWindow(w);return captured && (state&MFS_DISABLED) && clicked && blocked==0 && enabled==1?0:3;
     }
     if(argc==2 && !lstrcmpW(argv[1],L"--buttons")){
         HWND w=CreateWindowExW(0,wc.lpszClassName,L"Caption commands",WS_OVERLAPPEDWINDOW,
