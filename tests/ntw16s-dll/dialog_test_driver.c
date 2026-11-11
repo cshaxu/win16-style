@@ -49,7 +49,8 @@ int wmain(int argc,WCHAR **argv)
     if(argc==2 && !lstrcmpW(argv[1],L"--self-test"))return desktop_self_test();
     if(argc<3)return 2;
     BOOL low=!lstrcmpW(argv[1],L"--low-private");
-    BOOL isolated=low || !lstrcmpW(argv[1],L"--private");int offset=isolated?1:0;
+    BOOL visible=!lstrcmpW(argv[1],L"--visible-private");
+    BOOL isolated=low || visible || !lstrcmpW(argv[1],L"--private");int offset=isolated?1:0;
     if(argc<3+offset)return 2;
     BOOL direct=!lstrcmpW(argv[1+offset],L"--direct");
     WCHAR command[8192];int used=direct?swprintf(command,8192,L"\"%ls\"",argv[2+offset]):swprintf(command,8192,L"\"%ls\" --wait \"%ls\"",argv[1+offset],argv[2+offset]);
@@ -71,10 +72,26 @@ int wmain(int argc,WCHAR **argv)
         if(!desktop){printf("PRIVATE_DESKTOP_CREATE_FAIL error=%lu\n",GetLastError());CloseHandle(job);return 2;}startup.lpDesktop=desktop_name;}
     if(!CreateProcessW(direct?argv[2+offset]:argv[1+offset],command,NULL,NULL,TRUE,CREATE_SUSPENDED,NULL,NULL,&startup,&process)){if(desktop)CloseDesktop(desktop);CloseHandle(job);return 6;}
     if(!AssignProcessToJobObject(job,process.hProcess)){TerminateProcess(process.hProcess,7);CloseHandle(process.hThread);CloseHandle(process.hProcess);if(desktop)CloseDesktop(desktop);CloseHandle(job);return 7;}
+    HDESK original=NULL;POINT pointer={0};BOOL switched=FALSE,have_pointer=FALSE;
+    if(visible){
+        original=OpenInputDesktop(0,FALSE,DESKTOP_SWITCHDESKTOP|DESKTOP_READOBJECTS);
+        have_pointer=GetCursorPos(&pointer);
+        WCHAR input_name[80]={0};DWORD needed=0;
+        BOOL normal=original && GetUserObjectInformationW(original,UOI_NAME,input_name,sizeof(input_name),&needed) && !lstrcmpW(input_name,L"Default");
+        if(!normal || !SwitchDesktop(desktop)){
+            if(original)CloseDesktop(original);
+            TerminateProcess(process.hProcess,9);CloseHandle(process.hThread);CloseHandle(process.hProcess);
+            CloseHandle(job);CloseDesktop(desktop);printf("PRIVATE_DESKTOP_SWITCH_FAIL error=%lu\n",GetLastError());return 9;
+        }
+        switched=TRUE;
+    }
     ResumeThread(process.hThread);CloseHandle(process.hThread);
     DWORD wait=WaitForSingleObject(process.hProcess,35000),code=99;
     if(wait==WAIT_OBJECT_0)GetExitCodeProcess(process.hProcess,&code);
     else printf("DIALOG_DRIVER_TIMEOUT wait=%lu\n",wait);
+    if(switched){if(!SwitchDesktop(original)){printf("PRIVATE_DESKTOP_RESTORE_FAIL error=%lu\n",GetLastError());code=10;}
+        if(have_pointer)SetCursorPos(pointer.x,pointer.y);
+        CloseDesktop(original);}
     CloseHandle(job);CloseHandle(process.hProcess);if(desktop && !desktop_released(desktop,desktop_name))code=8;
     printf("DIALOG_DRIVER exit=%lu\n",code);return (int)code;
 }

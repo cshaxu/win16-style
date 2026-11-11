@@ -29,12 +29,75 @@ static uint64_t button_signature(HWND w,unsigned index)
     ReleaseDC(w,dc);return value;
 }
 
+typedef struct { HWND window;BOOL input,pressed,cancelled,maximized,restored;unsigned gray,native; } physical_probe;
+static BOOL physical_click(POINT point)
+{
+    INPUT event={.type=INPUT_MOUSE};
+    if(!SetCursorPos(point.x,point.y))return FALSE;
+    event.mi.dwFlags=MOUSEEVENTF_LEFTDOWN;BOOL down=SendInput(1,&event,sizeof(event))==1;
+    Sleep(100);event.mi.dwFlags=MOUSEEVENTF_LEFTUP;BOOL up=SendInput(1,&event,sizeof(event))==1;
+    return down && up;
+}
+static DWORD WINAPI physical_thread(void *parameter)
+{
+    physical_probe *probe=parameter;HWND w=probe->window;
+    TITLEBARINFOEX info={.cbSize=sizeof(info)};RECT outer;
+    SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);GetWindowRect(w,&outer);
+    RECT button=info.rgrect[3];POINT center={(button.left+button.right)/2,(button.top+button.bottom)/2};
+    INPUT event={.type=INPUT_MOUSE};event.mi.dwFlags=MOUSEEVENTF_LEFTDOWN;
+    Sleep(200);probe->input=SetCursorPos(center.x,center.y) && SendInput(1,&event,sizeof(event))==1;
+    Sleep(250);
+    GUITHREADINFO thread={.cbSize=sizeof(thread)};
+    probe->pressed=GetGUIThreadInfo(GetWindowThreadProcessId(w,NULL),&thread) && thread.hwndCapture==w;
+    TITLEBARINFOEX down={.cbSize=sizeof(down)};SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&down);
+    probe->pressed=probe->pressed && (down.rgstate[3]&STATE_SYSTEM_PRESSED)!=0;
+    HDC dc=GetWindowDC(w);
+    if(dc){OffsetRect(&button,-outer.left,-outer.top);
+        for(int y=button.top;y<button.bottom;++y)for(int x=button.left;x<button.right;++x){
+            COLORREF pixel=GetPixel(dc,x,y);
+            if(pixel==RGB(192,192,192))++probe->gray;
+            if(pixel==GetSysColor(COLOR_3DFACE))++probe->native;
+        }
+        ReleaseDC(w,dc);}
+    SetCursorPos(outer.left+30,outer.top+100);Sleep(150);
+    event.mi.dwFlags=MOUSEEVENTF_LEFTUP;
+    BOOL released=SendInput(1,&event,sizeof(event))==1;
+    probe->input=probe->input && released;
+    Sleep(200);probe->cancelled=IsWindow(w) && !IsZoomed(w);
+    probe->input=physical_click(center) && probe->input;Sleep(200);
+    probe->maximized=IsWindow(w) && IsZoomed(w);
+    if(probe->maximized){
+        TITLEBARINFOEX zoom={.cbSize=sizeof(zoom)};SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&zoom);
+        POINT restore={(zoom.rgrect[3].left+zoom.rgrect[3].right)/2,(zoom.rgrect[3].top+zoom.rgrect[3].bottom)/2};
+        probe->input=physical_click(restore) && probe->input;Sleep(200);
+        probe->restored=IsWindow(w) && !IsZoomed(w);
+    }
+    PostMessageW(w,WM_APP+1,0,0);return 0;
+}
+
 int wmain(int argc,WCHAR **argv)
 {
     HINSTANCE instance=GetModuleHandleW(NULL);
     BOOL no_icon=argc==2 && !lstrcmpW(argv[1],L"--no-icon");
     WNDCLASSW wc={.lpfnWndProc=procedure,.hInstance=instance,.hIcon=no_icon?NULL:LoadIconW(NULL,MAKEINTRESOURCEW(32515)),.lpszClassName=L"Win2kFrameFixture"};
     if(!RegisterClassW(&wc))return 1;
+    if(argc==2 && !lstrcmpW(argv[1],L"--physical")){
+        HWND w=CreateWindowExW(0,wc.lpszClassName,L"Caption mouse test",WS_OVERLAPPEDWINDOW,
+                                80,80,420,260,NULL,NULL,instance,NULL);
+        if(!w)return 2;
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);SetForegroundWindow(w);
+        physical_probe probe={.window=w};HANDLE worker=CreateThread(NULL,0,physical_thread,&probe,0,NULL);
+        if(!worker){DestroyWindow(w);return 3;}
+        MSG message;
+        while(GetMessageW(&message,NULL,0,0)>0){
+            if(message.message==WM_APP+1)break;
+            TranslateMessage(&message);DispatchMessageW(&message);
+        }
+        WaitForSingleObject(worker,3000);CloseHandle(worker);DestroyWindow(w);
+        printf("WIN2K PHYSICAL bits=%u input=%d pressed=%d gray=%u native=%u cancelled=%d max=%d restore=%d\n",
+               (unsigned)(sizeof(void*)*8),probe.input,probe.pressed,probe.gray,probe.native,probe.cancelled,probe.maximized,probe.restored);
+        return probe.input && probe.pressed && probe.gray>200 && probe.native<20 && probe.cancelled && probe.maximized && probe.restored?0:3;
+    }
     if(no_icon){
         HWND w=CreateWindowExW(0,wc.lpszClassName,L"No icon",WS_OVERLAPPEDWINDOW,
                                 80,80,420,260,NULL,NULL,instance,NULL);

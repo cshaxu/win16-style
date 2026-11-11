@@ -4,9 +4,11 @@
 #include <dwmapi.h>
 #include <oleacc.h>
 #include <stdint.h>
+#include <windowsx.h>
 
 static const WCHAR frame_property[]=L"Win2kStyle.Frame";
 static const WCHAR hover_property[]=L"Win2kStyle.CaptionHover";
+static const WCHAR button_property[]=L"Win2kStyle.CaptionButton";
 
 /* DrawFrameControl uses the host's palette; remap its classic shades locally. */
 static void paint_button(HDC target,const RECT *rect,UINT state)
@@ -110,7 +112,8 @@ static void paint(HWND window)
             UINT state=buttons[i];
             if(i==3 && IsZoomed(window))state=DFCS_CAPTIONRESTORE;
             if(info.rgstate[i]&STATE_SYSTEM_UNAVAILABLE)state|=DFCS_INACTIVE;
-            if(info.rgstate[i]&STATE_SYSTEM_PRESSED)state|=DFCS_PUSHED;
+            uintptr_t tracked=(uintptr_t)GetPropW(window,button_property);
+            if((tracked/2==i && (tracked&1)) || (info.rgstate[i]&STATE_SYSTEM_PRESSED))state|=DFCS_PUSHED;
             paint_button(dc,&r,state);
         }
         if(!IsZoomed(window))paint_border(dc,width,height);
@@ -118,10 +121,51 @@ static void paint(HWND window)
     ReleaseDC(window,dc);
 }
 
+static BOOL button_input(HWND window,UINT message,WPARAM wp,LPARAM lp)
+{
+    uintptr_t tracked=(uintptr_t)GetPropW(window,button_property);
+    if(message==WM_NCLBUTTONDOWN && !tracked){
+        if(IsIconic(window))return FALSE;
+        unsigned index=wp==HTMINBUTTON?2:wp==HTMAXBUTTON?3:wp==HTHELP?4:wp==HTCLOSE?5:0;
+        if(!index)return FALSE;
+        TITLEBARINFOEX info={.cbSize=sizeof(info)};
+        SendMessageW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
+        if(info.rgstate[index]&(STATE_SYSTEM_INVISIBLE|STATE_SYSTEM_UNAVAILABLE))return FALSE;
+        if(!SetPropW(window,button_property,(HANDLE)(uintptr_t)(index*2+1)))return FALSE;
+        SetCapture(window);
+        if(GetCapture()!=window){RemovePropW(window,button_property);return FALSE;}
+        paint(window);return TRUE;
+    }
+    if(!tracked)return FALSE;
+    if(message==WM_MOUSEMOVE || message==WM_LBUTTONUP){
+        unsigned index=(unsigned)(tracked/2);TITLEBARINFOEX info={.cbSize=sizeof(info)};
+        POINT point={GET_X_LPARAM(lp),GET_Y_LPARAM(lp)};
+        ClientToScreen(window,&point);SendMessageW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
+        BOOL inside=PtInRect(&info.rgrect[index],point);
+        if(message==WM_LBUTTONUP){
+            RemovePropW(window,button_property);if(GetCapture()==window)ReleaseCapture();
+            if(IsWindow(window))paint(window);
+            if(inside && IsWindow(window))PostMessageW(window,WM_SYSCOMMAND,
+                index==2?SC_MINIMIZE:index==3?(IsZoomed(window)?SC_RESTORE:SC_MAXIMIZE):
+                index==4?SC_CONTEXTHELP:SC_CLOSE,MAKELPARAM(point.x,point.y));
+        }else if(inside!=(BOOL)(tracked&1)){
+            SetPropW(window,button_property,(HANDLE)(uintptr_t)(index*2+(inside?1:0)));paint(window);
+        }
+        return TRUE;
+    }
+    if(message==WM_CAPTURECHANGED || message==WM_CANCELMODE || message==WM_NCDESTROY){
+        RemovePropW(window,button_property);
+        if(message==WM_CANCELMODE && GetCapture()==window)ReleaseCapture();
+        if(message!=WM_NCDESTROY && IsWindow(window))paint(window);
+    }
+    return FALSE;
+}
+
 static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,UINT_PTR id,DWORD_PTR ref)
 {
     (void)ref;
     DWORD incoming=GetLastError();
+    if(button_input(window,message,wp,lp)){SetLastError(incoming);return 0;}
     BOOL repaint=FALSE;
     if(message==WM_NCACTIVATE)SetPropW(window,frame_property,(HANDLE)(uintptr_t)(wp?2:1));
     if(message==WM_NCMOUSEMOVE){
@@ -132,6 +176,12 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
     SetLastError(incoming);
     LRESULT result=DefSubclassProc(window,message,wp,lp);
     DWORD outcome=GetLastError();
+    if(message==WM_GETTITLEBARINFOEX && lp){
+        uintptr_t tracked=(uintptr_t)GetPropW(window,button_property);
+        TITLEBARINFOEX *info=(TITLEBARINFOEX *)lp;
+        if(info->cbSize>=sizeof(*info) && tracked/2>=2 && tracked/2<=CCHILDREN_TITLEBAR && (tracked&1))
+            info->rgstate[tracked/2]|=STATE_SYSTEM_PRESSED;
+    }
     if(message==WM_NCPAINT || message==WM_NCACTIVATE || message==WM_SETTEXT || message==WM_SIZE ||
        message==WM_NCLBUTTONDOWN || message==WM_NCLBUTTONUP || message==WM_SETICON ||
        message==WM_STYLECHANGED || message==WM_THEMECHANGED || message==WM_DPICHANGED || repaint)
