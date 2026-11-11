@@ -75,7 +75,7 @@ static INT_PTR CALLBACK frame_dialog_proc(HWND window,UINT message,WPARAM wp,LPA
     return FALSE;
 }
 
-static volatile LONG message_seen,message_attached;
+static volatile LONG message_seen,message_attached,message_accept;
 static BOOL CALLBACK find_message_window(HWND window,LPARAM unused)
 {
     (void)unused;DWORD pid=0;WCHAR title[64]={0};GetWindowThreadProcessId(window,&pid);
@@ -84,7 +84,14 @@ static BOOL CALLBACK find_message_window(HWND window,LPARAM unused)
     BOOL sent=SendMessageTimeoutW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&info,SMTO_ABORTIFHUNG,1000,&response)!=0;
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
     if(sent && GetPropW(window,L"Win2kStyle.Frame") && info.rcTitleBar.bottom-info.rcTitleBar.top==MulDiv(19,(int)dpi,96))InterlockedExchange(&message_attached,1);
-    InterlockedExchange(&message_seen,1);PostMessageW(window,WM_CLOSE,0,0);return FALSE;
+    InterlockedExchange(&message_seen,1);
+    if(InterlockedCompareExchange(&message_accept,0,0)){
+        HWND button=GetDlgItem(window,IDOK);PostMessageW(window,WM_COMMAND,MAKEWPARAM(IDOK,BN_CLICKED),(LPARAM)button);
+        ULONGLONG deadline=GetTickCount64()+1500;
+        while(IsWindow(window) && GetTickCount64()<deadline)Sleep(25);
+        if(IsWindow(window)){PostMessageW(window,WM_CLOSE,0,0);Sleep(1000);if(IsWindow(window))ExitProcess(4);}
+    }else PostMessageW(window,WM_CLOSE,0,0);
+    return FALSE;
 }
 static DWORD WINAPI close_message(void *unused)
 {
@@ -263,6 +270,26 @@ int wmain(int argc,WCHAR **argv)
             if(!pass)all=FALSE;
         }
         return all?0:3;
+    }
+    if(argc==2 && !lstrcmpW(argv[1],L"--file-select")){
+        char path_a[260];WCHAR path_w[260];
+        if(!GetModuleFileNameA(NULL,path_a,ARRAYSIZE(path_a)) || !GetModuleFileNameW(NULL,path_w,ARRAYSIZE(path_w)))return 2;
+        BOOL all=TRUE;InterlockedExchange(&message_accept,1);
+        for(int ansi=0;ansi<2;++ansi)for(int save=0;save<2;++save)for(int explorer=0;explorer<2;++explorer){
+            InterlockedExchange(&message_seen,0);InterlockedExchange(&message_attached,0);
+            HANDLE thread=CreateThread(NULL,0,close_message,NULL,0,NULL);if(!thread)return 2;
+            char file_a[260];WCHAR file_w[260];lstrcpynA(file_a,path_a,ARRAYSIZE(file_a));lstrcpynW(file_w,path_w,ARRAYSIZE(file_w));
+            DWORD flags=OFN_NOCHANGEDIR|OFN_FILEMUSTEXIST|OFN_DONTADDTORECENT|(explorer?OFN_EXPLORER:OFN_ENABLEHOOK);
+            OPENFILENAMEA a={.lStructSize=sizeof(a),.lpstrFilter="All\0*.*\0\0",.lpstrFile=file_a,.nMaxFile=ARRAYSIZE(file_a),.lpstrTitle="Win2kMessageFixture",.Flags=flags,.lpfnHook=file_classic_hook};
+            OPENFILENAMEW w={.lStructSize=sizeof(w),.lpstrFilter=L"All\0*.*\0\0",.lpstrFile=file_w,.nMaxFile=ARRAYSIZE(file_w),.lpstrTitle=L"Win2kMessageFixture",.Flags=flags,.lpfnHook=file_classic_hook};
+            BOOL result=ansi?(save?GetSaveFileNameA(&a):GetOpenFileNameA(&a)):(save?GetSaveFileNameW(&w):GetOpenFileNameW(&w));
+            DWORD error=CommDlgExtendedError();DWORD wait=WaitForSingleObject(thread,1000);CloseHandle(thread);
+            BOOL same=ansi?!lstrcmpiA(file_a,path_a):!lstrcmpiW(file_w,path_w);
+            BOOL pass=wait==WAIT_OBJECT_0 && result && error==0 && same && InterlockedCompareExchange(&message_seen,0,0) && InterlockedCompareExchange(&message_attached,0,0);
+            printf("WIN2K SELECT bits=%u ansi=%d save=%d explorer=%d attached=%ld result=%d same=%d error=%lu\n",(unsigned)(sizeof(void*)*8),ansi,save,explorer,(long)InterlockedCompareExchange(&message_attached,0,0),result,same,(unsigned long)error);
+            if(!pass)all=FALSE;
+        }
+        InterlockedExchange(&message_accept,0);return all?0:3;
     }
     if(argc==2 && !lstrcmpW(argv[1],L"--file-frame")){
         BOOL all=TRUE;
