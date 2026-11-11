@@ -669,7 +669,8 @@ int wmain(int argc,WCHAR **argv)
                title.rcTitleBar.bottom-title.rcTitleBar.top);
         DestroyWindow(w);DestroyMenu(menu);return ok?0:3;
     }
-    if(argc==3 && !lstrcmpW(argv[1],L"--real-about")){
+    if(argc==3 && (!lstrcmpW(argv[1],L"--real-about") || !lstrcmpW(argv[1],L"--real-about-caption"))){
+        BOOL captions=!lstrcmpW(argv[1],L"--real-about-caption");
         WCHAR command[2048];if(swprintf(command,ARRAYSIZE(command),L"\"%ls\"",argv[2])<0)return 2;
         STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION process={0};
         if(!CreateProcessW(argv[2],command,NULL,NULL,FALSE,0,NULL,NULL,&startup,&process)){printf("WIN2K REAL CREATE error=%lu\n",GetLastError());return 3;}
@@ -691,6 +692,14 @@ int wmain(int argc,WCHAR **argv)
             ReleaseDC(app_window,dc);}
         BOOL owner_disabled=app_window && !IsWindowEnabled(app_window);
         BOOL dialog_styled=app_dialog && GetPropW(app_dialog,L"Win2kStyle.Frame")!=NULL;
+        COLORREF dialog_pixel=CLR_INVALID,owner_pixel=CLR_INVALID;BOOL foreground=FALSE,colors=FALSE;
+        if(captions && app_dialog && app_window){foreground=GetForegroundWindow()==app_dialog;
+            dialog_pixel=caption_pixel(app_dialog);owner_pixel=caption_pixel(app_window);
+            colors=foreground && dialog_pixel!=CLR_INVALID && owner_pixel!=CLR_INVALID &&
+                GetBValue(dialog_pixel)>GetRValue(dialog_pixel) && GetRValue(owner_pixel)==GetGValue(owner_pixel) &&
+                GetGValue(owner_pixel)==GetBValue(owner_pixel) && GetRValue(owner_pixel)>=128 && GetRValue(owner_pixel)<=181;
+            printf("WIN2K REAL ABOUT CAPTION foreground=%d active=%06lx inactive=%06lx colors=%d\n",
+                   foreground,(unsigned long)dialog_pixel,(unsigned long)owner_pixel,colors);}
         printf("WIN2K REAL ABOUT found=%d styled=%d owner_disabled=%d measured=%d black=%u gray=%u\n",
                app_dialog!=NULL,dialog_styled,owner_disabled,measured,black,gray);
         if(app_dialog)PostMessageW(app_dialog,WM_CLOSE,0,0);
@@ -698,7 +707,8 @@ int wmain(int argc,WCHAR **argv)
         DWORD wait=WaitForSingleObject(process.hProcess,5000);
         if(wait!=WAIT_OBJECT_0)TerminateProcess(process.hProcess,4);
         CloseHandle(process.hThread);CloseHandle(process.hProcess);
-        return dialog_styled && owner_disabled && measured && black==0 && gray>0 && wait==WAIT_OBJECT_0?0:3;
+        if(captions && app_dialog && !foreground)return 77;
+        return dialog_styled && owner_disabled && measured && black==0 && gray>0 && wait==WAIT_OBJECT_0 && (!captions || colors)?0:3;
     }
     if(argc==3 && !lstrcmpW(argv[1],L"--real-app")){
         WCHAR command[2048];if(swprintf(command,ARRAYSIZE(command),L"\"%ls\"",argv[2])<0)return 2;
