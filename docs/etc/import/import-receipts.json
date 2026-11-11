@@ -491,7 +491,7 @@
       "path": "tests/ntw16s-dll/system_menu_visual.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4ed8d18eb01c42f40223d716059a90a55856763131f5eb4651c2d139175e4d4b",
+      "sha256": "97555465d53ebcc3f34d8fefc6147e74101faeb9a3e13821edaa7db062528d39",
       "disposition": "authored",
       "review": "T20 S19 native system menu regression witness; T23 S1 native system-menu hover buffering and unchanged-selection regression",
       "notice": "Project-authored test; no imported code or resources"

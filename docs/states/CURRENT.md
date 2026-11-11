@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T25 S3 已完成首版 Win2000 普通 Win32 窗口接入、发布与远端复核；验证范围和未覆盖见[S3 P1](../history/M0-T25-S3-P1-delivery.md)。S4 P3 修复用户发现的 P2 重复图标回归，见[S4 P3](../history/M0-T25-S4-P3-delivery.md)。用户随后报告颜色不合格；S4 P4 根据参考图调整配色，见[S4 P4](../history/M0-T25-S4-P4-delivery.md)，S4 P6 修复按住按钮时系统颜色回退，见[S4 P6](../history/M0-T25-S4-P6-button-press.md)；S4 P8 完善边框底色，见[S4 P8](../history/M0-T25-S4-P8-frame-band.md)；S4 P9 调整工具标题字号，见[S4 P9](../history/M0-T25-S4-P9-tool-font.md)；S4 P10 调整标题按钮默认尺寸及命中，见[S4 P10](../history/M0-T25-S4-P10-button-geometry.md)；S4 P12 调整无菜单窗口标题高度，见[S4 P12](../history/M0-T25-S4-P12-bare-caption.md)；S4 P14 处理普通菜单窗口几何，见[S4 P14](../history/M0-T25-S4-P14-menu-geometry.md)；S4 P15 接入对话框窗口，见[S4 P15](../history/M0-T25-S4-P15-dialog-frame.md)；S4 P16 修复空对话框过程的窗口附着，见[S4 P16](../history/M0-T25-S4-P16-null-dialog.md)；S4 P17 补充资源对话框回归，见[S4 P17](../history/M0-T25-S4-P17-dialog-resources.md)；S4 P18 接入系统菜单经典配色，见[S4 P18](../history/M0-T25-S4-P18-system-menu.md)；S4 P19 修复系统菜单图标，见[S4 P19](../history/M0-T25-S4-P19-menu-glyphs.md)；S4 P20 修复默认菜单项字重，见[S4 P20](../history/M0-T25-S4-P20-menu-default.md)；S4 P21 记录菜单离屏和录音机对照，见[S4 P21](../history/M0-T25-S4-P21-visual-audit.md)；S4 P22 记录菜单边框和命令探针，见[S4 P22](../history/M0-T25-S4-P22-menu-border-audit.md)；继续 S4，T25 仍开放。
+M0 T25 S3 已完成首版 Win2000 普通 Win32 窗口接入、发布与远端复核；验证范围和未覆盖见[S3 P1](../history/M0-T25-S3-P1-delivery.md)。S4 P3 修复用户发现的 P2 重复图标回归，见[S4 P3](../history/M0-T25-S4-P3-delivery.md)。用户随后报告颜色不合格；S4 P4 根据参考图调整配色，见[S4 P4](../history/M0-T25-S4-P4-delivery.md)，S4 P6 修复按住按钮时系统颜色回退，见[S4 P6](../history/M0-T25-S4-P6-button-press.md)；S4 P8 完善边框底色，见[S4 P8](../history/M0-T25-S4-P8-frame-band.md)；S4 P9 调整工具标题字号，见[S4 P9](../history/M0-T25-S4-P9-tool-font.md)；S4 P10 调整标题按钮默认尺寸及命中，见[S4 P10](../history/M0-T25-S4-P10-button-geometry.md)；S4 P12 调整无菜单窗口标题高度，见[S4 P12](../history/M0-T25-S4-P12-bare-caption.md)；S4 P14 处理普通菜单窗口几何，见[S4 P14](../history/M0-T25-S4-P14-menu-geometry.md)；S4 P15 接入对话框窗口，见[S4 P15](../history/M0-T25-S4-P15-dialog-frame.md)；S4 P16 修复空对话框过程的窗口附着，见[S4 P16](../history/M0-T25-S4-P16-null-dialog.md)；S4 P17 补充资源对话框回归，见[S4 P17](../history/M0-T25-S4-P17-dialog-resources.md)；S4 P18 接入系统菜单经典配色，见[S4 P18](../history/M0-T25-S4-P18-system-menu.md)；S4 P19 修复系统菜单图标，见[S4 P19](../history/M0-T25-S4-P19-menu-glyphs.md)；S4 P20 修复默认菜单项字重，见[S4 P20](../history/M0-T25-S4-P20-menu-default.md)；S4 P21 记录菜单离屏和录音机对照，见[S4 P21](../history/M0-T25-S4-P21-visual-audit.md)；S4 P22 记录菜单边框和命令探针，见[S4 P22](../history/M0-T25-S4-P22-menu-border-audit.md)；S4 P23 验证菜单实际客户区，见[S4 P23](../history/M0-T25-S4-P23-live-menu-audit.md)；继续 S4，T25 仍开放。
 
 ## M0 T25 S4 Packet
 
@@ -35,7 +35,7 @@ M0 T25 S3 已完成首版 Win2000 普通 Win32 窗口接入、发布与远端复
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
 - Last allocated T25 S: 4
-- Last verified remote delivery: M0 T25 S4 P21，`74ec6534389e352c46a0dbeb1018442589b96050`。
+- Last verified remote delivery: M0 T25 S4 P22，`4a115928d72dbe78641fcf46f56c9059654e1e05`。
 - Open task: M0 T25 S4；Win2000 普通 Win32 标题与外框绘制。
 
 ## Technical Baseline

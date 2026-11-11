@@ -5,13 +5,16 @@
 #include <stdio.h>
 #include <wchar.h>
 #include "lib-win32/win2k-window/system_menu.h"
-static HMENU system_menu;static HWND popup;static UINT before_type,seen_type;static ULONG_PTR before_data,seen_data;static BOOL seen,checked,selected,custom;static COLORREF sample=CLR_INVALID;static unsigned idles,custom_draws;static BOOL hover,hover_checked,hover_preserved,win2k_paint,win2k_live,win2k_glyph,win2k_default;static unsigned glyph_rows;static BOOL default_changed;
+static HMENU system_menu;static HWND popup;static UINT before_type,seen_type;static ULONG_PTR before_data,seen_data;static BOOL seen,checked,selected,custom;static COLORREF sample=CLR_INVALID,live_sample=CLR_INVALID;static unsigned idles,custom_draws;static BOOL hover,hover_checked,hover_preserved,win2k_paint,win2k_live,win2k_glyph,win2k_default;static unsigned glyph_rows;static BOOL default_changed;
 static BOOL CALLBACK find_popup(HWND w,LPARAM unused){(void)unused;WCHAR cls[32];MENUBARINFO mbi={.cbSize=sizeof(mbi)};if(IsWindowVisible(w)&&GetClassNameW(w,cls,32)&&!lstrcmpW(cls,L"#32768")&&GetMenuBarInfo(w,OBJID_CLIENT,0,&mbi)&&mbi.hMenu==system_menu){popup=w;return FALSE;}return TRUE;}
 static BOOL sample_menu(void){
     if(!EnumThreadWindows(GetCurrentThreadId(),find_popup,0)&&!popup)return FALSE;
     int count=GetMenuItemCount(system_menu),selected_index=-1;RECT row,window;
     for(int i=0;i<count;++i){MENUITEMINFOW m={.cbSize=sizeof(m),.fMask=MIIM_STATE};if(GetMenuItemInfoW(system_menu,(UINT)i,TRUE,&m)&&(m.fState&MFS_HILITE)){selected_index=i;break;}}
     if(selected_index<0||!GetMenuItemRect(NULL,system_menu,(UINT)selected_index,&row)||!GetWindowRect(popup,&window))return FALSE;
+    if(win2k_live&&!custom){POINT point={row.left+4,(row.top+row.bottom)/2};ScreenToClient(popup,&point);
+        HDC live=GetDC(popup);if(live){live_sample=GetPixel(live,point.x,point.y);ReleaseDC(popup,live);}}
+
     int width=window.right-window.left,height=window.bottom-window.top;if(width<=0||height<=0||width>2048||height>2048)return FALSE;
     HDC screen=GetDC(NULL),dc=screen?CreateCompatibleDC(screen):NULL;HBITMAP bitmap=dc?CreateCompatibleBitmap(screen,width,height):NULL;HGDIOBJ prev=bitmap?SelectObject(dc,bitmap):NULL;
     if(screen)ReleaseDC(NULL,screen);
@@ -87,8 +90,9 @@ int wmain(int argc,WCHAR **argv){
     MSG msg;while(GetMessageW(&msg,NULL,0,0)>0){TranslateMessage(&msg);DispatchMessageW(&msg);}KillTimer(w,1);
     BOOL intact=GetMenuItemInfoW(system_menu,0,TRUE,&i)&&i.fType==before_type&&i.dwItemData==before_data;
     BOOL style=sample==((win2k_paint||win2k_live)?RGB(0,0,128):RGB(164,200,240));printf("SYSTEM_MENU bits=%u custom=%d seen=%d unchanged=%d checked=%d selected=%d blue=%d sample=%06lx idles=%u custom_draws=%u\n",(unsigned)(sizeof(void*)*8),custom,seen,seen_type==before_type&&seen_data==before_data&&intact,checked,selected,style,(DWORD)sample,idles,custom_draws);
+    if(win2k_live&&!custom)printf("WIN2K SYSTEM LIVE sample=%06lx\n",(unsigned long)live_sample);
     if(win2k_glyph)printf("WIN2K SYSTEM GLYPHS rows=%u\n",glyph_rows);
     if(win2k_default)printf("WIN2K SYSTEM DEFAULT changed=%d\n",default_changed);
-    DestroyWindow(w);return (!win2k_glyph||glyph_rows==4)&&(!win2k_default||default_changed)&&seen&&seen_type==before_type&&seen_data==before_data&&intact&&selected&&(custom?custom_draws>0:style)&&(!hover||(hover_checked&&hover_preserved))?0:1;
+    DestroyWindow(w);return (!win2k_live||custom||live_sample==RGB(0,0,128))&&(!win2k_glyph||glyph_rows==4)&&(!win2k_default||default_changed)&&seen&&seen_type==before_type&&seen_data==before_data&&intact&&selected&&(custom?custom_draws>0:style)&&(!hover||(hover_checked&&hover_preserved))?0:1;
 }
 
