@@ -97,17 +97,19 @@ BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinate
 }
 
 typedef struct menu_scope menu_scope;
-struct menu_scope { HWND owner,popup;HMENU menu;menu_scope *previous;unsigned calls;BOOL detached; };
+struct menu_scope { HWND owner,popup;HMENU menu;menu_scope *previous;unsigned calls;int selection;BOOL detached,painted; };
 static _Thread_local menu_scope *scopes;
 static _Thread_local HHOOK message_hook;
 static LRESULT CALLBACK menu_popup_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
+static int selected_item(HMENU menu);
 
 static void popup_paint(HWND window,menu_scope *scope,HDC target,BOOL window_coordinates)
 {
     if(scope->detached || !scope->menu)return;
     HDC dc=target?target:GetDC(window);if(!dc)return;
-    (void)win2k_system_menu_paint(window,scope->menu,dc,window_coordinates);
+    BOOL painted=win2k_system_menu_paint(window,scope->menu,dc,window_coordinates);
     if(!target)ReleaseDC(window,dc);
+    if(painted && !target && !scope->detached){scope->selection=selected_item(scope->menu);scope->painted=TRUE;}
 }
 static int selected_item(HMENU menu)
 {
@@ -154,6 +156,15 @@ void win2k_system_menu_begin(HWND owner)
 void win2k_system_menu_set(HWND owner,HMENU menu)
 {
     if(scopes && scopes->owner==owner)scopes->menu=menu;
+}
+void win2k_system_menu_idle(HWND owner)
+{
+    menu_scope *scope=scopes;
+    if(scope && scope->owner==owner && scope->popup && scope->menu &&
+       (!scope->painted || scope->selection!=selected_item(scope->menu))){
+        ++scope->calls;popup_paint(scope->popup,scope,NULL,FALSE);
+        if(!--scope->calls && scope->detached)free(scope);
+    }
 }
 void win2k_system_menu_end(HWND owner,BOOL all)
 {
