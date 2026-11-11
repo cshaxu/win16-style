@@ -19,8 +19,34 @@ static BOOL blue_caption(HWND w)
 int wmain(int argc,WCHAR **argv)
 {
     HINSTANCE instance=GetModuleHandleW(NULL);
-    WNDCLASSW wc={.lpfnWndProc=procedure,.hInstance=instance,.hIcon=LoadIconW(NULL,MAKEINTRESOURCEW(32515)),.lpszClassName=L"Win2kFrameFixture"};
+    BOOL no_icon=argc==2 && !lstrcmpW(argv[1],L"--no-icon");
+    WNDCLASSW wc={.lpfnWndProc=procedure,.hInstance=instance,.hIcon=no_icon?NULL:LoadIconW(NULL,MAKEINTRESOURCEW(32515)),.lpszClassName=L"Win2kFrameFixture"};
     if(!RegisterClassW(&wc))return 1;
+    if(no_icon){
+        HWND w=CreateWindowExW(0,wc.lpszClassName,L"No icon",WS_OVERLAPPEDWINDOW,
+                                80,80,420,260,NULL,NULL,instance,NULL);
+        if(!w)return 2;
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);SendMessageW(w,WM_NCACTIVATE,TRUE,0);
+        TITLEBARINFOEX info={.cbSize=sizeof(info)};RECT outer;
+        SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);GetWindowRect(w,&outer);
+        HDC dc=GetWindowDC(w);COLORREF before[16*16];unsigned drawn=0,changed=0;
+        int left=info.rcTitleBar.left-outer.left+3,top=info.rcTitleBar.top-outer.top+3;
+        if(dc){
+            COLORREF background=GetPixel(dc,left,top);
+            for(int y=0;y<16;++y)for(int x=0;x<16;++x){
+                COLORREF pixel=GetPixel(dc,left+x,top+y);
+                before[y*16+x]=pixel;
+                if(pixel!=CLR_INVALID && pixel!=background)++drawn;
+            }
+            SendMessageW(w,WM_SETICON,ICON_BIG,(LPARAM)LoadIconW(NULL,MAKEINTRESOURCEW(32513)));
+            for(int y=0;y<16;++y)for(int x=0;x<16;++x)
+                if(before[y*16+x]!=GetPixel(dc,left+x,top+y))++changed;
+            ReleaseDC(w,dc);
+        }
+        DestroyWindow(w);
+        printf("WIN2K DEFAULT ICON bits=%u drawn=%u changed=%u\n",(unsigned)(sizeof(void*)*8),drawn,changed);
+        return drawn>0 && changed>0?0:3;
+    }
     if(argc==2 && !lstrcmpW(argv[1],L"--tool")){
         HWND tool=CreateWindowExW(WS_EX_TOOLWINDOW,wc.lpszClassName,L"Tool window",WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU,
                                   100,100,320,180,NULL,NULL,instance,NULL);

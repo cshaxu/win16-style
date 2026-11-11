@@ -46,10 +46,11 @@ static void paint(HWND window)
         HICON icon=NULL;int icon_size=0;
         if((GetWindowLongPtrW(window,GWL_STYLE)&WS_SYSMENU) &&
            !(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)){
-            icon=(HICON)SendMessageW(window,WM_GETICON,ICON_SMALL2,0);
-            if(!icon)icon=(HICON)SendMessageW(window,WM_GETICON,ICON_SMALL,0);
+            icon=(HICON)SendMessageW(window,WM_GETICON,ICON_SMALL,0);
+            if(!icon)icon=(HICON)SendMessageW(window,WM_GETICON,ICON_BIG,0);
             if(!icon)icon=(HICON)GetClassLongPtrW(window,GCLP_HICONSM);
             if(!icon)icon=(HICON)GetClassLongPtrW(window,GCLP_HICON);
+            if(!icon)icon=LoadIconW(NULL,MAKEINTRESOURCEW(32517));
             if(icon){
                 icon_size=GetSystemMetricsForDpi(SM_CXSMICON,dpi);
                 int available=caption.bottom-caption.top-2;
