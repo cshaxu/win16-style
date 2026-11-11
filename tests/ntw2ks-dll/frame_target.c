@@ -86,6 +86,12 @@ int wmain(int argc,WCHAR **argv)
     COLORREF pixel=dc?GetPixel(dc,x,y):CLR_INVALID;
     COLORREF pixel2=dc?GetPixel(dc,x+80,y):CLR_INVALID;
     COLORREF endpoint=dc?GetPixel(dc,end-3,y):CLR_INVALID;
+    unsigned classic_button_pixels=0;
+    if(dc){
+        RECT button=info.rgrect[5];OffsetRect(&button,-window.left,-window.top);
+        for(int by=button.top;by<button.bottom;++by)for(int bx=button.left;bx<button.right;++bx)
+            if(GetPixel(dc,bx,by)==RGB(192,192,192))++classic_button_pixels;
+    }
     unsigned icon_pixels=0;
     COLORREF icon_before[16*12];
     if(dc){
@@ -122,13 +128,13 @@ int wmain(int argc,WCHAR **argv)
     BOOL maximized=IsZoomed(w) && blue_caption(w);
     SendMessageW(w,WM_SYSCOMMAND,SC_RESTORE,0);
     BOOL restored=!IsZoomed(w) && GetPropW(w,L"Win2kStyle.Frame")!=NULL && blue_caption(w);
-    printf("WIN2K FRAME bits=%u attached=%d title=%ldx%ld pixels=%06lx/%06lx end=%06lx inactive=%06lx/%06lx icon_pixels=%u icon_changed=%u text_pixels=%u hit=%lld\n",
+    printf("WIN2K FRAME bits=%u attached=%d title=%ldx%ld pixels=%06lx/%06lx end=%06lx inactive=%06lx/%06lx button_gray=%u icon_pixels=%u icon_changed=%u text_pixels=%u hit=%lld\n",
         (unsigned)(sizeof(void*)*8),attached,info.rcTitleBar.right-info.rcTitleBar.left,
-        info.rcTitleBar.bottom-info.rcTitleBar.top,(unsigned long)pixel,(unsigned long)pixel2,(unsigned long)endpoint,(unsigned long)inactive,(unsigned long)inactive_end,icon_pixels,icon_changed,changed,(long long)hit);
+        info.rcTitleBar.bottom-info.rcTitleBar.top,(unsigned long)pixel,(unsigned long)pixel2,(unsigned long)endpoint,(unsigned long)inactive,(unsigned long)inactive_end,classic_button_pixels,icon_pixels,icon_changed,changed,(long long)hit);
     SendMessageW(w,WM_SYSCOMMAND,SC_CLOSE,0);
     BOOL closed=!IsWindow(w);if(!closed)DestroyWindow(w);
     return attached && pixel!=CLR_INVALID && pixel2!=CLR_INVALID && pixel!=pixel2 && inactive!=CLR_INVALID &&
-           GetBValue(pixel)>GetRValue(pixel) && GetRValue(endpoint)>=12 && GetGValue(endpoint)>=120 && GetBValue(endpoint)>=200 &&
+           GetBValue(pixel)>GetRValue(pixel) && GetRValue(endpoint)>=150 && GetGValue(endpoint)>=180 && GetBValue(endpoint)>=220 && classic_button_pixels>20 &&
            GetRValue(inactive)==GetGValue(inactive) && GetGValue(inactive)==GetBValue(inactive) && GetRValue(inactive_end)>=175 && GetRValue(inactive_end)<=181 && icon_pixels>0 && icon_changed>0 && changed>0 &&
            hit==HTCAPTION && resized && maximized && restored && closed?0:3;
 }

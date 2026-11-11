@@ -8,6 +8,58 @@
 static const WCHAR frame_property[]=L"Win2kStyle.Frame";
 static const WCHAR hover_property[]=L"Win2kStyle.CaptionHover";
 
+/* DrawFrameControl uses the host's palette; remap its classic shades locally. */
+static void paint_button(HDC target,const RECT *rect,UINT state)
+{
+    int width=rect->right-rect->left,height=rect->bottom-rect->top;
+    if(width<=0 || height<=0)return;
+    BITMAPINFO bitmap={0};
+    bitmap.bmiHeader.biSize=sizeof(bitmap.bmiHeader);
+    bitmap.bmiHeader.biWidth=width;bitmap.bmiHeader.biHeight=-height;
+    bitmap.bmiHeader.biPlanes=1;bitmap.bmiHeader.biBitCount=32;
+    bitmap.bmiHeader.biCompression=BI_RGB;
+    HDC memory=CreateCompatibleDC(target);void *bits=NULL;
+    if(!memory)return;
+    HBITMAP surface=CreateDIBSection(target,&bitmap,DIB_RGB_COLORS,&bits,NULL,0);
+    if(surface && bits){
+        HGDIOBJ old=SelectObject(memory,surface);
+        RECT local={0,0,width,height};
+        if(old && old!=HGDI_ERROR && DrawFrameControl(memory,&local,DFC_CAPTION,state)){
+            static const int indices[]={COLOR_3DFACE,COLOR_3DSHADOW,COLOR_3DDKSHADOW,COLOR_3DLIGHT};
+            static const COLORREF values[]={RGB(192,192,192),RGB(128,128,128),RGB(0,0,0),RGB(192,192,192)};
+            DWORD from[ARRAYSIZE(indices)],to[ARRAYSIZE(indices)];
+            for(unsigned i=0;i<ARRAYSIZE(indices);++i){
+                COLORREF c=GetSysColor(indices[i]),v=values[i];
+                from[i]=(DWORD)GetRValue(c)<<16 | (DWORD)GetGValue(c)<<8 | GetBValue(c);
+                to[i]=(DWORD)GetRValue(v)<<16 | (DWORD)GetGValue(v)<<8 | GetBValue(v);
+            }
+            GdiFlush();DWORD *pixels=bits;
+            for(int i=0;i<width*height;++i)for(unsigned j=0;j<ARRAYSIZE(indices);++j)
+                if((pixels[i]&0xffffff)==from[j]){pixels[i]=to[j];break;}
+            BitBlt(target,rect->left,rect->top,width,height,memory,0,0,SRCCOPY);
+        }
+        if(old && old!=HGDI_ERROR)SelectObject(memory,old);
+    }
+    if(surface)DeleteObject(surface);
+    DeleteDC(memory);
+}
+
+static void paint_border(HDC dc,int width,int height)
+{
+    static const COLORREF colors[]={RGB(255,255,255),RGB(0,0,0),RGB(192,192,192),RGB(128,128,128)};
+    for(int inset=0;inset<2;++inset){
+        HBRUSH light=CreateSolidBrush(colors[inset*2]),dark=CreateSolidBrush(colors[inset*2+1]);
+        if(light && dark && width>2*inset && height>2*inset){
+            RECT top={inset,inset,width-inset,inset+1},left={inset,inset+1,inset+1,height-inset};
+            RECT bottom={inset,height-inset-1,width-inset,height-inset},right={width-inset-1,inset,width-inset,height-inset};
+            FillRect(dc,&top,light);FillRect(dc,&left,light);
+            FillRect(dc,&bottom,dark);FillRect(dc,&right,dark);
+        }
+        if(light)DeleteObject(light);
+        if(dark)DeleteObject(dark);
+    }
+}
+
 static void paint(HWND window)
 {
     RECT outer;TITLEBARINFOEX info={0};WCHAR title[1024];
@@ -22,7 +74,7 @@ static void paint(HWND window)
     HDC dc=GetWindowDC(window);if(!dc)return;
     BOOL active=GetPropW(window,frame_property)==(HANDLE)(uintptr_t)2;
     win2k_caption_colors colors=active?
-        (win2k_caption_colors){RGB(0,0,128),RGB(16,132,208),RGB(255,255,255),TRUE}:
+        (win2k_caption_colors){RGB(0,0,128),RGB(166,192,232),RGB(255,255,255),TRUE}:
         (win2k_caption_colors){RGB(128,128,128),RGB(181,181,181),RGB(192,192,192),TRUE};
     int saved=SaveDC(dc);
     if(saved){
@@ -59,12 +111,9 @@ static void paint(HWND window)
             if(i==3 && IsZoomed(window))state=DFCS_CAPTIONRESTORE;
             if(info.rgstate[i]&STATE_SYSTEM_UNAVAILABLE)state|=DFCS_INACTIVE;
             if(info.rgstate[i]&STATE_SYSTEM_PRESSED)state|=DFCS_PUSHED;
-            DrawFrameControl(dc,&r,DFC_CAPTION,state);
+            paint_button(dc,&r,state);
         }
-        if(!IsZoomed(window)){
-            RECT border={0,0,width,height};
-            DrawEdge(dc,&border,EDGE_RAISED,BF_RECT);
-        }
+        if(!IsZoomed(window))paint_border(dc,width,height);
     }
     ReleaseDC(window,dc);
 }

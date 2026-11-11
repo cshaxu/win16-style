@@ -6728,7 +6728,7 @@
       "path": "src/lib-win32/win2k-window/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "a286d9e5a7bc22982c98863cac31aac6a2fd2919ac23a6d24fc142fcf2264f26",
+      "sha256": "43bf6d2d5dbe3616ccc29477736ee6e3af756e46788c64dd0c07d2f5d10dfcfd",
       "disposition": "authored",
       "review": "T25 S3 native Win2000 frame and fixture; T25 S3 Win2000 frame; T25 S4 caption state and icon; T25 S4 original caption region and state",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -6746,7 +6746,7 @@
       "path": "tests/ntw2ks-dll/frame_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7c1ebeb09df71422b3701553742bfccd501474d46f344207c98ebd7ac8bc7c8b",
+      "sha256": "f5bbdce607dc570fc92aacd3bf7aaad95ba24e6c56c1d67e905c505503f9c731",
       "disposition": "authored",
       "review": "T25 S3 native Win2000 frame and fixture; T25 S4 caption state and icon; T25 S4 original caption region and state",
       "notice": "Project-authored C; no external source or artwork copied"
