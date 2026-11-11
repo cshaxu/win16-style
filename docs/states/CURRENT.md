@@ -2,28 +2,28 @@
 
 ## Current Work
 
-M0 T25 S3 已按用户要求准入，T25 收窄为普通 Win32 程序的 Windows 2000 窗体外框和标题栏；S3–S8 序列见[方案](../proposals/windows-2000-classic.md)。S3 P1 外框基础已本地发布、重点测试通过，待提交推送及远端复核；范围与限制见[S3 交付记录](../history/M0-T25-S3-P1-delivery.md)。S2 已交付、远端复核，但用户尚未对其手动验收，既有全局托盘和 UWP 测试限制见 [S2 交付记录](../history/M0-T25-S2-P1-delivery.md)。
+M0 T25 S3 已完成首版 Win2000 普通 Win32 窗口接入、发布与远端复核；验证范围和未覆盖见[S3 P1](../history/M0-T25-S3-P1-delivery.md)。用户尚未手动验收，不据此宣称视觉效果通过。按已准入的 T25 序列继续 S4；T25 仍开放。
 
-## M0 T25 S3 Packet
+## M0 T25 S4 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | New；T25 内新 S。 |
-| Admission And Approval | 用户要求开始 Windows 2000 普通 Win32 窗体外框并自行规划 S。 |
-| Objective | 审核 Win2000 参考及现有接入，完成普通顶层窗口外框基础及可验证的双位宽产品接入。 |
-| Non-goals | 不处理 UWP、WinUI、自绘客户区、控件内部、对话框布局或 Win2000 全局模式。 |
-| Reference Baseline | main 24a0f644，S2 八文件已发布；原版源码包只读参考，不复制实现或资源。 |
-| Candidate Proposal | docs/proposals/windows-2000-classic.md，用户收窄 T25 后 S3–S8 序列。 |
-| Files And ABI Surface | ntw2ks-dll、必要公共窗口库、demo、构建及对应测试；维护 ntwshk 和 Win16 行为。 |
-| Applicable Rules | M0；纯 C17、MinGW GCC、Ninja、ccache；用户批准的八文件包。 |
-| Verification | x86/x64 实际启动和窗口附着，标题绘制和原生系统命令、失败清理及 Win16 对照；真实桌面及未覆盖状态分别记录。 |
-| Expected Markers | 明确原版参考、窗口类和状态范围；观察实际外框而非仅 DLL 加载。 |
-| Asset Needs | 保留原有图形和来源声明，不复制未经许可的参考源码或资源。 |
-| Reporting Requirements | 区分已实现、后续 S 和未验证；自动截图不替代用户视觉验收。 |
-| Stop Conditions | 不修改系统安全设置、目标文件或兄弟仓库；环境限制记录并继续可做工作。 |
-| Exit Criteria | 基础接入实测、双位宽构建及同批实际包测试、发布、提交推送和远端复核；待验收与限制如实记录。 |
-| Original Owner Request | 开始做 Win2000 窗体外框与标题栏，本 T 专注 Win32，自行规划 S。 |
-| Similar-Issue Sweep | 比较普通与工具窗口、标题按钮、菜单、最大化、DPI、重绘、传播及默认 Win16 路径。 |
+| Identifier Mode | New；T25 内下一 S。 |
+| Admission And Approval | 用户要求继续实现普通 Win32 程序的 Windows 2000 外框及标题栏，并授权自行规划 S。 |
+| Objective | 完善普通 Win32 标题栏活动/失活、文字、图标、渐变、窗口边缘及重绘，基于可取得的原版参考明确几何与颜色。 |
+| Non-goals | 不声称 UWP、WinUI、自绘客户区、控件内部或 Win2000 全局模式已支持。 |
+| Reference Baseline | main 8e7f487d；S3 P1 八文件已发布并远端复核；Win2000 源码包只读参考。 |
+| Candidate Proposal | docs/proposals/windows-2000-classic.md 的 S4；完整目标保留至 S8。 |
+| Files And ABI Surface | win2k-window、ntw2ks 接入、对应同名测试与包测试；保持 Win16 及启动行为。 |
+| Applicable Rules | M0；纯 C17、MinGW GCC、Ninja、ccache；八文件同批交付。 |
+| Verification | 双位宽真实普通窗口验证活动/失活、文字图标、标题颜色、重复绘制和 resize；默认 Win16、启动传播及资源边界回归。 |
+| Expected Markers | 区分标题实际画面、消息与命中，列出颜色/尺寸参考及仍不支持状态。 |
+| Asset Needs | 保留原有资源和来源声明，不复制未经许可的参考源码或图形。 |
+| Reporting Requirements | 区分产品包测试、原版对照、物理输入和用户手动验收。 |
+| Stop Conditions | 不改变系统安全设置、目标文件或兄弟仓库；受限验证记录真实原因。 |
+| Exit Criteria | 目标状态实测、双位宽干净构建、同批包测试与发布、提交推送及远端复核；限制不得算通过。 |
+| Original Owner Request | 实现普通 Win32 程序的 Windows 2000 经典窗口样式。 |
+| Similar-Issue Sweep | 窗口创建、不同标题/图标、激活/失活、最大化/还原、窗口边缘、主题切换和 Win16 默认路径。 |
 
 ## Identifier State
 
@@ -34,10 +34,10 @@ M0 T25 S3 已按用户要求准入，T25 收窄为普通 Win32 程序的 Windows
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
-- Last allocated T25 S: 3
-- Last verified remote delivery: M0 T25 S2 P1，`9aecf5305714a8105072790afab2464c5bf4e4bc`。
-- Open task: M0 T25 S3；Win2000 普通 Win32 外框基础。
+- Last allocated T25 S: 4
+- Last verified remote delivery: M0 T25 S3 P1，`8e7f487d59adf5c5227119115ce2a98846dbf179`。
+- Open task: M0 T25 S4；Win2000 普通 Win32 标题与外框绘制。
 
 ## Technical Baseline
 
-已发布基线为五组件、八产品文件；纯 C17、MinGW GCC、Ninja 和 ccache。T25 S2 P1 八文件已发布于项目 assets 根目录与 O:/winnt，摘要和验证范围见[交付记录](../history/M0-T25-S2-P1-delivery.md)。历史状态见[T24 工作快照](../history/M0-T24-S1-working-log.md)和[原状态快照](../history/M0-T24-current-state-archive.md)。
+已发布基线为五组件、八产品文件；纯 C17、MinGW GCC、Ninja 和 ccache。T25 S3 P1 八文件已发布于项目 assets 根目录与 O:/winnt，摘要和验证范围见[交付记录](../history/M0-T25-S3-P1-delivery.md)。历史状态见[T24 工作快照](../history/M0-T24-S1-working-log.md)和[原状态快照](../history/M0-T24-current-state-archive.md)。
