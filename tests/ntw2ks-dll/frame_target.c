@@ -135,14 +135,24 @@ static LRESULT CALLBACK find_owner_proc(HWND window,UINT message,WPARAM wp,LPARA
     return DefWindowProcW(window,message,wp,lp);
 }
 
-static BOOL blue_caption(HWND w)
+static COLORREF caption_pixel(HWND w)
 {
     TITLEBARINFOEX info={.cbSize=sizeof(info)};RECT outer;
     SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
-    if(!GetWindowRect(w,&outer))return FALSE;
-    HDC dc=GetWindowDC(w);if(!dc)return FALSE;
+    if(!GetWindowRect(w,&outer))return CLR_INVALID;
+    HDC dc=GetWindowDC(w);if(!dc)return CLR_INVALID;
     COLORREF pixel=GetPixel(dc,info.rcTitleBar.left-outer.left+40,info.rcTitleBar.top-outer.top+2);
-    ReleaseDC(w,dc);
+    ReleaseDC(w,dc);return pixel;
+}
+static BOOL classic_caption_pixel(COLORREF pixel)
+{
+    if(pixel==CLR_INVALID)return FALSE;
+    BYTE red=GetRValue(pixel),green=GetGValue(pixel),blue=GetBValue(pixel);
+    return (red==green && green==blue && red>=128 && red<=181) || (blue>red && blue>=90);
+}
+static BOOL blue_caption(HWND w)
+{
+    COLORREF pixel=caption_pixel(w);
     return pixel!=CLR_INVALID && GetBValue(pixel)>GetRValue(pixel);
 }
 
@@ -459,6 +469,20 @@ int wmain(int argc,WCHAR **argv)
             ok=measured && title.rcTitleBar.bottom-title.rcTitleBar.top==MulDiv(19,(int)dpi,96) && hit==HTMENU && opened;
             printf("WIN2K REAL APP bits=%u title=%ld menu=%d hit=%lld opened=%d\n",(unsigned)(sizeof(void*)*8),
                    title.rcTitleBar.bottom-title.rcTitleBar.top,measured,(long long)hit,opened);
+            BOOL supports_max=(GetWindowLongPtrW(app_window,GWL_STYLE)&WS_MAXIMIZEBOX)!=0;
+            BOOL maximized=FALSE,restored=FALSE,caption=FALSE;COLORREF max_pixel=CLR_INVALID,restore_pixel=CLR_INVALID;
+            if(supports_max){DWORD_PTR ignored=0;
+                BOOL sent=SendMessageTimeoutW(app_window,WM_SYSCOMMAND,SC_MAXIMIZE,0,SMTO_ABORTIFHUNG,2000,&ignored)!=0;
+                maximized=sent && IsZoomed(app_window);
+                TITLEBARINFOEX zoom={.cbSize=sizeof(zoom)};
+                if(maximized && SendMessageTimeoutW(app_window,WM_GETTITLEBARINFOEX,0,(LPARAM)&zoom,SMTO_ABORTIFHUNG,2000,&ignored))
+                    caption=zoom.rcTitleBar.bottom>zoom.rcTitleBar.top && GetPropW(app_window,L"Win2kStyle.Frame")!=NULL;
+                if(maximized)max_pixel=caption_pixel(app_window);
+                sent=SendMessageTimeoutW(app_window,WM_SYSCOMMAND,SC_RESTORE,0,SMTO_ABORTIFHUNG,2000,&ignored)!=0;
+                restored=sent && !IsZoomed(app_window);if(restored)restore_pixel=caption_pixel(app_window);
+                ok=ok && maximized && restored && caption && classic_caption_pixel(max_pixel) && classic_caption_pixel(restore_pixel);
+            }
+            printf("WIN2K REAL GEOMETRY supported=%d maximized=%d restored=%d caption=%d pixels=%06lx,%06lx\n",supports_max,maximized,restored,caption,(unsigned long)max_pixel,(unsigned long)restore_pixel);
             PostMessageW(app_window,WM_CLOSE,0,0);
         }
         if(WaitForSingleObject(process.hProcess,3000)!=WAIT_OBJECT_0){TerminateProcess(process.hProcess,1);ok=FALSE;}
