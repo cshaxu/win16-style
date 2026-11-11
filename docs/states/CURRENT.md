@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T25 S3 已完成首版 Win2000 普通 Win32 窗口接入、发布与远端复核；验证范围和未覆盖见[S3 P1](../history/M0-T25-S3-P1-delivery.md)。S4 P3 修复用户发现的 P2 重复图标回归，见[S4 P3](../history/M0-T25-S4-P3-delivery.md)。用户随后报告颜色不合格；S4 P4 根据参考图调整配色，见[S4 P4](../history/M0-T25-S4-P4-delivery.md)，S4 P6 修复按住按钮时系统颜色回退，见[S4 P6](../history/M0-T25-S4-P6-button-press.md)；S4 P8 完善边框底色，见[S4 P8](../history/M0-T25-S4-P8-frame-band.md)；S4 P9 调整工具标题字号，见[S4 P9](../history/M0-T25-S4-P9-tool-font.md)；S4 P10 调整标题按钮默认尺寸及命中，见[S4 P10](../history/M0-T25-S4-P10-button-geometry.md)；S4 P12 调整无菜单窗口标题高度，见[S4 P12](../history/M0-T25-S4-P12-bare-caption.md)；带菜单窗口几何仍待完成，继续 S4，T25 仍开放。
+M0 T25 S3 已完成首版 Win2000 普通 Win32 窗口接入、发布与远端复核；验证范围和未覆盖见[S3 P1](../history/M0-T25-S3-P1-delivery.md)。S4 P3 修复用户发现的 P2 重复图标回归，见[S4 P3](../history/M0-T25-S4-P3-delivery.md)。用户随后报告颜色不合格；S4 P4 根据参考图调整配色，见[S4 P4](../history/M0-T25-S4-P4-delivery.md)，S4 P6 修复按住按钮时系统颜色回退，见[S4 P6](../history/M0-T25-S4-P6-button-press.md)；S4 P8 完善边框底色，见[S4 P8](../history/M0-T25-S4-P8-frame-band.md)；S4 P9 调整工具标题字号，见[S4 P9](../history/M0-T25-S4-P9-tool-font.md)；S4 P10 调整标题按钮默认尺寸及命中，见[S4 P10](../history/M0-T25-S4-P10-button-geometry.md)；S4 P12 调整无菜单窗口标题高度，见[S4 P12](../history/M0-T25-S4-P12-bare-caption.md)；S4 P14 处理普通菜单窗口几何，见[S4 P14](../history/M0-T25-S4-P14-menu-geometry.md)；继续 S4，T25 仍开放。
 
 ## M0 T25 S4 Packet
 
@@ -35,9 +35,9 @@ M0 T25 S3 已完成首版 Win2000 普通 Win32 窗口接入、发布与远端复
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
 - Last allocated T25 S: 4
-- Last verified remote delivery: M0 T25 S4 P12，`2d51dc29379e27585be94edd3a43e9b0b517d594`。
+- Last verified remote delivery: M0 T25 S4 P13，`d6d19bf1200977a3c511a4fdb091663bbf23016d`。
 - Open task: M0 T25 S4；Win2000 普通 Win32 标题与外框绘制。
 
 ## Technical Baseline
 
-已发布基线为五组件、八产品文件；纯 C17、MinGW GCC、Ninja 和 ccache。T25 S4 P12 八文件已发布于项目 assets 根目录与 O:/winnt，摘要和验证范围见[交付记录](../history/M0-T25-S4-P12-bare-caption.md)。历史状态见[T24 工作快照](../history/M0-T24-S1-working-log.md)和[原状态快照](../history/M0-T24-current-state-archive.md)。
+已发布基线为五组件、八产品文件；纯 C17、MinGW GCC、Ninja 和 ccache。T25 S4 P14 八文件已发布于项目 assets 根目录与 O:/winnt，摘要和验证范围见[交付记录](../history/M0-T25-S4-P14-menu-geometry.md)。历史状态见[T24 工作快照](../history/M0-T24-S1-working-log.md)和[原状态快照](../history/M0-T24-current-state-archive.md)。

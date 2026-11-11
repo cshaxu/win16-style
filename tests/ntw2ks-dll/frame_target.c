@@ -5,8 +5,60 @@
 #include <stdint.h>
 #include <limits.h>
 
+static unsigned menu_scenario,menu_entries,menu_exits,menu_commands,menu_idle,menu_popup_inits;
+static volatile LONG menu_frame_paints;
+static BOOL menu_timeout;
+static POINT menu_hover_point;
+static DWORD app_pid;
+static HWND app_window;
+static volatile LONG app_popup_seen;
+static BOOL CALLBACK find_app_window(HWND window,LPARAM ignored)
+{
+    (void)ignored;DWORD pid=0;GetWindowThreadProcessId(window,&pid);
+    if(pid==app_pid && IsWindowVisible(window) && !(GetWindowLongPtrW(window,GWL_STYLE)&WS_CHILD)){
+        app_window=window;return FALSE;
+    }
+    return TRUE;
+}
+static BOOL CALLBACK find_app_popup(HWND window,LPARAM ignored)
+{
+    (void)ignored;DWORD pid=0;WCHAR name[32]={0};GetWindowThreadProcessId(window,&pid);
+    if(pid==app_pid && IsWindowVisible(window) && GetClassNameW(window,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"#32768")){
+        InterlockedExchange(&app_popup_seen,1);return FALSE;
+    }
+    return TRUE;
+}
+static DWORD WINAPI cancel_app_menu(void *ignored)
+{
+    (void)ignored;ULONGLONG deadline=GetTickCount64()+2000;
+    do{EnumWindows(find_app_popup,0);if(InterlockedCompareExchange(&app_popup_seen,0,0))break;Sleep(50);}while(GetTickCount64()<deadline);
+    PostMessageW(app_window,WM_CANCELMODE,0,0);PostMessageW(app_window,WM_KEYDOWN,VK_ESCAPE,1);return 0;
+}
 static LRESULT CALLBACK procedure(HWND w,UINT message,WPARAM wp,LPARAM lp)
-{return DefWindowProcW(w,message,wp,lp);}
+{
+    if(menu_scenario){
+        if(message==WM_ENTERMENULOOP)++menu_entries;
+        if(message==WM_EXITMENULOOP)++menu_exits;
+        if(message==WM_INITMENUPOPUP){++menu_popup_inits;if(menu_scenario==6)menu_idle=0;}
+        if(message==WM_NCPAINT)InterlockedIncrement(&menu_frame_paints);
+        if(message==WM_COMMAND && LOWORD(wp)==101){++menu_commands;return 0;}
+        if(message==WM_TIMER && wp==77){menu_timeout=TRUE;EndMenu();return 0;}
+        if(message==WM_ENTERIDLE && wp==MSGF_MENU && menu_scenario==5)return 0;
+        if(message==WM_ENTERIDLE && wp==MSGF_MENU && !menu_idle++){
+            if(menu_scenario==1){PostMessageW(w,WM_KEYDOWN,VK_DOWN,1);PostMessageW(w,WM_KEYDOWN,VK_RETURN,1);}
+            else if(menu_scenario==3 && menu_entries==1){
+                PostMessageW(w,WM_MOUSEMOVE,0,MAKELPARAM(menu_hover_point.x,menu_hover_point.y));
+            }
+            else if(menu_scenario==4 && menu_entries==1)PostMessageW(w,WM_KEYDOWN,VK_RIGHT,1);
+            else if(menu_scenario==6 && menu_popup_inits==1){PostMessageW(w,WM_KEYDOWN,VK_DOWN,1);PostMessageW(w,WM_KEYDOWN,VK_RIGHT,1);}
+            else if(menu_scenario==6){PostMessageW(w,WM_KEYDOWN,VK_ESCAPE,1);PostMessageW(w,WM_KEYDOWN,VK_ESCAPE,1);}
+            else PostMessageW(w,WM_KEYDOWN,VK_ESCAPE,1);
+            return 0;
+        }
+        if(message==WM_ENTERMENULOOP && (menu_scenario==3 || menu_scenario==4))menu_idle=0;
+    }
+    return DefWindowProcW(w,message,wp,lp);
+}
 
 static BOOL blue_caption(HWND w)
 {
@@ -59,6 +111,23 @@ static BOOL physical_click(POINT point)
     Sleep(100);event.mi.dwFlags=MOUSEEVENTF_LEFTUP;BOOL up=SendInput(1,&event,sizeof(event))==1;
     return down && up;
 }
+typedef struct { HWND window;POINT first,second;BOOL input,toggle,closed_before_escape;LONG first_paints,second_paints; } menu_physical_probe;
+static DWORD WINAPI menu_physical_thread(void *parameter)
+{
+    menu_physical_probe *probe=parameter;
+    for(unsigned i=0;i<20 && GetForegroundWindow()!=probe->window;++i)Sleep(50);
+    if(GetForegroundWindow()==probe->window){
+        probe->input=physical_click(probe->first);Sleep(350);
+        probe->first_paints=InterlockedCompareExchange(&menu_frame_paints,0,0);
+        if(probe->toggle)probe->input=physical_click(probe->second) && probe->input;
+        else probe->input=SetCursorPos(probe->second.x,probe->second.y) && probe->input;
+        Sleep(350);
+        probe->second_paints=InterlockedCompareExchange(&menu_frame_paints,0,0);
+        probe->closed_before_escape=GetPropW(probe->window,L"Win2kStyle.Menu")==NULL;
+        PostMessageW(probe->window,WM_KEYDOWN,VK_ESCAPE,1);Sleep(200);
+    }
+    PostMessageW(probe->window,WM_APP+1,0,0);return 0;
+}
 static DWORD WINAPI physical_thread(void *parameter)
 {
     physical_probe *probe=parameter;HWND w=probe->window;
@@ -107,8 +176,147 @@ int wmain(int argc,WCHAR **argv)
 {
     HINSTANCE instance=GetModuleHandleW(NULL);
     BOOL no_icon=argc==2 && !lstrcmpW(argv[1],L"--no-icon");
-    WNDCLASSW wc={.lpfnWndProc=procedure,.hInstance=instance,.hIcon=no_icon?NULL:LoadIconW(NULL,MAKEINTRESOURCEW(32515)),.lpszClassName=L"Win2kFrameFixture"};
+    WNDCLASSW wc={.lpfnWndProc=procedure,.hInstance=instance,.hIcon=no_icon?NULL:LoadIconW(NULL,MAKEINTRESOURCEW(32515)),
+        .hbrBackground=(HBRUSH)(COLOR_WINDOW+1),.lpszClassName=L"Win2kFrameFixture"};
     if(!RegisterClassW(&wc))return 1;
+    if(argc==2 && (!lstrcmpW(argv[1],L"--menu-physical") || !lstrcmpW(argv[1],L"--menu-physical-toggle"))){
+        BOOL toggle=!lstrcmpW(argv[1],L"--menu-physical-toggle");
+        HMENU menu=CreateMenu(),first=CreatePopupMenu(),second=CreatePopupMenu();if(!menu || !first || !second)return 2;
+        AppendMenuW(first,MF_STRING,101,L"First item");AppendMenuW(second,MF_STRING,102,L"Second item");
+        AppendMenuW(menu,MF_POPUP,(UINT_PTR)first,L"File");AppendMenuW(menu,MF_POPUP,(UINT_PTR)second,L"Help");
+        HWND w=CreateWindowExW(0,wc.lpszClassName,L"Menu physical",WS_OVERLAPPEDWINDOW,
+                                80,80,420,260,NULL,menu,instance,NULL);
+        if(!w){DestroyMenu(menu);return 3;}
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);SetForegroundWindow(w);
+        RECT a,b;BOOL measured=GetMenuItemRect(w,menu,0,&a) && GetMenuItemRect(w,menu,1,&b);
+        UINT dpi=GetDpiForWindow(w);if(!dpi)dpi=96;int shift=GetSystemMetricsForDpi(SM_CYCAPTION,dpi)-MulDiv(19,(int)dpi,96);
+        OffsetRect(&a,0,-shift);OffsetRect(&b,0,-shift);
+        menu_physical_probe probe={.window=w,.first={(a.left+a.right)/2,(a.top+a.bottom)/2},.second={(b.left+b.right)/2,(b.top+b.bottom)/2},.toggle=toggle};
+        if(toggle)probe.second=probe.first;
+        menu_scenario=5;HANDLE worker=CreateThread(NULL,0,menu_physical_thread,&probe,0,NULL);
+        if(!worker){DestroyWindow(w);DestroyMenu(menu);return 3;}
+        MSG message;while(GetMessageW(&message,NULL,0,0)>0){if(message.message==WM_APP+1)break;TranslateMessage(&message);DispatchMessageW(&message);}
+        WaitForSingleObject(worker,3000);CloseHandle(worker);menu_scenario=0;
+        BOOL ok=measured && probe.input && menu_entries==(toggle?1u:2u) && menu_exits==menu_entries &&
+                (!toggle || probe.closed_before_escape) &&
+                probe.first_paints==probe.second_paints && GetCapture()==NULL;
+        printf("WIN2K MENU PHYSICAL bits=%u toggle=%d input=%d entries=%u exits=%u frame_paints=%ld,%ld,%ld\n",
+               (unsigned)(sizeof(void*)*8),toggle,probe.input,menu_entries,menu_exits,probe.first_paints,probe.second_paints,
+               InterlockedCompareExchange(&menu_frame_paints,0,0));
+        DestroyWindow(w);DestroyMenu(menu);return ok?0:3;
+    }
+    if(argc==2 && !lstrcmpW(argv[1],L"--menu-special")){
+        HMENU menu=CreateMenu(),first=CreatePopupMenu(),second=CreatePopupMenu();if(!menu || !first || !second)return 2;
+        AppendMenuW(first,MF_STRING,101,L"First item");AppendMenuW(second,MF_STRING,102,L"Second item");
+        AppendMenuW(menu,MF_POPUP,(UINT_PTR)first,L"File");AppendMenuW(menu,MF_POPUP|MF_MENUBREAK,(UINT_PTR)second,L"Help");
+        HWND w=CreateWindowExW(0,wc.lpszClassName,L"Multiple rows",WS_OVERLAPPEDWINDOW,
+                                80,80,420,260,NULL,menu,instance,NULL);
+        if(!w){DestroyMenu(menu);return 3;}
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);
+        TITLEBARINFOEX title={.cbSize=sizeof(title)};MENUBARINFO bar={.cbSize=sizeof(bar)};
+        SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&title);BOOL got=GetMenuBarInfo(w,OBJID_MENU,0,&bar);
+        POINT client={0,0};ClientToScreen(w,&client);UINT dpi=GetDpiForWindow(w);if(!dpi)dpi=96;
+        BOOL ok=got && title.rcTitleBar.bottom-title.rcTitleBar.top==GetSystemMetricsForDpi(SM_CYCAPTION,dpi) &&
+            bar.rcBar.top>=title.rcTitleBar.bottom && bar.rcBar.bottom<=client.y;
+        printf("WIN2K SPECIAL MENU bits=%u native=%d title=%ld\n",(unsigned)(sizeof(void*)*8),ok,
+               title.rcTitleBar.bottom-title.rcTitleBar.top);
+        DestroyWindow(w);DestroyMenu(menu);return ok?0:3;
+    }
+    if(argc==3 && !lstrcmpW(argv[1],L"--real-app")){
+        WCHAR command[2048];if(swprintf(command,ARRAYSIZE(command),L"\"%ls\"",argv[2])<0)return 2;
+        STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION process={0};
+        if(!CreateProcessW(argv[2],command,NULL,NULL,FALSE,0,NULL,NULL,&startup,&process))return 3;
+        app_pid=process.dwProcessId;ULONGLONG deadline=GetTickCount64()+5000;
+        do{EnumWindows(find_app_window,0);if(app_window)break;Sleep(50);}while(GetTickCount64()<deadline);
+        BOOL ok=FALSE;
+        if(app_window){
+            TITLEBARINFOEX title={.cbSize=sizeof(title)};RECT outer,item;
+            SendMessageW(app_window,WM_GETTITLEBARINFOEX,0,(LPARAM)&title);GetWindowRect(app_window,&outer);
+            HMENU menu=GetMenu(app_window);UINT dpi=GetDpiForWindow(app_window);if(!dpi)dpi=96;
+            int shift=GetSystemMetricsForDpi(SM_CYCAPTION,dpi)-MulDiv(19,(int)dpi,96);
+            BOOL measured=menu && GetMenuItemRect(app_window,menu,0,&item);
+            if(measured)OffsetRect(&item,0,-shift);
+            LRESULT hit=measured?SendMessageW(app_window,WM_NCHITTEST,0,MAKELPARAM((item.left+item.right)/2,(item.top+item.bottom)/2)):0;
+            BOOL opened=FALSE;
+            if(measured && hit==HTMENU){
+                HANDLE cancel=CreateThread(NULL,0,cancel_app_menu,NULL,0,NULL);
+                DWORD_PTR reply=0;
+                BOOL sent=cancel && SendMessageTimeoutW(app_window,WM_NCLBUTTONDOWN,HTMENU,
+                    MAKELPARAM((item.left+item.right)/2,(item.top+item.bottom)/2),SMTO_ABORTIFHUNG,4000,&reply);
+                if(cancel){WaitForSingleObject(cancel,3000);CloseHandle(cancel);}
+                opened=sent && InterlockedCompareExchange(&app_popup_seen,0,0)!=0;
+            }
+            ok=measured && title.rcTitleBar.bottom-title.rcTitleBar.top==MulDiv(19,(int)dpi,96) && hit==HTMENU && opened;
+            printf("WIN2K REAL APP bits=%u title=%ld menu=%d hit=%lld opened=%d\n",(unsigned)(sizeof(void*)*8),
+                   title.rcTitleBar.bottom-title.rcTitleBar.top,measured,(long long)hit,opened);
+            PostMessageW(app_window,WM_CLOSE,0,0);
+        }
+        if(WaitForSingleObject(process.hProcess,3000)!=WAIT_OBJECT_0){TerminateProcess(process.hProcess,1);ok=FALSE;}
+        CloseHandle(process.hThread);CloseHandle(process.hProcess);return ok?0:4;
+    }
+    if(argc==2 && (!lstrcmpW(argv[1],L"--menu-hover") || !lstrcmpW(argv[1],L"--menu-arrow") || !lstrcmpW(argv[1],L"--menu-nested"))){
+        BOOL arrow=!lstrcmpW(argv[1],L"--menu-arrow");
+        BOOL nested=!lstrcmpW(argv[1],L"--menu-nested");
+        HMENU menu=CreateMenu(),first=CreatePopupMenu(),second=CreatePopupMenu();if(!menu || !first || !second)return 2;
+        if(nested){HMENU child=CreatePopupMenu();if(!child)return 2;AppendMenuW(child,MF_STRING,101,L"Nested item");AppendMenuW(first,MF_POPUP,(UINT_PTR)child,L"Nested");}
+        else AppendMenuW(first,MF_STRING,101,L"First item");
+        AppendMenuW(second,MF_STRING,102,L"Second item");
+        AppendMenuW(menu,MF_POPUP,(UINT_PTR)first,L"File");AppendMenuW(menu,MF_POPUP,(UINT_PTR)second,L"Help");
+        HWND w=CreateWindowExW(0,wc.lpszClassName,L"Menu hover",WS_OVERLAPPEDWINDOW,
+                                80,80,420,260,NULL,menu,instance,NULL);
+        if(!w){DestroyMenu(menu);return 3;}
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);SetForegroundWindow(w);
+        RECT a,b;BOOL measured=GetMenuItemRect(w,menu,0,&a) && GetMenuItemRect(w,menu,1,&b);
+        UINT dpi=GetDpiForWindow(w);if(!dpi)dpi=96;
+        int shift=GetSystemMetricsForDpi(SM_CYCAPTION,dpi)-MulDiv(19,(int)dpi,96);
+        OffsetRect(&a,0,-shift);OffsetRect(&b,0,-shift);
+        POINT click={(a.left+a.right)/2,(a.top+a.bottom)/2};menu_hover_point=(POINT){(b.left+b.right)/2,(b.top+b.bottom)/2};
+        menu_scenario=nested?6:arrow?4:3;menu_idle=0;SetTimer(w,77,2500,NULL);
+        SendMessageW(w,WM_NCLBUTTONDOWN,HTMENU,MAKELPARAM(click.x,click.y));
+        KillTimer(w,77);pump_messages();menu_scenario=0;
+        BOOL ok=measured && !menu_timeout && menu_entries==(nested?1u:2u) && menu_exits==menu_entries &&
+            (!nested || menu_popup_inits>=2) && GetCapture()==NULL;
+        printf("WIN2K MENU HOVER bits=%u arrow=%d nested=%d entries=%u exits=%u popups=%u timeout=%d\n",
+               (unsigned)(sizeof(void*)*8),arrow,nested,menu_entries,menu_exits,menu_popup_inits,menu_timeout);
+        DestroyWindow(w);DestroyMenu(menu);return ok?0:3;
+    }
+    if(argc==2 && (!lstrcmpW(argv[1],L"--menu-input") || !lstrcmpW(argv[1],L"--menu-key") || !lstrcmpW(argv[1],L"--menu-f10") || !lstrcmpW(argv[1],L"--menu-f10-select"))){
+        BOOL keyboard=!lstrcmpW(argv[1],L"--menu-key");
+        BOOL select=!lstrcmpW(argv[1],L"--menu-f10-select");
+        BOOL f10=select || !lstrcmpW(argv[1],L"--menu-f10");
+        HMENU menu=CreateMenu(),popup=CreatePopupMenu();if(!menu || !popup)return 2;
+        AppendMenuW(popup,MF_STRING,101,L"Item");AppendMenuW(menu,MF_POPUP,(UINT_PTR)popup,L"&File");
+        HWND w=CreateWindowExW(0,wc.lpszClassName,L"Menu input",WS_OVERLAPPEDWINDOW,
+                                80,80,420,260,NULL,menu,instance,NULL);
+        if(!w){DestroyMenu(menu);return 3;}
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);SetForegroundWindow(w);
+        HWND edit=CreateWindowW(L"EDIT",L"",WS_CHILD|WS_VISIBLE|WS_TABSTOP,10,10,120,20,w,NULL,instance,NULL);
+        if(edit)SetFocus(edit);
+        RECT item;BOOL measured=GetMenuItemRect(w,menu,0,&item);
+        UINT dpi=GetDpiForWindow(w);if(!dpi)dpi=96;
+        int shift=GetSystemMetricsForDpi(SM_CYCAPTION,dpi)-MulDiv(19,(int)dpi,96);
+        OffsetRect(&item,0,-shift);POINT click={(item.left+item.right)/2,(item.top+item.bottom)/2};
+        BOOL hit=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(click.x,click.y))==HTMENU;
+        BOOL focus_ok=TRUE;
+        for(menu_scenario=select?1:(keyboard||f10)?2:1;menu_scenario<=(select?1u:2u);++menu_scenario){
+            menu_idle=0;SetTimer(w,77,2500,NULL);
+            if(keyboard)SendMessageW(w,WM_SYSCOMMAND,SC_KEYMENU,L'f');
+            else if(f10){
+                SendMessageW(w,WM_SYSCOMMAND,SC_KEYMENU,0);focus_ok=edit && GetFocus()==w;
+                SendMessageW(w,WM_KEYDOWN,VK_DOWN,1);
+                pump_messages();
+                if(!select)SendMessageW(w,WM_KEYDOWN,VK_ESCAPE,1);
+                focus_ok=focus_ok && GetFocus()==edit;
+            }
+            else SendMessageW(w,WM_NCLBUTTONDOWN,HTMENU,MAKELPARAM(click.x,click.y));
+            KillTimer(w,77);pump_messages();
+        }
+        menu_scenario=0;
+        BOOL ok=measured && hit && focus_ok && !menu_timeout && menu_entries==((keyboard||f10)?1u:2u) && menu_exits==menu_entries && menu_commands==(select?1u:(keyboard||f10)?0u:1u) && GetCapture()==NULL;
+        printf("WIN2K MENU INPUT bits=%u keyboard=%d f10=%d focus=%d hit=%d entries=%u exits=%u commands=%u timeout=%d\n",
+               (unsigned)(sizeof(void*)*8),keyboard,f10,focus_ok,hit,menu_entries,menu_exits,menu_commands,menu_timeout);
+        DestroyWindow(w);DestroyMenu(menu);return ok?0:3;
+    }
     if(argc==2 && !lstrcmpW(argv[1],L"--menu-transition")){
         HWND w=CreateWindowExW(0,wc.lpszClassName,L"Menu transition",WS_OVERLAPPEDWINDOW,
                                 80,80,420,260,NULL,NULL,instance,NULL);
@@ -121,6 +329,9 @@ int wmain(int argc,WCHAR **argv)
         BOOL attached=SetMenu(w,menu);DrawMenuBar(w);
         SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&added);
         MENUBARINFO bar={.cbSize=sizeof(bar)};BOOL has_bar=GetMenuBarInfo(w,OBJID_MENU,0,&bar);
+        UINT dpi=GetDpiForWindow(w);if(!dpi)dpi=96;
+        int shift=GetSystemMetricsForDpi(SM_CYCAPTION,dpi)-(added.rcTitleBar.bottom-added.rcTitleBar.top);
+        if(shift>0)OffsetRect(&bar.rcBar,0,-shift);
         POINT client={0,0};ClientToScreen(w,&client);
         BOOL menu_ok=attached && has_bar && bar.rcBar.top>=added.rcTitleBar.bottom && bar.rcBar.bottom<=client.y;
         BOOL detached=SetMenu(w,NULL);DrawMenuBar(w);
@@ -147,14 +358,21 @@ int wmain(int argc,WCHAR **argv)
         POINT origin={0,0};ClientToScreen(w,&origin);
         TITLEBARINFOEX title={.cbSize=sizeof(title)};SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&title);
         MENUBARINFO bar={.cbSize=sizeof(bar)};BOOL have_menu=GetMenuBarInfo(w,OBJID_MENU,0,&bar);
-        LRESULT client_hit=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(origin.x+20,origin.y+1));
-        printf("WIN2K GEOMETRY bits=%u title=%ld menu=%ld,%ld client=%ld menu_ok=%d bare=%d client_hit=%lld\n",
-               (unsigned)(sizeof(void*)*8),title.rcTitleBar.bottom-title.rcTitleBar.top,
-               bar.rcBar.top-outer.top,bar.rcBar.bottom-outer.top,origin.y-outer.top,have_menu,bare,(long long)client_hit);
         UINT dpi=GetDpiForWindow(w);if(!dpi)dpi=96;
+        int shift=GetSystemMetricsForDpi(SM_CYCAPTION,dpi)-(title.rcTitleBar.bottom-title.rcTitleBar.top);
+        if(have_menu && shift>0)OffsetRect(&bar.rcBar,0,-shift);
+        LRESULT client_hit=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(origin.x+20,origin.y+1));
+        COLORREF menu_pixel=CLR_INVALID;
+        HDC dc=GetWindowDC(w);if(dc && have_menu){menu_pixel=GetPixel(dc,bar.rcBar.right-outer.left-10,(bar.rcBar.top+bar.rcBar.bottom)/2-outer.top);ReleaseDC(w,dc);}
+        else if(dc)ReleaseDC(w,dc);
+        LRESULT blank_hit=have_menu?SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(bar.rcBar.right-10,(bar.rcBar.top+bar.rcBar.bottom)/2)):0;
+        printf("WIN2K GEOMETRY bits=%u title=%ld menu=%ld,%ld client=%ld menu_ok=%d bare=%d client_hit=%lld menu_pixel=%06lx\n",
+               (unsigned)(sizeof(void*)*8),title.rcTitleBar.bottom-title.rcTitleBar.top,
+               bar.rcBar.top-outer.top,bar.rcBar.bottom-outer.top,origin.y-outer.top,have_menu,bare,(long long)client_hit,(unsigned long)menu_pixel);
         BOOL good=bare?(title.rcTitleBar.bottom-title.rcTitleBar.top==MulDiv(19,(int)dpi,96) &&
                         title.rcTitleBar.bottom<=origin.y && client_hit==HTCLIENT):
-                       (have_menu && bar.rcBar.top>=title.rcTitleBar.bottom && bar.rcBar.bottom<=origin.y);
+                       (have_menu && title.rcTitleBar.bottom-title.rcTitleBar.top==MulDiv(19,(int)dpi,96) &&
+                        bar.rcBar.top>=title.rcTitleBar.bottom && bar.rcBar.bottom<=origin.y && client_hit==HTCLIENT && blank_hit==HTMENU && menu_pixel==RGB(192,192,192));
         DestroyWindow(w);if(menu)DestroyMenu(menu);return good?0:4;
     }
     if(argc==2 && !lstrcmpW(argv[1],L"--buttons")){
