@@ -290,12 +290,13 @@ static DWORD WINAPI disabled_physical_thread(void *parameter)
     }
     PostMessageW(w,WM_APP+1,0,0);return 0;
 }
-typedef struct { HWND window;POINT first,second;BOOL input,toggle,closed_before_escape;LONG first_paints,second_paints; } menu_physical_probe;
+typedef struct { HWND window;POINT first,second;BOOL foreground,input,toggle,closed_before_escape;LONG first_paints,second_paints; } menu_physical_probe;
 static DWORD WINAPI menu_physical_thread(void *parameter)
 {
     menu_physical_probe *probe=parameter;
     for(unsigned i=0;i<20 && GetForegroundWindow()!=probe->window;++i)Sleep(50);
-    if(GetForegroundWindow()==probe->window){
+    probe->foreground=GetForegroundWindow()==probe->window;
+    if(probe->foreground){
         probe->input=physical_click(probe->first);Sleep(350);
         probe->first_paints=InterlockedCompareExchange(&menu_frame_paints,0,0);
         if(probe->toggle)probe->input=physical_click(probe->second) && probe->input;
@@ -676,7 +677,7 @@ int wmain(int argc,WCHAR **argv)
                                 80,80,420,260,NULL,menu,instance,NULL);
         if(!w){DestroyMenu(menu);return 3;}
         ShowWindow(w,SW_SHOW);UpdateWindow(w);SetForegroundWindow(w);
-        RECT a,b;BOOL measured=GetMenuItemRect(w,menu,0,&a) && GetMenuItemRect(w,menu,1,&b);
+        RECT a={0},b={0};BOOL measured=GetMenuItemRect(w,menu,0,&a) && GetMenuItemRect(w,menu,1,&b);
         adjusted_menu_rect(w,&a);adjusted_menu_rect(w,&b);
         menu_physical_probe probe={.window=w,.first={(a.left+a.right)/2,(a.top+a.bottom)/2},.second={(b.left+b.right)/2,(b.top+b.bottom)/2},.toggle=toggle};
         if(toggle)probe.second=probe.first;
@@ -687,10 +688,10 @@ int wmain(int argc,WCHAR **argv)
         BOOL ok=measured && probe.input && menu_entries==(toggle?1u:2u) && menu_exits==menu_entries &&
                 (!toggle || probe.closed_before_escape) &&
                 probe.first_paints==probe.second_paints && GetCapture()==NULL;
-        printf("WIN2K MENU PHYSICAL bits=%u toggle=%d input=%d entries=%u exits=%u frame_paints=%ld,%ld,%ld\n",
-               (unsigned)(sizeof(void*)*8),toggle,probe.input,menu_entries,menu_exits,probe.first_paints,probe.second_paints,
+        printf("WIN2K MENU PHYSICAL bits=%u toggle=%d foreground=%d input=%d entries=%u exits=%u frame_paints=%ld,%ld,%ld\n",
+               (unsigned)(sizeof(void*)*8),toggle,probe.foreground,probe.input,menu_entries,menu_exits,probe.first_paints,probe.second_paints,
                InterlockedCompareExchange(&menu_frame_paints,0,0));
-        DestroyWindow(w);DestroyMenu(menu);return ok?0:3;
+        DestroyWindow(w);DestroyMenu(menu);if(!probe.foreground)return 77;return ok?0:3;
     }
     if(argc==2 && !lstrcmpW(argv[1],L"--menu-special")){
         HMENU menu=CreateMenu(),first=CreatePopupMenu(),second=CreatePopupMenu();if(!menu || !first || !second)return 2;

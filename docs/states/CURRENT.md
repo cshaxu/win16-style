@@ -44,6 +44,8 @@ S8 P1 冻结最终审计覆盖清单，见[记录](../history/M0-T25-S8-P1-audit
 
 S8 P2 核对外框实现与证据，见[记录](../history/M0-T25-S8-P2-frame-audit.md)。
 
+S8 P3 验证自有双位宽窗口真实鼠标菜单切换，见[记录](../history/M0-T25-S8-P3-physical-menu.md)。
+
 S7 P13 按有限范围收口并准入 S8，见[记录](../history/M0-T25-S7-P13-closure.md)。
 
 S7 P1 检查实际扫雷、Solitaire 和双位宽传播，见[记录](../history/M0-T25-S7-P1-real-apps.md)。
