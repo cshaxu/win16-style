@@ -503,7 +503,7 @@ static BOOL button_input(HWND window,UINT message,WPARAM wp,LPARAM lp)
                 HMENU system=GetSystemMenu(window,FALSE);
                 if(command==SC_CONTEXTHELP || !(GetWindowLongPtrW(window,GWL_STYLE)&WS_SYSMENU) ||
                    (system && !(GetMenuState(system,command,MF_BYCOMMAND)&MFS_DISABLED)))
-                    PostMessageW(window,WM_SYSCOMMAND,command,MAKELPARAM(point.x,point.y));
+                    SendMessageW(window,WM_SYSCOMMAND,command,MAKELPARAM(point.x,point.y));
             }
         }else if(inside!=(BOOL)(tracked&1)){
             SetPropW(window,button_property,(HANDLE)(uintptr_t)(index*2+(inside?1:0)));paint(window);

@@ -1122,6 +1122,21 @@ int wmain(int argc,WCHAR **argv)
         if(IsWindow(w))DestroyWindow(w);
         return states && probe.input && probe.safe?0:3;
     }
+    if(argc==2 && !lstrcmpW(argv[1],L"--button-command-order")){
+        HWND w=CreateWindowExW(0,wc.lpszClassName,L"Caption command order",WS_OVERLAPPEDWINDOW,
+                                80,80,420,260,NULL,NULL,instance,NULL);
+        if(!w)return 2;
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);
+        TITLEBARINFOEX info={.cbSize=sizeof(info)};SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
+        POINT point={(info.rgrect[5].left+info.rgrect[5].right)/2,(info.rgrect[5].top+info.rgrect[5].bottom)/2};
+        watch_disabled_commands=TRUE;SendMessageW(w,WM_NCLBUTTONDOWN,HTCLOSE,MAKELPARAM(point.x,point.y));
+        BOOL captured=GetCapture()==w;ScreenToClient(w,&point);
+        SendMessageW(w,WM_LBUTTONUP,0,MAKELPARAM(point.x,point.y));
+        unsigned before=disabled_commands;pump_messages();unsigned after=disabled_commands;
+        watch_disabled_commands=FALSE;DestroyWindow(w);
+        printf("WIN2K BUTTON ORDER bits=%u captured=%d before=%u after=%u\n",(unsigned)(sizeof(void*)*8),captured,before,after);
+        return captured && before==1 && after==1?0:3;
+    }
     if(argc==2 && !lstrcmpW(argv[1],L"--disabled-menu-commands")){
         HWND w=CreateWindowExW(0,wc.lpszClassName,L"Disabled system commands",WS_OVERLAPPEDWINDOW,
                                 80,80,420,260,NULL,NULL,instance,NULL);
