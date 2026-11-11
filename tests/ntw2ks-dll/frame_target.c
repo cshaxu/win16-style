@@ -20,6 +20,7 @@ static unsigned startup_early_size, startup_late_size;
 static POINT menu_hover_point;
 static DWORD app_pid;
 static HWND app_window;
+static HWND app_dialog;
 static volatile LONG app_popup_seen;
 static int expected_physical_border(HWND window,int pixels,BOOL horizontal)
 {
@@ -46,6 +47,15 @@ static BOOL CALLBACK find_app_window(HWND window,LPARAM ignored)
     (void)ignored;DWORD pid=0;GetWindowThreadProcessId(window,&pid);
     if(pid==app_pid && IsWindowVisible(window) && !(GetWindowLongPtrW(window,GWL_STYLE)&WS_CHILD)){
         app_window=window;return FALSE;
+    }
+    return TRUE;
+}
+static BOOL CALLBACK find_app_dialog(HWND window,LPARAM ignored)
+{
+    (void)ignored;DWORD pid=0;WCHAR cls[32]={0};GetWindowThreadProcessId(window,&pid);
+    if(pid==app_pid && window!=app_window && IsWindowVisible(window) &&
+       GetClassNameW(window,cls,ARRAYSIZE(cls)) && !lstrcmpW(cls,L"#32770")){
+        app_dialog=window;return FALSE;
     }
     return TRUE;
 }
@@ -634,6 +644,37 @@ int wmain(int argc,WCHAR **argv)
         printf("WIN2K SPECIAL MENU bits=%u native=%d title=%ld\n",(unsigned)(sizeof(void*)*8),ok,
                title.rcTitleBar.bottom-title.rcTitleBar.top);
         DestroyWindow(w);DestroyMenu(menu);return ok?0:3;
+    }
+    if(argc==3 && !lstrcmpW(argv[1],L"--real-about")){
+        WCHAR command[2048];if(swprintf(command,ARRAYSIZE(command),L"\"%ls\"",argv[2])<0)return 2;
+        STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION process={0};
+        if(!CreateProcessW(argv[2],command,NULL,NULL,FALSE,0,NULL,NULL,&startup,&process))return 3;
+        app_pid=process.dwProcessId;ULONGLONG deadline=GetTickCount64()+5000;
+        do{EnumWindows(find_app_window,0);if(app_window)break;Sleep(50);}while(GetTickCount64()<deadline);
+        HMENU menu=app_window?GetMenu(app_window):NULL;
+        HMENU help=menu?GetSubMenu(menu,GetMenuItemCount(menu)-1):NULL;
+        UINT id=help?GetMenuItemID(help,GetMenuItemCount(help)-1):(UINT)-1;
+        BOOL sent=app_window && id!=(UINT)-1 && PostMessageW(app_window,WM_COMMAND,id,0);
+        deadline=GetTickCount64()+5000;
+        if(sent)do{EnumWindows(find_app_dialog,0);if(app_dialog)break;Sleep(50);}while(GetTickCount64()<deadline);
+        RECT item={0},outer={0};BOOL measured=app_dialog && GetMenuItemRect(app_window,menu,0,&item) &&
+            adjusted_menu_rect(app_window,&item) && GetWindowRect(app_window,&outer);
+        unsigned black=0,gray=0;HDC dc=measured?GetWindowDC(app_window):NULL;
+        if(dc){OffsetRect(&item,-outer.left,-outer.top);
+            for(int y=item.top;y<item.bottom;++y)for(int x=item.left;x<item.right;++x){COLORREF c=GetPixel(dc,x,y);
+                if(c==RGB(0,0,0))++black;
+                if(c==RGB(128,128,128))++gray;}
+            ReleaseDC(app_window,dc);}
+        BOOL owner_disabled=app_window && !IsWindowEnabled(app_window);
+        BOOL dialog_styled=app_dialog && GetPropW(app_dialog,L"Win2kStyle.Frame")!=NULL;
+        printf("WIN2K REAL ABOUT found=%d styled=%d owner_disabled=%d measured=%d black=%u gray=%u\n",
+               app_dialog!=NULL,dialog_styled,owner_disabled,measured,black,gray);
+        if(app_dialog)PostMessageW(app_dialog,WM_CLOSE,0,0);
+        if(app_window)PostMessageW(app_window,WM_CLOSE,0,0);
+        DWORD wait=WaitForSingleObject(process.hProcess,5000);
+        if(wait!=WAIT_OBJECT_0)TerminateProcess(process.hProcess,4);
+        CloseHandle(process.hThread);CloseHandle(process.hProcess);
+        return dialog_styled && owner_disabled && measured && black==0 && gray>0 && wait==WAIT_OBJECT_0?0:3;
     }
     if(argc==3 && !lstrcmpW(argv[1],L"--real-app")){
         WCHAR command[2048];if(swprintf(command,ARRAYSIZE(command),L"\"%ls\"",argv[2])<0)return 2;
