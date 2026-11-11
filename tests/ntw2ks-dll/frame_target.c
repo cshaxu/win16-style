@@ -93,6 +93,10 @@ static LRESULT CALLBACK procedure(HWND w,UINT message,WPARAM wp,LPARAM lp)
 }
 
 static BOOL dialog_frame_seen;
+static INT_PTR CALLBACK empty_dialog_proc(HWND window,UINT message,WPARAM wp,LPARAM lp)
+{
+    (void)window;(void)message;(void)wp;(void)lp;return FALSE;
+}
 static INT_PTR CALLBACK frame_dialog_proc(HWND window,UINT message,WPARAM wp,LPARAM lp)
 {
     (void)wp;(void)lp;
@@ -176,6 +180,18 @@ static COLORREF caption_pixel(HWND w)
     HDC dc=GetWindowDC(w);if(!dc)return CLR_INVALID;
     COLORREF pixel=GetPixel(dc,info.rcTitleBar.left-outer.left+40,info.rcTitleBar.top-outer.top+2);
     ReleaseDC(w,dc);return pixel;
+}
+static unsigned caption_icon_pixels(HWND w)
+{
+    TITLEBARINFOEX info={.cbSize=sizeof(info)};RECT outer;
+    SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
+    if(!GetWindowRect(w,&outer))return 0;
+    HDC dc=GetWindowDC(w);if(!dc)return 0;
+    int left=info.rcTitleBar.left-outer.left-(info.rcTitleBar.bottom-info.rcTitleBar.top)+4;
+    int top=info.rcTitleBar.top-outer.top+2;unsigned count=0;
+    for(int x=left;x<left+16;++x){COLORREF base=GetPixel(dc,x,top);
+        for(int y=top+1;y<top+13;++y)if(GetPixel(dc,x,y)!=base)++count;}
+    ReleaseDC(w,dc);return count;
 }
 static BOOL classic_caption_pixel(COLORREF pixel)
 {
@@ -512,13 +528,17 @@ int wmain(int argc,WCHAR **argv)
         }
         DestroyWindow(owner);UnregisterClassW(owner_class.lpszClassName,instance);return all?0:3;
     }
-    BOOL no_icon=argc==2 && (!lstrcmpW(argv[1],L"--no-icon") || !lstrcmpW(argv[1],L"--modal-no-icon"));
+    BOOL real_modal=argc==2 && !lstrcmpW(argv[1],L"--real-modal-no-icon");
+    BOOL no_icon=argc==2 && (!lstrcmpW(argv[1],L"--no-icon") || !lstrcmpW(argv[1],L"--modal-no-icon") || real_modal);
     WNDCLASSW wc={.lpfnWndProc=procedure,.hInstance=instance,.hIcon=no_icon?NULL:LoadIconW(NULL,MAKEINTRESOURCEW(32515)),
         .hbrBackground=(HBRUSH)(COLOR_WINDOW+1),.lpszClassName=L"Win2kFrameFixture"};
     if(!RegisterClassW(&wc))return 1;
-    if(argc==2 && !lstrcmpW(argv[1],L"--modal-no-icon")){
-        HWND w=CreateWindowExW(WS_EX_DLGMODALFRAME,wc.lpszClassName,L"",WS_POPUP|WS_CAPTION|WS_SYSMENU,
-                               80,80,420,260,NULL,NULL,instance,NULL);
+    if(argc==2 && (!lstrcmpW(argv[1],L"--modal-no-icon") || real_modal)){
+        struct { DLGTEMPLATE header; WORD menu,klass,title; } templ={0};
+        templ.header.style=WS_POPUP|WS_CAPTION|WS_SYSMENU|DS_MODALFRAME;templ.header.cx=160;templ.header.cy=80;
+        HWND w=real_modal?CreateDialogIndirectParamW(instance,&templ.header,NULL,empty_dialog_proc,0):
+            CreateWindowExW(WS_EX_DLGMODALFRAME,wc.lpszClassName,L"",WS_POPUP|WS_CAPTION|WS_SYSMENU,
+                            80,80,420,260,NULL,NULL,instance,NULL);
         if(!w)return 2;
         ShowWindow(w,SW_SHOW);UpdateWindow(w);SendMessageW(w,WM_NCACTIVATE,TRUE,0);
         TITLEBARINFOEX info={.cbSize=sizeof(info)};RECT outer;MENUBARINFO system={.cbSize=sizeof(system)};
@@ -529,10 +549,11 @@ int wmain(int argc,WCHAR **argv)
             for(int x=left+2;x<left+18;++x){COLORREF base=GetPixel(dc,x,top+2);
                 for(int y=top+3;y<top+15;++y)if(GetPixel(dc,x,y)!=base)++irregular;}
             ReleaseDC(w,dc);}
-        printf("WIN2K MODAL ICON bits=%u visible=%d system=%d icon_state=%lu title_left=%ld icon_left=%ld irregular=%u\n",
-               (unsigned)(sizeof(void*)*8),IsWindowVisible(w),has_system,(unsigned long)info.rgstate[1],
+        WCHAR cls[32]={0};GetClassNameW(w,cls,ARRAYSIZE(cls));BOOL real_class=!lstrcmpW(cls,L"#32770");
+        printf("WIN2K MODAL ICON bits=%u visible=%d real_class=%d system=%d icon_state=%lu title_left=%ld icon_left=%ld irregular=%u\n",
+               (unsigned)(sizeof(void*)*8),IsWindowVisible(w),real_class,has_system,(unsigned long)info.rgstate[1],
                info.rcTitleBar.left-outer.left,has_system?system.rcBar.left-outer.left:-1,irregular);
-        DestroyWindow(w);return dc && irregular==0?0:3;
+        DestroyWindow(w);return dc && irregular==0 && (!real_modal || real_class)?0:3;
     }
     if(argc==2 && !lstrcmpW(argv[1],L"--startup-size")){
         startup_probe=TRUE;
@@ -822,16 +843,17 @@ int wmain(int argc,WCHAR **argv)
             puts("WIN2K ACTIVATION SKIP no_foreground");DestroyWindow(second);DestroyWindow(first);return 77;
         }
         SetActiveWindow(first);BOOL first_active=GetActiveWindow()==first;
-        COLORREF first_blue=caption_pixel(first),second_gray=caption_pixel(second);
+        COLORREF first_blue=caption_pixel(first),second_gray=caption_pixel(second);unsigned active_icon=caption_icon_pixels(first);
         SetActiveWindow(second);BOOL second_active=GetActiveWindow()==second;
-        COLORREF first_gray=caption_pixel(first),second_blue=caption_pixel(second);
+        COLORREF first_gray=caption_pixel(first),second_blue=caption_pixel(second);unsigned inactive_icon=caption_icon_pixels(first);
         BOOL colors=GetBValue(first_blue)>GetRValue(first_blue) && GetRValue(second_gray)==GetGValue(second_gray) &&
             GetGValue(second_gray)==GetBValue(second_gray) && GetRValue(first_gray)==GetGValue(first_gray) &&
             GetGValue(first_gray)==GetBValue(first_gray) && GetBValue(second_blue)>GetRValue(second_blue) &&
             first_blue!=CLR_INVALID && second_gray!=CLR_INVALID && first_gray!=CLR_INVALID && second_blue!=CLR_INVALID;
         printf("WIN2K ACTIVATION bits=%u first=%d second=%d colors=%d pixels=%06lx,%06lx,%06lx,%06lx\n",(unsigned)(sizeof(void*)*8),first_active,second_active,colors,
                (unsigned long)first_blue,(unsigned long)second_gray,(unsigned long)first_gray,(unsigned long)second_blue);
-        DestroyWindow(second);DestroyWindow(first);return first_active && second_active && colors?0:3;
+        printf("WIN2K ACTIVATION ICON active=%u inactive=%u\n",active_icon,inactive_icon);
+        DestroyWindow(second);DestroyWindow(first);return first_active && second_active && colors && active_icon>0 && inactive_icon>0?0:3;
     }
     if(argc==2 && !lstrcmpW(argv[1],L"--caption-added")){
         HWND w=CreateWindowExW(0,wc.lpszClassName,L"Caption added",WS_POPUP,
