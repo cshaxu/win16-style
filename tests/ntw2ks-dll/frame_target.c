@@ -648,6 +648,28 @@ int wmain(int argc,WCHAR **argv)
                (unsigned)(sizeof(void*)*8),keyboard,f10,focus_ok,hit,menu_entries,menu_exits,menu_commands,menu_timeout);
         DestroyWindow(w);DestroyMenu(menu);return ok?0:3;
     }
+    if(argc==2 && !lstrcmpW(argv[1],L"--activation")){
+        HWND first=CreateWindowExW(0,wc.lpszClassName,L"First active",WS_OVERLAPPEDWINDOW,
+                                  80,80,420,260,NULL,NULL,instance,NULL);
+        HWND second=CreateWindowExW(0,wc.lpszClassName,L"Second active",WS_OVERLAPPEDWINDOW,
+                                   520,80,420,260,NULL,NULL,instance,NULL);
+        if(!first || !second){if(first)DestroyWindow(first);if(second)DestroyWindow(second);return 2;}
+        ShowWindow(first,SW_SHOW);ShowWindow(second,SW_SHOW);UpdateWindow(first);UpdateWindow(second);
+        if(!GetForegroundWindow()){
+            puts("WIN2K ACTIVATION SKIP no_foreground");DestroyWindow(second);DestroyWindow(first);return 77;
+        }
+        SetActiveWindow(first);BOOL first_active=GetActiveWindow()==first;
+        COLORREF first_blue=caption_pixel(first),second_gray=caption_pixel(second);
+        SetActiveWindow(second);BOOL second_active=GetActiveWindow()==second;
+        COLORREF first_gray=caption_pixel(first),second_blue=caption_pixel(second);
+        BOOL colors=GetBValue(first_blue)>GetRValue(first_blue) && GetRValue(second_gray)==GetGValue(second_gray) &&
+            GetGValue(second_gray)==GetBValue(second_gray) && GetRValue(first_gray)==GetGValue(first_gray) &&
+            GetGValue(first_gray)==GetBValue(first_gray) && GetBValue(second_blue)>GetRValue(second_blue) &&
+            first_blue!=CLR_INVALID && second_gray!=CLR_INVALID && first_gray!=CLR_INVALID && second_blue!=CLR_INVALID;
+        printf("WIN2K ACTIVATION bits=%u first=%d second=%d colors=%d pixels=%06lx,%06lx,%06lx,%06lx\n",(unsigned)(sizeof(void*)*8),first_active,second_active,colors,
+               (unsigned long)first_blue,(unsigned long)second_gray,(unsigned long)first_gray,(unsigned long)second_blue);
+        DestroyWindow(second);DestroyWindow(first);return first_active && second_active && colors?0:3;
+    }
     if(argc==2 && !lstrcmpW(argv[1],L"--caption-added")){
         HWND w=CreateWindowExW(0,wc.lpszClassName,L"Caption added",WS_POPUP,
                                 80,80,420,260,NULL,NULL,instance,NULL);
