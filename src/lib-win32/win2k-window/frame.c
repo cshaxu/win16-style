@@ -540,7 +540,15 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
         BOOL button=FALSE;
         for(unsigned i=2;i<ARRAYSIZE(hits);++i)
             if(!(info.rgstate[i]&STATE_SYSTEM_INVISIBLE) && PtInRect(&info.rgrect[i],point)){result=hits[i];button=TRUE;break;}
-        if(!button && !(info.rgstate[1]&STATE_SYSTEM_INVISIBLE) && PtInRect(&info.rgrect[1],point))result=HTSYSMENU;
+        MENUBARINFO system={.cbSize=sizeof(system)};int dx=frame_shift(window,TRUE),dy=frame_shift(window,FALSE);
+        BOOL icon=FALSE;
+        if((dx || dy) && GetMenuBarInfo(window,OBJID_SYSMENU,0,&system)){
+            OffsetRect(&system.rcBar,-dx,-dy);
+            system.rcBar.top=max(system.rcBar.top,info.rcTitleBar.top);
+            system.rcBar.bottom=min(system.rcBar.bottom,info.rcTitleBar.bottom);
+            icon=PtInRect(&system.rcBar,point);
+        }
+        if(!button && (icon || (!(info.rgstate[1]&STATE_SYSTEM_INVISIBLE) && PtInRect(&info.rgrect[1],point))))result=HTSYSMENU;
         else if(!button && PtInRect(&info.rcTitleBar,point))result=HTCAPTION;
     }
     if(message==WM_NCPAINT || message==WM_NCACTIVATE || message==WM_SETTEXT || message==WM_SIZE ||

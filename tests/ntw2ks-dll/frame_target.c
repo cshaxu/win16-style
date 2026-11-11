@@ -805,6 +805,22 @@ int wmain(int argc,WCHAR **argv)
                         bar.rcBar.top>=title.rcTitleBar.bottom && bar.rcBar.bottom<=origin.y && client_hit==HTCLIENT && blank_hit==HTMENU && menu_pixel==RGB(192,192,192));
         DestroyWindow(w);if(menu)DestroyMenu(menu);return good?0:4;
     }
+    if(argc==2 && !lstrcmpW(argv[1],L"--system-icon")){
+        HWND w=CreateWindowExW(0,wc.lpszClassName,L"System icon",WS_OVERLAPPEDWINDOW,
+                                80,80,420,260,NULL,NULL,instance,NULL);
+        if(!w)return 2;
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);
+        TITLEBARINFOEX info={.cbSize=sizeof(info)};SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
+        RECT outer;MENUBARINFO system={.cbSize=sizeof(system)};
+        if(!GetWindowRect(w,&outer) || !GetMenuBarInfo(w,OBJID_SYSMENU,0,&system)){DestroyWindow(w);return 2;}
+        RECT icon=system.rcBar;int border=(int)(info.rcTitleBar.top-outer.top);
+        OffsetRect(&icon,(int)(outer.left+border-icon.left),(int)(outer.top+border-icon.top));
+        POINT point={(icon.left+icon.right)/2,(icon.top+icon.bottom)/2};
+        LRESULT hit_result=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(point.x,point.y));
+        LRESULT edge_hit=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(icon.left+1,icon.top+1));BOOL hit=hit_result==HTSYSMENU && edge_hit==HTSYSMENU;
+        printf("WIN2K SYSTEM ICON bits=%u hit=%d result=%lld edge=%lld\n",(unsigned)(sizeof(void*)*8),hit,(long long)hit_result,(long long)edge_hit);
+        DestroyWindow(w);return hit?0:3;
+    }
     if(argc==2 && !lstrcmpW(argv[1],L"--help-button")){
         HWND w=CreateWindowExW(WS_EX_CONTEXTHELP,wc.lpszClassName,L"Context help",
                                 WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU,80,80,420,260,NULL,NULL,instance,NULL);
