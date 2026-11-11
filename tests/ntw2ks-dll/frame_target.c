@@ -1138,6 +1138,29 @@ int wmain(int argc,WCHAR **argv)
         if(IsWindow(w))DestroyWindow(w);
         return states && probe.input && probe.safe?0:3;
     }
+    if(argc==2 && !lstrcmpW(argv[1],L"--button-capture-loss")){
+        HWND w=CreateWindowExW(0,wc.lpszClassName,L"Caption capture",WS_OVERLAPPEDWINDOW,
+                                80,80,420,260,NULL,NULL,instance,NULL);
+        HWND other=CreateWindowExW(0,wc.lpszClassName,L"Capture receiver",WS_OVERLAPPEDWINDOW,
+                                    100,100,200,120,NULL,NULL,instance,NULL);
+        if(!w || !other){if(w)DestroyWindow(w);if(other)DestroyWindow(other);return 2;}
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);
+        TITLEBARINFOEX info={.cbSize=sizeof(info)};SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
+        POINT point={(info.rgrect[5].left+info.rgrect[5].right)/2,(info.rgrect[5].top+info.rgrect[5].bottom)/2};
+        LPARAM screen=MAKELPARAM(point.x,point.y);ScreenToClient(w,&point);LPARAM client=MAKELPARAM(point.x,point.y);
+        watch_disabled_commands=TRUE;SendMessageW(w,WM_NCLBUTTONDOWN,HTCLOSE,screen);
+        BOOL pressed=GetCapture()==w;SetCapture(other);BOOL transferred=GetCapture()==other;
+        SendMessageW(w,WM_LBUTTONUP,0,client);pump_messages();unsigned lost=disabled_commands;
+        if(GetCapture()==other)ReleaseCapture();
+        SendMessageW(w,WM_NCLBUTTONDOWN,HTCLOSE,screen);BOOL captured=GetCapture()==w;
+        SendMessageW(w,WM_CANCELMODE,0,0);BOOL released=GetCapture()!=w;
+        SendMessageW(w,WM_LBUTTONUP,0,client);pump_messages();unsigned cancelled=disabled_commands;
+        BOOL clicked=click_caption(w,5,HTCLOSE);unsigned final=disabled_commands;watch_disabled_commands=FALSE;
+        printf("WIN2K CAPTURE LOSS bits=%u pressed=%d transferred=%d lost=%u captured=%d released=%d cancelled=%u clicked=%d final=%u\n",
+               (unsigned)(sizeof(void*)*8),pressed,transferred,lost,captured,released,cancelled,clicked,final);
+        DestroyWindow(other);DestroyWindow(w);
+        return pressed && transferred && lost==0 && captured && released && cancelled==0 && clicked && final==1?0:3;
+    }
     if(argc==2 && !lstrcmpW(argv[1],L"--button-command-order")){
         HWND w=CreateWindowExW(0,wc.lpszClassName,L"Caption command order",WS_OVERLAPPEDWINDOW,
                                 80,80,420,260,NULL,NULL,instance,NULL);
