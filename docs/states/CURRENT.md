@@ -46,6 +46,8 @@ S8 P2 核对外框实现与证据，见[记录](../history/M0-T25-S8-P2-frame-au
 
 S8 P3 验证自有双位宽窗口真实鼠标菜单切换，见[记录](../history/M0-T25-S8-P3-physical-menu.md)。
 
+S8 P4 核对遗留项范围与实际鼠标验证证据，见[记录](../history/M0-T25-S8-P4-debt-scope.md)。
+
 S7 P13 按有限范围收口并准入 S8，见[记录](../history/M0-T25-S7-P13-closure.md)。
 
 S7 P1 检查实际扫雷、Solitaire 和双位宽传播，见[记录](../history/M0-T25-S7-P1-real-apps.md)。

@@ -4,13 +4,13 @@
 
 - [ ] TODO(High): 普通 `--2k` 新建窗口当前没有可调用的运行中样式移除/恢复入口；Owner：T25 最终审计及后续经准入的多样式生命周期工作。Evidence：[S7 P5](../history/M0-T25-S7-P5-apps-and-restore.md)：`win2k-window/frame.h` 仅有附着入口，`ntw2ks` 不提供移除导出；最大化后的还原只恢复窗口尺寸，不是样式恢复。Admission：先明确普通启动的生命周期、原 DWM 状态和控件/窗口归属，再以实际调用方和双位宽验证可逆性；不能将窗口销毁或 `SC_RESTORE` 算作运行中移除通过。
 
-- [ ] TODO(High): Win2000 外框真实拖动/缩放的连续画面、瞬时闪烁、跨屏 DPI 和跨进程前台焦点未完成；Owner：T25 真实程序回归与最终审计。Evidence：[S6 P4](../history/M0-T25-S6-P4-natural-resize.md)仅覆盖程序位置变化和有限像素点，[S6 P3](../history/M0-T25-S6-P3-activation-foreground.md)中后续测试窗口未获前台而跳过。Admission：不创建/切换隔离桌面、不妨碍用户操作；以自有窗口与有限清理验证真实输入和动态画面，不能将消息采样或跳过算通过。
+- [ ] TODO(High): Win2000 外框真实拖动/缩放的连续画面、瞬时闪烁、跨屏 DPI 和跨进程前台焦点未完成；Owner：T25 最终审计。Evidence：[S7 P11](../history/M0-T25-S7-P11-physical-frame-drag.md)通过双位宽自有窗口一次真实拖动和拉伸及末帧采样，[S6 P3](../history/M0-T25-S6-P3-activation-foreground.md)中后续测试窗口未获前台而跳过；连续画面和跨屏仍未覆盖。Admission：不创建/切换隔离桌面、不妨碍用户操作；以自有窗口与有限清理验证动态画面，不能将末帧采样或跳过算通过。
 
 - [ ] TODO(High): Win2000 系统菜单真实 Alt+Space/Escape 未验证；Owner：T25 后续交互与最终审计。Evidence：[S5 基线](../history/M0-T25-S5-P1-system-menu-baseline.md)中原生对照通过、套样式对照超时，根因未定；[P3](../history/M0-T25-S5-P3-escape-message-control.md)和[P4](../history/M0-T25-S5-P4-escape-input-control.md)的消息和真实按键替代探针在原生对照上不可靠。Admission：仅在不创建/切换隔离桌面且不妨碍用户操作的条件下，使用有界自有实例与有效原生对照验证；不得将程序消息或定时器退出记为真实按键通过。
 
 - [ ] TODO(High): T25 当前完整包测试包含用户禁止的隔离桌面用例，尚未完成；Owner：T25 最终审计。Evidence：[S5 P9](../history/M0-T25-S5-P9-caption-command-order.md)仅有发布版聚焦检查；Admission：使用符合当前桌面约束的实际包路径验证可运行项，不能运行的明确列为未覆盖，不以聚焦结果代替全矩阵。
 
-- [ ] TODO(High): Windows 2000 经典窗口、控件和公共对话框的完整外观及原版对照尚未实现；Owner：T25 后续活动包。Evidence：[T25 S1 研究](../proposals/windows-2000-classic.md)与[实验包](../history/M0-T25-S1-P1-delivery.md)。Admission：按窗口、常用控件、对话框、菜单的优先级实现并验证，不将禁用视觉主题视为像素一致。
+- [ ] TODO(High): Windows 2000 常用控件和公共对话框的完整外观及原版对照尚未实现；Owner：未来经准入的控件和对话框工作。Evidence：[T25 S1 研究](../proposals/windows-2000-classic.md)与[实验包](../history/M0-T25-S1-P1-delivery.md)；用户已将 T25 收窄为普通 Win32 窗口外框。Admission：按常用控件、对话框和菜单的优先级实现并验证，不将禁用视觉主题视为像素一致。
 
 - [ ] TODO(Medium): 全局模式旧 `global-e2e` 仍假设启动即启用，而当前托盘默认关闭；私有桌面真实托盘创建失败。Owner：后续全局测试维护。Evidence：[T25 S1 调查](../proposals/windows-2000-classic.md)和 T24 同条件对照；专用托盘夹具非管理员运行亦未通过。Admission：更新测试以符合用户主动启用语义，并在可用会话验证实际托盘与目标清理，不把桩替代真实托盘。
 
