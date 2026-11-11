@@ -6,7 +6,7 @@
 #include <wchar.h>
 #include "lib-win32/win2k-window/system_menu.h"
 static HMENU system_menu;static HWND popup;static UINT before_type,seen_type;static ULONG_PTR before_data,seen_data;static BOOL seen,checked,selected,custom;static COLORREF sample=CLR_INVALID,live_sample=CLR_INVALID;static unsigned idles,custom_draws;static BOOL hover,hover_checked,hover_preserved,win2k_paint,win2k_live,win2k_glyph,win2k_default;static unsigned glyph_rows;static BOOL default_changed;
-static BOOL win2k_switch,switch_done,win2k_keyboard,key_sent;static int sampled_index=-1,first_index=-1;static COLORREF first_live=CLR_INVALID;
+static BOOL win2k_switch,switch_done,win2k_keyboard,key_sent,win2k_context;static int sampled_index=-1,first_index=-1;static COLORREF first_live=CLR_INVALID;
 static BOOL CALLBACK find_popup(HWND w,LPARAM unused){(void)unused;WCHAR cls[32];MENUBARINFO mbi={.cbSize=sizeof(mbi)};if(IsWindowVisible(w)&&GetClassNameW(w,cls,32)&&!lstrcmpW(cls,L"#32768")&&GetMenuBarInfo(w,OBJID_CLIENT,0,&mbi)&&mbi.hMenu==system_menu){popup=w;return FALSE;}return TRUE;}
 static BOOL sample_menu(void){
     if(!EnumThreadWindows(GetCurrentThreadId(),find_popup,0)&&!popup)return FALSE;
@@ -88,7 +88,7 @@ static LRESULT CALLBACK proc(HWND w,UINT m,WPARAM a,LPARAM b){
                 printf("SYSTEM_HOVER unchanged_row=%d checked=%d\n",hover_preserved,hover_checked);
             }
             EndMenu();return 0;}if(idles==1)PostMessageW(w,WM_KEYDOWN,VK_DOWN,1);}
-    if(m==WM_TIMER&&a==1){KillTimer(w,1);EndMenu();return 0;}
+    if(m==WM_TIMER&&a==1){KillTimer(w,1);EndMenu();if(win2k_context && !seen)PostQuitMessage(0);return 0;}
     if(m==WM_EXITMENULOOP)PostQuitMessage(0);
     if(m==WM_MEASUREITEM&&custom){MEASUREITEMSTRUCT *x=(MEASUREITEMSTRUCT *)b;if(x&&x->CtlType==ODT_MENU&&x->itemID==12345){x->itemWidth=80;x->itemHeight=20;return TRUE;}}
     if(m==WM_DRAWITEM&&custom){DRAWITEMSTRUCT *x=(DRAWITEMSTRUCT *)b;if(x&&x->CtlType==ODT_MENU&&x->itemID==12345){++custom_draws;FillRect(x->hDC,&x->rcItem,GetSysColorBrush(COLOR_MENU));return TRUE;}}
@@ -96,14 +96,17 @@ static LRESULT CALLBACK proc(HWND w,UINT m,WPARAM a,LPARAM b){
 }
 int wmain(int argc,WCHAR **argv){
     if(argc!=2)return 2;
-    custom=!lstrcmpW(argv[1],L"custom")||!lstrcmpW(argv[1],L"win2k-custom");hover=!lstrcmpW(argv[1],L"hover")||!lstrcmpW(argv[1],L"win2k-hover");win2k_paint=!lstrcmpW(argv[1],L"win2k-paint");win2k_glyph=!lstrcmpW(argv[1],L"win2k-glyph");win2k_default=!lstrcmpW(argv[1],L"win2k-default");win2k_switch=!lstrcmpW(argv[1],L"win2k-switch");win2k_keyboard=!lstrcmpW(argv[1],L"win2k-keyboard");win2k_live=win2k_switch||win2k_keyboard||win2k_glyph||win2k_default||!lstrcmpW(argv[1],L"win2k-live")||!lstrcmpW(argv[1],L"win2k-hover")||!lstrcmpW(argv[1],L"win2k-custom");if(!custom&&!hover&&!win2k_paint&&!win2k_live&&lstrcmpW(argv[1],L"normal"))return 2;
+    custom=!lstrcmpW(argv[1],L"custom")||!lstrcmpW(argv[1],L"win2k-custom");hover=!lstrcmpW(argv[1],L"hover")||!lstrcmpW(argv[1],L"win2k-hover");win2k_paint=!lstrcmpW(argv[1],L"win2k-paint");win2k_glyph=!lstrcmpW(argv[1],L"win2k-glyph");win2k_default=!lstrcmpW(argv[1],L"win2k-default");win2k_switch=!lstrcmpW(argv[1],L"win2k-switch");win2k_keyboard=!lstrcmpW(argv[1],L"win2k-keyboard");win2k_context=!lstrcmpW(argv[1],L"win2k-context");win2k_live=win2k_switch||win2k_keyboard||win2k_context||win2k_glyph||win2k_default||!lstrcmpW(argv[1],L"win2k-live")||!lstrcmpW(argv[1],L"win2k-hover")||!lstrcmpW(argv[1],L"win2k-custom");if(!custom&&!hover&&!win2k_paint&&!win2k_live&&lstrcmpW(argv[1],L"normal"))return 2;
     WNDCLASSW cls={.lpfnWndProc=proc,.hInstance=GetModuleHandleW(NULL),.lpszClassName=L"Win16SysMenuWitness"};if(!RegisterClassW(&cls))return 4;
     HMENU bar=CreateMenu(),sub=CreatePopupMenu();if(!bar||!sub||!AppendMenuW(sub,MF_STRING,42,L"Item")||!AppendMenuW(bar,MF_POPUP,(UINT_PTR)sub,L"&File"))return 5;
     HWND w=CreateWindowW(cls.lpszClassName,L"System menu witness",WS_OVERLAPPEDWINDOW|WS_CLIPCHILDREN,30,30,360,200,NULL,bar,cls.hInstance,NULL);if(!w)return 5;
     ShowWindow(w,SW_SHOWNORMAL);UpdateWindow(w);
     system_menu=GetSystemMenu(w,FALSE);if(!system_menu)return 6;if(custom&&!AppendMenuW(system_menu,MF_OWNERDRAW,12345,0))return 7;
     MENUITEMINFOW i={.cbSize=sizeof(i),.fMask=MIIM_FTYPE|MIIM_DATA};if(!GetMenuItemInfoW(system_menu,0,TRUE,&i))return 8;before_type=i.fType;before_data=i.dwItemData;
-    SetActiveWindow(w);SetFocus(w);if(!SetTimer(w,1,3000,NULL)||!PostMessageW(w,WM_SYSCOMMAND,SC_KEYMENU,L' '))return 9;
+    SetActiveWindow(w);SetFocus(w);RECT window={0};GetWindowRect(w,&window);
+    if(!SetTimer(w,1,3000,NULL) || !(win2k_context?
+        PostMessageW(w,WM_CONTEXTMENU,(WPARAM)w,MAKELPARAM(window.left+80,window.top+10)):
+        PostMessageW(w,WM_SYSCOMMAND,SC_KEYMENU,L' ')))return 9;
     MSG msg;while(GetMessageW(&msg,NULL,0,0)>0){TranslateMessage(&msg);DispatchMessageW(&msg);}KillTimer(w,1);
     BOOL intact=GetMenuItemInfoW(system_menu,0,TRUE,&i)&&i.fType==before_type&&i.dwItemData==before_data;
     BOOL style=sample==((win2k_paint||win2k_live)?RGB(0,0,128):RGB(164,200,240));printf("SYSTEM_MENU bits=%u custom=%d seen=%d unchanged=%d checked=%d selected=%d blue=%d sample=%06lx idles=%u custom_draws=%u\n",(unsigned)(sizeof(void*)*8),custom,seen,seen_type==before_type&&seen_data==before_data&&intact,checked,selected,style,(DWORD)sample,idles,custom_draws);
