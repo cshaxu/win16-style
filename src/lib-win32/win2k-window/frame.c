@@ -43,24 +43,7 @@ static void paint(HWND window)
         HFONT font=owned_font?owned_font:(HFONT)GetStockObject(DEFAULT_GUI_FONT);
         win2k_caption_colors solid=colors;solid.gradient=FALSE;
         win2k_caption_paint(dc,&caption,L"",font,&solid);
-        HICON icon=NULL;int icon_size=0;
-        if((GetWindowLongPtrW(window,GWL_STYLE)&WS_SYSMENU) &&
-           !(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)){
-            icon=(HICON)SendMessageW(window,WM_GETICON,ICON_SMALL,0);
-            if(!icon)icon=(HICON)SendMessageW(window,WM_GETICON,ICON_BIG,0);
-            if(!icon)icon=(HICON)GetClassLongPtrW(window,GCLP_HICONSM);
-            if(!icon)icon=(HICON)GetClassLongPtrW(window,GCLP_HICON);
-            if(!icon)icon=LoadIconW(NULL,MAKEINTRESOURCEW(32517));
-            if(icon){
-                icon_size=GetSystemMetricsForDpi(SM_CXSMICON,dpi);
-                int available=caption.bottom-caption.top-2;
-                if(icon_size>available)icon_size=available;
-                if(icon_size>0)gradient.left+=caption.bottom-caption.top;
-            }
-        }
         if(gradient.right>gradient.left)win2k_caption_paint(dc,&gradient,L"",font,&colors);
-        if(icon && icon_size>0)DrawIconEx(dc,caption.left+(caption.bottom-caption.top-icon_size)/2,
-            caption.top+(caption.bottom-caption.top-icon_size)/2,icon,icon_size,icon_size,0,NULL,DI_NORMAL);
         RECT text=gradient;text.left+=2;
         if(text.right>text.left){
             SetBkMode(dc,TRANSPARENT);SetTextColor(dc,colors.text);SelectObject(dc,font);

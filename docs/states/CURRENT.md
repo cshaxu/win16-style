@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T25 S3 已完成首版 Win2000 普通 Win32 窗口接入、发布与远端复核；验证范围和未覆盖见[S3 P1](../history/M0-T25-S3-P1-delivery.md)。S4 P1 已修正渐变与标题状态，P2 补齐默认图标回退，验证及限制见[S4 P1](../history/M0-T25-S4-P1-delivery.md)和[S4 P2](../history/M0-T25-S4-P2-delivery.md)；用户尚未手动验收。继续 S4；T25 仍开放。
+M0 T25 S3 已完成首版 Win2000 普通 Win32 窗口接入、发布与远端复核；验证范围和未覆盖见[S3 P1](../history/M0-T25-S3-P1-delivery.md)。S4 P3 修复用户发现的 P2 重复图标回归，见[S4 P3](../history/M0-T25-S4-P3-delivery.md)。用户随后报告颜色不合格；继续 S4 调查并修复，T25 仍开放。
 
 ## M0 T25 S4 Packet
 
@@ -40,4 +40,4 @@ M0 T25 S3 已完成首版 Win2000 普通 Win32 窗口接入、发布与远端复
 
 ## Technical Baseline
 
-已发布基线为五组件、八产品文件；纯 C17、MinGW GCC、Ninja 和 ccache。T25 S4 P2 八文件已发布于项目 assets 根目录与 O:/winnt，摘要和验证范围见[交付记录](../history/M0-T25-S4-P2-delivery.md)。历史状态见[T24 工作快照](../history/M0-T24-S1-working-log.md)和[原状态快照](../history/M0-T24-current-state-archive.md)。
+已发布基线为五组件、八产品文件；纯 C17、MinGW GCC、Ninja 和 ccache。T25 S4 P3 八文件已发布于项目 assets 根目录与 O:/winnt，摘要和验证范围见[交付记录](../history/M0-T25-S4-P3-delivery.md)。历史状态见[T24 工作快照](../history/M0-T24-S1-working-log.md)和[原状态快照](../history/M0-T24-current-state-archive.md)。

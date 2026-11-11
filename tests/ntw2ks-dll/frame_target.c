@@ -29,23 +29,28 @@ int wmain(int argc,WCHAR **argv)
         ShowWindow(w,SW_SHOW);UpdateWindow(w);SendMessageW(w,WM_NCACTIVATE,TRUE,0);
         TITLEBARINFOEX info={.cbSize=sizeof(info)};RECT outer;
         SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);GetWindowRect(w,&outer);
-        HDC dc=GetWindowDC(w);COLORREF before[16*16];unsigned drawn=0,changed=0;
-        int left=info.rcTitleBar.left-outer.left+3,top=info.rcTitleBar.top-outer.top+3;
+        HDC dc=GetWindowDC(w);COLORREF before[16*16],title_before[16*16];unsigned drawn=0,changed=0,title_changed=0;
+        int left=info.rcTitleBar.left-outer.left-(info.rcTitleBar.bottom-info.rcTitleBar.top)+3;
+        int top=info.rcTitleBar.top-outer.top+3;
+        int title_left=info.rcTitleBar.left-outer.left+2;
         if(dc){
             COLORREF background=GetPixel(dc,left,top);
             for(int y=0;y<16;++y)for(int x=0;x<16;++x){
                 COLORREF pixel=GetPixel(dc,left+x,top+y);
                 before[y*16+x]=pixel;
+                title_before[y*16+x]=GetPixel(dc,title_left+x,top+y);
                 if(pixel!=CLR_INVALID && pixel!=background)++drawn;
             }
             SendMessageW(w,WM_SETICON,ICON_BIG,(LPARAM)LoadIconW(NULL,MAKEINTRESOURCEW(32513)));
-            for(int y=0;y<16;++y)for(int x=0;x<16;++x)
+            for(int y=0;y<16;++y)for(int x=0;x<16;++x){
                 if(before[y*16+x]!=GetPixel(dc,left+x,top+y))++changed;
+                if(title_before[y*16+x]!=GetPixel(dc,title_left+x,top+y))++title_changed;
+            }
             ReleaseDC(w,dc);
         }
         DestroyWindow(w);
-        printf("WIN2K DEFAULT ICON bits=%u drawn=%u changed=%u\n",(unsigned)(sizeof(void*)*8),drawn,changed);
-        return drawn>0 && changed>0?0:3;
+        printf("WIN2K DEFAULT ICON bits=%u drawn=%u changed=%u title_changed=%u\n",(unsigned)(sizeof(void*)*8),drawn,changed,title_changed);
+        return drawn>0 && changed>0 && title_changed==0?0:3;
     }
     if(argc==2 && !lstrcmpW(argv[1],L"--tool")){
         HWND tool=CreateWindowExW(WS_EX_TOOLWINDOW,wc.lpszClassName,L"Tool window",WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU,
@@ -85,14 +90,14 @@ int wmain(int argc,WCHAR **argv)
     COLORREF icon_before[16*12];
     if(dc){
         for(int iy=info.rcTitleBar.top-window.top+2;iy<info.rcTitleBar.bottom-window.top-2;++iy)
-            for(int ix=info.rcTitleBar.left-window.left+4;ix<info.rcTitleBar.left-window.left+20;++ix){
+            for(int ix=info.rcTitleBar.left-window.left-(info.rcTitleBar.bottom-info.rcTitleBar.top)+4;ix<info.rcTitleBar.left-window.left-(info.rcTitleBar.bottom-info.rcTitleBar.top)+20;++ix){
                 COLORREF c=GetPixel(dc,ix,iy);
                 if(c!=CLR_INVALID && GetRValue(c)>=GetBValue(c))++icon_pixels;
             }
     }
     unsigned icon_changed=0;
     if(dc){
-        int left=info.rcTitleBar.left-window.left+4,top=info.rcTitleBar.top-window.top+4;
+        int left=info.rcTitleBar.left-window.left-(info.rcTitleBar.bottom-info.rcTitleBar.top)+4,top=info.rcTitleBar.top-window.top+4;
         for(int iy=0;iy<12;++iy)for(int ix=0;ix<16;++ix)icon_before[iy*16+ix]=GetPixel(dc,left+ix,top+iy);
         SendMessageW(w,WM_SETICON,ICON_SMALL,(LPARAM)LoadIconW(NULL,MAKEINTRESOURCEW(32513)));
         for(int iy=0;iy<12;++iy)for(int ix=0;ix<16;++ix)
