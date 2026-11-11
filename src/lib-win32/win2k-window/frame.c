@@ -158,13 +158,14 @@ static void paint_menu(HWND window,HDC dc,const RECT *outer)
         if(font)SelectObject(dc,font);
         SetBkMode(dc,TRANSPARENT);
         int count=GetMenuItemCount(menu);uintptr_t selected=(uintptr_t)GetPropW(window,menu_property);
+        BOOL inactive=GetPropW(window,frame_property)!=(HANDLE)(uintptr_t)2;
         for(int i=0;i<count;++i){
             WCHAR text[512]={0};MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_STRING|MIIM_STATE,
                 .dwTypeData=text,.cch=ARRAYSIZE(text)-1};RECT r;
             if(!GetMenuItemInfoW(menu,(UINT)i,TRUE,&item) || !GetMenuItemRect(window,menu,(UINT)i,&r))continue;
             offset_menu(window,&r);OffsetRect(&r,-outer->left,-outer->top);
             if(selected==(uintptr_t)i+1){HBRUSH active=CreateSolidBrush(RGB(0,0,128));if(active){FillRect(dc,&r,active);DeleteObject(active);}}
-            SetTextColor(dc,(item.fState&MFS_DISABLED)?RGB(128,128,128):selected==(uintptr_t)i+1?RGB(255,255,255):RGB(0,0,0));
+            SetTextColor(dc,(inactive || (item.fState&MFS_DISABLED))?RGB(128,128,128):selected==(uintptr_t)i+1?RGB(255,255,255):RGB(0,0,0));
             DrawTextW(dc,text,-1,&r,DT_SINGLELINE|DT_VCENTER|DT_CENTER);
         }
         RestoreDC(dc,saved);

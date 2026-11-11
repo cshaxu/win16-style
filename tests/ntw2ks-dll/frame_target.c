@@ -534,6 +534,29 @@ int wmain(int argc,WCHAR **argv)
     WNDCLASSW wc={.lpfnWndProc=procedure,.hInstance=instance,.hIcon=no_icon?NULL:LoadIconW(NULL,MAKEINTRESOURCEW(32515)),
         .hbrBackground=(HBRUSH)(COLOR_WINDOW+1),.lpszClassName=L"Win2kFrameFixture"};
     if(!RegisterClassW(&wc))return 1;
+    if(argc==2 && !lstrcmpW(argv[1],L"--inactive-menu")){
+        HMENU menu=CreateMenu(),popup=CreatePopupMenu();if(!menu || !popup)return 2;
+        AppendMenuW(popup,MF_STRING,101,L"Item");AppendMenuW(menu,MF_POPUP,(UINT_PTR)popup,L"&Game");
+        HWND w=CreateWindowExW(0,wc.lpszClassName,L"Inactive menu",WS_OVERLAPPEDWINDOW,
+                               80,80,420,260,NULL,menu,instance,NULL);
+        if(!w){DestroyMenu(menu);return 2;}
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);RECT r,outer;
+        BOOL measured=GetMenuItemRect(w,menu,0,&r) && adjusted_menu_rect(w,&r) && GetWindowRect(w,&outer);
+        OffsetRect(&r,-outer.left,-outer.top);HDC dc=GetWindowDC(w);
+        unsigned active_black=0,inactive_black=0,inactive_gray=0;
+        if(measured && dc){
+            SendMessageW(w,WM_NCACTIVATE,TRUE,0);
+            for(int y=r.top;y<r.bottom;++y)for(int x=r.left;x<r.right;++x)if(GetPixel(dc,x,y)==RGB(0,0,0))++active_black;
+            SendMessageW(w,WM_NCACTIVATE,FALSE,0);
+            for(int y=r.top;y<r.bottom;++y)for(int x=r.left;x<r.right;++x){COLORREF c=GetPixel(dc,x,y);
+                if(c==RGB(0,0,0))++inactive_black;
+                if(c==RGB(128,128,128))++inactive_gray;}
+        }
+        if(dc)ReleaseDC(w,dc);
+        printf("WIN2K INACTIVE MENU bits=%u measured=%d active_black=%u inactive_black=%u inactive_gray=%u\n",
+               (unsigned)(sizeof(void*)*8),measured,active_black,inactive_black,inactive_gray);
+        DestroyWindow(w);DestroyMenu(menu);return measured && active_black>0 && inactive_black==0 && inactive_gray>0?0:3;
+    }
     if(argc==2 && (!lstrcmpW(argv[1],L"--modal-no-icon") || real_modal)){
         struct { DLGTEMPLATE header; WORD menu,klass,title; } templ={0};
         templ.header.style=WS_POPUP|WS_CAPTION|WS_SYSMENU|DS_MODALFRAME;templ.header.cx=160;templ.header.cy=80;
