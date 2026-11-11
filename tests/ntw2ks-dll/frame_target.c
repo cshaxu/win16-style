@@ -1,6 +1,7 @@
 #define _WIN32_WINNT 0x0A00
 #include <windows.h>
 #include <commdlg.h>
+#include <cderr.h>
 #include <oleacc.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -101,10 +102,11 @@ static DWORD WINAPI close_message(void *unused)
     return 1;
 }
 
+static HWND common_owner;
 static BOOL CALLBACK find_common_window(HWND window,LPARAM unused)
 {
     (void)unused;DWORD pid=0;WCHAR cls[32]={0};GetWindowThreadProcessId(window,&pid);
-    if(pid!=GetCurrentProcessId() || !IsWindowVisible(window) || !GetClassNameW(window,cls,ARRAYSIZE(cls)) || lstrcmpW(cls,L"#32770"))return TRUE;
+    if((pid!=GetCurrentProcessId() && (!common_owner || GetWindow(window,GW_OWNER)!=common_owner)) || !IsWindowVisible(window) || !GetClassNameW(window,cls,ARRAYSIZE(cls)) || lstrcmpW(cls,L"#32770"))return TRUE;
     TITLEBARINFOEX info={.cbSize=sizeof(info)};DWORD_PTR response=0;
     BOOL sent=SendMessageTimeoutW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&info,SMTO_ABORTIFHUNG,1000,&response)!=0;
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
@@ -304,6 +306,41 @@ int wmain(int argc,WCHAR **argv)
             if(!pass)all=FALSE;
         }
         return all?0:3;
+    }
+    if(argc==2 && !lstrcmpW(argv[1],L"--print-frame")){
+        PRINTDLGW defaults={.lStructSize=sizeof(defaults),.Flags=PD_RETURNDEFAULT};
+        BOOL available=PrintDlgW(&defaults);DWORD printer_error=CommDlgExtendedError();
+        if(defaults.hDevMode)GlobalFree(defaults.hDevMode);
+        if(defaults.hDevNames)GlobalFree(defaults.hDevNames);
+        if(!available){
+            if(printer_error==PDERR_NODEFAULTPRN || printer_error==PDERR_NODEVICES){puts("WIN2K PRINT SKIP no_default_printer");return 77;}
+            printf("WIN2K PRINT ERROR default=%lu\n",(unsigned long)printer_error);return 3;
+        }
+        WNDCLASSW owner_class={.lpfnWndProc=DefWindowProcW,.hInstance=instance,.lpszClassName=L"Win2kPrintFixture"};
+        if(!RegisterClassW(&owner_class))return 2;
+        common_owner=CreateWindowW(owner_class.lpszClassName,L"Print owner",WS_OVERLAPPEDWINDOW,0,0,320,200,NULL,NULL,instance,NULL);
+        if(!common_owner)return 2;
+        BOOL all=TRUE;
+        for(int ansi=0;ansi<2;++ansi)for(int setup=0;setup<2;++setup){
+            InterlockedExchange(&message_seen,0);InterlockedExchange(&message_attached,0);
+            HANDLE thread=CreateThread(NULL,0,close_common,NULL,0,NULL);if(!thread)return 2;
+            PRINTDLGA pa={.lStructSize=sizeof(pa),.hwndOwner=common_owner};PRINTDLGW pw={.lStructSize=sizeof(pw),.hwndOwner=common_owner};
+            PAGESETUPDLGA sa={.lStructSize=sizeof(sa),.hwndOwner=common_owner};PAGESETUPDLGW sw={.lStructSize=sizeof(sw),.hwndOwner=common_owner};
+            BOOL result=ansi?(setup?PageSetupDlgA(&sa):PrintDlgA(&pa)):(setup?PageSetupDlgW(&sw):PrintDlgW(&pw));
+            DWORD error=CommDlgExtendedError();DWORD wait=WaitForSingleObject(thread,1000);CloseHandle(thread);
+            BOOL pass=wait==WAIT_OBJECT_0 && !result && error==0 && InterlockedCompareExchange(&message_seen,0,0) && InterlockedCompareExchange(&message_attached,0,0);
+            printf("WIN2K PRINT bits=%u ansi=%d setup=%d attached=%ld cancelled=%d error=%lu\n",(unsigned)(sizeof(void*)*8),ansi,setup,(long)InterlockedCompareExchange(&message_attached,0,0),!result,(unsigned long)error);
+            if(pa.hDevMode)GlobalFree(pa.hDevMode);
+            if(pa.hDevNames)GlobalFree(pa.hDevNames);
+            if(pw.hDevMode)GlobalFree(pw.hDevMode);
+            if(pw.hDevNames)GlobalFree(pw.hDevNames);
+            if(sa.hDevMode)GlobalFree(sa.hDevMode);
+            if(sa.hDevNames)GlobalFree(sa.hDevNames);
+            if(sw.hDevMode)GlobalFree(sw.hDevMode);
+            if(sw.hDevNames)GlobalFree(sw.hDevNames);
+            if(!pass)all=FALSE;
+        }
+        DestroyWindow(common_owner);common_owner=NULL;UnregisterClassW(owner_class.lpszClassName,instance);return all?0:3;
     }
     if(argc==2 && !lstrcmpW(argv[1],L"--color-accept")){
         BOOL all=TRUE;InterlockedExchange(&message_accept,1);
