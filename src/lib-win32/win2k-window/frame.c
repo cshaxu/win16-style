@@ -5,6 +5,7 @@
 #include <dwmapi.h>
 #include <oleacc.h>
 #include <stdint.h>
+#include <stdatomic.h>
 #include <windowsx.h>
 
 static const WCHAR frame_property[]=L"Win2kStyle.Frame";
@@ -13,6 +14,8 @@ static const WCHAR button_property[]=L"Win2kStyle.CaptionButton";
 static const WCHAR menu_property[]=L"Win2kStyle.Menu";
 static const WCHAR menu_keyboard_property[]=L"Win2kStyle.MenuKeyboard";
 static const WCHAR menu_focus_property[]=L"Win2kStyle.MenuFocus";
+static const WCHAR pending_property[]=L"Win2kStyle.FramePending";
+static _Atomic UINT frame_message;
 
 static int caption_height(HWND window)
 {
@@ -483,6 +486,11 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
 {
     (void)ref;
     DWORD incoming=GetLastError();
+    if(message && message==atomic_load(&frame_message)){
+        if(RemovePropW(window,pending_property))
+            SetWindowPos(window,NULL,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
+        SetLastError(incoming);return 0;
+    }
     if(message==WM_ENTERMENULOOP)win2k_system_menu_begin(window);
     else if(message==WM_INITMENUPOPUP && HIWORD(lp))win2k_system_menu_set(window,(HMENU)wp);
     else if(message==WM_ENTERIDLE && wp==MSGF_MENU)win2k_system_menu_idle(window);
@@ -502,10 +510,12 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
         HANDLE hit=(HANDLE)(uintptr_t)(wp+1);
         if(GetPropW(window,hover_property)!=hit){SetPropW(window,hover_property,hit);repaint=TRUE;}
     }else if(message==WM_NCMOUSELEAVE){RemovePropW(window,hover_property);repaint=TRUE;}
-    if(message==WM_NCDESTROY){RemovePropW(window,menu_focus_property);RemovePropW(window,menu_keyboard_property);RemovePropW(window,menu_property);RemovePropW(window,hover_property);RemovePropW(window,frame_property);RemoveWindowSubclass(window,frame_proc,id);}
+    if(message==WM_NCDESTROY){RemovePropW(window,pending_property);RemovePropW(window,menu_focus_property);RemovePropW(window,menu_keyboard_property);RemovePropW(window,menu_property);RemovePropW(window,hover_property);RemovePropW(window,frame_property);RemoveWindowSubclass(window,frame_proc,id);}
     SetLastError(incoming);
     LRESULT result=DefSubclassProc(window,message,wp,lp);
     DWORD outcome=GetLastError();
+    if(message==WM_SHOWWINDOW && wp && IsWindow(window) && RemovePropW(window,pending_property))
+        SetWindowPos(window,NULL,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
     if(message==WM_NCCALCSIZE && lp && compact_enabled(window) &&
        (GetWindowLongPtrW(window,GWL_STYLE)&WS_CAPTION)==WS_CAPTION &&
        !(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_LAYOUTRTL)){
@@ -535,7 +545,7 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
             if(tracked/2>=2 && tracked/2<=CCHILDREN_TITLEBAR && (tracked&1))info->rgstate[tracked/2]|=STATE_SYSTEM_PRESSED;
         }
     }
-    BOOL preserve_hit=message==WM_NCHITTEST && (result==HTTRANSPARENT || result==HTERROR || result==HTNOWHERE);
+    BOOL preserve_hit=message==WM_NCHITTEST && (result==HTTRANSPARENT || result==HTERROR || result==HTNOWHERE || result==HTCLIENT);
     if(message==WM_NCHITTEST && !preserve_hit && compact_enabled(window)){
         RECT client;POINT point={GET_X_LPARAM(lp),GET_Y_LPARAM(lp)};
         if(menu_bar_at(window,point))result=HTMENU;
@@ -598,6 +608,10 @@ BOOL win2k_frame_attach(HWND window)
     if(FAILED(DwmSetWindowAttribute(window,DWMWA_NCRENDERING_POLICY,&policy,sizeof(policy)))){
         RemovePropW(window,frame_property);RemoveWindowSubclass(window,frame_proc,(UINT_PTR)frame_proc);return FALSE;
     }
-    SetWindowPos(window,NULL,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
+    /* Avoid sending WM_SIZE before the creator can finish initializing its window. */
+    UINT message=RegisterWindowMessageW(L"Win2kStyle.RecalculateFrame");
+    if(message && SetPropW(window,pending_property,(HANDLE)1)){
+        atomic_store(&frame_message,message);PostMessageW(window,message,0,0);
+    }
     return TRUE;
 }

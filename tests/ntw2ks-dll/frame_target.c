@@ -14,6 +14,8 @@ static BOOL menu_timeout;
 static unsigned help_commands;
 static BOOL custom_hit_enabled;
 static LRESULT custom_hit_value;
+static BOOL startup_probe, startup_ready;
+static unsigned startup_early_size, startup_late_size;
 static POINT menu_hover_point;
 static DWORD app_pid;
 static HWND app_window;
@@ -42,6 +44,7 @@ static DWORD WINAPI cancel_app_menu(void *ignored)
 }
 static LRESULT CALLBACK procedure(HWND w,UINT message,WPARAM wp,LPARAM lp)
 {
+    if(startup_probe && message==WM_SIZE){if(startup_ready)++startup_late_size;else ++startup_early_size;}
     if(custom_hit_enabled && message==WM_NCHITTEST)return custom_hit_value;
     if(message==WM_SYSCOMMAND && (wp&0xfff0)==SC_CONTEXTHELP){++help_commands;return 0;}
     if(menu_scenario){
@@ -486,6 +489,17 @@ int wmain(int argc,WCHAR **argv)
     WNDCLASSW wc={.lpfnWndProc=procedure,.hInstance=instance,.hIcon=no_icon?NULL:LoadIconW(NULL,MAKEINTRESOURCEW(32515)),
         .hbrBackground=(HBRUSH)(COLOR_WINDOW+1),.lpszClassName=L"Win2kFrameFixture"};
     if(!RegisterClassW(&wc))return 1;
+    if(argc==2 && !lstrcmpW(argv[1],L"--startup-size")){
+        startup_probe=TRUE;
+        HWND w=CreateWindowExW(0,wc.lpszClassName,L"Startup size",WS_OVERLAPPEDWINDOW,
+                               80,80,420,260,NULL,NULL,instance,NULL);
+        startup_ready=TRUE;
+        if(!w)return 2;
+        MSG message;while(PeekMessageW(&message,NULL,0,0,PM_REMOVE))DispatchMessageW(&message);
+        BOOL ok=startup_early_size==0 && startup_late_size>0;
+        printf("WIN2K STARTUP SIZE bits=%u early=%u late=%u\n",(unsigned)(sizeof(void*)*8),startup_early_size,startup_late_size);
+        DestroyWindow(w);return ok?0:3;
+    }
     if(argc==2 && (!lstrcmpW(argv[1],L"--menu-physical") || !lstrcmpW(argv[1],L"--menu-physical-toggle"))){
         BOOL toggle=!lstrcmpW(argv[1],L"--menu-physical-toggle");
         HMENU menu=CreateMenu(),first=CreatePopupMenu(),second=CreatePopupMenu();if(!menu || !first || !second)return 2;
@@ -849,7 +863,7 @@ int wmain(int argc,WCHAR **argv)
         SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
         RECT button=info.rgrect[3];POINT caption={info.rcTitleBar.left+30,(info.rcTitleBar.top+info.rcTitleBar.bottom)/2};
         POINT maximize={(button.left+button.right)/2,(button.top+button.bottom)/2};POINT client={20,20};ClientToScreen(w,&client);
-        const LRESULT values[]={HTTRANSPARENT,HTERROR,HTNOWHERE};BOOL passed=TRUE;custom_hit_enabled=TRUE;
+        const LRESULT values[]={HTTRANSPARENT,HTERROR,HTNOWHERE,HTCLIENT};BOOL passed=TRUE;custom_hit_enabled=TRUE;
         for(unsigned i=0;i<ARRAYSIZE(values);++i){custom_hit_value=values[i];
             LRESULT a=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(caption.x,caption.y));
             LRESULT b=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(maximize.x,maximize.y));
