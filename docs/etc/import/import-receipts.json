@@ -491,7 +491,7 @@
       "path": "tests/ntw16s-dll/system_menu_visual.c",
       "source": null,
       "source_blob": null,
-      "sha256": "73cc2e6b8d5be1b6aaef0295d8f082da862f4904fa279c925e9fea84ed1e92f2",
+      "sha256": "89cd3d2b02750d3f3c0bdc63db3cf398fe5c2a55b48aeacbc277c2b9b3200f93",
       "disposition": "authored",
       "review": "T20 S19 native system menu regression witness; T23 S1 native system-menu hover buffering and unchanged-selection regression",
       "notice": "Project-authored test; no imported code or resources"
@@ -6728,7 +6728,7 @@
       "path": "src/lib-win32/win2k-window/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1e3d3d3defa9544599da3e2b717c5e8cc3d7b1aa2a85a94f78cb25fd8c0bad62",
+      "sha256": "b1baebab849c1f889146e35bb29686817bedceec4477a93a99c37330078b9aa2",
       "disposition": "authored",
       "review": "T25 S3 native Win2000 frame and fixture; T25 S3 Win2000 frame; T25 S4 caption state and icon; T25 S4 original caption region and state",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -6759,6 +6759,24 @@
       "disposition": "authored",
       "review": "T25 S4 dialog resource fixture",
       "notice": "Project-authored test resource; no external source or artwork copied"
+    },
+    {
+      "path": "src/lib-win32/win2k-window/system_menu.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "a372441420cb020c877a43917b809254524507ecef73f85457749c1e7b957653",
+      "disposition": "authored",
+      "review": "T25 S4 Win2000 system menu presentation candidate",
+      "notice": "Project-authored C; no external source or artwork copied"
+    },
+    {
+      "path": "src/lib-win32/win2k-window/system_menu.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "6b96caff32266a647df75264c6a6d9c40801d11a4099bff8d03320641ad200e9",
+      "disposition": "authored",
+      "review": "T25 S4 Win2000 system menu presentation candidate",
+      "notice": "Project-authored C; no external source or artwork copied"
     }
   ]
 }

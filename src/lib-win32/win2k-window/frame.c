@@ -1,5 +1,6 @@
 #include "frame.h"
 #include "caption.h"
+#include "system_menu.h"
 #include <commctrl.h>
 #include <dwmapi.h>
 #include <oleacc.h>
@@ -438,6 +439,10 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
 {
     (void)ref;
     DWORD incoming=GetLastError();
+    if(message==WM_ENTERMENULOOP)win2k_system_menu_begin(window);
+    else if(message==WM_INITMENUPOPUP && HIWORD(lp))win2k_system_menu_set(window,(HMENU)wp);
+    else if(message==WM_EXITMENULOOP)win2k_system_menu_end(window,FALSE);
+    else if(message==WM_NCDESTROY)win2k_system_menu_end(window,TRUE);
     if(message==WM_COMMAND && !lp && GetPropW(window,menu_keyboard_property))leave_menu_keyboard(window,TRUE);
     if(active_menu && active_menu->window==window){
         if(message==WM_INITMENUPOPUP)active_menu->active=(HMENU)wp;
