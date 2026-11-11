@@ -872,6 +872,32 @@ int wmain(int argc,WCHAR **argv)
                horz.rcScrollBar.left-outer.left,horz.rcScrollBar.top-outer.top,horz.rcScrollBar.right-outer.left,horz.rcScrollBar.bottom-outer.top);
         DestroyWindow(w);return separate && hits?0:3;
     }
+    if(argc==2 && !lstrcmpW(argv[1],L"--zoom-cycle")){
+        HMENU menu=CreateMenu(),popup=CreatePopupMenu();if(!menu || !popup)return 2;
+        AppendMenuW(popup,MF_STRING,101,L"Item");AppendMenuW(menu,MF_POPUP,(UINT_PTR)popup,L"File");
+        HWND w=CreateWindowExW(0,wc.lpszClassName,L"Zoom cycles",WS_OVERLAPPEDWINDOW,
+                                80,80,420,260,NULL,menu,instance,NULL);
+        if(!w){DestroyMenu(menu);return 2;}
+        HWND edit=CreateWindowW(L"EDIT",L"retained content",WS_CHILD|WS_VISIBLE,10,10,150,24,w,NULL,instance,NULL);
+        if(!edit){DestroyWindow(w);DestroyMenu(menu);return 2;}
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);RECT before={0};if(!GetWindowRect(w,&before)){DestroyWindow(w);DestroyMenu(menu);return 2;}
+        unsigned maximized=0,restored=0,geometry=0,caption=0,hit=0,content=0;
+        for(int i=0;i<8;++i){
+            ShowWindow(w,SW_MAXIMIZE);RedrawWindow(w,NULL,NULL,RDW_FRAME|RDW_INVALIDATE|RDW_ERASE|RDW_ALLCHILDREN|RDW_UPDATENOW);
+            if(IsZoomed(w))++maximized;
+            TITLEBARINFOEX title={.cbSize=sizeof(title)};SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&title);
+            RECT r=title.rgrect[3];if(SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM((r.left+r.right)/2,(r.top+r.bottom)/2))==HTMAXBUTTON)++hit;
+            if(classic_caption_pixel(caption_pixel(w)))++caption;
+            ShowWindow(w,SW_RESTORE);RedrawWindow(w,NULL,NULL,RDW_FRAME|RDW_INVALIDATE|RDW_ERASE|RDW_ALLCHILDREN|RDW_UPDATENOW);
+            RECT after={0};if(!IsZoomed(w))++restored;if(GetWindowRect(w,&after) && EqualRect(&before,&after))++geometry;
+            if(classic_caption_pixel(caption_pixel(w)))++caption;
+            WCHAR text[32]={0};if(GetWindowTextW(edit,text,ARRAYSIZE(text))>0 && !lstrcmpW(text,L"retained content"))++content;
+        }
+        printf("WIN2K ZOOM CYCLE bits=%u dpi=%u max=%u restore=%u geometry=%u caption=%u hit=%u content=%u\n",
+               (unsigned)(sizeof(void*)*8),GetDpiForWindow(w),maximized,restored,geometry,caption,hit,content);
+        DestroyWindow(w);DestroyMenu(menu);
+        return maximized==8 && restored==8 && geometry==8 && caption==16 && hit==8 && content==8?0:3;
+    }
     if(argc==2 && !lstrcmpW(argv[1],L"--resize-cycle")){
         HMENU menu=CreateMenu(),popup=CreatePopupMenu();if(!menu || !popup)return 2;
         AppendMenuW(popup,MF_STRING,101,L"Item");AppendMenuW(menu,MF_POPUP,(UINT_PTR)popup,L"File");
