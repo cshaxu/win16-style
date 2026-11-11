@@ -528,7 +528,8 @@ int wmain(int argc,WCHAR **argv)
         }
         DestroyWindow(owner);UnregisterClassW(owner_class.lpszClassName,instance);return all?0:3;
     }
-    BOOL real_modal=argc==2 && !lstrcmpW(argv[1],L"--real-modal-no-icon");
+    BOOL real_modal=argc==2 && (!lstrcmpW(argv[1],L"--real-modal-no-icon") || !lstrcmpW(argv[1],L"--real-modal-icon"));
+    BOOL explicit_icon=argc==2 && !lstrcmpW(argv[1],L"--real-modal-icon");
     BOOL no_icon=argc==2 && (!lstrcmpW(argv[1],L"--no-icon") || !lstrcmpW(argv[1],L"--modal-no-icon") || real_modal);
     WNDCLASSW wc={.lpfnWndProc=procedure,.hInstance=instance,.hIcon=no_icon?NULL:LoadIconW(NULL,MAKEINTRESOURCEW(32515)),
         .hbrBackground=(HBRUSH)(COLOR_WINDOW+1),.lpszClassName=L"Win2kFrameFixture"};
@@ -540,6 +541,8 @@ int wmain(int argc,WCHAR **argv)
             CreateWindowExW(WS_EX_DLGMODALFRAME,wc.lpszClassName,L"",WS_POPUP|WS_CAPTION|WS_SYSMENU,
                             80,80,420,260,NULL,NULL,instance,NULL);
         if(!w)return 2;
+        BOOL attached=GetPropW(w,L"Win2kStyle.Frame")!=NULL;
+        if(explicit_icon)SendMessageW(w,WM_SETICON,ICON_SMALL,(LPARAM)LoadIconW(NULL,MAKEINTRESOURCEW(32513)));
         ShowWindow(w,SW_SHOW);UpdateWindow(w);SendMessageW(w,WM_NCACTIVATE,TRUE,0);
         TITLEBARINFOEX info={.cbSize=sizeof(info)};RECT outer;MENUBARINFO system={.cbSize=sizeof(system)};
         SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);GetWindowRect(w,&outer);
@@ -549,11 +552,12 @@ int wmain(int argc,WCHAR **argv)
             for(int x=left+2;x<left+18;++x){COLORREF base=GetPixel(dc,x,top+2);
                 for(int y=top+3;y<top+15;++y)if(GetPixel(dc,x,y)!=base)++irregular;}
             ReleaseDC(w,dc);}
+        if(explicit_icon)irregular=caption_icon_pixels(w);
         WCHAR cls[32]={0};GetClassNameW(w,cls,ARRAYSIZE(cls));BOOL real_class=!lstrcmpW(cls,L"#32770");
-        printf("WIN2K MODAL ICON bits=%u visible=%d real_class=%d system=%d icon_state=%lu title_left=%ld icon_left=%ld irregular=%u\n",
-               (unsigned)(sizeof(void*)*8),IsWindowVisible(w),real_class,has_system,(unsigned long)info.rgstate[1],
+        printf("WIN2K MODAL ICON bits=%u visible=%d real_class=%d explicit=%d system=%d icon_state=%lu title_left=%ld icon_left=%ld irregular=%u\n",
+               (unsigned)(sizeof(void*)*8),IsWindowVisible(w),real_class,explicit_icon,has_system,(unsigned long)info.rgstate[1],
                info.rcTitleBar.left-outer.left,has_system?system.rcBar.left-outer.left:-1,irregular);
-        DestroyWindow(w);return dc && irregular==0 && (!real_modal || real_class)?0:3;
+        DestroyWindow(w);return attached && dc && (explicit_icon?irregular>0:irregular==0) && (!real_modal || real_class)?0:3;
     }
     if(argc==2 && !lstrcmpW(argv[1],L"--startup-size")){
         startup_probe=TRUE;
