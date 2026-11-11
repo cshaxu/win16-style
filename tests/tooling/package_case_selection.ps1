@@ -42,6 +42,9 @@ $skipCases=@(
     @{name='vcl-status-font-alias-32';code=2;output="ALIAS_SKIP no_handle_reuse attempts=1200 extra`n";expected=$false},
     @{name='ntw2ks-print-frame-x86';code=77;output="WIN2K PRINT SKIP no_default_printer`n";expected=$true},
     @{name='ntw2ks-print-frame-x64';code=1;output="WIN2K PRINT SKIP no_default_printer`n";expected=$false},
+    @{name='ntw2ks-printex-frame-x86';code=77;output="WIN2K PRINTEX SKIP no_default_printer`n";expected=$true},
+    @{name='ntw2ks-printex-frame-x64';code=1;output="WIN2K PRINTEX SKIP no_default_printer`n";expected=$false},
+    @{name='other';code=77;output="WIN2K PRINTEX SKIP no_default_printer`n";expected=$false},
     @{name='other';code=77;output="WIN2K PRINT SKIP no_default_printer`n";expected=$false},
     @{name='other';code=2;output='PRIVATE_DESKTOP_CREATE_FAIL error=5';expected=$true},
     @{name='other';code=2;output='PRIVATE_DESKTOP_CREATE_FAIL error=6';expected=$false}

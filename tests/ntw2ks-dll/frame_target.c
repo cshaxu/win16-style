@@ -3,6 +3,7 @@
 #include <commdlg.h>
 #include <cderr.h>
 #include <oleacc.h>
+#include <objbase.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <limits.h>
@@ -103,6 +104,7 @@ static DWORD WINAPI close_message(void *unused)
 }
 
 static HWND common_owner;
+static volatile LONG common_done;
 static BOOL CALLBACK find_common_window(HWND window,LPARAM unused)
 {
     (void)unused;DWORD pid=0;WCHAR cls[32]={0};GetWindowThreadProcessId(window,&pid);
@@ -123,7 +125,7 @@ static BOOL CALLBACK find_common_window(HWND window,LPARAM unused)
 static DWORD WINAPI close_common(void *unused)
 {
     (void)unused;ULONGLONG deadline=GetTickCount64()+3000;
-    do{EnumWindows(find_common_window,0);if(InterlockedCompareExchange(&message_seen,0,0))return 0;Sleep(25);}while(GetTickCount64()<deadline);
+    do{EnumWindows(find_common_window,0);if(InterlockedCompareExchange(&message_seen,0,0) || InterlockedCompareExchange(&common_done,0,0))return 0;Sleep(25);}while(GetTickCount64()<deadline);
     ExitProcess(4);return 1;
 }
 
@@ -306,6 +308,40 @@ int wmain(int argc,WCHAR **argv)
             if(!pass)all=FALSE;
         }
         return all?0:3;
+    }
+    if(argc==2 && !lstrcmpW(argv[1],L"--print-ex-frame")){
+        PRINTDLGW defaults={.lStructSize=sizeof(defaults),.Flags=PD_RETURNDEFAULT};
+        BOOL available=PrintDlgW(&defaults);DWORD printer_error=CommDlgExtendedError();
+        if(defaults.hDevMode)GlobalFree(defaults.hDevMode);
+        if(defaults.hDevNames)GlobalFree(defaults.hDevNames);
+        if(!available){
+            if(printer_error==PDERR_NODEFAULTPRN || printer_error==PDERR_NODEVICES){puts("WIN2K PRINTEX SKIP no_default_printer");return 77;}
+            printf("WIN2K PRINTEX ERROR default=%lu\n",(unsigned long)printer_error);return 3;
+        }
+        HRESULT init=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);if(FAILED(init))return 3;
+        WNDCLASSW owner_class={.lpfnWndProc=DefWindowProcW,.hInstance=instance,.lpszClassName=L"Win2kPrintExFixture"};
+        if(!RegisterClassW(&owner_class)){CoUninitialize();return 2;}
+        common_owner=CreateWindowW(owner_class.lpszClassName,L"Print owner",WS_OVERLAPPEDWINDOW,0,0,320,200,NULL,NULL,instance,NULL);
+        if(!common_owner){UnregisterClassW(owner_class.lpszClassName,instance);CoUninitialize();return 2;}
+        BOOL all=TRUE;
+        for(int ansi=0;ansi<2;++ansi){
+            InterlockedExchange(&message_seen,0);InterlockedExchange(&message_attached,0);InterlockedExchange(&common_done,0);
+            HANDLE thread=CreateThread(NULL,0,close_common,NULL,0,NULL);if(!thread){all=FALSE;break;}
+            PRINTDLGEXA a={.lStructSize=sizeof(a),.hwndOwner=common_owner,.Flags=PD_NOPAGENUMS,.nCopies=1,.nStartPage=START_PAGE_GENERAL};
+            PRINTDLGEXW w={.lStructSize=sizeof(w),.hwndOwner=common_owner,.Flags=PD_NOPAGENUMS,.nCopies=1,.nStartPage=START_PAGE_GENERAL};
+            HRESULT result=ansi?PrintDlgExA(&a):PrintDlgExW(&w);DWORD action=ansi?a.dwResultAction:w.dwResultAction;
+            InterlockedExchange(&common_done,1);DWORD wait=WaitForSingleObject(thread,1000);CloseHandle(thread);
+            BOOL pass=wait==WAIT_OBJECT_0 && result==S_OK && action==PD_RESULT_CANCEL && InterlockedCompareExchange(&message_seen,0,0) && InterlockedCompareExchange(&message_attached,0,0);
+            printf("WIN2K PRINTEX bits=%u ansi=%d attached=%ld result=%08lx action=%lu\n",(unsigned)(sizeof(void*)*8),ansi,(long)InterlockedCompareExchange(&message_attached,0,0),(unsigned long)result,(unsigned long)action);
+            if(a.hDevMode)GlobalFree(a.hDevMode);
+            if(a.hDevNames)GlobalFree(a.hDevNames);
+            if(a.hDC)DeleteDC(a.hDC);
+            if(w.hDevMode)GlobalFree(w.hDevMode);
+            if(w.hDevNames)GlobalFree(w.hDevNames);
+            if(w.hDC)DeleteDC(w.hDC);
+            if(!pass)all=FALSE;
+        }
+        DestroyWindow(common_owner);common_owner=NULL;UnregisterClassW(owner_class.lpszClassName,instance);CoUninitialize();return all?0:3;
     }
     if(argc==2 && !lstrcmpW(argv[1],L"--print-frame")){
         PRINTDLGW defaults={.lStructSize=sizeof(defaults),.Flags=PD_RETURNDEFAULT};
