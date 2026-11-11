@@ -8,8 +8,33 @@ typedef struct menu_row {
     RECT rect;
     WCHAR text[512];
     UINT type,state;
+    HBITMAP bitmap;
     BOOL submenu;
 } menu_row;
+
+static void system_glyph(HDC dc,const RECT *row,HBITMAP bitmap,int unit,COLORREF color)
+{
+    if(!bitmap)return;
+    HPEN pen=CreatePen(PS_SOLID,unit,color);if(!pen)return;
+    HGDIOBJ old_pen=SelectObject(dc,pen),old_brush=SelectObject(dc,GetStockObject(NULL_BRUSH));
+    int x=row->left+5*unit,y=(row->top+row->bottom-8*unit)/2;
+    if(bitmap==HBMMENU_POPUP_CLOSE){
+        MoveToEx(dc,x,y,NULL);LineTo(dc,x+8*unit,y+8*unit);
+        MoveToEx(dc,x+7*unit,y,NULL);LineTo(dc,x-unit,y+8*unit);
+    }else if(bitmap==HBMMENU_POPUP_MINIMIZE){
+        MoveToEx(dc,x,y+6*unit,NULL);LineTo(dc,x+8*unit,y+6*unit);
+        MoveToEx(dc,x,y+7*unit,NULL);LineTo(dc,x+8*unit,y+7*unit);
+    }else if(bitmap==HBMMENU_POPUP_MAXIMIZE){
+        Rectangle(dc,x,y,x+8*unit,y+8*unit);
+        MoveToEx(dc,x+unit,y+2*unit,NULL);LineTo(dc,x+7*unit,y+2*unit);
+    }else if(bitmap==HBMMENU_POPUP_RESTORE){
+        Rectangle(dc,x+2*unit,y,x+8*unit,y+6*unit);
+        Rectangle(dc,x,y+2*unit,x+6*unit,y+8*unit);
+    }
+    if(old_brush && old_brush!=HGDI_ERROR)SelectObject(dc,old_brush);
+    if(old_pen && old_pen!=HGDI_ERROR)SelectObject(dc,old_pen);
+    DeleteObject(pen);
+}
 
 BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinates)
 {
@@ -27,7 +52,7 @@ BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinate
            (item.hbmpItem && item.hbmpItem!=HBMMENU_POPUP_CLOSE && item.hbmpItem!=HBMMENU_POPUP_RESTORE &&
             item.hbmpItem!=HBMMENU_POPUP_MINIMIZE && item.hbmpItem!=HBMMENU_POPUP_MAXIMIZE) ||
            !GetMenuItemRect(NULL,menu,(UINT)i,&rows[i].rect)){valid=FALSE;break;}
-        rows[i].type=item.fType;rows[i].state=item.fState;rows[i].submenu=item.hSubMenu!=NULL;
+        rows[i].type=item.fType;rows[i].state=item.fState;rows[i].bitmap=item.hbmpItem;rows[i].submenu=item.hSubMenu!=NULL;
     }
     int saved=valid?SaveDC(dc):0;
     if(!saved){free(rows);return FALSE;}
@@ -53,6 +78,7 @@ BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinate
             if(shadow){FillRect(dc,&line,shadow);DeleteObject(shadow);}continue;
         }
         SetTextColor(dc,(rows[i].state&MFS_DISABLED)?RGB(128,128,128):selected?RGB(255,255,255):RGB(0,0,0));
+        system_glyph(dc,&r,rows[i].bitmap,unit,(rows[i].state&MFS_DISABLED)?RGB(128,128,128):selected?RGB(255,255,255):RGB(0,0,0));
         RECT label=r;label.left+=MulDiv(22,(int)dpi,96);label.right-=MulDiv(16,(int)dpi,96);
         WCHAR *tab=wcschr(rows[i].text,L'\t');
         if(tab){*tab=0;RECT shortcut=label;DrawTextW(dc,tab+1,-1,&shortcut,DT_SINGLELINE|DT_VCENTER|DT_RIGHT|DT_NOPREFIX);}
