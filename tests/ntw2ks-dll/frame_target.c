@@ -264,6 +264,20 @@ static BOOL physical_click(POINT point)
     Sleep(100);event.mi.dwFlags=MOUSEEVENTF_LEFTUP;BOOL up=SendInput(1,&event,sizeof(event))==1;
     return down && up;
 }
+typedef struct { HWND window;unsigned disabled;BOOL input,safe; } disabled_physical_probe;
+static DWORD WINAPI disabled_physical_thread(void *parameter)
+{
+    disabled_physical_probe *probe=parameter;HWND w=probe->window;
+    for(unsigned i=0;i<20 && GetForegroundWindow()!=w;++i)Sleep(50);
+    TITLEBARINFOEX info={.cbSize=sizeof(info)};SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
+    const unsigned buttons[]={probe->disabled,5};probe->input=GetForegroundWindow()==w;probe->safe=TRUE;
+    for(unsigned i=0;i<ARRAYSIZE(buttons) && probe->input;++i){
+        RECT r=info.rgrect[buttons[i]];POINT p={(r.left+r.right)/2,(r.top+r.bottom)/2};
+        probe->input=physical_click(p);Sleep(200);
+        if(!IsWindow(w) || IsIconic(w) || IsZoomed(w))probe->safe=FALSE;
+    }
+    PostMessageW(w,WM_APP+1,0,0);return 0;
+}
 typedef struct { HWND window;POINT first,second;BOOL input,toggle,closed_before_escape;LONG first_paints,second_paints; } menu_physical_probe;
 static DWORD WINAPI menu_physical_thread(void *parameter)
 {
@@ -1083,6 +1097,24 @@ int wmain(int argc,WCHAR **argv)
         printf("WIN2K BUTTON CANCEL bits=%u captured=%d cancelled=%d max=%d restore=%d\n",
                (unsigned)(sizeof(void*)*8),captured,cancelled,maximized,restored);
         DestroyWindow(w);return captured && cancelled && maximized && restored?0:3;
+    }
+    if(argc==2 && (!lstrcmpW(argv[1],L"--physical-disabled") || !lstrcmpW(argv[1],L"--physical-disabled-max"))){
+        BOOL disable_max=!lstrcmpW(argv[1],L"--physical-disabled-max");unsigned index=disable_max?3:2;
+        HWND w=CreateWindowExW(0,wc.lpszClassName,L"Disabled buttons",
+            WS_OVERLAPPEDWINDOW & ~(disable_max?WS_MAXIMIZEBOX:WS_MINIMIZEBOX),80,80,420,260,NULL,NULL,instance,NULL);
+        if(!w)return 2;
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);HMENU system=GetSystemMenu(w,FALSE);
+        if(!system){DestroyWindow(w);return 2;}
+        EnableMenuItem(system,SC_CLOSE,MF_BYCOMMAND|MF_GRAYED);DrawMenuBar(w);SetForegroundWindow(w);
+        TITLEBARINFOEX info={.cbSize=sizeof(info)};SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
+        BOOL states=(info.rgstate[index]&STATE_SYSTEM_UNAVAILABLE) && (info.rgstate[5]&STATE_SYSTEM_UNAVAILABLE);
+        disabled_physical_probe probe={.window=w,.disabled=index};HANDLE worker=CreateThread(NULL,0,disabled_physical_thread,&probe,0,NULL);
+        if(!worker){DestroyWindow(w);return 3;}
+        MSG message;while(GetMessageW(&message,NULL,0,0)>0){if(message.message==WM_APP+1)break;TranslateMessage(&message);DispatchMessageW(&message);}
+        WaitForSingleObject(worker,3000);CloseHandle(worker);
+        printf("WIN2K DISABLED PHYSICAL bits=%u button=%u states=%d input=%d safe=%d\n",(unsigned)(sizeof(void*)*8),index,states,probe.input,probe.safe);
+        if(IsWindow(w))DestroyWindow(w);
+        return states && probe.input && probe.safe?0:3;
     }
     if(argc==2 && !lstrcmpW(argv[1],L"--buttons")){
         HWND w=CreateWindowExW(0,wc.lpszClassName,L"Caption commands",WS_OVERLAPPEDWINDOW,

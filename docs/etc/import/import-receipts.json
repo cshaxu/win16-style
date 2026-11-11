@@ -6746,7 +6746,7 @@
       "path": "tests/ntw2ks-dll/frame_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "54f3d863a7a49eae02edbe14e87113b0f92509344e9b76d7e9dfa5afeb23b055",
+      "sha256": "5a0ca1c87fce12d1425d97352f807327d6c8b16f059ac0ead0fb5eb0411ac7f2",
       "disposition": "authored",
       "review": "T25 S3 native Win2000 frame and fixture; T25 S4 caption state and icon; T25 S4 original caption region and state",
       "notice": "Project-authored C; no external source or artwork copied"
