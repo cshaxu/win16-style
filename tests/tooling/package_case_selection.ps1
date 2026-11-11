@@ -30,6 +30,9 @@ foreach ($mutate in @('missing','count','overlap','coverage','full','skips')) {
     if (!$rejected) { throw "Invalid focused result accepted: $mutate" }
 }
 $skipCases=@(
+    @{name='ntw2ks-frame-aware-fixed-x86';code=77;output="WIN2K DPI AWARE SKIP error=5`n";expected=$true},
+    @{name='ntw2ks-frame-aware-resize-x64';code=1;output="WIN2K DPI AWARE SKIP error=5`n";expected=$false},
+    @{name='other';code=77;output="WIN2K DPI AWARE SKIP error=5`n";expected=$false},
     @{name='vb5-checklist-dpi144-32';code=77;output="VB_CHECKLIST_144_SKIP dpi=96`n";expected=$true},
     @{name='vb6-checklist-dpi144-64';code=77;output="VB_CHECKLIST_144_SKIP dpi=144`n";expected=$false},
     @{name='vb6-checklist-dpi144-64';code=1;output="VB_CHECKLIST_144_SKIP dpi=96`n";expected=$false},

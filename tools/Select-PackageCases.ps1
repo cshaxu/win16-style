@@ -39,6 +39,7 @@ function Assert-PackageCoverage {
 function Test-PackageCaseSkip {
     param([string]$Name,[int]$ExitCode,[string]$Output)
     if ($ExitCode -eq 2 -and $Output.Contains('PRIVATE_DESKTOP_CREATE_FAIL error=5')) { return $true }
+    if ($Name -cmatch '^ntw2ks-frame-aware-(fixed|resize)-x(86|64)$' -and $ExitCode -eq 77 -and $Output -cmatch '(?m)^WIN2K DPI AWARE SKIP error=[0-9]+\r?$') { return $true }
     if ($Name -cmatch '^ntw2ks-print-frame-x(86|64)$' -and $ExitCode -eq 77 -and $Output -cmatch '(?m)^WIN2K PRINT SKIP no_default_printer\r?$') { return $true }
     if ($Name -cmatch '^ntw2ks-printex-frame-x(86|64)$' -and $ExitCode -eq 77 -and $Output -cmatch '(?m)^WIN2K PRINTEX SKIP no_default_printer\r?$') { return $true }
     if ($Name -cmatch '^scroll-(frame|list|edit)-x(86|64)$' -and $ExitCode -eq 77 -and $Output -cmatch '(?m)^FRAME_VISUAL_SKIP axis=[01] reason=occluded\r?$') { return $true }

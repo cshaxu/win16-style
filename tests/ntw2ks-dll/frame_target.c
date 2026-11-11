@@ -301,6 +301,12 @@ static DWORD WINAPI physical_thread(void *parameter)
 
 int wmain(int argc,WCHAR **argv)
 {
+    if(argc>2 && !lstrcmpW(argv[1],L"--dpi-aware")){
+        if(!SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2)){
+            printf("WIN2K DPI AWARE SKIP error=%lu\n",GetLastError());return 77;
+        }
+        --argc;++argv;
+    }
     HINSTANCE instance=GetModuleHandleW(NULL);
     if(argc==2 && !lstrcmpW(argv[1],L"--dialog-frame")){
         struct { DLGTEMPLATE header; WORD menu,klass,title; } templ={0};
@@ -757,6 +763,7 @@ int wmain(int argc,WCHAR **argv)
                    has_system?system.rcBar.left-outer.left:-1,has_system?system.rcBar.top-outer.top:-1,
                    has_menu?bar.rcBar.left-outer.left:-1,has_menu?bar.rcBar.top-outer.top:-1,menu_spill);
             UINT dpi=GetDpiForWindow(w);if(!dpi)dpi=96;
+            printf("WIN2K FRAME DPI bits=%u dpi=%u\n",(unsigned)(sizeof(void*)*8),dpi);
             int expected_x=expected_physical_border(w,resizable?4:3,TRUE);
             int expected_y=expected_physical_border(w,resizable?4:3,FALSE);
             BOOL corners=TRUE,edge_pixels=TRUE;
