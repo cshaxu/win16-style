@@ -46,6 +46,8 @@ S7 P2 验证两种样式的 CLI 失败回滚及 Win16 回归，见[记录](../hi
 
 S7 P3 验证启动事务失败后目标退出，见[记录](../history/M0-T25-S7-P3-process-cleanup.md)。
 
+S7 P4 在真实 CLI 失败后检查目标进程快照，见[记录](../history/M0-T25-S7-P4-cli-process-cleanup.md)。
+
 S6 P1 验证双位宽连续尺寸变化的几何与有限采样，见[记录](../history/M0-T25-S6-P1-resize-cycle.md)。
 
 S6 P2 验证重复最大化和还原，见[记录](../history/M0-T25-S6-P2-zoom-cycle.md)。
