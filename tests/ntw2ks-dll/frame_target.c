@@ -50,7 +50,7 @@ static uint64_t button_signature(HWND w,unsigned index)
     ReleaseDC(w,dc);return value;
 }
 
-typedef struct { HWND window;BOOL input,pressed,cancelled,maximized,restored;unsigned gray,native;LRESULT hit;uintptr_t tracked;BOOL capture; } physical_probe;
+typedef struct { HWND window;BOOL foreground,input,pressed,cancelled,maximized,restored;unsigned gray,native;LRESULT hit;uintptr_t tracked;BOOL capture; } physical_probe;
 static BOOL physical_click(POINT point)
 {
     INPUT event={.type=INPUT_MOUSE};
@@ -67,9 +67,12 @@ static DWORD WINAPI physical_thread(void *parameter)
     RECT button=info.rgrect[3];POINT center={(button.left+button.right)/2,(button.top+button.bottom)/2};
     probe->hit=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(center.x,center.y));
     INPUT event={.type=INPUT_MOUSE};event.mi.dwFlags=MOUSEEVENTF_LEFTDOWN;
-    Sleep(200);BOOL positioned=SetCursorPos(center.x,center.y);Sleep(100);
+    for(unsigned i=0;i<20 && GetForegroundWindow()!=w;++i)Sleep(50);
+    probe->foreground=GetForegroundWindow()==w;
+    if(!probe->foreground){PostMessageW(w,WM_APP+1,0,0);return 0;}
+    BOOL positioned=probe->foreground && SetCursorPos(center.x,center.y);Sleep(100);
     probe->input=positioned && SendInput(1,&event,sizeof(event))==1;
-    Sleep(250);
+    for(unsigned i=0;i<10 && (uintptr_t)GetPropW(w,L"Win2kStyle.CaptionButton")!=7;++i)Sleep(50);
     GUITHREADINFO thread={.cbSize=sizeof(thread)};
     probe->capture=GetGUIThreadInfo(GetWindowThreadProcessId(w,NULL),&thread) && thread.hwndCapture==w;
     probe->tracked=(uintptr_t)GetPropW(w,L"Win2kStyle.CaptionButton");
@@ -106,23 +109,30 @@ int wmain(int argc,WCHAR **argv)
     BOOL no_icon=argc==2 && !lstrcmpW(argv[1],L"--no-icon");
     WNDCLASSW wc={.lpfnWndProc=procedure,.hInstance=instance,.hIcon=no_icon?NULL:LoadIconW(NULL,MAKEINTRESOURCEW(32515)),.lpszClassName=L"Win2kFrameFixture"};
     if(!RegisterClassW(&wc))return 1;
-    if(argc==2 && !lstrcmpW(argv[1],L"--geometry")){
-        HMENU menu=CreateMenu(),popup=CreatePopupMenu();
-        if(!menu || !popup)return 2;
-        AppendMenuW(popup,MF_STRING,101,L"Item");AppendMenuW(menu,MF_POPUP,(UINT_PTR)popup,L"File");
+    if(argc==2 && (!lstrcmpW(argv[1],L"--geometry") || !lstrcmpW(argv[1],L"--geometry-bare"))){
+        BOOL bare=!lstrcmpW(argv[1],L"--geometry-bare");
+        HMENU menu=NULL,popup=NULL;
+        if(!bare){
+            menu=CreateMenu();popup=CreatePopupMenu();if(!menu || !popup)return 2;
+            AppendMenuW(popup,MF_STRING,101,L"Item");AppendMenuW(menu,MF_POPUP,(UINT_PTR)popup,L"File");
+        }
         HWND w=CreateWindowExW(0,wc.lpszClassName,L"Geometry",WS_OVERLAPPEDWINDOW,
                                 80,80,420,260,NULL,menu,instance,NULL);
-        if(!w){DestroyMenu(menu);return 3;}
+        if(!w){if(menu)DestroyMenu(menu);return 3;}
         ShowWindow(w,SW_SHOW);UpdateWindow(w);
         RECT outer,client;GetWindowRect(w,&outer);GetClientRect(w,&client);
         POINT origin={0,0};ClientToScreen(w,&origin);
         TITLEBARINFOEX title={.cbSize=sizeof(title)};SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&title);
         MENUBARINFO bar={.cbSize=sizeof(bar)};BOOL have_menu=GetMenuBarInfo(w,OBJID_MENU,0,&bar);
-        printf("WIN2K GEOMETRY bits=%u title=%ld menu=%ld,%ld client=%ld menu_ok=%d\n",
+        LRESULT client_hit=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(origin.x+20,origin.y+1));
+        printf("WIN2K GEOMETRY bits=%u title=%ld menu=%ld,%ld client=%ld menu_ok=%d bare=%d client_hit=%lld\n",
                (unsigned)(sizeof(void*)*8),title.rcTitleBar.bottom-title.rcTitleBar.top,
-               bar.rcBar.top-outer.top,bar.rcBar.bottom-outer.top,origin.y-outer.top,have_menu);
-        BOOL good=have_menu && bar.rcBar.top>=title.rcTitleBar.bottom && bar.rcBar.bottom<=origin.y;
-        DestroyWindow(w);DestroyMenu(menu);return good?0:4;
+               bar.rcBar.top-outer.top,bar.rcBar.bottom-outer.top,origin.y-outer.top,have_menu,bare,(long long)client_hit);
+        UINT dpi=GetDpiForWindow(w);if(!dpi)dpi=96;
+        BOOL good=bare?(title.rcTitleBar.bottom-title.rcTitleBar.top==MulDiv(19,(int)dpi,96) &&
+                        title.rcTitleBar.bottom<=origin.y && client_hit==HTCLIENT):
+                       (have_menu && bar.rcBar.top>=title.rcTitleBar.bottom && bar.rcBar.bottom<=origin.y);
+        DestroyWindow(w);if(menu)DestroyMenu(menu);return good?0:4;
     }
     if(argc==2 && !lstrcmpW(argv[1],L"--buttons")){
         HWND w=CreateWindowExW(0,wc.lpszClassName,L"Caption commands",WS_OVERLAPPEDWINDOW,
@@ -152,9 +162,9 @@ int wmain(int argc,WCHAR **argv)
             TranslateMessage(&message);DispatchMessageW(&message);
         }
         WaitForSingleObject(worker,3000);CloseHandle(worker);DestroyWindow(w);
-        printf("WIN2K PHYSICAL bits=%u input=%d pressed=%d capture=%d tracked=%llu hit=%lld gray=%u native=%u cancelled=%d max=%d restore=%d\n",
-               (unsigned)(sizeof(void*)*8),probe.input,probe.pressed,probe.capture,(unsigned long long)probe.tracked,(long long)probe.hit,probe.gray,probe.native,probe.cancelled,probe.maximized,probe.restored);
-        return probe.input && probe.pressed && probe.gray>80 && probe.native<20 && probe.cancelled && probe.maximized && probe.restored?0:3;
+        printf("WIN2K PHYSICAL bits=%u foreground=%d input=%d pressed=%d capture=%d tracked=%llu hit=%lld gray=%u native=%u cancelled=%d max=%d restore=%d\n",
+               (unsigned)(sizeof(void*)*8),probe.foreground,probe.input,probe.pressed,probe.capture,(unsigned long long)probe.tracked,(long long)probe.hit,probe.gray,probe.native,probe.cancelled,probe.maximized,probe.restored);
+        return probe.foreground && probe.input && probe.pressed && probe.gray>80 && probe.native<20 && probe.cancelled && probe.maximized && probe.restored?0:3;
     }
     if(no_icon){
         HWND w=CreateWindowExW(0,wc.lpszClassName,L"No icon",WS_OVERLAPPEDWINDOW,
@@ -211,6 +221,7 @@ int wmain(int argc,WCHAR **argv)
             UINT dpi=GetDpiForWindow(tool);if(!dpi)dpi=96;
             int expected=MulDiv(15,(int)dpi,96);
             tool_ok=tool_ok && text_bottom>=text_top && text_bottom-text_top+1<=MulDiv(8,(int)dpi,96) &&
+                info.rcTitleBar.bottom-info.rcTitleBar.top==MulDiv(16,(int)dpi,96) &&
                 info.rgrect[5].right-info.rgrect[5].left==expected && info.rgrect[5].bottom-info.rgrect[5].top==expected;
             DestroyWindow(tool);
         }

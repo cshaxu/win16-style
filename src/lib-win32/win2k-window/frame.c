@@ -10,6 +10,12 @@ static const WCHAR frame_property[]=L"Win2kStyle.Frame";
 static const WCHAR hover_property[]=L"Win2kStyle.CaptionHover";
 static const WCHAR button_property[]=L"Win2kStyle.CaptionButton";
 
+static int caption_height(HWND window)
+{
+    UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
+    return MulDiv((GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)?16:19,(int)dpi,96);
+}
+
 static void classic_buttons(HWND window,TITLEBARINFOEX *info)
 {
     LONG_PTR ex=GetWindowLongPtrW(window,GWL_EXSTYLE);
@@ -219,13 +225,31 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
     SetLastError(incoming);
     LRESULT result=DefSubclassProc(window,message,wp,lp);
     DWORD outcome=GetLastError();
+    if(message==WM_NCCALCSIZE && lp && !IsIconic(window) && !GetMenu(window) &&
+       (GetWindowLongPtrW(window,GWL_STYLE)&WS_CAPTION)==WS_CAPTION &&
+       !(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_LAYOUTRTL)){
+        UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
+        int metric=(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)?SM_CYSMCAPTION:SM_CYCAPTION;
+        int difference=GetSystemMetricsForDpi(metric,dpi)-caption_height(window);
+        RECT *client=wp?&((NCCALCSIZE_PARAMS *)lp)->rgrc[0]:(RECT *)lp;
+        if(difference>0){client->top-=difference;if(wp)result&=~WVR_VALIDRECTS;}
+    }
     if(message==WM_GETTITLEBARINFOEX && lp){
         uintptr_t tracked=(uintptr_t)GetPropW(window,button_property);
         TITLEBARINFOEX *info=(TITLEBARINFOEX *)lp;
         if(info->cbSize>=sizeof(*info)){
+            int height=caption_height(window);
+            if(!GetMenu(window) && !IsIconic(window) && !(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_LAYOUTRTL) &&
+               height>0 && info->rcTitleBar.bottom-info->rcTitleBar.top>height)
+                info->rcTitleBar.bottom=info->rcTitleBar.top+height;
             classic_buttons(window,info);
             if(tracked/2>=2 && tracked/2<=CCHILDREN_TITLEBAR && (tracked&1))info->rgstate[tracked/2]|=STATE_SYSTEM_PRESSED;
         }
+    }
+    if(message==WM_NCHITTEST && !IsIconic(window) && !GetMenu(window) &&
+       !(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_LAYOUTRTL)){
+        RECT client;POINT point={GET_X_LPARAM(lp),GET_Y_LPARAM(lp)};
+        if(GetClientRect(window,&client) && ScreenToClient(window,&point) && PtInRect(&client,point))result=HTCLIENT;
     }
     if(message==WM_NCHITTEST && !IsIconic(window) &&
        (result==HTCAPTION || result==HTMINBUTTON || result==HTMAXBUTTON || result==HTHELP || result==HTCLOSE)){
