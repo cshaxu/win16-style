@@ -2,6 +2,8 @@
 
 # Deferred Debt
 
+- [ ] TODO(High): Win2000 外框真实拖动/缩放的连续画面、瞬时闪烁、跨屏 DPI 和跨进程前台焦点未完成；Owner：T25 真实程序回归与最终审计。Evidence：[S6 P4](../history/M0-T25-S6-P4-natural-resize.md)仅覆盖程序位置变化和有限像素点，[S6 P3](../history/M0-T25-S6-P3-activation-foreground.md)中后续测试窗口未获前台而跳过。Admission：不创建/切换隔离桌面、不妨碍用户操作；以自有窗口与有限清理验证真实输入和动态画面，不能将消息采样或跳过算通过。
+
 - [ ] TODO(High): Win2000 系统菜单真实 Alt+Space/Escape 未验证；Owner：T25 后续交互与最终审计。Evidence：[S5 基线](../history/M0-T25-S5-P1-system-menu-baseline.md)中原生对照通过、套样式对照超时，根因未定；[P3](../history/M0-T25-S5-P3-escape-message-control.md)和[P4](../history/M0-T25-S5-P4-escape-input-control.md)的消息和真实按键替代探针在原生对照上不可靠。Admission：仅在不创建/切换隔离桌面且不妨碍用户操作的条件下，使用有界自有实例与有效原生对照验证；不得将程序消息或定时器退出记为真实按键通过。
 
 - [ ] TODO(High): T25 当前完整包测试包含用户禁止的隔离桌面用例，尚未完成；Owner：T25 最终审计。Evidence：[S5 P9](../history/M0-T25-S5-P9-caption-command-order.md)仅有发布版聚焦检查；Admission：使用符合当前桌面约束的实际包路径验证可运行项，不能运行的明确列为未覆盖，不以聚焦结果代替全矩阵。

@@ -2,28 +2,28 @@
 
 ## Current Work
 
-M0 T25 S5 按已验证的有限技术范围收口，详见[收口记录](../history/M0-T25-S5-P17-closure.md)；真实 Alt+Space/Escape、原有首次超时及完整包矩阵仍未证明，转交 T25 后续验证与最终审计，不记通过。T25 保持开放，现进入 S6 窗口尺寸与交互。
+M0 T25 S6 按已验证的有限技术范围收口，详见[收口记录](../history/M0-T25-S6-P5-closure.md)；真实拖动/缩放、瞬时闪烁、跨屏 DPI 和部分前台焦点仍未证明，转交真实程序回归及最终审计，不记通过。T25 保持开放，现进入 S7 多进程与真实应用回归。
 
-## M0 T25 S6 Packet
+## M0 T25 S7 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | New；T25 内下一 S。 |
-| Admission And Approval | 用户要求继续完成普通 Win32 的 Windows 2000 外框并授权自行规划 S；S6 属于原定序列。 |
-| Objective | 检查和完善移动、缩放、最大化、还原、焦点与 DPI 变化期间的外框、标题及菜单持续重绘。 |
+| Admission And Approval | 用户要求继续完成普通 Win32 的 Windows 2000 外框并授权自行规划 S；S7 属于原定序列。 |
+| Objective | 用实际普通 Win32 程序和自有双位宽目标检查启动、传播、标题外框、菜单与窗口行为，核查 Win16 路径及失败清理。 |
 | Non-goals | 不声称 UWP、WinUI、应用自绘客户区、控件内部或 Win2000 全局模式已支持。 |
-| Reference Baseline | S5 P9 发布包及 P17 有限技术收口；真实键盘、完整包和视觉验收未完成。 |
-| Candidate Proposal | docs/proposals/windows-2000-classic.md 用户收窄后的 S6。 |
-| Files And ABI Surface | win2k-window 窗口布局、绘制和交互，以及对应测试、包和文档；不预设公开 ABI 变化。 |
+| Reference Baseline | S5 P9 八文件发布包；S6 P5 有限技术收口，真实输入、完整包矩阵和视觉验收仍未完成。 |
+| Candidate Proposal | docs/proposals/windows-2000-classic.md 用户收窄后的 S7。 |
+| Files And ABI Surface | run16s、ntw2ks、共享进程能力、win2k-window 及对应测试；必要变更保持 ABI 和既有样式行为。 |
 | Applicable Rules | M0；纯 C17、MinGW GCC、Ninja、ccache；八文件同批交付。 |
-| Verification | 双位宽固定/可缩放/工具窗口；移动、调整尺寸、最大化还原、焦点/DPI 消息及实际应用；回归 Win16 和普通启动。 |
-| Expected Markers | 分别观察命中、几何、实际绘制、客户区语义、持续变化与清理；可用时对照原版。 |
-| Asset Needs | 保留图形资源与来源声明；不复制未获许可的原系统资源。 |
-| Reporting Requirements | 区分程序消息、真实输入、实际程序、各 DPI、用户视觉验收与未覆盖范围。 |
+| Verification | 双位宽启动/传播及清理、实际 32/64 位程序外框、对话框和菜单、默认 Win16 回归；明确真实输入及 DPI 范围。 |
+| Expected Markers | 分开报告启动、加载、附着、绘制、交互、退出及资源清理；可用时对照原版。 |
+| Asset Needs | 保留图形资源与来源声明；实际应用只读使用，不复制或修改样本。 |
+| Reporting Requirements | 区分消息、真实输入、实际程序、前台焦点、各 DPI、用户视觉验收与未覆盖范围。 |
 | Stop Conditions | 不创建或切换隔离桌面；不改变系统安全设置、目标文件或兄弟仓库。 |
-| Exit Criteria | 已准入范围实现及实际验证，按规范构建、先发布后测试、提交推送与远端复核；受限项不计通过并交后续审计。 |
+| Exit Criteria | 已准入范围实现及实际验证，按规范构建、必要发布、测试、提交推送与远端复核；受限项不计通过并交最终审计。 |
 | Original Owner Request | 实现普通 Win32 程序的 Windows 2000 经典窗口样式。 |
-| Similar-Issue Sweep | 对照普通/工具窗口、菜单、最大化/还原、真实应用及 Win16 路径，关注重复绘制和客户区残影。 |
+| Similar-Issue Sweep | 对照真实程序与自有模型，检查位宽、进程传播、启动顺序、窗口交互和正常退出。 |
 
 ## Identifier State
 
@@ -34,9 +34,9 @@ M0 T25 S5 按已验证的有限技术范围收口，详见[收口记录](../hist
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
-- Last allocated T25 S: 6
+- Last allocated T25 S: 7
 - Last verified remote delivery: M0 T25 S4 P73，`826503cf6fb16f2da7fad130a829118d65a6a4c3`。
-- Open task: M0 T25 S6；Win2000 窗口尺寸与交互。
+- Open task: M0 T25 S7；Win2000 多进程与真实应用回归。
 
 ## Technical Baseline
 
@@ -47,6 +47,8 @@ S6 P2 验证重复最大化和还原，见[记录](../history/M0-T25-S6-P2-zoom-
 S6 P3 区分线程激活与前台窗口，见[记录](../history/M0-T25-S6-P3-activation-foreground.md)。
 
 S6 P4 验证尺寸变化后的自然消息重绘，见[记录](../history/M0-T25-S6-P4-natural-resize.md)。
+
+S6 P5 按有限技术范围收口并准入 S7，见[记录](../history/M0-T25-S6-P5-closure.md)。
 
 已发布基线为五组件、八产品文件；纯 C17、MinGW GCC、Ninja 和 ccache。T25 S5 P9 八文件已发布于项目 assets 根目录与 O:/winnt，摘要和验证范围见[交付记录](../history/M0-T25-S5-P9-caption-command-order.md)。历史状态见[T24 工作快照](../history/M0-T24-S1-working-log.md)和[原状态快照](../history/M0-T24-current-state-archive.md)。
 
