@@ -192,7 +192,7 @@ int wmain(int argc,WCHAR **argv)
     if(argc==2 && !lstrcmpW(argv[1],L"--dialog-frame")){
         struct { DLGTEMPLATE header; WORD menu,klass,title; } templ={0};
         templ.header.style=WS_POPUP|WS_CAPTION|WS_SYSMENU;templ.header.cx=160;templ.header.cy=80;
-        BOOL modeless[2]={0},modal[2]={0},no_proc[2]={0};
+        BOOL modeless[2]={0},modal[2]={0},no_proc[2]={0},named[2]={0},named_modal[2]={0};
         for(int ansi=0;ansi<2;++ansi){
             HWND dialog=ansi?CreateDialogIndirectParamA(instance,(LPCDLGTEMPLATEA)&templ,NULL,frame_dialog_proc,0):
                 CreateDialogIndirectParamW(instance,(LPCDLGTEMPLATEW)&templ,NULL,frame_dialog_proc,0);
@@ -200,13 +200,20 @@ int wmain(int argc,WCHAR **argv)
             dialog=ansi?CreateDialogIndirectParamA(instance,(LPCDLGTEMPLATEA)&templ,NULL,NULL,0):
                 CreateDialogIndirectParamW(instance,(LPCDLGTEMPLATEW)&templ,NULL,NULL,0);
             if(dialog){no_proc[ansi]=GetPropW(dialog,L"Win2kStyle.Frame")!=NULL;DestroyWindow(dialog);}
+            dialog=ansi?CreateDialogParamA(instance,MAKEINTRESOURCEA(101),NULL,NULL,0):
+                CreateDialogParamW(instance,MAKEINTRESOURCEW(101),NULL,NULL,0);
+            if(dialog){named[ansi]=GetPropW(dialog,L"Win2kStyle.Frame")!=NULL;DestroyWindow(dialog);}
+            dialog_frame_seen=FALSE;
+            INT_PTR named_result=ansi?DialogBoxParamA(instance,MAKEINTRESOURCEA(101),NULL,frame_dialog_proc,0):
+                DialogBoxParamW(instance,MAKEINTRESOURCEW(101),NULL,frame_dialog_proc,0);
+            named_modal[ansi]=named_result==7 && dialog_frame_seen;
             dialog_frame_seen=FALSE;
             INT_PTR result=ansi?DialogBoxIndirectParamA(instance,(LPCDLGTEMPLATEA)&templ,NULL,frame_dialog_proc,0):
                 DialogBoxIndirectParamW(instance,(LPCDLGTEMPLATEW)&templ,NULL,frame_dialog_proc,0);
             modal[ansi]=result==7 && dialog_frame_seen;
         }
-        printf("WIN2K DIALOG FRAME bits=%u modeless=%d,%d modal=%d,%d no_proc=%d,%d\n",(unsigned)(sizeof(void*)*8),modeless[0],modeless[1],modal[0],modal[1],no_proc[0],no_proc[1]);
-        return modeless[0] && modeless[1] && modal[0] && modal[1] && no_proc[0] && no_proc[1]?0:3;
+        printf("WIN2K DIALOG FRAME bits=%u modeless=%d,%d modal=%d,%d no_proc=%d,%d named=%d,%d named_modal=%d,%d\n",(unsigned)(sizeof(void*)*8),modeless[0],modeless[1],modal[0],modal[1],no_proc[0],no_proc[1],named[0],named[1],named_modal[0],named_modal[1]);
+        return modeless[0] && modeless[1] && modal[0] && modal[1] && no_proc[0] && no_proc[1] && named[0] && named[1] && named_modal[0] && named_modal[1]?0:3;
     }
     BOOL no_icon=argc==2 && !lstrcmpW(argv[1],L"--no-icon");
     WNDCLASSW wc={.lpfnWndProc=procedure,.hInstance=instance,.hIcon=no_icon?NULL:LoadIconW(NULL,MAKEINTRESOURCEW(32515)),
