@@ -194,7 +194,11 @@ static COLORREF caption_pixel(HWND w)
     SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
     if(!GetWindowRect(w,&outer))return CLR_INVALID;
     HDC dc=GetWindowDC(w);if(!dc)return CLR_INVALID;
-    COLORREF pixel=GetPixel(dc,info.rcTitleBar.left-outer.left+40,info.rcTitleBar.top-outer.top+2);
+    int x=info.rcTitleBar.left-outer.left+40,y=info.rcTitleBar.top-outer.top+2;
+    RECT clip={0};int kind=GetClipBox(dc,&clip);
+    if(kind!=ERROR && kind!=NULLREGION){x=max(x,clip.left);y=max(y,clip.top);}
+    COLORREF pixel=CLR_INVALID;
+    if(x<info.rcTitleBar.right-outer.left && y<info.rcTitleBar.bottom-outer.top && PtVisible(dc,x,y))pixel=GetPixel(dc,x,y);
     ReleaseDC(w,dc);return pixel;
 }
 static unsigned caption_icon_pixels(HWND w)
@@ -704,6 +708,7 @@ int wmain(int argc,WCHAR **argv)
         do{EnumWindows(find_app_window,0);if(app_window)break;Sleep(50);}while(GetTickCount64()<deadline);
         BOOL ok=FALSE;
         if(app_window){
+            DPI_AWARENESS_CONTEXT previous=SetThreadDpiAwarenessContext(GetWindowDpiAwarenessContext(app_window));
             TITLEBARINFOEX title={.cbSize=sizeof(title)};RECT outer,item;
             SendMessageW(app_window,WM_GETTITLEBARINFOEX,0,(LPARAM)&title);GetWindowRect(app_window,&outer);
             printf("WIN2K REAL BUTTONS title=%ld,%ld,%ld,%ld min=%ld,%ld,%ld,%ld max=%ld,%ld,%ld,%ld close=%ld,%ld,%ld,%ld\n",
@@ -725,8 +730,8 @@ int wmain(int argc,WCHAR **argv)
                 opened=sent && InterlockedCompareExchange(&app_popup_seen,0,0)!=0;
             }
             ok=measured && title.rcTitleBar.bottom-title.rcTitleBar.top==MulDiv(19,(int)dpi,96) && hit==HTBORDER && opened;
-            printf("WIN2K REAL APP bits=%u title=%ld menu=%d hit=%lld opened=%d\n",(unsigned)(sizeof(void*)*8),
-                   title.rcTitleBar.bottom-title.rcTitleBar.top,measured,(long long)hit,opened);
+            printf("WIN2K REAL APP bits=%u title=%ld menu=%d hit=%lld opened=%d dpi=%u expected=%ld\n",(unsigned)(sizeof(void*)*8),
+                   title.rcTitleBar.bottom-title.rcTitleBar.top,measured,(long long)hit,opened,dpi,(long)MulDiv(19,(int)dpi,96));
             DWORD_PTR activation_reply=0;
             BOOL active_sent=SendMessageTimeoutW(app_window,WM_NCACTIVATE,TRUE,0,SMTO_ABORTIFHUNG,2000,&activation_reply)!=0;
             COLORREF active_pixel=active_sent?caption_pixel(app_window):CLR_INVALID;
@@ -765,6 +770,7 @@ int wmain(int argc,WCHAR **argv)
             }
             ok=ok && moved && drawn && (!sized || resized);
             printf("WIN2K REAL MOVE moved=%d size_supported=%d resized=%d caption=%d\n",moved,sized,resized,drawn);
+            if(previous)SetThreadDpiAwarenessContext(previous);
             PostMessageW(app_window,WM_CLOSE,0,0);
         }
         if(WaitForSingleObject(process.hProcess,3000)!=WAIT_OBJECT_0){TerminateProcess(process.hProcess,1);ok=FALSE;}
