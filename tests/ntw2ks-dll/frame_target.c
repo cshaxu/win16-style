@@ -11,6 +11,7 @@
 static unsigned menu_scenario,menu_entries,menu_exits,menu_commands,menu_idle,menu_popup_inits;
 static volatile LONG menu_frame_paints;
 static BOOL menu_timeout;
+static unsigned help_commands;
 static POINT menu_hover_point;
 static DWORD app_pid;
 static HWND app_window;
@@ -39,6 +40,7 @@ static DWORD WINAPI cancel_app_menu(void *ignored)
 }
 static LRESULT CALLBACK procedure(HWND w,UINT message,WPARAM wp,LPARAM lp)
 {
+    if(message==WM_SYSCOMMAND && (wp&0xfff0)==SC_CONTEXTHELP){++help_commands;return 0;}
     if(menu_scenario){
         if(message==WM_ENTERMENULOOP)++menu_entries;
         if(message==WM_EXITMENULOOP)++menu_exits;
@@ -761,6 +763,18 @@ int wmain(int argc,WCHAR **argv)
                        (have_menu && title.rcTitleBar.bottom-title.rcTitleBar.top==MulDiv(19,(int)dpi,96) &&
                         bar.rcBar.top>=title.rcTitleBar.bottom && bar.rcBar.bottom<=origin.y && client_hit==HTCLIENT && blank_hit==HTMENU && menu_pixel==RGB(192,192,192));
         DestroyWindow(w);if(menu)DestroyMenu(menu);return good?0:4;
+    }
+    if(argc==2 && !lstrcmpW(argv[1],L"--help-button")){
+        HWND w=CreateWindowExW(WS_EX_CONTEXTHELP,wc.lpszClassName,L"Context help",
+                                WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU,80,80,420,260,NULL,NULL,instance,NULL);
+        if(!w)return 2;
+        ShowWindow(w,SW_SHOW);UpdateWindow(w);
+        TITLEBARINFOEX info={.cbSize=sizeof(info)};SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
+        RECT help=info.rgrect[4];BOOL visible=!(info.rgstate[4]&STATE_SYSTEM_INVISIBLE) && help.right>help.left && help.bottom>help.top;
+        BOOL hit=visible && SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM((help.left+help.right)/2,(help.top+help.bottom)/2))==HTHELP;
+        BOOL clicked=hit && click_caption(w,4,HTHELP) && help_commands==1;
+        printf("WIN2K HELP bits=%u visible=%d hit=%d clicked=%d commands=%u\n",(unsigned)(sizeof(void*)*8),visible,hit,clicked,help_commands);
+        DestroyWindow(w);return visible && hit && clicked?0:3;
     }
     if(argc==2 && !lstrcmpW(argv[1],L"--buttons")){
         HWND w=CreateWindowExW(0,wc.lpszClassName,L"Caption commands",WS_OVERLAPPEDWINDOW,
