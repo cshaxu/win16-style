@@ -483,6 +483,19 @@ int wmain(int argc,WCHAR **argv)
                 ok=ok && maximized && restored && caption && classic_caption_pixel(max_pixel) && classic_caption_pixel(restore_pixel);
             }
             printf("WIN2K REAL GEOMETRY supported=%d maximized=%d restored=%d caption=%d pixels=%06lx,%06lx\n",supports_max,maximized,restored,caption,(unsigned long)max_pixel,(unsigned long)restore_pixel);
+            RECT before,after;BOOL sized=(GetWindowLongPtrW(app_window,GWL_STYLE)&WS_THICKFRAME)!=0;
+            BOOL read=GetWindowRect(app_window,&before),moved=FALSE,resized=FALSE,drawn=FALSE;
+            if(read){int width=before.right-before.left,height=before.bottom-before.top;
+                UINT flags=SWP_NOZORDER|SWP_NOACTIVATE|(sized?0:SWP_NOSIZE);
+                BOOL set=SetWindowPos(app_window,NULL,before.left+22,before.top+16,width+24,height+18,flags);
+                if(set && GetWindowRect(app_window,&after)){
+                    moved=after.left!=before.left || after.top!=before.top;
+                    resized=(after.right-after.left!=width || after.bottom-after.top!=height);
+                    drawn=classic_caption_pixel(caption_pixel(app_window));
+                }
+            }
+            ok=ok && moved && drawn && (!sized || resized);
+            printf("WIN2K REAL MOVE moved=%d size_supported=%d resized=%d caption=%d\n",moved,sized,resized,drawn);
             PostMessageW(app_window,WM_CLOSE,0,0);
         }
         if(WaitForSingleObject(process.hProcess,3000)!=WAIT_OBJECT_0){TerminateProcess(process.hProcess,1);ok=FALSE;}
