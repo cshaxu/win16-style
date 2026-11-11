@@ -72,7 +72,7 @@ BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinate
     for(int i=0;valid && i<count;++i){
         RECT r=rows[i].rect;MapWindowPoints(NULL,popup,(POINT *)&r,2);OffsetRect(&r,origin.x,origin.y);
         BOOL selected=(rows[i].state&MFS_HILITE)!=0;
-        HBRUSH background=CreateSolidBrush(selected?RGB(0,0,128):RGB(192,192,192));
+        HBRUSH background=CreateSolidBrush(selected?RGB(0,0,128):RGB(212,208,200));
         if(!background){valid=FALSE;break;}
         FillRect(dc,&r,background);DeleteObject(background);
         if(rows[i].type&MFT_SEPARATOR){

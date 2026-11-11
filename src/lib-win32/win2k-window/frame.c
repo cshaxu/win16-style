@@ -137,7 +137,7 @@ static void paint_menu(HWND window,HDC dc,const RECT *outer)
         POINT right={client_rect.right,0};
         if(ClientToScreen(window,&right))area.right=max(area.right,right.x-outer->left);
     }
-    HBRUSH face=CreateSolidBrush(RGB(192,192,192));if(!face)return;
+    HBRUSH face=CreateSolidBrush(RGB(212,208,200));if(!face)return;
     FillRect(dc,&area,face);DeleteObject(face);
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
     HFONT font=CreateFontW(-MulDiv(8,(int)dpi,72),0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,
@@ -181,10 +181,11 @@ static void classic_buttons(HWND window,TITLEBARINFOEX *info)
     LONG_PTR ex=GetWindowLongPtrW(window,GWL_EXSTYLE);
     if(ex&WS_EX_LAYOUTRTL)return;
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
-    int size=MulDiv((ex&WS_EX_TOOLWINDOW)?15:18,(int)dpi,96);
+    int width=MulDiv((ex&WS_EX_TOOLWINDOW)?15:16,(int)dpi,96);
+    int height=MulDiv((ex&WS_EX_TOOLWINDOW)?15:14,(int)dpi,96);
     int gap=MulDiv(2,(int)dpi,96);
     RECT title=info->rcTitleBar;
-    if(size<=0 || title.bottom-title.top<size)return;
+    if(width<=0 || height<=0 || title.bottom-title.top<height)return;
     RECT result[CCHILDREN_TITLEBAR+1];
     for(unsigned i=0;i<ARRAYSIZE(result);++i)result[i]=info->rgrect[i];
     int right=title.right;BOOL close=FALSE;
@@ -193,9 +194,9 @@ static void classic_buttons(HWND window,TITLEBARINFOEX *info)
         unsigned i=order[n];
         if((info->rgstate[i]&STATE_SYSTEM_INVISIBLE) || info->rgrect[i].right<=info->rgrect[i].left)continue;
         if(close){right-=gap;close=FALSE;}
-        if(right-size<title.left)return;
-        result[i]=(RECT){right-size,title.top+(title.bottom-title.top-size)/2,right,title.top+(title.bottom-title.top-size)/2+size};
-        right-=size;if(i==5)close=TRUE;
+        if(right-width<title.left)return;
+        result[i]=(RECT){right-width,title.top+(title.bottom-title.top-height+1)/2,right,title.top+(title.bottom-title.top-height+1)/2+height};
+        right-=width;if(i==5)close=TRUE;
     }
     for(unsigned i=2;i<ARRAYSIZE(result);++i)info->rgrect[i]=result[i];
 }
@@ -218,7 +219,7 @@ static void paint_button(HDC target,const RECT *rect,UINT state)
         RECT local={0,0,width,height};
         if(old && old!=HGDI_ERROR && DrawFrameControl(memory,&local,DFC_CAPTION,state)){
             static const int indices[]={COLOR_3DFACE,COLOR_3DSHADOW,COLOR_3DDKSHADOW,COLOR_3DLIGHT};
-            static const COLORREF values[]={RGB(192,192,192),RGB(128,128,128),RGB(0,0,0),RGB(192,192,192)};
+            static const COLORREF values[]={RGB(212,208,200),RGB(128,128,128),RGB(0,0,0),RGB(212,208,200)};
             DWORD from[ARRAYSIZE(indices)],to[ARRAYSIZE(indices)];
             for(unsigned i=0;i<ARRAYSIZE(indices);++i){
                 COLORREF c=GetSysColor(indices[i]),v=values[i];
@@ -238,9 +239,9 @@ static void paint_button(HDC target,const RECT *rect,UINT state)
 
 static void paint_border(HDC dc,int width,int height,int thickness)
 {
-    static const COLORREF colors[]={RGB(255,255,255),RGB(0,0,0),RGB(192,192,192),RGB(128,128,128)};
+    static const COLORREF colors[]={RGB(255,255,255),RGB(0,0,0),RGB(212,208,200),RGB(128,128,128)};
     if(thickness>0 && width>2*thickness && height>2*thickness){
-        HBRUSH face=CreateSolidBrush(RGB(192,192,192));
+        HBRUSH face=CreateSolidBrush(RGB(212,208,200));
         if(face){
             RECT top={0,0,width,thickness},bottom={0,height-thickness,width,height};
             RECT left={0,thickness,thickness,height-thickness},right={width-thickness,thickness,width,height-thickness};
@@ -305,7 +306,7 @@ static void paint(HWND window)
     HDC dc=GetWindowDC(window);if(!dc)return;
     BOOL active=GetPropW(window,frame_property)==(HANDLE)(uintptr_t)2;
     win2k_caption_colors colors=active?
-        (win2k_caption_colors){RGB(0,0,128),RGB(166,192,232),RGB(255,255,255),TRUE}:
+        (win2k_caption_colors){RGB(0,0,128),RGB(166,202,240),RGB(255,255,255),TRUE}:
         (win2k_caption_colors){RGB(128,128,128),RGB(181,181,181),RGB(192,192,192),TRUE};
     int saved=SaveDC(dc);
     if(saved){
@@ -326,9 +327,10 @@ static void paint(HWND window)
         HFONT owned_font=CreateFontW(-font_height,0,0,0,FW_BOLD,FALSE,FALSE,FALSE,
             DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Tahoma");
         HFONT font=owned_font?owned_font:(HFONT)GetStockObject(DEFAULT_GUI_FONT);
-        win2k_caption_colors solid=colors;solid.gradient=FALSE;
-        win2k_caption_paint(dc,&caption,L"",font,&solid);
         if(gradient.right>gradient.left)win2k_caption_paint(dc,&gradient,L"",font,&colors);
+        RECT tail=caption;tail.left=gradient.right;
+        win2k_caption_colors solid=colors;solid.left=colors.right;solid.gradient=FALSE;
+        if(tail.right>tail.left)win2k_caption_paint(dc,&tail,L"",font,&solid);
         RECT text=gradient;text.left=has_icon?max(text.left,icon.right)+2:text.left+2;
         if(text.right>text.left){
             SetBkMode(dc,TRANSPARENT);SetTextColor(dc,colors.text);SelectObject(dc,font);

@@ -258,7 +258,7 @@ static DWORD WINAPI physical_thread(void *parameter)
     if(dc){OffsetRect(&button,-outer.left,-outer.top);
         for(int y=button.top;y<button.bottom;++y)for(int x=button.left;x<button.right;++x){
             COLORREF pixel=GetPixel(dc,x,y);
-            if(pixel==RGB(192,192,192))++probe->gray;
+            if(pixel==RGB(212,208,200))++probe->gray;
             if(pixel==GetSysColor(COLOR_3DFACE))++probe->native;
         }
         ReleaseDC(w,dc);}
@@ -720,7 +720,7 @@ int wmain(int argc,WCHAR **argv)
                 HDC dc=GetWindowDC(w);
                 if(dc){
                     for(int y=(int)(title.rcTitleBar.bottom-outer.top);y<(int)(title.rcTitleBar.bottom-outer.top)+3;++y)
-                        for(int x=left;x<left+20;++x)if(GetPixel(dc,x,y)!=RGB(192,192,192))++menu_spill;
+                        for(int x=left;x<left+20;++x)if(GetPixel(dc,x,y)!=RGB(212,208,200))++menu_spill;
                     ReleaseDC(w,dc);
                 }else menu_spill=UINT_MAX;
             }
@@ -852,7 +852,7 @@ int wmain(int argc,WCHAR **argv)
         BOOL good=bare?(title.rcTitleBar.bottom-title.rcTitleBar.top==MulDiv(19,(int)dpi,96) &&
                         title.rcTitleBar.bottom<=origin.y && client_hit==HTCLIENT):
                        (have_menu && title.rcTitleBar.bottom-title.rcTitleBar.top==MulDiv(19,(int)dpi,96) &&
-                        bar.rcBar.top>=title.rcTitleBar.bottom && bar.rcBar.bottom<=origin.y && client_hit==HTCLIENT && blank_hit==HTMENU && menu_pixel==RGB(192,192,192));
+                        bar.rcBar.top>=title.rcTitleBar.bottom && bar.rcBar.bottom<=origin.y && client_hit==HTCLIENT && blank_hit==HTMENU && menu_pixel==RGB(212,208,200));
         DestroyWindow(w);if(menu)DestroyMenu(menu);return good?0:4;
     }
     if(argc==2 && !lstrcmpW(argv[1],L"--hit-transparent")){
@@ -1048,17 +1048,19 @@ int wmain(int argc,WCHAR **argv)
     SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
     RECT window;GetWindowRect(w,&window);
     UINT dpi=GetDpiForWindow(w);if(!dpi)dpi=96;
-    int expected_button=MulDiv(18,(int)dpi,96);
+    int expected_width=MulDiv(16,(int)dpi,96),expected_height=MulDiv(14,(int)dpi,96);
     BOOL button_size=TRUE,button_hits=TRUE;
     for(unsigned i=2;i<=5;++i){
         if(info.rgstate[i]&STATE_SYSTEM_INVISIBLE)continue;
         RECT r=info.rgrect[i];
-        if(r.right-r.left!=expected_button || r.bottom-r.top!=expected_button)button_size=FALSE;
+        int expected_top=info.rcTitleBar.top+(info.rcTitleBar.bottom-info.rcTitleBar.top-expected_height+1)/2;
+        if(r.right-r.left!=expected_width || r.bottom-r.top!=expected_height || r.top!=expected_top)button_size=FALSE;
         static const LRESULT hits[]={0,0,HTMINBUTTON,HTMAXBUTTON,HTHELP,HTCLOSE};
         LRESULT observed=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM((r.left+r.right)/2,(r.top+r.bottom)/2));
         if(observed!=hits[i])button_hits=FALSE;
     }
     if(!(info.rgstate[5]&STATE_SYSTEM_INVISIBLE) && !(info.rgstate[3]&STATE_SYSTEM_INVISIBLE)){
+        if(info.rgrect[5].right!=info.rcTitleBar.right)button_size=FALSE;
         POINT gap={info.rgrect[5].left-1,(info.rgrect[5].top+info.rgrect[5].bottom)/2};
         if(SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(gap.x,gap.y))!=HTCAPTION)button_hits=FALSE;
     }
@@ -1082,7 +1084,7 @@ int wmain(int argc,WCHAR **argv)
         RECT button=info.rgrect[5];OffsetRect(&button,-window.left,-window.top);
         button_top=GetPixel(dc,button.left+3,button.top);
         for(int by=button.top;by<button.bottom;++by)for(int bx=button.left;bx<button.right;++bx)
-            if(GetPixel(dc,bx,by)==RGB(192,192,192))++classic_button_pixels;
+            if(GetPixel(dc,bx,by)==RGB(212,208,200))++classic_button_pixels;
         int bw=button.right-button.left,bh=button.bottom-button.top;
         HMENU system=GetSystemMenu(w,FALSE);
         if(system && bw>0 && bw<=64 && bh>0 && bh<=64){
@@ -1144,7 +1146,7 @@ int wmain(int argc,WCHAR **argv)
     SendMessageW(w,WM_SYSCOMMAND,SC_CLOSE,0);
     BOOL closed=!IsWindow(w);if(!closed)DestroyWindow(w);
     return attached && button_size && button_hits && pixel!=CLR_INVALID && pixel2!=CLR_INVALID && pixel!=pixel2 && inactive!=CLR_INVALID &&
-           GetBValue(pixel)>GetRValue(pixel) && GetRValue(endpoint)>=150 && GetGValue(endpoint)>=180 && GetBValue(endpoint)>=220 && (frame_width<=4 || frame_face==RGB(192,192,192)) && button_top==RGB(255,255,255) && classic_button_pixels>20 && close_disabled && close_changed>0 &&
+           GetBValue(pixel)>GetRValue(pixel) && GetRValue(endpoint)>=150 && GetGValue(endpoint)>=180 && GetBValue(endpoint)>=220 && (frame_width<=4 || frame_face==RGB(212,208,200)) && button_top==RGB(255,255,255) && classic_button_pixels>20 && close_disabled && close_changed>0 &&
            GetRValue(inactive)==GetGValue(inactive) && GetGValue(inactive)==GetBValue(inactive) && GetRValue(inactive_end)>=175 && GetRValue(inactive_end)<=181 && icon_pixels>0 && icon_changed>0 && changed>0 &&
            hit==HTCAPTION && resized && maximized && restored && closed?0:3;
 }
