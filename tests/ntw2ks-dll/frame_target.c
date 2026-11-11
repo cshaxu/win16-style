@@ -650,6 +650,37 @@ int wmain(int argc,WCHAR **argv)
                (unsigned)(sizeof(void*)*8),keyboard,f10,focus_ok,hit,menu_entries,menu_exits,menu_commands,menu_timeout);
         DestroyWindow(w);DestroyMenu(menu);return ok?0:3;
     }
+    if(argc==4 && !lstrcmpW(argv[1],L"--frame-bounds")){
+        BOOL all=TRUE;
+        int resizable=argv[2][0]-L'0',with_menu=argv[3][0]-L'0';
+        if((resizable!=0 && resizable!=1) || (with_menu!=0 && with_menu!=1) || argv[2][1] || argv[3][1])return 2;
+        {
+            HMENU menu=NULL,popup=NULL;
+            if(with_menu){menu=CreateMenu();popup=CreatePopupMenu();if(!menu || !popup)return 2;
+                AppendMenuW(popup,MF_STRING,101,L"Item");AppendMenuW(menu,MF_POPUP,(UINT_PTR)popup,L"File");}
+            DWORD style=WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU|(resizable?WS_THICKFRAME|WS_MINIMIZEBOX|WS_MAXIMIZEBOX:0);
+            HWND w=CreateWindowExW(0,wc.lpszClassName,L"Border metrics",style,80,80,420,260,NULL,menu,instance,NULL);
+            if(!w){if(menu)DestroyMenu(menu);return 2;}
+            ShowWindow(w,SW_SHOW);UpdateWindow(w);
+            RECT outer,client;POINT origin={0,0};TITLEBARINFOEX title={.cbSize=sizeof(title)};
+            BOOL got=GetWindowRect(w,&outer) && GetClientRect(w,&client) && ClientToScreen(w,&origin);
+            SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&title);
+            int left=origin.x-outer.left,right=outer.right-origin.x-client.right,bottom=outer.bottom-origin.y-client.bottom;
+            int top=(int)(title.rcTitleBar.top-outer.top);
+            MENUBARINFO system={.cbSize=sizeof(system)},bar={.cbSize=sizeof(bar)};
+            BOOL has_system=GetMenuBarInfo(w,OBJID_SYSMENU,0,&system);
+            BOOL has_menu=with_menu && GetMenuBarInfo(w,OBJID_MENU,0,&bar);
+            LRESULT edge=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(outer.left+1,(outer.top+outer.bottom)/2));
+            printf("WIN2K FRAME BOUNDS bits=%u resize=%d menu=%d top=%d left=%d right=%d bottom=%d edge=%lld icon=%ld,%ld bar=%ld,%ld\n",
+                   (unsigned)(sizeof(void*)*8),resizable,with_menu,top,left,right,bottom,(long long)edge,
+                   has_system?system.rcBar.left-outer.left:-1,has_system?system.rcBar.top-outer.top:-1,
+                   has_menu?bar.rcBar.left-outer.left:-1,has_menu?bar.rcBar.top-outer.top:-1);
+            all=all && got && GetPropW(w,L"Win2kStyle.Frame")!=NULL && left>0 && right>0 && bottom>0 &&
+                edge==(resizable?HTLEFT:HTBORDER);
+            DestroyWindow(w);if(menu)DestroyMenu(menu);
+        }
+        return all?0:3;
+    }
     if(argc==2 && !lstrcmpW(argv[1],L"--activation")){
         HWND first=CreateWindowExW(0,wc.lpszClassName,L"First active",WS_OVERLAPPEDWINDOW,
                                   80,80,420,260,NULL,NULL,instance,NULL);
