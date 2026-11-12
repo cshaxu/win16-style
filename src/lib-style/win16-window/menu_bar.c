@@ -40,7 +40,7 @@ void win16_control_menu_input(MSG *m,const win16_control_menu_input_view *v)
             m->message=WM_NULL;m->wParam=0;m->lParam=0;EndMenu();}
     }
     if((m->message==WM_KEYDOWN || m->message==WM_SYSKEYDOWN) &&
-       win16_control_menu_bar_arrow(*v->window,*v->root,*v->active,(UINT)m->wParam)){
+       style_menu_bar_arrow(*v->window,*v->root,*v->active,(UINT)m->wParam,TRUE)){
         *v->direction=m->wParam==VK_LEFT?-1:1;
         m->message=WM_NULL;m->wParam=0;m->lParam=0;EndMenu();
     }
@@ -94,24 +94,6 @@ int win16_control_menu_bar_hit_screen(HWND w,const win16_style_layout *layout,
     hit=win16_style_menu_hit(bar.rects,bar.count,point);win16_style_bar_free(&bar);
     return hit<0?-3:hit;
 }
-BOOL win16_control_menu_bar_arrow(HWND window,HMENU root,HMENU active,UINT key)
-{
-    int i,count,selected=-1;MENUITEMINFOW info={.cbSize=sizeof(info)};RECT chosen,other;
-    if(!root || !active || (key!=VK_LEFT && key!=VK_RIGHT))return FALSE;
-    if(key==VK_LEFT && active!=root)return FALSE;
-    count=GetMenuItemCount(active);
-    for(i=0;i<count;++i){info.fMask=MIIM_STATE|MIIM_SUBMENU;
-        if(GetMenuItemInfoW(active,i,TRUE,&info) && (info.fState&MFS_HILITE)){selected=i;break;}}
-    if(selected>=0){
-        if(key==VK_RIGHT && info.hSubMenu && !(info.fState&MFS_DISABLED))return FALSE;
-        if(!GetMenuItemRect(window,active,selected,&chosen))return FALSE;
-        for(i=0;i<count;++i)if(GetMenuItemRect(window,active,i,&other) &&
-            ((key==VK_LEFT && other.right<=chosen.left) ||
-             (key==VK_RIGHT && other.left>=chosen.right)))return FALSE;
-    }
-    return TRUE;
-}
-
 void win16_style_bar_free(win16_style_bar *bar)
 {
     UINT i;

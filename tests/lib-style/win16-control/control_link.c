@@ -1,3 +1,4 @@
+#include "lib-style/common/menu_input.h"
 #include <stdio.h>
 #include "lib-style/win16-common/palette.h"
 #include "lib-style/win16-control/basic_paint.h"
@@ -161,11 +162,11 @@ int main(void)
     if(!valid)return 5;
     HMENU root=CreatePopupMenu(),child=CreatePopupMenu();
     if(!root || !child)return 6;
-    BOOL arrows=win16_control_menu_bar_arrow(NULL,root,root,VK_LEFT) &&
-        win16_control_menu_bar_arrow(NULL,root,root,VK_RIGHT) &&
-        !win16_control_menu_bar_arrow(NULL,root,child,VK_LEFT) &&
-        !win16_control_menu_bar_arrow(NULL,NULL,root,VK_RIGHT) &&
-        !win16_control_menu_bar_arrow(NULL,root,root,VK_UP);
+    BOOL arrows=style_menu_bar_arrow(NULL,root,root,VK_LEFT,TRUE) &&
+        style_menu_bar_arrow(NULL,root,root,VK_RIGHT,TRUE) &&
+        !style_menu_bar_arrow(NULL,root,child,VK_LEFT,TRUE) &&
+        !style_menu_bar_arrow(NULL,NULL,root,VK_RIGHT,TRUE) &&
+        !style_menu_bar_arrow(NULL,root,root,VK_UP,TRUE);
     DestroyMenu(child);DestroyMenu(root);
     if(!arrows)return 7;
     win16_style_bar_item items[3]={{.text=L"&File"},{.text=L"E&&xit\t&X"},{.text=L"&Edit",.state=MFS_DISABLED}};

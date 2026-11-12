@@ -1,5 +1,26 @@
 #include "lib-style/common/menu_input.h"
 
+static BOOL arrow_test(void)
+{
+    HMENU root=CreatePopupMenu(),child=CreatePopupMenu(),nested=CreatePopupMenu();
+    if(!root || !child || !nested){if(root)DestroyMenu(root);if(child)DestroyMenu(child);if(nested)DestroyMenu(nested);return FALSE;}
+    BOOL ok=AppendMenuW(root,MF_POPUP,(UINT_PTR)child,L"child") &&
+        style_menu_bar_arrow(NULL,root,root,VK_LEFT,FALSE) &&
+        style_menu_bar_arrow(NULL,root,root,VK_RIGHT,FALSE) &&
+        !style_menu_bar_arrow(NULL,root,nested,VK_LEFT,TRUE) &&
+        !style_menu_bar_arrow(NULL,NULL,root,VK_RIGHT,TRUE) &&
+        !style_menu_bar_arrow(NULL,root,root,VK_UP,FALSE);
+    MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_STATE,.fState=MFS_HILITE};
+    ok=ok && SetMenuItemInfoW(root,0,TRUE,&item) &&
+        !style_menu_bar_arrow(NULL,root,root,VK_RIGHT,FALSE) &&
+        !style_menu_bar_arrow(NULL,root,root,VK_RIGHT,TRUE);
+    item.fState=MFS_HILITE|MFS_DISABLED;
+    ok=ok && SetMenuItemInfoW(root,0,TRUE,&item) &&
+        style_menu_bar_arrow(NULL,root,root,VK_RIGHT,FALSE);
+    DestroyMenu(nested);DestroyMenu(root); /* root owns child after AppendMenu */
+    return ok;
+}
+
 int main(void)
 {
     if(style_menu_neutral_hit(HTMENU)!=HTBORDER || style_menu_neutral_hit(HTCLIENT)!=HTCLIENT ||
@@ -24,5 +45,6 @@ int main(void)
        style_menu_pointer(WM_LBUTTONDOWN,1,1,-1,-1,FALSE,&target) ||
        !style_menu_pointer(WM_NCLBUTTONDOWN,1,1,-1,-1,TRUE,&target) || target!=-1 ||
        !style_menu_pointer(WM_NCMOUSEMOVE,2,1,-1,-1,FALSE,&target) || target!=2)return 6;
+    if(!arrow_test())return 7;
     return 0;
 }

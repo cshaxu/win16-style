@@ -39,6 +39,31 @@ static inline BOOL style_menu_pointer(UINT message,int hit,int selected,int no_h
     *target=hit==selected?cancel:hit;return TRUE;
 }
 
+/* Decide whether a popup arrow belongs to the menu bar. A caller that uses
+ * native multi-column popups requests geometry checks; otherwise scan every
+ * highlighted item, matching native single-row tracking semantics. */
+static inline BOOL style_menu_bar_arrow(HWND window,HMENU root,HMENU active,UINT key,BOOL columns)
+{
+    MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_STATE|MIIM_SUBMENU};
+    int count,selected=-1;RECT chosen,other;
+    if(!root || !active || (key!=VK_LEFT && key!=VK_RIGHT))return FALSE;
+    if(key==VK_LEFT && active!=root)return FALSE;
+    count=GetMenuItemCount(active);
+    for(int i=0;i<count;++i){
+        if(!GetMenuItemInfoW(active,(UINT)i,TRUE,&item) || !(item.fState&MFS_HILITE))continue;
+        if(selected<0)selected=i;
+        if(key==VK_RIGHT && item.hSubMenu && !(item.fState&MFS_DISABLED))return FALSE;
+        if(columns)break;
+    }
+    if(columns && selected>=0){
+        if(!GetMenuItemRect(window,active,(UINT)selected,&chosen))return FALSE;
+        for(int i=0;i<count;++i)if(GetMenuItemRect(window,active,(UINT)i,&other) &&
+            ((key==VK_LEFT && other.right<=chosen.left) ||
+             (key==VK_RIGHT && other.left>=chosen.right)))return FALSE;
+    }
+    return TRUE;
+}
+
 /* USER hot-tracks HTMENU before dispatch; custom menu bars own that input. */
 static inline LRESULT style_menu_neutral_hit(LRESULT hit)
 {

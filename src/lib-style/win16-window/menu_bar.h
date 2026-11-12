@@ -32,7 +32,6 @@ void win16_style_bar_paint(const win16_style_bar *bar,HDC dc,HFONT font,UINT dpi
 /* Internal shared original-resource painter for MDI's system/restore cells. */
 void win16_style_merged_control(HDC dc,RECT bounds,BOOL system,BOOL selected,int unit,const win16_style_palette *palette);
 /* Whether native menu navigation has reached the edge of the active popup. */
-BOOL win16_control_menu_bar_arrow(HWND window,HMENU root,HMENU active,UINT key);
 int win16_control_menu_bar_hit_screen(HWND window,const win16_style_layout *layout,
     HFONT font,UINT dpi,POINT point);
 int win16_control_menu_bar_item_screen(HWND window,const win16_style_layout *layout,

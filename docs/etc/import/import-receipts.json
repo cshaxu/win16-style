@@ -932,7 +932,7 @@
       "path": "src/lib-style/win16-window/menu_bar.c",
       "source": "src/ntw16s-dll/menu_bar.c",
       "source_blob": "8dea689873ff121dce171c1e89d4b8ac93375ffd",
-      "sha256": "adbe1090bf9bebaf0d890a80a9af1e04d77700f18832c4e8cfe6e30d8239d6c3",
+      "sha256": "b673618025e9bc0755d2bf103d9bd066f28a09ae218e7ba7f7723f55a59efd3a",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T21 S22 library migration",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -941,7 +941,7 @@
       "path": "src/lib-style/win16-window/menu_bar.h",
       "source": "src/ntw16s-dll/menu_bar.h",
       "source_blob": "dbf916ef7759d4c3a249a56712c10ec946ec70de",
-      "sha256": "00e59e2863eb2b0e471716e9eaa4134e12e3ddbe86ebfb1db24fa2b20c83393b",
+      "sha256": "21b04e5f04cbf9fc4d17c3e266cec5a428985c290467160a63f827dc903a0559",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T21 S22 library migration; T24 S1 removed forwarding header src/ntw16s-dll/menu_bar.h SHA256 b7d39b522884d056ef7b1a5126d26e6388677303fecbce8a4590913e934c3bb4",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -4030,7 +4030,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "ef10b5f1ee9e908892ed01ca98f015416d1a84912b3029f29138dfee0e5b175e",
+      "sha256": "037e6fa57cd7def69140e3a55bb192e1038025ba73fe7f9397e84827b7834a4d",
       "review": "T21 S22 standalone whole-archive linkage and original glyph smoke test"
     },
     {
@@ -6728,7 +6728,7 @@
       "path": "src/lib-style/win2k-window/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6a02ae291fa8d7566823f374c59238641dd2f4ec92941a665b84f1a7c05d4c6c",
+      "sha256": "8f8a7f2d33918a06f50865127170f6460e4fe49b55cfdfb20741985cacd058d9",
       "disposition": "authored",
       "review": "T25 S3 native Win2000 frame and fixture; T25 S3 Win2000 frame; T25 S4 caption state and icon; T25 S4 original caption region and state; T25 S8 paired frame removal",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -6782,7 +6782,7 @@
       "path": "src/lib-style/common/menu_input.h",
       "source": null,
       "source_blob": null,
-      "sha256": "779d257a0ba57b488f9b9e574bfdd6ff436ba4a5394822124081f73fff179f56",
+      "sha256": "c120ce8c4c0b2c4bba39e959aec06d482cb512cac5b76446f7618229f620cebe",
       "disposition": "authored",
       "review": "T25 S4 shared custom menu input protocol and test",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -6791,7 +6791,7 @@
       "path": "tests/lib-style/common/menu_input.c",
       "source": null,
       "source_blob": null,
-      "sha256": "395c53fbbee4f845fb5df1c7947fa11ca9ef1a0222c1ec7b7598486262bfe78e",
+      "sha256": "ea8b3355fa65877584618069fb2c6ef58f582a20c8caeaa8a03bd855dfed41d0",
       "disposition": "authored",
       "review": "T25 S4 shared custom menu input protocol and test",
       "notice": "Project-authored C; no external source or artwork copied"

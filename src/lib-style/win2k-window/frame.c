@@ -117,13 +117,8 @@ static LRESULT CALLBACK menu_filter(int code,WPARAM wp,LPARAM lp)
         }
         if((message->message==WM_KEYDOWN || message->message==WM_SYSKEYDOWN) &&
            (message->wParam==VK_LEFT || message->wParam==VK_RIGHT) && active_menu->active==active_menu->root){
-            BOOL child=FALSE;
-            if(message->wParam==VK_RIGHT){
-                int count=GetMenuItemCount(active_menu->root);
-                for(int i=0;i<count;++i){MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_STATE|MIIM_SUBMENU};
-                    if(GetMenuItemInfoW(active_menu->root,(UINT)i,TRUE,&item) && (item.fState&MFS_HILITE) && item.hSubMenu && !(item.fState&MFS_DISABLED)){child=TRUE;break;}}
-            }
-            if(!child){
+            if(!active_menu->root || style_menu_bar_arrow(active_menu->window,active_menu->root,
+                active_menu->active,(UINT)message->wParam,FALSE)){
                 HMENU bar=GetMenu(active_menu->window);int count=bar?GetMenuItemCount(bar):0;
                 int direction=message->wParam==VK_LEFT?-1:1;
                 for(int step=1;step<count;++step){
