@@ -49,3 +49,32 @@ BOOL style_uwp_bitmap_ensure(style_uwp_bitmap *s,SIZE size)
     if(!s->old_bitmap || s->old_bitmap==HGDI_ERROR){s->old_bitmap=NULL;style_uwp_bitmap_dispose(s);return FALSE;}
     return TRUE;
 }
+
+BOOL style_uwp_surface_present(HWND owner,HWND surface,const RECT *outer,
+    const RECT *hole,style_uwp_bitmap *bitmap,const BOOL *detached)
+{
+    SIZE size=bitmap->size;GdiFlush();
+    for(int y=0;y<size.cy;++y){
+        BYTE *row=bitmap->pixels+(SIZE_T)y*(SIZE_T)size.cx*4;
+        if(y<hole->top || y>=hole->bottom){for(int x=0;x<size.cx;++x)row[(SIZE_T)x*4+3]=255;}
+        else{
+            for(int x=0;x<hole->left;++x)row[(SIZE_T)x*4+3]=255;
+            for(int x=hole->right;x<size.cx;++x)row[(SIZE_T)x*4+3]=255;
+        }
+    }
+    if(*detached)return FALSE;
+    HRGN region=CreateRectRgn(0,0,size.cx,size.cy),inside=CreateRectRgnIndirect(hole);
+    BOOL ok=region && inside && CombineRgn(region,region,inside,RGN_DIFF)!=ERROR;
+    if(inside)DeleteObject(inside);
+    if(ok && SetWindowRgn(surface,region,FALSE))region=NULL;else ok=FALSE;
+    if(region)DeleteObject(region);
+    POINT at={outer->left,outer->top},source={0,0};BLENDFUNCTION blend={AC_SRC_OVER,0,255,AC_SRC_ALPHA};
+    if(ok)ok=UpdateLayeredWindow(surface,NULL,&at,&size,bitmap->dc,&source,0,&blend,ULW_ALPHA);
+    if(ok){
+        HWND above=GetWindow(owner,GW_HWNDPREV);
+        if(above==surface)above=GetWindow(surface,GW_HWNDPREV);
+        ok=SetWindowPos(surface,above?above:HWND_TOP,0,0,0,0,
+            SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOOWNERZORDER|SWP_SHOWWINDOW);
+    }
+    return ok;
+}

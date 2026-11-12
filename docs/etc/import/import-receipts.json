@@ -6008,7 +6008,7 @@
       "path": "src/lib-style/win16-window-uwp/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2a29f3882c201bac75e7c0fea822b05d8f618012cd955dc07853ce583f922c26",
+      "sha256": "c49b0df4a32ecc720c1dea148d9234fb1c00e0ea515d3d62934ae4d5c0bfab2a",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T22 S1 system-menu temporary command state and native cursor handling; T23 S4 console and Terminal window adaptation and native tests; T23 S7 maximize work-area geometry regression and fix",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -7088,7 +7088,7 @@
       "path": "src/lib-style/uwp/surface.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4eccbabe1e25cc609a5ba43410cd60c7401a89fc024178589ef82dae76062c91",
+      "sha256": "01ba07272560a140277826529167c882906104c1addcf07c509b96f8a59761bd",
       "disposition": "authored",
       "review": "T26 S1 split existing UWP host geometry and bitmap lifetime with independent fixture",
       "notice": "Project-authored C; no imported artwork"
@@ -7097,7 +7097,7 @@
       "path": "src/lib-style/uwp/surface.h",
       "source": null,
       "source_blob": null,
-      "sha256": "226f3f4691a8664a09fa9ad3903e4a2b02f03c2886e3d4072a8e9e7b8e25995a",
+      "sha256": "ab797207c3f96f4991d39b7ed12021d0bc6c9e130991f88482d9d5f6e1725c5e",
       "disposition": "authored",
       "review": "T26 S1 split existing UWP host geometry and bitmap lifetime with independent fixture",
       "notice": "Project-authored C; no imported artwork"
@@ -7109,6 +7109,15 @@
       "sha256": "17724292491ae2aa85cbb394c86bffe518079857994ecbcf51ca9697a9c93a8e",
       "disposition": "authored",
       "review": "T26 S1 split existing UWP host geometry and bitmap lifetime with independent fixture",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "tests/lib-style/uwp/surface_present.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "9677e7b92e08edc45d9853578ec33cad5b86a211013e2dbe508a494af77603fe",
+      "disposition": "authored",
+      "review": "T26 S1 shared layered surface ownership and failure paths",
       "notice": "Project-authored C; no imported artwork"
     }
   ]

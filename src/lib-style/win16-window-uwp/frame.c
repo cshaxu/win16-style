@@ -102,31 +102,9 @@ static BOOL refresh(uwp_frame *s)
             ZeroMemory(s->bitmap.pixels,(SIZE_T)size.cx*(SIZE_T)size.cy*4);
             win16_control_frame_view view={s,&s->detached,&s->active,&s->menu_font,&s->title_font,&s->dpi,
                 &s->no_selection,&s->no_menu,&s->no_keyboard,&s->pressed,&s->hot,cached_layout,colors,no_scrollbars};
-            win16_control_paint_frame(s->window,&view,s->bitmap.dc);GdiFlush();
+            win16_control_paint_frame(s->window,&view,s->bitmap.dc);
             RECT hole=s->layout.client;
-            for(int y=0;y<size.cy;++y){
-                BYTE *row=s->bitmap.pixels+(SIZE_T)y*(SIZE_T)size.cx*4;
-                if(y<hole.top || y>=hole.bottom){for(int x=0;x<size.cx;++x)row[(SIZE_T)x*4+3]=255;}
-                else{
-                    for(int x=0;x<hole.left;++x)row[(SIZE_T)x*4+3]=255;
-                    for(int x=hole.right;x<size.cx;++x)row[(SIZE_T)x*4+3]=255;
-                }
-            }
-            if(!s->detached){
-                HRGN region=CreateRectRgn(0,0,size.cx,size.cy),inside=CreateRectRgnIndirect(&hole);
-                ok=region && inside && CombineRgn(region,region,inside,RGN_DIFF)!=ERROR;
-                if(inside)DeleteObject(inside);
-                if(ok && SetWindowRgn(s->surface,region,FALSE))region=NULL;else ok=FALSE;
-                if(region)DeleteObject(region);
-                POINT at={outer.left,outer.top},source={0,0};BLENDFUNCTION blend={AC_SRC_OVER,0,255,AC_SRC_ALPHA};
-                if(ok)ok=UpdateLayeredWindow(s->surface,NULL,&at,&size,s->bitmap.dc,&source,0,&blend,ULW_ALPHA);
-                if(ok){
-                    HWND above=GetWindow(s->window,GW_HWNDPREV);
-                    if(above==s->surface)above=GetWindow(s->surface,GW_HWNDPREV);
-                    ok=SetWindowPos(s->surface,above?above:HWND_TOP,0,0,0,0,
-                        SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOOWNERZORDER|SWP_SHOWWINDOW);
-                }
-            }else ok=FALSE;
+            ok=style_uwp_surface_present(s->window,s->surface,&outer,&hole,&s->bitmap,&s->detached);
         }
     }
     if(!ok && !s->detached)ShowWindow(s->surface,SW_HIDE);

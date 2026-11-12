@@ -10,4 +10,8 @@ typedef struct style_uwp_bitmap {
 } style_uwp_bitmap;
 BOOL style_uwp_bitmap_ensure(style_uwp_bitmap *bitmap,SIZE size);
 void style_uwp_bitmap_dispose(style_uwp_bitmap *bitmap);
+/* The bitmap is already painted; hole is a valid rectangle within its bounds.
+ * The caller keeps the detached flag and all HWNDs alive until return. */
+BOOL style_uwp_surface_present(HWND owner,HWND surface,const RECT *outer,
+    const RECT *hole,style_uwp_bitmap *bitmap,const BOOL *detached);
 #endif
