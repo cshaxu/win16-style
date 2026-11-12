@@ -1,11 +1,18 @@
 #include "lib-style/uwp/repaint.h"
 #include <stdio.h>
-static style_uwp_repaint state;static BOOL detached;static int refs,paints,activations;
+static style_uwp_repaint state;static BOOL detached,cancel_on_paint,cancel_on_activate;
+static int refs,paints,activations,retained_during_cancel;
 static void retain(void *context){if(context==&state)++refs;}
 static void release(void *context){if(context==&state)--refs;}
-static void activate(HWND owner,void *context){if(owner && context==&state)++activations;}
+static void activate(HWND owner,void *context)
+{
+    if(owner && context==&state){++activations;
+        if(cancel_on_activate){retained_during_cancel=refs;style_uwp_repaint_cancel(&state);detached=TRUE;}}
+}
 static LRESULT CALLBACK proc(HWND w,UINT m,WPARAM a,LPARAM b)
-{if(m==WM_NCPAINT){++paints;return 0;}return DefWindowProcW(w,m,a,b);}
+{if(m==WM_NCPAINT){++paints;
+    if(cancel_on_paint){retained_during_cancel=refs;style_uwp_repaint_cancel(&state);detached=TRUE;}
+    return 0;}return DefWindowProcW(w,m,a,b);}
 static BOOL pump_until(const int *value,int wanted,DWORD timeout)
 {
     ULONGLONG until=GetTickCount64()+timeout;MSG message;
@@ -30,7 +37,13 @@ int main(void)
     ULONGLONG start=GetTickCount64();state.waiting=TRUE;state.deadline=start+70;
     if(!style_uwp_repaint_queue(w,&state,&detached,&state,&services) || !pump_until(&activations,1,2000) ||
        GetTickCount64()-start<70 || refs || state.waiting)return 7;
-    style_uwp_repaint_cancel(&state);detached=TRUE;
-    if(style_uwp_repaint_queue(w,&state,&detached,&state,&services))return 8;
-    DestroyWindow(w);UnregisterClassW(wc.lpszClassName,instance);puts("UWP_REPAINT_PASS");return 0;
+    style_uwp_repaint_cancel(&state);cancel_on_paint=TRUE;
+    if(!style_uwp_repaint_queue(w,&state,&detached,&state,&services) || !pump_until(&paints,2,2000) ||
+       !detached || retained_during_cancel!=1 || refs || state.timer || state.pending || state.repainting)return 8;
+    detached=FALSE;cancel_on_paint=FALSE;cancel_on_activate=TRUE;retained_during_cancel=0;
+    state.waiting=TRUE;state.deadline=GetTickCount64();
+    if(!style_uwp_repaint_queue(w,&state,&detached,&state,&services) || !pump_until(&activations,2,2000) ||
+       !detached || retained_during_cancel!=1 || refs || state.timer || state.pending || state.waiting)return 9;
+    if(style_uwp_repaint_queue(w,&state,&detached,&state,&services))return 10;
+    DestroyWindow(w);UnregisterClassW(wc.lpszClassName,instance);puts("UWP_REPAINT_PASS nested_cancel=paint,activate");return 0;
 }

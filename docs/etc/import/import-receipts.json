@@ -7223,7 +7223,7 @@
       "path": "tests/lib-style/uwp/repaint.c",
       "source": null,
       "source_blob": null,
-      "sha256": "73903bdc97251c802faaffe0b6f38d4cab11194f94f928ce49fbcbe533f5fd6f",
+      "sha256": "8aa71d20d849cc4dabded08685c2d5d764e2a6745af6592bc2cfeb162bbb34fa",
       "disposition": "authored",
       "review": "T26 S1 shared UWP repaint scheduler and native test",
       "notice": "Project-authored C; no imported artwork"
