@@ -36,12 +36,12 @@
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 1
-- Last verified remote delivery: M0 T26 S1 P30，`9158d550`。
+- Last verified remote delivery: M0 T26 S1 P33，`56e88402`。
 - Open task: M0 T26 S1；跨风格能力完整审计与迁移规划。
 
 ## Technical Baseline
 
-控件创建作用域的生命周期和 Win16 策略边界已审计，共享实现及 Win2000 调用尚待完成；见[记录](../history/M0-T26-S1-control-scope-audit.md)。
+控件创建作用域的生命周期已抽离并由 Win16 路径调用；Win2000 调用仍待审计，见[记录](../history/M0-T26-S1-control-scope.md)及[原边界审计](../history/M0-T26-S1-control-scope-audit.md)。
 
 Win2000 DWM 恢复问题的直接附着及延迟消息对照已复现；根因仍未确认，见[调查](../history/M0-T26-S1-win2k-dwm-investigation.md)。
 

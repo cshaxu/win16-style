@@ -5288,7 +5288,7 @@
       "path": "src/lib-style/win16-control/control_scope.c",
       "source": null,
       "source_blob": null,
-      "sha256": "09d9c95a7252dc23f52fa3e306287591772b5fcf8467df1d93090315ea35f460",
+      "sha256": "69cc1434ec9df89a30d570bf38d1b7e1c87fad02578ae8ad1075d800fd754ed6",
       "disposition": "authored",
       "review": "T21 S24 extracted from project-authored src/ntw16s-dll/control_scope.c; original project source retained in history",
       "notice": "Project-authored source per fixed component README; original notices preserved"
@@ -5297,7 +5297,7 @@
       "path": "src/lib-style/win16-control/control_scope.h",
       "source": null,
       "source_blob": null,
-      "sha256": "b7f228dff1c39baab74f493215e3fad249ce2ccf0fbc95e284a05157d075d174",
+      "sha256": "d7a2c4f7d8531924c51dd7e493f6e410959315da9598b7b090a4ca99734ffbec",
       "disposition": "authored",
       "review": "T21 S24 extracted from project-authored src/ntw16s-dll/control_scope.c; original project source retained in history",
       "notice": "Project-authored source per fixed component README; original notices preserved"
@@ -7317,6 +7317,33 @@
       "disposition": "authored",
       "review": "T26 S1 shared printer resource helpers and native test",
       "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "src/lib-style/common/control_scope.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "review": "T26 S1 shared control creation scope lifetime",
+      "notice": "Project-authored C; no imported artwork",
+      "sha256": "e1bee87d1b8be1fef07ad853c918ccf938ac84e1d0d9a9f395eaed1984de05d2"
+    },
+    {
+      "path": "src/lib-style/common/control_scope.h",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "review": "T26 S1 shared control creation scope lifetime",
+      "notice": "Project-authored C; no imported artwork",
+      "sha256": "10430513bc38d86e76c5147a70964cfd4bf8a42a83215791645b01adfc5cddc7"
+    },
+    {
+      "path": "tests/lib-style/common/control_scope.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "review": "T26 S1 shared control creation scope lifetime",
+      "notice": "Project-authored C; no imported artwork",
+      "sha256": "d1892a433c71fada3eeb4073a1a9b116dff017ffa4c64cecf32a5db8c01e4138"
     }
   ]
 }

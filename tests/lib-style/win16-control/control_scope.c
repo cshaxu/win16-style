@@ -18,6 +18,7 @@ int main(void)
     win16_style_control_scope *outer=win16_control_scope_begin(root,NULL,&scopes,&hook,observe);CHECK(outer && hook);
     HWND a=CreateWindowExW(0,L"BUTTON",L"",WS_CHILD,0,0,20,20,root,NULL,NULL,NULL);CHECK(a && installs==1);
     win16_style_control_scope *inner=win16_control_scope_begin(root,NULL,&scopes,&hook,observe);CHECK(inner);
+    CHECK(!win16_control_scope_end((win16_style_control_scope *)(UINT_PTR)1,NULL,&scopes,&hook) && GetLastError()==ERROR_INVALID_PARAMETER);
     HWND b=CreateWindowExW(0,L"EDIT",L"",WS_CHILD|WS_BORDER,0,0,20,20,root,NULL,NULL,NULL);CHECK(b && edit_installs==1);
     win16_style_control_counts count={0};CHECK(win16_control_scope_end(inner,&count,&scopes,&hook));CHECK(count.installed==1 && hook);
     ending=outer;reenter=1;HWND c=CreateWindowExW(0,L"BUTTON",L"",WS_CHILD,0,0,20,20,root,NULL,NULL,NULL);CHECK(c && installs==2 && !scopes && !hook);

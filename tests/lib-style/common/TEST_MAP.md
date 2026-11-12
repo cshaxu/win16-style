@@ -15,6 +15,7 @@
 | `classic_com_show`, `classic_browse`, `classic_file_live` | `classic_bridge.c`; `tests/lib-style/win16-dialog/dialog_link.c`; `tests/lib-style/win16-dialog/dialog_chrome.c` |
 | `classic_file_helpers`, `classic_hidden_files` | `classic_helpers.c`; `tests/lib-style/win16-dialog/dialog_link.c` |
 | `control_protocol` | `control_protocol.c`; `tests/ntw16s-dll/control_protocol_owner.c` (direct worker); control integration probes |
+| `control_scope` | `control_scope.c`; `tests/lib-style/win16-control/control_scope.c` |
 | `frame` XAML child detection | `frame_xaml.c`; Win16 frame integration |
 | `control_redraw` | `control_redraw.c`; Win16 list/combo/edit integration |
 | `print_resources` | `print_resources.c`; Win16 PrintDlgEx integration |

@@ -1,7 +1,8 @@
 #ifndef WIN16_CONTROL_SCOPE_H
 #define WIN16_CONTROL_SCOPE_H
 #include "../win16-common/palette.h"
-typedef struct win16_style_control_scope win16_style_control_scope;
+#include "../common/control_scope.h"
+typedef style_control_scope win16_style_control_scope;
 typedef struct win16_style_control_counts {unsigned installed,unsupported,failed;} win16_style_control_counts;
 typedef struct win16_control_scope_services {
     BOOL (*edit_install)(HWND,BOOL,const win16_style_palette *);

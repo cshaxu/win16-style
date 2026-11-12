@@ -1,22 +1,17 @@
 #include "control_scope.h"
 #include "control_class.h"
-#include <stdlib.h>
 #define class_is ntw16s_class_is
 
-struct win16_style_control_scope {
-    struct win16_style_control_scope *next;
-    HWND root;
+typedef struct control_scope_data {
     win16_style_palette palette;
     win16_style_control_counts counts;
-    unsigned calls;
-    BOOL detached;
-};
+} control_scope_data;
 void win16_control_scope_observe(WPARAM ignored,LPARAM b,win16_style_control_scope *scopes,const win16_control_scope_services *v)
 {
     (void)ignored;
     const CWPRETSTRUCT *m=(const CWPRETSTRUCT *)b;win16_style_control_scope *s;
     if(m->message==WM_NCDESTROY){
-        for(s=scopes;s;s=s->next)if(s->root==m->hwnd)s->root=NULL;
+        style_control_scope_root_destroyed(scopes,m->hwnd);
     }else if(m->message==WM_CREATE && m->lResult!=-1){
         HWND ancestor;const CREATESTRUCTW *create=(const CREATESTRUCTW *)m->lParam;
         BOOL edit=class_is(m->hwnd,L"EDIT"),internal=FALSE;
@@ -28,15 +23,16 @@ void win16_control_scope_observe(WPARAM ignored,LPARAM b,win16_style_control_sco
         for(ancestor=GetParent(m->hwnd);ancestor;ancestor=GetParent(ancestor))
             if(class_is(ancestor,L"COMBOBOX")){internal=TRUE;break;}
         if(internal)goto done;
-        for(s=scopes;s;s=s->next)if(s->root && IsChild(s->root,m->hwnd))break;
-        if(s){BOOL installed;DWORD failure;++s->calls;
-            installed=edit?v->edit_install(m->hwnd,(create->style&WS_BORDER)!=0,&s->palette):
-                v->control_install(m->hwnd,&s->palette);
+        s=style_control_scope_find(scopes,m->hwnd);
+        if(s){BOOL installed;DWORD failure;control_scope_data *data=style_control_scope_data(s);
+            style_control_scope_retain(s);
+            installed=edit?v->edit_install(m->hwnd,(create->style&WS_BORDER)!=0,&data->palette):
+                v->control_install(m->hwnd,&data->palette);
             failure=GetLastError();
-            if(installed)++s->counts.installed;
-            else if(failure==ERROR_NOT_SUPPORTED)++s->counts.unsupported;
-            else ++s->counts.failed;
-            if(!--s->calls && s->detached)free(s);
+            if(installed)++data->counts.installed;
+            else if(failure==ERROR_NOT_SUPPORTED)++data->counts.unsupported;
+            else ++data->counts.failed;
+            style_control_scope_release(s);
         }
     }
 done:
@@ -46,23 +42,19 @@ done:
 win16_style_control_scope *win16_control_scope_begin(HWND root,const win16_style_palette *palette,
     win16_style_control_scope **scopes,HHOOK *creation_hook,HOOKPROC observer)
 {
-    win16_style_control_scope *s;
-    if(GetWindowThreadProcessId(root,NULL)!=GetCurrentThreadId()){SetLastError(ERROR_INVALID_THREAD_ID);return NULL;}
-    s=calloc(1,sizeof(*s));if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return NULL;}
-    if(!*scopes){*creation_hook=SetWindowsHookExW(WH_CALLWNDPROCRET,observer,NULL,GetCurrentThreadId());
-        if(!*creation_hook){free(s);return NULL;}}
-    s->root=root;if(palette)s->palette=*palette;else win16_style_default_palette(&s->palette);
-    s->next=*scopes;*scopes=s;return s;
+    win16_style_control_scope *s=style_control_scope_begin(root,sizeof(control_scope_data),scopes,creation_hook,observer);
+    if(!s)return NULL;
+    control_scope_data *data=style_control_scope_data(s);
+    if(palette)data->palette=*palette;else win16_style_default_palette(&data->palette);
+    return s;
 }
 
 BOOL win16_control_scope_end(win16_style_control_scope *s,win16_style_control_counts *counts,
     win16_style_control_scope **scopes,HHOOK *creation_hook)
 {
-    win16_style_control_scope **link=scopes;
-    while(*link && *link!=s)link=&(*link)->next;
-    if(!s || !*link){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
-    *link=s->next;s->detached=TRUE;if(counts)*counts=s->counts;
-    if(!*scopes){UnhookWindowsHookEx(*creation_hook);*creation_hook=NULL;}
-    if(!s->calls)free(s);
+    if(!style_control_scope_contains(*scopes,s))return style_control_scope_end(s,scopes,creation_hook);
+    win16_style_control_counts value=((control_scope_data *)style_control_scope_data(s))->counts;
+    if(!style_control_scope_end(s,scopes,creation_hook))return FALSE;
+    if(counts)*counts=value;
     return TRUE;
 }
