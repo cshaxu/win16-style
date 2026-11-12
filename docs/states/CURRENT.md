@@ -36,10 +36,12 @@
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 1
-- Last verified remote delivery: M0 T26 S1 P35，`7840174c`。
+- Last verified remote delivery: M0 T26 S1 P36，`01487702`。
 - Open task: M0 T26 S1；跨风格能力完整审计与迁移规划。
 
 ## Technical Baseline
+
+UWP 系统菜单的命令状态及临时动作事务已抽离，实际其他风格接入尚未验证；见[记录](../history/M0-T26-S1-uwp-menu.md)。
 
 发布版全局窗口直接工作进程的双位宽附着、绘制和恢复通过；跨风格探针 x64 状态栏对齐出现一次失败，见[记录](../history/M0-T26-S1-global-worker-retest.md)。
 

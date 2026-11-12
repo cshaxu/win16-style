@@ -1,6 +1,7 @@
 #include "frame.h"
 #include "frame_layout.h"
 #include "lib-style/uwp/surface.h"
+#include "lib-style/uwp/menu.h"
 #include "lib-style/win16-window/frame_view.h"
 #include "lib-style/win16-common/font.h"
 #include "lib-style/win16-window/menu_message.h"
@@ -152,25 +153,12 @@ static void system_menu(uwp_frame *s)
     if(s->detached){s->tracking=FALSE;return;}
     /* TrackPopupMenu does not apply the root window's system-command states.
      * Add only temporary restrictions; retain application-disabled commands. */
-    const UINT ids[]={SC_RESTORE,SC_MOVE,SC_SIZE,SC_MINIMIZE,SC_MAXIMIZE};
-    UINT saved[ARRAYSIZE(ids)];
-    DWORD style=(DWORD)GetWindowLongPtrW(s->window,GWL_STYLE);
-    BOOL zoomed=IsZoomed(s->window),iconic=IsIconic(s->window);
-    BOOL disabled[]={!zoomed&&!iconic,zoomed,zoomed||iconic||!(style&WS_THICKFRAME),
-        iconic||!(style&WS_MINIMIZEBOX),zoomed||!(style&WS_MAXIMIZEBOX)};
-    for(unsigned i=0;i<ARRAYSIZE(ids);++i){
-        saved[i]=GetMenuState(menu,ids[i],MF_BYCOMMAND);
-        if(saved[i]!=(UINT)-1 && disabled[i])EnableMenuItem(menu,ids[i],MF_BYCOMMAND|MF_GRAYED);
-    }
+    style_uwp_menu_state menu_state;
+    style_uwp_menu_restrict(s->window,menu,&menu_state);
     BOOL actions_ready=TRUE;
     for(unsigned i=0;i<s->action_count;++i){
-        frame_action *action=&s->actions[i];action->command=0;
-        for(UINT id=0xeff0;id>=0xe000;id-=16)if(GetMenuState(menu,id,MF_BYCOMMAND)==(UINT)-1){
-            MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_ID|MIIM_STRING|MIIM_DATA,
-                .wID=id,.dwTypeData=(PWSTR)action->value.label,.dwItemData=(ULONG_PTR)action};
-            if(InsertMenuItemW(menu,(UINT)-1,TRUE,&item))action->command=id;
-            break;
-        }
+        frame_action *action=&s->actions[i];
+        action->command=style_uwp_menu_add(menu,action->value.label,action);
         if(!action->command){actions_ready=FALSE;break;}
     }
     UINT command=0;unsigned selected=s->action_count;
@@ -187,16 +175,12 @@ static void system_menu(uwp_frame *s)
             SetWindowLongPtrW(s->menu_window,GWL_EXSTYLE,GetWindowLongPtrW(s->menu_window,GWL_EXSTYLE)&~WS_EX_LAYERED);
         s->menu_window=NULL;
     }
-    if(!s->detached && GetSystemMenu(s->window,FALSE)==menu)for(unsigned i=0;i<ARRAYSIZE(ids);++i)
-        if(saved[i]!=(UINT)-1 && disabled[i])
-            EnableMenuItem(menu,ids[i],MF_BYCOMMAND|(saved[i]&(MF_DISABLED|MF_GRAYED)));
+    if(!s->detached && GetSystemMenu(s->window,FALSE)==menu)style_uwp_menu_restore(menu,&menu_state);
     for(unsigned i=0;i<s->action_count;++i){
         frame_action *action=&s->actions[i];
         if(!action->command)continue;
         if(command==action->command)selected=i;
-        MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_DATA};
-        if(GetMenuItemInfoW(menu,action->command,FALSE,&item)&&item.dwItemData==(ULONG_PTR)action)
-            DeleteMenu(menu,action->command,MF_BYCOMMAND);
+        style_uwp_menu_remove(menu,action->command,action);
         action->command=0;
     }
     s->tracking=FALSE;s->no_menu=FALSE;

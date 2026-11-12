@@ -6008,7 +6008,7 @@
       "path": "src/lib-style/win16-window-uwp/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c49b0df4a32ecc720c1dea148d9234fb1c00e0ea515d3d62934ae4d5c0bfab2a",
+      "sha256": "d01665cf41ed90781eaff49e2f66c93dc46a499beaba708f06a1a9b9fd64b093",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T22 S1 system-menu temporary command state and native cursor handling; T23 S4 console and Terminal window adaptation and native tests; T23 S7 maximize work-area geometry regression and fix",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -7362,6 +7362,24 @@
       "review": "T26 S1 shared system menu row snapshot",
       "notice": "Project-authored C; no imported artwork",
       "sha256": "f61067ba90fc49ceafce06cd6bf2ad3104a6736ff288e6e7ab0b6a150dd0d7bb"
+    },
+    {
+      "path": "src/lib-style/uwp/menu.h",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "review": "T26 S1 shared UWP system menu transaction",
+      "notice": "Project-authored C; no imported artwork",
+      "sha256": "e8353b630f220682eeadbe2f4c7eb667e069b21df82a56685c197a8139b7ac5c"
+    },
+    {
+      "path": "tests/lib-style/uwp/menu.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "review": "T26 S1 shared UWP system menu transaction",
+      "notice": "Project-authored C; no imported artwork",
+      "sha256": "2740ea15e74ed4b4c18e60f2a23fbb5eb739d46b3a8d9cd1c4dcf8ef530628f7"
     }
   ]
 }
