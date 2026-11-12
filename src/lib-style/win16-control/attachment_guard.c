@@ -93,19 +93,19 @@ void win16_attachment_post_controls(HWND w,UINT m,attachment *a,const win16_atta
 
 static void release_failed_protocol(HWND w,attachment *a,BOOL (*remove_owned)(HWND,const void *))
 {
-    remove_owned(w,a);ntw16s_control_protocol_release(a->protocol);a->protocol=NULL;
+    remove_owned(w,a);style_control_protocol_release(a->protocol);a->protocol=NULL;
 }
 
 void win16_attachment_post_toolbar(HWND w,UINT m,attachment *a,const win16_attachment_verified_services *v)
 {
     if(m==WM_PAINT && a->vcl_toolbar_candidate && !a->vcl_toolbar_attempted && !a->detached && a->vcl_toolbar_witness){
         DWORD saved=GetLastError();a->vcl_toolbar_attempted=TRUE;
-        ntw16s_control_protocol *protocol=win16_control_vcl_toolbar_identity(w,a->vcl_toolbar_owner,a->vcl_toolbar_parent)?ntw16s_control_protocol_bind_verified_toolbar(w,a->vcl_toolbar_witness):NULL;
+        style_control_protocol *protocol=win16_control_vcl_toolbar_identity(w,a->vcl_toolbar_owner,a->vcl_toolbar_parent)?style_control_protocol_bind_verified_toolbar(w,a->vcl_toolbar_witness):NULL;
         if(protocol && !a->detached){
             a->protocol=protocol;BOOL installed=v->toolbar_install(w,NULL,a,&a->detached);
             if(installed && !a->detached){a->vcl_toolbar_installed=TRUE;InvalidateRect(w,NULL,TRUE);}
             else if(!a->detached){release_failed_protocol(w,a,v->remove_owned);}
-        }else if(protocol)ntw16s_control_protocol_release(protocol);
+        }else if(protocol)style_control_protocol_release(protocol);
         SetLastError(saved);
     }
 }
@@ -114,28 +114,28 @@ void win16_attachment_post_verified(HWND w,UINT m,attachment *a,const win16_atta
     if(m!=WM_PAINT)return;
     if(a->group_button_candidate && !a->group_button_attempted && !a->detached && a->group_button_witness_owner){
         DWORD saved=GetLastError();a->group_button_attempted=TRUE;
-        ntw16s_control_protocol *protocol=win16_control_group_button_identity(w)?ntw16s_control_protocol_bind_verified_group_button(w,a->group_button_witness_owner):NULL;
+        style_control_protocol *protocol=win16_control_group_button_identity(w)?style_control_protocol_bind_verified_group_button(w,a->group_button_witness_owner):NULL;
         if(protocol && !a->detached){
             a->protocol=protocol;
             BOOL installed=v->control_install(w,FALSE,FALSE,FALSE,NULL,a,&a->detached);
             if(installed && !a->detached){a->group_button_parent=GetParent(w);a->group_button_installed=TRUE;InvalidateRect(w,NULL,TRUE);}
             else if(!a->detached){release_failed_protocol(w,a,v->remove_owned);}
-        }else if(protocol)ntw16s_control_protocol_release(protocol);
+        }else if(protocol)style_control_protocol_release(protocol);
         SetLastError(saved);
     }
     if(a->scroll_candidate && !a->scroll_attempted && !a->detached && a->scroll_witness){
         DWORD saved=GetLastError();a->scroll_attempted=TRUE;
-        ntw16s_control_protocol *protocol=GetParent(w)==a->scroll_parent?ntw16s_control_protocol_bind_verified_scroll(w,a->scroll_witness):NULL;
+        style_control_protocol *protocol=GetParent(w)==a->scroll_parent?style_control_protocol_bind_verified_scroll(w,a->scroll_witness):NULL;
         if(protocol && !a->detached && GetParent(w)==a->scroll_parent){a->protocol=protocol;
             BOOL installed=v->control_install(w,FALSE,FALSE,FALSE,NULL,a,&a->detached);
             if(installed && !a->detached && GetParent(w)==a->scroll_parent){a->scroll_installed=TRUE;InvalidateRect(w,NULL,TRUE);}
             else if(!a->detached){release_failed_protocol(w,a,v->remove_owned);}
-        }else if(protocol)ntw16s_control_protocol_release(protocol);
+        }else if(protocol)style_control_protocol_release(protocol);
         SetLastError(saved);
     }
     if(a->edit_candidate && !a->edit_attempted && !a->detached && a->edit_witness_owner){
         DWORD saved=GetLastError();a->edit_attempted=TRUE;
-        ntw16s_control_protocol *protocol=a->combo_candidate && !v->combo_same_role(w,a)?NULL:a->link_candidate?ntw16s_control_protocol_bind_verified_link(w,a->edit_witness_owner):a->combo_candidate?ntw16s_control_protocol_bind_verified_combo(w,a->edit_witness_owner):ntw16s_control_protocol_bind_verified_edit(w,a->edit_witness_owner);
+        style_control_protocol *protocol=a->combo_candidate && !v->combo_same_role(w,a)?NULL:a->link_candidate?style_control_protocol_bind_verified_link(w,a->edit_witness_owner):a->combo_candidate?style_control_protocol_bind_verified_combo(w,a->edit_witness_owner):style_control_protocol_bind_verified_edit(w,a->edit_witness_owner);
         if(protocol && !a->detached && (!a->combo_candidate || v->combo_same_role(w,a))){
             a->protocol=protocol;
             BOOL installed=v->control_install(w,!a->link_candidate && !a->combo_candidate,(a->edit_original_style&WS_BORDER)!=0,FALSE,NULL,a,&a->detached);
@@ -145,8 +145,8 @@ void win16_attachment_post_verified(HWND w,UINT m,attachment *a,const win16_atta
             }
             if(installed && !a->detached && (!a->combo_candidate || v->combo_same_role(w,a))){a->edit_installed=TRUE;InvalidateRect(w,NULL,TRUE);}
             else if(!a->detached){v->remove_owned(w,a);if(a->themed){v->theme_remove(w,a);a->themed=NULL;}
-                ntw16s_control_protocol_release(a->protocol);a->protocol=NULL;}
-        }else if(protocol)ntw16s_control_protocol_release(protocol);
+                style_control_protocol_release(a->protocol);a->protocol=NULL;}
+        }else if(protocol)style_control_protocol_release(protocol);
         /* An empty link has no ideal height. Retry on a later paint only
          * after a fresh same-owner native SysLink forwarding witness. */
         if(a->link_candidate && !a->detached && !a->edit_installed){
@@ -157,23 +157,23 @@ void win16_attachment_post_verified(HWND w,UINT m,attachment *a,const win16_atta
     if(a->vcl_report_candidate && !a->vcl_report_attempted && !a->detached && a->vcl_report_witness)v->vcl_report_try_bind(w,a);
     if(a->tab_candidate && !a->tab_attempted && !a->detached && a->tab_witness_owner){
         DWORD saved=GetLastError();a->tab_attempted=TRUE;
-        ntw16s_control_protocol *protocol=GetParent(w)==a->tab_parent?ntw16s_control_protocol_bind_verified_tab(w,a->tab_witness_owner):NULL;
+        style_control_protocol *protocol=GetParent(w)==a->tab_parent?style_control_protocol_bind_verified_tab(w,a->tab_witness_owner):NULL;
         if(protocol && !a->detached){a->protocol=protocol;
             BOOL installed=v->control_install(w,FALSE,FALSE,FALSE,NULL,a,&a->detached);
             if(installed && !a->detached){a->tab_installed=TRUE;InvalidateRect(w,NULL,TRUE);}
             else if(!a->detached){release_failed_protocol(w,a,v->remove_owned);}
-        }else if(protocol)ntw16s_control_protocol_release(protocol);
+        }else if(protocol)style_control_protocol_release(protocol);
         SetLastError(saved);
     }
     if(a->track_candidate && !a->track_attempted && !a->detached && a->track_witness_owner){
         DWORD saved=GetLastError();a->track_attempted=TRUE;
-        ntw16s_control_protocol *protocol=ntw16s_control_protocol_bind_verified_trackbar(w,a->track_witness_owner);
+        style_control_protocol *protocol=style_control_protocol_bind_verified_trackbar(w,a->track_witness_owner);
         if(protocol && !a->detached){
             a->protocol=protocol;
             BOOL installed=v->trackbar_install(w,NULL,a,&a->detached);
             if(installed && !a->detached){a->track_installed=TRUE;InvalidateRect(w,NULL,TRUE);}
             else if(!a->detached){release_failed_protocol(w,a,v->remove_owned);}
-        }else if(protocol)ntw16s_control_protocol_release(protocol);
+        }else if(protocol)style_control_protocol_release(protocol);
         SetLastError(saved);
     }
 }
@@ -220,16 +220,16 @@ void win16_attachment_native_prepare(HWND w,UINT m,WPARAM p,attachment *a,BOOL c
     }
 }
 
-BOOL win16_attachment_install_style(HWND w,attachment *a,ntw16s_control_protocol *protocol,DWORD original_style,BOOL legacy_progress,BOOL tree,BOOL picture,BOOL control,BOOL edit,BOOL report,DWORD *out_error,const win16_attachment_install_services *v)
+BOOL win16_attachment_install_style(HWND w,attachment *a,style_control_protocol *protocol,DWORD original_style,BOOL legacy_progress,BOOL tree,BOOL picture,BOOL control,BOOL edit,BOOL report,DWORD *out_error,const win16_attachment_install_services *v)
 {
     BOOL installed;DWORD error;
     if(a->cool_candidate || a->box_candidate || a->controlbar_candidate || a->rich_candidate || a->vb_data_candidate || a->vb_user_candidate || a->checklist || a->status || a->spin || a->static_candidate || a->scroll_candidate || a->edit_candidate || a->group_button_candidate || a->grid_candidate || a->inplace_candidate || a->nav_candidate || a->vcl_toolbar_candidate || a->track_candidate || a->tab_candidate || a->vcl_report_candidate || a->color_candidate || a->date_candidate || a->status_candidate || a->bit_candidate || a->group_frame_candidate || a->panel_frame_candidate)installed=TRUE;
     else if(legacy_progress)installed=v->legacy_progress(w,NULL,a,&a->detached);
-    else if(protocol && ntw16s_control_protocol_toolbar(w))
+    else if(protocol && style_control_protocol_toolbar(w))
         installed=v->toolbar(w,NULL,a,&a->detached);
-    else if(protocol && ntw16s_control_protocol_is(w,UPDOWN_CLASSW))installed=v->updown(w,NULL,a,&a->detached);
-    else if(protocol && ntw16s_control_protocol_is(w,TRACKBAR_CLASSW))installed=v->trackbar(w,NULL,a,&a->detached);
-    else if(protocol && ntw16s_control_protocol_is(w,PROGRESS_CLASSW))installed=v->progress(w,NULL,a,&a->detached);
+    else if(protocol && style_control_protocol_is(w,UPDOWN_CLASSW))installed=v->updown(w,NULL,a,&a->detached);
+    else if(protocol && style_control_protocol_is(w,TRACKBAR_CLASSW))installed=v->trackbar(w,NULL,a,&a->detached);
+    else if(protocol && style_control_protocol_is(w,PROGRESS_CLASSW))installed=v->progress(w,NULL,a,&a->detached);
     else if(tree)installed=v->tree(w,NULL,a,&a->detached);
     else if(picture)installed=v->picture(w,NULL,a,&a->detached);
     else if(a->lookup_popup_candidate)installed=v->grid(w,NULL,a,&a->detached);
@@ -269,15 +269,15 @@ void win16_attachment_report_bind(HWND w,attachment *a,const win16_attachment_re
         (lstrcmpW(name,WC_LISTVIEWW) && lstrcmpW(name,L"TListView") &&
          lstrcmpW(name,WC_TREEVIEWW) && lstrcmpW(name,L"TTreeView") && lstrcmpW(name,L"TShellTreeView") &&
          lstrcmpW(name,L"TreeView20WndClass")))return;
-    ntw16s_control_protocol *protocol=ntw16s_control_protocol_bind(w);
+    style_control_protocol *protocol=style_control_protocol_bind(w);
     if(!protocol)return;
-    HMODULE module=ntw16s_control_protocol_list_module(w);
-    BOOL tree=ntw16s_control_protocol_tree_module(w)!=NULL;if(tree)module=ntw16s_control_protocol_tree_module(w);
+    HMODULE module=style_control_protocol_list_module(w);
+    BOOL tree=style_control_protocol_tree_module(w)!=NULL;if(tree)module=style_control_protocol_tree_module(w);
     HWND parent=GetParent(w);
     if(!a->detached && module && parent &&
         SetWindowSubclass(parent,v->notify,(UINT_PTR)w,(DWORD_PTR)a)){
         a->protocol=protocol;a->report_window=w;a->report_parent=parent;a->report_module=module;a->tree=tree;
-    }else ntw16s_control_protocol_release(protocol);
+    }else style_control_protocol_release(protocol);
 }
 /* The runtime-owner path is accepted only after this exact HWND forwards its
  * own paint to the registered native class. Keep the public protocol checks. */
@@ -285,10 +285,10 @@ void win16_attachment_vcl_report_bind(HWND w,attachment *a,const win16_attachmen
 {
     DWORD saved=GetLastError();a->vcl_report_attempted=TRUE;
     BOOL tree=a->vcl_report_tree;
-    ntw16s_control_protocol *protocol=GetParent(w)==a->vcl_report_parent?
-        ntw16s_control_protocol_bind_verified_report(w,a->vcl_report_witness,tree):NULL;
+    style_control_protocol *protocol=GetParent(w)==a->vcl_report_parent?
+        style_control_protocol_bind_verified_report(w,a->vcl_report_witness,tree):NULL;
     if(protocol && !a->detached){
-        HMODULE module=tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);
+        HMODULE module=tree?style_control_protocol_tree_module(w):style_control_protocol_list_module(w);
         HWND parent=GetParent(w);
         if(module && parent==a->vcl_report_parent && SetWindowSubclass(parent,v->notify,(UINT_PTR)w,(DWORD_PTR)a)){
             a->protocol=protocol;a->report_window=w;a->report_parent=parent;a->report_module=module;a->tree=tree;
@@ -297,8 +297,8 @@ void win16_attachment_vcl_report_bind(HWND w,attachment *a,const win16_attachmen
                 !(style&(WS_BORDER|WS_THICKFRAME|WS_CAPTION))?TRUE:v->frame_install(w,NULL,a,&a->detached);
             if(installed && !a->detached){a->vcl_report_installed=TRUE;InvalidateRect(w,NULL,TRUE);}
             else if(!a->detached){(void)v->remove(w);}
-        }else ntw16s_control_protocol_release(protocol);
-    }else if(protocol)ntw16s_control_protocol_release(protocol);
+        }else style_control_protocol_release(protocol);
+    }else if(protocol)style_control_protocol_release(protocol);
     if(!a->detached && !a->vcl_report_installed){a->vcl_report_attempted=FALSE;a->vcl_report_witness=NULL;}
     SetLastError(saved);
 }
@@ -339,7 +339,7 @@ BOOL win16_attachment_remove(HWND w,const win16_attachment_lifecycle_services *v
     v->control_remove_owned(w,a);
     if(a->themed)v->theme_remove(a->themed,a);
     v->theme_remove(w,NULL);
-    ntw16s_control_protocol_release(a->protocol);a->protocol=NULL;
+    style_control_protocol_release(a->protocol);a->protocol=NULL;
     v->release(a);return TRUE;
 }
 BOOL win16_attachment_terminal(HWND w,const win16_attachment_lifecycle_services *v)
@@ -362,7 +362,7 @@ BOOL win16_attachment_terminal(HWND w,const win16_attachment_lifecycle_services 
     if(a && a->themed && a->themed!=w &&
             !v->theme_terminal(a->themed,a) && !error)error=GetLastError();
     if(!v->theme_terminal(w,NULL) && !error)error=GetLastError();
-    if(a){v->report_unbind(a);v->cool_unbind(a);ntw16s_control_protocol_release(a->protocol);a->protocol=NULL;v->release(a);}
+    if(a){v->report_unbind(a);v->cool_unbind(a);style_control_protocol_release(a->protocol);a->protocol=NULL;v->release(a);}
     SetLastError(error?error:saved);return !error;
 }
 
@@ -432,13 +432,13 @@ BOOL win16_attachment_classify_initial(HWND w,DWORD original_style,BOOL ready,BO
     if(checklist)v->control=FALSE;
     if(!v->control && !checklist && !status && !spin && (original_style&WS_CHILD)){
         SetLastError(ERROR_SUCCESS);
-        v->protocol=ntw16s_control_protocol_bind(w);
+        v->protocol=style_control_protocol_bind(w);
         if(!v->protocol && GetLastError()==ERROR_NOT_ENOUGH_MEMORY)return FALSE;
-        v->report=v->protocol && ntw16s_control_protocol_list_module(w);
-        v->tree=v->protocol && ntw16s_control_protocol_tree_module(w);
-        v->legacy_progress=v->protocol && ntw16s_control_protocol_legacy_progress(w);
+        v->report=v->protocol && style_control_protocol_list_module(w);
+        v->tree=v->protocol && style_control_protocol_tree_module(w);
+        v->legacy_progress=v->protocol && style_control_protocol_legacy_progress(w);
         v->control=v->protocol && !v->report && !v->legacy_progress;
-        v->edit=v->protocol && ntw16s_control_protocol_is(w,L"EDIT");
+        v->edit=v->protocol && style_control_protocol_is(w,L"EDIT");
     }
     v->owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
     /* These owner-drawn VCL file lists expose LISTBOX as their native class;
@@ -576,7 +576,7 @@ void win16_attachment_initialize(HWND w,DWORD original_style,attachment *a,const
     a->calls=1;a->cool_candidate=e->cool_candidate;a->cool_parent=GetParent(w);a->cool_owner=i->owner;if(e->cool_candidate)a->report_window=w;a->mdi_candidate=seed->vcl_mdi_probe;a->mdi_parent=GetParent(w);a->mdi_host=GetParent(a->mdi_parent);a->mdi_owner=i->owner;a->mdi_host_attachment=seed->vcl_mdi_probe?seed->lookup(a->mdi_host):NULL;if(a->mdi_host_attachment)++a->mdi_host_attachment->calls;a->nav_candidate=v->nav_candidate;a->nav_parent=GetParent(w);a->nav_owner=i->owner;a->lookup_popup_candidate=seed->lookup_popup_candidate;a->lookup_popup_source=seed->popup_source;a->lookup_popup_source_parent=seed->popup_source_parent;a->lookup_popup_owner=i->owner;a->lookup_popup_source_attachment=seed->lookup_popup_candidate?seed->popup_source_attachment:NULL;if(a->lookup_popup_source_attachment)++a->lookup_popup_source_attachment->calls;a->controlbar_candidate=e->controlbar_candidate;a->controlbar_parent=GetParent(w);a->controlbar_owner=i->owner;a->rich_popup=e->rich_popup;a->rich_month=e->rich_month;a->rich_hotkey=e->rich_hotkey;a->box_candidate=e->box_candidate;a->box_owner=i->owner;a->box_parent=GetParent(w);a->rich_unicode=e->rich_unicode;a->rich_candidate=e->rich_candidate;a->rich_parent=e->rich_popup?GetDesktopWindow():GetParent(w);a->rich_owner=i->owner;a->group_frame_candidate=v->group_frame_candidate;a->panel_frame_candidate=v->panel_frame_candidate;a->vb_user_candidate=e->vb_user_edge;a->vb_data_candidate=e->vb_data_edge;a->protocol=i->protocol;a->file_owner=ntw16s_vb_owner_file(w);a->picture=seed->picture;a->button_owner=ntw16s_vb_graphical_button(w);a->checklist=seed->checklist;a->status=seed->status;a->spin=seed->spin;a->modern_spin=seed->spin&&win16_control_modern_spin_shape(w);a->static_candidate=v->static_candidate;
     a->scroll_candidate=v->scroll_candidate;a->scroll_parent=GetParent(w);a->edit_candidate=v->edit_candidate;a->link_candidate=v->edit_candidate && ntw16s_class_is(w,L"TLinkLabel");a->combo_candidate=v->edit_candidate && (ntw16s_class_is(w,L"TComboBox") || ntw16s_class_is(w,L"TDBComboBox"));a->combo_parent=GetParent(w);a->combo_original_type=original_style&3;a->spinedit_candidate=v->edit_candidate && ntw16s_class_is(w,L"TSpinEdit");a->group_button_candidate=v->group_button_candidate;a->grid_candidate=v->grid_candidate;a->inplace_candidate=v->inplace_candidate;a->inplace_owner=i->owner;a->inplace_parent=GetParent(w);a->vcl_toolbar_candidate=v->vcl_toolbar_candidate;a->vcl_toolbar_owner=i->owner;a->vcl_toolbar_parent=GetParent(w);a->grid_owner=i->owner;a->grid_parent=GetParent(w);a->edit_original_style=original_style;a->track_candidate=v->track_candidate;a->tab_candidate=v->tab_candidate;a->tab_parent=GetParent(w);a->vcl_report_candidate=v->vcl_report_candidate;a->vcl_report_parent=GetParent(w);a->vcl_report_owner=i->owner;a->vcl_report_tree=v->vcl_report_candidate && ntw16s_class_is(w,L"TTreeView");a->color_candidate=v->color_candidate;a->date_candidate=v->date_candidate;a->status_candidate=v->status_candidate;a->bit_candidate=v->bit_candidate;
     if(i->report || i->tree || a->file_owner || a->button_owner || a->checklist || a->bit_candidate){a->report_window=w;a->tree=i->tree;
-        a->report_module=(a->file_owner || a->button_owner || a->bit_candidate)?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):i->tree?ntw16s_control_protocol_tree_module(w):ntw16s_control_protocol_list_module(w);a->report_parent=GetParent(w);}
+        a->report_module=(a->file_owner || a->button_owner || a->bit_candidate)?(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE):i->tree?style_control_protocol_tree_module(w):style_control_protocol_list_module(w);a->report_parent=GetParent(w);}
 }
 
 BOOL win16_attachment_static_paint(const attachment *a,UINT m)

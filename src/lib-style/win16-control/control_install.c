@@ -23,7 +23,7 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
     s->creation_owner=creation_owner;
     s->header_pressed=-1;
     SetLastError(ERROR_SUCCESS);
-    s->protocol=ntw16s_control_protocol_acquire(w);
+    s->protocol=style_control_protocol_acquire(w);
     if(!s->protocol && GetLastError()==ERROR_ARITHMETIC_OVERFLOW){win16_control_state_dispose(s);SetLastError(ERROR_ARITHMETIC_OVERFLOW);return FALSE;}
     if(tabbed && tab_count){s->tab_positions=malloc((size_t)tab_count*sizeof(int));
         if(!s->tab_positions){win16_control_state_dispose(s);return FALSE;}

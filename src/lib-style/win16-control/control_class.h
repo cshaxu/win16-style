@@ -2,7 +2,7 @@
 #define NTW16S_CONTROL_CLASS_H
 #include <windows.h>
 #include <commctrl.h>
-#include "control_protocol.h"
+#include "../common/control_protocol.h"
 /* Private framework classification. A name alone is insufficient: only the
  * exact observed intrinsic classes registered by their loaded VB5/6 runtime are aliases.
  * No LoadLibrary, object-layout inspection or application-name special case. */
@@ -112,7 +112,7 @@ static inline BOOL ntw16s_class_is(HWND w,const WCHAR *expected)
 {
     WCHAR name[64];
     if(!lstrcmpiW(expected,L"SysTabControl32") || !lstrcmpiW(expected,L"SysHeader32") || !lstrcmpiW(expected,L"SysTreeView32") || !lstrcmpiW(expected,L"msctls_progress32") || !lstrcmpiW(expected,L"msctls_trackbar32") || !lstrcmpiW(expected,L"msctls_updown32"))
-        return ntw16s_control_protocol_is(w,expected);
+        return style_control_protocol_is(w,expected);
     if(GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpiW(name,expected))return TRUE;
     if((!lstrcmpiW(expected,L"BUTTON") || !lstrcmpiW(expected,L"EDIT") ||
         !lstrcmpiW(expected,L"STATIC") || !lstrcmpiW(expected,L"COMBOBOX") ||
@@ -122,8 +122,8 @@ static inline BOOL ntw16s_class_is(HWND w,const WCHAR *expected)
     if(!lstrcmpiW(expected,L"COMBOBOX") && ntw16s_vb_combo(w))return TRUE;
     if(!lstrcmpiW(expected,L"LISTBOX") && ntw16s_vb_list(w))return TRUE;
     if(!lstrcmpiW(expected,L"SCROLLBAR") && ntw16s_vb_scroll(w))return TRUE;
-    if(!lstrcmpiW(expected,L"EDIT"))return ntw16s_vb_class(w,L"ThunderRT6TextBox") || ntw16s_vb5_class(w,L"ThunderRT5TextBox") || ntw16s_control_protocol_is(w,expected);
-    return ntw16s_control_protocol_is(w,expected);
+    if(!lstrcmpiW(expected,L"EDIT"))return ntw16s_vb_class(w,L"ThunderRT6TextBox") || ntw16s_vb5_class(w,L"ThunderRT5TextBox") || style_control_protocol_is(w,expected);
+    return style_control_protocol_is(w,expected);
 }
 static inline BOOL ntw16s_is_static(HWND w){return ntw16s_class_is(w,L"STATIC");}
 static inline BOOL ntw16s_is_edit(HWND w){return ntw16s_class_is(w,L"EDIT");}

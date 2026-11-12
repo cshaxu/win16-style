@@ -1,6 +1,6 @@
 #include "control_dispatch.h"
 #include "basic_message.h"
-#include "control_protocol.h"
+#include "../common/control_protocol.h"
 #include <commctrl.h>
 
 LRESULT win16_control_dispatch_message(HWND w,control_style *s,UINT *message,WPARAM *wparam,LPARAM *lparam,BOOL tab,BOOL header,BOOL progress,const win16_control_dispatch_services *v)
@@ -12,8 +12,8 @@ LRESULT win16_control_dispatch_message(HWND w,control_style *s,UINT *message,WPA
     else if(header)result=win16_control_header_message(w,s,m,a,b,v->present,v->header);
     else if(progress)result=win16_control_progress_message(w,s,m,a,b,v->present,v->progress);
     else if(v->class_is(w,UPDOWN_CLASSW)){result=DefSubclassProc(w,m,a,b);}
-    else if(v->class_is(w,TRACKBAR_CLASSW) || ntw16s_control_protocol_is(w,TRACKBAR_CLASSW)){
-        if(ntw16s_control_protocol_runtime_trackbar(w) && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT))
+    else if(v->class_is(w,TRACKBAR_CLASSW) || style_control_protocol_is(w,TRACKBAR_CLASSW)){
+        if(style_control_protocol_runtime_trackbar(w) && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT))
             result=v->track_dispatch(s,w,m,a,b);
         else result=DefSubclassProc(w,m,a,b);
         if(!s->detached && m==WM_STYLECHANGED)SendMessageW(w,WM_SYSCOLORCHANGE,0,0);

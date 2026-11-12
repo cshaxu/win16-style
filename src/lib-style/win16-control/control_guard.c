@@ -1,7 +1,7 @@
 #include "control_guard.h"
 #include "../win16-common/font.h"
 #include "control_class.h"
-#include "control_protocol.h"
+#include "../common/control_protocol.h"
 #include "fileowner_message.h"
 #include "tab_paint.h"
 #include "header_paint.h"

@@ -65,9 +65,13 @@ add_library(win16-window-uwp STATIC
 target_include_directories(win16-window-uwp PUBLIC src)
 target_compile_definitions(win16-window-uwp PRIVATE NTW16S_STATIC UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(win16-window-uwp PUBLIC style-uwp-native win16-window)
+add_library(style-control-common STATIC src/lib-style/common/control_protocol.c)
+target_include_directories(style-control-common PUBLIC src)
+target_compile_definitions(style-control-common PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+target_link_libraries(style-control-common PUBLIC user32 comctl32)
 add_library(win16-control STATIC
   src/lib-style/win16-control/scroll_layout.c src/lib-style/win16-control/scroll_track.c
-  src/lib-style/win16-control/control_protocol.c src/lib-style/win16-control/tab_paint.c
+  src/lib-style/win16-control/tab_paint.c
   src/lib-style/win16-control/header_paint.c
   src/lib-style/win16-control/progress_paint.c src/lib-style/win16-control/trackbar_paint.c
   src/lib-style/win16-control/toolbar_paint.c src/lib-style/win16-control/control_scope.c
@@ -97,7 +101,7 @@ add_library(win16-control STATIC
   src/lib-style/win16-control/attachment_guard.c)
 target_include_directories(win16-control PUBLIC src/lib-style/win16-control)
 target_compile_definitions(win16-control PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-target_link_libraries(win16-control PUBLIC style-theme-state win16-common user32 gdi32 comctl32 uxtheme)
+target_link_libraries(win16-control PUBLIC style-control-common style-theme-state win16-common user32 gdi32 comctl32 uxtheme)
 add_library(style-dialog-common STATIC src/lib-style/common/print_ranges.c src/lib-style/common/classic_file_contract.c src/lib-style/common/classic_shell_item.c src/lib-style/common/file_events.c src/lib-style/common/modern_file_dialog.c src/lib-style/common/classic_shell_folder.c src/lib-style/common/dialog_customize.c src/lib-style/common/dialog_ole_window.c src/lib-style/common/dialog_v2.c src/lib-style/common/dialog_primary.c src/lib-style/common/classic_com_show.c src/lib-style/common/classic_browse.c src/lib-style/common/classic_file_live.c src/lib-style/common/classic_file_helpers.c src/lib-style/common/classic_hidden_files.c)
 target_include_directories(style-dialog-common PUBLIC src)
 target_compile_definitions(style-dialog-common PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
@@ -795,6 +799,9 @@ if(BUILD_TESTING)
   add_executable(core-style-modern-file tests/lib-style/common/modern_file_dialog.c)
   target_link_libraries(core-style-modern-file PRIVATE style-dialog-common)
   add_test(NAME core/style-modern-file COMMAND $<TARGET_FILE:core-style-modern-file>)
+  add_executable(core-style-control-protocol tests/lib-style/common/control_protocol.c)
+  target_link_libraries(core-style-control-protocol PRIVATE style-control-common)
+  add_test(NAME core/style-control-protocol COMMAND $<TARGET_FILE:core-style-control-protocol>)
   add_executable(core-style-classic-helpers tests/lib-style/common/classic_helpers.c)
   target_link_libraries(core-style-classic-helpers PRIVATE style-dialog-common)
   add_test(NAME core/style-classic-helpers COMMAND $<TARGET_FILE:core-style-classic-helpers>)
@@ -956,6 +963,7 @@ if(BUILD_TESTING)
   target_compile_definitions(core-toolbar-text-bounds-v6 PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   add_test(NAME core/toolbar-text-bounds-v6 COMMAND ${test_driver} --name core/toolbar-text-bounds-v6 -- $<TARGET_FILE:core-toolbar-text-bounds-v6>)
   native_test(core-control-protocol-owner tests/ntw16s-dll/control_protocol_owner.c user32)
+  target_include_directories(core-control-protocol-owner PRIVATE src)
   add_test(NAME core/control-protocol-owner COMMAND ${test_driver} --name core/control-protocol-owner -- $<TARGET_FILE:core-control-protocol-owner>)
   foreach(fixture IN ITEMS tab-controls pending-control-owner)
     string(REPLACE "-" "_" fixture_source ${fixture})
@@ -1001,7 +1009,7 @@ if(BUILD_TESTING)
   # It is deliberately not a CTest dependency: no external component belongs
   # in the product, build input, or required regression environment.
   native_test(core-ocx-tree-host tests/ntw16s-dll/ocx_tree_host.c user32 comctl32 ole32 oleaut32 uuid)
-  target_sources(core-ocx-tree-host PRIVATE src/lib-style/win16-control/control_protocol.c)
+  target_link_libraries(core-ocx-tree-host PRIVATE style-control-common)
   target_include_directories(core-ocx-tree-host PRIVATE src)
   # Read-only direct catalogue for an explicit OCX path.  It does not call
   # registration APIs and remains outside CTest for the same reason as the

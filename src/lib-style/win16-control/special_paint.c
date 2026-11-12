@@ -2,7 +2,7 @@
 #include "special_paint.h"
 #include "basic_paint.h"
 #include "scroll_assets.h"
-#include "control_protocol.h"
+#include "../common/control_protocol.h"
 #include "control_class.h"
 #include "control_state.h"
 #include "choice_paint.h"
@@ -139,7 +139,7 @@ void win16_control_legacy_progress_border(HWND w,const win16_style_palette *pale
 {
     RECT outer,client;POINT origin={0,0};DWORD saved_error=GetLastError();
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
-    if(!ntw16s_control_protocol_legacy_progress(w) ||
+    if(!style_control_protocol_legacy_progress(w) ||
         !(ex&WS_EX_STATICEDGE) || (ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_CLIENTEDGE)) ||
         (style&(PBS_MARQUEE|WS_HSCROLL|WS_VSCROLL)) ||
         !GetWindowRect(w,&outer) || !GetClientRect(w,&client) || !ClientToScreen(w,&origin))goto done;

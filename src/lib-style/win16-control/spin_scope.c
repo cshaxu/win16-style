@@ -1,7 +1,7 @@
 #include "spin_scope.h"
 #include "spin_identity.h"
 #include "special_paint.h"
-#include "control_protocol.h"
+#include "../common/control_protocol.h"
 #include <string.h>
 
 void win16_control_spin_buffers_clear(spin_draw_scope *s)
@@ -57,7 +57,7 @@ void win16_control_spin_theme(spin_draw_scope *s,HDC dc,int part,int state,const
 {
     HMODULE module=NULL;BOOL owned=FALSE;RECT client;POINT pt[2];
     if(!s || !*s->modern_spin || *s->detached || !rect || clip || part!=1 || state<1 || state>4 ||
-       !win16_control_modern_spin_shape(s->window) || GetParent(s->window)!=s->parent || !ntw16s_control_protocol_is(s->parent,L"EDIT") ||
+       !win16_control_modern_spin_shape(s->window) || GetParent(s->window)!=s->parent || !style_control_protocol_is(s->parent,L"EDIT") ||
        GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)caller,&module) ||
        module!=(HMODULE)GetClassLongPtrW(s->window,GCLP_HMODULE) || !GetClientRect(s->window,&client))return;
@@ -83,7 +83,7 @@ void win16_control_spin_blit(spin_draw_scope *s,HDC dest,int x,int y,int width,i
 {
     RECT r;
     if(!s || !s->buffers || !*s->modern_spin || *s->detached || !win16_control_modern_spin_shape(s->window) ||
-       GetParent(s->window)!=s->parent || !ntw16s_control_protocol_is(s->parent,L"EDIT") || !GetClientRect(s->window,&r) ||
+       GetParent(s->window)!=s->parent || !style_control_protocol_is(s->parent,L"EDIT") || !GetClientRect(s->window,&r) ||
        (WindowFromDC(dest)!=s->window && (!s->dc || dest!=s->dc)) || source!=s->snapshot_dc ||
        GetCurrentObject(source,OBJ_BITMAP)!=s->snapshot_bitmap || x<0 || y<0 || sx!=x || sy!=y ||
        width<=0 || height<=0 || x>r.right-width || y>r.bottom-height || r.right>64 || r.bottom>64 ||

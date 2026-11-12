@@ -1,7 +1,7 @@
 #include "choice_view.h"
 #include "choice_paint.h"
 #include "other_paint.h"
-#include "control_protocol.h"
+#include "../common/control_protocol.h"
 #include <uxtheme.h>
 #include <stdlib.h>
 
@@ -41,7 +41,7 @@ void win16_control_draw_choice(HWND w,const win16_control_choice_view *view,HDC 
     if(!text)return;
     GetWindowTextW(w,text,length+1);
     font=*view->font && (view->vb_frame(w) || view->vb_button(w) ||
-        ntw16s_control_protocol_is(w,L"BUTTON"))?
+        style_control_protocol_is(w,L"BUTTON"))?
         *view->font:(HFONT)SendMessageW(w,WM_GETFONT,0,0);
     if(*view->detached || !IsWindow(w)){free(text);return;}
     if(!font)font=(HFONT)GetStockObject(SYSTEM_FONT);

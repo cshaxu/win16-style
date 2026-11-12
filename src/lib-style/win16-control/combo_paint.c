@@ -1,6 +1,6 @@
 #include "combo_paint.h"
 #include "basic_paint.h"
-#include "control_protocol.h"
+#include "../common/control_protocol.h"
 #include <stdlib.h>
 
 void win16_control_draw_combo(HWND w,const BOOL *detached,const BOOL *common_dialog_combo,const win16_style_palette *palette,HFONT *font_slot,HDC dc,BOOL (*get_info)(HWND,PCOMBOBOXINFO),BOOL (*is_vb_combo)(HWND),BOOL (*is_vb_drive)(HWND))
@@ -9,7 +9,7 @@ void win16_control_draw_combo(HWND w,const BOOL *detached,const BOOL *common_dia
     WCHAR *label;int length,saved,left,top,u;BOOL selected,pressed,editable,simple;
     if(!dc || !get_info(w,&info))return;
     length=GetWindowTextLengthW(w);label=calloc((size_t)length+1,sizeof(WCHAR));if(!label)return;
-    GetWindowTextW(w,label,length+1);font=*font_slot && (is_vb_combo(w) || ntw16s_control_protocol_is(w,L"COMBOBOX"))?
+    GetWindowTextW(w,label,length+1);font=*font_slot && (is_vb_combo(w) || style_control_protocol_is(w,L"COMBOBOX"))?
         *font_slot:(HFONT)SendMessageW(w,WM_GETFONT,0,0);
     pressed=SendMessageW(w,CB_GETDROPPEDSTATE,0,0)!=0;
     simple=(GetWindowLongPtrW(w,GWL_STYLE)&3)==CBS_SIMPLE;

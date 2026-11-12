@@ -12,7 +12,7 @@ void win16_control_state_dispose(control_style *s)
 {
     for(unsigned i=0;i<s->combo_font_count;++i)win16_style_system_release(s->combo_fonts[i]);
     win16_style_system_release(s->font);
-    ntw16s_control_protocol_release(s->protocol);
+    style_control_protocol_release(s->protocol);
     free(s->tab_positions);free(s);
 }
 BOOL win16_control_state_prepare_font(HWND w,control_style *s,UINT m,WPARAM *a,BOOL native_font,HFONT *previous,HFONT *outbound)

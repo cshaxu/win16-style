@@ -1,6 +1,6 @@
 #include "special_install.h"
 #include "control_class.h"
-#include "control_protocol.h"
+#include "../common/control_protocol.h"
 #include "scroll_assets.h"
 #include "trackbar_paint.h"
 #include "progress_paint.h"
@@ -23,7 +23,7 @@ static BOOL finish_install(HWND w,const void *owner,const win16_control_special_
 }
 BOOL win16_control_special_updown_install(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled,const win16_control_special_services *v)
 {
-    HMODULE native=ntw16s_control_protocol_updown_module(w);
+    HMODULE native=style_control_protocol_updown_module(w);
     if(!native || !ntw16s_updown_api_enabled()){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     control_style *s=install_frame(w,palette,owner,cancelled,v);if(!s)return FALSE;
     ntw16s_updown_register(&s->updown,w,native,&s->palette,win16_control_scroll_glyphs(),s,v->updown_acquire,v->updown_release);
@@ -42,7 +42,7 @@ BOOL win16_control_special_trackbar_install(HWND w,const win16_style_palette *pa
 }
 BOOL win16_control_special_toolbar_install(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled,const win16_control_special_services *v)
 {
-    if(!ntw16s_control_protocol_toolbar(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    if(!style_control_protocol_toolbar(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     control_style *s=install_frame(w,palette,owner,cancelled,v);if(!s)return FALSE;
     ++s->calls;s->toolbar_window=w;s->toolbar_parent=GetParent(w);
     BOOL okay=s->toolbar_parent && SetWindowSubclass(s->toolbar_parent,v->toolbar_notify,(UINT_PTR)w,(DWORD_PTR)s);
@@ -57,7 +57,7 @@ BOOL win16_control_special_progress_install(HWND w,const win16_style_palette *pa
 }
 BOOL win16_control_special_legacy_progress_border_install(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled,const win16_control_special_services *v)
 {
-    if(!ntw16s_control_protocol_legacy_progress(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    if(!style_control_protocol_legacy_progress(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     control_style *s=install_frame(w,palette,owner,cancelled,v);if(!s)return FALSE;
     s->legacy_progress_border=TRUE;
     RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);
@@ -65,7 +65,7 @@ BOOL win16_control_special_legacy_progress_border_install(HWND w,const win16_sty
 }
 BOOL win16_control_special_tree_install(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled,const win16_control_special_services *v)
 {
-    if(!ntw16s_control_protocol_is(w,WC_TREEVIEWW)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    if(!style_control_protocol_is(w,WC_TREEVIEWW)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     control_style *s=install_frame(w,palette,owner,cancelled,v);if(!s)return FALSE;
     s->native_border=TRUE;
     return TRUE;

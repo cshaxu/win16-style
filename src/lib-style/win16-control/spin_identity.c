@@ -1,5 +1,5 @@
 #include "spin_identity.h"
-#include "control_protocol.h"
+#include "../common/control_protocol.h"
 
 BOOL win16_control_spin_identity(HWND w)
 {
@@ -63,7 +63,7 @@ BOOL win16_control_spin_full_clip(HDC dc,const POINT pt[2])
 HWND win16_control_spinedit_button(HWND w)
 {
     WCHAR name[64];HWND child;
-    if(!ntw16s_control_protocol_is(w,L"EDIT") || !GetClassNameW(w,name,ARRAYSIZE(name)) || lstrcmpW(name,L"TSpinEdit"))return NULL;
+    if(!style_control_protocol_is(w,L"EDIT") || !GetClassNameW(w,name,ARRAYSIZE(name)) || lstrcmpW(name,L"TSpinEdit"))return NULL;
     child=FindWindowExW(w,NULL,L"TSpinButton",NULL);
     return child && GetParent(child)==w && GetWindowThreadProcessId(child,NULL)==GetCurrentThreadId() &&
         GetClassLongPtrW(child,GCLP_HMODULE)==GetClassLongPtrW(w,GCLP_HMODULE)?child:NULL;

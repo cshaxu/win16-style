@@ -36,12 +36,14 @@
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 1
-- Last verified remote delivery: M0 T26 S1 P20，`7f59d5a6`。
+- Last verified remote delivery: M0 T26 S1 P21，`34314714`。
 - Open task: M0 T26 S1；跨风格能力完整审计与迁移规划。
 
 ## Technical Baseline
 
 T26 S1 已索引 28 个 Win16/Win2000 窗口与 UWP 源文件；直接引用及未完成的共享边界见[窗口索引](../history/M0-T26-S1-window-index.md)。
+
+T26 S1 已共享控件协议识别和绑定生命周期；属性命名变化、并存限制及发布后测试见[记录](../history/M0-T26-S1-control-protocol.md)。
 
 T26 S1 已索引 55 个 Win16 控件源文件与直接测试引用，并验证现有控件协议清理；混合机制与未覆盖项见[控件索引](../history/M0-T26-S1-control-index.md)。
 

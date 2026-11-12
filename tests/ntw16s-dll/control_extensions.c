@@ -128,10 +128,10 @@ static int worker(int argc,WCHAR **argv)
         HWND w=CreateWindowW(L"TButton",L"verified protocol",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,10,10,160,50,parent,(HMENU)(UINT_PTR)variant,instance,NULL);
         ntw16s_creation_result result={0};CHECK(end(scope,&result) && w);
         WCHAR real[40];CHECK(RealGetWindowClassW(w,real,40) && !wcscmp(real,L"TButton"));
-        printf("PROTOCOL_RESULT round=%u variant=%u attached=%u scope_error=%lu initialized=%lld extra=%lu prop=%p queries=%u owner=%p exe=%p\n",round,variant,attached(w),result.failure,(long long)GetWindowLongPtrW(w,0),(unsigned long)GetClassLongPtrW(w,GCL_CBWNDEXTRA),(void*)GetPropW(w,L"ntw16s.private.control-protocol.v1"),protocol_queries,(void*)GetClassLongPtrW(w,GCLP_HMODULE),(void*)instance);fflush(stdout);
+        printf("PROTOCOL_RESULT round=%u variant=%u attached=%u scope_error=%lu initialized=%lld extra=%lu prop=%p queries=%u owner=%p exe=%p\n",round,variant,attached(w),result.failure,(long long)GetWindowLongPtrW(w,0),(unsigned long)GetClassLongPtrW(w,GCL_CBWNDEXTRA),(void*)GetPropW(w,L"style.private.control-protocol.v1"),protocol_queries,(void*)GetClassLongPtrW(w,GCLP_HMODULE),(void*)instance);fflush(stdout);
         CHECK(attached(w)==(variant==1));
         if(variant==1){paint(w,FALSE);CHECK(color_count(0xc0c0c0)>300);
-            if(round&1)CHECK(remove_style(w) && !attached(w) && !GetPropW(w,L"ntw16s.private.control-protocol.v1"));}
+            if(round&1)CHECK(remove_style(w) && !attached(w) && !GetPropW(w,L"style.private.control-protocol.v1"));}
         CHECK(DestroyWindow(w));settle();
     }
     DWORD after_gdi=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);

@@ -1,7 +1,7 @@
 #ifndef WIN16_CONTROL_STATE_H
 #define WIN16_CONTROL_STATE_H
 #include "../win16-common/palette.h"
-#include "control_protocol.h"
+#include "../common/control_protocol.h"
 #include "scroll_track.h"
 #include "updown_adapter.h"
 typedef struct control_style {
@@ -17,7 +17,7 @@ typedef struct control_style {
     HWND common_dialog_parent;
     struct control_style *owner;
     const void *creation_owner;
-    ntw16s_control_protocol *protocol;
+    style_control_protocol *protocol;
     win16_scroll_track scroll;
     UINT_PTR scroll_timer;
     unsigned scroll_epoch;

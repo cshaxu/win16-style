@@ -1,5 +1,5 @@
 #include "notify_message.h"
-#include "control_protocol.h"
+#include "../common/control_protocol.h"
 #include "custom_draw.h"
 #include "trackbar_paint.h"
 #include "toolbar_paint.h"
@@ -12,7 +12,7 @@ LRESULT win16_control_trackbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_
         NMHDR *header=(NMHDR *)l;
         if(header->hwndFrom==s->track_window && header->code==NM_CUSTOMDRAW)draw=(NMCUSTOMDRAW *)l;
     }
-    if(draw && ntw16s_control_protocol_runtime_trackbar(s->track_window)){
+    if(draw && style_control_protocol_runtime_trackbar(s->track_window)){
         track_paint_scope *scope=*active_scope;
         BOOL match=scope && scope->owner==s && scope->active && scope->draw==draw && scope->dc==draw->hdc;
         if(match && draw->dwDrawStage==CDDS_ITEMPOSTPAINT && scope->pending && scope->item==draw->dwItemSpec){

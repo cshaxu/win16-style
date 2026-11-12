@@ -112,7 +112,7 @@ static int worker(int argc,WCHAR **argv)
         if(mode==1 || mode==3){CHECK(state.removed && !attached(w));if(mode==3)CHECK(state.installed && remove_leaf(w));}
         else {CHECK(attached(w));if(mode==4)CHECK(width(w)==101);if(mode==5)CHECK((HFONT)SendMessageW(w,WM_GETFONT,0,0)==late);CHECK(remove_style(w));}
         LOGFONTW valid;CHECK(GetObjectW((HFONT)SendMessageW(w,WM_GETFONT,0,0),sizeof(valid),&valid));
-        CHECK(!GetPropW(w,L"ntw16s.private.control-protocol.v1") && DestroyWindow(w));
+        CHECK(!GetPropW(w,L"style.private.control-protocol.v1") && DestroyWindow(w));
     }
     ntw16s_creation_scope *scope=begin(TRUE);CHECK(scope);
     HWND wrapped=CreateWindowW(L"THeaderControl",L"",WS_CHILD|WS_VISIBLE,0,0,360,26,parent,NULL,instance,NULL);ntw16s_creation_result result={0};CHECK(wrapped && end(scope,&result) && attached(wrapped));

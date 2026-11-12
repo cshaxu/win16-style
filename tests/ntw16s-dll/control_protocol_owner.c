@@ -9,7 +9,7 @@ static void *tracked_calloc(size_t n,size_t size)
 static void tracked_free(void *p){if(p){if(!allocations)abort();--allocations;free(p);}}
 #define calloc tracked_calloc
 #define free tracked_free
-#include "../../src/lib-style/win16-control/control_protocol.c"
+#include "../../src/lib-style/common/control_protocol.c"
 #undef calloc
 #undef free
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"PROTOCOL_OWNER_FAIL line=%u error=%lu: %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
@@ -36,32 +36,32 @@ static int worker(int argc,WCHAR **argv)
     HWND parent=CreateWindowW(L"STATIC",L"owner",WS_POPUP,0,0,200,100,NULL,NULL,instance,NULL);CHECK(parent);
     for(unsigned i=1;i<=4;++i){
         HWND w=CreateWindowW(L"TButton",L"test",WS_CHILD,0,0,100,30,parent,(HMENU)(UINT_PTR)i,instance,NULL);CHECK(w);
-        ntw16s_control_protocol *b=ntw16s_control_protocol_bind(w);
+        style_control_protocol *b=style_control_protocol_bind(w);
         CHECK((b!=NULL)==(i==1));
-        if(b){CHECK(allocations==1 && ntw16s_control_protocol_is(w,L"BUTTON") && !ntw16s_control_protocol_is(w,L"EDIT"));
-            CHECK(ntw16s_control_protocol_acquire(w)==b && b->refs==2);
-            ntw16s_control_protocol_release(b);CHECK(allocations==1 && b->refs==1);
-            b->refs=UINT_MAX;SetLastError(0);CHECK(!ntw16s_control_protocol_acquire(w) && GetLastError()==ERROR_ARITHMETIC_OVERFLOW);
+        if(b){CHECK(allocations==1 && style_control_protocol_is(w,L"BUTTON") && !style_control_protocol_is(w,L"EDIT"));
+            CHECK(style_control_protocol_acquire(w)==b && b->refs==2);
+            style_control_protocol_release(b);CHECK(allocations==1 && b->refs==1);
+            b->refs=UINT_MAX;SetLastError(0);CHECK(!style_control_protocol_acquire(w) && GetLastError()==ERROR_ARITHMETIC_OVERFLOW);
             b->refs=1;
-            RemovePropW(w,key);CHECK(!ntw16s_control_protocol_is(w,L"BUTTON"));
-            ntw16s_control_protocol_release(b);CHECK(!GetPropW(w,key));}
+            RemovePropW(w,key);CHECK(!style_control_protocol_is(w,L"BUTTON"));
+            style_control_protocol_release(b);CHECK(!GetPropW(w,key));}
         CHECK(!allocations && !bindings);if(IsWindow(w))CHECK(DestroyWindow(w));
     }
     HWND w=CreateWindowW(L"TButton",L"oom",WS_CHILD,0,0,100,30,parent,(HMENU)1,instance,NULL);CHECK(w);
-    fail_next=TRUE;SetLastError(0);CHECK(!ntw16s_control_protocol_bind(w) && GetLastError()==ERROR_NOT_ENOUGH_MEMORY && !bindings && !allocations);
-    CHECK(SetPropW(w,key,(HANDLE)(UINT_PTR)123));CHECK(!ntw16s_control_protocol_bind(w) && !ntw16s_control_protocol_is(w,L"BUTTON"));
+    fail_next=TRUE;SetLastError(0);CHECK(!style_control_protocol_bind(w) && GetLastError()==ERROR_NOT_ENOUGH_MEMORY && !bindings && !allocations);
+    CHECK(SetPropW(w,key,(HANDLE)(UINT_PTR)123));CHECK(!style_control_protocol_bind(w) && !style_control_protocol_is(w,L"BUTTON"));
     CHECK(RemovePropW(w,key)==(HANDLE)(UINT_PTR)123 && DestroyWindow(w));
     w=CreateWindowW(L"TComboBox",L"fake",WS_CHILD,0,0,100,30,parent,NULL,instance,NULL);CHECK(w);
-    CHECK(!ntw16s_control_protocol_bind(w) && !allocations && !bindings && !GetPropW(w,key));
+    CHECK(!style_control_protocol_bind(w) && !allocations && !bindings && !GetPropW(w,key));
     CHECK(DestroyWindow(w));
     w=CreateWindowW(L"TEdit",L"fake",WS_CHILD,0,0,100,30,parent,NULL,instance,NULL);CHECK(w);
-    CHECK(!ntw16s_control_protocol_bind(w) && !allocations && !bindings && !GetPropW(w,key));
+    CHECK(!style_control_protocol_bind(w) && !allocations && !bindings && !GetPropW(w,key));
     CHECK(DestroyWindow(w));
     w=CreateWindowW(L"TListBox",L"fake",WS_CHILD,0,0,100,30,parent,NULL,instance,NULL);CHECK(w);
-    CHECK(!ntw16s_control_protocol_bind(w) && !allocations && !bindings && !GetPropW(w,key));
+    CHECK(!style_control_protocol_bind(w) && !allocations && !bindings && !GetPropW(w,key));
     CHECK(DestroyWindow(w));
     w=CreateWindowW(L"TDBListBox",L"fake",WS_CHILD,0,0,100,30,parent,NULL,instance,NULL);CHECK(w);
-    CHECK(!ntw16s_control_protocol_bind(w) && !allocations && !bindings && !GetPropW(w,key));
+    CHECK(!style_control_protocol_bind(w) && !allocations && !bindings && !GetPropW(w,key));
     CHECK(DestroyWindow(w) && DestroyWindow(parent));
     printf("PROTOCOL_OWNER_OK bits=%u allocations=0 bindings=0 invalid=5 destroyed_query=1 oom=1 foreign_property=1 combo_edit_list_impostor=1\n",(unsigned)(sizeof(void*)*8));return 0;
 }

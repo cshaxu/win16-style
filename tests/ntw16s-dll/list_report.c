@@ -104,7 +104,7 @@ static int child(BOOL styled,BOOL aware)
         for(unsigned i=0;i<ARRAYSIZE(unsupported);++i){
             list=CreateWindowExW(0,WC_LISTVIEWW,L"",WS_CHILD|WS_VISIBLE|WS_BORDER|unsupported[i],0,0,600,180,root,(HMENU)14,cls.hInstance,NULL);CHECK(list);
             draw_mode=0;(void)capture(list,bits);
-            CHECK(!GetPropW(list,L"ntw16s.private.control-protocol.v1"));CHECK(DestroyWindow(list));
+            CHECK(!GetPropW(list,L"style.private.control-protocol.v1"));CHECK(DestroyWindow(list));
         }
         puts("LIST_REPORT_UNSUPPORTED_NATIVE_OK view_ownerdata_ownerdraw=3");
         list=CreateWindowExW(0,WC_LISTVIEWW,L"",WS_CHILD|WS_VISIBLE|LVS_REPORT,0,0,600,180,root,(HMENU)12,cls.hInstance,NULL);CHECK(list && attached(list));

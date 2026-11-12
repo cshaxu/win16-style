@@ -3,7 +3,7 @@
 #include "../win16-common/palette.h"
 #include <commctrl.h>
 #include "status_font.h"
-#include "control_protocol.h"
+#include "../common/control_protocol.h"
 #include "vb_text.h"
 #include "vcl_identity.h"
 typedef struct attachment {
@@ -46,7 +46,7 @@ typedef struct attachment {
     HWND themed,report_window,report_parent;
     HMODULE report_module;
     ntw16s_vb_fonts fonts;
-    ntw16s_control_protocol *protocol;
+    style_control_protocol *protocol;
 } attachment;
 typedef struct win16_attachment_guard_services {
     attachment *(*lookup)(HWND);
@@ -116,7 +116,7 @@ typedef struct win16_attachment_install_services {
     void (*theme_remove)(HWND,const void *);
     BOOL (*remove)(HWND);
 } win16_attachment_install_services;
-BOOL win16_attachment_install_style(HWND,attachment *,ntw16s_control_protocol *,DWORD,BOOL,BOOL,BOOL,BOOL,BOOL,BOOL,DWORD *,const win16_attachment_install_services *);
+BOOL win16_attachment_install_style(HWND,attachment *,style_control_protocol *,DWORD,BOOL,BOOL,BOOL,BOOL,BOOL,BOOL,DWORD *,const win16_attachment_install_services *);
 typedef struct win16_attachment_report_services {
     SUBCLASSPROC notify;
     win16_attachment_special_install tree_install,frame_install;
@@ -164,7 +164,7 @@ typedef struct win16_attachment_notify_services {
 LRESULT win16_attachment_report_notify(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR,const win16_attachment_notify_services *);
 typedef struct win16_attachment_initial_classification {
     BOOL edit,control,report,tree,legacy_progress;
-    ntw16s_control_protocol *protocol;
+    style_control_protocol *protocol;
     HMODULE owner;
 } win16_attachment_initial_classification;
 BOOL win16_attachment_classify_initial(HWND,DWORD,BOOL,BOOL,BOOL,BOOL,win16_attachment_initial_classification *);

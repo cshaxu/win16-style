@@ -5,15 +5,15 @@
 #include <limits.h>
 #include <wchar.h>
 
-struct ntw16s_control_protocol {
-    struct ntw16s_control_protocol *next;
+struct style_control_protocol {
+    struct style_control_protocol *next;
     HWND window;
     unsigned role,refs;
     BOOL runtime_trackbar,runtime_toolbar;
     HMODULE native_module;
 };
-static _Thread_local ntw16s_control_protocol *bindings;
-static const WCHAR key[]=L"ntw16s.private.control-protocol.v1";
+static _Thread_local style_control_protocol *bindings;
+static const WCHAR key[]=L"style.private.control-protocol.v1";
 /* These official OCX wrappers expose the matching standard control message
  * surface. Admission remains exact: the child and reflector must share one
  * known COMCTL32.OCX/MSCOMCTL.OCX owner; no class prefix is accepted. */
@@ -53,57 +53,57 @@ static unsigned ocx_toolbar_owner(HWND w,HMODULE owner,const WCHAR *name,WNDCLAS
         GetClassLongPtrW(w,GCL_CBWNDEXTRA)<(ULONG_PTR)native->cbWndExtra)return 0;
     return 10;
 }
-static BOOL current(const ntw16s_control_protocol *b)
+static BOOL current(const style_control_protocol *b)
 {return IsWindow(b->window) && GetPropW(b->window,key)==(HANDLE)b;}
-static ntw16s_control_protocol *find_binding(HWND w,unsigned role)
+static style_control_protocol *find_binding(HWND w,unsigned role)
 {
-    for(ntw16s_control_protocol *b=bindings;b;b=b->next)
+    for(style_control_protocol *b=bindings;b;b=b->next)
         if(b->window==w && (!role || b->role==role) && current(b))return b;
     return NULL;
 }
-BOOL ntw16s_control_protocol_is(HWND w,const WCHAR *name)
+BOOL style_control_protocol_is(HWND w,const WCHAR *name)
 {
-    ntw16s_control_protocol *b=find_binding(w,0);
+    style_control_protocol *b=find_binding(w,0);
     return b && ((b->role==1 && !lstrcmpiW(name,L"BUTTON")) ||
             (b->role==2 && !lstrcmpiW(name,L"COMBOBOX")) || (b->role==3 && !lstrcmpiW(name,WC_TABCONTROLW)) ||
             (b->role==4 && !lstrcmpiW(name,WC_HEADERW)) || (b->role==5 && !lstrcmpiW(name,WC_LISTVIEWW)) || (b->role==6 && !lstrcmpiW(name,WC_TREEVIEWW)) || (b->role==7 && !lstrcmpiW(name,PROGRESS_CLASSW)) || (b->role==8 && !lstrcmpiW(name,TRACKBAR_CLASSW)) || (b->role==9 && !lstrcmpiW(name,UPDOWN_CLASSW)) ||
             (b->role==11 && !lstrcmpiW(name,L"EDIT")) || (b->role==12 && !lstrcmpiW(name,L"LISTBOX")) || (b->role==14 && !lstrcmpiW(name,L"SCROLLBAR")) || (b->role==15 && !lstrcmpiW(name,WC_LINK)));
 }
-BOOL ntw16s_control_protocol_toolbar(HWND w)
+BOOL style_control_protocol_toolbar(HWND w)
 {return find_binding(w,10)!=NULL;}
-BOOL ntw16s_control_protocol_runtime_toolbar(HWND w)
+BOOL style_control_protocol_runtime_toolbar(HWND w)
 {
-    for(ntw16s_control_protocol *b=bindings;b;b=b->next)
+    for(style_control_protocol *b=bindings;b;b=b->next)
         if(b->window==w && b->role==10 && b->runtime_toolbar && current(b))return TRUE;
     return FALSE;
 }
-BOOL ntw16s_control_protocol_runtime_trackbar(HWND w)
+BOOL style_control_protocol_runtime_trackbar(HWND w)
 {
-    for(ntw16s_control_protocol *b=bindings;b;b=b->next)
+    for(style_control_protocol *b=bindings;b;b=b->next)
         if(b->window==w && b->role==8 && b->runtime_trackbar && current(b))return TRUE;
     return FALSE;
 }
-BOOL ntw16s_control_protocol_legacy_progress(HWND w)
+BOOL style_control_protocol_legacy_progress(HWND w)
 {return find_binding(w,13)!=NULL;}
-HMODULE ntw16s_control_protocol_list_module(HWND w)
-{ntw16s_control_protocol *b=find_binding(w,5);return b?b->native_module:NULL;}
-HMODULE ntw16s_control_protocol_tree_module(HWND w)
-{ntw16s_control_protocol *b=find_binding(w,6);return b?b->native_module:NULL;}
-HMODULE ntw16s_control_protocol_updown_module(HWND w)
-{ntw16s_control_protocol *b=find_binding(w,9);return b?b->native_module:NULL;}
-ntw16s_control_protocol *ntw16s_control_protocol_acquire(HWND w)
+HMODULE style_control_protocol_list_module(HWND w)
+{style_control_protocol *b=find_binding(w,5);return b?b->native_module:NULL;}
+HMODULE style_control_protocol_tree_module(HWND w)
+{style_control_protocol *b=find_binding(w,6);return b?b->native_module:NULL;}
+HMODULE style_control_protocol_updown_module(HWND w)
+{style_control_protocol *b=find_binding(w,9);return b?b->native_module:NULL;}
+style_control_protocol *style_control_protocol_acquire(HWND w)
 {
-    ntw16s_control_protocol *b=find_binding(w,0);
+    style_control_protocol *b=find_binding(w,0);
     if(b){
         if(b->refs==UINT_MAX){SetLastError(ERROR_ARITHMETIC_OVERFLOW);return NULL;}
         ++b->refs;return b;
     }
     return NULL;
 }
-void ntw16s_control_protocol_release(ntw16s_control_protocol *b)
+void style_control_protocol_release(style_control_protocol *b)
 {
     if(!b)return;
-    ntw16s_control_protocol **link=&bindings;
+    style_control_protocol **link=&bindings;
     while(*link && *link!=b)link=&(*link)->next;
     if(!*link)return;
     if(--b->refs)return;
@@ -111,7 +111,7 @@ void ntw16s_control_protocol_release(ntw16s_control_protocol *b)
     if(current(b))RemovePropW(b->window,key);
     free(b);
 }
-static ntw16s_control_protocol *bind_protocol(HWND w,HMODULE verified_owner,unsigned verified_role)
+static style_control_protocol *bind_protocol(HWND w,HMODULE verified_owner,unsigned verified_role)
 {
     WCHAR name[64];unsigned role;DWORD process;WNDCLASSEXW native_class={.cbSize=sizeof(native_class)};
     HMODULE owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE),toolbar_native=NULL;
@@ -151,10 +151,10 @@ static ntw16s_control_protocol *bind_protocol(HWND w,HMODULE verified_owner,unsi
     if(role==3 && ((GetWindowLongPtrW(w,GWL_STYLE)&(TCS_BOTTOM|TCS_VERTICAL)) ||
         GetClassLongPtrW(w,GCL_CBWNDEXTRA)<(ULONG_PTR)native_class.cbWndExtra))return NULL;
     if(role>=4 && role<=9 && GetClassLongPtrW(w,GCL_CBWNDEXTRA)<(ULONG_PTR)native_class.cbWndExtra)return NULL;
-    ntw16s_control_protocol *b=calloc(1,sizeof(*b));
+    style_control_protocol *b=calloc(1,sizeof(*b));
     if(!b){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return NULL;}
     b->window=w;b->refs=1;b->next=bindings;bindings=b;
-    if(!SetPropW(w,key,(HANDLE)b)){ntw16s_control_protocol_release(b);return NULL;}
+    if(!SetPropW(w,key,(HANDLE)b)){style_control_protocol_release(b);return NULL;}
     BOOL valid=FALSE;
     if(role==1){
         WNDCLASSEXW native={.cbSize=sizeof(native)};SIZE ideal={0};
@@ -336,26 +336,26 @@ static ntw16s_control_protocol *bind_protocol(HWND w,HMODULE verified_owner,unsi
          * painter validates every draw pass and emits no guessed pixels. */
         if(valid)b->native_module=native_owner;
     }
-    if(!valid){ntw16s_control_protocol_release(b);return NULL;}
+    if(!valid){style_control_protocol_release(b);return NULL;}
     b->role=role;b->runtime_trackbar=verified_owner && role==8;b->runtime_toolbar=verified_owner && role==10;return b;
 }
-ntw16s_control_protocol *ntw16s_control_protocol_bind(HWND w)
+style_control_protocol *style_control_protocol_bind(HWND w)
 {return bind_protocol(w,NULL,0);}
-ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_toolbar(HWND w,HMODULE owner)
+style_control_protocol *style_control_protocol_bind_verified_toolbar(HWND w,HMODULE owner)
 {return owner?bind_protocol(w,owner,10):NULL;}
-ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_group_button(HWND w,HMODULE owner)
+style_control_protocol *style_control_protocol_bind_verified_group_button(HWND w,HMODULE owner)
 {return owner?bind_protocol(w,owner,1):NULL;}
-ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_combo(HWND w,HMODULE owner)
+style_control_protocol *style_control_protocol_bind_verified_combo(HWND w,HMODULE owner)
 {return owner?bind_protocol(w,owner,2):NULL;}
-ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_edit(HWND w,HMODULE owner)
+style_control_protocol *style_control_protocol_bind_verified_edit(HWND w,HMODULE owner)
 {return owner?bind_protocol(w,owner,11):NULL;}
-ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_link(HWND w,HMODULE owner)
+style_control_protocol *style_control_protocol_bind_verified_link(HWND w,HMODULE owner)
 {return owner?bind_protocol(w,owner,15):NULL;}
-ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_scroll(HWND w,HMODULE owner)
+style_control_protocol *style_control_protocol_bind_verified_scroll(HWND w,HMODULE owner)
 {return owner?bind_protocol(w,owner,14):NULL;}
-ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_tab(HWND w,HMODULE owner)
+style_control_protocol *style_control_protocol_bind_verified_tab(HWND w,HMODULE owner)
 {return owner?bind_protocol(w,owner,3):NULL;}
-ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_report(HWND w,HMODULE owner,BOOL tree)
+style_control_protocol *style_control_protocol_bind_verified_report(HWND w,HMODULE owner,BOOL tree)
 {return owner?bind_protocol(w,owner,tree?6:5):NULL;}
-ntw16s_control_protocol *ntw16s_control_protocol_bind_verified_trackbar(HWND w,HMODULE owner)
+style_control_protocol *style_control_protocol_bind_verified_trackbar(HWND w,HMODULE owner)
 {return owner?bind_protocol(w,owner,8):NULL;}

@@ -576,7 +576,7 @@ static BOOL install_created(HWND w,DWORD original_style)
 {
     BOOL ready=InterlockedCompareExchange(&status_hooks_ready,0,0)!=0;
     BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=win16_control_checklist_identity(w),status=ready && status_identity(w,NULL,NULL),spin=ready && (win16_control_spin_identity(w)||win16_control_modern_spin_shape(w));HWND parent;HMODULE owner;attachment *a;DWORD error;
-    ntw16s_control_protocol *protocol=NULL;
+    style_control_protocol *protocol=NULL;
     if(lookup(w))return TRUE;
     /* COMBOBOX installs its own internal list when construction finishes.
      * The internal EDIT also belongs to that native composite, not a frame. */
@@ -597,14 +597,14 @@ static BOOL install_created(HWND w,DWORD original_style)
     BOOL cool_candidate=extra.cool_candidate;
     BOOL vcl_mdi_probe=mdi_identity(w,GetParent(w),GetParent(GetParent(w)),owner);
     int rejected=win16_attachment_eligibility(original_style,picture,checklist,status,spin,vcl_mdi_probe,&initial,&candidates,&extra);
-    if(rejected){if(rejected==1)ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    if(rejected){if(rejected==1)style_control_protocol_release(protocol);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     a=calloc(1,sizeof(*a));
-    if(!a){ntw16s_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
+    if(!a){style_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
     const win16_attachment_seed seed={&initial,&candidates,&extra,picture,checklist,status,spin,
         vcl_mdi_probe,lookup_popup_candidate,popup_source,popup_source_parent,popup_source_attachment,lookup};
     win16_attachment_initialize(w,original_style,a,&seed);
     if(!SetWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc,(DWORD_PTR)a)){
-        DWORD failure=GetLastError();ntw16s_control_protocol_release(protocol);if(a->lookup_popup_source_attachment)release(a->lookup_popup_source_attachment);if(a->mdi_host_attachment)release(a->mdi_host_attachment);free(a);SetLastError(failure);return FALSE;
+        DWORD failure=GetLastError();style_control_protocol_release(protocol);if(a->lookup_popup_source_attachment)release(a->lookup_popup_source_attachment);if(a->mdi_host_attachment)release(a->mdi_host_attachment);free(a);SetLastError(failure);return FALSE;
     }
     if((report || tree || a->file_owner || a->button_owner || a->checklist || a->bit_candidate) && (!a->report_parent || !SetWindowSubclass(a->report_parent,report_notify,(UINT_PTR)w,(DWORD_PTR)a))){
         DWORD error=GetLastError();Ntw16sWindowRemove(w);release(a);SetLastError(error);return FALSE;

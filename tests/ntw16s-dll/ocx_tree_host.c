@@ -9,7 +9,7 @@
 #include <oleidl.h>
 #include <olectl.h>
 #include <stdio.h>
-#include "lib-style/win16-control/control_protocol.h"
+#include "lib-style/common/control_protocol.h"
 
 #define CHECK(x) do{if(!(x)){fwprintf(stderr,L"OCX_TREE_HOST_FAIL line=%u error=%lu: %hs\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
 typedef struct host host;
@@ -141,7 +141,7 @@ static BOOL CALLBACK found(HWND w,LPARAM value)
 {
     WCHAR name[64];outcome *state=(outcome *)value;
     if(generic_mode){
-        WCHAR module[MAX_PATH],parent_name[64],real[64];HMODULE owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);HWND parent=GetParent(w);LRESULT value=0;ntw16s_control_protocol *protocol;
+        WCHAR module[MAX_PATH],parent_name[64],real[64];HMODULE owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);HWND parent=GetParent(w);LRESULT value=0;style_control_protocol *protocol;
         if(!GetClassNameW(w,name,ARRAYSIZE(name)))return TRUE;
         if(!RealGetWindowClassW(w,real,ARRAYSIZE(real)))real[0]=0;
         if(owner)GetModuleFileNameW(owner,module,ARRAYSIZE(module));else module[0]=0;
@@ -169,7 +169,7 @@ static BOOL CALLBACK found(HWND w,LPARAM value)
         }
         else if(wcsstr(name,L"StatusBar"))value=SendMessageW(w,SB_GETPARTS,0,0);
         else if(wcsstr(name,L"TabStrip"))value=SendMessageW(w,TCM_GETITEMCOUNT,0,0);
-        protocol=ntw16s_control_protocol_bind(w);
+        protocol=style_control_protocol_bind(w);
         if(wcsstr(name,L"ListView") && report_view){
             list_window=w;CHECK(SetWindowSubclass(GetParent(w),list_monitor,7302,0));
             RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_ALLCHILDREN|RDW_UPDATENOW);
@@ -183,7 +183,7 @@ static BOOL CALLBACK found(HWND w,LPARAM value)
         if(!lstrcmpW(name,TOOLBARCLASSNAMEW) && toolbar_test)wprintf(L"OCX_TOOLBAR_DRAW pre=%u item=%u post=%u\n",toolbar_pre,toolbar_item,toolbar_post);
         if(wcsstr(name,L"ListView") && report_view)wprintf(L"OCX_LIST_DRAW pre=%u item=%u post=%u\n",list_pre,list_item,list_post);
         if(wcsstr(name,L"StatusBar"))wprintf(L"OCX_STATUS_DRAW pre=%u item=%u post=%u\n",status_pre,status_item,status_post);
-        if(protocol)ntw16s_control_protocol_release(protocol);
+        if(protocol)style_control_protocol_release(protocol);
         if(wcsstr(name,L"ProgressBar")){
             PBRANGE range={INT_MAX,INT_MIN};LRESULT low=SendMessageW(w,PBM_GETRANGE,TRUE,(LPARAM)&range);
             LRESULT high=SendMessageW(w,PBM_GETRANGE,FALSE,0),state=SendMessageW(w,PBM_GETSTATE,0,0);
@@ -204,8 +204,8 @@ static BOOL CALLBACK found(HWND w,LPARAM value)
         if(list_mode){
             LRESULT previous=SendMessageW(w,LVM_SETVIEW,LVS_REPORT,0);HWND header=(HWND)SendMessageW(w,LVM_GETHEADER,0,0);WCHAR header_name[64],module[MAX_PATH];
             HMODULE header_owner=header?(HMODULE)GetClassLongPtrW(header,GCLP_HMODULE):NULL;
-            ntw16s_control_protocol *protocol=is_attached?NULL:ntw16s_control_protocol_bind(w);BOOL public_bound=protocol!=NULL;
-            if(protocol)ntw16s_control_protocol_release(protocol);
+            style_control_protocol *protocol=is_attached?NULL:style_control_protocol_bind(w);BOOL public_bound=protocol!=NULL;
+            if(protocol)style_control_protocol_release(protocol);
             if(header_owner)GetModuleFileNameW(header_owner,module,ARRAYSIZE(module));else module[0]=0;
             if(header)GetClassNameW(header,header_name,ARRAYSIZE(header_name));else header_name[0]=0;
             wprintf(L"OCX_LIST_HOST_RESULT class=%ls attached=%u expected=%u public_bound=%u setview_previous=%lld style=%08lx count=%lld header=%p header_class=%ls header_module=%ls dpi=%u\n",name,is_attached,state->expected,public_bound,(long long)previous,(DWORD)GetWindowLongPtrW(w,GWL_STYLE),(long long)SendMessageW(w,LVM_GETITEMCOUNT,0,0),header,header_name,module,GetDpiForWindow(w));

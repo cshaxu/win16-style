@@ -1,6 +1,6 @@
 #include "scroll_message.h"
 #include "special_paint.h"
-#include "control_protocol.h"
+#include "../common/control_protocol.h"
 #include <commctrl.h>
 
 LRESULT win16_control_frame_scroll_message(HWND w,control_style *s,UINT m,WPARAM a,LPARAM b,const win16_control_scroll_services *services)
@@ -38,7 +38,7 @@ LRESULT win16_control_sizebox_message(HWND w,control_style *s,UINT m,WPARAM a,LP
 LRESULT win16_control_scroll_message(HWND w,control_style *s,UINT *message,WPARAM *wparam,LPARAM *lparam,const win16_control_scroll_services *services)
 {
     UINT m=*message;WPARAM a=*wparam;LPARAM b=*lparam;LRESULT result=0;
-        if(ntw16s_control_protocol_is(w,L"SCROLLBAR") && !IsWindowEnabled(w) && (m==WM_KEYDOWN || m==WM_KEYUP || m==WM_LBUTTONDOWN || m==WM_LBUTTONDBLCLK || m==WM_LBUTTONUP))result=DefSubclassProc(w,m,a,b);
+        if(style_control_protocol_is(w,L"SCROLLBAR") && !IsWindowEnabled(w) && (m==WM_KEYDOWN || m==WM_KEYUP || m==WM_LBUTTONDOWN || m==WM_LBUTTONDBLCLK || m==WM_LBUTTONUP))result=DefSubclassProc(w,m,a,b);
         else if(services->input(w,s,m,a,b))result=0;
         else if(m==WM_SETFOCUS || m==WM_SIZE)services->caret_sync(w,s);
         else if(m==WM_KILLFOCUS)services->caret_destroy(w,s);
